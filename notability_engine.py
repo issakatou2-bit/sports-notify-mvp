@@ -65,6 +65,7 @@ class Game:
     home_team_name: str
     away_team_name: str
     players: list = field(default_factory=list)  # list[PlayerHighlight]
+    start_time_utc: Optional[str] = None  # ISO8601 (例: '2026-07-21T00:10:00Z')
 
 
 @dataclass
@@ -155,14 +156,33 @@ def score_game(reasons: list[Reason]) -> int:
 # 出力JSON組み立て
 # ---------------------------------------------------------------------------
 
+def _to_jst_str(start_time_utc: Optional[str]) -> Optional[str]:
+    """'2026-07-21T00:10:00Z' のようなUTC文字列をJST(UTC+9)の'HH:MM'に変換する"""
+    if not start_time_utc:
+        return None
+    import datetime as _datetime
+
+    try:
+        s = start_time_utc.replace("Z", "+00:00")
+        dt_utc = _datetime.datetime.fromisoformat(s)
+        dt_jst = dt_utc.astimezone(_datetime.timezone(_datetime.timedelta(hours=9)))
+        return dt_jst.strftime("%m/%d %H:%M")
+    except (ValueError, TypeError):
+        return None
+
+
 def build_output(games: list[Game], standings: dict) -> dict:
     output_games = []
     for g in games:
         reasons = generate_reasons(g, standings)
         score = score_game(reasons)
-        if score <= 0:
-            # 理由が1つも無い試合は「注目試合」として通知・表示する意味が無いため除外する
-            continue
+
+        home_abbr = MLB_TEAM_ABBR.get(g.home_team_id)
+        away_abbr = MLB_TEAM_ABBR.get(g.away_team_id)
+        abbr_matchup = (
+            f"{home_abbr} vs {away_abbr}" if home_abbr and away_abbr else None
+        )
+
         output_games.append(
             {
                 "game_id": g.game_id,
@@ -170,13 +190,19 @@ def build_output(games: list[Game], standings: dict) -> dict:
                 "home_team_id": g.home_team_id,
                 "away_team_id": g.away_team_id,
                 "matchup": f"{g.home_team_name} vs {g.away_team_name}",
+                "abbr_matchup": abbr_matchup,
+                "start_time_jst": _to_jst_str(g.start_time_utc),
                 "score": score,
+                "is_notable": score > 0,
                 "reasons": [
                     {"tag": r.tag, "text": r.text, "weight": r.weight} for r in reasons
                 ],
             }
         )
-    output_games.sort(key=lambda x: x["score"], reverse=True)
+    # 注目度が高い順、同点なら開始時刻順に並べる
+    output_games.sort(
+        key=lambda x: (-x["score"], x["start_time_jst"] or "99/99 99:99")
+    )
     import datetime as _datetime
     generated_at = _datetime.datetime.now(_datetime.timezone.utc).isoformat()
     return {"generated_at": generated_at, "games": output_games}
@@ -286,6 +312,16 @@ MLB_TEAM_NAME_JP = {
     "158": "ブリュワーズ",
 }
 
+# 短縮表記(通知の文字数節約・略称に慣れてもらう目的で使用)
+MLB_TEAM_ABBR = {
+    "108": "LAA", "109": "ARI", "110": "BAL", "111": "BOS", "112": "CHC",
+    "113": "CIN", "114": "CLE", "115": "COL", "116": "DET", "117": "HOU",
+    "118": "KC", "119": "LAD", "120": "WSH", "121": "NYM", "133": "ATH",
+    "134": "PIT", "135": "SD", "136": "SEA", "137": "SF", "138": "STL",
+    "139": "TB", "140": "TEX", "141": "TOR", "142": "MIN", "143": "PHI",
+    "144": "ATL", "145": "CWS", "146": "MIA", "147": "NYY", "158": "MIL",
+}
+
 
 # ---------------------------------------------------------------------------
 # 実データ取得: MLB Stats API
@@ -375,6 +411,7 @@ def fetch_mlb_games_and_standings(date_str: str):
                     home_team_name=MLB_TEAM_NAME_JP.get(str(home["id"]), home["name"]),
                     away_team_name=MLB_TEAM_NAME_JP.get(str(away["id"]), away["name"]),
                     players=players,
+                    start_time_utc=g.get("gameDate"),
                 )
             )
 
@@ -504,6 +541,7 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
                     home_team_name=home["name"],
                     away_team_name=away["name"],
                     players=players,
+                    start_time_utc=m.get("utcDate"),
                 )
             )
 

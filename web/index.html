@@ -59,6 +59,27 @@
     color: #c9c9c2;
     margin: 4px 0;
   }
+  .schedule-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 2px;
+    border-bottom: 1px solid #1e1e1c;
+    font-size: 13px;
+  }
+  .schedule-row .time {
+    color: #9a9a94;
+    width: 74px;
+    flex-shrink: 0;
+  }
+  .schedule-row .matchup-abbr {
+    flex-grow: 1;
+  }
+  .schedule-row .league-tag {
+    font-size: 10px;
+    color: #7fb0e6;
+    flex-shrink: 0;
+  }
   .section {
     margin-top: 2rem;
     padding-top: 1.25rem;
@@ -101,7 +122,12 @@
 <h1>今日の注目試合</h1>
 <p class="sub">端末内のフォロー設定に応じて、注目理由つきで表示します</p>
 
-<div id="games">読み込み中...</div>
+<div id="notableGames">読み込み中...</div>
+
+<div class="section">
+  <p class="sub">今日の全試合(開始時刻は日本時間)</p>
+  <div id="allGames"></div>
+</div>
 
 <div class="section">
   <p class="sub">通知の設定(初回のみ)</p>
@@ -134,7 +160,8 @@
   }
 
   async function renderGames() {
-    const el = document.getElementById('games');
+    const notableEl = document.getElementById('notableGames');
+    const allEl = document.getElementById('allGames');
     try {
       const res = await fetch('games.json', { cache: 'no-store' });
       if (!res.ok) throw new Error('games.json が見つかりません');
@@ -142,12 +169,19 @@
       const games = data.games || [];
 
       if (games.length === 0) {
-        el.innerHTML = '<p class="sub">今日は該当する試合がありません</p>';
+        notableEl.innerHTML = '<p class="sub">今日は試合がありません</p>';
+        allEl.innerHTML = '';
         return;
       }
 
-      el.innerHTML = '';
-      games.forEach((g) => {
+      const notable = games.filter((g) => g.is_notable);
+
+      // --- 注目試合セクション ---
+      notableEl.innerHTML = '';
+      if (notable.length === 0) {
+        notableEl.innerHTML = '<p class="sub">今日は特に注目の試合はありません</p>';
+      }
+      notable.forEach((g) => {
         const card = document.createElement('div');
         card.className = 'card';
 
@@ -165,10 +199,31 @@
           card.appendChild(p);
         });
 
-        el.appendChild(card);
+        notableEl.appendChild(card);
+      });
+
+      // --- 全試合スケジュールセクション(開始時刻順、略称表記) ---
+      const bySchedule = [...games].sort((a, b) => {
+        const ta = a.start_time_jst || '99/99 99:99';
+        const tb = b.start_time_jst || '99/99 99:99';
+        return ta.localeCompare(tb);
+      });
+
+      allEl.innerHTML = '';
+      bySchedule.forEach((g) => {
+        const row = document.createElement('div');
+        row.className = 'schedule-row';
+        const time = g.start_time_jst ? g.start_time_jst.split(' ')[1] || g.start_time_jst : '--:--';
+        const matchup = g.abbr_matchup || g.matchup;
+        row.innerHTML =
+          '<span class="time">' + time + '</span>' +
+          '<span class="matchup-abbr">' + matchup + (g.is_notable ? ' ★' : '') + '</span>' +
+          '<span class="league-tag">' + g.league + '</span>';
+        allEl.appendChild(row);
       });
     } catch (e) {
-      el.innerHTML = '<p class="sub">games.json の読み込みに失敗しました。まだデプロイされていない可能性があります。</p>';
+      notableEl.innerHTML = '<p class="sub">games.json の読み込みに失敗しました。まだデプロイされていない可能性があります。</p>';
+      allEl.innerHTML = '';
     }
   }
 

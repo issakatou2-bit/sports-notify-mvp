@@ -29,7 +29,14 @@ def load_top_game(path: str):
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
     games = data.get("games", [])
-    return games[0] if games else None
+    if not games:
+        return None
+    top = games[0]
+    # 全試合が含まれるようになったため、スコア0(理由なし)の試合が
+    # 先頭に来てしまう場合は「注目試合が無い日」として扱う
+    if not top.get("is_notable"):
+        return None
+    return top
 
 
 def main():
@@ -50,10 +57,11 @@ def main():
 
     reasons = top_game.get("reasons", [])
     body_text = " / ".join(r["text"] for r in reasons[:2]) or "詳細はアプリで確認してください"
+    title_matchup = top_game.get("abbr_matchup") or top_game["matchup"]
 
     payload = json.dumps(
         {
-            "title": f"今日の注目: {top_game['matchup']}",
+            "title": f"今日の注目: {title_matchup}",
             "body": body_text,
             "url": SITE_URL,
         },

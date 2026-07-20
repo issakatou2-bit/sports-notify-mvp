@@ -28,12 +28,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      # TODO: --mock を実データ取得に置き換える
-      # (MLB Stats API / football-data.org に接続する処理を notability_engine.py に追加後)
       - name: Generate today's notable games
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-        run: python notability_engine.py --mock --out notable_games.json
+        run: python notability_engine.py --source all --out notable_games.json
 
       - name: Assemble Pages site
         run: |
