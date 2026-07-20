@@ -177,7 +177,9 @@ def build_output(games: list[Game], standings: dict) -> dict:
             }
         )
     output_games.sort(key=lambda x: x["score"], reverse=True)
-    return {"generated_at": "TODO: set actual UTC timestamp", "games": output_games}
+    import datetime as _datetime
+    generated_at = _datetime.datetime.now(_datetime.timezone.utc).isoformat()
+    return {"generated_at": generated_at, "games": output_games}
 
 
 # ---------------------------------------------------------------------------
@@ -248,6 +250,41 @@ JP_PLAYERS_SOCCER = [
     {"name_en": "Daichi Kamada", "name_jp": "鎌田大地", "team_en": "Crystal Palace"},
     {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂本達裕", "team_en": "Coventry City"},
 ]
+
+
+# MLB Stats API のチームIDは実行結果で確認済みの値と一致(108=エンゼルス等)
+MLB_TEAM_NAME_JP = {
+    "108": "エンゼルス",
+    "109": "ダイヤモンドバックス",
+    "110": "オリオールズ",
+    "111": "レッドソックス",
+    "112": "カブス",
+    "113": "レッズ",
+    "114": "ガーディアンズ",
+    "115": "ロッキーズ",
+    "116": "タイガース",
+    "117": "アストロズ",
+    "118": "ロイヤルズ",
+    "119": "ドジャース",
+    "120": "ナショナルズ",
+    "121": "メッツ",
+    "133": "アスレチックス",
+    "134": "パイレーツ",
+    "135": "パドレス",
+    "136": "マリナーズ",
+    "137": "ジャイアンツ",
+    "138": "カージナルス",
+    "139": "レイズ",
+    "140": "レンジャーズ",
+    "141": "ブルージェイズ",
+    "142": "ツインズ",
+    "143": "フィリーズ",
+    "144": "ブレーブス",
+    "145": "ホワイトソックス",
+    "146": "マーリンズ",
+    "147": "ヤンキース",
+    "158": "ブリュワーズ",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -335,8 +372,8 @@ def fetch_mlb_games_and_standings(date_str: str):
                     league="MLB",
                     home_team_id=str(home["id"]),
                     away_team_id=str(away["id"]),
-                    home_team_name=home["name"],
-                    away_team_name=away["name"],
+                    home_team_name=MLB_TEAM_NAME_JP.get(str(home["id"]), home["name"]),
+                    away_team_name=MLB_TEAM_NAME_JP.get(str(away["id"]), away["name"]),
                     players=players,
                 )
             )

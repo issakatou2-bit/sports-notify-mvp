@@ -20,7 +20,9 @@ import sys
 from pywebpush import webpush, WebPushException
 
 
-SITE_URL = "https://REPLACE_WITH_YOUR_USERNAME.github.io/REPLACE_WITH_YOUR_REPO/"
+SITE_URL = os.environ.get(
+    "SITE_URL", "https://REPLACE_WITH_YOUR_USERNAME.github.io/REPLACE_WITH_YOUR_REPO/"
+)
 
 
 def load_top_game(path: str):

@@ -33,7 +33,7 @@ jobs:
       - name: Generate today's notable games
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-        run: python notability_engine.py --source all --out notable_games.json
+        run: python notability_engine.py --mock --out notable_games.json
 
       - name: Assemble Pages site
         run: |
@@ -66,6 +66,7 @@ jobs:
           PUSH_SUBSCRIPTION: ${{ secrets.PUSH_SUBSCRIPTION }}
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}
+          SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
         run: python scripts/send_push.py
 
   deploy:
