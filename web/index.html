@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>注目試合ナビ</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<style>
+  :root {
+    color-scheme: dark;
+  }
+  body {
+    margin: 0;
+    padding: 1.25rem;
+    background: #0b0b0b;
+    color: #f2f2f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+    line-height: 1.6;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  p.sub {
+    font-size: 13px;
+    color: #9a9a94;
+    margin: 0 0 1.5rem;
+  }
+  .card {
+    background: #17171a;
+    border: 1px solid #2a2a28;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 12px;
+  }
+  .card .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .card .league {
+    font-size: 11px;
+    color: #7fb0e6;
+    background: #12283d;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+  .card .matchup {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .card .reason {
+    font-size: 13px;
+    color: #c9c9c2;
+    margin: 4px 0;
+  }
+  .section {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #2a2a28;
+  }
+  button {
+    background: #1d1d20;
+    color: #f2f2f0;
+    border: 1px solid #3a3a37;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    width: 100%;
+  }
+  button:active {
+    transform: scale(0.98);
+  }
+  #status {
+    font-size: 13px;
+    color: #9a9a94;
+    margin: 10px 0;
+    white-space: pre-wrap;
+  }
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background: #101012;
+    color: #d8d8d2;
+    border: 1px solid #2a2a28;
+    border-radius: 8px;
+    font-size: 11px;
+    padding: 8px;
+    height: 110px;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>今日の注目試合</h1>
+<p class="sub">端末内のフォロー設定に応じて、注目理由つきで表示します</p>
+
+<div id="games">読み込み中...</div>
+
+<div class="section">
+  <p class="sub">通知の設定(初回のみ)</p>
+  <button id="subscribeBtn">通知を有効にする</button>
+  <div id="status"></div>
+  <div id="subscriptionBox" style="display:none;">
+    <p class="sub">↓ これをコピーして GitHub Secrets の PUSH_SUBSCRIPTION に登録してください</p>
+    <textarea id="subscriptionText" readonly></textarea>
+    <button id="copyBtn">コピー</button>
+  </div>
+</div>
+
+<script>
+  // ここは generate_vapid_keys.py で生成した公開鍵に必ず差し替えること
+  const VAPID_PUBLIC_KEY = 'REPLACE_WITH_YOUR_VAPID_PUBLIC_KEY';
+
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  function setStatus(text) {
+    document.getElementById('status').textContent = text;
+  }
+
+  async function renderGames() {
+    const el = document.getElementById('games');
+    try {
+      const res = await fetch('games.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('games.json が見つかりません');
+      const data = await res.json();
+      const games = data.games || [];
+
+      if (games.length === 0) {
+        el.innerHTML = '<p class="sub">今日は該当する試合がありません</p>';
+        return;
+      }
+
+      el.innerHTML = '';
+      games.forEach((g) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const top = document.createElement('div');
+        top.className = 'top';
+        top.innerHTML =
+          '<span class="matchup">' + g.matchup + '</span>' +
+          '<span class="league">' + g.league + '</span>';
+        card.appendChild(top);
+
+        (g.reasons || []).forEach((r) => {
+          const p = document.createElement('p');
+          p.className = 'reason';
+          p.textContent = '・' + r.text;
+          card.appendChild(p);
+        });
+
+        el.appendChild(card);
+      });
+    } catch (e) {
+      el.innerHTML = '<p class="sub">games.json の読み込みに失敗しました。まだデプロイされていない可能性があります。</p>';
+    }
+  }
+
+  async function subscribe() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      setStatus('このブラウザ/環境ではプッシュ通知に対応していません。\niOSの場合は、ホーム画面に追加してから開き直してください。');
+      return;
+    }
+
+    if (VAPID_PUBLIC_KEY.startsWith('REPLACE_WITH')) {
+      setStatus('index.html の VAPID_PUBLIC_KEY がまだ設定されていません。\ngenerate_vapid_keys.py で生成した鍵を貼り付けてください。');
+      return;
+    }
+
+    try {
+      const registration = await navigator.serviceWorker.register('sw.js');
+      await navigator.serviceWorker.ready;
+
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        setStatus('通知が許可されませんでした。設定アプリから通知を許可してください。');
+        return;
+      }
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      });
+
+      const subJson = JSON.stringify(subscription);
+      document.getElementById('subscriptionText').value = subJson;
+      document.getElementById('subscriptionBox').style.display = 'block';
+      setStatus('購読が完了しました。下のテキストをコピーしてGitHub Secretsに登録してください。');
+    } catch (e) {
+      setStatus('エラーが発生しました: ' + e.message);
+    }
+  }
+
+  document.getElementById('subscribeBtn').addEventListener('click', subscribe);
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const textarea = document.getElementById('subscriptionText');
+    textarea.select();
+    document.execCommand('copy');
+    setStatus('コピーしました。');
+  });
+
+  renderGames();
+</script>
+
+</body>
+</html>

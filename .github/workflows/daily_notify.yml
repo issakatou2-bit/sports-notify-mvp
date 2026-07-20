@@ -1,0 +1,80 @@
+name: Daily notable games
+
+# 日本は夏時間が無いため UTC+9 で固定。UTC 10:00 = JST 19:00
+# ただしGitHub Actionsのcronは「その時刻ちょうどに実行される保証」がない
+# (数分〜十数分遅れることがある)点に注意
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build_and_notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      # TODO: --mock を実データ取得に置き換える
+      # (MLB Stats API / football-data.org に接続する処理を notability_engine.py に追加後)
+      - name: Generate today's notable games
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python notability_engine.py --mock --out notable_games.json
+
+      - name: Assemble Pages site
+        run: |
+          mkdir -p public
+          cp -r web/* public/
+          cp notable_games.json public/games.json
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      # 初回セットアップ時はPUSH_SUBSCRIPTIONがまだ無いため、このステップは
+      # Secretsが設定されてから初めて実行される(それまでは自動でスキップ)
+      - name: Check if push subscription is configured
+        id: check_push
+        env:
+          PUSH_SUBSCRIPTION: ${{ secrets.PUSH_SUBSCRIPTION }}
+        run: |
+          if [ -n "$PUSH_SUBSCRIPTION" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::PUSH_SUBSCRIPTIONが未設定のため通知送信をスキップしました"
+          fi
+
+      - name: Send push notification
+        if: steps.check_push.outputs.configured == 'true'
+        env:
+          PUSH_SUBSCRIPTION: ${{ secrets.PUSH_SUBSCRIPTION }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}
+        run: python scripts/send_push.py
+
+  deploy:
+    needs: build_and_notify
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
