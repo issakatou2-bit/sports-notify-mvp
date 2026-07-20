@@ -26,6 +26,7 @@
 
 import json
 import argparse
+import time
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -355,6 +356,38 @@ SOCCER_COMPETITIONS = {
 }
 
 
+def _football_data_get(url, headers, params=None, timeout=10, max_retries=3):
+    """
+    football-data.org は 10リクエスト/分(無料枠)。レスポンスヘッダーの
+    X-Requests-Available-Minute を見て残りが少なければ待機し、
+    429(レート制限超過)が返ってきた場合は Retry-After に従って再試行する。
+    (football-data.org運営者からの助言に基づく実装)
+    """
+    for attempt in range(max_retries):
+        resp = requests.get(url, headers=headers, params=params, timeout=timeout)
+
+        if resp.status_code == 429:
+            retry_after = int(resp.headers.get("Retry-After", "60"))
+            print(f"[warn] football-data.org レート制限に到達。{retry_after}秒待機してリトライします")
+            time.sleep(retry_after)
+            continue
+
+        resp.raise_for_status()
+
+        remaining = resp.headers.get("X-Requests-Available-Minute")
+        if remaining is not None:
+            try:
+                if int(remaining) <= 1:
+                    print("[info] football-data.org 残りリクエスト数が少ないため1秒待機します")
+                    time.sleep(1)
+            except ValueError:
+                pass
+
+        return resp
+
+    raise RuntimeError("football-data.org: リトライ上限に達しました(レート制限が解消しません)")
+
+
 def fetch_soccer_games_and_standings(date_str: str, api_key: str):
     """
     date_str: 'YYYY-MM-DD'
@@ -371,21 +404,17 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
     jp_team_names = {p["team_en"] for p in JP_PLAYERS_SOCCER}
 
     for code, league_name in SOCCER_COMPETITIONS.items():
-        matches_resp = requests.get(
+        matches_resp = _football_data_get(
             f"{FOOTBALL_DATA_BASE}/competitions/{code}/matches",
             headers=headers,
             params={"dateFrom": date_str, "dateTo": date_str},
-            timeout=10,
         )
-        matches_resp.raise_for_status()
         matches_data = matches_resp.json()
 
-        standings_resp = requests.get(
+        standings_resp = _football_data_get(
             f"{FOOTBALL_DATA_BASE}/competitions/{code}/standings",
             headers=headers,
-            timeout=10,
         )
-        standings_resp.raise_for_status()
         standings_data = standings_resp.json()
 
         # 順位表(TOTALテーブルのみ利用)
