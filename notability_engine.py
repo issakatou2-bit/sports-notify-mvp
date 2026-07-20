@@ -159,6 +159,10 @@ def build_output(games: list[Game], standings: dict) -> dict:
     output_games = []
     for g in games:
         reasons = generate_reasons(g, standings)
+        score = score_game(reasons)
+        if score <= 0:
+            # 理由が1つも無い試合は「注目試合」として通知・表示する意味が無いため除外する
+            continue
         output_games.append(
             {
                 "game_id": g.game_id,
@@ -166,7 +170,7 @@ def build_output(games: list[Game], standings: dict) -> dict:
                 "home_team_id": g.home_team_id,
                 "away_team_id": g.away_team_id,
                 "matchup": f"{g.home_team_name} vs {g.away_team_name}",
-                "score": score_game(reasons),
+                "score": score,
                 "reasons": [
                     {"tag": r.tag, "text": r.text, "weight": r.weight} for r in reasons
                 ],
