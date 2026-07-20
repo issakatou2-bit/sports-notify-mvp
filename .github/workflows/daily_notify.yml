@@ -33,7 +33,7 @@ jobs:
       - name: Generate today's notable games
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-        run: python notability_engine.py --source mlb --out notable_games.json
+        run: python notability_engine.py --source all --out notable_games.json
 
       - name: Assemble Pages site
         run: |
