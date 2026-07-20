@@ -82,6 +82,9 @@ class Reason:
 
 def rule_japanese_player(game: Game) -> list[Reason]:
     reasons = []
+    covered_team_ids = set()
+
+    # 今日の先発予定として確認できた場合は高めの重み
     for p in game.players:
         if p.is_japanese:
             reasons.append(
@@ -91,7 +94,64 @@ def rule_japanese_player(game: Game) -> list[Reason]:
                     weight=3,
                 )
             )
+            covered_team_ids.add(p.team_id)
+
+    # 先発確認は取れなくても、チームに日本人選手が所属していること自体を理由にする
+    # (野手や登板日でない投手も対象にするため。ただし故障者リスト等は未反映)
+    jp_team_lookup: dict[str, list[str]] = {}
+    for player in JP_PLAYERS_MLB:
+        tid = player.get("team_id")
+        if tid:
+            jp_team_lookup.setdefault(tid, []).append(player["name_jp"])
+
+    for team_id, team_name in (
+        (game.home_team_id, game.home_team_name),
+        (game.away_team_id, game.away_team_name),
+    ):
+        if team_id in jp_team_lookup and team_id not in covered_team_ids:
+            names_str = "・".join(jp_team_lookup[team_id])
+            reasons.append(
+                Reason(
+                    tag="jp_team",
+                    text=f"{team_name}には{names_str}が所属",
+                    weight=2,
+                )
+            )
+            covered_team_ids.add(team_id)
+
     return reasons
+
+
+def rule_marquee_team(game: Game) -> list[Reason]:
+    """全米的に人気・注目度が高いとされる伝統的な球団が出場する場合に加点する"""
+    reasons = []
+    for team_id, team_name in (
+        (game.home_team_id, game.home_team_name),
+        (game.away_team_id, game.away_team_name),
+    ):
+        if team_id in MLB_MARQUEE_TEAM_IDS:
+            reasons.append(
+                Reason(
+                    tag="marquee",
+                    text=f"{team_name}は全米的に注目度の高い人気球団",
+                    weight=1,
+                )
+            )
+    return reasons
+
+
+def rule_rivalry(game: Game) -> list[Reason]:
+    """伝統的なライバルカードに加点する"""
+    pair = frozenset({game.home_team_id, game.away_team_id})
+    if pair in MLB_RIVALRIES:
+        return [
+            Reason(
+                tag="rivalry",
+                text=f"{game.home_team_name} vs {game.away_team_name} は伝統の好カード",
+                weight=2,
+            )
+        ]
+    return []
 
 
 def rule_division_race(game: Game, standings: dict) -> list[Reason]:
@@ -135,16 +195,16 @@ def rule_win_streak(game: Game, standings: dict) -> list[Reason]:
     return reasons
 
 
-ALL_RULES = [rule_japanese_player, rule_division_race, rule_win_streak]
+GAME_ONLY_RULES = [rule_japanese_player, rule_marquee_team, rule_rivalry]
+STANDINGS_RULES = [rule_division_race, rule_win_streak]
 
 
 def generate_reasons(game: Game, standings: dict) -> list[Reason]:
     reasons: list[Reason] = []
-    for rule in ALL_RULES:
-        if rule is rule_japanese_player:
-            reasons.extend(rule(game))
-        else:
-            reasons.extend(rule(game, standings))
+    for rule in GAME_ONLY_RULES:
+        reasons.extend(rule(game))
+    for rule in STANDINGS_RULES:
+        reasons.extend(rule(game, standings))
     return reasons
 
 
@@ -189,6 +249,10 @@ def build_output(games: list[Game], standings: dict) -> dict:
                 "league": g.league,
                 "home_team_id": g.home_team_id,
                 "away_team_id": g.away_team_id,
+                "home_team_name": g.home_team_name,
+                "away_team_name": g.away_team_name,
+                "home_abbr": home_abbr,
+                "away_abbr": away_abbr,
                 "matchup": f"{g.home_team_name} vs {g.away_team_name}",
                 "abbr_matchup": abbr_matchup,
                 "start_time_jst": _to_jst_str(g.start_time_utc),
@@ -256,17 +320,32 @@ def load_mock_data():
 # 移籍で頻繁に変わるため、シーズンごと・移籍市場のたびに手動更新が必要。
 # name_en は API のレスポンス上の英語表記に一致させること(ローマ字表記の揺れに注意)。
 
+# 2026年7月時点、Web検索で確認した所属先。移籍が多いので毎シーズン要更新。
+# team_id は MLB_TEAM_NAME_JP / MLB_TEAM_ABBR のキーと対応
 JP_PLAYERS_MLB = [
-    {"name_en": "Shohei Ohtani", "name_jp": "大谷翔平"},
-    {"name_en": "Yu Darvish", "name_jp": "ダルビッシュ有"},
-    {"name_en": "Roki Sasaki", "name_jp": "佐々木朗希"},
-    {"name_en": "Yoshinobu Yamamoto", "name_jp": "山本由伸"},
-    {"name_en": "Tomoyuki Sugano", "name_jp": "菅野智之"},
-    {"name_en": "Yusei Kikuchi", "name_jp": "菊池雄星"},
-    {"name_en": "Shota Imanaga", "name_jp": "今永昇太"},
-    {"name_en": "Seiya Suzuki", "name_jp": "鈴木誠也"},
-    {"name_en": "Kodai Senga", "name_jp": "千賀滉大"},
-    {"name_en": "Yuki Matsui", "name_jp": "松井裕樹"},
+    {"name_en": "Shohei Ohtani", "name_jp": "大谷翔平", "team_id": "119"},
+    {"name_en": "Yu Darvish", "name_jp": "ダルビッシュ有", "team_id": "135"},  # 2026シーズンは故障で全休予定
+    {"name_en": "Roki Sasaki", "name_jp": "佐々木朗希", "team_id": "119"},
+    {"name_en": "Yoshinobu Yamamoto", "name_jp": "山本由伸", "team_id": "119"},
+    {"name_en": "Tomoyuki Sugano", "name_jp": "菅野智之", "team_id": "110"},
+    {"name_en": "Yusei Kikuchi", "name_jp": "菊池雄星", "team_id": "108"},
+    {"name_en": "Shota Imanaga", "name_jp": "今永昇太", "team_id": "112"},
+    {"name_en": "Seiya Suzuki", "name_jp": "鈴木誠也", "team_id": "112"},
+    {"name_en": "Kodai Senga", "name_jp": "千賀滉大", "team_id": "121"},
+    {"name_en": "Yuki Matsui", "name_jp": "松井裕樹", "team_id": "135"},
+    {"name_en": "Koyo Aoyagi", "name_jp": "青柳晃洋", "team_id": "143"},
+]
+
+# 全米的に注目度・話題性が高いとされる伝統的な人気球団(市場規模・ファン数などが根拠)
+MLB_MARQUEE_TEAM_IDS = {"147", "119", "111", "112", "144"}  # ヤンキース/ドジャース/レッドソックス/カブス/ブレーブス
+
+# 伝統の好カード(ライバル関係)。フロズンセット化して両方向マッチできるようにする
+MLB_RIVALRIES = [
+    frozenset({"147", "111"}),  # ヤンキース vs レッドソックス
+    frozenset({"119", "137"}),  # ドジャース vs ジャイアンツ
+    frozenset({"112", "138"}),  # カブス vs カージナルス
+    frozenset({"119", "135"}),  # ドジャース vs パドレス
+    frozenset({"147", "121"}),  # ヤンキース vs メッツ(subway series)
 ]
 
 # 2026年7月時点、Web検索で確認できた範囲のみ記載。追加・更新推奨。
@@ -549,6 +628,56 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
 
 
 # ---------------------------------------------------------------------------
+# AIによる注目理由の要約(任意機能)
+# ---------------------------------------------------------------------------
+# コスト暴走を防ぐための設計上の制約:
+#   - 1日1回の実行につき、最大1試合分・1回のAPI呼び出しのみ(ループでの複数回
+#     呼び出しはしない)
+#   - max_tokensを150に固定(暴走した場合の被害を最小化)
+#   - 失敗時にリトライはしない(1回失敗したらルールベースの理由文にフォールバック)
+#   - 最も安価なHaiku 4.5を使用
+# この関数は ANTHROPIC_API_KEY が設定されている場合のみ main() から呼ばれる。
+
+def enhance_top_game_with_ai(output: dict, api_key: str) -> None:
+    games = output.get("games", [])
+    if not games or not games[0].get("is_notable"):
+        return
+
+    top = games[0]
+    reasons_text = "\n".join(f"- {r['text']}" for r in top.get("reasons", []))
+    if not reasons_text:
+        return
+
+    prompt = (
+        f"以下は「{top['matchup']}」({top['league']})の試合について、"
+        f"ルールベースで抽出した事実です。\n{reasons_text}\n\n"
+        "これらの事実だけを根拠に、スポーツ好きの友人に向けて「今日この試合を"
+        "見るべき理由」を熱量を持って日本語1〜2文で伝えてください。"
+        "事実に無いことは書かないでください。見出しや記号は使わず、本文のみを"
+        "出力してください。"
+    )
+
+    try:
+        import anthropic
+
+        client = anthropic.Anthropic(api_key=api_key)
+        message = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=150,  # 暴走時の被害を抑えるための上限
+            messages=[{"role": "user", "content": prompt}],
+        )
+        ai_text = "".join(
+            block.text for block in message.content if block.type == "text"
+        ).strip()
+        if ai_text:
+            top["ai_summary"] = ai_text
+            print("[info] AIによる要約を生成しました")
+    except Exception as e:
+        # リトライはせず、ルールベースの理由文にフォールバックする
+        print(f"[warn] AIによる要約生成に失敗、ルールベースの理由のみ使用します: {e}")
+
+
+# ---------------------------------------------------------------------------
 # メイン
 # ---------------------------------------------------------------------------
 
@@ -622,6 +751,10 @@ def main():
             print("[warn] 取得できた試合が0件でした。notable_games.jsonは空で出力します。")
 
     result = build_output(games, standings)
+
+    ai_key = os.environ.get("ANTHROPIC_API_KEY")
+    if ai_key:
+        enhance_top_game_with_ai(result, ai_key)
 
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)

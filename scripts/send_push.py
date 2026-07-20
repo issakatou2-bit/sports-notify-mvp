@@ -56,7 +56,11 @@ def main():
         return
 
     reasons = top_game.get("reasons", [])
-    body_text = " / ".join(r["text"] for r in reasons[:2]) or "詳細はアプリで確認してください"
+    body_text = (
+        top_game.get("ai_summary")
+        or " / ".join(r["text"] for r in reasons[:2])
+        or "詳細はアプリで確認してください"
+    )
     title_matchup = top_game.get("abbr_matchup") or top_game["matchup"]
 
     payload = json.dumps(
