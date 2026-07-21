@@ -80,7 +80,7 @@ class Reason:
 # ---------------------------------------------------------------------------
 # 判定ルールはここに集約する。新しい注目軸を足したい場合はこの関数群に追加していく。
 
-def rule_japanese_player(game: Game) -> list[Reason]:
+def rule_japanese_player(game: Game, jp_team_map: dict) -> list[Reason]:
     reasons = []
     covered_team_ids = set()
 
@@ -97,19 +97,15 @@ def rule_japanese_player(game: Game) -> list[Reason]:
             covered_team_ids.add(p.team_id)
 
     # 先発確認は取れなくても、チームに日本人選手が所属していること自体を理由にする
-    # (野手や登板日でない投手も対象にするため。ただし故障者リスト等は未反映)
-    jp_team_lookup: dict[str, list[str]] = {}
-    for player in JP_PLAYERS_MLB:
-        tid = player.get("team_id")
-        if tid:
-            jp_team_lookup.setdefault(tid, []).append(player["name_jp"])
-
+    # (野手や登板日でない投手も対象にするため)。jp_team_mapはMLB Stats APIから
+    # 毎回動的に解決した「今シーズン実際に所属している」選手のみを含むので、
+    # 戦力外・移籍済みの選手が誤って残り続けることはない
     for team_id, team_name in (
         (game.home_team_id, game.home_team_name),
         (game.away_team_id, game.away_team_name),
     ):
-        if team_id in jp_team_lookup and team_id not in covered_team_ids:
-            names_str = "・".join(jp_team_lookup[team_id])
+        if team_id in jp_team_map and team_id not in covered_team_ids:
+            names_str = "・".join(jp_team_map[team_id])
             reasons.append(
                 Reason(
                     tag="jp_team",
@@ -195,12 +191,13 @@ def rule_win_streak(game: Game, standings: dict) -> list[Reason]:
     return reasons
 
 
-GAME_ONLY_RULES = [rule_japanese_player, rule_marquee_team, rule_rivalry]
 STANDINGS_RULES = [rule_division_race, rule_win_streak]
+GAME_ONLY_RULES = [rule_marquee_team, rule_rivalry]  # jp_team_mapもstandingsも不要なルール
 
 
-def generate_reasons(game: Game, standings: dict) -> list[Reason]:
+def generate_reasons(game: Game, standings: dict, jp_team_map: dict) -> list[Reason]:
     reasons: list[Reason] = []
+    reasons.extend(rule_japanese_player(game, jp_team_map))
     for rule in GAME_ONLY_RULES:
         reasons.extend(rule(game))
     for rule in STANDINGS_RULES:
@@ -231,10 +228,10 @@ def _to_jst_str(start_time_utc: Optional[str]) -> Optional[str]:
         return None
 
 
-def build_output(games: list[Game], standings: dict) -> dict:
+def build_output(games: list[Game], standings: dict, jp_team_map: dict) -> dict:
     output_games = []
     for g in games:
-        reasons = generate_reasons(g, standings)
+        reasons = generate_reasons(g, standings, jp_team_map)
         score = score_game(reasons)
 
         home_abbr = MLB_TEAM_ABBR.get(g.home_team_id)
@@ -322,18 +319,21 @@ def load_mock_data():
 
 # 2026年7月時点、Web検索で確認した所属先。移籍が多いので毎シーズン要更新。
 # team_id は MLB_TEAM_NAME_JP / MLB_TEAM_ABBR のキーと対応
+# 所属チームはハードコードしない(移籍・戦力外が多く、すぐ古くなるため)。
+# 実際に青柳晃洋は2025年7月にフィリーズを自由契約になっており、静的な所属情報の
+# 限界が実証された。所属チームは resolve_jp_player_teams() でMLB Stats APIから
+# 毎回動的に解決する。ここは「誰が対象の日本人選手か」の名前リストのみを持つ。
 JP_PLAYERS_MLB = [
-    {"name_en": "Shohei Ohtani", "name_jp": "大谷翔平", "team_id": "119"},
-    {"name_en": "Yu Darvish", "name_jp": "ダルビッシュ有", "team_id": "135"},  # 2026シーズンは故障で全休予定
-    {"name_en": "Roki Sasaki", "name_jp": "佐々木朗希", "team_id": "119"},
-    {"name_en": "Yoshinobu Yamamoto", "name_jp": "山本由伸", "team_id": "119"},
-    {"name_en": "Tomoyuki Sugano", "name_jp": "菅野智之", "team_id": "110"},
-    {"name_en": "Yusei Kikuchi", "name_jp": "菊池雄星", "team_id": "108"},
-    {"name_en": "Shota Imanaga", "name_jp": "今永昇太", "team_id": "112"},
-    {"name_en": "Seiya Suzuki", "name_jp": "鈴木誠也", "team_id": "112"},
-    {"name_en": "Kodai Senga", "name_jp": "千賀滉大", "team_id": "121"},
-    {"name_en": "Yuki Matsui", "name_jp": "松井裕樹", "team_id": "135"},
-    {"name_en": "Koyo Aoyagi", "name_jp": "青柳晃洋", "team_id": "143"},
+    {"name_en": "Shohei Ohtani", "name_jp": "大谷翔平"},
+    {"name_en": "Yu Darvish", "name_jp": "ダルビッシュ有"},  # 2026シーズンは故障で全休予定
+    {"name_en": "Roki Sasaki", "name_jp": "佐々木朗希"},
+    {"name_en": "Yoshinobu Yamamoto", "name_jp": "山本由伸"},
+    {"name_en": "Tomoyuki Sugano", "name_jp": "菅野智之"},
+    {"name_en": "Yusei Kikuchi", "name_jp": "菊池雄星"},
+    {"name_en": "Shota Imanaga", "name_jp": "今永昇太"},
+    {"name_en": "Seiya Suzuki", "name_jp": "鈴木誠也"},
+    {"name_en": "Kodai Senga", "name_jp": "千賀滉大"},
+    {"name_en": "Yuki Matsui", "name_jp": "松井裕樹"},
 ]
 
 # 全米的に注目度・話題性が高いとされる伝統的な人気球団(市場規模・ファン数などが根拠)
@@ -410,6 +410,46 @@ MLB_TEAM_ABBR = {
 # 無効のため実際のレスポンスは未検証。フィールド名などは変わる可能性がある。
 
 MLB_API_BASE = "https://statsapi.mlb.com/api/v1"
+
+
+def resolve_jp_player_teams(date_str: str) -> dict:
+    """
+    日本人選手の「現在の所属チーム」をMLB Stats APIから動的に解決する。
+    戻り値: team_id -> [name_jp, ...] のdict
+
+    見つからなかった選手(戦力外・引退・マイナー降格などでシーズンの選手名鑑に
+    載っていない)は単純に対象から外れる。誤って古い所属を表示し続けるより、
+    何も表示しない方が安全という判断。
+    """
+    if requests is None:
+        return {}
+
+    season = date_str[:4]
+    try:
+        resp = requests.get(
+            f"{MLB_API_BASE}/sports/1/players", params={"season": season}, timeout=15
+        )
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as e:
+        print(f"[warn] 日本人選手の所属解決に失敗、この日はJP所属チーム加点をスキップします: {e}")
+        return {}
+
+    name_to_team_id: dict[str, str] = {}
+    for player in data.get("people", []):
+        full_name = player.get("fullName")
+        current_team = player.get("currentTeam") or {}
+        team_id = current_team.get("id")
+        if full_name and team_id:
+            name_to_team_id[full_name] = str(team_id)
+
+    jp_team_map: dict[str, list] = {}
+    for jp in JP_PLAYERS_MLB:
+        team_id = name_to_team_id.get(jp["name_en"])
+        if team_id:
+            jp_team_map.setdefault(team_id, []).append(jp["name_jp"])
+
+    return jp_team_map
 
 
 def fetch_mlb_games_and_standings(date_str: str):
@@ -494,7 +534,7 @@ def fetch_mlb_games_and_standings(date_str: str):
                 )
             )
 
-    return games, standings
+    return games, standings, resolve_jp_player_teams(date_str)
 
 
 # ---------------------------------------------------------------------------
@@ -711,15 +751,17 @@ def main():
 
     if args.mock:
         games, standings = load_mock_data()
+        jp_team_map = {}
     else:
         date_str = args.date or datetime.date.today().isoformat()
-        games, standings = [], {}
+        games, standings, jp_team_map = [], {}, {}
 
         if args.source in ("mlb", "all"):
             try:
-                g, s = fetch_mlb_games_and_standings(date_str)
+                g, s, jtm = fetch_mlb_games_and_standings(date_str)
                 games.extend(g)
                 standings.update(s)
+                jp_team_map.update(jtm)
             except Exception as e:
                 if args.source == "mlb":
                     raise
@@ -750,7 +792,7 @@ def main():
         if not games:
             print("[warn] 取得できた試合が0件でした。notable_games.jsonは空で出力します。")
 
-    result = build_output(games, standings)
+    result = build_output(games, standings, jp_team_map)
 
     ai_key = os.environ.get("ANTHROPIC_API_KEY")
     if ai_key:
