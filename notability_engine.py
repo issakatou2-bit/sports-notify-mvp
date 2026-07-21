@@ -46,6 +46,8 @@ class Standing:
     division_rank: int
     games_back: float  # 首位との差(0.0なら首位)
     win_streak: int  # 正の値=連勝、負の値=連敗
+    wins: int = 0
+    losses: int = 0
 
 
 @dataclass
@@ -514,6 +516,8 @@ def fetch_mlb_games_and_standings(date_str: str):
                 division_rank=int(team_record.get("divisionRank", 0)),
                 games_back=games_back,
                 win_streak=win_streak,
+                wins=int(team_record.get("wins", 0)),
+                losses=int(team_record.get("losses", 0)),
             )
 
     jp_names_en = {p["name_en"] for p in JP_PLAYERS_MLB}
@@ -696,7 +700,22 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
 #   - 最も安価なHaiku 4.5を使用
 # この関数は ANTHROPIC_API_KEY が設定されている場合のみ main() から呼ばれる。
 
-def enhance_top_game_with_ai(output: dict, api_key: str) -> None:
+def _team_context_line(team_id: str, team_name: str, standings: dict) -> str:
+    """AIに渡すための、1チーム分の順位表コンテキストを組み立てる"""
+    s = standings.get(team_id)
+    if not s:
+        return f"{team_name}: 順位表データなし"
+    record = f"{s.wins}勝{s.losses}敗" if (s.wins or s.losses) else "戦績データなし"
+    streak = f"{abs(s.win_streak)}連勝中" if s.win_streak > 0 else (
+        f"{abs(s.win_streak)}連敗中" if s.win_streak < 0 else "連勝連敗なし"
+    )
+    return (
+        f"{team_name}: {record}、地区{s.division_rank}位"
+        f"(首位との差{s.games_back}ゲーム)、{streak}"
+    )
+
+
+def enhance_top_game_with_ai(output: dict, standings: dict, api_key: str) -> None:
     games = output.get("games", [])
     if not games or not games[0].get("is_notable"):
         return
@@ -706,13 +725,31 @@ def enhance_top_game_with_ai(output: dict, api_key: str) -> None:
     if not reasons_text:
         return
 
+    home_context = _team_context_line(
+        top["home_team_id"], top["home_team_name"], standings
+    )
+    away_context = _team_context_line(
+        top["away_team_id"], top["away_team_name"], standings
+    )
+
     prompt = (
-        f"以下は「{top['matchup']}」({top['league']})の試合について、"
-        f"ルールベースで抽出した事実です。\n{reasons_text}\n\n"
-        "これらの事実だけを根拠に、スポーツ好きの友人に向けて「今日この試合を"
-        "見るべき理由」を熱量を持って日本語1〜2文で伝えてください。"
-        "事実に無いことは書かないでください。見出しや記号は使わず、本文のみを"
-        "出力してください。"
+        f"以下は「{top['matchup']}」({top['league']})という試合についてのデータです。\n\n"
+        f"【チームの状況】\n{home_context}\n{away_context}\n\n"
+        f"【この試合が注目された理由(ルールベースで抽出)】\n{reasons_text}\n\n"
+        "あなたはMLB/野球初心者にも分かりやすく解説するスポーツ記者です。"
+        "上記のデータだけを根拠に、「シーズン全体・MLB全体で見たときに、"
+        "この一戦になぜ注目すべきか」を2〜3文の日本語で説明してください。\n\n"
+        "厳守してほしいこと:\n"
+        "- 上記のデータに書かれている具体的な数字(順位・ゲーム差・連勝数など)を"
+        "  実際に使って、理由を裏付けること。数字を使わない抽象的な感想は禁止\n"
+        "- 「有名選手が揃っている」「注目の一戦だ」のような、データを言い換えた"
+        "  だけの薄い文章は禁止。必ず具体的な数字や順位の意味を説明に組み込むこと\n"
+        "- 文体は理路整然とした説明口調にすること。「〜だよ！」「〜だね！」の"
+        "  ような話し言葉・感嘆符での締めは禁止。「〜である」「〜になる」のような"
+        "  落ち着いた書き言葉で書くこと\n"
+        "- 野球初心者にも伝わるよう、専門用語を使う場合は軽く説明を添えること\n"
+        "- データに無いことは書かないこと\n"
+        "- 見出しや記号(・や「」)は使わず、本文の文章のみを出力すること"
     )
 
     try:
@@ -721,7 +758,7 @@ def enhance_top_game_with_ai(output: dict, api_key: str) -> None:
         client = anthropic.Anthropic(api_key=api_key)
         message = client.messages.create(
             model="claude-haiku-4-5-20251001",
-            max_tokens=150,  # 暴走時の被害を抑えるための上限
+            max_tokens=250,  # 暴走時の被害を抑えるための上限
             messages=[{"role": "user", "content": prompt}],
         )
         ai_text = "".join(
@@ -823,7 +860,7 @@ def main():
 
     ai_key = os.environ.get("ANTHROPIC_API_KEY")
     if ai_key:
-        enhance_top_game_with_ai(result, ai_key)
+        enhance_top_game_with_ai(result, standings, ai_key)
 
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
