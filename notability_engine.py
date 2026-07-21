@@ -73,6 +73,7 @@ class Reason:
     tag: str
     text: str
     weight: int
+    visible: bool = True  # Falseならスコアには使うが、ユーザーには表示しない
 
 
 # ---------------------------------------------------------------------------
@@ -119,7 +120,11 @@ def rule_japanese_player(game: Game, jp_team_map: dict) -> list[Reason]:
 
 
 def rule_marquee_team(game: Game) -> list[Reason]:
-    """全米的に人気・注目度が高いとされる伝統的な球団が出場する場合に加点する"""
+    """
+    全米的に人気・注目度が高いとされる伝統的な球団が出場する場合に加点する。
+    ただし「全米的に人気」というテキスト自体は情報として薄いというフィードバックを
+    踏まえ、ユーザーには表示せず、注目試合の並び順(スコア)にだけ影響させる。
+    """
     reasons = []
     for team_id, team_name in (
         (game.home_team_id, game.home_team_name),
@@ -131,6 +136,7 @@ def rule_marquee_team(game: Game) -> list[Reason]:
                     tag="marquee",
                     text=f"{team_name}は全米的に注目度の高い人気球団",
                     weight=1,
+                    visible=False,
                 )
             )
     return reasons
@@ -206,7 +212,13 @@ def generate_reasons(game: Game, standings: dict, jp_team_map: dict) -> list[Rea
 
 
 def score_game(reasons: list[Reason]) -> int:
+    """全理由(非表示分も含む)の合計。ソートのタイブレークに使う"""
     return sum(r.weight for r in reasons)
+
+
+def visible_score_game(reasons: list[Reason]) -> int:
+    """ユーザーに見える理由だけの合計。注目試合(is_notable)の判定に使う"""
+    return sum(r.weight for r in reasons if r.visible)
 
 
 # ---------------------------------------------------------------------------
@@ -232,7 +244,8 @@ def build_output(games: list[Game], standings: dict, jp_team_map: dict) -> dict:
     output_games = []
     for g in games:
         reasons = generate_reasons(g, standings, jp_team_map)
-        score = score_game(reasons)
+        visible_score = visible_score_game(reasons)
+        total_score = score_game(reasons)
 
         home_abbr = MLB_TEAM_ABBR.get(g.home_team_id)
         away_abbr = MLB_TEAM_ABBR.get(g.away_team_id)
@@ -253,17 +266,22 @@ def build_output(games: list[Game], standings: dict, jp_team_map: dict) -> dict:
                 "matchup": f"{g.home_team_name} vs {g.away_team_name}",
                 "abbr_matchup": abbr_matchup,
                 "start_time_jst": _to_jst_str(g.start_time_utc),
-                "score": score,
-                "is_notable": score > 0,
+                "score": visible_score,
+                "_sort_score": total_score,
+                "is_notable": visible_score > 0,
                 "reasons": [
-                    {"tag": r.tag, "text": r.text, "weight": r.weight} for r in reasons
+                    {"tag": r.tag, "text": r.text, "weight": r.weight}
+                    for r in reasons
+                    if r.visible
                 ],
             }
         )
     # 注目度が高い順、同点なら開始時刻順に並べる
     output_games.sort(
-        key=lambda x: (-x["score"], x["start_time_jst"] or "99/99 99:99")
+        key=lambda x: (-x["score"], -x["_sort_score"], x["start_time_jst"] or "99/99 99:99")
     )
+    for g in output_games:
+        del g["_sort_score"]  # 内部のタイブレーク用なので出力には含めない
     import datetime as _datetime
     generated_at = _datetime.datetime.now(_datetime.timezone.utc).isoformat()
     return {"generated_at": generated_at, "games": output_games}

@@ -66,6 +66,36 @@
     text-transform: uppercase;
     margin: 0 0 10px;
   }
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin: 1.25rem 0 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 9px 0;
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    border-radius: 7px;
+  }
+  .tab.active {
+    color: #0B0E14;
+    background: var(--accent);
+  }
+  .card .time-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin: 0 0 6px;
+  }
   .card {
     background: var(--surface-raised);
     border: 1px solid var(--border);
@@ -118,9 +148,9 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 12px;
+    padding: 7px 12px;
     border-bottom: 1px solid var(--border);
-    font-size: 13px;
+    font-size: 12.5px;
     border-left: 3px solid transparent;
   }
   .schedule-row:last-child { border-bottom: none; }
@@ -187,6 +217,11 @@
 <div class="brand"><span class="brand-dot"></span><h1>SPOWatch!</h1></div>
 <p class="sub">端末内のフォロー設定に応じて、注目理由つきで表示します</p>
 
+<div class="tabs" id="tabs">
+  <div class="tab active" data-league="MLB">MLB</div>
+  <div class="tab" data-league="SOCCER">5大リーグ</div>
+</div>
+
 <p class="eyebrow">Today's Pick</p>
 <div id="notableGames">読み込み中...</div>
 
@@ -208,7 +243,7 @@
 
 <script>
   // ここは generate_vapid_keys.py で生成した公開鍵に必ず差し替えること
-  const VAPID_PUBLIC_KEY = 'REPLACE_WITH_YOUR_VAPID_PUBLIC_KEY';
+  const VAPID_PUBLIC_KEY = 'BNx05ds6oaPccl3zB-nLCh-tqDeBFOBTuKDoacF3dGSD2_KNmq-JvWlfQtKA2Sg6kuF86ftta97-VNMPL0qnRsE';
 
   function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -229,6 +264,88 @@
     return abbr ? `${name}(${abbr})` : name;
   }
 
+  const SOCCER_LEAGUES = ['プレミアリーグ', 'ラ・リーガ', 'セリエA', 'ブンデスリーガ', 'リーグ・アン'];
+
+  let allGamesCache = [];
+  let activeLeague = 'MLB';
+
+  function renderTab() {
+    const notableEl = document.getElementById('notableGames');
+    const allEl = document.getElementById('allGames');
+
+    const games = allGamesCache.filter((g) =>
+      activeLeague === 'MLB' ? g.league === 'MLB' : SOCCER_LEAGUES.includes(g.league)
+    );
+
+    if (games.length === 0) {
+      const msg = activeLeague === 'MLB' ? '今日はMLBの試合がありません' : '今はシーズンオフのため試合がありません';
+      notableEl.innerHTML = '<p class="sub">' + msg + '</p>';
+      allEl.innerHTML = '';
+      return;
+    }
+
+    // --- 今日の注目試合(スクショで収まるよう1試合に絞る) ---
+    const top = [...games].sort((a, b) => b.score - a.score)[0];
+    notableEl.innerHTML = '';
+    if (!top.is_notable) {
+      notableEl.innerHTML = '<p class="sub">今日は特に注目の試合はありません</p>';
+    } else {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      if (top.start_time_jst) {
+        const time = document.createElement('p');
+        time.className = 'time-badge';
+        time.textContent = top.start_time_jst + ' (JST)';
+        card.appendChild(time);
+      }
+
+      const topRow = document.createElement('div');
+      topRow.className = 'top';
+      topRow.innerHTML =
+        '<span class="matchup">' + top.matchup + '</span>' +
+        '<span class="league">' + top.league + '</span>';
+      card.appendChild(topRow);
+
+      if (top.ai_summary) {
+        const ai = document.createElement('p');
+        ai.className = 'ai-summary';
+        ai.textContent = top.ai_summary;
+        card.appendChild(ai);
+      }
+
+      (top.reasons || []).forEach((r) => {
+        const p = document.createElement('p');
+        p.className = 'reason';
+        p.textContent = '・' + r.text;
+        card.appendChild(p);
+      });
+
+      notableEl.appendChild(card);
+    }
+
+    // --- 全試合スケジュール(開始時刻順、名前+略称表記) ---
+    const bySchedule = [...games].sort((a, b) => {
+      const ta = a.start_time_jst || '99/99 99:99';
+      const tb = b.start_time_jst || '99/99 99:99';
+      return ta.localeCompare(tb);
+    });
+
+    allEl.innerHTML = '';
+    bySchedule.forEach((g) => {
+      const row = document.createElement('div');
+      row.className = 'schedule-row' + (g.is_notable ? ' notable' : '');
+      const time = g.start_time_jst ? (g.start_time_jst.split(' ')[1] || g.start_time_jst) : '--:--';
+      const home = nameWithAbbr(g.home_team_name, g.home_abbr);
+      const away = nameWithAbbr(g.away_team_name, g.away_abbr);
+      row.innerHTML =
+        '<span class="time">' + time + '</span>' +
+        '<span class="matchup-abbr">' + home + ' vs ' + away + '</span>' +
+        '<span class="league-tag">' + g.league + '</span>';
+      allEl.appendChild(row);
+    });
+  }
+
   async function renderGames() {
     const notableEl = document.getElementById('notableGames');
     const allEl = document.getElementById('allGames');
@@ -236,74 +353,42 @@
       const res = await fetch('games.json', { cache: 'no-store' });
       if (!res.ok) throw new Error('games.json が見つかりません');
       const data = await res.json();
-      const games = data.games || [];
-
-      if (games.length === 0) {
-        notableEl.innerHTML = '<p class="sub">今日は試合がありません</p>';
-        allEl.innerHTML = '';
-        return;
-      }
-
-      const notable = games.filter((g) => g.is_notable);
-
-      // --- 注目試合セクション ---
-      notableEl.innerHTML = '';
-      if (notable.length === 0) {
-        notableEl.innerHTML = '<p class="sub">今日は特に注目の試合はありません</p>';
-      }
-      notable.forEach((g) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        const top = document.createElement('div');
-        top.className = 'top';
-        top.innerHTML =
-          '<span class="matchup">' + g.matchup + '</span>' +
-          '<span class="league">' + g.league + '</span>';
-        card.appendChild(top);
-
-        if (g.ai_summary) {
-          const ai = document.createElement('p');
-          ai.className = 'ai-summary';
-          ai.textContent = g.ai_summary;
-          card.appendChild(ai);
-        }
-
-        (g.reasons || []).forEach((r) => {
-          const p = document.createElement('p');
-          p.className = 'reason';
-          p.textContent = '・' + r.text;
-          card.appendChild(p);
-        });
-
-        notableEl.appendChild(card);
-      });
-
-      // --- 全試合スケジュールセクション(開始時刻順、名前+略称表記) ---
-      const bySchedule = [...games].sort((a, b) => {
-        const ta = a.start_time_jst || '99/99 99:99';
-        const tb = b.start_time_jst || '99/99 99:99';
-        return ta.localeCompare(tb);
-      });
-
-      allEl.innerHTML = '';
-      bySchedule.forEach((g) => {
-        const row = document.createElement('div');
-        row.className = 'schedule-row' + (g.is_notable ? ' notable' : '');
-        const time = g.start_time_jst ? (g.start_time_jst.split(' ')[1] || g.start_time_jst) : '--:--';
-        const home = nameWithAbbr(g.home_team_name, g.home_abbr);
-        const away = nameWithAbbr(g.away_team_name, g.away_abbr);
-        row.innerHTML =
-          '<span class="time">' + time + '</span>' +
-          '<span class="matchup-abbr">' + home + ' vs ' + away + '</span>' +
-          '<span class="league-tag">' + g.league + '</span>';
-        allEl.appendChild(row);
-      });
+      allGamesCache = data.games || [];
+      renderTab();
     } catch (e) {
       notableEl.innerHTML = '<p class="sub">games.json の読み込みに失敗しました。まだデプロイされていない可能性があります。</p>';
       allEl.innerHTML = '';
     }
   }
+
+  document.getElementById('tabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('.tab');
+    if (!tab) return;
+    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeLeague = tab.dataset.league;
+    renderTab();
+  });
+
+  // 左右スワイプでもタブを切り替えられるようにする
+  (() => {
+    let startX = null;
+    document.body.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+    document.body.addEventListener('touchend', (e) => {
+      if (startX === null) return;
+      const deltaX = e.changedTouches[0].clientX - startX;
+      startX = null;
+      if (Math.abs(deltaX) < 60) return;
+      const tabs = [...document.querySelectorAll('.tab')];
+      const currentIndex = tabs.findIndex((t) => t.classList.contains('active'));
+      const nextIndex = deltaX < 0
+        ? Math.min(currentIndex + 1, tabs.length - 1)
+        : Math.max(currentIndex - 1, 0);
+      if (nextIndex !== currentIndex) tabs[nextIndex].click();
+    }, { passive: true });
+  })();
 
   async function subscribe() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
