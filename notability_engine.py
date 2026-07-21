@@ -729,7 +729,16 @@ def enhance_top_game_with_ai(output: dict, api_key: str) -> None:
         ).strip()
         if ai_text:
             top["ai_summary"] = ai_text
-            print("[info] AIによる要約を生成しました")
+            usage = message.usage
+            # Haiku 4.5の料金: 入力$1/出力$5 per 1M tokens (2026年7月時点)
+            cost_usd = (usage.input_tokens / 1_000_000 * 1) + (
+                usage.output_tokens / 1_000_000 * 5
+            )
+            print(
+                f"[info] AIによる要約を生成しました "
+                f"(入力{usage.input_tokens}トークン/出力{usage.output_tokens}トークン、"
+                f"概算${cost_usd:.5f})"
+            )
     except Exception as e:
         # リトライはせず、ルールベースの理由文にフォールバックする
         print(f"[warn] AIによる要約生成に失敗、ルールベースの理由のみ使用します: {e}")
