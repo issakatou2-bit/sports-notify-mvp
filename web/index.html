@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>SPOWatch!</title>
 <link rel="manifest" href="manifest.json" />
+<link rel="alternate" type="application/rss+xml" title="SPOWatch! RSS" href="feed.xml" />
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -121,6 +122,60 @@
     flex-shrink: 0;
     letter-spacing: 0.05em;
   }
+  .badges {
+    display: flex;
+    gap: 6px;
+    margin: 2px 0 8px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--jp);
+    background: rgba(73, 197, 182, 0.12);
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+  }
+  .schedule-row .badge-mini {
+    font-size: 9px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .share-btn {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--bg);
+    background: var(--text);
+    padding: 7px 14px;
+    border-radius: 7px;
+    text-decoration: none;
+  }
+  .preview-box {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .video-wrap {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    margin: 10px 0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .video-wrap iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: 0;
+  }
   .card .matchup {
     font-family: 'Oswald', sans-serif;
     font-size: 17px;
@@ -230,6 +285,11 @@
   <div class="board" id="allGames"></div>
 </div>
 
+<div class="section" id="previewSection" style="display:none;">
+  <p class="eyebrow">Tomorrow's Preview</p>
+  <div class="preview-box" id="previewBox"></div>
+</div>
+
 <div class="section">
   <p class="sub">通知の設定(初回のみ)</p>
   <button id="subscribeBtn">通知を有効にする</button>
@@ -307,6 +367,22 @@
         '<span class="league">' + top.league + '</span>';
       card.appendChild(topRow);
 
+      const badgeLabels = [];
+      if (top.same_division) badgeLabels.push('同地区対決');
+      if (top.rivalry_type === 'historic') badgeLabels.push('伝統の好カード');
+      if (top.rivalry_type === 'city') badgeLabels.push('同都市対決');
+      if (badgeLabels.length > 0) {
+        const badgeRow = document.createElement('div');
+        badgeRow.className = 'badges';
+        badgeLabels.forEach((label) => {
+          const b = document.createElement('span');
+          b.className = 'badge';
+          b.textContent = label;
+          badgeRow.appendChild(b);
+        });
+        card.appendChild(badgeRow);
+      }
+
       if (top.ai_summary) {
         const ai = document.createElement('p');
         ai.className = 'ai-summary';
@@ -320,6 +396,26 @@
         p.textContent = '・' + r.text;
         card.appendChild(p);
       });
+
+      if (top.highlight_video_id) {
+        const wrap = document.createElement('div');
+        wrap.className = 'video-wrap';
+        wrap.innerHTML =
+          '<iframe src="https://www.youtube-nocookie.com/embed/' + top.highlight_video_id +
+          '" title="MLB公式ハイライト" frameborder="0" allowfullscreen loading="lazy"></iframe>';
+        card.appendChild(wrap);
+      }
+
+      const shareText = encodeURIComponent(
+        '今日の注目試合: ' + top.matchup + '\n' + (top.ai_summary || (top.reasons[0] || {}).text || '')
+      );
+      const shareLink = document.createElement('a');
+      shareLink.className = 'share-btn';
+      shareLink.href = 'https://twitter.com/intent/tweet?text=' + shareText;
+      shareLink.target = '_blank';
+      shareLink.rel = 'noopener';
+      shareLink.textContent = 'Xでシェア';
+      card.appendChild(shareLink);
 
       notableEl.appendChild(card);
     }
@@ -338,9 +434,14 @@
       const time = g.start_time_jst ? (g.start_time_jst.split(' ')[1] || g.start_time_jst) : '--:--';
       const home = nameWithAbbr(g.home_team_name, g.home_abbr);
       const away = nameWithAbbr(g.away_team_name, g.away_abbr);
+      let miniBadge = '';
+      if (g.rivalry_type === 'historic') miniBadge = '伝統';
+      else if (g.rivalry_type === 'city') miniBadge = '同都市';
+      else if (g.same_division) miniBadge = '同地区';
       row.innerHTML =
         '<span class="time">' + time + '</span>' +
         '<span class="matchup-abbr">' + home + ' vs ' + away + '</span>' +
+        (miniBadge ? '<span class="badge-mini">' + miniBadge + '</span>' : '') +
         '<span class="league-tag">' + g.league + '</span>';
       allEl.appendChild(row);
     });
@@ -355,10 +456,23 @@
       const data = await res.json();
       allGamesCache = data.games || [];
       renderTab();
+      renderPreview(data.tomorrow_preview);
     } catch (e) {
       notableEl.innerHTML = '<p class="sub">games.json の読み込みに失敗しました。まだデプロイされていない可能性があります。</p>';
       allEl.innerHTML = '';
     }
+  }
+
+  function renderPreview(preview) {
+    const section = document.getElementById('previewSection');
+    const box = document.getElementById('previewBox');
+    if (!preview) {
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = 'block';
+    const time = preview.start_time_jst ? preview.start_time_jst + ' (JST) ' : '';
+    box.textContent = time + preview.matchup + ' — ' + preview.reason_text;
   }
 
   document.getElementById('tabs').addEventListener('click', (e) => {

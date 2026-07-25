@@ -81,9 +81,17 @@ def main():
         )
         print("通知を送信しました:", top_game["matchup"])
     except WebPushException as ex:
-        print("通知の送信に失敗しました:", repr(ex), file=sys.stderr)
-        # 購読が失効している場合(410 Gone)などがここに来る。
-        # 失効時は index.html で再購読が必要になる。
+        status_code = getattr(ex.response, "status_code", None)
+        if status_code in (404, 410):
+            print(
+                "[error] 購読が失効しています(iPhone側でホーム画面のアイコンを"
+                "削除・再作成した、通知をオフにした等が原因として考えられます)。"
+                "サイトを開いて『通知を有効にする』をもう一度押し、新しい購読情報を"
+                "GitHub Secretsの PUSH_SUBSCRIPTION に登録し直してください。",
+                file=sys.stderr,
+            )
+        else:
+            print("通知の送信に失敗しました:", repr(ex), file=sys.stderr)
         sys.exit(1)
 
 

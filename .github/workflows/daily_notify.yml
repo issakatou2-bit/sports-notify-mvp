@@ -32,13 +32,20 @@ jobs:
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python notability_engine.py --source all --out notable_games.json
+
+      - name: Generate RSS feed
+        run: |
+          python scripts/generate_rss.py --input notable_games.json --out feed.xml \
+            --site-url "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
 
       - name: Assemble Pages site
         run: |
           mkdir -p public
           cp -r web/* public/
           cp notable_games.json public/games.json
+          cp feed.xml public/feed.xml
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

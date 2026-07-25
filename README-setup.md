@@ -1,69 +1,108 @@
-# 注目試合ナビ PWA — セットアップ手順
+# SPOWatch! — セットアップ・現状まとめ
 
-## 動作確認済み / 未確認の範囲(正直に)
+最終更新: 2026年7月21日時点
 
-- ✅ `scripts/generate_vapid_keys.py` — このまま実行して鍵が生成できることを確認済み
-- ✅ `notability_engine.py --mock` — JSON生成のロジックは動作確認済み
-- ✅ `notability_engine.py --source all`(APIキー未設定時) — MLB/サッカーのどちらか、または両方が失敗・未設定でもクラッシュせず、警告を出して空JSONまたは部分的な結果を出力することを確認済み
-- ⚠️ MLB Stats API・football-data.orgへの実際のリクエスト(認証成功時の正常系) — この開発環境はネットワークが許可リスト制のため、実際に統計データが取れることまでは検証できていません。エンドポイント・パラメータ名は実在確認済みですが、フィールド名の細部は初回実行時に要確認
-- ⚠️ Web Push送信・GitHub Pagesへのデプロイ・ブラウザでの購読フロー — 同様の理由で未検証。標準的な構成なので動くはずだが、実際にGitHubリポジトリ上で試して調整が必要
-- ✅ ワークフロー — `PUSH_SUBSCRIPTION`が未設定でも通知送信ステップはスキップされ、Pagesのデプロイまでは完了する設計に変更済み(初回セットアップの詰まりを回避)
+## これは何か
+MLB・欧州5大リーグの「今日の注目試合」を、なぜ注目かの理由付きで毎日19時(JST)ごろに
+Web Push通知で届けるPWA。GitHub Actions(サーバー側)がデータ取得・理由生成・通知送信
+まで全部やる。ネイティブアプリ化はまだ先で、今はPWA(ホーム画面に追加したWebサイト)
+として動いている。
 
-## 手順
+リポジトリ: https://github.com/issakatou2-bit/sports-notify-mvp
+公開サイト: https://issakatou2-bit.github.io/sports-notify-mvp/
 
-### 1. GitHubリポジトリを作る
-このフォルダ一式を新しいリポジトリにpushする。
+## 現在の到達点(ステータス)
 
-### 2. GitHub Pagesを有効にする
-リポジトリの Settings > Pages > Source を **GitHub Actions** に設定する。
+| 項目 | 状態 |
+|---|---|
+| GitHub Pages公開 | ✅ 稼働中 |
+| MLB Stats API連携 | ✅ 実データで動作確認済み(標準API、キー不要) |
+| football-data.org連携 | ✅ 疎通確認済み。ただし5大リーグは8/21開幕前のため試合0件が正常 |
+| Web Push通知 | ⚠️ 一時停止中の可能性あり(下記「既知の問題」参照) |
+| AIによる理由文の言い換え | ✅ 導入済み。Haiku 4.5、順位表データも渡して生成 |
+| 日本人選手判定(MLB) | ✅ 毎回MLB Stats APIから動的に所属チームを解決(ハードコードなし) |
+| 日本人選手判定(サッカー) | ⚠️ 静的リスト(下記参照)、移籍市場の影響を受けやすい |
+| UI | ✅ 「SPOWatch!」ブランド、MLB/5大リーグのタブ切り替え、スクショ向け1試合表示 |
 
-### 3. VAPID鍵を生成する
+## 既知の問題
+
+### 通知が届かなくなった疑いがある(2026/07/21時点、未解決)
+おそらく原因: UI更新のためホーム画面のアイコンを削除・Safariのサイトデータを削除した際、
+`PUSH_SUBSCRIPTION`(端末の購読情報)が無効になった。
+
+**再開時にまず確認すること:**
+1. GitHub Actionsの実行履歴で、直近の`Send push notification`ステップが赤い✕になっていないか確認する
+2. ✕になっていれば、iPhoneでサイトを開き直し「通知を有効にする」を再実行し、表示された新しい購読情報でSecretsの`PUSH_SUBSCRIPTION`を更新する
+3. `scripts/send_push.py`は410 Gone(購読失効)を検出した場合、専用のエラーメッセージを出すよう改善済み。ログを見れば原因を判別しやすくなっている
+
+### サッカーのJP選手リストが古くなりやすい
+`JP_PLAYERS_SOCCER`(田中碧・三笘薫・鎌田大地・坂元達裕・遠藤航)は手動管理の静的リスト。
+2026年7月時点の状況:
+- 田中碧: 移籍市場で退団報道が多く、非常に流動的。**8月中旬(開幕直前)に必ず再確認**
+- 三笘薫: ハムストリング負傷で開幕戦(8/23)に間に合うか不透明。所属はブライトンのまま
+- 鎌田大地: クリスタル・パレスと契約延長、安定
+- 坂元達裕: コヴェントリー・シティ、安定
+
+## セットアップ手順(最初から作り直す場合)
+
+### 1. リポジトリを作りPagesを有効化
+新規GitHubリポジトリ(Public)にファイル一式をpush。Settings > Pages > Source を
+**GitHub Actions** に設定。
+
+### 2. VAPID鍵を生成
 ```
 python3 scripts/generate_vapid_keys.py
 ```
-出力された `VAPID_PUBLIC_KEY` と `VAPID_PRIVATE_KEY` をメモしておく。
+出力された公開鍵を `web/index.html` の `VAPID_PUBLIC_KEY` に貼り付ける。
 
-### 4. 公開鍵をindex.htmlに埋め込む
-`web/index.html` 内の
-
-```js
-const VAPID_PUBLIC_KEY = 'REPLACE_WITH_YOUR_VAPID_PUBLIC_KEY';
-```
-
-を、手順3で生成した `VAPID_PUBLIC_KEY` に差し替える。
-
-### 5. GitHub Secretsを登録する
-リポジトリの Settings > Secrets and variables > Actions で以下を登録:
+### 3. GitHub Secretsを登録
 
 | Secret名 | 値 | 無くても動くか |
 |---|---|---|
-| `VAPID_PRIVATE_KEY` | 手順3で生成した秘密鍵 | 通知送信ステップが自動スキップされる |
+| `VAPID_PRIVATE_KEY` | generate_vapid_keys.pyの秘密鍵 | 通知送信ステップが自動スキップ |
 | `VAPID_SUBJECT` | `mailto:自分のメールアドレス` | 同上 |
-| `PUSH_SUBSCRIPTION` | 手順6で取得する購読情報 | 未設定ならPagesのデプロイまでは正常に完了する(通知送信だけスキップ) |
-| `FOOTBALL_DATA_API_KEY` | football-data.orgで取得したキー | 未設定ならサッカー分だけスキップし、MLBのみで続行する |
+| `PUSH_SUBSCRIPTION` | iPhoneで購読後に表示されるJSON | 未設定ならPagesのデプロイまでは完了(通知送信のみスキップ) |
+| `FOOTBALL_DATA_API_KEY` | football-data.orgで無料登録して取得 | 未設定ならサッカー分のみスキップ、MLBは続行 |
+| `ANTHROPIC_API_KEY` | console.anthropic.comで発行 | 未設定ならAI要約はスキップ、ルールベースの理由文のみ表示 |
+| `YOUTUBE_API_KEY` | Google Cloud ConsoleでYouTube Data API v3を有効化して発行 | 未設定ならMLB公式ハイライト動画の検索・埋め込みをスキップ |
 
-**つまり、最初は何も登録しなくてもワークフローは(mockデータで)最後まで通ります。** 1つずつ揃えながら本番データに寄せていけばよい。
+**つまり何も登録しなくてもワークフローは(mockデータで)最後まで通る設計。** 1つずつ揃えて本番に寄せていけばよい。
 
-### 6. サイトにアクセスして購読する
-1. GitHub Actionsを一度手動実行(workflow_dispatch)してPagesを公開する
-2. 公開されたURLに **iPhoneのSafari** でアクセス
+### 4. iPhoneで購読する
+1. Actionsを手動実行してPagesを公開
+2. **iPhoneのSafari**で公開URLを開く(Chrome等では不可)
 3. 共有ボタン → 「ホーム画面に追加」
-4. ホーム画面のアイコンからPWAとして起動(Safariの中で開くと通知が動かないので注意)
-5. 「通知を有効にする」ボタンをタップ → 通知を許可
-6. 画面に表示されたJSONをコピー
-7. GitHub Secretsの `PUSH_SUBSCRIPTION` をこの値で更新する
+4. ホーム画面のアイコンから起動(Safariのタブ内で開くと通知は動かない)
+5. 「通知を有効にする」→許可→表示されたJSONを`PUSH_SUBSCRIPTION`に登録
 
-### 7. テスト送信する
-Actionsタブから `Daily notable games` ワークフローを手動実行(Run workflow)。
-19時を待たずにその場でテストできる。
+### 5. テスト実行
+Actionsタブから`Daily notable games`を手動実行(Run workflow)。19時を待たずに即時テスト可能。
 
-### 8. 本番の19時通知を待つ
-`cron: '0 10 * * *'` によりUTC 10:00(JST 19:00)に自動実行される。
-GitHub Actionsのcronは指定時刻ちょうどに実行される保証がなく、数分〜十数分遅れることがある。
+### 6. 本番の自動実行を待つ
+`cron: '0 10 * * *'`(UTC 10:00 = JST 19:00)。数分〜十数分のズレは正常な範囲。
+
+## AI要約についてのコスト管理
+
+- Anthropic Consoleで**自動リロードはオフ**にしてある(意図的な設定、変更しないこと)
+- 1回の実行で使うのはトップ1試合分のみ、`max_tokens=250`で上限固定
+- 実際のコストは`platform.claude.com/cost`で確認可能。ログにも毎回のトークン数・概算コストが出る
+
+## アーキテクチャ上の設計判断(なぜこうなっているか)
+
+- **サーバー側(GitHub Actions)が理由を計算し、通知本文に埋め込んで送る**方式。BGTaskScheduler
+  のような端末側の定期実行には依存しない(iOSのバックグラウンド実行はOSの気分次第で
+  信頼性が低いため、19時に確実性高く届けるには不向きと判断した)
+- **Reasonに`visible`フラグ**があり、「スコアには使うが表示はしない」情報(全米的な
+  人気球団かどうか等)を扱える。ユーザーからのフィードバックで「薄い情報を見せない
+  ほうがいい」という判断があったため
+- **日本人選手の所属はMLBだけ動的解決**にしている(青柳晃洋選手が実際には既に戦力外に
+  なっていたのに静的リストに残っていた反省から)。サッカー側は同等のAPIが無料枠に無い
+  ため、静的リストのまま運用している
 
 ## 今後やるべきこと
 
-- `notability_engine.py` の `fetch_mlb_schedule_today()` を完成させ、`--mock` ではなく実データで動かす
-- football-data.org 等サッカー側のデータ取得を追加する
-- 購読が失効した場合(410 Gone)の再購読フローを用意する
-- 十分安定して動くようになったら、ネイティブアプリ化を検討する
+- 通知停止の原因調査・再購読(最優先)
+- サービス名(SPOWatch!のままか)・ドメインの最終決定
+- 8月中旬、5大リーグ開幕前にJP選手リストの再確認
+- AI要約の文章、実際の出力を見ながら継続調整
+- 十分安定して動くようになったら、ネイティブアプリ化を検討

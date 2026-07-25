@@ -145,17 +145,16 @@ def rule_marquee_team(game: Game) -> list[Reason]:
 
 
 def rule_rivalry(game: Game) -> list[Reason]:
-    """伝統的なライバルカードに加点する"""
+    """伝統的なライバルカード・同都市対決に加点する"""
     pair = frozenset({game.home_team_id, game.away_team_id})
-    if pair in MLB_RIVALRIES:
-        return [
-            Reason(
-                tag="rivalry",
-                text=f"{game.home_team_name} vs {game.away_team_name} は伝統の好カード",
-                weight=2,
-            )
-        ]
-    return []
+    rivalry_type = MLB_RIVALRIES.get(pair)
+    if rivalry_type == "historic":
+        text = f"{game.home_team_name} vs {game.away_team_name} は伝統の好カード"
+    elif rivalry_type == "city":
+        text = f"{game.home_team_name} vs {game.away_team_name} は同都市対決"
+    else:
+        return []
+    return [Reason(tag="rivalry", text=text, weight=2)]
 
 
 def rule_division_race(game: Game, standings: dict) -> list[Reason]:
@@ -255,6 +254,13 @@ def build_output(games: list[Game], standings: dict, jp_team_map: dict) -> dict:
             f"{home_abbr} vs {away_abbr}" if home_abbr and away_abbr else None
         )
 
+        home_division = MLB_DIVISIONS.get(g.home_team_id)
+        away_division = MLB_DIVISIONS.get(g.away_team_id)
+        same_division = bool(
+            home_division and away_division and home_division == away_division
+        )
+        rivalry_type = MLB_RIVALRIES.get(frozenset({g.home_team_id, g.away_team_id}))
+
         output_games.append(
             {
                 "game_id": g.game_id,
@@ -268,6 +274,10 @@ def build_output(games: list[Game], standings: dict, jp_team_map: dict) -> dict:
                 "matchup": f"{g.home_team_name} vs {g.away_team_name}",
                 "abbr_matchup": abbr_matchup,
                 "start_time_jst": _to_jst_str(g.start_time_utc),
+                "home_division": home_division,
+                "away_division": away_division,
+                "same_division": same_division,
+                "rivalry_type": rivalry_type,  # "historic" / "city" / None
                 "score": visible_score,
                 "_sort_score": total_score,
                 "is_notable": visible_score > 0,
@@ -360,21 +370,46 @@ JP_PLAYERS_MLB = [
 MLB_MARQUEE_TEAM_IDS = {"147", "119", "111", "112", "144"}  # ヤンキース/ドジャース/レッドソックス/カブス/ブレーブス
 
 # 伝統の好カード(ライバル関係)。フロズンセット化して両方向マッチできるようにする
-MLB_RIVALRIES = [
-    frozenset({"147", "111"}),  # ヤンキース vs レッドソックス
-    frozenset({"119", "137"}),  # ドジャース vs ジャイアンツ
-    frozenset({"112", "138"}),  # カブス vs カージナルス
-    frozenset({"119", "135"}),  # ドジャース vs パドレス
-    frozenset({"147", "121"}),  # ヤンキース vs メッツ(subway series)
-]
+MLB_DIVISIONS = {
+    # AL East
+    "110": "ALE", "111": "ALE", "147": "ALE", "139": "ALE", "141": "ALE",
+    # AL Central
+    "145": "ALC", "114": "ALC", "116": "ALC", "118": "ALC", "142": "ALC",
+    # AL West
+    "117": "ALW", "108": "ALW", "133": "ALW", "136": "ALW", "140": "ALW",
+    # NL East
+    "144": "NLE", "146": "NLE", "121": "NLE", "143": "NLE", "120": "NLE",
+    # NL Central
+    "112": "NLC", "113": "NLC", "158": "NLC", "134": "NLC", "138": "NLC",
+    # NL West
+    "109": "NLW", "119": "NLW", "135": "NLW", "137": "NLW", "115": "NLW",
+}
+
+# 歴史的なライバル関係("historic")と、同都市・近郊対決("city")を区別して持つ。
+# AIへのコンテキストとして渡し、文章に「同地区」「同都市」の文脈を含められるようにする
+MLB_RIVALRIES = {
+    frozenset({"147", "111"}): "historic",  # ヤンキース vs レッドソックス
+    frozenset({"119", "137"}): "historic",  # ドジャース vs ジャイアンツ
+    frozenset({"112", "138"}): "historic",  # カブス vs カージナルス
+    frozenset({"119", "135"}): "historic",  # ドジャース vs パドレス
+    frozenset({"147", "121"}): "city",       # ヤンキース vs メッツ(subway series)
+    frozenset({"112", "145"}): "city",       # カブス vs ホワイトソックス(crosstown classic)
+    frozenset({"108", "119"}): "city",       # エンゼルス vs ドジャース(freeway series)
+}
 
 # 2026年7月時点、Web検索で確認できた範囲のみ記載。追加・更新推奨。
 JP_PLAYERS_SOCCER = [
     {"name_en": "Kaoru Mitoma", "name_jp": "三笘薫", "team_en": "Brighton"},
+    # 2026年7月時点で退団報道多数(マンU/ニューカッスル/エヴァートン等に興味報道)。
+    # 開幕直前(8月中旬)に必ず再確認すること
     {"name_en": "Ao Tanaka", "name_jp": "田中碧", "team_en": "Leeds United"},
     {"name_en": "Daichi Kamada", "name_jp": "鎌田大地", "team_en": "Crystal Palace"},
-    {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂本達裕", "team_en": "Coventry City"},
+    {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂元達裕", "team_en": "Coventry City"},
+    {"name_en": "Wataru Endo", "name_jp": "遠藤航", "team_en": "Liverpool"},
 ]
+
+# 2026年7月時点、Web検索で確認できた範囲。移籍市場が動いている選手がいるため
+# 8月中旬(開幕直前)に必ず再確認すること
 
 
 # MLB Stats API のチームIDは実行結果で確認済みの値と一致(108=エンゼルス等)
@@ -409,6 +444,21 @@ MLB_TEAM_NAME_JP = {
     "146": "マーリンズ",
     "147": "ヤンキース",
     "158": "ブリュワーズ",
+}
+
+# YouTube検索用(公式英語名)。翻訳前のAPIレスポンスの名前と揃えてある
+MLB_TEAM_NAME_EN = {
+    "108": "Los Angeles Angels", "109": "Arizona Diamondbacks",
+    "110": "Baltimore Orioles", "111": "Boston Red Sox", "112": "Chicago Cubs",
+    "113": "Cincinnati Reds", "114": "Cleveland Guardians", "115": "Colorado Rockies",
+    "116": "Detroit Tigers", "117": "Houston Astros", "118": "Kansas City Royals",
+    "119": "Los Angeles Dodgers", "120": "Washington Nationals", "121": "New York Mets",
+    "133": "Athletics", "134": "Pittsburgh Pirates", "135": "San Diego Padres",
+    "136": "Seattle Mariners", "137": "San Francisco Giants", "138": "St. Louis Cardinals",
+    "139": "Tampa Bay Rays", "140": "Texas Rangers", "141": "Toronto Blue Jays",
+    "142": "Minnesota Twins", "143": "Philadelphia Phillies", "144": "Atlanta Braves",
+    "145": "Chicago White Sox", "146": "Miami Marlins", "147": "New York Yankees",
+    "158": "Milwaukee Brewers",
 }
 
 # 短縮表記(通知の文字数節約・略称に慣れてもらう目的で使用)
@@ -715,70 +765,153 @@ def _team_context_line(team_id: str, team_name: str, standings: dict) -> str:
     )
 
 
-def enhance_top_game_with_ai(output: dict, standings: dict, api_key: str) -> None:
-    games = output.get("games", [])
-    if not games or not games[0].get("is_notable"):
-        return
-
-    top = games[0]
-    reasons_text = "\n".join(f"- {r['text']}" for r in top.get("reasons", []))
-    if not reasons_text:
-        return
-
+def _build_ai_prompt(game: dict, standings: dict) -> str:
     home_context = _team_context_line(
-        top["home_team_id"], top["home_team_name"], standings
+        game["home_team_id"], game["home_team_name"], standings
     )
     away_context = _team_context_line(
-        top["away_team_id"], top["away_team_name"], standings
+        game["away_team_id"], game["away_team_name"], standings
     )
 
-    prompt = (
-        f"以下は「{top['matchup']}」({top['league']})という試合についてのデータです。\n\n"
+    structural_notes = []
+    home_div = MLB_DIVISIONS.get(game["home_team_id"])
+    away_div = MLB_DIVISIONS.get(game["away_team_id"])
+    if home_div and away_div and home_div == away_div:
+        structural_notes.append("同地区対決である")
+    pair = frozenset({game["home_team_id"], game["away_team_id"]})
+    rivalry_type = MLB_RIVALRIES.get(pair)
+    if rivalry_type == "historic":
+        structural_notes.append("歴史的に有名なライバルカードである")
+    elif rivalry_type == "city":
+        structural_notes.append("同都市・近郊に本拠地を置くチーム同士の対決である")
+    structural_text = "\n".join(f"- {n}" for n in structural_notes) or "- 特記事項なし"
+
+    reasons_text = "\n".join(f"- {r['text']}" for r in game.get("reasons", []))
+
+    highlight_line = ""
+    if game.get("highlight_title"):
+        highlight_line = (
+            f"\n【MLB公式ハイライト動画のタイトル(参考情報)】\n{game['highlight_title']}\n"
+        )
+
+    return (
+        f"以下は「{game['matchup']}」({game['league']})という試合についてのデータです。\n\n"
         f"【チームの状況】\n{home_context}\n{away_context}\n\n"
-        f"【この試合が注目された理由(ルールベースで抽出)】\n{reasons_text}\n\n"
+        f"【構造的な位置づけ】\n{structural_text}\n\n"
+        f"【この試合が注目された理由(ルールベースで抽出)】\n{reasons_text}\n"
+        f"{highlight_line}\n"
         "あなたはMLB/野球初心者にも分かりやすく解説するスポーツ記者です。"
         "上記のデータだけを根拠に、「シーズン全体・MLB全体で見たときに、"
         "この一戦になぜ注目すべきか」を2〜3文の日本語で説明してください。\n\n"
         "厳守してほしいこと:\n"
-        "- 上記のデータに書かれている具体的な数字(順位・ゲーム差・連勝数など)を"
-        "  実際に使って、理由を裏付けること。数字を使わない抽象的な感想は禁止\n"
+        "- 今シーズンの具体的な数字(順位・ゲーム差・連勝数など)は、必ず上記の"
+        "  データに書かれているものだけを使うこと。データに無い今季の数字は"
+        "  絶対に書かないこと\n"
+        "- ただし、球団の歴史的背景・伝統的なライバル関係の由来など、今季の"
+        "  数字を伴わない一般的な知識は、事実として広く知られている範囲でのみ"
+        "  補足として使ってよい(不確かな場合は使わないこと)\n"
         "- 「有名選手が揃っている」「注目の一戦だ」のような、データを言い換えた"
-        "  だけの薄い文章は禁止。必ず具体的な数字や順位の意味を説明に組み込むこと\n"
+        "  だけの薄い文章は禁止。必ず具体的な数字や、上記の構造的な位置づけを"
+        "  説明に組み込むこと\n"
         "- 文体は理路整然とした説明口調にすること。「〜だよ！」「〜だね！」の"
         "  ような話し言葉・感嘆符での締めは禁止。「〜である」「〜になる」のような"
         "  落ち着いた書き言葉で書くこと\n"
         "- 野球初心者にも伝わるよう、専門用語を使う場合は軽く説明を添えること\n"
-        "- データに無いことは書かないこと\n"
-        "- 見出しや記号(・や「」)は使わず、本文の文章のみを出力すること"
+        "- 見出しや記号(・や「」)は使わず、本文の文章のみを出力すること\n"
+        "- MLB公式ハイライト動画のタイトルが提供されている場合、そこから伝わる"
+        "  文脈(注目プレーの内容など)は参考にしてよいが、タイトルの文言を"
+        "  そのまま引用せず、必ず自分の言葉で言い換えること"
     )
 
+
+def _call_ai(prompt: str, api_key: str, max_tokens: int = 250):
+    """1回分のAPI呼び出し。戻り値: (text, cost_usd) または (None, 0)"""
     try:
         import anthropic
 
         client = anthropic.Anthropic(api_key=api_key)
         message = client.messages.create(
             model="claude-haiku-4-5-20251001",
-            max_tokens=250,  # 暴走時の被害を抑えるための上限
+            max_tokens=max_tokens,  # 暴走時の被害を抑えるための上限
             messages=[{"role": "user", "content": prompt}],
         )
         ai_text = "".join(
             block.text for block in message.content if block.type == "text"
         ).strip()
-        if ai_text:
-            top["ai_summary"] = ai_text
-            usage = message.usage
-            # Haiku 4.5の料金: 入力$1/出力$5 per 1M tokens (2026年7月時点)
-            cost_usd = (usage.input_tokens / 1_000_000 * 1) + (
-                usage.output_tokens / 1_000_000 * 5
-            )
-            print(
-                f"[info] AIによる要約を生成しました "
-                f"(入力{usage.input_tokens}トークン/出力{usage.output_tokens}トークン、"
-                f"概算${cost_usd:.5f})"
-            )
+        usage = message.usage
+        # Haiku 4.5の料金: 入力$1/出力$5 per 1M tokens (2026年7月時点)
+        cost_usd = (usage.input_tokens / 1_000_000 * 1) + (
+            usage.output_tokens / 1_000_000 * 5
+        )
+        return ai_text, cost_usd, usage.input_tokens, usage.output_tokens
     except Exception as e:
-        # リトライはせず、ルールベースの理由文にフォールバックする
-        print(f"[warn] AIによる要約生成に失敗、ルールベースの理由のみ使用します: {e}")
+        print(f"[warn] AI呼び出しに失敗、この試合はルールベースの理由のみ使用します: {e}")
+        return None, 0, 0, 0
+
+
+def fetch_mlb_highlight(
+    home_team_id: str, away_team_id: str, date_str: str, api_key: str
+):
+    """
+    MLB公式YouTubeチャンネル(channelTitleが完全一致で"MLB"のもの)から、
+    該当試合のハイライト動画を検索する。公式チャンネル以外の結果は除外する。
+    戻り値: (title, video_id) または (None, None)
+    """
+    if requests is None:
+        return None, None
+
+    home_en = MLB_TEAM_NAME_EN.get(home_team_id)
+    away_en = MLB_TEAM_NAME_EN.get(away_team_id)
+    if not home_en or not away_en:
+        return None, None
+
+    try:
+        resp = requests.get(
+            "https://www.googleapis.com/youtube/v3/search",
+            params={
+                "key": api_key,
+                "q": f"{away_en} {home_en} Highlights",
+                "type": "video",
+                "order": "date",
+                "maxResults": 5,
+                "publishedAfter": f"{date_str}T00:00:00Z",
+            },
+            timeout=10,
+        )
+        resp.raise_for_status()
+        items = resp.json().get("items", [])
+        for item in items:
+            if item["snippet"]["channelTitle"] == "MLB":
+                return item["snippet"]["title"], item["id"]["videoId"]
+    except Exception as e:
+        print(f"[warn] MLBハイライト動画の検索に失敗: {e}")
+
+    return None, None
+
+
+def enhance_games_with_ai(
+    output: dict, standings: dict, api_key: str, count: int = 3
+) -> None:
+    """上位N試合(注目試合のみ、理由が空でないもの)にAI要約を追加する"""
+    games = output.get("games", [])
+    targets = [
+        g for g in games if g.get("is_notable") and g.get("reasons")
+    ][:count]
+
+    total_cost = 0.0
+    for game in targets:
+        prompt = _build_ai_prompt(game, standings)
+        ai_text, cost_usd, in_tok, out_tok = _call_ai(prompt, api_key)
+        if ai_text:
+            game["ai_summary"] = ai_text
+            total_cost += cost_usd
+            print(
+                f"[info] AI要約生成: {game['matchup']} "
+                f"(入力{in_tok}トークン/出力{out_tok}トークン、概算${cost_usd:.5f})"
+            )
+
+    if targets:
+        print(f"[info] 今回のAI要約合計コスト: 概算${total_cost:.5f}")
 
 
 # ---------------------------------------------------------------------------
@@ -858,9 +991,42 @@ def main():
 
     result = build_output(games, standings, jp_team_map)
 
+    # MLB公式ハイライト動画のタイトルを取得(AIのコンテキスト強化・埋め込み表示用)
+    youtube_api_key = os.environ.get("YOUTUBE_API_KEY")
+    if youtube_api_key and not args.mock:
+        for game in [g for g in result["games"] if g.get("is_notable")][:3]:
+            if game["league"] != "MLB":
+                continue
+            title, video_id = fetch_mlb_highlight(
+                game["home_team_id"], game["away_team_id"], date_str, youtube_api_key
+            )
+            if title:
+                game["highlight_title"] = title
+                game["highlight_video_id"] = video_id
+                print(f"[info] ハイライト動画を発見: {title}")
+
     ai_key = os.environ.get("ANTHROPIC_API_KEY")
     if ai_key:
-        enhance_top_game_with_ai(result, standings, ai_key)
+        enhance_games_with_ai(result, standings, ai_key, count=3)
+
+    # 明日のMLB注目候補プレビュー(失敗しても本体の結果には影響させない)
+    if not args.mock and args.source in ("mlb", "all"):
+        try:
+            tomorrow_str = (
+                datetime.date.fromisoformat(date_str) + datetime.timedelta(days=1)
+            ).isoformat()
+            t_games, t_standings, t_jp_map = fetch_mlb_games_and_standings(tomorrow_str)
+            t_result = build_output(t_games, t_standings, t_jp_map)
+            t_top = t_result["games"][0] if t_result["games"] else None
+            if t_top and t_top["is_notable"] and t_top["reasons"]:
+                result["tomorrow_preview"] = {
+                    "matchup": t_top["matchup"],
+                    "start_time_jst": t_top["start_time_jst"],
+                    "reason_text": t_top["reasons"][0]["text"],
+                }
+                print(f"[info] 明日のプレビュー生成: {t_top['matchup']}")
+        except Exception as e:
+            print(f"[warn] 明日のプレビュー生成に失敗、スキップします: {e}")
 
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
