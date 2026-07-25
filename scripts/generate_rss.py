@@ -52,7 +52,7 @@ def build_rss(data: dict, site_url: str) -> str:
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>SPOWatch! - 今日の注目試合</title>
+    <title>コレスポ - 今日の注目試合</title>
     <link>{html.escape(site_url)}</link>
     <description>MLB・欧州5大リーグの今日の注目試合と、その理由を届けます</description>
     <language>ja</language>

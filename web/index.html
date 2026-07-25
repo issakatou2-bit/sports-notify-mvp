@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>SPOWatch!</title>
+<title>コレスポ</title>
 <link rel="manifest" href="manifest.json" />
-<link rel="alternate" type="application/rss+xml" title="SPOWatch! RSS" href="feed.xml" />
+<link rel="alternate" type="application/rss+xml" title="コレスポ RSS" href="feed.xml" />
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -137,6 +137,11 @@
     border-radius: 4px;
     letter-spacing: 0.03em;
   }
+  .badge-jp {
+    color: var(--bg);
+    background: var(--accent);
+    font-weight: 600;
+  }
   .schedule-row .badge-mini {
     font-size: 9px;
     color: var(--text-dim);
@@ -192,6 +197,12 @@
     color: var(--text);
     margin: 2px 0 10px;
     line-height: 1.5;
+  }
+  .card .series-context {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin: 0 0 8px;
   }
   .board {
     background: var(--surface);
@@ -269,7 +280,7 @@
 </head>
 <body>
 
-<div class="brand"><span class="brand-dot"></span><h1>SPOWatch!</h1></div>
+<div class="brand"><span class="brand-dot"></span><h1>コレスポ</h1></div>
 <p class="sub">端末内のフォロー設定に応じて、注目理由つきで表示します</p>
 
 <div class="tabs" id="tabs">
@@ -277,11 +288,11 @@
   <div class="tab" data-league="SOCCER">5大リーグ</div>
 </div>
 
-<p class="eyebrow">Today's Pick</p>
+<p class="eyebrow" id="pickLabel">Pick</p>
 <div id="notableGames">読み込み中...</div>
 
 <div class="section">
-  <p class="eyebrow">Today's Board (JST)</p>
+  <p class="eyebrow" id="boardLabel">Board (JST)</p>
   <div class="board" id="allGames"></div>
 </div>
 
@@ -324,6 +335,36 @@
     return abbr ? `${name}(${abbr})` : name;
   }
 
+  function makeBadge(label) {
+    const b = document.createElement('span');
+    b.className = 'badge';
+    b.textContent = label;
+    return b;
+  }
+
+  // Xは全角文字(日本語含む)を2文字分としてカウントする実質280文字制限。
+  // 本文はURL分の余裕を残して安全な長さに切り詰める(全角換算で約100文字まで)
+  function truncateForX(text, maxFullWidthChars) {
+    if (text.length <= maxFullWidthChars) return text;
+    return text.slice(0, maxFullWidthChars) + '…';
+  }
+
+  function buildShareLink(game) {
+    const body = game.ai_summary || (game.reasons[0] || {}).text || '';
+    const header = '今日の注目試合: ' + game.matchup + '\n';
+    const truncatedBody = truncateForX(body, 100 - Math.min(header.length, 40));
+    const shareText = encodeURIComponent(header + truncatedBody);
+    const siteUrl = encodeURIComponent(location.origin + location.pathname);
+
+    const link = document.createElement('a');
+    link.className = 'share-btn';
+    link.href = `https://twitter.com/intent/tweet?text=${shareText}&url=${siteUrl}`;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Xでシェア';
+    return link;
+  }
+
   const SOCCER_LEAGUES = ['プレミアリーグ', 'ラ・リーガ', 'セリエA', 'ブンデスリーガ', 'リーグ・アン'];
 
   let allGamesCache = [];
@@ -338,18 +379,26 @@
     );
 
     if (games.length === 0) {
-      const msg = activeLeague === 'MLB' ? '今日はMLBの試合がありません' : '今はシーズンオフのため試合がありません';
+      const msg = activeLeague === 'MLB' ? '対象のMLBの試合がありません' : '今はシーズンオフのため試合がありません';
       notableEl.innerHTML = '<p class="sub">' + msg + '</p>';
       allEl.innerHTML = '';
       return;
     }
 
-    // --- 今日の注目試合(スクショで収まるよう1試合に絞る) ---
-    const top = [...games].sort((a, b) => b.score - a.score)[0];
+    // 見出しに実際の日付を表示する(「Today」「Tomorrow」だと日本時間では
+    // 日付をまたいでしまい紛らわしいため、実データの日付をそのまま出す)
+    const dateFromGames = games.find((g) => g.start_time_jst)?.start_time_jst?.split(' ')[0];
+    document.getElementById('pickLabel').textContent = dateFromGames ? dateFromGames + ' Pick' : 'Pick';
+    document.getElementById('boardLabel').textContent = dateFromGames ? dateFromGames + ' Board (JST)' : 'Board (JST)';
+
+    // --- 注目試合(上位2試合まで) ---
+    const sorted = [...games].sort((a, b) => b.score - a.score);
+    const picks = sorted.filter((g) => g.is_notable).slice(0, 2);
     notableEl.innerHTML = '';
-    if (!top.is_notable) {
+    if (picks.length === 0) {
       notableEl.innerHTML = '<p class="sub">今日は特に注目の試合はありません</p>';
-    } else {
+    }
+    picks.forEach((top) => {
       const card = document.createElement('div');
       card.className = 'card';
 
@@ -367,20 +416,36 @@
         '<span class="league">' + top.league + '</span>';
       card.appendChild(topRow);
 
-      const badgeLabels = [];
-      if (top.same_division) badgeLabels.push('同地区対決');
-      if (top.rivalry_type === 'historic') badgeLabels.push('伝統の好カード');
-      if (top.rivalry_type === 'city') badgeLabels.push('同都市対決');
-      if (badgeLabels.length > 0) {
-        const badgeRow = document.createElement('div');
-        badgeRow.className = 'badges';
-        badgeLabels.forEach((label) => {
-          const b = document.createElement('span');
-          b.className = 'badge';
-          b.textContent = label;
-          badgeRow.appendChild(b);
-        });
-        card.appendChild(badgeRow);
+      const badgeRow = document.createElement('div');
+      badgeRow.className = 'badges';
+      (top.jp_starters || []).forEach((p) => {
+        const b = document.createElement('span');
+        b.className = 'badge badge-jp';
+        b.textContent = 'JP先発: ' + p.name;
+        badgeRow.appendChild(b);
+      });
+      if (top.same_division) badgeRow.appendChild(makeBadge('同地区対決'));
+      if (top.rivalry_type === 'historic') badgeRow.appendChild(makeBadge('伝統の好カード'));
+      if (top.rivalry_type === 'city') badgeRow.appendChild(makeBadge('同都市対決'));
+      if (badgeRow.children.length > 0) card.appendChild(badgeRow);
+
+      if (top.series_context) {
+        const sc = top.series_context;
+        const parts = [];
+        if (sc.series_game_number && sc.games_in_series) {
+          parts.push(`第${sc.series_game_number}戦(全${sc.games_in_series}戦)`);
+        }
+        const hw = sc.home_wins_in_stretch || 0;
+        const aw = sc.away_wins_in_stretch || 0;
+        if (hw || aw) {
+          parts.push(`直近対戦成績 ${top.home_team_name}${hw}勝 ${top.away_team_name}${aw}勝`);
+        }
+        if (parts.length > 0) {
+          const p = document.createElement('p');
+          p.className = 'series-context';
+          p.textContent = parts.join(' / ');
+          card.appendChild(p);
+        }
       }
 
       if (top.ai_summary) {
@@ -406,19 +471,9 @@
         card.appendChild(wrap);
       }
 
-      const shareText = encodeURIComponent(
-        '今日の注目試合: ' + top.matchup + '\n' + (top.ai_summary || (top.reasons[0] || {}).text || '')
-      );
-      const shareLink = document.createElement('a');
-      shareLink.className = 'share-btn';
-      shareLink.href = 'https://twitter.com/intent/tweet?text=' + shareText;
-      shareLink.target = '_blank';
-      shareLink.rel = 'noopener';
-      shareLink.textContent = 'Xでシェア';
-      card.appendChild(shareLink);
-
+      card.appendChild(buildShareLink(top));
       notableEl.appendChild(card);
-    }
+    });
 
     // --- 全試合スケジュール(開始時刻順、名前+略称表記) ---
     const bySchedule = [...games].sort((a, b) => {
