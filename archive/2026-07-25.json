@@ -1,0 +1,441 @@
+{
+  "generated_at": "2026-07-25T05:56:07.377955+00:00",
+  "games": [
+    {
+      "game_id": "824571",
+      "league": "MLB",
+      "home_team_id": "145",
+      "away_team_id": "117",
+      "home_team_name": "ホワイトソックス",
+      "away_team_name": "アストロズ",
+      "home_abbr": "CWS",
+      "away_abbr": "HOU",
+      "matchup": "ホワイトソックス vs アストロズ",
+      "abbr_matchup": "CWS vs HOU",
+      "start_time_jst": "07/26 08:10",
+      "home_division": "ALC",
+      "away_division": "ALW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 6,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ホワイトソックスには村上宗隆が所属",
+          "weight": 2
+        },
+        {
+          "tag": "jp_team",
+          "text": "アストロズには今井達也が所属",
+          "weight": 2
+        },
+        {
+          "tag": "div",
+          "text": "ホワイトソックス vs アストロズ は首位攻防戦、ゲーム差はわずか2.0",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 1
+      },
+      "ai_summary": "ホワイトソックスが地区首位（54勝48敗）を守る立場にある中で、4連勝中のアストロズ（51勝54敗）がゲーム差2.0という接近した成績で追い上げており、シリーズの第2戦はこの両チームの上位争いが直結した局面になっている。ホワイトソックスが1連敗中という状況下での試合となるため、ここでの勝敗は地区内での順位争いの流れを大きく左右する要素を持つ。シーズン全体で見ると、現在の勝敗数や順位の微妙な差は、シーズン終盤へ向けて地区優勝を目指す両チームにとって、失えない一戦という意味を持つようになる。"
+    },
+    {
+      "game_id": "823600",
+      "league": "MLB",
+      "home_team_id": "121",
+      "away_team_id": "119",
+      "home_team_name": "メッツ",
+      "away_team_name": "ドジャース",
+      "home_abbr": "NYM",
+      "away_abbr": "LAD",
+      "matchup": "メッツ vs ドジャース",
+      "abbr_matchup": "NYM vs LAD",
+      "start_time_jst": "07/26 08:15",
+      "home_division": "NLE",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [
+        {
+          "name": "山本由伸",
+          "context": "先発予定"
+        }
+      ],
+      "score": 5,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "JP",
+          "text": "山本由伸が先発予定の中での出場",
+          "weight": 3
+        },
+        {
+          "tag": "jp_team",
+          "text": "メッツには千賀滉大が所属",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 1
+      },
+      "ai_summary": "ドジャースは現在66勝38敗で地区首位を走る強豪チームであり、3連勝中という好調さを維持している状況にある一方で、メッツは43勝61敗と大きく負け越し、首位との差が18.5ゲーム開いているため、シーズン全体で見ると両チームの力関係は明らかである。しかし今シリーズはまだ第2戦であり、ここからの試合結果がシリーズの帰趨を左右する重要な局面となるため、ドジャースの連勝を止めるか、あるいは地区優位を更に広げるかの分岐点として注視する価値がある。加えて、両チームに日本出身の主力投手が揃っていることが、日本国内での視聴関心を高める要因となっており、MLB"
+    },
+    {
+      "game_id": "824734",
+      "league": "MLB",
+      "home_team_id": "111",
+      "away_team_id": "141",
+      "home_team_name": "レッドソックス",
+      "away_team_name": "ブルージェイズ",
+      "home_abbr": "BOS",
+      "away_abbr": "TOR",
+      "matchup": "レッドソックス vs ブルージェイズ",
+      "abbr_matchup": "BOS vs TOR",
+      "start_time_jst": "07/26 05:10",
+      "home_division": "ALE",
+      "away_division": "ALE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 4,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "レッドソックスには吉田正尚が所属",
+          "weight": 2
+        },
+        {
+          "tag": "jp_team",
+          "text": "ブルージェイズには岡本和真が所属",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 0
+      },
+      "ai_summary": "レッドソックスは現在地区3位で首位との差が6.5ゲーム(勝ち数で換算した成績差)あり、シーズン後半で順位争いを意識した試合運びが求められる局面にあります。一方のブルージェイズは地区5位で首位との差が13.5ゲームと厳しい状況にあり、残りシーズンの過ごし方が来季以降の戦力構想に影響を与える時期にあたります。このシリーズ第2戦は同地区のライバルが相互に異なる立場から競う対決であり、日本を代表する選手である吉田正尚と岡本和真という両国の注目選手がどのような活躍を見せるかによって、シーズン終盤の地区順位争いに一つの示唆をもた"
+    },
+    {
+      "game_id": "823841",
+      "league": "MLB",
+      "home_team_id": "146",
+      "away_team_id": "135",
+      "home_team_name": "マーリンズ",
+      "away_team_name": "パドレス",
+      "home_abbr": "MIA",
+      "away_abbr": "SD",
+      "matchup": "マーリンズ vs パドレス",
+      "abbr_matchup": "MIA vs SD",
+      "start_time_jst": "07/26 05:10",
+      "home_division": "NLE",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 4,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 2
+        },
+        {
+          "tag": "streak",
+          "text": "マーリンズは10連敗中",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823355",
+      "league": "MLB",
+      "home_team_id": "134",
+      "away_team_id": "112",
+      "home_team_name": "パイレーツ",
+      "away_team_name": "カブス",
+      "home_abbr": "PIT",
+      "away_abbr": "CHC",
+      "matchup": "パイレーツ vs カブス",
+      "abbr_matchup": "PIT vs CHC",
+      "start_time_jst": "07/26 07:40",
+      "home_division": "NLC",
+      "away_division": "NLC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [
+        {
+          "name": "今永昇太",
+          "context": "先発予定"
+        }
+      ],
+      "score": 3,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "JP",
+          "text": "今永昇太が先発予定の中での出場",
+          "weight": 3
+        }
+      ]
+    },
+    {
+      "game_id": "823197",
+      "league": "MLB",
+      "home_team_id": "137",
+      "away_team_id": "108",
+      "home_team_name": "ジャイアンツ",
+      "away_team_name": "エンゼルス",
+      "home_abbr": "SF",
+      "away_abbr": "LAA",
+      "matchup": "ジャイアンツ vs エンゼルス",
+      "abbr_matchup": "SF vs LAA",
+      "start_time_jst": "07/26 05:05",
+      "home_division": "NLW",
+      "away_division": "ALW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 2,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "エンゼルスには菊池雄星が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "822948",
+      "league": "MLB",
+      "home_team_id": "139",
+      "away_team_id": "114",
+      "home_team_name": "レイズ",
+      "away_team_name": "ガーディアンズ",
+      "home_abbr": "TB",
+      "away_abbr": "CLE",
+      "matchup": "レイズ vs ガーディアンズ",
+      "abbr_matchup": "TB vs CLE",
+      "start_time_jst": "07/26 07:10",
+      "home_division": "ALE",
+      "away_division": "ALC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 2,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "div",
+          "text": "レイズ vs ガーディアンズ は首位攻防戦、ゲーム差はわずか1.5",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823758",
+      "league": "MLB",
+      "home_team_id": "158",
+      "away_team_id": "115",
+      "home_team_name": "ブリュワーズ",
+      "away_team_name": "ロッキーズ",
+      "home_abbr": "MIL",
+      "away_abbr": "COL",
+      "matchup": "ブリュワーズ vs ロッキーズ",
+      "abbr_matchup": "MIL vs COL",
+      "start_time_jst": "07/26 08:10",
+      "home_division": "NLC",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 2,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ロッキーズには菅野智之が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823027",
+      "league": "MLB",
+      "home_team_id": "138",
+      "away_team_id": "113",
+      "home_team_name": "カージナルス",
+      "away_team_name": "レッズ",
+      "home_abbr": "STL",
+      "away_abbr": "CIN",
+      "matchup": "カージナルス vs レッズ",
+      "abbr_matchup": "STL vs CIN",
+      "start_time_jst": "07/26 08:15",
+      "home_division": "NLC",
+      "away_division": "NLC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 2,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "カージナルスにはヌートバーが所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "822869",
+      "league": "MLB",
+      "home_team_id": "140",
+      "away_team_id": "136",
+      "home_team_name": "レンジャーズ",
+      "away_team_name": "マリナーズ",
+      "home_abbr": "TEX",
+      "away_abbr": "SEA",
+      "matchup": "レンジャーズ vs マリナーズ",
+      "abbr_matchup": "TEX vs SEA",
+      "start_time_jst": "07/26 08:15",
+      "home_division": "ALW",
+      "away_division": "ALW",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 2,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "div",
+          "text": "レンジャーズ vs マリナーズ は首位攻防戦、ゲーム差はわずか1.5",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823435",
+      "league": "MLB",
+      "home_team_id": "143",
+      "away_team_id": "147",
+      "home_team_name": "フィリーズ",
+      "away_team_name": "ヤンキース",
+      "home_abbr": "PHI",
+      "away_abbr": "NYY",
+      "matchup": "フィリーズ vs ヤンキース",
+      "abbr_matchup": "PHI vs NYY",
+      "start_time_jst": "07/26 07:05",
+      "home_division": "NLE",
+      "away_division": "ALE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "824811",
+      "league": "MLB",
+      "home_team_id": "110",
+      "away_team_id": "144",
+      "home_team_name": "オリオールズ",
+      "away_team_name": "ブレーブス",
+      "home_abbr": "BAL",
+      "away_abbr": "ATL",
+      "matchup": "オリオールズ vs ブレーブス",
+      "abbr_matchup": "BAL vs ATL",
+      "start_time_jst": "07/26 08:05",
+      "home_division": "ALE",
+      "away_division": "NLE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "824244",
+      "league": "MLB",
+      "home_team_id": "116",
+      "away_team_id": "118",
+      "home_team_name": "タイガース",
+      "away_team_name": "ロイヤルズ",
+      "home_abbr": "DET",
+      "away_abbr": "KC",
+      "matchup": "タイガース vs ロイヤルズ",
+      "abbr_matchup": "DET vs KC",
+      "start_time_jst": "07/26 02:10",
+      "home_division": "ALC",
+      "away_division": "ALC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "822704",
+      "league": "MLB",
+      "home_team_id": "120",
+      "away_team_id": "109",
+      "home_team_name": "ナショナルズ",
+      "away_team_name": "ダイヤモンドバックス",
+      "home_abbr": "WSH",
+      "away_abbr": "ARI",
+      "matchup": "ナショナルズ vs ダイヤモンドバックス",
+      "abbr_matchup": "WSH vs ARI",
+      "start_time_jst": "07/26 05:05",
+      "home_division": "NLE",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "823679",
+      "league": "MLB",
+      "home_team_id": "142",
+      "away_team_id": "133",
+      "home_team_name": "ツインズ",
+      "away_team_name": "アスレチックス",
+      "home_abbr": "MIN",
+      "away_abbr": "ATH",
+      "matchup": "ツインズ vs アスレチックス",
+      "abbr_matchup": "MIN vs ATH",
+      "start_time_jst": "07/26 08:10",
+      "home_division": "ALC",
+      "away_division": "ALW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    }
+  ],
+  "tomorrow_preview": {
+    "matchup": "ホワイトソックス vs アストロズ",
+    "start_time_jst": "07/27 03:10",
+    "reason_text": "ホワイトソックスには村上宗隆が所属"
+  }
+}
