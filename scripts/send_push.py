@@ -39,6 +39,38 @@ def load_top_game(path: str):
     return top
 
 
+def build_notification_headline(game: dict) -> str:
+    """
+    通知本文は「フックになる一言」に絞る。サイト側の詳しい理由・AI要約とは別に、
+    通知専用の短い見出しをルールベースで組み立てる。
+    業界的にもプッシュ通知は「詳細」ではなく「タップしたくなる一言」に徹するのが
+    一般的(ニュースアプリ等も本文全部は送らない)なので、それに倣う設計にした。
+
+    優先順位: JP先発 > 伝統の好カード > 同都市対決 > 同地区対決 > 連勝/連敗 > その他
+    """
+    jp_starters = game.get("jp_starters") or []
+    if jp_starters:
+        names = "・".join(p["name"] for p in jp_starters)
+        return f"{names}が先発予定"
+
+    if game.get("rivalry_type") == "historic":
+        return "伝統の好カード"
+    if game.get("rivalry_type") == "city":
+        return "同都市対決"
+    if game.get("same_division"):
+        return "同地区対決の一戦"
+
+    for r in game.get("reasons", []):
+        if r.get("tag") == "streak":
+            return r["text"]
+
+    reasons = game.get("reasons", [])
+    if reasons:
+        return reasons[0]["text"]
+
+    return "詳細はアプリで確認してください"
+
+
 def main():
     required_env = ["PUSH_SUBSCRIPTION", "VAPID_PRIVATE_KEY"]
     missing = [k for k in required_env if not os.environ.get(k)]
@@ -55,12 +87,7 @@ def main():
         print("今日は通知対象の試合がありません。送信をスキップします。")
         return
 
-    reasons = top_game.get("reasons", [])
-    body_text = (
-        top_game.get("ai_summary")
-        or " / ".join(r["text"] for r in reasons[:2])
-        or "詳細はアプリで確認してください"
-    )
+    body_text = build_notification_headline(top_game)
     title_matchup = top_game.get("abbr_matchup") or top_game["matchup"]
 
     payload = json.dumps(

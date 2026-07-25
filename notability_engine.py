@@ -261,6 +261,12 @@ def build_output(games: list[Game], standings: dict, jp_team_map: dict) -> dict:
         )
         rivalry_type = MLB_RIVALRIES.get(frozenset({g.home_team_id, g.away_team_id}))
 
+        jp_starters = [
+            {"name": p.name, "context": p.stat_context}
+            for p in g.players
+            if p.is_japanese
+        ]
+
         output_games.append(
             {
                 "game_id": g.game_id,
@@ -278,6 +284,7 @@ def build_output(games: list[Game], standings: dict, jp_team_map: dict) -> dict:
                 "away_division": away_division,
                 "same_division": same_division,
                 "rivalry_type": rivalry_type,  # "historic" / "city" / None
+                "jp_starters": jp_starters,
                 "score": visible_score,
                 "_sort_score": total_score,
                 "is_notable": visible_score > 0,
@@ -355,7 +362,7 @@ def load_mock_data():
 # 毎回動的に解決する。ここは「誰が対象の日本人選手か」の名前リストのみを持つ。
 JP_PLAYERS_MLB = [
     {"name_en": "Shohei Ohtani", "name_jp": "大谷翔平"},
-    {"name_en": "Yu Darvish", "name_jp": "ダルビッシュ有"},  # 2026シーズンは故障で全休予定
+    {"name_en": "Yu Darvish", "name_jp": "ダルビッシュ有"},
     {"name_en": "Roki Sasaki", "name_jp": "佐々木朗希"},
     {"name_en": "Yoshinobu Yamamoto", "name_jp": "山本由伸"},
     {"name_en": "Tomoyuki Sugano", "name_jp": "菅野智之"},
@@ -364,6 +371,13 @@ JP_PLAYERS_MLB = [
     {"name_en": "Seiya Suzuki", "name_jp": "鈴木誠也"},
     {"name_en": "Kodai Senga", "name_jp": "千賀滉大"},
     {"name_en": "Yuki Matsui", "name_jp": "松井裕樹"},
+    # 2026/7時点で判明した見落とし分。2026年在籍16名のうち欠けていた6名を追加
+    {"name_en": "Masataka Yoshida", "name_jp": "吉田正尚"},
+    {"name_en": "Kazuma Okamoto", "name_jp": "岡本和真"},
+    {"name_en": "Munetaka Murakami", "name_jp": "村上宗隆"},
+    {"name_en": "Shinnosuke Ogasawara", "name_jp": "小笠原慎之介"},
+    {"name_en": "Tatsuya Imai", "name_jp": "今井達也"},
+    {"name_en": "Lars Nootbaar", "name_jp": "ヌートバー"},
 ]
 
 # 全米的に注目度・話題性が高いとされる伝統的な人気球団(市場規模・ファン数などが根拠)
@@ -520,6 +534,75 @@ def resolve_jp_player_teams(date_str: str) -> dict:
             jp_team_map.setdefault(team_id, []).append(jp["name_jp"])
 
     return jp_team_map
+
+
+def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) -> dict | None:
+    """
+    同じ2チームの直近の対戦成績・シリーズ内の位置づけを取得する。
+    MLB Stats APIのスケジュールに含まれる seriesGameNumber/gamesInSeries を使う。
+    この項目が無い/取得失敗の場合はNoneを返し、呼び出し側は無視すればよい設計。
+    """
+    if requests is None:
+        return None
+
+    import datetime as _datetime
+
+    try:
+        end = _datetime.date.fromisoformat(date_str)
+        start = end - _datetime.timedelta(days=5)
+        resp = requests.get(
+            f"{MLB_API_BASE}/schedule",
+            params={
+                "sportId": 1,
+                "startDate": start.isoformat(),
+                "endDate": end.isoformat(),
+                "teamId": home_team_id,
+            },
+            timeout=10,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+
+        past_results = []  # (date, home_wins: bool)
+        series_game_number = None
+        games_in_series = None
+
+        for date_entry in data.get("dates", []):
+            for g in date_entry.get("games", []):
+                home_id = str(g["teams"]["home"]["team"]["id"])
+                away_id = str(g["teams"]["away"]["team"]["id"])
+                pair = {home_id, away_id}
+                if pair != {home_team_id, away_team_id}:
+                    continue
+
+                if g.get("gameDate", "").startswith(date_str):
+                    series_game_number = g.get("seriesGameNumber")
+                    games_in_series = g.get("gamesInSeries")
+
+                if g.get("status", {}).get("abstractGameCode") == "F":
+                    home_score = g["teams"]["home"].get("score")
+                    away_score = g["teams"]["away"].get("score")
+                    if home_score is None or away_score is None:
+                        continue
+                    this_game_home_won = home_score > away_score
+                    # この関数の呼び出し元から見た home_team_id が勝ったかどうかに正規化
+                    normalized_home_won = (
+                        this_game_home_won if home_id == home_team_id else not this_game_home_won
+                    )
+                    past_results.append(normalized_home_won)
+
+        if not past_results and series_game_number is None:
+            return None
+
+        return {
+            "series_game_number": series_game_number,
+            "games_in_series": games_in_series,
+            "home_wins_in_stretch": sum(1 for r in past_results if r),
+            "away_wins_in_stretch": sum(1 for r in past_results if not r),
+        }
+    except Exception as e:
+        print(f"[warn] シリーズ文脈の取得に失敗、この試合はスキップします: {e}")
+        return None
 
 
 def fetch_mlb_games_and_standings(date_str: str):
@@ -784,6 +867,21 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         structural_notes.append("歴史的に有名なライバルカードである")
     elif rivalry_type == "city":
         structural_notes.append("同都市・近郊に本拠地を置くチーム同士の対決である")
+
+    series_context = game.get("series_context")
+    if series_context:
+        sgn = series_context.get("series_game_number")
+        gis = series_context.get("games_in_series")
+        if sgn and gis:
+            structural_notes.append(f"今シリーズの第{sgn}戦(全{gis}戦)である")
+        home_w = series_context.get("home_wins_in_stretch", 0)
+        away_w = series_context.get("away_wins_in_stretch", 0)
+        if home_w or away_w:
+            structural_notes.append(
+                f"直近の対戦成績は{game['home_team_name']}{home_w}勝"
+                f"{game['away_team_name']}{away_w}勝である"
+            )
+
     structural_text = "\n".join(f"- {n}" for n in structural_notes) or "- 特記事項なし"
 
     reasons_text = "\n".join(f"- {r['text']}" for r in game.get("reasons", []))
@@ -991,6 +1089,18 @@ def main():
 
     result = build_output(games, standings, jp_team_map)
 
+    # シリーズ文脈(前の試合結果・第何戦か)を取得
+    if not args.mock:
+        for game in [g for g in result["games"] if g.get("is_notable")][:3]:
+            if game["league"] != "MLB":
+                continue
+            series_context = fetch_series_context(
+                game["home_team_id"], game["away_team_id"], date_str
+            )
+            if series_context:
+                game["series_context"] = series_context
+                print(f"[info] シリーズ文脈を取得: {game['matchup']} -> {series_context}")
+
     # MLB公式ハイライト動画のタイトルを取得(AIのコンテキスト強化・埋め込み表示用)
     youtube_api_key = os.environ.get("YOUTUBE_API_KEY")
     if youtube_api_key and not args.mock:
@@ -1030,6 +1140,17 @@ def main():
 
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
+
+    # 日次アーカイブ(評価用・将来的な自前データソース化のため蓄積する)
+    if not args.mock:
+        import pathlib
+
+        archive_dir = pathlib.Path("archive")
+        archive_dir.mkdir(exist_ok=True)
+        archive_path = archive_dir / f"{date_str}.json"
+        with open(archive_path, "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        print(f"[info] アーカイブに保存しました: {archive_path}")
 
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
