@@ -9,6 +9,21 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  // OneSignal管理画面(Settings > Keys & IDs)で発行されたApp IDに差し替えること
+  const ONESIGNAL_APP_ID = 'REPLACE_WITH_YOUR_ONESIGNAL_APP_ID';
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function (OneSignal) {
+    if (ONESIGNAL_APP_ID.startsWith('REPLACE_WITH')) return;
+    await OneSignal.init({
+      appId: ONESIGNAL_APP_ID,
+      // 独自のsw.js(既存のVAPID方式)とスコープが被らないよう分離する
+      serviceWorkerPath: 'onesignal/OneSignalSDKWorker.js',
+      serviceWorkerParam: { scope: '/onesignal/' },
+    });
+  });
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -66,6 +81,32 @@
     color: var(--accent);
     text-transform: uppercase;
     margin: 0 0 10px;
+  }
+  .onboarding {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .onboarding summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .onboarding ol {
+    margin: 8px 0 2px;
+    padding-left: 1.2em;
+  }
+  details summary {
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+  a {
+    color: var(--accent);
   }
   .tabs {
     display: flex;
@@ -283,6 +324,15 @@
 <div class="brand"><span class="brand-dot"></span><h1>コレスポ</h1></div>
 <p class="sub">端末内のフォロー設定に応じて、注目理由つきで表示します</p>
 
+<details class="onboarding">
+  <summary>はじめての方はこちら(通知の設定方法)</summary>
+  <ol>
+    <li>画面下(または上)の共有ボタンをタップ</li>
+    <li>「ホーム画面に追加」を選ぶ</li>
+    <li>ホーム画面のアイコンから開き直し、下の「通知を有効にする」をタップ</li>
+  </ol>
+</details>
+
 <div class="tabs" id="tabs">
   <div class="tab active" data-league="MLB">MLB</div>
   <div class="tab" data-league="SOCCER">5大リーグ</div>
@@ -306,10 +356,25 @@
   <button id="subscribeBtn">通知を有効にする</button>
   <div id="status"></div>
   <div id="subscriptionBox" style="display:none;">
-    <p class="sub">↓ これをコピーして GitHub Secrets の PUSH_SUBSCRIPTION に登録してください</p>
-    <textarea id="subscriptionText" readonly></textarea>
-    <button id="copyBtn">コピー</button>
+    <p class="sub">設定が完了しました。この端末の登録作業はこれで終わりです。</p>
+    <details>
+      <summary>(開発者向け) 購読情報を手動登録する場合</summary>
+      <p class="sub">↓ これをコピーして GitHub Secrets の PUSH_SUBSCRIPTION に登録してください</p>
+      <textarea id="subscriptionText" readonly></textarea>
+      <button id="copyBtn">コピー</button>
+    </details>
   </div>
+</div>
+
+<div class="section">
+  <p class="eyebrow">日本での視聴方法</p>
+  <p class="sub">
+    MLBは<a href="https://spotvnow.co.jp/" target="_blank" rel="noopener">SPOTV NOW</a>・
+    <a href="https://www.nhk.jp/" target="_blank" rel="noopener">NHK</a>・
+    Prime Video(SPOTVチャンネル)などで視聴できます。
+    5大リーグは<a href="https://www.dazn.com/ja-JP/" target="_blank" rel="noopener">DAZN</a>が中心です。
+    (放送予定は日によって変わるため、各サービスで最新情報をご確認ください)
+  </p>
 </div>
 
 <script>
@@ -560,35 +625,24 @@
   })();
 
   async function subscribe() {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      setStatus('このブラウザ/環境ではプッシュ通知に対応していません。\niOSの場合は、ホーム画面に追加してから開き直してください。');
+    if (ONESIGNAL_APP_ID.startsWith('REPLACE_WITH')) {
+      setStatus('index.html の ONESIGNAL_APP_ID がまだ設定されていません。\nOneSignalでアプリを作成し、App IDを貼り付けてください。');
       return;
     }
-
-    if (VAPID_PUBLIC_KEY.startsWith('REPLACE_WITH')) {
-      setStatus('index.html の VAPID_PUBLIC_KEY がまだ設定されていません。\ngenerate_vapid_keys.py で生成した鍵を貼り付けてください。');
+    if (!window.OneSignal) {
+      setStatus('通知機能の読み込みに失敗しました。少し待ってから再読み込みしてください。');
       return;
     }
 
     try {
-      const registration = await navigator.serviceWorker.register('sw.js');
-      await navigator.serviceWorker.ready;
-
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
+      await window.OneSignal.Notifications.requestPermission();
+      const optedIn = window.OneSignal.User.PushSubscription.optedIn;
+      if (optedIn) {
+        setStatus('通知が有効になりました。設定はこれで完了です(このボタンをもう一度押す必要はありません)。');
+        document.getElementById('subscriptionBox').style.display = 'none';
+      } else {
         setStatus('通知が許可されませんでした。設定アプリから通知を許可してください。');
-        return;
       }
-
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-      });
-
-      const subJson = JSON.stringify(subscription);
-      document.getElementById('subscriptionText').value = subJson;
-      document.getElementById('subscriptionBox').style.display = 'block';
-      setStatus('購読が完了しました。下のテキストをコピーしてGitHub Secretsに登録してください。');
     } catch (e) {
       setStatus('エラーが発生しました: ' + e.message);
     }
