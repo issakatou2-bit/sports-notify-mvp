@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>運営者情報 | コレスポ</title>
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0B0E14;
+    --surface: #12161F;
+    --border: #232838;
+    --text: #F2F0E6;
+    --text-dim: #8891A3;
+    --accent: #FFB020;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: max(1.5rem, env(safe-area-inset-top)) 1.25rem 3rem;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+    line-height: 1.8;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  th, td {
+    text-align: left;
+    padding: 0.9rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 0.95rem;
+  }
+  th { color: var(--text-dim); font-weight: 500; width: 35%; white-space: nowrap; }
+  a { color: var(--accent); }
+  .back { display: inline-block; margin-top: 2.5rem; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; }
+  .placeholder { color: var(--text-dim); font-style: italic; }
+  .note { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 2rem; }
+</style>
+</head>
+<body>
+  <h1>運営者情報</h1>
+
+  <div class="note">
+    このページの [ ] で囲まれた項目は、実際の情報に書き換えてから公開してください。
+  </div>
+
+  <table>
+    <tr><th>サイト名</th><td>コレスポ</td></tr>
+    <tr><th>運営者</th><td class="placeholder">[運営者名 または 屋号を記入]</td></tr>
+    <tr><th>連絡先</th><td class="placeholder">[連絡用メールアドレスを記入]</td></tr>
+    <tr><th>運営開始</th><td class="placeholder">[YYYY年M月]</td></tr>
+    <tr><th>サイトの目的</th>
+      <td>MLB・欧州サッカー主要リーグの試合を、なぜ注目かという理由とともに紹介し、これから野球・サッカーに親しむ人が生中継をより楽しめるようになることを目指す情報サイトです。</td>
+    </tr>
+    <tr><th>掲載情報について</th>
+      <td>試合日程・結果・選手所属等の情報は、MLB Stats API、football-data.org等の公開情報を基に自動生成しています。内容の正確性には配慮していますが、正式な情報は各リーグ・球団・クラブの公式発表をご確認ください。</td>
+    </tr>
+    <tr><th>広告について</th>
+      <td>当サイトは第三者配信の広告サービス(Google AdSense)を利用する場合があります。詳細は<a href="privacy.html">プライバシーポリシー</a>をご確認ください。</td>
+    </tr>
+  </table>
+
+  <a class="back" href="index.html">&larr; コレスポに戻る</a>
+</body>
+</html>
