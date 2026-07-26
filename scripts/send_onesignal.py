@@ -90,7 +90,10 @@ def main():
 
     payload = {
         "app_id": app_id,
-        "included_segments": ["Subscribed Users"],
+        # 注意: OneSignalアプリの作成時期によって、標準セグメント名が異なる
+        # (旧: "Subscribed Users" / 新: "Total Subscriptions")。実際に
+        # ダッシュボードのSegments一覧に表示されている名前と一致させること。
+        "included_segments": ["Total Subscriptions"],
         "headings": {"ja": f"今日の注目: {title_matchup}", "en": f"Today's Pick: {title_matchup}"},
         "contents": {"ja": body_text, "en": body_text},
         "url": SITE_URL,
