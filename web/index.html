@@ -18,7 +18,9 @@
     if (ONESIGNAL_APP_ID.startsWith('REPLACE_WITH')) return;
     await OneSignal.init({
       appId: ONESIGNAL_APP_ID,
-      safari_web_id: 'web.onesignal.auto.5bb9a1c9-03c0-4629-b099-1bc8c9257be5',
+      // safari_web_idは削除(発行時のドメインに固定されてしまうため、
+      // ドメイン変更のたびにこの値がエラーの原因になっていた。
+      // 現在のSafari/iOSは標準のWeb Push方式に対応済みのため無くても動作する)
       notifyButton: { enable: false }, // 独自のボタンを使うため、OneSignal標準のベルアイコンは非表示にする
     });
   });
