@@ -12,15 +12,14 @@
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   // OneSignal管理画面(Settings > Keys & IDs)で発行されたApp IDに差し替えること
-  const ONESIGNAL_APP_ID = '12ccd9ea-cc6a-4cde-8388-ae563c3797cc';
+  const ONESIGNAL_APP_ID = 'REPLACE_WITH_YOUR_ONESIGNAL_APP_ID';
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function (OneSignal) {
     if (ONESIGNAL_APP_ID.startsWith('REPLACE_WITH')) return;
     await OneSignal.init({
       appId: ONESIGNAL_APP_ID,
-      // 独自のsw.js(既存のVAPID方式)とスコープが被らないよう分離する
-      serviceWorkerPath: 'onesignal/OneSignalSDKWorker.js',
-      serviceWorkerParam: { scope: '/onesignal/' },
+      safari_web_id: 'web.onesignal.auto.5bb9a1c9-03c0-4629-b099-1bc8c9257be5',
+      notifyButton: { enable: false }, // 独自のボタンを使うため、OneSignal標準のベルアイコンは非表示にする
     });
   });
 </script>
@@ -374,6 +373,14 @@
     Prime Video(SPOTVチャンネル)などで視聴できます。
     5大リーグは<a href="https://www.dazn.com/ja-JP/" target="_blank" rel="noopener">DAZN</a>が中心です。
     (放送予定は日によって変わるため、各サービスで最新情報をご確認ください)
+  </p>
+</div>
+
+<div class="section">
+  <p class="eyebrow">もっと詳しくなる</p>
+  <p class="sub">
+    LADやOPS、xGのような略語・専門用語が気になったら、
+    <a href="glossary.html">用語集</a>をどうぞ。生中継がもっと楽しくなります。
   </p>
 </div>
 
