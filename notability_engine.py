@@ -161,8 +161,14 @@ def rule_division_race(game: Game, standings: dict) -> list[Reason]:
     reasons = []
     home = standings.get(game.home_team_id)
     away = standings.get(game.away_team_id)
-    if home and away:
-        # 両チームの首位との差が僅差、かつ同地区想定の場合を「首位攻防戦」とみなす
+    home_div = MLB_DIVISIONS.get(game.home_team_id)
+    away_div = MLB_DIVISIONS.get(game.away_team_id)
+    # 「首位攻防戦」は同一地区内の順位争いを指す表現。ここでの
+    # home_div == away_div チェックが無いと、たまたま両チームとも
+    # (別々の地区で)首位と僅差、というだけで「首位攻防戦」という、
+    # あたかも同じ地区で直接争っているかのような誤解を招く文章が
+    # 生成されてしまう(実際に発生していたバグ)。
+    if home and away and home_div and away_div and home_div == away_div:
         if abs(home.games_back - away.games_back) <= 2.0 and (
             home.games_back <= 3.0 or away.games_back <= 3.0
         ):

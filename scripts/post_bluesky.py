@@ -33,6 +33,31 @@ SITE_URL = os.environ.get("SITE_URL", "https://collespo.com/")
 MAX_POST_GRAPHEMES = 280
 
 
+def collect_hashtags(games: list) -> list:
+    """
+    表示する試合群から、ハッシュタグにする値を集める。
+    優先順位: 日本人先発選手の名前(重複除く) > リーグ名(重複除く)。
+    index.htmlのXシェアボタンで既にやっている考え方(JP選手名+リーグ名)を
+    Bluesky投稿にも合わせている。
+    """
+    names: list = []
+    seen_names = set()
+    for g in games:
+        for p in g.get("jp_starters") or []:
+            name = p.get("name")
+            if name and name not in seen_names:
+                seen_names.add(name)
+                names.append(name)
+
+    leagues: list = []
+    for g in games:
+        league = g.get("league")
+        if league and league not in leagues:
+            leagues.append(league)
+
+    return names + leagues
+
+
 def build_rule_based_hook(game: dict) -> str:
     """
     AIのフック文(notification_hook)が無い場合のフォールバック。
@@ -99,17 +124,19 @@ def load_notable_games(path: str, limit: int = 3):
     return [g for g in games if g.get("is_notable")][:limit]
 
 
-def build_post_body(notable_games: list) -> str:
+def build_post_body(notable_games: list, hashtags_display: str) -> str:
     """
-    上位試合を使って本文を組み立てる。300グラフェムを超える場合は、
-    試合数を1件ずつ減らして収まるまで組み直す(それでも1件だけは必ず残す)。
+    上位試合を使って本文を組み立てる。ハッシュタグ・URL分の文字数も
+    差し引いた上で、300グラフェムを超える場合は試合数を1件ずつ減らして
+    収まるまで組み直す(それでも1件だけは必ず残す)。
     """
     label = today_or_tomorrow_label(notable_games[0])
     games = list(notable_games)
+    reserved = len(hashtags_display) + len(SITE_URL) + 4  # 改行・スペース分の余裕
     while True:
         lines = [label] + [game_line(g) for g in games]
         text = "\n".join(lines)
-        if len(text) <= MAX_POST_GRAPHEMES or len(games) <= 1:
+        if len(text) + reserved <= MAX_POST_GRAPHEMES or len(games) <= 1:
             return text
         games = games[:-1]
 
@@ -126,19 +153,20 @@ def main():
         print("[info] 今日は注目試合が無いため投稿をスキップします")
         return
 
-    body_text = build_post_body(notable_games)
+    hashtags = collect_hashtags(notable_games)
+    hashtags_display = " ".join(f"#{t}" for t in hashtags)
+    body_text = build_post_body(notable_games, hashtags_display)
 
     try:
         from atproto import Client, client_utils
 
         client = Client()
         client.login(handle, app_password)
-        post = (
-            client_utils.TextBuilder()
-            .text(body_text + "\n")
-            .link(SITE_URL, SITE_URL)
-        )
-        client.send_post(post)
+        builder = client_utils.TextBuilder().text(body_text + "\n")
+        for t in hashtags:
+            builder = builder.tag(f"#{t} ", t)
+        builder = builder.link(SITE_URL, SITE_URL)
+        client.send_post(builder)
         print("[info] Blueskyに投稿しました")
     except Exception as e:
         print(f"[warn] Bluesky投稿に失敗しました: {e}", file=sys.stderr)
