@@ -32,10 +32,9 @@ SITE_URL = os.environ.get(
 ONESIGNAL_API_URL = "https://onesignal.com/api/v1/notifications"
 
 
-def build_notification_headline(game: dict) -> str:
+def build_rule_based_hook(game: dict) -> str:
     """
-    通知本文は「フックになる一言」に絞る(send_push.pyと同じロジック)。
-    pywebpushへの依存を避けるためこちらにも複製している。
+    AIのフック文(notification_hook)が無い場合のフォールバック。
     優先順位: JP先発 > 伝統の好カード > 同都市対決 > 同地区対決 > 連勝/連敗 > その他
     """
     jp_starters = game.get("jp_starters") or []
@@ -61,16 +60,40 @@ def build_notification_headline(game: dict) -> str:
     return "詳細はアプリで確認してください"
 
 
-def load_top_game(path: str):
+def game_hook_line(game: dict) -> str:
+    """1試合分の通知本文の1行を組み立てる。'CWS vs HOU 村上の一発は出るか、HOUは5連勝中' の形。"""
+    matchup = game.get("abbr_matchup") or game["matchup"]
+    hook = game.get("notification_hook") or build_rule_based_hook(game)
+    return f"{matchup} {hook}"
+
+
+def today_or_tomorrow_label(top_game: dict) -> str:
+    """
+    通知が実際に送られる(=この関数が呼ばれる)時点のJST日付と、試合の
+    start_time_jst('MM/DD HH:MM')の日付を比較し、「今日」か「明日」かを
+    動的に判定する。cronの実行遅延で日付を跨いだ場合でも自然な表現になる。
+    """
+    import datetime
+
+    start = top_game.get("start_time_jst")
+    if not start:
+        return "注目試合"
+    try:
+        month, day = start.split(" ")[0].split("/")
+        jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+        if int(month) == jst_now.month and int(day) == jst_now.day:
+            return "今日の注目試合"
+        return "明日の注目試合"
+    except (ValueError, IndexError):
+        return "注目試合"
+
+
+def load_notable_games(path: str, limit: int = 2):
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
     games = data.get("games", [])
-    if not games:
-        return None
-    top = games[0]
-    if not top.get("is_notable"):
-        return None
-    return top
+    notable = [g for g in games if g.get("is_notable")][:limit]
+    return notable
 
 
 def main():
@@ -80,13 +103,14 @@ def main():
         print("[info] ONESIGNAL_APP_ID/ONESIGNAL_REST_API_KEY未設定のためスキップします")
         return
 
-    top_game = load_top_game("notable_games.json")
-    if top_game is None:
+    notable_games = load_notable_games("notable_games.json", limit=2)
+    if not notable_games:
         print("今日は通知対象の試合がありません。送信をスキップします。")
         return
 
-    body_text = build_notification_headline(top_game)
-    title_matchup = top_game.get("abbr_matchup") or top_game["matchup"]
+    label = today_or_tomorrow_label(notable_games[0])
+    lines = [label] + [game_hook_line(g) for g in notable_games]
+    body_text = "\n".join(lines)
 
     payload = {
         "app_id": app_id,
@@ -94,7 +118,7 @@ def main():
         # (旧: "Subscribed Users" / 新: "Total Subscriptions")。実際に
         # ダッシュボードのSegments一覧に表示されている名前と一致させること。
         "included_segments": ["Total Subscriptions"],
-        "headings": {"ja": f"今日の注目: {title_matchup}", "en": f"Today's Pick: {title_matchup}"},
+        "headings": {"ja": "コレスポ", "en": "Kollespo"},
         "contents": {"ja": body_text, "en": body_text},
         "url": SITE_URL,
     }

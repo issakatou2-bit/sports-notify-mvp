@@ -198,6 +198,71 @@ def rule_win_streak(game: Game, standings: dict) -> list[Reason]:
     return reasons
 
 
+def load_manual_notes(date_str: str, path: str = "manual_notes.json") -> list:
+    """
+    manual_notes.json から、指定日付分の手動追加情報を読み込む。
+
+    このファイルは「APIやAIでは自動的に集められない情報」(例: 放送予定の
+    確定情報、直前の怪我・移籍の一報など)を、コードを書かずにJSONへ直接
+    書き足すだけで注目理由に反映させるための仕組み。
+
+    ファイルが存在しない/該当日付の記載が無い場合は、空リストを返して
+    通常通り(自動データのみ)で動作する。つまりこの機能は「無くても動く・
+    あれば上乗せされる」という前提で設計している。
+
+    フォーマット例:
+      {
+        "2026-07-27": [
+          {"teams": ["ホワイトソックス", "アストロズ"], "text": "地上波でも中継決定", "weight": 2}
+        ]
+      }
+    "teams" は、その試合のhome_team_name/away_team_nameに一致させる
+    (両方の名前が含まれる試合にだけ適用される)。
+    """
+    import pathlib
+
+    p = pathlib.Path(path)
+    if not p.exists():
+        return []
+    try:
+        with open(p, "r", encoding="utf-8") as f:
+            all_notes = json.load(f)
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"[warn] manual_notes.jsonの読み込みに失敗、スキップします: {e}")
+        return []
+    return all_notes.get(date_str, [])
+
+
+def apply_manual_notes(games: list, notes: list) -> dict:
+    """
+    manual_notesの内容を、該当する試合のgame_idごとの追加Reasonリストに変換する。
+    戻り値: {game_id: [Reason, ...]}
+    """
+    extra: dict = {}
+    for note in notes:
+        team_names = note.get("teams", [])
+        text = note.get("text")
+        if not team_names or not text:
+            print(f"[warn] manual_notesの記載が不正なためスキップします: {note}")
+            continue
+        weight = note.get("weight", 2)
+        visible = note.get("visible", True)
+        matched = False
+        for g in games:
+            game_team_names = {g.home_team_name, g.away_team_name}
+            if all(name in game_team_names for name in team_names):
+                extra.setdefault(g.game_id, []).append(
+                    Reason(tag="manual", text=text, weight=weight, visible=visible)
+                )
+                matched = True
+        if not matched:
+            print(
+                f"[warn] manual_notesのteams={team_names}に一致する試合が"
+                "見つかりませんでした(チーム名の表記揺れの可能性)"
+            )
+    return extra
+
+
 STANDINGS_RULES = [rule_division_race, rule_win_streak]
 GAME_ONLY_RULES = [rule_marquee_team, rule_rivalry]  # jp_team_mapもstandingsも不要なルール
 
@@ -241,10 +306,14 @@ def _to_jst_str(start_time_utc: Optional[str]) -> Optional[str]:
         return None
 
 
-def build_output(games: list[Game], standings: dict, jp_team_map: dict) -> dict:
+def build_output(
+    games: list[Game], standings: dict, jp_team_map: dict, manual_reasons: dict = None
+) -> dict:
+    manual_reasons = manual_reasons or {}
     output_games = []
     for g in games:
         reasons = generate_reasons(g, standings, jp_team_map)
+        reasons.extend(manual_reasons.get(g.game_id, []))
         visible_score = visible_score_game(reasons)
         total_score = score_game(reasons)
 
@@ -899,9 +968,16 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         f"【この試合が注目された理由(ルールベースで抽出)】\n{reasons_text}\n"
         f"{highlight_line}\n"
         "あなたはMLB/野球初心者にも分かりやすく解説するスポーツ記者です。"
-        "上記のデータだけを根拠に、「シーズン全体・MLB全体で見たときに、"
-        "この一戦になぜ注目すべきか」を2〜3文の日本語で説明してください。\n\n"
-        "厳守してほしいこと:\n"
+        "以下の2つを、上記のデータだけを根拠に日本語で書いてください。\n\n"
+        "【出力1: 解説文】\n"
+        "「シーズン全体・MLB全体で見たときに、この一戦になぜ注目すべきか」を"
+        "2〜3文で説明する文章。\n\n"
+        "【出力2: 通知用フック文】\n"
+        "スマホのプッシュ通知に使う、15〜25文字程度の短い一言。見た人が"
+        "「試合を見てみよう」と思うような、具体的な選手名や数字を絡めた"
+        "煽り文句にすること。「〜か」「〜なるか」のような体言止め・疑問形は"
+        "使ってよい(こちらは解説文と違い、キャッチーな見出し口調でよい)。\n\n"
+        "厳守してほしいこと(出力1・出力2共通):\n"
         "- 今シーズンの具体的な数字(順位・ゲーム差・連勝数など)は、必ず上記の"
         "  データに書かれているものだけを使うこと。データに無い今季の数字は"
         "  絶対に書かないこと\n"
@@ -910,19 +986,22 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         "  補足として使ってよい(不確かな場合は使わないこと)\n"
         "- 「有名選手が揃っている」「注目の一戦だ」のような、データを言い換えた"
         "  だけの薄い文章は禁止。必ず具体的な数字や、上記の構造的な位置づけを"
-        "  説明に組み込むこと\n"
-        "- 文体は理路整然とした説明口調にすること。「〜だよ！」「〜だね！」の"
+        "  組み込むこと\n"
+        "- 出力1の文体は理路整然とした説明口調にすること。「〜だよ！」「〜だね！」の"
         "  ような話し言葉・感嘆符での締めは禁止。「〜である」「〜になる」のような"
         "  落ち着いた書き言葉で書くこと\n"
         "- 野球初心者にも伝わるよう、専門用語を使う場合は軽く説明を添えること\n"
-        "- 見出しや記号(・や「」)は使わず、本文の文章のみを出力すること\n"
+        "- 見出しや記号(・や「」)は使わず、文章のみを出力すること\n"
         "- MLB公式ハイライト動画のタイトルが提供されている場合、そこから伝わる"
         "  文脈(注目プレーの内容など)は参考にしてよいが、タイトルの文言を"
-        "  そのまま引用せず、必ず自分の言葉で言い換えること"
+        "  そのまま引用せず、必ず自分の言葉で言い換えること\n\n"
+        "出力形式(厳守): まず出力1の文章のみを書き、次の行に半角記号で"
+        "「---HOOK---」とだけ書いた行を挟み、最後に出力2のフック文を1行で"
+        "書くこと。それ以外の見出しや前置き・番号は一切付けないこと。"
     )
 
 
-def _call_ai(prompt: str, api_key: str, max_tokens: int = 250):
+def _call_ai(prompt: str, api_key: str, max_tokens: int = 320):
     """1回分のAPI呼び出し。戻り値: (text, cost_usd) または (None, 0)"""
     try:
         import anthropic
@@ -1001,7 +1080,18 @@ def enhance_games_with_ai(
         prompt = _build_ai_prompt(game, standings)
         ai_text, cost_usd, in_tok, out_tok = _call_ai(prompt, api_key)
         if ai_text:
-            game["ai_summary"] = ai_text
+            # "---HOOK---" を境に、解説文(ai_summary)と通知用フック文
+            # (notification_hook)に分割する。AIが区切りを守らなかった場合は
+            # 全文をai_summaryとして扱い、フック文は無し(送信側でルール
+            # ベースにフォールバックする)扱いにする。
+            if "---HOOK---" in ai_text:
+                summary_part, _, hook_part = ai_text.partition("---HOOK---")
+                game["ai_summary"] = summary_part.strip()
+                hook_clean = hook_part.strip().strip("「」")
+                if hook_clean:
+                    game["notification_hook"] = hook_clean
+            else:
+                game["ai_summary"] = ai_text.strip()
             total_cost += cost_usd
             print(
                 f"[info] AI要約生成: {game['matchup']} "
@@ -1087,7 +1177,14 @@ def main():
         if not games:
             print("[warn] 取得できた試合が0件でした。notable_games.jsonは空で出力します。")
 
-    result = build_output(games, standings, jp_team_map)
+    manual_reasons = {}
+    if not args.mock:
+        manual_notes = load_manual_notes(date_str)
+        if manual_notes:
+            manual_reasons = apply_manual_notes(games, manual_notes)
+            print(f"[info] manual_notes.jsonから{len(manual_notes)}件の手動情報を反映しました")
+
+    result = build_output(games, standings, jp_team_map, manual_reasons)
 
     # シリーズ文脈(前の試合結果・第何戦か)を取得
     if not args.mock:
