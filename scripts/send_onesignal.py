@@ -61,10 +61,14 @@ def build_rule_based_hook(game: dict) -> str:
 
 
 def game_hook_line(game: dict) -> str:
-    """1試合分の通知本文の1行を組み立てる。'CWS vs HOU 村上の一発は出るか、HOUは5連勝中' の形。"""
+    """1試合分の通知本文の1行を組み立てる。'23:10 CWS vs HOU 村上の一発は出るか、HOUは5連勝中' の形。"""
     matchup = game.get("abbr_matchup") or game["matchup"]
     hook = game.get("notification_hook") or build_rule_based_hook(game)
-    return f"{matchup} {hook}"
+    start = game.get("start_time_jst")
+    time_part = ""
+    if start and " " in start:
+        time_part = start.split(" ")[1] + " "  # 'MM/DD HH:MM' の 'HH:MM ' 部分だけ使う
+    return f"{time_part}{matchup} {hook}"
 
 
 def today_or_tomorrow_label(top_game: dict) -> str:
@@ -72,6 +76,7 @@ def today_or_tomorrow_label(top_game: dict) -> str:
     通知が実際に送られる(=この関数が呼ばれる)時点のJST日付と、試合の
     start_time_jst('MM/DD HH:MM')の日付を比較し、「今日」か「明日」かを
     動的に判定する。cronの実行遅延で日付を跨いだ場合でも自然な表現になる。
+    タイトル行にそのまま使う想定なので、末尾に「の注目試合」まで含める。
     """
     import datetime
 
@@ -109,8 +114,7 @@ def main():
         return
 
     label = today_or_tomorrow_label(notable_games[0])
-    lines = [label] + [game_hook_line(g) for g in notable_games]
-    body_text = "\n".join(lines)
+    body_text = "\n".join(game_hook_line(g) for g in notable_games)
 
     payload = {
         "app_id": app_id,
@@ -118,7 +122,7 @@ def main():
         # (旧: "Subscribed Users" / 新: "Total Subscriptions")。実際に
         # ダッシュボードのSegments一覧に表示されている名前と一致させること。
         "included_segments": ["Total Subscriptions"],
-        "headings": {"ja": "コレスポ", "en": "Kollespo"},
+        "headings": {"ja": f"コレスポ {label}！", "en": "Kollespo Picks"},
         "contents": {"ja": body_text, "en": body_text},
         "url": SITE_URL,
     }
