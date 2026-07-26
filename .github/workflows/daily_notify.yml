@@ -1,11 +1,14 @@
 name: Daily notable games
 
-# 日本は夏時間が無いため UTC+9 で固定。UTC 10:00 = JST 19:00
-# ただしGitHub Actionsのcronは「その時刻ちょうどに実行される保証」がない
-# (数分〜十数分遅れることがある)点に注意
+# 実行タイミングについて:
+# GitHub Actions純正のscheduleトリガーは「best-effort」であり、特にこの
+# リポジトリのように作成から日が浅いものは、GitHub側の負荷分散の都合で
+# 数時間単位で遅延することが判明した(2026年7月確認)。19時ちょうどに届く
+# ことが体験の核なので、外部のcronサービス(cron-job.org)からGitHub API
+# (workflows/daily_notify.yml/dispatches)を叩く方式に切り替えた。
+# そのため、ここではscheduleトリガーを持たず、workflow_dispatchのみを
+# 起点とする(cron-job.org側のジョブ、または手動実行のいずれかで動く)。
 on:
-  schedule:
-    - cron: '0 10 * * *'
   workflow_dispatch: {}
 
 permissions:
