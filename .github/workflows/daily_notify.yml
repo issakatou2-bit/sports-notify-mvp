@@ -41,7 +41,7 @@ jobs:
       - name: Generate RSS feed
         run: |
           python scripts/generate_rss.py --input notable_games.json --out feed.xml \
-            --site-url "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+            --site-url "https://collespo.com/"
 
       - name: Commit archive
         run: |
@@ -83,21 +83,21 @@ jobs:
           PUSH_SUBSCRIPTION: ${{ secrets.PUSH_SUBSCRIPTION }}
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}
-          SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+          SITE_URL: https://collespo.com/
         run: python scripts/send_push.py
 
       - name: Post to Bluesky
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-          SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+          SITE_URL: https://collespo.com/
         run: python scripts/post_bluesky.py
 
       - name: Send push via OneSignal
         env:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
-          SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+          SITE_URL: https://collespo.com/
         run: python scripts/send_onesignal.py
 
   deploy:
