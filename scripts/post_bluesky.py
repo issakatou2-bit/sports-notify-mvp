@@ -33,20 +33,33 @@ SITE_URL = os.environ.get("SITE_URL", "https://collespo.com/")
 MAX_POST_GRAPHEMES = 280
 
 
+# ハッシュタグにする選手名の上限。多すぎるとスパム的に見えるため絞る。
+MAX_PLAYER_TAGS = 3
+
+
 def collect_hashtags(games: list) -> list:
     """
     表示する試合群から、ハッシュタグにする値を集める。
-    優先順位: 日本人先発選手の名前(重複除く) > リーグ名(重複除く)。
-    index.htmlのXシェアボタンで既にやっている考え方(JP選手名+リーグ名)を
-    Bluesky投稿にも合わせている。
+
+    含めるのは「先発予定の日本人選手」と「その試合の両チームに所属している
+    日本人選手」。所属選手まで含めるのは、本文でも名前に触れている以上、
+    タグにしても誤情報にはならないため(タグは『所属している』ことを示すだけで、
+    出場・スタメンを保証するものではない)。
+    なお打者のスタメン情報は、MLB Stats APIでは試合開始の1〜2時間前にしか
+    公表されず、19時JSTの生成時点では存在しないため使えない。
+
+    順序は jp_players 側で「先発予定が先頭」に並べてあるので、上限で切っても
+    重要な選手が残るようになっている。
     """
     names: list = []
-    seen_names = set()
     for g in games:
+        for name in g.get("jp_players") or []:
+            if name and name not in names:
+                names.append(name)
+        # jp_playersが無い古いデータ向けのフォールバック
         for p in g.get("jp_starters") or []:
             name = p.get("name")
-            if name and name not in seen_names:
-                seen_names.add(name)
+            if name and name not in names:
                 names.append(name)
 
     leagues: list = []
@@ -55,7 +68,7 @@ def collect_hashtags(games: list) -> list:
         if league and league not in leagues:
             leagues.append(league)
 
-    return names + leagues
+    return names[:MAX_PLAYER_TAGS] + leagues
 
 
 def build_rule_based_hook(game: dict) -> str:

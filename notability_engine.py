@@ -342,6 +342,17 @@ def build_output(
             if p.is_japanese
         ]
 
+        # 「先発かどうかに関わらず、この試合の両チームに所属している日本人選手」の
+        # 一覧。ハッシュタグ生成などで、本文テキストを正規表現で解析するような
+        # 壊れやすいやり方を避けるために、構造化した形でも持たせておく。
+        # 先発予定(jp_starters)を先頭に、それ以外の所属選手を後ろに並べる。
+        starter_names = [s["name"] for s in jp_starters]
+        jp_players = list(starter_names)
+        for team_id in (g.home_team_id, g.away_team_id):
+            for name in jp_team_map.get(team_id, []):
+                if name not in jp_players:
+                    jp_players.append(name)
+
         output_games.append(
             {
                 "game_id": g.game_id,
@@ -360,6 +371,7 @@ def build_output(
                 "same_division": same_division,
                 "rivalry_type": rivalry_type,  # "historic" / "city" / None
                 "jp_starters": jp_starters,
+                "jp_players": jp_players,
                 "score": visible_score,
                 "_sort_score": total_score,
                 "is_notable": visible_score > 0,
