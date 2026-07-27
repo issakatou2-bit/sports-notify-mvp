@@ -271,11 +271,15 @@ def apply_manual_notes(games: list, notes: list) -> dict:
 
 def rule_quality_matchup(game: Game, standings: dict) -> list[Reason]:
     """
-    同地区でなくても、両チームがそれぞれ自分の地区の上位に位置している
-    (=実力の伯仲した好カード)場合に加点する。
+    同地区でなくても、両チームがそれぞれ自分の地区で1位か2位に位置している
+    場合に加点する(=インターリーグ等では貴重な、強豪同士の対戦)。
+    「ゲーム差が僅か」ではなく「実際の順位そのもの」で判定する。理由は、
+    ゲーム差だと地区のレベル差(激戦区か否か)に左右されて基準が曖昧になるが、
+    順位そのものなら「1位or2位」という基準が明確で分かりやすいため。
+
     rule_division_raceとの違い: あちらは「同じ地区で直接争っている」ことが
     前提の表現(首位攻防戦)。こちらは地区が違っても成立する、あくまで
-    「両チームとも自分の地区で強い」という事実だけを述べる表現にして、
+    「両チームとも自分の地区の上位」という事実だけを述べる表現にして、
     同地区で争っているかのような誤解を生まないようにしている。
     """
     reasons = []
@@ -288,17 +292,14 @@ def rule_quality_matchup(game: Game, standings: dict) -> list[Reason]:
     if home_div == away_div:
         return reasons  # 同地区はrule_division_race側の担当
 
-    QUALITY_GAMES_BACK_THRESHOLD = 5.0
-    if (
-        home.games_back <= QUALITY_GAMES_BACK_THRESHOLD
-        and away.games_back <= QUALITY_GAMES_BACK_THRESHOLD
-    ):
+    if home.division_rank in (1, 2) and away.division_rank in (1, 2):
         reasons.append(
             Reason(
                 tag="quality",
                 text=(
-                    f"{game.home_team_name}・{game.away_team_name}とも、"
-                    "それぞれの地区で上位に位置する好カード"
+                    f"{game.home_team_name}は自地区{home.division_rank}位、"
+                    f"{game.away_team_name}は自地区{away.division_rank}位"
+                    "同士の好カード"
                 ),
                 weight=2,
             )
