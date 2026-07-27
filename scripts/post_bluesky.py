@@ -152,21 +152,37 @@ def load_notable_games(path: str, limit: int = 3):
     return [g for g in games if g.get("is_notable")][:limit]
 
 
+def _time_sort_key(g: dict) -> str:
+    return g.get("start_time_jst") or "99/99 99:99"
+
+
+def sort_for_display(games: list) -> list:
+    """
+    「どの試合を選ぶか(=文字数調整での間引き含む)」はスコア順のまま行い、
+    この関数は選出済みの試合群を「どの順に見せるか」だけ時系列に並べ替える。
+    """
+    return sorted(games, key=_time_sort_key)
+
+
 def build_post_body(notable_games: list, hashtags_display: str) -> str:
     """
     上位試合を使って本文を組み立てる。ハッシュタグ・URL分の文字数も
     差し引いた上で、300グラフェムを超える場合は試合数を1件ずつ減らして
     収まるまで組み直す(それでも1件だけは必ず残す)。
+    間引きはスコアの低い(=元のリストの末尾の)試合から行い、実際に表示する
+    順番だけ最後に時系列へ並べ替える。
     """
     label = today_or_tomorrow_label(notable_games[0])
     games = list(notable_games)
     reserved = len(hashtags_display) + len(SITE_URL) + 4  # 改行・スペース分の余裕
     while True:
-        lines = [label] + [game_line(g) for g in games]
-        text = "\n".join(lines)
+        text = "\n".join([label] + [game_line(g) for g in games])
         if len(text) + reserved <= MAX_POST_GRAPHEMES or len(games) <= 1:
-            return text
+            break
         games = games[:-1]
+
+    display_games = sort_for_display(games)
+    return "\n".join([label] + [game_line(g) for g in display_games])
 
 
 def main():
@@ -176,7 +192,7 @@ def main():
         print("[info] BLUESKY_HANDLE/BLUESKY_APP_PASSWORD未設定のためスキップします")
         return
 
-    notable_games = load_notable_games("notable_games.json", limit=3)
+    notable_games = load_notable_games("notable_games.json", limit=1)
     if not notable_games:
         print("[info] 今日は注目試合が無いため投稿をスキップします")
         return

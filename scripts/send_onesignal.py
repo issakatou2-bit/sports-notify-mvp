@@ -101,6 +101,19 @@ def load_notable_games(path: str, limit: int = 2):
     return notable
 
 
+def _time_sort_key(g: dict) -> str:
+    return g.get("start_time_jst") or "99/99 99:99"
+
+
+def sort_for_display(games: list) -> list:
+    """
+    「どの試合を選ぶか」はスコア順のまま行い、この関数は選出済みの試合群を
+    「どの順に見せるか」だけ時系列に並べ替える(見せ方の問題であって、
+    選出ロジックには影響させない)。
+    """
+    return sorted(games, key=_time_sort_key)
+
+
 def split_by_league(games: list) -> tuple:
     """試合群をMLBとそれ以外(5大リーグ)に分ける。"""
     mlb = [g for g in games if g.get("league") == "MLB"]
@@ -123,7 +136,8 @@ def send_one(app_id: str, api_key: str, tag_key: str, games: list, heading_suffi
         return True
 
     label = today_or_tomorrow_label(games[0])
-    body_text = "\n".join(game_hook_line(g) for g in games)
+    display_games = sort_for_display(games)
+    body_text = "\n".join(game_hook_line(g) for g in display_games)
 
     payload = {
         "app_id": app_id,

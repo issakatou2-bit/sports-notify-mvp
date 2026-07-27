@@ -269,7 +269,44 @@ def apply_manual_notes(games: list, notes: list) -> dict:
     return extra
 
 
-STANDINGS_RULES = [rule_division_race, rule_win_streak]
+def rule_quality_matchup(game: Game, standings: dict) -> list[Reason]:
+    """
+    同地区でなくても、両チームがそれぞれ自分の地区の上位に位置している
+    (=実力の伯仲した好カード)場合に加点する。
+    rule_division_raceとの違い: あちらは「同じ地区で直接争っている」ことが
+    前提の表現(首位攻防戦)。こちらは地区が違っても成立する、あくまで
+    「両チームとも自分の地区で強い」という事実だけを述べる表現にして、
+    同地区で争っているかのような誤解を生まないようにしている。
+    """
+    reasons = []
+    home = standings.get(game.home_team_id)
+    away = standings.get(game.away_team_id)
+    home_div = MLB_DIVISIONS.get(game.home_team_id)
+    away_div = MLB_DIVISIONS.get(game.away_team_id)
+    if not (home and away and home_div and away_div):
+        return reasons
+    if home_div == away_div:
+        return reasons  # 同地区はrule_division_race側の担当
+
+    QUALITY_GAMES_BACK_THRESHOLD = 5.0
+    if (
+        home.games_back <= QUALITY_GAMES_BACK_THRESHOLD
+        and away.games_back <= QUALITY_GAMES_BACK_THRESHOLD
+    ):
+        reasons.append(
+            Reason(
+                tag="quality",
+                text=(
+                    f"{game.home_team_name}・{game.away_team_name}とも、"
+                    "それぞれの地区で上位に位置する好カード"
+                ),
+                weight=2,
+            )
+        )
+    return reasons
+
+
+STANDINGS_RULES = [rule_division_race, rule_quality_matchup, rule_win_streak]
 GAME_ONLY_RULES = [rule_marquee_team, rule_rivalry]  # jp_team_mapもstandingsも不要なルール
 
 
