@@ -1065,6 +1065,7 @@ def fetch_mlb_highlight(
             "https://www.googleapis.com/youtube/v3/search",
             params={
                 "key": api_key,
+                "part": "snippet",  # これが無いとレスポンスにsnippetが含まれずKeyErrorになる
                 "q": f"{away_en} {home_en} Highlights",
                 "type": "video",
                 "order": "date",
@@ -1076,8 +1077,10 @@ def fetch_mlb_highlight(
         resp.raise_for_status()
         items = resp.json().get("items", [])
         for item in items:
-            if item["snippet"]["channelTitle"] == "MLB":
-                return item["snippet"]["title"], item["id"]["videoId"]
+            snippet = item.get("snippet") or {}
+            video_id = item.get("id", {}).get("videoId")
+            if snippet.get("channelTitle") == "MLB" and video_id:
+                return snippet.get("title"), video_id
     except Exception as e:
         print(f"[warn] MLBハイライト動画の検索に失敗: {e}")
 
