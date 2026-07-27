@@ -41,16 +41,30 @@ def collect_hashtags(games: list) -> list:
     """
     表示する試合群から、ハッシュタグにする値を集める。
 
-    含めるのは「先発予定の日本人選手」と「その試合の両チームに所属している
-    日本人選手」。所属選手まで含めるのは、本文でも名前に触れている以上、
-    タグにしても誤情報にはならないため(タグは『所属している』ことを示すだけで、
-    出場・スタメンを保証するものではない)。
-    なお打者のスタメン情報は、MLB Stats APIでは試合開始の1〜2時間前にしか
-    公表されず、19時JSTの生成時点では存在しないため使えない。
+    含めるのは以下の3種類:
+      1. 球団名 … 先頭(最注目)の試合の両チームのみ。全試合分を入れると
+         3試合×2球団=6個になりタグだらけになるため、1試合分に絞っている
+      2. 日本人選手名 … 先発予定＋その試合の両チームの所属選手(上限3人)。
+         所属選手まで含めるのは、本文でも名前に触れている以上、タグにしても
+         誤情報にはならないため(タグは『所属している』ことを示すだけで、
+         出場・スタメンを保証するものではない)。なお打者のスタメン情報は、
+         MLB Stats APIでは試合開始の1〜2時間前にしか公表されず、19時JSTの
+         生成時点では存在しないため使えない
+      3. リーグ名 … 重複を除いて全部
 
-    順序は jp_players 側で「先発予定が先頭」に並べてあるので、上限で切っても
-    重要な選手が残るようになっている。
+    球団名は日本語表記(ドジャース等)を使う。読者が日本語話者中心であり、
+    日本語圏で実際に検索・使用されているタグに合わせるため。
     """
+    tags: list = []
+
+    # 1. 先頭の試合の球団名
+    top = games[0]
+    for key in ("home_team_name", "away_team_name"):
+        name = top.get(key)
+        if name and name not in tags:
+            tags.append(name)
+
+    # 2. 日本人選手名
     names: list = []
     for g in games:
         for name in g.get("jp_players") or []:
@@ -61,14 +75,15 @@ def collect_hashtags(games: list) -> list:
             name = p.get("name")
             if name and name not in names:
                 names.append(name)
+    tags.extend(n for n in names[:MAX_PLAYER_TAGS] if n not in tags)
 
-    leagues: list = []
+    # 3. リーグ名
     for g in games:
         league = g.get("league")
-        if league and league not in leagues:
-            leagues.append(league)
+        if league and league not in tags:
+            tags.append(league)
 
-    return names[:MAX_PLAYER_TAGS] + leagues
+    return tags
 
 
 def build_rule_based_hook(game: dict) -> str:

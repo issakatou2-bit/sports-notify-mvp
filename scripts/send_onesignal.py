@@ -101,28 +101,34 @@ def load_notable_games(path: str, limit: int = 2):
     return notable
 
 
-def main():
-    app_id = os.environ.get("ONESIGNAL_APP_ID")
-    api_key = os.environ.get("ONESIGNAL_REST_API_KEY")
-    if not app_id or not api_key:
-        print("[info] ONESIGNAL_APP_ID/ONESIGNAL_REST_API_KEY未設定のためスキップします")
-        return
+def split_by_league(games: list) -> tuple:
+    """試合群をMLBとそれ以外(5大リーグ)に分ける。"""
+    mlb = [g for g in games if g.get("league") == "MLB"]
+    soccer = [g for g in games if g.get("league") != "MLB"]
+    return mlb, soccer
 
-    notable_games = load_notable_games("notable_games.json", limit=2)
-    if not notable_games:
-        print("今日は通知対象の試合がありません。送信をスキップします。")
-        return
 
-    label = today_or_tomorrow_label(notable_games[0])
-    body_text = "\n".join(game_hook_line(g) for g in notable_games)
+def send_one(app_id: str, api_key: str, tag_key: str, games: list, heading_suffix: str) -> bool:
+    """
+    指定したタグ(mlb/soccer)が'1'の購読者にだけ、その競技の上位試合を送る。
+    そのタグが一度も設定されていない(=この機能追加前からの古い購読者で、
+    まだページを再訪問していない)人には、この絞り込みでは届かない。
+    再訪問時にindex.html側で自動的にタグが補完されるため、時間が経てば
+    解消される想定。
+    戻り値: 成功したらTrue(対象0件でスキップした場合もTrue扱い)、
+    送信自体に失敗した場合のみFalse。
+    """
+    if not games:
+        print(f"[info] {tag_key}: 今回は通知対象の試合が無いためスキップします")
+        return True
+
+    label = today_or_tomorrow_label(games[0])
+    body_text = "\n".join(game_hook_line(g) for g in games)
 
     payload = {
         "app_id": app_id,
-        # 注意: OneSignalアプリの作成時期によって、標準セグメント名が異なる
-        # (旧: "Subscribed Users" / 新: "Total Subscriptions")。実際に
-        # ダッシュボードのSegments一覧に表示されている名前と一致させること。
-        "included_segments": ["Total Subscriptions"],
-        "headings": {"ja": f"コレスポ {label}！", "en": "Kollespo Picks"},
+        "filters": [{"field": "tag", "key": tag_key, "relation": "=", "value": "1"}],
+        "headings": {"ja": f"コレスポ {label}({heading_suffix})！", "en": "Kollespo Picks"},
         "contents": {"ja": body_text, "en": body_text},
         "url": SITE_URL,
     }
@@ -140,9 +146,29 @@ def main():
         resp.raise_for_status()
         result = resp.json()
         recipients = result.get("recipients", "不明")
-        print(f"[info] OneSignal経由で通知を送信しました(配信対象: {recipients}件)")
+        print(f"[info] {tag_key}向けにOneSignal通知を送信しました(配信対象: {recipients}件)")
+        return True
     except Exception as e:
-        print(f"[warn] OneSignal通知の送信に失敗しました: {e}", file=sys.stderr)
+        print(f"[warn] {tag_key}向けの通知送信に失敗しました: {e}", file=sys.stderr)
+        return False
+
+
+def main():
+    app_id = os.environ.get("ONESIGNAL_APP_ID")
+    api_key = os.environ.get("ONESIGNAL_REST_API_KEY")
+    if not app_id or not api_key:
+        print("[info] ONESIGNAL_APP_ID/ONESIGNAL_REST_API_KEY未設定のためスキップします")
+        return
+
+    notable_games = load_notable_games("notable_games.json", limit=4)
+    if not notable_games:
+        print("今日は通知対象の試合がありません。送信をスキップします。")
+        return
+
+    mlb_games, soccer_games = split_by_league(notable_games)
+    ok1 = send_one(app_id, api_key, "mlb", mlb_games[:2], "MLB")
+    ok2 = send_one(app_id, api_key, "soccer", soccer_games[:2], "5大リーグ")
+    if not (ok1 and ok2):
         sys.exit(1)
 
 

@@ -285,6 +285,23 @@
   .section {
     margin-top: 2rem;
   }
+  .league-toggles {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .league-toggles label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .league-toggles input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+  }
   button {
     background: var(--surface-raised);
     color: var(--text);
@@ -354,6 +371,10 @@
 
 <div class="section">
   <p class="sub">通知の設定(初回のみ)</p>
+  <div class="league-toggles">
+    <label><input type="checkbox" id="notifyMlb" checked> MLBの通知</label>
+    <label><input type="checkbox" id="notifySoccer" checked> 5大リーグの通知</label>
+  </div>
   <button id="subscribeBtn">通知を有効にする</button>
   <div id="status"></div>
   <div id="subscriptionBox" style="display:none;">
@@ -641,6 +662,46 @@
     }, { passive: true });
   })();
 
+  async function applyLeagueTags() {
+    // MLB/5大リーグそれぞれの通知を受け取るかどうかを、OneSignalの
+    // タグとして保存する。send_onesignal.py側がこのタグでフィルタして
+    // 送り分ける。
+    // 値は明示的に '1'/'0' を持たせる(removeTagで消す方式にはしない)。
+    // タグが「存在しない」状態を「一度もこの機能に触れていない古い購読者」
+    // の判定に使うため、「OFFにした」場合と区別できなくなってしまうと
+    // 次回訪問時に誤って再度ONへ復元されてしまう。
+    if (!window.OneSignal || !window.OneSignal.User.PushSubscription.optedIn) return;
+    const mlb = document.getElementById('notifyMlb').checked;
+    const soccer = document.getElementById('notifySoccer').checked;
+    try {
+      await window.OneSignal.User.addTag('mlb', mlb ? '1' : '0');
+      await window.OneSignal.User.addTag('soccer', soccer ? '1' : '0');
+    } catch (e) {
+      console.error('通知タグの設定に失敗しました:', e);
+    }
+  }
+
+  async function syncLeagueCheckboxesOnLoad() {
+    // 既にどこかの端末で購読済みの状態でページを開いた場合の処理。
+    // タグが一切無い(=この機能を追加する前からの購読者)場合だけ、
+    // チェックボックスの初期値(両方ON)をそのままタグとして書き込む
+    // (バックフィル)。タグが既にあれば、それを正としてチェックボックスの
+    // 表示側をタグの値に合わせる(勝手に書き換えない)。
+    if (!window.OneSignal || !window.OneSignal.User.PushSubscription.optedIn) return;
+    try {
+      const tags = await window.OneSignal.User.getTags();
+      const hasAny = tags && (('mlb' in tags) || ('soccer' in tags));
+      if (!hasAny) {
+        await applyLeagueTags();
+      } else {
+        if ('mlb' in tags) document.getElementById('notifyMlb').checked = tags.mlb === '1';
+        if ('soccer' in tags) document.getElementById('notifySoccer').checked = tags.soccer === '1';
+      }
+    } catch (e) {
+      console.error('通知タグの取得に失敗しました:', e);
+    }
+  }
+
   async function subscribe() {
     if (ONESIGNAL_APP_ID.startsWith('REPLACE_WITH')) {
       setStatus('index.html の ONESIGNAL_APP_ID がまだ設定されていません。\nOneSignalでアプリを作成し、App IDを貼り付けてください。');
@@ -655,6 +716,7 @@
       await window.OneSignal.Notifications.requestPermission();
       const optedIn = window.OneSignal.User.PushSubscription.optedIn;
       if (optedIn) {
+        await applyLeagueTags();
         setStatus('通知が有効になりました。設定はこれで完了です(このボタンをもう一度押す必要はありません)。');
         document.getElementById('subscriptionBox').style.display = 'none';
       } else {
@@ -666,6 +728,9 @@
   }
 
   document.getElementById('subscribeBtn').addEventListener('click', subscribe);
+  document.getElementById('notifyMlb').addEventListener('change', applyLeagueTags);
+  document.getElementById('notifySoccer').addEventListener('change', applyLeagueTags);
+  syncLeagueCheckboxesOnLoad();
   document.getElementById('copyBtn').addEventListener('click', () => {
     const textarea = document.getElementById('subscriptionText');
     textarea.select();
