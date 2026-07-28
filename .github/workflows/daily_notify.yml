@@ -58,6 +58,18 @@ jobs:
           cp notable_games.json public/games.json
           cp feed.xml public/feed.xml
 
+      # アーカイブを「日付ごとの静的HTML」として生成する。
+      # これまでarchive/はリポジトリにコミットされるだけでPagesには
+      # 含まれていなかったため、蓄積したデータが公開サイトから一切
+      # 参照できない状態だった(archive.htmlも空表示になっていた)。
+      # ここでpublic配下に出力することで、その問題も併せて解消する。
+      - name: Generate archive pages
+        run: |
+          python scripts/generate_archive_pages.py \
+            --archive-dir archive \
+            --out-dir public/archive \
+            --site-root public
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
