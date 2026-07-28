@@ -331,6 +331,14 @@ def visible_score_game(reasons: list[Reason]) -> int:
     return sum(r.weight for r in reasons if r.visible)
 
 
+# 「注目試合」とみなす最低スコア。同地区対決や連勝のような単発の軽い理由
+# (重みweight=2)1つだけでは注目扱いにせず、JP先発(weight=3)クラス1つか、
+# 複数の理由が重なった試合だけをハイライトする(以前は0点超えで即注目扱い
+# だったため、盤面の半分以上に色が付いてしまい、目印としての意味が薄れて
+# いた)。
+NOTABLE_SCORE_THRESHOLD = 3
+
+
 # ---------------------------------------------------------------------------
 # 出力JSON組み立て
 # ---------------------------------------------------------------------------
@@ -391,6 +399,16 @@ def build_output(
                 if name not in jp_players:
                     jp_players.append(name)
 
+        # UI側で「日本人選手が所属している球団に国旗を付ける」ために、
+        # チームごとの有無だけを単純な真偽値で持たせる。
+        starter_names_set = {s["name"] for s in jp_starters}
+        home_has_jp = bool(jp_team_map.get(g.home_team_id)) or any(
+            p.name in starter_names_set for p in g.players if p.team_id == g.home_team_id
+        )
+        away_has_jp = bool(jp_team_map.get(g.away_team_id)) or any(
+            p.name in starter_names_set for p in g.players if p.team_id == g.away_team_id
+        )
+
         output_games.append(
             {
                 "game_id": g.game_id,
@@ -401,6 +419,8 @@ def build_output(
                 "away_team_name": g.away_team_name,
                 "home_abbr": home_abbr,
                 "away_abbr": away_abbr,
+                "home_color": MLB_TEAM_COLOR.get(g.home_team_id),
+                "away_color": MLB_TEAM_COLOR.get(g.away_team_id),
                 "matchup": f"{g.home_team_name} vs {g.away_team_name}",
                 "abbr_matchup": abbr_matchup,
                 "start_time_jst": _to_jst_str(g.start_time_utc),
@@ -410,9 +430,11 @@ def build_output(
                 "rivalry_type": rivalry_type,  # "historic" / "city" / None
                 "jp_starters": jp_starters,
                 "jp_players": jp_players,
+                "home_has_jp": home_has_jp,
+                "away_has_jp": away_has_jp,
                 "score": visible_score,
                 "_sort_score": total_score,
-                "is_notable": visible_score > 0,
+                "is_notable": visible_score >= NOTABLE_SCORE_THRESHOLD,
                 "reasons": [
                     {"tag": r.tag, "text": r.text, "weight": r.weight}
                     for r in reasons
@@ -608,6 +630,20 @@ MLB_TEAM_ABBR = {
     "134": "PIT", "135": "SD", "136": "SEA", "137": "SF", "138": "STL",
     "139": "TB", "140": "TEX", "141": "TOR", "142": "MIN", "143": "PHI",
     "144": "ATL", "145": "CWS", "146": "MIA", "147": "NYY", "158": "MIL",
+}
+
+# 球団カラー(公式ロゴ画像そのものではなく、ブランドカラーの色情報のみ)。
+# 色そのものは著作物ではないため、球団名の頭に色付きバッジを表示する
+# 目的でのみ使用する(実際のエンブレム画像は一切使わない)。
+MLB_TEAM_COLOR = {
+    "108": "#BA0021", "109": "#A71930", "110": "#DF4601", "111": "#BD3039",
+    "112": "#0E3386", "113": "#C6011F", "114": "#00385D", "115": "#333366",
+    "116": "#0C2C56", "117": "#002D62", "118": "#004687", "119": "#005A9C",
+    "120": "#AB0003", "121": "#002D72", "133": "#003831", "134": "#FDB827",
+    "135": "#2F241D", "136": "#0C2C56", "137": "#FD5A1E", "138": "#C41E3A",
+    "139": "#092C5C", "140": "#003278", "141": "#134A8E", "142": "#002B5C",
+    "143": "#E81828", "144": "#CE1141", "145": "#27251F", "146": "#00A3E0",
+    "147": "#003087", "158": "#12284B",
 }
 
 
@@ -1274,25 +1310,6 @@ def main():
     ai_key = os.environ.get("ANTHROPIC_API_KEY")
     if ai_key:
         enhance_games_with_ai(result, standings, ai_key, count=3)
-
-    # 明日のMLB注目候補プレビュー(失敗しても本体の結果には影響させない)
-    if not args.mock and args.source in ("mlb", "all"):
-        try:
-            tomorrow_str = (
-                datetime.date.fromisoformat(date_str) + datetime.timedelta(days=1)
-            ).isoformat()
-            t_games, t_standings, t_jp_map = fetch_mlb_games_and_standings(tomorrow_str)
-            t_result = build_output(t_games, t_standings, t_jp_map)
-            t_top = t_result["games"][0] if t_result["games"] else None
-            if t_top and t_top["is_notable"] and t_top["reasons"]:
-                result["tomorrow_preview"] = {
-                    "matchup": t_top["matchup"],
-                    "start_time_jst": t_top["start_time_jst"],
-                    "reason_text": t_top["reasons"][0]["text"],
-                }
-                print(f"[info] 明日のプレビュー生成: {t_top['matchup']}")
-        except Exception as e:
-            print(f"[warn] 明日のプレビュー生成に失敗、スキップします: {e}")
 
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)

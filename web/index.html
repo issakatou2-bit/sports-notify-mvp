@@ -266,6 +266,22 @@
     border-left: 3px solid var(--accent);
     background: rgba(255, 176, 32, 0.06);
   }
+  .board-legend {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0.4rem 0 0.6rem;
+  }
+  .legend-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-left: 3px solid var(--accent);
+    background: rgba(255, 176, 32, 0.06);
+    border-radius: 2px;
+  }
   .schedule-row .time {
     font-family: 'JetBrains Mono', monospace;
     color: var(--text-dim);
@@ -361,12 +377,11 @@
 
 <div class="section">
   <p class="eyebrow" id="boardLabel">Board (JST)</p>
+  <p class="board-legend">
+    <span class="legend-swatch"></span>
+    背景色つきの試合は、コレスポが特に注目度が高いと判定した試合です
+  </p>
   <div class="board" id="allGames"></div>
-</div>
-
-<div class="section" id="previewSection" style="display:none;">
-  <p class="eyebrow">Tomorrow's Preview</p>
-  <div class="preview-box" id="previewBox"></div>
 </div>
 
 <div class="section">
@@ -391,7 +406,7 @@
 <div class="section">
   <p class="eyebrow">日本での視聴方法</p>
   <p class="sub">
-    MLBは<a href="https://spotvnow.co.jp/" target="_blank" rel="noopener">SPOTV NOW</a>・
+    MLBは<a href="https://www.spotvnow.jp/" target="_blank" rel="noopener">SPOTV NOW</a>・
     <a href="https://www.nhk.jp/" target="_blank" rel="noopener">NHK</a>・
     Prime Video(SPOTVチャンネル)などで視聴できます。
     5大リーグは<a href="https://www.dazn.com/ja-JP/" target="_blank" rel="noopener">DAZN</a>が中心です。
@@ -434,8 +449,30 @@
     document.getElementById('status').textContent = text;
   }
 
-  function nameWithAbbr(name, abbr) {
-    return abbr ? `${name}(${abbr})` : name;
+  function contrastColor(hex) {
+    if (!hex) return '#fff';
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.6 ? '#111' : '#fff';
+  }
+
+  function teamBadge(abbr, color) {
+    if (!abbr || !color) return '';
+    const fg = contrastColor(color);
+    return (
+      `<span style="display:inline-flex;align-items:center;justify-content:center;` +
+      `width:26px;height:18px;border-radius:4px;background:${color};color:${fg};` +
+      `font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;` +
+      `margin-right:4px;flex-shrink:0;">${abbr}</span>`
+    );
+  }
+
+  function nameWithAbbr(name, abbr, hasJp, color) {
+    const flag = hasJp ? ' 🇯🇵' : '';
+    const badge = teamBadge(abbr, color);
+    return badge + name + flag;
   }
 
   function makeBadge(label) {
@@ -445,18 +482,56 @@
     return b;
   }
 
-  // Xは全角文字(日本語含む)を2文字分としてカウントする実質280文字制限。
-  // 本文はURL分の余裕を残して安全な長さに切り詰める(全角換算で約100文字まで)
-  function truncateForX(text, maxFullWidthChars) {
-    if (text.length <= maxFullWidthChars) return text;
-    return text.slice(0, maxFullWidthChars) + '…';
+  // Xの実質文字数(全角2文字換算)を計算する
+  function xWeight(text) {
+    let w = 0;
+    for (const ch of text) {
+      w += ch.charCodeAt(0) > 0x2e80 ? 2 : 1;
+    }
+    return w;
+  }
+
+  function ruleBasedHook(game) {
+    const starters = game.jp_starters || [];
+    if (starters.length) return starters.map((p) => p.name).join('・') + 'が先発予定';
+    if (game.rivalry_type === 'historic') return '伝統の好カード';
+    if (game.rivalry_type === 'city') return '同都市対決';
+    if (game.same_division) return '同地区対決の一戦';
+    const streak = (game.reasons || []).find((r) => r.tag === 'streak');
+    if (streak) return streak.text;
+    if (game.reasons && game.reasons.length) return game.reasons[0].text;
+    return '詳細はサイトで確認してください';
+  }
+
+  function collectHashtags(game) {
+    const tags = [];
+    if (game.home_team_name) tags.push(game.home_team_name);
+    if (game.away_team_name) tags.push(game.away_team_name);
+    (game.jp_players || []).slice(0, 3).forEach((n) => {
+      if (!tags.includes(n)) tags.push(n);
+    });
+    if (game.league && !tags.includes(game.league)) tags.push(game.league);
+    return tags;
   }
 
   function buildShareLink(game) {
-    const body = game.ai_summary || (game.reasons[0] || {}).text || '';
-    const header = '今日の注目試合: ' + game.matchup + '\n';
-    const truncatedBody = truncateForX(body, 100 - Math.min(header.length, 40));
-    const shareText = encodeURIComponent(header + truncatedBody);
+    // Bluesky/X自動投稿(scripts/post_bluesky.py)と同じ考え方に揃える:
+    // 時刻+対戦カード+短いフック文+ハッシュタグ、の1試合構成。
+    const hook = game.notification_hook || ruleBasedHook(game);
+    const timePart = game.start_time_jst
+      ? (game.start_time_jst.split(' ')[1] || '') + ' '
+      : '';
+    let body = timePart + game.matchup + ' ' + hook;
+    const hashtags = collectHashtags(game)
+      .map((t) => '#' + t)
+      .join(' ');
+
+    // Xの実質280字制限を超える場合は、本文側だけ削って収める
+    while (xWeight(body + '\n' + hashtags) > 270 && body.length > 10) {
+      body = body.slice(0, -2) + '…';
+    }
+
+    const shareText = encodeURIComponent(body + '\n' + hashtags);
     const siteUrl = encodeURIComponent(location.origin + location.pathname);
 
     const link = document.createElement('a');
@@ -514,8 +589,10 @@
 
       const topRow = document.createElement('div');
       topRow.className = 'top';
+      const homeLabel = teamBadge(top.home_abbr, top.home_color) + top.home_team_name + (top.home_has_jp ? ' 🇯🇵' : '');
+      const awayLabel = teamBadge(top.away_abbr, top.away_color) + top.away_team_name + (top.away_has_jp ? ' 🇯🇵' : '');
       topRow.innerHTML =
-        '<span class="matchup">' + top.matchup + '</span>' +
+        '<span class="matchup">' + homeLabel + ' vs ' + awayLabel + '</span>' +
         '<span class="league">' + top.league + '</span>';
       card.appendChild(topRow);
 
@@ -590,8 +667,8 @@
       const row = document.createElement('div');
       row.className = 'schedule-row' + (g.is_notable ? ' notable' : '');
       const time = g.start_time_jst ? (g.start_time_jst.split(' ')[1] || g.start_time_jst) : '--:--';
-      const home = nameWithAbbr(g.home_team_name, g.home_abbr);
-      const away = nameWithAbbr(g.away_team_name, g.away_abbr);
+      const home = nameWithAbbr(g.home_team_name, g.home_abbr, g.home_has_jp, g.home_color);
+      const away = nameWithAbbr(g.away_team_name, g.away_abbr, g.away_has_jp, g.away_color);
       let miniBadge = '';
       if (g.rivalry_type === 'historic') miniBadge = '伝統';
       else if (g.rivalry_type === 'city') miniBadge = '同都市';
@@ -614,23 +691,10 @@
       const data = await res.json();
       allGamesCache = data.games || [];
       renderTab();
-      renderPreview(data.tomorrow_preview);
     } catch (e) {
       notableEl.innerHTML = '<p class="sub">games.json の読み込みに失敗しました。まだデプロイされていない可能性があります。</p>';
       allEl.innerHTML = '';
     }
-  }
-
-  function renderPreview(preview) {
-    const section = document.getElementById('previewSection');
-    const box = document.getElementById('previewBox');
-    if (!preview) {
-      section.style.display = 'none';
-      return;
-    }
-    section.style.display = 'block';
-    const time = preview.start_time_jst ? preview.start_time_jst + ' (JST) ' : '';
-    box.textContent = time + preview.matchup + ' — ' + preview.reason_text;
   }
 
   document.getElementById('tabs').addEventListener('click', (e) => {

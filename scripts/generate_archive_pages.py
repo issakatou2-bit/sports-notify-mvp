@@ -83,6 +83,16 @@ STYLE = """
     font-size: 0.8rem;
     color: var(--text-dim);
   }
+  .result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--surface-raised);
+    border-radius: 6px;
+    padding: 0.5rem 0.8rem;
+    margin: 0.6rem 0;
+  }
+  .result .winner { color: var(--accent); font-family: 'Inter', sans-serif; font-size: 0.8rem; }
   .badges { margin: 0.5rem 0 0.8rem; }
   .badge {
     display: inline-block;
@@ -222,13 +232,46 @@ def render_badges(g: dict) -> str:
     return '<div class="badges">' + "".join(badges) + "</div>"
 
 
+def team_badge_html(abbr, color) -> str:
+    if not abbr or not color:
+        return ""
+    r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+    luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+    fg = "#111" if luminance > 0.6 else "#fff"
+    return (
+        f'<span style="display:inline-flex;align-items:center;justify-content:center;'
+        f'width:26px;height:18px;border-radius:4px;background:{color};color:{fg};'
+        f"font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;"
+        f'margin-right:4px;">{html.escape(abbr)}</span>'
+    )
+
+
 def render_game(g: dict) -> str:
     parts = ['<article class="game">']
-    parts.append(f'<h2>{html.escape(g.get("matchup", ""))}</h2>')
+    home_badge = team_badge_html(g.get("home_abbr"), g.get("home_color"))
+    away_badge = team_badge_html(g.get("away_abbr"), g.get("away_color"))
+    parts.append(
+        f'<h2>{home_badge}{html.escape(g.get("home_team_name", ""))} vs '
+        f'{away_badge}{html.escape(g.get("away_team_name", ""))}</h2>'
+    )
     if g.get("start_time_jst"):
         parts.append(
             f'<div class="time">{html.escape(g["start_time_jst"])} (JST)</div>'
         )
+
+    final_score = g.get("final_score")
+    if final_score:
+        home_name = g.get("home_team_name", "")
+        away_name = g.get("away_team_name", "")
+        winner_name = home_name if final_score.get("winner") == "home" else away_name
+        parts.append(
+            '<div class="result">'
+            f'{html.escape(home_name)} {final_score.get("home")} - '
+            f'{final_score.get("away")} {html.escape(away_name)}'
+            f'　<span class="winner">{html.escape(winner_name)}勝利</span>'
+            "</div>"
+        )
+
     parts.append(render_badges(g))
 
     if g.get("ai_summary"):
@@ -255,6 +298,13 @@ def render_game(g: dict) -> str:
         )
         parts.append("<p>MLB公式チャンネルのハイライト映像</p>")
         parts.append("</div>")
+
+    detail_query = f'{g.get("home_team_name", "")} {g.get("away_team_name", "")} 速報'
+    detail_url = "https://search.yahoo.co.jp/search?p=" + detail_query.replace(" ", "+")
+    parts.append(
+        f'<p><a href="{html.escape(detail_url)}" target="_blank" rel="noopener">'
+        "試合経過・詳細を検索(スポナビ等)</a></p>"
+    )
 
     parts.append("</article>")
     return "\n".join(parts)
