@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>球団クイズ | コレスポ</title>
+<meta name="description" content="略称・本拠地球場・州から球団を当てる4択クイズ。豆知識つきで、MLBに詳しくなれます。" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0B0E14;
+    --surface: #12161F;
+    --surface-raised: #171C27;
+    --border: #232838;
+    --text: #F2F0E6;
+    --text-dim: #8891A3;
+    --accent: #FFB020;
+    --accent-dim: #4A3A1A;
+    --good: #49C58A;
+    --bad: #E5484D;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    padding: max(1.5rem, env(safe-area-inset-top)) 1.25rem 3rem;
+    max-width: 480px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+    line-height: 1.7;
+  }
+  a { color: var(--accent); }
+  .back {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin: 0 0 0.3rem;
+  }
+  .lead { color: var(--text-dim); font-size: 0.88rem; margin: 0 0 1.5rem; }
+
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+  }
+  .hud .score { color: var(--accent); font-weight: 600; }
+
+  .qcard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem 1.2rem;
+    min-height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .qcard p { font-size: 1.05rem; font-weight: 500; margin: 0; }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 1rem;
+  }
+  .choices button {
+    background: var(--surface-raised);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .choices button:active { transform: scale(0.98); }
+  .choices button.correct { border-color: var(--good); background: rgba(73,197,138,0.12); color: var(--good); }
+  .choices button.wrong { border-color: var(--bad); background: rgba(229,72,77,0.12); color: var(--bad); }
+  .choices button:disabled { opacity: 0.6; }
+
+  #feedback {
+    min-height: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    margin: 0.9rem 0 0;
+  }
+  #feedback.correct { color: var(--good); }
+  #feedback.wrong { color: var(--bad); }
+
+  #triviaBox {
+    display: none;
+    background: var(--accent-dim);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-top: 0.6rem;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  #nextBtn {
+    display: none;
+    width: 100%;
+    margin-top: 1.1rem;
+    background: var(--accent);
+    color: #1a1300;
+    border: none;
+    border-radius: 8px;
+    padding: 13px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  #nextBtn:active { transform: scale(0.98); }
+
+  #resultBox { display: none; text-align: center; }
+  #resultBox .big { font-family: 'Oswald', sans-serif; font-size: 2.4rem; color: var(--accent); margin: 1rem 0 0.3rem; }
+  #resultBox p { color: var(--text-dim); font-size: 0.9rem; margin: 0 0 1.3rem; }
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; コレスポ トップへ</a>
+  <h1>球団クイズ</h1>
+  <p class="lead">略称・本拠地球場・所在州から球団を当てるクイズです。全8問、豆知識つき。</p>
+
+  <div id="quizArea">
+    <div class="hud">
+      <span id="qCounter">問題 1 / 8</span>
+      <span class="score">正解 <span id="scoreNum">0</span></span>
+    </div>
+    <div class="qcard"><p id="qText"></p></div>
+    <div class="choices" id="choices"></div>
+    <p id="feedback"></p>
+    <div id="triviaBox"></div>
+    <button id="nextBtn"></button>
+  </div>
+
+  <div id="resultBox">
+    <p class="lead" style="margin-bottom:0;">お疲れさまでした</p>
+    <div class="big" id="resultScore"></div>
+    <p id="resultComment"></p>
+    <button id="retryBtn">もう一度挑戦</button>
+  </div>
+
+<script>
+const BANK = [
+  { q: '略称「NYY」はどの球団？', choices: ['ヤンキース', 'メッツ', 'レッドソックス', 'ブルージェイズ'], answer: 'ヤンキース',
+    trivia: 'ヤンキースは通算27回のワールドシリーズ制覇。北米4大スポーツの中でも最多優勝記録を持つチームです。' },
+  { q: 'ドジャースの本拠地球場は？', choices: ['ペトコ・パーク', 'ドジャー・スタジアム', 'オラクル・パーク', 'チェイス・フィールド'], answer: 'ドジャー・スタジアム',
+    trivia: 'ドジャー・スタジアムは1962年開場。現役球場としてはMLBで3番目に古く、大谷翔平選手の本拠地でもあります。' },
+  { q: '略称「CWS」はどの球団？', choices: ['カブス', 'ホワイトソックス', 'ガーディアンズ', 'タイガース'], answer: 'ホワイトソックス',
+    trivia: '同じシカゴを本拠地とするカブスとは「クロスタウン・クラシック」と呼ばれる同都市対決を毎年戦います。' },
+  { q: 'フェンウェイ・パークを本拠地とするのは？', choices: ['レッドソックス', 'ヤンキース', 'オリオールズ', 'レイズ'], answer: 'レッドソックス',
+    trivia: 'フェンウェイ・パークは1912年開場でMLB最古の現役球場。左翼の高い壁は「グリーンモンスター」と呼ばれます。' },
+  { q: 'リグレー・フィールドを本拠地とするのは？', choices: ['カブス', 'ホワイトソックス', 'レッズ', 'ブリュワーズ'], answer: 'カブス',
+    trivia: '外野の壁を覆う蔦(つた)が名物。かつては照明設備が無く、長年「デーゲーム専用球場」でした。' },
+  { q: '略称「HOU」はどの球団？', choices: ['レンジャーズ', 'アストロズ', 'マリナーズ', 'エンゼルス'], answer: 'アストロズ',
+    trivia: 'アストロズはナ・リーグ球団としてスタートしましたが、2013年からア・リーグ西地区に所属しています。' },
+  { q: 'カージナルスの本拠地がある州は？', choices: ['イリノイ州', 'ミズーリ州', 'オハイオ州', 'ケンタッキー州'], answer: 'ミズーリ州',
+    trivia: 'カージナルスの本拠地セントルイスは、同じミズーリ州のカンザスシティ(ロイヤルズ)とは全く別の都市です。' },
+  { q: '略称「SF」はどの球団？', choices: ['ジャイアンツ', 'パドレス', 'アスレチックス', 'ドジャース'], answer: 'ジャイアンツ',
+    trivia: '本拠地オラクル・パークはサンフランシスコ湾に面しており、場外へのホームランは「マッコビー入江」に落ちることがあります。' },
+  { q: '略称「ATL」はどの球団？', choices: ['ナショナルズ', 'ブレーブス', 'マーリンズ', 'フィリーズ'], answer: 'ブレーブス',
+    trivia: 'ブレーブスは現存する球団の中で最古参の一つ。1871年創設で、本拠地を3度移転してきた歴史があります。' },
+  { q: 'カナダを本拠地とするのは？', choices: ['ブルージェイズ', 'マリナーズ', 'タイガース', 'ロッキーズ'], answer: 'ブルージェイズ',
+    trivia: 'ブルージェイズはMLB30球団で唯一、アメリカ国外(トロント)を本拠地とする球団です。' },
+  { q: '略称「SD」はどの球団？', choices: ['エンゼルス', 'パドレス', 'マリナーズ', 'アスレチックス'], answer: 'パドレス',
+    trivia: '本拠地ペトコ・パークは温暖な気候で知られ、球場内にビーチのような砂浜エリアがあります。' },
+  { q: 'シティ・フィールドを本拠地とするのは？', choices: ['ヤンキース', 'メッツ', 'フィリーズ', 'ブレーブス'], answer: 'メッツ',
+    trivia: 'メッツは1962年創設。ヤンキースとは「サブウェイ・シリーズ」と呼ばれる同都市対決で知られます。' },
+  { q: 'PNCパークを本拠地とするのは？', choices: ['パイレーツ', 'フィリーズ', 'レッズ', 'ガーディアンズ'], answer: 'パイレーツ',
+    trivia: 'PNCパークは川沿いの立地とダウンタウンの眺望から、「MLBで最も美しい球場」の一つに挙げられます。' },
+  { q: 'ロッキーズの本拠地がある州は？', choices: ['コロラド州', 'ユタ州', 'アリゾナ州', 'ネバダ州'], answer: 'コロラド州',
+    trivia: '本拠地クアーズ・フィールドは標高約1600mの高地にあり、空気が薄いため打球が飛びやすいとされています。' },
+  { q: '略称「CLE」はどの球団？', choices: ['タイガース', 'ガーディアンズ', 'ツインズ', 'ロイヤルズ'], answer: 'ガーディアンズ',
+    trivia: '2022年に「インディアンス」から現在の「ガーディアンズ」へ球団名を変更しました。' },
+  { q: '略称「ATH」はどの球団？', choices: ['エンゼルス', 'アスレチックス', 'アストロズ', 'マリナーズ'], answer: 'アスレチックス',
+    trivia: 'アスレチックスは長年オークランドを本拠地としていましたが、将来的なラスベガス移転が決まっています。' }
+];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const QUIZ_LEN = 8;
+let questions = shuffle(BANK).slice(0, QUIZ_LEN);
+let current = 0;
+let score = 0;
+let answered = false;
+
+const qText = document.getElementById('qText');
+const choicesEl = document.getElementById('choices');
+const feedback = document.getElementById('feedback');
+const triviaBox = document.getElementById('triviaBox');
+const nextBtn = document.getElementById('nextBtn');
+const qCounter = document.getElementById('qCounter');
+const scoreNum = document.getElementById('scoreNum');
+const quizArea = document.getElementById('quizArea');
+const resultBox = document.getElementById('resultBox');
+const resultScore = document.getElementById('resultScore');
+const resultComment = document.getElementById('resultComment');
+
+function renderQuestion() {
+  answered = false;
+  feedback.textContent = '';
+  feedback.className = '';
+  triviaBox.style.display = 'none';
+  nextBtn.style.display = 'none';
+  const item = questions[current];
+  qCounter.textContent = `問題 ${current + 1} / ${questions.length}`;
+  qText.textContent = item.q;
+  choicesEl.innerHTML = '';
+  shuffle(item.choices).forEach((choice) => {
+    const btn = document.createElement('button');
+    btn.textContent = choice;
+    btn.addEventListener('click', () => selectChoice(choice, btn, item));
+    choicesEl.appendChild(btn);
+  });
+}
+
+function selectChoice(choice, btn, item) {
+  if (answered) return;
+  answered = true;
+  const correct = choice === item.answer;
+  if (correct) {
+    score += 1;
+    scoreNum.textContent = score;
+    btn.classList.add('correct');
+    feedback.textContent = '正解';
+    feedback.className = 'correct';
+  } else {
+    btn.classList.add('wrong');
+    feedback.textContent = `不正解。正解は「${item.answer}」`;
+    feedback.className = 'wrong';
+    [...choicesEl.children].forEach((c) => {
+      if (c.textContent === item.answer) c.classList.add('correct');
+    });
+  }
+  [...choicesEl.children].forEach((c) => (c.disabled = true));
+  triviaBox.textContent = item.trivia;
+  triviaBox.style.display = 'block';
+  nextBtn.textContent = current < questions.length - 1 ? '次の問題' : '結果を見る';
+  nextBtn.style.display = 'block';
+}
+
+function showResult() {
+  quizArea.style.display = 'none';
+  resultBox.style.display = 'block';
+  resultScore.textContent = `${score} / ${questions.length}`;
+  let comment;
+  if (score === questions.length) comment = 'パーフェクト。かなりの通ですね。';
+  else if (score >= questions.length * 0.6) comment = 'なかなかの成績です。';
+  else comment = 'これを機に、いろいろな球団に詳しくなってみてください。';
+  resultComment.textContent = comment;
+}
+
+nextBtn.addEventListener('click', () => {
+  if (current < questions.length - 1) {
+    current += 1;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+});
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  questions = shuffle(BANK).slice(0, QUIZ_LEN);
+  current = 0;
+  score = 0;
+  scoreNum.textContent = '0';
+  quizArea.style.display = 'block';
+  resultBox.style.display = 'none';
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>
