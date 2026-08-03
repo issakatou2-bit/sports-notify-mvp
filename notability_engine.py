@@ -102,23 +102,45 @@ def rule_japanese_player(game: Game, jp_team_map: dict) -> list[Reason]:
     # 先発確認は取れなくても、チームに日本人選手が所属していること自体を理由にする
     # (野手や登板日でない投手も対象にするため)。jp_team_mapはMLB Stats APIから
     # 毎回動的に解決した「今シーズン実際に所属している」選手のみを含むので、
-    # 戦力外・移籍済みの選手が誤って残り続けることはない
+    # 戦力外・移籍済みの選手が誤って残り続けることはない。
+    #
+    # 重みは所属人数に応じて変える。以前は何人いても一律+2だったため、
+    # 大谷・山本・佐々木の3人が所属するドジャースと、1人だけの球団が
+    # 同点になってしまい、日本の視聴者にとって明らかに注目度が違う試合を
+    # 正しく順位付けできていなかった(実データで確認済み)。
+    # 人数はAPIから取得した客観的な事実なので、球団の人気を主観で
+    # ランク付けするより、根拠が明確で自動追従もする。
     for team_id, team_name in (
         (game.home_team_id, game.home_team_name),
         (game.away_team_id, game.away_team_name),
     ):
         if team_id in jp_team_map and team_id not in covered_team_ids:
-            names_str = "・".join(jp_team_map[team_id])
+            names = jp_team_map[team_id]
+            names_str = "・".join(names)
             reasons.append(
                 Reason(
                     tag="jp_team",
                     text=f"{team_name}には{names_str}が所属",
-                    weight=2,
+                    weight=jp_roster_weight(len(names)),
                 )
             )
             covered_team_ids.add(team_id)
 
     return reasons
+
+
+def jp_roster_weight(count: int) -> int:
+    """
+    チームに所属する日本人選手の人数から、注目理由の重みを求める。
+    1人=2, 2人=3, 3人以上=4。人数が増えるほど「その試合を見る理由」が
+    増えるのは確かだが、比例させると1球団だけで他の全要素を押し流して
+    しまうため、頭打ちにしている。
+    """
+    if count <= 1:
+        return 2
+    if count == 2:
+        return 3
+    return 4
 
 
 def rule_marquee_team(game: Game) -> list[Reason]:

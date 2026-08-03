@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>用語集 | コレスポ</title>
+<meta name="description" content="LADやOPS、xGのような野球・サッカーの略語や専門用語を、初心者向けにやさしく解説します。" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0B0E14;
+    --surface: #12161F;
+    --surface-raised: #171C27;
+    --border: #232838;
+    --text: #F2F0E6;
+    --text-dim: #8891A3;
+    --accent: #FFB020;
+    --jp: #49C5B6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    padding: max(1.5rem, env(safe-area-inset-top)) 1.25rem 3rem;
+    max-width: 720px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+    line-height: 1.8;
+  }
+  a { color: var(--accent); }
+  .back {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    margin-bottom: 1.2rem;
+  }
+  h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    margin: 0 0 0.3rem;
+  }
+  .lead { color: var(--text-dim); font-size: 0.9rem; margin: 0 0 2rem; }
+  h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.2rem;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.4rem;
+    margin: 2.2rem 0 1rem;
+  }
+  dl { margin: 0; }
+  dt {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    margin-top: 1rem;
+    display: inline-block;
+  }
+  dd {
+    margin: 0.5rem 0 0;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; コレスポ トップへ</a>
+  <h1>用語集</h1>
+  <p class="lead">生中継でよく出てくる略語・専門用語を、初めての方向けにやさしくまとめました。</p>
+
+  <h2>MLB(野球)</h2>
+  <dl>
+    <dt>OPS</dt>
+    <dd>出塁率+長打率。打者の総合力を表す指標で、数字が高いほど強打者とされます。0.900を超えると一流の目安です。</dd>
+
+    <dt>ERA(防御率)</dt>
+    <dd>投手が9イニング投げた場合に平均で何点取られるかを表す数値。低いほど優秀な投手です。3点台前半なら好投手の目安です。</dd>
+
+    <dt>WHIP</dt>
+    <dd>投手が1イニングあたりに許した「四球+安打」の数。1.00を切ると支配的な投球とされます。</dd>
+
+    <dt>RBI(打点)</dt>
+    <dd>自分の打撃によって味方を本塁に生還させた数。チャンスにどれだけ強いかを示す指標の一つです。</dd>
+
+    <dt>セーブ</dt>
+    <dd>僅差でリードしている試合の最終盤を投げ切り、勝利を守り切った投手に記録される数字。守護神(クローザー)の成績評価に使われます。</dd>
+
+    <dt>クローザー</dt>
+    <dd>試合終盤、僅差のリードを守るために登板する専門の投手。チームの「最後の砦」的な存在です。</dd>
+
+    <dt>ローテーション</dt>
+    <dd>先発投手が試合ごとに順番に登板していく仕組み。通常5人前後で回します。</dd>
+
+    <dt>ゲーム差</dt>
+    <dd>地区首位のチームと、そのチームとの勝敗差を表す数字。0.0なら首位、数字が小さいほど首位に近い接戦です。</dd>
+
+    <dt>地区首位</dt>
+    <dd>MLBは各リーグが3つの地区に分かれており、その地区で最も勝率の高いチームを指します。</dd>
+
+    <dt>サイクル安打</dt>
+    <dd>1試合で単打・二塁打・三塁打・本塁打を全て打つこと。滅多に起きない記録的な出来事です。</dd>
+  </dl>
+
+  <h2>欧州サッカー(5大リーグ)</h2>
+  <dl>
+    <dt>xG(期待得点)</dt>
+    <dd>シュートの状況から「本来どれくらいの確率で得点になるはずだったか」を数値化した指標。実際の得点より高ければ「決定機を活かせなかった」と分析できます。</dd>
+
+    <dt>オフサイド</dt>
+    <dd>攻撃側の選手が、ボールより前かつ相手ゴールに近い位置で、相手の最後尾の選手より前にいる状態でパスを受けると反則になるルール。</dd>
+
+    <dt>クリーンシート</dt>
+    <dd>試合を通じて相手に1点も許さず終えること。ゴールキーパーやディフェンス陣の評価指標としてよく使われます。</dd>
+
+    <dt>アシスト</dt>
+    <dd>得点に直接つながるパスやプレーをした選手に記録されます。得点者と同じくらい評価される重要な記録です。</dd>
+
+    <dt>フォーメーション</dt>
+    <dd>「4-3-3」のように、守備・中盤・攻撃の人数配置を表す表記。チームの戦い方の傾向を知る手がかりになります。</dd>
+
+    <dt>VAR</dt>
+    <dd>ビデオ・アシスタント・レフェリーの略。誤審が疑われる重要な場面で、審判が映像を見直して判定を確認する仕組みです。</dd>
+
+    <dt>CL(チャンピオンズリーグ)</dt>
+    <dd>欧州各国リーグの上位チームが参加する、クラブチームにとって最高峰の大陸間タイトルです。</dd>
+  </dl>
+
+  <a class="back" href="index.html">&larr; コレスポ トップへ</a>
+</body>
+</html>

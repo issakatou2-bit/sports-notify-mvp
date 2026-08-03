@@ -564,11 +564,21 @@
       return;
     }
 
-    // 見出しに実際の日付を表示する(「Today」「Tomorrow」だと日本時間では
-    // 日付をまたいでしまい紛らわしいため、実データの日付をそのまま出す)
+    // 見出しは「今日/明日」+実際の日付の併記にする。相対表現だけだと
+    // 日本時間では日付をまたいで紛らわしく、日付だけだと直感的に分かり
+    // にくいため、両方出す(通知本文と同じ考え方に揃えている)。
     const dateFromGames = games.find((g) => g.start_time_jst)?.start_time_jst?.split(' ')[0];
-    document.getElementById('pickLabel').textContent = dateFromGames ? dateFromGames + ' Pick' : 'Pick';
-    document.getElementById('boardLabel').textContent = dateFromGames ? dateFromGames + ' Board (JST)' : 'Board (JST)';
+    let relLabel = '';
+    if (dateFromGames) {
+      const [mm, dd] = dateFromGames.split('/').map(Number);
+      const now = new Date();
+      const jst = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + 9 * 3600000);
+      relLabel = (jst.getMonth() + 1 === mm && jst.getDate() === dd) ? '今日' : '明日';
+    }
+    document.getElementById('pickLabel').textContent =
+      dateFromGames ? `${relLabel}(${dateFromGames})特に注目の試合` : '特に注目の試合';
+    document.getElementById('boardLabel').textContent =
+      dateFromGames ? `${relLabel}(${dateFromGames})の全試合 (JST)` : '全試合 (JST)';
 
     // --- 注目試合(上位2試合まで) ---
     const sorted = [...games].sort((a, b) => b.score - a.score);
