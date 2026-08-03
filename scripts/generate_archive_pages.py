@@ -405,7 +405,15 @@ def render_sitemap(entries: list) -> str:
         (f"{SITE_URL}glossary.html", None),
         (f"{SITE_URL}about.html", None),
         (f"{SITE_URL}privacy.html", None),
+        (f"{SITE_URL}quiz.html", None),
+        (f"{SITE_URL}players/", None),
     ]
+    # 選手ページ(generate_player_pages.pyが生成する分)もsitemapに含める
+    players_dir = pathlib.Path("public/players")
+    if players_dir.exists():
+        for f in sorted(players_dir.glob("*.html")):
+            if f.name != "index.html":
+                urls.append((f"{SITE_URL}players/{f.name}", None))
     urls += [(f"{SITE_URL}archive/{d}.html", d) for d, _ in entries]
 
     lines = ['<?xml version="1.0" encoding="UTF-8"?>']

@@ -38,6 +38,13 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python notability_engine.py --source all --out notable_games.json
 
+      # 過去に生成した試合(直近5日分)のうち、終了しているのにまだ
+      # 最終スコアが無いものを、MLB Stats APIから取得して埋める。
+      # 生成時点(19時JST)ではまだ試合が始まってすらいないため、
+      # 結果は必ず「後から追いかけて埋める」形にならざるを得ない。
+      - name: Backfill past game results
+        run: python scripts/backfill_results.py --archive-dir archive
+
       - name: Generate RSS feed
         run: |
           python scripts/generate_rss.py --input notable_games.json --out feed.xml \
@@ -63,6 +70,14 @@ jobs:
       # 含まれていなかったため、蓄積したデータが公開サイトから一切
       # 参照できない状態だった(archive.htmlも空表示になっていた)。
       # ここでpublic配下に出力することで、その問題も併せて解消する。
+      # 選手ページはsitemap生成より前に作る必要がある
+      # (generate_archive_pages.pyがpublic/players配下を走査してsitemapに載せるため)
+      - name: Generate player pages
+        run: |
+          python scripts/generate_player_pages.py \
+            --archive-dir archive \
+            --out-dir public/players
+
       - name: Generate archive pages
         run: |
           python scripts/generate_archive_pages.py \
