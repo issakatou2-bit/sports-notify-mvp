@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T12:44:42.097448+00:00",
+  "generated_at": "2026-08-03T12:48:49.478896+00:00",
   "games": [
     {
       "game_id": "824647",
@@ -27,6 +27,16 @@
         "佐々木朗希",
         "山本由伸"
       ],
+      "home_probable": {
+        "name": "Matthew Boyd",
+        "name_en": "Matthew Boyd",
+        "player_id": "571510",
+        "era": "3.41",
+        "wins": 6,
+        "losses": 1,
+        "strikeouts": 60
+      },
+      "away_probable": null,
       "home_has_jp": true,
       "away_has_jp": true,
       "score": 9,
@@ -48,8 +58,8 @@
           "weight": 2
         }
       ],
-      "ai_summary": "ナショナルリーグ西地区の首位ドジャース（69勝43敗）が、3連敗で勢いを欠く中、地区2位のカブス（63勝49敗、首位との差6.5ゲーム）と対戦する試合である。両球団には日本出身の主力選手が複数名所属しており、シーズン中盤戦での地区順位争いを左右する重要な一戦となる。",
-      "notification_hook": "大谷・佐々木・山本を擁するドジャース、3連敗で首位死守なるか。"
+      "ai_summary": "ドジャースはナ・リーグ西地区で2位に10ゲーム差をつけて首位を走る一方、カブスはナ・リーグ中地区で2位に6.5ゲーム差の2位にいるため、両チームともリーグ内での地位を確保しつつも、この試合は各々の地区での立場の違いを象徴する好カードとなる。特にドジャースが現在3連敗中であることから、シーズン後半に向けた勢いの回復が問われる一戦になるといえる。また、両チームには日本出身の主力選手が複数名在籍していることも、この試合に対する注目度を高める要因となっている。",
+      "notification_hook": "3連敗中のドジャース、今季防御率3.41のBoydに挑む。日本人選手が激突する西地区首位の底力。"
     },
     {
       "game_id": "824160",
@@ -74,6 +84,24 @@
         "今井達也",
         "岡本和真"
       ],
+      "home_probable": {
+        "name": "Cristian Javier",
+        "name_en": "Cristian Javier",
+        "player_id": "664299",
+        "era": "7.17",
+        "wins": 1,
+        "losses": 1,
+        "strikeouts": 21
+      },
+      "away_probable": {
+        "name": "Shane Bieber",
+        "name_en": "Shane Bieber",
+        "player_id": "669456",
+        "era": "5.74",
+        "wins": 2,
+        "losses": 2,
+        "strikeouts": 22
+      },
       "home_has_jp": true,
       "away_has_jp": true,
       "score": 6,
@@ -95,8 +123,8 @@
           "weight": 2
         }
       ],
-      "ai_summary": "アストロズは現在地区首位で6連勝と勢いに乗っており、この試合ではその連勝を継続できるかが焦点となる。一方、ブルージェイズは地区5位で首位から13.5ゲーム離れた苦しい状況にあり、連敗を止めるために勝利が必要である。両チームに所属する日本出身の主要選手たちがどのようなパフォーマンスを見せるかが、この対戦の注視点になる。",
-      "notification_hook": "勢いのアストロズ連勝継続なるか。日本人選手対決が熱い一戦"
+      "ai_summary": "アストロズはア・リーグ西地区で2位に2.5ゲーム差をつけて首位に立ち、現在6連勝中と勢いに乗っているのに対し、ブルージェイズはア・リーグ東地区5位で厳しい状況にある。所属地区が異なる両チームの直接対決ながら、調子の良いアストロズの連勝がどこまで続くか、そして低迷するブルージェイズが勢いのあるチームを相手にどう対抗するかが見どころになる。",
+      "notification_hook": "6連勝中アストロズの快進撃は止まるか。低迷ブルージェイズとの東西地区対決。"
     },
     {
       "game_id": "823520",
@@ -120,6 +148,24 @@
       "jp_players": [
         "ヌートバー"
       ],
+      "home_probable": {
+        "name": "Cam Schlittler",
+        "name_en": "Cam Schlittler",
+        "player_id": "693645",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Michael McGreevy",
+        "name_en": "Michael McGreevy",
+        "player_id": "700241",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
       "home_has_jp": false,
       "away_has_jp": true,
       "score": 2,
@@ -152,6 +198,16 @@
       "rivalry_type": null,
       "jp_starters": [],
       "jp_players": [],
+      "home_probable": {
+        "name": "Aaron Nola",
+        "name_en": "Aaron Nola",
+        "player_id": "605400",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": null,
       "home_has_jp": false,
       "away_has_jp": false,
       "score": 2,
@@ -184,6 +240,16 @@
       "rivalry_type": null,
       "jp_starters": [],
       "jp_players": [],
+      "home_probable": null,
+      "away_probable": {
+        "name": "Logan Webb",
+        "name_en": "Logan Webb",
+        "player_id": "657277",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
       "home_has_jp": false,
       "away_has_jp": false,
       "score": 2,
@@ -218,6 +284,24 @@
       "jp_players": [
         "菅野智之"
       ],
+      "home_probable": {
+        "name": "Michael Lorenzen",
+        "name_en": "Michael Lorenzen",
+        "player_id": "547179",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Ian Seymour",
+        "name_en": "Ian Seymour",
+        "player_id": "693855",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
       "home_has_jp": true,
       "away_has_jp": false,
       "score": 2,
@@ -252,6 +336,24 @@
       "jp_players": [
         "松井裕樹"
       ],
+      "home_probable": {
+        "name": "Brandon Pfaadt",
+        "name_en": "Brandon Pfaadt",
+        "player_id": "694297",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Michael King",
+        "name_en": "Michael King",
+        "player_id": "650633",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
       "home_has_jp": false,
       "away_has_jp": true,
       "score": 2,
@@ -284,6 +386,24 @@
       "rivalry_type": null,
       "jp_starters": [],
       "jp_players": [],
+      "home_probable": {
+        "name": "Brandon Sproat",
+        "name_en": "Brandon Sproat",
+        "player_id": "687075",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Bubba Chandler",
+        "name_en": "Bubba Chandler",
+        "player_id": "696149",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
       "home_has_jp": false,
       "away_has_jp": false,
       "score": 0,
