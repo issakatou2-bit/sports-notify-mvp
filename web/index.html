@@ -311,6 +311,15 @@
     color: var(--text-dim);
     margin: 0 0 8px;
   }
+  .card .venue-note {
+    font-size: 11.5px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin: 0 0 10px;
+    line-height: 1.6;
+  }
   .board {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -417,6 +426,8 @@
     margin-bottom: 8px;
   }
 </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3009257813842371"
+     crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -708,6 +719,31 @@
           p.textContent = parts.join(' / ');
           card.appendChild(p);
         }
+      }
+
+      // 先発予定投手(分かっている場合のみ)
+      const pitchers = [];
+      if (top.away_probable && top.away_probable.name) {
+        pitchers.push(`${top.away_team_name} ${top.away_probable.name}` +
+          (top.away_probable.era ? `(防${top.away_probable.era})` : ''));
+      }
+      if (top.home_probable && top.home_probable.name) {
+        pitchers.push(`${top.home_team_name} ${top.home_probable.name}` +
+          (top.home_probable.era ? `(防${top.home_probable.era})` : ''));
+      }
+      if (pitchers.length > 0) {
+        const p = document.createElement('p');
+        p.className = 'series-context';
+        p.textContent = '先発予定: ' + pitchers.join(' / ');
+        card.appendChild(p);
+      }
+
+      // 球場に特徴がある場合のみ、小さな見どころとして添える
+      if (top.venue_jp && top.venue_note) {
+        const v = document.createElement('p');
+        v.className = 'venue-note';
+        v.textContent = `${top.venue_jp}: ${top.venue_note}`;
+        card.appendChild(v);
       }
 
       if (top.ai_summary) {

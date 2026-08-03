@@ -85,6 +85,7 @@ class Game:
     start_time_utc: Optional[str] = None  # ISO8601 (例: '2026-07-21T00:10:00Z')
     home_probable: Optional[ProbablePitcher] = None
     away_probable: Optional[ProbablePitcher] = None
+    venue_name: Optional[str] = None  # MLB Stats APIが返す英語の球場名
 
 
 @dataclass
@@ -484,6 +485,9 @@ def build_output(
                 "jp_players": jp_players,
                 "home_probable": _probable_dict(g.home_probable),
                 "away_probable": _probable_dict(g.away_probable),
+                "venue_name": g.venue_name,
+                "venue_jp": (MLB_VENUE_NOTES.get(g.venue_name or "") or (None, None))[0],
+                "venue_note": (MLB_VENUE_NOTES.get(g.venue_name or "") or (None, None))[1],
                 "home_has_jp": home_has_jp,
                 "away_has_jp": away_has_jp,
                 "score": visible_score,
@@ -585,6 +589,24 @@ JP_PLAYERS_MLB = [
 MLB_MARQUEE_TEAM_IDS = {"147", "119", "111", "112", "144"}  # ヤンキース/ドジャース/レッドソックス/カブス/ブレーブス
 
 # 伝統の好カード(ライバル関係)。フロズンセット化して両方向マッチできるようにする
+# 球場ごとの特徴。「大きな注目理由(カード)」に対する「小さな見どころ」として、
+# AIが要約の締めに使えるようにするためのメモ。キーはMLB Stats APIが返す
+# 英語の球場名。内容は広く知られている事実(標高・フェンスの形状・気候)に
+# 限定し、パークファクターのような数値的な断定は避けている。
+MLB_VENUE_NOTES = {
+    "Coors Field": ("クアーズ・フィールド", "標高約1600mの高地にあり、空気が薄いぶん打球が伸びやすい、MLBで最も打者有利とされる球場"),
+    "Fenway Park": ("フェンウェイ・パーク", "左翼に高さ約11mの「グリーンモンスター」がそびえ、打球の行方が読みにくい独特の形状"),
+    "Wrigley Field": ("リグレー・フィールド", "風向きによって球場の性格が変わり、外野へ吹く日は打撃戦になりやすいことで知られる"),
+    "Oracle Park": ("オラクル・パーク", "右中間が非常に深く、海風の影響もあって本塁打が出にくい、投手有利とされる球場"),
+    "Yankee Stadium": ("ヤンキー・スタジアム", "右翼が浅く、左打者の本塁打が出やすい形状"),
+    "Great American Ball Park": ("グレート・アメリカン・ボール・パーク", "両翼が狭く、本塁打が出やすい球場として知られる"),
+    "Dodger Stadium": ("ドジャー・スタジアム", "1962年開場、MLBで3番目に古い現役球場"),
+    "Petco Park": ("ペトコ・パーク", "広い外野と海沿いの気候により、投手有利とされる球場"),
+    "Tropicana Field": ("トロピカーナ・フィールド", "MLBで数少ないドーム球場。天候に左右されない"),
+    "Daikin Park": ("ダイキン・パーク", "左翼が浅く、開閉式屋根を持つ球場"),
+    "Minute Maid Park": ("ミニッツメイド・パーク", "左翼が浅く、開閉式屋根を持つ球場"),
+}
+
 MLB_DIVISION_NAME_JP = {
     "ALE": "ア・リーグ東地区",
     "ALC": "ア・リーグ中地区",
@@ -936,6 +958,7 @@ def fetch_mlb_games_and_standings(date_str: str):
                     start_time_utc=g.get("gameDate"),
                     home_probable=probables["home"],
                     away_probable=probables["away"],
+                    venue_name=(g.get("venue") or {}).get("name"),
                 )
             )
 
@@ -1261,10 +1284,18 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         else ""
     )
 
+    venue_text = ""
+    if game.get("venue_note"):
+        venue_text = (
+            f"\n【球場の特徴(小さな見どころとして使ってよい)】\n"
+            f"- 会場は{game.get('venue_jp')}。{game['venue_note']}\n"
+        )
+
     return (
         f"以下は「{game['matchup']}」({game['league']})という試合についてのデータです。\n\n"
         f"【チームの状況】\n{home_context}\n{away_context}\n"
-        f"{pitcher_text}\n"
+        f"{pitcher_text}"
+        f"{venue_text}\n"
         f"【構造的な位置づけ】\n{structural_text}\n\n"
         f"【この試合が注目された理由(ルールベースで抽出)】\n{reasons_text}\n"
         f"{highlight_line}\n"
@@ -1272,7 +1303,12 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         "以下の2つを、上記のデータだけを根拠に日本語で書いてください。\n\n"
         "【出力1: 解説文】\n"
         "「シーズン全体・MLB全体で見たときに、この一戦になぜ注目すべきか」を"
-        "2〜3文で説明する文章。\n\n"
+        "2〜3文で説明する文章。\n"
+        "構成は「大きな注目理由(順位争い・両チームの立場など、試合全体の意味)」を"
+        "先に述べ、最後の1文で「小さな見どころ(先発投手の投げ合い、球場の特徴など、"
+        "試合を見ている間に注目できる具体的なポイント)」を添えること。"
+        "球場の特徴が提供されている場合は、それを最後の見どころとして使うと良い"
+        "(例:「本塁打が出やすい球場での一戦だけに、一発が出るかにも注目したい」)。\n\n"
         "【出力2: 通知用フック文】\n"
         "スマホのプッシュ通知に使う、15〜25文字程度の短い一言。見た人が"
         "「試合を見てみよう」と思うような、具体的な選手名や数字を絡めた"
