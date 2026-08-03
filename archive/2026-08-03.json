@@ -1,0 +1,294 @@
+{
+  "generated_at": "2026-08-03T10:01:17.649108+00:00",
+  "games": [
+    {
+      "game_id": "824647",
+      "league": "MLB",
+      "home_team_id": "112",
+      "away_team_id": "119",
+      "home_team_name": "カブス",
+      "away_team_name": "ドジャース",
+      "home_abbr": "CHC",
+      "away_abbr": "LAD",
+      "home_color": "#0E3386",
+      "away_color": "#005A9C",
+      "matchup": "カブス vs ドジャース",
+      "abbr_matchup": "CHC vs LAD",
+      "start_time_jst": "08/04 09:05",
+      "home_division": "NLC",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "今永昇太",
+        "鈴木誠也",
+        "大谷翔平",
+        "佐々木朗希",
+        "山本由伸"
+      ],
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "score": 9,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "カブスには今永昇太・鈴木誠也が所属",
+          "weight": 3
+        },
+        {
+          "tag": "jp_team",
+          "text": "ドジャースには大谷翔平・佐々木朗希・山本由伸が所属",
+          "weight": 4
+        },
+        {
+          "tag": "quality",
+          "text": "カブスは自地区2位、ドジャースは自地区1位同士の好カード",
+          "weight": 2
+        }
+      ],
+      "ai_summary": "ナショナルリーグ西地区の首位ドジャース(69勝43敗)が、地区2位のカブス(63勝49敗)と対戦する一戦である。ドジャースは3連敗中で首位の座を守る正念場であり、一方のカブスは1連敗中で首位との差6.5ゲームを詰める機会となるため、地区順位争いの趨勢を左右する重要な対局になる。両軍とも日本出身の主力選手を複数抱えており、大谷翔平や佐々木朗希、山本由伸を擁するドジャースに対し、今永昇太や鈴木誠也を有するカブスが挑む構図も、国内の野球ファンにとって見どころとなる。",
+      "notification_hook": "連敗中ドジャースvs地区2位カブス。大谷・佐々木らVS今永・鈴木、地区争いを左右する一戦。"
+    },
+    {
+      "game_id": "824160",
+      "league": "MLB",
+      "home_team_id": "117",
+      "away_team_id": "141",
+      "home_team_name": "アストロズ",
+      "away_team_name": "ブルージェイズ",
+      "home_abbr": "HOU",
+      "away_abbr": "TOR",
+      "home_color": "#002D62",
+      "away_color": "#134A8E",
+      "matchup": "アストロズ vs ブルージェイズ",
+      "abbr_matchup": "HOU vs TOR",
+      "start_time_jst": "08/04 09:10",
+      "home_division": "ALW",
+      "away_division": "ALE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "今井達也",
+        "岡本和真"
+      ],
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "score": 6,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "アストロズには今井達也が所属",
+          "weight": 2
+        },
+        {
+          "tag": "jp_team",
+          "text": "ブルージェイズには岡本和真が所属",
+          "weight": 2
+        },
+        {
+          "tag": "streak",
+          "text": "アストロズは6連勝中",
+          "weight": 2
+        }
+      ],
+      "ai_summary": "アストロズは現在地区首位で6連勝中と勢いに乗っているのに対し、ブルージェイズは5位で首位との差が13.5ゲーム開いており、シーズン後半での浮沈の分かれ目となる一戦である。両チームに日本出身の主力選手が所属しており、国内ファンにとっても注視される対戦カードとなる。",
+      "notification_hook": "地区首位アストロズ6連勝の勢いに、ブルージェイズが挑む。今井と岡本の日本人対決に注目。"
+    },
+    {
+      "game_id": "823520",
+      "league": "MLB",
+      "home_team_id": "147",
+      "away_team_id": "138",
+      "home_team_name": "ヤンキース",
+      "away_team_name": "カージナルス",
+      "home_abbr": "NYY",
+      "away_abbr": "STL",
+      "home_color": "#003087",
+      "away_color": "#C41E3A",
+      "matchup": "ヤンキース vs カージナルス",
+      "abbr_matchup": "NYY vs STL",
+      "start_time_jst": "08/04 08:05",
+      "home_division": "ALE",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "ヌートバー"
+      ],
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "カージナルスにはヌートバーが所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823431",
+      "league": "MLB",
+      "home_team_id": "143",
+      "away_team_id": "120",
+      "home_team_name": "フィリーズ",
+      "away_team_name": "ナショナルズ",
+      "home_abbr": "PHI",
+      "away_abbr": "WSH",
+      "home_color": "#E81828",
+      "away_color": "#AB0003",
+      "matchup": "フィリーズ vs ナショナルズ",
+      "abbr_matchup": "PHI vs WSH",
+      "start_time_jst": "08/04 07:40",
+      "home_division": "NLE",
+      "away_division": "NLE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "streak",
+          "text": "ナショナルズは5連敗中",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "822867",
+      "league": "MLB",
+      "home_team_id": "140",
+      "away_team_id": "137",
+      "home_team_name": "レンジャーズ",
+      "away_team_name": "ジャイアンツ",
+      "home_abbr": "TEX",
+      "away_abbr": "SF",
+      "home_color": "#003278",
+      "away_color": "#FD5A1E",
+      "matchup": "レンジャーズ vs ジャイアンツ",
+      "abbr_matchup": "TEX vs SF",
+      "start_time_jst": "08/04 09:05",
+      "home_division": "ALW",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "streak",
+          "text": "レンジャーズは5連敗中",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "824324",
+      "league": "MLB",
+      "home_team_id": "115",
+      "away_team_id": "139",
+      "home_team_name": "ロッキーズ",
+      "away_team_name": "レイズ",
+      "home_abbr": "COL",
+      "away_abbr": "TB",
+      "home_color": "#333366",
+      "away_color": "#092C5C",
+      "matchup": "ロッキーズ vs レイズ",
+      "abbr_matchup": "COL vs TB",
+      "start_time_jst": "08/04 09:40",
+      "home_division": "NLW",
+      "away_division": "ALE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "菅野智之"
+      ],
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ロッキーズには菅野智之が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "825095",
+      "league": "MLB",
+      "home_team_id": "109",
+      "away_team_id": "135",
+      "home_team_name": "ダイヤモンドバックス",
+      "away_team_name": "パドレス",
+      "home_abbr": "ARI",
+      "away_abbr": "SD",
+      "home_color": "#A71930",
+      "away_color": "#2F241D",
+      "matchup": "ダイヤモンドバックス vs パドレス",
+      "abbr_matchup": "ARI vs SD",
+      "start_time_jst": "08/04 10:40",
+      "home_division": "NLW",
+      "away_division": "NLW",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "松井裕樹"
+      ],
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823757",
+      "league": "MLB",
+      "home_team_id": "158",
+      "away_team_id": "134",
+      "home_team_name": "ブリュワーズ",
+      "away_team_name": "パイレーツ",
+      "home_abbr": "MIL",
+      "away_abbr": "PIT",
+      "home_color": "#12284B",
+      "away_color": "#FDB827",
+      "matchup": "ブリュワーズ vs パイレーツ",
+      "abbr_matchup": "MIL vs PIT",
+      "start_time_jst": "08/04 08:40",
+      "home_division": "NLC",
+      "away_division": "NLC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    }
+  ]
+}
