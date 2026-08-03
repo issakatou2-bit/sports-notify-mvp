@@ -50,6 +50,71 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
     line-height: 1.6;
   }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .menu-btn {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0;
+    cursor: pointer;
+  }
+  .menu-btn span {
+    display: block;
+    width: 16px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 1px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  .drawer {
+    margin-top: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .drawer > a {
+    display: block;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .drawer > a span {
+    display: block;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .drawer > a:active { background: var(--surface-raised); }
+  .drawer-foot {
+    display: flex;
+    gap: 16px;
+    padding: 11px 16px;
+    font-size: 12px;
+  }
+  .drawer-foot a { color: var(--text-dim); text-decoration: none; }
+
   .brand {
     display: flex;
     align-items: center;
@@ -355,8 +420,24 @@
 </head>
 <body>
 
-<div class="brand"><span class="brand-dot"></span><h1>コレスポ</h1></div>
+<header class="site-header">
+  <div class="brand"><span class="brand-dot"></span><h1>コレスポ</h1></div>
+  <button id="menuBtn" class="menu-btn" aria-label="メニューを開く" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
 <p class="sub">端末内のフォロー設定に応じて、注目理由つきで表示します</p>
+
+<nav id="drawer" class="drawer" hidden>
+  <a href="glossary.html">用語集<span>LAD・OPS・xGなどの略語を解説</span></a>
+  <a href="quiz.html">球団クイズ<span>略称・球場・州から球団を当てる</span></a>
+  <a href="archive/">アーカイブ<span>過去の注目試合を振り返る</span></a>
+  <a href="#watchSection" data-close>日本での視聴方法<span>どこで見られるか</span></a>
+  <div class="drawer-foot">
+    <a href="about.html">運営者情報</a>
+    <a href="privacy.html">プライバシーポリシー</a>
+  </div>
+</nav>
 
 <details class="onboarding">
   <summary>はじめての方はこちら(通知の設定方法)</summary>
@@ -403,7 +484,7 @@
   </div>
 </div>
 
-<div class="section">
+<div class="section" id="watchSection">
   <p class="eyebrow">日本での視聴方法</p>
   <p class="sub">
     MLBは<a href="https://www.spotvnow.jp/" target="_blank" rel="noopener">SPOTV NOW</a>・
@@ -411,16 +492,6 @@
     Prime Video(SPOTVチャンネル)などで視聴できます。
     5大リーグは<a href="https://www.dazn.com/ja-JP/" target="_blank" rel="noopener">DAZN</a>が中心です。
     (放送予定は日によって変わるため、各サービスで最新情報をご確認ください)
-  </p>
-</div>
-
-<div class="section">
-  <p class="eyebrow">もっと詳しくなる</p>
-  <p class="sub">
-    LADやOPS、xGのような略語・専門用語が気になったら、
-    <a href="glossary.html">用語集</a>をどうぞ。生中継がもっと楽しくなります。
-    過去の注目試合は<a href="archive/">アーカイブ</a>から振り返れます。
-    腕試しに<a href="quiz.html">球団クイズ</a>もどうぞ。
   </p>
 </div>
 
@@ -707,6 +778,26 @@
       allEl.innerHTML = '';
     }
   }
+
+  // --- メニュー(ドロワー)の開閉 ---
+  (function initDrawer() {
+    const btn = document.getElementById('menuBtn');
+    const drawer = document.getElementById('drawer');
+    if (!btn || !drawer) return;
+    function setOpen(open) {
+      drawer.hidden = !open;
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+    }
+    btn.addEventListener('click', () => setOpen(drawer.hidden));
+    // ページ内リンク(視聴方法など)を押したときはメニューを閉じる
+    drawer.querySelectorAll('[data-close]').forEach((a) => {
+      a.addEventListener('click', () => setOpen(false));
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !drawer.hidden) setOpen(false);
+    });
+  })();
 
   document.getElementById('tabs').addEventListener('click', (e) => {
     const tab = e.target.closest('.tab');
