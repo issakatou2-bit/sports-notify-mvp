@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T12:48:49.478896+00:00",
+  "generated_at": "2026-08-03T13:46:56.422059+00:00",
   "games": [
     {
       "game_id": "824647",
@@ -37,6 +37,9 @@
         "strikeouts": 60
       },
       "away_probable": null,
+      "venue_name": "Wrigley Field",
+      "venue_jp": "リグレー・フィールド",
+      "venue_note": "風向きによって球場の性格が変わり、外野へ吹く日は打撃戦になりやすいことで知られる",
       "home_has_jp": true,
       "away_has_jp": true,
       "score": 9,
@@ -58,8 +61,8 @@
           "weight": 2
         }
       ],
-      "ai_summary": "ドジャースはナ・リーグ西地区で2位に10ゲーム差をつけて首位を走る一方、カブスはナ・リーグ中地区で2位に6.5ゲーム差の2位にいるため、両チームともリーグ内での地位を確保しつつも、この試合は各々の地区での立場の違いを象徴する好カードとなる。特にドジャースが現在3連敗中であることから、シーズン後半に向けた勢いの回復が問われる一戦になるといえる。また、両チームには日本出身の主力選手が複数名在籍していることも、この試合に対する注目度を高める要因となっている。",
-      "notification_hook": "3連敗中のドジャース、今季防御率3.41のBoydに挑む。日本人選手が激突する西地区首位の底力。"
+      "ai_summary": "ナ・リーグ西地区で10ゲーム差をつけて独走するドジャースと、中地区で2位に位置するカブスが対戦する本試合は、両地区の主力チーム同士が実力を示す重要な一戦である。特にドジャースは3連敗中という足踏み状態にあり、ここでの勝利がシーズン後半の勢いを左右することになる。先発のMatthew Boydは今季6勝1敗という優秀な成績を誇るカブスの右腕であり、リグレー・フィールドの風向きが外野へ吹く場合は打撃戦になりやすいため、投手戦か打撃戦かという試合展開の変化にも注目する価値がある。",
+      "notification_hook": "3連敗中のドジャースに立ちはだかる防御率3.41の左腕Boyd、今夜の火花散る投げ合いはどうなるか"
     },
     {
       "game_id": "824160",
@@ -102,6 +105,9 @@
         "losses": 2,
         "strikeouts": 22
       },
+      "venue_name": "Daikin Park",
+      "venue_jp": "ダイキン・パーク",
+      "venue_note": "左翼が浅く、開閉式屋根を持つ球場",
       "home_has_jp": true,
       "away_has_jp": true,
       "score": 6,
@@ -123,8 +129,8 @@
           "weight": 2
         }
       ],
-      "ai_summary": "アストロズはア・リーグ西地区で2位に2.5ゲーム差をつけて首位に立ち、現在6連勝中と勢いに乗っているのに対し、ブルージェイズはア・リーグ東地区5位で厳しい状況にある。所属地区が異なる両チームの直接対決ながら、調子の良いアストロズの連勝がどこまで続くか、そして低迷するブルージェイズが勢いのあるチームを相手にどう対抗するかが見どころになる。",
-      "notification_hook": "6連勝中アストロズの快進撃は止まるか。低迷ブルージェイズとの東西地区対決。"
+      "ai_summary": "アストロズはア・リーグ西地区で2位に2.5ゲーム差をつけて首位を走る強力なチームであり、現在6連勝中で勢いに乗っている状況にある一方、ブルージェイズは東地区5位と厳しい立場にあるため、両チームの現在地の差が明確に表れる一戦となる。異なる地区に所属する両チームが対戦する中で、シーズン好調なアストロズの勢いがどこまで続くのかが焦点になる。先発はアストロズのJavierとブルージェイズのBierberが登板するが、左翼が浅いダイキン・パークでの対戦だけに、どちらかのチームが短距離の本塁打を活かした得点を奪えるかという点にも注目が集まる。",
+      "notification_hook": "6連勝中アストロズ、左翼浅のダイキン・パークで本塁打が決め手になるか"
     },
     {
       "game_id": "823520",
@@ -166,6 +172,9 @@
         "losses": null,
         "strikeouts": null
       },
+      "venue_name": "Yankee Stadium",
+      "venue_jp": "ヤンキー・スタジアム",
+      "venue_note": "右翼が浅く、左打者の本塁打が出やすい形状",
       "home_has_jp": false,
       "away_has_jp": true,
       "score": 2,
@@ -208,6 +217,9 @@
         "strikeouts": null
       },
       "away_probable": null,
+      "venue_name": "Citizens Bank Park",
+      "venue_jp": null,
+      "venue_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
       "score": 2,
@@ -250,6 +262,9 @@
         "losses": null,
         "strikeouts": null
       },
+      "venue_name": "Globe Life Field",
+      "venue_jp": null,
+      "venue_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
       "score": 2,
@@ -302,6 +317,9 @@
         "losses": null,
         "strikeouts": null
       },
+      "venue_name": "Coors Field",
+      "venue_jp": "クアーズ・フィールド",
+      "venue_note": "標高約1600mの高地にあり、空気が薄いぶん打球が伸びやすい、MLBで最も打者有利とされる球場",
       "home_has_jp": true,
       "away_has_jp": false,
       "score": 2,
@@ -354,6 +372,9 @@
         "losses": null,
         "strikeouts": null
       },
+      "venue_name": "Chase Field",
+      "venue_jp": null,
+      "venue_note": null,
       "home_has_jp": false,
       "away_has_jp": true,
       "score": 2,
@@ -404,6 +425,9 @@
         "losses": null,
         "strikeouts": null
       },
+      "venue_name": "American Family Field",
+      "venue_jp": null,
+      "venue_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
       "score": 0,
