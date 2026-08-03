@@ -48,6 +48,21 @@ class Standing:
     win_streak: int  # 正の値=連勝、負の値=連敗
     wins: int = 0
     losses: int = 0
+    # 直近10試合の成績(例: "7-3")。連勝連敗より実際の勢いを表しやすい。
+    # 取得できなかった場合はNone。
+    last_ten: Optional[str] = None
+
+
+@dataclass
+class ProbablePitcher:
+    """先発予定投手。今季成績はAI要約対象の試合についてのみ後から取得する。"""
+    player_id: str
+    name_en: str
+    name_jp: Optional[str] = None
+    era: Optional[str] = None
+    wins: Optional[int] = None
+    losses: Optional[int] = None
+    strikeouts: Optional[int] = None
 
 
 @dataclass
@@ -68,6 +83,8 @@ class Game:
     away_team_name: str
     players: list = field(default_factory=list)  # list[PlayerHighlight]
     start_time_utc: Optional[str] = None  # ISO8601 (例: '2026-07-21T00:10:00Z')
+    home_probable: Optional[ProbablePitcher] = None
+    away_probable: Optional[ProbablePitcher] = None
 
 
 @dataclass
@@ -431,6 +448,19 @@ def build_output(
             p.name in starter_names_set for p in g.players if p.team_id == g.away_team_id
         )
 
+        def _probable_dict(p):
+            if not p:
+                return None
+            return {
+                "name": p.name_jp or p.name_en,
+                "name_en": p.name_en,
+                "player_id": p.player_id,
+                "era": p.era,
+                "wins": p.wins,
+                "losses": p.losses,
+                "strikeouts": p.strikeouts,
+            }
+
         output_games.append(
             {
                 "game_id": g.game_id,
@@ -452,6 +482,8 @@ def build_output(
                 "rivalry_type": rivalry_type,  # "historic" / "city" / None
                 "jp_starters": jp_starters,
                 "jp_players": jp_players,
+                "home_probable": _probable_dict(g.home_probable),
+                "away_probable": _probable_dict(g.away_probable),
                 "home_has_jp": home_has_jp,
                 "away_has_jp": away_has_jp,
                 "score": visible_score,
@@ -553,6 +585,15 @@ JP_PLAYERS_MLB = [
 MLB_MARQUEE_TEAM_IDS = {"147", "119", "111", "112", "144"}  # ヤンキース/ドジャース/レッドソックス/カブス/ブレーブス
 
 # 伝統の好カード(ライバル関係)。フロズンセット化して両方向マッチできるようにする
+MLB_DIVISION_NAME_JP = {
+    "ALE": "ア・リーグ東地区",
+    "ALC": "ア・リーグ中地区",
+    "ALW": "ア・リーグ西地区",
+    "NLE": "ナ・リーグ東地区",
+    "NLC": "ナ・リーグ中地区",
+    "NLW": "ナ・リーグ西地区",
+}
+
 MLB_DIVISIONS = {
     # AL East
     "110": "ALE", "111": "ALE", "147": "ALE", "139": "ALE", "141": "ALE",
@@ -806,7 +847,12 @@ def fetch_mlb_games_and_standings(date_str: str):
 
     standings_resp = requests.get(
         f"{MLB_API_BASE}/standings",
-        params={"leagueId": "103,104", "season": date_str[:4]},
+        params={
+            "leagueId": "103,104",
+            "season": date_str[:4],
+            # splitRecords を含めると直近10試合(lastTen)の成績が取れる
+            "hydrate": "team",
+        },
         timeout=10,
     )
     standings_resp.raise_for_status()
@@ -827,6 +873,14 @@ def fetch_mlb_games_and_standings(date_str: str):
                     win_streak = sign * int(streak_code[1:])
                 except ValueError:
                     win_streak = 0
+            # 直近10試合の成績。standingsのsplitRecordsに含まれるが、
+            # レスポンスに無い場合もあるため防御的に取得する。
+            last_ten = None
+            for sr in team_record.get("records", {}).get("splitRecords", []):
+                if sr.get("type") == "lastTen":
+                    last_ten = f"{sr.get('wins', 0)}勝{sr.get('losses', 0)}敗"
+                    break
+
             standings[team_id] = Standing(
                 team_id=team_id,
                 division_rank=int(team_record.get("divisionRank", 0)),
@@ -834,6 +888,7 @@ def fetch_mlb_games_and_standings(date_str: str):
                 win_streak=win_streak,
                 wins=int(team_record.get("wins", 0)),
                 losses=int(team_record.get("losses", 0)),
+                last_ten=last_ten,
             )
 
     jp_names_en = {p["name_en"] for p in JP_PLAYERS_MLB}
@@ -846,15 +901,25 @@ def fetch_mlb_games_and_standings(date_str: str):
             away = g["teams"]["away"]["team"]
 
             players: list[PlayerHighlight] = []
+            probables: dict = {"home": None, "away": None}
             for side, team in (("home", home), ("away", away)):
                 pitcher = g["teams"][side].get("probablePitcher")
-                if pitcher and pitcher.get("fullName") in jp_names_en:
+                if not pitcher:
+                    continue
+                name_en = pitcher.get("fullName")
+                # 日本人以外の先発投手も記録しておく。AI要約で「誰と誰が投げ合うのか」
+                # を語れるようにするため(以前は日本人選手しか拾っていなかった)。
+                probables[side] = ProbablePitcher(
+                    player_id=str(pitcher.get("id", "")),
+                    name_en=name_en or "",
+                    name_jp=jp_lookup.get(name_en),
+                )
+                if name_en in jp_names_en:
                     players.append(
                         PlayerHighlight(
-                            name=jp_lookup[pitcher["fullName"]],
+                            name=jp_lookup[name_en],
                             team_id=str(team["id"]),
                             is_japanese=True,
-                            # TODO: 実際の成績文脈(防御率順位など)を別APIから取得して差し替える
                             stat_context="先発予定",
                         )
                     )
@@ -869,6 +934,8 @@ def fetch_mlb_games_and_standings(date_str: str):
                     away_team_name=MLB_TEAM_NAME_JP.get(str(away["id"]), away["name"]),
                     players=players,
                     start_time_utc=g.get("gameDate"),
+                    home_probable=probables["home"],
+                    away_probable=probables["away"],
                 )
             )
 
@@ -1016,19 +1083,94 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
 #   - 最も安価なHaiku 4.5を使用
 # この関数は ANTHROPIC_API_KEY が設定されている場合のみ main() から呼ばれる。
 
+def _division_lead_margin(team_id: str, standings: dict):
+    """
+    そのチームが地区首位の場合に、2位との差(リード幅)を返す。
+    首位でない場合や算出できない場合はNone。
+    首位チームのgames_backは常に0.0なので、それだけをAIに渡すと
+    「独走中なのか、僅差で追われているのか」が区別できず、10ゲーム差で
+    独走していても「首位の座を守る正念場」のような誇張した表現を
+    生んでしまうため(実際に発生した)、リード幅を明示的に渡す。
+    """
+    s = standings.get(team_id)
+    if not s or s.division_rank != 1:
+        return None
+    div = MLB_DIVISIONS.get(team_id)
+    if not div:
+        return None
+    others = [
+        o.games_back
+        for tid, o in standings.items()
+        if tid != team_id and MLB_DIVISIONS.get(tid) == div and o.games_back is not None
+    ]
+    if not others:
+        return None
+    return min(others)
+
+
+def fetch_pitcher_season_stats(player_id: str, season: str) -> dict:
+    """
+    先発投手の今季成績(防御率・勝敗・奪三振)を取得する。
+    AI要約の対象になる上位数試合ぶんだけ呼ぶ想定なので、呼び出し回数は
+    1日あたり数回に収まる。取得に失敗しても要約自体は続行できるよう、
+    失敗時は空dictを返す。
+    """
+    if not player_id or requests is None:
+        return {}
+    try:
+        resp = requests.get(
+            f"{MLB_API_BASE}/people/{player_id}/stats",
+            params={"stats": "season", "group": "pitching", "season": season},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        for st in resp.json().get("stats", []):
+            for split in st.get("splits", []):
+                s = split.get("stat", {})
+                if not s:
+                    continue
+                return {
+                    "era": s.get("era"),
+                    "wins": s.get("wins"),
+                    "losses": s.get("losses"),
+                    "strikeouts": s.get("strikeOuts"),
+                }
+    except Exception as e:
+        print(f"[warn] 投手成績の取得に失敗(player_id={player_id}): {e}")
+    return {}
+
+
 def _team_context_line(team_id: str, team_name: str, standings: dict) -> str:
     """AIに渡すための、1チーム分の順位表コンテキストを組み立てる"""
     s = standings.get(team_id)
     if not s:
         return f"{team_name}: 順位表データなし"
     record = f"{s.wins}勝{s.losses}敗" if (s.wins or s.losses) else "戦績データなし"
-    streak = f"{abs(s.win_streak)}連勝中" if s.win_streak > 0 else (
-        f"{abs(s.win_streak)}連敗中" if s.win_streak < 0 else "連勝連敗なし"
-    )
-    return (
-        f"{team_name}: {record}、地区{s.division_rank}位"
-        f"(首位との差{s.games_back}ゲーム)、{streak}"
-    )
+
+    # 1試合勝った/負けただけの状態を「1連勝中」「1連敗中」と書くと日本語として
+    # 不自然なうえ、勢いがあるかのような誤った印象を与えるため、2以上のときだけ
+    # 連勝・連敗として扱う。
+    if s.win_streak >= 2:
+        streak = f"{s.win_streak}連勝中"
+    elif s.win_streak <= -2:
+        streak = f"{abs(s.win_streak)}連敗中"
+    else:
+        streak = "連勝・連敗はしていない"
+
+    div_name = MLB_DIVISION_NAME_JP.get(MLB_DIVISIONS.get(team_id, ""), "所属地区不明")
+    if s.division_rank == 1:
+        lead = _division_lead_margin(team_id, standings)
+        if lead is not None:
+            rank_part = f"{div_name}の1位(2位に{lead}ゲーム差をつけている)"
+        else:
+            rank_part = f"{div_name}の1位"
+    else:
+        rank_part = f"{div_name}の{s.division_rank}位(同地区首位との差{s.games_back}ゲーム)"
+
+    parts = f"{team_name}: {record}、{rank_part}、{streak}"
+    if s.last_ten:
+        parts += f"、直近10試合は{s.last_ten}"
+    return parts
 
 
 def _build_ai_prompt(game: dict, standings: dict) -> str:
@@ -1042,8 +1184,23 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
     structural_notes = []
     home_div = MLB_DIVISIONS.get(game["home_team_id"])
     away_div = MLB_DIVISIONS.get(game["away_team_id"])
-    if home_div and away_div and home_div == away_div:
-        structural_notes.append("同地区対決である")
+    if home_div and away_div:
+        if home_div == away_div:
+            structural_notes.append(
+                f"両チームとも{MLB_DIVISION_NAME_JP.get(home_div, '同じ地区')}に所属する"
+                "同地区対決であり、順位を直接争う関係にある"
+            )
+        else:
+            # 別地区であることを明示しないと、両チームの順位(1位/2位など)を
+            # 見たAIが「同じ地区で首位を争っている」かのような誤った文章を
+            # 書いてしまう(実際に発生した)。
+            structural_notes.append(
+                f"{game['home_team_name']}は"
+                f"{MLB_DIVISION_NAME_JP.get(home_div, '不明')}、"
+                f"{game['away_team_name']}は"
+                f"{MLB_DIVISION_NAME_JP.get(away_div, '不明')}と、"
+                "所属地区が異なるため、両チームは地区順位を直接争う関係にはない"
+            )
     pair = frozenset({game["home_team_id"], game["away_team_id"]})
     rivalry_type = MLB_RIVALRIES.get(pair)
     if rivalry_type == "historic":
@@ -1075,9 +1232,39 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
             f"\n【MLB公式ハイライト動画のタイトル(参考情報)】\n{game['highlight_title']}\n"
         )
 
+    def _pitcher_line(p, team_name):
+        if not p or not p.get("name"):
+            return None
+        bits = [f"{team_name}先発: {p['name']}"]
+        detail = []
+        if p.get("era") is not None:
+            detail.append(f"今季防御率{p['era']}")
+        if p.get("wins") is not None and p.get("losses") is not None:
+            detail.append(f"{p['wins']}勝{p['losses']}敗")
+        if p.get("strikeouts") is not None:
+            detail.append(f"{p['strikeouts']}奪三振")
+        if detail:
+            bits.append("(" + "、".join(detail) + ")")
+        return "".join(bits)
+
+    pitcher_lines = [
+        line
+        for line in (
+            _pitcher_line(game.get("home_probable"), game["home_team_name"]),
+            _pitcher_line(game.get("away_probable"), game["away_team_name"]),
+        )
+        if line
+    ]
+    pitcher_text = (
+        "\n【先発予定投手】\n" + "\n".join(f"- {l}" for l in pitcher_lines) + "\n"
+        if pitcher_lines
+        else ""
+    )
+
     return (
         f"以下は「{game['matchup']}」({game['league']})という試合についてのデータです。\n\n"
-        f"【チームの状況】\n{home_context}\n{away_context}\n\n"
+        f"【チームの状況】\n{home_context}\n{away_context}\n"
+        f"{pitcher_text}\n"
         f"【構造的な位置づけ】\n{structural_text}\n\n"
         f"【この試合が注目された理由(ルールベースで抽出)】\n{reasons_text}\n"
         f"{highlight_line}\n"
@@ -1101,6 +1288,15 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         "- 「有名選手が揃っている」「注目の一戦だ」のような、データを言い換えた"
         "  だけの薄い文章は禁止。必ず具体的な数字や、上記の構造的な位置づけを"
         "  組み込むこと\n"
+        "- 所属地区を取り違えないこと。上記【チームの状況】に各チームの所属地区を"
+        "  明記してあるので、別々の地区のチーム同士を「同地区で首位を争っている」"
+        "  かのように書くことは絶対に禁止\n"
+        "- 順位差を誇張しないこと。地区首位のチームについては2位との差を明記して"
+        "  あるので、大差をつけて独走している場合に「首位の座が危うい」「正念場」"
+        "  のような、事実と食い違う煽り方をしないこと\n"
+        "- 連勝・連敗は、上記データに書かれている場合のみ言及すること。"
+        "  「連勝・連敗はしていない」と書かれているチームについて、"
+        "  勝手に連勝中・連敗中と書かないこと\n"
         "- 出力1の文体は理路整然とした説明口調にすること。「〜だよ！」「〜だね！」の"
         "  ような話し言葉・感嘆符での締めは禁止。「〜である」「〜になる」のような"
         "  落ち着いた書き言葉で書くこと\n"
@@ -1193,7 +1389,21 @@ def enhance_games_with_ai(
     ][:count]
 
     total_cost = 0.0
+    season = None
     for game in targets:
+        # 先発投手の今季成績を、AI要約を作る試合についてだけ取得する
+        # (全試合ぶん取るとAPI呼び出しが1日30回近くに増えるため、
+        #  実際に文章化する上位数試合に絞っている)。
+        if season is None:
+            season = (output.get("generated_at") or "")[:4] or None
+        for key in ("home_probable", "away_probable"):
+            p = game.get(key)
+            if not p or not p.get("player_id") or p.get("era") is not None:
+                continue
+            stats = fetch_pitcher_season_stats(p["player_id"], season or "")
+            if stats:
+                p.update(stats)
+
         prompt = _build_ai_prompt(game, standings)
         ai_text, cost_usd, in_tok, out_tok = _call_ai(prompt, api_key)
         if ai_text:
