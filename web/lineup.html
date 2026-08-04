@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>マイ・ベストナイン | コレスポ</title>
+<meta name="description" content="MLBの最新成績から、自分だけのベストナインを編成してシェアできます。OPS.900超えの選手は虹色に光ります。" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3009257813842371"
+     crossorigin="anonymous"></script>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0B0E14; --surface: #12161F; --surface-raised: #171C27;
+    --border: #232838; --text: #F2F0E6; --text-dim: #8891A3;
+    --accent: #FFB020; --accent-dim: #4A3A1A; --jp: #49C5B6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto; padding: max(1.5rem, env(safe-area-inset-top)) 1.25rem 3rem;
+    max-width: 560px; background: var(--bg); color: var(--text); line-height: 1.7;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+  }
+  a { color: var(--accent); }
+  .back { display: inline-block; font-size: 0.85rem; color: var(--text-dim);
+          text-decoration: none; margin-bottom: 1rem; }
+  h1 { font-family: 'Oswald', sans-serif; font-size: 1.5rem; color: var(--accent); margin: 0 0 0.3rem; }
+  .lead { color: var(--text-dim); font-size: 0.88rem; margin: 0 0 0.5rem; }
+  .updated { color: var(--text-dim); font-size: 0.75rem; margin: 0 0 1.5rem;
+             font-family: 'JetBrains Mono', monospace; }
+
+  /* --- 編成カード(シェア対象) --- */
+  #lineupCard {
+    background: linear-gradient(160deg, #12161F 0%, #0B0E14 100%);
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.1rem 1rem; margin-bottom: 1.2rem;
+  }
+  .card-head { display: flex; align-items: center; justify-content: space-between;
+               margin-bottom: 0.8rem; }
+  .card-title { font-family: 'Oswald', sans-serif; font-size: 1.05rem; color: var(--accent); }
+  .card-brand { font-size: 0.7rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+
+  .slot {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 9px; border-radius: 8px; margin-bottom: 5px;
+    background: var(--surface-raised); border: 1px solid var(--border);
+    cursor: pointer; position: relative; overflow: hidden;
+  }
+  .slot:active { transform: scale(0.995); }
+  .slot .pos {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600;
+    width: 30px; flex-shrink: 0; color: var(--text-dim); text-align: center;
+  }
+  .slot .who { flex: 1; min-width: 0; }
+  .slot .pname { font-size: 13.5px; font-weight: 600; white-space: nowrap;
+                 overflow: hidden; text-overflow: ellipsis; }
+  .slot .pteam { font-size: 10.5px; color: var(--text-dim);
+                 font-family: 'JetBrains Mono', monospace; }
+  .slot .pstat { font-family: 'JetBrains Mono', monospace; font-size: 12px;
+                 color: var(--accent); flex-shrink: 0; }
+  .slot.empty .pname { color: var(--text-dim); font-weight: 400; }
+
+  /* OPS .900超え / 防御率2点台前半は虹色に光らせる */
+  .slot.elite {
+    border-color: transparent;
+    background:
+      linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box,
+      linear-gradient(100deg, #ff5f6d, #ffc371, #7ee8fa, #a06bfa, #ff5f6d) border-box;
+    border: 2px solid transparent;
+    animation: shimmer 4s linear infinite;
+    background-size: 100% 100%, 300% 100%;
+  }
+  @keyframes shimmer {
+    0% { background-position: 0 0, 0% 50%; }
+    100% { background-position: 0 0, 300% 50%; }
+  }
+  .slot.elite .pstat {
+    background: linear-gradient(100deg, #ff5f6d, #ffc371, #7ee8fa, #a06bfa);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-weight: 700;
+  }
+
+  .card-foot { display: flex; justify-content: space-between; align-items: center;
+               margin-top: 0.7rem; font-size: 0.7rem; color: var(--text-dim);
+               font-family: 'JetBrains Mono', monospace; }
+
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1.5rem; }
+  button {
+    background: var(--surface-raised); color: var(--text); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 8px; font-size: 13px; font-weight: 500;
+    font-family: 'Inter', sans-serif; cursor: pointer;
+  }
+  button.primary { background: var(--accent); color: #1a1300; border-color: var(--accent); font-weight: 600; }
+  button:active { transform: scale(0.98); }
+
+  /* --- 選手選択モーダル --- */
+  #picker { position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+            display: none; align-items: flex-end; justify-content: center; z-index: 50; }
+  #picker.open { display: flex; }
+  .picker-inner {
+    background: var(--surface); border-top-left-radius: 16px; border-top-right-radius: 16px;
+    width: 100%; max-width: 560px; max-height: 78vh; overflow-y: auto;
+    padding: 1rem 1rem 2rem; border: 1px solid var(--border);
+  }
+  .picker-head { display: flex; justify-content: space-between; align-items: center;
+                 margin-bottom: 0.8rem; }
+  .picker-head h2 { font-family: 'Oswald', sans-serif; font-size: 1.05rem; margin: 0; color: var(--accent); }
+  .picker-close { background: none; border: none; color: var(--text-dim); font-size: 20px;
+                  width: auto; padding: 0 6px; }
+  .opt { display: flex; align-items: center; gap: 10px; padding: 9px 8px;
+         border-bottom: 1px solid var(--border); cursor: pointer; }
+  .opt:active { background: var(--surface-raised); }
+  .opt .rank { font-family: 'JetBrains Mono', monospace; font-size: 10px;
+               color: var(--text-dim); width: 20px; flex-shrink: 0; }
+  .opt .info { flex: 1; min-width: 0; }
+  .opt .n { font-size: 13.5px; font-weight: 600; }
+  .opt .t { font-size: 10.5px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+  .opt .s { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); }
+
+  .note { font-size: 0.78rem; color: var(--text-dim); line-height: 1.8; }
+  #loadError { color: var(--text-dim); font-size: 0.88rem; }
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; コレスポ トップへ</a>
+  <h1>マイ・ベストナイン</h1>
+  <p class="lead">MLBの最新成績から、自分だけのベストナインを組んでみましょう。各枠をタップして選手を選べます。</p>
+  <p class="updated" id="updatedAt"></p>
+
+  <div id="loadError" hidden>成績データをまだ読み込めていません。しばらくしてからもう一度お試しください。</div>
+
+  <div id="lineupCard">
+    <div class="card-head">
+      <span class="card-title">MY BEST NINE</span>
+      <span class="card-brand">collespo.com</span>
+    </div>
+    <div id="slots"></div>
+    <div class="card-foot">
+      <span id="cardSeason"></span>
+      <span id="eliteCount"></span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="randomBtn">おまかせ編成</button>
+    <button id="clearBtn">クリア</button>
+    <button id="shareBtn" class="primary" style="grid-column: 1 / -1;">結果をXでシェア</button>
+  </div>
+
+  <p class="note">
+    OPS.900以上の打者、防御率2.50未満の投手は<strong>虹色</strong>に光ります。<br>
+    スクリーンショットを撮ってそのままシェアするのもおすすめです。<br>
+    編成内容はこの端末にのみ保存され、外部には送信されません。
+  </p>
+
+<script>
+const SLOT_ORDER = ['P', 'C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'];
+const SLOT_LABEL = { P: '投', C: '捕', '1B': '一', '2B': '二', '3B': '三',
+                     SS: '遊', LF: '左', CF: '中', RF: '右', DH: 'DH' };
+
+let DATA = null;
+let selection = {};   // slot -> player
+let openSlot = null;
+
+const slotsEl = document.getElementById('slots');
+const pickerEl = document.getElementById('picker');
+
+function isElite(slot, p) {
+  if (!p) return false;
+  if (slot === 'P') return parseFloat(p.era) < 2.50;
+  return parseFloat(p.ops) >= 0.900;
+}
+
+function statText(slot, p) {
+  if (!p) return '';
+  if (slot === 'P') return p.era != null ? `防${p.era}` : '';
+  return p.ops != null ? `OPS ${p.ops}` : '';
+}
+
+function renderSlots() {
+  slotsEl.innerHTML = '';
+  let elite = 0;
+  SLOT_ORDER.forEach((slot) => {
+    const p = selection[slot];
+    const div = document.createElement('div');
+    div.className = 'slot' + (p ? '' : ' empty') + (isElite(slot, p) ? ' elite' : '');
+    if (isElite(slot, p)) elite += 1;
+    div.innerHTML =
+      `<span class="pos">${SLOT_LABEL[slot]}</span>` +
+      `<span class="who"><span class="pname">${p ? escapeHtml(p.name) : 'タップして選ぶ'}</span>` +
+      `<span class="pteam">${p ? escapeHtml(p.team || '') : ''}</span></span>` +
+      `<span class="pstat">${statText(slot, p)}</span>`;
+    div.addEventListener('click', () => openPicker(slot));
+    slotsEl.appendChild(div);
+  });
+  document.getElementById('eliteCount').textContent = elite > 0 ? `★${elite}` : '';
+  save();
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function candidatesFor(slot) {
+  if (!DATA) return [];
+  return slot === 'P' ? (DATA.pitchers || []) : ((DATA.batters || {})[slot] || []);
+}
+
+function openPicker(slot) {
+  openSlot = slot;
+  const list = candidatesFor(slot);
+  const title = slot === 'P' ? '投手' : (DATA.position_names || {})[slot] || slot;
+  let html =
+    `<div class="picker-inner"><div class="picker-head"><h2>${escapeHtml(title)}を選ぶ</h2>` +
+    `<button class="picker-close" id="closePicker">&times;</button></div>`;
+  if (list.length === 0) {
+    html += '<p class="note">この枠の候補データがまだありません。</p>';
+  } else {
+    list.forEach((p, i) => {
+      const sub = slot === 'P'
+        ? `${p.wins ?? '-'}勝${p.losses ?? '-'}敗 ${p.so ?? '-'}奪三振`
+        : `打率${p.avg ?? '-'} ${p.hr ?? '-'}本 ${p.rbi ?? '-'}打点`;
+      html +=
+        `<div class="opt" data-i="${i}"><span class="rank">${i + 1}</span>` +
+        `<span class="info"><span class="n">${escapeHtml(p.name)}</span>` +
+        `<span class="t">${escapeHtml(p.team || '')} / ${escapeHtml(sub)}</span></span>` +
+        `<span class="s">${statText(slot, p)}</span></div>`;
+    });
+  }
+  html += '</div>';
+  pickerEl.innerHTML = html;
+  pickerEl.classList.add('open');
+
+  document.getElementById('closePicker').addEventListener('click', closePicker);
+  pickerEl.querySelectorAll('.opt').forEach((el) => {
+    el.addEventListener('click', () => {
+      selection[openSlot] = list[parseInt(el.dataset.i, 10)];
+      closePicker();
+      renderSlots();
+    });
+  });
+}
+
+function closePicker() {
+  pickerEl.classList.remove('open');
+  pickerEl.innerHTML = '';
+  openSlot = null;
+}
+
+pickerEl.addEventListener('click', (e) => { if (e.target === pickerEl) closePicker(); });
+
+// --- 保存(この端末のみ) ---
+function save() {
+  try {
+    const slim = {};
+    Object.keys(selection).forEach((k) => { if (selection[k]) slim[k] = selection[k]; });
+    window.name = JSON.stringify({ collespoLineup: slim });
+  } catch (e) { /* 保存できなくても編成自体は続けられる */ }
+}
+function load() {
+  try {
+    const parsed = JSON.parse(window.name || '{}');
+    if (parsed && parsed.collespoLineup) selection = parsed.collespoLineup;
+  } catch (e) { selection = {}; }
+}
+
+// --- 操作 ---
+document.getElementById('randomBtn').addEventListener('click', () => {
+  SLOT_ORDER.forEach((slot) => {
+    const list = candidatesFor(slot);
+    if (list.length) selection[slot] = list[Math.floor(Math.random() * Math.min(list.length, 8))];
+  });
+  renderSlots();
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  selection = {};
+  renderSlots();
+});
+
+document.getElementById('shareBtn').addEventListener('click', () => {
+  const filled = SLOT_ORDER.filter((s) => selection[s]);
+  if (filled.length === 0) {
+    alert('まず選手を選んでみてください');
+    return;
+  }
+  const lines = filled.map((s) => `${SLOT_LABEL[s]} ${selection[s].name}`);
+  const elite = filled.filter((s) => isElite(s, selection[s])).length;
+  let text = `私のMLBベストナイン\n${lines.join('\n')}`;
+  if (elite > 0) text += `\n★級 ${elite}人`;
+  text += '\n#MLB #ベストナイン';
+  const url = encodeURIComponent(location.origin + location.pathname);
+  window.open(
+    `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`,
+    '_blank', 'noopener'
+  );
+});
+
+// --- 起動 ---
+(async function init() {
+  load();
+  try {
+    const res = await fetch('player_stats.json?_=' + Date.now());
+    if (!res.ok) throw new Error('not ok');
+    DATA = await res.json();
+    if (DATA.updated_at) {
+      const d = new Date(DATA.updated_at);
+      document.getElementById('updatedAt').textContent =
+        '成績データ: ' + d.toLocaleDateString('ja-JP') + ' 時点';
+    }
+    document.getElementById('cardSeason').textContent = (DATA.season || '') + ' SEASON';
+  } catch (e) {
+    document.getElementById('loadError').hidden = false;
+  }
+  renderSlots();
+})();
+</script>
+
+<div id="picker"></div>
+</body>
+</html>
