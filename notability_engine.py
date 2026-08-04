@@ -645,17 +645,51 @@ MLB_RIVALRIES = {
 
 # 2026年7月時点、Web検索で確認できた範囲のみ記載。追加・更新推奨。
 JP_PLAYERS_SOCCER = [
-    {"name_en": "Kaoru Mitoma", "name_jp": "三笘薫", "team_en": "Brighton"},
-    # 2026年7月時点で退団報道多数(マンU/ニューカッスル/エヴァートン等に興味報道)。
-    # 開幕直前(8月中旬)に必ず再確認すること
-    {"name_en": "Ao Tanaka", "name_jp": "田中碧", "team_en": "Leeds United"},
-    {"name_en": "Daichi Kamada", "name_jp": "鎌田大地", "team_en": "Crystal Palace"},
-    {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂元達裕", "team_en": "Coventry City"},
+    # 2026-27シーズン、5大リーグ所属の日本人選手。
+    # 2026年8月4日に外部の一覧記事と突き合わせて更新。
+    # 欧州の移籍市場は9月2日早朝(日本時間)まで開いているため、
+    # 閉幕後にもう一度確認すること。
+    #
+    # チーム名(team_en)はfootball-data.orgのAPIが返す表記と
+    # 突き合わせるので、表記が合わないと検出できない点に注意。
+
+    # --- プレミアリーグ(イングランド) ---
     {"name_en": "Wataru Endo", "name_jp": "遠藤航", "team_en": "Liverpool"},
+    {"name_en": "Kaoru Mitoma", "name_jp": "三笘薫", "team_en": "Brighton"},
+    {"name_en": "Daichi Kamada", "name_jp": "鎌田大地", "team_en": "Crystal Palace"},
+    {"name_en": "Kota Takai", "name_jp": "高井幸大", "team_en": "Tottenham"},
+    {"name_en": "Ao Tanaka", "name_jp": "田中碧", "team_en": "Leeds United"},
+    {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂元達裕", "team_en": "Coventry City"},
+    {"name_en": "Daizen Maeda", "name_jp": "前田大然", "team_en": "Ipswich Town"},
+    {"name_en": "Hidemasa Morita", "name_jp": "守田英正", "team_en": "Hull City"},
+
+    # --- ラ・リーガ(スペイン) ---
+    {"name_en": "Takefusa Kubo", "name_jp": "久保建英", "team_en": "Real Sociedad"},
+    {"name_en": "Ryunosuke Sato", "name_jp": "佐藤龍之介", "team_en": "Valencia"},
+
+    # --- ブンデスリーガ(ドイツ) ---
+    {"name_en": "Hiroki Ito", "name_jp": "伊藤洋輝", "team_en": "Bayern Munich"},
+    {"name_en": "Koki Machida", "name_jp": "町田浩樹", "team_en": "Hoffenheim"},
+    {"name_en": "Yuito Suzuki", "name_jp": "鈴木唯人", "team_en": "Freiburg"},
+    {"name_en": "Ritsu Doan", "name_jp": "堂安律", "team_en": "Eintracht Frankfurt"},
+    {"name_en": "Kaishu Sano", "name_jp": "佐野海舟", "team_en": "Mainz"},
+    {"name_en": "Sota Kawasaki", "name_jp": "川﨑颯太", "team_en": "Mainz"},
+    {"name_en": "Shuto Machino", "name_jp": "町野修斗", "team_en": "Borussia Monchengladbach"},
+    {"name_en": "Zento Uno", "name_jp": "宇野禅斗", "team_en": "Borussia Monchengladbach"},
+    {"name_en": "Daiki Hashioka", "name_jp": "橋岡大樹", "team_en": "Borussia Monchengladbach"},
+    {"name_en": "Satoshi Tanaka", "name_jp": "田中聡", "team_en": "Schalke"},
+
+    # --- セリエA(イタリア) ---
+    {"name_en": "Zion Suzuki", "name_jp": "鈴木ザイオン", "team_en": "Parma"},
+
+    # --- リーグ・アン(フランス) ---
+    {"name_en": "Takumi Minamino", "name_jp": "南野拓実", "team_en": "Monaco"},
+    {"name_en": "Ayumu Seko", "name_jp": "瀬古歩夢", "team_en": "Le Havre"},
+    {"name_en": "Sota Nakamura", "name_jp": "中村草太", "team_en": "Le Havre"},
+    {"name_en": "Kaito Mizuta", "name_jp": "水多海斗", "team_en": "Le Havre"},
 ]
 
-# 2026年7月時点、Web検索で確認できた範囲。移籍市場が動いている選手がいるため
-# 8月中旬(開幕直前)に必ず再確認すること
+# 移籍市場は9月2日早朝(日本時間)まで開いている。閉幕後に再確認すること。
 
 
 # MLB Stats API のチームIDは実行結果で確認済みの値と一致(108=エンゼルス等)
@@ -742,6 +776,10 @@ MLB_TEAM_COLOR = {
 MLB_API_BASE = "https://statsapi.mlb.com/api/v1"
 
 
+# 日本語名 -> {"player_id", "team_id"}。resolve_jp_player_teams が毎回更新する。
+JP_PLAYER_LOOKUP: dict = {}
+
+
 def resolve_jp_player_teams(date_str: str) -> dict:
     """
     日本人選手の「現在の所属チーム」をMLB Stats APIから動的に解決する。
@@ -766,18 +804,28 @@ def resolve_jp_player_teams(date_str: str) -> dict:
         return {}
 
     name_to_team_id: dict[str, str] = {}
+    name_to_player_id: dict[str, str] = {}
     for player in data.get("people", []):
         full_name = player.get("fullName")
         current_team = player.get("currentTeam") or {}
         team_id = current_team.get("id")
         if full_name and team_id:
             name_to_team_id[full_name] = str(team_id)
+            name_to_player_id[full_name] = str(player.get("id", ""))
 
     jp_team_map: dict[str, list] = {}
+    # 日本語名 -> (player_id, team_id)。打者の試合ログ(連続安打など)を
+    # 引くのに選手IDが要るため、ここで一緒に控えておく。
+    # 1日1回の解決結果を使い回すので、追加のAPI呼び出しは発生しない。
+    JP_PLAYER_LOOKUP.clear()
     for jp in JP_PLAYERS_MLB:
         team_id = name_to_team_id.get(jp["name_en"])
         if team_id:
             jp_team_map.setdefault(team_id, []).append(jp["name_jp"])
+            JP_PLAYER_LOOKUP[jp["name_jp"]] = {
+                "player_id": name_to_player_id.get(jp["name_en"], ""),
+                "team_id": team_id,
+            }
 
     return jp_team_map
 
@@ -1460,6 +1508,8 @@ def collect_log_notes(game: dict, season: str) -> list:
         return []
 
     notes = []
+
+    # 先発予定投手
     for key, team_key in (("home_probable", "home_team_id"), ("away_probable", "away_team_id")):
         p = game.get(key)
         if p and p.get("player_id"):
@@ -1468,6 +1518,29 @@ def collect_log_notes(game: dict, season: str) -> list:
                     p["player_id"], p.get("name", ""), game.get(team_key, ""), season
                 )
             )
+
+    # この試合に絡む日本人打者。先発投手として既に見た選手は重複するので除く。
+    # 対象を絞らないと1試合で何度もAPIを叩くことになるため、上限も設ける。
+    seen = {
+        (game.get(k) or {}).get("name")
+        for k in ("home_probable", "away_probable")
+    }
+    checked = 0
+    for name in (game.get("jp_players") or []):
+        if checked >= 2:
+            break
+        if name in seen:
+            continue
+        info = JP_PLAYER_LOOKUP.get(name)
+        if not info or not info.get("player_id"):
+            continue
+        checked += 1
+        notes.extend(
+            gln.detect_hitting_notes(
+                info["player_id"], name, info.get("team_id", ""), season
+            )
+        )
+
     return notes[:3]
 
 
