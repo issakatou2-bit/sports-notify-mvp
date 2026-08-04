@@ -1288,6 +1288,15 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         else ""
     )
 
+    log_notes = game.get("log_notes") or []
+    log_text = ""
+    if log_notes:
+        log_text = (
+            "\n【その日ならではの見どころ(試合ログから確認済みの事実)】\n"
+            + "\n".join(f"- {n}" for n in log_notes)
+            + "\n"
+        )
+
     venue_text = ""
     if game.get("venue_note"):
         venue_text = (
@@ -1299,6 +1308,7 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         f"以下は「{game['matchup']}」({game['league']})という試合についてのデータです。\n\n"
         f"【チームの状況】\n{home_context}\n{away_context}\n"
         f"{pitcher_text}"
+        f"{log_text}"
         f"{venue_text}\n"
         f"【構造的な位置づけ】\n{structural_text}\n\n"
         f"【この試合が注目された理由(ルールベースで抽出)】\n{reasons_text}\n"
@@ -1429,6 +1439,38 @@ def fetch_mlb_highlight(
     return None, None
 
 
+def collect_log_notes(game: dict, season: str) -> list:
+    """
+    試合ログ由来の見どころを集める。API呼び出しを抑えるため、
+    先発予定投手と、その試合に絡む日本人選手だけを対象にする。
+    game_log_notes モジュールが読み込めない場合は静かに空を返す。
+    """
+    import os
+    import sys as _sys
+
+    # notability_engine.py はリポジトリ直下、モジュールは scripts/ にあるため
+    # 明示的にパスを通す(実行時のカレントディレクトリに依存させない)
+    scripts_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts")
+    if scripts_dir not in _sys.path:
+        _sys.path.insert(0, scripts_dir)
+    try:
+        import game_log_notes as gln
+    except ImportError as e:
+        print(f"[warn] game_log_notes を読み込めませんでした: {e}")
+        return []
+
+    notes = []
+    for key, team_key in (("home_probable", "home_team_id"), ("away_probable", "away_team_id")):
+        p = game.get(key)
+        if p and p.get("player_id"):
+            notes.extend(
+                gln.detect_pitching_notes(
+                    p["player_id"], p.get("name", ""), game.get(team_key, ""), season
+                )
+            )
+    return notes[:3]
+
+
 def enhance_games_with_ai(
     output: dict, standings: dict, api_key: str, count: int = 3
 ) -> None:
@@ -1453,6 +1495,10 @@ def enhance_games_with_ai(
             stats = fetch_pitcher_season_stats(p["player_id"], season or "")
             if stats:
                 p.update(stats)
+
+        # 試合ログから「その日ならではの見どころ」を拾う。
+        # 条件を満たさなければ何も返らないので、毎日必ず出るものではない。
+        game["log_notes"] = collect_log_notes(game, season or "")
 
         prompt = _build_ai_prompt(game, standings)
         ai_text, cost_usd, in_tok, out_tok = _call_ai(prompt, api_key)
