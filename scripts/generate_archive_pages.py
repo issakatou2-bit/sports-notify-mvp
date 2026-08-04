@@ -393,7 +393,7 @@ def render_index_page(entries: list, summaries: dict) -> str:
     return "\n".join(body)
 
 
-def render_sitemap(entries: list) -> str:
+def render_sitemap(entries: list, site_root: pathlib.Path = None) -> str:
     """
     sitemap.xml を組み立てる。日付ページは数が増えていく一方で、トップから
     直接リンクされているわけではないため、クローラーに存在を伝える手段として
@@ -408,8 +408,10 @@ def render_sitemap(entries: list) -> str:
         (f"{SITE_URL}quiz.html", None),
         (f"{SITE_URL}players/", None),
     ]
-    # 選手ページ(generate_player_pages.pyが生成する分)もsitemapに含める
-    players_dir = pathlib.Path("public/players")
+    # 選手ページ(generate_player_pages.pyが生成する分)もsitemapに含める。
+    # パスは site_root から導出する(固定文字列にすると、実行時の
+    # カレントディレクトリ次第で見つからず、静かに漏れてしまうため)。
+    players_dir = (site_root or pathlib.Path("public")) / "players"
     if players_dir.exists():
         for f in sorted(players_dir.glob("*.html")):
             if f.name != "index.html":
@@ -490,7 +492,9 @@ def main():
 
     site_root = pathlib.Path(args.site_root)
     site_root.mkdir(parents=True, exist_ok=True)
-    (site_root / "sitemap.xml").write_text(render_sitemap(entries), encoding="utf-8")
+    (site_root / "sitemap.xml").write_text(
+        render_sitemap(entries, site_root), encoding="utf-8"
+    )
     (site_root / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}sitemap.xml\n", encoding="utf-8"
     )

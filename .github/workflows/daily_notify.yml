@@ -90,28 +90,11 @@ jobs:
         with:
           path: public
 
-      # 初回セットアップ時はPUSH_SUBSCRIPTIONがまだ無いため、このステップは
-      # Secretsが設定されてから初めて実行される(それまでは自動でスキップ)
-      - name: Check if push subscription is configured
-        id: check_push
-        env:
-          PUSH_SUBSCRIPTION: ${{ secrets.PUSH_SUBSCRIPTION }}
-        run: |
-          if [ -n "$PUSH_SUBSCRIPTION" ]; then
-            echo "configured=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::PUSH_SUBSCRIPTIONが未設定のため通知送信をスキップしました"
-          fi
-
-      - name: Send push notification
-        if: steps.check_push.outputs.configured == 'true'
-        env:
-          PUSH_SUBSCRIPTION: ${{ secrets.PUSH_SUBSCRIPTION }}
-          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
-          VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}
-          SITE_URL: https://collespo.com/
-        run: python scripts/send_push.py
+      # 旧方式(VAPID + scripts/send_push.py)のステップはここにあったが、
+      # OneSignalへの移行が完了し、購読者はすべてOneSignal側で管理して
+      # いるため削除した。scripts/send_push.py への依存も無くなっている。
+      # (Secretsの PUSH_SUBSCRIPTION / VAPID_PRIVATE_KEY / VAPID_SUBJECT も
+      #  もう参照されないので、GitHub側から削除して構わない)
 
       - name: Post to Bluesky
         env:
