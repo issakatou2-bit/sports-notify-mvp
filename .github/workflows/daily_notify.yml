@@ -50,11 +50,22 @@ jobs:
           python scripts/generate_rss.py --input notable_games.json --out feed.xml \
             --site-url "https://collespo.com/"
 
+      # 選手の所属変化を検知してニュース化する。
+      # 差分は「候補」に過ぎないため、スクリプト内でAPIに問い合わせて
+      # 裏が取れたものだけを出力する(検証に落ちたものは公開しない)。
+      # スナップショットは次回比較用にリポジトリへコミットする。
+      - name: Detect roster changes
+        run: |
+          mkdir -p public
+          python scripts/detect_roster_changes.py \
+            --snapshot data/roster_snapshot.json \
+            --out public/news.json
+
       - name: Commit archive
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add archive/ || true
+          git add archive/ data/ || true
           git diff --cached --quiet || git commit -m "archive: ${{ github.run_id }}"
           git push || echo "変更が無いか、push対象が無いためスキップ"
 
@@ -65,11 +76,6 @@ jobs:
           cp notable_games.json public/games.json
           cp feed.xml public/feed.xml
 
-      # アーカイブを「日付ごとの静的HTML」として生成する。
-      # これまでarchive/はリポジトリにコミットされるだけでPagesには
-      # 含まれていなかったため、蓄積したデータが公開サイトから一切
-      # 参照できない状態だった(archive.htmlも空表示になっていた)。
-      # ここでpublic配下に出力することで、その問題も併せて解消する。
       # ベストナイン編成用の選手成績。MLB Stats APIのseason成績は試合ごとに
       # 更新されるため、毎日ここで取り直せば常に最新の状態が保たれる。
       - name: Generate player stats
@@ -83,6 +89,9 @@ jobs:
             --archive-dir archive \
             --out-dir public/players
 
+      # アーカイブを「日付ごとの静的HTML」として生成する。
+      # public/ に出力することで、蓄積したデータが公開サイトから
+      # 日付ごとの独立したURLで読める状態になる。
       - name: Generate archive pages
         run: |
           python scripts/generate_archive_pages.py \

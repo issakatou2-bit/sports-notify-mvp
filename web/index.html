@@ -311,6 +311,13 @@
     color: var(--text-dim);
     margin: 0 0 8px;
   }
+  .news-list { list-style: none; padding: 0; margin: 0; }
+  .news-list li {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--jp); border-radius: 8px;
+    padding: 9px 12px; margin-bottom: 6px; font-size: 13px;
+  }
+  .news-note { font-size: 10.5px; color: var(--text-dim); margin: 6px 0 0; }
   .ad-label {
     display: inline-block;
     margin-left: 8px;
@@ -482,6 +489,12 @@
 <div class="tabs" id="tabs">
   <div class="tab active" data-league="MLB">MLB</div>
   <div class="tab" data-league="SOCCER">欧州サッカー</div>
+</div>
+
+<div class="section" id="newsSection" hidden>
+  <p class="eyebrow">最近の動き</p>
+  <ul class="news-list" id="newsList"></ul>
+  <p class="news-note">MLB公式データの変化から自動検出し、内容を確認できたものだけを掲載しています。</p>
 </div>
 
 <p class="eyebrow" id="pickLabel">Pick</p>
@@ -752,15 +765,16 @@
         }
       }
 
-      // 先発予定投手(分かっている場合のみ)
+      // 先発予定投手。カード見出しの並び(ホーム→アウェイ)と順序を揃える。
+      // 逆順だと「どちらの球団の投手か」が読み取りにくく、混乱のもとになる。
       const pitchers = [];
-      if (top.away_probable && top.away_probable.name) {
-        pitchers.push(`${top.away_team_name} ${top.away_probable.name}` +
-          (top.away_probable.era ? `(防${top.away_probable.era})` : ''));
-      }
       if (top.home_probable && top.home_probable.name) {
         pitchers.push(`${top.home_team_name} ${top.home_probable.name}` +
           (top.home_probable.era ? `(防${top.home_probable.era})` : ''));
+      }
+      if (top.away_probable && top.away_probable.name) {
+        pitchers.push(`${top.away_team_name} ${top.away_probable.name}` +
+          (top.away_probable.era ? `(防${top.away_probable.era})` : ''));
       }
       if (pitchers.length > 0) {
         const p = document.createElement('p');
@@ -849,6 +863,27 @@
       allEl.innerHTML = '';
     }
   }
+
+  // --- 最近の動き(ロースター変化のニュース) ---
+  (async function loadNews() {
+    try {
+      const res = await fetch('news.json?_=' + Date.now());
+      if (!res.ok) return;
+      const data = await res.json();
+      const items = (data.news || []).slice(0, 3);
+      if (items.length === 0) return;
+      const ul = document.getElementById('newsList');
+      ul.innerHTML = '';
+      items.forEach((n) => {
+        const li = document.createElement('li');
+        li.textContent = n.text;
+        ul.appendChild(li);
+      });
+      document.getElementById('newsSection').hidden = false;
+    } catch (e) {
+      // ニュースが取れなくても本体の表示には影響させない
+    }
+  })();
 
   // --- メニュー(ドロワー)の開閉 ---
   (function initDrawer() {

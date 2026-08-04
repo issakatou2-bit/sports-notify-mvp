@@ -148,6 +148,22 @@ def today_or_tomorrow_label(top_game: dict) -> str:
         return "注目試合"
 
 
+def load_news(path: str = "public/news.json", limit: int = 2) -> list:
+    """
+    検証を通ったニュース(detect_roster_changes.pyの出力)を読み込む。
+    ファイルが無い/空の場合は空リストを返し、投稿は試合情報のみになる。
+    """
+    import os
+
+    if not os.path.exists(path):
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return (json.load(f).get("news") or [])[:limit]
+    except (json.JSONDecodeError, OSError):
+        return []
+
+
 def load_notable_games(path: str, limit: int = 3):
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -203,6 +219,15 @@ def main():
     hashtags = collect_hashtags(notable_games)
     hashtags_display = " ".join(f"#{t}" for t in hashtags)
     body_text = build_post_body(notable_games, hashtags_display)
+
+    # 検証済みのニュースがあれば1件だけ添える。
+    # 文字数に収まる場合のみ入れる(試合情報を削ってまで入れない)。
+    news = load_news()
+    if news:
+        candidate = body_text + "\n" + news[0]["text"]
+        reserved = len(hashtags_display) + len(SITE_URL) + 4
+        if len(candidate) + reserved <= MAX_POST_GRAPHEMES:
+            body_text = candidate
 
     try:
         from atproto import Client, client_utils
