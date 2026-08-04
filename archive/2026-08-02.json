@@ -51,7 +51,12 @@
         "away_wins_in_stretch": 0
       },
       "ai_summary": "シーズン中盤戦において、同じテキサス州の地区内ライバル同士による首位争いの直接対決である。アストロズは57勝55敗で地区首位に立ち5連勝中という勢いを保つ一方、レンジャーズは55勝56敗で1.5ゲーム差の2位から巻き返しを図っており、このシリーズ第3戦の結果が両球団の今後の順位争いに大きな影響を与えることになる。また、日本の投手である今井達也がアストロズの一員として活躍していることも、国内視聴者にとって注視する理由となっている。",
-      "notification_hook": "首位アストロズが5連勝で地区2位レンジャーズを追い詰める。今井達也も登場するシリーズ最終戦。"
+      "notification_hook": "首位アストロズが5連勝で地区2位レンジャーズを追い詰める。今井達也も登場するシリーズ最終戦。",
+      "final_score": {
+        "home": 7,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824648",
@@ -99,7 +104,12 @@
         "away_wins_in_stretch": 1
       },
       "ai_summary": "シーズン終盤に差し掛かる中、両チームとも自地区2位の立場で、首位との距離が異なる状況にあります。カブスは地区首位との差が6.5ゲーム、ヤンキースは3.5ゲーム差という、プレーオフ進出への重要性が異なる段階での対戦となります。シリーズを1勝1敗で迎える第3戦は、この直近の好成績チーム同士の対戦がどちらにいかなる勢いをもたらすかが、後半戦の流れを左右する試合になる。",
-      "notification_hook": "首位との差3.5ゲーム。ヤンキース、今永・鈴木誠也のカブスとの決着戦に挑む"
+      "notification_hook": "首位との差3.5ゲーム。ヤンキース、今永・鈴木誠也のカブスとの決着戦に挑む",
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823919",
@@ -149,7 +159,12 @@
         "away_wins_in_stretch": 2
       },
       "ai_summary": "ドジャースは69勝42敗で地区首位に立つ一方、レッドソックスは59勝51敗で首位から6.0ゲーム離れており、この試合はシリーズ最終戦となる。直近の対戦ではレッドソックスが2連勝しており、現在4連勝中という勢いに乗る同チームが、2連敗中のドジャースを相手に、首位チームとの差を縮めるためにシリーズを制することができるかが焦点となる。大谷翔平や佐々木朗希といったドジャースの主力と、吉田正尚を擁するレッドソックスの対戦は、シーズン後半戦における地区優位性の争いを象徴する一戦である。",
-      "notification_hook": "首位ドジャース2連敗、勢いレッドソックスが最終戦で地区差を詰めるか"
+      "notification_hook": "首位ドジャース2連敗、勢いレッドソックスが最終戦で地区差を詰めるか",
+      "final_score": {
+        "home": 4,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822783",
@@ -189,7 +204,12 @@
           "text": "カージナルスにはヌートバーが所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822943",
@@ -228,7 +248,12 @@
           "text": "レイズは自地区1位、ホワイトソックスは自地区1位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823996",
@@ -267,7 +292,12 @@
           "text": "エンゼルスは5連敗中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823592",
@@ -301,7 +331,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824323",
@@ -335,7 +370,12 @@
           "text": "ロッキーズには菅野智之が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 8,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823270",
@@ -369,7 +409,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824891",
@@ -395,7 +440,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824807",
@@ -421,7 +471,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824404",
@@ -447,7 +502,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824483",
@@ -473,7 +533,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 10,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824971",
@@ -499,7 +564,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 11,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823107",
@@ -525,7 +595,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 7,
+        "away": 6,
+        "winner": "home"
+      }
     }
   ]
 }
