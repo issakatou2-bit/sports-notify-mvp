@@ -64,6 +64,9 @@ def game_hook_line(game: dict) -> str:
     """1試合分の通知本文の1行を組み立てる。'23:10 CWS vs HOU 村上の一発は出るか、HOUは5連勝中' の形。"""
     matchup = game.get("abbr_matchup") or game["matchup"]
     hook = game.get("notification_hook") or build_rule_based_hook(game)
+    # 解説文の要点強調に使う【】がフック文へ混ざることがあるため、
+    # プレーンテキストで表示される通知・SNS投稿では取り除く。
+    hook = hook.replace("【", "").replace("】", "")
     start = game.get("start_time_jst")
     time_part = ""
     if start and " " in start:

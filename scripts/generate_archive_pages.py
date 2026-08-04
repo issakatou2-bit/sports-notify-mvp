@@ -106,6 +106,8 @@ STYLE = """
   }
   .badge.jp { color: var(--jp); border-color: var(--jp); }
   .summary { font-size: 0.95rem; margin: 0 0 0.9rem; }
+  mark { background: linear-gradient(transparent 58%, rgba(255,176,32,0.32) 58%);
+         color: var(--text); font-weight: 600; padding: 0 1px; }
   ul.reasons { padding-left: 1.1rem; margin: 0; }
   ul.reasons li { font-size: 0.87rem; color: var(--text-dim); }
   .video { margin-top: 1rem; }
@@ -277,7 +279,13 @@ def render_game(g: dict) -> str:
     parts.append(render_badges(g))
 
     if g.get("ai_summary"):
-        parts.append(f'<p class="summary">{html.escape(g["ai_summary"])}</p>')
+        # AIが【】で囲んだ要点だけをマーカー表示にする。
+        # 先にエスケープしてからタグを差し込むことで、生成文が
+        # そのままHTMLとして解釈されることを防いでいる。
+        summary = re.sub(
+            r"【([^】]{1,40})】", r"<mark>\\1</mark>", html.escape(g["ai_summary"])
+        )
+        parts.append(f'<p class="summary">{summary}</p>')
 
     visible_reasons = [
         r for r in g.get("reasons", []) if r.get("visible", True) and r.get("text")

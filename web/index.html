@@ -311,6 +311,12 @@
     color: var(--text-dim);
     margin: 0 0 8px;
   }
+  mark {
+    background: linear-gradient(transparent 58%, rgba(255, 176, 32, 0.32) 58%);
+    color: var(--text);
+    font-weight: 600;
+    padding: 0 1px;
+  }
   .card .venue-note {
     font-size: 11.5px;
     color: var(--accent);
@@ -534,6 +540,11 @@
     document.getElementById('status').textContent = text;
   }
 
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
   function contrastColor(hex) {
     if (!hex) return '#fff';
     const r = parseInt(hex.slice(1, 3), 16);
@@ -751,7 +762,11 @@
       if (top.ai_summary) {
         const ai = document.createElement('p');
         ai.className = 'ai-summary';
-        ai.textContent = top.ai_summary;
+        // AIが【】で囲んだ要点だけをマーカー表示にする。
+        // textContentではなくinnerHTMLを使うため、必ず先にエスケープしてから
+        // マーカー用のタグだけを差し込む(生成文をそのまま流し込まない)。
+        ai.innerHTML = escapeHtml(top.ai_summary)
+          .replace(/【([^】]{1,40})】/g, '<mark>$1</mark>');
         card.appendChild(ai);
       }
 
