@@ -52,7 +52,9 @@ PLAYERS_PER_SLOT = 12
 PITCHER_COUNT = 15
 
 # 規定打席に満たない選手が上位に来ないよう、最低打席数を設ける
-MIN_PLATE_APPEARANCES = 150
+# 打席数(plateAppearances)は基本のseason成績に含まれないことがあるため、
+# 必ず含まれる打数(atBats)を基準にする
+MIN_AT_BATS = 150
 MIN_INNINGS_PITCHED = 50.0
 
 
@@ -65,6 +67,8 @@ def _safe_float(v, default=0.0):
 
 def fetch_hitting(season: str) -> list:
     """打者の今季成績を取得する。OPS順の上位から必要数を確保する。"""
+    # sortStat はこのエンドポイントでは有効なパラメータではないため指定しない
+    # (別系統の bdfed エンドポイント用のもの)。並べ替えは取得後に自前で行う。
     try:
         resp = requests.get(
             f"{MLB_API_BASE}/stats",
@@ -73,10 +77,9 @@ def fetch_hitting(season: str) -> list:
                 "group": "hitting",
                 "season": season,
                 "sportId": 1,
-                "limit": 400,
-                "sortStat": "onBasePlusSlugging",
+                "limit": 1200,
             },
-            timeout=20,
+            timeout=30,
         )
         resp.raise_for_status()
     except Exception as e:
@@ -92,8 +95,15 @@ def fetch_hitting(season: str) -> list:
             pos = (split.get("position") or player.get("primaryPosition") or {}).get(
                 "abbreviation"
             )
+            # plateAppearances は seasonAdvanced 側にしか無いことがあるため、
+            # 基本の season 成績に必ず含まれる atBats を主軸に判定する。
+            # どちらも取れない場合は「弾かない」(0人になるより、多めに出す)。
+            ab = stat.get("atBats")
             pa = stat.get("plateAppearances")
-            if pa is None or int(pa) < MIN_PLATE_APPEARANCES:
+            qualifier = _safe_float(pa, 0.0) or _safe_float(ab, 0.0)
+            if qualifier and qualifier < MIN_AT_BATS:
+                continue
+            if stat.get("ops") is None:
                 continue
             out.append(
                 {
@@ -105,7 +115,7 @@ def fetch_hitting(season: str) -> list:
                     "avg": stat.get("avg"),
                     "hr": stat.get("homeRuns"),
                     "rbi": stat.get("rbi"),
-                    "pa": pa,
+                    "pa": pa or ab,
                 }
             )
     return out
@@ -121,10 +131,9 @@ def fetch_pitching(season: str) -> list:
                 "group": "pitching",
                 "season": season,
                 "sportId": 1,
-                "limit": 200,
-                "sortStat": "earnedRunAverage",
+                "limit": 800,
             },
-            timeout=20,
+            timeout=30,
         )
         resp.raise_for_status()
     except Exception as e:
@@ -138,7 +147,10 @@ def fetch_pitching(season: str) -> list:
             stat = split.get("stat") or {}
             team = split.get("team") or {}
             ip = _safe_float(stat.get("inningsPitched"), 0.0)
-            if ip < MIN_INNINGS_PITCHED:
+            # 投球回が取れない場合は弾かず、防御率が無い場合のみ除外する
+            if ip and ip < MIN_INNINGS_PITCHED:
+                continue
+            if stat.get("era") is None:
                 continue
             out.append(
                 {
@@ -189,6 +201,8 @@ def main():
 
     batters = fetch_hitting(season)
     pitchers = fetch_pitching(season)
+    # 0人になった場合に原因を追えるよう、段階ごとの件数を必ずログに出す
+    print(f"[info] 取得: 打者{len(batters)}名 / 投手{len(pitchers)}名")
 
     if not batters and not pitchers:
         print("[warn] 選手成績を1件も取得できませんでした。JSONは出力しません。")
@@ -207,7 +221,9 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False)
 
-    total = sum(len(v) for v in data["batters"].values()) + len(pitchers)
+    per_slot = {k: len(v) for k, v in data["batters"].items()}
+    total = sum(per_slot.values()) + len(pitchers)
+    print(f"[info] ポジション別: {per_slot}")
     print(f"[info] 選手成績を出力しました({total}名) -> {out_path}")
 
 

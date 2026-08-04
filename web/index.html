@@ -311,6 +311,18 @@
     color: var(--text-dim);
     margin: 0 0 8px;
   }
+  .ad-label {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 9.5px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    vertical-align: middle;
+  }
   mark {
     background: linear-gradient(transparent 58%, rgba(255, 176, 32, 0.32) 58%);
     color: var(--text);
@@ -469,7 +481,7 @@
 
 <div class="tabs" id="tabs">
   <div class="tab active" data-league="MLB">MLB</div>
-  <div class="tab" data-league="SOCCER">5大リーグ</div>
+  <div class="tab" data-league="SOCCER">欧州サッカー</div>
 </div>
 
 <p class="eyebrow" id="pickLabel">Pick</p>
@@ -488,7 +500,7 @@
   <p class="sub">通知の設定(初回のみ)</p>
   <div class="league-toggles">
     <label><input type="checkbox" id="notifyMlb" checked> MLBの通知</label>
-    <label><input type="checkbox" id="notifySoccer" checked> 5大リーグの通知</label>
+    <label><input type="checkbox" id="notifySoccer" checked> 欧州サッカーの通知</label>
   </div>
   <button id="subscribeBtn">通知を有効にする</button>
   <div id="status"></div>
@@ -504,13 +516,19 @@
 </div>
 
 <div class="section" id="watchSection">
-  <p class="eyebrow">日本での視聴方法</p>
+  <p class="eyebrow">日本での視聴方法<span class="ad-label">広告を含みます</span></p>
   <p class="sub">
     MLBは<a href="https://www.spotvnow.jp/" target="_blank" rel="noopener">SPOTV NOW</a>・
     <a href="https://www.nhk.jp/" target="_blank" rel="noopener">NHK</a>・
     Prime Video(SPOTVチャンネル)などで視聴できます。
-    5大リーグは<a href="https://www.dazn.com/ja-JP/" target="_blank" rel="noopener">DAZN</a>が中心です。
+    欧州5大リーグは<a href="https://www.dazn.com/ja-JP/" target="_blank" rel="noopener">DAZN</a>、
+    チャンピオンズリーグは
+    <a href="https://px.a8.net/svt/ejp?a8mat=4B8ACW+2LH2R6+5DFW+5YRHE" rel="nofollow noopener" target="_blank">WOWOWオンデマンド</a><img border="0" width="1" height="1" src="https://www13.a8.net/0.gif?a8mat=4B8ACW+2LH2R6+5DFW+5YRHE" alt="">が中心です。
     (放送予定は日によって変わるため、各サービスで最新情報をご確認ください)
+  </p>
+  <p class="sub" style="font-size: 11.5px;">
+    ※上記のうち一部のリンクは広告(アフィリエイト)です。リンク経由でお申し込みがあった場合、
+    当サイトに紹介料が支払われることがあります。紹介料の有無によって掲載内容を変えることはありません。
   </p>
 </div>
 

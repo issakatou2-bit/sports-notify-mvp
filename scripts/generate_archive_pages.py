@@ -106,6 +106,10 @@ STYLE = """
   }
   .badge.jp { color: var(--jp); border-color: var(--jp); }
   .summary { font-size: 0.95rem; margin: 0 0 0.9rem; }
+  .watch { font-size: 0.85rem; margin: 0.6rem 0 0; }
+  .ad-label { display: inline-block; margin-left: 6px; font-size: 9.5px;
+              color: var(--text-dim); border: 1px solid var(--border);
+              border-radius: 3px; padding: 1px 5px; vertical-align: middle; }
   mark { background: linear-gradient(transparent 58%, rgba(255,176,32,0.32) 58%);
          color: var(--text); font-weight: 600; padding: 0 1px; }
   ul.reasons { padding-left: 1.1rem; margin: 0; }
@@ -283,7 +287,7 @@ def render_game(g: dict) -> str:
         # 先にエスケープしてからタグを差し込むことで、生成文が
         # そのままHTMLとして解釈されることを防いでいる。
         summary = re.sub(
-            r"【([^】]{1,40})】", r"<mark>\\1</mark>", html.escape(g["ai_summary"])
+            r"【([^】]{1,40})】", r"<mark>\1</mark>", html.escape(g["ai_summary"])
         )
         parts.append(f'<p class="summary">{summary}</p>')
 
@@ -308,6 +312,18 @@ def render_game(g: dict) -> str:
         )
         parts.append("<p>MLB公式チャンネルのハイライト映像</p>")
         parts.append("</div>")
+
+    # チャンピオンズリーグは日本ではWOWOWが独占放送しているため、
+    # その試合に限って視聴導線を添える(広告リンクであることを明示する)。
+    if g.get("league") == "チャンピオンズリーグ":
+        parts.append(
+            '<p class="watch">日本での中継: '
+            '<a href="https://px.a8.net/svt/ejp?a8mat=4B8ACW+2LH2R6+5DFW+5YRHE" '
+            'rel="nofollow noopener" target="_blank">WOWOWオンデマンド</a>'
+            '<img border="0" width="1" height="1" '
+            'src="https://www13.a8.net/0.gif?a8mat=4B8ACW+2LH2R6+5DFW+5YRHE" alt="">'
+            '<span class="ad-label">広告</span></p>'
+        )
 
     detail_query = f'{g.get("home_team_name", "")} {g.get("away_team_name", "")} 速報'
     detail_url = "https://search.yahoo.co.jp/search?p=" + detail_query.replace(" ", "+")
