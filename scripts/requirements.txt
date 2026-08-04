@@ -1,9 +1,11 @@
-# anthropic: AI要約の生成(notability_engine.py)
-# atproto:   Bluesky自動投稿(post_bluesky.py)
-# requests:  MLB Stats API / football-data.org / OneSignal / YouTube への通信
-#
-# pywebpush は旧VAPID方式(send_push.py)専用だったが、OneSignalへの移行完了に
-# 伴い不要になったため削除した。
+# anthropic: AI要約・ナレーション原稿の生成
+# atproto:   Bluesky自動投稿
+# requests:  MLB Stats API / football-data.org / OneSignal / VOICEVOX への通信
+# pillow:    動画フレームの描画
+# google-api-python-client, google-auth: YouTubeへの動画アップロード
 anthropic
 atproto
 requests
+pillow
+google-api-python-client
+google-auth

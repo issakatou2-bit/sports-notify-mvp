@@ -1,0 +1,321 @@
+"""
+ナレーション音声と試合データから、縦型のショート動画を生成する。
+
+設計:
+  ・音声の実測長(manifest.json)に合わせて各画面の表示時間を決めるため、
+    ナレーションと画面がズレない。
+  ・静止画の切り替えではなく、フレームを1枚ずつ描いて動かす
+    (数字のカウントアップ、カードのスライドイン、ゆっくりした背景の動き)。
+  ・画像素材は使わず、全てプログラムで描画する。
+    著作権上の懸念が無く、毎日安定した品質で出せるため。
+
+出力: build/video/collespo_short.mp4
+
+使い方:
+  python3 scripts/generate_video.py \
+      --games notable_games.json --audio-dir build/audio --out build/video
+"""
+
+import argparse
+import json
+import math
+import pathlib
+import shutil
+import subprocess
+import sys
+
+from PIL import Image, ImageDraw, ImageFont
+
+W, H = 1080, 1920
+FPS = 30
+
+BG = (11, 14, 20)
+SURF = (18, 22, 31)
+SURF2 = (23, 28, 39)
+TEXT = (242, 240, 230)
+DIM = (136, 145, 163)
+ACCENT = (255, 176, 32)
+ACCENT_DIM = (74, 58, 26)
+JP = (73, 197, 182)
+
+FONT_PATH = "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc"
+FONT_PATH_FALLBACK = "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf"
+
+
+def font(size: int):
+    try:
+        return ImageFont.truetype(FONT_PATH, size)
+    except OSError:
+        return ImageFont.truetype(FONT_PATH_FALLBACK, size)
+
+
+def ease_out(t: float) -> float:
+    """0..1 を、最初速く最後ゆっくりに変換する"""
+    return 1 - (1 - t) ** 3
+
+
+def wrap(draw, text, fnt, max_w):
+    lines, cur = [], ""
+    for ch in text:
+        if ch == "\n":
+            lines.append(cur)
+            cur = ""
+            continue
+        if draw.textlength(cur + ch, font=fnt) > max_w:
+            lines.append(cur)
+            cur = ch
+        else:
+            cur += ch
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def base_frame(progress: float):
+    """全画面共通の下地。背景がゆっくり動いて単調さを避ける。"""
+    im = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(im)
+    # ゆっくり流れる斜めのアクセント
+    offset = int(progress * 240)
+    for i in range(-2, 6):
+        x = i * 340 + offset
+        d.polygon(
+            [(x, H), (x + 150, H), (x + 400, 0), (x + 250, 0)],
+            fill=(14, 18, 26),
+        )
+    d.rectangle([0, H - 22, W, H], fill=ACCENT)
+    return im, d
+
+
+def draw_brand(d, small=False):
+    d.text((70, 70), "コレスポ", font=font(46 if small else 56), fill=ACCENT)
+
+
+def team_badge(d, x, y, abbr, color, w=118, h=64):
+    if not abbr:
+        return
+    col = color or (60, 66, 80)
+    if isinstance(col, str) and col.startswith("#"):
+        col = tuple(int(col[i:i + 2], 16) for i in (1, 3, 5))
+    lum = (0.299 * col[0] + 0.587 * col[1] + 0.114 * col[2]) / 255
+    fg = (17, 17, 17) if lum > 0.6 else (255, 255, 255)
+    d.rounded_rectangle([x, y, x + w, y + h], 12, fill=col)
+    f = font(34)
+    tw = d.textlength(abbr, font=f)
+    d.text((x + (w - tw) / 2, y + 12), abbr, font=f, fill=fg)
+
+
+def render_intro(progress: float, date_label: str):
+    im, d = base_frame(progress)
+    e = ease_out(min(1.0, progress * 2.4))
+    slide = int((1 - e) * 90)
+    d.text((80, 680 + slide), "コレスポ", font=font(140), fill=ACCENT)
+    if progress > 0.25:
+        e2 = ease_out(min(1.0, (progress - 0.25) * 3))
+        y = 880 + int((1 - e2) * 40)
+        d.text((80, y), f"{date_label} の注目試合", font=font(64), fill=TEXT)
+    d.text((80, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
+def render_game(progress: float, g: dict, index: int, total: int):
+    im, d = base_frame(progress)
+    draw_brand(d)
+
+    d.text((70, 180), f"PICK {index + 1} / {total}", font=font(40), fill=ACCENT)
+    d.text((70, 250), (g.get("start_time_jst") or "") + " JST", font=font(46), fill=DIM)
+
+    # --- 対戦カード(左からスライドイン) ---
+    e = ease_out(min(1.0, progress * 3.2))
+    dx = int((1 - e) * 160)
+    card_y = 380
+    d.rounded_rectangle([60 - dx, card_y, W - 60 - dx, card_y + 300], 26, fill=SURF)
+
+    for i, side in enumerate(("home", "away")):
+        y = card_y + 40 + i * 120
+        team_badge(d, 100 - dx, y, g.get(f"{side}_abbr"), g.get(f"{side}_color"))
+        name = g.get(f"{side}_team_name", "")
+        d.text((240 - dx, y + 4), name, font=font(58), fill=TEXT)
+        if g.get(f"{side}_has_jp"):
+            nw = d.textlength(name, font=font(58))
+            d.rounded_rectangle(
+                [250 - dx + nw, y + 12, 250 - dx + nw + 74, y + 54], 8, fill=JP
+            )
+            d.text((262 - dx + nw, y + 14), "JP", font=font(30), fill=(11, 14, 20))
+
+    y = 740
+    # --- 先発投手 ---
+    pitchers = []
+    for side, label in (("home", ""), ("away", "")):
+        p = g.get(f"{side}_probable")
+        if p and p.get("name"):
+            era = f" ({p['era']})" if p.get("era") else ""
+            pitchers.append(f"{p['name']}{era}")
+    if pitchers and progress > 0.2:
+        d.text((70, y), "先発予定", font=font(34), fill=DIM)
+        y += 52
+        for line in pitchers:
+            d.text((70, y), line, font=font(42), fill=TEXT)
+            y += 58
+        y += 24
+
+    # --- 注目理由(1つずつ順に出す) ---
+    reasons = [r["text"] for r in (g.get("reasons") or [])
+               if r.get("visible", True) and r.get("text")][:3]
+    for i, r in enumerate(reasons):
+        appear = 0.28 + i * 0.16
+        if progress < appear:
+            continue
+        e2 = ease_out(min(1.0, (progress - appear) * 5))
+        dy = int((1 - e2) * 24)
+        for line in wrap(d, "・" + r, font(42), W - 190):
+            d.text((80, y + dy), line, font=font(42), fill=TEXT)
+            y += 62
+        y += 14
+
+    # --- 球場の見どころ ---
+    if g.get("venue_note") and progress > 0.6:
+        y = max(y + 30, 1480)
+        d.rounded_rectangle([60, y, W - 60, y + 230], 20, fill=ACCENT_DIM)
+        yy = y + 26
+        d.text((90, yy), g.get("venue_jp", ""), font=font(38), fill=ACCENT)
+        yy += 56
+        for line in wrap(d, g["venue_note"], font(34), W - 200)[:3]:
+            d.text((90, yy), line, font=font(34), fill=ACCENT)
+            yy += 48
+    return im
+
+
+def render_news(progress: float, text: str):
+    im, d = base_frame(progress)
+    draw_brand(d)
+    d.text((70, 200), "最近の動き", font=font(52), fill=JP)
+    e = ease_out(min(1.0, progress * 3))
+    dy = int((1 - e) * 40)
+    y = 420 + dy
+    d.rounded_rectangle([60, y - 40, W - 60, y + 300], 24, fill=SURF)
+    yy = y
+    for line in wrap(d, text, font(50), W - 200):
+        d.text((100, yy), line, font=font(50), fill=TEXT)
+        yy += 74
+    return im
+
+
+def render_outro(progress: float):
+    im, d = base_frame(progress)
+    e = ease_out(min(1.0, progress * 2))
+    d.text((80, 760), "コレスポ", font=font(120), fill=ACCENT)
+    d.text((80, 920), "collespo.com", font=font(58), fill=TEXT)
+    if progress > 0.3:
+        d.text((80, 1030), "毎日19時 更新", font=font(46), fill=DIM)
+    return im
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--games", default="notable_games.json")
+    parser.add_argument("--audio-dir", default="build/audio")
+    parser.add_argument("--out", default="build/video")
+    args = parser.parse_args()
+
+    games_data = json.loads(pathlib.Path(args.games).read_text(encoding="utf-8"))
+    games = [g for g in games_data.get("games", []) if g.get("is_notable")]
+    if not games:
+        print("[info] 注目試合が無いため、動画は作りません")
+        return
+
+    manifest_path = pathlib.Path(args.audio_dir) / "manifest.json"
+    if manifest_path.exists():
+        segments = json.loads(manifest_path.read_text(encoding="utf-8"))["segments"]
+    else:
+        print("[warn] 音声manifestが無いため、固定秒数で作ります")
+        segments = [{"index": 0, "file": None, "duration": 4.0, "kind": "intro",
+                     "meta": {}}]
+        for i in range(len(games[:3])):
+            segments.append({"index": i + 1, "file": None, "duration": 8.0,
+                             "kind": "game", "meta": {"game_index": i}})
+        segments.append({"index": len(segments), "file": None, "duration": 4.0,
+                         "kind": "outro", "meta": {}})
+
+    out_dir = pathlib.Path(args.out)
+    frames_dir = out_dir / "frames"
+    if frames_dir.exists():
+        shutil.rmtree(frames_dir)
+    frames_dir.mkdir(parents=True, exist_ok=True)
+
+    date_label = (games[0].get("start_time_jst") or "").split(" ")[0]
+    total_games = len(games[:3])
+
+    frame_no = 0
+    for seg in segments:
+        dur = max(2.0, float(seg.get("duration") or 0) or 4.0)
+        n = int(dur * FPS)
+        kind = seg.get("kind")
+        meta = seg.get("meta") or {}
+        for k in range(n):
+            p = k / max(1, n - 1)
+            if kind == "intro":
+                im = render_intro(p, date_label)
+            elif kind == "game":
+                gi = meta.get("game_index", 0)
+                if gi >= len(games):
+                    continue
+                im = render_game(p, games[gi], gi, total_games)
+            elif kind == "news":
+                im = render_news(p, seg.get("text", ""))
+            else:
+                im = render_outro(p)
+            im.save(frames_dir / f"f{frame_no:06d}.png")
+            frame_no += 1
+        print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")
+
+    if frame_no == 0:
+        print("[warn] フレームが1枚も作られませんでした")
+        return
+
+    # --- 音声を連結 ---
+    audio_files = [s["file"] for s in segments if s.get("file")]
+    out_dir.mkdir(parents=True, exist_ok=True)
+    video_path = out_dir / "collespo_short.mp4"
+
+    if audio_files:
+        concat_list = out_dir / "audio_list.txt"
+        concat_list.write_text(
+            "\n".join(f"file '{pathlib.Path(a).resolve()}'" for a in audio_files),
+            encoding="utf-8",
+        )
+        audio_path = out_dir / "narration.wav"
+        subprocess.run(
+            ["ffmpeg", "-y", "-f", "concat", "-safe", "0",
+             "-i", str(concat_list), "-c", "copy", str(audio_path)],
+            check=True, capture_output=True,
+        )
+        cmd = [
+            "ffmpeg", "-y",
+            "-framerate", str(FPS), "-i", str(frames_dir / "f%06d.png"),
+            "-i", str(audio_path),
+            "-c:v", "libx264", "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "192k", "-shortest",
+            str(video_path),
+        ]
+    else:
+        cmd = [
+            "ffmpeg", "-y",
+            "-framerate", str(FPS), "-i", str(frames_dir / "f%06d.png"),
+            "-c:v", "libx264", "-pix_fmt", "yuv420p",
+            str(video_path),
+        ]
+
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0:
+        print(f"[error] 動画の書き出しに失敗しました:\n{r.stderr[-2000:]}", file=sys.stderr)
+        sys.exit(1)
+
+    shutil.rmtree(frames_dir, ignore_errors=True)
+    size_mb = video_path.stat().st_size / 1024 / 1024
+    print(f"[info] 動画を生成しました: {video_path} ({size_mb:.1f}MB, "
+          f"{frame_no / FPS:.1f}秒)")
+
+
+if __name__ == "__main__":
+    main()

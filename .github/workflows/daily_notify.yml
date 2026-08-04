@@ -29,7 +29,9 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r scripts/requirements.txt
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
 
       - name: Generate today's notable games
         env:
@@ -123,6 +125,63 @@ jobs:
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
           SITE_URL: https://collespo.com/
         run: python scripts/send_onesignal.py
+
+      # ---- 動画の生成と投稿 ----
+      # サイト更新・通知が全て終わってから実行する。
+      # ここで失敗しても、その日の配信自体は既に完了している状態にするため。
+      - name: Start VOICEVOX engine
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました。音声なしで進めます"
+          # 起動を待つ(最大60秒)
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Generate narration script
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/generate_narration.py \
+            --games notable_games.json \
+            --news public/news.json \
+            --out public/narration.json
+
+      - name: Synthesize narration
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration public/narration.json \
+            --out-dir build/audio
+
+      - name: Generate video
+        run: |
+          python scripts/generate_video.py \
+            --games notable_games.json \
+            --audio-dir build/audio \
+            --out build/video
+
+      - name: Upload to YouTube
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python scripts/upload_youtube.py \
+            --video build/video/collespo_short.mp4 \
+            --games notable_games.json \
+            --privacy unlisted
+
+      - name: Save video as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-video
+          path: build/video/collespo_short.mp4
+          retention-days: 7
+          if-no-files-found: ignore
 
   deploy:
     needs: build_and_notify
