@@ -51,10 +51,23 @@ jobs:
             --snapshot data/roster_snapshot.json \
             --out public/news.json
 
-      # 通知とSNS投稿は、試合データが揃った時点で即座に送る。
-      # サイトの再構築(選手ページ・アーカイブ生成など)は通知の内容に
-      # 影響しないため、後回しにしても届くものは変わらない。
-      # 19時ちょうどに届けたいので、ここまでの所要時間を最短にしている。
+      # データの準備が終わったら、19時ちょうどになるまで待ってから配信する。
+      # 早めに起動しておけば、処理時間が日によって変動しても
+      # 「毎日19時00分に届く」ことを保証できる。
+      # 既に19時を過ぎている場合(手動実行や遅延時)は待たずに即送信する。
+      - name: Wait until 19:00 JST
+        run: |
+          TARGET_MIN=$((19 * 60))
+          NOW_MIN=$(( $(TZ=Asia/Tokyo date +%H) * 60 + $(TZ=Asia/Tokyo date +%-M) ))
+          WAIT=$(( (TARGET_MIN - NOW_MIN) * 60 - $(TZ=Asia/Tokyo date +%-S) ))
+          if [ "$WAIT" -gt 0 ] && [ "$WAIT" -le 900 ]; then
+            echo "19:00まで ${WAIT} 秒待機します"
+            sleep "$WAIT"
+          else
+            echo "待機不要(現在 $(TZ=Asia/Tokyo date +%H:%M:%S) JST)"
+          fi
+          echo "配信開始: $(TZ=Asia/Tokyo date +%H:%M:%S) JST"
+
       - name: Post to Bluesky
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
