@@ -46,7 +46,9 @@ DESCRIPTION = (
 )
 AUTHOR = "コレスポ"
 EMAIL = "issakatou2@gmail.com"
-IMAGE_URL = SITE_URL + "icons/icon-512.png"
+# Appleは1400x1400〜3000x3000pxのカバー画像を要求する。
+# PWA用のアイコン(512px)では小さすぎて登録が弾かれるため、専用画像を用意している。
+IMAGE_URL = SITE_URL + "icons/podcast-cover.png"
 
 # 古いエピソードを残す日数。1本約1MBなので、90日で約90MB。
 KEEP_DAYS = 90
