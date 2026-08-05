@@ -257,10 +257,14 @@ def render_news(progress: float, text: str):
 def render_outro(progress: float):
     im, d = base_frame(progress)
     e = ease_out(min(1.0, progress * 2))
-    d.text((80, 760), "コレスポ", font=font(120), fill=ACCENT)
-    d.text((80, 920), "collespo.com", font=font(58), fill=TEXT)
+    d.text((80, 700), "コレスポ", font=font(120), fill=ACCENT)
+    d.text((80, 860), "collespo.com", font=font(58), fill=TEXT)
     if progress > 0.3:
-        d.text((80, 1030), "毎日19時 更新", font=font(46), fill=DIM)
+        d.text((80, 970), "毎日19時 更新", font=font(46), fill=DIM)
+    # VOICEVOXの利用規約で、動画内または説明欄へのクレジット表記が
+    # 求められているため、アウトロに必ず表示する
+    d.text((80, 1180), "音声: VOICEVOX:ずんだもん", font=font(40), fill=DIM)
+    d.text((80, 1250), "データ: MLB Stats API", font=font(40), fill=DIM)
     return im
 
 

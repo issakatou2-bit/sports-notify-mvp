@@ -188,7 +188,7 @@ jobs:
           python scripts/upload_youtube.py \
             --video build/video/collespo_short.mp4 \
             --games notable_games.json \
-            --privacy unlisted
+            --privacy public
 
       - name: Save video as artifact
         uses: actions/upload-artifact@v4

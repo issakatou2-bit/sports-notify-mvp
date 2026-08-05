@@ -71,6 +71,10 @@ def build_metadata(games_path: str, date_label: str) -> dict:
         "",
         "※試合データはMLB公式のデータをもとに自動生成しています。",
         "※放送予定は変更される場合があります。各配信サービスで最新情報をご確認ください。",
+        "",
+        "―――",
+        "音声: VOICEVOX:ずんだもん",
+        "データ: MLB Stats API",
     ]
 
     tags = ["MLB", "メジャーリーグ", "野球", "注目試合", "コレスポ", "Shorts"]
@@ -94,7 +98,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
     parser.add_argument("--games", default="notable_games.json")
-    parser.add_argument("--privacy", default="unlisted",
+    parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
     args = parser.parse_args()
 
