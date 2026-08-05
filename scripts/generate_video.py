@@ -27,7 +27,10 @@ import sys
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1080, 1920
-FPS = 30
+# 24fpsにしているのは生成時間のため。フレームを1枚ずつPNGに書き出す方式なので、
+# 枚数がそのまま時間に効く(30fpsだと約4分、24fpsだと約3分)。
+# 情報番組的な内容では、なめらかさより生成の速さを優先してよいと判断した。
+FPS = 24
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
@@ -38,15 +41,65 @@ ACCENT = (255, 176, 32)
 ACCENT_DIM = (74, 58, 26)
 JP = (73, 197, 182)
 
-FONT_PATH = "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc"
-FONT_PATH_FALLBACK = "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf"
+# 日本語フォントの場所は環境によって違う(手元のコンテナとGitHub Actionsの
+# ランナーでは入っているフォントが異なる)。決め打ちにすると片方で必ず落ちるため、
+# 候補を順に探し、最後はfc-matchでシステムに問い合わせる。
+FONT_CANDIDATES = [
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
+    "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
+    "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc",
+]
+
+_FONT_FILE = None
+
+
+def _resolve_font_file() -> str:
+    """使える日本語フォントのパスを1つ決める。見つからなければ例外。"""
+    global _FONT_FILE
+    if _FONT_FILE:
+        return _FONT_FILE
+
+    for path in FONT_CANDIDATES:
+        if pathlib.Path(path).exists():
+            _FONT_FILE = path
+            print(f"[info] 使用フォント: {path}")
+            return _FONT_FILE
+
+    # 候補に無ければ、システムに日本語フォントを問い合わせる
+    try:
+        r = subprocess.run(
+            ["fc-match", "-f", "%{file}", ":lang=ja"],
+            capture_output=True, text=True, check=True,
+        )
+        candidate = r.stdout.strip()
+        if candidate and pathlib.Path(candidate).exists():
+            _FONT_FILE = candidate
+            print(f"[info] 使用フォント(fc-match): {candidate}")
+            return _FONT_FILE
+    except Exception:
+        pass
+
+    raise RuntimeError(
+        "日本語フォントが見つかりません。"
+        "ワークフローで fonts-noto-cjk をインストールしてください。"
+    )
 
 
 def font(size: int):
+    path = _resolve_font_file()
     try:
-        return ImageFont.truetype(FONT_PATH, size)
+        return ImageFont.truetype(path, size)
     except OSError:
-        return ImageFont.truetype(FONT_PATH_FALLBACK, size)
+        # .ttc は複数フォントの束なので、先頭以外を試す
+        for idx in (1, 2, 3):
+            try:
+                return ImageFont.truetype(path, size, index=idx)
+            except OSError:
+                continue
+        raise
 
 
 def ease_out(t: float) -> float:

@@ -142,6 +142,14 @@ jobs:
             sleep 2
           done
 
+      # GitHub Actionsのランナーには日本語フォントが入っていないため、
+      # 動画の描画前に必ずインストールする(入れないとPillowが落ちる)
+      - name: Install Japanese fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          fc-list :lang=ja | head -3
+
       - name: Generate narration script
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
