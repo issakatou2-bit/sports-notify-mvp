@@ -40,6 +40,35 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python notability_engine.py --source all --out notable_games.json
 
+      # 選手の所属変化を検知してニュース化する。
+      # 差分は「候補」に過ぎないため、スクリプト内でAPIに問い合わせて
+      # 裏が取れたものだけを出力する(検証に落ちたものは公開しない)。
+      # スナップショットは次回比較用にリポジトリへコミットする。
+      - name: Detect roster changes
+        run: |
+          mkdir -p public
+          python scripts/detect_roster_changes.py \
+            --snapshot data/roster_snapshot.json \
+            --out public/news.json
+
+      # 通知とSNS投稿は、試合データが揃った時点で即座に送る。
+      # サイトの再構築(選手ページ・アーカイブ生成など)は通知の内容に
+      # 影響しないため、後回しにしても届くものは変わらない。
+      # 19時ちょうどに届けたいので、ここまでの所要時間を最短にしている。
+      - name: Post to Bluesky
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          SITE_URL: https://collespo.com/
+        run: python scripts/post_bluesky.py
+
+      - name: Send push via OneSignal
+        env:
+          ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
+          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+          SITE_URL: https://collespo.com/
+        run: python scripts/send_onesignal.py
+
       # 過去に生成した試合(直近5日分)のうち、終了しているのにまだ
       # 最終スコアが無いものを、MLB Stats APIから取得して埋める。
       # 生成時点(19時JST)ではまだ試合が始まってすらいないため、
@@ -51,17 +80,6 @@ jobs:
         run: |
           python scripts/generate_rss.py --input notable_games.json --out feed.xml \
             --site-url "https://collespo.com/"
-
-      # 選手の所属変化を検知してニュース化する。
-      # 差分は「候補」に過ぎないため、スクリプト内でAPIに問い合わせて
-      # 裏が取れたものだけを出力する(検証に落ちたものは公開しない)。
-      # スナップショットは次回比較用にリポジトリへコミットする。
-      - name: Detect roster changes
-        run: |
-          mkdir -p public
-          python scripts/detect_roster_changes.py \
-            --snapshot data/roster_snapshot.json \
-            --out public/news.json
 
       - name: Commit archive
         run: |
@@ -111,20 +129,6 @@ jobs:
       # いるため削除した。scripts/send_push.py への依存も無くなっている。
       # (Secretsの PUSH_SUBSCRIPTION / VAPID_PRIVATE_KEY / VAPID_SUBJECT も
       #  もう参照されないので、GitHub側から削除して構わない)
-
-      - name: Post to Bluesky
-        env:
-          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
-          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-          SITE_URL: https://collespo.com/
-        run: python scripts/post_bluesky.py
-
-      - name: Send push via OneSignal
-        env:
-          ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
-          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
-          SITE_URL: https://collespo.com/
-        run: python scripts/send_onesignal.py
 
       # ---- 動画の生成と投稿 ----
       # サイト更新・通知が全て終わってから実行する。
