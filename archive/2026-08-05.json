@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-05T02:05:46.904581+00:00",
+  "generated_at": "2026-08-05T03:12:49.422173+00:00",
   "games": [
     {
       "game_id": "824646",
@@ -55,7 +55,7 @@
       "venue_note": "風向きによって球場の性格が変わり、外野へ吹く日は打撃戦になりやすいことで知られる",
       "home_has_jp": true,
       "away_has_jp": true,
-      "score": 9,
+      "score": 11,
       "is_notable": true,
       "reasons": [
         {
@@ -72,19 +72,27 @@
           "tag": "quality",
           "text": "カブスは自地区2位、ドジャースは自地区1位同士の好カード",
           "weight": 2
+        },
+        {
+          "tag": "streak",
+          "text": "ドジャースは5連敗中",
+          "weight": 2
         }
       ],
       "series_context": {
         "series_game_number": 3,
         "games_in_series": 3,
-        "home_wins_in_stretch": 1,
+        "home_wins_in_stretch": 2,
         "away_wins_in_stretch": 0
       },
+      "highlight_title": "FULL START: Tarik Skubal makes his Dodgers debut! | MLB Highlights",
+      "highlight_video_id": "W75Cbnvoit8",
       "log_notes": [
+        "鈴木誠也は4試合連続安打中",
         "大谷翔平は8試合連続安打中"
       ],
-      "ai_summary": "ナ・リーグ西地区首位のドジャースが【2位に9.0ゲーム差】で独走する中、同地区を異にする中地区2位のカブスとの対戦となる。本シリーズ第3戦を迎えた両チームの力関係を測る一戦であり、特にドジャースは4連敗中という状況での重要な試合となる。先発の今永昇太とEric Lauerの投げ合いに加え、大谷翔平が8試合連続安打中という好調ぶりに注目が集まるほか、風向きによって打撃戦になりやすいリグレー・フィールドでの試合であるだけに、投手戦か打撃戦かどちらに傾くかも見どころである。",
-      "notification_hook": "4連敗中のドジャース、大谷翔平の8試合連続安打が止まるか。"
+      "ai_summary": "ナ・リーグ西地区の【首位ドジャースが5連敗中】という危機的状況下での一戦であり、カブスとの直近対戦では2連勝している勢いを保ちたいカブス側にとっても、立て直しを急ぐドジャース側にとっても重要な試合となる。両チームの先発投手は防御率で大きな差があり、今永昇太の精密な投球術がEric Lauerのやや崩れやすい投球をどう抑え込むかが鍵となる。リグレー・フィールドは風向きによって球場の性質が大きく変わる球場として知られており、この日の風がどう試合の展開を左右するかという点も見どころになる。",
+      "notification_hook": "5連敗中ドジャース、大谷翔平8試合連続安打で巻き返しなるか。"
     },
     {
       "game_id": "824728",
@@ -160,8 +168,8 @@
       "log_notes": [
         "村上宗隆は11試合連続安打中"
       ],
-      "ai_summary": "レッドソックスは【6連勝中】で勢いを増す東地区3位、ホワイトソックスは中地区首位で2位に3.0ゲーム差をつけている安定した戦いぶりを見せており、シリーズ第2戦となる本試合は両チームの現在地を映す重要な一戦である。先発投手陣も充実しており、レッドソックスのSonny Grayは防御率2.93で13勝を挙げる好調ぶり、ホワイトソックスのSean Burkeは140奪三振で打者を抑えるエースとして対峙することになる。独特の形状をした会場フェンウェイ・パークの左翼に聳える高さ約11メートルのグリーンモンスターが打球の行方を読みにくくする中での、両先発投手の投げ合いに注目である。",
-      "notification_hook": "6連勝レッドソックス、中地区首位ホワイトソックスとの投手戦。Gray vs Burkeの対決を見逃すな。"
+      "ai_summary": "レッドソックスは6連勝で波に乗る一方、ホワイトソックスはア・リーグ中地区で【2位に3.0ゲーム差をつけて首位】の座を守る状況での対戦となる。両チームは異なる地区に属しているため地区順位は直接争う関係にはないが、シーズン終盤に向けた勢いの差が試合結果に直結する重要な一戦である。レッドソックス先発のSonny Grayは防御率2.93で13勝をあげている左腕の好調投手であり、ホワイトソックス先発のSean Burkeの投球と投げ合いになることに加え、左翼に高さ約11メートルの「グリーンモンスター」がそびえるフェンウェイ・パークという独特の形状の球場での試合であるため、打球がどう変化するかに注目したい。",
+      "notification_hook": "6連勝中のレッドソックスが、地区首位のホワイトソックスに吉田正尚と村上"
     },
     {
       "game_id": "824158",
@@ -226,14 +234,14 @@
       "series_context": {
         "series_game_number": 3,
         "games_in_series": 3,
-        "home_wins_in_stretch": 0,
+        "home_wins_in_stretch": 1,
         "away_wins_in_stretch": 1
       },
       "log_notes": [
         "Jameson Taillonは移籍後初登板"
       ],
-      "ai_summary": "アストロズはア・リーグ西地区で【2位に2.5ゲーム差】をつけて首位に立つ好調チームであり、直近10試合も8勝2敗と安定した成績を収めている一方、ブルージェイズは東地区の下位に沈み、シリーズ第3戦で同一地区との順位争いに直結しない対戦となる。とはいえアストロズの先発Hunter Brownは今季防御率3.42と安定した投球を見せ、対するブルージェイズのJameson Taillonは移籍後初登板ながら防御率5.92と課題を抱えており、投手力の差が試合を大きく左右する構図が予想される。左翼が浅く、屋根を備えたダイキン・パークでのホームゲームだけに、Hunter Brownがいかに左打者の本塁打を抑えるかが焦点となる。",
-      "notification_hook": "移籍後初登板のTaillonに対し、防御率3.42の好調投手Brown、投手戦の行方"
+      "ai_summary": "アストロズはア・リーグ西地区で【2位に2.5ゲーム差をつける首位】の位置にあり、直近10試合で8勝2敗と好調を保っているのに対し、ブルージェイズは東地区5位と地区内で大きく後れを取っている状況での対戦である。所属地区こそ異なるが、シーズン終盤に向けて勢いのあるアストロズと、巻き返しを狙うブルージェイズの力関係が試される一戦になるだろう。先発投手の対比に注目で、防御率3.42で安定したHunter Brownに対し、防御率5.92とシーズンを通じ苦労しているJameson Taillonが移籍後初登板を迎えることになり、左翼が浅いダイキン・パークでの投げ合いがどう展開するかが見どころである。",
+      "notification_hook": "防御率3.42と5.92、好調アストロズの堅実先発vs苦労するブルージェイズの新戦力初"
     },
     {
       "game_id": "825052",
@@ -405,51 +413,6 @@
         {
           "tag": "streak",
           "text": "ブレーブスは6連勝中",
-          "weight": 2
-        }
-      ]
-    },
-    {
-      "game_id": "822866",
-      "league": "MLB",
-      "home_team_id": "140",
-      "away_team_id": "137",
-      "home_team_name": "レンジャーズ",
-      "away_team_name": "ジャイアンツ",
-      "home_abbr": "TEX",
-      "away_abbr": "SF",
-      "home_color": "#003278",
-      "away_color": "#FD5A1E",
-      "matchup": "レンジャーズ vs ジャイアンツ",
-      "abbr_matchup": "TEX vs SF",
-      "start_time_jst": "08/06 03:35",
-      "home_division": "ALW",
-      "away_division": "NLW",
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_probable": null,
-      "away_probable": {
-        "name": "Carson Whisenhunt",
-        "name_en": "Carson Whisenhunt",
-        "player_id": "687931",
-        "era": null,
-        "wins": null,
-        "losses": null,
-        "strikeouts": null
-      },
-      "venue_name": "Globe Life Field",
-      "venue_jp": null,
-      "venue_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 2,
-      "is_notable": false,
-      "reasons": [
-        {
-          "tag": "streak",
-          "text": "レンジャーズは6連敗中",
           "weight": 2
         }
       ]
@@ -711,6 +674,45 @@
       "venue_name": "Yankee Stadium",
       "venue_jp": "ヤンキー・スタジアム",
       "venue_note": "右翼が浅く、左打者の本塁打が出やすい形状",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "822866",
+      "league": "MLB",
+      "home_team_id": "140",
+      "away_team_id": "137",
+      "home_team_name": "レンジャーズ",
+      "away_team_name": "ジャイアンツ",
+      "home_abbr": "TEX",
+      "away_abbr": "SF",
+      "home_color": "#003278",
+      "away_color": "#FD5A1E",
+      "matchup": "レンジャーズ vs ジャイアンツ",
+      "abbr_matchup": "TEX vs SF",
+      "start_time_jst": "08/06 03:35",
+      "home_division": "ALW",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": null,
+      "away_probable": {
+        "name": "Carson Whisenhunt",
+        "name_en": "Carson Whisenhunt",
+        "player_id": "687931",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Globe Life Field",
+      "venue_jp": null,
+      "venue_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
       "score": 0,
