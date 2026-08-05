@@ -85,7 +85,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add archive/ data/ || true
+          git add archive/ data/ podcast/ || true
           git diff --cached --quiet || git commit -m "archive: ${{ github.run_id }}"
           git push || echo "変更が無いか、push対象が無いためスキップ"
 
@@ -118,17 +118,6 @@ jobs:
             --archive-dir archive \
             --out-dir public/archive \
             --site-root public
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: public
-
-      # 旧方式(VAPID + scripts/send_push.py)のステップはここにあったが、
-      # OneSignalへの移行が完了し、購読者はすべてOneSignal側で管理して
-      # いるため削除した。scripts/send_push.py への依存も無くなっている。
-      # (Secretsの PUSH_SUBSCRIPTION / VAPID_PRIVATE_KEY / VAPID_SUBJECT も
-      #  もう参照されないので、GitHub側から削除して構わない)
 
       # ---- 動画の生成と投稿 ----
       # サイト更新・通知が全て終わってから実行する。
@@ -173,6 +162,39 @@ jobs:
           python scripts/synthesize_narration.py \
             --narration public/narration.json \
             --out-dir build/audio
+
+      # 動画用に作った音声を、そのままポッドキャストにも転用する。
+      # 追加のAI呼び出しも音声合成も不要なので、実質コストはゼロ。
+      - name: Generate podcast
+        continue-on-error: true
+        run: |
+          python scripts/generate_podcast.py \
+            --audio-dir build/audio \
+            --store podcast \
+            --public public/podcast \
+            --games notable_games.json
+
+      # ポッドキャストのmp3をpublic/へ出した後に、Pagesへ渡す。
+      # 順序が逆だと、その日のエピソードが公開されない。
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      # 旧方式(VAPID + scripts/send_push.py)のステップはここにあったが、
+      # OneSignalへの移行が完了し、購読者はすべてOneSignal側で管理して
+      # いるため削除した。scripts/send_push.py への依存も無くなっている。
+      # (Secretsの PUSH_SUBSCRIPTION / VAPID_PRIVATE_KEY / VAPID_SUBJECT も
+      #  もう参照されないので、GitHub側から削除して構わない)
+
+      - name: Commit podcast episode
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add podcast/ || true
+          git diff --cached --quiet || git commit -m "podcast: ${{ github.run_id }}"
+          git push || echo "変更が無いか、push対象が無いためスキップ"
 
       - name: Generate video
         continue-on-error: true

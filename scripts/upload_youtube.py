@@ -37,7 +37,7 @@ SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 CATEGORY_SPORTS = "17"
 
 
-def build_metadata(games_path: str, date_label: str) -> dict:
+def build_metadata(games_path: str, date_label: str, kind: str = "daily") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -45,7 +45,10 @@ def build_metadata(games_path: str, date_label: str) -> dict:
     except (json.JSONDecodeError, OSError):
         games = []
 
-    if games:
+    if kind == "weekly":
+        # 週次まとめは横型・8分以上の通常動画なので #Shorts は付けない
+        title = f"【MLB】今週の注目試合まとめ｜{date_label} 週間ダイジェスト"
+    elif games:
         top = games[0]
         matchup = f"{top.get('home_team_name')} vs {top.get('away_team_name')}"
         title = f"【MLB】{date_label} 注目試合｜{matchup} ほか #Shorts"
@@ -53,7 +56,10 @@ def build_metadata(games_path: str, date_label: str) -> dict:
         title = f"【MLB】{date_label} 注目試合 #Shorts"
     title = title[:100]  # YouTubeのタイトル上限
 
-    lines = [f"{date_label} の注目試合を、なぜ注目なのかの理由つきで紹介します。", ""]
+    if kind == "weekly":
+        lines = ["この1週間の注目試合を、結果とあわせて振り返ります。", ""]
+    else:
+        lines = [f"{date_label} の注目試合を、なぜ注目なのかの理由つきで紹介します。", ""]
     for i, g in enumerate(games, 1):
         lines.append(
             f"{i}. {g.get('start_time_jst')} "
@@ -64,7 +70,7 @@ def build_metadata(games_path: str, date_label: str) -> dict:
                 lines.append(f"   ・{r['text']}")
         lines.append("")
     lines += [
-        "#Shorts",
+        "#Shorts" if kind != "weekly" else "",
         "",
         "毎日19時ごろ、その日の注目試合をお届けしています。",
         "サイト: https://collespo.com/",
@@ -77,7 +83,8 @@ def build_metadata(games_path: str, date_label: str) -> dict:
         "データ: MLB Stats API",
     ]
 
-    tags = ["MLB", "メジャーリーグ", "野球", "注目試合", "コレスポ", "Shorts"]
+    tags = ["MLB", "メジャーリーグ", "野球", "注目試合", "コレスポ"]
+    tags.append("週間まとめ" if kind == "weekly" else "Shorts")
     for g in games:
         for name in (g.get("jp_players") or [])[:2]:
             if name not in tags:
@@ -102,6 +109,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
     parser.add_argument("--games", default="notable_games.json")
+    parser.add_argument("--kind", default="daily", choices=["daily", "weekly"],
+                        help="daily=ショート / weekly=週次まとめ")
     parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
     args = parser.parse_args()
@@ -136,7 +145,7 @@ def main():
     except (json.JSONDecodeError, OSError):
         pass
 
-    body = build_metadata(args.games, date_label)
+    body = build_metadata(args.games, date_label, args.kind)
     body["status"] = {
         "privacyStatus": args.privacy,
         "selfDeclaredMadeForKids": False,

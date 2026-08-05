@@ -1,0 +1,72 @@
+name: Weekly summary video
+
+# 週次のまとめ動画(横型・8分以上)を作ってYouTubeへ投稿する。
+#
+# 日次のワークフローと分けている理由:
+#   ・週1回しか動かさないので、毎日のパイプラインに混ぜると
+#     条件分岐が増えて見通しが悪くなる
+#   ・生成に15分前後かかるため、19時の通知を遅らせたくない
+#
+# 実行タイミング:
+#   日曜の21時(JST)。日次の19時配信とぶつからない時間にしている。
+#   UTC 12:00 = JST 21:00
+#   日次と同様、GitHubのcronは遅延するため、確実性が要るなら
+#   cron-job.orgから叩く形に切り替えてもよい。
+
+on:
+  schedule:
+    - cron: '0 12 * * 0'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  weekly:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+
+      - name: Install video tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+          fc-list :lang=ja | head -3
+
+      - name: Generate weekly video
+        run: |
+          python scripts/generate_weekly.py \
+            --archive-dir archive \
+            --out build/weekly
+
+      - name: Upload to YouTube
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python scripts/upload_youtube.py \
+            --video build/weekly/collespo_weekly.mp4 \
+            --games notable_games.json \
+            --kind weekly \
+            --privacy public
+
+      - name: Save video as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-weekly
+          path: build/weekly/collespo_weekly.mp4
+          retention-days: 7
+          if-no-files-found: ignore
