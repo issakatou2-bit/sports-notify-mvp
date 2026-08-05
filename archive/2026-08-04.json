@@ -700,7 +700,12 @@
           "text": "ロッキーズには菅野智之が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 7,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "825054",
@@ -755,7 +760,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824084",
@@ -898,7 +908,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 8,
+        "winner": "away"
+      }
     }
   ]
 }
