@@ -165,25 +165,34 @@ def send_one(app_id: str, api_key: str, tag_key: str, games: list, heading_suffi
         resp.raise_for_status()
         result = resp.json()
 
-        # OneSignalは、宛先が0人でもHTTP 200を返し、recipientsを含めずに
-        # errorsだけを返すことがある(「送信できた」と誤認しやすい)。
-        # 原因を追えるよう、想定通りでない場合はレスポンス全体を出す。
-        if "recipients" not in result:
-            print(f"[warn] {tag_key}: 配信数が返りませんでした。"
-                  f"OneSignalの応答: {result}", file=sys.stderr)
-            errors = result.get("errors")
-            if errors:
-                print(f"[warn] {tag_key}: エラー内容 -> {errors}", file=sys.stderr)
+        # 成否の判定は「通知IDが返ったか」で行う。
+        # filtersを使った送信では、配信数(recipients)がその場では返らず、
+        # IDだけが返ることがある。recipientsの有無で判定すると、
+        # 正常に送れているのに失敗扱いしてしまう(実際に発生した)。
+        errors = result.get("errors")
+        notification_id = result.get("id")
+
+        if errors:
+            print(f"[warn] {tag_key}: OneSignalがエラーを返しました -> {errors}",
+                  file=sys.stderr)
             return False
 
-        recipients = result["recipients"]
-        if recipients == 0:
-            print(f"[warn] {tag_key}: 条件に一致する購読者が0人でした。"
-                  f"タグ({tag_key}=1)が付いているか、OneSignalのSubscriptions画面で"
-                  "確認してください。")
-            return True
+        if not notification_id:
+            print(f"[warn] {tag_key}: 通知IDが返りませんでした。"
+                  f"応答: {result}", file=sys.stderr)
+            return False
 
-        print(f"[info] {tag_key}向けにOneSignal通知を送信しました(配信対象: {recipients}件)")
+        recipients = result.get("recipients")
+        if recipients is None:
+            # 配信数は後から確定するため、この時点では分からないことがある。
+            # 実際に何人へ届いたかはOneSignalのDelivery画面で確認できる。
+            print(f"[info] {tag_key}向けに通知を作成しました"
+                  f"(ID: {notification_id} / 配信数は集計中)")
+        elif recipients == 0:
+            print(f"[warn] {tag_key}: 条件に一致する購読者が0人でした。"
+                  f"タグ({tag_key}=1)が付いているか確認してください。")
+        else:
+            print(f"[info] {tag_key}向けに通知を送信しました(配信対象: {recipients}件)")
         return True
     except Exception as e:
         print(f"[warn] {tag_key}向けの通知送信に失敗しました: {e}", file=sys.stderr)
