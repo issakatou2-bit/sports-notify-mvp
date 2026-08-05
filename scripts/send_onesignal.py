@@ -150,6 +150,8 @@ def send_one(app_id: str, api_key: str, tag_key: str, games: list, heading_suffi
         "url": SITE_URL,
     }
 
+    print(f"[info] {tag_key}: {len(games)}試合を、タグ {tag_key}=1 の購読者へ送信します")
+
     try:
         resp = requests.post(
             ONESIGNAL_API_URL,
@@ -162,7 +164,25 @@ def send_one(app_id: str, api_key: str, tag_key: str, games: list, heading_suffi
         )
         resp.raise_for_status()
         result = resp.json()
-        recipients = result.get("recipients", "不明")
+
+        # OneSignalは、宛先が0人でもHTTP 200を返し、recipientsを含めずに
+        # errorsだけを返すことがある(「送信できた」と誤認しやすい)。
+        # 原因を追えるよう、想定通りでない場合はレスポンス全体を出す。
+        if "recipients" not in result:
+            print(f"[warn] {tag_key}: 配信数が返りませんでした。"
+                  f"OneSignalの応答: {result}", file=sys.stderr)
+            errors = result.get("errors")
+            if errors:
+                print(f"[warn] {tag_key}: エラー内容 -> {errors}", file=sys.stderr)
+            return False
+
+        recipients = result["recipients"]
+        if recipients == 0:
+            print(f"[warn] {tag_key}: 条件に一致する購読者が0人でした。"
+                  f"タグ({tag_key}=1)が付いているか、OneSignalのSubscriptions画面で"
+                  "確認してください。")
+            return True
+
         print(f"[info] {tag_key}向けにOneSignal通知を送信しました(配信対象: {recipients}件)")
         return True
     except Exception as e:
