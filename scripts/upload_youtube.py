@@ -48,9 +48,9 @@ def build_metadata(games_path: str, date_label: str) -> dict:
     if games:
         top = games[0]
         matchup = f"{top.get('home_team_name')} vs {top.get('away_team_name')}"
-        title = f"【MLB】{date_label} 注目試合｜{matchup} ほか｜コレスポ"
+        title = f"【MLB】{date_label} 注目試合｜{matchup} ほか #Shorts"
     else:
-        title = f"【MLB】{date_label} 注目試合｜コレスポ"
+        title = f"【MLB】{date_label} 注目試合 #Shorts"
     title = title[:100]  # YouTubeのタイトル上限
 
     lines = [f"{date_label} の注目試合を、なぜ注目なのかの理由つきで紹介します。", ""]
@@ -64,6 +64,8 @@ def build_metadata(games_path: str, date_label: str) -> dict:
                 lines.append(f"   ・{r['text']}")
         lines.append("")
     lines += [
+        "#Shorts",
+        "",
         "毎日19時ごろ、その日の注目試合をお届けしています。",
         "サイト: https://collespo.com/",
         "",
@@ -71,7 +73,7 @@ def build_metadata(games_path: str, date_label: str) -> dict:
         "※放送予定は変更される場合があります。各配信サービスで最新情報をご確認ください。",
     ]
 
-    tags = ["MLB", "メジャーリーグ", "野球", "大谷翔平", "注目試合", "コレスポ"]
+    tags = ["MLB", "メジャーリーグ", "野球", "注目試合", "コレスポ", "Shorts"]
     for g in games:
         for name in (g.get("jp_players") or [])[:2]:
             if name not in tags:

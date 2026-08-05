@@ -38,6 +38,8 @@ except ImportError:
     anthropic = None
 
 MODEL = "claude-haiku-4-5-20251001"
+# ショート動画(60秒以内)に収まる範囲で、情報量も確保する。
+# 1試合75文字前後 × 3試合 + 前後 で、1.3倍速で40秒前後になる。
 MAX_GAMES = 3
 
 
@@ -78,7 +80,8 @@ def narrate_game(client, game: dict, index: int, total: int) -> str:
         f"{facts}\n\n"
         "条件:\n"
         f"- これは{total}試合の紹介のうち{index + 1}番目です\n"
-        "- 100文字から140文字。読み上げて25秒前後になる長さ\n"
+        "- 70文字から85文字。短くテンポよく。長い説明は不要\n"
+        "- 一番の見どころを1つに絞る。あれもこれも詰め込まない\n"
         "- 耳で聞いて分かる話し言葉。「〜です」「〜ます」調で書く\n"
         "- 上に書かれていない数字・成績・順位は絶対に書かないこと\n"
         "- 選手名は上の表記をそのまま使う。英語表記の名前をカタカナに"
@@ -108,7 +111,7 @@ def main():
         return
 
     date_label = (games[0].get("start_time_jst") or "").split(" ")[0]
-    news = (_load(args.news, {}).get("news") or [])[:2]
+    news = (_load(args.news, {}).get("news") or [])[:1]
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     segments = []
@@ -116,7 +119,7 @@ def main():
     # --- オープニング(定型。ここはAIを使わない) ---
     segments.append({
         "kind": "intro",
-        "text": f"コレスポです。{date_label}の注目試合を、注目の理由つきでお届けします。",
+        "text": f"コレスポ。{date_label}の注目試合です。",
         "meta": {"date_label": date_label},
     })
 
@@ -148,8 +151,7 @@ def main():
     # --- クロージング ---
     segments.append({
         "kind": "outro",
-        "text": "詳しい注目理由は、コレスポドットコムでご覧いただけます。"
-                "毎日19時に、その日の注目試合をお届けしています。",
+        "text": "詳しくはコレスポドットコムへ。毎日19時更新です。",
         "meta": {},
     })
 

@@ -293,46 +293,15 @@ def main():
                          "kind": "outro", "meta": {}})
 
     out_dir = pathlib.Path(args.out)
-    frames_dir = out_dir / "frames"
-    if frames_dir.exists():
-        shutil.rmtree(frames_dir)
-    frames_dir.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    video_path = out_dir / "collespo_short.mp4"
 
     date_label = (games[0].get("start_time_jst") or "").split(" ")[0]
     total_games = len(games[:3])
 
-    frame_no = 0
-    for seg in segments:
-        dur = max(2.0, float(seg.get("duration") or 0) or 4.0)
-        n = int(dur * FPS)
-        kind = seg.get("kind")
-        meta = seg.get("meta") or {}
-        for k in range(n):
-            p = k / max(1, n - 1)
-            if kind == "intro":
-                im = render_intro(p, date_label)
-            elif kind == "game":
-                gi = meta.get("game_index", 0)
-                if gi >= len(games):
-                    continue
-                im = render_game(p, games[gi], gi, total_games)
-            elif kind == "news":
-                im = render_news(p, seg.get("text", ""))
-            else:
-                im = render_outro(p)
-            im.save(frames_dir / f"f{frame_no:06d}.png")
-            frame_no += 1
-        print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")
-
-    if frame_no == 0:
-        print("[warn] フレームが1枚も作られませんでした")
-        return
-
-    # --- 音声を連結 ---
+    # --- 音声を先に連結しておく ---
     audio_files = [s["file"] for s in segments if s.get("file")]
-    out_dir.mkdir(parents=True, exist_ok=True)
-    video_path = out_dir / "collespo_short.mp4"
-
+    audio_path = None
     if audio_files:
         concat_list = out_dir / "audio_list.txt"
         concat_list.write_text(
@@ -345,28 +314,60 @@ def main():
              "-i", str(concat_list), "-c", "copy", str(audio_path)],
             check=True, capture_output=True,
         )
-        cmd = [
-            "ffmpeg", "-y",
-            "-framerate", str(FPS), "-i", str(frames_dir / "f%06d.png"),
-            "-i", str(audio_path),
-            "-c:v", "libx264", "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "192k", "-shortest",
-            str(video_path),
-        ]
-    else:
-        cmd = [
-            "ffmpeg", "-y",
-            "-framerate", str(FPS), "-i", str(frames_dir / "f%06d.png"),
-            "-c:v", "libx264", "-pix_fmt", "yuv420p",
-            str(video_path),
-        ]
 
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    if r.returncode != 0:
-        print(f"[error] 動画の書き出しに失敗しました:\n{r.stderr[-2000:]}", file=sys.stderr)
+    # --- フレームをffmpegへ直接流し込む ---
+    # PNGとしてディスクに書き出すと、2000枚超で圧縮とI/Oに3分近くかかる。
+    # 生のRGBデータを標準入力経由で渡せば、その両方が不要になる。
+    cmd = [
+        "ffmpeg", "-y",
+        "-f", "rawvideo", "-pix_fmt", "rgb24",
+        "-s", f"{W}x{H}", "-framerate", str(FPS),
+        "-i", "-",
+    ]
+    if audio_path:
+        cmd += ["-i", str(audio_path)]
+    cmd += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+            "-pix_fmt", "yuv420p"]
+    if audio_path:
+        cmd += ["-c:a", "aac", "-b:a", "160k", "-shortest"]
+    cmd += [str(video_path)]
+
+    proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
+                            stderr=subprocess.PIPE)
+
+    frame_no = 0
+    try:
+        for seg in segments:
+            dur = max(2.0, float(seg.get("duration") or 0) or 4.0)
+            n = int(dur * FPS)
+            kind = seg.get("kind")
+            meta = seg.get("meta") or {}
+            for k in range(n):
+                p_ = k / max(1, n - 1)
+                if kind == "intro":
+                    im = render_intro(p_, date_label)
+                elif kind == "game":
+                    gi = meta.get("game_index", 0)
+                    if gi >= len(games):
+                        continue
+                    im = render_game(p_, games[gi], gi, total_games)
+                elif kind == "news":
+                    im = render_news(p_, seg.get("text", ""))
+                else:
+                    im = render_outro(p_)
+                proc.stdin.write(im.tobytes())
+                frame_no += 1
+            print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")
+    finally:
+        if proc.stdin:
+            proc.stdin.close()
+        proc.wait()
+
+    if proc.returncode != 0:
+        err = proc.stderr.read().decode("utf-8", "ignore")[-2000:]
+        print(f"[error] 動画の書き出しに失敗しました:\n{err}", file=sys.stderr)
         sys.exit(1)
 
-    shutil.rmtree(frames_dir, ignore_errors=True)
     size_mb = video_path.stat().st_size / 1024 / 1024
     print(f"[info] 動画を生成しました: {video_path} ({size_mb:.1f}MB, "
           f"{frame_no / FPS:.1f}秒)")

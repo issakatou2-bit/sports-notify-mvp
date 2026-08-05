@@ -35,8 +35,9 @@ VOICEVOX_URL = "http://127.0.0.1:50021"
 # 話者ID。VOICEVOXのspeakersエンドポイントで確認できる。
 # 3 = ずんだもん(ノーマル)が一般的だが、環境により異なる場合がある。
 DEFAULT_SPEAKER = 3
-# 少しゆっくりめの方が聞き取りやすい
-SPEED_SCALE = 1.05
+# ショート動画はテンポが命なので速めにする。
+# 1.3を超えると聞き取りにくくなるため、この辺りが上限。
+SPEED_SCALE = 1.3
 
 
 def engine_available() -> bool:
