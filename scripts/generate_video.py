@@ -281,7 +281,9 @@ def main():
     if manifest_path.exists():
         segments = json.loads(manifest_path.read_text(encoding="utf-8"))["segments"]
     else:
-        print("[warn] 音声manifestが無いため、固定秒数で作ります")
+        print(f"[warn] 音声manifestが見つかりません: {manifest_path.resolve()}")
+        print("       音声なし・固定秒数で作ります"
+              "(synthesize_narration.py のログを確認してください)")
         segments = [{"index": 0, "file": None, "duration": 4.0, "kind": "intro",
                      "meta": {}}]
         for i in range(len(games[:3])):

@@ -95,7 +95,10 @@ def main():
 
     npath = pathlib.Path(args.narration)
     if not npath.exists():
-        print("[info] ナレーション原稿が無いため、音声合成をスキップします")
+        # 原稿が無いと音声も動画の尺も決まらないため、なぜ無いのかを
+        # 追えるように、探した場所を明示しておく
+        print(f"[warn] ナレーション原稿が見つかりません: {npath.resolve()}")
+        print("       generate_narration.py が失敗していないか確認してください")
         return
 
     with open(npath, "r", encoding="utf-8") as f:
@@ -109,7 +112,7 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     if not engine_available():
-        print("[warn] VOICEVOX ENGINEに接続できませんでした。"
+        print(f"[warn] VOICEVOX ENGINE({VOICEVOX_URL})に接続できませんでした。"
               "音声なしで進めます(動画は無音になります)。")
         manifest = [{"index": i, "file": None, "duration": 0.0,
                      "kind": s.get("kind"), "text": s.get("text", ""),

@@ -129,7 +129,16 @@ jobs:
       # ---- 動画の生成と投稿 ----
       # サイト更新・通知が全て終わってから実行する。
       # ここで失敗しても、その日の配信自体は既に完了している状態にするため。
+      - name: Install video tools
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+          fc-list :lang=ja | head -3
+          ffmpeg -version | head -1
+
       - name: Start VOICEVOX engine
+        continue-on-error: true
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox \
             voicevox/voicevox_engine:cpu-latest || \
@@ -142,15 +151,10 @@ jobs:
             sleep 2
           done
 
-      # GitHub Actionsのランナーには日本語フォントが入っていないため、
-      # 動画の描画前に必ずインストールする(入れないとPillowが落ちる)
-      - name: Install Japanese fonts
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk
-          fc-list :lang=ja | head -3
-
+      # 動画の描画・書き出しに必要なもの。ランナーには
+      # 日本語フォントもffmpegも入っていないため、ここで入れる。
       - name: Generate narration script
+        continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
@@ -160,12 +164,14 @@ jobs:
             --out public/narration.json
 
       - name: Synthesize narration
+        continue-on-error: true
         run: |
           python scripts/synthesize_narration.py \
             --narration public/narration.json \
             --out-dir build/audio
 
       - name: Generate video
+        continue-on-error: true
         run: |
           python scripts/generate_video.py \
             --games notable_games.json \
@@ -173,6 +179,7 @@ jobs:
             --out build/video
 
       - name: Upload to YouTube
+        continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
