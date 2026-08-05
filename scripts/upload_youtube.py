@@ -89,7 +89,11 @@ def build_metadata(games_path: str, date_label: str) -> dict:
             "description": "\n".join(lines)[:5000],
             "tags": tags[:15],
             "categoryId": CATEGORY_SPORTS,
+            # 動画本編の言語と、タイトル・説明の言語。
+            # 未設定だとYouTube側で「選択」のままになり、
+            # 字幕の自動生成や検索での扱いが不利になる。
             "defaultLanguage": "ja",
+            "defaultAudioLanguage": "ja",
         }
     }
 
@@ -136,6 +140,12 @@ def main():
     body["status"] = {
         "privacyStatus": args.privacy,
         "selfDeclaredMadeForKids": False,
+        # 「AIの使用」の申告。ここで問われているのは、実在の人物が実際には
+        # していない発言・行動をしているように見せたり、実際の映像を改変したり
+        # といった「誤解を招く合成コンテンツ」かどうか。
+        # この動画はテキストと図形をプログラムで描いた情報グラフィックであり、
+        # そうした改変は一切していないため false とする。
+        "containsSyntheticMedia": False,
     }
 
     try:
