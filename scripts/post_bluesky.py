@@ -211,7 +211,10 @@ def main():
         print("[info] BLUESKY_HANDLE/BLUESKY_APP_PASSWORD未設定のためスキップします")
         return
 
-    notable_games = load_notable_games("notable_games.json", limit=1)
+    # Blueskyは300グラフェムまで入るので、収まる範囲で複数試合を載せる。
+    # (以前Xの文字数に合わせて1試合に固定していたが、Xは手動投稿なので
+    #  自動投稿側をXの制限に合わせる必要はなかった)
+    notable_games = load_notable_games("notable_games.json", limit=3)
     if not notable_games:
         print("[info] 今日は注目試合が無いため投稿をスキップします")
         return

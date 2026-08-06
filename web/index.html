@@ -648,17 +648,28 @@
     const timePart = game.start_time_jst
       ? (game.start_time_jst.split(' ')[1] || '') + ' '
       : '';
-    let body = timePart + game.matchup + ' ' + hook;
-    const hashtags = collectHashtags(game)
-      .map((t) => '#' + t)
-      .join(' ');
+    const body = timePart + game.matchup + ' ' + hook;
 
-    // Xの実質280字制限を超える場合は、本文側だけ削って収める
-    while (xWeight(body + '\n' + hashtags) > 270 && body.length > 10) {
-      body = body.slice(0, -2) + '…';
+    // Xは全角を2文字換算、URLは一律23文字換算。
+    // 収まらない場合は、まずハッシュタグを後ろから削る。
+    // 本文を途中で切ると「防御率2.41の投」のように文が壊れて
+    // 意味が伝わらなくなるため、本文は最後まで残すことを優先する。
+    const LIMIT = 280 - 23 - 2;
+    let tags = collectHashtags(game);
+    let hashtags = tags.map((t) => '#' + t).join(' ');
+    while (tags.length > 1 && xWeight(body + '\n' + hashtags) > LIMIT) {
+      tags = tags.slice(0, -1);
+      hashtags = tags.map((t) => '#' + t).join(' ');
     }
 
-    const shareText = encodeURIComponent(body + '\n' + hashtags);
+    // タグを1つまで削っても収まらない場合に限り、本文を文の区切りで詰める
+    let finalBody = body;
+    if (xWeight(finalBody + '\n' + hashtags) > LIMIT) {
+      const cut = finalBody.search(/[。、]/);
+      if (cut > 10) finalBody = finalBody.slice(0, cut + 1);
+    }
+
+    const shareText = encodeURIComponent(finalBody + '\n' + hashtags);
     const siteUrl = encodeURIComponent(location.origin + location.pathname);
 
     const link = document.createElement('a');
