@@ -32,6 +32,12 @@ W, H = 1080, 1920
 # 情報番組的な内容では、なめらかさより生成の速さを優先してよいと判断した。
 FPS = 24
 
+# 各セグメントのアニメーションが完了する進捗。これを過ぎたフレームは
+# 見た目が変わらないため、描き直さず直前のフレームを使い回す。
+# 1枚ずつ描画すると枚数がそのまま生成時間になるので、
+# 静止している区間を省くだけで大幅に短縮できる。
+ANIM_END = 0.45
+
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
 SURF2 = (23, 28, 39)
@@ -129,7 +135,9 @@ def base_frame(progress: float):
     im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
     # ゆっくり流れる斜めのアクセント
-    offset = int(progress * 240)
+    # 背景はANIM_ENDで動きを止める。ここが動き続けると全フレームが
+    # 微妙に異なり、描画結果を使い回せなくなるため。
+    offset = int(min(progress, ANIM_END) * 240)
     for i in range(-2, 6):
         x = i * 340 + offset
         d.polygon(
@@ -163,7 +171,7 @@ def render_intro(progress: float, date_label: str):
     e = ease_out(min(1.0, progress * 2.4))
     slide = int((1 - e) * 90)
     d.text((80, 680 + slide), "コレスポ", font=font(140), fill=ACCENT)
-    if progress > 0.25:
+    if progress > 0.10:
         e2 = ease_out(min(1.0, (progress - 0.25) * 3))
         y = 880 + int((1 - e2) * 40)
         d.text((80, y), f"{date_label} の注目試合", font=font(64), fill=TEXT)
@@ -204,7 +212,7 @@ def render_game(progress: float, g: dict, index: int, total: int):
         if p and p.get("name"):
             era = f" ({p['era']})" if p.get("era") else ""
             pitchers.append(f"{p['name']}{era}")
-    if pitchers and progress > 0.2:
+    if pitchers and progress > 0.08:
         d.text((70, y), "先発予定", font=font(34), fill=DIM)
         y += 52
         for line in pitchers:
@@ -216,7 +224,7 @@ def render_game(progress: float, g: dict, index: int, total: int):
     reasons = [r["text"] for r in (g.get("reasons") or [])
                if r.get("visible", True) and r.get("text")][:3]
     for i, r in enumerate(reasons):
-        appear = 0.28 + i * 0.16
+        appear = 0.10 + i * 0.08
         if progress < appear:
             continue
         e2 = ease_out(min(1.0, (progress - appear) * 5))
@@ -227,7 +235,7 @@ def render_game(progress: float, g: dict, index: int, total: int):
         y += 14
 
     # --- 球場の見どころ ---
-    if g.get("venue_note") and progress > 0.6:
+    if g.get("venue_note") and progress > 0.30:
         y = max(y + 30, 1480)
         d.rounded_rectangle([60, y, W - 60, y + 230], 20, fill=ACCENT_DIM)
         yy = y + 26
@@ -259,7 +267,7 @@ def render_outro(progress: float):
     e = ease_out(min(1.0, progress * 2))
     d.text((80, 700), "コレスポ", font=font(120), fill=ACCENT)
     d.text((80, 860), "collespo.com", font=font(58), fill=TEXT)
-    if progress > 0.3:
+    if progress > 0.12:
         d.text((80, 970), "毎日19時 更新", font=font(46), fill=DIM)
     # VOICEVOXの利用規約で、動画内または説明欄へのクレジット表記が
     # 求められているため、アウトロに必ず表示する
@@ -346,8 +354,14 @@ def main():
             n = int(dur * FPS)
             kind = seg.get("kind")
             meta = seg.get("meta") or {}
+            cached = None
             for k in range(n):
                 p_ = k / max(1, n - 1)
+                if p_ > ANIM_END and cached is not None:
+                    # 動きが止まった区間は描き直さず、直前のフレームを使い回す
+                    proc.stdin.write(cached)
+                    frame_no += 1
+                    continue
                 if kind == "intro":
                     im = render_intro(p_, date_label)
                 elif kind == "game":
@@ -359,7 +373,8 @@ def main():
                     im = render_news(p_, seg.get("text", ""))
                 else:
                     im = render_outro(p_)
-                proc.stdin.write(im.tobytes())
+                cached = im.tobytes()
+                proc.stdin.write(cached)
                 frame_no += 1
             print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")
     finally:

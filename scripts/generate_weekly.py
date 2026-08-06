@@ -34,6 +34,12 @@ from PIL import Image, ImageDraw, ImageFont
 W, H = 1920, 1080
 FPS = 24
 
+# 各セグメントのアニメーションが完了する進捗。これを過ぎたフレームは
+# 見た目が変わらないため、描き直さず直前のフレームを使い回す。
+# 1枚ずつ描画すると枚数がそのまま生成時間になるので、
+# 静止している区間を省くだけで大幅に短縮できる。
+ANIM_END = 0.45
+
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
 SURF2 = (23, 28, 39)
@@ -107,7 +113,9 @@ def wrap(d, text, fnt, max_w):
 def base(progress):
     im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
-    off = int(progress * 200)
+    # 背景はANIM_ENDで動きを止める。ここが動き続けると全フレームが
+    # 微妙に異なり、描画結果を使い回せなくなるため。
+    off = int(min(progress, ANIM_END) * 200)
     for i in range(-2, 8):
         x = i * 420 + off
         d.polygon([(x, H), (x + 180, H), (x + 480, 0), (x + 300, 0)], fill=(14, 18, 26))
@@ -137,7 +145,7 @@ def render_intro(p, label):
     im, d = base(p)
     e = ease_out(min(1.0, p * 2.2))
     d.text((140, 380 + int((1 - e) * 60)), "コレスポ", font=font(150), fill=ACCENT)
-    if p > 0.25:
+    if p > 0.10:
         d.text((140, 580), f"{label} 週間まとめ", font=font(76), fill=TEXT)
     d.text((140, H - 140), "collespo.com", font=font(40), fill=DIM)
     return im
@@ -163,7 +171,7 @@ def render_day(p, date_str, game):
             d.text((312 - dx + nw, yy + 10), "JP", font=font(26), fill=BG)
 
     fs = game.get("final_score")
-    if fs and p > 0.25:
+    if fs and p > 0.12:
         winner = (game.get("home_team_name") if fs.get("winner") == "home"
                   else game.get("away_team_name"))
         d.rounded_rectangle([W - 640, 300, W - 100, 420], 18, fill=ACCENT_DIM)
@@ -173,7 +181,7 @@ def render_day(p, date_str, game):
     yy = 600
     for i, r in enumerate([x["text"] for x in (game.get("reasons") or [])
                            if x.get("visible", True) and x.get("text")][:3]):
-        if p < 0.3 + i * 0.14:
+        if p < 0.12 + i * 0.07:
             continue
         for line in wrap(d, "・" + r, font(40), W - 300):
             d.text((120, yy), line, font=font(40), fill=TEXT)
@@ -188,7 +196,7 @@ def render_news(p, items):
     d.text((100, 200), "今週の動き", font=font(70), fill=JP)
     yy = 360
     for i, t in enumerate(items[:4]):
-        if p < 0.15 + i * 0.15:
+        if p < 0.08 + i * 0.07:
             continue
         d.rounded_rectangle([100, yy - 18, W - 100, yy + 74], 16, fill=SURF)
         for line in wrap(d, t, font(42), W - 260)[:1]:
@@ -204,7 +212,7 @@ def render_ranking(p, ranking):
     d.text((100, 190), "今週よく登場した球団", font=font(70), fill=ACCENT)
     yy = 340
     for i, (name, count, color) in enumerate(ranking[:5]):
-        if p < 0.1 + i * 0.13:
+        if p < 0.06 + i * 0.06:
             continue
         e = ease_out(min(1.0, (p - (0.1 + i * 0.13)) * 6))
         bar_w = int((W - 700) * (count / max(1, ranking[0][1])) * e)
@@ -340,8 +348,14 @@ def main():
             dur = max(3.0, float(seg.get("duration") or 0) or 10.0)
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
+            cached = None
             for k in range(n):
                 pp = k / max(1, n - 1)
+                if pp > ANIM_END and cached is not None:
+                    # 動きが止まった区間は描き直さず、直前のフレームを使い回す
+                    proc.stdin.write(cached)
+                    total += 1
+                    continue
                 if kind == "intro":
                     im = render_intro(pp, label)
                 elif kind == "day":
@@ -355,7 +369,8 @@ def main():
                     im = render_news(pp, news_items)
                 else:
                     im = render_outro(pp)
-                proc.stdin.write(im.tobytes())
+                cached = im.tobytes()
+                proc.stdin.write(cached)
                 total += 1
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:
