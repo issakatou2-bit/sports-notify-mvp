@@ -44,10 +44,42 @@ jobs:
           sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
           fc-list :lang=ja | head -3
 
+      # 週次動画にもナレーションを入れる。
+      # これが無いと音声manifestが作られず、無音の動画になる。
+      - name: Start VOICEVOX engine
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました。音声なしで進めます"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Generate weekly narration
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/generate_weekly_narration.py \
+            --archive-dir archive \
+            --out build/weekly_narration.json
+
+      - name: Synthesize weekly narration
+        continue-on-error: true
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/weekly_narration.json \
+            --out-dir build/weekly_audio
+
       - name: Generate weekly video
         run: |
           python scripts/generate_weekly.py \
             --archive-dir archive \
+            --audio-dir build/weekly_audio \
             --out build/weekly
 
       - name: Upload to YouTube
