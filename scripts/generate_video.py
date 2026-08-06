@@ -330,8 +330,11 @@ def main():
     # --- フレームをffmpegへ直接流し込む ---
     # PNGとしてディスクに書き出すと、2000枚超で圧縮とI/Oに3分近くかかる。
     # 生のRGBデータを標準入力経由で渡せば、その両方が不要になる。
+    # -nostats/-loglevel error で、ffmpegが標準エラーへ書く量を最小限にする。
+    # 出力が多いとパイプのバッファが埋まり、ffmpegが停止して
+    # こちらの書き込みも止まる(デッドロック)。
     cmd = [
-        "ffmpeg", "-y",
+        "ffmpeg", "-y", "-nostats", "-loglevel", "error",
         "-f", "rawvideo", "-pix_fmt", "rgb24",
         "-s", f"{W}x{H}", "-framerate", str(FPS),
         "-i", "-",
@@ -344,8 +347,12 @@ def main():
         cmd += ["-c:a", "aac", "-b:a", "160k", "-shortest"]
     cmd += [str(video_path)]
 
+    # stderrはパイプではなくファイルへ逃がす。
+    # パイプのままだと、こちらが読まない限りバッファが埋まって止まる。
+    err_path = out_dir / "ffmpeg_error.log"
+    err_file = open(err_path, "wb")
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
-                            stderr=subprocess.PIPE)
+                            stderr=err_file)
 
     frame_no = 0
     try:
@@ -381,9 +388,10 @@ def main():
         if proc.stdin:
             proc.stdin.close()
         proc.wait()
+        err_file.close()
 
     if proc.returncode != 0:
-        err = proc.stderr.read().decode("utf-8", "ignore")[-2000:]
+        err = err_path.read_text(encoding="utf-8", errors="ignore")[-2000:]
         print(f"[error] 動画の書き出しに失敗しました:\n{err}", file=sys.stderr)
         sys.exit(1)
 

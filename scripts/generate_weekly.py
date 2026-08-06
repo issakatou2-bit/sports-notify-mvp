@@ -215,7 +215,9 @@ def render_ranking(p, ranking):
         if p < 0.06 + i * 0.06:
             continue
         e = ease_out(min(1.0, (p - (0.1 + i * 0.13)) * 6))
-        bar_w = int((W - 700) * (count / max(1, ranking[0][1])) * e)
+        # アニメーション開始直後は幅が0になり、rounded_rectangleが
+        # 「x1がx0より小さい」で例外を投げるため、最低幅を確保する
+        bar_w = max(2, int((W - 700) * (count / max(1, ranking[0][1])) * e))
         d.text((120, yy), f"{i + 1}", font=font(44), fill=DIM)
         badge(d, 190, yy - 4, None, color)
         d.text((200, yy), name, font=font(46), fill=TEXT)
@@ -331,7 +333,11 @@ def main():
                         "-i", str(lst), "-c", "copy", str(audio_path)],
                        check=True, capture_output=True)
 
-    cmd = ["ffmpeg", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24",
+    # -nostats/-loglevel error で、ffmpegが標準エラーへ書く量を最小限にする。
+    # 出力が多いとパイプのバッファが埋まり、ffmpegが停止して
+    # こちらの書き込みも止まる(デッドロック)。
+    cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
+           "-f", "rawvideo", "-pix_fmt", "rgb24",
            "-s", f"{W}x{H}", "-framerate", str(FPS), "-i", "-"]
     if audio_path:
         cmd += ["-i", str(audio_path)]
@@ -340,8 +346,12 @@ def main():
         cmd += ["-c:a", "aac", "-b:a", "160k", "-shortest"]
     cmd += [str(video_path)]
 
+    # stderrはパイプではなくファイルへ逃がす。
+    # パイプのままだと、こちらが読まない限りバッファが埋まって止まる。
+    err_path = out_dir / "ffmpeg_error.log"
+    err_file = open(err_path, "wb")
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
-                            stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+                            stdout=subprocess.DEVNULL, stderr=err_file)
     total = 0
     try:
         for seg in segs:
@@ -377,9 +387,11 @@ def main():
         if proc.stdin:
             proc.stdin.close()
         proc.wait()
+        err_file.close()
 
     if proc.returncode != 0:
-        print(f"[error] 書き出しに失敗:\n{proc.stderr.read().decode('utf-8','ignore')[-1500:]}",
+        print(f"[error] 書き出しに失敗:\n"
+              f"{err_path.read_text(encoding='utf-8', errors='ignore')[-1500:]}",
               file=sys.stderr)
         sys.exit(1)
 
