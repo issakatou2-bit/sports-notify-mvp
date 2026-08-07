@@ -28,16 +28,23 @@ on:
           - mlb_position
         default: mlb_abbr
       privacy:
-        description: 公開設定(まずはunlistedで中身を確認することを推奨)
+        description: 公開設定
         type: choice
         options:
+          - public
           - unlisted
           - private
-          - public
-        default: unlisted
+        default: public
+      force:
+        description: 投稿済みのトピックも上げ直す(通常はオフ)
+        type: boolean
+        default: false
 
+# 投稿済みの記録(data/published_assets.json)をコミットして残すため、
+# 書き込み権限が要る。これが無いと毎回まっさらな状態から判断することになり、
+# 同じ資産動画を何度も投稿してしまう。
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   asset:
@@ -98,7 +105,13 @@ jobs:
           TOPICS="${{ inputs.topic }}"
           if [ "$TOPICS" = "all" ]; then
             TOPICS="mlb_abbr mlb_venue mlb_rivalry mlb_stats mlb_terms mlb_league mlb_position"
-            echo "::notice::全トピックを投稿します。APIの割り当て上、1日6本前後が上限です"
+            echo "::notice::全トピックを対象にします。投稿済みのものは自動で飛ばします"
+          fi
+
+          FORCE=""
+          if [ "${{ inputs.force }}" = "true" ]; then
+            FORCE="--force"
+            echo "::warning::投稿済みのトピックも上げ直します"
           fi
 
           FAILED=""
@@ -123,8 +136,8 @@ jobs:
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
               --thumbnail "build/asset_$t/thumb.png" \
-              --privacy "${{ inputs.privacy }}"; then
-              echo "$t: 投稿しました"
+              --privacy "${{ inputs.privacy }}" $FORCE; then
+              echo "$t: 完了"
             else
               echo "::warning::$t の投稿に失敗しました(APIの割り当て超過の可能性)"
               FAILED="$FAILED $t"
@@ -140,6 +153,16 @@ jobs:
           # 動画自体は必ず1か所へ集めて、成果物として持ち帰れるようにする
           mkdir -p build/asset
           cp build/asset_*/*.mp4 build/asset/ 2>/dev/null || true
+
+      - name: Commit published record
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/published_assets.json || true
+          git diff --cached --quiet || git commit -m "published assets: ${{ github.run_id }}"
+          git pull --rebase --quiet || true
+          git push || echo "変更が無いか、push対象が無いためスキップ"
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
       - name: Save videos as artifact

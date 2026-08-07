@@ -170,6 +170,52 @@ def build_asset_metadata(topic: str) -> dict:
     }
 
 
+# 投稿済みの資産動画を記録するファイル。リポジトリへコミットするので、
+# 次の実行から「まだ出していないものだけ」を選べる。
+PUBLISHED_PATH = "data/published_assets.json"
+
+
+def load_published(path: str = PUBLISHED_PATH) -> dict:
+    p = pathlib.Path(path)
+    if not p.exists():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8")).get("assets") or {}
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def record_published(topic: str, video_id: str, privacy: str,
+                     path: str = PUBLISHED_PATH) -> None:
+    """
+    投稿できたトピックを控える。
+
+    同じ資産動画を二重に投稿すると、チャンネルに重複が並ぶだけでなく
+    APIの割り当ても無駄になる。実行のたびに手で覚えておく前提にすると
+    いつか必ず間違えるので、記録をリポジトリに残して機械的に判断する。
+    """
+    from datetime import datetime, timezone
+
+    p = pathlib.Path(path)
+    data = {}
+    if p.exists():
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            data = {}
+    assets = data.get("assets") or {}
+    assets[topic] = {
+        "video_id": video_id,
+        "url": f"https://youtu.be/{video_id}",
+        "privacy": privacy,
+        "published_at": datetime.now(timezone.utc).isoformat(),
+    }
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps({"assets": assets}, ensure_ascii=False, indent=2),
+                 encoding="utf-8")
+    print(f"[info] 投稿済みとして記録しました: {topic} -> {path}")
+
+
 def load_hook(narration_path: str) -> dict:
     """
     動画の1枚目に使ったフックを、ナレーション原稿から読む。
@@ -331,6 +377,8 @@ def main():
                         help="週次のタイトルに入れる期間の算出元")
     parser.add_argument("--thumbnail", default=None,
                         help="設定するカスタムサムネイル(PNG)")
+    parser.add_argument("--force", action="store_true",
+                        help="資産動画を投稿済みでも上げ直す")
     parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
     args = parser.parse_args()
@@ -339,6 +387,15 @@ def main():
     if not video_path.exists():
         print(f"[info] {video_path} が無いため、アップロードをスキップします")
         return
+
+    # 同じ資産動画を二重に上げない。作り直したい場合は --force で上書きできる。
+    if args.kind == "asset" and not args.force:
+        already = load_published().get(args.asset_topic or "")
+        if already:
+            print(f"[info] {args.asset_topic} は投稿済みのためスキップします "
+                  f"({already.get('url')})")
+            print("       作り直して上げ直す場合は --force を付けてください")
+            return
 
     client_id = os.environ.get("YOUTUBE_CLIENT_ID")
     client_secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
@@ -428,6 +485,9 @@ def main():
                       file=sys.stderr)
         elif thumb:
             print(f"[info] サムネイル画像が無いためスキップします: {thumb}")
+
+        if args.kind == "asset" and vid:
+            record_published(args.asset_topic or "mlb_abbr", vid, args.privacy)
     except Exception as e:
         # アップロードに失敗しても、通知やサイト更新は既に済んでいるので
         # ワークフロー全体を落とさない

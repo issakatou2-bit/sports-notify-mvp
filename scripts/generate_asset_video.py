@@ -244,12 +244,28 @@ def venue_items() -> list:
     """
     球場の特徴。notability_engine の MLB_VENUE_NOTES をそのまま使う。
 
-    毎日の注目理由でも「本塁打が出やすい球場」といった形で触れているので、
-    ここで一度まとめておくと、日々の配信の理解が深まる。
-    表示順は登録順(打者有利→投手有利→その他)のまま固定し、
-    作り置きできる動画として毎回同じ内容になるようにしている。
+    見出しには「どのチームの本拠地で、どこにあるか」を必ず付ける。
+    球場の癖だけを聞いても、それがどこの話なのか分からないと頭に残らない。
+    表示順は登録順のまま固定し、作り置きできる動画として
+    毎回同じ内容になるようにしている。
+
+    同じ球場が改称前後で2件登録されている場合があるので、
+    本拠地球団が重複するものは先に出てきた方だけを使う。
     """
-    return [(jp, note) for jp, note in MLB_VENUE_NOTES.values()]
+    out, seen = [], set()
+    for v in MLB_VENUE_NOTES.values():
+        jp, note = v[0], v[1]
+        team_id = v[2] if len(v) > 2 else None
+        place = v[3] if len(v) > 3 else None
+        if team_id and team_id in seen:
+            continue
+        if team_id:
+            seen.add(team_id)
+        team = MLB_TEAM_NAME_JP.get(team_id or "", "")
+        head = f"{jp}｜{team}" if team else jp
+        body = f"{place}。{note}" if place else note
+        out.append((head, body))
+    return out
 
 
 def rivalry_items() -> list:
@@ -323,7 +339,7 @@ def _narration_list(topic: str) -> dict:
         chunk = items[i:i + 2]
         segments.append({
             "kind": "list",
-            "text": "".join(f"{t}。{b}。" for t, b in chunk),
+            "text": "".join(f"{t.replace('｜', '、')}。{b}。" for t, b in chunk),
             "meta": {"topic": topic, "start": i, "count": len(chunk)},
         })
     segments.append(_outro_segment())
@@ -341,7 +357,9 @@ def _narration_venue() -> dict:
     # 1画面に2球場ずつ。1つずつだと画面数が増えすぎて冗長になる
     for i in range(0, len(items), 2):
         chunk = items[i:i + 2]
-        text = "".join(f"{jp}。{note}。" for jp, note in chunk)
+        # 見出しの「｜」は画面用の区切りで、読み上げには向かない。
+        # 音声側では読点に置き換える。
+        text = "".join(f"{jp.replace('｜', '、')}。{note}。" for jp, note in chunk)
         segments.append({
             "kind": "venue",
             "text": text,
