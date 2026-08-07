@@ -40,6 +40,12 @@ FPS = 24
 # 静止している区間を省くだけで大幅に短縮できる。
 ANIM_END = 0.45
 
+# セグメント種別ごとの最低表示秒数。
+# ナレーションの実測長だけに合わせると、読み上げが終わった瞬間に
+# 画面が切り替わってしまい、成績を読む間がない。
+# 8分以上(ミッドロール広告の条件)を満たす意味でも、下限を設けている。
+MIN_DURATION = {"intro": 8.0, "day": 30.0, "ranking": 28.0, "news": 18.0, "outro": 10.0}
+
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
 SURF2 = (23, 28, 39)
@@ -355,7 +361,9 @@ def main():
     total = 0
     try:
         for seg in segs:
-            dur = max(3.0, float(seg.get("duration") or 0) or 10.0)
+            kind_ = seg.get("kind") or "day"
+            dur = max(MIN_DURATION.get(kind_, 10.0),
+                      float(seg.get("duration") or 0) or 10.0)
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
