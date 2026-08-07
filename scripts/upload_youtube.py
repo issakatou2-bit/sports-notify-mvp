@@ -37,6 +37,57 @@ SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 CATEGORY_SPORTS = "17"
 
 
+# 資産動画のトピックごとのメタ情報。
+# 日次・週次と違って中身が日付に依存しないため、検索から長く拾われることを
+# 狙って、タイトルと説明文を固定で持つ。
+ASSET_META = {
+    "mlb_abbr": {
+        "title": "【MLB】30球団の略称、地区ごとに覚える｜LAD・NYY・CWSってどこ？ #Shorts",
+        "lead": [
+            "野球中継のスコアボードや速報では、球団名がアルファベットの略称で"
+            "表示されます。この動画では、MLB30球団の略称を地区ごとに整理して"
+            "紹介します。",
+            "",
+            "ア・リーグ東地区 / 中地区 / 西地区",
+            "ナ・リーグ東地区 / 中地区 / 西地区",
+            "",
+            "略称が読めるようになると、中継の情報がそのまま頭に入ってきます。",
+        ],
+        "tags": ["MLB", "メジャーリーグ", "野球", "野球初心者", "球団略称",
+                 "MLB入門", "コレスポ"],
+    },
+}
+
+
+def build_asset_metadata(topic: str) -> dict:
+    meta = ASSET_META.get(topic)
+    if not meta:
+        raise ValueError(f"ASSET_META に未登録のトピックです: {topic}")
+
+    lines = list(meta["lead"]) + [
+        "",
+        "#Shorts",
+        "",
+        "コレスポでは毎日19時に、その日の注目試合を"
+        "「なぜ注目なのか」の理由つきでお届けしています。",
+        "サイト: https://collespo.com/",
+        "",
+        "―――",
+        "音声: VOICEVOX:ずんだもん",
+        "データ: MLB Stats API",
+    ]
+    return {
+        "snippet": {
+            "title": meta["title"][:100],
+            "description": "\n".join(lines)[:5000],
+            "tags": meta["tags"][:15],
+            "categoryId": CATEGORY_SPORTS,
+            "defaultLanguage": "ja",
+            "defaultAudioLanguage": "ja",
+        }
+    }
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
@@ -109,8 +160,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
     parser.add_argument("--games", default="notable_games.json")
-    parser.add_argument("--kind", default="daily", choices=["daily", "weekly"],
-                        help="daily=ショート / weekly=週次まとめ")
+    parser.add_argument("--kind", default="daily",
+                        choices=["daily", "weekly", "asset"],
+                        help="daily=ショート / weekly=週次まとめ / asset=資産動画")
+    parser.add_argument("--asset-topic", default=None,
+                        help="--kind asset のときのトピック名")
     parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
     args = parser.parse_args()
@@ -136,16 +190,19 @@ def main():
         scopes=SCOPES,
     )
 
-    date_label = ""
-    try:
-        data = json.loads(pathlib.Path(args.games).read_text(encoding="utf-8"))
-        g = [x for x in data.get("games", []) if x.get("is_notable")]
-        if g:
-            date_label = (g[0].get("start_time_jst") or "").split(" ")[0]
-    except (json.JSONDecodeError, OSError):
-        pass
-
-    body = build_metadata(args.games, date_label, args.kind)
+    if args.kind == "asset":
+        # 資産動画は試合データを一切参照しない(日付に依存しないため)
+        body = build_asset_metadata(args.asset_topic or "mlb_abbr")
+    else:
+        date_label = ""
+        try:
+            data = json.loads(pathlib.Path(args.games).read_text(encoding="utf-8"))
+            g = [x for x in data.get("games", []) if x.get("is_notable")]
+            if g:
+                date_label = (g[0].get("start_time_jst") or "").split(" ")[0]
+        except (json.JSONDecodeError, OSError):
+            pass
+        body = build_metadata(args.games, date_label, args.kind)
     body["status"] = {
         "privacyStatus": args.privacy,
         "selfDeclaredMadeForKids": False,

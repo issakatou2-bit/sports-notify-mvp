@@ -1,0 +1,113 @@
+name: Asset video
+
+# 日付に依存しない「資産動画」を作ってYouTubeへ投稿する。
+#
+# 日次・週次と分けている理由:
+#   内容が日付に依存しないので、決まった時刻に出す必要が無い。
+#   作りたいときに手で回す方が、毎日のパイプラインを重くせずに済む。
+#
+# 既定では限定公開(unlisted)で上げる。
+# 資産動画は一度公開すると長く残るため、内容を確認してから
+# YouTube側で公開へ切り替える運用にしている。
+# 確認済みのトピックを作り直すときだけ public を選ぶ。
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 作る資産動画のトピック
+        type: choice
+        options:
+          - mlb_abbr
+        default: mlb_abbr
+      privacy:
+        description: 公開設定(まずはunlistedで中身を確認することを推奨)
+        type: choice
+        options:
+          - unlisted
+          - private
+          - public
+        default: unlisted
+
+permissions:
+  contents: read
+
+jobs:
+  asset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+
+      - name: Install video tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+          fc-list :lang=ja | head -3
+
+      - name: Start VOICEVOX engine
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました。音声なしで進めます"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      # 原稿は球団テーブルから機械的に組み立てるだけなので、
+      # AIも外部APIも使わない(コストゼロ・内容は毎回同じ)
+      - name: Generate narration script
+        run: |
+          python scripts/generate_asset_video.py \
+            --topic "${{ inputs.topic }}" \
+            --narration-out build/asset_narration.json
+
+      - name: Synthesize narration
+        continue-on-error: true
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/asset_narration.json \
+            --out-dir build/asset_audio
+
+      - name: Generate asset video
+        run: |
+          python scripts/generate_asset_video.py \
+            --topic "${{ inputs.topic }}" \
+            --audio-dir build/asset_audio \
+            --out build/asset
+
+      - name: Upload to YouTube
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python scripts/upload_youtube.py \
+            --video "build/asset/collespo_asset_${{ inputs.topic }}.mp4" \
+            --kind asset \
+            --asset-topic "${{ inputs.topic }}" \
+            --privacy "${{ inputs.privacy }}"
+
+      # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
+      - name: Save video as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-asset-${{ inputs.topic }}
+          path: build/asset/*.mp4
+          retention-days: 14
+          if-no-files-found: warn
