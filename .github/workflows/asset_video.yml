@@ -75,6 +75,13 @@ jobs:
         timeout-minutes: 16
         run: bash scripts/install_video_tools.sh
 
+      # 球場の回で使う実測値。その年の全試合から集計するので、
+      # 作るたびに最新の数字になる。取得できなくても、
+      # 実測の項目が入らないだけで動画自体は作れる。
+      - name: Fetch venue stats
+        continue-on-error: true
+        run: python scripts/venue_stats.py --out data/venue_stats.json
+
       - name: Start VOICEVOX engine
         continue-on-error: true
         run: |
@@ -159,7 +166,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/published_assets.json || true
+          git add data/published_assets.json data/venue_stats.json || true
           git diff --cached --quiet || git commit -m "published assets: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いか、push対象が無いためスキップ"

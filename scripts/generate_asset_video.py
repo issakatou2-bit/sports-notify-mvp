@@ -37,6 +37,8 @@ import wave
 
 from PIL import Image, ImageDraw, ImageFont
 
+import venue_stats
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import (  # noqa: E402
     MLB_DIVISION_NAME_JP,
@@ -229,8 +231,11 @@ LIST_TOPICS = {
     "venue_coors": {
         "label": "クアーズ・フィールド",
         "heading": "クアーズ・フィールド",
+        "venue_en": "Coors Field",
+        # 「MLBで最も打者有利」と断定していたが、実測では2位だった。
+        # 数字を併記する以上、言い伝えの方は断定を避ける。
         "intro": "コロラド州デンバー、ロッキーズの本拠地。"
-                 "MLBで最も打者有利とされる球場です。なぜそうなるのか見ていきます。",
+                 "打者有利の代名詞とされる球場です。なぜそうなるのか見ていきます。",
         "items": [
             ("標高およそ1600メートル", "MLBで群を抜いて高い場所にあります。"
                                  "空気が薄いぶん打球の抵抗が小さく、"
@@ -246,6 +251,7 @@ LIST_TOPICS = {
     "venue_fenway": {
         "label": "フェンウェイ・パーク",
         "heading": "フェンウェイ・パーク",
+        "venue_en": "Fenway Park",
         "intro": "マサチューセッツ州ボストン、レッドソックスの本拠地。"
                  "現役では最も古く、形もMLBで一番いびつな球場です。",
         "items": [
@@ -262,6 +268,7 @@ LIST_TOPICS = {
     "venue_wrigley": {
         "label": "リグレー・フィールド",
         "heading": "リグレー・フィールド",
+        "venue_en": "Wrigley Field",
         "intro": "イリノイ州シカゴ、カブスの本拠地。"
                  "その日の風向きで、球場の性格そのものが変わります。",
         "items": [
@@ -278,8 +285,11 @@ LIST_TOPICS = {
     "venue_oracle": {
         "label": "オラクル・パーク",
         "heading": "オラクル・パーク",
+        "venue_en": "Oracle Park",
+        # 「MLBでも指折りの投手有利」と書いていたが、実測は30球場中17位で
+        # 中位だった。言い伝えのまま断定すると、直後に出る数字と食い違う。
         "intro": "カリフォルニア州サンフランシスコ、ジャイアンツの本拠地。"
-                 "海に面した、MLBでも指折りの投手有利な球場です。",
+                 "海に面した、本塁打が出にくいことで知られる球場です。",
         "items": [
             ("右翼のすぐ後ろが海", "場外へ飛んだ打球がサンフランシスコ湾に落ちます。"
                             "ボートで球を拾いに来る人がいることでも知られます"),
@@ -293,6 +303,7 @@ LIST_TOPICS = {
     "venue_yankee": {
         "label": "ヤンキー・スタジアム",
         "heading": "ヤンキー・スタジアム",
+        "venue_en": "Yankee Stadium",
         "intro": "ニューヨーク州ニューヨーク、ヤンキースの本拠地。"
                  "左打者にとって、MLBでも指折りに本塁打が出やすい球場です。",
         "items": [
@@ -435,10 +446,35 @@ def _outro_segment() -> dict:
     }
 
 
+def list_items(topic: str) -> list:
+    """
+    そのトピックで実際に表示する項目リスト。
+
+    原稿と画面が必ず同じものを見るよう、加工はここだけで行う。
+    最初は原稿側にだけ実測値を足してしまい、画面側は元のリストを
+    見ていたため、項目数が食い違って描画が範囲外で落ちた。
+    週次動画で一度直したのと同じ形の失敗なので、同じやり方で防ぐ。
+    """
+    spec = LIST_TOPICS[topic]
+    items = list(spec["items"])
+
+    # 球場の回は、その年の全試合から集計した実測値を先頭に置く。
+    # 「打者有利とされる」で終わらせず、実際どうだったのかまで出す。
+    # 集計データが無い環境では、何も足さずに従来どおりの内容になる。
+    venue_en = spec.get("venue_en")
+    if venue_en:
+        desc = venue_stats.describe(venue_stats.load(), venue_en)
+        if desc:
+            items.insert(0, ("実際に何点入っているか", desc))
+    return items
+
+
 def _narration_list(topic: str) -> dict:
     """LIST_TOPICS のデータから原稿を組む。1画面に2項目ずつ。"""
     spec = LIST_TOPICS[topic]
-    items = spec["items"]
+    items = list_items(topic)
+    if spec.get("venue_en") and items and items[0][0] == "実際に何点入っているか":
+        print(f"[info] 実測値を追加: {items[0][1]}")
     segments = [{"kind": "intro", "text": spec["intro"], "meta": {}}]
     for i in range(0, len(items), 2):
         chunk = items[i:i + 2]
@@ -831,13 +867,14 @@ def main():
                                      (len(venues) + 1) // 2,
                                      "球場でこんなに変わる")
                 elif kind == "list":
-                    spec = LIST_TOPICS[meta.get("topic", args.topic)]
-                    items = spec["items"]
+                    t = meta.get("topic", args.topic)
+                    # 原稿と同じ関数で組み立てる。別々に作ると項目数がずれる
+                    items = list_items(t)
                     im = render_list(pp, items, meta.get("start", 0),
                                      meta.get("count", 1),
                                      meta.get("start", 0) // 2 + 1,
                                      (len(items) + 1) // 2,
-                                     spec["heading"])
+                                     LIST_TOPICS[t]["heading"])
                 elif kind == "rivalry":
                     idx = meta.get("index", 0)
                     im = render_rivalry(pp, rivalries[idx], idx, len(rivalries))
