@@ -26,6 +26,7 @@ import pathlib
 import re
 import subprocess
 import sys
+import wave
 from datetime import datetime, timedelta, timezone
 
 from PIL import Image, ImageDraw, ImageFont
@@ -43,8 +44,14 @@ ANIM_END = 0.45
 # セグメント種別ごとの最低表示秒数。
 # ナレーションの実測長だけに合わせると、読み上げが終わった瞬間に
 # 画面が切り替わってしまい、成績を読む間がない。
-# 8分以上(ミッドロール広告の条件)を満たす意味でも、下限を設けている。
 MIN_DURATION = {"intro": 8.0, "day": 30.0, "ranking": 28.0, "news": 18.0, "outro": 10.0}
+
+# 狙う全体の尺。480秒(8分)がYouTubeのミッドロール広告の条件で、
+# そこに余裕を20秒足している。アーカイブの日数や1日あたりの試合数は
+# 日によって変わるため、固定の秒数を足し合わせて8分を狙うと簡単に割り込む
+# (実際、7日×2試合でも466秒にしかならず14秒足りなかった)。
+# そのため、組み上げた後に不足分をday セグメントへ配って必ず届かせる。
+TARGET_SECONDS = 500.0
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
@@ -218,15 +225,22 @@ def render_ranking(p, ranking):
     d.text((100, 190), "今週よく登場した球団", font=font(70), fill=ACCENT)
     yy = 340
     for i, (name, count, color) in enumerate(ranking[:5]):
-        if p < 0.06 + i * 0.06:
+        if p < 0.04 + i * 0.05:
             continue
-        e = ease_out(min(1.0, (p - (0.1 + i * 0.13)) * 6))
+        # バーの伸びは ANIM_END までに必ず終わらせる。
+        # ANIM_END を過ぎたフレームは描き直さず使い回すため、そこまでに
+        # 伸び切っていないバーは、以降ずっとその途中の幅で固まってしまう。
+        # 以前は 0.1 + i*0.13 から始めていたので、4本目(0.49)と5本目(0.62)は
+        # 開始前の状態のまま凍り付き、最低幅の2pxで表示され続けていた。
+        e = ease_out(min(1.0, max(0.0, (p - (0.04 + i * 0.05)) * 9)))
         # アニメーション開始直後は幅が0になり、rounded_rectangleが
         # 「x1がx0より小さい」で例外を投げるため、最低幅を確保する
         bar_w = max(2, int((W - 700) * (count / max(1, ranking[0][1])) * e))
         d.text((120, yy), f"{i + 1}", font=font(44), fill=DIM)
+        # 色チップは幅20pxで描かれるので、球団名はその右端より先から始める。
+        # 以前は200pxから書き始めており、1文字目にチップが重なっていた。
         badge(d, 190, yy - 4, None, color)
-        d.text((200, yy), name, font=font(46), fill=TEXT)
+        d.text((232, yy), name, font=font(46), fill=TEXT)
         d.rounded_rectangle([620, yy + 8, 620 + bar_w, yy + 46], 8, fill=ACCENT_DIM)
         d.text((640, yy + 8), f"{count}回", font=font(34), fill=ACCENT)
         yy += 110
@@ -241,6 +255,129 @@ def render_outro(p):
     d.text((140, 800), "音声: VOICEVOX:ずんだもん", font=font(38), fill=DIM)
     d.text((140, 860), "データ: MLB Stats API", font=font(38), fill=DIM)
     return im
+
+
+def load_news_items(news_path: str, log_path: str, since: str, until: str) -> list:
+    """
+    「今週の動き」に載せるニュース文を集める。
+
+    週次ワークフローには public/news.json が存在しない(あれは日次側が
+    その日限りで作るもので、リポジトリにも残らない)。そのため以前は
+    この枠が常に空になり、ニュース画面が1枚も出ていなかった。
+    日次がコミットしている data/news_log.json から、その週の分だけを拾う。
+    履歴がまだ無い環境では、従来どおり news.json を見る。
+    """
+    p = pathlib.Path(log_path)
+    if p.exists():
+        try:
+            entries = json.loads(p.read_text(encoding="utf-8")).get("entries") or []
+            return [e["text"] for e in entries
+                    if e.get("text") and since <= (e.get("date") or "") <= until]
+        except (json.JSONDecodeError, OSError, KeyError):
+            pass
+
+    p = pathlib.Path(news_path)
+    if p.exists():
+        try:
+            return [n["text"] for n in
+                    (json.loads(p.read_text(encoding="utf-8")).get("news") or [])]
+        except (json.JSONDecodeError, OSError, KeyError):
+            pass
+    return []
+
+
+def plan_durations(segs: list, target: float = TARGET_SECONDS) -> list:
+    """
+    各セグメントの表示秒数を先に決める。
+
+    描画ループの中で都度計算すると、音声側の尺合わせと計算が食い違いやすい。
+    ここで1本のリストとして確定させ、映像も音声もこれだけを見るようにする。
+
+    まず「ナレーションの実測長」と「種別ごとの下限」の大きい方を採り、
+    それでも目標に届かなければ、不足分をday セグメントへ均等に配る。
+    day を伸ばす理由は、試合ごとの成績や注目理由が並ぶ画面で、
+    ここだけは長く映しても間延びして見えないため。
+    """
+    durations = []
+    for seg in segs:
+        kind = seg.get("kind") or "day"
+        audio_len = float(seg.get("duration") or 0)
+        durations.append(max(MIN_DURATION.get(kind, 10.0), audio_len, 4.0))
+
+    total = sum(durations)
+    day_idx = [i for i, s in enumerate(segs) if (s.get("kind") or "day") == "day"]
+    if total < target and day_idx:
+        extra = (target - total) / len(day_idx)
+        for i in day_idx:
+            durations[i] += extra
+        print(f"[info] 目標{target:.0f}秒に{target - total:.0f}秒不足したため、"
+              f"{len(day_idx)}件の試合紹介を1件あたり{extra:.1f}秒ずつ延ばしました")
+    return durations
+
+
+def build_narration_track(segs: list, durations: list, out_dir: pathlib.Path):
+    """
+    セグメントごとの音声を、その区間の長さぴったりまで無音で埋めてから連結する。
+
+    なぜ無音を挟むのか:
+      各画面は「ナレーションの実測長」ではなく「下限秒数」で表示されるため、
+      読み上げ(例:16秒)より画面(例:30秒)の方が長い。音声をそのまま
+      詰めて連結すると、その差が毎セグメント積み上がり、最後の試合の画面では
+      ナレーションが3分以上先行してしまう(=別の試合の音声が乗る)。
+      さらに音声トラック全体が映像より短くなるため、ffmpegの -shortest が
+      音声の長さで出力を打ち切り、8分のはずの動画が4分で終わっていた。
+
+      各区間の余りを無音で埋めれば、音声の総尺は映像と一致し、
+      どの画面でもその画面のナレーションが流れる状態になる。
+
+    戻り値: 連結済みwavのパス。音声が1つも無ければ None。
+    """
+    if not any(s.get("file") for s in segs):
+        return None
+
+    # 無音は、実際に合成された音声と同じ形式で作る。
+    # 形式が揃っていれば concat の -c copy がそのまま使え、再エンコードによる
+    # 劣化も追加の依存も無しに連結できる。
+    params = None
+    for s in segs:
+        if s.get("file") and pathlib.Path(s["file"]).exists():
+            with wave.open(s["file"], "rb") as w:
+                params = w.getparams()
+            break
+    if params is None:
+        return None
+
+    pad_dir = out_dir / "silence"
+    pad_dir.mkdir(parents=True, exist_ok=True)
+
+    parts = []
+    for i, (seg, dur) in enumerate(zip(segs, durations)):
+        spoken = 0.0
+        path = seg.get("file")
+        if path and pathlib.Path(path).exists():
+            with wave.open(path, "rb") as w:
+                spoken = w.getnframes() / float(w.getframerate())
+            parts.append(pathlib.Path(path).resolve())
+
+        gap = dur - spoken
+        if gap <= 0.02:
+            continue
+        sil = pad_dir / f"pad_{i:03d}.wav"
+        with wave.open(str(sil), "wb") as w:
+            w.setnchannels(params.nchannels)
+            w.setsampwidth(params.sampwidth)
+            w.setframerate(params.framerate)
+            frames = int(gap * params.framerate)
+            w.writeframes(b"\x00" * (frames * params.nchannels * params.sampwidth))
+        parts.append(sil.resolve())
+
+    lst = out_dir / "audio_list.txt"
+    lst.write_text("\n".join(f"file '{p}'" for p in parts), encoding="utf-8")
+    audio_path = out_dir / "narration.wav"
+    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0",
+                    "-i", str(lst), "-c", "copy", str(audio_path)],
+                   check=True, capture_output=True)
+    return audio_path
 
 
 def load_week(archive_dir: pathlib.Path, days: int = 7):
@@ -271,6 +408,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--news", default="public/news.json")
+    parser.add_argument("--news-log", default="data/news_log.json")
     parser.add_argument("--audio-dir", default="build/weekly_audio")
     parser.add_argument("--out", default="build/weekly")
     args = parser.parse_args()
@@ -286,14 +424,8 @@ def main():
               "週次動画はまだ作りません(2日分以上必要)")
         return
 
-    news_items = []
-    npath = pathlib.Path(args.news)
-    if npath.exists():
-        try:
-            news_items = [n["text"] for n in
-                          (json.loads(npath.read_text(encoding="utf-8")).get("news") or [])]
-        except (json.JSONDecodeError, OSError):
-            pass
+    news_items = load_news_items(args.news, args.news_log, week[0][0], week[-1][0])
+    print(f"[info] 今週の動き: {len(news_items)}件")
 
     label = f"{week[0][0][5:].replace('-', '/')}〜{week[-1][0][5:].replace('-', '/')}"
 
@@ -324,20 +456,19 @@ def main():
             segs.append({"kind": "news", "duration": 20.0, "file": None, "meta": {}})
         segs.append({"kind": "outro", "duration": 10.0, "file": None, "meta": {}})
 
+    # 存在しない試合を指すセグメントは、映像も音声も作れない。
+    # 描画ループの中だけで弾くと音声側とセグメント数が食い違い、
+    # 以降のナレーションが1つずつずれるため、ここで先に落としておく。
+    segs = [s for s in segs
+            if (s.get("kind") or "day") != "day"
+            or (s.get("meta") or {}).get("day_index", 0) < len(week)]
+
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / "collespo_weekly.mp4"
 
-    audio_files = [s["file"] for s in segs if s.get("file")]
-    audio_path = None
-    if audio_files:
-        lst = out_dir / "audio_list.txt"
-        lst.write_text("\n".join(f"file '{pathlib.Path(a).resolve()}'"
-                                 for a in audio_files), encoding="utf-8")
-        audio_path = out_dir / "narration.wav"
-        subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0",
-                        "-i", str(lst), "-c", "copy", str(audio_path)],
-                       check=True, capture_output=True)
+    durations = plan_durations(segs)
+    audio_path = build_narration_track(segs, durations, out_dir)
 
     # -nostats/-loglevel error で、ffmpegが標準エラーへ書く量を最小限にする。
     # 出力が多いとパイプのバッファが埋まり、ffmpegが停止して
@@ -360,10 +491,7 @@ def main():
                             stdout=subprocess.DEVNULL, stderr=err_file)
     total = 0
     try:
-        for seg in segs:
-            kind_ = seg.get("kind") or "day"
-            dur = max(MIN_DURATION.get(kind_, 10.0),
-                      float(seg.get("duration") or 0) or 10.0)
+        for seg, dur in zip(segs, durations):
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
@@ -378,8 +506,6 @@ def main():
                     im = render_intro(pp, label)
                 elif kind == "day":
                     di = meta.get("day_index", 0)
-                    if di >= len(week):
-                        continue
                     im = render_day(pp, week[di][0], week[di][1])
                 elif kind == "ranking":
                     im = render_ranking(pp, ranking)
@@ -405,9 +531,32 @@ def main():
 
     secs = total / FPS
     print(f"[info] 週次動画を生成しました: {video_path} ({secs / 60:.1f}分)")
-    if secs < 480:
-        print(f"[info] 8分に{480 - secs:.0f}秒不足しています"
+
+    # 実際に書き出されたmp4の長さを測る。書き込んだフレーム数から計算した秒数と
+    # 食い違う場合、-shortest が音声側の長さで打ち切っている(過去にこれで
+    # 8分のはずの動画が4分になっていた)。数えた枚数ではなく成果物を見る。
+    actual = secs
+    try:
+        r = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+             "-of", "csv=p=0", str(video_path)],
+            capture_output=True, text=True, check=True,
+        )
+        actual = float(r.stdout.strip())
+    except Exception:
+        pass
+
+    if abs(actual - secs) > 2:
+        print(f"::warning title=尺が想定と食い違う::"
+              f"描画した{secs:.0f}秒に対し、mp4は{actual:.0f}秒しかありません"
+              "(音声トラックが短く、-shortestで打ち切られた可能性)")
+    if actual < 480:
+        print(f"::warning title=8分未満::"
+              f"{480 - actual:.0f}秒不足しています"
               "(ミッドロール広告は8分以上が条件)")
+    else:
+        print(f"[info] ミッドロール広告の条件(8分以上)を満たしています"
+              f"({actual:.0f}秒)")
 
 
 if __name__ == "__main__":

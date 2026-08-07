@@ -1151,12 +1151,20 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
 # AIによる注目理由の要約(任意機能)
 # ---------------------------------------------------------------------------
 # コスト暴走を防ぐための設計上の制約:
-#   - 1日1回の実行につき、最大1試合分・1回のAPI呼び出しのみ(ループでの複数回
-#     呼び出しはしない)
-#   - max_tokensを150に固定(暴走した場合の被害を最小化)
+#   - 1日1回の実行につき、上位3試合まで(enhance_games_with_ai の count 引数)
+#   - max_tokensに上限を設ける(暴走した場合の被害を最小化)
 #   - 失敗時にリトライはしない(1回失敗したらルールベースの理由文にフォールバック)
 #   - 最も安価なHaiku 4.5を使用
 # この関数は ANTHROPIC_API_KEY が設定されている場合のみ main() から呼ばれる。
+#
+# max_tokensの決め方(2026年8月に320から引き上げ):
+#   出力は「解説文 + ---HOOK--- + フック文」の順で、フック文が最後に来る。
+#   そのため上限に当たると、真っ先に壊れるのがフック文になる。実際、
+#   解説文が300文字を超えた日はフック文が「防御率2.41の投」のように
+#   語の途中で切れており、それがそのまま通知・Bluesky・動画へ流れていた。
+#   出力トークンは実際に使った分だけの課金なので、上限を上げること自体の
+#   コストは無い。上限は「暴走の歯止め」としてだけ機能させ、長さの制御は
+#   プロンプト側の文字数指定で行う。
 
 def _division_lead_margin(team_id: str, standings: dict):
     """
@@ -1365,7 +1373,8 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         "以下の2つを、上記のデータだけを根拠に日本語で書いてください。\n\n"
         "【出力1: 解説文】\n"
         "「シーズン全体・MLB全体で見たときに、この一戦になぜ注目すべきか」を"
-        "2〜3文で説明する文章。\n"
+        "2〜3文で説明する文章。全体で200文字以内に必ず収めること"
+        "(長くなりすぎると読み手が離れ、後続のフック文も書けなくなる)。\n"
         "構成は「大きな注目理由(順位争い・両チームの立場など、試合全体の意味)」を"
         "先に述べ、最後の1文で「小さな見どころ(先発投手の投げ合い、球場の特徴など、"
         "試合を見ている間に注目できる具体的なポイント)」を添えること。"
@@ -1419,8 +1428,14 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
     )
 
 
-def _call_ai(prompt: str, api_key: str, max_tokens: int = 320):
-    """1回分のAPI呼び出し。戻り値: (text, cost_usd) または (None, 0)"""
+def _call_ai(prompt: str, api_key: str, max_tokens: int = 700):
+    """
+    1回分のAPI呼び出し。
+
+    戻り値: (text, cost_usd, in_tok, out_tok, truncated)
+      truncated … 上限に当たって出力が途中で切れたか。Trueなら文の途中で
+      終わっている可能性が高いので、呼び出し側でそのまま公開してはいけない。
+    """
     try:
         import anthropic
 
@@ -1438,10 +1453,16 @@ def _call_ai(prompt: str, api_key: str, max_tokens: int = 320):
         cost_usd = (usage.input_tokens / 1_000_000 * 1) + (
             usage.output_tokens / 1_000_000 * 5
         )
-        return ai_text, cost_usd, usage.input_tokens, usage.output_tokens
+        truncated = message.stop_reason == "max_tokens"
+        if truncated:
+            print(
+                f"[warn] 出力がmax_tokens({max_tokens})に達して途中で切れました。"
+                "壊れた文を公開しないよう、この試合の生成結果は破棄します"
+            )
+        return ai_text, cost_usd, usage.input_tokens, usage.output_tokens, truncated
     except Exception as e:
         print(f"[warn] AI呼び出しに失敗、この試合はルールベースの理由のみ使用します: {e}")
-        return None, 0, 0, 0
+        return None, 0, 0, 0, False
 
 
 def fetch_mlb_highlight(
@@ -1544,6 +1565,32 @@ def collect_log_notes(game: dict, season: str) -> list:
     return notes[:3]
 
 
+# フック文として短すぎるものの下限。実データ上、正常に生成されたフック文は
+# 26〜53文字に収まっていたのに対し、上限で切れたものは9〜14文字だった。
+# stop_reasonでの判定が主で、これは念のための二段目の網。
+MIN_HOOK_CHARS = 15
+
+
+def _clean_hook(hook_part: str) -> str:
+    """
+    フック文を、通知・SNS・動画へそのまま流せる形に整える。
+
+    ここで整えておけば、送信側(send_onesignal / post_bluesky)それぞれで
+    同じ処理を書かずに済む。短すぎるものは、途中で切れた残骸である可能性が
+    高いので捨て、送信側のルールベースへフォールバックさせる。
+    """
+    hook = hook_part.strip().strip("「」").strip()
+    # 解説文の要点強調に使う【】が、フック文側へ混ざってくることがある
+    hook = hook.replace("【", "").replace("】", "")
+    # 複数行で返してきた場合は先頭行だけ使う
+    hook = hook.splitlines()[0].strip() if hook else ""
+    if len(hook) < MIN_HOOK_CHARS:
+        if hook:
+            print(f"[warn] フック文が短すぎるため破棄します({len(hook)}文字): {hook}")
+        return ""
+    return hook
+
+
 def enhance_games_with_ai(
     output: dict, standings: dict, api_key: str, count: int = 3
 ) -> None:
@@ -1554,6 +1601,7 @@ def enhance_games_with_ai(
     ][:count]
 
     total_cost = 0.0
+    succeeded = 0
     season = None
     for game in targets:
         # 先発投手の今季成績を、AI要約を作る試合についてだけ取得する
@@ -1574,28 +1622,58 @@ def enhance_games_with_ai(
         game["log_notes"] = collect_log_notes(game, season or "")
 
         prompt = _build_ai_prompt(game, standings)
-        ai_text, cost_usd, in_tok, out_tok = _call_ai(prompt, api_key)
-        if ai_text:
-            # "---HOOK---" を境に、解説文(ai_summary)と通知用フック文
-            # (notification_hook)に分割する。AIが区切りを守らなかった場合は
-            # 全文をai_summaryとして扱い、フック文は無し(送信側でルール
-            # ベースにフォールバックする)扱いにする。
-            if "---HOOK---" in ai_text:
-                summary_part, _, hook_part = ai_text.partition("---HOOK---")
-                game["ai_summary"] = summary_part.strip()
-                hook_clean = hook_part.strip().strip("「」")
-                if hook_clean:
-                    game["notification_hook"] = hook_clean
-            else:
-                game["ai_summary"] = ai_text.strip()
-            total_cost += cost_usd
-            print(
-                f"[info] AI要約生成: {game['matchup']} "
-                f"(入力{in_tok}トークン/出力{out_tok}トークン、概算${cost_usd:.5f})"
-            )
+        ai_text, cost_usd, in_tok, out_tok, truncated = _call_ai(prompt, api_key)
+        total_cost += cost_usd
+
+        # 途中で切れた出力は、文としても事実としても壊れている可能性がある。
+        # 「検証できることしか書かない」以前に「読める文しか出さない」ため、
+        # 部分的に使うことはせず丸ごと捨てて、ルールベースへ委ねる。
+        if truncated:
+            continue
+        if not ai_text:
+            continue
+
+        # "---HOOK---" を境に、解説文(ai_summary)と通知用フック文
+        # (notification_hook)に分割する。AIが区切りを守らなかった場合は
+        # 全文をai_summaryとして扱い、フック文は無し(送信側でルール
+        # ベースにフォールバックする)扱いにする。
+        if "---HOOK---" in ai_text:
+            summary_part, _, hook_part = ai_text.partition("---HOOK---")
+            game["ai_summary"] = summary_part.strip()
+            hook_clean = _clean_hook(hook_part)
+            if hook_clean:
+                game["notification_hook"] = hook_clean
+        else:
+            game["ai_summary"] = ai_text.strip()
+
+        succeeded += 1
+        print(
+            f"[info] AI要約生成: {game['matchup']} "
+            f"(入力{in_tok}トークン/出力{out_tok}トークン、概算${cost_usd:.5f}、"
+            f"解説{len(game.get('ai_summary') or '')}文字)"
+        )
 
     if targets:
-        print(f"[info] 今回のAI要約合計コスト: 概算${total_cost:.5f}")
+        print(f"[info] 今回のAI要約合計コスト: 概算${total_cost:.5f}"
+              f"({succeeded}/{len(targets)}試合成功)")
+
+    # AIが全滅したことに気付けるようにする。
+    # 残高切れ・APIキー失効はどれも例外として握り潰されるため、放っておくと
+    # 「ワークフローは成功しているのに中身だけ静かに劣化する」状態になる。
+    # ワークフローのログにGitHub Actionsの注釈として出し、生成物にも残す。
+    output["ai_status"] = {
+        "targets": len(targets),
+        "succeeded": succeeded,
+        "cost_usd": round(total_cost, 5),
+    }
+    if targets and succeeded == 0:
+        print("::error title=AI要約が全滅::"
+              "AI要約が1件も生成できませんでした。Anthropicの残高・APIキーを"
+              "確認してください(サイトはルールベースの文章で更新されています)")
+    elif succeeded < len(targets):
+        print(f"::warning title=AI要約が一部失敗::"
+              f"{len(targets)}試合中{len(targets) - succeeded}試合でAI要約を"
+              "生成できませんでした")
 
 
 # ---------------------------------------------------------------------------

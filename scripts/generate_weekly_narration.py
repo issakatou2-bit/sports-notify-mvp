@@ -53,6 +53,27 @@ def load_week(archive_dir: pathlib.Path, days: int = 7):
     return out
 
 
+def load_news_items(news_path: str, log_path: str, since: str, until: str) -> list:
+    """generate_weekly.py の同名関数と同じ条件で「今週の動き」を拾う"""
+    p = pathlib.Path(log_path)
+    if p.exists():
+        try:
+            entries = json.loads(p.read_text(encoding="utf-8")).get("entries") or []
+            return [e["text"] for e in entries
+                    if e.get("text") and since <= (e.get("date") or "") <= until]
+        except (json.JSONDecodeError, OSError, KeyError):
+            pass
+
+    p = pathlib.Path(news_path)
+    if p.exists():
+        try:
+            return [n["text"] for n in
+                    (json.loads(p.read_text(encoding="utf-8")).get("news") or [])]
+        except (json.JSONDecodeError, OSError, KeyError):
+            pass
+    return []
+
+
 def game_facts(date_str: str, g: dict) -> str:
     y, m, d = date_str.split("-")
     lines = [
@@ -117,6 +138,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--news", default="public/news.json")
+    parser.add_argument("--news-log", default="data/news_log.json")
     parser.add_argument("--out", default="build/weekly_narration.json")
     args = parser.parse_args()
 
@@ -129,14 +151,10 @@ def main():
     label = (f"{week[0][0][5:].replace('-', '/')}〜"
              f"{week[-1][0][5:].replace('-', '/')}")
 
-    news_items = []
-    npath = pathlib.Path(args.news)
-    if npath.exists():
-        try:
-            news_items = [n["text"] for n in
-                          (json.loads(npath.read_text(encoding="utf-8")).get("news") or [])]
-        except (json.JSONDecodeError, OSError):
-            pass
+    # 動画側(generate_weekly.py)と同じ条件で拾う。ここでニュース枠の
+    # 有無がずれると、原稿のセグメント数と画面のセグメント数が食い違い、
+    # 以降のナレーションが1つずつずれてしまう。
+    news_items = load_news_items(args.news, args.news_log, week[0][0], week[-1][0])
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     client = anthropic.Anthropic(api_key=api_key) if (api_key and anthropic) else None

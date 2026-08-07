@@ -24,7 +24,9 @@
 
 入出力:
   data/roster_snapshot.json … 前回の所属一覧(比較用、リポジトリにコミットする)
-  public/news.json          … 検証を通ったニュース
+  public/news.json          … その日の検証済みニュース(毎日上書き、非コミット)
+  data/news_log.json        … 検証済みニュースの履歴(日付つきで蓄積、コミットする)
+                              週次まとめ動画の「今週の動き」がこれを読む
 
 使い方:
   python3 scripts/detect_roster_changes.py \
@@ -35,7 +37,7 @@ import argparse
 import json
 import pathlib
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -166,10 +168,68 @@ def score_candidate(c: dict, jp_names: set) -> int:
     return score
 
 
+# ニュースの履歴を残す日数。週次まとめ(7日)に余裕を持たせた長さ。
+# 際限なく貯めると差分コミットが重くなるだけなので、ここで打ち切る。
+NEWS_LOG_DAYS = 60
+
+
+def append_news_log(log_path: pathlib.Path, verified: list) -> None:
+    """
+    検証を通ったニュースを、日付つきで履歴ファイルへ積む。
+
+    なぜ履歴が要るのか:
+      public/news.json は「その日の検知結果」で毎日上書きされ、しかも
+      public/ はリポジトリにコミットされない。そのため週次のまとめ動画からは
+      過去の動きを一切参照できず、「今週の動き」の枠が常に空になっていた。
+      data/ は日次ワークフローがコミットしているので、ここに積めば
+      週次側から1週間分をまとめて読める。
+
+    同じ移籍が複数日に渡って検知された場合は、最初に出た日付だけを残す。
+    """
+    entries = []
+    if log_path.exists():
+        try:
+            entries = json.loads(log_path.read_text(encoding="utf-8")).get("entries", [])
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"[warn] ニュース履歴を読めませんでした(作り直します): {e}", file=sys.stderr)
+
+    known = {e.get("text") for e in entries}
+    today = datetime.now(timezone.utc).date()
+    added = 0
+    for item in verified:
+        if item.get("text") in known:
+            continue
+        entries.append({
+            "date": today.isoformat(),
+            "text": item["text"],
+            "name": item.get("name"),
+            "player_id": item.get("player_id"),
+        })
+        known.add(item.get("text"))
+        added += 1
+
+    cutoff = (today - timedelta(days=NEWS_LOG_DAYS)).isoformat()
+    entries = [e for e in entries if (e.get("date") or "") >= cutoff]
+    entries.sort(key=lambda e: e.get("date") or "")
+
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_path.write_text(
+        json.dumps({"entries": entries}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    print(f"[info] ニュース履歴に{added}件追加しました"
+          f"(保持{len(entries)}件 / 直近{NEWS_LOG_DAYS}日)-> {log_path}")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--snapshot", default="data/roster_snapshot.json")
     parser.add_argument("--out", default="public/news.json")
+    parser.add_argument(
+        "--log",
+        default="data/news_log.json",
+        help="検証を通ったニュースを日付つきで積む履歴ファイル(週次まとめが読む)",
+    )
     parser.add_argument("--season", default=None)
     parser.add_argument(
         "--jp-names",
@@ -264,6 +324,8 @@ def main():
             ensure_ascii=False,
         )
     print(f"[info] ニュースを出力しました -> {out_path}")
+
+    append_news_log(pathlib.Path(args.log), verified)
 
 
 if __name__ == "__main__":
