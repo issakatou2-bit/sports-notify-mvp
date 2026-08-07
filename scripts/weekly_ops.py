@@ -32,6 +32,7 @@ import requests
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import JP_PLAYERS_MLB  # noqa: E402
+from notability_engine import MLB_TEAM_ABBR as TEAM_ABBR  # noqa: E402
 
 MLB_API_BASE = "https://statsapi.mlb.com/api/v1"
 
@@ -105,6 +106,63 @@ def fetch_range_hitting(player_id: str, start: str, end: str, season: str):
     return None
 
 
+# リーグ全体のランキングに載せる最低打席数。
+# 日本人選手より高くしているのは、母数が150名以上あり、少ない打席で
+# 数字が跳ねた選手が上位を埋めてしまうため。
+MIN_PA_LEAGUE = 15
+TOP_N_LEAGUE = 5
+
+
+def fetch_league_week(start: str, end: str, season: str) -> list:
+    """
+    MLB全体の期間打撃成績を、1回の呼び出しで取る。
+
+    日本人選手だけだと「今週いちばん打った選手」が分からない。
+    ジャッジやシュワーバーのような、日本でも名前が通っている選手が
+    上位に来れば、それ自体が見どころになる。
+    選手ごとに引くと150回以上の呼び出しになるが、
+    このエンドポイントはリーグ全体をまとめて返してくれる。
+    """
+    try:
+        resp = requests.get(
+            f"{MLB_API_BASE}/stats",
+            params={"stats": "byDateRange", "group": "hitting", "sportId": 1,
+                    "startDate": start, "endDate": end,
+                    "season": season, "limit": 400},
+            timeout=40,
+        )
+        resp.raise_for_status()
+    except Exception as e:
+        print(f"[warn] リーグ全体の成績取得に失敗しました: {e}", file=sys.stderr)
+        return []
+
+    rows = []
+    for st in resp.json().get("stats", []):
+        for sp in st.get("splits", []):
+            p = sp.get("player") or {}
+            s = sp.get("stat") or {}
+            t = sp.get("team") or {}
+            pa = s.get("plateAppearances") or s.get("atBats")
+            if not pa or int(_f(pa)) < MIN_PA_LEAGUE:
+                continue
+            if s.get("ops") is None:
+                continue
+            team_id = str(t.get("id", ""))
+            rows.append({
+                "name": p.get("fullName", ""),
+                "player_id": str(p.get("id", "")),
+                "team_id": team_id,
+                "team": TEAM_ABBR.get(team_id) or t.get("abbreviation") or "",
+                "pa": int(_f(pa)),
+                "hits": int(_f(s.get("hits"))),
+                "hr": int(_f(s.get("homeRuns"))),
+                "rbi": int(_f(s.get("rbi"))),
+                "ops": s.get("ops"),
+            })
+    rows.sort(key=lambda r: -_f(r.get("ops")))
+    return rows
+
+
 def build(days: int = 7, season: str = None) -> dict:
     season = season or str(datetime.now(timezone.utc).year)
     end = date.today()
@@ -144,12 +202,20 @@ def build(days: int = 7, season: str = None) -> dict:
         print(f"   {r['name']}  OPS {r['ops']}  {r['hits']}安打 "
               f"{r['hr']}本塁打 ({r['pa']}打席)")
 
+    league = fetch_league_week(s, e, season)
+    print(f"[info] MLB全体({MIN_PA_LEAGUE}打席以上): {len(league)}名")
+    for r in league[:TOP_N_LEAGUE]:
+        print(f"   {r['name']} ({r['team']})  OPS {r['ops']}  "
+              f"{r['hits']}安打 {r['hr']}本塁打")
+
     return {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "start": s,
         "end": e,
         "min_pa": MIN_PA,
+        "min_pa_league": MIN_PA_LEAGUE,
         "players": rows,
+        "league": league[:TOP_N_LEAGUE],
     }
 
 
@@ -170,6 +236,20 @@ def load(path: str, since: str = None, until: str = None) -> list:
               f"(記録={data.get('end')} / 必要={until})")
         return []
     return data.get("players") or []
+
+
+def load_league(path: str, until: str = None) -> list:
+    """MLB全体の上位。日本人選手ランキングと同じく、古い週の数字は使わない。"""
+    p = pathlib.Path(path)
+    if not p.exists():
+        return []
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return []
+    if until and (data.get("end") or "") < until:
+        return []
+    return data.get("league") or []
 
 
 def main():

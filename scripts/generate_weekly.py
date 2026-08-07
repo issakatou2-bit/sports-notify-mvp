@@ -50,7 +50,7 @@ SEGMENT_TAIL = 2.0
 # セグメント種別ごとの最低表示秒数。原稿が短かった場合の下支えでしかなく、
 # 通常はナレーションの実測長が上回るのでこちらは効かない。
 MIN_DURATION = {"intro": 5.0, "day": 10.0, "ranking": 9.0, "ops": 10.0,
-                "verdict": 10.0, "news": 8.0, "outro": 6.0}
+                "league_ops": 10.0, "verdict": 10.0, "news": 8.0, "outro": 6.0}
 
 # 以前はここに TARGET_SECONDS = 500 を置き、尺が足りなければ day セグメントを
 # 引き伸ばして8分(ミッドロール広告の条件)に届かせていた。これをやめた理由:
@@ -297,6 +297,44 @@ def render_ops(p, players):
     return im
 
 
+def render_league_ops(p, players):
+    """
+    今週のMLB全体で最も打った打者。
+
+    日本人選手だけだと「今週いちばん打ったのは誰か」が分からない。
+    名前の通っている選手が上位に来れば、それ自体が見どころになる。
+    """
+    im, d = base(p)
+    d.text((100, 70), "コレスポ", font=font(44), fill=ACCENT)
+    d.text((100, 180), "今週もっとも打った打者", font=font(70), fill=ACCENT)
+    d.text((104, 268), "MLB全体 / 15打席以上", font=font(32), fill=DIM)
+
+    y = 360
+    for i, pl in enumerate(players[:5]):
+        if p < 0.05 + i * 0.05:
+            continue
+        d.rounded_rectangle([100, y, W - 100, y + 108], 16, fill=SURF)
+        d.text((132, y + 26), f"{i + 1}", font=font(44), fill=DIM)
+        name = pl.get("name", "")
+        ns = 48
+        for s in (48, 42, 36, 32):
+            if d.textlength(name, font=font(s)) <= 620:
+                ns = s
+                break
+        d.text((210, y + 26), name, font=font(ns), fill=TEXT)
+        d.text((880, y + 34), pl.get("team", ""), font=font(34), fill=JP)
+
+        ops = str(pl.get("ops") or "")
+        f_ops = font(54)
+        d.text((W - 470 - d.textlength(ops, font=f_ops), y + 22), ops,
+               font=f_ops, fill=ACCENT if i == 0 else TEXT)
+        detail = (f"{pl.get('hits', 0)}安打 {pl.get('hr', 0)}本塁打 "
+                  f"/ {pl.get('pa', 0)}打席")
+        d.text((W - 430, y + 34), detail, font=font(32), fill=DIM)
+        y += 128
+    return im
+
+
 def render_verdict(p, verdict):
     """
     今週の答え合わせ。
@@ -476,7 +514,9 @@ def main():
 
     # 原稿側(generate_weekly_narration.py)と同じ条件で読む
     ops_players = weekly_ops.load(args.weekly_ops, until=week[-1][0])[:5]
-    print(f"[info] 週間OPS: {len(ops_players)}名")
+    league_players = weekly_ops.load_league(args.weekly_ops, until=week[-1][0])[:5]
+    print(f"[info] 週間OPS: 日本人{len(ops_players)}名 / "
+          f"MLB全体{len(league_players)}名")
 
     label = f"{week[0][0][5:].replace('-', '/')}〜{week[-1][0][5:].replace('-', '/')}"
 
@@ -508,6 +548,9 @@ def main():
             segs.append({"kind": "ranking", "duration": 0.0, "file": None, "meta": {}})
         if ops_players:
             segs.append({"kind": "ops", "duration": 0.0, "file": None, "meta": {}})
+        if league_players:
+            segs.append({"kind": "league_ops", "duration": 0.0,
+                         "file": None, "meta": {}})
         if verdict["decided"]:
             segs.append({"kind": "verdict", "duration": 0.0, "file": None, "meta": {}})
         if news_items:
@@ -569,6 +612,8 @@ def main():
                     im = render_ranking(pp, ranking)
                 elif kind == "ops":
                     im = render_ops(pp, ops_players)
+                elif kind == "league_ops":
+                    im = render_league_ops(pp, league_players)
                 elif kind == "verdict":
                     im = render_verdict(pp, verdict)
                 elif kind == "news":

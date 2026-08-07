@@ -191,6 +191,22 @@ def ops_text(players: list) -> str:
     return "".join(parts)
 
 
+def league_ops_text(players: list) -> str:
+    """
+    MLB全体で今週最も打った打者。選手名は英語表記のまま読ませる。
+    カタカナへ勝手に直すと、日本のメディアの表記と食い違うため。
+    """
+    top = players[0]
+    parts = [
+        "こちらはMLB全体です。",
+        f"今週最も打ったのは{top['name']}。OPS{top.get('ops')}、"
+        f"{top.get('hits')}安打{top.get('hr')}本塁打でした。",
+    ]
+    for p in players[1:3]:
+        parts.append(f"続いて{p['name']}がOPS{p.get('ops')}です。")
+    return "".join(parts)
+
+
 def verdict_text(v: dict) -> str:
     """
     答え合わせの原稿。数字を読み上げるだけなのでAIは使わない。
@@ -248,6 +264,7 @@ def main():
     verdict = ws.compute_verdict(week)
     # 動画側と同じ条件で読む。片方だけセグメントが増減すると全体がずれる
     ops_players = weekly_ops.load(args.weekly_ops, until=week[-1][0])[:5]
+    league_players = weekly_ops.load_league(args.weekly_ops, until=week[-1][0])[:5]
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     client = anthropic.Anthropic(api_key=api_key) if (api_key and anthropic) else None
@@ -284,6 +301,12 @@ def main():
         segments.append({
             "kind": "ops",
             "text": ops_text(ops_players),
+            "meta": {},
+        })
+    if league_players:
+        segments.append({
+            "kind": "league_ops",
+            "text": league_ops_text(league_players),
             "meta": {},
         })
     segments.append({
