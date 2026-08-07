@@ -151,7 +151,15 @@ def describe(stats: dict, venue_en: str) -> str:
     1球場ぶんの1文。数字が無ければ空を返す(無い数字は書かない)。
     何年の話かを必ず添える。年が変われば数字も変わるため。
     """
-    v = (stats.get("venues") or {}).get(venue_en)
+    venues = stats.get("venues") or {}
+    v = venues.get(venue_en)
+    if not v:
+        # 命名権で名前が変わることがある
+        # (ドジャー・スタジアムは "UNIQLO Field at Dodger Stadium" で返る)
+        for key, value in venues.items():
+            if key in venue_en or venue_en in key:
+                v = value
+                break
     if not v:
         return ""
     season = stats.get("season", "")

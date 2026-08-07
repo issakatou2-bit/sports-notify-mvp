@@ -184,6 +184,67 @@ def rule_marquee_team(game: Game) -> list[Reason]:
     return reasons
 
 
+def lookup_venue(venue_en: str):
+    """
+    球場名から登録済みの情報を引く。
+
+    完全一致で見つからない場合は部分一致でも探す。命名権によって
+    APIが返す名前が変わることがあり、実際に MLB Stats API は
+    ドジャー・スタジアムを "UNIQLO Field at Dodger Stadium" として
+    返していた。そのため、これまでドジャースの本拠地では球場の説明が
+    一切出ていなかった(ドジャースは日本人選手が多く、最も頻繁に
+    取り上げる球場の一つなので影響が大きい)。
+    """
+    if not venue_en:
+        return None
+    if venue_en in MLB_VENUE_NOTES:
+        return MLB_VENUE_NOTES[venue_en]
+    for key, value in MLB_VENUE_NOTES.items():
+        if key in venue_en or venue_en in key:
+            return value
+    return None
+
+
+_VENUE_STATS_CACHE = None
+
+
+def _venue_runs_note(venue_en: str):
+    """
+    その球場で実際に何点入っているか。scripts/venue_stats.py の集計を読む。
+
+    「打者有利とされる」という言い伝えだけでなく、実際の数字まで書けるようにする。
+    集計を取ってみると、言われていることと実測が食い違う球場が実際にあった
+    (フェンウェイ・パークは打者天国のイメージだが30球場中25位)。
+
+    ファイルが無ければ None を返し、従来どおり特徴の説明だけになる。
+    """
+    global _VENUE_STATS_CACHE
+    if not venue_en:
+        return None
+    if _VENUE_STATS_CACHE is None:
+        import pathlib
+
+        p = pathlib.Path("data/venue_stats.json")
+        try:
+            _VENUE_STATS_CACHE = json.loads(p.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError, FileNotFoundError):
+            _VENUE_STATS_CACHE = {}
+
+    venues = _VENUE_STATS_CACHE.get("venues") or {}
+    v = venues.get(venue_en)
+    if not v:
+        # 命名権による表記ゆれを吸収する(lookup_venue と同じ考え方)
+        for key, value in venues.items():
+            if key in venue_en or venue_en in key:
+                v = value
+                break
+    if not v:
+        return None
+    season = _VENUE_STATS_CACHE.get("season", "")
+    return (f"この球場の{season}年シーズンの1試合平均得点は"
+            f"{v['avg_runs']}点で、MLB{v['total']}球場中{v['rank']}位")
+
+
 def rule_rivalry(game: Game) -> list[Reason]:
     """伝統的なライバルカード・同都市対決に加点する"""
     pair = frozenset({game.home_team_id, game.away_team_id})
@@ -514,8 +575,10 @@ def build_output(
                 "home_probable": _probable_dict(g.home_probable),
                 "away_probable": _probable_dict(g.away_probable),
                 "venue_name": g.venue_name,
-                "venue_jp": (MLB_VENUE_NOTES.get(g.venue_name or "") or (None, None))[0],
-                "venue_note": (MLB_VENUE_NOTES.get(g.venue_name or "") or (None, None))[1],
+                "venue_jp": (lookup_venue(g.venue_name) or (None, None))[0],
+                "venue_note": (lookup_venue(g.venue_name) or (None, None))[1],
+                # 球場ごとの実測(1試合平均得点)。data/venue_stats.json があれば入る
+                "venue_runs_note": _venue_runs_note(g.venue_name),
                 "home_has_jp": home_has_jp,
                 "away_has_jp": away_has_jp,
                 "score": visible_score,
@@ -695,6 +758,19 @@ MLB_VENUE_NOTES = {
     # 過去のアーカイブが旧名で残っているため、両方の表記を引けるようにしておく。
     "Daikin Park": ("ダイキン・パーク", "左翼が浅く、開閉式屋根を持つ球場", "117", "テキサス州ヒューストン"),
     "Minute Maid Park": ("ミニッツメイド・パーク", "左翼が浅く、開閉式屋根を持つ球場", "117", "テキサス州ヒューストン"),
+    # 残り11球場。これが無いと、その球場での試合は球場の説明が一切出ない。
+    # 実測値(venue_stats)は30球場すべてで取れるので、説明側も揃えておく。
+    "Rate Field": ("レート・フィールド", "ホワイトソックスの本拠地。旧称ギャランティード・レート・フィールド", "145", "イリノイ州シカゴ"),
+    "American Family Field": ("アメリカン・ファミリー・フィールド", "開閉式屋根を持ち、天候に左右されにくい球場", "158", "ウィスコンシン州ミルウォーキー"),
+    "Citizens Bank Park": ("シチズンズ・バンク・パーク", "両翼が比較的浅く、本塁打が出やすい球場として知られる", "143", "ペンシルベニア州フィラデルフィア"),
+    "Kauffman Stadium": ("カウフマン・スタジアム", "外野が広く、長打が転がりやすい構造", "118", "ミズーリ州カンザスシティ"),
+    "PNC Park": ("PNCパーク", "川越しに街並みを望む景観で知られる球場", "134", "ペンシルベニア州ピッツバーグ"),
+    "Target Field": ("ターゲット・フィールド", "寒暖差が大きく、季節によって打球の飛び方が変わる", "142", "ミネソタ州ミネアポリス"),
+    "Angel Stadium": ("エンゼル・スタジアム", "1966年開場。MLBでは古い部類に入る球場", "108", "カリフォルニア州アナハイム"),
+    "Globe Life Field": ("グローブライフ・フィールド", "2020年開場。夏の暑さに対応した開閉式屋根を持つ", "140", "テキサス州アーリントン"),
+    "loanDepot park": ("ローンデポ・パーク", "開閉式屋根を持ち、湿度の高い気候の影響を抑えている", "146", "フロリダ州マイアミ"),
+    "Nationals Park": ("ナショナルズ・パーク", "2008年開場。連邦議会議事堂を望む立地", "120", "ワシントンD.C."),
+    "Sutter Health Park": ("サッター・ヘルス・パーク", "アスレチックスが本拠地移転までの間、暫定的に使用している球場", "133", "カリフォルニア州サクラメント"),
 }
 
 MLB_DIVISION_NAME_JP = {
@@ -1477,6 +1553,10 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
             f"\n【球場の特徴(小さな見どころとして使ってよい)】\n"
             f"- 会場は{game.get('venue_jp')}。{game['venue_note']}\n"
         )
+        # その年の全試合から集計した実測値。「打者有利とされる」で終わらせず、
+        # 実際どうなのかまで書けるようにする。
+        if game.get("venue_runs_note"):
+            venue_text += f"- {game['venue_runs_note']}\n"
 
     return (
         f"以下は「{game['matchup']}」({game['league']})という試合についてのデータです。\n\n"
