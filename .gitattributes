@@ -1,0 +1,7 @@
+# Windowsで編集してもLinuxのランナーで壊れないよう、改行コードを固定する。
+# シェルスクリプトがCRLFで入ると、Linux側で "bad interpreter" や
+# 引数への \r 混入といった、原因の分かりにくい失敗になる。
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.py text eol=lf
