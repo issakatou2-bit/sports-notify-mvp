@@ -111,10 +111,58 @@ jobs:
             --thumbnail build/weekly/thumb.png \
             --privacy public
 
-      - name: Save video as artifact
+      # ---- 答え合わせショート ----
+      # 週次まとめの一画面に埋もれさせるには惜しい内容なので、縦型ショートとしても出す。
+      # 「◯連勝中だから注目」と書いた試合がどうなったかは、毎日予告を出して
+      # 結果まで記録している側にしか言えない。
+      - name: Generate verdict short narration
+        continue-on-error: true
+        run: |
+          python scripts/generate_verdict_short.py \
+            --archive-dir archive \
+            --narration-out build/vs_narration.json
+
+      - name: Synthesize verdict narration
+        continue-on-error: true
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/vs_narration.json \
+            --out-dir build/vs_audio
+
+      - name: Generate verdict short
+        continue-on-error: true
+        run: |
+          python scripts/generate_verdict_short.py \
+            --archive-dir archive \
+            --audio-dir build/vs_audio \
+            --out build/verdict
+
+      - name: Generate verdict thumbnail
+        continue-on-error: true
+        run: |
+          python scripts/generate_thumbnail.py \
+            --kind verdict --out build/verdict/thumb.png
+
+      - name: Upload verdict short to YouTube
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python scripts/upload_youtube.py \
+            --video build/verdict/collespo_verdict.mp4 \
+            --kind verdict \
+            --thumbnail build/verdict/thumb.png \
+            --privacy public
+
+      - name: Save videos as artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: collespo-weekly
-          path: build/weekly/collespo_weekly.mp4
+          path: |
+            build/weekly/collespo_weekly.mp4
+            build/verdict/collespo_verdict.mp4
           retention-days: 7
           if-no-files-found: ignore

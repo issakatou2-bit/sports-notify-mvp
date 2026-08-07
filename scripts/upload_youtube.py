@@ -196,7 +196,12 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     except (json.JSONDecodeError, OSError):
         games = []
 
-    if kind == "weekly":
+    if kind == "verdict":
+        # 縦型ショート。予測の的中ではなく「その後どうなったか」を扱うので、
+        # 「当たった/外れた」という言い方はタイトルでも使わない
+        title = (f"注目した試合、どうなった？｜{date_label} "
+                 f"先週の答え合わせ【MLB】#Shorts")
+    elif kind == "weekly":
         # 週次まとめは横型の通常動画なので #Shorts は付けない
         title = f"今週の注目試合と答え合わせ｜{date_label}【MLB週間まとめ】"
     elif games:
@@ -216,7 +221,16 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         title = f"{date_label}の注目試合【MLB】#Shorts"
     title = title[:100]  # YouTubeのタイトル上限
 
-    if kind == "weekly":
+    if kind == "verdict":
+        lines = [
+            "コレスポが先週「◯連勝中だから注目」として取り上げた試合が、"
+            "実際どうなったかを確かめます。",
+            "",
+            "毎日その日の注目試合を理由つきで出し、結果まで記録しているので"
+            "言える内容です。勝敗を予想しているわけではありません。",
+            "",
+        ]
+    elif kind == "weekly":
         lines = ["この1週間の注目試合を、結果とあわせて振り返ります。", ""]
     else:
         lines = [f"{date_label} の注目試合を、なぜ注目なのかの理由つきで紹介します。", ""]
@@ -270,8 +284,9 @@ def main():
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--kind", default="daily",
-                        choices=["daily", "weekly", "asset"],
-                        help="daily=ショート / weekly=週次まとめ / asset=資産動画")
+                        choices=["daily", "weekly", "asset", "verdict"],
+                        help="daily=ショート / weekly=週次まとめ / "
+                             "asset=資産動画 / verdict=答え合わせショート")
     parser.add_argument("--asset-topic", default=None,
                         help="--kind asset のときのトピック名")
     parser.add_argument("--narration", default="public/narration.json",

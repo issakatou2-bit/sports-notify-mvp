@@ -18,6 +18,7 @@ on:
         description: 作る資産動画のトピック
         type: choice
         options:
+          - all
           - mlb_abbr
           - mlb_venue
           - mlb_rivalry
@@ -75,50 +76,68 @@ jobs:
           done
 
       # 原稿は球団テーブルから機械的に組み立てるだけなので、
-      # AIも外部APIも使わない(コストゼロ・内容は毎回同じ)
-      - name: Generate narration script
-        run: |
-          python scripts/generate_asset_video.py \
-            --topic "${{ inputs.topic }}" \
-            --narration-out build/asset_narration.json
-
-      - name: Synthesize narration
-        continue-on-error: true
-        run: |
-          python scripts/synthesize_narration.py \
-            --narration build/asset_narration.json \
-            --out-dir build/asset_audio
-
-      - name: Generate asset video
-        run: |
-          python scripts/generate_asset_video.py \
-            --topic "${{ inputs.topic }}" \
-            --audio-dir build/asset_audio \
-            --out build/asset
-
-      - name: Generate thumbnail
-        continue-on-error: true
-        run: |
-          python scripts/generate_thumbnail.py \
-            --kind asset --asset-topic "${{ inputs.topic }}" \
-            --out build/asset/thumb.png
-
-      - name: Upload to YouTube
-        continue-on-error: true
+      # AIも外部APIも使わない(コストゼロ・内容は毎回同じ)。
+      #
+      # topic に all を選ぶと、全トピックを順に作って投稿する。
+      # ただしYouTube Data APIの1日あたりの割り当ては10,000ユニットで、
+      # 動画1本のアップロードが1,600、サムネイル設定が50かかる。
+      # つまり1日あたり約6本が上限で、7本目は必ず割り当て超過で失敗する。
+      # 途中で失敗しても残りを試し、最後に結果をまとめて出す。
+      - name: Build and upload topics
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
-          python scripts/upload_youtube.py \
-            --video "build/asset/collespo_asset_${{ inputs.topic }}.mp4" \
-            --kind asset \
-            --asset-topic "${{ inputs.topic }}" \
-            --thumbnail build/asset/thumb.png \
-            --privacy "${{ inputs.privacy }}"
+          TOPICS="${{ inputs.topic }}"
+          if [ "$TOPICS" = "all" ]; then
+            TOPICS="mlb_abbr mlb_venue mlb_rivalry mlb_stats mlb_terms mlb_league mlb_position"
+            echo "::notice::全トピックを投稿します。APIの割り当て上、1日6本前後が上限です"
+          fi
+
+          FAILED=""
+          for t in $TOPICS; do
+            echo "::group::$t"
+            python scripts/generate_asset_video.py \
+              --topic "$t" --narration-out "build/narr_$t.json"
+
+            # VOICEVOXが落ちていても無音で作れるよう、ここは失敗を許容する
+            python scripts/synthesize_narration.py \
+              --narration "build/narr_$t.json" \
+              --out-dir "build/audio_$t" || true
+
+            python scripts/generate_asset_video.py \
+              --topic "$t" --audio-dir "build/audio_$t" --out "build/asset_$t"
+
+            python scripts/generate_thumbnail.py \
+              --kind asset --asset-topic "$t" \
+              --out "build/asset_$t/thumb.png" || true
+
+            if python scripts/upload_youtube.py \
+              --video "build/asset_$t/collespo_asset_$t.mp4" \
+              --kind asset --asset-topic "$t" \
+              --thumbnail "build/asset_$t/thumb.png" \
+              --privacy "${{ inputs.privacy }}"; then
+              echo "$t: 投稿しました"
+            else
+              echo "::warning::$t の投稿に失敗しました(APIの割り当て超過の可能性)"
+              FAILED="$FAILED $t"
+            fi
+            echo "::endgroup::"
+          done
+
+          if [ -n "$FAILED" ]; then
+            echo "::warning title=未投稿のトピック::$FAILED"
+            echo "割り当ては日本時間の17時ごろに回復します。翌日に残りを実行してください"
+          fi
+
+          # 動画自体は必ず1か所へ集めて、成果物として持ち帰れるようにする
+          mkdir -p build/asset
+          cp build/asset_*/*.mp4 build/asset/ 2>/dev/null || true
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
-      - name: Save video as artifact
+      - name: Save videos as artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: collespo-asset-${{ inputs.topic }}

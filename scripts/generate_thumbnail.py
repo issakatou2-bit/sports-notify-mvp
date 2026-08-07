@@ -162,6 +162,14 @@ def draw_weekly(d, label: str):
     d.text((70, H - 66), "コレスポ 週間まとめ", font=font(36), fill=DIM)
 
 
+def draw_verdict(d, label: str):
+    d.text((70, 110), "注目した試合", font=font(76), fill=TEXT)
+    d.text((70, 210), "どうなった？", font=font(140), fill=ACCENT)
+    d.text((70, 400), "連勝は続いたのか、止まったのか", font=font(52), fill=TEXT)
+    d.text((70, H - 130), label, font=font(56), fill=JP)
+    d.text((70, H - 66), "コレスポ 先週の答え合わせ", font=font(36), fill=DIM)
+
+
 def draw_asset(d, topic: str):
     big, mid, small = ASSET_THUMB.get(
         topic, ("コレスポ", "MLB入門", "collespo.com"))
@@ -176,7 +184,7 @@ def draw_asset(d, topic: str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--kind", default="daily",
-                        choices=["daily", "weekly", "asset"])
+                        choices=["daily", "weekly", "asset", "verdict"])
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--narration", default="public/narration.json")
     parser.add_argument("--asset-topic", default="mlb_abbr")
@@ -190,7 +198,7 @@ def main():
 
     if args.kind == "asset":
         draw_asset(d, args.asset_topic)
-    elif args.kind == "weekly":
+    elif args.kind in ("weekly", "verdict"):
         label = args.label
         if not label:
             # 動画・タイトルと同じ条件で週の範囲を求める。
@@ -207,7 +215,10 @@ def main():
                              f"{week[-1][0][5:].replace('-', '/')}")
             except Exception as e:
                 print(f"[warn] 週の範囲を求められませんでした: {e}")
-        draw_weekly(d, label)
+        if args.kind == "verdict":
+            draw_verdict(d, label)
+        else:
+            draw_weekly(d, label)
     else:
         try:
             data = json.loads(pathlib.Path(args.games).read_text(encoding="utf-8"))
