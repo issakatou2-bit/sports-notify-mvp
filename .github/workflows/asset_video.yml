@@ -69,17 +69,11 @@ jobs:
           pip install -r scripts/requirements.txt
           pip install pillow google-api-python-client google-auth
 
-      # 実行 #2 でこのステップが30分以上ハングした(通常は1〜2分)。
-      # 原因はGitHub側のミラーの一時的な不調とみられるが、待ち続けても
-      # 何も進まないので、上限を切って早く落とす。
+      # aptが応答しなくなる事象が実行#2と#5で起きたため、
+      # リトライとミラー切り替えを持つスクリプトへ切り出した。
       - name: Install video tools
-        timeout-minutes: 10
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
-          fc-list :lang=ja | head -3
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
 
       - name: Start VOICEVOX engine
         continue-on-error: true

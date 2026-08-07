@@ -135,13 +135,12 @@ jobs:
       # ---- 動画の生成と投稿 ----
       # サイト更新・通知が全て終わってから実行する。
       # ここで失敗しても、その日の配信自体は既に完了している状態にするため。
+      # 通知とサイト更新はこの時点で終わっているので、
+      # ここで失敗しても配信自体は成立する(continue-on-error)。
       - name: Install video tools
         continue-on-error: true
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
-          fc-list :lang=ja | head -3
-          ffmpeg -version | head -1
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
 
       - name: Start VOICEVOX engine
         continue-on-error: true

@@ -39,10 +39,8 @@ jobs:
           pip install pillow google-api-python-client google-auth
 
       - name: Install video tools
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
-          fc-list :lang=ja | head -3
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
 
       # 週次動画にもナレーションを入れる。
       # これが無いと音声manifestが作られず、無音の動画になる。

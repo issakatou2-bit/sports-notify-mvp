@@ -46,13 +46,8 @@ jobs:
           pip install pillow google-api-python-client google-auth
 
       - name: Install video tools
-        timeout-minutes: 10
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
-          fc-list :lang=ja | head -3
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
 
       # 出場した選手が1人もいない日(オールスター休みなど)は、
       # ここでファイルが更新されず、以降のステップが自然に何も作らない
