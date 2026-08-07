@@ -54,6 +54,14 @@ jobs:
       - name: Fetch last night's results
         run: python scripts/morning_recap.py --out data/morning_recap.json
 
+      # 球場ごとの実測(1試合平均得点)。日次の注目試合の解説や資産動画が
+      # これを読むが、更新する場所がどこにも無いと古い数字を使い続けてしまう。
+      # 16時の時点では前日の試合が確定しているので、ここで取り直すのが都合がよい。
+      # 失敗しても、前回コミットした分がそのまま使われる。
+      - name: Update venue stats
+        continue-on-error: true
+        run: python scripts/venue_stats.py --out data/venue_stats.json
+
       - name: Start VOICEVOX engine
         continue-on-error: true
         run: |
@@ -115,8 +123,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/morning_recap.json || true
-          git diff --cached --quiet || git commit -m "morning recap: ${{ github.run_id }}"
+          git add data/morning_recap.json data/venue_stats.json || true
+          git diff --cached --quiet || git commit -m "recap: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いか、push対象が無いためスキップ"
 
