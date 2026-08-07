@@ -114,6 +114,10 @@ STYLE = """
          color: var(--text); font-weight: 600; padding: 0 1px; }
   ul.reasons { padding-left: 1.1rem; margin: 0; }
   ul.reasons li { font-size: 0.87rem; color: var(--text-dim); }
+  /* ライバル関係の由来。理由の一部だが、読み物として少し目立たせる */
+  .origin { display: block; margin-top: 0.2rem; padding-left: 0.6rem;
+            border-left: 2px solid var(--accent-dim);
+            color: var(--text); font-size: 0.86rem; line-height: 1.65; }
   .video { margin-top: 1rem; }
   .video iframe {
     width: 100%;
@@ -313,7 +317,17 @@ def render_game(g: dict) -> str:
     if visible_reasons:
         parts.append('<ul class="reasons">')
         for r in visible_reasons:
-            parts.append(f'<li>{html.escape(r["text"])}</li>')
+            # ライバル関係の理由文は「見出し — 由来」の形。動画では尺の都合で
+            # 見出ししか出せないが、サイトは長さの制約が無いので由来まで見せる。
+            # ここがコレスポで一番「読む価値」のある部分になる。
+            head, sep, origin = r["text"].partition(" — ")
+            if sep:
+                parts.append(
+                    f'<li>{html.escape(head)}'
+                    f'<span class="origin">{html.escape(origin)}</span></li>'
+                )
+            else:
+                parts.append(f'<li>{html.escape(r["text"])}</li>')
         parts.append("</ul>")
 
     # MLB公式ハイライト動画。試合終了後の生成でのみIDが入るため、

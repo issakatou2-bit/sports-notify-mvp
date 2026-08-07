@@ -31,6 +31,7 @@ import os
 import pathlib
 import sys
 
+import weekly_ops
 import weekly_stats as ws
 
 try:
@@ -170,6 +171,26 @@ def fallback(date_str: str, g: dict) -> str:
     return "".join(parts)
 
 
+def ops_text(players: list) -> str:
+    """
+    週間OPSの読み上げ。数字を並べるだけなのでAIは使わない。
+
+    OPSは初心者向けの指標ではないので、最初に一言で何を表すかを添える。
+    ここを飛ばすと、数字だけ読み上げても意味が伝わらない。
+    """
+    top = players[0]
+    parts = [
+        "続いて、今週の日本人打者です。",
+        "OPSは、出塁率と長打率を足した、打者の総合力を表す数字です。",
+        f"今週最も打ったのは{top['name']}。OPS{top.get('ops')}、"
+        f"{top.get('hits')}安打{top.get('hr')}本塁打でした。",
+    ]
+    for p in players[1:3]:
+        parts.append(f"続いて{p['name']}がOPS{p.get('ops')}、"
+                     f"{p.get('hits')}安打です。")
+    return "".join(parts)
+
+
 def verdict_text(v: dict) -> str:
     """
     答え合わせの原稿。数字を読み上げるだけなのでAIは使わない。
@@ -208,6 +229,7 @@ def main():
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--news", default="public/news.json")
     parser.add_argument("--news-log", default="data/news_log.json")
+    parser.add_argument("--weekly-ops", default="data/weekly_ops.json")
     parser.add_argument("--out", default="build/weekly_narration.json")
     args = parser.parse_args()
 
@@ -224,6 +246,8 @@ def main():
     # 原稿と画面のセグメント数が食い違って以降が全部ずれる。
     news_items = ws.load_news_items(args.news, args.news_log, week[0][0], week[-1][0])
     verdict = ws.compute_verdict(week)
+    # 動画側と同じ条件で読む。片方だけセグメントが増減すると全体がずれる
+    ops_players = weekly_ops.load(args.weekly_ops, until=week[-1][0])[:5]
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     client = anthropic.Anthropic(api_key=api_key) if (api_key and anthropic) else None
@@ -256,6 +280,12 @@ def main():
         "text": "今週、注目試合として多く取り上げた球団を振り返ります。",
         "meta": {},
     })
+    if ops_players:
+        segments.append({
+            "kind": "ops",
+            "text": ops_text(ops_players),
+            "meta": {},
+        })
     segments.append({
         "kind": "verdict",
         "text": verdict_text(verdict),

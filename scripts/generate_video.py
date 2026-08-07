@@ -267,7 +267,10 @@ def render_game(progress: float, g: dict, index: int, total: int):
         y += 24
 
     # --- 注目理由(1つずつ順に出す) ---
-    reasons = [r["text"] for r in (g.get("reasons") or [])
+    # ライバル関係の理由文は「◯◯ vs ◯◯ は伝統の好カード — 由来…」の形で、
+    # 由来まで入れると縦型の画面には収まらない。動画では見出し部分だけ使い、
+    # 由来はサイト側(全文を出せる)に任せる。
+    reasons = [r["text"].split(" — ")[0] for r in (g.get("reasons") or [])
                if r.get("visible", True) and r.get("text")][:3]
     for i, r in enumerate(reasons):
         appear = 0.10 + i * 0.08

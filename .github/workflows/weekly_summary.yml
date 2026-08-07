@@ -59,6 +59,12 @@ jobs:
             sleep 2
           done
 
+      # 日本人打者の直近7日の成績。選手ごとにAPIを1回ずつ叩くので、
+      # 日次のパイプラインには入れず、週次でのみ取得する。
+      - name: Fetch weekly OPS
+        continue-on-error: true
+        run: python scripts/weekly_ops.py --out data/weekly_ops.json
+
       - name: Generate weekly narration
         continue-on-error: true
         env:

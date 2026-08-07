@@ -30,6 +30,7 @@ import wave
 
 from PIL import Image, ImageDraw, ImageFont
 
+import weekly_ops
 import weekly_stats as ws
 
 # 横型(通常動画向け)
@@ -48,7 +49,7 @@ SEGMENT_TAIL = 2.0
 
 # セグメント種別ごとの最低表示秒数。原稿が短かった場合の下支えでしかなく、
 # 通常はナレーションの実測長が上回るのでこちらは効かない。
-MIN_DURATION = {"intro": 5.0, "day": 10.0, "ranking": 9.0,
+MIN_DURATION = {"intro": 5.0, "day": 10.0, "ranking": 9.0, "ops": 10.0,
                 "verdict": 10.0, "news": 8.0, "outro": 6.0}
 
 # 以前はここに TARGET_SECONDS = 500 を置き、尺が足りなければ day セグメントを
@@ -207,7 +208,9 @@ def render_day(p, date_str, game):
         d.text((W - 600, 385), f"{winner} 勝利", font=font(30), fill=ACCENT)
 
     yy = 600
-    for i, r in enumerate([x["text"] for x in (game.get("reasons") or [])
+    # 由来つきのライバル理由文は長いので、動画では見出し部分だけ使う
+    for i, r in enumerate([x["text"].split(" — ")[0]
+                           for x in (game.get("reasons") or [])
                            if x.get("visible", True) and x.get("text")][:3]):
         if p < 0.12 + i * 0.07:
             continue
@@ -259,6 +262,38 @@ def render_ranking(p, ranking):
         d.rounded_rectangle([620, yy + 8, 620 + bar_w, yy + 46], 8, fill=ACCENT_DIM)
         d.text((640, yy + 8), f"{count}回", font=font(34), fill=ACCENT)
         yy += 110
+    return im
+
+
+def render_ops(p, players):
+    """
+    今週の日本人打者をOPS順に並べる。
+
+    OPSは初心者向けの指標ではないので、見出しの下に一言で説明を置く。
+    数字だけ並べても「で、これは良いの?」が分からないため。
+    """
+    im, d = base(p)
+    d.text((100, 70), "コレスポ", font=font(44), fill=ACCENT)
+    d.text((100, 180), "今週の日本人打者", font=font(70), fill=ACCENT)
+    d.text((104, 268), "OPS = 出塁率 + 長打率。打者の総合力を表す数字",
+           font=font(32), fill=DIM)
+
+    y = 360
+    for i, pl in enumerate(players[:5]):
+        if p < 0.05 + i * 0.05:
+            continue
+        d.rounded_rectangle([100, y, W - 100, y + 108], 16, fill=SURF)
+        d.text((132, y + 26), f"{i + 1}", font=font(44), fill=DIM)
+        d.text((210, y + 22), pl.get("name", ""), font=font(50), fill=TEXT)
+        # OPSは右揃えにして、桁を見比べられるようにする
+        ops = str(pl.get("ops") or "")
+        f_ops = font(54)
+        d.text((W - 470 - d.textlength(ops, font=f_ops), y + 22), ops,
+               font=f_ops, fill=ACCENT if i == 0 else TEXT)
+        detail = (f"{pl.get('hits', 0)}安打 {pl.get('hr', 0)}本塁打 "
+                  f"/ {pl.get('pa', 0)}打席")
+        d.text((W - 430, y + 34), detail, font=font(32), fill=DIM)
+        y += 128
     return im
 
 
@@ -414,6 +449,7 @@ def main():
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--news", default="public/news.json")
     parser.add_argument("--news-log", default="data/news_log.json")
+    parser.add_argument("--weekly-ops", default="data/weekly_ops.json")
     parser.add_argument("--audio-dir", default="build/weekly_audio")
     parser.add_argument("--out", default="build/weekly")
     args = parser.parse_args()
@@ -437,6 +473,10 @@ def main():
     verdict = ws.compute_verdict(week)
     print(f"[info] 答え合わせ: {verdict['decided']}/{verdict['picked']}試合で結果あり、"
           f"連勝・連敗の検証{len(verdict['streaks'])}件")
+
+    # 原稿側(generate_weekly_narration.py)と同じ条件で読む
+    ops_players = weekly_ops.load(args.weekly_ops, until=week[-1][0])[:5]
+    print(f"[info] 週間OPS: {len(ops_players)}名")
 
     label = f"{week[0][0][5:].replace('-', '/')}〜{week[-1][0][5:].replace('-', '/')}"
 
@@ -466,6 +506,8 @@ def main():
                          "meta": {"day_index": i}})
         if ranking:
             segs.append({"kind": "ranking", "duration": 0.0, "file": None, "meta": {}})
+        if ops_players:
+            segs.append({"kind": "ops", "duration": 0.0, "file": None, "meta": {}})
         if verdict["decided"]:
             segs.append({"kind": "verdict", "duration": 0.0, "file": None, "meta": {}})
         if news_items:
@@ -525,6 +567,8 @@ def main():
                     im = render_day(pp, week[di][0], week[di][1])
                 elif kind == "ranking":
                     im = render_ranking(pp, ranking)
+                elif kind == "ops":
+                    im = render_ops(pp, ops_players)
                 elif kind == "verdict":
                     im = render_verdict(pp, verdict)
                 elif kind == "news":
