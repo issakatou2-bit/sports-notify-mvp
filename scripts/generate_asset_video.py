@@ -57,7 +57,7 @@ ANIM_END = 0.45
 # 種別ごとの最低表示秒数。読み上げが終わった瞬間に切り替わると
 # 略称を目で追う時間が無いため、下限を設けている。
 MIN_DURATION = {"intro": 5.0, "division": 9.0, "venue": 10.0,
-                "rivalry": 9.0, "outro": 6.0}
+                "list": 10.0, "rivalry": 9.0, "outro": 6.0}
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
@@ -158,6 +158,88 @@ def teams_by_division() -> dict:
 # 原稿
 # ---------------------------------------------------------------------------
 
+# 「見出し + 説明」を並べるだけで作れるトピック。
+# 画面のレイアウトは共通なので、増やすときはここにデータを足すだけでよい。
+# 中身はすべて、検証を必要としない一般的な用語・仕組みの説明に限る
+# (今季の成績や順位のような、都度確かめないと正しさを保証できない数字は
+#  入れない。資産動画は作り置きして長く使うため、古くなる情報を載せない)。
+LIST_TOPICS = {
+    "mlb_stats": {
+        "label": "成績の数字の見方",
+        "heading": "この数字だけ分かればいい",
+        "intro": "中継やネットで見かける成績の数字。よく出てくるものだけ、"
+                 "意味と目安をまとめます。",
+        "items": [
+            ("OPS", "出塁率と長打率を足した、打者の総合力を表す数字。"
+                    "0.900を超えると一流の目安です"),
+            ("打率", "安打の数を打数で割った数字。3割を超えると好打者とされます"),
+            ("防御率 ERA", "投手が9イニングを投げた場合に、平均で何点取られるかを表す数字。"
+                          "低いほど優秀で、3点台前半なら好投手の目安です"),
+            ("WHIP", "投手が1イニングあたりに許した四球と安打の合計。"
+                     "1.00を切ると支配的な投球とされます"),
+            ("打点 RBI", "自分の打撃で味方を本塁に還した数。"
+                        "チャンスでの強さを示す数字の一つです"),
+            ("奪三振", "投手が三振を奪った数。球威と決め球の質が表れます"),
+        ],
+    },
+    "mlb_terms": {
+        "label": "順位表の読み方",
+        "heading": "順位表、こう読む",
+        "intro": "順位表に並ぶ言葉が分かると、その日の試合が"
+                 "どれくらい重いのかが見えてきます。",
+        "items": [
+            ("ゲーム差", "上位チームとの差を表す数字。1ゲーム差は、"
+                       "直接対決に1つ勝てば並べる距離です"),
+            ("地区首位", "所属する地区で1位のこと。MLBは6つの地区に分かれており、"
+                       "各地区の1位はプレーオフに進めます"),
+            ("ワイルドカード", "地区1位になれなかったチームのうち、"
+                             "勝率上位に与えられるプレーオフ出場枠です"),
+            ("直近10試合", "最近10試合の勝敗。シーズン通算の成績では見えない、"
+                         "今の調子が分かります"),
+            ("インターリーグ", "ア・リーグとナ・リーグをまたぐ対戦のこと。"
+                             "普段は当たらない組み合わせが実現します"),
+            ("同地区対決", "同じ地区のチーム同士の対戦。"
+                         "勝てば相手を直接引き離せるので、順位争いでは特に重みがあります"),
+        ],
+    },
+    "mlb_league": {
+        "label": "MLBの仕組み",
+        "heading": "30球団、どう分かれている？",
+        "intro": "MLBは30球団。2つのリーグと6つの地区に分かれています。"
+                 "この構造が分かると、順位表が一気に読めるようになります。",
+        "items": [
+            ("2つのリーグ", "ア・リーグ(アメリカン)とナ・リーグ(ナショナル)。"
+                          "それぞれ15球団ずつに分かれています"),
+            ("6つの地区", "各リーグが東・中・西の3地区に分かれ、"
+                        "1地区あたり5球団。合わせて30球団です"),
+            ("指名打者の違い", "かつてはア・リーグだけが投手の代わりに打つ"
+                            "指名打者を使えましたが、現在は両リーグで採用されています"),
+            ("レギュラーシーズン", "3月末から9月末まで、1球団あたり162試合。"
+                                "ほぼ毎日試合があるのがMLBの特徴です"),
+            ("ポストシーズン", "各地区の1位とワイルドカードの計12球団が進出。"
+                            "勝ち上がった2球団がワールドシリーズを戦います"),
+        ],
+    },
+    "mlb_position": {
+        "label": "守備位置の略号",
+        "heading": "スタメン表が読める",
+        "intro": "スタメン表や速報では、守備位置も略号で書かれます。"
+                 "9つの位置を順に見ていきましょう。",
+        "items": [
+            ("P / C", "ピッチャー(投手)と、キャッチャー(捕手)。"
+                     "この2人をバッテリーと呼びます"),
+            ("1B / 2B", "ファースト(一塁手)とセカンド(二塁手)。"
+                       "数字は塁の番号にそのまま対応しています"),
+            ("3B / SS", "サード(三塁手)とショート(遊撃手)。"
+                       "ショートだけはSSで、ショートストップの略です"),
+            ("LF / CF / RF", "レフト、センター、ライト。"
+                            "左翼・中堅・右翼の3つの外野の位置です"),
+            ("DH", "指名打者。守備につかず、打つことだけを担当します"),
+        ],
+    },
+}
+
+
 def venue_items() -> list:
     """
     球場の特徴。notability_engine の MLB_VENUE_NOTES をそのまま使う。
@@ -191,6 +273,8 @@ def rivalry_items() -> list:
 
 
 def build_narration(topic: str) -> dict:
+    if topic in LIST_TOPICS:
+        return _narration_list(topic)
     if topic == "mlb_venue":
         return _narration_venue()
     if topic == "mlb_rivalry":
@@ -228,6 +312,22 @@ def _outro_segment() -> dict:
                 "理由つきでお届けしています。",
         "meta": {},
     }
+
+
+def _narration_list(topic: str) -> dict:
+    """LIST_TOPICS のデータから原稿を組む。1画面に2項目ずつ。"""
+    spec = LIST_TOPICS[topic]
+    items = spec["items"]
+    segments = [{"kind": "intro", "text": spec["intro"], "meta": {}}]
+    for i in range(0, len(items), 2):
+        chunk = items[i:i + 2]
+        segments.append({
+            "kind": "list",
+            "text": "".join(f"{t}。{b}。" for t, b in chunk),
+            "meta": {"topic": topic, "start": i, "count": len(chunk)},
+        })
+    segments.append(_outro_segment())
+    return {"label": spec["label"], "segments": segments}
 
 
 def _narration_venue() -> dict:
@@ -354,15 +454,40 @@ def _wrap(d, text, fnt, max_w):
     return lines
 
 
-def render_venue(p, items, start, count, page, pages):
+def render_list(p, items, start, count, page, pages, heading):
+    """
+    「見出し + 説明」を2件ずつ並べる共通の画面。
+
+    資産動画のほとんどはこの形で足りるので、トピックを増やすときに
+    描画を書き足さずに済むよう、1つの関数にまとめてある。
+    """
     im, d = base(p)
     d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
     f = font(40)
     prog = f"{page} / {pages}"
     d.text((W - 70 - d.textlength(prog, font=f), 84), prog, font=f, fill=DIM)
-    d.text((70, 210), "球場でこんなに変わる", font=font(72), fill=ACCENT)
 
+    # 見出しは長いものがあるので、収まるサイズを実測で選ぶ
+    hs = 72
+    for s in (72, 64, 56, 48):
+        if d.textlength(heading, font=font(s)) <= W - 140:
+            hs = s
+            break
+    d.text((70, 210), heading, font=font(hs), fill=ACCENT)
+
+    # カードの高さは中身に合わせる。固定にすると、説明が2行のトピックで
+    # カードの下半分が丸ごと空き、間延びして見える。
+    # 先に全カードの高さを出し、塊が縦の中央に来るよう開始位置を決める。
+    heights = []
+    for i in range(count):
+        note = items[start + i][1]
+        n = len(_wrap(d, note, font(42), W - 220)[:6])
+        heights.append(130 + n * 62 + 34)
+    # 見出しのすぐ下から積む。中央に寄せると、項目が短いトピックで
+    # 見出しとカードの間が大きく空いてしまう。
+    gap = 46
     y = 430
+
     for i in range(count):
         jp, note = items[start + i]
         appear = 0.06 + i * 0.10
@@ -370,13 +495,13 @@ def render_venue(p, items, start, count, page, pages):
             continue
         e = ease_out(min(1.0, max(0.0, (p - appear) * 9)))
         dx = int((1 - e) * 120)
-        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + 470], 22, fill=SURF)
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + heights[i]], 22, fill=SURF)
         d.text((100 - dx, y + 34), jp, font=font(56), fill=JP)
         yy = y + 130
         for line in _wrap(d, note, font(42), W - 220)[:6]:
             d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
             yy += 62
-        y += 520
+        y += heights[i] + gap
 
     d.text((70, H - 130), "collespo.com", font=font(38), fill=DIM)
     return im
@@ -570,10 +695,19 @@ def main():
                     code = DIVISION_ORDER[meta.get("division_index", 0)]
                     im = render_division(pp, code, by_div[code])
                 elif kind == "venue":
-                    im = render_venue(pp, venues, meta.get("start", 0),
-                                      meta.get("count", 1),
-                                      meta.get("start", 0) // 2 + 1,
-                                      (len(venues) + 1) // 2)
+                    im = render_list(pp, venues, meta.get("start", 0),
+                                     meta.get("count", 1),
+                                     meta.get("start", 0) // 2 + 1,
+                                     (len(venues) + 1) // 2,
+                                     "球場でこんなに変わる")
+                elif kind == "list":
+                    spec = LIST_TOPICS[meta.get("topic", args.topic)]
+                    items = spec["items"]
+                    im = render_list(pp, items, meta.get("start", 0),
+                                     meta.get("count", 1),
+                                     meta.get("start", 0) // 2 + 1,
+                                     (len(items) + 1) // 2,
+                                     spec["heading"])
                 elif kind == "rivalry":
                     idx = meta.get("index", 0)
                     im = render_rivalry(pp, rivalries[idx], idx, len(rivalries))

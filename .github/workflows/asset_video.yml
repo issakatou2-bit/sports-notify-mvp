@@ -21,6 +21,10 @@ on:
           - mlb_abbr
           - mlb_venue
           - mlb_rivalry
+          - mlb_stats
+          - mlb_terms
+          - mlb_league
+          - mlb_position
         default: mlb_abbr
       privacy:
         description: 公開設定(まずはunlistedで中身を確認することを推奨)
