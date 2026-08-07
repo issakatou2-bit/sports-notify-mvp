@@ -56,6 +56,34 @@ ASSET_META = {
         "tags": ["MLB", "メジャーリーグ", "野球", "野球初心者", "球団略称",
                  "MLB入門", "コレスポ"],
     },
+    "mlb_venue": {
+        "title": "【MLB】球場でこんなに変わる｜点が入る球場・入らない球場 #Shorts",
+        "lead": [
+            "同じ野球でも、球場によって試合の性格はまったく変わります。"
+            "標高、風向き、フェンスの形。MLBを代表する球場の特徴を紹介します。",
+            "",
+            "クアーズ・フィールド / フェンウェイ・パーク / リグレー・フィールド",
+            "オラクル・パーク / ヤンキー・スタジアム ほか",
+            "",
+            "球場の癖が分かると、点の入り方の理由が見えてきます。",
+        ],
+        "tags": ["MLB", "メジャーリーグ", "野球", "野球初心者", "球場",
+                 "MLB入門", "コレスポ"],
+    },
+    "mlb_rivalry": {
+        "title": "【MLB】伝統の一戦、なぜ因縁？｜ヤンキースvsレッドソックスほか #Shorts",
+        "lead": [
+            "MLBには、勝ち負け以上の意味を持つカードがあります。"
+            "なぜ因縁の対決と呼ばれるのか、その由来を紹介します。",
+            "",
+            "ヤンキース vs レッドソックス / ドジャース vs ジャイアンツ",
+            "カブス vs カージナルス / サブウェイ・シリーズ ほか",
+            "",
+            "背景が分かると、ただの1試合が特別な1試合に見えてきます。",
+        ],
+        "tags": ["MLB", "メジャーリーグ", "野球", "野球初心者", "ライバル",
+                 "MLB入門", "コレスポ"],
+    },
 }
 
 
@@ -196,6 +224,8 @@ def main():
                         help="タイトルの先頭に使うフックの取得元")
     parser.add_argument("--archive-dir", default="archive",
                         help="週次のタイトルに入れる期間の算出元")
+    parser.add_argument("--thumbnail", default=None,
+                        help="設定するカスタムサムネイル(PNG)")
     parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
     args = parser.parse_args()
@@ -272,6 +302,26 @@ def main():
         print(f"[info] アップロードしました: https://youtu.be/{vid}")
         print(f"[info] タイトル: {body['snippet']['title']}")
         print(f"[info] 公開設定: {args.privacy}")
+
+        # サムネイルは動画の登録が終わってからでないと設定できない。
+        # ここで失敗しても動画自体は上がっているので、警告に留める。
+        thumb = pathlib.Path(args.thumbnail) if args.thumbnail else None
+        if thumb and thumb.exists() and vid:
+            try:
+                youtube.thumbnails().set(
+                    videoId=vid,
+                    media_body=MediaFileUpload(str(thumb), mimetype="image/png"),
+                ).execute()
+                print(f"[info] サムネイルを設定しました: {thumb}")
+            except Exception as e:
+                # カスタムサムネイルはアカウントの電話番号確認が必要。
+                # 未確認だとここで必ず失敗するので、原因が分かるように書く
+                print(f"[warn] サムネイルの設定に失敗しました: {e}", file=sys.stderr)
+                print("       YouTubeアカウントの電話番号確認が済んでいるか"
+                      "確認してください(未確認だとカスタムサムネイルは使えません)",
+                      file=sys.stderr)
+        elif thumb:
+            print(f"[info] サムネイル画像が無いためスキップします: {thumb}")
     except Exception as e:
         # アップロードに失敗しても、通知やサイト更新は既に済んでいるので
         # ワークフロー全体を落とさない

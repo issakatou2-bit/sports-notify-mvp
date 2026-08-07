@@ -41,9 +41,12 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import (  # noqa: E402
     MLB_DIVISION_NAME_JP,
     MLB_DIVISIONS,
+    MLB_RIVALRIES,
+    MLB_RIVALRY_NOTES,
     MLB_TEAM_ABBR,
     MLB_TEAM_COLOR,
     MLB_TEAM_NAME_JP,
+    MLB_VENUE_NOTES,
 )
 
 # 縦型(ショート向け)
@@ -53,7 +56,8 @@ ANIM_END = 0.45
 
 # 種別ごとの最低表示秒数。読み上げが終わった瞬間に切り替わると
 # 略称を目で追う時間が無いため、下限を設けている。
-MIN_DURATION = {"intro": 5.0, "division": 9.0, "outro": 6.0}
+MIN_DURATION = {"intro": 5.0, "division": 9.0, "venue": 10.0,
+                "rivalry": 9.0, "outro": 6.0}
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
@@ -154,7 +158,43 @@ def teams_by_division() -> dict:
 # 原稿
 # ---------------------------------------------------------------------------
 
+def venue_items() -> list:
+    """
+    球場の特徴。notability_engine の MLB_VENUE_NOTES をそのまま使う。
+
+    毎日の注目理由でも「本塁打が出やすい球場」といった形で触れているので、
+    ここで一度まとめておくと、日々の配信の理解が深まる。
+    表示順は登録順(打者有利→投手有利→その他)のまま固定し、
+    作り置きできる動画として毎回同じ内容になるようにしている。
+    """
+    return [(jp, note) for jp, note in MLB_VENUE_NOTES.values()]
+
+
+def rivalry_items() -> list:
+    """伝統の一戦と、その由来"""
+    out = []
+    for pair, kind in MLB_RIVALRIES.items():
+        note = MLB_RIVALRY_NOTES.get(pair)
+        if not note:
+            continue
+        names = sorted(MLB_TEAM_NAME_JP.get(t, "") for t in pair)
+        colors = [MLB_TEAM_COLOR.get(t) for t in sorted(pair)]
+        out.append({
+            "title": " vs ".join(n for n in names if n),
+            "kind": "伝統の一戦" if kind == "historic" else "同都市対決",
+            "note": note,
+            "colors": colors,
+        })
+    # 由来の短いものから並べると尻すぼみになるので、種別でまとめる
+    out.sort(key=lambda x: (x["kind"] != "伝統の一戦", x["title"]))
+    return out
+
+
 def build_narration(topic: str) -> dict:
+    if topic == "mlb_venue":
+        return _narration_venue()
+    if topic == "mlb_rivalry":
+        return _narration_rivalry()
     if topic != "mlb_abbr":
         raise ValueError(f"未対応のトピックです: {topic}")
 
@@ -177,13 +217,56 @@ def build_narration(topic: str) -> dict:
             "meta": {"division_index": i},
         })
 
-    segments.append({
+    segments.append(_outro_segment())
+    return {"label": "MLB30球団の略称", "segments": segments}
+
+
+def _outro_segment() -> dict:
+    return {
         "kind": "outro",
         "text": "コレスポでは、毎日午後七時に、その日の注目試合を"
                 "理由つきでお届けしています。",
         "meta": {},
-    })
-    return {"label": "MLB30球団の略称", "segments": segments}
+    }
+
+
+def _narration_venue() -> dict:
+    items = venue_items()
+    segments = [{
+        "kind": "intro",
+        "text": "野球は、球場によって試合の性格が変わります。"
+                "点が入りやすい球場と、入りにくい球場を見ていきましょう。",
+        "meta": {},
+    }]
+    # 1画面に2球場ずつ。1つずつだと画面数が増えすぎて冗長になる
+    for i in range(0, len(items), 2):
+        chunk = items[i:i + 2]
+        text = "".join(f"{jp}。{note}。" for jp, note in chunk)
+        segments.append({
+            "kind": "venue",
+            "text": text,
+            "meta": {"start": i, "count": len(chunk)},
+        })
+    segments.append(_outro_segment())
+    return {"label": "球場でこんなに変わる", "segments": segments}
+
+
+def _narration_rivalry() -> dict:
+    items = rivalry_items()
+    segments = [{
+        "kind": "intro",
+        "text": "MLBには、勝ち負け以上の意味を持つカードがあります。"
+                "なぜ因縁の対決と呼ばれるのか、由来から見ていきましょう。",
+        "meta": {},
+    }]
+    for i, it in enumerate(items):
+        segments.append({
+            "kind": "rivalry",
+            "text": f"{it['title']}。{it['note']}。",
+            "meta": {"index": i},
+        })
+    segments.append(_outro_segment())
+    return {"label": "MLB 伝統の一戦", "segments": segments}
 
 
 # ---------------------------------------------------------------------------
@@ -254,6 +337,83 @@ def render_division(p, code, teams):
         y += 250
 
     # ショートは切り抜き・スクショで出回るので、どの画面にも出典を残す
+    d.text((70, H - 130), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
+def _wrap(d, text, fnt, max_w):
+    lines, cur = [], ""
+    for ch in text:
+        if d.textlength(cur + ch, font=fnt) > max_w:
+            lines.append(cur)
+            cur = ch
+        else:
+            cur += ch
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def render_venue(p, items, start, count, page, pages):
+    im, d = base(p)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    f = font(40)
+    prog = f"{page} / {pages}"
+    d.text((W - 70 - d.textlength(prog, font=f), 84), prog, font=f, fill=DIM)
+    d.text((70, 210), "球場でこんなに変わる", font=font(72), fill=ACCENT)
+
+    y = 430
+    for i in range(count):
+        jp, note = items[start + i]
+        appear = 0.06 + i * 0.10
+        if p < appear:
+            continue
+        e = ease_out(min(1.0, max(0.0, (p - appear) * 9)))
+        dx = int((1 - e) * 120)
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + 470], 22, fill=SURF)
+        d.text((100 - dx, y + 34), jp, font=font(56), fill=JP)
+        yy = y + 130
+        for line in _wrap(d, note, font(42), W - 220)[:6]:
+            d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
+            yy += 62
+        y += 520
+
+    d.text((70, H - 130), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
+def render_rivalry(p, item, index, total):
+    im, d = base(p)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    f = font(40)
+    prog = f"{index + 1} / {total}"
+    d.text((W - 70 - d.textlength(prog, font=f), 84), prog, font=f, fill=DIM)
+
+    e = ease_out(min(1.0, p * 3))
+    dx = int((1 - e) * 130)
+
+    # 両球団のカラーを帯で示す。ロゴは使わず色だけを借りる
+    for i, col in enumerate(item["colors"][:2]):
+        c = col or "#3C4250"
+        if isinstance(c, str) and c.startswith("#"):
+            c = tuple(int(c[j:j + 2], 16) for j in (1, 3, 5))
+        d.rounded_rectangle([70 - dx + i * 130, 210, 190 - dx + i * 130, 290], 12, fill=c)
+
+    d.text((70 - dx, 340), item["kind"], font=font(44), fill=JP)
+
+    y = 430
+    for line in _wrap(d, item["title"], font(84), W - 160)[:3]:
+        d.text((70 - dx, y), line, font=font(84), fill=ACCENT)
+        y += 104
+
+    if p > 0.14:
+        y += 50
+        d.rounded_rectangle([60, y - 30, W - 60, y + 350], 22, fill=SURF)
+        yy = y + 10
+        for line in _wrap(d, item["note"], font(46), W - 200)[:6]:
+            d.text((100, yy), line, font=font(46), fill=TEXT)
+            yy += 68
+
     d.text((70, H - 130), "collespo.com", font=font(38), fill=DIM)
     return im
 
@@ -355,6 +515,8 @@ def main():
         return
 
     by_div = teams_by_division()
+    venues = venue_items()
+    rivalries = rivalry_items()
     label = narration["label"]
 
     manifest = pathlib.Path(args.audio_dir) / "manifest.json"
@@ -407,6 +569,14 @@ def main():
                 elif kind == "division":
                     code = DIVISION_ORDER[meta.get("division_index", 0)]
                     im = render_division(pp, code, by_div[code])
+                elif kind == "venue":
+                    im = render_venue(pp, venues, meta.get("start", 0),
+                                      meta.get("count", 1),
+                                      meta.get("start", 0) // 2 + 1,
+                                      (len(venues) + 1) // 2)
+                elif kind == "rivalry":
+                    idx = meta.get("index", 0)
+                    im = render_rivalry(pp, rivalries[idx], idx, len(rivalries))
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()

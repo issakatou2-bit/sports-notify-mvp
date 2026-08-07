@@ -217,6 +217,18 @@ jobs:
             --audio-dir build/audio \
             --out build/video
 
+      # サムネイルを指定しないと、YouTubeが動画中のコマを自動で選ぶ。
+      # 検索結果や関連動画ではそれがクリック率を左右するため、
+      # 動画の1枚目と同じフックで自前のものを作る。
+      - name: Generate thumbnail
+        continue-on-error: true
+        run: |
+          python scripts/generate_thumbnail.py \
+            --kind daily \
+            --games notable_games.json \
+            --narration public/narration.json \
+            --out build/video/thumb.png
+
       - name: Upload to YouTube
         continue-on-error: true
         env:
@@ -227,6 +239,8 @@ jobs:
           python scripts/upload_youtube.py \
             --video build/video/collespo_short.mp4 \
             --games notable_games.json \
+            --narration public/narration.json \
+            --thumbnail build/video/thumb.png \
             --privacy public
 
       - name: Save video as artifact

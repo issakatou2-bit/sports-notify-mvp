@@ -82,6 +82,15 @@ jobs:
             --audio-dir build/weekly_audio \
             --out build/weekly
 
+      # --label を省くと、動画側と同じ条件(weekly_stats.load_week)で
+      # 週の範囲をアーカイブから求める
+      - name: Generate thumbnail
+        continue-on-error: true
+        run: |
+          python scripts/generate_thumbnail.py \
+            --kind weekly \
+            --out build/weekly/thumb.png
+
       - name: Upload to YouTube
         continue-on-error: true
         env:
@@ -93,6 +102,7 @@ jobs:
             --video build/weekly/collespo_weekly.mp4 \
             --games notable_games.json \
             --kind weekly \
+            --thumbnail build/weekly/thumb.png \
             --privacy public
 
       - name: Save video as artifact

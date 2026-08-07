@@ -194,6 +194,11 @@ def rule_rivalry(game: Game) -> list[Reason]:
         text = f"{game.home_team_name} vs {game.away_team_name} は同都市対決"
     else:
         return []
+    # 「なぜ因縁のカードなのか」まで書く。種別だけでは、初めて見る人に
+    # 何が特別なのかが伝わらない。
+    note = MLB_RIVALRY_NOTES.get(pair)
+    if note:
+        text = f"{text} — {note}"
     return [Reason(tag="rivalry", text=text, weight=2)]
 
 
@@ -641,6 +646,29 @@ MLB_RIVALRIES = {
     frozenset({"147", "121"}): "city",       # ヤンキース vs メッツ(subway series)
     frozenset({"112", "145"}): "city",       # カブス vs ホワイトソックス(crosstown classic)
     frozenset({"108", "119"}): "city",       # エンゼルス vs ドジャース(freeway series)
+}
+
+# ライバル関係の「由来」。なぜ因縁のカードなのかが分からないと、
+# 「伝統の好カード」と書かれても初めて見る人には意味が伝わらない。
+#
+# ここに載せるのは、今季の成績とは無関係で、かつ広く知られている
+# 歴史的経緯だけに限る(シリーズの通算成績のような、都度APIで確認しないと
+# 正しさを保証できない数字は書かない)。
+MLB_RIVALRY_NOTES = {
+    frozenset({"147", "111"}):
+        "1919年のベーブ・ルース移籍に端を発する、MLBで最も長く続くライバル関係",
+    frozenset({"119", "137"}):
+        "ニューヨーク時代から続く因縁で、1958年に両球団そろって西海岸へ移転した後も続いている",
+    frozenset({"112", "138"}):
+        "ナ・リーグ中地区を代表する、中西部の伝統の一戦",
+    frozenset({"119", "135"}):
+        "近年のナ・リーグ西地区の優勝争いを二分してきたカード",
+    frozenset({"147", "121"}):
+        "ニューヨーク市を二分する「サブウェイ・シリーズ」",
+    frozenset({"112", "145"}):
+        "シカゴ市内を二分する「クロスタウン・クラシック」",
+    frozenset({"108", "119"}):
+        "ロサンゼルス近郊の2球団による「フリーウェイ・シリーズ」",
 }
 
 # 2026年7月時点、Web検索で確認できた範囲のみ記載。追加・更新推奨。
@@ -1290,6 +1318,11 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         structural_notes.append("歴史的に有名なライバルカードである")
     elif rivalry_type == "city":
         structural_notes.append("同都市・近郊に本拠地を置くチーム同士の対決である")
+    # ライバル関係の由来。AIが自前の知識で歴史を語ると不確かなことを
+    # 書きかねないので、書いてよい内容をこちらから渡す。
+    rivalry_note = MLB_RIVALRY_NOTES.get(pair)
+    if rivalry_note:
+        structural_notes.append(f"このカードの由来: {rivalry_note}")
 
     series_context = game.get("series_context")
     if series_context:

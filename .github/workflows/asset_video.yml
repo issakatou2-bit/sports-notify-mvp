@@ -19,6 +19,8 @@ on:
         type: choice
         options:
           - mlb_abbr
+          - mlb_venue
+          - mlb_rivalry
         default: mlb_abbr
       privacy:
         description: 公開設定(まずはunlistedで中身を確認することを推奨)
@@ -90,6 +92,13 @@ jobs:
             --audio-dir build/asset_audio \
             --out build/asset
 
+      - name: Generate thumbnail
+        continue-on-error: true
+        run: |
+          python scripts/generate_thumbnail.py \
+            --kind asset --asset-topic "${{ inputs.topic }}" \
+            --out build/asset/thumb.png
+
       - name: Upload to YouTube
         continue-on-error: true
         env:
@@ -101,6 +110,7 @@ jobs:
             --video "build/asset/collespo_asset_${{ inputs.topic }}.mp4" \
             --kind asset \
             --asset-topic "${{ inputs.topic }}" \
+            --thumbnail build/asset/thumb.png \
             --privacy "${{ inputs.privacy }}"
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
