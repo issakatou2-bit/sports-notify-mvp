@@ -165,7 +165,7 @@ def draw_weekly(d, label: str):
 
 def draw_morning(d, day: str, players: list):
     d.text((70, 90), day, font=font(56), fill=DIM)
-    d.text((70, 170), "昨夜の日本人選手", font=font(112), fill=ACCENT)
+    d.text((70, 170), "日本人選手の成績", font=font(112), fill=ACCENT)
 
     # 名前と成績を2人ぶんだけ。サムネで読ませられるのはこのくらい
     y = 340

@@ -151,7 +151,7 @@ def build_narration(data: dict) -> dict:
 
     segments = [{
         "kind": "intro",
-        "text": f"{day}のメジャーリーグ、日本人選手の結果です。"
+        "text": f"{day}のメジャーリーグ、日本人選手の成績です。"
                 + (f"{top['name']}は{top['headline']}。" if top else ""),
         "meta": {"date": data.get("date", ""), "count": len(players)},
     }]
@@ -183,7 +183,7 @@ def render_intro(p, meta, top):
     slide = int((1 - e) * 70)
 
     d.text((80, 430 + slide), jp_date(meta.get("date", "")), font=font(64), fill=DIM)
-    d.text((80, 530 + slide), "日本人選手の結果", font=font(96), fill=ACCENT)
+    d.text((80, 530 + slide), "日本人選手の成績", font=font(96), fill=ACCENT)
 
     if top and p > 0.14:
         d.rounded_rectangle([70, 760, W - 70, 1120], 24, fill=SURF)
@@ -201,7 +201,7 @@ def render_intro(p, meta, top):
 def render_list(p, players, start, count):
     im, d = base(p)
     d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
-    d.text((70, 200), "昨夜の日本人選手", font=font(64), fill=ACCENT)
+    d.text((70, 200), "今日の日本人選手", font=font(64), fill=ACCENT)
 
     y = 380
     for i in range(count):

@@ -121,8 +121,12 @@ def headline(row: dict) -> str:
 def build(day: str = None, season: str = None) -> dict:
     """
     対象日は「日本時間の昨日」ではなく、アメリカの試合日。
-    MLBの1日は日本時間の朝までかかるので、JSTの朝に走らせるときは
-    前日(米国日付)を見るのが正しい。
+
+    米国日付Dのナイトゲームは現地19時開始で、日本時間では
+    東部が翌8時〜11時、太平洋が翌11時〜14時に行われる。
+    つまり全試合が出揃うのはJSTの14時ごろ。
+    このスクリプトはJST 16時に走る前提で、その時点の「JSTの前日」を
+    見れば、ちょうど終わったばかりの試合日にあたる。
     """
     season = season or str(datetime.now(timezone.utc).year)
     target = day or (datetime.now(JST).date() - timedelta(days=1)).isoformat()
