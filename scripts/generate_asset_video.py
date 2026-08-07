@@ -514,7 +514,14 @@ def render_list(p, items, start, count, page, pages, heading):
         e = ease_out(min(1.0, max(0.0, (p - appear) * 9)))
         dx = int((1 - e) * 120)
         d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + heights[i]], 22, fill=SURF)
-        d.text((100 - dx, y + 34), jp, font=font(56), fill=JP)
+        # 見出しは「球場名｜球団名」のように長くなることがあるので、
+        # 収まるサイズを実測で選ぶ(固定だと右端で切れる)
+        hs = 40
+        for s in (56, 50, 46, 42, 40):
+            if d.textlength(jp, font=font(s)) <= W - 240:
+                hs = s
+                break
+        d.text((100 - dx, y + 34), jp, font=font(hs), fill=JP)
         yy = y + 130
         for line in _wrap(d, note, font(42), W - 220)[:6]:
             d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
