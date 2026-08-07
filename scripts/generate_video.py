@@ -19,6 +19,7 @@
 import argparse
 import json
 import math
+import os
 import pathlib
 import shutil
 import subprocess
@@ -66,6 +67,14 @@ def _resolve_font_file() -> str:
     """使える日本語フォントのパスを1つ決める。見つからなければ例外。"""
     global _FONT_FILE
     if _FONT_FILE:
+        return _FONT_FILE
+
+    # 手元(Windows等)で動作確認するとき用の逃げ道。
+    # CIではLinuxの候補が先に見つかるので、本番の見た目は変わらない。
+    env = os.environ.get("COLLESPO_FONT")
+    if env and pathlib.Path(env).exists():
+        _FONT_FILE = env
+        print(f"[info] 使用フォント(COLLESPO_FONT): {env}")
         return _FONT_FILE
 
     for path in FONT_CANDIDATES:

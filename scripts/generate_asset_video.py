@@ -29,6 +29,7 @@
 
 import argparse
 import json
+import os
 import pathlib
 import subprocess
 import sys
@@ -88,6 +89,11 @@ DIVISION_ORDER = ["ALE", "ALC", "ALW", "NLE", "NLC", "NLW"]
 def _resolve_font() -> str:
     global _FONT_FILE
     if _FONT_FILE:
+        return _FONT_FILE
+    # 手元で動作確認するとき用の逃げ道。CIではLinuxの候補が先に見つかる。
+    env = os.environ.get("COLLESPO_FONT")
+    if env and pathlib.Path(env).exists():
+        _FONT_FILE = env
         return _FONT_FILE
     for p in FONT_CANDIDATES:
         if pathlib.Path(p).exists():
