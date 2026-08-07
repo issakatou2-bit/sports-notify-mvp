@@ -26,6 +26,7 @@ on:
           - mlb_terms
           - mlb_league
           - mlb_position
+          - collespo_guide
         default: mlb_abbr
       privacy:
         description: 公開設定
@@ -104,7 +105,7 @@ jobs:
         run: |
           TOPICS="${{ inputs.topic }}"
           if [ "$TOPICS" = "all" ]; then
-            TOPICS="mlb_abbr mlb_venue mlb_rivalry mlb_stats mlb_terms mlb_league mlb_position"
+            TOPICS="mlb_abbr mlb_venue mlb_rivalry mlb_stats mlb_terms mlb_league mlb_position collespo_guide"
             echo "::notice::全トピックを対象にします。投稿済みのものは自動で飛ばします"
           fi
 
