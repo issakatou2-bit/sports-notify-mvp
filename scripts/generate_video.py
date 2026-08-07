@@ -166,16 +166,53 @@ def team_badge(d, x, y, abbr, color, w=118, h=64):
     d.text((x + (w - tw) / 2, y + 12), abbr, font=f, fill=fg)
 
 
-def render_intro(progress: float, date_label: str):
+def render_intro(progress: float, date_label: str, meta: dict = None):
+    """
+    1枚目。ここで視聴者はスワイプするかどうかを決める。
+
+    以前は「コレスポ」のロゴと日付だけを出していたが、それは視聴者にとって
+    情報がゼロで、最も離脱されやすい入り方だった。今はその日いちばん具体的な
+    事実(選手名+記録、連勝数など)を最初に大きく出し、名乗りは下に小さく置く。
+
+    文字だけで成立させているのは、ショートの多くが音声を切って見られるため。
+    ナレーションと同じ内容を画面にも出しておけば、無音でも意味が通る。
+    """
     im, d = base_frame(progress)
-    e = ease_out(min(1.0, progress * 2.4))
-    slide = int((1 - e) * 90)
-    d.text((80, 680 + slide), "コレスポ", font=font(140), fill=ACCENT)
-    if progress > 0.10:
-        e2 = ease_out(min(1.0, (progress - 0.25) * 3))
-        y = 880 + int((1 - e2) * 40)
-        d.text((80, y), f"{date_label} の注目試合", font=font(64), fill=TEXT)
-    d.text((80, H - 170), "collespo.com", font=font(38), fill=DIM)
+    hook = (meta or {}).get("hook") or {}
+    big = hook.get("big") or f"{date_label} の注目試合"
+    sub = hook.get("sub") or ""
+
+    e = ease_out(min(1.0, progress * 2.6))
+    slide = int((1 - e) * 70)
+
+    # 見出しは1行で見せたい。文字数から推測するとフォントによって外すので、
+    # 実際に幅を測って収まる最大のサイズを選ぶ。
+    # (「4試合連続安打中」の「中」だけが次行に落ちる、といったことを防ぐ)
+    max_w = W - 160
+    size = 72
+    for s in (128, 116, 104, 92, 80, 72):
+        if d.textlength(big, font=font(s)) <= max_w:
+            size = s
+            break
+    lines = wrap(d, big, font(size), max_w)[:3]
+
+    # 文字の塊を画面の中央よりやや上に置く。縦型では視線がここに来る。
+    line_h = int(size * 1.22)
+    block_h = (120 if sub else 0) + len(lines) * line_h + 120
+    y = max(320, (H - block_h) // 2 - 60)
+
+    if sub:
+        d.text((80, y + slide), sub, font=font(72), fill=JP)
+        y += 120
+
+    for line in lines:
+        d.text((80, y + slide), line, font=font(size), fill=ACCENT)
+        y += line_h
+
+    if progress > 0.14:
+        d.text((80, y + 40), f"{date_label} の注目試合", font=font(52), fill=TEXT)
+
+    d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im
 
 
@@ -265,14 +302,20 @@ def render_news(progress: float, text: str):
 def render_outro(progress: float):
     im, d = base_frame(progress)
     e = ease_out(min(1.0, progress * 2))
-    d.text((80, 700), "コレスポ", font=font(120), fill=ACCENT)
-    d.text((80, 860), "collespo.com", font=font(58), fill=TEXT)
-    if progress > 0.12:
-        d.text((80, 970), "毎日19時 更新", font=font(46), fill=DIM)
+    d.text((80, 620), "コレスポ", font=font(120), fill=ACCENT)
+    d.text((80, 780), "毎日19時", font=font(76), fill=TEXT)
+    if progress > 0.10:
+        d.text((80, 880), "その日の注目試合を", font=font(50), fill=TEXT)
+        d.text((80, 950), "「なぜ注目か」の理由つきで", font=font(50), fill=TEXT)
+    if progress > 0.20:
+        # 何をしてほしいかを1つだけ明示する。複数並べるとどれも実行されない。
+        d.rounded_rectangle([70, 1060, W - 70, 1170], 18, fill=ACCENT)
+        d.text((110, 1088), "チャンネル登録で毎日届きます", font=font(46), fill=BG)
+    d.text((80, 1220), "collespo.com", font=font(46), fill=TEXT)
     # VOICEVOXの利用規約で、動画内または説明欄へのクレジット表記が
     # 求められているため、アウトロに必ず表示する
-    d.text((80, 1180), "音声: VOICEVOX:ずんだもん", font=font(40), fill=DIM)
-    d.text((80, 1250), "データ: MLB Stats API", font=font(40), fill=DIM)
+    d.text((80, 1340), "音声: VOICEVOX:ずんだもん", font=font(38), fill=DIM)
+    d.text((80, 1400), "データ: MLB Stats API", font=font(38), fill=DIM)
     return im
 
 
@@ -370,7 +413,7 @@ def main():
                     frame_no += 1
                     continue
                 if kind == "intro":
-                    im = render_intro(p_, date_label)
+                    im = render_intro(p_, date_label, meta)
                 elif kind == "game":
                     gi = meta.get("game_index", 0)
                     if gi >= len(games):
