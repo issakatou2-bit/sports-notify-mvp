@@ -6,10 +6,19 @@
   ・週次は「既に終わった試合」を振り返るので、結果まで語れる
   そのため、同じスクリプトを使い回さず別に用意している。
 
+原稿の厚みについて:
+  以前は1試合110〜140文字しか書かせておらず、画面の表示時間(30秒)に対して
+  読み上げが16秒しかなかった。差は無音で埋まり、8分の動画の半分近くが
+  沈黙という状態になっていた。アーカイブには先発投手の成績・球場の特徴・
+  連続安打・シリーズの経過まで記録されているのに、その大半を使わずに
+  尺だけ伸ばしていたことになる。今は素材を全部渡して厚く書かせ、
+  尺は原稿の長さから決まるようにしてある。
+
 出力: build/weekly_narration.json
-  generate_weekly.py のセグメント構成(intro / day×N / ranking / news / outro)と
-  1対1で対応させる。順序がずれると音声と画面が食い違うため、
-  ここで組み立てた順序をそのまま動画側でも使う。
+  generate_weekly.py のセグメント構成
+  (intro / day×N / ranking / verdict / news / outro)と1対1で対応させる。
+  順序がずれると音声と画面が食い違うため、週の読み込みと集計は
+  weekly_stats.py に集約し、両方が同じ結果を見るようにしている。
 
 使い方:
   python3 scripts/generate_weekly_narration.py \
@@ -20,9 +29,9 @@ import argparse
 import json
 import os
 import pathlib
-import re
 import sys
-from datetime import datetime, timedelta, timezone
+
+import weekly_stats as ws
 
 try:
     import anthropic
@@ -30,56 +39,28 @@ except ImportError:
     anthropic = None
 
 MODEL = "claude-haiku-4-5-20251001"
-DATE_FILE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})\.json$")
-JST = timezone(timedelta(hours=9))
 
-
-def load_week(archive_dir: pathlib.Path, days: int = 7):
-    """generate_weekly.py と同じ条件で読み込む(順序を一致させるため)"""
-    entries = []
-    for f in sorted(archive_dir.glob("*.json")):
-        if DATE_FILE_RE.match(f.name):
-            entries.append((f.name[:10], f))
-    entries.sort(key=lambda x: x[0], reverse=True)
-    out = []
-    for date_str, path in entries[:days]:
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            continue
-        for g in [x for x in data.get("games", []) if x.get("is_notable")][:2]:
-            out.append((date_str, g))
-    out.reverse()
-    return out
-
-
-def load_news_items(news_path: str, log_path: str, since: str, until: str) -> list:
-    """generate_weekly.py の同名関数と同じ条件で「今週の動き」を拾う"""
-    p = pathlib.Path(log_path)
-    if p.exists():
-        try:
-            entries = json.loads(p.read_text(encoding="utf-8")).get("entries") or []
-            return [e["text"] for e in entries
-                    if e.get("text") and since <= (e.get("date") or "") <= until]
-        except (json.JSONDecodeError, OSError, KeyError):
-            pass
-
-    p = pathlib.Path(news_path)
-    if p.exists():
-        try:
-            return [n["text"] for n in
-                    (json.loads(p.read_text(encoding="utf-8")).get("news") or [])]
-        except (json.JSONDecodeError, OSError, KeyError):
-            pass
-    return []
+# 1試合あたりの目標文字数。VOICEVOXの読み上げ速度(speedScale=1.3)では
+# おおよそ 6文字/秒 × 1.3 ≒ 7.8文字/秒 なので、220文字で約28秒になる。
+# 画面に載る情報(対戦・スコア・注目理由)を読み終えるのにちょうど良い長さ。
+TARGET_CHARS = (190, 240)
 
 
 def game_facts(date_str: str, g: dict) -> str:
+    """
+    AIに渡す事実。ここに書かれていないことは書かせない。
+
+    アーカイブに入っているものは、日によって欠けるものがある
+    (先発投手は生成時点で未発表のことがある、球場の特徴は登録済みの
+     球場だけ、など)。欠けているものは行ごと出さず、AIには
+     「無い情報は書かない」という形で伝わるようにしている。
+    """
     y, m, d = date_str.split("-")
     lines = [
         f"日付: {int(m)}月{int(d)}日",
-        f"対戦: {g.get('home_team_name')} 対 {g.get('away_team_name')}",
+        f"対戦: {g.get('home_team_name')}(ホーム) 対 {g.get('away_team_name')}(ビジター)",
     ]
+
     fs = g.get("final_score")
     if fs:
         winner = (g.get("home_team_name") if fs.get("winner") == "home"
@@ -90,13 +71,40 @@ def game_facts(date_str: str, g: dict) -> str:
         )
     else:
         lines.append("結果: まだ記録されていない")
+
+    sc = g.get("series_context") or {}
+    if sc.get("series_game_number") and sc.get("games_in_series"):
+        lines.append(
+            f"シリーズ: 全{sc['games_in_series']}戦中の第{sc['series_game_number']}戦"
+        )
+
+    for side, label in (("home", "ホーム"), ("away", "ビジター")):
+        p = g.get(f"{side}_probable") or {}
+        if p.get("name"):
+            bits = [f"{label}先発: {p['name']}"]
+            if p.get("era"):
+                bits.append(f"防御率{p['era']}")
+            if p.get("wins") is not None and p.get("losses") is not None:
+                bits.append(f"{p['wins']}勝{p['losses']}敗")
+            if p.get("strikeouts"):
+                bits.append(f"奪三振{p['strikeouts']}")
+            lines.append("、".join(bits))
+
+    if g.get("venue_jp") and g.get("venue_note"):
+        lines.append(f"球場: {g['venue_jp']} — {g['venue_note']}")
+
+    for note in (g.get("log_notes") or [])[:2]:
+        lines.append(f"記録: {note}")
+
     for r in (g.get("reasons") or [])[:3]:
         if r.get("visible", True) and r.get("text"):
             lines.append(f"注目理由: {r['text']}")
+
     return "\n".join(lines)
 
 
 def narrate(client, date_str: str, g: dict, index: int, total: int) -> str:
+    lo, hi = TARGET_CHARS
     prompt = (
         "あなたは日本のスポーツ番組で、1週間を振り返るコーナーの"
         "ナレーション原稿を書く放送作家です。\n"
@@ -104,33 +112,94 @@ def narrate(client, date_str: str, g: dict, index: int, total: int) -> str:
         f"{game_facts(date_str, g)}\n\n"
         "条件:\n"
         f"- 1週間の振り返りのうち{index + 1}試合目({total}試合中)です\n"
-        "- 110文字から140文字\n"
+        f"- {lo}文字から{hi}文字。短すぎると間が持たないので、"
+        "上に挙げた事実をできるだけ拾って厚く書くこと\n"
         "- 既に終わった試合を振り返る口調で書く"
         "(「〜でした」「〜が勝利しました」など)\n"
-        "- 結果が分かっている場合は必ず触れる\n"
-        "- 上に書かれていない数字・成績は絶対に書かない\n"
+        "- 結果が分かっている場合は必ずスコアに触れる\n"
+        "- 先発投手・球場の特徴・連続安打などの記録が上にある場合は、"
+        "できるだけ盛り込んで、試合の様子が浮かぶようにすること\n"
+        "- 上に書かれていない数字・成績は絶対に書かない。"
+        "誰が打ったか、何回に点が入ったかは記録が無いので書かないこと\n"
         "- 選手名は上の表記のまま使う。英語表記をカタカナに変換しない\n"
         "- 記号や箇条書きは使わず、そのまま読める文章だけを出力する\n"
         "- 前置きや説明は不要。原稿本文のみ"
     )
     resp = client.messages.create(
-        model=MODEL, max_tokens=300,
+        model=MODEL, max_tokens=700,
         messages=[{"role": "user", "content": prompt}],
     )
+    if resp.stop_reason == "max_tokens":
+        # 途中で切れた原稿は、読み上げると文の途中で終わる。
+        # 使わずに簡易版へ落とす(notability_engine.py と同じ考え方)。
+        print("[warn] 原稿が上限で切れたため、簡易版で代替します", file=sys.stderr)
+        return ""
     return "".join(b.text for b in resp.content if b.type == "text").strip()
 
 
 def fallback(date_str: str, g: dict) -> str:
+    """AIが使えないときの原稿。事実を並べるだけだが、厚みは確保する。"""
     y, m, d = date_str.split("-")
     parts = [f"{int(m)}月{int(d)}日、{g.get('home_team_name')}対{g.get('away_team_name')}。"]
+
+    sc = g.get("series_context") or {}
+    if sc.get("series_game_number") and sc.get("games_in_series"):
+        parts.append(f"全{sc['games_in_series']}戦中の第{sc['series_game_number']}戦です。")
+
     fs = g.get("final_score")
     if fs:
         winner = (g.get("home_team_name") if fs.get("winner") == "home"
                   else g.get("away_team_name"))
         parts.append(f"{fs.get('home')}対{fs.get('away')}で{winner}が勝利しました。")
-    for r in (g.get("reasons") or [])[:1]:
+
+    for side in ("home", "away"):
+        p = g.get(f"{side}_probable") or {}
+        if p.get("name") and p.get("era"):
+            parts.append(f"先発は{p['name']}、防御率{p['era']}。")
+
+    for r in (g.get("reasons") or [])[:2]:
         if r.get("visible", True) and r.get("text"):
             parts.append(r["text"] + "。")
+
+    for note in (g.get("log_notes") or [])[:1]:
+        parts.append(note + "。")
+
+    if g.get("venue_jp") and g.get("venue_note"):
+        parts.append(f"舞台は{g['venue_jp']}。{g['venue_note']}球場です。")
+
+    return "".join(parts)
+
+
+def verdict_text(v: dict) -> str:
+    """
+    答え合わせの原稿。数字を読み上げるだけなのでAIは使わない。
+
+    ここはコレスポが自分で出した注目理由の検証にあたる部分なので、
+    表現の揺れよりも、数字がそのまま伝わることを優先する。
+    """
+    parts = ["ここからは、今週の答え合わせです。"]
+    if v["decided"]:
+        parts.append(
+            f"取り上げた{v['picked']}試合のうち、{v['decided']}試合で結果が出ました。"
+            f"ホームチームの成績は{v['home_wins']}勝{v['away_wins']}敗です。"
+        )
+    if v["one_run"]:
+        parts.append(f"そのうち1点差の接戦が{v['one_run']}試合ありました。")
+    if v["shutouts"]:
+        parts.append(f"完封試合は{v['shutouts']}試合です。")
+    if v["top_game"]:
+        t = v["top_game"]
+        parts.append(
+            f"最も点が入ったのは{t['home_name']}対{t['away_name']}で、"
+            f"{t['home']}対{t['away']}、合わせて{t['total']}点が入りました。"
+        )
+
+    # 連勝・連敗を理由に取り上げた試合の行方。コレスポにしか言えない部分。
+    for s in v["streaks"][:3]:
+        parts.append(
+            f"{s['n']}{s['kind']}中として取り上げた{s['team']}は、{s['spoken']}。"
+        )
+
     return "".join(parts)
 
 
@@ -143,7 +212,7 @@ def main():
     args = parser.parse_args()
 
     archive_dir = pathlib.Path(args.archive_dir)
-    week = load_week(archive_dir)
+    week = ws.load_week(archive_dir)
     if len(week) < 2:
         print(f"[info] アーカイブが{len(week)}件しか無いため、原稿は作りません")
         return
@@ -151,10 +220,10 @@ def main():
     label = (f"{week[0][0][5:].replace('-', '/')}〜"
              f"{week[-1][0][5:].replace('-', '/')}")
 
-    # 動画側(generate_weekly.py)と同じ条件で拾う。ここでニュース枠の
-    # 有無がずれると、原稿のセグメント数と画面のセグメント数が食い違い、
-    # 以降のナレーションが1つずつずれてしまう。
-    news_items = load_news_items(args.news, args.news_log, week[0][0], week[-1][0])
+    # 動画側と同じ関数で拾う。ここでニュース枠の有無がずれると、
+    # 原稿と画面のセグメント数が食い違って以降が全部ずれる。
+    news_items = ws.load_news_items(args.news, args.news_log, week[0][0], week[-1][0])
+    verdict = ws.compute_verdict(week)
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     client = anthropic.Anthropic(api_key=api_key) if (api_key and anthropic) else None
@@ -163,7 +232,8 @@ def main():
 
     segments = [{
         "kind": "intro",
-        "text": f"コレスポ、今週のまとめです。{label}の注目試合を振り返ります。",
+        "text": f"コレスポ、今週のまとめです。{label}の注目試合を、"
+                "結果とあわせて振り返ります。",
         "meta": {},
     }]
 
@@ -180,10 +250,15 @@ def main():
             "meta": {"day_index": i},
         })
 
-    # ランキングとニュースは、動画側のセグメント構成と順序を合わせる
+    # ランキング・答え合わせ・ニュースは、動画側のセグメント構成と順序を合わせる
     segments.append({
         "kind": "ranking",
         "text": "今週、注目試合として多く取り上げた球団を振り返ります。",
+        "meta": {},
+    })
+    segments.append({
+        "kind": "verdict",
+        "text": verdict_text(verdict),
         "meta": {},
     })
     if news_items:
@@ -194,7 +269,8 @@ def main():
         })
     segments.append({
         "kind": "outro",
-        "text": "詳しくはコレスポドットコムへ。毎日19時に、その日の注目試合をお届けしています。",
+        "text": "コレスポでは毎日午後7時に、その日の注目試合を"
+                "なぜ注目なのかの理由つきでお届けしています。",
         "meta": {},
     })
 
@@ -205,8 +281,13 @@ def main():
         encoding="utf-8",
     )
     chars = sum(len(s["text"]) for s in segments)
+    day_chars = [len(s["text"]) for s in segments if s["kind"] == "day"]
     print(f"[info] 週次ナレーション原稿を生成しました"
-          f"({len(segments)}セグメント / 計{chars}文字 / 読み上げ推定{chars / 6 / 1.3:.0f}秒)")
+          f"({len(segments)}セグメント / 計{chars}文字 / "
+          f"読み上げ推定{chars / 6 / 1.3:.0f}秒)")
+    if day_chars:
+        print(f"[info] 1試合あたり {min(day_chars)}〜{max(day_chars)}文字 "
+              f"(平均{sum(day_chars) / len(day_chars):.0f}文字)")
 
 
 if __name__ == "__main__":

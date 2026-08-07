@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# 生成物。ワークフローの中で作られ、成果物として別途アップロードされるため
+# リポジトリには入れない(動画・音声はサイズも大きい)
+build/
+public/
+notable_games.json
+feed.xml
+
+# ローカル検証用
+venv/
+.venv/

@@ -23,13 +23,13 @@
 import argparse
 import json
 import pathlib
-import re
 import subprocess
 import sys
 import wave
-from datetime import datetime, timedelta, timezone
 
 from PIL import Image, ImageDraw, ImageFont
+
+import weekly_stats as ws
 
 # 横型(通常動画向け)
 W, H = 1920, 1080
@@ -41,17 +41,23 @@ FPS = 24
 # 静止している区間を省くだけで大幅に短縮できる。
 ANIM_END = 0.45
 
-# セグメント種別ごとの最低表示秒数。
-# ナレーションの実測長だけに合わせると、読み上げが終わった瞬間に
-# 画面が切り替わってしまい、成績を読む間がない。
-MIN_DURATION = {"intro": 8.0, "day": 30.0, "ranking": 28.0, "news": 18.0, "outro": 10.0}
+# 読み上げが終わってから画面が切り替わるまでの余白。
+# 0にすると語尾と同時に切り替わって忙しないが、長く取ると沈黙になる。
+SEGMENT_TAIL = 2.0
 
-# 狙う全体の尺。480秒(8分)がYouTubeのミッドロール広告の条件で、
-# そこに余裕を20秒足している。アーカイブの日数や1日あたりの試合数は
-# 日によって変わるため、固定の秒数を足し合わせて8分を狙うと簡単に割り込む
-# (実際、7日×2試合でも466秒にしかならず14秒足りなかった)。
-# そのため、組み上げた後に不足分をday セグメントへ配って必ず届かせる。
-TARGET_SECONDS = 500.0
+# セグメント種別ごとの最低表示秒数。原稿が短かった場合の下支えでしかなく、
+# 通常はナレーションの実測長が上回るのでこちらは効かない。
+MIN_DURATION = {"intro": 5.0, "day": 10.0, "ranking": 9.0,
+                "verdict": 10.0, "news": 8.0, "outro": 6.0}
+
+# 以前はここに TARGET_SECONDS = 500 を置き、尺が足りなければ day セグメントを
+# 引き伸ばして8分(ミッドロール広告の条件)に届かせていた。これをやめた理由:
+#   ・広告収入が有効になるのは登録者1,000人・総再生時間4,000時間からで、
+#     そこに届いていない段階では8分を満たしても収益は発生しない
+#   ・一方で引き伸ばした分はそのまま無音になり、実際に8分19秒の動画のうち
+#     4分近くが沈黙という状態になっていた。視聴維持率が落ちれば、
+#     1,000人へ近づくどころか遠のく
+# 尺は原稿の厚みから決まるべきもので、目標秒数から逆算するものではない。
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
@@ -61,9 +67,12 @@ DIM = (136, 145, 163)
 ACCENT = (255, 176, 32)
 ACCENT_DIM = (74, 58, 26)
 JP = (73, 197, 182)
-
-DATE_FILE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})\.json$")
-JST = timezone(timedelta(hours=9))
+# 答え合わせの勝敗を示す色。
+# 「注目理由が継続したか(held)」ではなく「そのチームが勝ったか(won)」で
+# 塗り分ける。連敗中のチームが連敗を伸ばした場合、理由としては継続だが
+# 視聴者から見れば悪い結果であり、継続=好結果の色で塗ると意味が逆に伝わる。
+WIN_COL = (73, 197, 182)
+LOSE_COL = (232, 116, 116)
 
 FONT_CANDIDATES = [
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
@@ -247,6 +256,49 @@ def render_ranking(p, ranking):
     return im
 
 
+def render_verdict(p, verdict):
+    """
+    今週の答え合わせ。
+
+    左に週全体の集計、右に「連勝中だから注目」として取り上げた試合の行方を出す。
+    どちらも、コレスポが自分で書いた注目理由と、後から埋めた最終スコアの
+    両方が揃っているからこそ言える内容で、他所には無い。
+    """
+    im, d = base(p)
+    d.text((100, 70), "コレスポ", font=font(44), fill=ACCENT)
+    d.text((100, 190), "今週の答え合わせ", font=font(70), fill=ACCENT)
+
+    # --- 左: 週全体の集計 ---
+    y = 350
+    for i, (big, small) in enumerate(ws.verdict_lines(verdict)[:5]):
+        if p < 0.05 + i * 0.05:
+            continue
+        d.text((120, y), big, font=font(62), fill=TEXT)
+        d.text((124, y + 76), small, font=font(30), fill=DIM)
+        y += 128
+
+    # --- 右: 連勝・連敗として取り上げた試合の行方 ---
+    streaks = verdict.get("streaks") or []
+    if not streaks:
+        return im
+
+    x = 1010
+    d.text((x, 350), "注目理由の行方", font=font(40), fill=JP)
+    y = 430
+    for i, s in enumerate(streaks[:4]):
+        if p < 0.12 + i * 0.06:
+            continue
+        col = WIN_COL if s["won"] else LOSE_COL
+        d.rounded_rectangle([x, y, W - 100, y + 128], 16, fill=SURF)
+        d.text((x + 28, y + 18), f"{s['team']} {s['n']}{s['kind']}中",
+               font=font(36), fill=DIM)
+        d.text((x + 28, y + 68), s["result"], font=font(42), fill=col)
+        # 結果が一目で分かるよう、右端に色の帯を置く
+        d.rounded_rectangle([W - 130, y + 18, W - 118, y + 110], 6, fill=col)
+        y += 150
+    return im
+
+
 def render_outro(p):
     im, d = base(p)
     d.text((140, 360), "コレスポ", font=font(140), fill=ACCENT)
@@ -257,61 +309,32 @@ def render_outro(p):
     return im
 
 
-def load_news_items(news_path: str, log_path: str, since: str, until: str) -> list:
-    """
-    「今週の動き」に載せるニュース文を集める。
-
-    週次ワークフローには public/news.json が存在しない(あれは日次側が
-    その日限りで作るもので、リポジトリにも残らない)。そのため以前は
-    この枠が常に空になり、ニュース画面が1枚も出ていなかった。
-    日次がコミットしている data/news_log.json から、その週の分だけを拾う。
-    履歴がまだ無い環境では、従来どおり news.json を見る。
-    """
-    p = pathlib.Path(log_path)
-    if p.exists():
-        try:
-            entries = json.loads(p.read_text(encoding="utf-8")).get("entries") or []
-            return [e["text"] for e in entries
-                    if e.get("text") and since <= (e.get("date") or "") <= until]
-        except (json.JSONDecodeError, OSError, KeyError):
-            pass
-
-    p = pathlib.Path(news_path)
-    if p.exists():
-        try:
-            return [n["text"] for n in
-                    (json.loads(p.read_text(encoding="utf-8")).get("news") or [])]
-        except (json.JSONDecodeError, OSError, KeyError):
-            pass
-    return []
-
-
-def plan_durations(segs: list, target: float = TARGET_SECONDS) -> list:
+def plan_durations(segs: list) -> list:
     """
     各セグメントの表示秒数を先に決める。
 
     描画ループの中で都度計算すると、音声側の尺合わせと計算が食い違いやすい。
     ここで1本のリストとして確定させ、映像も音声もこれだけを見るようにする。
 
-    まず「ナレーションの実測長」と「種別ごとの下限」の大きい方を採り、
-    それでも目標に届かなければ、不足分をday セグメントへ均等に配る。
-    day を伸ばす理由は、試合ごとの成績や注目理由が並ぶ画面で、
-    ここだけは長く映しても間延びして見えないため。
+    尺はナレーションの実測長で決まる。目標秒数から逆算して引き伸ばすことは
+    しない(そうすると差がそのまま無音になる)。原稿を厚くすれば動画は
+    自然に長くなり、薄ければ短くなる、という素直な関係にしてある。
     """
     durations = []
     for seg in segs:
         kind = seg.get("kind") or "day"
         audio_len = float(seg.get("duration") or 0)
-        durations.append(max(MIN_DURATION.get(kind, 10.0), audio_len, 4.0))
+        durations.append(max(MIN_DURATION.get(kind, 8.0), audio_len + SEGMENT_TAIL))
 
     total = sum(durations)
-    day_idx = [i for i, s in enumerate(segs) if (s.get("kind") or "day") == "day"]
-    if total < target and day_idx:
-        extra = (target - total) / len(day_idx)
-        for i in day_idx:
-            durations[i] += extra
-        print(f"[info] 目標{target:.0f}秒に{target - total:.0f}秒不足したため、"
-              f"{len(day_idx)}件の試合紹介を1件あたり{extra:.1f}秒ずつ延ばしました")
+    spoken = sum(float(s.get("duration") or 0) for s in segs)
+    silence = total - spoken
+    print(f"[info] 尺の内訳: 合計{total:.0f}秒 "
+          f"(読み上げ{spoken:.0f}秒 / 間{silence:.0f}秒 = {silence / total * 100:.0f}%)")
+    if spoken and silence / total > 0.35:
+        print("::warning title=無音が多い::"
+              f"全体の{silence / total * 100:.0f}%が無音です。"
+              "原稿が薄いか、音声合成に失敗している可能性があります")
     return durations
 
 
@@ -380,30 +403,6 @@ def build_narration_track(segs: list, durations: list, out_dir: pathlib.Path):
     return audio_path
 
 
-def load_week(archive_dir: pathlib.Path, days: int = 7):
-    """直近days日分のアーカイブを、古い順に返す"""
-    entries = []
-    for f in sorted(archive_dir.glob("*.json")):
-        m = DATE_FILE_RE.match(f.name)
-        if not m:
-            continue
-        entries.append((f.name[:10], f))
-    entries.sort(key=lambda x: x[0], reverse=True)
-    out = []
-    for date_str, path in entries[:days]:
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            continue
-        games = [g for g in data.get("games", []) if g.get("is_notable")]
-        # 1日あたり2試合まで扱う。1試合だけだと全体が3分程度にしかならず、
-        # ミッドロール広告の条件(8分以上)に届かないため。
-        for g in games[:2]:
-            out.append((date_str, g))
-    out.reverse()
-    return out
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--archive-dir", default="archive")
@@ -418,14 +417,20 @@ def main():
         print("[warn] アーカイブが無いため、週次動画は作りません")
         return
 
-    week = load_week(archive_dir)
+    week = ws.load_week(archive_dir)
     if len(week) < 2:
         print(f"[info] アーカイブが{len(week)}日分しか無いため、"
               "週次動画はまだ作りません(2日分以上必要)")
         return
 
-    news_items = load_news_items(args.news, args.news_log, week[0][0], week[-1][0])
+    news_items = ws.load_news_items(args.news, args.news_log, week[0][0], week[-1][0])
     print(f"[info] 今週の動き: {len(news_items)}件")
+
+    # 答え合わせ。原稿側(generate_weekly_narration.py)も同じ関数を呼ぶので、
+    # 画面に出る数字と読み上げられる数字は必ず一致する。
+    verdict = ws.compute_verdict(week)
+    print(f"[info] 答え合わせ: {verdict['decided']}/{verdict['picked']}試合で結果あり、"
+          f"連勝・連敗の検証{len(verdict['streaks'])}件")
 
     label = f"{week[0][0][5:].replace('-', '/')}〜{week[-1][0][5:].replace('-', '/')}"
 
@@ -446,15 +451,20 @@ def main():
     if manifest.exists():
         segs = json.loads(manifest.read_text(encoding="utf-8"))["segments"]
     else:
-        segs = [{"kind": "intro", "duration": 10.0, "file": None, "meta": {}}]
+        # 音声が無い場合の構成。generate_weekly_narration.py が作る
+        # セグメントの並び(intro / day×N / ranking / verdict / news / outro)と
+        # 揃えておかないと、後で音声が付いたときにずれる。
+        segs = [{"kind": "intro", "duration": 0.0, "file": None, "meta": {}}]
         for i in range(len(week)):
-            segs.append({"kind": "day", "duration": 30.0, "file": None,
+            segs.append({"kind": "day", "duration": 0.0, "file": None,
                          "meta": {"day_index": i}})
         if ranking:
-            segs.append({"kind": "ranking", "duration": 30.0, "file": None, "meta": {}})
+            segs.append({"kind": "ranking", "duration": 0.0, "file": None, "meta": {}})
+        if verdict["decided"]:
+            segs.append({"kind": "verdict", "duration": 0.0, "file": None, "meta": {}})
         if news_items:
-            segs.append({"kind": "news", "duration": 20.0, "file": None, "meta": {}})
-        segs.append({"kind": "outro", "duration": 10.0, "file": None, "meta": {}})
+            segs.append({"kind": "news", "duration": 0.0, "file": None, "meta": {}})
+        segs.append({"kind": "outro", "duration": 0.0, "file": None, "meta": {}})
 
     # 存在しない試合を指すセグメントは、映像も音声も作れない。
     # 描画ループの中だけで弾くと音声側とセグメント数が食い違い、
@@ -509,6 +519,8 @@ def main():
                     im = render_day(pp, week[di][0], week[di][1])
                 elif kind == "ranking":
                     im = render_ranking(pp, ranking)
+                elif kind == "verdict":
+                    im = render_verdict(pp, verdict)
                 elif kind == "news":
                     im = render_news(pp, news_items)
                 else:
