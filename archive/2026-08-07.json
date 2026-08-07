@@ -1,0 +1,841 @@
+{
+  "generated_at": "2026-08-07T09:53:31.952305+00:00",
+  "games": [
+    {
+      "game_id": "825051",
+      "league": "MLB",
+      "home_team_id": "109",
+      "away_team_id": "119",
+      "home_team_name": "ダイヤモンドバックス",
+      "away_team_name": "ドジャース",
+      "home_abbr": "ARI",
+      "away_abbr": "LAD",
+      "home_color": "#A71930",
+      "away_color": "#005A9C",
+      "matchup": "ダイヤモンドバックス vs ドジャース",
+      "abbr_matchup": "ARI vs LAD",
+      "start_time_jst": "08/08 10:40",
+      "home_division": "NLW",
+      "away_division": "NLW",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [
+        {
+          "name": "佐々木朗希",
+          "context": "先発予定"
+        }
+      ],
+      "jp_players": [
+        "佐々木朗希",
+        "ヌートバー",
+        "大谷翔平",
+        "山本由伸"
+      ],
+      "home_probable": {
+        "name": "Merrill Kelly",
+        "name_en": "Merrill Kelly",
+        "player_id": "518876",
+        "era": "5.04",
+        "wins": 8,
+        "losses": 9,
+        "strikeouts": 76
+      },
+      "away_probable": {
+        "name": "佐々木朗希",
+        "name_en": "Roki Sasaki",
+        "player_id": "808963",
+        "era": "4.64",
+        "wins": 5,
+        "losses": 5,
+        "strikeouts": 101
+      },
+      "venue_name": "Chase Field",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "score": 7,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "JP",
+          "text": "佐々木朗希が先発予定の中での出場",
+          "weight": 3
+        },
+        {
+          "tag": "jp_team",
+          "text": "ダイヤモンドバックスにはヌートバーが所属",
+          "weight": 2
+        },
+        {
+          "tag": "streak",
+          "text": "ドジャースは6連敗中",
+          "weight": 2
+        }
+      ],
+      "log_notes": [
+        "ヌートバーは移籍後3試合目",
+        "大谷翔平は9試合連続安打中"
+      ],
+      "ai_summary": "ナ・リーグ西地区で【首位ドジャースと2位ダイヤモンドバックスが8.5ゲーム差で対戦】する一戦であり、特に6連敗中のドジャースが地区内での優位を守れるかが焦点となる。佐々木朗希と防御率5.04のKellyが先発する投手戦の行方も見どころである。",
+      "notification_hook": "6連敗中のドジャース、佐々木朗希で巻き返せるか。大谷翔平9試合連続安打も注目。"
+    },
+    {
+      "game_id": "824727",
+      "league": "MLB",
+      "home_team_id": "111",
+      "away_team_id": "133",
+      "home_team_name": "レッドソックス",
+      "away_team_name": "アスレチックス",
+      "home_abbr": "BOS",
+      "away_abbr": "ATH",
+      "home_color": "#BD3039",
+      "away_color": "#003831",
+      "matchup": "レッドソックス vs アスレチックス",
+      "abbr_matchup": "BOS vs ATH",
+      "start_time_jst": "08/08 08:10",
+      "home_division": "ALE",
+      "away_division": "ALW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "吉田正尚"
+      ],
+      "home_probable": {
+        "name": "Payton Tolle",
+        "name_en": "Payton Tolle",
+        "player_id": "801139",
+        "era": "3.30",
+        "wins": 6,
+        "losses": 6,
+        "strikeouts": 110
+      },
+      "away_probable": {
+        "name": "Jack Perkins",
+        "name_en": "Jack Perkins",
+        "player_id": "678022",
+        "era": "6.72",
+        "wins": 2,
+        "losses": 7,
+        "strikeouts": 89
+      },
+      "venue_name": "Fenway Park",
+      "venue_jp": "フェンウェイ・パーク",
+      "venue_note": "左翼に高さ約11mの「グリーンモンスター」がそびえ、打球の行方が読みにくい独特の形状",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 6,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "レッドソックスには吉田正尚が所属",
+          "weight": 2
+        },
+        {
+          "tag": "streak",
+          "text": "レッドソックスは8連勝中",
+          "weight": 2
+        },
+        {
+          "tag": "streak",
+          "text": "アスレチックスは8連敗中",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 1,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "ai_summary": "レッドソックスは【8連勝中】で東地区3位から首位を狙う立場にある一方、アスレチックスは【8連敗中】で西地区4位と苦しい状況にあり、両チームの勢いが大きく異なる対比が見どころとなる。先発はレッドソックスが防御率3.30の安定した投手を立てるのに対し、アスレチックスは防御率6.72と打ち込まれやすい投手が登板するため、打ち合いが予想される。フェンウェイ・パークの左翼に聳える高さ11メートルのグリーンモンスターという独特の壁が打球の行方を左右する中での攻防にも注目したい。",
+      "notification_hook": "8連勝レッドソックス対8連敗アスレチックス、勢い対決の行方は。"
+    },
+    {
+      "game_id": "823515",
+      "league": "MLB",
+      "home_team_id": "147",
+      "away_team_id": "144",
+      "home_team_name": "ヤンキース",
+      "away_team_name": "ブレーブス",
+      "home_abbr": "NYY",
+      "away_abbr": "ATL",
+      "home_color": "#003087",
+      "away_color": "#CE1141",
+      "matchup": "ヤンキース vs ブレーブス",
+      "abbr_matchup": "NYY vs ATL",
+      "start_time_jst": "08/08 08:05",
+      "home_division": "ALE",
+      "away_division": "NLE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": {
+        "name": "Max Fried",
+        "name_en": "Max Fried",
+        "player_id": "608331",
+        "era": "3.12",
+        "wins": 4,
+        "losses": 3,
+        "strikeouts": 68
+      },
+      "away_probable": {
+        "name": "Tyler Mahle",
+        "name_en": "Tyler Mahle",
+        "player_id": "641816",
+        "era": "5.13",
+        "wins": 3,
+        "losses": 9,
+        "strikeouts": 89
+      },
+      "venue_name": "Yankee Stadium",
+      "venue_jp": "ヤンキー・スタジアム",
+      "venue_note": "右翼が浅く、左打者の本塁打が出やすい形状",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 4,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ヤンキースは自地区2位、ブレーブスは自地区1位同士の好カード",
+          "weight": 2
+        },
+        {
+          "tag": "streak",
+          "text": "ブレーブスは8連勝中",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 1,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [
+        "Tyler Mahleは移籍後初登板"
+      ],
+      "ai_summary": "各地区で上位に位置する両チームの対戦であり、とりわけブレーブスは【8連勝中】で勢いに乗っており、ヤンキースにとっては地区順位を意識した重要な試合となる。先発はブレーブスのTyler Mahleが移籍後初登板を迎えるなか、ヤンキー・スタジアムの右翼が浅い特徴が左打者の本塁打を誘いやすく、攻撃面での見どころとなる。",
+      "notification_hook": "8連勝中ブレーブスの移籍初登板Mahleに対し、ヤンキースは防御率3.12の先発で反撃なるか。"
+    },
+    {
+      "game_id": "823266",
+      "league": "MLB",
+      "home_team_id": "135",
+      "away_team_id": "117",
+      "home_team_name": "パドレス",
+      "away_team_name": "アストロズ",
+      "home_abbr": "SD",
+      "away_abbr": "HOU",
+      "home_color": "#2F241D",
+      "away_color": "#002D62",
+      "matchup": "パドレス vs アストロズ",
+      "abbr_matchup": "SD vs HOU",
+      "start_time_jst": "08/08 10:40",
+      "home_division": "NLW",
+      "away_division": "ALW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "松井裕樹",
+        "今井達也"
+      ],
+      "home_probable": {
+        "name": "Robbie Ray",
+        "name_en": "Robbie Ray",
+        "player_id": "592662",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Ronel Blanco",
+        "name_en": "Ronel Blanco",
+        "player_id": "669854",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Petco Park",
+      "venue_jp": "ペトコ・パーク",
+      "venue_note": "広い外野と海沿いの気候により、投手有利とされる球場",
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "score": 4,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 2
+        },
+        {
+          "tag": "jp_team",
+          "text": "アストロズには今井達也が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "824081",
+      "league": "MLB",
+      "home_team_id": "118",
+      "away_team_id": "112",
+      "home_team_name": "ロイヤルズ",
+      "away_team_name": "カブス",
+      "home_abbr": "KC",
+      "away_abbr": "CHC",
+      "home_color": "#004687",
+      "away_color": "#0E3386",
+      "matchup": "ロイヤルズ vs カブス",
+      "abbr_matchup": "KC vs CHC",
+      "start_time_jst": "08/08 09:10",
+      "home_division": "ALC",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "今永昇太",
+        "鈴木誠也"
+      ],
+      "home_probable": {
+        "name": "Daniel Lynch IV",
+        "name_en": "Daniel Lynch IV",
+        "player_id": "663738",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": null,
+      "venue_name": "Kauffman Stadium",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 3,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "カブスには今永昇太・鈴木誠也が所属",
+          "weight": 3
+        }
+      ]
+    },
+    {
+      "game_id": "823349",
+      "league": "MLB",
+      "home_team_id": "134",
+      "away_team_id": "121",
+      "home_team_name": "パイレーツ",
+      "away_team_name": "メッツ",
+      "home_abbr": "PIT",
+      "away_abbr": "NYM",
+      "home_color": "#FDB827",
+      "away_color": "#002D72",
+      "matchup": "パイレーツ vs メッツ",
+      "abbr_matchup": "PIT vs NYM",
+      "start_time_jst": "08/08 07:40",
+      "home_division": "NLC",
+      "away_division": "NLE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "千賀滉大"
+      ],
+      "home_probable": {
+        "name": "Carmen Mlodzinski",
+        "name_en": "Carmen Mlodzinski",
+        "player_id": "669387",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Zac Thornton",
+        "name_en": "Zac Thornton",
+        "player_id": "804267",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "PNC Park",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "メッツには千賀滉大が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823428",
+      "league": "MLB",
+      "home_team_id": "143",
+      "away_team_id": "141",
+      "home_team_name": "フィリーズ",
+      "away_team_name": "ブルージェイズ",
+      "home_abbr": "PHI",
+      "away_abbr": "TOR",
+      "home_color": "#E81828",
+      "away_color": "#134A8E",
+      "matchup": "フィリーズ vs ブルージェイズ",
+      "abbr_matchup": "PHI vs TOR",
+      "start_time_jst": "08/08 07:40",
+      "home_division": "NLE",
+      "away_division": "ALE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "岡本和真"
+      ],
+      "home_probable": {
+        "name": "Zack Wheeler",
+        "name_en": "Zack Wheeler",
+        "player_id": "554430",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "José Soriano",
+        "name_en": "José Soriano",
+        "player_id": "667755",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Citizens Bank Park",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ブルージェイズには岡本和真が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823836",
+      "league": "MLB",
+      "home_team_id": "146",
+      "away_team_id": "108",
+      "home_team_name": "マーリンズ",
+      "away_team_name": "エンゼルス",
+      "home_abbr": "MIA",
+      "away_abbr": "LAA",
+      "home_color": "#00A3E0",
+      "away_color": "#BA0021",
+      "matchup": "マーリンズ vs エンゼルス",
+      "abbr_matchup": "MIA vs LAA",
+      "start_time_jst": "08/08 08:10",
+      "home_division": "NLE",
+      "away_division": "ALW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "菊池雄星"
+      ],
+      "home_probable": {
+        "name": "Tyler Phillips",
+        "name_en": "Tyler Phillips",
+        "player_id": "663969",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "George Klassen",
+        "name_en": "George Klassen",
+        "player_id": "691946",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "loanDepot park",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "エンゼルスには菊池雄星が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "824566",
+      "league": "MLB",
+      "home_team_id": "145",
+      "away_team_id": "114",
+      "home_team_name": "ホワイトソックス",
+      "away_team_name": "ガーディアンズ",
+      "home_abbr": "CWS",
+      "away_abbr": "CLE",
+      "home_color": "#27251F",
+      "away_color": "#00385D",
+      "matchup": "ホワイトソックス vs ガーディアンズ",
+      "abbr_matchup": "CWS vs CLE",
+      "start_time_jst": "08/08 08:40",
+      "home_division": "ALC",
+      "away_division": "ALC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "村上宗隆"
+      ],
+      "home_probable": {
+        "name": "Noah Schultz",
+        "name_en": "Noah Schultz",
+        "player_id": "702273",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Parker Messick",
+        "name_en": "Parker Messick",
+        "player_id": "800048",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Rate Field",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ホワイトソックスには村上宗隆が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823750",
+      "league": "MLB",
+      "home_team_id": "158",
+      "away_team_id": "142",
+      "home_team_name": "ブリュワーズ",
+      "away_team_name": "ツインズ",
+      "home_abbr": "MIL",
+      "away_abbr": "MIN",
+      "home_color": "#12284B",
+      "away_color": "#002B5C",
+      "matchup": "ブリュワーズ vs ツインズ",
+      "abbr_matchup": "MIL vs MIN",
+      "start_time_jst": "08/08 08:40",
+      "home_division": "NLC",
+      "away_division": "ALC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": {
+        "name": "Shane Drohan",
+        "name_en": "Shane Drohan",
+        "player_id": "675660",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Zebby Matthews",
+        "name_en": "Zebby Matthews",
+        "player_id": "805673",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "American Family Field",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ブリュワーズは自地区1位、ツインズは自地区2位同士の好カード",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823024",
+      "league": "MLB",
+      "home_team_id": "138",
+      "away_team_id": "115",
+      "home_team_name": "カージナルス",
+      "away_team_name": "ロッキーズ",
+      "home_abbr": "STL",
+      "away_abbr": "COL",
+      "home_color": "#C41E3A",
+      "away_color": "#333366",
+      "matchup": "カージナルス vs ロッキーズ",
+      "abbr_matchup": "STL vs COL",
+      "start_time_jst": "08/08 09:15",
+      "home_division": "NLC",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "菅野智之"
+      ],
+      "home_probable": {
+        "name": "Kyle Leahy",
+        "name_en": "Kyle Leahy",
+        "player_id": "681517",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Ryan Feltner",
+        "name_en": "Ryan Feltner",
+        "player_id": "663372",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Busch Stadium",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ロッキーズには菅野智之が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "822699",
+      "league": "MLB",
+      "home_team_id": "120",
+      "away_team_id": "113",
+      "home_team_name": "ナショナルズ",
+      "away_team_name": "レッズ",
+      "home_abbr": "WSH",
+      "away_abbr": "CIN",
+      "home_color": "#AB0003",
+      "away_color": "#C6011F",
+      "matchup": "ナショナルズ vs レッズ",
+      "abbr_matchup": "WSH vs CIN",
+      "start_time_jst": "08/08 07:45",
+      "home_division": "NLE",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": {
+        "name": "Cade Cavalli",
+        "name_en": "Cade Cavalli",
+        "player_id": "676917",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": null,
+      "venue_name": "Nationals Park",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "822863",
+      "league": "MLB",
+      "home_team_id": "140",
+      "away_team_id": "110",
+      "home_team_name": "レンジャーズ",
+      "away_team_name": "オリオールズ",
+      "home_abbr": "TEX",
+      "away_abbr": "BAL",
+      "home_color": "#003278",
+      "away_color": "#DF4601",
+      "matchup": "レンジャーズ vs オリオールズ",
+      "abbr_matchup": "TEX vs BAL",
+      "start_time_jst": "08/08 09:15",
+      "home_division": "ALW",
+      "away_division": "ALE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": {
+        "name": "Nathan Eovaldi",
+        "name_en": "Nathan Eovaldi",
+        "player_id": "543135",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Shane Baz",
+        "name_en": "Shane Baz",
+        "player_id": "669358",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Globe Life Field",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "823103",
+      "league": "MLB",
+      "home_team_id": "136",
+      "away_team_id": "139",
+      "home_team_name": "マリナーズ",
+      "away_team_name": "レイズ",
+      "home_abbr": "SEA",
+      "away_abbr": "TB",
+      "home_color": "#0C2C56",
+      "away_color": "#092C5C",
+      "matchup": "マリナーズ vs レイズ",
+      "abbr_matchup": "SEA vs TB",
+      "start_time_jst": "08/08 10:45",
+      "home_division": "ALW",
+      "away_division": "ALE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": {
+        "name": "Logan Gilbert",
+        "name_en": "Logan Gilbert",
+        "player_id": "669302",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Drew Rasmussen",
+        "name_en": "Drew Rasmussen",
+        "player_id": "656876",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "T-Mobile Park",
+      "venue_jp": null,
+      "venue_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "823191",
+      "league": "MLB",
+      "home_team_id": "137",
+      "away_team_id": "116",
+      "home_team_name": "ジャイアンツ",
+      "away_team_name": "タイガース",
+      "home_abbr": "SF",
+      "away_abbr": "DET",
+      "home_color": "#FD5A1E",
+      "away_color": "#0C2C56",
+      "matchup": "ジャイアンツ vs タイガース",
+      "abbr_matchup": "SF vs DET",
+      "start_time_jst": "08/08 11:15",
+      "home_division": "NLW",
+      "away_division": "ALC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": null,
+      "away_probable": {
+        "name": "Keider Montero",
+        "name_en": "Keider Montero",
+        "player_id": "672456",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Oracle Park",
+      "venue_jp": "オラクル・パーク",
+      "venue_note": "右中間が非常に深く、海風の影響もあって本塁打が出にくい、投手有利とされる球場",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    }
+  ],
+  "ai_status": {
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.0098
+  }
+}
