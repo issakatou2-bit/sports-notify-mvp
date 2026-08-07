@@ -88,7 +88,25 @@ def build_asset_metadata(topic: str) -> dict:
     }
 
 
-def build_metadata(games_path: str, date_label: str, kind: str = "daily") -> dict:
+def load_hook(narration_path: str) -> dict:
+    """
+    動画の1枚目に使ったフックを、ナレーション原稿から読む。
+
+    タイトルと動画の冒頭を同じ文言にするため。別々に組み立てると
+    「サムネでは連続安打の話なのにタイトルは日付だけ」といった食い違いが出る。
+    """
+    try:
+        data = json.loads(pathlib.Path(narration_path).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    for s in data.get("segments", []):
+        if s.get("kind") == "intro":
+            return (s.get("meta") or {}).get("hook") or {}
+    return {}
+
+
+def build_metadata(games_path: str, date_label: str, kind: str = "daily",
+                   narration_path: str = "public/narration.json") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -97,14 +115,23 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily") -> dic
         games = []
 
     if kind == "weekly":
-        # 週次まとめは横型・8分以上の通常動画なので #Shorts は付けない
-        title = f"【MLB】今週の注目試合まとめ｜{date_label} 週間ダイジェスト"
+        # 週次まとめは横型の通常動画なので #Shorts は付けない
+        title = f"今週の注目試合と答え合わせ｜{date_label}【MLB週間まとめ】"
     elif games:
+        # 日付を先頭に置いていたが、「08/07」で検索する人はいない。
+        # その日いちばん具体的な事実(動画の1枚目と同じもの)を先頭に出す。
+        hook = load_hook(narration_path)
+        big = (hook.get("big") or "").strip()
+        sub = (hook.get("sub") or "").strip()
+        lead = f"{sub} {big}".strip() if big else ""
         top = games[0]
         matchup = f"{top.get('home_team_name')} vs {top.get('away_team_name')}"
-        title = f"【MLB】{date_label} 注目試合｜{matchup} ほか #Shorts"
+        if lead:
+            title = f"{lead}｜{matchup} ほか {date_label}の注目試合【MLB】#Shorts"
+        else:
+            title = f"{matchup} ほか｜{date_label}の注目試合【MLB】#Shorts"
     else:
-        title = f"【MLB】{date_label} 注目試合 #Shorts"
+        title = f"{date_label}の注目試合【MLB】#Shorts"
     title = title[:100]  # YouTubeのタイトル上限
 
     if kind == "weekly":
@@ -165,6 +192,10 @@ def main():
                         help="daily=ショート / weekly=週次まとめ / asset=資産動画")
     parser.add_argument("--asset-topic", default=None,
                         help="--kind asset のときのトピック名")
+    parser.add_argument("--narration", default="public/narration.json",
+                        help="タイトルの先頭に使うフックの取得元")
+    parser.add_argument("--archive-dir", default="archive",
+                        help="週次のタイトルに入れる期間の算出元")
     parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
     args = parser.parse_args()
@@ -202,7 +233,22 @@ def main():
                 date_label = (g[0].get("start_time_jst") or "").split(" ")[0]
         except (json.JSONDecodeError, OSError):
             pass
-        body = build_metadata(args.games, date_label, args.kind)
+
+        # 週次ワークフローには notable_games.json が存在しない(あれは日次側が
+        # その日に作るもの)。そのままだとタイトルから日付が丸ごと落ちるので、
+        # 動画と同じ週の範囲をアーカイブから求める。
+        if args.kind == "weekly" and not date_label:
+            try:
+                import weekly_stats as ws
+
+                week = ws.load_week(pathlib.Path(args.archive_dir))
+                if week:
+                    date_label = (f"{week[0][0][5:].replace('-', '/')}〜"
+                                  f"{week[-1][0][5:].replace('-', '/')}")
+            except Exception as e:
+                print(f"[warn] 週の範囲を求められませんでした: {e}", file=sys.stderr)
+
+        body = build_metadata(args.games, date_label, args.kind, args.narration)
     body["status"] = {
         "privacyStatus": args.privacy,
         "selfDeclaredMadeForKids": False,

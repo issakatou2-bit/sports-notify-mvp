@@ -146,6 +146,22 @@ HEAD_TMPL = """<!DOCTYPE html>
 <title>{title}</title>
 <meta name="description" content="{description}" />
 <link rel="canonical" href="{canonical}" />
+<!-- 個別ページが共有されたときもカードが出るようにする。
+     og:title / og:description はページごとの値をそのまま使い、
+     画像だけ共通のものを指す。 -->
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="コレスポ" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:url" content="{canonical}" />
+<meta property="og:title" content="{title}" />
+<meta property="og:description" content="{description}" />
+<meta property="og:image" content="https://collespo.com/icons/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{title}" />
+<meta name="twitter:description" content="{description}" />
+<meta name="twitter:image" content="https://collespo.com/icons/og-image.png" />
 <link rel="apple-touch-icon" href="{root}icons/icon-192.png" />
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3009257813842371"
