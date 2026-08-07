@@ -229,6 +229,20 @@ def main():
                 "meta": {"game_index": i},
             })
 
+    # --- コレスポ指数 ---
+    # なぜこの試合を選んだのかは、実際には点数で決まっている。
+    # その基準を隠さずに見せる。独自の指標なので他所には出せない内容になる。
+    if any(g.get("score") for g in games):
+        top = max(games, key=lambda g: g.get("score") or 0)
+        segments.append({
+            "kind": "score",
+            "text": "コレスポは、日本人選手の出場、順位争い、連勝記録などに"
+                    "点数をつけて注目試合を選んでいます。"
+                    f"今日の最高点は{top.get('score')}点、"
+                    f"{top.get('home_team_name')}対{top.get('away_team_name')}でした。",
+            "meta": {},
+        })
+
     # --- ニュース(検証済みのものだけ) ---
     for n in news:
         segments.append({"kind": "news", "text": n["text"] + "です。", "meta": {}})

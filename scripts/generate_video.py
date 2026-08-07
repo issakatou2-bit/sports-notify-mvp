@@ -27,6 +27,13 @@ import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+try:
+    from notability_engine import reason_label
+except ImportError:  # ラベルが引けなくても動画自体は作れるようにする
+    def reason_label(tag):
+        return tag or "その他の理由"
+
 W, H = 1080, 1920
 # 24fpsにしているのは生成時間のため。フレームを1枚ずつPNGに書き出す方式なので、
 # 枚数がそのまま時間に効く(30fpsだと約4分、24fpsだと約3分)。
@@ -311,6 +318,78 @@ def render_news(progress: float, text: str):
     return im
 
 
+def render_score(progress: float, games: list):
+    """
+    コレスポ指数。なぜこの試合を選んだのかを、点数と内訳で見せる。
+
+    選定は元から点数で決まっているのに、点数自体は内部に隠れていた。
+    何にどれだけ加点したかまで出すことで、選定基準そのものが読み物になる。
+    独自の指標なので、同じものは他所には無い。
+    """
+    im, d = base_frame(progress)
+    draw_brand(d)
+    d.text((70, 180), "コレスポ指数", font=font(64), fill=ACCENT)
+    d.text((74, 268), "なぜこの試合を選んだか、点数で", font=font(34), fill=DIM)
+
+    def reason_lines(g):
+        """
+        加点の内訳。理由文そのものが短ければそれを使い、長ければラベルに落とす。
+        ラベルだけにすると「連勝・連敗中」が2行並ぶような、
+        どのチームの話か分からない表示になってしまう。
+        """
+        out = []
+        for r in (g.get("reasons") or [])[:3]:
+            if not r.get("text"):
+                continue
+            text = r["text"].split(" — ")[0]
+            out.append((r.get("weight", 0),
+                        text if len(text) <= 18 else reason_label(r.get("tag"))))
+        return out
+
+    top_score = max((g.get("score") or 0) for g in games[:3]) or 1
+    y = 360
+    for i, g in enumerate(games[:3]):
+        if progress < 0.06 + i * 0.07:
+            continue
+        e = ease_out(min(1.0, max(0.0, (progress - (0.06 + i * 0.07)) * 8)))
+        dx = int((1 - e) * 120)
+        sc = g.get("score") or 0
+
+        # カードの高さは内訳の行数に合わせる。固定にすると行が少ない試合で
+        # 下半分が空いて間延びする
+        lines = reason_lines(g)
+        card_h = 180 + max(1, len(lines)) * 56 + 24
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + card_h], 22, fill=SURF)
+        name = g.get("abbr_matchup") or g.get("matchup") or ""
+        d.text((100 - dx, y + 26), name, font=font(52), fill=TEXT)
+
+        # 点数は右上に大きく。3試合を見比べられるようにする
+        stxt = f"{sc}"
+        f_s = font(88)
+        d.text((W - 150 - dx - d.textlength(stxt, font=f_s), y + 16),
+               stxt, font=f_s, fill=ACCENT)
+        d.text((W - 138 - dx, y + 66), "点", font=font(38), fill=ACCENT)
+
+        # 点数の比較バー
+        bar_w = max(4, int((W - 220) * (sc / top_score) * e))
+        d.rounded_rectangle([100 - dx, y + 120, 100 - dx + bar_w, y + 146],
+                            6, fill=ACCENT_DIM)
+
+        yy = y + 180
+        for weight, label in lines:
+            d.text((100 - dx, yy), f"+{weight}", font=font(40), fill=ACCENT)
+            # 長い理由文でも収まるサイズを実測で選ぶ
+            ls = 38
+            for s in (38, 34, 30):
+                if d.textlength(label, font=font(s)) <= W - 300:
+                    ls = s
+                    break
+            d.text((180 - dx, yy + 4), label, font=font(ls), fill=TEXT)
+            yy += 56
+        y += card_h + 40
+    return im
+
+
 def render_outro(progress: float):
     im, d = base_frame(progress)
     e = ease_out(min(1.0, progress * 2))
@@ -431,6 +510,8 @@ def main():
                     if gi >= len(games):
                         continue
                     im = render_game(p_, games[gi], gi, total_games)
+                elif kind == "score":
+                    im = render_score(p_, games)
                 elif kind == "news":
                     im = render_news(p_, seg.get("text", ""))
                 else:

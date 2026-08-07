@@ -366,6 +366,29 @@ def generate_reasons(game: Game, standings: dict, jp_team_map: dict) -> list[Rea
     return reasons
 
 
+# 加点理由を、視聴者に見せるための短いラベルにする。
+#
+# なぜ見せるのか:
+#   コレスポは「なぜこの試合を選んだか」を理由つきで出すことを軸にしている。
+#   その選定は実際には点数で決まっているのに、点数自体は今まで内部に隠れていた。
+#   何にどれだけ加点したかまで見せれば、選定基準そのものが読み物になる。
+#   独自の指標なので、他所には出せない内容でもある。
+REASON_TAG_LABELS = {
+    "JP": "日本人投手が先発予定",
+    "jp_team": "日本人選手が所属",
+    "streak": "連勝・連敗中",
+    "div": "首位攻防戦",
+    "quality": "上位チーム同士",
+    "rivalry": "伝統の一戦",
+    "venue": "球場の特徴",
+    "manual": "編集部メモ",
+}
+
+
+def reason_label(tag: str) -> str:
+    return REASON_TAG_LABELS.get(tag or "", "その他の理由")
+
+
 def score_game(reasons: list[Reason]) -> int:
     """全理由(非表示分も含む)の合計。ソートのタイブレークに使う"""
     return sum(r.weight for r in reasons)
