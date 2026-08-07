@@ -31,6 +31,13 @@ import sys
 
 import requests
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+try:
+    from notability_engine import apply_readings
+except ImportError:  # 読みの表が引けなくても、音声そのものは作れるようにする
+    def apply_readings(text):
+        return text
+
 VOICEVOX_URL = "http://127.0.0.1:50021"
 # 話者ID。VOICEVOXのspeakersエンドポイントで確認できる。
 # 3 = ずんだもん(ノーマル)が一般的だが、環境により異なる場合がある。
@@ -49,7 +56,14 @@ def engine_available() -> bool:
 
 
 def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
-    """1セグメント分の音声を合成する。成功したらTrue。"""
+    """
+    1セグメント分の音声を合成する。成功したらTrue。
+
+    選手名は読み仮名へ置き換えてから渡す。VOICEVOXは漢字の人名を
+    正しく読めないことがあり(「朗希」「滉大」など)、画面の表記は
+    正しいのに音だけ違う、という状態になるため。
+    """
+    text = apply_readings(text)
     try:
         q = requests.post(
             f"{VOICEVOX_URL}/audio_query",

@@ -187,8 +187,40 @@ def load_hook(narration_path: str) -> dict:
     return {}
 
 
+def weekly_lead(archive_dir: str = "archive") -> str:
+    """
+    週次タイトルの先頭に置く、その週いちばん目立った出来事。
+
+    「今週の注目試合まとめ」だけでは、中身が何も想像できず開く理由にならない。
+    連勝がどこまで伸びたか・どこで止まったかは、その週を一言で表す事実になる。
+    """
+    try:
+        import pathlib as _p
+        import sys as _s
+
+        _s.path.insert(0, str(_p.Path(__file__).resolve().parent))
+        import weekly_stats as ws
+
+        week = ws.load_week(_p.Path(archive_dir))
+        streaks = (ws.compute_verdict(week) or {}).get("streaks") or []
+    except Exception:
+        return ""
+
+    # 数字が大きいものから拾う。7連勝は3連勝より目を引く
+    parts = []
+    for s in sorted(streaks, key=lambda x: -x["n"])[:2]:
+        if s["kind"] == "連勝":
+            parts.append(f"{s['team']}{s['n'] + 1}連勝"
+                         if s["won"] else f"{s['team']}連勝ストップ")
+        else:
+            parts.append(f"{s['team']}連敗脱出"
+                         if s["won"] else f"{s['team']}{s['n'] + 1}連敗")
+    return "、".join(parts)
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
-                   narration_path: str = "public/narration.json") -> dict:
+                   narration_path: str = "public/narration.json",
+                   archive_dir: str = "archive") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -203,7 +235,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  f"先週の答え合わせ【MLB】#Shorts")
     elif kind == "weekly":
         # 週次まとめは横型の通常動画なので #Shorts は付けない
-        title = f"今週の注目試合と答え合わせ｜{date_label}【MLB週間まとめ】"
+        lead = weekly_lead(archive_dir)
+        if lead:
+            title = f"{lead}｜{date_label} MLBの1週間を振り返る"
+        else:
+            title = f"今週の注目試合と答え合わせ｜{date_label}【MLB週間まとめ】"
     elif games:
         # 日付を先頭に置いていたが、「08/07」で検索する人はいない。
         # その日いちばん具体的な事実(動画の1枚目と同じもの)を先頭に出す。
@@ -347,7 +383,8 @@ def main():
             except Exception as e:
                 print(f"[warn] 週の範囲を求められませんでした: {e}", file=sys.stderr)
 
-        body = build_metadata(args.games, date_label, args.kind, args.narration)
+        body = build_metadata(args.games, date_label, args.kind,
+                              args.narration, args.archive_dir)
     body["status"] = {
         "privacyStatus": args.privacy,
         "selfDeclaredMadeForKids": False,
