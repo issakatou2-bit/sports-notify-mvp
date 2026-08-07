@@ -1,0 +1,129 @@
+name: Morning recap
+
+# 「昨夜の日本人選手」を朝に配信する。
+#
+# 19時の予告(これから起きること)に対して、こちらは朝の枠(終わったこと)。
+# MLBは日本の朝に終わるので、起きた直後に結果を1本で確認できる。
+#
+# 実行タイミングについて:
+#   UTC 23:00 = JST 8:00。西海岸のナイトゲームでも日本時間の朝には
+#   終わっているため、この時刻なら前日ぶんが出揃っている。
+#   19時の配信と違って「8時ちょうど」である必要はないので、
+#   ここではGitHub純正のscheduleを使う(純正は数時間遅れることがある)。
+#   遅延が実際に問題になるようなら、日次と同じくcron-job.orgから
+#   叩く方式へ移すこと。
+
+on:
+  schedule:
+    - cron: '0 23 * * *'
+  workflow_dispatch: {}
+
+# 取得した結果を data/ へコミットするため
+permissions:
+  contents: write
+
+jobs:
+  morning:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+
+      - name: Install video tools
+        timeout-minutes: 10
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+          fc-list :lang=ja | head -3
+
+      # 出場した選手が1人もいない日(オールスター休みなど)は、
+      # ここでファイルが更新されず、以降のステップが自然に何も作らない
+      - name: Fetch last night's results
+        run: python scripts/morning_recap.py --out data/morning_recap.json
+
+      - name: Start VOICEVOX engine
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました。音声なしで進めます"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Generate narration
+        continue-on-error: true
+        run: |
+          python scripts/generate_morning_short.py \
+            --recap data/morning_recap.json \
+            --narration-out build/mr_narration.json
+
+      - name: Synthesize narration
+        continue-on-error: true
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/mr_narration.json \
+            --out-dir build/mr_audio
+
+      - name: Generate morning short
+        run: |
+          python scripts/generate_morning_short.py \
+            --recap data/morning_recap.json \
+            --audio-dir build/mr_audio \
+            --out build/morning
+
+      - name: Generate thumbnail
+        continue-on-error: true
+        run: |
+          python scripts/generate_thumbnail.py \
+            --kind morning --recap data/morning_recap.json \
+            --out build/morning/thumb.png
+
+      - name: Upload to YouTube
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python scripts/upload_youtube.py \
+            --video build/morning/collespo_morning.mp4 \
+            --kind morning \
+            --recap data/morning_recap.json \
+            --thumbnail build/morning/thumb.png \
+            --privacy public
+
+      # 結果はサイトからも参照できるよう、リポジトリへ残す
+      - name: Commit recap
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/morning_recap.json || true
+          git diff --cached --quiet || git commit -m "morning recap: ${{ github.run_id }}"
+          git pull --rebase --quiet || true
+          git push || echo "変更が無いか、push対象が無いためスキップ"
+
+      - name: Save video as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-morning
+          path: build/morning/collespo_morning.mp4
+          retention-days: 7
+          if-no-files-found: ignore

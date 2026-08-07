@@ -163,6 +163,22 @@ def draw_weekly(d, label: str):
     d.text((70, H - 66), "コレスポ 週間まとめ", font=font(36), fill=DIM)
 
 
+def draw_morning(d, day: str, players: list):
+    d.text((70, 90), day, font=font(56), fill=DIM)
+    d.text((70, 170), "昨夜の日本人選手", font=font(112), fill=ACCENT)
+
+    # 名前と成績を2人ぶんだけ。サムネで読ませられるのはこのくらい
+    y = 340
+    for p in players[:2]:
+        line = f"{p.get('name', '')}　{p.get('headline', '')}"
+        s = fit(d, line, W - 200, (58, 52, 46, 40))
+        d.rounded_rectangle([70, y, W - 70, y + s + 34], 14, fill=SURF)
+        d.text((100, y + 14), line, font=font(s), fill=TEXT)
+        y += s + 56
+
+    d.text((70, H - 78), f"出場 {len(players)}人　コレスポ", font=font(38), fill=JP)
+
+
 def draw_verdict(d, label: str):
     d.text((70, 110), "注目した試合", font=font(76), fill=TEXT)
     d.text((70, 210), "どうなった？", font=font(140), fill=ACCENT)
@@ -185,7 +201,8 @@ def draw_asset(d, topic: str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--kind", default="daily",
-                        choices=["daily", "weekly", "asset", "verdict"])
+                        choices=["daily", "weekly", "asset", "verdict", "morning"])
+    parser.add_argument("--recap", default="data/morning_recap.json")
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--narration", default="public/narration.json")
     parser.add_argument("--asset-topic", default="mlb_abbr")
@@ -197,7 +214,25 @@ def main():
 
     im, d = base()
 
-    if args.kind == "asset":
+    if args.kind == "morning":
+        try:
+            rec = json.loads(pathlib.Path(args.recap).read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            print("[info] 成績データが読めないため、サムネイルは作りません")
+            return
+        players = rec.get("players") or []
+        if not players:
+            print("[info] 出場選手がいないため、サムネイルは作りません")
+            return
+        day = rec.get("date", "")
+        try:
+            from datetime import datetime as _dt
+            _p = _dt.strptime(day, "%Y-%m-%d")
+            day = f"{_p.month}月{_p.day}日"
+        except ValueError:
+            pass
+        draw_morning(d, day, players)
+    elif args.kind == "asset":
         draw_asset(d, args.asset_topic)
     elif args.kind in ("weekly", "verdict"):
         label = args.label

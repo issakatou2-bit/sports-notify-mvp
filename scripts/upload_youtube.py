@@ -283,7 +283,8 @@ def weekly_lead(archive_dir: str = "archive") -> str:
 
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
-                   archive_dir: str = "archive") -> dict:
+                   archive_dir: str = "archive",
+                   morning_players: list = None) -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -291,7 +292,15 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     except (json.JSONDecodeError, OSError):
         games = []
 
-    if kind == "verdict":
+    if kind == "morning":
+        # 検索されるのは選手名なので、目立った成績の選手を先頭に置く
+        names = [p.get("name") for p in (morning_players or [])][:3]
+        who = "・".join(n for n in names if n)
+        if who:
+            title = f"{who} ほか｜{date_label} 昨夜のMLB 日本人選手の結果 #Shorts"
+        else:
+            title = f"{date_label} 昨夜のMLB 日本人選手の結果【MLB】#Shorts"
+    elif kind == "verdict":
         # 縦型ショート。予測の的中ではなく「その後どうなったか」を扱うので、
         # 「当たった/外れた」という言い方はタイトルでも使わない
         title = (f"注目した試合、どうなった？｜{date_label} "
@@ -320,7 +329,13 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         title = f"{date_label}の注目試合【MLB】#Shorts"
     title = title[:100]  # YouTubeのタイトル上限
 
-    if kind == "verdict":
+    if kind == "morning":
+        lines = [f"{date_label}のメジャーリーグから、"
+                 "日本人選手の成績をまとめました。", ""]
+        for p in (morning_players or [])[:8]:
+            lines.append(f"・{p.get('name')} … {p.get('headline')}")
+        lines += ["", "数字はMLB公式データをそのまま集計したものです。", ""]
+    elif kind == "verdict":
         lines = [
             "コレスポが先週「◯連勝中だから注目」として取り上げた試合が、"
             "実際どうなったかを確かめます。",
@@ -358,6 +373,12 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
 
     tags = ["MLB", "メジャーリーグ", "野球", "注目試合", "コレスポ"]
     tags.append("週間まとめ" if kind == "weekly" else "Shorts")
+    if kind == "morning":
+        # 検索されるのは選手名なので、出場した選手を優先してタグに入れる
+        tags += ["日本人選手", "MLB速報"]
+        for p in (morning_players or [])[:6]:
+            if p.get("name") and p["name"] not in tags:
+                tags.append(p["name"])
     for g in games:
         for name in (g.get("jp_players") or [])[:2]:
             if name not in tags:
@@ -383,9 +404,11 @@ def main():
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--kind", default="daily",
-                        choices=["daily", "weekly", "asset", "verdict"],
+                        choices=["daily", "weekly", "asset", "verdict", "morning"],
                         help="daily=ショート / weekly=週次まとめ / "
-                             "asset=資産動画 / verdict=答え合わせショート")
+                             "asset=資産動画 / verdict=答え合わせ / morning=朝のまとめ")
+    parser.add_argument("--recap", default="data/morning_recap.json",
+                        help="--kind morning のときの成績データ")
     parser.add_argument("--asset-topic", default=None,
                         help="--kind asset のときのトピック名")
     parser.add_argument("--narration", default="public/narration.json",
@@ -457,8 +480,22 @@ def main():
             except Exception as e:
                 print(f"[warn] 週の範囲を求められませんでした: {e}", file=sys.stderr)
 
+        morning_players = []
+        if args.kind == "morning":
+            try:
+                rec = json.loads(pathlib.Path(args.recap).read_text(encoding="utf-8"))
+                morning_players = rec.get("players") or []
+                # タイトルと画面で同じ日付を使う
+                d = rec.get("date", "")
+                if d:
+                    from datetime import datetime as _dt
+                    _p = _dt.strptime(d, "%Y-%m-%d")
+                    date_label = f"{_p.month}月{_p.day}日"
+            except (json.JSONDecodeError, OSError, ValueError) as e:
+                print(f"[warn] 成績データを読めませんでした: {e}", file=sys.stderr)
+
         body = build_metadata(args.games, date_label, args.kind,
-                              args.narration, args.archive_dir)
+                              args.narration, args.archive_dir, morning_players)
     body["status"] = {
         "privacyStatus": args.privacy,
         "selfDeclaredMadeForKids": False,
