@@ -82,7 +82,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ西地区で【首位と7.5ゲーム差】をつけるドジャースが、2位のダイヤモンドバックスとの同地区対決に臨む。ドジャースは現在7連敗中と低迷しており、ここからの巻き返しが優勝争いを左右する重要な局面である。対するダイヤモンドバックスは直近10試合で7勝と好調を維持しており、地区順位の短縮を狙う。先発は山本由伸が防御率2.76で11勝を挙げるドジャース側に対し、Brandon Pfaadtが6勝1敗の好成績で対抗する投手戦になるほか、砂漠気候で開閉式屋根を備えるチェイス・フィールドでの環境の違いも、試合の行方を左右する要素となる。",
-      "notification_hook": "山本由伸11勝対6勝1敗のPfaadt、地区1位ドジャース7連敗中の正念場"
+      "notification_hook": "山本由伸11勝対6勝1敗のPfaadt、地区1位ドジャース7連敗中の正念場",
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824726",
@@ -157,7 +162,12 @@
       },
       "log_notes": [],
       "ai_summary": "レッドソックスはア・リーグ東地区3位で【9連勝中】の好調ぶりを見せ、一方アスレチックスは西地区4位で【9連敗中】と低迷している。両チームは異なる地区に属するため直接の順位争いではないが、シリーズ第2戦となる本試合は対照的な勢いを持つ両チームの激突である。先発投手の対決では、防御率2.90で安定感のあるJake Bennettが防御率4.59のGage Jumpと相対する。フェンウェイ・パークの独特の形状である高さ11メートルのグリーンモンスターが打球の行方を左右する、変則的な試合展開が予想される。",
-      "notification_hook": "9連勝レッドソックスvs9連敗アスレチックス、正尚との対戦カード"
+      "notification_hook": "9連勝レッドソックスvs9連敗アスレチックス、正尚との対戦カード",
+      "final_score": {
+        "home": 3,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824079",
@@ -230,7 +240,12 @@
         "Clay Holmesは移籍後初登板"
       ],
       "ai_summary": "カブスはナ・リーグ中地区2位で【5連勝中】と絶好調だが、同地区首位との差は4.5ゲーム。ホームのカウフマン・スタジアムで迎え撃つロイヤルズは、5位という低迷が続く中での重要な一戦となる。先発投手の対比も見どころで、カブスのClay Holmesは移籍後初登板で防御率2.39と優秀だが、Seth Lugoとの投げ合いがどうなるか注視される。外野が広く長打が転がりやすいこの球場での決着を見守りたい。",
-      "notification_hook": "5連勝カブスのClay Holmes移籍後初登板。カウフマン・スタジアムで本塁打が出るか。"
+      "notification_hook": "5連勝カブスのClay Holmes移籍後初登板。カウフマン・スタジアムで本塁打が出るか。",
+      "final_score": {
+        "home": 6,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823267",
@@ -292,7 +307,12 @@
           "text": "アストロズには今井達也が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824565",
@@ -353,7 +373,12 @@
           "text": "ホワイトソックス vs ガーディアンズ は首位攻防戦、ゲーム差はわずか2.0",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823514",
@@ -407,7 +432,12 @@
           "text": "ヤンキースは自地区2位、ブレーブスは自地区1位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823834",
@@ -463,7 +493,12 @@
           "text": "エンゼルスには菊池雄星が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 7,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823426",
@@ -519,7 +554,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823348",
@@ -575,7 +615,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 9,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823752",
@@ -629,7 +674,12 @@
           "text": "ブリュワーズは自地区1位、ツインズは自地区2位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823021",
@@ -685,7 +735,12 @@
           "text": "ロッキーズには菅野智之が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822701",
@@ -733,7 +788,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 8,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823188",
@@ -781,7 +841,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822864",
@@ -829,7 +894,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823102",
@@ -877,7 +947,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 3,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
