@@ -132,6 +132,14 @@ jobs:
             --out-dir public/archive \
             --site-root public
 
+      # サイトからYouTubeへの導線。動画の説明文にはサイトのURLを載せて
+      # いたが、逆向きが一つも無く、サイトに来た人は同じ内容を動画でも
+      # 見られることを知らないまま帰っていた。
+      # 用語集は特に相性が良い(「OPSとは」を調べに来た人へ、同じ説明の動画)。
+      - name: Inject video links into the site
+        continue-on-error: true
+        run: python scripts/inject_video_links.py --site public
+
       # ---- 動画の生成と投稿 ----
       # サイト更新・通知が全て終わってから実行する。
       # ここで失敗しても、その日の配信自体は既に完了している状態にするため。
