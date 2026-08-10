@@ -326,6 +326,40 @@ def record_published(topic: str, video_id: str, privacy: str,
     print(f"[info] 投稿済みとして記録しました: {topic} -> {path}")
 
 
+# 日付ものの動画(日次・16時・週次)の投稿記録。
+# 資産動画と違ってトピックではなく日付で引くので、別ファイルに分ける。
+VIDEOS_PATH = "data/published_videos.json"
+
+
+def record_video(kind: str, date_key: str, video_id: str,
+                 title: str, path: str = VIDEOS_PATH) -> None:
+    """
+    その日の動画のIDを残す。
+
+    アーカイブページや選手ページから「この日の動画」へ辿れるようにするため。
+    サイトと動画が別々に存在していて相互に行き来できない状態だったので、
+    まずIDを記録するところから繋ぐ。
+    """
+    from datetime import datetime, timezone
+
+    p = pathlib.Path(path)
+    data = {}
+    if p.exists():
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            data = {}
+    data.setdefault(kind, {})[date_key] = {
+        "video_id": video_id,
+        "url": f"https://youtu.be/{video_id}",
+        "title": title,
+        "published_at": datetime.now(timezone.utc).isoformat(),
+    }
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[info] 動画を記録しました: {kind}/{date_key} -> {path}")
+
+
 def load_hook(narration_path: str) -> dict:
     """
     動画の1枚目に使ったフックを、ナレーション原稿から読む。
@@ -524,6 +558,8 @@ def main():
                         help="設定するカスタムサムネイル(PNG)")
     parser.add_argument("--force", action="store_true",
                         help="資産動画を投稿済みでも上げ直す")
+    parser.add_argument("--video-date", default=None,
+                        help="記録に使う日付(既定はUTCの実行日)")
     parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
     args = parser.parse_args()
@@ -647,6 +683,14 @@ def main():
 
         if args.kind == "asset" and vid:
             record_published(args.asset_topic or "mlb_abbr", vid, args.privacy)
+        elif vid:
+            # 日付ものは、アーカイブページから辿れるよう日付で記録する。
+            # キーはUTC日付にする。archive/YYYY-MM-DD.json と同じ決め方なので、
+            # そのままアーカイブページと突き合わせられる。
+            from datetime import datetime, timezone
+
+            key = args.video_date or datetime.now(timezone.utc).date().isoformat()
+            record_video(args.kind, key, vid, body["snippet"]["title"])
     except Exception as e:
         # アップロードに失敗しても、通知やサイト更新は既に済んでいるので
         # ワークフロー全体を落とさない

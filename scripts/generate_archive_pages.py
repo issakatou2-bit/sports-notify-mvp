@@ -118,6 +118,13 @@ STYLE = """
   .origin { display: block; margin-top: 0.2rem; padding-left: 0.6rem;
             border-left: 2px solid var(--accent-dim);
             color: var(--text); font-size: 0.86rem; line-height: 1.65; }
+  /* その日の動画。縦型ショートなので、横幅を絞って中央に置く */
+  .day-video { margin: 1.2rem 0 1.8rem; }
+  .day-video h2 { font-size: 1rem; color: var(--accent); margin: 0 0 .5rem; }
+  .day-video iframe { width: 100%; max-width: 320px; aspect-ratio: 9 / 16;
+    border: 0; border-radius: 10px; display: block; }
+  .day-video p { margin: .6rem 0 0; font-size: .85rem; }
+  .day-video a { color: var(--accent); }
   .video { margin-top: 1rem; }
   .video iframe {
     width: 100%;
@@ -141,6 +148,17 @@ STYLE = """
   }
   ul.datelist .sub { display: block; font-size: 0.8rem; color: var(--text-dim); }
 """
+
+def load_published_videos(path: str = "data/published_videos.json") -> dict:
+    """日付ものの動画の投稿記録。無ければ空(その場合は何も埋め込まない)。"""
+    p = pathlib.Path(path)
+    if not p.exists():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
 
 HEAD_TMPL = """<!DOCTYPE html>
 <html lang="ja">
@@ -380,6 +398,17 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     else:
         description = f"{jp_date}の注目試合の記録です。"
 
+    # その日の動画があれば埋め込む。サイトと動画が別々に存在していて
+    # 相互に行き来できない状態だったので、ここで繋ぐ。
+    # アーカイブページは検索から入ってくる本命なので、効き目が大きい。
+    videos = load_published_videos()
+    day_videos = []
+    for kind, label in (("daily", "この日の注目試合"),
+                        ("morning", "この日の日本人選手の成績")):
+        v = (videos.get(kind) or {}).get(archive_date)
+        if v and v.get("video_id"):
+            day_videos.append((label, v))
+
     head = HEAD_TMPL.format(
         title=f"{jp_date}の注目試合 | コレスポ",
         description=html.escape(description),
@@ -391,6 +420,25 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
 
     body = [head]
     body.append(f"<h1>{jp_date}の注目試合</h1>")
+
+    # この日の動画。1本目は埋め込み、2本目以降はリンクにする
+    # (縦型の埋め込みを2つ並べると縦に伸びすぎて本文が読まれなくなる)
+    if day_videos:
+        label, v = day_videos[0]
+        body.append('<div class="day-video">')
+        body.append(f"<h2>{label}(動画)</h2>")
+        body.append(
+            f'<iframe src="https://www.youtube-nocookie.com/embed/'
+            f'{html.escape(v["video_id"])}" title="{html.escape(v.get("title", ""))}" '
+            'loading="lazy" allowfullscreen></iframe>'
+        )
+        for label2, v2 in day_videos[1:]:
+            body.append(
+                f'<p><a href="{html.escape(v2["url"])}" target="_blank" '
+                f'rel="noopener">▶ {label2}(動画)</a></p>'
+            )
+        body.append("</div>")
+
     body.append(
         f'<p class="lead">コレスポが選んだこの日の注目カードです。'
         f'<a href="./">アーカイブ一覧へ</a></p>'

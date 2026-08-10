@@ -250,6 +250,19 @@ jobs:
             --thumbnail build/video/thumb.png \
             --privacy public
 
+      # 動画IDは翌日以降のアーカイブページから参照する。
+      # コミットしないと記録が毎回消えてしまう。
+      - name: Commit video record
+        if: always()
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/published_videos.json || true
+          git diff --cached --quiet || git commit -m "video record: ${{ github.run_id }}"
+          git pull --rebase --quiet || true
+          git push || echo "変更が無いか、push対象が無いためスキップ"
+
       - name: Save video as artifact
         uses: actions/upload-artifact@v4
         with:
