@@ -169,13 +169,15 @@ def build_narration(data: dict) -> dict:
     buzz = data.get("buzz") or []
     if buzz:
         top = buzz[0]
-        segments.append({
-            "kind": "buzz",
-            "text": "現地で最も見られた試合です。"
-                    f"MLB公式のハイライトで、{_jp_matchup(top['matchup'])}が"
-                    f"{_yomi_views(top['views'])}再生でした。",
-            "meta": {},
-        })
+        parts = ["現地で最も見られた試合です。",
+                 f"MLB公式のハイライトで、{_jp_matchup(top['matchup'])}が"
+                 f"{_yomi_views(top['views'])}再生でした。"]
+        # コレスポの選定と現地の注目を突き合わせる。
+        # 一致しない方が普通で、そのずれ自体が見どころになる。
+        for pk in (data.get("picks") or [])[:2]:
+            parts.append(f"コレスポが注目試合に選んだ{pk['matchup']}は、"
+                         f"現地では{pk['rank']}位でした。")
+        segments.append({"kind": "buzz", "text": "".join(parts), "meta": {}})
 
     segments.append({
         "kind": "outro",
@@ -186,30 +188,9 @@ def build_narration(data: dict) -> dict:
     return {"label": day, "segments": segments}
 
 
-# MLB公式のタイトルは英語表記なので、日本で通じる球団名に直す。
-# 引き当てられないものは英語のまま出す(勝手な当て字はしない)。
-TEAM_EN_TO_JP = {
-    "Angels": "エンゼルス", "D-backs": "ダイヤモンドバックス",
-    "Diamondbacks": "ダイヤモンドバックス", "Orioles": "オリオールズ",
-    "Red Sox": "レッドソックス", "Cubs": "カブス", "Reds": "レッズ",
-    "Guardians": "ガーディアンズ", "Rockies": "ロッキーズ",
-    "Tigers": "タイガース", "Astros": "アストロズ", "Royals": "ロイヤルズ",
-    "Dodgers": "ドジャース", "Nationals": "ナショナルズ", "Mets": "メッツ",
-    "Athletics": "アスレチックス", "Pirates": "パイレーツ",
-    "Padres": "パドレス", "Mariners": "マリナーズ", "Giants": "ジャイアンツ",
-    "Cardinals": "カージナルス", "Rays": "レイズ", "Rangers": "レンジャーズ",
-    "Blue Jays": "ブルージェイズ", "Twins": "ツインズ",
-    "Phillies": "フィリーズ", "Braves": "ブレーブス",
-    "White Sox": "ホワイトソックス", "Marlins": "マーリンズ",
-    "Yankees": "ヤンキース", "Brewers": "ブリュワーズ",
-}
-
-
-def _jp_matchup(matchup: str) -> str:
-    out = matchup
-    for en, jp in sorted(TEAM_EN_TO_JP.items(), key=lambda x: -len(x[0])):
-        out = out.replace(en, jp)
-    return out.replace("vs.", "対").replace(" vs ", "対")
+# 球団名の対応表は mlb_buzz 側に集約した。
+# 同じ表を2か所に持つと、球団が増えたときに片方だけ古くなる。
+_jp_matchup = mlb_buzz.jp_matchup
 
 
 def _yomi_views(n: int) -> str:
@@ -273,7 +254,7 @@ def render_list(p, players, start, count):
     return im
 
 
-def render_buzz(p, buzz):
+def render_buzz(p, buzz, picks=None):
     """
     現地でどれだけ見られたか。
 
@@ -287,8 +268,11 @@ def render_buzz(p, buzz):
     d.text((70, 200), "現地で最も見られた試合", font=font(60), fill=ACCENT)
     d.text((74, 282), "MLB公式ハイライトの再生回数", font=font(32), fill=DIM)
 
+    picks = picks or []
+    # コレスポの比較を下に置くので、その分だけ一覧を減らす
+    limit = 3 if picks else 4
     y = 400
-    for i, b in enumerate(buzz[:4]):
+    for i, b in enumerate(buzz[:limit]):
         appear = 0.06 + i * 0.07
         if p < appear:
             continue
@@ -306,6 +290,17 @@ def render_buzz(p, buzz):
         d.text((100 - dx, y + 110), views, font=font(46),
                fill=ACCENT if i == 0 else TEXT)
         y += 218
+
+    # コレスポが前日に選んだ試合が、現地で何位だったか。
+    # 予告と結果の両方を持っているからこそ出せる比較になる。
+    if picks:
+        d.text((70, y + 20), "コレスポが選んだ試合は", font=font(36), fill=JP)
+        yy = y + 76
+        for p in picks[:2]:
+            line = f"{p['matchup']}　現地{p['rank']}位"
+            s = fit(d, line, W - 200, (40, 36, 32))
+            d.text((100, yy), line, font=font(s), fill=TEXT)
+            yy += 56
 
     d.text((70, H - 230), "※人気球団の試合は内容に関わらず伸びます",
            font=font(30), fill=DIM)
@@ -386,6 +381,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--recap", default="data/morning_recap.json")
     parser.add_argument("--buzz", default="data/mlb_buzz.json")
+    parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--out", default="build/morning")
@@ -404,8 +400,22 @@ def main():
     # 現地の注目度。取れていなければ、その画面を出さないだけ
     data["buzz"] = mlb_buzz.load(args.buzz)
     buzz = data["buzz"]
+    picks = []
     if buzz:
         print(f"[info] 現地の注目度: {len(buzz)}件 / 最多 {buzz[0]['views']:,}回")
+        # 前日にコレスポが選んだ試合が、現地で何位だったか。
+        # 対象日(米国日付)のアーカイブが、そのまま前日の予告にあたる。
+        ap = pathlib.Path(args.archive_dir) / f"{data.get('date', '')}.json"
+        if ap.exists():
+            try:
+                games = [g for g in json.loads(ap.read_text(encoding="utf-8"))
+                         .get("games", []) if g.get("is_notable")][:3]
+                picks = mlb_buzz.cross_check(buzz, games)
+                for p in picks:
+                    print(f"[info] 突き合わせ: {p['matchup']} → 現地{p['rank']}位")
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"[warn] アーカイブを読めませんでした: {e}")
+    data["picks"] = picks
 
     narration = build_narration(data)
     if args.narration_out:
@@ -465,7 +475,7 @@ def main():
                     im = render_list(pp, players, meta.get("start", 0),
                                      meta.get("count", 1))
                 elif kind == "buzz":
-                    im = render_buzz(pp, buzz)
+                    im = render_buzz(pp, buzz, picks)
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()

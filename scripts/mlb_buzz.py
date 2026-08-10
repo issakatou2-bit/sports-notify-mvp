@@ -131,6 +131,67 @@ def build(api_key: str, hours: int = 30, top: int = 5) -> dict:
     }
 
 
+# MLB公式のタイトルは英語表記。日本で通じる球団名に直す。
+# 引き当てられないものは英語のまま扱う(勝手な当て字はしない)。
+TEAM_EN_TO_JP = {
+    "Angels": "エンゼルス", "D-backs": "ダイヤモンドバックス",
+    "Diamondbacks": "ダイヤモンドバックス", "Orioles": "オリオールズ",
+    "Red Sox": "レッドソックス", "Cubs": "カブス", "Reds": "レッズ",
+    "Guardians": "ガーディアンズ", "Rockies": "ロッキーズ",
+    "Tigers": "タイガース", "Astros": "アストロズ", "Royals": "ロイヤルズ",
+    "Dodgers": "ドジャース", "Nationals": "ナショナルズ", "Mets": "メッツ",
+    "Athletics": "アスレチックス", "Pirates": "パイレーツ",
+    "Padres": "パドレス", "Mariners": "マリナーズ", "Giants": "ジャイアンツ",
+    "Cardinals": "カージナルス", "Rays": "レイズ", "Rangers": "レンジャーズ",
+    "Blue Jays": "ブルージェイズ", "Twins": "ツインズ",
+    "Phillies": "フィリーズ", "Braves": "ブレーブス",
+    "White Sox": "ホワイトソックス", "Marlins": "マーリンズ",
+    "Yankees": "ヤンキース", "Brewers": "ブリュワーズ",
+}
+
+
+def jp_matchup(matchup: str) -> str:
+    """"Angels vs. Dodgers" -> "エンゼルス 対 ドジャース\""""
+    out = matchup
+    # 長い名前から先に置換する。"Red Sox" より先に "Sox" を処理すると壊れる
+    for en, jp in sorted(TEAM_EN_TO_JP.items(), key=lambda x: -len(x[0])):
+        out = out.replace(en, jp)
+    return out.replace("vs.", "対").replace(" vs ", " 対 ")
+
+
+def cross_check(buzz: list, games: list) -> list:
+    """
+    コレスポが注目試合として取り上げたカードが、
+    現地の再生回数で何位だったかを突き合わせる。
+
+    予告と結果の両方を持っているからこそできる照合になる。
+    コレスポの選定はルール(日本人選手・順位・連勝など)で決めていて、
+    現地の再生回数は人気球団に強く引かれるので、両者は一致しない方が普通。
+    ずれること自体が「日本から見た注目」と「現地の注目」の違いを表す。
+
+    MLB公式のタイトルは「ビジター vs. ホーム」の並びだが、
+    順序に依存せず両チーム名が含まれるかで照合する。
+    """
+    ranked = [(i, b, jp_matchup(b.get("matchup", "")))
+              for i, b in enumerate(buzz, 1)]
+    out = []
+    for g in games:
+        home = (g.get("home_team_name") or "").strip()
+        away = (g.get("away_team_name") or "").strip()
+        if not home or not away:
+            continue
+        for rank, b, jp in ranked:
+            if home in jp and away in jp:
+                out.append({
+                    "matchup": f"{home} 対 {away}",
+                    "rank": rank,
+                    "views": b.get("views", 0),
+                    "total": len(buzz),
+                })
+                break
+    return out
+
+
 def load(path: str = "data/mlb_buzz.json", max_age_hours: int = 30) -> list:
     """
     表示側から読む。古い記録は使わない
