@@ -26,13 +26,14 @@ from datetime import datetime
 
 from PIL import Image, ImageDraw, ImageFont
 
+import mlb_buzz
 import morning_recap
 
 W, H = 1080, 1920
 FPS = 24
 ANIM_END = 0.45
 SEGMENT_TAIL = 1.5
-MIN_DURATION = {"intro": 5.0, "list": 8.0, "outro": 5.0}
+MIN_DURATION = {"intro": 5.0, "list": 8.0, "buzz": 9.0, "outro": 5.0}
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
@@ -164,6 +165,18 @@ def build_narration(data: dict) -> dict:
             "meta": {"start": i, "count": len(chunk)},
         })
 
+    # 現地でどれだけ見られたか。感想を代弁せず、数字だけを出す。
+    buzz = data.get("buzz") or []
+    if buzz:
+        top = buzz[0]
+        segments.append({
+            "kind": "buzz",
+            "text": "現地で最も見られた試合です。"
+                    f"MLB公式のハイライトで、{_jp_matchup(top['matchup'])}が"
+                    f"{_yomi_views(top['views'])}再生でした。",
+            "meta": {},
+        })
+
     segments.append({
         "kind": "outro",
         "text": "コレスポでは毎日午後7時に、その日の注目試合を"
@@ -171,6 +184,39 @@ def build_narration(data: dict) -> dict:
         "meta": {},
     })
     return {"label": day, "segments": segments}
+
+
+# MLB公式のタイトルは英語表記なので、日本で通じる球団名に直す。
+# 引き当てられないものは英語のまま出す(勝手な当て字はしない)。
+TEAM_EN_TO_JP = {
+    "Angels": "エンゼルス", "D-backs": "ダイヤモンドバックス",
+    "Diamondbacks": "ダイヤモンドバックス", "Orioles": "オリオールズ",
+    "Red Sox": "レッドソックス", "Cubs": "カブス", "Reds": "レッズ",
+    "Guardians": "ガーディアンズ", "Rockies": "ロッキーズ",
+    "Tigers": "タイガース", "Astros": "アストロズ", "Royals": "ロイヤルズ",
+    "Dodgers": "ドジャース", "Nationals": "ナショナルズ", "Mets": "メッツ",
+    "Athletics": "アスレチックス", "Pirates": "パイレーツ",
+    "Padres": "パドレス", "Mariners": "マリナーズ", "Giants": "ジャイアンツ",
+    "Cardinals": "カージナルス", "Rays": "レイズ", "Rangers": "レンジャーズ",
+    "Blue Jays": "ブルージェイズ", "Twins": "ツインズ",
+    "Phillies": "フィリーズ", "Braves": "ブレーブス",
+    "White Sox": "ホワイトソックス", "Marlins": "マーリンズ",
+    "Yankees": "ヤンキース", "Brewers": "ブリュワーズ",
+}
+
+
+def _jp_matchup(matchup: str) -> str:
+    out = matchup
+    for en, jp in sorted(TEAM_EN_TO_JP.items(), key=lambda x: -len(x[0])):
+        out = out.replace(en, jp)
+    return out.replace("vs.", "対").replace(" vs ", "対")
+
+
+def _yomi_views(n: int) -> str:
+    """読み上げ用。万単位に丸める(桁が多いと耳で追えない)"""
+    if n >= 10000:
+        return f"およそ{n / 10000:.1f}万回".replace(".0万", "万")
+    return f"{n}回"
 
 
 # ---------------------------------------------------------------------------
@@ -223,6 +269,46 @@ def render_list(p, players, start, count):
                font=font(30), fill=DIM)
         y += 258
 
+    d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
+def render_buzz(p, buzz):
+    """
+    現地でどれだけ見られたか。
+
+    「現地の反応」を語らず、公式ハイライトの再生回数だけを出す。
+    誰でも同じ数字を確認でき、感想を代弁せずに注目度を示せる。
+    ただしこれは注目度であって面白さや重要さではない
+    (人気球団は内容に関わらず伸びる)。その断りを画面にも入れる。
+    """
+    im, d = base(p)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    d.text((70, 200), "現地で最も見られた試合", font=font(60), fill=ACCENT)
+    d.text((74, 282), "MLB公式ハイライトの再生回数", font=font(32), fill=DIM)
+
+    y = 400
+    for i, b in enumerate(buzz[:4]):
+        appear = 0.06 + i * 0.07
+        if p < appear:
+            continue
+        e = ease_out(min(1.0, max(0.0, (p - appear) * 9)))
+        dx = int((1 - e) * 110)
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + 190], 20, fill=SURF)
+        d.text((100 - dx, y + 22), f"{i + 1}", font=font(40),
+               fill=ACCENT if i == 0 else DIM)
+
+        name = _jp_matchup(b.get("matchup", ""))
+        s = fit(d, name, W - 260, (48, 42, 38, 34))
+        d.text((170 - dx, y + 24), name, font=font(s), fill=TEXT)
+
+        views = f"{b.get('views', 0):,}回再生"
+        d.text((100 - dx, y + 110), views, font=font(46),
+               fill=ACCENT if i == 0 else TEXT)
+        y += 218
+
+    d.text((70, H - 230), "※人気球団の試合は内容に関わらず伸びます",
+           font=font(30), fill=DIM)
     d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
     return im
 
@@ -299,6 +385,7 @@ def build_narration_track(segs, durations, out_dir):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--recap", default="data/morning_recap.json")
+    parser.add_argument("--buzz", default="data/mlb_buzz.json")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--out", default="build/morning")
@@ -313,6 +400,12 @@ def main():
     if not players:
         print("[info] 出場した日本人選手がいないため作りません")
         return
+
+    # 現地の注目度。取れていなければ、その画面を出さないだけ
+    data["buzz"] = mlb_buzz.load(args.buzz)
+    buzz = data["buzz"]
+    if buzz:
+        print(f"[info] 現地の注目度: {len(buzz)}件 / 最多 {buzz[0]['views']:,}回")
 
     narration = build_narration(data)
     if args.narration_out:
@@ -371,6 +464,8 @@ def main():
                 elif kind == "list":
                     im = render_list(pp, players, meta.get("start", 0),
                                      meta.get("count", 1))
+                elif kind == "buzz":
+                    im = render_buzz(pp, buzz)
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()

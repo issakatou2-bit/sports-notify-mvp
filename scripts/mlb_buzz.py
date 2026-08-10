@@ -1,0 +1,180 @@
+"""
+MLB公式YouTubeのハイライト動画の再生回数から、
+「現地でどの試合が最も見られたか」を集める。
+
+なぜこの形にするのか:
+  「現地の反応」を伝えたいが、SNSの書き込みを拾って紹介するのは避けたい。
+  本物か・代表的かを確かめられないうえ、翻訳の加減で印象が変わり、
+  都合のいいものだけ拾えば実態と違うものになる。
+  一方、公式ハイライトの再生回数は誰でも同じ数字を確認でき、
+  「現地でどれだけ見られたか」をそのまま表す。
+  感想を代弁せずに注目度だけを示せる。
+
+  ただしこれは「注目度」であって「面白さ」や「重要さ」ではない。
+  人気球団の試合は内容に関わらず伸びる。その旨は表示側で断る。
+
+取り方:
+  search.list で MLB公式チャンネルの直近のハイライトを拾い、
+  videos.list でまとめて再生回数を取る。
+  search が100ユニット、videos が1ユニットなので、1日1回なら
+  1日の割り当て(10,000)に対して十分収まる。
+
+出力: data/mlb_buzz.json
+
+使い方:
+  YOUTUBE_API_KEY=xxx python3 scripts/mlb_buzz.py --out data/mlb_buzz.json
+"""
+
+import argparse
+import json
+import os
+import pathlib
+import re
+import sys
+from datetime import datetime, timedelta, timezone
+
+import requests
+
+YOUTUBE_API = "https://www.googleapis.com/youtube/v3"
+
+# 公式以外(まとめ・転載)を除くため、チャンネル名が完全一致するものだけ使う。
+OFFICIAL_CHANNEL_TITLE = "MLB"
+
+# ハイライトのタイトルは "Angels vs. Dodgers Game Highlights (8/9/26) | MLB Highlights"
+# のような形をしている。対戦カード部分だけを取り出す。
+MATCHUP_RE = re.compile(r"^(.+?)\s+Game Highlights", re.I)
+
+
+def fetch_recent_highlights(api_key: str, hours: int = 30) -> list:
+    published_after = (datetime.now(timezone.utc)
+                       - timedelta(hours=hours)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    try:
+        resp = requests.get(
+            f"{YOUTUBE_API}/search",
+            params={
+                "key": api_key, "part": "snippet", "q": "Game Highlights",
+                "type": "video", "order": "date", "maxResults": 50,
+                "publishedAfter": published_after,
+            },
+            timeout=20,
+        )
+        resp.raise_for_status()
+    except Exception as e:
+        print(f"[warn] ハイライトの検索に失敗しました: {e}", file=sys.stderr)
+        return []
+
+    items = []
+    for it in resp.json().get("items", []):
+        sn = it.get("snippet") or {}
+        if sn.get("channelTitle") != OFFICIAL_CHANNEL_TITLE:
+            continue
+        vid = (it.get("id") or {}).get("videoId")
+        if not vid:
+            continue
+        items.append({
+            "video_id": vid,
+            "title": sn.get("title", ""),
+            "published_at": sn.get("publishedAt", ""),
+        })
+    print(f"[info] MLB公式の直近{hours}時間のハイライト: {len(items)}本")
+    return items
+
+
+def fetch_view_counts(api_key: str, items: list) -> list:
+    """再生回数をまとめて取る。1回の呼び出しで50本まで。"""
+    if not items:
+        return []
+    ids = ",".join(i["video_id"] for i in items[:50])
+    try:
+        resp = requests.get(
+            f"{YOUTUBE_API}/videos",
+            params={"key": api_key, "part": "statistics", "id": ids},
+            timeout=20,
+        )
+        resp.raise_for_status()
+    except Exception as e:
+        print(f"[warn] 再生回数の取得に失敗しました: {e}", file=sys.stderr)
+        return []
+
+    counts = {}
+    for it in resp.json().get("items", []):
+        st = it.get("statistics") or {}
+        try:
+            counts[it.get("id")] = int(st.get("viewCount", 0))
+        except (TypeError, ValueError):
+            continue
+
+    out = []
+    for i in items:
+        v = counts.get(i["video_id"])
+        if v is None:
+            continue
+        m = MATCHUP_RE.match(i["title"])
+        out.append({**i, "views": v,
+                    "matchup": m.group(1).strip() if m else i["title"][:40]})
+    out.sort(key=lambda x: -x["views"])
+    return out
+
+
+def build(api_key: str, hours: int = 30, top: int = 5) -> dict:
+    items = fetch_recent_highlights(api_key, hours)
+    ranked = fetch_view_counts(api_key, items)
+    if not ranked:
+        return {}
+    print(f"[info] 再生回数の取れたハイライト: {len(ranked)}本")
+    for r in ranked[:top]:
+        print(f"   {r['views']:>9,}回  {r['matchup']}")
+    return {
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "hours": hours,
+        "videos": ranked[:top],
+    }
+
+
+def load(path: str = "data/mlb_buzz.json", max_age_hours: int = 30) -> list:
+    """
+    表示側から読む。古い記録は使わない
+    (昨日の「最も見られた試合」を今日のものとして出さないため)。
+    """
+    p = pathlib.Path(path)
+    if not p.exists():
+        return []
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return []
+    try:
+        updated = datetime.fromisoformat(data.get("updated_at", ""))
+    except ValueError:
+        return []
+    age = (datetime.now(timezone.utc) - updated).total_seconds() / 3600
+    if age > max_age_hours:
+        print(f"[info] 注目度データが古いため使いません({age:.0f}時間前)")
+        return []
+    return data.get("videos") or []
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", default="data/mlb_buzz.json")
+    parser.add_argument("--hours", type=int, default=30)
+    args = parser.parse_args()
+
+    api_key = os.environ.get("YOUTUBE_API_KEY")
+    if not api_key:
+        print("[info] YOUTUBE_API_KEY未設定のためスキップします")
+        return
+
+    data = build(api_key, hours=args.hours)
+    if not data:
+        print("[info] 取得できなかったため、ファイルは更新しません")
+        return
+
+    out = pathlib.Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[info] 注目度を出力しました({len(data['videos'])}本) -> {out}")
+
+
+if __name__ == "__main__":
+    main()
