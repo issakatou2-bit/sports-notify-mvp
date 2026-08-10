@@ -124,36 +124,52 @@ jobs:
             echo "::warning::投稿済みのトピックも上げ直します"
           fi
 
+          # 1本が失敗しても残りを試す。ここを素通しにしていたため、
+          # jp_players の不具合1件で以降のトピックが丸ごと未処理になった。
+          set +e
           FAILED=""
           for t in $TOPICS; do
             echo "::group::$t"
+
             python scripts/generate_asset_video.py \
               --topic "$t" --narration-out "build/narr_$t.json"
+            if [ $? -ne 0 ]; then
+              echo "::warning::$t の原稿生成に失敗しました"
+              FAILED="$FAILED $t(原稿)"
+              echo "::endgroup::"; continue
+            fi
 
             # VOICEVOXが落ちていても無音で作れるよう、ここは失敗を許容する
             python scripts/synthesize_narration.py \
               --narration "build/narr_$t.json" \
-              --out-dir "build/audio_$t" || true
+              --out-dir "build/audio_$t"
 
             python scripts/generate_asset_video.py \
               --topic "$t" --audio-dir "build/audio_$t" --out "build/asset_$t"
+            if [ $? -ne 0 ]; then
+              echo "::warning::$t の動画生成に失敗しました"
+              FAILED="$FAILED $t(動画)"
+              echo "::endgroup::"; continue
+            fi
 
             python scripts/generate_thumbnail.py \
               --kind asset --asset-topic "$t" \
-              --out "build/asset_$t/thumb.png" || true
+              --out "build/asset_$t/thumb.png"
 
-            if python scripts/upload_youtube.py \
+            python scripts/upload_youtube.py \
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
               --thumbnail "build/asset_$t/thumb.png" \
-              --privacy "${{ inputs.privacy }}" $FORCE; then
+              --privacy "${{ inputs.privacy }}" $FORCE
+            if [ $? -eq 0 ]; then
               echo "$t: 完了"
             else
               echo "::warning::$t の投稿に失敗しました(APIの割り当て超過の可能性)"
-              FAILED="$FAILED $t"
+              FAILED="$FAILED $t(投稿)"
             fi
             echo "::endgroup::"
           done
+          set -e
 
           if [ -n "$FAILED" ]; then
             echo "::warning title=未投稿のトピック::$FAILED"

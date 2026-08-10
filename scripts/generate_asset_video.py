@@ -999,11 +999,14 @@ def main():
                     t = meta.get("topic", args.topic)
                     # 原稿と同じ関数で組み立てる。別々に作ると項目数がずれる
                     items = list_items(t)
+                    # heading は画面上部の見出し。省略されたら label を使う
+                    # (トピックを足すたびに書き忘れると、生成の途中で落ちる)
+                    ts = LIST_TOPICS[t]
                     im = render_list(pp, items, meta.get("start", 0),
                                      meta.get("count", 1),
                                      meta.get("start", 0) // 2 + 1,
                                      (len(items) + 1) // 2,
-                                     LIST_TOPICS[t]["heading"])
+                                     ts.get("heading") or ts.get("label", ""))
                 elif kind == "rivalry":
                     idx = meta.get("index", 0)
                     im = render_rivalry(pp, rivalries[idx], idx, len(rivalries))
