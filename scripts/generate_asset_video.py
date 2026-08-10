@@ -41,6 +41,7 @@ import venue_stats
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import (  # noqa: E402
+    JP_PLAYERS_MLB,
     MLB_DIVISION_NAME_JP,
     MLB_DIVISIONS,
     MLB_RIVALRIES,
@@ -324,6 +325,53 @@ LIST_TOPICS = {
                        "右打者と左打者で本塁打の出やすさが大きく違います"),
         ],
     },
+    # --- 検索需要が明確なもの ---
+    # 実測で、疑問形のタイトル(「〜とは」「なぜ〜」)を持つ資産動画は
+    # そうでないものの6倍見られていた。流入の57%が検索なので、
+    # 「視聴者が実際に打ち込む言葉」を扱うトピックを優先する。
+    "jp_players": {
+        "label": "MLBの日本人選手",
+        "hook": "今、何人いる？",
+        "dynamic": "jp_players",
+        "intro": "2026年シーズン、メジャーリーグでプレーする日本人選手を"
+                 "投手と野手に分けて紹介します。",
+        "items": [],   # 名簿から組み立てるので、ここは空でよい
+    },
+    "mlb_watch": {
+        "label": "MLBの見かた",
+        "hook": "日本でどこで見られる？",
+        "intro": "メジャーリーグを日本で見る方法と、"
+                 "試合が行われる時間帯をまとめました。",
+        "items": [
+            ("試合は日本の朝から昼", "アメリカの夜の試合が、日本時間の朝8時ごろから"
+                               "始まります。西海岸の試合は昼過ぎまでかかります"),
+            ("平日でも毎日ある", "3月末から9月末まで、1球団あたり162試合。"
+                           "ほぼ毎日どこかで試合が行われています"),
+            ("配信サービスで見る", "SPOTV NOW、NHK、Prime Video(SPOTVチャンネル)などで"
+                            "中継されています。放送予定は日によって変わります"),
+            ("どの試合を見るか", "毎日15試合前後あるので、全部は追えません。"
+                          "日本人選手の出場、順位争い、連勝などを手がかりに選ぶと"
+                          "見どころのある試合に当たりやすくなります"),
+        ],
+    },
+    "mlb_postseason": {
+        "label": "MLBのポストシーズン",
+        "hook": "どうやって優勝が決まる？",
+        "intro": "レギュラーシーズンのあと、どうやって世界一が決まるのか。"
+                 "MLBのポストシーズンの仕組みを順に見ていきます。",
+        "items": [
+            ("進出できるのは12球団", "各リーグ6球団ずつ。30球団のうち"
+                               "5球団に2球団が勝ち残る計算になります"),
+            ("地区優勝が6枠", "ア・リーグとナ・リーグ、それぞれ東・中・西の"
+                         "3地区で1位になった球団が進みます"),
+            ("ワイルドカードが6枠", "地区優勝を逃した中で勝率上位の3球団が、"
+                             "各リーグから進出します。地区2位でも進めるのがこの枠です"),
+            ("勝ち抜き方式", "ワイルドカードシリーズ、地区シリーズ、"
+                        "リーグ優勝決定シリーズと勝ち上がります"),
+            ("ワールドシリーズ", "両リーグの勝者が対戦し、先に4勝した方が世界一。"
+                          "10月末に行われます"),
+        ],
+    },
     "collespo_guide": {
         "label": "コレスポの使い方",
         "hook": "毎日19時に届きます",
@@ -456,6 +504,31 @@ def _outro_segment() -> dict:
     }
 
 
+def _jp_player_items() -> list:
+    """
+    日本人選手の名簿を、投手と野手に分けて並べる。
+
+    notability_engine の JP_PLAYERS_MLB をそのまま使う。
+    毎日の注目試合の判定に使っているのと同じ名簿なので、
+    動画とサイトで人数が食い違うことがない。
+    """
+    pitchers = [p["name_jp"] for p in JP_PLAYERS_MLB
+                if p.get("type") == "pitcher"]
+    batters = [p["name_jp"] for p in JP_PLAYERS_MLB
+               if p.get("type") == "batter"]
+
+    def chunk(names, size=5):
+        return ["、".join(names[i:i + size]) for i in range(0, len(names), size)]
+
+    items = [(f"全部で{len(pitchers) + len(batters)}人",
+              f"投手が{len(pitchers)}人、野手が{len(batters)}人です")]
+    for i, line in enumerate(chunk(pitchers)):
+        items.append((f"投手 {i + 1}" if i else "投手", line))
+    for i, line in enumerate(chunk(batters)):
+        items.append((f"野手 {i + 1}" if i else "野手", line))
+    return items
+
+
 def list_items(topic: str) -> list:
     """
     そのトピックで実際に表示する項目リスト。
@@ -466,7 +539,13 @@ def list_items(topic: str) -> list:
     週次動画で一度直したのと同じ形の失敗なので、同じやり方で防ぐ。
     """
     spec = LIST_TOPICS[topic]
-    items = list(spec["items"])
+
+    # 名簿から組み立てるトピック。静的に書くと二重管理になり、
+    # 選手が入れ替わったときに片方だけ古くなる。
+    if spec.get("dynamic") == "jp_players":
+        items = _jp_player_items()
+    else:
+        items = list(spec["items"])
 
     # 球場の回は、その年の全試合から集計した実測値を先頭に置く。
     # 「打者有利とされる」で終わらせず、実際どうだったのかまで出す。

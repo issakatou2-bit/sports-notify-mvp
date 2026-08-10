@@ -27,6 +27,9 @@ on:
           - mlb_league
           - mlb_position
           - collespo_guide
+          - jp_players
+          - mlb_watch
+          - mlb_postseason
           - venue_coors
           - venue_fenway
           - venue_wrigley
@@ -111,7 +114,7 @@ jobs:
         run: |
           TOPICS="${{ inputs.topic }}"
           if [ "$TOPICS" = "all" ]; then
-            TOPICS="mlb_abbr mlb_venue mlb_rivalry mlb_stats mlb_terms mlb_league mlb_position collespo_guide venue_coors venue_fenway venue_wrigley venue_oracle venue_yankee"
+            TOPICS="mlb_abbr mlb_venue mlb_rivalry mlb_stats mlb_terms mlb_league mlb_position collespo_guide jp_players mlb_watch mlb_postseason venue_coors venue_fenway venue_wrigley venue_oracle venue_yankee"
             echo "::notice::全トピックを対象にします。投稿済みのものは自動で飛ばします"
           fi
 

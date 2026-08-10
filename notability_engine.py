@@ -656,24 +656,26 @@ def load_mock_data():
 # 実際に青柳晃洋は2025年7月にフィリーズを自由契約になっており、静的な所属情報の
 # 限界が実証された。所属チームは resolve_jp_player_teams() でMLB Stats APIから
 # 毎回動的に解決する。ここは「誰が対象の日本人選手か」の名前リストのみを持つ。
+# type は資産動画で投手・野手に分けて紹介するために持つ。
+# 大谷翔平は両方だが、打者としての出場が続いているため "batter" にしている。
 JP_PLAYERS_MLB = [
-    {"name_en": "Shohei Ohtani", "name_jp": "大谷翔平"},
-    {"name_en": "Yu Darvish", "name_jp": "ダルビッシュ有"},
-    {"name_en": "Roki Sasaki", "name_jp": "佐々木朗希"},
-    {"name_en": "Yoshinobu Yamamoto", "name_jp": "山本由伸"},
-    {"name_en": "Tomoyuki Sugano", "name_jp": "菅野智之"},
-    {"name_en": "Yusei Kikuchi", "name_jp": "菊池雄星"},
-    {"name_en": "Shota Imanaga", "name_jp": "今永昇太"},
-    {"name_en": "Seiya Suzuki", "name_jp": "鈴木誠也"},
-    {"name_en": "Kodai Senga", "name_jp": "千賀滉大"},
-    {"name_en": "Yuki Matsui", "name_jp": "松井裕樹"},
+    {"name_en": "Shohei Ohtani", "name_jp": "大谷翔平", "type": "batter"},
+    {"name_en": "Yu Darvish", "name_jp": "ダルビッシュ有", "type": "pitcher"},
+    {"name_en": "Roki Sasaki", "name_jp": "佐々木朗希", "type": "pitcher"},
+    {"name_en": "Yoshinobu Yamamoto", "name_jp": "山本由伸", "type": "pitcher"},
+    {"name_en": "Tomoyuki Sugano", "name_jp": "菅野智之", "type": "pitcher"},
+    {"name_en": "Yusei Kikuchi", "name_jp": "菊池雄星", "type": "pitcher"},
+    {"name_en": "Shota Imanaga", "name_jp": "今永昇太", "type": "pitcher"},
+    {"name_en": "Seiya Suzuki", "name_jp": "鈴木誠也", "type": "batter"},
+    {"name_en": "Kodai Senga", "name_jp": "千賀滉大", "type": "pitcher"},
+    {"name_en": "Yuki Matsui", "name_jp": "松井裕樹", "type": "pitcher"},
     # 2026/7時点で判明した見落とし分。2026年在籍16名のうち欠けていた6名を追加
-    {"name_en": "Masataka Yoshida", "name_jp": "吉田正尚"},
-    {"name_en": "Kazuma Okamoto", "name_jp": "岡本和真"},
-    {"name_en": "Munetaka Murakami", "name_jp": "村上宗隆"},
-    {"name_en": "Shinnosuke Ogasawara", "name_jp": "小笠原慎之介"},
-    {"name_en": "Tatsuya Imai", "name_jp": "今井達也"},
-    {"name_en": "Lars Nootbaar", "name_jp": "ヌートバー"},
+    {"name_en": "Masataka Yoshida", "name_jp": "吉田正尚", "type": "batter"},
+    {"name_en": "Kazuma Okamoto", "name_jp": "岡本和真", "type": "batter"},
+    {"name_en": "Munetaka Murakami", "name_jp": "村上宗隆", "type": "batter"},
+    {"name_en": "Shinnosuke Ogasawara", "name_jp": "小笠原慎之介", "type": "pitcher"},
+    {"name_en": "Tatsuya Imai", "name_jp": "今井達也", "type": "pitcher"},
+    {"name_en": "Lars Nootbaar", "name_jp": "ヌートバー", "type": "batter"},
 ]
 
 # 音声合成に渡すときの読み。
