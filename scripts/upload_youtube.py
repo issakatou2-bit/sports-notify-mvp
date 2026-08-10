@@ -385,6 +385,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     except (json.JSONDecodeError, OSError):
         games = []
 
+    # 日次のフック。タイトルと説明文の冒頭で同じものを使う。
+    # 注目試合が取れなかった日は空のままになる。
+    daily_lead = ""
+
     if kind == "morning":
         # 検索されるのは選手名なので、目立った成績の選手を先頭に置く
         names = [p.get("name") for p in (morning_players or [])][:3]
@@ -412,6 +416,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         big = (hook.get("big") or "").strip()
         sub = (hook.get("sub") or "").strip()
         lead = f"{sub} {big}".strip() if big else ""
+        daily_lead = lead
         top = games[0]
         matchup = f"{top.get('home_team_name')} vs {top.get('away_team_name')}"
         if lead:
@@ -422,8 +427,13 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         title = f"{date_label}の注目試合【MLB】#Shorts"
     title = title[:100]  # YouTubeのタイトル上限
 
+    # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
+    # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
+    # タイトルと同じく、具体的な事実を先に置く。
     if kind == "morning":
-        lines = [f"{date_label}のメジャーリーグから、"
+        who = "、".join(p.get("name", "") for p in (morning_players or [])[:3])
+        head = f"{who}ほか。" if who else ""
+        lines = [f"{head}{date_label}のメジャーリーグから、"
                  "日本人選手の成績をまとめました。", ""]
         for p in (morning_players or [])[:8]:
             lines.append(f"・{p.get('name')} … {p.get('headline')}")
@@ -440,7 +450,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     elif kind == "weekly":
         lines = ["この1週間の注目試合を、結果とあわせて振り返ります。", ""]
     else:
-        lines = [f"{date_label} の注目試合を、なぜ注目なのかの理由つきで紹介します。", ""]
+        head = f"{daily_lead}。" if daily_lead else ""
+        lines = [f"{head}{date_label} の注目試合を、"
+                 "なぜ注目なのかの理由つきで紹介します。", ""]
     for i, g in enumerate(games, 1):
         lines.append(
             f"{i}. {g.get('start_time_jst')} "
