@@ -168,6 +168,7 @@ def teams_by_division() -> dict:
 LIST_TOPICS = {
     "mlb_stats": {
         "label": "成績の数字の見方",
+        "hook": "OPS って何の数字？",
         "heading": "この数字だけ分かればいい",
         "intro": "中継やネットで見かける成績の数字。よく出てくるものだけ、"
                  "意味と目安をまとめます。",
@@ -186,6 +187,7 @@ LIST_TOPICS = {
     },
     "mlb_terms": {
         "label": "順位表の読み方",
+        "hook": "ゲーム差って何？",
         "heading": "順位表、こう読む",
         "intro": "順位表に並ぶ言葉が分かると、その日の試合が"
                  "どれくらい重いのかが見えてきます。",
@@ -206,6 +208,7 @@ LIST_TOPICS = {
     },
     "mlb_league": {
         "label": "MLBの仕組み",
+        "hook": "30球団、どう分かれてる？",
         "heading": "30球団、どう分かれている？",
         "intro": "MLBは30球団。2つのリーグと6つの地区に分かれています。"
                  "この構造が分かると、順位表が一気に読めるようになります。",
@@ -230,6 +233,7 @@ LIST_TOPICS = {
     # 年によって変わる収容人数は「約」で丸める。
     "venue_coors": {
         "label": "クアーズ・フィールド",
+        "hook": "なぜ点が入る？",
         "heading": "クアーズ・フィールド",
         "venue_en": "Coors Field",
         # 「MLBで最も打者有利」と断定していたが、実測では2位だった。
@@ -250,6 +254,7 @@ LIST_TOPICS = {
     },
     "venue_fenway": {
         "label": "フェンウェイ・パーク",
+        "hook": "この壁、高さ11m",
         "heading": "フェンウェイ・パーク",
         "venue_en": "Fenway Park",
         "intro": "マサチューセッツ州ボストン、レッドソックスの本拠地。"
@@ -267,6 +272,7 @@ LIST_TOPICS = {
     },
     "venue_wrigley": {
         "label": "リグレー・フィールド",
+        "hook": "風で試合が変わる",
         "heading": "リグレー・フィールド",
         "venue_en": "Wrigley Field",
         "intro": "イリノイ州シカゴ、カブスの本拠地。"
@@ -284,6 +290,7 @@ LIST_TOPICS = {
     },
     "venue_oracle": {
         "label": "オラクル・パーク",
+        "hook": "打球が海に落ちる",
         "heading": "オラクル・パーク",
         "venue_en": "Oracle Park",
         # 「MLBでも指折りの投手有利」と書いていたが、実測は30球場中17位で
@@ -302,6 +309,7 @@ LIST_TOPICS = {
     },
     "venue_yankee": {
         "label": "ヤンキー・スタジアム",
+        "hook": "左打者が有利な理由",
         "heading": "ヤンキー・スタジアム",
         "venue_en": "Yankee Stadium",
         "intro": "ニューヨーク州ニューヨーク、ヤンキースの本拠地。"
@@ -318,6 +326,7 @@ LIST_TOPICS = {
     },
     "collespo_guide": {
         "label": "コレスポの使い方",
+        "hook": "毎日19時に届きます",
         "heading": "毎日19時に届きます",
         "intro": "コレスポは、その日の注目試合を「なぜ注目なのか」の理由つきで"
                  "毎日19時にお届けするサービスです。何ができるのか紹介します。",
@@ -338,6 +347,7 @@ LIST_TOPICS = {
     },
     "mlb_position": {
         "label": "守備位置の略号",
+        "hook": "SS ってどこの守備？",
         "heading": "スタメン表が読める",
         "intro": "スタメン表や速報では、守備位置も略号で書かれます。"
                  "9つの位置を順に見ていきましょう。",
@@ -557,14 +567,54 @@ def abbr_badge(d, x, y, abbr, color, w=250, h=130):
     d.text((x + (w - d.textlength(abbr, font=f)) / 2, y + 24), abbr, font=f, fill=fg)
 
 
-def render_intro(p, label):
+# LIST_TOPICS を使わない(専用の構成を持つ)トピックのフック。
+# サムネイルの文言と揃える。サムネで見た問いと1枚目が違うと、
+# 開いた瞬間に別物に見えてしまう。
+EXTRA_HOOKS = {
+    "mlb_abbr": "LAD って どこ？",
+    "mlb_venue": "点が入る球場、入らない球場",
+    "mlb_rivalry": "なぜ因縁の対決？",
+}
+
+
+def hook_for(topic: str, label: str) -> str:
+    spec = LIST_TOPICS.get(topic) or {}
+    return spec.get("hook") or EXTRA_HOOKS.get(topic) or label
+
+
+def render_intro(p, label, hook=None):
+    """
+    1枚目。ここで見るかどうかが決まる。
+
+    以前は「コレスポ」の名乗りから始めていたが、日次ショートで同じ作りを
+    やめたところ、平均視聴率が15.5%から平均69%へ上がった(実測)。
+    視聴者にとって名乗りは情報がゼロなので、その日いちばん引きのある
+    一言を先に出し、ブランドは下に小さく置く。
+    """
     im, d = base(p)
-    e = ease_out(min(1.0, p * 2.4))
-    d.text((80, 620 + int((1 - e) * 90)), "コレスポ", font=font(64), fill=ACCENT)
-    d.text((80, 740), label, font=font(104), fill=TEXT)
-    if p > 0.12:
-        d.text((80, 900), "中継が読めるようになる", font=font(56), fill=JP)
-    d.text((80, H - 170), "collespo.com", font=font(38), fill=DIM)
+    hook = hook or label
+    e = ease_out(min(1.0, p * 2.6))
+    slide = int((1 - e) * 70)
+
+    # 1行に収まる最大のサイズを実測で選ぶ
+    max_w = W - 160
+    size = 64
+    for s in (116, 104, 92, 80, 72, 64):
+        if d.textlength(hook, font=font(s)) <= max_w:
+            size = s
+            break
+    lines = _wrap(d, hook, font(size), max_w)[:3]
+
+    line_h = int(size * 1.24)
+    y = max(420, (H - (len(lines) * line_h + 220)) // 2 - 60)
+    for line in lines:
+        d.text((80, y + slide), line, font=font(size), fill=ACCENT)
+        y += line_h
+
+    if p > 0.14:
+        d.text((80, y + 50), label, font=font(56), fill=TEXT)
+
+    d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im
 
 
@@ -856,7 +906,7 @@ def main():
                     total += 1
                     continue
                 if kind == "intro":
-                    im = render_intro(pp, label)
+                    im = render_intro(pp, label, hook_for(args.topic, label))
                 elif kind == "division":
                     code = DIVISION_ORDER[meta.get("division_index", 0)]
                     im = render_division(pp, code, by_div[code])
