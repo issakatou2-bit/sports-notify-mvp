@@ -27,6 +27,7 @@
 import json
 import argparse
 import time
+import unicodedata
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -851,68 +852,118 @@ JP_PLAYERS_SOCCER = [
     # "Borussia Monchengladbach" のような英字を正しく読めないため。
 
     # --- プレミアリーグ(イングランド) ---
-    {"name_en": "Wataru Endo", "name_jp": "遠藤航",
-     "team_en": "Liverpool", "team_jp": "リバプール", "league": "PL"},
-    {"name_en": "Kaoru Mitoma", "name_jp": "三笘薫",
-     "team_en": "Brighton", "team_jp": "ブライトン", "league": "PL"},
-    {"name_en": "Daichi Kamada", "name_jp": "鎌田大地",
-     "team_en": "Crystal Palace", "team_jp": "クリスタル・パレス", "league": "PL"},
-    {"name_en": "Kota Takai", "name_jp": "高井幸大",
-     "team_en": "Tottenham", "team_jp": "トッテナム", "league": "PL"},
-    {"name_en": "Ao Tanaka", "name_jp": "田中碧",
-     "team_en": "Leeds United", "team_jp": "リーズ", "league": "PL"},
-    {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂元達裕",
-     "team_en": "Coventry City", "team_jp": "コベントリー", "league": "ELC"},
-    {"name_en": "Daizen Maeda", "name_jp": "前田大然",
-     "team_en": "Ipswich Town", "team_jp": "イプスウィッチ", "league": "ELC"},
-    {"name_en": "Hidemasa Morita", "name_jp": "守田英正",
-     "team_en": "Hull City", "team_jp": "ハル・シティ", "league": "ELC"},
+    {"name_en": "Wataru Endo", "name_jp": "遠藤航", "team_en": "Liverpool",
+     "team_jp": "リバプール", "league": "PL", "match": "liverpool"},
+    {"name_en": "Kaoru Mitoma", "name_jp": "三笘薫", "team_en": "Brighton",
+     "team_jp": "ブライトン", "league": "PL", "match": "brighton"},
+    {"name_en": "Daichi Kamada", "name_jp": "鎌田大地", "team_en": "Crystal Palace",
+     "team_jp": "クリスタル・パレス", "league": "PL", "match": "crystalpalace"},
+    {"name_en": "Kota Takai", "name_jp": "高井幸大", "team_en": "Tottenham",
+     "team_jp": "トッテナム", "league": "PL", "match": "tottenham"},
+    {"name_en": "Ao Tanaka", "name_jp": "田中碧", "team_en": "Leeds United",
+     "team_jp": "リーズ", "league": "PL", "match": "leeds"},
+    {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂元達裕", "team_en": "Coventry City",
+     "team_jp": "コベントリー", "league": "ELC", "match": "coventry"},
+    {"name_en": "Daizen Maeda", "name_jp": "前田大然", "team_en": "Ipswich Town",
+     "team_jp": "イプスウィッチ", "league": "ELC", "match": "ipswich"},
+    {"name_en": "Hidemasa Morita", "name_jp": "守田英正", "team_en": "Hull City",
+     "team_jp": "ハル・シティ", "league": "ELC", "match": "hullcity"},
 
     # --- ラ・リーガ(スペイン) ---
-    {"name_en": "Takefusa Kubo", "name_jp": "久保建英",
-     "team_en": "Real Sociedad", "team_jp": "レアル・ソシエダ", "league": "PD"},
-    {"name_en": "Ryunosuke Sato", "name_jp": "佐藤龍之介",
-     "team_en": "Valencia", "team_jp": "バレンシア", "league": "PD"},
+    {"name_en": "Takefusa Kubo", "name_jp": "久保建英", "team_en": "Real Sociedad",
+     "team_jp": "レアル・ソシエダ", "league": "PD", "match": "sociedad"},
+    {"name_en": "Ryunosuke Sato", "name_jp": "佐藤龍之介", "team_en": "Valencia",
+     "team_jp": "バレンシア", "league": "PD", "match": "valencia"},
 
     # --- ブンデスリーガ(ドイツ) ---
-    {"name_en": "Hiroki Ito", "name_jp": "伊藤洋輝",
-     "team_en": "Bayern Munich", "team_jp": "バイエルン", "league": "BL1"},
-    {"name_en": "Koki Machida", "name_jp": "町田浩樹",
-     "team_en": "Hoffenheim", "team_jp": "ホッフェンハイム", "league": "BL1"},
-    {"name_en": "Yuito Suzuki", "name_jp": "鈴木唯人",
-     "team_en": "Freiburg", "team_jp": "フライブルク", "league": "BL1"},
-    {"name_en": "Ritsu Doan", "name_jp": "堂安律",
-     "team_en": "Eintracht Frankfurt", "team_jp": "フランクフルト", "league": "BL1"},
-    {"name_en": "Kaishu Sano", "name_jp": "佐野海舟",
-     "team_en": "Mainz", "team_jp": "マインツ", "league": "BL1"},
-    {"name_en": "Sota Kawasaki", "name_jp": "川﨑颯太",
-     "team_en": "Mainz", "team_jp": "マインツ", "league": "BL1"},
+    # "bayern" 単体だと Bayer Leverkusen とは別物なので衝突しない
+    # (bayer と bayern で綴りが違う)。
+    {"name_en": "Hiroki Ito", "name_jp": "伊藤洋輝", "team_en": "Bayern Munich",
+     "team_jp": "バイエルン", "league": "BL1", "match": "bayern"},
+    {"name_en": "Koki Machida", "name_jp": "町田浩樹", "team_en": "Hoffenheim",
+     "team_jp": "ホッフェンハイム", "league": "BL1", "match": "hoffenheim"},
+    {"name_en": "Yuito Suzuki", "name_jp": "鈴木唯人", "team_en": "Freiburg",
+     "team_jp": "フライブルク", "league": "BL1", "match": "freiburg"},
+    {"name_en": "Ritsu Doan", "name_jp": "堂安律", "team_en": "Eintracht Frankfurt",
+     "team_jp": "フランクフルト", "league": "BL1", "match": "eintrachtfrankfurt"},
+    {"name_en": "Kaishu Sano", "name_jp": "佐野海舟", "team_en": "Mainz",
+     "team_jp": "マインツ", "league": "BL1", "match": "mainz"},
+    {"name_en": "Sota Kawasaki", "name_jp": "川﨑颯太", "team_en": "Mainz",
+     "team_jp": "マインツ", "league": "BL1", "match": "mainz"},
+    # "borussia" はドルトムントとぶつかるので地名側を使う
     {"name_en": "Shuto Machino", "name_jp": "町野修斗",
-     "team_en": "Borussia Monchengladbach",
-     "team_jp": "ボルシアMG", "league": "BL1"},
+     "team_en": "Borussia Monchengladbach", "team_jp": "ボルシアMG",
+     "league": "BL1", "match": "monchengladbach"},
     {"name_en": "Zento Uno", "name_jp": "宇野禅斗",
-     "team_en": "Borussia Monchengladbach",
-     "team_jp": "ボルシアMG", "league": "BL1"},
+     "team_en": "Borussia Monchengladbach", "team_jp": "ボルシアMG",
+     "league": "BL1", "match": "monchengladbach"},
     {"name_en": "Daiki Hashioka", "name_jp": "橋岡大樹",
-     "team_en": "Borussia Monchengladbach",
-     "team_jp": "ボルシアMG", "league": "BL1"},
-    {"name_en": "Satoshi Tanaka", "name_jp": "田中聡",
-     "team_en": "Schalke", "team_jp": "シャルケ", "league": "BL2"},
+     "team_en": "Borussia Monchengladbach", "team_jp": "ボルシアMG",
+     "league": "BL1", "match": "monchengladbach"},
+    {"name_en": "Satoshi Tanaka", "name_jp": "田中聡", "team_en": "Schalke",
+     "team_jp": "シャルケ", "league": "BL2", "match": "schalke"},
 
     # --- セリエA(イタリア) ---
-    {"name_en": "Zion Suzuki", "name_jp": "鈴木ザイオン",
-     "team_en": "Parma", "team_jp": "パルマ", "league": "SA"},
+    {"name_en": "Zion Suzuki", "name_jp": "鈴木ザイオン", "team_en": "Parma",
+     "team_jp": "パルマ", "league": "SA", "match": "parma"},
 
     # --- リーグ・アン(フランス) ---
-    {"name_en": "Takumi Minamino", "name_jp": "南野拓実",
-     "team_en": "Monaco", "team_jp": "モナコ", "league": "FL1"},
-    {"name_en": "Ayumu Seko", "name_jp": "瀬古歩夢",
-     "team_en": "Le Havre", "team_jp": "ル・アーブル", "league": "FL1"},
-    {"name_en": "Sota Nakamura", "name_jp": "中村草太",
-     "team_en": "Le Havre", "team_jp": "ル・アーブル", "league": "FL1"},
-    {"name_en": "Kaito Mizuta", "name_jp": "水多海斗",
-     "team_en": "Le Havre", "team_jp": "ル・アーブル", "league": "FL1"},
+    {"name_en": "Takumi Minamino", "name_jp": "南野拓実", "team_en": "Monaco",
+     "team_jp": "モナコ", "league": "FL1", "match": "monaco"},
+    {"name_en": "Ayumu Seko", "name_jp": "瀬古歩夢", "team_en": "Le Havre",
+     "team_jp": "ル・アーブル", "league": "FL1", "match": "havre"},
+    {"name_en": "Sota Nakamura", "name_jp": "中村草太", "team_en": "Le Havre",
+     "team_jp": "ル・アーブル", "league": "FL1", "match": "havre"},
+    {"name_en": "Kaito Mizuta", "name_jp": "水多海斗", "team_en": "Le Havre",
+     "team_jp": "ル・アーブル", "league": "FL1", "match": "havre"},
 ]
+
+# クラブ名の照合について
+# ---------------------------------------------------------------------------
+# 上の team_en は人が読むための表記で、APIが返す名前とは一致しない。
+# football-data.org の name は正式名称なので、次のように長い:
+#
+#   "Liverpool"                → "Liverpool FC"
+#   "Bayern Munich"            → "FC Bayern München"
+#   "Borussia Monchengladbach" → "Borussia Mönchengladbach"
+#   "Le Havre"                 → "Le Havre AC"
+#   "Real Sociedad"            → "Real Sociedad de Fútbol"
+#
+# 当初は team.get("name") in {team_en...} という完全一致で照合していた。
+# これだと上のどれ1つ当たらない。開幕前で試合が0件だったため
+# 疎通確認では表面化せず、開幕後に「日本人選手が1人も検出されない」形で
+# 出るところだった。
+#
+# 対策として、各選手に match(照合キー)を持たせる。
+# 正式名称を正規化した文字列に、このキーが含まれるかどうかで判定する。
+# キーはリーグ内で一意になる語を選ぶ。"borussia" はドルトムントと
+# ぶつかるので使わず、"monchengladbach" を使う。
+
+def normalize_club(name: str) -> str:
+    """
+    クラブ名を照合用に潰す。
+
+    ウムラウト等を落とし、英数字だけを残して小文字に揃える。
+    空白も落とすので "Real Sociedad de Fútbol" は
+    "realsociedaddefutbol" になり、"sociedad" が部分一致で当たる。
+    """
+    if not name:
+        return ""
+    decomposed = unicodedata.normalize("NFKD", name)
+    ascii_only = "".join(c for c in decomposed if not unicodedata.combining(c))
+    return "".join(c for c in ascii_only.lower() if c.isalnum())
+
+
+def jp_players_for_club(name: str, league: str | None = None) -> list:
+    """APIが返したクラブ名に所属する日本人選手を返す。無ければ空。"""
+    norm = normalize_club(name)
+    if not norm:
+        return []
+    return [
+        p for p in JP_PLAYERS_SOCCER
+        if p["match"] in norm and (league is None or p["league"] == league)
+    ]
+
 
 # 上のleagueコードに対応する日本語名。資産動画などで見出しに使う。
 # ELC(イングランド2部)とBL2(ドイツ2部)は5大リーグではないが、
@@ -1317,8 +1368,6 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
     games: list[Game] = []
     standings: dict[str, Standing] = {}
 
-    jp_team_names = {p["team_en"] for p in JP_PLAYERS_SOCCER}
-
     for code, league_name in SOCCER_COMPETITIONS.items():
         matches_resp = _football_data_get(
             f"{FOOTBALL_DATA_BASE}/competitions/{code}/matches",
@@ -1355,10 +1404,9 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
 
             players: list[PlayerHighlight] = []
             for team in (home, away):
-                if team.get("name") in jp_team_names:
-                    jp_player = next(
-                        p for p in JP_PLAYERS_SOCCER if p["team_en"] == team["name"]
-                    )
+                # 同じクラブに複数の日本人選手がいる場合(ボルシアMGは3人)、
+                # 以前は next() で最初の1人しか拾えていなかった。
+                for jp_player in jp_players_for_club(team.get("name")):
                     players.append(
                         PlayerHighlight(
                             name=jp_player["name_jp"],
