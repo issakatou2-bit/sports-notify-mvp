@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-11T05:41:10.178117+00:00",
+  "updated_at": "2026-08-11T10:15:45.790771+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -8,19 +8,15 @@
     {
       "name": "MLB公式",
       "items": 25
-    },
-    {
-      "name": "ESPN",
-      "items": 16
     }
   ],
-  "titles_count": 67,
+  "titles_count": 51,
   "teams": [
     {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
-      "mentions": 8
+      "mentions": 6
     },
     {
       "team_id": "119",
@@ -35,15 +31,9 @@
       "mentions": 3
     },
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 3
-    },
-    {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
       "mentions": 3
     },
     {
@@ -53,22 +43,28 @@
       "mentions": 3
     },
     {
-      "team_id": "138",
-      "name": "カージナルス",
-      "name_en": "St. Louis Cardinals",
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
       "mentions": 2
     },
     {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
-      "mentions": 2
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 1
+    },
+    {
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
+      "mentions": 1
     }
   ],
   "players": [
     {
       "name": "千賀滉大",
-      "mentions": 3
+      "mentions": 2
     }
   ]
 }
