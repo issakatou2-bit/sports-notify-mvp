@@ -106,6 +106,49 @@ Google Search Console用の`web/googled4e966dc0b088ef6.html`が同じ形。
 4. `https://collespo.com/<ファイル名>`が開けることを確認してから、
    ポータル側で「検証」を押す
 
+## TikTokへの自動投稿
+
+`TIKTOK_REFRESH_TOKEN` が未設定の間、TikTokの処理は黙って飛ばされる。
+審査が通るまでは設定しない運用でよい。
+
+### 一度だけやる手順
+
+1. TikTok Developer Portal でドメイン `collespo.com` を確認する
+   (URL properties)。ToS・Privacy・Web URLの3つが同時に通る
+2. Login Kit の Redirect URI に
+   `https://collespo.com/tiktok/callback.html` を登録する
+3. `Deploy site` を実行して `/tiktok/` を公開する
+4. `https://collespo.com/tiktok/` を開き、Client key を入れてログインする
+5. 戻ってきた画面の認可コードを使い、手元で交換する
+
+   ```
+   TIKTOK_CLIENT_KEY=xxx TIKTOK_CLIENT_SECRET=yyy \
+     python3 scripts/tiktok_auth.py --code "<認可コード>"
+   ```
+
+6. 出力された refresh token を含む3つをGitHub Secretsへ登録する
+   (`TIKTOK_CLIENT_KEY` / `TIKTOK_CLIENT_SECRET` / `TIKTOK_REFRESH_TOKEN`)
+
+認可コードは一度きりで、数分で失効する。失敗したら4からやり直す。
+
+### 審査の前後で何が変わるか
+
+審査前は `video.publish` が付与されないため、投稿は**下書き**として
+TikTokアプリの受信箱に入る。公開範囲もTikTok側の制限で `SELF_ONLY`
+しか選べない。審査が通ると、コードを変えずに直接投稿へ切り替わる。
+
+投稿前に権限だけ確認したいときは `--dry-run` を使う。
+
+```
+python3 scripts/post_tiktok.py --video <mp4> --title テスト --dry-run
+```
+
+### リフレッシュトークンの期限
+
+有効期限は365日。投稿のたびにTikTok側が新しい値を返すことがあり、
+その場合は警告が出る。表示されたら Secrets の値を差し替える。
+放置すると、いずれ期限切れで投稿できなくなる。
+
 ## AI要約についてのコスト管理
 
 - Anthropic Consoleで**自動リロードはオフ**にしてある(意図的な設定、変更しないこと)
