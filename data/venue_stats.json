@@ -1,15 +1,15 @@
 {
-  "updated_at": "2026-08-10T18:13:35.495868+00:00",
+  "updated_at": "2026-08-11T08:13:01.336038+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-08-10",
-  "total_games": 1914,
+  "end": "2026-08-11",
+  "total_games": 1924,
   "min_games": 20,
   "venues": {
     "Sutter Health Park": {
-      "games": 52,
-      "runs": 592,
-      "avg_runs": 11.38,
+      "games": 53,
+      "runs": 608,
+      "avg_runs": 11.47,
       "rank": 1,
       "total": 30
     },
@@ -70,30 +70,30 @@
       "total": 30
     },
     "Chase Field": {
-      "games": 60,
-      "runs": 542,
+      "games": 61,
+      "runs": 551,
       "avg_runs": 9.03,
       "rank": 10,
+      "total": 30
+    },
+    "Target Field": {
+      "games": 58,
+      "runs": 523,
+      "avg_runs": 9.02,
+      "rank": 11,
+      "total": 30
+    },
+    "Truist Park": {
+      "games": 61,
+      "runs": 548,
+      "avg_runs": 8.98,
+      "rank": 12,
       "total": 30
     },
     "Citi Field": {
       "games": 59,
       "runs": 527,
       "avg_runs": 8.93,
-      "rank": 11,
-      "total": 30
-    },
-    "Target Field": {
-      "games": 57,
-      "runs": 509,
-      "avg_runs": 8.93,
-      "rank": 12,
-      "total": 30
-    },
-    "Truist Park": {
-      "games": 60,
-      "runs": 535,
-      "avg_runs": 8.92,
       "rank": 13,
       "total": 30
     },
@@ -118,45 +118,45 @@
       "rank": 16,
       "total": 30
     },
-    "Oracle Park": {
-      "games": 58,
-      "runs": 495,
-      "avg_runs": 8.53,
+    "UNIQLO Field at Dodger Stadium": {
+      "games": 59,
+      "runs": 504,
+      "avg_runs": 8.54,
       "rank": 17,
+      "total": 30
+    },
+    "Oracle Park": {
+      "games": 59,
+      "runs": 504,
+      "avg_runs": 8.54,
+      "rank": 18,
       "total": 30
     },
     "American Family Field": {
       "games": 65,
       "runs": 554,
       "avg_runs": 8.52,
-      "rank": 18,
+      "rank": 19,
       "total": 30
     },
     "Progressive Field": {
       "games": 59,
       "runs": 502,
       "avg_runs": 8.51,
-      "rank": 19,
-      "total": 30
-    },
-    "UNIQLO Field at Dodger Stadium": {
-      "games": 58,
-      "runs": 493,
-      "avg_runs": 8.5,
       "rank": 20,
-      "total": 30
-    },
-    "Rogers Centre": {
-      "games": 59,
-      "runs": 498,
-      "avg_runs": 8.44,
-      "rank": 21,
       "total": 30
     },
     "Tropicana Field": {
       "games": 59,
       "runs": 493,
       "avg_runs": 8.36,
+      "rank": 21,
+      "total": 30
+    },
+    "Rogers Centre": {
+      "games": 60,
+      "runs": 501,
+      "avg_runs": 8.35,
       "rank": 22,
       "total": 30
     },
@@ -174,17 +174,17 @@
       "rank": 24,
       "total": 30
     },
-    "Angel Stadium": {
-      "games": 59,
-      "runs": 484,
-      "avg_runs": 8.2,
+    "Busch Stadium": {
+      "games": 64,
+      "runs": 527,
+      "avg_runs": 8.23,
       "rank": 25,
       "total": 30
     },
-    "Busch Stadium": {
-      "games": 63,
-      "runs": 516,
-      "avg_runs": 8.19,
+    "Angel Stadium": {
+      "games": 60,
+      "runs": 489,
+      "avg_runs": 8.15,
       "rank": 26,
       "total": 30
     },
@@ -203,9 +203,9 @@
       "total": 30
     },
     "Petco Park": {
-      "games": 60,
-      "runs": 468,
-      "avg_runs": 7.8,
+      "games": 61,
+      "runs": 473,
+      "avg_runs": 7.75,
       "rank": 29,
       "total": 30
     },
