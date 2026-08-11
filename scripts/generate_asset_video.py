@@ -1,4 +1,4 @@
-"""
+﻿"""
 資産動画(日付に依存しない、作り置きできる動画)を生成する。
 
 日次のショートとの違い:
@@ -38,6 +38,7 @@ import wave
 
 from PIL import Image, ImageDraw, ImageFont
 
+import soccer_preview
 import venue_stats
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
@@ -795,7 +796,7 @@ def soccer_opening_items() -> list:
         # APIがまだ次シーズンへ切り替えていない競技会は飛ばす。
         # 飛ばさないと、既に終わったシーズンの開幕日を
         # 「これから始まります」として読み上げてしまう。
-        if c.get("stale"):
+        if soccer_preview.is_stale(c):
             continue
         start = _jp_day((c.get("season") or {}).get("start"))
         if not start:
@@ -819,7 +820,7 @@ def soccer_opening_items() -> list:
     # 「どのリーグを見るか」を決める材料にならない。
     picks = []
     for c in data.get("competitions", []):
-        if c.get("stale"):
+        if soccer_preview.is_stale(c):
             continue
         for m in c.get("highlights", []):
             picks.append((c.get("name_jp", c.get("code")), m))
@@ -852,7 +853,7 @@ def soccer_last_season_items() -> list:
     data = load_soccer_preview()
     items = []
     for c in data.get("competitions", []):
-        if c.get("stale"):
+        if soccer_preview.is_stale(c):
             continue
         table = c.get("last_season") or []
         if not table:
@@ -1398,3 +1399,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -137,6 +137,20 @@ def fetch_competition(code: str, api_key: str) -> dict:
     return out
 
 
+def is_stale(comp: dict) -> bool:
+    """
+    この競技会を出してよいか。出してはいけないなら True。
+
+    保存時に付けた stale だけを見ると、古いJSONを読んだときに判定できない。
+    実際、CLの不具合を直した後もサイトには終了済みの日程が出続けた。
+    日次の取得は3日間スキップするので、直っても数日はそのままになる。
+    保存された日付からも判断できるようにしておく。
+    """
+    if comp.get("stale"):
+        return True
+    return _ended((comp.get("season") or {}).get("end"))
+
+
 def _ended(end_date) -> bool:
     """そのシーズンが既に終わっているか。日付が読めなければ終了扱いにしない。"""
     if not end_date:

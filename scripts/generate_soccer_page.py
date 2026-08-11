@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 欧州サッカーの案内ページ public/soccer.html を作る。
 
@@ -27,8 +27,10 @@ import json
 import pathlib
 import sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
+import soccer_preview  # noqa: E402
 from notability_engine import (  # noqa: E402
     JP_PLAYERS_SOCCER,
     SOCCER_LEAGUE_NAME_JP,
@@ -189,7 +191,7 @@ def schedule_section(preview: dict) -> str:
     for c in comps:
         # APIがまだ次シーズンへ切り替えていない競技会は載せない。
         # 終わったシーズンの日程を「今シーズン」として出すことになる。
-        if c.get("stale"):
+        if soccer_preview.is_stale(c):
             continue
         season = c.get("season") or {}
         start, end = jp_day(season.get("start")), jp_day(season.get("end"))
@@ -213,7 +215,7 @@ def schedule_section(preview: dict) -> str:
 def highlights_section(preview: dict) -> str:
     picks = []
     for c in preview.get("competitions", []):
-        if c.get("stale"):
+        if soccer_preview.is_stale(c):
             continue
         for m in c.get("highlights", []):
             picks.append((c.get("name_jp", c.get("code")), m))
@@ -252,7 +254,7 @@ def highlights_section(preview: dict) -> str:
 def last_season_section(preview: dict) -> str:
     out = []
     for c in preview.get("competitions", []):
-        if c.get("stale"):
+        if soccer_preview.is_stale(c):
             continue
         table = c.get("last_season") or []
         if not table:
@@ -358,3 +360,4 @@ def main():
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
