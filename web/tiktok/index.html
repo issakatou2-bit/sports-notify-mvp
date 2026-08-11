@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>TikTok連携 | コレスポ</title>
+<meta name="robots" content="noindex" />
+<link rel="apple-touch-icon" href="../icons/icon-192.png" />
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0B0E14; --surface: #12161F; --border: #232838;
+    --text: #F2F0E6; --text-dim: #8891A3; --accent: #FFB020; --jp: #49C5B6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto; padding: 2rem 1.25rem 3rem; max-width: 640px;
+    background: var(--bg); color: var(--text); line-height: 1.8;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+  }
+  a { color: var(--accent); }
+  h1 { font-size: 1.4rem; color: var(--accent); margin: 0 0 0.2rem; }
+  .lead { color: var(--text-dim); font-size: 0.9rem; margin: 0 0 2rem; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem; margin: 1rem 0;
+  }
+  .card h2 { font-size: 1rem; color: var(--jp); margin: 0 0 0.6rem; }
+  label { display: block; font-size: 0.85rem; color: var(--text-dim);
+          margin: 0.8rem 0 0.3rem; }
+  input {
+    width: 100%; padding: 0.7rem 0.8rem; border-radius: 8px;
+    border: 1px solid var(--border); background: #0E121A; color: var(--text);
+    font-family: ui-monospace, monospace; font-size: 0.9rem;
+  }
+  button {
+    width: 100%; margin-top: 1.2rem; padding: 0.9rem 1rem; border: 0;
+    border-radius: 999px; background: var(--accent); color: #12161F;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+  }
+  button:disabled { background: #3A3F4C; color: var(--text-dim); cursor: not-allowed; }
+  .status { font-size: 0.85rem; margin-top: 0.8rem; }
+  .ok { color: var(--jp); }
+  .ng { color: #FF7A7A; }
+  ol { padding-left: 1.2rem; color: var(--text-dim); font-size: 0.85rem; }
+  code { background: #0E121A; padding: 0.1rem 0.35rem; border-radius: 4px;
+         font-size: 0.85em; }
+  .back { display: inline-block; font-size: 0.85rem; color: var(--text-dim);
+          text-decoration: none; margin-bottom: 1.2rem; }
+</style>
+</head>
+<body>
+  <a class="back" href="../index.html">&larr; コレスポ トップへ</a>
+  <h1>TikTok連携</h1>
+  <p class="lead">コレスポが自動生成した動画を、コレスポ自身のTikTokアカウントへ
+  投稿するための連携設定です。運営者向けの画面です。</p>
+
+  <div class="card">
+    <h2>1. アプリ情報</h2>
+    <p class="lead" style="margin:0 0 0.5rem">
+      TikTok Developer Portal の Client key を入れます。
+      この値は公開されても問題のないもので、この端末にだけ保存されます。
+      Client secret はここでは扱いません。</p>
+    <label for="ck">Client key</label>
+    <input id="ck" type="text" placeholder="aw..." autocomplete="off" />
+    <div class="status" id="ckStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. TikTokにログインして許可する</h2>
+    <p class="lead" style="margin:0">
+      TikTokの画面に移動します。コレスポのアカウントでログインし、
+      動画の投稿を許可してください。</p>
+    <button id="go" disabled>TikTokでログイン</button>
+    <div class="status" id="goStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>3. このあとの流れ</h2>
+    <ol>
+      <li>許可すると <code>/tiktok/callback.html</code> に戻ります</li>
+      <li>そこに表示される認可コードを控えます</li>
+      <li>手元で <code>scripts/tiktok_auth.py</code> を実行して
+          リフレッシュトークンに交換します</li>
+      <li>そのトークンを GitHub Secrets の
+          <code>TIKTOK_REFRESH_TOKEN</code> に登録します</li>
+    </ol>
+    <p class="lead" style="margin:0.6rem 0 0">
+      以降は毎日の自動投稿がこのトークンを使います。
+      トークンの有効期限は1年で、投稿のたびに自動で更新されます。</p>
+  </div>
+
+<script>
+  // 認可の入口。ここでは client_key しか扱わない。
+  // client_secret を使うトークン交換は、この画面ではなく手元で行う。
+  // 静的サイト(GitHub Pages)にsecretを置く必要が無いようにするため。
+  var REDIRECT_URI = location.origin + '/tiktok/callback.html';
+  var SCOPES = 'user.info.basic,video.publish,video.upload';
+
+  var ck = document.getElementById('ck');
+  var go = document.getElementById('go');
+  var ckStatus = document.getElementById('ckStatus');
+
+  ck.value = localStorage.getItem('collespo_tiktok_client_key') || '';
+
+  function refresh() {
+    var v = ck.value.trim();
+    go.disabled = v.length < 8;
+    ckStatus.textContent = v ? '戻り先: ' + REDIRECT_URI : '';
+    ckStatus.className = 'status ok';
+  }
+  ck.addEventListener('input', refresh);
+  refresh();
+
+  go.addEventListener('click', function () {
+    var key = ck.value.trim();
+    localStorage.setItem('collespo_tiktok_client_key', key);
+
+    // stateは、戻ってきたときに「自分が始めた認可か」を確かめるための値。
+    // これが無いと、他所から誘導された認可コードを受け取ってしまう。
+    //
+    // sessionStorage ではなく localStorage に置く。TikTokの認可は
+    // 別タブで戻ってくることがあり、sessionStorage はタブごとに
+    // 独立しているため、その場合に照合できなくなる。
+    var bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    var state = Array.from(bytes).map(function (b) {
+      return b.toString(16).padStart(2, '0');
+    }).join('');
+    localStorage.setItem('collespo_tiktok_state', state);
+
+    var url = 'https://www.tiktok.com/v2/auth/authorize/'
+      + '?client_key=' + encodeURIComponent(key)
+      + '&scope=' + encodeURIComponent(SCOPES)
+      + '&response_type=code'
+      + '&redirect_uri=' + encodeURIComponent(REDIRECT_URI)
+      + '&state=' + state;
+    location.href = url;
+  });
+</script>
+</body>
+</html>

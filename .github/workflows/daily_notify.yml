@@ -276,6 +276,27 @@ jobs:
             --thumbnail build/video/thumb.png \
             --privacy public
 
+      # 同じ動画をTikTokへも出す。タイトルはYouTube側の記録から借りるので、
+      # 先にUpload to YouTubeが終わっている必要がある。
+      #
+      # TIKTOK_REFRESH_TOKEN が未設定なら黙って飛ばす。審査が通るまでは
+      # 設定しない運用になるため、失敗として出すと毎日ノイズになる。
+      # 審査前は video.publish が付かないので、自動的に下書き投稿になる。
+      - name: Post to TikTok
+        continue-on-error: true
+        env:
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+        run: |
+          if [ -z "$TIKTOK_REFRESH_TOKEN" ]; then
+            echo "TikTokは未設定のため飛ばします"
+            exit 0
+          fi
+          python scripts/post_tiktok.py \
+            --video build/video/collespo_short.mp4 \
+            --kind daily
+
       # 動画IDは翌日以降のアーカイブページから参照する。
       # コミットしないと記録が毎回消えてしまう。
       - name: Commit video record
@@ -284,7 +305,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/published_videos.json || true
+          git add data/published_videos.json data/published_tiktok.json || true
           git diff --cached --quiet || git commit -m "video record: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いか、push対象が無いためスキップ"

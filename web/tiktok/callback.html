@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>TikTok連携 - 認可完了 | コレスポ</title>
+<meta name="robots" content="noindex" />
+<link rel="apple-touch-icon" href="../icons/icon-192.png" />
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0B0E14; --surface: #12161F; --border: #232838;
+    --text: #F2F0E6; --text-dim: #8891A3; --accent: #FFB020; --jp: #49C5B6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto; padding: 2rem 1.25rem 3rem; max-width: 640px;
+    background: var(--bg); color: var(--text); line-height: 1.8;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+  }
+  a { color: var(--accent); }
+  h1 { font-size: 1.4rem; margin: 0 0 0.2rem; }
+  h1.ok { color: var(--jp); }
+  h1.ng { color: #FF7A7A; }
+  .lead { color: var(--text-dim); font-size: 0.9rem; margin: 0 0 2rem; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem; margin: 1rem 0;
+  }
+  .card h2 { font-size: 1rem; color: var(--jp); margin: 0 0 0.6rem; }
+  .code {
+    background: #0E121A; border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.8rem; font-family: ui-monospace, monospace; font-size: 0.85rem;
+    word-break: break-all; user-select: all;
+  }
+  button {
+    width: 100%; margin-top: 0.8rem; padding: 0.8rem 1rem; border: 0;
+    border-radius: 999px; background: var(--accent); color: #12161F;
+    font-size: 0.95rem; font-weight: 700; cursor: pointer;
+  }
+  pre {
+    background: #0E121A; border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.8rem; overflow-x: auto; font-size: 0.8rem; margin: 0.5rem 0 0;
+  }
+  .note { color: var(--text-dim); font-size: 0.82rem; }
+  .back { display: inline-block; font-size: 0.85rem; color: var(--text-dim);
+          text-decoration: none; margin-bottom: 1.2rem; }
+</style>
+</head>
+<body>
+  <a class="back" href="./">&larr; TikTok連携にもどる</a>
+  <h1 id="title">確認しています…</h1>
+  <p class="lead" id="lead"></p>
+  <div id="body"></div>
+
+<script>
+  var p = new URLSearchParams(location.search);
+  var code = p.get('code');
+  var state = p.get('state');
+  var error = p.get('error');
+  var errorDesc = p.get('error_description');
+
+  var title = document.getElementById('title');
+  var lead = document.getElementById('lead');
+  var body = document.getElementById('body');
+
+  function fail(msg, detail) {
+    title.textContent = '連携できませんでした';
+    title.className = 'ng';
+    lead.textContent = msg;
+    if (detail) {
+      body.innerHTML = '<div class="card"><h2>詳細</h2><pre></pre></div>';
+      body.querySelector('pre').textContent = detail;
+    }
+  }
+
+  if (error) {
+    fail('TikTok側で許可が完了しませんでした。', error + (errorDesc ? '\n' + errorDesc : ''));
+  } else if (!code) {
+    fail('認可コードが見つかりません。最初からやり直してください。');
+  } else {
+    // 自分が始めた認可かどうかを確かめる。
+    // 一致しない場合、別の場所から誘導された認可コードの可能性がある。
+    var expected = localStorage.getItem('collespo_tiktok_state');
+    if (expected && state !== expected) {
+      fail('認可の照合に失敗しました(stateが一致しません)。'
+         + 'このコードは使わずに、最初からやり直してください。');
+    } else {
+      // 照合できなかった場合は、素通りさせずにその事実を出す。
+      // 黙って通すと「確認された」と受け取られてしまう。
+      var unchecked = !expected;
+      localStorage.removeItem('collespo_tiktok_state');
+      title.textContent = '許可を受け取りました';
+      title.className = 'ok';
+      lead.textContent = 'あと1回だけ、手元での操作が必要です。'
+        + 'このコードは数分で失効するので、続けて実行してください。';
+
+      body.innerHTML = (unchecked
+        ? '<div class="card"><h2>確認できなかったこと</h2>'
+        + '<p class="note">この端末に照合用の値が残っていないため、'
+        + 'この認可がこの画面から始めたものかを確かめられませんでした。'
+        + '自分で「TikTokでログイン」を押した直後であれば問題ありません。'
+        + '心当たりが無い場合は、このコードを使わないでください。</p></div>'
+        : '') +
+        '<div class="card"><h2>1. 認可コード</h2>'
+        + '<div class="code" id="c"></div>'
+        + '<button id="copy">コードをコピー</button>'
+        + '<p class="note">このコードは一度しか使えません。'
+        + '第三者に渡さないでください。</p></div>'
+        + '<div class="card"><h2>2. 手元で実行する</h2>'
+        + '<pre id="cmd"></pre>'
+        + '<p class="note">client secret を扱うため、この処理はブラウザではなく'
+        + '手元で行います。静的サイトに secret を置かずに済むようにするためです。</p>'
+        + '</div>'
+        + '<div class="card"><h2>3. 出力されたトークンを登録する</h2>'
+        + '<p class="note">表示された refresh token を、GitHubリポジトリの '
+        + 'Settings → Secrets and variables → Actions で '
+        + '<code>TIKTOK_REFRESH_TOKEN</code> として登録します。'
+        + '以降の自動投稿がこれを使います。</p></div>';
+
+      document.getElementById('c').textContent = code;
+      document.getElementById('cmd').textContent =
+        'python scripts/tiktok_auth.py --code "' + code + '"';
+      document.getElementById('copy').addEventListener('click', function () {
+        navigator.clipboard.writeText(code).then(function () {
+          document.getElementById('copy').textContent = 'コピーしました';
+        });
+      });
+    }
+  }
+</script>
+</body>
+</html>

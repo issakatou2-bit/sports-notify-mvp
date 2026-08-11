@@ -108,6 +108,9 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
         run: |
           set +e
           for mode in players local; do
@@ -147,6 +150,13 @@ jobs:
               --recap data/morning_recap.json \
               --thumbnail "build/morning/thumb_${mode}.png" \
               --privacy public
+
+            # TikTokへも同じものを出す。タイトルはYouTube側の記録から借りる。
+            # 記録上の区分は players→morning / local→morning_local。
+            if [ -n "$TIKTOK_REFRESH_TOKEN" ]; then
+              if [ "$mode" = "players" ]; then TK=morning; else TK=morning_local; fi
+              python scripts/post_tiktok.py --video "$VIDEO" --kind "$TK"
+            fi
             echo "::endgroup::"
 
             # 2本目は少し間を置く。同時に上げると初速が分散する
@@ -162,7 +172,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/morning_recap.json data/venue_stats.json \
             data/published_videos.json data/mlb_buzz.json \
-            data/local_buzz.json || true
+            data/local_buzz.json data/published_tiktok.json || true
           git diff --cached --quiet || git commit -m "recap: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いか、push対象が無いためスキップ"
