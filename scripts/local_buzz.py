@@ -44,12 +44,23 @@ from notability_engine import (  # noqa: E402
 
 UA = {"User-Agent": "collespo/1.0 (+https://collespo.com)"}
 
+# 球団別サブレディット(r/Dodgers など)も試したが、外した。
+#   ・Redditのレート制限が厳しく、3つ足したうち2つが429で取れなかった。
+#     日によって取れたり取れなかったりするので、数字が安定しない
+#   ・そのチームの名前が必ず出るため、球団の言及数の比較には使えない
+#     (板の投稿数の多さがそのまま順位になってしまう)
+#   ・結局そこから増えたのは日本人選手の言及1件だけで、
+#     実行時間が倍になるのに見合わなかった
+# 全体板と報道で十分に機能しているので、ここはこの構成を保つ。
 FEEDS = [
     ("r/baseball", "https://www.reddit.com/r/baseball/.rss"),
-    ("r/mlb", "https://www.reddit.com/r/mlb/.rss"),
     ("MLB公式", "https://www.mlb.com/feeds/news/rss.xml"),
     ("ESPN", "https://www.espn.com/espn/rss/mlb/news"),
 ]
+
+# 特定球団に偏るフィードを足す場合、球団の集計からは外す必要がある。
+# 現在は該当なし(上記の理由で球団別板を使っていないため)。
+TEAM_BIASED: set = set()
 
 # 通称が2語になる球団。ここを1語(Sox / Jays)で数えると、
 # レッドソックスとホワイトソックスが混ざってしまう。
@@ -133,7 +144,8 @@ def count_mentions(text: str) -> tuple:
 
 
 def build() -> dict:
-    all_titles = []
+    neutral_titles = []   # 球団の言及数を数える対象
+    all_titles = []       # 選手の言及数を数える対象(球団別板も含む)
     sources = []
     for i, (name, url) in enumerate(FEEDS):
         if i:
@@ -142,12 +154,17 @@ def build() -> dict:
         if titles:
             sources.append({"name": name, "items": len(titles)})
             all_titles += titles
+            if name not in TEAM_BIASED:
+                neutral_titles += titles
         print(f"[info] {name}: {len(titles)}件")
 
     if not all_titles:
         return {}
 
-    teams, players = count_mentions(" ".join(all_titles))
+    # 球団の順位は中立な板だけで数える。球団別板を混ぜると、
+    # その球団の名前が必ず出るぶん、単に板の投稿数の多さが順位になってしまう。
+    teams, _ = count_mentions(" ".join(neutral_titles))
+    _, players = count_mentions(" ".join(all_titles))
     ranked = [{"team_id": tid, "name": MLB_TEAM_NAME_JP.get(tid, tid),
                "name_en": MLB_TEAM_NAME_EN.get(tid, ""), "mentions": n}
               for tid, n in teams.most_common(8)]
