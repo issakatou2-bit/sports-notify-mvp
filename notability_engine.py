@@ -836,49 +836,97 @@ MLB_RIVALRY_NOTES = {
 
 # 2026年7月時点、Web検索で確認できた範囲のみ記載。追加・更新推奨。
 JP_PLAYERS_SOCCER = [
-    # 2026-27シーズン、5大リーグ所属の日本人選手。
+    # 2026-27シーズン、欧州主要リーグ所属の日本人選手。
+    # 大半は5大リーグだが、イングランド2部・ドイツ2部の選手も含む。
     # 2026年8月4日に外部の一覧記事と突き合わせて更新。
     # 欧州の移籍市場は9月2日早朝(日本時間)まで開いているため、
     # 閉幕後にもう一度確認すること。
     #
     # チーム名(team_en)はfootball-data.orgのAPIが返す表記と
     # 突き合わせるので、表記が合わないと検出できない点に注意。
+    #
+    # league / team_jp は表示と読み上げのために持つ。
+    # 所属リーグをコメントだけで表していた頃は、リーグ単位で選手をまとめる
+    # 処理が書けなかった。team_jp が要るのは、読み上げ(VOICEVOX)が
+    # "Borussia Monchengladbach" のような英字を正しく読めないため。
 
     # --- プレミアリーグ(イングランド) ---
-    {"name_en": "Wataru Endo", "name_jp": "遠藤航", "team_en": "Liverpool"},
-    {"name_en": "Kaoru Mitoma", "name_jp": "三笘薫", "team_en": "Brighton"},
-    {"name_en": "Daichi Kamada", "name_jp": "鎌田大地", "team_en": "Crystal Palace"},
-    {"name_en": "Kota Takai", "name_jp": "高井幸大", "team_en": "Tottenham"},
-    {"name_en": "Ao Tanaka", "name_jp": "田中碧", "team_en": "Leeds United"},
-    {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂元達裕", "team_en": "Coventry City"},
-    {"name_en": "Daizen Maeda", "name_jp": "前田大然", "team_en": "Ipswich Town"},
-    {"name_en": "Hidemasa Morita", "name_jp": "守田英正", "team_en": "Hull City"},
+    {"name_en": "Wataru Endo", "name_jp": "遠藤航",
+     "team_en": "Liverpool", "team_jp": "リバプール", "league": "PL"},
+    {"name_en": "Kaoru Mitoma", "name_jp": "三笘薫",
+     "team_en": "Brighton", "team_jp": "ブライトン", "league": "PL"},
+    {"name_en": "Daichi Kamada", "name_jp": "鎌田大地",
+     "team_en": "Crystal Palace", "team_jp": "クリスタル・パレス", "league": "PL"},
+    {"name_en": "Kota Takai", "name_jp": "高井幸大",
+     "team_en": "Tottenham", "team_jp": "トッテナム", "league": "PL"},
+    {"name_en": "Ao Tanaka", "name_jp": "田中碧",
+     "team_en": "Leeds United", "team_jp": "リーズ", "league": "PL"},
+    {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂元達裕",
+     "team_en": "Coventry City", "team_jp": "コベントリー", "league": "ELC"},
+    {"name_en": "Daizen Maeda", "name_jp": "前田大然",
+     "team_en": "Ipswich Town", "team_jp": "イプスウィッチ", "league": "ELC"},
+    {"name_en": "Hidemasa Morita", "name_jp": "守田英正",
+     "team_en": "Hull City", "team_jp": "ハル・シティ", "league": "ELC"},
 
     # --- ラ・リーガ(スペイン) ---
-    {"name_en": "Takefusa Kubo", "name_jp": "久保建英", "team_en": "Real Sociedad"},
-    {"name_en": "Ryunosuke Sato", "name_jp": "佐藤龍之介", "team_en": "Valencia"},
+    {"name_en": "Takefusa Kubo", "name_jp": "久保建英",
+     "team_en": "Real Sociedad", "team_jp": "レアル・ソシエダ", "league": "PD"},
+    {"name_en": "Ryunosuke Sato", "name_jp": "佐藤龍之介",
+     "team_en": "Valencia", "team_jp": "バレンシア", "league": "PD"},
 
     # --- ブンデスリーガ(ドイツ) ---
-    {"name_en": "Hiroki Ito", "name_jp": "伊藤洋輝", "team_en": "Bayern Munich"},
-    {"name_en": "Koki Machida", "name_jp": "町田浩樹", "team_en": "Hoffenheim"},
-    {"name_en": "Yuito Suzuki", "name_jp": "鈴木唯人", "team_en": "Freiburg"},
-    {"name_en": "Ritsu Doan", "name_jp": "堂安律", "team_en": "Eintracht Frankfurt"},
-    {"name_en": "Kaishu Sano", "name_jp": "佐野海舟", "team_en": "Mainz"},
-    {"name_en": "Sota Kawasaki", "name_jp": "川﨑颯太", "team_en": "Mainz"},
-    {"name_en": "Shuto Machino", "name_jp": "町野修斗", "team_en": "Borussia Monchengladbach"},
-    {"name_en": "Zento Uno", "name_jp": "宇野禅斗", "team_en": "Borussia Monchengladbach"},
-    {"name_en": "Daiki Hashioka", "name_jp": "橋岡大樹", "team_en": "Borussia Monchengladbach"},
-    {"name_en": "Satoshi Tanaka", "name_jp": "田中聡", "team_en": "Schalke"},
+    {"name_en": "Hiroki Ito", "name_jp": "伊藤洋輝",
+     "team_en": "Bayern Munich", "team_jp": "バイエルン", "league": "BL1"},
+    {"name_en": "Koki Machida", "name_jp": "町田浩樹",
+     "team_en": "Hoffenheim", "team_jp": "ホッフェンハイム", "league": "BL1"},
+    {"name_en": "Yuito Suzuki", "name_jp": "鈴木唯人",
+     "team_en": "Freiburg", "team_jp": "フライブルク", "league": "BL1"},
+    {"name_en": "Ritsu Doan", "name_jp": "堂安律",
+     "team_en": "Eintracht Frankfurt", "team_jp": "フランクフルト", "league": "BL1"},
+    {"name_en": "Kaishu Sano", "name_jp": "佐野海舟",
+     "team_en": "Mainz", "team_jp": "マインツ", "league": "BL1"},
+    {"name_en": "Sota Kawasaki", "name_jp": "川﨑颯太",
+     "team_en": "Mainz", "team_jp": "マインツ", "league": "BL1"},
+    {"name_en": "Shuto Machino", "name_jp": "町野修斗",
+     "team_en": "Borussia Monchengladbach",
+     "team_jp": "ボルシアMG", "league": "BL1"},
+    {"name_en": "Zento Uno", "name_jp": "宇野禅斗",
+     "team_en": "Borussia Monchengladbach",
+     "team_jp": "ボルシアMG", "league": "BL1"},
+    {"name_en": "Daiki Hashioka", "name_jp": "橋岡大樹",
+     "team_en": "Borussia Monchengladbach",
+     "team_jp": "ボルシアMG", "league": "BL1"},
+    {"name_en": "Satoshi Tanaka", "name_jp": "田中聡",
+     "team_en": "Schalke", "team_jp": "シャルケ", "league": "BL2"},
 
     # --- セリエA(イタリア) ---
-    {"name_en": "Zion Suzuki", "name_jp": "鈴木ザイオン", "team_en": "Parma"},
+    {"name_en": "Zion Suzuki", "name_jp": "鈴木ザイオン",
+     "team_en": "Parma", "team_jp": "パルマ", "league": "SA"},
 
     # --- リーグ・アン(フランス) ---
-    {"name_en": "Takumi Minamino", "name_jp": "南野拓実", "team_en": "Monaco"},
-    {"name_en": "Ayumu Seko", "name_jp": "瀬古歩夢", "team_en": "Le Havre"},
-    {"name_en": "Sota Nakamura", "name_jp": "中村草太", "team_en": "Le Havre"},
-    {"name_en": "Kaito Mizuta", "name_jp": "水多海斗", "team_en": "Le Havre"},
+    {"name_en": "Takumi Minamino", "name_jp": "南野拓実",
+     "team_en": "Monaco", "team_jp": "モナコ", "league": "FL1"},
+    {"name_en": "Ayumu Seko", "name_jp": "瀬古歩夢",
+     "team_en": "Le Havre", "team_jp": "ル・アーブル", "league": "FL1"},
+    {"name_en": "Sota Nakamura", "name_jp": "中村草太",
+     "team_en": "Le Havre", "team_jp": "ル・アーブル", "league": "FL1"},
+    {"name_en": "Kaito Mizuta", "name_jp": "水多海斗",
+     "team_en": "Le Havre", "team_jp": "ル・アーブル", "league": "FL1"},
 ]
+
+# 上のleagueコードに対応する日本語名。資産動画などで見出しに使う。
+# ELC(イングランド2部)とBL2(ドイツ2部)は5大リーグではないが、
+# 日本人選手が在籍しているので名簿には載せ、見出しで区別する。
+SOCCER_LEAGUE_NAME_JP = {
+    "PL": "プレミアリーグ",
+    "ELC": "イングランド2部（チャンピオンシップ）",
+    "PD": "ラ・リーガ",
+    "SA": "セリエA",
+    "BL1": "ブンデスリーガ",
+    "BL2": "ブンデスリーガ2部",
+    "FL1": "リーグ・アン",
+    "CL": "チャンピオンズリーグ",
+}
 
 # 移籍市場は9月2日早朝(日本時間)まで開いている。閉幕後に再確認すること。
 

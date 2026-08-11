@@ -42,6 +42,7 @@ import venue_stats
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import (  # noqa: E402
     JP_PLAYERS_MLB,
+    JP_PLAYERS_SOCCER,
     MLB_DIVISION_NAME_JP,
     MLB_DIVISIONS,
     MLB_RIVALRIES,
@@ -50,6 +51,7 @@ from notability_engine import (  # noqa: E402
     MLB_TEAM_COLOR,
     MLB_TEAM_NAME_JP,
     MLB_VENUE_NOTES,
+    SOCCER_LEAGUE_NAME_JP,
 )
 
 # 縦型(ショート向け)
@@ -443,6 +445,63 @@ LIST_TOPICS = {
                       "日本の投手が得意とすることで知られています"),
         ],
     },
+    # --- 欧州サッカー ---
+    # MLBがオフに入る10月以降、コレスポの主戦場はサッカーになる。
+    # 開幕(8月下旬)前に、見るための前提を揃えておく回。
+    "soccer_leagues": {
+        "label": "欧州5大リーグ",
+        "hook": "5大リーグって何が違う？",
+        "heading": "欧州5大リーグ",
+        "intro": "欧州サッカーは国ごとにリーグがあり、"
+                 "中でも規模の大きい5つが5大リーグと呼ばれます。",
+        "items": [
+            ("プレミアリーグ（イングランド）", "20クラブ。放映権収入が最も大きく、"
+                                     "資金力の面で世界最高峰とされます。"
+                                     "日本人選手が多く在籍するリーグでもあります"),
+            ("ラ・リーガ（スペイン）", "20クラブ。技術と戦術を重んじる作りで、"
+                               "レアル・マドリードとバルセロナの2強が長く中心にいます"),
+            ("セリエA（イタリア）", "20クラブ。守備の組織を重視する伝統があり、"
+                             "戦術的な駆け引きが見どころとされます"),
+            ("ブンデスリーガ（ドイツ）", "18クラブ。観客動員が多く、"
+                                "若手が出場機会を得やすいリーグとして知られます"),
+            ("リーグ・アン（フランス）", "18クラブ。育成に定評があり、"
+                                "ここから他リーグへ移る選手が多く出ます"),
+            ("チャンピオンズリーグ", "各国リーグの上位クラブが集まる大会。"
+                              "火曜と水曜に開催されるので、"
+                              "週末のリーグ戦と合わせるとほぼ毎日試合があります"),
+        ],
+    },
+    "soccer_jp": {
+        "label": "欧州の日本人選手",
+        "hook": "欧州に何人いる？",
+        "heading": "欧州でプレーする日本人選手",
+        "intro": "いま欧州のクラブに所属している日本人選手を、まとめて見ていきます。"
+                 "名前と所属を知っておくと、どの試合を見るか決めやすくなります。",
+        # 項目は名簿(JP_PLAYERS_SOCCER)から自動で組み立てる
+        "dynamic": "soccer_jp",
+        "items": [],
+    },
+    "soccer_terms": {
+        "label": "サッカーで使われる指標",
+        "hook": "xG って何の数字？",
+        "heading": "サッカーで使われる指標",
+        "intro": "中継や記事でよく出てくる数字を、意味だけ押さえておきましょう。"
+                 "分かると、スコア以外の見どころが増えます。",
+        "items": [
+            ("xG（期待ゴール）", "そのシュートが決まる確率を、位置や状況から見積もった数字。"
+                          "0.8なら「8割方入る場面」。"
+                          "試合のxGを足すと「本来何点入ってもおかしくなかったか」が見えます"),
+            ("xA（期待アシスト）", "そのパスがアシストになる確率。"
+                           "得点に結びつかなくても、良い形を作れていたかが分かります"),
+            ("ポゼッション率", "ボールを保持していた時間の割合。"
+                        "ただし高いほど強いとは限らず、"
+                        "あえて持たせて守る戦い方もあります"),
+            ("PPDA", "相手が何本パスを通すごとに守備を仕掛けたかを表す数字。"
+                     "小さいほど前から激しく追っている、という読み方をします"),
+            ("クリーンシート", "無失点で試合を終えること。"
+                        "守備陣とGKの評価によく使われます"),
+        ],
+    },
     "collespo_guide": {
         "label": "コレスポの使い方",
         "hook": "毎日19時に届きます",
@@ -600,6 +659,58 @@ def _jp_player_items() -> list:
     return items
 
 
+def soccer_jp_items() -> list:
+    """
+    欧州でプレーする日本人選手の一覧を、名簿から組み立てる。
+
+    JP_PLAYERS_SOCCER をそのまま使うので、選手リストを更新すれば
+    動画の内容も自動で追従する。手で書き写すと、移籍のたびに
+    どちらかが古くなる。
+
+    リーグごとにまとめる。人数で機械的に4人ずつ区切ると
+    「1〜4人目」という、視聴者にとって意味のない見出しになり、
+    最後の画面が1人だけになることもある。リーグで分ければ
+    見出しがそのまま「どこのリーグの話か」になる。
+
+    クラブ名は日本語表記(team_jp)を使う。読み上げが英字を
+    正しく読めないため。所属クラブは移籍市場で変わるので、
+    市場が閉じた直後(例年9月上旬)に作り直すこと。
+    """
+    order = ["PL", "PD", "SA", "BL1", "FL1"]
+    # 2部リーグは各国1〜3人しかいない。リーグごとに項目を立てると
+    # 「1人だけの画面」ができてしまうので、ひとまとめにする。
+    second_tier = ["ELC", "BL2"]
+
+    by_league: dict = {}
+    for p in JP_PLAYERS_SOCCER:
+        by_league.setdefault(p["league"], []).append(p)
+
+    # 名簿に想定外のリーグコードが増えても落とさない
+    for code in by_league:
+        if code not in order and code not in second_tier:
+            order.append(code)
+
+    def names(members):
+        return "／".join(f"{p['name_jp']}（{p['team_jp']}）" for p in members)
+
+    out = []
+    for code in order:
+        members = by_league.get(code)
+        if not members:
+            continue
+        head = f"{SOCCER_LEAGUE_NAME_JP.get(code, code)}（{len(members)}人）"
+        out.append((head, names(members)))
+
+    lower = [(c, by_league[c]) for c in second_tier if by_league.get(c)]
+    if lower:
+        total = sum(len(m) for _, m in lower)
+        body = "。".join(
+            f"{SOCCER_LEAGUE_NAME_JP.get(c, c)}は{names(m)}" for c, m in lower
+        )
+        out.append((f"2部リーグ（{total}人）", body))
+    return out
+
+
 def list_items(topic: str) -> list:
     """
     そのトピックで実際に表示する項目リスト。
@@ -615,6 +726,8 @@ def list_items(topic: str) -> list:
     # 選手が入れ替わったときに片方だけ古くなる。
     if spec.get("dynamic") == "jp_players":
         items = _jp_player_items()
+    elif spec.get("dynamic") == "soccer_jp":
+        items = soccer_jp_items()
     else:
         items = list(spec["items"])
 
