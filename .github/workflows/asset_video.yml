@@ -36,6 +36,8 @@ on:
           - soccer_leagues
           - soccer_jp
           - soccer_terms
+          - soccer_opening
+          - soccer_last_season
           - venue_coors
           - venue_fenway
           - venue_wrigley
@@ -91,6 +93,15 @@ jobs:
         continue-on-error: true
         run: python scripts/venue_stats.py --out data/venue_stats.json
 
+      # サッカーの開幕日程・昨季順位。soccer_opening と soccer_last_season が
+      # これを読む。取れなければその2トピックだけが作られず、他は通る。
+      # 開幕日程も昨季順位もAPIから取るので、こちらで書き起こす部分は無い。
+      - name: Fetch soccer preview
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/soccer_preview.py --out data/soccer_preview.json
+
       - name: Start VOICEVOX engine
         continue-on-error: true
         run: |
@@ -120,7 +131,7 @@ jobs:
         run: |
           TOPICS="${{ inputs.topic }}"
           if [ "$TOPICS" = "all" ]; then
-            TOPICS="mlb_abbr mlb_venue mlb_rivalry mlb_stats mlb_terms mlb_league mlb_position collespo_guide jp_players mlb_watch mlb_postseason npb_diff mlb_advanced mlb_pitch soccer_leagues soccer_jp soccer_terms venue_coors venue_fenway venue_wrigley venue_oracle venue_yankee"
+            TOPICS="mlb_abbr mlb_venue mlb_rivalry mlb_stats mlb_terms mlb_league mlb_position collespo_guide jp_players mlb_watch mlb_postseason npb_diff mlb_advanced mlb_pitch soccer_leagues soccer_jp soccer_terms soccer_opening soccer_last_season venue_coors venue_fenway venue_wrigley venue_oracle venue_yankee"
             echo "::notice::全トピックを対象にします。投稿済みのものは自動で飛ばします"
           fi
 
@@ -191,7 +202,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/published_assets.json data/venue_stats.json || true
+          git add data/published_assets.json data/venue_stats.json \
+            data/soccer_preview.json || true
           git diff --cached --quiet || git commit -m "published assets: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いか、push対象が無いためスキップ"

@@ -97,5 +97,61 @@ print("未カバーの選手:", missing or "なし")
 if missing:
     fails += 1
 
+
+# ---------------------------------------------------------------------------
+# 日本語表記(club_name_jp)
+# ---------------------------------------------------------------------------
+# 取り違えが起きやすい組み合わせを重点的に見る。
+# 特に "AC Milan" と "FC Internazionale Milano" は、
+# 短いキー("milan")を先に見ると両方ミランになる。
+
+NAME_CASES = [
+    ("FC Internazionale Milano", "インテル"),
+    ("AC Milan", "ACミラン"),
+    ("Real Madrid CF", "レアル・マドリード"),
+    ("Club Atlético de Madrid", "アトレティコ・マドリード"),
+    ("Real Sociedad de Fútbol", "レアル・ソシエダ"),
+    ("Real Betis Balompié", "レアル・ベティス"),
+    ("Athletic Club", "アスレティック・ビルバオ"),
+    ("Paris Saint-Germain FC", "パリ・サンジェルマン"),
+    ("Paris FC", "パリFC"),
+    ("Manchester City FC", "マンチェスター・シティ"),
+    ("Manchester United FC", "マンチェスター・ユナイテッド"),
+    ("Bayer 04 Leverkusen", "レバークーゼン"),
+    ("FC Bayern München", "バイエルン"),
+    ("Borussia Dortmund", "ドルトムント"),
+    ("Borussia Mönchengladbach", "ボルシアMG"),
+    ("1. FC Köln", "ケルン"),
+    ("Olympique Lyonnais", "リヨン"),
+    ("Olympique de Marseille", "マルセイユ"),
+    ("LOSC Lille", "リール"),
+    ("Stade Rennais FC 1901", "レンヌ"),
+    ("Le Havre AC", "ル・アーブル"),
+    ("AS Roma", "ローマ"),
+    ("SV Werder Bremen", "ブレーメン"),
+    ("1. FC Union Berlin", "ウニオン・ベルリン"),
+    ("FC St. Pauli", "ザンクトパウリ"),
+    ("Hamburger SV", "ハンブルク"),
+    # 一覧に無いクラブは、そのまま返る(欠けても落ちない)
+    ("Some Unknown FC", "Some Unknown FC"),
+]
+
+print()
+for api_name, want in NAME_CASES:
+    got = ne.club_name_jp(api_name)
+    ok = got == want
+    if not ok:
+        fails += 1
+    print(f"{'ok ' if ok else 'NG '} {api_name:28} -> {got}"
+          + ("" if ok else f"  (期待 {want})"))
+
+# 名簿にいるクラブは名簿の team_jp と必ず一致すること。
+# ここが割れると、同じクラブが動画とサイトで別名になる。
+for p in ne.JP_PLAYERS_SOCCER:
+    got = ne.club_name_jp(p["team_en"])
+    if got != p["team_jp"]:
+        fails += 1
+        print(f"NG  表記割れ: {p['team_en']} -> {got} (名簿は {p['team_jp']})")
+
 print("\nALL OK" if fails == 0 else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

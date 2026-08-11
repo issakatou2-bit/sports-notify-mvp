@@ -965,6 +965,153 @@ def jp_players_for_club(name: str, league: str | None = None) -> list:
     ]
 
 
+# クラブ名の日本語表記
+# ---------------------------------------------------------------------------
+# 日本人選手が居るクラブは名簿に team_jp を持っているが、
+# 開幕日程や昨季順位にはそれ以外のクラブも出てくる。
+# 読み上げ(VOICEVOX)は "Olympique Lyonnais" のような英字を読めないので、
+# 主要クラブぶんの表記をここに置く。
+#
+# 照合は normalize_club() を通した部分一致で、長いキーから順に見る。
+# キーの選び方に注意が要る例:
+#   internazionale : "FC Internazionale Milano" は "milan" を含むので、
+#                    ミランより先に判定しないとインテルがミランになる
+#   acmilan        : 上の理由で "milan" ではなく "acmilan" を使う
+#   realmadrid     : "Club Atlético de Madrid" と分けるため地名だけでは足りない
+#   saintgermain   : "Paris FC" と分けるため
+#
+# 一覧に無いクラブは英語表記のまま出る(欠けても落ちない)。
+SOCCER_CLUB_NAME_JP = {
+    # --- プレミアリーグ ---
+    "arsenal": "アーセナル",
+    "astonvilla": "アストン・ヴィラ",
+    "bournemouth": "ボーンマス",
+    "brentford": "ブレントフォード",
+    "brighton": "ブライトン",
+    "burnley": "バーンリー",
+    "chelsea": "チェルシー",
+    "crystalpalace": "クリスタル・パレス",
+    "everton": "エバートン",
+    "fulham": "フラム",
+    "leeds": "リーズ",
+    "liverpool": "リバプール",
+    "manchestercity": "マンチェスター・シティ",
+    "manchesterunited": "マンチェスター・ユナイテッド",
+    "newcastle": "ニューカッスル",
+    "nottingham": "ノッティンガム・フォレスト",
+    "sunderland": "サンダーランド",
+    "tottenham": "トッテナム",
+    "westham": "ウェストハム",
+    "wolverhampton": "ウルバーハンプトン",
+
+    # --- ラ・リーガ ---
+    "realmadrid": "レアル・マドリード",
+    "barcelona": "バルセロナ",
+    "atletico": "アトレティコ・マドリード",
+    "athletic": "アスレティック・ビルバオ",
+    "villarreal": "ビジャレアル",
+    "betis": "レアル・ベティス",
+    "sevilla": "セビージャ",
+    "valencia": "バレンシア",
+    "sociedad": "レアル・ソシエダ",
+    "girona": "ジローナ",
+    "celta": "セルタ",
+    "osasuna": "オサスナ",
+    "mallorca": "マジョルカ",
+    "rayo": "ラージョ・バジェカーノ",
+    "getafe": "ヘタフェ",
+    "espanyol": "エスパニョール",
+    "alaves": "アラベス",
+    "levante": "レバンテ",
+    "elche": "エルチェ",
+
+    # --- セリエA ---
+    # インテルを先に見る(下の acmilan より長いので自然に先になる)
+    "internazionale": "インテル",
+    "acmilan": "ACミラン",
+    "juventus": "ユベントス",
+    "napoli": "ナポリ",
+    "roma": "ローマ",
+    "lazio": "ラツィオ",
+    "atalanta": "アタランタ",
+    "fiorentina": "フィオレンティーナ",
+    "bologna": "ボローニャ",
+    "torino": "トリノ",
+    "udinese": "ウディネーゼ",
+    "genoa": "ジェノア",
+    "parma": "パルマ",
+    "cagliari": "カリアリ",
+    "lecce": "レッチェ",
+    "verona": "ベローナ",
+    "sassuolo": "サッスオーロ",
+    "cremonese": "クレモネーゼ",
+
+    # --- ブンデスリーガ ---
+    "bayern": "バイエルン",
+    "dortmund": "ドルトムント",
+    "leverkusen": "レバークーゼン",
+    "leipzig": "ライプツィヒ",
+    "stuttgart": "シュツットガルト",
+    "eintrachtfrankfurt": "フランクフルト",
+    "wolfsburg": "ボルフスブルク",
+    "freiburg": "フライブルク",
+    "mainz": "マインツ",
+    "monchengladbach": "ボルシアMG",
+    "werder": "ブレーメン",
+    "hoffenheim": "ホッフェンハイム",
+    "augsburg": "アウクスブルク",
+    "unionberlin": "ウニオン・ベルリン",
+    "stpauli": "ザンクトパウリ",
+    "koln": "ケルン",
+    "heidenheim": "ハイデンハイム",
+    "hamburger": "ハンブルク",
+    "schalke": "シャルケ",
+
+    # --- リーグ・アン ---
+    "saintgermain": "パリ・サンジェルマン",
+    "marseille": "マルセイユ",
+    "lyonnais": "リヨン",
+    "monaco": "モナコ",
+    "lille": "リール",
+    "rennais": "レンヌ",
+    "nice": "ニース",
+    "lens": "ランス",
+    "nantes": "ナント",
+    "toulouse": "トゥールーズ",
+    "strasbourg": "ストラスブール",
+    "brestois": "ブレスト",
+    "havre": "ル・アーブル",
+    "auxerre": "オセール",
+    "angers": "アンジェ",
+    "metz": "メス",
+    "lorient": "ロリアン",
+    "parisfc": "パリFC",
+}
+
+# 長いキーを先に見る。"acmilan" と "milan" のように片方が
+# もう片方を含む場合、短い方が先に当たると誤って割り当てられる。
+_SOCCER_CLUB_KEYS = sorted(SOCCER_CLUB_NAME_JP, key=len, reverse=True)
+
+
+def club_name_jp(name: str) -> str:
+    """
+    APIが返したクラブ名を日本語表記にする。一覧に無ければ元の文字列。
+
+    まず名簿(日本人選手のクラブ)を見るのは、そちらが実際に配信へ
+    出る表記だから。両方に載っているクラブで表記が割れないようにする。
+    """
+    norm = normalize_club(name)
+    if not norm:
+        return name
+    for p in JP_PLAYERS_SOCCER:
+        if p["match"] in norm:
+            return p["team_jp"]
+    for key in _SOCCER_CLUB_KEYS:
+        if key in norm:
+            return SOCCER_CLUB_NAME_JP[key]
+    return name
+
+
 # 上のleagueコードに対応する日本語名。資産動画などで見出しに使う。
 # ELC(イングランド2部)とBL2(ドイツ2部)は5大リーグではないが、
 # 日本人選手が在籍しているので名簿には載せ、見出しで区別する。

@@ -28,6 +28,7 @@
 """
 
 import argparse
+import datetime as dt
 import json
 import os
 import pathlib
@@ -52,6 +53,7 @@ from notability_engine import (  # noqa: E402
     MLB_TEAM_NAME_JP,
     MLB_VENUE_NOTES,
     SOCCER_LEAGUE_NAME_JP,
+    club_name_jp,
 )
 
 # 縦型(ショート向け)
@@ -502,6 +504,27 @@ LIST_TOPICS = {
                         "守備陣とGKの評価によく使われます"),
         ],
     },
+    # 以下2つは data/soccer_preview.json を読む。
+    # 中身が無い環境では原稿の段階で止まり、動画は作られない。
+    # 開幕日程も昨季順位も、こちらで書き起こす部分は無い。
+    "soccer_opening": {
+        "label": "今シーズンの開幕と序盤の注目カード",
+        "hook": "開幕はいつ？",
+        "heading": "欧州サッカー 開幕ガイド",
+        "intro": "欧州の各リーグがいつ始まるのか、"
+                 "そして序盤に見ておきたいカードを確認しておきましょう。",
+        "dynamic": "soccer_opening",
+        "items": [],
+    },
+    "soccer_last_season": {
+        "label": "昨シーズンはどうだったか",
+        "hook": "昨季の王者は？",
+        "heading": "昨シーズンの結果",
+        "intro": "今シーズンを見る前に、昨シーズンがどう終わったかを"
+                 "押さえておきましょう。序盤の力関係を読む手掛かりになります。",
+        "dynamic": "soccer_last_season",
+        "items": [],
+    },
     "collespo_guide": {
         "label": "コレスポの使い方",
         "hook": "毎日19時に届きます",
@@ -711,6 +734,140 @@ def soccer_jp_items() -> list:
     return out
 
 
+def load_soccer_preview(path: str = "data/soccer_preview.json") -> dict:
+    """
+    scripts/soccer_preview.py が書いた前情報。無ければ空。
+
+    COLLESPO_SOCCER_PREVIEW で場所を差し替えられる。
+    APIキーが手元に無い環境で、保存済みの応答を使って
+    描画だけを確認するため。
+    """
+    p = pathlib.Path(os.environ.get("COLLESPO_SOCCER_PREVIEW", path))
+    if not p.exists():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _jp_date(utc: str) -> str:
+    """
+    '2026-08-21T19:00:00Z' → '8月22日 4時'(日本時間)。
+
+    欧州の試合は現地の夜に始まるので、日本時間では翌日の早朝になる。
+    現地の日付のまま出すと「その日に見られる」と誤解されるため、
+    日本時間へ直してから出す。
+    """
+    if not utc:
+        return ""
+    try:
+        t = dt.datetime.strptime(utc, "%Y-%m-%dT%H:%M:%SZ")
+    except ValueError:
+        return ""
+    t = t.replace(tzinfo=dt.timezone.utc).astimezone(
+        dt.timezone(dt.timedelta(hours=9))
+    )
+    return f"{t.month}月{t.day}日 {t.hour}時"
+
+
+def _jp_day(date_str: str) -> str:
+    """'2026-08-21' → '8月21日'。開幕日は現地の日付のまま扱う。"""
+    if not date_str:
+        return ""
+    try:
+        t = dt.datetime.strptime(str(date_str)[:10], "%Y-%m-%d")
+    except ValueError:
+        return ""
+    return f"{t.month}月{t.day}日"
+
+
+def soccer_opening_items() -> list:
+    """開幕日と、序盤の注目カードを並べる。"""
+    data = load_soccer_preview()
+    items = []
+
+    # リーグ戦とCLを分けるのは、性格が違うからというより画面の都合。
+    # 6件を1項目にすると1画面ぶんの分量になり、注目カードが同じ画面へ
+    # はみ出す。2項目に割ると、開幕日だけで1画面になる。
+    league_starts, cup_starts = [], []
+    for c in data.get("competitions", []):
+        start = _jp_day((c.get("season") or {}).get("start"))
+        if not start:
+            continue
+        name = c.get("name_jp", c.get("code"))
+        (cup_starts if c.get("code") == "CL" else league_starts).append(
+            (name, start)
+        )
+    if league_starts:
+        items.append((
+            "リーグ戦の開幕",
+            "。".join(f"{n}は{d}" for n, d in league_starts),
+        ))
+    for name, day in cup_starts:
+        items.append((name, f"{day}に始まります。火曜と水曜の開催なので、"
+                            f"週末のリーグ戦と合わせるとほぼ毎日試合があります"))
+
+    # 注目カードは競技会をまたいで点の高い順に並べる。
+    # ただし1リーグ2件までにする。単純に点順で取ると、昨季順位が
+    # 揃っているリーグや日本人選手の多いリーグだけで埋まり、
+    # 「どのリーグを見るか」を決める材料にならない。
+    picks = []
+    for c in data.get("competitions", []):
+        for m in c.get("highlights", []):
+            picks.append((c.get("name_jp", c.get("code")), m))
+    picks.sort(key=lambda x: -x[1].get("score", 0))
+
+    per_league: dict = {}
+    limited = []
+    for league, m in picks:
+        if per_league.get(league, 0) >= 2:
+            continue
+        per_league[league] = per_league.get(league, 0) + 1
+        limited.append((league, m))
+
+    for league, m in limited[:6]:
+        home = club_name_jp(m.get("home") or "")
+        away = club_name_jp(m.get("away") or "")
+        when = _jp_date(m.get("utc") or "")
+        head = f"{home} 対 {away}"
+        why = "、".join(m.get("reasons", [])) or "序盤の注目カード"
+        body = f"{league}。{why}"
+        if when:
+            body += f"。日本時間{when}から"
+        items.append((head, body))
+
+    return items
+
+
+def soccer_last_season_items() -> list:
+    """昨季の最終順位から、リーグごとに上位と得点力を1行にまとめる。"""
+    data = load_soccer_preview()
+    items = []
+    for c in data.get("competitions", []):
+        table = c.get("last_season") or []
+        if not table:
+            continue
+        top = table[0]
+        champ = club_name_jp(top.get("team") or "")
+        parts = [f"優勝は{champ}"]
+        if top.get("points") is not None:
+            parts.append(f"勝ち点{top['points']}")
+        if top.get("won") is not None and top.get("lost") is not None:
+            parts.append(f"{top['won']}勝{top.get('draw', 0)}分{top['lost']}敗")
+
+        rest = [club_name_jp(r.get("team") or "") for r in table[1:4]]
+        if rest:
+            parts.append("以下、" + "、".join(rest) + "と続きました")
+
+        year = c.get("last_season_year")
+        head = c.get("name_jp", c.get("code"))
+        if year:
+            head = f"{head}（{year}-{str(year + 1)[-2:]}）"
+        items.append((head, "。".join(parts)))
+    return items
+
+
 def list_items(topic: str) -> list:
     """
     そのトピックで実際に表示する項目リスト。
@@ -728,8 +885,20 @@ def list_items(topic: str) -> list:
         items = _jp_player_items()
     elif spec.get("dynamic") == "soccer_jp":
         items = soccer_jp_items()
+    elif spec.get("dynamic") == "soccer_opening":
+        items = soccer_opening_items()
+    elif spec.get("dynamic") == "soccer_last_season":
+        items = soccer_last_season_items()
     else:
         items = list(spec["items"])
+
+    # 外部データが要るトピックで中身が空なら、ここで止める。
+    # 見出しだけの動画を投稿してしまうより、作らない方がよい。
+    if spec.get("dynamic", "").startswith("soccer_") and not items:
+        raise SystemExit(
+            f"[skip] {topic}: data/soccer_preview.json に必要なデータがありません。"
+            "先に scripts/soccer_preview.py を実行してください"
+        )
 
     # 球場の回は、その年の全試合から集計した実測値を先頭に置く。
     # 「打者有利とされる」で終わらせず、実際どうだったのかまで出す。
