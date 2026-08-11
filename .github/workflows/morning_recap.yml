@@ -98,47 +98,61 @@ jobs:
             sleep 2
           done
 
-      - name: Generate narration
-        continue-on-error: true
-        run: |
-          python scripts/generate_morning_short.py \
-            --recap data/morning_recap.json \
-            --narration-out build/mr_narration.json
-
-      - name: Synthesize narration
-        continue-on-error: true
-        run: |
-          python scripts/synthesize_narration.py \
-            --narration build/mr_narration.json \
-            --out-dir build/mr_audio
-
-      - name: Generate morning short
-        run: |
-          python scripts/generate_morning_short.py \
-            --recap data/morning_recap.json \
-            --audio-dir build/mr_audio \
-            --out build/morning
-
-      - name: Generate thumbnail
-        continue-on-error: true
-        run: |
-          python scripts/generate_thumbnail.py \
-            --kind morning --recap data/morning_recap.json \
-            --out build/morning/thumb.png
-
-      - name: Upload to YouTube
+      # 選手成績と現地の注目度を1本にまとめると76秒・7画面になり、
+      # 主題が3つ混ざってタイトルもサムネイルも1つしか表せなくなる。
+      # 実際、最も見られた動画は単一主題のもので、情報を詰めたものほど
+      # 視聴率が落ちていた。2本に分けて、それぞれ主題を1つにする。
+      - name: Build and upload both shorts
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
-          python scripts/upload_youtube.py \
-            --video build/morning/collespo_morning.mp4 \
-            --kind morning \
-            --recap data/morning_recap.json \
-            --thumbnail build/morning/thumb.png \
-            --privacy public
+          set +e
+          for mode in players local; do
+            echo "::group::$mode"
+            if [ "$mode" = "players" ]; then
+              VIDEO="build/morning/collespo_morning.mp4"
+            else
+              VIDEO="build/morning/collespo_morning_${mode}.mp4"
+            fi
+
+            python scripts/generate_morning_short.py \
+              --recap data/morning_recap.json --mode "$mode" \
+              --narration-out "build/mr_narration_${mode}.json"
+            if [ ! -f "build/mr_narration_${mode}.json" ]; then
+              echo "素材が無いため $mode は作りません"
+              echo "::endgroup::"; continue
+            fi
+
+            python scripts/synthesize_narration.py \
+              --narration "build/mr_narration_${mode}.json" \
+              --out-dir "build/mr_audio_${mode}"
+
+            python scripts/generate_morning_short.py \
+              --recap data/morning_recap.json --mode "$mode" \
+              --audio-dir "build/mr_audio_${mode}" --out build/morning
+            if [ $? -ne 0 ]; then
+              echo "::warning::$mode の動画生成に失敗しました"
+              echo "::endgroup::"; continue
+            fi
+
+            python scripts/generate_thumbnail.py \
+              --kind "morning" --recap data/morning_recap.json \
+              --mode "$mode" --out "build/morning/thumb_${mode}.png"
+
+            python scripts/upload_youtube.py \
+              --video "$VIDEO" --kind morning --morning-mode "$mode" \
+              --recap data/morning_recap.json \
+              --thumbnail "build/morning/thumb_${mode}.png" \
+              --privacy public
+            echo "::endgroup::"
+
+            # 2本目は少し間を置く。同時に上げると初速が分散する
+            [ "$mode" = "players" ] && sleep 60
+          done
+          set -e
 
       # 結果はサイトからも参照できるよう、リポジトリへ残す
       - name: Commit recap

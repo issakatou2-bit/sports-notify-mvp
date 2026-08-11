@@ -187,28 +187,52 @@ def pick_top(players: list) -> dict:
 # 原稿
 # ---------------------------------------------------------------------------
 
-def build_narration(data: dict) -> dict:
+def build_narration(data: dict, mode: str = "all") -> dict:
+    """
+    mode で扱う内容を切り替える。
+
+    全部を1本に詰めると76秒・7画面になり、主題が3つ(選手成績・現地の注目度・
+    現地の声)混ざる。1本にまとめると、タイトルもサムネイルもどれか1つしか
+    表せない。実際、最も見られた動画は単一主題のもので、情報を詰めたものほど
+    視聴率が落ちていた。
+
+      players … 日本人選手の成績だけ
+      local   … 現地の注目度と声だけ
+      all     … 従来どおり全部(検証用)
+    """
     players = data.get("players") or []
     day = jp_date(data.get("date", ""))
     top = pick_top(players)
+    want_players = mode in ("all", "players")
+    want_local = mode in ("all", "local")
 
-    segments = [{
-        "kind": "intro",
-        "text": f"{day}のメジャーリーグ、日本人選手の成績です。"
-                + (f"{top['name']}は{top['headline']}。" if top else ""),
-        "meta": {"date": data.get("date", ""), "count": len(players)},
-    }]
+    if want_players:
+        segments = [{
+            "kind": "intro",
+            "text": f"{day}のメジャーリーグ、日本人選手の成績です。"
+                    + (f"{top['name']}は{top['headline']}。" if top else ""),
+            "meta": {"date": data.get("date", ""), "count": len(players)},
+        }]
+    else:
+        # 現地編は選手一覧を出さないので、冒頭も現地の話から入る
+        segments = [{
+            "kind": "intro",
+            "text": f"{day}のメジャーリーグ、現地での注目度をまとめました。",
+            "meta": {"date": data.get("date", ""), "count": len(players),
+                     "local": True},
+        }]
 
-    for i in range(0, len(players), PER_PAGE):
-        chunk = players[i:i + PER_PAGE]
-        segments.append({
-            "kind": "list",
-            "text": "".join(f"{p['name']}、{p['headline']}。" for p in chunk),
-            "meta": {"start": i, "count": len(chunk)},
-        })
+    if want_players:
+        for i in range(0, len(players), PER_PAGE):
+            chunk = players[i:i + PER_PAGE]
+            segments.append({
+                "kind": "list",
+                "text": "".join(f"{p['name']}、{p['headline']}。" for p in chunk),
+                "meta": {"start": i, "count": len(chunk)},
+            })
 
     # 現地でどれだけ見られたか。感想を代弁せず、数字だけを出す。
-    buzz = data.get("buzz") or []
+    buzz = (data.get("buzz") or []) if want_local else []
     if buzz:
         top = buzz[0]
         parts = ["現地で最も見られた試合です。",
@@ -223,7 +247,7 @@ def build_narration(data: dict) -> dict:
 
     # 現地のコミュニティと報道で、どのチームの名前が挙がったか。
     # 投稿の文面は引用せず、回数だけを数えている。
-    talk = data.get("talk") or {}
+    talk = (data.get("talk") or {}) if want_local else {}
     teams = talk.get("teams") or []
     if teams:
         top = teams[0]
@@ -236,7 +260,7 @@ def build_narration(data: dict) -> dict:
 
     # 現地の声。ここだけは数字ではなく、翻訳を通した誰かの感想なので、
     # 読み上げでも「翻訳したもの」であることを先に断る。
-    voices = (data.get("voices") or {}).get("voices") or []
+    voices = ((data.get("voices") or {}).get("voices") or []) if want_local else []
     if voices:
         parts = [f"ここからは現地の声です。"
                  f"{(data.get('voices') or {}).get('source', '')}の投稿を"
@@ -276,9 +300,11 @@ def render_intro(p, meta, top):
     slide = int((1 - e) * 70)
 
     d.text((80, 430 + slide), jp_date(meta.get("date", "")), font=font(64), fill=DIM)
-    d.text((80, 530 + slide), "日本人選手の成績", font=font(96), fill=ACCENT)
+    # 現地編は主題が違うので見出しを変える
+    heading = "現地での注目度" if meta.get("local") else "日本人選手の成績"
+    d.text((80, 530 + slide), heading, font=font(96), fill=ACCENT)
 
-    if top and p > 0.14:
+    if top and p > 0.14 and not meta.get("local"):
         d.rounded_rectangle([70, 760, W - 70, 1120], 24, fill=SURF)
         # 「今日の1人」であることを明示する。数字で機械的に選んでいるので、
         # 主観の評価に見えないよう、下に選び方の根拠を添える
@@ -289,7 +315,13 @@ def render_intro(p, meta, top):
         d.text((110, 940), head, font=font(s), fill=TEXT)
         d.text((110, 1036), "成績から機械的に選んでいます", font=font(32), fill=DIM)
 
-    d.text((80, 1210), f"出場 {meta.get('count', 0)}人", font=font(52), fill=TEXT)
+    if meta.get("local"):
+        d.text((80, 800), "見られた量・語られた量・現地の声",
+               font=font(46), fill=JP)
+        d.text((80, 880), "数字と、翻訳した投稿で見ていきます",
+               font=font(40), fill=DIM)
+    else:
+        d.text((80, 1210), f"出場 {meta.get('count', 0)}人", font=font(52), fill=TEXT)
     d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im
 
@@ -549,6 +581,9 @@ def main():
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--voices", default="data/local_voices.json")
+    parser.add_argument("--mode", default="players",
+                        choices=["players", "local", "all"],
+                        help="players=選手成績 / local=現地の注目度と声 / all=全部")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--out", default="build/morning")
@@ -597,7 +632,14 @@ def main():
         print(f"[info] 現地の話題: {len(talk['teams'])}チーム / "
               f"{talk.get('titles_count', 0)}件の見出しから")
 
-    narration = build_narration(data)
+    narration = build_narration(data, args.mode)
+    kinds = [s["kind"] for s in narration["segments"]]
+    print(f"[info] mode={args.mode} / 画面 {len(kinds)}枚: {kinds}")
+    if args.mode == "local" and not (buzz or talk.get("teams") or
+                                     voices_data.get("voices")):
+        print("[info] 現地のデータが1つも無いため、現地編は作りません")
+        return
+
     if args.narration_out:
         p = pathlib.Path(args.narration_out)
         p.parent.mkdir(parents=True, exist_ok=True)
@@ -617,7 +659,10 @@ def main():
 
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    video_path = out_dir / "collespo_morning.mp4"
+    # モードごとに別ファイルにする。同じ名前だと2本目が1本目を上書きする
+    video_path = out_dir / (f"collespo_morning_{args.mode}.mp4"
+                            if args.mode != "players"
+                            else "collespo_morning.mp4")
 
     durations = plan_durations(segs)
     audio_path = build_narration_track(segs, durations, out_dir)

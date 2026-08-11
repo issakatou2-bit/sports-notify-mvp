@@ -411,7 +411,8 @@ def weekly_lead(archive_dir: str = "archive") -> str:
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
-                   morning_players: list = None) -> dict:
+                   morning_players: list = None,
+                   morning_mode: str = "players") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -423,7 +424,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 注目試合が取れなかった日は空のままになる。
     daily_lead = ""
 
-    if kind == "morning":
+    if kind == "morning" and morning_mode == "local":
+        # 現地編は主題が違うので、選手名ではなく「現地」を前に出す
+        title = (f"現地で最も見られた試合は？｜{date_label} "
+                 f"MLB 現地での注目度 #Shorts")
+    elif kind == "morning":
         # 検索されるのは選手名なので、目立った成績の選手を先頭に置く
         names = [p.get("name") for p in (morning_players or [])][:3]
         who = "・".join(n for n in names if n)
@@ -464,7 +469,15 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
     # タイトルと同じく、具体的な事実を先に置く。
-    if kind == "morning":
+    if kind == "morning" and morning_mode == "local":
+        lines = [f"{date_label}のメジャーリーグについて、"
+                 "現地でどれだけ注目されたかをまとめました。", "",
+                 "・MLB公式ハイライトの再生回数（見られた量）",
+                 "・r/baseball と現地メディアでの言及数（語られた量）",
+                 "・現地の投稿を翻訳した「現地の声」", "",
+                 "数字はいずれも公開されているものです。"
+                 "「現地の声」は翻訳であり、当チャンネルの見解ではありません。", ""]
+    elif kind == "morning":
         who = "、".join(p.get("name", "") for p in (morning_players or [])[:3])
         head = f"{who}ほか。" if who else ""
         lines = [f"{head}{date_label}のメジャーリーグから、"
@@ -548,6 +561,9 @@ def main():
                              "asset=資産動画 / verdict=答え合わせ / morning=朝のまとめ")
     parser.add_argument("--recap", default="data/morning_recap.json",
                         help="--kind morning のときの成績データ")
+    parser.add_argument("--morning-mode", default="players",
+                        choices=["players", "local", "all"],
+                        help="16時の2本を区別する")
     parser.add_argument("--asset-topic", default=None,
                         help="--kind asset のときのトピック名")
     parser.add_argument("--narration", default="public/narration.json",
@@ -636,7 +652,8 @@ def main():
                 print(f"[warn] 成績データを読めませんでした: {e}", file=sys.stderr)
 
         body = build_metadata(args.games, date_label, args.kind,
-                              args.narration, args.archive_dir, morning_players)
+                              args.narration, args.archive_dir, morning_players,
+                              args.morning_mode)
     body["status"] = {
         "privacyStatus": args.privacy,
         "selfDeclaredMadeForKids": False,
@@ -690,7 +707,11 @@ def main():
             from datetime import datetime, timezone
 
             key = args.video_date or datetime.now(timezone.utc).date().isoformat()
-            record_video(args.kind, key, vid, body["snippet"]["title"])
+            # 16時は2本上がるので、記録も分けて上書きを防ぐ
+            rec_kind = (f"{args.kind}_{args.morning_mode}"
+                        if args.kind == "morning" and args.morning_mode != "players"
+                        else args.kind)
+            record_video(rec_kind, key, vid, body["snippet"]["title"])
     except Exception as e:
         # アップロードに失敗しても、通知やサイト更新は既に済んでいるので
         # ワークフロー全体を落とさない
