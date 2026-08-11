@@ -126,19 +126,38 @@ def jp_date(day: str) -> str:
 
 def pick_top(players: list) -> dict:
     """
-    冒頭に出す1人。数字だけで機械的に決める(誰が良かったかの判断はしない)。
-    本塁打 > 安打数 > 奪三振 の順で見る。
+    その日いちばん目立った1人を、数字だけで機械的に選ぶ。
+
+    「誰が良かったか」を語らずに済むよう、順番を先に決めてある。
+    投手は好投した場合のみ候補にする(登板しただけで上位に来ないように)。
+
+      1. 本塁打を打った打者(本数 → 安打数)
+      2. 5回以上を自責2以下で投げた投手(奪三振の多い順)
+      3. 2安打以上の打者(安打数)
+      4. 奪三振が最も多い投手
     """
     if not players:
         return {}
     batters = [p for p in players if p["type"] == "batter"]
+    pitchers = [p for p in players if p["type"] == "pitcher"]
+
     hr = [p for p in batters if p.get("hr")]
     if hr:
         return max(hr, key=lambda p: (p["hr"], p["hits"]))
+
+    def _ip(p):
+        try:
+            return float(p.get("ip") or 0)
+        except (TypeError, ValueError):
+            return 0.0
+
+    quality = [p for p in pitchers if _ip(p) >= 5 and p.get("er", 99) <= 2]
+    if quality:
+        return max(quality, key=lambda p: p.get("so", 0))
+
     multi = [p for p in batters if p.get("hits", 0) >= 2]
     if multi:
         return max(multi, key=lambda p: p["hits"])
-    pitchers = [p for p in players if p["type"] == "pitcher"]
     if pitchers:
         return max(pitchers, key=lambda p: p.get("so", 0))
     return players[0]
@@ -230,11 +249,14 @@ def render_intro(p, meta, top):
 
     if top and p > 0.14:
         d.rounded_rectangle([70, 760, W - 70, 1120], 24, fill=SURF)
-        d.text((110, 800), top.get("name", ""), font=font(72), fill=JP)
+        # 「今日の1人」であることを明示する。数字で機械的に選んでいるので、
+        # 主観の評価に見えないよう、下に選び方の根拠を添える
+        d.text((110, 774), "今日の1人", font=font(34), fill=ACCENT)
+        d.text((110, 820), top.get("name", ""), font=font(72), fill=JP)
         head = top.get("headline", "")
-        s = fit(d, head, W - 220, (68, 60, 52, 46))
-        d.text((110, 920), head, font=font(s), fill=TEXT)
-        d.text((110, 1030), "MLB Stats API の記録より", font=font(34), fill=DIM)
+        s = fit(d, head, W - 220, (60, 54, 48, 42))
+        d.text((110, 940), head, font=font(s), fill=TEXT)
+        d.text((110, 1036), "成績から機械的に選んでいます", font=font(32), fill=DIM)
 
     d.text((80, 1210), f"出場 {meta.get('count', 0)}人", font=font(52), fill=TEXT)
     d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
