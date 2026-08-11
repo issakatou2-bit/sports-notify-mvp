@@ -26,6 +26,7 @@ from datetime import datetime
 
 from PIL import Image, ImageDraw, ImageFont
 
+import local_buzz
 import mlb_buzz
 import morning_recap
 
@@ -33,13 +34,15 @@ W, H = 1080, 1920
 FPS = 24
 ANIM_END = 0.45
 SEGMENT_TAIL = 1.5
-MIN_DURATION = {"intro": 5.0, "list": 8.0, "buzz": 9.0, "outro": 5.0}
+MIN_DURATION = {"intro": 5.0, "list": 8.0, "buzz": 9.0,
+                "talk": 9.0, "outro": 5.0}
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
 TEXT = (242, 240, 230)
 DIM = (136, 145, 163)
 ACCENT = (255, 176, 32)
+ACCENT_DIM = (74, 58, 26)
 JP = (73, 197, 182)
 
 FONT_CANDIDATES = [
@@ -179,6 +182,19 @@ def build_narration(data: dict) -> dict:
                          f"現地では{pk['rank']}位でした。")
         segments.append({"kind": "buzz", "text": "".join(parts), "meta": {}})
 
+    # 現地のコミュニティと報道で、どのチームの名前が挙がったか。
+    # 投稿の文面は引用せず、回数だけを数えている。
+    talk = data.get("talk") or {}
+    teams = talk.get("teams") or []
+    if teams:
+        top = teams[0]
+        parts = ["現地で話題になっているチームです。",
+                 f"レディットのアール・ベースボールと現地メディアの見出しで、"
+                 f"{top['name']}が最も多く{top['mentions']}回名前が挙がりました。"]
+        for t in teams[1:3]:
+            parts.append(f"次いで{t['name']}が{t['mentions']}回です。")
+        segments.append({"kind": "talk", "text": "".join(parts), "meta": {}})
+
     segments.append({
         "kind": "outro",
         "text": "コレスポでは毎日午後7時に、その日の注目試合を"
@@ -308,6 +324,51 @@ def render_buzz(p, buzz, picks=None):
     return im
 
 
+def render_talk(p, talk):
+    """
+    現地で名前が挙がったチーム。
+
+    投稿の文面は一切引用せず、何回名前が出たかだけを数えている。
+    翻訳を介さないので加減が入らず、誰でも同じ手順で再現できる。
+    再生回数(見られた量)とは別の軸で、こちらは語られた量にあたる。
+    """
+    im, d = base(p)
+    teams = talk.get("teams") or []
+    players = talk.get("players") or []
+
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    d.text((70, 200), "現地で話題のチーム", font=font(64), fill=ACCENT)
+    d.text((74, 282), "r/baseball と現地メディアの見出しから", font=font(30), fill=DIM)
+
+    top = teams[0]["mentions"] if teams else 1
+    y = 380
+    for i, t in enumerate(teams[:5]):
+        appear = 0.05 + i * 0.06
+        if p < appear:
+            continue
+        e = ease_out(min(1.0, max(0.0, (p - appear) * 9)))
+        d.rounded_rectangle([60, y, W - 60, y + 108], 16, fill=SURF)
+        d.text((100, y + 28), f"{i + 1}", font=font(38), fill=DIM)
+        name = t.get("name", "")
+        s = fit(d, name, 480, (48, 42, 36))
+        d.text((170, y + 26), name, font=font(s), fill=TEXT)
+        # 言及回数を棒で見せる。数字だけより差が分かりやすい
+        bar = max(4, int(360 * (t["mentions"] / max(1, top)) * e))
+        d.rounded_rectangle([680, y + 38, 680 + bar, y + 68], 6, fill=ACCENT_DIM)
+        d.text((690, y + 34), f"{t['mentions']}回", font=font(34), fill=ACCENT)
+        y += 126
+
+    if players and p > 0.3:
+        d.text((70, y + 20), "日本人選手の言及", font=font(36), fill=JP)
+        line = "　".join(f"{q['name']} {q['mentions']}回" for q in players[:3])
+        s = fit(d, line, W - 200, (38, 34, 30))
+        d.text((100, y + 76), line, font=font(s), fill=TEXT)
+
+    d.text((70, H - 230), "※見出しに名前が出た回数です", font=font(30), fill=DIM)
+    d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
 def render_outro(p):
     im, d = base(p)
     d.text((80, 620), "コレスポ", font=font(120), fill=ACCENT)
@@ -382,6 +443,7 @@ def main():
     parser.add_argument("--recap", default="data/morning_recap.json")
     parser.add_argument("--buzz", default="data/mlb_buzz.json")
     parser.add_argument("--archive-dir", default="archive")
+    parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--out", default="build/morning")
@@ -416,6 +478,13 @@ def main():
             except (json.JSONDecodeError, OSError) as e:
                 print(f"[warn] アーカイブを読めませんでした: {e}")
     data["picks"] = picks
+
+    # 現地で何が語られているか(再生回数とは別の軸)
+    data["talk"] = local_buzz.load(args.talk)
+    talk = data["talk"]
+    if talk.get("teams"):
+        print(f"[info] 現地の話題: {len(talk['teams'])}チーム / "
+              f"{talk.get('titles_count', 0)}件の見出しから")
 
     narration = build_narration(data)
     if args.narration_out:
@@ -476,6 +545,8 @@ def main():
                                      meta.get("count", 1))
                 elif kind == "buzz":
                     im = render_buzz(pp, buzz, picks)
+                elif kind == "talk":
+                    im = render_talk(pp, talk)
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()
