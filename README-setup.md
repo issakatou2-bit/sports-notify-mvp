@@ -81,6 +81,31 @@ Actionsタブから`Daily notable games`を手動実行(Run workflow)。19時を
 ### 6. 本番の自動実行を待つ
 `cron: '0 10 * * *'`(UTC 10:00 = JST 19:00)。数分〜十数分のズレは正常な範囲。
 
+## サイトだけを反映したいとき
+
+Actionsタブから`Deploy site`を実行する。投稿も通知もせず、Pagesへの
+デプロイだけを行う。`Daily notable games`を手で回すと、その日の配信
+(YouTube・Bluesky・プッシュ通知)が丸ごともう一度走ってしまうため。
+
+`games.json` / `news.json` / `feed.xml` は日次実行の生成物で、
+`.gitignore`によりリポジトリに入っていない。`Deploy site`はこれらを
+公開中のサイトから取り直して持ち越す。1つでも取れなければ中止する
+(欠けたまま公開するとトップページから試合一覧が消えるため)。
+
+### ドメイン所有権の確認ファイルを置く
+
+TikTokやSearch Consoleが求める確認ファイルは、`web/`直下に置けば
+サイトのルートに出る(`web/*`が`public/`へそのままコピーされるため)。
+Google Search Console用の`web/googled4e966dc0b088ef6.html`が同じ形。
+
+手順:
+
+1. 相手のポータルで確認ファイルをダウンロードする
+2. `web/`に置いてコミットする
+3. Actionsタブから`Deploy site`を実行する
+4. `https://collespo.com/<ファイル名>`が開けることを確認してから、
+   ポータル側で「検証」を押す
+
 ## AI要約についてのコスト管理
 
 - Anthropic Consoleで**自動リロードはオフ**にしてある(意図的な設定、変更しないこと)

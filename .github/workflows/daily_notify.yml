@@ -16,6 +16,13 @@ permissions:
   pages: write
   id-token: write
 
+# deploy_site.yml と同じグループにしておく。両方が同時にPagesへ出すと、
+# 後から終わった方が相手の成果物で上書きしてしまう。
+# cancel-in-progress: false なので、日次実行が途中で止められることはない。
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build_and_notify:
     runs-on: ubuntu-latest

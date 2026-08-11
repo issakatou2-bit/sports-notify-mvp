@@ -1,0 +1,153 @@
+name: Deploy site
+
+# サイトだけを組み立ててGitHub Pagesへ出す。投稿も通知もしない。
+#
+# なぜ分けたか:
+#   Pagesへのデプロイは daily_notify.yml の末尾にしか無かった。
+#   サイトの文言を1行直しただけでも、反映するには19時の実行を待つか、
+#   daily_notify を手で回すしかない。後者はYouTubeへの投稿・Bluesky・
+#   プッシュ通知まで一式走るので、その日の配信が二重になる。
+#
+#   TikTokのドメイン所有権確認のように、ファイルを置いて確認 → 直して
+#   もう一度、という往復が必要な場面でとくに困る。
+#
+# ここでやらないこと(daily_notify.yml の担当):
+#   注目試合の判定 / 通知 / Bluesky / 動画の生成と投稿 / ポッドキャスト
+#
+# 公開中のデータの引き継ぎについて:
+#   Pagesへのデプロイはサイトを丸ごと置き換える。ところが
+#   games.json / news.json / feed.xml は日次実行の中で作られるだけで、
+#   .gitignore によりリポジトリには入っていない。素直に web/ だけを
+#   出すと、公開中のトップページから試合一覧とニュースが消える。
+#
+#   そこで、これらは公開中のサイトから取り直して持ち越す。
+#   1つでも取れなければ、その場で止める。欠けたまま公開するくらいなら
+#   何もしない方がよい(次の日次実行で正しい状態に戻る)。
+#
+#   podcastのmp3はリポジトリに入っているので、そちらから復元する。
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 日次実行とPagesのデプロイがぶつからないようにする。
+# 同時に走ると、後から終わった方が相手の成果物を上書きしてしまう。
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow
+
+      - name: Assemble Pages site
+        run: |
+          mkdir -p public
+          cp -r web/* public/
+
+      # 日次実行が作った分を、公開中のサイトから取り直す。
+      # これをやらないと、デプロイのたびにトップページが空になる。
+      - name: Carry over published data
+        env:
+          SITE: https://collespo.com
+        run: |
+          fail=0
+          for f in games.json news.json feed.xml podcast/feed.xml; do
+            mkdir -p "public/$(dirname "$f")"
+            code=$(curl -sS -o "public/$f" -w '%{http_code}' -m 30 "$SITE/$f" || echo 000)
+            if [ "$code" = "200" ]; then
+              echo "$f を引き継ぎました ($(wc -c < "public/$f") バイト)"
+            else
+              echo "::error::$SITE/$f を取得できません (HTTP $code)"
+              rm -f "public/$f"
+              fail=1
+            fi
+          done
+          if [ "$fail" = "1" ]; then
+            echo "::error::公開中のデータを引き継げないため中止します。" \
+                 "欠けたまま公開すると、トップページから試合一覧が消えます。" \
+                 "次の日次実行を待ってください"
+            exit 1
+          fi
+
+      # mp3はリポジトリにあるので、そこから戻す。
+      # feed.xml は上で公開中のものを引き継いでいるので、ここでは触らない。
+      - name: Restore podcast episodes
+        run: |
+          mkdir -p public/podcast
+          if ls podcast/*.mp3 > /dev/null 2>&1; then
+            cp podcast/*.mp3 public/podcast/
+            echo "podcast: $(ls public/podcast/*.mp3 | wc -l) 本"
+          else
+            echo "::warning::podcast/ にmp3がありません"
+          fi
+
+      - name: Generate soccer page
+        continue-on-error: true
+        run: |
+          python scripts/generate_soccer_page.py \
+            --preview data/soccer_preview.json \
+            --out public/soccer.html
+
+      # 選手ページはsitemap生成より前に作る
+      # (generate_archive_pages.pyがpublic/players配下を走査するため)
+      - name: Generate player pages
+        continue-on-error: true
+        run: |
+          python scripts/generate_player_pages.py \
+            --archive-dir archive \
+            --out-dir public/players
+
+      - name: Generate archive pages
+        continue-on-error: true
+        run: |
+          python scripts/generate_archive_pages.py \
+            --archive-dir archive \
+            --out-dir public/archive \
+            --site-root public
+
+      - name: Inject video links into the site
+        continue-on-error: true
+        run: python scripts/inject_video_links.py --site public
+
+      # 置いたファイルが実際にPagesへ渡るか、ここで見えるようにする。
+      # ドメイン所有権の確認ファイルは、名前が1文字違うだけで通らない。
+      - name: List what will be published
+        run: |
+          echo "--- public/ 直下 ---"
+          ls -la public/
+          echo "--- 合計 ---"
+          find public -type f | wc -l
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
