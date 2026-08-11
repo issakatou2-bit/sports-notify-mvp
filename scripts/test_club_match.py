@@ -132,6 +132,25 @@ NAME_CASES = [
     ("1. FC Union Berlin", "ウニオン・ベルリン"),
     ("FC St. Pauli", "ザンクトパウリ"),
     ("Hamburger SV", "ハンブルク"),
+
+    # 実データ(data/soccer_preview.json)で実際に取り違えていた組。
+    # 短いキーだと、長い正式名称の一部として飲み込まれる。
+    ("FC Barcelona", "バルセロナ"),
+    ("RCD Espanyol de Barcelona", "エスパニョール"),
+    ("RC Deportivo La Coruña", "デポルティボ"),
+    ("Deportivo Alavés", "アラベス"),
+
+    # NFKDで分解されない文字。ø は独立した字なので、
+    # 結合記号を落とすだけでは o にならない。
+    ("FC København", "コペンハーゲン"),
+    ("FK Bodø/Glimt", "ボドー／グリムト"),
+
+    # CLに出てくる5大リーグ以外のクラブ
+    ("Sport Lisboa e Benfica", "ベンフィカ"),
+    ("Sporting Clube de Portugal", "スポルティング"),
+    ("FK Shakhtar Donetsk", "シャフタール"),
+    ("Qarabağ Ağdam FK", "カラバフ"),
+
     # 一覧に無いクラブは、そのまま返る(欠けても落ちない)
     ("Some Unknown FC", "Some Unknown FC"),
 ]
@@ -152,6 +171,25 @@ for p in ne.JP_PLAYERS_SOCCER:
     if got != p["team_jp"]:
         fails += 1
         print(f"NG  表記割れ: {p['team_en']} -> {got} (名簿は {p['team_jp']})")
+
+# 1つの日本語名に2つ以上の「別クラブ」が割り当たっていないか。
+# 個別ケースを増やすより、こちらの方が新しい取り違えを拾える。
+# (実データ134クラブでこれを回して、バルセロナとデポルティボの2件が出た)
+#
+# 対象はAPIが返す形の名前だけにする。名簿の team_en を混ぜると
+# "Bayern Munich" と "FC Bayern München" が別クラブとして数えられ、
+# 同じ日本語名になるのが正しいのに失敗として出る。
+api_names = {n for n, _ in CASES} | {n for n, _ in NAME_CASES}
+seen: dict = {}
+for api_name in api_names:
+    jp = ne.club_name_jp(api_name)
+    if jp == api_name:      # 変換されなかったものは対象外
+        continue
+    seen.setdefault(jp, set()).add(api_name)
+for jp, sources in seen.items():
+    if len(sources) > 1:
+        fails += 1
+        print(f"NG  取り違え: {jp} <- {sorted(sources)}")
 
 print("\nALL OK" if fails == 0 else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

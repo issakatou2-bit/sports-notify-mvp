@@ -949,6 +949,12 @@ def normalize_club(name: str) -> str:
     """
     if not name:
         return ""
+    # NFKDで分解できない文字は個別に置く。ø や ß は「基底文字＋結合記号」では
+    # なく独立した文字なので、分解しても素通りしてしまう。
+    # 実データで FC København と FK Bodø/Glimt が当たらなかった。
+    for a, b in (("ø", "o"), ("Ø", "O"), ("æ", "ae"), ("Æ", "AE"),
+                 ("ß", "ss"), ("đ", "d"), ("Đ", "D"), ("ł", "l"), ("Ł", "L")):
+        name = name.replace(a, b)
     decomposed = unicodedata.normalize("NFKD", name)
     ascii_only = "".join(c for c in decomposed if not unicodedata.combining(c))
     return "".join(c for c in ascii_only.lower() if c.isalnum())
@@ -1006,7 +1012,10 @@ SOCCER_CLUB_NAME_JP = {
 
     # --- ラ・リーガ ---
     "realmadrid": "レアル・マドリード",
-    "barcelona": "バルセロナ",
+    # "barcelona" だと "RCD Espanyol de Barcelona" まで拾ってしまう
+    # (実データで発覚)。エスパニョールは別クラブなので前置きまで含める。
+    "fcbarcelona": "バルセロナ",
+    "espanyol": "エスパニョール",
     "atletico": "アトレティコ・マドリード",
     "athletic": "アスレティック・ビルバオ",
     "villarreal": "ビジャレアル",
@@ -1020,7 +1029,6 @@ SOCCER_CLUB_NAME_JP = {
     "mallorca": "マジョルカ",
     "rayo": "ラージョ・バジェカーノ",
     "getafe": "ヘタフェ",
-    "espanyol": "エスパニョール",
     "alaves": "アラベス",
     "levante": "レバンテ",
     "elche": "エルチェ",
@@ -1086,6 +1094,52 @@ SOCCER_CLUB_NAME_JP = {
     "metz": "メス",
     "lorient": "ロリアン",
     "parisfc": "パリFC",
+
+    # --- CLに出てくる5大リーグ以外のクラブ ---
+    # 実データ(data/soccer_preview.json)で英語のまま残っていた分を補った。
+    # CLの注目カードにこれらが出ると、読み上げが英字を読めない。
+    "benfica": "ベンフィカ",
+    "sportingclubedeportugal": "スポルティング",
+    "porto": "ポルト",
+    "ajax": "アヤックス",
+    "psv": "PSV",
+    "feyenoord": "フェイエノールト",
+    "brugge": "クラブ・ブルージュ",
+    "unionsaintgilloise": "ユニオン・サンジロワーズ",
+    "celtic": "セルティック",
+    "galatasaray": "ガラタサライ",
+    "salzburg": "ザルツブルク",
+    "sturmgraz": "シュツルム・グラーツ",
+    "youngboys": "ヤングボーイズ",
+    "slaviapraha": "スラビア・プラハ",
+    "spartapraha": "スパルタ・プラハ",
+    "dinamozagreb": "ディナモ・ザグレブ",
+    "crvenazvezda": "レッドスター・ベオグラード",
+    "slovanbratislava": "スロバン・ブラチスラバ",
+    "shakhtar": "シャフタール",
+    "olympiakos": "オリンピアコス",
+    "kobenhavn": "コペンハーゲン",
+    "bodo": "ボドー／グリムト",
+    "qarabag": "カラバフ",
+    "kairat": "カイラト",
+    "paphos": "パフォス",
+
+    # --- 昇格・降格で出入りするクラブ ---
+    "monza": "モンツァ",
+    "pisa": "ピサ",
+    "como": "コモ",
+    "venezia": "ベネチア",
+    "frosinone": "フロジノーネ",
+    "oviedo": "オビエド",
+    "malaga": "マラガ",
+    # "deportivo" だと "Deportivo Alavés" を飲み込む(実データで発覚)
+    "deportivolacoruna": "デポルティボ",
+    "racingclubdesantander": "ラシン・サンタンデール",
+    "paderborn": "パーダーボルン",
+    "elversberg": "エルバースベルク",
+    "troyes": "トロワ",
+    "lemans": "ル・マン",
+    "auxerre": "オセール",
 }
 
 # 長いキーを先に見る。"acmilan" と "milan" のように片方が

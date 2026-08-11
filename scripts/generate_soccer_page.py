@@ -187,6 +187,10 @@ def schedule_section(preview: dict) -> str:
     comps = preview.get("competitions", [])
     rows = []
     for c in comps:
+        # APIがまだ次シーズンへ切り替えていない競技会は載せない。
+        # 終わったシーズンの日程を「今シーズン」として出すことになる。
+        if c.get("stale"):
+            continue
         season = c.get("season") or {}
         start, end = jp_day(season.get("start")), jp_day(season.get("end"))
         if not start:
@@ -209,6 +213,8 @@ def schedule_section(preview: dict) -> str:
 def highlights_section(preview: dict) -> str:
     picks = []
     for c in preview.get("competitions", []):
+        if c.get("stale"):
+            continue
         for m in c.get("highlights", []):
             picks.append((c.get("name_jp", c.get("code")), m))
     picks.sort(key=lambda x: -x[1].get("score", 0))
@@ -246,6 +252,8 @@ def highlights_section(preview: dict) -> str:
 def last_season_section(preview: dict) -> str:
     out = []
     for c in preview.get("competitions", []):
+        if c.get("stale"):
+            continue
         table = c.get("last_season") or []
         if not table:
             continue

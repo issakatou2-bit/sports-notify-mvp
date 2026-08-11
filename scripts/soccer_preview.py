@@ -84,6 +84,20 @@ def fetch_competition(code: str, api_key: str) -> dict:
         "year": _season_year(cs.get("startDate")),
     }
 
+    # currentSeason が既に終わっている競技会は、APIがまだ次シーズンへ
+    # 切り替えていない状態。実際CLは、5大リーグが2026-27を返している時点でも
+    # 2025-09-16〜2026-05-30(終了済み)を返していた。
+    # そのまま出すと「9月16日に始まります」と過去の日付を告知してしまう。
+    # 昨季順位も1シーズンぶんずれるので、競技会ごと落とす。
+    out["stale"] = _ended(cs.get("endDate"))
+    if out["stale"]:
+        print(f"[info] {code}: currentSeasonが終了済み"
+              f"({cs.get('startDate')}〜{cs.get('endDate')})のため対象外にします")
+        out["openers"] = []
+        out["early"] = []
+        out["last_season"] = []
+        return out
+
     # 2) 開幕から EARLY_MATCHDAYS 節ぶんの試合。
     #    matchday を1節ずつ引くとリクエストが3倍になるので、
     #    節の指定なしで取って手元で絞る。
@@ -121,6 +135,17 @@ def fetch_competition(code: str, api_key: str) -> dict:
         out["last_season"] = []
 
     return out
+
+
+def _ended(end_date) -> bool:
+    """そのシーズンが既に終わっているか。日付が読めなければ終了扱いにしない。"""
+    if not end_date:
+        return False
+    try:
+        end = dt.datetime.strptime(str(end_date)[:10], "%Y-%m-%d").date()
+    except ValueError:
+        return False
+    return end < dt.date.today()
 
 
 def _season_year(start_date) -> int | None:

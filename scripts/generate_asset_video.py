@@ -792,6 +792,11 @@ def soccer_opening_items() -> list:
     # はみ出す。2項目に割ると、開幕日だけで1画面になる。
     league_starts, cup_starts = [], []
     for c in data.get("competitions", []):
+        # APIがまだ次シーズンへ切り替えていない競技会は飛ばす。
+        # 飛ばさないと、既に終わったシーズンの開幕日を
+        # 「これから始まります」として読み上げてしまう。
+        if c.get("stale"):
+            continue
         start = _jp_day((c.get("season") or {}).get("start"))
         if not start:
             continue
@@ -814,6 +819,8 @@ def soccer_opening_items() -> list:
     # 「どのリーグを見るか」を決める材料にならない。
     picks = []
     for c in data.get("competitions", []):
+        if c.get("stale"):
+            continue
         for m in c.get("highlights", []):
             picks.append((c.get("name_jp", c.get("code")), m))
     picks.sort(key=lambda x: -x[1].get("score", 0))
@@ -845,6 +852,8 @@ def soccer_last_season_items() -> list:
     data = load_soccer_preview()
     items = []
     for c in data.get("competitions", []):
+        if c.get("stale"):
+            continue
         table = c.get("last_season") or []
         if not table:
             continue
