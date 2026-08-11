@@ -255,7 +255,22 @@ def build(api_key: str) -> dict:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/soccer_preview.json")
+    ap.add_argument(
+        "--max-age-days", type=float, default=None,
+        help="出力先がこの日数より新しければ、取得せず終了する",
+    )
     args = ap.parse_args()
+
+    # 中身は日単位ではほとんど動かない(開幕日程と昨季順位)。
+    # 毎日取ると6競技会×3で18リクエストを使い、無料枠(10/分)の
+    # 待機で実行時間も伸びる。日次から呼ぶときは鮮度だけ見て打ち切る。
+    if args.max_age_days is not None:
+        p = pathlib.Path(args.out)
+        if p.exists():
+            age = (dt.datetime.now().timestamp() - p.stat().st_mtime) / 86400
+            if age < args.max_age_days:
+                print(f"[skip] {args.out} は{age:.1f}日前の取得なので、そのまま使います")
+                return 0
 
     api_key = os.environ.get("FOOTBALL_DATA_API_KEY")
     if not api_key:

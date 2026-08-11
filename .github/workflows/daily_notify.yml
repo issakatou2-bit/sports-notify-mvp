@@ -114,6 +114,25 @@ jobs:
       - name: Generate player stats
         run: python scripts/generate_player_stats.py --out public/player_stats.json
 
+      # 開幕日程と昨季順位。中身は日単位ではほぼ動かないので、
+      # 3日以内に取ったものがあればそのまま使う(無料枠の節約)。
+      - name: Refresh soccer preview
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: |
+          python scripts/soccer_preview.py \
+            --out data/soccer_preview.json --max-age-days 3
+
+      # 欧州サッカーの案内ページ。名簿と data/soccer_preview.json から作る。
+      # preview が無くても、名簿と解説だけでページは成立する。
+      - name: Generate soccer page
+        continue-on-error: true
+        run: |
+          python scripts/generate_soccer_page.py \
+            --preview data/soccer_preview.json \
+            --out public/soccer.html
+
       # 選手ページはsitemap生成より前に作る必要がある
       # (generate_archive_pages.pyがpublic/players配下を走査してsitemapに載せるため)
       - name: Generate player pages
