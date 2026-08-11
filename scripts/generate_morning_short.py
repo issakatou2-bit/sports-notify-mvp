@@ -27,6 +27,7 @@ from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 
 import local_buzz
+import local_voices
 import mlb_buzz
 import morning_recap
 
@@ -35,7 +36,12 @@ FPS = 24
 ANIM_END = 0.45
 SEGMENT_TAIL = 1.5
 MIN_DURATION = {"intro": 5.0, "list": 8.0, "buzz": 9.0,
-                "talk": 9.0, "outro": 5.0}
+                "talk": 9.0, "voices": 11.0, "outro": 5.0}
+
+# 「現地の声」だけは背景色を変える。
+# 他の画面がAPIの数字だけで作られているのに対し、ここは翻訳を通した
+# 誰かの感想なので、見た目で切り分けて、混ざって見えないようにする。
+VOICE_BG = (20, 16, 28)
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
@@ -95,6 +101,20 @@ def font(size: int):
 
 def ease_out(t):
     return 1 - (1 - t) ** 3
+
+
+def wrap(d, text, fnt, max_w):
+    """指定幅で折り返す。日本語なので単語境界は見ず1文字ずつ詰める。"""
+    lines, cur = [], ""
+    for ch in text:
+        if d.textlength(cur + ch, font=fnt) > max_w:
+            lines.append(cur)
+            cur = ch
+        else:
+            cur += ch
+    if cur:
+        lines.append(cur)
+    return lines
 
 
 def fit(d, text, max_w, sizes):
@@ -213,6 +233,17 @@ def build_narration(data: dict) -> dict:
         for t in teams[1:3]:
             parts.append(f"次いで{t['name']}が{t['mentions']}回です。")
         segments.append({"kind": "talk", "text": "".join(parts), "meta": {}})
+
+    # 現地の声。ここだけは数字ではなく、翻訳を通した誰かの感想なので、
+    # 読み上げでも「翻訳したもの」であることを先に断る。
+    voices = (data.get("voices") or {}).get("voices") or []
+    if voices:
+        parts = [f"ここからは現地の声です。"
+                 f"{(data.get('voices') or {}).get('source', '')}の投稿を"
+                 "翻訳したもので、コレスポの見解ではありません。"]
+        for v in voices[:3]:
+            parts.append(v.get("ja", "") + "。")
+        segments.append({"kind": "voices", "text": "".join(parts), "meta": {}})
 
     segments.append({
         "kind": "outro",
@@ -391,6 +422,57 @@ def render_talk(p, talk):
     return im
 
 
+def render_voices(p, voices):
+    """
+    現地のファンが何と言っているか。
+
+    他の画面と違い、ここは翻訳を通した誰かの感想であって記録ではない。
+    背景色を変え、出典と「翻訳」であることを画面に必ず出して、
+    数字のコーナーと混ざって見えないようにする。
+    原文も併記して、訳が気になる人が確かめられるようにしておく。
+    """
+    im = Image.new("RGB", (W, H), VOICE_BG)
+    d = ImageDraw.Draw(im)
+    off = int(min(p, ANIM_END) * 240)
+    for i in range(-2, 6):
+        x = i * 340 + off
+        d.polygon([(x, H), (x + 150, H), (x + 400, 0), (x + 250, 0)],
+                  fill=(26, 21, 36))
+    d.rectangle([0, H - 22, W, H], fill=JP)
+
+    items = voices.get("voices") or []
+    d.text((70, 70), "コレスポ", font=font(46), fill=JP)
+    d.text((70, 190), "現地の声", font=font(72), fill=JP)
+    d.text((74, 278), f"{voices.get('source', '')} の投稿を翻訳",
+           font=font(32), fill=DIM)
+
+    y = 380
+    for i, v in enumerate(items[:3]):
+        appear = 0.06 + i * 0.09
+        if p < appear:
+            continue
+        e = ease_out(min(1.0, max(0.0, (p - appear) * 8)))
+        dx = int((1 - e) * 110)
+        ja = v.get("ja", "")
+        lines = wrap(d, ja, font(42), W - 220)[:3]
+        h = 60 + len(lines) * 58 + 46
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + h], 20, fill=(31, 26, 42))
+        d.text((100 - dx, y + 18), "❝", font=font(44), fill=JP)
+        yy = y + 66
+        for line in lines:
+            d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
+            yy += 58
+        # 原文の一部を小さく添える。訳が気になる人が確かめられるように
+        src = (v.get("title") or "")[:38]
+        d.text((100 - dx, yy + 4), src, font=font(24), fill=DIM)
+        y += h + 26
+
+    d.text((70, H - 250), "※現地の投稿を翻訳したものです", font=font(30), fill=DIM)
+    d.text((70, H - 200), "　コレスポの見解ではありません", font=font(30), fill=DIM)
+    d.text((70, H - 140), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
 def render_outro(p):
     im, d = base(p)
     d.text((80, 620), "コレスポ", font=font(120), fill=ACCENT)
@@ -466,6 +548,7 @@ def main():
     parser.add_argument("--buzz", default="data/mlb_buzz.json")
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--talk", default="data/local_buzz.json")
+    parser.add_argument("--voices", default="data/local_voices.json")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--out", default="build/morning")
@@ -504,6 +587,12 @@ def main():
     # 現地で何が語られているか(再生回数とは別の軸)
     data["talk"] = local_buzz.load(args.talk)
     talk = data["talk"]
+
+    # 現地の声(翻訳)。数字のコーナーとは別枠として扱う
+    data["voices"] = local_voices.load(args.voices)
+    voices_data = data["voices"]
+    if voices_data.get("voices"):
+        print(f"[info] 現地の声: {len(voices_data['voices'])}件")
     if talk.get("teams"):
         print(f"[info] 現地の話題: {len(talk['teams'])}チーム / "
               f"{talk.get('titles_count', 0)}件の見出しから")
@@ -569,6 +658,8 @@ def main():
                     im = render_buzz(pp, buzz, picks)
                 elif kind == "talk":
                     im = render_talk(pp, talk)
+                elif kind == "voices":
+                    im = render_voices(pp, voices_data)
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()

@@ -77,6 +77,14 @@ jobs:
         continue-on-error: true
         run: python scripts/local_buzz.py --out data/local_buzz.json
 
+      # 現地のファンが実際に何と言っているか。翻訳を通すので、
+      # 数字のコーナーとは別枠として扱う(画面も背景色を変えて分ける)。
+      - name: Fetch local voices
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/local_voices.py --out data/local_voices.json
+
       - name: Start VOICEVOX engine
         continue-on-error: true
         run: |
