@@ -197,13 +197,32 @@ TAGS_MLB = "#MLB #大リーグ #野球 #コレスポ"
 TAGS_SOCCER = "#サッカー #海外サッカー #プレミアリーグ #コレスポ"
 
 
+# 題材の判定に使う語。
+#
+# 「リーグ」だけで拾ってはいけない。MLBのタイトルには
+# 「ア・リーグ」「ナ・リーグ」「インターリーグ」が普通に出てくるので、
+# 部分一致だとMLBの動画に #サッカー が付く。実際そうなっていた。
+# リーグ名は必ず最後まで書いて突き合わせる。
+SOCCER_WORDS = ("サッカー", "プレミアリーグ", "ラ・リーガ", "ラリーガ",
+                "セリエA", "ブンデスリーガ", "リーグ・アン",
+                "チャンピオンズリーグ", "欧州")
+MLB_WORDS = ("【MLB】", "MLB", "大リーグ", "メジャーリーグ")
+
+
 def caption(title: str) -> str:
     """YouTubeのタイトルを、TikTokの説明文に作り替える。"""
     t = title.replace("#Shorts", "").replace("#shorts", "").strip()
-    soccer = any(w in t for w in
-                 ("サッカー", "リーグ", "プレミア", "ラ・リーガ", "セリエ",
-                  "ブンデス", "チャンピオンズ"))
-    tags = TAGS_SOCCER if soccer else TAGS_MLB
+
+    # 見出しの【サッカー】が最も確かな手掛かりなので先に見る。
+    if "【サッカー】" in t:
+        tags = TAGS_SOCCER
+    elif any(w in t for w in MLB_WORDS):
+        tags = TAGS_MLB
+    elif any(w in t for w in SOCCER_WORDS):
+        tags = TAGS_SOCCER
+    else:
+        # どちらとも決まらないものはMLB扱い。本数が圧倒的に多い。
+        tags = TAGS_MLB
     return f"{t}\n\n{tags}"
 
 

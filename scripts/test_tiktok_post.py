@@ -127,6 +127,30 @@ try:
 except RuntimeError as e:
     print(f"ok  HTTP200でもエラーを拾う: {e}")
 
+# --- 題材の判定 -------------------------------------------------------------
+# MLBのタイトルには「ア・リーグ」「ナ・リーグ」「インターリーグ」が出る。
+# 「リーグ」で部分一致させると、これらがサッカー扱いになる。
+print("\n--- caption の題材判定 ---")
+TOPIC_CASES = [
+    ("ア・リーグ東地区の首位攻防｜ヤンキース vs レッドソックス ほか #Shorts", False),
+    ("ナ・リーグ西地区 ドジャースが首位をキープ #Shorts", False),
+    ("インターリーグ対決｜08/12の注目試合【MLB】#Shorts", False),
+    ("大谷翔平が2試合連続本塁打 #Shorts", False),
+    ("千賀滉大・松井裕樹 ほか｜8月10日 MLB日本人選手の成績まとめ #Shorts", False),
+    ("【サッカー】欧州5大リーグ、何が違う？｜プレミア・ラリーガ・セリエA #Shorts", True),
+    ("【サッカー】欧州でプレーする日本人選手まとめ｜所属クラブ一覧 #Shorts", True),
+    ("【サッカー】xG って何の数字？｜期待ゴール・ポゼッションの見方 #Shorts", True),
+    ("プレミアリーグ開幕｜リバプール対アーセナル", True),
+    ("リーグ・アンの注目カード", True),
+]
+for title, want_soccer in TOPIC_CASES:
+    c = pt.caption(title)
+    got = "#サッカー" in c
+    check(("サッカー" if want_soccer else "MLB   ") + " " + title[:34], got, want_soccer)
+    if "#Shorts" in c:
+        fails += 1
+        print("NG  #Shorts が残っている")
+
 tmp.unlink()
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)
