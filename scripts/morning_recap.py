@@ -180,6 +180,7 @@ def build(day: str = None, season: str = None) -> dict:
             if e:
                 r["clutch_points"] = e["points"]
                 r["clutch_label"] = e["label"]
+                r["clutch_note"] = e.get("note", "")
                 r["clutch_plays"] = e["plays"]
                 print(f"[info] {r['name']}: {e['label']} (+{e['points']})")
     except Exception as e:  # noqa: BLE001
@@ -214,7 +215,13 @@ def outs_from_ip(ip) -> int:
 
 def contribution(row: dict) -> int:
     """
-    その日の「コレスポ貢献度」。投手と打者を同じ0〜100の物差しに載せる。
+    その日の「勝利貢献スコア」。投手と打者を同じ物差しに載せる。
+
+    名前について:
+      「コレスポpt」のような身内向けの呼び方は避ける。初めて見た人には
+      何の点数か分からず、内輪の遊びに見える。何を測っているかが
+      名前だけで伝わる方がよい。計算方法は web/score.html で公開する。
+
 
     なぜ作るか:
       成績をそのまま並べると「1.0回2奪三振」「4打数2安打」が横に並ぶだけで、

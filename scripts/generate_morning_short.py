@@ -275,7 +275,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 "text": "".join(
                     f"{i + j + 1}位、{p['name']}、{p['headline']}。"
                     + (f"{p['clutch_label']}。" if p.get("clutch_label") else "")
-                    + (f"貢献度{morning_recap.score_label(p)}。"
+                    + (f"スコア{morning_recap.score_label(p)}。"
                        if morning_recap.score_label(p) else "")
                     for j, p in enumerate(chunk)
                 ),
@@ -402,7 +402,7 @@ def render_list(p, players, start, count):
         col = ACCENT if kind == "two_way" else (JP if kind == "pitcher" else TEXT)
         d.text((180 - dx, y + 26), pl.get("name", ""), font=font(58), fill=col)
 
-        # 貢献度。投手と打者を同じ物差しに載せた、コレスポ独自の数字。
+        # 勝利貢献スコア。投手と打者を同じ物差しに載せた、コレスポ独自の数字。
         # 右端に置いて、名前と成績の邪魔をしないようにする。
         #
         # 100超えは色と大きさを変えて、ひと目で分かるようにする。
@@ -431,6 +431,11 @@ def render_list(p, players, start, count):
         if clutch_label:
             d.text((180 - dx + d.textlength(role, font=font(30)) + 24,
                     y + 178), clutch_label, font=font(32), fill=ACCENT)
+            # 用語の説明を小さく添える。「先頭打者本塁打」のような言葉で
+            # 止まらないようにするため。
+            note = pl.get("clutch_note")
+            if note:
+                d.text((180 - dx, y + 214), note, font=font(24), fill=DIM)
         y += 258
 
     d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)

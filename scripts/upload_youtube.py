@@ -546,9 +546,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         who = "・".join(n for n in names if n)
         if who:
             title = (f"{who} ほか｜{date_label} MLB日本人選手 "
-                     f"今日の貢献度ランキング #Shorts")
+                     f"勝利貢献スコア ランキング #Shorts")
         else:
-            title = f"{date_label} MLB日本人選手 今日の貢献度ランキング #Shorts"
+            title = f"{date_label} MLB日本人選手 勝利貢献スコア ランキング #Shorts"
     elif kind == "verdict":
         # 縦型ショート。予測の的中ではなく「その後どうなったか」を扱うので、
         # 「当たった/外れた」という言い方はタイトルでも使わない
