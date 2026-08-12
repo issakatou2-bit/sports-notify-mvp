@@ -99,6 +99,12 @@ jobs:
             echo "::warning::podcast/ にmp3がありません"
           fi
 
+      # 勝利貢献スコアの計算方法。コード側の定数から作るので、
+      # 重みを変えれば公開している式も一緒に変わる。
+      - name: Generate score page
+        continue-on-error: true
+        run: python scripts/generate_score_page.py --out public/score.html
+
       - name: Generate soccer page
         continue-on-error: true
         run: |

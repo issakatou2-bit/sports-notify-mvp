@@ -506,6 +506,7 @@ def render_sitemap(entries: list, site_root: pathlib.Path = None) -> str:
         (f"{SITE_URL}archive/", None),
         (f"{SITE_URL}glossary.html", None),
         (f"{SITE_URL}soccer.html", None),
+        (f"{SITE_URL}score.html", None),
         (f"{SITE_URL}about.html", None),
         (f"{SITE_URL}privacy.html", None),
         (f"{SITE_URL}quiz.html", None),

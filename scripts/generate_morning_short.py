@@ -154,6 +154,48 @@ def sort_players(players: list) -> list:
                                  p.get("name", "")))
 
 
+def worth_speaking(player: dict, rank: int) -> bool:
+    """
+    その選手を読み上げるか。画面には全員を出したままにする。
+
+    全員を読み上げると、5人いれば5回同じ形の文が続いてテンポが死ぬ。
+    かといって画面から省くと、載っているのに触れられない選手が出る。
+    画面は全部、音声は要点だけ、という分け方にする。
+
+    読むのは次のいずれか:
+      その日の1位 / 場面のついた一打 / 突き抜けたスコア
+    """
+    return (rank == 1
+            or bool(player.get("clutch_label"))
+            or morning_recap.contribution(player) >= morning_recap.STANDOUT)
+
+
+def spoken_list(chunk: list, start: int) -> str:
+    """1画面ぶんの読み上げ。触れない選手は人数だけ言う。"""
+    parts, skipped = [], 0
+    for j, p in enumerate(chunk):
+        rank = start + j + 1
+        if worth_speaking(p, rank):
+            score = morning_recap.score_label(p)
+            parts.append(
+                f"{rank}位、{p['name']}、{p['headline']}。"
+                + (f"{p['clutch_label']}。" if p.get("clutch_label") else "")
+                + (f"スコア{score}。" if score else "")
+            )
+        else:
+            skipped += 1
+
+    # 誰も該当しない画面が無音にならないよう、先頭だけは必ず読む
+    if not parts and chunk:
+        p = chunk[0]
+        parts.append(f"{start + 1}位、{p['name']}、{p['headline']}。")
+        skipped -= 1
+
+    if skipped > 0:
+        parts.append(f"ほか{skipped}人は画面のとおりです。")
+    return "".join(parts)
+
+
 def recap_day(data: dict) -> str:
     """
     画面に出す日付。米国日付ではなく、日本時間で試合が行われた日を使う。
@@ -272,13 +314,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             chunk = players[i:i + PER_PAGE]
             segments.append({
                 "kind": "list",
-                "text": "".join(
-                    f"{i + j + 1}位、{p['name']}、{p['headline']}。"
-                    + (f"{p['clutch_label']}。" if p.get("clutch_label") else "")
-                    + (f"スコア{morning_recap.score_label(p)}。"
-                       if morning_recap.score_label(p) else "")
-                    for j, p in enumerate(chunk)
-                ),
+                "text": spoken_list(chunk, i),
                 "meta": {"start": i, "count": len(chunk)},
             })
 

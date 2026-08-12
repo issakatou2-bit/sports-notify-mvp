@@ -131,6 +131,12 @@ jobs:
           python scripts/soccer_preview.py \
             --out data/soccer_preview.json --max-age-days 3
 
+      # 勝利貢献スコアの計算方法。コード側の定数から作るので、
+      # 重みを変えれば公開している式も一緒に変わる。
+      - name: Generate score page
+        continue-on-error: true
+        run: python scripts/generate_score_page.py --out public/score.html
+
       # 欧州サッカーの案内ページ。名簿と data/soccer_preview.json から作る。
       # preview が無くても、名簿と解説だけでページは成立する。
       - name: Generate soccer page
