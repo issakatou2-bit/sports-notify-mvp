@@ -43,8 +43,33 @@ VOICEVOX_URL = "http://127.0.0.1:50021"
 # 3 = ずんだもん(ノーマル)が一般的だが、環境により異なる場合がある。
 DEFAULT_SPEAKER = 3
 # ショート動画はテンポが命なので速めにする。
-# 1.3を超えると聞き取りにくくなるため、この辺りが上限。
-SPEED_SCALE = 1.3
+#
+# 1.3から1.38へ上げた(2026年8月)。元の1.3は「これ以上は聞き取りにくい」
+# という判断で置かれた値で、実際に聞き比べて決めたものかどうかは記録が無い。
+# 直近28日のショートは40.6%が途中でスワイプされており、テンポを上げる側に
+# 倒す価値があると判断した。
+#
+# ただし聞き取りやすさは実測していない(手元にVOICEVOXが無いため)。
+# 次に出来上がった動画を聞いて、速すぎると感じたら1.3へ戻すこと。
+# ここだけ変えれば戻る。
+SPEED_SCALE = 1.38
+
+# 間の詰め方
+# ---------------------------------------------------------------------------
+# 話速だけ上げると、語りは速いのに切れ目で止まる、という妙な間になる。
+# VOICEVOXは1回の合成ごとに前後へ無音を付けるので、画面が10枚あれば
+# その分だけ積み上がる。読み上げの中身を削らずに尺を詰められるのは、
+# まずここ。
+#
+#   prePhonemeLength  … 発話の前に入る無音(既定0.1秒)
+#   postPhonemeLength … 発話の後に入る無音(既定0.1秒)
+#   pauseLengthScale  … 「、」「。」で入る間の倍率(既定1.0)
+#
+# 後ろは完全に0にはしない。次の画面と音が地続きになって、
+# 区切りが聞き取れなくなるため。
+PRE_PHONEME = 0.0
+POST_PHONEME = 0.05
+PAUSE_SCALE = 0.85
 
 
 def engine_available() -> bool:
@@ -73,6 +98,15 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
         q.raise_for_status()
         query = q.json()
         query["speedScale"] = SPEED_SCALE
+
+        # 応答に無いキーを送るとエンジンが422を返すことがある。
+        # pauseLengthScale は新しめのVOICEVOXにしか無いので、
+        # 返ってきたキーだけを上書きする。
+        for key, value in (("prePhonemeLength", PRE_PHONEME),
+                           ("postPhonemeLength", POST_PHONEME),
+                           ("pauseLengthScale", PAUSE_SCALE)):
+            if key in query:
+                query[key] = value
 
         s = requests.post(
             f"{VOICEVOX_URL}/synthesis",
