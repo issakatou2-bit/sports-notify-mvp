@@ -28,6 +28,13 @@ import sys
 # --- 判定条件 ---------------------------------------------------------------
 # (キー, 表示名, 重み, なぜこの重みなのか)
 CRITERIA = [
+    ("demand", "日本語圏にそもそも需要がある", 5.0,
+     "他の条件が全部揃っていても、見る人がいなければ何も起きない。"
+     "作りやすさと需要は別物で、当初このモデルには需要が入っていなかった。"
+     "そのためNBAが2位に来ていたが、日本でのNBAの関心はMLBよりずっと小さい。"
+     "この項目だけは調べれば決まる事実ではなく、こちらの見立て。"
+     "外れうるので、順位を鵜呑みにせずここを疑うこと。"),
+
     ("api", "毎日更新される公開データがある", 5.0,
      "日次配信が成立するかどうかがここで決まる。コレスポの日次は"
      "MLB Stats APIに全面的に依存していて、これが無い日は配信自体が無い。"
@@ -75,25 +82,25 @@ MAX_SCORE = sum(w for _, _, w, _ in CRITERIA) * 5
 # --- ジャンル ---------------------------------------------------------------
 # 点は0〜5。noteには、その点にした理由のうち特に効いたものを書く。
 GENRES = [
-    ("NBA", dict(api=5, choice=5, explainable=5, deadline=5, jp_thin=4,
+    ("NBA", dict(demand=2, api=5, choice=5, explainable=5, deadline=5, jp_thin=4,
                  roster=4, archive=5, rights=4, evergreen=5),
      "MLBとほぼ同じ形。公式のStats APIがあり、1日5〜12試合、"
      "順位・連勝・個人成績がそのまま理由になる。日本人選手が少ないぶん"
      "「日本人が出る試合」という軸は弱く、代わりにスター選手軸で作る。"
      "コレスポのコードをそのまま流用できる度合いが最も高い。"),
 
-    ("欧州サッカー(実装済み)", dict(api=4, choice=5, explainable=5, deadline=5,
+    ("欧州サッカー(実装済み)", dict(demand=4, api=4, choice=5, explainable=5, deadline=5,
                           jp_thin=3, roster=4, archive=4, rights=4, evergreen=5),
      "実装済み。football-data.orgの無料枠は順位と日程は取れるが"
      "個人成績が無く、理由づけの材料がMLBより薄い。"
      "日本人選手が25人いるので名簿軸は強い。"),
 
-    ("NFL", dict(api=4, choice=3, explainable=5, deadline=5, jp_thin=4,
+    ("NFL", dict(demand=1, api=4, choice=3, explainable=5, deadline=5, jp_thin=4,
                  roster=4, archive=4, rights=4, evergreen=5),
      "週1開催なので日次の在庫が作れない(choiceが低い)。"
      "週次・レビュー中心なら成立する。データと解説の相性は非常に良い。"),
 
-    ("競馬", dict(api=3, choice=5, explainable=5, deadline=5, jp_thin=1,
+    ("競馬", dict(demand=5, api=3, choice=5, explainable=5, deadline=5, jp_thin=1,
                   roster=2, archive=4, rights=3, evergreen=4),
      "毎日開催・多レース・データ豊富と、条件は非常に良い。"
      "ただし日本語の情報が飽和していて(jp_thin=1)、"
@@ -101,94 +108,94 @@ GENRES = [
      "予想に踏み込むと性格が変わるので、"
      "「どのレースが注目か」に留めるなら成立する。"),
 
-    ("F1", dict(api=3, choice=2, explainable=4, deadline=5, jp_thin=3,
+    ("F1", dict(demand=3, api=3, choice=2, explainable=4, deadline=5, jp_thin=3,
                 roster=5, archive=3, rights=3, evergreen=5),
      "年24戦で日次にならない。ドライバー20人・10チームと名簿が"
      "極めて安定しているので資産動画は作りやすい。"
      "レース週だけ動かす作りなら合う。"),
 
-    ("大相撲", dict(api=2, choice=4, explainable=4, deadline=5, jp_thin=1,
+    ("大相撲", dict(demand=3, api=2, choice=4, explainable=4, deadline=5, jp_thin=1,
                   roster=3, archive=3, rights=3, evergreen=4),
      "本場所中は毎日15日間あり日次に向く。ただし年6場所・90日で"
      "年の3/4が空く。公式APIが無くスクレイピング前提。"
      "日本語情報も厚い。"),
 
-    ("eスポーツ(LoL/Valorant)", dict(api=4, choice=4, explainable=4, deadline=4,
+    ("eスポーツ(LoL/Valorant)", dict(demand=2, api=4, choice=4, explainable=4, deadline=4,
                                 jp_thin=4, roster=2, archive=3, rights=4,
                                 evergreen=4),
      "Riotが公開APIを出していてデータは取れる。"
      "選手・チームの入れ替わりが激しく名簿の保守が重い(roster=2)。"
      "視聴者層がYouTubeと重なるのは有利。"),
 
-    ("将棋", dict(api=2, choice=3, explainable=3, deadline=4, jp_thin=1,
+    ("将棋", dict(demand=4, api=2, choice=3, explainable=3, deadline=4, jp_thin=1,
                  roster=4, archive=4, rights=2, evergreen=5),
      "公式APIが無い。棋譜の扱いに権利上の注意が要る(rights=2)。"
      "対局は日に数局で選ぶ余地が小さい。棋士の名簿は安定していて"
      "用語・戦法の資産動画は非常に作りやすい。"),
 
-    ("MLB(実装済み)", dict(api=5, choice=5, explainable=5, deadline=5,
+    ("MLB(実装済み)", dict(demand=5, api=5, choice=5, explainable=5, deadline=5,
                       jp_thin=4, roster=5, archive=5, rights=4, evergreen=5),
      "基準。全条件が揃っている。無料の公式APIが個人成績まで返し、"
      "1日15試合、日本人16人、オフに資産動画。"),
 
-    ("天文(流星群・惑星・日食)", dict(api=4, choice=2, explainable=4, deadline=5,
+    ("天文(流星群・惑星・日食)", dict(demand=2, api=4, choice=2, explainable=4, deadline=5,
                             jp_thin=2, roster=5, archive=2, rights=5,
                             evergreen=5),
      "イベントが年に数十回しかなく日次にならない(choice=2)。"
      "ただし完全に計算で決まるので、何年先まででも自動生成できる。"
      "資産動画との相性は全ジャンル中でも高い。"),
 
-    ("新作ゲーム/大型アップデート", dict(api=3, choice=4, explainable=3, deadline=3,
+    ("新作ゲーム/大型アップデート", dict(demand=3, api=3, choice=4, explainable=3, deadline=3,
                               jp_thin=3, roster=1, archive=3, rights=3,
                               evergreen=3),
      "SteamのAPIはあるが、注目度を数字で説明しにくい(explainable=3)。"
      "対象タイトルが際限なく増えるので名簿が閉じない(roster=1)。"),
 
-    ("映画/配信作品の公開日", dict(api=4, choice=4, explainable=2, deadline=3,
+    ("映画/配信作品の公開日", dict(demand=3, api=4, choice=4, explainable=2, deadline=3,
                           jp_thin=2, roster=1, archive=3, rights=2,
                           evergreen=3),
      "TMDbなどでデータは取れるが、「なぜ注目か」が評価や話題性に"
      "寄るためデータで説明しづらい(explainable=2)。画像の権利も要注意。"),
 
-    ("arXiv/論文", dict(api=5, choice=5, explainable=3, deadline=2, jp_thin=5,
+    ("arXiv/論文", dict(demand=1, api=5, choice=5, explainable=3, deadline=2, jp_thin=5,
                     roster=1, archive=5, rights=4, evergreen=3),
      "APIは完璧、日本語情報は最も薄い。ただし締め切りが無く"
      "(deadline=2)「今日見なければ」が作れない。"
      "重要度をデータで判定するのが難しく、被引用数は数か月遅れる。"),
 
-    ("株式・為替", dict(api=4, choice=5, explainable=4, deadline=5, jp_thin=1,
+    ("株式・為替", dict(demand=4, api=4, choice=5, explainable=4, deadline=5, jp_thin=1,
                    roster=3, archive=4, rights=3, evergreen=4),
      "条件は揃うが、助言と受け取られる領域に踏み込みやすい。"
      "「なぜ動いたか」の説明は、外すと実害が出る。"
      "情報も飽和している。他の条件が良いだけに、"
      "避ける理由が採点の外にある例。"),
 
-    ("気象・防災", dict(api=5, choice=3, explainable=4, deadline=5, jp_thin=1,
+    ("気象・防災", dict(demand=5, api=5, choice=3, explainable=4, deadline=5, jp_thin=1,
                    roster=2, archive=2, rights=5, evergreen=3),
      "気象庁のデータは公開されていて質も高い。"
      "ただし誤りが実害に直結し、公式が既に十分な発信をしている。"
      "個人が上乗せする余地が小さい。"),
 
-    ("アニメ放送スケジュール", dict(api=4, choice=5, explainable=2, deadline=4,
+    ("アニメ放送スケジュール", dict(demand=4, api=4, choice=5, explainable=2, deadline=4,
                          jp_thin=1, roster=1, archive=3, rights=2,
                          evergreen=3),
      "しょぼいカレンダー等でデータは取れるが、"
      "注目理由がデータで出せない(explainable=2)。既存サービスが厚い。"),
 
-    ("音楽リリース", dict(api=4, choice=5, explainable=3, deadline=2, jp_thin=2,
+    ("音楽リリース", dict(demand=3, api=4, choice=5, explainable=3, deadline=2, jp_thin=2,
                     roster=1, archive=3, rights=2, evergreen=3),
      "Spotify APIはあるが締め切りが無く、対象が閉じない。"),
 
-    ("テニス", dict(api=3, choice=4, explainable=4, deadline=5, jp_thin=4,
+    ("テニス", dict(demand=2, api=3, choice=4, explainable=4, deadline=5, jp_thin=4,
                  roster=3, archive=3, rights=3, evergreen=4),
      "大会期間中は毎日試合があり日次になる。ただし年間を通すと"
      "空白期が長い。無料APIの質が競技団体ごとに割れる。"),
 
-    ("ゴルフ", dict(api=3, choice=3, explainable=4, deadline=4, jp_thin=3,
+    ("ゴルフ", dict(demand=3, api=3, choice=3, explainable=4, deadline=4, jp_thin=3,
                  roster=3, archive=3, rights=3, evergreen=4),
      "木〜日の開催で週の半分が空く。日本人選手軸は作りやすい。"),
 
-    ("海外AIツール・Techトレンド", dict(api=5, choice=5, explainable=2, deadline=3,
+    ("海外AIツール・Techトレンド", dict(demand=3, api=5, choice=5, explainable=2, deadline=3,
                               jp_thin=5, roster=1, archive=2, rights=4,
                               evergreen=3),
      "Hacker News APIもProduct Hunt APIも無料で使え、日本語の一次情報は"
@@ -197,7 +204,7 @@ GENRES = [
      "対象が無限に増えるので名簿が閉じない。数か月で古くなるため蓄積も効かない。"
      "参入は容易だが、その容易さゆえに既に飽和している。"),
 
-    ("海外の反応(アニメ・映画)", dict(api=2, choice=4, explainable=2, deadline=3,
+    ("海外の反応(アニメ・映画)", dict(demand=3, api=2, choice=4, explainable=2, deadline=3,
                           jp_thin=5, roster=2, archive=2, rights=5,
                           evergreen=2),
      "素材が文章なので、映像を一切使わずに成立する(rights=5)。"
@@ -208,7 +215,7 @@ GENRES = [
      "ここを解けるなら、コレスポが既に別軸として持っている仕組みが"
      "そのまま使える(local_voices.py)。"),
 
-    ("暗号資産・ミームコイン", dict(api=5, choice=5, explainable=3, deadline=5,
+    ("暗号資産・ミームコイン", dict(demand=3, api=5, choice=5, explainable=3, deadline=5,
                         jp_thin=2, roster=1, archive=2, rights=4,
                         evergreen=2),
      "CoinGecko APIは無料で秒単位、条件だけ見れば最上位に来る。"
@@ -218,7 +225,7 @@ GENRES = [
      "コレスポが掲げている「確かめられることだけを出す」とも噛み合わない。"
      "点数の外の理由で選ばない方がよい例。"),
 
-    ("NPB(日本プロ野球)", dict(api=2, choice=4, explainable=5, deadline=5,
+    ("NPB(日本プロ野球)", dict(demand=5, api=2, choice=4, explainable=5, deadline=5,
                         jp_thin=1, roster=4, archive=3, rights=2,
                         evergreen=4),
      "無料の公式APIが無いのが致命的(api=2)。"
@@ -271,6 +278,10 @@ def main():
     print("\n--- 合計点では見えない足切り ---")
     for name, s, _ in ranked:
         blockers = []
+        # 需要は足し算で埋め合わせが効いてしまうが、実際には天井を決める。
+        # 他が満点でも、見る人がいなければ伸びない。
+        if s.get("demand", 5) <= 2:
+            blockers.append("日本語圏の需要が小さい(他が揃っていても天井が低い)")
         if s["api"] <= 2:
             blockers.append("公開APIが無い(日次が組めない)")
         if s["rights"] <= 2:
