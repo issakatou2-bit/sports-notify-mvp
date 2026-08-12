@@ -109,9 +109,7 @@ def fetch_view_counts(api_key: str, items: list) -> list:
         v = counts.get(i["video_id"])
         if v is None:
             continue
-        m = MATCHUP_RE.match(i["title"])
-        out.append({**i, "views": v,
-                    "matchup": m.group(1).strip() if m else i["title"][:40]})
+        out.append({**i, "views": v, "matchup": extract_matchup(i["title"])})
     out.sort(key=lambda x: -x["views"])
     return out
 
@@ -150,13 +148,38 @@ TEAM_EN_TO_JP = {
 }
 
 
+def extract_matchup(title: str) -> str:
+    """
+    ハイライトのタイトルから対戦カードの部分だけを取り出す。
+
+    MLB公式のタイトルは書式が一定ではない。
+      "Angels vs. Dodgers Game Highlights (8/9/26) | MLB Highlights"
+      "RANGERS vs. ANGELS: Official Full Game Highlights (August 10) | ..."
+    後者のように ":" 区切りの但し書きが挟まることがあり、
+    そのまま持つと「... 対 ...: Official Full」と読み上げてしまう。
+    """
+    m = MATCHUP_RE.match(title)
+    raw = m.group(1).strip() if m else title[:40]
+    return raw.split(":")[0].strip()
+
+
 def jp_matchup(matchup: str) -> str:
     """"Angels vs. Dodgers" -> "エンゼルス 対 ドジャース\""""
-    out = matchup
-    # 長い名前から先に置換する。"Red Sox" より先に "Sox" を処理すると壊れる
+    # 保存済みの data/mlb_buzz.json には、但し書きが付いたままの
+    # matchup が入っていることがある(取り出し側を直す前に保存された分)。
+    # 取り出し時にも切っておかないと、次に取り直すまで
+    # 「... 対 ...: Official Full」と読み上げ続けることになる。
+    out = str(matchup).split(":")[0].strip()
+    # 長い名前から先に置換する。"Red Sox" より先に "Sox" を処理すると壊れる。
+    #
+    # 大文字小文字は無視する。MLB公式のタイトルは球団名を
+    # "RANGERS vs. ANGELS" と全て大文字で書くことがあり、
+    # そのまま完全一致で探していたため日本語に変換されず、
+    # 英語のまま読み上げていた。順位の突き合わせ(cross_check)も
+    # 同じ理由で当たらなくなっていた。
     for en, jp in sorted(TEAM_EN_TO_JP.items(), key=lambda x: -len(x[0])):
-        out = out.replace(en, jp)
-    return out.replace("vs.", "対").replace(" vs ", " 対 ")
+        out = re.sub(re.escape(en), jp, out, flags=re.I)
+    return re.sub(r"\s*\bvs\.?\s*", " 対 ", out, flags=re.I).strip()
 
 
 def cross_check(buzz: list, games: list) -> list:

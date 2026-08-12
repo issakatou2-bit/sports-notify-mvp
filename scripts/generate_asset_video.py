@@ -32,6 +32,7 @@ import datetime as dt
 import json
 import os
 import pathlib
+import re
 import subprocess
 import sys
 import wave
@@ -921,13 +922,93 @@ def list_items(topic: str) -> list:
     return items
 
 
+# 冒頭で読み上げる項目の数と、1項目あたりの長さの上限。
+INTRO_PREVIEW_ITEMS = 4
+INTRO_HEAD_MAX = 12
+
+# 冒頭の読み上げの長さの上限(かな換算)。
+# 話速1.38で約5秒。ここを超えると、本題に入る前に離脱される。
+INTRO_BUDGET = 50
+
+
+def _spoken_len(text: str) -> int:
+    """読み上げの長さの目安。句読点と拗音は数えない。"""
+    t = re.sub(r"[、。！？\s]", "", text)
+    return len(re.sub(r"[ァィゥェォャュョぁぃぅぇぉゃゅょ]", "", t))
+
+
+def _first_sentence(text: str) -> str:
+    head = text.split("。")[0].strip()
+    return head + "。" if head else text
+
+
+def _intro_text(topic: str, items: list) -> str:
+    """
+    冒頭の読み上げを組む。「問い → 何を扱うか」の順。
+
+    これまでは「中継やネットで見かける成績の数字。よく出てくるものだけ、
+    意味と目安をまとめます」のように、一般論から入っていた。
+    直近28日でショートの40.6%が途中でスワイプされていて、
+    ここに一般論を置く余裕は無い。
+
+    先頭に置く問い(hook)は、サムネイル用に既に書いてあるもの。
+    「OPS って何の数字？」のように、検索して来る人がまさに知りたいことが
+    そのまま入っている。読み上げでは使っていなかったので、ここでも使う。
+
+    続けて扱う項目を並べる。ただしこれが効くのは、項目名が
+    用語のように短いトピックだけ。開幕カードの回のように項目が
+    「バイエルン 対 シュツットガルト」だと、並べた瞬間に冒頭が
+    6秒を超えて逆効果になる。長さで選び分け、収まらなければ
+    元の説明文の1文目に戻す。
+    """
+    spec = LIST_TOPICS[topic]
+    hook = (spec.get("hook") or "").strip()
+    if hook and not hook.endswith(("？", "。", "！")):
+        hook += "。"
+
+    # 問いが説明文の言い換えでしかない場合は重ねない
+    # (collespo_guideの「毎日19時に届きます」など)
+    if hook and hook.rstrip("。？！") in spec["intro"]:
+        hook = ""
+
+    # 問いに出てくる語が項目にもある場合(「OPS って何の数字？」と項目「OPS」)、
+    # 一度それを省いてみたが、いちばん肝心な項目が一覧から消えるだけだった。
+    # 重なっていても自然に読めるので、そのまま並べる。
+    heads = []
+    for h, _ in items:
+        # 「xG（期待ゴール）」→「xG」。読み上げでは括弧の中まで要らない。
+        head = re.split(r"[（(]", h)[0].strip()
+        # 「投手 2」は画面を分けるための連番で、内容の区別ではない。
+        # 読み上げると「投手、投手 2」と重なって聞こえる。
+        head = re.sub(r"\s*\d+$", "", head).strip()
+        if head and head not in heads:
+            heads.append(head)
+        if len(heads) >= INTRO_PREVIEW_ITEMS:
+            break
+
+    candidates = []
+    if heads and len(items) >= 3 and all(len(h) <= INTRO_HEAD_MAX for h in heads):
+        more = "ほか" if len(items) > INTRO_PREVIEW_ITEMS else ""
+        candidates.append(f"{hook}{'、'.join(heads)}{more}、まとめて見ていきます。")
+    if hook:
+        candidates.append(f"{hook}{_first_sentence(spec['intro'])}")
+    candidates.append(spec["intro"])
+
+    for c in candidates:
+        if _spoken_len(c) <= INTRO_BUDGET:
+            return c
+    # どれも収まらなければ、いちばん短いものを使う
+    return min(candidates, key=_spoken_len)
+
+
 def _narration_list(topic: str) -> dict:
     """LIST_TOPICS のデータから原稿を組む。1画面に2項目ずつ。"""
     spec = LIST_TOPICS[topic]
     items = list_items(topic)
     if spec.get("venue_en") and items and items[0][0] == "実際に何点入っているか":
         print(f"[info] 実測値を追加: {items[0][1]}")
-    segments = [{"kind": "intro", "text": spec["intro"], "meta": {}}]
+    segments = [{"kind": "intro", "text": _intro_text(topic, items),
+                 "meta": {}}]
     for i in range(0, len(items), 2):
         chunk = items[i:i + 2]
         segments.append({

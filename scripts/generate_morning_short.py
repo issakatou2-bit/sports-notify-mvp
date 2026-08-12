@@ -218,18 +218,30 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     want_players = mode in ("all", "players")
     want_local = mode in ("all", "local")
 
+    # 冒頭は「その日いちばん具体的な事実 → 何の動画か」の順にする。
+    #
+    # 以前は「8月11日のメジャーリーグ、日本人選手の成績です」と
+    # 一般的な前置きから入り、具体的な成績はその後だった。
+    # 日次ショートで同じ形を直したのと同じ理由で、ここも入れ替える。
+    # 直近28日でショートの40.6%が途中でスワイプされている。
     if want_players:
+        head = f"{top['name']}は{top['headline']}。" if top else ""
         segments = [{
             "kind": "intro",
-            "text": f"{day}のメジャーリーグ、日本人選手の成績です。"
-                    + (f"{top['name']}は{top['headline']}。" if top else ""),
+            "text": f"{head}{day}、日本人選手{len(players)}人の成績です。",
             "meta": {"date": day_iso, "count": len(players)},
         }]
     else:
-        # 現地編は選手一覧を出さないので、冒頭も現地の話から入る
+        # 現地編は選手一覧を出さないので、冒頭も現地の話から入る。
+        # 最も見られた試合が分かっていれば、それを先に言う。
+        buzz = data.get("buzz") or []
+        head = ""
+        if buzz:
+            head = (f"現地で最も見られたのは"
+                    f"{_jp_matchup(buzz[0]['matchup'])}。")
         segments = [{
             "kind": "intro",
-            "text": f"{day}のメジャーリーグ、現地での注目度をまとめました。",
+            "text": f"{head}{day}、現地での注目度をまとめました。",
             "meta": {"date": day_iso, "count": len(players),
                      "local": True},
         }]
