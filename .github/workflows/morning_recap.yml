@@ -172,7 +172,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/morning_recap.json data/venue_stats.json \
             data/published_videos.json data/mlb_buzz.json \
-            data/local_buzz.json data/published_tiktok.json || true
+            data/local_buzz.json data/published_tiktok.json \
+            data/recap_history/ || true
           git diff --cached --quiet || git commit -m "recap: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いか、push対象が無いためスキップ"

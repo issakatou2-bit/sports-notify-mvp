@@ -313,6 +313,77 @@ def jst_label(us_date: str) -> str:
     return (d + timedelta(days=1)).isoformat()
 
 
+def save_history(data: dict, out_dir: str = "data/recap_history",
+                 keep_days: int = 40) -> None:
+    """
+    その日の記録を日付ごとに残す。週間ランキングの材料になる。
+
+    data/morning_recap.json は毎日上書きされるので、前日以前が残らない。
+    週や月でまとめるには、日ごとに取っておく必要がある。
+
+    1日あたり数KBなので、40日ぶん置いても軽い。
+    古いものは消す(リポジトリが際限なく膨らむのを防ぐ)。
+    """
+    day = data.get("date")
+    if not day:
+        return
+    d = pathlib.Path(out_dir)
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{day}.json").write_text(
+        json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+    files = sorted(d.glob("????-??-??.json"))
+    for f in files[:-keep_days]:
+        f.unlink()
+        print(f"[info] 古い記録を削除: {f.name}")
+
+
+def load_history(out_dir: str = "data/recap_history", days: int = 7) -> list:
+    """新しい順に days 日ぶん読む。足りなければあるだけ返す。"""
+    d = pathlib.Path(out_dir)
+    if not d.exists():
+        return []
+    out = []
+    for f in sorted(d.glob("????-??-??.json"), reverse=True)[:days]:
+        try:
+            out.append(json.loads(f.read_text(encoding="utf-8")))
+        except (json.JSONDecodeError, OSError):
+            continue
+    return out
+
+
+def weekly_ranking(days: int = 7, out_dir: str = "data/recap_history") -> list:
+    """
+    直近の記録から、選手ごとの合計と平均を出す。
+
+    合計だけだと出場機会の多い選手が並ぶだけになり、
+    平均だけだと1試合しか出ていない選手が上に来る。
+    両方持たせて、使う側で選べるようにする。
+    """
+    hist = load_history(out_dir, days)
+    agg: dict = {}
+    for d in hist:
+        for p in d.get("players") or []:
+            e = agg.setdefault(p["name"], {
+                "name": p["name"], "total": 0, "games": 0,
+                "best": 0, "best_day": "", "labels": [],
+            })
+            v = contribution(p)
+            e["total"] += v
+            e["games"] += 1
+            if v > e["best"]:
+                e["best"] = v
+                e["best_day"] = d.get("date_jst") or d.get("date", "")
+            if p.get("clutch_label"):
+                e["labels"].append(p["clutch_label"])
+
+    rows = list(agg.values())
+    for e in rows:
+        e["avg"] = round(e["total"] / e["games"]) if e["games"] else 0
+    rows.sort(key=lambda e: (-e["total"], -e["avg"], e["name"]))
+    return rows
+
+
 def load(path: str, day: str = None) -> list:
     """朝のショート側から読む。日付が食い違う場合は使わない。"""
     p = pathlib.Path(path)
@@ -344,6 +415,13 @@ def main():
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
     print(f"[info] 朝のまとめを出力しました({len(data['players'])}名) -> {out}")
+
+    # 週間ランキングの材料。こちらは日付ごとに残す。
+    save_history(data)
+    week = weekly_ranking()
+    if week:
+        print(f"[info] 直近7日の合計上位: "
+              + " / ".join(f"{e['name']}{e['total']}" for e in week[:3]))
 
 
 if __name__ == "__main__":

@@ -386,8 +386,7 @@ def render_game(g: dict) -> str:
 
 def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     games = [g for g in data.get("games", []) if g.get("is_notable")]
-    y, m, d = archive_date.split("-")
-    jp_date = f"{y}年{int(m)}月{int(d)}日"
+    jp_date = display_date(archive_date, games)
 
     if games:
         top = games[0].get("matchup", "")
@@ -465,7 +464,7 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     return "\n".join(body)
 
 
-def render_index_page(entries: list, summaries: dict) -> str:
+def render_index_page(entries: list, summaries: dict, labels: dict = None) -> str:
     head = HEAD_TMPL.format(
         title="注目試合アーカイブ | コレスポ",
         description="コレスポがこれまでに選んだ日ごとの注目試合を、"
@@ -483,7 +482,7 @@ def render_index_page(entries: list, summaries: dict) -> str:
     body.append('<ul class="datelist">')
     for date_str, _ in entries:
         y, m, d = date_str.split("-")
-        label = f"{y}年{int(m)}月{int(d)}日"
+        label = (labels or {}).get(date_str) or f"{y}年{int(m)}月{int(d)}日"
         sub = summaries.get(date_str, "")
         body.append(
             f'<li><a href="{date_str}.html">{label}</a>'
@@ -493,6 +492,37 @@ def render_index_page(entries: list, summaries: dict) -> str:
     body.append("</ul>")
     body.append("</body></html>")
     return "\n".join(body)
+
+
+def display_date(archive_date: str, games: list) -> str:
+    """
+    ページに出す日付。ファイル名ではなく、実際の試合日(JST)を使う。
+
+    アーカイブのファイル名は生成した日(JST)で、中身はその翌日の試合。
+    19時に配信して、扱うのは翌朝から始まる試合なので必ず1日ずれる。
+    ファイル名をそのまま見出しにしていたため、
+    「2026年8月11日の注目試合」の下に 08/12 の試合が並んでいた。
+    YouTubeのタイトルは既に翌日の日付を使っていて、そちらとも
+    食い違っていた。
+
+    URLは archive/2026-08-11.html のまま変えない。
+    既に検索に載っているものを動かすと、その評価が消える。
+    表示だけを実際の試合日に合わせる。
+
+    試合が1件も無ければ、判断材料が無いのでファイル名の日付を使う。
+    """
+    for g in games:
+        s = (g.get("start_time_jst") or "").strip()
+        m = re.match(r"(\d{2})/(\d{2})", s)
+        if m:
+            month, day = int(m.group(1)), int(m.group(2))
+            year = int(archive_date.split("-")[0])
+            # 12月31日の回が1月1日の試合を扱うと、年をまたぐ
+            if archive_date[5:7] == "12" and month == 1:
+                year += 1
+            return f"{year}年{month}月{day}日"
+    y, mo, d = archive_date.split("-")
+    return f"{y}年{int(mo)}月{int(d)}日"
 
 
 def render_sitemap(entries: list, site_root: pathlib.Path = None) -> str:
@@ -564,6 +594,9 @@ def main():
     date_to_index = {d: i for i, (d, _) in enumerate(asc)}
 
     summaries = {}
+    # 一覧に出す日付も、ファイル名ではなく実際の試合日にする。
+    # 個別ページだけ直すと、一覧では8月11日、開いたら8月12日になる。
+    labels = {}
     generated = 0
     for date_str, path in entries:
         try:
@@ -584,9 +617,10 @@ def main():
         notable = [g for g in data.get("games", []) if g.get("is_notable")]
         if notable:
             summaries[date_str] = notable[0].get("matchup", "")
+        labels[date_str] = display_date(date_str, notable)
 
     (out_dir / "index.html").write_text(
-        render_index_page(entries, summaries), encoding="utf-8"
+        render_index_page(entries, summaries, labels), encoding="utf-8"
     )
     # 既存のarchive.html(JSで一覧を描画する方)が参照するため、日付一覧も出力する
     (out_dir / "index.json").write_text(
