@@ -147,13 +147,26 @@ def build(day: str = None, season: str = None) -> dict:
         pid = by_name.get(p["name_en"])
         if not pid:
             continue
-        stat = fetch_day_pitching(pid, target, season) or \
-            fetch_day_hitting(pid, target, season)
-        if not stat:
+        # 投げて打った日は両方を持つ。
+        # 以前は or で繋いでいたため、投げた日は打撃成績が丸ごと消えていた。
+        # 二刀流はその日がいちばん見どころなのに、片方しか出せていなかった。
+        pit = fetch_day_pitching(pid, target, season)
+        bat = fetch_day_hitting(pid, target, season)
+        if not pit and not bat:
             continue
+
+        if pit and bat:
+            row = {**pit, "type": "two_way", "pitching": pit, "batting": bat}
+            row["headline"] = (headline({"name": p["name_jp"], **pit})
+                               + "／"
+                               + headline({"name": p["name_jp"], **bat}))
+        else:
+            stat = pit or bat
+            row = {**stat}
+            row["headline"] = headline({"name": p["name_jp"], **stat})
+
         rows.append({"name": p["name_jp"], "name_en": p["name_en"],
-                     "player_id": pid, **stat,
-                     "headline": headline({"name": p["name_jp"], **stat})})
+                     "player_id": pid, **row})
 
     # 投手を先に、打者は安打数の多い順。出場者が少ない日でも形になる並びにする
     rows.sort(key=lambda r: (r["type"] != "pitcher", -r.get("hits", 0)))
@@ -200,7 +213,17 @@ def contribution(row: dict) -> int:
 
     倍率は、好投・好打が70〜90に収まるように置いた。
     絶対的な意味は無く、その日の中で並べるための数字。
+
+    上限は設けない。完封や3本塁打のような日は100を超えてよく、
+    投げて打った日は両方を足すので200近くになる。
+    「今日は突き抜けている」が数字の大きさで伝わる方が面白い。
+    下限だけ0で止める。マイナスは順位以上の意味を持たないため。
     """
+    # 投げて打った日は両方を足す。7回10奪三振に3本塁打が乗れば200点前後になる。
+    if row.get("type") == "two_way":
+        return (contribution({**row["pitching"], "type": "pitcher"})
+                + contribution({**row["batting"], "type": "batter"}))
+
     if row.get("type") == "pitcher":
         outs = outs_from_ip(row.get("ip"))
         raw = (outs
@@ -223,7 +246,23 @@ def contribution(row: dict) -> int:
                + row.get("bb", 0)
                - row.get("so", 0))
         score = 30 + raw * 2.4
-    return max(0, min(100, round(score)))
+    return max(0, round(score))
+
+
+# この点を超えたら「突き抜けた日」として画面で強調する。
+# 完封級・3本塁打級がここに入る。
+STANDOUT = 100
+
+# これを下回る日は、点数を出さずに成績だけ載せる。
+# 0点と書くこと自体には意味が無く、出場した選手に対して不必要に厳しい。
+# 順位の並びには使うので、点そのものは計算し続ける。
+HIDE_BELOW = 25
+
+
+def score_label(row: dict) -> str:
+    """画面に出す点数。低い日は数字を伏せる。"""
+    v = contribution(row)
+    return "" if v < HIDE_BELOW else str(v)
 
 
 def jst_label(us_date: str) -> str:

@@ -274,7 +274,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 "kind": "list",
                 "text": "".join(
                     f"{i + j + 1}位、{p['name']}、{p['headline']}。"
-                    f"貢献度{morning_recap.contribution(p)}。"
+                    + (f"貢献度{morning_recap.score_label(p)}。"
+                       if morning_recap.score_label(p) else "")
                     for j, p in enumerate(chunk)
                 ),
                 "meta": {"start": i, "count": len(chunk)},
@@ -394,23 +395,35 @@ def render_list(p, players, start, count):
         rank = start + i + 1
         d.text((100 - dx, y + 30), f"{rank}", font=font(64), fill=ACCENT)
 
-        # 投手か打者かが一目で分かるよう、色を分ける
-        col = JP if pl["type"] == "pitcher" else TEXT
+        # 投手か打者かが一目で分かるよう、色を分ける。
+        # 投げて打った日は、どちらでもないので目立つ色にする。
+        kind = pl.get("type")
+        col = ACCENT if kind == "two_way" else (JP if kind == "pitcher" else TEXT)
         d.text((180 - dx, y + 26), pl.get("name", ""), font=font(58), fill=col)
 
         # 貢献度。投手と打者を同じ物差しに載せた、コレスポ独自の数字。
         # 右端に置いて、名前と成績の邪魔をしないようにする。
-        score = morning_recap.contribution(pl)
-        sw = d.textlength(str(score), font=font(66))
-        d.text((W - 110 - dx - sw, y + 24), str(score),
-               font=font(66), fill=ACCENT)
-        d.text((W - 108 - dx, y + 48), "点", font=font(30), fill=DIM)
+        #
+        # 100超えは色と大きさを変えて、ひと目で分かるようにする。
+        # 完封や3本塁打、投げて打った日がここに入る。
+        # 低い日は数字を出さない(成績はそのまま載る)。
+        label = morning_recap.score_label(pl)
+        if label:
+            score = morning_recap.contribution(pl)
+            big = score >= morning_recap.STANDOUT
+            size = 84 if big else 66
+            col = JP if big else ACCENT
+            sw = d.textlength(label, font=font(size))
+            d.text((W - 110 - dx - sw, y + (14 if big else 24)), label,
+                   font=font(size), fill=col)
+            d.text((W - 108 - dx, y + 48), "点", font=font(30),
+                   fill=col if big else DIM)
 
         head = pl.get("headline", "")
         s = fit(d, head, W - 300, (48, 44, 40, 36))
         d.text((180 - dx, y + 118), head, font=font(s), fill=TEXT)
         d.text((180 - dx, y + 180),
-               "投手" if pl["type"] == "pitcher" else "打者",
+               {"pitcher": "投手", "two_way": "投打"}.get(kind, "打者"),
                font=font(30), fill=DIM)
         y += 258
 
