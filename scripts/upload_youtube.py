@@ -532,17 +532,23 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     daily_lead = ""
 
     if kind == "morning" and morning_mode == "local":
-        # 現地編は主題が違うので、選手名ではなく「現地」を前に出す
-        title = (f"現地で最も見られた試合は？｜{date_label} "
-                 f"MLB 現地での注目度 #Shorts")
+        # 現地編は主題が違うので、選手名ではなく「現地」を前に出す。
+        # 「最も見られた試合は？」だと1試合の話に見えるが、実際は
+        # 再生回数の順位と、話題に挙がったチームまで扱っている。
+        # 何位まで出るのかがタイトルから分かる形にする。
+        title = (f"【MLB】{date_label} 現地で最も注目された試合ランキング"
+                 f"｜再生回数と話題のチーム #Shorts")
     elif kind == "morning":
-        # 検索されるのは選手名なので、目立った成績の選手を先頭に置く
+        # 検索されるのは選手名なので、貢献度の高い順に先頭へ置く。
+        # 「成績まとめ」だけだと淡々と読み上げるだけの動画に見えるので、
+        # 順位をつけていることをタイトルにも出す。
         names = [p.get("name") for p in (morning_players or [])][:3]
         who = "・".join(n for n in names if n)
         if who:
-            title = f"{who} ほか｜{date_label} MLB日本人選手の成績まとめ #Shorts"
+            title = (f"{who} ほか｜{date_label} MLB日本人選手 "
+                     f"今日の貢献度ランキング #Shorts")
         else:
-            title = f"{date_label} MLB日本人選手の成績まとめ【MLB】#Shorts"
+            title = f"{date_label} MLB日本人選手 今日の貢献度ランキング #Shorts"
     elif kind == "verdict":
         # 縦型ショート。予測の的中ではなく「その後どうなったか」を扱うので、
         # 「当たった/外れた」という言い方はタイトルでも使わない

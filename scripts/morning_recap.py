@@ -170,6 +170,62 @@ def build(day: str = None, season: str = None) -> dict:
     }
 
 
+def outs_from_ip(ip) -> int:
+    """
+    MLBの投球回表記をアウト数に直す。"6.1" は6回3分の1で19アウト。
+    小数として読むと6.1回になり、3分の1と10分の1を取り違える。
+    """
+    try:
+        whole, _, frac = str(ip).partition(".")
+        return int(whole) * 3 + (int(frac[0]) if frac else 0)
+    except (ValueError, TypeError):
+        return 0
+
+
+def contribution(row: dict) -> int:
+    """
+    その日の「コレスポ貢献度」。投手と打者を同じ0〜100の物差しに載せる。
+
+    なぜ作るか:
+      成績をそのまま並べると「1.0回2奪三振」「4打数2安打」が横に並ぶだけで、
+      どちらがその日効いたのかが伝わらない。順位がつくと、
+      淡々とした一覧が「誰がいちばんだったか」の話になる。
+
+    投手はビル・ジェームズのゲームスコアを土台にしている(広く使われていて、
+    こちらで重みを考えた部分が少ない)。50を平均点として、
+      アウト数 + 5回を超えた分の加点 + 奪三振 - 被安打×2 - 自責×4 - 四球
+    打者は塁打を軸に、打点と四球を足して三振を引く。
+    長打の内訳(二塁打・三塁打)はAPIのこの呼び出しでは取れないので、
+    本塁打だけを塁打に上乗せしている。ここは近似。
+
+    倍率は、好投・好打が70〜90に収まるように置いた。
+    絶対的な意味は無く、その日の中で並べるための数字。
+    """
+    if row.get("type") == "pitcher":
+        outs = outs_from_ip(row.get("ip"))
+        raw = (outs
+               + 2 * max(0, outs - 12)
+               + row.get("so", 0)
+               - 2 * row.get("hits", 0)
+               - 4 * row.get("er", 0)
+               - row.get("bb", 0))
+        # 基準点は投球回に応じて動かす。
+        # 定数(先発想定の45)にしていたとき、1回を無失点で抑えた中継ぎが
+        # 4打数2安打1打点の打者を上回った。1イニングは、良い内容でも
+        # その試合に効いた量としては小さい。5回を投げ切って満額になる形にする。
+        base = 25 + 20 * min(1.0, outs / 15)
+        score = base + raw * 1.2
+    else:
+        # 二塁打・三塁打が取れないため、塁打は安打+本塁打×3で近似する
+        tb = row.get("hits", 0) + 3 * row.get("hr", 0)
+        raw = (2 * tb
+               + 2 * row.get("rbi", 0)
+               + row.get("bb", 0)
+               - row.get("so", 0))
+        score = 30 + raw * 2.4
+    return max(0, min(100, round(score)))
+
+
 def jst_label(us_date: str) -> str:
     """
     米国日付を、日本の視聴者が体感する日付へ直す。

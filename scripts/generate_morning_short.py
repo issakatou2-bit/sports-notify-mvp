@@ -137,6 +137,23 @@ def base(progress):
     return im, d
 
 
+def sort_players(players: list) -> list:
+    """
+    その日の貢献度が高い順に並べる。
+
+    これまでは「投手が先、打者は安打数順」で、その日いちばん効いた選手が
+    何番目に出てくるか決まっていなかった。順番に意味が無いと、
+    一覧はただの羅列になる。投手と打者を同じ物差しに載せて並べれば、
+    「今日いちばんは誰か」という話になる。
+
+    同点のときは投手を先にする。並びが実行ごとに変わらないようにするため。
+    """
+    return sorted(players,
+                  key=lambda p: (-morning_recap.contribution(p),
+                                 p.get("type") != "pitcher",
+                                 p.get("name", "")))
+
+
 def recap_day(data: dict) -> str:
     """
     画面に出す日付。米国日付ではなく、日本時間で試合が行われた日を使う。
@@ -209,12 +226,16 @@ def build_narration(data: dict, mode: str = "all") -> dict:
       local   … 現地の注目度と声だけ
       all     … 従来どおり全部(検証用)
     """
-    players = data.get("players") or []
+    players = sort_players(data.get("players") or [])
+
     # 画面・原稿・タイトル・サムネイルで同じ日付になるよう、
     # ここで一度だけ日本時間へ直してから配る。
     day_iso = recap_day(data)
     day = jp_date(day_iso)
-    top = pick_top(players)
+    # 冒頭で挙げる選手は、一覧の1位と同じにする。
+    # pick_top() は別の基準(本塁打→好投→複数安打)で選んでいたため、
+    # 「冒頭は大谷、でも一覧の1位は千賀」という食い違いが出ていた。
+    top = players[0] if players else {}
     want_players = mode in ("all", "players")
     want_local = mode in ("all", "local")
 
@@ -251,7 +272,11 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             chunk = players[i:i + PER_PAGE]
             segments.append({
                 "kind": "list",
-                "text": "".join(f"{p['name']}、{p['headline']}。" for p in chunk),
+                "text": "".join(
+                    f"{i + j + 1}位、{p['name']}、{p['headline']}。"
+                    f"貢献度{morning_recap.contribution(p)}。"
+                    for j, p in enumerate(chunk)
+                ),
                 "meta": {"start": i, "count": len(chunk)},
             })
 
@@ -364,13 +389,27 @@ def render_list(p, players, start, count):
         e = ease_out(min(1.0, max(0.0, (p - appear) * 9)))
         dx = int((1 - e) * 110)
         d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + 230], 20, fill=SURF)
+
+        # 順位。並び順の意味が画面からも分かるようにする
+        rank = start + i + 1
+        d.text((100 - dx, y + 30), f"{rank}", font=font(64), fill=ACCENT)
+
         # 投手か打者かが一目で分かるよう、色を分ける
         col = JP if pl["type"] == "pitcher" else TEXT
-        d.text((100 - dx, y + 26), pl.get("name", ""), font=font(58), fill=col)
+        d.text((180 - dx, y + 26), pl.get("name", ""), font=font(58), fill=col)
+
+        # 貢献度。投手と打者を同じ物差しに載せた、コレスポ独自の数字。
+        # 右端に置いて、名前と成績の邪魔をしないようにする。
+        score = morning_recap.contribution(pl)
+        sw = d.textlength(str(score), font=font(66))
+        d.text((W - 110 - dx - sw, y + 24), str(score),
+               font=font(66), fill=ACCENT)
+        d.text((W - 108 - dx, y + 48), "点", font=font(30), fill=DIM)
+
         head = pl.get("headline", "")
-        s = fit(d, head, W - 220, (48, 44, 40, 36))
-        d.text((100 - dx, y + 118), head, font=font(s), fill=TEXT)
-        d.text((100 - dx, y + 180),
+        s = fit(d, head, W - 300, (48, 44, 40, 36))
+        d.text((180 - dx, y + 118), head, font=font(s), fill=TEXT)
+        d.text((180 - dx, y + 180),
                "投手" if pl["type"] == "pitcher" else "打者",
                font=font(30), fill=DIM)
         y += 258
@@ -618,7 +657,13 @@ def main():
         print(f"[info] {path} が無いため、朝のショートは作りません")
         return
     data = json.loads(path.read_text(encoding="utf-8"))
-    players = data.get("players") or []
+    # 並べ替えはここで一度だけ行う。
+    # build_narration の中だけで並べ替えていたとき、原稿は貢献度順なのに
+    # 画面は元の順のままで、「1位 34点、3位 44点」と食い違った。
+    # 週次動画と資産動画で一度ずつ踏んだのと同じ失敗なので、
+    # 原稿と画面が同じリストを見るようにする。
+    players = sort_players(data.get("players") or [])
+    data["players"] = players
     if not players:
         print("[info] 出場した日本人選手がいないため作りません")
         return
