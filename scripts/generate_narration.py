@@ -32,6 +32,7 @@ import os
 import pathlib
 import re
 import sys
+import unicodedata
 
 try:
     import anthropic
@@ -54,6 +55,40 @@ HOOK_RE = re.compile(r"^(?P<who>.{2,14}?)(?<![にへとで])は(?P<what>.{4,28})
 # 「アストロズ vs レンジャーズ は首位攻防戦、ゲーム差はわずか1.5」から
 # ゲーム差だけを取り出す。
 GAMES_BACK_RE = re.compile(r"ゲーム差はわずか([\d.]+)")
+
+
+def speech_name(name: str) -> str:
+    """
+    読み上げに渡す用に、外国人選手の名前を整える。画面表示には使わない。
+
+    VOICEVOXは「José Soriano」を「ジェーオーエス、ソリアーノ」と読む。
+    アクセント付きの文字で辞書を外し、そこだけアルファベットの
+    1文字読みに落ちるため。冒頭のフックは動画の最初の2秒なので、
+    ここが崩れるのはいちばん痛い。
+
+    やっていることは2つだけ:
+      1. アクセント記号を落とす (José -> Jose)
+      2. 2語以上なら姓だけにする (Jose Soriano -> Soriano)
+
+    姓だけにするのは、VOICEVOXが姓は概ね読めているのと、
+    日本の野球中継でも姓で呼ぶのが普通のため。
+    日本人選手はJP_PLAYER_READINGSでカタカナに置き換わるので、
+    ここへは来ない(来ても漢字はそのまま返る)。
+
+    根本的には選手ごとのカタカナ表記を持つのが正しいが、
+    先発投手は誰でもフックに出るので、名簿を用意しても漏れる。
+    """
+    if not name or not any(c.isascii() and c.isalpha() for c in name):
+        return name
+    folded = unicodedata.normalize("NFKD", name)
+    folded = "".join(c for c in folded if not unicodedata.combining(c))
+    parts = [p for p in folded.split() if p]
+    if len(parts) >= 2:
+        # "Jr." のような接尾辞は落として、その手前を姓とみなす
+        while len(parts) >= 2 and parts[-1].rstrip(".").lower() in ("jr", "sr", "ii", "iii"):
+            parts.pop()
+        return parts[-1]
+    return folded
 
 
 def pick_hook(games: list) -> dict:
@@ -200,7 +235,10 @@ def main():
     hook = pick_hook(games)
     # フック文が既に句点で終わっている場合があるので、重ねないよう剥がす
     _big = hook["big"].rstrip("。")
-    lead = f"{hook['sub']}は{_big}。" if hook["sub"] else f"{_big}。"
+    # 読み上げでは姓だけにする。画面は meta 経由で hook をそのまま受け取るので、
+    # フルネームのまま表示される。
+    _sub = speech_name(hook["sub"])
+    lead = f"{_sub}は{_big}。" if _sub else f"{_big}。"
 
     # 冒頭は「具体的な事実 → 何の動画か」の順で、2文だけにする。
     #

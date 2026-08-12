@@ -21,6 +21,7 @@ import json
 import os
 import pathlib
 import sys
+from morning_recap import jst_label as _jst_label  # noqa: E402
 
 try:
     from google.oauth2.credentials import Credentials
@@ -748,8 +749,11 @@ def main():
             try:
                 rec = json.loads(pathlib.Path(args.recap).read_text(encoding="utf-8"))
                 morning_players = rec.get("players") or []
-                # タイトルと画面で同じ日付を使う
-                d = rec.get("date", "")
+                # タイトルと画面で同じ日付を使う。
+                # date は米国日付なので、日本の視聴者が体感する日付
+                # (date_jst)を優先する。古い記録には無いので、その場合だけ
+                # date から換算する。
+                d = rec.get("date_jst") or _jst_label(rec.get("date", ""))
                 if d:
                     from datetime import datetime as _dt
                     _p = _dt.strptime(d, "%Y-%m-%d")

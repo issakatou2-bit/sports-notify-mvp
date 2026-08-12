@@ -29,6 +29,7 @@ import json
 import os
 import pathlib
 import subprocess
+from morning_recap import jst_label as _jst_label  # noqa: E402
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -252,7 +253,10 @@ def main():
         if not players:
             print("[info] 出場選手がいないため、サムネイルは作りません")
             return
-        day = rec.get("date", "")
+        # 米国日付ではなく、日本時間で試合が行われた日を出す。
+        # 動画・タイトル・サムネイルで日付が食い違うと、
+        # どれが正しいのか視聴者には分からない。
+        day = rec.get("date_jst") or _jst_label(rec.get("date", ""))
         try:
             from datetime import datetime as _dt
             _p = _dt.strptime(day, "%Y-%m-%d")

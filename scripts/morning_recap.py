@@ -165,8 +165,28 @@ def build(day: str = None, season: str = None) -> dict:
     return {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "date": target,
+        "date_jst": jst_label(target),
         "players": rows,
     }
+
+
+def jst_label(us_date: str) -> str:
+    """
+    米国日付を、日本の視聴者が体感する日付へ直す。
+
+    米国日付Dの試合はほぼ全て日本時間D+1の朝に行われる
+    (現地19時開始 = JST翌8時)。ところがタイトルにもサムネイルにも
+    米国日付をそのまま出していたため、日本時間8月11日の朝に見た試合を
+    その日の夜に「8月10日の成績」として出していた。
+    サイトも動画も他は全てJST基準なので、ここだけ1日ずれて見える。
+
+    日付として読めなければ、そのまま返す(欠けても落とさない)。
+    """
+    try:
+        d = datetime.strptime(str(us_date)[:10], "%Y-%m-%d").date()
+    except (ValueError, TypeError):
+        return us_date
+    return (d + timedelta(days=1)).isoformat()
 
 
 def load(path: str, day: str = None) -> list:

@@ -218,10 +218,16 @@ def main():
         except ValueError:
             continue
         dur, size = audio_meta(f)
+        # ファイル名は作った日(JST)だが、中身はその翌日の試合。
+        # 19時に配信して、扱うのは翌朝から始まる試合なので1日ずれる。
+        # ファイル名のまま題名にしていたため、8月11日の回が
+        # 「8月11日の注目試合」と出ていた。実際は8月12日の試合。
+        # YouTube側は既に翌日の日付を使っており、そちらと食い違っていた。
+        g = d + timedelta(days=1)
         episodes.append({
             "date": d,
             "file": f.name,
-            "title": f"{d.month}月{d.day}日の注目試合",
+            "title": f"{g.month}月{g.day}日の注目試合",
             # 説明文は当日分のみ実データ、過去分は汎用文にしておく
             # (過去のnotable_games.jsonを読み直すのはコストに見合わないため)
             "description": desc if f.name == mp3_path.name else DESCRIPTION,

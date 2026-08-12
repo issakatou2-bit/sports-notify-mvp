@@ -23,6 +23,7 @@ import subprocess
 import sys
 import wave
 from datetime import datetime
+from morning_recap import jst_label as _jst_label  # noqa: E402
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -136,6 +137,14 @@ def base(progress):
     return im, d
 
 
+def recap_day(data: dict) -> str:
+    """
+    画面に出す日付。米国日付ではなく、日本時間で試合が行われた日を使う。
+    古い記録には date_jst が無いので、その場合は date から換算する。
+    """
+    return data.get("date_jst") or _jst_label(data.get("date", ""))
+
+
 def jp_date(day: str) -> str:
     try:
         dt = datetime.strptime(day, "%Y-%m-%d")
@@ -201,7 +210,10 @@ def build_narration(data: dict, mode: str = "all") -> dict:
       all     … 従来どおり全部(検証用)
     """
     players = data.get("players") or []
-    day = jp_date(data.get("date", ""))
+    # 画面・原稿・タイトル・サムネイルで同じ日付になるよう、
+    # ここで一度だけ日本時間へ直してから配る。
+    day_iso = recap_day(data)
+    day = jp_date(day_iso)
     top = pick_top(players)
     want_players = mode in ("all", "players")
     want_local = mode in ("all", "local")
@@ -211,14 +223,14 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             "kind": "intro",
             "text": f"{day}のメジャーリーグ、日本人選手の成績です。"
                     + (f"{top['name']}は{top['headline']}。" if top else ""),
-            "meta": {"date": data.get("date", ""), "count": len(players)},
+            "meta": {"date": day_iso, "count": len(players)},
         }]
     else:
         # 現地編は選手一覧を出さないので、冒頭も現地の話から入る
         segments = [{
             "kind": "intro",
             "text": f"{day}のメジャーリーグ、現地での注目度をまとめました。",
-            "meta": {"date": data.get("date", ""), "count": len(players),
+            "meta": {"date": day_iso, "count": len(players),
                      "local": True},
         }]
 
