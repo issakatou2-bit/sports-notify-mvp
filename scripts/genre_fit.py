@@ -197,14 +197,16 @@ GENRES = [
      "対象が無限に増えるので名簿が閉じない。数か月で古くなるため蓄積も効かない。"
      "参入は容易だが、その容易さゆえに既に飽和している。"),
 
-    ("海外の反応(アニメ・映画)", dict(api=2, choice=4, explainable=1, deadline=3,
-                          jp_thin=4, roster=2, archive=2, rights=1,
+    ("海外の反応(アニメ・映画)", dict(api=2, choice=4, explainable=2, deadline=3,
+                          jp_thin=5, roster=2, archive=2, rights=5,
                           evergreen=2),
-     "Reddit APIは2023年に有料化しており、無料で安定して取れる前提が崩れている。"
-     "実際コレスポでも r/baseball のJSON APIは403で、RSSしか通らなかった。"
-     "さらに他人の書き込みを翻訳して動画にするのは、"
-     "引用の範囲と本人の意図の両方で危うい(rights=1)。"
-     "「注目度」を数字で示す手段も無く、選定が主観になる。"),
+     "素材が文章なので、映像を一切使わずに成立する(rights=5)。"
+     "日本語で読める一次情報も最も薄い部類。"
+     "弱点はデータの取り方で、Reddit APIは2023年に有料化しており、"
+     "コレスポで試した限り r/baseball のJSON APIは403、RSSしか通らなかった。"
+     "取れる量が限られるぶん、どれを選ぶかの根拠も弱くなる。"
+     "ここを解けるなら、コレスポが既に別軸として持っている仕組みが"
+     "そのまま使える(local_voices.py)。"),
 
     ("暗号資産・ミームコイン", dict(api=5, choice=5, explainable=3, deadline=5,
                         jp_thin=2, roster=1, archive=2, rights=4,
