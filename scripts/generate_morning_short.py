@@ -274,6 +274,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 "kind": "list",
                 "text": "".join(
                     f"{i + j + 1}位、{p['name']}、{p['headline']}。"
+                    + (f"{p['clutch_label']}。" if p.get("clutch_label") else "")
                     + (f"貢献度{morning_recap.score_label(p)}。"
                        if morning_recap.score_label(p) else "")
                     for j, p in enumerate(chunk)
@@ -422,9 +423,14 @@ def render_list(p, players, start, count):
         head = pl.get("headline", "")
         s = fit(d, head, W - 300, (48, 44, 40, 36))
         d.text((180 - dx, y + 118), head, font=font(s), fill=TEXT)
-        d.text((180 - dx, y + 180),
-               {"pitcher": "投手", "two_way": "投打"}.get(kind, "打者"),
-               font=font(30), fill=DIM)
+
+        # 場面(逆転・勝ち越し・同点)。点数がなぜ高いのかの説明になる。
+        role = {"pitcher": "投手", "two_way": "投打"}.get(kind, "打者")
+        d.text((180 - dx, y + 180), role, font=font(30), fill=DIM)
+        clutch_label = pl.get("clutch_label")
+        if clutch_label:
+            d.text((180 - dx + d.textlength(role, font=font(30)) + 24,
+                    y + 178), clutch_label, font=font(32), fill=ACCENT)
         y += 258
 
     d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)

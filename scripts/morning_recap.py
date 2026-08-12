@@ -168,6 +168,23 @@ def build(day: str = None, season: str = None) -> dict:
         rows.append({"name": p["name_jp"], "name_en": p["name_en"],
                      "player_id": pid, **row})
 
+    # 打点が「どういう場面で入ったか」を足す。
+    # 同じ3ランでも逆転と大差では試合への効き方が違うのに、
+    # 成績の合計値だけでは区別できなかった。
+    # 取れなくても、その加点が乗らないだけで他は通る。
+    try:
+        import clutch
+        cl = clutch.build(target, [r["player_id"] for r in rows])
+        for r in rows:
+            e = cl.get(r["player_id"])
+            if e:
+                r["clutch_points"] = e["points"]
+                r["clutch_label"] = e["label"]
+                r["clutch_plays"] = e["plays"]
+                print(f"[info] {r['name']}: {e['label']} (+{e['points']})")
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] 場面の判定を取得できませんでした: {e}", file=sys.stderr)
+
     # 投手を先に、打者は安打数の多い順。出場者が少ない日でも形になる並びにする
     rows.sort(key=lambda r: (r["type"] != "pitcher", -r.get("hits", 0)))
 
@@ -219,10 +236,15 @@ def contribution(row: dict) -> int:
     「今日は突き抜けている」が数字の大きさで伝わる方が面白い。
     下限だけ0で止める。マイナスは順位以上の意味を持たないため。
     """
+    # 逆転・勝ち越し・同点の加点。clutch.py が付ける。
+    # 打点の合計だけでは、どういう場面だったかが分からない。
+    bonus = row.get("clutch_points") or 0
+
     # 投げて打った日は両方を足す。7回10奪三振に3本塁打が乗れば200点前後になる。
     if row.get("type") == "two_way":
         return (contribution({**row["pitching"], "type": "pitcher"})
-                + contribution({**row["batting"], "type": "batter"}))
+                + contribution({**row["batting"], "type": "batter"})
+                + bonus)
 
     if row.get("type") == "pitcher":
         outs = outs_from_ip(row.get("ip"))
@@ -246,7 +268,7 @@ def contribution(row: dict) -> int:
                + row.get("bb", 0)
                - row.get("so", 0))
         score = 30 + raw * 2.4
-    return max(0, round(score))
+    return max(0, round(score + bonus))
 
 
 # この点を超えたら「突き抜けた日」として画面で強調する。
