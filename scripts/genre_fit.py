@@ -188,6 +188,34 @@ GENRES = [
                  roster=3, archive=3, rights=3, evergreen=4),
      "木〜日の開催で週の半分が空く。日本人選手軸は作りやすい。"),
 
+    ("海外AIツール・Techトレンド", dict(api=5, choice=5, explainable=2, deadline=3,
+                              jp_thin=5, roster=1, archive=2, rights=4,
+                              evergreen=3),
+     "Hacker News APIもProduct Hunt APIも無料で使え、日本語の一次情報は"
+     "最も薄い部類。ただし「何が重要か」をデータで判定できない(explainable=2)。"
+     "Hacker Newsのスコアは英語圏の技術者の関心で、日本のライト層の関心とは別物。"
+     "対象が無限に増えるので名簿が閉じない。数か月で古くなるため蓄積も効かない。"
+     "参入は容易だが、その容易さゆえに既に飽和している。"),
+
+    ("海外の反応(アニメ・映画)", dict(api=2, choice=4, explainable=1, deadline=3,
+                          jp_thin=4, roster=2, archive=2, rights=1,
+                          evergreen=2),
+     "Reddit APIは2023年に有料化しており、無料で安定して取れる前提が崩れている。"
+     "実際コレスポでも r/baseball のJSON APIは403で、RSSしか通らなかった。"
+     "さらに他人の書き込みを翻訳して動画にするのは、"
+     "引用の範囲と本人の意図の両方で危うい(rights=1)。"
+     "「注目度」を数字で示す手段も無く、選定が主観になる。"),
+
+    ("暗号資産・ミームコイン", dict(api=5, choice=5, explainable=3, deadline=5,
+                        jp_thin=2, roster=1, archive=2, rights=4,
+                        evergreen=2),
+     "CoinGecko APIは無料で秒単位、条件だけ見れば最上位に来る。"
+     "だが「射幸心を煽るので伸びる」という設計は、"
+     "見た人が損をする方向に効くことを前提にしている。"
+     "各プラットフォームの金融コンテンツの規定にも触れやすく、"
+     "コレスポが掲げている「確かめられることだけを出す」とも噛み合わない。"
+     "点数の外の理由で選ばない方がよい例。"),
+
     ("NPB(日本プロ野球)", dict(api=2, choice=4, explainable=5, deadline=5,
                         jp_thin=1, roster=4, archive=3, rights=2,
                         evergreen=4),
