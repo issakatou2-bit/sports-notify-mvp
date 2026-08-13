@@ -206,6 +206,15 @@ def draw_morning_local(d, day: str):
     d.text((70, H - 78), "コレスポ  現地での注目度", font=font(38), fill=JP)
 
 
+def draw_morning_press(d, day: str):
+    """言葉の回。数字の回と主題を分けてあるので、そこが分かる出し方にする"""
+    d.text((70, 90), day, font=font(56), fill=DIM)
+    d.text((70, 170), "現地メディアは", font=font(96), fill=TEXT)
+    d.text((70, 280), "何と言っている？", font=font(112), fill=JP)
+    d.text((70, 440), "番記者の投稿と見出しを翻訳", font=font(50), fill=TEXT)
+    d.text((70, H - 78), "コレスポ  現地の声", font=font(38), fill=JP)
+
+
 def draw_verdict(d, label: str):
     d.text((70, 110), "注目した試合", font=font(76), fill=TEXT)
     d.text((70, 210), "どうなった？", font=font(140), fill=ACCENT)
@@ -231,7 +240,7 @@ def main():
                         choices=["daily", "weekly", "asset", "verdict", "morning"])
     parser.add_argument("--recap", default="data/morning_recap.json")
     parser.add_argument("--mode", default="players",
-                        choices=["players", "local", "all"])
+                        choices=["players", "local", "press", "all"])
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--narration", default="public/narration.json")
     parser.add_argument("--asset-topic", default="mlb_abbr")
@@ -263,7 +272,9 @@ def main():
             day = f"{_p.month}月{_p.day}日"
         except ValueError:
             pass
-        if args.mode == "local":
+        if args.mode == "press":
+            draw_morning_press(d, day)
+        elif args.mode == "local":
             draw_morning_local(d, day)
         else:
             draw_morning(d, day, players)

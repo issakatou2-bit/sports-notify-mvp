@@ -531,7 +531,12 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 注目試合が取れなかった日は空のままになる。
     daily_lead = ""
 
-    if kind == "morning" and morning_mode == "local":
+    if kind == "morning" and morning_mode == "press":
+        # 言葉の回。数字の回(local)と主題を分けてあるので、
+        # タイトルでも「誰が何と言ったか」を前に出す。
+        title = (f"【MLB】{date_label} 現地メディアは何と言っているか"
+                 f"｜番記者の投稿と現地の見出し #Shorts")
+    elif kind == "morning" and morning_mode == "local":
         # 現地編は主題が違うので、選手名ではなく「現地」を前に出す。
         # 「最も見られた試合は？」だと1試合の話に見えるが、実際は
         # 再生回数の順位と、話題に挙がったチームまで扱っている。
@@ -582,7 +587,15 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
     # タイトルと同じく、具体的な事実を先に置く。
-    if kind == "morning" and morning_mode == "local":
+    if kind == "morning" and morning_mode == "press":
+        lines = [f"{date_label}のメジャーリーグについて、"
+                 "現地で何と言われているかをまとめました。", "",
+                 "・現地の番記者がSNSに書いた投稿（実名・所属媒体つき）",
+                 "・現地メディアの見出し（選手名で検索して取得）",
+                 "・現地のファンの投稿", "",
+                 "いずれも翻訳したもので、コレスポの見解ではありません。",
+                 "数字で見る「現地での注目度」は別の動画で出しています。"]
+    elif kind == "morning" and morning_mode == "local":
         lines = [f"{date_label}のメジャーリーグについて、"
                  "現地でどれだけ注目されたかをまとめました。", "",
                  "・MLB公式ハイライトの再生回数（見られた量）",

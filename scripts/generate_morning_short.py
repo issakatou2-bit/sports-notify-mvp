@@ -273,7 +273,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     視聴率が落ちていた。
 
       players … 日本人選手の成績だけ
-      local   … 現地の注目度と声だけ
+      local   … 現地の注目度だけ(再生回数・話題のチーム＝測った数字)
+      press   … 現地の声と報道だけ(番記者・見出し・ファン＝翻訳した言葉)
       all     … 従来どおり全部(検証用)
     """
     players = sort_players(data.get("players") or [])
@@ -286,8 +287,17 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     # pick_top() は別の基準(本塁打→好投→複数安打)で選んでいたため、
     # 「冒頭は大谷、でも一覧の1位は千賀」という食い違いが出ていた。
     top = players[0] if players else {}
+    # 現地の素材を、数字と言葉で分ける。
+    #
+    # local に5種類(再生回数・話題のチーム・ファンの声・番記者・見出し)を
+    # 詰めると、また主題が混ざる。以前76秒3主題の動画を2本に割ったのと
+    # 同じ状態になっていた。
+    #   local … 現地でどれだけ見られ、どれだけ語られたか(測った数字)
+    #   press … 現地が何と言っているか(翻訳した言葉)
+    # 画面の背景色も元から分かれているので、切り口としても素直。
     want_players = mode in ("all", "players")
     want_local = mode in ("all", "local")
+    want_press = mode in ("all", "press")
 
     # 冒頭は「その日いちばん具体的な事実 → 何の動画か」の順にする。
     #
@@ -301,6 +311,28 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             "kind": "intro",
             "text": f"{head}{day}、日本人選手{len(players)}人の成績です。",
             "meta": {"date": day_iso, "count": len(players)},
+        }]
+    elif mode == "press":
+        # 言葉の回。
+        # 冒頭で本文の引用をそのまま読むと、直後の画面で同じ文をもう一度
+        # 読むことになる。冒頭は「誰の言葉が何件あるか」だけにして、
+        # 中身は本文の画面に任せる。
+        rp = (data.get("reporters") or {}).get("posts") or []
+        hd = (data.get("reporters") or {}).get("headlines") or []
+        who = ""
+        if rp:
+            outlets = []
+            for r in rp[:3]:
+                o = r.get("outlet", "")
+                if o and o not in outlets:
+                    outlets.append(o)
+            if outlets:
+                who = "、".join(outlets[:2]) + "などの記者。"
+        segments = [{
+            "kind": "intro",
+            "text": f"{who}{day}、現地では何と言われているか。"
+                    f"番記者の投稿と現地の見出しから。",
+            "meta": {"date": day_iso, "count": len(players), "local": True},
         }]
     else:
         # 現地編は選手一覧を出さないので、冒頭も現地の話から入る。
@@ -355,7 +387,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
 
     # 現地の声。ここだけは数字ではなく、翻訳を通した誰かの感想なので、
     # 読み上げでも「翻訳したもの」であることを先に断る。
-    voices = ((data.get("voices") or {}).get("voices") or []) if want_local else []
+    voices = ((data.get("voices") or {}).get("voices") or []) if want_press else []
     if voices:
         parts = [f"ここからは現地の声です。"
                  f"{(data.get('voices') or {}).get('source', '')}の投稿を"
@@ -368,24 +400,26 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     # 実名で、その球団を毎日追っている人の言葉だという点。
     # ここも翻訳を通すので、数字のコーナーとは画面を分ける。
     reporters = ((data.get("reporters") or {}).get("posts") or []) \
-        if want_local else []
+        if want_press else []
     if reporters:
         parts = ["現地の番記者の投稿です。翻訳したもので、"
                  "コレスポの見解ではありません。"]
         for r in reporters[:2]:
             body = r.get("jp") or r.get("text", "")
-            parts.append(f"{r.get('outlet', '')}の記者。{body}。")
+            # 訳が付いていない場合は原文が入る。原文は長いので、
+            # 読み上げが尺を食いすぎないよう頭で切る。
+            parts.append(f"{r.get('outlet', '')}の記者。{body[:90]}。")
         segments.append({"kind": "reporters", "text": "".join(parts),
                          "meta": {}})
 
     # 現地で何が報じられたか。見出しだけを扱う。
     heads = ((data.get("reporters") or {}).get("headlines") or []) \
-        if want_local else []
+        if want_press else []
     if heads:
         parts = ["現地の見出しです。"]
         for h in heads[:3]:
-            parts.append(f"{h.get('source', '')}。"
-                         f"{h.get('jp') or h.get('title', '')}。")
+            body = h.get("jp") or h.get("title", "")
+            parts.append(f"{h.get('source', '')}。{body[:80]}。")
         segments.append({"kind": "headlines", "text": "".join(parts),
                          "meta": {}})
 
@@ -826,8 +860,9 @@ def main():
     parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--voices", default="data/local_voices.json")
     parser.add_argument("--mode", default="players",
-                        choices=["players", "local", "all"],
-                        help="players=選手成績 / local=現地の注目度と声 / all=全部")
+                        choices=["players", "local", "press", "all"],
+                        help="players=選手成績 / local=現地の注目度(数字) / "
+                             "press=現地の声と報道(言葉) / all=全部")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--out", default="build/morning")
@@ -903,7 +938,7 @@ def main():
     # 数えていたため、番記者と見出しを足したときに数え漏れて、
     # 中身のある動画を「材料が無い」として捨てていた。
     body = [k for k in kinds if k not in ("intro", "outro")]
-    if args.mode == "local" and not body:
+    if args.mode in ("local", "press") and not body:
         print("[info] 現地のデータが1つも無いため、現地編は作りません")
         return
 

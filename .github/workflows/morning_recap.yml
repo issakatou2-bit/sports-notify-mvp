@@ -122,7 +122,7 @@ jobs:
           TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
         run: |
           set +e
-          for mode in players local; do
+          for mode in players local press; do
             echo "::group::$mode"
             if [ "$mode" = "players" ]; then
               VIDEO="build/morning/collespo_morning.mp4"
@@ -161,9 +161,9 @@ jobs:
               --privacy public
 
             # TikTokへも同じものを出す。タイトルはYouTube側の記録から借りる。
-            # 記録上の区分は players→morning / local→morning_local。
+            # 記録上の区分は players→morning / それ以外→morning_<mode>。
             if [ -n "$TIKTOK_REFRESH_TOKEN" ]; then
-              if [ "$mode" = "players" ]; then TK=morning; else TK=morning_local; fi
+              if [ "$mode" = "players" ]; then TK=morning; else TK="morning_${mode}"; fi
               python scripts/post_tiktok.py --video "$VIDEO" --kind "$TK"
             fi
             echo "::endgroup::"
