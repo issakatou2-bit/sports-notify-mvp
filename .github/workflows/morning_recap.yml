@@ -85,6 +85,15 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/local_voices.py --out data/local_voices.json
 
+      # 現地の番記者が今日書いたこと。ファンの声(local_voices)とは別で、
+      # その球団を毎日追っている人が実名で書いている一次情報。
+      # Blueskyの公開エンドポイントは認証が要らないので鍵も不要。
+      - name: Fetch local reporters
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/local_reporters.py --out data/local_reporters.json
+
       - name: Start VOICEVOX engine
         continue-on-error: true
         run: |
@@ -173,7 +182,7 @@ jobs:
           git add data/morning_recap.json data/venue_stats.json \
             data/published_videos.json data/mlb_buzz.json \
             data/local_buzz.json data/published_tiktok.json \
-            data/recap_history/ || true
+            data/local_reporters.json data/recap_history/ || true
           git diff --cached --quiet || git commit -m "recap: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いか、push対象が無いためスキップ"

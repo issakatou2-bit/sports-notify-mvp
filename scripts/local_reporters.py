@@ -1,0 +1,299 @@
+#!/usr/bin/env python3
+"""
+現地の番記者が今日書いたことを拾い、日本語に直す。
+
+    python3 scripts/local_reporters.py --out data/local_reporters.json
+
+なぜこれを足すのか:
+  コレスポがこれまで拾っていた「現地」は、再生回数(mlb_buzz)と
+  名前の登場回数(local_buzz)、つまり量だけだった。
+  何を言っているかは、ファンの投稿を翻訳する local_voices しか無い。
+
+  番記者は、その球団を毎日追っている人が実名で書いている一次情報で、
+  日本語にはほぼ流れてこない。取材した人が「今日はこうだった」と
+  書いた内容は、数字の裏側を埋める材料になる。
+
+どう取るか:
+  BlueskyのAT Protocolは、公開エンドポイントに認証が要らない。
+    app.bsky.feed.getAuthorFeed  … 特定アカウントの投稿(認証なしで通る)
+    app.bsky.actor.searchActors  … 記者を名前で探す(同上)
+  検索(searchPosts)は403で使えないので、こちらから見に行く形にする。
+  そのため名簿が要る。下のREPORTERSは searchActors で洗い出し、
+  実際に投稿を取得できることまで確認したもの。
+
+  いいね数とリポスト数が付いてくるので、どれが刺さった投稿かを
+  こちらの判断ではなく現地の反応で並べられる。
+"""
+
+import argparse
+import json
+import os
+import pathlib
+import re
+import sys
+import time
+from datetime import datetime, timedelta, timezone
+
+import requests
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+from notability_engine import JP_PLAYERS_MLB, MLB_TEAM_NAME_JP  # noqa: E402
+
+BASE = "https://public.api.bsky.app/xrpc"
+UA = {"User-Agent": "collespo/1.0 (+https://collespo.com)"}
+
+# 番記者の名簿。
+# scripts/local_reporters.py --discover で洗い出せるが、
+# 同名の他競技(NFLのGiants・Cardinals)が混ざるため、最後は人が選ぶ。
+# 所属は確認した時点のもので、移籍する。取れなくなったら外すこと。
+REPORTERS = [
+    # (handle, 球団, 媒体)
+    ("billplunkett.bsky.social", "ドジャース", "Southern California News Group"),
+    ("chriskirschner.bsky.social", "ヤンキース", "The Athletic"),
+    ("garyhphillips.bsky.social", "ヤンキース", "New York Daily News"),
+    ("jcmccaffrey.bsky.social", "レッドソックス", "The Athletic"),
+    ("timbhealey.bsky.social", "レッドソックス", "Boston Globe"),
+    ("maccerullo.bsky.social", "レッドソックス", "Boston Herald"),
+    ("peteabeglobeew.bsky.social", "レッドソックス", "Boston Globe"),
+    ("keeganmatheson.bsky.social", "ブルージェイズ", "MLB.com"),
+    ("jefffletcherocr.bsky.social", "エンゼルス", "Orange County Register"),
+    ("samblum3.bsky.social", "エンゼルス", "The Athletic"),
+    ("chandlerrome.bsky.social", "アストロズ", "The Athletic"),
+    ("mmontemurro.bsky.social", "カブス", "Chicago Tribune"),
+    ("tonyandracki23.bsky.social", "カブス", "Marquee Sports Network"),
+    ("miguardado.bsky.social", "ジャイアンツ", "MLB.com"),
+    ("ewebeck.bsky.social", "ジャイアンツ", "San Jose Mercury News"),
+    ("timstebbins.bsky.social", "ガーディアンズ", "MLB.com"),
+    ("lalbanese.bsky.social", "メッツ", "Newsday"),
+    ("mannygo3.bsky.social", "メッツ", "NJ Advance Media"),
+    ("afkostka.bsky.social", "オリオールズ", "Baltimore Banner"),
+    ("jakerill.bsky.social", "オリオールズ", "MLB.com"),
+    ("danielleallentuck.bsky.social", "オリオールズ", "Baltimore Banner"),
+    ("sdutkevinacee.bsky.social", "パドレス", "San Diego Union Tribune"),
+    ("mattgelb.bsky.social", "フィリーズ", "The Athletic"),
+    ("toddzolecki.bsky.social", "フィリーズ", "MLB.com"),
+    ("jasonbeck.bsky.social", "タイガース", "MLB.com"),
+    ("daniel-guerrero.bsky.social", "カージナルス", "St. Louis Post-Dispatch"),
+
+    # 球団を持たない全国担当。特定の球団に張り付いていないぶん、
+    # 日本人選手のように球団をまたぐ話題を拾いやすい。
+    ("feinsand.bsky.social", "全国", "MLB.com"),
+    ("samdykstramilb.bsky.social", "全国", "MLB Pipeline"),
+    ("jimcallis.bsky.social", "全国", "MLB Pipeline"),
+
+    # 日本人選手が所属する球団を厚くする
+    ("bastianmlb.bsky.social", "カブス", "MLB.com"),          # 鈴木誠也・今永昇太
+    ("ianmbrowne.bsky.social", "レッドソックス", "MLB.com"),      # 吉田正尚
+    ("willsammon.bsky.social", "メッツ", "The Athletic"),      # 千賀滉大
+    ("annerogers.bsky.social", "ロイヤルズ", "MLB.com"),
+    ("kennlandry.bsky.social", "レンジャーズ", "MLB.com"),
+    ("adammccalvy.bsky.social", "ブルワーズ", "MLB.com"),
+    ("patricksaundersdp.bsky.social", "ロッキーズ", "Denver Post"),
+    ("nightengalejr.bsky.social", "ツインズ", "Star Tribune"),
+    ("gdubmlb.bsky.social", "レッズ", "Cincinnati Enquirer"),
+]
+
+# 取り込む時間幅。朝の枠で使うので、前夜の試合を含む長さにする。
+HOURS = 30
+
+# 1人あたり何件見るか。多くしても、古い投稿が増えるだけ。
+PER_AUTHOR = 12
+
+# 翻訳して出す件数。動画1画面に載る量。
+TOP_N = 6
+
+
+def fetch_author(handle: str, limit: int = PER_AUTHOR) -> list:
+    r = requests.get(f"{BASE}/app.bsky.feed.getAuthorFeed",
+                     params={"actor": handle, "limit": limit},
+                     headers=UA, timeout=20)
+    r.raise_for_status()
+    return r.json().get("feed", [])
+
+
+def _recent(iso: str, hours: int) -> bool:
+    try:
+        t = datetime.fromisoformat(iso.replace("Z", "+00:00"))
+    except (ValueError, AttributeError):
+        return False
+    return t >= datetime.now(timezone.utc) - timedelta(hours=hours)
+
+
+def _keywords() -> list:
+    """拾う対象。日本人選手の英語名と、球団の英語側の手掛かり。"""
+    out = [p["name_en"] for p in JP_PLAYERS_MLB]
+    # 姓だけでも拾う(記者は姓で書くことが多い)
+    out += [p["name_en"].split()[-1] for p in JP_PLAYERS_MLB]
+    return sorted(set(out), key=len, reverse=True)
+
+
+def collect(hours: int = HOURS, sleep: float = 0.3) -> list:
+    """名簿を回って、直近の投稿を集める。"""
+    kws = _keywords()
+    out = []
+    for handle, team, outlet in REPORTERS:
+        try:
+            feed = fetch_author(handle)
+        except Exception as e:  # noqa: BLE001
+            print(f"[warn] @{handle}: {e}", file=sys.stderr)
+            time.sleep(sleep)
+            continue
+
+        for item in feed:
+            p = item.get("post") or {}
+            rec = p.get("record") or {}
+            text = (rec.get("text") or "").strip()
+            if not text or not _recent(rec.get("createdAt", ""), hours):
+                continue
+            # リポストは本人の言葉ではないので外す
+            if item.get("reason"):
+                continue
+
+            hit = [k for k in kws if re.search(rf"\b{re.escape(k)}\b", text)]
+            out.append({
+                "handle": handle,
+                "author": (p.get("author") or {}).get("displayName", handle),
+                "team": team,
+                "outlet": outlet,
+                "text": text,
+                "likes": p.get("likeCount", 0),
+                "reposts": p.get("repostCount", 0),
+                "replies": p.get("replyCount", 0),
+                "at": rec.get("createdAt", ""),
+                "uri": p.get("uri", ""),
+                "jp_players": hit,
+            })
+        time.sleep(sleep)
+    return out
+
+
+def rank(posts: list, top: int = TOP_N) -> list:
+    """
+    どれを出すか。こちらの好みではなく、現地の反応の大きさで決める。
+
+    日本人選手に触れている投稿は優先する。日本語圏に向けて出すので、
+    同じ反応量なら、そちらの方が読む理由がある。
+    """
+    def key(p):
+        engage = p["likes"] + p["reposts"] * 2 + p["replies"]
+        return (-(1 if p["jp_players"] else 0), -engage)
+
+    seen, out = set(), []
+    for p in sorted(posts, key=key):
+        # 同じ記者ばかりにならないよう2件まで
+        if sum(1 for x in out if x["handle"] == p["handle"]) >= 2:
+            continue
+        if p["text"][:40] in seen:
+            continue
+        seen.add(p["text"][:40])
+        out.append(p)
+        if len(out) >= top:
+            break
+    return out
+
+
+def translate(posts: list, api_key: str) -> list:
+    """
+    まとめて1回で訳す。1件ずつ呼ぶと件数ぶん課金される。
+
+    訳文は事実の提示ではなく、誰かが書いたことの翻訳なので、
+    出す側で「記者の発言」と分かる形にすること(動画では画面を分ける)。
+    """
+    if not posts or not api_key:
+        return posts
+    try:
+        import anthropic
+    except ImportError:
+        print("[warn] anthropic が無いため翻訳しません", file=sys.stderr)
+        return posts
+
+    numbered = "\n".join(f"{i + 1}. {p['text']}" for i, p in enumerate(posts))
+    prompt = (
+        "次はMLBの番記者がSNSに書いた投稿です。"
+        "それぞれを日本語に訳してください。\n"
+        "・1行に1件、番号をつけて出力\n"
+        "・意訳しすぎず、書かれていないことを足さない\n"
+        "・80文字以内に収める\n"
+        "・URLや記事へのリンクは訳さず省く\n\n"
+        + numbered
+    )
+    try:
+        client = anthropic.Anthropic(api_key=api_key)
+        msg = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1200,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        if msg.stop_reason == "max_tokens":
+            print("[warn] 翻訳が途中で切れたため使いません", file=sys.stderr)
+            return posts
+        body = msg.content[0].text
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] 翻訳に失敗しました: {e}", file=sys.stderr)
+        return posts
+
+    lines = {}
+    for line in body.splitlines():
+        m = re.match(r"\s*(\d+)[.):]\s*(.+)", line)
+        if m:
+            lines[int(m.group(1))] = m.group(2).strip()
+    for i, p in enumerate(posts, 1):
+        if i in lines:
+            p["jp"] = lines[i]
+    return posts
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", default="data/local_reporters.json")
+    ap.add_argument("--hours", type=int, default=HOURS)
+    ap.add_argument("--top", type=int, default=TOP_N)
+    ap.add_argument("--discover", action="store_true",
+                    help="Blueskyから番記者を探して候補を出す(名簿の更新用)")
+    args = ap.parse_args()
+
+    if args.discover:
+        teams = ["Dodgers", "Yankees", "Red Sox", "Cubs", "Padres", "Mets",
+                 "Blue Jays", "Angels", "Mariners", "Braves", "Phillies"]
+        for t in teams:
+            r = requests.get(f"{BASE}/app.bsky.actor.searchActors",
+                             params={"q": f"{t} beat writer", "limit": 8},
+                             headers=UA, timeout=20)
+            if not r.ok:
+                continue
+            for a in r.json().get("actors", []):
+                d = (a.get("description") or "").replace("\n", " ")
+                if re.search(r"beat (writer|reporter)|reporter for", d, re.I):
+                    print(f"  {t:12} @{a['handle']:34} {d[:70]}")
+            time.sleep(0.3)
+        return 0
+
+    posts = collect(hours=args.hours)
+    print(f"[info] 直近{args.hours}時間の投稿: {len(posts)}件"
+          f" (名簿 {len(REPORTERS)}人)")
+    jp_hits = [p for p in posts if p["jp_players"]]
+    print(f"[info] 日本人選手に触れているもの: {len(jp_hits)}件")
+
+    top = rank(posts, args.top)
+    top = translate(top, os.environ.get("ANTHROPIC_API_KEY", ""))
+
+    for p in top:
+        print(f"   ♥{p['likes']:4} RT{p['reposts']:3}  @{p['handle'][:22]:24}"
+              f" {p.get('jp') or p['text'][:60]}")
+
+    out = pathlib.Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "hours": args.hours,
+        "reporters": len(REPORTERS),
+        "collected": len(posts),
+        "posts": top,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[done] {out}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding="utf-8")
+    raise SystemExit(main())
