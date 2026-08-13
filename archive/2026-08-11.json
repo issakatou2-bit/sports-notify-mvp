@@ -75,7 +75,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ西地区でダイヤモンドバックスが【2位で7.5ゲーム差】と地区の順位争いを繰り広げる中、最下位のロッキーズとの直接対決が始まる。ダイヤモンドバックスは2連勝中と勢いを保つ一方、ロッキーズは2連敗中と苦しい状況が続いている。先発陣の対比では、ロッキーズの菅野智之が11勝5敗という好成績を残しているのに対し、ダイヤモンドバックスのMitch Brattは1勝1敗に留まっており、菅野の先発登板がこの一戦の見どころとなる。砂漠気候のチェイス・フィールドで屋根が閉じられると打球が伸びにくくなるため、投手有利の試合展開になるかが注目される。",
-      "notification_hook": "菅野智之が11勝5敗で先発！ロッキーズはダイヤモンドバックスに正面からぶつかる"
+      "notification_hook": "菅野智之が11勝5敗で先発！ロッキーズはダイヤモンドバックスに正面からぶつかる",
+      "final_score": {
+        "home": 2,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822778",
@@ -148,7 +153,12 @@
         "Dylan Ceaseは直近3登板を自責1以下に抑えている"
       ],
       "ai_summary": "ア・リーグ東地区の順位争いで、3位のレッドソックス（64勝54敗、首位との差8.0ゲーム）が、5位のブルージェイズ（57勝63敗、首位との差16.0ゲーム）との直接対決に臨む。レッドソックスは【3連敗中】で勢いを失っており、ここでの勝利が地区順位の競争力を左右する一戦となる。ブルージェイズ先発のDylan Ceaseは今季防御率2.28、直近3登板で自責点1以下に抑える好調ぶりを見せている一方、レッドソックス先発のPatrick Sandovalは1勝0敗と登板数が限定的である。MLBで唯一カナダにあるロジャーズ・センターでの開催となり、開閉式屋根を備えた球場での先発投手陣の投げ合いに注目が集まる。",
-      "notification_hook": "Dylan Ceaseの好調と3連敗中のレッドソックス、岡本和真と吉田正尚の対決"
+      "notification_hook": "Dylan Ceaseの好調と3連敗中のレッドソックス、岡本和真と吉田正尚の対決",
+      "final_score": {
+        "home": 5,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823917",
@@ -215,7 +225,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ西地区で【7.5ゲーム差をつけて首位を走るドジャース】が、ア・リーグ中地区の下位に沈むロイヤルズと対戦する。直近10試合で2勝8敗と調子を落としているドジャースに対し、ロイヤルズも2連敗中で両チームともリズムを欠いた状況での一戦となる。注目点は先発投手の対比である。ドジャース先発のBlake Snellは今季防御率12.00と苦戦を強いられているのに対し、ロイヤルズ先発のMichael Wacha は防御率3.44で112奪三振を記録するなど、投手成績に大きな開きがある。1962年開場の歴史あるドジャー・スタジアムでの投げ合いにも注目したい。",
-      "notification_hook": "調子が落ちるドジャース、先発Snellの防御率12.00は巻き返せるか。"
+      "notification_hook": "調子が落ちるドジャース、先発Snellの防御率12.00は巻き返せるか。",
+      "final_score": {
+        "home": 5,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822697",
@@ -269,7 +284,12 @@
           "text": "今永昇太が先発予定の中での出場",
           "weight": 3
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824886",
@@ -325,7 +345,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824563",
@@ -381,7 +406,12 @@
           "text": "ホワイトソックスには村上宗隆が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823997",
@@ -437,7 +467,12 @@
           "text": "エンゼルスには菊池雄星が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824970",
@@ -491,7 +526,12 @@
           "text": "レイズは7連勝中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 12,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823264",
@@ -547,7 +587,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 11,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823186",
@@ -595,7 +640,12 @@
           "text": "アストロズには今井達也が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823512",
@@ -643,7 +693,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824240",
@@ -691,7 +746,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 6,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823832",
@@ -739,7 +799,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823673",
@@ -787,7 +852,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823019",
@@ -835,7 +905,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     }
   ],
   "ai_status": {
