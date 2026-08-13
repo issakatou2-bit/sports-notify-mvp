@@ -37,7 +37,9 @@ FPS = 24
 ANIM_END = 0.45
 SEGMENT_TAIL = 1.5
 MIN_DURATION = {"intro": 5.0, "list": 8.0, "buzz": 9.0,
-                "talk": 9.0, "voices": 11.0, "outro": 5.0}
+                "talk": 9.0, "voices": 11.0, "outro": 5.0,
+                # 翻訳した文章は読む時間が要るので、数字の画面より長く取る
+                "reporters": 12.0, "headlines": 11.0}
 
 # 「現地の声」だけは背景色を変える。
 # 他の画面がAPIの数字だけで作られているのに対し、ここは翻訳を通した
@@ -105,7 +107,13 @@ def ease_out(t):
 
 
 def wrap(d, text, fnt, max_w):
-    """指定幅で折り返す。日本語なので単語境界は見ず1文字ずつ詰める。"""
+    """
+    指定幅で折り返す。日本語なので単語境界は見ず1文字ずつ詰める。
+
+    改行を含む文字列はPILが幅を測れずValueErrorになる。
+    外部から来た文章(SNSの投稿など)は改行を含むので、ここで均す。
+    """
+    text = " ".join(str(text).split())
     lines, cur = [], ""
     for ch in text:
         if d.textlength(cur + ch, font=fnt) > max_w:
@@ -356,6 +364,31 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             parts.append(v.get("ja", "") + "。")
         segments.append({"kind": "voices", "text": "".join(parts), "meta": {}})
 
+    # 現地の番記者が書いたこと。ファンの声との違いは、
+    # 実名で、その球団を毎日追っている人の言葉だという点。
+    # ここも翻訳を通すので、数字のコーナーとは画面を分ける。
+    reporters = ((data.get("reporters") or {}).get("posts") or []) \
+        if want_local else []
+    if reporters:
+        parts = ["現地の番記者の投稿です。翻訳したもので、"
+                 "コレスポの見解ではありません。"]
+        for r in reporters[:2]:
+            body = r.get("jp") or r.get("text", "")
+            parts.append(f"{r.get('outlet', '')}の記者。{body}。")
+        segments.append({"kind": "reporters", "text": "".join(parts),
+                         "meta": {}})
+
+    # 現地で何が報じられたか。見出しだけを扱う。
+    heads = ((data.get("reporters") or {}).get("headlines") or []) \
+        if want_local else []
+    if heads:
+        parts = ["現地の見出しです。"]
+        for h in heads[:3]:
+            parts.append(f"{h.get('source', '')}。"
+                         f"{h.get('jp') or h.get('title', '')}。")
+        segments.append({"kind": "headlines", "text": "".join(parts),
+                         "meta": {}})
+
     segments.append({
         "kind": "outro",
         "text": "コレスポでは毎日午後7時に、その日の注目試合を"
@@ -577,6 +610,93 @@ def render_talk(p, talk):
     return im
 
 
+def render_reporters(p, posts):
+    """
+    現地の番記者が書いたこと。
+
+    ファンの声と同じく翻訳を通しているので背景を分ける。
+    ただしこちらは実名と媒体が出せるので、それを必ず添える。
+    どこの誰が言ったのかが分かることが、この画面の価値そのもの。
+    """
+    im = Image.new("RGB", (W, H), VOICE_BG)
+    d = ImageDraw.Draw(im)
+    off = int(min(p, ANIM_END) * 240)
+    for i in range(-2, 6):
+        x = i * 340 + off
+        d.polygon([(x, H), (x + 150, H), (x + 400, 0), (x + 250, 0)],
+                  fill=(26, 21, 36))
+    d.rectangle([0, H - 22, W, H], fill=JP)
+
+    d.text((70, 70), "コレスポ", font=font(46), fill=JP)
+    d.text((70, 190), "現地の番記者", font=font(72), fill=JP)
+    d.text((74, 278), "現地メディアの記者の投稿を翻訳", font=font(32), fill=DIM)
+
+    y = 380
+    for i, r in enumerate(posts[:2]):
+        appear = 0.06 + i * 0.10
+        if p < appear:
+            continue
+        e = ease_out(min(1.0, max(0.0, (p - appear) * 8)))
+        dx = int((1 - e) * 110)
+        body = r.get("jp") or r.get("text", "")
+        lines = wrap(d, body, font(42), W - 220)[:4]
+        h = 150 + len(lines) * 56
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + h], 20, fill=(31, 25, 43))
+        d.text((100 - dx, y + 26),
+               f"{r.get('author', '')}（{r.get('outlet', '')}）",
+               font=font(34), fill=JP)
+        yy = y + 82
+        for line in lines:
+            d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
+            yy += 56
+        d.text((100 - dx, y + h - 46),
+               f"いいね {r.get('likes', 0)}　担当 {r.get('team', '')}",
+               font=font(28), fill=DIM)
+        y += h + 34
+
+    d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
+def render_headlines(p, heads):
+    """現地で何が報じられたか。見出しだけを並べる。"""
+    im = Image.new("RGB", (W, H), VOICE_BG)
+    d = ImageDraw.Draw(im)
+    off = int(min(p, ANIM_END) * 240)
+    for i in range(-2, 6):
+        x = i * 340 + off
+        d.polygon([(x, H), (x + 150, H), (x + 400, 0), (x + 250, 0)],
+                  fill=(26, 21, 36))
+    d.rectangle([0, H - 22, W, H], fill=JP)
+
+    d.text((70, 70), "コレスポ", font=font(46), fill=JP)
+    d.text((70, 190), "現地の見出し", font=font(72), fill=JP)
+    d.text((74, 278), "現地メディアの見出しを翻訳", font=font(32), fill=DIM)
+
+    y = 380
+    for i, h in enumerate(heads[:3]):
+        appear = 0.06 + i * 0.08
+        if p < appear:
+            continue
+        e = ease_out(min(1.0, max(0.0, (p - appear) * 8)))
+        dx = int((1 - e) * 110)
+        body = h.get("jp") or h.get("title", "")
+        lines = wrap(d, body, font(40), W - 220)[:3]
+        hh = 120 + len(lines) * 54
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + hh], 20,
+                            fill=(31, 25, 43))
+        d.text((100 - dx, y + 24), h.get("source", ""),
+               font=font(32), fill=JP)
+        yy = y + 76
+        for line in lines:
+            d.text((100 - dx, yy), line, font=font(40), fill=TEXT)
+            yy += 54
+        y += hh + 30
+
+    d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
 def render_voices(p, voices):
     """
     現地のファンが何と言っているか。
@@ -701,6 +821,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--recap", default="data/morning_recap.json")
     parser.add_argument("--buzz", default="data/mlb_buzz.json")
+    parser.add_argument("--reporters", default="data/local_reporters.json")
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--voices", default="data/local_voices.json")
@@ -755,6 +876,19 @@ def main():
     # 現地の声(翻訳)。数字のコーナーとは別枠として扱う
     data["voices"] = local_voices.load(args.voices)
     voices_data = data["voices"]
+
+    # 現地の番記者と見出し。取れていなければ、その画面が出ないだけ。
+    reporters_data = {}
+    rp = pathlib.Path(args.reporters)
+    if rp.exists():
+        try:
+            reporters_data = json.loads(rp.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            reporters_data = {}
+    data["reporters"] = reporters_data
+    if reporters_data.get("posts"):
+        print(f"[info] 現地の番記者: {len(reporters_data['posts'])}件 / "
+              f"見出し {len(reporters_data.get('headlines') or [])}件")
     if voices_data.get("voices"):
         print(f"[info] 現地の声: {len(voices_data['voices'])}件")
     if talk.get("teams"):
@@ -764,8 +898,12 @@ def main():
     narration = build_narration(data, args.mode)
     kinds = [s["kind"] for s in narration["segments"]]
     print(f"[info] mode={args.mode} / 画面 {len(kinds)}枚: {kinds}")
-    if args.mode == "local" and not (buzz or talk.get("teams") or
-                                     voices_data.get("voices")):
+    # 材料が1つも無い日は作らない。
+    # 判定は「実際に画面ができたかどうか」で見る。素材の種類を並べて
+    # 数えていたため、番記者と見出しを足したときに数え漏れて、
+    # 中身のある動画を「材料が無い」として捨てていた。
+    body = [k for k in kinds if k not in ("intro", "outro")]
+    if args.mode == "local" and not body:
         print("[info] 現地のデータが1つも無いため、現地編は作りません")
         return
 
@@ -834,6 +972,11 @@ def main():
                     im = render_talk(pp, talk)
                 elif kind == "voices":
                     im = render_voices(pp, voices_data)
+                elif kind == "reporters":
+                    im = render_reporters(pp, reporters_data.get("posts") or [])
+                elif kind == "headlines":
+                    im = render_headlines(
+                        pp, reporters_data.get("headlines") or [])
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()

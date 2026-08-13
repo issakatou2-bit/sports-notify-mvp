@@ -142,7 +142,9 @@ def collect(hours: int = HOURS, sleep: float = 0.3) -> list:
         for item in feed:
             p = item.get("post") or {}
             rec = p.get("record") or {}
-            text = (rec.get("text") or "").strip()
+            # 投稿は改行を含む。PILは改行入りの文字列の幅を測れず、
+            # 折り返し処理がそこで落ちる。取り込む時点で1行に均す。
+            text = re.sub(r"\s*\n+\s*", " ", (rec.get("text") or "")).strip()
             if not text or not _recent(rec.get("createdAt", ""), hours):
                 continue
             # リポストは本人の言葉ではないので外す
