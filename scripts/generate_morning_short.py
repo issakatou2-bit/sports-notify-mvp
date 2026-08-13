@@ -65,6 +65,11 @@ _FONT_FILE = None
 # 1画面に載せる人数。多いと字が小さくなって読めない
 PER_PAGE = 4
 
+# 現地の声編を作る最低の素材数(番記者+見出し+ファンの声の合計)。
+# 選手成績と違って毎日必ず湧く情報ではないので、下限を置く。
+# 中身1件の動画に初見の人が当たると、そこで見限られる。
+MIN_PRESS_ITEMS = 3
+
 
 def _resolve_font() -> str:
     global _FONT_FILE
@@ -938,6 +943,25 @@ def main():
     # 数えていたため、番記者と見出しを足したときに数え漏れて、
     # 中身のある動画を「材料が無い」として捨てていた。
     body = [k for k in kinds if k not in ("intro", "outro")]
+
+    # 薄い日をどう扱うか。
+    #
+    # 毎日出ることに意味がある枠なので、少ない日も基本は出す。
+    # ただし press は、選手成績のように必ず毎日発生する情報ではない。
+    # 中身が1件しかない動画が、たまたま初めて見た人に当たると、
+    # そこで見限られる。1本ぶんの体裁になる最低量だけは要る。
+    #
+    # 数えるのは画面の数ではなく素材の件数。見出し1件でも画面は作れてしまう。
+    if args.mode == "press":
+        rep = reporters_data.get("posts") or []
+        hds = reporters_data.get("headlines") or []
+        vcs = (voices_data or {}).get("voices") or []
+        items = len(rep) + len(hds) + len(vcs)
+        if items < MIN_PRESS_ITEMS:
+            print(f"[info] 現地の素材が{items}件しかないため、"
+                  f"現地の声編は作りません(最低{MIN_PRESS_ITEMS}件)")
+            return
+
     if args.mode in ("local", "press") and not body:
         print("[info] 現地のデータが1つも無いため、現地編は作りません")
         return
