@@ -243,6 +243,63 @@ def translate(posts: list, api_key: str) -> list:
     return posts
 
 
+# ---------------------------------------------------------------------------
+# 現地の見出し(Google ニュース RSS)
+# ---------------------------------------------------------------------------
+# 記者の名簿は「誰を見るか」を先に決める方式なので、名簿の外で起きたことは
+# 拾えない。こちらは逆に「何を探すか」を指定でき、選手名で直接引ける。
+# キーもアカウントも要らず、1クエリで100件前後返る。
+#
+# 見出しだけを使い、本文は取りに行かない。見出しは事実の要約で、
+# 誰の解釈も入っていないため、そのまま訳せる。
+
+NEWS_RSS = ("https://news.google.com/rss/search?q={q}"
+            "&hl=en-US&gl=US&ceid=US:en")
+
+
+def fetch_headlines(query: str, limit: int = 8) -> list:
+    import urllib.parse
+    url = NEWS_RSS.format(q=urllib.parse.quote(f"{query} when:1d"))
+    r = requests.get(url, headers=UA, timeout=20)
+    r.raise_for_status()
+    items = re.findall(r"<item>(.*?)</item>", r.text, re.S)
+    out = []
+    for it in items[:limit]:
+        t = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", it, re.S)
+        d = re.search(r"<pubDate>(.*?)</pubDate>", it, re.S)
+        s = re.search(r"<source[^>]*>(.*?)</source>", it, re.S)
+        if not t:
+            continue
+        title = t.group(1).strip()
+        # Google ニュースの見出しは "本文 - 媒体名" の形
+        source = s.group(1).strip() if s else ""
+        if source and title.endswith(f"- {source}"):
+            title = title[: -len(source) - 2].strip()
+        out.append({"query": query, "title": title,
+                    "source": source, "at": d.group(1) if d else ""})
+    return out
+
+
+def collect_headlines(sleep: float = 0.4) -> list:
+    """日本人選手の名前で、現地の見出しを引く。"""
+    out = []
+    for p in JP_PLAYERS_MLB:
+        try:
+            out += fetch_headlines(p["name_en"], limit=4)
+        except Exception as e:  # noqa: BLE001
+            print(f"[warn] {p['name_en']}: {e}", file=sys.stderr)
+        time.sleep(sleep)
+    # 同じ見出しが複数の選手で出ることがある
+    seen, uniq = set(), []
+    for h in out:
+        k = h["title"][:60]
+        if k in seen:
+            continue
+        seen.add(k)
+        uniq.append(h)
+    return uniq
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/local_reporters.json")
@@ -275,11 +332,26 @@ def main():
     print(f"[info] 日本人選手に触れているもの: {len(jp_hits)}件")
 
     top = rank(posts, args.top)
-    top = translate(top, os.environ.get("ANTHROPIC_API_KEY", ""))
+
+    # 選手名で直接引く見出し。名簿の外で起きたことを拾う。
+    heads = collect_headlines()
+    print(f"[info] 現地の見出し(直近1日): {len(heads)}件")
+
+    key = os.environ.get("ANTHROPIC_API_KEY", "")
+    top = translate(top, key)
+    # 見出しも同じ形に詰めて、まとめて1回で訳す
+    head_items = [{"text": h["title"]} for h in heads[:args.top]]
+    head_items = translate(head_items, key)
+    for h, t in zip(heads, head_items):
+        if t.get("jp"):
+            h["jp"] = t["jp"]
 
     for p in top:
         print(f"   ♥{p['likes']:4} RT{p['reposts']:3}  @{p['handle'][:22]:24}"
               f" {p.get('jp') or p['text'][:60]}")
+    for h in heads[:args.top]:
+        print(f"   [見出し] {h['source'][:18]:20} "
+              f"{h.get('jp') or h['title'][:60]}")
 
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -289,6 +361,7 @@ def main():
         "reporters": len(REPORTERS),
         "collected": len(posts),
         "posts": top,
+        "headlines": heads[:args.top],
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[done] {out}")
     return 0
