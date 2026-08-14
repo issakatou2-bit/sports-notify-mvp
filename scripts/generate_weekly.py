@@ -579,7 +579,8 @@ def main():
            "-s", f"{W}x{H}", "-framerate", str(FPS), "-i", "-"]
     if audio_path:
         cmd += ["-i", str(audio_path)]
-    cmd += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "23", "-pix_fmt", "yuv420p"]
+    cmd += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+            "-pix_fmt", "yuv420p", "-movflags", "+faststart"]
     if audio_path:
         cmd += ["-c:a", "aac", "-b:a", "160k", "-shortest"]
     cmd += [str(video_path)]
