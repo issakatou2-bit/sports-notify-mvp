@@ -18,15 +18,34 @@
 import argparse
 import sys
 
-# YouTube Data API v3 の単価(公開値)。1日あたり10,000ユニット。
+# YouTube Data API v3 の割り当て。
+#
+# ここは一度間違えた。「videos.insert = 1600ユニット」という広く知られた
+# 数字を使って「1日6本まで、日次4本なら資産動画は1本」と結論したが、
+# 公式のGetting startedにはこう書かれている:
+#
+#   100 search.list calls, 100 videos.insert calls, and
+#   10,000 units per day combined for all other endpoints
+#
+# 読み方は「アップロードと検索は回数で別枠、残りが10,000ユニット」。
+# この読み方だと、日次4本どころか1日100本まで上げられることになる。
+#
+# 2つの読み方で結論が正反対になるので、ここでは断定しない。
+# 本当の数字は Google Cloud Console の
+#   APIs & Services > YouTube Data API v3 > Quotas
+# に実際の消費が出る。そこを見るのが唯一確実。
 YT_COSTS = {
-    "videos.insert": 1600,
+    "videos.insert": 1600,   # 旧来よく使われる値。別枠なら実際は1
     "thumbnails.set": 50,
-    "search.list": 100,
+    "search.list": 100,      # 同上
     "videos.list": 1,
     "playlistItems.insert": 50,
 }
 YT_DAILY_LIMIT = 10_000
+
+# 別枠だった場合の1日の上限回数(公式の記載より)
+YT_INSERT_PER_DAY = 100
+YT_SEARCH_PER_DAY = 100
 
 # 毎日走るもの。(名前, 呼び出し, 回数)
 DAILY_YT = [
@@ -88,13 +107,28 @@ def main():
         print(f"  {'資産動画 ' + str(args.assets) + '本':26} "
               f"{'insert+thumb':20} {a:6,}")
 
+    uploads = sum(n for _, c, n in DAILY_YT if c == "videos.insert") + args.assets
     pct = total / YT_DAILY_LIMIT * 100
-    print(f"\n  合計 {total:,} / {YT_DAILY_LIMIT:,}  ({pct:.0f}%)")
+
+    print(f"\n  --- 読み方A: すべて10,000ユニットから引かれる場合 ---")
+    print(f"  合計 {total:,} / {YT_DAILY_LIMIT:,}  ({pct:.0f}%)")
     left = YT_DAILY_LIMIT - total
-    print(f"  残り {left:,} ユニット"
-          f" = 資産動画 あと{left // 1650}本")
-    if pct > 80:
-        print("  ::warning:: 8割を超えています。資産動画を回す余裕がありません")
+    print(f"  残り {left:,} ユニット = 資産動画 あと{max(0, left // 1650)}本")
+
+    print(f"\n  --- 読み方B: アップロードと検索が別枠の場合 ---")
+    print(f"  アップロード {uploads} / {YT_INSERT_PER_DAY} 回")
+    print(f"  検索 1 / {YT_SEARCH_PER_DAY} 回")
+    others = sum(YT_COSTS[c] * n for _, c, n in DAILY_YT
+                 if c not in ("videos.insert", "search.list"))
+    others += YT_COSTS["thumbnails.set"] * args.assets
+    print(f"  その他 {others:,} / {YT_DAILY_LIMIT:,} ユニット "
+          f"({others / YT_DAILY_LIMIT * 100:.1f}%)")
+    print(f"  この読み方なら、動画本数はほぼ制約にならない")
+
+    print("\n  ::注意:: どちらが正しいかは、実際の消費を見ないと決まらない。")
+    print("  Google Cloud Console > APIs & Services > YouTube Data API v3")
+    print("  > Quotas で、その日の実消費が確認できる。")
+    print("  上限に達した場合は Quota extension request form で増枠を申請できる。")
 
     print()
     print("=" * 68)
