@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Threads連携 | コレスポ</title>
+<meta name="robots" content="noindex" />
+<link rel="apple-touch-icon" href="../icons/icon-192.png" />
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0B0E14; --surface: #12161F; --border: #232838;
+    --text: #F2F0E6; --text-dim: #8891A3; --accent: #FFB020; --jp: #49C5B6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto; padding: 2rem 1.25rem 3rem; max-width: 640px;
+    background: var(--bg); color: var(--text); line-height: 1.8;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
+  }
+  a { color: var(--accent); }
+  h1 { font-size: 1.4rem; color: var(--accent); margin: 0 0 0.2rem; }
+  .lead { color: var(--text-dim); font-size: 0.9rem; margin: 0 0 2rem; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem; margin: 1rem 0;
+  }
+  .card h2 { font-size: 1rem; color: var(--jp); margin: 0 0 0.6rem; }
+  label { display: block; font-size: 0.85rem; color: var(--text-dim);
+          margin: 0.8rem 0 0.3rem; }
+  input {
+    width: 100%; padding: 0.7rem 0.8rem; border-radius: 8px;
+    border: 1px solid var(--border); background: #0E121A; color: var(--text);
+    font-family: ui-monospace, monospace; font-size: 0.9rem;
+  }
+  button {
+    width: 100%; margin-top: 1.2rem; padding: 0.9rem 1rem; border: 0;
+    border-radius: 999px; background: var(--accent); color: #12161F;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+  }
+  button:disabled { background: #3A3F4C; color: var(--text-dim);
+                    cursor: not-allowed; }
+  .status { font-size: 0.85rem; margin-top: 0.8rem; }
+  .ok { color: var(--jp); }
+  ol { padding-left: 1.2rem; color: var(--text-dim); font-size: 0.85rem; }
+  code { background: #0E121A; padding: 0.1rem 0.35rem; border-radius: 4px;
+         font-size: 0.85em; word-break: break-all; }
+  .back { display: inline-block; font-size: 0.85rem; color: var(--text-dim);
+          text-decoration: none; margin-bottom: 1.2rem; }
+</style>
+</head>
+<body>
+  <a class="back" href="../index.html">&larr; コレスポ トップへ</a>
+  <h1>Threads連携</h1>
+  <p class="lead">コレスポが選んだ注目試合を、コレスポ自身のThreadsアカウントへ
+  自動投稿するための設定です。運営者向けの画面です。</p>
+
+  <div class="card">
+    <h2>1. アプリ情報</h2>
+    <p class="lead" style="margin:0 0 0.5rem">
+      Meta開発者ポータルの <strong>Threads app ID</strong> を入れます。
+      Facebookアプリ側のIDとは別物なので取り違えないでください。
+      この値は公開されても問題のないもので、この端末にだけ保存されます。
+      App secret はここでは扱いません。</p>
+    <label for="ck">Threads app ID</label>
+    <input id="ck" type="text" placeholder="123456789..." autocomplete="off"
+           inputmode="numeric" />
+    <div class="status" id="ckStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. Threadsにログインして許可する</h2>
+    <p class="lead" style="margin:0">
+      Threadsの画面に移動します。コレスポのアカウントでログインし、
+      投稿を許可してください。</p>
+    <button id="go" disabled>Threadsでログイン</button>
+  </div>
+
+  <div class="card">
+    <h2>3. このあとの流れ</h2>
+    <ol>
+      <li>許可すると <code>/threads/callback.html</code> に戻ります</li>
+      <li>そこに表示される認可コードを控えます</li>
+      <li>手元で <code>scripts/threads_auth.py</code> を実行して
+          長期トークン(60日)に交換します</li>
+      <li>そのトークンを GitHub Secrets の
+          <code>THREADS_ACCESS_TOKEN</code> に登録します</li>
+    </ol>
+    <p class="lead" style="margin:0.6rem 0 0">
+      トークンは投稿のたびに自動で延長されるので、毎日動いている限り
+      切れません。TikTokと違って投稿ごとの確認画面は要らず、完全に自動で
+      投稿されます。</p>
+  </div>
+
+<script>
+  // 認可の入口。ここでは app ID しか扱わない。
+  // app secret を使うトークン交換は、この画面ではなく手元で行う。
+  // 静的サイト(GitHub Pages)にsecretを置く必要が無いようにするため。
+  var REDIRECT_URI = location.origin + '/threads/callback.html';
+
+  // threads_basic は必須。投稿には threads_content_publish が要る。
+  var SCOPES = 'threads_basic,threads_content_publish';
+
+  var ck = document.getElementById('ck');
+  var go = document.getElementById('go');
+  var ckStatus = document.getElementById('ckStatus');
+
+  // localStorageは保存を止めている環境で例外を投げる。
+  // ここで落ちるとページが動かなくなるので必ず包む。
+  function store(key, value) {
+    try {
+      if (arguments.length > 1) { localStorage.setItem(key, value); return; }
+      return localStorage.getItem(key);
+    } catch (e) { return null; }
+  }
+
+  // 前回の値を復元する。ただし復元したことを黙っていると、別の環境の
+  // IDが残ったまま認可してしまう。TikTokで実際にそれで詰まったので出す。
+  var remembered = store('collespo_threads_app_id') || '';
+  ck.value = remembered;
+
+  function refresh() {
+    var v = ck.value.trim();
+    go.disabled = v.length < 6;
+    if (!v) { ckStatus.textContent = ''; return; }
+    var msg = '戻り先: ' + REDIRECT_URI;
+    if (v === remembered) {
+      msg = '前回のIDを復元しました（' + v.slice(0, 8) + '…）。 / ' + msg;
+    }
+    ckStatus.textContent = msg;
+    ckStatus.className = 'status ok';
+  }
+  ck.addEventListener('input', refresh);
+  refresh();
+
+  go.addEventListener('click', function () {
+    var id = ck.value.trim();
+    store('collespo_threads_app_id', id);
+
+    // stateは、戻ってきたときに「自分が始めた認可か」を確かめる値。
+    // 別タブで戻ることがあるので sessionStorage ではなく localStorage。
+    var bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    var state = Array.from(bytes).map(function (b) {
+      return b.toString(16).padStart(2, '0');
+    }).join('');
+    store('collespo_threads_state', state);
+
+    location.href = 'https://threads.net/oauth/authorize'
+      + '?client_id=' + encodeURIComponent(id)
+      + '&redirect_uri=' + encodeURIComponent(REDIRECT_URI)
+      + '&scope=' + encodeURIComponent(SCOPES)
+      + '&response_type=code'
+      + '&state=' + state;
+  });
+</script>
+</body>
+</html>

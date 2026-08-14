@@ -86,6 +86,16 @@ jobs:
           SITE_URL: https://collespo.com/
         run: python scripts/post_bluesky.py
 
+      # Threadsは投稿ごとの確認画面を要求しないので、完全に自動で出せる。
+      # 未設定なら黙って飛ぶ。落として毎日ノイズを出す価値は無い。
+      - name: Post to Threads
+        continue-on-error: true
+        env:
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          SITE_URL: https://collespo.com/
+        run: python scripts/post_threads.py
+
       - name: Send push via OneSignal
         env:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
