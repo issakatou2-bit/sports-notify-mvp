@@ -43,6 +43,12 @@
     padding: 0.8rem; overflow-x: auto; font-size: 0.8rem; margin: 0.5rem 0 0;
   }
   .note { color: var(--text-dim); font-size: 0.82rem; }
+  input {
+    width: 100%; margin-top: 0.6rem; padding: 0.7rem 0.8rem;
+    border-radius: 8px; border: 1px solid var(--border);
+    background: #0E121A; color: var(--text);
+    font-family: ui-monospace, monospace; font-size: 0.9rem;
+  }
   .back { display: inline-block; font-size: 0.85rem; color: var(--text-dim);
           text-decoration: none; margin-bottom: 1.2rem; }
 </style>
@@ -126,16 +132,24 @@
         + '<button id="copy">コードをコピー</button>'
         + '<p class="note">このコードは一度しか使えません。'
         + '第三者に渡さないでください。</p></div>'
-        + '<div class="card"><h2>2. 手元で実行する</h2>'
+        + '<div class="card"><h2>2. Client secret を入れる</h2>'
         + '<p class="note">この認可に使った Client key: '
         + '<strong id="usedkey"></strong><br>'
-        + '交換のときは<u>同じ環境の</u>キーとsecretを使ってください。'
-        + 'Production と Sandbox を混ぜると invalid_client になります。</p>'
+        + '<u>同じ環境</u>の Client secret を下に貼ってください。'
+        + 'Sandbox のキーには Sandbox の secret、'
+        + 'Production には Production の secret です。'
+        + '混ぜると invalid_client になります。<br>'
+        + 'secret はこの端末から外に出ません（下のコマンドを組み立てるだけ）。</p>'
+        + '<input id="sec" type="password" placeholder="Client secret" '
+        + 'autocomplete="off" />'
+        + '</div>'
+        + '<div class="card"><h2>3. 手元で実行する</h2>'
         + '<pre id="cmd"></pre>'
+        + '<button id="copycmd">コマンドをコピー</button>'
         + '<p class="note">client secret を扱うため、この処理はブラウザではなく'
         + '手元で行います。静的サイトに secret を置かずに済むようにするためです。</p>'
         + '</div>'
-        + '<div class="card"><h2>3. 出力されたトークンを登録する</h2>'
+        + '<div class="card"><h2>4. 出力されたトークンを登録する</h2>'
         + '<p class="note">表示された refresh token を、GitHubリポジトリの '
         + 'Settings → Secrets and variables → Actions で '
         + '<code>TIKTOK_REFRESH_TOKEN</code> として登録します。'
@@ -151,14 +165,35 @@
       // になった。どのキーで認可したのかが画面で分からないと、
       // 何度やり直しても同じところで詰まる。
       var usedKey = store('collespo_tiktok_client_key') || '';
-      document.getElementById('cmd').textContent =
-        '$env:TIKTOK_CLIENT_KEY = "' + usedKey + '"\n'
-        + '$env:TIKTOK_CLIENT_SECRET = "（このキーと同じ環境のsecret）"\n'
-        + 'py -3 scripts/tiktok_auth.py --code "' + code + '"';
       var kd = document.getElementById('usedkey');
       if (kd) {
         kd.textContent = usedKey || '(不明)';
       }
+
+      // secretは入力欄から取り、そのままコマンドに差し込む。
+      //
+      // 以前は説明文のプレースホルダーをコマンドの中に置いていたため、
+      // それごと貼り付けられて invalid_client になった。
+      // コマンド欄には「そのまま実行できるもの」以外を混ぜない。
+      var sec = document.getElementById('sec');
+      var cmd = document.getElementById('cmd');
+
+      function render() {
+        var s = (sec.value || '').trim();
+        cmd.textContent =
+          '$env:TIKTOK_CLIENT_KEY = "' + usedKey + '"\n'
+          + (s ? '$env:TIKTOK_CLIENT_SECRET = "' + s + '"\n'
+               : '# ↑の欄に Client secret を入れると、ここに続きが出ます\n')
+          + (s ? 'py -3 scripts/tiktok_auth.py --code "' + code + '"' : '');
+      }
+      sec.addEventListener('input', render);
+      render();
+
+      document.getElementById('copycmd').addEventListener('click', function () {
+        navigator.clipboard.writeText(cmd.textContent).then(function () {
+          document.getElementById('copycmd').textContent = 'コピーしました';
+        });
+      });
       document.getElementById('copy').addEventListener('click', function () {
         navigator.clipboard.writeText(code).then(function () {
           document.getElementById('copy').textContent = 'コピーしました';
