@@ -110,10 +110,25 @@ jobs:
       - name: Backfill past game results
         run: python scripts/backfill_results.py --archive-dir archive
 
+      # サッカーの試合はここで取る。RSSもサイトも20時の動画も、
+      # このファイルを読む。別々に取ると、取得の間に日程が動いたときに
+      # 載っている試合が食い違う。
+      - name: Fetch soccer fixtures
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python notability_engine.py --source soccer \
+            --out data/soccer_games.json
+
+      # 購読者には1つのフィードで届ける。競技ごとに1件ずつ出る。
       - name: Generate RSS feed
         run: |
-          python scripts/generate_rss.py --input notable_games.json --out feed.xml \
-            --site-url "https://collespo.com/"
+          python scripts/generate_rss.py \
+            --input notable_games.json \
+            --input data/soccer_games.json \
+            --out feed.xml --site-url "https://collespo.com/"
 
       - name: Commit archive
         run: |
@@ -150,18 +165,6 @@ jobs:
       - name: Generate score page
         continue-on-error: true
         run: python scripts/generate_score_page.py --out public/score.html
-
-      # サッカーの試合はここで取る。20時の動画も同じファイルを読むので、
-      # サイトに載る試合と動画に出る試合が食い違わない。
-      # 別々に取ると、取得の間に日程が動いたときに両者がずれる。
-      - name: Fetch soccer fixtures
-        continue-on-error: true
-        env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          python notability_engine.py --source soccer \
-            --out data/soccer_games.json
 
       # 欧州サッカーの案内ページ。名簿と data/soccer_preview.json から作る。
       # preview が無くても、名簿と解説だけでページは成立する。

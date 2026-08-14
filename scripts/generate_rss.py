@@ -11,25 +11,43 @@ RSSとは: サイトの更新情報を機械可読な形式(XML)で配信する�
 
 import argparse
 import json
+import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import post_common  # noqa: E402
 import html
 from datetime import datetime, timezone
 
 
-def build_rss(data: dict, site_url: str) -> str:
-    games = data.get("games", [])
-    notable = [g for g in games if g.get("is_notable")][:5]
+def build_rss(sources: list, site_url: str) -> str:
+    """
+    競技ごとに1件ずつ出す。
 
-    generated_at = data.get("generated_at", datetime.now(timezone.utc).isoformat())
+    以前は全部を1つにまとめて先頭1件だけを出していた。MLBとサッカーを
+    混ぜるとそれでは片方しか出ない。しかも点数は競技ごとに別の物差しで
+    付いているので、合わせて並べ替えると常に同じ競技が勝ってしまう。
+    """
+    generated = next((d.get("generated_at") for d in sources
+                      if d.get("generated_at")), "")
     try:
-        pub_date_dt = datetime.fromisoformat(generated_at.replace("Z", "+00:00"))
+        pub_date_dt = datetime.fromisoformat(
+            (generated or datetime.now(timezone.utc).isoformat()
+             ).replace("Z", "+00:00"))
     except ValueError:
         pub_date_dt = datetime.now(timezone.utc)
     pub_date = pub_date_dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
 
     items = []
-    if notable:
+    for data in sources:
+        notable = [g for g in data.get("games", []) if g.get("is_notable")]
+        if not notable:
+            continue
         top = notable[0]
-        title = f"今日の注目: {top['matchup']}"
+        # 「今日」か「今夜」かは試合開始時刻から決める。欧州の試合は
+        # 日本時間の未明に始まるので、暦どおりだと実感とずれる。
+        label = post_common.when_label(top.get("start_time_jst") or "") or "次"
+        title = f"{label}の注目: {top['matchup']}"
         description_parts = []
         if top.get("ai_summary"):
             description_parts.append(top["ai_summary"])
@@ -65,17 +83,29 @@ def build_rss(data: dict, site_url: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", default="notable_games.json")
+    # 複数指定できるようにしてある。MLBとサッカーで別ファイルに
+    # 分かれているが、購読者にとっては1つのフィードで届く方がよい。
+    # 無いファイルは黙って飛ばす(サッカーは試合の無い日がある)。
+    parser.add_argument("--input", action="append", default=None,
+                        help="注目試合のJSON。複数回指定できる")
     parser.add_argument("--out", default="feed.xml")
     parser.add_argument(
         "--site-url", default="https://issakatou2-bit.github.io/sports-notify-mvp/"
     )
     args = parser.parse_args()
 
-    with open(args.input, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    loaded = []
+    for path in (args.input or ["notable_games.json"]):
+        p = pathlib.Path(path)
+        if not p.exists():
+            print(f"[info] {path} が無いため飛ばします")
+            continue
+        try:
+            loaded.append(json.loads(p.read_text(encoding="utf-8")))
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"[warn] {path} を読めませんでした: {e}")
 
-    rss = build_rss(data, args.site_url)
+    rss = build_rss(loaded, args.site_url)
 
     with open(args.out, "w", encoding="utf-8") as f:
         f.write(rss)

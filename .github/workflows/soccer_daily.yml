@@ -178,6 +178,27 @@ jobs:
             --thumbnail build/soccer/thumb.png \
             --privacy public --publish-at "20:00"
 
+      # SNSは競技ごとに別の投稿にする。MLBは19時に「明日の注目試合」、
+      # こちらは20時に「今夜の注目試合」で、1つにまとめると
+      # どちらかの言い方が必ず嘘になる。
+      - name: Post to Bluesky
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          SITE_URL: https://collespo.com/
+        run: python scripts/post_bluesky.py --games data/soccer_games.json
+
+      - name: Post to Threads
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        env:
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          SITE_URL: https://collespo.com/
+        run: python scripts/post_threads.py --games data/soccer_games.json
+
       - name: Post to TikTok
         if: steps.gate.outputs.count != '0'
         continue-on-error: true

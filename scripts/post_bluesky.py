@@ -23,6 +23,7 @@ Blueskyを選ぶ理由: X(旧Twitter) APIは2026年2月に無料枠が完全終�
   プレーンテキスト扱いになるため)。
 """
 
+import argparse
 import os
 import sys
 
@@ -33,6 +34,12 @@ MAX_POST_GRAPHEMES = 280
 
 
 def main():
+    # 競技ごとに別の投稿にする。MLBは「明日」、欧州サッカーは「今夜」で、
+    # 1つにまとめるとどちらかの言い方が必ず嘘になる。
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--games", default="notable_games.json")
+    args = ap.parse_args()
+
     handle = os.environ.get("BLUESKY_HANDLE")
     app_password = os.environ.get("BLUESKY_APP_PASSWORD")
     if not handle or not app_password:
@@ -42,7 +49,7 @@ def main():
     # 300グラフェムまで入るので、収まる範囲で複数試合を載せる。
     # (以前Xの文字数に合わせて1試合に固定していたが、Xは手動投稿なので
     #  自動投稿側をXの制限に合わせる必要はなかった)
-    games = post_common.load_notable_games("notable_games.json", limit=3)
+    games = post_common.load_notable_games(args.games, limit=3)
     if not games:
         print("[info] 今日は注目試合が無いため投稿をスキップします")
         return
