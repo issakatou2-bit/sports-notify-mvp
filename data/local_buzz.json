@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-14T08:20:02.477074+00:00",
+  "updated_at": "2026-08-14T17:28:07.094819+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -16,13 +16,13 @@
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 6
+      "mentions": 4
     },
     {
-      "team_id": "142",
-      "name": "ツインズ",
-      "name_en": "Minnesota Twins",
-      "mentions": 5
+      "team_id": "137",
+      "name": "ジャイアンツ",
+      "name_en": "San Francisco Giants",
+      "mentions": 3
     },
     {
       "team_id": "119",
@@ -31,44 +31,35 @@
       "mentions": 3
     },
     {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
       "mentions": 2
     },
     {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
       "mentions": 2
     },
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 1
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 2
     },
     {
       "team_id": "145",
       "name": "ホワイトソックス",
       "name_en": "Chicago White Sox",
-      "mentions": 1
-    },
-    {
-      "team_id": "146",
-      "name": "マーリンズ",
-      "name_en": "Miami Marlins",
-      "mentions": 1
-    }
-  ],
-  "players": [
-    {
-      "name": "佐々木朗希",
       "mentions": 2
     },
     {
-      "name": "大谷翔平",
-      "mentions": 1
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 2
     }
-  ]
+  ],
+  "players": []
 }
