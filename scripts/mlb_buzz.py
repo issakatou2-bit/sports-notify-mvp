@@ -114,14 +114,155 @@ def fetch_view_counts(api_key: str, items: list) -> list:
     return out
 
 
+MLB_API = "https://statsapi.mlb.com/api/v1"
+
+
+def game_date_from_title(title: str, published_at: str = "") -> str:
+    """
+    ハイライトのタイトルから試合日を取る。
+
+    MLB公式は "(August 10)" のように必ず日付を入れている。
+    投稿日から引き算する方法もあるが、投稿が翌日にずれる試合があるので、
+    書いてある日付を読む方が確実。読めなければ空を返す。
+    """
+    m = re.search(r"\(([A-Z][a-z]+)\s+(\d{1,2})\)", title)
+    if not m:
+        return ""
+    year = (published_at or "")[:4] or str(datetime.now(timezone.utc).year)
+    try:
+        return datetime.strptime(
+            f"{m.group(1)} {int(m.group(2))} {year}", "%B %d %Y"
+        ).date().isoformat()
+    except ValueError:
+        return ""
+
+
+def _performer_line(players: dict) -> list:
+    """出場選手から、目立った成績を点数付きで並べる。"""
+    out = []
+    for pl in players.values():
+        s = pl.get("stats") or {}
+        bat, pit = s.get("batting") or {}, s.get("pitching") or {}
+        name = (pl.get("person") or {}).get("fullName", "")
+        if not name:
+            continue
+        if bat.get("atBats"):
+            score = (bat.get("hits", 0) * 2 + bat.get("homeRuns", 0) * 4
+                     + bat.get("rbi", 0) * 2)
+            line = (f"{bat.get('atBats')}打数{bat.get('hits', 0)}安打"
+                    + (f" {bat['rbi']}打点" if bat.get("rbi") else "")
+                    + (f" {bat['homeRuns']}本塁打" if bat.get("homeRuns") else ""))
+            out.append((score, name, line))
+        ip = pit.get("inningsPitched")
+        # 短いリリーフは「活躍」として出すには根拠が薄いので4回以上に限る
+        if ip and _f(ip) >= 4:
+            score = (int(_f(ip)) * 2 + pit.get("strikeOuts", 0)
+                     - pit.get("earnedRuns", 0) * 3)
+            out.append((score, name,
+                        f"{ip}回 {pit.get('strikeOuts', 0)}奪三振"
+                        f" 自責{pit.get('earnedRuns', 0)}"))
+    out.sort(reverse=True)
+    return out
+
+
+def _f(v, default=0.0):
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return default
+
+
+def fetch_result(date: str, teams: list) -> dict:
+    """
+    その日のその対戦の結果と、最も目立った選手を取る。
+
+    再生回数は「見られた量」でしかない。何が起きた試合なのかが
+    並んでいないと、順位に説得力が出ない。
+    取れなければ空を返し、順位だけをこれまで通り出す。
+    """
+    if not date or len(teams) < 2:
+        return {}
+    try:
+        sch = requests.get(f"{MLB_API}/schedule",
+                           params={"sportId": 1, "date": date}, timeout=25)
+        sch.raise_for_status()
+        games = [g for d in sch.json().get("dates", [])
+                 for g in d.get("games", [])]
+    except Exception:
+        return {}
+
+    for g in games:
+        away = ((g.get("teams") or {}).get("away") or {})
+        home = ((g.get("teams") or {}).get("home") or {})
+        an = (away.get("team") or {}).get("name", "")
+        hn = (home.get("team") or {}).get("name", "")
+        if not all(any(t.lower() in x.lower() for x in (an, hn))
+                   for t in teams):
+            continue
+        if away.get("score") is None or home.get("score") is None:
+            return {}
+        res = {
+            "away_jp": jp_team(an), "home_jp": jp_team(hn),
+            "away_score": away["score"], "home_score": home["score"],
+        }
+        try:
+            bx = requests.get(f"{MLB_API}/game/{g['gamePk']}/boxscore",
+                              timeout=25)
+            bx.raise_for_status()
+            data = bx.json()
+            best = []
+            for side in ("away", "home"):
+                best += _performer_line(
+                    (data.get("teams", {}).get(side, {}).get("players") or {}))
+            best.sort(reverse=True)
+            if best:
+                res["star_name"] = best[0][1]
+                res["star_line"] = best[0][2]
+        except Exception:
+            pass
+        return res
+    return {}
+
+
+def jp_team(full_name: str) -> str:
+    """"Texas Rangers" → "レンジャーズ"。引けなければ英語のまま。"""
+    for en, jp in TEAM_EN_TO_JP.items():
+        if full_name.endswith(en):
+            return jp
+    return full_name
+
+
 def build(api_key: str, hours: int = 30, top: int = 5) -> dict:
     items = fetch_recent_highlights(api_key, hours)
     ranked = fetch_view_counts(api_key, items)
     if not ranked:
         return {}
     print(f"[info] 再生回数の取れたハイライト: {len(ranked)}本")
+
+    # 上位だけ結果を引く。全部引くと呼び出しが増えるうえ、
+    # 画面に出るのは上位だけなので意味がない。
     for r in ranked[:top]:
-        print(f"   {r['views']:>9,}回  {r['matchup']}")
+        date = game_date_from_title(r.get("title", ""), r.get("published_at", ""))
+        names = [t.strip() for t in
+                 str(r.get("matchup", "")).split(":")[0].split("vs.")]
+        try:
+            res = fetch_result(date, [n for n in names if n])
+        except Exception as e:  # noqa: BLE001
+            print(f"[warn] 結果を取れません ({r.get('matchup')}): {e}",
+                  file=sys.stderr)
+            res = {}
+        if res:
+            r["result"] = res
+
+    for r in ranked[:top]:
+        res = r.get("result") or {}
+        tail = ""
+        if res:
+            tail = (f"  {res['away_jp']} {res['away_score']}"
+                    f"-{res['home_score']} {res['home_jp']}")
+            if res.get("star_name"):
+                tail += f" / {res['star_name']} {res['star_line']}"
+        print(f"   {r['views']:>9,}回  {r['matchup']}{tail}")
     return {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "hours": hours,

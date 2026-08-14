@@ -24,6 +24,8 @@ import sys
 import wave
 from datetime import datetime
 from morning_recap import jst_label as _jst_label  # noqa: E402
+# 外国人選手はVOICEVOXがアクセント記号で読みを外す。日次と同じ処理を通す。
+from generate_narration import speech_name  # noqa: E402
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -195,7 +197,7 @@ def spoken_list(chunk: list, start: int) -> str:
         if worth_speaking(p, rank):
             score = morning_recap.score_label(p)
             parts.append(
-                f"{rank}位、{p['name']}、{p['headline']}。"
+                f"{rank}位、{p['name']}、{yomi_stats(p['headline'])}。"
                 + (f"{p['clutch_label']}。" if p.get("clutch_label") else "")
                 + (f"スコア{score}。" if score else "")
             )
@@ -205,7 +207,7 @@ def spoken_list(chunk: list, start: int) -> str:
     # 誰も該当しない画面が無音にならないよう、先頭だけは必ず読む
     if not parts and chunk:
         p = chunk[0]
-        parts.append(f"{start + 1}位、{p['name']}、{p['headline']}。")
+        parts.append(f"{start + 1}位、{p['name']}、{yomi_stats(p['headline'])}。")
         skipped -= 1
 
     if skipped > 0:
@@ -315,7 +317,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     # 日次ショートで同じ形を直したのと同じ理由で、ここも入れ替える。
     # 直近28日でショートの40.6%が途中でスワイプされている。
     if want_players:
-        head = f"{top['name']}は{top['headline']}。" if top else ""
+        head = f"{top['name']}は{yomi_stats(top['headline'])}。" if top else ""
         segments = [{
             "kind": "intro",
             "text": f"{head}{day}、日本人選手{len(players)}人の成績です。",
@@ -349,8 +351,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         buzz = data.get("buzz") or []
         head = ""
         if buzz:
-            head = (f"現地で最も見られたのは"
-                    f"{_jp_matchup(buzz[0]['matchup'])}。")
+            head = f"現地で最も見られたのは{yomi_stats(buzz_label(buzz[0]))}。"
         segments = [{
             "kind": "intro",
             "text": f"{head}{day}、現地での注目度をまとめました。",
@@ -372,8 +373,14 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     if buzz:
         top = buzz[0]
         parts = ["現地で最も見られた試合です。",
-                 f"MLB公式のハイライトで、{_jp_matchup(top['matchup'])}が"
+                 f"MLB公式のハイライトで、{yomi_stats(buzz_label(top))}が"
                  f"{_yomi_views(top['views'])}再生でした。"]
+        # 誰が目立った試合なのかまで言う。数字だけだと、
+        # なぜ見られたのかが分からないまま終わる。
+        star = (top.get("result") or {}).get("star_name")
+        if star:
+            parts.append(f"この試合は{speech_name(star)}が"
+                         f"{yomi_stats(top['result']['star_line'])}でした。")
         # コレスポの選定と現地の注目を突き合わせる。
         # 一致しない方が普通で、そのずれ自体が見どころになる。
         for pk in (data.get("picks") or [])[:2]:
@@ -390,6 +397,10 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         parts = ["現地で話題になっているチームです。",
                  f"レディットのアール・ベースボールと現地メディアの見出しで、"
                  f"{top['name']}が最も多く{top['mentions']}回名前が挙がりました。"]
+        # 回数だけでは、勝ち続けているのか騒がれているのか区別できない。
+        # 見出しが何を言っているのかを、断りつきで添える。
+        if top.get("gist"):
+            parts.append(f"見出しの多くは、{top['gist']}という内容でした。")
         for t in teams[1:3]:
             parts.append(f"次いで{t['name']}が{t['mentions']}回です。")
         segments.append({"kind": "talk", "text": "".join(parts), "meta": {}})
@@ -454,6 +465,32 @@ def _yomi_views(n: int) -> str:
     if n >= 10000:
         return f"およそ{n / 10000:.1f}万回".replace(".0万", "万")
     return f"{n}回"
+
+
+def _ip_reading(m) -> str:
+    frac = m.group(2)
+    if frac == "1":
+        return f"{m.group(1)}回3分の1"
+    if frac == "2":
+        return f"{m.group(1)}回3分の2"
+    return f"{m.group(1)}回"
+
+
+def yomi_stats(text: str) -> str:
+    """
+    成績の文字列を、読み上げ用に直す。画面表示には使わない。
+
+    投球回は3進法で書かれている。"6.1回" は6回3分の1のことだが、
+    VOICEVOXは小数として「ろくてんいちかい」と読む。
+    数字の意味が変わってしまうので、分数の形に直す。
+
+    スコアの "4 - 1" もそのままでは記号として読まれるため、
+    「4対1」にする。
+    """
+    import re as _re
+    t = _re.sub(r"(\d+)\.(\d)回", _ip_reading, str(text))
+    t = _re.sub(r"(\d+)\s*-\s*(\d+)", r"\1対\2", t)
+    return t
 
 
 # ---------------------------------------------------------------------------
@@ -590,6 +627,21 @@ def render_list(p, players, start, count):
     return im
 
 
+def buzz_label(b: dict) -> str:
+    """
+    その試合をどう呼ぶか。結果が取れていればスコアの形にする。
+
+    画面と読み上げで別々に組み立てると、片方だけスコア入りになって
+    食い違う。実際、順位を別々に並べ替えて「1位 34点、3位 44点」と
+    表示した事故が起きている。呼び名は必ずここを通す。
+    """
+    res = b.get("result") or {}
+    if res.get("away_jp") and res.get("away_score") is not None:
+        return (f"{res['away_jp']} {res['away_score']}"
+                f" - {res['home_score']} {res['home_jp']}")
+    return _jp_matchup(b.get("matchup", ""))
+
+
 def render_buzz(p, buzz, picks=None):
     """
     現地でどれだけ見られたか。
@@ -618,13 +670,21 @@ def render_buzz(p, buzz, picks=None):
         d.text((100 - dx, y + 22), f"{i + 1}", font=font(40),
                fill=ACCENT if i == 0 else DIM)
 
-        name = _jp_matchup(b.get("matchup", ""))
+        res = b.get("result") or {}
+        name = buzz_label(b)
         s = fit(d, name, W - 260, (48, 42, 38, 34))
         d.text((170 - dx, y + 24), name, font=font(s), fill=TEXT)
 
         views = f"{b.get('views', 0):,}回再生"
         d.text((100 - dx, y + 110), views, font=font(46),
                fill=ACCENT if i == 0 else TEXT)
+
+        if res.get("star_name"):
+            star = f"{res['star_name']}　{res['star_line']}"
+            ss = fit(d, star, W - 620, (32, 28, 24))
+            sw2 = d.textlength(star, font=font(ss))
+            d.text((W - 110 - dx - sw2, y + 122), star,
+                   font=font(ss), fill=JP)
         y += 218
 
     # コレスポが前日に選んだ試合が、現地で何位だったか。
@@ -667,7 +727,12 @@ def render_talk(p, talk):
         if p < appear:
             continue
         e = ease_out(min(1.0, max(0.0, (p - appear) * 9)))
-        d.rounded_rectangle([60, y, W - 60, y + 108], 16, fill=SURF)
+        # 見出しが何を言っているかを添える行のぶん、背を高くする。
+        # 回数だけでは、勝ち続けているのか騒がれているのか区別できない。
+        gist = t.get("gist")
+        tone = t.get("tone")
+        h = 158 if (gist or tone) else 108
+        d.rounded_rectangle([60, y, W - 60, y + h], 16, fill=SURF)
         d.text((100, y + 28), f"{i + 1}", font=font(38), fill=DIM)
         name = t.get("name", "")
         s = fit(d, name, 480, (48, 42, 36))
@@ -676,7 +741,20 @@ def render_talk(p, talk):
         bar = max(4, int(360 * (t["mentions"] / max(1, top)) * e))
         d.rounded_rectangle([680, y + 38, 680 + bar, y + 68], 6, fill=ACCENT_DIM)
         d.text((690, y + 34), f"{t['mentions']}回", font=font(34), fill=ACCENT)
-        y += 126
+
+        if gist or tone:
+            x = 170
+            if tone:
+                tc = {"好調": UP, "不振": DOWN}.get(tone, ACCENT)
+                tw = d.textlength(tone, font=font(30))
+                d.rounded_rectangle([x, y + 96, x + tw + 28, y + 140], 10,
+                                    outline=tc, width=2)
+                d.text((x + 14, y + 100), tone, font=font(30), fill=tc)
+                x += tw + 46
+            if gist:
+                gs = fit(d, gist, W - x - 100, (34, 30, 26))
+                d.text((x, y + 102), gist, font=font(gs), fill=DIM)
+        y += h + 18
 
     if players and p > 0.3:
         d.text((70, y + 20), "日本人選手の言及", font=font(36), fill=JP)
