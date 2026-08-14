@@ -1,0 +1,30 @@
+name: Probe data sources
+
+# 新しい競技を足す前に、その材料が本当に取れるのかをランナーから確かめる。
+#
+# 手元(日本の回線)からはNBAのCDNが403を返すが、実際に動かすのはこの
+# ランナー(米国)なので、ここでの結果が判断材料になる。
+# 「たぶん取れる」で実装を始めて、あとから取れないと分かるのがいちばん高い。
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Probe
+        run: python scripts/probe_sources.py --out probe_result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: probe-result
+          path: probe_result.json
+          if-no-files-found: ignore
