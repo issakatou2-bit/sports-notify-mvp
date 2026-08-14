@@ -170,11 +170,19 @@ jobs:
               *)       AT="" ;;
             esac
 
-            python scripts/upload_youtube.py \
+            # set +e で回しているため、ここが落ちても次のmodeへ進む。
+            # 実際 --morning-mode の選択肢に press が無く、argparse が
+            # 終了コード2で落ちていたのに誰も気づかず、現地の声の動画が
+            # 2日ぶん作られては捨てられていた。結果を必ず出す。
+            if python scripts/upload_youtube.py \
               --video "$VIDEO" --kind morning --morning-mode "$mode" \
               --recap data/morning_recap.json \
               --thumbnail "build/morning/thumb_${mode}.png" \
-              --privacy public --publish-at "$AT"
+              --privacy public --publish-at "$AT"; then
+              echo "$mode: 投稿しました (公開 ${AT:-即時})"
+            else
+              echo "::error::$mode の投稿に失敗しました"
+            fi
 
             # TikTokへも同じものを出す。タイトルはYouTube側の記録から借りる。
             # 記録上の区分は players→morning / それ以外→morning_<mode>。

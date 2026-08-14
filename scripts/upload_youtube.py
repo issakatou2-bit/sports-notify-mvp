@@ -750,8 +750,9 @@ def main():
     parser.add_argument("--recap", default="data/morning_recap.json",
                         help="--kind morning のときの成績データ")
     parser.add_argument("--morning-mode", default="players",
-                        choices=["players", "local", "all"],
-                        help="16時の2本を区別する")
+                        choices=["players", "local", "press", "all"],
+                        help="夕方以降の3本を区別する。"
+                             "players=成績 / local=注目度 / press=現地の声")
     parser.add_argument("--asset-topic", default=None,
                         help="--kind asset のときのトピック名")
     parser.add_argument("--narration", default="public/narration.json",
