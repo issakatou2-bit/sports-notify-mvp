@@ -67,6 +67,14 @@ jobs:
           python scripts/post_tiktok.py --video build/probe.mp4 \
             --title "$TITLE" --dry-run
 
+      # ランナーにはffmpegも日本語フォントも入っていない。
+      # 権限の確認より後に置くのは、aptに数分かかるため。
+      # 入れ忘れると、音声の長さがすべて0.0秒になったうえで
+      # 書き出しの直前まで進んでから ffmpeg が無くて落ちる。
+      - name: Install video tools
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
       # 成績はその日のものを取り直す。リポジトリに入っているのは
       # 前回の回の結果なので、古い日付のまま投稿してしまう。
       - name: Fetch today's results
