@@ -299,16 +299,23 @@ def main():
               "期限切れを避けるため、Secretsの TIKTOK_REFRESH_TOKEN を"
               "新しい値に置き換えてください")
 
-    try:
-        info = creator_info(token)
-    except RuntimeError as e:
-        print(f"[error] アカウント情報を取得できません: {e}")
-        return 1
-
-    privacy = pick_privacy(info, args.privacy)
-    print(f"アカウント: {info.get('creator_nickname', '?')}")
-    print(f"選べる公開範囲: {info.get('privacy_level_options')}")
-    print(f"使う公開範囲: {privacy}")
+    # creator_info は直接投稿のためのAPIで、video.publish が要る。
+    # 下書きしか許されていない状態で呼ぶと scope_not_authorized で落ちる。
+    # 下書きでは公開範囲も題名もTikTokアプリ側で決めるので、そもそも要らない。
+    info: dict = {}
+    privacy = None
+    if direct:
+        try:
+            info = creator_info(token)
+        except RuntimeError as e:
+            print(f"[error] アカウント情報を取得できません: {e}")
+            return 1
+        privacy = pick_privacy(info, args.privacy)
+        print(f"アカウント: {info.get('creator_nickname', '?')}")
+        print(f"選べる公開範囲: {info.get('privacy_level_options')}")
+        print(f"使う公開範囲: {privacy}")
+    else:
+        print("公開範囲: 下書きのため、TikTokアプリで投稿するときに決めます")
 
     if args.dry_run:
         print("\n--dry-run のため、ここで終了します")

@@ -4,6 +4,7 @@ TikTok投稿の組み立てを、通信を差し替えて検証する。
 下書きと直接投稿の切り替えは確かめられる。
 """
 import json
+import os
 import pathlib
 import sys
 
@@ -150,6 +151,50 @@ for title, want_soccer in TOPIC_CASES:
     if "#Shorts" in c:
         fails += 1
         print("NG  #Shorts が残っている")
+
+# --- creator_info を呼ぶ条件 ------------------------------------------------
+# creator_info は直接投稿のためのAPIで video.publish が要る。
+# 下書きしか許されていない審査前に呼ぶと scope_not_authorized で落ち、
+# その間の自動投稿が毎日すべて失敗する。実際にそうなった。
+print("\n--- creator_info を呼ぶ条件 ---")
+called = []
+pt.creator_info = lambda token: (called.append(token),
+                                 {"privacy_level_options": ["SELF_ONLY"],
+                                  "creator_nickname": "テスト"})[1]
+pt.upload_file = lambda url, video: None
+pt.wait_status = lambda token, pid, tries=12: {"status": "SEND_TO_USER_INBOX"}
+pt._post = fake_post
+
+rec = tmp.parent / "rec.json"
+argv = sys.argv
+
+# 通信は差し替えてあるので中身は使われない。存在確認だけを満たす。
+for name in ("TIKTOK_CLIENT_KEY", "TIKTOK_CLIENT_SECRET", "TIKTOK_REFRESH_TOKEN"):
+    os.environ[name] = "test"
+
+
+def run_main(scope):
+    pt.refresh_token = lambda k, s, r: {"access_token": "t", "scope": scope}
+    called.clear()
+    sys.argv = ["post_tiktok.py", "--video", str(tmp), "--title", "確認",
+                "--record", str(rec)]
+    try:
+        return pt.main()
+    finally:
+        sys.argv = argv
+
+
+tmp.write_bytes(b"0" * 1000)
+check("下書きのみ: 正常終了する", run_main("user.info.basic,video.upload"), 0)
+check("下書きのみ: creator_info を呼ばない", called, [])
+check("審査後: creator_info を呼ぶ",
+      (run_main("user.info.basic,video.upload,video.publish"), called) == (0, ["t"]),
+      True)
+
+saved = json.loads(rec.read_text(encoding="utf-8"))["daily"]
+check("記録に投稿方法が残る",
+      [v["direct"] for v in saved.values()], [True])
+rec.unlink()
 
 tmp.unlink()
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
