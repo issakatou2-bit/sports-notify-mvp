@@ -122,12 +122,25 @@
   var go = document.getElementById('go');
   var ckStatus = document.getElementById('ckStatus');
 
-  ck.value = localStorage.getItem('collespo_tiktok_client_key') || '';
+  // 前回の値を復元する。ただし復元したことを黙っていると、
+  // Production のキーが残ったまま Sandbox のつもりで認可してしまい、
+  // 交換時に invalid_client で弾かれる。復元した場合はそう出す。
+  var remembered = localStorage.getItem('collespo_tiktok_client_key') || '';
+  ck.value = remembered;
 
   function refresh() {
     var v = ck.value.trim();
     go.disabled = v.length < 8;
-    ckStatus.textContent = v ? '戻り先: ' + REDIRECT_URI : '';
+    if (!v) {
+      ckStatus.textContent = '';
+      return;
+    }
+    var msg = '戻り先: ' + REDIRECT_URI;
+    if (v === remembered) {
+      msg = '前回のキーを復元しました（' + v.slice(0, 8) + '…）。'
+          + 'Sandbox と Production を取り違えていないか確認してください。 / ' + msg;
+    }
+    ckStatus.textContent = msg;
     ckStatus.className = 'status ok';
   }
   ck.addEventListener('input', refresh);

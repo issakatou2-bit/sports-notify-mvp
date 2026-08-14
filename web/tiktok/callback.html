@@ -54,6 +54,25 @@
   <div id="body"></div>
 
 <script>
+  // localStorageは、プライベートモードや保存を止めている環境で例外を投げる。
+  // ここで落ちるとページ全体が「確認しています…」のまま止まり、
+  // いちばん見せたい認可コードが表示されない。読み書きは必ず包む。
+  function store(key, value) {
+    try {
+      if (arguments.length > 1) {
+        if (value === null) {
+          localStorage.removeItem(key);
+        } else {
+          localStorage.setItem(key, value);
+        }
+        return value;
+      }
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
   var p = new URLSearchParams(location.search);
   var code = p.get('code');
   var state = p.get('state');
@@ -81,7 +100,7 @@
   } else {
     // 自分が始めた認可かどうかを確かめる。
     // 一致しない場合、別の場所から誘導された認可コードの可能性がある。
-    var expected = localStorage.getItem('collespo_tiktok_state');
+    var expected = store('collespo_tiktok_state');
     if (expected && state !== expected) {
       fail('認可の照合に失敗しました(stateが一致しません)。'
          + 'このコードは使わずに、最初からやり直してください。');
@@ -89,7 +108,7 @@
       // 照合できなかった場合は、素通りさせずにその事実を出す。
       // 黙って通すと「確認された」と受け取られてしまう。
       var unchecked = !expected;
-      localStorage.removeItem('collespo_tiktok_state');
+      store('collespo_tiktok_state', null);
       title.textContent = '許可を受け取りました';
       title.className = 'ok';
       lead.textContent = 'あと1回だけ、手元での操作が必要です。'
@@ -108,6 +127,10 @@
         + '<p class="note">このコードは一度しか使えません。'
         + '第三者に渡さないでください。</p></div>'
         + '<div class="card"><h2>2. 手元で実行する</h2>'
+        + '<p class="note">この認可に使った Client key: '
+        + '<strong id="usedkey"></strong><br>'
+        + '交換のときは<u>同じ環境の</u>キーとsecretを使ってください。'
+        + 'Production と Sandbox を混ぜると invalid_client になります。</p>'
         + '<pre id="cmd"></pre>'
         + '<p class="note">client secret を扱うため、この処理はブラウザではなく'
         + '手元で行います。静的サイトに secret を置かずに済むようにするためです。</p>'
@@ -119,8 +142,23 @@
         + '以降の自動投稿がこれを使います。</p></div>';
 
       document.getElementById('c').textContent = code;
+
+      // 認可に使った client key をそのまま出す。
+      //
+      // ここを出していなかったため、ページが記憶していた別のキー(Production)で
+      // 認可し、手元ではSandboxのキーで交換して
+      // 「invalid_client / Client key does not match authorization record」
+      // になった。どのキーで認可したのかが画面で分からないと、
+      // 何度やり直しても同じところで詰まる。
+      var usedKey = store('collespo_tiktok_client_key') || '';
       document.getElementById('cmd').textContent =
-        'python scripts/tiktok_auth.py --code "' + code + '"';
+        '$env:TIKTOK_CLIENT_KEY = "' + usedKey + '"\n'
+        + '$env:TIKTOK_CLIENT_SECRET = "（このキーと同じ環境のsecret）"\n'
+        + 'py -3 scripts/tiktok_auth.py --code "' + code + '"';
+      var kd = document.getElementById('usedkey');
+      if (kd) {
+        kd.textContent = usedKey || '(不明)';
+      }
       document.getElementById('copy').addEventListener('click', function () {
         navigator.clipboard.writeText(code).then(function () {
           document.getElementById('copy').textContent = 'コピーしました';
