@@ -430,8 +430,11 @@ def build_narration(data: dict, mode: str = "all") -> dict:
 
     segments.append({
         "kind": "outro",
-        "text": "コレスポでは毎日午後7時に、その日の注目試合を"
-                "理由つきでお届けしています。",
+        # アウトロは「何をしているか」の説明で終わっていた。
+        # 次に何があるかを言い、登録を促す形に変える。
+        # 登録が増えないと、毎日出しても毎日ゼロから始まる。
+        "text": "今夜7時には、明日の注目試合を理由つきで出します。"
+                "見逃したくない方は、チャンネル登録をお願いします。",
         "meta": {},
     })
     return {"label": day, "segments": segments}
