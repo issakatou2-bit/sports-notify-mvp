@@ -358,7 +358,7 @@ def main():
 def _fallback_game_text(game: dict) -> str:
     """AIが使えない場合の、事実の読み上げだけの原稿"""
     parts = [
-        f"{game.get('start_time_jst', '')}から、"
+        f"{post_common.kickoff_display(game.get('start_time_jst') or '')}から、"
         f"{game.get('home_team_name')}対{game.get('away_team_name')}。"
     ]
     for r in (game.get("reasons") or [])[:2]:
