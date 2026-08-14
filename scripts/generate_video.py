@@ -406,16 +406,31 @@ def render_outro(progress: float):
     # VOICEVOXの利用規約で、動画内または説明欄へのクレジット表記が
     # 求められているため、アウトロに必ず表示する
     d.text((80, 1340), "音声: VOICEVOX:ずんだもん", font=font(38), fill=DIM)
-    d.text((80, 1400), "データ: MLB Stats API", font=font(38), fill=DIM)
+    # 出典は競技で変わる。サッカーの動画にMLBのAPI名が出ていては嘘になる。
+    d.text((80, 1400), DATA_SOURCE, font=font(38), fill=DIM)
     return im
+
+
+# 画面の隅に出す出典。競技で変わる。
+# サッカーの動画に「データ: MLB Stats API」と出ていては嘘になる。
+DATA_SOURCES = {
+    "mlb": "データ: MLB Stats API",
+    "soccer": "データ: football-data.org",
+}
+DATA_SOURCE = DATA_SOURCES["mlb"]
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--games", default="notable_games.json")
+    parser.add_argument("--sport", default="mlb",
+                        choices=list(DATA_SOURCES),
+                        help="出典表記の切り替え")
     parser.add_argument("--audio-dir", default="build/audio")
     parser.add_argument("--out", default="build/video")
     args = parser.parse_args()
+    global DATA_SOURCE
+    DATA_SOURCE = DATA_SOURCES[args.sport]
 
     games_data = json.loads(pathlib.Path(args.games).read_text(encoding="utf-8"))
     games = [g for g in games_data.get("games", []) if g.get("is_notable")]

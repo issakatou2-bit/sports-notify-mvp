@@ -556,11 +556,30 @@ def weekly_lead(archive_dir: str = "archive") -> str:
     return "、".join(parts)
 
 
+# 競技ごとの見出しとタグ。同じ日次の仕組みを別competitionに載せるとき、
+# 変わるのはここだけになるようにまとめておく。
+# MLBの文言は既存のまま(過去の動画と並びを揃えるため)。
+SPORTS = {
+    "mlb": {
+        "badge": "【MLB】",
+        "source": "データ: MLB Stats API",
+        "tags": ["MLB", "メジャーリーグ", "野球", "注目試合", "コレスポ"],
+    },
+    "soccer": {
+        "badge": "【サッカー】",
+        "source": "データ: football-data.org",
+        "tags": ["サッカー", "海外サッカー", "欧州サッカー", "プレミアリーグ",
+                 "注目試合", "コレスポ"],
+    },
+}
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
                    morning_players: list = None,
-                   morning_mode: str = "players") -> dict:
+                   morning_mode: str = "players",
+                   sport: str = "mlb") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -616,13 +635,15 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         lead = f"{sub} {big}".strip() if big else ""
         daily_lead = lead
         top = games[0]
+        badge = SPORTS.get(sport, SPORTS["mlb"])["badge"]
         matchup = f"{top.get('home_team_name')} vs {top.get('away_team_name')}"
         if lead:
-            title = f"{lead}｜{matchup} ほか {date_label}の注目試合【MLB】#Shorts"
+            title = f"{lead}｜{matchup} ほか {date_label}の注目試合{badge}#Shorts"
         else:
-            title = f"{matchup} ほか｜{date_label}の注目試合【MLB】#Shorts"
+            title = f"{matchup} ほか｜{date_label}の注目試合{badge}#Shorts"
     else:
-        title = f"{date_label}の注目試合【MLB】#Shorts"
+        title = (f"{date_label}の注目試合"
+                 f"{SPORTS.get(sport, SPORTS['mlb'])['badge']}#Shorts")
     title = title[:100]  # YouTubeのタイトル上限
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
@@ -690,7 +711,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         "データ: MLB Stats API",
     ]
 
-    tags = ["MLB", "メジャーリーグ", "野球", "注目試合", "コレスポ"]
+    tags = list(SPORTS.get(sport, SPORTS["mlb"])["tags"])
     tags.append("週間まとめ" if kind == "weekly" else "Shorts")
     if kind == "morning":
         # 検索されるのは選手名なので、出場した選手を優先してタグに入れる
@@ -745,6 +766,8 @@ def main():
                         help="記録に使う日付(既定はUTCの実行日)")
     parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
+    parser.add_argument("--sport", default="mlb", choices=["mlb", "soccer"],
+                        help="日次の競技。見出しとタグが変わる")
     parser.add_argument("--publish-at", default=None,
                         help="JSTの公開時刻 HH:MM。指定すると予約投稿になる。"
                              "過ぎている場合はそのまま公開する")
@@ -826,7 +849,7 @@ def main():
 
         body = build_metadata(args.games, date_label, args.kind,
                               args.narration, args.archive_dir, morning_players,
-                              args.morning_mode)
+                              args.morning_mode, args.sport)
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)
@@ -885,10 +908,17 @@ def main():
             from datetime import datetime, timezone
 
             key = args.video_date or datetime.now(timezone.utc).date().isoformat()
-            # 16時は2本上がるので、記録も分けて上書きを防ぐ
-            rec_kind = (f"{args.kind}_{args.morning_mode}"
-                        if args.kind == "morning" and args.morning_mode != "players"
-                        else args.kind)
+            # 同じ日に同じ kind が複数上がる場合は、記録を分けて上書きを防ぐ。
+            #   16時台は players / local / press の3本
+            #   日次は MLB と サッカーの2本
+            # 分けないと、あとから上げた方が前の動画IDを消してしまい、
+            # アーカイブページが片方だけを指すことになる。
+            if args.kind == "morning" and args.morning_mode != "players":
+                rec_kind = f"{args.kind}_{args.morning_mode}"
+            elif args.kind == "daily" and args.sport != "mlb":
+                rec_kind = f"{args.kind}_{args.sport}"
+            else:
+                rec_kind = args.kind
             record_video(rec_kind, key, vid, body["snippet"]["title"],
                          publish_at=publish_at)
     except Exception as e:

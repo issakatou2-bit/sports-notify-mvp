@@ -1,0 +1,181 @@
+name: Soccer daily
+
+# 欧州サッカーの日次ショート。19時のMLBとは別の1本として出す。
+#
+# なぜ分けるのか:
+#   これまでサッカーは notability_engine の --source all に混ざっていて、
+#   日次動画1本ぶん(3試合)の枠をMLBと取り合っていた。MLBは毎日15試合あり
+#   日本人選手も10人以上いるので、平日はサッカーが1枠も取れない。
+#   投稿本数に上限は無い(YouTubeは1日100本、いま4本)ので、分ける方が素直。
+#
+# 実行時刻について:
+#   欧州の試合は日本時間の21時〜翌6時。20時に出せば、その日の夜の試合の
+#   前に届く。19時(MLB)と21時(現地の声)の間に入れて、通知が固まらない
+#   ようにしている。
+#   GitHubのscheduleは2〜4時間遅れる(実測)ので、cron-job.orgから叩く。
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: soccer-daily
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+
+      # サッカーだけを取る。--source all にすると再びMLBと混ざる。
+      - name: Fetch soccer fixtures
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python notability_engine.py --source soccer \
+            --out soccer_games.json
+
+      # 開幕前やオフの日は試合が無い。無い日に空の動画を出すより、
+      # 何も出さない方がよい。ここで打ち切る。
+      - name: Stop when there are no fixtures
+        id: gate
+        run: |
+          COUNT=$(python -c "
+          import json
+          try:
+              d = json.load(open('soccer_games.json', encoding='utf-8'))
+              print(len([g for g in d.get('games', []) if g.get('is_notable')]))
+          except Exception:
+              print(0)
+          ")
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::notice::この日は対象の試合がないため、動画は作りません"
+          else
+            echo "注目試合 ${COUNT}件"
+          fi
+
+      - name: Install video tools
+        if: steps.gate.outputs.count != '0'
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
+      - name: Start VOICEVOX engine
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Generate narration
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/generate_narration.py \
+            --games soccer_games.json \
+            --out build/soccer_narration.json
+
+      - name: Synthesize narration
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/soccer_narration.json \
+            --out-dir build/soccer_audio
+
+      - name: Generate video
+        if: steps.gate.outputs.count != '0'
+        run: |
+          python scripts/generate_video.py \
+            --games soccer_games.json --sport soccer \
+            --audio-dir build/soccer_audio \
+            --out build/soccer
+
+      - name: Generate thumbnail
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        run: |
+          python scripts/generate_thumbnail.py \
+            --kind daily \
+            --games soccer_games.json \
+            --narration build/soccer_narration.json \
+            --out build/soccer/thumb.png
+
+      # 20:00に出す。この回は20:10前後に終わるので、間に合わなければ
+      # そのまま即時公開に倒れる(予約が過去になるとAPIが弾くため)。
+      - name: Upload to YouTube
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python scripts/upload_youtube.py \
+            --video build/soccer/collespo_short.mp4 \
+            --kind daily --sport soccer \
+            --games soccer_games.json \
+            --narration build/soccer_narration.json \
+            --thumbnail build/soccer/thumb.png \
+            --privacy public --publish-at "20:00"
+
+      - name: Post to TikTok
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        env:
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+        run: |
+          if [ -z "$TIKTOK_REFRESH_TOKEN" ]; then
+            echo "TikTokは未設定のため飛ばします"; exit 0
+          fi
+          python scripts/post_tiktok.py \
+            --video build/soccer/collespo_short.mp4 --kind soccer_daily
+
+      - name: Commit record
+        if: always()
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in data/published_videos.json data/published_tiktok.json \
+                   soccer_games.json; do
+            if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
+          done
+          git diff --cached --quiet || \
+            git commit -m "soccer daily: ${{ github.run_id }}"
+          git pull --rebase --quiet || true
+          git push || echo "変更が無いためスキップ"
+
+      - name: Save video as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-soccer
+          path: build/soccer/
+          if-no-files-found: ignore

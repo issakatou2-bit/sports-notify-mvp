@@ -45,7 +45,11 @@ jobs:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-        run: python notability_engine.py --source all --out notable_games.json
+        # サッカーは soccer_daily.yml が別の1本として出す。
+        # ここを all にすると、日次1本の3枠をMLBと取り合うことになる。
+        # MLBは毎日15試合・日本人10人以上あるので、平日はサッカーが
+        # 1枠も取れず、週末だけMLBが押し出される形になっていた。
+        run: python notability_engine.py --source mlb --out notable_games.json
 
       # 選手の所属変化を検知してニュース化する。
       # 差分は「候補」に過ぎないため、スクリプト内でAPIに問い合わせて
