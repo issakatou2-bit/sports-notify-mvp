@@ -1,0 +1,132 @@
+name: TikTok test post
+
+# TikTokへの投稿だけを、手で1回だけ試すためのもの。
+#
+# 日次や朝の回を回せば投稿は試せるが、それらはYouTubeにも本当に公開し、
+# サイトも更新してしまう。連携の確認や審査用の録画のために、
+# 予定外の時刻に本番の配信を出すわけにはいかない。
+#
+# ここではTikTokにしか出さない。審査が通るまでは下書きなので、
+# 受信箱に届くだけで、投稿ボタンを押さない限り公開されない。
+#
+# 使いどころ:
+#   - Secretsを入れ替えた直後の確認
+#   - Sandbox から Production へ切り替えたあとの確認
+#   - 審査に出す録画を撮るとき
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'TikTokの説明文にする見出し'
+        required: false
+        default: '【MLB】日本人選手の成績まとめ'
+      mode:
+        description: '作る動画 (players=成績 / local=注目度 / press=現地の声)'
+        required: false
+        default: 'players'
+
+permissions:
+  contents: read
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow
+
+      # 先に権限だけ確かめる。動画を作るのに数分かかるので、
+      # トークンが切れていた場合はここで止めた方が早い。
+      - name: Check TikTok credentials
+        env:
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          # 入力はシェルに直接埋めず、環境変数として渡す。
+          # ${{ }} は展開された文字列がそのままコマンドの一部になる。
+          TITLE: ${{ inputs.title }}
+        run: |
+          if [ -z "$TIKTOK_REFRESH_TOKEN" ]; then
+            echo "::error::TIKTOK_REFRESH_TOKEN が未設定です。" \
+                 "https://collespo.com/tiktok/ から取得してください"
+            exit 1
+          fi
+          mkdir -p build
+          : > build/probe.mp4
+          python scripts/post_tiktok.py --video build/probe.mp4 \
+            --title "$TITLE" --dry-run
+
+      # 成績はその日のものを取り直す。リポジトリに入っているのは
+      # 前回の回の結果なので、古い日付のまま投稿してしまう。
+      - name: Fetch today's results
+        run: |
+          python scripts/morning_recap.py --out data/morning_recap.json
+          python scripts/local_reporters.py --out data/local_reporters.json || true
+
+      - name: Start VOICEVOX engine
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Build one short
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          python scripts/generate_morning_short.py \
+            --recap data/morning_recap.json --mode "$MODE" \
+            --narration-out build/tt_narration.json
+          if [ ! -f build/tt_narration.json ]; then
+            echo "::error::今日は $MODE の素材がありません。別のmodeで試してください"
+            exit 1
+          fi
+          python scripts/synthesize_narration.py \
+            --narration build/tt_narration.json --out-dir build/tt_audio
+          python scripts/generate_morning_short.py \
+            --recap data/morning_recap.json --mode "$MODE" \
+            --audio-dir build/tt_audio --out build/tiktok_test
+
+      - name: Post to TikTok
+        env:
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          TITLE: ${{ inputs.title }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          if [ "$MODE" = "players" ]; then
+            VIDEO="build/tiktok_test/collespo_morning.mp4"
+          else
+            VIDEO="build/tiktok_test/collespo_morning_${MODE}.mp4"
+          fi
+          ls -la build/tiktok_test/
+          # 記録は残さない。本番の投稿履歴に試し撃ちを混ぜると、
+          # その日に何を出したのかが後から分からなくなる。
+          python scripts/post_tiktok.py --video "$VIDEO" \
+            --title "$TITLE" --record /tmp/tiktok_test_record.json
+
+      # 録画で使うため、投稿したものと同じ動画を手元に落とせるようにする。
+      - name: Save the video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tiktok-test-video
+          path: build/tiktok_test/
+          if-no-files-found: ignore
