@@ -40,6 +40,10 @@
   }
   button:disabled { background: #3A3F4C; color: var(--text-dim); cursor: not-allowed; }
   .status { font-size: 0.85rem; margin-top: 0.8rem; }
+  label.check { display: flex; align-items: center; gap: 8px;
+                margin-top: 1rem; color: var(--text); font-size: 0.9rem; }
+  label.check input { width: auto; }
+  .hint { color: var(--text-dim); font-size: 0.8rem; margin: 0.4rem 0 0; }
   .ok { color: var(--jp); }
   .ng { color: #FF7A7A; }
   ol { padding-left: 1.2rem; color: var(--text-dim); font-size: 0.85rem; }
@@ -64,6 +68,15 @@
     <label for="ck">Client key</label>
     <input id="ck" type="text" placeholder="aw..." autocomplete="off" />
     <div class="status" id="ckStatus"></div>
+
+    <label class="check">
+      <input id="pub" type="checkbox" />
+      直接投稿(video.publish)も要求する
+    </label>
+    <p class="hint">審査が通るまでこの権限は付与されません。
+    承認前にチェックを入れると、TikTokのログイン画面が
+    「エラーが発生しました … scope」で止まります。
+    ふだんは外したままにしてください。</p>
   </div>
 
   <div class="card">
@@ -95,7 +108,15 @@
   // client_secret を使うトークン交換は、この画面ではなく手元で行う。
   // 静的サイト(GitHub Pages)にsecretを置く必要が無いようにするため。
   var REDIRECT_URI = location.origin + '/tiktok/callback.html';
-  var SCOPES = 'user.info.basic,video.publish,video.upload';
+
+  // 要求する権限。
+  //
+  // アプリに付与されていない権限を要求すると、TikTokのログイン画面が
+  // 「エラーが発生しました … scope」で止まる。承認前のアプリには
+  // video.publish が付かないので、既定は video.upload(下書き)だけにする。
+  // 審査が通ったら下のチェックを入れて video.publish を足す。
+  var SCOPE_BASE = 'user.info.basic,video.upload';
+  var SCOPE_PUBLISH = 'video.publish';
 
   var ck = document.getElementById('ck');
   var go = document.getElementById('go');
@@ -129,9 +150,14 @@
     }).join('');
     localStorage.setItem('collespo_tiktok_state', state);
 
+    var scopes = SCOPE_BASE;
+    if (document.getElementById('pub').checked) {
+      scopes += ',' + SCOPE_PUBLISH;
+    }
+
     var url = 'https://www.tiktok.com/v2/auth/authorize/'
       + '?client_key=' + encodeURIComponent(key)
-      + '&scope=' + encodeURIComponent(SCOPES)
+      + '&scope=' + encodeURIComponent(scopes)
       + '&response_type=code'
       + '&redirect_uri=' + encodeURIComponent(REDIRECT_URI)
       + '&state=' + state;
