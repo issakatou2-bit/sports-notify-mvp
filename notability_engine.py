@@ -52,6 +52,10 @@ class Standing:
     # 直近10試合の成績(例: "7-3")。連勝連敗より実際の勢いを表しやすい。
     # 取得できなかった場合はNone。
     last_ten: Optional[str] = None
+    # 首位との勝ち点差。サッカーでのみ入る。
+    # games_back には互換のため3で割った値を入れているが、
+    # 「ゲーム差」は野球の概念で、サッカーの画面にそのまま出すと嘘になる。
+    points_back: Optional[float] = None
 
 
 @dataclass
@@ -414,12 +418,169 @@ def rule_quality_matchup(game: Game, standings: dict) -> list[Reason]:
     return reasons
 
 
+# --- サッカー用のルール -----------------------------------------------------
+#
+# MLB用のルールはどれもチームIDでMLBの地区表や名簿を引くため、サッカーの
+# 試合では1つも発火しない。実際、開幕節を模した試合を通したところ両方とも
+# 0点・注目試合ゼロになり、そのままなら8/21に動画が1本も出なかった。
+#
+# 材料が違うので、判定もサッカーの材料で書く。
+#   日本人選手 … クラブ名で名簿を引く(MLBのようなIDの対応表が無いため)
+#   順位       … 勝ち点表。ゲーム差ではなく勝ち点差で語る
+#   ビッグクラブ … 日本での知名度が高く、中継も立つクラブ
+
+# 日本で名前が通っていて、試合単体で見られるクラブ。
+# MLB_MARQUEE_TEAM_IDS と同じ役割。クラブ名の正規化キーで持つ。
+SOCCER_MARQUEE_CLUBS = {
+    "fcbarcelona", "realmadrid", "manchesterunited", "manchestercity",
+    "liverpool", "arsenal", "chelsea", "tottenham", "juventus",
+    "acmilan", "internazionale", "bayernmunchen", "borussiadortmund",
+    "parissaintgermain", "atleticomadrid",
+}
+
+# 同じ都市・地域の対戦。背景があると1試合の重みが変わる。
+SOCCER_DERBIES = [
+    ({"manchesterunited", "manchestercity"}, "マンチェスター・ダービー"),
+    ({"liverpool", "everton"}, "マージーサイド・ダービー"),
+    ({"arsenal", "tottenham"}, "ノース・ロンドン・ダービー"),
+    ({"fcbarcelona", "realmadrid"}, "エル・クラシコ"),
+    ({"acmilan", "internazionale"}, "ミラノ・ダービー"),
+    ({"juventus", "internazionale"}, "イタリア・ダービー"),
+    ({"borussiadortmund", "fcschalke04"}, "レヴィアダービー"),
+    ({"bayernmunchen", "borussiadortmund"}, "デア・クラシカー"),
+]
+
+
+def is_soccer(game: Game) -> bool:
+    return game.league in SOCCER_COMPETITIONS
+
+
+def _club_key(name: str, keys) -> str:
+    """
+    クラブ名に含まれる識別子を返す。無ければ空。
+
+    APIは "FC Internazionale Milano" のような正式名称を返すので、
+    完全一致では引けない。名簿と同じ部分一致にする。
+    長いキーから見るのは "barcelona" が "RCD Espanyol de Barcelona" に
+    当たるような取り違えを避けるため。
+    """
+    norm = normalize_club(name)
+    if not norm:
+        return ""
+    for key in sorted(keys, key=len, reverse=True):
+        if key in norm:
+            return key
+    return ""
+
+
+def rule_soccer_japanese_player(game: Game) -> list[Reason]:
+    """
+    クラブ名から日本人選手を引く。
+
+    MLBはチームIDで名簿を引けるが、サッカーはIDの対応表が無い。
+    クラブ名の表記揺れは normalize_club が吸収する。
+    """
+    reasons = []
+    for name in (game.home_team_name, game.away_team_name):
+        players = jp_players_for_club(name, game.league)
+        if not players:
+            continue
+        names = "・".join(p["name_jp"] for p in players)
+        reasons.append(Reason(
+            tag="jp_team",
+            text=f"{club_name_jp(name)}には{names}が所属",
+            weight=jp_roster_weight(len(players)),
+        ))
+    return reasons
+
+
+def rule_soccer_marquee(game: Game) -> list[Reason]:
+    clubs = []
+    for name in (game.home_team_name, game.away_team_name):
+        if _club_key(name, SOCCER_MARQUEE_CLUBS):
+            clubs.append(club_name_jp(name))
+    if not clubs:
+        return []
+    if len(clubs) == 2:
+        return [Reason(tag="quality",
+                       text=f"{clubs[0]} と {clubs[1]} の対戦",
+                       weight=3)]
+    return [Reason(tag="quality", text=f"{clubs[0]} の試合", weight=1)]
+
+
+def rule_soccer_derby(game: Game) -> list[Reason]:
+    all_keys = {k for clubs, _ in SOCCER_DERBIES for k in clubs}
+    pair = {_club_key(game.home_team_name, all_keys),
+            _club_key(game.away_team_name, all_keys)}
+    for clubs, label in SOCCER_DERBIES:
+        if pair == clubs:
+            return [Reason(tag="rivalry", text=f"{label}", weight=3)]
+    return []
+
+
+def rule_soccer_table(game: Game, standings: dict) -> list[Reason]:
+    """
+    順位表から。開幕直後は全チーム勝ち点0で並ぶので、その場合は何も言わない。
+
+    「ゲーム差」は野球の言い方なので使わない。サッカーは勝ち点差で語る。
+    """
+    home = standings.get(game.home_team_id)
+    away = standings.get(game.away_team_id)
+    if not (home and away):
+        return []
+
+    reasons = []
+    # 上位対決。順位そのもので判定する(勝ち点差はリーグの拮抗度に左右される)
+    if home.division_rank and away.division_rank:
+        worst = max(home.division_rank, away.division_rank)
+        if worst <= 4:
+            reasons.append(Reason(
+                tag="quality",
+                text=(f"{club_name_jp(game.home_team_name)}が"
+                      f"{home.division_rank}位、"
+                      f"{club_name_jp(game.away_team_name)}が"
+                      f"{away.division_rank}位の上位対決"),
+                weight=3))
+        elif worst <= 8:
+            reasons.append(Reason(
+                tag="quality",
+                text=(f"{club_name_jp(game.home_team_name)}"
+                      f"{home.division_rank}位 と "
+                      f"{club_name_jp(game.away_team_name)}"
+                      f"{away.division_rank}位"),
+                weight=1))
+
+    # 首位争い。points_back が取れている場合だけ、勝ち点差で述べる。
+    hb, ab = home.points_back, away.points_back
+    if hb is not None and ab is not None and min(hb, ab) <= 3:
+        diff = abs(hb - ab)
+        if diff <= 3:
+            reasons.append(Reason(
+                tag="div",
+                text=f"首位争い、勝ち点差は{diff:.0f}",
+                weight=2))
+    return reasons
+
+
+SOCCER_GAME_RULES = [rule_soccer_japanese_player, rule_soccer_marquee,
+                     rule_soccer_derby]
+SOCCER_STANDINGS_RULES = [rule_soccer_table]
+
 STANDINGS_RULES = [rule_division_race, rule_quality_matchup, rule_win_streak]
 GAME_ONLY_RULES = [rule_marquee_team, rule_rivalry]  # jp_team_mapもstandingsも不要なルール
 
 
 def generate_reasons(game: Game, standings: dict, jp_team_map: dict) -> list[Reason]:
     reasons: list[Reason] = []
+    # MLBのルールはチームIDでMLBの地区表・名簿を引くので、サッカーでは
+    # 1つも発火しない。競技で分ける。
+    if is_soccer(game):
+        for rule in SOCCER_GAME_RULES:
+            reasons.extend(rule(game))
+        for rule in SOCCER_STANDINGS_RULES:
+            reasons.extend(rule(game, standings))
+        return reasons
+
     reasons.extend(rule_japanese_player(game, jp_team_map))
     for rule in GAME_ONLY_RULES:
         reasons.extend(rule(game))
@@ -552,19 +713,29 @@ def build_output(
                 "strikeouts": p.strikeouts,
             }
 
+        # サッカーのAPIは "FC Internazionale Milano" のような正式名称を返す。
+        # そのまま出すとタイトルも画面も英語になり、VOICEVOXも読めない。
+        # 理由の文面は既に日本語表記なので、ここも揃える。
+        if is_soccer(g):
+            home_name = club_name_jp(g.home_team_name)
+            away_name = club_name_jp(g.away_team_name)
+        else:
+            home_name = g.home_team_name
+            away_name = g.away_team_name
+
         output_games.append(
             {
                 "game_id": g.game_id,
                 "league": g.league,
                 "home_team_id": g.home_team_id,
                 "away_team_id": g.away_team_id,
-                "home_team_name": g.home_team_name,
-                "away_team_name": g.away_team_name,
+                "home_team_name": home_name,
+                "away_team_name": away_name,
                 "home_abbr": home_abbr,
                 "away_abbr": away_abbr,
                 "home_color": MLB_TEAM_COLOR.get(g.home_team_id),
                 "away_color": MLB_TEAM_COLOR.get(g.away_team_id),
-                "matchup": f"{g.home_team_name} vs {g.away_team_name}",
+                "matchup": f"{home_name} vs {away_name}",
                 "abbr_matchup": abbr_matchup,
                 "start_time_jst": _to_jst_str(g.start_time_utc),
                 "home_division": home_division,
@@ -1591,12 +1762,14 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
             top_points = table[0]["points"] if table else 0
             for row in table:
                 team_id = f"{code}-{row['team']['id']}"
-                games_back = round((top_points - row["points"]) / 3, 1)  # 簡易換算
+                points_back = float(top_points - row["points"])
+                games_back = round(points_back / 3, 1)  # 互換のための簡易換算
                 standings[team_id] = Standing(
                     team_id=team_id,
                     division_rank=row["position"],
                     games_back=games_back,
                     win_streak=0,  # 無料枠にフォームデータが無いため未実装
+                    points_back=points_back,
                 )
 
         for m in matches_data.get("matches", []):

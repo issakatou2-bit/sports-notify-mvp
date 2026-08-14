@@ -44,6 +44,9 @@ MODEL = "claude-haiku-4-5-20251001"
 # 1試合75文字前後 × 3試合 + 前後 で、1.3倍速で40秒前後になる。
 MAX_GAMES = 3
 
+# サッカーの競技会コード。点数の根拠の言い回しを競技で分けるのに使う。
+SOCCER_LEAGUES = {"PL", "PD", "SA", "BL1", "FL1", "CL", "ELC", "BL2"}
+
 
 # 「大谷翔平は8試合連続安打中」「アストロズは5連勝中」のように、
 # 主語と内容が「は」で分かれている事実をほどく。
@@ -139,6 +142,28 @@ def pick_hook(games: list) -> dict:
             m = GAMES_BACK_RE.search(r.get("text") or "")
             if m:
                 return {"big": f"ゲーム差{m.group(1)}の首位攻防戦", "sub": ""}
+
+    # 4.5 ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
+    #     サッカーには「連続安打」「移籍後初登板」に当たる個人記録が
+    #     APIから取れないので、上の1〜3は発火しない。ここが実質の先頭になる。
+    for g in games:
+        for r in g.get("reasons") or []:
+            if r.get("tag") == "rivalry" and r.get("text"):
+                name = r["text"].strip()
+                if 3 <= len(name) <= 20:
+                    return {"big": name, "sub": ""}
+
+    # 4.6 サッカーで日本人選手が所属している場合。
+    #     「先発予定」とは書かない。スタメンは前日には分からない。
+    for g in games:
+        for r in g.get("reasons") or []:
+            if r.get("tag") != "jp_team":
+                continue
+            m = re.match(r"^(?P<club>.+?)には(?P<who>.+?)が所属$",
+                         (r.get("text") or "").strip())
+            if m:
+                return {"big": f"{m.group('club')}の試合",
+                        "sub": m.group("who").split("・")[0]}
 
     # 5. AIのフック文(短くまとまっているものだけ)
     for g in games:
@@ -282,9 +307,14 @@ def main():
     # その基準を隠さずに見せる。独自の指標なので他所には出せない内容になる。
     if any(g.get("score") for g in games):
         top = max(games, key=lambda g: g.get("score") or 0)
+        # 何に点をつけているかは競技で違う。サッカーは連勝記録が取れない
+        # (無料枠にフォームデータが無い)ので、そこを挙げると嘘になる。
+        soccer = any(g.get("league") in SOCCER_LEAGUES for g in games)
+        basis = ("日本人選手の所属、順位、伝統の一戦かどうか" if soccer
+                 else "日本人選手の出場、順位争い、連勝記録")
         segments.append({
             "kind": "score",
-            "text": "コレスポは、日本人選手の出場、順位争い、連勝記録などに"
+            "text": f"コレスポは、{basis}などに"
                     "点数をつけて注目試合を選んでいます。"
                     f"今日の最高点は{top.get('score')}点、"
                     f"{top.get('home_team_name')}対{top.get('away_team_name')}でした。",
