@@ -35,6 +35,10 @@ VIDEO_KINDS = [
      "前夜の日本人選手を勝利貢献スコア順に", "morning_recap.yml"),
     ("morning_local", "夕: 現地の注目度", "毎日18:00 JST",
      "現地の再生回数と、話題に挙がったチーム", "morning_recap.yml"),
+    ("morning_press", "夜: 現地の声", "毎日21:00 JST",
+     "現地の番記者の投稿と見出しを、翻訳して", "morning_recap.yml"),
+    ("daily_soccer", "サッカー日次", "毎日20:00 JST",
+     "その夜の欧州の注目試合3つを、理由つきで", "soccer_daily.yml"),
     ("weekly", "週次まとめ", "毎週日曜",
      "1週間の振り返りと、予告した試合の答え合わせ", "weekly_summary.yml"),
     ("verdict", "答え合わせショート", "週次と同時",
@@ -48,6 +52,7 @@ CHANNELS = [
     ("YouTube", "動画すべて", "自動", "upload_youtube.py"),
     ("TikTok", "日次・夕の3本", "下書きまで自動", "post_tiktok.py"),
     ("Bluesky", "日次の注目試合", "自動", "post_bluesky.py"),
+    ("Threads", "日次の注目試合", "自動(認可待ち)", "post_threads.py"),
     ("Webプッシュ", "日次の注目試合", "自動", "send_onesignal.py"),
     ("サイト", "全ページ", "日次で再生成", "daily_notify.yml"),
     ("RSS", "注目試合", "自動", "generate_rss.py"),
@@ -60,9 +65,19 @@ def asset_topics() -> dict:
     import generate_asset_video as gav
     import generate_thumbnail as gt
 
-    # upload_youtube は google ライブラリが無いと止まるので、定義だけ読む
+    # upload_youtube は google ライブラリが無いと止まるので、定義だけ読む。
+    #
+    # ASSET_META の範囲だけを見る。ファイル全体を走査すると、同じ形の
+    # 辞書が他にあるだけで拾ってしまう。実際、競技ごとの見出しを持つ
+    # SPORTS を足した時点で "mlb" と "soccer" が資産動画のトピック扱いに
+    # なり、「作るコードが無い」と誤検出していた。
     src = (ROOT / "scripts" / "upload_youtube.py").read_text(encoding="utf-8")
-    meta_keys = set(re.findall(r'^    "([a-z0-9_]+)": \{', src, re.M))
+    block = ""
+    start = src.find("ASSET_META = {")
+    if start >= 0:
+        end = src.find("\n}\n", start)
+        block = src[start:end if end > 0 else len(src)]
+    meta_keys = set(re.findall(r'^    "([a-z0-9_]+)": \{', block, re.M))
 
     wf = (ROOT / ".github" / "workflows" / "asset_video.yml").read_text(
         encoding="utf-8")

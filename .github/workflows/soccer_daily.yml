@@ -167,8 +167,12 @@ jobs:
           if [ -z "$TIKTOK_REFRESH_TOKEN" ]; then
             echo "TikTokは未設定のため飛ばします"; exit 0
           fi
+          # 区分は upload_youtube が記録した名前と揃える。
+          # post_tiktok はその日の記録からタイトルを借りるので、
+          # ずれていると「タイトルがありません」で必ず落ちる。
+          # upload_youtube 側は kind=daily + sport=soccer → daily_soccer。
           python scripts/post_tiktok.py \
-            --video build/soccer/collespo_short.mp4 --kind soccer_daily
+            --video build/soccer/collespo_short.mp4 --kind daily_soccer
 
       - name: Commit record
         if: always()
