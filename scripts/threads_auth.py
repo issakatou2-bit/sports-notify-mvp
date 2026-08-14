@@ -66,11 +66,45 @@ def to_long_lived(secret: str, short_token: str) -> dict:
     return _check(r, "長期トークンへの交換")
 
 
+def whoami(token: str) -> dict:
+    """トークンから user_id を引く。投稿先の指定に要る。"""
+    r = requests.get("https://graph.threads.net/v1.0/me",
+                     params={"fields": "id,username", "access_token": token},
+                     timeout=30)
+    return _check(r, "アカウント情報の取得")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--code", required=True, help="認可コード")
+    ap.add_argument("--code", help="認可コード(認可ページから来た場合)")
+    ap.add_argument("--token",
+                    help="開発者ポータルの『ユーザートークン生成ツール』で"
+                         "作った長期トークン。これがあれば --code は要らない")
     ap.add_argument("--redirect-uri", default=REDIRECT_URI)
     args = ap.parse_args()
+
+    # ポータルでトークンを直接発行できる場合は、認可の往復が丸ごと要らない。
+    # secret も使わないので、手元に置く値が1つ減る。
+    if args.token:
+        try:
+            me = whoami(args.token)
+        except RuntimeError as e:
+            print(f"[error] {e}")
+            print("       トークンが正しいか、アカウントが公開かを確認してください")
+            return 1
+        print("\n=== 確認できました ===")
+        print(f"アカウント : @{me.get('username', '?')}")
+        print("\n--- GitHub Secrets に登録 ---")
+        print(f"THREADS_USER_ID       = {me.get('id')}")
+        print(f"THREADS_ACCESS_TOKEN  = {args.token}")
+        print("--- ここまで ---")
+        print("\n投稿のたびに自動で延長されるので、"
+              "毎日動いている限り切れません")
+        return 0
+
+    if not args.code:
+        print("[error] --token か --code のどちらかが要ります")
+        return 1
 
     app_id = os.environ.get("THREADS_APP_ID")
     secret = os.environ.get("THREADS_APP_SECRET")
