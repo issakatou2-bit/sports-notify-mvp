@@ -31,9 +31,9 @@ sys.path.insert(0, str(ROOT))
 VIDEO_KINDS = [
     ("daily", "日次ショート", "毎日19:00 JST",
      "翌日の注目試合3つを、選んだ理由つきで", "daily_notify.yml"),
-    ("morning", "朝: 日本人選手", "毎日16:00 JST",
+    ("morning", "夕: 日本人選手", "毎日16:30 JST",
      "前夜の日本人選手を勝利貢献スコア順に", "morning_recap.yml"),
-    ("morning_local", "朝: 現地の注目度", "毎日16:00 JST",
+    ("morning_local", "夕: 現地の注目度", "毎日18:00 JST",
      "現地の再生回数と、話題に挙がったチーム", "morning_recap.yml"),
     ("weekly", "週次まとめ", "毎週日曜",
      "1週間の振り返りと、予告した試合の答え合わせ", "weekly_summary.yml"),
@@ -46,7 +46,7 @@ VIDEO_KINDS = [
 # 配信先。動画以外も含めて全部並べる。
 CHANNELS = [
     ("YouTube", "動画すべて", "自動", "upload_youtube.py"),
-    ("TikTok", "日次・朝の3本", "審査待ち", "post_tiktok.py"),
+    ("TikTok", "日次・夕の3本", "下書きまで自動", "post_tiktok.py"),
     ("Bluesky", "日次の注目試合", "自動", "post_bluesky.py"),
     ("Webプッシュ", "日次の注目試合", "自動", "send_onesignal.py"),
     ("サイト", "全ページ", "日次で再生成", "daily_notify.yml"),
