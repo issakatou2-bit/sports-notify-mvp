@@ -311,7 +311,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/published_videos.json data/published_tiktok.json || true
+          # 存在しないものを1つ混ぜると git add は全体を諦める。
+          # published_tiktok.json は投稿が成功するまで作られないため、
+          # 動画IDの記録まで巻き添えで止まっていた(08/11以降)。
+          for f in data/published_videos.json data/published_tiktok.json; do
+            if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
+          done
           git diff --cached --quiet || git commit -m "video record: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いか、push対象が無いためスキップ"

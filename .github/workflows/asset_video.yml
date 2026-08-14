@@ -202,8 +202,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/published_assets.json data/venue_stats.json \
-            data/soccer_preview.json || true
+          # 1つでも欠けると git add は何もstageしない。いまは3つとも
+          # 存在するが、増やしたときに黙って記録が止まらないようにする。
+          for f in data/published_assets.json data/venue_stats.json \
+                   data/soccer_preview.json; do
+            if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
+          done
           git diff --cached --quiet || git commit -m "published assets: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いか、push対象が無いためスキップ"
