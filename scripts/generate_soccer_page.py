@@ -83,6 +83,11 @@ STYLE = """
   dl { margin: 0; }
   dt { font-weight: 600; color: var(--accent); margin-top: 1rem; }
   dd { margin: 0.2rem 0 0; }
+  .fixtures { padding-left: 1.2rem; margin: 0.6rem 0 0; }
+  .fixtures > li { margin-bottom: 1rem; }
+  .fixtures .when { display: block; color: var(--accent); font-size: 0.8rem; }
+  .fixtures ul { margin: 0.3rem 0 0; padding-left: 1.1rem;
+                 color: var(--text-dim); font-size: 0.85rem; }
   .updated { color: var(--text-dim); font-size: 0.8rem; margin-top: 2.5rem; }
 """
 
@@ -281,8 +286,45 @@ def last_season_section(preview: dict) -> str:
     return "<h2>昨シーズンの結果</h2>\n" + "\n".join(out)
 
 
-def render(preview: dict) -> str:
+def fixtures_section(games: list) -> str:
+    """
+    その日の注目試合。20時のサッカー動画と同じ選定・同じ理由を出す。
+
+    ここが無いと、動画は出ているのにサイト側に着地点が無い。
+    MLBは日次のたびにアーカイブページができて、それが検索の入口に
+    なっているが、サッカーには対応するページが1つも無かった。
+    「プレミアリーグ 今日 試合」で入ってくる導線を作る。
+    """
+    if not games:
+        return ""
+    out = ["<h2>今夜の注目試合</h2>",
+           '<p class="note">コレスポが選んだ、その日の注目カードです。'
+           '選んだ理由も添えています。時刻は日本時間です。</p>',
+           '<ol class="fixtures">']
+    for g in games[:3]:
+        home = esc(g.get("home_team_name") or "")
+        away = esc(g.get("away_team_name") or "")
+        when = jp_datetime(g.get("start_time_utc") or g.get("game_date") or "")
+        league = esc(SOCCER_LEAGUE_NAME_JP.get(g.get("league"), g.get("league") or ""))
+        reasons = [r.get("text") for r in (g.get("reasons") or [])
+                   if r.get("visible", True) and r.get("text")][:3]
+        out.append("<li>")
+        out.append(f"<strong>{home} vs {away}</strong>")
+        meta = " ".join(x for x in (when, league) if x)
+        if meta:
+            out.append(f'<span class="when">{esc(meta)}</span>')
+        if reasons:
+            out.append("<ul>"
+                       + "".join(f"<li>{esc(r)}</li>" for r in reasons)
+                       + "</ul>")
+        out.append("</li>")
+    out.append("</ol>")
+    return "\n".join(out)
+
+
+def render(preview: dict, games: list = None) -> str:
     sections = [
+        fixtures_section(games or []),
         schedule_section(preview),
         highlights_section(preview),
         players_section(),
@@ -341,6 +383,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--preview", default="data/soccer_preview.json")
     ap.add_argument("--out", default="public/soccer.html")
+    ap.add_argument("--games", default="data/soccer_games.json",
+                    help="その日の注目試合。無ければその節を省く")
     args = ap.parse_args()
 
     preview = load_preview(args.preview)
@@ -349,12 +393,25 @@ def main():
         # 理由にページごと落とすと、開幕前の検索需要を丸ごと逃す。
         print(f"[info] {args.preview} が無いため、日程と昨季順位は省きます")
 
+    # その日の試合。開幕前やオフの日は無いので、無ければ節ごと省く。
+    games = []
+    gp = pathlib.Path(args.games)
+    if gp.exists():
+        try:
+            data = json.loads(gp.read_text(encoding="utf-8"))
+            games = [g for g in data.get("games", []) if g.get("is_notable")]
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"[warn] {args.games} を読めませんでした: {e}")
+    else:
+        print(f"[info] {args.games} が無いため、今夜の注目試合は省きます")
+
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(render(preview), encoding="utf-8")
+    out.write_text(render(preview, games), encoding="utf-8")
 
     n_comp = len(preview.get("competitions", []))
-    print(f"[done] {out} (選手{len(JP_PLAYERS_SOCCER)}人 / 競技会{n_comp})")
+    print(f"[done] {out} (選手{len(JP_PLAYERS_SOCCER)}人 / 競技会{n_comp} /"
+          f" 今夜の試合{len(games)})")
     return 0
 
 

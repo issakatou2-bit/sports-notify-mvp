@@ -110,6 +110,7 @@ jobs:
         run: |
           python scripts/generate_soccer_page.py \
             --preview data/soccer_preview.json \
+            --games data/soccer_games.json \
             --out public/soccer.html
 
       # 選手ページはsitemap生成より前に作る

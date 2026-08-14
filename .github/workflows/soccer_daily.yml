@@ -54,14 +54,36 @@ jobs:
           pip install -r scripts/requirements.txt
           pip install pillow google-api-python-client google-auth
 
-      # サッカーだけを取る。--source all にすると再びMLBと混ざる。
+      # 19時の日次が data/soccer_games.json を作ってコミットしている。
+      # それをそのまま使うことで、サイトに載る試合と動画に出る試合が
+      # 必ず一致する。同じものを2か所で作ると、いつか食い違う。
+      #
+      # 手動実行や、日次側の取得が落ちた回のために、無ければ自分で取る。
       - name: Fetch soccer fixtures
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python notability_engine.py --source soccer \
-            --out soccer_games.json
+          # generated_at はUTCなので、比較もUTCで揃える。
+          # 19時JST = 10時UTCの同じ日なので、この枠ではどちらでも同じだが、
+          # 揃えておかないと実行時刻を動かしたときに黙って壊れる。
+          TODAY=$(date -u +%F)
+          FRESH=$(python -c "
+          import json, pathlib
+          p = pathlib.Path('data/soccer_games.json')
+          try:
+              d = json.loads(p.read_text(encoding='utf-8'))
+              print((d.get('generated_at') or d.get('date') or '')[:10])
+          except Exception:
+              print('')
+          ")
+          if [ "$FRESH" = "$TODAY" ]; then
+            echo "日次が取った分を使います ($FRESH)"
+          else
+            echo "取り直します (手元: '${FRESH:-無し}' / 今日: $TODAY)"
+            python notability_engine.py --source soccer \
+              --out data/soccer_games.json
+          fi
 
       # 開幕前やオフの日は試合が無い。無い日に空の動画を出すより、
       # 何も出さない方がよい。ここで打ち切る。
@@ -71,7 +93,7 @@ jobs:
           COUNT=$(python -c "
           import json
           try:
-              d = json.load(open('soccer_games.json', encoding='utf-8'))
+              d = json.load(open('data/soccer_games.json', encoding='utf-8'))
               print(len([g for g in d.get('games', []) if g.get('is_notable')]))
           except Exception:
               print(0)
@@ -109,7 +131,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           python scripts/generate_narration.py \
-            --games soccer_games.json \
+            --games data/soccer_games.json \
             --out build/soccer_narration.json
 
       - name: Synthesize narration
@@ -124,7 +146,7 @@ jobs:
         if: steps.gate.outputs.count != '0'
         run: |
           python scripts/generate_video.py \
-            --games soccer_games.json --sport soccer \
+            --games data/soccer_games.json --sport soccer \
             --audio-dir build/soccer_audio \
             --out build/soccer
 
@@ -134,7 +156,7 @@ jobs:
         run: |
           python scripts/generate_thumbnail.py \
             --kind daily \
-            --games soccer_games.json \
+            --games data/soccer_games.json \
             --narration build/soccer_narration.json \
             --out build/soccer/thumb.png
 
@@ -151,7 +173,7 @@ jobs:
           python scripts/upload_youtube.py \
             --video build/soccer/collespo_short.mp4 \
             --kind daily --sport soccer \
-            --games soccer_games.json \
+            --games data/soccer_games.json \
             --narration build/soccer_narration.json \
             --thumbnail build/soccer/thumb.png \
             --privacy public --publish-at "20:00"
@@ -181,7 +203,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for f in data/published_videos.json data/published_tiktok.json \
-                   soccer_games.json; do
+                   data/soccer_games.json; do
             if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
           done
           git diff --cached --quiet || \
