@@ -25,6 +25,8 @@ import shutil
 import subprocess
 import sys
 
+import post_common  # noqa: E402
+
 from PIL import Image, ImageDraw, ImageFont
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
@@ -237,7 +239,11 @@ def render_game(progress: float, g: dict, index: int, total: int):
     draw_brand(d)
 
     d.text((70, 180), f"PICK {index + 1} / {total}", font=font(40), fill=ACCENT)
-    d.text((70, 250), (g.get("start_time_jst") or "") + " JST", font=font(46), fill=DIM)
+    # 未明の試合はそう書き添える。20時に見ている人にとって「4:00」は
+    # 今夜の続きで、翌日の昼ではない。判定は post_common に1本化してある。
+    d.text((70, 250),
+           post_common.kickoff_display(g.get("start_time_jst") or "") + " JST",
+           font=font(46), fill=DIM)
 
     # --- 対戦カード(左からスライドイン) ---
     e = ease_out(min(1.0, progress * 3.2))

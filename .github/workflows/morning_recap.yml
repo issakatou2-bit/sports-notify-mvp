@@ -22,7 +22,12 @@ name: Player recap
 on:
   schedule:
     - cron: '0 7 * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      modes:
+        description: '作る本数を絞る (players local press のうち必要なものだけ)'
+        required: false
+        default: 'players local press'
 
 # 取得した結果を data/ へコミットするため
 permissions:
@@ -122,7 +127,10 @@ jobs:
           TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
         run: |
           set +e
-          for mode in players local press; do
+          # 定期実行では3本とも作る。手動実行では絞れるようにしてある。
+          # 1本だけ落ちた日に、成功した2本まで上げ直すと重複するため。
+          MODES="${{ inputs.modes }}"
+          for mode in ${MODES:-players local press}; do
             echo "::group::$mode"
             if [ "$mode" = "players" ]; then
               VIDEO="build/morning/collespo_morning.mp4"

@@ -30,6 +30,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
+import post_common  # noqa: E402
 import soccer_preview  # noqa: E402
 from notability_engine import (  # noqa: E402
     JP_PLAYERS_SOCCER,
@@ -297,14 +298,18 @@ def fixtures_section(games: list) -> str:
     """
     if not games:
         return ""
-    out = ["<h2>今夜の注目試合</h2>",
+    label = post_common.when_label(games[0].get("start_time_jst") or "") or "この日"
+    out = [f"<h2>{label}の注目試合</h2>",
            '<p class="note">コレスポが選んだ、その日の注目カードです。'
            '選んだ理由も添えています。時刻は日本時間です。</p>',
            '<ol class="fixtures">']
     for g in games[:3]:
         home = esc(g.get("home_team_name") or "")
         away = esc(g.get("away_team_name") or "")
-        when = jp_datetime(g.get("start_time_utc") or g.get("game_date") or "")
+        # 時刻は動画と同じ表記にする。未明の試合はそう書き添える。
+        when = post_common.kickoff_display(g.get("start_time_jst") or "")
+        if not when:
+            when = jp_datetime(g.get("start_time_utc") or "")
         league = esc(SOCCER_LEAGUE_NAME_JP.get(g.get("league"), g.get("league") or ""))
         reasons = [r.get("text") for r in (g.get("reasons") or [])
                    if r.get("visible", True) and r.get("text")][:3]

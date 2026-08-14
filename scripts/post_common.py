@@ -116,19 +116,68 @@ def game_line(game: dict) -> str:
     return f"{time_part}{matchup} {hook}"
 
 
-def today_or_tomorrow_label(top_game: dict) -> str:
-    """投稿時点のJST日付と試合日を比べ、「今日」か「明日」かを決める。"""
-    start = top_game.get("start_time_jst")
-    if not start:
-        return "注目試合"
+# 日付が変わってから明け方までは、暦の上では翌日でも生活の感覚では
+# 「今夜」の続き。欧州の試合は日本時間の深夜〜早朝に集中するので、
+# ここを暦どおり「明日」と言うと、20時に見た人には遠い先の話に聞こえる。
+# 日本のスポーツ報道も「あす未明」と呼ぶ。
+LATE_NIGHT_UNTIL = 9  # この時刻より前は「未明」として扱う
+
+
+def kickoff_parts(start_time_jst: str):
+    """"08/23 04:00" を (月, 日, 時) に分解する。読めなければ None。"""
     try:
-        month, day = start.split(" ")[0].split("/")
-        now = datetime.now(timezone(timedelta(hours=9)))
-        if int(month) == now.month and int(day) == now.day:
-            return "今日の注目試合"
-        return "明日の注目試合"
-    except (ValueError, IndexError):
-        return "注目試合"
+        date_part, time_part = str(start_time_jst).split(" ", 1)
+        month, day = (int(x) for x in date_part.split("/"))
+        hour = int(time_part.split(":")[0])
+        return month, day, hour
+    except (ValueError, IndexError, AttributeError):
+        return None
+
+
+def is_late_night(start_time_jst: str) -> bool:
+    """その試合が日本時間の未明に始まるか。"""
+    parts = kickoff_parts(start_time_jst)
+    return bool(parts) and parts[2] < LATE_NIGHT_UNTIL
+
+
+def when_label(start_time_jst: str) -> str:
+    """
+    投稿時点から見て、その試合がいつなのか。
+
+    画面・読み上げ・SNS・サイトが別々にこれを決めると、同じ試合が
+    片方で「今夜」もう片方で「明日」になる。必ずここを通す。
+    """
+    parts = kickoff_parts(start_time_jst)
+    if not parts:
+        return ""
+    month, day, hour = parts
+    now = datetime.now(timezone(timedelta(hours=9)))
+    if month == now.month and day == now.day:
+        return "今夜" if hour >= 18 else "今日"
+
+    tomorrow = now + timedelta(days=1)
+    if month == tomorrow.month and day == tomorrow.day:
+        # 20時に見ている人にとって、翌4時は「今夜」の続き
+        return "今夜" if hour < LATE_NIGHT_UNTIL else "明日"
+    return ""
+
+
+def today_or_tomorrow_label(top_game: dict) -> str:
+    """投稿時点から見た見出し。「今夜の注目試合」など。"""
+    label = when_label(top_game.get("start_time_jst") or "")
+    return f"{label}の注目試合" if label else "注目試合"
+
+
+def kickoff_display(start_time_jst: str) -> str:
+    """
+    画面に出す時刻。未明の試合はそう書き添える。
+
+    「8/23 4:00」だけだと、20時に見た人には翌日の昼と区別がつかない。
+    """
+    if not start_time_jst:
+        return ""
+    return (f"{start_time_jst}（未明）" if is_late_night(start_time_jst)
+            else str(start_time_jst))
 
 
 def sort_for_display(games: list) -> list:

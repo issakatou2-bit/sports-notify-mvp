@@ -34,6 +34,8 @@ import re
 import sys
 import unicodedata
 
+import post_common  # noqa: E402
+
 try:
     import anthropic
 except ImportError:
@@ -192,7 +194,8 @@ def build_game_facts(game: dict) -> str:
     """AIに渡す事実だけを列挙する。ここに無い数字は書かせない。"""
     lines = [
         f"対戦: {game.get('home_team_name')} 対 {game.get('away_team_name')}",
-        f"開始時刻: {game.get('start_time_jst')} 日本時間",
+        f"開始時刻: {post_common.kickoff_display(game.get('start_time_jst') or '')}"
+        f" 日本時間",
     ]
     for r in (game.get("reasons") or [])[:4]:
         if r.get("visible", True) and r.get("text"):
