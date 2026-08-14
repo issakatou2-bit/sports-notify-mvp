@@ -13,6 +13,7 @@ GitHub Actionsのランナー(米国)なので、そこから叩いた結果で�
 
 import argparse
 import json
+import os
 import sys
 import urllib.error
 import urllib.request
@@ -85,21 +86,38 @@ def main() -> int:
 
     nba = [r for r in results if r["name"].startswith("NBA")]
     mlb = [r for r in results if r["name"].startswith("MLB")]
-    print()
-    if any(r["ok"] for r in nba):
-        print("[結論] NBAの一次情報はこの環境から取れます。実装に進めます。")
+    reachable = any(r["ok"] for r in nba)
+    if reachable:
+        verdict = "NBAの一次情報はこの環境から取れます。実装に進めます。"
     elif mlb and mlb[0]["ok"]:
-        print("[結論] MLBは取れてNBAだけ落ちています。回線の問題ではなく、"
-              "NBA側がこのIPを弾いています。鍵の要るAPIを検討してください。")
+        verdict = ("MLBは取れてNBAだけ落ちています。回線の問題ではなく、"
+                   "NBA側がこのIPを弾いています。鍵の要るAPIを検討してください。")
     else:
-        print("[結論] MLBも落ちているので、この環境自体が外に出られていません。"
-              "判定材料になりません。")
+        verdict = ("MLBも落ちているので、この環境自体が外に出られていません。"
+                   "判定材料になりません。")
+    print(f"\n[結論] {verdict}")
 
     if args.out:
         with open(args.out, "w", encoding="utf-8") as f:
-            json.dump(results, f, ensure_ascii=False, indent=2)
+            json.dump({"reachable": reachable, "verdict": verdict,
+                       "results": results}, f, ensure_ascii=False, indent=2)
         print(f"\n結果を書き出しました: {args.out}")
-    return 0
+
+    # 実行ページに結論を出す。成果物を開かないと分からないのでは、
+    # 確認のために毎回ダウンロードすることになる。
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as f:
+            f.write(f"## 一次情報の到達性\n\n**{verdict}**\n\n")
+            f.write("| 取得先 | 結果 |\n|---|---|\n")
+            for r in results:
+                mark = "取れる" if r["ok"] else f"取れない (HTTP {r['status']})"
+                f.write(f"| {r['name']} | {mark} |\n")
+
+    # 終了コードにも結論を載せる。成功/失敗の色だけで判断できるようにする。
+    # 取れない = 失敗 とみなすのは、ここが「取れるか確かめる」ためだけの
+    # ワークフローで、取れないことが分かった時点で目的を果たしていないため。
+    return 0 if reachable else 1
 
 
 if __name__ == "__main__":

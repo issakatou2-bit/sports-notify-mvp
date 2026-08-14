@@ -12,10 +12,18 @@ name: Soccer daily
 #   欧州の試合は日本時間の21時〜翌6時。20時に出せば、その日の夜の試合の
 #   前に届く。19時(MLB)と21時(現地の声)の間に入れて、通知が固まらない
 #   ようにしている。
-#   GitHubのscheduleは2〜4時間遅れる(実測)ので、cron-job.orgから叩く。
+#
+#   起動はcronを増やさず、19時のMLB日次が終わったのを合図にする。
+#   GitHubのscheduleは2〜4時間遅れるため外部cronが要るが、外部cronを
+#   本数ぶん増やすと、設定する場所も壊れる場所も増える。
+#   公開時刻は --publish-at 20:00 でYouTube側に預けてあるので、
+#   19時台に作り終えていれば20時ちょうどに出る。
 
 on:
   workflow_dispatch: {}
+  workflow_run:
+    workflows: ["Daily notable games"]
+    types: [completed]
 
 permissions:
   contents: write
@@ -27,6 +35,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # 日次が失敗した回で動かしても、そこで取れた材料が無い。
+    # 手動実行(workflow_dispatch)のときは event 名が違うので通す。
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
