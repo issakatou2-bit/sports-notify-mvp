@@ -438,8 +438,44 @@ def record_published(topic: str, video_id: str, privacy: str,
 VIDEOS_PATH = "data/published_videos.json"
 
 
+def resolve_publish_at(spec: str | None) -> str | None:
+    """
+    "17:30" のようなJST時刻を、YouTubeに渡すUTC文字列に直す。
+
+    公開時刻をぴったりにするための仕組み。GitHubのscheduleは2〜4時間
+    遅れるため(実測)、時刻をこちらで守ろうとすると外部cronを本数分だけ
+    立てることになる。代わりに1回の実行でまとめて作り、公開の時刻だけ
+    YouTubeに預ける。
+
+    過ぎた時刻を渡すとAPIが弾く。予約に失敗して非公開のまま埋もれるのが
+    最悪なので、その場合はNoneを返して即時公開に倒す。
+    """
+    if not spec:
+        return None
+    from datetime import datetime, timedelta, timezone
+
+    jst = timezone(timedelta(hours=9))
+    now = datetime.now(jst)
+    try:
+        hh, mm = (int(x) for x in spec.split(":"))
+        when = now.replace(hour=hh, minute=mm, second=0, microsecond=0)
+    except ValueError:
+        print(f"[warn] 公開時刻を読めません: {spec!r} (HH:MM で指定してください)",
+              file=sys.stderr)
+        return None
+
+    # 実行が押した場合。ここで翌日に回すと、その日の成績が翌日に出てしまう。
+    if when <= now + timedelta(minutes=5):
+        print(f"[info] 指定の {spec} は過ぎている(現在 {now:%H:%M})ため、"
+              f"予約せずそのまま公開します")
+        return None
+    print(f"[info] 公開を予約します: {when:%m/%d %H:%M} JST")
+    return when.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def record_video(kind: str, date_key: str, video_id: str,
-                 title: str, path: str = VIDEOS_PATH) -> None:
+                 title: str, path: str = VIDEOS_PATH,
+                 publish_at: str | None = None) -> None:
     """
     その日の動画のIDを残す。
 
@@ -456,12 +492,17 @@ def record_video(kind: str, date_key: str, video_id: str,
             data = json.loads(p.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
             data = {}
-    data.setdefault(kind, {})[date_key] = {
+    entry = {
         "video_id": video_id,
         "url": f"https://youtu.be/{video_id}",
         "title": title,
         "published_at": datetime.now(timezone.utc).isoformat(),
     }
+    # 予約投稿は公開時刻まで非公開のまま。サイトがそれを知らずに並べると、
+    # その間リンクを踏んだ人が見られない動画に当たる。
+    if publish_at:
+        entry["publish_at"] = publish_at
+    data.setdefault(kind, {})[date_key] = entry
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[info] 動画を記録しました: {kind}/{date_key} -> {path}")
@@ -704,6 +745,9 @@ def main():
                         help="記録に使う日付(既定はUTCの実行日)")
     parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
+    parser.add_argument("--publish-at", default=None,
+                        help="JSTの公開時刻 HH:MM。指定すると予約投稿になる。"
+                             "過ぎている場合はそのまま公開する")
     args = parser.parse_args()
 
     video_path = pathlib.Path(args.video)
@@ -783,8 +827,11 @@ def main():
         body = build_metadata(args.games, date_label, args.kind,
                               args.narration, args.archive_dir, morning_players,
                               args.morning_mode)
+    # publishAt は privacyStatus が private のときだけ有効。
+    # public のまま渡すと予約は無視され、その場で公開される。
+    publish_at = resolve_publish_at(args.publish_at)
     body["status"] = {
-        "privacyStatus": args.privacy,
+        "privacyStatus": "private" if publish_at else args.privacy,
         "selfDeclaredMadeForKids": False,
         # 「AIの使用」の申告。ここで問われているのは、実在の人物が実際には
         # していない発言・行動をしているように見せたり、実際の映像を改変したり
@@ -793,6 +840,8 @@ def main():
         # そうした改変は一切していないため false とする。
         "containsSyntheticMedia": False,
     }
+    if publish_at:
+        body["status"]["publishAt"] = publish_at
 
     try:
         youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)
@@ -840,7 +889,8 @@ def main():
             rec_kind = (f"{args.kind}_{args.morning_mode}"
                         if args.kind == "morning" and args.morning_mode != "players"
                         else args.kind)
-            record_video(rec_kind, key, vid, body["snippet"]["title"])
+            record_video(rec_kind, key, vid, body["snippet"]["title"],
+                         publish_at=publish_at)
     except Exception as e:
         # アップロードに失敗しても、通知やサイト更新は既に済んでいるので
         # ワークフロー全体を落とさない

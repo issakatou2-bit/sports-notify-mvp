@@ -160,6 +160,27 @@ def load_published_videos(path: str = "data/published_videos.json") -> dict:
         return {}
 
 
+def is_scheduled(entry: dict) -> bool:
+    """
+    まだ公開時刻が来ていない動画かどうか。
+
+    予約投稿は公開時刻まで非公開のままなので、それを知らずに並べると
+    リンクを踏んだ人が見られない動画に当たる。埋め込まない方がよい。
+    読めない値は、伏せるより出す方に倒す(記録が壊れていても既存の
+    動画が消えないように)。
+    """
+    at = entry.get("publish_at")
+    if not at:
+        return False
+    from datetime import datetime, timezone
+    try:
+        when = datetime.strptime(at, "%Y-%m-%dT%H:%M:%SZ").replace(
+            tzinfo=timezone.utc)
+    except ValueError:
+        return False
+    return when > datetime.now(timezone.utc)
+
+
 HEAD_TMPL = """<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -405,7 +426,7 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     for kind, label in (("daily", "この日の注目試合"),
                         ("morning", "この日の日本人選手の成績")):
         v = (videos.get(kind) or {}).get(archive_date)
-        if v and v.get("video_id"):
+        if v and v.get("video_id") and not is_scheduled(v):
             day_videos.append((label, v))
 
     head = HEAD_TMPL.format(
