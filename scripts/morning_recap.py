@@ -26,7 +26,7 @@ from datetime import date, datetime, timedelta, timezone
 import requests
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-from notability_engine import JP_PLAYERS_MLB  # noqa: E402
+from notability_engine import JP_PLAYERS_MLB, MLB_TEAM_NAME_JP  # noqa: E402
 
 MLB_API_BASE = "https://statsapi.mlb.com/api/v1"
 JST = timezone(timedelta(hours=9))
@@ -101,6 +101,106 @@ def fetch_day_pitching(player_id: str, day: str, season: str):
     return None
 
 
+def _row_from_split(split: dict, group: str):
+    """gameLogの1試合分を、contribution()が読める形に直す。"""
+    s = split.get("stat") or {}
+    if group == "pitching":
+        ip = s.get("inningsPitched")
+        if not ip or _f(ip) <= 0:
+            return None
+        return {
+            "type": "pitcher", "ip": ip,
+            "er": int(_f(s.get("earnedRuns"))),
+            "hits": int(_f(s.get("hits"))),
+            "so": int(_f(s.get("strikeOuts"))),
+            "bb": int(_f(s.get("baseOnBalls"))),
+        }
+    ab = int(_f(s.get("atBats")))
+    pa = int(_f(s.get("plateAppearances"))) or ab
+    if not pa:
+        return None
+    return {
+        "type": "batter", "pa": pa, "ab": ab,
+        "hits": int(_f(s.get("hits"))),
+        "hr": int(_f(s.get("homeRuns"))),
+        "rbi": int(_f(s.get("rbi"))),
+        "runs": int(_f(s.get("runs"))),
+        "so": int(_f(s.get("strikeOuts"))),
+        "bb": int(_f(s.get("baseOnBalls"))),
+    }
+
+
+def fetch_game_log(player_id: str, group: str, season: str) -> list:
+    """その選手の今季の1試合ごとの成績。取れなければ空。"""
+    try:
+        resp = requests.get(
+            f"{MLB_API_BASE}/people/{player_id}/stats",
+            params={"stats": "gameLog", "group": group, "season": season},
+            timeout=25,
+        )
+        resp.raise_for_status()
+    except Exception:
+        return []
+    out = []
+    for st in resp.json().get("stats", []):
+        for split in st.get("splits", []):
+            out.append(split)
+    out.sort(key=lambda s: s.get("date") or "")
+    return out
+
+
+# 直近の平均を取る試合数。7試合だと、打者は約1週間、投手は先発なら
+# 1か月半にあたる。投手の「直近」としては長すぎるので、登板数で分ける。
+RECENT_GAMES_BATTER = 7
+RECENT_GAMES_PITCHER = 3
+
+
+def fetch_context(player_id: str, groups: list, season: str, day: str) -> dict:
+    """
+    その日より前の成績から、前回の点数と直近の平均を出す。
+
+    点数を単独で出しても「良かったのか」が分からない。前回から増えたのか、
+    いつもと比べて高いのかが並んで初めて、数字が意味を持つ。
+
+    recap_history ではなくMLBのgameLogを見る。履歴は溜まるまで使えないし、
+    実際に溜まっていなかった期間がある。原簿から引く方が確実で、
+    シーズン途中から始めても過去に遡れる。
+
+    二刀流は投打の両方を渡す。その日の点数は両方の合計なので、
+    比べる相手も同じ日付で合算していないと、増減が嘘になる。
+    """
+    per_date: dict = {}
+    team = None
+    for group in groups:
+        log = fetch_game_log(player_id, group, season)
+        if not log:
+            continue
+        # 所属は最新の試合のもの。移籍した選手は移籍後の球団になる。
+        # 名前ではなくIDで持つ。表記揺れで引けなくなるのを避けるため。
+        team = team or (log[-1].get("team") or {}).get("id")
+        for s in log:
+            d = s.get("date") or ""
+            if not d or d >= day:
+                continue
+            row = _row_from_split(s, group)
+            if row:
+                per_date[d] = per_date.get(d, 0) + contribution(row)
+
+    if not per_date:
+        return {"team": team} if team else {}
+
+    scored = sorted(per_date.items())
+    n = RECENT_GAMES_PITCHER if "pitching" in groups else RECENT_GAMES_BATTER
+    recent = scored[-n:]
+    return {
+        "team": team,
+        "prev_score": scored[-1][1],
+        "prev_date": scored[-1][0],
+        "avg_score": round(sum(v for _, v in recent) / len(recent)),
+        "avg_games": len(recent),
+    }
+
+
 def headline(row: dict) -> str:
     """1行の見出し。数字をそのまま並べるだけで、評価はしない。"""
     if row["type"] == "pitcher":
@@ -167,6 +267,27 @@ def build(day: str = None, season: str = None) -> dict:
 
         rows.append({"name": p["name_jp"], "name_en": p["name_en"],
                      "player_id": pid, **row})
+
+    # 前回・直近と比べる材料と、所属を足す。
+    # 「62点」だけでは高いのか低いのか分からないが、「前回44点」が
+    # 隣にあれば伸びが見える。所属は、名前を知らない選手が出た日に
+    # どのチームの話なのかを伝える。
+    for r in rows:
+        groups = (["pitching", "hitting"] if r["type"] == "two_way"
+                  else ["pitching"] if r["type"] == "pitcher"
+                  else ["hitting"])
+        try:
+            ctx = fetch_context(r["player_id"], groups, season, target)
+        except Exception as e:  # noqa: BLE001
+            print(f"[warn] {r['name']} の過去成績を取れません: {e}",
+                  file=sys.stderr)
+            continue
+        if ctx.get("team"):
+            r["team_id"] = str(ctx["team"])
+            r["team_jp"] = MLB_TEAM_NAME_JP.get(r["team_id"], "")
+        for k in ("prev_score", "prev_date", "avg_score", "avg_games"):
+            if ctx.get(k) is not None:
+                r[k] = ctx[k]
 
     # 打点が「どういう場面で入ったか」を足す。
     # 同じ3ランでも逆転と大差では試合への効き方が違うのに、

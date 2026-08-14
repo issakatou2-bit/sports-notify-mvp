@@ -53,6 +53,10 @@ DIM = (136, 145, 163)
 ACCENT = (255, 176, 32)
 ACCENT_DIM = (74, 58, 26)
 JP = (73, 197, 182)
+# 前回との増減。上げは既存の緑、下げは背景から浮きすぎない赤にする。
+# 落ちた日を責める画面にはしたくないので、彩度は抑える。
+UP = (110, 205, 150)
+DOWN = (200, 120, 120)
 
 FONT_CANDIDATES = [
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
@@ -531,12 +535,45 @@ def render_list(p, players, start, count):
             d.text((W - 108 - dx, y + 48), "点", font=font(30),
                    fill=col if big else DIM)
 
+            # 点数だけでは高いのか低いのか伝わらない。前回と並べて初めて
+            # 「伸びた」「落ちた」が読める。投手は前回登板、打者は前試合。
+            # 主役は今日の数字なので、こちらは小さく暗く置く。
+            prev = pl.get("prev_score")
+            if prev is not None:
+                diff = score - prev
+                mark = "▲" if diff > 0 else ("▼" if diff < 0 else "±")
+                sub = f"前回{prev} {mark}{abs(diff)}"
+                dc = UP if diff > 0 else (DOWN if diff < 0 else DIM)
+                sw2 = d.textlength(sub, font=font(28))
+                d.text((W - 108 - dx - sw2, y + 96), sub,
+                       font=font(28), fill=dc)
+
+            # 直近の平均。1試合の上下ではなく、いまの調子そのもの。
+            avg = pl.get("avg_score")
+            if avg is not None:
+                n = pl.get("avg_games", 0)
+                unit = "登板" if pl.get("type") == "pitcher" else "試合"
+                sub2 = f"直近{n}{unit} 平均{avg}"
+                sw3 = d.textlength(sub2, font=font(26))
+                d.text((W - 108 - dx - sw3, y + 132), sub2,
+                       font=font(26), fill=DIM)
+
         head = pl.get("headline", "")
-        s = fit(d, head, W - 300, (48, 44, 40, 36))
+        # 右に前回・直近を置いた分だけ、成績の使える幅が狭くなる。
+        # 詰めずに書くと重なって両方読めなくなる。
+        right_used = pl.get("prev_score") is not None or \
+            pl.get("avg_score") is not None
+        s = fit(d, head, (W - 560) if right_used else (W - 300),
+                (48, 44, 40, 36))
         d.text((180 - dx, y + 118), head, font=font(s), fill=TEXT)
 
         # 場面(逆転・勝ち越し・同点)。点数がなぜ高いのかの説明になる。
         role = {"pitcher": "投手", "two_way": "投打"}.get(kind, "打者")
+        # 所属も添える。名前を知らない選手が出た日に、どのチームの話なのかが
+        # 分からないままになる。小さく置いて、成績の邪魔はしない。
+        team = pl.get("team_jp")
+        if team:
+            role = f"{role}・{team}"
         d.text((180 - dx, y + 180), role, font=font(30), fill=DIM)
         clutch_label = pl.get("clutch_label")
         if clutch_label:
