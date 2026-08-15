@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-15T07:01:26.488627+00:00",
+  "updated_at": "2026-08-15T07:34:47.122060+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,16 +13,16 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 4
-    },
-    {
       "team_id": "141",
       "name": "ブルージェイズ",
       "name_en": "Toronto Blue Jays",
       "mentions": 4
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 3
     },
     {
       "team_id": "119",
@@ -31,15 +31,15 @@
       "mentions": 3
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 3
-    },
-    {
       "team_id": "116",
       "name": "タイガース",
       "name_en": "Detroit Tigers",
+      "mentions": 2
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
       "mentions": 2
     },
     {
@@ -73,10 +73,6 @@
     {
       "name": "村上宗隆",
       "mentions": 2
-    },
-    {
-      "name": "千賀滉大",
-      "mentions": 1
     }
   ]
 }
