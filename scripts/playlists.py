@@ -40,7 +40,8 @@ TOKEN_URI = "https://oauth2.googleapis.com/token"
 # 再生リストの作成・追加には youtube スコープが要る。
 # ここでは記録のために置いてあるだけで、更新要求には渡さない
 # (渡すと invalid_scope になる。理由は client() のコメント)。
-SCOPES = ["https://www.googleapis.com/auth/youtube"]
+NEEDED = "https://www.googleapis.com/auth/youtube"
+SCOPES = [NEEDED]
 
 VIDEOS_PATH = "data/published_videos.json"
 STORE = "data/playlists.json"
@@ -85,7 +86,40 @@ def client():
     # 権限はトークン側にあるので、こちらから指定する必要は無い。
     creds = Credentials(None, refresh_token=token, token_uri=TOKEN_URI,
                         client_id=cid, client_secret=secret)
+    print(f"[info] トークン: ...{token[-8:]}")
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
+
+
+def creds_of(yt):
+    """build() した後から資格情報を取り出す。"""
+    return getattr(getattr(yt, '_http', None), 'credentials', None)
+
+
+def granted_scopes(creds) -> list:
+    """
+    いま使っているトークンが実際に持っている権限を、Googleに聞く。
+
+    権限が足りないときに「取り直してください」とだけ出しても、
+    取り直したのに直らない場合に何も分からない。実際、取り直した後も
+    Secretsが古いままで同じエラーが出た。何が入っているかを見せる。
+    """
+    import urllib.error
+    import urllib.request
+
+    if creds is None:
+        return []
+    try:
+        from google.auth.transport.requests import Request
+        if not creds.token:
+            creds.refresh(Request())
+        with urllib.request.urlopen(
+                "https://oauth2.googleapis.com/tokeninfo"
+                f"?access_token={creds.token}", timeout=20) as r:
+            return (json.load(r).get("scope") or "").split()
+    except Exception as e:  # noqa: BLE001
+        # ここが分からなくても本題(権限不足)は伝わるので、握って続ける。
+        print(f"[warn] 権限の確認に失敗しました: {e}")
+        return []
 
 
 def load_store() -> dict:
@@ -263,11 +297,24 @@ def main() -> int:
     except HttpError as e:
         # スコープが足りない場合はここに来る。何が要るのかを出す。
         if "insufficientPermissions" in str(e) or e.resp.status == 403:
-            print("[error] 権限が足りません。再生リストの操作には "
-                  "youtube スコープが要ります")
-            print("       scripts/get_youtube_token.py の SCOPES に")
-            print("       https://www.googleapis.com/auth/youtube を足して")
-            print("       トークンを取り直してください")
+            print()
+            print("[error] 権限が足りません。")
+            have = granted_scopes(creds_of(yt))
+            if have:
+                print("       いま使われているトークンが持っている権限:")
+                for sc in have:
+                    print(f"         {sc}")
+                if NEEDED not in have:
+                    print()
+                    print(f"       {NEEDED} がありません。")
+                    print("       取り直したのにこう出る場合は、GitHub Secrets の")
+                    print("       YOUTUBE_REFRESH_TOKEN がまだ古い値のままです。")
+            else:
+                print("       トークンの権限を確認できませんでした。")
+            print()
+            print("       取り直しは次のコマンドです:")
+            print("         py -3 scripts/youtube_auth.py \\")
+            print("           --client-secret path/to/client_secret.json")
             return 1
         raise
 
