@@ -60,6 +60,10 @@ JP = (73, 197, 182)
 UP = (110, 205, 150)
 DOWN = (200, 120, 120)
 
+# 現地の声の調子。褒めているのか怒っているのかで、同じ一言の
+# 意味が変わる。中立には色を付けない(付けると3色が並んで散らかる)。
+TONE_COLOR = {"称賛": (110, 205, 150), "批判": (200, 120, 120)}
+
 FONT_CANDIDATES = [
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
@@ -883,7 +887,7 @@ def render_voices(p, voices):
     items = voices.get("voices") or []
     d.text((70, 70), "コレスポ", font=font(46), fill=JP)
     d.text((70, 190), "現地の声", font=font(72), fill=JP)
-    d.text((74, 278), f"{voices.get('source', '')} の投稿を翻訳",
+    d.text((74, 278), f"{voices.get('source', '')}を翻訳",
            font=font(32), fill=DIM)
 
     y = 380
@@ -897,7 +901,21 @@ def render_voices(p, voices):
         lines = wrap(d, ja, font(42), W - 220)[:3]
         h = 60 + len(lines) * 58 + 46
         d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + h], 20, fill=(31, 26, 42))
-        d.text((100 - dx, y + 18), "❝", font=font(44), fill=JP)
+        # ❝(U+275D)はNoto Sans CJKに無く、豆腐(□)になる。
+        # 確実に持っている鉤括弧を使う。
+        d.text((100 - dx, y + 14), "「", font=font(44), fill=JP)
+
+        # 称賛か批判かを添える。同じ一言でも、褒めているのか怒っているのかで
+        # 意味が変わる。訳文だけだと、どちらとも取れる書き方が残る。
+        tone = v.get("tone")
+        if tone in TONE_COLOR:
+            tw = d.textlength(tone, font=font(28)) + 34
+            d.rounded_rectangle([W - 60 - dx - tw - 34, y + 22,
+                                 W - 60 - dx - 34, y + 68],
+                                12, fill=TONE_COLOR[tone])
+            d.text((W - 60 - dx - tw - 17, y + 30), tone,
+                   font=font(28), fill=BG)
+
         yy = y + 66
         for line in lines:
             d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
@@ -905,6 +923,11 @@ def render_voices(p, voices):
         # 原文の一部を小さく添える。訳が気になる人が確かめられるように
         src = (v.get("title") or "")[:38]
         d.text((100 - dx, yy + 4), src, font=font(24), fill=DIM)
+        # どれだけ賛同されたかは、その一言の重みそのもの。
+        likes = v.get("likes")
+        if likes:
+            d.text((W - 100 - dx - d.textlength(f"♥ {likes:,}", font=font(26)),
+                    yy + 2), f"♥ {likes:,}", font=font(26), fill=JP)
         y += h + 26
 
     d.text((70, H - 250), "※現地の投稿を翻訳したものです", font=font(30), fill=DIM)

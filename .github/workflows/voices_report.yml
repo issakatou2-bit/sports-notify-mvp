@@ -1,0 +1,39 @@
+name: Voices report
+
+# 公式ハイライトのコメントが実際どう付いているのかを見る。
+#
+# 動画に載るのは訳した数件だけなので、いいねがどれくらい付くのか、
+# 賛否がどちらに寄るのかが分からないまま使うことになる。
+# 手元からはYouTubeの鍵を使えないので、ここで取って実行ページに出す。
+#
+# 何も投稿しない。取って表示するだけ。
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      # 動画IDを取り直す。リポジトリにあるものは前回の回のままなので、
+      # 古い試合のコメントを見ることになる。
+      - name: Refresh highlight list
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python scripts/mlb_buzz.py --out data/mlb_buzz.json
+
+      - name: Report
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/local_voices.py --report --limit 6

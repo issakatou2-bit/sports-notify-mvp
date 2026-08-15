@@ -100,9 +100,11 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
         try:
             r = requests.get(
                 "https://www.googleapis.com/youtube/v3/commentThreads",
-                params={"part": "snippet", "videoId": vid, "key": api_key,
-                        "order": "relevance", "maxResults": per_video,
-                        "textFormat": "plainText"},
+                # replies も取る。賛否が割れたコメントは返信が伸びるので、
+                # 「どれだけ受けたか」を見るのに件数が効く。
+                params={"part": "snippet,replies", "videoId": vid,
+                        "key": api_key, "order": "relevance",
+                        "maxResults": per_video, "textFormat": "plainText"},
                 timeout=25)
             if r.status_code == 403:
                 print(f"[info] {vid}: コメントが取れません(無効化されている可能性)")
@@ -120,10 +122,18 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
             # 短すぎるものは訳しても中身が無い。長すぎるものは読み上げに載らない。
             if not (12 <= len(text) <= 220):
                 continue
+            replies = [
+                (rc.get("snippet") or {}).get("textOriginal", "").strip()
+                for rc in ((item.get("replies") or {}).get("comments") or [])
+            ]
             out.append({
                 "title": " ".join(text.split()),
                 "url": f"https://www.youtube.com/watch?v={vid}",
                 "likes": int(c.get("likeCount") or 0),
+                "replies": int((item.get("snippet") or {})
+                               .get("totalReplyCount") or 0),
+                "reply_texts": [" ".join(x.split()) for x in replies if x][:2],
+                "author": c.get("authorDisplayName", ""),
                 "source": "MLB公式ハイライトのコメント",
                 "matchup": v.get("matchup") or v.get("title", "")[:40],
             })
@@ -169,12 +179,17 @@ def translate(client, items: list) -> list:
     1回のやり取りで全件を訳させる。
     """
     numbered = "\n".join(f"{i + 1}. {it['title']}" for i, it in enumerate(items))
+    # 訳と同時に、その一言が肯定寄りか否定寄りかも付けてもらう。
+    # 別々に呼ぶと回数が倍になるうえ、訳文と判定が違う読み方で付く。
     prompt = (
-        "以下は、アメリカの野球ファンが集まる掲示板 r/baseball に"
-        "投稿された見出しです。日本語に訳してください。\n\n"
+        "以下は、アメリカの野球ファンが書いた短い書き込みです。"
+        "日本語に訳し、書き手の調子を判定してください。\n\n"
         f"{numbered}\n\n"
         "条件:\n"
-        "- 1行につき1件、「番号. 訳文」の形式だけを出力する\n"
+        "- 1行につき1件、「番号|調子|訳文」の形式だけを出力する\n"
+        "- 調子は 称賛 / 批判 / 中立 のいずれか1つ\n"
+        "  称賛=選手やプレーを褒めている、批判=不満や非難、"
+        "中立=事実の指摘や質問\n"
         "- 意訳しすぎず、元の言い回しの雰囲気を残す\n"
         "- スラングや略語は、日本語として自然な範囲で分かるように訳す\n"
         "- 訳せない固有名詞(選手名・球団名)は英語のまま残してよい\n"
@@ -192,15 +207,24 @@ def translate(client, items: list) -> list:
 
     translated = {}
     for line in text.splitlines():
-        m = re.match(r"\s*(\d+)[.、]\s*(.+)", line.strip())
+        line = line.strip()
+        m = re.match(r"(\d+)\s*[|｜]\s*(\S+?)\s*[|｜]\s*(.+)", line)
         if m:
-            translated[int(m.group(1))] = m.group(2).strip()
+            translated[int(m.group(1))] = (m.group(2), m.group(3).strip())
+            continue
+        # 調子を付け忘れた行も拾う。訳文だけでも動画には使える。
+        m = re.match(r"(\d+)[.、]\s*(.+)", line)
+        if m:
+            translated[int(m.group(1))] = ("中立", m.group(2).strip())
 
     out = []
     for i, it in enumerate(items, 1):
-        ja = translated.get(i)
-        if ja:
-            out.append({**it, "ja": ja})
+        got = translated.get(i)
+        if got:
+            tone, ja = got
+            out.append({**it, "ja": ja,
+                        "tone": tone if tone in ("称賛", "批判", "中立")
+                        else "中立"})
     return out
 
 
@@ -259,11 +283,75 @@ def load(path: str = "data/local_voices.json", max_age_hours: int = 30) -> dict:
     return data
 
 
+def report(raw: list, voices: list) -> str:
+    """
+    集めたコメントの素の姿を書き出す。
+
+    動画に載るのは訳した数件だけなので、そもそもどれくらいの反応が
+    付いているのか、賛否はどちらに寄っているのかが分からない。
+    採用したものだけでなく、拾った全体の分布を出す。
+    """
+    if not raw:
+        return "コメントは取れませんでした。"
+    likes = sorted((c.get("likes", 0) for c in raw), reverse=True)
+    replies = sum(c.get("replies", 0) for c in raw)
+    tones = {}
+    for v in voices:
+        tones[v.get("tone", "中立")] = tones.get(v.get("tone", "中立"), 0) + 1
+
+    lines = [
+        "## 公式ハイライトのコメント", "",
+        f"- 拾った件数: **{len(likes)}件**",
+        f"- いいね 最大: **{likes[0]:,}** / 中央値: **{likes[len(likes) // 2]:,}**"
+        f" / 平均: **{sum(likes) / len(likes):.0f}**",
+        f"- いいね0件: {sum(1 for x in likes if x == 0)}件",
+        f"- 返信の合計: {replies}件", "",
+        "### 訳したもの", "",
+        "| 調子 | いいね | 返信 | 訳 | 原文 |", "|---|---:|---:|---|---|",
+    ]
+    for v in voices:
+        lines.append(
+            f"| {v.get('tone', '?')} | {v.get('likes', 0):,} |"
+            f" {v.get('replies', 0)} | {v.get('ja', '')[:44]} |"
+            f" {v.get('title', '')[:44]} |")
+    if tones:
+        lines += ["", "調子の内訳: "
+                  + " / ".join(f"{k} {n}件" for k, n in tones.items())]
+
+    lines += ["", "### いいねの多い順(上位10件・原文)", ""]
+    for c in raw[:10]:
+        lines.append(f"- **{c.get('likes', 0):,}** いいね"
+                     f"（返信{c.get('replies', 0)}）… {c.get('title', '')[:96]}")
+        for rt in c.get("reply_texts", [])[:1]:
+            lines.append(f"    - 返信: {rt[:80]}")
+    return "\n".join(lines)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", default="data/local_voices.json")
     parser.add_argument("--limit", type=int, default=MAX_VOICES)
+    parser.add_argument("--report", action="store_true",
+                        help="集めたコメントの分布を実行ページへ書き出す")
     args = parser.parse_args()
+
+    if args.report:
+        raw = fetch_youtube_comments()
+        voices = []
+        key = os.environ.get("ANTHROPIC_API_KEY")
+        if raw and key and anthropic is not None:
+            try:
+                voices = translate(anthropic.Anthropic(api_key=key),
+                                   raw[:args.limit])
+            except Exception as e:  # noqa: BLE001
+                print(f"[warn] 翻訳に失敗: {e}", file=sys.stderr)
+        text = report(raw, voices)
+        print(text)
+        summary = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary:
+            with open(summary, "a", encoding="utf-8") as f:
+                f.write(text + "\n")
+        return
 
     data = build(limit=args.limit)
     if not data:
