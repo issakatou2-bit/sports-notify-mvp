@@ -452,9 +452,12 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # アウトロは「何をしているか」の説明で終わっていた。
         # 次に何があるかを言い、登録を促す形に変える。
         # 登録が増えないと、毎日出しても毎日ゼロから始まる。
-        "text": "今夜7時には、明日の注目試合を理由つきで出します。"
-                # 「方」は「ほう」と読まれる。読み上げ用の原稿なので仮名で書く。
-        "見逃したくないかたは、チャンネル登録をお願いします。",
+        # 時刻を1つ挙げるより、毎日何が届くのかを言う。
+        # 「方」は「ほう」と読まれるので仮名で書く。
+        "text": "コレスポでは、日本人選手の成績、現地での注目度、"
+                "明日の注目試合、欧州サッカー、現地メディアの声を"
+                "毎日お届けしています。"
+                "見逃したくないかたは、チャンネル登録をお願いします。",
         "meta": {},
     })
     return {"label": day, "segments": segments}
@@ -910,19 +913,45 @@ def render_voices(p, voices):
     return im
 
 
+# 毎日出しているものの一覧。アウトロで順に出す。
+#
+# 以前は「毎日19時」とだけ書いていたが、いまは5本体制で19時はそのうちの
+# 1本にすぎない。何が毎日届くのかが分からないままでは、登録する理由に
+# ならない。時刻ではなく中身を並べる。
+DAILY_LINEUP = [
+    ("日本人選手の成績", "誰がいちばん効いたか"),
+    ("現地での注目度", "向こうで何が見られたか"),
+    ("明日の注目試合", "なぜ注目なのか"),
+    ("欧州サッカー", "その夜の注目カード"),
+    ("現地メディアの声", "番記者と見出しを翻訳"),
+]
+
+
 def render_outro(p):
     im, d = base(p)
-    d.text((80, 620), "コレスポ", font=font(120), fill=ACCENT)
-    d.text((80, 780), "毎日19時", font=font(76), fill=TEXT)
-    if p > 0.10:
-        d.text((80, 880), "その日の注目試合を", font=font(50), fill=TEXT)
-        d.text((80, 950), "「なぜ注目か」の理由つきで", font=font(50), fill=TEXT)
-    if p > 0.20:
-        d.rounded_rectangle([70, 1060, W - 70, 1170], 18, fill=ACCENT)
-        d.text((110, 1088), "チャンネル登録で毎日届きます", font=font(46), fill=BG)
-    d.text((80, 1220), "collespo.com", font=font(46), fill=TEXT)
-    d.text((80, 1340), "音声: VOICEVOX:ずんだもん", font=font(38), fill=DIM)
-    d.text((80, 1400), "データ: MLB Stats API", font=font(38), fill=DIM)
+    d.text((80, 300), "コレスポ", font=font(104), fill=ACCENT)
+    d.text((80, 430), "毎日、更新中", font=font(64), fill=TEXT)
+
+    # 1行ずつ滑り込ませる。全部を一度に出すと、ただの箇条書きに見える。
+    y = 540
+    for i, (title, note) in enumerate(DAILY_LINEUP):
+        appear = 0.08 + i * 0.09
+        if p < appear:
+            continue
+        e = ease_out(min(1.0, (p - appear) * 7))
+        dx = int((1 - e) * 90)
+        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 150], 16, fill=SURF)
+        d.text((104 - dx, y + 22), title, font=font(52), fill=TEXT)
+        d.text((104 - dx, y + 92), note, font=font(38), fill=DIM)
+        y += 166
+
+    if p > 0.62:
+        d.rounded_rectangle([70, 1610, W - 70, 1720], 18, fill=ACCENT)
+        d.text((110, 1638), "チャンネル登録で毎日届きます", font=font(46), fill=BG)
+    d.text((80, 1760), "collespo.com", font=font(42), fill=TEXT)
+    # 出典はいちばん下に置く。一覧と重ならない位置。
+    d.text((80, 1500), "音声: VOICEVOX:ずんだもん", font=font(34), fill=DIM)
+    d.text((80, 1550), "データ: MLB Stats API", font=font(34), fill=DIM)
     return im
 
 

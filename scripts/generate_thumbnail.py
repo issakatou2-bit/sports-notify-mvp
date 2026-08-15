@@ -36,6 +36,13 @@ from PIL import Image, ImageDraw, ImageFont
 # YouTube推奨サイズ。2MB以内に収める必要がある(PNGでも十分収まる)
 W, H = 1280, 720
 
+# ショートのサムネイルは9:16でないと受け付けられない。
+#
+# ここは16:9の座標で描いているので、縦に伸ばすと下半分が空く。
+# 縦向きは動画の1枚目をそのまま使う(scripts/shorts_thumbnail.sh)。
+# 同じ絵を2か所で作り直すより、既にある1枚目を取り出す方が確実で、
+# 動画とサムネイルが必ず一致する。
+
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
 TEXT = (242, 240, 230)
@@ -317,7 +324,8 @@ def main():
     out.parent.mkdir(parents=True, exist_ok=True)
     im.save(out, optimize=True)
     kb = out.stat().st_size / 1024
-    print(f"[info] サムネイルを生成しました: {out} ({W}×{H}, {kb:.0f}KB)")
+    print(f"[info] サムネイルを生成しました: {out} "
+          f"({im.width}×{im.height}, {kb:.0f}KB)")
     if kb > 2048:
         print("::warning title=サムネイルが大きすぎる::"
               "YouTubeの上限は2MBです")

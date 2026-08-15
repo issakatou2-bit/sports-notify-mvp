@@ -359,6 +359,23 @@ ASSET_META = {
 }
 
 
+# 毎日出しているものの一覧。説明文の下部に置く。
+#
+# 「毎日19時ごろ、その日の注目試合を」とだけ書いていたが、いまは5本ある。
+# 時刻を1つ挙げるより、毎日何が届くのかを並べる方が登録の理由になる。
+# 時刻を書かないのは、増減や入れ替えのたびに全動画の説明文が
+# 過去のものまで嘘になるため。
+DAILY_LINEUP_LINES = [
+    "コレスポは毎日、次を自動でお届けしています。",
+    "",
+    "・日本人選手の成績 … 誰がその日いちばん効いたか",
+    "・現地での注目度 … 向こうで何が見られ、語られたか",
+    "・明日の注目試合 … なぜ注目なのかの理由つき",
+    "・欧州サッカー … その夜の注目カード",
+    "・現地メディアの声 … 番記者の投稿と見出しを翻訳",
+]
+
+
 def build_asset_metadata(topic: str) -> dict:
     meta = ASSET_META.get(topic)
     if not meta:
@@ -368,13 +385,12 @@ def build_asset_metadata(topic: str) -> dict:
         "",
         "#Shorts",
         "",
-        "コレスポでは毎日19時に、その日の注目試合を"
-        "「なぜ注目なのか」の理由つきでお届けしています。",
+        *DAILY_LINEUP_LINES,
+        "",
         "サイト: https://collespo.com/",
         "",
         "―――",
         "音声: VOICEVOX:ずんだもん",
-        "データ: MLB Stats API",
     ]
     return {
         "snippet": {
@@ -741,15 +757,17 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     lines += [
         "#Shorts" if kind != "weekly" else "",
         "",
-        "毎日19時ごろ、その日の注目試合をお届けしています。",
+        *DAILY_LINEUP_LINES,
+        "",
         "サイト: https://collespo.com/",
         "",
-        "※試合データはMLB公式のデータをもとに自動生成しています。",
+        "※試合データは公式のデータをもとに自動生成しています。",
         "※放送予定は変更される場合があります。各配信サービスで最新情報をご確認ください。",
         "",
         "―――",
         "音声: VOICEVOX:ずんだもん",
-        "データ: MLB Stats API",
+        # 出典は競技で変わる。サッカーの動画にMLBのAPI名が出ていては嘘になる。
+        SPORTS.get(sport, SPORTS["mlb"])["source"],
     ]
 
     tags = list(SPORTS.get(sport, SPORTS["mlb"])["tags"])
