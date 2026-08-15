@@ -25,6 +25,7 @@
 """
 
 import json
+import pathlib
 import argparse
 import time
 import unicodedata
@@ -562,8 +563,69 @@ def rule_soccer_table(game: Game, standings: dict) -> list[Reason]:
     return reasons
 
 
+def _last_season_ranks(path: str = "data/soccer_preview.json") -> dict:
+    """
+    昨季の最終順位。クラブ名の正規化キーで引けるようにして返す。
+
+    開幕直後は今季の順位表が全チーム横並びで、順位のルールが何も返さない。
+    実際、ラ・リーガ開幕日の2試合はどちらも0点になり、動画が作られなかった。
+    昨季の順位は soccer_preview.py が既に取っているので、それを使う。
+    """
+    global _LAST_SEASON_CACHE
+    if _LAST_SEASON_CACHE is not None:
+        return _LAST_SEASON_CACHE
+    ranks: dict = {}
+    try:
+        data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as e:
+        # 握り潰さない。ここが空だと開幕直後に全試合0点になるが、
+        # 静かに0件を返すと「試合が地味だった」のと見分けが付かない。
+        print(f"[warn] {path} を読めませんでした: {e}")
+        _LAST_SEASON_CACHE = ranks
+        return ranks
+    for comp in data.get("competitions", []):
+        for row in comp.get("last_season", []):
+            team, pos = row.get("team"), row.get("position")
+            if team and pos:
+                ranks[normalize_club(team)] = int(pos)
+    _LAST_SEASON_CACHE = ranks
+    return ranks
+
+
+_LAST_SEASON_CACHE = None
+
+
+def rule_soccer_last_season(game: Game) -> list[Reason]:
+    """
+    昨季の順位。今季の順位が意味を持つまでの数節を、これで埋める。
+
+    今季の順位が付いている時期には rule_soccer_table の方が実態に近いので、
+    こちらは上位同士のときだけ、控えめな重みで足す。
+    """
+    ranks = _last_season_ranks()
+    if not ranks:
+        return []
+    hr = ranks.get(_club_key(game.home_team_name, ranks) or "")
+    ar = ranks.get(_club_key(game.away_team_name, ranks) or "")
+    if not (hr and ar):
+        return []
+    worst = max(hr, ar)
+    if worst <= 6:
+        # 単独で注目扱いになる重み。MLBの「日本人投手が先発」に相当する。
+        # 開幕直後はこれ以外に 材料 が無く、重み2だと閾値3に届かず、
+        # 昨季3位と5位の対戦が対象外になっていた。
+        return [Reason(tag="quality",
+                       text=(f"昨季{hr}位の{club_name_jp(game.home_team_name)}と"
+                             f"{ar}位の{club_name_jp(game.away_team_name)}"),
+                       weight=3)]
+    if worst <= 10:
+        return [Reason(tag="quality",
+                       text=f"昨季{hr}位と{ar}位の対戦", weight=1)]
+    return []
+
+
 SOCCER_GAME_RULES = [rule_soccer_japanese_player, rule_soccer_marquee,
-                     rule_soccer_derby]
+                     rule_soccer_derby, rule_soccer_last_season]
 SOCCER_STANDINGS_RULES = [rule_soccer_table]
 
 STANDINGS_RULES = [rule_division_race, rule_quality_matchup, rule_win_streak]
