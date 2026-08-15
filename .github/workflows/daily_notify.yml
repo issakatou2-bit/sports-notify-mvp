@@ -337,6 +337,17 @@ jobs:
             --video build/video/collespo_short.mp4 \
             --kind daily
 
+      # 種類ごとの再生リストへ入れる。ショートを見た人に
+      # 「毎日ここに増えている」を見せるための導線。
+      # youtube スコープが要るので、取り直すまでは何もせず終わる。
+      - name: Add to playlists
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/playlists.py --sync
+
       # 動画IDは翌日以降のアーカイブページから参照する。
       # コミットしないと記録が毎回消えてしまう。
       - name: Commit video record

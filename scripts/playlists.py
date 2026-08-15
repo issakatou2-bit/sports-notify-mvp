@@ -1,0 +1,194 @@
+#!/usr/bin/env python3
+"""
+投稿した動画を、種類ごとの再生リストへ入れる。
+
+なぜ要るのか:
+  ショートの視聴からチャンネル登録に至る割合は、一般に0.3〜0.8%とされる。
+  コレスポは28日で3,712回の視聴に対して登録+2人、つまり0.054%で、
+  下限のさらに6分の1しかない。
+
+  ショートを見た人は「次々に流す」状態にあり、その場では登録しない。
+  そこから残ってもらうために名前が挙がるのが再生リストで、
+  「この人は同じものを毎日出している」が一覧で見えることが効く。
+  53本がバラバラに並んでいるだけの状態では、それが伝わらない。
+
+必要な権限:
+  再生リストの操作には youtube スコープが要る。投稿だけの
+  youtube.upload では足りないので、取り直しが必要になる。
+  取り直していない場合はこのスクリプトは何もせずに終わる。
+
+使い方:
+  python3 scripts/playlists.py --sync
+  python3 scripts/playlists.py --add VIDEO_ID --kind morning
+"""
+
+import argparse
+import json
+import os
+import pathlib
+import sys
+
+try:
+    from google.oauth2.credentials import Credentials
+    from googleapiclient.discovery import build
+    from googleapiclient.errors import HttpError
+except ImportError:
+    print("[warn] Google APIライブラリが無いためスキップします")
+    sys.exit(0)
+
+TOKEN_URI = "https://oauth2.googleapis.com/token"
+# 再生リストの作成・追加には youtube スコープが要る。
+SCOPES = ["https://www.googleapis.com/auth/youtube"]
+
+VIDEOS_PATH = "data/published_videos.json"
+STORE = "data/playlists.json"
+
+# 種類ごとの再生リスト。説明は「毎日ここに増える」ことが伝わる書き方にする。
+PLAYLISTS = {
+    "morning": (
+        "日本人選手の成績｜毎日更新",
+        "MLBの日本人選手が、その日どれだけ効いたかを勝利貢献スコア順に。"
+        "毎日16時30分に追加しています。計算方法は https://collespo.com/score.html"),
+    "morning_local": (
+        "現地での注目度｜毎日更新",
+        "現地でどの試合が見られ、どのチームが語られたかを数字で。毎日18時に追加しています。"),
+    "morning_press": (
+        "現地メディアの声｜毎日更新",
+        "現地の番記者の投稿と見出しを翻訳して紹介します。毎日21時に追加しています。"),
+    "daily": (
+        "明日の注目試合（MLB）｜毎日更新",
+        "翌日のMLBから3試合を、なぜ注目なのかの理由つきで。毎日19時に追加しています。"),
+    "daily_soccer": (
+        "今夜の注目試合（欧州サッカー）｜毎日更新",
+        "その夜の欧州5大リーグとCLから、注目カードを理由つきで。毎日20時に追加しています。"),
+    "weekly": (
+        "週間まとめと答え合わせ",
+        "1週間の振り返りと、注目試合に選んだカードが実際どうなったかの確認。毎週日曜。"),
+    "asset": (
+        "はじめての人へ｜用語と仕組み",
+        "日付に関係なく使える解説。順位表の読み方、指標の意味、球場の特徴など。"),
+}
+
+
+def client():
+    cid = os.environ.get("YOUTUBE_CLIENT_ID")
+    secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
+    token = os.environ.get("YOUTUBE_REFRESH_TOKEN")
+    if not (cid and secret and token):
+        print("[info] YouTube認証情報が未設定のためスキップします")
+        return None
+    creds = Credentials(None, refresh_token=token, token_uri=TOKEN_URI,
+                        client_id=cid, client_secret=secret, scopes=SCOPES)
+    return build("youtube", "v3", credentials=creds, cache_discovery=False)
+
+
+def load_store() -> dict:
+    p = pathlib.Path(STORE)
+    if not p.exists():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def save_store(data: dict) -> None:
+    p = pathlib.Path(STORE)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def ensure_playlist(yt, store: dict, kind: str) -> str:
+    """その種類の再生リストIDを返す。無ければ作る。"""
+    if store.get(kind, {}).get("id"):
+        return store[kind]["id"]
+    title, desc = PLAYLISTS[kind]
+    res = yt.playlists().insert(
+        part="snippet,status",
+        body={"snippet": {"title": title, "description": desc,
+                          "defaultLanguage": "ja"},
+              "status": {"privacyStatus": "public"}}).execute()
+    pid = res["id"]
+    store[kind] = {"id": pid, "title": title, "videos": []}
+    print(f"[info] 再生リストを作りました: {title} ({pid})")
+    return pid
+
+
+def add_video(yt, store: dict, kind: str, video_id: str) -> bool:
+    if kind not in PLAYLISTS:
+        print(f"[info] {kind} に対応する再生リストはありません")
+        return False
+    pid = ensure_playlist(yt, store, kind)
+    if video_id in store[kind].get("videos", []):
+        return False
+    try:
+        yt.playlistItems().insert(
+            part="snippet",
+            body={"snippet": {"playlistId": pid,
+                              "resourceId": {"kind": "youtube#video",
+                                             "videoId": video_id}}}).execute()
+    except HttpError as e:
+        # 既に入っている、動画が非公開など。1本の失敗で全体を止めない。
+        print(f"[warn] {video_id} を追加できませんでした: {e}")
+        return False
+    store[kind].setdefault("videos", []).append(video_id)
+    return True
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--sync", action="store_true",
+                    help="記録にある動画を、まとめて再生リストへ入れる")
+    ap.add_argument("--add", help="この動画IDを追加する")
+    ap.add_argument("--kind", help="--add と一緒に使う種類")
+    args = ap.parse_args()
+
+    yt = client()
+    if yt is None:
+        return 0
+    store = load_store()
+
+    try:
+        if args.add:
+            if not args.kind:
+                print("[error] --add には --kind が要ります")
+                return 1
+            ok = add_video(yt, store, args.kind, args.add)
+            print(f"[info] {'追加しました' if ok else '追加していません(既出か失敗)'}")
+        elif args.sync:
+            try:
+                videos = json.loads(
+                    pathlib.Path(VIDEOS_PATH).read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"[error] {VIDEOS_PATH} を読めません: {e}")
+                return 1
+            added = 0
+            # 古い順に入れる。再生リストは追加順に並ぶので、
+            # 上から順に見ていくと時系列になる形にしておく。
+            for kind in PLAYLISTS:
+                for day in sorted(videos.get(kind, {})):
+                    vid = videos[kind][day].get("video_id")
+                    if vid and add_video(yt, store, kind, vid):
+                        added += 1
+                        print(f"  {kind} {day} -> {vid}")
+            print(f"[info] {added}本を追加しました")
+        else:
+            print("[info] --sync か --add を指定してください")
+    except HttpError as e:
+        # スコープが足りない場合はここに来る。何が要るのかを出す。
+        if "insufficientPermissions" in str(e) or e.resp.status == 403:
+            print("[error] 権限が足りません。再生リストの操作には "
+                  "youtube スコープが要ります")
+            print("       scripts/get_youtube_token.py の SCOPES に")
+            print("       https://www.googleapis.com/auth/youtube を足して")
+            print("       トークンを取り直してください")
+            return 1
+        raise
+
+    save_store(store)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding="utf-8")
+    raise SystemExit(main())
