@@ -52,6 +52,7 @@ CHANNELS = [
     ("YouTube", "動画すべて", "自動", "upload_youtube.py"),
     ("TikTok", "日次・夕の3本", "下書きまで自動", "post_tiktok.py"),
     ("Bluesky", "日次の注目試合", "自動", "post_bluesky.py"),
+    ("YouTube再生リスト", "全動画を種類ごとに", "自動", "playlists.py"),
     ("Threads", "日次の注目試合", "自動(認可待ち)", "post_threads.py"),
     ("Webプッシュ", "日次の注目試合", "自動", "send_onesignal.py"),
     ("サイト", "全ページ", "日次で再生成", "daily_notify.yml"),

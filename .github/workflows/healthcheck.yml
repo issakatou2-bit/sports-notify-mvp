@@ -1,0 +1,44 @@
+name: Healthcheck
+
+# 昨日、出るべきものが出たかを確認する。
+#
+# ワークフローが成功で終わることと、結果が残っていることは別。
+# 1日で8件の不具合が見つかった日があるが、全部「成功」で終わっていた。
+# 動画が投稿直前に捨てられ、記録が4日間止まり、採点ルールが1つも
+# 発火していなかった。実行ログを見ても気づけない類のもので、
+# 結果の側から見るしかない。
+#
+# 欠けていれば赤で終わる。Actionsの一覧に赤が並べば、それが合図になる。
+#
+# 時刻は正確でなくてよいので、GitHub純正のscheduleで足りる
+# (数時間遅れても、昨日の結果を見ることに変わりはない)。
+
+on:
+  schedule:
+    - cron: '0 1 * * *'   # UTC 1:00 = JST 10:00
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '確認する日 (YYYY-MM-DD、既定は昨日)'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check
+        env:
+          DAY: ${{ inputs.date }}
+        run: |
+          if [ -n "$DAY" ]; then
+            python scripts/healthcheck.py --date "$DAY"
+          else
+            python scripts/healthcheck.py
+          fi
