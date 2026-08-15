@@ -97,6 +97,15 @@ def fetch_day_pitching(player_id: str, day: str, season: str):
                 "bb": int(_f(s.get("baseOnBalls"))),
                 "wins": int(_f(s.get("wins"))),
                 "losses": int(_f(s.get("losses"))),
+                # 役割を判別するための値。
+                # 同じ「1回無失点」でも、先発なら物足りず、
+                # クローザーなら仕事を完璧に果たしたことになる。
+                # ニュースを追わなくても、この4つで機械的に分かる。
+                "gs": int(_f(s.get("gamesStarted"))),
+                "saves": int(_f(s.get("saves"))),
+                "save_opp": int(_f(s.get("saveOpportunities"))),
+                "blown": int(_f(s.get("blownSaves"))),
+                "holds": int(_f(s.get("holds"))),
             }
     return None
 
@@ -114,6 +123,11 @@ def _row_from_split(split: dict, group: str):
             "hits": int(_f(s.get("hits"))),
             "so": int(_f(s.get("strikeOuts"))),
             "bb": int(_f(s.get("baseOnBalls"))),
+            "gs": int(_f(s.get("gamesStarted"))),
+            "saves": int(_f(s.get("saves"))),
+            "save_opp": int(_f(s.get("saveOpportunities"))),
+            "blown": int(_f(s.get("blownSaves"))),
+            "holds": int(_f(s.get("holds"))),
         }
     ab = int(_f(s.get("atBats")))
     pa = int(_f(s.get("plateAppearances"))) or ab
@@ -205,6 +219,15 @@ def headline(row: dict) -> str:
     """1行の見出し。数字をそのまま並べるだけで、評価はしない。"""
     if row["type"] == "pitcher":
         bits = [f"{row['ip']}回", f"{row['so']}奪三振", f"自責{row['er']}"]
+        # 役割は点数を左右するので、画面にも出す。
+        # 同じ「1回無失点」に別々の点が付く理由が見えないと、
+        # 数字だけが動いていることになる。
+        if row.get("saves"):
+            bits.append("セーブ")
+        elif row.get("blown"):
+            bits.append("セーブ失敗")
+        elif row.get("holds"):
+            bits.append("ホールド")
         if row.get("wins"):
             bits.append("勝ち投手")
         elif row.get("losses"):
@@ -215,6 +238,10 @@ def headline(row: dict) -> str:
         bits.append(f"{row['hr']}本塁打")
     if row.get("rbi"):
         bits.append(f"{row['rbi']}打点")
+    # 四球は打数に入らないので、書かないと「3打数0安打」だけが残り、
+    # 塁に出たことが消える。点数にも効いているので必ず出す。
+    if row.get("bb"):
+        bits.append(f"{row['bb']}四球")
     return "　".join(bits)
 
 
@@ -334,6 +361,33 @@ def outs_from_ip(ip) -> int:
         return 0
 
 
+# 救援の基準点。投球回ではなく「その役割を果たしたか」で置く。
+#   closer  … セーブ機会で登板した。締めれば試合が終わる
+#   setup   … ホールドが付く場面。リードを次へ渡す役
+#   reliever… それ以外の救援
+RELIEF_BASE = {"closer": 58, "setup": 50, "reliever": 38}
+
+
+def pitcher_role(row: dict) -> str:
+    """
+    その登板の役割。MLB APIの値だけで決まる。
+
+    先発かどうかは gamesStarted、抑えかどうかは saves と
+    saveOpportunities で分かる。セーブが付かなくても、セーブ機会で
+    投げていれば抑えの仕事をしている(同点で登板した場合など)。
+    """
+    if row.get("gs"):
+        return "starter"
+    if row.get("saves") or row.get("save_opp") or row.get("blown"):
+        return "closer"
+    if row.get("holds"):
+        return "setup"
+    return "reliever"
+
+
+ROLE_LABEL = {"closer": "セーブ", "setup": "ホールド"}
+
+
 def contribution(row: dict) -> int:
     """
     その日の「勝利貢献スコア」。投手と打者を同じ物差しに載せる。
@@ -383,17 +437,39 @@ def contribution(row: dict) -> int:
                - 4 * row.get("er", 0)
                - row.get("bb", 0))
         # 基準点は投球回に応じて動かす。
-        # 定数(先発想定の45)にしていたとき、1回を無失点で抑えた中継ぎが
-        # 4打数2安打1打点の打者を上回った。1イニングは、良い内容でも
-        # その試合に効いた量としては小さい。5回を投げ切って満額になる形にする。
-        base = 25 + 20 * min(1.0, outs / 15)
+        # 基準点は役割で変える。
+        #
+        # 投球回だけで決めていたとき、1回を無失点に抑えた抑え投手が
+        # 30点そこそこにしかならなかった。実際にはその日の勝ちを
+        # 締めていて、仕事は完璧に果たしている。逆に先発の1回無失点は
+        # 早々に降板したということなので、同じ点であるはずがない。
+        #
+        # 役割はAPIの値で判別できる(gamesStarted / saves / holds)。
+        # 「守護神に転向した」といった記事を追わなくても分かる。
+        role = pitcher_role(row)
+        if role == "starter":
+            # 5回を投げ切って満額。ビル・ジェームズのゲームスコアと同じ発想。
+            base = 25 + 20 * min(1.0, outs / 15)
+        else:
+            # 締めた回数ではなく、締めきったかどうかで見る。
+            base = RELIEF_BASE[role]
+            if row.get("blown"):
+                # 逆転を許した登板。抑えの失敗はその試合を落とす。
+                base -= 35
         score = base + raw * 1.2
     else:
         # 二塁打・三塁打が取れないため、塁打は安打+本塁打×3で近似する
         tb = row.get("hits", 0) + 3 * row.get("hr", 0)
+        # 凡退そのものを引く。
+        #
+        # 以前は三振だけを引いていたため、3打数0安打でも28点が付き、
+        # 画面に出ていた。全打席凡退した日に点が残るのは実態と合わない。
+        # 四球は塁に出ているので、安打ほどではないが確かな加点にする。
+        outs_made = max(0, row.get("ab", 0) - row.get("hits", 0))
         raw = (2 * tb
                + 2 * row.get("rbi", 0)
-               + row.get("bb", 0)
+               + 2 * row.get("bb", 0)
+               - outs_made
                - row.get("so", 0))
         score = 30 + raw * 2.4
     return max(0, round(score + bonus))

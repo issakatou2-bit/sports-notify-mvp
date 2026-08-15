@@ -416,6 +416,21 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             parts.append(v.get("ja", "") + "。")
         segments.append({"kind": "voices", "text": "".join(parts), "meta": {}})
 
+    # 現地で何が報じられたか。見出しだけを扱う。
+    #
+    # 番記者より先に置く。番記者の投稿は1件が長いので、いきなり誰かの
+    # 長い所感から始まると入りが重い。短い見出しで「何が起きたか」を
+    # 先に通してから、それについて誰が何と言ったかへ進む方がテンポが出る。
+    heads = ((data.get("reporters") or {}).get("headlines") or []) \
+        if want_press else []
+    if heads:
+        parts = ["現地の見出しです。"]
+        for h in heads[:3]:
+            body = h.get("jp") or h.get("title", "")
+            parts.append(f"{h.get('source', '')}。{body[:80]}。")
+        segments.append({"kind": "headlines", "text": "".join(parts),
+                         "meta": {}})
+
     # 現地の番記者が書いたこと。ファンの声との違いは、
     # 実名で、その球団を毎日追っている人の言葉だという点。
     # ここも翻訳を通すので、数字のコーナーとは画面を分ける。
@@ -430,17 +445,6 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             # 読み上げが尺を食いすぎないよう頭で切る。
             parts.append(f"{r.get('outlet', '')}の記者。{body[:90]}。")
         segments.append({"kind": "reporters", "text": "".join(parts),
-                         "meta": {}})
-
-    # 現地で何が報じられたか。見出しだけを扱う。
-    heads = ((data.get("reporters") or {}).get("headlines") or []) \
-        if want_press else []
-    if heads:
-        parts = ["現地の見出しです。"]
-        for h in heads[:3]:
-            body = h.get("jp") or h.get("title", "")
-            parts.append(f"{h.get('source', '')}。{body[:80]}。")
-        segments.append({"kind": "headlines", "text": "".join(parts),
                          "meta": {}})
 
     segments.append({

@@ -84,6 +84,16 @@ EXAMPLES = [
      dict(type="pitcher", ip="7.0", so=8, hits=4, er=1, bb=2)),
     ("6回 5奪三振 被安打6 自責3 四球2",
      dict(type="pitcher", ip="6.0", so=5, hits=6, er=3, bb=2)),
+    ("1回 1奪三振 無失点（抑え・セーブ）",
+     dict(type="pitcher", ip="1.0", so=1, hits=1, er=0, bb=0,
+          gs=0, saves=1, save_opp=1)),
+    ("1回 1奪三振 無失点（同じ内容の先発）",
+     dict(type="pitcher", ip="1.0", so=1, hits=1, er=0, bb=0, gs=1)),
+    ("1回 無失点（リード維持・ホールド）",
+     dict(type="pitcher", ip="1.0", so=1, hits=0, er=0, bb=0, holds=1)),
+    ("1回 2失点（セーブ失敗）",
+     dict(type="pitcher", ip="1.0", so=0, hits=3, er=2, bb=1,
+          save_opp=1, blown=1)),
     ("1回 2奪三振 無失点（中継ぎ）",
      dict(type="pitcher", ip="1.0", so=2, hits=0, er=0, bb=1)),
     ("3回 被安打9 自責7 四球4",
@@ -97,6 +107,8 @@ EXAMPLES = [
           clutch_points=clutch.CLUTCH_POINTS["逆転"])),
     ("4打数2安打 1打点",
      dict(type="batter", ab=4, hits=2, hr=0, rbi=1, bb=0, so=1)),
+    ("3打数0安打 1四球",
+     dict(type="batter", ab=3, hits=0, hr=0, rbi=0, bb=1, so=0)),
     ("5打数0安打 3三振",
      dict(type="batter", ab=5, hits=0, hr=0, rbi=0, bb=0, so=3)),
 ]
@@ -119,6 +131,12 @@ def render() -> str:
                     f'<td class="num">{esc(shown)}</td></tr>')
 
     two = mr.contribution(TWO_WAY_EXAMPLE)
+
+    # 救援の基準点は morning_recap から読む。ここに数字を書き写すと、
+    # 重みを変えたときにページだけが古くなる。
+    closer = mr.RELIEF_BASE["closer"]
+    setup = mr.RELIEF_BASE["setup"]
+    reliever = mr.RELIEF_BASE["reliever"]
 
     clutch_rows = "".join(
         f"<tr><td>{esc(k)}</td><td class=\"num\">+{v}</td>"
@@ -169,18 +187,33 @@ def render() -> str:
      - 4 × 自責点
      - 四球
 
-基準点 = 25 + 20 × min(1, アウト数 ÷ 15)    ← 5回で満額
+基準点（先発）= 25 + 20 × min(1, アウト数 ÷ 15)   ← 5回で満額
+基準点（抑え）= {closer}     ← セーブ機会での登板
+基準点（中継ぎ・リード維持）= {setup}
+基準点（その他の救援）= {reliever}
+　　セーブ失敗の登板は基準点から35を引きます
+
 スコア = 基準点 + 素点 × 1.2</div>
-  <p class="note">基準点が投球回で動くのは、1イニングの好投と7イニングの好投を
-  同じ扱いにしないためです。基準点を固定にしていたとき、
-  1回を無失点で抑えた中継ぎが4打数2安打1打点の打者を上回りました。</p>
+  <p class="note">先発の基準点が投球回で動くのは、1イニングの好投と7イニングの
+  好投を同じ扱いにしないためです。</p>
+  <p class="note">救援は投球回では測りません。同じ「1回無失点」でも、
+  先発なら早い降板ですが、抑えなら勝ちを締めきったということで、
+  果たした仕事がまるで違います。役割はMLB公式データの
+  先発登板数・セーブ・セーブ機会・ホールドから機械的に判別しており、
+  移籍や配置転換のニュースを読む必要はありません。</p>
 
   <h2>打者</h2>
   <div class="formula">塁打 = 安打 + 3 × 本塁打
        ↑ 二塁打・三塁打はこの取得方法では分からないため、近似しています
 
-素点 = 2 × 塁打 + 2 × 打点 + 四球 - 三振
+凡退 = 打数 - 安打
+
+素点 = 2 × 塁打 + 2 × 打点 + 2 × 四球 - 凡退 - 三振
 スコア = 30 + 素点 × 2.4</div>
+  <p class="note">凡退そのものを引きます。三振だけを引いていたときは、
+  全打席凡退した日でも28点が付いて画面に出ていました。</p>
+  <p class="note">四球は打数に入らないため、書かないと「3打数0安打」だけが
+  残り、塁に出たことが消えてしまいます。点数にも効くので画面にも出します。</p>
 
   <h2>場面による加点</h2>
   <p>同じ3ランでも、逆転と大差での1本では試合への効き方が違います。

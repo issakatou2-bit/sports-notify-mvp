@@ -21,6 +21,7 @@ import json
 import os
 import pathlib
 import sys
+import post_common  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
 
 try:
@@ -668,13 +669,22 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         top = games[0]
         badge = SPORTS.get(sport, SPORTS["mlb"])["badge"]
         matchup = f"{top.get('home_team_name')} vs {top.get('away_team_name')}"
+        # 「明日の注目試合」を先頭に置く。
+        #
+        # 以前は「パドレス 6連勝中｜ドジャース vs ブリュワーズ ほか
+        # 08/16の注目試合【MLB】」の形で、一覧では前半しか見えず、
+        # この動画で明日どの試合を見ればいいのかが分かる、という肝心の
+        # ことが伝わっていなかった。日付は説明文にもサムネイルにもある。
+        when = post_common.when_label(top.get("start_time_jst") or "") or "次"
+        head = f"{when}の注目試合{badge}"
         if lead:
-            title = f"{lead}｜{matchup} ほか {date_label}の注目試合{badge}#Shorts"
+            title = f"{head}｜{lead}｜{matchup} ほか #Shorts"
         else:
-            title = f"{matchup} ほか｜{date_label}の注目試合{badge}#Shorts"
+            title = f"{head}｜{matchup} ほか #Shorts"
     else:
         title = (f"{date_label}の注目試合"
                  f"{SPORTS.get(sport, SPORTS['mlb'])['badge']}#Shorts")
+    title = title.replace("  ", " ").strip()
     title = title[:100]  # YouTubeのタイトル上限
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
