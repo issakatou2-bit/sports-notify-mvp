@@ -346,7 +346,10 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python scripts/playlists.py --sync
+        # --sync は記録(11本)しか見ない。記録は4日間止まっていた
+        # ことがあるので、チャンネルの投稿一覧から入れる。
+        # 既に入っているものは飛ばすので、毎日回して問題ない。
+        run: python scripts/playlists.py --backfill
 
       # 動画IDは翌日以降のアーカイブページから参照する。
       # コミットしないと記録が毎回消えてしまう。
@@ -359,7 +362,7 @@ jobs:
           # 存在しないものを1つ混ぜると git add は全体を諦める。
           # published_tiktok.json は投稿が成功するまで作られないため、
           # 動画IDの記録まで巻き添えで止まっていた(08/11以降)。
-          for f in data/published_videos.json data/published_tiktok.json; do
+          for f in data/published_videos.json data/published_tiktok.json \n                   data/playlists.json; do
             if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
           done
           git diff --cached --quiet || git commit -m "video record: ${{ github.run_id }}"

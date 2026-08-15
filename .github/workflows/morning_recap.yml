@@ -216,7 +216,10 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python scripts/playlists.py --sync
+        # --sync は記録(11本)しか見ない。記録は4日間止まっていた
+        # ことがあるので、チャンネルの投稿一覧から入れる。
+        # 既に入っているものは飛ばすので、毎日回して問題ない。
+        run: python scripts/playlists.py --backfill
 
       # 結果はサイトからも参照できるよう、リポジトリへ残す
       - name: Commit recap
@@ -237,7 +240,7 @@ jobs:
           for f in data/morning_recap.json data/venue_stats.json \
                    data/published_videos.json data/mlb_buzz.json \
                    data/local_buzz.json data/published_tiktok.json \
-                   data/local_reporters.json data/local_voices.json \n                   data/recap_history; do
+                   data/local_reporters.json data/local_voices.json \n                   data/playlists.json \n                   data/recap_history; do
             if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
           done
           git diff --cached --quiet || git commit -m "recap: ${{ github.run_id }}"
