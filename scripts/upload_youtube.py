@@ -438,6 +438,37 @@ def record_published(topic: str, video_id: str, privacy: str,
 VIDEOS_PATH = "data/published_videos.json"
 
 
+def record_kind(kind: str, morning_mode: str = "players",
+                sport: str = "mlb") -> str:
+    """
+    記録上の区分。同じ日に同じ kind が複数上がるものを見分ける。
+
+      16:30/18:00/21:00 の3本 … morning / morning_local / morning_press
+      19:00と20:00の2本     … daily / daily_soccer
+
+    投稿前の重複判定と投稿後の記録が、必ず同じ名前を使うようにここへ寄せる。
+    別々に組み立てていると、片方だけ直したときに黙ってすれ違う。
+    """
+    if kind == "morning" and morning_mode != "players":
+        return f"{kind}_{morning_mode}"
+    if kind == "daily" and sport != "mlb":
+        return f"{kind}_{sport}"
+    return kind
+
+
+def published_video(kind: str, date_key: str,
+                    path: str = VIDEOS_PATH) -> dict:
+    """その区分・その日が既に投稿済みなら記録を返す。無ければ空。"""
+    p = pathlib.Path(path)
+    if not p.exists():
+        return {}
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    return (data.get(kind) or {}).get(date_key) or {}
+
+
 def resolve_publish_at(spec: str | None) -> str | None:
     """
     "17:30" のようなJST時刻を、YouTubeに渡すUTC文字列に直す。
@@ -788,6 +819,24 @@ def main():
             print("       作り直して上げ直す場合は --force を付けてください")
             return
 
+    # 日付ものも二重に上げない。
+    #
+    # 資産動画にはこの守りがあったが、日次と夕方の3本には無かった。
+    # ワークフローが2度走った日に、同じ内容の動画が3種類とも2本ずつ
+    # チャンネルに並んだ。記録は上書きされるので、片方はサイトからも
+    # 辿れないまま残る。定刻の実行と手動の実行が重なるのは普通に起きる。
+    from datetime import datetime as _dt, timezone as _tz
+
+    date_key = args.video_date or _dt.now(_tz.utc).date().isoformat()
+    rec_kind = record_kind(args.kind, args.morning_mode, args.sport)
+    if args.kind in ("daily", "morning") and not args.force:
+        already = published_video(rec_kind, date_key)
+        if already:
+            print(f"[info] {rec_kind} の {date_key} は投稿済みのため"
+                  f"スキップします ({already.get('url')})")
+            print("       上げ直す場合は --force を付けてください")
+            return
+
     client_id = os.environ.get("YOUTUBE_CLIENT_ID")
     client_secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
     refresh_token = os.environ.get("YOUTUBE_REFRESH_TOKEN")
@@ -906,20 +955,10 @@ def main():
             # 日付ものは、アーカイブページから辿れるよう日付で記録する。
             # キーはUTC日付にする。archive/YYYY-MM-DD.json と同じ決め方なので、
             # そのままアーカイブページと突き合わせられる。
-            from datetime import datetime, timezone
-
-            key = args.video_date or datetime.now(timezone.utc).date().isoformat()
-            # 同じ日に同じ kind が複数上がる場合は、記録を分けて上書きを防ぐ。
-            #   16時台は players / local / press の3本
-            #   日次は MLB と サッカーの2本
-            # 分けないと、あとから上げた方が前の動画IDを消してしまい、
-            # アーカイブページが片方だけを指すことになる。
-            if args.kind == "morning" and args.morning_mode != "players":
-                rec_kind = f"{args.kind}_{args.morning_mode}"
-            elif args.kind == "daily" and args.sport != "mlb":
-                rec_kind = f"{args.kind}_{args.sport}"
-            else:
-                rec_kind = args.kind
+            # 区分と日付は投稿前の重複判定で決めたものをそのまま使う。
+            # ここで組み立て直すと、片方だけ直したときにすれ違う。
+            key, rec_kind = date_key, record_kind(
+                args.kind, args.morning_mode, args.sport)
             record_video(rec_kind, key, vid, body["snippet"]["title"],
                          publish_at=publish_at)
     except Exception as e:
