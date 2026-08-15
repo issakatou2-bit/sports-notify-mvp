@@ -18,6 +18,8 @@ OneSignal経由で通知を送信するスクリプト。
   実際に動かして初めて分かる差異が残っている前提で扱うこと。
 """
 
+import argparse
+import pathlib
 import json
 import os
 import sys
@@ -200,13 +202,27 @@ def send_one(app_id: str, api_key: str, tag_key: str, games: list, heading_suffi
 
 
 def main():
+    # 競技ごとに別ファイルへ分かれたので、両方を読む。
+    # 片方だけ渡すと、その競技のタグを付けている購読者には何も届かない。
+    # 通知そのものは send_one がタグごとに分けて送るので、
+    # ここで混ざっても購読者の受け取りは分かれたままになる。
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--games", action="append", default=None,
+                    help="注目試合のJSON。複数回指定できる")
+    args = ap.parse_args()
+
     app_id = os.environ.get("ONESIGNAL_APP_ID")
     api_key = os.environ.get("ONESIGNAL_REST_API_KEY")
     if not app_id or not api_key:
         print("[info] ONESIGNAL_APP_ID/ONESIGNAL_REST_API_KEY未設定のためスキップします")
         return
 
-    notable_games = load_notable_games("notable_games.json", limit=4)
+    notable_games = []
+    for path in (args.games or ["notable_games.json"]):
+        if pathlib.Path(path).exists():
+            notable_games.extend(load_notable_games(path, limit=4))
+        else:
+            print(f"[info] {path} が無いため飛ばします")
     if not notable_games:
         print("今日は通知対象の試合がありません。送信をスキップします。")
         return

@@ -55,6 +55,19 @@ jobs:
       # 差分は「候補」に過ぎないため、スクリプト内でAPIに問い合わせて
       # 裏が取れたものだけを出力する(検証に落ちたものは公開しない)。
       # スナップショットは次回比較用にリポジトリへコミットする。
+      # サッカーの試合はここで取る。プッシュもSNSもRSSもサイトも、
+      # そして20時の動画も、このファイルを読む。配信より前に取っておかないと
+      # 前日ぶんを配ることになる。別々に取ると、取得の間に日程が動いたときに
+      # 載っている試合が食い違う。
+      - name: Fetch soccer fixtures
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python notability_engine.py --source soccer \
+            --out data/soccer_games.json
+
       - name: Detect roster changes
         run: |
           mkdir -p public
@@ -101,7 +114,10 @@ jobs:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
           SITE_URL: https://collespo.com/
-        run: python scripts/send_onesignal.py
+        run: |
+          python scripts/send_onesignal.py \
+            --games notable_games.json \
+            --games data/soccer_games.json
 
       # 過去に生成した試合(直近5日分)のうち、終了しているのにまだ
       # 最終スコアが無いものを、MLB Stats APIから取得して埋める。
@@ -109,18 +125,6 @@ jobs:
       # 結果は必ず「後から追いかけて埋める」形にならざるを得ない。
       - name: Backfill past game results
         run: python scripts/backfill_results.py --archive-dir archive
-
-      # サッカーの試合はここで取る。RSSもサイトも20時の動画も、
-      # このファイルを読む。別々に取ると、取得の間に日程が動いたときに
-      # 載っている試合が食い違う。
-      - name: Fetch soccer fixtures
-        continue-on-error: true
-        env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          python notability_engine.py --source soccer \
-            --out data/soccer_games.json
 
       # 購読者には1つのフィードで届ける。競技ごとに1件ずつ出る。
       - name: Generate RSS feed

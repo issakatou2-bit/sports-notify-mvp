@@ -2474,9 +2474,36 @@ def main():
         archive_dir = pathlib.Path("archive")
         archive_dir.mkdir(exist_ok=True)
         archive_path = archive_dir / f"{date_str}.json"
+
+        # 同じ日に競技ごとに実行するので、上書きではなく足し込む。
+        #
+        # MLBとサッカーを別々に取るようにした時点で、後から走った方が
+        # その日のアーカイブを丸ごと置き換えてしまう状態になっていた。
+        # アーカイブはページ・選手ページ・週次・答え合わせの全部が読む
+        # 元データなので、消えると1日分がまとめて欠ける。
+        #
+        # 同じ game_id は新しい方で差し替える(結果の追記で上書きされる)。
+        merged = {}
+        if archive_path.exists():
+            try:
+                old = json.loads(archive_path.read_text(encoding="utf-8"))
+                for g in old.get("games", []):
+                    if g.get("game_id"):
+                        merged[g["game_id"]] = g
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"[warn] 既存のアーカイブを読めませんでした: {e}")
+        for g in result.get("games", []):
+            if g.get("game_id"):
+                merged[g["game_id"]] = g
+
+        archived = dict(result)
+        archived["games"] = sorted(
+            merged.values(),
+            key=lambda g: (g.get("start_time_jst") or "99/99 99:99"))
         with open(archive_path, "w", encoding="utf-8") as f:
-            json.dump(result, f, ensure_ascii=False, indent=2)
-        print(f"[info] アーカイブに保存しました: {archive_path}")
+            json.dump(archived, f, ensure_ascii=False, indent=2)
+        print(f"[info] アーカイブに保存しました: {archive_path} "
+              f"(今回{len(result.get('games', []))}件 / 合計{len(merged)}件)")
 
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
