@@ -34,7 +34,9 @@ except ImportError:
     sys.exit(0)
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
-SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
+# 記録のために置いてある。更新要求には渡さない(理由は下のコメント)。
+SCOPES = ["https://www.googleapis.com/auth/youtube.upload",
+          "https://www.googleapis.com/auth/youtube"]
 # MLB / 野球 のカテゴリ。17 = Sports
 CATEGORY_SPORTS = "17"
 
@@ -872,13 +874,19 @@ def main():
         print("[info] YouTube認証情報が未設定のため、アップロードをスキップします")
         return
 
+    # scopes は渡さない。
+    #
+    # 渡すと更新要求に scope が乗り、付与済みと一致しない場合に
+    # Googleが invalid_scope を返す。トークンを youtube.upload だけで
+    # 取っていた間は一致していたので通っていたが、再生リスト用に
+    # youtube を足した時点で一致しなくなり、投稿まで巻き添えになる。
+    # 権限はトークン側に記録されているので、こちらから送る必要は無い。
     creds = Credentials(
         token=None,
         refresh_token=refresh_token,
         token_uri=TOKEN_URI,
         client_id=client_id,
         client_secret=client_secret,
-        scopes=SCOPES,
     )
 
     if args.kind == "asset":

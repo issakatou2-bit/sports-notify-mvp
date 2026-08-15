@@ -38,6 +38,8 @@ except ImportError:
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 # 再生リストの作成・追加には youtube スコープが要る。
+# ここでは記録のために置いてあるだけで、更新要求には渡さない
+# (渡すと invalid_scope になる。理由は client() のコメント)。
 SCOPES = ["https://www.googleapis.com/auth/youtube"]
 
 VIDEOS_PATH = "data/published_videos.json"
@@ -77,8 +79,12 @@ def client():
     if not (cid and secret and token):
         print("[info] YouTube認証情報が未設定のためスキップします")
         return None
+    # scopes は渡さない。更新要求に scope が乗ると、付与済みと一致しない
+    # 場合に invalid_scope で弾かれる。実際、youtube だけを渡して
+    # (トークンは youtube.upload と youtube の2つを持っている)落ちた。
+    # 権限はトークン側にあるので、こちらから指定する必要は無い。
     creds = Credentials(None, refresh_token=token, token_uri=TOKEN_URI,
-                        client_id=cid, client_secret=secret, scopes=SCOPES)
+                        client_id=cid, client_secret=secret)
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
 
