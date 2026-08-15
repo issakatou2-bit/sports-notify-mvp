@@ -14,9 +14,15 @@
   数字だけでは出てこない熱量や温度は、ここでしか伝えられない。
 
 取り方:
-  r/baseball のRSSから投稿の見出しを取る(認証不要)。
-  MLBの話題に関係するものだけを選び、AIで自然な日本語にする。
-  原文は必ず併記し、出典としてsubreddit名を残す。
+  MLB公式ハイライトのコメント欄を読む。その試合を見た人が、見た直後に
+  書いた言葉が集まる場所で、賛同の多い順に取る。動画IDは mlb_buzz.py が
+  既に取っているので、探し直す必要はない。
+
+  取れなかった日は r/baseball のRSSに落ちる。ただしそちらで取れるのは
+  投稿の見出しだけで、その多くは定型スレッドの名前であり、
+  「ファンが何を言ったか」としては弱い。あくまで予備。
+
+  原文は必ず併記し、出典を残す。
 
 出力: data/local_voices.json
 
@@ -56,6 +62,76 @@ SKIP_PATTERNS = [
     r"^Monthly",
     r"America's Pastime",
 ]
+
+
+def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
+                           per_video: int = 6) -> list:
+    """
+    MLB公式ハイライトに付いたコメントを取る。
+
+    なぜここを見るのか:
+      r/baseball のRSSから取れるのは投稿の見出しだけで、その多くは
+      「OFFICIAL FRIDAY TRASH TALK THREAD」のような定型スレッドの名前。
+      ファンが試合を見て何を言ったか、ではない。
+      公式ハイライトのコメント欄は、その試合を見た人がその場で書いた
+      言葉が集まる。母数も大きく、日ごとに必ず湧く。
+
+      動画IDは mlb_buzz.py が既に取っているので、追加の検索は要らない。
+      commentThreads.list は1本1ユニットで、割り当てへの影響はほぼ無い。
+
+    コメントを切っている動画は403が返る。その動画だけ飛ばす。
+    """
+    api_key = os.environ.get("YOUTUBE_API_KEY")
+    if not api_key:
+        print("[info] YOUTUBE_API_KEY未設定のため、コメントは取りません")
+        return []
+    try:
+        videos = json.loads(
+            pathlib.Path(buzz_path).read_text(encoding="utf-8")).get("videos", [])
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"[warn] {buzz_path} を読めませんでした: {e}", file=sys.stderr)
+        return []
+
+    out = []
+    for v in videos[:4]:
+        vid = v.get("video_id")
+        if not vid:
+            continue
+        try:
+            r = requests.get(
+                "https://www.googleapis.com/youtube/v3/commentThreads",
+                params={"part": "snippet", "videoId": vid, "key": api_key,
+                        "order": "relevance", "maxResults": per_video,
+                        "textFormat": "plainText"},
+                timeout=25)
+            if r.status_code == 403:
+                print(f"[info] {vid}: コメントが取れません(無効化されている可能性)")
+                continue
+            r.raise_for_status()
+            data = r.json()
+        except Exception as e:  # noqa: BLE001
+            print(f"[warn] {vid} のコメント取得に失敗: {e}", file=sys.stderr)
+            continue
+
+        for item in data.get("items", []):
+            c = ((item.get("snippet") or {}).get("topLevelComment") or {}
+                 ).get("snippet") or {}
+            text = (c.get("textOriginal") or "").strip()
+            # 短すぎるものは訳しても中身が無い。長すぎるものは読み上げに載らない。
+            if not (12 <= len(text) <= 220):
+                continue
+            out.append({
+                "title": " ".join(text.split()),
+                "url": f"https://www.youtube.com/watch?v={vid}",
+                "likes": int(c.get("likeCount") or 0),
+                "source": "MLB公式ハイライトのコメント",
+                "matchup": v.get("matchup") or v.get("title", "")[:40],
+            })
+
+    # 賛同の多い順。少数の意見を上に置くと、選び方の恣意が入る。
+    out.sort(key=lambda x: -x["likes"])
+    print(f"[info] 公式ハイライトのコメント: {len(out)}件")
+    return out
 
 
 def fetch_titles() -> list:
@@ -129,7 +205,15 @@ def translate(client, items: list) -> list:
 
 
 def build(limit: int = MAX_VOICES) -> dict:
-    items = fetch_titles()
+    # 公式ハイライトのコメントを先に見る。試合を見た人が書いた言葉が
+    # 集まる場所で、r/baseball の見出しより「反応」に近い。
+    # 取れなかった日はRSSに落ちる(どちらも無い日は何も作らない)。
+    items = fetch_youtube_comments()
+    source_name, source_url = "MLB公式ハイライトのコメント", "https://www.youtube.com/@MLB"
+    if not items:
+        items = fetch_titles()
+        source_name = SOURCE[0]
+        source_url = f"https://www.reddit.com/{SOURCE[0]}/"
     if not items:
         return {}
 
@@ -154,8 +238,8 @@ def build(limit: int = MAX_VOICES) -> dict:
 
     return {
         "updated_at": datetime.now(timezone.utc).isoformat(),
-        "source": SOURCE[0],
-        "source_url": f"https://www.reddit.com/{SOURCE[0]}/",
+        "source": source_name,
+        "source_url": source_url,
         "voices": voices,
     }
 

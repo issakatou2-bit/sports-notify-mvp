@@ -84,10 +84,14 @@ jobs:
 
       # 現地のファンが実際に何と言っているか。翻訳を通すので、
       # 数字のコーナーとは別枠として扱う(画面も背景色を変えて分ける)。
+      #
+      # 公式ハイライトのコメントを読むので、mlb_buzz.py の後に置く
+      # (動画IDをあちらが取っている)。YOUTUBE_API_KEY はそのために要る。
       - name: Fetch local voices
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python scripts/local_voices.py --out data/local_voices.json
 
       # 現地の番記者が今日書いたこと。ファンの声(local_voices)とは別で、
@@ -225,7 +229,7 @@ jobs:
           for f in data/morning_recap.json data/venue_stats.json \
                    data/published_videos.json data/mlb_buzz.json \
                    data/local_buzz.json data/published_tiktok.json \
-                   data/local_reporters.json data/recap_history; do
+                   data/local_reporters.json data/local_voices.json \n                   data/recap_history; do
             if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
           done
           git diff --cached --quiet || git commit -m "recap: ${{ github.run_id }}"
