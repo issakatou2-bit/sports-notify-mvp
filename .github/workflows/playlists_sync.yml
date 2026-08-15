@@ -1,0 +1,51 @@
+name: Playlists sync
+
+# 投稿済みの動画を、種類ごとの再生リストへまとめて入れる。
+#
+# 日次と夕方の回にも同じ処理が入っているが、こちらは手動で回せる。
+# トークンを取り直した直後に、権限が足りているかをその場で確かめられる。
+# 過去に投稿した分も遡って入るので、初回はここから実行するのが早い。
+#
+# 何も投稿しない。既にある動画を並べ替えるだけ。
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install google-api-python-client google-auth
+
+      # 記録に残っているのは11本だけ(記録が4日間止まっていた)。
+      # チャンネルにある53本を入れるには、投稿一覧そのものを見る。
+      - name: Backfill from the channel
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/playlists.py --backfill
+
+      # どの再生リストに何本入ったかを残す。次回はここを見て
+      # 既出を飛ばすので、コミットしないと毎回同じものを追加しようとする。
+      - name: Commit playlist record
+        if: always()
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -e data/playlists.json ]; then git add data/playlists.json; fi
+          git diff --cached --quiet || \
+            git commit -m "playlists: ${{ github.run_id }}"
+          git pull --rebase --quiet || true
+          git push || echo "変更が無いためスキップ"

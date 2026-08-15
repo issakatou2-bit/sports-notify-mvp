@@ -135,10 +135,71 @@ def add_video(yt, store: dict, kind: str, video_id: str) -> bool:
     return True
 
 
+# タイトルから種類を見分ける。
+#
+# data/published_videos.json に残っているのは11本だけで、
+# チャンネルには53本ある(記録が4日間止まっていた分が抜けている)。
+# 過去分を入れるには、チャンネルにある動画そのものを見るしかない。
+#
+# 順番に意味がある。「注目試合」は複数の種類のタイトルに出てくるので、
+# より限定的なものから先に判定する。
+TITLE_RULES = [
+    ("morning_press", ("現地メディアは何と言っている", "番記者の投稿と現地の見出し")),
+    ("morning_local", ("現地で最も注目された試合", "現地での注目度",
+                       "現地で最も見られた試合")),
+    ("morning", ("勝利貢献スコア", "日本人選手の成績")),
+    ("weekly", ("週間ダイジェスト", "1週間を振り返", "今週の注目試合",
+                "答え合わせ")),
+    ("daily_soccer", ("の注目試合【サッカー】", "注目試合｜サッカー")),
+    ("daily", ("の注目試合【MLB】", "の注目試合", "注目試合")),
+]
+
+
+def classify(title: str) -> str:
+    """タイトルから種類を決める。当てはまらなければ資産動画とみなす。"""
+    for kind, needles in TITLE_RULES:
+        if any(n in title for n in needles):
+            return kind
+    return "asset"
+
+
+def uploads_playlist_id(yt) -> str:
+    res = yt.channels().list(part="contentDetails", mine=True).execute()
+    items = res.get("items") or []
+    if not items:
+        raise RuntimeError("チャンネルが取得できませんでした")
+    return items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
+
+
+def all_uploads(yt) -> list:
+    """チャンネルの全動画を、古い順に返す。"""
+    pid = uploads_playlist_id(yt)
+    out, token = [], None
+    while True:
+        res = yt.playlistItems().list(
+            part="snippet", playlistId=pid, maxResults=50,
+            pageToken=token).execute()
+        for item in res.get("items", []):
+            sn = item.get("snippet") or {}
+            vid = (sn.get("resourceId") or {}).get("videoId")
+            if vid:
+                out.append({"id": vid, "title": sn.get("title", ""),
+                            "at": sn.get("publishedAt", "")})
+        token = res.get("nextPageToken")
+        if not token:
+            break
+    out.sort(key=lambda x: x["at"])
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sync", action="store_true",
                     help="記録にある動画を、まとめて再生リストへ入れる")
+    ap.add_argument("--backfill", action="store_true",
+                    help="チャンネルの全動画をタイトルから分類して入れる")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="追加せず、どう分類されるかだけ出す")
     ap.add_argument("--add", help="この動画IDを追加する")
     ap.add_argument("--kind", help="--add と一緒に使う種類")
     args = ap.parse_args()
@@ -155,6 +216,25 @@ def main() -> int:
                 return 1
             ok = add_video(yt, store, args.kind, args.add)
             print(f"[info] {'追加しました' if ok else '追加していません(既出か失敗)'}")
+        elif args.backfill:
+            videos = all_uploads(yt)
+            print(f"[info] チャンネルの動画 {len(videos)}本\n")
+            counts, added = {}, 0
+            for v in videos:
+                kind = classify(v["title"])
+                counts[kind] = counts.get(kind, 0) + 1
+                if args.dry_run:
+                    print(f"  {kind:<14} {v['title'][:56]}")
+                    continue
+                if add_video(yt, store, kind, v["id"]):
+                    added += 1
+                    print(f"  {kind:<14} {v['title'][:56]}")
+            print()
+            for k, n in sorted(counts.items(), key=lambda x: -x[1]):
+                title = PLAYLISTS.get(k, (k,))[0]
+                print(f"  {title:<34} {n}本")
+            if not args.dry_run:
+                print(f"\n[info] {added}本を追加しました")
         elif args.sync:
             try:
                 videos = json.loads(
