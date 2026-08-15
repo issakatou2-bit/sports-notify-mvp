@@ -231,6 +231,51 @@ GENRES = [
      "無料の公式APIが無いのが致命的(api=2)。"
      "日本語情報が最も飽和しているジャンルでもある。"
      "MLBのコードが最も流用しやすいのに、入口で詰まる例。"),
+
+    # --- ここから下は、到達性を実際に叩いて確かめたうえで採点している ---
+    # (2026-08-16 実測: NASA / Hacker News / GitHub / arXiv / CoinGecko /
+    #  Steam / 国会会議録 は取得可。Reddit は403、Twitch は401)
+
+    ("政治(国会・法案)", dict(demand=3, api=4, choice=4, explainable=3, deadline=2,
+                       jp_thin=1, roster=2, archive=4, rights=5,
+                       evergreen=3),
+     "国会会議録APIは実際に取得できた(鍵なし・10KB返る)。"
+     "ただし日本語の一次情報が最も厚い分野で、翻訳・要約の価値が出ない。"
+     "締め切りも弱く、今日見なければ困る情報がほとんど無い。"
+     "何より、事実の提示だけで中立を保つのが最も難しい題材で、"
+     "『確かめられることだけを出す』という前提と両立させる労力が大きい。"),
+
+    ("宇宙(打ち上げ・探査)", dict(demand=2, api=5, choice=1, explainable=3, deadline=4,
+                        jp_thin=3, roster=3, archive=3, rights=3,
+                        evergreen=5),
+     "NASA APIは無料で確実に取れる。資産動画の題材としては極めて優秀。"
+     "ただし打ち上げは週に数回で、1日に複数の候補が並ばない(choice=1)。"
+     "『今日のどれを見るか』という商品が成立せず、日次にならない。"
+     "画像の権利も、NASA以外の素材を使うと途端に怪しくなる。"),
+
+    ("Twitch・配信クリップ", dict(demand=3, api=2, choice=5, explainable=2, deadline=4,
+                          jp_thin=3, roster=1, archive=1, rights=1,
+                          evergreen=1),
+     "実測でTwitch APIは401。鍵だけでは通らずOAuthが要る。"
+     "決定的なのは権利で、クリップは配信者の著作物であり、"
+     "まとめ動画は本人の許諾が前提になる。名簿も数万人規模で安定しない。"
+     "コレスポの『映像を使わない』という前提と最も相性が悪い。"),
+
+    ("自動車・コネクテッドカー", dict(demand=1, api=1, choice=2, explainable=3,
+                            deadline=1, jp_thin=2, roster=2, archive=2,
+                            rights=3, evergreen=2),
+     "データの精度は最高級だが、中身は個人の走行履歴で、"
+     "APIを叩くにはドライバー本人の同意が毎回要る。"
+     "公開データではないので、そもそも配信の題材にならない。"
+     "日次で語れる『今日の出来事』も存在しない。"),
+
+    ("Steamの動向(同接・セール)", dict(demand=4, api=5, choice=5, explainable=4,
+                              deadline=3, jp_thin=2, roster=1, archive=2,
+                              rights=2, evergreen=3),
+     "Steam APIは実測で取得可、無料。急上昇や過去最安値は"
+     "毎日必ず湧き、選ぶ余地もある。需要も若年層に厚い。"
+     "弱点は名簿(roster=1)で、対象が数万タイトルあり固定できない。"
+     "画像もストアの素材に依存するため、権利面が読みにくい。"),
 ]
 
 
