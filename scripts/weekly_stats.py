@@ -13,8 +13,11 @@
 """
 
 import json
+import sys
 import pathlib
 import re
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 DATE_FILE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})\.json$")
 
@@ -26,13 +29,26 @@ STREAK_RE = re.compile(r"^(?P<team>.+?)は(?P<n>\d+)(?P<kind>連勝|連敗)中$"
 GAMES_PER_DAY = 2
 
 
-def load_week(archive_dir: pathlib.Path, days: int = 7) -> list:
-    """直近days日分のアーカイブを、古い順に [(日付, 試合), ...] で返す"""
+def load_week(archive_dir: pathlib.Path, days: int = 7,
+              sport: str = "mlb") -> list:
+    """
+    直近days日分のアーカイブを、古い順に [(日付, 試合), ...] で返す。
+
+    競技で絞る。アーカイブにはMLBと欧州サッカーが同居しているので、
+    絞らないと1日2試合の枠を取り合い、週末はサッカーが混ざる。
+    日次を競技ごとに分けたのと同じ理由で、週次も分ける。
+    """
+    from notability_engine import is_soccer_league
+
     entries = []
     for f in sorted(archive_dir.glob("*.json")):
         if DATE_FILE_RE.match(f.name):
             entries.append((f.name[:10], f))
     entries.sort(key=lambda x: x[0], reverse=True)
+
+    def wanted(g: dict) -> bool:
+        soccer = is_soccer_league(g.get("league"))
+        return soccer if sport == "soccer" else not soccer
 
     out = []
     for date_str, path in entries[:days]:
@@ -40,7 +56,9 @@ def load_week(archive_dir: pathlib.Path, days: int = 7) -> list:
             data = json.loads(path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
             continue
-        for g in [x for x in data.get("games", []) if x.get("is_notable")][:GAMES_PER_DAY]:
+        picked = [x for x in data.get("games", [])
+                  if x.get("is_notable") and wanted(x)][:GAMES_PER_DAY]
+        for g in picked:
             out.append((date_str, g))
     out.reverse()
     return out
