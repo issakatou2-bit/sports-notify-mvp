@@ -35,6 +35,9 @@ import sys
 import unicodedata
 
 import post_common  # noqa: E402
+from notability_engine import (  # noqa: E402
+    is_soccer_league as _is_soccer_league,
+)
 
 try:
     import anthropic
@@ -46,8 +49,9 @@ MODEL = "claude-haiku-4-5-20251001"
 # 1試合75文字前後 × 3試合 + 前後 で、1.3倍速で40秒前後になる。
 MAX_GAMES = 3
 
-# サッカーの競技会コード。点数の根拠の言い回しを競技で分けるのに使う。
-SOCCER_LEAGUES = {"PL", "PD", "SA", "BL1", "FL1", "CL", "ELC", "BL2"}
+# 競技の見分けは notability_engine に寄せる。ここでコードだけを並べて
+# いたが、データに入っているのは日本語のリーグ名なので一度も一致せず、
+# 点数の根拠の文言がサッカーでも野球のままになっていた。
 
 
 # 「大谷翔平は8試合連続安打中」「アストロズは5連勝中」のように、
@@ -312,7 +316,7 @@ def main():
         top = max(games, key=lambda g: g.get("score") or 0)
         # 何に点をつけているかは競技で違う。サッカーは連勝記録が取れない
         # (無料枠にフォームデータが無い)ので、そこを挙げると嘘になる。
-        soccer = any(g.get("league") in SOCCER_LEAGUES for g in games)
+        soccer = any(_is_soccer_league(g.get("league")) for g in games)
         basis = ("日本人選手の所属、順位、伝統の一戦かどうか" if soccer
                  else "日本人選手の出場、順位争い、連勝記録")
         segments.append({

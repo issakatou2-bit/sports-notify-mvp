@@ -452,8 +452,27 @@ SOCCER_DERBIES = [
 ]
 
 
+# 競技会の見分けに使う値。コードと日本語名の両方を入れる。
+#
+# 取得側は Game.league に日本語のリーグ名("ラ・リーガ")を入れるが、
+# SOCCER_COMPETITIONS のキーはコード("PD")。コードだけで見ていたため、
+# サッカー用のルールが本番で1つも発火していなかった。
+# テストがコードを渡していたので、テストは通っていた。
+# SOCCER_COMPETITIONS はこの下で定義されるので、初回に組み立てる。
+_SOCCER_LEAGUE_KEYS = None
+
+
+def is_soccer_league(league) -> bool:
+    """リーグ名またはコードが、対象のサッカー競技会かどうか。"""
+    global _SOCCER_LEAGUE_KEYS
+    if _SOCCER_LEAGUE_KEYS is None:
+        _SOCCER_LEAGUE_KEYS = (set(SOCCER_COMPETITIONS)
+                               | set(SOCCER_COMPETITIONS.values()))
+    return bool(league) and league in _SOCCER_LEAGUE_KEYS
+
+
 def is_soccer(game: Game) -> bool:
-    return game.league in SOCCER_COMPETITIONS
+    return is_soccer_league(game.league)
 
 
 def _club_key(name: str, keys) -> str:
@@ -483,7 +502,10 @@ def rule_soccer_japanese_player(game: Game) -> list[Reason]:
     """
     reasons = []
     for name in (game.home_team_name, game.away_team_name):
-        players = jp_players_for_club(name, game.league)
+        # 名簿の league はコード。日本語名で来た場合は絞り込みを外す
+        # (絞ると1件も一致しなくなる)。
+        code = game.league if game.league in SOCCER_COMPETITIONS else None
+        players = jp_players_for_club(name, code)
         if not players:
             continue
         names = "・".join(p["name_jp"] for p in players)
