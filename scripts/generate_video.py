@@ -324,6 +324,48 @@ def render_news(progress: float, text: str):
     return im
 
 
+def render_recap(progress: float, meta: dict):
+    """
+    昨日この番組で選んだ試合が、実際どうなったか。
+
+    毎回その日で完結していると、明日また来る理由が無い。
+    コレスポは「なぜ注目か」を書いて出しているので、その検算ができる。
+    予想を当てにいくのではなく、書いたことの結果を並べるだけ。
+    """
+    im, d = base_frame(progress)
+    draw_brand(d)
+    d.text((70, 180), "昨日の答え合わせ", font=font(64), fill=ACCENT)
+    d.text((74, 268), "この番組が選んだ試合は、こうなりました",
+           font=font(34), fill=DIM)
+
+    y = 380
+    for i, row in enumerate((meta.get("lines") or [])[:3]):
+        appear = 0.08 + i * 0.10
+        if progress < appear:
+            continue
+        e = ease_out(min(1.0, max(0.0, (progress - appear) * 8)))
+        dx = int((1 - e) * 110)
+        note = row.get("note", "")
+        # 添える一言が無い試合は、その分カードを詰める。
+        # 高さを固定にすると、note の無い行だけ下半分が空いて間延びする。
+        h = 190 if note else 130
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + h], 20, fill=SURF2)
+        d.text((100 - dx, y + 28), row.get("matchup", ""), font=font(50),
+               fill=TEXT)
+        score = row.get("score", "")
+        d.text((W - 100 - dx - d.textlength(score, font=font(64)), y + 20),
+               score, font=font(64), fill=ACCENT)
+        if note:
+            d.text((100 - dx, y + 108), note, font=font(38), fill=JP)
+        y += h + 24
+
+    d.text((70, H - 240), "予想ではありません。選んだ理由を書いて出し、",
+           font=font(32), fill=DIM)
+    d.text((70, H - 190), "その結果を並べているだけです。",
+           font=font(32), fill=DIM)
+    return im
+
+
 def render_score(progress: float, games: list):
     """
     コレスポ指数。なぜこの試合を選んだのかを、点数と内訳で見せる。
@@ -533,6 +575,8 @@ def main():
                     im = render_game(p_, games[gi], gi, total_games)
                 elif kind == "score":
                     im = render_score(p_, games)
+                elif kind == "recap":
+                    im = render_recap(p_, meta)
                 elif kind == "news":
                     im = render_news(p_, seg.get("text", ""))
                 else:

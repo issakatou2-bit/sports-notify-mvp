@@ -186,6 +186,40 @@ def pick_hook(games: list) -> dict:
     return {"big": "今日の注目試合", "sub": ""}
 
 
+def _yesterday_recap(archive_dir: str, games: list) -> dict:
+    """
+    昨日「注目」として出した試合の結果を、1つのセグメントにまとめる。
+
+    結果が入っていない試合は扱わない。19時の時点では、前日に予告した
+    試合(日本時間の未明〜午前)は終わっているので、その日の分だけ言える。
+    """
+    import datetime as _dt
+    import pathlib as _p
+
+    import weekly_stats as ws
+
+    sport = ("soccer" if any(_is_soccer_league(g.get("league")) for g in games)
+             else "mlb")
+    jst = _dt.timezone(_dt.timedelta(hours=9))
+    yesterday = (_dt.datetime.now(jst) - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
+
+    picked = ws.load_day(_p.Path(archive_dir), yesterday, sport=sport)
+    lines = ws.day_lines(picked)
+    if not lines:
+        return {}
+
+    spoken = "。".join(
+        f"{m}は{sc.replace(' - ', '対')}" + (f"、{note}" if note else "")
+        for m, sc, note in lines[:3])
+    return {
+        "kind": "recap",
+        "text": f"昨日この番組で選んだ{len(lines)}試合は、こうなりました。"
+                f"{spoken}。明日の結果も、また明日この時間に出します。",
+        "meta": {"lines": [{"matchup": m, "score": sc, "note": n}
+                           for m, sc, n in lines[:3]]},
+    }
+
+
 def _load(path: str, default):
     try:
         with open(path, "r", encoding="utf-8") as f:
@@ -246,6 +280,8 @@ def main():
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--news", default="public/news.json")
     parser.add_argument("--out", default="public/narration.json")
+    parser.add_argument("--archive-dir", default="archive",
+                        help="昨日の答え合わせに使う")
     args = parser.parse_args()
 
     data = _load(args.games, {})
@@ -308,6 +344,22 @@ def main():
                 "text": _fallback_game_text(g),
                 "meta": {"game_index": i},
             })
+
+    # --- 昨日の答え合わせ ---
+    #
+    # 毎回その日で完結していると、明日また来る理由が無い。実際、
+    # 48時間で3,995回見られて登録は+2人だった(0.054%。ショートの
+    # 一般的な転換率0.3〜0.8%の10分の1)。
+    #
+    # コレスポは「なぜ注目か」を書いて出しているので、その検算ができる。
+    # 昨日出した3試合がどうなったかを見せれば、「言いっぱなしではない」が
+    # 毎日示せる。他所には出せない内容でもある。
+    #
+    # 置く場所はアウトロの直前。冒頭のフックは動画で最も重要なので、
+    # そこと本編の間には何も挟まない。
+    recap = _yesterday_recap(args.archive_dir, games)
+    if recap:
+        segments.append(recap)
 
     # --- コレスポ指数 ---
     # なぜこの試合を選んだのかは、実際には点数で決まっている。

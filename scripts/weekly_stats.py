@@ -64,6 +64,65 @@ def load_week(archive_dir: pathlib.Path, days: int = 7,
     return out
 
 
+def load_day(archive_dir: pathlib.Path, date_str: str,
+             sport: str = "mlb") -> list:
+    """
+    その日に「注目」として出した試合を、結果つきで返す。
+
+    週次の答え合わせと同じことを1日ぶんでやる。日次の中で前日を
+    回収するために使う。結果が入っていない試合は返さない
+    (推測はしない。試合が終わっていなければ、そもそも言えることが無い)。
+    """
+    from notability_engine import is_soccer_league
+
+    p = archive_dir / f"{date_str}.json"
+    if not p.exists():
+        return []
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return []
+
+    out = []
+    for g in data.get("games", []):
+        if not g.get("is_notable"):
+            continue
+        soccer = is_soccer_league(g.get("league"))
+        if (soccer if sport == "soccer" else not soccer) is False:
+            continue
+        if not (g.get("final_score") or {}).get("winner"):
+            continue
+        out.append(g)
+    return out
+
+
+def day_lines(games: list) -> list:
+    """
+    答え合わせの1行ずつ。(対戦, スコア, 添える一言) を返す。
+
+    添える一言は、こちらが書いた注目理由が実際どうだったかに限る。
+    「熱戦だった」のような感想は入れない。書いたことの検算だけをする。
+    """
+    lines = []
+    for g in games:
+        fs = g["final_score"]
+        h, a = fs.get("home"), fs.get("away")
+        if h is None or a is None:
+            continue
+        note = ""
+        for s in check_streaks([("", g)]):
+            note = s["result"]
+            break
+        if not note and h is not None and a is not None:
+            if abs(h - a) == 1:
+                note = "1点差"
+            elif min(h, a) == 0:
+                note = "完封"
+        lines.append((g.get("abbr_matchup") or g.get("matchup"),
+                      f"{h} - {a}", note))
+    return lines
+
+
 def load_news_items(news_path: str, log_path: str, since: str, until: str) -> list:
     """
     「今週の動き」に載せるニュース文を集める。
