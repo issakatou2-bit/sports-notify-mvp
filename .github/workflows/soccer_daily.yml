@@ -148,7 +148,7 @@ jobs:
           python scripts/generate_video.py \
             --games data/soccer_games.json --sport soccer \
             --audio-dir build/soccer_audio \
-            --out build/soccer
+            --out build/soccer --require-audio
 
       - name: Generate thumbnail
         if: steps.gate.outputs.count != '0'

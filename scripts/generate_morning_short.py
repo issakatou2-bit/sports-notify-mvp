@@ -1045,6 +1045,8 @@ def main():
                              "press=現地の声と報道(言葉) / all=全部")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/mr_audio")
+    parser.add_argument("--require-audio", action="store_true",
+                        help="音声が作れなければ動画を作らずに終わる")
     parser.add_argument("--out", default="build/morning")
     args = parser.parse_args()
 
@@ -1168,6 +1170,14 @@ def main():
     durations = plan_durations(segs)
     audio_path = build_narration_track(segs, durations, out_dir)
 
+    # 音声が作れなかった場合、これまでは無音のまま書き出して投稿していた。
+    # 無音の動画が出るくらいなら、その日は出さない方がよい。
+    # VOICEVOXの起動は continue-on-error なので、失敗しても気づけない。
+    if args.require_audio and not audio_path:
+        print("::error::音声が作れませんでした。無音のまま投稿しないよう、"
+              "ここで中止します(VOICEVOXの起動を確認してください)")
+        return 1
+
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24",
            "-s", f"{W}x{H}", "-framerate", str(FPS), "-i", "-"]
@@ -1235,4 +1245,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main() の戻り値を終了コードにする。返すだけでは 0 で終わり、
+    # 中止したつもりでも後続の投稿ステップが動いてしまう。
+    raise SystemExit(main() or 0)

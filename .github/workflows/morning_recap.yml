@@ -28,6 +28,10 @@ on:
         description: '作る本数を絞る (players local press のうち必要なものだけ)'
         required: false
         default: 'players local press'
+      force:
+        description: 'true にすると、その日に投稿済みでも上げ直す'
+        required: false
+        default: 'false'
 
 # 取得した結果を data/ へコミットするため
 permissions:
@@ -156,7 +160,8 @@ jobs:
 
             python scripts/generate_morning_short.py \
               --recap data/morning_recap.json --mode "$mode" \
-              --audio-dir "build/mr_audio_${mode}" --out build/morning
+              --audio-dir "build/mr_audio_${mode}" --out build/morning \
+              --require-audio
             if [ $? -ne 0 ]; then
               echo "::warning::$mode の動画生成に失敗しました"
               echo "::endgroup::"; continue
@@ -186,11 +191,15 @@ jobs:
             # 実際 --morning-mode の選択肢に press が無く、argparse が
             # 終了コード2で落ちていたのに誰も気づかず、現地の声の動画が
             # 2日ぶん作られては捨てられていた。結果を必ず出す。
+            # 投稿済みの日は既定で飛ばす。消して作り直したい場合だけ
+            # force を立てる(重複を防ぐ守りを、意図して外すための口)。
+            FORCE=""
+            if [ "${{ inputs.force }}" = "true" ]; then FORCE="--force"; fi
             if python scripts/upload_youtube.py \
               --video "$VIDEO" --kind morning --morning-mode "$mode" \
               --recap data/morning_recap.json \
               --thumbnail "build/morning/thumb_${mode}.png" \
-              --privacy public --publish-at "$AT"; then
+              --privacy public --publish-at "$AT" $FORCE; then
               echo "$mode: 投稿しました (公開 ${AT:-即時})"
             else
               echo "::error::$mode の投稿に失敗しました"

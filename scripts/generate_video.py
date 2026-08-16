@@ -473,6 +473,8 @@ def main():
                         choices=list(DATA_SOURCES),
                         help="出典表記の切り替え")
     parser.add_argument("--audio-dir", default="build/audio")
+    parser.add_argument("--require-audio", action="store_true",
+                        help="音声が作れなければ動画を作らずに終わる")
     parser.add_argument("--out", default="build/video")
     args = parser.parse_args()
     global DATA_SOURCE
@@ -509,6 +511,15 @@ def main():
     # --- 音声を先に連結しておく ---
     audio_files = [s["file"] for s in segments if s.get("file")]
     audio_path = None
+
+    # 音声が無いまま書き出すと、無音の動画がそのまま投稿される。
+    # VOICEVOXの起動は continue-on-error なので、失敗しても実行は緑で終わる。
+    # 無音を出すくらいなら、その日は出さない方がよい。
+    if args.require_audio and not audio_files:
+        print("::error::音声が作れませんでした。無音のまま投稿しないよう、"
+              "ここで中止します(VOICEVOXの起動を確認してください)")
+        return 1
+
     if audio_files:
         concat_list = out_dir / "audio_list.txt"
         concat_list.write_text(
@@ -600,4 +611,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main() の戻り値を終了コードにする。返すだけでは 0 で終わり、
+    # 中止したつもりでも後続の投稿ステップが動いてしまう。
+    raise SystemExit(main() or 0)

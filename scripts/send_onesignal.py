@@ -26,6 +26,14 @@ import sys
 
 import requests
 
+# 「今日/今夜/明日」の判定は post_common に1つだけ置く。
+#
+# ここに同じ関数を自前で持っていた。共通側をリスト対応にして呼び出しも
+# 変えたとき、この複製だけが辞書のままで残り、19時の通知が
+# AttributeError で落ちた。同じ判断を2か所に置くと、必ず片方が古くなる。
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from post_common import today_or_tomorrow_label  # noqa: E402
+
 
 SITE_URL = os.environ.get(
     "SITE_URL", "https://REPLACE_WITH_YOUR_USERNAME.github.io/REPLACE_WITH_YOUR_REPO/"
@@ -74,28 +82,6 @@ def game_hook_line(game: dict) -> str:
     if start and " " in start:
         time_part = start.split(" ")[1] + " "  # 'MM/DD HH:MM' の 'HH:MM ' 部分だけ使う
     return f"{time_part}{matchup} {hook}"
-
-
-def today_or_tomorrow_label(top_game: dict) -> str:
-    """
-    通知が実際に送られる(=この関数が呼ばれる)時点のJST日付と、試合の
-    start_time_jst('MM/DD HH:MM')の日付を比較し、「今日」か「明日」かを
-    動的に判定する。cronの実行遅延で日付を跨いだ場合でも自然な表現になる。
-    タイトル行にそのまま使う想定なので、末尾に「の注目試合」まで含める。
-    """
-    import datetime
-
-    start = top_game.get("start_time_jst")
-    if not start:
-        return "注目試合"
-    try:
-        month, day = start.split(" ")[0].split("/")
-        jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
-        if int(month) == jst_now.month and int(day) == jst_now.day:
-            return "今日の注目試合"
-        return "明日の注目試合"
-    except (ValueError, IndexError):
-        return "注目試合"
 
 
 def load_notable_games(path: str, limit: int = 2):

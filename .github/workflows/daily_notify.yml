@@ -288,7 +288,7 @@ jobs:
           python scripts/generate_video.py \
             --games notable_games.json \
             --audio-dir build/audio \
-            --out build/video
+            --out build/video --require-audio
 
       # サムネイルを指定しないと、YouTubeが動画中のコマを自動で選ぶ。
       # 検索結果や関連動画ではそれがクリック率を左右するため、
