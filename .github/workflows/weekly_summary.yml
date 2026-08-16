@@ -25,8 +25,9 @@ on:
     workflows: ["Daily notable games"]
     types: [completed]
 
+# 投稿の記録をコミットするので write が要る。
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   # 日曜かどうかだけを見る。JSTで判定する(UTCだと日曜の朝までが土曜になる)。
@@ -185,6 +186,34 @@ jobs:
             --kind verdict \
             --thumbnail build/verdict/thumb.png \
             --privacy public
+
+      # 投稿の記録を残す。
+      #
+      # これまで残していなかった。upload_youtube.py は
+      # data/published_videos.json を見て二重投稿を防ぐが、その記録が
+      # 毎回捨てられていたので、週次では二重投稿の防止が一度も働いていない。
+      # 起動を日次の完走に乗せた今、日曜に日次を2回動かせば週次も2回動く。
+      # 残しておけば2本目は弾かれる。健康診断も週次を確認できるようになる。
+      - name: Commit video record
+        if: always()
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in data/published_videos.json data/published_tiktok.json                    data/playlists.json data/localized.json; do
+            if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
+          done
+          git diff --cached --quiet ||             git commit -m "weekly record: ${{ github.run_id }}"
+          git pull --rebase --quiet || true
+          git push || echo "変更が無いためスキップ"
+
+      # 作れなかった回を緑のまま通さない。週1本しか無いので、
+      # 翌朝の健康診断まで気付かないのは遅い。
+      - name: Confirm the videos went out
+        if: always()
+        run: |
+          python scripts/verify_published.py --kind weekly
+          python scripts/verify_published.py --kind verdict
 
       - name: Save videos as artifact
         if: always()
