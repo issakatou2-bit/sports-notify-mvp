@@ -2050,17 +2050,57 @@ def _team_context_line(team_id: str, team_name: str, standings: dict) -> str:
     return parts
 
 
+def _soccer_context_line(team_id: str, team_name: str, standings: dict) -> str:
+    """
+    サッカー1チーム分の、AIに渡す状況。
+
+    MLB用をそのまま当てていたので、「所属地区不明」と「ゲーム差」が
+    サッカーの試合に出ていた。どちらもサッカーには無い概念で、
+    それを見たAIが「同地区内で1.0ゲーム差の3位同士」という、
+    どこにも根拠の無い文を書いて公開された。
+
+    開幕直後は順位そのものを渡さない。全チームが勝ち点0で並び、
+    APIは得失点差などのタイブレークで順位を付けて返すだけなので、
+    それを実力の順位として読ませると必ず作り話になる。
+    ルール側(rule_soccer_table)と同じ境目で切る。
+    """
+    s = standings.get(team_id)
+    if not s or (s.played or 0) < SOCCER_TABLE_MIN_MATCHES:
+        return (f"{team_name}: 今季の順位表はまだ意味を持つ段階にない"
+                "(開幕直後のため順位には触れないこと)")
+    if s.division_rank == 1:
+        rank_part = "リーグ首位"
+    else:
+        rank_part = f"リーグ{s.division_rank}位"
+        if s.points_back is not None:
+            rank_part += f"(首位との勝ち点差{s.points_back:.0f})"
+    return f"{team_name}: {rank_part}、{s.played}試合消化"
+
+
 def _build_ai_prompt(game: dict, standings: dict) -> str:
-    home_context = _team_context_line(
+    line = (_soccer_context_line if is_soccer_league(game.get("league"))
+            else _team_context_line)
+    home_context = line(
         game["home_team_id"], game["home_team_name"], standings
     )
-    away_context = _team_context_line(
+    away_context = line(
         game["away_team_id"], game["away_team_name"], standings
     )
 
     structural_notes = []
-    home_div = MLB_DIVISIONS.get(game["home_team_id"])
-    away_div = MLB_DIVISIONS.get(game["away_team_id"])
+    soccer = is_soccer_league(game.get("league"))
+    if soccer:
+        # サッカーには地区が無い。MLB用の地区の話をそのまま通すと、
+        # 「同地区内で対峙する」という存在しない構図が書かれる。
+        structural_notes.append(
+            f"{game['league']}は1部リーグの総当たり戦であり、地区や"
+            "カンファレンスの区分は無い。「同地区」「地区首位」といった"
+            "言い方はこの競技には存在しないので使わないこと")
+        structural_notes.append(
+            "順位の差は勝ち点で表す。「ゲーム差」は野球の言い方なので"
+            "使わないこと")
+    home_div = MLB_DIVISIONS.get(game["home_team_id"]) if not soccer else None
+    away_div = MLB_DIVISIONS.get(game["away_team_id"]) if not soccer else None
     if home_div and away_div:
         if home_div == away_div:
             structural_notes.append(
@@ -2172,21 +2212,32 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         f"【構造的な位置づけ】\n{structural_text}\n\n"
         f"【この試合が注目された理由(ルールベースで抽出)】\n{reasons_text}\n"
         f"{highlight_line}\n"
-        "あなたはMLB/野球初心者にも分かりやすく解説するスポーツ記者です。"
+        # 競技で言い換える。サッカーの試合にも「MLB/野球初心者にも」
+        # 「先発投手の投げ合い」「本塁打が出やすい球場」と書かせていた。
+        + (f"あなたは{'サッカー' if soccer else 'MLB/野球'}初心者にも"
+           "分かりやすく解説するスポーツ記者です。") +
         "以下の2つを、上記のデータだけを根拠に日本語で書いてください。\n\n"
         "【出力1: 解説文】\n"
-        "「シーズン全体・MLB全体で見たときに、この一戦になぜ注目すべきか」を"
+        f"「シーズン全体・{game['league']}全体で見たときに、"
+        "この一戦になぜ注目すべきか」を"
         "3〜4文で説明する文章。250文字から320文字に収めること。\n"
         "この文章はサイト本文として読まれるので、短すぎると物足りない。"
-        "上に与えたデータのうち、順位・連勝連敗・先発投手の成績・球場の特徴・"
-        "選手の記録など、使えるものはできるだけ拾って厚みを出すこと。"
+        + ("上に与えたデータのうち、順位・昨季の成績・所属する日本人選手など、"
+           "使えるものはできるだけ拾って厚みを出すこと。"
+           if soccer else
+           "上に与えたデータのうち、順位・連勝連敗・先発投手の成績・"
+           "球場の特徴・選手の記録など、使えるものはできるだけ拾って"
+           "厚みを出すこと。") +
         "ただし320文字を超えると、続けて書くフック文が書けなくなるので"
         "必ず収めること。\n"
         "構成は「大きな注目理由(順位争い・両チームの立場など、試合全体の意味)」を"
-        "先に述べ、最後の1文で「小さな見どころ(先発投手の投げ合い、球場の特徴など、"
-        "試合を見ている間に注目できる具体的なポイント)」を添えること。"
-        "球場の特徴が提供されている場合は、それを最後の見どころとして使うと良い"
-        "(例:「本塁打が出やすい球場での一戦だけに、一発が出るかにも注目したい」)。\n"
+        "先に述べ、最後の1文で「小さな見どころ(試合を見ている間に注目できる"
+        "具体的なポイント)」を添えること。"
+        + ("" if soccer else
+           "先発投手の投げ合いや球場の特徴が提供されている場合は、"
+           "それを最後の見どころとして使うと良い"
+           "(例:「本塁打が出やすい球場での一戦だけに、"
+           "一発が出るかにも注目したい」)。") + "\n"
         "解説文の中で、読者がここだけ読めば要点が掴めるという箇所を1〜2箇所選び、"
         "その部分だけを【】で囲むこと(例: 【首位と2.0ゲーム差】で並ぶ両者が)。"
         "囲むのは10〜20文字程度の短い語句にとどめ、文全体を囲まないこと。\n\n"
@@ -2208,6 +2259,12 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         "- 所属地区を取り違えないこと。上記【チームの状況】に各チームの所属地区を"
         "  明記してあるので、別々の地区のチーム同士を「同地区で首位を争っている」"
         "  かのように書くことは絶対に禁止\n"
+        # 開幕直後のサッカーで、渡していない順位を勝手に書いた実例がある。
+        # 「順位表はまだ意味を持つ段階にない」と渡したにもかかわらず、
+        # 「同地区内で1.0ゲーム差の3位同士」という文が公開された。
+        "- 【チームの状況】に「順位表はまだ意味を持つ段階にない」と書かれている"
+        "  場合、今季の順位・勝ち点・勝ち点差・ゲーム差には一切触れないこと。"
+        "  昨季の順位など、与えられている材料だけで書くこと\n"
         "- 順位差を誇張しないこと。地区首位のチームについては2位との差を明記して"
         "  あるので、大差をつけて独走している場合に「首位の座が危うい」「正念場」"
         "  のような、事実と食い違う煽り方をしないこと\n"
@@ -2224,9 +2281,10 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         "- 出力1の文体は理路整然とした説明口調にすること。「〜だよ！」「〜だね！」の"
         "  ような話し言葉・感嘆符での締めは禁止。「〜である」「〜になる」のような"
         "  落ち着いた書き言葉で書くこと\n"
-        "- 野球初心者にも伝わるよう、専門用語を使う場合は軽く説明を添えること\n"
+        + (f"- {'サッカー' if soccer else '野球'}初心者にも伝わるよう、"
+           "専門用語を使う場合は軽く説明を添えること\n") +
         "- 見出しや記号(・や「」)は使わず、文章のみを出力すること\n"
-        "- MLB公式ハイライト動画のタイトルが提供されている場合、そこから伝わる"
+        "- 公式ハイライト動画のタイトルが提供されている場合、そこから伝わる"
         "  文脈(注目プレーの内容など)は参考にしてよいが、タイトルの文言を"
         "  そのまま引用せず、必ず自分の言葉で言い換えること\n\n"
         "出力形式(厳守): まず出力1の文章のみを書き、次の行に半角記号で"
