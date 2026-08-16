@@ -254,6 +254,20 @@ def main() -> int:
     if not args.dry_run:
         save_store(store)
     print(f"\n[info] {done}本に英語を足しました")
+
+    # 実行ページにも出す。ログを開かないと結果が分からないのでは、
+    # 確認のたびにジョブを掘ることになる。
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary and REPORT:
+        head = ("訳の確認（更新はしていません）" if args.dry_run
+                else f"{done}本に英語を足しました")
+        lines = [f"## {head}", ""]
+        for ja, en, desc in REPORT:
+            lines += [f"**{ja}**", "", f"→ {en}", "",
+                      "<details><summary>説明文</summary>", "",
+                      "```", desc[:900], "```", "", "</details>", ""]
+        with open(summary, "a", encoding="utf-8") as f:
+            f.write("\n".join(lines) + "\n")
     return 0
 
 
