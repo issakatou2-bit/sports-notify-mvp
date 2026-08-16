@@ -140,7 +140,7 @@ def send_one(app_id: str, api_key: str, tag_key: str, games: list, heading_suffi
         print(f"[info] {tag_key}: 今回は通知対象の試合が無いためスキップします")
         return True
 
-    label = today_or_tomorrow_label(games[0])
+    label = today_or_tomorrow_label(games)
     display_games = sort_for_display(games)
     body_text = "\n".join(game_hook_line(g) for g in display_games)
 

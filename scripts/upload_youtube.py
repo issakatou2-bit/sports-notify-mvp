@@ -693,7 +693,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 08/16の注目試合【MLB】」の形で、一覧では前半しか見えず、
         # この動画で明日どの試合を見ればいいのかが分かる、という肝心の
         # ことが伝わっていなかった。日付は説明文にもサムネイルにもある。
-        when = post_common.when_label(top.get("start_time_jst") or "") or "次"
+        # 見出しは1試合ではなく、その回のまとまりで決める。
+        # 上位1試合だけで決めると、深夜の試合が1位だった日に
+        # 「今夜」へ振れて、毎日の呼び方が安定しない。
+        when = post_common.overall_label(games) or "次"
         head = f"{when}の注目試合{badge}"
         if lead:
             title = f"{head}｜{lead}｜{matchup} ほか #Shorts"

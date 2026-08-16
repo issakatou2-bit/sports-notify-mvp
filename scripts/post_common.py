@@ -120,7 +120,15 @@ def game_line(game: dict) -> str:
 # 「今夜」の続き。欧州の試合は日本時間の深夜〜早朝に集中するので、
 # ここを暦どおり「明日」と言うと、20時に見た人には遠い先の話に聞こえる。
 # 日本のスポーツ報道も「あす未明」と呼ぶ。
-LATE_NIGHT_UNTIL = 9  # この時刻より前は「未明」として扱う
+#
+# 6時にしている理由:
+#   最初は9時にしていたが、それではMLBまで飲み込んだ。MLBの開始は
+#   JST 01時〜11時で、07〜08時台に最も多い(実測94試合)。9時を境にすると
+#   08:15開始の試合が「今夜」になり、19時に見た人に翌朝の試合を
+#   「今夜」と言うことになる。実際、日次の見出しが全て「今夜の注目試合」
+#   になっていた。
+#   欧州の試合は21時〜翌6時なので、6時ならそちらは取りこぼさない。
+LATE_NIGHT_UNTIL = 6  # この時刻より前は「未明」として扱う
 
 
 def kickoff_parts(start_time_jst: str):
@@ -162,9 +170,31 @@ def when_label(start_time_jst: str) -> str:
     return ""
 
 
-def today_or_tomorrow_label(top_game: dict) -> str:
-    """投稿時点から見た見出し。「今夜の注目試合」など。"""
-    label = when_label(top_game.get("start_time_jst") or "")
+def overall_label(games) -> str:
+    """
+    その回の見出しに使う「いつ」。試合ごとではなく、まとまりで決める。
+
+    1本の動画に、未明の試合と翌朝の試合が混ざることがある。
+    上位1試合だけで決めると、たまたま深夜の試合が1位だった日に
+    見出しが「今夜」に振れて、毎日の呼び方が安定しない。
+    多数決にすれば、その回が実際どちらの塊なのかで決まる。
+    """
+    labels = [when_label(g.get("start_time_jst") or "") for g in (games or [])]
+    labels = [x for x in labels if x]
+    if not labels:
+        return ""
+    return max(set(labels), key=labels.count)
+
+
+def today_or_tomorrow_label(games) -> str:
+    """
+    投稿時点から見た見出し。「今夜の注目試合」など。
+
+    1試合でもリストでも受ける(呼び出し側が両方ある)。
+    """
+    if isinstance(games, dict):
+        games = [games]
+    label = overall_label(games)
     return f"{label}の注目試合" if label else "注目試合"
 
 
@@ -193,7 +223,7 @@ def build_post_body(games: list, hashtags_display: str, max_chars: int) -> str:
     """
     if not games:
         return ""
-    label = today_or_tomorrow_label(games[0])
+    label = today_or_tomorrow_label(games)
     kept = list(games)
     reserved = len(hashtags_display) + len(SITE_URL) + 4
     while True:
