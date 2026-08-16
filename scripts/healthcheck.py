@@ -86,7 +86,17 @@ def check_videos(day: str) -> tuple:
         if entry:
             lines.append(f"| {at} | {label} | 出た | {entry.get('video_id')} |")
         elif optional:
-            lines.append(f"| {at} | {label} | — | 試合が無い日 |")
+            # 「試合の無い日は欠けてよい」と一律に見逃していたので、
+            # サッカーが1本も出ていないことに何週間も気付かなかった。
+            # 開催があったかどうかは手元のデータで分かる。
+            fixtures = len(((load("data/soccer_games.json") or {})
+                            .get("games")) or [])
+            if fixtures:
+                missing += 1
+                lines.append(f"| {at} | {label} | **出ていない** | "
+                             f"{fixtures}試合あった日 |")
+            else:
+                lines.append(f"| {at} | {label} | — | 試合が無い日 |")
         else:
             missing += 1
             lines.append(f"| {at} | {label} | **出ていない** | |")

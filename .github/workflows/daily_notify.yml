@@ -143,6 +143,9 @@ jobs:
 
       # 購読者には1つのフィードで届ける。競技ごとに1件ずつ出る。
       - name: Generate RSS feed
+        # サイトが1日古くなるより、動画が出ない方が痛い。
+        # 動画の生成はこれらより後ろに並んでいる。
+        continue-on-error: true
         run: |
           python scripts/generate_rss.py \
             --input notable_games.json \
@@ -158,6 +161,9 @@ jobs:
           git push || echo "変更が無いか、push対象が無いためスキップ"
 
       - name: Assemble Pages site
+        # サイトが1日古くなるより、動画が出ない方が痛い。
+        # 動画の生成はこれらより後ろに並んでいる。
+        continue-on-error: true
         run: |
           mkdir -p public
           cp -r web/* public/
@@ -167,6 +173,9 @@ jobs:
       # ベストナイン編成用の選手成績。MLB Stats APIのseason成績は試合ごとに
       # 更新されるため、毎日ここで取り直せば常に最新の状態が保たれる。
       - name: Generate player stats
+        # サイトが1日古くなるより、動画が出ない方が痛い。
+        # 動画の生成はこれらより後ろに並んでいる。
+        continue-on-error: true
         run: python scripts/generate_player_stats.py --out public/player_stats.json
 
       # 開幕日程と昨季順位。中身は日単位ではほぼ動かないので、
@@ -198,6 +207,9 @@ jobs:
       # 選手ページはsitemap生成より前に作る必要がある
       # (generate_archive_pages.pyがpublic/players配下を走査してsitemapに載せるため)
       - name: Generate player pages
+        # サイトが1日古くなるより、動画が出ない方が痛い。
+        # 動画の生成はこれらより後ろに並んでいる。
+        continue-on-error: true
         run: |
           python scripts/generate_player_pages.py \
             --archive-dir archive \
@@ -207,6 +219,9 @@ jobs:
       # public/ に出力することで、蓄積したデータが公開サイトから
       # 日付ごとの独立したURLで読める状態になる。
       - name: Generate archive pages
+        # サイトが1日古くなるより、動画が出ない方が痛い。
+        # 動画の生成はこれらより後ろに並んでいる。
+        continue-on-error: true
         run: |
           python scripts/generate_archive_pages.py \
             --archive-dir archive \
@@ -278,6 +293,9 @@ jobs:
       # ポッドキャストのmp3をpublic/へ出した後に、Pagesへ渡す。
       # 順序が逆だと、その日のエピソードが公開されない。
       - name: Upload Pages artifact
+        # サイトが1日古くなるより、動画が出ない方が痛い。
+        # 動画の生成はこれらより後ろに並んでいる。
+        continue-on-error: true
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
