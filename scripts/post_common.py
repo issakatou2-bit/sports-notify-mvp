@@ -234,6 +234,52 @@ def build_post_body(games: list, hashtags_display: str, max_chars: int) -> str:
     return "\n".join([label] + [game_line(g) for g in sort_for_display(kept)])
 
 
+# Xの文字数の数え方。
+#
+# Xは280文字までだが、日本語は1文字を2として数えるので、日本語だけなら
+# 実質140文字になる。Blueskyは300グラフェムで、日本語でもそのまま300。
+# 同じ本文を手で貼り替えると毎回溢れるのはこのため。
+#
+# 1として数えられる範囲(それ以外は2):
+#   U+0000-U+10FF / U+2000-U+200D / U+2010-U+201F / U+2032-U+2037
+# URLは実際の長さに関係なく23として数えられる。
+X_LIMIT = 280
+X_URL_WEIGHT = 23
+_X_SINGLE_RANGES = ((0x0000, 0x10FF), (0x2000, 0x200D),
+                    (0x2010, 0x201F), (0x2032, 0x2037))
+
+
+def x_weight(text: str) -> int:
+    """Xでの文字数。日本語は1文字を2として数える。"""
+    total = 0
+    for ch in text or "":
+        c = ord(ch)
+        total += 1 if any(lo <= c <= hi for lo, hi in _X_SINGLE_RANGES) else 2
+    return total
+
+
+def build_post_for_x(games: list, news_path: str = "public/news.json"):
+    """
+    Xへ貼るための本文。収まるまで試合を1件ずつ減らす。
+
+    Bluesky向けを手で削って貼る運用だったが、Xの数え方だと日本語の
+    本文はほぼ必ず溢れる。削る作業を毎日やる意味が無いので、
+    最初から収まる形を別に用意する。
+    """
+    kept = list(games)
+    while kept:
+        hashtags = collect_hashtags(kept)
+        display = " ".join(f"#{t}" for t in hashtags)
+        body = build_post_body(kept, display, 1000)
+        text = f"{body}\n{display}\n{SITE_URL}"
+        # URLは23として数えられるので、実文字数との差を引く
+        weight = x_weight(text) - x_weight(SITE_URL) + X_URL_WEIGHT
+        if weight <= X_LIMIT or len(kept) == 1:
+            return text, weight
+        kept = kept[:-1]
+    return "", 0
+
+
 def build_post(games: list, max_chars: int, news_path: str = "public/news.json"):
     """
     投稿1件ぶんの材料をまとめて返す。

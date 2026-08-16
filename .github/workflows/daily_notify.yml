@@ -68,7 +68,9 @@ jobs:
           python notability_engine.py --source soccer \
             --out data/soccer_games.json
 
+      # ニュースが取れなくても、動画もサイトも作れる。
       - name: Detect roster changes
+        continue-on-error: true
         run: |
           mkdir -p public
           python scripts/detect_roster_changes.py \
@@ -92,7 +94,12 @@ jobs:
           fi
           echo "配信開始: $(TZ=Asia/Tokyo date +%H:%M:%S) JST"
 
+      # 配信先の失敗で、その日の動画とサイトまで落とさない。
+      # 実際、通知が AttributeError で落ちた日に、以降のステップが
+      # 1つも動かず、動画もRSSもサイト更新も丸ごと消えた。
+      # 通知は届かなければ困るが、本体はあくまで動画とサイト。
       - name: Post to Bluesky
+        continue-on-error: true
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
@@ -110,6 +117,7 @@ jobs:
         run: python scripts/post_threads.py
 
       - name: Send push via OneSignal
+        continue-on-error: true
         env:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
@@ -123,7 +131,10 @@ jobs:
       # 最終スコアが無いものを、MLB Stats APIから取得して埋める。
       # 生成時点(19時JST)ではまだ試合が始まってすらいないため、
       # 結果は必ず「後から追いかけて埋める」形にならざるを得ない。
+      # 過去のアーカイブに結果を埋める処理。MLB側のAPIを叩くので、
+      # 先方が不調な日にその日の配信ごと落とすのは割に合わない。
       - name: Backfill past game results
+        continue-on-error: true
         run: python scripts/backfill_results.py --archive-dir archive
 
       # 購読者には1つのフィードで届ける。競技ごとに1件ずつ出る。
