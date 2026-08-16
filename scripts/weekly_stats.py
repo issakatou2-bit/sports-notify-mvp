@@ -19,6 +19,10 @@ import re
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
+# 関数の中で import していたので、使う場所を増やすたびに書き足しが要り、
+# 実際に2か所で書き忘れて undefined name になった。ここに1つ置く。
+from notability_engine import is_soccer_league  # noqa: E402
+
 DATE_FILE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})\.json$")
 
 # 「アストロズは5連勝中」の形をほどく。notability_engine.py が
@@ -38,8 +42,6 @@ def load_week(archive_dir: pathlib.Path, days: int = 7,
     絞らないと1日2試合の枠を取り合い、週末はサッカーが混ざる。
     日次を競技ごとに分けたのと同じ理由で、週次も分ける。
     """
-    from notability_engine import is_soccer_league
-
     entries = []
     for f in sorted(archive_dir.glob("*.json")):
         if DATE_FILE_RE.match(f.name):
@@ -73,8 +75,6 @@ def load_day(archive_dir: pathlib.Path, date_str: str,
     回収するために使う。結果が入っていない試合は返さない
     (推測はしない。試合が終わっていなければ、そもそも言えることが無い)。
     """
-    from notability_engine import is_soccer_league
-
     p = archive_dir / f"{date_str}.json"
     if not p.exists():
         return []
@@ -113,8 +113,18 @@ def day_lines(games: list) -> list:
         for s in check_streaks([("", g)]):
             note = s["result"]
             break
+        # 添える一言は競技で変える。「完封」は野球の言い方で、
+        # サッカーでは使わない(あちらは無失点・クリーンシート)。
+        # 1点差もサッカーではありふれているので、態々書かない。
         if not note and h is not None and a is not None:
-            if abs(h - a) == 1:
+            if is_soccer_league(g.get("league")):
+                if h == a:
+                    note = "引き分け"
+                elif min(h, a) == 0:
+                    note = "無失点"
+                elif abs(h - a) >= 3:
+                    note = "大差"
+            elif abs(h - a) == 1:
                 note = "1点差"
             elif min(h, a) == 0:
                 note = "完封"
@@ -237,6 +247,10 @@ def compute_verdict(week: list) -> dict:
     decided = [(d, g) for d, g in week if (g.get("final_score") or {}).get("winner")]
 
     home_wins = sum(1 for _, g in decided if g["final_score"]["winner"] == "home")
+    # 引き分けを引かずに away_wins = decided - home_wins としていた。
+    # 野球には引き分けが無いので気付かなかったが、サッカーでは3割前後あり、
+    # そのぶんアウェイの勝ち数が水増しされる。
+    draws = sum(1 for _, g in decided if g["final_score"]["winner"] == "draw")
     one_run = 0
     shutouts = 0
     top = None
@@ -265,24 +279,33 @@ def compute_verdict(week: list) -> dict:
         "picked": len(week),
         "decided": len(decided),
         "home_wins": home_wins,
-        "away_wins": len(decided) - home_wins,
+        "draws": draws,
+        "away_wins": len(decided) - home_wins - draws,
         "one_run": one_run,
         "shutouts": shutouts,
         "top_game": top,
         "streaks": dedupe_streaks(check_streaks(week)),
+        # 語彙を競技で変えるため。週の全試合が同じ競技である前提で見る
+        # (load_week が sport で絞ってから渡している)。
+        "soccer": bool(week) and is_soccer_league(week[0][1].get("league")),
     }
 
 
 def verdict_lines(v: dict) -> list:
     """答え合わせ画面に出す行。数字が入るものだけを返す。"""
+    soccer = v.get("soccer")
     lines = []
     if v["decided"]:
         lines.append((f"{v['decided']}試合", "結果が出た注目試合"))
-        lines.append((f"{v['home_wins']}勝 {v['away_wins']}敗", "ホームチームの成績"))
-    if v["one_run"]:
+        record = f"{v['home_wins']}勝 {v['away_wins']}敗"
+        if v.get("draws"):
+            record += f" {v['draws']}分"
+        lines.append((record, "ホームチームの成績"))
+    if v["one_run"] and not soccer:
         lines.append((f"{v['one_run']}試合", "1点差の接戦"))
     if v["shutouts"]:
-        lines.append((f"{v['shutouts']}試合", "完封試合"))
+        lines.append((f"{v['shutouts']}試合",
+                      "無失点で終えた試合" if soccer else "完封試合"))
     if v["top_game"]:
         t = v["top_game"]
         lines.append((f"{t['home']} - {t['away']}", f"最も点が入った {t['abbr']}"))

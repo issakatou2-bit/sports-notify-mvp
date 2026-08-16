@@ -35,11 +35,15 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 日次が失敗した回で動かしても、そこで取れた材料が無い。
-    # 手動実行(workflow_dispatch)のときは event 名が違うので通す。
+    # 起動の合図にするだけで、材料には依存しない。
+    #
+    # 以前は日次の成功を条件にしていたが、8/16に日次が通知の失敗で落ちた回、
+    # サッカーまで一緒に止まった。この下の Fetch soccer fixtures は
+    # 手元のデータが古ければ自分で取り直すので、MLB側の不調は理由にならない。
+    # 中止(cancelled)のときだけ、意図的に止めたものとして従う。
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+      github.event.workflow_run.conclusion != 'cancelled'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

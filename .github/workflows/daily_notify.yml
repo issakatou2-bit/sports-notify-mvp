@@ -133,8 +133,12 @@ jobs:
       # 結果は必ず「後から追いかけて埋める」形にならざるを得ない。
       # 過去のアーカイブに結果を埋める処理。MLB側のAPIを叩くので、
       # 先方が不調な日にその日の配信ごと落とすのは割に合わない。
+      # サッカーの結果は football-data.org から取るので、鍵が要る。
+      # 鍵が無いとサッカーの分だけ静かに飛ばされ、答え合わせに出てこない。
       - name: Backfill past game results
         continue-on-error: true
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: python scripts/backfill_results.py --archive-dir archive
 
       # 購読者には1つのフィードで届ける。競技ごとに1件ずつ出る。

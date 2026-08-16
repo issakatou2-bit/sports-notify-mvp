@@ -643,7 +643,11 @@ def rule_soccer_last_season(game: Game) -> list[Reason]:
     if worst <= 10:
         return [Reason(tag="quality",
                        text=f"昨季{hr}位と{ar}位の対戦", weight=1)]
-    return []
+    # 中位・下位同士でも、昨季の位置は語れる材料になる。
+    # 点は付けない(注目度は上がらない)が、その日にこの試合しか無ければ
+    # ナレーションが何も言えなくなるので、文面だけは残す。
+    return [Reason(tag="quality",
+                   text=f"昨季{hr}位と{ar}位の対戦", weight=0)]
 
 
 SOCCER_GAME_RULES = [rule_soccer_japanese_player, rule_soccer_marquee,
@@ -712,6 +716,13 @@ def visible_score_game(reasons: list[Reason]) -> int:
 # だったため、盤面の半分以上に色が付いてしまい、目印としての意味が薄れて
 # いた)。
 NOTABLE_SCORE_THRESHOLD = 3
+
+# サッカーで、その日にある試合から最低限残す本数。build_output で使う。
+# 試合数がMLBの15に対して0〜10と幅があるため、絶対値の閾値だけでは
+# 「開催はあるのに0件」という日が出る。理由は build_output に書いてある。
+# 3にしてあるのは日次動画がMLBと同じ3試合構成だから。既に3試合以上が
+# 閾値を超えている日は、この下限では何も変わらない。
+SOCCER_MIN_NOTABLE = 3
 
 
 # ---------------------------------------------------------------------------
@@ -851,6 +862,21 @@ def build_output(
     output_games.sort(
         key=lambda x: (-x["score"], -x["_sort_score"], x["start_time_jst"] or "99/99 99:99")
     )
+    # サッカーは、その日にある試合の中で上位を必ず残す。
+    #
+    # MLBは1日15試合あるので「3点以上」という絶対値で絞れば3試合残る。
+    # サッカーは開催が2試合しかない日がある。そこへ同じ閾値を当てると、
+    # 「今夜やる試合のうちどれを見るか」に答える前に0件になる。
+    # 実際、ラ・リーガ開幕週はアラベス対ヘタフェとセビージャ対ラージョの
+    # 2試合しか無く、どちらも昨季14位・15位を含むため0点になり、
+    # サッカーの日次動画は1本も出ていなかった。
+    #
+    # 毎日必ず出ることがこのチャンネルの value なので、試合がある日は出す。
+    # 点が低い日は見出しが控えめになるだけで、事実と食い違うわけではない。
+    soccer = [g for g in output_games if is_soccer_league(g["league"])]
+    for g in soccer[:SOCCER_MIN_NOTABLE]:  # 既に条件を満たしていれば何も変わらない
+        g["is_notable"] = True
+
     for g in output_games:
         del g["_sort_score"]  # 内部のタイブレーク用なので出力には含めない
     import datetime as _datetime

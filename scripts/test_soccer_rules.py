@@ -45,6 +45,8 @@ for lg in ("PD", "ラ・リーガ", "PL", "プレミアリーグ", "CL", "チャ
 check("MLB はサッカーでない", ne.is_soccer(make("MLB", "A", "B")), False)
 
 # --- 実際のリーグ名でルールが発火するか -------------------------------------
+# 見るのは点数。is_notable はこの後の「その日の上位を残す」規則が
+# 混ざるので、ルールが効いているかの確認には使えない。
 print("\n--- 日本語のリーグ名で採点する ---")
 CASES = [
     ("ラ・リーガ", "FC Barcelona", "Real Madrid CF", True, "エル・クラシコ"),
@@ -52,13 +54,47 @@ CASES = [
     ("プレミアリーグ", "Liverpool FC", "Brighton & Hove Albion FC", True, "日本人選手"),
     ("ラ・リーガ", "Deportivo Alavés", "Getafe CF", False, "中位同士"),
 ]
-for league, home, away, want_notable, note in CASES:
+for league, home, away, want_scored, note in CASES:
     out = ne.build_output([make(league, home, away)], {}, {})
     g = out["games"][0]
-    check(f"{note}: {g['matchup']}", bool(g.get("is_notable")), want_notable)
-    if g.get("is_notable"):
-        for r in g.get("reasons") or []:
-            print(f"      {r.get('text')}")
+    check(f"{note}: {g['matchup']}",
+          g["score"] >= ne.NOTABLE_SCORE_THRESHOLD, want_scored)
+    for r in g.get("reasons") or []:
+        print(f"      +{r.get('weight')} {r.get('text')}")
+
+# --- その日にある試合から必ず選ぶ -------------------------------------------
+# サッカーは開催が2試合しかない日がある。MLBと同じ絶対値の閾値だけだと
+# その日は0件になり、動画が1本も出ない。実際ラ・リーガ開幕週がそうだった。
+print("\n--- 試合数が少ない日 ---")
+thin = [make("ラ・リーガ", "Deportivo Alavés", "Getafe CF", 0),
+        make("ラ・リーガ", "Sevilla FC", "Rayo Vallecano de Madrid", 1)]
+out = ne.build_output(thin, {}, {})
+check("地味な2試合しか無い日でも選ばれる",
+      sum(1 for g in out["games"] if g["is_notable"]), 2)
+check("点は低いまま(嵩上げしていない)",
+      max(g["score"] for g in out["games"]), 0)
+check("それでも語る材料はある",
+      all(g["reasons"] for g in out["games"]), True)
+
+print("\n--- 試合が多い日は強い順に並ぶ ---")
+fat = [make("ラ・リーガ", "Deportivo Alavés", "Getafe CF", 0),
+       make("ラ・リーガ", "FC Barcelona", "Real Madrid CF", 1),
+       make("セリエA", "AC Milan", "FC Internazionale Milano", 2),
+       make("ラ・リーガ", "Sevilla FC", "Rayo Vallecano de Madrid", 3)]
+out = ne.build_output(fat, {}, {})
+check("先頭はエル・クラシコ", out["games"][0]["matchup"],
+      "バルセロナ vs レアル・マドリード")
+check("地味な試合が上位を押しのけない",
+      out["games"][-1]["score"] == 0, True)
+
+# MLBは1日15試合あるので、この下限は当てない(当てると地味な試合が混ざる)
+print("\n--- MLBにはこの下限を当てない ---")
+weak_mlb = [Game(game_id=f"w{i}", league="MLB", home_team_id="x", away_team_id="y",
+                 home_team_name="A", away_team_name="B",
+                 start_time_utc="2026-08-22T02:10:00Z") for i in range(3)]
+out = ne.build_output(weak_mlb, {}, {})
+check("理由の無いMLBは選ばれない",
+      sum(1 for g in out["games"] if g["is_notable"]), 0)
 
 # --- 表記が日本語になるか ---------------------------------------------------
 print("\n--- クラブ名の表記 ---")

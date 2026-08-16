@@ -330,12 +330,20 @@ def render_game(g: dict) -> str:
     if final_score:
         home_name = g.get("home_team_name", "")
         away_name = g.get("away_team_name", "")
-        winner_name = home_name if final_score.get("winner") == "home" else away_name
+        # 引き分けはサッカーでは3割前後ある。home/awayの2択で書いていたので、
+        # 引き分けが away の勝利として表示されていた。
+        winner = final_score.get("winner")
+        if winner == "home":
+            verdict = f"{html.escape(home_name)}勝利"
+        elif winner == "away":
+            verdict = f"{html.escape(away_name)}勝利"
+        else:
+            verdict = "引き分け"
         parts.append(
             '<div class="result">'
             f'{html.escape(home_name)} {final_score.get("home")} - '
             f'{final_score.get("away")} {html.escape(away_name)}'
-            f'　<span class="winner">{html.escape(winner_name)}勝利</span>'
+            f'　<span class="winner">{verdict}</span>'
             "</div>"
         )
 
