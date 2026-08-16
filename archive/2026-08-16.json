@@ -1,0 +1,962 @@
+{
+  "generated_at": "2026-08-16T11:56:22.705016+00:00",
+  "games": [
+    {
+      "game_id": "564629",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-5335",
+      "away_team_id": "PD-94",
+      "home_team_name": "ラシン・サンタンデール",
+      "away_team_name": "ビジャレアル",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ラシン・サンタンデール vs ビジャレアル",
+      "abbr_matchup": null,
+      "start_time_jst": "08/17 00:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 5,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ラシン・サンタンデールが3位、ビジャレアルが3位の上位対決",
+          "weight": 3
+        },
+        {
+          "tag": "div",
+          "text": "首位争い、勝ち点差は0",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ラ・リーガの上位争いが激化する中、【同じ3位同士の対決】となるラシン・サンタンデールとビジャレアルが対戦する。両チームとも地区首位との差は1.0ゲームに迫っており、ここでの勝利がシーズン後半の浮沈を左右する重要な一戦となる。現在連勝・連敗を記録していない両チームが、どちらが先に上昇気流に乗るのかが見どころである。",
+      "notification_hook": "3位同士の直接対決、勝った方が首位に近づく一戦"
+    },
+    {
+      "game_id": "822940",
+      "league": "MLB",
+      "home_team_id": "139",
+      "away_team_id": "110",
+      "home_team_name": "レイズ",
+      "away_team_name": "オリオールズ",
+      "home_abbr": "TB",
+      "away_abbr": "BAL",
+      "home_color": "#092C5C",
+      "away_color": "#DF4601",
+      "matchup": "レイズ vs オリオールズ",
+      "abbr_matchup": "TB vs BAL",
+      "start_time_jst": "08/17 01:15",
+      "home_division": "ALE",
+      "away_division": "ALE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": {
+        "name": "Freddy Peralta",
+        "name_en": "Freddy Peralta",
+        "player_id": "642547",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Trevor Rogers",
+        "name_en": "Trevor Rogers",
+        "player_id": "669432",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Tropicana Field",
+      "venue_jp": "トロピカーナ・フィールド",
+      "venue_note": "MLBで数少ないドーム球場。天候に左右されない",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.38点で、MLB30球場中20位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "564632",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-80",
+      "away_team_id": "PD-88",
+      "home_team_name": "エスパニョール",
+      "away_team_name": "レバンテ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "エスパニョール vs レバンテ",
+      "abbr_matchup": null,
+      "start_time_jst": "08/17 02:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 5,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "昨季11位と18位の対戦",
+          "weight": 0
+        },
+        {
+          "tag": "quality",
+          "text": "エスパニョールが3位、レバンテが3位の上位対決",
+          "weight": 3
+        },
+        {
+          "tag": "div",
+          "text": "首位争い、勝ち点差は0",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "昨季11位と18位から今季【3位同士の対決】へと躍進した両チームが、地区首位との差1.0ゲーム差で激突する。連勝・連敗をしていない安定した戦いぶりの両者が、同じ立場で優勝争いの上位グループに名を連ねており、ここでの勝利が残りシーズンの展開を大きく左右することになる。順位が近い分、試合内容がどちらのチームの調子を示すか注視する価値がある。",
+      "notification_hook": "昨季最下位圏から3位へ。同じ立場の両チームが首位まで1ゲーム差で激突。"
+    },
+    {
+      "game_id": "824880",
+      "league": "MLB",
+      "home_team_id": "144",
+      "away_team_id": "109",
+      "home_team_name": "ブレーブス",
+      "away_team_name": "ダイヤモンドバックス",
+      "home_abbr": "ATL",
+      "away_abbr": "ARI",
+      "home_color": "#CE1141",
+      "away_color": "#A71930",
+      "matchup": "ブレーブス vs ダイヤモンドバックス",
+      "abbr_matchup": "ATL vs ARI",
+      "start_time_jst": "08/17 02:35",
+      "home_division": "NLE",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "ヌートバー"
+      ],
+      "home_probable": {
+        "name": "Bryce Elder",
+        "name_en": "Bryce Elder",
+        "player_id": "693821",
+        "era": "4.03",
+        "wins": 8,
+        "losses": 7,
+        "strikeouts": 108
+      },
+      "away_probable": {
+        "name": "Michael Soroka",
+        "name_en": "Michael Soroka",
+        "player_id": "647336",
+        "era": "2.92",
+        "wins": 8,
+        "losses": 3,
+        "strikeouts": 83
+      },
+      "venue_name": "Truist Park",
+      "venue_jp": "トゥルーイスト・パーク",
+      "venue_note": "2017年開場。球場の外に商業施設が一体で作られた、比較的新しい形の球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.86点で、MLB30球場中14位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 4,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ダイヤモンドバックスにはヌートバーが所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "ブレーブスは自地区1位、ダイヤモンドバックスは自地区2位同士の好カード",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 3,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 2
+      },
+      "log_notes": [],
+      "ai_summary": "ナ・リーグ東地区首位のブレーブスが、西地区2位のダイヤモンドバックスとの対戦第3戦に臨む。ブレーブスは2位に【7.5ゲーム差】をつけて独走中だが、直近は2連敗で勢いが止まっている。一方、ダイヤモンドバックスは2連勝中と上昇気流にあり、直近10試合は6勝4敗で調子を上げている。先発対決では、防御率2.92で8勝3敗と好成績を収めるSorokaが、Elder(防御率4.03、8勝7敗)とぶつかる。新設のトゥルーイスト・パークでの試合だけに、得点力の高い球場環境での投手戦の行方が見どころになる。",
+      "notification_hook": "Soroka好調ダイヤモンドバックス、Elderと投げ合い。勢いの差が出るか。"
+    },
+    {
+      "game_id": "823344",
+      "league": "MLB",
+      "home_team_id": "134",
+      "away_team_id": "111",
+      "home_team_name": "パイレーツ",
+      "away_team_name": "レッドソックス",
+      "home_abbr": "PIT",
+      "away_abbr": "BOS",
+      "home_color": "#FDB827",
+      "away_color": "#BD3039",
+      "matchup": "パイレーツ vs レッドソックス",
+      "abbr_matchup": "PIT vs BOS",
+      "start_time_jst": "08/17 02:35",
+      "home_division": "NLC",
+      "away_division": "ALE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "吉田正尚"
+      ],
+      "home_probable": {
+        "name": "Lake Bachar",
+        "name_en": "Lake Bachar",
+        "player_id": "669199",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Patrick Sandoval",
+        "name_en": "Patrick Sandoval",
+        "player_id": "663776",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "PNC Park",
+      "venue_jp": "PNCパーク",
+      "venue_note": "川越しに街並みを望む景観で知られる球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は10.47点で、MLB30球場中4位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "レッドソックスには吉田正尚が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "822774",
+      "league": "MLB",
+      "home_team_id": "141",
+      "away_team_id": "147",
+      "home_team_name": "ブルージェイズ",
+      "away_team_name": "ヤンキース",
+      "home_abbr": "TOR",
+      "away_abbr": "NYY",
+      "home_color": "#134A8E",
+      "away_color": "#003087",
+      "matchup": "ブルージェイズ vs ヤンキース",
+      "abbr_matchup": "TOR vs NYY",
+      "start_time_jst": "08/17 02:37",
+      "home_division": "ALE",
+      "away_division": "ALE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "岡本和真"
+      ],
+      "home_probable": {
+        "name": "Dylan Cease",
+        "name_en": "Dylan Cease",
+        "player_id": "656302",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Ryan Weathers",
+        "name_en": "Ryan Weathers",
+        "player_id": "677960",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Rogers Centre",
+      "venue_jp": "ロジャーズ・センター",
+      "venue_note": "MLBで唯一カナダにある球場。開閉式屋根を持つ",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.23点で、MLB30球場中24位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ブルージェイズには岡本和真が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823590",
+      "league": "MLB",
+      "home_team_id": "121",
+      "away_team_id": "120",
+      "home_team_name": "メッツ",
+      "away_team_name": "ナショナルズ",
+      "home_abbr": "NYM",
+      "away_abbr": "WSH",
+      "home_color": "#002D72",
+      "away_color": "#AB0003",
+      "matchup": "メッツ vs ナショナルズ",
+      "abbr_matchup": "NYM vs WSH",
+      "start_time_jst": "08/17 02:40",
+      "home_division": "NLE",
+      "away_division": "NLE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "千賀滉大"
+      ],
+      "home_probable": {
+        "name": "Christian Scott",
+        "name_en": "Christian Scott",
+        "player_id": "681035",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Jake Irvin",
+        "name_en": "Jake Irvin",
+        "player_id": "663623",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Citi Field",
+      "venue_jp": "シティ・フィールド",
+      "venue_note": "2009年開場。開場当初は外野が広く投手有利とされ、その後フェンスが調整された",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.87点で、MLB30球場中13位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "メッツには千賀滉大が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "824397",
+      "league": "MLB",
+      "home_team_id": "114",
+      "away_team_id": "135",
+      "home_team_name": "ガーディアンズ",
+      "away_team_name": "パドレス",
+      "home_abbr": "CLE",
+      "away_abbr": "SD",
+      "home_color": "#00385D",
+      "away_color": "#2F241D",
+      "matchup": "ガーディアンズ vs パドレス",
+      "abbr_matchup": "CLE vs SD",
+      "start_time_jst": "08/17 02:40",
+      "home_division": "ALC",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "松井裕樹"
+      ],
+      "home_probable": {
+        "name": "Tanner Bibee",
+        "name_en": "Tanner Bibee",
+        "player_id": "676440",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Casey Mize",
+        "name_en": "Casey Mize",
+        "player_id": "663554",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Progressive Field",
+      "venue_jp": "プログレッシブ・フィールド",
+      "venue_note": "湖からの風の影響を受けやすく、季節によって球場の性格が変わる",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.54点で、MLB30球場中17位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "824236",
+      "league": "MLB",
+      "home_team_id": "116",
+      "away_team_id": "145",
+      "home_team_name": "タイガース",
+      "away_team_name": "ホワイトソックス",
+      "home_abbr": "DET",
+      "away_abbr": "CWS",
+      "home_color": "#0C2C56",
+      "away_color": "#27251F",
+      "matchup": "タイガース vs ホワイトソックス",
+      "abbr_matchup": "DET vs CWS",
+      "start_time_jst": "08/17 02:40",
+      "home_division": "ALC",
+      "away_division": "ALC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "村上宗隆"
+      ],
+      "home_probable": {
+        "name": "Drew Anderson",
+        "name_en": "Drew Anderson",
+        "player_id": "623454",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Sean Burke",
+        "name_en": "Sean Burke",
+        "player_id": "680732",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Comerica Park",
+      "venue_jp": "コメリカ・パーク",
+      "venue_note": "中堅が非常に深く、本塁打が出にくい投手有利の球場とされる",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.31点で、MLB30球場中22位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ホワイトソックスには村上宗隆が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "824477",
+      "league": "MLB",
+      "home_team_id": "113",
+      "away_team_id": "146",
+      "home_team_name": "レッズ",
+      "away_team_name": "マーリンズ",
+      "home_abbr": "CIN",
+      "away_abbr": "MIA",
+      "home_color": "#C6011F",
+      "away_color": "#00A3E0",
+      "matchup": "レッズ vs マーリンズ",
+      "abbr_matchup": "CIN vs MIA",
+      "start_time_jst": "08/17 02:40",
+      "home_division": "NLC",
+      "away_division": "NLE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": {
+        "name": "Nick Lodolo",
+        "name_en": "Nick Lodolo",
+        "player_id": "666157",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Eury Pérez",
+        "name_en": "Eury Pérez",
+        "player_id": "691587",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Great American Ball Park",
+      "venue_jp": "グレート・アメリカン・ボール・パーク",
+      "venue_note": "両翼が狭く、本塁打が出やすい球場として知られる",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.63点で、MLB30球場中16位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "823670",
+      "league": "MLB",
+      "home_team_id": "142",
+      "away_team_id": "143",
+      "home_team_name": "ツインズ",
+      "away_team_name": "フィリーズ",
+      "home_abbr": "MIN",
+      "away_abbr": "PHI",
+      "home_color": "#002B5C",
+      "away_color": "#E81828",
+      "matchup": "ツインズ vs フィリーズ",
+      "abbr_matchup": "MIN vs PHI",
+      "start_time_jst": "08/17 03:10",
+      "home_division": "ALC",
+      "away_division": "NLE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": {
+        "name": "Dean Kremer",
+        "name_en": "Dean Kremer",
+        "player_id": "665152",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Andrew Painter",
+        "name_en": "Andrew Painter",
+        "player_id": "691725",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Target Field",
+      "venue_jp": "ターゲット・フィールド",
+      "venue_note": "寒暖差が大きく、季節によって打球の飛び方が変わる",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は9.05点で、MLB30球場中10位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "824642",
+      "league": "MLB",
+      "home_team_id": "112",
+      "away_team_id": "138",
+      "home_team_name": "カブス",
+      "away_team_name": "カージナルス",
+      "home_abbr": "CHC",
+      "away_abbr": "STL",
+      "home_color": "#0E3386",
+      "away_color": "#C41E3A",
+      "matchup": "カブス vs カージナルス",
+      "abbr_matchup": "CHC vs STL",
+      "start_time_jst": "08/17 04:15",
+      "home_division": "NLC",
+      "away_division": "NLC",
+      "same_division": true,
+      "rivalry_type": "historic",
+      "jp_starters": [],
+      "jp_players": [
+        "今永昇太",
+        "鈴木誠也"
+      ],
+      "home_probable": {
+        "name": "Edward Cabrera",
+        "name_en": "Edward Cabrera",
+        "player_id": "665795",
+        "era": "5.10",
+        "wins": 5,
+        "losses": 4,
+        "strikeouts": 65
+      },
+      "away_probable": {
+        "name": "Hunter Dobbins",
+        "name_en": "Hunter Dobbins",
+        "player_id": "690928",
+        "era": "3.40",
+        "wins": 2,
+        "losses": 3,
+        "strikeouts": 42
+      },
+      "venue_name": "Wrigley Field",
+      "venue_jp": "リグレー・フィールド",
+      "venue_note": "風向きによって球場の性格が変わり、外野へ吹く日は打撃戦になりやすいことで知られる",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は9.34点で、MLB30球場中8位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 5,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "カブスには今永昇太・鈴木誠也が所属",
+          "weight": 3
+        },
+        {
+          "tag": "rivalry",
+          "text": "カブス vs カージナルス は伝統の好カード — ナ・リーグ中地区を代表する、中西部の伝統の一戦",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 3,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [],
+      "ai_summary": "ナ・リーグ中地区で【2位のカブスと3位のカージナルス】による同地区対決。首位との差が4.0ゲームと2.0ゲーム差の違いはあるが、両チームとも順位を直接争う立場にある。直近10試合でカブスは7勝3敗と好調を維持し、カージナルスは6勝4敗で追い上げている状況だ。先発は防御率3.40のHunter Dobbinsが率いるカージナルスに対し、カブスはEdward Cabreraを起用。リグレー・フィールドでの対戦であり、風向きによって球場の性格が変わる点も、この試合の結果を左右する要素になる可能性がある。",
+      "notification_hook": "7勝3敗の好調カブスと、順位を争うカージナルスの直接対決。先発投手の力の差が勝敗を分ける。"
+    },
+    {
+      "game_id": "823182",
+      "league": "MLB",
+      "home_team_id": "137",
+      "away_team_id": "115",
+      "home_team_name": "ジャイアンツ",
+      "away_team_name": "ロッキーズ",
+      "home_abbr": "SF",
+      "away_abbr": "COL",
+      "home_color": "#FD5A1E",
+      "away_color": "#333366",
+      "matchup": "ジャイアンツ vs ロッキーズ",
+      "abbr_matchup": "SF vs COL",
+      "start_time_jst": "08/17 05:05",
+      "home_division": "NLW",
+      "away_division": "NLW",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "菅野智之"
+      ],
+      "home_probable": {
+        "name": "Blade Tidwell",
+        "name_en": "Blade Tidwell",
+        "player_id": "694918",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Gabriel Hughes",
+        "name_en": "Gabriel Hughes",
+        "player_id": "687312",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Oracle Park",
+      "venue_jp": "オラクル・パーク",
+      "venue_note": "右中間が非常に深く、海風の影響もあって本塁打が出にくい、投手有利とされる球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.37点で、MLB30球場中21位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ロッキーズには菅野智之が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "824965",
+      "league": "MLB",
+      "home_team_id": "133",
+      "away_team_id": "140",
+      "home_team_name": "アスレチックス",
+      "away_team_name": "レンジャーズ",
+      "home_abbr": "ATH",
+      "away_abbr": "TEX",
+      "home_color": "#003831",
+      "away_color": "#003278",
+      "matchup": "アスレチックス vs レンジャーズ",
+      "abbr_matchup": "ATH vs TEX",
+      "start_time_jst": "08/17 05:05",
+      "home_division": "ALW",
+      "away_division": "ALW",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": {
+        "name": "Jacob Lopez",
+        "name_en": "Jacob Lopez",
+        "player_id": "682052",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Cody Bradford",
+        "name_en": "Cody Bradford",
+        "player_id": "674003",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Sutter Health Park",
+      "venue_jp": "サッター・ヘルス・パーク",
+      "venue_note": "アスレチックスが本拠地移転までの間、暫定的に使用している球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は11.49点で、MLB30球場中1位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "823991",
+      "league": "MLB",
+      "home_team_id": "108",
+      "away_team_id": "118",
+      "home_team_name": "エンゼルス",
+      "away_team_name": "ロイヤルズ",
+      "home_abbr": "LAA",
+      "away_abbr": "KC",
+      "home_color": "#BA0021",
+      "away_color": "#004687",
+      "matchup": "エンゼルス vs ロイヤルズ",
+      "abbr_matchup": "LAA vs KC",
+      "start_time_jst": "08/17 05:07",
+      "home_division": "ALW",
+      "away_division": "ALC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "菊池雄星"
+      ],
+      "home_probable": {
+        "name": "Ryan Johnson",
+        "name_en": "Ryan Johnson",
+        "player_id": "696270",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Noah Cameron",
+        "name_en": "Noah Cameron",
+        "player_id": "702070",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Angel Stadium",
+      "venue_jp": "エンゼル・スタジアム",
+      "venue_note": "1966年開場。MLBでは古い部類に入る球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.03点で、MLB30球場中28位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "エンゼルスには菊池雄星が所属",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "game_id": "823912",
+      "league": "MLB",
+      "home_team_id": "119",
+      "away_team_id": "158",
+      "home_team_name": "ドジャース",
+      "away_team_name": "ブリュワーズ",
+      "home_abbr": "LAD",
+      "away_abbr": "MIL",
+      "home_color": "#005A9C",
+      "away_color": "#12284B",
+      "matchup": "ドジャース vs ブリュワーズ",
+      "abbr_matchup": "LAD vs MIL",
+      "start_time_jst": "08/17 05:10",
+      "home_division": "NLW",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "大谷翔平",
+        "佐々木朗希",
+        "山本由伸"
+      ],
+      "home_probable": {
+        "name": "Tarik Skubal",
+        "name_en": "Tarik Skubal",
+        "player_id": "669373",
+        "era": "2.93",
+        "wins": 7,
+        "losses": 6,
+        "strikeouts": 128
+      },
+      "away_probable": {
+        "name": "Logan Henderson",
+        "name_en": "Logan Henderson",
+        "player_id": "701656",
+        "era": "2.88",
+        "wins": 6,
+        "losses": 2,
+        "strikeouts": 69
+      },
+      "venue_name": "UNIQLO Field at Dodger Stadium",
+      "venue_jp": "ドジャー・スタジアム",
+      "venue_note": "1962年開場、MLBで3番目に古い現役球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.39点で、MLB30球場中19位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 6,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ドジャースには大谷翔平・佐々木朗希・山本由伸が所属",
+          "weight": 4
+        },
+        {
+          "tag": "quality",
+          "text": "ドジャースは自地区1位、ブリュワーズは自地区1位同士の好カード",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 4,
+        "games_in_series": 4,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 2
+      },
+      "log_notes": [
+        "Tarik Skubalは移籍後3登板目"
+      ],
+      "ai_summary": "ナ・リーグ西地区首位のドジャースと中地区首位のブリュワーズが対戦する、【両地区の頂点同士の好カード】である。ドジャースは2位に8.0ゲーム差をつけて地区を支配し、ブリュワーズも4.0ゲーム差で中地区を制している。両チームとも直近10試合は5勝5敗で調子が一進一退だが、この第4戦で勢いを取り戻したい局面である。先発はドジャースのTarik Skubalが防御率2.93、ブリュワーズのLogan Hendersonが防御率2.88と、両投手ともシーズンを通じた安定感が光る。1962年開場の歴史あるドジャー・スタジアムでの一戦だけに、ピッチャーの精密な投げ合いに注目したい。",
+      "notification_hook": "地区首位同士、Skubal対Henderson。防御率2点台の投手戦"
+    },
+    {
+      "game_id": "824156",
+      "league": "MLB",
+      "home_team_id": "117",
+      "away_team_id": "136",
+      "home_team_name": "アストロズ",
+      "away_team_name": "マリナーズ",
+      "home_abbr": "HOU",
+      "away_abbr": "SEA",
+      "home_color": "#002D62",
+      "away_color": "#0C2C56",
+      "matchup": "アストロズ vs マリナーズ",
+      "abbr_matchup": "HOU vs SEA",
+      "start_time_jst": "08/17 08:20",
+      "home_division": "ALW",
+      "away_division": "ALW",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "今井達也"
+      ],
+      "home_probable": {
+        "name": "Hunter Brown",
+        "name_en": "Hunter Brown",
+        "player_id": "686613",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Bryan Woo",
+        "name_en": "Bryan Woo",
+        "player_id": "693433",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Daikin Park",
+      "venue_jp": "ダイキン・パーク",
+      "venue_note": "左翼が浅く、開閉式屋根を持つ球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は9.46点で、MLB30球場中6位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 2,
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "アストロズには今井達也が所属",
+          "weight": 2
+        }
+      ]
+    }
+  ],
+  "ai_status": {
+    "targets": 2,
+    "succeeded": 2,
+    "cost_usd": 0.00601
+  }
+}

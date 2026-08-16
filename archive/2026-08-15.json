@@ -55,7 +55,12 @@
           "text": "ホワイトソックスには村上宗隆が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "564634",
@@ -87,7 +92,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824644",
@@ -158,7 +168,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ中地区で【2位のカブスと3位のカージナルス】が対戦する同地区対決である。カブスは首位との差3.0ゲーム差を詰めるため、直近10試合で8勝2敗と好調を維持しており、ここでの勝利が重要になる。一方カージナルスも地区内での順位争いが続く状況にある。先発はカブスのBoydが防御率3.50で8勝1敗と好成績を積み重ねており、カージナルスのMcGreevy(防御率3.64)との投手戦が展開される見込みだ。リグレー・フィールドは外野へ吹く風で打撃戦になりやすく、球場の得点性の高さから一発が出るかにも注目したい。",
-      "notification_hook": "Boyd防御率3.50、8勝1敗。好調カブス先発が中地区の順位争いを左右する。"
+      "notification_hook": "Boyd防御率3.50、8勝1敗。好調カブス先発が中地区の順位争いを左右する。",
+      "final_score": {
+        "home": 4,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822775",
@@ -214,7 +229,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "564633",
@@ -246,7 +266,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823184",
@@ -302,7 +327,12 @@
           "text": "ロッキーズには菅野智之が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 7,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823588",
@@ -358,7 +388,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822941",
@@ -406,7 +441,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824480",
@@ -454,7 +494,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824400",
@@ -516,7 +561,12 @@
       },
       "log_notes": [],
       "ai_summary": "パドレスはナ・リーグ西地区で【2位の好位置を保ち】、6連勝中と勢いに乗っているのに対し、ガーディアンズはア・リーグ中地区4位で2連敗中と苦しい状況が続いている。両チームは所属地区が異なるため地区順位を直接争う関係ではないものの、このシリーズ第2戦では勢いの差がそのまま試合結果に反映される可能性が高い。ガーディアンズの先発Joey Cantilloは今季防御率3.91の安定感ある投手だが、パドレスの打線の好調さに対して投げ合いができるかが鍵となる。プログレッシブ・フィールドは湖からの風の影響で球場の特徴が変わりやすく、この時期の気象条件が試合の展開を左右する要素になるだろう。",
-      "notification_hook": "6連勝中のパドレスが調子を落とすガーディアンズに連勝で追い討ちなるか。"
+      "notification_hook": "6連勝中のパドレスが調子を落とすガーディアンズに連勝で追い討ちなるか。",
+      "final_score": {
+        "home": 6,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824157",
@@ -572,7 +622,12 @@
           "text": "アストロズには今井達也が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 10,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823671",
@@ -620,7 +675,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823914",
@@ -692,7 +752,12 @@
       },
       "log_notes": [],
       "ai_summary": "各地区で首位を守る両チームによるナ・リーグの注目カードである。ドジャースは【8.0ゲーム差をつけて西地区首位】を堅持し、ブリュワーズも【3.0ゲーム差で中地区を制御】している。直近10試合が5勝5敗で勢いに欠ける両チームだけに、ここからの勝利がシーズン終盤の地位を左右する重要性を持つ。先発はブリュワーズのJacob Misiorowski（防御率1.76、204奪三振）がドジャースのJustin Wrobleski（防御率3.44、94奪三振）と対戦する投手戦になる見込みで、1962年開場の歴史あるドジャー・スタジアムでの投げ合いが見どころになる。",
-      "notification_hook": "防御率1.76の右腕vs西地区8ゲーム差首位のドジャース、両地区首位の激突。"
+      "notification_hook": "防御率1.76の右腕vs西地区8ゲーム差首位のドジャース、両地区首位の激突。",
+      "final_score": {
+        "home": 1,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823347",
@@ -748,7 +813,12 @@
           "text": "レッドソックスには吉田正尚が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824884",
@@ -804,7 +874,12 @@
           "text": "ダイヤモンドバックスにはヌートバーが所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 10,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823990",
@@ -860,7 +935,12 @@
           "text": "エンゼルスには菊池雄星が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824966",
@@ -908,7 +988,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 5,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {

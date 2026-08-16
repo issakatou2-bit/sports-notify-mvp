@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-08-15T09:53:53.287762+00:00",
+  "generated_at": "2026-08-16T11:56:22.705016+00:00",
   "games": [
     {
-      "game_id": "564634",
+      "game_id": "564629",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-263",
-      "away_team_id": "PD-82",
-      "home_team_name": "Deportivo Alavés",
-      "away_team_name": "Getafe CF",
+      "home_team_id": "PD-5335",
+      "away_team_id": "PD-94",
+      "home_team_name": "ラシン・サンタンデール",
+      "away_team_name": "ビジャレアル",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "Deportivo Alavés vs Getafe CF",
+      "matchup": "ラシン・サンタンデール vs ビジャレアル",
       "abbr_matchup": null,
-      "start_time_jst": "08/16 02:30",
+      "start_time_jst": "08/17 00:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -29,24 +29,38 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 0,
-      "is_notable": false,
-      "reasons": []
+      "score": 5,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ラシン・サンタンデールが3位、ビジャレアルが3位の上位対決",
+          "weight": 3
+        },
+        {
+          "tag": "div",
+          "text": "首位争い、勝ち点差は0",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ラ・リーガの上位争いが激化する中、【同じ3位同士の対決】となるラシン・サンタンデールとビジャレアルが対戦する。両チームとも地区首位との差は1.0ゲームに迫っており、ここでの勝利がシーズン後半の浮沈を左右する重要な一戦となる。現在連勝・連敗を記録していない両チームが、どちらが先に上昇気流に乗るのかが見どころである。",
+      "notification_hook": "3位同士の直接対決、勝った方が首位に近づく一戦"
     },
     {
-      "game_id": "564633",
+      "game_id": "564632",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-559",
-      "away_team_id": "PD-87",
-      "home_team_name": "Sevilla FC",
-      "away_team_name": "Rayo Vallecano de Madrid",
+      "home_team_id": "PD-80",
+      "away_team_id": "PD-88",
+      "home_team_name": "エスパニョール",
+      "away_team_name": "レバンテ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "Sevilla FC vs Rayo Vallecano de Madrid",
+      "matchup": "エスパニョール vs レバンテ",
       "abbr_matchup": null,
-      "start_time_jst": "08/16 04:30",
+      "start_time_jst": "08/17 02:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -61,14 +75,33 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 0,
-      "is_notable": false,
-      "reasons": []
+      "score": 5,
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "昨季11位と18位の対戦",
+          "weight": 0
+        },
+        {
+          "tag": "quality",
+          "text": "エスパニョールが3位、レバンテが3位の上位対決",
+          "weight": 3
+        },
+        {
+          "tag": "div",
+          "text": "首位争い、勝ち点差は0",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "昨季11位と18位から今季【3位同士の対決】へと躍進した両チームが、地区首位との差1.0ゲーム差で激突する。連勝・連敗をしていない安定した戦いぶりの両者が、同じ立場で優勝争いの上位グループに名を連ねており、ここでの勝利が残りシーズンの展開を大きく左右することになる。順位が近い分、試合内容がどちらのチームの調子を示すか注視する価値がある。",
+      "notification_hook": "昨季最下位圏から3位へ。同じ立場の両チームが首位まで1ゲーム差で激突。"
     }
   ],
   "ai_status": {
-    "targets": 0,
-    "succeeded": 0,
-    "cost_usd": 0.0
+    "targets": 2,
+    "succeeded": 2,
+    "cost_usd": 0.00601
   }
 }
