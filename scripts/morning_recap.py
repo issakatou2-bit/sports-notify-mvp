@@ -67,6 +67,17 @@ def fetch_day_hitting(player_id: str, day: str, season: str):
                 "so": int(_f(s.get("strikeOuts"))),
                 "bb": int(_f(s.get("baseOnBalls"))),
                 "avg": s.get("avg"),
+                # 長打と、安打以外での出塁。
+                #
+                # 「二塁打・三塁打は取れない」と思い込んで、塁打を
+                # 安打+本塁打×3で近似していたが、APIは全部返している。
+                # そのせいで、たとえば大谷の8/15の三塁打が単打として
+                # 採点されていた(実際の塁打3に対し、こちらの計算は1)。
+                "doubles": int(_f(s.get("doubles"))),
+                "triples": int(_f(s.get("triples"))),
+                "tb": int(_f(s.get("totalBases"))),
+                "hbp": int(_f(s.get("hitByPitch"))),
+                "sb": int(_f(s.get("stolenBases"))),
             }
     return None
 
@@ -133,6 +144,8 @@ def _row_from_split(split: dict, group: str):
     pa = int(_f(s.get("plateAppearances"))) or ab
     if not pa:
         return None
+    # 当日と同じ項目を揃える。片方だけ塁打の実数を使うと、
+    # 「前回より上がった/下がった」の比較が式違いの比較になってしまう。
     return {
         "type": "batter", "pa": pa, "ab": ab,
         "hits": int(_f(s.get("hits"))),
@@ -141,6 +154,11 @@ def _row_from_split(split: dict, group: str):
         "runs": int(_f(s.get("runs"))),
         "so": int(_f(s.get("strikeOuts"))),
         "bb": int(_f(s.get("baseOnBalls"))),
+        "doubles": int(_f(s.get("doubles"))),
+        "triples": int(_f(s.get("triples"))),
+        "tb": int(_f(s.get("totalBases"))),
+        "hbp": int(_f(s.get("hitByPitch"))),
+        "sb": int(_f(s.get("stolenBases"))),
     }
 
 
@@ -234,14 +252,24 @@ def headline(row: dict) -> str:
             bits.append("負け投手")
         return "　".join(bits)
     bits = [f"{row['ab']}打数{row['hits']}安打"]
+    # 長打は種類まで出す。「1安打」だけでは、単打も三塁打も同じに見える。
+    # 点数の側では塁打で差を付けているので、画面にも根拠を出しておく。
     if row.get("hr"):
         bits.append(f"{row['hr']}本塁打")
+    if row.get("triples"):
+        bits.append(f"{row['triples']}三塁打")
+    if row.get("doubles"):
+        bits.append(f"{row['doubles']}二塁打")
     if row.get("rbi"):
         bits.append(f"{row['rbi']}打点")
     # 四球は打数に入らないので、書かないと「3打数0安打」だけが残り、
     # 塁に出たことが消える。点数にも効いているので必ず出す。
     if row.get("bb"):
         bits.append(f"{row['bb']}四球")
+    if row.get("hbp"):
+        bits.append(f"{row['hbp']}死球")
+    if row.get("sb"):
+        bits.append(f"{row['sb']}盗塁")
     return "　".join(bits)
 
 
@@ -406,9 +434,11 @@ def contribution(row: dict) -> int:
     投手はビル・ジェームズのゲームスコアを土台にしている(広く使われていて、
     こちらで重みを考えた部分が少ない)。50を平均点として、
       アウト数 + 5回を超えた分の加点 + 奪三振 - 被安打×2 - 自責×4 - 四球
-    打者は塁打を軸に、打点と四球を足して三振を引く。
-    長打の内訳(二塁打・三塁打)はAPIのこの呼び出しでは取れないので、
-    本塁打だけを塁打に上乗せしている。ここは近似。
+    打者は塁打を軸に、打点・四球・死球・盗塁を足して、凡退と三振を引く。
+    塁打はAPIの実数(totalBases)なので、単打2点・二塁打4点・三塁打6点・
+    本塁打8点と、同じ1安打でも進んだ塁の数で差が付く。
+    (長らく「二塁打・三塁打は取れない」と思い込んで安打+本塁打×3で
+     近似しており、三塁打が単打と同じ点になっていた)
 
     倍率は、好投・好打が70〜90に収まるように置いた。
     絶対的な意味は無く、その日の中で並べるための数字。
@@ -458,17 +488,26 @@ def contribution(row: dict) -> int:
                 base -= 35
         score = base + raw * 1.2
     else:
-        # 二塁打・三塁打が取れないため、塁打は安打+本塁打×3で近似する
-        tb = row.get("hits", 0) + 3 * row.get("hr", 0)
+        # 塁打はAPIの実数を使う。単打2点、二塁打4点、三塁打6点、本塁打8点。
+        # 同じ「1安打」でも、どこまで進んだかで価値が違う。
+        # 取れないと思い込んで安打+本塁打×3で近似していたぶん、
+        # 二塁打と三塁打が単打と同じ扱いになっていた。
+        tb = row.get("tb")
+        if tb is None:  # 古い記録には項目が無い
+            tb = row.get("hits", 0) + 3 * row.get("hr", 0)
+
         # 凡退そのものを引く。
         #
         # 以前は三振だけを引いていたため、3打数0安打でも28点が付き、
         # 画面に出ていた。全打席凡退した日に点が残るのは実態と合わない。
         # 四球は塁に出ているので、安打ほどではないが確かな加点にする。
+        # 死球も出塁なので同じ扱い。盗塁は自力で1つ先の塁へ進んだぶん。
         outs_made = max(0, row.get("ab", 0) - row.get("hits", 0))
         raw = (2 * tb
                + 2 * row.get("rbi", 0)
                + 2 * row.get("bb", 0)
+               + 2 * row.get("hbp", 0)
+               + 1 * row.get("sb", 0)
                - outs_made
                - row.get("so", 0))
         score = 30 + raw * 2.4

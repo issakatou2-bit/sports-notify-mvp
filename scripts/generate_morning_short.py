@@ -75,10 +75,21 @@ _FONT_FILE = None
 # 1画面に載せる人数。多いと字が小さくなって読めない
 PER_PAGE = 4
 
-# 現地の声編を作る最低の素材数(番記者+見出し+ファンの声の合計)。
+# 報道編を作る最低の素材数(番記者の投稿+現地の見出し)。
 # 選手成績と違って毎日必ず湧く情報ではないので、下限を置く。
 # 中身1件の動画に初見の人が当たると、そこで見限られる。
 MIN_PRESS_ITEMS = 3
+
+# コメント欄編を作る最低の件数。
+# 3件あれば「賛否が並んでいる」形になる。1〜2件だと、
+# 誰か1人の感想を読み上げただけの動画になってしまう。
+MIN_VOICE_ITEMS = 3
+
+# 冒頭でそのまま読める長さ。これを超えるものは途中で切らずに見送る。
+# 以前は44文字で機械的に切っており、「ブルワーズをドジャースの
+# 大谷翔平を抑えて。」と文が壊れたまま読み上げていた。
+INTRO_HEADLINE_MAX = 42
+INTRO_VOICE_MAX = 46
 
 
 def _resolve_font() -> str:
@@ -158,6 +169,20 @@ def base(progress):
                   fill=(14, 18, 26))
     d.rectangle([0, H - 22, W, H], fill=ACCENT)
     return im, d
+
+
+def usable_headline(text: str) -> bool:
+    """
+    冒頭でそのまま読める見出しかどうか。
+
+    翻訳や取得の都合で、本文の代わりに断り書きだけが入ることがある。
+    それを冒頭で読むと「URLのため省略。8月16日、現地の報道です」になる。
+    """
+    if not text or len(text) < 12:
+        return False
+    if text.startswith(("(", "（")):
+        return False
+    return not any(w in text for w in ("省略", "取得できません", "翻訳できません"))
 
 
 def sort_players(players: list) -> list:
@@ -289,7 +314,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
 
       players … 日本人選手の成績だけ
       local   … 現地の注目度だけ(再生回数・話題のチーム＝測った数字)
-      press   … 現地の声と報道だけ(番記者・見出し・ファン＝翻訳した言葉)
+      press   … 現地の報道だけ(番記者の投稿・現地の見出し)
+      voices  … その日いちばん見られたハイライトと、そのコメント欄
       all     … 従来どおり全部(検証用)
     """
     players = sort_players(data.get("players") or [])
@@ -313,6 +339,15 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     want_players = mode in ("all", "players")
     want_local = mode in ("all", "local")
     want_press = mode in ("all", "press")
+    # ファンの声は、報道編から切り出して1本にした。
+    #
+    # 「現地メディアは何と言っているか」という題で、番記者・見出し・
+    # ファンの声という3つの中身を抱えていた。題が指しているのは
+    # 最初の2つで、いちばん反応が取れるファンの声が題からも
+    # サムネイルからも見えない状態だった。
+    # ファンの声はハイライト動画のコメント欄なので、
+    # 「その日いちばん見られた試合」と組にすると1本として成立する。
+    want_voices = mode in ("all", "voices")
 
     # 冒頭は「その日いちばん具体的な事実 → 何の動画か」の順にする。
     #
@@ -329,25 +364,55 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         }]
     elif mode == "press":
         # 言葉の回。
-        # 冒頭で本文の引用をそのまま読むと、直後の画面で同じ文をもう一度
-        # 読むことになる。冒頭は「誰の言葉が何件あるか」だけにして、
-        # 中身は本文の画面に任せる。
-        rp = (data.get("reporters") or {}).get("posts") or []
+        #
+        # 冒頭が「◯◯などの記者。8月16日、現地では何と言われているか。
+        # 番記者の投稿と現地の見出しから。」と、本題に入る前に3つ言っていた。
+        # 誰の言葉かも、何の動画かも、後の画面を見れば分かる。
+        # いちばん短い見出しを1本そのまま先に読む方が、1秒目に中身が来る。
         hd = (data.get("reporters") or {}).get("headlines") or []
-        who = ""
-        if rp:
-            outlets = []
-            for r in rp[:3]:
-                o = r.get("outlet", "")
-                if o and o not in outlets:
-                    outlets.append(o)
-            if outlets:
-                who = "、".join(outlets[:2]) + "などの記者。"
+        lead, lead_idx = "", None
+        # 途中で切ると文が壊れるので、そのまま収まる見出しだけを選ぶ。
+        # 並びは元のまま(関連の強い順)にする。短い順に見たときは
+        # 「(URLのため省略)」のような中身の無いものが先頭に来た。
+        for i, h in enumerate(hd):
+            body = (h.get("jp") or h.get("title") or "").strip().rstrip("。")
+            if not usable_headline(body):
+                continue
+            if len(body) <= INTRO_HEADLINE_MAX:
+                lead, lead_idx = f"{body}。", i
+                break
         segments = [{
             "kind": "intro",
-            "text": f"{who}{day}、現地では何と言われているか。"
-                    f"番記者の投稿と現地の見出しから。",
-            "meta": {"date": day_iso, "count": len(players), "local": True},
+            "text": f"{lead}{day}、現地の報道です。",
+            "meta": {"date": day_iso, "count": len(players), "local": True,
+                     # 冒頭で読んだ見出しは、本編でもう一度読まない
+                     "used_headline": lead_idx},
+        }]
+    elif mode == "voices":
+        # ファンの声の回。
+        # その日いちばん見られたハイライトを先に立て、そのコメント欄を読む。
+        # 数字(何回見られたか)と言葉(何と書かれたか)が1本で繋がる。
+        # 冒頭は、その日いちばん支持された一言そのもの。
+        #
+        # 最初は試合名と再生回数を読ませていたが、直後の画面で
+        # 同じことをもう一度言うことになり、1秒目が案内で潰れていた。
+        # コメントそのものが中身なので、いきなりそこから入る。
+        vs = ((data.get("voices") or {}).get("voices") or [])
+        lead, lead_idx = "", None
+        for i, v in enumerate(vs):
+            body = (v.get("ja") or "").strip().rstrip("。！!、.")
+            if body and len(body) <= INTRO_VOICE_MAX:
+                likes = v.get("likes") or 0
+                lead, lead_idx = f"{body}。", i
+                if likes >= 10:
+                    lead += f"高評価{likes}件。"
+                break
+        segments = [{
+            "kind": "intro",
+            "text": f"{lead}現地で最も見られた試合のコメント欄です。",
+            "meta": {"date": day_iso, "count": len(players), "local": True,
+                     # 冒頭で読んだコメントは、本編でもう一度読まない
+                     "used_voice": lead_idx},
         }]
     else:
         # 現地編は選手一覧を出さないので、冒頭も現地の話から入る。
@@ -371,6 +436,26 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 "text": spoken_list(chunk, i),
                 "meta": {"start": i, "count": len(chunk)},
             })
+
+    # ファンの声の回。コメントを読む前に、何の試合なのかを立てる。
+    #
+    # コメントだけを並べても、どの試合の話なのか分からないまま終わる。
+    # 試合結果と目立った選手を1画面挟むと、その後の言葉が読める。
+    if want_voices and not want_local:
+        buzz = data.get("buzz") or []
+        if buzz:
+            top = buzz[0]
+            parts = [f"MLB公式のハイライトで、{yomi_stats(buzz_label(top))}が"
+                     f"{_yomi_views(top['views'])}再生でした。"]
+            res = top.get("result") or {}
+            if res.get("away_score") is not None:
+                parts.append(f"{res.get('away_jp')}が{res.get('away_score')}、"
+                             f"{res.get('home_jp')}が{res.get('home_score')}。")
+            if res.get("star_name"):
+                parts.append(f"{speech_name(res['star_name'])}が"
+                             f"{yomi_stats(res.get('star_line', ''))}でした。")
+            segments.append({"kind": "buzz", "text": "".join(parts),
+                             "meta": {"single": True}})
 
     # 現地でどれだけ見られたか。感想を代弁せず、数字だけを出す。
     buzz = (data.get("buzz") or []) if want_local else []
@@ -411,13 +496,30 @@ def build_narration(data: dict, mode: str = "all") -> dict:
 
     # 現地の声。ここだけは数字ではなく、翻訳を通した誰かの感想なので、
     # 読み上げでも「翻訳したもの」であることを先に断る。
-    voices = ((data.get("voices") or {}).get("voices") or []) if want_press else []
+    voices = ((data.get("voices") or {}).get("voices") or []) if want_voices else []
     if voices:
-        parts = [f"ここからは現地の声です。"
-                 f"{(data.get('voices') or {}).get('source', '')}の投稿を"
-                 "翻訳したもので、コレスポの見解ではありません。"]
-        for v in voices[:3]:
-            parts.append(v.get("ja", "") + "。")
+        # 断りは要るが、毎回同じ長さの前置きを読むのは尺の無駄。
+        # ファンの声だけの回では、直前に試合を紹介した流れのまま
+        # 短く断って本文へ入る。
+        src = (data.get("voices") or {}).get("source", "")
+        if want_local or want_press:
+            parts = [f"ここからは現地の声です。{src}の投稿を"
+                     "翻訳したもので、コレスポの見解ではありません。"]
+        else:
+            parts = ["コメント欄から。翻訳したものです。"]
+        # どれだけ支持された言葉なのかを添える。同じ感想でも、
+        # 1件と数百件では意味が違う。数字は取得済みのものをそのまま使う。
+        used = (segments[0].get("meta") or {}).get("used_voice")
+        rest = [v for i, v in enumerate(voices) if i != used]
+        for v in rest[:4]:
+            # 「レンジャーズ頑張れ！。」のように記号が二重にならないよう、
+            # 文末の記号を落としてから句点を足す。
+            body = (v.get("ja") or "").strip().rstrip("。！!、.")
+            if not body:
+                continue
+            likes = v.get("likes") or 0
+            suffix = f"この投稿には高評価が{likes}件。" if likes >= 10 else ""
+            parts.append(f"{body}。{suffix}")
         segments.append({"kind": "voices", "text": "".join(parts), "meta": {}})
 
     # 現地で何が報じられたか。見出しだけを扱う。
@@ -428,8 +530,10 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     heads = ((data.get("reporters") or {}).get("headlines") or []) \
         if want_press else []
     if heads:
+        used = (segments[0].get("meta") or {}).get("used_headline")
+        rest = [h for i, h in enumerate(heads) if i != used]
         parts = ["現地の見出しです。"]
-        for h in heads[:3]:
+        for h in rest[:3]:
             body = h.get("jp") or h.get("title", "")
             parts.append(f"{h.get('source', '')}。{body[:80]}。")
         segments.append({"kind": "headlines", "text": "".join(parts),
@@ -458,8 +562,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 登録が増えないと、毎日出しても毎日ゼロから始まる。
         # 時刻を1つ挙げるより、毎日何が届くのかを言う。
         # 「方」は「ほう」と読まれるので仮名で書く。
-        "text": "コレスポでは、日本人選手の成績、現地での注目度、"
-                "明日の注目試合、欧州サッカー、現地メディアの声を"
+        "text": "コレスポでは、日本人選手の成績、ファンのコメント欄、"
+                "現地での注目度、明日の注目試合、欧州サッカー、現地の報道を"
                 "毎日お届けしています。"
                 "見逃したくないかたは、チャンネル登録をお願いします。",
         "meta": {},
@@ -943,10 +1047,11 @@ def render_voices(p, voices):
 # ならない。時刻ではなく中身を並べる。
 DAILY_LINEUP = [
     ("日本人選手の成績", "誰がいちばん効いたか"),
+    ("ファンのコメント欄", "現地の反応を翻訳"),
     ("現地での注目度", "向こうで何が見られたか"),
     ("明日の注目試合", "なぜ注目なのか"),
     ("欧州サッカー", "その夜の注目カード"),
-    ("現地メディアの声", "番記者と見出しを翻訳"),
+    ("現地の報道", "番記者と見出しを翻訳"),
 ]
 
 
@@ -1040,9 +1145,11 @@ def main():
     parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--voices", default="data/local_voices.json")
     parser.add_argument("--mode", default="players",
-                        choices=["players", "local", "press", "all"],
+                        choices=["players", "local", "press", "voices",
+                                 "all"],
                         help="players=選手成績 / local=現地の注目度(数字) / "
-                             "press=現地の声と報道(言葉) / all=全部")
+                             "press=現地の報道(番記者と見出し) / "
+                             "voices=ハイライトのコメント欄 / all=全部")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--require-audio", action="store_true",
@@ -1132,14 +1239,22 @@ def main():
     if args.mode == "press":
         rep = reporters_data.get("posts") or []
         hds = reporters_data.get("headlines") or []
-        vcs = (voices_data or {}).get("voices") or []
-        items = len(rep) + len(hds) + len(vcs)
+        items = len(rep) + len(hds)
         if items < MIN_PRESS_ITEMS:
-            print(f"[info] 現地の素材が{items}件しかないため、"
-                  f"現地の声編は作りません(最低{MIN_PRESS_ITEMS}件)")
+            print(f"[info] 現地の報道が{items}件しかないため、"
+                  f"報道編は作りません(最低{MIN_PRESS_ITEMS}件)")
             return
 
-    if args.mode in ("local", "press") and not body:
+    # コメント欄の回は、声が少ない日に出すと1件読んで終わってしまう。
+    # 報道編と同じ理由で、1本ぶんの体裁になる最低量を求める。
+    if args.mode == "voices":
+        vcs = (voices_data or {}).get("voices") or []
+        if len(vcs) < MIN_VOICE_ITEMS:
+            print(f"[info] コメントが{len(vcs)}件しかないため、"
+                  f"コメント欄編は作りません(最低{MIN_VOICE_ITEMS}件)")
+            return
+
+    if args.mode in ("local", "press", "voices") and not body:
         print("[info] 現地のデータが1つも無いため、現地編は作りません")
         return
 

@@ -34,9 +34,10 @@ JST = timezone(timedelta(hours=9))
 # 毎日出るはずのもの。名前は data/published_videos.json の区分に合わせる。
 EXPECTED_DAILY = [
     ("morning", "日本人選手の成績", "16:30"),
+    ("morning_voices", "ハイライトのコメント欄", "17:30"),
     ("morning_local", "現地での注目度", "18:00"),
     ("daily", "明日の注目試合(MLB)", "19:00"),
-    ("morning_press", "現地メディアの声", "21:00"),
+    ("morning_press", "現地の報道", "21:00"),
 ]
 
 # サッカーは試合の無い日があるので、欠けていても異常としない。

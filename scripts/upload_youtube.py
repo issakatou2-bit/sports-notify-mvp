@@ -371,10 +371,11 @@ DAILY_LINEUP_LINES = [
     "コレスポは毎日、次を自動でお届けしています。",
     "",
     "・日本人選手の成績 … 誰がその日いちばん効いたか",
+    "・ファンのコメント欄 … 最も見られたハイライトの反応を翻訳",
     "・現地での注目度 … 向こうで何が見られ、語られたか",
     "・明日の注目試合 … なぜ注目なのかの理由つき",
     "・欧州サッカー … その夜の注目カード",
-    "・現地メディアの声 … 番記者の投稿と見出しを翻訳",
+    "・現地の報道 … 番記者の投稿と見出しを翻訳",
 ]
 
 
@@ -657,12 +658,41 @@ def weekly_description_lines(archive_dir: str) -> list:
     return lines
 
 
+def buzz_top(path: str) -> dict:
+    """
+    その日いちばん見られたMLB公式ハイライト。無ければ空。
+
+    コメント欄の回は、タイトルと説明文で「どの試合の話か」を示す必要がある。
+    「現地の声」だけでは何の動画か分からず、検索にも当たらない。
+    表記は日本語にする(mlb_buzz.json は英語の対戦名で持っている)。
+    """
+    try:
+        vids = json.loads(pathlib.Path(path).read_text(
+            encoding="utf-8")).get("videos") or []
+    except (json.JSONDecodeError, OSError):
+        return {}
+    if not vids:
+        return {}
+    v = vids[0]
+    res = v.get("result") or {}
+    out = {"views": v.get("views")}
+    if res.get("away_jp") and res.get("home_jp"):
+        out["matchup_jp"] = f"{res['away_jp']} vs {res['home_jp']}"
+        if res.get("away_score") is not None:
+            out["score_line"] = (f"{res['away_jp']} {res['away_score']} - "
+                                 f"{res['home_score']} {res['home_jp']}")
+    elif v.get("matchup"):
+        out["matchup_jp"] = v["matchup"]
+    return out
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
                    morning_players: list = None,
                    morning_mode: str = "players",
-                   sport: str = "mlb") -> dict:
+                   sport: str = "mlb",
+                   buzz_path: str = "data/mlb_buzz.json") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -674,7 +704,20 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 注目試合が取れなかった日は空のままになる。
     daily_lead = ""
 
-    if kind == "morning" and morning_mode == "press":
+    if kind == "morning" and morning_mode == "voices":
+        # コメント欄の回。何の試合かがタイトルで分かるようにする。
+        # 「現地の声」だけでは、どの試合の話なのか見当が付かない。
+        # 検索されるのは球団名なので、対戦を先頭へ置く。
+        m = (buzz_top(buzz_path) or {})
+        card = m.get("matchup_jp") or ""
+        if card:
+            title = (f"{card} 現地のファンは何と言ったか"
+                     f"｜{date_label} 最も見られたハイライトのコメント欄"
+                     f"【MLB】#Shorts")
+        else:
+            title = (f"【MLB】{date_label} 現地で最も見られた試合の"
+                     f"コメント欄｜ファンの反応を翻訳 #Shorts")
+    elif kind == "morning" and morning_mode == "press":
         # 言葉の回。数字の回(local)と主題を分けてあるので、
         # タイトルでも「誰が何と言ったか」を前に出す。
         title = (f"【MLB】{date_label} 現地メディアは何と言っているか"
@@ -744,14 +787,28 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
     # タイトルと同じく、具体的な事実を先に置く。
-    if kind == "morning" and morning_mode == "press":
+    if kind == "morning" and morning_mode == "voices":
+        top = buzz_top(buzz_path) or {}
+        lines = [f"{date_label}のメジャーリーグで、"
+                 "現地で最も見られたハイライトのコメント欄を紹介します。", ""]
+        if top.get("matchup_jp"):
+            lines.append(f"・試合: {top['matchup_jp']}")
+        if top.get("score_line"):
+            lines.append(f"・結果: {top['score_line']}")
+        if top.get("views"):
+            lines.append(f"・MLB公式ハイライトの再生回数: {top['views']:,}回")
+        lines += ["",
+                  "コメントは翻訳したもので、コレスポの見解ではありません。",
+                  "賛成・批判・中立の別と、高評価の数を画面に出しています。",
+                  "現地の報道（番記者と見出し）は別の動画で出しています。"]
+    elif kind == "morning" and morning_mode == "press":
         lines = [f"{date_label}のメジャーリーグについて、"
-                 "現地で何と言われているかをまとめました。", "",
+                 "現地の報道をまとめました。", "",
                  "・現地の番記者がSNSに書いた投稿（実名・所属媒体つき）",
-                 "・現地メディアの見出し（選手名で検索して取得）",
-                 "・現地のファンの投稿", "",
+                 "・現地メディアの見出し（選手名で検索して取得）", "",
                  "いずれも翻訳したもので、コレスポの見解ではありません。",
-                 "数字で見る「現地での注目度」は別の動画で出しています。"]
+                 "ファンのコメント欄と、数字で見る「現地での注目度」は"
+                 "別の動画で出しています。"]
     elif kind == "morning" and morning_mode == "local":
         lines = [f"{date_label}のメジャーリーグについて、"
                  "現地でどれだけ注目されたかをまとめました。", "",
@@ -849,8 +906,12 @@ def main():
                              "asset=資産動画 / verdict=答え合わせ / morning=朝のまとめ")
     parser.add_argument("--recap", default="data/morning_recap.json",
                         help="--kind morning のときの成績データ")
+    parser.add_argument("--buzz", default="data/mlb_buzz.json",
+                        help="--morning-mode voices のときの、"
+                             "その日いちばん見られたハイライト")
     parser.add_argument("--morning-mode", default="players",
-                        choices=["players", "local", "press", "all"],
+                        choices=["players", "local", "press", "voices",
+                                 "all"],
                         help="夕方以降の3本を区別する。"
                              "players=成績 / local=注目度 / press=現地の声")
     parser.add_argument("--asset-topic", default=None,
@@ -978,7 +1039,7 @@ def main():
 
         body = build_metadata(args.games, date_label, args.kind,
                               args.narration, args.archive_dir, morning_players,
-                              args.morning_mode, args.sport)
+                              args.morning_mode, args.sport, args.buzz)
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)
