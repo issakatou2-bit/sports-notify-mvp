@@ -118,6 +118,10 @@ def translate(ai, title: str, description: str) -> tuple:
     return title_en[:100], "\n".join(desc_en).strip()
 
 
+# 実行ページに出す行。訳したものを順に溜めていく。
+REPORT: list = []
+
+
 def localize(yt, ai, video_id: str, store: dict, dry: bool = False) -> bool:
     res = yt.videos().list(part="snippet,localizations", id=video_id).execute()
     items = res.get("items") or []
@@ -142,6 +146,7 @@ def localize(yt, ai, video_id: str, store: dict, dry: bool = False) -> bool:
 
     print(f"  {sn.get('title','')[:44]}")
     print(f"    -> {title_en[:60]}")
+    REPORT.append((sn.get("title", ""), title_en, desc_en))
     if dry:
         return False
 

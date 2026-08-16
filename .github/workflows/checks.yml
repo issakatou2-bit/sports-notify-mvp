@@ -1,0 +1,43 @@
+name: Checks
+
+# 押されたコードを、動かさなくても分かる範囲で検査する。
+#
+# テストは書いてあったのに、CIで一度も走っていなかった。手元で気づいた
+# ときだけ実行する運用だったので、そのまま壊れたものが本番へ出た。
+#
+#   ・実行ページへ出す処理で変数を定義せずに参照していた
+#     (手元にGoogleのライブラリが無くて動かせず、そのまま押した)
+#   ・サッカーの採点が本番で1つも発火しなかった
+#     (テストは通っていたが、渡していた値が実物と違った)
+#
+# APIキーは使わない。鍵の要るものはここでは見ない。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'notability_engine.py'
+      - '.github/workflows/**'
+  pull_request:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pyflakes pyyaml pillow
+
+      - name: Run checks
+        run: python scripts/run_checks.py

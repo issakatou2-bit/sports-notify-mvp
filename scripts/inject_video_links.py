@@ -25,7 +25,6 @@ import argparse
 import json
 import pathlib
 import re
-import sys
 
 CHANNEL_URL = "https://www.youtube.com/@collespo_jp"
 

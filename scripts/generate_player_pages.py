@@ -22,7 +22,6 @@ import html
 import json
 import pathlib
 import re
-import unicodedata
 
 SITE_URL = "https://collespo.com/"
 DATE_FILE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})\.json$")
