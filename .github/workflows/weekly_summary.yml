@@ -8,21 +8,53 @@ name: Weekly summary video
 #   ・生成に15分前後かかるため、19時の通知を遅らせたくない
 #
 # 実行タイミング:
-#   日曜の21時(JST)。日次の19時配信とぶつからない時間にしている。
-#   UTC 12:00 = JST 21:00
-#   日次と同様、GitHubのcronは遅延するため、確実性が要るなら
-#   cron-job.orgから叩く形に切り替えてもよい。
+#   日曜。日次(18:52起動)が終わったのを合図にする。
+#
+#   以前は GitHub の schedule で日曜21時(UTC 12:00)を指定していた。
+#   ただしGitHubのscheduleは2〜4時間遅れる。日次はそれが理由で
+#   cron-job.orgからの起動に切り替えてあり、こちらだけ放置していた。
+#   週1本の動画が23時に出たり翌1時に出たりしていたことになる。
+#
+#   外部cronをもう1本増やす手もあるが、設定する場所も壊れる場所も増える。
+#   日次は毎日確実に動いているので、それに乗る。曜日の判定は下の gate で行う。
+#   二重投稿は upload_youtube.py が区分と日付で弾く。
 
 on:
-  schedule:
-    - cron: '0 12 * * 0'
   workflow_dispatch: {}
+  workflow_run:
+    workflows: ["Daily notable games"]
+    types: [completed]
 
 permissions:
   contents: read
 
 jobs:
+  # 日曜かどうかだけを見る。JSTで判定する(UTCだと日曜の朝までが土曜になる)。
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.day.outputs.go }}
+    steps:
+      - name: Check the day
+        id: day
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "手動実行なので曜日を問わず進めます"
+            echo "go=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          DOW=$(TZ=Asia/Tokyo date +%u)   # 1=月 ... 7=日
+          if [ "$DOW" = "7" ]; then
+            echo "日曜なので週次を作ります"
+            echo "go=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "日曜ではないので何もしません (曜日=$DOW)"
+            echo "go=0" >> "$GITHUB_OUTPUT"
+          fi
+
   weekly:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
