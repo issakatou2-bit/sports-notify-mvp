@@ -39,7 +39,10 @@ FPS = 24
 ANIM_END = 0.45
 SEGMENT_TAIL = 1.5
 
-MIN_DURATION = {"intro": 5.0, "check": 6.0, "totals": 7.0, "outro": 5.0}
+MIN_DURATION = {"intro": 5.0, "check": 6.0, "totals": 7.0,
+                # 通算は数字が1つだけの画面。読み終わってからも
+                # 少し残す(割合が上がりきる動きを見せたい)
+                "career": 8.0, "outro": 5.0}
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
@@ -134,15 +137,62 @@ def base(progress):
 # 原稿
 # ---------------------------------------------------------------------------
 
-def build_narration(verdict: dict, label: str) -> dict:
+# 通算を語り始める最低の件数。これ未満だと「2件中1件」のような、
+# 傾向とは呼べない数字を割合として出すことになる。
+CAREER_MIN = 8
+
+
+def career_streaks(archive_dir: pathlib.Path) -> dict:
+    """
+    アーカイブ全体で、連勝・連敗を理由に挙げた試合がどうなったか。
+
+    週ごとの答え合わせは1〜3件しか無く、傾向としては語れない。
+    毎日理由つきで出して結果まで記録している以上、積み上げれば
+    「その理由で挙げた試合は実際どれくらい続くのか」が言える。
+    予想の的中率ではない。書いたことの検算を足しているだけ。
+    """
+    days = []
+    for f in sorted(archive_dir.glob("????-??-??.json")):
+        try:
+            data = json.loads(f.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        for g in data.get("games", []):
+            if g.get("is_notable"):
+                days.append((f.name[:10], g))
+    checked = ws.check_streaks(days)
+    return {"total": len(checked),
+            "hit": sum(1 for s in checked if s["held"])}
+
+
+def streak_summary(total: int, hit: int) -> str:
+    """
+    その週の結果を、数のとおりに言う。
+
+    「2件のうち0件はそのまま続きました」と書いていた。
+    間違ってはいないが、日本語として読み上げると引っかかる。
+    全部途切れた週はむしろ珍しく、そう言った方が中身も伝わる。
+    """
+    if not total:
+        return "連勝や連敗を理由に取り上げた試合は、先週はありませんでした。"
+    if hit == 0:
+        return (f"連勝や連敗を理由に取り上げた{total}件は、"
+                "いずれもそこで途切れました。")
+    if hit == total:
+        return (f"連勝や連敗を理由に取り上げた{total}件は、"
+                "すべてそのまま続きました。")
+    return (f"連勝や連敗を理由に取り上げた{total}件のうち、"
+            f"続いたのは{hit}件でした。")
+
+
+def build_narration(verdict: dict, label: str, career: dict = None) -> dict:
     streaks = verdict.get("streaks") or []
     hit = sum(1 for s in streaks if s["held"])
 
     segments = [{
         "kind": "intro",
-        "text": f"コレスポが先週注目した試合、実際どうなったか。"
-                f"連勝や連敗を理由に取り上げた{len(streaks)}件のうち、"
-                f"{hit}件はそのまま続きました。",
+        "text": ("コレスポが先週注目した試合、実際どうなったか。"
+                 + streak_summary(len(streaks), hit)),
         "meta": {"total": len(streaks), "hit": hit, "label": label},
     }]
 
@@ -155,12 +205,37 @@ def build_narration(verdict: dict, label: str) -> dict:
         })
 
     if verdict.get("decided"):
+        parts = [f"先週の注目試合は{verdict['decided']}試合で結果が出て、"
+                 f"ホームチームは{verdict['home_wins']}勝"
+                 f"{verdict['away_wins']}敗でした。"]
+        # 数字を並べるだけで終わらせない。その週がどういう週だったのかは、
+        # 同じ数字から言える。1点差が半分近くを占めた週と、
+        # 大差ばかりの週とでは、同じ「12試合」でも中身が違う。
+        one_run = verdict.get("one_run") or 0
+        if one_run:
+            parts.append(f"うち{one_run}試合が1点差です。")
+        top = verdict.get("top_game") or {}
+        if top.get("abbr"):
+            parts.append(f"最も点が入ったのは{top['abbr']}の"
+                         f"{top['home']}対{top['away']}でした。")
+        segments.append({"kind": "totals", "text": "".join(parts), "meta": {}})
+
+    # 通算。この番組にしか出せない数字。
+    #
+    # 毎日「◯連勝中だから注目」と書き、結果まで記録し続けているので、
+    # 「その理由で挙げた試合は、実際どれくらい続いたのか」を数えられる。
+    # 1週ぶんでは2件しか無く、傾向として語れない。溜めれば意味が出る。
+    # 予想の的中率ではない。書いたことの検算の積み上げ。
+    if career and career.get("total", 0) >= CAREER_MIN:
+        pct = round(100 * career["hit"] / career["total"])
         segments.append({
-            "kind": "totals",
-            "text": f"先週の注目試合は{verdict['decided']}試合で結果が出て、"
-                    f"ホームチームは{verdict['home_wins']}勝"
-                    f"{verdict['away_wins']}敗でした。",
-            "meta": {},
+            "kind": "career",
+            "text": f"コレスポが連勝や連敗を理由に挙げた試合は、"
+                    f"通算{career['total']}件。"
+                    f"そのうち{career['hit']}件、{pct}パーセントが"
+                    f"そのまま続きました。",
+            "meta": {"total": career["total"], "hit": career["hit"],
+                     "pct": pct},
         })
 
     segments.append({
@@ -259,6 +334,31 @@ def render_totals(p, verdict):
     return im
 
 
+def render_career(p, meta):
+    """通算の1画面。数字1つを大きく置く。"""
+    im, d = base(p)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    d.text((70, 210), "通算での答え合わせ", font=font(72), fill=ACCENT)
+
+    e = ease_out(min(1.0, p * 2.4))
+    pct = int(meta.get("pct", 0) * e)
+    d.text((70, 520), f"{pct}%", font=font(240), fill=TEXT)
+    d.text((80, 800), "「◯連勝中だから注目」と書いた試合が",
+           font=font(46), fill=DIM)
+    d.text((80, 870), "そのまま続いた割合", font=font(46), fill=DIM)
+
+    if p > 0.25:
+        d.rounded_rectangle([60, 1010, W - 60, 1200], 22, fill=SURF)
+        d.text((100, 1050), f"{meta.get('hit', 0)} / {meta.get('total', 0)} 件",
+               font=font(84), fill=ACCENT)
+    if p > 0.4:
+        d.text((80, 1280), "毎日、理由つきで出して", font=font(44), fill=DIM)
+        d.text((80, 1350), "結果まで記録しているから言えます",
+               font=font(44), fill=DIM)
+    d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
 def render_outro(p):
     im, d = base(p)
     d.text((80, 620), "コレスポ", font=font(120), fill=ACCENT)
@@ -352,7 +452,8 @@ def main():
 
     label = (f"{week[0][0][5:].replace('-', '/')}〜"
              f"{week[-1][0][5:].replace('-', '/')}")
-    narration = build_narration(verdict, label)
+    narration = build_narration(verdict, label,
+                                career_streaks(pathlib.Path(args.archive_dir)))
 
     if args.narration_out:
         p = pathlib.Path(args.narration_out)
@@ -411,6 +512,8 @@ def main():
                     im = render_check(pp, streaks[meta.get("index", 0)])
                 elif kind == "totals":
                     im = render_totals(pp, verdict)
+                elif kind == "career":
+                    im = render_career(pp, meta)
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()
