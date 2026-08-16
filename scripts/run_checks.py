@@ -102,6 +102,37 @@ def check_yaml() -> int:
     return bad
 
 
+def check_imports() -> int:
+    """
+    本番と同じ起動の仕方で、各スクリプトが立ち上がるか。
+
+    構文検査もpyflakesも、import が実際に解決できるかまでは見ない。
+    generate_narration.py がリポジトリ直下の notability_engine を
+    sys.path を通さずに import しており、本番では毎回
+    ModuleNotFoundError で落ちていた。ナレーションが作れないので
+    音声も動画もポッドキャストも作られず、それが何日も気付かれなかった。
+
+    --help を渡して起動するだけなので、APIも叩かず、ファイルも書かない。
+    それでも import は全部走るので、この種の欠落はここで捕まる。
+    """
+    step("スクリプトが起動できるか(本番と同じ呼び方)")
+    bad = 0
+    for f in sorted(ROOT.glob("scripts/*.py")):
+        if f.name.startswith(("test_", "run_checks")):
+            continue
+        src = f.read_text(encoding="utf-8", errors="replace")
+        if "argparse" not in src:
+            continue  # --help を受け付けないものは、起動＝実行になるので飛ばす
+        r = run([sys.executable, str(f), "--help"])  # run() が cwd=ROOT で起動する
+        err = (r.stderr or "")
+        if "ModuleNotFoundError" in err or "ImportError" in err:
+            bad += 1
+            line = [x for x in err.splitlines() if "Error" in x]
+            print(f"NG {f.name}: {line[-1] if line else err[:120]}")
+    print(f"{'ok ' if not bad else 'NG '} 起動できないもの {bad}件")
+    return bad
+
+
 def check_tests(tmp: str) -> int:
     step("テスト")
     bad = 0
@@ -135,6 +166,7 @@ def main() -> int:
     failed += check_syntax()
     failed += check_pyflakes()
     failed += check_yaml()
+    failed += check_imports()
     failed += check_tests(tmp)
     failed += check_inventory()
 

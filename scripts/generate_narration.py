@@ -34,6 +34,14 @@ import re
 import sys
 import unicodedata
 
+# notability_engine.py はリポジトリの直下にある。
+# `python scripts/generate_narration.py` で起動すると sys.path に載るのは
+# scripts/ だけで、作業ディレクトリは載らない。この1行が無いまま
+# notability_engine を import していたため、本番で毎回
+# ModuleNotFoundError になり、ナレーションも音声も動画もポッドキャストも
+# 作られなかった。手元では通っていた(起動の仕方が違うため)。
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+
 import post_common  # noqa: E402
 from notability_engine import (  # noqa: E402
     is_soccer_league as _is_soccer_league,
