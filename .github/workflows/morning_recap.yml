@@ -221,6 +221,18 @@ jobs:
         # 既に入っているものは飛ばすので、毎日回して問題ない。
         run: python scripts/playlists.py --backfill
 
+      # 英語のタイトルと説明文を足す。日本語版は変えない。
+      # 自動吹き替えで音声は英語になるが、タイトルが日本語のままだと
+      # 英語圏の人はそこへ辿り着けない。視聴の35.8%が日本以外。
+      - name: Add English metadata
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/localize_videos.py --recent 6
+
       # 結果はサイトからも参照できるよう、リポジトリへ残す
       - name: Commit recap
         if: always()
@@ -240,7 +252,7 @@ jobs:
           for f in data/morning_recap.json data/venue_stats.json \
                    data/published_videos.json data/mlb_buzz.json \
                    data/local_buzz.json data/published_tiktok.json \
-                   data/local_reporters.json data/local_voices.json \n                   data/playlists.json \n                   data/recap_history; do
+                   data/local_reporters.json data/local_voices.json \n                   data/playlists.json data/localized.json \n                   data/recap_history; do
             if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
           done
           git diff --cached --quiet || git commit -m "recap: ${{ github.run_id }}"

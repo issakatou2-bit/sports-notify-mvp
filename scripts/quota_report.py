@@ -48,7 +48,11 @@ YT_QUOTAS = {
 UNIT_COSTS = {
     "thumbnails.set": 50,
     "videos.list": 1,
+    "videos.update": 50,
     "playlistItems.insert": 50,
+    "playlistItems.list": 1,
+    "channels.list": 1,
+    "commentThreads.list": 1,
 }
 
 # 毎日走るもの。(名前, 呼び出し, 回数)
@@ -63,6 +67,14 @@ DAILY_YT = [
     ("朝: 現地の声 サムネ", "thumbnails.set", 1),
     ("現地の再生回数を調べる", "search.list", 1),
     ("再生回数の取得", "videos.list", 1),
+    ("現地のファンのコメント", "commentThreads.list", 4),
+    # 再生リスト: 一覧を2回(日次と夕方)走査し、その日の5本を足す
+    ("再生リストの走査", "playlistItems.list", 4),
+    ("再生リストへの追加", "playlistItems.insert", 5),
+    ("チャンネル情報", "channels.list", 2),
+    # 英語のタイトル・説明文。既に入っているものは問い合わせだけ。
+    ("英語メタデータの確認", "videos.list", 12),
+    ("英語メタデータの付与", "videos.update", 5),
 ]
 
 # AIの呼び出し。max_tokensは上限なので、実際はこれより少ない。
@@ -72,6 +84,7 @@ DAILY_AI = [
     ("現地のファンの声 翻訳", "local_voices.py", 1500, 1),
     ("現地の番記者 翻訳", "local_reporters.py", 1200, 1),
     ("現地の見出し 翻訳", "local_reporters.py", 1200, 1),
+    ("英語のタイトル・説明文", "localize_videos.py", 1600, 5),
 ]
 WEEKLY_AI = [
     ("週次まとめの原稿", "generate_weekly_narration.py", 700, 8),

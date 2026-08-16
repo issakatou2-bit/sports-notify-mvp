@@ -1,0 +1,66 @@
+name: Localize backfill
+
+# 過去の動画に英語のタイトルと説明文を足す。日本語版は変えない。
+#
+# 日次の回でも新しい分には足しているが、それ以前の53本は日本語のまま。
+# 資産動画(用語解説など)は日付に依存せず長く検索から拾われるので、
+# ここに英語が付くかどうかの差が大きい。
+#
+# videos.update は1本50ユニット。53本で2,650、1日の割り当て10,000に
+# 対して26%。1回で終わる作業なので、日を分ける必要は無い。
+# それでも --limit で上限を切ってあるのは、途中で何かあったときに
+# 割り当てを使い切らないため。
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: '1回で処理する本数の上限'
+        required: false
+        default: '60'
+      dry_run:
+        description: 'true にすると訳を出すだけで更新しない'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  localize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install google-api-python-client google-auth
+
+      - name: Localize
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LIMIT: ${{ inputs.limit }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          ARGS="--backfill --limit ${LIMIT:-60}"
+          if [ "$DRY" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          python scripts/localize_videos.py $ARGS
+
+      # 済んだ動画を控える。残さないと毎回すべてを問い合わせ直すことになる。
+      - name: Commit record
+        if: always()
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -e data/localized.json ]; then git add data/localized.json; fi
+          git diff --cached --quiet || \
+            git commit -m "localized: ${{ github.run_id }}"
+          git pull --rebase --quiet || true
+          git push || echo "変更が無いためスキップ"

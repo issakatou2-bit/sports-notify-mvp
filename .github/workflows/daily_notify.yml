@@ -351,6 +351,18 @@ jobs:
         # 既に入っているものは飛ばすので、毎日回して問題ない。
         run: python scripts/playlists.py --backfill
 
+      # 英語のタイトルと説明文を足す。日本語版は変えない。
+      # 自動吹き替えで音声は英語になるが、タイトルが日本語のままだと
+      # 英語圏の人はそこへ辿り着けない。視聴の35.8%が日本以外。
+      - name: Add English metadata
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/localize_videos.py --recent 6
+
       # 動画IDは翌日以降のアーカイブページから参照する。
       # コミットしないと記録が毎回消えてしまう。
       - name: Commit video record
@@ -362,7 +374,7 @@ jobs:
           # 存在しないものを1つ混ぜると git add は全体を諦める。
           # published_tiktok.json は投稿が成功するまで作られないため、
           # 動画IDの記録まで巻き添えで止まっていた(08/11以降)。
-          for f in data/published_videos.json data/published_tiktok.json \n                   data/playlists.json; do
+          for f in data/published_videos.json data/published_tiktok.json \n                   data/playlists.json data/localized.json; do
             if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
           done
           git diff --cached --quiet || git commit -m "video record: ${{ github.run_id }}"
