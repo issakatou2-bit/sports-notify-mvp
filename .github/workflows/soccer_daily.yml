@@ -243,3 +243,9 @@ jobs:
           name: collespo-soccer
           path: build/soccer/
           if-no-files-found: ignore
+
+      # 試合があった回だけ検品する。開催が無い日は作らないのが正しいので、
+      # そこを赤くすると毎週何度も嘘の警報が鳴る。
+      - name: Confirm the video went out
+        if: always() && steps.gate.outputs.count != '0'
+        run: python scripts/verify_published.py --kind daily_soccer

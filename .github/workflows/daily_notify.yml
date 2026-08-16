@@ -422,6 +422,14 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+      # 最後に検品する。配信の各ステップは1つの失敗で全部を落とさないよう
+      # continue-on-error にしてあるが、そのぶん動画が1本も出ていない回も
+      # 実行は緑になる。8/16の再実行が実際にそうだった。
+      # 途中では止めず、最後に落とす。順序はそのまま、結果だけ正直にする。
+      - name: Confirm the video went out
+        if: always()
+        run: python scripts/verify_published.py --kind daily
+
   deploy:
     needs: build_and_notify
     environment:

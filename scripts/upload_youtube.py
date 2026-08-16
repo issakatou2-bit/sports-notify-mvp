@@ -624,6 +624,39 @@ SPORTS = {
 }
 
 
+def weekly_description_lines(archive_dir: str) -> list:
+    """
+    週次の説明文に載せる、その週の実数。
+
+    どれもアーカイブに記録されている値を数えただけなので、言い切ってよい。
+    「熱戦が続きました」のような感想は書かない。数えたことだけを書く。
+    """
+    try:
+        import weekly_stats as ws
+
+        week = ws.load_week(pathlib.Path(archive_dir))
+        if not week:
+            return []
+        v = ws.compute_verdict(week)
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] 週の集計を作れませんでした: {e}", file=sys.stderr)
+        return []
+
+    lines = ["■ この週の数字"]
+    for value, label in ws.verdict_lines(v):
+        lines.append(f"・{label}: {value}")
+    lines.append("")
+
+    streaks = v.get("streaks") or []
+    if streaks:
+        lines.append("■ 連勝・連敗はどうなったか")
+        for s in streaks[:6]:
+            lines.append(f"・{s['team']} {s['n']}{s['kind']}中 "
+                         f"→ {s['result']}（{s['matchup']} {s['score']}）")
+        lines.append("")
+    return lines
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
@@ -745,7 +778,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             "",
         ]
     elif kind == "weekly":
+        # 10分の動画に1行しか説明が無かった。週次はこのチャンネルの本命で、
+        # 検索も関連動画も説明文を読む。中身はアーカイブに全部あるので使う。
         lines = ["この1週間の注目試合を、結果とあわせて振り返ります。", ""]
+        lines += weekly_description_lines(archive_dir)
     else:
         head = f"{daily_lead}。" if daily_lead else ""
         lines = [f"{head}{date_label} の注目試合を、"
@@ -908,7 +944,11 @@ def main():
         # 週次ワークフローには notable_games.json が存在しない(あれは日次側が
         # その日に作るもの)。そのままだとタイトルから日付が丸ごと落ちるので、
         # 動画と同じ週の範囲をアーカイブから求める。
-        if args.kind == "weekly" and not date_label:
+        #
+        # 答え合わせショート(verdict)は同じ週を扱うのに、ここが weekly だけを
+        # 見ていた。そのため題名の日付が空になり、
+        # 「注目した試合、どうなった？｜ 先週の答え合わせ」と空白だけが残っていた。
+        if args.kind in ("weekly", "verdict") and not date_label:
             try:
                 import weekly_stats as ws
 

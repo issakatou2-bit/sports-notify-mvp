@@ -57,6 +57,12 @@ class Standing:
     # games_back には互換のため3で割った値を入れているが、
     # 「ゲーム差」は野球の概念で、サッカーの画面にそのまま出すと嘘になる。
     points_back: Optional[float] = None
+    # 消化試合数。順位表を語ってよいかの判断に使う。
+    # 開幕直後は全チームが勝ち点0で並び、APIは得失点差などの
+    # タイブレークで順位を付けて返す。それを実力の順位として読むと
+    # 「ラシン・サンタンデールが3位、ビジャレアルが3位の上位対決」
+    # 「首位争い、勝ち点差は0」のような、事実でない文が出る(実際に出た)。
+    played: Optional[int] = None
 
 
 @dataclass
@@ -432,6 +438,10 @@ def rule_quality_matchup(game: Game, standings: dict) -> list[Reason]:
 
 # 日本で名前が通っていて、試合単体で見られるクラブ。
 # MLB_MARQUEE_TEAM_IDS と同じ役割。クラブ名の正規化キーで持つ。
+# 今季の順位表を語ってよくなる消化試合数。
+# 5節あれば勝ち点が10前後まで開き、順位が並び順ではなく実態になる。
+SOCCER_TABLE_MIN_MATCHES = 5
+
 SOCCER_MARQUEE_CLUBS = {
     "fcbarcelona", "realmadrid", "manchesterunited", "manchestercity",
     "liverpool", "arsenal", "chelsea", "tottenham", "juventus",
@@ -543,13 +553,25 @@ def rule_soccer_derby(game: Game) -> list[Reason]:
 
 def rule_soccer_table(game: Game, standings: dict) -> list[Reason]:
     """
-    順位表から。開幕直後は全チーム勝ち点0で並ぶので、その場合は何も言わない。
+    順位表から。ただし順位表が意味を持つようになってからだけ。
+
+    「開幕直後は何も言わない」と書いてありながら、そう書いてあるだけで
+    実際には何も見ていなかった。ラ・リーガ開幕節で全チームが勝ち点0のとき、
+    APIは得失点差などのタイブレークで順位を返す。それを実力順として読み、
+    「ラシン・サンタンデールが3位、ビジャレアルが3位の上位対決」
+    「首位争い、勝ち点差は0」という、どちらも事実でない文が出ていた。
 
     「ゲーム差」は野球の言い方なので使わない。サッカーは勝ち点差で語る。
     """
     home = standings.get(game.home_team_id)
     away = standings.get(game.away_team_id)
     if not (home and away):
+        return []
+
+    # 消化が少ないうちの順位は、並び順であって順位ではない。
+    # この時期は rule_soccer_last_season(昨季の順位)が受け持つ。
+    played = min(home.played or 0, away.played or 0)
+    if played < SOCCER_TABLE_MIN_MATCHES:
         return []
 
     reasons = []
@@ -1880,6 +1902,7 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
                     games_back=games_back,
                     win_streak=0,  # 無料枠にフォームデータが無いため未実装
                     points_back=points_back,
+                    played=row.get("playedGames"),
                 )
 
         for m in matches_data.get("matches", []):

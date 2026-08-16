@@ -106,18 +106,35 @@ check("クラブ名に英字が残っていない",
           out["games"][0]["home_team_name"] + out["games"][0]["away_team_name"]),
       False)
 
+# --- 開幕直後の順位表は語らない ---------------------------------------------
+# 全チームが勝ち点0のとき、APIは得失点差などのタイブレークで順位を返す。
+# それを実力順として読み、「3位と3位の上位対決」「首位争い、勝ち点差は0」
+# という事実でない文が実際に出た。
+print("\n--- 開幕直後の順位表 ---")
+opening = {"h9": Standing(team_id="h9", division_rank=3, games_back=0.0,
+                          win_streak=0, points_back=0.0, played=1),
+           "a9": Standing(team_id="a9", division_rank=3, games_back=0.0,
+                          win_streak=0, points_back=0.0, played=1)}
+out = ne.build_output(
+    [make("ラ・リーガ", "Racing Club de Santander", "Villarreal CF", 9)],
+    opening, {})
+texts = " / ".join(r.get("text", "") for r in out["games"][0].get("reasons") or [])
+check("順位の話をしない", "上位対決" in texts, False)
+check("首位争いと言わない", "首位争い" in texts, False)
+
 # --- 今季の順位が付いている時期 ---------------------------------------------
-print("\n--- 順位表がある場合 ---")
+print("\n--- 順位表がある場合(消化5節以降) ---")
 st = {"h0": Standing(team_id="h0", division_rank=1, games_back=0.0,
-                     win_streak=0, points_back=0.0),
+                     win_streak=0, points_back=0.0, played=6),
       "a0": Standing(team_id="a0", division_rank=2, games_back=0.3,
-                     win_streak=0, points_back=1.0)}
+                     win_streak=0, points_back=1.0, played=6)}
 out = ne.build_output([make("プレミアリーグ", "Arsenal FC", "Manchester City FC")],
                       st, {})
 g = out["games"][0]
 check("上位対決が注目になる", bool(g.get("is_notable")), True)
 texts = " / ".join(r.get("text", "") for r in g.get("reasons") or [])
 check("勝ち点差で語る(ゲーム差と書かない)", "ゲーム差" in texts, False)
+check("順位の話が戻ってくる", "上位対決" in texts, True)
 print(f"      {texts}")
 
 # --- MLBが壊れていないか ----------------------------------------------------
