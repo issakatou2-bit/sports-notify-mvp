@@ -102,6 +102,44 @@ def check_yaml() -> int:
     return bad
 
 
+def check_shell_in_yaml() -> int:
+    """
+    ワークフローの run: が、シェルとして読める形になっているか。
+
+    YAMLとして正しくても、シェルとして壊れていることがある。
+    行継続のバックスラッシュを書こうとして、バックスラッシュとnの2文字が
+    そのまま入り、コマンドの引数に化けたことがある。
+    YAMLの検査は通るので、動かして初めて分かる種類の壊れ方。
+    """
+    step("ワークフローの run: がシェルとして読めるか")
+    try:
+        import yaml
+    except ImportError:
+        print("[info] pyyaml が無いため飛ばします")
+        return 0
+    bad = 0
+    marker = chr(92) + "n"          # 「\」+「n」
+    for f in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
+        try:
+            d = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        except yaml.YAMLError:
+            continue  # YAMLの検査が別に見る
+        for job in (d.get("jobs") or {}).values():
+            for stepd in (job.get("steps") or []):
+                run = stepd.get("run")
+                if not isinstance(run, str):
+                    continue
+                # 1行の中にバックスラッシュ+nがあれば、書き損じ
+                for line in run.splitlines():
+                    if marker in line:
+                        bad += 1
+                        print(f"NG {f.name} / {stepd.get('name','(名前なし)')}: "
+                              f"行継続が文字列になっています")
+                        print(f"     {line.strip()[:90]}")
+    print(f"{'ok ' if not bad else 'NG '} 壊れた行 {bad}件")
+    return bad
+
+
 def check_imports() -> int:
     """
     本番と同じ起動の仕方で、各スクリプトが立ち上がるか。
@@ -166,6 +204,7 @@ def main() -> int:
     failed += check_syntax()
     failed += check_pyflakes()
     failed += check_yaml()
+    failed += check_shell_in_yaml()
     failed += check_imports()
     failed += check_tests(tmp)
     failed += check_inventory()

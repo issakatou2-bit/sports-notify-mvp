@@ -225,16 +225,9 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in data/published_videos.json data/published_tiktok.json \
-                   data/soccer_games.json; do
-            if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
-          done
-          git diff --cached --quiet || \
-            git commit -m "soccer daily: ${{ github.run_id }}"
-          git pull --rebase --quiet || true
-          git push || echo "変更が無いためスキップ"
+          bash scripts/commit_data.sh \
+            "soccer daily: ${{ github.run_id }}" \
+            data/published_videos.json data/published_tiktok.json data/soccer_games.json
 
       - name: Save video as artifact
         if: always()

@@ -275,27 +275,9 @@ jobs:
       - name: Commit recap
         if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # git add は並べた中に1つでも存在しないものがあると、その場で
-          # 失敗して何もstageしない。|| true はその失敗を隠すだけで、
-          # 続く git diff --cached は「変更なし」を返すのでコミットも起きない。
-          #
-          # published_tiktok.json は投稿が成功するまで作られない。これを
-          # 並べた時点で他の全ファイルが巻き添えになり、08/11以降、成績も
-          # 現地の話題も番記者も週間ランキングの材料も保存が止まっていた。
-          # ワークフローは毎日successで終わっていたので気づけなかった。
-          #
-          # 1つずつ、あるものだけstageする。
-          for f in data/morning_recap.json data/venue_stats.json \
-                   data/published_videos.json data/mlb_buzz.json \
-                   data/local_buzz.json data/published_tiktok.json \
-                   data/local_reporters.json data/local_voices.json \n                   data/playlists.json data/localized.json \n                   data/recap_history; do
-            if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
-          done
-          git diff --cached --quiet || git commit -m "recap: ${{ github.run_id }}"
-          git pull --rebase --quiet || true
-          git push || echo "変更が無いか、push対象が無いためスキップ"
+          bash scripts/commit_data.sh \
+            "recap: ${{ github.run_id }}" \
+            data/morning_recap.json data/venue_stats.json data/published_videos.json data/mlb_buzz.json data/local_buzz.json data/published_tiktok.json data/local_reporters.json data/local_voices.json data/playlists.json data/localized.json data/recap_history
 
       - name: Save video as artifact
         if: always()

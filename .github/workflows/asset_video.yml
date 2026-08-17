@@ -200,17 +200,9 @@ jobs:
       - name: Commit published record
         if: always()
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # 1つでも欠けると git add は何もstageしない。いまは3つとも
-          # 存在するが、増やしたときに黙って記録が止まらないようにする。
-          for f in data/published_assets.json data/venue_stats.json \
-                   data/soccer_preview.json; do
-            if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
-          done
-          git diff --cached --quiet || git commit -m "published assets: ${{ github.run_id }}"
-          git pull --rebase --quiet || true
-          git push || echo "変更が無いか、push対象が無いためスキップ"
+          bash scripts/commit_data.sh \
+            "published assets: ${{ github.run_id }}" \
+            data/published_assets.json data/venue_stats.json data/soccer_preview.json
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
       - name: Save videos as artifact

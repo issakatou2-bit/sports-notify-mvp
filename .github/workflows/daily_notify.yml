@@ -162,11 +162,9 @@ jobs:
 
       - name: Commit archive
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add archive/ data/ podcast/ || true
-          git diff --cached --quiet || git commit -m "archive: ${{ github.run_id }}"
-          git push || echo "変更が無いか、push対象が無いためスキップ"
+          bash scripts/commit_data.sh \
+            "archive: ${{ github.run_id }}" \
+            archive/ podcast/
 
       - name: Assemble Pages site
         # サイトが1日古くなるより、動画が出ない方が痛い。
@@ -317,11 +315,9 @@ jobs:
       - name: Commit podcast episode
         continue-on-error: true
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add podcast/ || true
-          git diff --cached --quiet || git commit -m "podcast: ${{ github.run_id }}"
-          git push || echo "変更が無いか、push対象が無いためスキップ"
+          bash scripts/commit_data.sh \
+            "podcast: ${{ github.run_id }}" \
+            podcast/
 
       - name: Generate video
         continue-on-error: true
@@ -410,17 +406,9 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # 存在しないものを1つ混ぜると git add は全体を諦める。
-          # published_tiktok.json は投稿が成功するまで作られないため、
-          # 動画IDの記録まで巻き添えで止まっていた(08/11以降)。
-          for f in data/published_videos.json data/published_tiktok.json \n                   data/playlists.json data/localized.json; do
-            if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
-          done
-          git diff --cached --quiet || git commit -m "video record: ${{ github.run_id }}"
-          git pull --rebase --quiet || true
-          git push || echo "変更が無いか、push対象が無いためスキップ"
+          bash scripts/commit_data.sh \
+            "video record: ${{ github.run_id }}" \
+            data/published_videos.json data/published_tiktok.json data/playlists.json data/localized.json
 
       - name: Save video as artifact
         uses: actions/upload-artifact@v4
