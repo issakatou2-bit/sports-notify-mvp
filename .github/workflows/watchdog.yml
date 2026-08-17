@@ -1,0 +1,83 @@
+name: Watchdog (same-day)
+
+# その日出るはずだったものが出ていないことを、その日のうちに知る。
+#
+# なぜ健康診断と別に要るのか:
+#   healthcheck.yml は毎朝10時に「前日」を見る。作りとしては正しいが、
+#   気づくのが翌朝になる。8/17は朝の4本が丸ごと落ちたのに、
+#   こちらが手で調べるまで誰も気づかなかった。
+#
+#   起きたこと自体は仕組みの不具合ではなく、外部cronの時刻を
+#   16:00から15:00へ変えた日に、当日の枠が消えたためだった。
+#   つまり「ワークフローが失敗する」形ではなく「そもそも動かない」形で、
+#   GitHub側からは検知しようがない。出るはずのものが出たかを、
+#   別のところから見に行くしかない。
+#
+# いつ動かすか:
+#   日次(cron-job.orgが18:52に起動)の完走を合図にする。
+#   GitHubのscheduleは0〜4時間遅れるので、見張り番の起動には使えない。
+#   19時台に見れば、16:30・17:00・17:30・18:00・19:00の5枠が判定できる。
+#
+#   保険として schedule も置く。日次そのものが動かなかった日は
+#   workflow_run が来ないので、遅れてでも走る口が要る。
+#
+# 何をするか:
+#   欠けていたら赤で終わる。GitHubは失敗した実行を通知するので、
+#   設定していれば当日中にメールが届く。
+#   何が欠けて、次に何をすればよいかは実行ページに出す。
+
+on:
+  workflow_run:
+    workflows: ["Daily notable games"]
+    types: [completed]
+  schedule:
+    - cron: '0 12 * * *'   # UTC 12:00 = JST 21:00(遅延込みで深夜まで)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: watchdog
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 公開時刻が過ぎた枠だけを見る。これから出るものを欠けと言われても
+      # 毎回赤くなるだけで、何も伝えていないことになる。
+      - name: Check what should already be out
+        id: check
+        run: python scripts/healthcheck.py --today
+
+      # 欠けていた回だけ、次に何をすればよいかを添える。
+      # 実行ページを開いた人が、そこから調べ直さなくて済むように。
+      - name: What to do about it
+        if: failure()
+        run: |
+          {
+            echo "## 次に見るところ"
+            echo
+            echo "1. **cron-job.org の履歴**"
+            echo "   https://console.cron-job.org/jobs"
+            echo "   「コレスポ朝の回」の HISTORY に、今日の実行があるか。"
+            echo "   実行が無ければ、そもそも起動していない(時刻の変更直後は"
+            echo "   当日の枠が消えることがある)。"
+            echo
+            echo "2. **朝の回の実行ログ**"
+            echo "   https://github.com/${{ github.repository }}/actions/workflows/morning_recap.yml"
+            echo "   実行があって失敗しているなら、どのステップかを見る。"
+            echo
+            echo "3. **その日のぶんを回収する**"
+            echo "   上のページで Run workflow を押せば、まだ出せる。"
+            echo "   公開時刻を過ぎた枠は即時公開に倒れる。0本よりはよい。"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -85,13 +85,22 @@ def hours_since(iso: str):
     return (datetime.now(timezone.utc) - t).total_seconds() / 3600
 
 
-def check_videos(day: str) -> tuple:
-    """その日の動画が投稿されたか。(行, 欠けている数) を返す。"""
+def check_videos(day: str, only_past: bool = False) -> tuple:
+    """
+    その日の動画が投稿されたか。(行, 欠けている数) を返す。
+
+    only_past を立てると、まだ公開時刻が来ていない枠は見ない。
+    当日の途中で走らせるとき、これから出るものを「欠け」と言われても
+    毎回赤くなるだけで意味が無い。
+    """
     rec = load("data/published_videos.json") or {}
+    now_hm = datetime.now(JST).strftime("%H:%M")
     lines, missing = [], 0
     for kind, label, at, since in EXPECTED_DAILY + OPTIONAL_DAILY:
         if day < since:
             continue  # その枠がまだ無かった日
+        if only_past and at > now_hm:
+            continue  # まだその時刻になっていない
         entry = (rec.get(kind) or {}).get(day)
         optional = any(kind == k for k, _, _, _ in OPTIONAL_DAILY)
         if entry:
@@ -153,13 +162,22 @@ def check_playlists() -> tuple:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", help="確認する日 (既定は昨日のJST)")
+    ap.add_argument("--today", action="store_true",
+                    help="今日を、公開時刻が過ぎた枠だけ見る(日中の見張り用)")
     args = ap.parse_args()
 
     now = datetime.now(JST)
-    day = args.date or (now - timedelta(days=1)).strftime("%Y-%m-%d")
+    if args.today:
+        day = now.strftime("%Y-%m-%d")
+    else:
+        day = args.date or (now - timedelta(days=1)).strftime("%Y-%m-%d")
 
-    video_lines, missing = check_videos(day)
+    video_lines, missing = check_videos(day, only_past=args.today)
+    # 当日の途中では、材料が古いのは当たり前(朝の回がまだ走っていない)。
+    # 動画が出たかどうかだけを見る。
     data_lines, stale = check_data()
+    if args.today:
+        stale = 0
     hist_line, _ = check_history()
     pl_line, pl_bad = check_playlists()
 
