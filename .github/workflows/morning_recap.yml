@@ -215,9 +215,15 @@ jobs:
             # force を立てる(重複を防ぐ守りを、意図して外すための口)。
             FORCE=""
             if [ "${{ inputs.force }}" = "true" ]; then FORCE="--force"; fi
+            # 回によって使う材料が違う。既定値と同じ場所だが、
+            # どの回が何を読むのかがここで分かるように明示しておく。
+            #   voices → mlb_buzz(その日いちばん見られたハイライト)
+            #   player → player_profile(今日の1人)
             if python scripts/upload_youtube.py \
               --video "$VIDEO" --kind morning --morning-mode "$mode" \
               --recap data/morning_recap.json \
+              --buzz data/mlb_buzz.json \
+              --profile data/player_profile.json \
               --thumbnail "build/morning/thumb_${mode}.png" \
               --privacy public --publish-at "$AT" $FORCE; then
               echo "$mode: 投稿しました (公開 ${AT:-即時})"

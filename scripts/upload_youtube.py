@@ -819,12 +819,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         bio = prof.get("bio") or {}
         lines = [f"{prof.get('name','')}（{prof.get('team','')}）を、"
                  "MLB公式データからまとめました。", ""]
+        # 画面と同じ日本語表記にする。APIのキー名をそのまま並べると
+        # 「games 1152 avg .282 hr 307」になり、検索にも読み手にも効かない。
+        import player_screens as _ps
         for label, key in (("通算", "career"), ("今季", "this_season"),
                            ("昨季", "last_season")):
-            s = prof.get(key) or {}
+            s = _ps.stat_line(prof, prof.get(key) or {})
             if s:
-                lines.append(f"・{label}: " + "　".join(
-                    f"{k} {v}" for k, v in s.items() if v not in (None, "")))
+                lines.append(f"・{label}: {s}")
         if bio.get("debut"):
             lines.append(f"・MLBデビュー: {bio['debut']}")
         if bio.get("birth_city"):
