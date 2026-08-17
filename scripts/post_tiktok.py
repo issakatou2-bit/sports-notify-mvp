@@ -13,9 +13,14 @@
   3. init で投稿枠を作り、返ってきたURLへ動画を送る
   4. status を見て、受理されたことを確かめる
 
-直接投稿と下書きについて:
+直接投稿と受信箱について:
+
+  審査前は「受信箱(inbox)」にしか送れない。ここは TikTok アプリの
+  プロフィール内の「下書き」ではなく、アプリの通知欄に届く
+  システムメッセージのこと。そこから開いて投稿する。
+  (最初これを「下書き」と書いていたため、探す場所を間違わせた)
   審査が通るまで video.publish は付与されないので、その間は
-  下書き(inbox)にしか送れない。両方に対応してあり、使える方を選ぶ。
+  受信箱にしか送れない。両方に対応してあり、使える方を選ぶ。
   審査後は何も変えずに直接投稿へ切り替わる。
 
 公開範囲について:
@@ -121,7 +126,7 @@ def init_upload(token: str, video: pathlib.Path, title: str,
     }
 
     if not direct:
-        # 下書き。post_info は受け付けないので送らない。
+        # 受信箱へ送る。post_info は受け付けないので送らない。
         return _post(f"{API}/post/publish/inbox/video/init/", token,
                      {"source_info": source})
 
@@ -290,7 +295,8 @@ def main():
     scopes = (tok.get("scope") or "").split(",")
     direct = "video.publish" in scopes
     print(f"権限: {tok.get('scope')}")
-    print("投稿方法:", "直接投稿" if direct else "下書き(審査前のため)")
+    print("投稿方法:", "直接投稿" if direct else
+          "受信箱へ送信(審査前のため。TikTokアプリの通知から投稿します)")
 
     # 返ってきたリフレッシュトークンは、渡したものと違う場合がある。
     # 次回はこちらを使う必要があるので、必ず表示する。
@@ -300,8 +306,8 @@ def main():
               "新しい値に置き換えてください")
 
     # creator_info は直接投稿のためのAPIで、video.publish が要る。
-    # 下書きしか許されていない状態で呼ぶと scope_not_authorized で落ちる。
-    # 下書きでは公開範囲も題名もTikTokアプリ側で決めるので、そもそも要らない。
+    # 受信箱しか許されていない状態で呼ぶと scope_not_authorized で落ちる。
+    # 受信箱では公開範囲も題名もTikTokアプリ側で決めるので、そもそも要らない。
     info: dict = {}
     privacy = None
     if direct:
@@ -315,7 +321,7 @@ def main():
         print(f"選べる公開範囲: {info.get('privacy_level_options')}")
         print(f"使う公開範囲: {privacy}")
     else:
-        print("公開範囲: 下書きのため、TikTokアプリで投稿するときに決めます")
+        print("公開範囲: TikTokアプリで投稿するときに決めます")
 
     if args.dry_run:
         print("\n--dry-run のため、ここで終了します")
