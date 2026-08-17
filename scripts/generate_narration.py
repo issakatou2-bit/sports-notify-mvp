@@ -264,9 +264,12 @@ def _yesterday_recap(archive_dir: str, games: list,
     if not lines:
         return {}
 
+    # 読み上げには正式名を渡す。画面は略称のままにする。
+    # 「LAD」は「エルエーディー」と読まれてしまい、耳では意味が通らない。
     spoken = "。".join(
-        f"{m}は{sc.replace(' - ', '対')}" + (f"、{note}" if note else "")
-        for m, sc, note in lines[:3])
+        f"{spoken_m or m}は{sc.replace(' - ', '対')}"
+        + (f"、{note}" if note else "")
+        for m, sc, note, spoken_m in lines[:3])
     # 通算の記録も渡す。毎日1つずつ増える数字で、
     # 続けて見ている人にだけ育っているのが見える。
     base = {}
@@ -286,7 +289,7 @@ def _yesterday_recap(archive_dir: str, games: list,
         "text": f"昨日この番組で選んだ{len(lines)}試合は、こうなりました。"
                 f"{spoken}。{tail}",
         "meta": {"lines": [{"matchup": m, "score": sc, "note": n}
-                           for m, sc, n in lines[:3]],
+                           for m, sc, n, _ in lines[:3]],
                  "base": base},
     }
 

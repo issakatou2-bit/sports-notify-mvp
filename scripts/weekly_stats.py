@@ -98,7 +98,12 @@ def load_day(archive_dir: pathlib.Path, date_str: str,
 
 def day_lines(games: list) -> list:
     """
-    答え合わせの1行ずつ。(対戦, スコア, 添える一言) を返す。
+    答え合わせの1行ずつ。(対戦, スコア, 添える一言, 読み上げ用の対戦) を返す。
+
+    画面は略称のままでよい。縦型の画面に「ドジャース vs ブリュワーズ」を
+    並べると字が小さくなるし、スコアの横に短い記号が並ぶ方が読みやすい。
+    ただし読み上げは別で、VOICEVOXは「LAD」を「エルエーディー」と読む。
+    耳で聞いている人には何のことか分からないので、そちらは正式名を渡す。
 
     添える一言は、こちらが書いた注目理由が実際どうだったかに限る。
     「熱戦だった」のような感想は入れない。書いたことの検算だけをする。
@@ -129,7 +134,8 @@ def day_lines(games: list) -> list:
             elif min(h, a) == 0:
                 note = "完封"
         lines.append((g.get("abbr_matchup") or g.get("matchup"),
-                      f"{h} - {a}", note))
+                      f"{h} - {a}", note,
+                      g.get("matchup") or g.get("abbr_matchup") or ""))
     return lines
 
 
