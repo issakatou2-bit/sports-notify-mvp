@@ -104,6 +104,15 @@ jobs:
         continue-on-error: true
         run: python scripts/local_buzz.py --out data/local_buzz.json
 
+      # コメントを拾いにいく先を集める。MLB公式だけでなく、日本の配信元や
+      # 球団公式も見る。RSSなので枠を使わない(検索は1回100ユニット)。
+      - name: Collect videos from every source
+        continue-on-error: true
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python scripts/channel_feeds.py             --sources data/comment_sources.json             --out data/channel_videos.json
+
       # 現地のファンが実際に何と言っているか。翻訳を通すので、
       # 数字のコーナーとは別枠として扱う(画面も背景色を変えて分ける)。
       #
