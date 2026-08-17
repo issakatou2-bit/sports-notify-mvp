@@ -38,16 +38,17 @@ import requests
 YOUTUBE_API = "https://www.googleapis.com/youtube/v3"
 FEED = "https://www.youtube.com/feeds/videos.xml?channel_id={}"
 
-# 試合そのものを扱っている投稿だけを残す。
-# チャンネルによって題の付け方が違うので、両方の言語で見る。
-KEEP_PATTERNS = [
-    r"highlights?", r"ハイライト", r"game", r"試合",
-    r"vs\.?\s", r"×", r"全打席", r"好プレー", r"週間",
-]
-
-# 見出しだけの動画や、試合と関係のないものを外す。
+# 題名で絞るのは、その競技だけを扱っているわけではない場所だけ。
+#
+# 最初は全チャンネルに共通の「ハイライト/game/vs」といった条件を当てていた。
+# ところが日本語の題は「ドジャース対ロッキーズ 8/18【野球ラジオ調実況】」
+# 「【ドジャース・スクーバル】6回7奪三振の好投…#shorts」のような形で、
+# どれにも当たらない。SPOTV NOWもハムショーも毎日0件になっていた。
+#
+# チャンネルを名指しで選んでいる以上、そこの投稿はおおむね対象のはず。
+# 絞りたい場所(ESPNのような総合メディア)だけ、情報源の側に条件を書く。
 SKIP_PATTERNS = [
-    r"shorts?$", r"予告", r"cm", r"トレーラー", r"インタビュー全文",
+    r"予告", r"トレーラー", r"^cm$", r"メンバーシップ", r"生配信の告知",
 ]
 
 # 何時間前までの投稿を見るか。
@@ -195,11 +196,18 @@ def fetch_feed(channel_id: str, hours: int = LOOKBACK_HOURS) -> list:
     return out
 
 
-def wanted(title: str) -> bool:
-    low = title.lower()
-    if any(re.search(p, low, re.I) for p in SKIP_PATTERNS):
+def wanted(title: str, keep: str = "") -> bool:
+    """
+    その投稿を拾うか。
+
+    keep が指定されている情報源だけ、題名がそれに合うことを求める。
+    指定が無ければ、明らかに関係の無いもの以外は全部拾う。
+    """
+    if any(re.search(p, title, re.I) for p in SKIP_PATTERNS):
         return False
-    return any(re.search(p, low, re.I) for p in KEEP_PATTERNS)
+    if keep:
+        return bool(re.search(keep, title, re.I))
+    return True
 
 
 def fetch_stats(api_key: str, video_ids: list) -> dict:
@@ -248,7 +256,9 @@ def main() -> int:
     rows = []
     for ch in channels:
         hours = int(ch.get("lookback_hours") or LOOKBACK_HOURS)
-        items = [v for v in fetch_feed(ch["id"], hours) if wanted(v["title"])]
+        keep = ch.get("keep_pattern") or ""
+        items = [v for v in fetch_feed(ch["id"], hours)
+                 if wanted(v["title"], keep)]
         items = items[:PER_CHANNEL]
         for v in items:
             v["channel"] = ch.get("label") or ch.get("name")

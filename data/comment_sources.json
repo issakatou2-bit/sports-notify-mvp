@@ -22,7 +22,15 @@
     "",
     "lookback_hours: そのチャンネルの投稿頻度に合わせる。",
     "  毎日出す公式は30時間で足りるが、週1本の場所を30時間で",
-    "  見ると毎日0件になる。頻度は情報源の性質なので、ここに書く。"
+    "  見ると毎日0件になる。頻度は情報源の性質なので、ここに書く。",
+    "",
+    "同じ名前で別のチャンネルがあることに注意。SPOTVNOWは週間ニュース用と",
+    "試合切り抜き用でIDが違い、ハンドルから引くと前者に当たる。",
+    "登録するときは、実際にRSSを引いて中身を見てから決めること。",
+    "",
+    "keep_pattern: その競技だけを扱っていない場所にだけ書く。",
+    "  ESPNは全スポーツを流すので題名で絞るが、MLB専門の場所は絞らない。",
+    "  共通の条件を全部に当てると、日本語の題の付け方に合わず0件になる。"
   ],
   "channels": [
     {
@@ -37,10 +45,10 @@
     {
       "id": "UCgn06AH6iI_DOutzukEsPAA",
       "name": "SPOTVNOW",
-      "label": "SPOTV NOW",
+      "label": "SPOTV NOW(週間ニュース)",
       "sport": "mlb",
       "lang": "ja",
-      "note": "日本でMLBを配信している。日本語のコメントが集まる",
+      "note": "週1本のまとめ。試合直後の反応はもう一方のIDに集まる",
       "lookback_hours": 200
     },
     {
@@ -51,6 +59,34 @@
       "lang": "en",
       "note": "日本人選手が所属する球団の公式。ファンの熱量が高い",
       "lookback_hours": 80
+    },
+    {
+      "id": "UCJ-l-sMQFHogSy8KXRyMIRA",
+      "name": "SPOTVNOW main",
+      "label": "SPOTV NOW",
+      "sport": "mlb",
+      "lang": "ja",
+      "lookback_hours": 30,
+      "note": "日本のMLB配信元。試合ごとの切り抜きを毎時出す。日本語のコメントが最も集まる場所"
+    },
+    {
+      "id": "UC_MbGNpd7ldQAHdBTQ2Ke1w",
+      "name": "Sports Show",
+      "label": "ハムショーのメジャー実況",
+      "sport": "mlb",
+      "lang": "ja",
+      "lookback_hours": 30,
+      "note": "注目試合をラジオ調で実況。盛り上がった試合ほどコメントが伸びるので、「その日どの試合が熱かったか」の指標として効く"
+    },
+    {
+      "id": "UCiio0ydw439X13KyZgMIcHw",
+      "name": "ESPN",
+      "label": "ESPN",
+      "sport": "mlb",
+      "lang": "en",
+      "lookback_hours": 30,
+      "note": "米国のスポーツメディア。現地の反応が集まるが、MLB専門ではないので題名で絞る",
+      "keep_pattern": "MLB|baseball|Ohtani|Dodgers|Yankees|World Series"
     }
   ]
 }
