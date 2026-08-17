@@ -128,6 +128,12 @@ jobs:
             --kind weekly \
             --out build/weekly/thumb.png
 
+      # 公開時刻を決める。
+      #
+      # これまで指定が無く、出来上がった順に公開していた。日次の完走に
+      # 乗せているので、日次を手で回した日は23:49に出る。10分の動画が
+      # 深夜に無言で現れても、誰の目にも触れない。
+      # 21:00は現地の報道の枠なので、そこは避けて22:00に置く。
       - name: Upload to YouTube
         continue-on-error: true
         env:
@@ -140,7 +146,7 @@ jobs:
             --games notable_games.json \
             --kind weekly \
             --thumbnail build/weekly/thumb.png \
-            --privacy public
+            --privacy public --publish-at "22:00"
 
       # ---- 答え合わせショート ----
       # 週次まとめの一画面に埋もれさせるには惜しい内容なので、縦型ショートとしても出す。
@@ -203,10 +209,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in data/published_videos.json data/published_tiktok.json                    data/playlists.json data/localized.json; do
+          for f in data/published_videos.json data/published_tiktok.json \
+                   data/playlists.json data/localized.json; do
             if [ -e "$f" ]; then git add "$f"; else echo "(無し) $f"; fi
           done
-          git diff --cached --quiet ||             git commit -m "weekly record: ${{ github.run_id }}"
+          git diff --cached --quiet || \
+            git commit -m "weekly record: ${{ github.run_id }}"
           git pull --rebase --quiet || true
           git push || echo "変更が無いためスキップ"
 
