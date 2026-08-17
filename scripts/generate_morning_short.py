@@ -302,49 +302,6 @@ def jp_date(day: str) -> str:
         return day
 
 
-def pick_top(players: list) -> dict:
-    """
-    その日いちばん目立った1人を、数字だけで機械的に選ぶ。
-
-    「誰が良かったか」を語らずに済むよう、順番を先に決めてある。
-    投手は好投した場合のみ候補にする(登板しただけで上位に来ないように)。
-
-      1. 本塁打を打った打者(本数 → 安打数)
-      2. 5回以上を自責2以下で投げた投手(奪三振の多い順)
-      3. 2安打以上の打者(安打数)
-      4. 奪三振が最も多い投手
-    """
-    if not players:
-        return {}
-    batters = [p for p in players if p["type"] == "batter"]
-    pitchers = [p for p in players if p["type"] == "pitcher"]
-
-    hr = [p for p in batters if p.get("hr")]
-    if hr:
-        return max(hr, key=lambda p: (p["hr"], p["hits"]))
-
-    def _ip(p):
-        try:
-            return float(p.get("ip") or 0)
-        except (TypeError, ValueError):
-            return 0.0
-
-    quality = [p for p in pitchers if _ip(p) >= 5 and p.get("er", 99) <= 2]
-    if quality:
-        return max(quality, key=lambda p: p.get("so", 0))
-
-    multi = [p for p in batters if p.get("hits", 0) >= 2]
-    if multi:
-        return max(multi, key=lambda p: p["hits"])
-    if pitchers:
-        return max(pitchers, key=lambda p: p.get("so", 0))
-    return players[0]
-
-
-# ---------------------------------------------------------------------------
-# 原稿
-# ---------------------------------------------------------------------------
-
 def build_narration(data: dict, mode: str = "all") -> dict:
     """
     mode で扱う内容を切り替える。
@@ -1413,7 +1370,14 @@ def main():
               f"({len(narration['segments'])}セグメント)")
         return
 
-    top = pick_top(players)
+    # 画面の冒頭も、読み上げと同じ選手にする。
+    #
+    # 読み上げは players[0](貢献度順の1位)、画面は pick_top(本塁打を
+    # 最優先する別の基準)を使っていた。本塁打が出た日だけ、
+    # 「画面には大谷、音声は鈴木誠也」という食い違いが出る。
+    # 以前 build_narration 側を直したときに、こちらを直し忘れていた。
+    # 選び方が2つあると、いつかまた離れる。1つにする。
+    top = players[0] if players else {}
     manifest = pathlib.Path(args.audio_dir) / "manifest.json"
     if manifest.exists():
         segs = json.loads(manifest.read_text(encoding="utf-8"))["segments"]
