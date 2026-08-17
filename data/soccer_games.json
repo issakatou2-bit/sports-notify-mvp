@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-08-16T14:36:11.243968+00:00",
+  "generated_at": "2026-08-17T09:53:48.250705+00:00",
   "games": [
     {
-      "game_id": "564629",
+      "game_id": "564635",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-5335",
-      "away_team_id": "PD-94",
-      "home_team_name": "ラシン・サンタンデール",
-      "away_team_name": "ビジャレアル",
+      "home_team_id": "PD-560",
+      "away_team_id": "PD-285",
+      "home_team_name": "デポルティボ",
+      "away_team_name": "エルチェ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "ラシン・サンタンデール vs ビジャレアル",
+      "matchup": "デポルティボ vs エルチェ",
       "abbr_matchup": null,
-      "start_time_jst": "08/17 00:00",
+      "start_time_jst": "08/18 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -32,52 +32,11 @@
       "score": 0,
       "is_notable": true,
       "reasons": []
-    },
-    {
-      "game_id": "564632",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-80",
-      "away_team_id": "PD-88",
-      "home_team_name": "エスパニョール",
-      "away_team_name": "レバンテ",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "エスパニョール vs レバンテ",
-      "abbr_matchup": null,
-      "start_time_jst": "08/17 02:00",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "昨季11位と18位の対戦",
-          "weight": 0
-        }
-      ],
-      "log_notes": [],
-      "ai_summary": "昨季11位と18位という下位に沈んだ両チームが、今シーズンは同地区内で【1.0ゲーム差の3位同士】で対峙する注目の一戦となる。順位を大きく上げてきた両者の現在地を占う重要な対局であり、シーズン全体の競争力を測る上で見落とせない。連勝や連敗といった勢いの波に乗っていない安定した状況下での対戦だけに、実力差がより明確に表れる可能性がある。",
-      "notification_hook": "昨季18位から這い上がったレバンテ、3位進出を目指す正念場の一戦。"
     }
   ],
   "ai_status": {
-    "targets": 1,
-    "succeeded": 1,
-    "cost_usd": 0.003
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
   }
 }

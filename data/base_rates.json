@@ -1,28 +1,28 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 62,
-    "home_wins": 36,
+    "games": 65,
+    "home_wins": 37,
     "draws": 0,
-    "away_wins": 26,
-    "home_win_pct": 58,
-    "avg_total": 8.0,
+    "away_wins": 28,
+    "home_win_pct": 57,
+    "avg_total": 8.1,
     "one_run": 17,
-    "one_run_pct": 27,
+    "one_run_pct": 26,
     "shutouts": 9,
-    "shutout_pct": 15
+    "shutout_pct": 14
   },
   "same_division": {
-    "games": 18,
+    "games": 19,
     "home_wins": 11,
     "draws": 0,
-    "away_wins": 7,
-    "home_win_pct": 61,
-    "avg_total": 7.5,
+    "away_wins": 8,
+    "home_win_pct": 58,
+    "avg_total": 7.9,
     "one_run": 5,
-    "one_run_pct": 28,
+    "one_run_pct": 26,
     "shutouts": 3,
-    "shutout_pct": 17
+    "shutout_pct": 16
   },
   "venues": {
     "フェンウェイ・パーク": {
@@ -30,12 +30,12 @@
       "avg_total": 13.4
     },
     "リグレー・フィールド": {
-      "games": 5,
-      "avg_total": 9.8
+      "games": 6,
+      "avg_total": 10.7
     },
     "ドジャー・スタジアム": {
-      "games": 5,
-      "avg_total": 7.6
+      "games": 6,
+      "avg_total": 7.7
     }
   },
   "min_sample": 5

@@ -31,7 +31,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": true,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 2,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "822940",
@@ -79,7 +84,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 10,
+        "winner": "away"
+      }
     },
     {
       "game_id": "564632",
@@ -120,7 +130,12 @@
       ],
       "log_notes": [],
       "ai_summary": "昨季11位と18位という下位に沈んだ両チームが、今シーズンは同地区内で【1.0ゲーム差の3位同士】で対峙する注目の一戦となる。順位を大きく上げてきた両者の現在地を占う重要な対局であり、シーズン全体の競争力を測る上で見落とせない。連勝や連敗といった勢いの波に乗っていない安定した状況下での対戦だけに、実力差がより明確に表れる可能性がある。",
-      "notification_hook": "昨季18位から這い上がったレバンテ、3位進出を目指す正念場の一戦。"
+      "notification_hook": "昨季18位から這い上がったレバンテ、3位進出を目指す正念場の一戦。",
+      "final_score": {
+        "home": 3,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824880",
@@ -190,7 +205,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ東地区首位のブレーブスと西地区2位のダイヤモンドバックスが対戦する、【各地区の上位チーム同士の好カード】である。ブレーブスは2位に7.5ゲーム差をつけて独走態勢にあるが、直近は2連敗で勢いが鈍っている一方、ダイヤモンドバックスは2連勝中で上昇気流に乗っており、本シリーズの第3戦は大きな意味を持つ。先発はブレーブスがBryce Elder（防御率4.03）、ダイヤモンドバックスがMichael Soroka（防御率2.92）の対戦となり、Sorokaの精密な投球術がElder相手にどこまで通用するかが勝敗を分けるポイントになるだろう。また、新しく開場した球場での試合であり、MLB平均的な得点環境での両右腕の投げ合いは見応えがある。",
-      "notification_hook": "東地区首位ブレーブスvs西地区2位ダイヤモンドバックス、防御率2.92のSorokaの活躍を見よ。"
+      "notification_hook": "東地区首位ブレーブスvs西地区2位ダイヤモンドバックス、防御率2.92のSorokaの活躍を見よ。",
+      "final_score": {
+        "home": 5,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823344",
@@ -246,7 +266,12 @@
           "text": "レッドソックスには吉田正尚が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 8,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822774",
@@ -302,7 +327,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823590",
@@ -358,7 +388,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824397",
@@ -414,7 +449,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824236",
@@ -470,7 +510,12 @@
           "text": "ホワイトソックスには村上宗隆が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824477",
@@ -518,7 +563,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823670",
@@ -566,7 +616,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824642",
@@ -637,7 +692,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ中地区で【首位との差4.0ゲーム差の2位】に位置するカブスが、13.5ゲーム差で3位に沈むカージナルスとの同地区対決に臨む。直近10試合で7勝3敗と好調なカブスにとって、ここからのシーズンは順位争いを左右する重要な局面であり、一つ一つの試合の積み重ねが地区優勝への道を開く。先発は両チームとも高い期待が寄せられており、カブスのEdward Cabreraの防御率5.10に対し、カージナルスのHunter Dobbinsは防御率3.40と投手戦が予想される。リグレー・フィールドの風向きによって球場の性格が大きく変わる特性により、投手戦か打撃戦かどちらに傾くかが試合の行方を左右することになる。",
-      "notification_hook": "カブス2位キープへ、投手対決の行方がカギを握る同地区対決。"
+      "notification_hook": "カブス2位キープへ、投手対決の行方がカギを握る同地区対決。",
+      "final_score": {
+        "home": 4,
+        "away": 11,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823182",
@@ -693,7 +753,12 @@
           "text": "ロッキーズには菅野智之が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 7,
+        "away": 13,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824965",
@@ -741,7 +806,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823991",
@@ -797,7 +867,12 @@
           "text": "エンゼルスには菊池雄星が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823912",
@@ -871,7 +946,12 @@
         "Tarik Skubalは移籍後3登板目"
       ],
       "ai_summary": "ナ・リーグ西地区首位のドジャースと中地区首位のブリュワーズが対戦する、両地区を代表するチーム同士の好カードである。ドジャースは2位に【8.0ゲーム差をつけて】独走態勢を築き、ブリュワーズも2位に4.0ゲーム差をつけるなど、双方とも自地区での優位性を確立している。直近10試合は両チームとも5勝5敗と足踏みしており、シーズン終盤に向けた勢いが問われる局面となる。先発投手の投げ合いでは、ドジャースのTarik Skubal(防御率2.93)とブリュワーズのLogan Henderson(防御率2.88)という好投手同士が対戦し、ドジャー・スタジアムの得点環境でどちらが試合を制するかにも注目したい。",
-      "notification_hook": "自地区首位同士の好カード。Skubalとhenderson、好投手の投げ合いに注目。"
+      "notification_hook": "自地区首位同士の好カード。Skubalとhenderson、好投手の投げ合いに注目。",
+      "final_score": {
+        "home": 2,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824156",
@@ -927,7 +1007,12 @@
           "text": "アストロズには今井達也が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 3,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
