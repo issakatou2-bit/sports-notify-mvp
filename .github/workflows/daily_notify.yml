@@ -173,7 +173,11 @@ jobs:
         run: |
           mkdir -p public
           cp -r web/* public/
-          cp notable_games.json public/games.json
+          # サイトはこの1ファイルしか読まない。MLBだけを入れていたため、
+          # トップページの「欧州サッカー」タブが毎日空だった。
+          # プッシュもRSSも動画も両方を受け取っているのに、サイトだけが
+          # 片方しか渡されていなかった。1つにまとめて渡す。
+          python scripts/merge_games.py             --input notable_games.json             --input data/soccer_games.json             --out public/games.json
           cp feed.xml public/feed.xml
 
       # ベストナイン編成用の選手成績。MLB Stats APIのseason成績は試合ごとに
