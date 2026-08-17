@@ -658,6 +658,14 @@ def weekly_description_lines(archive_dir: str) -> list:
     return lines
 
 
+def load_profile(path: str) -> dict:
+    """「今日の1人」の材料。無ければ空。"""
+    try:
+        return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
 def buzz_top(path: str) -> dict:
     """
     その日いちばん見られたMLB公式ハイライト。無ければ空。
@@ -692,7 +700,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    morning_players: list = None,
                    morning_mode: str = "players",
                    sport: str = "mlb",
-                   buzz_path: str = "data/mlb_buzz.json") -> dict:
+                   buzz_path: str = "data/mlb_buzz.json",
+                   profile_path: str = "data/player_profile.json") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -704,7 +713,16 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 注目試合が取れなかった日は空のままになる。
     daily_lead = ""
 
-    if kind == "morning" and morning_mode == "voices":
+    if kind == "morning" and morning_mode == "player":
+        # 選手名が最も強いフックだと実測で分かっている(32ポイント差)。
+        # しかもこの回は「明日の試合」と違って古くならないので、
+        # あとから名前で検索した人にも同じだけ役に立つ。
+        prof = load_profile(profile_path)
+        who = prof.get("name") or ""
+        big = prof.get("headline") or ""
+        title = (f"【MLB】{who}｜通算成績・今季・受賞歴まとめ"
+                 + (f'｜{big}' if big else "") + " #Shorts")
+    elif kind == "morning" and morning_mode == "voices":
         # コメント欄の回。何の試合かがタイトルで分かるようにする。
         # 「現地の声」だけでは、どの試合の話なのか見当が付かない。
         # 検索されるのは球団名なので、対戦を先頭へ置く。
@@ -796,7 +814,29 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
     # タイトルと同じく、具体的な事実を先に置く。
-    if kind == "morning" and morning_mode == "voices":
+    if kind == "morning" and morning_mode == "player":
+        prof = load_profile(profile_path)
+        bio = prof.get("bio") or {}
+        lines = [f"{prof.get('name','')}（{prof.get('team','')}）を、"
+                 "MLB公式データからまとめました。", ""]
+        for label, key in (("通算", "career"), ("今季", "this_season"),
+                           ("昨季", "last_season")):
+            s = prof.get(key) or {}
+            if s:
+                lines.append(f"・{label}: " + "　".join(
+                    f"{k} {v}" for k, v in s.items() if v not in (None, "")))
+        if bio.get("debut"):
+            lines.append(f"・MLBデビュー: {bio['debut']}")
+        if bio.get("birth_city"):
+            lines.append(f"・出身: {bio['birth_city']}")
+        aw = prof.get("awards") or []
+        if aw:
+            lines += ["", "主な受賞歴"]
+            lines += [f"・{a['season']} {a['name']}" for a in aw]
+        lines += ["",
+                  "数字はMLB公式データをそのまま集計したものです。",
+                  "現地の言葉は翻訳したもので、コレスポの見解ではありません。"]
+    elif kind == "morning" and morning_mode == "voices":
         top = buzz_top(buzz_path) or {}
         lines = [f"{date_label}のメジャーリーグで、"
                  "現地で最も見られたハイライトのコメント欄を紹介します。", ""]
@@ -915,12 +955,14 @@ def main():
                              "asset=資産動画 / verdict=答え合わせ / morning=朝のまとめ")
     parser.add_argument("--recap", default="data/morning_recap.json",
                         help="--kind morning のときの成績データ")
+    parser.add_argument("--profile", default="data/player_profile.json",
+                        help="--morning-mode player のときの、今日の1人")
     parser.add_argument("--buzz", default="data/mlb_buzz.json",
                         help="--morning-mode voices のときの、"
                              "その日いちばん見られたハイライト")
     parser.add_argument("--morning-mode", default="players",
-                        choices=["players", "local", "press", "voices",
-                                 "all"],
+                        choices=["players", "player", "local", "press",
+                                 "voices", "all"],
                         help="夕方以降の3本を区別する。"
                              "players=成績 / local=注目度 / press=現地の声")
     parser.add_argument("--asset-topic", default=None,
@@ -1048,7 +1090,8 @@ def main():
 
         body = build_metadata(args.games, date_label, args.kind,
                               args.narration, args.archive_dir, morning_players,
-                              args.morning_mode, args.sport, args.buzz)
+                              args.morning_mode, args.sport, args.buzz,
+                              args.profile)
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)

@@ -41,7 +41,10 @@ SEGMENT_TAIL = 1.5
 MIN_DURATION = {"intro": 5.0, "list": 8.0, "buzz": 9.0,
                 "talk": 9.0, "voices": 11.0, "outro": 5.0,
                 # 翻訳した文章は読む時間が要るので、数字の画面より長く取る
-                "reporters": 12.0, "headlines": 11.0}
+                "reporters": 12.0, "headlines": 11.0,
+                # 「今日の1人」の画面
+                "p_intro": 6.0, "p_career": 8.0, "p_season": 9.0,
+                "p_recent": 9.0, "p_awards": 8.0, "p_quotes": 12.0}
 
 # 「現地の声」だけは背景色を変える。
 # 他の画面がAPIの数字だけで作られているのに対し、ここは翻訳を通した
@@ -188,6 +191,13 @@ def draw_steps(d, color=None) -> None:
         x = pad + i * (w + gap)
         d.rounded_rectangle([x, 30, x + w, 30 + h], h // 2,
                             fill=on if i <= _STEP else (44, 52, 66))
+
+
+def card(d, x0, y0, x1, y1, stripe=None, fill=None):
+    """日次側と同じカード。角丸の面と、左端の色帯。"""
+    d.rounded_rectangle([x0, y0, x1, y1], 26, fill=fill or SURF)
+    if stripe:
+        d.rounded_rectangle([x0, y0, x0 + 16, y1], 8, fill=stripe)
 
 
 def base(progress):
@@ -1171,6 +1181,100 @@ def build_narration_track(segs, durations, out_dir):
     return audio
 
 
+def build_player_video(args):
+    """
+    「今日の1人」。1人の選手を、数字と現地の言葉だけでまとめる。
+
+    他の枠と違い、前夜の試合に依存しない。通算成績と経歴は翌日には
+    古くならないので、あとから名前で検索した人にも同じだけ役に立つ。
+    試合の予告が翌日に価値を失うのに対し、こちらは残る。
+    """
+    import player_screens as ps
+
+    path = pathlib.Path(args.profile)
+    if not path.exists():
+        print(f"[info] {path} が無いため、今日の1人は作りません"
+              "(scripts/player_profile.py を先に走らせてください)")
+        return 0
+    prof = json.loads(path.read_text(encoding="utf-8"))
+    if not (prof.get("career") or prof.get("this_season")):
+        print(f"[info] {prof.get('name')} の成績が取れていないため作りません")
+        return 0
+
+    narration = ps.build_narration(prof)
+    kinds = [s["kind"] for s in narration["segments"]]
+    print(f"[info] 今日の1人: {prof.get('name')}({prof.get('team')}) "
+          f"/ 画面 {len(kinds)}枚: {kinds}")
+
+    if args.narration_out:
+        op = pathlib.Path(args.narration_out)
+        op.parent.mkdir(parents=True, exist_ok=True)
+        op.write_text(json.dumps(narration, ensure_ascii=False, indent=2),
+                      encoding="utf-8")
+        print(f"[info] 原稿を書き出しました: {op} ({len(kinds)}セグメント)")
+        return 0
+
+    manifest = pathlib.Path(args.audio_dir) / "manifest.json"
+    if manifest.exists():
+        segs = json.loads(manifest.read_text(encoding="utf-8"))["segments"]
+    else:
+        print(f"[warn] 音声manifestが見つかりません: {manifest.resolve()}")
+        segs = [{"kind": s["kind"], "file": None, "duration": 0.0,
+                 "meta": s["meta"]} for s in narration["segments"]]
+
+    out_dir = pathlib.Path(args.out)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    video_path = out_dir / "collespo_morning_player.mp4"
+
+    durations = plan_durations(segs)
+    audio_path = build_narration_track(segs, durations, out_dir)
+    if args.require_audio and not audio_path:
+        print("::error::音声が作れませんでした。無音のまま投稿しないよう、"
+              "ここで中止します(VOICEVOXの起動を確認してください)")
+        return 1
+
+    cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
+           "-f", "rawvideo", "-pix_fmt", "rgb24",
+           "-s", f"{W}x{H}", "-framerate", str(FPS), "-i", "-"]
+    if audio_path:
+        cmd += ["-i", str(audio_path)]
+    cmd += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+            "-pix_fmt", "yuv420p", "-movflags", "+faststart"]
+    if audio_path:
+        cmd += ["-c:a", "aac", "-b:a", "160k", "-shortest"]
+    cmd += [str(video_path)]
+
+    err_file = open(out_dir / "ffmpeg_error.log", "wb")
+    proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
+                            stdout=subprocess.DEVNULL, stderr=err_file)
+    try:
+        for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+            set_step(seg_i, len(segs))
+            n = int(dur * FPS)
+            kind = seg.get("kind")
+            draw = ps.RENDERERS.get(kind)
+            cached = None
+            for k in range(n):
+                pp = k / max(1, n - 1)
+                if pp > ANIM_END and cached is not None:
+                    proc.stdin.write(cached)
+                    continue
+                im = draw(pp, prof) if draw else render_outro(pp)
+                cached = im.tobytes()
+                proc.stdin.write(cached)
+            print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")
+    finally:
+        if proc.stdin:
+            proc.stdin.close()
+        proc.wait()
+    err_file.close()
+    if proc.returncode != 0:
+        print(f"::error::ffmpegが失敗しました ({proc.returncode})")
+        return 1
+    print(f"[info] 書き出しました -> {video_path}")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--recap", default="data/morning_recap.json")
@@ -1179,18 +1283,26 @@ def main():
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--voices", default="data/local_voices.json")
+    parser.add_argument("--profile", default="data/player_profile.json",
+                        help="--mode player のときの、今日の1人の材料")
     parser.add_argument("--mode", default="players",
-                        choices=["players", "local", "press", "voices",
-                                 "all"],
+                        choices=["players", "player", "local", "press",
+                                 "voices", "all"],
                         help="players=選手成績 / local=現地の注目度(数字) / "
                              "press=現地の報道(番記者と見出し) / "
-                             "voices=ハイライトのコメント欄 / all=全部")
+                             "voices=ハイライトのコメント欄 / "
+                             "player=今日の1人 / all=全部")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--require-audio", action="store_true",
                         help="音声が作れなければ動画を作らずに終わる")
     parser.add_argument("--out", default="build/morning")
     args = parser.parse_args()
+
+    # 「今日の1人」は他の枠と材料が違うので、ここで分岐して先に処理する。
+    # 前夜の出場に依存しないため、成績データが無い日でも作れる。
+    if args.mode == "player":
+        return build_player_video(args)
 
     path = pathlib.Path(args.recap)
     if not path.exists():

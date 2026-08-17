@@ -40,6 +40,7 @@ JST = timezone(timedelta(hours=9))
 SINCE_ALWAYS = "0000-00-00"
 EXPECTED_DAILY = [
     ("morning", "日本人選手の成績", "16:30", SINCE_ALWAYS),
+    ("morning_player", "今日の1人", "17:00", "2026-08-18"),
     ("morning_voices", "ハイライトのコメント欄", "17:30", "2026-08-17"),
     ("morning_local", "現地での注目度", "18:00", SINCE_ALWAYS),
     ("daily", "明日の注目試合(MLB)", "19:00", SINCE_ALWAYS),
