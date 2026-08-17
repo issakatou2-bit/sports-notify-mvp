@@ -225,7 +225,9 @@ def _top_game_meta(games: list) -> dict:
     }
 
 
-def _yesterday_recap(archive_dir: str, games: list) -> dict:
+def _yesterday_recap(archive_dir: str, games: list,
+                     base_rates_path: str = "data/base_rates.json"
+                     ) -> dict:
     """
     昨日「注目」として出した試合の結果を、1つのセグメントにまとめる。
 
@@ -250,12 +252,27 @@ def _yesterday_recap(archive_dir: str, games: list) -> dict:
     spoken = "。".join(
         f"{m}は{sc.replace(' - ', '対')}" + (f"、{note}" if note else "")
         for m, sc, note in lines[:3])
+    # 通算の記録も渡す。毎日1つずつ増える数字で、
+    # 続けて見ている人にだけ育っているのが見える。
+    base = {}
+    try:
+        base = (json.loads(pathlib.Path(base_rates_path).read_text(
+            encoding="utf-8")).get("overall") or {})
+    except (json.JSONDecodeError, OSError):
+        pass
+
+    tail = "明日の結果も、また明日この時間に出します。"
+    if base.get("games"):
+        tail = (f"この番組が選んで結果まで記録した試合は、これで"
+                f"{base['games']}試合になりました。"
+                "明日の結果も、また明日この時間に出します。")
     return {
         "kind": "recap",
         "text": f"昨日この番組で選んだ{len(lines)}試合は、こうなりました。"
-                f"{spoken}。明日の結果も、また明日この時間に出します。",
+                f"{spoken}。{tail}",
         "meta": {"lines": [{"matchup": m, "score": sc, "note": n}
-                           for m, sc, n in lines[:3]]},
+                           for m, sc, n in lines[:3]],
+                 "base": base},
     }
 
 
@@ -418,7 +435,7 @@ def main():
     #
     # 置く場所はアウトロの直前。冒頭のフックは動画で最も重要なので、
     # そこと本編の間には何も挟まない。
-    recap = _yesterday_recap(args.archive_dir, games)
+    recap = _yesterday_recap(args.archive_dir, games, args.base_rates)
     if recap:
         segments.append(recap)
 

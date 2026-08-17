@@ -452,7 +452,25 @@ def render_recap(progress: float, meta: dict):
     d.text((74, 268), "この番組が選んだ試合は、こうなりました",
            font=font(34), fill=DIM)
 
+    # 通算の記録を、答え合わせの上に置く。
+    #
+    # 1本ずつが完結していると、明日また来る理由が無い。この数字は
+    # 毎日1つずつ増えるので、続けて見ている人にだけ「育っている」ことが
+    # 見える。予想の的中率ではなく、書いたことの検算を数えた数。
+    # 数字が上がりきる動きを見せるのは、増えることそのものが中身だから。
+    base = meta.get("base") or {}
     y = 380
+    if base.get("games"):
+        e0 = ease_out(min(1.0, progress * 2.2))
+        card(d, 60, y, W - 60, y + 150, stripe=JP)
+        n = int(base["games"] * e0)
+        d.text((100, y + 26), f"{n}", font=font(74), fill=ACCENT)
+        nw = d.textlength(f"{n}", font=font(74))
+        d.text((110 + nw, y + 58), "試合を記録しました", font=font(40), fill=TEXT)
+        d.text((100, y + 104), "毎日、選んだ試合の結果まで残しています",
+               font=font(30), fill=DIM)
+        y += 180
+
     for i, row in enumerate((meta.get("lines") or [])[:3]):
         appear = 0.08 + i * 0.10
         if progress < appear:
