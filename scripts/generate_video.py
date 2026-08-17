@@ -214,6 +214,28 @@ def base_frame(progress: float):
     return im, d
 
 
+def card(d, x0, y0, x1, y1, stripe=None, fill=None):
+    """
+    このチャンネルのカード。角丸の面と、左端の色帯。
+
+    画面ごとにばらばらの箱を置いていたので、揃えた。同じ形が並ぶと
+    「どこからどこまでが1つの話か」が一目で分かる。
+    視聴者の73.5%が45歳以上なので、装飾ではなく区切りとして効かせる。
+    """
+    d.rounded_rectangle([x0, y0, x1, y1], 26, fill=fill or SURF)
+    if stripe:
+        d.rounded_rectangle([x0, y0, x0 + 16, y1], 8, fill=stripe)
+
+
+def label_chip(d, x, y, text, color, fg=None):
+    """小さな見出しの札。「先発予定」のような区分に使う。"""
+    f = font(30)
+    w = d.textlength(text, font=f)
+    d.rounded_rectangle([x, y, x + w + 32, y + 46], 10, fill=color)
+    d.text((x + 16, y + 4), text, font=f, fill=fg or (11, 14, 20))
+    return y + 62
+
+
 def draw_brand(d, small=False):
     d.text((70, 70), "コレスポ", font=font(46 if small else 56), fill=ACCENT)
 
@@ -315,7 +337,7 @@ def render_game(progress: float, g: dict, index: int, total: int):
     e = ease_out(min(1.0, progress * 3.2))
     dx = int((1 - e) * 160)
     card_y = 380
-    d.rounded_rectangle([60 - dx, card_y, W - 60 - dx, card_y + 300], 26, fill=SURF)
+    card(d, 60 - dx, card_y, W - 60 - dx, card_y + 300, stripe=ACCENT)
 
     for i, side in enumerate(("home", "away")):
         y = card_y + 40 + i * 120
@@ -330,6 +352,18 @@ def render_game(progress: float, g: dict, index: int, total: int):
             d.text((262 - dx + nw, y + 14), "JP", font=font(30), fill=(11, 14, 20))
 
     y = 740
+
+    # --- どの大会か ---
+    #
+    # サッカーの画面がほぼ空になっていた。MLBには略称の色札・先発投手・
+    # 球場の説明があるが、サッカーはどれも無い。昨季の順位すら、
+    # 昇格クラブには存在しない。何も無いまま対戦名だけが浮いていた。
+    # せめて「どのリーグの試合か」は必ず言える。リーグを見て選ぶ人には、
+    # ここがいちばん要る情報でもある。
+    league = g.get("league") or ""
+    if league and league != "MLB":
+        y = label_chip(d, 70, y, league, JP) + 10
+
     # --- 先発投手 ---
     pitchers = []
     for side, label in (("home", ""), ("away", "")):
@@ -338,12 +372,11 @@ def render_game(progress: float, g: dict, index: int, total: int):
             era = f" ({p['era']})" if p.get("era") else ""
             pitchers.append(f"{p['name']}{era}")
     if pitchers and progress > 0.08:
-        d.text((70, y), "先発予定", font=font(34), fill=DIM)
-        y += 52
+        y = label_chip(d, 70, y, "先発予定", ACCENT_DIM, ACCENT)
         for line in pitchers:
-            d.text((70, y), line, font=font(42), fill=TEXT)
+            d.text((84, y), line, font=font(42), fill=TEXT)
             y += 58
-        y += 24
+        y += 20
 
     # --- 注目理由(1つずつ順に出す) ---
     # ライバル関係の理由文は「◯◯ vs ◯◯ は伝統の好カード — 由来…」の形で、
@@ -351,26 +384,41 @@ def render_game(progress: float, g: dict, index: int, total: int):
     # 由来はサイト側(全文を出せる)に任せる。
     reasons = [r["text"].split(" — ")[0] for r in (g.get("reasons") or [])
                if r.get("visible", True) and r.get("text")][:3]
-    for i, r in enumerate(reasons):
-        appear = 0.10 + i * 0.08
-        if progress < appear:
-            continue
-        e2 = ease_out(min(1.0, (progress - appear) * 5))
-        dy = int((1 - e2) * 24)
-        for line in wrap(d, "・" + r, font(42), W - 190):
-            d.text((80, y + dy), line, font=font(42), fill=TEXT)
-            y += 62
-        y += 14
+    if reasons and progress > 0.10:
+        # 1枚のカードにまとめる。以前は文字が地の上に直接置かれていて、
+        # 上の対戦カードと作りが違い、どこまでが理由なのか曖昧だった。
+        # 高さは中身から決める。決め打ちだと余白が出るか、はみ出す。
+        wrapped = [wrap(d, "・" + r, font(42), W - 230) for r in reasons]
+        h = sum(len(w) * 62 for w in wrapped) + 44
+        card(d, 60, y, W - 60, y + h, stripe=JP)
+        yy = y + 22
+        for i, lines in enumerate(wrapped):
+            appear = 0.12 + i * 0.08
+            if progress < appear:
+                yy += len(lines) * 62
+                continue
+            e2 = ease_out(min(1.0, (progress - appear) * 5))
+            dx2 = int((1 - e2) * 26)
+            for line in lines:
+                d.text((100 + dx2, yy), line, font=font(42), fill=TEXT)
+                yy += 62
+        y += h + 26
 
     # --- 球場の見どころ ---
     if g.get("venue_note") and progress > 0.30:
-        y = max(y + 30, 1480)
-        d.rounded_rectangle([60, y, W - 60, y + 230], 20, fill=ACCENT_DIM)
-        yy = y + 26
-        d.text((90, yy), g.get("venue_jp", ""), font=font(38), fill=ACCENT)
+        # 高さを230で決め打ちしていたため、2行しか無い日も同じ大きさの
+        # 塊が残り、画面でいちばん大きくて重い箱が最も軽い情報になっていた。
+        note = wrap(d, g["venue_note"], font(34), W - 220)[:3]
+        h = 56 + len(note) * 48 + 30
+        # 中身のすぐ下に置く。下限を決め打ちしていたので、理由が少ない日は
+        # 上に空きができ、多い日は詰まった。並びは中身が決める。
+        y = min(y + 20, H - 300 - h)
+        card(d, 60, y, W - 60, y + h, stripe=ACCENT, fill=ACCENT_DIM)
+        yy = y + 24
+        d.text((100, yy), g.get("venue_jp", ""), font=font(38), fill=ACCENT)
         yy += 56
-        for line in wrap(d, g["venue_note"], font(34), W - 200)[:3]:
-            d.text((90, yy), line, font=font(34), fill=ACCENT)
+        for line in note:
+            d.text((100, yy), line, font=font(34), fill=ACCENT)
             yy += 48
     return im
 
