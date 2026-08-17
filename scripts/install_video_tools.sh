@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-# 動画生成に必要な日本語フォント(fonts-noto-cjk)とffmpegを入れる。
+# 動画生成に必要な日本語フォントとffmpegを入れる。
+#
+# fonts-noto-cjk には Regular と Bold しか入っていない。
+# 見出しと本文を同じ太さで書くと、画面の中で何が主役なのか伝わらない。
+# fonts-noto-cjk-extra に Black が入っているので、そちらも入れる。
+# 入らなくても Bold に落ちるだけで、動画は作れる。
 #
 # なぜ専用のスクリプトにしたのか:
 #   GitHub Actionsのランナーには、ffmpegも日本語フォントも入っていない
@@ -44,7 +49,8 @@ for attempt in 1 2 3; do
   fi
 
   if sudo timeout 150 apt-get update -qq \
-     && sudo timeout 240 apt-get install -y -qq fonts-noto-cjk ffmpeg; then
+     && sudo timeout 240 apt-get install -y -qq \
+          fonts-noto-cjk fonts-noto-cjk-extra ffmpeg; then
     echo "::endgroup::"
     echo "[info] apt での導入に成功しました(${attempt}回目)"
     break
