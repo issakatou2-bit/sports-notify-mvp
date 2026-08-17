@@ -62,6 +62,94 @@ LOOKBACK_HOURS = 30
 PER_CHANNEL = 6
 
 
+# そのチャンネルの平常時を測るのに、何本ぶんの記録を残すか。
+# 30本あれば、たまたま伸びた1本に中央値が引きずられない。
+BASELINE_KEEP = 30
+
+# 平常時を語り始める最低の本数。これ未満では倍率を出さない。
+# 3本の中央値を「いつもの水準」と呼ぶのは、数字を装った印象論になる。
+BASELINE_MIN = 8
+
+
+def _median(xs: list) -> float:
+    xs = sorted(x for x in xs if x is not None)
+    if not xs:
+        return 0.0
+    n = len(xs)
+    return float(xs[n // 2] if n % 2 else (xs[n // 2 - 1] + xs[n // 2]) / 2)
+
+
+def hours_since(iso: str) -> float:
+    """公開からの経過時間。読めなければ0。"""
+    try:
+        t = datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return 0.0
+    return max(0.25, (datetime.now(timezone.utc) - t).total_seconds() / 3600)
+
+
+def load_baseline(path: str) -> dict:
+    try:
+        return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def update_baseline(base: dict, rows: list) -> dict:
+    """
+    チャンネルごとの平常時を更新する。
+
+    なぜ要るのか:
+      MLB公式とSPOTV NOWでは規模が違う。生の再生回数を並べると、
+      規模の大きいチャンネルの平凡な動画が、小さいチャンネルの
+      特別な動画より常に上に来る。それは「盛り上がり」ではなく
+      「登録者数」を並べているだけになる。
+
+      その場所のいつもと比べて何倍か、で見る。
+      伸び方は時間とともに増えるので、1時間あたりに直してから比べる。
+    """
+    for r in rows:
+        ch = r.get("channel")
+        if not ch or r.get("views") is None:
+            continue
+        h = hours_since(r.get("published_at"))
+        entry = base.setdefault(ch, {"samples": []})
+        entry["samples"] = [s for s in entry["samples"]
+                            if s.get("video_id") != r["video_id"]]
+        entry["samples"].append({
+            "video_id": r["video_id"],
+            "views_per_hour": (r.get("views") or 0) / h,
+            "comments_per_hour": (r.get("comments") or 0) / h,
+        })
+        entry["samples"] = entry["samples"][-BASELINE_KEEP:]
+    for ch, entry in base.items():
+        s = entry.get("samples") or []
+        entry["n"] = len(s)
+        entry["median_views_per_hour"] = round(
+            _median([x["views_per_hour"] for x in s]), 2)
+        entry["median_comments_per_hour"] = round(
+            _median([x["comments_per_hour"] for x in s]), 3)
+    return base
+
+
+def add_heat(rows: list, base: dict) -> list:
+    """
+    その場所のいつもと比べて何倍かを付ける。母数が足りなければ付けない。
+    """
+    for r in rows:
+        entry = base.get(r.get("channel")) or {}
+        if entry.get("n", 0) < BASELINE_MIN:
+            continue
+        h = hours_since(r.get("published_at"))
+        med_v = entry.get("median_views_per_hour") or 0
+        med_c = entry.get("median_comments_per_hour") or 0
+        if med_v > 0:
+            r["heat_views"] = round(((r.get("views") or 0) / h) / med_v, 2)
+        if med_c > 0:
+            r["heat_comments"] = round(((r.get("comments") or 0) / h) / med_c, 2)
+    return rows
+
+
 def load_sources(path: str) -> list:
     try:
         d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
@@ -146,6 +234,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sources", default="data/comment_sources.json")
     ap.add_argument("--out", default="data/channel_videos.json")
+    ap.add_argument("--baseline", default="data/channel_baseline.json",
+                    help="チャンネルごとの平常時(何倍かを出すのに使う)")
     ap.add_argument("--sport", default="mlb")
     args = ap.parse_args()
 
@@ -175,9 +265,21 @@ def main() -> int:
         stats = fetch_stats(api_key, [r["video_id"] for r in rows])
         for r in rows:
             r.update(stats.get(r["video_id"], {}))
-        # 反応の多い順。再生回数だけだと、公開直後のものが必ず下に来る。
-        # コメント数を主にするのは、こちらが欲しいのが議論そのものだから。
-        rows.sort(key=lambda r: (-(r.get("comments") or 0),
+        # チャンネルごとの平常時を更新してから、倍率を付ける。
+        base = update_baseline(load_baseline(args.baseline), rows)
+        rows = add_heat(rows, base)
+        bp = pathlib.Path(args.baseline)
+        bp.parent.mkdir(parents=True, exist_ok=True)
+        bp.write_text(json.dumps(base, ensure_ascii=False, indent=2),
+                      encoding="utf-8")
+
+        # 並べる軸は「その場所のいつもの何倍か」。
+        # 生の数で並べると、規模の大きいチャンネルの平凡な回が、
+        # 小さいチャンネルの特別な回より常に上に来る。
+        # 倍率が出せない(母数が足りない)ものは、生の数で後ろに並べる。
+        rows.sort(key=lambda r: (-(r.get("heat_comments") or 0),
+                                 -(r.get("heat_views") or 0),
+                                 -(r.get("comments") or 0),
                                  -(r.get("views") or 0)))
     else:
         print("[info] YOUTUBE_API_KEY が無いため、再生回数は付けません")
@@ -191,11 +293,13 @@ def main() -> int:
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"\n[info] 合計{len(rows)}本 -> {out}")
-    for r in rows[:5]:
-        c = r.get("comments")
-        v = r.get("views")
+    for r in rows[:6]:
+        c, v = r.get("comments"), r.get("views")
         extra = f"  コメント{c}件 / {v:,}回" if c is not None else ""
-        print(f"   [{r['channel']}] {r['title'][:48]}{extra}")
+        hc, hv = r.get("heat_comments"), r.get("heat_views")
+        if hc is not None or hv is not None:
+            extra += f"  いつもの{hc or hv:.1f}倍"
+        print(f"   [{r['channel']}] {r['title'][:44]}{extra}")
     return 0
 
 
