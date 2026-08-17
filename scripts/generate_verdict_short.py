@@ -39,7 +39,7 @@ FPS = 24
 ANIM_END = 0.45
 SEGMENT_TAIL = 1.5
 
-MIN_DURATION = {"intro": 5.0, "check": 6.0, "totals": 7.0,
+MIN_DURATION = {"intro": 5.0, "check": 6.0, "totals": 7.0, "base": 9.0,
                 # 通算は数字が1つだけの画面。読み終わってからも
                 # 少し残す(割合が上がりきる動きを見せたい)
                 "career": 8.0, "outro": 5.0}
@@ -141,6 +141,10 @@ def base(progress):
 # 傾向とは呼べない数字を割合として出すことになる。
 CAREER_MIN = 8
 
+# 全体の実測を語り始める最低の試合数。
+# 10試合では1試合が10%動かすので、割合として読ませるには足りない。
+BASE_MIN_GAMES = 30
+
 
 def career_streaks(archive_dir: pathlib.Path) -> dict:
     """
@@ -185,7 +189,8 @@ def streak_summary(total: int, hit: int) -> str:
             f"続いたのは{hit}件でした。")
 
 
-def build_narration(verdict: dict, label: str, career: dict = None) -> dict:
+def build_narration(verdict: dict, label: str, career: dict = None,
+                    base_rates: dict = None) -> dict:
     streaks = verdict.get("streaks") or []
     hit = sum(1 for s in streaks if s["held"])
 
@@ -236,6 +241,24 @@ def build_narration(verdict: dict, label: str, career: dict = None) -> dict:
                     f"そのまま続きました。",
             "meta": {"total": career["total"], "hit": career["hit"],
                      "pct": pct},
+        })
+
+    # コレスポが取り上げた試合ぜんたいの実測。
+    #
+    # 「次はどうなる」を当てにいくと、外れた日に他の全部の信頼が落ちる。
+    # 同じ材料で、外れようのない言い方ができる。これまで取り上げた試合が
+    # 実際どうだったかを数えて出す。件数を必ず添えるので、読む人が
+    # そこから何を思うかは読む人が決められる。
+    rates = (base_rates or {}).get("overall") or {}
+    if rates.get("games", 0) >= BASE_MIN_GAMES:
+        segments.append({
+            "kind": "base",
+            "text": f"ここまでコレスポが取り上げて結果が出た試合は"
+                    f"{rates['games']}試合。ホームが{rates['home_win_pct']}"
+                    f"パーセント勝っています。1点差で決まったのが"
+                    f"{rates['one_run_pct']}パーセント、"
+                    f"1試合の平均得点は{rates['avg_total']}点でした。",
+            "meta": rates,
         })
 
     segments.append({
@@ -359,6 +382,37 @@ def render_career(p, meta):
     return im
 
 
+def render_base(p, meta):
+    """これまでの実測。件数を大きく、割合を並べる。"""
+    im, d = base(p)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    d.text((70, 210), "これまで取り上げた試合", font=font(66), fill=ACCENT)
+
+    e = ease_out(min(1.0, p * 2.4))
+    d.text((70, 380), f"{int(meta.get('games', 0) * e)}", font=font(180),
+           fill=TEXT)
+    d.text((70, 600), "試合の結果が出ています", font=font(46), fill=DIM)
+
+    rows = [(f"{meta.get('home_win_pct', 0)}%", "ホームが勝った割合"),
+            (f"{meta.get('one_run_pct', 0)}%", "1点差で決まった割合"),
+            (f"{meta.get('avg_total', 0)}", "1試合の平均得点")]
+    y = 740
+    for i, (big, small) in enumerate(rows):
+        if p < 0.10 + i * 0.08:
+            continue
+        d.rounded_rectangle([60, y, W - 60, y + 200], 22, fill=SURF)
+        d.text((100, y + 26), big, font=font(80), fill=TEXT)
+        d.text((104, y + 128), small, font=font(38), fill=DIM)
+        y += 230
+
+    if p > 0.45:
+        d.text((80, H - 300), "予想ではありません。", font=font(42), fill=DIM)
+        d.text((80, H - 240), "毎日出して記録した結果を数えたものです。",
+               font=font(42), fill=DIM)
+    d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
 def render_outro(p):
     im, d = base(p)
     d.text((80, 620), "コレスポ", font=font(120), fill=ACCENT)
@@ -432,6 +486,8 @@ def build_narration_track(segs, durations, out_dir):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--archive-dir", default="archive")
+    parser.add_argument("--base-rates", default="data/base_rates.json",
+                        help="これまでの実測(scripts/base_rates.py の出力)")
     parser.add_argument("--narration-out", default=None)
     parser.add_argument("--audio-dir", default="build/vs_audio")
     parser.add_argument("--out", default="build/verdict")
@@ -452,8 +508,15 @@ def main():
 
     label = (f"{week[0][0][5:].replace('-', '/')}〜"
              f"{week[-1][0][5:].replace('-', '/')}")
+    base = {}
+    try:
+        base = json.loads(
+            pathlib.Path(args.base_rates).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        pass
     narration = build_narration(verdict, label,
-                                career_streaks(pathlib.Path(args.archive_dir)))
+                                career_streaks(pathlib.Path(args.archive_dir)),
+                                base)  # noqa: F821  下で読み込んだ実測
 
     if args.narration_out:
         p = pathlib.Path(args.narration_out)
@@ -514,6 +577,8 @@ def main():
                     im = render_totals(pp, verdict)
                 elif kind == "career":
                     im = render_career(pp, meta)
+                elif kind == "base":
+                    im = render_base(pp, meta)
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()

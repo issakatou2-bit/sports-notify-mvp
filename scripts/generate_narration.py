@@ -117,10 +117,9 @@ def pick_hook(games: list) -> dict:
       視聴者にとっては何の情報も無かった。ショートは最初の1秒で
       スワイプされるかが決まるので、そこを名乗りに使うのは最ももったいない。
 
-    選ぶ順番は「具体性が高い順」。選手名と数字が入っているものが一番強く、
-    次に連勝・連敗、日本人選手の先発、首位攻防戦、と続く。
-    いずれも既に検証済みのデータで、ここで新しく何かを判断したり
-    生成したりはしない。
+    選ぶ順番は「日本の視聴者が知っている順」。実測でそう決めてある
+    (下の1番の説明を参照)。いずれも既に検証済みのデータで、
+    ここで新しく何かを判断したり生成したりはしない。
 
     最後の日本人選手名は「所属している」ことしか分からないため、
     名前を並べるだけにして「出場」「先発」とは書かない
@@ -168,7 +167,7 @@ def pick_hook(games: list) -> dict:
             if m:
                 return {"big": m.group("what"), "sub": m.group("who")}
 
-    # 4. 首位攻防戦(ゲーム差という具体的な数字が入る)
+    # 5. 首位攻防戦(ゲーム差という具体的な数字が入る)
     for g in games:
         for r in g.get("reasons") or []:
             if r.get("tag") != "div":
@@ -177,7 +176,7 @@ def pick_hook(games: list) -> dict:
             if m:
                 return {"big": f"ゲーム差{m.group(1)}の首位攻防戦", "sub": ""}
 
-    # 4.5 ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
+    # 6. ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
     #     サッカーには「連続安打」「移籍後初登板」に当たる個人記録が
     #     APIから取れないので、上の1〜3は発火しない。ここが実質の先頭になる。
     for g in games:
@@ -187,7 +186,7 @@ def pick_hook(games: list) -> dict:
                 if 3 <= len(name) <= 20:
                     return {"big": name, "sub": ""}
 
-    # 4.6 サッカーで日本人選手が所属している場合。
+    # 7. サッカーで日本人選手が所属している場合。
     #     「先発予定」とは書かない。スタメンは前日には分からない。
     for g in games:
         for r in g.get("reasons") or []:
@@ -199,13 +198,13 @@ def pick_hook(games: list) -> dict:
                 return {"big": f"{m.group('club')}の試合",
                         "sub": m.group("who").split("・")[0]}
 
-    # 5. AIのフック文(短くまとまっているものだけ)
+    # 8. AIのフック文(短くまとまっているものだけ)
     for g in games:
         h = (g.get("notification_hook") or "").strip().rstrip("。")
         if 6 <= len(h) <= 32:
             return {"big": h, "sub": ""}
 
-    # 6. 日本人選手の名前を並べるだけ(所属以上のことは書かない)
+    # 9. 日本人選手の名前を並べるだけ(所属以上のことは書かない)
     for g in games:
         names = [n for n in (g.get("jp_players") or []) if n]
         if names:
@@ -273,6 +272,12 @@ def build_game_facts(game: dict) -> str:
             lines.append(f"{label}: {p['name']}{era}")
     if game.get("venue_note"):
         lines.append(f"球場: {game.get('venue_jp')}。{game['venue_note']}")
+    # コレスポ自身の記録から言えること。予測ではなく、こちらの集計。
+    # 「この球場は打高です」と言い切ると根拠の無い断定になるが、
+    # 「取り上げた5試合は平均13.4得点でした」なら数えただけの事実で、
+    # 読んだ人が自分で先を考えられる。件数を必ず添えるのはそのため。
+    if game.get("base_rate_note"):
+        lines.append(f"これまでの記録: {game['base_rate_note']}")
     for n in (game.get("log_notes") or []):
         lines.append(f"見どころ: {n}")
     return "\n".join(lines)
@@ -307,6 +312,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--news", default="public/news.json")
+    parser.add_argument("--base-rates", default="data/base_rates.json",
+                        help="これまでの実測(scripts/base_rates.py の出力)")
     parser.add_argument("--out", default="public/narration.json")
     parser.add_argument("--archive-dir", default="archive",
                         help="昨日の答え合わせに使う")
@@ -314,6 +321,17 @@ def main():
 
     data = _load(args.games, {})
     games = [g for g in data.get("games", []) if g.get("is_notable")][:MAX_GAMES]
+
+    # コレスポがこれまで取り上げた試合の実測を添える。
+    # 予測はしない。数えた結果を、件数つきで置くだけ。
+    rates = _load(args.base_rates, {})
+    if rates:
+        import base_rates as _br
+        for g in games:
+            venue = g.get("venue_jp") or g.get("venue_name")
+            note = _br.venue_line(rates, venue) if venue else ""
+            if note:
+                g["base_rate_note"] = note
     if not games:
         print("[info] 注目試合が無いため、ナレーション原稿は作りません")
         return

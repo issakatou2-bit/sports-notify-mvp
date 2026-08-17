@@ -141,6 +141,14 @@ jobs:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: python scripts/backfill_results.py --archive-dir archive
 
+      # コレスポが取り上げた試合の実測。結果を埋めた直後に数え直す。
+      # 予測はしない。「これまでこうだった」を件数つきで置くだけ。
+      - name: Count what actually happened
+        continue-on-error: true
+        run: |
+          python scripts/base_rates.py \
+            --archive-dir archive --out data/base_rates.json
+
       # 購読者には1つのフィードで届ける。競技ごとに1件ずつ出る。
       - name: Generate RSS feed
         # サイトが1日古くなるより、動画が出ない方が痛い。
