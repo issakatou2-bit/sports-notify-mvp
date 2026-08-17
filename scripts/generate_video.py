@@ -124,6 +124,14 @@ def font(size: int):
         raise
 
 
+def fit_size(draw, text: str, max_w: int, sizes) -> int:
+    """その幅に収まる最大の文字サイズ。収まらなければ最小を返す。"""
+    for s in sizes:
+        if draw.textlength(text, font=font(s)) <= max_w:
+            return s
+    return sizes[-1]
+
+
 def ease_out(t: float) -> float:
     """0..1 を、最初速く最後ゆっくりに変換する"""
     return 1 - (1 - t) ** 3
@@ -146,6 +154,39 @@ def wrap(draw, text, fnt, max_w):
     return lines
 
 
+# いま何枚目か。描画のたびに引数で回すと全関数の引数が増えるので、
+# 1本を順に描くだけのこの処理では、ここに置いて描画側から読む。
+_STEP = 0
+_STEPS = 0
+
+
+def set_step(step: int, steps: int) -> None:
+    global _STEP, _STEPS
+    _STEP, _STEPS = step, steps
+
+
+def _draw_steps(d) -> None:
+    """
+    画面の上に、何枚中の何枚目かを出す。
+
+    ショートは77.7%がスワイプで消される。残りがどれくらいかが分からないと、
+    途中で「まだ続くのか」と思われて終わる。あと2枚だと見えていれば、
+    そこまでは見てもらえる。
+
+    連続して伸びるバーにしないのは、フレームごとに絵が変わると
+    描画結果を使い回せなくなり、生成時間が跳ね上がるため。
+    1枚ごとに1目盛り進む形なら、動きは十分に伝わって費用はかからない。
+    """
+    if _STEPS < 2:
+        return
+    pad, gap, h = 48, 10, 8
+    w = (W - pad * 2 - gap * (_STEPS - 1)) / _STEPS
+    for i in range(_STEPS):
+        x = pad + i * (w + gap)
+        col = ACCENT if i <= _STEP else (44, 52, 66)
+        d.rounded_rectangle([x, 30, x + w, 30 + h], h // 2, fill=col)
+
+
 def base_frame(progress: float):
     """全画面共通の下地。背景がゆっくり動いて単調さを避ける。"""
     im = Image.new("RGB", (W, H), BG)
@@ -160,7 +201,16 @@ def base_frame(progress: float):
             [(x, H), (x + 150, H), (x + 400, 0), (x + 250, 0)],
             fill=(14, 18, 26),
         )
-    d.rectangle([0, H - 22, W, H], fill=ACCENT)
+    # 下端の帯は、単色から左端だけ明るい段階にする。
+    # 平らな1色より奥行きが出るが、色数は増やさない。
+    # 視聴者の73.5%が45歳以上なので、派手さより輪郭の明快さを優先する。
+    for i in range(24):
+        x0 = int(W * i / 24)
+        x1 = int(W * (i + 1) / 24)
+        k = 1.0 - i / 40
+        d.rectangle([x0, H - 22, x1, H],
+                    fill=tuple(int(c * k) for c in ACCENT))
+    _draw_steps(d)
     return im, d
 
 
@@ -212,10 +262,13 @@ def render_intro(progress: float, date_label: str, meta: dict = None):
             break
     lines = wrap(d, big, font(size), max_w)[:3]
 
-    # 文字の塊を画面の中央よりやや上に置く。縦型では視線がここに来る。
+    # 塊は上寄せにする。
+    #
+    # 以前は縦の中央に置いていたが、上に600ピクセル近い空白ができていた。
+    # ショートの画面はいちばん下がUIに隠れ、実際に読めるのは上から2/3。
+    # 中央に置くと、その読める範囲の下端に文字が来ることになる。
     line_h = int(size * 1.22)
-    block_h = (120 if sub else 0) + len(lines) * line_h + 120
-    y = max(320, (H - block_h) // 2 - 60)
+    y = 380
 
     if sub:
         d.text((80, y + slide), sub, font=font(72), fill=JP)
@@ -227,6 +280,21 @@ def render_intro(progress: float, date_label: str, meta: dict = None):
 
     if progress > 0.14:
         d.text((80, y + 40), f"{date_label} の注目試合", font=font(52), fill=TEXT)
+
+    # 空いた下半分に、その日いちばんの試合を置く。
+    # 1枚目で「で、どの試合なの」に答えられていなかった。
+    # ここが埋まっていれば、音を切って見ている人にも用件が伝わる。
+    top = (meta or {}).get("top_game") or {}
+    if top.get("matchup") and progress > 0.22:
+        e2 = ease_out(min(1.0, (progress - 0.22) * 4))
+        y2 = 1080 + int((1 - e2) * 50)
+        d.rounded_rectangle([60, y2, W - 60, y2 + 250], 26, fill=SURF)
+        # 左端に色の帯を入れる。カードの輪郭がはっきりして、
+        # 何枚も並ぶ後続の画面と同じ作りに見える。
+        d.rounded_rectangle([60, y2, 76, y2 + 250], 8, fill=ACCENT)
+        d.text((110, y2 + 36), top.get("time") or "", font=font(44), fill=DIM)
+        mf = font(fit_size(d, top["matchup"], W - 240, (66, 58, 50, 44)))
+        d.text((110, y2 + 110), top["matchup"], font=mf, fill=TEXT)
 
     d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im
@@ -562,10 +630,12 @@ def main():
 
     frame_no = 0
     try:
-        for seg in segments:
+        for seg_i, seg in enumerate(segments):
             dur = max(2.0, float(seg.get("duration") or 0) or 4.0)
             n = int(dur * FPS)
             kind = seg.get("kind")
+            # 何枚目かを画面上の目盛りに反映する
+            set_step(seg_i, len(segments))
             meta = seg.get("meta") or {}
             cached = None
             for k in range(n):

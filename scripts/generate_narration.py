@@ -213,6 +213,18 @@ def pick_hook(games: list) -> dict:
     return {"big": "今日の注目試合", "sub": ""}
 
 
+def _top_game_meta(games: list) -> dict:
+    """1枚目に添える、その回のいちばんの試合。"""
+    if not games:
+        return {}
+    g = games[0]
+    start = g.get("start_time_jst") or ""
+    return {
+        "matchup": g.get("matchup") or "",
+        "time": (start.split(" ")[1] + " JST") if " " in start else "",
+    }
+
+
 def _yesterday_recap(archive_dir: str, games: list) -> dict:
     """
     昨日「注目」として出した試合の結果を、1つのセグメントにまとめる。
@@ -366,7 +378,10 @@ def main():
     segments.append({
         "kind": "intro",
         "text": f"{lead}注目の{len(games)}試合を、理由つきで。",
-        "meta": {"date_label": date_label, "hook": hook},
+        # 1枚目にその日いちばんの試合も渡す。画面の下半分が空いており、
+        # 「で、どの試合なの」に答えられていなかった。
+        "meta": {"date_label": date_label, "hook": hook,
+                 "top_game": _top_game_meta(games)},
     })
     print(f"[info] 冒頭のフック: {lead}")
 

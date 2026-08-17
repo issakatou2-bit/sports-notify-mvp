@@ -149,8 +149,11 @@ jobs:
       - name: Generate verdict short narration
         continue-on-error: true
         run: |
+          python scripts/base_rates.py \
+            --archive-dir archive --out data/base_rates.json
           python scripts/generate_verdict_short.py \
             --archive-dir archive \
+            --base-rates data/base_rates.json \
             --narration-out build/vs_narration.json
 
       - name: Synthesize verdict narration
