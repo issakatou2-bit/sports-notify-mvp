@@ -210,7 +210,22 @@ def pick_hook(games: list) -> dict:
         if names:
             return {"big": "・".join(names[:3]), "sub": ""}
 
-    return {"big": "今日の注目試合", "sub": ""}
+    # 10. サッカーは、大会名を最後の手がかりにする。
+    #     クラブ名だけのタイトルだと、どのリーグの話か分からない。
+    #     MLBは札で分かるので、ここはサッカーだけ。
+    for g in games:
+        lg = g.get("league")
+        if lg and _is_soccer_league(lg):
+            return {"big": f"{lg}の一戦", "sub": ""}
+
+    # 何も当てはまらない日。
+    #
+    # ここで「今日の注目試合」を返していたため、タイトルが
+    # 「今夜の注目試合｜今日の注目試合｜デポルティボ vs エルチェ」と
+    # 見出しを2回言う形になって公開された。見出しはタイトル側が
+    # 別に付けるので、材料が無いなら何も返さない方がよい。
+    # 画面側は big が空なら日付入りの見出しに落ちる。
+    return {"big": "", "sub": ""}
 
 
 def _top_game_meta(games: list) -> dict:
