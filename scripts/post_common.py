@@ -130,6 +130,23 @@ def game_line(game: dict) -> str:
 #   欧州の試合は21時〜翌6時なので、6時ならそちらは取りこぼさない。
 LATE_NIGHT_UNTIL = 6  # この時刻より前は「未明」として扱う
 
+# ただし、この扱いが要るのは欧州サッカーだけ。
+#
+# 「今夜の続き」と呼べるのは、20時に見た人がそのまま起きて見る試合のこと。
+# 欧州の試合は21時〜翌6時に切れ目なく並ぶので、4時のキックオフは
+# その人にとって今夜の続きになる。
+#
+# MLBは違う。開始は1時〜11時で、日本の視聴者は寝て、翌朝に見る。
+# 19時の枠も「明日の注目試合」として毎日出している。にもかかわらず
+# 同じ規則を当てていたため、たまたま未明の試合ばかりが選ばれた日に
+# 「今夜の注目試合」に振れ、毎日の約束と食い違っていた。
+MLB_LEAGUE = "MLB"
+
+
+def _late_night_until(league: str) -> int:
+    """その競技で、何時までを「今夜の続き」と呼ぶか。"""
+    return 0 if league == MLB_LEAGUE else LATE_NIGHT_UNTIL
+
 
 def kickoff_parts(start_time_jst: str):
     """"08/23 04:00" を (月, 日, 時) に分解する。読めなければ None。"""
@@ -143,17 +160,19 @@ def kickoff_parts(start_time_jst: str):
 
 
 def is_late_night(start_time_jst: str) -> bool:
-    """その試合が日本時間の未明に始まるか。"""
+    """その試合が日本時間の未明に始まるか。画面の「（未明）」に使う。"""
     parts = kickoff_parts(start_time_jst)
     return bool(parts) and parts[2] < LATE_NIGHT_UNTIL
 
 
-def when_label(start_time_jst: str) -> str:
+def when_label(start_time_jst: str, league: str = "") -> str:
     """
     投稿時点から見て、その試合がいつなのか。
 
     画面・読み上げ・SNS・サイトが別々にこれを決めると、同じ試合が
     片方で「今夜」もう片方で「明日」になる。必ずここを通す。
+
+    競技で境目が違う(_late_night_until を参照)。
     """
     parts = kickoff_parts(start_time_jst)
     if not parts:
@@ -165,8 +184,9 @@ def when_label(start_time_jst: str) -> str:
 
     tomorrow = now + timedelta(days=1)
     if month == tomorrow.month and day == tomorrow.day:
-        # 20時に見ている人にとって、翌4時は「今夜」の続き
-        return "今夜" if hour < LATE_NIGHT_UNTIL else "明日"
+        # 20時に見ている人にとって、欧州の翌4時は「今夜」の続き。
+        # MLBは翌朝に見るものなので、未明でも「明日」で通す。
+        return "今夜" if hour < _late_night_until(league) else "明日"
     return ""
 
 
@@ -179,7 +199,8 @@ def overall_label(games) -> str:
     見出しが「今夜」に振れて、毎日の呼び方が安定しない。
     多数決にすれば、その回が実際どちらの塊なのかで決まる。
     """
-    labels = [when_label(g.get("start_time_jst") or "") for g in (games or [])]
+    labels = [when_label(g.get("start_time_jst") or "", g.get("league") or "")
+              for g in (games or [])]
     labels = [x for x in labels if x]
     if not labels:
         return ""

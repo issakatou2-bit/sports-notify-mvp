@@ -87,6 +87,26 @@ check("空文字", pc.when_label(""), "")
 check("形式違い", pc.when_label("2026-08-16 08:15"), "")
 check("見出しは空でも落ちない", pc.today_or_tomorrow_label([]), "注目試合")
 
+# --- 競技で「今夜」の境目が違う ---------------------------------------------
+# MLBの19時枠は毎日「明日の注目試合」として出している。にもかかわらず
+# 欧州サッカー向けの規則(6時までは今夜)をMLBにも当てていたため、
+# 未明の試合ばかりが選ばれた日だけ「今夜の注目試合」に振れていた。
+print("\n--- 競技ごとの境目 ---")
+FakeDT._now = datetime.datetime(2026, 8, 16, 19, 0)
+
+
+def _g(league, hhmm):
+    return {"start_time_jst": f"08/17 {hhmm}", "league": league}
+
+
+for _hhmm in ("02:35", "04:15", "08:07"):
+    check(f"MLB 翌{_hhmm} は明日",
+          pc.today_or_tomorrow_label([_g("MLB", _hhmm)]), "明日の注目試合")
+check("サッカー 翌04:00 は今夜",
+      pc.today_or_tomorrow_label([_g("ラ・リーガ", "04:00")]), "今夜の注目試合")
+check("サッカー 翌22:00 は明日",
+      pc.today_or_tomorrow_label([_g("プレミアリーグ", "22:00")]), "明日の注目試合")
+
 pc.datetime = _orig
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)
