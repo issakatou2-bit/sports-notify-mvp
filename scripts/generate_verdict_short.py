@@ -121,6 +121,37 @@ def fit(d, text, max_w, sizes):
     return sizes[-1]
 
 
+# いま何枚目か。generate_video.py と同じ作り。
+# 引数で回すと全描画関数の引数が増えるので、1本を順に描くだけの
+# この処理ではここに置いて描画側から読む。
+_STEP = 0
+_STEPS = 0
+
+
+def set_step(step: int, steps: int) -> None:
+    global _STEP, _STEPS
+    _STEP, _STEPS = step, steps
+
+
+def draw_steps(d, color=None) -> None:
+    """
+    画面の上に、何枚中の何枚目かを出す。
+
+    ショートは77.7%がスワイプで消される。あと何枚あるかが見えないと
+    「まだ続くのか」で切られる。1枚ごとに1目盛り進める形にすれば、
+    フレームごとに絵が変わらないので描画結果を使い回せる。
+    """
+    if _STEPS < 2:
+        return
+    on = color or ACCENT
+    pad, gap, h = 48, 10, 8
+    w = (W - pad * 2 - gap * (_STEPS - 1)) / _STEPS
+    for i in range(_STEPS):
+        x = pad + i * (w + gap)
+        d.rounded_rectangle([x, 30, x + w, 30 + h], h // 2,
+                            fill=on if i <= _STEP else (44, 52, 66))
+
+
 def base(progress):
     im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
@@ -130,6 +161,7 @@ def base(progress):
         d.polygon([(x, H), (x + 150, H), (x + 400, 0), (x + 250, 0)],
                   fill=(14, 18, 26))
     d.rectangle([0, H - 22, W, H], fill=ACCENT)
+    draw_steps(d)
     return im, d
 
 
@@ -559,7 +591,8 @@ def main():
                             stdout=subprocess.DEVNULL, stderr=err_file)
     total = 0
     try:
-        for seg, dur in zip(segs, durations):
+        for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+            set_step(seg_i, len(segs))
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
