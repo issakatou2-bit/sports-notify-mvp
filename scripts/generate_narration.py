@@ -126,14 +126,25 @@ def pick_hook(games: list) -> dict:
     名前を並べるだけにして「出場」「先発」とは書かない
     (打者のスタメンは19時の生成時点ではまだ公表されていない)。
     """
-    # 1. 連続安打・移籍後初登板などの個人記録(選手名 + 数字で最も具体的)
+    # 1. 日本人投手の先発予定(APIで確認できている事実)
+    #
+    # 以前は「具体性が高い順」として、外国人選手の個人記録を先頭に置いていた。
+    # 実測はその逆だった。同じ「明日の注目試合」でも:
+    #
+    #   パドレス 6連勝中             視聴継続 50.2%(738回)
+    #   Kevin Gausman 移籍後2登板目  視聴継続 19.1%(1203回)
+    #   Clay Holmes 移籍後2登板目    視聴継続 16.9%(208回)
+    #
+    # 32ポイント差。1203回配られて19%しか残らないのは、配られ方ではなく
+    # 1枚目の問題で、「Kevin Gausman」で止まる人が日本の視聴者には多い。
+    # 視聴の97.6%が日本からで、検索されるのも日本人選手の名前。
+    # 知っている名前を先に出す。
     for g in games:
-        for note in g.get("log_notes") or []:
-            m = HOOK_RE.match((note or "").strip())
-            if m:
-                return {"big": m.group("what"), "sub": m.group("who")}
+        for p in g.get("jp_starters") or []:
+            if p.get("name"):
+                return {"big": "先発予定", "sub": p["name"]}
 
-    # 2. 連勝・連敗
+    # 2. 連勝・連敗。チームの話なので、選手を知らなくても意味が通る。
     for g in games:
         for r in g.get("reasons") or []:
             if r.get("tag") != "streak":
@@ -142,11 +153,20 @@ def pick_hook(games: list) -> dict:
             if m:
                 return {"big": m.group("what"), "sub": m.group("who")}
 
-    # 3. 日本人投手の先発予定(これはAPIで確認できている事実)
+    # 3. 日本人選手が所属しているチームの試合。
+    #    打者のスタメンは前日には分からないので、「出場」「先発」とは書かない。
     for g in games:
-        for p in g.get("jp_starters") or []:
-            if p.get("name"):
-                return {"big": "先発予定", "sub": p["name"]}
+        for name in (g.get("jp_players") or []):
+            if name:
+                return {"big": "所属チームの一戦", "sub": name}
+
+    # 4. 連続安打・移籍後初登板などの個人記録。
+    #    外国人選手が主語になりやすく、上の実測どおり弱いので後ろに置く。
+    for g in games:
+        for note in g.get("log_notes") or []:
+            m = HOOK_RE.match((note or "").strip())
+            if m:
+                return {"big": m.group("what"), "sub": m.group("who")}
 
     # 4. 首位攻防戦(ゲーム差という具体的な数字が入る)
     for g in games:

@@ -617,7 +617,7 @@ SPORTS = {
         "tags": ["MLB", "メジャーリーグ", "野球", "注目試合", "コレスポ"],
     },
     "soccer": {
-        "badge": "【サッカー】",
+        "badge": "【欧州サッカー】",
         "source": "データ: football-data.org",
         "tags": ["サッカー", "海外サッカー", "欧州サッカー", "プレミアリーグ",
                  "注目試合", "コレスポ"],
@@ -711,24 +711,24 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         m = (buzz_top(buzz_path) or {})
         card = m.get("matchup_jp") or ""
         if card:
-            title = (f"{card} 現地のファンは何と言ったか"
+            title = (f"【MLB】{card} 現地のファンは何と言ったか"
                      f"｜{date_label} 最も見られたハイライトのコメント欄"
-                     f"【MLB】#Shorts")
+                     f" #Shorts")
         else:
-            title = (f"【MLB】{date_label} 現地で最も見られた試合の"
-                     f"コメント欄｜ファンの反応を翻訳 #Shorts")
+            title = (f"【MLB】現地で最も見られた試合のコメント欄"
+                     f"｜{date_label} ファンの反応を翻訳 #Shorts")
     elif kind == "morning" and morning_mode == "press":
         # 言葉の回。数字の回(local)と主題を分けてあるので、
         # タイトルでも「誰が何と言ったか」を前に出す。
-        title = (f"【MLB】{date_label} 現地メディアは何と言っているか"
-                 f"｜番記者の投稿と現地の見出し #Shorts")
+        title = (f"【MLB】現地メディアは何と言っているか"
+                 f"｜{date_label} 番記者の投稿と現地の見出し #Shorts")
     elif kind == "morning" and morning_mode == "local":
         # 現地編は主題が違うので、選手名ではなく「現地」を前に出す。
         # 「最も見られた試合は？」だと1試合の話に見えるが、実際は
         # 再生回数の順位と、話題に挙がったチームまで扱っている。
         # 何位まで出るのかがタイトルから分かる形にする。
-        title = (f"【MLB】{date_label} 現地で最も注目された試合ランキング"
-                 f"｜再生回数と話題のチーム #Shorts")
+        title = (f"【MLB】現地で最も注目された試合ランキング"
+                 f"｜{date_label} 再生回数と話題のチーム #Shorts")
     elif kind == "morning":
         # 検索されるのは選手名なので、貢献度の高い順に先頭へ置く。
         # 「成績まとめ」だけだと淡々と読み上げるだけの動画に見えるので、
@@ -736,22 +736,23 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         names = [p.get("name") for p in (morning_players or [])][:3]
         who = "・".join(n for n in names if n)
         if who:
-            title = (f"{who} ほか｜{date_label} MLB日本人選手 "
+            title = (f"【MLB】{who} ほか｜{date_label} 日本人選手 "
                      f"勝利貢献スコア ランキング #Shorts")
         else:
-            title = f"{date_label} MLB日本人選手 勝利貢献スコア ランキング #Shorts"
+            title = (f"【MLB】{date_label} 日本人選手 "
+                     f"勝利貢献スコア ランキング #Shorts")
     elif kind == "verdict":
         # 縦型ショート。予測の的中ではなく「その後どうなったか」を扱うので、
         # 「当たった/外れた」という言い方はタイトルでも使わない
-        title = (f"注目した試合、どうなった？｜{date_label} "
-                 f"先週の答え合わせ【MLB】#Shorts")
+        title = (f"【MLB】注目した試合、どうなった？"
+                 f"｜{date_label} 先週の答え合わせ #Shorts")
     elif kind == "weekly":
         # 週次まとめは横型の通常動画なので #Shorts は付けない
         lead = weekly_lead(archive_dir)
         if lead:
-            title = f"{lead}｜{date_label} MLBの1週間を振り返る"
+            title = f"【MLB】{lead}｜{date_label} 1週間を振り返る"
         else:
-            title = f"今週の注目試合と答え合わせ｜{date_label}【MLB週間まとめ】"
+            title = f"【MLB】今週の注目試合と答え合わせ｜{date_label} 週間まとめ"
     elif games:
         # 日付を先頭に置いていたが、「08/07」で検索する人はいない。
         # その日いちばん具体的な事実(動画の1枚目と同じもの)を先頭に出す。
@@ -772,15 +773,23 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 見出しは1試合ではなく、その回のまとまりで決める。
         # 上位1試合だけで決めると、深夜の試合が1位だった日に
         # 「今夜」へ振れて、毎日の呼び方が安定しない。
+        # 競技は先頭に置く。
+        #
+        # 視聴の95.3%がショートフィードから来る。フィードでは
+        # タイトルの先頭しか見えず、「今夜の注目試合【MLB】｜…」だと
+        # 競技名が見える前に切れていた。野球だけ、サッカーだけ見たい人が
+        # 0.5秒で判断できない。競技名自体が検索語でもあるので、
+        # 先頭に置いても捨てた分は小さい。
+        # 札は1つだけにする。【MLB】【毎日更新】と重ねると逆効果。
         when = post_common.overall_label(games) or "次"
-        head = f"{when}の注目試合{badge}"
+        head = f"{badge}{when}の注目試合"
         if lead:
             title = f"{head}｜{lead}｜{matchup} ほか #Shorts"
         else:
             title = f"{head}｜{matchup} ほか #Shorts"
     else:
-        title = (f"{date_label}の注目試合"
-                 f"{SPORTS.get(sport, SPORTS['mlb'])['badge']}#Shorts")
+        title = (f"{SPORTS.get(sport, SPORTS['mlb'])['badge']}"
+                 f"{date_label}の注目試合 #Shorts")
     title = title.replace("  ", " ").strip()
     title = title[:100]  # YouTubeのタイトル上限
 

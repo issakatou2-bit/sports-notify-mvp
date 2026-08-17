@@ -32,16 +32,23 @@ from datetime import datetime, timedelta, timezone
 JST = timezone(timedelta(hours=9))
 
 # 毎日出るはずのもの。名前は data/published_videos.json の区分に合わせる。
+#
+# 4つ目の要素は「いつから出しているか」。
+# 新しい枠を足した日、それ以前の日を診断すると必ず「出ていない」になる。
+# 実際、コメント欄編を足した直後の診断が、前日の分を欠けとして赤くした。
+# 存在しなかった日に出ていないのは当たり前で、報せる価値が無い。
+SINCE_ALWAYS = "0000-00-00"
 EXPECTED_DAILY = [
-    ("morning", "日本人選手の成績", "16:30"),
-    ("morning_voices", "ハイライトのコメント欄", "17:30"),
-    ("morning_local", "現地での注目度", "18:00"),
-    ("daily", "明日の注目試合(MLB)", "19:00"),
-    ("morning_press", "現地の報道", "21:00"),
+    ("morning", "日本人選手の成績", "16:30", SINCE_ALWAYS),
+    ("morning_voices", "ハイライトのコメント欄", "17:30", "2026-08-17"),
+    ("morning_local", "現地での注目度", "18:00", SINCE_ALWAYS),
+    ("daily", "明日の注目試合(MLB)", "19:00", SINCE_ALWAYS),
+    ("morning_press", "現地の報道", "21:00", SINCE_ALWAYS),
 ]
 
 # サッカーは試合の無い日があるので、欠けていても異常としない。
-OPTIONAL_DAILY = [("daily_soccer", "今夜の注目試合(サッカー)", "20:00")]
+OPTIONAL_DAILY = [("daily_soccer", "今夜の注目試合(サッカー)",
+                   "20:00", SINCE_ALWAYS)]
 
 # 材料。何時間以内に更新されていれば良しとするか。
 FRESH_HOURS = 30
@@ -81,9 +88,11 @@ def check_videos(day: str) -> tuple:
     """その日の動画が投稿されたか。(行, 欠けている数) を返す。"""
     rec = load("data/published_videos.json") or {}
     lines, missing = [], 0
-    for kind, label, at in EXPECTED_DAILY + OPTIONAL_DAILY:
+    for kind, label, at, since in EXPECTED_DAILY + OPTIONAL_DAILY:
+        if day < since:
+            continue  # その枠がまだ無かった日
         entry = (rec.get(kind) or {}).get(day)
-        optional = any(kind == k for k, _, _ in OPTIONAL_DAILY)
+        optional = any(kind == k for k, _, _, _ in OPTIONAL_DAILY)
         if entry:
             lines.append(f"| {at} | {label} | 出た | {entry.get('video_id')} |")
         elif optional:
