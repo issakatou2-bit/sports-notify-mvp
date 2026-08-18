@@ -209,7 +209,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "weekly record: ${{ github.run_id }}" \
-            data/published_videos.json data/published_tiktok.json data/playlists.json data/localized.json
+            data/published_videos.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json
 
       # 作れなかった回を緑のまま通さない。週1本しか無いので、
       # 翌朝の健康診断まで気付かないのは遅い。

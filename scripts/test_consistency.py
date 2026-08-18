@@ -120,6 +120,12 @@ have = set(pl.PLAYLISTS)
 check("健康診断が見る区分に、再生リストが全部ある",
       sorted(expected - have), [])
 
+# サイトのその日ページに、その日出した動画が全部並んでいるか。
+# 枠を足すたびにここを直し忘れると、作った動画がどこからも辿れなくなる。
+import generate_archive_pages as ga  # noqa: E402
+check("その日ページに、毎日出す動画が全部ある",
+      sorted(expected - {k for k, _ in ga.DAY_VIDEO_KINDS}), [])
+
 
 
 # --- コメント欄の回で、読み上げと画面が同じ声を見ているか -------------------

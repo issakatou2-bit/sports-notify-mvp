@@ -47,7 +47,19 @@ for attempt in 1 2 3 4 5; do
     exit 0
   fi
   echo "他の実行と競合しました。取り込んでやり直します (${attempt}回目)"
-  if ! git pull --rebase --quiet; then
+  # --autostash が要る理由:
+  #   この回で作ったのに、ここへ渡し忘れているファイルが1つでもあると、
+  #   作業ツリーが汚れたままになる。git pull --rebase はその状態を拒む。
+  #   すると1回目の競合で取り込みに失敗し、記録は残らないまま終わる。
+  #
+  #   実際、朝の回は8/16を最後にひと月ぶんの記録が1件も残っていない。
+  #   best_of_day.json と player_profile.json を新しく作るようにして、
+  #   どちらも渡し忘れていたため。動画は毎日出ているのに、
+  #   サイトからは辿れず、健康診断も記録では確かめられなくなっていた。
+  #
+  #   渡し忘れ自体は直したが、次に何かを足す人も同じ穴に落ちる。
+  #   関係の無い汚れで記録を落とさないようにしておく。
+  if ! git pull --rebase --autostash --quiet; then
     echo "::warning::取り込みに失敗しました。中止します"
     git rebase --abort 2>/dev/null || true
     exit 0

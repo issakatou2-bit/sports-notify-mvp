@@ -27,6 +27,7 @@
   py -3 scripts/run_checks.py
 """
 
+import re
 import pathlib
 import subprocess
 import sys
@@ -196,6 +197,57 @@ def check_inventory() -> int:
     return r.returncode
 
 
+def check_commit_list() -> int:
+    """
+    その回で作ったファイルを、コミットの一覧へ渡し忘れていないか。
+
+    なぜ要るのか:
+      朝の回は8/16を最後に、投稿の記録が1件も残っていなかった。
+      動画は毎日出ている。best_of_day.json と player_profile.json を
+      新しく作るようにしたのに、commit_data.sh へ渡していなかったので、
+      作業ツリーが汚れたまま push が競合し、rebase が拒まれて終わっていた。
+
+      ワークフローは緑で終わる。動画も出る。記録だけが消える。
+      実行ログを見ても気づけない類の穴なので、機械に見張らせる。
+
+    見るもの:
+      --out data/x.json で作っていて、gitが追跡していて、
+      同じワークフローの commit_data.sh の引数に無いもの。
+    """
+    step("作ったのにコミットしていないもの")
+    tracked = set((run(["git", "ls-files", "data"]).stdout or "").split())
+    bad = 0
+    for wf in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
+        text = wf.read_text(encoding="utf-8")
+        if "commit_data.sh" not in text:
+            continue  # 記録を残さない回。渡し忘れも起きない。
+        made = set(re.findall(r"--out\s+(data/[\w./-]+\.json)", text))
+
+        # commit_data.sh の呼び出しから、続く行の引数を拾う。
+        # 行末が \ で続いている間だけが、その呼び出しの引数。
+        listed = set()
+        lines = text.splitlines()
+        for i, line in enumerate(lines):
+            if "commit_data.sh" not in line:
+                continue
+            j = i
+            while j < len(lines):
+                listed |= set(re.findall(r"(data/[\w./-]+)", lines[j]))
+                if not lines[j].rstrip().endswith(chr(92)):
+                    break
+                j += 1
+
+        miss = sorted(f for f in made
+                      if f in tracked and f not in listed
+                      and not any(f.startswith(d + "/") for d in listed))
+        if miss:
+            bad += 1
+            print(f"NG {wf.name}: {' '.join(miss)} を残していません")
+        else:
+            print(f"ok {wf.name}")
+    return bad
+
+
 def main() -> int:
     import tempfile
 
@@ -208,6 +260,7 @@ def main() -> int:
     failed += check_imports()
     failed += check_tests(tmp)
     failed += check_inventory()
+    failed += check_commit_list()
 
     print()
     if failed:

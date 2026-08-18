@@ -149,6 +149,23 @@ STYLE = """
   ul.datelist .sub { display: block; font-size: 0.8rem; color: var(--text-dim); }
 """
 
+# その日ページに並べる動画。
+#
+# 以前は「注目試合」と「日本人選手の成績」の2つだけを見ていた。
+# その頃はその2本しか無かったが、今は1日7本出している。
+# 残りの5本はどこからも辿れず、作った日にしか存在しない扱いになっていた。
+# 検索から入ってくるのはこのページなので、その日の分は全部ここに置く。
+DAY_VIDEO_KINDS = (
+    ("daily", "この日の注目試合(MLB)"),
+    ("daily_soccer", "この日の注目試合(欧州サッカー)"),
+    ("morning", "この日の日本人選手の成績"),
+    ("morning_player", "この日の1人"),
+    ("morning_voices", "この日のコメント欄"),
+    ("morning_local", "この日の現地での注目度"),
+    ("morning_press", "この日の現地の報道"),
+)
+
+
 def load_published_videos(path: str = "data/published_videos.json") -> dict:
     """日付ものの動画の投稿記録。無ければ空(その場合は何も埋め込まない)。"""
     p = pathlib.Path(path)
@@ -431,8 +448,7 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     # アーカイブページは検索から入ってくる本命なので、効き目が大きい。
     videos = load_published_videos()
     day_videos = []
-    for kind, label in (("daily", "この日の注目試合"),
-                        ("morning", "この日の日本人選手の成績")):
+    for kind, label in DAY_VIDEO_KINDS:
         v = (videos.get(kind) or {}).get(archive_date)
         if v and v.get("video_id") and not is_scheduled(v):
             day_videos.append((label, v))

@@ -300,7 +300,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "recap: ${{ github.run_id }}" \
-            data/morning_recap.json data/venue_stats.json data/published_videos.json data/mlb_buzz.json data/local_buzz.json data/published_tiktok.json data/local_reporters.json data/local_voices.json data/playlists.json data/localized.json data/recap_history
+            data/morning_recap.json data/venue_stats.json data/published_videos.json data/mlb_buzz.json data/local_buzz.json data/published_tiktok.json data/local_reporters.json data/local_voices.json data/playlists.json data/localized.json data/recap_history data/best_of_day.json data/player_profile.json
 
       - name: Save video as artifact
         if: always()
