@@ -18,6 +18,7 @@
 """
 
 import argparse
+import json
 import pathlib
 import re
 import sys
@@ -130,19 +131,37 @@ def workflows() -> list:
     return out
 
 
+def generated_keys(path: str = "data/venue_topics.json") -> set:
+    """
+    venue_topics.py が公式APIから作ったトピック。
+
+    こちらは手書きの一覧に載らない。タイトルもサムネも説明文も
+    材料から組み立てるし、選ぶのは next_asset.py なので、
+    ワークフローの選択肢に並べる必要も無い。
+    手書きのぶんと同じ物差しで見ると、増えるたびに赤くなる。
+    """
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return set()
+    return {x.get("key") for x in (d.get("topics") or []) if x.get("key")}
+
+
 def check(a: dict) -> list:
     """食い違いを並べる。空なら揃っている。"""
     problems = []
+    auto = generated_keys()
     for t in sorted(a["known"]):
+        if t in auto:
+            continue   # 材料から組み立てるので、手書きの一覧には要らない
         if t not in a["meta"]:
             problems.append(f"{t}: upload_youtube.py の ASSET_META に無い"
                             "(既定のタイトルで投稿される)")
         if t not in a["thumb"]:
             problems.append(f"{t}: generate_thumbnail.py の ASSET_THUMB に無い")
-        if t not in a["all"]:
-            problems.append(f"{t}: asset_video.yml の all に無い(一括実行で漏れる)")
-        if t not in a["choices"]:
-            problems.append(f"{t}: asset_video.yml の選択肢に無い(手動で選べない)")
+        # ワークフローの選択肢は見ない。
+        # トピックが46件を超えてなお増え続けるので、選択肢に並べる形は
+        # もう保たない。出す順番は next_asset.py が投稿の記録から決める。
     for t in sorted(a["meta"] - a["known"]):
         problems.append(f"{t}: ASSET_META にあるが、作るコードが無い")
     return problems

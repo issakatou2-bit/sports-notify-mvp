@@ -374,8 +374,47 @@ DAILY_LINEUP_LINES = [
 ]
 
 
+def generated_topic(topic: str, path: str = "data/venue_topics.json") -> dict:
+    """venue_topics.py が作ったトピックの材料。無ければ空。"""
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    for spec in d.get("topics") or []:
+        if spec.get("key") == topic:
+            return spec
+    return {}
+
+
+def asset_meta_from_spec(spec: dict) -> dict:
+    """
+    自動で作ったトピックのタイトルと説明文。
+
+    手書きの24本は1本ずつ文面を用意してあるが、球場のぶんは
+    公式APIから機械的に増える。文面まで手で書いていたら結局
+    毎日は続かないので、材料からそのまま組む。
+    書いてあるのは全部 venue_topics.json にある数字と語だけ。
+    """
+    label = spec.get("label", "")
+    hook = spec.get("hook", "")
+    where = spec.get("where", "")
+    items = spec.get("items") or []
+    lead = [f"{label}（{where}）を、MLB公式データの数字で見ていきます。", ""]
+    lead += [f"・{head}　{body}" for head, body in items]
+    return {
+        "title": f"【MLB】{label}｜{hook} #Shorts",
+        "lead": lead,
+        "tags": ["MLB", "メジャーリーグ", "野球", label, "球場",
+                 "MLB球場", "コレスポ"],
+    }
+
+
 def build_asset_metadata(topic: str) -> dict:
     meta = ASSET_META.get(topic)
+    if not meta:
+        spec = generated_topic(topic)
+        if spec:
+            meta = asset_meta_from_spec(spec)
     if not meta:
         raise ValueError(f"ASSET_META に未登録のトピックです: {topic}")
 

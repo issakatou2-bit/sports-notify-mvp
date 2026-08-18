@@ -12,38 +12,25 @@ name: Asset video
 # 確認済みのトピックを作り直すときだけ public を選ぶ。
 
 on:
+  # 毎日1本ずつ出す。
+  #
+  # なぜ定期にしたのか:
+  #   資産動画は実測で維持率76.3%、日次(29〜46%)の倍以上まで見られている。
+  #   見られれば最後まで見られるのに、手で回す運用だったので24本を
+  #   出し切ったところで止まっていた。いちばんよく見られる種類が
+  #   いちばん出ていない状態だった。
+  #
+  #   球場のぶんは venue_topics.py が公式APIから作るので玉が尽きない。
+  #   時刻は厳密でなくてよいので、GitHub純正のscheduleで足りる
+  #   (数時間遅れても、日付に依存しない内容なので困らない)。
+  schedule:
+    - cron: '0 13 * * *'   # UTC 13:00 = JST 22:00
   workflow_dispatch:
     inputs:
       topic:
-        description: 作る資産動画のトピック
-        type: choice
-        options:
-          - all
-          - mlb_abbr
-          - mlb_venue
-          - mlb_rivalry
-          - mlb_stats
-          - mlb_terms
-          - mlb_league
-          - mlb_position
-          - collespo_guide
-          - jp_players
-          - mlb_watch
-          - mlb_postseason
-          - npb_diff
-          - mlb_advanced
-          - mlb_pitch
-          - soccer_leagues
-          - soccer_jp
-          - soccer_terms
-          - soccer_opening
-          - soccer_last_season
-          - venue_coors
-          - venue_fenway
-          - venue_wrigley
-          - venue_oracle
-          - venue_yankee
-        default: mlb_abbr
+        description: 'トピック名。next で未投稿から1本'
+        type: string
+        default: next
       privacy:
         description: 公開設定
         type: choice
@@ -89,6 +76,12 @@ jobs:
       # 球場の回で使う実測値。その年の全試合から集計するので、
       # 作るたびに最新の数字になる。取得できなくても、
       # 実測の項目が入らないだけで動画自体は作れる。
+      # 球場ごとのトピックを公式APIから作る。手書きの在庫が尽きても、
+      # ここが玉を供給し続ける。取れなければ手書きのぶんだけで動く。
+      - name: Build venue topics
+        continue-on-error: true
+        run: python scripts/venue_topics.py --out data/venue_topics.json
+
       - name: Fetch venue stats
         continue-on-error: true
         run: python scripts/venue_stats.py --out data/venue_stats.json
@@ -128,13 +121,19 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          PRIVACY: ${{ inputs.privacy }}
         run: |
           TOPICS="${{ inputs.topic }}"
-          if [ "$TOPICS" = "all" ]; then
-            TOPICS="mlb_abbr mlb_venue mlb_rivalry mlb_stats mlb_terms mlb_league mlb_position collespo_guide jp_players mlb_watch mlb_postseason npb_diff mlb_advanced mlb_pitch soccer_leagues soccer_jp soccer_terms soccer_opening soccer_last_season venue_coors venue_fenway venue_wrigley venue_oracle venue_yankee"
-            echo "::notice::全トピックを対象にします。投稿済みのものは自動で飛ばします"
+          # 定期実行では inputs が空になる。未投稿から1本を既定にする。
+          if [ -z "$TOPICS" ]; then TOPICS="next"; fi
+          if [ "$TOPICS" = "next" ]; then
+            TOPICS="$(python scripts/next_asset.py)"
+            if [ -z "$TOPICS" ]; then
+              echo "::warning::未投稿の資産動画がありません。venue_topics.py で玉を足してください"
+              exit 0
+            fi
+            echo "::notice::今日の資産動画: $TOPICS"
           fi
-
           FORCE=""
           if [ "${{ inputs.force }}" = "true" ]; then
             FORCE="--force"
@@ -177,7 +176,7 @@ jobs:
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
               --thumbnail "build/asset_$t/thumb.png" \
-              --privacy "${{ inputs.privacy }}" $FORCE
+              --privacy "${PRIVACY:-public}" $FORCE
             if [ $? -eq 0 ]; then
               echo "$t: 完了"
             else

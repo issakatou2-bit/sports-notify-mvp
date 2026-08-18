@@ -569,6 +569,39 @@ LIST_TOPICS = {
 }
 
 
+def load_generated_topics(path: str = "data/venue_topics.json") -> dict:
+    """
+    自動で作ったトピックを読み込む。
+
+    なぜ自動なのか:
+      手で書いた資産動画は24本作って、24本とも出し終えた。在庫がゼロ。
+      常緑ものは実測で維持率76.3%と、日次の倍以上まで見られている。
+      見られれば最後まで見られるのに、出す玉が無い状態だった。
+
+      球場は30あって、収容人数もフィールドの寸法も標高も公式APIから
+      取れる。しかも全部の球場で数字が違うので、1つの型で中身の違う
+      ものが並ぶ。書き方は venue_topics.py に置いてある。
+
+    読めなければ何も足さない。手書きのぶんはそのまま使える。
+    """
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    out = {}
+    for spec in d.get("topics") or []:
+        key = spec.get("key")
+        if not key or key in LIST_TOPICS:
+            continue   # 手書きのぶんが先。あちらの方が踏み込んでいる。
+        out[key] = {k: v for k, v in spec.items() if k != "key"}
+        out[key]["items"] = [tuple(x) for x in spec.get("items") or []]
+    return out
+
+
+# 起動時に1度だけ足す。以降 LIST_TOPICS を引くところは全部そのまま動く。
+LIST_TOPICS.update(load_generated_topics())
+
+
 def venue_items() -> list:
     """
     球場の特徴。notability_engine の MLB_VENUE_NOTES をそのまま使う。

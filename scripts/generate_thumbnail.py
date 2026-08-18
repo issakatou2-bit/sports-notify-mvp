@@ -59,6 +59,31 @@ FONT_CANDIDATES = [
 _FONT_FILE = None
 
 # 資産動画のサムネ文言。動画の中身と一致させる。
+def _generated_thumb(topic: str, path: str = "data/venue_topics.json"):
+    """
+    venue_topics.py が作ったトピックのサムネ文言。無ければ None。
+
+    手書きの分は1本ずつ考えてあるが、球場は公式APIから増え続けるので、
+    材料の hook と label をそのまま置く。数字が入っているぶん、
+    どの球場かが縮小しても見分けられる。
+    """
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    for spec in d.get("topics") or []:
+        if spec.get("key") != topic:
+            continue
+        hook = spec.get("hook", "")
+        # 「中堅420フィート、30球場でいちばん深い」を2行に割る。
+        # 1行に押し込むと字が小さくなって、サムネでは読めない。
+        head, _, tail = hook.partition("、")
+        return (head or spec.get("label", ""),
+                spec.get("label", ""),
+                tail or spec.get("where", ""))
+    return None
+
+
 ASSET_THUMB = {
     "mlb_abbr": ("LAD って どこ？", "MLB30球団の略称", "地区ごとに覚える"),
     "mlb_venue": ("点が入る球場", "入らない球場", "MLBの球場の癖"),
@@ -231,8 +256,8 @@ def draw_verdict(d, label: str):
 
 
 def draw_asset(d, topic: str):
-    big, mid, small = ASSET_THUMB.get(
-        topic, ("コレスポ", "MLB入門", "collespo.com"))
+    big, mid, small = ASSET_THUMB.get(topic) or _generated_thumb(topic) or (
+        "コレスポ", "MLB入門", "collespo.com")
     s = fit(d, big, W - 140, (150, 132, 116, 100))
     d.text((70, 120), big, font=font(s), fill=ACCENT)
     s2 = fit(d, mid, W - 140, (84, 72, 64, 56))
