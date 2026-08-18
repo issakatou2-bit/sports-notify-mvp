@@ -121,5 +121,39 @@ check("健康診断が見る区分に、再生リストが全部ある",
       sorted(expected - have), [])
 
 
+
+# --- コメント欄の回で、読み上げと画面が同じ声を見ているか -------------------
+#
+# 読み上げは冒頭で使った1件とやり取りの1件を外して読むのに、画面は
+# 元の並びの先頭から描いていた。映っていない言葉を読み、読んでいない
+# 言葉を映す状態になる。見ている側からは、どちらが本当か分からない。
+print("\n--- コメント欄の回 ---")
+import generate_morning_short as gms  # noqa: E402
+
+_vs = {"source": "MLB公式ハイライトのコメント", "voices": [
+    {"ja": "この守備は今年一番だろう", "title": "A", "likes": 900,
+     "replies": 12, "tone": "称賛", "is_thread": True,
+     "reply_ja": [{"ja": "いや別の方が上", "tone": "批判", "original": "x"}]},
+    {"ja": "レンジャーズ頑張れ", "title": "B", "likes": 9, "replies": 0,
+     "tone": "中立", "reply_ja": []},
+    {"ja": "Detmersは勝利に値する", "title": "C", "likes": 18, "replies": 0,
+     "tone": "称賛", "reply_ja": []},
+    {"ja": "カナダから応援している", "title": "D", "likes": 4, "replies": 0,
+     "tone": "中立", "reply_ja": []},
+]}
+_n = gms.build_narration({"voices": _vs, "players": [], "buzz": [],
+                          "talk": {}, "reporters": {}, "date": "2026-08-18"},
+                         mode="voices")
+_seg = next((s for s in _n["segments"] if s["kind"] == "voices"), None)
+_picked = ((_seg or {}).get("meta") or {}).get("picked") or []
+_shown = [_vs["voices"][i]["ja"] for i in _picked]
+check("画面に出す声が、読み上げの本文にすべて入っている",
+      all(v.rstrip("。！!、.") in _seg["text"] for v in _shown), True)
+check("やり取りで使う一言を、声の並びでもう一度読んでいない",
+      _vs["voices"][0]["ja"] in _seg["text"], False)
+check("画面と読み上げの件数が同じ",
+      len(_picked), min(gms.VOICES_SHOWN, len(_vs["voices"]) - 1))
+
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

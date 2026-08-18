@@ -46,6 +46,10 @@ MIN_DURATION = {"intro": 5.0, "list": 8.0, "buzz": 9.0,
                 "p_intro": 6.0, "p_career": 8.0, "p_season": 9.0,
                 "p_recent": 9.0, "p_awards": 8.0, "p_quotes": 12.0}
 
+# 声の画面に並べる件数。読み上げと画面で別々の数を持つと、
+# 4件読んで3件しか映らない、という食い違いが静かに生まれる。
+VOICES_SHOWN = 3
+
 # 「現地の声」だけは背景色を変える。
 # 他の画面がAPIの数字だけで作られているのに対し、ここは翻訳を通した
 # 誰かの感想なので、見た目で切り分けて、混ざって見えないようにする。
@@ -591,8 +595,9 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 1件と数百件では意味が違う。数字は取得済みのものをそのまま使う。
         used = (segments[0].get("meta") or {}).get("used_voice")
         held = thread_index(voices)
-        rest = [v for i, v in enumerate(voices) if i not in (used, held)]
-        for v in rest[:4]:
+        picked = [i for i in range(len(voices)) if i not in (used, held)]
+        rest = [voices[i] for i in picked]
+        for v in rest[:VOICES_SHOWN]:
             # 「レンジャーズ頑張れ！。」のように記号が二重にならないよう、
             # 文末の記号を落としてから句点を足す。
             body = (v.get("ja") or "").strip().rstrip("。！!、.")
@@ -601,7 +606,14 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             likes = v.get("likes") or 0
             suffix = f"この投稿には高評価が{likes}件。" if likes >= 10 else ""
             parts.append(f"{body}。{suffix}")
-        segments.append({"kind": "voices", "text": "".join(parts), "meta": {}})
+        # 読んだものと同じ声を画面にも出す。
+        #
+        # ここは冒頭で使った1件とやり取りの1件を外して読んでいたのに、
+        # 画面は元の並びの先頭3件をそのまま描いていた。
+        # 声が「読まれていない言葉」を映し、読み上げは「映っていない言葉」を
+        # 読む状態になる。どちらが本当なのか、見ている側には確かめようがない。
+        segments.append({"kind": "voices", "text": "".join(parts),
+                         "meta": {"picked": picked[:VOICES_SHOWN]}})
 
     # 現地で何が報じられたか。見出しだけを扱う。
     #
@@ -1166,7 +1178,7 @@ def render_thread(p, v):
     return im
 
 
-def render_voices(p, voices):
+def render_voices(p, voices, picked=None):
     """
     現地のファンが何と言っているか。
 
@@ -1187,13 +1199,16 @@ def render_voices(p, voices):
     draw_spoken(d, JP)
 
     items = voices.get("voices") or []
+    # 読み上げが選んだものと同じ並びにする。指定が無い日は元の並び。
+    if picked is not None:
+        items = [items[i] for i in picked if i < len(items)]
     d.text((70, 70), "コレスポ", font=font(46), fill=JP)
     d.text((70, 190), "現地の声", font=font(72), fill=JP)
     d.text((74, 278), f"{voices.get('source', '')}を翻訳",
            font=font(32), fill=DIM)
 
     y = 380
-    for i, v in enumerate(items[:3]):
+    for i, v in enumerate(items[:VOICES_SHOWN]):
         appear = 0.06 + i * 0.09
         if p < appear:
             continue
@@ -1649,7 +1664,7 @@ def main():
                     im = render_thread(pp, vs[i] if i is not None
                                        and i < len(vs) else None)
                 elif kind == "voices":
-                    im = render_voices(pp, voices_data)
+                    im = render_voices(pp, voices_data, meta.get("picked"))
                 elif kind == "reporters":
                     im = render_reporters(pp, reporters_data.get("posts") or [])
                 elif kind == "headlines":
