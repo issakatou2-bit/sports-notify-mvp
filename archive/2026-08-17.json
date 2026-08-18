@@ -111,7 +111,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 7,
+        "away": 6,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824478",
@@ -151,7 +156,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 6,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823427",
@@ -199,7 +209,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 6,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823343",
@@ -247,7 +262,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824725",
@@ -310,7 +330,12 @@
       },
       "log_notes": [],
       "ai_summary": "両チームともア・リーグ、ナ・リーグで【66勝59敗の同勝敗数】ながら、所属地区で3位に甘んじており、シーズン終盤での上積みが求められる立場にある。レッドソックスは直近10試合で3勝7敗と苦しみ、ダイヤモンドバックスは同期間5勝5敗と安定した戦いを見せており、ここからの勢いがシーズン後半の明暗を分けかねない。先発のMitch Brattは今季1勝1敗と五分の成績だが、本拠地フェンウェイ・パークの独特な形状と得点環境がどう影響するか、ダイヤモンドバックスの攻撃がどこまで通用するか注目したい。",
-      "notification_hook": "両66勝同勝敗の同地区3位同士、レッドソックス吉田正尚とダイヤモンドバックス対決"
+      "notification_hook": "両66勝同勝敗の同地区3位同士、レッドソックス吉田正尚とダイヤモンドバックス対決",
+      "final_score": {
+        "home": 11,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823589",
@@ -372,7 +397,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823668",
@@ -420,7 +450,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824077",
@@ -468,7 +503,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 9,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824641",
@@ -551,7 +591,12 @@
         "Luis Castilloは移籍後3登板目"
       ],
       "ai_summary": "シカゴ市内を二分するクロスタウン・クラシックは、両チームの現在地を映す一戦である。ナ・リーグ中地区で【2位に5.0ゲーム差】のカブスは2連敗中、一方ア・リーグ中地区首位のホワイトソックスは3連勝中と、勢いが分かれている。先発は、カブスの今永昇太が防御率3.74で8勝、ホワイトソックスのLuis Castilloが防御率4.96で4勝と対照的な成績を展開。打撃戦になりやすいとされるリグレー・フィールドでの一戦だけに、両先発の投げ合いがどう機能するかに注目したい。",
-      "notification_hook": "3連勝ホワイトソックス対2連敗カブス、クロスタウン・クラシックの行方は。"
+      "notification_hook": "3連勝ホワイトソックス対2連敗カブス、クロスタウン・クラシックの行方は。",
+      "final_score": {
+        "home": 7,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824320",
@@ -623,7 +668,12 @@
       ],
       "log_notes": [],
       "ai_summary": "ナ・リーグ西地区で【首位ドジャースと5位ロッキーズ】が対戦する。順位争いが激しさを増す中、地区内での勝ち越しは重要な意味を持つ。ドジャースは2連敗で勢いを失っており、一方ロッキーズも直近10試合が5勝5敗と足踏み状態にある。先発では菅野智之が12勝5敗という成績を携えて登板する一方、Blake Snellは今季まだ勝ち星がない投手対決となる。高地球場での打撃戦になる可能性があるだけに、本塁打がどう出るかに注目したい。",
-      "notification_hook": "菅野智之vs勝ち星なしのSnell、高地球場での投手対決に注目。"
+      "notification_hook": "菅野智之vs勝ち星なしのSnell、高地球場での投手対決に注目。",
+      "final_score": {
+        "home": 5,
+        "away": 11,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
