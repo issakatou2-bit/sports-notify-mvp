@@ -187,6 +187,37 @@ def _draw_steps(d) -> None:
         d.rounded_rectangle([x, 30, x + w, 30 + h], h // 2, fill=col)
 
 
+# いま読み上げている文。画面の下に出す。
+# 読み上げだけで画面に何も無いと、聞き取れなかった人が確かめる先が無い。
+# 音を切って見ている人には、そもそも届かない。
+_SPOKEN = ""
+
+# 画面下に出す読み上げ文の上限。超えたぶんは「…」で切る。
+SPOKEN_MAX = 90
+
+
+def set_spoken(text: str) -> None:
+    global _SPOKEN
+    _SPOKEN = (text or "").strip()
+
+
+def draw_spoken(d) -> None:
+    """読み上げの文を画面の下に置く。長い回は先頭だけにする。"""
+    if not _SPOKEN:
+        return
+    text = _SPOKEN
+    if len(text) > SPOKEN_MAX:
+        text = text[:SPOKEN_MAX].rstrip("、。") + "…"
+    lines = wrap(d, text, font(34), W - 200)[:3]
+    h = len(lines) * 46 + 36
+    # いちばん下には collespo.com が置いてある。その上に載せる。
+    y = H - 260 - h
+    d.rounded_rectangle([60, y, W - 60, y + h], 18, fill=(16, 20, 28))
+    d.rounded_rectangle([60, y, 68, y + h], 4, fill=ACCENT)
+    for i, ln in enumerate(lines):
+        d.text((92, y + 18 + i * 46), ln, font=font(34), fill=DIM)
+
+
 def base_frame(progress: float):
     """全画面共通の下地。背景がゆっくり動いて単調さを避ける。"""
     im = Image.new("RGB", (W, H), BG)
@@ -219,6 +250,7 @@ def base_frame(progress: float):
         d.rectangle([x0, H - 22, x1, H],
                     fill=tuple(int(c * k) for c in ACCENT))
     _draw_steps(d)
+    draw_spoken(d)
     return im, d
 
 
@@ -731,6 +763,8 @@ def main():
             kind = seg.get("kind")
             # 何枚目かを画面上の目盛りに反映する
             set_step(seg_i, len(segments))
+            # その画面で読み上げている文を、画面下に出す
+            set_spoken(seg.get("text") or "")
             meta = seg.get("meta") or {}
             cached = None
             for k in range(n):

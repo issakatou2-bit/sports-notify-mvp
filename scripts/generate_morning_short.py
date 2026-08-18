@@ -88,6 +88,10 @@ MIN_PRESS_ITEMS = 3
 # 誰か1人の感想を読み上げただけの動画になってしまう。
 MIN_VOICE_ITEMS = 3
 
+# 画面下に出す読み上げ文の上限。超えたぶんは「…」で切る。
+# 全文を出すと下半分が文字で埋まり、本題の数字が読めなくなる。
+SPOKEN_MAX = 90
+
 # 冒頭でそのまま読める長さ。これを超えるものは途中で切らずに見送る。
 # 以前は44文字で機械的に切っており、「ブルワーズをドジャースの
 # 大谷翔平を抑えて。」と文が壊れたまま読み上げていた。
@@ -200,6 +204,42 @@ def card(d, x0, y0, x1, y1, stripe=None, fill=None):
         d.rounded_rectangle([x0, y0, x0 + 16, y1], 8, fill=stripe)
 
 
+# いま読み上げている文。画面の下に出す。
+#
+# 読み上げだけで画面に何も無いと、聞き取れなかった人が確かめる先が無い。
+# 音を切って見ている人には、そもそも届かない。
+# YouTube側の字幕とは別に、画面へ焼き込む(切り替えても消えない)。
+_SPOKEN = ""
+
+
+def set_spoken(text: str) -> None:
+    global _SPOKEN
+    _SPOKEN = (text or "").strip()
+
+
+def draw_spoken(d, color=None) -> None:
+    """
+    読み上げの文を画面の下に置く。長い回は先頭だけにする。
+
+    全文を出すと下半分が文字で埋まる。読み上げに追いつくための
+    手がかりなので、いま話している範囲が分かれば足りる。
+    """
+    if not _SPOKEN:
+        return
+    text = _SPOKEN
+    if len(text) > SPOKEN_MAX:
+        text = text[:SPOKEN_MAX].rstrip("、。") + "…"
+    lines = wrap(d, text, font(34), W - 200)[:3]
+    h = len(lines) * 46 + 36
+    # 画面のいちばん下には、出典の断りと collespo.com が既に置いてある。
+    # そこへ重ねると両方読めなくなるので、その上に載せる。
+    y = H - 300 - h
+    d.rounded_rectangle([60, y, W - 60, y + h], 18, fill=(16, 20, 28))
+    d.rounded_rectangle([60, y, 68, y + h], 4, fill=color or ACCENT)
+    for i, ln in enumerate(lines):
+        d.text((92, y + 18 + i * 46), ln, font=font(34), fill=DIM)
+
+
 def base(progress):
     im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
@@ -210,6 +250,7 @@ def base(progress):
                   fill=(14, 18, 26))
     d.rectangle([0, H - 22, W, H], fill=ACCENT)
     draw_steps(d)
+    draw_spoken(d)
     return im, d
 
 
@@ -899,6 +940,7 @@ def render_reporters(p, posts):
                   fill=(26, 21, 36))
     d.rectangle([0, H - 22, W, H], fill=JP)
     draw_steps(d, JP)
+    draw_spoken(d, JP)
 
     d.text((70, 70), "コレスポ", font=font(46), fill=JP)
     d.text((70, 190), "現地の番記者", font=font(72), fill=JP)
@@ -942,6 +984,7 @@ def render_headlines(p, heads):
                   fill=(26, 21, 36))
     d.rectangle([0, H - 22, W, H], fill=JP)
     draw_steps(d, JP)
+    draw_spoken(d, JP)
 
     d.text((70, 70), "コレスポ", font=font(46), fill=JP)
     d.text((70, 190), "現地の見出し", font=font(72), fill=JP)
@@ -989,6 +1032,7 @@ def render_voices(p, voices):
                   fill=(26, 21, 36))
     d.rectangle([0, H - 22, W, H], fill=JP)
     draw_steps(d, JP)
+    draw_spoken(d, JP)
 
     items = voices.get("voices") or []
     d.text((70, 70), "コレスポ", font=font(46), fill=JP)
@@ -1207,6 +1251,9 @@ def build_player_video(args):
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
             set_step(seg_i, len(segs))
+            # その画面で読み上げている文を、画面下に出す
+            set_spoken((narration["segments"][seg_i].get("text") or "")
+                       if seg_i < len(narration["segments"]) else "")
             n = int(dur * FPS)
             kind = seg.get("kind")
             draw = ps.RENDERERS.get(kind)
@@ -1423,6 +1470,9 @@ def main():
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
             set_step(seg_i, len(segs))
+            # その画面で読み上げている文を、画面下に出す
+            set_spoken((narration["segments"][seg_i].get("text") or "")
+                       if seg_i < len(narration["segments"]) else "")
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
