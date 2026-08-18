@@ -362,22 +362,28 @@ def render_intro(progress: float, date_label: str, meta: dict = None):
         y += line_h
 
     if progress > 0.14:
-        d.text((80, y + 40), f"{date_label} の注目試合", font=font(52), fill=TEXT)
+        # 見出しの材料が無い日は big がこの文言に落ちる。
+        # そのまま下にも同じものを出すと、1枚目で同じ行を2回読ませることになる。
+        sub_line = f"{date_label} の注目試合"
+        if big != sub_line:
+            d.text((80, y + 40), sub_line, font=font(52), fill=TEXT)
 
     # 空いた下半分に、その日いちばんの試合を置く。
     # 1枚目で「で、どの試合なの」に答えられていなかった。
     # ここが埋まっていれば、音を切って見ている人にも用件が伝わる。
+    #
+    # 塗りにしているのは、ショートのサムネがこの1枚目そのものだから。
+    # 以前は暗い面に灰色の文字で置いていたが、一覧に小さく並んだときに
+    # 何も読めない。明るい塊を1つ作ると、縮小しても残る。
     top = (meta or {}).get("top_game") or {}
     if top.get("matchup") and progress > 0.22:
         e2 = ease_out(min(1.0, (progress - 0.22) * 4))
-        y2 = 1080 + int((1 - e2) * 50)
-        d.rounded_rectangle([60, y2, W - 60, y2 + 250], 26, fill=SURF)
-        # 左端に色の帯を入れる。カードの輪郭がはっきりして、
-        # 何枚も並ぶ後続の画面と同じ作りに見える。
-        d.rounded_rectangle([60, y2, 76, y2 + 250], 8, fill=ACCENT)
-        d.text((110, y2 + 36), top.get("time") or "", font=font(44), fill=DIM)
+        y2 = 1020 + int((1 - e2) * 50)
         mf = font(fit_size(d, top["matchup"], W - 240, (66, 58, 50, 44)))
-        d.text((110, y2 + 110), top["matchup"], font=mf, fill=TEXT)
+        d.rounded_rectangle([60, y2, W - 60, y2 + 250], 26, fill=ACCENT)
+        d.text((110, y2 + 36), top.get("time") or "", font=font(44),
+               fill=(92, 58, 8))
+        d.text((110, y2 + 110), top["matchup"], font=mf, fill=BG)
 
     d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im

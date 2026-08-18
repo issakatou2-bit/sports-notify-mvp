@@ -244,12 +244,27 @@ def render_intro(p, prof):
                                  f"背番号{bio['number']}" if bio.get("number")
                                  else "") if x)
     d.text((80, y), line, font=ms.font(46), fill=ms.TEXT)
+    y += 100
+
+    # なぜこの選手なのかを、いちばん目立つ形で置く。
+    #
+    # ここが空いていた。名前と所属だけの画面で、選ばれた理由 —— その日の
+    # 成績も、今季の到達点も —— どこにも書かれていなかった。
+    # 読み上げの帯に灰色で小さく出ているだけで、音を切って見ている人にも、
+    # 一覧に並んだ小さなサムネを見ている人にも、何も届いていない。
+    if p > 0.10:
+        reach = milestone(prof)
+        today = ms.topic_short(prof.get("headline") or "")
+        # その日の成績を先に置く。「今日の1人」に選んだ理由そのもので、
+        # 到達点(30本塁打30盗塁)は年間の話なので、下に小さく添える。
+        y = ms.topic_band(d, today or reach, y,
+                          note=(reach if today and reach else ""))
 
     # 通算をここで1つだけ大きく出す。名前だけの画面にしない。
     if p > 0.18:
         s = stat_line(prof, prof.get("career") or {})
         if s:
-            y2 = 1080
+            y2 = max(y, 940)
             ms.card(d, 60, y2, ms.W - 60, y2 + 200, stripe=ms.JP) \
                 if hasattr(ms, "card") else \
                 d.rounded_rectangle([60, y2, ms.W - 60, y2 + 200], 26,

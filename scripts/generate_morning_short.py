@@ -416,7 +416,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         segments = [{
             "kind": "intro",
             "text": f"{head}{day}、日本人選手{len(players)}人の成績です。",
-            "meta": {"date": day_iso, "count": len(players)},
+            "meta": {"date": day_iso, "count": len(players),
+                     "mode": mode},
         }]
     elif mode == "press":
         # 言葉の回。
@@ -441,6 +442,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             "kind": "intro",
             "text": f"{lead}{day}、現地の報道です。",
             "meta": {"date": day_iso, "count": len(players), "local": True,
+                     "mode": mode,
                      # 冒頭で読んだ見出しは、本編でもう一度読まない
                      "used_headline": lead_idx},
         }]
@@ -482,6 +484,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             "kind": "intro",
             "text": f"{lead}現地で最も見られた試合のコメント欄です。",
             "meta": {"date": day_iso, "count": len(players), "local": True,
+                     "mode": mode,
                      # 冒頭で読んだコメントは、本編でもう一度読まない
                      "used_voice": lead_idx, "teased_thread": teased},
         }]
@@ -496,7 +499,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             "kind": "intro",
             "text": f"{head}{day}、現地での注目度をまとめました。",
             "meta": {"date": day_iso, "count": len(players),
-                     "local": True},
+                     "local": True, "mode": mode},
         }]
 
     if want_players:
@@ -718,34 +721,153 @@ def yomi_stats(text: str) -> str:
 # 描画
 # ---------------------------------------------------------------------------
 
-def render_intro(p, meta, top):
+def topic_band(d, text: str, y: int, note: str = "") -> int:
+    """
+    1枚目の主張を、いちばん目立つ形で置く。次の y を返す。
+
+    なぜ塗りにするのか:
+      ショートのサムネは1枚目そのもの。ところが今の1枚目は、見出し以外が
+      全部くすんだ灰色で書かれていて、「なぜこれを見るのか」に当たる部分が
+      見出しより弱い。暗い背景に暗い文字を並べると、小さく表示された
+      一覧の中では何も読めない。
+
+      面積のある明るい塊を1つ置くと、縮小しても残る。読ませたい1行だけを
+      そこに入れる。2つ置くと、どちらも目立たなくなるので1つに絞る。
+    """
+    if not text:
+        return y
+    size = fit(d, text, W - 200, (58, 52, 46, 40, 36))
+    h = 40 + size + 40 + (48 if note else 0)
+    d.rounded_rectangle([60, y, W - 60, y + h], 24, fill=ACCENT)
+    d.text((100, y + 34), text, font=font(size), fill=BG)
+    if note:
+        # 地がオレンジなので、注記も暗い色で置く。
+        # ACCENT_DIM は暗い茶で、オレンジの上では沈んで読めなかった。
+        d.text((100, y + 40 + size + 8), note, font=font(32),
+               fill=(92, 58, 8))
+    return y + h + 30
+
+
+# 1枚目の帯に入れる項目数。
+#
+# 一覧に並ぶサムネは実際には数センチしかない。そこで読めるのは3つか4つで、
+# 6つ並べると全部が小さくなって、結局どれも読まれない。
+# 残りは後の画面に全部出るので、ここは代表だけにする。
+TOPIC_ITEMS = 4
+
+
+def topic_short(text: str) -> str:
+    """全角空白で区切られた成績を、先頭のいくつかに絞る。"""
+    parts = [x for x in (text or "").replace(chr(0x3000), " ").split() if x]
+    return " ".join(parts[:TOPIC_ITEMS])
+
+
+# 1枚目の見出しと、その下の一行。回ごとに変える。
+# 名前は post_common.DAILY_LINEUP と揃える(あちらが説明文と読み上げの元)。
+INTRO_HEADINGS = {
+    "players": ("日本人選手の成績", "誰がその日いちばん効いたか"),
+    "local": ("現地での注目度", "見られた量と、語られた量"),
+    "voices": ("ファンのコメント欄", "最も見られた試合の反応を翻訳"),
+    "press": ("現地の報道", "番記者の投稿と、現地の見出し"),
+}
+
+
+def clip_phrase(text: str, limit: int) -> str:
+    """
+    長い文を、意味の切れ目で短くする。
+
+    単に切ると「大谷翔平は計878フィートのホームランを放ち、火曜日」で
+    終わってしまい、読んだ人には何の話か分からない。
+    読点や助詞の手前で切って、そこまでで文として通る形にする。
+    """
+    text = (text or "").strip()
+    if len(text) <= limit:
+        return text
+    head = text[:limit]
+    for sep in ("、", "。", "で", "し", "が"):
+        i = head.rfind(sep)
+        if i >= limit // 2:
+            return head[:i + (1 if sep in ("、", "。") else 1)].rstrip("、。")
+    return head
+
+
+def intro_topic(mode: str, meta: dict, top: dict, extra: dict) -> tuple:
+    """
+    その回いちばんの事実。(帯に入れる本文, 添え書き) を返す。
+
+    材料が無ければ空を返して、帯そのものを出さない。
+    無いものを埋めるために言葉を作らない。
+    """
+    if mode == "players" and top:
+        head = topic_short(top.get("headline") or "")
+        if head:
+            return f"{top.get('name', '')}　{head}", "その日いちばん効いた選手"
+        return "", ""
+
+    if mode == "local":
+        b = (extra.get("buzz") or [])
+        if b:
+            # 呼び名は buzz_label を通す。mlb_buzz.json は英語の対戦名で
+            # 持っているので、そのまま出すと1枚目だけ英語になる。
+            card = buzz_label(b[0])
+            views = b[0].get("views")
+            note = f"MLB公式ハイライト {views:,}回" if views else ""
+            return card[:26], note
+        return "", ""
+
+    if mode == "voices":
+        vs = (extra.get("voices") or {}).get("voices") or []
+        i = thread_index(vs)
+        if i is not None:
+            return (f"返信{vs[i].get('replies', 0)}件ついた一言",
+                    _jp_matchup(vs[i].get("matchup", "")))
+        if vs:
+            return topic_short(vs[0].get("ja", ""))[:26], "現地のファンの声"
+        return "", ""
+
+    if mode == "press":
+        hs = (extra.get("reporters") or {}).get("headlines") or []
+        if hs:
+            # いちばん短い見出しを選ぶ。長いものを途中で切ると
+            # 「…火曜日」で終わって、何の話か分からなくなる。
+            head = min((h.get("jp") or h.get("title") or "" for h in hs[:5]),
+                       key=len, default="")
+            return clip_phrase(head, 26), f"現地の見出し {len(hs)}件を翻訳"
+        return "", ""
+
+    return "", ""
+
+
+def render_intro(p, meta, top, extra=None):
+    """
+    1枚目。ショートのサムネはこの絵そのものなので、ここで見る理由を出す。
+
+    以前は local / voices / press の3つが同じ "local": True しか持って
+    おらず、3本とも見出しが「現地での注目度」になっていた。タイトルは
+    「現地のファンは何と言ったか」なのに、開くと別の名前が出る。
+
+    見出しの下に、その回いちばんの事実を明るい帯で1つだけ置く。
+    暗い背景に灰色の字を並べても、一覧に並んだ小さなサムネでは読めない。
+    """
     im, d = base(p)
     e = ease_out(min(1.0, p * 2.6))
     slide = int((1 - e) * 70)
+    mode = meta.get("mode") or ("local" if meta.get("local") else "players")
+    heading, lede = INTRO_HEADINGS.get(mode, INTRO_HEADINGS["players"])
 
-    d.text((80, 430 + slide), jp_date(meta.get("date", "")), font=font(64), fill=DIM)
-    # 現地編は主題が違うので見出しを変える
-    heading = "現地での注目度" if meta.get("local") else "日本人選手の成績"
+    d.text((80, 430 + slide), jp_date(meta.get("date", "")),
+           font=font(64), fill=DIM)
     d.text((80, 530 + slide), heading, font=font(96), fill=ACCENT)
+    d.text((84, 660 + slide), lede, font=font(44), fill=DIM)
 
-    if top and p > 0.14 and not meta.get("local"):
-        d.rounded_rectangle([70, 760, W - 70, 1120], 24, fill=SURF)
-        # 「今日の1人」であることを明示する。数字で機械的に選んでいるので、
-        # 主観の評価に見えないよう、下に選び方の根拠を添える
-        d.text((110, 774), "今日の1人", font=font(34), fill=ACCENT)
-        d.text((110, 820), top.get("name", ""), font=font(72), fill=JP)
-        head = top.get("headline", "")
-        s = fit(d, head, W - 220, (60, 54, 48, 42))
-        d.text((110, 940), head, font=font(s), fill=TEXT)
-        d.text((110, 1036), "成績から機械的に選んでいます", font=font(32), fill=DIM)
+    y = 760
+    if p > 0.10:
+        text, note = intro_topic(mode, meta, top, extra or {})
+        y = topic_band(d, text, y, note=note)
 
-    if meta.get("local"):
-        d.text((80, 800), "見られた量・語られた量・現地の声",
-               font=font(46), fill=JP)
-        d.text((80, 880), "数字と、翻訳した投稿で見ていきます",
-               font=font(40), fill=DIM)
-    else:
-        d.text((80, 1210), f"出場 {meta.get('count', 0)}人", font=font(52), fill=TEXT)
+    if mode == "players":
+        d.text((80, max(y, 1180)), f"出場 {meta.get('count', 0)}人",
+               font=font(52), fill=TEXT)
     d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im
 
@@ -1658,7 +1780,10 @@ def main():
                     total += 1
                     continue
                 if kind == "intro":
-                    im = render_intro(pp, meta, top)
+                    im = render_intro(pp, meta, top,
+                                     {"buzz": buzz,
+                                      "voices": voices_data,
+                                      "reporters": reporters_data})
                 elif kind == "list":
                     im = render_list(pp, players, meta.get("start", 0),
                                      meta.get("count", 1))
