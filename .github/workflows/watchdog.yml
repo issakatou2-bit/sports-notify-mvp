@@ -1,4 +1,4 @@
-name: Watchdog (same-day)
+name: 毎日 21:00　見張り(当日)
 
 # その日出るはずだったものが出ていないことを、その日のうちに知る。
 #
@@ -28,7 +28,7 @@ name: Watchdog (same-day)
 
 on:
   workflow_run:
-    workflows: ["Daily notable games"]
+    workflows: ["毎日 19:00　明日の注目試合"]
     types: [completed]
   schedule:
     - cron: '0 12 * * *'   # UTC 12:00 = JST 21:00(遅延込みで深夜まで)

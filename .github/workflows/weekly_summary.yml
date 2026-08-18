@@ -1,4 +1,4 @@
-name: Weekly summary video
+name: 毎週日曜　週間まとめ
 
 # 週次のまとめ動画(横型・8分以上)を作ってYouTubeへ投稿する。
 #
@@ -22,7 +22,7 @@ name: Weekly summary video
 on:
   workflow_dispatch: {}
   workflow_run:
-    workflows: ["Daily notable games"]
+    workflows: ["毎日 19:00　明日の注目試合"]
     types: [completed]
 
 # 投稿の記録をコミットするので write が要る。

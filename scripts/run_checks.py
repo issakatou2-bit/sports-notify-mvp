@@ -248,6 +248,42 @@ def check_commit_list() -> int:
     return bad
 
 
+def check_workflow_links() -> int:
+    """
+    workflow_run で名前を指しているワークフローが、実際にあるか。
+
+    なぜ要るのか:
+      サッカー・週次・見張りの3つは「Daily notable games が終わったら」で
+      起動する。指しているのはワークフローの name で、ファイル名ではない。
+      つまり name を1文字変えるだけで、3本が静かに動かなくなる。
+      止まっても赤くならない。呼ばれないだけなので、ログにも残らない。
+    """
+    step("ワークフローどうしの参照")
+    import re as _re
+    quoted = _re.compile("[" + chr(34) + chr(39) + "]([^" + chr(34) + chr(39)
+                         + "]+)[" + chr(34) + chr(39) + "]")
+    d = ROOT / ".github" / "workflows"
+    names, refs = set(), []
+    for f in sorted(d.glob("*.yml")):
+        t = f.read_text(encoding="utf-8")
+        m = _re.search(r"^name:\s*(.+)$", t, _re.M)
+        if m:
+            names.add(m.group(1).strip().strip(chr(34)).strip(chr(39)))
+        for block in _re.findall(r"workflows:\s*\[(.*?)\]", t, _re.S):
+            for q in quoted.findall(block):
+                refs.append((f.name, q.strip()))
+    bad = 0
+    for src, want in refs:
+        if want in names:
+            print(f"ok {src} -> {want}")
+        else:
+            bad += 1
+            print(f"NG {src} が指している「{want}」が見つかりません")
+    if not refs:
+        print("(参照なし)")
+    return bad
+
+
 def main() -> int:
     import tempfile
 
@@ -261,6 +297,7 @@ def main() -> int:
     failed += check_tests(tmp)
     failed += check_inventory()
     failed += check_commit_list()
+    failed += check_workflow_links()
 
     print()
     if failed:
