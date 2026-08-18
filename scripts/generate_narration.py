@@ -241,7 +241,8 @@ def _top_game_meta(games: list) -> dict:
 
 
 def _yesterday_recap(archive_dir: str, games: list,
-                     base_rates_path: str = "data/base_rates.json"
+                     base_rates_path: str = "data/base_rates.json",
+                     best_path: str = "data/best_of_day.json"
                      ) -> dict:
     """
     昨日「注目」として出した試合の結果を、1つのセグメントにまとめる。
@@ -279,9 +280,25 @@ def _yesterday_recap(archive_dir: str, games: list,
     except (json.JSONDecodeError, OSError):
         pass
 
-    tail = "明日の結果も、また明日この時間に出します。"
+    # その日いちばん活躍した選手を1人添える。
+    #
+    # スコアの羅列だけだと「6対5でした」が3回続いて終わる。
+    # ヒーローと呼べる日ばかりではないが、最低でもマルチ安打や
+    # 奪三振の多い投手はいる。全MLBの採点は既に取ってあるので、
+    # その1位を引くだけで済む(こちらで選び直さない)。
+    best = ""
+    try:
+        b = json.loads(_p.Path(best_path).read_text(encoding="utf-8"))
+        top = (b.get("players") or [None])[0]
+        if top and top.get("headline"):
+            who = speech_name(top["name"])
+            best = f"この日いちばんは{who}で、{top['headline']}。"
+    except (json.JSONDecodeError, OSError, KeyError, IndexError):
+        pass
+
+    tail = best + "明日の結果も、また明日この時間に出します。"
     if base.get("games"):
-        tail = (f"この番組が選んで結果まで記録した試合は、これで"
+        tail = (best + "この番組が選んで結果まで記録した試合は、これで"
                 f"{base['games']}試合になりました。"
                 "明日の結果も、また明日この時間に出します。")
     return {
@@ -364,6 +381,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--news", default="public/news.json")
+    parser.add_argument("--best", default="data/best_of_day.json",
+                        help="その日いちばん活躍した選手(best_of_day.py の出力)")
     parser.add_argument("--weather", default="data/venue_weather.json",
                         help="球場の天気(venue_weather.py の出力)")
     parser.add_argument("--base-rates", default="data/base_rates.json",
@@ -467,7 +486,8 @@ def main():
     #
     # 置く場所はアウトロの直前。冒頭のフックは動画で最も重要なので、
     # そこと本編の間には何も挟まない。
-    recap = _yesterday_recap(args.archive_dir, games, args.base_rates)
+    recap = _yesterday_recap(args.archive_dir, games,
+                             args.base_rates, args.best)
     if recap:
         segments.append(recap)
 
