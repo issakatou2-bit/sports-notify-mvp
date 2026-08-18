@@ -44,6 +44,10 @@ JST = timezone(timedelta(hours=9))
 # 何人ぶん残すか。1位だけだと、僅差の2位が見えない。
 KEEP = 8
 
+# 投手を別枠で何人残すか。読み上げで使うのは1人だが、
+# 同点や記録漏れのときに次を見られるようにしておく。
+PITCHERS_KEEP = 3
+
 
 def _jp_names() -> set:
     return {p["name_en"] for p in JP_PLAYERS_MLB}
@@ -133,16 +137,26 @@ def main() -> int:
         return 0
 
     jp = _jp_names()
-    out = []
-    for score, row in rows[:KEEP]:
-        out.append({
+
+    def entry(score, row):
+        return {
             "name": row["name"], "team": row["team"],
             "type": row["type"], "score": score,
             "headline": mr.headline(row),
             "is_japanese": row["name"] in jp,
             "stats": {k: v for k, v in row.items()
                       if k not in ("type", "name", "team")},
-        })
+        }
+
+    out = [entry(s, r) for s, r in rows[:KEEP]]
+
+    # 投手は別枠でも残す。
+    #
+    # 採点は打者に土台点(50点)を置いてあるので、上位はほぼ打者で埋まる。
+    # 「今日いちばん」を1人だけ言うならそれで正しいが、そうすると
+    # 何人抑えた投手がいた日も、その話が一度も出てこない。
+    # 打者と混ぜて順位を付け替えるのではなく、投手の1位を別に持つ。
+    arms = [entry(s, r) for s, r in rows if r["type"] == "pitcher"][:PITCHERS_KEEP]
 
     p = pathlib.Path(args.out)
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -152,6 +166,7 @@ def main() -> int:
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "scored": len(rows),
         "players": out,
+        "pitchers": arms,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"[info] {len(rows)}人を採点しました\n")
@@ -159,6 +174,11 @@ def main() -> int:
         mark = " ★日本人選手" if x["is_japanese"] else ""
         print(f"{i:2d}. {x['score']:4d}  {x['name'][:24]:24s} "
               f"{x['headline']}{mark}")
+    if arms:
+        print("\n--- 投手 ---")
+        for i, x in enumerate(arms, 1):
+            print(f"{i:2d}. {x['score']:4d}  "
+                  f"{x['name'][:24]:24s} {x['headline']}")
     print(f"\n[info] 書き出しました -> {p}")
     return 0
 

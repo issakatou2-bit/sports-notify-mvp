@@ -240,6 +240,33 @@ def _top_game_meta(games: list) -> dict:
     }
 
 
+def _who(row) -> dict:
+    """画面に出す用の、選手名と成績。無ければ空。"""
+    if not row or not row.get("headline"):
+        return {}
+    return {"name": row.get("name", ""), "team": row.get("team", ""),
+            "headline": row["headline"]}
+
+
+def _spoken_stats(headline: str) -> str:
+    """
+    画面用の成績文を、読み上げ用に整える。
+
+    画面では「5打数4安打　2本塁打　3打点」のように全角の空白で区切って
+    いるが、読み上げに渡すと切れ目が無く一息で流れる。
+    耳で聞く方には、読点が入っていないと数字の切れ目が分からない。
+    """
+    out = "、".join(x for x in headline.replace(chr(0x3000), " ").split() if x)
+    # 投球回は野球独特の書き方で、小数点以下はアウトの数を表す。
+    # 「6.1回」は6と3分の1回であって6.1回ではない。
+    # 画面はこの書き方のままでよいが、読み上げは「ろくてんいち」と
+    # 読まれてしまい、意味が変わって聞こえる。
+    for dec, word in (("0", "回"), ("1", "回3分の1"), ("2", "回3分の2")):
+        pat = r"(\d+)\." + dec + r"回"
+        out = re.sub(pat, r"\1" + word, out)
+    return out
+
+
 def _yesterday_recap(archive_dir: str, games: list,
                      base_rates_path: str = "data/base_rates.json",
                      best_path: str = "data/best_of_day.json"
@@ -287,12 +314,20 @@ def _yesterday_recap(archive_dir: str, games: list,
     # 奪三振の多い投手はいる。全MLBの採点は既に取ってあるので、
     # その1位を引くだけで済む(こちらで選び直さない)。
     best = ""
+    top = arm = None
     try:
         b = json.loads(_p.Path(best_path).read_text(encoding="utf-8"))
         top = (b.get("players") or [None])[0]
         if top and top.get("headline"):
             who = speech_name(top["name"])
-            best = f"この日いちばんは{who}で、{top['headline']}。"
+            best = f"この日いちばんは{who}で、{_spoken_stats(top['headline'])}。"
+        # 投手は打者と別枠で持っている。採点に打者の土台点があるため、
+        # 混ぜて並べると上位が打者で埋まり、何人抑えた投手がいた日も
+        # その話が一度も出てこない。1人だけ、打者の後ろに足す。
+        arm = (b.get("pitchers") or [None])[0]
+        if arm and arm.get("headline"):
+            best += (f"投手では{speech_name(arm['name'])}が"
+                     f"{_spoken_stats(arm['headline'])}。")
     except (json.JSONDecodeError, OSError, KeyError, IndexError):
         pass
 
@@ -305,9 +340,12 @@ def _yesterday_recap(archive_dir: str, games: list,
         "kind": "recap",
         "text": f"昨日この番組で選んだ{len(lines)}試合は、こうなりました。"
                 f"{spoken}。{tail}",
+        # 読み上げで名前を出した選手は、画面にも出す。
+        # 耳だけに残る名前は、聞き取れなかった人には無かったのと同じ。
         "meta": {"lines": [{"matchup": m, "score": sc, "note": n}
                            for m, sc, n, _ in lines[:3]],
-                 "base": base},
+                 "base": base,
+                 "best": _who(top), "arm": _who(arm)},
     }
 
 

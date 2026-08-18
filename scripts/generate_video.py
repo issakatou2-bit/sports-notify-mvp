@@ -552,6 +552,30 @@ def render_recap(progress: float, meta: dict):
             d.text((100 - dx, y + 108), note, font=font(38), fill=JP)
         y += h + 24
 
+    # スコアの羅列だけだと「6対5でした」が3回続いて終わる。
+    # その日いちばんの打者と投手を1人ずつ添える。
+    # 読み上げでも同じ2人を呼んでいるので、耳と画面が食い違わない。
+    for who, label, col in ((meta.get("best") or {}), "打者", ACCENT),                            ((meta.get("arm") or {}), "投手", JP):
+        if not who or not who.get("headline"):
+            continue
+        if progress < 0.34:
+            continue
+        e = ease_out(min(1.0, max(0.0, (progress - 0.34) * 8)))
+        dx = int((1 - e) * 90)
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + 128], 18, fill=SURF2)
+        d.rounded_rectangle([60 - dx, y, 68 - dx, y + 128], 4, fill=col)
+        lw = d.textlength(label, font=font(26)) + 28
+        d.rounded_rectangle([100 - dx, y + 20, 100 - dx + lw, y + 60], 11,
+                            fill=col)
+        d.text((114 - dx, y + 26), label, font=font(26), fill=BG)
+        name = who.get("name", "")
+        d.text((116 - dx + lw, y + 18),
+               name, font=font(fit_size(d, name, W - 320 - lw,
+                                        (44, 40, 36, 32))), fill=TEXT)
+        d.text((100 - dx, y + 76), who["headline"][:32], font=font(34),
+               fill=DIM)
+        y += 148
+
     d.text((70, H - 240), "予想ではありません。選んだ理由を書いて出し、",
            font=font(32), fill=DIM)
     d.text((70, H - 190), "その結果を並べているだけです。",

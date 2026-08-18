@@ -133,9 +133,13 @@ def day_lines(games: list) -> list:
                 note = "1点差"
             elif min(h, a) == 0:
                 note = "完封"
+        # 読み上げ側の「vs」は「ブイエス」と読まれる。画面はそのままでよいが、
+        # 耳で聞く方は「対」でないと言葉として通らない。
+        spoken = (g.get("matchup") or g.get("abbr_matchup") or "")
+        for sep in (" vs. ", " vs ", " VS ", "vs."):
+            spoken = spoken.replace(sep, "対")
         lines.append((g.get("abbr_matchup") or g.get("matchup"),
-                      f"{h} - {a}", note,
-                      g.get("matchup") or g.get("abbr_matchup") or ""))
+                      f"{h} - {a}", note, spoken))
     return lines
 
 

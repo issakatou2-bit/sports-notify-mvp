@@ -1,7 +1,7 @@
 {
   "date": "2026-08-17",
   "date_jst": "2026-08-18",
-  "updated_at": "2026-08-18T13:01:13.471419+00:00",
+  "updated_at": "2026-08-18T14:12:17.010918+00:00",
   "scored": 320,
   "players": [
     {
@@ -178,6 +178,68 @@
         "triples": 0,
         "hbp": 0,
         "sb": 0
+      }
+    }
+  ],
+  "pitchers": [
+    {
+      "name": "Blake Snell",
+      "team": "ドジャース",
+      "type": "pitcher",
+      "score": 74,
+      "headline": "6.0回　5奪三振　自責1",
+      "is_japanese": false,
+      "stats": {
+        "ip": "6.0",
+        "er": 1,
+        "hits": 2,
+        "so": 5,
+        "bb": 3,
+        "gs": 1,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
+    },
+    {
+      "name": "Shota Imanaga",
+      "team": "カブス",
+      "type": "pitcher",
+      "score": 70,
+      "headline": "6.0回　10奪三振　自責3",
+      "is_japanese": true,
+      "stats": {
+        "ip": "6.0",
+        "er": 3,
+        "hits": 2,
+        "so": 10,
+        "bb": 3,
+        "gs": 1,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
+    },
+    {
+      "name": "Walker Buehler",
+      "team": "パドレス",
+      "type": "pitcher",
+      "score": 69,
+      "headline": "6.0回　4奪三振　自責2",
+      "is_japanese": false,
+      "stats": {
+        "ip": "6.0",
+        "er": 2,
+        "hits": 2,
+        "so": 4,
+        "bb": 2,
+        "gs": 1,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
       }
     }
   ]
