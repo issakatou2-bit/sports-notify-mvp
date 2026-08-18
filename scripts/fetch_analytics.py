@@ -72,10 +72,73 @@ def load(path: str) -> dict:
         return {}
 
 
+# 崖と呼ぶ落ち込み。この幅より急に減った区間を「切られた場所」とする。
+#
+# 隣り合う2点の差で見ると見つからない。曲線は100点あるので、
+# 1点は動画の1%(1秒未満)しかなく、6秒で6割落ちていても
+# 1点あたりでは15%ずつにしか見えない。人はそんな刻みで
+# 動画を切らない。区間で見る。
+CLIFF_DROP = 0.30
+CLIFF_WINDOW = 5   # 何点ぶんを1つの区間として見るか(動画の5%)
+
+# 曲線を取る本数。1本1リクエストなので、再生数の多いものから。
+CURVE_TOP = 5
+
+
+def retention_curve(yta, video_id: str, start, end) -> list:
+    """
+    その動画の、どこまで見られたか。[(位置0-1, 残っている割合), ...]
+
+    平均維持率だけでは、なだらかに減ったのか1か所で切られたのかが
+    分からない。実測では同じ枠の2本が、片方は6秒地点で6割落ち、
+    もう片方は最後まで3割を保っていた。平均が19%と50%という差より、
+    直すべき場所が違うことの方が大事になる。
+    """
+    try:
+        r = yta.reports().query(
+            ids="channel==MINE", startDate=start.isoformat(),
+            endDate=end.isoformat(), metrics="audienceWatchRatio",
+            dimensions="elapsedVideoTimeRatio",
+            filters=f"video=={video_id}").execute()
+    except HttpError:
+        return []
+    return [(row[0], row[1]) for row in (r.get("rows") or [])]
+
+
+def find_cliff(curve: list) -> tuple:
+    """いちばん急に落ちた区間の終わりと、その落ち幅。無ければ (None, 最大幅)。"""
+    worst, drop_at = 0.0, None
+    for i in range(CLIFF_WINDOW, len(curve)):
+        drop = curve[i - CLIFF_WINDOW][1] - curve[i][1]
+        if drop > worst:
+            worst, drop_at = drop, curve[i][0]
+    return (drop_at, worst) if worst >= CLIFF_DROP else (None, worst)
+
+
+def half_at(curve: list):
+    """
+    見ていた人が半分になる位置。0〜1。最後まで半分を保てば None。
+
+    崖より先にこれを見る。崖が無くても、5%の時点で半分になっていれば
+    そこが問題で、60%まで半分が残っていれば形としては良い。
+    ループ再生で最初が1.0を超えるので、開始点を基準に測る。
+    """
+    if not curve:
+        return None
+    base = max(v for _, v in curve[:3]) or 1.0
+    for pos, v in curve:
+        if v <= base * 0.5:
+            return pos
+    return None
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=28)
     ap.add_argument("--out", default="data/analytics.json")
+    ap.add_argument("--curves", action="store_true", default=True,
+                    help="再生数上位の離脱曲線も取る")
+    ap.add_argument("--no-curves", dest="curves", action="store_false")
     args = ap.parse_args()
 
     yta = client("youtubeAnalytics", "v2")
@@ -131,11 +194,21 @@ def main() -> int:
         except HttpError:
             pass
 
+    # 再生数の多いものだけ、曲線も取る。1本1リクエストなので全部は取らない。
+    curves = {}
+    if args.curves:
+        for r in rows[:CURVE_TOP]:
+            c = retention_curve(yta, r["video"], start, end)
+            if c:
+                curves[r["video"]] = c
+
     store = load(args.out)
     today = end.isoformat()
     store.setdefault("days", {})[today] = {
         "range": [start.isoformat(), end.isoformat()],
-        "videos": [{**r, "title": titles.get(r.get("video"), "")}
+        "videos": [{**r, "title": titles.get(r.get("video"), ""),
+                    **({"curve": curves[r["video"]]}
+                       if r.get("video") in curves else {})}
                    for r in rows],
     }
     # 積み上げるが、際限なく増やさない。90日あれば季節の比較もできる。
@@ -155,6 +228,20 @@ def main() -> int:
               f"{int(r.get('averageViewDuration', 0)):4d}  "
               f"{titles.get(r.get('video'), r.get('video'))[:46]}")
 
+    if curves:
+        print("\n--- どこで切られたか ---")
+        for r in rows[:CURVE_TOP]:
+            c = curves.get(r.get("video"))
+            if not c:
+                continue
+            at, drop = find_cliff(c)
+            h = half_at(c)
+            name = titles.get(r.get("video"), "")[:38]
+            hs = f"半減 {h * 100:3.0f}%地点" if h is not None else "半減せず   "
+            cs = (f"/ 崖 {at * 100:3.0f}%地点で{drop * 100:.0f}%減"
+                  if at is not None else f"/ 崖なし(最大{drop * 100:.0f}%)")
+            print(f"  {hs} {cs}  {name}")
+
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         lines = ["## 動画ごとの数字", "",
@@ -165,6 +252,23 @@ def main() -> int:
                 f"| {int(r.get('views', 0))} "
                 f"| {int(r.get('averageViewDuration', 0))} "
                 f"| {titles.get(r.get('video'), '')[:44]} |")
+        if curves:
+            lines += ["", "### どこで切られたか", "",
+                      "平均だけでは、なだらかに減ったのか1か所で切られたのか"
+                      "が分かりません。半分が離れる位置が遅いほど良い形です。",
+                      "",
+                      "| 半分が離れる位置 | 崖 | 題名 |", "|---|---|---|"]
+            for r in rows[:CURVE_TOP]:
+                c = curves.get(r.get("video"))
+                if not c:
+                    continue
+                at, drop = find_cliff(c)
+                h = half_at(c)
+                name = titles.get(r.get("video"), "")[:40]
+                hs = f"{h * 100:.0f}%地点" if h is not None else "最後まで半分以上"
+                cs = (f"{at * 100:.0f}%地点で{drop * 100:.0f}%減"
+                      if at is not None else "なし")
+                lines.append(f"| {hs} | {cs} | {name} |")
         with open(summary, "a", encoding="utf-8") as f:
             f.write("\n".join(lines) + "\n\n")
     return 0

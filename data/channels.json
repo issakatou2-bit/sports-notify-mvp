@@ -22,7 +22,7 @@
     {
       "key": "bluesky",
       "name": "Bluesky",
-      "url": "",
+      "url": "https://bsky.app/profile/collespo.bsky.social",
       "what": "その日の注目試合を投稿しています"
     },
     {
@@ -34,8 +34,15 @@
     {
       "key": "tiktok",
       "name": "TikTok",
-      "url": "",
+      "url": "https://www.tiktok.com/@collespo",
       "what": "YouTubeと同じ縦型の動画を出しています"
+    },
+    {
+      "key": "x",
+      "name": "X",
+      "url": "",
+      "what": "その日の注目試合を投稿しています",
+      "_url_when_ready": "https://x.com/collespo_jp"
     }
   ]
 }

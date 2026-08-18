@@ -178,5 +178,41 @@ check("説明文が一覧から作られている",
       all(name in "".join(uy.DAILY_LINEUP_LINES)
           for _, name, _ in pc.DAILY_LINEUP), True)
 
+
+# 冒頭で名乗った試合が、いちばん最初に紹介されるか。
+#
+# 実測の離脱曲線では、どの回も動画の12〜21%(およそ8〜14秒)で人が急に減る。
+# ちょうど1枚目が終わって試合の紹介が始まる位置。ところが過去17日のうち
+# 7日は、冒頭で名前を出した試合が2番目や3番目に置かれていた。
+# その名前を見て入ってきた人は、目当ての試合が始まる前に去っていたことになる。
+#
+# 並べ替えたので、今度は「読み上げの試合」と「画面が引く試合」がずれないかを見る。
+# 画面は notable_games.json を別に読むので、位置がずれると別の試合が映る。
+print("\n--- 冒頭の試合と、その後の並び ---")
+import generate_narration as gn2  # noqa: E402
+
+_late = _mismatch = 0
+for _f in sorted((ROOT / "archive").glob("2026-*.json")):
+    _d = json.loads(_f.read_text(encoding="utf-8"))
+    _games = [g for g in _d.get("games", []) if g.get("is_notable")][:3]
+    if len(_games) < 2:
+        continue
+    _orig = [g.get("matchup") or g.get("abbr_matchup") for g in _games]
+    _work, _order = list(_games), list(range(len(_games)))
+    _h = gn2.pick_hook(_work)
+    _at = _h.get("at")
+    if isinstance(_at, int) and 0 < _at < len(_work):
+        _work.insert(0, _work.pop(_at))
+        _order.insert(0, _order.pop(_at))
+    _key = (_h.get("sub") or _h.get("big") or "").strip()
+    if _key and _key not in json.dumps(_work[0], ensure_ascii=False):
+        _late += 1
+    for _i, _g in enumerate(_work):
+        if _orig[_order[_i]] != (_g.get("matchup") or _g.get("abbr_matchup")):
+            _mismatch += 1
+
+check("冒頭で名乗った試合が、1つ目に来ている日数の欠け", _late, 0)
+check("読み上げの試合と、画面が引く試合が同じ", _mismatch, 0)
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

@@ -826,10 +826,14 @@ def main():
                 if kind == "intro":
                     im = render_intro(p_, date_label, meta)
                 elif kind == "game":
+                    # game_index は notable_games.json の中の位置。
+                    # order は読み上げの順番で、画面の「PICK N/3」はこちら。
+                    # 冒頭で名乗った試合を先頭へ動かすので、2つは一致しない。
                     gi = meta.get("game_index", 0)
                     if gi >= len(games):
                         continue
-                    im = render_game(p_, games[gi], gi, total_games)
+                    im = render_game(p_, games[gi],
+                                     meta.get("order", gi), total_games)
                 elif kind == "score":
                     im = render_score(p_, games)
                 elif kind == "recap":

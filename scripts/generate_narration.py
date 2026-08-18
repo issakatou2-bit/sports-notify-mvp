@@ -146,57 +146,57 @@ def pick_hook(games: list) -> dict:
     # 1枚目の問題で、「Kevin Gausman」で止まる人が日本の視聴者には多い。
     # 視聴の97.6%が日本からで、検索されるのも日本人選手の名前。
     # 知っている名前を先に出す。
-    for g in games:
+    for at, g in enumerate(games):
         for p in g.get("jp_starters") or []:
             if p.get("name"):
-                return {"big": "先発予定", "sub": p["name"]}
+                return {"big": "先発予定", "sub": p["name"], "at": at}
 
     # 2. 連勝・連敗。チームの話なので、選手を知らなくても意味が通る。
-    for g in games:
+    for at, g in enumerate(games):
         for r in g.get("reasons") or []:
             if r.get("tag") != "streak":
                 continue
             m = HOOK_RE.match((r.get("text") or "").strip())
             if m:
-                return {"big": m.group("what"), "sub": m.group("who")}
+                return {"big": m.group("what"), "sub": m.group("who"), "at": at}
 
     # 3. 日本人選手が所属しているチームの試合。
     #    打者のスタメンは前日には分からないので、「出場」「先発」とは書かない。
-    for g in games:
+    for at, g in enumerate(games):
         for name in (g.get("jp_players") or []):
             if name:
-                return {"big": "所属チームの一戦", "sub": name}
+                return {"big": "所属チームの一戦", "sub": name, "at": at}
 
     # 4. 連続安打・移籍後初登板などの個人記録。
     #    外国人選手が主語になりやすく、上の実測どおり弱いので後ろに置く。
-    for g in games:
+    for at, g in enumerate(games):
         for note in g.get("log_notes") or []:
             m = HOOK_RE.match((note or "").strip())
             if m:
-                return {"big": m.group("what"), "sub": m.group("who")}
+                return {"big": m.group("what"), "sub": m.group("who"), "at": at}
 
     # 5. 首位攻防戦(ゲーム差という具体的な数字が入る)
-    for g in games:
+    for at, g in enumerate(games):
         for r in g.get("reasons") or []:
             if r.get("tag") != "div":
                 continue
             m = GAMES_BACK_RE.search(r.get("text") or "")
             if m:
-                return {"big": f"ゲーム差{m.group(1)}の首位攻防戦", "sub": ""}
+                return {"big": f"ゲーム差{m.group(1)}の首位攻防戦", "sub": "", "at": at}
 
     # 6. ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
     #     サッカーには「連続安打」「移籍後初登板」に当たる個人記録が
     #     APIから取れないので、上の1〜3は発火しない。ここが実質の先頭になる。
-    for g in games:
+    for at, g in enumerate(games):
         for r in g.get("reasons") or []:
             if r.get("tag") == "rivalry" and r.get("text"):
                 name = r["text"].strip()
                 if 3 <= len(name) <= 20:
-                    return {"big": name, "sub": ""}
+                    return {"big": name, "sub": "", "at": at}
 
     # 7. サッカーで日本人選手が所属している場合。
     #     「先発予定」とは書かない。スタメンは前日には分からない。
-    for g in games:
+    for at, g in enumerate(games):
         for r in g.get("reasons") or []:
             if r.get("tag") != "jp_team":
                 continue
@@ -207,24 +207,24 @@ def pick_hook(games: list) -> dict:
                         "sub": m.group("who").split("・")[0]}
 
     # 8. AIのフック文(短くまとまっているものだけ)
-    for g in games:
+    for at, g in enumerate(games):
         h = (g.get("notification_hook") or "").strip().rstrip("。")
         if 6 <= len(h) <= 32:
-            return {"big": h, "sub": ""}
+            return {"big": h, "sub": "", "at": at}
 
     # 9. 日本人選手の名前を並べるだけ(所属以上のことは書かない)
-    for g in games:
+    for at, g in enumerate(games):
         names = [n for n in (g.get("jp_players") or []) if n]
         if names:
-            return {"big": "・".join(names[:3]), "sub": ""}
+            return {"big": "・".join(names[:3]), "sub": "", "at": at}
 
     # 10. サッカーは、大会名を最後の手がかりにする。
     #     クラブ名だけのタイトルだと、どのリーグの話か分からない。
     #     MLBは札で分かるので、ここはサッカーだけ。
-    for g in games:
+    for at, g in enumerate(games):
         lg = g.get("league")
         if lg and _is_soccer_league(lg):
-            return {"big": f"{lg}の一戦", "sub": ""}
+            return {"big": f"{lg}の一戦", "sub": "", "at": at}
 
     # 何も当てはまらない日。
     #
@@ -233,7 +233,7 @@ def pick_hook(games: list) -> dict:
     # 見出しを2回言う形になって公開された。見出しはタイトル側が
     # 別に付けるので、材料が無いなら何も返さない方がよい。
     # 画面側は big が空なら日付入りの見出しに落ちる。
-    return {"big": "", "sub": ""}
+    return {"big": "", "sub": "", "at": None}
 
 
 def _top_game_meta(games: list) -> dict:
@@ -473,6 +473,31 @@ def main():
     # 画面側(generate_video.py)も同じ hook を meta 経由で受け取るので、
     # 読み上げと1枚目の表示が必ず一致する。
     hook = pick_hook(games)
+
+    # 1枚目で名乗った試合を、そのまま2枚目に持ってくる。
+    #
+    # なぜか:
+    #   実測の離脱曲線を見ると、どの回も動画の12〜21%地点、およそ8〜14秒で
+    #   一気に人が減る。ちょうど1枚目が終わって試合の紹介が始まる位置。
+    #
+    #   ところが過去17日のうち7日は、冒頭で名前を出した試合が2試合目や
+    #   3試合目に置かれていた。「山本由伸 先発予定」で入ってきた人には、
+    #   山本の試合が始まる前に別の試合が2つ流れる。崖はその手前にある。
+    #   つまり、その人は山本を一度も見ずに去っている。
+    #
+    #   並びの根拠は点数順だったが、点数の話は最後の画面で別にしている。
+    #   「言った試合をすぐ見せる」方を優先する。
+    #   画面側(generate_video.py)は notable_games.json をそのまま読むので、
+    #   ここで並べ替えるだけだと読み上げと画面が別の試合を指す。
+    #   元の位置を覚えて meta で渡す。
+    order = list(range(len(games)))
+    at = hook.get("at")
+    if isinstance(at, int) and 0 < at < len(games):
+        games.insert(0, games.pop(at))
+        order.insert(0, order.pop(at))
+        print(f"[info] 冒頭で名乗った試合を1つ目に移しました "
+              f"({at + 1}番目 -> 1番目)")
+
     # フック文が既に句点で終わっている場合があるので、重ねないよう剥がす
     _big = hook["big"].rstrip("。")
     # 読み上げでは姓だけにする。画面は meta 経由で hook をそのまま受け取るので、
@@ -510,14 +535,15 @@ def main():
                 text = None
             if not text:
                 text = _fallback_game_text(g)
-            segments.append({"kind": "game", "text": text, "meta": {"game_index": i}})
+            segments.append({"kind": "game", "text": text,
+                             "meta": {"game_index": order[i], "order": i}})
     else:
         print("[info] ANTHROPIC_API_KEY未設定のため、簡易的な原稿で生成します")
         for i, g in enumerate(games):
             segments.append({
                 "kind": "game",
                 "text": _fallback_game_text(g),
-                "meta": {"game_index": i},
+                "meta": {"game_index": order[i], "order": i},
             })
 
     # --- 昨日の答え合わせ ---
