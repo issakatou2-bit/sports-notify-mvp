@@ -273,6 +273,16 @@ jobs:
             sleep 2
           done
 
+      # 開始時刻の現地の天気。Open-Meteoは鍵も枠も要らないので、
+      # 落ちても他に影響しない位置に置いて continue-on-error で流す。
+      # 気温と風は、その試合がどんな条件で始まるかの事実そのもの。
+      - name: Fetch venue weather
+        continue-on-error: true
+        run: |
+          python scripts/venue_weather.py \
+            --games notable_games.json \
+            --out data/venue_weather.json
+
       # 動画の描画・書き出しに必要なもの。ランナーには
       # 日本語フォントもffmpegも入っていないため、ここで入れる。
       - name: Generate narration script

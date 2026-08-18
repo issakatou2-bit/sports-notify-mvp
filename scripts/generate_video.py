@@ -465,15 +465,22 @@ def render_game(progress: float, g: dict, index: int, total: int):
                 yy += 62
         y += h + 26
 
-    # --- 球場の見どころ ---
+    # --- 球場の見どころと、開始時刻の天気 ---
     if g.get("venue_note") and progress > 0.30:
         # 高さを230で決め打ちしていたため、2行しか無い日も同じ大きさの
         # 塊が残り、画面でいちばん大きくて重い箱が最も軽い情報になっていた。
         note = wrap(d, g["venue_note"], font(34), W - 220)[:3]
-        h = 56 + len(note) * 48 + 30
+        # その時刻・その球場の天気。気温と風と降水確率だけを置く。
+        # 「打者有利」のような判断は書かない。数字だけあれば、
+        # どう読むかは見ている人が決められる。
+        wx = venue_weather(g.get("game_id"), g.get("venue_name"))
+        h = 56 + len(note) * 48 + 30 + (46 if wx else 0)
         # 中身のすぐ下に置く。下限を決め打ちしていたので、理由が少ない日は
         # 上に空きができ、多い日は詰まった。並びは中身が決める。
-        y = min(y + 20, H - 300 - h)
+        #
+        # 下限は読み上げの帯より上に取る。帯は3行で H-434 から始まるので、
+        # そこへ食い込むと球場の話も読み上げ文も両方読めなくなる。
+        y = min(y + 20, H - 460 - h)
         card(d, 60, y, W - 60, y + h, stripe=ACCENT, fill=ACCENT_DIM)
         yy = y + 24
         d.text((100, yy), g.get("venue_jp", ""), font=font(38), fill=ACCENT)
@@ -481,7 +488,25 @@ def render_game(progress: float, g: dict, index: int, total: int):
         for line in note:
             d.text((100, yy), line, font=font(34), fill=ACCENT)
             yy += 48
+        if wx:
+            d.text((100, yy + 2), wx, font=font(32), fill=TEXT)
     return im
+
+
+_WEATHER = None
+
+
+def venue_weather(game_id, venue_name: str = "") -> str:
+    """開始時刻の現地の天気。取れていない日は空。"""
+    global _WEATHER
+    if _WEATHER is None:
+        try:
+            _WEATHER = json.loads(pathlib.Path("data/venue_weather.json")
+                                  .read_text(encoding="utf-8")).get("venues") or {}
+        except (OSError, json.JSONDecodeError):
+            _WEATHER = {}
+    hit = _WEATHER.get(str(game_id or "")) or _WEATHER.get(venue_name or "")
+    return (hit or {}).get("text", "")
 
 
 def render_news(progress: float, text: str):

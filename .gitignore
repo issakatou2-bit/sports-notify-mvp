@@ -12,3 +12,5 @@ feed.xml
 # ローカル検証用
 venv/
 .venv/
+# その回限りの天気。同じジョブの中でしか使わないので残さない。
+data/venue_weather.json
