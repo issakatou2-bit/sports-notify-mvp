@@ -370,12 +370,7 @@ ASSET_META = {
 DAILY_LINEUP_LINES = [
     "コレスポは毎日、次を自動でお届けしています。",
     "",
-    "・日本人選手の成績 … 誰がその日いちばん効いたか",
-    "・ファンのコメント欄 … 最も見られたハイライトの反応を翻訳",
-    "・現地での注目度 … 向こうで何が見られ、語られたか",
-    "・明日の注目試合 … なぜ注目なのかの理由つき",
-    "・欧州サッカー … その夜の注目カード",
-    "・現地の報道 … 番記者の投稿と見出しを翻訳",
+    *post_common.lineup_lines(),
 ]
 
 
@@ -390,7 +385,7 @@ def build_asset_metadata(topic: str) -> dict:
         "",
         *DAILY_LINEUP_LINES,
         "",
-        "サイト: https://collespo.com/",
+        *OTHER_CHANNEL_LINES,
         "",
         "―――",
         "音声: VOICEVOX:ずんだもん",
@@ -709,6 +704,21 @@ def buzz_top(path: str) -> dict:
     return out
 
 
+# 同じ内容を、動画のほかに音声とサイトでも出している。
+#
+# これまで説明文に載っていたのはサイトのURLだけだった。通勤中に
+# 音声で聞きたい人にも、その選択肢があること自体が伝わっていない。
+# 押し付けずに、どの形で受け取れるかだけ並べる。
+#
+# SNSのアカウント名はここに書かない。Secretsにしか無く、
+# 間違ったURLを何百本の説明文へ焼き付けることになる。
+OTHER_CHANNEL_LINES = [
+    "サイト: https://collespo.com/",
+    "ポッドキャスト(同じ内容を音声で): https://collespo.com/podcast/feed.xml",
+    "RSS: https://collespo.com/feed.xml",
+]
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
@@ -929,7 +939,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         "",
         *DAILY_LINEUP_LINES,
         "",
-        "サイト: https://collespo.com/",
+        *OTHER_CHANNEL_LINES,
         "",
         "※試合データは公式のデータをもとに自動生成しています。",
         "※放送予定は変更される場合があります。各配信サービスで最新情報をご確認ください。",

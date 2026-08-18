@@ -322,3 +322,37 @@ def build_post(games: list, max_chars: int, news_path: str = "public/news.json")
             body = candidate
 
     return body, hashtags, SITE_URL
+
+
+# 毎日出しているものの一覧。1か所で持つ。
+#
+# なぜ1か所なのか:
+#   同じ「毎日これを出しています」を、動画の最後・説明文・
+#   「今日の1人」の締めの3か所で別々に書いていた。結果、
+#   3つとも中身が違っていた。7本出しているのに6本、5本、6本。
+#   しかも「今日の1人」はどこにも入っていない回があった。
+#
+#   毎日見ている人にいちばん届く場所で、何を出しているかを
+#   間違えて伝えていたことになる。並びは公開時刻の順。
+#
+#   (区分名, 名前, ひとこと)
+DAILY_LINEUP = [
+    ("morning", "日本人選手の成績", "誰がその日いちばん効いたか"),
+    ("morning_player", "今日の1人", "MLB全体で最も活躍した選手"),
+    ("morning_voices", "ファンのコメント欄", "最も見られたハイライトの反応を翻訳"),
+    ("morning_local", "現地での注目度", "向こうで何が見られ、語られたか"),
+    ("daily", "明日の注目試合", "なぜ注目なのかの理由つき"),
+    ("daily_soccer", "欧州サッカー", "その夜の注目カード"),
+    ("morning_press", "現地の報道", "番記者の投稿と見出しを翻訳"),
+]
+
+
+def lineup_names(exclude: str = "") -> list:
+    """読み上げ用。自分の回は外す(その動画を見ている人には要らない)。"""
+    return [name for kind, name, _ in DAILY_LINEUP if kind != exclude]
+
+
+def lineup_lines(exclude: str = "") -> list:
+    """説明文用。名前とひとことを箇条書きにする。"""
+    return [f"・{name} … {what}"
+            for kind, name, what in DAILY_LINEUP if kind != exclude]

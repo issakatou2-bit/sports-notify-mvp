@@ -1,0 +1,41 @@
+{
+  "_note": "サイトに出す各チャンネルへの導線。url が空のものは表示しません。存在しないURLを踏ませないため、手元で確認できたものだけ入れてください。",
+  "channels": [
+    {
+      "key": "youtube",
+      "name": "YouTube",
+      "url": "https://www.youtube.com/@collespo_jp",
+      "what": "毎日7本。注目試合、日本人選手の成績、現地の反応"
+    },
+    {
+      "key": "podcast",
+      "name": "ポッドキャスト",
+      "url": "https://collespo.com/podcast/feed.xml",
+      "what": "動画と同じ音声。Apple / Spotify などにこのRSSで登録できます"
+    },
+    {
+      "key": "rss",
+      "name": "RSS",
+      "url": "https://collespo.com/feed.xml",
+      "what": "その日の注目試合を、選んだ理由つきで配信"
+    },
+    {
+      "key": "bluesky",
+      "name": "Bluesky",
+      "url": "",
+      "what": "その日の注目試合を投稿しています"
+    },
+    {
+      "key": "threads",
+      "name": "Threads",
+      "url": "",
+      "what": "その日の注目試合を投稿しています"
+    },
+    {
+      "key": "tiktok",
+      "name": "TikTok",
+      "url": "",
+      "what": "YouTubeと同じ縦型の動画を出しています"
+    }
+  ]
+}

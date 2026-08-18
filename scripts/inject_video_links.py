@@ -26,8 +26,6 @@ import json
 import pathlib
 import re
 
-CHANNEL_URL = "https://www.youtube.com/@collespo_jp"
-
 # 用語集の見出し(dt)と、それを扱っている資産動画のトピック。
 # 見出しの文字列に、ここのキーが含まれていれば対応づける。
 TERM_TO_TOPIC = {
@@ -62,16 +60,52 @@ STYLE = """
     border-radius:10px; background:var(--surface); }
   .yt-channel a { color:var(--accent); }
   .yt-channel p { margin:.3rem 0 0; font-size:.85rem; color:var(--text-dim); }
+  .ch-list { list-style:none; margin:.6rem 0 0; padding:0; }
+  .ch-list li { padding:.35rem 0; border-top:1px solid var(--border); }
+  .ch-list li:first-child { border-top:0; }
+  .ch-list span { display:block; font-size:.78rem; color:var(--text-dim); }
 </style>
 """
 
-CHANNEL_BLOCK = f"""
-<div class="yt-channel">
-  <a href="{CHANNEL_URL}" target="_blank" rel="noopener">
-    YouTube「コレスポ」で動画も配信しています</a>
-  <p>その日の注目試合、日本人選手の成績、球場や用語の解説を動画にしています。</p>
-</div>
-"""
+def load_channels(path: str = "data/channels.json") -> list:
+    """
+    出し先の一覧。URLが空のものは出さない。
+
+    手元で確かめられたURLだけを置いている。SNSのアカウント名は
+    GitHubのSecretsにあってリポジトリには無いので、埋めるまでは
+    その行が出ないだけになる。存在しないURLを踏ませるよりよい。
+    """
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return []
+    return [c for c in (d.get("channels") or []) if c.get("url")]
+
+
+def channel_block(channels: list) -> str:
+    """
+    どこで見られるかを、1か所にまとめて出す。
+
+    なぜ要るのか:
+      YouTubeの説明文にはサイトのURLが載っている。サイトの用語集からは
+      動画へ行ける。だがそれ以外は繋がっていなかった。
+      同じ内容を7本の動画と音声とSNSで出しているのに、どれか1つに
+      辿り着いた人は、他があることを知らないまま帰っていた。
+
+      好きな形で受け取れる方を選んでもらう。押し付けずに、並べておく。
+    """
+    if not channels:
+        return ""
+    rows = []
+    for c in channels:
+        rows.append(
+            f'  <li><a href="{c["url"]}" target="_blank" rel="noopener">'
+            f'{c["name"]}</a><span>{c.get("what", "")}</span></li>')
+    return ('<div class="yt-channel">' + chr(10)
+            + "  <strong>コレスポは、こちらでも出しています</strong>" + chr(10)
+            + '  <ul class="ch-list">' + chr(10)
+            + chr(10).join(rows) + chr(10)
+            + "  </ul>" + chr(10) + "</div>" + chr(10))
 
 
 def load_published(path: str) -> dict:
@@ -111,22 +145,23 @@ def inject_glossary(html: str, published: dict) -> tuple:
     return html, count
 
 
-def add_channel_block(html: str) -> str:
+def add_channel_block(html: str, block: str = "") -> str:
     """チャンネルへの導線を、本文の末尾(戻るリンクの手前)へ置く"""
-    if "yt-channel" in html:
+    if "yt-channel" in html or not block:
         return html
-    if "</head>" in html and "yt-link" not in html:
+    if "</head>" in html and "ch-list" not in html:
         html = html.replace("</head>", STYLE + "</head>", 1)
     m = re.search(r'<a class="back"', html)
     if m:
-        return html[:m.start()] + CHANNEL_BLOCK + html[m.start():]
-    return html.replace("</body>", CHANNEL_BLOCK + "</body>", 1)
+        return html[:m.start()] + block + html[m.start():]
+    return html.replace("</body>", block + "</body>", 1)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", default="public")
     parser.add_argument("--published", default="data/published_assets.json")
+    parser.add_argument("--channels", default="data/channels.json")
     args = parser.parse_args()
 
     site = pathlib.Path(args.site)
@@ -136,6 +171,9 @@ def main():
 
     published = load_published(args.published)
     print(f"[info] 投稿済みの資産動画: {len(published)}本")
+    channels = load_channels(args.channels)
+    block = channel_block(channels)
+    print(f"[info] 出し先: {', '.join(c['name'] for c in channels) or 'なし'}")
 
     # 用語集: 用語ごとのリンク
     g = site / "glossary.html"
@@ -144,18 +182,22 @@ def main():
         if "</head>" in html and "yt-link" not in html:
             html = html.replace("</head>", STYLE + "</head>", 1)
         html, n = inject_glossary(html, published)
-        html = add_channel_block(html)
+        html = add_channel_block(html, block)
         g.write_text(html, encoding="utf-8")
         print(f"[info] 用語集に{n}件の動画リンクを差し込みました")
 
     # 主要ページ: チャンネルへの導線
+    #
+    # 以前は用語集と3ページだけだった。いちばん人が来るトップページに
+    # 出し先が1つも載っていなかったので、そこを含めて主要ページに置く。
     added = []
-    for name in ("about.html", "quiz.html", "lineup.html"):
+    for name in ("index.html", "about.html", "quiz.html", "lineup.html",
+                 "score.html", "soccer.html", "glossary.html"):
         p = site / name
         if not p.exists():
             continue
         html = p.read_text(encoding="utf-8")
-        new = add_channel_block(html)
+        new = add_channel_block(html, block)
         if new != html:
             p.write_text(new, encoding="utf-8")
             added.append(name)

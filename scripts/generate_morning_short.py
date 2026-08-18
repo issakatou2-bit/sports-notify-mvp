@@ -30,6 +30,7 @@ from generate_narration import speech_name  # noqa: E402
 from PIL import Image, ImageDraw, ImageFont
 
 import local_buzz
+import post_common
 import local_voices
 import mlb_buzz
 import morning_recap
@@ -45,6 +46,17 @@ MIN_DURATION = {"intro": 5.0, "list": 8.0, "buzz": 9.0,
                 # 「今日の1人」の画面
                 "p_intro": 6.0, "p_career": 8.0, "p_season": 9.0,
                 "p_recent": 9.0, "p_awards": 8.0, "p_quotes": 12.0}
+
+# --mode の名前と、投稿の記録に使う区分の対応。
+# 締めの一覧から「いま見ている回」を外すのに使う。
+# 自分が見ている動画を「毎日出しています」と案内されても意味が無い。
+MODE_KIND = {
+    "players": "morning",
+    "player": "morning_player",
+    "voices": "morning_voices",
+    "local": "morning_local",
+    "press": "morning_press",
+}
 
 # 声の画面に並べる件数。読み上げと画面で別々の数を持つと、
 # 4件読んで3件しか映らない、という食い違いが静かに生まれる。
@@ -655,10 +667,10 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 登録が増えないと、毎日出しても毎日ゼロから始まる。
         # 時刻を1つ挙げるより、毎日何が届くのかを言う。
         # 「方」は「ほう」と読まれるので仮名で書く。
-        "text": "コレスポでは、日本人選手の成績、ファンのコメント欄、"
-                "現地での注目度、明日の注目試合、欧州サッカー、現地の報道を"
-                "毎日お届けしています。"
-                "見逃したくないかたは、チャンネル登録をお願いします。",
+        "text": ("コレスポでは、"
+                 + "、".join(post_common.lineup_names(MODE_KIND.get(mode, "")))
+                 + "を毎日お届けしています。"
+                 "見逃したくないかたは、チャンネル登録をお願いします。"),
         "meta": {},
     })
     return {"label": day, "segments": segments}
@@ -1258,14 +1270,10 @@ def render_voices(p, voices, picked=None):
 # 以前は「毎日19時」とだけ書いていたが、いまは5本体制で19時はそのうちの
 # 1本にすぎない。何が毎日届くのかが分からないままでは、登録する理由に
 # ならない。時刻ではなく中身を並べる。
-DAILY_LINEUP = [
-    ("日本人選手の成績", "誰がいちばん効いたか"),
-    ("ファンのコメント欄", "現地の反応を翻訳"),
-    ("現地での注目度", "向こうで何が見られたか"),
-    ("明日の注目試合", "なぜ注目なのか"),
-    ("欧州サッカー", "その夜の注目カード"),
-    ("現地の報道", "番記者と見出しを翻訳"),
-]
+# 画面に並べる一覧。文言は post_common に1本化してある。
+# 以前はここと説明文と「今日の1人」の締めで別々に書いていて、
+# 3つとも中身が違っていた。
+DAILY_LINEUP = [(name, what) for _, name, what in post_common.DAILY_LINEUP]
 
 
 def render_outro(p):

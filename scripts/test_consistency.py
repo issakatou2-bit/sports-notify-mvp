@@ -161,5 +161,22 @@ check("画面と読み上げの件数が同じ",
       len(_picked), min(gms.VOICES_SHOWN, len(_vs["voices"]) - 1))
 
 
+
+# 「毎日これを出しています」の一覧が、実際の枠と合っているか。
+#
+# 以前は動画の締め・説明文・「今日の1人」の締めで別々に書いてあり、
+# 3つとも中身が違っていた。7本出しているのに6本・5本・6本。
+# 毎日見ている人にいちばん届く場所で、間違ったことを言っていた。
+print("\n--- 毎日の一覧 ---")
+import post_common as pc  # noqa: E402
+
+_kinds = {k for k, _, _ in pc.DAILY_LINEUP}
+check("一覧の区分が、健康診断の見る枠と同じ",
+      sorted(expected ^ _kinds), [])
+check("一覧に重複が無い", len(pc.DAILY_LINEUP), len(_kinds))
+check("説明文が一覧から作られている",
+      all(name in "".join(uy.DAILY_LINEUP_LINES)
+          for _, name, _ in pc.DAILY_LINEUP), True)
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

@@ -14,6 +14,7 @@ generate_morning_short.py から使う。描画の道具(フォント・カー�
 """
 
 import generate_morning_short as ms
+import post_common
 from generate_narration import speech_name
 
 
@@ -206,10 +207,11 @@ def build_narration(prof: dict) -> dict:
 
     segments.append({
         "kind": "outro",
-        "text": "コレスポでは、日本人選手の成績、今日の1人、"
-                "ファンのコメント欄、明日の注目試合、欧州サッカーを"
-                "毎日お届けしています。"
-                "見逃したくないかたは、チャンネル登録をお願いします。",
+        # この動画自体が「今日の1人」なので、そこだけ外して読む。
+        "text": ("コレスポでは、"
+                 + "、".join(post_common.lineup_names("morning_player"))
+                 + "を毎日お届けしています。"
+                 "見逃したくないかたは、チャンネル登録をお願いします。"),
         "meta": {},
     })
     return {"label": prof.get("date_jst", ""), "segments": segments}
