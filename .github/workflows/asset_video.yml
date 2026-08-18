@@ -82,6 +82,12 @@ jobs:
         continue-on-error: true
         run: python scripts/venue_topics.py --out data/venue_topics.json
 
+      # 球団のぶんも同じ形で作る。球団は移転するので、手書きの表より
+      # APIを見ている方が正しい(2026年のアスレチックスはサクラメント)。
+      - name: Build team topics
+        continue-on-error: true
+        run: python scripts/team_topics.py --out data/team_topics.json
+
       - name: Fetch venue stats
         continue-on-error: true
         run: python scripts/venue_stats.py --out data/venue_stats.json
@@ -201,7 +207,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "published assets: ${{ github.run_id }}" \
-            data/published_assets.json data/venue_stats.json data/soccer_preview.json
+            data/published_assets.json data/venue_topics.json data/team_topics.json data/venue_stats.json data/soccer_preview.json
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
       - name: Save videos as artifact

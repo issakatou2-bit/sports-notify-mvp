@@ -59,7 +59,7 @@ FONT_CANDIDATES = [
 _FONT_FILE = None
 
 # 資産動画のサムネ文言。動画の中身と一致させる。
-def _generated_thumb(topic: str, path: str = "data/venue_topics.json"):
+def _generated_thumb(topic: str):
     """
     venue_topics.py が作ったトピックのサムネ文言。無ければ None。
 
@@ -67,17 +67,15 @@ def _generated_thumb(topic: str, path: str = "data/venue_topics.json"):
     材料の hook と label をそのまま置く。数字が入っているぶん、
     どの球場かが縮小しても見分けられる。
     """
-    try:
-        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return None
-    for spec in d.get("topics") or []:
-        if spec.get("key") != topic:
-            continue
+    import generated_topics as gt
+    spec = gt.get(topic)
+    if spec:
         hook = spec.get("hook", "")
         # 「中堅420フィート、30球場でいちばん深い」を2行に割る。
         # 1行に押し込むと字が小さくなって、サムネでは読めない。
         head, _, tail = hook.partition("、")
+        if "　" in hook and not tail:
+            head, _, tail = hook.partition("　")
         return (head or spec.get("label", ""),
                 spec.get("label", ""),
                 tail or spec.get("where", ""))

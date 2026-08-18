@@ -569,7 +569,7 @@ LIST_TOPICS = {
 }
 
 
-def load_generated_topics(path: str = "data/venue_topics.json") -> dict:
+def load_generated_topics() -> dict:
     """
     自動で作ったトピックを読み込む。
 
@@ -584,14 +584,10 @@ def load_generated_topics(path: str = "data/venue_topics.json") -> dict:
 
     読めなければ何も足さない。手書きのぶんはそのまま使える。
     """
-    try:
-        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return {}
+    import generated_topics as gt
     out = {}
-    for spec in d.get("topics") or []:
-        key = spec.get("key")
-        if not key or key in LIST_TOPICS:
+    for key, spec in gt.all_topics().items():
+        if key in LIST_TOPICS:
             continue   # 手書きのぶんが先。あちらの方が踏み込んでいる。
         out[key] = {k: v for k, v in spec.items() if k != "key"}
         out[key]["items"] = [tuple(x) for x in spec.get("items") or []]

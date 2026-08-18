@@ -18,7 +18,6 @@
 """
 
 import argparse
-import json
 import pathlib
 import re
 import sys
@@ -131,7 +130,7 @@ def workflows() -> list:
     return out
 
 
-def generated_keys(path: str = "data/venue_topics.json") -> set:
+def generated_keys() -> set:
     """
     venue_topics.py が公式APIから作ったトピック。
 
@@ -140,11 +139,8 @@ def generated_keys(path: str = "data/venue_topics.json") -> set:
     ワークフローの選択肢に並べる必要も無い。
     手書きのぶんと同じ物差しで見ると、増えるたびに赤くなる。
     """
-    try:
-        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return set()
-    return {x.get("key") for x in (d.get("topics") or []) if x.get("key")}
+    import generated_topics as gt
+    return gt.keys()
 
 
 def check(a: dict) -> list:

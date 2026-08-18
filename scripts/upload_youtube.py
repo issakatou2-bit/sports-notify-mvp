@@ -374,16 +374,10 @@ DAILY_LINEUP_LINES = [
 ]
 
 
-def generated_topic(topic: str, path: str = "data/venue_topics.json") -> dict:
-    """venue_topics.py が作ったトピックの材料。無ければ空。"""
-    try:
-        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {}
-    for spec in d.get("topics") or []:
-        if spec.get("key") == topic:
-            return spec
-    return {}
+def generated_topic(topic: str) -> dict:
+    """自動で作ったトピックの材料。無ければ空。"""
+    import generated_topics as gt
+    return gt.get(topic)
 
 
 def asset_meta_from_spec(spec: dict) -> dict:
@@ -404,8 +398,8 @@ def asset_meta_from_spec(spec: dict) -> dict:
     return {
         "title": f"【MLB】{label}｜{hook} #Shorts",
         "lead": lead,
-        "tags": ["MLB", "メジャーリーグ", "野球", label, "球場",
-                 "MLB球場", "コレスポ"],
+        "tags": ["MLB", "メジャーリーグ", "野球", label,
+                 "MLB入門", "コレスポ"],
     }
 
 
