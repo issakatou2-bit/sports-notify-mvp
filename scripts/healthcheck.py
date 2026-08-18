@@ -230,6 +230,12 @@ def main() -> int:
     # 動画が出たかどうかだけを見る。
     data_lines, stale = check_data()
     if args.today:
+        # 当日の途中では、材料が古いのは当たり前(朝の回がまだ走っていない)
+        stale = 0
+    elif actual >= expect > 0:
+        # 動画が出ているなら、材料は揃っていたということ。
+        # 古く見えるのは記録が押し合いで残らなかったからで、
+        # 取れていなかったわけではない。結果の方を信じる。
         stale = 0
     hist_line, _ = check_history()
     pl_line, pl_bad = check_playlists()
