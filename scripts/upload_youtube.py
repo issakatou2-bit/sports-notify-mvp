@@ -744,9 +744,17 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # あとから名前で検索した人にも同じだけ役に立つ。
         prof = load_profile(profile_path)
         who = prof.get("name") or ""
-        big = prof.get("headline") or ""
-        title = (f"【MLB】{who}｜通算成績・今季・受賞歴まとめ"
-                 + (f'｜{big}' if big else "") + " #Shorts")
+        # 到達点があれば、それをタイトルに出す。
+        #
+        # 実測では「パドレス 6連勝中」が50.2%、「Kevin Gausman 移籍後2登板目」が
+        # 19.1%。差は名前の知名度ではなく、数字がその選手の状態を語っているか
+        # どうかだった。「30本塁打30盗塁」は誰でも意味が分かる。
+        # 「通算成績・今季・受賞歴まとめ」は何も言っていない。
+        import player_screens as _ps
+        big = _ps.milestone(prof) or prof.get("headline") or ""
+        title = (f"【MLB】{who}"
+                 + (f"｜{big}" if big else "")
+                 + "｜通算成績・今季・受賞歴まとめ #Shorts")
     elif kind == "morning" and morning_mode == "voices":
         # コメント欄の回。何の試合かがタイトルで分かるようにする。
         # 「現地の声」だけでは、どの試合の話なのか見当が付かない。

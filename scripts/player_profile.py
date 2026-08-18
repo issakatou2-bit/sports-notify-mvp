@@ -394,6 +394,10 @@ def build(args) -> dict:
         "team": team_now(pid),
         "group": group,
         "why": chosen["why"],
+        # その日の成績。採点から来た場合だけ入る。
+        # 説明文で使う。これまで渡していなかったので None のままだった。
+        "headline": (best or {}).get("headline") or "",
+        "score": (best or {}).get("score"),
         "bio": bio,
         "career": season_line(pid, group),
         "this_season": season_line(pid, group, season),
