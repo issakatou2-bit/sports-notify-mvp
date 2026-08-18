@@ -178,6 +178,29 @@ def pick_from_best(best_path: str, history: dict) -> dict:
     return {}
 
 
+def pinned_player(name: str, best_path: str) -> dict:
+    """
+    名前で指定された選手。採点表にいればその成績も添える。
+
+    いなければ名前だけ返す。「その日いちばん」とは言わない。
+    採点の外から選んだものを1位と書くと、他の回の1位が信用できなくなる。
+    """
+    try:
+        d = json.loads(pathlib.Path(best_path).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        d = {}
+    key = name.strip().lower()
+    for group in ("players", "pitchers"):
+        for x in d.get(group) or []:
+            if x.get("name", "").lower() == key:
+                day = d.get("date_jst") or d.get("date")
+                return {"name_en": x["name"], "name_jp": x["name"],
+                        "why": f"{day}の成績", "score": x.get("score"),
+                        "headline": x.get("headline"), "team": x.get("team")}
+    return {"name_en": name, "name_jp": name, "why": "",
+            "score": None, "headline": "", "team": ""}
+
+
 def pick_player(history: dict, mentions: dict) -> dict:
     """名簿から選ぶ(その日の採点が取れなかったときの控え)。"""
     today = datetime.now(JST).date()
@@ -317,13 +340,22 @@ def quotes(name_jp: str, name_en: str, reporters_path: str,
 def build(args) -> dict:
     history = load_history(args.history)
     mentions = mention_counts(args.reporters, args.voices)
-    # まず、その日いちばん活躍した選手。取れなければ名簿から回す。
-    best = pick_from_best(args.best, history)
+    # 名前を指定されていれば、その人で作る。
+    #
+    # 普段は毎日その日の1位が自動で決まるが、「この選手で1本出したい」
+    # という回がある。採点の外から選んだのだから、理由も
+    # 「その日いちばん」とは書かない。書ける事実だけを書く。
+    if getattr(args, "name", ""):
+        best = pinned_player(args.name, args.best)
+    else:
+        # まず、その日いちばん活躍した選手。取れなければ名簿から回す。
+        best = pick_from_best(args.best, history)
     if best:
         p = {"name_en": best["name_en"], "name_jp": best["name_jp"],
              "type": "batter"}
         chosen = {"player": p, "why": best["why"]}
-        print(f"[info] その日の1位: {best['name_jp']} "
+        how = "指名" if getattr(args, "name", "") else "その日の1位"
+        print(f"[info] {how}: {best['name_jp']} "
               f"({best.get('score')}点 / {best.get('headline')})")
     else:
         chosen = pick_player(history, mentions)
@@ -377,6 +409,9 @@ def build(args) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/player_profile.json")
+    ap.add_argument("--name", default="",
+                    help="この選手で作る(例: Pete Crow-Armstrong)。"
+                         "指定しなければ、その日いちばん活躍した選手")
     ap.add_argument("--best", default="data/best_of_day.json",
                     help="その日いちばん活躍した選手(best_of_day.py の出力)")
     ap.add_argument("--history", default="data/featured_players.json")

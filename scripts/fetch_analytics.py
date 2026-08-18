@@ -93,9 +93,19 @@ def main() -> int:
         ).execute()
     except HttpError as e:
         if e.resp.status in (401, 403):
-            print("[info] 分析の権限がありません。"
-                  "yt-analytics.readonly を足したトークンが要ります "
-                  "(README の手順を参照)")
+            # 403は2つの理由で返る。取り違えると、直っているトークンを
+            # 何度も取り直すことになる(実際そうなった)ので、書き分ける。
+            body = (getattr(e, "content", b"") or b"").decode("utf-8", "replace")
+            if "accessNotConfigured" in body or "has not been used in project" in body:
+                print("[info] Google Cloud で YouTube Analytics API が"
+                      "有効になっていません。トークンは正しいので、"
+                      "コンソールで有効にすれば通ります:")
+                print("       https://console.cloud.google.com/apis/library/"
+                      "youtubeanalytics.googleapis.com")
+            else:
+                print("[info] 分析の権限がありません。"
+                      "yt-analytics.readonly を足したトークンが要ります "
+                      "(README の手順を参照)")
             return 0
         print(f"[warn] 取得に失敗しました: {e}", file=sys.stderr)
         return 0

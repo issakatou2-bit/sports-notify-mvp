@@ -28,6 +28,11 @@ def _hitting_line(s: dict) -> str:
         bits.append(f"{s['rbi']}打点")
     if s.get("ops"):
         bits.append(f"OPS{s['ops']}")
+    # 盗塁は、走る選手のときだけ出す。1桁の選手まで並べると、
+    # どの行にも同じ項目が並んで、その選手の特徴が見えなくなる。
+    # 30本塁打30盗塁と書いた隣に盗塁数が無いのも、辻褄が合わない。
+    if (s.get("sb") or 0) >= 10:
+        bits.append(f"{s['sb']}盗塁")
     return "　".join(bits)
 
 
@@ -98,9 +103,34 @@ def yomi(text: str) -> str:
     return ms.yomi_stats(text).replace("　", "、")
 
 
+def milestone(prof: dict) -> str:
+    """
+    今季の到達点で、ひとことで言えるもの。無ければ空。
+
+    30本塁打30盗塁は、走れて長打も打てる打者にしか届かない。
+    通算71本塁打より、こちらの方がその選手が何者かを短く伝える。
+    数えているのはAPIの数字そのもので、こちらの評価は入れない。
+    """
+    if prof.get("group") == "pitching":
+        s = prof.get("this_season") or {}
+        so = s.get("so") or 0
+        if so >= 200:
+            return f"今シーズン{so}奪三振"
+        return ""
+    s = prof.get("this_season") or {}
+    hr, sb = s.get("hr") or 0, s.get("sb") or 0
+    for n in (50, 40, 30, 20):
+        if hr >= n and sb >= n:
+            return f"今シーズン{n}本塁打{n}盗塁"
+    return ""
+
+
 def build_narration(prof: dict) -> dict:
     """今日の1人ぶんの原稿。画面と1対1で対応させる。"""
     name = prof.get("name", "")
+    # 画面はそのままの綴りで出す。読み上げだけカタカナに替える。
+    # 綴りを変えると、検索してきた人が見ている名前と違うものになる。
+    said = speech_name(name)
     bio = prof.get("bio") or {}
     team = prof.get("team", "")
 
@@ -115,15 +145,21 @@ def build_narration(prof: dict) -> dict:
         big = f"通算{c['wins']}勝" if c.get("wins") else ""
     else:
         big = f"通算{c['hr']}本塁打" if c.get("hr") else ""
+    # 到達点があれば、通算の数字よりそちらを先に出す。
+    # 「通算71本塁打」は4年目の選手ならありふれた数字だが、
+    # 「30本塁打30盗塁」は誰にでも届くものではない。
+    ms_line = milestone(prof)
+    if ms_line:
+        big = ms_line
     aw = prof.get("awards") or []
     if not big and aw:
         big = award_yomi(aw[0]["name"])
-    head = f"{name}、{team}。" + (f"{big}。" if big else "")
+    head = f"{said}、{team}。" + (f"{big}。" if big else "")
     segments = [{"kind": "p_intro", "text": head + "今日はこの選手です。",
                  "meta": {}}]
 
     if prof.get("career"):
-        parts = [f"{name}の通算成績です。{yomi(career)}。"]
+        parts = [f"{said}の通算成績です。{yomi(career)}。"]
         if bio.get("debut"):
             parts.append(f"デビューは{bio['debut'][:4]}年。")
         segments.append({"kind": "p_career", "text": "".join(parts),
@@ -137,6 +173,8 @@ def build_narration(prof: dict) -> dict:
             parts.append(f"今シーズンは{yomi(this_s)}。")
         if last_s:
             parts.append(f"昨シーズンは{yomi(last_s)}でした。")
+        if ms_line:
+            parts.append(f"{ms_line}に到達しています。")
         segments.append({"kind": "p_season", "text": "".join(parts),
                          "meta": {}})
 
@@ -258,6 +296,13 @@ def render_season(p, prof):
     last_s = stat_line(prof, prof.get("last_season") or {})
     if this_s:
         y = _stat_card(d, y, "今シーズン", this_s, ms.ACCENT)
+    reach = milestone(prof)
+    if reach and p > 0.10:
+        d.rounded_rectangle([60, y, ms.W - 60, y + 92], 18, fill=ms.SURF)
+        d.rounded_rectangle([60, y, 68, y + 92], 4, fill=ms.ACCENT)
+        d.text((100, y + 24), f"{reach}に到達", font=ms.font(44),
+               fill=ms.ACCENT)
+        y += 114
     if last_s and p > 0.14:
         _stat_card(d, y, "昨シーズン", last_s, ms.DIM)
     return im

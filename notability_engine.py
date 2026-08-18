@@ -1015,6 +1015,91 @@ JP_PLAYER_READINGS = {
 }
 
 
+# 外国人選手の姓の読み。
+#
+# なぜ要るのか:
+#   VOICEVOXにアルファベットを渡すと、辞書に無いものは1文字ずつ読む。
+#   「Crow-Armstrong」は「シーアールオーダブリュー…」になる。
+#   これまで名前が出るのは冒頭のフックだけだったので姓に削って凌いでいたが、
+#   「今日の1人」で外国人選手を扱うようになり、1本まるごと同じ名前を
+#   何度も読むことになった。読めない名前で1分喋ることになる。
+#
+#   全選手ぶんは持てない(毎日変わる)。日本の中継や記事で普段そう書かれて
+#   いる読みだけを置く。無い名前は、これまで通り姓のアルファベットに落ちる。
+MLB_NAME_READINGS = {
+    "Crow-Armstrong": "クロウ、アームストロング",
+    "Ohtani": "オオタニ",
+    "Judge": "ジャッジ",
+    "Soto": "ソト",
+    "Betts": "ベッツ",
+    "Freeman": "フリーマン",
+    "Harper": "ハーパー",
+    "Acuna": "アクーニャ",
+    "Witt": "ウィット",
+    "Tucker": "タッカー",
+    "Alonso": "アロンソ",
+    "Devers": "デバース",
+    "Ramirez": "ラミレス",
+    "Guerrero": "ゲレーロ",
+    "Bichette": "ビシェット",
+    "Turang": "トゥラング",
+    "Carroll": "キャロル",
+    "Rutschman": "ラッチマン",
+    "Henderson": "ヘンダーソン",
+    "Skubal": "スクーバル",
+    "Wheeler": "ウィーラー",
+    "Snell": "スネル",
+    "Burnes": "バーンズ",
+    "Gausman": "ガウスマン",
+    "Cease": "シース",
+    "Sale": "セール",
+    "Skenes": "スキーンズ",
+    "Buehler": "ビューラー",
+    "Glasnow": "グラスノー",
+    "Kershaw": "カーショウ",
+    "Verlander": "バーランダー",
+    "Scherzer": "シャーザー",
+    "Cole": "コール",
+    "Nola": "ノラ",
+    "Webb": "ウェッブ",
+    "Gilbert": "ギルバート",
+    "Castillo": "カスティーヨ",
+    "Diaz": "ディアス",
+    "Contreras": "コントレラス",
+    "Realmuto": "リアルミュート",
+    "Machado": "マチャド",
+    "Arenado": "アレナド",
+    "Goldschmidt": "ゴールドシュミット",
+    "Olson": "オルソン",
+    "Riley": "ライリー",
+    "Albies": "アルビーズ",
+    "Bregman": "ブレグマン",
+    "Altuve": "アルトゥーベ",
+    "Alvarez": "アルバレス",
+    "Rodriguez": "ロドリゲス",
+    "Raleigh": "ローリー",
+    "Kwan": "クワン",
+    "Robert": "ロバート",
+    "Langford": "ラングフォード",
+    "Marte": "マーテ",
+    "Nootbaar": "ヌートバー",
+    "Imanaga": "イマナガ",
+    "Yamamoto": "ヤマモト",
+    "Sasaki": "ササキ",
+    "Suzuki": "スズキ",
+    "Yoshida": "ヨシダ",
+    "Senga": "センガ",
+    "Sugano": "スガノ",
+    "Kikuchi": "キクチ",
+    "Matsui": "マツイ",
+    "Murakami": "ムラカミ",
+    "Okamoto": "オカモト",
+    "Lee": "リー",
+    "Muncy": "マンシー",
+    "Encarnacion-Strand": "エンカーナシオン、ストランド",
+}
+
+
 def apply_readings(text: str) -> str:
     """
     音声合成へ渡す直前に、選手名を読み仮名へ置き換える。

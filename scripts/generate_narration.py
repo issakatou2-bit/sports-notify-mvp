@@ -44,6 +44,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 import post_common  # noqa: E402
 from notability_engine import (  # noqa: E402
+    MLB_NAME_READINGS as _MLB_NAME_READINGS,
     is_soccer_league as _is_soccer_league,
 )
 
@@ -100,6 +101,13 @@ def speech_name(name: str) -> str:
     folded = unicodedata.normalize("NFKD", name)
     folded = "".join(c for c in folded if not unicodedata.combining(c))
     parts = [p for p in folded.split() if p]
+    # 読みを持っている姓は、カタカナに置き換える。
+    # 姓だけに削るのは「アルファベットのままよりはまし」という妥協で、
+    # 1本まるごと同じ名前を読む回には足りない。
+    for part in reversed(parts):
+        got = _MLB_NAME_READINGS.get(part.rstrip("."))
+        if got:
+            return got
     if len(parts) >= 2:
         # "Jr." のような接尾辞は落として、その手前を姓とみなす
         while len(parts) >= 2 and parts[-1].rstrip(".").lower() in ("jr", "sr", "ii", "iii"):
