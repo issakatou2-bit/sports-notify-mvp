@@ -1,22 +1,22 @@
 {
-  "updated_at": "2026-08-16T10:54:52.440503+00:00",
+  "updated_at": "2026-08-18T15:08:17.644442+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-08-16",
-  "total_games": 1992,
+  "end": "2026-08-18",
+  "total_games": 2018,
   "min_games": 20,
   "venues": {
-    "Sutter Health Park": {
-      "games": 57,
-      "runs": 655,
-      "avg_runs": 11.49,
+    "Coors Field": {
+      "games": 60,
+      "runs": 686,
+      "avg_runs": 11.43,
       "rank": 1,
       "total": 30
     },
-    "Coors Field": {
-      "games": 59,
-      "runs": 670,
-      "avg_runs": 11.36,
+    "Sutter Health Park": {
+      "games": 58,
+      "runs": 662,
+      "avg_runs": 11.41,
       "rank": 2,
       "total": 30
     },
@@ -28,37 +28,37 @@
       "total": 30
     },
     "PNC Park": {
-      "games": 62,
-      "runs": 649,
-      "avg_runs": 10.47,
+      "games": 64,
+      "runs": 673,
+      "avg_runs": 10.52,
       "rank": 4,
       "total": 30
     },
     "Kauffman Stadium": {
-      "games": 59,
-      "runs": 565,
-      "avg_runs": 9.58,
+      "games": 60,
+      "runs": 579,
+      "avg_runs": 9.65,
       "rank": 5,
       "total": 30
     },
-    "Daikin Park": {
-      "games": 63,
-      "runs": 596,
-      "avg_runs": 9.46,
+    "Citizens Bank Park": {
+      "games": 64,
+      "runs": 607,
+      "avg_runs": 9.48,
       "rank": 6,
       "total": 30
     },
-    "Citizens Bank Park": {
+    "Wrigley Field": {
       "games": 63,
-      "runs": 596,
-      "avg_runs": 9.46,
+      "runs": 597,
+      "avg_runs": 9.48,
       "rank": 7,
       "total": 30
     },
-    "Wrigley Field": {
-      "games": 61,
-      "runs": 570,
-      "avg_runs": 9.34,
+    "Daikin Park": {
+      "games": 64,
+      "runs": 601,
+      "avg_runs": 9.39,
       "rank": 8,
       "total": 30
     },
@@ -70,8 +70,8 @@
       "total": 30
     },
     "Target Field": {
-      "games": 61,
-      "runs": 552,
+      "games": 63,
+      "runs": 570,
       "avg_runs": 9.05,
       "rank": 10,
       "total": 30
@@ -90,38 +90,38 @@
       "rank": 12,
       "total": 30
     },
-    "Citi Field": {
-      "games": 61,
-      "runs": 541,
-      "avg_runs": 8.87,
-      "rank": 13,
-      "total": 30
-    },
     "Truist Park": {
-      "games": 65,
-      "runs": 576,
-      "avg_runs": 8.86,
-      "rank": 14,
+      "games": 66,
+      "runs": 584,
+      "avg_runs": 8.85,
+      "rank": 13,
       "total": 30
     },
     "Yankee Stadium": {
       "games": 58,
       "runs": 508,
       "avg_runs": 8.76,
+      "rank": 14,
+      "total": 30
+    },
+    "Citi Field": {
+      "games": 63,
+      "runs": 551,
+      "avg_runs": 8.75,
       "rank": 15,
       "total": 30
     },
     "Great American Ball Park": {
-      "games": 62,
-      "runs": 535,
-      "avg_runs": 8.63,
+      "games": 65,
+      "runs": 557,
+      "avg_runs": 8.57,
       "rank": 16,
       "total": 30
     },
-    "Progressive Field": {
-      "games": 61,
-      "runs": 521,
-      "avg_runs": 8.54,
+    "Oracle Park": {
+      "games": 64,
+      "runs": 547,
+      "avg_runs": 8.55,
       "rank": 17,
       "total": 30
     },
@@ -132,45 +132,45 @@
       "rank": 18,
       "total": 30
     },
-    "UNIQLO Field at Dodger Stadium": {
-      "games": 64,
-      "runs": 537,
-      "avg_runs": 8.39,
+    "Tropicana Field": {
+      "games": 63,
+      "runs": 536,
+      "avg_runs": 8.51,
       "rank": 19,
       "total": 30
     },
-    "Tropicana Field": {
-      "games": 61,
-      "runs": 511,
-      "avg_runs": 8.38,
+    "Progressive Field": {
+      "games": 62,
+      "runs": 526,
+      "avg_runs": 8.48,
       "rank": 20,
       "total": 30
     },
-    "Oracle Park": {
-      "games": 63,
-      "runs": 527,
-      "avg_runs": 8.37,
+    "UNIQLO Field at Dodger Stadium": {
+      "games": 65,
+      "runs": 545,
+      "avg_runs": 8.38,
       "rank": 21,
       "total": 30
     },
     "Comerica Park": {
-      "games": 62,
-      "runs": 515,
-      "avg_runs": 8.31,
+      "games": 63,
+      "runs": 527,
+      "avg_runs": 8.37,
       "rank": 22,
       "total": 30
     },
     "Fenway Park": {
-      "games": 60,
-      "runs": 497,
-      "avg_runs": 8.28,
+      "games": 61,
+      "runs": 509,
+      "avg_runs": 8.34,
       "rank": 23,
       "total": 30
     },
     "Rogers Centre": {
-      "games": 65,
-      "runs": 535,
-      "avg_runs": 8.23,
+      "games": 66,
+      "runs": 542,
+      "avg_runs": 8.21,
       "rank": 24,
       "total": 30
     },
@@ -196,9 +196,9 @@
       "total": 30
     },
     "Angel Stadium": {
-      "games": 65,
-      "runs": 522,
-      "avg_runs": 8.03,
+      "games": 66,
+      "runs": 525,
+      "avg_runs": 7.95,
       "rank": 28,
       "total": 30
     },

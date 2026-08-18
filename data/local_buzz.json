@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-16T10:55:00.156245+00:00",
+  "updated_at": "2026-08-18T15:08:25.248920+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,9 +13,15 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
+      "mentions": 4
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
       "mentions": 3
     },
     {
@@ -25,46 +31,40 @@
       "mentions": 3
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
       "mentions": 3
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 3
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
       "mentions": 2
     },
     {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
       "mentions": 2
     },
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 1
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 2
     },
     {
-      "team_id": "142",
-      "name": "ツインズ",
-      "name_en": "Minnesota Twins",
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
       "mentions": 1
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 4
+      "mentions": 2
     }
   ]
 }

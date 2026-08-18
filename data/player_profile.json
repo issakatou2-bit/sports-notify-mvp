@@ -1,75 +1,75 @@
 {
-  "generated_at": "2026-08-17T09:54:11.291814+00:00",
-  "date_jst": "2026-08-17",
-  "name": "大谷翔平",
-  "player_id": "660271",
-  "team": "ドジャース",
+  "generated_at": "2026-08-18T15:07:10.821063+00:00",
+  "date_jst": "2026-08-19",
+  "name": "Pete Crow-Armstrong",
+  "player_id": "691718",
+  "team": "カブス",
   "group": "hitting",
-  "why": "現地で名前が挙がっている",
+  "why": "2026-08-18の成績",
   "bio": {
-    "name_en": "Shohei Ohtani",
-    "age": 32,
-    "birth_city": "Oshu",
-    "birth_date": "1994-07-05",
-    "debut": "2018-03-29",
-    "number": "17",
-    "position": "Two-Way Player",
-    "nickname": "Showtime",
-    "height": "6' 4\"",
-    "weight": 210
+    "name_en": "Pete Crow-Armstrong",
+    "age": 24,
+    "birth_city": "Sherman Oaks",
+    "birth_date": "2002-03-25",
+    "debut": "2023-09-11",
+    "number": "4",
+    "position": "Outfielder",
+    "nickname": "PCA",
+    "height": "6' 0\"",
+    "weight": 184
   },
   "career": {
-    "games": 1152,
-    "avg": ".282",
-    "hr": 307,
-    "rbi": 744,
-    "ops": ".954",
-    "sb": 172,
-    "hits": 1178
+    "games": 419,
+    "avg": ".253",
+    "hr": 71,
+    "rbi": 221,
+    "ops": ".791",
+    "sb": 95,
+    "hits": 369
   },
   "this_season": {
-    "games": 119,
-    "avg": ".289",
-    "hr": 27,
-    "rbi": 75,
-    "ops": ".928",
-    "sb": 7,
-    "hits": 128
+    "games": 126,
+    "avg": ".281",
+    "hr": 30,
+    "rbi": 78,
+    "ops": ".929",
+    "sb": 31,
+    "hits": 135
   },
   "last_season": {
-    "games": 158,
-    "avg": ".282",
-    "hr": 55,
-    "rbi": 102,
-    "ops": "1.014",
-    "sb": 20,
-    "hits": 172
+    "games": 157,
+    "avg": ".247",
+    "hr": 31,
+    "rbi": 95,
+    "ops": ".768",
+    "sb": 35,
+    "hits": 146
   },
   "recent": [
     {
+      "date": "2026-08-17",
+      "line": "5打数4安打 2本塁打 3打点",
+      "opponent": "Chicago White Sox"
+    },
+    {
       "date": "2026-08-16",
-      "line": "4打数1安打",
-      "opponent": "Milwaukee Brewers"
+      "line": "5打数1安打 1本塁打 2打点",
+      "opponent": "St. Louis Cardinals"
     },
     {
       "date": "2026-08-15",
-      "line": "4打数1安打 1打点",
-      "opponent": "Milwaukee Brewers"
+      "line": "4打数0安打",
+      "opponent": "St. Louis Cardinals"
     },
     {
       "date": "2026-08-14",
-      "line": "3打数0安打",
-      "opponent": "Milwaukee Brewers"
+      "line": "4打数0安打",
+      "opponent": "St. Louis Cardinals"
     },
     {
       "date": "2026-08-13",
-      "line": "4打数1安打",
-      "opponent": "Milwaukee Brewers"
-    },
-    {
-      "date": "2026-08-12",
-      "line": "4打数2安打 1本塁打 2打点",
-      "opponent": "Kansas City Royals"
+      "line": "4打数0安打",
+      "opponent": "Washington Nationals"
     }
   ],
   "awards": [
@@ -79,41 +79,20 @@
     },
     {
       "season": "2026",
-      "name": "NL Pitcher of the Month"
+      "name": "NL Player of the Month"
+    },
+    {
+      "season": "2026",
+      "name": "NL Player of the Week"
     },
     {
       "season": "2025",
-      "name": "NL MVP"
+      "name": "Rawlings NL Gold Glove"
     },
     {
       "season": "2025",
-      "name": "NL Hank Aaron Award"
-    },
-    {
-      "season": "2025",
-      "name": "NL Silver Slugger"
+      "name": "NL All-Star"
     }
   ],
-  "quotes": [
-    {
-      "who": "Yahoo Sports",
-      "text": "ジェイコブ・ミシオロウスキがまた素晴らしい投球でブルワーズをドジャースの大谷翔平を抑えて勝利に導く",
-      "kind": "headline"
-    },
-    {
-      "who": "The Japan Times",
-      "text": "ドジャースはマウンドへの大谷翔平の復帰について楽観的",
-      "kind": "headline"
-    },
-    {
-      "who": "ESPN",
-      "text": "大谷翔平が打点付き三塁打を放つ",
-      "kind": "headline"
-    },
-    {
-      "who": "FOX Sports",
-      "text": "ドジャースの大谷翔平が1点三塁打を放ち、ブルワーズ戦での点差を縮める",
-      "kind": "headline"
-    }
-  ]
+  "quotes": []
 }
