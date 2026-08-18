@@ -658,6 +658,21 @@ def weekly_description_lines(archive_dir: str) -> list:
     return lines
 
 
+def thread_replies(path: str = "data/local_voices.json") -> int:
+    """やり取りとして紹介した一言に、返信が何件付いていたか。無ければ0。"""
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return 0
+    for v in d.get("voices") or []:
+        if v.get("is_thread") and v.get("reply_ja"):
+            try:
+                return int(v.get("replies") or 0)
+            except (TypeError, ValueError):
+                return 0
+    return 0
+
+
 def load_profile(path: str) -> dict:
     """「今日の1人」の材料。無ければ空。"""
     try:
@@ -728,13 +743,15 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 検索されるのは球団名なので、対戦を先頭へ置く。
         m = (buzz_top(buzz_path) or {})
         card = m.get("matchup_jp") or ""
+        # 返信が付いた一言を扱った回は、その件数を出す。
+        # 「ファンの反応」は毎日同じ言い方になるが、件数はその日だけの数字で、
+        # しかも「何を言ったらそんなに返ってきたのか」が残る。
+        n = thread_replies()
+        tail = f"｜返信{n}件ついたコメント {date_label} #Shorts" if n else             f"｜{date_label} 最も見られたハイライトのコメント欄 #Shorts"
         if card:
-            title = (f"【MLB】{card} 現地のファンは何と言ったか"
-                     f"｜{date_label} 最も見られたハイライトのコメント欄"
-                     f" #Shorts")
+            title = f"【MLB】{card} 現地のファンは何と言ったか{tail}"
         else:
-            title = (f"【MLB】現地で最も見られた試合のコメント欄"
-                     f"｜{date_label} ファンの反応を翻訳 #Shorts")
+            title = f"【MLB】現地で最も見られた試合のコメント欄{tail}"
     elif kind == "morning" and morning_mode == "press":
         # 言葉の回。数字の回(local)と主題を分けてあるので、
         # タイトルでも「誰が何と言ったか」を前に出す。
@@ -848,6 +865,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             lines.append(f"・結果: {top['score_line']}")
         if top.get("views"):
             lines.append(f"・MLB公式ハイライトの再生回数: {top['views']:,}回")
+        n = thread_replies()
+        if n:
+            lines.append(f"・最も返信の付いたコメント: 返信{n}件"
+                         "（その返信も訳して紹介しています）")
         lines += ["",
                   "コメントは翻訳したもので、コレスポの見解ではありません。",
                   "賛成・批判・中立の別と、高評価の数を画面に出しています。",

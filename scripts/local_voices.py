@@ -65,7 +65,7 @@ SKIP_PATTERNS = [
 
 
 def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
-                           per_video: int = 6) -> list:
+                           per_video: int = 20) -> list:
     """
     MLB公式ハイライトに付いたコメントを取る。
 
@@ -132,7 +132,8 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
                 "likes": int(c.get("likeCount") or 0),
                 "replies": int((item.get("snippet") or {})
                                .get("totalReplyCount") or 0),
-                "reply_texts": [" ".join(x.split()) for x in replies if x][:2],
+                "reply_texts": [" ".join(x.split())
+                                for x in replies if 4 <= len(x) <= 200][:3],
                 "author": c.get("authorDisplayName", ""),
                 "source": "MLB公式ハイライトのコメント",
                 "matchup": v.get("matchup") or v.get("title", "")[:40],
@@ -140,6 +141,22 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
 
     # 賛同の多い順。少数の意見を上に置くと、選び方の恣意が入る。
     out.sort(key=lambda x: -x["likes"])
+
+    # ただし先頭だけは、返信のいちばん多い一言に譲る。
+    #
+    # 高評価は「そう思う」を押した人の数で、一人が言い切って終わる。
+    # 返信が付くのは、誰かがそれに言い返したということ。
+    # ファンが盛り上がっているかを見たいとき、後者の方が近い。
+    # 入れ替えるのは1件だけで、残りは賛同順のまま触らない。
+    threads = [c for c in out if c["replies"] > 0 and c["reply_texts"]]
+    if threads:
+        top = max(threads, key=lambda x: (x["replies"], x["likes"]))
+        top["is_thread"] = True
+        out.remove(top)
+        out.insert(0, top)
+        print(f"[info] 返信の付いた一言を先頭に: 返信{top['replies']}件 "
+              f"/ 高評価{top['likes']}件")
+
     print(f"[info] 公式ハイライトのコメント: {len(out)}件")
     return out
 
@@ -178,7 +195,16 @@ def translate(client, items: list) -> list:
     見出しをまとめて日本語にする。1件ずつ呼ぶとAPI呼び出しが増えるので、
     1回のやり取りで全件を訳させる。
     """
-    numbered = "\n".join(f"{i + 1}. {it['title']}" for i, it in enumerate(items))
+    # 訳すのは本文だけではない。返信まで訳して初めて、
+    # 「この一言に、こう返ってきた」というやり取りとして出せる。
+    # 別の呼び出しに分けると、同じ話題を2つの文脈で訳すことになる。
+    flat = []  # (何件目の投稿か, 返信なら何件目か / 本文は -1, 原文)
+    for n, it in enumerate(items):
+        flat.append((n, -1, it["title"]))
+        for j, rt in enumerate(it.get("reply_texts") or []):
+            flat.append((n, j, rt))
+    numbered = "\n".join(f"{n + 1}. {txt}"
+                         for n, (_, _, txt) in enumerate(flat))
     # 訳と同時に、その一言が肯定寄りか否定寄りかも付けてもらう。
     # 別々に呼ぶと回数が倍になるうえ、訳文と判定が違う読み方で付く。
     prompt = (
@@ -197,7 +223,7 @@ def translate(client, items: list) -> list:
         "- 前置きや説明は不要"
     )
     resp = client.messages.create(
-        model=MODEL, max_tokens=1500,
+        model=MODEL, max_tokens=2500,
         messages=[{"role": "user", "content": prompt}],
     )
     if resp.stop_reason == "max_tokens":
@@ -217,15 +243,22 @@ def translate(client, items: list) -> list:
         if m:
             translated[int(m.group(1))] = ("中立", m.group(2).strip())
 
-    out = []
-    for i, it in enumerate(items, 1):
-        got = translated.get(i)
-        if got:
-            tone, ja = got
-            out.append({**it, "ja": ja,
-                        "tone": tone if tone in ("称賛", "批判", "中立")
-                        else "中立"})
-    return out
+    def clean(pair):
+        tone, ja = pair
+        return {"ja": ja,
+                "tone": tone if tone in ("称賛", "批判", "中立") else "中立"}
+
+    out = [None] * len(items)
+    for n, (i, j, _) in enumerate(flat, 1):
+        got = translated.get(n)
+        if not got:
+            continue
+        if j < 0:
+            out[i] = {**items[i], **clean(got), "reply_ja": []}
+        elif out[i] is not None:
+            out[i]["reply_ja"].append({**clean(got),
+                                       "original": items[i]["reply_texts"][j]})
+    return [x for x in out if x]
 
 
 def build(limit: int = MAX_VOICES) -> dict:

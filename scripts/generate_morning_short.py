@@ -438,8 +438,13 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 同じことをもう一度言うことになり、1秒目が案内で潰れていた。
         # コメントそのものが中身なので、いきなりそこから入る。
         vs = ((data.get("voices") or {}).get("voices") or [])
+        # 返信の付いた一言は、やり取りの画面のために取っておく。
+        # 冒頭で先に読んでしまうと、そのあと同じ言葉をもう一度読むことになる。
+        held = thread_index(vs)
         lead, lead_idx = "", None
         for i, v in enumerate(vs):
+            if i == held:
+                continue
             body = (v.get("ja") or "").strip().rstrip("。！!、.")
             if body and len(body) <= INTRO_VOICE_MAX:
                 likes = v.get("likes") or 0
@@ -447,12 +452,22 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 if likes >= 10:
                     lead += f"高評価{likes}件。"
                 break
+        # 返信の付いた一言がある日は、冒頭でその件数だけを言う。
+        #
+        # 中身を先に読んでしまうと、やり取りの画面で同じ言葉をもう一度
+        # 読むことになる。件数だけなら重複せず、「何を言ったら18件も
+        # 返ってきたのか」という問いが残る。答えは次の画面にある。
+        teased = held is not None
+        if teased:
+            lead = f"返信が{all_voices_replies(vs, held)}件ついた一言があります。"
+            # 冒頭で誰の言葉も読まなかったので、本編から外すものは無い。
+            lead_idx = None
         segments = [{
             "kind": "intro",
             "text": f"{lead}現地で最も見られた試合のコメント欄です。",
             "meta": {"date": day_iso, "count": len(players), "local": True,
                      # 冒頭で読んだコメントは、本編でもう一度読まない
-                     "used_voice": lead_idx},
+                     "used_voice": lead_idx, "teased_thread": teased},
         }]
     else:
         # 現地編は選手一覧を出さないので、冒頭も現地の話から入る。
@@ -534,6 +549,31 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             parts.append(f"次いで{t['name']}が{t['mentions']}回です。")
         segments.append({"kind": "talk", "text": "".join(parts), "meta": {}})
 
+    # 1件のコメントと、それへの返信。
+    #
+    # 声を4つ並べる画面と materials は同じだが、読ませ方が違う。
+    # あちらは賛同の多い順に並べるだけで、誰も誰にも答えていない。
+    # こちらは1件に絞って、返ってきた言葉をぶら下げる。
+    # ファンが盛り上がっているかは、断言の数より言い返しの側に出る。
+    all_voices = ((data.get("voices") or {}).get("voices") or [])         if want_voices else []
+    ti = thread_index(all_voices)
+    if ti is not None:
+        v = all_voices[ti]
+        body = (v.get("ja") or "").strip().rstrip("。！!、.")
+        # 冒頭で件数を言った回は、ここでは繰り返さずに本文から入る。
+        teased = (segments[0].get("meta") or {}).get("teased_thread")
+        parts = [] if teased else [f"返信が{v.get('replies', 0)}件ついたコメントです。"]
+        parts.append(f"{body}。")
+        rs = (v.get("reply_ja") or [])[:3]
+        if rs:
+            parts.append("これに、こう返っています。")
+            for r in rs:
+                rb = (r.get("ja") or "").strip().rstrip("。！!、.")
+                if rb:
+                    parts.append(f"{rb}。")
+        segments.append({"kind": "thread", "text": "".join(parts),
+                         "meta": {"index": ti}})
+
     # 現地の声。ここだけは数字ではなく、翻訳を通した誰かの感想なので、
     # 読み上げでも「翻訳したもの」であることを先に断る。
     voices = ((data.get("voices") or {}).get("voices") or []) if want_voices else []
@@ -550,7 +590,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # どれだけ支持された言葉なのかを添える。同じ感想でも、
         # 1件と数百件では意味が違う。数字は取得済みのものをそのまま使う。
         used = (segments[0].get("meta") or {}).get("used_voice")
-        rest = [v for i, v in enumerate(voices) if i != used]
+        held = thread_index(voices)
+        rest = [v for i, v in enumerate(voices) if i not in (used, held)]
         for v in rest[:4]:
             # 「レンジャーズ頑張れ！。」のように記号が二重にならないよう、
             # 文末の記号を落としてから句点を足す。
@@ -1011,6 +1052,117 @@ def render_headlines(p, heads):
         y += hh + 30
 
     d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
+def all_voices_replies(voices: list, i) -> int:
+    """その一言に付いた返信の件数。"""
+    try:
+        return int(voices[i].get("replies") or 0)
+    except (IndexError, TypeError, ValueError):
+        return 0
+
+
+def thread_index(voices: list):
+    """返信の付いた一言が何番目か。無ければ None。"""
+    for i, v in enumerate(voices or []):
+        if v.get("is_thread") and v.get("reply_ja"):
+            return i
+    return None
+
+
+def render_thread(p, v):
+    """
+    1つの投稿と、それに返ってきた言葉を並べる。
+
+    なぜ別の画面にするのか:
+      「現地の声」は、賛同を集めた一言を4つ並べる作りになっている。
+      それぞれは独立していて、誰も誰にも答えていない。
+      並べるほど声の数は増えるが、会話にはならない。
+
+      ファンの熱は、一人の断言ではなく言い返しの側に出る。
+      1件に絞って、それへの返信をぶら下げる形にすると、
+      同じ材料が「言い合い」として読める。
+
+      訳を通しているのは他の声の画面と同じなので、背景も断りも揃える。
+    """
+    im = Image.new("RGB", (W, H), VOICE_BG)
+    d = ImageDraw.Draw(im)
+    off = int(min(p, ANIM_END) * 240)
+    for i in range(-2, 6):
+        x = i * 340 + off
+        d.polygon([(x, H), (x + 150, H), (x + 400, 0), (x + 250, 0)],
+                  fill=(26, 21, 36))
+    d.rectangle([0, H - 22, W, H], fill=JP)
+    draw_steps(d, JP)
+    draw_spoken(d, JP)
+
+    d.text((70, 70), "コレスポ", font=font(46), fill=JP)
+    d.text((70, 190), "この一言に、こう返った", font=font(64), fill=JP)
+    d.text((74, 288), "MLB公式ハイライトのコメント欄を翻訳",
+           font=font(32), fill=DIM)
+
+    if not v:
+        return im
+
+    # どの試合のコメント欄かを出す。訳文だけだと、何を見ての言葉なのかが
+    # 画面から消えてしまう。
+    y = 360
+    if v.get("matchup"):
+        d.text((74, y), v["matchup"][:44], font=font(30), fill=JP)
+        y += 52
+
+    # 元の投稿
+    lines = wrap(d, v.get("ja") or "", font(44), W - 240)[:4]
+    h = 30 + len(lines) * 60 + 52
+    e = ease_out(min(1.0, max(0.0, p * 7)))
+    dx = int((1 - e) * 110)
+    d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + h], 20, fill=(33, 27, 45))
+    d.rounded_rectangle([60 - dx, y, 70 - dx, y + h], 5, fill=JP)
+    yy = y + 30
+    for ln in lines:
+        d.text((100 - dx, yy), ln, font=font(44), fill=TEXT)
+        yy += 60
+    d.text((100 - dx, yy + 6), (v.get("title") or "")[:40],
+           font=font(24), fill=DIM)
+    stat = f"♥ {v.get('likes', 0):,}　返信 {v.get('replies', 0)}件"
+    d.text((W - 100 - dx - d.textlength(stat, font=font(28)), yy + 4),
+           stat, font=font(28), fill=JP)
+
+    # 返信。左に縦線を引いて、上の投稿にぶら下がっていることを見せる
+    y += h + 34
+    replies = (v.get("reply_ja") or [])[:3]
+    for i, r in enumerate(replies):
+        appear = 0.14 + i * 0.11
+        if p < appear:
+            continue
+        e = ease_out(min(1.0, max(0.0, (p - appear) * 8)))
+        dx = int((1 - e) * 90)
+        # 右上に調子の札が載るので、そのぶん本文の幅を空けておく。
+        # 同じ行に文字が来ると、札の下に文字が潜って読めなくなる。
+        rl = wrap(d, r.get("ja") or "", font(38), W - 480)[:3]
+        rh = 34 + len(rl) * 52 + 34
+        d.rounded_rectangle([150 - dx, y, W - 60 - dx, y + rh], 18,
+                            fill=(27, 22, 38))
+        # 上の投稿から降りてくる線
+        d.line([(112, y - 34), (112, y + 34)], fill=(60, 52, 78), width=4)
+        d.line([(112, y + 34), (150 - dx, y + 34)], fill=(60, 52, 78), width=4)
+        tone = r.get("tone")
+        if tone in TONE_COLOR:
+            tw = d.textlength(tone, font=font(26)) + 30
+            d.rounded_rectangle([W - 60 - dx - tw - 28, y + 16,
+                                 W - 60 - dx - 28, y + 56], 11,
+                                fill=TONE_COLOR[tone])
+            d.text((W - 60 - dx - tw - 13, y + 23), tone,
+                   font=font(26), fill=BG)
+        ry = y + 34
+        for ln in rl:
+            d.text((186 - dx, ry), ln, font=font(38), fill=TEXT)
+            ry += 52
+        d.text((186 - dx, ry + 2), (r.get("original") or "")[:36],
+               font=font(22), fill=DIM)
+        y += rh + 26
+
     return im
 
 
@@ -1491,6 +1643,11 @@ def main():
                     im = render_buzz(pp, buzz, picks)
                 elif kind == "talk":
                     im = render_talk(pp, talk)
+                elif kind == "thread":
+                    vs = (voices_data or {}).get("voices") or []
+                    i = meta.get("index")
+                    im = render_thread(pp, vs[i] if i is not None
+                                       and i < len(vs) else None)
                 elif kind == "voices":
                     im = render_voices(pp, voices_data)
                 elif kind == "reporters":
