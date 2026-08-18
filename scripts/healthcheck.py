@@ -85,6 +85,49 @@ def hours_since(iso: str):
     return (datetime.now(timezone.utc) - t).total_seconds() / 3600
 
 
+CHANNEL_ID = "UCpZ_j8X8uOex5VvKwwTJj3Q"
+FEED = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
+
+
+def published_on(day: str) -> int:
+    """
+    その日にチャンネルへ実際に公開された本数。取れなければ -1。
+
+    なぜ記録だけを信じないのか:
+      8/17は7本すべて公開されているのに、健康診断は5本欠けと言った。
+      投稿の記録を data/published_videos.json から読んでいるが、
+      その日は5つのワークフローが同じブランチへ押し合って、記録の側が
+      失われていた。動画はある。記録が無いだけ。
+
+      記録が消えるのは直したが、それでも「記録が真実の唯一の写し」で
+      ある限り、同じ形の誤報はまた起きる。誤報を出す見張りは、
+      見張りが無いより悪い。実物を見に行く。
+
+      RSSなので鍵も枠も要らない。取れなければ -1 を返して、
+      記録だけの判断に戻る(取得できないことを異常とは言わない)。
+    """
+    import re
+    import urllib.request
+    try:
+        req = urllib.request.Request(FEED, headers={"User-Agent": "collespo/1.0"})
+        xml = urllib.request.urlopen(req, timeout=20).read().decode("utf-8",
+                                                                   "replace")
+    except Exception:  # noqa: BLE001
+        return -1
+    n = 0
+    for e in re.findall(r"<entry>(.*?)</entry>", xml, re.S):
+        m = re.search(r"<published>(.*?)</published>", e)
+        if not m:
+            continue
+        try:
+            when = datetime.fromisoformat(m.group(1).replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if when.astimezone(JST).strftime("%Y-%m-%d") == day:
+            n += 1
+    return n
+
+
 def check_videos(day: str, only_past: bool = False) -> tuple:
     """
     その日の動画が投稿されたか。(行, 欠けている数) を返す。
@@ -173,6 +216,16 @@ def main() -> int:
         day = args.date or (now - timedelta(days=1)).strftime("%Y-%m-%d")
 
     video_lines, missing = check_videos(day, only_past=args.today)
+
+    # 記録が欠けていても、実際に公開されていれば異常ではない。
+    # 記録の押し合いで記録だけが失われることがあり、そのとき
+    # 見張りが「出ていない」と嘘をつく。実物の本数と突き合わせる。
+    actual = published_on(day)
+    expect = len(video_lines)
+    if missing and actual >= expect:
+        video_lines.append(f"| — | 実際の公開 | {actual}本ありました | "
+                           "記録が欠けているだけです |")
+        missing = 0
     # 当日の途中では、材料が古いのは当たり前(朝の回がまだ走っていない)。
     # 動画が出たかどうかだけを見る。
     data_lines, stale = check_data()
