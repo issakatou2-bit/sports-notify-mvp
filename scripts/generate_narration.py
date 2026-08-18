@@ -325,6 +325,11 @@ def build_game_facts(game: dict) -> str:
     # 読んだ人が自分で先を考えられる。件数を必ず添えるのはそのため。
     if game.get("base_rate_note"):
         lines.append(f"これまでの記録: {game['base_rate_note']}")
+    # その時刻・その球場の天気。観測と予報の数字だけを渡す。
+    # 「打者有利」のような判断は書かない。風速と風向きがあれば、
+    # どう読むかは見る人が決められる。
+    if game.get("weather_note"):
+        lines.append(f"試合開始時の天気: {game['weather_note']}")
     for n in (game.get("log_notes") or []):
         lines.append(f"見どころ: {n}")
     return "\n".join(lines)
@@ -359,6 +364,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--news", default="public/news.json")
+    parser.add_argument("--weather", default="data/venue_weather.json",
+                        help="球場の天気(venue_weather.py の出力)")
     parser.add_argument("--base-rates", default="data/base_rates.json",
                         help="これまでの実測(scripts/base_rates.py の出力)")
     parser.add_argument("--out", default="public/narration.json")
@@ -371,6 +378,13 @@ def main():
 
     # コレスポがこれまで取り上げた試合の実測を添える。
     # 予測はしない。数えた結果を、件数つきで置くだけ。
+    # 天気。取れていなければ、その行が出ないだけ。
+    weather = (_load(args.weather, {}).get("venues") or {})
+    for g in games:
+        w = weather.get(g.get("game_id") or g.get("venue_name") or "")
+        if w and w.get("text"):
+            g["weather_note"] = w["text"]
+
     rates = _load(args.base_rates, {})
     if rates:
         import base_rates as _br

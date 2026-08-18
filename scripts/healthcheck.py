@@ -194,6 +194,28 @@ def check_history() -> tuple:
     return f"| 週間ランキングの材料 | {n}日分 | あと{7 - n}日 |", 0
 
 
+def check_analytics() -> tuple:
+    """
+    直近に取れている数字。fetch_analytics.py が残したものを読むだけ。
+
+    ここで API を叩かない。診断は毎朝走るので、取得はそちらに任せて、
+    こちらは「残っているか」と「いま何％か」だけを見る。
+    """
+    d = load("data/analytics.json")
+    days = (d or {}).get("days") or {}
+    if not days:
+        return ("| 動画ごとの数字 | まだ取れていない | "
+                "yt-analytics の権限が要ります |", 0)
+    latest = sorted(days)[-1]
+    vids = days[latest].get("videos") or []
+    if not vids:
+        return f"| 動画ごとの数字 | {latest} 時点 | 0本 |", 0
+    pcts = [v.get("averageViewPercentage") or 0 for v in vids]
+    avg = sum(pcts) / len(pcts)
+    return (f"| 動画ごとの数字 | {latest} 時点 / {len(vids)}本 | "
+            f"平均維持率 {avg:.1f}% |", 0)
+
+
 def check_playlists() -> tuple:
     d = load("data/playlists.json")
     if not d:
@@ -239,6 +261,7 @@ def main() -> int:
         stale = 0
     hist_line, _ = check_history()
     pl_line, pl_bad = check_playlists()
+    an_line, _ = check_analytics()
 
     out = [f"# コレスポの健康診断  ({day} 分 / {now:%m-%d %H:%M} JST 時点)", ""]
     if missing or stale or pl_bad:
@@ -250,7 +273,7 @@ def main() -> int:
     out += video_lines
     out += ["", "## 材料と記録", "",
             "| 対象 | 状態 | |", "|---|---|---|"]
-    out += data_lines + [hist_line, pl_line]
+    out += data_lines + [hist_line, pl_line, an_line]
 
     text = "\n".join(out)
     print(text)

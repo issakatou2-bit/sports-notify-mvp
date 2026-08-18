@@ -22,8 +22,10 @@ on:
         description: '確認する日 (YYYY-MM-DD、既定は昨日)'
         required: false
 
+# 取った数字を data/analytics.json へ残すので write が要る。
+# 積み上がって初めて「変えた翌日に動いたか」が比べられる。
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   check:
@@ -33,6 +35,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      # 動画ごとの数字を取ってから診断する。
+      # これまで人が Studio の画面から書き写していた。
+      # 自動で残れば、1枚目を変えた翌日に動いたかを機械的に比べられる。
+      # 権限が無い間は静かに飛ぶ(診断そのものは止めない)。
+      - name: Fetch per-video numbers
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/fetch_analytics.py --days 28
+
       - name: Check
         env:
           DAY: ${{ inputs.date }}
@@ -42,3 +56,10 @@ jobs:
           else
             python scripts/healthcheck.py
           fi
+
+      # 取った数字を残す。1日ぶんだけでは比べようがない。
+      - name: Commit the numbers
+        if: always()
+        continue-on-error: true
+        run: |
+          bash scripts/commit_data.sh             "analytics: ${{ github.run_id }}"             data/analytics.json

@@ -31,6 +31,11 @@ import sys
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube",
+    # 動画ごとの維持率と再生数を読むのに要る。
+    # これまで Studio の画面から人が書き写していた。自動で残れば、
+    # 「1枚目を変えた翌日に数字が動いたか」を機械的に比べられる。
+    # 読み取り専用で、投稿や編集はできない。
+    "https://www.googleapis.com/auth/yt-analytics.readonly",
 ]
 
 
