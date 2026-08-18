@@ -177,7 +177,10 @@ jobs:
           # トップページの「欧州サッカー」タブが毎日空だった。
           # プッシュもRSSも動画も両方を受け取っているのに、サイトだけが
           # 片方しか渡されていなかった。1つにまとめて渡す。
-          python scripts/merge_games.py             --input notable_games.json             --input data/soccer_games.json             --out public/games.json
+          python scripts/merge_games.py \
+            --input notable_games.json \
+            --input data/soccer_games.json \
+            --out public/games.json
           cp feed.xml public/feed.xml
 
       # ベストナイン編成用の選手成績。MLB Stats APIのseason成績は試合ごとに
@@ -356,6 +359,21 @@ jobs:
             --narration public/narration.json \
             --thumbnail build/video/thumb.png \
             --privacy public
+
+      # 読み上げの本文をそのまま字幕にする。
+      #
+      # 字幕なしで見られている割合が70%。ショートは音を切って見る人が
+      # 多いので、そこに何も出していないと読み上げの中身が丸ごと落ちる。
+      # 自動生成に任せず本文を渡すのは、VOICEVOXの音声を聞き取り直させると
+      # 選手名と球団名が確実に崩れるため。元の文字はこちらが持っている。
+      - name: Add Japanese captions
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python scripts/captions.py             --narration public/narration.json             --audio-dir build/audio --kind daily
 
       # 同じ動画をTikTokへも出す。タイトルはYouTube側の記録から借りるので、
       # 先にUpload to YouTubeが終わっている必要がある。

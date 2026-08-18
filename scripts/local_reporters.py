@@ -111,6 +111,52 @@ def fetch_author(handle: str, limit: int = PER_AUTHOR) -> list:
     return r.json().get("feed", [])
 
 
+# 1つの投稿から拾う返信の上限。全部拾うと、その1件で画面が埋まる。
+REPLIES_PER_POST = 4
+
+# 返信を拾う投稿の数。多いと呼び出しが増えるので、反応の大きい順に絞る。
+THREADS_TO_OPEN = 3
+
+
+def fetch_replies(uri: str) -> list:
+    """
+    その投稿に付いた返信を、いいね数つきで返す。
+
+    なぜ要るのか:
+      番記者が何を書いたかは取れていたが、それを読んだ人が何を言ったかは
+      取れていなかった。議論や言い合いはそちらにある。
+
+      Blueskyの公開エンドポイントは認証が要らず、返信も、それぞれの
+      いいね数も付いてくる。何人が同意したかが分かるので、
+      「誰か1人がそう言った」と「多くがそう思った」を区別できる。
+
+      Redditはコメント本文がRSSに含まれず、Xは有料。
+      いま無料で議論そのものが取れるのはここだけ。
+    """
+    try:
+        r = requests.get(f"{BASE}/app.bsky.feed.getPostThread",
+                         params={"uri": uri, "depth": 1},
+                         headers=UA, timeout=20)
+        r.raise_for_status()
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] 返信を取れませんでした: {e}", file=sys.stderr)
+        return []
+    out = []
+    for item in ((r.json().get("thread") or {}).get("replies") or []):
+        post = item.get("post") or {}
+        text = ((post.get("record") or {}).get("text") or "").strip()
+        if not text:
+            continue
+        out.append({
+            "text": text,
+            "likes": post.get("likeCount") or 0,
+            "author": ((post.get("author") or {}).get("handle") or ""),
+        })
+    # 支持された順。1件しか賛同の無い返信と、100件のものは重みが違う。
+    out.sort(key=lambda x: -x["likes"])
+    return out[:REPLIES_PER_POST]
+
+
 def _recent(iso: str, hours: int) -> bool:
     try:
         t = datetime.fromisoformat(iso.replace("Z", "+00:00"))
@@ -167,6 +213,27 @@ def collect(hours: int = HOURS, sleep: float = 0.3) -> list:
             })
         time.sleep(sleep)
     return out
+
+
+def attach_replies(posts: list, sleep: float = 0.3) -> list:
+    """
+    反応の大きい投稿に、その返信を足す。
+
+    全部の投稿で開くと呼び出しが投稿数ぶん増える。議論が起きているのは
+    返信数の多い投稿なので、そこだけ開く。返信数はもう取れている。
+    """
+    targets = sorted((p for p in posts if p.get("replies")),
+                     key=lambda p: -(p.get("replies") or 0))[:THREADS_TO_OPEN]
+    for p in targets:
+        if not p.get("uri"):
+            continue
+        p["reply_texts"] = fetch_replies(p["uri"])
+        if p["reply_texts"]:
+            print(f"[info] @{p['handle']} の投稿に返信 "
+                  f"{len(p['reply_texts'])}件 "
+                  f"(最多いいね {p['reply_texts'][0]['likes']})")
+        time.sleep(sleep)
+    return posts
 
 
 def rank(posts: list, top: int = TOP_N) -> list:
@@ -328,6 +395,9 @@ def main():
         return 0
 
     posts = collect(hours=args.hours)
+    # 反応の大きい投稿には、その返信(ファンの議論)も足す。
+    # 記者が何を書いたかだけでなく、それを読んだ人が何と言ったか。
+    posts = attach_replies(posts)
     print(f"[info] 直近{args.hours}時間の投稿: {len(posts)}件"
           f" (名簿 {len(REPORTERS)}人)")
     jp_hits = [p for p in posts if p["jp_players"]]
