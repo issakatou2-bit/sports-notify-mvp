@@ -47,6 +47,16 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python scripts/fetch_analytics.py --days 28
 
+      # 記録が落ちた日を、チャンネルの一覧から埋め直す。
+      #
+      # 8/17と8/18の朝の回は6本すべて公開されているのに、押し合いで
+      # 記録だけが残らなかった。原因は直したが、落ちたぶんは戻らない。
+      # 動画は実在するので、RSSから読み直して埋める。
+      # 鍵も割り当ても要らないので、毎朝走らせて構わない。
+      - name: Backfill lost records
+        continue-on-error: true
+        run: python scripts/backfill_records.py --write
+
       - name: Check
         env:
           DAY: ${{ inputs.date }}
@@ -62,4 +72,4 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          bash scripts/commit_data.sh             "analytics: ${{ github.run_id }}"             data/analytics.json
+          bash scripts/commit_data.sh             "analytics: ${{ github.run_id }}"             data/analytics.json data/published_videos.json
