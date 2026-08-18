@@ -20,9 +20,18 @@
   誰かがそう言った、という事実だけを扱う。
 
 誰を取り上げるか:
-  1. 直近 COOLDOWN_DAYS 日に取り上げた人は外す(全員に順番が回る)
-  2. 残りのうち、いま現地で名前が挙がっている人を優先
-  3. それも無ければ、直近の出場が新しい人
+  その日のMLB全体で、いちばん活躍した選手。
+
+  最初は日本人選手の名簿から順番に選ぶ作りにしていたが、それは
+  この枠の趣旨ではなかった。8/17は Pete Crow-Armstrong が
+  先頭打者本塁打とサヨナラ本塁打で154点、大谷が140点。
+  名簿で絞ると、その日の1位が出てこない。
+
+  採点は best_of_day.py が全出場選手に対して行う。物差しは
+  日本人選手の成績で使っているものと同じ(morning_recap.contribution)。
+
+  直近 COOLDOWN_DAYS 日に取り上げた人は外す。同じ選手が
+  連日続くと、毎日見ている人には同じ動画に見える。
 
 出力: data/player_profile.json
 
@@ -134,8 +143,43 @@ def mention_counts(reporters_path: str, voices_path: str) -> dict:
     return counts
 
 
+def pick_from_best(best_path: str, history: dict) -> dict:
+    """
+    その日いちばん活躍した選手。直近に出した人は飛ばす。
+
+    best_of_day.py が全MLBを採点した結果を読む。ここで選び直さない。
+    採点をもう一度書くと、2つの物差しができる。
+    """
+    from datetime import datetime as _dt
+    try:
+        d = json.loads(pathlib.Path(best_path).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    players = d.get("players") or []
+    if not players:
+        return {}
+
+    today = datetime.now(JST).date()
+    for x in players:
+        last = (history.get("featured") or {}).get(x["name"])
+        if last:
+            try:
+                days = (today - _dt.strptime(last, "%Y-%m-%d").date()).days
+                if days < COOLDOWN_DAYS:
+                    continue
+            except ValueError:
+                pass
+        why = f"{d.get('date_jst') or d.get('date')}のMLBで最も活躍"
+        if x.get("is_japanese"):
+            why += "(日本人選手)"
+        return {"name_en": x["name"], "name_jp": x["name"],
+                "why": why, "score": x.get("score"),
+                "headline": x.get("headline"), "team": x.get("team")}
+    return {}
+
+
 def pick_player(history: dict, mentions: dict) -> dict:
-    """今日取り上げる1人を選ぶ。理由も一緒に返す。"""
+    """名簿から選ぶ(その日の採点が取れなかったときの控え)。"""
     today = datetime.now(JST).date()
     fresh = []
     for p in JP_PLAYERS_MLB:
@@ -273,7 +317,17 @@ def quotes(name_jp: str, name_en: str, reporters_path: str,
 def build(args) -> dict:
     history = load_history(args.history)
     mentions = mention_counts(args.reporters, args.voices)
-    chosen = pick_player(history, mentions)
+    # まず、その日いちばん活躍した選手。取れなければ名簿から回す。
+    best = pick_from_best(args.best, history)
+    if best:
+        p = {"name_en": best["name_en"], "name_jp": best["name_jp"],
+             "type": "batter"}
+        chosen = {"player": p, "why": best["why"]}
+        print(f"[info] その日の1位: {best['name_jp']} "
+              f"({best.get('score')}点 / {best.get('headline')})")
+    else:
+        chosen = pick_player(history, mentions)
+        print("[info] その日の採点が取れないため、名簿から選びます")
     p = chosen["player"]
     pid = resolve_id(p.get("name_en", ""))
     if not pid:
@@ -323,6 +377,8 @@ def build(args) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/player_profile.json")
+    ap.add_argument("--best", default="data/best_of_day.json",
+                    help="その日いちばん活躍した選手(best_of_day.py の出力)")
     ap.add_argument("--history", default="data/featured_players.json")
     ap.add_argument("--reporters", default="data/local_reporters.json")
     ap.add_argument("--voices", default="data/local_voices.json")

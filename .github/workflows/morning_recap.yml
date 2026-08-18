@@ -65,12 +65,24 @@ jobs:
           pip install -r scripts/requirements.txt
           pip install pillow google-api-python-client google-auth
 
-      # 「今日の1人」の材料。誰を出すかは、直近14日に出していない人のうち
-      # 現地でいま名前が挙がっている人から選ぶ。全員に順番が回る。
+      # その日のMLB全体を採点する。「今日の1人」がここから選ばれる。
+      #
+      # 日本人選手の名簿から順番に選ぶ作りにしていたが、この枠の趣旨は
+      # 「MLB全体でその日いちばん活躍した選手」だった。8/17は
+      # Pete Crow-Armstrong が154点で1位、大谷が140点で2位。
+      # 名簿で絞ると、その日の1位が出てこない。
+      - name: Score every MLB player today
+        continue-on-error: true
+        run: python scripts/best_of_day.py --out data/best_of_day.json
+
+      # 「今日の1人」の材料。上の採点から選び、
+      # 直近14日に出した人は飛ばす(同じ選手が連日続かないように)。
       - name: Pick today's player
         continue-on-error: true
         run: |
-          python scripts/player_profile.py             --out data/player_profile.json             --history data/featured_players.json
+          python scripts/player_profile.py \
+            --out data/player_profile.json \
+            --history data/featured_players.json
 
       - name: Install video tools
         timeout-minutes: 16
@@ -111,7 +123,9 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
-          python scripts/channel_feeds.py             --sources data/comment_sources.json             --out data/channel_videos.json
+          python scripts/channel_feeds.py \
+            --sources data/comment_sources.json \
+            --out data/channel_videos.json
 
       # 現地のファンが実際に何と言っているか。翻訳を通すので、
       # 数字のコーナーとは別枠として扱う(画面も背景色を変えて分ける)。
