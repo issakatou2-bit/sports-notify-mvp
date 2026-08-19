@@ -765,7 +765,7 @@ def topic_short(text: str) -> str:
 # 1枚目の見出しと、その下の一行。回ごとに変える。
 # 名前は post_common.DAILY_LINEUP と揃える(あちらが説明文と読み上げの元)。
 INTRO_HEADINGS = {
-    "players": ("日本人選手の成績", "誰がその日いちばん効いたか"),
+    "players": ("日本人選手の成績", "その日活躍した順に紹介します"),
     "local": ("現地での注目度", "見られた量と、語られた量"),
     "voices": ("ファンのコメント欄", "最も見られた試合の反応を翻訳"),
     "press": ("現地の報道", "番記者の投稿と、現地の見出し"),
@@ -801,7 +801,8 @@ def intro_topic(mode: str, meta: dict, top: dict, extra: dict) -> tuple:
     if mode == "players" and top:
         head = topic_short(top.get("headline") or "")
         if head:
-            return f"{top.get('name', '')}　{head}", "その日いちばん効いた選手"
+            return (f"{top.get('name', '')}　{head}",
+                    "コレスポが選ぶ、今日いちばん活躍した選手")
         return "", ""
 
     if mode == "local":
@@ -1398,31 +1399,49 @@ def render_voices(p, voices, picked=None):
 DAILY_LINEUP = [(name, what) for _, name, what in post_common.DAILY_LINEUP]
 
 
-def render_outro(p):
+def render_outro(p, mode: str = ""):
+    """
+    最後の画面。毎日出しているものを並べる。
+
+    高さを固定で置いていたところ、一覧が6件から7件になった日に
+    出典と登録の帯と読み上げの帯が全部同じところへ重なった。
+    実際に投稿された動画でそうなっている。
+    座標は積み上げで決めて、決め打ちを残さない。
+    """
     im, d = base(p)
-    d.text((80, 300), "コレスポ", font=font(104), fill=ACCENT)
-    d.text((80, 430), "毎日、更新中", font=font(64), fill=TEXT)
+    d.text((80, 250), "コレスポ", font=font(104), fill=ACCENT)
+    d.text((80, 380), "毎日、更新中", font=font(64), fill=TEXT)
+
+    # 見ている回そのものは外す。読み上げと同じ扱いにする。
+    rows = [(name, what) for kind, name, what in post_common.DAILY_LINEUP
+            if kind != MODE_KIND.get(mode, "")]
 
     # 1行ずつ滑り込ませる。全部を一度に出すと、ただの箇条書きに見える。
-    y = 540
-    for i, (title, note) in enumerate(DAILY_LINEUP):
+    y = 500
+    h = 132 if len(rows) > 5 else 150
+    for i, (title, note) in enumerate(rows):
         appear = 0.08 + i * 0.09
         if p < appear:
+            y += h + 14
             continue
         e = ease_out(min(1.0, (p - appear) * 7))
         dx = int((1 - e) * 90)
-        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 150], 16, fill=SURF)
-        d.text((104 - dx, y + 22), title, font=font(52), fill=TEXT)
-        d.text((104 - dx, y + 92), note, font=font(38), fill=DIM)
-        y += 166
+        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + h], 16, fill=SURF)
+        d.text((104 - dx, y + 18), title, font=font(46), fill=TEXT)
+        d.text((104 - dx, y + 76), note, font=font(34), fill=DIM)
+        y += h + 14
 
+    y += 16
     if p > 0.62:
-        d.rounded_rectangle([70, 1610, W - 70, 1720], 18, fill=ACCENT)
-        d.text((110, 1638), "チャンネル登録で毎日届きます", font=font(46), fill=BG)
-    d.text((80, 1760), "collespo.com", font=font(42), fill=TEXT)
-    # 出典はいちばん下に置く。一覧と重ならない位置。
-    d.text((80, 1500), "音声: VOICEVOX:ずんだもん", font=font(34), fill=DIM)
-    d.text((80, 1550), "データ: MLB Stats API", font=font(34), fill=DIM)
+        d.rounded_rectangle([70, y, W - 70, y + 100], 18, fill=ACCENT)
+        d.text((110, y + 26), "チャンネル登録で毎日届きます",
+               font=font(44), fill=BG)
+    y += 124
+
+    # 出典はいちばん下。一覧の下に積むので、件数が変わっても重ならない。
+    d.text((80, y), "音声: VOICEVOX:ずんだもん", font=font(30), fill=DIM)
+    d.text((80, y + 42), "データ: MLB Stats API", font=font(30), fill=DIM)
+    d.text((80, y + 96), "collespo.com", font=font(38), fill=TEXT)
     return im
 
 
@@ -1560,7 +1579,7 @@ def build_player_video(args):
                 if pp > ANIM_END and cached is not None:
                     proc.stdin.write(cached)
                     continue
-                im = draw(pp, prof) if draw else render_outro(pp)
+                im = draw(pp, prof) if draw else render_outro(pp, "player")
                 cached = im.tobytes()
                 proc.stdin.write(cached)
             print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")
@@ -1779,6 +1798,8 @@ def main():
                     proc.stdin.write(cached)
                     total += 1
                     continue
+                if kind == "outro":
+                    set_spoken("")
                 if kind == "intro":
                     im = render_intro(pp, meta, top,
                                      {"buzz": buzz,
@@ -1804,7 +1825,7 @@ def main():
                     im = render_headlines(
                         pp, reporters_data.get("headlines") or [])
                 else:
-                    im = render_outro(pp)
+                    im = render_outro(pp, args.mode)
                 cached = im.tobytes()
                 proc.stdin.write(cached)
                 total += 1

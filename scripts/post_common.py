@@ -354,7 +354,7 @@ def build_post(games: list, max_chars: int, news_path: str = "public/news.json")
 #
 #   (区分名, 名前, ひとこと)
 DAILY_LINEUP = [
-    ("morning", "日本人選手の成績", "誰がその日いちばん効いたか"),
+    ("morning", "日本人選手の成績", "その日活躍した順に紹介"),
     ("morning_player", "今日の1人", "MLB全体で最も活躍した選手"),
     ("morning_voices", "ファンのコメント欄", "最も見られたハイライトの反応を翻訳"),
     ("morning_local", "現地での注目度", "向こうで何が見られ、語られたか"),
