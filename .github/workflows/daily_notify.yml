@@ -77,56 +77,6 @@ jobs:
             --snapshot data/roster_snapshot.json \
             --out public/news.json
 
-      # データの準備が終わったら、19時ちょうどになるまで待ってから配信する。
-      # 早めに起動しておけば、処理時間が日によって変動しても
-      # 「毎日19時00分に届く」ことを保証できる。
-      # 既に19時を過ぎている場合(手動実行や遅延時)は待たずに即送信する。
-      - name: Wait until 19:00 JST
-        run: |
-          TARGET_MIN=$((19 * 60))
-          NOW_MIN=$(( $(TZ=Asia/Tokyo date +%H) * 60 + $(TZ=Asia/Tokyo date +%-M) ))
-          WAIT=$(( (TARGET_MIN - NOW_MIN) * 60 - $(TZ=Asia/Tokyo date +%-S) ))
-          if [ "$WAIT" -gt 0 ] && [ "$WAIT" -le 900 ]; then
-            echo "19:00まで ${WAIT} 秒待機します"
-            sleep "$WAIT"
-          else
-            echo "待機不要(現在 $(TZ=Asia/Tokyo date +%H:%M:%S) JST)"
-          fi
-          echo "配信開始: $(TZ=Asia/Tokyo date +%H:%M:%S) JST"
-
-      # 配信先の失敗で、その日の動画とサイトまで落とさない。
-      # 実際、通知が AttributeError で落ちた日に、以降のステップが
-      # 1つも動かず、動画もRSSもサイト更新も丸ごと消えた。
-      # 通知は届かなければ困るが、本体はあくまで動画とサイト。
-      - name: Post to Bluesky
-        continue-on-error: true
-        env:
-          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
-          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-          SITE_URL: https://collespo.com/
-        run: python scripts/post_bluesky.py
-
-      # Threadsは投稿ごとの確認画面を要求しないので、完全に自動で出せる。
-      # 未設定なら黙って飛ぶ。落として毎日ノイズを出す価値は無い。
-      - name: Post to Threads
-        continue-on-error: true
-        env:
-          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
-          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
-          SITE_URL: https://collespo.com/
-        run: python scripts/post_threads.py
-
-      - name: Send push via OneSignal
-        continue-on-error: true
-        env:
-          ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
-          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
-          SITE_URL: https://collespo.com/
-        run: |
-          python scripts/send_onesignal.py \
-            --games notable_games.json \
-            --games data/soccer_games.json
-
       # 過去に生成した試合(直近5日分)のうち、終了しているのにまだ
       # 最終スコアが無いものを、MLB Stats APIから取得して埋める。
       # 生成時点(19時JST)ではまだ試合が始まってすらいないため、
@@ -376,6 +326,69 @@ jobs:
             --narration public/narration.json \
             --thumbnail build/video/thumb.png \
             --privacy public --publish-at "19:00"
+
+      # 19時まで待って、通知とSNSを出す。
+      #
+      # このブロックは以前いちばん前にあった。通知を最速で届けるためだが、
+      # 動画を作るのはずっと後ろなので、動画の公開は19:02〜19:07に
+      # ずれていた(実測3日ぶん)。「毎日19時」と言っている枠で
+      # そこがずれるのは、いちばん守るべきところを守れていない。
+      #
+      # 動画を先に上げ切ってから待つ形にした。アップロードには
+      # --publish-at 19:00 を渡してあるので、19時前に上げられれば
+      # 公開はその時刻ちょうどになる。通知もここで19時に出る。
+      # 動画の生成が19時を過ぎた日は、待たずにそのまま出す
+      # (待っても遅れは取り戻せないので、通知だけでも早く出す)。
+
+      # データの準備が終わったら、19時ちょうどになるまで待ってから配信する。
+      # 早めに起動しておけば、処理時間が日によって変動しても
+      # 「毎日19時00分に届く」ことを保証できる。
+      # 既に19時を過ぎている場合(手動実行や遅延時)は待たずに即送信する。
+      - name: Wait until 19:00 JST
+        run: |
+          TARGET_MIN=$((19 * 60))
+          NOW_MIN=$(( $(TZ=Asia/Tokyo date +%H) * 60 + $(TZ=Asia/Tokyo date +%-M) ))
+          WAIT=$(( (TARGET_MIN - NOW_MIN) * 60 - $(TZ=Asia/Tokyo date +%-S) ))
+          if [ "$WAIT" -gt 0 ] && [ "$WAIT" -le 900 ]; then
+            echo "19:00まで ${WAIT} 秒待機します"
+            sleep "$WAIT"
+          else
+            echo "待機不要(現在 $(TZ=Asia/Tokyo date +%H:%M:%S) JST)"
+          fi
+          echo "配信開始: $(TZ=Asia/Tokyo date +%H:%M:%S) JST"
+
+      # 配信先の失敗で、その日の動画とサイトまで落とさない。
+      # 実際、通知が AttributeError で落ちた日に、以降のステップが
+      # 1つも動かず、動画もRSSもサイト更新も丸ごと消えた。
+      # 通知は届かなければ困るが、本体はあくまで動画とサイト。
+      - name: Post to Bluesky
+        continue-on-error: true
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          SITE_URL: https://collespo.com/
+        run: python scripts/post_bluesky.py
+
+      # Threadsは投稿ごとの確認画面を要求しないので、完全に自動で出せる。
+      # 未設定なら黙って飛ぶ。落として毎日ノイズを出す価値は無い。
+      - name: Post to Threads
+        continue-on-error: true
+        env:
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          SITE_URL: https://collespo.com/
+        run: python scripts/post_threads.py
+
+      - name: Send push via OneSignal
+        continue-on-error: true
+        env:
+          ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
+          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+          SITE_URL: https://collespo.com/
+        run: |
+          python scripts/send_onesignal.py \
+            --games notable_games.json \
+            --games data/soccer_games.json
 
       # 読み上げの本文をそのまま字幕にする。
       #
