@@ -27,6 +27,7 @@ AIを使う箇所:
 """
 
 import argparse
+import functools
 import json
 import os
 import pathlib
@@ -75,6 +76,16 @@ HOOK_RE = re.compile(r"^(?P<who>.{2,14}?)(?<![にへとで])は(?P<what>.{4,28})
 GAMES_BACK_RE = re.compile(r"ゲーム差はわずか([\d.]+)")
 
 
+@functools.lru_cache(maxsize=1)
+def _kana_table(path: str = "data/player_kana.json") -> dict:
+    """英語名 -> 日本語表記。無ければ空の辞書。"""
+    try:
+        return json.loads(pathlib.Path(path).read_text(
+            encoding="utf-8")).get("names") or {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
 def speech_name(name: str) -> str:
     """
     読み上げに渡す用に、外国人選手の名前を整える。画面表示には使わない。
@@ -98,6 +109,11 @@ def speech_name(name: str) -> str:
     """
     if not name or not any(c.isascii() and c.isalpha() for c in name):
         return name
+    # 集めたカタカナがあれば、それがいちばん正しい。
+    # player_kana.py が Wikidata から引いて残している。
+    got = _kana_table().get(name)
+    if got:
+        return got
     folded = unicodedata.normalize("NFKD", name)
     folded = "".join(c for c in folded if not unicodedata.combining(c))
     parts = [p for p in folded.split() if p]

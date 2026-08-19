@@ -239,7 +239,15 @@ def render_intro(p, prof):
     d.text((80, 360 + dy), prof.get("name", ""), font=ms.font(size),
            fill=ms.ACCENT)
 
-    y = 360 + size + 60
+    y = 360 + size + 30
+    # 綴りの下にカタカナを添える。綴りを消さないのは、検索して
+    # 来た人が見ている文字と揃えておくため。
+    kana = speech_name(prof.get("name", "")).replace("、", "・")
+    if kana and kana != prof.get("name", ""):
+        d.text((84, y), kana, font=ms.font(52), fill=ms.JP)
+        y += 74
+    else:
+        y += 30
     line = "　".join(x for x in (prof.get("team"), position_jp(bio.get("position")),
                                  f"背番号{bio['number']}" if bio.get("number")
                                  else "") if x)
