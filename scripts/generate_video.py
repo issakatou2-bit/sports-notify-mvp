@@ -17,6 +17,7 @@
 """
 
 import argparse
+import functools
 import json
 import os
 import pathlib
@@ -110,6 +111,12 @@ def _resolve_font_file() -> str:
     )
 
 
+# フォントは1度読んだら使い回す。
+#
+# ImageFont.truetype はそのつどファイルを開いて読む。描画1枚のうちに
+# 何十回も呼ぶので、1本の動画で数万回ファイルを開いていた。
+# 大きさの種類は10個ほどしかない。読み直す理由が無い。
+@functools.lru_cache(maxsize=64)
 def font(size: int):
     path = _resolve_font_file()
     try:
