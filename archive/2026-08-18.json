@@ -47,7 +47,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822938",
@@ -103,7 +108,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 10,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823341",
@@ -151,7 +161,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824398",
@@ -199,7 +214,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 8,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824475",
@@ -247,7 +267,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823423",
@@ -295,7 +320,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 6,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824723",
@@ -366,7 +396,12 @@
       },
       "log_notes": [],
       "ai_summary": "両チームとも地区3位と厳しい立場にあり、【ゲーム差で8.5～9.0ゲーム】の差をつけられている状況で迎える一戦である。レッドソックスは直近10試合で3勝7敗と苦しく、ダイヤモンドバックスは2連敗中と、どちらも勢いを欠いている。先発投手では防御率3.25のRanger Suarezに対し、5.11のMerrill Kellyが対戦するため、投手力での差は顕著である。グリーンモンスターという独特な左翼フェンスを備えたフェンウェイ・パークでの試合だけに、この個性的な球場がどう試合運びに影響するかに注目したい。",
-      "notification_hook": "Ranger Suarezの防御率3.25vs Merrill Kelly、フェンウェイ・パークでの投手戦はどう決着するか。"
+      "notification_hook": "Ranger Suarezの防御率3.25vs Merrill Kelly、フェンウェイ・パークでの投手戦はどう決着するか。",
+      "final_score": {
+        "home": 9,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823586",
@@ -428,7 +463,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823667",
@@ -476,7 +516,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824075",
@@ -516,7 +561,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823749",
@@ -564,7 +614,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 22,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824639",
@@ -641,7 +696,12 @@
         "鈴木誠也は4試合連続安打中"
       ],
       "ai_summary": "シカゴ市内を二分する「クロスタウン・クラシック」の第1戦である本試合は、各地区での立場が対照的な両チームの対決となる。カブスは【ナ・リーグ中地区2位、地区首位との差4.5ゲーム】の位置にあり、ホワイトソックスは【ア・リーグ中地区1位で2位に4.5ゲーム差】をつけている。直近10試合はともに6勝4敗で調子を保っている。先発のKevin Gausmanは移籍後3登板目で、今季防御率4.53と課題を抱えている。リグレー・フィールドでは風向きによって球場の性格が大きく変わることで知られており、本塁打の出やすさがどう影響するかに注目したい。",
-      "notification_hook": "鈴木誠也は4試合連続安打で好調。Gausmanの初登板成績に注目だ。"
+      "notification_hook": "鈴木誠也は4試合連続安打で好調。Gausmanの初登板成績に注目だ。",
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822859",
@@ -689,7 +749,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824154",
@@ -751,7 +816,12 @@
           "text": "エンゼルスには菊池雄星が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824319",
@@ -824,7 +894,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ西地区でドジャースが【首位から8.0ゲーム差をつけて】独走する中、5位のロッキーズとの地区対決が始まる。直近10試合で5勝5敗と足踏みするロッキーズに対し、ドジャースは6勝4敗で上位を保っている。先発はドジャースのEric Lauer（防御率4.67）とロッキーズのRyan Feltner（防御率5.59）の対戦となるが、クアーズ・フィールドは標高の高さで打球が伸びやすく、2026年シーズンの1試合平均得点がMLB2位の球場だけに、両投手の球が浮かぶかどうかに注目したい。",
-      "notification_hook": "ドジャース・大谷翔平らエース陣が高地ドームへ、本塁打が飛ぶ球場での投手戦が見どころ。"
+      "notification_hook": "ドジャース・大谷翔平らエース陣が高地ドームへ、本塁打が飛ぶ球場での投手戦が見どころ。",
+      "final_score": {
+        "home": 6,
+        "away": 7,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
