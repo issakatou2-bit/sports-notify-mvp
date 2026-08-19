@@ -107,12 +107,24 @@ def published_on(day: str) -> int:
       記録だけの判断に戻る(取得できないことを異常とは言わない)。
     """
     import re
+    import time
     import urllib.request
-    try:
-        req = urllib.request.Request(FEED, headers={"User-Agent": "collespo/1.0"})
-        xml = urllib.request.urlopen(req, timeout=20).read().decode("utf-8",
-                                                                   "replace")
-    except Exception:  # noqa: BLE001
+    # YouTubeのRSSは、たまに500を返す。実際に診断が落ちた日がある。
+    # 一時的なものなので、間を空けて数回試す。
+    xml = None
+    for wait in (0, 3, 8):
+        if wait:
+            time.sleep(wait)
+        try:
+            req = urllib.request.Request(
+                FEED, headers={"User-Agent": "collespo/1.0"})
+            xml = urllib.request.urlopen(req, timeout=20).read().decode(
+                "utf-8", "replace")
+            break
+        except Exception:  # noqa: BLE001
+            continue
+    if xml is None:
+        print("[info] チャンネルの一覧を取れませんでした。記録の方で判断します")
         return -1
     n = 0
     for e in re.findall(r"<entry>(.*?)</entry>", xml, re.S):
@@ -138,7 +150,10 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
     """
     rec = load("data/published_videos.json") or {}
     now_hm = datetime.now(JST).strftime("%H:%M")
-    lines, missing = [], 0
+    # skipped は「出るはずが無かった枠」。サッカーの開催が無い日など。
+    # これを本数に数えていたため、6本出た日を「7本中6本」と見なして
+    # 材料の古さの補正が効かず、正常な日が毎回赤くなっていた。
+    lines, missing, skipped = [], 0, 0
     for kind, label, at, since in EXPECTED_DAILY + OPTIONAL_DAILY:
         if day < since:
             continue  # その枠がまだ無かった日
@@ -160,10 +175,11 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
                              f"{fixtures}試合あった日 |")
             else:
                 lines.append(f"| {at} | {label} | — | 試合が無い日 |")
+                skipped += 1
         else:
             missing += 1
             lines.append(f"| {at} | {label} | **出ていない** | |")
-    return lines, missing
+    return lines, missing, skipped
 
 
 def check_data() -> tuple:
@@ -237,13 +253,15 @@ def main() -> int:
     else:
         day = args.date or (now - timedelta(days=1)).strftime("%Y-%m-%d")
 
-    video_lines, missing = check_videos(day, only_past=args.today)
+    video_lines, missing, skipped = check_videos(day, only_past=args.today)
 
     # 記録が欠けていても、実際に公開されていれば異常ではない。
     # 記録の押し合いで記録だけが失われることがあり、そのとき
     # 見張りが「出ていない」と嘘をつく。実物の本数と突き合わせる。
     actual = published_on(day)
-    expect = len(video_lines)
+    # 出るはずの無かった枠は引く。サッカーが無い日に7本を期待すると、
+    # 6本出ていても足りないことになる。
+    expect = len(video_lines) - skipped
     if missing and actual >= expect:
         video_lines.append(f"| — | 実際の公開 | {actual}本ありました | "
                            "記録が欠けているだけです |")
@@ -254,10 +272,14 @@ def main() -> int:
     if args.today:
         # 当日の途中では、材料が古いのは当たり前(朝の回がまだ走っていない)
         stale = 0
-    elif actual >= expect > 0:
+    elif (actual >= expect > 0) or (actual < 0 and expect > 0 and not missing):
         # 動画が出ているなら、材料は揃っていたということ。
         # 古く見えるのは記録が押し合いで残らなかったからで、
         # 取れていなかったわけではない。結果の方を信じる。
+        #
+        # 一覧が取れなかった日(actual < 0)は、記録の側で判断する。
+        # 取れないことを理由に赤くすると、YouTube側が500を返しただけの日に
+        # 「材料が古い」と嘘の警告が出る。実際にそれで落ちた。
         stale = 0
     hist_line, _ = check_history()
     pl_line, pl_bad = check_playlists()
