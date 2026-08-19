@@ -446,7 +446,7 @@ SOCCER_MARQUEE_CLUBS = {
     "fcbarcelona", "realmadrid", "manchesterunited", "manchestercity",
     "liverpool", "arsenal", "chelsea", "tottenham", "juventus",
     "acmilan", "internazionale", "bayernmunchen", "borussiadortmund",
-    "parissaintgermain", "atleticomadrid",
+    "parissaintgermain", "atleticomadrid", "atleticodemadrid",
 }
 
 # 同じ都市・地域の対戦。背景があると1試合の重みが変わる。
@@ -651,7 +651,20 @@ def rule_soccer_last_season(game: Game) -> list[Reason]:
         return []
     hr = ranks.get(_club_key(game.home_team_name, ranks) or "")
     ar = ranks.get(_club_key(game.away_team_name, ranks) or "")
+
+    # 片方しか順位が無い日。相手が昇格クラブだと必ずこうなる。
+    #
+    # 両方揃ったときだけ返していたので、開幕直後は何も言えなかった。
+    # 実際、8/16から8/19のサッカーは4本とも理由が1つも付かず、
+    # サイトのカードが対戦名だけになっていた。
+    # 片方が昨季上位なら、それはそれで書ける事実になる。
     if not (hr and ar):
+        one = hr or ar
+        if one and one <= 6:
+            who = (game.home_team_name if hr else game.away_team_name)
+            return [Reason(tag="quality",
+                           text=f"昨季{one}位の{club_name_jp(who)}",
+                           weight=2)]
         return []
     worst = max(hr, ar)
     if worst <= 6:
