@@ -1,0 +1,645 @@
+{
+  "updated_at": "2026-08-19T15:31:32.580789+00:00",
+  "source": "MLB Stats API (Hall of Fame recipients)",
+  "teams": {
+    "137": {
+      "team": "ジャイアンツ",
+      "players": [
+        {
+          "name": "Jeff Kent",
+          "position": "Second Base",
+          "hof_year": "2026",
+          "line": "通算 打率.290　377本塁打　2461安打",
+          "type": "batter"
+        },
+        {
+          "name": "Orlando Cepeda",
+          "position": "First Base",
+          "hof_year": "1999",
+          "line": "通算 打率.297　379本塁打　2351安打",
+          "type": "batter"
+        },
+        {
+          "name": "George Davis",
+          "position": "Shortstop",
+          "hof_year": "1998",
+          "line": "通算 打率.295　72本塁打　2660安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "144": {
+      "team": "ブレーブス",
+      "players": [
+        {
+          "name": "Andruw Jones",
+          "position": "Outfield",
+          "hof_year": "2026",
+          "line": "通算 打率.254　434本塁打　1933安打",
+          "type": "batter"
+        },
+        {
+          "name": "Chipper Jones",
+          "position": "Third Base",
+          "hof_year": "2018",
+          "line": "通算 打率.303　468本塁打　2726安打",
+          "type": "batter"
+        },
+        {
+          "name": "John Smoltz",
+          "position": "Pitcher",
+          "hof_year": "2015",
+          "line": "通算 213勝　防御率3.33　3084奪三振",
+          "type": "pitcher"
+        }
+      ]
+    },
+    "121": {
+      "team": "メッツ",
+      "players": [
+        {
+          "name": "Carlos Beltrán",
+          "position": "Outfield",
+          "hof_year": "2026",
+          "line": "通算 打率.279　435本塁打　2725安打",
+          "type": "batter"
+        },
+        {
+          "name": "Mike Piazza",
+          "position": "Catcher",
+          "hof_year": "2016",
+          "line": "通算 打率.308　427本塁打　2127安打",
+          "type": "batter"
+        },
+        {
+          "name": "Tom Seaver",
+          "position": "Pitcher",
+          "hof_year": "1992",
+          "line": "通算 311勝　防御率2.86　3640奪三振",
+          "type": "pitcher"
+        }
+      ]
+    },
+    "143": {
+      "team": "フィリーズ",
+      "players": [
+        {
+          "name": "Dick Allen",
+          "position": "First Base",
+          "hof_year": "2025",
+          "line": "通算 打率.292　351本塁打　1848安打",
+          "type": "batter"
+        },
+        {
+          "name": "Jim Bunning",
+          "position": "Pitcher",
+          "hof_year": "1996",
+          "line": "通算 224勝　防御率3.27　2855奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Mike Schmidt",
+          "position": "Third Base",
+          "hof_year": "1995",
+          "line": "通算 打率.267　548本塁打　2234安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "117": {
+      "team": "アストロズ",
+      "players": [
+        {
+          "name": "Billy Wagner",
+          "position": "Relief Pitcher",
+          "hof_year": "2025",
+          "line": "通算 47勝　防御率2.31　1196奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Jeff Bagwell",
+          "position": "First Base",
+          "hof_year": "2017",
+          "line": "通算 打率.297　449本塁打　2314安打",
+          "type": "batter"
+        },
+        {
+          "name": "Craig Biggio",
+          "position": "Second Base",
+          "hof_year": "2015",
+          "line": "通算 打率.281　291本塁打　3060安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "147": {
+      "team": "ヤンキース",
+      "players": [
+        {
+          "name": "CC Sabathia",
+          "position": "Pitcher",
+          "hof_year": "2025",
+          "line": "通算 251勝　防御率3.74　3093奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Derek Jeter",
+          "position": "Shortstop",
+          "hof_year": "2020",
+          "line": "通算 打率.310　260本塁打　3465安打",
+          "type": "batter"
+        },
+        {
+          "name": "Mariano Rivera",
+          "position": "Pitcher",
+          "hof_year": "2019",
+          "line": "通算 82勝　防御率2.21　1173奪三振",
+          "type": "pitcher"
+        }
+      ]
+    },
+    "136": {
+      "team": "マリナーズ",
+      "players": [
+        {
+          "name": "Ichiro Suzuki",
+          "position": "Outfield",
+          "hof_year": "2025",
+          "line": "通算 打率.311　117本塁打　3089安打",
+          "type": "batter"
+        },
+        {
+          "name": "Edgar Martinez",
+          "position": "Designated Hitter",
+          "hof_year": "2019",
+          "line": "通算 打率.312　309本塁打　2247安打",
+          "type": "batter"
+        },
+        {
+          "name": "Ken Griffey Jr.",
+          "position": "Outfielder",
+          "hof_year": "2016",
+          "line": "通算 打率.284　630本塁打　2781安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "134": {
+      "team": "パイレーツ",
+      "players": [
+        {
+          "name": "Dave Parker",
+          "position": "Outfield",
+          "hof_year": "2025",
+          "line": "通算 打率.290　339本塁打　2712安打",
+          "type": "batter"
+        },
+        {
+          "name": "Bill Mazeroski",
+          "position": "Second Base",
+          "hof_year": "2001",
+          "line": "通算 打率.260　138本塁打　2016安打",
+          "type": "batter"
+        },
+        {
+          "name": "Willie Stargell",
+          "position": "Outfield",
+          "hof_year": "1988",
+          "line": "通算 打率.282　475本塁打　2232安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "140": {
+      "team": "レンジャーズ",
+      "players": [
+        {
+          "name": "Adrian Beltré",
+          "position": "Third Base",
+          "hof_year": "2024",
+          "line": "通算 打率.286　477本塁打　3166安打",
+          "type": "batter"
+        },
+        {
+          "name": "Ivan Rodriguez",
+          "position": "Catcher",
+          "hof_year": "2017",
+          "line": "通算 打率.296　311本塁打　2844安打",
+          "type": "batter"
+        },
+        {
+          "name": "Nolan Ryan Jr.",
+          "position": "Pitcher",
+          "hof_year": "1999",
+          "line": "通算 324勝　防御率3.19　5714奪三振",
+          "type": "pitcher"
+        }
+      ]
+    },
+    "142": {
+      "team": "ツインズ",
+      "players": [
+        {
+          "name": "Joe Mauer",
+          "position": "Catcher",
+          "hof_year": "2024",
+          "line": "通算 打率.306　143本塁打　2123安打",
+          "type": "batter"
+        },
+        {
+          "name": "Jim Kaat",
+          "position": "Pitcher",
+          "hof_year": "2021",
+          "line": "通算 283勝　防御率3.45　2461奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Tony Oliva",
+          "position": "Outfield",
+          "hof_year": "2021",
+          "line": "通算 打率.304　220本塁打　1917安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "115": {
+      "team": "ロッキーズ",
+      "players": [
+        {
+          "name": "Todd Helton",
+          "position": "First Base",
+          "hof_year": "2024",
+          "line": "通算 打率.316　369本塁打　2519安打",
+          "type": "batter"
+        },
+        {
+          "name": "Larry Walker",
+          "position": "Outfielder",
+          "hof_year": "2020",
+          "line": "通算 打率.313　383本塁打　2160安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "138": {
+      "team": "カージナルス",
+      "players": [
+        {
+          "name": "Scott Rolen",
+          "position": "Third Base",
+          "hof_year": "2023",
+          "line": "通算 打率.281　316本塁打　2077安打",
+          "type": "batter"
+        },
+        {
+          "name": "Ted Simmons",
+          "position": "Catcher",
+          "hof_year": "2020",
+          "line": "通算 打率.285　248本塁打　2472安打",
+          "type": "batter"
+        },
+        {
+          "name": "Whitey Herzog",
+          "position": "Unknown",
+          "hof_year": "2010",
+          "line": "通算 打率.257　25本塁打　414安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "111": {
+      "team": "レッドソックス",
+      "players": [
+        {
+          "name": "David Ortiz",
+          "position": "Designated Hitter",
+          "hof_year": "2022",
+          "line": "通算 打率.286　541本塁打　2472安打",
+          "type": "batter"
+        },
+        {
+          "name": "Pedro Martínez",
+          "position": "Pitcher",
+          "hof_year": "2015",
+          "line": "通算 219勝　防御率2.93　3154奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Jim Rice",
+          "position": "Outfield",
+          "hof_year": "2009",
+          "line": "通算 打率.298　382本塁打　2452安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "119": {
+      "team": "ドジャース",
+      "players": [
+        {
+          "name": "Gil Hodges",
+          "position": "First Base",
+          "hof_year": "2021",
+          "line": "通算 打率.273　370本塁打　1921安打",
+          "type": "batter"
+        },
+        {
+          "name": "Don Sutton",
+          "position": "Pitcher",
+          "hof_year": "1998",
+          "line": "通算 324勝　防御率3.26　3574奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Tommy Lasorda",
+          "position": "Unknown",
+          "hof_year": "1997",
+          "line": "通算 打率.071　0本塁打　1安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "145": {
+      "team": "ホワイトソックス",
+      "players": [
+        {
+          "name": "Minnie Minoso",
+          "position": "Outfield",
+          "hof_year": "2021",
+          "line": "通算 打率.299　195本塁打　2113安打",
+          "type": "batter"
+        },
+        {
+          "name": "Harold Baines",
+          "position": "Designated Hitter",
+          "hof_year": "2019",
+          "line": "通算 打率.289　384本塁打　2866安打",
+          "type": "batter"
+        },
+        {
+          "name": "Frank Thomas",
+          "position": "First Base",
+          "hof_year": "2014",
+          "line": "通算 打率.301　521本塁打　2468安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "112": {
+      "team": "カブス",
+      "players": [
+        {
+          "name": "Lee Smith",
+          "position": "Pitcher",
+          "hof_year": "2019",
+          "line": "通算 71勝　防御率3.03　1251奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Ron Santo",
+          "position": "Third Base",
+          "hof_year": "2012",
+          "line": "通算 打率.277　342本塁打　2254安打",
+          "type": "batter"
+        },
+        {
+          "name": "Ryne Sandberg",
+          "position": "Second Base",
+          "hof_year": "2005",
+          "line": "通算 打率.285　282本塁打　2386安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "116": {
+      "team": "タイガース",
+      "players": [
+        {
+          "name": "Alan Trammell",
+          "position": "Shortstop",
+          "hof_year": "2018",
+          "line": "通算 打率.285　185本塁打　2365安打",
+          "type": "batter"
+        },
+        {
+          "name": "Jack Morris",
+          "position": "Pitcher",
+          "hof_year": "2018",
+          "line": "通算 254勝　防御率3.90　2478奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Hal Newhouser",
+          "position": "Pitcher",
+          "hof_year": "1992",
+          "line": "通算 207勝　防御率3.06　1796奪三振",
+          "type": "pitcher"
+        }
+      ]
+    },
+    "114": {
+      "team": "ガーディアンズ",
+      "players": [
+        {
+          "name": "Jim Thome",
+          "position": "First Base",
+          "hof_year": "2018",
+          "line": "通算 打率.276　612本塁打　2328安打",
+          "type": "batter"
+        },
+        {
+          "name": "Larry Doby",
+          "position": "Outfield",
+          "hof_year": "1998",
+          "line": "通算 打率.288　273本塁打　1697安打",
+          "type": "batter"
+        },
+        {
+          "name": "Addie Joss",
+          "position": "Pitcher",
+          "hof_year": "1978",
+          "line": "通算 160勝　防御率1.89　920奪三振",
+          "type": "pitcher"
+        }
+      ]
+    },
+    "135": {
+      "team": "パドレス",
+      "players": [
+        {
+          "name": "Trevor Hoffman",
+          "position": "Pitcher",
+          "hof_year": "2018",
+          "line": "通算 61勝　防御率2.87　1133奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Tony Gwynn",
+          "position": "Outfield",
+          "hof_year": "2007",
+          "line": "通算 打率.338　135本塁打　3141安打",
+          "type": "batter"
+        },
+        {
+          "name": "Dave Winfield",
+          "position": "Outfield",
+          "hof_year": "2001",
+          "line": "通算 打率.283　465本塁打　3110安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "120": {
+      "team": "ナショナルズ",
+      "players": [
+        {
+          "name": "Tim Raines Sr.",
+          "position": "Outfielder",
+          "hof_year": "2017",
+          "line": "通算 打率.294　170本塁打　2605安打",
+          "type": "batter"
+        },
+        {
+          "name": "Andre Dawson",
+          "position": "Outfield",
+          "hof_year": "2010",
+          "line": "通算 打率.279　438本塁打　2774安打",
+          "type": "batter"
+        },
+        {
+          "name": "Gary Carter",
+          "position": "Catcher",
+          "hof_year": "2003",
+          "line": "通算 打率.262　324本塁打　2092安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "109": {
+      "team": "ダイヤモンドバックス",
+      "players": [
+        {
+          "name": "Randy Johnson",
+          "position": "Pitcher",
+          "hof_year": "2015",
+          "line": "通算 303勝　防御率3.29　4875奪三振",
+          "type": "pitcher"
+        }
+      ]
+    },
+    "113": {
+      "team": "レッズ",
+      "players": [
+        {
+          "name": "Barry Larkin",
+          "position": "Shortstop",
+          "hof_year": "2012",
+          "line": "通算 打率.295　198本塁打　2340安打",
+          "type": "batter"
+        },
+        {
+          "name": "Bid McPhee",
+          "position": "Second Base",
+          "hof_year": "2000",
+          "line": "通算 打率.271　53本塁打　2250安打",
+          "type": "batter"
+        },
+        {
+          "name": "Sparky Anderson",
+          "position": "Unknown",
+          "hof_year": "2000",
+          "line": "通算 打率.218　0本塁打　104安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "141": {
+      "team": "ブルージェイズ",
+      "players": [
+        {
+          "name": "Roberto Alomar",
+          "position": "Second Base",
+          "hof_year": "2011",
+          "line": "通算 打率.300　210本塁打　2724安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "133": {
+      "team": "アスレチックス",
+      "players": [
+        {
+          "name": "Rickey Henderson",
+          "position": "Outfield",
+          "hof_year": "2009",
+          "line": "通算 打率.279　297本塁打　3055安打",
+          "type": "batter"
+        },
+        {
+          "name": "Dick Williams",
+          "position": "Unknown",
+          "hof_year": "2008",
+          "line": "通算 打率.260　70本塁打　768安打",
+          "type": "batter"
+        },
+        {
+          "name": "Dennis Eckersley",
+          "position": "Pitcher",
+          "hof_year": "2004",
+          "line": "通算 197勝　防御率3.50　2401奪三振",
+          "type": "pitcher"
+        }
+      ]
+    },
+    "110": {
+      "team": "オリオールズ",
+      "players": [
+        {
+          "name": "Cal Ripken Jr.",
+          "position": "Shortstop",
+          "hof_year": "2007",
+          "line": "通算 打率.276　431本塁打　3184安打",
+          "type": "batter"
+        },
+        {
+          "name": "Eddie Murray",
+          "position": "First Base",
+          "hof_year": "2003",
+          "line": "通算 打率.287　504本塁打　3255安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "158": {
+      "team": "ブリュワーズ",
+      "players": [
+        {
+          "name": "Paul Molitor",
+          "position": "Designated Hitter",
+          "hof_year": "2004",
+          "line": "通算 打率.306　234本塁打　3319安打",
+          "type": "batter"
+        },
+        {
+          "name": "Robin Yount",
+          "position": "Shortstop",
+          "hof_year": "1999",
+          "line": "通算 打率.285　251本塁打　3142安打",
+          "type": "batter"
+        }
+      ]
+    },
+    "118": {
+      "team": "ロイヤルズ",
+      "players": [
+        {
+          "name": "George Brett",
+          "position": "Third Base",
+          "hof_year": "1999",
+          "line": "通算 打率.305　317本塁打　3154安打",
+          "type": "batter"
+        }
+      ]
+    }
+  }
+}
