@@ -231,6 +231,13 @@ jobs:
       # アーカイブを「日付ごとの静的HTML」として生成する。
       # public/ に出力することで、蓄積したデータが公開サイトから
       # 日付ごとの独立したURLで読める状態になる。
+      # 順位表。YouTubeの検索で来た人がいちばん打っていた語が
+      # 「mlb順位表」で、それに当たるものが1つも無かった。
+      # 数字はMLB公式APIから取るので、毎日ここで作り直す。
+      - name: Build standings page
+        continue-on-error: true
+        run: python scripts/generate_standings_page.py --out public/standings.html
+
       - name: Generate archive pages
         # サイトが1日古くなるより、動画が出ない方が痛い。
         # 動画の生成はこれらより後ろに並んでいる。

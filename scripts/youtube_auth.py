@@ -29,8 +29,15 @@ import pathlib
 import sys
 
 SCOPES = [
-    "https://www.googleapis.com/auth/youtube.upload",
-    "https://www.googleapis.com/auth/youtube",
+    # youtube.force-ssl は youtube と youtube.upload を含む上位の権限。
+    #
+    # 字幕を入れるのにこれが要る。captions.py は毎日走っているのに、
+    # 権限が足りず全部 403 で落ちていた。continue-on-error にしてあるので
+    # 実行は緑のまま、字幕だけが1本も付いていなかった。
+    # 字幕はYouTubeの検索の材料になり、音を切って見ている人にも届く。
+    #
+    # 3つ並べていたのを1つにまとめる。upload と youtube はこれに含まれる。
+    "https://www.googleapis.com/auth/youtube.force-ssl",
     # 動画ごとの維持率と再生数を読むのに要る。
     # これまで Studio の画面から人が書き写していた。自動で残れば、
     # 「1枚目を変えた翌日に数字が動いたか」を機械的に比べられる。

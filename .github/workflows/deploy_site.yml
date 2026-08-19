@@ -122,6 +122,13 @@ jobs:
             --archive-dir archive \
             --out-dir public/players
 
+      # 順位表。YouTubeの検索で来た人がいちばん打っていた語が
+      # 「mlb順位表」で、それに当たるものが1つも無かった。
+      # 数字はMLB公式APIから取るので、毎日ここで作り直す。
+      - name: Build standings page
+        continue-on-error: true
+        run: python scripts/generate_standings_page.py --out public/standings.html
+
       - name: Generate archive pages
         continue-on-error: true
         run: |
