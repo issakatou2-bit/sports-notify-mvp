@@ -1209,9 +1209,15 @@ def render_map(p, spec):
                   div_c[1] + (lon - div_c[1]) * e)
         zoom, stage = 2.1 + e * 2.2, 2
 
-    poly = usmap.outline_points(W, H, center, zoom)
-    edge = 78 - int(34 * min(1.0, (zoom - 1) / 3.5))
-    d.polygon(poly, outline=(edge, edge + 10, edge + 24), fill=(16, 21, 30))
+    # 州境。Natural Earth から取ってコミットしてあるので通信は無い。
+    # 州の形があると、寄っても「どのあたりか」の手がかりが残る。
+    polys = usmap.state_polygons(W, H, center, zoom)
+    edge = 40 + int(26 * min(1.0, (zoom - 1) / 3.5))
+    for poly in polys:
+        d.polygon(poly, fill=(16, 21, 30), outline=(edge, edge + 8, edge + 20))
+    if not polys:   # データが無い日は手書きの輪郭に落ちる
+        d.polygon(usmap.outline_points(W, H, center, zoom),
+                  fill=(16, 21, 30), outline=(60, 70, 90))
 
     def put(la, lo, r, fill, label=""):
         x, y = usmap.project(la, lo, W, H, center, zoom)

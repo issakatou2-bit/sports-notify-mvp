@@ -71,3 +71,46 @@ def project(lat: float, lon: float, w: int, h: int,
 
 def outline_points(w: int, h: int, center=None, zoom: float = 1.0) -> list:
     return [project(la, lo, w, h, center, zoom) for la, lo in OUTLINE]
+
+
+# ---------------------------------------------------------------------------
+# 州境。fetch_map_data.py が Natural Earth から取ってきたもの。
+# 手書きの OUTLINE と違い、州の形が入っているので寄っても崩れない。
+# ---------------------------------------------------------------------------
+
+import functools
+import json
+import pathlib
+
+STATES_PATH = "data/us_states.json"
+
+
+@functools.lru_cache(maxsize=1)
+def states(path: str = STATES_PATH) -> list:
+    """[{"code","name","rings":[[[lon,lat],...],...]}, ...]。無ければ空。"""
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    return d.get("states") or []
+
+
+def state_polygons(w: int, h: int, center=None, zoom: float = 1.0,
+                   margin: int = 400) -> list:
+    """
+    画面に落とした州の輪郭。画面から大きく外れたものは省く。
+
+    寄ると49州のうち数州しか映らないので、全部を描き直すのは無駄。
+    画面の外側 margin ピクセルまでを残す。
+    """
+    out = []
+    for st in states():
+        for ring in st["rings"]:
+            pts = [project(lat, lon, w, h, center, zoom) for lon, lat in ring]
+            xs = [p[0] for p in pts]
+            ys = [p[1] for p in pts]
+            if (max(xs) < -margin or min(xs) > w + margin
+                    or max(ys) < -margin or min(ys) > h + margin):
+                continue
+            out.append(pts)
+    return out
