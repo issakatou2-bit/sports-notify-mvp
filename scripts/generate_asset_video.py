@@ -38,6 +38,8 @@ import subprocess
 import sys
 import wave
 
+import usmap
+
 from PIL import Image, ImageDraw, ImageFont
 
 import soccer_preview
@@ -66,7 +68,9 @@ ANIM_END = 0.45
 
 # 種別ごとの最低表示秒数。読み上げが終わった瞬間に切り替わると
 # 略称を目で追う時間が無いため、下限を設けている。
-MIN_DURATION = {"intro": 5.0, "division": 9.0, "venue": 10.0,
+MIN_DURATION = {"intro": 5.0, "division": 9.0,
+                # 地図は寄る動きが中身なので、他より長く取る
+                "map": 13.0, "venue": 10.0,
                 "list": 10.0, "rivalry": 9.0, "outro": 6.0}
 
 BG = (11, 14, 20)
@@ -1045,6 +1049,23 @@ def _narration_list(topic: str) -> dict:
         print(f"[info] 実測値を追加: {items[0][1]}")
     segments = [{"kind": "intro", "text": _intro_text(topic, items),
                  "meta": {}}]
+
+    # 球団の回は、どこにあるかを先に見せる。
+    #
+    # 「カリフォルニア州アナハイム」と読み上げても、アメリカの地理を
+    # 知らないと像を結ばない。西の端なのか東の端なのかが先に分かると、
+    # そのあとの数字も置き場所ができる。
+    m = spec.get("map") or {}
+    if m.get("lat") is not None:
+        near = "、".join(x["name"] for x in (m.get("near") or [])[:4])
+        parts = ["まず場所から。アメリカ、MLBは30球団。"]
+        if m.get("division"):
+            parts.append(f"{m['division']}。")
+        if near:
+            parts.append(f"同じ地区には{near}。")
+        parts.append(f"{spec.get('where', '')}。ここが{spec['label']}の本拠地です。")
+        segments.insert(1, {"kind": "map", "text": "".join(parts),
+                            "meta": {"topic": topic}})
     for i in range(0, len(items), 2):
         chunk = items[i:i + 2]
         segments.append({
@@ -1113,6 +1134,82 @@ def base(progress):
                   fill=(14, 18, 26))
     d.rectangle([0, H - 22, W, H], fill=ACCENT)
     return im, d
+
+
+def render_map(p, spec):
+    """
+    その球団がどこにあるかを、寄りながら見せる。
+
+    なぜ地図なのか:
+      「カリフォルニア州アナハイム」と読み上げても、どのあたりなのかは
+      アメリカの地理を知らないと像を結ばない。日本の視聴者にとっては
+      州の名前より、西の端なのか東の端なのかの方が早い。
+
+      地図の画像は使わない。海岸線を粗い多角形で持っているだけなので、
+      出どころを毎回確かめる必要も、外部への通信も無い。
+
+    寄り方:
+      0.00-0.25  国全体。30球場が散らばっているのが見える
+      0.25-0.55  その地区へ寄る。同地区の4球団も光る
+      0.55-1.00  その球場へ。市の名前が出る
+
+      ここだけはANIM_ENDを越えて動かす。寄る動きが中身そのもので、
+      途中で止めると「地図を見せた」だけになる。
+    """
+    im, d = base(min(p, ANIM_END))
+    m = spec.get("map") or {}
+    lat, lon = m.get("lat"), m.get("lon")
+    if lat is None:
+        return im
+
+    # 寄り具合。0->1 で全体から球場へ。
+    e = ease_out(min(1.0, max(0.0, (p - 0.05) / 0.75)))
+    # 4.5倍まで。12倍まで寄ったら輪郭が画面の外へ出てしまい、
+    # 「どこにあるか」を見せるはずが、点だけが残った。
+    zoom = 1.0 + e * 3.5
+    # 中心も動かす。全体のときは国の真ん中、寄るほど球場へ。
+    c0 = ((usmap.LAT_RANGE[0] + usmap.LAT_RANGE[1]) / 2,
+          (usmap.LON_RANGE[0] + usmap.LON_RANGE[1]) / 2)
+    center = (c0[0] + (lat - c0[0]) * e, c0[1] + (lon - c0[1]) * e)
+
+    poly = usmap.outline_points(W, H, center, zoom)
+    # 寄るほど輪郭を薄くする。粗い多角形なので、拡大すると粗が出る。
+    edge = int(70 - 40 * e)
+    d.polygon(poly, outline=(edge, edge + 10, edge + 24), fill=(16, 21, 30))
+
+    # 同地区の球団。先に打って、自分の球団を上に重ねる。
+    for n in (m.get("near") or []):
+        x, y = usmap.project(n["lat"], n["lon"], W, H, center, zoom)
+        if not (-200 < x < W + 200 and -200 < y < H + 200):
+            continue
+        r = 6 + 6 * e
+        d.ellipse([x - r, y - r, x + r, y + r], fill=(58, 70, 92))
+        if e > 0.35:
+            d.text((x + r + 8, y - 16), n["abbr"], font=font(30), fill=DIM)
+
+    x, y = usmap.project(lat, lon, W, H, center, zoom)
+    # 波紋。止まった円だと、どこを指しているのか探すことになる。
+    for i in range(3):
+        rr = 26 + i * 26 + e * 40
+        d.ellipse([x - rr, y - rr, x + rr, y + rr],
+                  outline=(255, 176, 32, 90), width=2)
+    d.ellipse([x - 13, y - 13, x + 13, y + 13], fill=ACCENT)
+
+    # 見出しは寄りに合わせて差し替える。読み上げと同じ順序で出す。
+    if e < 0.3:
+        big, small = "アメリカ", "MLBは30球団"
+    elif e < 0.62:
+        big, small = m.get("division", ""), "同じ地区の4球団"
+    else:
+        # 日本語の表記を使う。APIのcityは "Anaheim" のままで、
+        # 画面にも読み上げにも英語が出てしまう。
+        big, small = (spec.get("where") or m.get("city", "")), spec.get("label", "")
+    size = next((s for s in (84, 72, 60, 50)
+                 if d.textlength(big, font=font(s)) <= W - 140), 50)
+    d.text((70, 150), big, font=font(size), fill=ACCENT)
+    if small:
+        d.text((74, 260), small, font=font(40), fill=DIM)
+    return im
 
 
 def abbr_badge(d, x, y, abbr, color, w=250, h=130):
@@ -1460,7 +1557,10 @@ def main():
             cached = None
             for k in range(n):
                 pp = k / max(1, n - 1)
-                if pp > ANIM_END and cached is not None:
+                # 地図は最後まで動く。他の画面は途中で絵が止まるので
+                # 描き直さずに使い回すが、ここでそれをやると寄るのが
+                # 止まってしまう。
+                if kind != "map" and pp > ANIM_END and cached is not None:
                     proc.stdin.write(cached)
                     total += 1
                     continue
@@ -1475,6 +1575,9 @@ def main():
                                      meta.get("start", 0) // 2 + 1,
                                      (len(venues) + 1) // 2,
                                      "球場でこんなに変わる")
+                elif kind == "map":
+                    im = render_map(pp, LIST_TOPICS[meta.get("topic",
+                                                             args.topic)])
                 elif kind == "list":
                     t = meta.get("topic", args.topic)
                     # 原稿と同じ関数で組み立てる。別々に作ると項目数がずれる

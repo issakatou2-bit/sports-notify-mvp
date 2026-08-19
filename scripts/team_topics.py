@@ -79,7 +79,8 @@ def fetch() -> tuple:
                          params={"sportId": 1, "hydrate": "league,division,venue"},
                          headers=UA, timeout=30).json().get("teams", [])
     vs = requests.get(f"{API}/venues",
-                      params={"sportId": 1, "hydrate": "location,fieldInfo"},
+                      params={"sportId": 1,
+                              "hydrate": "location,fieldInfo"},
                       headers=UA, timeout=30).json().get("venues", [])
     venue = {v["id"]: v for v in vs}
     return teams, venue
@@ -106,7 +107,8 @@ def traditional_of(team_id: str) -> str:
     return ""
 
 
-def build(t: dict, venue: dict, all_caps: list, all_years: list) -> dict:
+def build(t: dict, venue: dict, all_caps: list, all_years: list,
+          all_teams: list) -> dict:
     tid = str(t["id"])
     jp = MLB_TEAM_NAME_JP.get(tid) or t.get("name", "")
     v = venue.get((t.get("venue") or {}).get("id")) or {}
@@ -116,6 +118,8 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list) -> dict:
     year = t.get("firstYearOfPlay") or ""
     where = jp_where(v.get("name", "")) or (t.get("locationName") or
                                             loc.get("city") or "")
+    city = t.get("locationName") or loc.get("city") or ""
+    state = loc.get("state") or ""
 
     items = []
     if year:
@@ -154,8 +158,30 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list) -> dict:
     if not hook:
         hook = f"本拠地は{where}"
 
+    # 地図に打つための座標。同地区の4球団ぶんも一緒に持たせる。
+    # 画面側でAPIを叩き直さずに済む。
+    coord = (loc.get("defaultCoordinates") or {})
+    near = []
+    for other in all_teams:
+        oid = str(other["id"])
+        if oid == tid or MLB_DIVISIONS.get(oid) != MLB_DIVISIONS.get(tid):
+            continue
+        ov = venue.get((other.get("venue") or {}).get("id")) or {}
+        oc = ((ov.get("location") or {}).get("defaultCoordinates") or {})
+        if oc.get("latitude"):
+            near.append({"name": MLB_TEAM_NAME_JP.get(oid, ""),
+                         "abbr": other.get("abbreviation", ""),
+                         "lat": oc["latitude"], "lon": oc["longitude"]})
+
     return {
         "key": "team_" + t.get("teamCode", tid),
+        "map": {
+            "lat": coord.get("latitude"), "lon": coord.get("longitude"),
+            "city": city, "state": state,
+            "abbr": t.get("abbreviation", ""),
+            "division": MLB_DIVISION_NAME_JP.get(MLB_DIVISIONS.get(tid, ""), ""),
+            "near": near,
+        },
         "label": jp,
         "heading": jp,
         "hook": hook,
@@ -178,7 +204,7 @@ def main() -> int:
 
     years = [int(t["firstYearOfPlay"]) for t in teams
              if (t.get("firstYearOfPlay") or "").isdigit()]
-    topics = [build(t, venue, caps, years) for t in teams]
+    topics = [build(t, venue, caps, years, teams) for t in teams]
     topics = [x for x in topics if x["label"]]
 
     p = pathlib.Path(args.out)
