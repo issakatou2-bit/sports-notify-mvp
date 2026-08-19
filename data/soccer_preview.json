@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-11T14:58:16.397743+00:00",
+  "generated_at": "2026-08-19T13:45:46.599082+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -668,14 +668,6 @@
         },
         {
           "matchday": 1,
-          "utc": "2026-08-16T19:30:00Z",
-          "home": "RC Celta de Vigo",
-          "away": "CA Osasuna",
-          "home_short": "Celta",
-          "away_short": "Osasuna"
-        },
-        {
-          "matchday": 1,
           "utc": "2026-08-17T19:00:00Z",
           "home": "RC Deportivo La Coruña",
           "away": "Elche CF",
@@ -705,6 +697,14 @@
           "away": "Real Sociedad de Fútbol",
           "home_short": "Real Madrid",
           "away_short": "Real Sociedad"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-27T18:30:00Z",
+          "home": "RC Celta de Vigo",
+          "away": "CA Osasuna",
+          "home_short": "Celta",
+          "away_short": "Osasuna"
         },
         {
           "matchday": 1,
@@ -747,14 +747,6 @@
           "away": "Levante UD",
           "home_short": "Espanyol",
           "away_short": "Levante"
-        },
-        {
-          "matchday": 1,
-          "utc": "2026-08-16T19:30:00Z",
-          "home": "RC Celta de Vigo",
-          "away": "CA Osasuna",
-          "home_short": "Celta",
-          "away_short": "Osasuna"
         },
         {
           "matchday": 1,
@@ -867,6 +859,14 @@
           "away": "Real Sociedad de Fútbol",
           "home_short": "Real Madrid",
           "away_short": "Real Sociedad"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-27T18:30:00Z",
+          "home": "RC Celta de Vigo",
+          "away": "CA Osasuna",
+          "home_short": "Celta",
+          "away_short": "Osasuna"
         },
         {
           "matchday": 1,
@@ -1566,7 +1566,7 @@
         },
         {
           "matchday": 3,
-          "utc": "2026-09-07T16:30:00Z",
+          "utc": "2026-09-07T16:00:00Z",
           "home": "Cagliari Calcio",
           "away": "US Lecce",
           "home_short": "Cagliari",
@@ -2669,31 +2669,7 @@
         },
         {
           "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
-          "home": "Le Havre AC",
-          "away": "Stade Brestois 29",
-          "home_short": "Le Havre",
-          "away_short": "Brest"
-        },
-        {
-          "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
-          "home": "Olympique de Marseille",
-          "away": "Paris FC",
-          "home_short": "Marseille",
-          "away_short": "Paris FC"
-        },
-        {
-          "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
-          "home": "Racing Club de Lens",
-          "away": "FC Lorient",
-          "home_short": "RC Lens",
-          "away_short": "Lorient"
-        },
-        {
-          "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
+          "utc": "2026-09-03T18:45:00Z",
           "home": "Toulouse FC",
           "away": "Lille OSC",
           "home_short": "Toulouse",
@@ -2701,23 +2677,7 @@
         },
         {
           "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
-          "home": "Paris Saint-Germain FC",
-          "away": "AS Monaco FC",
-          "home_short": "PSG",
-          "away_short": "Monaco"
-        },
-        {
-          "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
-          "home": "Angers SCO",
-          "away": "Stade Rennais FC 1901",
-          "home_short": "Angers SCO",
-          "away_short": "Stade Rennais"
-        },
-        {
-          "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
+          "utc": "2026-09-04T17:00:00Z",
           "home": "Olympique Lyonnais",
           "away": "AJ Auxerre",
           "home_short": "Olympique Lyon",
@@ -2725,7 +2685,39 @@
         },
         {
           "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
+          "utc": "2026-09-04T19:05:00Z",
+          "home": "Paris Saint-Germain FC",
+          "away": "AS Monaco FC",
+          "home_short": "PSG",
+          "away_short": "Monaco"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-05T15:15:00Z",
+          "home": "Racing Club de Lens",
+          "away": "FC Lorient",
+          "home_short": "RC Lens",
+          "away_short": "Lorient"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-05T18:45:00Z",
+          "home": "Le Havre AC",
+          "away": "Stade Brestois 29",
+          "home_short": "Le Havre",
+          "away_short": "Brest"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-05T18:45:00Z",
+          "home": "OGC Nice",
+          "away": "Le Mans FC",
+          "home_short": "Nice",
+          "away_short": "Le Mans"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-06T13:00:00Z",
           "home": "ES Troyes AC",
           "away": "RC Strasbourg Alsace",
           "home_short": "Troyes",
@@ -2733,11 +2725,19 @@
         },
         {
           "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
-          "home": "OGC Nice",
-          "away": "Le Mans FC",
-          "home_short": "Nice",
-          "away_short": "Le Mans"
+          "utc": "2026-09-06T15:15:00Z",
+          "home": "Angers SCO",
+          "away": "Stade Rennais FC 1901",
+          "home_short": "Angers SCO",
+          "away_short": "Stade Rennais"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-06T18:45:00Z",
+          "home": "Olympique de Marseille",
+          "away": "Paris FC",
+          "home_short": "Marseille",
+          "away_short": "Paris FC"
         }
       ],
       "last_season": [
@@ -2957,7 +2957,7 @@
         },
         {
           "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
+          "utc": "2026-09-04T19:05:00Z",
           "home": "Paris Saint-Germain FC",
           "away": "AS Monaco FC",
           "home_short": "PSG",
@@ -2982,7 +2982,7 @@
         },
         {
           "matchday": 3,
-          "utc": "2026-09-05T15:00:00Z",
+          "utc": "2026-09-05T18:45:00Z",
           "home": "Le Havre AC",
           "away": "Stade Brestois 29",
           "home_short": "Le Havre",
