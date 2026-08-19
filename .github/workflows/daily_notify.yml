@@ -1,4 +1,4 @@
-name: 毎日 19:00　明日の注目試合
+name: 毎日 19:00頃　明日の注目試合
 
 # 実行タイミングについて:
 # GitHub Actions純正のscheduleトリガーは「best-effort」であり、特にこの
@@ -375,7 +375,7 @@ jobs:
             --games notable_games.json \
             --narration public/narration.json \
             --thumbnail build/video/thumb.png \
-            --privacy public
+            --privacy public --publish-at "19:00"
 
       # 読み上げの本文をそのまま字幕にする。
       #

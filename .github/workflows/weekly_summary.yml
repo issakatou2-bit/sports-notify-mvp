@@ -22,7 +22,7 @@ name: 毎週日曜　週間まとめ
 on:
   workflow_dispatch: {}
   workflow_run:
-    workflows: ["毎日 19:00　明日の注目試合"]
+    workflows: ["毎日 19:00頃　明日の注目試合"]
     types: [completed]
 
 # 投稿の記録をコミットするので write が要る。
