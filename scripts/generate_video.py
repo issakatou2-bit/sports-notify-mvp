@@ -566,8 +566,20 @@ def render_recap(progress: float, meta: dict):
         d.text((100, y + 26), f"{n}", font=font(74), fill=ACCENT)
         nw = d.textlength(f"{n}", font=font(74))
         d.text((110 + nw, y + 58), "試合を記録しました", font=font(40), fill=TEXT)
-        d.text((100, y + 104), "毎日、選んだ試合の結果まで残しています",
-               font=font(30), fill=DIM)
+        # 数えた結果を並べる。予想ではないので、外れることが無い。
+        #
+        # 「次はどうなるか」を言い出すと、当たり外れで見られることになり、
+        # 外した日から見られなくなる。「これまでこうだった」なら、
+        # 見る側が自分で先を考えられて、しかも古びない。
+        bits = []
+        if base.get("one_run_pct") is not None:
+            bits.append(f"1点差 {base['one_run_pct']}%")
+        if base.get("shutout_pct") is not None:
+            bits.append(f"完封 {base['shutout_pct']}%")
+        if base.get("avg_total") is not None:
+            bits.append(f"平均 {base['avg_total']}点")
+        d.text((100, y + 104), "　".join(bits) or "毎日、結果まで残しています",
+               font=font(32), fill=DIM)
         y += 180
 
     for i, row in enumerate((meta.get("lines") or [])[:3]):
