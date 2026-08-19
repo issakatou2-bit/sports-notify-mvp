@@ -35,6 +35,7 @@ import requests
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import (  # noqa: E402
     MLB_DIVISIONS,
+    MLB_TEAM_COLOR,
     MLB_DIVISION_NAME_JP,
     MLB_RIVALRIES,
     MLB_TEAM_NAME_JP,
@@ -161,6 +162,13 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
     # 地図に打つための座標。同地区の4球団ぶんも一緒に持たせる。
     # 画面側でAPIを叩き直さずに済む。
     coord = (loc.get("defaultCoordinates") or {})
+    all_points = []
+    for other in all_teams:
+        ov = venue.get((other.get("venue") or {}).get("id")) or {}
+        oc = ((ov.get("location") or {}).get("defaultCoordinates") or {})
+        if oc.get("latitude"):
+            all_points.append([round(oc["latitude"], 3),
+                               round(oc["longitude"], 3)])
     near = []
     for other in all_teams:
         oid = str(other["id"])
@@ -175,12 +183,17 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
 
     return {
         "key": "team_" + t.get("teamCode", tid),
+        # その球団の色。画面のアクセントに使う。
+        # 30球団ぶんが同じオレンジだと、どの回も同じ絵に見える。
+        "color": MLB_TEAM_COLOR.get(tid),
         "map": {
             "lat": coord.get("latitude"), "lon": coord.get("longitude"),
             "city": city, "state": state,
             "abbr": t.get("abbreviation", ""),
             "division": MLB_DIVISION_NAME_JP.get(MLB_DIVISIONS.get(tid, ""), ""),
             "near": near,
+            # 30球団ぶんの位置。「MLBは30球団」と言うところで打つ。
+            "all": all_points,
         },
         "label": jp,
         "heading": jp,

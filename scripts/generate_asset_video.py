@@ -1136,77 +1136,116 @@ def base(progress):
     return im, d
 
 
+def team_color(spec: dict):
+    """
+    その球団の色。暗い背景で読める明るさに持ち上げて返す。
+
+    公式の色をそのまま使うと、濃紺(#0C2C56)や濃緑(#003831)、
+    濃茶(#2F241D)が背景(#0B0E14)に沈んで見えない。
+    色みは保ったまま明るさだけ上げる。
+
+    色が無い球団や、球団以外の回では既定のオレンジに落とす。
+    """
+    import colorsys
+    hexv = (spec or {}).get("color") or ""
+    if not hexv.startswith("#") or len(hexv) != 7:
+        return ACCENT
+    r, g, b = (int(hexv[i:i + 2], 16) / 255 for i in (1, 3, 5))
+    h, s, v = colorsys.rgb_to_hsv(r, g, b)
+    v = max(v, 0.72)
+    s = min(s, 0.78)
+    r, g, b = colorsys.hsv_to_rgb(h, s, v)
+    return (int(r * 255), int(g * 255), int(b * 255))
+
+
 def render_map(p, spec):
     """
     その球団がどこにあるかを、寄りながら見せる。
 
     なぜ地図なのか:
-      「カリフォルニア州アナハイム」と読み上げても、どのあたりなのかは
-      アメリカの地理を知らないと像を結ばない。日本の視聴者にとっては
-      州の名前より、西の端なのか東の端なのかの方が早い。
+      「カリフォルニア州アナハイム」と読み上げても、アメリカの地理を
+      知らないと像を結ばない。日本の視聴者には州の名前より、
+      西の端なのか東の端なのかの方が早い。
 
       地図の画像は使わない。海岸線を粗い多角形で持っているだけなので、
-      出どころを毎回確かめる必要も、外部への通信も無い。
+      出どころを確かめる必要も、外部への通信も無い。
 
-    寄り方:
-      0.00-0.25  国全体。30球場が散らばっているのが見える
-      0.25-0.55  その地区へ寄る。同地区の4球団も光る
-      0.55-1.00  その球場へ。市の名前が出る
+    3段階に切ってある:
+      0.00-0.30  国全体。30球場が散らばっているのが見える
+      0.30-0.65  その地区へ。同地区の5球団が収まる範囲まで
+      0.65-1.00  その球場へ
 
-      ここだけはANIM_ENDを越えて動かす。寄る動きが中身そのもので、
-      途中で止めると「地図を見せた」だけになる。
+      連続で寄せると、序盤で中心が動いた時点で端の球団
+      (シアトル、マイアミ)が画面の外へ出てしまう。実際そうなった。
+      全体を見せる区間は、中心も倍率も動かさない。
     """
     im, d = base(min(p, ANIM_END))
+    col = team_color(spec)
     m = spec.get("map") or {}
     lat, lon = m.get("lat"), m.get("lon")
     if lat is None:
         return im
 
-    # 寄り具合。0->1 で全体から球場へ。
-    e = ease_out(min(1.0, max(0.0, (p - 0.05) / 0.75)))
-    # 4.5倍まで。12倍まで寄ったら輪郭が画面の外へ出てしまい、
-    # 「どこにあるか」を見せるはずが、点だけが残った。
-    zoom = 1.0 + e * 3.5
-    # 中心も動かす。全体のときは国の真ん中、寄るほど球場へ。
-    c0 = ((usmap.LAT_RANGE[0] + usmap.LAT_RANGE[1]) / 2,
-          (usmap.LON_RANGE[0] + usmap.LON_RANGE[1]) / 2)
-    center = (c0[0] + (lat - c0[0]) * e, c0[1] + (lon - c0[1]) * e)
+    country = ((usmap.LAT_RANGE[0] + usmap.LAT_RANGE[1]) / 2,
+               (usmap.LON_RANGE[0] + usmap.LON_RANGE[1]) / 2)
+    near = m.get("near") or []
+    # 地区の真ん中。5球団の平均。
+    if near:
+        div_c = ((lat + sum(n["lat"] for n in near)) / (len(near) + 1),
+                 (lon + sum(n["lon"] for n in near)) / (len(near) + 1))
+    else:
+        div_c = (lat, lon)
+
+    if p < 0.30:
+        center, zoom, stage = country, 1.0, 0
+    elif p < 0.65:
+        e = ease_out((p - 0.30) / 0.35)
+        center = (country[0] + (div_c[0] - country[0]) * e,
+                  country[1] + (div_c[1] - country[1]) * e)
+        zoom, stage = 1.0 + e * 1.1, 1
+    else:
+        e = ease_out(min(1.0, (p - 0.65) / 0.30))
+        center = (div_c[0] + (lat - div_c[0]) * e,
+                  div_c[1] + (lon - div_c[1]) * e)
+        zoom, stage = 2.1 + e * 2.2, 2
 
     poly = usmap.outline_points(W, H, center, zoom)
-    # 寄るほど輪郭を薄くする。粗い多角形なので、拡大すると粗が出る。
-    edge = int(70 - 40 * e)
+    edge = 78 - int(34 * min(1.0, (zoom - 1) / 3.5))
     d.polygon(poly, outline=(edge, edge + 10, edge + 24), fill=(16, 21, 30))
 
-    # 同地区の球団。先に打って、自分の球団を上に重ねる。
-    for n in (m.get("near") or []):
-        x, y = usmap.project(n["lat"], n["lon"], W, H, center, zoom)
-        if not (-200 < x < W + 200 and -200 < y < H + 200):
-            continue
-        r = 6 + 6 * e
-        d.ellipse([x - r, y - r, x + r, y + r], fill=(58, 70, 92))
-        if e > 0.35:
-            d.text((x + r + 8, y - 16), n["abbr"], font=font(30), fill=DIM)
+    def put(la, lo, r, fill, label=""):
+        x, y = usmap.project(la, lo, W, H, center, zoom)
+        if not (-150 < x < W + 150 and -150 < y < H + 150):
+            return
+        d.ellipse([x - r, y - r, x + r, y + r], fill=fill)
+        if label:
+            d.text((x + r + 8, y - 16), label, font=font(30), fill=DIM)
+
+    # 全体のときは30球場を打つ。「MLBは30球団」と言う場所なので、
+    # 数がそのまま画面に出ている方がよい。
+    if stage == 0:
+        for la, lo in (m.get("all") or []):
+            put(la, lo, 7, (58, 70, 92))
+    else:
+        for n in near:
+            put(n["lat"], n["lon"], 7 + 4 * (stage - 1), (58, 70, 92),
+                n["abbr"] if stage >= 1 else "")
 
     x, y = usmap.project(lat, lon, W, H, center, zoom)
-    # 波紋。止まった円だと、どこを指しているのか探すことになる。
     for i in range(3):
-        rr = 26 + i * 26 + e * 40
-        d.ellipse([x - rr, y - rr, x + rr, y + rr],
-                  outline=(255, 176, 32, 90), width=2)
-    d.ellipse([x - 13, y - 13, x + 13, y + 13], fill=ACCENT)
+        rr = 24 + i * 24 + zoom * 6
+        d.ellipse([x - rr, y - rr, x + rr, y + rr], outline=col, width=2)
+    d.ellipse([x - 13, y - 13, x + 13, y + 13], fill=col)
 
-    # 見出しは寄りに合わせて差し替える。読み上げと同じ順序で出す。
-    if e < 0.3:
+    if stage == 0:
         big, small = "アメリカ", "MLBは30球団"
-    elif e < 0.62:
+    elif stage == 1:
         big, small = m.get("division", ""), "同じ地区の4球団"
     else:
-        # 日本語の表記を使う。APIのcityは "Anaheim" のままで、
-        # 画面にも読み上げにも英語が出てしまう。
         big, small = (spec.get("where") or m.get("city", "")), spec.get("label", "")
     size = next((s for s in (84, 72, 60, 50)
                  if d.textlength(big, font=font(s)) <= W - 140), 50)
-    d.text((70, 150), big, font=font(size), fill=ACCENT)
+    d.text((70, 150), big, font=font(size), fill=col)
     if small:
         d.text((74, 260), small, font=font(40), fill=DIM)
     return im
