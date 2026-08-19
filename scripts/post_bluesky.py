@@ -94,6 +94,9 @@ def main():
         for t in hashtags:
             builder = builder.tag(f"#{t} ", t)
         builder = builder.link(site_url, site_url)
+        builder = builder.text('\n')
+        builder = builder.link(post_common.YOUTUBE_URL,
+                               post_common.YOUTUBE_URL)
         client.send_post(builder)
         print("[info] Blueskyに投稿しました")
     except Exception as e:

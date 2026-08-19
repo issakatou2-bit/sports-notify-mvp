@@ -115,7 +115,7 @@ def main() -> int:
 
     body, hashtags, site_url = post_common.build_post(games, MAX_CHARS)
     # Threadsはタグやリンクの装飾が要らない。本文にそのまま並べる。
-    text = body + "\n" + " ".join(f"#{t}" for t in hashtags) + "\n" + site_url
+    text = body + "\n" + " ".join(f"#{t}" for t in hashtags) + "\n" + site_url + "\n" + post_common.YOUTUBE_URL
 
     print("投稿する本文:")
     print("-" * 40)

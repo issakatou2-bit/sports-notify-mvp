@@ -19,6 +19,22 @@ from datetime import datetime, timedelta, timezone
 
 SITE_URL = os.environ.get("SITE_URL", "https://collespo.com/")
 
+# 動画の置き場。SNSからの導線がここへ向いていなかった。
+#
+# 流入の内訳を見ると、YouTubeへの外部からの流入はほぼゼロだった。
+# SNSにはサイトのURLだけを貼っていて、動画は貼っていない。
+#
+# 7本ぶんのリンクを並べる案もあったが、まず1本にする。
+# 流入がゼロのものを7倍しても足し算にならないし、
+# 1日7投稿はタイムラインを占領して、かえって読まれなくなる。
+# 1本でどれだけ動くかを測ってから本数を考える。
+#
+# 個々の動画ではなくShortsの一覧を指すのは、投稿の時点で
+# その日の動画がまだ上がっていないため(SNSは19時、動画は予約公開)。
+# 一覧なら常に最新が先頭に来る。
+YOUTUBE_URL = os.environ.get(
+    "YOUTUBE_URL", "https://www.youtube.com/@collespo_jp/shorts")
+
 # ハッシュタグにする選手名の上限。多すぎるとスパム的に見えるため絞る。
 MAX_PLAYER_TAGS = 3
 
@@ -246,7 +262,8 @@ def build_post_body(games: list, hashtags_display: str, max_chars: int) -> str:
         return ""
     label = today_or_tomorrow_label(games)
     kept = list(games)
-    reserved = len(hashtags_display) + len(SITE_URL) + 4
+    reserved = (len(hashtags_display) + len(SITE_URL)
+                + len(YOUTUBE_URL) + 6)
     while True:
         text = "\n".join([label] + [game_line(g) for g in kept])
         if len(text) + reserved <= max_chars or len(kept) <= 1:
