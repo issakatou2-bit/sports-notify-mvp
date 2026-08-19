@@ -896,7 +896,7 @@ def build_output(
     # 毎日必ず出ることがこのチャンネルの value なので、試合がある日は出す。
     # 点が低い日は見出しが控えめになるだけで、事実と食い違うわけではない。
     soccer = [g for g in output_games if is_soccer_league(g["league"])]
-    for g in soccer[:SOCCER_MIN_NOTABLE]:  # 既に条件を満たしていれば何も変わらない
+    for g in _spread_across_leagues(soccer, SOCCER_MIN_NOTABLE):
         g["is_notable"] = True
 
     for g in output_games:
@@ -1942,6 +1942,56 @@ def _football_data_get(url, headers, params=None, timeout=10, max_retries=3):
         return resp
 
     raise RuntimeError("football-data.org: リトライ上限に達しました(レート制限が解消しません)")
+
+
+# 1つのリーグから取る上限。3枠が同じリーグで埋まらないようにする。
+SOCCER_PER_LEAGUE = 1
+
+
+def _spread_across_leagues(games: list, want: int) -> list:
+    """
+    上位から選ぶが、同じリーグばかりにしない。
+
+    なぜ要るのか:
+      5大リーグが揃う週末は48試合あり、そこから3つ選ぶ。
+      採点をそのまま並べて上位3つを取ると、12週ぶんを試したとき
+      36枠のうち22枠がブンデスリーガになった。セリエAは0枠。
+
+      偏るのは採点が壊れているからではない。日本人選手がブンデスに
+      多いというだけの事実がそのまま出ている。ただ、プレミアを見に
+      来た人にとっては「欧州サッカーの注目試合」が毎回よそのリーグの
+      話になる。1本しか出せない枠で、それは受け取る側の損になる。
+
+      同点も多い。最高点は6点で頭打ちになり、3週末のうち2回は
+      6点が3試合並んだ。そこの並びはリーグの処理順で決まっていて、
+      選んだ理由が無い。
+
+      なので上位から順に取りつつ、1つのリーグからは1試合までにする。
+      2つまでにしたときは22枠が19枠に減っただけで効かなかった。
+      1つにすると12枠まで下がり、プレミアとリーグ・アンが11枠ずつになる。
+
+      枠が埋まらなければ、上限を無視して点数順で埋める
+      (試合が2つしか無い日に、分散のために空けても仕方がない)。
+
+      ラ・リーガとセリエAは、これでもほとんど選ばれない。
+      あちらに日本人選手が少ないという事実がそのまま出ているだけで、
+      無理に入れると「注目試合」という言葉の方が嘘になる。
+    """
+    picked, per = [], {}
+    for g in games:
+        if len(picked) >= want:
+            break
+        lg = g.get("league") or ""
+        if per.get(lg, 0) >= SOCCER_PER_LEAGUE:
+            continue
+        picked.append(g)
+        per[lg] = per.get(lg, 0) + 1
+    for g in games:            # それでも足りない日は点数順で補う
+        if len(picked) >= want:
+            break
+        if g not in picked:
+            picked.append(g)
+    return picked
 
 
 def fetch_soccer_games_and_standings(date_str: str, api_key: str):
