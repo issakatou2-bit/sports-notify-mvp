@@ -403,6 +403,70 @@ def asset_meta_from_spec(spec: dict) -> dict:
     }
 
 
+def _fit_tags(tags: list, limit: int = 460) -> list:
+    """500文字の枠に収まるところまで、前から詰める。"""
+    out, total = [], 0
+    for x in tags:
+        if not x or x in out:
+            continue
+        # 空白を含むタグは引用符でくくられ、2文字ぶん余計に数えられる
+        cost = len(x) + 1 + (2 if " " in x else 0)
+        if total + cost > limit:
+            break
+        out.append(x)
+        total += cost
+    return out
+
+
+def subject_tags(kind: str, morning_mode: str, games: list,
+                 morning_players: list, profile_path: str,
+                 buzz_path: str) -> list:
+    """
+    その動画が扱っている固有名詞。検索で当たるのはここ。
+
+    表記を1つに決めない。同じ選手を、英語のフルネーム・姓・愛称・
+    カタカナで探す人がいる。実際の検索語には「今永昇太」も
+    「mlb順位表」も混ざっていて、揃っていない。
+    """
+    out = []
+
+    def add(*xs):
+        for x in xs:
+            x = (x or "").strip()
+            if x and x not in out:
+                out.append(x)
+
+    if kind == "morning" and morning_mode == "player":
+        prof = load_profile(profile_path)
+        name = prof.get("name") or ""
+        add(name)
+        if " " in name:
+            add(name.split()[-1])
+        add((prof.get("bio") or {}).get("nickname"))
+        # カタカナの姓。VOICEVOX用に持っている読みをそのまま使う。
+        try:
+            import generate_narration as gn
+            kana = gn.speech_name(name).replace("、", "")
+            if kana != name:
+                add(kana)
+        except Exception:  # noqa: BLE001
+            pass
+        add(prof.get("team"))
+
+        return out   # 1人の回。今日の試合のチームは関係が無い
+
+    if kind == "morning" and morning_mode in ("voices", "local"):
+        top = buzz_top(buzz_path) or {}
+        for part in (top.get("matchup_jp") or "").split(" vs "):
+            add(part)
+        return out   # 扱っているのは、その1試合のコメント欄
+
+    # 明日の注目試合と、週間まとめ。ここは並べた試合そのものが中身。
+    for g in games[:3]:
+        add(g.get("home_team_name"), g.get("away_team_name"))
+    return out
+
+
 def build_asset_metadata(topic: str) -> dict:
     meta = ASSET_META.get(topic)
     if not meta:
@@ -785,9 +849,17 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 「通算成績・今季・受賞歴まとめ」は何も言っていない。
         import player_screens as _ps
         big = _ps.milestone(prof) or prof.get("headline") or ""
+        # 今季の数字には「いつ時点か」を添える。
+        #
+        # 「30本塁打30盗塁」は8月の数字で、9月には31本になる。この回は
+        # 日付に縛られない作りにしてあるぶん、10月に見た人には
+        # どの時点の話か分からない。枠の名前(今日の1人)は入れない
+        # ——入れた瞬間に翌日から古い動画になる——が、
+        # 数字の時点だけは書いておく。それで古びても嘘にはならない。
+        asof = f"（{date_label}時点）" if big and "今シーズン" in big else ""
         title = (f"【MLB】{who}"
-                 + (f"｜{big}" if big else "")
-                 + "｜通算成績・今季・受賞歴まとめ #Shorts")
+                 + (f"｜{big}{asof}" if big else "")
+                 + "｜通算成績・受賞歴まとめ #Shorts")
     elif kind == "morning" and morning_mode == "voices":
         # コメント欄の回。何の試合かがタイトルで分かるようにする。
         # 「現地の声」だけでは、どの試合の話なのか見当が付かない。
@@ -991,24 +1063,39 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         SPORTS.get(sport, SPORTS["mlb"])["source"],
     ]
 
-    tags = list(SPORTS.get(sport, SPORTS["mlb"])["tags"])
+    # その回の主役を先に入れる。
+    #
+    # これまでタグは競技ごとの固定の並びと、日本人選手の名簿だけだった。
+    # Pete Crow-Armstrong を1本まるごと扱った動画のタグに、
+    # 大谷翔平・吉田正尚・村上宗隆が並んでいて、本人の名前がどこにも
+    # 入っていない。「PCA MLB」で検索しても上位10本に出てこない。
+    #
+    # 検索から来た人は平均102秒見ている。Shortsフィードから来た人の
+    # 21秒に対して5倍で、いちばん濃い流入がそこだった。
+    tags = subject_tags(kind, morning_mode, games, morning_players,
+                        profile_path, buzz_path)
+    for x in SPORTS.get(sport, SPORTS["mlb"])["tags"]:
+        if x not in tags:
+            tags.append(x)
     tags.append("週間まとめ" if kind == "weekly" else "Shorts")
     if kind == "morning":
-        # 検索されるのは選手名なので、出場した選手を優先してタグに入れる
-        tags += ["日本人選手", "MLB速報"]
+        tags += [x for x in ("日本人選手", "MLB速報") if x not in tags]
         for p in (morning_players or [])[:6]:
             if p.get("name") and p["name"] not in tags:
                 tags.append(p["name"])
-    for g in games:
-        for name in (g.get("jp_players") or [])[:2]:
-            if name not in tags:
-                tags.append(name)
+    if not (kind == "morning" and morning_mode in ("player", "voices", "local")):
+        for g in games:
+            for name in (g.get("jp_players") or [])[:2]:
+                if name not in tags:
+                    tags.append(name)
 
     return {
         "snippet": {
             "title": title,
             "description": "\n".join(lines)[:5000],
-            "tags": tags[:15],
+            # 上限は500文字。15本に絞っていたが、主役の名前を前に置くように
+            # したので、そのぶん後ろの一般語が押し出されていた。
+            "tags": _fit_tags(tags),
             "categoryId": CATEGORY_SPORTS,
             # 動画本編の言語と、タイトル・説明の言語。
             # 未設定だとYouTube側で「選択」のままになり、
