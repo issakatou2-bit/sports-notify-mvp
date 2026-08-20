@@ -33,6 +33,7 @@ import os
 import pathlib
 import re
 import sys
+import textkey as _textkey
 import unicodedata
 
 # notability_engine.py はリポジトリの直下にある。
@@ -76,6 +77,10 @@ HOOK_RE = re.compile(r"^(?P<who>.{2,14}?)(?<![にへとで])は(?P<what>.{4,28})
 GAMES_BACK_RE = re.compile(r"ゲーム差はわずか([\d.]+)")
 
 
+# 手書きの読み表も、正規化したキーで引けるようにしておく。
+_READINGS_FOLDED = {_textkey.key(k): v for k, v in _MLB_NAME_READINGS.items()}
+
+
 @functools.lru_cache(maxsize=1)
 def _surname_kana() -> dict:
     """
@@ -94,12 +99,12 @@ def _surname_kana() -> dict:
     for en, ja in _kana_table().items():
         if not ja or "・" not in ja:
             continue
-        parts = [x for x in en.replace(".", "").split() if x]
-        # Jr. や III は姓ではない
-        parts = [x for x in parts if x not in ("Jr", "Sr", "II", "III", "IV")]
-        if len(parts) < 2:
-            continue
-        out.setdefault(parts[-1], ja.split("・")[-1])
+        # キーは正規化して置く。アクセントを残すと "Díaz" で登録され、
+        # コメントやAPIが返す "Diaz" では引けない。実際そうなっていて、
+        # 手書きの表にたまたま "Diaz" があったので気付かなかった。
+        last = _textkey.surname(en)
+        if last:
+            out.setdefault(_textkey.key(last), ja.split("・")[-1])
     return out
 
 
@@ -107,10 +112,13 @@ def _surname_kana() -> dict:
 def _kana_table(path: str = "data/player_kana.json") -> dict:
     """英語名 -> 日本語表記。無ければ空の辞書。"""
     try:
-        return json.loads(pathlib.Path(path).read_text(
+        raw = json.loads(pathlib.Path(path).read_text(
             encoding="utf-8")).get("names") or {}
     except (OSError, json.JSONDecodeError):
         return {}
+    # キーは正規化して持つ。APIが "Andrés Chaparro" を返す日と
+    # "Andres Chaparro" を返す日があり、完全一致だと片方で引けない。
+    return {_textkey.key(k): v for k, v in raw.items() if v}
 
 
 def speech_name(name: str) -> str:
@@ -138,7 +146,7 @@ def speech_name(name: str) -> str:
         return name
     # 集めたカタカナがあれば、それがいちばん正しい。
     # player_kana.py が Wikidata から引いて残している。
-    got = _kana_table().get(name)
+    got = _kana_table().get(_textkey.key(name))
     if got:
         return got
     folded = unicodedata.normalize("NFKD", name)
@@ -151,7 +159,10 @@ def speech_name(name: str) -> str:
         key = part.rstrip(".")
         if key in ("Jr", "Sr", "II", "III", "IV"):
             continue
-        got = _MLB_NAME_READINGS.get(key) or _surname_kana().get(key)
+        k = _textkey.key(key)
+        got = (_MLB_NAME_READINGS.get(key)
+               or _READINGS_FOLDED.get(k)
+               or _surname_kana().get(k))
         if got:
             return got
     if len(parts) >= 2:
