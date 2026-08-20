@@ -1,0 +1,41 @@
+name: 道具　同じ検索語で誰が出てくるか見る
+
+# 「日本語のMLBショートは誰が強いか」を頭の中で並べても、
+# それは思い込みの順位でしかない。視聴者が打ちそうな言葉で実際に
+# 検索して、上位に出た順に数字を取る。
+#
+# YouTubeの鍵は手元から使えないのでここで動かす。
+# 何も投稿しない。取って実行ページに出すだけ。
+#
+# 単位は1回およそ520。日次の残りに収まる。
+
+on:
+  workflow_dispatch:
+    inputs:
+      top:
+        description: '測るチャンネル数'
+        required: false
+        default: '12'
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Measure
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python scripts/competitors.py --top "${{ inputs.top || '12' }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: competitors
+          path: data/competitors.json
+          if-no-files-found: ignore
