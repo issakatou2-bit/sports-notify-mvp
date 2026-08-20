@@ -152,7 +152,10 @@ def main() -> int:
             ids="channel==MINE",
             startDate=start.isoformat(), endDate=end.isoformat(),
             metrics=METRICS, dimensions="video",
-            sort="-views", maxResults=50,
+            # 上位50本だけを取っていたので、本数が50を超えてから
+            # 中央値も「再生10回未満が何本あるか」も測れなくなっていた。
+            # 見えていないのは必ず下位——つまり、いちばん知りたい側。
+            sort="-views", maxResults=200,
         ).execute()
     except HttpError as e:
         if e.resp.status in (401, 403):
