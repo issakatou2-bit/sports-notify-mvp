@@ -107,6 +107,15 @@ jobs:
         continue-on-error: true
         run: python scripts/player_kana.py --from-recap
 
+      # 出す前に、常識で読み直す。
+      # 打数より安打が多い、防御率が三桁――照合だけでは通ってしまう
+      # 種類の壊れ方を、ここで止める。数字の幅は記録より広く取って
+      # あるので、引っかかったらまず組み立てを疑う。
+      - name: Sanity check
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/sanity.py --strict
+
       - name: Install video tools
         timeout-minutes: 16
         run: bash scripts/install_video_tools.sh
@@ -217,6 +226,12 @@ jobs:
               echo "素材が無いため $mode は作りません"
               echo "::endgroup::"; continue
             fi
+
+            # 原稿ができた時点で、競技を知っている人の目で読み直す。
+            # ここは止めない。気付いたことを実行ページに出すだけ。
+            python scripts/sanity.py --general \
+              --narration "build/mr_narration_${mode}.json" \
+              --out "data/sanity_${mode}.json" || true
 
             python scripts/synthesize_narration.py \
               --narration "build/mr_narration_${mode}.json" \

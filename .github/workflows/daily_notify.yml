@@ -252,6 +252,15 @@ jobs:
             --news public/news.json \
             --out public/narration.json
 
+      # 出す前に、常識で読み直す。
+      # 打数より安打が多い、防御率が三桁――照合だけでは通ってしまう
+      # 種類の壊れ方を、ここで止める。数字の幅は記録より広く取って
+      # あるので、引っかかったらまず組み立てを疑う。
+      - name: Sanity check
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/sanity.py --general --strict
+
       - name: Synthesize narration
         continue-on-error: true
         run: |
