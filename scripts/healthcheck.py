@@ -266,11 +266,11 @@ def main() -> int:
         video_lines.append(f"| — | 実際の公開 | {actual}本ありました | "
                            "記録が欠けているだけです |")
         missing = 0
-    # 当日の途中では、材料が古いのは当たり前(朝の回がまだ走っていない)。
+    # 当日の途中では、材料が古いのは当たり前(夕方の回がまだ走っていない)。
     # 動画が出たかどうかだけを見る。
     data_lines, stale = check_data()
     if args.today:
-        # 当日の途中では、材料が古いのは当たり前(朝の回がまだ走っていない)
+        # 当日の途中では、材料が古いのは当たり前(夕方の回がまだ走っていない)
         stale = 0
     elif (actual >= expect > 0) or (actual < 0 and expect > 0 and not missing):
         # 動画が出ているなら、材料は揃っていたということ。

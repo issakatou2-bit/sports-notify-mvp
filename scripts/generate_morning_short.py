@@ -1,7 +1,7 @@
 """
 「昨夜の日本人選手」の縦型ショートを作る。
 
-19時の予告(これから起きること)に対して、こちらは朝の枠(終わったこと)。
+19時の予告(これから起きること)に対して、こちらは夕方の枠(終わったこと)。
 MLBは日本の朝に終わるので、起きた直後に結果を1本で確認できる。
 結果は確定しているため推測が一切入らず、全部が検証済みの数字になる。
 
@@ -1633,7 +1633,7 @@ def main():
 
     path = pathlib.Path(args.recap)
     if not path.exists():
-        print(f"[info] {path} が無いため、朝のショートは作りません")
+        print(f"[info] {path} が無いため、夕方のショートは作りません")
         return
     data = json.loads(path.read_text(encoding="utf-8"))
     # 並べ替えはここで一度だけ行う。
@@ -1850,7 +1850,7 @@ def main():
         sys.exit(1)
 
     secs = total / FPS
-    print(f"[info] 朝のショートを生成しました: {video_path} "
+    print(f"[info] 夕方のショートを生成しました: {video_path} "
           f"({video_path.stat().st_size / 1024 / 1024:.1f}MB, {secs:.0f}秒)")
 
 

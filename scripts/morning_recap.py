@@ -1,11 +1,11 @@
 """
-「昨夜の日本人選手」の結果を集めて、朝のショート用データを作る。
+「昨夜の日本人選手」の結果を集めて、夕方のショート用データを作る。
 
 なぜこれをやるのか:
   MLBは日本の朝に終わる。個々の選手のニュースは大量にあるが、
   日本人選手を一覧で見られるものは意外と少なく、しかも
   「昨日◯◯どうだった?」は毎朝ほぼ確実に検索される。
-  19時の予告(これから)とは別に、朝の枠(終わったこと)を取れる。
+  19時の予告(これから)とは別に、夕方の枠(終わったこと)を取れる。
 
   予告と違って結果は確定しているので、推測が一切入らない。
   取れなかった選手は黙って落とす(0で埋めると、出ていないのか
@@ -676,7 +676,7 @@ def weekly_ranking(days: int = 7, out_dir: str = "data/recap_history") -> list:
 
 
 def load(path: str, day: str = None) -> list:
-    """朝のショート側から読む。日付が食い違う場合は使わない。"""
+    """夕方のショート側から読む。日付が食い違う場合は使わない。"""
     p = pathlib.Path(path)
     if not p.exists():
         return []
@@ -705,7 +705,7 @@ def main():
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
-    print(f"[info] 朝のまとめを出力しました({len(data['players'])}名) -> {out}")
+    print(f"[info] 夕方のまとめを出力しました({len(data['players'])}名) -> {out}")
 
     # 週間ランキングの材料。こちらは日付ごとに残す。
     save_history(data)

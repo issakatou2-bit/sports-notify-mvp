@@ -1154,7 +1154,7 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict", "morning"],
                         help="daily=ショート / weekly=週次まとめ / "
-                             "asset=資産動画 / verdict=答え合わせ / morning=朝のまとめ")
+                             "asset=資産動画 / verdict=答え合わせ / morning=夕方の5本")
     parser.add_argument("--recap", default="data/morning_recap.json",
                         help="--kind morning のときの成績データ")
     parser.add_argument("--profile", default="data/player_profile.json",
