@@ -47,7 +47,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823587",
@@ -109,7 +114,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823664",
@@ -163,7 +173,12 @@
           "text": "ツインズは自地区2位、ブレーブスは自地区1位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824640",
@@ -247,7 +262,12 @@
         "Clay Holmesは移籍後3登板目"
       ],
       "ai_summary": "シカゴを二分する同都市対決「クロスタウン・クラシック」の第3戦である本試合は、各地区で異なる立場にある両チームの力関係を映す一戦になる。ナ・リーグ中地区で【2位の74勝53敗】で2連勝中のカブスに対し、ア・リーグ中地区で【首位を4.0ゲーム差で牽引する65勝60敗】のホワイトソックスが挑む。両チームの先発投手は防御率2.5台の好投手で、Clay Holmesが2.56、Sean Newcombが2.51という接近した成績を見せている。風向きで打撃戦になりやすいリグレー・フィールドでの投げ合いにも注目したい。",
-      "notification_hook": "同都市対決・第3戦。先発投手の防御率2.5台同士の投げ合いがどうなるか。"
+      "notification_hook": "同都市対決・第3戦。先発投手の防御率2.5台同士の投げ合いがどうなるか。",
+      "final_score": {
+        "home": 0,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "564628",
@@ -279,7 +299,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": true,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824722",
@@ -352,7 +377,12 @@
         "Brandon Pfaadtは直近4登板を自責1以下に抑えている"
       ],
       "ai_summary": "ア・リーグ東地区3位のレッドソックスとナ・リーグ西地区3位のダイヤモンドバックスが対戦する、シリーズ最終戦である。両チームとも直近10試合は4勝6敗と足踏み状態だが、レッドソックスは【2連勝中】で、ダイヤモンドバックスは【3連敗中】と、現在の勢いが大きく異なる。先発投手の対比では、レッドソックスのPayton Tolleが防御率2.97で128奪三振を記録する一方、ダイヤモンドバックスのBrandon Pfaadtは防御率3.11ながら直近4登板を自責1以下に抑えており、安定感を見せている。フェンウェイ・パークのグリーンモンスターという左翼の高い壁が、打球の行方をどう変えるかにも注目したい。",
-      "notification_hook": "2連勝レッドソックス vs 3連敗ダイヤモンドバックス、グリーンモンスターが揺さぶる一戦"
+      "notification_hook": "2連勝レッドソックス vs 3連敗ダイヤモンドバックス、グリーンモンスターが揺さぶる一戦",
+      "final_score": {
+        "home": 6,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823424",
@@ -406,7 +436,12 @@
           "text": "フィリーズは5連勝中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824801",
@@ -454,7 +489,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822937",
@@ -510,7 +550,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 7,
+        "away": 6,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824394",
@@ -558,7 +603,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 1,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824476",
@@ -606,7 +656,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824076",
@@ -638,7 +693,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 9,
+        "away": 7,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823748",
@@ -686,7 +746,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822860",
@@ -734,7 +799,12 @@
       "away_has_jp": false,
       "score": 0,
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824155",
@@ -796,7 +866,12 @@
           "text": "エンゼルスには菊池雄星が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824318",
@@ -876,7 +951,12 @@
         "大谷翔平は4試合連続安打中"
       ],
       "ai_summary": "【首位ドジャースと地区5位ロッキーズ】による同地区対決の第2戦。76勝51敗で地区首位を走るドジャースが2位に8.0ゲーム差をつけているのに対し、ロッキーズは50勝76敗と苦しい立場にある。先発はドジャース佐々木朗希（防御率4.46、108奪三振）がロッキーズKyle Freeland（防御率6.27）と対戦する投手戦の見どころがあり、大谷翔平は4試合連続安打中。標高1600メートルの高地にあるクアーズ・フィールドは打球が伸びやすいMLB随一の打者有利球場だけに、両投手の力試しがどう展開するかに注目したい。",
-      "notification_hook": "佐々木朗希vs.大谷翔平、標高1600mの打者有利球場での対決。"
+      "notification_hook": "佐々木朗希vs.大谷翔平、標高1600mの打者有利球場での対決。",
+      "final_score": {
+        "home": 4,
+        "away": 6,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
