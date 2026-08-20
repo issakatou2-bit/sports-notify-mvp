@@ -98,6 +98,13 @@ class Game:
     home_probable: Optional[ProbablePitcher] = None
     away_probable: Optional[ProbablePitcher] = None
     venue_name: Optional[str] = None  # MLB Stats APIが返す英語の球場名
+    # ポストシーズン。gameType は R=レギュラー / F=ワイルドカード /
+    # D=地区シリーズ / L=リーグ優勝決定 / W=ワールドシリーズ。
+    game_type: str = "R"
+    series_game: Optional[int] = None   # そのシリーズの第何戦か
+    series_length: Optional[int] = None  # 何戦制か
+    series_wins: Optional[int] = None    # そのシリーズのここまでの勝敗
+    series_losses: Optional[int] = None
 
 
 @dataclass
@@ -273,6 +280,60 @@ def rule_rivalry(game: Game) -> list[Reason]:
     if note:
         text = f"{text} — {note}"
     return [Reason(tag="rivalry", text=text, weight=2)]
+
+
+# ポストシーズンの重み。勝てば次、負ければ終わり。段が上がるほど重い。
+POSTSEASON_WEIGHT = {"F": 4, "D": 5, "L": 6, "W": 8}
+POSTSEASON_NAME = {
+    "F": "ワイルドカードシリーズ",
+    "D": "地区シリーズ",
+    "L": "リーグ優勝決定シリーズ",
+    "W": "ワールドシリーズ",
+}
+
+
+def rule_postseason(game: Game) -> list[Reason]:
+    """
+    ポストシーズンの試合。
+
+    なぜ専用のルールが要るのか:
+      これまでの採点は順位争いと連勝記録でできている。どちらも
+      レギュラーシーズンの言葉で、10月には意味を失う。順位はもう
+      決着していて、連勝は記録されない。
+
+      そのままだと、ワールドシリーズの日に全試合が0点になり、
+      その日は動画が1本も出ない。1日1試合しか無い日に、
+      そのたった1試合を落とすことになる。
+
+      段を分けるのは、実際に重みが違うため。ワイルドカードは
+      3戦のうち1つ、ワールドシリーズは最後の7戦。
+    """
+    w = POSTSEASON_WEIGHT.get(game.game_type)
+    if not w:
+        return []
+    name = POSTSEASON_NAME.get(game.game_type, "ポストシーズン")
+    text = name
+    if game.series_game:
+        text += f" 第{game.series_game}戦"
+
+    # 王手は勝敗を見てから書く。
+    #
+    # 第何戦かだけで「どちらかが王手」と書いていたが、5戦制の第3戦は
+    # 2勝0敗なら王手でも、1勝1敗ならまだ何も決まっていない。
+    # seriesStatus に勝敗が入っているので、推測で書く必要が無い。
+    w1, w2 = game.series_wins, game.series_losses
+    if w1 is not None and w2 is not None and game.series_length:
+        need = (game.series_length + 1) // 2
+        lead, trail = max(w1, w2), min(w1, w2)
+        if lead == need - 1 and trail == need - 1:
+            text += f"({lead}勝{trail}敗。勝った方が突破)"
+        elif lead == need - 1:
+            text += f"({lead}勝{trail}敗で王手)"
+        elif lead == trail:
+            text += f"({lead}勝{trail}敗のタイ)"
+        else:
+            text += f"({lead}勝{trail}敗)"
+    return [Reason(tag="postseason", text=text, weight=w)]
 
 
 def rule_division_race(game: Game, standings: dict) -> list[Reason]:
@@ -690,7 +751,8 @@ SOCCER_GAME_RULES = [rule_soccer_japanese_player, rule_soccer_marquee,
 SOCCER_STANDINGS_RULES = [rule_soccer_table]
 
 STANDINGS_RULES = [rule_division_race, rule_quality_matchup, rule_win_streak]
-GAME_ONLY_RULES = [rule_marquee_team, rule_rivalry]  # jp_team_mapもstandingsも不要なルール
+GAME_ONLY_RULES = [rule_marquee_team, rule_rivalry, rule_postseason]
+# jp_team_mapもstandingsも不要なルール
 
 
 def generate_reasons(game: Game, standings: dict, jp_team_map: dict) -> list[Reason]:
@@ -758,6 +820,10 @@ NOTABLE_SCORE_THRESHOLD = 3
 # 3にしてあるのは日次動画がMLBと同じ3試合構成だから。既に3試合以上が
 # 閾値を超えている日は、この下限では何も変わらない。
 SOCCER_MIN_NOTABLE = 3
+
+# MLBも、その日にある試合の中から最低これだけは残す。
+# ポストシーズンで試合数が1〜4に減る日のため。
+MLB_MIN_NOTABLE = 3
 
 
 # ---------------------------------------------------------------------------
@@ -884,6 +950,8 @@ def build_output(
                 "home_has_jp": home_has_jp,
                 "away_has_jp": away_has_jp,
                 "score": visible_score,
+                # ポストシーズンかどうか。R=レギュラー。
+                "game_type": g.game_type,
                 "_sort_score": total_score,
                 "is_notable": visible_score >= NOTABLE_SCORE_THRESHOLD,
                 "reasons": [
@@ -911,6 +979,22 @@ def build_output(
     soccer = [g for g in output_games if is_soccer_league(g["league"])]
     for g in _spread_across_leagues(soccer, SOCCER_MIN_NOTABLE):
         g["is_notable"] = True
+
+    # ポストシーズンの日だけ、MLBにも下限を当てる。
+    #
+    # 10月に入ると1日1〜4試合になる。ワールドシリーズは1試合しか無い。
+    # 順位争いも連勝記録ももう発火しないので、そのままだと0点になり、
+    # その日は動画が1本も出ない。1試合しか無い日に、その1試合を
+    # 落とすことになる。
+    #
+    # レギュラーシーズンには当てない。1日15試合あって必ず3つが閾値を
+    # 超えるので、下限は要らない。むしろ理由の無い試合を注目と呼ばない
+    # 方が正しく、そこは test_soccer_rules が見張っている
+    # (実際、最初にレギュラーへも当ててしまい、そこで落ちた)。
+    mlb = [g for g in output_games if not is_soccer_league(g["league"])]
+    if any(g.get("game_type", "R") != "R" for g in mlb):
+        for g in mlb[:MLB_MIN_NOTABLE]:
+            g["is_notable"] = True
 
     for g in output_games:
         del g["_sort_score"]  # 内部のタイブレーク用なので出力には含めない
@@ -1801,7 +1885,10 @@ def fetch_mlb_games_and_standings(date_str: str):
 
     schedule_resp = requests.get(
         f"{MLB_API_BASE}/schedule",
-        params={"sportId": 1, "date": date_str, "hydrate": "team,probablePitcher"},
+        # seriesStatus はポストシーズンの勝敗(2勝2敗など)を返す。
+        # これが無いと「王手」を推測で書くことになる。
+        params={"sportId": 1, "date": date_str,
+                "hydrate": "team,probablePitcher,seriesStatus"},
         timeout=10,
     )
     schedule_resp.raise_for_status()
@@ -1896,6 +1983,11 @@ def fetch_mlb_games_and_standings(date_str: str):
                     away_team_name=MLB_TEAM_NAME_JP.get(str(away["id"]), away["name"]),
                     players=players,
                     start_time_utc=g.get("gameDate"),
+                    game_type=g.get("gameType") or "R",
+                    series_game=g.get("seriesGameNumber"),
+                    series_length=g.get("gamesInSeries"),
+                    series_wins=(g.get("seriesStatus") or {}).get("wins"),
+                    series_losses=(g.get("seriesStatus") or {}).get("losses"),
                     home_probable=probables["home"],
                     away_probable=probables["away"],
                     venue_name=(g.get("venue") or {}).get("name"),
