@@ -31,6 +31,7 @@ from generate_narration import speech_name  # noqa: E402
 from PIL import Image, ImageDraw, ImageFont
 
 import local_buzz
+import mentioned
 import post_common
 import local_voices
 import mlb_buzz
@@ -1362,7 +1363,9 @@ def render_voices(p, voices, picked=None):
         dx = int((1 - e) * 110)
         ja = v.get("ja", "")
         lines = wrap(d, ja, font(42), W - 220)[:3]
-        h = 60 + len(lines) * 58 + 46
+        # コメントで名前が挙がった選手。成績を1行足すぶん、箱を高くする。
+        who = (mentioned.find(v.get("title") or "", limit=1) or [None])[0]
+        h = 60 + len(lines) * 58 + 46 + (38 if who else 0)
         d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + h], 20, fill=(31, 26, 42))
         # ❝(U+275D)はNoto Sans CJKに無く、豆腐(□)になる。
         # 確実に持っている鉤括弧を使う。
@@ -1386,6 +1389,17 @@ def render_voices(p, voices, picked=None):
         # 原文の一部を小さく添える。訳が気になる人が確かめられるように
         src = (v.get("title") or "")[:38]
         d.text((100 - dx, yy + 4), src, font=font(24), fill=DIM)
+        # コメントで名前が挙がった選手の、その日の成績。
+        #
+        # 「Sanchezが今日の負けの唯一の理由だ」と書かれていても、
+        # 訳文だけでは実際どうだったのかが分からない。数字を隣に置くと、
+        # 怒っているのか称えているのかが数字の側からも見える。
+        # こちらの評価は足さない。並べるだけにする。
+        if who:
+            d.text((100 - dx, yy + 38),
+                   f"{who['name']}　{who['line'][:26]}",
+                   font=font(26), fill=JP)
+
         # どれだけ賛同されたかは、その一言の重みそのもの。
         likes = v.get("likes")
         if likes:

@@ -150,6 +150,15 @@ def main() -> int:
 
     out = [entry(s, r) for s, r in rows[:KEEP]]
 
+    # その日出た全員を、名前と成績1行だけで持つ。
+    #
+    # ファンのコメントには選手名が出てくる("Sanchez が今日の負けの理由だ")。
+    # そこへその選手の今日の成績を並べれば、言葉と数字が同じ画面に載る。
+    # 照合するには上位8人では足りず、出た全員が要る。
+    # 1人50バイトほどなので、300人でも大きくならない。
+    everyone = [{"name": r["name"], "team": r["team"], "type": r["type"],
+                 "line": mr.headline(r)} for _, r in rows]
+
     # 投手は別枠でも残す。
     #
     # 採点は打者に土台点(50点)を置いてあるので、上位はほぼ打者で埋まる。
@@ -167,6 +176,7 @@ def main() -> int:
         "scored": len(rows),
         "players": out,
         "pitchers": arms,
+        "everyone": everyone,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"[info] {len(rows)}人を採点しました\n")
