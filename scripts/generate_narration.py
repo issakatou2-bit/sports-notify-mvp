@@ -77,6 +77,33 @@ GAMES_BACK_RE = re.compile(r"ゲーム差はわずか([\d.]+)")
 
 
 @functools.lru_cache(maxsize=1)
+def _surname_kana() -> dict:
+    """
+    姓だけの読み。フルネームで引けた人から作る。
+
+    なぜ要るのか:
+      Wikidataに載っていない選手がいる。デビューしたばかりだと
+      記事が無い。実際 "Rafael Flores Jr." は引けず、読み上げが
+      「フロアーズ」になった。
+
+      ところが同じ姓の "Wilmer Flores" は引けていて、
+      「ウィルマー・フローレス」と分かっている。姓の読みは
+      そこから取れる。1人ぶん引ければ、同じ姓の全員に効く。
+    """
+    out = {}
+    for en, ja in _kana_table().items():
+        if not ja or "・" not in ja:
+            continue
+        parts = [x for x in en.replace(".", "").split() if x]
+        # Jr. や III は姓ではない
+        parts = [x for x in parts if x not in ("Jr", "Sr", "II", "III", "IV")]
+        if len(parts) < 2:
+            continue
+        out.setdefault(parts[-1], ja.split("・")[-1])
+    return out
+
+
+@functools.lru_cache(maxsize=1)
 def _kana_table(path: str = "data/player_kana.json") -> dict:
     """英語名 -> 日本語表記。無ければ空の辞書。"""
     try:
@@ -121,7 +148,10 @@ def speech_name(name: str) -> str:
     # 姓だけに削るのは「アルファベットのままよりはまし」という妥協で、
     # 1本まるごと同じ名前を読む回には足りない。
     for part in reversed(parts):
-        got = _MLB_NAME_READINGS.get(part.rstrip("."))
+        key = part.rstrip(".")
+        if key in ("Jr", "Sr", "II", "III", "IV"):
+            continue
+        got = _MLB_NAME_READINGS.get(key) or _surname_kana().get(key)
         if got:
             return got
     if len(parts) >= 2:
@@ -411,9 +441,21 @@ def build_game_facts(game: dict) -> str:
         lines.append(f"試合開始時の天気: {game['weather_note']}")
     for n in (game.get("log_notes") or []):
         lines.append(f"見どころ: {n}")
+
+    # 「所属」と「先発予定」は違う、と書き添える。
+    #
+    # 8/20の回で、両チームに日本人投手が所属している試合を
+    # 「日本人投手対決」と紹介してしまった。先発は Peter Lambert と
+    # Grayson Rodriguez で、2人とも投げない試合だった。
+    #
+    # 事実の並びが誘っている。「所属」の行と「先発」の行が別々に
+    # 置いてあるだけでは、繋げて読まれる。
+    jp_start = any((game.get(k) or {}).get("name_jp")
+                   for k in ("home_probable", "away_probable"))
+    if not jp_start and sum(1 for x in lines if "が所属" in x) >= 2:
+        lines.append("補足: 上の「所属」は在籍しているという意味で、"
+                     "この試合に出るとは限りません。先発は上の投手です。")
     return "\n".join(lines)
-
-
 def narrate_game(client, game: dict, index: int, total: int) -> str:
     facts = build_game_facts(game)
     prompt = (
@@ -426,6 +468,8 @@ def narrate_game(client, game: dict, index: int, total: int) -> str:
         "- 一番の見どころを1つに絞る。あれもこれも詰め込まない\n"
         "- 耳で聞いて分かる話し言葉。「〜です」「〜ます」調で書く\n"
         "- 上に書かれていない数字・成績・順位は絶対に書かないこと\n"
+        "- 「所属」は在籍の意味で、出場や先発とは違う。所属の選手を"
+        "「対決」「投げ合い」「登板」と書かないこと\n"
         "- 選手名は上の表記をそのまま使う。英語表記の名前をカタカナに"
         "変換しないこと(日本のメディアの表記と食い違うため)\n"
         "- 記号(【】・「」等)や箇条書きは使わず、そのまま読める文章だけを書く\n"

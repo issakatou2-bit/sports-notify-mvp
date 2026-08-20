@@ -16,6 +16,7 @@
   どれも「1つの問いに答えが2つある」状態。ここではその形を探す。
 """
 
+import inspect
 import json
 import pathlib
 import re
@@ -213,6 +214,37 @@ for _f in sorted((ROOT / "archive").glob("2026-*.json")):
 
 check("冒頭で名乗った試合が、1つ目に来ている日数の欠け", _late, 0)
 check("読み上げの試合と、画面が引く試合が同じ", _mismatch, 0)
+
+
+# 「所属」を「対決」と読み替えられないようにしてあるか。
+#
+# 8/20の19時の回で、両チームに日本人投手が在籍しているだけの試合を
+# 「日本人投手対決」と紹介した。先発は2人とも別の投手で、
+# その日は誰も投げていない。原稿はAIが書くので、渡す事実の並びが
+# 誤解を誘わない形になっているかを、こちらで見張る。
+print("\n--- 所属と先発の区別 ---")
+import generate_narration as gn3  # noqa: E402
+
+_g = {"home_team_name": "アストロズ", "away_team_name": "エンゼルス",
+      "start_time_jst": "08/21 09:10",
+      "reasons": [{"tag": "jp", "text": "アストロズには今井達也が所属",
+                   "visible": True},
+                  {"tag": "jp", "text": "エンゼルスには菊池雄星が所属",
+                   "visible": True}],
+      "home_probable": {"name": "Peter Lambert", "era": "3.11"},
+      "away_probable": {"name": "Grayson Rodriguez", "era": "7.17"}}
+_facts = gn3.build_game_facts(_g)
+check("所属だけの日は、出るとは限らないと書き添える",
+      "出るとは限りません" in _facts, True)
+
+# 日本人が先発する日は、断りが要らない(むしろ邪魔になる)
+_g2 = dict(_g)
+_g2["home_probable"] = {"name": "Yusei Kikuchi", "name_jp": "菊池雄星",
+                        "era": "3.20"}
+check("日本人が先発する日は書き添えない",
+      "出るとは限りません" in gn3.build_game_facts(_g2), False)
+check("AIへの条件に「対決と書かない」が入っている",
+      "「対決」" in inspect.getsource(gn3.narrate_game), True)
 
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)
