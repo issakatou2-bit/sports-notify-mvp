@@ -91,6 +91,36 @@ def roster(team_id: str, season: str) -> list:
     return out
 
 
+def league_wide(season: str) -> list:
+    """
+    リーグ全体の現役選手。名前と球団だけ。
+
+    なぜ要るのか:
+      コメントに出る名前が、そのカードの両チームにいるとは限らない。
+      「10回にDiazを出さなくて済んだ」の Diaz は、コメントが付いていた
+      8球団のどこにも在籍していなかった。リーグ全体を見ると
+      Diaz は1人だけで、姓から一意に決められる。
+
+      成績はここでは取らない。1200人ぶん引くことになる。
+      名前が誰なのかだけ分かれば、成績は必要になった選手だけ引けばよい。
+    """
+    try:
+        r = requests.get(f"{API}/sports/1/players",
+                         params={"season": season}, headers=UA,
+                         timeout=60).json()
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] リーグ全体の名簿を取れません: {e}", file=sys.stderr)
+        return []
+    out = []
+    for p in r.get("people", []):
+        name = p.get("fullName")
+        tid = str((p.get("currentTeam") or {}).get("id") or "")
+        if name and tid in MLB_TEAM_NAME_JP:
+            out.append({"name": name, "team": MLB_TEAM_NAME_JP[tid],
+                        "id": p.get("id")})
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--buzz", default="data/mlb_buzz.json")
@@ -132,6 +162,9 @@ def main() -> int:
         print(f"[info] {name_jp}: {len(got)}人")
         players += got
 
+    everyone = league_wide(season)
+    print(f"[info] リーグ全体: {len(everyone)}人")
+
     p = pathlib.Path(args.out)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps({
@@ -139,8 +172,10 @@ def main() -> int:
         "season": season,
         "teams": [t for t, _ in ids],
         "players": players,
+        # 成績は持たない。誰なのかを決めるためだけの名簿。
+        "league": everyone,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"[info] {len(players)}人を書き出しました -> {p}")
+    print(f"[info] 在籍{len(players)}人 / 名簿{len(everyone)}人 -> {p}")
     return 0
 
 

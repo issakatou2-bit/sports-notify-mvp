@@ -48,6 +48,19 @@ STOP = {
     "Rangers", "Mariners", "Athletics", "Brewers", "Cardinals",
     "Rockies", "Diamondbacks", "Yankee", "Prayers", "Thank", "Congrats",
     "I", "We", "You", "He", "She", "It", "My", "His", "Her", "Our",
+    # 姓と同じ綴りの普通の単語。大文字小文字を見なくしたぶん拾う。
+    "Judge", "Price", "May", "Wood", "Bell", "Long", "Young", "Short",
+    "Strong", "Hill", "Field", "Park", "Green", "White", "Brown", "Black",
+    "Gray", "Best", "Love", "Story", "March", "Snow", "Win", "Call",
+    "Hand", "Head", "Back", "Free", "Real", "Rich", "Wise", "Sharp",
+    "Swift", "Beat", "Close", "Cross", "Hard", "Home", "Last", "Left",
+    "Right", "Over", "Under", "Down", "Away", "Even", "Ever", "Every",
+    "Much", "Many", "More", "Most", "Some", "Such", "Than", "Them", "Time",
+    "Very", "Well", "Were", "Will", "With", "Would", "Your", "Been",
+    "Come", "Does", "From", "Have", "Here", "Into", "Like", "Look", "Made",
+    "Make", "Only", "Said", "Same", "Says", "Take", "Tell", "Their",
+    "Think", "Want", "Went", "Good", "Great", "Better", "Nice", "Sure",
+    "Feel", "Know", "Got",
 }
 
 
@@ -86,6 +99,13 @@ def _roster(best: str = BEST, roster: str = ROSTER) -> tuple:
     try:
         d = json.loads(pathlib.Path(roster).read_text(encoding="utf-8"))
         rows += [{**r, "when": "season"} for r in (d.get("players") or [])]
+        # リーグ全体の名簿。成績は無いが、誰なのかは決められる。
+        #
+        # 「10回にDiazを出さなくて済んだ」の Diaz は、コメントが付いていた
+        # 8球団のどこにもいなかった。リーグ全体で見ると1人だけで、
+        # 姓から一意に決まる。成績が無くても、所属は書ける。
+        rows += [{**r, "when": "league", "line": "", "type": ""}
+                 for r in (d.get("league") or [])]
     except (OSError, json.JSONDecodeError):
         pass
 
@@ -98,7 +118,7 @@ def _roster(best: str = BEST, roster: str = ROSTER) -> tuple:
         last = _surname(name)
         if last:
             by_last.setdefault(last, [])
-            # 同じ選手が両方に載る。その日の方を残す。
+            # 同じ選手が複数の表に載る。先に入れた方(その日の成績)を残す。
             if not any(x["name"] == name for x in by_last[last]):
                 by_last[last].append(row)
     by_last = {k: v[0] for k, v in by_last.items() if len(v) == 1}
@@ -107,23 +127,43 @@ def _roster(best: str = BEST, roster: str = ROSTER) -> tuple:
 
 def find(text: str, limit: int = 2) -> list:
     """
-    その文に出てくる選手を、その日の成績つきで返す。
+    その文に出てくる選手を、成績つきで返す。
 
     英語の原文に対して使う。訳文は表記が揺れるので見ない。
+
+    大文字小文字は見ない。ファンは気にせず書く。実際
+    "thank goodness they didnt call up diaz in the 10th" は
+    全部小文字で、大文字始まりだけを拾っていたら1件も当たらなかった。
+
+    そのぶん、姓と同じ綴りの普通の単語(judge, price, may, wood)を
+    拾うようになるので STOP で弾く。名簿の綴りと完全に一致する語だけを
+    見るので、それ以外は元から当たらない。
     """
     if not text:
         return []
-    by_last, by_full = _roster()
+    by_last, _by_full = _roster()
     if not by_last:
         return []
+    lower = {k.lower(): v for k, v in by_last.items()}
+    stop = {x.lower() for x in STOP}
     out, seen = [], set()
-    for word in re.findall(r"\b[A-Z][a-zA-Z'\-]{2,}\b", text):
-        if word in STOP or word in seen:
+    for word in re.findall(r"[A-Za-z][A-Za-z'-]{2,}", text):
+        key = word.lower()
+        if key in stop or key in seen:
             continue
-        hit = by_last.get(word)
+        hit = lower.get(key)
         if hit:
-            seen.add(word)
-            out.append(hit)
-            if len(out) >= limit:
-                break
+            seen.add(key)
+            # 成績が無い選手は出さない。
+            #
+            # リーグ全体の名簿は「誰なのか」を決めるために要る。
+            # 同じ姓が2人いれば捨てる、という判定は、その2人が
+            # どの球団にいようと効かないと意味が無いので、
+            # 名寄せは全体で行う。ただし名前と所属だけを画面に出しても
+            # 「なぜこの人が出てくるのか」になるだけなので、
+            # 成績のある選手に限って返す。
+            if hit.get("line"):
+                out.append(hit)
+                if len(out) >= limit:
+                    break
     return out
