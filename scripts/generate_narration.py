@@ -321,6 +321,26 @@ def _spoken_stats(headline: str) -> str:
     return out
 
 
+def _how_many(games: list, total: int) -> str:
+    """
+    「何試合あるうちの何試合を紹介するか」。
+
+    欧州は日によって0試合の日も19試合の日もある。3試合と言われても、
+    それが全部なのか一部なのかが分からない。総数が分かれば、
+    選んだという行為そのものにも意味が出る。
+
+    MLBは毎日15試合前後で変わらないので、そちらには足さない。
+    毎回同じ数を言うことになって、尺だけ食う。
+    """
+    n = len(games)
+    if not (games and _is_soccer_league(games[0].get("league"))):
+        return f"注目の{n}試合を、理由つきで。"
+    if not total or total <= n:
+        # 全部紹介する日。「1試合から1試合を選ぶ」とは言わない。
+        return f"今夜あるのはこの{n}試合です。理由つきで見ていきます。"
+    return f"今夜は{total}試合。そこから{n}試合を、理由つきで。"
+
+
 def _yesterday_recap(archive_dir: str, games: list,
                      base_rates_path: str = "data/base_rates.json",
                      best_path: str = "data/best_of_day.json"
@@ -549,6 +569,10 @@ def main():
     # 名乗りから入らず、その日いちばん具体的な事実から入る。
     # 画面側(generate_video.py)も同じ hook を meta 経由で受け取るので、
     # 読み上げと1枚目の表示が必ず一致する。
+    # その日にあった試合の総数。サッカーで「何試合中の何試合か」を言う。
+    total_today = len([g for g in data.get("games", [])
+                       if _is_soccer_league(g.get("league"))])
+
     hook = pick_hook(games)
 
     # 1枚目で名乗った試合を、そのまま2枚目に持ってくる。
@@ -593,7 +617,13 @@ def main():
     # 続けて見る理由になるのは名乗りではなくこちら。
     segments.append({
         "kind": "intro",
-        "text": f"{lead}注目の{len(games)}試合を、理由つきで。",
+        # サッカーは「今夜あるうちの何試合か」を添える。
+        #
+        # 欧州は日によって0試合の日も19試合の日もある。3試合と言われても、
+        # それが全部なのか一部なのかが分からない。全体の数が分かれば、
+        # 選んだという行為の意味も伝わる。
+        # MLBは毎日15試合前後で変わらないので、そちらには足さない。
+        "text": f"{lead}{_how_many(games, total_today)}",
         # 1枚目にその日いちばんの試合も渡す。画面の下半分が空いており、
         # 「で、どの試合なの」に答えられていなかった。
         "meta": {"date_label": date_label, "hook": hook,
