@@ -403,6 +403,42 @@ def asset_meta_from_spec(spec: dict) -> dict:
     }
 
 
+def related_lines(kind: str, limit: int = 3,
+                  path: str = "data/published_videos.json") -> list:
+    """
+    同じ枠の、少し前の回へのリンク。無ければ空。
+
+    なぜ要るのか:
+      実測では、公開から14日を過ぎた動画は1本も再生されていない。
+      Shortsフィードは97%を占めるが、そこに載るのは新しいものだけで、
+      古い回に辿り着く道が検索(2.3%)しか無かった。
+
+      フィードから来た人は説明欄を開かないので、これが効くのは
+      検索から来た人だけ。ただしその層は平均102秒見ている
+      (フィード経由は21秒)ので、次の1本へ渡す価値がある。
+    """
+    try:
+        rec = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    days = rec.get(kind) or {}
+    out, seen = [], set()
+    for day in sorted(days, reverse=True):
+        if len(out) >= limit:
+            break
+        e = days[day]
+        vid = e.get("video_id")
+        # 同じ動画が2日ぶん記録されていることがある(作り直した回など)。
+        # 同じリンクが並ぶと、記録が壊れているように見える。
+        if not (e.get("url") and e.get("title")) or vid in seen:
+            continue
+        seen.add(vid)
+        out.append(f"・{e['title'][:52]}" + '\n' + f"  {e['url']}")
+    if not out:
+        return []
+    return ["", "この枠の前回まで", ""] + out
+
+
 def _fit_tags(tags: list, limit: int = 460) -> list:
     """500文字の枠に収まるところまで、前から詰める。"""
     out, total = [], 0
@@ -1052,6 +1088,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         "",
         *DAILY_LINEUP_LINES,
         "",
+        # 同じ枠の前回まで。検索から来た人が次の1本へ行けるように。
+        *related_lines("morning_" + morning_mode
+                       if kind == "morning" and morning_mode
+                       and morning_mode != "players"
+                       else ("morning" if kind == "morning" else kind)),
         *OTHER_CHANNEL_LINES,
         "",
         "※試合データは公式のデータをもとに自動生成しています。",
