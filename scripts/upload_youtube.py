@@ -644,7 +644,12 @@ def resolve_publish_at(spec: str | None) -> str | None:
         return None
 
     # 実行が押した場合。ここで翌日に回すと、その日の成績が翌日に出てしまう。
-    if when <= now + timedelta(minutes=5):
+    #
+    # 余裕を5分取っていたが、それが理由で18:57に上げた回が
+    # 「19:00は5分以内だから」と即時公開になり、3分早く出た。
+    # 動画のアップロードはこの判定より前に終わっていて、
+    # ここから先はメタデータを送るだけなので、数十秒あれば足りる。
+    if when <= now + timedelta(minutes=1):
         print(f"[info] 指定の {spec} は過ぎている(現在 {now:%H:%M})ため、"
               f"予約せずそのまま公開します")
         return None
