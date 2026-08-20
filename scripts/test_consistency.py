@@ -246,5 +246,27 @@ check("日本人が先発する日は書き添えない",
 check("AIへの条件に「対決と書かない」が入っている",
       "「対決」" in inspect.getsource(gn3.narrate_game), True)
 
+
+# 1枚目の帯と、そこで読み上げる文が同じものを指しているか。
+#
+# 現地の報道の回で、帯は「いちばん短い見出し」、読み上げは「1件目」を
+# 選んでいた。画面に見出しが2つ並び、声は下の方だけを読む形になり、
+# 見ている側からは、どちらが本題か分からなかった。
+print("\n--- 1枚目の帯と読み上げ ---")
+
+_rep = {"headlines": [
+    {"jp": "大谷翔平が6年連続30本塁打シーズンを達成、MVP争いでペースを維持"},
+    {"jp": "ダルビッシュはカブスの良い補強か"},
+    {"jp": "レッドソックスが連勝を4に伸ばす"},
+]}
+_data = {"reporters": _rep, "voices": {}, "buzz": [], "players": [],
+         "talk": {}, "date": "2026-08-20"}
+_n = gms.build_narration(_data, mode="press")
+_intro = _n["segments"][0]
+_band, _ = gms.intro_topic("press", _intro["meta"], None,
+                           {"reporters": _rep, "voices": {}, "buzz": []})
+check("帯の見出しが、読み上げの本文に入っている",
+      bool(_band) and _band[:12] in _intro["text"], True)
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

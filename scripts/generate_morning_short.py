@@ -836,10 +836,14 @@ def intro_topic(mode: str, meta: dict, top: dict, extra: dict) -> tuple:
     if mode == "press":
         hs = (extra.get("reporters") or {}).get("headlines") or []
         if hs:
-            # いちばん短い見出しを選ぶ。長いものを途中で切ると
-            # 「…火曜日」で終わって、何の話か分からなくなる。
-            head = min((h.get("jp") or h.get("title") or "" for h in hs[:5]),
-                       key=len, default="")
+            # 読み上げが選んだ見出しを、そのまま帯にも出す。
+            #
+            # 以前は帯だけ「いちばん短い見出し」を選んでいて、
+            # 読み上げは1件目を読んでいた。画面に見出しが2つ並び、
+            # 声は下の方だけを読む形になっていた。
+            i = meta.get("used_headline")
+            h = hs[i] if isinstance(i, int) and i < len(hs) else hs[0]
+            head = h.get("jp") or h.get("title") or ""
             return clip_phrase(head, 26), f"現地の見出し {len(hs)}件を翻訳"
         return "", ""
 
