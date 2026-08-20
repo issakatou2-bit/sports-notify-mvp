@@ -15,6 +15,7 @@ generate_morning_short.py から使う。描画の道具(フォント・カー�
 
 import generate_morning_short as ms
 import post_common
+import terms
 from generate_narration import speech_name
 
 
@@ -313,12 +314,35 @@ def render_career(p, prof):
     return im
 
 
+# その動画で既に出した用語。同じ説明を何度も出さない。
+_SHOWN_TERMS = set()
+
+
+def draw_term(d, text: str) -> None:
+    """
+    画面の下に、指標の一行説明を出す。
+
+    なぜ画面だけなのか:
+      読み上げに入れると、毎回「OPSとは出塁率と長打率を足したもので…」
+      を聞かされる。知っている人には邪魔で、尺も食う。
+      画面に小さく出しておけば、要る人だけが読む。
+
+      置き場所は読み上げの帯のさらに下。帯は H-260-h から始まるので、
+      そこへ重ねないように H-235 に置く。
+    """
+    note = terms.note_for(text, _SHOWN_TERMS)
+    if not note:
+        return
+    d.text((70, ms.H - 235), note, font=ms.font(28), fill=ms.DIM)
+
+
 def render_season(p, prof):
     im, d = ms.base(p)
     y = _head(d, prof, "今季と昨季")
     y += 40
     this_s = stat_line(prof, prof.get("this_season") or {})
     last_s = stat_line(prof, prof.get("last_season") or {})
+    draw_term(d, this_s + " " + last_s)
     if this_s:
         y = _stat_card(d, y, "今シーズン", this_s, ms.ACCENT)
     reach = milestone(prof)
