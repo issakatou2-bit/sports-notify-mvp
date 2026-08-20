@@ -107,14 +107,12 @@ jobs:
         continue-on-error: true
         run: python scripts/player_kana.py --from-recap
 
-      # 出す前に、常識で読み直す。
-      # 打数より安打が多い、防御率が三桁――照合だけでは通ってしまう
-      # 種類の壊れ方を、ここで止める。数字の幅は記録より広く取って
-      # あるので、引っかかったらまず組み立てを疑う。
+      # 成績データを常識で見ておく。ここは知らせるだけ。
+      # 止めるのは1本ずつ、下のループの中で判断する——
+      # 1行おかしいからといって、関係のない4本まで落とす理由はない。
       - name: Sanity check
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/sanity.py --strict
+        continue-on-error: true
+        run: python scripts/sanity.py --narration
 
       - name: Install video tools
         timeout-minutes: 16
@@ -227,11 +225,18 @@ jobs:
               echo "::endgroup::"; continue
             fi
 
-            # 原稿ができた時点で、競技を知っている人の目で読み直す。
-            # ここは止めない。気付いたことを実行ページに出すだけ。
-            python scripts/sanity.py --general \
-              --narration "build/mr_narration_${mode}.json" \
-              --out "data/sanity_${mode}.json" || true
+            # 原稿ができた時点で、常識で読み直す。
+            #
+            # ありえない数字が原稿に入っていたら、この1本だけ出さない。
+            # 他の枠は別の材料で別の原稿を作っているので、巻き込まない。
+            # 通し読み(--general)のほうは止めない。言語模型の違和感で
+            # 正しい日の投稿を潰すと、その損のほうが大きい。
+            if ! python scripts/sanity.py --general --strict \
+                --narration "build/mr_narration_${mode}.json" \
+                --out "data/sanity_${mode}.json"; then
+              echo "::warning::$mode の原稿にありえない数字があるため出しません"
+              echo "::endgroup::"; continue
+            fi
 
             python scripts/synthesize_narration.py \
               --narration "build/mr_narration_${mode}.json" \

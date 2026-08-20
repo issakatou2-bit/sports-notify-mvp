@@ -257,6 +257,10 @@ jobs:
       # 種類の壊れ方を、ここで止める。数字の幅は記録より広く取って
       # あるので、引っかかったらまず組み立てを疑う。
       - name: Sanity check
+        id: sanity
+        # ここで落ちても回は続ける。止めるのは公開だけ。
+        # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
+        continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/sanity.py --general --strict
@@ -271,6 +275,7 @@ jobs:
       # 動画用に作った音声を、そのままポッドキャストにも転用する。
       # 追加のAI呼び出しも音声合成も不要なので、実質コストはゼロ。
       - name: Generate podcast
+        if: steps.sanity.outcome == 'success'
         continue-on-error: true
         run: |
           python scripts/generate_podcast.py \
@@ -296,6 +301,7 @@ jobs:
       #  もう参照されないので、GitHub側から削除して構わない)
 
       - name: Commit podcast episode
+        if: steps.sanity.outcome == 'success'
         continue-on-error: true
         run: |
           bash scripts/commit_data.sh \
@@ -323,6 +329,7 @@ jobs:
             --out build/video/thumb.png
 
       - name: Upload to YouTube
+        if: steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -371,6 +378,7 @@ jobs:
       # 1つも動かず、動画もRSSもサイト更新も丸ごと消えた。
       # 通知は届かなければ困るが、本体はあくまで動画とサイト。
       - name: Post to Bluesky
+        if: steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -381,6 +389,7 @@ jobs:
       # Threadsは投稿ごとの確認画面を要求しないので、完全に自動で出せる。
       # 未設定なら黙って飛ぶ。落として毎日ノイズを出す価値は無い。
       - name: Post to Threads
+        if: steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
@@ -389,6 +398,7 @@ jobs:
         run: python scripts/post_threads.py
 
       - name: Send push via OneSignal
+        if: steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
@@ -406,6 +416,7 @@ jobs:
       # 自動生成に任せず本文を渡すのは、VOICEVOXの音声を聞き取り直させると
       # 選手名と球団名が確実に崩れるため。元の文字はこちらが持っている。
       - name: Add Japanese captions
+        if: steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -421,6 +432,7 @@ jobs:
       # 設定しない運用になるため、失敗として出すと毎日ノイズになる。
       # 審査前は video.publish が付かないので、自動的に下書き投稿になる。
       - name: Post to TikTok
+        if: steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}

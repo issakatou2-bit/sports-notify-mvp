@@ -143,6 +143,10 @@ jobs:
       # 種類の壊れ方を、ここで止める。数字の幅は記録より広く取って
       # あるので、引っかかったらまず組み立てを疑う。
       - name: Sanity check
+        id: sanity
+        # ここで落ちても回は続ける。止めるのは公開だけ。
+        # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
+        continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/sanity.py --general --strict --narration build/soccer_narration.json
@@ -176,7 +180,7 @@ jobs:
       # 20:00に出す。この回は20:10前後に終わるので、間に合わなければ
       # そのまま即時公開に倒れる(予約が過去になるとAPIが弾くため)。
       - name: Upload to YouTube
-        if: steps.gate.outputs.count != '0'
+        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -195,7 +199,7 @@ jobs:
       # こちらは20時に「今夜の注目試合」で、1つにまとめると
       # どちらかの言い方が必ず嘘になる。
       - name: Post to Bluesky
-        if: steps.gate.outputs.count != '0'
+        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -204,7 +208,7 @@ jobs:
         run: python scripts/post_bluesky.py --games data/soccer_games.json
 
       - name: Post to Threads
-        if: steps.gate.outputs.count != '0'
+        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
@@ -213,7 +217,7 @@ jobs:
         run: python scripts/post_threads.py --games data/soccer_games.json
 
       - name: Post to TikTok
-        if: steps.gate.outputs.count != '0'
+        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}

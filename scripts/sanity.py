@@ -80,8 +80,19 @@ def parse_line(line):
     for unit in units:
         for m in re.finditer(NUM + re.escape(unit), line):
             out.setdefault(unit, float(m.group(1)))
+    # 読み上げ原稿では打率を「2割9分1厘」と書く。数字だけ拾うと
+    # 打率2.0になり、ありえない値として正常な原稿を止めてしまう。
+    # 実際それで大谷の行が引っかかった。先に読み解く。
+    m = re.search("打率[ 　]*([0-9]+)割(?:([0-9]+)分)?(?:([0-9]+)厘)?", line)
+    if m:
+        wari, bu, rin = (int(x or 0) for x in m.groups())
+        out["打率"] = wari / 10 + bu / 100 + rin / 1000
+        line = line[:m.start()] + line[m.end():]
+
     # 「防御率2.15」「打率.312」は数字が後ろに来る
     for unit in ("防御率", "打率"):
+        if unit in out:
+            continue
         m = re.search(re.escape(unit) + "[ 　]*([0-9]*[.][0-9]+|[0-9]+)", line)
         if m:
             out[unit] = float(m.group(1))
@@ -138,6 +149,45 @@ def check_stat_files():
                     continue
                 seen.add(sig)
                 bad += check_line(r.get("name", "?"), line)
+    return bad
+
+
+def check_narration(paths):
+    """原稿そのものを見る。
+
+    成績データが正しくても、組み立てで壊れることはある。
+    ただし原稿は地の文なので、一試合の話か今季の話かが
+    行からは決まらない。「45本塁打」は今季なら普通、
+    一試合ならありえない。
+
+    なので原稿には広いほうの幅だけを当てる。
+    矛盾の検査(安打>打数)も原稿では見ない——1つの文に
+    2人の成績が並ぶことがあり、別人の数字を突き合わせて
+    しまう。狭く見て誤って止めるより、確実な分だけ止める。
+    """
+    loose = {}
+    for unit in set(GAME_BOUNDS) | set(SEASON_BOUNDS):
+        g = GAME_BOUNDS.get(unit, (0, 0))
+        s = SEASON_BOUNDS.get(unit, (0, 0))
+        loose[unit] = (min(g[0], s[0]), max(g[1], s[1]))
+
+    bad = []
+    for p in paths:
+        try:
+            d = json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        for i, s in enumerate(d.get("segments") or []):
+            text = (s.get("text") or "").strip()
+            if not text:
+                continue
+            for unit, val in parse_line(text).items():
+                lo, hi = loose.get(unit, (None, None))
+                if lo is None or lo <= val <= hi:
+                    continue
+                bad.append("%s の%d番目: 「%s」の%s%g はありえない(%g〜%g)"
+                           % (pathlib.Path(p).name, i + 1,
+                              text[:40], unit, val, lo, hi))
     return bad
 
 
@@ -223,7 +273,8 @@ def main():
     ap.add_argument("--out", default="data/sanity.json")
     args = ap.parse_args()
 
-    impossible = check_stat_files() + check_scores()
+    impossible = (check_stat_files() + check_scores()
+                  + check_narration(args.narration))
     print("--- ありえない数字 ---")
     for b in impossible:
         print("  NG", b)
