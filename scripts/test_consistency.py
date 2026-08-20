@@ -268,5 +268,22 @@ _band, _ = gms.intro_topic("press", _intro["meta"], None,
 check("帯の見出しが、読み上げの本文に入っている",
       bool(_band) and _band[:12] in _intro["text"], True)
 
+
+# 名前の照合で、アクセント記号のせいで別人を出さないか。
+#
+# 現役に Díaz は6人いる。アクセントを落とさずに数えていたため、
+# Diaz(1人) と Díaz(5人) に割れ、前者だけが「同姓なし」として
+# 残っていた。ファンが書く "diaz" に、無関係な選手の成績が
+# 付くところだった。
+print("\n--- 名前の照合 ---")
+import mentioned as mn  # noqa: E402
+
+check("アクセントを落とせている", mn.fold("Edwin Díaz"), "Edwin Diaz")
+check("姓もアクセントを落とす", mn._surname("Edwin Díaz"), "Diaz")
+_by_last, _ = mn._roster()
+# 同姓が複数いる姓は、照合から外れていること
+_dupes = [s for s in ("Diaz", "Diaz".lower()) if s in _by_last]
+check("同姓が複数いる姓は照合しない", _dupes, [])
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

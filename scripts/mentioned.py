@@ -31,6 +31,7 @@ import functools
 import json
 import pathlib
 import re
+import unicodedata
 
 BEST = "data/best_of_day.json"
 ROSTER = "data/roster_stats.json"
@@ -64,8 +65,23 @@ STOP = {
 }
 
 
+def fold(s: str) -> str:
+    """
+    照合用にアクセントを落とす。Díaz -> Diaz。
+
+    これが無いと、同じ姓が綴りの違いで別々に数えられる。
+    現役に Díaz は6人いるのに、アクセントの有無で
+    Diaz(1人) と Díaz(5人) に割れ、前者だけが「一意」として残っていた。
+    コメントの "diaz" に、無関係な Yainer Diaz の成績が付くところだった。
+
+    ファンはアクセントを打たない。名簿側を寄せる。
+    """
+    return "".join(c for c in unicodedata.normalize("NFKD", s or "")
+                   if not unicodedata.combining(c))
+
+
 def _surname(name: str) -> str:
-    parts = [x for x in (name or "").replace(".", "").split()
+    parts = [x for x in fold(name).replace(".", "").split()
              if x not in ("Jr", "Sr", "II", "III", "IV")]
     return parts[-1] if len(parts) >= 2 else ""
 
@@ -144,11 +160,11 @@ def find(text: str, limit: int = 2) -> list:
     by_last, _by_full = _roster()
     if not by_last:
         return []
-    lower = {k.lower(): v for k, v in by_last.items()}
+    lower = {fold(k).lower(): v for k, v in by_last.items()}
     stop = {x.lower() for x in STOP}
     out, seen = [], set()
     for word in re.findall(r"[A-Za-z][A-Za-z'-]{2,}", text):
-        key = word.lower()
+        key = fold(word).lower()
         if key in stop or key in seen:
             continue
         hit = lower.get(key)
