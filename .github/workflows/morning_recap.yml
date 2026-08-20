@@ -94,6 +94,15 @@ jobs:
       # 出しても読みにくいし、読み上げは辞書に無い綴りを1文字ずつ読む。
       # Wikidataの日本語ラベルを引いて残しておく。一度引いた名前は
       # 二度と問い合わせないので、日に数件しか通信しない。
+      # コメントで名前が挙がった選手を引くための表。
+      #
+      # ファンは出場していない選手の話もする(「降格するらしい」など)。
+      # その日の出場者だけでは繋がらないので、コメントを集めた
+      # 4試合の両チームぶん、在籍と今季成績を持っておく。
+      - name: Fetch rosters for the commented games
+        continue-on-error: true
+        run: python scripts/roster_stats.py --buzz data/mlb_buzz.json
+
       - name: Fetch player readings
         continue-on-error: true
         run: python scripts/player_kana.py --from-recap
@@ -314,7 +323,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "recap: ${{ github.run_id }}" \
-            data/morning_recap.json data/venue_stats.json data/published_videos.json data/mlb_buzz.json data/local_buzz.json data/published_tiktok.json data/local_reporters.json data/local_voices.json data/playlists.json data/localized.json data/recap_history data/best_of_day.json data/player_profile.json data/player_kana.json
+            data/morning_recap.json data/venue_stats.json data/published_videos.json data/mlb_buzz.json data/local_buzz.json data/published_tiktok.json data/local_reporters.json data/local_voices.json data/playlists.json data/localized.json data/recap_history data/best_of_day.json data/player_profile.json data/player_kana.json data/roster_stats.json
 
       - name: Save video as artifact
         if: always()

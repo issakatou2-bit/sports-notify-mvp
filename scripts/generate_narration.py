@@ -369,6 +369,23 @@ def _yesterday_recap(archive_dir: str, games: list,
     # その1位を引くだけで済む(こちらで選び直さない)。
     best = ""
     top = arm = None
+    # best_of_day.py が採点しているのはMLBの選手だけ。
+    #
+    # sport を見ずに読んでいたので、サッカーの答え合わせに
+    # 「この日いちばんはクロウ、アームストロングで、5打数4安打」が
+    # 入っていた。サッカーの動画に打数と本塁打が出る。
+    #
+    # サッカー側に同じものを出すなら、得点者を別に取ってくることになる。
+    # いまは無いので、サッカーは試合結果だけを並べる。
+    if sport != "mlb":
+        return {
+            "kind": "recap",
+            "text": f"昨日この番組で選んだ{len(lines)}試合は、こうなりました。"
+                    f"{spoken}。今夜の結果も、また明日この時間に出します。",
+            "meta": {"lines": [{"matchup": m, "score": sc, "note": n}
+                               for m, sc, n, _ in lines[:3]],
+                     "base": base},
+        }
     try:
         b = json.loads(_p.Path(best_path).read_text(encoding="utf-8"))
         top = (b.get("players") or [None])[0]
