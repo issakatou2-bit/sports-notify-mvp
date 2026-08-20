@@ -114,7 +114,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "archive: ${{ github.run_id }}" \
-            archive/ podcast/
+            archive/ podcast/ data/roster_snapshot.json data/news_log.json
 
       - name: Assemble Pages site
         # サイトが1日古くなるより、動画が出ない方が痛い。

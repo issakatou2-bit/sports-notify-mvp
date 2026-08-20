@@ -285,5 +285,29 @@ _by_last, _ = mn._roster()
 _dupes = [s for s in ("Diaz", "Diaz".lower()) if s in _by_last]
 check("同姓が複数いる姓は照合しない", _dupes, [])
 
+# 同じ日に出す5本が、同じ言葉で始まっていないか。
+#
+# 現地編と報道編は、先頭が枠の名前で固定されていた。7日並べると
+# 変わるのは日付だけで、フィードでは同じ動画を出し直しているように
+# 見える。YouTubeの規約が「変化に乏しい動画」を名指ししている形でもある。
+# 先頭はその日の中身から取る。
+print("\n--- 同じ日の5本の書き出し ---")
+import upload_youtube as _uy  # noqa: E402
+
+_heads = {}
+for _mode in ("players", "player", "voices", "local", "press"):
+    _t = _uy.build_metadata("notable_games.json", "8月21日",
+                            kind="morning", morning_mode=_mode
+                            )["snippet"]["title"]
+    _heads[_mode] = _t.split("｜")[0].replace("【MLB】", "").strip()
+    check(f"{_mode} は100字以内", len(_t) <= 100, True)
+
+_dupe = [h for h in _heads.values() if list(_heads.values()).count(h) > 1]
+check("書き出しがかぶっていない", sorted(set(_dupe)), [])
+
+# 中身が変われば書き出しも変わること(枠の名前を置いているだけなら変わらない)
+check("報道編の書き出しはその日の見出しから", bool(_uy.top_headline()), True)
+check("現地編の書き出しはその日の話題から", bool(_uy.top_talked_team()), True)
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

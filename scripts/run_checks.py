@@ -197,6 +197,147 @@ def check_inventory() -> int:
     return r.returncode
 
 
+def _writes_to(script: str, dest: str) -> bool:
+    """その台本が args.<dest> の指す先へ書き込むか。
+
+    書き方は二通りある。args.x を直に渡す形と、いったん
+    Path(args.x) を変数に入れてから書く形。後者が
+    featured_players.json の書き方で、直の検索では見つからない。
+    """
+    path = ROOT / "scripts" / script
+    if not path.exists():
+        return False
+    src = path.read_text(encoding="utf-8")
+    ref = "args." + dest
+    if ref not in src:
+        return False
+
+    lines = src.splitlines()
+    aliases = {ref}
+    for line in lines:
+        m = re.match(r"\s*(\w+)\s*=\s*(?:pathlib\.)?Path\(" + re.escape(ref),
+                     line)
+        if m:
+            aliases.add(m.group(1))
+
+    for i, line in enumerate(lines):
+        if not any(a in line for a in aliases):
+            continue
+        # 書き込みは同じ行か、続く数行に現れる
+        if _is_write(" ".join(lines[i:i + 3])):
+            return True
+        # 他の関数へ渡している形。ニュースの履歴はこれで、
+        # append_news_log(Path(args.log), ...) と渡した先で書いていた。
+        # 呼び先を一段だけ辿る。名前で当てると当て損なう。
+        for cm in re.finditer(r"\b(\w+)\(([^\n]*)\)", line):
+            fn, argstr = cm.group(1), cm.group(2)
+            if not any(a in argstr for a in aliases):
+                continue
+            pos = _arg_position(argstr, aliases)
+            if pos is None:
+                continue
+            dm = re.search(r"^def " + re.escape(fn) + r"\(([^)]*)\)",
+                           src, re.M)
+            if not dm:
+                continue
+            params = [p.split(":")[0].split("=")[0].strip()
+                      for p in dm.group(1).split(",")]
+            if pos < len(params) and _writes_to_var(src, fn, params[pos]):
+                return True
+    return False
+
+
+def _arg_position(argstr: str, aliases: set):
+    """呼び出しの何番目の引数に入っているか。"""
+    depth = 0
+    start = 0
+    parts = []
+    for i, ch in enumerate(argstr):
+        if ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+        elif ch == "," and depth == 0:
+            parts.append(argstr[start:i])
+            start = i + 1
+    parts.append(argstr[start:])
+    for i, p in enumerate(parts):
+        if any(a in p for a in aliases):
+            return i
+    return None
+
+
+def _is_write(text: str) -> bool:
+    """この断片は書き込みか。
+
+    open() は開く向きまで見る。読むだけの open(path, "r") を
+    書き込みと数えると、読み専用の入力まで「コミット漏れ」に見えて、
+    検査そのものが信用されなくなる。
+    """
+    if re.search(r"\.(write_text|write_bytes|mkdir)\b", text):
+        return True
+    if re.search(r"json\.dump\(", text):
+        return True
+    return bool(re.search(r"open\([^)]*[\"'][wax]b?\+?[\"']", text))
+
+
+def _writes_to_var(src: str, fn: str, param: str) -> bool:
+    """関数 fn の本体で、引数 param へ書いているか。"""
+    m = re.search(r"^def " + re.escape(fn) + r"\(.*?\n(.*?)(?=^def |\Z)",
+                  src, re.M | re.S)
+    if not m:
+        return False
+    for line in m.group(1).splitlines():
+        if param in line and _is_write(line):
+            return True
+    return False
+
+
+def _defaults_written(script: str) -> set:
+    """台本が既定値で書きにいく data/*.json。
+
+    渡していないから安全、とはならない。ニュースの履歴は
+    argparse の既定値で data/news_log.json を書いていて、
+    ワークフローの行には現れないまま、一度もコミットされていなかった。
+    """
+    path = ROOT / "scripts" / script
+    if not path.exists():
+        return set()
+    src = path.read_text(encoding="utf-8")
+    out = set()
+    for m in re.finditer(r"add_argument\(\s*[\"']--([\w-]+)[\"'][^)]*?"
+                         r"default\s*=\s*[\"'](data/[\w./-]+\.json)[\"']",
+                         src, re.S):
+        if _writes_to(script, m.group(1).replace("-", "_")):
+            out.add(m.group(2))
+    # 既定値を持たず、定数で直に書いているものも拾う
+    for m in re.finditer(r"^[A-Z_]+\s*=\s*[\"'](data/[\w./-]+\.json)[\"']",
+                         src, re.M):
+        name = src[:m.start()].rsplit("\n", 1)[-1] or ""
+        const = re.match(r"([A-Z_]+)", m.group(0)).group(1)
+        if re.search(re.escape(const) + r"[^\n]*write_text|"
+                     r"write_text[^\n]*" + re.escape(const), src):
+            out.add(m.group(1))
+        del name
+    return out
+
+
+def _written_via_flags(text: str) -> set:
+    """ワークフローが動かす台本が書き戻す data/*.json。"""
+    out = set()
+    # 「python scripts/x.py」から、次の python 行までを1つの呼び出しとみなす
+    for m in re.finditer(r"python\s+scripts/([\w_]+\.py)((?:.|\n)*?)"
+                         r"(?=\n\s*(?:python|-\s*name:|#|\Z))", text):
+        script, tail = m.group(1), m.group(2)
+        for fm in re.finditer(r"--([\w-]+)\s+[\"']?(data/[\w./-]+\.json)",
+                              tail):
+            flag, path = fm.group(1), fm.group(2)
+            if _writes_to(script, flag.replace("-", "_")):
+                out.add(path)
+        out |= _defaults_written(script)
+    return out
+
+
 def check_commit_list() -> int:
     """
     その回で作ったファイルを、コミットの一覧へ渡し忘れていないか。
@@ -210,9 +351,20 @@ def check_commit_list() -> int:
       ワークフローは緑で終わる。動画も出る。記録だけが消える。
       実行ログを見ても気づけない類の穴なので、機械に見張らせる。
 
+      --out だけ見ていたら、二度目を素通りさせた。
+      「今日の1人」の重複除けの履歴は --history data/featured_players.json
+      で渡していて、player_profile.py はそこへ書き戻す。だが
+      commit_data.sh に無かったので、履歴は毎回まっさらに戻り、
+      14日の間隔は一度も効いていなかった。Pete Crow-Armstrong が
+      8/18と8/19に続けて出たのはそのため。
+
+      なので旗の名前では判断しない。ワークフローが渡している
+      data/*.json を全部拾って、渡された先の台本がそこへ書くかどうかを
+      台本自身に見にいく。書くなら、コミットに要る。
+
     見るもの:
-      --out data/x.json で作っていて、gitが追跡していて、
-      同じワークフローの commit_data.sh の引数に無いもの。
+      ワークフローが台本に渡していて、その台本が書き込んでいて、
+      gitが追跡していて、commit_data.sh の引数に無いもの。
     """
     step("作ったのにコミットしていないもの")
     tracked = set((run(["git", "ls-files", "data"]).stdout or "").split())
@@ -222,6 +374,7 @@ def check_commit_list() -> int:
         if "commit_data.sh" not in text:
             continue  # 記録を残さない回。渡し忘れも起きない。
         made = set(re.findall(r"--out\s+(data/[\w./-]+\.json)", text))
+        made |= _written_via_flags(text)
 
         # commit_data.sh の呼び出しから、続く行の引数を拾う。
         # 行末が \ で続いている間だけが、その呼び出しの引数。

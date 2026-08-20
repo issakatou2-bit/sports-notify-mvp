@@ -814,6 +814,56 @@ def load_profile(path: str) -> dict:
         return {}
 
 
+def top_headline(path: str = "data/local_reporters.json",
+                 limit: int = 32) -> str:
+    """その日の現地の見出し(日本語)。無ければ空。
+
+    タイトルの先頭に置くので短く切る。切るときは句点や助詞ではなく
+    語の切れ目を探す——途中で切れた見出しは、読み手には
+    「壊れている」ようにしか見えない。
+    """
+    try:
+        heads = json.loads(pathlib.Path(path).read_text(
+            encoding="utf-8")).get("headlines") or []
+    except (json.JSONDecodeError, OSError):
+        return ""
+    for h in heads:
+        jp = (h.get("jp") or "").strip()
+        if not jp:
+            continue
+        if len(jp) <= limit:
+            return jp
+        # 句読点を先に探す。空白のほうが後ろにあっても、そちらで切ると
+        # 「達成、NL」のように文の途中で終わる。
+        for seps in ("。", "、", " 　"):
+            cut = max(jp.rfind(c, 0, limit) for c in seps)
+            if cut > limit // 2:
+                return jp[:cut]
+        return jp[:limit]
+    return ""
+
+
+def top_talked_team(path: str = "data/local_buzz.json") -> str:
+    """現地で最も名前が挙がった球団。無ければ空。
+
+    再生回数(見られた量)とは別の軸。コメント欄の回が対戦名を
+    使うので、現地編はこちらを先頭に置いて、同じ日の2本が
+    同じ言葉で始まらないようにする。
+    """
+    try:
+        teams = json.loads(pathlib.Path(path).read_text(
+            encoding="utf-8")).get("teams") or []
+    except (json.JSONDecodeError, OSError):
+        return ""
+    if not teams:
+        return ""
+    top = max(teams, key=lambda t: t.get("mentions") or 0)
+    # 1件しか挙がっていない日は「いちばん」と言うほどの差がない
+    if (top.get("mentions") or 0) < 2:
+        return ""
+    return top.get("name") or ""
+
+
 def buzz_top(path: str) -> dict:
     """
     その日いちばん見られたMLB公式ハイライト。無ければ空。
@@ -919,14 +969,30 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     elif kind == "morning" and morning_mode == "press":
         # 言葉の回。数字の回(local)と主題を分けてあるので、
         # タイトルでも「誰が何と言ったか」を前に出す。
-        title = (f"【MLB】現地メディアは何と言っているか"
+        #
+        # 以前は枠の名前だけを先頭に置いていて、7日続けて
+        # 「現地メディアは何と言っているか」で始まっていた。
+        # 変わるのは日付だけなので、並んだところを見ると
+        # 同じ動画を出し直しているようにしか見えない。
+        # その日の見出しそのものを先頭へ出す。中身にも実際に出る。
+        head = top_headline()
+        title = (f"【MLB】{head}｜{date_label} 現地メディアの見出しと"
+                 f"番記者の投稿 #Shorts" if head else
+                 f"【MLB】現地メディアは何と言っているか"
                  f"｜{date_label} 番記者の投稿と現地の見出し #Shorts")
     elif kind == "morning" and morning_mode == "local":
         # 現地編は主題が違うので、選手名ではなく「現地」を前に出す。
         # 「最も見られた試合は？」だと1試合の話に見えるが、実際は
         # 再生回数の順位と、話題に挙がったチームまで扱っている。
-        # 何位まで出るのかがタイトルから分かる形にする。
-        title = (f"【MLB】現地で最も注目された試合ランキング"
+        #
+        # ここも先頭が動かない枠だった。対戦名を出すとコメント欄の回と
+        # かぶるので、この回だけが持っている軸——現地で最も名前が
+        # 挙がったチーム——を先頭に置く。
+        team = top_talked_team()
+        title = (f"【MLB】現地でいちばん名前が挙がったのは{team}"
+                 f"｜{date_label} 再生回数ランキングと話題のチーム #Shorts"
+                 if team else
+                 f"【MLB】現地で最も注目された試合ランキング"
                  f"｜{date_label} 再生回数と話題のチーム #Shorts")
     elif kind == "morning":
         # 検索されるのは選手名なので、貢献度の高い順に先頭へ置く。
