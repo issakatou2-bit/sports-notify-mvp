@@ -132,6 +132,21 @@ def half_at(curve: list):
     return None
 
 
+def _report(why: str) -> None:
+    """取れなかった理由を実行ページに出す。
+
+    このステップは continue-on-error なので、落ちても回は緑で終わる。
+    理由はログの奥にしか残らず、実際 data/analytics.json は8/19で
+    止まったまま2日気づかれなかった。何をすれば直るのかまで書く。
+    """
+    s = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not s:
+        return
+    with open(s, "a", encoding="utf-8") as f:
+        f.write("\n## アナリティクスが取れませんでした\n\n")
+        f.write("- %s\n" % why)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=28)
@@ -168,12 +183,20 @@ def main() -> int:
                       "コンソールで有効にすれば通ります:")
                 print("       https://console.cloud.google.com/apis/library/"
                       "youtubeanalytics.googleapis.com")
+                _report("Google Cloud で YouTube Analytics API が"
+                        "有効になっていません。"
+                        "console.cloud.google.com/apis/library/"
+                        "youtubeanalytics.googleapis.com で有効にしてください")
             else:
                 print("[info] 分析の権限がありません。"
                       "yt-analytics.readonly を足したトークンが要ります "
                       "(README の手順を参照)")
+                _report("トークンに yt-analytics.readonly が入っていません。"
+                        "`python scripts/youtube_auth.py` で取り直して、"
+                        "YOUTUBE_REFRESH_TOKEN を入れ替えてください")
             return 0
         print(f"[warn] 取得に失敗しました: {e}", file=sys.stderr)
+        _report("取得に失敗しました: %s" % str(e)[:200])
         return 0
 
     cols = [h["name"] for h in res.get("columnHeaders", [])]
