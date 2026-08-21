@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-21T06:01:53.123369+00:00",
+  "updated_at": "2026-08-21T08:20:47.855115+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -16,49 +16,65 @@
       "team_id": "141",
       "name": "ブルージェイズ",
       "name_en": "Toronto Blue Jays",
-      "mentions": 3
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "ブルージェイズが7連続でシリーズ勝利、打者も健闘"
     },
     {
       "team_id": "136",
       "name": "マリナーズ",
       "name_en": "Seattle Mariners",
-      "mentions": 3
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "マリナーズが野球最高評価の投手有望株を昇格へ"
     },
     {
       "team_id": "117",
       "name": "アストロズ",
       "name_en": "Houston Astros",
-      "mentions": 3
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "アストロズが18-3で大敗、得失点差が-46に"
     },
     {
       "team_id": "121",
       "name": "メッツ",
       "name_en": "New York Mets",
-      "mentions": 2
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "メッツ球場にアライグマ問題、チーム成績は好調"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 2
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ドジャースオーナーが調査下で資金移動、複数選手負傷"
     },
     {
       "team_id": "140",
       "name": "レンジャーズ",
       "name_en": "Texas Rangers",
-      "mentions": 2
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "レンジャーズがALW最高の得失点差、デグロム2000奪三振達"
     },
     {
       "team_id": "108",
       "name": "エンゼルス",
       "name_en": "Los Angeles Angels",
-      "mentions": 2
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "エンゼルスがネト5安5打点で大勝、アストロズを圧倒"
     },
     {
       "team_id": "113",
       "name": "レッズ",
       "name_en": "Cincinnati Reds",
-      "mentions": 2
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "レッズとヴァルガス対立、ルーキーが76年ぶりの快挙目前"
     }
   ],
   "players": [
