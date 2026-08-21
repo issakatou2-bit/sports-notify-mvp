@@ -158,6 +158,8 @@ def main() -> int:
 
     yta = client("youtubeAnalytics", "v2")
     if yta is None:
+        _report("YouTubeの認証情報(YOUTUBE_CLIENT_ID / CLIENT_SECRET / "
+                "REFRESH_TOKEN)がこのジョブに渡っていません")
         return 0
 
     end = datetime.now(JST).date()
@@ -197,6 +199,21 @@ def main() -> int:
             return 0
         print(f"[warn] 取得に失敗しました: {e}", file=sys.stderr)
         _report("取得に失敗しました: %s" % str(e)[:200])
+        return 0
+    except Exception as e:  # noqa: BLE001
+        # HttpError しか捕まえていなかったので、トークンが失効している
+        # 場合(RefreshError / invalid_grant)は素通りして落ちていた。
+        # continue-on-error のせいで回は緑、理由はログの奥だけ。
+        # 実際それで2日間、何が悪いのか分からないままだった。
+        name = type(e).__name__
+        why = str(e)[:200]
+        print(f"[warn] {name}: {why}", file=sys.stderr)
+        if "invalid_grant" in why or "RefreshError" in name:
+            _report("リフレッシュトークンが失効しています(invalid_grant)。"
+                    "手元で `python scripts/youtube_auth.py` を実行し、"
+                    "YOUTUBE_REFRESH_TOKEN を入れ替えてください")
+        else:
+            _report(f"{name}: {why}")
         return 0
 
     cols = [h["name"] for h in res.get("columnHeaders", [])]
