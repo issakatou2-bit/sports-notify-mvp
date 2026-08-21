@@ -14,10 +14,14 @@ MLB公式YouTubeのハイライト動画の再生回数から、
   人気球団の試合は内容に関わらず伸びる。その旨は表示側で断る。
 
 取り方:
-  search.list で MLB公式チャンネルの直近のハイライトを拾い、
-  videos.list でまとめて再生回数を取る。
-  search が100ユニット、videos が1ユニットなので、1日1回なら
-  1日の割り当て(10,000)に対して十分収まる。
+  MLB公式の投稿一覧(playlistItems)から直近のハイライトを読み、
+  videos.list でまとめて再生回数を取る。どちらも1ユニット。
+
+  以前は「Game Highlights」で全チャンネルを検索して、そのあと
+  公式だけを残していた。他所が同じ語で投稿した日は公式のぶんが
+  50件の外へ押し出され、8/21は1本しか残らなかった。
+  「再生回数ランキング」が1位だけの動画になる。
+  チャンネルを直に読めば押し出されようがない。
 
 出力: data/mlb_buzz.json
 
@@ -45,39 +49,87 @@ OFFICIAL_CHANNEL_TITLE = "MLB"
 MATCHUP_RE = re.compile(r"^(.+?)\s+Game Highlights", re.I)
 
 
-def fetch_recent_highlights(api_key: str, hours: int = 30) -> list:
-    published_after = (datetime.now(timezone.utc)
-                       - timedelta(hours=hours)).strftime("%Y-%m-%dT%H:%M:%SZ")
+def fetch_recent_highlights(api_key: str, hours: int = 30,
+                            state_path: str = "data/mlb_buzz.json") -> list:
+    """MLB公式の直近のハイライト。
+
+    以前は「Game Highlights」で全チャンネルを新着順に50件取り、
+    そのあとMLB公式だけを残していた。他所が同じ語で投稿した日は、
+    公式のぶんが50件の外へ押し出される。8/21はそれで1本しか残らず、
+    「再生回数ランキング」が1位だけの動画になった。
+
+    チャンネルの投稿一覧を直に読む形にする。押し出されようがなく、
+    しかも search(100ユニット)ではなく playlistItems(1ユニット)で済む。
+    チャンネルIDは一度引いたら覚えておく。
+    """
+    cid = _official_channel_id(api_key, state_path)
+    if not cid:
+        return []
+    # 投稿一覧のプレイリストIDは、チャンネルIDの2文字目をUに変えたもの。
+    # channels.list を1回叩いても取れるが、この対応は公開仕様。
+    uploads = "UU" + cid[2:]
+    after = datetime.now(timezone.utc) - timedelta(hours=hours)
+
+    items = []
+    try:
+        resp = requests.get(
+            f"{YOUTUBE_API}/playlistItems",
+            params={"key": api_key, "part": "snippet",
+                    "playlistId": uploads, "maxResults": 50},
+            timeout=20)
+        resp.raise_for_status()
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] 投稿一覧を取れません: {e}", file=sys.stderr)
+        return []
+
+    for it in resp.json().get("items", []):
+        sn = it.get("snippet") or {}
+        vid = (sn.get("resourceId") or {}).get("videoId")
+        pub = sn.get("publishedAt", "")
+        if not vid or not pub:
+            continue
+        try:
+            when = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if when < after:
+            continue
+        # 公式は試合以外(特集・記者会見)も出す。ランキングに混ぜない。
+        if "Highlights" not in sn.get("title", ""):
+            continue
+        items.append({"video_id": vid, "title": sn.get("title", ""),
+                      "published_at": pub})
+    print(f"[info] MLB公式の直近{hours}時間のハイライト: {len(items)}本")
+    return items
+
+
+def _official_channel_id(api_key: str, state_path: str) -> str:
+    """MLB公式のチャンネルID。一度引いたら覚えておく。"""
+    try:
+        got = json.loads(pathlib.Path(state_path).read_text(
+            encoding="utf-8")).get("channel_id")
+        if got:
+            return got
+    except (OSError, json.JSONDecodeError):
+        pass
     try:
         resp = requests.get(
             f"{YOUTUBE_API}/search",
-            params={
-                "key": api_key, "part": "snippet", "q": "Game Highlights",
-                "type": "video", "order": "date", "maxResults": 50,
-                "publishedAfter": published_after,
-            },
-            timeout=20,
-        )
+            params={"key": api_key, "part": "snippet",
+                    "q": "MLB Game Highlights", "type": "video",
+                    "order": "date", "maxResults": 50},
+            timeout=20)
         resp.raise_for_status()
-    except Exception as e:
-        print(f"[warn] ハイライトの検索に失敗しました: {e}", file=sys.stderr)
-        return []
-
-    items = []
-    for it in resp.json().get("items", []):
-        sn = it.get("snippet") or {}
-        if sn.get("channelTitle") != OFFICIAL_CHANNEL_TITLE:
-            continue
-        vid = (it.get("id") or {}).get("videoId")
-        if not vid:
-            continue
-        items.append({
-            "video_id": vid,
-            "title": sn.get("title", ""),
-            "published_at": sn.get("publishedAt", ""),
-        })
-    print(f"[info] MLB公式の直近{hours}時間のハイライト: {len(items)}本")
-    return items
+        for it in resp.json().get("items", []):
+            sn = it.get("snippet") or {}
+            if sn.get("channelTitle") == OFFICIAL_CHANNEL_TITLE:
+                cid = sn.get("channelId")
+                if cid:
+                    print(f"[info] MLB公式のチャンネルIDを覚えました: {cid}")
+                    return cid
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] チャンネルIDを引けません: {e}", file=sys.stderr)
+    return ""
 
 
 def fetch_view_counts(api_key: str, items: list) -> list:
@@ -252,8 +304,10 @@ def jp_team(full_name: str) -> str:
     return full_name
 
 
-def build(api_key: str, hours: int = 30, top: int = 5) -> dict:
-    items = fetch_recent_highlights(api_key, hours)
+def build(api_key: str, hours: int = 30, top: int = 5,
+          state_path: str = "data/mlb_buzz.json") -> dict:
+    cid = _official_channel_id(api_key, state_path)
+    items = fetch_recent_highlights(api_key, hours, state_path)
     ranked = fetch_view_counts(api_key, items)
     if not ranked:
         return {}
@@ -286,6 +340,8 @@ def build(api_key: str, hours: int = 30, top: int = 5) -> dict:
     return {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "hours": hours,
+        # 覚えておく。次からは search を打たずに済む(100 -> 1ユニット)。
+        "channel_id": cid,
         "videos": ranked[:top],
     }
 
