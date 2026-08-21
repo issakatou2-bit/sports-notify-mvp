@@ -47,6 +47,15 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python scripts/fetch_analytics.py --days 28
 
+      # 上が落ちても回は緑になる。だから落ちたことを別に見張る。
+      #
+      # 実際 data/analytics.json は8/19の1回きりで、そのあと2日ぶん
+      # 静かに欠けていた。数字を見ようとした日に初めて気づくのでは、
+      # 判断のもとが無い状態で2日過ごすことになる。
+      - name: Warn if the numbers went stale
+        if: always()
+        run: python scripts/analytics_age.py
+
       # 記録が落ちた日を、チャンネルの一覧から埋め直す。
       #
       # 8/17と8/18の朝の回は6本すべて公開されているのに、押し合いで

@@ -17,8 +17,9 @@ on:
         required: false
         default: '12'
 
+# 過去の回を残すのでコミットする
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   measure:
@@ -33,6 +34,16 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           python scripts/competitors.py --top "${{ inputs.top || '12' }}"
+      # 1回の結果は測定ではない。同じ日の同じ検索語でも、顔ぶれが
+      # 3分の1入れ替わり、中央値が3分の1になった。並べて初めて
+      # どれが動かない事実なのか分かるので、過去の回を残す。
+      - name: Commit
+        if: always()
+        run: |
+          bash scripts/commit_data.sh \
+            "competitors: ${{ github.run_id }}" \
+            data/competitors.json
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:

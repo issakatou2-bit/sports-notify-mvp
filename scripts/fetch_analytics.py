@@ -224,6 +224,19 @@ def main() -> int:
                  encoding="utf-8")
 
     print(f"[info] {len(rows)}本ぶんを取りました ({start} 〜 {end})")
+
+    # 取れたことを実行ページに書く。
+    #
+    # このステップは continue-on-error なので、落ちても回は緑になる。
+    # そのぶん、取れていないことに誰も気づけない。実際 data/analytics.json
+    # は8/19の1回きりで、2日ぶん静かに欠けていた。数字を見ようとした
+    # ときに初めて分かるのでは遅い。
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as f:
+            f.write("\n## アナリティクス\n\n")
+            f.write(f"- {end} の分を {len(rows)}本ぶん取りました\n")
+            f.write(f"- 残っている日: {', '.join(sorted(store['days'])[-5:])}\n")
     print(f"\n{'維持率':>7s} {'再生':>6s} {'秒':>4s}  題名")
     for r in rows[:12]:
         print(f"{r.get('averageViewPercentage', 0):6.1f}% "
