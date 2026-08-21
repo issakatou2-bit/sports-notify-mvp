@@ -851,11 +851,40 @@ def top_headline(path: str = "data/local_reporters.json",
                 pass
         if len(jp) <= limit:
             return jp
-        for seps in ("。", "、", " 　"):
-            cut = max(jp.rfind(c, 0, limit) for c in seps)
-            if cut > limit // 2:
-                return jp[:cut]
-        return jp[:limit]
+        head = _clip(jp, limit)
+        if head:
+            return head
+        # 切ると意味が変わる見出しは、切らずに次へ回す
+    return ""
+
+
+# 打ち消しの語。これが切り落とした側にあると、頭だけ読んだ人には
+# 逆の意味が伝わる。
+NEGATIONS = ("ない", "ません", "ではなく", "わけでは", "否定")
+
+# 切ったあとに残す最低の長さ。「いいえ」だけ残っても意味がない。
+MIN_HEAD = 10
+
+
+def _clip(jp: str, limit: int) -> str:
+    """見出しを短くする。意味が変わるなら空を返す。
+
+    「ドジャースが大谷翔平と契約したり、スーパーチームを構築したのは
+    マーク・ウォルターの融資のためではない」を頭だけ切ると、
+    「ドジャースが大谷翔平と契約したり」になる。
+    否定が丸ごと落ちて、逆のことを言う題ができあがる。
+
+    実際そうなりかけた。切って良いのは、落とす側に打ち消しが
+    無いときだけ。無理なら次の見出しに回す。
+    """
+    for sep in ("。", "、"):
+        cut = jp.rfind(sep, 0, limit)
+        if cut < MIN_HEAD:
+            continue
+        head, tail = jp[:cut], jp[cut:]
+        if any(n in tail for n in NEGATIONS):
+            return ""
+        return head
     return ""
 
 

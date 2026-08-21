@@ -261,6 +261,16 @@ def rank(posts: list, top: int = TOP_N) -> list:
     return out
 
 
+def _jp_name_hint() -> str:
+    """日本人選手の「英語名 → 日本語表記」を、訳す側へ渡す形にする。"""
+    try:
+        from notability_engine import JP_PLAYERS_MLB
+    except ImportError:
+        return ""
+    return "\n".join("  %s → %s" % (p["name_en"], p["name_jp"])
+                     for p in JP_PLAYERS_MLB)
+
+
 def translate(posts: list, api_key: str) -> list:
     """
     まとめて1回で訳す。1件ずつ呼ぶと件数ぶん課金される。
@@ -283,7 +293,12 @@ def translate(posts: list, api_key: str) -> list:
         "・1行に1件、番号をつけて出力\n"
         "・意訳しすぎず、書かれていないことを足さない\n"
         "・80文字以内に収める\n"
-        "・URLや記事へのリンクは訳さず省く\n\n"
+        "・URLや記事へのリンクは訳さず省く\n"
+        # 「ショウヘイ・オータニが2本塁打」という題が実際に出た。
+        # 音写されると日本語の題として読みにくく、検索にも当たらない。
+        # 正しい表記を渡しておけば、選ぶだけで済む。
+        "・日本人選手は必ず次の表記を使う(音写しない):\n"
+        + _jp_name_hint() + "\n\n"
         + numbered
     )
     try:
