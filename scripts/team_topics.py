@@ -87,6 +87,27 @@ def fetch() -> tuple:
     return teams, venue
 
 
+def _geo_edge(tid: str, coord: dict, all_coords: list) -> str:
+    """本拠地が地理の端なら、その言い方。端でなければ空。
+
+    「MLBでいちばん北」は位置から決まるので、当てにいく余地がない。
+    """
+    lat, lon = coord.get("latitude"), coord.get("longitude")
+    if lat is None or lon is None or len(all_coords) < 20:
+        return ""
+    lats = [a for a, _ in all_coords]
+    lons = [b for _, b in all_coords]
+    if lat >= max(lats):
+        return "MLBでいちばん北にある球団"
+    if lat <= min(lats):
+        return "MLBでいちばん南にある球団"
+    if lon <= min(lons):
+        return "MLBでいちばん西にある球団"
+    if lon >= max(lons):
+        return "MLBでいちばん東にある球団"
+    return ""
+
+
 def rivals_of(team_id: str) -> list:
     """同地区の相手。年に13試合ずつ当たる、いちばん近い4球団。"""
     div = MLB_DIVISIONS.get(str(team_id))
@@ -117,6 +138,14 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
     loc = v.get("location") or {}
     div = MLB_DIVISION_NAME_JP.get(MLB_DIVISIONS.get(tid, ""), "")
     year = t.get("firstYearOfPlay") or ""
+    coord_of = (loc.get("defaultCoordinates") or {})
+    all_coords = []
+    for other in all_teams:
+        ov = venue.get((other.get("venue") or {}).get("id")) or {}
+        oc = ((ov.get("location") or {}).get("defaultCoordinates") or {})
+        if oc.get("latitude") is not None:
+            all_coords.append((oc["latitude"], oc["longitude"]))
+
     where = jp_where(v.get("name", "")) or (t.get("locationName") or
                                             loc.get("city") or "")
     city = t.get("locationName") or loc.get("city") or ""
@@ -154,6 +183,34 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
             hook = f"本拠地の収容{f['capacity']:,}人　MLBでいちばん小さい"
         elif f["capacity"] == max(all_caps):
             hook = f"本拠地の収容{f['capacity']:,}人　MLBでいちばん大きい"
+    # 殿堂入りの人数は使わない。
+    #
+    # data/team_legends.json は球団ごとに上位3人しか保存していない。
+    # 27球団のうち21球団がちょうど3人で、これは実際の人数ではなく
+    # 見本の数。「殿堂入り3人　MLBで最多」はヤンキースについて明確に
+    # 嘘になる。数に見えるが数ではない値を、順位に使わない。
+
+    # 収容人数の順位。こちらは全球団ぶん取れていて、上限も無い。
+    if not hook and f.get("capacity") and len(all_caps) >= 25:
+        rank = sorted(all_caps, reverse=True).index(f["capacity"]) + 1
+        if rank <= 3:
+            hook = f"本拠地の収容{f['capacity']:,}人　MLBで{rank}番目に大きい"
+        elif rank >= len(all_caps) - 2:
+            small = len(all_caps) - rank + 1
+            hook = f"本拠地の収容{f['capacity']:,}人　MLBで{small}番目に小さい"
+
+    # 地理の端。位置は全球団ぶん持っているので順位が出せる。
+    if not hook:
+        edge = _geo_edge(tid, coord_of, all_coords)
+        if edge:
+            hook = f"{edge}　本拠地は{where}"
+
+    # 伝統の一戦。順位ではないが、その球団だけの事実で、年で変わらない。
+    # 「1903年創設　本拠地はニューヨーク州ニューヨーク」より、
+    # 「レッドソックスとの伝統の一戦」のほうが、その球団を表している。
+    if not hook and trad:
+        hook = f"{trad}との伝統の一戦で知られる球団"
+
     if not hook and year:
         hook = f"{year}年創設　本拠地は{where}"
     if not hook:
