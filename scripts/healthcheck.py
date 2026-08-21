@@ -68,15 +68,21 @@ DATA_FILES = [
 # 鍵を渡し忘れていて、鍵が無いときの分岐に落ちていたため。
 # 新しさだけを見ていたので、診断は毎日「問題なし」と言っていた。
 #
-# 形は (ファイル, 一覧のキー, 揃っているべきキー, 表示名)。
+# 形は (ファイル, 一覧のキー, 揃っているべきキー, 表示名, 最低件数)。
 # 一覧の先頭いくつかを見て、そのキーが埋まっているかを数える。
+#
+# 最低件数も見る理由:
+#   8/21の「現地で最も注目された試合ランキング」は、1試合しか
+#   材料が無いまま作られていた。1位だけのランキングは順位ではない。
+#   埋まり具合だけを見ていたので「1件中1件」で100%、診断は通していた。
+#   足りないのは中身の質ではなく数なので、そこも数える。
 CONTENT_CHECKS = [
-    ("data/local_buzz.json", "teams", "gist", "現地の話題(何を言われたか)"),
-    ("data/mlb_buzz.json", "videos", "result", "現地の再生回数(試合結果)"),
-    ("data/local_reporters.json", "headlines", "jp", "現地の番記者(訳)"),
-    ("data/local_voices.json", "voices", "ja", "現地のファンの声(訳)"),
-    ("data/roster_stats.json", "players", "line", "在籍選手(成績)"),
-    ("data/best_of_day.json", "players", "headline", "その日の採点(成績行)"),
+    ("data/local_buzz.json", "teams", "gist", "現地の話題(何を言われたか)", 3),
+    ("data/mlb_buzz.json", "videos", "result", "現地の再生回数(試合結果)", 3),
+    ("data/local_reporters.json", "headlines", "jp", "現地の番記者(訳)", 3),
+    ("data/local_voices.json", "voices", "ja", "現地のファンの声(訳)", 3),
+    ("data/roster_stats.json", "players", "line", "在籍選手(成績)", 10),
+    ("data/best_of_day.json", "players", "headline", "その日の採点(成績行)", 3),
 ]
 
 # 何割埋まっていれば良しとするか。
@@ -226,14 +232,20 @@ def check_data() -> tuple:
 def check_content() -> tuple:
     """材料の中身が埋まっているか。新しさとは別に見る。"""
     lines, empty = [], 0
-    for path, group, key, label in CONTENT_CHECKS:
+    for path, group, key, label, need in CONTENT_CHECKS:
         d = load(path)
         if d is None:
             continue          # 新しさの検査が別に見ている
+        total = len(d.get(group) or [])
         rows = (d.get(group) or [])[:8]
         if not rows:
             empty += 1
             lines.append(f"| {label} | **中身が無い** | {group} が空 |")
+            continue
+        if total < need:
+            empty += 1
+            lines.append(f"| {label} | **{total}件しかない** | "
+                         f"{need}件は要る |")
             continue
         got = sum(1 for r in rows if r.get(key))
         share = got / len(rows)
