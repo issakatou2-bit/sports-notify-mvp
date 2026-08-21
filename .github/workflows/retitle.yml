@@ -27,8 +27,9 @@ on:
         required: false
         default: 'false'
 
+# 記録も直すのでコミットする
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   retitle:
@@ -57,3 +58,9 @@ jobs:
           if [ "${{ inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
           echo "python scripts/retitle.py $ARGS"
           python scripts/retitle.py $ARGS
+
+      # 題を変えたら記録も変わる。押しておかないと次の実行でまた差分が出る。
+      - name: Commit
+        if: always()
+        run: |
+          bash scripts/commit_data.sh             "retitle: ${{ github.run_id }}"             data/published_videos.json

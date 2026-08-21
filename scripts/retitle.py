@@ -214,6 +214,10 @@ def main() -> int:
 
     views = view_counts()
     changed = skipped = 0
+    # 変えたら記録も直す。YouTube側だけ変えると、published_videos.json が
+    # 古い題を持ったまま残り、あとから読む側は実物と違うものを見る。
+    # 「1つの問いに答えが2つある」形をここで作らない。
+    touched = []
     for date, kind, vid in sorted(targets):
         got = views.get(vid)
         if got is not None and got > SAFE_VIEWS and not args.force:
@@ -226,6 +230,14 @@ def main() -> int:
         print("%s / %s" % (date, kind))
         if apply(yt, vid, title, not args.write):
             changed += 1
+            touched.append((kind, date, title))
+
+    if touched and args.write:
+        for kind, date, title in touched:
+            rec.setdefault(kind, {}).setdefault(date, {})["title"] = title
+        pathlib.Path(RECORD).write_text(
+            json.dumps(rec, ensure_ascii=False, indent=2), encoding="utf-8")
+        print("記録も%d件そろえました" % len(touched))
 
     print()
     print("%d本を%s" % (changed, "変えました" if args.write else "変えます"))
