@@ -1,20 +1,133 @@
 {
-  "generated_at": "2026-08-20T09:53:52.330857+00:00",
+  "generated_at": "2026-08-21T09:53:47.478334+00:00",
   "games": [
     {
-      "game_id": "564638",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-87",
-      "away_team_id": "PD-263",
-      "home_team_name": "ラージョ・バジェカーノ",
-      "away_team_name": "アラベス",
+      "game_id": "560542",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-57",
+      "away_team_id": "PL-1076",
+      "home_team_name": "アーセナル",
+      "away_team_name": "コベントリー",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "ラージョ・バジェカーノ vs アラベス",
+      "matchup": "アーセナル vs コベントリー",
       "abbr_matchup": null,
-      "start_time_jst": "08/21 04:00",
+      "start_time_jst": "08/22 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [
+        {
+          "name": "坂元達裕",
+          "context": "所属チームの試合"
+        }
+      ],
+      "jp_players": [
+        "坂元達裕"
+      ],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 5,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "コベントリーには坂元達裕が所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "アーセナル の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季1位のアーセナル",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "昨季プレミアリーグで1位を獲得したアーセナルが、開幕戦となる本試合に挑む。相手のコベントリーには、日本代表の坂元達裕が所属しており、国内外の注目が集まる一戦となる。シーズンの【最初の勝利】をめぐるアーセナルとコベントリーの戦いぶりと、坂元がどのような活躍を見せるかが見どころとなる。",
+      "notification_hook": "昨季1位アーセナルの開幕戦、坂元達裕のコベントリーと激突。"
+    },
+    {
+      "game_id": "564647",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-90",
+      "away_team_id": "PD-92",
+      "home_team_name": "レアル・ベティス",
+      "away_team_name": "レアル・ソシエダ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "レアル・ベティス vs レアル・ソシエダ",
+      "abbr_matchup": null,
+      "start_time_jst": "08/22 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [
+        {
+          "name": "久保建英",
+          "context": "所属チームの試合"
+        }
+      ],
+      "jp_players": [
+        "久保建英"
+      ],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "レアル・ソシエダには久保建英が所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "昨季5位と10位の対戦",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ラ・リーガの開幕戦を彩る一戦として、昨季5位のレアル・ベティスと昨季10位のレアル・ソシエダが対戦する。【両チームの昨季成績】を背景に、新シーズンの戦力を測る重要な指標となるこの試合では、スペインの強豪クラブがどのような布陣で臨むのかが焦点となる。レアル・ソシエダには日本代表の久保建英が所属しており、彼がどの程度スペインの一流リーグで貢献できるかも見どころになる。両チームの開幕での形がどう表れるかに注目したい。",
+      "notification_hook": "久保建英のラ・リーガ初戦。昨季5位ベティス vs 10位ソシエダ"
+    },
+    {
+      "game_id": "559715",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-516",
+      "away_team_id": "FL1-576",
+      "home_team_name": "マルセイユ",
+      "away_team_name": "ストラスブール",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "マルセイユ vs ストラスブール",
+      "abbr_matchup": null,
+      "start_time_jst": "08/22 03:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -29,24 +142,24 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 0,
+      "score": 1,
       "game_type": "R",
       "is_notable": true,
       "reasons": [
         {
           "tag": "quality",
-          "text": "昨季8位と14位の対戦",
-          "weight": 0
+          "text": "昨季5位と8位の対戦",
+          "weight": 1
         }
       ],
       "log_notes": [],
-      "ai_summary": "ラ・リーガの開幕を飾るこの一戦は、昨季8位のラージョ・バジェカーノと【昨季14位のアラベス】という、前シーズンで明確な力関係を示していた両チームの対戦である。新シーズンは全30チームによる総当たり戦で展開され、勝ち点の積み重ねが最終順位を左右するため、こうした前評判の差がどこまで反映されるかが興味深い。開幕直後だからこそ、両チームがシーズンへの勢いをどう作るのか、そしてそれぞれの攻撃と守備の組み立てがどのように機能するかに注目したい。",
-      "notification_hook": "昨季8位vs14位、新シーズンの実力差は保つのか。"
+      "ai_summary": "リーグ・アンの開幕戦を飾るのは、昨季の上位勢による対戦である。【昨季5位のマルセイユと8位のストラスブール】が相まみえることで、両チームがシーズンをいかに始動させるかが試される一戦となる。リーグ全体では多くのチームがスタートを切る中、前季の実績を持つこの両者の立ち上がりぶりは、今後の戦いを占う上で注目に値する。攻守の組み立てが両チームでどの程度完成度を高めているか、またセットプレーなどの決定機でどちらが先制するかに注目したい。",
+      "notification_hook": "前季上位勢が激突。マルセイユとストラスブール、開幕の立ち上がりを占う。"
     }
   ],
   "ai_status": {
-    "targets": 1,
-    "succeeded": 1,
-    "cost_usd": 0.0035
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.01023
   }
 }
