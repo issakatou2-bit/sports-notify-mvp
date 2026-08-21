@@ -401,6 +401,62 @@ def check_commit_list() -> int:
     return bad
 
 
+def check_secrets_passed() -> int:
+    """
+    台本が読む鍵を、ワークフローが渡しているか。
+
+    なぜ要るのか:
+      「現地で話題のチーム」は回数を数えるだけの画面になっていた。
+      何を言われているのかを足す仕掛け(summarize_teams)は書いてあり、
+      呼ばれてもいた。ただ ANTHROPIC_API_KEY を渡していなかったので、
+      鍵が空のときの分岐に落ちて、静かに数字だけを返していた。
+
+      鍵が無いときに落ちない作りは正しい。落ちれば動画ごと止まる。
+      だが「落ちない」と「効いている」は別で、実行ログは同じ顔をする。
+
+    見るもの:
+      run: が起動する台本が os.environ から読む秘密の名前が、
+      その step / job / workflow の env に無いもの。
+    """
+    step("鍵を渡し忘れていないか")
+    try:
+        import yaml
+    except ImportError:
+        print("[info] pyyaml が無いため飛ばします")
+        return 0
+
+    pat = re.compile(r"environ(?:\.get)?[\(\[][\"']"
+                     r"(\w*(?:API_KEY|TOKEN|SECRET|CLIENT_ID|CLIENT_KEY))"
+                     r"[\"']")
+    need = {}
+    for f in (ROOT / "scripts").glob("*.py"):
+        keys = set(pat.findall(f.read_text(encoding="utf-8")))
+        if keys:
+            need[f.name] = keys
+
+    bad = 0
+    for wf in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
+        try:
+            d = yaml.safe_load(wf.read_text(encoding="utf-8")) or {}
+        except yaml.YAMLError:
+            continue
+        for job in (d.get("jobs") or {}).values():
+            for st in (job.get("steps") or []):
+                run = st.get("run")
+                if not isinstance(run, str):
+                    continue
+                given = (set(st.get("env") or {}) | set(job.get("env") or {})
+                         | set(d.get("env") or {}))
+                for m in re.finditer(r"python\s+scripts/([\w_]+\.py)", run):
+                    for k in sorted(need.get(m.group(1), ())):
+                        if k not in given:
+                            bad += 1
+                            print(f"NG {wf.name} / {st.get('name', '?')}: "
+                                  f"{m.group(1)} が {k} を読むのに渡していません")
+    print(f"{'ok ' if not bad else 'NG '} 渡し忘れ {bad}件")
+    return bad
+
+
 def check_workflow_links() -> int:
     """
     workflow_run で名前を指しているワークフローが、実際にあるか。
@@ -450,6 +506,7 @@ def main() -> int:
     failed += check_tests(tmp)
     failed += check_inventory()
     failed += check_commit_list()
+    failed += check_secrets_passed()
     failed += check_workflow_links()
 
     print()

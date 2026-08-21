@@ -21,6 +21,8 @@ import json
 import os
 import pathlib
 import sys
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 import post_common  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
 
@@ -815,26 +817,40 @@ def load_profile(path: str) -> dict:
 
 
 def top_headline(path: str = "data/local_reporters.json",
-                 limit: int = 32) -> str:
+                 limit: int = 26, max_age_hours: int = 20) -> str:
     """その日の現地の見出し(日本語)。無ければ空。
 
-    タイトルの先頭に置くので短く切る。切るときは句点や助詞ではなく
-    語の切れ目を探す——途中で切れた見出しは、読み手には
-    「壊れている」ようにしか見えない。
+    古いものは使わない。
+      集めてくる見出しには前日のものが混ざる(実際、上位6件のうち2件が
+      前日だった)。それをタイトルの先頭に置いて日付を「8月21日」と
+      書くと、一昨日の出来事を今日のことのように出すことになる。
+
+    タイトルの先頭に置くので短く切る。切るときは句点を先に探す——
+    空白のほうが後ろにあっても、そちらで切ると「達成、NL」のように
+    文の途中で終わる。
     """
     try:
         heads = json.loads(pathlib.Path(path).read_text(
             encoding="utf-8")).get("headlines") or []
     except (json.JSONDecodeError, OSError):
         return ""
+    now = datetime.now(timezone.utc)
     for h in heads:
         jp = (h.get("jp") or "").strip()
         if not jp:
             continue
+        at = h.get("at")
+        if at:
+            try:
+                when = parsedate_to_datetime(at)
+                if when.tzinfo is None:
+                    when = when.replace(tzinfo=timezone.utc)
+                if (now - when).total_seconds() > max_age_hours * 3600:
+                    continue
+            except (TypeError, ValueError):
+                pass
         if len(jp) <= limit:
             return jp
-        # 句読点を先に探す。空白のほうが後ろにあっても、そちらで切ると
-        # 「達成、NL」のように文の途中で終わる。
         for seps in ("。", "、", " 　"):
             cut = max(jp.rfind(c, 0, limit) for c in seps)
             if cut > limit // 2:
@@ -975,9 +991,16 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 変わるのは日付だけなので、並んだところを見ると
         # 同じ動画を出し直しているようにしか見えない。
         # その日の見出しそのものを先頭へ出す。中身にも実際に出る。
+        # 見出しは鉤括弧に入れて、誰の言葉かを先に置く。
+        #
+        # 「大谷翔平が2本塁打を放つ｜8月21日 …」とだけ書くと、
+        # コレスポが試合を報じているように読める。事実は合っていても、
+        # 開いた人が期待するのはハイライトで、中身は報道のまとめになる。
+        # 引用であることが、題を読んだ時点で分かる形にする。
         head = top_headline()
-        title = (f"【MLB】{head}｜{date_label} 現地メディアの見出しと"
-                 f"番記者の投稿 #Shorts" if head else
+        title = (f"【MLB】現地はこう報じた「{head}」"
+                 f"｜{date_label} 番記者の投稿と現地の見出し #Shorts"
+                 if head else
                  f"【MLB】現地メディアは何と言っているか"
                  f"｜{date_label} 番記者の投稿と現地の見出し #Shorts")
     elif kind == "morning" and morning_mode == "local":

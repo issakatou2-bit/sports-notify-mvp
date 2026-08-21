@@ -112,6 +112,8 @@ jobs:
       # 1行おかしいからといって、関係のない4本まで落とす理由はない。
       - name: Sanity check
         continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/sanity.py --narration
 
       - name: Install video tools
@@ -144,6 +146,8 @@ jobs:
       # 再生回数(見られた量)とは別の軸で、こちらは語られた量にあたる。
       - name: Fetch local talk
         continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/local_buzz.py --out data/local_buzz.json
 
       # コメントを拾いにいく先を集める。MLB公式だけでなく、日本の配信元や
@@ -198,6 +202,7 @@ jobs:
       - name: Build and upload both shorts
         continue-on-error: true
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
