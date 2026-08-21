@@ -229,6 +229,41 @@ def pick_player(history: dict, mentions: dict) -> dict:
     return {"player": top, "why": why}
 
 
+def team_history(pid: str, group: str) -> list:
+    """所属してきた球団を、順に。[{"team":"ブルワーズ","from":2022,"to":2026}, ...]
+
+    年度別成績に球団名が付いてくるので、そこから拾う。
+    同じ球団が続く年はまとめる。移籍した年は両方に出るので、
+    その年を境に区切る。
+
+    「通算成績」だけでは、その選手がどこを渡ってきたかが分からない。
+    移籍の多い選手ほど経歴そのものが見どころになる。
+    """
+    try:
+        from notability_engine import MLB_TEAM_NAME_JP
+    except ImportError:
+        MLB_TEAM_NAME_JP = {}
+
+    rows = []
+    for st in _get(f"people/{pid}/stats",
+                   stats="yearByYear", group=group).get("stats", []):
+        for sp in st.get("splits", []):
+            team = sp.get("team") or {}
+            year = sp.get("season")
+            name = MLB_TEAM_NAME_JP.get(str(team.get("id"))) or team.get("name")
+            if not (name and year):
+                continue
+            try:
+                year = int(year)
+            except (TypeError, ValueError):
+                continue
+            if rows and rows[-1]["team"] == name:
+                rows[-1]["to"] = max(rows[-1]["to"], year)
+            else:
+                rows.append({"team": name, "from": year, "to": year})
+    return rows
+
+
 def season_line(pid: str, group: str, season: str = None) -> dict:
     """通算 or 指定シーズンの成績。取れなければ空。"""
     params = ({"stats": "career", "group": group} if season is None
@@ -373,8 +408,16 @@ def build(args) -> dict:
             "name_en": person.get("fullName"),
             "age": person.get("currentAge"),
             "birth_city": person.get("birthCity"),
+            # 市名だけでは通じない。「出身 Orange」と出したことがあり、
+            # あれはカリフォルニア州オレンジで、州も国も同じ応答に
+            # 入っていたのに落としていた。
+            "birth_state": person.get("birthStateProvince"),
+            "birth_country": person.get("birthCountry"),
             "birth_date": person.get("birthDate"),
             "debut": person.get("mlbDebutDate"),
+            "draft_year": person.get("draftYear"),
+            "bats": (person.get("batSide") or {}).get("description"),
+            "throws": (person.get("pitchHand") or {}).get("description"),
             "number": person.get("primaryNumber"),
             "position": (person.get("primaryPosition") or {}).get("name"),
             "nickname": person.get("nickName"),
@@ -399,6 +442,7 @@ def build(args) -> dict:
         "headline": (best or {}).get("headline") or "",
         "score": (best or {}).get("score"),
         "bio": bio,
+        "teams": team_history(pid, group),
         "career": season_line(pid, group),
         "this_season": season_line(pid, group, season),
         "last_season": season_line(pid, group, str(int(season) - 1)),

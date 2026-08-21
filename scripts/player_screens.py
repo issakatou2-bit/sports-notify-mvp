@@ -162,8 +162,21 @@ def build_narration(prof: dict) -> dict:
 
     if prof.get("career"):
         parts = [f"{said}の通算成績です。{yomi(career)}。"]
+        # 出身は国だけ読む。州名や市名まで読み上げると、
+        # 綴りしか無い地名を1文字ずつ読むことになる。
+        country = BIRTH_COUNTRY_JP.get(
+            (bio.get("birth_country") or "").strip())
+        if country:
+            parts.append(f"{country}の出身。")
         if bio.get("debut"):
             parts.append(f"デビューは{bio['debut'][:4]}年。")
+        # 渡り歩いた球団は、それ自体が経歴になる。
+        # 1球団だけの選手は言わない——「ずっとここです」は
+        # 移籍した選手と並べて初めて意味を持つ。
+        teams = prof.get("teams") or []
+        if len(teams) >= 2:
+            parts.append("".join([
+                "、".join(t["team"] for t in teams[-3:]), "と渡り歩いています。"]))
         segments.append({"kind": "p_career", "text": "".join(parts),
                          "meta": {}})
 
@@ -297,19 +310,105 @@ def _stat_card(d, y, label, text, stripe):
     return y + 220
 
 
+# MLBの選手が生まれている国。日本語で出す。
+# 市名は音写しない——「Orange」を「オレンジ」と書いても伝わらないし、
+# 読みを当てにいくと必ず間違える日が来る。綴りのまま出して、
+# 国だけ日本語にする。
+BIRTH_COUNTRY_JP = {
+    "USA": "アメリカ", "Dominican Republic": "ドミニカ共和国",
+    "Venezuela": "ベネズエラ", "Cuba": "キューバ", "Japan": "日本",
+    "Puerto Rico": "プエルトリコ", "Mexico": "メキシコ", "Canada": "カナダ",
+    "Colombia": "コロンビア", "Panama": "パナマ", "Curacao": "キュラソー",
+    # APIが返すのは "Republic of Korea" のほう。両方入れておく。
+    "South Korea": "韓国", "Republic of Korea": "韓国",
+    "Taiwan": "台湾", "Australia": "オーストラリア",
+    "Netherlands": "オランダ", "Brazil": "ブラジル", "Nicaragua": "ニカラグア",
+    "Aruba": "アルバ", "Bahamas": "バハマ", "Germany": "ドイツ",
+    "Honduras": "ホンジュラス", "Peru": "ペルー", "Lithuania": "リトアニア",
+    "Jamaica": "ジャマイカ", "United Kingdom": "イギリス",
+}
+
+
+STATE_JP = {  # 州名は英字2文字で返る。日本語の住所と同じ並びにするため
+    "CA": "カリフォルニア州", "TX": "テキサス州", "FL": "フロリダ州",
+    "NY": "ニューヨーク州", "IL": "イリノイ州", "PA": "ペンシルベニア州",
+    "OH": "オハイオ州", "GA": "ジョージア州", "NC": "ノースカロライナ州",
+    "MI": "ミシガン州", "NJ": "ニュージャージー州", "VA": "バージニア州",
+    "WA": "ワシントン州", "AZ": "アリゾナ州", "MA": "マサチューセッツ州",
+    "TN": "テネシー州", "IN": "インディアナ州", "MO": "ミズーリ州",
+    "MD": "メリーランド州", "WI": "ウィスコンシン州", "CO": "コロラド州",
+    "MN": "ミネソタ州", "SC": "サウスカロライナ州", "AL": "アラバマ州",
+    "LA": "ルイジアナ州", "KY": "ケンタッキー州", "OR": "オレゴン州",
+    "OK": "オクラホマ州", "CT": "コネチカット州", "IA": "アイオワ州",
+    "MS": "ミシシッピ州", "AR": "アーカンソー州", "KS": "カンザス州",
+    "NV": "ネバダ州", "NM": "ニューメキシコ州", "NE": "ネブラスカ州",
+    "WV": "ウェストバージニア州", "ID": "アイダホ州", "HI": "ハワイ州",
+    "ME": "メイン州", "NH": "ニューハンプシャー州", "RI": "ロードアイランド州",
+    "MT": "モンタナ州", "DE": "デラウェア州", "SD": "サウスダコタ州",
+    "ND": "ノースダコタ州", "AK": "アラスカ州", "VT": "バーモント州",
+    "WY": "ワイオミング州", "UT": "ユタ州", "DC": "ワシントンD.C.",
+}
+
+
+def birthplace(bio: dict) -> str:
+    """「アメリカ カリフォルニア州 Orange」の形にする。
+
+    市名だけを出して「出身 Orange」になったことがある。
+    カリフォルニア州オレンジのことで、州も国も同じ応答に入っていたのに
+    落としていた。市名だけでは、どこの国の話かも分からない。
+
+    並びは国→州→市。日本語の住所と同じ向きなので、読み下せば
+    だんだん細かくなる。市名は綴りのまま——音写を当てにいくと、
+    いつか必ず違う読みを出す。
+    """
+    city = (bio.get("birth_city") or "").strip()
+    state = (bio.get("birth_state") or "").strip()
+    country = (bio.get("birth_country") or "").strip()
+    parts = [BIRTH_COUNTRY_JP.get(country, country),
+             STATE_JP.get(state, state), city]
+    return " ".join(x for x in parts if x)
+
+
+def debut_label(bio: dict) -> str:
+    """デビューの年。日付まで出しても、どの年かの方が頭に残る。"""
+    d = (bio.get("debut") or "")[:10]
+    if len(d) < 10:
+        return ""
+    return "%d年%d月" % (int(d[:4]), int(d[5:7]))
+
+
+def team_path(teams: list) -> str:
+    """「マリナーズ→メッツ→ドジャース」。1球団なら在籍年を添える。"""
+    if not teams:
+        return ""
+    if len(teams) == 1:
+        t = teams[0]
+        span = (f"{t['from']}-" if t["from"] != t["to"] else f"{t['from']}")
+        return f"{t['team']}（{span}）"
+    return "→".join(t["team"] for t in teams[-3:])
+
+
 def render_career(p, prof):
     im, d = ms.base(p)
     y = _head(d, prof, "通算成績")
     bio = prof.get("bio") or {}
     y = _stat_card(d, y + 40, "通算", stat_line(prof, prof.get("career") or {}),
                    ms.ACCENT)
-    rows = [("デビュー", bio.get("debut")), ("出身", bio.get("birth_city")),
-            ("年齢", f"{bio['age']}歳" if bio.get("age") else None)]
+    rows = [("デビュー", debut_label(bio)),
+            ("出身", birthplace(bio)),
+            ("年齢", f"{bio['age']}歳" if bio.get("age") else None),
+            ("球団", team_path(prof.get("teams") or []))]
     for i, (k, v) in enumerate([r for r in rows if r[1]]):
         if p < 0.12 + i * 0.08:
             continue
         d.text((100, y + 20), k, font=ms.font(36), fill=ms.DIM)
-        d.text((320, y + 14), str(v), font=ms.font(46), fill=ms.TEXT)
+        # 出身と球団経歴は行によって長さがまるで違う。
+        # 「アメリカ カリフォルニア州 Orange」も
+        # 「マリナーズ→メッツ→ドジャース」も、決め打ちの大きさでは
+        # 画面からはみ出す。入る大きさまで落とす。
+        size = ms.fit(d, str(v), ms.W - 320 - 70, (46, 40, 34, 30, 26))
+        d.text((320, y + 14 + (46 - size) // 2), str(v),
+               font=ms.font(size), fill=ms.TEXT)
         y += 74
     return im
 

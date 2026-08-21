@@ -73,8 +73,20 @@ def lookup(name: str, timeout: int = 20) -> str:
         lab = ((e.get("entities", {}).get(q, {}).get("labels", {})
                 .get("ja") or {}).get("value"))
         if lab:
-            return lab
+            return _strip_disambiguator(lab)
     return ""
+
+
+def _strip_disambiguator(label: str) -> str:
+    """Wikidataの曖昧さ回避を落とす。「ミッチェル (野球)」→「ミッチェル」
+
+    同名の人物がいると、日本語ラベルに「(野球)」「(野球選手)」が
+    付いてくる。そのまま読み上げに渡すと「かっこ やきゅう」と読む。
+    実際 Garrett Mitchell がそうなっていた。
+    """
+    import re
+    out = re.sub(r"\s*[（(][^）)]*[）)]\s*$", "", label).strip()
+    return out or label
 
 
 def names_from_recap() -> list:
