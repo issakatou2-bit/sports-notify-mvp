@@ -211,14 +211,18 @@ def main() -> int:
     titles = {}
     yt = client("youtube", "v3")
     if yt:
-        ids = [r["video"] for r in rows][:50]
-        try:
-            v = yt.videos().list(part="snippet,contentDetails",
-                                 id=",".join(ids)).execute()
-            for it in v.get("items", []):
-                titles[it["id"]] = it["snippet"]["title"]
-        except HttpError:
-            pass
+        # videos.list は1回50件まで。上限を200に上げたので、
+        # 50で切ると51本目から題名が空になる——そして空になるのは
+        # 再生数の少ない側、つまり調べたい側から先に消える。
+        ids = [r["video"] for r in rows]
+        for i in range(0, len(ids), 50):
+            try:
+                v = yt.videos().list(part="snippet,contentDetails",
+                                     id=",".join(ids[i:i + 50])).execute()
+                for it in v.get("items", []):
+                    titles[it["id"]] = it["snippet"]["title"]
+            except HttpError:
+                pass
 
     # 再生数の多いものだけ、曲線も取る。1本1リクエストなので全部は取らない。
     curves = {}
