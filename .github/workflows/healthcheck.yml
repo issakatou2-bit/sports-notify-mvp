@@ -62,6 +62,14 @@ jobs:
       # 記録だけが残らなかった。原因は直したが、落ちたぶんは戻らない。
       # 動画は実在するので、RSSから読み直して埋める。
       # 鍵も割り当ても要らないので、毎朝走らせて構わない。
+      # 初動。維持率はAnalyticsが要るが、再生数は APIキーだけで取れる。
+      # トークンが効かない間も、配られたかどうかはこれで分かる。
+      - name: Early views
+        continue-on-error: true
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python scripts/early_views.py --days 7
+
       - name: Backfill lost records
         continue-on-error: true
         run: python scripts/backfill_records.py --write
@@ -81,4 +89,4 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          bash scripts/commit_data.sh             "analytics: ${{ github.run_id }}"             data/analytics.json data/published_videos.json
+          bash scripts/commit_data.sh             "analytics: ${{ github.run_id }}"             data/analytics.json data/published_videos.json data/early_views.json

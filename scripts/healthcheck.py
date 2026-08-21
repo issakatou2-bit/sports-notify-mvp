@@ -246,6 +246,34 @@ def check_content() -> tuple:
     return lines, empty
 
 
+def check_assets(max_gap_days: int = 2) -> tuple:
+    """資産動画が止まっていないか。
+
+    日次の7枠しか見ていなかったので、資産動画が8/12から8/18まで
+    7日間1本も出ていないことに、誰も気づかなかった。
+    玉は79本のうち53本が未投稿で、素材切れではない。
+    起動が GitHub純正の schedule だけで、その週は動かなかった。
+
+    出るはずのものが出ていないことは、結果の側からしか分からない。
+    """
+    a = (load("data/published_assets.json") or {}).get("assets") or {}
+    days = sorted({(v.get("published_at") or "")[:10]
+                   for v in a.values()
+                   if isinstance(v, dict) and v.get("published_at")})
+    if not days:
+        return "| 資産動画 | **記録が無い** | |", 1
+    newest = days[-1]
+    try:
+        gap = (datetime.now(JST).date()
+               - datetime.strptime(newest, "%Y-%m-%d").date()).days
+    except ValueError:
+        return f"| 資産動画 | 日付が読めない({newest}) | |", 0
+    if gap > max_gap_days:
+        return (f"| 資産動画 | **{gap}日出ていない** | "
+                f"最後は{newest} |"), 1
+    return f"| 資産動画 | {gap}日前 | 計{len(a)}本 |", 0
+
+
 def check_history() -> tuple:
     """週間ランキングの材料。7日分そろって初めて出せる。"""
     d = pathlib.Path("data/recap_history")
@@ -327,14 +355,16 @@ def main() -> int:
         # 「材料が古い」と嘘の警告が出る。実際にそれで落ちた。
         stale = 0
     content_lines, empty = check_content()
+    asset_line, asset_bad = check_assets()
     hist_line, _ = check_history()
     pl_line, pl_bad = check_playlists()
     an_line, _ = check_analytics()
 
     out = [f"# コレスポの健康診断  ({day} 分 / {now:%m-%d %H:%M} JST 時点)", ""]
-    if missing or stale or pl_bad or empty:
+    if missing or stale or pl_bad or empty or asset_bad:
         out.append(f"**要確認: 動画の欠け {missing}件 / データの古さ {stale}件"
-                   f" / 中身の欠け {empty}件**")
+                   f" / 中身の欠け {empty}件"
+                   + ("  / 資産動画が止まっています" if asset_bad else "") + "**")
     else:
         out.append("**問題なし**")
     out += ["", "## 動画", "",
@@ -342,7 +372,7 @@ def main() -> int:
     out += video_lines
     out += ["", "## 材料と記録", "",
             "| 対象 | 状態 | |", "|---|---|---|"]
-    out += data_lines + [hist_line, pl_line, an_line]
+    out += data_lines + [asset_line, hist_line, pl_line, an_line]
     out += ["", "## 材料の中身", "",
             "先頭8件のうち、いくつ埋まっているか。"
             "ファイルが新しくても中身が空のことがある。", "",
