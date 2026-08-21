@@ -56,6 +56,30 @@ GAME_BOUNDS = {
     "失点": (0, 20),
 }
 
+# 通算で起こりうる幅。
+#
+# これが抜けていて、8/21の「今日の1人」が出なかった。
+# Zach Netoの通算は443安打・79本塁打・234打点。これを今季の幅
+# (270安打・75本塁打・200打点)で見ると3か所で引っかかる。
+# この枠は通算成績そのものが主題なので、毎回引っかかっていた。
+#
+# 上限は歴代記録の少し上に置く。安打4256、本塁打762、打点2297、
+# 盗塁1406、勝511、奪三振5714。記録を追い抜く選手が現れる日は、
+# その日に上げればよい。
+CAREER_BOUNDS = {
+    "勝": (0, 600),
+    "敗": (0, 400),
+    "セーブ": (0, 750),
+    "ホールド": (0, 400),
+    "防御率": (0, 15),
+    "奪三振": (0, 6500),
+    "本塁打": (0, 900),
+    "打点": (0, 2600),
+    "安打": (0, 5000),
+    "盗塁": (0, 1600),
+    "打率": (0, 0.400),
+}
+
 # 一シーズンで起こりうる幅。
 SEASON_BOUNDS = {
     "勝": (0, 30),
@@ -102,10 +126,14 @@ def parse_line(line):
 def check_line(name, line):
     """一行ぶんの成績を常識で見る。"""
     bad = []
-    season = "今季" in line or "通算" in line
-    bounds = SEASON_BOUNDS if season else GAME_BOUNDS
+    if "通算" in line:
+        bounds, where = CAREER_BOUNDS, "通算"
+    elif "今季" in line or "昨季" in line:
+        bounds, where = SEASON_BOUNDS, "今季"
+    else:
+        bounds, where = GAME_BOUNDS, "一試合"
+    season = where != "一試合"
     got = parse_line(line)
-    where = "今季" if season else "一試合"
 
     for unit, val in got.items():
         lo, hi = bounds.get(unit, (None, None))
@@ -166,10 +194,13 @@ def check_narration(paths):
     しまう。狭く見て誤って止めるより、確実な分だけ止める。
     """
     loose = {}
-    for unit in set(GAME_BOUNDS) | set(SEASON_BOUNDS):
-        g = GAME_BOUNDS.get(unit, (0, 0))
-        s = SEASON_BOUNDS.get(unit, (0, 0))
-        loose[unit] = (min(g[0], s[0]), max(g[1], s[1]))
+    for unit in set(GAME_BOUNDS) | set(SEASON_BOUNDS) | set(CAREER_BOUNDS):
+        lo, hi = 0, 0
+        for table in (GAME_BOUNDS, SEASON_BOUNDS, CAREER_BOUNDS):
+            b = table.get(unit)
+            if b:
+                lo, hi = min(lo, b[0]), max(hi, b[1])
+        loose[unit] = (lo, hi)
 
     bad = []
     for p in paths:
