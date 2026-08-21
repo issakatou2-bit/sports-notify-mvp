@@ -48,7 +48,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 9,
+        "away": 10,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822934",
@@ -105,7 +110,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824395",
@@ -154,7 +164,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824589",
@@ -274,7 +289,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 6,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823747",
@@ -323,7 +343,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 7,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "564638",
@@ -365,7 +390,12 @@
       ],
       "log_notes": [],
       "ai_summary": "ラ・リーガの開幕を飾るこの一戦は、昨季8位のラージョ・バジェカーノと【昨季14位のアラベス】という、前シーズンで明確な力関係を示していた両チームの対戦である。新シーズンは全30チームによる総当たり戦で展開され、勝ち点の積み重ねが最終順位を左右するため、こうした前評判の差がどこまで反映されるかが興味深い。開幕直後だからこそ、両チームがシーズンへの勢いをどう作るのか、そしてそれぞれの攻撃と守備の組み立てがどのように機能するかに注目したい。",
-      "notification_hook": "昨季8位vs14位、新シーズンの実力差は保つのか。"
+      "notification_hook": "昨季8位vs14位、新シーズンの実力差は保つのか。",
+      "final_score": {
+        "home": 1,
+        "away": 1,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "824802",
@@ -414,7 +444,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822861",
@@ -463,7 +498,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824153",
@@ -535,7 +575,12 @@
       },
       "log_notes": [],
       "ai_summary": "ア・リーグ西地区で【首位と2.0ゲーム差】を保つアストロズが、同地区4位のエンゼルスと対戦する。防御率3.11で8勝を挙げるアストロズのPeter Lambertに対し、エンゼルスは防御率7.17のGrayson Rodriguezで臨む先発投手の成績差が大きい一戦である。直近10試合でアストロズは4勝6敗、エンゼルスは5勝5敗と、両チームとも足並みが揃わない状況下での対戦となる。左翼が浅い開閉式球場での試合だけに、左打者の一発がゲームの流れを左右する可能性に注目したい。",
-      "notification_hook": "防御率3.11のアストロズ先発が防御率7.17の相手と対戦、投手力の差がもたらす結果は。"
+      "notification_hook": "防御率3.11のアストロズ先発が防御率7.17の相手と対戦、投手力の差がもたらす結果は。",
+      "final_score": {
+        "home": 3,
+        "away": 18,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
