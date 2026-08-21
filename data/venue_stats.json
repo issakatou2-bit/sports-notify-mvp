@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-08-20T13:48:12.252787+00:00",
+  "updated_at": "2026-08-21T06:01:45.508879+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-08-20",
-  "total_games": 2048,
+  "end": "2026-08-21",
+  "total_games": 2057,
   "min_games": 20,
   "venues": {
     "Coors Field": {
@@ -35,9 +35,9 @@
       "total": 30
     },
     "Kauffman Stadium": {
-      "games": 62,
-      "runs": 602,
-      "avg_runs": 9.71,
+      "games": 63,
+      "runs": 610,
+      "avg_runs": 9.68,
       "rank": 5,
       "total": 30
     },
@@ -48,17 +48,17 @@
       "rank": 6,
       "total": 30
     },
+    "Daikin Park": {
+      "games": 67,
+      "runs": 631,
+      "avg_runs": 9.42,
+      "rank": 7,
+      "total": 30
+    },
     "Wrigley Field": {
       "games": 65,
       "runs": 607,
       "avg_runs": 9.34,
-      "rank": 7,
-      "total": 30
-    },
-    "Daikin Park": {
-      "games": 66,
-      "runs": 610,
-      "avg_runs": 9.24,
       "rank": 8,
       "total": 30
     },
@@ -77,30 +77,30 @@
       "total": 30
     },
     "Oriole Park at Camden Yards": {
-      "games": 65,
-      "runs": 583,
-      "avg_runs": 8.97,
+      "games": 66,
+      "runs": 590,
+      "avg_runs": 8.94,
       "rank": 11,
-      "total": 30
-    },
-    "Rate Field": {
-      "games": 61,
-      "runs": 542,
-      "avg_runs": 8.89,
-      "rank": 12,
       "total": 30
     },
     "Truist Park": {
       "games": 66,
       "runs": 584,
       "avg_runs": 8.85,
-      "rank": 13,
+      "rank": 12,
       "total": 30
     },
     "American Family Field": {
-      "games": 67,
-      "runs": 588,
-      "avg_runs": 8.78,
+      "games": 68,
+      "runs": 599,
+      "avg_runs": 8.81,
+      "rank": 13,
+      "total": 30
+    },
+    "Rate Field": {
+      "games": 62,
+      "runs": 544,
+      "avg_runs": 8.77,
       "rank": 14,
       "total": 30
     },
@@ -118,24 +118,24 @@
       "rank": 16,
       "total": 30
     },
-    "Tropicana Field": {
-      "games": 65,
-      "runs": 564,
-      "avg_runs": 8.68,
+    "Great American Ball Park": {
+      "games": 68,
+      "runs": 588,
+      "avg_runs": 8.65,
       "rank": 17,
+      "total": 30
+    },
+    "Tropicana Field": {
+      "games": 66,
+      "runs": 570,
+      "avg_runs": 8.64,
+      "rank": 18,
       "total": 30
     },
     "Oracle Park": {
       "games": 64,
       "runs": 547,
       "avg_runs": 8.55,
-      "rank": 18,
-      "total": 30
-    },
-    "Great American Ball Park": {
-      "games": 67,
-      "runs": 569,
-      "avg_runs": 8.49,
       "rank": 19,
       "total": 30
     },
@@ -153,17 +153,17 @@
       "rank": 21,
       "total": 30
     },
-    "Progressive Field": {
-      "games": 64,
-      "runs": 536,
-      "avg_runs": 8.38,
-      "rank": 22,
-      "total": 30
-    },
     "Comerica Park": {
       "games": 63,
       "runs": 527,
       "avg_runs": 8.37,
+      "rank": 22,
+      "total": 30
+    },
+    "Progressive Field": {
+      "games": 65,
+      "runs": 543,
+      "avg_runs": 8.35,
       "rank": 23,
       "total": 30
     },
@@ -189,9 +189,9 @@
       "total": 30
     },
     "Globe Life Field": {
-      "games": 63,
-      "runs": 508,
-      "avg_runs": 8.06,
+      "games": 64,
+      "runs": 510,
+      "avg_runs": 7.97,
       "rank": 27,
       "total": 30
     },
