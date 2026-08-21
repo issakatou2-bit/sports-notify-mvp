@@ -1,0 +1,59 @@
+name: 道具　公開済みの題を付け直す
+
+# 題の作り方を変えても、すでに出た動画は古い題のまま残る。
+# 同じ作り方から作り直して揃える。
+#
+# 既定は下読みだけ。実行ページに「いま」と「こう」を並べて出すので、
+# 見てから write: true でもう一度動かす。
+#
+# 材料はいま手元にあるものを使うので、当日以外を作り直すと
+# その日の材料ではなく今日の材料で題が付く。date は既定で当日。
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '対象の日 (YYYY-MM-DD、既定は今日)'
+        required: false
+      kind:
+        description: '種類を1つに絞る (morning_press など。空なら全部)'
+        required: false
+      write:
+        description: 'true にすると実際に変える(既定は下読みだけ)'
+        required: false
+        default: 'false'
+      force:
+        description: 'true にすると、よく見られている動画も対象にする'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: read
+
+jobs:
+  retitle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install google-api-python-client google-auth
+
+      - name: Retitle
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          DATE: ${{ inputs.date }}
+          KIND: ${{ inputs.kind }}
+        run: |
+          ARGS="--date ${DATE:-$(TZ=Asia/Tokyo date +%F)}"
+          if [ -n "$KIND" ]; then ARGS="$ARGS --kind $KIND"; fi
+          if [ "${{ inputs.write }}" = "true" ]; then ARGS="$ARGS --write"; fi
+          if [ "${{ inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
+          echo "python scripts/retitle.py $ARGS"
+          python scripts/retitle.py $ARGS
