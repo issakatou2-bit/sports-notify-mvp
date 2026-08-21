@@ -121,6 +121,25 @@ def _kana_table(path: str = "data/player_kana.json") -> dict:
     return {_textkey.key(k): v for k, v in raw.items() if v}
 
 
+@functools.lru_cache(maxsize=1)
+def _jp_kana() -> dict:
+    """日本人選手の、漢字表記 → 読み(カタカナ)。
+
+    野球とサッカー、両方の名簿が持っている。
+    _MLB_NAME_READINGS のほうは英語名を引くための表なので、
+    漢字で来る日本人選手はそちらでは引けない。
+    """
+    out = {}
+    try:
+        from notability_engine import JP_PLAYERS_MLB, JP_PLAYERS_SOCCER
+    except ImportError:
+        return out
+    for p in list(JP_PLAYERS_SOCCER) + list(JP_PLAYERS_MLB):
+        if p.get("kana") and p.get("name_jp"):
+            out[p["name_jp"]] = p["kana"]
+    return out
+
+
 def speech_name(name: str) -> str:
     """
     読み上げに渡す用に、外国人選手の名前を整える。画面表示には使わない。
@@ -136,12 +155,21 @@ def speech_name(name: str) -> str:
 
     姓だけにするのは、VOICEVOXが姓は概ね読めているのと、
     日本の野球中継でも姓で呼ぶのが普通のため。
-    日本人選手はJP_PLAYER_READINGSでカタカナに置き換わるので、
-    ここへは来ない(来ても漢字はそのまま返る)。
+    日本人選手は漢字で来るので、先に _jp_kana() で読みに置き換える
+    (置き換えないと「田中碧」の読みをVOICEVOXが推測することになる)。
 
     根本的には選手ごとのカタカナ表記を持つのが正しいが、
     先発投手は誰でもフックに出るので、名簿を用意しても漏れる。
     """
+    # 日本人選手は漢字で持っている。そのまま渡すとVOICEVOXが読みを
+    # 推測して、「田中碧」を「たなかみどり」のように外す。人名の読みは
+    # 規則で決まらないので、推測に任せてはいけない。
+    #
+    # 名簿にローマ字表記があるので、読みはそこから決まっている。
+    # こちらで当てているわけではない (Ao Tanaka → タナカ・アオ)。
+    got = _jp_kana().get(name.strip())
+    if got:
+        return got
     if not name or not any(c.isascii() and c.isalpha() for c in name):
         return name
     # 集めたカタカナがあれば、それがいちばん正しい。
@@ -305,6 +333,13 @@ def _top_game_meta(games: list) -> dict:
     }
 
 
+def _with_team(row) -> str:
+    """「レンジャーズのジェイコブ・デグロム」。所属が無ければ名前だけ。"""
+    who = speech_name(row.get("name", ""))
+    team = (row.get("team") or "").strip()
+    return f"{team}の{who}" if team else who
+
+
 def _who(row) -> dict:
     """画面に出す用の、選手名と成績。無ければ空。"""
     if not row or not row.get("headline"):
@@ -421,14 +456,21 @@ def _yesterday_recap(archive_dir: str, games: list,
         b = json.loads(_p.Path(best_path).read_text(encoding="utf-8"))
         top = (b.get("players") or [None])[0]
         if top and top.get("headline"):
-            who = speech_name(top["name"])
-            best = f"この日いちばんは{who}で、{_spoken_stats(top['headline'])}。"
+            # 所属を必ず言う。
+            #
+            # 直前に選んだ3試合を読み上げているので、そこへ名前だけ
+            # 続けると、その試合に出ていた選手に聞こえる。実際は
+            # MLB全体の1位で、別の試合のことが多い。
+            # デグロムはレンジャーズなのに、エンゼルスの試合の直後に
+            # 名前だけ出たので、エンゼルスの投手として聞こえていた。
+            best = ("この日のMLB全体でいちばんは"
+                    f"{_with_team(top)}で、{_spoken_stats(top['headline'])}。")
         # 投手は打者と別枠で持っている。採点に打者の土台点があるため、
         # 混ぜて並べると上位が打者で埋まり、何人抑えた投手がいた日も
         # その話が一度も出てこない。1人だけ、打者の後ろに足す。
         arm = (b.get("pitchers") or [None])[0]
         if arm and arm.get("headline"):
-            best += (f"投手では{speech_name(arm['name'])}が"
+            best += (f"投手では{_with_team(arm)}が"
                      f"{_spoken_stats(arm['headline'])}。")
     except (json.JSONDecodeError, OSError, KeyError, IndexError):
         pass

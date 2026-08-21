@@ -309,5 +309,37 @@ check("書き出しがかぶっていない", sorted(set(_dupe)), [])
 check("報道編の書き出しはその日の見出しから", bool(_uy.top_headline()), True)
 check("現地編の書き出しはその日の話題から", bool(_uy.top_talked_team()), True)
 
+# 日本人選手の読みが、名簿のローマ字と合っているか。
+#
+# 漢字をそのままVOICEVOXへ渡すと読みを推測する。「田中碧」は
+# Ao Tanaka なので「タナカ・アオ」だが、推測なら「みどり」もありうる。
+# 読みは名簿のローマ字から決まっているので、突き合わせられる。
+print("\n--- 日本人選手の読み ---")
+import unicodedata as _ud  # noqa: E402
+from generate_narration import speech_name as _sp  # noqa: E402
+from notability_engine import (  # noqa: E402
+    JP_PLAYERS_MLB as _M, JP_PLAYERS_SOCCER as _S)
+
+_KATA = "".join(chr(c) for c in range(0x30A1, 0x30FB)) + "ー・"
+_bad = []
+for _p in list(_M) + list(_S):
+    _k = _p.get("kana")
+    if not _k:
+        continue
+    if any(c not in _KATA for c in _k):
+        _bad.append((_p["name_jp"], _k, "カタカナ以外が混じっている"))
+        continue
+    # ローマ字の姓と、読みの先頭が対応しているか(ざっくり)
+    _fam = _p["name_en"].split()[-1].lower()
+    _head = _k.split("・")[0]
+    if len(_fam) >= 3 and len(_head) < 2:
+        _bad.append((_p["name_jp"], _k, "姓の読みが短すぎる"))
+check("読みが全員そろっている",
+      [p["name_jp"] for p in list(_M) + list(_S) if not p.get("kana")],
+      ["ヌートバー"])
+check("読みの形がおかしいもの", _bad, [])
+check("田中碧はタナカ・アオ", _sp("田中碧"), "タナカ・アオ")
+check("遠藤航はエンドウ・ワタル", _sp("遠藤航"), "エンドウ・ワタル")
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)
