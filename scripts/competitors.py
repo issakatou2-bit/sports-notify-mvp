@@ -149,6 +149,64 @@ def recent(uploads_playlist, want=25):
     }
 
 
+def rss(channel_id):
+    """チャンネルのRSS。直近15本の公開時刻とタイトル。単位を使わない。"""
+    url = ("https://www.youtube.com/feeds/videos.xml?channel_id="
+           + channel_id)
+    req = urllib.request.Request(
+        url, headers={"User-Agent": "Mozilla/5.0 (collespo)"})
+    try:
+        x = urllib.request.urlopen(req, timeout=30).read().decode("utf-8")
+    except Exception:
+        return [], []
+    pub = re.findall("<published>(.*?)</published>", x)
+    tit = re.findall("<media:title>(.*?)</media:title>", x)
+    out = []
+    for p in pub:
+        try:
+            out.append(dt.datetime.fromisoformat(p))
+        except ValueError:
+            pass
+    return out, tit
+
+
+def automation(times, titles):
+    """自動投稿の仕掛けがあるか。決めつけずに、根拠になる数字を並べる。
+
+    見ているもの:
+      秒のばらつき
+        予約公開はその分の00秒ちょうどに出る。手で上げると、
+        変換が終わった時刻——つまり任意の秒——になる。
+      投稿間隔のばらつき
+        毎日同じ時刻に出しているなら、間隔は24時間に張り付く。
+      タイトルの型
+        差し込みで作っていれば、先頭の言い回しの種類が本数より
+        ずっと少なくなる。
+
+    これは推定であって証明ではない。予約公開を手で毎日入れている人も
+    いるし、型のあるタイトルを手書きする人もいる。数字を出して、
+    読む側が判断できるようにする。
+    """
+    if len(times) < 4:
+        return {}
+    times = sorted(times)
+    secs = [t.second for t in times]
+    gaps = [(times[i + 1] - times[i]).total_seconds() / 3600
+            for i in range(len(times) - 1)]
+    heads = {t.split("｜")[0][:12] for t in titles} if titles else set()
+
+    on_the_minute = sum(1 for s in secs if s == 0) / len(secs)
+    return {
+        "n": len(times),
+        "sec_spread": round(statistics.pstdev(secs), 1),
+        "on_the_minute": round(on_the_minute, 2),
+        "gap_hours_median": round(statistics.median(gaps), 1) if gaps else None,
+        "gap_spread": round(statistics.pstdev(gaps), 1) if len(gaps) > 1 else None,
+        "title_shapes": (round(len(heads) / len(titles), 2)
+                         if titles else None),
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--per-query", type=int, default=25)
@@ -186,6 +244,9 @@ def main():
         s["best_rank"] = min(r for _, r in rank[cid])
         s["recent"] = recent(s.pop("uploads")) if s.get("uploads") else None
         s["mine"] = MINE in s["name"]
+        # 「同じことをやっているのか」は登録者数では分からない。
+        # 出し方の癖を見る。RSSなので単位を使わない。
+        s["auto"] = automation(*rss(cid))
         rows.append(s)
 
     print()
@@ -199,6 +260,22 @@ def main():
                  f"{rc.get('median_views', 0):,}",
                  rc.get("per_day") if rc.get("per_day") is not None else "-",
                  int((rc.get("shorts_share") or 0) * 100)))
+
+    print()
+    print("=== 出し方の癖 ===")
+    print("  秒ばらつきが0に近く、00秒率が1に近く、間隔が24hに張り付き、")
+    print("  型の数/本 が小さいほど、差し込みで作って予約公開している。")
+    print()
+    print("%-26s %4s %8s %7s %8s %8s"
+          % ("チャンネル", "本", "秒ばらつき", "00秒率", "間隔中央", "型/本"))
+    for r in rows:
+        a = r.get("auto") or {}
+        if not a:
+            continue
+        print("%-26s %4s %7s秒 %7s %7sh %8s"
+              % (r["name"][:24], a["n"], a["sec_spread"],
+                 a["on_the_minute"], a["gap_hours_median"],
+                 a["title_shapes"]))
 
     print("\n=== 検索語ごとの上位3 ===")
     for q in QUERIES:
@@ -226,6 +303,21 @@ def main():
                     rc.get("per_day") if rc.get("per_day") is not None else "-",
                     int((rc.get("shorts_share") or 0) * 100),
                     "、".join(r["queries"])))
+
+            f.write("\n### 出し方の癖\n\n")
+            f.write("秒のばらつきが0に近く、00秒率が1に近く、間隔が24hに"
+                    "張り付き、型の数が小さいほど、差し込みで作って予約公開"
+                    "している。推定であって証明ではない。\n\n")
+            f.write("|チャンネル|本|秒ばらつき|00秒率|間隔中央|型の数/本|\n")
+            f.write("|---|--:|--:|--:|--:|--:|\n")
+            for r in rows:
+                a = r.get("auto") or {}
+                if not a:
+                    continue
+                f.write("|%s%s|%s|%s秒|%s|%sh|%s|\n" % (
+                    r["name"], " ←自分" if r["mine"] else "", a["n"],
+                    a["sec_spread"], a["on_the_minute"],
+                    a["gap_hours_median"], a["title_shapes"]))
     return 0
 
 

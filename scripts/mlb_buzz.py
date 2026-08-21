@@ -205,6 +205,26 @@ def fetch_result(date: str, teams: list) -> dict:
             "away_jp": jp_team(an), "home_jp": jp_team(hn),
             "away_score": away["score"], "home_score": home["score"],
         }
+        # イニングごとの点。スコアボードを描くのに要る。
+        # 最終スコアだけだと「7対6だった」しか言えないが、
+        # 回ごとの並びがあれば、どこで動いた試合なのかが一目で分かる。
+        try:
+            ls = requests.get(f"{MLB_API}/game/{g['gamePk']}/linescore",
+                              timeout=25)
+            ls.raise_for_status()
+            line = ls.json()
+            res["innings"] = [
+                {"num": i.get("num"),
+                 "away": (i.get("away") or {}).get("runs"),
+                 "home": (i.get("home") or {}).get("runs")}
+                for i in (line.get("innings") or [])]
+            for side in ("away", "home"):
+                t = (line.get("teams") or {}).get(side) or {}
+                res[side + "_hits"] = t.get("hits")
+                res[side + "_errors"] = t.get("errors")
+        except Exception:
+            pass
+
         try:
             bx = requests.get(f"{MLB_API}/game/{g['gamePk']}/boxscore",
                               timeout=25)

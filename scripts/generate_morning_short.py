@@ -998,6 +998,155 @@ def buzz_label(b: dict) -> str:
     return _jp_matchup(b.get("matchup", ""))
 
 
+def scoreboard_ready(res) -> bool:
+    """スコアボードを描いてよい材料が揃っているか。
+
+    回ごとの合計と最終スコアが合わない日は描かない。取り込みが途中で
+    切れると、表のRと下の折れ線が別々の数字を出すことになる。
+    画面の中で辻褄が合っていないのは、その画面が無いより悪い。
+    """
+    innings = [i for i in ((res or {}).get("innings") or []) if i.get("num")]
+    if not innings:
+        return False
+    for side in ("away", "home"):
+        final = res.get(side + "_score")
+        if final is None:
+            return False
+        if sum((i.get(side) or 0) for i in innings) != final:
+            return False
+    return True
+
+
+def render_scoreboard(p, res, away, home):
+    """
+    イニングごとの点を、球場の掲示板の形で出す。
+
+    最終スコアだけだと「7対6だった」で終わるが、回ごとの並びがあれば
+    どこで動いた試合なのかが一目で分かる。序盤に離して守り切ったのか、
+    終盤にひっくり返したのかは、数字の列がそのまま語る。
+
+    素材を一切借りずに作れるのも都合がよい。球団のロゴにも
+    選手の写真にも触れずに、公式の数字だけで画になる。
+
+    左から順に開く。全部同時に出すと、ただの表になる。
+    """
+    if not scoreboard_ready(res):
+        return None
+
+    im, d = base(p)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    innings = [i for i in (res.get("innings") or []) if i.get("num")]
+
+    d.text((70, 190), "スコアボード", font=font(52), fill=ACCENT)
+
+    # 球団名は表の左に置けない。「ダイヤモンドバックス」は
+    # 縦画面の幅では1回の列まで食い込む。名前は上に大きく出して、
+    # 表は数字だけにする。そのぶん1回ぶんの枠を広く取れる。
+    aw, hm = res.get("away_score"), res.get("home_score")
+    head = f"{away}  {aw} - {hm}  {home}"
+    hs = fit(d, head, W - 140, (58, 52, 46, 40, 36))
+    d.text((70, 300), head, font=font(hs), fill=TEXT)
+
+    # 9回までは必ず枠を引く。延長した日はその分だけ伸ばす。
+    cols = max(9, max(i["num"] for i in innings))
+    x0, top = 70, 520
+    label_w = 150
+    rhe_w = 3 * 62
+    cell = (W - 140 - label_w - rhe_w - 20) // cols
+    rh = 130
+
+    # 回の見出しと R H E
+    for n in range(1, cols + 1):
+        cx = x0 + label_w + (n - 1) * cell
+        tw = d.textlength(str(n), font=font(36))
+        d.text((cx + cell / 2 - tw / 2, top - 62), str(n),
+               font=font(36), fill=DIM)
+    for j, tag in enumerate(("R", "H", "E")):
+        cx = x0 + label_w + cols * cell + 20 + j * 62
+        tw = d.textlength(tag, font=font(36))
+        d.text((cx + 31 - tw / 2, top - 62), tag, font=font(36), fill=ACCENT)
+
+    for row, side in enumerate(("away", "home")):
+        y = top + row * rh
+        d.rounded_rectangle([x0, y, W - 70, y + rh - 14], 14,
+                            fill=SURF if row == 0 else (24, 28, 36))
+        d.text((x0 + 24, y + rh / 2 - 34), "先攻" if row == 0 else "後攻",
+               font=font(34), fill=DIM)
+
+        for n in range(1, cols + 1):
+            # 左から順に開く。全部同時に出すと、ただの表になる。
+            if p < 0.10 + (n - 1) * 0.045:
+                continue
+            got = next((i for i in innings if i["num"] == n), None)
+            v = (got or {}).get(side)
+            # 後攻がサヨナラや9回裏なしで打たなかった回は「-」。
+            # 0と書くと、攻撃して取れなかったことになる。
+            txt = "-" if v is None else str(v)
+            cx = x0 + label_w + (n - 1) * cell
+            tw = d.textlength(txt, font=font(52))
+            d.text((cx + cell / 2 - tw / 2, y + rh / 2 - 40), txt,
+                   font=font(52), fill=ACCENT if (v or 0) > 0 else DIM)
+
+        for j, key in enumerate(("_score", "_hits", "_errors")):
+            v = res.get(side + key)
+            if v is None:
+                continue
+            cx = x0 + label_w + cols * cell + 20 + j * 62
+            tw = d.textlength(str(v), font=font(52))
+            d.text((cx + 31 - tw / 2, y + rh / 2 - 40), str(v),
+                   font=font(52), fill=TEXT if key == "_score" else DIM)
+
+    # 表は「何回に何点」までしか言わない。積み上げると、点差がいつ開いて
+    # いつ詰まったのかが線になる。縦画面は下が余るので、そこに置く。
+    cy0 = top + 2 * rh + 90
+    ch = 420
+    d.text((70, cy0), "得点の推移", font=font(38), fill=DIM)
+    # 横位置は上の表の回に合わせる。ずれていると、線のどこが何回なのかを
+    # 目で追えない。
+    gx0 = x0 + label_w + cell // 2
+    gw = (cols - 1) * cell
+    gy0 = cy0 + 80
+    run = {"away": 0, "home": 0}
+    pts = {"away": [], "home": []}
+    for n in range(1, cols + 1):
+        got = next((i for i in innings if i["num"] == n), None)
+        for side in ("away", "home"):
+            run[side] += ((got or {}).get(side) or 0)
+            pts[side].append(run[side])
+    top_run = max(max(pts["away"]), max(pts["home"]), 1)
+
+    # 目盛りは点数。線だけだと大きさが分からない。
+    for v in (0, top_run):
+        yy = gy0 + ch - int(ch * v / top_run)
+        d.line([gx0, yy, gx0 + gw, yy], fill=(38, 44, 54), width=2)
+        d.text((70, yy - 20), str(v), font=font(28), fill=DIM)
+
+    for side, col in (("away", (120, 170, 255)), ("home", ACCENT)):
+        pl = []
+        for n in range(cols):
+            if p < 0.10 + n * 0.045:
+                break
+            pl.append((gx0 + int(gw * n / max(1, cols - 1)),
+                       gy0 + ch - int(ch * pts[side][n] / top_run)))
+        if len(pl) > 1:
+            d.line(pl, fill=col, width=6, joint="curve")
+        if pl:
+            d.ellipse([pl[-1][0] - 9, pl[-1][1] - 9,
+                       pl[-1][0] + 9, pl[-1][1] + 9], fill=col)
+
+    d.text((gx0, gy0 + ch + 24), away, font=font(30), fill=(120, 170, 255))
+    hw = d.textlength(home, font=font(30))
+    d.text((gx0 + gw - hw, gy0 + ch + 24), home, font=font(30), fill=ACCENT)
+
+    if res.get("star_name"):
+        star = f"{res['star_name']}　{res['star_line']}"
+        d.text((70, H - 260), star,
+               font=font(fit(d, star, W - 140, (44, 40, 36, 32))), fill=JP)
+
+    d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
 def render_buzz(p, buzz, picks=None):
     """
     現地でどれだけ見られたか。
