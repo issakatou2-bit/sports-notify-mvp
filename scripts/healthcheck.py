@@ -61,6 +61,28 @@ DATA_FILES = [
     ("data/local_voices.json", "現地のファンの声"),
 ]
 
+# ファイルが新しいことと、中身が揃っていることは別。
+#
+# 「現地で話題のチーム」は毎朝きちんと更新されていた。中身は
+# 球団名と回数だけで、何を言われているか(gist)が全部空だった。
+# 鍵を渡し忘れていて、鍵が無いときの分岐に落ちていたため。
+# 新しさだけを見ていたので、診断は毎日「問題なし」と言っていた。
+#
+# 形は (ファイル, 一覧のキー, 揃っているべきキー, 表示名)。
+# 一覧の先頭いくつかを見て、そのキーが埋まっているかを数える。
+CONTENT_CHECKS = [
+    ("data/local_buzz.json", "teams", "gist", "現地の話題(何を言われたか)"),
+    ("data/mlb_buzz.json", "videos", "result", "現地の再生回数(試合結果)"),
+    ("data/local_reporters.json", "headlines", "jp", "現地の番記者(訳)"),
+    ("data/local_voices.json", "voices", "ja", "現地のファンの声(訳)"),
+    ("data/roster_stats.json", "players", "line", "在籍選手(成績)"),
+    ("data/best_of_day.json", "players", "headline", "その日の採点(成績行)"),
+]
+
+# 何割埋まっていれば良しとするか。
+# 訳や要約は一部落ちることがあるので、全部を求めない。
+CONTENT_MIN = 0.5
+
 
 def load(path: str):
     p = pathlib.Path(path)
@@ -201,6 +223,29 @@ def check_data() -> tuple:
     return lines, stale
 
 
+def check_content() -> tuple:
+    """材料の中身が埋まっているか。新しさとは別に見る。"""
+    lines, empty = [], 0
+    for path, group, key, label in CONTENT_CHECKS:
+        d = load(path)
+        if d is None:
+            continue          # 新しさの検査が別に見ている
+        rows = (d.get(group) or [])[:8]
+        if not rows:
+            empty += 1
+            lines.append(f"| {label} | **中身が無い** | {group} が空 |")
+            continue
+        got = sum(1 for r in rows if r.get(key))
+        share = got / len(rows)
+        if share < CONTENT_MIN:
+            empty += 1
+            lines.append(f"| {label} | **{got}/{len(rows)}** | "
+                         f"{key} が埋まっていない |")
+        else:
+            lines.append(f"| {label} | {got}/{len(rows)} | |")
+    return lines, empty
+
+
 def check_history() -> tuple:
     """週間ランキングの材料。7日分そろって初めて出せる。"""
     d = pathlib.Path("data/recap_history")
@@ -281,13 +326,15 @@ def main() -> int:
         # 取れないことを理由に赤くすると、YouTube側が500を返しただけの日に
         # 「材料が古い」と嘘の警告が出る。実際にそれで落ちた。
         stale = 0
+    content_lines, empty = check_content()
     hist_line, _ = check_history()
     pl_line, pl_bad = check_playlists()
     an_line, _ = check_analytics()
 
     out = [f"# コレスポの健康診断  ({day} 分 / {now:%m-%d %H:%M} JST 時点)", ""]
-    if missing or stale or pl_bad:
-        out.append(f"**要確認: 動画の欠け {missing}件 / データの古さ {stale}件**")
+    if missing or stale or pl_bad or empty:
+        out.append(f"**要確認: 動画の欠け {missing}件 / データの古さ {stale}件"
+                   f" / 中身の欠け {empty}件**")
     else:
         out.append("**問題なし**")
     out += ["", "## 動画", "",
@@ -296,6 +343,11 @@ def main() -> int:
     out += ["", "## 材料と記録", "",
             "| 対象 | 状態 | |", "|---|---|---|"]
     out += data_lines + [hist_line, pl_line, an_line]
+    out += ["", "## 材料の中身", "",
+            "先頭8件のうち、いくつ埋まっているか。"
+            "ファイルが新しくても中身が空のことがある。", "",
+            "| 対象 | 埋まり | |", "|---|---|---|"]
+    out += content_lines
 
     text = "\n".join(out)
     print(text)
