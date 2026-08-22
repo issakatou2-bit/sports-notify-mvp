@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-21T08:20:47.855115+00:00",
+  "updated_at": "2026-08-22T06:01:53.692900+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,73 +13,81 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 3,
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "Ketel Marteがゲーム中にカジノにいた"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 2,
       "tone": "好調",
-      "gist": "ブルージェイズが7連続でシリーズ勝利、打者も健闘"
+      "gist": "Montgomery含む連続本塁打、Rogersが逆転サヨナ"
     },
     {
       "team_id": "136",
       "name": "マリナーズ",
       "name_en": "Seattle Mariners",
-      "mentions": 3,
+      "mentions": 2,
       "tone": "話題",
-      "gist": "マリナーズが野球最高評価の投手有望株を昇格へ"
-    },
-    {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "アストロズが18-3で大敗、得失点差が-46に"
+      "gist": "Troutがマリナーズ相手に56本、Rivasが延長サヨナラ"
     },
     {
       "team_id": "121",
       "name": "メッツ",
       "name_en": "New York Mets",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "メッツ球場にアライグマ問題、チーム成績は好調"
+      "tone": "不振",
+      "gist": "Rogersのサヨナラ2ランホーマーでメッツが敗北"
+    },
+    {
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "Alonso30号本塁打でオリオールズがリード"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "Contrerasの本塁打でレッドソックスがリード"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ドジャースオーナーが調査下で資金移動、複数選手負傷"
-    },
-    {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
-      "mentions": 2,
+      "mentions": 1,
       "tone": "好調",
-      "gist": "レンジャーズがALW最高の得失点差、デグロム2000奪三振達"
+      "gist": "Edmanがサヨナラ、ドジャース4連勝"
     },
     {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "エンゼルスがネト5安5打点で大勝、アストロズを圧倒"
-    },
-    {
-      "team_id": "113",
-      "name": "レッズ",
-      "name_en": "Cincinnati Reds",
-      "mentions": 2,
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 1,
       "tone": "話題",
-      "gist": "レッズとヴァルガス対立、ルーキーが76年ぶりの快挙目前"
+      "gist": "Kirkがプレイヤーズウィークエンド用カスタム装備で地元愛"
     }
   ],
   "players": [
     {
-      "name": "村上宗隆",
+      "name": "山本由伸",
+      "mentions": 1
+    },
+    {
+      "name": "今永昇太",
+      "mentions": 1
+    },
+    {
+      "name": "鈴木誠也",
       "mentions": 1
     }
   ]
