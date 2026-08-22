@@ -414,10 +414,12 @@ def _yesterday_recap(archive_dir: str, games: list,
 
     # 読み上げには正式名を渡す。画面は略称のままにする。
     # 「LAD」は「エルエーディー」と読まれてしまい、耳では意味が通らない。
+    # 「6対4」だけでは、どちらの数字か分からない。勝った側まで言う。
     spoken = "。".join(
         f"{spoken_m or m}は{sc.replace(' - ', '対')}"
+        + (f"で{won}の勝ち" if won else "")
         + (f"、{note}" if note else "")
-        for m, sc, note, spoken_m in lines[:3])
+        for m, sc, note, spoken_m, won in lines[:3])
     # 通算の記録も渡す。毎日1つずつ増える数字で、
     # 続けて見ている人にだけ育っているのが見える。
     base = {}
@@ -448,8 +450,9 @@ def _yesterday_recap(archive_dir: str, games: list,
             "kind": "recap",
             "text": f"昨日この番組で選んだ{len(lines)}試合は、こうなりました。"
                     f"{spoken}。今夜の結果も、また明日この時間に出します。",
-            "meta": {"lines": [{"matchup": m, "score": sc, "note": n}
-                               for m, sc, n, _ in lines[:3]],
+            "meta": {"lines": [{"matchup": m, "score": sc, "note": n,
+                                "won": w}
+                               for m, sc, n, _, w in lines[:3]],
                      "base": base},
         }
     try:
@@ -486,8 +489,8 @@ def _yesterday_recap(archive_dir: str, games: list,
                 f"{spoken}。{tail}",
         # 読み上げで名前を出した選手は、画面にも出す。
         # 耳だけに残る名前は、聞き取れなかった人には無かったのと同じ。
-        "meta": {"lines": [{"matchup": m, "score": sc, "note": n}
-                           for m, sc, n, _ in lines[:3]],
+        "meta": {"lines": [{"matchup": m, "score": sc, "note": n, "won": w}
+                           for m, sc, n, _, w in lines[:3]],
                  "base": base,
                  "best": _who(top), "arm": _who(arm)},
     }

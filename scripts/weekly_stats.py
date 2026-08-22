@@ -98,7 +98,11 @@ def load_day(archive_dir: pathlib.Path, date_str: str,
 
 def day_lines(games: list) -> list:
     """
-    答え合わせの1行ずつ。(対戦, スコア, 添える一言, 読み上げ用の対戦) を返す。
+    答え合わせの1行ずつ。
+    (対戦, スコア, 添える一言, 読み上げ用の対戦, 勝った側) を返す。
+
+    勝った側を足したのは、「6対4」だけでは、どちらの数字か分からないため。
+    画面には対戦が並んでいるが、耳で聞いている人には順番が伝わらない。
 
     画面は略称のままでよい。縦型の画面に「ドジャース vs ブリュワーズ」を
     並べると字が小さくなるし、スコアの横に短い記号が並ぶ方が読みやすい。
@@ -138,8 +142,16 @@ def day_lines(games: list) -> list:
         spoken = (g.get("matchup") or g.get("abbr_matchup") or "")
         for sep in (" vs. ", " vs ", " VS ", "vs."):
             spoken = spoken.replace(sep, "対")
+        # final_score に winner が入っている。名前まで引いて渡す。
+        side = (fs.get("winner") or "")
+        if side == "home":
+            won = g.get("home_team_name") or g.get("home_abbr") or ""
+        elif side == "away":
+            won = g.get("away_team_name") or g.get("away_abbr") or ""
+        else:
+            won = ""     # 引き分け、または取れていない
         lines.append((g.get("abbr_matchup") or g.get("matchup"),
-                      f"{h} - {a}", note, spoken))
+                      f"{h} - {a}", note, spoken, won))
     return lines
 
 

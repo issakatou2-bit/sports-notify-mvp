@@ -595,9 +595,24 @@ def render_recap(progress: float, meta: dict):
         d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + h], 20, fill=SURF2)
         d.text((100 - dx, y + 28), row.get("matchup", ""), font=font(50),
                fill=TEXT)
+        # スコアは「6 - 4」で、左が先に書いた側(対戦名の左と同じ)。
+        # どちらが勝ったのかは数字を見比べないと分からないので、
+        # 勝った側だけ色を残して、負けた側を落とす。
+        # 場所を足さずに勝敗が分かる。
         score = row.get("score", "")
-        d.text((W - 100 - dx - d.textlength(score, font=font(64)), y + 20),
-               score, font=font(64), fill=ACCENT)
+        sw = d.textlength(score, font=font(64))
+        sx = W - 100 - dx - sw
+        parts = score.split(" - ")
+        if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+            left, right = int(parts[0]), int(parts[1])
+            cx = sx
+            for txt, win in ((parts[0], left > right), (" - ", None),
+                             (parts[1], right > left)):
+                d.text((cx, y + 20), txt, font=font(64),
+                       fill=ACCENT if win else (DIM if win is False else TEXT))
+                cx += d.textlength(txt, font=font(64))
+        else:
+            d.text((sx, y + 20), score, font=font(64), fill=ACCENT)
         if note:
             d.text((100 - dx, y + 108), note, font=font(38), fill=JP)
         y += h + 24
@@ -618,10 +633,17 @@ def render_recap(progress: float, meta: dict):
         d.rounded_rectangle([100 - dx, y + 20, 100 - dx + lw, y + 60], 11,
                             fill=col)
         d.text((114 - dx, y + 26), label, font=font(26), fill=BG)
+        # 所属も出す。この1位はMLB全体から選んでいるので、上に並ぶ
+        # 3試合とは関係が無い。球団名が無いと、直前に読み上げた
+        # 試合の選手に見える(デグロムがそう読まれた)。
         name = who.get("name", "")
+        team = (who.get("team") or "").strip()
         d.text((116 - dx + lw, y + 18),
                name, font=font(fit_size(d, name, W - 320 - lw,
                                         (44, 40, 36, 32))), fill=TEXT)
+        if team:
+            tw = d.textlength(team, font=font(30))
+            d.text((W - 100 - dx - tw, y + 28), team, font=font(30), fill=DIM)
         d.text((100 - dx, y + 76), who["headline"][:32], font=font(34),
                fill=DIM)
         y += 148
