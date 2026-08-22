@@ -26,6 +26,7 @@
 """
 
 import argparse
+import functools
 import json
 import os
 import pathlib
@@ -364,24 +365,80 @@ def fetch_headlines(query: str, limit: int = 8) -> list:
     return out
 
 
+# 野球の記事だと分かる語。球団名は notability_engine から取る。
+_BALL_WORDS = ("mlb", "pitcher", "pitching", "homer", "home run", "strikeout",
+               "strikeouts", " ks", "inning", "innings", "bullpen", "lineup",
+               "shutout", "rbi", "no-hitter", "rotation", "all-star",
+               "world series", "playoff", "postseason", "baseball")
+
+
+@functools.lru_cache(maxsize=1)
+def _ball_terms() -> tuple:
+    try:
+        from notability_engine import MLB_TEAM_NAME_EN
+        teams = tuple(v.lower() for v in MLB_TEAM_NAME_EN.values() if v)
+    except ImportError:
+        teams = ()
+    return _BALL_WORDS + teams
+
+
+def _mentions(title: str, name_en: str) -> bool:
+    """その見出しを、この枠に載せてよいか。
+
+    Googleニュースは検索語と緩く結びついたものも返す。
+    「Yu Darvish」で引いたら「Chicago home prices spike…」が来た。
+    ダルビッシュが昔シカゴにいたというだけで、野球ですらない。
+    それが「現地メディアは何と言っているか」に並んでいた。
+
+    残すのは、その選手の姓が入っているか、野球の記事だと分かるもの。
+    姓だけを条件にすると、デグロムの2000奪三振のような、
+    日本人選手の話ではないがこの枠に合う記事まで落ちる。
+    """
+    low = (title or "").lower()
+    parts = [x for x in name_en.split() if len(x) > 2]
+    if parts and parts[-1].lower() in low:
+        return True
+    return any(w in low for w in _ball_terms())
+
+
 def collect_headlines(sleep: float = 0.4) -> list:
     """日本人選手の名前で、現地の見出しを引く。"""
-    out = []
+    out, dropped = [], 0
     for p in JP_PLAYERS_MLB:
         try:
-            out += fetch_headlines(p["name_en"], limit=4)
+            got = fetch_headlines(p["name_en"], limit=4)
         except Exception as e:  # noqa: BLE001
             print(f"[warn] {p['name_en']}: {e}", file=sys.stderr)
+            time.sleep(sleep)
+            continue
+        keep = [h for h in got if _mentions(h.get("title", ""), p["name_en"])]
+        dropped += len(got) - len(keep)
+        out += keep
         time.sleep(sleep)
-    # 同じ見出しが複数の選手で出ることがある
+    if dropped:
+        print(f"[info] 選手名の入っていない見出しを{dropped}件外しました")
+
+    # 同じ見出しが複数の選手で出ることがある。
+    # 媒体によって "Exclusive | " のような枕が付くので、そこも落として比べる。
     seen, uniq = set(), []
     for h in out:
-        k = h["title"][:60]
+        k = _dedupe_key(h["title"])
         if k in seen:
             continue
         seen.add(k)
         uniq.append(h)
     return uniq
+
+
+def _dedupe_key(title: str) -> str:
+    """見出しの同一判定に使う形。枕と記号を落とす。
+
+    「Sammy Sosa reveals…」と「Exclusive | Sammy Sosa reveals…」が
+    別物として2件並んでいた。同じ記事なので1件にする。
+    """
+    t = re.sub(r"^[^|]{0,18}\|\s*", "", (title or "").strip())
+    t = re.sub(r"[^a-z0-9]+", "", t.lower())
+    return t[:60]
 
 
 def main():
