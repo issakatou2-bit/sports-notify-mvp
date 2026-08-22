@@ -110,6 +110,48 @@ def stats_for(ids: list) -> dict:
     return out
 
 
+def _same_age(store, rows, got, today):
+    """前の回と、公開からの経過日数を揃えて中央値を比べる。
+
+    前の回そのものではなく「そのとき何日目だったか」で揃える。
+    暦の日で比べると、当日の夜と翌朝を突き合わせることになる。
+    実際そこで20倍の差が出るので、揃えないと比べたことにならない。
+    """
+    runs = (store or {}).get("runs") or {}
+    if not runs:
+        return {}
+    when = sorted(runs)[-1]
+    last = runs[when]
+    try:
+        w = dt.datetime.strptime(when, "%Y-%m-%dT%H%M").replace(
+            tzinfo=dt.timezone.utc).astimezone(
+            dt.timezone(dt.timedelta(hours=9)))
+    except ValueError:
+        return {}
+    label, was_day = w.strftime("%m/%d %H:%M"), w.date()
+
+    def by_age(videos, base):
+        out = collections.defaultdict(list)
+        for v in videos:
+            try:
+                age = (base - dt.date.fromisoformat(v["date"])).days
+            except (ValueError, KeyError, TypeError):
+                continue
+            out[age].append(v.get("views", 0))
+        return out
+
+    now_by = by_age([{"date": d, "views": got.get(v, {}).get("views", 0)}
+                     for d, _, v, _ in rows], today)
+    was_by = by_age(last.get("videos") or [], was_day)
+    out = {}
+    for age in sorted(set(now_by) & set(was_by)):
+        if age > 3:
+            continue      # 4日目以降はもう動かない
+        out[age] = (statistics.median(now_by[age]),
+                    statistics.median(was_by[age]), label)
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=7)
@@ -148,6 +190,21 @@ def main() -> int:
         print("  %-18s %2d本  中央%6.0f  最大%6d  最小%5d"
               % (KIND_LABEL.get(kind, kind), len(vs),
                  statistics.median(vs), max(vs), min(vs)))
+
+    # 同じ「公開からの経過日数」どうしで比べる。
+    #
+    # 公開当日の夜に見ると中央値が一桁になり、翌朝には178まで伸びる。
+    # 同じ7本を、測った時刻が違うだけで20倍違って見える。
+    # 「今日は初動が悪い」かどうかは、前の回の同じ経過日数と
+    # 突き合わせないと言えない。
+    prev = _same_age(load(args.out), rows, got, today)
+    if prev:
+        print("\n=== 前の回と、同じ経過日数どうしで ===")
+        for age, (now_med, was_med, when) in sorted(prev.items()):
+            mark = "→" if now_med == was_med else (
+                "↑" if now_med > was_med else "↓")
+            print("  公開から%d日: 中央 %6.0f  (%s は %6.0f) %s"
+                  % (age, now_med, when, was_med, mark))
 
     print("\n=== ほとんど配られていない動画 ===")
     barely = [(d, k, t, got.get(v, {}).get("views", 0))
