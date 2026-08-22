@@ -817,7 +817,7 @@ def load_profile(path: str) -> dict:
 
 
 def top_headline(path: str = "data/local_reporters.json",
-                 limit: int = 26, max_age_hours: int = 20) -> str:
+                 limit: int = 42, max_age_hours: int = 20) -> str:
     """その日の現地の見出し(日本語)。無ければ空。
 
     古いものは使わない。
@@ -854,7 +854,7 @@ def top_headline(path: str = "data/local_reporters.json",
         head = _clip(jp, limit)
         if head:
             return head
-        # 切ると意味が変わる見出しは、切らずに次へ回す
+        # 収まらない見出しは、切らずに次へ回す
     return ""
 
 
@@ -862,30 +862,34 @@ def top_headline(path: str = "data/local_reporters.json",
 # 逆の意味が伝わる。
 NEGATIONS = ("ない", "ません", "ではなく", "わけでは", "否定")
 
-# 切ったあとに残す最低の長さ。「いいえ」だけ残っても意味がない。
-MIN_HEAD = 10
+# 切ったあとに残す最低の長さ。「いいえ」「速報」だけ残っても意味がない。
+# 10字にしていたら「大谷翔平が2本塁打」(9字)まで弾いていた。
+MIN_HEAD = 8
 
 
 def _clip(jp: str, limit: int) -> str:
-    """見出しを短くする。意味が変わるなら空を返す。
+    """収まる範囲に、文として完結している部分があれば返す。無ければ空。
 
-    「ドジャースが大谷翔平と契約したり、スーパーチームを構築したのは
-    マーク・ウォルターの融資のためではない」を頭だけ切ると、
-    「ドジャースが大谷翔平と契約したり」になる。
-    否定が丸ごと落ちて、逆のことを言う題ができあがる。
+    読点では切らない。
+      「サミー・ソーサが大谷翔平の落選を明かし、ナ・リーグMVPを選出」を
+      読点で切ると「大谷翔平の落選を明かし」になる。元は「ソーサが自分の
+      投票で大谷を選ばなかった」話なのに、大谷が何かから落選したように
+      読める。打ち消しが落ちる例と同じで、切った側に意味が残っている。
 
-    実際そうなりかけた。切って良いのは、落とす側に打ち消しが
-    無いときだけ。無理なら次の見出しに回す。
+      同じ形で「ドジャースが大谷翔平と契約したり」も出かけた。元は
+      「…したのは融資のためではない」で、否定が丸ごと落ちていた。
+
+      句点なら文が終わっているので切ってよい。それ以外は切らずに、
+      次の見出しへ回す。見出しは毎日5〜6件あるので、1つ飛ばしても
+      困らない。
     """
-    for sep in ("。", "、"):
-        cut = jp.rfind(sep, 0, limit)
-        if cut < MIN_HEAD:
-            continue
-        head, tail = jp[:cut], jp[cut:]
-        if any(n in tail for n in NEGATIONS):
-            return ""
-        return head
-    return ""
+    cut = jp.rfind("。", 0, limit)
+    if cut < MIN_HEAD:
+        return ""
+    head, tail = jp[:cut], jp[cut:]
+    if any(n in tail for n in NEGATIONS):
+        return ""
+    return head
 
 
 def top_talked_team(path: str = "data/local_buzz.json") -> str:
