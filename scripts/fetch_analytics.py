@@ -148,6 +148,61 @@ def _report(why: str) -> None:
 
 
 def main() -> int:
+    """外側で必ず受け止める。
+
+    前は例外の種類ごとに受け口を足していたが、そのたびに隣が残った。
+    HttpError だけ見ていたら RefreshError が抜け、それを足したら
+    今度は client() の中の build() が try の外にいて抜けた。
+    2回とも「回は緑、理由はどこにも出ない」で終わっている。
+
+    受け口を1つにして、ここから先で何が起きても必ず書き出す。
+    """
+    try:
+        return _run()
+    except Exception as e:  # noqa: BLE001
+        name, why = type(e).__name__, str(e)[:220]
+        print(f"[warn] {name}: {why}", file=sys.stderr)
+        _report(_diagnose(name, why))
+        return 0
+
+
+# エラーの言葉と、直し方の対応。
+#
+# 「RefreshError なら失効」とまとめて書いていたら、invalid_client
+# (鍵そのものが違う)まで「トークンを取り直してください」と案内していた。
+# 取り直しても直らないので、間違った案内は無いより悪い。
+_CAUSES = (
+    ("invalid_grant",
+     "リフレッシュトークンが失効しています(invalid_grant)。"
+     "手元で `python scripts/youtube_auth.py` を実行し、"
+     "YOUTUBE_REFRESH_TOKEN を入れ替えてください"),
+    ("invalid_client",
+     "OAuthクライアントが見つかりません(invalid_client)。"
+     "YOUTUBE_CLIENT_ID と YOUTUBE_CLIENT_SECRET が、いま Google Cloud に"
+     "あるものと一致しているか確認してください"
+     "(クライアントを作り直すと、古い値では通りません)"),
+    ("invalid_scope",
+     "スコープの指定が拒否されました(invalid_scope)。"
+     "更新時に scopes を渡していないか確認してください"),
+    ("accessNotConfigured",
+     "Google Cloud で YouTube Analytics API が有効になっていません。"
+     "console.cloud.google.com/apis/library/"
+     "youtubeanalytics.googleapis.com で有効にしてください"),
+    ("insufficientPermissions",
+     "トークンに yt-analytics.readonly が入っていません。"
+     "`python scripts/youtube_auth.py` で取り直してください"),
+)
+
+
+def _diagnose(name: str, why: str) -> str:
+    """エラーの言葉から、何をすれば直るかを返す。分からなければそのまま。"""
+    for key, fix in _CAUSES:
+        if key in why:
+            return fix
+    return f"{name}: {why}"
+
+
+def _run() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=28)
     ap.add_argument("--out", default="data/analytics.json")
@@ -199,21 +254,6 @@ def main() -> int:
             return 0
         print(f"[warn] 取得に失敗しました: {e}", file=sys.stderr)
         _report("取得に失敗しました: %s" % str(e)[:200])
-        return 0
-    except Exception as e:  # noqa: BLE001
-        # HttpError しか捕まえていなかったので、トークンが失効している
-        # 場合(RefreshError / invalid_grant)は素通りして落ちていた。
-        # continue-on-error のせいで回は緑、理由はログの奥だけ。
-        # 実際それで2日間、何が悪いのか分からないままだった。
-        name = type(e).__name__
-        why = str(e)[:200]
-        print(f"[warn] {name}: {why}", file=sys.stderr)
-        if "invalid_grant" in why or "RefreshError" in name:
-            _report("リフレッシュトークンが失効しています(invalid_grant)。"
-                    "手元で `python scripts/youtube_auth.py` を実行し、"
-                    "YOUTUBE_REFRESH_TOKEN を入れ替えてください")
-        else:
-            _report(f"{name}: {why}")
         return 0
 
     cols = [h["name"] for h in res.get("columnHeaders", [])]
