@@ -186,8 +186,11 @@ def build_narration(prof: dict) -> dict:
         parts = []
         if this_s:
             parts.append(f"今シーズンは{yomi(this_s)}。")
-        if last_s:
-            parts.append(f"昨シーズンは{yomi(last_s)}でした。")
+        # 昨シーズンは画面に出すだけで、読み上げない。
+        #
+        # 今季と昨季を続けて読むと、同じ形の数字が2回並ぶ。耳では
+        # どちらの話か分からなくなるうえ、尺も倍かかる。
+        # 画面には並べてあるので、比べたい人はそこで比べられる。
         if ms_line:
             parts.append(f"{ms_line}に到達しています。")
         segments.append({"kind": "p_season", "text": "".join(parts),
