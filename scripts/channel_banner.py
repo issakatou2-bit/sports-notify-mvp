@@ -88,7 +88,7 @@ def build() -> Image.Image:
            font=font(44), fill=TEXT)
 
     # 出している枠を並べる。実際に出しているものだけ。
-    names = [name for _, name, _ in post_common.DAILY_LINEUP]
+    names = [name for _, name, _, _ in post_common.DAILY_LINEUP]
     line = "　".join(names[:4])
     line2 = "　".join(names[4:])
     d.text((x0 + 6, y0 + 226), line, font=font(34), fill=DIM)

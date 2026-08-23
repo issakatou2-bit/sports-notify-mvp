@@ -593,8 +593,9 @@ def record_kind(kind: str, morning_mode: str = "players",
     """
     記録上の区分。同じ日に同じ kind が複数上がるものを見分ける。
 
-      16:30/18:00/21:00 の3本 … morning / morning_local / morning_press
-      19:00と20:00の2本     … daily / daily_soccer
+      17:00の2本 … morning / morning_player
+      18:00の2本 … morning_voices / morning_press
+      19:00の2本 … daily / daily_soccer
 
     投稿前の重複判定と投稿後の記録が、必ず同じ名前を使うようにここへ寄せる。
     別々に組み立てていると、片方だけ直したときに黙ってすれ違う。

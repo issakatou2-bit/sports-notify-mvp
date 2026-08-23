@@ -38,17 +38,19 @@ import urllib.request
 API = "https://www.googleapis.com/youtube/v3/"
 
 # 記録の区分から、見やすい名前へ
-KIND_LABEL = {
-    "morning": "16:30 貢献スコア",
-    "morning_player": "17:00 今日の1人",
-    "morning_voices": "17:30 コメント欄",
-    "morning_local": "18:00 現地の注目",
-    "daily": "19:00 明日の注目",
-    "daily_soccer": "20:00 サッカー",
-    "morning_press": "21:00 現地の報道",
-    "weekly": "週間",
-    "asset": "資産動画",
-}
+def _labels() -> dict:
+    """区分ごとの見出し。時刻は post_common が持っているものを使う。"""
+    import sys as _s
+    import pathlib as _p
+    _s.path.insert(0, str(_p.Path(__file__).resolve().parent))
+    import post_common
+    out = {k: f"{at} {name}" for k, name, _, at in post_common.DAILY_LINEUP}
+    out.update({"weekly": "週間", "asset": "資産動画",
+                "morning_local": "(畳んだ枠) 現地の注目"})
+    return out
+
+
+KIND_LABEL = _labels()
 
 # これ未満なら「ほとんど配られていない」とみなす。
 # 実測で、フィードに乗った動画は初日から数十回は付く。

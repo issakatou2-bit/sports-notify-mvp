@@ -354,21 +354,21 @@ def build_post(games: list, max_chars: int, news_path: str = "public/news.json")
 #
 #   (区分名, 名前, ひとこと)
 DAILY_LINEUP = [
-    ("morning", "日本人選手の成績", "その日活躍した順に紹介"),
-    ("morning_player", "今日の1人", "MLB全体で最も活躍した選手"),
-    ("morning_voices", "ファンのコメント欄", "最も見られたハイライトの反応を翻訳"),
-    ("daily", "明日の注目試合", "なぜ注目なのかの理由つき"),
-    ("daily_soccer", "欧州サッカー", "その夜の注目カード"),
-    ("morning_press", "現地の報道", "番記者の投稿と見出しを翻訳"),
+    ("morning", "日本人選手の成績", "その日活躍した順に紹介", "17:00"),
+    ("morning_player", "今日の1人", "MLB全体で最も活躍した選手", "17:00"),
+    ("morning_voices", "ファンのコメント欄", "最も見られたハイライトの反応を翻訳", "18:00"),
+    ("daily", "明日の注目試合", "なぜ注目なのかの理由つき", "19:00"),
+    ("daily_soccer", "欧州サッカー", "その夜の注目カード", "19:00"),
+    ("morning_press", "現地の報道", "番記者の投稿と見出しを翻訳", "18:00"),
 ]
 
 
 def lineup_names(exclude: str = "") -> list:
     """読み上げ用。自分の回は外す(その動画を見ている人には要らない)。"""
-    return [name for kind, name, _ in DAILY_LINEUP if kind != exclude]
+    return [name for kind, name, _, _ in DAILY_LINEUP if kind != exclude]
 
 
 def lineup_lines(exclude: str = "") -> list:
     """説明文用。名前とひとことを箇条書きにする。"""
     return [f"・{name} … {what}"
-            for kind, name, what in DAILY_LINEUP if kind != exclude]
+            for kind, name, what, _ in DAILY_LINEUP if kind != exclude]

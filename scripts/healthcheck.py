@@ -38,13 +38,21 @@ JST = timezone(timedelta(hours=9))
 # 実際、コメント欄編を足した直後の診断が、前日の分を欠けとして赤くした。
 # 存在しなかった日に出ていないのは当たり前で、報せる価値が無い。
 SINCE_ALWAYS = "0000-00-00"
-EXPECTED_DAILY = [
-    ("morning", "日本人選手の成績", "16:30", SINCE_ALWAYS),
-    ("morning_player", "今日の1人", "17:00", "2026-08-18"),
-    ("morning_voices", "ハイライトのコメント欄", "17:30", "2026-08-17"),
-    ("daily", "明日の注目試合(MLB)", "19:00", SINCE_ALWAYS),
-    ("morning_press", "現地の報道", "21:00", SINCE_ALWAYS),
-]
+
+# 公開時刻は post_common.DAILY_LINEUP が持っている。
+#
+# ここに書き写していたので、時刻を動かすたびに直し忘れる場所が増えた。
+# 実際 16:30/17:30/21:00 が3つのファイルに散らばっていた。
+# 一次情報は1つにして、こちらは引くだけにする。
+def _lineup():
+    import post_common
+    since = {"morning_player": "2026-08-18", "morning_voices": "2026-08-17"}
+    return [(k, name, at, since.get(k, SINCE_ALWAYS))
+            for k, name, _, at in post_common.DAILY_LINEUP
+            if k != "daily_soccer"]
+
+
+EXPECTED_DAILY = _lineup()
 
 # 2026-08-24 に畳んだ枠。
 #
@@ -57,7 +65,9 @@ RETIRED = {"morning_local": "2026-08-24"}
 
 # サッカーは試合の無い日があるので、欠けていても異常としない。
 OPTIONAL_DAILY = [("daily_soccer", "今夜の注目試合(サッカー)",
-                   "20:00", SINCE_ALWAYS)]
+                   next((at for k, _, _, at in __import__("post_common")
+                         .DAILY_LINEUP if k == "daily_soccer"), "19:00"),
+                   SINCE_ALWAYS)]
 
 # 材料。何時間以内に更新されていれば良しとするか。
 FRESH_HOURS = 30

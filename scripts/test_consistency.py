@@ -175,13 +175,13 @@ check("画面と読み上げの件数が同じ",
 print("\n--- 毎日の一覧 ---")
 import post_common as pc  # noqa: E402
 
-_kinds = {k for k, _, _ in pc.DAILY_LINEUP}
+_kinds = {k for k, _, _, _ in pc.DAILY_LINEUP}
 check("一覧の区分が、健康診断の見る枠と同じ",
       sorted(expected ^ _kinds), [])
 check("一覧に重複が無い", len(pc.DAILY_LINEUP), len(_kinds))
 check("説明文が一覧から作られている",
       all(name in "".join(uy.DAILY_LINEUP_LINES)
-          for _, name, _ in pc.DAILY_LINEUP), True)
+          for _, name, _, _ in pc.DAILY_LINEUP), True)
 
 
 # 冒頭で名乗った試合が、いちばん最初に紹介されるか。
@@ -405,6 +405,28 @@ check("生成が away を先に置いている",
 check("サイトも away を先に置いている",
       "awayLabel + ' vs ' + homeLabel" in
       (ROOT / "web" / "index.html").read_text(encoding="utf-8"), True)
+
+
+# 公開時刻が1か所からしか来ていないか。
+#
+# 16:30/17:30/21:00 が healthcheck・early_views・ワークフローの3か所に
+# 書き写されていた。時刻を動かすたびに直し忘れる場所が増える。
+# 一次情報は post_common.DAILY_LINEUP だけにする。
+print("\n--- 公開時刻の出どころ ---")
+_at = {k: at for k, _, _, at in pc.DAILY_LINEUP}
+check("健康診断が一覧と同じ時刻を見ている",
+      {k: a for k, _, a, _ in hc.EXPECTED_DAILY + hc.OPTIONAL_DAILY}, _at)
+import early_views as _ev  # noqa: E402
+check("初動の見出しも一覧から作られている",
+      all(_ev.KIND_LABEL.get(k, "").startswith(a) for k, a in _at.items()),
+      True)
+# ワークフローが持つ公開時刻が、一覧と食い違っていないか
+_wf = (ROOT / ".github" / "workflows" / "morning_recap.yml").read_text(
+    encoding="utf-8")
+for _k, _mode in (("morning", "players"), ("morning_player", "player"),
+                  ("morning_voices", "voices"), ("morning_press", "press")):
+    check(f"ワークフローの {_mode} が {_at[_k]}",
+          f'{_mode})' in _wf and f'AT="{_at[_k]}"' in _wf, True)
 
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

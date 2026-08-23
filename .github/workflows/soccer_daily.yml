@@ -16,7 +16,11 @@ name: 毎日 20:00　欧州サッカー
 #   起動はcronを増やさず、19時のMLB日次が終わったのを合図にする。
 #   GitHubのscheduleは2〜4時間遅れるため外部cronが要るが、外部cronを
 #   本数ぶん増やすと、設定する場所も壊れる場所も増える。
-#   公開時刻は --publish-at 20:00 でYouTube側に預けてあるので、
+#   公開時刻は --publish-at 19:00 でYouTube側に預けてあるので、
+#
+#   20:00にしていたが、その日の最速のキックオフが22:00前後で、
+#   8/22は20:30開始の試合を取り上げていた。19:00なら3時間空く。
+#   選ぶ側でも開始45分前を切る試合は外すようにしてある。
 #   19時台に作り終えていれば20時ちょうどに出る。
 
 on:
@@ -193,7 +197,7 @@ jobs:
             --games data/soccer_games.json \
             --narration build/soccer_narration.json \
             --thumbnail build/soccer/thumb.png \
-            --privacy public --publish-at "20:00"
+            --privacy public --publish-at "19:00"
 
       # SNSは競技ごとに別の投稿にする。MLBは19時に「明日の注目試合」、
       # こちらは20時に「今夜の注目試合」で、1つにまとめると

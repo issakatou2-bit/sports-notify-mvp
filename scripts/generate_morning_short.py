@@ -1685,7 +1685,8 @@ def render_voices(p, voices, picked=None):
 # 画面に並べる一覧。文言は post_common に1本化してある。
 # 以前はここと説明文と「今日の1人」の締めで別々に書いていて、
 # 3つとも中身が違っていた。
-DAILY_LINEUP = [(name, what) for _, name, what in post_common.DAILY_LINEUP]
+DAILY_LINEUP = [(name, what)
+                for _, name, what, _ in post_common.DAILY_LINEUP]
 
 
 def render_outro(p, mode: str = ""):
@@ -1702,7 +1703,7 @@ def render_outro(p, mode: str = ""):
     d.text((80, 380), "毎日、更新中", font=font(64), fill=TEXT)
 
     # 見ている回そのものは外す。読み上げと同じ扱いにする。
-    rows = [(name, what) for kind, name, what in post_common.DAILY_LINEUP
+    rows = [(name, what) for kind, name, what, _ in post_common.DAILY_LINEUP
             if kind != MODE_KIND.get(mode, "")]
 
     # 1行ずつ滑り込ませる。全部を一度に出すと、ただの箇条書きに見える。
