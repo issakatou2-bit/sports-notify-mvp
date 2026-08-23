@@ -24,6 +24,14 @@ jobs:
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: python scripts/probe_sources.py --out probe_result.json
+
+      # サッカーの中身が取れるか。NBAの到達性とは別の問いなので
+      # 別の台本にしてある。片方が落ちても、もう片方は動く。
+      - name: Probe soccer detail
+        if: always()
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/probe_soccer.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -66,53 +66,6 @@ def probe(name: str, url: str, extra: dict) -> dict:
                 "error": f"{type(e).__name__}: {e}"}
 
 
-def probe_soccer_detail() -> None:
-    """football-data.org の無料枠で、試合の中身がどこまで取れるか。
-
-    MLBと同じ形の枠(その日の日本人選手・貢献スコア・今日の1人)を
-    サッカーへ広げられるかは、ここで決まる。
-      得点者が取れる     → 「今日のゴール」が作れる
-      出場記録が取れる   → 「今日の日本人選手」が作れる
-      出場時間が取れる   → 貢献スコアの物差しが作れる
-
-    取れないなら、別のデータ元を探すところから始める話になる。
-    想像で構想を書いても、作り始めてから覆る。
-    """
-    import json as _j
-    import os as _os
-    import urllib.request as _u
-    key = _os.environ.get("FOOTBALL_DATA_API_KEY", "")
-    if not key:
-        print("\n[soccer] FOOTBALL_DATA_API_KEY が無いため飛ばします")
-        return
-    url = ("https://api.football-data.org/v4/competitions/PL/matches"
-           "?status=FINISHED&limit=1")
-    try:
-        req = _u.Request(url, headers={"X-Auth-Token": key,
-                                       "User-Agent": "collespo/1.0"})
-        d = _j.loads(_u.urlopen(req, timeout=25).read())
-    except Exception as e:  # noqa: BLE001
-        print(f"\n[soccer] 取れません: {type(e).__name__} {str(e)[:120]}")
-        return
-    ms = d.get("matches") or []
-    if not ms:
-        print("\n[soccer] 終了した試合が返りませんでした")
-        return
-    m = ms[0]
-    body = _j.dumps(m, ensure_ascii=False)
-    print("\n[soccer] football-data.org 無料枠で返る中身")
-    print(f"  項目: {sorted(m)}")
-    for label, key_ in (("得点者", "goals"), ("交代", "substitutions"),
-                        ("先発", "lineup"), ("警告", "bookings"),
-                        ("スタッツ", "statistics")):
-        got = m.get(key_)
-        n = len(got) if isinstance(got, list) else ("あり" if got else "なし")
-        print(f"  {label:8s} {key_:14s} -> {n}")
-    print(f"  レスポンス長: {len(body):,} バイト")
-    print("  判定: 得点者が取れれば「今日のゴール」、"
-          "出場記録が取れれば「今日の日本人選手」が作れます")
-
-
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=None, help="結果のJSON出力先")
@@ -144,6 +97,8 @@ def main() -> int:
                    "判定材料になりません。")
     print(f"\n[結論] {verdict}")
 
+    # NBAが取れないことは異常ではなく結果。赤くすると、
+    # 他の確認を足したときに毎回赤が出て、意味が薄れる。
     if args.out:
         with open(args.out, "w", encoding="utf-8") as f:
             json.dump({"reachable": reachable, "verdict": verdict,
@@ -164,7 +119,9 @@ def main() -> int:
     # 終了コードにも結論を載せる。成功/失敗の色だけで判断できるようにする。
     # 取れない = 失敗 とみなすのは、ここが「取れるか確かめる」ためだけの
     # ワークフローで、取れないことが分かった時点で目的を果たしていないため。
-    return 0 if reachable else 1
+    # 「取れない」も結果なので、それだけで赤くしない。
+    # 赤が常態になると、本当に壊れた日の赤が埋もれる。
+    return 0
 
 
 if __name__ == "__main__":
