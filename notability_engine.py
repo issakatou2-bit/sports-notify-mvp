@@ -980,6 +980,17 @@ def build_output(
     # 毎日必ず出ることがこのチャンネルの value なので、試合がある日は出す。
     # 点が低い日は見出しが控えめになるだけで、事実と食い違うわけではない。
     soccer = [g for g in output_games if is_soccer_league(g["league"])]
+    # もう始まっている試合、始まる直前の試合は「今夜の注目試合」に出さない。
+    #
+    # 20:00公開の枠で、20:30開始の試合を取り上げた日がある(8/22)。
+    # 見る人が動画を見終える頃には試合が始まっている。過去19試合のうち
+    # 1件だが、20:00ちょうどに始まる試合なら開始済みになる。
+    #
+    # 公開時刻を変えても、その日の最速のカードが早ければ同じことが起きる。
+    # 時刻の側ではなく、選ぶ側で外す。
+    fresh = [g for g in soccer if _starts_later(g.get("start_time_jst"))]
+    if fresh:
+        soccer = fresh
     for g in _spread_across_leagues(soccer, SOCCER_MIN_NOTABLE):
         g["is_notable"] = True
 
@@ -2054,6 +2065,38 @@ def _football_data_get(url, headers, params=None, timeout=10, max_retries=3):
 
 # 1つのリーグから取る上限。複数リーグある日に、同じところから続けて取らない。
 SOCCER_PER_LEAGUE = 1
+
+
+# 公開から試合開始までに、最低これだけ空けたい(分)。
+# 動画が60秒、見てから予定を決めるところまでを見込む。
+KICKOFF_MARGIN_MIN = 45
+
+
+def _starts_later(start_jst: str, now=None) -> bool:
+    """その試合は、まだ始まるまで余裕があるか。読めなければ True。
+
+    読めないものを外すと、書式が変わった日にサッカーが1本も
+    出なくなる。判断できないときは通す。
+    """
+    import datetime as _dt
+    import re as _re
+    if not start_jst:
+        return True
+    m = _re.search(r"([0-9]{2})/([0-9]{2}) ([0-9]{1,2}):([0-9]{2})", start_jst)
+    if not m:
+        return True
+    jst = _dt.timezone(_dt.timedelta(hours=9))
+    now = now or _dt.datetime.now(jst)
+    mo, da, hh, mi = (int(x) for x in m.groups())
+    year = now.year
+    # 年をまたぐ日(12/31 -> 01/01)を取り違えない
+    if now.month == 12 and mo == 1:
+        year += 1
+    try:
+        when = _dt.datetime(year, mo, da, hh, mi, tzinfo=jst)
+    except ValueError:
+        return True
+    return when >= now + _dt.timedelta(minutes=KICKOFF_MARGIN_MIN)
 
 
 def _spread_across_leagues(games: list, want: int) -> list:
