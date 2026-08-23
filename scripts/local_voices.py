@@ -162,6 +162,11 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
                 for rc in ((item.get("replies") or {}).get("comments") or [])
             ]
             out.append({
+                # コメントの投稿時刻。動画の公開からどれだけ経って
+                # 書かれたかを見るのに要る。何時に取りにいくのが
+                # いちばん溜まっているのかは、これでしか分からない。
+                "at": c.get("publishedAt", ""),
+                "video_published_at": v.get("published_at", ""),
                 "title": " ".join(text.split()),
                 "url": f"https://www.youtube.com/watch?v={vid}",
                 "likes": int(c.get("likeCount") or 0),
@@ -369,6 +374,42 @@ def load(path: str = "data/local_voices.json", max_age_hours: int = 30) -> dict:
     return data
 
 
+def _timing_lines(raw: list) -> list:
+    """コメントが、ハイライト公開から何時間後に書かれたか。
+
+    「何時に取りにいけばいちばん溜まっているか」は、こちらの想像では
+    決まらない。試合直後に集中するのか、現地の夜に伸びるのかで、
+    枠を何時に置くかの答えが変わる。
+    """
+    import datetime as _dt
+    rows = []
+    for c in raw:
+        a, v = c.get("at"), c.get("video_published_at")
+        if not (a and v):
+            continue
+        try:
+            ta = _dt.datetime.fromisoformat(a.replace("Z", "+00:00"))
+            tv = _dt.datetime.fromisoformat(v.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        rows.append((ta - tv).total_seconds() / 3600)
+    if not rows:
+        return ["- コメントの投稿時刻が取れませんでした", ""]
+
+    rows.sort()
+    buckets = [(0, 1), (1, 3), (3, 6), (6, 12), (12, 24), (24, 999)]
+    out = ["### いつ書かれたか(ハイライト公開からの経過)", "",
+           "|経過|件数|割合|", "|---|--:|--:|"]
+    for lo, hi in buckets:
+        n = sum(1 for x in rows if lo <= x < hi)
+        label = f"{lo}〜{hi}時間" if hi < 999 else f"{lo}時間以降"
+        out.append(f"|{label}|{n}|{n / len(rows) * 100:.0f}%|")
+    half = rows[len(rows) // 2]
+    out += ["", f"- 中央値: 公開から **{half:.1f}時間後**",
+            f"- 最も遅いもの: {rows[-1]:.1f}時間後", ""]
+    return out
+
+
 def report(raw: list, voices: list) -> str:
     """
     集めたコメントの素の姿を書き出す。
@@ -385,8 +426,9 @@ def report(raw: list, voices: list) -> str:
     for v in voices:
         tones[v.get("tone", "中立")] = tones.get(v.get("tone", "中立"), 0) + 1
 
-    lines = [
-        "## 公式ハイライトのコメント", "",
+    lines = ["## 公式ハイライトのコメント", ""]
+    lines += _timing_lines(raw)
+    lines += [
         f"- 拾った件数: **{len(likes)}件**",
         f"- いいね 最大: **{likes[0]:,}** / 中央値: **{likes[len(likes) // 2]:,}**"
         f" / 平均: **{sum(likes) / len(likes):.0f}**",
