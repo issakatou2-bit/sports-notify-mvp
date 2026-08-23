@@ -60,7 +60,12 @@ MIN_DURATION = {"intro": 4.5, "list": 6.5, "buzz": 7.5,
                 "reporters": 12.0, "headlines": 11.0,
                 # 「今日の1人」の画面
                 "p_intro": 5.0, "p_career": 6.0, "p_season": 6.0,
-                "p_recent": 6.0, "p_awards": 6.0, "p_quotes": 12.0}
+                "p_recent": 6.0, "p_awards": 6.0, "p_quotes": 12.0,
+                # スコアボードは回ごとの数字を目で追うので、
+                # 読み上げより長めに置く。
+                "scoreboard": 9.0,
+                # 翻訳した文章なので、目で追う時間を取る。
+                "praise": 10.0}
 
 # --mode の名前と、投稿の記録に使う区分の対応。
 # 締めの一覧から「いま見ている回」を外すのに使う。
@@ -543,7 +548,12 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             parts = [f"MLB公式のハイライトで、{yomi_stats(buzz_label(top))}が"
                      f"{_yomi_views(top['views'])}再生でした。"]
             res = top.get("result") or {}
-            if res.get("away_score") is not None:
+            # 点数は言わない。
+            #
+            # 対戦の呼び名に既に入っていて(「パイレーツ 4対5 ドジャース」)、
+            # このあとスコアボードでも出る。同じ数字を3回聞かされる。
+            # ここは「どれだけ見られたか」の画面なので、再生回数に絞る。
+            if not scoreboard_ready(res) and res.get("away_score") is not None:
                 parts.append(f"{res.get('away_jp')}が{res.get('away_score')}、"
                              f"{res.get('home_jp')}が{res.get('home_score')}。")
             if res.get("star_name"):
@@ -551,6 +561,42 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                              f"{yomi_stats(res.get('star_line', ''))}でした。")
             segments.append({"kind": "buzz", "text": "".join(parts),
                              "meta": {"single": True}})
+
+            # 試合の中身をひと目で。
+            #
+            # 「6対4でした」だけだと、どういう試合だったのかが残らない。
+            # そのあとに読むコメントは試合の展開に対するものなので、
+            # 展開を先に見せておかないと、言葉だけが宙に浮く。
+            # 回ごとの得点があるときだけ出す(合わない日は描かない)。
+            if scoreboard_ready(res):
+                away, home = res.get("away_jp", ""), res.get("home_jp", "")
+                turn = _turning_point(res)
+                segments.append({
+                    "kind": "scoreboard",
+                    "text": f"試合はこうでした。{turn}",
+                    "meta": {"away": away, "home": home},
+                })
+
+    # 日本人選手が現地でどう言われたか。称賛だけを出す枠。
+    #
+    # 試合そのもののコメント欄(voices)とは別。あちらは賛否をそのまま
+    # 見せる枠で、絞ると現地の空気ではなくこちらの編集になる。
+    # こちらは「その選手が向こうでどう受け取られたか」という別の話で、
+    # 貢献スコアの順位のすぐ後ろに置くのが自然な位置になる。
+    if mode == "players":
+        praise = ((data.get("voices") or {}).get("jp_praise") or [])[:2]
+        if praise:
+            parts = ["現地のコメント欄から、日本人選手への声です。"
+                     "翻訳したものです。"]
+            for v in praise:
+                who = "、".join(v.get("jp_players") or [])
+                body = (v.get("ja") or "").strip().rstrip("。！!、.")
+                parts.append(f"{who}について、{body}。")
+            segments.append({
+                "kind": "praise",
+                "text": "".join(parts),
+                "meta": {"count": len(praise)},
+            })
 
     # 現地でどれだけ見られたか。感想を代弁せず、数字だけを出す。
     buzz = (data.get("buzz") or []) if want_local else []
@@ -1011,6 +1057,23 @@ def buzz_label(b: dict) -> str:
     return _jp_matchup(b.get("matchup", ""))
 
 
+def _turning_point(res) -> str:
+    """試合が動いた回を、ひとことで。数えるだけで、評価はしない。"""
+    innings = [i for i in (res.get("innings") or []) if i.get("num")]
+    if not innings:
+        return ""
+    best, at, side = 0, None, ""
+    for i in innings:
+        for k, who in (("away", res.get("away_jp", "")),
+                       ("home", res.get("home_jp", ""))):
+            v = i.get(k) or 0
+            if v > best:
+                best, at, side = v, i["num"], who
+    if not at or best < 2:
+        return ""
+    return f"{at}回に{side}が{best}点。ここが大きかった回です。"
+
+
 def scoreboard_ready(res) -> bool:
     """スコアボードを描いてよい材料が揃っているか。
 
@@ -1028,6 +1091,45 @@ def scoreboard_ready(res) -> bool:
         if sum((i.get(side) or 0) for i in innings) != final:
             return False
     return True
+
+
+def render_praise(p, rows):
+    """日本人選手への称賛。翻訳であることを画面に必ず出す。
+
+    数字の画面と同じ見た目にしない。ここは誰かの感想の訳で、
+    確かめられる記録ではない。混ぜて見えると、どこまでが
+    数字の話なのか区別がつかなくなる。
+    """
+    im = Image.new("RGB", (W, H), VOICE_BG)
+    d = ImageDraw.Draw(im)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    d.text((70, 190), "現地は何と言ったか", font=font(60), fill=ACCENT)
+    d.text((74, 272), "MLB公式ハイライトのコメント欄・翻訳",
+           font=font(30), fill=DIM)
+
+    y = 380
+    for i, v in enumerate(rows[:2]):
+        if p < 0.08 + i * 0.10:
+            continue
+        who = "、".join(v.get("jp_players") or [])
+        body = (v.get("ja") or "").strip()
+        lines = wrap(d, body, font(38), W - 220)[:4]
+        h = 92 + len(lines) * 52
+        d.rounded_rectangle([60, y, W - 60, y + h], 20, fill=SURF)
+        d.text((100, y + 22), who, font=font(38), fill=ACCENT)
+        likes = v.get("likes") or 0
+        if likes:
+            tag = f"高評価{likes:,}"
+            tw = d.textlength(tag, font=font(30))
+            d.text((W - 100 - tw, y + 28), tag, font=font(30), fill=DIM)
+        yy = y + 80
+        for line in lines:
+            d.text((100, yy), line, font=font(38), fill=TEXT)
+            yy += 52
+        y += h + 24
+
+    d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
+    return im
 
 
 def render_scoreboard(p, res, away, home):
@@ -1997,6 +2099,16 @@ def main():
                                      meta.get("count", 1))
                 elif kind == "buzz":
                     im = render_buzz(pp, buzz, picks)
+                elif kind == "praise":
+                    im = render_praise(
+                        pp, ((voices_data or {}).get("jp_praise") or [])
+                        [:meta.get("count", 2)])
+                elif kind == "scoreboard":
+                    res = (buzz[0].get("result") or {}) if buzz else {}
+                    im = render_scoreboard(pp, res, meta.get("away", ""),
+                                           meta.get("home", ""))
+                    if im is None:      # 材料が合わない日は前の画面を保つ
+                        im = render_buzz(pp, buzz, picks)
                 elif kind == "talk":
                     im = render_talk(pp, talk)
                 elif kind == "thread":

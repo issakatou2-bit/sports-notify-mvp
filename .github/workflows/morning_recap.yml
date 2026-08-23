@@ -1,7 +1,7 @@
 # Actionsの一覧にはこの name が出る。ファイル名(morning_recap.yml)では
 # 探せないので、中身と揃えておく。以前は Player recap のままで、
 # 5本を作るようになったあとも古い名前が残り、探しても見つからなかった。
-name: 毎日 16:30-21:00　夕方の5本
+name: 毎日 16:30-21:00　夕方の4本
 
 # 「その日の日本人選手の成績」を配信する。
 # 19時の予告(これから起きること)に対して、こちらは結果(終わったこと)。
@@ -28,17 +28,17 @@ name: 毎日 16:30-21:00　夕方の5本
 #   起動時刻について:
 #     最終試合の終了は実測14:25前後。データはそこで揃う。
 #     16:00起動では16:30の公開予約に間に合わず、実際 morning だけ
-#     予約が記録されておらず即時公開に倒れていた(local/press は
-#     18:00/21:00 なので余裕があり、毎日ぴったり出ている)。
+#     予約が記録されておらず即時公開に倒れていた(press は21:00なので
+#     余裕があり、毎日ぴったり出ている)。
 #     動画ツールの導入だけで最大16分かかるので、余裕を90分取る。
 
 on:
   workflow_dispatch:
     inputs:
       modes:
-        description: '作る本数を絞る (players player voices local press のうち必要なものだけ)'
+        description: '作る本数を絞る (players player voices press のうち必要なものだけ)'
         required: false
-        default: 'players player voices local press'
+        default: 'players player voices press'
       player:
         description: '「今日の1人」をこの選手で作る (例: Pete Crow-Armstrong)'
         required: false
@@ -212,9 +212,11 @@ jobs:
         run: |
           set +e
           # 定期実行では4本とも作る。手動実行では絞れるようにしてある。
+          # 18:00の「現地での注目度」は2026-08-24に畳んだ。
+          # 同じ試合をコメント欄の回が扱っていたので、そちらへ寄せた。
           # 1本だけ落ちた日に、成功した分まで上げ直すと重複するため。
           MODES="${{ inputs.modes }}"
-          for mode in ${MODES:-players player voices local press}; do
+          for mode in ${MODES:-players player voices press}; do
             echo "::group::$mode"
             if [ "$mode" = "players" ]; then
               VIDEO="build/morning/collespo_morning.mp4"

@@ -126,6 +126,10 @@ check("健康診断が見る区分に、再生リストが全部ある",
 import generate_archive_pages as ga  # noqa: E402
 check("その日ページに、毎日出す動画が全部ある",
       sorted(expected - {k for k, _ in ga.DAY_VIDEO_KINDS}), [])
+# 畳んだ枠は、その日ページには残す(過去の動画へ辿れなくなるため)。
+# 毎日の一覧と健康診断からは外れているのが正しい。
+check("畳んだ枠が毎日の一覧に残っていない",
+      sorted(set(hc.RETIRED) & expected), [])
 
 
 
