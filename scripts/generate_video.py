@@ -496,7 +496,16 @@ def render_game(progress: float, g: dict, index: int, total: int):
         y = min(y + 20, H - 460 - h)
         card(d, 60, y, W - 60, y + h, stripe=ACCENT, fill=ACCENT_DIM)
         yy = y + 24
-        d.text((100, yy), g.get("venue_jp", ""), font=font(38), fill=ACCENT)
+        # 球場名だけだと、どちらの本拠地なのかが分からない。
+        # 対戦は「アウェー vs ホーム」なので、後ろのチームの球場になる。
+        # そこまで書いて初めて、並びと球場が繋がる。
+        home = g.get("home_team_name") or ""
+        where = g.get("venue_jp", "")
+        if home and where:
+            where = f"{where}（{home}の本拠地）"
+        d.text((100, yy), where,
+               font=font(fit_size(d, where, W - 240, (38, 34, 30, 26))),
+               fill=ACCENT)
         yy += 56
         for line in note:
             d.text((100, yy), line, font=font(34), fill=ACCENT)
@@ -699,6 +708,15 @@ def render_score(progress: float, games: list):
         d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + card_h], 22, fill=SURF)
         name = g.get("abbr_matchup") or g.get("matchup") or ""
         d.text((100 - dx, y + 26), name, font=font(52), fill=TEXT)
+        # 何戦目か。3連戦の初戦と最終戦では意味が違う。
+        # データには最初から入っていて、サイトは出していたが動画は
+        # 出していなかった。
+        sc_ctx = g.get("series_context") or {}
+        if sc_ctx.get("series_game_number") and sc_ctx.get("games_in_series"):
+            tag = (f"第{sc_ctx['series_game_number']}戦"
+                   f"/全{sc_ctx['games_in_series']}戦")
+            d.text((100 - dx + d.textlength(name, font=font(52)) + 20,
+                    y + 40), tag, font=font(30), fill=DIM)
 
         # 点数は右上に大きく。3試合を見比べられるようにする
         stxt = f"{sc}"

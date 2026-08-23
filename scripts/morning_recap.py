@@ -247,6 +247,12 @@ def headline(row: dict) -> str:
             bits.append(f"{row['hits']}被安打")
         if row.get("bb"):
             bits.append(f"{row['bb']}与四球")
+        # 失点した登板は、その試合の防御率も出す。
+        # 「6回3自責」と「2回3自責」は、自責の数だけでは同じに見える。
+        # 自責0の回は「自責0」の方が短くて明快なので出さない。
+        outs_ = outs_from_ip(row.get("ip"))
+        if row.get("er") and outs_:
+            bits.append(f"防御率{row['er'] * 27 / outs_:.2f}")
         # 役割は点数を左右するので、画面にも出す。
         # 同じ「1回無失点」に別々の点が付く理由が見えないと、
         # 数字だけが動いていることになる。
@@ -403,6 +409,9 @@ def outs_from_ip(ip) -> int:
 #   closer  … セーブ機会で登板した。締めれば試合が終わる
 #   setup   … ホールドが付く場面。リードを次へ渡す役
 #   reliever… それ以外の救援
+# 自責0で降りたことへの加点。長さは raw が見ているので一律。
+CLEAN_OUTING = 7
+
 RELIEF_BASE = {"closer": 58, "setup": 50, "reliever": 38}
 
 
@@ -486,6 +495,17 @@ def contribution(row: dict) -> int:
         #
         # 役割はAPIの値で判別できる(gamesStarted / saves / holds)。
         # 「守護神に転向した」といった記事を追わなくても分かる。
+        # 任された分を無失点で終えたことへの加点。
+        #
+        # これまで「点を取られなかった」ことに直接の加点が無く、
+        # 失点の減点が無いというだけだった。そのため完璧な1回が44点で、
+        # 打者の並の1日(68点)より下に来ていた。
+        # 投球回の長さは raw の側で既に効いているので、ここは一律にする。
+        # 7回無失点も1回無失点も「任された分を抑えた」ことは同じで、
+        # 長さの差はそちらで付く。
+        if row.get("er") == 0 and outs >= 3:
+            raw += CLEAN_OUTING
+
         role = pitcher_role(row)
         if role == "starter":
             # 5回を投げ切って満額。ビル・ジェームズのゲームスコアと同じ発想。

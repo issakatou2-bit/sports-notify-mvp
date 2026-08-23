@@ -175,7 +175,7 @@ def render_game(date_str: str, g: dict) -> str:
         )
         parts.append(
             f'<p class="result">{html.escape(g.get("home_team_name",""))} '
-            f'{fs.get("home")} - {fs.get("away")} '
+            f'{fs.get("away")} - {fs.get("home")} '
             f'{html.escape(g.get("away_team_name",""))}　{html.escape(winner or "")}勝利</p>'
         )
 

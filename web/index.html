@@ -774,7 +774,7 @@
       const homeLabel = teamBadge(top.home_abbr, top.home_color) + top.home_team_name + (top.home_has_jp ? ' 🇯🇵' : '');
       const awayLabel = teamBadge(top.away_abbr, top.away_color) + top.away_team_name + (top.away_has_jp ? ' 🇯🇵' : '');
       topRow.innerHTML =
-        '<span class="matchup">' + homeLabel + ' vs ' + awayLabel + '</span>' +
+        '<span class="matchup">' + awayLabel + ' vs ' + homeLabel + '</span>' +
         '<span class="league">' + top.league + '</span>';
       card.appendChild(topRow);
 

@@ -108,7 +108,7 @@ def episode_description(games_path: str) -> str:
     for g in games:
         lines.append(
             f"{g.get('start_time_jst')} "
-            f"{g.get('home_team_name')} vs {g.get('away_team_name')}"
+            f"{g.get('away_team_name')} vs {g.get('home_team_name')}"
         )
         for r in (g.get("reasons") or [])[:2]:
             if r.get("visible", True) and r.get("text"):

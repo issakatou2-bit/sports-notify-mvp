@@ -83,7 +83,7 @@ fat = [make("ラ・リーガ", "Deportivo Alavés", "Getafe CF", 0),
        make("ラ・リーガ", "Sevilla FC", "Rayo Vallecano de Madrid", 3)]
 out = ne.build_output(fat, {}, {})
 check("先頭はエル・クラシコ", out["games"][0]["matchup"],
-      "バルセロナ vs レアル・マドリード")
+      "レアル・マドリード vs バルセロナ")
 check("地味な試合が上位を押しのけない",
       out["games"][-1]["score"] == 0, True)
 
@@ -99,7 +99,7 @@ check("理由の無いMLBは選ばれない",
 # --- 表記が日本語になるか ---------------------------------------------------
 print("\n--- クラブ名の表記 ---")
 out = ne.build_output([make("ラ・リーガ", "FC Barcelona", "Real Madrid CF")], {}, {})
-check("matchup が日本語", out["games"][0]["matchup"], "バルセロナ vs レアル・マドリード")
+check("matchup が日本語", out["games"][0]["matchup"], "レアル・マドリード vs バルセロナ")
 # 区切りの "vs" は残してよい。クラブ名の側に英字が残っていないかを見る。
 check("クラブ名に英字が残っていない",
       any(c.isascii() and c.isalpha() for c in
@@ -146,7 +146,7 @@ out = ne.build_output([mlb], {}, {"119": ["大谷翔平", "山本由伸"]})
 g = out["games"][0]
 check("日本人選手の所属が理由になる",
       any(r.get("tag") == "jp_team" for r in g.get("reasons") or []), True)
-check("表記は変えない", g["matchup"], "ドジャース vs パドレス")
+check("表記は変えない", g["matchup"], "パドレス vs ドジャース")
 
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

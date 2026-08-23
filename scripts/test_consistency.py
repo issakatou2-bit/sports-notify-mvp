@@ -376,5 +376,31 @@ check("題は100字以内",
                             morning_mode="press")["snippet"]["title"]) <= 100,
       True)
 
+
+# 対戦名の並びと、スコアの並びが揃っているか。
+#
+# 「アウェー vs ホーム」に直したとき、直す場所が8つあった。1つでも
+# 残ると、対戦名は左がアウェーなのにスコアは左がホーム、という形で
+# 別の試合に見える。動かしても例外は出ない。
+print("\n--- 対戦名とスコアの並び ---")
+import weekly_stats as _ws  # noqa: E402
+
+_g = {"abbr_matchup": "ARI vs BOS", "matchup": "ダイヤモンドバックス vs レッドソックス",
+      "home_abbr": "BOS", "away_abbr": "ARI",
+      "home_team_name": "レッドソックス", "away_team_name": "ダイヤモンドバックス",
+      "league": "MLB",
+      "final_score": {"home": 9, "away": 4, "winner": "home"}}
+_rows = _ws.day_lines([_g])
+check("スコアはアウェー先", _rows[0][1] if _rows else "", "4 - 9")
+check("勝った側はホーム", _rows[0][4] if _rows else "", "レッドソックス")
+# 生成側も同じ向きか
+import notability_engine as _ne  # noqa: E402
+check("生成が away を先に置いている",
+      'f"{away_name} vs {home_name}"' in
+      (ROOT / "notability_engine.py").read_text(encoding="utf-8"), True)
+check("サイトも away を先に置いている",
+      "awayLabel + ' vs ' + homeLabel" in
+      (ROOT / "web" / "index.html").read_text(encoding="utf-8"), True)
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

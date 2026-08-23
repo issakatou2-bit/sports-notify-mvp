@@ -269,9 +269,9 @@ def rule_rivalry(game: Game) -> list[Reason]:
     pair = frozenset({game.home_team_id, game.away_team_id})
     rivalry_type = MLB_RIVALRIES.get(pair)
     if rivalry_type == "historic":
-        text = f"{game.home_team_name} vs {game.away_team_name} は伝統の好カード"
+        text = f"{game.away_team_name} vs {game.home_team_name} は伝統の好カード"
     elif rivalry_type == "city":
-        text = f"{game.home_team_name} vs {game.away_team_name} は同都市対決"
+        text = f"{game.away_team_name} vs {game.home_team_name} は同都市対決"
     else:
         return []
     # 「なぜ因縁のカードなのか」まで書く。種別だけでは、初めて見る人に
@@ -355,7 +355,7 @@ def rule_division_race(game: Game, standings: dict) -> list[Reason]:
                 Reason(
                     tag="div",
                     text=(
-                        f"{game.home_team_name} vs {game.away_team_name} は"
+                        f"{game.away_team_name} vs {game.home_team_name} は"
                         f"首位攻防戦、ゲーム差はわずか{abs(home.games_back - away.games_back):.1f}"
                     ),
                     weight=2,
@@ -859,7 +859,7 @@ def build_output(
         home_abbr = MLB_TEAM_ABBR.get(g.home_team_id)
         away_abbr = MLB_TEAM_ABBR.get(g.away_team_id)
         abbr_matchup = (
-            f"{home_abbr} vs {away_abbr}" if home_abbr and away_abbr else None
+            f"{away_abbr} vs {home_abbr}" if home_abbr and away_abbr else None
         )
 
         home_division = MLB_DIVISIONS.get(g.home_team_id)
@@ -931,7 +931,10 @@ def build_output(
                 "away_abbr": away_abbr,
                 "home_color": MLB_TEAM_COLOR.get(g.home_team_id),
                 "away_color": MLB_TEAM_COLOR.get(g.away_team_id),
-                "matchup": f"{home_name} vs {away_name}",
+                # 並びは「アウェー vs ホーム」。野球の表記はどこもこの向きで、
+                # 後ろが本拠地の側になる。逆に書いていたので、球場名を
+                # 添えても、それがどちらのホームなのか読み取れなかった。
+                "matchup": f"{away_name} vs {home_name}",
                 "abbr_matchup": abbr_matchup,
                 "start_time_jst": _to_jst_str(g.start_time_utc),
                 "home_division": home_division,

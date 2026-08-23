@@ -151,7 +151,9 @@ def day_lines(games: list) -> list:
         else:
             won = ""     # 引き分け、または取れていない
         lines.append((g.get("abbr_matchup") or g.get("matchup"),
-                      f"{h} - {a}", note, spoken, won))
+                      # 対戦名が「アウェー vs ホーム」なので、点も同じ並びにする。
+                      # ずれると、左の数字が右のチームのものに見える。
+                      f"{a} - {h}", note, spoken, won))
     return lines
 
 
@@ -241,7 +243,7 @@ def check_streaks(week: list) -> list:
                 "result": result,
                 "spoken": spoken,
                 "matchup": g.get("abbr_matchup") or g.get("matchup"),
-                "score": f"{fs.get('home')}-{fs.get('away')}",
+                "score": f"{fs.get('away')}-{fs.get('home')}",
             })
     return out
 
