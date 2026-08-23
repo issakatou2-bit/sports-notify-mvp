@@ -21,6 +21,8 @@ jobs:
         with:
           python-version: '3.11'
       - name: Probe
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: python scripts/probe_sources.py --out probe_result.json
       - uses: actions/upload-artifact@v4
         if: always()
