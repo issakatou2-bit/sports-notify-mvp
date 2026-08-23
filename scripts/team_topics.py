@@ -108,6 +108,80 @@ def _geo_edge(tid: str, coord: dict, all_coords: list) -> str:
     return ""
 
 
+def stars(tid: str, season: str = "") -> list:
+    """いまその球団でいちばん打っている人と、いちばん抑えている人。
+
+    指標は本塁打の最多と奪三振の最多にする。順位が一意に決まり、
+    こちらが点数を作らずに済む。独自の指標を持ち込むと、
+    「なぜこの選手なのか」を毎回説明しないと出せなくなる。
+
+    同じ選手が複数行で返ることがある(移籍すると球団ごとに分かれる)。
+    その球団での成績だけを見る。合算すると、他球団で挙げた数字を
+    この球団のものとして出すことになる。
+    """
+    season = season or str(datetime.now(timezone.utc).year)
+    try:
+        r = requests.get(
+            f"{API}/teams/{tid}/roster",
+            params={"rosterType": "active",
+                    "hydrate": f"person(stats(type=season,season={season}))"},
+            headers=UA, timeout=30)
+        r.raise_for_status()
+        roster = r.json().get("roster") or []
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] {tid} の名簿を取れません: {e}", file=sys.stderr)
+        return []
+
+    bat, arm = None, None
+    for row in roster:
+        person = row.get("person") or {}
+        name = person.get("fullName")
+        if not name:
+            continue
+        for st in (person.get("stats") or []):
+            grp = (st.get("group") or {}).get("displayName")
+            for sp in (st.get("splits") or []):
+                # その球団での分だけ。移籍組は他球団の行も返ってくる。
+                if str((sp.get("team") or {}).get("id") or tid) != str(tid):
+                    continue
+                s = sp.get("stat") or {}
+                if grp == "hitting":
+                    hr = s.get("homeRuns") or 0
+                    if hr and (bat is None or hr > bat[0]):
+                        bat = (hr, name,
+                               f"打率{s.get('avg', '')}　{hr}本塁打"
+                               f"　{s.get('rbi', 0)}打点")
+                elif grp == "pitching":
+                    so = s.get("strikeOuts") or 0
+                    if so and (arm is None or so > arm[0]):
+                        arm = (so, name,
+                               f"{s.get('wins', 0)}勝{s.get('losses', 0)}敗"
+                               f"　防御率{s.get('era', '')}　{so}奪三振")
+
+    out = []
+    if bat:
+        out.append({"name": bat[1], "line": bat[2], "why": "今季チーム最多本塁打"})
+    if arm:
+        out.append({"name": arm[1], "line": arm[2], "why": "今季チーム最多奪三振"})
+    return out
+
+
+def legends(tid: str, path: str = "data/team_legends.json") -> list:
+    """その球団の殿堂入り。上位3人まで保存してある分をそのまま。
+
+    人数の順位には使わない(3人で頭打ちなので、数として意味がない)。
+    ここでは誰がいたかを紹介するだけなので、その用途では正しい。
+    """
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    row = (d.get("teams") or {}).get(str(tid)) or {}
+    return [{"name": p.get("name", ""), "line": p.get("line", ""),
+             "hof_year": p.get("hof_year", "")}
+            for p in (row.get("players") or []) if p.get("name")][:3]
+
+
 def rivals_of(team_id: str) -> list:
     """同地区の相手。年に13試合ずつ当たる、いちばん近い4球団。"""
     div = MLB_DIVISIONS.get(str(team_id))
@@ -255,6 +329,10 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
         "label": jp,
         "heading": jp,
         "hook": hook,
+        # 創設年と収容人数だけでは、その球団の「顔」が出てこない。
+        # 殿堂入りと、いま実際に打って抑えている選手を添える。
+        "legends": legends(tid),
+        "stars": stars(tid),
         "where": where,
         "intro": f"{jp}。{where}を本拠地にする球団です。数字で見ていきます。",
         "items": [list(x) for x in items],

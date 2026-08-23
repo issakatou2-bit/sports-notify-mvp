@@ -101,6 +101,22 @@ def names_from_recap() -> list:
             for row in d.get(key) or []:
                 if row.get("name"):
                     out.append(row["name"])
+
+    # 球団紹介で出す殿堂入りと現役の中心。
+    #
+    # ここは日々の採点に出てこないので、集める対象に入っていなかった。
+    # 結果、読み上げが「ヘンダーソン、Williams、Eckersley」になる。
+    # 一度引けば残るので、30球団ぶん回しても数日で出揃う。
+    try:
+        topics = json.loads(pathlib.Path("data/team_topics.json").read_text(
+            encoding="utf-8")).get("topics") or []
+    except (OSError, json.JSONDecodeError):
+        topics = []
+    for spec in topics:
+        for group in ("legends", "stars"):
+            for row in (spec.get(group) or []):
+                if row.get("name"):
+                    out.append(row["name"])
     return out
 
 

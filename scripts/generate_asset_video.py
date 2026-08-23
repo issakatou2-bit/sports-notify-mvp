@@ -1073,8 +1073,48 @@ def _narration_list(topic: str) -> dict:
             "text": "".join(f"{t.replace('｜', '、')}。{b}。" for t, b in chunk),
             "meta": {"topic": topic, "start": i, "count": len(chunk)},
         })
+    # 数字のあとに、人を出す。
+    #
+    # 創設年・収容人数・地区が並ぶだけだと、その球団が何者なのかが
+    # 残らない。殿堂入りと、いま実際に打って抑えている選手を1画面ずつ。
+    # テンポを落とさないよう、それぞれ1画面に収める。
+    legends = (spec.get("legends") or [])[:3]
+    said = [s for s in (_say(x["name"]) for x in legends) if s]
+    if legends and said:
+        segments.append({
+            "kind": "people",
+            "text": "この球団の殿堂入りは、" + "、".join(said) + "。",
+            "meta": {"topic": topic, "group": "legends",
+                     "heading": "殿堂入り"},
+        })
+    stars = (spec.get("stars") or [])[:2]
+    parts = [f"{_say(x['name'])}が{x.get('why', '')}。"
+             for x in stars if _say(x["name"])]
+    if parts:
+        segments.append({
+            "kind": "people",
+            "text": "いまの中心は、" + "".join(parts),
+            "meta": {"topic": topic, "group": "stars",
+                     "heading": "今シーズンの中心"},
+        })
+
     segments.append(_outro_segment())
     return {"label": spec["label"], "segments": segments}
+
+
+def _say(name: str) -> str:
+    """読み上げ用の名前。読みが分からなければ空を返す。
+
+    英字のまま渡すと1文字ずつ読まれる。「リッキー・ヘンダーソン、
+    ウィリアムズ、Ginn」のように1つ混じるだけで、その並びが崩れる。
+    読めないものは読み上げから外す(画面には正しい綴りで出す)。
+    """
+    try:
+        from generate_narration import speech_name
+        said = speech_name(name)
+    except Exception:  # noqa: BLE001
+        return ""
+    return "" if any(c.isascii() and c.isalpha() for c in said) else said
 
 
 def _narration_venue() -> dict:
@@ -1347,6 +1387,62 @@ def render_division(p, code, teams):
         y += 250
 
     # ショートは切り抜き・スクショで出回るので、どの画面にも出典を残す
+    d.text((70, H - 130), "collespo.com", font=font(38), fill=DIM)
+    return im
+
+
+def fit(d, text: str, max_w: int, sizes) -> int:
+    """その幅に収まる、いちばん大きい文字の大きさ。
+
+    同じことを画面ごとにその場で書いていた。選手名は長さの幅が
+    大きい(「Ben Rice」と「Cam Schlittler」)ので、収まらないと
+    はみ出す。1か所にまとめる。
+    """
+    for s in sizes:
+        if d.textlength(text, font=font(s)) <= max_w:
+            return s
+    return sizes[-1]
+
+
+def render_people(p, rows, heading, sub=""):
+    """殿堂入り、または今シーズンの中心。名前と成績を並べるだけ。
+
+    数字ばかりの画面が続くと、その球団が何者なのかが残らない。
+    人の名前が1画面あるだけで、あとの数字に置き場所ができる。
+    尺は増やさないので、1画面に3人まで。
+    """
+    im, d = base(p)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    d.text((70, 190), heading, font=font(64), fill=ACCENT)
+    if sub:
+        d.text((74, 276), sub, font=font(32), fill=DIM)
+
+    y = 380
+    for i, r in enumerate(rows[:3]):
+        appear = 0.06 + i * 0.08
+        if p < appear:
+            continue
+        e = ease_out(min(1.0, max(0.0, (p - appear) * 9)))
+        dx = int((1 - e) * 120)
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + 190], 20, fill=SURF)
+
+        name = r.get("name", "")
+        d.text((100 - dx, y + 26), name,
+               font=font(fit(d, name, W - 260, (56, 50, 44, 38))), fill=TEXT)
+        line = r.get("line", "")
+        if line:
+            d.text((100 - dx, y + 104), line,
+                   font=font(fit(d, line, W - 260, (38, 34, 30, 26))),
+                   fill=DIM)
+        # 殿堂入りの年、または「今季チーム最多本塁打」のような選んだ理由。
+        # なぜこの人なのかを画面にも置いておく。
+        tag = r.get("hof_year") and f"殿堂{r['hof_year']}年" or r.get("why", "")
+        if tag:
+            tw = d.textlength(tag, font=font(30))
+            d.text((W - 100 - dx - tw, y + 32), tag, font=font(30),
+                   fill=ACCENT)
+        y += 214
+
     d.text((70, H - 130), "collespo.com", font=font(38), fill=DIM)
     return im
 
@@ -1635,6 +1731,12 @@ def main():
                                      meta.get("start", 0) // 2 + 1,
                                      (len(items) + 1) // 2,
                                      ts.get("heading") or ts.get("label", ""))
+                elif kind == "people":
+                    ts = LIST_TOPICS[meta.get("topic", args.topic)]
+                    rows = ts.get(meta.get("group", "legends")) or []
+                    im = render_people(pp, rows,
+                                       meta.get("heading", ""),
+                                       ts.get("label", ""))
                 elif kind == "rivalry":
                     idx = meta.get("index", 0)
                     im = render_rivalry(pp, rivalries[idx], idx, len(rivalries))

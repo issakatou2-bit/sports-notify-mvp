@@ -305,8 +305,20 @@ for _mode in ("players", "player", "voices", "local", "press"):
 _dupe = [h for h in _heads.values() if list(_heads.values()).count(h) > 1]
 check("書き出しがかぶっていない", sorted(set(_dupe)), [])
 
-# 中身が変われば書き出しも変わること(枠の名前を置いているだけなら変わらない)
-check("報道編の書き出しはその日の見出しから", bool(_uy.top_headline()), True)
+# 中身が変われば書き出しも変わること(枠の名前を置いているだけなら変わらない)。
+#
+# 「見出しが必ずある」ことは求めない。20時間より古いものは使わない
+# 作りなので、手元のデータが一晩たてば空になる。それは正しい動作で、
+# テストが落ちる理由にはならない。見出しがあるときに題へ入るか、
+# 無いときに既定の題へ落ちるか、その繋がりだけを見る。
+_head = _uy.top_headline()
+_press = _uy.build_metadata("notable_games.json", "8月21日", kind="morning",
+                            morning_mode="press")["snippet"]["title"]
+if _head:
+    check("見出しがあれば題に入る", _head in _press, True)
+else:
+    check("見出しが無ければ既定の題", "現地メディアは何と言っているか" in _press,
+          True)
 check("現地編の書き出しはその日の話題から", bool(_uy.top_talked_team()), True)
 
 # 日本人選手の読みが、名簿のローマ字と合っているか。
