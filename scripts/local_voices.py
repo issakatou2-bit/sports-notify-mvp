@@ -64,6 +64,41 @@ SKIP_PATTERNS = [
 ]
 
 
+WORD = chr(92) + "b"   # 単語境界。書き換えの経路で消えやすいので定数で持つ
+
+
+def jp_mentioned(text: str) -> list:
+    """そのコメントに名前が出ている日本人選手。
+
+    姓と名を、語として丸ごと一致するときだけ拾う。愛称は追わない。
+    「Yoshi」が吉田なのか他の誰かなのかは文面からは決まらないので、
+    取り違えるくらいなら拾わないほうがよい。
+
+    正規表現は使わない。単語境界の書き方が、書き換えの経路で
+    何度も消えた。語で切って集合で突き合わせれば同じことができる。
+    """
+    import textkey
+    from notability_engine import JP_PLAYERS_MLB
+
+    words = set()
+    cur = []
+    for ch in textkey.key(text or ""):
+        if ch.isalnum():
+            cur.append(ch)
+        elif cur:
+            words.add("".join(cur))
+            cur = []
+    if cur:
+        words.add("".join(cur))
+
+    out = []
+    for pl in JP_PLAYERS_MLB:
+        for w in (pl.get("name_en") or "").split():
+            if len(w) >= 4 and textkey.key(w) in words:
+                out.append(pl["name_jp"])
+                break
+    return out
+
 def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
                            per_video: int = 20) -> list:
     """
@@ -293,11 +328,29 @@ def build(limit: int = MAX_VOICES) -> dict:
         print(f"   {v['ja']}")
         print(f"     原文: {v['title'][:70]}")
 
+    # 日本人選手に触れた称賛だけを、別に持つ。
+    #
+    # 「voices」の側は一切絞らない。試合そのもののコメントは、
+    # 賛否も不満も含めてそのまま見せる枠で、そこを称賛に寄せると
+    # 現地の空気ではなくこちらの編集になる。
+    #
+    # 一方こちらは「日本人選手が現地でどう言われたか」という別の話で、
+    # 貢献スコアの枠に添えるもの。用途が違うので置き場も分ける。
+    for v in voices:
+        v["jp_players"] = jp_mentioned(v.get("title", "") + " " + v.get("ja", ""))
+    praise = [v for v in voices
+              if v.get("jp_players") and v.get("tone") == "称賛"]
+    if praise:
+        print(f"[info] 日本人選手への称賛: {len(praise)}件")
+        for v in praise:
+            print(f"   {'、'.join(v['jp_players'])}: {v['ja'][:44]}")
+
     return {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "source": source_name,
         "source_url": source_url,
         "voices": voices,
+        "jp_praise": praise,
     }
 
 
