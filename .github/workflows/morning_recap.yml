@@ -353,7 +353,9 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/localize_videos.py --recent 6
+        # この回で出すのは4本。日次(19:00)が6本見に行くので、
+        # そちらと重ならない分だけでよい。
+        run: python scripts/localize_videos.py --recent 4
 
       # 結果はサイトからも参照できるよう、リポジトリへ残す
       - name: Commit recap
