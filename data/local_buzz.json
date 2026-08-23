@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-22T06:01:53.692900+00:00",
+  "updated_at": "2026-08-23T06:01:44.907716+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,81 +13,73 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
-      "mentions": 2,
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 4,
+      "tone": "好調",
+      "gist": "Kyle Tucker、Skubalらが活躍しローテーション"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 3,
       "tone": "話題",
-      "gist": "Ketel Marteがゲーム中にカジノにいた"
+      "gist": "Abreuが0-5で4三振もプレイヤーオブザゲーム"
+    },
+    {
+      "team_id": "137",
+      "name": "ジャイアンツ",
+      "name_en": "San Francisco Giants",
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "Abreuがサヨナラで勝利、レッドソックス逆転"
     },
     {
       "team_id": "145",
       "name": "ホワイトソックス",
       "name_en": "Chicago White Sox",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "Montgomery含む連続本塁打、Rogersが逆転サヨナ"
+      "tone": "話題",
+      "gist": "ファンのファインプレーとHR記念での逸失物回収"
     },
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
+      "team_id": "134",
+      "name": "パイレーツ",
+      "name_en": "Pittsburgh Pirates",
       "mentions": 2,
       "tone": "話題",
-      "gist": "Troutがマリナーズ相手に56本、Rivasが延長サヨナラ"
+      "gist": "Skubalが11奪三振も初回3失点で失敗"
     },
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
       "mentions": 2,
-      "tone": "不振",
-      "gist": "Rogersのサヨナラ2ランホーマーでメッツが敗北"
+      "tone": "話題",
+      "gist": "Ceaseのノーヒット未遂でヤンキース敗北"
     },
     {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "Alonso30号本塁打でオリオールズがリード"
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "Contrerasの本塁打でレッドソックスがリード"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "Edmanがサヨナラ、ドジャース4連勝"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
       "mentions": 1,
       "tone": "話題",
-      "gist": "Kirkがプレイヤーズウィークエンド用カスタム装備で地元愛"
+      "gist": "Jose Ramirezがフランチャイズ歴代5位に"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "Padresが5月24日以来10ゲーム以上"
     }
   ],
   "players": [
     {
-      "name": "山本由伸",
-      "mentions": 1
-    },
-    {
-      "name": "今永昇太",
-      "mentions": 1
-    },
-    {
-      "name": "鈴木誠也",
+      "name": "大谷翔平",
       "mentions": 1
     }
   ]

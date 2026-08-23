@@ -1,90 +1,24 @@
 {
-  "updated_at": "2026-08-22T06:01:42.586600+00:00",
+  "updated_at": "2026-08-23T06:01:34.161463+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "ncPT03sfF18",
-      "title": "YANKEES vs. ORIOLES: Official Full Game Highlights (August 20) | 2026 MLB Season",
-      "published_at": "2026-08-21T01:58:38Z",
-      "views": 220755,
-      "matchup": "YANKEES vs. ORIOLES",
+      "video_id": "QlppJt9lT0A",
+      "title": "PIRATES vs. DODGERS: Official Full Game Highlights (August 21) | 2026 MLB Season",
+      "published_at": "2026-08-22T05:49:56Z",
+      "views": 388104,
+      "matchup": "PIRATES vs. DODGERS",
       "result": {
-        "away_jp": "ヤンキース",
-        "home_jp": "オリオールズ",
-        "away_score": 6,
-        "home_score": 1,
+        "away_jp": "パイレーツ",
+        "home_jp": "ドジャース",
+        "away_score": 4,
+        "home_score": 5,
         "innings": [
           {
             "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 3,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 6,
-            "away": 2,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 8,
             "away": 1,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": 0
-          }
-        ],
-        "away_hits": 11,
-        "away_errors": 0,
-        "home_hits": 4,
-        "home_errors": 1,
-        "star_name": "Gerrit Cole",
-        "star_line": "6.0回 8奪三振 自責1"
-      }
-    },
-    {
-      "video_id": "Z_pNt4X2osE",
-      "title": "BRAVES vs. BREWERS: Official Full Game Highlights (August 21) | 2026 MLB Season",
-      "published_at": "2026-08-21T23:01:11Z",
-      "views": 87017,
-      "matchup": "BRAVES vs. BREWERS",
-      "result": {
-        "away_jp": "ブレーブス",
-        "home_jp": "ブリュワーズ",
-        "away_score": 1,
-        "home_score": 2,
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
+            "home": 2
           },
           {
             "num": 2,
@@ -93,7 +27,7 @@
           },
           {
             "num": 3,
-            "away": 0,
+            "away": 1,
             "home": 2
           },
           {
@@ -118,110 +52,49 @@
           },
           {
             "num": 8,
-            "away": 1,
+            "away": 2,
             "home": 0
           },
           {
             "num": 9,
             "away": 0,
-            "home": null
+            "home": 0
+          },
+          {
+            "num": 10,
+            "away": 0,
+            "home": 1
           }
         ],
         "away_hits": 8,
-        "away_errors": 0,
-        "home_hits": 9,
-        "home_errors": 1,
-        "star_name": "Jacob Misiorowski",
-        "star_line": "6.0回 6奪三振 自責0"
-      }
-    },
-    {
-      "video_id": "5E88IyNKRFA",
-      "title": "ANGELS vs. ASTROS: Official Full Game Highlights (August 20) | 2026 MLB Season",
-      "published_at": "2026-08-21T03:23:07Z",
-      "views": 86509,
-      "matchup": "ANGELS vs. ASTROS",
-      "result": {
-        "away_jp": "エンゼルス",
-        "home_jp": "アストロズ",
-        "away_score": 18,
-        "home_score": 3,
-        "innings": [
-          {
-            "num": 1,
-            "away": 1,
-            "home": 2
-          },
-          {
-            "num": 2,
-            "away": 3,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 6,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 4,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 2,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 2,
-            "home": 1
-          }
-        ],
-        "away_hits": 18,
         "away_errors": 1,
-        "home_hits": 8,
-        "home_errors": 2,
-        "star_name": "Zach Neto",
-        "star_line": "6打数5安打 7打点 1本塁打"
+        "home_hits": 6,
+        "home_errors": 0,
+        "star_name": "Yoshinobu Yamamoto",
+        "star_line": "6.1回 9奪三振 自責2"
       }
     },
     {
-      "video_id": "GMBnpYLGIG8",
-      "title": "BLUE JAYS vs. YANKEES: Official Full Game Highlights (August 21) | 2026 MLB Season",
-      "published_at": "2026-08-22T02:36:29Z",
-      "views": 53995,
+      "video_id": "T83Sywvs7os",
+      "title": "BLUE JAYS vs. YANKEES: Official Full Game Highlights (August 22) | 2026 MLB Season",
+      "published_at": "2026-08-22T21:20:48Z",
+      "views": 250758,
       "matchup": "BLUE JAYS vs. YANKEES",
       "result": {
         "away_jp": "ブルージェイズ",
         "home_jp": "ヤンキース",
-        "away_score": 1,
+        "away_score": 4,
         "home_score": 3,
         "innings": [
           {
             "num": 1,
-            "away": 0,
+            "away": 1,
             "home": 0
           },
           {
             "num": 2,
             "away": 0,
-            "home": 2
+            "home": 0
           },
           {
             "num": 3,
@@ -230,8 +103,8 @@
           },
           {
             "num": 4,
-            "away": 0,
-            "home": 1
+            "away": 1,
+            "home": 0
           },
           {
             "num": 5,
@@ -246,42 +119,42 @@
           {
             "num": 7,
             "away": 0,
-            "home": 0
+            "home": 1
           },
           {
             "num": 8,
-            "away": 0,
-            "home": 0
+            "away": 1,
+            "home": 2
           },
           {
             "num": 9,
             "away": 0,
-            "home": null
+            "home": 0
           }
         ],
-        "away_hits": 9,
+        "away_hits": 15,
         "away_errors": 0,
         "home_hits": 4,
-        "home_errors": 1,
-        "star_name": "Cam Schlittler",
-        "star_line": "6.0回 4奪三振 自責1"
+        "home_errors": 2,
+        "star_name": "Dylan Cease",
+        "star_line": "6.2回 8奪三振 自責1"
       }
     },
     {
-      "video_id": "XMFHntCvnbw",
-      "title": "NATIONALS vs. RANGERS: Official Full Game Highlights (August 20) | 2026 MLB Season",
-      "published_at": "2026-08-21T02:46:20Z",
-      "views": 45336,
-      "matchup": "NATIONALS vs. RANGERS",
+      "video_id": "ABnJI5NV5CA",
+      "title": "PIRATES vs. DODGERS: Official Full Game Highlights (August 22) | 2026 MLB Season",
+      "published_at": "2026-08-23T02:20:52Z",
+      "views": 138026,
+      "matchup": "PIRATES vs. DODGERS",
       "result": {
-        "away_jp": "ナショナルズ",
-        "home_jp": "レンジャーズ",
-        "away_score": 0,
-        "home_score": 2,
+        "away_jp": "パイレーツ",
+        "home_jp": "ドジャース",
+        "away_score": 3,
+        "home_score": 4,
         "innings": [
           {
             "num": 1,
-            "away": 0,
+            "away": 3,
             "home": 0
           },
           {
@@ -292,17 +165,17 @@
           {
             "num": 3,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 4,
             "away": 0,
-            "home": 0
+            "home": 2
           },
           {
             "num": 5,
             "away": 0,
-            "home": 0
+            "home": 2
           },
           {
             "num": 6,
@@ -317,7 +190,7 @@
           {
             "num": 8,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 9,
@@ -325,13 +198,91 @@
             "home": null
           }
         ],
-        "away_hits": 1,
-        "away_errors": 0,
-        "home_hits": 6,
+        "away_hits": 6,
+        "away_errors": 1,
+        "home_hits": 7,
         "home_errors": 0,
-        "star_name": "Jacob deGrom",
-        "star_line": "6.0回 10奪三振 自責0"
+        "star_name": "Tarik Skubal",
+        "star_line": "7.0回 11奪三振 自責3"
       }
+    },
+    {
+      "video_id": "fy6tBPC_pdA",
+      "title": "CUBS vs. MARINERS: Official Full Game Highlights (August 21) | 2026 MLB Season",
+      "published_at": "2026-08-22T05:44:01Z",
+      "views": 121677,
+      "matchup": "CUBS vs. MARINERS",
+      "result": {
+        "away_jp": "カブス",
+        "home_jp": "マリナーズ",
+        "away_score": 5,
+        "home_score": 6,
+        "innings": [
+          {
+            "num": 1,
+            "away": 3,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 4
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 10,
+            "away": 0,
+            "home": 1
+          }
+        ],
+        "away_hits": 12,
+        "away_errors": 1,
+        "home_hits": 8,
+        "home_errors": 2,
+        "star_name": "Alex Bregman",
+        "star_line": "5打数3安打 3打点 2本塁打"
+      }
+    },
+    {
+      "video_id": "sSAXygk83j0",
+      "title": "FULL 10TH INNING: Tommy Edman WALKS IT OFF for the Dodgers in extra innings! 😤💪 | MLB Highlights",
+      "published_at": "2026-08-22T06:04:48Z",
+      "views": 96127,
+      "matchup": "FULL 10TH INNING"
     }
   ]
 }

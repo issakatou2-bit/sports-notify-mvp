@@ -1,121 +1,121 @@
 {
-  "generated_at": "2026-08-22T06:00:59.165346+00:00",
-  "date_jst": "2026-08-22",
-  "name": "Alex Bregman",
-  "player_id": "608324",
-  "team": "カブス",
+  "generated_at": "2026-08-23T06:00:58.593566+00:00",
+  "date_jst": "2026-08-23",
+  "name": "Randy Arozarena",
+  "player_id": "668227",
+  "team": "マリナーズ",
   "group": "hitting",
-  "why": "2026-08-22のMLBで最も活躍",
-  "headline": "5打数3安打　2本塁打　3打点",
-  "score": 162,
+  "why": "2026-08-23のMLBで最も活躍",
+  "headline": "4打数3安打　2本塁打　3打点　1四球",
+  "score": 176,
   "bio": {
-    "name_en": "Alex Bregman",
-    "age": 32,
-    "birth_city": "Albuquerque",
-    "birth_state": "NM",
-    "birth_country": "USA",
-    "birth_date": "1994-03-30",
-    "debut": "2016-07-25",
-    "draft_year": 2015,
+    "name_en": "Randy Arozarena",
+    "age": 31,
+    "birth_city": "Havana",
+    "birth_state": null,
+    "birth_country": "Cuba",
+    "birth_date": "1995-02-28",
+    "debut": "2019-08-14",
+    "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "3",
-    "position": "Third Base",
-    "nickname": "A-Breg",
+    "number": "56",
+    "position": "Outfielder",
+    "nickname": null,
     "height": "5' 10\"",
-    "weight": 190
+    "weight": 185
   },
   "teams": [
     {
-      "team": "アストロズ",
-      "from": 2016,
+      "team": "カージナルス",
+      "from": 2019,
+      "to": 2019
+    },
+    {
+      "team": "レイズ",
+      "from": 2020,
       "to": 2024
     },
     {
-      "team": "レッドソックス",
-      "from": 2025,
-      "to": 2025
-    },
-    {
-      "team": "カブス",
-      "from": 2026,
+      "team": "マリナーズ",
+      "from": 2024,
       "to": 2026
     }
   ],
   "career": {
-    "games": 1351,
-    "avg": ".271",
-    "hr": 227,
-    "rbi": 791,
-    "ops": ".837",
-    "sb": 46,
-    "hits": 1379
+    "games": 923,
+    "avg": ".254",
+    "hr": 137,
+    "rbi": 447,
+    "ops": ".785",
+    "sb": 151,
+    "hits": 854
   },
   "this_season": {
-    "games": 126,
-    "avg": ".258",
-    "hr": 18,
-    "rbi": 66,
-    "ops": ".765",
-    "sb": 3,
-    "hits": 129
+    "games": 122,
+    "avg": ".275",
+    "hr": 19,
+    "rbi": 57,
+    "ops": ".832",
+    "sb": 20,
+    "hits": 125
   },
   "last_season": {
-    "games": 114,
-    "avg": ".273",
-    "hr": 18,
-    "rbi": 62,
-    "ops": ".822",
-    "sb": 1,
-    "hits": 118
+    "games": 160,
+    "avg": ".238",
+    "hr": 27,
+    "rbi": 76,
+    "ops": ".760",
+    "sb": 31,
+    "hits": 146
   },
   "recent": [
     {
+      "date": "2026-08-22",
+      "line": "4打数3安打 2本塁打 3打点",
+      "opponent": "Chicago Cubs"
+    },
+    {
       "date": "2026-08-21",
-      "line": "5打数3安打 2本塁打 3打点",
-      "opponent": "Seattle Mariners"
+      "line": "5打数1安打 1打点",
+      "opponent": "Chicago Cubs"
+    },
+    {
+      "date": "2026-08-20",
+      "line": "3打数0安打",
+      "opponent": "Milwaukee Brewers"
     },
     {
       "date": "2026-08-19",
-      "line": "4打数0安打",
-      "opponent": "Chicago White Sox"
+      "line": "4打数1安打",
+      "opponent": "Milwaukee Brewers"
     },
     {
       "date": "2026-08-18",
-      "line": "5打数2安打 2打点",
-      "opponent": "Chicago White Sox"
-    },
-    {
-      "date": "2026-08-17",
-      "line": "4打数3安打",
-      "opponent": "Chicago White Sox"
-    },
-    {
-      "date": "2026-08-16",
-      "line": "3打数0安打",
-      "opponent": "St. Louis Cardinals"
+      "line": "4打数0安打",
+      "opponent": "Milwaukee Brewers"
     }
   ],
   "awards": [
+    {
+      "season": "2026",
+      "name": "AL All-Star"
+    },
     {
       "season": "2025",
       "name": "AL All-Star"
     },
     {
-      "season": "2025",
-      "name": "AL Player of the Week"
+      "season": "2023",
+      "name": "AL All-Star"
     },
     {
-      "season": "2024",
-      "name": "Rawlings AL Gold Glove"
+      "season": "2023",
+      "name": "World Baseball Classic Pool C MVP"
     },
     {
-      "season": "2022",
-      "name": "World Series Championship"
-    },
-    {
-      "season": "2022",
-      "name": "AL Player of the Month"
+      "season": "2021",
+      "name": "Jackie Robinson AL Rookie of the Year"
     }
   ],
   "quotes": []
