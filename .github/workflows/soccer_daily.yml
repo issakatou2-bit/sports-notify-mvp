@@ -1,4 +1,4 @@
-name: 毎日 20:00　欧州サッカー
+name: 毎日 19:00　欧州サッカー
 
 # 欧州サッカーの日次ショート。19時のMLBとは別の1本として出す。
 #
@@ -188,6 +188,7 @@ jobs:
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |

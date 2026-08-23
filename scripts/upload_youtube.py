@@ -950,11 +950,24 @@ def buzz_top(path: str) -> dict:
 #
 # SNSのアカウント名はここに書かない。Secretsにしか無く、
 # 間違ったURLを何百本の説明文へ焼き付けることになる。
-OTHER_CHANNEL_LINES = [
-    "サイト: https://collespo.com/",
-    "ポッドキャスト(同じ内容を音声で): https://collespo.com/podcast/feed.xml",
-    "RSS: https://collespo.com/feed.xml",
-]
+def _other_channels() -> list:
+    """他のチャネルへの案内。
+
+    同じ内容をBlueskyとThreadsにも出しているのに、動画からそこへ
+    辿る道が無かった。ハンドルは投稿のときに使っている秘密から
+    そのまま取る。ここへ書き写すと、変えたときに古いまま残る。
+    """
+    lines = ["サイト: https://collespo.com/",
+             "ポッドキャスト(同じ内容を音声で): "
+             "https://collespo.com/podcast/feed.xml",
+             "RSS: https://collespo.com/feed.xml"]
+    bsky = os.environ.get("BLUESKY_HANDLE", "").strip()
+    if bsky:
+        lines.append(f"Bluesky: https://bsky.app/profile/{bsky}")
+    return lines
+
+
+OTHER_CHANNEL_LINES = _other_channels()
 
 
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
