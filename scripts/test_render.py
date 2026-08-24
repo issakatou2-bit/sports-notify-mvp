@@ -94,6 +94,7 @@ def check(label, fn, *args, allow_none=False, **kw):
 
 
 def main() -> int:
+    global fails
     if not os.environ.get("COLLESPO_FONT"):
         print("[skip] 日本語フォントが見つからないため飛ばします")
         return 0
@@ -145,6 +146,34 @@ def main() -> int:
         meta = {"mode": mode, "date_label": "8月21日"}
         top = players[0] if players else {}
         check("冒頭 %s" % mode, g.render_intro, 1.0, meta, top, extra)
+
+    # 成績の行が、置ける幅に収まっているか。
+    #
+    # fit() は入らなくても最小の大きさを返すだけで、収まったとは
+    # 言わない。投手の行に被安打と防御率を足した日に28字になり、
+    # 最小の文字でも右へはみ出したまま公開された。
+    # 「小さくすれば入る」は、ある長さから先は成り立たない。
+    print("\n--- 成績の行が幅に収まるか ---")
+    import morning_recap as _mr
+    from PIL import Image as _I, ImageDraw as _ID
+    _dd = _ID.Draw(_I.new("RGB", (g.W, g.H)))
+    over = []
+    for row in (recap.get("players") or []):
+        head = _mr.headline(row)
+        wide = (row.get("prev_score") is not None
+                or row.get("avg_score") is not None)
+        avail = (g.W - 560) if wide else (g.W - 300)
+        size = g.fit(_dd, head, avail, (48, 44, 40, 36, 32, 28, 24))
+        if _dd.textlength(head, font=g.font(size)) > avail:
+            over.append("%d字 %s" % (len(head), head))
+    if over:
+        fails += 1
+        print("NG  幅に収まらない行が%d件" % len(over))
+        for o in over[:3]:
+            print("      " + o)
+    else:
+        print("ok  すべて収まる(%d件)" % len(recap.get("players") or []))
+
 
     print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
     return 1 if fails else 0

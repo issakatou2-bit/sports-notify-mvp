@@ -343,9 +343,19 @@ def worth_speaking(player: dict, rank: int) -> bool:
             or morning_recap.contribution(player) >= morning_recap.STANDOUT)
 
 
+def _surname_only(name: str) -> str:
+    """読み上げ用の姓だけ。「オカモト・カズマ」ではなく「オカモト」。
+
+    フルネームを3人ぶん並べると、そこだけ名簿の読み上げになる。
+    姓で呼ぶのは中継でも普通で、聞いて誰か分かる単位でもある。
+    """
+    said = speech_name(name)
+    return said.split("・")[0] if "・" in said else said
+
+
 def spoken_list(chunk: list, start: int) -> str:
     """1画面ぶんの読み上げ。触れない選手は人数だけ言う。"""
-    parts, skipped = [], 0
+    parts, skipped, names = [], 0, []
     for j, p in enumerate(chunk):
         rank = start + j + 1
         if worth_speaking(p, rank):
@@ -357,15 +367,27 @@ def spoken_list(chunk: list, start: int) -> str:
             )
         else:
             skipped += 1
+            names.append(p.get("name", ""))
 
     # 誰も該当しない画面が無音にならないよう、先頭だけは必ず読む
     if not parts and chunk:
         p = chunk[0]
         parts.append(f"{start + 1}位、{p['name']}、{yomi_stats(p['headline'])}。")
         skipped -= 1
+        if names and names[0] == p.get("name", ""):
+            names.pop(0)
 
     if skipped > 0:
-        parts.append(f"ほか{skipped}人は画面のとおりです。")
+        # 名前だけは読む。
+        #
+        # 「ほか3人は画面のとおりです」だと、その日出ていた選手の
+        # 名前が一度も声に出ない。検索で来る人が探しているのは
+        # 名前なので、成績を飛ばすとしても名前は残す。
+        said = [_surname_only(n) for n in names if n]
+        if said:
+            parts.append("ほか、" + "、".join(said) + "。")
+        else:
+            parts.append(f"ほか{skipped}人は画面のとおりです。")
     return "".join(parts)
 
 
@@ -1015,8 +1037,12 @@ def render_list(p, players, start, count):
         # 詰めずに書くと重なって両方読めなくなる。
         right_used = pl.get("prev_score") is not None or \
             pl.get("avg_score") is not None
+        # 下限を36までしか用意していなかったので、長い行が入りきらずに
+        # そのまま右へはみ出していた。投手の行に被安打と防御率を足して
+        # 28字を超えた日に出た。fit は入らなければ最小を返すだけで、
+        # 収まったかどうかは教えてくれない。刻みを下まで用意する。
         s = fit(d, head, (W - 560) if right_used else (W - 300),
-                (48, 44, 40, 36))
+                (48, 44, 40, 36, 32, 28, 24))
         d.text((180 - dx, y + 118), head, font=font(s), fill=TEXT)
 
         # 場面(逆転・勝ち越し・同点)。点数がなぜ高いのかの説明になる。
