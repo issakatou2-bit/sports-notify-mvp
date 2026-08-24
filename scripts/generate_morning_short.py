@@ -63,7 +63,8 @@ MIN_DURATION = {"intro": 4.5, "list": 6.5, "buzz": 7.5,
                 "p_recent": 6.0, "p_awards": 6.0, "p_quotes": 12.0,
                 # スコアボードは回ごとの数字を目で追うので、
                 # 読み上げより長めに置く。
-                "scoreboard": 9.0,
+                # スコアボードは回の数で変わるので scoreboard_seconds で出す
+                "scoreboard": 7.0,
                 # 翻訳した文章なので、目で追う時間を取る。
                 "praise": 10.0}
 
@@ -507,9 +508,20 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 返信の付いた一言は、やり取りの画面のために取っておく。
         # 冒頭で先に読んでしまうと、そのあと同じ言葉をもう一度読むことになる。
         held = thread_index(vs)
-        lead, lead_idx = "", None
+        lead, lead_idx, led_thread = "", None, False
+        # まず、返信のいちばん付いた一言そのもので入る。
+        #
+        # 以前はここで件数だけを予告していた(「返信が54件ついた一言が
+        # あります」)。同じ言葉を二度読まないための工夫だったが、
+        # 予告は中身が空で、聞いた側に引っかかりが残らない。
+        # 中身から入って、件数はやり取りの画面へ送る。そちらでは
+        # 「この一言に54件返ってきた」と、対象が目の前にある状態で言える。
+        if held is not None:
+            body = (vs[held].get("ja") or "").strip().rstrip("。！!、.")
+            if body and len(body) <= INTRO_VOICE_MAX:
+                lead, lead_idx, led_thread = f"{body}。", held, True
         for i, v in enumerate(vs):
-            if i == held:
+            if led_thread or i == held:
                 continue
             body = (v.get("ja") or "").strip().rstrip("。！!、.")
             if body and len(body) <= INTRO_VOICE_MAX:
@@ -518,23 +530,18 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 if likes >= 10:
                     lead += f"高評価{likes}件。"
                 break
-        # 返信の付いた一言がある日は、冒頭でその件数だけを言う。
-        #
-        # 中身を先に読んでしまうと、やり取りの画面で同じ言葉をもう一度
-        # 読むことになる。件数だけなら重複せず、「何を言ったら18件も
-        # 返ってきたのか」という問いが残る。答えは次の画面にある。
-        teased = held is not None
-        if teased:
-            lead = f"返信が{all_voices_replies(vs, held)}件ついた一言があります。"
-            # 冒頭で誰の言葉も読まなかったので、本編から外すものは無い。
-            lead_idx = None
+        # 返信の付いた一言が長すぎる日は、上の繰り返しが別の短い一言を
+        # 拾っている。そちらで入る。どちらにしても冒頭は必ず誰かの言葉で、
+        # 「返信が54件ついた一言があります」のような空の予告はもう出さない。
+        teased = False
         segments = [{
             "kind": "intro",
             "text": f"{lead}現地で最も見られた試合のコメント欄です。",
             "meta": {"date": day_iso, "count": len(players), "local": True,
                      "mode": mode,
                      # 冒頭で読んだコメントは、本編でもう一度読まない
-                     "used_voice": lead_idx, "teased_thread": teased},
+                     "used_voice": lead_idx, "teased_thread": teased,
+                     "led_thread": led_thread},
         }]
     else:
         # 現地編は選手一覧を出さないので、冒頭も現地の話から入る。
@@ -597,6 +604,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                     "kind": "scoreboard",
                     "text": f"試合はこうでした。{turn}",
                     "meta": {"away": away, "home": home},
+                    "min_duration": scoreboard_seconds(res),
                 })
 
     # 日本人選手が現地でどう言われたか。称賛だけを出す枠。
@@ -669,12 +677,19 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         v = all_voices[ti]
         body = (v.get("ja") or "").strip().rstrip("。！!、.")
         # 冒頭で件数を言った回は、ここでは繰り返さずに本文から入る。
-        teased = (segments[0].get("meta") or {}).get("teased_thread")
-        parts = [] if teased else [f"返信が{v.get('replies', 0)}件ついたコメントです。"]
-        parts.append(f"{body}。")
+        m0 = segments[0].get("meta") or {}
+        led = m0.get("led_thread")
+        if led:
+            # 冒頭で読んだ一言。ここでは繰り返さず、件数だけ足す。
+            parts = [f"この一言に、返信が{v.get('replies', 0)}件つきました。"]
+        elif m0.get("teased_thread"):
+            parts = [f"{body}。"]
+        else:
+            parts = [f"返信が{v.get('replies', 0)}件ついたコメントです。{body}。"]
         rs = (v.get("reply_ja") or [])[:3]
         if rs:
-            parts.append("これに、こう返っています。")
+            parts.append("これに、こう返っています。" if not led
+                         else "こう返っています。")
             for r in rs:
                 rb = (r.get("ja") or "").strip().rstrip("。！!、.")
                 if rb:
@@ -1098,6 +1113,20 @@ def _turning_point(res) -> str:
     if not at or best < 2:
         return ""
     return f"{at}回に{side}が{best}点。ここが大きかった回です。"
+
+
+# スコアボードの尺。9回ぶんを追うのに要る秒数と、1回あたりの足し前。
+#
+# 固定の9.0秒だと、読み上げが6秒前後で終わって2秒以上が無音になっていた。
+# かといって縮めるだけでは、延長に入った日に列が増えて追いつかない。
+# 列の数で決めるのが素直で、9回なら7.0秒、延長は1回ごとに0.5秒足す。
+SCOREBOARD_BASE = 7.0
+SCOREBOARD_PER_INNING = 0.5
+
+
+def scoreboard_seconds(res) -> float:
+    n = len([i for i in (res.get("innings") or []) if i.get("num")])
+    return SCOREBOARD_BASE + SCOREBOARD_PER_INNING * max(0, n - 9)
 
 
 def scoreboard_ready(res) -> bool:
@@ -1766,7 +1795,14 @@ def render_outro(p, mode: str = ""):
 # ---------------------------------------------------------------------------
 
 def plan_durations(segs):
-    return [max(MIN_DURATION.get(s.get("kind") or "list", 5.0),
+    """各画面を何秒置くか。読み上げの長さと、目で追う量の大きいほう。
+
+    min_duration を持つ段は、その値を下限に使う。画面に出る量が
+    その日によって変わるものがあり(スコアボードの回数など)、
+    表の固定値では、短い日は無音が伸び、長い日は追いつかない。
+    """
+    return [max(float(s.get("min_duration")
+                      or MIN_DURATION.get(s.get("kind") or "list", 5.0)),
                 float(s.get("duration") or 0) + SEGMENT_TAIL)
             for s in segs]
 

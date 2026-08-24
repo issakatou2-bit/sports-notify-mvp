@@ -128,6 +128,28 @@ def mentions(text, names_en):
     return False
 
 
+def spotv(key):
+    """SPOTV NOWがYouTubeにMLBのハイライトを出しているか。
+
+    出しているなら、そのコメント欄は日本語になる。翻訳が要らない代わりに、
+    「現地がどう見たか」ではなくなる。使えるかどうかとは別に、
+    どういう性質のものかを見ておきたい。search は100ユニット使うが、
+    1日の割り当て10,000に対しては1%で、一度きりの調べもの。
+    """
+    r = requests.get(API + "/search",
+                     params={"key": key, "part": "snippet", "q": "SPOTV NOW MLB",
+                             "type": "video", "maxResults": 10,
+                             "order": "date"}, timeout=25)
+    if r.status_code != 200:
+        return []
+    out = []
+    for it in r.json().get("items", []):
+        sn = it.get("snippet") or {}
+        out.append((sn.get("channelTitle", ""), sn.get("title", "")[:60],
+                    (it.get("id") or {}).get("videoId", "")))
+    return out
+
+
 def main():
     key = os.environ.get("YOUTUBE_API_KEY")
     if not key:
@@ -217,6 +239,21 @@ def main():
     out()
     out("FLOOR=%d 以上で、ハイライトも見つかった日: **%d / %d**"
         % (FLOOR, len(checked), len(rows)))
+    out()
+    out("### SPOTV NOW は出しているか")
+    out()
+    sp = spotv(key)
+    if not sp:
+        out("見つかりませんでした。")
+    else:
+        ids = [v for _, _, v in sp if v]
+        st2 = stats(key, ids)
+        out("| チャンネル | 題 | 再生 | コメント |")
+        out("|---|---|---:|---:|")
+        for ch, ti, vid in sp:
+            v, c = st2.get(vid, (0, 0))
+            out("| %s | %s | %s | %s |" % (ch, ti.replace("|", " "),
+                                           format(v, ","), format(c, ",")))
     return 0
 
 
