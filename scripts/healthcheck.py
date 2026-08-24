@@ -228,6 +228,19 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
     return lines, missing, skipped
 
 
+def _today_jst(iso: str) -> bool:
+    """その時刻は今日(JST)か。読めなければ True(判断しない)。"""
+    if not iso:
+        return True
+    try:
+        t = datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
+    except ValueError:
+        return True
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=timezone.utc)
+    return t.astimezone(JST).date() == datetime.now(JST).date()
+
+
 def check_data() -> tuple:
     lines, stale = [], 0
     for path, label in DATA_FILES:
@@ -236,12 +249,21 @@ def check_data() -> tuple:
             stale += 1
             lines.append(f"| {label} | **ファイルが無い** | |")
             continue
-        h = hours_since(d.get("updated_at") or d.get("generated_at"))
+        stamp = d.get("updated_at") or d.get("generated_at")
+        h = hours_since(stamp)
         if h is None:
             lines.append(f"| {label} | 時刻が読めない | |")
         elif h > FRESH_HOURS:
             stale += 1
             lines.append(f"| {label} | **{h:.0f}時間前** | 古い |")
+        elif not _today_jst(stamp):
+            # 30時間の幅は、前日の同じ時刻(27時間前)を通してしまう。
+            # 実際 8/24 の 17:30 は 8/23 のコメントで作られ、題だけ
+            # 日付が変わっていた。日をまたいだ材料は、時間で見ても
+            # 引っかからない。
+            stale += 1
+            lines.append(f"| {label} | **前日のまま**({h:.0f}時間前) | "
+                         f"今日の分が取れていません |")
         else:
             lines.append(f"| {label} | {h:.0f}時間前 | |")
     return lines, stale

@@ -37,7 +37,7 @@ import pathlib
 import re
 import sys
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -368,8 +368,21 @@ def load(path: str = "data/local_voices.json", max_age_hours: int = 30) -> dict:
         updated = datetime.fromisoformat(data.get("updated_at", ""))
     except (json.JSONDecodeError, OSError, ValueError):
         return {}
-    if (datetime.now(timezone.utc) - updated).total_seconds() / 3600 > max_age_hours:
+    age = (datetime.now(timezone.utc) - updated).total_seconds() / 3600
+    if age > max_age_hours:
         print("[info] 現地の声のデータが古いため使いません")
+        return {}
+
+    # 前日のコメントに今日の日付を付けて出さない。
+    #
+    # 8/24の17:30は、8/23と同じ試合・同じ返信件数のまま題だけ日付が
+    # 変わっていた。取得に失敗した日に、前日のファイルがそのまま
+    # 使われたため。30時間という幅は、前日の同じ時刻(27時間前)を
+    # 通してしまう。時間ではなく、日で見る。
+    jst = timezone(timedelta(hours=9))
+    if updated.astimezone(jst).date() != datetime.now(jst).date():
+        print(f"[info] 現地の声は{updated.astimezone(jst).date()}のものです。"
+              "今日の分が取れていないので使いません")
         return {}
     return data
 
