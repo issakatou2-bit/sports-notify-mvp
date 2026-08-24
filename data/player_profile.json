@@ -1,121 +1,111 @@
 {
-  "generated_at": "2026-08-23T06:00:58.593566+00:00",
-  "date_jst": "2026-08-23",
-  "name": "Randy Arozarena",
-  "player_id": "668227",
-  "team": "マリナーズ",
+  "generated_at": "2026-08-24T06:01:01.264679+00:00",
+  "date_jst": "2026-08-24",
+  "name": "Fernando Tatis Jr.",
+  "player_id": "665487",
+  "team": "パドレス",
   "group": "hitting",
-  "why": "2026-08-23のMLBで最も活躍",
-  "headline": "4打数3安打　2本塁打　3打点　1四球",
-  "score": 176,
+  "why": "2026-08-24のMLBで最も活躍",
+  "headline": "5打数4安打　2本塁打　4打点　1盗塁",
+  "score": 187,
   "bio": {
-    "name_en": "Randy Arozarena",
-    "age": 31,
-    "birth_city": "Havana",
+    "name_en": "Fernando Tatis Jr.",
+    "age": 27,
+    "birth_city": "San Pedro De Macoris",
     "birth_state": null,
-    "birth_country": "Cuba",
-    "birth_date": "1995-02-28",
-    "debut": "2019-08-14",
+    "birth_country": "Dominican Republic",
+    "birth_date": "1999-01-02",
+    "debut": "2019-03-28",
     "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "56",
+    "number": "23",
     "position": "Outfielder",
-    "nickname": null,
-    "height": "5' 10\"",
-    "weight": 185
+    "nickname": "El Nino",
+    "height": "6' 3\"",
+    "weight": 217
   },
   "teams": [
     {
-      "team": "カージナルス",
+      "team": "パドレス",
       "from": 2019,
-      "to": 2019
-    },
-    {
-      "team": "レイズ",
-      "from": 2020,
-      "to": 2024
-    },
-    {
-      "team": "マリナーズ",
-      "from": 2024,
       "to": 2026
     }
   ],
   "career": {
-    "games": 923,
-    "avg": ".254",
-    "hr": 137,
-    "rbi": 447,
-    "ops": ".785",
-    "sb": 151,
-    "hits": 854
+    "games": 800,
+    "avg": ".279",
+    "hr": 169,
+    "rbi": 460,
+    "ops": ".859",
+    "sb": 153,
+    "hits": 866
   },
   "this_season": {
-    "games": 122,
-    "avg": ".275",
-    "hr": 19,
-    "rbi": 57,
-    "ops": ".832",
-    "sb": 20,
-    "hits": 125
+    "games": 129,
+    "avg": ".290",
+    "hr": 17,
+    "rbi": 67,
+    "ops": ".814",
+    "sb": 29,
+    "hits": 146
   },
   "last_season": {
-    "games": 160,
-    "avg": ".238",
-    "hr": 27,
-    "rbi": 76,
-    "ops": ".760",
-    "sb": 31,
-    "hits": 146
+    "games": 155,
+    "avg": ".268",
+    "hr": 25,
+    "rbi": 71,
+    "ops": ".814",
+    "sb": 32,
+    "hits": 159
   },
   "recent": [
     {
+      "date": "2026-08-23",
+      "line": "5打数4安打 2本塁打 4打点",
+      "opponent": "Minnesota Twins"
+    },
+    {
       "date": "2026-08-22",
-      "line": "4打数3安打 2本塁打 3打点",
-      "opponent": "Chicago Cubs"
+      "line": "5打数2安打 1打点",
+      "opponent": "Minnesota Twins"
     },
     {
       "date": "2026-08-21",
-      "line": "5打数1安打 1打点",
-      "opponent": "Chicago Cubs"
-    },
-    {
-      "date": "2026-08-20",
-      "line": "3打数0安打",
-      "opponent": "Milwaukee Brewers"
+      "line": "4打数3安打 1打点",
+      "opponent": "Minnesota Twins"
     },
     {
       "date": "2026-08-19",
-      "line": "4打数1安打",
-      "opponent": "Milwaukee Brewers"
+      "line": "3打数1安打 1打点",
+      "opponent": "New York Mets"
     },
     {
       "date": "2026-08-18",
-      "line": "4打数0安打",
-      "opponent": "Milwaukee Brewers"
+      "line": "5打数2安打 2本塁打 3打点",
+      "opponent": "New York Mets"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "AL All-Star"
+      "season": "2025",
+      "name": "Padres MVP"
     },
     {
       "season": "2025",
-      "name": "AL All-Star"
+      "name": "Rawlings NL Gold Glove"
     },
     {
-      "season": "2023",
-      "name": "AL All-Star"
+      "season": "2025",
+      "name": "NL All-Star"
     },
     {
-      "season": "2023",
-      "name": "World Baseball Classic Pool C MVP"
+      "season": "2025",
+      "name": "NL Player of the Week"
     },
     {
-      "season": "2021",
-      "name": "Jackie Robinson AL Rookie of the Year"
+      "season": "2024",
+      "name": "NL All-Star"
     }
   ],
   "quotes": []

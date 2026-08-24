@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-23T06:01:44.907716+00:00",
+  "updated_at": "2026-08-24T06:01:58.071051+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -18,23 +18,39 @@
       "name_en": "Los Angeles Dodgers",
       "mentions": 4,
       "tone": "好調",
-      "gist": "Kyle Tucker、Skubalらが活躍しローテーション"
+      "gist": "ドジャースが6連勝で首位を維持"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "マリナーズが1週間で最悪の敗北を2度経験"
     },
     {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
       "mentions": 3,
-      "tone": "話題",
-      "gist": "Abreuが0-5で4三振もプレイヤーオブザゲーム"
+      "tone": "好調",
+      "gist": "レッドソックスがフェンウェイで調子を戻す"
     },
     {
-      "team_id": "137",
-      "name": "ジャイアンツ",
-      "name_en": "San Francisco Giants",
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
       "mentions": 3,
-      "tone": "好調",
-      "gist": "Abreuがサヨナラで勝利、レッドソックス逆転"
+      "tone": "話題",
+      "gist": "カブスとブルージェイズが2027年リトルリーグクラシック対戦"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ブルージェイズとカブスが2027年リトルリーグクラシック対戦"
     },
     {
       "team_id": "145",
@@ -42,15 +58,15 @@
       "name_en": "Chicago White Sox",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ファンのファインプレーとHR記念での逸失物回収"
+      "gist": "ホワイトソックスのケイが患者の帽子にサイン"
     },
     {
-      "team_id": "134",
-      "name": "パイレーツ",
-      "name_en": "Pittsburgh Pirates",
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "Skubalが11奪三振も初回3失点で失敗"
+      "tone": "不振",
+      "gist": "ロッキーズがガーディアンズに掃討される"
     },
     {
       "team_id": "147",
@@ -58,23 +74,7 @@
       "name_en": "New York Yankees",
       "mentions": 2,
       "tone": "話題",
-      "gist": "Ceaseのノーヒット未遂でヤンキース敗北"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "Jose Ramirezがフランチャイズ歴代5位に"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "Padresが5月24日以来10ゲーム以上"
+      "gist": "ヤンキースとレッドソックスの対戦が今週の注目試合"
     }
   ],
   "players": [
