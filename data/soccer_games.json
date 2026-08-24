@@ -1,383 +1,20 @@
 {
-  "generated_at": "2026-08-23T09:53:53.429605+00:00",
+  "generated_at": "2026-08-24T09:53:53.374622+00:00",
   "games": [
     {
-      "game_id": "559719",
-      "league": "リーグ・アン",
-      "home_team_id": "FL1-533",
-      "away_team_id": "FL1-548",
-      "home_team_name": "ル・アーブル",
-      "away_team_name": "モナコ",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "ル・アーブル vs モナコ",
-      "abbr_matchup": null,
-      "start_time_jst": "08/24 00:15",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [
-        {
-          "name": "瀬古歩夢",
-          "context": "所属チームの試合"
-        },
-        {
-          "name": "中村草太",
-          "context": "所属チームの試合"
-        },
-        {
-          "name": "水多海斗",
-          "context": "所属チームの試合"
-        },
-        {
-          "name": "南野拓実",
-          "context": "所属チームの試合"
-        }
-      ],
-      "jp_players": [
-        "瀬古歩夢",
-        "中村草太",
-        "水多海斗",
-        "南野拓実"
-      ],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": true,
-      "away_has_jp": true,
-      "score": 6,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "jp_team",
-          "text": "ル・アーブルには瀬古歩夢・中村草太・水多海斗が所属",
-          "weight": 4
-        },
-        {
-          "tag": "jp_team",
-          "text": "モナコには南野拓実が所属",
-          "weight": 2
-        },
-        {
-          "tag": "quality",
-          "text": "昨季14位と7位の対戦",
-          "weight": 0
-        }
-      ],
-      "log_notes": [],
-      "ai_summary": "リーグ・アンの開幕戦を飾るこの試合は、昨季7位のモナコと昨季14位のル・アーブルが激突する一戦である。両チームともシーズンの滑り出しを左右する重要な試合となる中、ル・アーブルには瀬古歩夢、中村草太、水多海斗という【3人の日本人選手】が、モナコには南野拓実が所属しており、日本人選手の活躍がこの試合の見どころとなる。開幕戦という限られたチャンスの中で、各選手がどのようなパフォーマンスを見せるかに注目したい。",
-      "notification_hook": "昨季7位モナコ・南野拓実と昨季14位ル・アーブル・瀬古歩夢ら日本人3選手の開幕戦対決。"
-    },
-    {
-      "game_id": "560548",
-      "league": "プレミアリーグ",
-      "home_team_id": "PL-65",
-      "away_team_id": "PL-1044",
-      "home_team_name": "マンチェスター・シティ",
-      "away_team_name": "ボーンマス",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "マンチェスター・シティ vs ボーンマス",
-      "abbr_matchup": null,
-      "start_time_jst": "08/23 22:00",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 4,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "マンチェスター・シティ の試合",
-          "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "昨季2位のマンチェスター・シティと6位のボーンマス",
-          "weight": 3
-        }
-      ],
-      "log_notes": [],
-      "ai_summary": "昨季2位の実績を持つマンチェスター・シティが、【昨季6位のボーンマス】を迎える一戦である。プレミアリーグの総当たり戦において、上位に位置するチームの現在地を測るうえで重要な試合となる。シティの攻撃陣がボーンマスの守備にどう対応するのか、そしてボーンマスが上位チームとの対戦でどの程度の競争力を発揮できるのかに注目したい。",
-      "notification_hook": "昨季2位シティ対昨季6位ボーンマス、プレミアリーグ開幕戦の力関係"
-    },
-    {
-      "game_id": "564646",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-78",
-      "away_team_id": "PD-94",
-      "home_team_name": "アトレティコ・マドリード",
-      "away_team_name": "ビジャレアル",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "アトレティコ・マドリード vs ビジャレアル",
-      "abbr_matchup": null,
-      "start_time_jst": "08/24 00:00",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 4,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "アトレティコ・マドリード の試合",
-          "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "昨季4位のアトレティコ・マドリードと3位のビジャレアル",
-          "weight": 3
-        }
-      ],
-      "log_notes": [],
-      "ai_summary": "昨季ラ・リーガで【4位と3位の上位チーム同士】が対戦するこの一戦は、新シーズンの実力を測る重要な指標となる。共に前年から高い成績を維持するアトレティコ・マドリードとビジャレアルが、シーズン序盤からどの程度の力を発揮できているか、両チームの仕上がり具合を直接比較できる機会である。守備を重視する伝統を持つアトレティコ・マドリードが、どのようなビルドアップでビジャレアルの組織的な守備に立ち向かうか注視したい。",
-      "notification_hook": "昨季の上位チーム対決、アトレティコとビジャレアルの真の力はいかに。"
-    },
-    {
-      "game_id": "559713",
-      "league": "リーグ・アン",
-      "home_team_id": "FL1-524",
-      "away_team_id": "FL1-529",
-      "home_team_name": "パリ・サンジェルマン",
-      "away_team_name": "レンヌ",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "パリ・サンジェルマン vs レンヌ",
-      "abbr_matchup": null,
-      "start_time_jst": "08/24 03:45",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 4,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "パリ・サンジェルマン の試合",
-          "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "昨季1位のパリ・サンジェルマンと6位のレンヌ",
-          "weight": 3
-        }
-      ]
-    },
-    {
-      "game_id": "560549",
-      "league": "プレミアリーグ",
-      "home_team_id": "PL-397",
-      "away_team_id": "PL-58",
-      "home_team_name": "ブライトン",
-      "away_team_name": "アストン・ヴィラ",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "ブライトン vs アストン・ヴィラ",
-      "abbr_matchup": null,
-      "start_time_jst": "08/23 22:00",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [
-        {
-          "name": "三笘薫",
-          "context": "所属チームの試合"
-        }
-      ],
-      "jp_players": [
-        "三笘薫"
-      ],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": true,
-      "away_has_jp": false,
-      "score": 3,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "jp_team",
-          "text": "ブライトンには三笘薫が所属",
-          "weight": 2
-        },
-        {
-          "tag": "quality",
-          "text": "昨季8位と4位の対戦",
-          "weight": 1
-        }
-      ]
-    },
-    {
-      "game_id": "560550",
-      "league": "プレミアリーグ",
-      "home_team_id": "PL-67",
-      "away_team_id": "PL-64",
-      "home_team_name": "ニューカッスル",
-      "away_team_name": "リバプール",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "ニューカッスル vs リバプール",
-      "abbr_matchup": null,
-      "start_time_jst": "08/24 00:30",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [
-        {
-          "name": "遠藤航",
-          "context": "所属チームの試合"
-        }
-      ],
-      "jp_players": [
-        "遠藤航"
-      ],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": true,
-      "score": 3,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "jp_team",
-          "text": "リバプールには遠藤航が所属",
-          "weight": 2
-        },
-        {
-          "tag": "quality",
-          "text": "リバプール の試合",
-          "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "昨季12位と5位の対戦",
-          "weight": 0
-        }
-      ]
-    },
-    {
-      "game_id": "558635",
+      "game_id": "558630",
       "league": "セリエA",
-      "home_team_id": "SA-470",
-      "away_team_id": "SA-109",
-      "home_team_name": "フロジノーネ",
-      "away_team_name": "ユベントス",
+      "home_team_id": "SA-103",
+      "away_team_id": "SA-110",
+      "home_team_name": "ボローニャ",
+      "away_team_name": "ラツィオ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "フロジノーネ vs ユベントス",
+      "matchup": "ラツィオ vs ボローニャ",
       "abbr_matchup": null,
-      "start_time_jst": "08/24 01:30",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 3,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "ユベントス の試合",
-          "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "昨季6位のユベントス",
-          "weight": 2
-        }
-      ]
-    },
-    {
-      "game_id": "558634",
-      "league": "セリエA",
-      "home_team_id": "SA-586",
-      "away_team_id": "SA-98",
-      "home_team_name": "トリノ",
-      "away_team_name": "ACミラン",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "トリノ vs ACミラン",
-      "abbr_matchup": null,
-      "start_time_jst": "08/24 03:45",
+      "start_time_jst": "08/25 01:30",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -394,34 +31,32 @@
       "away_has_jp": false,
       "score": 1,
       "game_type": "R",
-      "is_notable": false,
+      "is_notable": true,
       "reasons": [
         {
           "tag": "quality",
-          "text": "ACミラン の試合",
+          "text": "昨季8位と9位の対戦",
           "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "昨季13位と5位の対戦",
-          "weight": 0
         }
-      ]
+      ],
+      "log_notes": [],
+      "ai_summary": "昨季セリエAで8位と9位の成績を残したラツィオとボローニャが対戦する。セリエAは全20チームによる総当たり戦で、シーズンを通じた勝ち点の積み重ねが最終順位を左右する競技環境である。【昨季上位8チーム同士の激突】は、両チームが前季の実績を今季にどう繋げるかを占う重要な指標となる。攻撃と守備の両面で、前季の実力がどの程度維持されているのかに注目したい。",
+      "notification_hook": "昨季8位ラツィオ vs 昨季9位ボローニャ、前季上位チーム同士の開幕戦"
     },
     {
-      "game_id": "564642",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-285",
-      "away_team_id": "PD-81",
-      "home_team_name": "エルチェ",
-      "away_team_name": "バルセロナ",
+      "game_id": "560551",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-63",
+      "away_team_id": "PL-61",
+      "home_team_name": "フラム",
+      "away_team_name": "チェルシー",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "エルチェ vs バルセロナ",
+      "matchup": "チェルシー vs フラム",
       "abbr_matchup": null,
-      "start_time_jst": "08/24 04:30",
+      "start_time_jst": "08/25 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -438,34 +73,79 @@
       "away_has_jp": false,
       "score": 1,
       "game_type": "R",
-      "is_notable": false,
+      "is_notable": true,
       "reasons": [
         {
           "tag": "quality",
-          "text": "バルセロナ の試合",
+          "text": "チェルシー の試合",
           "weight": 1
         },
         {
           "tag": "quality",
-          "text": "昨季13位と1位の対戦",
+          "text": "昨季11位と10位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "log_notes": [],
+      "ai_summary": "プレミアリーグ開幕直後の重要な一戦として、昨季10位のフラムと昨季11位のチェルシーが対戦する。両チームとも前シーズンのリーグ下位グループからのスタートであり、シーズン全体を見据えた序盤戦での勝利がチームの勢いに大きく影響する。38試合の総当たり戦で得点できる勝ち点(勝利で3点、引き分けで1点)の積み重ねが順位を大きく左右するため、この時期の結果は重要性を増す。チェルシーの攻撃陣がどのような機動力を発揮し、フラムの守備がそれにどう対応するかに注目したい。",
+      "notification_hook": "昨季10位と11位のプレミアリーグ勢が開幕直後の貴重な3点をめぐって激突。"
     },
     {
-      "game_id": "559717",
-      "league": "リーグ・アン",
-      "home_team_id": "FL1-532",
-      "away_team_id": "FL1-521",
-      "home_team_name": "アンジェ",
-      "away_team_name": "リール",
+      "game_id": "564639",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-79",
+      "away_team_id": "PD-88",
+      "home_team_name": "オサスナ",
+      "away_team_name": "レバンテ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "アンジェ vs リール",
+      "matchup": "レバンテ vs オサスナ",
       "abbr_matchup": null,
-      "start_time_jst": "08/23 22:00",
+      "start_time_jst": "08/25 02:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "昨季16位と18位の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ラ・リーガの総当たり戦で、昨季の下位争いを経験した両チームが対戦する。【昨季16位のレバンテと18位のオサスナ】という、前シーズンに厳しい環境に置かれたチーム同士の一戦は、新たなシーズンでの立て直しが進んでいるかを測る指標となる。両チームがどのような戦術と構成で臨み、攻防のバランスがどのように機能するかに注目したい。",
+      "notification_hook": "昨季苦しんだレバンテとオサスナ、新シーズンの再出発を占う対戦。"
+    },
+    {
+      "game_id": "558638",
+      "league": "セリエA",
+      "home_team_id": "SA-100",
+      "away_team_id": "SA-99",
+      "home_team_name": "ローマ",
+      "away_team_name": "フィオレンティーナ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "フィオレンティーナ vs ローマ",
+      "abbr_matchup": null,
+      "start_time_jst": "08/25 03:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -486,25 +166,25 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "昨季13位と3位の対戦",
+          "text": "昨季3位と15位の対戦",
           "weight": 0
         }
       ]
     },
     {
-      "game_id": "558637",
-      "league": "セリエA",
-      "home_team_id": "SA-454",
-      "away_team_id": "SA-5890",
-      "home_team_name": "ベネチア",
-      "away_team_name": "レッチェ",
+      "game_id": "564640",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-84",
+      "away_team_id": "PD-560",
+      "home_team_name": "マラガ",
+      "away_team_name": "デポルティボ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "ベネチア vs レッチェ",
+      "matchup": "デポルティボ vs マラガ",
       "abbr_matchup": null,
-      "start_time_jst": "08/24 01:30",
+      "start_time_jst": "08/25 04:30",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -523,83 +203,11 @@
       "game_type": "R",
       "is_notable": false,
       "reasons": []
-    },
-    {
-      "game_id": "564644",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-82",
-      "away_team_id": "PD-5335",
-      "home_team_name": "ヘタフェ",
-      "away_team_name": "ラシン・サンタンデール",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "ヘタフェ vs ラシン・サンタンデール",
-      "abbr_matchup": null,
-      "start_time_jst": "08/24 02:30",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": []
-    },
-    {
-      "game_id": "558633",
-      "league": "セリエA",
-      "home_team_id": "SA-102",
-      "away_team_id": "SA-471",
-      "home_team_name": "アタランタ",
-      "away_team_name": "サッスオーロ",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "アタランタ vs サッスオーロ",
-      "abbr_matchup": null,
-      "start_time_jst": "08/24 03:45",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "昨季7位と11位の対戦",
-          "weight": 0
-        }
-      ]
     }
   ],
   "ai_status": {
     "targets": 3,
     "succeeded": 3,
-    "cost_usd": 0.01039
+    "cost_usd": 0.0102
   }
 }
