@@ -338,7 +338,12 @@
           "text": "昨季12位と5位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 2,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "558635",
@@ -382,7 +387,12 @@
           "text": "昨季6位のユベントス",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 1,
+        "winner": "away"
+      }
     },
     {
       "game_id": "558637",
@@ -415,7 +425,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "564644",
@@ -448,7 +463,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823507",
