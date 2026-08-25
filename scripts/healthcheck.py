@@ -335,6 +335,10 @@ def check_history() -> tuple:
     return f"| 週間ランキングの材料 | {n}日分 | あと{7 - n}日 |", 0
 
 
+# 何日前まで許すか。取得は毎朝走るので、2日空いたら止まっている。
+ANALYTICS_MAX_AGE_DAYS = 2
+
+
 def check_analytics() -> tuple:
     """
     直近に取れている数字。fetch_analytics.py が残したものを読むだけ。
@@ -353,6 +357,24 @@ def check_analytics() -> tuple:
         return f"| 動画ごとの数字 | {latest} 時点 | 0本 |", 0
     pcts = [v.get("averageViewPercentage") or 0 for v in vids]
     avg = sum(pcts) / len(pcts)
+
+    # 何日前のものかを見る。
+    #
+    # これを見ていなかったため、6日間止まったまま毎朝
+    # 「2026-08-19 時点 / 50本 / 平均維持率 39.2%」と通過し続けていた。
+    # 数字が出ているので、止まっていることに気づけない。
+    # しかも失敗した日も「analytics: 12345」という名前でコミットされる
+    # (中身は別のファイルだけ)ので、履歴を見ても動いているように見える。
+    #
+    # 維持率は、動画の中身を変えたときに効いたかどうかを見る唯一の材料で、
+    # 再生数では代わりにならない。止まっていることは知らせる必要がある。
+    today = datetime.now(JST).date()
+    stale = (today - datetime.strptime(latest, "%Y-%m-%d").date()).days
+    if stale > ANALYTICS_MAX_AGE_DAYS:
+        return (f"| 動画ごとの数字 | **{stale}日前で止まっている** | "
+                f"{latest}以降が取れていません。"
+                f"healthcheck の実行ページで fetch_analytics の"
+                f"行を見てください |", 1)
     return (f"| 動画ごとの数字 | {latest} 時点 / {len(vids)}本 | "
             f"平均維持率 {avg:.1f}% |", 0)
 
