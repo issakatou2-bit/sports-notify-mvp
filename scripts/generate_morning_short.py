@@ -83,6 +83,19 @@ MODE_KIND = {
 # 4件読んで3件しか映らない、という食い違いが静かに生まれる。
 VOICES_SHOWN = 3
 
+# 現地の報道で読む件数。
+#
+# 見出し3件と番記者2件で、読み上げが約500字・70秒になっていた。
+# この枠は9本の実測で視聴継続16.4%と全枠で最も低く、しかも
+# 最も長い。枠の中で短い回と長い回を比べても差が出なかったので、
+# 数十秒の削りでは足りない。件数から減らす。
+#
+# 画面に出す数もここから取る。読み上げと画面がずれると、
+# 「読まれていない言葉が映り、映っていない言葉が読まれる」状態になる。
+# どちらが本当なのか、見ている側には確かめようがない。
+HEADLINES_SHOWN = 2
+REPORTERS_SHOWN = 1
+
 # 「現地の声」だけは背景色を変える。
 # 他の画面がAPIの数字だけで作られているのに対し、ここは翻訳を通した
 # 誰かの感想なので、見た目で切り分けて、混ざって見えないようにする。
@@ -745,9 +758,9 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         used = (segments[0].get("meta") or {}).get("used_headline")
         rest = [h for i, h in enumerate(heads) if i != used]
         parts = ["現地の見出しです。"]
-        for h in rest[:3]:
+        for h in rest[:HEADLINES_SHOWN]:
             body = h.get("jp") or h.get("title", "")
-            parts.append(f"{h.get('source', '')}。{body[:80]}。")
+            parts.append(f"{h.get('source', '')}。{body[:70]}。")
         segments.append({"kind": "headlines", "text": "".join(parts),
                          "meta": {}})
 
@@ -759,7 +772,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     if reporters:
         parts = ["現地の番記者の投稿です。翻訳したもので、"
                  "コレスポの見解ではありません。"]
-        for r in reporters[:2]:
+        for r in reporters[:REPORTERS_SHOWN]:
             body = r.get("jp") or r.get("text", "")
             # 訳が付いていない場合は原文が入る。原文は長いので、
             # 読み上げが尺を食いすぎないよう頭で切る。
@@ -1466,7 +1479,7 @@ def render_reporters(p, posts):
     d.text((74, 278), "現地メディアの記者の投稿を翻訳", font=font(32), fill=DIM)
 
     y = 380
-    for i, r in enumerate(posts[:2]):
+    for i, r in enumerate(posts[:REPORTERS_SHOWN]):
         appear = 0.06 + i * 0.10
         if p < appear:
             continue
@@ -1510,7 +1523,7 @@ def render_headlines(p, heads):
     d.text((74, 278), "現地メディアの見出しを翻訳", font=font(32), fill=DIM)
 
     y = 380
-    for i, h in enumerate(heads[:3]):
+    for i, h in enumerate(heads[:HEADLINES_SHOWN]):
         appear = 0.06 + i * 0.08
         if p < appear:
             continue
@@ -1794,6 +1807,71 @@ def render_outro(p, mode: str = ""):
 # 尺と音声(週次・答え合わせと同じ考え方)
 # ---------------------------------------------------------------------------
 
+# 1本の上限。ここを超えたぶんは、下の順で画面ごと落とす。
+#
+# 102本の実測で、長さと視聴継続がはっきり並んだ:
+#
+#   〜35秒   31.8%(n=6)     45-55秒  27.5%(n=10)
+#   35-45秒  39.2%(n=19)    55-70秒  23.6%(n=16)
+#                            70秒〜   22.8%(n=14)
+#
+# 枠の中で短い回と長い回を比べても、7枠のうち5枠で短いほうが上だった
+# (残る2つは資産動画と、まだ6本しかないコメント欄)。
+# 枠が違うから差が出ているのではなく、長さそのものが効いている。
+#
+# いちばん悪い3枠が、そのままいちばん長い3枠でもある。
+# 現地の報道70秒16.4%、今日の1人76秒20.7%、明日の注目72秒23.7%。
+# いちばん良い日本人選手は37秒で50.6%。
+#
+# 上限は55秒。最良の帯(35-45秒)そのものではなく、その少し上に置く。
+# いきなり半分にすると、何が効いたのか分からなくなる。
+MAX_SECONDS = 55.0
+
+# 超過をどこまで見逃すか。
+#
+# これが無いと削りすぎる。64秒の回で、55秒に収めようとして
+# スコアボード(8秒)を落とし、それでも56秒なので声(26秒)まで落として
+# 30秒になった。9秒はみ出しているのを直すのに34秒捨てている。
+# 画面ごとにしか落とせない以上、ぴったりには収まらない。
+# 1画面ぶんの端数は許して、次を巻き添えにしない。
+BUDGET_GRACE = 6.0
+
+# 予算を超えたときに落とす順。前にあるものから落とす。
+# 冒頭と締めは入れない。冒頭は最も見られる画面で、
+# 締めは他の枠への案内なので、削ると回遊が止まる。
+DROP_ORDER = ("talk", "headlines", "p_awards", "p_recent", "p_season",
+              "praise", "reporters", "scoreboard", "voices", "buzz")
+
+
+def fit_budget(segs, durations, limit: float = MAX_SECONDS):
+    """予算に収まるまで、優先度の低い画面を落とす。
+
+    音声ができたあとにしか本当の長さは分からない。字数から見積もろうと
+    したが、枠によって4.4字/秒から8.6字/秒まで開いていて当てにならない
+    (短い画面は下限側で決まるため)。実測を使う。
+
+    落とすのは画面ごと。1画面の中の読み上げを途中で切ると、
+    文の途中で次へ行くか、逆に意味が反転する
+    (「…わけではない」を切ると逆のことを言う)。
+    """
+    keep = list(range(len(segs)))
+    total = sum(durations)
+    dropped = []
+    for kind in DROP_ORDER:
+        if total <= limit + BUDGET_GRACE:
+            break
+        for i in list(keep):
+            if (segs[i].get("kind") or "") == kind:
+                keep.remove(i)
+                total -= durations[i]
+                dropped.append(kind)
+                break
+    if dropped:
+        print(f"[info] {limit:.0f}秒に収めるため{len(dropped)}画面を外しました: "
+              f"{'、'.join(dropped)} → {total:.0f}秒")
+    return keep, dropped
+
+
 def plan_durations(segs):
     """各画面を何秒置くか。読み上げの長さと、目で追う量の大きいほう。
 
@@ -1896,6 +1974,22 @@ def build_player_video(args):
     video_path = out_dir / "collespo_morning_player.mp4"
 
     durations = plan_durations(segs)
+
+    # 長すぎる回を、ここで削る。
+    #
+    # 音声ができたあとなので、本当の長さが分かる。捨てる音声は
+    # VOICEVOXがローカルで作ったもので、費用はかからない。
+    keep, dropped = fit_budget(segs, durations)
+    if dropped:
+        segs = [segs[i] for i in keep]
+        durations = [durations[i] for i in keep]
+        summary = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary:
+            with open(summary, "a", encoding="utf-8") as f:
+                f.write(f"{args.mode}: {MAX_SECONDS:.0f}秒に収めるため"
+                        f"{'、'.join(dropped)}を外しました"
+                        f"(残り{sum(durations):.0f}秒){chr(10)}")
+
     audio_path = build_narration_track(segs, durations, out_dir)
     if args.require_audio and not audio_path:
         print("::error::音声が作れませんでした。無音のまま投稿しないよう、"
