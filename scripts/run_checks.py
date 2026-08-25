@@ -27,6 +27,7 @@
   py -3 scripts/run_checks.py
 """
 
+import ast
 import re
 import pathlib
 import subprocess
@@ -457,6 +458,123 @@ def check_secrets_passed() -> int:
     return bad
 
 
+# 標準で入っているものの名前。3.10以降が持っている一覧をそのまま使う。
+STDLIB = set(getattr(sys, "stdlib_module_names", ())) | {"__future__"}
+
+
+def _third_party(script: str, seen=None) -> set:
+    """その台本が要る、標準で入っていない物の名前。
+
+    自作の取り込み(scripts/ の中にある名前)は、そちらが要る物も
+    数えに行く。probe_jp_highlight は requests を直に使うだけでなく、
+    morning_recap と mlb_buzz も引き込んでいて、そちらも requests に
+    依っている。直の import だけ見ても足りない。
+    """
+    seen = seen if seen is not None else set()
+    if script in seen:
+        return set()
+    seen.add(script)
+    path = ROOT / "scripts" / script
+    if not path.exists():
+        return set()
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+    except SyntaxError:
+        return set()
+    out = set()
+    for node in ast.walk(tree):
+        names = []
+        if isinstance(node, ast.Import):
+            names = [a.name.split(".")[0] for a in node.names]
+        elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+            names = [node.module.split(".")[0]]
+        for n in names:
+            if n in STDLIB:
+                continue
+            if (ROOT / "scripts" / (n + ".py")).exists():
+                out |= _third_party(n + ".py", seen)
+            elif (ROOT / (n + ".py")).exists():
+                continue          # 直下の自作(notability_engine など)
+            else:
+                out.add(n)
+    return out
+
+
+def check_deps_installed() -> int:
+    """
+    ワークフローが起動する台本の必要な物を、そのワークフローが入れているか。
+
+    なぜ要るのか:
+      「新しい材料が取れるか試す」は、最初の2本が urllib だけで
+      書かれていたので pip install の段が無かった。そこへ requests を
+      使う3本目を足したら、import の時点で落ちた。
+
+      厄介なのは出方で、落ちたのが import なので実行前。
+      要約に1行も出ず、artifact も前の2本ぶんだけ残る。
+      「日本人選手のハイライトにコメントが付いていなかった」のか
+      「そもそも動かなかった」のか、見た目で区別が付かない。
+      材料が無いという結論を、間違って持ち帰るところだった。
+
+    見るもの:
+      run: が起動する台本が要る物のうち、その job のどこでも
+      入れていないもの。requirements.txt を読む段があれば、
+      そこに書いてあるものは入っているとみなす。
+    """
+    step("必要な物を入れ忘れていないか")
+    try:
+        import yaml
+    except ImportError:
+        print("[info] pyyaml が無いため飛ばします")
+        return 0
+
+    req = set()
+    rp = ROOT / "scripts" / "requirements.txt"
+    if rp.exists():
+        for line in rp.read_text(encoding="utf-8").splitlines():
+            line = line.split("#")[0].strip()
+            if line:
+                req.add(re.split(r"[<>=\[]", line)[0].strip())
+
+    # 配布名と取り込み名が違うもの
+    ALIAS = {"pillow": "PIL", "google-api-python-client": "googleapiclient",
+             "google-auth": "google", "pyyaml": "yaml",
+             "beautifulsoup4": "bs4"}
+
+    bad = 0
+    for wf in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
+        try:
+            d = yaml.safe_load(wf.read_text(encoding="utf-8")) or {}
+        except yaml.YAMLError:
+            continue
+        for job in (d.get("jobs") or {}).values():
+            runs = [st.get("run") for st in (job.get("steps") or [])
+                    if isinstance(st.get("run"), str)]
+            body = chr(10).join(runs)
+            have = set()
+            for m in re.finditer(r"pip install\s+(.+)", body):
+                arg = m.group(1)
+                if "requirements.txt" in arg:
+                    have |= req
+                else:
+                    have |= set(re.findall(r"[\w.-]+", arg))
+            have |= {ALIAS[h] for h in have if h in ALIAS}
+            for st in (job.get("steps") or []):
+                run = st.get("run")
+                if not isinstance(run, str):
+                    continue
+                for m in re.finditer(r"python\s+(?:-m\s+)?scripts/([\w_]+\.py)",
+                                     run):
+                    for n in sorted(_third_party(m.group(1))):
+                        if n in have or n in {ALIAS.get(x, x) for x in have}:
+                            continue
+                        bad += 1
+                        print(f"NG {wf.name} / {st.get('name', '?')}: "
+                              f"{m.group(1)} が {n} を要るのに"
+                              f"入れる段がありません")
+    print(f"{'ok ' if not bad else 'NG '} 入れ忘れ {bad}件")
+    return bad
+
+
 def check_workflow_links() -> int:
     """
     workflow_run で名前を指しているワークフローが、実際にあるか。
@@ -507,6 +625,7 @@ def main() -> int:
     failed += check_inventory()
     failed += check_commit_list()
     failed += check_secrets_passed()
+    failed += check_deps_installed()
     failed += check_workflow_links()
 
     print()

@@ -20,6 +20,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      # 追加の物が要る。
+      #
+      # 最初の2本は urllib だけで書いてあり、入れる段が無かった。
+      # そこへ requests を使う3本目を足したので、import の時点で
+      # 落ちて、要約に1行も出ないまま終わっていた。
+      # 出力が無いのは「取れなかった」ではなく「動かなかった」だった。
+      - name: Install
+        run: pip install -r scripts/requirements.txt
       - name: Probe
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
