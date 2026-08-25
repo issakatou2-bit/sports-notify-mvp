@@ -67,6 +67,22 @@ SKIP_PATTERNS = [
 WORD = chr(92) + "b"   # 単語境界。書き換えの経路で消えやすいので定数で持つ
 
 
+def note(line: str) -> None:
+    """出なかった理由を実行ページにも出す。
+
+    ここは continue-on-error で走らせている。止めたくないからで、
+    その判断は変えない。ただ黙って抜けると、前の日のファイルが
+    そのまま残り、翌朝の診断は「55時間前・古い」としか言わない。
+    なぜ古いのかはログの奥にしか無く、誰も開かない。
+    実際そうやって3日ぶん止まっていた。
+    """
+    print(line)
+    path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if path:
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(line + chr(10))
+
+
 def jp_mentioned(text: str) -> list:
     """そのコメントに名前が出ている日本人選手。
 
@@ -263,12 +279,14 @@ def translate(client, items: list) -> list:
         "- 前置きや説明は不要"
     )
     resp = client.messages.create(
-        model=MODEL, max_tokens=2500,
+        # 4件の本文と、それぞれの返信3件まで。最大16行を訳す。
+        # 元が220字まで許してあるので、日本語にすると1行200字近くなる
+        # ことがあり、2500では足りない日が出る。上限を上げても
+        # 出力した分しか課金されないので、増やして困らない。
+        model=MODEL, max_tokens=4000,
         messages=[{"role": "user", "content": prompt}],
     )
-    if resp.stop_reason == "max_tokens":
-        print("[warn] 訳が途中で切れたため、この回は使いません", file=sys.stderr)
-        return []
+    cut = resp.stop_reason == "max_tokens"
     text = "".join(b.text for b in resp.content if b.type == "text")
 
     translated = {}
@@ -287,6 +305,18 @@ def translate(client, items: list) -> list:
         tone, ja = pair
         return {"ja": ja,
                 "tone": tone if tone in ("称賛", "批判", "中立") else "中立"}
+
+    # 途中で切れた日は、最後に拾えた1行だけを落とす。
+    #
+    # 以前は切れたら全部捨てていた。だが切れるのは最後の1行で、
+    # そこまでに揃った訳は正しい。丸ごと捨てると、その日は
+    # 「ファンのコメント欄」が1本出ない。1件減るのと0本になるのでは
+    # 落とすものの大きさが違う。
+    if cut and translated:
+        last = max(translated)
+        translated.pop(last, None)
+        note(f"[warn] 訳が{len(flat)}行のうち{last - 1}行で切れました。"
+             f"切れた行だけ落として続けます")
 
     out = [None] * len(items)
     for n, (i, j, _) in enumerate(flat, 1):
@@ -312,21 +342,24 @@ def build(limit: int = MAX_VOICES) -> dict:
         source_name = SOURCE[0]
         source_url = f"https://www.reddit.com/{SOURCE[0]}/"
     if not items:
+        note("**現地の声: コメントもRSSも取れませんでした**")
         return {}
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key or anthropic is None:
-        print("[info] ANTHROPIC_API_KEY未設定のため、翻訳はしません")
+        note("**現地の声: ANTHROPIC_API_KEY が渡っていません**")
         return {}
 
     client = anthropic.Anthropic(api_key=api_key)
     try:
         voices = translate(client, items[:limit])
     except Exception as e:
-        print(f"[warn] 翻訳に失敗しました: {e}", file=sys.stderr)
+        note(f"**現地の声: 翻訳に失敗しました** {type(e).__name__}: "
+             f"{str(e)[:160]}")
         return {}
 
     if not voices:
+        note("**現地の声: 1件も訳せませんでした**")
         return {}
     print(f"[info] 訳せた見出し: {len(voices)}件")
     for v in voices:
@@ -496,7 +529,8 @@ def main():
 
     data = build(limit=args.limit)
     if not data:
-        print("[info] 取得できなかったため、ファイルは更新しません")
+        note("現地の声は更新しません(前日のファイルが残ります)。"
+             "18:00の「ファンのコメント欄」は、鮮度が足りなければ出ません")
         return
 
     out = pathlib.Path(args.out)
