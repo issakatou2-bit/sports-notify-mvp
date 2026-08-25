@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-24T06:01:58.071051+00:00",
+  "updated_at": "2026-08-25T06:01:53.961729+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,74 +13,69 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 4,
-      "tone": "好調",
-      "gist": "ドジャースが6連勝で首位を維持"
-    },
-    {
       "team_id": "136",
       "name": "マリナーズ",
       "name_en": "Seattle Mariners",
-      "mentions": 3,
+      "mentions": 9,
+      "tone": "好調",
+      "gist": "Cal Raleighの活躍でマリナーズが好調。本塁打多数。"
+    },
+    {
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
+      "mentions": 4,
       "tone": "不振",
-      "gist": "マリナーズが1週間で最悪の敗北を2度経験"
+      "gist": "Espada監督が契約更新なし。GM Brown退団。"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "Padres売却で$3.9B。新オーナーが優勝宣言。"
+    },
+    {
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "Pederson選手がチャレンジ失敗後に退場騒動。"
     },
     {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
-      "mentions": 3,
+      "mentions": 2,
       "tone": "好調",
-      "gist": "レッドソックスがフェンウェイで調子を戻す"
+      "gist": "RedSoxが下位打線の活躍で逆転劇。"
     },
     {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "カブスとブルージェイズが2027年リトルリーグクラシック対戦"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "ブルージェイズとカブスが2027年リトルリーグクラシック対戦"
+      "tone": "好調",
+      "gist": "Dodgersが首位陥落。Brewersが1位に浮上。"
     },
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ホワイトソックスのケイが患者の帽子にサイン"
-    },
-    {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
+      "team_id": "108",
+      "name": "エンゼルス",
+      "name_en": "Los Angeles Angels",
       "mentions": 2,
       "tone": "不振",
-      "gist": "ロッキーズがガーディアンズに掃討される"
+      "gist": "Guardians勝利。Angels選手が怪我で欠場。"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ヤンキースとレッドソックスの対戦が今週の注目試合"
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "Hedges本塁打でGuardiansがAngelsを撃破。"
     }
   ],
-  "players": [
-    {
-      "name": "大谷翔平",
-      "mentions": 1
-    }
-  ]
+  "players": []
 }
