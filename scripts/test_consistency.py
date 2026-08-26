@@ -425,8 +425,13 @@ _wf = (ROOT / ".github" / "workflows" / "morning_recap.yml").read_text(
     encoding="utf-8")
 for _k, _mode in (("morning", "players"), ("morning_player", "player"),
                   ("morning_voices", "voices"), ("morning_press", "press")):
+    # 同じ行で見る。以前は「その文字列がファイルのどこかにあるか」
+    # だったので、17:00の枠が2つあるうちの片方だけ動かしても通った。
+    _pat = re.compile(r"^\s*" + re.escape(_mode) + r"\)\s*AT=\"([^\"]*)\"",
+                      re.M)
+    _m = _pat.search(_wf)
     check(f"ワークフローの {_mode} が {_at[_k]}",
-          f'{_mode})' in _wf and f'AT="{_at[_k]}"' in _wf, True)
+          _m.group(1) if _m else "(行が無い)", _at[_k])
 
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

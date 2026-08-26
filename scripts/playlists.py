@@ -28,6 +28,9 @@ import os
 import pathlib
 import sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import post_common  # noqa: E402
+
 try:
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
@@ -46,32 +49,53 @@ SCOPES = [NEEDED]
 VIDEOS_PATH = "data/published_videos.json"
 STORE = "data/playlists.json"
 
+def _at(kind: str) -> str:
+    """その枠の公開時刻の言い回し。一覧から作る。
+
+    ここに時刻を直に書いていたら、3つとも実際と違っていた。
+    現地の報道が「毎日21時」(実際は18:00)、今日の1人が「毎日17時」、
+    ファンのコメント欄が「毎日17時30分」(実際は18:00)。
+    どれもYouTubeの再生リストに出ている、読み手向けの文章。
+
+    枠を動かすたびにここを直しに来るのは無理がある。
+    post_common.DAILY_LINEUP から引く。
+    """
+    for k, _, _, at in post_common.DAILY_LINEUP:
+        if k == kind:
+            h, m = at.split(":")
+            return (f"毎日{int(h)}時に" if m == "00"
+                    else f"毎日{int(h)}時{int(m)}分に")
+    return "毎日"
+
+
 # 種類ごとの再生リスト。説明は「毎日ここに増える」ことが伝わる書き方にする。
 PLAYLISTS = {
     "morning": (
         "日本人選手の成績｜毎日更新",
         "MLBの日本人選手が、その日どれだけ効いたかを勝利貢献スコア順に。"
-        "毎日16時30分に追加しています。計算方法は https://collespo.com/score.html"),
+        + _at("morning") + "追加しています。"
+        "計算方法は https://collespo.com/score.html"),
     "morning_local": (
         "現地での注目度｜毎日更新",
-        "現地でどの試合が見られ、どのチームが語られたかを数字で。毎日18時に追加しています。"),
+        "現地でどの試合が見られ、どのチームが語られたかを数字で。"
+        "毎日追加しています。"),
     "morning_press": (
         "現地メディアの声｜毎日更新",
-        "現地の番記者の投稿と見出しを翻訳して紹介します。毎日21時に追加しています。"),
+        "現地の番記者の投稿と見出しを翻訳して紹介します。" + _at("morning_press") + "追加しています。"),
     "morning_player": (
         "今日の1人｜日本人選手まとめ",
         "MLBの日本人選手を1日1人、通算成績・今季・昨季・直近の試合・"
-        "受賞歴・現地での報じられ方までまとめます。毎日17時に追加しています。"),
+        "受賞歴・現地での報じられ方までまとめます。" + _at("morning_player") + "追加しています。"),
     "morning_voices": (
         "現地のファンは何と言ったか｜毎日更新",
         "その日いちばん見られたMLB公式ハイライトのコメント欄を翻訳して紹介します。"
-        "賛否と高評価の数つき。毎日17時30分に追加しています。"),
+        "賛否と高評価の数つき。" + _at("morning_voices") + "追加しています。"),
     "daily": (
         "明日の注目試合（MLB）｜毎日更新",
-        "翌日のMLBから3試合を、なぜ注目なのかの理由つきで。毎日19時に追加しています。"),
+        "翌日のMLBから3試合を、なぜ注目なのかの理由つきで。" + _at("daily") + "追加しています。"),
     "daily_soccer": (
         "今夜の注目試合（欧州サッカー）｜毎日更新",
-        "その夜の欧州5大リーグとCLから、注目カードを理由つきで。毎日20時に追加しています。"),
+        "その夜の欧州5大リーグとCLから、注目カードを理由つきで。" + _at("daily_soccer") + "追加しています。"),
     "weekly": (
         "週間まとめと答え合わせ",
         "1週間の振り返りと、注目試合に選んだカードが実際どうなったかの確認。毎週日曜。"),
