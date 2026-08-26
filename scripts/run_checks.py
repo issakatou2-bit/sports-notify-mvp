@@ -500,6 +500,60 @@ def _third_party(script: str, seen=None) -> set:
     return out
 
 
+def check_root_imports() -> int:
+    """
+    直下の自作モジュールを使う台本が、そこへの経路を足しているか。
+
+    なぜ要るのか:
+      notability_engine.py はリポジトリ直下にある。だが
+      `python scripts/local_voices.py` で起動すると、Python が
+      経路に入れるのは台本のある scripts/ だけで、直下は入らない。
+      手元で `python -c` から呼ぶと、そちらは作業場所が経路に入るので
+      通ってしまう。手元で通って本番で落ちる。
+
+      実際に起きたこと:
+        jp_mentioned() の中で notability_engine を取り込んでいた。
+        関数の中なので、起動時には落ちない。翻訳が終わって、
+        呼ばれた瞬間に ModuleNotFoundError で止まる。
+        continue-on-error なので回は緑、ファイルは前日のまま。
+        3日間「ファンのコメント欄」が出なかった。
+
+      22本は経路を足していて、抜けていたのは3本だけだった。
+      作法は決まっているのに、1本抜けるだけで枠が1つ止まる。
+
+    見るもの:
+      scripts/ の台本のうち、直下の .py を取り込むのに
+      parent.parent を経路へ足していないもの。
+    """
+    step("直下のモジュールへの経路")
+    roots = {f.stem for f in ROOT.glob("*.py")}
+    bad = 0
+    for f in sorted((ROOT / "scripts").glob("*.py")):
+        src = f.read_text(encoding="utf-8")
+        try:
+            tree = ast.parse(src)
+        except SyntaxError:
+            continue
+        used = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                used |= {a.name.split(".")[0] for a in node.names}
+            elif (isinstance(node, ast.ImportFrom) and node.level == 0
+                    and node.module):
+                used.add(node.module.split(".")[0])
+        need = used & roots
+        if not need:
+            continue
+        if ("parent.parent" in src or "parents[1]" in src
+                or "HERE.parent" in src):
+            continue
+        bad += 1
+        print(f"NG {f.name}: {'、'.join(sorted(need))} を使うのに "
+              f"sys.path へ直下を足していません")
+    print(f"{'ok ' if not bad else 'NG '} 経路の抜け {bad}件")
+    return bad
+
+
 def check_deps_installed() -> int:
     """
     ワークフローが起動する台本の必要な物を、そのワークフローが入れているか。
@@ -625,6 +679,7 @@ def main() -> int:
     failed += check_inventory()
     failed += check_commit_list()
     failed += check_secrets_passed()
+    failed += check_root_imports()
     failed += check_deps_installed()
     failed += check_workflow_links()
 

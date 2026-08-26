@@ -41,6 +41,12 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
+# notability_engine はリポジトリ直下にある。
+# python scripts/local_voices.py で起動すると scripts/ しか経路に入らず、
+# jp_mentioned() の中の取り込みが ModuleNotFoundError になる。
+# 翻訳が終わったあとに落ちるので、API呼び出しごと無駄になる。
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+
 try:
     import anthropic
 except ImportError:

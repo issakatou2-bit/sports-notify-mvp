@@ -17,6 +17,9 @@ sys.path.insert(0, ".")
 
 import notability_engine as ne  # noqa: E402
 
+import pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+
 fails = 0
 
 
