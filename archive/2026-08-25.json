@@ -53,7 +53,12 @@
       ],
       "log_notes": [],
       "ai_summary": "ラ・リーガの開幕戦となるこの一戦は、【昨季9位と5位】という異なる立場のチームが初めて顔を合わせる。バレンシアには日本代表の佐藤龍之介が所属しており、彼のラ・リーガでの活躍がどう映るかが注目される。新シーズンの滑り出しを左右する重要な試合であり、両チームの戦い方から今季の方向性が見えてくる。",
-      "notification_hook": "佐藤龍之介がラ・リーガで躍動するか。開幕戦で実力が試される。"
+      "notification_hook": "佐藤龍之介がラ・リーガで躍動するか。開幕戦で実力が試される。",
+      "final_score": {
+        "home": 0,
+        "away": 1,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823826",
@@ -102,7 +107,12 @@
           "text": "レッドソックスには吉田正尚が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824233",
@@ -157,7 +167,12 @@
           "text": "タイガースは6連敗中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822693",
@@ -211,7 +226,12 @@
           "text": "ロッキーズは7連敗中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823505",
@@ -282,7 +302,12 @@
       },
       "log_notes": [],
       "ai_summary": "ア・リーグ東地区2位のヤンキースと西地区2位のアストロズが、シーズン中盤戦でぶつかる。ヤンキースは【74勝56敗で地区首位との差3.5ゲーム】、アストロズは【地区首位との差わずか0.5ゲーム】に迫る状況だ。ヤンキースは直近10試合で6勝4敗と比較的好調だが、アストロズは2連敗中で4勝6敗と足踏みしている。先発投手はヤンキースのWill Warrenが8勝の実績を携え、アストロズの控え投手Ethan Peckoに対して経験値に勝る一戦となる。右翼が浅く左打者が本塁打を狙いやすいヤンキー・スタジアムでの開催だけに、長打がどう影響するかに注目したい。",
-      "notification_hook": "地区2位同士の激突、アストロズが2連敗脱出なるか。"
+      "notification_hook": "地区2位同士の激突、アストロズが2連敗脱出なるか。",
+      "final_score": {
+        "home": 7,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822773",
@@ -344,7 +369,12 @@
           "text": "ロイヤルズは8連勝中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823585",
@@ -401,7 +431,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824881",
@@ -479,7 +514,12 @@
       },
       "log_notes": [],
       "ai_summary": "各地区首位同士による全米屈指のカード対決である。ドジャースは西地区で2位に9.5ゲーム差をつけて独走中で、現在6連勝中。一方、ブレーブスは東地区首位ながら直近10試合は3勝7敗と足踏み状態にある。先発は、ドジャースのTyler Glasnowが防御率2.72と好調ぶりを見せるのに対し、ブレーブスのBryce Elderは防御率3.92と比較的高めである。【新しい球場での投手戦】がどのような展開になるかが見どころになる。",
-      "notification_hook": "6連勝中ドジャースのGlasnow防御率2.72 vs ブレーブス不調Elderの投げ合い"
+      "notification_hook": "6連勝中ドジャースのGlasnow防御率2.72 vs ブレーブス不調Elderの投げ合い",
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824556",
@@ -541,7 +581,12 @@
           "text": "ホワイトソックスは自地区1位、レンジャーズは自地区1位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 11,
+        "away": 7,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823016",
@@ -582,7 +627,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 13,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823989",
@@ -644,7 +694,12 @@
           "text": "ガーディアンズは5連勝中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "825042",
@@ -719,7 +774,12 @@
         "Clay Holmesは移籍後4登板目"
       ],
       "ai_summary": "カブスはナ・リーグ中地区で【首位との差5.5ゲーム】を追う2位の立場にあり、2連勝で勢いに乗っている。一方、ダイヤモンドバックスは西地区3位と地区内でも厳しい状況にある。直近10試合で両チームが同じ5勝5敗と横並びの中での対戦であり、カブスの先発Clay Holmesは防御率2.49と安定した投球が特徴である。屋根を閉じると打球が伸びにくくなるチェイス・フィールドでの開催となるため、投手力がより重要になる投げ合いがどうなるかに注目したい。",
-      "notification_hook": "首位との差5.5ゲーム、カブス・ホームズの防御率2.49と安定度が試される一戦。"
+      "notification_hook": "首位との差5.5ゲーム、カブス・ホームズの防御率2.49と安定度が試される一戦。",
+      "final_score": {
+        "home": 5,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823259",
@@ -776,7 +836,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 1,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824962",
@@ -825,7 +890,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823098",
@@ -874,7 +944,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823181",
@@ -923,7 +998,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 1,
+        "winner": "home"
+      }
     }
   ],
   "ai_status": {

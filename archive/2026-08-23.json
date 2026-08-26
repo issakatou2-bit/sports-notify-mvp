@@ -1002,7 +1002,12 @@
           "text": "昨季1位のパリ・サンジェルマンと6位のレンヌ",
           "weight": 3
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 2,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "558634",
@@ -1046,7 +1051,12 @@
           "text": "昨季13位と5位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "558633",
@@ -1085,7 +1095,12 @@
           "text": "昨季7位と11位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824315",
@@ -1274,7 +1289,12 @@
           "text": "昨季13位と1位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823909",
