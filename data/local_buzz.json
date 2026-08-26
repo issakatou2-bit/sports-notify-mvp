@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-25T06:01:53.961729+00:00",
+  "updated_at": "2026-08-26T06:02:31.614802+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,68 +13,68 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 9,
-      "tone": "好調",
-      "gist": "Cal Raleighの活躍でマリナーズが好調。本塁打多数。"
-    },
-    {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 4,
-      "tone": "不振",
-      "gist": "Espada監督が契約更新なし。GM Brown退団。"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
+      "team_id": "142",
+      "name": "ツインズ",
+      "name_en": "Minnesota Twins",
       "mentions": 4,
       "tone": "話題",
-      "gist": "Padres売却で$3.9B。新オーナーが優勝宣言。"
+      "gist": "Taj Bradleyがツインズ史上初の完全イニング達成"
     },
     {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
       "mentions": 3,
-      "tone": "話題",
-      "gist": "Pederson選手がチャレンジ失敗後に退場騒動。"
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "RedSoxが下位打線の活躍で逆転劇。"
+      "tone": "不振",
+      "gist": "29連続得点後にダイヤモンドバックスに逆転負け"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "Dodgersが首位陥落。Brewersが1位に浮上。"
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ドジャースの地元TV放映権による競争優位性"
     },
     {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
       "mentions": 2,
       "tone": "不振",
-      "gist": "Guardians勝利。Angels選手が怪我で欠場。"
+      "gist": "マリナーズにKirbyが9奪三振で完封負け"
     },
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "メッツに10回の守備エラーで敗戦"
+    },
+    {
+      "team_id": "134",
+      "name": "パイレーツ",
+      "name_en": "Pittsburgh Pirates",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "Hedges本塁打でGuardiansがAngelsを撃破。"
+      "tone": "話題",
+      "gist": "パイレーツのGMがスポーツ界の就職について質問受付"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "パドレス傘下コーチがICE拘束から釈放"
+    },
+    {
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "レンジャーズがMLB唯一の完全イニング未達球団"
     }
   ],
   "players": []
