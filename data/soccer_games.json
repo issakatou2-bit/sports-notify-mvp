@@ -1,32 +1,32 @@
 {
-  "generated_at": "2026-08-25T09:53:52.526281+00:00",
+  "generated_at": "2026-08-26T09:53:54.206271+00:00",
   "games": [
     {
-      "game_id": "564637",
+      "game_id": "564631",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-95",
-      "away_team_id": "PD-90",
-      "home_team_name": "バレンシア",
-      "away_team_name": "レアル・ベティス",
+      "home_team_id": "PD-86",
+      "away_team_id": "PD-92",
+      "home_team_name": "レアル・マドリード",
+      "away_team_name": "レアル・ソシエダ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "レアル・ベティス vs バレンシア",
+      "matchup": "レアル・ソシエダ vs レアル・マドリード",
       "abbr_matchup": null,
-      "start_time_jst": "08/26 04:00",
+      "start_time_jst": "08/27 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
       "rivalry_type": null,
       "jp_starters": [
         {
-          "name": "佐藤龍之介",
+          "name": "久保建英",
           "context": "所属チームの試合"
         }
       ],
       "jp_players": [
-        "佐藤龍之介"
+        "久保建英"
       ],
       "home_probable": null,
       "away_probable": null,
@@ -34,31 +34,36 @@
       "venue_jp": null,
       "venue_note": null,
       "venue_runs_note": null,
-      "home_has_jp": true,
-      "away_has_jp": false,
-      "score": 3,
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 4,
       "game_type": "R",
       "is_notable": true,
       "reasons": [
         {
           "tag": "jp_team",
-          "text": "バレンシアには佐藤龍之介が所属",
+          "text": "レアル・ソシエダには久保建英が所属",
           "weight": 2
         },
         {
           "tag": "quality",
-          "text": "昨季9位と5位の対戦",
+          "text": "レアル・マドリード の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季2位と10位の対戦",
           "weight": 1
         }
       ],
       "log_notes": [],
-      "ai_summary": "ラ・リーガの開幕戦となるこの一戦は、【昨季9位と5位】という異なる立場のチームが初めて顔を合わせる。バレンシアには日本代表の佐藤龍之介が所属しており、彼のラ・リーガでの活躍がどう映るかが注目される。新シーズンの滑り出しを左右する重要な試合であり、両チームの戦い方から今季の方向性が見えてくる。",
-      "notification_hook": "佐藤龍之介がラ・リーガで躍動するか。開幕戦で実力が試される。"
+      "ai_summary": "昨季2位のレアル・マドリードと10位のレアル・ソシエダが対戦する。スペイン1部リーグの総当たり戦では、どのチームとの試合も順位争いに直結するため、昨季の成績差がある両チーム間の一戦は、シーズン全体の流れを左右する可能性がある。また、レアル・ソシエダには【日本代表の久保建英】が所属しており、マドリード相手にどのようなパフォーマンスを見せるかが注目される。",
+      "notification_hook": "久保建英、昨季2位マドリード相手にどう立ち向かうか"
     }
   ],
   "ai_status": {
     "targets": 1,
     "succeeded": 1,
-    "cost_usd": 0.00323
+    "cost_usd": 0.0033
   }
 }
