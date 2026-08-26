@@ -810,6 +810,29 @@ def main():
         segments.append({"index": len(segments), "file": None, "duration": 4.0,
                          "kind": "outro", "meta": {}})
 
+    # 長すぎる回を、ここで削る。音声を繋ぐ前なので、落とした画面の
+    # 音声は最初から入らない。
+    #
+    # この枠は実測で71秒・視聴継続23.7%。最も配られていて(中央値288回、
+    # 最大847回)、最も残らない部類でもある。72秒の23.7%は、
+    # 平均的な視聴者が17秒で離れているということで、
+    # 「コレスポ指数」も「昨日の答え合わせ」も、そこまで届いていない。
+    #
+    # だから落とす順は、指数の自己説明 → ニュース → 答え合わせ。
+    # 試合そのものは落とさない。冒頭で「注目の3試合を」と言ってあり、
+    # 1つ減らすと読み上げが嘘になる。
+    keep, dropped = post_common.fit_budget(
+        segments, [max(2.0, float(s.get("duration") or 0) or 4.0)
+                   for s in segments],
+        ("score", "news", "recap"))
+    if dropped:
+        segments = [segments[i] for i in keep]
+        summary = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary:
+            with open(summary, "a", encoding="utf-8") as f:
+                f.write(f"日次: {post_common.MAX_SECONDS:.0f}秒に収めるため"
+                        f"{chr(12289).join(dropped)}を外しました{chr(10)}")
+
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / "collespo_short.mp4"

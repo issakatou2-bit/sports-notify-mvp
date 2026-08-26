@@ -372,3 +372,57 @@ def lineup_lines(exclude: str = "") -> list:
     """説明文用。名前とひとことを箇条書きにする。"""
     return [f"・{name} … {what}"
             for kind, name, what, _ in DAILY_LINEUP if kind != exclude]
+
+
+
+# ---------------------------------------------------------------------------
+# 1本の長さ
+# ---------------------------------------------------------------------------
+#
+# 102本の実測(2026-08-26)で、長さと視聴継続がはっきり並んだ:
+#
+#   〜35秒   31.8%(n=6)     45-55秒  27.5%(n=10)
+#   35-45秒  39.2%(n=19)    55-70秒  23.6%(n=16)
+#                            70秒〜   22.8%(n=14)
+#
+# 枠が違うから差が出ているのではないことも確かめてある。枠ごとに
+# 短い回と長い回を分けて比べて、7枠のうち5枠で短いほうが上だった。
+#
+# 朝の回と日次の回は別の台本で作っているが、見る側にはどちらも
+# 同じチャンネルの1本でしかない。上限は1か所に置く。
+MAX_SECONDS = 55.0
+
+# 超過をどこまで見逃すか。
+#
+# これが無いと削りすぎる。64秒の回で、55秒に収めようとして
+# 8秒の画面を落とし、それでも56秒なので26秒の画面まで落として
+# 30秒になった。9秒はみ出しているのを直すのに34秒捨てている。
+# 画面ごとにしか落とせない以上、ぴったりには収まらない。
+BUDGET_GRACE = 6.0
+
+
+def fit_budget(segs, durations, drop_order, limit=MAX_SECONDS):
+    """予算に収まるまで、優先度の低い画面を落とす。
+
+    落とすのは画面ごと。1画面の中の読み上げを途中で切ると、
+    文の途中で次へ行くか、逆に意味が反転する
+    (「…わけではない」を切ると逆のことを言う)。
+
+    返すのは (残す番号のリスト, 落とした種別のリスト)。
+    """
+    keep = list(range(len(segs)))
+    total = sum(durations)
+    dropped = []
+    for kind in drop_order:
+        if total <= limit + BUDGET_GRACE:
+            break
+        for i in list(keep):
+            if (segs[i].get("kind") or "") == kind:
+                keep.remove(i)
+                total -= durations[i]
+                dropped.append(kind)
+                break
+    if dropped:
+        print(f"[info] {limit:.0f}秒に収めるため{len(dropped)}画面を外しました: "
+              f"{chr(12289).join(dropped)} -> {total:.0f}秒")
+    return keep, dropped
