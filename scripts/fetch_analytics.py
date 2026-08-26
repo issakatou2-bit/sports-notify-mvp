@@ -81,8 +81,100 @@ def load(path: str) -> dict:
 CLIFF_DROP = 0.30
 CLIFF_WINDOW = 5   # 何点ぶんを1つの区間として見るか(動画の5%)
 
-# 曲線を取る本数。1本1リクエストなので、再生数の多いものから。
-CURVE_TOP = 5
+# 曲線を取る本数の上限。1本1リクエスト。
+CURVE_TOP = 12
+
+
+def by_slot(rows, titles, videos_path="data/published_videos.json",
+            floor: int = 50):
+    """枠ごとの、視聴継続と長さ。
+
+    なぜ要るのか:
+      1本ずつの表は102行あって、どの枠が良くて悪いのかが読めない。
+      判断に使うのは枠の水準のほうで、そこが動いたかどうかが
+      「変えたことが効いたか」の答えになる。
+
+      長さも並べる。8/26の実測で、視聴継続の悪い順が長い順と
+      ほぼ一致していた(最良の日本人選手が37秒50.6%、
+      最悪の現地の報道が69秒16.4%)。上限55秒を入れたので、
+      次からはここで下がっていくのが見えるはず。
+
+    再生数の少ないものは混ぜない。1桁の動画は割合が跳ねる。
+    """
+    try:
+        store = json.loads(
+            pathlib.Path(videos_path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    kind_of = {}
+    for kind, by_day in store.items():
+        if isinstance(by_day, dict):
+            for rec in by_day.values():
+                if isinstance(rec, dict) and rec.get("video_id"):
+                    kind_of[rec["video_id"]] = kind
+
+    buckets = {}
+    for r in rows:
+        k = kind_of.get(r.get("video"))
+        pct = r.get("averageViewPercentage") or 0
+        if not k or not pct or (r.get("views") or 0) < floor:
+            continue
+        # 動画そのものの長さ。平均秒 ÷ 割合 で出る。
+        buckets.setdefault(k, []).append(
+            (pct, (r.get("averageViewDuration") or 0) / (pct / 100),
+             r.get("views") or 0))
+
+    def med(xs):
+        xs = sorted(xs)
+        n = len(xs)
+        return xs[n // 2] if n % 2 else (xs[n // 2 - 1] + xs[n // 2]) / 2
+
+    out = [(k, len(v), med([x[0] for x in v]), med([x[1] for x in v]),
+            med([x[2] for x in v])) for k, v in buckets.items()]
+    out.sort(key=lambda x: -x[2])
+    return out
+
+
+def pick_for_curves(rows, videos_path="data/published_videos.json"):
+    """どの動画の曲線を取るか。**枠ごとに1本ずつ**。
+
+    以前は再生数の上位5本だけだった。それだと毎回、日本人選手と
+    明日の注目試合しか当たらない。曲線がいちばん要るのは、
+    その2つではなく、視聴継続が20%台で止まっている枠のほう。
+    今日の1人(40回)やファンのコメント欄(115回)は、
+    再生数で並べるかぎり永久に選ばれない。
+
+    枠は published_videos.json から引く。題名から見分けると、
+    書式を変えた日に静かに外れる(実際「【MLB】明日の注目試合」へ
+    変えたとき、題の先頭だけを見ていた突き合わせが外れた)。
+
+    枠ごとの最多再生を1本ずつ取り、余った枠で全体の上位を足す。
+    """
+    kind_of = {}
+    try:
+        store = json.loads(
+            pathlib.Path(videos_path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        store = {}
+    for kind, by_day in store.items():
+        if not isinstance(by_day, dict):
+            continue
+        for rec in by_day.values():
+            if isinstance(rec, dict) and rec.get("video_id"):
+                kind_of[rec["video_id"]] = kind
+
+    picked, seen_kinds = [], set()
+    for r in rows:                      # rows は再生数の多い順
+        k = kind_of.get(r.get("video"))
+        if k and k not in seen_kinds:
+            seen_kinds.add(k)
+            picked.append(r)
+    for r in rows:                      # 枠が分からないものは後から
+        if len(picked) >= CURVE_TOP:
+            break
+        if r not in picked:
+            picked.append(r)
+    return picked[:CURVE_TOP]
 
 
 def retention_curve(yta, video_id: str, start, end) -> list:
@@ -281,10 +373,10 @@ def _run() -> int:
             except HttpError:
                 pass
 
-    # 再生数の多いものだけ、曲線も取る。1本1リクエストなので全部は取らない。
+    # 曲線は枠ごとに1本ずつ。1本1リクエストなので全部は取らない。
     curves = {}
     if args.curves:
-        for r in rows[:CURVE_TOP]:
+        for r in pick_for_curves(rows):
             c = retention_curve(yta, r["video"], start, end)
             if c:
                 curves[r["video"]] = c
@@ -352,13 +444,27 @@ def _run() -> int:
                 f"| {int(r.get('views', 0))} "
                 f"| {int(r.get('averageViewDuration', 0))} "
                 f"| {titles.get(r.get('video'), '')[:44]} |")
+        slots = by_slot(rows, titles)
+        if slots:
+            lines += ["", "### 枠ごと", "",
+                      "判断に使うのはこちら。1本ずつの割合は跳ねるので、"
+                      "50回以上のものだけを枠でまとめています。"
+                      "長さも並べるのは、8/26の実測で"
+                      "**悪い順がほぼ長い順だった**ため。",
+                      "",
+                      "| 枠 | 本数 | 維持率 | 長さ | 再生 |",
+                      "|---|---:|---:|---:|---:|"]
+            for k, n, pct, ln, vw in slots:
+                lines.append(f"| {k} | {n} | {pct:.1f}% "
+                             f"| {ln:.0f}秒 | {vw:.0f} |")
+
         if curves:
             lines += ["", "### どこで切られたか", "",
                       "平均だけでは、なだらかに減ったのか1か所で切られたのか"
                       "が分かりません。半分が離れる位置が遅いほど良い形です。",
                       "",
                       "| 半分が離れる位置 | 崖 | 題名 |", "|---|---|---|"]
-            for r in rows[:CURVE_TOP]:
+            for r in rows:
                 c = curves.get(r.get("video"))
                 if not c:
                     continue
