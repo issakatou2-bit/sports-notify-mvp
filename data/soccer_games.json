@@ -1,33 +1,26 @@
 {
-  "generated_at": "2026-08-26T09:53:54.206271+00:00",
+  "generated_at": "2026-08-27T09:53:44.709328+00:00",
   "games": [
     {
-      "game_id": "564631",
+      "game_id": "564630",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-86",
-      "away_team_id": "PD-92",
-      "home_team_name": "レアル・マドリード",
-      "away_team_name": "レアル・ソシエダ",
+      "home_team_id": "PD-81",
+      "away_team_id": "PD-77",
+      "home_team_name": "バルセロナ",
+      "away_team_name": "アスレティック・ビルバオ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "レアル・ソシエダ vs レアル・マドリード",
+      "matchup": "アスレティック・ビルバオ vs バルセロナ",
       "abbr_matchup": null,
-      "start_time_jst": "08/27 04:00",
+      "start_time_jst": "08/28 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
       "rivalry_type": null,
-      "jp_starters": [
-        {
-          "name": "久保建英",
-          "context": "所属チームの試合"
-        }
-      ],
-      "jp_players": [
-        "久保建英"
-      ],
+      "jp_starters": [],
+      "jp_players": [],
       "home_probable": null,
       "away_probable": null,
       "venue_name": null,
@@ -35,35 +28,72 @@
       "venue_note": null,
       "venue_runs_note": null,
       "home_has_jp": false,
-      "away_has_jp": true,
-      "score": 4,
+      "away_has_jp": false,
+      "score": 1,
       "game_type": "R",
       "is_notable": true,
       "reasons": [
         {
-          "tag": "jp_team",
-          "text": "レアル・ソシエダには久保建英が所属",
-          "weight": 2
-        },
-        {
           "tag": "quality",
-          "text": "レアル・マドリード の試合",
+          "text": "バルセロナ の試合",
           "weight": 1
         },
         {
           "tag": "quality",
-          "text": "昨季2位と10位の対戦",
-          "weight": 1
+          "text": "昨季1位と12位の対戦",
+          "weight": 0
         }
       ],
       "log_notes": [],
-      "ai_summary": "昨季2位のレアル・マドリードと10位のレアル・ソシエダが対戦する。スペイン1部リーグの総当たり戦では、どのチームとの試合も順位争いに直結するため、昨季の成績差がある両チーム間の一戦は、シーズン全体の流れを左右する可能性がある。また、レアル・ソシエダには【日本代表の久保建英】が所属しており、マドリード相手にどのようなパフォーマンスを見せるかが注目される。",
-      "notification_hook": "久保建英、昨季2位マドリード相手にどう立ち向かうか"
+      "ai_summary": "昨季のラ・リーガで【1位と12位】の成績を収めた両チームの対戦である。開幕戦に近いこの時点では順位表がまだ形成途上にあるが、前シーズンの成績差は両チームの実力を大きく示唆している。バルセロナはスペイン国内で最高峰の実力を持つ強豪として、アスレティック・ビルバオはそこに近づくための課題を多く抱えるチームとして、この一戦に臨むことになる。両チームがどのような戦術で対峙し、どちらが試合をコントロールするのかが見どころである。",
+      "notification_hook": "昨季1位バルセロナ、12位ビルバオの実力差を開幕カードで検証。"
+    },
+    {
+      "game_id": "564636",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-558",
+      "away_team_id": "PD-79",
+      "home_team_name": "セルタ",
+      "away_team_name": "オサスナ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "オサスナ vs セルタ",
+      "abbr_matchup": null,
+      "start_time_jst": "08/28 03:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "昨季6位と16位の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ラ・リーガの総当たり戦では、前シーズンの成績が大きく異なるチーム同士の対戦も重要な意味を持つ。【昨季6位のオサスナと16位のセルタ】による本対戦は、シーズン序盤から両チームの実力差がどこまで反映されるかを見極める機会となる。開幕直後の時点では順位の変動も大きいため、ここでの結果がシーズン全体に与える影響は限定的であるが、両チームの攻撃力と守備の安定性がぶつかる局面に注目したい。",
+      "notification_hook": "昨季6位と16位の力の差が、開幕戦で明らかになるか。"
     }
   ],
   "ai_status": {
-    "targets": 1,
-    "succeeded": 1,
-    "cost_usd": 0.0033
+    "targets": 2,
+    "succeeded": 2,
+    "cost_usd": 0.00684
   }
 }

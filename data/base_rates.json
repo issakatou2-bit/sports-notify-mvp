@@ -1,16 +1,16 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 105,
-    "home_wins": 58,
+    "games": 112,
+    "home_wins": 64,
     "draws": 0,
-    "away_wins": 47,
-    "home_win_pct": 55,
-    "avg_total": 8.8,
-    "one_run": 31,
-    "one_run_pct": 30,
-    "shutouts": 12,
-    "shutout_pct": 11
+    "away_wins": 48,
+    "home_win_pct": 57,
+    "avg_total": 8.7,
+    "one_run": 33,
+    "one_run_pct": 29,
+    "shutouts": 15,
+    "shutout_pct": 13
   },
   "same_division": {
     "games": 28,
@@ -30,8 +30,8 @@
       "avg_total": 13.1
     },
     "レート・フィールド": {
-      "games": 6,
-      "avg_total": 11.3
+      "games": 7,
+      "avg_total": 11.7
     },
     "クアーズ・フィールド": {
       "games": 5,
@@ -54,8 +54,12 @@
       "avg_total": 7.3
     },
     "チェイス・フィールド": {
-      "games": 6,
-      "avg_total": 6.5
+      "games": 7,
+      "avg_total": 5.9
+    },
+    "ロジャーズ・センター": {
+      "games": 5,
+      "avg_total": 5.8
     }
   },
   "min_sample": 5
