@@ -1,19 +1,26 @@
 {
-  "updated_at": "2026-08-26T06:02:20.651712+00:00",
+  "updated_at": "2026-08-27T06:01:33.557732+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "seoYrJRTqy0",
-      "title": "PIRATES vs. PADRES: Official Full Game Highlights (August 24) | 2026 MLB Season",
-      "published_at": "2026-08-25T06:26:58Z",
-      "views": 139143,
+      "video_id": "W1dUf5QAqdI",
+      "title": "CAL RALEIGH HOMERED IN FOUR STRAIGHT AT-BATS 🤯 | MLB Highlights",
+      "published_at": "2026-08-26T03:26:01Z",
+      "views": 217418,
+      "matchup": "CAL RALEIGH HOMERED IN FOUR STRAIGHT AT-"
+    },
+    {
+      "video_id": "BdVVxhtFFwQ",
+      "title": "PIRATES vs. PADRES: Official Full Game Highlights (August 25) | 2026 MLB Season",
+      "published_at": "2026-08-26T04:26:40Z",
+      "views": 120100,
       "matchup": "PIRATES vs. PADRES",
       "result": {
         "away_jp": "パイレーツ",
         "home_jp": "パドレス",
-        "away_score": 3,
-        "home_score": 2,
+        "away_score": 1,
+        "home_score": 0,
         "innings": [
           {
             "num": 1,
@@ -42,8 +49,8 @@
           },
           {
             "num": 6,
-            "away": 2,
-            "home": 1
+            "away": 0,
+            "home": 0
           },
           {
             "num": 7,
@@ -53,131 +60,43 @@
           {
             "num": 8,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 9,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 10,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 11,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 12,
             "away": 1,
             "home": 0
           }
         ],
-        "away_hits": 9,
+        "away_hits": 6,
         "away_errors": 0,
-        "home_hits": 7,
+        "home_hits": 3,
         "home_errors": 0,
-        "star_name": "Braxton Ashcraft",
-        "star_line": "6.0回 2奪三振 自責1"
+        "star_name": "Michael King",
+        "star_line": "7.0回 7奪三振 自責0"
       }
     },
     {
-      "video_id": "kIBj5666mRE",
-      "title": "PHILLIES vs. MARINERS: Official Full Game Highlights (August 24) | 2026 MLB Season",
-      "published_at": "2026-08-25T04:48:51Z",
-      "views": 110146,
+      "video_id": "M__fFA0K0Qk",
+      "title": "PHILLIES vs. MARINERS: Official Full Game Highlights (August 25) | 2026 MLB Season",
+      "published_at": "2026-08-26T04:34:21Z",
+      "views": 107430,
       "matchup": "PHILLIES vs. MARINERS",
       "result": {
         "away_jp": "フィリーズ",
         "home_jp": "マリナーズ",
-        "away_score": 2,
-        "home_score": 9,
-        "innings": [
-          {
-            "num": 1,
-            "away": 1,
-            "home": 5
-          },
-          {
-            "num": 2,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 2
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": null
-          }
-        ],
-        "away_hits": 5,
-        "away_errors": 1,
-        "home_hits": 10,
-        "home_errors": 0,
-        "star_name": "Cal Raleigh",
-        "star_line": "3打数3安打 4打点 3本塁打"
-      }
-    },
-    {
-      "video_id": "cuajtaM9xas",
-      "title": "CUBS vs. D-BACKS: Official Full Game Highlights (August 24) | 2026 MLB Season",
-      "published_at": "2026-08-25T04:45:14Z",
-      "views": 73696,
-      "matchup": "CUBS vs. D-BACKS"
-    },
-    {
-      "video_id": "fkoJmTsxglU",
-      "title": "DODGERS vs. BRAVES: Official Full Game Highlights (August 25) | 2026 MLB Season",
-      "published_at": "2026-08-26T02:35:13Z",
-      "views": 67938,
-      "matchup": "DODGERS vs. BRAVES",
-      "result": {
-        "away_jp": "ドジャース",
-        "home_jp": "ブレーブス",
-        "away_score": 3,
+        "away_score": 1,
         "home_score": 4,
         "innings": [
           {
             "num": 1,
             "away": 0,
-            "home": 3
+            "home": 0
           },
           {
             "num": 2,
-            "away": 2,
-            "home": 0
+            "away": 1,
+            "home": 1
           },
           {
             "num": 3,
@@ -186,7 +105,7 @@
           },
           {
             "num": 4,
-            "away": 1,
+            "away": 0,
             "home": 0
           },
           {
@@ -197,17 +116,17 @@
           {
             "num": 6,
             "away": 0,
-            "home": 0
+            "home": 1
           },
           {
             "num": 7,
             "away": 0,
-            "home": 0
+            "home": 2
           },
           {
             "num": 8,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 9,
@@ -215,59 +134,66 @@
             "home": null
           }
         ],
-        "away_hits": 10,
+        "away_hits": 6,
         "away_errors": 0,
-        "home_hits": 9,
+        "home_hits": 5,
         "home_errors": 0,
-        "star_name": "Tyler Glasnow",
-        "star_line": "5.0回 7奪三振 自責3"
+        "star_name": "George Kirby",
+        "star_line": "7.2回 9奪三振 自責1"
       }
     },
     {
-      "video_id": "Aw9K_nbGjfc",
-      "title": "GUARDIANS vs. ANGELS: Official Full Game Highlights (August 24) | 2026 MLB Season",
-      "published_at": "2026-08-25T04:46:04Z",
-      "views": 41651,
-      "matchup": "GUARDIANS vs. ANGELS",
+      "video_id": "xY1ZRwZS3XQ",
+      "title": "CUBS vs. D-BACKS: Official Full Game Highlights (August 25) | 2026 MLB Season",
+      "published_at": "2026-08-26T04:52:51Z",
+      "views": 71389,
+      "matchup": "CUBS vs. D-BACKS"
+    },
+    {
+      "video_id": "EidlSQN9KhU",
+      "title": "DODGERS vs. BRAVES: Official Full Game Highlights (August 26) | 2026 MLB Season",
+      "published_at": "2026-08-27T03:08:34Z",
+      "views": 61013,
+      "matchup": "DODGERS vs. BRAVES",
       "result": {
-        "away_jp": "ガーディアンズ",
-        "home_jp": "エンゼルス",
-        "away_score": 4,
-        "home_score": 2,
+        "away_jp": "ドジャース",
+        "home_jp": "ブレーブス",
+        "away_score": 5,
+        "home_score": 6,
         "innings": [
           {
             "num": 1,
             "away": 0,
-            "home": 0
+            "home": 1
           },
           {
             "num": 2,
-            "away": 0,
+            "away": 1,
             "home": 0
           },
           {
             "num": 3,
-            "away": 1,
+            "away": 2,
             "home": 0
           },
           {
             "num": 4,
             "away": 0,
-            "home": 1
+            "home": 3
           },
           {
             "num": 5,
-            "away": 1,
+            "away": 0,
             "home": 0
           },
           {
             "num": 6,
-            "away": 2,
-            "home": 0
+            "away": 0,
+            "home": 1
           },
           {
             "num": 7,
-            "away": 0,
+            "away": 2,
             "home": 0
           },
           {
@@ -281,12 +207,12 @@
             "home": 1
           }
         ],
-        "away_hits": 8,
+        "away_hits": 10,
         "away_errors": 0,
-        "home_hits": 6,
-        "home_errors": 2,
-        "star_name": "Parker Messick",
-        "star_line": "6.0回 4奪三振 自責1"
+        "home_hits": 14,
+        "home_errors": 0,
+        "star_name": "Tommy Edman",
+        "star_line": "4打数2安打 3打点 1本塁打"
       }
     }
   ]

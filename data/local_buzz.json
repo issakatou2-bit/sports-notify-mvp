@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-26T06:02:31.614802+00:00",
+  "updated_at": "2026-08-27T06:01:44.855403+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,69 +13,78 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "142",
-      "name": "ツインズ",
-      "name_en": "Minnesota Twins",
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 6,
+      "tone": "不振",
+      "gist": "ドジャースはブレーブスにKimに歩かされ連敗"
+    },
+    {
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
       "mentions": 4,
       "tone": "話題",
-      "gist": "Taj Bradleyがツインズ史上初の完全イニング達成"
+      "gist": "レッズはSuárezらをウェーバー公開し9回7点差逆転"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ヤンキースはRodríguezの復帰とDolly Parto"
+    },
+    {
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "ブレーブスはKimの3ヶ月ぶり安打で歩かし逆転勝利"
+    },
+    {
+      "team_id": "120",
+      "name": "ナショナルズ",
+      "name_en": "Washington Nationals",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ナショナルズがLGBTQ+初の放送に関わる"
+    },
+    {
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "タイガースはSkubalがドジャース移籍後初対戦へ"
     },
     {
       "team_id": "112",
       "name": "カブス",
       "name_en": "Chicago Cubs",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "29連続得点後にダイヤモンドバックスに逆転負け"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ドジャースの地元TV放映権による競争優位性"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
       "mentions": 2,
       "tone": "不振",
-      "gist": "マリナーズにKirbyが9奪三振で完封負け"
+      "gist": "カブスはシャットアウト負け、審判のバーク見落としが原因"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "メッツに10回の守備エラーで敗戦"
-    },
-    {
-      "team_id": "134",
-      "name": "パイレーツ",
-      "name_en": "Pittsburgh Pirates",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "パイレーツのGMがスポーツ界の就職について質問受付"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "パドレス傘下コーチがICE拘束から釈放"
-    },
-    {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "レンジャーズがMLB唯一の完全イニング未達球団"
+      "tone": "好調",
+      "gist": "ブリュワーズは82勝51敗で2026年初の勝ち越し確定"
     }
   ],
-  "players": []
+  "players": [
+    {
+      "name": "大谷翔平",
+      "mentions": 1
+    },
+    {
+      "name": "佐々木朗希",
+      "mentions": 1
+    }
+  ]
 }

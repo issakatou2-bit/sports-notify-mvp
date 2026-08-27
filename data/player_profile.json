@@ -1,111 +1,103 @@
 {
-  "generated_at": "2026-08-26T06:01:06.479673+00:00",
-  "date_jst": "2026-08-26",
-  "name": "Yainer Diaz",
-  "player_id": "673237",
-  "team": "アストロズ",
+  "generated_at": "2026-08-27T06:01:02.019452+00:00",
+  "date_jst": "2026-08-27",
+  "name": "Héctor Rodríguez",
+  "player_id": "699302",
+  "team": "レッズ",
   "group": "hitting",
-  "why": "2026-08-26のMLBで最も活躍",
-  "headline": "4打数3安打　2本塁打　3打点　1四球",
-  "score": 175,
+  "why": "2026-08-27のMLBで最も活躍",
+  "headline": "6打数3安打　2本塁打　2打点",
+  "score": 151,
   "bio": {
-    "name_en": "Yainer Diaz",
-    "age": 27,
-    "birth_city": "Azua",
+    "name_en": "Héctor Rodríguez",
+    "age": 22,
+    "birth_city": "Santo Domingo",
     "birth_state": null,
     "birth_country": "Dominican Republic",
-    "birth_date": "1998-09-21",
-    "debut": "2022-09-02",
+    "birth_date": "2004-03-11",
+    "debut": "2026-08-04",
     "draft_year": null,
-    "bats": "Right",
+    "bats": "Left",
     "throws": "Right",
-    "number": "21",
-    "position": "Catcher",
+    "number": "43",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "5' 11\"",
-    "weight": 195
+    "height": "5' 10\"",
+    "weight": 200
   },
   "teams": [
     {
-      "team": "アストロズ",
-      "from": 2022,
+      "team": "レッズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 472,
-    "avg": ".276",
-    "hr": 69,
-    "rbi": 247,
-    "ops": ".753",
-    "sb": 3,
-    "hits": 480
+    "games": 16,
+    "avg": ".220",
+    "hr": 3,
+    "rbi": 5,
+    "ops": ".731",
+    "sb": 0,
+    "hits": 11
   },
   "this_season": {
-    "games": 71,
-    "avg": ".261",
-    "hr": 10,
-    "rbi": 32,
-    "ops": ".712",
+    "games": 16,
+    "avg": ".220",
+    "hr": 3,
+    "rbi": 5,
+    "ops": ".731",
     "sb": 0,
-    "hits": 65
+    "hits": 11
   },
-  "last_season": {
-    "games": 143,
-    "avg": ".256",
-    "hr": 20,
-    "rbi": 70,
-    "ops": ".701",
-    "sb": 1,
-    "hits": 139
-  },
+  "last_season": {},
   "recent": [
     {
+      "date": "2026-08-26",
+      "line": "6打数3安打 2本塁打 2打点",
+      "opponent": "San Francisco Giants"
+    },
+    {
       "date": "2026-08-25",
-      "line": "4打数3安打 2本塁打 3打点",
-      "opponent": "New York Yankees"
+      "line": "3打数1安打",
+      "opponent": "San Francisco Giants"
     },
     {
       "date": "2026-08-23",
-      "line": "1打数0安打",
-      "opponent": "Athletics"
+      "line": "4打数1安打",
+      "opponent": "Arizona Diamondbacks"
     },
     {
       "date": "2026-08-22",
-      "line": "4打数1安打 1打点",
-      "opponent": "Athletics"
-    },
-    {
-      "date": "2026-08-21",
-      "line": "4打数1安打",
-      "opponent": "Athletics"
+      "line": "3打数2安打 1本塁打 1打点",
+      "opponent": "Arizona Diamondbacks"
     },
     {
       "date": "2026-08-20",
-      "line": "2打数1安打",
-      "opponent": "Los Angeles Angels"
+      "line": "3打数1安打",
+      "opponent": "St. Louis Cardinals"
     }
   ],
   "awards": [
     {
+      "season": "2026",
+      "name": "INT Player of the Week"
+    },
+    {
+      "season": "2025",
+      "name": "SOU Post-Season All-Star"
+    },
+    {
+      "season": "2025",
+      "name": "SOU Player of the Week"
+    },
+    {
       "season": "2023",
-      "name": "Astros Rookie of the Year"
+      "name": "PWL Rookie of the Year"
     },
     {
-      "season": "2022",
-      "name": "MiLB.com Organization All-Star"
-    },
-    {
-      "season": "2021",
-      "name": "CAR Post-Season All-Star"
-    },
-    {
-      "season": "2021",
-      "name": "SAL Player of the Week"
-    },
-    {
-      "season": "2018",
-      "name": "ACL Post-Season All-Star"
+      "season": "2023",
+      "name": "FSL Post-Season All-Star"
     }
   ],
   "quotes": []
