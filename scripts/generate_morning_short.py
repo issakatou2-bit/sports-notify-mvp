@@ -94,6 +94,15 @@ VOICES_SHOWN = 3
 # 「読まれていない言葉が映り、映っていない言葉が読まれる」状態になる。
 # どちらが本当なのか、見ている側には確かめようがない。
 HEADLINES_SHOWN = 2
+
+# 見出しは切らない。長すぎるものは、その1件を飛ばして次を使う。
+#
+# 以前は70字で切っていた。今日の6件は19〜36字なので実害は出ていない
+# ものの、切るという判断自体が危ない。同じことをハイライトの題で
+# やっていて「CAL RALEIGH HOMERED IN FOUR STRAIGHT AT-」が
+# そのまま動画の題になった。見出しは6件取れているので、
+# 収まらないものは捨てて選び直せば済む。
+HEADLINE_MAX = 60
 REPORTERS_SHOWN = 1
 
 # 「現地の声」だけは背景色を変える。
@@ -365,6 +374,64 @@ def _surname_only(name: str) -> str:
     """
     said = speech_name(name)
     return said.split("・")[0] if "・" in said else said
+
+
+# 番記者の投稿の読み上げ上限。ここまでの範囲で文が終わっていれば使う。
+REPORTER_MAX = 110
+
+
+def clip_sentences(jp: str, limit: int = REPORTER_MAX) -> str:
+    """収まる範囲で、文として終わっているところまで返す。無ければ空。
+
+    以前は文字数で切っていた。実際に出たのがこれ:
+      「カブスも今シーズン投球がタイプされており、最近は日曜日に今。」
+    途中でぶつ切りにして句点を足しているので、意味の無い一文になる。
+
+    読点でも切らない。upload_youtube._clip と同じ理由で、
+    「…したのは融資のためではない」の否定が落ちると逆の意味になり、
+    「ソーサが大谷翔平の落選を明かし」のように、残った側だけで
+    別の意味が通ってしまう。
+
+    句点まで戻れないほど1文が長い投稿は、丸ごと使わない。
+    投稿は複数取れているので、次のものへ回せばよい。
+    """
+    jp = (jp or "").strip()
+    if not jp:
+        return ""
+    if len(jp) <= limit:
+        return jp.rstrip("。") + "。"
+    cut = jp.rfind("。", 0, limit)
+    return jp[:cut + 1] if cut >= 20 else ""
+
+
+def press_premise(heads: list) -> str:
+    """今日の報道が何についてのものか。数えるだけで、評価はしない。
+
+    なぜ要るのか:
+      見出しを2件並べても、それがその日の全体の中でどういう位置に
+      あるのかが分からない。1媒体だけが書いたことなのか、
+      現地中が同じ話をしているのかで、同じ見出しでも重みが違う。
+
+      記事の中身は取れない。Googleニュースのフィードが返すのは
+      題と媒体名と時刻だけで、description の中はリンク1本しか入って
+      いない。だから要約は作れないし、作ろうとすれば書いていない
+      ことを足すことになる。
+
+      代わりに数える。どの選手を引いた見出しが何件あったかは、
+      集めた時点で分かっている事実で、そこは間違えようがない。
+    """
+    from collections import Counter
+    pairs = [(h.get("query") or "", h.get("source") or "") for h in heads]
+    counts = Counter(q for q, _ in pairs if q)
+    if not counts:
+        return ""
+    top, n = counts.most_common(1)[0]
+    outlets = {s for q, s in pairs if q == top and s}
+    if n < 2 or len(outlets) < 2:
+        return ""
+    who = speech_name(top)
+    return (f"今日は{who}の話題が最も多く、"
+            f"{len(heads)}件のうち{n}件、{len(outlets)}媒体が報じています。")
 
 
 def spoken_list(chunk: list, start: int) -> str:
@@ -757,10 +824,13 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     if heads:
         used = (segments[0].get("meta") or {}).get("used_headline")
         rest = [h for i, h in enumerate(heads) if i != used]
-        parts = ["現地の見出しです。"]
-        for h in rest[:HEADLINES_SHOWN]:
+        parts = [press_premise(heads) or "現地の見出しです。"]
+        # 収まらない見出しは切らずに飛ばす。6件取れているので選び直せる。
+        fits = [h for h in rest
+                if len((h.get("jp") or h.get("title", ""))) <= HEADLINE_MAX]
+        for h in (fits or rest)[:HEADLINES_SHOWN]:
             body = h.get("jp") or h.get("title", "")
-            parts.append(f"{h.get('source', '')}。{body[:70]}。")
+            parts.append(f"{h.get('source', '')}。{body}。")
         segments.append({"kind": "headlines", "text": "".join(parts),
                          "meta": {}})
 
@@ -772,11 +842,17 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     if reporters:
         parts = ["現地の番記者の投稿です。翻訳したもので、"
                  "コレスポの見解ではありません。"]
-        for r in reporters[:REPORTERS_SHOWN]:
-            body = r.get("jp") or r.get("text", "")
-            # 訳が付いていない場合は原文が入る。原文は長いので、
-            # 読み上げが尺を食いすぎないよう頭で切る。
-            parts.append(f"{r.get('outlet', '')}の記者。{body[:90]}。")
+        # 文として終わるところまで取れた投稿だけを使う。
+        # 途中で切って句点を足すと、意味の無い一文になる。
+        usable = []
+        for r in reporters:
+            body = clip_sentences(r.get("jp") or r.get("text", ""))
+            if body:
+                usable.append((r, body))
+            if len(usable) >= REPORTERS_SHOWN:
+                break
+        for r, body in usable:
+            parts.append(f"{r.get('outlet', '')}の記者。{body}")
         segments.append({"kind": "reporters", "text": "".join(parts),
                          "meta": {}})
 
