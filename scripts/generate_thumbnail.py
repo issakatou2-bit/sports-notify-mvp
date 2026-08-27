@@ -245,6 +245,49 @@ def draw_morning_press(d, day: str):
     d.text((70, H - 78), "コレスポ  現地の声", font=font(38), fill=JP)
 
 
+def draw_morning_player(d, day: str, profile_path="data/player_profile.json"):
+    """今日の1人。名前がそのまま検索語になる枠なので、名前を最大に出す。"""
+    name = team = ""
+    try:
+        prof = json.loads(
+            pathlib.Path(profile_path).read_text(encoding="utf-8"))
+        name, team = prof.get("name", ""), prof.get("team", "")
+    except (OSError, json.JSONDecodeError):
+        pass
+    d.text((70, 90), day, font=font(56), fill=DIM)
+    if name:
+        s = fit(d, name, W - 140, (150, 132, 116, 100, 88))
+        d.text((70, 180), name, font=font(s), fill=JP)
+        if team:
+            d.text((70, 360), team, font=font(64), fill=TEXT)
+    else:
+        d.text((70, 180), "今日の1人", font=font(132), fill=JP)
+    d.text((70, 460), "通算・今季・受賞歴まで", font=font(50), fill=TEXT)
+    d.text((70, H - 78), "コレスポ  今日の1人", font=font(38), fill=DIM)
+
+
+def draw_morning_voices(d, day: str, buzz_path="data/mlb_buzz.json"):
+    """ファンのコメント欄。どの試合の反応なのかを出す。"""
+    card = ""
+    try:
+        b = json.loads(pathlib.Path(buzz_path).read_text(encoding="utf-8"))
+        top = (b.get("videos") or [{}])[0]
+        res = top.get("result") or {}
+        away, home = res.get("away_jp", ""), res.get("home_jp", "")
+        if away and home:
+            card = f"{away} 対 {home}"
+    except (OSError, json.JSONDecodeError, IndexError):
+        pass
+    d.text((70, 90), day, font=font(56), fill=DIM)
+    d.text((70, 165), "現地のファンは", font=font(96), fill=TEXT)
+    d.text((70, 275), "何と言った？", font=font(124), fill=JP)
+    if card:
+        s = fit(d, card, W - 140, (60, 54, 48, 42))
+        d.text((70, 440), card, font=font(s), fill=TEXT)
+    d.text((70, 520), "コメント欄を翻訳。高評価の数つき", font=font(46), fill=DIM)
+    d.text((70, H - 78), "コレスポ  現地の声", font=font(38), fill=JP)
+
+
 def draw_verdict(d, label: str):
     d.text((70, 110), "注目した試合", font=font(76), fill=TEXT)
     d.text((70, 210), "どうなった？", font=font(140), fill=ACCENT)
@@ -269,8 +312,20 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict", "morning"])
     parser.add_argument("--recap", default="data/morning_recap.json")
+    # 選択肢は post_common.DAILY_LINEUP と揃える。
+    #
+    # ここに player と voices が無かった。ワークフローは4つのmodeを
+    # 順に渡しているので、その2つでargparseが終了コード2で落ちる。
+    # ループは set +e で回っているため次へ進み、投稿側は
+    # 「サムネイル画像が無いためスキップします」と1行出して公開する。
+    # 結果、今日の1人とファンのコメント欄には最初からサムネイルが無かった。
+    #
+    # 同じことが --morning-mode でも起きている(press が選択肢に無く、
+    # 現地の声の動画が2日ぶん作られては捨てられていた)。
+    # 今度は run_checks.py が突き合わせる。
     parser.add_argument("--mode", default="players",
-                        choices=["players", "local", "press", "all"])
+                        choices=["players", "player", "voices",
+                                 "local", "press", "all"])
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--narration", default="public/narration.json")
     parser.add_argument("--asset-topic", default="mlb_abbr")
@@ -304,6 +359,10 @@ def main():
             pass
         if args.mode == "press":
             draw_morning_press(d, day)
+        elif args.mode == "player":
+            draw_morning_player(d, day)
+        elif args.mode == "voices":
+            draw_morning_voices(d, day)
         elif args.mode == "local":
             draw_morning_local(d, day)
         else:

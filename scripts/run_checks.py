@@ -500,6 +500,127 @@ def _third_party(script: str, seen=None) -> set:
     return out
 
 
+# 正規表現の中の逆斜線。書き換えの経路で \n が実際の改行に潰れるため、
+# 組み立てて使う(同じことが local_voices.py の単語境界でも起きている)。
+BS = chr(92)
+
+
+def _choices_of(script: str) -> dict:
+    """その台本の argparse が受け付ける値。{"--mode": {...}}"""
+    path = ROOT / "scripts" / script
+    if not path.exists():
+        return {}
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+    except SyntaxError:
+        return {}
+    out = {}
+    for node in ast.walk(tree):
+        if not (isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "add_argument"):
+            continue
+        flags = [a.value for a in node.args
+                 if isinstance(a, ast.Constant) and isinstance(a.value, str)]
+        ch = None
+        for kw in node.keywords:
+            if kw.arg == "choices" and isinstance(kw.value, (ast.List, ast.Tuple, ast.Set)):
+                vals = [e.value for e in kw.value.elts
+                        if isinstance(e, ast.Constant)]
+                if vals:
+                    ch = set(vals)
+        if ch:
+            for f in flags:
+                if f.startswith("--"):
+                    out[f] = ch
+    return out
+
+
+def check_arg_choices() -> int:
+    """
+    ワークフローが渡す値を、台本が受け付けるか。
+
+    なぜ要るのか:
+      同じ壊れ方が2回起きている。
+
+        1回目 upload_youtube.py の --morning-mode に press が無く、
+              現地の声の動画が2日ぶん作られては捨てられていた
+        2回目 generate_thumbnail.py の --mode に player と voices が無く、
+              その2枠には最初からサムネイルが1枚も付いていなかった
+
+      どちらも argparse が終了コード2で落ちるだけで、ループは
+      set +e で回っているから次へ進む。投稿側は「サムネイル画像が
+      無いためスキップします」と1行出して、そのまま公開する。
+      回は緑、動画は出る、絵だけが無い。
+
+    見るもの:
+      run: の中の `python scripts/X.py ... --flag 値`。
+      値が "$VAR" のときは、同じ run: の中の `for VAR in a b c` を
+      探して、その候補それぞれを見る。
+    """
+    step("渡している値を台本が受け付けるか")
+    try:
+        import yaml
+    except ImportError:
+        print("[info] pyyaml が無いため飛ばします")
+        return 0
+
+    bad = 0
+    for wf in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
+        try:
+            d = yaml.safe_load(wf.read_text(encoding="utf-8")) or {}
+        except yaml.YAMLError:
+            continue
+        for job in (d.get("jobs") or {}).values():
+            for st in (job.get("steps") or []):
+                run = st.get("run")
+                if not isinstance(run, str):
+                    continue
+                loops = {m.group(1): m.group(2).split()
+                         for m in re.finditer(
+                             r"for\s+(\w+)\s+in\s+\$\{[\w:+-]*?"
+                             r"([\w ]+?)\}", run)}
+                # 起動から、行末の \ で続く行までをひとまとまりで見る。
+                #
+                # 「行末の \ と改行」を先に試させる。逆にすると、
+                # 改行でない何か([^\n])が先に \ を食い、次の改行で
+                # 繰り返しが終わる。そこで正規表現としては成立して
+                # しまうので後戻りが起きず、2行目以降を見ないまま
+                # 「引数は \ だけ」という結果になる。
+                cmd_re = ("python" + BS + "s+scripts/([" + BS + "w_]+"
+                          + BS + ".py)((?:" + BS + BS + BS + "n|[^"
+                          + BS + "n])*)")
+                for m in re.finditer(cmd_re, run):
+                    ch = _choices_of(m.group(1))
+                    if not ch:
+                        continue
+                    arg_re = ("(--[" + BS + "w-]+)" + BS + 's+"?([^'
+                              + BS + 's"' + BS + BS + ']+)"?')
+                    for fm in re.finditer(arg_re, m.group(2)):
+                        flag, val = fm.group(1), fm.group(2)
+                        if flag not in ch:
+                            continue
+                        # "$mode" は for の候補に展開する。
+                        # "${PRIVACY:-public}" は既定値のほうを見る。
+                        # どちらでもない変数は、中身が分からないので触らない。
+                        vals = [val]
+                        dm = re.fullmatch(r"\$\{(\w+):-([^}]*)\}", val)
+                        vm = re.fullmatch(r"\$\{?(\w+)\}?", val)
+                        if dm:
+                            vals = loops.get(dm.group(1)) or [dm.group(2)]
+                        elif vm:
+                            vals = loops.get(vm.group(1), [])
+                        for v in vals:
+                            if v not in ch[flag]:
+                                bad += 1
+                                print(f"NG {wf.name} / {st.get('name', '?')}: "
+                                      f"{m.group(1)} {flag} に {v} を渡していますが、"
+                                      f"受け付けるのは "
+                                      f"{'、'.join(sorted(ch[flag]))} です")
+    print(f"{'ok ' if not bad else 'NG '} 受け付けない値 {bad}件")
+    return bad
+
+
 def check_root_imports() -> int:
     """
     直下の自作モジュールを使う台本が、そこへの経路を足しているか。
@@ -679,6 +800,7 @@ def main() -> int:
     failed += check_inventory()
     failed += check_commit_list()
     failed += check_secrets_passed()
+    failed += check_arg_choices()
     failed += check_root_imports()
     failed += check_deps_installed()
     failed += check_workflow_links()

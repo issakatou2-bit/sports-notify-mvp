@@ -26,24 +26,41 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT))
 
-# 動画の種類。頻度と狙いはコードから読めないので、ここに書く。
-# 「何を出しているか」の実体は upload_youtube 側から拾って突き合わせる。
+# 動画の種類。狙いはコードから読めないので、ここに書く。
+#
+# 時刻は書かない。post_common.DAILY_LINEUP から引く。
+# 直に書いていたら、日本人選手が「毎日16:30」(実際17:00)、
+# 現地の報道が「毎日21:00」(実際18:00)、サッカーが「毎日20:00」
+# (実際19:00)と、3つとも違っていた。しかも今日の1人と
+# ファンのコメント欄は、この表に載ってすらいなかった。
+import post_common as _pc                                  # noqa: E402
+
+_AT = {k: at for k, _, _, at in _pc.DAILY_LINEUP}
+
+
+def _when(kind: str, default: str = "手動") -> str:
+    at = _AT.get(kind)
+    return f"毎日{at} JST" if at else default
+
+
 VIDEO_KINDS = [
-    ("daily", "日次ショート", "毎日19:00 JST",
+    ("daily", "日次ショート", _when("daily"),
      "翌日の注目試合3つを、選んだ理由つきで", "daily_notify.yml"),
-    ("morning", "夕: 日本人選手", "毎日16:30 JST",
+    ("morning", "夕: 日本人選手", _when("morning"),
      "前夜の日本人選手を勝利貢献スコア順に", "morning_recap.yml"),
-    ("morning_local", "夕: 現地の注目度", "毎日18:00 JST",
-     "現地の再生回数と、話題に挙がったチーム", "morning_recap.yml"),
-    ("morning_press", "夜: 現地の声", "毎日21:00 JST",
+    ("morning_voices", "夕: ファンのコメント欄", _when("morning_voices"),
+     "最も見られたハイライトの反応を翻訳", "morning_recap.yml"),
+    ("morning_press", "夕: 現地の報道", _when("morning_press"),
      "現地の番記者の投稿と見出しを、翻訳して", "morning_recap.yml"),
-    ("daily_soccer", "サッカー日次", "毎日20:00 JST",
+    ("daily_soccer", "サッカー日次", _when("daily_soccer"),
      "その夜の欧州の注目試合3つを、理由つきで", "soccer_daily.yml"),
+    ("morning_player", "夜: 今日の1人", _when("morning_player"),
+     "MLB全体で最も活躍した選手を1人", "morning_recap.yml"),
     ("weekly", "週次まとめ", "毎週日曜",
      "1週間の振り返りと、予告した試合の答え合わせ", "weekly_summary.yml"),
     ("verdict", "答え合わせショート", "週次と同時",
      "注目試合に選んだカードが実際どうなったか", "weekly_summary.yml"),
-    ("asset", "資産動画", "手動(在庫として作り置き)",
+    ("asset", "資産動画", "毎日22:00 JST",
      "日付に依存しない知識もの", "asset_video.yml"),
 ]
 
