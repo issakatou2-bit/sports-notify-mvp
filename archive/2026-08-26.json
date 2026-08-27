@@ -48,7 +48,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "564631",
@@ -107,7 +112,12 @@
       ],
       "log_notes": [],
       "ai_summary": "昨季2位のレアル・マドリードと10位のレアル・ソシエダが対戦する。スペイン1部リーグの総当たり戦では、どのチームとの試合も順位争いに直結するため、昨季の成績差がある両チーム間の一戦は、シーズン全体の流れを左右する可能性がある。また、レアル・ソシエダには【日本代表の久保建英】が所属しており、マドリード相手にどのようなパフォーマンスを見せるかが注目される。",
-      "notification_hook": "久保建英、昨季2位マドリード相手にどう立ち向かうか"
+      "notification_hook": "久保建英、昨季2位マドリード相手にどう立ち向かうか",
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "825039",
@@ -180,7 +190,12 @@
       },
       "log_notes": [],
       "ai_summary": "カブスはナ・リーグ中地区で【首位との差5.5ゲーム】を追う2位の立場にあり、シーズン終盤の勝利が貴重になる局面にある。一方、ダイヤモンドバックスはナ・リーグ西地区で10.5ゲーム差の3位と地区優勝への道は遠いが、ワイルドカード(複数地区の上位チーム争い)での可能性を模索する段階である。先発は防御率2.61で13勝をあげるEdardo Rodriguezがダイヤモンドバックスを担当し、防御率4.15のMatthew Boydを擁するカブスとの投げ合いになる。屋根を閉じると打球が伸びにくくなるというチェイス・フィールドの特性が、両先発投手の投球がどう機能するかに影響を与えるか注目したい。",
-      "notification_hook": "防御率2.61のEdardo Rodriguez vs 直近10試合4勝6敗のカブス打線、投手戦の行方は"
+      "notification_hook": "防御率2.61のEdardo Rodriguez vs 直近10試合4勝6敗のカブス打線、投手戦の行方は",
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823180",
@@ -229,7 +244,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 9,
+        "away": 10,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823988",
@@ -291,7 +311,12 @@
           "text": "ガーディアンズは6連勝中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823255",
@@ -348,7 +373,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823096",
@@ -397,7 +427,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823825",
@@ -468,7 +503,12 @@
       },
       "log_notes": [],
       "ai_summary": "レッドソックスはア・リーグ東地区で【5連勝中】と勢いに乗り、地区首位との差を5.0ゲーム縮める展開が続く中、マーリンズはナ・リーグ東地区で2連敗中と足踏みしている状況だ。本シリーズはレッドソックスが先制して2勝0敗と主導権を握っており、決定力の差がさらに明確になる可能性がある。先発投手の実績でも、防御率2.79で16勝を挙げるSonny Grayに対し、マーリンズのRyan Gustoは防御率4.37で0勝3敗と大きく劣る。ローンデポ・パークは開閉式屋根で湿度をコントロールしつつも、MLB全体で得点が少ない球場とされるだけに、投手力の優位性がより際立つ展開に注目したい。",
-      "notification_hook": "Sonny Grayの防御率2.79が通用するか。レッドソックス吉田正尚との一戦。"
+      "notification_hook": "Sonny Grayの防御率2.79が通用するか。レッドソックス吉田正尚との一戦。",
+      "final_score": {
+        "home": 4,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822692",
@@ -525,7 +565,12 @@
           "text": "ロッキーズには菅野智之が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 13,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823506",
@@ -579,7 +624,12 @@
           "text": "ヤンキースは自地区2位、アストロズは自地区1位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 9,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822772",
@@ -641,7 +691,12 @@
           "text": "ロイヤルズは9連勝中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823584",
@@ -698,7 +753,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824878",
@@ -776,7 +836,12 @@
       },
       "log_notes": [],
       "ai_summary": "各地区で【首位を走るドジャースとブレーブス】による東西の強豪同士の対戦である。ドジャースは80勝52敗で西地区を9.5ゲーム差で独走し、直近10試合で7勝3敗と好調を維持している。一方ブレーブスは77勝55敗で東地区首位だが、直近10試合は4勝6敗と足踏み気味だ。注目は両先発投手の対比にある。ドジャース先発の佐々木朗希は114奪三振を記録する投手が、防御率6.23のAJ Smith-Shawverとどう投げ合うかが見どころとなる。",
-      "notification_hook": "佐々木朗希の114奪三振が、ブレーブス打線を黙らせるか。"
+      "notification_hook": "佐々木朗希の114奪三振が、ブレーブス打線を黙らせるか。",
+      "final_score": {
+        "home": 6,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824555",
@@ -838,7 +903,12 @@
           "text": "ホワイトソックスは自地区1位、レンジャーズは自地区2位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 10,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823015",
@@ -887,7 +957,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 7,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824963",
@@ -936,7 +1011,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 7,
+        "away": 4,
+        "winner": "home"
+      }
     }
   ],
   "ai_status": {
