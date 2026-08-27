@@ -939,6 +939,16 @@ def buzz_top(path: str) -> dict:
                                  f"{res['home_score']} {res['home_jp']}")
     elif v.get("matchup"):
         out["matchup_jp"] = v["matchup"]
+    # 何のハイライトかを日本語のひと言で。
+    #
+    # 公式は選手個人のハイライトも出す。そちらには対戦カードが
+    # 入っていないので、以前は英語の題を先頭40字で切ったものが
+    # そのまま動画の題になっていた。
+    # 「【MLB】CAL RALEIGH HOMERED IN FOUR STRAIGHT AT- 現地のファンは
+    #   何と言ったか」——単語の途中で切れていて、しかも
+    # 4打席連続本塁打への反応を集めた回だという前提が伝わらない。
+    if v.get("topic_jp"):
+        out["topic_jp"] = v["topic_jp"]
     return out
 
 
@@ -1019,7 +1029,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 「現地の声」だけでは、どの試合の話なのか見当が付かない。
         # 検索されるのは球団名なので、対戦を先頭へ置く。
         m = (buzz_top(buzz_path) or {})
-        card = m.get("matchup_jp") or ""
+        # 対戦カードがあればそれ、無ければ何のハイライトかを日本語で。
+        card = m.get("matchup_jp") or m.get("topic_jp") or ""
         # 返信が付いた一言を扱った回は、その件数を出す。
         # 「ファンの反応」は毎日同じ言い方になるが、件数はその日だけの数字で、
         # しかも「何を言ったらそんなに返ってきたのか」が残る。

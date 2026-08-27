@@ -39,6 +39,11 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
+try:
+    import anthropic
+except ImportError:                 # 訳せないだけ。取得そのものは動く
+    anthropic = None
+
 YOUTUBE_API = "https://www.googleapis.com/youtube/v3"
 
 # 公式以外(まとめ・転載)を除くため、チャンネル名が完全一致するものだけ使う。
@@ -46,6 +51,8 @@ OFFICIAL_CHANNEL_TITLE = "MLB"
 
 # ハイライトのタイトルは "Angels vs. Dodgers Game Highlights (8/9/26) | MLB Highlights"
 # のような形をしている。対戦カード部分だけを取り出す。
+TOPIC_MODEL = "claude-haiku-4-5-20251001"
+
 MATCHUP_RE = re.compile(r"^(.+?)\s+Game Highlights", re.I)
 
 
@@ -328,6 +335,10 @@ def build(api_key: str, hours: int = 30, top: int = 5,
         if res:
             r["result"] = res
 
+    # 何のハイライトかを日本語で持つ。題と読み上げの両方が使う。
+    for r in ranked[:top]:
+        r["topic_jp"] = topic_jp(r)
+
     for r in ranked[:top]:
         res = r.get("result") or {}
         tail = ""
@@ -374,10 +385,70 @@ def extract_matchup(title: str) -> str:
       "RANGERS vs. ANGELS: Official Full Game Highlights (August 10) | ..."
     後者のように ":" 区切りの但し書きが挟まることがあり、
     そのまま持つと「... 対 ...: Official Full」と読み上げてしまう。
+
+    公式は試合のハイライトだけでなく、選手個人のものも出す。
+      "CAL RALEIGH HOMERED IN FOUR STRAIGHT AT-BATS 🤯 | MLB Highlights"
+    これには対戦カードが入っていない。以前は先頭40字をそのまま
+    返していたので、"CAL RALEIGH HOMERED IN FOUR STRAIGHT AT-" という
+    単語の途中で切れた英語が、そのまま動画の題になっていた。
+    カードが無いなら空を返す。中身は topic_jp が別に持つ。
     """
     m = MATCHUP_RE.match(title)
-    raw = m.group(1).strip() if m else title[:40]
-    return raw.split(":")[0].strip()
+    raw = (m.group(1) if m else title).split(":")[0].strip()
+    # "X vs. Y" の形になっているものだけをカードとして扱う。
+    if not re.search(r"" + chr(92) + "bvs" + chr(92) + ".?" + chr(92) + "b",
+                     raw, re.I):
+        return ""
+    return raw
+
+
+def topic_jp(video: dict) -> str:
+    """その動画が何のハイライトかを、日本語のひと言で。
+
+    試合のハイライトなら「パイレーツ 対 ドジャース」。
+    選手個人のものなら題を訳して「カル・ローリーが4打席連続本塁打」。
+
+    なぜ訳すのか:
+      題が英語のまま出ると、開く前に何の動画か分からない。
+      「CAL RALEIGH HOMERED IN FOUR STRAIGHT AT-」では、
+      3本塁打への称賛を集めた回だという前提が伝わらないまま、
+      コメントの訳だけが流れることになる。前提が無い反応は読めない。
+
+    訳すのは1日1本ぶんで、しかもその日いちばん見られたものだけ。
+    """
+    card = jp_matchup(video.get("matchup") or "")
+    if card:
+        return card
+    raw = str(video.get("title") or "")
+    # "… | MLB Highlights" のような後ろの但し書きを落とす
+    raw = raw.split("|")[0].strip()
+    if not raw:
+        return ""
+    key = os.environ.get("ANTHROPIC_API_KEY")
+    if not (key and anthropic is not None):
+        return raw
+    try:
+        client = anthropic.Anthropic(api_key=key)
+        resp = client.messages.create(
+            model=TOPIC_MODEL, max_tokens=200,
+            messages=[{"role": "user", "content":
+                       "次はMLB公式のハイライト動画の題です。"
+                       "何が起きたかを日本語のひと言(30字以内)にしてください。"
+                       + chr(10) + chr(10) + raw + chr(10) + chr(10)
+                       + "条件:" + chr(10)
+                       + "- 選手名はカタカナにする" + chr(10)
+                       + "- 絵文字と煽り文句は落とす" + chr(10)
+                       + "- 書かれていないことを足さない" + chr(10)
+                       + "- 訳文だけを出力する"}],
+        )
+        out = "".join(b.text for b in resp.content
+                      if b.type == "text").strip()
+        if out and len(out) <= 40:
+            print(f"[info] ハイライトの題を訳しました: {raw[:50]} -> {out}")
+            return out
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] 題を訳せませんでした: {e}", file=sys.stderr)
+    return raw
 
 
 def jp_matchup(matchup: str) -> str:

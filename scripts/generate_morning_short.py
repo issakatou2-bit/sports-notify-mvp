@@ -1108,7 +1108,11 @@ def buzz_label(b: dict) -> str:
     if res.get("away_jp") and res.get("away_score") is not None:
         return (f"{res['away_jp']} {res['away_score']}"
                 f" - {res['home_score']} {res['home_jp']}")
-    return _jp_matchup(b.get("matchup", ""))
+    # 選手個人のハイライトには対戦カードが無い。その日の題を訳した
+    # ものが topic_jp に入っているので、そちらを読む。
+    # 英語のまま読み上げると、何の動画なのかが分からないまま
+    # コメントの訳だけが流れる。
+    return b.get("topic_jp") or _jp_matchup(b.get("matchup", ""))
 
 
 def _turning_point(res) -> str:

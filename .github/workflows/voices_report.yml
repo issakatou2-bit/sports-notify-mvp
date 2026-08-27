@@ -30,6 +30,9 @@ jobs:
       - name: Refresh highlight list
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          # 選手個人のハイライトは題に対戦カードが無い。
+          # その題を日本語のひと言に訳すのに要る。
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/mlb_buzz.py --out data/mlb_buzz.json
 
       - name: Report
