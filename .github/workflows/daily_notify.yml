@@ -328,6 +328,12 @@ jobs:
             --narration public/narration.json \
             --out build/video/thumb.png
 
+      # ショート用に、動画の1枚目(1080x1920)を切り出す。
+      # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
+      - name: Vertical thumbnail
+        run: |
+          bash scripts/shorts_thumbnail.sh build/video/collespo_short.mp4 build/video/short.png
+
       - name: Upload to YouTube
         if: steps.sanity.outcome == 'success'
         continue-on-error: true
@@ -341,7 +347,7 @@ jobs:
             --video build/video/collespo_short.mp4 \
             --games notable_games.json \
             --narration public/narration.json \
-            --thumbnail build/video/thumb.png \
+            --thumbnail build/video/short.png \
             --privacy public --publish-at "19:00"
 
       # 19時まで待って、通知とSNSを出す。

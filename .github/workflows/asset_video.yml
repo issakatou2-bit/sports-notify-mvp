@@ -182,10 +182,14 @@ jobs:
               --kind asset --asset-topic "$t" \
               --out "build/asset_$t/thumb.png"
 
+            # ショート用に、動画の1枚目(1080x1920)を切り出す。
+            # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
+            bash scripts/shorts_thumbnail.sh "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png"
+
             python scripts/upload_youtube.py \
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
-              --thumbnail "build/asset_$t/thumb.png" \
+              --thumbnail "build/asset_$t/short.png" \
               --privacy "${PRIVACY:-public}" $FORCE
             if [ $? -eq 0 ]; then
               echo "$t: 完了"

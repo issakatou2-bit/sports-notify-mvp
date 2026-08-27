@@ -181,6 +181,12 @@ jobs:
             --narration build/soccer_narration.json \
             --out build/soccer/thumb.png
 
+      # ショート用に、動画の1枚目(1080x1920)を切り出す。
+      # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
+      - name: Vertical thumbnail
+        run: |
+          bash scripts/shorts_thumbnail.sh build/soccer/collespo_short.mp4 build/soccer/short.png
+
       # 20:00に出す。この回は20:10前後に終わるので、間に合わなければ
       # そのまま即時公開に倒れる(予約が過去になるとAPIが弾くため)。
       - name: Upload to YouTube
@@ -197,7 +203,7 @@ jobs:
             --kind daily --sport soccer \
             --games data/soccer_games.json \
             --narration build/soccer_narration.json \
-            --thumbnail build/soccer/thumb.png \
+            --thumbnail build/soccer/short.png \
             --privacy public --publish-at "19:00"
 
       # SNSは競技ごとに別の投稿にする。MLBは19時に「明日の注目試合」、

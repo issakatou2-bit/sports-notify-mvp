@@ -128,6 +128,10 @@ jobs:
             --kind weekly \
             --out build/weekly/thumb.png
 
+          # ショート用に、動画の1枚目(1080x1920)を切り出す。
+          # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
+          bash scripts/shorts_thumbnail.sh build/weekly/collespo_weekly.mp4 build/weekly/short.png
+
       # 公開時刻を決める。
       #
       # これまで指定が無く、出来上がった順に公開していた。日次の完走に
@@ -145,7 +149,7 @@ jobs:
             --video build/weekly/collespo_weekly.mp4 \
             --games notable_games.json \
             --kind weekly \
-            --thumbnail build/weekly/thumb.png \
+            --thumbnail build/weekly/short.png \
             --privacy public --publish-at "22:00"
 
       # ---- 答え合わせショート ----
@@ -183,6 +187,10 @@ jobs:
           python scripts/generate_thumbnail.py \
             --kind verdict --out build/verdict/thumb.png
 
+          # ショート用に、動画の1枚目(1080x1920)を切り出す。
+          # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
+          bash scripts/shorts_thumbnail.sh build/verdict/collespo_verdict.mp4 build/verdict/short.png
+
       - name: Upload verdict short to YouTube
         continue-on-error: true
         env:
@@ -193,7 +201,7 @@ jobs:
           python scripts/upload_youtube.py \
             --video build/verdict/collespo_verdict.mp4 \
             --kind verdict \
-            --thumbnail build/verdict/thumb.png \
+            --thumbnail build/verdict/short.png \
             --privacy public
 
       # 投稿の記録を残す。

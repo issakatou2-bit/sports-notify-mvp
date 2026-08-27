@@ -266,6 +266,11 @@ jobs:
               --kind "morning" --recap data/morning_recap.json \
               --mode "$mode" --out "build/morning/thumb_${mode}.png"
 
+            # ショート用に、動画の1枚目(1080x1920)を切り出す。
+            # 上の16:9は、ショート棚では中央405pxに切り抜かれて
+            # 文字(x=70から)が丸ごと外へ出る。
+            bash scripts/shorts_thumbnail.sh "$VIDEO" "build/morning/short_${mode}.png"
+
             # 公開時刻はYouTubeに預ける。3本を同じ数分間に出すと、
             # 登録者には通知が固まって届き、どれか1本しか見られない。
             # かといって本数分のcronを立てると、取得も失敗点も3倍になる。
@@ -330,7 +335,7 @@ jobs:
               --recap data/morning_recap.json \
               --buzz data/mlb_buzz.json \
               --profile data/player_profile.json \
-              --thumbnail "build/morning/thumb_${mode}.png" \
+              --thumbnail "build/morning/short_${mode}.png" \
               --privacy public --publish-at "$AT" $FORCE; then
               echo "$mode: 投稿しました (公開 ${AT:-即時})"
             else
