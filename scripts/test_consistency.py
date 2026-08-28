@@ -104,7 +104,10 @@ if prof_path.exists():
     prof = json.loads(prof_path.read_text(encoding="utf-8"))
     title = uy.build_metadata("notable_games.json", "8月18日", "morning",
                               morning_mode="player")["snippet"]["title"]
-    check("タイトルの選手が、材料の選手と同じ", prof["name"] in title, True)
+    # 題はカタカナで出す(ラテン文字の綴りで始まると視聴継続が半分になる)。
+    # 見るのは「同じ選手か」であって「同じ綴りか」ではない。
+    check("タイトルの選手が、材料の選手と同じ",
+          uy.title_name(prof["name"]) in title, True)
     body = uy.build_metadata("notable_games.json", "8月18日", "morning",
                              morning_mode="player")["snippet"]["description"]
     line = ps.stat_line(prof, prof.get("career") or {})

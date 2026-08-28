@@ -63,7 +63,9 @@ def main() -> int:
                              morning_mode="player")["snippet"]
     title, desc = meta["title"], meta["description"]
     if prof.get("name"):
-        check("タイトルに選手名が入っている", prof["name"] in title)
+        # 題だけカタカナ。説明文とタグは綴りのまま(検索の当たりが違う)。
+        check("タイトルに選手名が入っている",
+              uy.title_name(prof["name"]) in title)
         check("説明文にも同じ選手名", prof["name"] in desc)
         check("タグに選手名", prof["name"] in meta["tags"])
     # 今季の数字を書くなら、いつ時点かも書く
