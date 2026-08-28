@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-27T06:01:44.855403+00:00",
+  "updated_at": "2026-08-28T06:01:59.160805+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -16,75 +16,71 @@
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 6,
+      "mentions": 7,
       "tone": "不振",
-      "gist": "ドジャースはブレーブスにKimに歩かされ連敗"
-    },
-    {
-      "team_id": "113",
-      "name": "レッズ",
-      "name_en": "Cincinnati Reds",
-      "mentions": 4,
-      "tone": "話題",
-      "gist": "レッズはSuárezらをウェーバー公開し9回7点差逆転"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ヤンキースはRodríguezの復帰とDolly Parto"
+      "gist": "Chris SaleにCGSOで完封され0-1で敗北"
     },
     {
       "team_id": "144",
       "name": "ブレーブス",
       "name_en": "Atlanta Braves",
-      "mentions": 3,
+      "mentions": 7,
       "tone": "好調",
-      "gist": "ブレーブスはKimの3ヶ月ぶり安打で歩かし逆転勝利"
+      "gist": "Chris Saleの完封とDrake Baldwinの先制"
     },
     {
-      "team_id": "120",
-      "name": "ナショナルズ",
-      "name_en": "Washington Nationals",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ナショナルズがLGBTQ+初の放送に関わる"
-    },
-    {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "タイガースはSkubalがドジャース移籍後初対戦へ"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 2,
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 4,
       "tone": "不振",
-      "gist": "カブスはシャットアウト負け、審判のバーク見落としが原因"
+      "gist": "ロイヤルズに11-2で大敗し、ファンからブーイングを受ける"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ローマ教皇がホワイトソックスの試合で配布されたポープハットを"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ヤンキースとの同地区ライバル対決でプレーオフ争いが激化"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "レッドソックスとの同地区ライバル対決でプレーオフ争いが激化"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 1,
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "statcast時代初の1シーズン100mph以上投球100"
+    },
+    {
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
+      "mentions": 2,
       "tone": "好調",
-      "gist": "ブリュワーズは82勝51敗で2026年初の勝ち越し確定"
+      "gist": "ブルージェイズをValenzuelaのエラーもあり11-2で"
     }
   ],
   "players": [
     {
-      "name": "大谷翔平",
-      "mentions": 1
-    },
-    {
-      "name": "佐々木朗希",
-      "mentions": 1
+      "name": "山本由伸",
+      "mentions": 5
     }
   ]
 }
