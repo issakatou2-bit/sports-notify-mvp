@@ -58,6 +58,8 @@ MIN_DURATION = {"intro": 4.5, "list": 6.5, "buzz": 7.5,
                 "talk": 7.5, "voices": 11.0, "outro": 4.0,
                 # 翻訳した文章は読む時間が要るので、数字の画面より長く取る
                 "reporters": 12.0, "headlines": 11.0,
+                # 7日間の合計。5行を目で追う画面
+                "week": 8.0,
                 # 「今日の1人」の画面
                 "p_intro": 5.0, "p_career": 6.0, "p_season": 6.0,
                 "p_recent": 6.0, "p_awards": 6.0, "p_quotes": 12.0,
@@ -404,6 +406,42 @@ def clip_sentences(jp: str, limit: int = REPORTER_MAX) -> str:
     return jp[:cut + 1] if cut >= 20 else ""
 
 
+def week_line(players: list, days: int = 7) -> tuple:
+    """今日の順位を、7日間の合計の中に置く。
+
+    なぜ足すのか:
+      この回はその日の数字と計算結果だけで終わる。1本1本は正しいが、
+      毎日「今日は誰が何点」で完結していて、昨日との繋がりが無い。
+      同じ順位でも、7日ずっと上位にいる人と今日だけ跳ねた人では
+      意味が違う。手元に13日ぶんの履歴があるので、そこは出せる。
+
+      新しい話題を足すのではなく、いま出している数字に奥行きを足す。
+      足し算しかしていないので、間違えようもない。
+
+    返すのは (読み上げる文, 画面に出す一覧)。
+    """
+    try:
+        import morning_recap as _mr
+        week = _mr.weekly_ranking(days=days)
+    except Exception:                            # noqa: BLE001
+        return "", []
+    if len(week) < 3:
+        return "", []
+    top = week[0]
+    today = players[0].get("name") if players else ""
+    lead = f"この{days}日間の合計では、{speech_name(top['name'])}が"     f"{top['total']}点で1位です。"
+    if today and today == top["name"]:
+        # 今日の1位が週でも1位なら、そう言ったほうが強い。
+        lead = (f"{speech_name(today)}は、この{days}日間の合計でも"
+                f"{top['total']}点で1位です。")
+    elif today:
+        for i, w in enumerate(week, 1):
+            if w["name"] == today:
+                lead += f"今日1位の{speech_name(today)}は{i}位。"
+                break
+    return lead, week[:5]
+
+
 def press_premise(heads: list) -> str:
     """今日の報道が何についてのものか。数えるだけで、評価はしない。
 
@@ -645,6 +683,16 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 "text": spoken_list(chunk, i),
                 "meta": {"start": i, "count": len(chunk)},
             })
+
+    # その日の順位を、7日間の合計の中に置く。
+    #
+    # この回は数字と計算結果だけで終わっていて、昨日との繋がりが無い。
+    # 同じ1位でも、ずっと上にいる人と今日だけ跳ねた人では意味が違う。
+    if want_players and players:
+        line, week = week_line(players)
+        if line:
+            segments.append({"kind": "week", "text": line,
+                             "meta": {"week": week}})
 
     # ファンの声の回。コメントを読む前に、何の試合なのかを立てる。
     #
@@ -1239,6 +1287,45 @@ def scoreboard_ready(res) -> bool:
         if sum((i.get(side) or 0) for i in innings) != final:
             return False
     return True
+
+
+def render_week(p, rows, today: str = ""):
+    """7日間の合計。今日の順位を、週の中に置いて見せる。
+
+    その日の数字だけだと、毎日そこで完結して昨日と繋がらない。
+    同じ1位でも、ずっと上にいる人と今日だけ跳ねた人では意味が違う。
+    合計と試合数を並べれば、その差がそのまま出る。
+
+    今日の1位には印を付ける。どこにいるのかが一目で分かる。
+    """
+    im, d = base(p)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    d.text((70, 180), "この7日間の合計", font=font(64), fill=ACCENT)
+    d.text((74, 268), "勝利貢献スコアの積み上げ", font=font(32), fill=DIM)
+
+    y = 360
+    for i, r in enumerate(rows[:5]):
+        if p < 0.08 + i * 0.09:
+            continue
+        me = today and r.get("name") == today
+        d.rounded_rectangle([60, y, W - 60, y + 130], 18,
+                            fill=ACCENT if me else SURF)
+        fg = BG if me else TEXT
+        d.text((100, y + 22), f"{i + 1}位", font=font(40),
+               fill=BG if me else DIM)
+        name = str(r.get("name", ""))
+        ns = fit(d, name, W - 460, (56, 50, 44, 38))
+        d.text((190, y + 16), name, font=font(ns), fill=fg)
+        tot = f"{r.get('total', 0)}点"
+        tw = d.textlength(tot, font=font(52))
+        d.text((W - 110 - tw, y + 18), tot, font=font(52), fill=fg)
+        d.text((190, y + 78), f"{r.get('games', 0)}試合　最高"
+               f"{r.get('best', 0)}点", font=font(32),
+               fill=BG if me else DIM)
+        y += 146
+    d.text((70, H - 120), "計算方法 collespo.com/score.html",
+           font=font(32), fill=DIM)
+    return im
 
 
 def render_praise(p, rows):
@@ -2282,6 +2369,9 @@ def main():
                                      meta.get("count", 1))
                 elif kind == "buzz":
                     im = render_buzz(pp, buzz, picks)
+                elif kind == "week":
+                    im = render_week(pp, meta.get("week") or [],
+                                     players[0].get("name") if players else "")
                 elif kind == "praise":
                     im = render_praise(
                         pp, ((voices_data or {}).get("jp_praise") or [])
