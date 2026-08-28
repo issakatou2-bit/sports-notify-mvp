@@ -894,6 +894,8 @@ def main():
                             stderr=err_file)
 
     frame_no = 0
+    # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
+    last_frame = None
     try:
         for seg_i, seg in enumerate(segments):
             dur = max(2.0, float(seg.get("duration") or 0) or 4.0)
@@ -905,6 +907,8 @@ def main():
             set_spoken(seg.get("text") or "")
             meta = seg.get("meta") or {}
             cached = None
+            # 最初の画面は前が無いので混ぜない
+            fade = 0 if seg_i == 0 else int(post_common.FADE_SECONDS * FPS)
             for k in range(n):
                 p_ = k / max(1, n - 1)
                 if p_ > ANIM_END and cached is not None:
@@ -931,9 +935,10 @@ def main():
                     im = render_news(p_, seg.get("text", ""))
                 else:
                     im = render_outro(p_)
-                cached = im.tobytes()
+                cached = post_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
                 frame_no += 1
+            last_frame = cached
             print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")
     finally:
         if proc.stdin:

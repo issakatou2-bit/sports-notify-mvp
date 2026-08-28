@@ -426,3 +426,42 @@ def fit_budget(segs, durations, drop_order, limit=MAX_SECONDS):
         print(f"[info] {limit:.0f}秒に収めるため{len(dropped)}画面を外しました: "
               f"{chr(12289).join(dropped)} -> {total:.0f}秒")
     return keep, dropped
+
+
+
+# ---------------------------------------------------------------------------
+# 画面の切り替え
+# ---------------------------------------------------------------------------
+#
+# これまで画面は瞬間的に入れ替わっていた。1フレームで別の絵になる。
+#
+# 実測の離脱曲線では、どの回も動画の12〜21%(およそ5〜14秒)で人が急に
+# 減る。ちょうど1枚目が終わって次の画面が始まる位置。中身の問題も
+# あるが、切り替えそのものが「終わった」という合図になっている面が
+# ある。溶けて変わるなら、まだ続いていると読める。
+#
+# ffmpegのxfadeフィルタは入力を分ける必要があり、いまの
+# 「生フレームを標準入力へ流し込む」作りとは噛み合わない。
+# 描く側で混ぜれば同じことができて、しかも1行で済む。
+FADE_SECONDS = 0.28
+
+
+def crossfade(prev_bytes, im, k: int, fade_frames: int, size):
+    """切り替わりの最初の数フレームだけ、前の画面と混ぜる。
+
+    prev_bytes は直前の画面の最後のフレーム(生のRGB)。
+    k はこの画面の何フレーム目か。返すのは書き出す生バイト。
+
+    混ぜるのは頭だけで、そのあとは素通し。全編に効かせると
+    動きのある画面(スコアボードが左から開く等)が濁る。
+    """
+    raw = im.tobytes()
+    if not prev_bytes or k >= fade_frames or fade_frames <= 0:
+        return raw
+    from PIL import Image
+    prev = Image.frombytes("RGB", size, prev_bytes)
+    # 直線ではなく、後半で一気に切り替わる形にする。
+    # 直線だと中間で両方が半分ずつ見えている時間が長く、
+    # 文字が二重に読めて、かえって読みにくい。
+    a = ((k + 1) / fade_frames) ** 0.6
+    return Image.blend(prev, im, a).tobytes()

@@ -2137,6 +2137,8 @@ def build_player_video(args):
     err_file = open(out_dir / "ffmpeg_error.log", "wb")
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
                             stdout=subprocess.DEVNULL, stderr=err_file)
+    # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
+    last_frame = None
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
             set_step(seg_i, len(segs))
@@ -2147,14 +2149,17 @@ def build_player_video(args):
             kind = seg.get("kind")
             draw = ps.RENDERERS.get(kind)
             cached = None
+            # 最初の画面は前が無いので混ぜない
+            fade = 0 if seg_i == 0 else int(post_common.FADE_SECONDS * FPS)
             for k in range(n):
                 pp = k / max(1, n - 1)
                 if pp > ANIM_END and cached is not None:
                     proc.stdin.write(cached)
                     continue
                 im = draw(pp, prof) if draw else render_outro(pp, "player")
-                cached = im.tobytes()
+                cached = post_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
+            last_frame = cached
             print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")
     finally:
         if proc.stdin:
@@ -2356,6 +2361,8 @@ def main():
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
                             stdout=subprocess.DEVNULL, stderr=err_file)
     total = 0
+    # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
+    last_frame = None
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
             set_step(seg_i, len(segs))
@@ -2365,6 +2372,8 @@ def main():
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
+            # 最初の画面は前が無いので混ぜない
+            fade = 0 if seg_i == 0 else int(post_common.FADE_SECONDS * FPS)
             for k in range(n):
                 pp = k / max(1, n - 1)
                 if pp > ANIM_END and cached is not None:
@@ -2412,9 +2421,10 @@ def main():
                         pp, reporters_data.get("headlines") or [])
                 else:
                     im = render_outro(pp, args.mode)
-                cached = im.tobytes()
+                cached = post_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
                 total += 1
+            last_frame = cached
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:
         if proc.stdin:
