@@ -472,11 +472,24 @@ def press_premise(heads: list) -> str:
             f"{len(heads)}件のうち{n}件、{len(outlets)}媒体が報じています。")
 
 
-def spoken_list(chunk: list, start: int) -> str:
-    """1画面ぶんの読み上げ。触れない選手は人数だけ言う。"""
+def spoken_list(chunk: list, start: int, said_already: str = "") -> str:
+    """1画面ぶんの読み上げ。触れない選手は人数だけ言う。
+
+    said_already は、冒頭で既に成績まで読んだ選手の名前。
+    その人はここで成績を繰り返さず、順位と点だけにする。
+
+    冒頭は「山本由伸は6回3分の1 8奪三振 防御率1.42 4被安打。」で始まり、
+    次の画面が「1位、山本由伸、6回3分の1 8奪三振 防御率1.42 4被安打。」
+    だった。同じ数字を2回続けて聞かされることになる。
+    """
     parts, skipped, names = [], 0, []
     for j, p in enumerate(chunk):
         rank = start + j + 1
+        if said_already and p.get("name") == said_already:
+            score = morning_recap.score_label(p)
+            parts.append(f"{rank}位は{p['name']}。"
+                         + (f"スコア{score}。" if score else ""))
+            continue
         if worth_speaking(p, rank):
             score = morning_recap.score_label(p)
             parts.append(
@@ -680,7 +693,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             chunk = players[i:i + PER_PAGE]
             segments.append({
                 "kind": "list",
-                "text": spoken_list(chunk, i),
+                # 冒頭で成績まで読んだ選手は、ここで繰り返さない
+                "text": spoken_list(chunk, i, top.get("name", "") if top else ""),
                 "meta": {"start": i, "count": len(chunk)},
             })
 

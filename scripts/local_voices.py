@@ -286,6 +286,8 @@ def translate(client, items: list) -> list:
         "- 感想や補足は加えない。書かれていないことを足さない\n"
         "- 前置きや説明は不要"
     )
+    if not token_log.allowed("voices"):
+        return []
     resp = client.messages.create(
         # 4件の本文と、それぞれの返信3件まで。最大16行を訳す。
         # 元が220字まで許してあるので、日本語にすると1行200字近くなる

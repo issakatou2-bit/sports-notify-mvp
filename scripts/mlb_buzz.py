@@ -431,6 +431,8 @@ def topic_jp(video: dict) -> str:
         return raw
     try:
         client = anthropic.Anthropic(api_key=key)
+        if not token_log.allowed("topic"):
+            return raw
         resp = client.messages.create(
             model=TOPIC_MODEL, max_tokens=200,
             messages=[{"role": "user", "content":

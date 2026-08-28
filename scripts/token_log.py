@@ -43,6 +43,42 @@ PRICES = {
 DEFAULT_PRICE = {"in": 1.00, "out": 5.00}
 
 
+# 1日に使ってよい上限(ドル)。これを超えたら、その日はもう呼ばない。
+#
+# 実測は1日$0.045。10倍の余裕を取ってある。ここに当たるのは
+# 「同じ処理が繰り返し走る」「入力が想定より桁違いに大きい」など、
+# 意図しない使い方をしているときだけ。
+#
+# 自動リロードを入れると、残高が減っても止まらなくなる。
+# 止まらないこと自体は目的どおりだが、暴走したときの歯止めが
+# 無くなるということでもある。上限はこちらで持つ。
+#
+# 当たったときは、翻訳を飛ばして本編は出す。鍵が無い日と同じ経路で、
+# 動画は出るが現地の言葉が入らない状態になる。
+DAILY_LIMIT_USD = 0.50
+
+
+def spent_today(path: str = PATH) -> float:
+    day = datetime.now(JST).strftime("%Y-%m-%d")
+    return float((_load(path).get("days") or {}).get(day, {}).get("usd", 0.0))
+
+
+def allowed(who: str = "", path: str = PATH) -> bool:
+    """今日はまだ呼んでよいか。上限に当たっていたら False。"""
+    used = spent_today(path)
+    if used < DAILY_LIMIT_USD:
+        return True
+    print(f"[warn] 今日の使用が${used:.3f}で上限${DAILY_LIMIT_USD:.2f}に"
+          f"達したため、{who or 'この処理'}は呼びません")
+    s = os.environ.get("GITHUB_STEP_SUMMARY")
+    if s:
+        with open(s, "a", encoding="utf-8") as f:
+            f.write(f"**API使用が1日の上限に達しました** "
+                    f"(${used:.3f} / ${DAILY_LIMIT_USD:.2f})。"
+                    f"{who or 'この処理'}を飛ばしました{chr(10)}")
+    return False
+
+
 def _load(path: str = PATH) -> dict:
     try:
         return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
