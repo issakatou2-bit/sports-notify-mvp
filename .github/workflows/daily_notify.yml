@@ -491,7 +491,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "video record: ${{ github.run_id }}" \
-            data/published_videos.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json
+            data/published_videos.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json data/token_usage.json
 
       - name: Save video as artifact
         uses: actions/upload-artifact@v4

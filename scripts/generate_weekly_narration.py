@@ -34,6 +34,8 @@ import sys
 import weekly_ops
 import weekly_stats as ws
 
+import token_log  # noqa: E402
+
 try:
     import anthropic
 except ImportError:
@@ -130,6 +132,7 @@ def narrate(client, date_str: str, g: dict, index: int, total: int) -> str:
         model=MODEL, max_tokens=700,
         messages=[{"role": "user", "content": prompt}],
     )
+    token_log.record("weekly", MODEL, resp)
     if resp.stop_reason == "max_tokens":
         # 途中で切れた原稿は、読み上げると文の途中で終わる。
         # 使わずに簡易版へ落とす(notability_engine.py と同じ考え方)。

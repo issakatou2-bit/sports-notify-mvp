@@ -251,7 +251,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "soccer daily: ${{ github.run_id }}" \
-            data/published_videos.json data/published_tiktok.json data/soccer_games.json
+            data/published_videos.json data/published_tiktok.json data/soccer_games.json data/token_usage.json
 
       - name: Save video as artifact
         if: always()

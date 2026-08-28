@@ -41,6 +41,8 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
+import token_log  # noqa: E402
+
 # notability_engine はリポジトリ直下にある。
 # python scripts/local_voices.py で起動すると scripts/ しか経路に入らず、
 # jp_mentioned() の中の取り込みが ModuleNotFoundError になる。
@@ -292,6 +294,7 @@ def translate(client, items: list) -> list:
         model=MODEL, max_tokens=4000,
         messages=[{"role": "user", "content": prompt}],
     )
+    token_log.record("voices", MODEL, resp)
     cut = resp.stop_reason == "max_tokens"
     text = "".join(b.text for b in resp.content if b.type == "text")
 

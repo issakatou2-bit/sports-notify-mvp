@@ -396,6 +396,35 @@ def check_analytics() -> tuple:
             f"平均維持率 {avg:.1f}% |", 0)
 
 
+def check_credit() -> tuple:
+    """Anthropicの残高が、このペースであと何日持つか。
+
+    残高そのものはAPIで取れない(GET /v1/organizations/balance は404)。
+    だから消費のほうを数える。messages.create の応答には usage が
+    必ず入っているので、呼ぶたびに足していけば1日いくらかは出る。
+    残高は data/credit.json に人が一度書く。
+
+    月$1.36の出費を削ることに意味は薄い。切れたことに気づかないまま
+    数日止まるほうが、はるかに高くつく。
+    """
+    try:
+        import token_log
+        s = token_log.summary()
+    except Exception:                            # noqa: BLE001
+        return "", 0
+    if not s:
+        return "| APIの使用量 | まだ記録が無い | 次の回から溜まります |", 0
+    line = (f"| APIの使用量 | ${s['avg_usd']:.3f}/日 "
+            f"(月あたり ${s['month_usd']:.2f}) |")
+    if "days_left" not in s or s.get("days_left") is None:
+        return line + " data/credit.json に残高を入れると日数が出ます |", 0
+    d = s["days_left"]
+    if d < 14:
+        return (line + f" **残り${s['balance']:.2f}、あと{d}日** "
+                f"console.anthropic.com で足すか、自動リロードを |", 1)
+    return line + f" 残り${s['balance']:.2f}、あと{d}日 |", 0
+
+
 def check_playlists() -> tuple:
     d = load("data/playlists.json")
     if not d:
@@ -450,6 +479,7 @@ def main() -> int:
     hist_line, _ = check_history()
     pl_line, pl_bad = check_playlists()
     an_line, _ = check_analytics()
+    cr_line, cr_bad = check_credit()
 
     out = [f"# コレスポの健康診断  ({day} 分 / {now:%m-%d %H:%M} JST 時点)", ""]
     if missing or stale or pl_bad or empty or asset_bad:
@@ -464,6 +494,8 @@ def main() -> int:
     out += ["", "## 材料と記録", "",
             "| 対象 | 状態 | |", "|---|---|---|"]
     out += data_lines + [asset_line, hist_line, pl_line, an_line]
+    if cr_line:
+        out.append(cr_line)
     out += ["", "## 材料の中身", "",
             "先頭8件のうち、いくつ埋まっているか。"
             "ファイルが新しくても中身が空のことがある。", "",

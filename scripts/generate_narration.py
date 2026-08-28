@@ -50,6 +50,8 @@ from notability_engine import (  # noqa: E402
     is_soccer_league as _is_soccer_league,
 )
 
+import token_log  # noqa: E402
+
 try:
     import anthropic
 except ImportError:
@@ -573,6 +575,7 @@ def narrate_game(client, game: dict, index: int, total: int) -> str:
         max_tokens=300,
         messages=[{"role": "user", "content": prompt}],
     )
+    token_log.record("narration", MODEL, resp)
     return "".join(b.text for b in resp.content if b.type == "text").strip()
 
 

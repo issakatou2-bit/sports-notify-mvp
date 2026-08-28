@@ -43,6 +43,8 @@ from notability_engine import (  # noqa: E402
     MLB_TEAM_NAME_JP,
 )
 
+import token_log  # noqa: E402
+
 UA = {"User-Agent": "collespo/1.0 (+https://collespo.com)"}
 
 # 球団別サブレディット(r/Dodgers など)も試したが、外した。
@@ -216,6 +218,7 @@ def summarize_teams(ranked: list, titles: list, api_key: str) -> list:
             max_tokens=800,
             messages=[{"role": "user", "content": prompt}],
         )
+        token_log.record("buzz", "claude-haiku-4-5-20251001", msg)
         text = "".join(b.text for b in msg.content if b.type == "text")
     except Exception as e:  # noqa: BLE001
         print(f"[warn] 論調をまとめられませんでした: {e}", file=sys.stderr)

@@ -59,4 +59,4 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "localized: ${{ github.run_id }}" \
-            data/localized.json
+            data/localized.json data/token_usage.json

@@ -39,6 +39,8 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
+import token_log  # noqa: E402
+
 try:
     import anthropic
 except ImportError:                 # 訳せないだけ。取得そのものは動く
@@ -441,6 +443,7 @@ def topic_jp(video: dict) -> str:
                        + "- 書かれていないことを足さない" + chr(10)
                        + "- 訳文だけを出力する"}],
         )
+        token_log.record("topic", TOPIC_MODEL, resp)
         out = "".join(b.text for b in resp.content
                       if b.type == "text").strip()
         if out and len(out) <= 40:

@@ -37,6 +37,8 @@ import pathlib
 import re
 import sys
 
+import token_log  # noqa: E402
+
 MODEL = "claude-haiku-4-5-20251001"
 
 NUM = "([0-9]+(?:[.][0-9]+)?)"
@@ -285,6 +287,7 @@ def general(paths, api_key):
             model=MODEL, max_tokens=900,
             messages=[{"role": "user",
                        "content": PROMPT + "\n".join(chunks)[:6000]}])
+        token_log.record("sanity", MODEL, resp)
         txt = "".join(b.text for b in resp.content if b.type == "text").strip()
         m = re.search(r"\[.*\]", txt, re.S)
         return json.loads(m.group(0)) if m else []

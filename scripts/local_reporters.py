@@ -40,6 +40,8 @@ import requests
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import JP_PLAYERS_MLB, MLB_TEAM_NAME_JP  # noqa: E402
 
+import token_log  # noqa: E402
+
 BASE = "https://public.api.bsky.app/xrpc"
 UA = {"User-Agent": "collespo/1.0 (+https://collespo.com)"}
 
@@ -309,6 +311,7 @@ def translate(posts: list, api_key: str) -> list:
             max_tokens=1200,
             messages=[{"role": "user", "content": prompt}],
         )
+        token_log.record("reporters", "claude-haiku-4-5-20251001", msg)
         if msg.stop_reason == "max_tokens":
             print("[warn] 翻訳が途中で切れたため使いません", file=sys.stderr)
             return posts

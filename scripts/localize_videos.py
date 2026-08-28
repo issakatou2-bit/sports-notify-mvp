@@ -29,6 +29,8 @@ import os
 import pathlib
 import sys
 
+import token_log  # noqa: E402
+
 try:
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
@@ -112,6 +114,7 @@ def translate(ai, title: str, description: str) -> tuple:
     )
     resp = ai.messages.create(model=MODEL, max_tokens=1600,
                               messages=[{"role": "user", "content": prompt}])
+    token_log.record("localize", MODEL, resp)
     if resp.stop_reason == "max_tokens":
         raise RuntimeError("訳が途中で切れました")
     text = "".join(b.text for b in resp.content if b.type == "text")
