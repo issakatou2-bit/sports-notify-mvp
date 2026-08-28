@@ -1,20 +1,79 @@
 {
-  "generated_at": "2026-08-27T09:53:44.709328+00:00",
+  "generated_at": "2026-08-28T09:53:47.513975+00:00",
   "games": [
     {
-      "game_id": "564630",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-81",
-      "away_team_id": "PD-77",
-      "home_team_name": "バルセロナ",
-      "away_team_name": "アスレティック・ビルバオ",
+      "game_id": "565776",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-5",
+      "away_team_id": "BL1-10",
+      "home_team_name": "バイエルン",
+      "away_team_name": "シュツットガルト",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "アスレティック・ビルバオ vs バルセロナ",
+      "matchup": "シュツットガルト vs バイエルン",
       "abbr_matchup": null,
-      "start_time_jst": "08/28 04:00",
+      "start_time_jst": "08/29 03:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [
+        {
+          "name": "伊藤洋輝",
+          "context": "所属チームの試合"
+        }
+      ],
+      "jp_players": [
+        "伊藤洋輝"
+      ],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "バイエルンには伊藤洋輝が所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "バイエルン の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季1位のバイエルンと4位のシュツットガルト",
+          "weight": 3
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "昨季のブンデスリーガで優勝したバイエルンと、昨季4位のシュツットガルトが対戦する。両チームの実力差を測る重要な一戦となる。【昨季の成績差】を背景に、新シーズンの立ち上がりでどちらが優位に立つかが焦点になる。また、バイエルンに所属する伊藤洋輝の活躍がどうなるかに注目したい。",
+      "notification_hook": "伊藤洋輝のバイエルン、昨季優勝チームの開幕戦での仕上がりは"
+    },
+    {
+      "game_id": "559702",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-521",
+      "away_team_id": "FL1-524",
+      "home_team_name": "リール",
+      "away_team_name": "パリ・サンジェルマン",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "パリ・サンジェルマン vs リール",
+      "abbr_matchup": null,
+      "start_time_jst": "08/29 03:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -29,39 +88,142 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 1,
+      "score": 4,
       "game_type": "R",
       "is_notable": true,
       "reasons": [
         {
           "tag": "quality",
-          "text": "バルセロナ の試合",
+          "text": "パリ・サンジェルマン の試合",
           "weight": 1
         },
         {
           "tag": "quality",
-          "text": "昨季1位と12位の対戦",
-          "weight": 0
+          "text": "昨季3位のリールと1位のパリ・サンジェルマン",
+          "weight": 3
         }
       ],
       "log_notes": [],
-      "ai_summary": "昨季のラ・リーガで【1位と12位】の成績を収めた両チームの対戦である。開幕戦に近いこの時点では順位表がまだ形成途上にあるが、前シーズンの成績差は両チームの実力を大きく示唆している。バルセロナはスペイン国内で最高峰の実力を持つ強豪として、アスレティック・ビルバオはそこに近づくための課題を多く抱えるチームとして、この一戦に臨むことになる。両チームがどのような戦術で対峙し、どちらが試合をコントロールするのかが見どころである。",
-      "notification_hook": "昨季1位バルセロナ、12位ビルバオの実力差を開幕カードで検証。"
+      "ai_summary": "リーグ・アン開幕直後の一戦として、昨季1位のパリ・サンジェルマンと昨季3位のリールが対戦する。フランス最高峰のリーグで、昨シーズン上位に位置していた両強豪がシーズン序盤から激突することで、【両チームの現在地を測る重要な指標】となる。各チームがどのような戦力で今季に臨んでいるのか、その強さの相対的な位置関係がこの試合で見えてくることになる。両チームの攻撃力の構成にどう変化が見られるか、守備の立て直しがどこまで進んでいるかに注目したい。",
+      "notification_hook": "昨季1位PSGと3位リール、シーズン序盤の実力試し。"
     },
     {
-      "game_id": "564636",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-558",
-      "away_team_id": "PD-79",
-      "home_team_name": "セルタ",
-      "away_team_name": "オサスナ",
+      "game_id": "558625",
+      "league": "セリエA",
+      "home_team_id": "SA-98",
+      "away_team_id": "SA-454",
+      "home_team_name": "ACミラン",
+      "away_team_name": "ベネチア",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "オサスナ vs セルタ",
+      "matchup": "ベネチア vs ACミラン",
       "abbr_matchup": null,
-      "start_time_jst": "08/28 03:30",
+      "start_time_jst": "08/29 03:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ACミラン の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季5位のACミラン",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "セリエAの開幕戦に当たるこの一戦は、昨季5位のACミランがシーズンをどのように始めるかを占う重要な試合となる。セリエAは全20チームが総当たり戦で争うリーグであり、開幕直後の一試合一試合が長いシーズンの流れを左右する可能性を持つ。ベネチアとの対戦で、ミランがどのような立ち上がりを見せるか、そして両チームの戦術がどのようにぶつかるかに注目したい。",
+      "notification_hook": "昨季5位ミラン、シーズン開幕戦でどう始動する。"
+    },
+    {
+      "game_id": "560555",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-354",
+      "away_team_id": "PL-65",
+      "home_team_name": "クリスタル・パレス",
+      "away_team_name": "マンチェスター・シティ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "マンチェスター・シティ vs クリスタル・パレス",
+      "abbr_matchup": null,
+      "start_time_jst": "08/29 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [
+        {
+          "name": "鎌田大地",
+          "context": "所属チームの試合"
+        }
+      ],
+      "jp_players": [
+        "鎌田大地"
+      ],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "クリスタル・パレスには鎌田大地が所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "マンチェスター・シティ の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季15位と2位の対戦",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "game_id": "564654",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-5335",
+      "away_team_id": "PD-285",
+      "home_team_name": "ラシン・サンタンデール",
+      "away_team_name": "エルチェ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "エルチェ vs ラシン・サンタンデール",
+      "abbr_matchup": null,
+      "start_time_jst": "08/29 02:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -78,22 +240,52 @@
       "away_has_jp": false,
       "score": 0,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
+      "reasons": []
+    },
+    {
+      "game_id": "564648",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-263",
+      "away_team_id": "PD-94",
+      "home_team_name": "アラベス",
+      "away_team_name": "ビジャレアル",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ビジャレアル vs アラベス",
+      "abbr_matchup": null,
+      "start_time_jst": "08/29 04:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
       "reasons": [
         {
           "tag": "quality",
-          "text": "昨季6位と16位の対戦",
+          "text": "昨季14位と3位の対戦",
           "weight": 0
         }
-      ],
-      "log_notes": [],
-      "ai_summary": "ラ・リーガの総当たり戦では、前シーズンの成績が大きく異なるチーム同士の対戦も重要な意味を持つ。【昨季6位のオサスナと16位のセルタ】による本対戦は、シーズン序盤から両チームの実力差がどこまで反映されるかを見極める機会となる。開幕直後の時点では順位の変動も大きいため、ここでの結果がシーズン全体に与える影響は限定的であるが、両チームの攻撃力と守備の安定性がぶつかる局面に注目したい。",
-      "notification_hook": "昨季6位と16位の力の差が、開幕戦で明らかになるか。"
+      ]
     }
   ],
   "ai_status": {
-    "targets": 2,
-    "succeeded": 2,
-    "cost_usd": 0.00684
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.00999
   }
 }

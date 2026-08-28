@@ -1,16 +1,16 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 112,
-    "home_wins": 64,
+    "games": 114,
+    "home_wins": 65,
     "draws": 0,
-    "away_wins": 48,
+    "away_wins": 49,
     "home_win_pct": 57,
-    "avg_total": 8.7,
-    "one_run": 33,
-    "one_run_pct": 29,
-    "shutouts": 15,
-    "shutout_pct": 13
+    "avg_total": 8.6,
+    "one_run": 34,
+    "one_run_pct": 30,
+    "shutouts": 16,
+    "shutout_pct": 14
   },
   "same_division": {
     "games": 28,
@@ -40,6 +40,10 @@
     "リグレー・フィールド": {
       "games": 9,
       "avg_total": 9.6
+    },
+    "ヤンキー・スタジアム": {
+      "games": 5,
+      "avg_total": 9.2
     },
     "ペトコ・パーク": {
       "games": 5,
