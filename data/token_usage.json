@@ -1,20 +1,20 @@
 {
   "days": {
     "2026-08-28": {
-      "calls": 5,
-      "in": 4024,
-      "out": 1481,
-      "usd": 0.01143,
+      "calls": 9,
+      "in": 6183,
+      "out": 2048,
+      "usd": 0.01643,
       "by": {
         "narration": {
-          "calls": 3,
-          "in": 1850,
-          "out": 280
+          "calls": 6,
+          "in": 3254,
+          "out": 488
         },
         "sanity": {
-          "calls": 1,
-          "in": 933,
-          "out": 592
+          "calls": 2,
+          "in": 1688,
+          "out": 951
         },
         "localize": {
           "calls": 1,
