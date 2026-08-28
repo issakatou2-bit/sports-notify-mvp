@@ -868,6 +868,41 @@ NEGATIONS = ("ない", "ません", "ではなく", "わけでは", "否定")
 MIN_HEAD = 8
 
 
+def title_name(name: str) -> str:
+    """題に出す選手名。ラテン文字ならカタカナにする。
+
+    なぜ要るのか:
+      実測で、題の先頭がラテン文字の選手名だった回は視聴継続が
+      16.9% / 19.0% / 19.1% と、3本とも同じところに固まっていた。
+      同じ枠の日本語のフックは42〜50%。日本からの視聴が97.6%で、
+      検索されるのもカタカナの名前なので、読めない綴りで始まると
+      そこで止まる。
+
+      日次の回はフックの順序を入れ替えて日本語が先に来るようにしたが、
+      「今日の1人」はMLB全体から選ぶ枠なので、そもそも日本人でない日が
+      ほとんど。名前を変えるのではなく、表記を変える。
+
+      日本語の名前はそのまま。speech_name は読み上げ用なので
+      「大谷翔平」を「オオタニ・ショウヘイ」にしてしまう。
+      題は目で読むものなので、漢字のままがよい。
+    """
+    if not name:
+        return ""
+    if any("ぁ" <= c <= "ヿ" or "一" <= c <= "鿿" for c in name):
+        return name                      # 日本語の名前はそのまま
+    try:
+        import generate_morning_short as _g
+        kana = _g.speech_name(name).replace("、", "").strip()
+    except Exception:                    # noqa: BLE001
+        return name
+    # 変換できなかった(綴りがそのまま返る)ときは元のまま
+    if not kana or kana == name:
+        return name
+    if any(c.isascii() and c.isalpha() for c in kana):
+        return name
+    return kana
+
+
 def _clip(jp: str, limit: int) -> str:
     """収まる範囲に、文として完結している部分があれば返す。無ければ空。
 
@@ -1004,7 +1039,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # しかもこの回は「明日の試合」と違って古くならないので、
         # あとから名前で検索した人にも同じだけ役に立つ。
         prof = load_profile(profile_path)
-        who = prof.get("name") or ""
+        who = title_name(prof.get("name") or "")
         # 到達点があれば、それをタイトルに出す。
         #
         # 実測では「パドレス 6連勝中」が50.2%、「Kevin Gausman 移籍後2登板目」が
