@@ -186,6 +186,20 @@ def published_on(day: str) -> int:
     return n
 
 
+# 公開時刻を過ぎてから、何分待って判定するか。
+#
+# 見張りは日次の完走(19:01頃)で起動する。そのとき19:00の枠を
+# 「1分過ぎたから出ているはず」と判定していた。ところが19:00には
+# 2本あり、サッカーは別のワークフローで、まだ動画を作っている。
+# 8/27はそれで「サッカーが出ていない」と赤で終わったが、
+# 実際にはその後ちゃんと出て6/6になっている。
+#
+# 出ていないものを見逃すより、出ているものを「無い」と言うほうが悪い。
+# 赤が誤報だと分かると、次からは本当の赤も見なくなる。
+# 21:00の回では全部の枠が猶予を過ぎているので、取りこぼしはしない。
+PUBLISH_GRACE_MIN = 45
+
+
 def check_videos(day: str, only_past: bool = False) -> tuple:
     """
     その日の動画が投稿されたか。(行, 欠けている数) を返す。
@@ -195,7 +209,10 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
     毎回赤くなるだけで意味が無い。
     """
     rec = load("data/published_videos.json") or {}
-    now_hm = datetime.now(JST).strftime("%H:%M")
+    # 公開時刻そのものではなく、そこから猶予を引いた時刻と比べる。
+    # 動画を作って上げ終わるまでに時間がかかる。
+    judge_from = (datetime.now(JST)
+                  - timedelta(minutes=PUBLISH_GRACE_MIN)).strftime("%H:%M")
     # skipped は「出るはずが無かった枠」。サッカーの開催が無い日など。
     # これを本数に数えていたため、6本出た日を「7本中6本」と見なして
     # 材料の古さの補正が効かず、正常な日が毎回赤くなっていた。
@@ -203,8 +220,8 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
     for kind, label, at, since in EXPECTED_DAILY + OPTIONAL_DAILY:
         if day < since:
             continue  # その枠がまだ無かった日
-        if only_past and at > now_hm:
-            continue  # まだその時刻になっていない
+        if only_past and at > judge_from:
+            continue  # まだ出そろう時刻になっていない
         entry = (rec.get(kind) or {}).get(day)
         optional = any(kind == k for k, _, _, _ in OPTIONAL_DAILY)
         if entry:
