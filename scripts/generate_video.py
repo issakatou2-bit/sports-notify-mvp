@@ -25,6 +25,7 @@ import subprocess
 import sys
 
 import post_common  # noqa: E402
+import video_common  # noqa: E402
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -908,7 +909,7 @@ def main():
             meta = seg.get("meta") or {}
             cached = None
             # 最初の画面は前が無いので混ぜない
-            fade = 0 if seg_i == 0 else int(post_common.FADE_SECONDS * FPS)
+            fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
                 p_ = k / max(1, n - 1)
                 if p_ > ANIM_END and cached is not None:
@@ -935,7 +936,7 @@ def main():
                     im = render_news(p_, seg.get("text", ""))
                 else:
                     im = render_outro(p_)
-                cached = post_common.crossfade(last_frame, im, k, fade, (W, H))
+                cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
                 frame_no += 1
             last_frame = cached

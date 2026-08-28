@@ -33,6 +33,7 @@ from PIL import Image, ImageDraw, ImageFont
 import local_buzz
 import mentioned
 import post_common
+import video_common
 import local_voices
 import mlb_buzz
 import morning_recap
@@ -2150,14 +2151,14 @@ def build_player_video(args):
             draw = ps.RENDERERS.get(kind)
             cached = None
             # 最初の画面は前が無いので混ぜない
-            fade = 0 if seg_i == 0 else int(post_common.FADE_SECONDS * FPS)
+            fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
                 pp = k / max(1, n - 1)
                 if pp > ANIM_END and cached is not None:
                     proc.stdin.write(cached)
                     continue
                 im = draw(pp, prof) if draw else render_outro(pp, "player")
-                cached = post_common.crossfade(last_frame, im, k, fade, (W, H))
+                cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
             last_frame = cached
             print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")
@@ -2373,7 +2374,7 @@ def main():
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
             # 最初の画面は前が無いので混ぜない
-            fade = 0 if seg_i == 0 else int(post_common.FADE_SECONDS * FPS)
+            fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
                 pp = k / max(1, n - 1)
                 if pp > ANIM_END and cached is not None:
@@ -2421,7 +2422,7 @@ def main():
                         pp, reporters_data.get("headlines") or [])
                 else:
                     im = render_outro(pp, args.mode)
-                cached = post_common.crossfade(last_frame, im, k, fade, (W, H))
+                cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
                 total += 1
             last_frame = cached
