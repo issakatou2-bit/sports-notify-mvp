@@ -990,6 +990,30 @@ def build_output(
             home_name = g.home_team_name
             away_name = g.away_team_name
 
+        # 順位表を、その試合の両チームぶんだけ載せる。
+        #
+        # 順位のデータは generate_reasons に渡っていて、
+        # 「首位攻防戦」の条件(同地区・2ゲーム差以内)に当たった日だけ
+        # 文章になっていた。当たらない日はどこにも出ない。
+        # だが ai_summary は「ゲーム差8.5〜9.0」と書けている。
+        # 材料はあるのに、構造化された形で外へ出ていなかった。
+        #
+        # 順位・ゲーム差・直近10試合を持たせておけば、
+        # 「なぜ今日この試合か」を条件に当たった日以外でも語れる。
+        def _standing_dict(team_id):
+            s = standings.get(team_id)
+            if not s:
+                return None
+            return {
+                "rank": s.division_rank,
+                "games_back": s.games_back,
+                "streak": s.win_streak,
+                "wins": s.wins,
+                "losses": s.losses,
+                "last_ten": s.last_ten,
+                "points_back": s.points_back,
+            }
+
         output_games.append(
             {
                 "game_id": g.game_id,
@@ -1014,6 +1038,8 @@ def build_output(
                 "rivalry_type": rivalry_type,  # "historic" / "city" / None
                 "jp_starters": jp_starters,
                 "jp_players": jp_players,
+                "home_standing": _standing_dict(g.home_team_id),
+                "away_standing": _standing_dict(g.away_team_id),
                 "home_probable": _probable_dict(g.home_probable),
                 "away_probable": _probable_dict(g.away_probable),
                 "venue_name": g.venue_name,

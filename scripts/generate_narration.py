@@ -45,6 +45,7 @@ import unicodedata
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 import post_common  # noqa: E402
+import perspectives  # noqa: E402
 from notability_engine import (  # noqa: E402
     MLB_NAME_READINGS as _MLB_NAME_READINGS,
     is_soccer_league as _is_soccer_league,
@@ -549,6 +550,21 @@ def build_game_facts(game: dict) -> str:
     for r in (game.get("reasons") or [])[:4]:
         if r.get("visible", True) and r.get("text"):
             lines.append(f"注目理由: {r['text']}")
+
+    # 同じ試合を、いくつかの角度から読んだもの。
+    #
+    # 注目理由は「◯◯が所属」「連勝中」のような1行の事実で、
+    # なぜ今日その試合なのかまでは届いていなかった。
+    # 順位・勢い・先発・連戦・球場を並べると、シーズンの中の
+    # どこにある試合なのかが見える。
+    #
+    # いちばん効くのは食い違いで、「順位では上だが直近は負け越し」は
+    # その日その試合を見る理由そのものになる。先に置く。
+    for label, text in perspectives.read(game):
+        lines.append(f"{label}から見ると: {text}")
+    _t = perspectives.tension(game)
+    if _t:
+        lines.append(f"見どころ(食い違い): {_t}")
     for key, label in (("home_probable", "ホーム先発"), ("away_probable", "アウェイ先発")):
         p = game.get(key)
         if p and p.get("name"):
@@ -826,9 +842,21 @@ def _fallback_game_text(game: dict) -> str:
         f"{post_common.kickoff_display(game.get('start_time_jst') or '')}から、"
         f"{game.get('home_team_name')}対{game.get('away_team_name')}。"
     ]
-    for r in (game.get("reasons") or [])[:2]:
-        if r.get("visible", True) and r.get("text"):
-            parts.append(r["text"] + "。")
+    # 角度から読んだものを先に。無い日は元の注目理由に落ちる。
+    #
+    # ここは1試合70〜85字に収める枠なので、1つだけ選ぶ。
+    # 食い違いがあればそれが最も強い。無ければ最初の角度。
+    said = perspectives.tension(game)
+    if said:
+        parts.append(said)
+    else:
+        got = perspectives.read(game, limit=1)
+        if got:
+            parts.append(got[0][1])
+    if len(parts) == 1:
+        for r in (game.get("reasons") or [])[:2]:
+            if r.get("visible", True) and r.get("text"):
+                parts.append(r["text"] + "。")
     return "".join(parts)
 
 
