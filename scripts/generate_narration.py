@@ -203,6 +203,24 @@ def speech_name(name: str) -> str:
     return folded
 
 
+def display_name(name: str) -> str:
+    """画面と題に出す名前。ラテン文字ならカタカナ、日本語ならそのまま。
+
+    speech_name は読み上げ用なので「山本由伸」を「ヤマモト・ヨシノブ」に
+    する。声に出すぶんにはそれでよいが、目で読む題は漢字のほうがよい。
+    直すのはラテン文字の綴りだけ。実測で、題の先頭がラテン文字だった回は
+    視聴継続が16.9% / 19.0% / 19.1% と3本ともそろって低かった。
+    """
+    if not name:
+        return ""
+    if not any(c.isascii() and c.isalpha() for c in name):
+        return name
+    kana = speech_name(name)
+    if any(c.isascii() and c.isalpha() for c in kana):
+        return name          # カタカナに直せなかったときは綴りのまま
+    return kana
+
+
 def pick_hook(games: list) -> dict:
     """
     動画の1枚目に出す「最も具体的な事実」を選ぶ。
@@ -247,22 +265,12 @@ def pick_hook(games: list) -> dict:
             if m:
                 return {"big": m.group("what"), "sub": m.group("who"), "at": at}
 
-    # 3. 日本人選手が所属しているチームの試合。
-    #    打者のスタメンは前日には分からないので、「出場」「先発」とは書かない。
-    for at, g in enumerate(games):
-        for name in (g.get("jp_players") or []):
-            if name:
-                return {"big": "所属チームの一戦", "sub": name, "at": at}
-
-    # 4. 連続安打・移籍後初登板などの個人記録。
-    #    外国人選手が主語になりやすく、上の実測どおり弱いので後ろに置く。
-    for at, g in enumerate(games):
-        for note in g.get("log_notes") or []:
-            m = HOOK_RE.match((note or "").strip())
-            if m:
-                return {"big": m.group("what"), "sub": m.group("who"), "at": at}
-
-    # 5. 首位攻防戦(ゲーム差という具体的な数字が入る)
+    # 3. 首位攻防戦(ゲーム差という具体的な数字が入る)
+    #
+    #    所属より上に置く。「◯◯が所属」はシーズンを通してほぼ毎日
+    #    どこかで成り立つので、その日を選んだ理由になっていない。
+    #    ゲーム差はその日その時点の数字で、なぜ今日この試合なのかに
+    #    答えている。所属は見どころの一つとして、本編で触れれば足りる。
     for at, g in enumerate(games):
         for r in g.get("reasons") or []:
             if r.get("tag") != "div":
@@ -271,15 +279,40 @@ def pick_hook(games: list) -> dict:
             if m:
                 return {"big": f"ゲーム差{m.group(1)}の首位攻防戦", "sub": "", "at": at}
 
-    # 6. ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
-    #     サッカーには「連続安打」「移籍後初登板」に当たる個人記録が
-    #     APIから取れないので、上の1〜3は発火しない。ここが実質の先頭になる。
+    # 4. ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
+    #
+    #    理由の文は説明つきで長い。
+    #      「カブス vs ホワイトソックス は同都市対決 —
+    #        シカゴ市内を二分する『クロスタウン・クラシック』」
+    #    20字の上限で弾いていたので、シカゴ対決の日でもここが発火せず、
+    #    その下の個人記録(外国人選手名)へ落ちていた。
+    #    鉤括弧の中に呼び名が入っているので、そこを取り出す。
     for at, g in enumerate(games):
         for r in g.get("reasons") or []:
-            if r.get("tag") == "rivalry" and r.get("text"):
-                name = r["text"].strip()
-                if 3 <= len(name) <= 20:
-                    return {"big": name, "sub": "", "at": at}
+            if r.get("tag") != "rivalry" or not r.get("text"):
+                continue
+            text = r["text"].strip()
+            m = re.search(chr(12300) + "([^" + chr(12301) + "]{3,20})"
+                          + chr(12301), text)
+            name = m.group(1) if m else text
+            if 3 <= len(name) <= 20:
+                return {"big": name, "sub": "", "at": at}
+
+    # 5. 連続安打・移籍後初登板などの個人記録。
+    #    外国人選手が主語になりやすく、実測どおり弱いので後ろに置く。
+    for at, g in enumerate(games):
+        for note in g.get("log_notes") or []:
+            m = HOOK_RE.match((note or "").strip())
+            if m:
+                return {"big": m.group("what"), "sub": m.group("who"), "at": at}
+
+    # 6. 日本人選手が所属しているチームの試合。
+    #    打者のスタメンは前日には分からないので、「出場」「先発」とは書かない。
+    #    ここまで何も無かった日の受け皿。
+    for at, g in enumerate(games):
+        for name in (g.get("jp_players") or []):
+            if name:
+                return {"big": "所属チームの一戦", "sub": name, "at": at}
 
     # 7. サッカーで日本人選手が所属している場合。
     #     「先発予定」とは書かない。スタメンは前日には分からない。
@@ -663,6 +696,14 @@ def main():
     # 読み上げでは姓だけにする。画面は meta 経由で hook をそのまま受け取るので、
     # フルネームのまま表示される。
     _sub = speech_name(hook["sub"])
+    # 画面と題にもカタカナを渡す。
+    #
+    # これまで読み上げだけカタカナで、画面と題は綴りのままだった。
+    # 実測では題の先頭がラテン文字だった回の視聴継続が
+    # 16.9% / 19.0% / 19.1% と3本ともそろって低い。
+    # 日本からの視聴が97.6%で、検索されるのもカタカナ。
+    # 読み上げているのと同じ表記を出す。
+    hook = dict(hook, sub_jp=display_name(hook.get("sub", "")))
     lead = f"{_sub}は{_big}。" if _sub else f"{_big}。"
 
     # 冒頭は「具体的な事実 → 何の動画か」の順で、2文だけにする。

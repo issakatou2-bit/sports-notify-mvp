@@ -83,6 +83,18 @@ class PlayerHighlight:
     team_id: str
     is_japanese: bool
     stat_context: str  # 例: "本塁打王争いトップ", "防御率リーグ2位"
+    # 出場が確認できているか。
+    #
+    # MLBの先発投手は前日に公表される(schedule の probablePitcher)ので True。
+    # サッカーはスタメンが試合の1時間前まで出ないうえ、無料枠には
+    # ラインナップが入っていない。所属しか分からないので False。
+    #
+    # これを分けていなかったため、8/28のサッカーが
+    # 「伊藤洋輝 先発予定｜バイエルン vs シュツットガルト」で出た。
+    # 出るかどうか分からない選手を、出ると言っていたことになる。
+    # すぐ下の行に「無料枠では出場の有無は分からない」と書いてあるのに、
+    # その情報がここから先へ渡っていなかった。
+    is_starter: bool = False
 
 
 @dataclass
@@ -120,6 +132,47 @@ class Reason:
 # ---------------------------------------------------------------------------
 # 判定ルールはここに集約する。新しい注目軸を足したい場合はこの関数群に追加していく。
 
+# 何日ぶん遡って「いま出ている選手か」を見るか。
+#
+# 野手のスタメンは前日には分からない。だが直近ずっと出ていない選手なら、
+# 明日も出ない可能性のほうが高い。実際、8/28の題は
+# 「吉田正尚 所属チームの一戦」で出たが、当人はスタメンを外れていた。
+#
+# 5日にしてあるのは、休養日や代打起用を挟んでも拾えるため。
+# 投手は登板間隔があるので、この判定にはかけない
+# (先発予定は probablePitcher で別に確認できている)。
+ACTIVE_DAYS = 5
+
+
+def recently_played(days: int = ACTIVE_DAYS,
+                    hist_dir: str = "data/recap_history") -> set:
+    """直近で実際に成績を残した日本人選手の名前。
+
+    data/recap_history には、その日に出場して数字を残した選手だけが
+    並んでいる。つまりベンチだった選手や故障者はそこに現れない。
+    新しく何かを取りに行かなくても、出場しているかどうかはこれで分かる。
+
+    履歴が無い環境では空集合を返す。そのときは絞り込みをしない
+    (判断できないことを理由に落とすほうが害が大きい)。
+    """
+    import json as _json
+    from datetime import date as _date, timedelta as _td
+    out = set()
+    d = pathlib.Path(hist_dir)
+    if not d.exists():
+        return out
+    recent = sorted(f for f in d.glob("*.json"))[-days:]
+    for f in recent:
+        try:
+            data = _json.loads(f.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for pl in (data.get("players") or []):
+            if pl.get("name"):
+                out.add(pl["name"])
+    return out
+
+
 def rule_japanese_player(game: Game, jp_team_map: dict) -> list[Reason]:
     reasons = []
     covered_team_ids = set()
@@ -153,6 +206,16 @@ def rule_japanese_player(game: Game, jp_team_map: dict) -> list[Reason]:
     ):
         if team_id in jp_team_map and team_id not in covered_team_ids:
             names = jp_team_map[team_id]
+            # 直近に出ている選手だけを挙げる。
+            #
+            # 名簿にいることと、明日その試合に出ることは別。
+            # 履歴が取れない環境では絞り込まない(空集合が返る)。
+            active = recently_played()
+            if active:
+                playing = [n for n in names if n in active]
+                if not playing:
+                    continue          # 誰も直近で出ていないなら理由にしない
+                names = playing
             names_str = "・".join(names)
             reasons.append(
                 Reason(
@@ -169,15 +232,19 @@ def rule_japanese_player(game: Game, jp_team_map: dict) -> list[Reason]:
 def jp_roster_weight(count: int) -> int:
     """
     チームに所属する日本人選手の人数から、注目理由の重みを求める。
-    1人=2, 2人=3, 3人以上=4。人数が増えるほど「その試合を見る理由」が
-    増えるのは確かだが、比例させると1球団だけで他の全要素を押し流して
-    しまうため、頭打ちにしている。
+
+    以前は 1人=2, 2人=3, 3人以上=4 だった。頭打ちにはしてあったが、
+    それでも実際には所属だけで並びが決まっていた。日本人選手は10人以上が
+    各球団に散っているので、この理由はほぼ毎試合で両チームに立つ。
+    2点+2点=4点が下敷きになり、順位争い(2点)も連勝(2点)も
+    その上に少し乗るだけになる。「どの試合か」ではなく
+    「日本人がいるか」で並んでいた。
+
+    所属は見どころの一つであって、試合そのものの理由ではない。
+    1人=1、2人以上=2 に下げる。代わりに順位争いとゲーム差を上げて、
+    シーズンの文脈で並ぶようにする。
     """
-    if count <= 1:
-        return 2
-    if count == 2:
-        return 3
-    return 4
+    return 1 if count <= 1 else 2
 
 
 def rule_marquee_team(game: Game) -> list[Reason]:
@@ -358,7 +425,9 @@ def rule_division_race(game: Game, standings: dict) -> list[Reason]:
                         f"{game.away_team_name} vs {game.home_team_name} は"
                         f"首位攻防戦、ゲーム差はわずか{abs(home.games_back - away.games_back):.1f}"
                     ),
-                    weight=2,
+                    # 所属を下げたぶん、シーズンの文脈をここへ寄せる。
+                    # 「なぜ今日この試合か」に答えているのはこちら。
+                    weight=3,
                 )
             )
     return reasons
@@ -664,7 +733,7 @@ def rule_soccer_table(game: Game, standings: dict) -> list[Reason]:
             reasons.append(Reason(
                 tag="div",
                 text=f"首位争い、勝ち点差は{diff:.0f}",
-                weight=2))
+                weight=3))
     return reasons
 
 
@@ -869,10 +938,12 @@ def build_output(
         )
         rivalry_type = MLB_RIVALRIES.get(frozenset({g.home_team_id, g.away_team_id}))
 
+        # 出場が確認できている選手だけ。所属しか分からない選手をここに
+        # 入れると、読み上げも題も「先発予定」と言い切ってしまう。
         jp_starters = [
             {"name": p.name, "context": p.stat_context}
             for p in g.players
-            if p.is_japanese
+            if p.is_japanese and p.is_starter
         ]
 
         # 「先発かどうかに関わらず、この試合の両チームに所属している日本人選手」の
@@ -1984,6 +2055,7 @@ def fetch_mlb_games_and_standings(date_str: str):
                             team_id=str(team["id"]),
                             is_japanese=True,
                             stat_context="先発予定",
+                            is_starter=True,
                         )
                     )
 

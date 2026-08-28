@@ -1139,7 +1139,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # その日いちばん具体的な事実(動画の1枚目と同じもの)を先頭に出す。
         hook = load_hook(narration_path)
         big = (hook.get("big") or "").strip()
-        sub = (hook.get("sub") or "").strip()
+        # 題もカタカナ。ラテン文字で始まる回は視聴継続が半分になる。
+        sub = (hook.get("sub_jp") or hook.get("sub") or "").strip()
         lead = f"{sub} {big}".strip() if big else ""
         daily_lead = lead
         top = games[0]

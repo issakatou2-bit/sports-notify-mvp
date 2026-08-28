@@ -336,7 +336,8 @@ def render_intro(progress: float, date_label: str, meta: dict = None):
     im, d = base_frame(progress)
     hook = (meta or {}).get("hook") or {}
     big = hook.get("big") or f"{date_label} の注目試合"
-    sub = hook.get("sub") or ""
+    # カタカナがあればそちら(読み上げと同じ表記にする)
+    sub = hook.get("sub_jp") or hook.get("sub") or ""
 
     e = ease_out(min(1.0, progress * 2.6))
     slide = int((1 - e) * 70)
