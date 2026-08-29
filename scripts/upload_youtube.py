@@ -1163,12 +1163,22 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 0.5秒で判断できない。競技名自体が検索語でもあるので、
         # 先頭に置いても捨てた分は小さい。
         # 札は1つだけにする。【MLB】【毎日更新】と重ねると逆効果。
+        # 競技名のすぐ後ろに、その日の事実を置く。
+        #
+        # 「【MLB】明日の注目試合｜…」の形にしていたが、13本並べると
+        # 全部が同じ18文字で始まる。ショートのフィードでは題の先頭しか
+        # 見えないので、同じ動画を出し直しているようにしか見えない。
+        #
+        # 競技名を先頭に置く判断はそのまま(野球だけ・サッカーだけ見たい人が
+        # 0.5秒で判断できる、競技名自体が検索語でもある)。動かすのは
+        # 枠の名前のほう。「明日の注目試合」は毎日同じで、
+        # 判別には一切効いていない。
         when = post_common.overall_label(games) or "次"
-        head = f"{badge}{when}の注目試合"
+        slot = f"{when}の注目試合"
         if lead:
-            title = f"{head}｜{lead}｜{matchup} ほか #Shorts"
+            title = f"{badge}{lead}｜{slot}｜{matchup} ほか #Shorts"
         else:
-            title = f"{head}｜{matchup} ほか #Shorts"
+            title = f"{badge}{slot}｜{matchup} ほか #Shorts"
     else:
         title = (f"{SPORTS.get(sport, SPORTS['mlb'])['badge']}"
                  f"{date_label}の注目試合 #Shorts")
