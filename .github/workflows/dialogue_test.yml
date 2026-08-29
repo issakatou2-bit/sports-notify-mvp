@@ -1,0 +1,76 @@
+name: 道具　対話の台本を試す
+
+# 長編（3分・対話形式）の台本を、Haikuに書かせて見るだけ。
+#
+# 動画は作らない。投稿もしない。
+#
+# なぜ台本だけ先に見るのか:
+#   長編でいちばん分からないのが「Haikuでこの品質が出せるか」で、
+#   そこが駄目なら画面も音声も作る意味が無い。
+#   逆にここが通れば、残りは既にある部品の組み替えで済む
+#   (16:9の描画も、話者の切り替えも、通常動画としての投稿も、
+#    既に別の台本の中にある)。
+#
+#   渡す事実と、出てきた台本の両方を実行ページに出す。
+#   「材料に無いことを書いていないか」は、並べないと確かめられない。
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  dialogue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install
+        run: pip install -r scripts/requirements.txt
+
+      # その日のハイライトとコメントを取り直す。
+      # リポジトリに入っているものは前日の回のもので、
+      # しかもコメントを1試合に絞る前のものが混ざっている。
+      - name: Refresh highlight
+        continue-on-error: true
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/mlb_buzz.py --out data/mlb_buzz.json
+
+      - name: Refresh comments
+        continue-on-error: true
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/local_voices.py --out data/local_voices.json
+
+      - name: Write the dialogue
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/generate_dialogue.py --print-only \
+            > dialogue_out.txt 2>&1 || true
+          cat dialogue_out.txt
+          {
+            echo "## 対話の台本（試作）"
+            echo
+            echo "Haikuに書かせたものです。**渡した事実と、出てきた台本を"
+            echo "並べてあります。** 材料に無いことを書いていないかを、"
+            echo "ここで確かめられます。"
+            echo
+            echo '```'
+            cat dialogue_out.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dialogue
+          path: dialogue_out.txt
+          if-no-files-found: ignore
