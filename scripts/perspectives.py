@@ -56,28 +56,71 @@ def _ten(s):
         return None
 
 
+def _is_soccer(g: dict) -> bool:
+    try:
+        from notability_engine import is_soccer_league
+        return bool(is_soccer_league(g.get("league")))
+    except Exception:                            # noqa: BLE001
+        return False
+
+
+def _gap(g: dict, s: dict) -> tuple:
+    """首位との差を、その競技の言い方で。(数, 単位) を返す。
+
+    サッカーの Standing には points_back(勝ち点差)が入っていて、
+    games_back はそれを3で割った互換用の数字でしかない。
+    エンジン側にも「『ゲーム差』は野球の概念で、サッカーの画面に
+    そのまま出すと嘘になる」と書いてある。
+
+    実際そう出た。「シュツットガルトが地区4位、バイエルンが1位。
+    その差2.0ゲームです」——サッカーに地区もゲーム差も無い。
+    書いた時点で、その注意書きは読まれていなかった。
+    """
+    if _is_soccer(g) and s.get("points_back") is not None:
+        return s["points_back"], "勝ち点"
+    return s.get("games_back"), "ゲーム"
+
+
+def _place(g: dict) -> str:
+    """順位の呼び方。野球は地区、サッカーはリーグ。"""
+    return "リーグ" if _is_soccer(g) else "地区"
+
+
+def _diff_words(diff: float, unit: str) -> str:
+    """差の言い方。単位を後ろに付けるだけだと日本語が崩れる。
+
+    「その差6勝ち点です」は言わない。勝ち点差は「勝ち点差6」、
+    ゲーム差は「1.5ゲーム差」と、順番が逆になる。
+    """
+    if unit == "勝ち点":
+        return f"勝ち点差{diff:.0f}"
+    return f"{diff:.1f}ゲーム差"
+
+
 def lens_standings(g: dict) -> str:
     """順位の目。いまどこにいるか。"""
     h, a = g.get("home_standing") or {}, g.get("away_standing") or {}
     hn, an = g.get("home_team_name", ""), g.get("away_team_name", "")
     if not (h.get("rank") and a.get("rank")):
         return ""
-    hg, ag = h.get("games_back"), a.get("games_back")
+    (hg, unit), (ag, _) = _gap(g, h), _gap(g, a)
     if hg is None or ag is None:
         return ""
-    # 同じ地区で、どちらも首位に近い日
-    if g.get("same_division") and max(hg, ag) <= CLOSE_GB:
-        return (f"{an}が地区{a['rank']}位、{hn}が{h['rank']}位。"
-                f"その差{abs(hg - ag):.1f}ゲームです。")
-    lead = (an, a) if ag < hg else (hn, h)
-    trail = (hn, h) if ag < hg else (an, a)
-    if trail[1]["games_back"] - lead[1]["games_back"] >= 8:
-        return (f"{lead[0]}が地区{lead[1]['rank']}位、"
-                f"{trail[0]}は{trail[1]['games_back']:.1f}ゲーム差の"
+    where = _place(g)
+    near = CLOSE_GB * (3 if unit == "勝ち点" else 1)
+    if g.get("same_division") and max(hg, ag) <= near:
+        return (f"{an}が{where}{a['rank']}位、{hn}が{h['rank']}位。"
+                f"{_diff_words(abs(hg - ag), unit)}です。")
+    lead = (an, a, ag) if ag < hg else (hn, h, hg)
+    trail = (hn, h, hg) if ag < hg else (an, a, ag)
+    diff = trail[2] - lead[2]
+    if diff >= (24 if unit == "勝ち点" else 8):
+        return (f"{lead[0]}が{where}{lead[1]['rank']}位、"
+                f"{trail[0]}は{_diff_words(diff, unit)}の"
                 f"{trail[1]['rank']}位。順位は離れています。")
-    return (f"{lead[0]}が地区{lead[1]['rank']}位、"
+    return (f"{lead[0]}が{where}{lead[1]['rank']}位、"
             f"{trail[0]}が{trail[1]['rank']}位。"
-            f"ゲーム差は{trail[1]['games_back'] - lead[1]['games_back']:.1f}です。")
+            f"{_diff_words(diff, unit)}です。")
 
 
 def lens_form(g: dict) -> str:
