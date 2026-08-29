@@ -46,7 +46,6 @@ ANIM_END = 0.45
 # 1.5秒だと、画面ごとに「読み終わって、待って、切り替わる」になる。
 # 実測で73秒の動画のうち12秒(17%)が無音だった。息継ぎに要るのは
 # それより短い。
-SEGMENT_TAIL = 0.7
 # 最短でも表示する秒数。読み上げが短い画面が一瞬で消えないための下限。
 #
 # 音声より長い分は、そのまま無音になる。「直近5試合」は読み上げ4.6秒に
@@ -2009,7 +2008,7 @@ def plan_durations(segs):
     """
     return [max(float(s.get("min_duration")
                       or MIN_DURATION.get(s.get("kind") or "list", 5.0)),
-                float(s.get("duration") or 0) + SEGMENT_TAIL)
+                float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
             for s in segs]
 
 

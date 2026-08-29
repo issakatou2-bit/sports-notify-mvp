@@ -34,15 +34,29 @@ from PIL import Image, ImageDraw, ImageFont
 
 import weekly_stats as ws
 
+import post_common  # noqa: E402
+import video_common  # noqa: E402
+
 W, H = 1080, 1920
 FPS = 24
 ANIM_END = 0.45
-SEGMENT_TAIL = 1.5
 
-MIN_DURATION = {"intro": 5.0, "check": 6.0, "totals": 7.0, "base": 9.0,
+# 最短でも表示する秒数。
+#
+# 以前は intro 5.0 / check 6.0 / totals 7.0 / base 9.0 / career 8.0 で、
+# そこへ1.5秒の間が乗っていた。読み上げが短い画面はそのぶん無音になる。
+# この枠は視聴継続15.2%でチャンネル最下位で、原因の一つがこれ。
+#
+# 夕方の回で下げた根拠(102本の実測、35-45秒が最良)は、この台本には
+# 届いていなかった。同じチャンネルの動画なので、同じ基準で置く。
+MIN_DURATION = {"intro": 4.5, "check": 5.0, "totals": 6.0, "base": 6.5,
                 # 通算は数字が1つだけの画面。読み終わってからも
                 # 少し残す(割合が上がりきる動きを見せたい)
-                "career": 8.0, "outro": 5.0}
+                "career": 6.0, "outro": 4.0}
+
+# 落とす順。予算を超えたら、この順に画面ごと外す。
+# 冒頭と締めは外さない。判定(check)も、この枠の中身そのものなので外さない。
+DROP_ORDER = ("base", "career", "totals")
 
 BG = (11, 14, 20)
 SURF = (18, 22, 31)
@@ -467,7 +481,7 @@ def render_outro(p):
 
 def plan_durations(segs):
     return [max(MIN_DURATION.get(s.get("kind") or "check", 5.0),
-                float(s.get("duration") or 0) + SEGMENT_TAIL)
+                float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
             for s in segs]
 
 
@@ -572,6 +586,12 @@ def main():
     video_path = out_dir / "collespo_verdict.mp4"
 
     durations = plan_durations(segs)
+
+    # 長すぎる回は削る。夕方の回・日次の回と同じ上限を使う。
+    keep, dropped = post_common.fit_budget(segs, durations, DROP_ORDER)
+    if dropped:
+        segs = [segs[i] for i in keep]
+        durations = [durations[i] for i in keep]
     audio_path = build_narration_track(segs, durations, out_dir)
 
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",

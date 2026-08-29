@@ -33,6 +33,8 @@ from PIL import Image, ImageDraw, ImageFont
 import weekly_ops
 import weekly_stats as ws
 
+import video_common  # noqa: E402
+
 # 横型(通常動画向け)
 W, H = 1920, 1080
 FPS = 24
@@ -45,7 +47,6 @@ ANIM_END = 0.45
 
 # 読み上げが終わってから画面が切り替わるまでの余白。
 # 0にすると語尾と同時に切り替わって忙しないが、長く取ると沈黙になる。
-SEGMENT_TAIL = 2.0
 
 # セグメント種別ごとの最低表示秒数。原稿が短かった場合の下支えでしかなく、
 # 通常はナレーションの実測長が上回るのでこちらは効かない。
@@ -403,7 +404,7 @@ def plan_durations(segs: list) -> list:
     for seg in segs:
         kind = seg.get("kind") or "day"
         audio_len = float(seg.get("duration") or 0)
-        durations.append(max(MIN_DURATION.get(kind, 8.0), audio_len + SEGMENT_TAIL))
+        durations.append(max(MIN_DURATION.get(kind, 8.0), audio_len + video_common.SEGMENT_TAIL))
 
     total = sum(durations)
     spoken = sum(float(s.get("duration") or 0) for s in segs)
