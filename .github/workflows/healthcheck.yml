@@ -89,6 +89,23 @@ jobs:
         continue-on-error: true
         run: python scripts/backfill_records.py --write
 
+      # 立場の違う5人が、昨日出したものを見て指摘する。
+      #
+      # 数字は「どうだったか」しか教えない。維持率が16%だと分かっても、
+      # 何をどう直すかは出てこない。人が見れば言えることが、
+      # 誰も見ていないので言われないまま毎日過ぎていた。
+      #
+      # 「返信が54件ついた一言があります」で始まる回は4日出続けたし、
+      # 英語で切れた題もそのまま投稿された。見た人がいなかったから。
+      #
+      # 出るのは制作側への指摘で、動画には入れない。
+      # 講評が落ちても診断は続ける(そちらが本体)。
+      - name: Review board
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/review_board.py
+
       - name: Check
         env:
           DAY: ${{ inputs.date }}
