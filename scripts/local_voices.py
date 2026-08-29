@@ -123,8 +123,28 @@ def jp_mentioned(text: str) -> list:
                 break
     return out
 
+# 何本のハイライトからコメントを集めるか。
+#
+# 4本から集めていた。件数は稼げるが、動画の中では
+# 「今日いちばん見られた試合」を1本立ててから、そのコメントを読む。
+# コメントが別の試合のものだと、話が繋がらない。
+#
+# 実際に出た。ハイライトはアストロズ対ヤンキース(25.9万回)なのに、
+# コメントはドジャース戦から来ていた。短編でも噛み合っていなかったが、
+# 3分の対話にすると「勝ってるのに怒ってる」が別の試合の話になる。
+#
+# 1本に絞って、そのぶん深く読む(件数を増やす)。
+# 足りない日だけ2本目に広げる。
+VIDEOS_READ = 1
+PER_VIDEO = 40
+
+# これ以下しか取れなかったら、次のハイライトも読む。
+# 1試合に揃えるのが目的だが、4件しか無い日に画面が作れないほうが困る。
+MIN_COMMENTS = 12
+
+
 def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
-                           per_video: int = 20) -> list:
+                           per_video: int = PER_VIDEO) -> list:
     """
     MLB公式ハイライトに付いたコメントを取る。
 
@@ -152,7 +172,10 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
         return []
 
     out = []
-    for v in videos[:4]:
+    # まず1本目だけ。足りなければ順に足す。
+    for n, v in enumerate(videos[:4]):
+        if n >= VIDEOS_READ and len(out) >= MIN_COMMENTS:
+            break
         vid = v.get("video_id")
         if not vid:
             continue
