@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-29T09:53:44.950421+00:00",
+  "generated_at": "2026-08-29T14:27:40.732817+00:00",
   "games": [
     {
       "game_id": "560552",
@@ -23,21 +23,21 @@
       "jp_players": [],
       "home_standing": {
         "rank": 10,
+        "games_back": 1.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 4.0
+      },
+      "away_standing": {
+        "rank": 12,
         "games_back": 1.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
         "points_back": 5.0
-      },
-      "away_standing": {
-        "rank": 15,
-        "games_back": 2.0,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 6.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -49,7 +49,7 @@
       "away_has_jp": false,
       "score": 2,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
       "reasons": [
         {
           "tag": "jp_team",
@@ -63,13 +63,10 @@
         },
         {
           "tag": "quality",
-          "text": "昨季5位と16位の対戦",
+          "text": "昨季3位と16位の対戦",
           "weight": 0
         }
-      ],
-      "log_notes": [],
-      "ai_summary": "昨季の成績で【リバプールが5位、ノッティンガム・フォレストが16位】という大きな差がある両チームが、プレミアリーグの開幕戦で対戦する。上位を狙うリバプールの出足、そして昇格争いから脱却を目指すノッティンガム・フォレストの戦いぶりが、シーズン全体の流れを左右する一戦である。また、リバプール所属の日本代表MF遠藤航の活躍にも注目したい。",
-      "notification_hook": "遠藤航のリバプール初戦、昇格後のノッティンガムの実力とは。"
+      ]
     },
     {
       "game_id": "565777",
@@ -92,16 +89,16 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 2,
-        "games_back": 1.0,
+        "rank": 4,
+        "games_back": 0.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 3.0
+        "points_back": 0.0
       },
       "away_standing": {
-        "rank": 2,
+        "rank": 15,
         "games_back": 1.0,
         "streak": 0,
         "wins": 0,
@@ -119,7 +116,7 @@
       "away_has_jp": false,
       "score": 2,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
       "reasons": [
         {
           "tag": "jp_team",
@@ -131,10 +128,7 @@
           "text": "昨季3位と12位の対戦",
           "weight": 0
         }
-      ],
-      "log_notes": [],
-      "ai_summary": "ブンデスリーガの開幕戦となるこの対戦では、昨季の成績が大きく異なる両チームの現在地が試される。【昨季3位のライプツィヒと12位のボルシアMG】という立場の違いを踏まえ、シーズン全体の勢力図がどう形作られるかが注目される。また、ボルシアMGには町野修斗、宇野禅斗、橋岡大樹といった日本人選手が所属しており、彼らのパフォーマンスがチームの戦いぶりにどう影響するかに注視したい。",
-      "notification_hook": "昨季3位ライプツィヒ対12位ボルシアMG、町野修斗ら日本人3選手の活躍は。"
+      ]
     },
     {
       "game_id": "565778",
@@ -157,22 +151,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 2,
-        "games_back": 1.0,
+        "rank": 6,
+        "games_back": 0.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 3.0
+        "points_back": 2.0
       },
       "away_standing": {
-        "rank": 2,
-        "games_back": 1.0,
+        "rank": 6,
+        "games_back": 0.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 3.0
+        "points_back": 2.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -189,63 +183,6 @@
         {
           "tag": "jp_team",
           "text": "マインツには佐野海舟・川﨑颯太が所属",
-          "weight": 2
-        }
-      ]
-    },
-    {
-      "game_id": "565780",
-      "league": "ブンデスリーガ",
-      "home_team_id": "BL1-719",
-      "away_team_id": "BL1-3",
-      "home_team_name": "エルバースベルク",
-      "away_team_name": "レバークーゼン",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "レバークーゼン vs エルバースベルク",
-      "abbr_matchup": null,
-      "start_time_jst": "08/29 22:30",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": {
-        "rank": 2,
-        "games_back": 1.0,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 3.0
-      },
-      "away_standing": {
-        "rank": 2,
-        "games_back": 1.0,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 3.0
-      },
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 2,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "昨季6位のレバークーゼン",
           "weight": 2
         }
       ]
@@ -271,22 +208,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 17,
-        "games_back": 2.0,
+        "rank": 14,
+        "games_back": 1.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 6.0
+        "points_back": 5.0
       },
       "away_standing": {
-        "rank": 5,
-        "games_back": 1.0,
+        "rank": 2,
+        "games_back": 0.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 3.0
+        "points_back": 2.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -333,7 +270,7 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 17,
+        "rank": 18,
         "games_back": 2.0,
         "streak": 0,
         "wins": 0,
@@ -342,7 +279,7 @@
         "points_back": 6.0
       },
       "away_standing": {
-        "rank": 10,
+        "rank": 11,
         "games_back": 1.7,
         "streak": 0,
         "wins": 0,
@@ -360,7 +297,7 @@
       "away_has_jp": false,
       "score": 2,
       "game_type": "R",
-      "is_notable": false,
+      "is_notable": true,
       "reasons": [
         {
           "tag": "jp_team",
@@ -374,10 +311,13 @@
         },
         {
           "tag": "quality",
-          "text": "昨季17位と12位の対戦",
+          "text": "昨季4位と12位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "log_notes": [],
+      "ai_summary": "プレミアリーグの開幕戦となるニューカッスル対トッテナムは、【昨季4位と12位の対戦】であり、前季の成績から大きく異なる立場の両チームが初めて顔を合わせる一戦である。トッテナムは昨季の上位の実績を引き継いで戦うことになる一方、ニューカッスルは昨季中位からの巻き返しを目指す。また、トッテナムに所属する高井幸大の活躍も見どころとなる。新シーズンの幕開けに、両チームがどのような戦いぶりを見せるかに注目したい。",
+      "notification_hook": "高井幸大擁するトッテナム、昨季4位からの開幕戦。"
     },
     {
       "game_id": "558619",
@@ -441,13 +381,13 @@
         },
         {
           "tag": "quality",
-          "text": "昨季6位と12位の対戦",
+          "text": "昨季13位と12位の対戦",
           "weight": 0
         }
       ],
       "log_notes": [],
-      "ai_summary": "セリエAの開幕戦となるこの一戦は、昨季6位のユベントスと12位のパルマが対戦する注目の試合である。両チームは【昨季の成績で大きく異なる立場】にあり、新シーズンへの滑り出しを占う重要な一戦になる。さらに、パルマに所属する鈴木ザイオンの活躍も見どころとなり、日本のサッカーファンにとっても見逃せない試合である。両チームの開幕戦での戦いぶりと、鈴木ザイオンがどのようなパフォーマンスを見せるかに注目したい。",
-      "notification_hook": "鈴木ザイオン出場、昨季6位ユベントスvs12位パルマの開幕戦"
+      "ai_summary": "セリエAの開幕戦となるユベントス対パルマは、昨季13位と12位の対戦である。両チームともシーズンの立ち上がりを左右する重要な一戦となり、【昨季下位同士の対抗戦】として、新シーズンの方向性を占う試合として注視される。また、パルマに所属する日本人選手の鈴木ザイオンの活躍ぶりに注目したい。",
+      "notification_hook": "鈴木ザイオン、開幕戦での存在感。パルマはユベントスとの初戦をどう戦うか。"
     },
     {
       "game_id": "559706",
@@ -497,7 +437,7 @@
       "away_has_jp": false,
       "score": 2,
       "game_type": "R",
-      "is_notable": false,
+      "is_notable": true,
       "reasons": [
         {
           "tag": "jp_team",
@@ -509,7 +449,10 @@
           "text": "昨季4位と14位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "log_notes": [],
+      "ai_summary": "昨季のリーグ・アン成績で【4位と14位の実力差がある両チーム】が開幕早々に対戦する。ル・アーブルには日本代表経験者の瀬古歩夢、中村草太、水多海斗が所属しており、リヨンとの力の差がどう表れるかが焦点となる。開幕直後だからこそ、今後のシーズン展開を占う上で重要な一戦であり、両チームの現在地を測るべき試合である。日本人選手たちがフランスの舞台でどのようなパフォーマンスを見せるかに注目したい。",
+      "notification_hook": "昨季4位リヨン対14位ル・アーブル、瀬古歩夢ら日本人トリオの活躍は。"
     },
     {
       "game_id": "565779",
@@ -532,7 +475,7 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 2,
+        "rank": 14,
         "games_back": 1.0,
         "streak": 0,
         "wins": 0,
@@ -541,13 +484,13 @@
         "points_back": 3.0
       },
       "away_standing": {
-        "rank": 2,
-        "games_back": 1.0,
+        "rank": 3,
+        "games_back": 0.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 3.0
+        "points_back": 0.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -568,7 +511,7 @@
         },
         {
           "tag": "quality",
-          "text": "昨季11位と8位の対戦",
+          "text": "昨季11位と33位の対戦",
           "weight": 0
         }
       ]
@@ -594,7 +537,7 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 2,
+        "rank": 15,
         "games_back": 1.0,
         "streak": 0,
         "wins": 0,
@@ -603,13 +546,13 @@
         "points_back": 3.0
       },
       "away_standing": {
-        "rank": 2,
-        "games_back": 1.0,
+        "rank": 4,
+        "games_back": 0.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 3.0
+        "points_back": 0.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -713,7 +656,7 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 2,
+        "rank": 8,
         "games_back": 1.0,
         "streak": 0,
         "wins": 0,
@@ -722,7 +665,7 @@
         "points_back": 3.0
       },
       "away_standing": {
-        "rank": 2,
+        "rank": 8,
         "games_back": 1.0,
         "streak": 0,
         "wins": 0,
@@ -749,7 +692,7 @@
         },
         {
           "tag": "quality",
-          "text": "昨季2位と13位の対戦",
+          "text": "昨季17位と13位の対戦",
           "weight": 0
         }
       ]
@@ -873,10 +816,61 @@
         },
         {
           "tag": "quality",
-          "text": "昨季15位と4位の対戦",
+          "text": "昨季15位と14位の対戦",
           "weight": 0
         }
       ]
+    },
+    {
+      "game_id": "565780",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-719",
+      "away_team_id": "BL1-3",
+      "home_team_name": "エルバースベルク",
+      "away_team_name": "レバークーゼン",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "レバークーゼン vs エルバースベルク",
+      "abbr_matchup": null,
+      "start_time_jst": "08/29 22:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "away_standing": {
+        "rank": 17,
+        "games_back": 1.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 3.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": []
     },
     {
       "game_id": "560560",
@@ -900,21 +894,21 @@
       "jp_players": [],
       "home_standing": {
         "rank": 13,
-        "games_back": 2.0,
+        "games_back": 1.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 6.0
+        "points_back": 5.0
       },
       "away_standing": {
-        "rank": 5,
-        "games_back": 1.0,
+        "rank": 2,
+        "games_back": 0.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 3.0
+        "points_back": 2.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -1320,6 +1314,6 @@
   "ai_status": {
     "targets": 3,
     "succeeded": 3,
-    "cost_usd": 0.01026
+    "cost_usd": 0.01364
   }
 }
