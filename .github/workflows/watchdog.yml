@@ -34,8 +34,10 @@ on:
     - cron: '0 12 * * *'   # UTC 12:00 = JST 21:00(遅延込みで深夜まで)
   workflow_dispatch: {}
 
+# 欠けていたら回し直すので、ワークフローを起動する権限が要る。
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: watchdog
@@ -58,6 +60,48 @@ jobs:
       - name: Check what should already be out
         id: check
         run: python scripts/healthcheck.py --today
+
+      # 欠けていたら、自分で回し直す。
+      #
+      # これまでは「出ていない」と報せて終わりで、気づいた人が
+      # 手で回す前提だった。出先だと何時間も空く。8/29は6本全部が
+      # 止まって、回収は夜になった。
+      #
+      # 何が欠けていてどれを回せばよいかは機械で分かる。
+      # 分かるなら、自分で回してよい。
+      #
+      # 無限に回らない理由: GitHubは GITHUB_TOKEN で起動した実行から
+      # workflow_run を発火させない。この見張りは日次の完走で起動する
+      # ので、回し直した先からは戻ってこない。1周で止まる。
+      #
+      # ただし、今日のような決まった失敗(検査が止めた等)には効かない。
+      # 同じ所で同じように止まる。効くのは一時的な失敗のほう。
+      - name: Run the missing ones again
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -u
+          python scripts/missing_kinds.py > to_run.txt 2> which.txt || true
+          cat which.txt
+          if [ ! -s to_run.txt ]; then
+            echo "回し直すものはありません"
+            exit 0
+          fi
+          {
+            echo "## 回し直しました"
+            echo
+            cat which.txt
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+          while read -r wf; do
+            [ -n "$wf" ] || continue
+            if gh workflow run "$wf" --ref main; then
+              echo "- 起動しました: $wf" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "- 起動できませんでした: $wf" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done < to_run.txt
 
       # 欠けていた回だけ、次に何をすればよいかを添える。
       # 実行ページを開いた人が、そこから調べ直さなくて済むように。
