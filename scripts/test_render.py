@@ -137,6 +137,20 @@ def main() -> int:
             i = g.thread_index(vs)
             if i is not None:
                 check("%s 返信のついた一言" % tag, g.render_thread, p, vs[i])
+        # 日本人選手への称賛。称賛が0件の日は描かないので、
+        # 材料がある日だけ見る。
+        pr = (voices.get("jp_praise") or [])[:2]
+        if pr:
+            check("%s 現地の称賛" % tag, g.render_praise, p, pr)
+        # 7日間の合計。8/28に足したのに、ここへ足すのを忘れていた。
+        # 8/29がこの画面の初日で、その日は動画が1本も出ていない。
+        # 原因かどうかは別として、描いたことが一度も無い画面を
+        # 本番に出していた。
+        if players:
+            line, week = g.week_line(players)
+            if week:
+                check("%s 7日間の合計" % tag, g.render_week, p, week,
+                      players[0].get("name", ""))
         check("%s アウトロ" % tag, g.render_outro, p)
 
     print("\n--- 冒頭(枠ごとに材料が違う) ---")

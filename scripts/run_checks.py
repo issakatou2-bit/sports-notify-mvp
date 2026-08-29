@@ -536,6 +536,45 @@ def _choices_of(script: str) -> dict:
     return out
 
 
+def check_render_coverage() -> int:
+    """描く関数が、全部いちど試験を通っているか。
+
+    なぜ要るのか:
+      8/28に「7日間の合計」の画面を足したが、test_render.py へ
+      足すのを忘れていた。8/29がその画面の初日で、その日は
+      動画が1本も出ていない。原因かどうかは切り分けが要るが、
+      **一度も描いたことのない画面を本番に出していた**のは確か。
+
+      画面は動かさないと壊れが出ない種類のもので、
+      それが test_render.py を置いた理由だった。
+      足し忘れると、その理由ごと無効になる。
+    """
+    step("描く関数が試験を通っているか")
+    src = ROOT / "scripts" / "generate_morning_short.py"
+    test = ROOT / "scripts" / "test_render.py"
+    if not (src.exists() and test.exists()):
+        print("[info] 台本が見つからないため飛ばします")
+        return 0
+    body = test.read_text(encoding="utf-8")
+    try:
+        tree = ast.parse(src.read_text(encoding="utf-8"))
+    except SyntaxError:
+        return 0
+    missing = []
+    for node in tree.body:
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        if not node.name.startswith("render_"):
+            continue
+        if node.name in body:
+            continue
+        missing.append(node.name)
+    for m in missing:
+        print(f"NG {m} が test_render.py で一度も呼ばれていません")
+    print(f"{'ok ' if not missing else 'NG '} 試験の抜け {len(missing)}件")
+    return len(missing)
+
+
 def check_arg_choices() -> int:
     """
     ワークフローが渡す値を、台本が受け付けるか。
@@ -800,6 +839,7 @@ def main() -> int:
     failed += check_inventory()
     failed += check_commit_list()
     failed += check_secrets_passed()
+    failed += check_render_coverage()
     failed += check_arg_choices()
     failed += check_root_imports()
     failed += check_deps_installed()
