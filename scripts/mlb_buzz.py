@@ -291,14 +291,29 @@ def fetch_result(date: str, teams: list) -> dict:
                               timeout=25)
             bx.raise_for_status()
             data = bx.json()
+            # どちらのチームの選手かを一緒に持つ。
+            #
+            # 名前と成績だけを渡していたため、対話の台本を書かせたとき
+            # 「タイガースの先発、Tarik Skubal」と書かれた。
+            # 実際はドジャースの投手で、古巣のタイガース相手に投げていた。
+            # モデルが対戦カードから推測して、外した。
+            #
+            # 所属が入っていれば推測する余地が無い。しかも
+            # 「古巣との対戦」という文脈は、コメント欄の
+            # 「なぜブーイングするんだ、お前らが出した選手だろう」を
+            # 読むのに要る前提そのものになる。
             best = []
             for side in ("away", "home"):
-                best += _performer_line(
-                    (data.get("teams", {}).get(side, {}).get("players") or {}))
-            best.sort(reverse=True)
+                side_jp = res.get(f"{side}_jp") or ""
+                for row in _performer_line(
+                        (data.get("teams", {}).get(side, {})
+                         .get("players") or {})):
+                    best.append(row + (side_jp,))
+            best.sort(key=lambda x: -x[0])
             if best:
                 res["star_name"] = best[0][1]
                 res["star_line"] = best[0][2]
+                res["star_team"] = best[0][3]
         except Exception:
             pass
         return res
