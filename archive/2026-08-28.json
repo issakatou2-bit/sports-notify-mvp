@@ -90,7 +90,12 @@
           "text": "カブスには今永昇太・鈴木誠也が所属",
           "weight": 3
         }
-      ]
+      ],
+      "final_score": {
+        "home": 8,
+        "away": 10,
+        "winner": "away"
+      }
     },
     {
       "game_id": "565776",
@@ -406,7 +411,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ西地区首位のドジャース(80勝54敗)がア・リーグ中地区4位のタイガース(62勝71敗)と対戦する。両チームの地位は大きく異なるが、ドジャースは【3連敗中】で勢いを失い、一方タイガースは直近10試合で2勝8敗と低迷しており、いずれも立て直しが急務となっている。先発はドジャースのTarik Skubal(防御率2.91、146奪三振)とタイガースのDrew Anderson(防御率4.09)の投手戦となる見通しで、中堅が深く本塁打が出にくいコメリカ・パークでの投げ合いがどう展開するかに注目したい。",
-      "notification_hook": "3連敗中のドジャース、防御率2.91の好投手Skubalで巻き返しなるか。"
+      "notification_hook": "3連敗中のドジャース、防御率2.91の好投手Skubalで巻き返しなるか。",
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822691",
@@ -455,7 +465,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 9,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823583",
@@ -527,7 +542,12 @@
       },
       "log_notes": [],
       "ai_summary": "ア・リーグ西地区首位のアストロズと、ナ・リーグ東地区で同地区首位との差が大きく開いているメッツの対戦である。アストロズは2位に1.0ゲーム差で首位を守る立場にあり、直近10試合は4勝6敗とやや調子を落としている。一方メッツは67勝67敗のアストロズに対し60勝74敗と、戦績で下回る。両先発投手は防御率でほぼ同等の成績を残しており、Christian Scottの111奪三振とHunter Brownの76奪三振での投げ合いがどう展開するか、またシティ・フィールドでの得点環境がこの試合にどう影響するかに注目したい。",
-      "notification_hook": "首位守るアストロズと低迷メッツ、先発投手の奪三振が試合を左右する"
+      "notification_hook": "首位守るアストロズと低迷メッツ、先発投手の奪三振が試合を左右する",
+      "final_score": {
+        "home": 1,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822935",
@@ -589,7 +609,12 @@
           "text": "レイズは自地区1位、パドレスは自地区2位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 9,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824396",
@@ -644,7 +669,12 @@
           "text": "ガーディアンズは7連勝中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823504",
@@ -717,7 +747,12 @@
         "Cam Schlittlerは直近3登板を自責1以下に抑えている"
       ],
       "ai_summary": "ア・リーグ東地区で【2位と3位が対戦】するこの試合は、順位争いを直接左右する重要な一戦である。ヤンキースは地区首位との差4.0ゲームで追う立場、レッドソックスは6.0ゲーム差で続いており、両チームとも直近10試合で7勝3敗と好調を保っている。先発のCam Schlittlerは防御率2.16で今季11勝を挙げ、直近3登板で1以下の自責点に抑える好調ぶりを見せている。右翼が浅く左打者が本塁打を狙いやすいヤンキー・スタジアムでの投げ合いがどうなるかが見どころになる。",
-      "notification_hook": "防御率2.16の好投手Schlittlerが、ヤンキース先発で地区2位を守れるか。"
+      "notification_hook": "防御率2.16の好投手Schlittlerが、ヤンキース先発で地区2位を守れるか。",
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824877",
@@ -779,7 +814,12 @@
           "text": "菅野智之が先発予定の中での出場",
           "weight": 3
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822769",
@@ -828,7 +868,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 8,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823744",
@@ -883,7 +928,12 @@
           "text": "ブリュワーズは自地区1位、レンジャーズは自地区2位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823666",
@@ -940,7 +990,12 @@
           "text": "ホワイトソックスには村上宗隆が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823013",
@@ -989,7 +1044,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823985",
@@ -1046,7 +1106,12 @@
           "text": "エンゼルスには菊池雄星が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824960",
@@ -1087,7 +1152,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823178",
@@ -1144,7 +1214,12 @@
           "text": "ダイヤモンドバックスにはヌートバーが所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 10,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
