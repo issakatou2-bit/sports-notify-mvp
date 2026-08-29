@@ -170,7 +170,18 @@ def check_line(name, line):
 
 
 def check_stat_files():
-    """出す前の成績データを一通り見る。"""
+    """手元の成績データを一通り見る。**出すのは止めない。**
+
+    ここが見るのは名簿の全行で、その日の動画で口にする行とは違う。
+    実際8/29は、どの台本にも出てこない Matthew Lugo の1行
+    (「今季 打率1.000」)で、その日の6本すべてが止まった。
+    彼の名前は1本の原稿にも出てこない。
+
+    使わない行の疑わしさは、出す動画を止める理由にならない。
+    直す手がかりにはなるので、警告としては残す。
+
+    止めてよいのは check_narration —— これから実際に喋る文だけ。
+    """
     bad = []
     for path, groups, field in (
         ("data/best_of_day.json", ("players", "pitchers", "everyone"), "headline"),
@@ -317,13 +328,24 @@ def main():
     ap.add_argument("--out", default="data/sanity.json")
     args = ap.parse_args()
 
-    impossible = (check_stat_files() + check_scores()
-                  + check_narration(args.narration))
-    print("--- ありえない数字 ---")
+    # 出すのを止めるのは、これから喋る文に問題があるときだけ。
+    #
+    # 以前は名簿全体の検査も同じ列に足していた。名簿に1行おかしな
+    # ものがあるだけで、その選手に触れてもいない動画まで止まる。
+    # 8/29はそれで6本が消えた。
+    impossible = check_scores() + check_narration(args.narration)
+    # 手元のデータの疑わしさ。直す手がかりにはなるが、出すのは止めない。
+    warnings = check_stat_files()
+
+    print("--- 原稿のありえない数字（これがあると出しません）---")
     for b in impossible:
         print("  NG", b)
     if not impossible:
         print("  なし")
+    if warnings:
+        print("--- 手元のデータで気になるもの（出すのは止めません）---")
+        for b in warnings:
+            print("  ?", b)
 
     odd = []
     if args.general:
@@ -342,7 +364,8 @@ def main():
 
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"impossible": impossible, "odd": odd},
+    out.write_text(json.dumps({"impossible": impossible, "odd": odd,
+                               "warnings": warnings},
                               ensure_ascii=False, indent=2), encoding="utf-8")
 
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
