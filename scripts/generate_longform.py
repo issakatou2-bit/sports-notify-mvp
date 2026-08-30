@@ -125,11 +125,12 @@ def _speaker(seg: dict) -> dict:
 # 「ジト目」は、めたんの素材に相当するものが無い(閉じ目の別型しか
 # ない)。片方だけ目が閉じる表情になるので、困り顔は
 # **眉だけで作る**。素材に無いものを無理に当てない。
+# (眉, 目, 口, 右腕, 左腕)。腕まで動かすと、絵がぐっと生きる。
 EXPRESSIONS = {
-    "基本": ("基本", "開", "閉"),
-    "笑顔": ("基本", "笑", "笑"),
-    "驚き": ("上げ", "見開", "大"),
-    "困り": ("困り", "開", "閉"),
+    "基本": ("基本", "開", "閉", "基本", "基本"),
+    "笑顔": ("基本", "笑", "笑", "基本", "基本"),
+    "驚き": ("上げ", "見開", "大", "上げ", "上げ"),
+    "困り": ("困り", "開", "閉", "考え", "考え"),
 }
 DEFAULT_EXPR = "基本"
 
@@ -225,7 +226,7 @@ def _parts(who: str, portrait_dir: str):
             try:
                 spec = json.loads(meta.read_text(encoding="utf-8"))
                 got = {"体": Image.open(d / spec["体"]).convert("RGBA")}
-                for g in ("眉", "目", "口"):
+                for g in ("眉", "目", "口", "右腕", "左腕"):
                     got[g] = {k: Image.open(d / v).convert("RGBA")
                               for k, v in (spec.get(g) or {}).items()}
             except Exception as e:               # noqa: BLE001
@@ -262,7 +263,8 @@ def _face(who: str, portrait_dir: str, expr: str, blink: bool, mouth: int,
     if "1枚" in parts:
         art = parts["1枚"]
     else:
-        br, ey, mo = EXPRESSIONS.get(expr) or EXPRESSIONS[DEFAULT_EXPR]
+        br, ey, mo, ra, la = (EXPRESSIONS.get(expr)
+                              or EXPRESSIONS[DEFAULT_EXPR])
         if blink:
             ey = "閉"
         # 喋っているあいだだけ口が動く。表情の口は、閉じている
@@ -272,7 +274,10 @@ def _face(who: str, portrait_dir: str, expr: str, blink: bool, mouth: int,
         elif mouth >= 2:
             mo = "大"
         art = parts["体"]
-        for g, tag in (("眉", br), ("目", ey), ("口", mo)):
+        # 腕を先に。顔は腕の上に来る(髪や手が顔にかかる絵があるため、
+        # 配布元の重ね順に合わせる)
+        for g, tag in (("右腕", ra), ("左腕", la),
+                       ("眉", br), ("目", ey), ("口", mo)):
             part = (parts.get(g) or {}).get(tag)
             if part is not None:
                 art = Image.alpha_composite(art, part)
