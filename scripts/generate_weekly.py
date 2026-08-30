@@ -549,11 +549,12 @@ def main():
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
+            still = None
             for k in range(n):
-                pp = k / max(1, n - 1)
-                if pp > ANIM_END and cached is not None:
+                pp, settled = video_common.anim_step(k, n)
+                if settled and still is not None:
                     # 動きが止まった区間は描き直さず、直前のフレームを使い回す
-                    proc.stdin.write(cached)
+                    proc.stdin.write(still)
                     total += 1
                     continue
                 if kind == "intro":
@@ -575,6 +576,9 @@ def main():
                     im = render_outro(pp)
                 cached = im.tobytes()
                 proc.stdin.write(cached)
+                # 動きが終わった最初の1枚。これを残りに使い回す。
+                if settled:
+                    still = cached
                 total += 1
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:

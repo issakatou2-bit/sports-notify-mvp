@@ -1,4 +1,4 @@
-﻿"""
+"""
 資産動画(日付に依存しない、作り置きできる動画)を生成する。
 
 日次のショートとの違い:
@@ -1696,13 +1696,18 @@ def main():
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
+            still = None
             for k in range(n):
-                pp = k / max(1, n - 1)
+                pp, settled = video_common.anim_step(k, n)
+                if kind == "map":
+                    # 地図だけは最後まで寄り続ける。止まらないので
+                    # 使い回してはいけない。
+                    settled = False
                 # 地図は最後まで動く。他の画面は途中で絵が止まるので
                 # 描き直さずに使い回すが、ここでそれをやると寄るのが
                 # 止まってしまう。
-                if kind != "map" and pp > ANIM_END and cached is not None:
-                    proc.stdin.write(cached)
+                if kind != "map" and settled and still is not None:
+                    proc.stdin.write(still)
                     total += 1
                     continue
                 if kind == "intro":
@@ -1744,6 +1749,9 @@ def main():
                     im = render_outro(pp)
                 cached = im.tobytes()
                 proc.stdin.write(cached)
+                # 動きが終わった最初の1枚。これを残りに使い回す。
+                if settled:
+                    still = cached
                 total += 1
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:

@@ -541,14 +541,18 @@ def main() -> int:
             n = int(dur * FPS)
             fade = 0 if i == 0 else int(video_common.FADE_SECONDS * FPS)
             cached = None
+            still = None
             for k in range(n):
-                p = k / max(1, n - 1)
-                if p > ANIM_END and cached is not None:
-                    proc.stdin.write(cached)
+                p, settled = video_common.anim_step(k, n)
+                if settled and still is not None:
+                    proc.stdin.write(still)
                     continue
                 im = render_line(p, seg, args.portrait_dir, topic, current)
                 cached = video_common.crossfade(last, im, k, fade, (W, H))
                 proc.stdin.write(cached)
+                # 動きが終わった最初の1枚。これを残りに使い回す。
+                if settled:
+                    still = cached
             last = cached
     except BrokenPipeError:
         # ffmpeg が先に終わっている。何を言って終わったかを出す。

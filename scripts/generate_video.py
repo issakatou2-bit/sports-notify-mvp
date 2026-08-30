@@ -895,13 +895,14 @@ def main():
             set_spoken(seg.get("text") or "")
             meta = seg.get("meta") or {}
             cached = None
+            still = None
             # 最初の画面は前が無いので混ぜない
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
-                p_ = k / max(1, n - 1)
-                if p_ > ANIM_END and cached is not None:
+                p_, settled = video_common.anim_step(k, n)
+                if settled and still is not None:
                     # 動きが止まった区間は描き直さず、直前のフレームを使い回す
-                    proc.stdin.write(cached)
+                    proc.stdin.write(still)
                     frame_no += 1
                     continue
                 if kind == "intro":
@@ -925,6 +926,9 @@ def main():
                     im = render_outro(p_)
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
+                # 動きが終わった最初の1枚。これを残りに使い回す。
+                if settled:
+                    still = cached
                 frame_no += 1
             last_frame = cached
             print(f"[info] {kind}: {dur:.1f}秒 ({n}フレーム)")

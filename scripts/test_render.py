@@ -213,10 +213,81 @@ def main() -> int:
     for c in cut[:5]:
         print("    落とした: " + c)
 
+    fails += check_still(players, vids, voices, reps, talk)
     fails += check_longform()
 
     print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
     return 1 if fails else 0
+
+
+def check_still(players, vids, voices, reps, talk) -> int:
+    """絵が本当に止まる時点が、使い回しを始める時点より前か。
+
+    ここがずれていると、**最後の1つが一度も画面に出ない。**
+    書き出す側は `p >= STILL_AFTER` で描くのをやめて前の絵を
+    使い回す。そのとき絵がまだ動いていたら、出かかった絵を
+    区間の残り全部に貼ることになる。
+
+    実際そうなっていた。ANIM_END(0.45)で使い回しを始めていたが、
+    どの画面も 0.455〜0.646 まで動いていた。
+    2行の台詞が1行で切れ、9回の試合が8回で終わっていたのは
+    これが原因。1つずつ確かめるのではなく、測って比べる。
+    """
+    import video_common
+    print("\n--- 絵が止まる時点 < 使い回しを始める時点 ---")
+    res = (vids[0].get("result") or {}) if vids else {}
+    cases = []
+    if players:
+        cases.append(("選手一覧", lambda p: g.render_list(p, players, 0, 3)))
+    if vids:
+        cases.append(("現地の再生回数", lambda p: g.render_buzz(p, vids)))
+        if res:
+            cases.append(("スコアボード", lambda p: g.render_scoreboard(
+                p, res, res.get("away_jp", ""), res.get("home_jp", ""))))
+    if voices.get("voices"):
+        cases.append(("ファンの声", lambda p: g.render_voices(p, voices)))
+    if reps.get("posts"):
+        cases.append(("番記者", lambda p: g.render_reporters(
+            p, reps.get("posts"))))
+    if reps.get("headlines"):
+        cases.append(("見出し", lambda p: g.render_headlines(
+            p, reps.get("headlines"))))
+    if talk.get("teams"):
+        cases.append(("話題のチーム", lambda p: g.render_talk(p, talk)))
+    cases.append(("アウトロ", lambda p: g.render_outro(p)))
+
+    cut = video_common.STILL_AFTER
+    late, worst = [], 0.0
+    for name, fn in cases:
+        try:
+            end = fn(1.0).tobytes()
+        except Exception as e:                   # noqa: BLE001
+            print("NG  %s: %s" % (name, str(e)[:80]))
+            return 1
+        stop = None
+        # 40刻みで十分。ここは目安であって、0.001の差は問題にしない
+        for i in range(41):
+            p = i / 40
+            try:
+                if fn(p).tobytes() == end:
+                    stop = p
+                    break
+            except Exception:                    # noqa: BLE001
+                continue
+        if stop is None:
+            late.append("%s: 止まりません" % name)
+            continue
+        worst = max(worst, stop)
+        if stop >= cut:
+            late.append("%s: %.3f" % (name, stop))
+    if late:
+        print("NG  使い回しを始める %.2f より後まで動いている: %s"
+              % (cut, "、".join(late)))
+        print("      video_common.STILL_AFTER を上げてください")
+        return 1
+    print("ok  いちばん遅いもの %.3f < %.2f（%d画面）"
+          % (worst, cut, len(cases)))
+    return 0
 
 
 def check_longform() -> int:
