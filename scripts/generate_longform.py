@@ -288,12 +288,24 @@ def _dimmed(art):
     return _DARK_CACHE[ck]
 
 
-def paste_portraits(im, talking: str, portrait_dir: str, state: dict):
+BOTH = "両方"
+
+# 冒頭の札では、2人を右へ寄せて並べる。
+# 文字は左に置くので、対話中と同じ左右の位置だと大きい文字に被る。
+# サムネイルと同じ並びにすると、押して開いた人が見比べられる。
+INTRO_ART_X = 1330
+INTRO_GAP = 90
+
+
+def paste_portraits(im, talking: str, portrait_dir: str, state: dict,
+                    layout: str = "対話"):
     """2人を貼る。喋っているほうだけ明るい。
 
     state は {名前: {"expr":…, "blink":bool, "mouth":0〜2}}。
+    talking が BOTH なら2人とも明るい(冒頭で同時に喋るとき)。
     立ち絵が無い日は、下地の側で丸と名前を描いてある。
     """
+    arts = []
     for s in SPEAKERS.values():
         who = s["name"]
         st = state.get(who) or {}
@@ -302,8 +314,19 @@ def paste_portraits(im, talking: str, portrait_dir: str, state: dict):
                     bool(s.get("flip")))
         if art is None:
             continue
-        if who != talking:
+        if talking != BOTH and who != talking:
             art = _dimmed(art)
+        arts.append((s, art))
+
+    if layout == "冒頭" and arts:
+        span = sum(a.width for _, a in arts) - INTRO_GAP * (len(arts) - 1)
+        x = INTRO_ART_X - span // 2
+        for _, art in arts:
+            im.paste(art, (int(x), H - PORTRAIT_H), art)
+            x += art.width - INTRO_GAP
+        return im
+
+    for s, art in arts:
         x = PORTRAIT_X if s["side"] == "left" else W - PORTRAIT_X
         im.paste(art, (int(x - art.width / 2), H - PORTRAIT_H), art)
     return im
@@ -534,6 +557,37 @@ def render_panel(d, panel, topic):
     fn(d, panel, top)
 
 
+def render_intro(p, topic="", day=""):
+    """冒頭の札。サムネイルと同じ見た目にする。
+
+    押して開いた人が「さっき見たやつだ」と確かめられるようにしたい。
+    サムネイルで見た絵と、開いて最初に出る絵が別物だと、
+    そこで一度迷わせることになる。
+
+    立ち絵はここでは描かない(呼び出し側が貼る)。
+    """
+    im, d = base(p)
+    head = f"{day}　{topic}" if (day and topic) else (topic or day)
+    if head:
+        size = 52
+        while size > 30 and d.textlength(head, font=font(size)) > W - 140:
+            size -= 4
+        video_common.pop_text(d, (70, 66), head, font(size), ACCENT,
+                              stroke=(8, 10, 15), stroke_w=5,
+                              shadow=(0, 0, 0), shadow_off=(3, 4))
+    y = 190
+    for text, size, color in (("公式ハイライトの", 86, TEXT),
+                              ("コメント欄を", 100, TEXT),
+                              ("読み解く", 156, ACCENT)):
+        video_common.pop_text(d, (70, y), text, font(size), color,
+                              stroke=(8, 10, 15), stroke_w=10,
+                              shadow=(0, 0, 0), shadow_off=(6, 7))
+        y += size + 24
+    video_common.pop_text(d, (70, H - 132), "by コレスポ", font(50), JP,
+                          stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
+    return im
+
+
 def render_stage(p, seg, portrait_dir="", topic="", panel=None):
     """立ち絵以外の全部。下地・札・台詞・名前。
 
@@ -646,6 +700,10 @@ def main() -> int:
         print(f"[info] 台本を読めません({e})。作りません")
         return 0
     topic = dia.get("top") or ""
+    # 冒頭の札に出す日付。サムネイルと揃える。
+    from datetime import datetime as _dt, timezone as _tz, timedelta as _td
+    _n = _dt.now(_tz(_td(hours=9)))
+    day_label = f"{_n.month}月{_n.day}日"
     cards = dia.get("panels") or {}
 
     manifest = pathlib.Path(args.audio_dir) / "manifest.json"
@@ -672,6 +730,22 @@ def main() -> int:
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / "collespo_longform.mp4"
+
+    # 冒頭。2人ぶんの「コレスポ」を1つに重ねて、1枚の札にする。
+    # 重ねられなかったら(音が無い日など)、そのまま前へ出さずに落とす。
+    intro = [s for s in segs if s.get("kind") == "intro"]
+    segs = [s for s in segs if s.get("kind") != "intro"]
+    if len(intro) >= 2:
+        mixed = video_common.mix_wavs(
+            [s.get("file") for s in intro], out_dir / "intro.wav")
+        if mixed:
+            dur = max(float(s.get("duration") or 0) for s in intro)
+            segs.insert(0, {"kind": "intro", "text": "", "speaker": 3,
+                            "panel": None, "file": str(mixed),
+                            "duration": dur})
+            print(f"[info] 冒頭: 2人ぶんを重ねました({dur:.1f}秒)")
+        else:
+            print("[info] 冒頭の音を重ねられませんでした。冒頭は出しません")
 
     # 台詞ごとの尺。読み終わりに息継ぎを足す。
     durations = [max(1.6, float(s.get("duration") or 0)
@@ -733,9 +807,13 @@ def main() -> int:
                 current = cards.get(seg["panel"])
             n = int(dur * FPS)
             fade = 0 if i == 0 else int(video_common.FADE_SECONDS * FPS)
+            is_intro = seg.get("kind") == "intro"
             talking = _speaker(seg)["name"]
             expr = expression_for(seg.get("text", ""),
                                   panel_mood(current))
+            if is_intro:
+                # 冒頭は2人とも喋る。笑顔で揃える。
+                expr, talking = "笑顔", ""
             # 口は読み上げの音そのものから取る。喋っている側だけ動く。
             mouth = video_common.mouth_levels(seg.get("file"), FPS, n)
             stage = None                # 止まったあとの下地
@@ -744,6 +822,10 @@ def main() -> int:
                 p, settled = video_common.anim_step(k, n)
                 if settled and stage is not None:
                     im = stage.copy()
+                elif is_intro:
+                    im = render_intro(p, topic, day_label)
+                    if settled:
+                        stage = im.copy()
                 else:
                     im = render_stage(p, seg, args.portrait_dir, topic,
                                       current)
@@ -753,11 +835,15 @@ def main() -> int:
                 for s in SPEAKERS.values():
                     nm = s["name"]
                     state[nm] = {
-                        "expr": expr if nm == talking else DEFAULT_EXPR,
+                        "expr": expr if (is_intro or nm == talking)
+                        else DEFAULT_EXPR,
                         "blink": (frame0 + k) in blinks[nm],
-                        "mouth": mouth[k] if nm == talking else 0,
+                        "mouth": mouth[k] if (is_intro or nm == talking)
+                        else 0,
                     }
-                paste_portraits(im, talking, args.portrait_dir, state)
+                paste_portraits(im, talking or BOTH,
+                                args.portrait_dir, state,
+                                "冒頭" if is_intro else "対話")
                 last_frame = video_common.crossfade(last, im, k, fade, (W, H))
                 proc.stdin.write(last_frame)
             last = last_frame

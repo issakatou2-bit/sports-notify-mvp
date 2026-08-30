@@ -93,6 +93,83 @@ def anim_step(k: int, n: int, still_after: float = STILL_AFTER):
     return p, p >= still_after
 
 
+def pop_text(d, xy, text, fnt, fill, stroke=None, stroke_w=0,
+             shadow=None, shadow_off=(4, 5), anchor=None):
+    """縁取りと影をつけて文字を置く。
+
+    なぜ要るのか:
+      サムネイルの書体は既に源ノ角ゴシック Heavy(Noto Sans CJK Black)で、
+      これは「YouTubeサムネにいちばん薦められている書体」そのもの。
+      それでも素っ気なく見えるのは、**書体ではなく処理**のため。
+
+      よく見るサムネの文字は、たいてい
+        ・太い縁取り(白か黒)で背景から切り離す
+        ・少しずらした影で浮かせる
+        ・1語だけ色を変える
+      をやっている。3つとも道具の話で、書体を替えなくてもできる。
+
+      縁取りには実利もある。**立ち絵の上に文字が乗っても読める。**
+      いまは重ならないよう避けているが、避けるほど画面が狭くなる。
+
+    stroke_w は太さ(px)。0なら縁取りなし。
+    """
+    x, y = xy
+    if shadow:
+        d.text((x + shadow_off[0], y + shadow_off[1]), text, font=fnt,
+               fill=shadow, anchor=anchor,
+               stroke_width=stroke_w, stroke_fill=shadow)
+    d.text((x, y), text, font=fnt, fill=fill, anchor=anchor,
+           stroke_width=stroke_w,
+           stroke_fill=stroke if stroke_w else None)
+
+
+def mix_wavs(paths, out_path):
+    """複数の読み上げを重ねて1つにする。無理なら None。
+
+    VOICEVOXは1回に1人しか喋らないので、2人が同時に言う形は
+    こちらで重ねるしかない。冒頭の「コレスポ」で使う。
+
+    そのまま足すと振り切れるので、本数で割ってから少し戻す。
+    長さは長いほうに合わせ、短いほうは無音で埋める。
+    """
+    files = [p for p in paths if p and pathlib.Path(p).exists()]
+    if not files:
+        return None
+    tracks, params = [], None
+    for p in files:
+        try:
+            with wave.open(str(p), "rb") as w:
+                if w.getsampwidth() != 2:
+                    return None
+                if params is None:
+                    params = w.getparams()
+                elif (w.getframerate(), w.getnchannels()) != (
+                        params.framerate, params.nchannels):
+                    return None
+                a = array.array("h")
+                a.frombytes(w.readframes(w.getnframes()))
+                tracks.append(a)
+        except Exception:                        # noqa: BLE001
+            return None
+    if not tracks:
+        return None
+    n = max(len(t) for t in tracks)
+    # 割ってから 1.4 倍戻す。半分にしたままだと、続く台詞より
+    # 明らかに小さくなって、冒頭だけ音量が違って聞こえる。
+    k = 1.4 / len(tracks)
+    mixed = array.array("h", bytes(2 * n))
+    for t in tracks:
+        for i, v in enumerate(t):
+            s = mixed[i] + int(v * k)
+            mixed[i] = 32767 if s > 32767 else (-32768 if s < -32768 else s)
+    with wave.open(str(out_path), "wb") as w:
+        w.setnchannels(params.nchannels)
+        w.setsampwidth(2)
+        w.setframerate(params.framerate)
+        w.writeframes(mixed.tobytes())
+    return out_path
+
+
 def mouth_levels(wav_path, fps: int, frames: int) -> list:
     """読み上げの音の大きさから、1枚ごとの口の開きを決める。
 

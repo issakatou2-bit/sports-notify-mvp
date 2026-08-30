@@ -302,38 +302,56 @@ def draw_morning_voices(d, day: str, buzz_path="data/mlb_buzz.json"):
     d.text((70, 520), "コメント欄を翻訳。高評価の数つき", font=font(46), fill=DIM)
     d.text((70, H - 78), "コレスポ  現地の声", font=font(38), fill=JP)
 
-
-# 長編のサムネイルに立ち絵を置く場所。
+# 長編のサムネイル。
 #
-# 16:9はショート棚のように切り抜かれないので、右側を使える。
-# 文字は左60%、2人は右40%。顔が小さくならないよう、
-# 上半身だけを切り出して大きく置く。
-LF_ART_H = 560
-LF_ART_Y = H - LF_ART_H + 40      # 少しはみ出させて、切れている感を出す
+# 16:9はショート棚のように中央だけ切り抜かれることが無いので、
+# 画面をぜんぶ使える。
+#
+#   ┌────────────────────────────────┐
+#   │ 8/30  ドジャース vs タイガース  │ ← ここだけ日によって変わる
+#   │                                │
+#   │ 公式ハイライトの      ｜立ち絵 │
+#   │ コメント欄を          ｜       │
+#   │ 読み解く              ｜       │
+#   │              by コレスポ       │
+#   └────────────────────────────────┘
+#
+# **大きい文字を固定にしたのが肝。**
+# 前は対戦カードを大きく出していたので、球団名が長い日に
+# 立ち絵へ文字が食い込んだ。長さが変わるものを小さい行へ回して、
+# 大きい行は毎日同じにする。これで被りようがない。
+#
+# 文字には縁取りと影を付ける(video_common.pop_text)。
+# 書体は源ノ角ゴシック Heavy のままで、処理だけ足している。
+LF_ART_H = 660
+LF_ART_X = 1010         # 立ち絵2人の中心
+LF_TEXT_R = 760         # 文字が使ってよい右端
 
 
 def _lf_art(who: str, portrait_dir: str):
-    """立ち絵。無ければ None。サムネイルでは1枚絵で十分。"""
+    """立ち絵。無ければ None。"""
     if not portrait_dir:
         return None
-    d = pathlib.Path(portrait_dir)
-    for cand in (d / who / "体.png", d / (who + ".png")):
+    base_dir = pathlib.Path(portrait_dir)
+    for cand in (base_dir / who / "体.png", base_dir / (who + ".png")):
         if not cand.exists():
             continue
         try:
             art = Image.open(cand).convert("RGBA")
         except Exception:                        # noqa: BLE001
             return None
-        # 部品の「体」は顔が入っていないので、目・眉・口を重ねる。
+        # 部品の「体」には顔が入っていないので、重ねる。
         if cand.name == "体.png":
             try:
                 spec = json.loads(
-                    (d / who / "parts.json").read_text(encoding="utf-8"))
+                    (base_dir / who / "parts.json").read_text(
+                        encoding="utf-8"))
                 for g, tag in (("眉", "基本"), ("目", "開"), ("口", "笑")):
                     fn = (spec.get(g) or {}).get(tag)
                     if fn:
                         art = Image.alpha_composite(
-                            art, Image.open(d / who / fn).convert("RGBA"))
+                            art, Image.open(
+                                base_dir / who / fn).convert("RGBA"))
             except Exception:                    # noqa: BLE001
                 pass
         k = LF_ART_H / art.height
@@ -343,49 +361,41 @@ def _lf_art(who: str, portrait_dir: str):
 
 
 def draw_longform(im, d, topic: str, day: str, portrait_dir: str):
-    """長編（対話）。何の試合のコメント欄を読むのかを出す。
+    """長編（対話）。何の試合のコメント欄を読むのかを出す。"""
+    import video_common as vc
 
-    それまで朝の枠のサムネイルを流用していた。動画の中身は
-    2人の対話なので、題と絵が食い違っていた。
-    """
-    for i, who in enumerate(("ずんだもん", "四国めたん")):
-        art = _lf_art(who, portrait_dir)
-        if art is None:
-            continue
-        x = 880 + i * 210
-        im.paste(art, (int(x - art.width / 2), LF_ART_Y), art)
+    # 立ち絵。画面の下端まで出して、切れているところを作る。
+    # 収まりよく置くより、画面を使い切るほうが目を引く。
+    arts = [(_lf_art(who, portrait_dir), i)
+            for i, who in enumerate(("ずんだもん", "四国めたん"))]
+    arts = [(a, i) for a, i in arts if a is not None]
+    if arts:
+        span = sum(a.width for a, _ in arts) - 90 * (len(arts) - 1)
+        x = LF_ART_X - span // 2
+        for a, _ in arts:
+            im.paste(a, (int(x), H - LF_ART_H + 30), a)
+            x += a.width - 90
 
-    d.text((70, 84), day, font=font(46), fill=DIM)
-    d.text((70, 148), "公式コメント欄を", font=font(84), fill=TEXT)
-    d.text((70, 246), "読み解く", font=font(124), fill=ACCENT)
-    y = 508
-    if topic:
-        # 「ハイライト」は題にもここにも出るので落とす。
-        # 字数が減ったぶん、対戦カードを大きく置ける。
-        for tail in ("ハイライト", " ハイライト", "の試合"):
-            if topic.endswith(tail):
-                topic = topic[:-len(tail)].strip()
-        # 幅は立ち絵の手前まで。780にしていたら、右の立ち絵に
-        # 文字が重なった。ここは絵の位置から決める。
-        avail = 880 - 120 - 70
-        s = fit(d, topic, avail, (58, 52, 46, 40, 34, 30))
-        if d.textlength(topic, font=font(s)) > avail:
-            # それでも入らないときは2行に割る。切らない。
-            cut = len(topic) // 2
-            for i in range(cut, min(len(topic) - 1, cut + 6)):
-                if topic[i] in "対 　vsVS":
-                    cut = i + 1
-                    break
-            s = fit(d, topic[:cut], avail, (52, 46, 40, 34, 30))
-            d.text((70, 402), topic[:cut], font=font(s), fill=TEXT)
-            d.text((70, 402 + s + 10), topic[cut:], font=font(s), fill=TEXT)
-            y = 402 + (s + 10) * 2 + 16
-        else:
-            d.text((70, 420), topic, font=font(s), fill=TEXT)
-            y = 420 + s + 26
-    d.text((70, max(508, y)), "現地の反応を、翻訳して読む",
-           font=font(42), fill=DIM)
-    d.text((70, H - 78), "コレスポ", font=font(38), fill=JP)
+    # 上の帯。ここだけ日によって変わる。
+    head = f"{day}　{topic}" if topic else day
+    s = fit(d, head, W - 140, (52, 46, 42, 38, 34, 30))
+    vc.pop_text(d, (70, 56), head, font(s), ACCENT,
+                stroke=(8, 10, 15), stroke_w=5, shadow=(0, 0, 0),
+                shadow_off=(3, 4))
+
+    # 大きい3行。**毎日同じ**なので、幅を測る必要が無い。
+    lines = [("公式ハイライトの", 80, TEXT),
+             ("コメント欄を", 96, TEXT),
+             ("読み解く", 150, ACCENT)]
+    y = 150
+    for text, size, color in lines:
+        vc.pop_text(d, (70, y), text, font(size), color,
+                    stroke=(8, 10, 15), stroke_w=10, shadow=(0, 0, 0),
+                    shadow_off=(6, 7))
+        y += size + 22
+
+    vc.pop_text(d, (70, H - 96), "by コレスポ", font(46), JP,
+                stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
 
 
 def draw_verdict(d, label: str):

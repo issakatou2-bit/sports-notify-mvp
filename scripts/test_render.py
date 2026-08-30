@@ -397,6 +397,23 @@ def check_longform() -> int:
                 bad += 1
                 print("NG  %s: 台詞を%d字捨てました"
                       % (key, len(txt) - len(joined)))
+    # 冒頭の札。台詞が空なので、割りつけが落ちないかも見る。
+    try:
+        pg = L.paginate([{"speaker": 3, "text": ""}])[0]
+        im = L.render_intro(1.0, "ドジャース vs タイガース", "8月30日")
+        st = {s["name"]: {"expr": "笑顔", "blink": False, "mouth": 2}
+              for s in L.SPEAKERS.values()}
+        L.paste_portraits(im, L.BOTH, "assets/portraits", st, "冒頭")
+        if blank(im):
+            bad += 1
+            print("NG  冒頭の札: 背景だけです")
+        elif pg["_lines"] != []:
+            bad += 1
+            print("NG  空の台詞から行が出ました: %r" % pg["_lines"])
+    except Exception as e:  # noqa: BLE001
+        bad += 1
+        print("NG  冒頭の札: %s: %s" % (type(e).__name__, str(e)[:90]))
+
     if not bad:
         print("ok  札%d種 × 長さ%d通り、はみ出しも捨てもありません"
               % (len(cards), len(texts)))

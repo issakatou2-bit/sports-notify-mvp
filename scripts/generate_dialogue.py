@@ -561,6 +561,23 @@ def main() -> int:
     if args.print_only:
         return 0
 
+    # 冒頭の1.8秒。2人が同時に「コレスポ」と言う。
+    #
+    # なぜ要るのか:
+    #   登録者が14人の段階で、チャンネル名が音として一度も出ていない。
+    #   題と説明欄には書いてあるが、見ている人は読んでいない。
+    #   1.8秒で名前が耳に入るなら、そのぶんは払う価値がある。
+    #
+    #   もう1つ、サムネイルと同じ絵を最初に出す意味がある。
+    #   押して開いた人が「さっき見たやつだ」と確かめられる。
+    #
+    #   VOICEVOXは1回に1人しか喋らないので、2つ作って
+    #   generate_longform 側で重ねる(video_common.mix_wavs)。
+    segs = [{"kind": "intro", "text": "コレスポ", "speaker": SPEAKER_ZUNDA,
+             "panel": None, "meta": {"who": "ずんだもん"}},
+            {"kind": "intro", "text": "コレスポ", "speaker": SPEAKER_EXPLAIN,
+             "panel": None, "meta": {"who": "めたん"}}] + segs
+
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(
