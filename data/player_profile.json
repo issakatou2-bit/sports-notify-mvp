@@ -1,116 +1,131 @@
 {
-  "generated_at": "2026-08-29T06:01:05.850481+00:00",
-  "date_jst": "2026-08-29",
-  "name": "George Springer",
-  "player_id": "543807",
-  "team": "ブルージェイズ",
+  "generated_at": "2026-08-30T06:01:13.532177+00:00",
+  "date_jst": "2026-08-30",
+  "name": "Carson Kelly",
+  "player_id": "608348",
+  "team": "カブス",
   "group": "hitting",
-  "why": "2026-08-29のMLBで最も活躍",
-  "headline": "4打数4安打　1本塁打　1二塁打　1打点",
-  "score": 133,
+  "why": "2026-08-30のMLBで最も活躍",
+  "headline": "4打数2安打　1本塁打　1二塁打　4打点　1四球",
+  "score": 135,
   "bio": {
-    "name_en": "George Springer",
-    "age": 36,
-    "birth_city": "New Britain",
-    "birth_state": "CT",
+    "name_en": "Carson Kelly",
+    "age": 32,
+    "birth_city": "Chicago",
+    "birth_state": "IL",
     "birth_country": "USA",
-    "birth_date": "1989-09-19",
-    "debut": "2014-04-16",
-    "draft_year": 2011,
+    "birth_date": "1994-07-14",
+    "debut": "2016-09-05",
+    "draft_year": 2012,
     "bats": "Right",
     "throws": "Right",
-    "number": "4",
-    "position": "Designated Hitter",
-    "nickname": "Horhay",
+    "number": "15",
+    "position": "Catcher",
+    "nickname": "Cars",
     "height": "6' 1\"",
-    "weight": 220
+    "weight": 212
   },
   "teams": [
     {
-      "team": "アストロズ",
-      "from": 2014,
-      "to": 2020
+      "team": "カージナルス",
+      "from": 2016,
+      "to": 2018
     },
     {
-      "team": "ブルージェイズ",
-      "from": 2021,
+      "team": "ダイヤモンドバックス",
+      "from": 2019,
+      "to": 2023
+    },
+    {
+      "team": "タイガース",
+      "from": 2023,
+      "to": 2024
+    },
+    {
+      "team": "レンジャーズ",
+      "from": 2024,
+      "to": 2024
+    },
+    {
+      "team": "カブス",
+      "from": 2025,
       "to": 2026
     }
   ],
   "career": {
-    "games": 1549,
-    "avg": ".265",
-    "hr": 307,
-    "rbi": 840,
-    "ops": ".825",
-    "sb": 130,
-    "hits": 1576
+    "games": 770,
+    "avg": ".233",
+    "hr": 80,
+    "rbi": 306,
+    "ops": ".700",
+    "sb": 5,
+    "hits": 532
   },
   "this_season": {
-    "games": 104,
-    "avg": ".251",
-    "hr": 14,
-    "rbi": 44,
-    "ops": ".741",
-    "sb": 10,
-    "hits": 96
+    "games": 101,
+    "avg": ".260",
+    "hr": 9,
+    "rbi": 49,
+    "ops": ".729",
+    "sb": 0,
+    "hits": 83
   },
   "last_season": {
-    "games": 140,
-    "avg": ".309",
-    "hr": 32,
-    "rbi": 84,
-    "ops": ".959",
-    "sb": 18,
-    "hits": 154
+    "games": 111,
+    "avg": ".249",
+    "hr": 17,
+    "rbi": 50,
+    "ops": ".761",
+    "sb": 2,
+    "hits": 92
   },
   "recent": [
     {
-      "date": "2026-08-28",
-      "line": "4打数4安打 1本塁打 1打点",
-      "opponent": "Seattle Mariners"
+      "date": "2026-08-29",
+      "line": "4打数2安打 1本塁打 4打点",
+      "opponent": "Cincinnati Reds"
     },
     {
-      "date": "2026-08-27",
-      "line": "3打数2安打 1本塁打 2打点",
-      "opponent": "Kansas City Royals"
+      "date": "2026-08-28",
+      "line": "3打数0安打",
+      "opponent": "Cincinnati Reds"
     },
     {
       "date": "2026-08-26",
-      "line": "4打数1安打",
-      "opponent": "Kansas City Royals"
+      "line": "3打数0安打",
+      "opponent": "Arizona Diamondbacks"
     },
     {
-      "date": "2026-08-25",
-      "line": "1打数0安打",
-      "opponent": "Kansas City Royals"
+      "date": "2026-08-24",
+      "line": "3打数1安打 1本塁打 1打点",
+      "opponent": "Arizona Diamondbacks"
     },
     {
       "date": "2026-08-23",
-      "line": "4打数1安打",
-      "opponent": "New York Yankees"
+      "line": "5打数1安打 1打点",
+      "opponent": "Seattle Mariners"
     }
   ],
   "awards": [
     {
-      "season": "2025",
-      "name": "Blue Jays MVP"
+      "season": "2017",
+      "name": "PCL Mid-Season All-Star"
     },
     {
-      "season": "2025",
-      "name": "AL Silver Slugger"
+      "season": "2016",
+      "name": "TEX Mid-Season All-Star"
     },
     {
-      "season": "2025",
-      "name": "AL Player of the Week"
+      "season": "2015",
+      "name": "Rawlings MiLB Gold Glove"
     },
     {
-      "season": "2022",
-      "name": "AL All-Star"
+      "season": "2014",
+      "name": "MiLB.com Organization All-Star"
     },
     {
-      "season": "2021",
-      "name": "AL Player of the Week"
+      "season": "2014",
+      "name": "MID Mid-Season All-Star"
     }
   ],
   "quotes": []

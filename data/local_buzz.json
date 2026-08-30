@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-29T06:02:02.686572+00:00",
+  "updated_at": "2026-08-30T06:02:25.958744+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,36 +13,52 @@
   "titles_count": 51,
   "teams": [
     {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ブルージェイズの伝説的放送者マルティネスの引退と復帰勝利"
+    },
+    {
+      "team_id": "137",
+      "name": "ジャイアンツ",
+      "name_en": "San Francisco Giants",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "ジャイアンツが5年連続で負け越し、フランチャイズ史上初"
+    },
+    {
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "スヌーピーがメッツの試合でファーストピッチを投球"
+    },
+    {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "審判の誤審が多発、選手ケガ多数"
-    },
-    {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "レイズがAL初の80勝達成、新球場決定"
-    },
-    {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "スクバル、涙の凱旋も投球では圧倒"
-    },
-    {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
       "mentions": 2,
       "tone": "話題",
-      "gist": "マンシーニが1日契約、延長で逆転勝ち"
+      "gist": "レッドソックスファンがヤンキースホームランを息子に返す"
+    },
+    {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "ドジャースが4試合で2度目のウォークオフで敗北"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "ヤンキースを含む複数球団に怪我人が発生"
     },
     {
       "team_id": "144",
@@ -50,37 +66,21 @@
       "name_en": "Atlanta Braves",
       "mentions": 2,
       "tone": "好調",
-      "gist": "オジー・アルビエス活躍で5連勝"
+      "gist": "ペレスが6連勝中のブレーブスの先発投手として活躍"
     },
     {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "ロジャン・ヘンダーソン好投でERA2.48"
-    },
-    {
-      "team_id": "138",
-      "name": "カージナルス",
-      "name_en": "St. Louis Cardinals",
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
       "mentions": 1,
       "tone": "話題",
-      "gist": "チャペル・ローン・ナイト開催"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "シーズがサイヤング賞候補の好投"
+      "gist": "オリオールズがエラー連続で得点、サーカス音楽を放送"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 2
+      "mentions": 3
     },
     {
       "name": "ヌートバー",
