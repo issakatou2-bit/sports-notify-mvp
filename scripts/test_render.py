@@ -188,18 +188,19 @@ def main() -> int:
         print("ok  9〜18回まで、最後の列が動きの終わりまでに開く")
 
     print("\n--- 成績の行が幅に収まるか ---")
-    import morning_recap as _mr
     from PIL import Image as _I, ImageDraw as _ID
     _dd = _ID.Draw(_I.new("RGB", (g.W, g.H)))
-    over = []
+    over, cut = [], []
     for row in (recap.get("players") or []):
-        head = _mr.headline(row)
         wide = (row.get("prev_score") is not None
                 or row.get("avg_score") is not None)
         avail = (g.W - 560) if wide else (g.W - 300)
-        size = g.fit(_dd, head, avail, (48, 44, 40, 36, 32, 28, 24))
+        head, size = g.fit_headline(_dd, row, avail)
+        full = __import__("morning_recap").headline(row)
         if _dd.textlength(head, font=g.font(size)) > avail:
             over.append("%d字 %s" % (len(head), head))
+        elif head != full:
+            cut.append("%s → %s" % (full, head))
     if over:
         fails += 1
         print("NG  幅に収まらない行が%d件" % len(over))
@@ -207,10 +208,102 @@ def main() -> int:
             print("      " + o)
     else:
         print("ok  すべて収まる(%d件)" % len(recap.get("players") or []))
+    # 落とした行は、失敗ではないが黙って消えるので出す。
+    # 落とすものが無くなってなお入らない日は、上の NG に出る。
+    for c in cut[:5]:
+        print("    落とした: " + c)
 
+    fails += check_longform()
 
     print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
     return 1 if fails else 0
+
+
+def check_longform() -> int:
+    """長編(16:9)の画面。札の種類ぶんだけ描いてみる。
+
+    ここを見ていなかったので、初版は台詞の箱が画面の外へ出たまま、
+    5行を超えたぶんを黙って捨てたまま公開された。
+    絵の良し悪しは見ないが、「置ける場所に収まっているか」は
+    座標の計算なので、ここで確かめられる。
+    """
+    print("\n--- 長編(16:9)の画面 ---")
+    bad = 0
+    try:
+        import generate_longform as L
+    except Exception as e:                       # noqa: BLE001
+        print("[skip] 読み込めません: %s" % str(e)[:120])
+        return 0
+
+    cards = {
+        "score": {"type": "score", "away": "デトロイト",
+                  "home": "ヒューストン", "away_score": 2, "home_score": 1,
+                  "innings": [{"num": i, "away": 0, "home": 0}
+                              for i in range(1, 13)]},
+        "views": {"type": "views", "title": "デトロイト対ヒューストン "
+                                            "ハイライト", "views": 318754},
+        "quote": {"type": "quote", "text": "あれは投げてはいけない球だ" * 4,
+                  "tone": "否定", "likes": 1240, "replies": 18,
+                  "source": "MLB公式"},
+        "stat": {"type": "stat", "name": "Tarik Skubal", "stat": "防御率",
+                 "rank": 2, "value": "2.14"},
+        "star": {"type": "star", "name": "Riley Greene",
+                 "team": "デトロイト・タイガース", "line": "4打数2安打1本塁打"},
+        "none": None,
+        "unknown": {"type": "存在しない種類"},
+    }
+    # 長さは、短い一言から、1画面に入らない長さまで。
+    texts = ["へえ。", "そうね。この試合、9回に決まったのよ。",
+             "コメント欄はね、勝ったほうじゃなくて負けたほうの話で"
+             "もちきりなの。いちばん支持されている一言が、これよ。",
+             "なるほどなのだ。" * 20]
+
+    for key, card in cards.items():
+        for ti, txt in enumerate(texts):
+            seg = {"speaker": 2 if ti % 2 else 3, "text": txt}
+            try:
+                pages = L.paginate([seg])
+                for pg in pages:
+                    im = L.render_line(1.0, pg, "assets/portraits",
+                                       "デトロイト対ヒューストン", card)
+                if blank(im):
+                    bad += 1
+                    print("NG  %s / %d字: 背景だけです" % (key, len(txt)))
+                    continue
+            except Exception as e:               # noqa: BLE001
+                bad += 1
+                print("NG  %s / %d字: %s: %s"
+                      % (key, len(txt), type(e).__name__, str(e)[:90]))
+                continue
+            # 捨てていないか。全部の画面の行を繋ぐと元に戻るはず。
+            joined = "".join("".join(pg["_lines"]) for pg in pages)
+            if len(joined) < len(" ".join(txt.split())):
+                bad += 1
+                print("NG  %s: 台詞を%d字捨てました"
+                      % (key, len(txt) - len(joined)))
+    if not bad:
+        print("ok  札%d種 × 長さ%d通り、はみ出しも捨てもありません"
+              % (len(cards), len(texts)))
+
+    # 置ける場所どうしが重なっていないか。座標なので数えれば分かる。
+    print("\n--- 長編の割りつけが重なっていないか ---")
+    over = []
+    if L.PANEL_Y1 >= L.TALK_Y0:
+        over.append("札(%d)と台詞(%d)" % (L.PANEL_Y1, L.TALK_Y0))
+    if L.TALK_Y1 > L.H:
+        over.append("台詞の下端(%d)が画面(%d)の外" % (L.TALK_Y1, L.H))
+    if L.H - L.PORTRAIT_H >= L.PANEL_Y1:
+        pass                                    # 立ち絵は札より下から
+    for size in L.TALK_SIZES:
+        need = size + L.TALK_LEAD
+        if (L.TALK_Y1 - L.TALK_Y0 - L.TALK_PAD * 2) < need:
+            over.append("%dptが1行も入らない" % size)
+    if over:
+        bad += 1
+        print("NG  " + "、".join(over))
+    else:
+        print("ok  札・台詞・立ち絵が重なりません")
+    return bad
 
 
 if __name__ == "__main__":

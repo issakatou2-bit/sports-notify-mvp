@@ -277,6 +277,33 @@ def fit(d, text, max_w, sizes):
     return sizes[-1]
 
 
+HEAD_SIZES = (48, 44, 40, 36, 32, 28, 24)
+
+
+def fit_headline(d, row, max_w, sizes=HEAD_SIZES):
+    """成績の行を、置ける幅に収める。
+
+    fit() は入らなくても最小の大きさを返すだけで、収まったとは
+    言わない。「小さくすれば入る」は、ある長さから先は成り立たない。
+    実際「4打数2安打　1本塁打　1二塁打　5打点　1四球」は24字あって、
+    いちばん小さい文字でも右へはみ出したまま公開されていた。
+
+    まず縮める。それでも入らなければ、morning_recap が決めた順に
+    部品を落とす。落とすものが無くなったら最小の大きさで返す
+    (そこから先は、こちらでは何もできない)。
+    """
+    bits, drops = morning_recap.headline_bits(row)
+    drop = list(drops)
+    while True:
+        text = "　".join(bits)
+        s = fit(d, text, max_w, sizes)
+        if d.textlength(text, font=font(s)) <= max_w or not drop:
+            return text, s
+        i = drop.pop(0)
+        bits = [b for j, b in enumerate(bits) if j != i]
+        drop = [j - 1 if j > i else j for j in drop]
+
+
 # いま何枚目か。generate_video.py と同じ作り。
 # 引数で回すと全描画関数の引数が増えるので、1本を順に描くだけの
 # この処理ではここに置いて描画側から読む。
@@ -1262,8 +1289,8 @@ def render_list(p, players, start, count):
         # そのまま右へはみ出していた。投手の行に被安打と防御率を足して
         # 28字を超えた日に出た。fit は入らなければ最小を返すだけで、
         # 収まったかどうかは教えてくれない。刻みを下まで用意する。
-        s = fit(d, head, (W - 560) if right_used else (W - 300),
-                (48, 44, 40, 36, 32, 28, 24))
+        avail = (W - 560) if right_used else (W - 300)
+        head, s = fit_headline(d, pl, avail)
         d.text((180 - dx, y + 118), head, font=font(s), fill=TEXT)
 
         # 場面(逆転・勝ち越し・同点)。点数がなぜ高いのかの説明になる。

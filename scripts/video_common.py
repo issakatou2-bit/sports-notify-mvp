@@ -152,6 +152,15 @@ def build_narration_track(segs, durations, out_dir):
 NO_LINE_END = "「『（〈《【〔［｛(["
 NO_LINE_START = "。、．，」』）〉》】〕］｝)]！？!?ゝ々ー"
 
+# 途中で切ってはいけない連なり。
+#
+# 「0.05動くだけでも」が「0.0」と「5動くだけでも」に割れて出ていた。
+# 数字は割れると別の数字に見える。英字の名前も同じ(Skub / al)。
+# 日本語は1文字ずつ詰めてよいが、ここだけは塊で送る。
+WORD_CHARS = set("0123456789.,:%-/+")
+WORD_CHARS |= set("abcdefghijklmnopqrstuvwxyz")
+WORD_CHARS |= set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
 
 def wrap(d, text, fnt, max_w):
     """
@@ -175,6 +184,17 @@ def wrap(d, text, fnt, max_w):
             if ch in NO_LINE_START:
                 cur += ch
                 continue
+            # 数字や英字の途中なら、その塊ごと次の行へ送る。
+            # ただし塊だけで1行を超えるなら、送っても直らないので切る。
+            if ch in WORD_CHARS and cur[-1] in WORD_CHARS:
+                i = len(cur)
+                while i > 0 and cur[i - 1] in WORD_CHARS:
+                    i -= 1
+                head, tail = cur[:i], cur[i:]
+                if head and d.textlength(tail + ch, font=fnt) <= max_w:
+                    lines.append(head)
+                    cur = tail + ch
+                    continue
             lines.append(cur)
             cur = ch
         else:

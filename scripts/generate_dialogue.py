@@ -212,7 +212,10 @@ def facts(m: dict, extra: list) -> str:
     top = m["top"]
     res = top.get("result") or {}
     lines = [
-        "## その日いちばん見られたハイライト",
+        "## その日いちばん見られたハイライト（MLB公式チャンネルの動画）",
+        "※ この動画を出しているのはMLB公式であって、コレスポではない。",
+        "  コレスポは、その動画とコメント欄を毎日見て話す番組。",
+        "  「うちのハイライト」「このチャンネルのハイライト」とは言わない。",
         f"何の動画か: {top.get('topic_jp') or top.get('matchup')}",
         f"再生回数: {top.get('views', 0):,}回",
     ]
@@ -250,6 +253,74 @@ def facts(m: dict, extra: list) -> str:
     return "\n".join(lines)
 
 
+def panels(m: dict, extra: list) -> dict:
+    """画面中央に出す情報の札。台詞と対応させるための鍵つき。
+
+    なぜここで作るのか:
+      16:9の画面は、左右に人・下に台詞を置くと、真ん中が丸ごと空く。
+      そこに「いま話していること」を出したい。
+
+      ただし**中身をモデルに作らせない**。作らせると、画面に映る
+      数字が台詞と同じ根拠を持たなくなる。ここで事実から組み立てて、
+      モデルには「どれを出すか」の鍵だけを選ばせる。
+      知らない鍵を返してきたら、その指定は捨てる(前の札のまま)。
+    """
+    top, res = m["top"], (m["top"].get("result") or {})
+    out = {}
+
+    if res.get("away_jp") and res.get("home_jp"):
+        out["score"] = {
+            "type": "score",
+            "away": res["away_jp"], "home": res["home_jp"],
+            "away_score": res.get("away_score"),
+            "home_score": res.get("home_score"),
+            "innings": [i for i in (res.get("innings") or []) if i.get("num")],
+        }
+    if top.get("views"):
+        out["views"] = {
+            "type": "views",
+            "title": top.get("topic_jp") or top.get("matchup") or "",
+            "views": top.get("views"),
+        }
+    if res.get("star_name"):
+        out["star"] = {
+            "type": "star", "name": res["star_name"],
+            "team": res.get("star_team") or "",
+            "line": res.get("star_line") or "",
+        }
+    for i, c in enumerate(m.get("voices") or [], 1):
+        if not c.get("ja"):
+            continue
+        out["comment%d" % i] = {
+            "type": "quote", "text": c["ja"],
+            "tone": c.get("tone") or "", "likes": c.get("likes") or 0,
+            "replies": c.get("replies") or 0,
+            "source": m.get("source") or "",
+        }
+    for i, e in enumerate(extra, 1):
+        out["stat%d" % i] = {
+            "type": "stat", "name": e["name"], "stat": e["stat"],
+            "rank": e["rank"], "value": e["value"],
+        }
+    return out
+
+
+def panel_menu(ps: dict) -> str:
+    """モデルに見せる、鍵の一覧。ここに無い鍵は書かせない。"""
+    label = {"score": "回ごとの得点と最終スコア",
+             "views": "その動画の再生回数",
+             "star": "目立った選手の成績"}
+    rows = []
+    for k, v in ps.items():
+        if v["type"] == "quote":
+            rows.append(f"[{k}] コメント: {v['text'][:34]}")
+        elif v["type"] == "stat":
+            rows.append(f"[{k}] {v['name']}の{v['stat']}")
+        else:
+            rows.append(f"[{k}] {label.get(k, k)}")
+    return "\n".join(rows)
+
+
 PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放送作家です。
 2人の会話として書いてください。
 
@@ -262,14 +333,27 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   知らないふりの質問はしない。視聴者を子供扱いしていることになる。
   聞くのは「その数字はどれくらい珍しいのか」「なぜそうなるのか」
   「他と比べてどうなのか」といった、**踏み込んだこと**。
-- 解説 … 語り手。敬語。落ち着いた口調。
+- めたん … 語り手。**落ち着いた大人の女性**。
+  語尾は「〜わね」「〜よ」「〜のよ」「〜かしら」。**敬語にはしない。**
+  ただし砕けすぎない。詳しく、冷静に、順序立てて話す人。
   下の事実だけを話す。「調べたことを話す人」であって、
   「何でも知っている人」ではない。
 
 {facts}
 
+## 画面に出せる札
+台詞の頭に [鍵] を付けると、その台詞のあいだ、画面の中央に
+その札が出る。**話していることと札を合わせる。**
+付けなければ、直前の札がそのまま残る。ここに無い鍵は使わない。
+
+{menu}
+
 条件:
-- 「話者：台詞」の形で、1行に1つ。それ以外は書かない
+- 「話者[鍵]：台詞」または「話者：台詞」の形で、1行に1つ。
+  それ以外は書かない
+- **話題が変わる行には必ず鍵を付ける。** 得点の話なら[score]、
+  コメントを読むならそのコメントの鍵、成績なら[stat1]のように。
+  同じ話が続くあいだは付けない
 - **全体で1500〜1800文字。** 3分の動画にはこれだけ要る。
   試作は1100文字で103秒にしかならなかった。
   台詞の数を増やすより、解説の一言を厚くするほうがよい
@@ -298,6 +382,11 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   「このハイライトチャンネル」のような言い換えをしない
   （試作では「このハイライトチャンネルでは」と書かれた。
   名前が出ないと、誰の番組か分からないまま終わる）
+- **ハイライト動画はMLB公式のもので、コレスポのものではない。**
+  「うちのハイライト」「このチャンネルのハイライト」は間違い。
+  コレスポは、その動画とコメント欄を毎日見て話す番組
+  （試作では最後にこの2つが混ざった。見ている人は、
+  どっちのチャンネルの話をされているのか分からなくなる）
 - コレスポが毎日出しているのは、日本人選手の成績、今日の1人、
   ファンのコメント欄、明日の注目試合、欧州サッカー、現地の報道。
   これ以外を挙げない
@@ -305,28 +394,44 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
 
 書き出しの例（この通りでなくてよい）:
 ずんだもん：今日のコメント欄、なんか揉めてるのだ。
-解説：ええ。勝っている試合なんですが、いちばん支持されている
-コメントが、こうなんです。
+めたん[comment1]：そうなのよ。勝っている試合なんだけど、
+いちばん支持されているコメントが、これなの。
 """
 
 
-def parse(text: str) -> list:
-    """「話者：台詞」の行を、区間の配列にする。"""
-    out = []
+def parse(text: str, keys=()) -> list:
+    """「話者[鍵]：台詞」の行を、区間の配列にする。
+
+    鍵は無くてもよい(直前の札が残る)。知らない鍵は捨てる。
+    捨てるだけで落とさないのは、画面の指定が1つ外れただけで
+    台本まるごとを失うのは割に合わないため。
+    """
+    out, unknown = [], []
     for line in text.splitlines():
         line = line.strip()
-        m = re.match(r"^(ずんだもん|解説)\s*[：:]\s*(.+)$", line)
+        m = re.match(
+            r"^(ずんだもん|めたん|四国めたん|解説)"
+            r"(?:\s*[\[［]\s*([A-Za-z0-9_]+)\s*[\]］])?"
+            r"\s*[：:]\s*(.+)$", line)
         if not m:
             continue
-        who, said = m.group(1), m.group(2).strip()
+        who, key, said = m.group(1), m.group(2), m.group(3).strip()
         if not said:
             continue
+        if key and keys and key not in keys:
+            unknown.append(key)
+            key = None
         out.append({
             "kind": "line",
             "text": said,
-            "speaker": SPEAKER_ZUNDA if who == "ずんだもん" else SPEAKER_EXPLAIN,
-            "meta": {"who": who},
+            "speaker": (SPEAKER_ZUNDA if who == "ずんだもん"
+                        else SPEAKER_EXPLAIN),
+            "panel": key or None,
+            "meta": {"who": "ずんだもん" if who == "ずんだもん" else "めたん"},
         })
+    if unknown:
+        print("[warn] 知らない画面の鍵を捨てました: %s"
+              % "、".join(sorted(set(unknown))))
     return out
 
 
@@ -346,8 +451,11 @@ def main() -> int:
 
     extra = enrich(m["voices"])
     body = facts(m, extra)
+    ps = panels(m, extra)
     print("--- モデルに渡す事実 ---")
     print(body)
+    print("\n--- 画面に出せる札 ---")
+    print(panel_menu(ps))
 
     key = os.environ.get("ANTHROPIC_API_KEY")
     if not (key and anthropic is not None):
@@ -360,15 +468,22 @@ def main() -> int:
     resp = client.messages.create(
         model=MODEL, max_tokens=2500,
         messages=[{"role": "user",
-                   "content": PROMPT.format(facts=body)}],
+                   "content": PROMPT.format(facts=body,
+                                            menu=panel_menu(ps))}],
     )
     token_log.record("dialogue", MODEL, resp)
     text = "".join(b.text for b in resp.content if b.type == "text")
 
-    segs = parse(text)
+    segs = parse(text, keys=set(ps))
     print("\n--- できた台本 ---")
     for s in segs:
-        print(f"{s['meta']['who']}：{s['text']}")
+        tag = "[%s]" % s["panel"] if s.get("panel") else ""
+        print(f"{s['meta']['who']}{tag}：{s['text']}")
+    used = {s["panel"] for s in segs if s.get("panel")}
+    print("[info] 画面の札 %d枚のうち %d枚を使いました"
+          % (len(ps), len(used)))
+    if ps and not used:
+        print("[warn] 札が1枚も指定されませんでした。中央は既定の札になります")
     chars = sum(len(s["text"]) for s in segs)
     print(f"\n[info] {len(segs)}行 / {chars}字 → 7字/秒で約{chars / 7:.0f}秒")
 
@@ -381,7 +496,7 @@ def main() -> int:
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(
-        {"kind": "dialogue", "segments": segs,
+        {"kind": "dialogue", "segments": segs, "panels": ps,
          "top": m["top"].get("topic_jp") or m["top"].get("matchup"),
          "source": m.get("source")},
         ensure_ascii=False, indent=2), encoding="utf-8")

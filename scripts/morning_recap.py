@@ -235,6 +235,23 @@ def fetch_context(player_id: str, groups: list, season: str, day: str) -> dict:
 
 def headline(row: dict) -> str:
     """1行の見出し。数字をそのまま並べるだけで、評価はしない。"""
+    return "　".join(headline_bits(row)[0])
+
+
+def headline_bits(row: dict):
+    """見出しを、部品と「落としてよい順」に分けて返す。
+
+    なぜ分けるのか:
+      成績の行に使える幅は決まっている(520〜780px)。日によって
+      長さが変わるので、入る日と入らない日がある。
+      投手の側は「被安打は出す、与四球は落とす」と固定で決めて
+      あったが、打者の側には何も無く、
+      「4打数2安打　1本塁打　1二塁打　5打点　1四球」で24字になり、
+      いちばん小さい文字でも右へはみ出したまま公開されていた。
+
+      どれを落とすかは、幅を測る側(描画)にしか決められない。
+      ここでは順番だけを決めて渡す。
+    """
     if row["type"] == "pitcher":
         bits = [f"{row['ip']}回", f"{row['so']}奪三振", f"自責{row['er']}"]
         # 被安打と与四球も出す。
@@ -281,7 +298,13 @@ def headline(row: dict) -> str:
         # 勝ちは「抑えて勝たせた」という、他の数字に出ない事実なので残す。
         if row.get("wins"):
             bits.append("勝ち投手")
-        return "　".join(bits)
+        # 投手側は既にここまでで選び切ってある。落とす余地は
+        # 「セーブ／ホールド」の役割だけ(防御率と被安打に出ない事実の
+        # なかでは、いちばん他から推し量れる)。
+        drops = [i for i, b in enumerate(bits)
+                 if b in ("ホールド", "セーブ失敗")]
+        return bits, drops
+
     bits = [f"{row['ab']}打数{row['hits']}安打"]
     # 長打は種類まで出す。「1安打」だけでは、単打も三塁打も同じに見える。
     # 点数の側では塁打で差を付けているので、画面にも根拠を出しておく。
@@ -301,7 +324,27 @@ def headline(row: dict) -> str:
         bits.append(f"{row['hbp']}死球")
     if row.get("sb"):
         bits.append(f"{row['sb']}盗塁")
-    return "　".join(bits)
+
+    # 落としてよい順。前にあるものから消す。
+    #
+    #   盗塁  … その打席の結果ではない
+    #   死球  … 四球と同じ「塁に出た」で、件数がごく少ない
+    #   二塁打… 安打数に含まれている。長打の種類は本塁打が残れば伝わる
+    #   四球  … **安打が出ている日だけ**落とす。0安打の日に落とすと
+    #           「3打数0安打」だけが残り、塁に出た事実が消える
+    #   三塁打… 二塁打より珍しいので、こちらを後に残す
+    #
+    # 打点と本塁打と打数安打は落とさない。ここが行の中身そのもの。
+    order = ["盗塁", "死球", "二塁打"]
+    if row.get("hits"):
+        order.append("四球")
+    order.append("三塁打")
+    pos = {}
+    for i, b in enumerate(bits):
+        for k in order:
+            if b.endswith(k):
+                pos[k] = i
+    return bits, [pos[k] for k in order if k in pos]
 
 
 def build(day: str = None, season: str = None) -> dict:
