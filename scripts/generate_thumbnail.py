@@ -303,6 +303,91 @@ def draw_morning_voices(d, day: str, buzz_path="data/mlb_buzz.json"):
     d.text((70, H - 78), "コレスポ  現地の声", font=font(38), fill=JP)
 
 
+# 長編のサムネイルに立ち絵を置く場所。
+#
+# 16:9はショート棚のように切り抜かれないので、右側を使える。
+# 文字は左60%、2人は右40%。顔が小さくならないよう、
+# 上半身だけを切り出して大きく置く。
+LF_ART_H = 560
+LF_ART_Y = H - LF_ART_H + 40      # 少しはみ出させて、切れている感を出す
+
+
+def _lf_art(who: str, portrait_dir: str):
+    """立ち絵。無ければ None。サムネイルでは1枚絵で十分。"""
+    if not portrait_dir:
+        return None
+    d = pathlib.Path(portrait_dir)
+    for cand in (d / who / "体.png", d / (who + ".png")):
+        if not cand.exists():
+            continue
+        try:
+            art = Image.open(cand).convert("RGBA")
+        except Exception:                        # noqa: BLE001
+            return None
+        # 部品の「体」は顔が入っていないので、目・眉・口を重ねる。
+        if cand.name == "体.png":
+            try:
+                spec = json.loads(
+                    (d / who / "parts.json").read_text(encoding="utf-8"))
+                for g, tag in (("眉", "基本"), ("目", "開"), ("口", "笑")):
+                    fn = (spec.get(g) or {}).get(tag)
+                    if fn:
+                        art = Image.alpha_composite(
+                            art, Image.open(d / who / fn).convert("RGBA"))
+            except Exception:                    # noqa: BLE001
+                pass
+        k = LF_ART_H / art.height
+        return art.resize((max(1, int(art.width * k)), LF_ART_H),
+                          Image.LANCZOS)
+    return None
+
+
+def draw_longform(im, d, topic: str, day: str, portrait_dir: str):
+    """長編（対話）。何の試合のコメント欄を読むのかを出す。
+
+    それまで朝の枠のサムネイルを流用していた。動画の中身は
+    2人の対話なので、題と絵が食い違っていた。
+    """
+    for i, who in enumerate(("ずんだもん", "四国めたん")):
+        art = _lf_art(who, portrait_dir)
+        if art is None:
+            continue
+        x = 880 + i * 210
+        im.paste(art, (int(x - art.width / 2), LF_ART_Y), art)
+
+    d.text((70, 84), day, font=font(46), fill=DIM)
+    d.text((70, 148), "公式コメント欄を", font=font(84), fill=TEXT)
+    d.text((70, 246), "読み解く", font=font(124), fill=ACCENT)
+    y = 508
+    if topic:
+        # 「ハイライト」は題にもここにも出るので落とす。
+        # 字数が減ったぶん、対戦カードを大きく置ける。
+        for tail in ("ハイライト", " ハイライト", "の試合"):
+            if topic.endswith(tail):
+                topic = topic[:-len(tail)].strip()
+        # 幅は立ち絵の手前まで。780にしていたら、右の立ち絵に
+        # 文字が重なった。ここは絵の位置から決める。
+        avail = 880 - 120 - 70
+        s = fit(d, topic, avail, (58, 52, 46, 40, 34, 30))
+        if d.textlength(topic, font=font(s)) > avail:
+            # それでも入らないときは2行に割る。切らない。
+            cut = len(topic) // 2
+            for i in range(cut, min(len(topic) - 1, cut + 6)):
+                if topic[i] in "対 　vsVS":
+                    cut = i + 1
+                    break
+            s = fit(d, topic[:cut], avail, (52, 46, 40, 34, 30))
+            d.text((70, 402), topic[:cut], font=font(s), fill=TEXT)
+            d.text((70, 402 + s + 10), topic[cut:], font=font(s), fill=TEXT)
+            y = 402 + (s + 10) * 2 + 16
+        else:
+            d.text((70, 420), topic, font=font(s), fill=TEXT)
+            y = 420 + s + 26
+    d.text((70, max(508, y)), "現地の反応を、翻訳して読む",
+           font=font(42), fill=DIM)
+    d.text((70, H - 78), "コレスポ", font=font(38), fill=JP)
+
+
 def draw_verdict(d, label: str):
     d.text((70, 110), "注目した試合", font=font(76), fill=TEXT)
     d.text((70, 210), "どうなった？", font=font(140), fill=ACCENT)
@@ -325,7 +410,8 @@ def draw_asset(d, topic: str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--kind", default="daily",
-                        choices=["daily", "weekly", "asset", "verdict", "morning"])
+                        choices=["daily", "weekly", "asset", "verdict", "morning",
+                                 "longform"])
     parser.add_argument("--recap", default="data/morning_recap.json")
     # 選択肢は post_common.DAILY_LINEUP と揃える。
     #
@@ -344,6 +430,9 @@ def main():
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--narration", default="public/narration.json")
     parser.add_argument("--asset-topic", default="mlb_abbr")
+    parser.add_argument("--topic", default="",
+                        help="長編で出す主題(その日のハイライト)")
+    parser.add_argument("--portrait-dir", default="assets/portraits")
     parser.add_argument("--label", default="")
     parser.add_argument("--archive-dir", default="archive",
                         help="週次で --label を省いたときの期間の算出元")
@@ -352,7 +441,16 @@ def main():
 
     im, d = base()
 
-    if args.kind == "morning":
+    if args.kind == "longform":
+        day = _jst_label(None) if not args.label else args.label
+        try:
+            from datetime import datetime as _dt, timezone, timedelta
+            n = _dt.now(timezone(timedelta(hours=9)))
+            day = f"{n.month}月{n.day}日"
+        except Exception:  # noqa: BLE001
+            day = ""
+        draw_longform(im, d, args.topic, day, args.portrait_dir)
+    elif args.kind == "morning":
         try:
             rec = json.loads(pathlib.Path(args.recap).read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):

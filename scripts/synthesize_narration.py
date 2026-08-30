@@ -78,6 +78,19 @@ PRE_PHONEME = 0.0
 POST_PHONEME = 0.05
 PAUSE_SCALE = 0.85
 
+# 話者ごとの調整。
+#
+# 対話の回で2人が同じ設定だと、片方が速すぎたり低すぎたりする。
+# 短編は全部ずんだもん(3)なので、そちらは上の既定のまま。
+#
+# 四国めたん … 解説の側。ずんだもんと同じ1.5では、内容のある話を
+#   追いかけるのがきつい。0.9倍の1.35に落とす。
+#   pitchScale はVOICEVOXの音の高さで、-0.15〜0.15あたりが実用域。
+#   0.03は「言われれば分かる」程度の上げ幅。
+SPEAKER_TUNE = {
+    2: {"speedScale": round(SPEED_SCALE * 0.9, 3), "pitchScale": 0.03},
+}
+
 
 def engine_available() -> bool:
     try:
@@ -112,6 +125,11 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
         for key, value in (("prePhonemeLength", PRE_PHONEME),
                            ("postPhonemeLength", POST_PHONEME),
                            ("pauseLengthScale", PAUSE_SCALE)):
+            if key in query:
+                query[key] = value
+
+        # 話者ごとの調整。応答に無い鍵は送らない(422になる)。
+        for key, value in (SPEAKER_TUNE.get(speaker) or {}).items():
             if key in query:
                 query[key] = value
 

@@ -97,8 +97,9 @@ jobs:
       - name: Thumbnail
         continue-on-error: true
         run: |
+          TOPIC=$(python -c "import json;print(json.load(open('build/lf/dialogue.json',encoding='utf-8')).get('top',''))" || echo "")
           python scripts/generate_thumbnail.py \
-            --kind morning --mode voices \
+            --kind longform --topic "$TOPIC" \
             --out build/lf/thumb.png
 
       # 動画は必ず artifact に残す。上げなくても手元で見られるように。

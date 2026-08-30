@@ -64,9 +64,13 @@ from generate_weekly import (  # noqa: E402
 #
 # 左右に分けるのは、聞かなくても誰が喋っているか分かるようにするため。
 # 音を切って見ている人には、これしか手がかりが無い。
+# flip は左右を反転するか。素材はどちらも同じ向きに描かれているので、
+# 片方をそのまま置くと外を向く。内側を向かせる。
 SPEAKERS = {
-    3: {"name": "ずんだもん", "color": JP, "side": "left"},
-    2: {"name": "四国めたん", "color": ACCENT, "side": "right"},
+    3: {"name": "ずんだもん", "color": JP, "side": "left",
+        "flip": True},
+    2: {"name": "四国めたん", "color": ACCENT, "side": "right",
+        "flip": False},
 }
 DEFAULT_SPEAKER = 3
 
@@ -96,47 +100,167 @@ def _speaker(seg: dict) -> dict:
     sid = seg.get("speaker")
     return SPEAKERS.get(sid) or SPEAKERS[DEFAULT_SPEAKER]
 
+# ---------------------------------------------------------------------------
+# 立ち絵と表情
+# ---------------------------------------------------------------------------
+#
+# 1枚の絵のままだと、3分のあいだ2人が微動だにしない。
+# PSDに目(閉じ目つき)・眉・口が別の層で入っていたので、
+# build_portrait_parts.py で部品に分けて書き出してある。
+#
+#   assets/portraits/<名前>/体.png  目_*.png  眉_*.png  口_*.png
+#
+# 部品はどれも全画面の大きさなので、(0,0)に重ねるだけでよい。
+# ずれようがない。
 
-_PORTRAIT_CACHE: dict = {}
+# 表情。(眉, 目, 口) の組み合わせ。
+#
+# 「ジト目」は、めたんの素材に相当するものが無い(閉じ目の別型しか
+# ない)。片方だけ目が閉じる表情になるので、困り顔は
+# **眉だけで作る**。素材に無いものを無理に当てない。
+EXPRESSIONS = {
+    "基本": ("基本", "開", "閉"),
+    "笑顔": ("基本", "笑", "笑"),
+    "驚き": ("上げ", "見開", "大"),
+    "困り": ("困り", "開", "閉"),
+}
+DEFAULT_EXPR = "基本"
+
+# 台詞から表情を決める言葉。
+#
+# モデルに選ばせることもできるが、鍵を1つ増やすと台本の書式が
+# 増えて、外したときに落ちる場所も増える。まずは書かれた台詞から
+# 引く。外しても「基本」に落ちるだけで、壊れない。
+_HINT = (
+    ("驚き", ("！", "!", "すごい", "すさまじ", "驚", "まさか", "えっ")),
+    ("困り", ("厳しい", "ひどい", "残念", "苦し", "心配", "難しい",
+              "イライラ", "貧弱", "落ち", "だめ", "ダメ")),
+    ("笑顔", ("いい", "良い", "よかった", "最高", "面白", "楽し",
+              "うれし", "嬉し", "見事")),
+)
 
 
-def _portrait(who: str, portrait_dir: str):
-    """立ち絵。無ければ None。
+def expression_for(text: str) -> str:
+    """台詞に合う表情。当たらなければ基本。
 
-    毎フレーム開くと、3分の動画で数千回ファイルを読むことになる。
-    大きさも決まっているので、縮めたものを持っておく。
+    問いかけは眉を上げる。ずんだもんはほとんどが問いなので、
+    ここで表情が動く。
     """
-    if not portrait_dir:
-        return None
-    ck = (who, portrait_dir)
-    if ck in _PORTRAIT_CACHE:
-        return _PORTRAIT_CACHE[ck]
-    art = None
-    for ext in (".png", ".webp"):
-        p = pathlib.Path(portrait_dir) / (who + ext)
-        if p.exists():
-            try:
-                art = Image.open(p).convert("RGBA")
-            except Exception:                    # noqa: BLE001
-                art = None
-            break
-    if art is not None:
-        k = PORTRAIT_H / art.height
-        art = art.resize((max(1, int(art.width * k)), PORTRAIT_H),
-                         Image.LANCZOS)
-    _PORTRAIT_CACHE[ck] = art
-    return art
+    t = str(text or "")
+    if t.rstrip().endswith(("？", "?")):
+        return "驚き"
+    for name, words in _HINT:
+        if any(w in t for w in words):
+            return name
+    return DEFAULT_EXPR
 
 
+_PARTS_CACHE: dict = {}
+_FACE_CACHE: dict = {}
 _DARK_CACHE: dict = {}
 
 
-def _dimmed(ck, art):
+def _parts(who: str, portrait_dir: str):
+    """部品一式。部品が無ければ1枚絵、それも無ければ None。"""
+    ck = (who, portrait_dir)
+    if ck in _PARTS_CACHE:
+        return _PARTS_CACHE[ck]
+    got = None
+    if portrait_dir:
+        d = pathlib.Path(portrait_dir) / who
+        meta = d / "parts.json"
+        if meta.exists():
+            try:
+                spec = json.loads(meta.read_text(encoding="utf-8"))
+                got = {"体": Image.open(d / spec["体"]).convert("RGBA")}
+                for g in ("眉", "目", "口"):
+                    got[g] = {k: Image.open(d / v).convert("RGBA")
+                              for k, v in (spec.get(g) or {}).items()}
+            except Exception as e:               # noqa: BLE001
+                print(f"[warn] {who} の部品を読めません({e})。1枚絵で描きます")
+                got = None
+        if got is None:
+            for ext in (".png", ".webp"):
+                one = pathlib.Path(portrait_dir) / (who + ext)
+                if one.exists():
+                    try:
+                        got = {"1枚": Image.open(one).convert("RGBA")}
+                    except Exception:            # noqa: BLE001
+                        got = None
+                    break
+    _PARTS_CACHE[ck] = got
+    return got
+
+
+def _face(who: str, portrait_dir: str, expr: str, blink: bool, mouth: int,
+          flip: bool):
+    """表情つきの立ち絵。無ければ None。
+
+    組み合わせごとに1度だけ組んで持っておく。3分の動画でも
+    出てくる組み合わせは20通りほどしかない。
+    """
+    ck = (who, portrait_dir, expr, blink, mouth, flip)
+    if ck in _FACE_CACHE:
+        return _FACE_CACHE[ck]
+    parts = _parts(who, portrait_dir)
+    if not parts:
+        _FACE_CACHE[ck] = None
+        return None
+
+    if "1枚" in parts:
+        art = parts["1枚"]
+    else:
+        br, ey, mo = EXPRESSIONS.get(expr) or EXPRESSIONS[DEFAULT_EXPR]
+        if blink:
+            ey = "閉"
+        # 喋っているあいだだけ口が動く。表情の口は、閉じている
+        # ときのぶんとして使う。
+        if mouth == 1:
+            mo = "開"
+        elif mouth >= 2:
+            mo = "大"
+        art = parts["体"]
+        for g, tag in (("眉", br), ("目", ey), ("口", mo)):
+            part = (parts.get(g) or {}).get(tag)
+            if part is not None:
+                art = Image.alpha_composite(art, part)
+
+    k = PORTRAIT_H / art.height
+    art = art.resize((max(1, int(art.width * k)), PORTRAIT_H), Image.LANCZOS)
+    if flip:
+        art = art.transpose(Image.FLIP_LEFT_RIGHT)
+    _FACE_CACHE[ck] = art
+    return art
+
+
+def _dimmed(art):
     """喋っていない側。消さずに落とす(そこに居るので)。"""
+    ck = id(art)
     if ck not in _DARK_CACHE:
         veil = Image.new("RGBA", art.size, (10, 12, 20, 165))
         _DARK_CACHE[ck] = Image.alpha_composite(art, veil)
     return _DARK_CACHE[ck]
+
+
+def paste_portraits(im, talking: str, portrait_dir: str, state: dict):
+    """2人を貼る。喋っているほうだけ明るい。
+
+    state は {名前: {"expr":…, "blink":bool, "mouth":0〜2}}。
+    立ち絵が無い日は、下地の側で丸と名前を描いてある。
+    """
+    for s in SPEAKERS.values():
+        who = s["name"]
+        st = state.get(who) or {}
+        art = _face(who, portrait_dir, st.get("expr", DEFAULT_EXPR),
+                    bool(st.get("blink")), int(st.get("mouth", 0)),
+                    bool(s.get("flip")))
+        if art is None:
+            continue
+        if who != talking:
+            art = _dimmed(art)
+        x = PORTRAIT_X if s["side"] == "left" else W - PORTRAIT_X
+        im.paste(art, (int(x - art.width / 2), H - PORTRAIT_H), art)
+    return im
 
 
 # ---------------------------------------------------------------------------
@@ -364,8 +488,14 @@ def render_panel(d, panel, topic):
     fn(d, panel, top)
 
 
-def render_line(p, seg, portrait_dir="", topic="", panel=None):
-    """1つの台詞。喋っている側を明るく、もう片方を暗くする。"""
+def render_stage(p, seg, portrait_dir="", topic="", panel=None):
+    """立ち絵以外の全部。下地・札・台詞・名前。
+
+    立ち絵と分けてあるのは、**こちらは途中で止まるが、立ち絵は
+    最後まで動く**ため。まばたきも口も1枚ごとに変わるので、
+    一緒に描くと3分ぶん全部を描き直すことになる。
+    止まったあとの下地を1枚持っておいて、その上に立ち絵だけ貼る。
+    """
     im, d = base(p)
     who = _speaker(seg)
 
@@ -377,25 +507,20 @@ def render_line(p, seg, portrait_dir="", topic="", panel=None):
 
     render_panel(d, panel, topic)
 
-    # 立っている2人。喋っているほうだけ色が付く。
+    # 立ち絵が無い日は、色の丸と名前で代用する。
+    # 絵が無いから作れない、にはしない。
     for s in SPEAKERS.values():
+        if _parts(s["name"], portrait_dir):
+            continue
         talking = s["name"] == who["name"]
         x = PORTRAIT_X if s["side"] == "left" else W - PORTRAIT_X
         col = s["color"] if talking else (52, 58, 72)
-
-        art = _portrait(s["name"], portrait_dir)
-        if art is not None:
-            ck = (s["name"], portrait_dir)
-            shown = art if talking else _dimmed(ck, art)
-            im.paste(shown, (int(x - shown.width / 2), H - PORTRAIT_H), shown)
-        else:
-            # 絵が無くても成立させる。色の丸と名前で代用する。
-            r = 74 if talking else 62
-            cy = H - PORTRAIT_H + 200
-            d.ellipse([x - r, cy - r, x + r, cy + r], fill=col)
-            f = font(38 if talking else 32)
-            d.text((x - d.textlength(s["name"], font=f) / 2, cy + r + 24),
-                   s["name"], font=f, fill=col if talking else DIM)
+        r = 74 if talking else 62
+        cy = H - PORTRAIT_H + 200
+        d.ellipse([x - r, cy - r, x + r, cy + r], fill=col)
+        f = font(38 if talking else 32)
+        d.text((x - d.textlength(s["name"], font=f) / 2, cy + r + 24),
+               s["name"], font=f, fill=col if talking else DIM)
 
     # 台詞。置ける場所は決まっている。中身をそこへ収める。
     size = seg.get("_size")
@@ -425,8 +550,7 @@ def render_line(p, seg, portrait_dir="", topic="", panel=None):
                         fill=who["color"])
     d.text((nx + 22, y0 - NAME_H + 20), nm, font=fn, fill=(12, 14, 20))
 
-    # 動きは文字が出そろうまで。ANIM_END を過ぎたら固定して、
-    # フレームを使い回せるようにする。
+    # 1行ずつ出す。ANIM_END までに出し切る。
     shown = len(lines) if p >= ANIM_END else max(
         1, int(len(lines) * (p / ANIM_END)))
     yy = y0 + TALK_PAD
@@ -441,6 +565,21 @@ def render_line(p, seg, portrait_dir="", topic="", panel=None):
     d.text(((COL_X0 + COL_X1) / 2 - d.textlength(cr, font=fc) / 2, 1026),
            cr, font=fc, fill=DIM)
     return im
+
+
+def render_line(p, seg, portrait_dir="", topic="", panel=None, state=None):
+    """1枚まるごと。下地に立ち絵を重ねる。
+
+    書き出しの輪は render_stage と paste_portraits を別々に
+    呼ぶ(下地を使い回すため)。こちらは検査と、1枚だけ見たいとき用。
+    """
+    im = render_stage(p, seg, portrait_dir, topic, panel)
+    who = _speaker(seg)["name"]
+    if state is None:
+        state = {s["name"]: {"expr": expression_for(seg.get("text", ""))
+                             if s["name"] == who else DEFAULT_EXPR}
+                 for s in SPEAKERS.values()}
+    return paste_portraits(im, who, portrait_dir, state)
 
 
 def main() -> int:
@@ -534,26 +673,47 @@ def main() -> int:
                             stdout=subprocess.DEVNULL, stderr=err)
     last = None
     current = None                      # 指定が無ければ直前の札が残る
+    # まばたきは動画1本ぶんの通し番号で決める。区間ごとに作ると
+    # 台詞が変わるたびに必ず1回まばたきすることになる。
+    total_frames = sum(int(d * FPS) for _, d in pages)
+    blinks = {s["name"]: video_common.blink_frames(total_frames, FPS,
+                                                   s["name"])
+              for s in SPEAKERS.values()}
+    frame0 = 0
     try:
         for i, (seg, dur) in enumerate(pages):
             if seg.get("panel"):
                 current = cards.get(seg["panel"])
             n = int(dur * FPS)
             fade = 0 if i == 0 else int(video_common.FADE_SECONDS * FPS)
-            cached = None
-            still = None
+            talking = _speaker(seg)["name"]
+            expr = expression_for(seg.get("text", ""))
+            # 口は読み上げの音そのものから取る。喋っている側だけ動く。
+            mouth = video_common.mouth_levels(seg.get("file"), FPS, n)
+            stage = None                # 止まったあとの下地
+            last_frame = None
             for k in range(n):
                 p, settled = video_common.anim_step(k, n)
-                if settled and still is not None:
-                    proc.stdin.write(still)
-                    continue
-                im = render_line(p, seg, args.portrait_dir, topic, current)
-                cached = video_common.crossfade(last, im, k, fade, (W, H))
-                proc.stdin.write(cached)
-                # 動きが終わった最初の1枚。これを残りに使い回す。
-                if settled:
-                    still = cached
-            last = cached
+                if settled and stage is not None:
+                    im = stage.copy()
+                else:
+                    im = render_stage(p, seg, args.portrait_dir, topic,
+                                      current)
+                    if settled:
+                        stage = im.copy()
+                state = {}
+                for s in SPEAKERS.values():
+                    nm = s["name"]
+                    state[nm] = {
+                        "expr": expr if nm == talking else DEFAULT_EXPR,
+                        "blink": (frame0 + k) in blinks[nm],
+                        "mouth": mouth[k] if nm == talking else 0,
+                    }
+                paste_portraits(im, talking, args.portrait_dir, state)
+                last_frame = video_common.crossfade(last, im, k, fade, (W, H))
+                proc.stdin.write(last_frame)
+            last = last_frame
+            frame0 += n
     except BrokenPipeError:
         # ffmpeg が先に終わっている。何を言って終わったかを出す。
         # これを出さないと、こちらの traceback しか残らない。

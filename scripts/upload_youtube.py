@@ -1134,10 +1134,13 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # ショートと違ってフィードから流れてこない。題とサムネイルを
         # 見て開くかどうかが決まるので、何の話かを先に出す。
         # 「1週間を振り返る」のような枠の名前では、開く理由にならない。
+        # 「読む」から「読み解く」へ。何をする動画かが題で分かる。
+        # コメント欄は MLB公式チャンネルのもの。「公式」を入れておくと、
+        # どこのコメント欄かが題だけで分かる。
         if topic:
-            title = f"【MLB】{topic}｜現地のコメント欄を読む {date_label}"
+            title = f"【MLB】{topic}｜公式コメント欄を読み解く {date_label}"
         else:
-            title = f"【MLB】現地のコメント欄を読む｜{date_label}"
+            title = f"【MLB】公式コメント欄を読み解く｜{date_label}"
     elif kind == "weekly":
         # 週次まとめは横型の通常動画なので #Shorts は付けない
         lead = weekly_lead(archive_dir)

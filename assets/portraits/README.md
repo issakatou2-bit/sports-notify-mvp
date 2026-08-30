@@ -30,3 +30,35 @@
 VOICEVOX 四国めたんに従う。音声も同じキャラクターを使っているので、
 動画の隅に `音声: VOICEVOX ずんだもん / 四国めたん` を常時出している
 (`generate_longform.render_line`)。
+
+## 部品
+
+PSDに目(閉じ目つき)・眉・口が別の層で入っていたので、
+`scripts/build_portrait_parts.py` で切り出してある。
+
+```
+assets/portraits/<名前>/
+  体.png       目・眉・口を消した下地
+  目_開 目_閉 目_笑 目_見開 目_ジト
+  眉_基本 眉_上げ 眉_困り
+  口_閉 口_開 口_笑 口_大
+  parts.json   どれが何か
+```
+
+**どれも全画面の大きさ**なので、(0,0)に重ねるだけでよい。ずれようがない。
+
+これで、
+
+- **まばたき** … 2.6〜5.2秒に1回、0.12秒。名前を種にして揺らす
+- **口の動き** … 読み上げの音の大きさから取る（`video_common.mouth_levels`）。喋っている側だけ動く
+- **表情** … 台詞から引く（`generate_longform.expression_for`）。問いかけは眉を上げる
+
+が出せる。
+
+部品を作り直すときだけ psd-tools が要る（`pip install psd-tools`）。
+動画を作る側は出来上がったPNGを重ねるだけなので、GitHub Actions には要らない。
+
+## 向き
+
+素材はどちらも同じ向きに描かれている。そのまま左右に置くと、片方が外を向く。
+`generate_longform.SPEAKERS` の `flip` で、左側のずんだもんだけ反転している。

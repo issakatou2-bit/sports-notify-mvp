@@ -11,8 +11,10 @@
   描画に要るものは、描画をする台本だけが読む場所に置く。
 """
 
+import array
 import functools
 import os
+import random
 from PIL import ImageFont
 import wave
 import subprocess
@@ -89,6 +91,68 @@ def anim_step(k: int, n: int, still_after: float = STILL_AFTER):
     """
     p = k / max(1, n - 1)
     return p, p >= still_after
+
+
+def mouth_levels(wav_path, fps: int, frames: int) -> list:
+    """読み上げの音の大きさから、1枚ごとの口の開きを決める。
+
+    戻り値は 0(閉じ) / 1(少し開き) / 2(大きく開き) の配列。
+
+    決め打ちで口をパクパクさせると、喋っていない間も動いてしまう。
+    音が既に手元にあるので、そこから取る。喋り出しと止まりが
+    そのまま口に出る。
+
+    大きさの目安はその区間の最大値からの割合にする。話者によって
+    録れる音量が違うので、絶対値で閾値を置くと片方だけ口が
+    開かなくなる。
+    """
+    quiet = [0] * frames
+    if not wav_path:
+        return quiet
+    try:
+        with wave.open(str(wav_path), "rb") as w:
+            if w.getsampwidth() != 2:
+                return quiet
+            sr, ch = w.getframerate(), w.getnchannels()
+            raw = w.readframes(w.getnframes())
+    except Exception:                            # noqa: BLE001
+        return quiet
+    a = array.array("h")
+    a.frombytes(raw[:len(raw) - len(raw) % 2])
+    if ch > 1:
+        a = a[::ch]
+    per = max(1, int(sr / max(1, fps)))
+    step = max(1, per // 24)                     # 間引く。形は変わらない
+    rms = []
+    for i in range(frames):
+        seg = a[i * per:(i + 1) * per:step]
+        if not seg:
+            rms.append(0.0)
+            continue
+        rms.append((sum(x * x for x in seg) / len(seg)) ** 0.5)
+    peak = max(rms) or 1.0
+    out = []
+    for r in rms:
+        v = r / peak
+        out.append(2 if v > 0.45 else (1 if v > 0.14 else 0))
+    return out
+
+
+def blink_frames(total_frames: int, fps: int, seed: str) -> set:
+    """まばたきする枚。2.6〜5.2秒に1回、0.12秒。
+
+    等間隔にすると機械が動いているように見える。人によって
+    間合いを変えたいので、名前を種にして揺らす。
+    乱数を使うが種は固定なので、同じ動画は何度作っても同じになる。
+    """
+    r = random.Random(seed)
+    out, t = set(), r.uniform(0.8, 2.6)
+    span = max(2, int(0.12 * fps))
+    while t * fps < total_frames:
+        k = int(t * fps)
+        out.update(range(k, min(total_frames, k + span)))
+        t += r.uniform(2.6, 5.2)
+    return out
 
 
 def crossfade(prev_bytes, im, k: int, fade_frames: int, size):

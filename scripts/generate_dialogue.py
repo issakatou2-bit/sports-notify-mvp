@@ -79,8 +79,19 @@ SPEAKER_EXPLAIN = 2
 # 3文字以下だと "Sale" のような普通名詞と衝突する。
 MIN_NAME = 5
 
-# 1本で扱うコメントの数。多いと3分に収まらない。
-MAX_COMMENTS = 4
+# 1本で扱うコメントの数。
+#
+# 4本にしていたが、出来た台本は939字・1分46秒にしかならなかった。
+# 3分に要るのは約1600字。**言葉を厚くするより、材料を増やす。**
+# 水増しした一言は、聞けば分かる。
+MAX_COMMENTS = 6
+
+# 3分の動画に要る字数。実測から出した。
+#
+#   939字 → 106秒（ずんだもん1.5倍速・めたん1.35倍速）
+#   つまり 8.9字/秒。180秒なら約1600字。
+TARGET_CHARS = 1600
+MIN_CHARS = 1250
 
 
 def _get(url: str, timeout: int = 20):
@@ -359,10 +370,12 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   同じ話が続くあいだは付けない
 - **最後のコレスポの案内には [topic] を付ける。**
   付けないと、締めのあいだ選手の成績が画面に出たままになる
-- **全体で1500〜1800文字。** 3分の動画にはこれだけ要る。
-  試作は1100文字で103秒にしかならなかった。
-  台詞の数を増やすより、解説の一言を厚くするほうがよい
-  (「なぜそう言えるのか」「他と比べてどうか」を足す)
+- **全体で1600〜1900文字。26〜32行。** 3分の動画にこれだけ要る。
+  実測で8.9文字/秒。939文字だと1分46秒にしかならない。
+  ただし**水増しはしない。** 上にある材料を使い切ること。
+  コメントは6件あるので、面白いものは返信まで読む。
+  1件を紹介して終わりにせず、「この人はこう言っているが、
+  返信では別の見方が出ている」まで行く
 - **上に書かれていない事実を絶対に足さない。**
   選手の経歴、過去の記録、他の試合、順位、年度——
   上に無いものは一切書かない。知っていても書かない
@@ -372,8 +385,14 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
 - 賛否が割れているときは、両方そのまま出す。どちらかに寄らない
 - 数字は上のものだけ。丸めたり足したりしない
 - **書かれていない因果を作らない。**
-  「接戦なのに、そんなに見られてるのだ？」——接戦だと再生数が
-  減るという事実はどこにも無い。数字と数字を勝手に結ばない
+  とくに**再生回数と試合の中身を結びつけない。**
+  接戦だから、負けたから、大差だから再生数がどうこう、という
+  事実はどこにも無い。上にあるのは「何回見られたか」だけで、
+  「なぜ見られたか」は書いていない
+  （試作では「接戦なのに、そんなに見られてるのだ？」、
+  次の回では「負けてるのに、そんなに見られてるのだ？」と
+  書かれた。**同じ形が2回出た。** ハイライトはどちらが勝っても
+  出るので、勝ち負けと再生数に関係は無い）
 - 結果は「◯◯が△対□で勝ち」と、勝った側をはっきり言う。
   「A 2 - 1 B」の形をそのまま読み上げない
 - **選手の所属チームは、上に書いてあるものだけを使う。**
@@ -470,16 +489,56 @@ def main() -> int:
         return 0
 
     client = anthropic.Anthropic(api_key=key)
+    ask = PROMPT.format(facts=body, menu=panel_menu(ps))
     resp = client.messages.create(
-        model=MODEL, max_tokens=2500,
-        messages=[{"role": "user",
-                   "content": PROMPT.format(facts=body,
-                                            menu=panel_menu(ps))}],
+        model=MODEL, max_tokens=4000,
+        messages=[{"role": "user", "content": ask}],
     )
     token_log.record("dialogue", MODEL, resp)
     text = "".join(b.text for b in resp.content if b.type == "text")
 
     segs = parse(text, keys=set(ps))
+    chars = sum(len(s["text"]) for s in segs)
+
+    # 短ければ、1度だけ書き足してもらう。
+    #
+    # 「1600〜1900字」と書いても939字で返ってきた。指示だけでは
+    # 長さは決まらない。ただし**足りないぶんを言葉で埋めさせない。**
+    # 使っていない材料を指して、そこを書けと言う。
+    # それでも足りなければ、短いまま出す。水増しよりましなので。
+    if chars < MIN_CHARS and token_log.allowed("dialogue"):
+        unused = [k for k in ps if k not in
+                  {s.get("panel") for s in segs if s.get("panel")}]
+        print(f"\n[info] {chars}字で短いので、書き足してもらいます"
+              f"（未使用の材料 {len(unused)}件）")
+        more = client.messages.create(
+            model=MODEL, max_tokens=4000,
+            messages=[
+                {"role": "user", "content": ask},
+                {"role": "assistant", "content": text},
+                {"role": "user", "content": (
+                    f"いまの台本は{chars}字で、"
+                    f"{TARGET_CHARS}字に足りません。\n"
+                    "**同じ形式のまま、全部を書き直してください。**\n"
+                    "足すのは中身であって、言葉数ではありません。\n"
+                    + ("まだ触れていない材料があります: "
+                       + "、".join(unused) + "\n" if unused else "")
+                    + "・コメントは返信まで読む\n"
+                    "・賛否が割れているところを、両方そのまま出す\n"
+                    "・上に無い事実は、やはり一切足さない\n"
+                    "台本だけを出力してください。")},
+            ],
+        )
+        token_log.record("dialogue", MODEL, more)
+        text2 = "".join(b.text for b in more.content if b.type == "text")
+        segs2 = parse(text2, keys=set(ps))
+        chars2 = sum(len(s["text"]) for s in segs2)
+        if chars2 > chars and len(segs2) >= 8:
+            print(f"[info] {chars}字 → {chars2}字")
+            segs, text = segs2, text2
+        else:
+            print(f"[info] 書き足しても{chars2}字だったので、"
+                  f"最初のものを使います")
     print("\n--- できた台本 ---")
     for s in segs:
         tag = "[%s]" % s["panel"] if s.get("panel") else ""
@@ -490,7 +549,11 @@ def main() -> int:
     if ps and not used:
         print("[warn] 札が1枚も指定されませんでした。中央は既定の札になります")
     chars = sum(len(s["text"]) for s in segs)
-    print(f"\n[info] {len(segs)}行 / {chars}字 → 7字/秒で約{chars / 7:.0f}秒")
+    # 8.9字/秒は実測(ずんだもん1.5倍速・めたん1.35倍速)。
+    # 7字/秒で見積もっていたので、いつも長めに出ていた。
+    print(f"\n[info] {len(segs)}行 / {chars}字 → 8.9字/秒で約{chars / 8.9:.0f}秒")
+    if chars < MIN_CHARS:
+        print(f"::warning::台本が{chars}字しかありません(目安{TARGET_CHARS}字)")
 
     if len(segs) < 8:
         print("[warn] 行が少なすぎます。台本として使いません")
