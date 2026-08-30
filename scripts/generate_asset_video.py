@@ -1,4 +1,4 @@
-"""
+﻿"""
 資産動画(日付に依存しない、作り置きできる動画)を生成する。
 
 日次のショートとの違い:
@@ -39,6 +39,7 @@ import sys
 import wave
 
 import usmap
+import video_common
 
 from PIL import Image, ImageDraw, ImageFont
 
