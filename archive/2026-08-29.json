@@ -1103,7 +1103,12 @@
           "text": "ドジャースには大谷翔平・佐々木朗希・山本由伸が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823665",
@@ -1178,7 +1183,12 @@
           "text": "ホワイトソックスには村上宗隆が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823011",
@@ -1245,7 +1255,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824637",
@@ -1321,7 +1336,12 @@
           "text": "カブスには鈴木誠也が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 17,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "558619",
@@ -1696,7 +1716,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "564649",
@@ -1825,7 +1850,12 @@
           "text": "ダイヤモンドバックスにはヌートバーが所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822690",
@@ -1892,7 +1922,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824874",
@@ -1981,7 +2016,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ東地区で【2位に5.0ゲーム差をつけて首位】に立つブレーブスが、西地区5位のロッキーズとの対戦に臨む。ブレーブスは5連勝中と好調を維持している一方、ロッキーズは2連敗と低迷している。先発投手では防御率3.12のMartín Pérezがブレーブス先発を務め、防御率6.08のRyan Feltnerがロッキーズ先発に登板する投手力の差が見どころとなる。トゥルーイスト・パークは1試合平均得点がMLB13位と、適度に本塁打が期待できる球場での一戦だけに、投手力の差がどう試合を左右するかに注目したい。",
-      "notification_hook": "5連勝ブレーブス、防御率3.12 vs 6.08の投手戦。"
+      "notification_hook": "5連勝ブレーブス、防御率3.12 vs 6.08の投手戦。",
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822936",
@@ -2070,7 +2110,12 @@
       },
       "log_notes": [],
       "ai_summary": "ア・リーグ東地区首位のレイズと、ナ・リーグ西地区2位のパドレスが対戦する。レイズは80勝54敗で2位に【4.0ゲーム差をつけた首位】の座にあり、2連勝中で勢いに乗っている。対するパドレスは72勝63敗で、直近10試合は5勝5敗と足踏み状態である。先発投手陣の力関係も注目で、レイズのNick Martinezは防御率2.93、13勝4敗と安定した成績を残す一方、パドレスのWalker Buehlerは防御率4.63、8勝6敗と比較すると分がある。ドーム球場トロピカーナ・フィールドでの投げ合いがどう展開するかに注目したい。",
-      "notification_hook": "首位レイズのMartinez(13勝4敗)vs パドレス・Buehler(8勝6敗)、先発投手の実力差が試合を左右するか。"
+      "notification_hook": "首位レイズのMartinez(13勝4敗)vs パドレス・Buehler(8勝6敗)、先発投手の実力差が試合を左右するか。",
+      "final_score": {
+        "home": 7,
+        "away": 6,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823582",
@@ -2146,7 +2191,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824392",
@@ -2213,7 +2263,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823501",
@@ -2280,7 +2335,12 @@
           "text": "レッドソックス vs ヤンキース は伝統の好カード — 1919年のベーブ・ルース移籍に端を発する、MLBで最も長く続くライバル関係",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 9,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823741",
@@ -2353,7 +2413,12 @@
           "text": "ブリュワーズは自地区1位、レンジャーズは自地区2位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823176",
@@ -2420,7 +2485,12 @@
           "text": "ダイヤモンドバックスにはヌートバーが所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 7,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824961",
@@ -2487,7 +2557,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823986",
@@ -2562,7 +2637,12 @@
           "text": "エンゼルスは5連敗中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 4,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
