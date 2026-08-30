@@ -11,6 +11,9 @@
   描画に要るものは、描画をする台本だけが読む場所に置く。
 """
 
+import functools
+import os
+from PIL import ImageFont
 import wave
 import subprocess
 import pathlib
@@ -179,3 +182,80 @@ def wrap(d, text, fnt, max_w):
     if cur:
         lines.append(cur)
     return lines
+
+
+# ---------------------------------------------------------------------------
+# フォント
+# ---------------------------------------------------------------------------
+#
+# 5本の動画台本が、それぞれ自前で持っていた。中身はほぼ同じだが、
+# **キャッシュが付いているのは3本だけ**だった。
+#
+# ImageFont.truetype はそのつどファイルを開く。描画1枚で何十回も呼ぶので、
+# 1本の動画で数万回開くことになる。それに気づいて lru_cache を足したのに、
+# 週次と答え合わせには届いていなかった。長編は generate_weekly から
+# 借りているので、そちらも遅いほうを使っていた。
+#
+# 直したものが他へ届かない、という同じ形。ここに1つ置く。
+FONT_CANDIDATES = [
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
+]
+
+_FONT_FILE = None
+
+
+def _resolve_font() -> str:
+    global _FONT_FILE
+    if _FONT_FILE:
+        return _FONT_FILE
+    env = os.environ.get("COLLESPO_FONT")
+    if env and pathlib.Path(env).exists():
+        _FONT_FILE = env
+        return _FONT_FILE
+    for p in FONT_CANDIDATES:
+        if pathlib.Path(p).exists():
+            _FONT_FILE = p
+            return p
+    try:
+        r = subprocess.run(["fc-match", "-f", "%{file}", ":lang=ja"],
+                           capture_output=True, text=True, check=True)
+        if r.stdout.strip():
+            _FONT_FILE = r.stdout.strip()
+            return _FONT_FILE
+    except Exception:
+        pass
+    raise RuntimeError("日本語フォントが見つかりません")
+
+
+# フォントは1度読んだら使い回す。
+#
+# ImageFont.truetype はそのつどファイルを開いて読む。描画1枚のうちに
+# 何十回も呼ぶので、1本の動画で数万回ファイルを開いていた。
+# 大きさの種類は10個ほどしかない。読み直す理由が無い。
+
+
+@functools.lru_cache(maxsize=64)
+def font(size: int):
+    path = _resolve_font()
+    try:
+        return ImageFont.truetype(path, size)
+    except OSError:
+        # .ttc は複数フォントの束なので、先頭以外を試す
+        for idx in (1, 2, 3):
+            try:
+                return ImageFont.truetype(path, size, index=idx)
+            except OSError:
+                continue
+        raise
+
+
+def ease_out(t: float) -> float:
+    """0..1 を、最初速く最後ゆっくりに変換する。
+
+    5本が同じ式を持っていた。1行なので害は小さいが、
+    置き場が5つあると「どれが本物か」が決まらない。
+    """
+    return 1 - (1 - t) ** 3

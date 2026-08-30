@@ -66,51 +66,13 @@ ACCENT = (255, 176, 32)
 WIN_COL = (73, 197, 182)
 LOSE_COL = (232, 116, 116)
 
-FONT_CANDIDATES = [
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-    "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
-]
-_FONT_FILE = None
-
-
-def _resolve_font() -> str:
-    global _FONT_FILE
-    if _FONT_FILE:
-        return _FONT_FILE
-    env = os.environ.get("COLLESPO_FONT")
-    if env and pathlib.Path(env).exists():
-        _FONT_FILE = env
-        return _FONT_FILE
-    for p in FONT_CANDIDATES:
-        if pathlib.Path(p).exists():
-            _FONT_FILE = p
-            return p
-    try:
-        r = subprocess.run(["fc-match", "-f", "%{file}", ":lang=ja"],
-                           capture_output=True, text=True, check=True)
-        if r.stdout.strip():
-            _FONT_FILE = r.stdout.strip()
-            return _FONT_FILE
-    except Exception:
-        pass
-    raise RuntimeError("日本語フォントが見つかりません")
-
-
-def font(size: int):
-    path = _resolve_font()
-    try:
-        return ImageFont.truetype(path, size)
-    except OSError:
-        for i in (1, 2, 3):
-            try:
-                return ImageFont.truetype(path, size, index=i)
-            except OSError:
-                continue
-        raise
-
-
+# フォントは video_common の正本を使う。
+# ここには自前の font() があったが、**キャッシュが付いていなかった**。
+# ImageFont.truetype はそのつどファイルを開くので、
+# 1本の動画で数万回開いていた。3本には lru_cache が入っていたのに、
+# ここには届いていなかった。
+font = video_common.font
+_resolve_font = video_common._resolve_font
 def ease_out(t):
     return 1 - (1 - t) ** 3
 
