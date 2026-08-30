@@ -15,3 +15,12 @@ venv/
 # その回限りの天気。同じジョブの中でしか使わないので残さない。
 data/venue_weather.json
 data/sanity*.json
+
+# 整理(2026-08-30)
+# 素材のZIPや、どこからも参照していないスクリーンショットを
+# git add -A で巻き込まないようにする。実際に71MBを入れてしまった。
+*.zip
+!ずんだもん立ち絵素材改*.zip
+!四国めたん立ち絵素材*.zip
+MLB煙雨レム/
+collespo-demo/
