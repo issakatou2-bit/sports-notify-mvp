@@ -28,12 +28,29 @@ import subprocess
 import sys
 import wave
 
+import video_common
+
+# build_narration_track は video_common の正本を使う。
+# 4本が少しずつ違う写しを持っていて、
+# **数字の連なりを切らない直し(0.05 → 0.0/5)が届いていなかった。**
+build_narration_track = video_common.build_narration_track
+
 from PIL import Image, ImageDraw, ImageFont
 
 import weekly_ops
 import weekly_stats as ws
 
 import video_common  # noqa: E402
+
+# フォントと ease_out は video_common に1つだけ置いてある。
+#
+# ここに自前で持っていたときは、候補の一覧が3〜6件でばらつき、
+# キャッシュが付いているものと付いていないものがあった。
+# 直したものが他へ届かない、という形をここで断つ。
+font = video_common.font
+ease_out = video_common.ease_out
+FONT_CANDIDATES = video_common.FONT_CANDIDATES
+
 
 # 横型(通常動画向け)
 W, H = 1920, 1080
@@ -84,9 +101,6 @@ LOSE_COL = (232, 116, 116)
 # ここには届いていなかった。
 font = video_common.font
 _resolve_font = video_common._resolve_font
-def ease_out(t): return 1 - (1 - t) ** 3
-
-
 # 折り返しは video_common の正本を使う。
 # 4本が自前で持っていて、禁則を入れたのは1本だけだった。
 wrap = video_common.wrap
@@ -367,71 +381,6 @@ def plan_durations(segs: list) -> list:
               f"全体の{silence / total * 100:.0f}%が無音です。"
               "原稿が薄いか、音声合成に失敗している可能性があります")
     return durations
-
-
-def build_narration_track(segs: list, durations: list, out_dir: pathlib.Path):
-    """
-    セグメントごとの音声を、その区間の長さぴったりまで無音で埋めてから連結する。
-
-    なぜ無音を挟むのか:
-      各画面は「ナレーションの実測長」ではなく「下限秒数」で表示されるため、
-      読み上げ(例:16秒)より画面(例:30秒)の方が長い。音声をそのまま
-      詰めて連結すると、その差が毎セグメント積み上がり、最後の試合の画面では
-      ナレーションが3分以上先行してしまう(=別の試合の音声が乗る)。
-      さらに音声トラック全体が映像より短くなるため、ffmpegの -shortest が
-      音声の長さで出力を打ち切り、8分のはずの動画が4分で終わっていた。
-
-      各区間の余りを無音で埋めれば、音声の総尺は映像と一致し、
-      どの画面でもその画面のナレーションが流れる状態になる。
-
-    戻り値: 連結済みwavのパス。音声が1つも無ければ None。
-    """
-    if not any(s.get("file") for s in segs):
-        return None
-
-    # 無音は、実際に合成された音声と同じ形式で作る。
-    # 形式が揃っていれば concat の -c copy がそのまま使え、再エンコードによる
-    # 劣化も追加の依存も無しに連結できる。
-    params = None
-    for s in segs:
-        if s.get("file") and pathlib.Path(s["file"]).exists():
-            with wave.open(s["file"], "rb") as w:
-                params = w.getparams()
-            break
-    if params is None:
-        return None
-
-    pad_dir = out_dir / "silence"
-    pad_dir.mkdir(parents=True, exist_ok=True)
-
-    parts = []
-    for i, (seg, dur) in enumerate(zip(segs, durations)):
-        spoken = 0.0
-        path = seg.get("file")
-        if path and pathlib.Path(path).exists():
-            with wave.open(path, "rb") as w:
-                spoken = w.getnframes() / float(w.getframerate())
-            parts.append(pathlib.Path(path).resolve())
-
-        gap = dur - spoken
-        if gap <= 0.02:
-            continue
-        sil = pad_dir / f"pad_{i:03d}.wav"
-        with wave.open(str(sil), "wb") as w:
-            w.setnchannels(params.nchannels)
-            w.setsampwidth(params.sampwidth)
-            w.setframerate(params.framerate)
-            frames = int(gap * params.framerate)
-            w.writeframes(b"\x00" * (frames * params.nchannels * params.sampwidth))
-        parts.append(sil.resolve())
-
-    lst = out_dir / "audio_list.txt"
-    lst.write_text("\n".join(f"file '{p}'" for p in parts), encoding="utf-8")
-    audio_path = out_dir / "narration.wav"
-    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0",
-                    "-i", str(lst), "-c", "copy", str(audio_path)],
-                   check=True, capture_output=True)
-    return audio_path
 
 
 def main():

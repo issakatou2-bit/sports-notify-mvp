@@ -34,6 +34,23 @@ import local_buzz
 import mentioned
 import post_common
 import video_common
+
+# build_narration_track、wrap は video_common の正本を使う。
+# 4本が少しずつ違う写しを持っていて、
+# **数字の連なりを切らない直し(0.05 → 0.0/5)が届いていなかった。**
+build_narration_track = video_common.build_narration_track
+wrap = video_common.wrap
+
+
+# フォントと ease_out は video_common に1つだけ置いてある。
+#
+# ここに自前で持っていたときは、候補の一覧が3〜6件でばらつき、
+# キャッシュが付いているものと付いていないものがあった。
+# 直したものが他へ届かない、という形をここで断つ。
+font = video_common.font
+ease_out = video_common.ease_out
+FONT_CANDIDATES = video_common.FONT_CANDIDATES
+
 import local_voices
 import mlb_buzz
 import morning_recap
@@ -135,13 +152,7 @@ DOWN = (200, 120, 120)
 # 意味が変わる。中立には色を付けない(付けると3色が並んで散らかる)。
 TONE_COLOR = {"称賛": (110, 205, 150), "批判": (200, 120, 120)}
 
-FONT_CANDIDATES = [
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-    "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
-]
-_FONT_FILE = None
+
 
 # 1画面に載せる人数。多いと字が小さくなって読めない
 PER_PAGE = 4
@@ -167,52 +178,11 @@ INTRO_HEADLINE_MAX = 42
 INTRO_VOICE_MAX = 46
 
 
-def _resolve_font() -> str:
-    global _FONT_FILE
-    if _FONT_FILE:
-        return _FONT_FILE
-    env = os.environ.get("COLLESPO_FONT")
-    if env and pathlib.Path(env).exists():
-        _FONT_FILE = env
-        return _FONT_FILE
-    for p in FONT_CANDIDATES:
-        if pathlib.Path(p).exists():
-            _FONT_FILE = p
-            return p
-    try:
-        r = subprocess.run(["fc-match", "-f", "%{file}", ":lang=ja"],
-                           capture_output=True, text=True, check=True)
-        if r.stdout.strip():
-            _FONT_FILE = r.stdout.strip()
-            return _FONT_FILE
-    except Exception:
-        pass
-    raise RuntimeError("日本語フォントが見つかりません")
-
-
 # フォントは1度読んだら使い回す。
 #
 # ImageFont.truetype はそのつどファイルを開いて読む。描画1枚のうちに
 # 何十回も呼ぶので、1本の動画で数万回ファイルを開いていた。
 # 大きさの種類は10個ほどしかない。読み直す理由が無い。
-@functools.lru_cache(maxsize=64)
-def font(size: int):
-    path = _resolve_font()
-    try:
-        return ImageFont.truetype(path, size)
-    except OSError:
-        for i in (1, 2, 3):
-            try:
-                return ImageFont.truetype(path, size, index=i)
-            except OSError:
-                continue
-        raise
-
-
-def ease_out(t):
-    return 1 - (1 - t) ** 3
-
-
 # 行末に置いてはいけない文字(始め括弧)と、行頭に置いてはいけない文字。
 #
 # 日本語の組版では、開き括弧で行を終えたり、句読点や閉じ括弧で
@@ -221,37 +191,6 @@ def ease_out(t):
 # 1行まるごと無駄になるうえ、読み手には理由が分からない。
 NO_LINE_END = "「『（〈《【〔［｛(["
 NO_LINE_START = "。、．，」』）〉》】〕］｝)]！？!?ゝ々ー"
-
-
-def wrap(d, text, fnt, max_w):
-    """
-    指定幅で折り返す。日本語なので単語境界は見ず1文字ずつ詰める。
-
-    改行を含む文字列はPILが幅を測れずValueErrorになる。
-    外部から来た文章(SNSの投稿など)は改行を含むので、ここで均す。
-
-    禁則も見る。開き括弧で行を終えない、句読点で行を始めない。
-    """
-    text = " ".join(str(text).split())
-    lines, cur = [], ""
-    for ch in text:
-        if d.textlength(cur + ch, font=fnt) > max_w and cur:
-            # 開き括弧で終わりそうなら、それを次の行へ送る
-            if cur[-1] in NO_LINE_END:
-                lines.append(cur[:-1])
-                cur = cur[-1] + ch
-                continue
-            # 句読点や閉じ括弧で次が始まりそうなら、無理にでも入れる
-            if ch in NO_LINE_START:
-                cur += ch
-                continue
-            lines.append(cur)
-            cur = ch
-        else:
-            cur += ch
-    if cur:
-        lines.append(cur)
-    return lines
 
 
 def fit_lines(d, text, max_w, sizes, max_lines):
@@ -2106,49 +2045,6 @@ def plan_durations(segs):
                       or MIN_DURATION.get(s.get("kind") or "list", 5.0)),
                 float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
             for s in segs]
-
-
-def build_narration_track(segs, durations, out_dir):
-    if not any(s.get("file") for s in segs):
-        return None
-    params = None
-    for s in segs:
-        if s.get("file") and pathlib.Path(s["file"]).exists():
-            with wave.open(s["file"], "rb") as w:
-                params = w.getparams()
-            break
-    if params is None:
-        return None
-
-    pad_dir = out_dir / "silence"
-    pad_dir.mkdir(parents=True, exist_ok=True)
-    parts = []
-    for i, (seg, dur) in enumerate(zip(segs, durations)):
-        spoken = 0.0
-        path = seg.get("file")
-        if path and pathlib.Path(path).exists():
-            with wave.open(path, "rb") as w:
-                spoken = w.getnframes() / float(w.getframerate())
-            parts.append(pathlib.Path(path).resolve())
-        gap = dur - spoken
-        if gap <= 0.02:
-            continue
-        sil = pad_dir / f"pad_{i:03d}.wav"
-        with wave.open(str(sil), "wb") as w:
-            w.setnchannels(params.nchannels)
-            w.setsampwidth(params.sampwidth)
-            w.setframerate(params.framerate)
-            n = int(gap * params.framerate)
-            w.writeframes(b"\x00" * (n * params.nchannels * params.sampwidth))
-        parts.append(sil.resolve())
-
-    lst = out_dir / "audio_list.txt"
-    lst.write_text("\n".join(f"file '{p}'" for p in parts), encoding="utf-8")
-    audio = out_dir / "narration.wav"
-    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0",
-                    "-i", str(lst), "-c", "copy", str(audio)],
-                   check=True, capture_output=True)
-    return audio
 
 
 def build_player_video(args):

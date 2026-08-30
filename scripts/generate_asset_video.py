@@ -41,6 +41,22 @@ import wave
 import usmap
 import video_common
 
+# build_narration_track は video_common の正本を使う。
+# 4本が少しずつ違う写しを持っていて、
+# **数字の連なりを切らない直し(0.05 → 0.0/5)が届いていなかった。**
+build_narration_track = video_common.build_narration_track
+
+
+# フォントと ease_out は video_common に1つだけ置いてある。
+#
+# ここに自前で持っていたときは、候補の一覧が3〜6件でばらつき、
+# キャッシュが付いているものと付いていないものがあった。
+# 直したものが他へ届かない、という形をここで断つ。
+font = video_common.font
+ease_out = video_common.ease_out
+FONT_CANDIDATES = video_common.FONT_CANDIDATES
+
+
 from PIL import Image, ImageDraw, ImageFont
 
 import soccer_preview
@@ -81,13 +97,7 @@ DIM = (136, 145, 163)
 ACCENT = (255, 176, 32)
 JP = (73, 197, 182)
 
-FONT_CANDIDATES = [
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-    "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
-]
-_FONT_FILE = None
+
 
 # 略称を読み上げさせるためのアルファベット読み。
 # VOICEVOXにローマ字をそのまま渡すと読み方が安定しないため、
@@ -105,53 +115,11 @@ LETTER_KANA = {
 DIVISION_ORDER = ["ALE", "ALC", "ALW", "NLE", "NLC", "NLW"]
 
 
-def _resolve_font() -> str:
-    global _FONT_FILE
-    if _FONT_FILE:
-        return _FONT_FILE
-    # 手元で動作確認するとき用の逃げ道。CIではLinuxの候補が先に見つかる。
-    env = os.environ.get("COLLESPO_FONT")
-    if env and pathlib.Path(env).exists():
-        _FONT_FILE = env
-        return _FONT_FILE
-    for p in FONT_CANDIDATES:
-        if pathlib.Path(p).exists():
-            _FONT_FILE = p
-            return p
-    try:
-        r = subprocess.run(["fc-match", "-f", "%{file}", ":lang=ja"],
-                           capture_output=True, text=True, check=True)
-        if r.stdout.strip():
-            _FONT_FILE = r.stdout.strip()
-            return _FONT_FILE
-    except Exception:
-        pass
-    raise RuntimeError("日本語フォントが見つかりません")
-
-
 # フォントは1度読んだら使い回す。
 #
 # ImageFont.truetype はそのつどファイルを開いて読む。描画1枚のうちに
 # 何十回も呼ぶので、1本の動画で数万回ファイルを開いていた。
 # 大きさの種類は10個ほどしかない。読み直す理由が無い。
-@functools.lru_cache(maxsize=64)
-def font(size: int):
-    path = _resolve_font()
-    try:
-        return ImageFont.truetype(path, size)
-    except OSError:
-        for i in (1, 2, 3):
-            try:
-                return ImageFont.truetype(path, size, index=i)
-            except OSError:
-                continue
-        raise
-
-
-def ease_out(t):
-    return 1 - (1 - t) ** 3
-
-
 def spell(abbr: str) -> str:
     """'NYY' -> 'エヌワイワイ'"""
     return "".join(LETTER_KANA.get(c, c) for c in abbr)
@@ -1578,59 +1546,6 @@ def plan_durations(segs: list) -> list:
     return [max(MIN_DURATION.get(s.get("kind") or "division", 6.0),
                 float(s.get("duration") or 0), 3.0)
             for s in segs]
-
-
-def build_narration_track(segs, durations, out_dir):
-    """
-    各セグメントの音声を、その区間の長さまで無音で埋めてから連結する。
-
-    画面は下限秒数で表示されるので、読み上げより画面の方が長い。
-    音声を詰めて繋ぐと差が積み上がって画面と音がずれ、さらに音声トラックが
-    映像より短くなるため ffmpeg の -shortest が出力を音声の長さで
-    打ち切ってしまう(週次動画で実際に起きた)。
-    """
-    if not any(s.get("file") for s in segs):
-        return None
-
-    params = None
-    for s in segs:
-        if s.get("file") and pathlib.Path(s["file"]).exists():
-            with wave.open(s["file"], "rb") as w:
-                params = w.getparams()
-            break
-    if params is None:
-        return None
-
-    pad_dir = out_dir / "silence"
-    pad_dir.mkdir(parents=True, exist_ok=True)
-
-    parts = []
-    for i, (seg, dur) in enumerate(zip(segs, durations)):
-        spoken = 0.0
-        path = seg.get("file")
-        if path and pathlib.Path(path).exists():
-            with wave.open(path, "rb") as w:
-                spoken = w.getnframes() / float(w.getframerate())
-            parts.append(pathlib.Path(path).resolve())
-        gap = dur - spoken
-        if gap <= 0.02:
-            continue
-        sil = pad_dir / f"pad_{i:03d}.wav"
-        with wave.open(str(sil), "wb") as w:
-            w.setnchannels(params.nchannels)
-            w.setsampwidth(params.sampwidth)
-            w.setframerate(params.framerate)
-            frames = int(gap * params.framerate)
-            w.writeframes(b"\x00" * (frames * params.nchannels * params.sampwidth))
-        parts.append(sil.resolve())
-
-    lst = out_dir / "audio_list.txt"
-    lst.write_text("\n".join(f"file '{p}'" for p in parts), encoding="utf-8")
-    audio_path = out_dir / "narration.wav"
-    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0",
-                    "-i", str(lst), "-c", "copy", str(audio_path)],
-                   check=True, capture_output=True)
-    return audio_path
 
 
 def main():

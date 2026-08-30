@@ -536,6 +536,49 @@ def _choices_of(script: str) -> dict:
     return out
 
 
+def check_shared_owned() -> int:
+    """video_common が持っているものを、自前で持ち直していないか。
+
+    なぜ要るのか（3回起きた）:
+      ・wrap … 4本が自前で持っていて、禁則を入れたのは1本だけ
+      ・font … 8本が自前で持っていて、キャッシュが付いたのは3本だけ
+      ・build_narration_track … 5本が少しずつ違い、無音の埋めは1本だけ
+
+      どれも「直したものが他へ届かない」という同じ形。
+      片方を直しても、もう片方は古いまま公開され続ける。
+
+      1か所に寄せても、次に誰かが書き足せば同じことが起きる。
+      **寄せたことを検査で押さえる。**
+    """
+    print("\n--- 共通のものを自前で持ち直していないか ---")
+    src = ROOT / "scripts" / "video_common.py"
+    if not src.exists():
+        print("[skip] video_common.py がありません")
+        return 0
+    owned = set(re.findall(r"^def (\w+)", src.read_text(encoding="utf-8"),
+                           re.M))
+    owned -= {"main"}
+    bad = []
+    for p in sorted((ROOT / "scripts").glob("*.py")):
+        if p.name == "video_common.py":
+            continue
+        t = p.read_text(encoding="utf-8-sig", errors="replace")
+        if "import video_common" not in t:
+            continue                 # 使っていないファイルは対象外
+        for name in sorted(owned):
+            if re.search(r"^def " + name + re.escape("("), t, re.M):
+                bad.append("%s: %s" % (p.name, name))
+    if bad:
+        print("NG  video_common にあるものを自前で持っています: %d件"
+              % len(bad))
+        for b in bad:
+            print("      " + b)
+        print("      片方だけ直すと、もう片方は古いまま公開されます")
+        return 1
+    print("ok  持ち直し 0件（video_common の %d個）" % len(owned))
+    return 0
+
+
 def check_render_coverage() -> int:
     """描く関数が、全部いちど試験を通っているか。
 
@@ -844,6 +887,7 @@ def main() -> int:
     failed += check_commit_list()
     failed += check_secrets_passed()
     failed += check_render_coverage()
+    failed += check_shared_owned()
     failed += check_arg_choices()
     failed += check_root_imports()
     failed += check_deps_installed()

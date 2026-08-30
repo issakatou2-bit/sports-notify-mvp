@@ -27,6 +27,16 @@ import sys
 import post_common  # noqa: E402
 import video_common  # noqa: E402
 
+# フォントと ease_out は video_common に1つだけ置いてある。
+#
+# ここに自前で持っていたときは、候補の一覧が3〜6件でばらつき、
+# キャッシュが付いているものと付いていないものがあった。
+# 直したものが他へ届かない、という形をここで断つ。
+font = video_common.font
+ease_out = video_common.ease_out
+FONT_CANDIDATES = video_common.FONT_CANDIDATES
+
+
 from PIL import Image, ImageDraw, ImageFont
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
@@ -60,16 +70,8 @@ JP = (73, 197, 182)
 # 日本語フォントの場所は環境によって違う(手元のコンテナとGitHub Actionsの
 # ランナーでは入っているフォントが異なる)。決め打ちにすると片方で必ず落ちるため、
 # 候補を順に探し、最後はfc-matchでシステムに問い合わせる。
-FONT_CANDIDATES = [
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-    "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
-    "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc",
-]
 
-_FONT_FILE = None
+
 
 
 def _resolve_font_file() -> str:
@@ -117,32 +119,12 @@ def _resolve_font_file() -> str:
 # ImageFont.truetype はそのつどファイルを開いて読む。描画1枚のうちに
 # 何十回も呼ぶので、1本の動画で数万回ファイルを開いていた。
 # 大きさの種類は10個ほどしかない。読み直す理由が無い。
-@functools.lru_cache(maxsize=64)
-def font(size: int):
-    path = _resolve_font_file()
-    try:
-        return ImageFont.truetype(path, size)
-    except OSError:
-        # .ttc は複数フォントの束なので、先頭以外を試す
-        for idx in (1, 2, 3):
-            try:
-                return ImageFont.truetype(path, size, index=idx)
-            except OSError:
-                continue
-        raise
-
-
 def fit_size(draw, text: str, max_w: int, sizes) -> int:
     """その幅に収まる最大の文字サイズ。収まらなければ最小を返す。"""
     for s in sizes:
         if draw.textlength(text, font=font(s)) <= max_w:
             return s
     return sizes[-1]
-
-
-def ease_out(t: float) -> float:
-    """0..1 を、最初速く最後ゆっくりに変換する"""
-    return 1 - (1 - t) ** 3
 
 
 # 折り返しは video_common の正本を使う。

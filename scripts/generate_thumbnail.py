@@ -31,7 +31,19 @@ import pathlib
 import subprocess
 from morning_recap import jst_label as _jst_label  # noqa: E402
 
-from PIL import Image, ImageDraw, ImageFont
+import video_common
+
+from PIL import Image, ImageDraw
+
+# フォントと ease_out は video_common に1つだけ置いてある。
+#
+# ここに自前で持っていたときは、候補の一覧が3〜6件でばらつき、
+# キャッシュが付いているものと付いていないものがあった。
+# 直したものが他へ届かない、という形をここで断つ。
+font = video_common.font
+ease_out = video_common.ease_out
+FONT_CANDIDATES = video_common.FONT_CANDIDATES
+
 
 # YouTube推奨サイズ。2MB以内に収める必要がある(PNGでも十分収まる)
 W, H = 1280, 720
@@ -65,13 +77,7 @@ DIM = (136, 145, 163)
 ACCENT = (255, 176, 32)
 JP = (73, 197, 182)
 
-FONT_CANDIDATES = [
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
-    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-    "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
-]
-_FONT_FILE = None
+
 
 # 資産動画のサムネ文言。動画の中身と一致させる。
 def _generated_thumb(topic: str):
@@ -124,42 +130,6 @@ ASSET_THUMB = {
     "mlb_watch": ("どこで見られる？", "日本でMLBを見る", "中継・時間帯"),
     "mlb_postseason": ("どう決まる？", "MLBのポストシーズン", "ワイルドカードとは"),
 }
-
-
-def _resolve_font() -> str:
-    global _FONT_FILE
-    if _FONT_FILE:
-        return _FONT_FILE
-    env = os.environ.get("COLLESPO_FONT")
-    if env and pathlib.Path(env).exists():
-        _FONT_FILE = env
-        return _FONT_FILE
-    for p in FONT_CANDIDATES:
-        if pathlib.Path(p).exists():
-            _FONT_FILE = p
-            return p
-    try:
-        r = subprocess.run(["fc-match", "-f", "%{file}", ":lang=ja"],
-                           capture_output=True, text=True, check=True)
-        if r.stdout.strip():
-            _FONT_FILE = r.stdout.strip()
-            return _FONT_FILE
-    except Exception:
-        pass
-    raise RuntimeError("日本語フォントが見つかりません")
-
-
-def font(size: int):
-    path = _resolve_font()
-    try:
-        return ImageFont.truetype(path, size)
-    except OSError:
-        for i in (1, 2, 3):
-            try:
-                return ImageFont.truetype(path, size, index=i)
-            except OSError:
-                continue
-        raise
 
 
 def fit(d, text: str, max_w: int, sizes) -> int:

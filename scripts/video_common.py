@@ -404,10 +404,18 @@ def wrap(d, text, fnt, max_w):
 #
 # 直したものが他へ届かない、という同じ形。ここに1つ置く。
 FONT_CANDIDATES = [
+    # 太い順。サムネイルも動画も、太いほうが小さくしても読める。
+    # 源ノ角ゴシック Heavy(= Noto Sans CJK Black)を最優先にする。
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc",
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+    "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
     "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "/usr/share/fonts/opentype/noto/NotoSerifCJK-Bold.ttc",
     "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
+    # Windows(手元で確かめるとき用)
+    "C:\\Windows\\Fonts\\meiryob.ttc",
+    "C:\\Windows\\Fonts\\YuGothB.ttc",
+    "C:\\Windows\\Fonts\\meiryo.ttc",
 ]
 
 _FONT_FILE = None

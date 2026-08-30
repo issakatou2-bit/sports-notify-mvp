@@ -30,12 +30,23 @@ import subprocess
 import sys
 import wave
 
+import video_common
+
+# build_narration_track は video_common の正本を使う。
+# 4本が少しずつ違う写しを持っていて、
+# **数字の連なりを切らない直し(0.05 → 0.0/5)が届いていなかった。**
+build_narration_track = video_common.build_narration_track
+
 from PIL import Image, ImageDraw, ImageFont
 
 import weekly_stats as ws
 
 import post_common  # noqa: E402
 import video_common  # noqa: E402
+
+ease_out = video_common.ease_out
+FONT_CANDIDATES = video_common.FONT_CANDIDATES
+
 
 W, H = 1080, 1920
 FPS = 24
@@ -73,10 +84,6 @@ LOSE_COL = (232, 116, 116)
 # ここには届いていなかった。
 font = video_common.font
 _resolve_font = video_common._resolve_font
-def ease_out(t):
-    return 1 - (1 - t) ** 3
-
-
 # 折り返しは video_common の正本を使う。
 # 4本が自前で持っていて、禁則を入れたのは1本だけだった。
 wrap = video_common.wrap
@@ -436,50 +443,6 @@ def plan_durations(segs):
     return [max(MIN_DURATION.get(s.get("kind") or "check", 5.0),
                 float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
             for s in segs]
-
-
-def build_narration_track(segs, durations, out_dir):
-    """各区間の余りを無音で埋める。詰めて繋ぐと画面と音がずれる。"""
-    if not any(s.get("file") for s in segs):
-        return None
-    params = None
-    for s in segs:
-        if s.get("file") and pathlib.Path(s["file"]).exists():
-            with wave.open(s["file"], "rb") as w:
-                params = w.getparams()
-            break
-    if params is None:
-        return None
-
-    pad_dir = out_dir / "silence"
-    pad_dir.mkdir(parents=True, exist_ok=True)
-    parts = []
-    for i, (seg, dur) in enumerate(zip(segs, durations)):
-        spoken = 0.0
-        path = seg.get("file")
-        if path and pathlib.Path(path).exists():
-            with wave.open(path, "rb") as w:
-                spoken = w.getnframes() / float(w.getframerate())
-            parts.append(pathlib.Path(path).resolve())
-        gap = dur - spoken
-        if gap <= 0.02:
-            continue
-        sil = pad_dir / f"pad_{i:03d}.wav"
-        with wave.open(str(sil), "wb") as w:
-            w.setnchannels(params.nchannels)
-            w.setsampwidth(params.sampwidth)
-            w.setframerate(params.framerate)
-            n = int(gap * params.framerate)
-            w.writeframes(b"\x00" * (n * params.nchannels * params.sampwidth))
-        parts.append(sil.resolve())
-
-    lst = out_dir / "audio_list.txt"
-    lst.write_text("\n".join(f"file '{p}'" for p in parts), encoding="utf-8")
-    audio = out_dir / "narration.wav"
-    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0",
-                    "-i", str(lst), "-c", "copy", str(audio)],
-                   check=True, capture_output=True)
-    return audio
 
 
 def main():

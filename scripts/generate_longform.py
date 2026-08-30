@@ -80,6 +80,12 @@ DEFAULT_SPEAKER = 3
 # 下へ伸びて画面の外に出た。置ける場所を先に決めて、
 # 中身をそこへ収めるほうにする。
 COL_X0, COL_X1 = 420, 1500          # 中央の列(立ち絵の内側)
+
+# 札の下地。下地より少し明るくして、縁を1本入れる。
+# 「ここに何かが出る」と、絵を見ただけで分かるようにするため。
+# 台詞の箱と同じ色だと、2つの箱が同じ役目に見える。
+PANEL_BG = (22, 27, 38)
+PANEL_EDGE = (44, 52, 70)
 PANEL_Y0, PANEL_Y1 = 104, 556       # 情報の札
 TALK_Y0, TALK_Y1 = 584, 1004        # 台詞
 PORTRAIT_H = 690                    # 立ち絵の高さ(画面の下端まで)
@@ -549,12 +555,58 @@ def render_panel(d, panel, topic):
         top = PANEL_Y0 + 84
         bottom = fn(d, panel, top, dry=True)
 
-    y1 = min(PANEL_Y1, max(PANEL_Y0 + 220, bottom + 34))
-    d.rounded_rectangle([COL_X0, PANEL_Y0, COL_X1, y1], 26, fill=SURF)
-    d.rounded_rectangle([COL_X0, PANEL_Y0, COL_X0 + 8, y1], 4, fill=ACCENT)
+    # 札の大きさは毎回同じにする。
+    #
+    # 中身に合わせて縮めていたが、そうすると札の下端が台詞ごとに
+    # 動いて、画面が落ち着かない。**ここは「何かが出る場所」**で、
+    # 見ている人にそう分かってほしい。場所が動くと、そう見えない。
+    #
+    # 代わりに、中身が短い日は上下の真ん中へ寄せる。
+    # 中身に合わせて縮めた理由(下に穴が空く)は、これで消える。
+    d.rounded_rectangle([COL_X0, PANEL_Y0, COL_X1, PANEL_Y1], 26,
+                        fill=PANEL_BG, outline=PANEL_EDGE, width=2)
+    d.rounded_rectangle([COL_X0, PANEL_Y0, COL_X0 + 8, PANEL_Y1], 4,
+                        fill=ACCENT)
     if title:
         d.text((COL_X0 + 40, PANEL_Y0 + 28), title, font=font(30), fill=DIM)
-    fn(d, panel, top)
+    slack = (PANEL_Y1 - 34) - bottom
+    fn(d, panel, top + max(0, int(slack / 2)))
+
+
+def draw_top_strip(d, topic="", score=None):
+    """最上部。**動画のあいだ、ずっと同じものが出ている帯。**
+
+    途中から見た人・音を切って見ている人が、
+    「何の試合の話か」「どっちが勝ったか」だけは分かるようにする。
+    札は台詞に合わせて変わるので、そこには置けない。
+
+    score は {away, home, away_score, home_score}。無ければ話題だけ。
+    """
+    left = topic[:40] if topic else ""
+    if score and score.get("away") and score.get("home"):
+        a, h = score.get("away_score"), score.get("home_score")
+        x, f = 60, font(34)
+        for name, val, win in (
+                (score["away"], a, isinstance(a, int) and isinstance(h, int)
+                 and a > h),
+                (score["home"], h, isinstance(a, int) and isinstance(h, int)
+                 and h > a)):
+            if name is score["home"]:
+                d.text((x, 40), "−", font=f, fill=DIM)
+                x += d.textlength("−", font=f) + 16
+            col = ACCENT if win else TEXT
+            d.text((x, 40), str(name), font=f, fill=col)
+            x += d.textlength(str(name), font=f) + 14
+            fb = font(40)
+            d.text((x, 36), "-" if val is None else str(val),
+                   font=fb, fill=col)
+            x += d.textlength(str(val), font=fb) + 24
+    elif left:
+        d.text((60, 40), left, font=font(32), fill=DIM)
+
+    t = "コレスポ  collespo.com"
+    d.text((W - 60 - d.textlength(t, font=font(32)), 40),
+           t, font=font(32), fill=DIM)
 
 
 def render_intro(p, topic="", day=""):
@@ -588,7 +640,8 @@ def render_intro(p, topic="", day=""):
     return im
 
 
-def render_stage(p, seg, portrait_dir="", topic="", panel=None):
+def render_stage(p, seg, portrait_dir="", topic="", panel=None,
+                 score=None):
     """立ち絵以外の全部。下地・札・台詞・名前。
 
     立ち絵と分けてあるのは、**こちらは途中で止まるが、立ち絵は
@@ -599,12 +652,7 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None):
     im, d = base(p)
     who = _speaker(seg)
 
-    if topic:
-        d.text((60, 40), topic[:40], font=font(32), fill=DIM)
-    t = "コレスポ  collespo.com"
-    d.text((W - 60 - d.textlength(t, font=font(32)), 40),
-           t, font=font(32), fill=DIM)
-
+    draw_top_strip(d, topic, score)
     render_panel(d, panel, topic)
 
     # 立ち絵が無い日は、色の丸と名前で代用する。
@@ -667,13 +715,14 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None):
     return im
 
 
-def render_line(p, seg, portrait_dir="", topic="", panel=None, state=None):
+def render_line(p, seg, portrait_dir="", topic="", panel=None,
+                state=None, score=None):
     """1枚まるごと。下地に立ち絵を重ねる。
 
     書き出しの輪は render_stage と paste_portraits を別々に
     呼ぶ(下地を使い回すため)。こちらは検査と、1枚だけ見たいとき用。
     """
-    im = render_stage(p, seg, portrait_dir, topic, panel)
+    im = render_stage(p, seg, portrait_dir, topic, panel, score)
     who = _speaker(seg)["name"]
     if state is None:
         expr = expression_for(seg.get("text", ""), panel_mood(panel))
@@ -705,6 +754,9 @@ def main() -> int:
     _n = _dt.now(_tz(_td(hours=9)))
     day_label = f"{_n.month}月{_n.day}日"
     cards = dia.get("panels") or {}
+    # 最上部の帯に出す試合。札から借りる。
+    # ここに無い日は、話題だけを出す。
+    score = cards.get("score")
 
     manifest = pathlib.Path(args.audio_dir) / "manifest.json"
     if manifest.exists():
@@ -828,7 +880,7 @@ def main() -> int:
                         stage = im.copy()
                 else:
                     im = render_stage(p, seg, args.portrait_dir, topic,
-                                      current)
+                                      current, score)
                     if settled:
                         stage = im.copy()
                 state = {}
