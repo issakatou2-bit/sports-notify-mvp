@@ -167,6 +167,26 @@ def main() -> int:
     # 言わない。投手の行に被安打と防御率を足した日に28字になり、
     # 最小の文字でも右へはみ出したまま公開された。
     # 「小さくすれば入る」は、ある長さから先は成り立たない。
+    # スコアボードの最後の列が、動きの終わりまでに開くか。
+    #
+    # 1列ずつ開く速さを固定にしていたため、9回目は 0.46 で開くのに
+    # 動きは 0.45 で止まり、9回が一度も描かれなかった。
+    # 1対2の試合で推移が1対1のまま終わる、という形で出た。
+    # 延長した日は10回以降も全部落ちていた。
+    print("\n--- スコアボードの列が開き切るか ---")
+    late = []
+    for cols in (9, 10, 12, 15, 18):
+        step = (g.ANIM_END - 0.14) / cols
+        last = 0.10 + (cols - 1) * step
+        if last >= g.ANIM_END:
+            late.append("%d回: %.3f" % (cols, last))
+    if late:
+        fails += 1
+        print("NG  動きの終わり %.2f に間に合わない: %s"
+              % (g.ANIM_END, "、".join(late)))
+    else:
+        print("ok  9〜18回まで、最後の列が動きの終わりまでに開く")
+
     print("\n--- 成績の行が幅に収まるか ---")
     import morning_recap as _mr
     from PIL import Image as _I, ImageDraw as _ID

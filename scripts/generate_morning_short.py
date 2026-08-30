@@ -1413,6 +1413,18 @@ def render_scoreboard(p, res, away, home):
 
     # 9回までは必ず枠を引く。延長した日はその分だけ伸ばす。
     cols = max(9, max(i["num"] for i in innings))
+
+    # 列が開き終わる速さ。**必ず ANIM_END より前に終わらせる。**
+    #
+    # 固定で1列0.045ずつにしていた。9列目は
+    # 0.10 + 8×0.045 = 0.46 で開くが、ANIM_END が 0.45 なので
+    # そこから先は前のフレームを使い回す。つまり9回目は
+    # 一度も描かれない。延長した日は10回以降も全部落ちる。
+    #
+    # 実際1対2の試合で、推移が1対1のまま終わっていた。
+    # 9回裏の1点が、画面に出ていなかった。
+    # 列の数から逆算すれば、何回まで伸びても収まる。
+    step = (ANIM_END - 0.14) / cols
     x0, top = 70, 520
     label_w = 150
     rhe_w = 3 * 62
@@ -1439,7 +1451,7 @@ def render_scoreboard(p, res, away, home):
 
         for n in range(1, cols + 1):
             # 左から順に開く。全部同時に出すと、ただの表になる。
-            if p < 0.10 + (n - 1) * 0.045:
+            if p < 0.10 + (n - 1) * step:
                 continue
             got = next((i for i in innings if i["num"] == n), None)
             v = (got or {}).get(side)

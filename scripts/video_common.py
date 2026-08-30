@@ -11,6 +11,9 @@
   描画に要るものは、描画をする台本だけが読む場所に置く。
 """
 
+import wave
+import subprocess
+import pathlib
 # ---------------------------------------------------------------------------
 # 画面の切り替え
 # ---------------------------------------------------------------------------
@@ -59,3 +62,64 @@ def crossfade(prev_bytes, im, k: int, fade_frames: int, size):
     # 文字が二重に読めて、かえって読みにくい。
     a = ((k + 1) / fade_frames) ** 0.6
     return Image.blend(prev, im, a).tobytes()
+
+
+# ---------------------------------------------------------------------------
+# 音声を尺に合わせる
+# ---------------------------------------------------------------------------
+#
+# 画面ごとの尺は「読み上げ + 息継ぎ」で決まるが、音声そのものは
+# 読み上げのぶんしか無い。そのまま繋ぐと音が先に尽きる。
+#
+# ffmpeg に -shortest を付けているので、音が尽きた時点で書き出しが
+# 終わる。こちらはフレームを送り続けるので、配管が壊れて
+# BrokenPipeError になる。長編の初回がこれで落ちた
+# (動画は3MBできていたのに、最後まで書けずに異常終了した)。
+#
+# 足りないぶんを無音で埋めれば、音と画面の長さが揃う。
+#
+# 同じ処理が generate_asset_video / generate_morning_short /
+# generate_verdict_short / generate_weekly の4本にもある。
+# 4つとも少しずつ違っていて、統合は別途(短編を測っている最中に
+# 4か所を同時に触らない)。ここは長編のための正本。
+def build_narration_track(segs, durations, out_dir):
+    if not any(s.get("file") for s in segs):
+        return None
+    params = None
+    for s in segs:
+        if s.get("file") and pathlib.Path(s["file"]).exists():
+            with wave.open(s["file"], "rb") as w:
+                params = w.getparams()
+            break
+    if params is None:
+        return None
+
+    pad_dir = out_dir / "silence"
+    pad_dir.mkdir(parents=True, exist_ok=True)
+    parts = []
+    for i, (seg, dur) in enumerate(zip(segs, durations)):
+        spoken = 0.0
+        path = seg.get("file")
+        if path and pathlib.Path(path).exists():
+            with wave.open(path, "rb") as w:
+                spoken = w.getnframes() / float(w.getframerate())
+            parts.append(pathlib.Path(path).resolve())
+        gap = dur - spoken
+        if gap <= 0.02:
+            continue
+        sil = pad_dir / f"pad_{i:03d}.wav"
+        with wave.open(str(sil), "wb") as w:
+            w.setnchannels(params.nchannels)
+            w.setsampwidth(params.sampwidth)
+            w.setframerate(params.framerate)
+            n = int(gap * params.framerate)
+            w.writeframes(b"\x00" * (n * params.nchannels * params.sampwidth))
+        parts.append(sil.resolve())
+
+    lst = out_dir / "audio_list.txt"
+    lst.write_text("\n".join(f"file '{p}'" for p in parts), encoding="utf-8")
+    audio = out_dir / "narration.wav"
+    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0",
+                    "-i", str(lst), "-c", "copy", str(audio)],
+                   check=True, capture_output=True)
+    return audio

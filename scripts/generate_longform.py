@@ -193,16 +193,13 @@ def main() -> int:
         print("::error::音声が作れませんでした。無音のまま出しません")
         return 1
 
-    audio_path = None
-    if audio_files:
-        lst = out_dir / "audio_list.txt"
-        lst.write_text(
-            chr(10).join(f"file '{pathlib.Path(a).resolve()}'"
-                         for a in audio_files), encoding="utf-8")
-        audio_path = out_dir / "narration.wav"
-        subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0",
-                        "-i", str(lst), "-c", "copy", str(audio_path)],
-                       check=True, capture_output=True)
+    # 音を尺に合わせる。足りないぶんは無音で埋める。
+    #
+    # 素のまま繋ぐと、音は読み上げぶんしか無いのに画面には息継ぎが
+    # 入るので、音のほうが短くなる。-shortest を付けてあるので
+    # ffmpeg がそこで終わり、こちらは書き続けて配管が壊れる。
+    # 初回はそれで BrokenPipeError になった。
+    audio_path = video_common.build_narration_track(segs, durations, out_dir)
 
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24",
@@ -233,6 +230,14 @@ def main() -> int:
                 cached = video_common.crossfade(last, im, k, fade, (W, H))
                 proc.stdin.write(cached)
             last = cached
+    except BrokenPipeError:
+        # ffmpeg が先に終わっている。何を言って終わったかを出す。
+        # これを出さないと、こちらの traceback しか残らない。
+        print("::error::ffmpegが先に終了しました。以下はその出力です")
+        err.flush()
+        print((out_dir / "ffmpeg_error.log").read_text(
+            encoding="utf-8", errors="replace")[:800])
+        return 1
     finally:
         if proc.stdin:
             proc.stdin.close()
