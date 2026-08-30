@@ -270,13 +270,25 @@ def check_scores():
     return bad
 
 
-PROMPT = """以下は、今日公開する野球/サッカーのショート動画の読み上げ原稿です。
+PROMPT = """今日は {today}、{season}年シーズンの最中です。
+あなたの学習データより後の日付ですが、**これが現在です。**
+「{season}年はまだ未来です」という指摘はしないでください。
+
+以下は、今日公開する野球/サッカーのショート動画の読み上げ原稿です。
 あなたはその競技をよく知っている視聴者です。読んでみて、事実として間違っていそうなところ、噛み合っていないところ、競技を知っている人が聞いて引っかかるところがあれば挙げてください。
 
 ・数字が規則の上でありえない
 ・前後の文が矛盾している(今季初登板なのに今季15勝、など)
 ・選手と所属球団の対応がおかしい
 ・言い回しがその競技の言い方と違う
+
+見なくてよいもの:
+・**カギカッコの中は現地のファンのコメントの翻訳です。**
+  こちらの主張ではないので、内容が偏っていても言い過ぎでも
+  それは指摘の対象外。訳として意味が通らない場合だけ挙げてください
+・先攻(ビジター)が表、後攻(ホーム)が裏に攻めます。
+  後攻が最終回に勝ち越せばその時点で試合は終わります。
+  この形は普通のことなので、矛盾として挙げないでください
 
 文体の好みや構成の提案は要りません。事実の齟齬だけ。
 問題がなければ空の配列を返してください。
@@ -285,6 +297,22 @@ JSONだけを返してください。形式:
 
 --- 原稿 ---
 """
+
+
+def _prompt() -> str:
+    """今日が何年何月かを入れて返す。
+
+    渡していなかったので、モデルが「2026年はまだ未来です」と
+    指摘してきた。学習データの切れ目より後の日付だと、そう読む。
+    こちらは毎日その日の試合を扱うので、必ずそうなる。
+    """
+    from datetime import datetime, timezone, timedelta
+    n = datetime.now(timezone(timedelta(hours=9)))
+    season = os.environ.get("MLB_SEASON") or str(n.year)
+    # format() は使わない。この指示にはJSONの見本が入っていて、
+    # {"severity":...} を置き換え先と読んで KeyError になる。
+    return (PROMPT.replace("{today}", n.strftime("%Y年%m月%d日"))
+                  .replace("{season}", season))
 
 
 def general(paths, api_key):
@@ -307,7 +335,7 @@ def general(paths, api_key):
         resp = anthropic.Anthropic(api_key=api_key).messages.create(
             model=MODEL, max_tokens=900,
             messages=[{"role": "user",
-                       "content": PROMPT + "\n".join(chunks)[:6000]}])
+                       "content": _prompt() + "\n".join(chunks)[:6000]}])
         token_log.record("sanity", MODEL, resp)
         txt = "".join(b.text for b in resp.content if b.type == "text").strip()
         m = re.search(r"\[.*\]", txt, re.S)
