@@ -105,7 +105,14 @@ HEADLINES_SHOWN = 2
 # そのまま動画の題になった。見出しは6件取れているので、
 # 収まらないものは捨てて選び直せば済む。
 HEADLINE_MAX = 60
-REPORTERS_SHOWN = 1
+# 番記者は2件。
+#
+# 尺を詰めたとき1件に減らしたが、毎日6件取れていて5件は使える。
+# 1件だと「現地の番記者が言っていること」ではなく「ある1人の感想」に
+# なる。2件並べて初めて、複数の書き手が同じ日に何を見ていたかが出る。
+#
+# 2件で約60秒。上限55秒＋余裕6秒にちょうど収まる。
+REPORTERS_SHOWN = 2
 
 # 「現地の声」だけは背景色を変える。
 # 他の画面がAPIの数字だけで作られているのに対し、ここは翻訳を通した
@@ -888,13 +895,24 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         rest = [h for i, h in enumerate(heads) if i != used]
         parts = [press_premise(heads) or "現地の見出しです。"]
         # 収まらない見出しは切らずに飛ばす。6件取れているので選び直せる。
-        fits = [h for h in rest
-                if len((h.get("jp") or h.get("title", ""))) <= HEADLINE_MAX]
-        for h in (fits or rest)[:HEADLINES_SHOWN]:
+        fits = [(i, h) for i, h in enumerate(heads)
+                if i != used
+                and len((h.get("jp") or h.get("title", ""))) <= HEADLINE_MAX]
+        if not fits:
+            fits = [(i, h) for i, h in enumerate(heads) if i != used]
+        picked = []
+        for i, h in fits[:HEADLINES_SHOWN]:
             body = h.get("jp") or h.get("title", "")
             parts.append(f"{h.get('source', '')}。{body}。")
+            picked.append(i)
+        # 読んだ見出しを、画面にもそのまま出す。
+        #
+        # 画面は heads[:2] を描いていた。読み上げは冒頭で1件目を使うので
+        # 本編は2件目と3件目を読む。つまり1件目は画面にあるのに読まれず、
+        # 3件目は読まれるのに画面に無い、という状態だった。
+        # どちらが本当なのか、見ている側には確かめようがない。
         segments.append({"kind": "headlines", "text": "".join(parts),
-                         "meta": {}})
+                         "meta": {"picked": picked}})
 
     # 現地の番記者が書いたこと。ファンの声との違いは、
     # 実名で、その球団を毎日追っている人の言葉だという点。
@@ -2429,8 +2447,11 @@ def main():
                 elif kind == "reporters":
                     im = render_reporters(pp, reporters_data.get("posts") or [])
                 elif kind == "headlines":
-                    im = render_headlines(
-                        pp, reporters_data.get("headlines") or [])
+                    hs = reporters_data.get("headlines") or []
+                    pick = meta.get("picked")
+                    if pick:
+                        hs = [hs[i] for i in pick if i < len(hs)]
+                    im = render_headlines(pp, hs)
                 else:
                     im = render_outro(pp, args.mode)
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
