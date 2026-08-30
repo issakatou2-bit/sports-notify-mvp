@@ -266,7 +266,9 @@ def panels(m: dict, extra: list) -> dict:
       知らない鍵を返してきたら、その指定は捨てる(前の札のまま)。
     """
     top, res = m["top"], (m["top"].get("result") or {})
-    out = {}
+    out = {"topic": {"type": "topic",
+                     "topic": top.get("topic_jp")
+                              or top.get("matchup") or "MLB"}}
 
     if res.get("away_jp") and res.get("home_jp"):
         out["score"] = {
@@ -309,7 +311,8 @@ def panel_menu(ps: dict) -> str:
     """モデルに見せる、鍵の一覧。ここに無い鍵は書かせない。"""
     label = {"score": "回ごとの得点と最終スコア",
              "views": "その動画の再生回数",
-             "star": "目立った選手の成績"}
+             "star": "目立った選手の成績",
+             "topic": "きょうの話（締めに使う）"}
     rows = []
     for k, v in ps.items():
         if v["type"] == "quote":
@@ -354,6 +357,8 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
 - **話題が変わる行には必ず鍵を付ける。** 得点の話なら[score]、
   コメントを読むならそのコメントの鍵、成績なら[stat1]のように。
   同じ話が続くあいだは付けない
+- **最後のコレスポの案内には [topic] を付ける。**
+  付けないと、締めのあいだ選手の成績が画面に出たままになる
 - **全体で1500〜1800文字。** 3分の動画にはこれだけ要る。
   試作は1100文字で103秒にしかならなかった。
   台詞の数を増やすより、解説の一言を厚くするほうがよい

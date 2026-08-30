@@ -173,6 +173,7 @@ def main():
         manifest = [{"index": i, "file": None, "duration": 0.0,
                      "kind": s.get("kind"), "text": s.get("text", ""),
                      "speaker": s.get("speaker", args.speaker),
+                     "panel": s.get("panel"),
                      "meta": s.get("meta", {})}
                     for i, s in enumerate(segments)]
     else:
@@ -195,6 +196,11 @@ def main():
                 "kind": seg.get("kind"),
                 "text": seg.get("text", ""),
                 "speaker": speaker,
+                # 画面の札の鍵。長編だけが使う。
+                # ここで持ち越さないと、動画側が台本と
+                # 番号で突き合わせる羽目になる。段の数が
+                # 1つでもずれたら、札が全部落ちる。
+                "panel": seg.get("panel"),
                 "meta": seg.get("meta", {}),
             })
             who = (seg.get("meta") or {}).get("who") or ""
