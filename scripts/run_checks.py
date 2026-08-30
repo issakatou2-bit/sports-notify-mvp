@@ -639,6 +639,10 @@ def check_arg_choices() -> int:
                         flag, val = fm.group(1), fm.group(2)
                         if flag not in ch:
                             continue
+                        # ${{ }} はGitHubが実行時に埋めるので判定しない。
+                        # workflow_dispatch の入力がここに入る。
+                        if val.startswith("${{") or "${{" in fm.group(0):
+                            continue
                         # "$mode" は for の候補に展開する。
                         # "${PRIVACY:-public}" は既定値のほうを見る。
                         # どちらでもない変数は、中身が分からないので触らない。

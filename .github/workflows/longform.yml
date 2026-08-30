@@ -1,0 +1,155 @@
+name: 試作　長編（対話）を作る
+
+# ずんだもんと四国めたんの対話で、3分の通常動画を作る。
+#
+# **既定では非公開(private)で上げる。** 見てから公開を決められる形にする。
+# 自動では回さない。手で押したときだけ動く。
+#
+# 短編の枠には一切触らない。数字を測っている最中なので、
+# 既存の7本と同じ日に別のものを混ぜない。
+
+on:
+  workflow_dispatch:
+    inputs:
+      privacy:
+        description: '公開設定 (private / unlisted / public)'
+        required: false
+        default: 'private'
+      upload:
+        description: 'YouTubeへ上げるか (false なら動画ファイルだけ作る)'
+        required: false
+        default: 'true'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+
+      - name: Install video tools
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
+      # 短編と同じ起動の仕方。ここは continue-on-error にしない。
+      # 対話は音が全てなので、無音で出しても意味が無い。
+      - name: Start VOICEVOX engine
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox             voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      # その日のハイライトとコメントを取り直す。
+      # 対話の材料はこの2つだけで、他は使わない。
+      - name: Refresh material
+        continue-on-error: true
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/mlb_buzz.py --out data/mlb_buzz.json
+          python scripts/local_voices.py --out data/local_voices.json
+
+      - name: Write the dialogue
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          mkdir -p build/lf
+          python scripts/generate_dialogue.py --out build/lf/dialogue.json
+
+      # 台本にありえない数字が混ざっていないか。短編と同じ検査を通す。
+      # 長編だからといって緩めない。
+      - name: Sanity check the script
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/sanity.py --general --strict \
+            --narration build/lf/dialogue.json \
+            --out data/sanity_longform.json
+
+      - name: Synthesize both voices
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/lf/dialogue.json \
+            --out-dir build/lf/audio
+
+      - name: Build the video
+        run: |
+          python scripts/generate_longform.py \
+            --dialogue build/lf/dialogue.json \
+            --audio-dir build/lf/audio \
+            --out build/lf --require-audio
+
+      - name: Thumbnail
+        continue-on-error: true
+        run: |
+          python scripts/generate_thumbnail.py \
+            --kind morning --mode voices \
+            --out build/lf/thumb.png
+
+      # 動画は必ず artifact に残す。上げなくても手元で見られるように。
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: longform
+          path: |
+            build/lf/collespo_longform.mp4
+            build/lf/dialogue.json
+            build/lf/thumb.png
+          if-no-files-found: warn
+
+      - name: Upload to YouTube
+        if: ${{ inputs.upload != 'false' }}
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          TOPIC=$(python -c "import json;print(json.load(open('build/lf/dialogue.json',encoding='utf-8')).get('top',''))")
+          python scripts/upload_youtube.py \
+            --video build/lf/collespo_longform.mp4 \
+            --kind longform --topic "$TOPIC" \
+            --thumbnail build/lf/thumb.png \
+            --privacy "${{ inputs.privacy }}"
+
+      - name: Say what happened
+        if: always()
+        run: |
+          {
+            echo "## 長編（試作）"
+            echo
+            if [ -f build/lf/collespo_longform.mp4 ]; then
+              echo "- 動画: $(du -h build/lf/collespo_longform.mp4 | cut -f1)"
+            else
+              echo "- **動画は作れませんでした**"
+            fi
+            echo "- 公開設定: ${{ inputs.privacy }}"
+            echo
+            echo "### 台本"
+            echo
+            echo '```'
+            python - <<'PY'
+          import json, pathlib
+          try:
+              d = json.loads(pathlib.Path("build/lf/dialogue.json").read_text(encoding="utf-8"))
+              for s in d.get("segments", []):
+                  print("%s：%s" % ((s.get("meta") or {}).get("who", "?"), s.get("text", "")))
+          except Exception as e:
+              print("(台本を読めません: %s)" % e)
+          PY
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

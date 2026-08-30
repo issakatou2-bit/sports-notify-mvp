@@ -172,13 +172,21 @@ def main():
               "音声なしで進めます(動画は無音になります)。")
         manifest = [{"index": i, "file": None, "duration": 0.0,
                      "kind": s.get("kind"), "text": s.get("text", ""),
+                     "speaker": s.get("speaker", args.speaker),
                      "meta": s.get("meta", {})}
                     for i, s in enumerate(segments)]
     else:
         manifest = []
         for i, seg in enumerate(segments):
             path = out_dir / f"seg_{i:03d}.wav"
-            ok = synth_one(seg.get("text", ""), args.speaker, path)
+            # 段が話者を指定していれば、そちらを使う。
+            #
+            # 対話の回は2人で喋る。台本の側に「この台詞は誰か」が
+            # 入っているので、ここで拾えば1つの引数で全部を賄える。
+            # 指定が無い段は、これまで通り --speaker のまま。
+            speaker = seg.get("speaker")
+            speaker = int(speaker) if isinstance(speaker, (int, str))                 and str(speaker).isdigit() else args.speaker
+            ok = synth_one(seg.get("text", ""), speaker, path)
             dur = audio_duration(path) if ok else 0.0
             manifest.append({
                 "index": i,
@@ -186,9 +194,12 @@ def main():
                 "duration": dur,
                 "kind": seg.get("kind"),
                 "text": seg.get("text", ""),
+                "speaker": speaker,
                 "meta": seg.get("meta", {}),
             })
-            print(f"[info] seg_{i:03d}: {dur:.1f}秒 / {seg.get('kind')}")
+            who = (seg.get("meta") or {}).get("who") or ""
+            print(f"[info] seg_{i:03d}: {dur:.1f}秒 / {seg.get('kind')}"
+                  + (f" / {who}(話者{speaker})" if who else ""))
 
     with open(out_dir / "manifest.json", "w", encoding="utf-8") as f:
         json.dump({"segments": manifest}, f, ensure_ascii=False)

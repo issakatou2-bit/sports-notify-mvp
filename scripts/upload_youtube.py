@@ -1022,7 +1022,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    morning_mode: str = "players",
                    sport: str = "mlb",
                    buzz_path: str = "data/mlb_buzz.json",
-                   profile_path: str = "data/player_profile.json") -> dict:
+                   profile_path: str = "data/player_profile.json",
+                   topic: str = "") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -1127,6 +1128,16 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 「当たった/外れた」という言い方はタイトルでも使わない
         title = (f"【MLB】注目した試合、どうなった？"
                  f"｜{date_label} 先週の答え合わせ #Shorts")
+    elif kind == "longform":
+        # 対話の通常動画。
+        #
+        # ショートと違ってフィードから流れてこない。題とサムネイルを
+        # 見て開くかどうかが決まるので、何の話かを先に出す。
+        # 「1週間を振り返る」のような枠の名前では、開く理由にならない。
+        if topic:
+            title = f"【MLB】{topic}｜現地のコメント欄を読む {date_label}"
+        else:
+            title = f"【MLB】現地のコメント欄を読む｜{date_label}"
     elif kind == "weekly":
         # 週次まとめは横型の通常動画なので #Shorts は付けない
         lead = weekly_lead(archive_dir)
@@ -1350,9 +1361,13 @@ def main():
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--kind", default="daily",
-                        choices=["daily", "weekly", "asset", "verdict", "morning"],
+                        choices=["daily", "weekly", "asset", "verdict",
+                                 "morning", "longform"],
                         help="daily=ショート / weekly=週次まとめ / "
-                             "asset=資産動画 / verdict=答え合わせ / morning=夕方の5本")
+                             "asset=資産動画 / verdict=答え合わせ / "
+                             "morning=夕方の5本 / longform=対話の通常動画")
+    parser.add_argument("--topic", default="",
+                        help="longform で題に出す主題(その日のハイライト)")
     parser.add_argument("--recap", default="data/morning_recap.json",
                         help="--kind morning のときの成績データ")
     parser.add_argument("--profile", default="data/player_profile.json",
@@ -1491,7 +1506,7 @@ def main():
         body = build_metadata(args.games, date_label, args.kind,
                               args.narration, args.archive_dir, morning_players,
                               args.morning_mode, args.sport, args.buzz,
-                              args.profile)
+                              args.profile, args.topic)
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)
