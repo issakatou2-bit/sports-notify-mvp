@@ -115,18 +115,9 @@ def ease_out(t):
     return 1 - (1 - t) ** 3
 
 
-def wrap(d, text, fnt, max_w):
-    lines, cur = [], ""
-    for ch in text:
-        if d.textlength(cur + ch, font=fnt) > max_w:
-            lines.append(cur)
-            cur = ch
-        else:
-            cur += ch
-    if cur:
-        lines.append(cur)
-    return lines
-
+# 折り返しは video_common の正本を使う。
+# 4本が自前で持っていて、禁則を入れたのは1本だけだった。
+wrap = video_common.wrap
 
 def fit(d, text, max_w, sizes):
     for s in sizes:

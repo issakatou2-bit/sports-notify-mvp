@@ -123,3 +123,59 @@ def build_narration_track(segs, durations, out_dir):
                     "-i", str(lst), "-c", "copy", str(audio)],
                    check=True, capture_output=True)
     return audio
+
+
+# ---------------------------------------------------------------------------
+# 文字の折り返し
+# ---------------------------------------------------------------------------
+#
+# 4本の動画台本が、それぞれ自前の wrap を持っていた。
+#   generate_verdict_short  改行を落とさない → PILが幅を測れず落ちる
+#   generate_video          改行で行を割る
+#   generate_weekly         同上
+#   generate_morning_short  空白に均す（＋禁則）
+#
+# 禁則を入れたのは1本だけで、他3本には届いていなかった。
+# 日次動画は2番目に配られる枠なのに、そこでは「が行末に残ったまま。
+#
+# 正本をここに置く。改行は空白に均す（外から来る文章は改行を含み、
+# 割ると1文が細切れになる）。
+# 行末に置いてはいけない文字(始め括弧)と、行頭に置いてはいけない文字。
+#
+# 日本語の組版では、開き括弧で行を終えたり、句読点や閉じ括弧で
+# 行を始めたりしない。折り返しがこれを知らないと、
+# 「が1文字だけ行末に残って、次の行から本文が始まる。
+# 1行まるごと無駄になるうえ、読み手には理由が分からない。
+NO_LINE_END = "「『（〈《【〔［｛(["
+NO_LINE_START = "。、．，」』）〉》】〕］｝)]！？!?ゝ々ー"
+
+
+def wrap(d, text, fnt, max_w):
+    """
+    指定幅で折り返す。日本語なので単語境界は見ず1文字ずつ詰める。
+
+    改行を含む文字列はPILが幅を測れずValueErrorになる。
+    外部から来た文章(SNSの投稿など)は改行を含むので、ここで均す。
+
+    禁則も見る。開き括弧で行を終えない、句読点で行を始めない。
+    """
+    text = " ".join(str(text).split())
+    lines, cur = [], ""
+    for ch in text:
+        if d.textlength(cur + ch, font=fnt) > max_w and cur:
+            # 開き括弧で終わりそうなら、それを次の行へ送る
+            if cur[-1] in NO_LINE_END:
+                lines.append(cur[:-1])
+                cur = cur[-1] + ch
+                continue
+            # 句読点や閉じ括弧で次が始まりそうなら、無理にでも入れる
+            if ch in NO_LINE_START:
+                cur += ch
+                continue
+            lines.append(cur)
+            cur = ch
+        else:
+            cur += ch
+    if cur:
+        lines.append(cur)
+    return lines
