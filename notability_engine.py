@@ -2265,11 +2265,24 @@ def fetch_soccer_games_and_standings(date_str: str, api_key: str):
         )
         matches_data = matches_resp.json()
 
-        standings_resp = _football_data_get(
-            f"{FOOTBALL_DATA_BASE}/competitions/{code}/standings",
-            headers=headers,
-        )
-        standings_data = standings_resp.json()
+        # 順位表は無い大会がある。
+        #
+        # チャンピオンズリーグはリーグフェーズが9月中旬に始まるので、
+        # それ以前は /standings が404を返す。8/30はそれで
+        # サッカーの回が丸ごと落ちた。日程は取れていたのに、
+        # 順位が無いという理由だけで、その日の動画が消えた。
+        #
+        # 順位は「あると良い」もので、無ければ順位の視点が出ないだけ。
+        # 試合を紹介できなくなる理由にはならない。
+        standings_data = {}
+        try:
+            standings_data = _football_data_get(
+                f"{FOOTBALL_DATA_BASE}/competitions/{code}/standings",
+                headers=headers,
+            ).json()
+        except Exception as e:  # noqa: BLE001
+            print(f"[info] {league_name} の順位表は取れません({e}). "
+                  f"日程と結果だけで進めます")
 
         # 順位表(TOTALテーブルのみ利用)
         for table_group in standings_data.get("standings", []):
