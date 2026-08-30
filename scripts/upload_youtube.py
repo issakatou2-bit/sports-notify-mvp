@@ -1015,6 +1015,14 @@ def _other_channels() -> list:
 OTHER_CHANNEL_LINES = _other_channels()
 
 
+# 横型（通常動画）の種類。ここに無いものはショート扱いになる。
+#
+# 「kind != weekly」で判定していたので、長編がショート扱いのまま
+# 公開された。説明欄に #Shorts が入り、タグにも Shorts が付いていた。
+# 種類が増えるたびに同じ間違いが起きるので、集合で持つ。
+LANDSCAPE_KINDS = {"weekly", "longform"}
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
@@ -1296,7 +1304,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                 lines.append(f"   ・{r['text']}")
         lines.append("")
     lines += [
-        "#Shorts" if kind != "weekly" else "",
+        "" if kind in LANDSCAPE_KINDS else "#Shorts",
         "",
         *DAILY_LINEUP_LINES,
         "",
@@ -1311,7 +1319,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         "※放送予定は変更される場合があります。各配信サービスで最新情報をご確認ください。",
         "",
         "―――",
-        "音声: VOICEVOX:ずんだもん",
+        ("音声: VOICEVOX:ずんだもん / VOICEVOX:四国めたん"
+         if kind == "longform" else "音声: VOICEVOX:ずんだもん"),
         # 出典は競技で変わる。サッカーの動画にMLBのAPI名が出ていては嘘になる。
         SPORTS.get(sport, SPORTS["mlb"])["source"],
     ]
@@ -1330,7 +1339,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     for x in SPORTS.get(sport, SPORTS["mlb"])["tags"]:
         if x not in tags:
             tags.append(x)
-    tags.append("週間まとめ" if kind == "weekly" else "Shorts")
+    tags.append("週間まとめ" if kind == "weekly"
+                else ("解説" if kind == "longform" else "Shorts"))
     if kind == "morning":
         tags += [x for x in ("日本人選手", "MLB速報") if x not in tags]
         for p in (morning_players or [])[:6]:

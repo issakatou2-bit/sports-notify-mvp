@@ -42,6 +42,7 @@
 import argparse
 import json
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -129,30 +130,75 @@ DEFAULT_EXPR = "基本"
 # 台詞から表情を決める言葉。
 #
 # モデルに選ばせることもできるが、鍵を1つ増やすと台本の書式が
-# 増えて、外したときに落ちる場所も増える。まずは書かれた台詞から
-# 引く。外しても「基本」に落ちるだけで、壊れない。
-_HINT = (
-    ("驚き", ("！", "!", "すごい", "すさまじ", "驚", "まさか", "えっ")),
-    ("困り", ("厳しい", "ひどい", "残念", "苦し", "心配", "難しい",
-              "イライラ", "貧弱", "落ち", "だめ", "ダメ")),
-    ("笑顔", ("いい", "良い", "よかった", "最高", "面白", "楽し",
-              "うれし", "嬉し", "見事")),
+# 増えて、外したときに落ちる場所も増える。書かれた台詞から引く。
+# 外しても「基本」に落ちるだけで、壊れない。
+NEG_WORDS = (
+    "負け", "敗れ", "悪い", "悪か", "ひどい", "厳し", "苦し", "残念",
+    "心配", "難し", "イライラ", "貧弱", "だめ", "ダメ", "怒", "打たれ",
+    "失点", "不振", "終わって", "ハズレ", "情けない", "疲弊", "休ませ",
+    "足を引っ張", "受け入れ難い", "調子が落ち",
 )
+POS_WORDS = (
+    "素晴らし", "見事", "最高", "良かった", "よかった", "面白", "楽し",
+    "うれし", "嬉し", "完璧", "好調", "快投", "圧巻",
+)
+SURPRISE_WORDS = ("すごい", "すさまじ", "驚", "まさか", "えっ", "そんなに")
 
 
-def expression_for(text: str) -> str:
+def expression_for(text: str, mood: str = "") -> str:
     """台詞に合う表情。当たらなければ基本。
 
-    問いかけは眉を上げる。ずんだもんはほとんどが問いなので、
-    ここで表情が動く。
+    順番が大事。**否定を先に見る。**
+
+    語を先勝ちで当てていたら、
+    「いい投手ばっかりなのに、打線が点を取らないのだ」で
+    ずんだもんが笑顔になった。「いい」に当たったため。
+    この文の要点は後半で、「Aはいいのに、Bが悪い」は
+    Bの話をしている。
+
+    mood は札から来る（コメントの賛否）。**書かれた語より
+    データのほうが確か**なので、否定のコメントを読んでいる間は
+    笑顔にしない。
     """
-    t = str(text or "")
-    if t.rstrip().endswith(("？", "?")):
+    t = " ".join(str(text or "").split())
+    neg = any(w in t for w in NEG_WORDS)
+    # 「〜のに、〜ない」の形。前半が肯定でも、言いたいのは後半。
+    if "のに" in t and ("ない" in t.split("のに", 1)[1]
+                        or "なか" in t.split("のに", 1)[1]):
+        neg = True
+    pos = any(w in t for w in POS_WORDS)
+    if mood == "否定":
+        pos = False
+        neg = True
+    elif mood == "肯定" and not neg:
+        pos = True
+
+    if neg:
+        return "困り"
+    # 「66万回以上も見られてるのだ」の「も」。数のあとに付く「も」は、
+    # 多さに驚いている印。これが無いと、驚くべき数字を平然と言う。
+    if re.search(r"[0-9０-９万千百]+(?:回|件|人|本|点|勝|試合)?"
+                 r"(?:以上|近く|ほど|くらい|余り)?も", t):
         return "驚き"
-    for name, words in _HINT:
-        if any(w in t for w in words):
-            return name
+    if t.rstrip().endswith(("？", "?")) or any(w in t
+                                              for w in SURPRISE_WORDS):
+        return "驚き"
+    if pos:
+        return "笑顔"
     return DEFAULT_EXPR
+
+
+def panel_mood(panel) -> str:
+    """いま出ている札から、場の空気を取る。
+
+    コメントの札には賛否が入っている（local_voices が付けている）。
+    画面に否定のコメントが出ているあいだ、2人が笑っているのは
+    おかしい。取れないときは空で返して、台詞だけで決める。
+    """
+    p = panel or {}
+    if p.get("type") == "quote":
+        return str(p.get("tone") or "")
+    return ""
 
 
 _PARTS_CACHE: dict = {}
@@ -576,8 +622,9 @@ def render_line(p, seg, portrait_dir="", topic="", panel=None, state=None):
     im = render_stage(p, seg, portrait_dir, topic, panel)
     who = _speaker(seg)["name"]
     if state is None:
-        state = {s["name"]: {"expr": expression_for(seg.get("text", ""))
-                             if s["name"] == who else DEFAULT_EXPR}
+        expr = expression_for(seg.get("text", ""), panel_mood(panel))
+        state = {s["name"]: {"expr": expr if s["name"] == who
+                             else DEFAULT_EXPR}
                  for s in SPEAKERS.values()}
     return paste_portraits(im, who, portrait_dir, state)
 
@@ -687,7 +734,8 @@ def main() -> int:
             n = int(dur * FPS)
             fade = 0 if i == 0 else int(video_common.FADE_SECONDS * FPS)
             talking = _speaker(seg)["name"]
-            expr = expression_for(seg.get("text", ""))
+            expr = expression_for(seg.get("text", ""),
+                                  panel_mood(current))
             # 口は読み上げの音そのものから取る。喋っている側だけ動く。
             mouth = video_common.mouth_levels(seg.get("file"), FPS, n)
             stage = None                # 止まったあとの下地

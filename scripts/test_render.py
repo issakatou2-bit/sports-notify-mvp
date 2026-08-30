@@ -214,6 +214,7 @@ def main() -> int:
         print("    落とした: " + c)
 
     fails += check_still(players, vids, voices, reps, talk)
+    fails += check_expression()
     fails += check_longform()
 
     print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
@@ -288,6 +289,50 @@ def check_still(players, vids, voices, reps, talk) -> int:
     print("ok  いちばん遅いもの %.3f < %.2f（%d画面）"
           % (worst, cut, len(cases)))
     return 0
+
+
+def check_expression() -> int:
+    """台詞に当てる表情。
+
+    語を先勝ちで当てていたので、
+    「いい投手ばっかりなのに、打線が点を取らないのだ」で
+    ずんだもんが笑顔になった。公開した動画に出た。
+    否定を先に見る形へ直したので、その形をここで押さえる。
+    """
+    print("\n--- 台詞に当てる表情 ---")
+    try:
+        import generate_longform as L
+    except Exception as e:                       # noqa: BLE001
+        print("[skip] 読み込めません: %s" % str(e)[:100])
+        return 0
+    cases = [
+        # 否定が肯定より強い。これが公開された動画で外れた形
+        ("いい投手ばっかりなのに、打線が点を取らないのだ。", "", "困り"),
+        ("ピッチングはいいのに負けたってことなのだ。", "", "困り"),
+        ("きょうのハイライト、ドジャースが負けたのだ？", "", "困り"),
+        ("また打線が悪かったのだ？", "", "困り"),
+        # 数のあとの「も」は多さに驚いている
+        ("66万回以上も見られてるのだ。", "", "驚き"),
+        ("高評価が421件もついているのよ。", "", "驚き"),
+        ("5件の返信があるのだ。", "", "基本"),
+        # 札の賛否は、書かれた語より確か
+        ("そうなのだ。", "否定", "困り"),
+        ("そうなのだ。", "肯定", "笑顔"),
+        # ふつうの問いと、ふつうの文
+        ("ベストバッターがそれなのだ？", "", "驚き"),
+        ("いろいろな見方があるのだ。", "", "基本"),
+        ("これは素晴らしい投球なのだ。", "", "笑顔"),
+    ]
+    bad = 0
+    for text, mood, want in cases:
+        got = L.expression_for(text, mood)
+        if got != want:
+            bad += 1
+            print("NG  「%s」%s → %s（%s のはず）"
+                  % (text[:30], ("／空気=" + mood) if mood else "", got, want))
+    if not bad:
+        print("ok  %d通り、当てた表情が変わっていません" % len(cases))
+    return bad
 
 
 def check_longform() -> int:
