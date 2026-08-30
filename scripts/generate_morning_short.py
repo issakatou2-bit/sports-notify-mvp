@@ -213,17 +213,38 @@ def ease_out(t):
     return 1 - (1 - t) ** 3
 
 
+# 行末に置いてはいけない文字(始め括弧)と、行頭に置いてはいけない文字。
+#
+# 日本語の組版では、開き括弧で行を終えたり、句読点や閉じ括弧で
+# 行を始めたりしない。折り返しがこれを知らないと、
+# 「が1文字だけ行末に残って、次の行から本文が始まる。
+# 1行まるごと無駄になるうえ、読み手には理由が分からない。
+NO_LINE_END = "「『（〈《【〔［｛(["
+NO_LINE_START = "。、．，」』）〉》】〕］｝)]！？!?ゝ々ー"
+
+
 def wrap(d, text, fnt, max_w):
     """
     指定幅で折り返す。日本語なので単語境界は見ず1文字ずつ詰める。
 
     改行を含む文字列はPILが幅を測れずValueErrorになる。
     外部から来た文章(SNSの投稿など)は改行を含むので、ここで均す。
+
+    禁則も見る。開き括弧で行を終えない、句読点で行を始めない。
     """
     text = " ".join(str(text).split())
     lines, cur = [], ""
     for ch in text:
-        if d.textlength(cur + ch, font=fnt) > max_w:
+        if d.textlength(cur + ch, font=fnt) > max_w and cur:
+            # 開き括弧で終わりそうなら、それを次の行へ送る
+            if cur[-1] in NO_LINE_END:
+                lines.append(cur[:-1])
+                cur = cur[-1] + ch
+                continue
+            # 句読点や閉じ括弧で次が始まりそうなら、無理にでも入れる
+            if ch in NO_LINE_START:
+                cur += ch
+                continue
             lines.append(cur)
             cur = ch
         else:
@@ -231,6 +252,22 @@ def wrap(d, text, fnt, max_w):
     if cur:
         lines.append(cur)
     return lines
+
+
+def fit_lines(d, text, max_w, sizes, max_lines):
+    """その行数に収まる大きさを探して、(大きさ, 行) を返す。
+
+    収まらないぶんを切り捨てると、読み上げは全部読むのに画面には
+    出ていない状態になる。実際、返信を3行で切っていたため
+    4行になるコメントは声だけになっていた。
+    小さくすれば入るなら、小さくするほうがよい。
+    """
+    for s in sizes:
+        got = wrap(d, text, font(s), max_w)
+        if len(got) <= max_lines:
+            return s, got
+    # どうしても入らないときだけ切る。ここまで来るのは異常に長い投稿。
+    return sizes[-1], wrap(d, text, font(sizes[-1]), max_w)[:max_lines]
 
 
 def fit(d, text, max_w, sizes):
@@ -1815,16 +1852,17 @@ def render_thread(p, v):
         y += 52
 
     # 元の投稿
-    lines = wrap(d, v.get("ja") or "", font(44), W - 240)[:4]
-    h = 30 + len(lines) * 60 + 52
+    fs, lines = fit_lines(d, v.get("ja") or "", W - 240,
+                          (44, 40, 36, 32, 28), 5)
+    h = 30 + len(lines) * (fs + 16) + 52
     e = ease_out(min(1.0, max(0.0, p * 7)))
     dx = int((1 - e) * 110)
     d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + h], 20, fill=(33, 27, 45))
     d.rounded_rectangle([60 - dx, y, 70 - dx, y + h], 5, fill=JP)
     yy = y + 30
     for ln in lines:
-        d.text((100 - dx, yy), ln, font=font(44), fill=TEXT)
-        yy += 60
+        d.text((100 - dx, yy), ln, font=font(fs), fill=TEXT)
+        yy += fs + 16
     d.text((100 - dx, yy + 6), (v.get("title") or "")[:40],
            font=font(24), fill=DIM)
     stat = f"♥ {v.get('likes', 0):,}　返信 {v.get('replies', 0)}件"
@@ -1842,8 +1880,9 @@ def render_thread(p, v):
         dx = int((1 - e) * 90)
         # 右上に調子の札が載るので、そのぶん本文の幅を空けておく。
         # 同じ行に文字が来ると、札の下に文字が潜って読めなくなる。
-        rl = wrap(d, r.get("ja") or "", font(38), W - 480)[:3]
-        rh = 34 + len(rl) * 52 + 34
+        rs, rl = fit_lines(d, r.get("ja") or "", W - 480,
+                           (38, 34, 30, 26), 4)
+        rh = 34 + len(rl) * (rs + 14) + 34
         d.rounded_rectangle([150 - dx, y, W - 60 - dx, y + rh], 18,
                             fill=(27, 22, 38))
         # 上の投稿から降りてくる線
