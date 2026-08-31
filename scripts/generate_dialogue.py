@@ -175,6 +175,32 @@ def leaders(category: str, group: str, limit: int = 30) -> dict:
     return {k: v for k, v in out.items() if v}
 
 
+def team_of(name: str) -> str:
+    """その選手のいまの所属。引けなければ空。
+
+    なぜ要るのか:
+      コメントに出てくる選手の所属を、モデルが対戦カードから
+      推測して外していた。「これはタイガースの打者の話」と
+      書かれた Kyle Tucker は、実際はドジャースの選手。
+
+      禁じるだけでは足りない。**引いて渡せば推測する必要が無い。**
+      people/search で人を特定し、そこから現所属を取る。
+      同姓が複数いるときは諦める（取り違えは「調べていない」より悪い）。
+    """
+    try:
+        d = _get(f"{MLB_API}/people/search?names="
+                 + urllib.parse.quote(name))
+        ppl = d.get("people") or []
+        if len(ppl) != 1:
+            return ""
+        pid = ppl[0].get("id")
+        q = _get(f"{MLB_API}/people/{pid}?hydrate=currentTeam")
+        return ((q.get("people") or [{}])[0].get("currentTeam")
+                or {}).get("name", "") or ""
+    except Exception:                            # noqa: BLE001
+        return ""
+
+
 def enrich(comments: list) -> list:
     """コメントに出てくる選手について、確かめられる数字を集める。
 
@@ -214,7 +240,16 @@ def material(buzz_path: str, voices_path: str) -> dict:
     if not vids:
         return {}
     top = vids[0]
-    return {"top": top, "voices": (v.get("voices") or [])[:MAX_COMMENTS],
+    voices = (v.get("voices") or [])[:MAX_COMMENTS]
+    # コメントに出てくる選手の所属を、こちらで引いておく。
+    # 渡さないと、モデルが対戦カードから推測して外す。
+    teams = {}
+    for n in find_players([c.get("title", "") for c in voices])[:8]:
+        tm = team_of(n)
+        if tm:
+            teams[n] = tm
+            print(f"[info] {n}: {tm}")
+    return {"top": top, "voices": voices, "teams": teams,
             "source": v.get("source", "")}
 
 
@@ -254,6 +289,14 @@ def facts(m: dict, extra: list) -> str:
                      f"返信{c.get('replies', 0)}件] {c.get('ja', '')}")
         for r in (c.get("reply_ja") or [])[:2]:
             lines.append(f"   返信: {r.get('ja', '')}")
+
+    if m.get("teams"):
+        lines += ["", "## コメントに出てくる選手の、いまの所属（MLB公式）",
+                  "**ここに書いてある所属だけを使うこと。**",
+                  "書いていない選手は、どこの所属かに触れない。",
+                  "対戦カードから推測しない"]
+        for n, tm in m["teams"].items():
+            lines.append(f"- {n}: {tm}")
 
     if extra:
         lines += ["", "## コメントに出てくる選手の、確かめた数字",
@@ -380,6 +423,16 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   選手の経歴、過去の記録、他の試合、順位、年度——
   上に無いものは一切書かない。知っていても書かない
 - コメントの訳文は、上のものをそのまま使う。言い換えない
+- **コメントが何を意味するかを、勝手に説明しない。**
+  書いてあること以上を読み取らない。
+  （試作では「Shoって誰？」という返信に対して
+  「打者の名前が分からないほど無名だということ」と説明したが、
+  そんなことはどこにも書いていない。分からない一言は
+  「こう書いてあるだけで、真意は分かりません」でよい）
+- **選手の所属は、上の「いまの所属」に書いてあるものだけを使う。**
+  書いていない選手の所属には触れない。対戦カードから推測しない
+  （試作では Kyle Tucker を「タイガースの打者」と書いたが、
+  実際はドジャースの選手だった）
 - コメントを紹介するときは「翻訳です」「現地の方の言葉です」と
   分かる形にする。ただし毎回同じ言い方にしない
 - 賛否が割れているときは、両方そのまま出す。どちらかに寄らない
@@ -402,10 +455,14 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   対戦カードから推測して外した）
 - 再生回数は「およそ32万回」のように丸めて読む。
   「31万8千754回」は耳で聞いて頭に入らない
-- 最後は「コレスポ」の案内で締める。**番組名は必ず「コレスポ」**。
-  「このハイライトチャンネル」のような言い換えをしない
-  （試作では「このハイライトチャンネルでは」と書かれた。
-  名前が出ないと、誰の番組か分からないまま終わる）
+- **締めは短く。1行だけ。**
+  「毎日出しているもの」を並べ立てない。名前と、また明日、で足りる。
+  例:「コレスポでは毎日こうやってコメント欄を読んでいるわ。
+  また明日ね」くらい。**番組名は必ず「コレスポ」**
+  （試作の締めは「こうしたコメント欄の反応をはじめ、日本人選手の
+  最新成績、そして明日の注目試合まで、毎日お伝えしていますので
+  ぜひご覧ください」で、案内が長すぎた。
+  この後に2人で「コレスポ」と言う画面が入るので、そこで足りる）
 - **ハイライト動画はMLB公式のもので、コレスポのものではない。**
   「うちのハイライト」「このチャンネルのハイライト」は間違い。
   コレスポは、その動画とコメント欄を毎日見て話す番組
@@ -573,10 +630,15 @@ def main() -> int:
     #
     #   VOICEVOXは1回に1人しか喋らないので、2つ作って
     #   generate_longform 側で重ねる(video_common.mix_wavs)。
-    segs = [{"kind": "intro", "text": "コレスポ", "speaker": SPEAKER_ZUNDA,
-             "panel": None, "meta": {"who": "ずんだもん"}},
-            {"kind": "intro", "text": "コレスポ", "speaker": SPEAKER_EXPLAIN,
-             "panel": None, "meta": {"who": "めたん"}}] + segs
+    def _call(kind):
+        return [{"kind": kind, "text": "コレスポ", "speaker": SPEAKER_ZUNDA,
+                 "panel": None, "meta": {"who": "ずんだもん"}},
+                {"kind": kind, "text": "コレスポ", "speaker": SPEAKER_EXPLAIN,
+                 "panel": None, "meta": {"who": "めたん"}}]
+
+    # 最後も同じ形で閉じる。始まりと終わりが揃うと、1本として
+    # まとまって見える。台本側の締めは1行に短くしてある。
+    segs = _call("intro") + segs + _call("outro")
 
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)

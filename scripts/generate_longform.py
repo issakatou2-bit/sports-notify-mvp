@@ -126,8 +126,19 @@ def _speaker(seg: dict) -> dict:
 # ない)。片方だけ目が閉じる表情になるので、困り顔は
 # **眉だけで作る**。素材に無いものを無理に当てない。
 # (眉, 目, 口, 右腕, 左腕)。腕まで動かすと、絵がぐっと生きる。
+#
+# 「問い」と「驚き」を分けてあるのが肝。
+#
+# 分けていなかったときは、**?で終わる文をすべて驚きにしていた。**
+# ずんだもんは聞き手なので台詞のほとんどが問いで、
+# 10行中9行が両手を挙げた驚き顔になっていた。
+# 台詞は驚いていないのに絵だけ驚いている、という状態。
+#
+# 問いは眉を上げるだけ。腕は下ろしたまま。
+# 驚きは、本当に驚く言葉があるときだけに取っておく。
 EXPRESSIONS = {
     "基本": ("基本", "開", "閉", "基本", "基本"),
+    "問い": ("上げ", "開", "閉", "基本", "基本"),
     "笑顔": ("基本", "笑", "笑", "基本", "基本"),
     "驚き": ("上げ", "見開", "大", "上げ", "上げ"),
     "困り": ("困り", "開", "閉", "考え", "考え"),
@@ -187,9 +198,11 @@ def expression_for(text: str, mood: str = "") -> str:
     if re.search(r"[0-9０-９万千百]+(?:回|件|人|本|点|勝|試合)?"
                  r"(?:以上|近く|ほど|くらい|余り)?も", t):
         return "驚き"
-    if t.rstrip().endswith(("？", "?")) or any(w in t
-                                              for w in SURPRISE_WORDS):
+    if any(w in t for w in SURPRISE_WORDS) or "！" in t or "!" in t:
         return "驚き"
+    # ただの問いかけ。眉を上げるだけで、腕は下ろしたまま。
+    if t.rstrip().endswith(("？", "?")):
+        return "問い"
     if pos:
         return "笑顔"
     return DEFAULT_EXPR
@@ -790,19 +803,25 @@ def main() -> int:
 
     # 冒頭。2人ぶんの「コレスポ」を1つに重ねて、1枚の札にする。
     # 重ねられなかったら(音が無い日など)、そのまま前へ出さずに落とす。
-    intro = [s for s in segs if s.get("kind") == "intro"]
-    segs = [s for s in segs if s.get("kind") != "intro"]
-    if len(intro) >= 2:
+    body = [s for s in segs if s.get("kind") not in ("intro", "outro")]
+    for kind, where, label in (("intro", 0, "冒頭"), ("outro", None, "締め")):
+        pair = [s for s in segs if s.get("kind") == kind]
+        if len(pair) < 2:
+            continue
         mixed = video_common.mix_wavs(
-            [s.get("file") for s in intro], out_dir / "intro.wav")
-        if mixed:
-            dur = max(float(s.get("duration") or 0) for s in intro)
-            segs.insert(0, {"kind": "intro", "text": "", "speaker": 3,
-                            "panel": None, "file": str(mixed),
-                            "duration": dur})
-            print(f"[info] 冒頭: 2人ぶんを重ねました({dur:.1f}秒)")
+            [s.get("file") for s in pair], out_dir / f"{kind}.wav")
+        if not mixed:
+            print(f"[info] {label}の音を重ねられませんでした。出しません")
+            continue
+        dur = max(float(s.get("duration") or 0) for s in pair)
+        card = {"kind": kind, "text": "", "speaker": 3, "panel": None,
+                "file": str(mixed), "duration": dur}
+        if where == 0:
+            body.insert(0, card)
         else:
-            print("[info] 冒頭の音を重ねられませんでした。冒頭は出しません")
+            body.append(card)
+        print(f"[info] {label}: 2人ぶんを重ねました({dur:.1f}秒)")
+    segs = body
 
     # 台詞ごとの尺。読み終わりに息継ぎを足す。
     durations = [max(1.6, float(s.get("duration") or 0)
@@ -864,7 +883,7 @@ def main() -> int:
                 current = cards.get(seg["panel"])
             n = int(dur * FPS)
             fade = 0 if i == 0 else int(video_common.FADE_SECONDS * FPS)
-            is_intro = seg.get("kind") == "intro"
+            is_intro = seg.get("kind") in ("intro", "outro")
             talking = _speaker(seg)["name"]
             expr = expression_for(seg.get("text", ""),
                                   panel_mood(current))
