@@ -1,12 +1,16 @@
-name: 試作　長編（対話）を作る
+name: 毎日 20:00頃　公式コメント欄を読み解く（長編）
 
 # ずんだもんと四国めたんの対話で、3分の通常動画を作る。
 #
-# **既定では非公開(private)で上げる。** 見てから公開を決められる形にする。
-# 自動では回さない。手で押したときだけ動く。
+# 夕方の4本が終わったあとに走る。材料(ハイライトとコメント欄)は
+# こちらで取り直すので、前の枠からファイルを受け取る必要は無い。
 #
-# 短編の枠には一切触らない。数字を測っている最中なので、
-# 既存の7本と同じ日に別のものを混ぜない。
+# **手で押したときは非公開(private)、日次で走ったときは公開(public)。**
+# 試作のあいだは見てから決めていたが、5本作って画面・音・台本の
+# 直しが出揃ったので、日次の枠として確立する。
+#
+# ショートとは出る面が違う(フィード vs 検索・関連)。
+# 同じ日に出しても、短編7本と食い合わない。
 
 on:
   workflow_dispatch:
@@ -19,6 +23,9 @@ on:
         description: 'YouTubeへ上げるか (false なら動画ファイルだけ作る)'
         required: false
         default: 'true'
+  workflow_run:
+    workflows: ["毎日 17:00-20:00　夕方の4本"]
+    types: [completed]
 
 permissions:
   contents: read
@@ -26,6 +33,12 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # 前の枠が落ちた日は、材料が揃っていない可能性がある。
+    # ただし長編は材料を取り直すので、落ちていても作れることはある。
+    # 「成功したときだけ」にしておく。取りこぼしは watchdog が拾う。
+    if: >-
+      github.event_name != 'workflow_run'
+      || github.event.workflow_run.conclusion == 'success'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -125,7 +138,7 @@ jobs:
             --video build/lf/collespo_longform.mp4 \
             --kind longform --topic "$TOPIC" \
             --thumbnail build/lf/thumb.png \
-            --privacy "${{ inputs.privacy }}"
+            --privacy "${{ inputs.privacy || 'public' }}"
 
       - name: Say what happened
         if: always()

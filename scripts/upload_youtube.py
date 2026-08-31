@@ -493,11 +493,18 @@ def subject_tags(kind: str, morning_mode: str, games: list,
 
         return out   # 1人の回。今日の試合のチームは関係が無い
 
-    if kind == "morning" and morning_mode in ("voices", "local"):
+    if kind == "longform" or (kind == "morning"
+                              and morning_mode in ("voices", "local")):
+        # 扱っているのは、その1試合のコメント欄。
+        # 明日の注目試合の球団名を並べても当たらない。
+        # 長編の説明文には「明日の注目試合」が丸ごと入っていて、
+        # タグも同じ間違いをしていた。
         top = buzz_top(buzz_path) or {}
         for part in (top.get("matchup_jp") or "").split(" vs "):
             add(part)
-        return out   # 扱っているのは、その1試合のコメント欄
+        for c in (top.get("result") or {}).get("star_name", ""), :
+            add(c)
+        return out
 
     # 明日の注目試合と、週間まとめ。ここは並べた試合そのものが中身。
     for g in games[:3]:
@@ -658,6 +665,51 @@ def resolve_publish_at(spec: str | None) -> str | None:
         return None
     print(f"[info] 公開を予約します: {when:%m/%d %H:%M} JST")
     return when.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def link_short_to_longform(yt, date_key: str, long_id: str,
+                           path: str = VIDEOS_PATH) -> str:
+    """その日のコメント欄ショートの説明欄に、長編への導線を足す。
+
+    なぜ要るのか:
+      ショートはフィードが勝手に配ってくれるが、**長編には
+      フィードが無い。** 検索と関連から引かれるしかなく、
+      登録者14人の段階では関連にも出ない。
+
+      いま人が来ているのはショートのほうなので、そこから繋ぐ。
+      同じ試合のコメント欄を扱っているので、話も繋がる。
+
+      短編を先に上げて、長編を後に上げる順なので、
+      短編を作る時点では長編のURLがまだ無い。だから後から足す。
+
+    videos.update は50ユニット。1日1万の枠には十分収まる。
+    失敗しても長編の公開には関係ないので、例外は握って進む。
+    """
+    try:
+        data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return "記録が読めません"
+    rec = (data.get("morning_voices") or {}).get(date_key)
+    if not rec or not rec.get("video_id"):
+        return f"{date_key} のコメント欄ショートが記録にありません"
+    vid = rec["video_id"]
+    line = ("▼ この試合のコメント欄を、もっと詳しく読んでいます（3分）"
+            + chr(10) + f"https://youtu.be/{long_id}")
+    try:
+        got = yt.videos().list(part="snippet", id=vid).execute()
+        items = got.get("items") or []
+        if not items:
+            return f"{vid} が見つかりません"
+        sn = items[0]["snippet"]
+        desc = sn.get("description") or ""
+        if long_id in desc:
+            return "既に入っています"
+        sn["description"] = (line + chr(10) + chr(10) + desc)[:5000]
+        yt.videos().update(part="snippet", body={
+            "id": vid, "snippet": sn}).execute()
+        return f"{vid} の説明欄に足しました"
+    except Exception as e:                       # noqa: BLE001
+        return f"足せませんでした: {str(e)[:120]}"
 
 
 def record_video(kind: str, date_key: str, video_id: str,
@@ -1142,13 +1194,22 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # ショートと違ってフィードから流れてこない。題とサムネイルを
         # 見て開くかどうかが決まるので、何の話かを先に出す。
         # 「1週間を振り返る」のような枠の名前では、開く理由にならない。
-        # 「読む」から「読み解く」へ。何をする動画かが題で分かる。
-        # コメント欄は MLB公式チャンネルのもの。「公式」を入れておくと、
-        # どこのコメント欄かが題だけで分かる。
+        # **「海外の反応」を題に入れる。**
+        #
+        # 長編にはフィードが無い。ショートは勝手に配られるが、
+        # 通常動画は検索・関連から引かれるしかない。
+        # つまり題は「何をする動画か」より前に
+        # **「人が打ち込む言葉が入っているか」**で決まる。
+        #
+        # 「公式コメント欄を読み解く」は正確だが、誰も検索しない。
+        # 「海外の反応」は日本語YouTubeで定着している言い方で、
+        # まさにこの動画の中身そのもの。
+        # 「読み解く」は残す。中身の説明としては、こちらが正しい。
         if topic:
-            title = f"【MLB】{topic}｜公式コメント欄を読み解く {date_label}"
+            title = (f"【海外の反応】{topic}｜"
+                     f"MLB公式コメント欄を読み解く {date_label}")
         else:
-            title = f"【MLB】公式コメント欄を読み解く｜{date_label}"
+            title = f"【海外の反応】MLB公式コメント欄を読み解く｜{date_label}"
     elif kind == "weekly":
         # 週次まとめは横型の通常動画なので #Shorts は付けない
         lead = weekly_lead(archive_dir)
@@ -1285,6 +1346,25 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             "言える内容です。勝敗を予想しているわけではありません。",
             "",
         ]
+    elif kind == "longform":
+        # 長編の説明文が「明日の注目試合」のままだった。
+        # 中身と1文字も合っていないものを、公開した動画に付けていた。
+        # 通常動画は検索から引かれるので、説明文はそのまま検索の材料。
+        lines = [
+            (f"{topic}。" if topic else "")
+            + "その日いちばん見られたMLB公式ハイライトの"
+              "コメント欄を、ずんだもんと四国めたんが読み解きます。",
+            "",
+            "・コメントは現地のものをそのまま翻訳しています。"
+            "コレスポの意見ではありません",
+            "・賛否が割れているときは、両方そのまま出します",
+            "・数字はMLB公式データ（statsapi.mlb.com）から引いたものだけ"
+            "を使っています",
+            "",
+            "ハイライト動画そのものはMLB公式チャンネルのものです。"
+            "コレスポは、その動画とコメント欄を毎日見て話す番組です。",
+            "",
+        ]
     elif kind == "weekly":
         # 10分の動画に1行しか説明が無かった。週次はこのチャンネルの本命で、
         # 検索も関連動画も説明文を読む。中身はアーカイブに全部あるので使う。
@@ -1294,7 +1374,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         head = f"{daily_lead}。" if daily_lead else ""
         lines = [f"{head}{date_label} の注目試合を、"
                  "なぜ注目なのかの理由つきで紹介します。", ""]
-    for i, g in enumerate(games, 1):
+    # 試合の一覧は日次のためのもの。長編と週次には付けない。
+    # 長編の説明文に「明日の注目試合」が並んでいて、中身と合わなかった。
+    for i, g in enumerate([] if kind == "longform" else games, 1):
         lines.append(
             f"{i}. {g.get('start_time_jst')} "
             f"{g.get('home_team_name')} vs {g.get('away_team_name')}"
@@ -1339,14 +1421,21 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     for x in SPORTS.get(sport, SPORTS["mlb"])["tags"]:
         if x not in tags:
             tags.append(x)
-    tags.append("週間まとめ" if kind == "weekly"
-                else ("解説" if kind == "longform" else "Shorts"))
+    if kind == "weekly":
+        tags.append("週間まとめ")
+    elif kind == "longform":
+        # 検索から引かれるための言葉。フィードが無いぶん、ここが効く。
+        tags += ["海外の反応", "MLB 海外の反応", "コメント欄", "解説"]
+    else:
+        tags.append("Shorts")
     if kind == "morning":
         tags += [x for x in ("日本人選手", "MLB速報") if x not in tags]
         for p in (morning_players or [])[:6]:
             if p.get("name") and p["name"] not in tags:
                 tags.append(p["name"])
-    if not (kind == "morning" and morning_mode in ("player", "voices", "local")):
+    if not (kind == "longform"
+            or (kind == "morning"
+                and morning_mode in ("player", "voices", "local"))):
         for g in games:
             for name in (g.get("jp_players") or [])[:2]:
                 if name not in tags:
@@ -1581,6 +1670,12 @@ def main():
                 args.kind, args.morning_mode, args.sport)
             record_video(rec_kind, key, vid, body["snippet"]["title"],
                          publish_at=publish_at)
+            # 長編を上げたら、同じ日のコメント欄ショートから繋ぐ。
+            # ショートにはフィードがあるが、長編には無い。
+            # 人が来ているほうから、来ていないほうへ道を作る。
+            if args.kind == "longform" and args.privacy == "public":
+                print("[info] 導線: "
+                      + link_short_to_longform(youtube, key, vid))
     except Exception as e:
         # アップロードに失敗しても、通知やサイト更新は既に済んでいるので
         # ワークフロー全体を落とさない
