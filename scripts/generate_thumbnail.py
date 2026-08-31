@@ -354,9 +354,11 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str):
                 shadow_off=(3, 4))
 
     # 大きい3行。**毎日同じ**なので、幅を測る必要が無い。
+    # 大きさは TYPE_SCALE の 80 / 100 / 156。
+    # 1.25倍ずつ違うので、3行の主従が一目で決まる。
     lines = [("公式ハイライトの", 80, TEXT),
-             ("コメント欄を", 96, TEXT),
-             ("読み解く", 150, ACCENT)]
+             ("コメント欄を", 100, TEXT),
+             ("読み解く", 156, ACCENT)]
     y = 150
     for text, size, color in lines:
         vc.pop_text(d, (70, y), text, font(size), color,

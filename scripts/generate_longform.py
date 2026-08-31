@@ -646,7 +646,8 @@ def render_intro(p, topic="", day=""):
                               stroke=(8, 10, 15), stroke_w=5,
                               shadow=(0, 0, 0), shadow_off=(3, 4))
     y = 190
-    for text, size, color in (("公式ハイライトの", 86, TEXT),
+    # サムネイルと同じ 80 / 100 / 156。
+    for text, size, color in (("公式ハイライトの", 80, TEXT),
                               ("コメント欄を", 100, TEXT),
                               ("読み解く", 156, ACCENT)):
         video_common.pop_text(d, (70, y), text, font(size), color,
