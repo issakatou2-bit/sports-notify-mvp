@@ -66,7 +66,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824876",
@@ -155,7 +160,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ東地区首位のブレーブスが、西地区5位のロッキーズを迎える本シリーズ第3戦である。ブレーブスは【6連勝中】で2位に5.0ゲーム差をつけて独走中だが、先発のTyler Mahleは防御率4.41、5勝10敗と成績が安定していない。一方ロッキーズは3連敗中と苦しい状況が続く中、Mason Adamsは今季防御率2.25という好成績で起用される。得点傾向がMLB平均水準のトゥルーイスト・パークでの投手戦がどう展開するか、両先発の投げ合いに注目したい。",
-      "notification_hook": "Mahleの不安定さ vs Adams好調防御率2.25、ブレーブス6連勝中の継続なるか"
+      "notification_hook": "Mahleの不安定さ vs Adams好調防御率2.25、ブレーブス6連勝中の継続なるか",
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823502",
@@ -230,7 +240,12 @@
           "text": "レッドソックス vs ヤンキース は伝統の好カード — 1919年のベーブ・ルース移籍に端を発する、MLBで最も長く続くライバル関係",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 16,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822766",
@@ -305,7 +320,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 7,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822933",
@@ -385,7 +405,12 @@
           "text": "レイズは自地区1位、パドレスは自地区2位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824232",
@@ -462,7 +487,12 @@
           "text": "ドジャースには大谷翔平・佐々木朗希・山本由伸が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824393",
@@ -529,7 +559,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 11,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823740",
@@ -602,7 +637,12 @@
           "text": "ブリュワーズは自地区1位、レンジャーズは自地区2位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823662",
@@ -677,7 +717,12 @@
           "text": "ホワイトソックスには村上宗隆が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823010",
@@ -744,7 +789,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823580",
@@ -820,7 +870,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824959",
@@ -887,7 +942,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823987",
@@ -981,7 +1041,12 @@
       },
       "log_notes": [],
       "ai_summary": "フィリーズはナ・リーグ東地区で【2位・首位との差5.0ゲーム】の位置から地区優勝を目指す立場にあり、直近10試合で8勝2敗と好調を維持している。対するエンゼルスは6連敗中で、先発の菊池雄星は今季0勝4敗・防御率6.25と苦しい成績が続いている。本シリーズで既に0勝2敗と後れを取るエンゼルスにとって、防御率3.40・10勝を挙げるZack Wheelerとの投げ合いで、古い球場での点の入りやすさがどう影響するかに注目したい。",
-      "notification_hook": "菊池雄星、防御率6.25で苦戦。好調フィリーズとの投げ合いは"
+      "notification_hook": "菊池雄星、防御率6.25で苦戦。好調フィリーズとの投げ合いは",
+      "final_score": {
+        "home": 2,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824636",
@@ -1071,7 +1136,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ中地区での順位争いを占う同地区対決として、この一戦は重要な位置づけにある。【2位のカブスと5位のレッズ】が激突するシリーズの最終戦であり、直近10試合が4勝6敗で足踏み状態の両チームの浮沈がかかっている。先発投手の投げ合いも見どころで、レッズのChase Burnsは防御率2.77と安定した成績を挙げている一方で、カブス先発の今永昇太がどのような投球を見せるかに注目したい。リグレー・フィールドは風向きによって打撃戦になりやすい球場であり、両投手の対戦がどう展開するかが試合を左右する。",
-      "notification_hook": "Chase Burns防御率2.77対今永昇太、リグレー・フィールドでの先発対決"
+      "notification_hook": "Chase Burns防御率2.77対今永昇太、リグレー・フィールドでの先発対決",
+      "final_score": {
+        "home": 5,
+        "away": 7,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {

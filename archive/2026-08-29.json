@@ -133,7 +133,12 @@
           "text": "昨季3位と12位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "565778",
@@ -190,7 +195,12 @@
           "text": "マインツには佐野海舟・川﨑颯太が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 0,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "565780",
@@ -241,7 +251,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "565779",
@@ -303,7 +318,12 @@
           "text": "昨季11位と33位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 3,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "565783",
@@ -365,7 +385,12 @@
           "text": "昨季14位と5位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "560561",
