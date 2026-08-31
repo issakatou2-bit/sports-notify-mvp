@@ -185,20 +185,20 @@ def draw_daily(d, hook: dict, games: list, date_label: str):
         d.text((96, y + 12), line, font=font(ls), fill=TEXT)
         y += ls + 40
 
-    d.text((70, H - 78), f"{date_label}  コレスポ", font=font(38), fill=DIM)
+    d.text((70, H - 78), f"{date_label}  コレスポ", font=font(40), fill=DIM)
 
 
 def draw_weekly(d, label: str):
     d.text((70, 110), "今週の", font=font(80), fill=TEXT)
-    d.text((70, 210), "答え合わせ", font=font(140), fill=ACCENT)
-    d.text((70, 400), "注目した試合は、実際どうだったか", font=font(52), fill=TEXT)
-    d.text((70, H - 130), label, font=font(56), fill=JP)
-    d.text((70, H - 66), "コレスポ 週間まとめ", font=font(36), fill=DIM)
+    d.text((70, 210), "答え合わせ", font=font(124), fill=ACCENT)
+    d.text((70, 400), "注目した試合は、実際どうだったか", font=font(50), fill=TEXT)
+    d.text((70, H - 130), label, font=font(50), fill=JP)
+    d.text((70, H - 66), "コレスポ 週間まとめ", font=font(32), fill=DIM)
 
 
 def draw_morning(d, day: str, players: list):
-    d.text((70, 90), day, font=font(56), fill=DIM)
-    d.text((70, 170), "日本人選手の成績", font=font(112), fill=ACCENT)
+    d.text((70, 90), day, font=font(50), fill=DIM)
+    d.text((70, 170), "日本人選手の成績", font=font(100), fill=ACCENT)
 
     # 名前と成績を2人ぶんだけ。サムネで読ませられるのはこのくらい
     y = 340
@@ -209,25 +209,25 @@ def draw_morning(d, day: str, players: list):
         d.text((100, y + 14), line, font=font(s), fill=TEXT)
         y += s + 56
 
-    d.text((70, H - 78), f"出場 {len(players)}人　コレスポ", font=font(38), fill=JP)
+    d.text((70, H - 78), f"出場 {len(players)}人　コレスポ", font=font(40), fill=JP)
 
 
 def draw_morning_local(d, day: str):
     """現地編。主題が違うので、選手名ではなく問いを前に出す"""
-    d.text((70, 90), day, font=font(56), fill=DIM)
-    d.text((70, 170), "現地で最も", font=font(96), fill=TEXT)
-    d.text((70, 280), "見られた試合は？", font=font(112), fill=ACCENT)
+    d.text((70, 90), day, font=font(50), fill=DIM)
+    d.text((70, 170), "現地で最も", font=font(100), fill=TEXT)
+    d.text((70, 280), "見られた試合は？", font=font(100), fill=ACCENT)
     d.text((70, 440), "公式ハイライトの再生回数で見る", font=font(50), fill=TEXT)
-    d.text((70, H - 78), "コレスポ  現地での注目度", font=font(38), fill=JP)
+    d.text((70, H - 78), "コレスポ  現地での注目度", font=font(40), fill=JP)
 
 
 def draw_morning_press(d, day: str):
     """言葉の回。数字の回と主題を分けてあるので、そこが分かる出し方にする"""
-    d.text((70, 90), day, font=font(56), fill=DIM)
-    d.text((70, 170), "現地メディアは", font=font(96), fill=TEXT)
-    d.text((70, 280), "何と言っている？", font=font(112), fill=JP)
+    d.text((70, 90), day, font=font(50), fill=DIM)
+    d.text((70, 170), "現地メディアは", font=font(100), fill=TEXT)
+    d.text((70, 280), "何と言っている？", font=font(100), fill=JP)
     d.text((70, 440), "番記者の投稿と見出しを翻訳", font=font(50), fill=TEXT)
-    d.text((70, H - 78), "コレスポ  現地の声", font=font(38), fill=JP)
+    d.text((70, H - 78), "コレスポ  現地の声", font=font(40), fill=JP)
 
 
 def draw_morning_player(d, day: str, profile_path="data/player_profile.json"):
@@ -239,16 +239,16 @@ def draw_morning_player(d, day: str, profile_path="data/player_profile.json"):
         name, team = prof.get("name", ""), prof.get("team", "")
     except (OSError, json.JSONDecodeError):
         pass
-    d.text((70, 90), day, font=font(56), fill=DIM)
+    d.text((70, 90), day, font=font(50), fill=DIM)
     if name:
         s = fit(d, name, W - 140, (150, 132, 116, 100, 88))
         d.text((70, 180), name, font=font(s), fill=JP)
         if team:
             d.text((70, 360), team, font=font(64), fill=TEXT)
     else:
-        d.text((70, 180), "今日の1人", font=font(132), fill=JP)
+        d.text((70, 180), "今日の1人", font=font(124), fill=JP)
     d.text((70, 460), "通算・今季・受賞歴まで", font=font(50), fill=TEXT)
-    d.text((70, H - 78), "コレスポ  今日の1人", font=font(38), fill=DIM)
+    d.text((70, H - 78), "コレスポ  今日の1人", font=font(40), fill=DIM)
 
 
 def draw_morning_voices(d, day: str, buzz_path="data/mlb_buzz.json"):
@@ -263,14 +263,14 @@ def draw_morning_voices(d, day: str, buzz_path="data/mlb_buzz.json"):
             card = f"{away} 対 {home}"
     except (OSError, json.JSONDecodeError, IndexError):
         pass
-    d.text((70, 90), day, font=font(56), fill=DIM)
-    d.text((70, 165), "現地のファンは", font=font(96), fill=TEXT)
+    d.text((70, 90), day, font=font(50), fill=DIM)
+    d.text((70, 165), "現地のファンは", font=font(100), fill=TEXT)
     d.text((70, 275), "何と言った？", font=font(124), fill=JP)
     if card:
         s = fit(d, card, W - 140, (60, 54, 48, 42))
         d.text((70, 440), card, font=font(s), fill=TEXT)
-    d.text((70, 520), "コメント欄を翻訳。高評価の数つき", font=font(46), fill=DIM)
-    d.text((70, H - 78), "コレスポ  現地の声", font=font(38), fill=JP)
+    d.text((70, 520), "コメント欄を翻訳。高評価の数つき", font=font(50), fill=DIM)
+    d.text((70, H - 78), "コレスポ  現地の声", font=font(40), fill=JP)
 
 # 長編のサムネイル。
 #
@@ -364,16 +364,16 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str):
                     shadow_off=(6, 7))
         y += size + 22
 
-    vc.pop_text(d, (70, H - 96), "by コレスポ", font(46), JP,
+    vc.pop_text(d, (70, H - 96), "by コレスポ", font(50), JP,
                 stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
 
 
 def draw_verdict(d, label: str):
-    d.text((70, 110), "注目した試合", font=font(76), fill=TEXT)
-    d.text((70, 210), "どうなった？", font=font(140), fill=ACCENT)
-    d.text((70, 400), "連勝は続いたのか、止まったのか", font=font(52), fill=TEXT)
-    d.text((70, H - 130), label, font=font(56), fill=JP)
-    d.text((70, H - 66), "コレスポ 先週の答え合わせ", font=font(36), fill=DIM)
+    d.text((70, 110), "注目した試合", font=font(80), fill=TEXT)
+    d.text((70, 210), "どうなった？", font=font(124), fill=ACCENT)
+    d.text((70, 400), "連勝は続いたのか、止まったのか", font=font(50), fill=TEXT)
+    d.text((70, H - 130), label, font=font(50), fill=JP)
+    d.text((70, H - 66), "コレスポ 先週の答え合わせ", font=font(32), fill=DIM)
 
 
 def draw_asset(d, topic: str):
@@ -383,8 +383,8 @@ def draw_asset(d, topic: str):
     d.text((70, 120), big, font=font(s), fill=ACCENT)
     s2 = fit(d, mid, W - 140, (84, 72, 64, 56))
     d.text((70, 320), mid, font=font(s2), fill=TEXT)
-    d.text((70, 440), small, font=font(52), fill=JP)
-    d.text((70, H - 78), "コレスポ  collespo.com", font=font(38), fill=DIM)
+    d.text((70, 440), small, font=font(50), fill=JP)
+    d.text((70, H - 78), "コレスポ  collespo.com", font=font(40), fill=DIM)
 
 
 def main():

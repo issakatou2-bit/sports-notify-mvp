@@ -92,7 +92,7 @@ PORTRAIT_H = 690                    # 立ち絵の高さ(画面の下端まで)
 PORTRAIT_X = 196                    # 左右の中心
 
 TALK_PAD = 30
-TALK_SIZES = (52, 46, 40)           # 上から順に試す
+TALK_SIZES = (50, 40, 32)           # 上から順に試す
 TALK_LEAD = 16                      # 行間
 
 # 名前は台詞の箱の上端に付ける。
@@ -459,12 +459,12 @@ def _panel_score(d, p, y, dry=False):
         cx = x0 + name_w + cell * i + cell / 2
         t = str(ig.get("num", i + 1))
         if not dry:
-            d.text((cx - d.textlength(t, font=font(28)) / 2, y),
-                   t, font=font(28), fill=DIM)
+            d.text((cx - d.textlength(t, font=font(26)) / 2, y),
+                   t, font=font(26), fill=DIM)
     rx = x0 + name_w + cell * n + cell / 2
     if not dry:
-        d.text((rx - d.textlength("計", font=font(28)) / 2, y),
-               "計", font=font(28), fill=DIM)
+        d.text((rx - d.textlength("計", font=font(26)) / 2, y),
+               "計", font=font(26), fill=DIM)
 
     y += 58
     win = None
@@ -473,7 +473,7 @@ def _panel_score(d, p, y, dry=False):
         win = "away" if a > h else ("home" if h > a else None)
     for nm, side, total in rows:
         col = ACCENT if side == win else TEXT
-        f = font(42)
+        f = font(40)
         if not dry:
             nm = nm if d.textlength(nm, font=f) <= name_w - 20 else nm[:7]
             d.text((x0, y), nm, font=f, fill=col)
@@ -485,7 +485,7 @@ def _panel_score(d, p, y, dry=False):
                 d.text((cx - d.textlength(t, font=fv) / 2, y),
                        t, font=fv, fill=TEXT if v else DIM)
             t = "-" if total is None else str(total)
-            fb = font(58)
+            fb = font(64)
             d.text((rx - d.textlength(t, font=fb) / 2, y - 12),
                    t, font=fb, fill=col)
         y += 96
@@ -586,7 +586,7 @@ def render_panel(d, panel, topic):
     d.rounded_rectangle([COL_X0, PANEL_Y0, COL_X0 + 8, PANEL_Y1], 4,
                         fill=ACCENT)
     if title:
-        d.text((COL_X0 + 40, PANEL_Y0 + 28), title, font=font(30), fill=DIM)
+        d.text((COL_X0 + 40, PANEL_Y0 + 28), title, font=font(32), fill=DIM)
     slack = (PANEL_Y1 - 34) - bottom
     fn(d, panel, top + max(0, int(slack / 2)))
 
@@ -603,7 +603,7 @@ def draw_top_strip(d, topic="", score=None):
     left = topic[:40] if topic else ""
     if score and score.get("away") and score.get("home"):
         a, h = score.get("away_score"), score.get("home_score")
-        x, f = 60, font(34)
+        x, f = 60, font(32)
         for name, val, win in (
                 (score["away"], a, isinstance(a, int) and isinstance(h, int)
                  and a > h),
@@ -709,7 +709,7 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None,
                             fill=who["color"])
 
     # 名前の札。箱の上端に、喋っている側から出す。
-    nm, fn = who["name"], font(30)
+    nm, fn = who["name"], font(32)
     nw = d.textlength(nm, font=fn) + 44
     nx = COL_X0 + 24 if left else COL_X1 - 24 - nw
     d.rounded_rectangle([nx, y0 - NAME_H + 12, nx + nw, y0 + 12], 12,
