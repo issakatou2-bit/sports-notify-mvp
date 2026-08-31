@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-08-30T13:01:49.503893+00:00",
+  "updated_at": "2026-08-31T06:01:54.366123+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-08-30",
-  "total_games": 2181,
+  "end": "2026-08-31",
+  "total_games": 2195,
   "min_games": 20,
   "venues": {
     "Coors Field": {
@@ -14,16 +14,16 @@
       "total": 30
     },
     "Sutter Health Park": {
-      "games": 63,
-      "runs": 709,
-      "avg_runs": 11.25,
+      "games": 64,
+      "runs": 722,
+      "avg_runs": 11.28,
       "rank": 2,
       "total": 30
     },
     "Nationals Park": {
-      "games": 70,
-      "runs": 766,
-      "avg_runs": 10.94,
+      "games": 71,
+      "runs": 774,
+      "avg_runs": 10.9,
       "rank": 3,
       "total": 30
     },
@@ -34,17 +34,17 @@
       "rank": 4,
       "total": 30
     },
+    "Wrigley Field": {
+      "games": 68,
+      "runs": 659,
+      "avg_runs": 9.69,
+      "rank": 5,
+      "total": 30
+    },
     "Kauffman Stadium": {
       "games": 66,
       "runs": 639,
       "avg_runs": 9.68,
-      "rank": 5,
-      "total": 30
-    },
-    "Wrigley Field": {
-      "games": 67,
-      "runs": 647,
-      "avg_runs": 9.66,
       "rank": 6,
       "total": 30
     },
@@ -69,45 +69,45 @@
       "rank": 9,
       "total": 30
     },
-    "Target Field": {
-      "games": 67,
-      "runs": 601,
-      "avg_runs": 8.97,
-      "rank": 10,
-      "total": 30
-    },
     "Chase Field": {
       "games": 69,
       "runs": 617,
       "avg_runs": 8.94,
+      "rank": 10,
+      "total": 30
+    },
+    "Target Field": {
+      "games": 68,
+      "runs": 607,
+      "avg_runs": 8.93,
       "rank": 11,
+      "total": 30
+    },
+    "Yankee Stadium": {
+      "games": 68,
+      "runs": 599,
+      "avg_runs": 8.81,
+      "rank": 12,
       "total": 30
     },
     "Oriole Park at Camden Yards": {
       "games": 69,
       "runs": 607,
       "avg_runs": 8.8,
-      "rank": 12,
-      "total": 30
-    },
-    "Tropicana Field": {
-      "games": 68,
-      "runs": 596,
-      "avg_runs": 8.76,
       "rank": 13,
       "total": 30
     },
-    "Yankee Stadium": {
-      "games": 67,
-      "runs": 582,
-      "avg_runs": 8.69,
+    "Tropicana Field": {
+      "games": 69,
+      "runs": 605,
+      "avg_runs": 8.77,
       "rank": 14,
       "total": 30
     },
-    "Truist Park": {
-      "games": 71,
-      "runs": 616,
-      "avg_runs": 8.68,
+    "American Family Field": {
+      "games": 73,
+      "runs": 633,
+      "avg_runs": 8.67,
       "rank": 15,
       "total": 30
     },
@@ -125,17 +125,17 @@
       "rank": 17,
       "total": 30
     },
-    "American Family Field": {
+    "Truist Park": {
       "games": 72,
-      "runs": 622,
-      "avg_runs": 8.64,
+      "runs": 621,
+      "avg_runs": 8.62,
       "rank": 18,
       "total": 30
     },
     "Citi Field": {
-      "games": 70,
-      "runs": 600,
-      "avg_runs": 8.57,
+      "games": 71,
+      "runs": 609,
+      "avg_runs": 8.58,
       "rank": 19,
       "total": 30
     },
@@ -146,17 +146,17 @@
       "rank": 20,
       "total": 30
     },
-    "Busch Stadium": {
-      "games": 71,
-      "runs": 591,
-      "avg_runs": 8.32,
+    "Progressive Field": {
+      "games": 68,
+      "runs": 569,
+      "avg_runs": 8.37,
       "rank": 21,
       "total": 30
     },
-    "Progressive Field": {
-      "games": 67,
-      "runs": 557,
-      "avg_runs": 8.31,
+    "Busch Stadium": {
+      "games": 72,
+      "runs": 600,
+      "avg_runs": 8.33,
       "rank": 22,
       "total": 30
     },
@@ -168,23 +168,23 @@
       "total": 30
     },
     "Rogers Centre": {
-      "games": 71,
-      "runs": 584,
-      "avg_runs": 8.23,
+      "games": 72,
+      "runs": 591,
+      "avg_runs": 8.21,
       "rank": 24,
       "total": 30
     },
     "Comerica Park": {
-      "games": 68,
-      "runs": 546,
-      "avg_runs": 8.03,
+      "games": 69,
+      "runs": 553,
+      "avg_runs": 8.01,
       "rank": 25,
       "total": 30
     },
     "Angel Stadium": {
-      "games": 71,
-      "runs": 566,
-      "avg_runs": 7.97,
+      "games": 72,
+      "runs": 573,
+      "avg_runs": 7.96,
       "rank": 26,
       "total": 30
     },

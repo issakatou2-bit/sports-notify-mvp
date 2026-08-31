@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-30T06:02:25.958744+00:00",
+  "updated_at": "2026-08-31T06:02:09.765868+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,52 +13,36 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ブルージェイズの伝説的放送者マルティネスの引退と復帰勝利"
-    },
-    {
-      "team_id": "137",
-      "name": "ジャイアンツ",
-      "name_en": "San Francisco Giants",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "ジャイアンツが5年連続で負け越し、フランチャイズ史上初"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "スヌーピーがメッツの試合でファーストピッチを投球"
-    },
-    {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
+      "mentions": 5,
+      "tone": "不振",
+      "gist": "ヤンキースに16失点で敗北、レッドソックス苦戦"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "ヤンキースの強さが際立つ、Austin Wells関連で話題"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
       "mentions": 2,
       "tone": "話題",
-      "gist": "レッドソックスファンがヤンキースホームランを息子に返す"
+      "gist": "Max Scherzerが歴代9位の奪三振達成"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
       "mentions": 2,
-      "tone": "不振",
-      "gist": "ドジャースが4試合で2度目のウォークオフで敗北"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "ヤンキースを含む複数球団に怪我人が発生"
+      "tone": "好調",
+      "gist": "Teoscar活躍、Glasnow好投でシリーズ制覇"
     },
     {
       "team_id": "144",
@@ -66,24 +50,36 @@
       "name_en": "Atlanta Braves",
       "mentions": 2,
       "tone": "好調",
-      "gist": "ペレスが6連勝中のブレーブスの先発投手として活躍"
+      "gist": "Matt Olsonサヨナラで7連勝達成"
     },
     {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "PCA2試合で5本塁打、好調続く"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "Ramírezを中心に打線が全力稼働"
+    },
+    {
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
       "mentions": 1,
       "tone": "話題",
-      "gist": "オリオールズがエラー連続で得点、サーカス音楽を放送"
+      "gist": "複数球団の故障者情報"
     }
   ],
   "players": [
     {
-      "name": "大谷翔平",
-      "mentions": 3
-    },
-    {
-      "name": "ヌートバー",
+      "name": "今永昇太",
       "mentions": 1
     }
   ]
