@@ -241,6 +241,26 @@ def material(buzz_path: str, voices_path: str) -> dict:
         return {}
     top = vids[0]
     voices = (v.get("voices") or [])[:MAX_COMMENTS]
+    # コメントに日本人選手が出ていたら、その名前を残す。
+    #
+    # 28日間の実測で、**題に日本人選手の名前が入っている動画は
+    # 再生が2.8倍（468回 vs 168回）、登録者は12人 vs 0人**だった。
+    # チャンネルの登録者14人のうち12人がこの形から来ている。
+    # ここまではっきり差が出ているものを、題で使わない手は無い。
+    jp = []
+    try:
+        import mentioned
+        for c in voices:
+            src = (c.get("title") or "") + " " + " ".join(
+                (r.get("text") or "") for r in (c.get("reply") or []))
+            for hit in mentioned.find(src, limit=3):
+                nm = hit.get("name")
+                if nm and nm not in jp:
+                    jp.append(nm)
+    except Exception as e:                       # noqa: BLE001
+        print(f"[info] 日本人選手の拾い出しを飛ばします({e})")
+    if jp:
+        print("[info] コメントに出ている日本人選手: " + "、".join(jp))
     # コメントに出てくる選手の所属を、こちらで引いておく。
     # 渡さないと、モデルが対戦カードから推測して外す。
     teams = {}
@@ -249,7 +269,7 @@ def material(buzz_path: str, voices_path: str) -> dict:
         if tm:
             teams[n] = tm
             print(f"[info] {n}: {tm}")
-    return {"top": top, "voices": voices, "teams": teams,
+    return {"top": top, "voices": voices, "teams": teams, "jp": jp,
             "source": v.get("source", "")}
 
 
@@ -645,6 +665,7 @@ def main() -> int:
     out.write_text(json.dumps(
         {"kind": "dialogue", "segments": segs, "panels": ps,
          "top": m["top"].get("topic_jp") or m["top"].get("matchup"),
+         "jp": m.get("jp") or [],
          "source": m.get("source")},
         ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[info] 台本を出力しました -> {out}")

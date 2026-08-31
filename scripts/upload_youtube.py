@@ -1083,7 +1083,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    sport: str = "mlb",
                    buzz_path: str = "data/mlb_buzz.json",
                    profile_path: str = "data/player_profile.json",
-                   topic: str = "") -> dict:
+                   topic: str = "",
+                   jp_names: list | None = None) -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -1205,7 +1206,21 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 「海外の反応」は日本語YouTubeで定着している言い方で、
         # まさにこの動画の中身そのもの。
         # 「読み解く」は残す。中身の説明としては、こちらが正しい。
-        if topic:
+        # **日本人選手の名前が先。**
+        #
+        # 28日間146本の実測:
+        #   題に日本人選手の名前あり  38本  再生/本 468  登録 12人
+        #   なし                    108本  再生/本 168  登録  0人
+        #
+        # 2.8倍で、しかも**登録者は全員こちらから来ている**。
+        # 「現地/海外/コメント/反応」は 276 vs 236 で1.17倍。
+        # どちらも効くが、桁が違う。名前が取れた日は名前を先に置く。
+        jp = [title_name(n) for n in (jp_names or [])][:2]
+        if jp:
+            who = "・".join(jp)
+            title = (f"【海外の反応】{who}への現地の声｜"
+                     f"{topic or 'MLB'} {date_label}")
+        elif topic:
             title = (f"【海外の反応】{topic}｜"
                      f"MLB公式コメント欄を読み解く {date_label}")
         else:
@@ -1470,6 +1485,9 @@ def main():
                              "morning=夕方の5本 / longform=対話の通常動画")
     parser.add_argument("--topic", default="",
                         help="longform で題に出す主題(その日のハイライト)")
+    parser.add_argument("--dialogue", default="",
+                        help="longform の台本。コメントに出ている"
+                             "日本人選手を題に使う")
     parser.add_argument("--recap", default="data/morning_recap.json",
                         help="--kind morning のときの成績データ")
     parser.add_argument("--profile", default="data/player_profile.json",
@@ -1605,10 +1623,20 @@ def main():
             except (json.JSONDecodeError, OSError, ValueError) as e:
                 print(f"[warn] 成績データを読めませんでした: {e}", file=sys.stderr)
 
+        # コメントに日本人選手が出ていたら、題の先頭に置く。
+        # 28日間の実測で、名前が題にある動画は再生2.8倍・登録12人 vs 0人。
+        jp_names = []
+        if args.dialogue:
+            try:
+                jp_names = json.loads(pathlib.Path(args.dialogue).read_text(
+                    encoding="utf-8")).get("jp") or []
+            except (OSError, json.JSONDecodeError) as e:
+                print(f"[info] 台本から日本人選手を読めません({e})")
         body = build_metadata(args.games, date_label, args.kind,
                               args.narration, args.archive_dir, morning_players,
                               args.morning_mode, args.sport, args.buzz,
-                              args.profile, args.topic)
+                              args.profile, args.topic,
+                              jp_names=jp_names)
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)

@@ -137,6 +137,7 @@ jobs:
           python scripts/upload_youtube.py \
             --video build/lf/collespo_longform.mp4 \
             --kind longform --topic "$TOPIC" \
+            --dialogue build/lf/dialogue.json \
             --thumbnail build/lf/thumb.png \
             --privacy "${{ inputs.privacy || 'public' }}"
 

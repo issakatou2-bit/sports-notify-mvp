@@ -293,6 +293,9 @@ def draw_morning_voices(d, day: str, buzz_path="data/mlb_buzz.json"):
 #
 # 文字には縁取りと影を付ける(video_common.pop_text)。
 # 書体は源ノ角ゴシック Heavy のままで、処理だけ足している。
+# 階段を1段ずつ下る。TYPE_SCALE の隣を引くための表。
+TYPE_SCALE_DOWN = {b: a for a, b in zip(video_common.TYPE_SCALE, video_common.TYPE_SCALE[1:])}
+
 LF_ART_H = 660
 LF_ART_X = 1010         # 立ち絵2人の中心
 LF_TEXT_R = 760         # 文字が使ってよい右端
@@ -330,8 +333,39 @@ def _lf_art(who: str, portrait_dir: str):
     return None
 
 
-def draw_longform(im, d, topic: str, day: str, portrait_dir: str):
-    """長編（対話）。何の試合のコメント欄を読むのかを出す。"""
+def _jp_from_dialogue(path: str):
+    """台本に残しておいた、コメントに出ている日本人選手。
+
+    generate_dialogue が mentioned.find で拾って書いてある。
+    ここで拾い直すと、題とサムネイルで別の名前が出かねない。
+    """
+    if not path:
+        return []
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    out = []
+    for n in (d.get("jp") or [])[:2]:
+        try:
+            import upload_youtube as uy
+            n = uy.title_name(n)
+        except Exception:                        # noqa: BLE001
+            pass
+        out.append(n)
+    return out
+
+
+def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
+                  jp_names=None):
+    """長編（対話）。何の試合のコメント欄を読むのかを出す。
+
+    日本人選手の名前が取れた日は、**大きい行をその名前にする。**
+
+    28日間146本の実測で、題に日本人選手の名前がある動画は
+    再生が2.8倍（468回 vs 168回）、登録者は12人 vs 0人だった。
+    題で効くものが、サムネイルで効かない理由が無い。
+    """
     import video_common as vc
 
     # 立ち絵。画面の下端まで出して、切れているところを作る。
@@ -353,12 +387,27 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str):
                 stroke=(8, 10, 15), stroke_w=5, shadow=(0, 0, 0),
                 shadow_off=(3, 4))
 
-    # 大きい3行。**毎日同じ**なので、幅を測る必要が無い。
-    # 大きさは TYPE_SCALE の 80 / 100 / 156。
+    # 大きい3行。大きさは TYPE_SCALE の 80 / 100 / 156。
     # 1.25倍ずつ違うので、3行の主従が一目で決まる。
-    lines = [("公式ハイライトの", 80, TEXT),
-             ("コメント欄を", 100, TEXT),
-             ("読み解く", 156, ACCENT)]
+    #
+    # 名前が取れた日は真ん中をその名前にする。名前は長さが変わるので、
+    # そこだけ幅を測って縮める。1行目と3行目は毎日同じなので測らない。
+    jp = [n for n in (jp_names or []) if n][:2]
+    if jp:
+        who = "・".join(jp)
+        avail = 880 - 120 - 70
+        size = 100
+        while size > 50 and d.textlength(who, font=font(size)) > avail:
+            size = TYPE_SCALE_DOWN.get(size, size - 10)
+        # 名前が先。**サムネイルは文ではなく断片で読まれる**が、
+        # それでも並びが逆だと目が止まる。
+        # 「大谷翔平 / への現地の声を / 読み解く」で通る。
+        lines = [(who, size, JP), ("への現地の声を", 64, TEXT),
+                 ("読み解く", 156, ACCENT)]
+    else:
+        lines = [("公式ハイライトの", 80, TEXT),
+                 ("コメント欄を", 100, TEXT),
+                 ("読み解く", 156, ACCENT)]
     y = 150
     for text, size, color in lines:
         vc.pop_text(d, (70, y), text, font(size), color,
@@ -415,6 +464,8 @@ def main():
     parser.add_argument("--topic", default="",
                         help="長編で出す主題(その日のハイライト)")
     parser.add_argument("--portrait-dir", default="assets/portraits")
+    parser.add_argument("--dialogue", default="",
+                        help="長編の台本。名前をサムネイルに出す")
     parser.add_argument("--label", default="")
     parser.add_argument("--archive-dir", default="archive",
                         help="週次で --label を省いたときの期間の算出元")
@@ -431,7 +482,8 @@ def main():
             day = f"{n.month}月{n.day}日"
         except Exception:  # noqa: BLE001
             day = ""
-        draw_longform(im, d, args.topic, day, args.portrait_dir)
+        draw_longform(im, d, args.topic, day, args.portrait_dir,
+                      _jp_from_dialogue(args.dialogue))
     elif args.kind == "morning":
         try:
             rec = json.loads(pathlib.Path(args.recap).read_text(encoding="utf-8"))
