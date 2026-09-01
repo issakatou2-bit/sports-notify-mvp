@@ -124,6 +124,43 @@ def record(who: str, model: str, resp, path: str = PATH) -> None:
         print(f"[warn] 使用量を記録できませんでした: {e}")
 
 
+# 単価($/百万トークン)。モデルを上げたので、1本いくらかを
+# その場で出せるようにしておく。
+#
+# ここに無いモデルは Haiku の単価で見積もる（過小評価になるが、
+# 「分からない」と出すより桁が分かるほうがよい）。
+PRICES = {
+    "claude-opus-5": (5.0, 25.0),
+    "claude-sonnet-5": (2.0, 10.0),
+    "claude-haiku-4-5": (1.0, 5.0),
+    "claude-haiku-4-5-20251001": (1.0, 5.0),
+}
+
+
+def cost_of(model: str, tin: int, tout: int) -> float:
+    """入力・出力のトークン数から金額を出す。"""
+    i, o = PRICES.get(model) or PRICES["claude-haiku-4-5"]
+    return tin * i / 1_000_000 + tout * o / 1_000_000
+
+
+def summary_line(who: str, path: str = PATH) -> str:
+    """その呼び出し元が今日いくら使ったか。1行で返す。
+
+    実行ページに出して、モデルを上げた分が割に合っているかを
+    毎日見られるようにするためのもの。
+    """
+    from datetime import datetime, timezone, timedelta
+    today = datetime.now(timezone(timedelta(hours=9))).date().isoformat()
+    d = _load(path).get("days", {}).get(today, {})
+    by = (d.get("by") or {}).get(who) or {}
+    if not by:
+        return f"{who}: 今日はまだ呼んでいません"
+    tin, tout = by.get("in", 0), by.get("out", 0)
+    total = d.get("usd", 0.0)
+    return (f"{who}: {by.get('calls', 0)}回 / 入力{tin:,} 出力{tout:,} "
+            f"トークン / 今日の合計 ${total:.4f}")
+
+
 def summary(path: str = PATH, credit_path: str = "data/credit.json") -> dict:
     """直近の消費と、残高が持つ日数。
 

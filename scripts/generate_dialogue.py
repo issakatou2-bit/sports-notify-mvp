@@ -83,7 +83,15 @@ except ImportError:
 # 1日1回しか呼ばないところで、ここをけちる理由が無い。
 #
 # 翻訳・検算・多言語化は回数が多いので Haiku のまま。
-MODEL = "claude-opus-5"
+# 環境変数で差し替えられる。**比べるため。**
+#
+#   COLLESPO_DIALOGUE_MODEL=claude-sonnet-5  で1本作って見比べる
+#
+# 「Haikuからいきなり Opus か」は、もっともな問い。
+# 間に Sonnet 5 があって、費用は Opus の 2.5分の1。
+# ただし**どれが良いかは出来上がりを見ないと分からない**ので、
+# 切り替えを1行にしておく。コードを触らずに戻せる。
+MODEL = os.environ.get("COLLESPO_DIALOGUE_MODEL") or "claude-opus-5"
 MLB_API = "https://statsapi.mlb.com/api/v1"
 
 # 話者ID(VOICEVOX)。
@@ -661,6 +669,10 @@ def main() -> int:
     for s in segs:
         tag = "[%s]" % s["panel"] if s.get("panel") else ""
         print(f"{s['meta']['who']}{tag}：{s['text']}")
+    # この1本にいくらかかったか。実行ページで見えるようにする。
+    # モデルを上げたので、割に合っているかを毎日見られる状態にしておく。
+    print(f"[info] モデル: {MODEL}")
+    print("[info] " + token_log.summary_line("dialogue"))
     used = {s["panel"] for s in segs if s.get("panel")}
     print("[info] 画面の札 %d枚のうち %d枚を使いました"
           % (len(ps), len(used)))

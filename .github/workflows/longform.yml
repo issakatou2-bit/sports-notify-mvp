@@ -182,7 +182,21 @@ jobs:
             else
               echo "- **動画は作れませんでした**"
             fi
-            echo "- 公開設定: ${{ inputs.privacy }}"
+            echo "- 公開設定: ${{ inputs.privacy || 'public' }}"
+            python - <<'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          try:
+              import token_log, generate_dialogue as gd
+              print("- 台本のモデル: `%s`" % gd.MODEL)
+              print("- " + token_log.summary_line("dialogue"))
+              s = token_log.summary()
+              print("- 今日のAPI代 $%.4f / 直近%d日の平均 $%.4f（月 $%.2f）"
+                    % (token_log.spent_today(), s.get("days", 0),
+                       s.get("avg_usd", 0), s.get("month_usd", 0)))
+          except Exception as e:
+              print("- (費用を読めません: %s)" % e)
+          PY
             echo
             echo "### 台本"
             echo
