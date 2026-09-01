@@ -536,6 +536,50 @@ def _choices_of(script: str) -> dict:
     return out
 
 
+def check_redefined() -> int:
+    """同じファイルの中で、同じ名前を2回定義していないか。
+
+    なぜ要るのか（実際に起きた）:
+      token_log.py に PRICES を2つ書いた。上は辞書、下はタプル。
+      あとの定義が上書きするので cost() が p["in"] でタプルを引き、
+      TypeError になった。record() の try/except がそれを飲んだので、
+      **台本を Opus 5 にした日の費用が1件も記録されなかった。**
+
+      費用を見るために置いた仕組みが、費用を見えなくしていた。
+      pyflakes の "redefinition of unused" は関数と import は見るが、
+      定数の再代入は見ない。ここで見る。
+    """
+    step("同じ名前を2回定義していないか")
+    bad = []
+    for f in sorted(ROOT.glob("scripts/*.py")) + [ROOT / "notability_engine.py"]:
+        try:
+            tree = ast.parse(f.read_text(encoding="utf-8-sig"))
+        except SyntaxError:
+            continue
+        seen = {}
+        for node in tree.body:      # 直下だけ。関数の中は別の話
+            names = []
+            if isinstance(node, ast.Assign):
+                names = [t.id for t in node.targets
+                         if isinstance(t, ast.Name) and t.id.isupper()]
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef,
+                                   ast.ClassDef)):
+                names = [node.name]
+            for n in names:
+                if n in seen:
+                    bad.append("%s: %s (%d行目と%d行目)"
+                               % (f.name, n, seen[n], node.lineno))
+                seen[n] = node.lineno
+    if bad:
+        print("NG  2回定義しているもの: %d件" % len(bad))
+        for b in bad:
+            print("      " + b)
+        print("      あとの定義が勝つので、前の形で使っている所が壊れます")
+        return 1
+    print("ok  重複 0件")
+    return 0
+
+
 def check_shared_owned() -> int:
     """video_common が持っているものを、自前で持ち直していないか。
 
@@ -888,6 +932,7 @@ def main() -> int:
     failed += check_secrets_passed()
     failed += check_render_coverage()
     failed += check_shared_owned()
+    failed += check_redefined()
     failed += check_arg_choices()
     failed += check_root_imports()
     failed += check_deps_installed()

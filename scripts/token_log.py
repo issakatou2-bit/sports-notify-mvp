@@ -37,7 +37,17 @@ PATH = "data/token_usage.json"
 # 100万トークンあたりの価格(ドル)。
 # 実測(8/01-8/24で$1.09)と突き合わせて確かめられるように、
 # 推定ではなく公表値をそのまま置く。
+# 単価($/百万トークン)。**ここが正本。**
+#
+# 2つ目の表を下のほうに足してしまい、しかも形が違った
+# （こちらは辞書、あちらはタプル）。あとの定義が上書きするので
+# cost() が p["in"] でタプルを引いて TypeError になり、
+# record() の try/except がそれを黙って飲んだ。
+# **台本を Opus 5 にした日の費用が、1件も記録されていなかった。**
 PRICES = {
+    "claude-opus-5": {"in": 5.00, "out": 25.00},
+    "claude-sonnet-5": {"in": 2.00, "out": 10.00},
+    "claude-haiku-4-5": {"in": 1.00, "out": 5.00},
     "claude-haiku-4-5-20251001": {"in": 1.00, "out": 5.00},
 }
 DEFAULT_PRICE = {"in": 1.00, "out": 5.00}
@@ -92,7 +102,12 @@ def cost(model: str, tin: int, tout: int) -> float:
 
 
 def record(who: str, model: str, resp, path: str = PATH) -> None:
-    """1回ぶんを足す。失敗しても本編は止めない。"""
+    """1回ぶんを足す。失敗しても本編は止めない。
+
+    **ただし黙らない。** 例外を握りつぶしていたので、単価表を
+    壊した日に「記録が1件も無い」という形でしか気づけなかった。
+    費用を見るために置いた仕組みが、費用を見えなくしていた。
+    """
     try:
         u = getattr(resp, "usage", None)
         tin = int(getattr(u, "input_tokens", 0) or 0)
@@ -129,18 +144,9 @@ def record(who: str, model: str, resp, path: str = PATH) -> None:
 #
 # ここに無いモデルは Haiku の単価で見積もる（過小評価になるが、
 # 「分からない」と出すより桁が分かるほうがよい）。
-PRICES = {
-    "claude-opus-5": (5.0, 25.0),
-    "claude-sonnet-5": (2.0, 10.0),
-    "claude-haiku-4-5": (1.0, 5.0),
-    "claude-haiku-4-5-20251001": (1.0, 5.0),
-}
-
-
 def cost_of(model: str, tin: int, tout: int) -> float:
-    """入力・出力のトークン数から金額を出す。"""
-    i, o = PRICES.get(model) or PRICES["claude-haiku-4-5"]
-    return tin * i / 1_000_000 + tout * o / 1_000_000
+    """入力・出力のトークン数から金額を出す。cost() と同じもの。"""
+    return cost(model, tin, tout)
 
 
 def summary_line(who: str, path: str = PATH) -> str:
