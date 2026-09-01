@@ -46,7 +46,10 @@ SINCE_ALWAYS = "0000-00-00"
 # 一次情報は1つにして、こちらは引くだけにする。
 def _lineup():
     import post_common
-    since = {"morning_player": "2026-08-18", "morning_voices": "2026-08-17"}
+    since = {"morning_player": "2026-08-18", "morning_voices": "2026-08-17",
+             # 長編を日次の枠にした日。それ以前を「出ていない」に
+             # しないため。
+             "longform": "2026-09-01"}
     return [(k, name, at, since.get(k, SINCE_ALWAYS))
             for k, name, _, at in post_common.DAILY_LINEUP
             if k != "daily_soccer"]

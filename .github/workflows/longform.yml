@@ -27,8 +27,13 @@ on:
     workflows: ["毎日 17:00-20:00　夕方の4本"]
     types: [completed]
 
+# 投稿の記録を書き戻すので write が要る。
+#
+# read のままだったので、長編を5本上げても
+# published_videos.json に1件も残っていなかった。
+# 記録が無いと、健康診断も導線もこの枠を見つけられない。
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -66,16 +71,30 @@ jobs:
             sleep 2
           done
 
-      # その日のハイライトとコメントを取り直す。
-      # 対話の材料はこの2つだけで、他は使わない。
-      - name: Refresh material
-        continue-on-error: true
-        env:
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      # 材料は取り直さない。**夕方の枠がコミットしたものを使う。**
+      #
+      # 取り直していたが、それだと18:00の「ファンのコメント欄」と
+      # 20:30の長編で、別の試合になりうる。
+      # 短編の説明欄には「この試合のコメント欄をもっと詳しく」と
+      # 書いて長編へ繋いでいるので、違う試合だとそれが嘘になる。
+      #
+      # ついでにYouTubeの枠とAnthropicの呼び出しが1回ずつ減る。
+      - name: Check the material is today's
         run: |
-          python scripts/mlb_buzz.py --out data/mlb_buzz.json
-          python scripts/local_voices.py --out data/local_voices.json
+          python - <<'PY'
+          import json, pathlib
+          from datetime import datetime, timezone, timedelta
+          today = datetime.now(timezone(timedelta(hours=9))).date().isoformat()
+          for name in ("data/mlb_buzz.json", "data/local_voices.json"):
+              try:
+                  d = json.loads(pathlib.Path(name).read_text(encoding="utf-8"))
+              except Exception as e:
+                  print("::warning::%s を読めません(%s)" % (name, e))
+                  continue
+              at = str(d.get("updated_at") or "")[:10]
+              mark = "" if at == today else "  ← 今日のものではありません"
+              print("%-26s %s%s" % (name, at or "(日付なし)", mark))
+          PY
 
       - name: Write the dialogue
         env:
@@ -113,6 +132,7 @@ jobs:
           TOPIC=$(python -c "import json;print(json.load(open('build/lf/dialogue.json',encoding='utf-8')).get('top',''))" || echo "")
           python scripts/generate_thumbnail.py \
             --kind longform --topic "$TOPIC" \
+            --dialogue build/lf/dialogue.json \
             --out build/lf/thumb.png
 
       # 動画は必ず artifact に残す。上げなくても手元で見られるように。
@@ -140,6 +160,16 @@ jobs:
             --dialogue build/lf/dialogue.json \
             --thumbnail build/lf/thumb.png \
             --privacy "${{ inputs.privacy || 'public' }}"
+
+      # 投稿の記録を残す。ここが無いと、上げたこと自体が
+      # ランナーの中で消える。
+      - name: Commit the record
+        if: ${{ inputs.upload != 'false' }}
+        continue-on-error: true
+        run: |
+          bash scripts/commit_data.sh \
+            "longform: ${{ github.run_id }}" \
+            data/published_videos.json data/token_usage.json
 
       - name: Say what happened
         if: always()
