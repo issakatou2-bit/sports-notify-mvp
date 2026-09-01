@@ -1,29 +1,29 @@
 {
-  "updated_at": "2026-08-31T13:02:04.047148+00:00",
+  "updated_at": "2026-09-01T06:01:33.501247+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-08-31",
-  "total_games": 2195,
+  "end": "2026-09-01",
+  "total_games": 2207,
   "min_games": 20,
   "venues": {
-    "Coors Field": {
-      "games": 65,
-      "runs": 735,
-      "avg_runs": 11.31,
-      "rank": 1,
-      "total": 30
-    },
     "Sutter Health Park": {
       "games": 64,
       "runs": 722,
       "avg_runs": 11.28,
+      "rank": 1,
+      "total": 30
+    },
+    "Coors Field": {
+      "games": 66,
+      "runs": 738,
+      "avg_runs": 11.18,
       "rank": 2,
       "total": 30
     },
     "Nationals Park": {
-      "games": 71,
-      "runs": 774,
-      "avg_runs": 10.9,
+      "games": 72,
+      "runs": 783,
+      "avg_runs": 10.88,
       "rank": 3,
       "total": 30
     },
@@ -35,9 +35,9 @@
       "total": 30
     },
     "Wrigley Field": {
-      "games": 68,
-      "runs": 659,
-      "avg_runs": 9.69,
+      "games": 69,
+      "runs": 679,
+      "avg_runs": 9.84,
       "rank": 5,
       "total": 30
     },
@@ -56,9 +56,9 @@
       "total": 30
     },
     "Daikin Park": {
-      "games": 70,
-      "runs": 655,
-      "avg_runs": 9.36,
+      "games": 71,
+      "runs": 664,
+      "avg_runs": 9.35,
       "rank": 8,
       "total": 30
     },
@@ -69,17 +69,17 @@
       "rank": 9,
       "total": 30
     },
-    "Chase Field": {
+    "Target Field": {
       "games": 69,
-      "runs": 617,
-      "avg_runs": 8.94,
+      "runs": 619,
+      "avg_runs": 8.97,
       "rank": 10,
       "total": 30
     },
-    "Target Field": {
-      "games": 68,
-      "runs": 607,
-      "avg_runs": 8.93,
+    "Chase Field": {
+      "games": 70,
+      "runs": 620,
+      "avg_runs": 8.86,
       "rank": 11,
       "total": 30
     },
@@ -98,9 +98,9 @@
       "total": 30
     },
     "Tropicana Field": {
-      "games": 69,
-      "runs": 605,
-      "avg_runs": 8.77,
+      "games": 70,
+      "runs": 610,
+      "avg_runs": 8.71,
       "rank": 14,
       "total": 30
     },
@@ -118,31 +118,31 @@
       "rank": 16,
       "total": 30
     },
-    "Great American Ball Park": {
-      "games": 68,
-      "runs": 588,
-      "avg_runs": 8.65,
+    "Truist Park": {
+      "games": 73,
+      "runs": 631,
+      "avg_runs": 8.64,
       "rank": 17,
       "total": 30
     },
-    "Truist Park": {
-      "games": 72,
-      "runs": 621,
-      "avg_runs": 8.62,
+    "Fenway Park": {
+      "games": 67,
+      "runs": 576,
+      "avg_runs": 8.6,
       "rank": 18,
+      "total": 30
+    },
+    "Great American Ball Park": {
+      "games": 69,
+      "runs": 593,
+      "avg_runs": 8.59,
+      "rank": 19,
       "total": 30
     },
     "Citi Field": {
       "games": 71,
       "runs": 609,
       "avg_runs": 8.58,
-      "rank": 19,
-      "total": 30
-    },
-    "Fenway Park": {
-      "games": 66,
-      "runs": 559,
-      "avg_runs": 8.47,
       "rank": 20,
       "total": 30
     },
@@ -182,9 +182,9 @@
       "total": 30
     },
     "Angel Stadium": {
-      "games": 72,
-      "runs": 573,
-      "avg_runs": 7.96,
+      "games": 73,
+      "runs": 584,
+      "avg_runs": 8.0,
       "rank": 26,
       "total": 30
     },
@@ -196,9 +196,9 @@
       "total": 30
     },
     "Globe Life Field": {
-      "games": 67,
-      "runs": 524,
-      "avg_runs": 7.82,
+      "games": 68,
+      "runs": 533,
+      "avg_runs": 7.84,
       "rank": 28,
       "total": 30
     },
