@@ -105,6 +105,7 @@ def main() -> int:
     reps = load("data/local_reporters.json")
     voices = load("data/local_voices.json")
     profile = load("data/player_profile.json")
+    ps = load("data/postseason.json")
 
     players = recap.get("players") or []
     vids = buzz.get("videos") or []
@@ -151,6 +152,15 @@ def main() -> int:
             if week:
                 check("%s 7日間の合計" % tag, g.render_week, p, week,
                       players[0].get("name", ""))
+        # ポストシーズン進出争い。9月から10月だけの枠なので、
+        # 材料がある日だけ見る。
+        for lid in ("103", "104"):
+            lg = (ps.get("leagues") or {}).get(lid)
+            if lg:
+                check("%s 進出争い(%s)" % (tag, lid),
+                      g.render_ps_league, p, lg)
+        if ps.get("leagues"):
+            check("%s 今日終わったら" % tag, g.render_ps_bracket, p, ps)
         check("%s アウトロ" % tag, g.render_outro, p)
 
     print("\n--- 冒頭(枠ごとに材料が違う) ---")

@@ -1324,6 +1324,120 @@ def scoreboard_ready(res) -> bool:
     return True
 
 
+def render_ps_league(p, league: dict):
+    """ポストシーズン進出争い。1リーグぶんを1画面に。
+
+    なぜこの形か:
+      9月は「いまどこにいるか」より**「あと何回で決まるか」**が主題。
+      マジックナンバーは毎日1つずつ減る数字で、減った理由も明快。
+      順位表をそのまま出すのではなく、**進出の枠で区切って**出す。
+
+      上3つが地区優勝、次の3つがワイルドカード、その下が枠外。
+      **枠の線をはっきり引く**のがこの画面の全部で、
+      そこが1行でも動けば、その日の意味がある。
+    """
+    im, d = base(p)
+    d.text((70, 150), league.get("league_jp", ""), font=font(56), fill=DIM)
+    d.text((70, 230), "ポストシーズン進出争い", font=font(72), fill=TEXT)
+
+    rows = ([(t, "地区首位") for t in league.get("leaders") or []]
+            + [(t, "ワイルドカード") for t in league.get("wildcards") or []])
+    out = [(t, "枠外") for t in league.get("chasing") or []]
+
+    y = 380
+    for i, (tm, tag) in enumerate(rows + out):
+        appear = 0.06 + i * 0.035
+        if p < appear:
+            y += 118
+            continue
+        e = ease_out(min(1.0, (p - appear) * 9))
+        dx = int((1 - e) * 80)
+        inside = tag != "枠外"
+        # 枠の線。ここが画面の主題なので、はっきり引く。
+        # 前の行に食い込まないよう、先に間を空けてから引く。
+        if i == len(rows):
+            y += 18
+            s = "──── ここまでが進出 ────"
+            d.text(((W - d.textlength(s, font=font(32))) / 2, y),
+                   s, font=font(32), fill=ACCENT)
+            y += 54
+        fill = SURF if inside else (14, 17, 24)
+        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 100], 16, fill=fill)
+        col = TEXT if inside else DIM
+        d.text((104 - dx, y + 14), tm.get("name", ""), font=font(46),
+               fill=col)
+        d.text((104 - dx, y + 66), "%d勝%d敗" % (tm.get("w") or 0,
+                                                tm.get("l") or 0),
+               font=font(30), fill=DIM)
+        # 右に、その球団のいまの数字。
+        # 地区首位ならマジック、それ以外は枠との差。
+        m = tm.get("magic")
+        if isinstance(m, int):
+            right, sub = str(m), "マジック"
+        elif tm.get("clinched") or tm.get("div_champ"):
+            right, sub = "決定", ""
+        elif tm.get("wc_gb") is None:
+            right, sub = "枠内", ""
+        else:
+            gb = str(tm.get("wc_gb"))
+            # 枠の中にいる球団は「+5.0」のように余裕が返る。
+            # 「差5.0」だと追う側と同じ言葉になって、どちらか分からない。
+            right, sub = gb, ("リード" if gb.startswith("+") else "差")
+        rc = ACCENT if (isinstance(m, int) and m <= 10) or right == "決定"             else (TEXT if inside else DIM)
+        fw = font(56 if right not in ("決定", "枠内") else 40)
+        w = d.textlength(right, font=fw)
+        d.text((W - 104 - dx - w, y + 20), right, font=fw, fill=rc)
+        if sub:
+            fs = font(26)
+            d.text((W - 104 - dx - d.textlength(sub, font=fs), y + 4),
+                   sub, font=fs, fill=DIM)
+        y += 118
+    return im
+
+
+def render_ps_bracket(p, data: dict):
+    """今日終わったら、この組み合わせ。
+
+    順位表は「誰が上か」しか言わない。**誰と誰が当たるか**は
+    そこから組まないと出てこないし、それが9月にいちばん見たいもの。
+    """
+    im, d = base(p)
+    d.text((70, 150), "今シーズンが今日終わったら", font=font(48), fill=DIM)
+    d.text((70, 226), "この組み合わせ", font=font(76), fill=TEXT)
+
+    y = 360
+    for lid in ("104", "103"):
+        lg = (data.get("leagues") or {}).get(lid) or {}
+        d.text((70, y), lg.get("league_jp", ""), font=font(44), fill=ACCENT)
+        y += 74
+        for i, m in enumerate(lg.get("bracket") or []):
+            appear = 0.08 + i * 0.05
+            if p < appear:
+                y += 104
+                continue
+            e = ease_out(min(1.0, (p - appear) * 9))
+            dx = int((1 - e) * 80)
+            d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 88], 14,
+                                fill=SURF)
+            if m.get("bye"):
+                d.text((104 - dx, y + 22), m["bye"].get("name", ""),
+                       font=font(42), fill=TEXT)
+                s = "1回戦なし"
+                d.text((W - 104 - dx - d.textlength(s, font=font(32)),
+                        y + 28), s, font=font(32), fill=DIM)
+            else:
+                line = "%s vs %s" % (m.get("home", {}).get("name", ""),
+                                     m.get("away", {}).get("name", ""))
+                sz = fit(d, line, W - 260, (44, 40, 36, 32))
+                d.text((104 - dx, y + 22), line, font=font(sz), fill=TEXT)
+                s = "ワイルドカード"
+                d.text((W - 104 - dx - d.textlength(s, font=font(26)),
+                        y + 30), s, font=font(26), fill=DIM)
+            y += 104
+        y += 20
+    return im
+
+
 def render_week(p, rows, today: str = ""):
     """7日間の合計。今日の順位を、週の中に置いて見せる。
 
