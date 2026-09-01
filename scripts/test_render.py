@@ -159,8 +159,10 @@ def main() -> int:
             if lg:
                 check("%s 進出争い(%s)" % (tag, lid),
                       g.render_ps_league, p, lg)
-        if ps.get("leagues"):
-            check("%s 今日終わったら" % tag, g.render_ps_bracket, p, ps)
+        for lid in ("103", "104"):
+            if (ps.get("leagues") or {}).get(lid):
+                check("%s トーナメント表(%s)" % (tag, lid),
+                      g.render_ps_bracket, p, ps, lid)
         check("%s アウトロ" % tag, g.render_outro, p)
 
     print("\n--- 冒頭(枠ごとに材料が違う) ---")

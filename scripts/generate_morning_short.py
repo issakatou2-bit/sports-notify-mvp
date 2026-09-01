@@ -1395,46 +1395,85 @@ def render_ps_league(p, league: dict):
     return im
 
 
-def render_ps_bracket(p, data: dict):
-    """今日終わったら、この組み合わせ。
+def render_ps_bracket(p, data: dict, league: str = "104"):
+    """トーナメント表。今日終わったら、こう進む。
 
-    順位表は「誰が上か」しか言わない。**誰と誰が当たるか**は
-    そこから組まないと出てこないし、それが9月にいちばん見たいもの。
+    順位表は「誰が上か」しか言わない。**誰と誰が当たって、
+    勝ったらどこへ行くのか**は、そこから組まないと出てこない。
+    9月にいちばん見たいのはそれで、毎日1行ずつ入れ替わる。
+
+    2026年の形（片リーグ6球団）:
+
+        1位 ───────────┐
+                       ├─ 地区シリーズ ─┐
+        4位 ─┐         │                │
+             ├─ WC ────┘                ├─ リーグ優勝
+        5位 ─┘                          │
+        2位 ───────────┐                │
+                       ├─ 地区シリーズ ─┘
+        3位 ─┐         │
+             ├─ WC ────┘
+        6位 ─┘
+
+    1位と2位はワイルドカードシリーズを免除される。
     """
     im, d = base(p)
-    d.text((70, 150), "今シーズンが今日終わったら", font=font(48), fill=DIM)
-    d.text((70, 226), "この組み合わせ", font=font(76), fill=TEXT)
+    lg = (data.get("leagues") or {}).get(league) or {}
+    d.text((70, 140), lg.get("league_jp", ""), font=font(46), fill=ACCENT)
+    d.text((70, 206), "今日終わったら、この組み合わせ",
+           font=font(60), fill=TEXT)
 
-    y = 360
-    for lid in ("104", "103"):
-        lg = (data.get("leagues") or {}).get(lid) or {}
-        d.text((70, y), lg.get("league_jp", ""), font=font(44), fill=ACCENT)
-        y += 74
-        for i, m in enumerate(lg.get("bracket") or []):
-            appear = 0.08 + i * 0.05
-            if p < appear:
-                y += 104
-                continue
-            e = ease_out(min(1.0, (p - appear) * 9))
-            dx = int((1 - e) * 80)
-            d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 88], 14,
-                                fill=SURF)
-            if m.get("bye"):
-                d.text((104 - dx, y + 22), m["bye"].get("name", ""),
-                       font=font(42), fill=TEXT)
-                s = "1回戦なし"
-                d.text((W - 104 - dx - d.textlength(s, font=font(32)),
-                        y + 28), s, font=font(32), fill=DIM)
-            else:
-                line = "%s vs %s" % (m.get("home", {}).get("name", ""),
-                                     m.get("away", {}).get("name", ""))
-                sz = fit(d, line, W - 260, (44, 40, 36, 32))
-                d.text((104 - dx, y + 22), line, font=font(sz), fill=TEXT)
-                s = "ワイルドカード"
-                d.text((W - 104 - dx - d.textlength(s, font=font(26)),
-                        y + 30), s, font=font(26), fill=DIM)
-            y += 104
-        y += 20
+    seeds = (lg.get("leaders") or [])[:3] + (lg.get("wildcards") or [])[:3]
+    if len(seeds) < 6:
+        d.text((70, 400), "まだ組み合わせが決まりません",
+               font=font(46), fill=DIM)
+        return im
+
+    # 縦に6枠。上から第1シード〜第6シード。
+    # 線で繋ぐので、位置は先に決めておく。
+    x0, bw, bh = 90, 620, 96
+    ys = [380 + i * 148 for i in range(6)]
+    order = [0, 3, 4, 1, 2, 5]        # 1位 / 4位・5位 / 2位 / 3位・6位
+
+    def box(k, y, seed):
+        appear = 0.06 + k * 0.05
+        if p < appear:
+            return False
+        e = ease_out(min(1.0, (p - appear) * 9))
+        dx = int((1 - e) * 70)
+        t = seeds[seed]
+        d.rounded_rectangle([x0 - dx, y, x0 + bw - dx, y + bh], 16,
+                            fill=SURF)
+        d.text((x0 + 26 - dx, y + 14), "%d" % (seed + 1),
+               font=font(34), fill=ACCENT)
+        d.text((x0 + 70 - dx, y + 12), t.get("name", ""), font=font(46),
+               fill=TEXT)
+        d.text((x0 + 70 - dx, y + 60), "%d勝%d敗" % (t.get("w") or 0,
+                                                    t.get("l") or 0),
+               font=font(28), fill=DIM)
+        return True
+
+    for k, seed in enumerate(order):
+        box(k, ys[k], seed)
+
+    # 線。ワイルドカードシリーズの2組を繋いで、その先を地区シリーズへ。
+    if p > 0.34:
+        xa, xb = x0 + bw + 20, x0 + bw + 110
+        for a, b in ((1, 2), (4, 5)):
+            ya, yb = ys[a] + bh / 2, ys[b] + bh / 2
+            d.line([(xa, ya), (xb, ya), (xb, yb), (xa, yb)], fill=DIM,
+                   width=4)
+            d.text((xb + 18, (ya + yb) / 2 - 20), "ワイルドカード",
+                   font=font(28), fill=DIM)
+        # 1位・2位はここを飛ばす
+        for k in (0, 3):
+            y = ys[k] + bh / 2
+            d.line([(xa, y), (xb + 170, y)], fill=DIM, width=4)
+            d.text((xa + 18, y - 44), "1回戦なし", font=font(28),
+                   fill=ACCENT)
+
+    d.text((70, H - 250), "上位2球団はワイルドカードシリーズが免除",
+           font=font(32), fill=DIM)
     return im
 
 
