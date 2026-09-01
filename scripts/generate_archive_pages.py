@@ -163,6 +163,7 @@ DAY_VIDEO_KINDS = (
     ("morning_voices", "この日のコメント欄"),
     ("morning_local", "この日の現地での注目度"),
     ("morning_press", "この日の現地の報道"),
+    ("postseason", "この日の進出争い"),
     ("longform", "この日の海外の反応（3分）"),
 )
 

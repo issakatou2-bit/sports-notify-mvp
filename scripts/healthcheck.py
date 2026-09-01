@@ -46,7 +46,8 @@ SINCE_ALWAYS = "0000-00-00"
 # 一次情報は1つにして、こちらは引くだけにする。
 def _lineup():
     import post_common
-    since = {"morning_player": "2026-08-18", "morning_voices": "2026-08-17",
+    since = {"morning_voices": "2026-08-17",
+             "postseason": "2026-09-02",
              # 長編を日次の枠にした日。それ以前を「出ていない」に
              # しないため。
              "longform": "2026-09-01"}
@@ -64,7 +65,9 @@ EXPECTED_DAILY = _lineup()
 # (99回と115回、最強の枠は427回)。1試合に絞って、順位・試合経過・
 # コメントを1本にまとめたほうが主題が1つになる。
 # 過去の日を診断したときに欠けと言わないよう、名前だけ残す。
-RETIRED = {"morning_local": "2026-08-24"}
+RETIRED = {"morning_local": "2026-08-24",
+           # 156回/本・継続23.5%・登録0。進出争いへ入れ替えた。
+           "morning_player": "2026-09-02"}
 
 # サッカーは試合の無い日があるので、欠けていても異常としない。
 OPTIONAL_DAILY = [("daily_soccer", "今夜の注目試合(サッカー)",

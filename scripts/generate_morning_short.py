@@ -96,6 +96,7 @@ MODE_KIND = {
     "voices": "morning_voices",
     "local": "morning_local",
     "press": "morning_press",
+    "postseason": "postseason",
 }
 
 # 声の画面に並べる件数。読み上げと画面で別々の数を持つと、
@@ -636,6 +637,60 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                      # 冒頭で読んだ見出しは、本編でもう一度読まない
                      "used_headline": lead_idx},
         }]
+    elif mode == "postseason":
+        # ポストシーズン進出争いの回。
+        #
+        # **主題は「昨日と何が違うか」。**順位表は毎日出しても、
+        # 変わらない日は見る理由が無い。逆に1行入れ替わった日は、
+        # それがその日いちばんの出来事になる。
+        # だから冒頭は差分から入る。差分が無い日は、
+        # いちばん近い決着（マジックの小さい球団）から入る。
+        ps = data.get("postseason") or {}
+        changes = ps.get("changes") or []
+        if changes:
+            lead = changes[0]["text"] + "。"
+            if len(changes) > 1:
+                lead += f"昨日から{len(changes)}つ動きました。"
+        else:
+            lead = (ps.get("headline") or "ポストシーズン進出争い") + "。"
+            lead += "昨日から順位に動きはありません。"
+        segments = [{
+            "kind": "intro",
+            "text": lead + f"{day}のポストシーズン進出争いです。",
+            "meta": {"date": day_iso, "mode": mode},
+        }]
+        for lid, name in (("104", "ナ・リーグ"), ("103", "ア・リーグ")):
+            lg = (ps.get("leagues") or {}).get(lid)
+            if not lg:
+                continue
+            rows = (lg.get("leaders") or [])[:3] + (lg.get("wildcards") or [])
+            say = []
+            for i, x in enumerate(rows, 1):
+                m = x.get("magic")
+                if isinstance(m, int):
+                    say.append(f"{x['name']}、マジック{m}")
+                elif i <= 3:
+                    say.append(f"{x['name']}")
+            near = (lg.get("chasing") or [])[:1]
+            tail = ""
+            if near and near[0].get("wc_gb") is not None:
+                tail = (f"追いかけているのは{near[0]['name']}で、"
+                        f"{near[0]['wc_gb']}ゲーム差です。")
+            segments.append({
+                "kind": "ps_league",
+                "text": f"{name}。進出圏内の6球団はこうです。"
+                        + "、".join(say[:3]) + "。" + tail,
+                "meta": {"league": lid},
+            })
+            segments.append({
+                "kind": "ps_bracket",
+                "text": f"今シーズンが今日終わったら、{name}は"
+                        f"この組み合わせになります。"
+                        + ("同率の球団があるので、順番は入れ替わりえます。"
+                           if lg.get("ties") else ""),
+                "meta": {"league": lid},
+            })
+
     elif mode == "voices":
         # ファンの声の回。
         # その日いちばん見られたハイライトを先に立て、そのコメント欄を読む。
@@ -2333,6 +2388,8 @@ def main():
     parser.add_argument("--recap", default="data/morning_recap.json")
     parser.add_argument("--buzz", default="data/mlb_buzz.json")
     parser.add_argument("--reporters", default="data/local_reporters.json")
+    # 進出争い。9月と10月だけ材料がある。
+    parser.add_argument("--postseason", default="data/postseason.json")
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--voices", default="data/local_voices.json")
@@ -2340,7 +2397,7 @@ def main():
                         help="--mode player のときの、今日の1人の材料")
     parser.add_argument("--mode", default="players",
                         choices=["players", "player", "local", "press",
-                                 "voices", "all"],
+                                 "voices", "postseason", "all"],
                         help="players=選手成績 / local=現地の注目度(数字) / "
                              "press=現地の報道(番記者と見出し) / "
                              "voices=ハイライトのコメント欄 / "
@@ -2410,6 +2467,21 @@ def main():
         except (json.JSONDecodeError, OSError):
             reporters_data = {}
     data["reporters"] = reporters_data
+
+    # ポストシーズン進出争い。9月と10月だけ材料がある。
+    # 取れていなければ、その枠を作らないだけ。
+    postseason = {}
+    pp_ = pathlib.Path(args.postseason)
+    if pp_.exists():
+        try:
+            postseason = json.loads(pp_.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            postseason = {}
+    data["postseason"] = postseason
+    if postseason.get("leagues"):
+        ch = postseason.get("changes") or []
+        print(f"[info] 進出争い: {postseason.get('headline','')} / "
+              f"昨日からの変化 {len(ch)}件")
     if reporters_data.get("posts"):
         print(f"[info] 現地の番記者: {len(reporters_data['posts'])}件 / "
               f"見出し {len(reporters_data.get('headlines') or [])}件")
@@ -2548,6 +2620,13 @@ def main():
                                      meta.get("count", 1))
                 elif kind == "buzz":
                     im = render_buzz(pp, buzz, picks)
+                elif kind == "ps_league":
+                    im = render_ps_league(
+                        pp, ((postseason.get("leagues") or {})
+                             .get(meta.get("league", "104")) or {}))
+                elif kind == "ps_bracket":
+                    im = render_ps_bracket(pp, postseason,
+                                           meta.get("league", "104"))
                 elif kind == "week":
                     im = render_week(pp, meta.get("week") or [],
                                      players[0].get("name") if players else "")

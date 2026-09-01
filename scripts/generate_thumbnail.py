@@ -509,6 +509,40 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
                 stroke=(8, 10, 15), stroke_w=7, shadow=(0, 0, 0))
 
 
+def draw_morning_postseason(d, day: str,
+                            path: str = "data/postseason.json"):
+    """ポストシーズン進出争い。
+
+    **主題は「昨日と何が違うか」。** 変わった日はそれを大きく出す。
+    変わらない日は、いちばん近い決着（マジックの小さい球団）を出す。
+    毎日同じ絵にしないのが、この枠を毎日見る理由になる。
+    """
+    ps = {}
+    try:
+        ps = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        pass
+    d.text((70, 90), day, font=font(50), fill=DIM)
+    changes = ps.get("changes") or []
+    if changes:
+        d.text((70, 170), "順位が動いた", font=font(100), fill=TEXT)
+        s = fit(d, changes[0]["text"], W - 140, (80, 64, 50, 40))
+        d.text((70, 290), changes[0]["text"], font=font(s), fill=ACCENT)
+        sub = (f"ほか{len(changes) - 1}件" if len(changes) > 1
+               else "ポストシーズン進出争い")
+        d.text((70, 430), sub, font=font(50), fill=TEXT)
+    else:
+        d.text((70, 170), "ポストシーズン", font=font(100), fill=TEXT)
+        d.text((70, 280), "進出争い", font=font(100), fill=ACCENT)
+        head = ps.get("headline") or ""
+        if head:
+            s = fit(d, head, W - 140, (64, 50, 40))
+            d.text((70, 430), head, font=font(s), fill=TEXT)
+    d.text((70, 520), "マジック・ワイルドカード・今日終わったらの組み合わせ",
+           font=font(32), fill=DIM)
+    d.text((70, H - 78), "コレスポ  進出争い", font=font(40), fill=JP)
+
+
 def draw_verdict(d, label: str):
     d.text((70, 110), "注目した試合", font=font(80), fill=TEXT)
     d.text((70, 210), "どうなった？", font=font(124), fill=ACCENT)
@@ -547,7 +581,7 @@ def main():
     # 今度は run_checks.py が突き合わせる。
     parser.add_argument("--mode", default="players",
                         choices=["players", "player", "voices",
-                                 "local", "press", "all"])
+                                 "local", "press", "postseason", "all"])
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--narration", default="public/narration.json")
     parser.add_argument("--asset-topic", default="mlb_abbr")
@@ -595,7 +629,9 @@ def main():
             day = f"{_p.month}月{_p.day}日"
         except ValueError:
             pass
-        if args.mode == "press":
+        if args.mode == "postseason":
+            draw_morning_postseason(d, day)
+        elif args.mode == "press":
             draw_morning_press(d, day)
         elif args.mode == "player":
             draw_morning_player(d, day)

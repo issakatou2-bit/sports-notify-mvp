@@ -426,7 +426,7 @@ check("初動の見出しも一覧から作られている",
 # ワークフローが持つ公開時刻が、一覧と食い違っていないか
 _wf = (ROOT / ".github" / "workflows" / "morning_recap.yml").read_text(
     encoding="utf-8")
-for _k, _mode in (("morning", "players"), ("morning_player", "player"),
+for _k, _mode in (("morning", "players"), ("postseason", "postseason"),
                   ("morning_voices", "voices"), ("morning_press", "press")):
     # 同じ行で見る。以前は「その文字列がファイルのどこかにあるか」
     # だったので、17:00の枠が2つあるうちの片方だけ動かしても通った。

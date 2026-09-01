@@ -493,6 +493,17 @@ def subject_tags(kind: str, morning_mode: str, games: list,
 
         return out   # 1人の回。今日の試合のチームは関係が無い
 
+    if kind == "morning" and morning_mode == "postseason":
+        # 扱っているのは進出争い。明日の試合の球団名は関係が無い。
+        ps = _postseason_data()
+        for c in (ps.get("changes") or [])[:3]:
+            add(c.get("name"))
+        for lid, r in (ps.get("leagues") or {}).items():
+            for x in (r.get("leaders") or [])[:2]:
+                add(x.get("name"))
+        add("ポストシーズン", "進出争い", "マジックナンバー", "ワイルドカード")
+        return out
+
     if kind == "longform" or (kind == "morning"
                               and morning_mode in ("voices", "local")):
         # 扱っているのは、その1試合のコメント欄。
@@ -1075,6 +1086,14 @@ OTHER_CHANNEL_LINES = _other_channels()
 LANDSCAPE_KINDS = {"weekly", "longform"}
 
 
+def _postseason_data(path: str = "data/postseason.json") -> dict:
+    """進出争い。無ければ空。題と説明文の両方から読む。"""
+    try:
+        return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
@@ -1121,6 +1140,20 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         title = (f"【MLB】{who}"
                  + (f"｜{big}{asof}" if big else "")
                  + "｜通算成績・受賞歴まとめ #Shorts")
+    elif kind == "morning" and morning_mode == "postseason":
+        # 進出争いの回。**題も「昨日と何が違うか」を先に出す。**
+        # 順位表は毎日出しても、変わらない日は開く理由が無い。
+        # 変わった日はそれが検索される言葉になる（球団名＋進出）。
+        ps = _postseason_data()
+        ch = (ps.get("changes") or [])
+        if ch:
+            lead = ch[0]["text"].replace(" が", "が")
+            title = (f"【MLB】{lead}｜{date_label} "
+                     f"ポストシーズン進出争い #Shorts")
+        else:
+            head = ps.get("headline") or "進出争い"
+            title = (f"【MLB】{head}｜{date_label} "
+                     f"ポストシーズン進出争い #Shorts")
     elif kind == "morning" and morning_mode == "voices":
         # コメント欄の回。何の試合かがタイトルで分かるようにする。
         # 「現地の声」だけでは、どの試合の話なのか見当が付かない。
@@ -1310,6 +1343,26 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         lines += ["",
                   "数字はMLB公式データをそのまま集計したものです。",
                   "現地の言葉は翻訳したもので、コレスポの見解ではありません。"]
+    elif kind == "morning" and morning_mode == "postseason":
+        ps = _postseason_data()
+        ch = ps.get("changes") or []
+        lines = ["MLBのポストシーズン進出争いを、毎日その日の数字で。", ""]
+        if ch:
+            lines.append("きょう動いたところ:")
+            lines += ["・" + c["text"] for c in ch[:5]]
+        else:
+            lines.append("きょうは順位に動きがありませんでした。")
+        lines += ["",
+                  "・マジックナンバー … あと何勝（または相手の何敗）で"
+                  "地区優勝が決まるか",
+                  "・ワイルドカード … 地区優勝を逃しても進出できる3枠",
+                  "・今日終わったら … いまの順位のままなら、"
+                  "どの組み合わせになるか",
+                  "",
+                  "数字はMLB公式データ（statsapi.mlb.com）から"
+                  "そのまま引いています。",
+                  "同率の球団がいる日は、直接対決の結果で順番が"
+                  "入れ替わることがあります。", ""]
     elif kind == "morning" and morning_mode == "voices":
         top = buzz_top(buzz_path) or {}
         lines = [f"{date_label}のメジャーリーグで、"
@@ -1391,7 +1444,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  "なぜ注目なのかの理由つきで紹介します。", ""]
     # 試合の一覧は日次のためのもの。長編と週次には付けない。
     # 長編の説明文に「明日の注目試合」が並んでいて、中身と合わなかった。
-    for i, g in enumerate([] if kind == "longform" else games, 1):
+    # 試合の一覧は「明日の注目試合」のためのもの。
+    # 長編にも進出争いにも関係が無い（中身と食い違う）。
+    _no_games = (kind == "longform"
+                 or (kind == "morning" and morning_mode == "postseason"))
+    for i, g in enumerate([] if _no_games else games, 1):
         lines.append(
             f"{i}. {g.get('start_time_jst')} "
             f"{g.get('home_team_name')} vs {g.get('away_team_name')}"
@@ -1497,9 +1554,10 @@ def main():
                              "その日いちばん見られたハイライト")
     parser.add_argument("--morning-mode", default="players",
                         choices=["players", "player", "local", "press",
-                                 "voices", "all"],
-                        help="夕方以降の3本を区別する。"
-                             "players=成績 / local=注目度 / press=現地の声")
+                                 "voices", "postseason", "all"],
+                        help="夕方以降の枠を区別する。"
+                             "players=成績 / postseason=進出争い / "
+                             "voices=コメント欄 / press=現地の声")
     parser.add_argument("--asset-topic", default=None,
                         help="--kind asset のときのトピック名")
     parser.add_argument("--narration", default="public/narration.json",

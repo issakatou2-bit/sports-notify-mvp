@@ -180,6 +180,64 @@ def race(teams: list) -> dict:
     return out
 
 
+def diff(now: dict, before: dict) -> list:
+    """昨日との違い。**この枠の主題はここ。**
+
+    順位表は毎日出しても、変わらない日は見る理由が無い。
+    逆に1行入れ替わった日は、それがその日いちばんの出来事になる。
+    「昨日と同じ」と言えることにも意味があるので、
+    **変化が無いことも結果として返す**（空の配列で返る）。
+
+    見るもの:
+      ・進出圏に入った / 出た
+      ・マジックが減った
+      ・進出が決まった / 敗退が決まった
+    """
+    out = []
+    if not before:
+        return out
+
+    def seats(d):
+        s = {}
+        for lid, r in (d.get("leagues") or {}).items():
+            for t in (r.get("leaders") or [])[:3] + (r.get("wildcards") or []):
+                s[str(t.get("id"))] = t
+        return s
+
+    a, b = seats(now), seats(before)
+    for tid, t in a.items():
+        if tid not in b:
+            out.append({"kind": "in", "name": t.get("name"),
+                        "text": f"{t.get('name')} が進出圏内に入った"})
+    for tid, t in b.items():
+        if tid not in a:
+            out.append({"kind": "out", "name": t.get("name"),
+                        "text": f"{t.get('name')} が進出圏内から出た"})
+
+    # マジックの減り方。減っていない日は出さない。
+    for tid, t in a.items():
+        m, pm = t.get("magic"), (b.get(tid) or {}).get("magic")
+        if isinstance(m, int) and isinstance(pm, int) and m < pm:
+            out.append({"kind": "magic", "name": t.get("name"),
+                        "text": f"{t.get('name')} のマジックが"
+                                f"{pm}から{m}へ"})
+
+    def flags(d, key):
+        return {str(t.get("id")): t
+                for lid, r in (d.get("leagues") or {}).items()
+                for t in (r.get(key) or [])}
+
+    for tid, t in flags(now, "clinched").items():
+        if tid not in flags(before, "clinched"):
+            out.append({"kind": "clinch", "name": t.get("name"),
+                        "text": f"{t.get('name')} が進出決定"})
+    for tid, t in flags(now, "eliminated").items():
+        if tid not in flags(before, "eliminated"):
+            out.append({"kind": "elim", "name": t.get("name"),
+                        "text": f"{t.get('name')} が敗退決定"})
+    return out
+
+
 def headline(data: dict) -> str:
     """その日いちばん短い一言。動画の1枚目に出す。
 
@@ -224,18 +282,49 @@ def main() -> int:
         return 0
 
     data = race(teams)
+    p = pathlib.Path(args.out)
+
+    # 前日ぶんを取っておく。**差分がこの枠の主題。**
+    # 同じ日に2回走らせても上書きしないよう、日付で見る。
+    prev_path = p.with_name(p.stem + "_prev.json")
+    before = {}
+    today = datetime.now(JST).date().isoformat()
+    if p.exists():
+        try:
+            old_data = json.loads(p.read_text(encoding="utf-8"))
+            if str(old_data.get("date") or "") != today:
+                prev_path.write_text(json.dumps(old_data, ensure_ascii=False,
+                                                indent=2), encoding="utf-8")
+            before = old_data if str(old_data.get("date")) != today else {}
+        except (OSError, json.JSONDecodeError):
+            pass
+    if not before and prev_path.exists():
+        try:
+            before = json.loads(prev_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            before = {}
+
+    changes = diff({"leagues": {str(k): v for k, v in data.items()}}, before)
     out = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
+        "date": today,
         "season": season,
         "headline": headline(data),
+        "changes": changes,
+        "prev_date": str(before.get("date") or ""),
         "leagues": {str(k): v for k, v in data.items()},
     }
-    p = pathlib.Path(args.out)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(out, ensure_ascii=False, indent=2),
                  encoding="utf-8")
 
     print(f"[info] {out['headline']}")
+    if changes:
+        print("[info] 昨日からの変化 %d件" % len(changes))
+        for c in changes[:6]:
+            print("    " + c["text"])
+    elif before:
+        print("[info] 昨日から変化はありません")
     for lid, r in data.items():
         print(f"--- {r['league_jp']} ---")
         for t in r["leaders"]:

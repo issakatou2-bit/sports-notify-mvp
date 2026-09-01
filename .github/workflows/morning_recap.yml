@@ -36,9 +36,9 @@ on:
   workflow_dispatch:
     inputs:
       modes:
-        description: '作る本数を絞る (players player voices press のうち必要なものだけ)'
+        description: '作る本数を絞る (players postseason voices press のうち必要なものだけ)'
         required: false
-        default: 'players player voices press'
+        default: 'players postseason voices press'
       player:
         description: '「今日の1人」をこの選手で作る (例: Pete Crow-Armstrong)'
         required: false
@@ -220,7 +220,7 @@ jobs:
           # 同じ試合をコメント欄の回が扱っていたので、そちらへ寄せた。
           # 1本だけ落ちた日に、成功した分まで上げ直すと重複するため。
           MODES="${{ inputs.modes }}"
-          for mode in ${MODES:-players player voices press}; do
+          for mode in ${MODES:-players postseason voices press}; do
             echo "::group::$mode"
             if [ "$mode" = "players" ]; then
               VIDEO="build/morning/collespo_morning.mp4"
@@ -312,7 +312,7 @@ jobs:
               # 20:00にした理由は、空いていることと、この枠が
               # 選手の経歴で古くならないこと。「今夜の試合」と違って
               # 時刻に縛られない中身なので、実験に出しやすい。
-              player)  AT="20:00" ;;
+              postseason) AT="20:00" ;;
               voices)  AT="18:00" ;;
               press)   AT="18:00" ;;
               *)       AT="" ;;
