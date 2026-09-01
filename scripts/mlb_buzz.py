@@ -190,7 +190,7 @@ def fetch_view_counts(api_key: str, items: list) -> list:
     try:
         import mentioned
         for i, v in enumerate(out):
-            if mentioned.find(v.get("title") or "", limit=1):
+            if mentioned.japanese_in(v.get("title") or ""):
                 if i:
                     print(f"[info] 日本人選手が題にあるものを先頭へ: "
                           f"{(v.get('title') or '')[:52]}")

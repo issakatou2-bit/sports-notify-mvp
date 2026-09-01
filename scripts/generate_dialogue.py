@@ -284,9 +284,11 @@ def material(buzz_path: str, voices_path: str) -> dict:
         for c in voices:
             src = (c.get("title") or "") + " " + " ".join(
                 (r.get("text") or "") for r in (c.get("reply") or []))
-            for hit in mentioned.find(src, limit=3):
-                nm = hit.get("name")
-                if nm and nm not in jp:
+            # **日本人選手だけ。** mentioned.find は MLB全体の名簿を
+            # 見るので Tarik Skubal も返す。題に出すのは
+            # 「日本人選手の名前」なので、そこを絞る。
+            for nm in mentioned.japanese_in(src):
+                if nm not in jp:
                     jp.append(nm)
     except Exception as e:                       # noqa: BLE001
         print(f"[info] 日本人選手の拾い出しを飛ばします({e})")

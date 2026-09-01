@@ -31,6 +31,15 @@ import functools
 import json
 import pathlib
 import re
+import sys
+
+# 直下の notability_engine を読むので、経路を通す。
+# 通していないと、scripts/ だけを sys.path に持つ呼び出し方
+# （python scripts/local_voices.py など）で落ちる。
+# 実際それでコメント欄の動画が3日止まったことがある。
+_HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(_HERE))
+sys.path.insert(0, str(_HERE.parent))
 
 import textkey
 
@@ -168,4 +177,34 @@ def find(text: str, limit: int = 2) -> list:
                 out.append(hit)
                 if len(out) >= limit:
                     break
+    return out
+
+
+def japanese_in(text: str) -> list:
+    """その文に出てくる**日本人選手**の英語名。
+
+    mentioned.find は MLB全体の名簿(best_of_day / roster_stats)を
+    見るので、Tarik Skubal も返す。題やサムネイルに
+    「日本人選手の名前」を出したいときは、これを使う。
+    実際 mlb_buzz の並べ替えで Skubal を日本人扱いしかけた。
+
+    姓だけでも当てる。動画の題は "Shohei Ohtani" とフルネームだが、
+    コメントは "Ohtani" とだけ書かれることが多い。
+    """
+    if not text:
+        return []
+    try:
+        from notability_engine import JP_PLAYERS_MLB
+    except Exception:                            # noqa: BLE001
+        return []
+    low = str(text).lower()
+    out = []
+    for p in JP_PLAYERS_MLB:
+        en = p.get("name_en") or ""
+        if not en:
+            continue
+        last = en.split()[-1]
+        if en.lower() in low or (len(last) >= 4 and last.lower() in low):
+            if en not in out:
+                out.append(en)
     return out
