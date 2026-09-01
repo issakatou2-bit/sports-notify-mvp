@@ -172,6 +172,32 @@ def fetch_view_counts(api_key: str, items: list) -> list:
             continue
         out.append({**i, "views": v, "matchup": extract_matchup(i["title"])})
     out.sort(key=lambda x: -x["views"])
+
+    # **日本人選手が題に入っているものを、先頭へ持ってくる。**
+    #
+    # 28日146本の実測で、題に日本人選手の名前がある動画は
+    # 再生2.8倍（468回 vs 168回）、登録者は12人 vs 0人。
+    # チャンネルの登録者は全部この形から来ている。
+    # 「大谷 海外の反応」は数百万回再生が並ぶ市場でもある。
+    #
+    # **並べ替えはここ1か所でやる。**
+    # 下流（local_voices がコメントを取る先、コメント欄の短編、
+    # 長編の台本）は全部 videos[0] を見ているので、
+    # 台本の側だけで選び直すと**違う動画のコメントを読むことになる**。
+    # 実際そうしかけた。
+    #
+    # 無い日はこれまでどおり再生数の順。作るのではなく、あれば選ぶ。
+    try:
+        import mentioned
+        for i, v in enumerate(out):
+            if mentioned.find(v.get("title") or "", limit=1):
+                if i:
+                    print(f"[info] 日本人選手が題にあるものを先頭へ: "
+                          f"{(v.get('title') or '')[:52]}")
+                    out.insert(0, out.pop(i))
+                break
+    except Exception as e:                       # noqa: BLE001
+        print(f"[info] 並べ替えを飛ばします({e})")
     return out
 
 

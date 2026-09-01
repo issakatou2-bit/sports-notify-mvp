@@ -266,6 +266,10 @@ def material(buzz_path: str, voices_path: str) -> dict:
     vids = b.get("videos") or []
     if not vids:
         return {}
+
+    # どの動画を扱うかは mlb_buzz が決めている。
+    # ここで選び直すと、local_voices が集めたコメントと
+    # 別の動画になる。**並べ替えは1か所。**
     top = vids[0]
     voices = (v.get("voices") or [])[:MAX_COMMENTS]
     # コメントに日本人選手が出ていたら、その名前を残す。
