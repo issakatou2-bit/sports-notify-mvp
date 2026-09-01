@@ -824,6 +824,110 @@ GAME_ONLY_RULES = [rule_marquee_team, rule_rivalry, rule_postseason]
 # jp_team_mapもstandingsも不要なルール
 
 
+# ---------------------------------------------------------------------------
+# ポストシーズン争い
+# ---------------------------------------------------------------------------
+#
+# なぜ足すのか（実データで見て分かったこと）:
+#   9/1の1試合目が「ロッキーズ 対 ドジャース」だった。ロッキーズは
+#   ナ・リーグ最下位で、菅野智之が所属しているという理由だけで拾われた。
+#   その日は登板予定でもない。
+#
+#   一方「アストロズ 対 ホワイトソックス」は**両方が地区首位**で、
+#   どちらも日本人選手がいる。明らかにこちらが「明日見る試合」だが、
+#   順位の重みが2点しか無いので、在籍の合計に埋もれていた。
+#
+#   9月は、勝ち負けの意味が試合によって全く違う。**進出争いの重みを
+#   入れないと、9月の注目試合は選べない。**
+#
+# 重み:
+#   両方が進出圏内で、しかも同じリーグ … 4  （直接ぶつかる）
+#   片方が進出圏内で、もう片方が争っている … 3
+#   片方だけが進出圏内 … 2
+#   マジックが1桁の球団が出る … +2（決まる日が近い）
+_PS_CACHE: dict = {}
+
+
+def _postseason(path: str = "data/postseason.json") -> dict:
+    """その日の進出争い。無ければ空。
+
+    postseason.py が作ったものを読むだけ。ここで順位表を叩き直さない
+    ように、出どころは1つにしておく。
+    """
+    if path in _PS_CACHE:
+        return _PS_CACHE[path]
+    got = {}
+    try:
+        import json as _json
+        import pathlib as _pl
+        d = _json.loads(_pl.Path(path).read_text(encoding="utf-8"))
+        for lid, r in (d.get("leagues") or {}).items():
+            inside = {str(t["id"]): ("首位" if t in (r.get("leaders") or [])
+                                else "ワイルドカード")
+                      for t in (r.get("leaders") or [])[:3]
+                      + (r.get("wildcards") or [])}
+            near = {str(t["id"]): t
+                    for t in (r.get("chasing") or [])}
+            for t in (r.get("leaders") or []) + (r.get("wildcards") or []):
+                got[str(t["id"])] = {"in": True, "where": inside.get(t["id"], ""),
+                                "magic": t.get("magic"), "league": lid,
+                                "name": t.get("name")}
+            for tid, t in near.items():
+                got[str(tid)] = {"in": False, "where": "あと少し",
+                            "gb": t.get("wc_gb"), "league": lid,
+                            "name": t.get("name")}
+    except Exception:                            # noqa: BLE001
+        got = {}
+    _PS_CACHE[path] = got
+    return got
+
+
+def rule_postseason_race(game: Game) -> list:
+    """進出争いの重み。9月と10月だけ効く（それ以外は材料が無い）。"""
+    ps = _postseason()
+    if not ps:
+        return []
+    # IDの型が食い違う。試合側は文字列("111")、順位表側は数(139)。
+    # 突き合わせは必ず文字列で行う。ここを揃えないと、
+    # **全試合で +0 になる**（実際そうなっていた）。
+    h = ps.get(str(game.home_team_id))
+    a = ps.get(str(game.away_team_id))
+    if not h and not a:
+        return []
+    out = []
+    both_in = bool(h and h["in"]) and bool(a and a["in"])
+    same_league = h and a and h.get("league") == a.get("league")
+    if both_in and same_league:
+        out.append(Reason(
+            tag="ps_race",
+            text=f"{game.home_team_name} と {game.away_team_name} は"
+                 f"どちらもポストシーズン圏内",
+            weight=4))
+    elif (h and h["in"]) and (a and not a["in"]) or          (a and a["in"]) and (h and not h["in"]):
+        inside = h if (h and h["in"]) else a
+        out.append(Reason(
+            tag="ps_race",
+            text=f"{inside['name']} はポストシーズン圏内、"
+                 f"相手が追いかけている",
+            weight=3))
+    elif h and h["in"] or a and a["in"]:
+        inside = h if (h and h["in"]) else a
+        out.append(Reason(
+            tag="ps_race",
+            text=f"{inside['name']} はポストシーズン圏内",
+            weight=2))
+    # 決まる日が近い球団は、その1勝の意味が違う。
+    for side in (h, a):
+        m = (side or {}).get("magic")
+        if isinstance(m, int) and m <= 9:
+            out.append(Reason(
+                tag="ps_magic",
+                text=f"{side['name']} は地区優勝マジック{m}",
+                weight=2))
+            break
+    return out
+
+
 def generate_reasons(game: Game, standings: dict, jp_team_map: dict) -> list[Reason]:
     reasons: list[Reason] = []
     # MLBのルールはチームIDでMLBの地区表・名簿を引くので、サッカーでは
@@ -836,6 +940,8 @@ def generate_reasons(game: Game, standings: dict, jp_team_map: dict) -> list[Rea
         return reasons
 
     reasons.extend(rule_japanese_player(game, jp_team_map))
+    # 9月・10月は、勝ち負けの意味が試合によって全く違う。
+    reasons.extend(rule_postseason_race(game))
     for rule in GAME_ONLY_RULES:
         reasons.extend(rule(game))
     for rule in STANDINGS_RULES:

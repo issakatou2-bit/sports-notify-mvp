@@ -49,7 +49,11 @@ jobs:
         # ここを all にすると、日次1本の3枠をMLBと取り合うことになる。
         # MLBは毎日15試合・日本人10人以上あるので、平日はサッカーが
         # 1枠も取れず、週末だけMLBが押し出される形になっていた。
-        run: python notability_engine.py --source mlb --out notable_games.json
+        run: |
+          # 進出争いを先に取る。**採点がこれを読む。**
+          # 無ければ加点0で通るので、落ちても止めない。
+          python scripts/postseason.py --out data/postseason.json || true
+          python notability_engine.py --source mlb --out notable_games.json
 
       # 選手の所属変化を検知してニュース化する。
       # 差分は「候補」に過ぎないため、スクリプト内でAPIに問い合わせて
@@ -114,7 +118,8 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "archive: ${{ github.run_id }}" \
-            archive/ podcast/ data/roster_snapshot.json data/news_log.json
+            archive/ podcast/ data/roster_snapshot.json data/news_log.json \
+            data/postseason.json
 
       - name: Assemble Pages site
         # サイトが1日古くなるより、動画が出ない方が痛い。
