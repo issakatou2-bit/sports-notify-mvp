@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-31T06:02:09.765868+00:00",
+  "updated_at": "2026-09-01T06:01:52.287350+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,73 +13,73 @@
   "titles_count": 51,
   "teams": [
     {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 5,
+      "tone": "好調",
+      "gist": "キューバスが8月に62本塁打。Bregmanが3本。"
+    },
+    {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
-      "mentions": 5,
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "Trevor Storyがサヨナラ。放送局が謝罪。"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "若手捕手Salasを昇格。Kingが6回無失点。"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ホワイトソックスがPhamをトレード獲得。"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "フィリーズがStottでD-backs下す。"
+    },
+    {
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
+      "mentions": 2,
       "tone": "不振",
-      "gist": "ヤンキースに16失点で敗北、レッドソックス苦戦"
+      "gist": "ロッキーズが順位を落とす。"
     },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "ヤンキースの強さが際立つ、Austin Wells関連で話題"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "Max Scherzerが歴代9位の奪三振達成"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
       "mentions": 2,
       "tone": "好調",
-      "gist": "Teoscar活躍、Glasnow好投でシリーズ制覇"
+      "gist": "ヤンキースがトップ5に返り咲く。"
     },
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
+      "team_id": "108",
+      "name": "エンゼルス",
+      "name_en": "Los Angeles Angels",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "Matt Olsonサヨナラで7連勝達成"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "PCA2試合で5本塁打、好調続く"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "Ramírezを中心に打線が全力稼働"
-    },
-    {
-      "team_id": "138",
-      "name": "カージナルス",
-      "name_en": "St. Louis Cardinals",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "複数球団の故障者情報"
+      "tone": "不振",
+      "gist": "エンゼルスに批判の声。守備ミスで失点。"
     }
   ],
   "players": [
     {
-      "name": "今永昇太",
+      "name": "鈴木誠也",
       "mentions": 1
     }
   ]

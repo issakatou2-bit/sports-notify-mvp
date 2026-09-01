@@ -146,6 +146,44 @@
           "out": 444
         }
       }
+    },
+    "2026-09-01": {
+      "calls": 14,
+      "in": 11618,
+      "out": 5108,
+      "usd": 0.03717,
+      "by": {
+        "topic": {
+          "calls": 2,
+          "in": 269,
+          "out": 64
+        },
+        "buzz": {
+          "calls": 1,
+          "in": 996,
+          "out": 203
+        },
+        "voices": {
+          "calls": 1,
+          "in": 617,
+          "out": 497
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 1278,
+          "out": 673
+        },
+        "sanity": {
+          "calls": 4,
+          "in": 3638,
+          "out": 1335
+        },
+        "localize": {
+          "calls": 4,
+          "in": 4820,
+          "out": 2336
+        }
+      }
     }
   }
 }
