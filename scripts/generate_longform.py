@@ -67,10 +67,16 @@ from generate_weekly import (  # noqa: E402
 # 音を切って見ている人には、これしか手がかりが無い。
 # flip は左右を反転するか。素材はどちらも同じ向きに描かれているので、
 # 片方をそのまま置くと外を向く。内側を向かせる。
+# 色はキャラクターのイメージ色（髪の色）にする。
+# 台詞の帯と名前の札に使うので、**聞かなくても・読まなくても**
+# どちらが喋っているかが色で分かる。
+ZUNDA = (150, 222, 130)      # 明るい優しい緑
+METAN = (242, 152, 196)      # ピンク
+
 SPEAKERS = {
-    3: {"name": "ずんだもん", "color": JP, "side": "left",
+    3: {"name": "ずんだもん", "color": ZUNDA, "side": "left",
         "flip": True},
-    2: {"name": "四国めたん", "color": ACCENT, "side": "right",
+    2: {"name": "四国めたん", "color": METAN, "side": "right",
         "flip": False},
 }
 DEFAULT_SPEAKER = 3
@@ -79,21 +85,33 @@ DEFAULT_SPEAKER = 3
 # 初版は箱の高さを中身から足し算していたので、行が増えると
 # 下へ伸びて画面の外に出た。置ける場所を先に決めて、
 # 中身をそこへ収めるほうにする。
-COL_X0, COL_X1 = 420, 1500          # 中央の列(立ち絵の内側)
+# 中央の列。**前より横に広げた。**
+#
+# 台詞が4〜5行になると、目が何度も左右に往復して読みにくい。
+# 横に伸ばして縦を詰めると、2〜3行で収まる。
+COL_X0, COL_X1 = 400, 1520
 
-# 札の下地。下地より少し明るくして、縁を1本入れる。
-# 「ここに何かが出る」と、絵を見ただけで分かるようにするため。
-# 台詞の箱と同じ色だと、2つの箱が同じ役目に見える。
-PANEL_BG = (22, 27, 38)
-PANEL_EDGE = (44, 52, 70)
-PANEL_Y0, PANEL_Y1 = 104, 556       # 情報の札
-TALK_Y0, TALK_Y1 = 584, 1004        # 台詞
-PORTRAIT_H = 690                    # 立ち絵の高さ(画面の下端まで)
-PORTRAIT_X = 196                    # 左右の中心
+# 情報の札は**黒板**にする。
+#
+# ここは「いま話していることの事実」が出る場所で、台詞の箱とは
+# 役目が違う。同じ暗い灰色だと2つの箱が同じものに見えていた。
+# 深い緑に木の枠を回すと、板に書いてあるものとして読める。
+PANEL_BG = (26, 42, 35)
+PANEL_EDGE = (104, 82, 56)
+PANEL_Y0, PANEL_Y1 = 92, 604        # 情報の札（画面の上半分）
+TALK_Y0, TALK_Y1 = 668, 1004        # 台詞（縦を詰めて横に伸ばした）
 
-TALK_PAD = 30
-TALK_SIZES = (50, 40, 32)           # 上から順に試す
-TALK_LEAD = 16                      # 行間
+# 立ち絵。**全身は要らない。**
+# 両端に寄せて、足元は画面の外へ出す。そのぶん顔が大きくなる。
+PORTRAIT_H = 900
+PORTRAIT_X = 130                    # 左右の中心（前は196）
+# 高さ900・幅453のとき、左は -96〜356、右は 1564〜2016。
+# 札は 400〜1520 なので重ならない。ここを緩めると被る。
+PORTRAIT_BOTTOM = 1080 + 130        # 足元を画面の外へ
+
+TALK_PAD = 28
+TALK_SIZES = (46, 40, 34)           # 少し小さく。横に広いので読める
+TALK_LEAD = 14                      # 行間
 
 # 名前は台詞の箱の上端に付ける。
 #
@@ -254,6 +272,30 @@ def _parts(who: str, portrait_dir: str):
                     except Exception:            # noqa: BLE001
                         got = None
                     break
+    # 透明の余白を落とす。**全部品を同じ枠で切る。**
+    #
+    # PSDの画布は1082×1552で、絵はその中に収まっている。
+    # そのまま高さを揃えると、余白ぶんだけ横に広がって、
+    # 「どこまでが絵か」が座標から分からなくなる。実際、
+    # 端に寄せたつもりが中央の札に43px食い込んでいた。
+    #
+    # 部品ごとに切ると位置がずれるので、**全部の和を取って
+    # 1つの枠で切る**。腕を上げた絵も含めた、いちばん外側。
+    if got and "1枚" not in got:
+        ims = [got["体"]] + [im for g in ("眉", "目", "口", "右腕", "左腕")
+                             for im in (got.get(g) or {}).values()]
+        box = None
+        for im in ims:
+            b = im.getbbox()
+            if not b:
+                continue
+            box = b if box is None else (min(box[0], b[0]), min(box[1], b[1]),
+                                         max(box[2], b[2]), max(box[3], b[3]))
+        if box:
+            got["体"] = got["体"].crop(box)
+            for g in ("眉", "目", "口", "右腕", "左腕"):
+                if g in got:
+                    got[g] = {k: v.crop(box) for k, v in got[g].items()}
     _PARTS_CACHE[ck] = got
     return got
 
@@ -696,9 +738,13 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None,
         size, pages = layout_talk(d, seg.get("text", ""))
         lines = pages[0]
 
-    h = min(TALK_Y1 - TALK_Y0,
-            len(lines) * (size + TALK_LEAD) + TALK_PAD * 2 - TALK_LEAD)
-    y0 = TALK_Y1 - h
+    # 箱の高さは**毎回同じ**にする。
+    #
+    # 中身に合わせて縮めていたので、1行の台詞のときだけ箱が小さくなって
+    # 札との間に穴が空いた。札と同じで、ここも「台詞が出る場所」。
+    # 場所が動くと、そう見えない。
+    # 代わりに、行が少ない日は上下の真ん中へ寄せる。
+    y0 = TALK_Y0
     d.rounded_rectangle([COL_X0, y0, COL_X1, TALK_Y1], 24, fill=SURF)
     # 喋っている側の縁に色の帯。吹き出しの尻尾の代わり。
     left = who["side"] == "left"
@@ -710,17 +756,24 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None,
                             fill=who["color"])
 
     # 名前の札。箱の上端に、喋っている側から出す。
+    #
+    # 文字が札の中で上に寄っていた。anchor="lm"（左・上下中央）で
+    # 置くと、書体が変わっても真ん中のまま。座標の足し算で合わせると
+    # フォントを替えたときにずれる。
     nm, fn = who["name"], font(32)
-    nw = d.textlength(nm, font=fn) + 44
+    nw = d.textlength(nm, font=fn) + 48
     nx = COL_X0 + 24 if left else COL_X1 - 24 - nw
-    d.rounded_rectangle([nx, y0 - NAME_H + 12, nx + nw, y0 + 12], 12,
-                        fill=who["color"])
-    d.text((nx + 22, y0 - NAME_H + 20), nm, font=fn, fill=(12, 14, 20))
+    ny0, ny1 = y0 - NAME_H + 8, y0 + 12
+    d.rounded_rectangle([nx, ny0, nx + nw, ny1], 13, fill=who["color"])
+    d.text((nx + 24, (ny0 + ny1) / 2), nm, font=fn, fill=(16, 22, 18),
+           anchor="lm")
 
     # 1行ずつ出す。ANIM_END までに出し切る。
     shown = len(lines) if p >= ANIM_END else max(
         1, int(len(lines) * (p / ANIM_END)))
-    yy = y0 + TALK_PAD
+    # 上下の真ん中から書き出す。
+    block = len(lines) * (size + TALK_LEAD) - TALK_LEAD
+    yy = y0 + max(TALK_PAD, ((TALK_Y1 - TALK_Y0) - block) // 2)
     for ln in lines[:shown]:
         d.text((COL_X0 + TALK_PAD, yy), ln, font=font(size), fill=TEXT)
         yy += size + TALK_LEAD
