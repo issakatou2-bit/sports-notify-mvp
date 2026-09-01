@@ -1,9 +1,10 @@
 {
-  "updated_at": "2026-09-01T12:30:27.466502+00:00",
+  "updated_at": "2026-09-01T13:29:43.152512+00:00",
   "season": "2026",
   "headline": "ドジャース マジック16",
   "leagues": {
     "103": {
+      "ties": false,
       "league_jp": "アメリカン・リーグ",
       "league_short": "ア・リーグ",
       "leaders": [
@@ -356,6 +357,7 @@
       "eliminated": []
     },
     "104": {
+      "ties": true,
       "league_jp": "ナショナル・リーグ",
       "league_short": "ナ・リーグ",
       "leaders": [

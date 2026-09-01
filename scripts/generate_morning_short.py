@@ -1472,8 +1472,14 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
             d.text((xa + 18, y - 44), "1回戦なし", font=font(28),
                    fill=ACCENT)
 
-    d.text((70, H - 250), "上位2球団はワイルドカードシリーズが免除",
-           font=font(32), fill=DIM)
+    note = "上位2球団はワイルドカードシリーズが免除"
+    d.text((70, H - 250), note, font=font(32), fill=DIM)
+    # 同率がいる日は断る。勝敗が並んだ2球団のどちらが上かは
+    # 直接対決で決まり、こちらはそれを計算していない。
+    # 「今日終わったら」と言い切る画面なので、ここは正直に。
+    if lg.get("ties"):
+        d.text((70, H - 196), "※ 同率の球団があり、順番は入れ替わりえます",
+               font=font(30), fill=ACCENT)
     return im
 
 

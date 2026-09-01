@@ -134,10 +134,17 @@ def race(teams: list) -> dict:
     for lid in (103, 104):
         ls = [t for t in teams if t["league"] == lid]
         # 地区ごとの首位
+        # 地区の首位は**公式の順位**を使う。
+        #
+        # 勝敗だけで決めると、同率のときにこちらが勝手に選ぶことになる。
+        # MLBは直接対決などで先に順位を付けているので、それに従う。
+        # divisionRank が無い日だけ、勝敗で並べる。
         leaders, rest = [], []
         for div in sorted({t["division"] for t in ls}):
             ds = sorted([t for t in ls if t["division"] == div],
-                        key=lambda t: (-(t["w"] or 0), t["l"] or 0))
+                        key=lambda t: (t["div_rank"] if isinstance(
+                            t["div_rank"], int) else 99,
+                            -(t["w"] or 0), t["l"] or 0))
             if ds:
                 leaders.append(ds[0])
                 rest += ds[1:]
@@ -145,7 +152,14 @@ def race(teams: list) -> dict:
         rest.sort(key=lambda t: (-(t["w"] or 0), t["l"] or 0))
         wc = rest[:3]
         chasing = rest[3:6]          # 追いかけている3球団まで
+        # 同率がいるか。いれば画面に断りを出す。
+        # 勝敗が並んだ2球団のどちらが上かは、直接対決で決まる。
+        # こちらはそれを計算していないので、「入れ替わりうる」と書く。
+        seeds = leaders[:3] + wc
+        ties = any(a["w"] == b["w"] and a["l"] == b["l"]
+                   for a, b in zip(seeds, seeds[1:]))
         out[lid] = {
+            "ties": ties,
             "league_jp": LEAGUE_JP[lid],
             "league_short": LEAGUE_SHORT[lid],
             "leaders": leaders,
