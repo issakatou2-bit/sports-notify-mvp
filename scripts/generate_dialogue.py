@@ -306,6 +306,136 @@ def material(buzz_path: str, voices_path: str) -> dict:
             "source": v.get("source", "")}
 
 
+def situation(m: dict) -> dict:
+    """その日の試合と、コメント欄の空気。**コードで決める。**
+
+    なぜここでやるのか:
+      台本が「コメントの長さ」の話になった日があった。
+      いちばん短いコメント、いちばん長い返信——それはそれで
+      面白いが、**その日の試合が何だったかと関係が無い。**
+      材料をただ順に読むと、いつでも成り立つ形に落ちる。
+
+      10対1の大敗で、コメント欄が荒れ気味。これはこの日にしか
+      無い状況で、話し方もそこから決まる。接戦の日、誰かが
+      大記録を作った日、打ち合いの日では、コメント欄の空気も、
+      2人が話すことも変わる。
+
+      **判定はコードでやる。**モデルに「今日はどういう日か」を
+      決めさせると、材料に無いことを根拠にし始める。
+      点差も、失策も、コメントの調子も、もう手元にある数字。
+    """
+    res = m.get("top", {}).get("result") or {}
+    a, h = res.get("away_score"), res.get("home_score")
+    out = {"shape": "", "flow": "", "mood": "", "notes": []}
+    if isinstance(a, int) and isinstance(h, int):
+        margin, total = abs(a - h), a + h
+        win = res.get("home_jp") if h > a else res.get("away_jp")
+        lose = res.get("away_jp") if h > a else res.get("home_jp")
+        out["win"], out["lose"] = win, lose
+        out["margin"], out["total"] = margin, total
+        if margin >= 6:
+            out["shape"] = f"{margin}点差の大差。{lose}の大敗"
+        elif margin <= 1:
+            out["shape"] = f"{margin}点差の接戦"
+        else:
+            out["shape"] = f"{margin}点差"
+        if total >= 12:
+            out["shape"] += "。両軍で%d点入った打ち合い" % total
+        elif total <= 3:
+            out["shape"] += "。両軍で%d点しか入らない投手戦" % total
+
+        # 点の入り方。序盤で決まったのか、終盤に動いたのか。
+        inn = [i for i in (res.get("innings") or []) if i.get("num")]
+        wk = "home" if h > a else "away"
+        lk = "away" if h > a else "home"
+        run_w = run_l = 0
+        decided = None
+        for i in inn:
+            run_w += i.get(wk) or 0
+            run_l += i.get(lk) or 0
+            if decided is None and run_w - run_l >= 3:
+                decided = i["num"]
+        if decided:
+            when = ("序盤" if decided <= 3 else
+                    "中盤" if decided <= 6 else "終盤")
+            out["flow"] = f"{when}（{decided}回）には{win}が3点差をつけていた"
+        # 追いかけた側が一度でも前に出ていたか
+        run_w = run_l = 0
+        for i in inn:
+            run_w += i.get(wk) or 0
+            run_l += i.get(lk) or 0
+            if run_l > run_w:
+                out["flow"] += f"。{lose}が先に前に出た回もある"
+                break
+
+    # 守備と安打。大敗の日はここに理由が出ていることが多い。
+    for side, key in (("away_jp", "away"), ("home_jp", "home")):
+        e = res.get(key + "_errors")
+        if isinstance(e, int) and e >= 2:
+            out["notes"].append(f"{res.get(side)}は失策{e}")
+
+    # コメント欄の調子。local_voices が1件ずつ付けている。
+    tones = {}
+    for c in m.get("voices") or []:
+        tones[c.get("tone") or "中立"] = tones.get(c.get("tone") or "中立",
+                                                   0) + 1
+    n = sum(tones.values())
+    if n:
+        neg, pos = tones.get("批判", 0), tones.get("称賛", 0)
+        if neg >= max(2, n * 0.6):
+            out["mood"] = f"{n}件中{neg}件が批判寄り。荒れ気味"
+        elif pos >= max(2, n * 0.6):
+            out["mood"] = f"{n}件中{pos}件が称賛寄り"
+        elif neg and pos:
+            out["mood"] = f"称賛{pos}件と批判{neg}件で割れている"
+        else:
+            out["mood"] = f"{n}件、目立った偏りは無い"
+    out["tones"] = tones
+    return out
+
+
+def angle(sit: dict) -> list:
+    """その日の切り口。situation から、話の軸を1つに決める。
+
+    「どう料理するか」をここで決めておかないと、材料を順に
+    読むだけの台本になる。**軸は1つ。**2つ立てると散る。
+    """
+    m = sit.get("margin")
+    lose, win = sit.get("lose", ""), sit.get("win", "")
+    if m is None:
+        return ["軸: コメント欄でいちばん支持されている見方と、"
+                "それに反対している返信。**その2つのぶつかりを追う。**"]
+    if m >= 6:
+        return [
+            f"軸: **{lose}のファンが、この負けをどう受け止めているか。**",
+            "大敗の日は、コメント欄が試合そのものより「ファンの心境」になる。",
+            f"{win}を褒める話に寄せない。コメント欄がそこを見ていない。",
+            "同じ負けに対して、突き放す人・かばう人・笑う人が並んでいるはず。"
+            "**その温度差を並べる。**",
+            "点の入り方（何回に何点）は、大敗の説明として先に1度だけ置く。"
+            "そのあとはコメントの話に移る。",
+        ]
+    if m <= 1:
+        return [
+            "軸: **どこで決まったか。**接戦の日は、1点の出入りが全部の意味を持つ。",
+            "コメント欄も勝った側と負けた側で割れているはず。両方出す。",
+        ]
+    if (sit.get("total") or 0) >= 12:
+        return [
+            "軸: **点の取り合いそのもの。**回ごとの得点を追うと形が見える。",
+            "投手が何人も出た試合なので、コメント欄は継投の話になりやすい。",
+        ]
+    if (sit.get("total") or 0) <= 3:
+        return [
+            "軸: **投げ合い。**点が入らない試合は、1点の重みが主題になる。",
+            "目立った選手の投球内容から入る。",
+        ]
+    return [
+        "軸: **コメント欄でいちばん支持されている見方と、それへの反論。**",
+        "賛否が割れているところを1つ選んで、そこを掘る。",
+    ]
+
+
 def facts(m: dict, extra: list) -> str:
     """モデルに渡す事実。ここに無いことは書かせない。"""
     top = m["top"]
@@ -322,11 +452,21 @@ def facts(m: dict, extra: list) -> str:
     if res.get("away_jp"):
         lines.append(f"結果: {res['away_jp']} {res.get('away_score')} "
                      f"- {res.get('home_score')} {res['home_jp']}")
+    if top.get("game_date"):
+        lines.append(f"試合が行われた日（現地）: {top['game_date']}")
     inn = [i for i in (res.get("innings") or []) if i.get("num")]
     if inn:
         lines.append("回ごとの得点(先攻/後攻): "
                      + " ".join(f"{i.get('away')}" for i in inn)
                      + " / " + " ".join(f"{i.get('home')}" for i in inn))
+    # 安打と失策。**大敗の日は、たいていここに理由が出ている。**
+    # 渡していなかったので、10対1の回でも点差の話しかできなかった。
+    if isinstance(res.get("away_hits"), int):
+        lines.append(f"安打: {res['away_jp']} {res['away_hits']}本 / "
+                     f"{res['home_jp']} {res.get('home_hits')}本")
+    if isinstance(res.get("away_errors"), int):
+        lines.append(f"失策: {res['away_jp']} {res['away_errors']} / "
+                     f"{res['home_jp']} {res.get('home_errors')}")
     if res.get("star_name"):
         # 所属を必ず書く。書かないとモデルが対戦カードから推測して外す。
         team = res.get("star_team")
@@ -358,6 +498,20 @@ def facts(m: dict, extra: list) -> str:
         for e in extra:
             lines.append(f"- {e['name']}: {e['stat']} "
                          f"リーグ{e['rank']}位（{e['value']}）")
+
+    # その日がどういう日か。**上の数字から機械的に出したもので、
+    # 新しい事実ではない。**話の軸をここで1つに決める。
+    sit = situation(m)
+    lines += ["", "## 今日はどういう日か（上の数字から判定したもの）"]
+    if sit.get("shape"):
+        lines.append(f"試合の形: {sit['shape']}")
+    if sit.get("flow"):
+        lines.append(f"点の入り方: {sit['flow']}")
+    for n in sit.get("notes") or []:
+        lines.append(f"目につく数字: {n}")
+    if sit.get("mood"):
+        lines.append(f"コメント欄の空気: {sit['mood']}")
+    lines += ["", "## この日の切り口"] + angle(sit)
     return "\n".join(lines)
 
 
@@ -435,20 +589,30 @@ def panel_menu(ps: dict) -> str:
 PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放送作家です。
 2人の会話として書いてください。
 
+この番組は「解説」ではなく、**野球を見ている2人の雑談**です。
+ニュースを読み上げる番組ではありません。
+
 登場人物:
 - ずんだもん … 聞き手。語尾は「〜のだ」「〜なのだ」。
   **問いと相槌だけを言う。断言も説明もしない。**
-  ただし**野球は知っている**。日本人選手の名前も、球団も、
-  基本的な用語も分かっている。
+  野球は**ひととおり知っている**。日本人選手の名前も、球団も、
+  基本的な用語も分かっている。ただし詳しくはない。
   「Yamamotoって日本人の選手なのだ？」のような、
   知らないふりの質問はしない。視聴者を子供扱いしていることになる。
   聞くのは「その数字はどれくらい珍しいのか」「なぜそうなるのか」
   「他と比べてどうなのか」といった、**踏み込んだこと**。
-- めたん … 語り手。**落ち着いた大人の女性**。
+  素朴に、しかし的を外さずに突っ込む役。
+- めたん … 語り手。**落ち着いた大人の女性で、野球に詳しい**。
   語尾は「〜わね」「〜よ」「〜のよ」「〜かしら」。**敬語にはしない。**
   ただし砕けすぎない。詳しく、冷静に、順序立てて話す人。
   下の事実だけを話す。「調べたことを話す人」であって、
   「何でも知っている人」ではない。
+
+2人の距離感:
+  かしこまった質疑応答にしない。**知っている人と、そこそこ知っている人が、
+  同じ画面を見ながら話している**形にする。
+  めたんは、聞かれたことに答えるだけでなく、
+  「そこじゃなくて、こっちを見て」と話を引っ張ってよい。
 
 {facts}
 
@@ -460,6 +624,38 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
 {menu}
 
 条件:
+- **上の「この日の切り口」に従う。**
+  材料を上から順に読むと、いつでも成り立つ形の台本になる。
+  ある回は「いちばん短いコメントに、いちばん長い返信がついている」
+  という話になった。面白くはあるが、**その日の試合と関係が無い。**
+  10対1の大敗でコメント欄が荒れているなら、そこが今日の話。
+
+  **コメントの長短・件数そのものを話の軸にしない。**
+  長い短いは、その日の試合が何だったかを何も言わない。
+- **皮肉ってよい。**
+  コメント欄は不特定多数の書き込みで、そこには筋の通らない
+  言い分も、都合のいい言い分も混じっている。
+  それを黙って読み上げるだけでは、2人がそこにいる意味が無い。
+
+  めたんは軽く突っ込む。ずんだもんは素朴に指摘する。
+  例:
+    めたん「10対1で負けた試合の下に『上り調子だ』ですって」
+    ずんだもん「どのあたりが上り調子なのだ？」
+  くらいの温度。**冷笑にはしない。**笑いながら見ている人の側に立つ。
+
+  **やらないこと:**
+  ・選手個人を貶さない（「下手」「終わっている」は書かない）
+  ・コメントを書いた人そのものを馬鹿にしない。
+    突っ込む相手は**言い分**であって、人ではない
+  ・特定の球団のファン全体を悪く言わない
+- **野球の決まりごとは説明してよい。**
+  用語・規則・数え方は、その日のデータに関係なく成り立つので、
+  事実を足すことにはならない。
+  例:「後攻が勝っていれば9回裏は行われないの」
+    「クオリティスタートは6回を自責点3以内のことよ」
+  ずんだもんが引っかかったところで、1本の動画に1つか2つ。
+  **ただし「珍しい」「多くない」「一流だ」のような評価はしない。**
+  それは数えないと言えないことで、ここに数字が無い。
 - **最初の2行で「何の動画のコメント欄を読むのか」を言う。**
   上の「動画の題（原文）」がそれ。日本語にして言う。
   見ている人は、どの動画の話なのかを知らないまま始まる

@@ -172,6 +172,7 @@ def fetch_view_counts(api_key: str, items: list) -> list:
             continue
         out.append({**i, "views": v, "matchup": extract_matchup(i["title"])})
     out.sort(key=lambda x: -x["views"])
+    out = newest_day_first(out)
 
     # **日本人選手が題に入っているものを、先頭へ持ってくる。**
     #
@@ -199,6 +200,56 @@ def fetch_view_counts(api_key: str, items: list) -> list:
     except Exception as e:                       # noqa: BLE001
         print(f"[info] 並べ替えを飛ばします({e})")
     return out
+
+
+# その日の試合が何本そろっていれば「その日で選ぶ」と見なすか。
+#
+# MLBは1日15試合前後。半分そろっていれば、上位が偏らない。
+# ここを下げると、東海岸の早い試合だけから選ぶ日が出る
+# (西海岸の試合はまだ上がっていない)。日本人選手はドジャース・
+# パドレス・エンゼルスに多いので、そこが落ちるのはいちばん困る。
+MIN_SAME_DAY = 6
+
+
+def newest_day_first(out: list) -> list:
+    """**新しい試合日のものを先に置く。**
+
+    なぜ要るのか:
+      窓は30時間で、並べ替えは再生回数の多い順。
+      25時間前に上がった動画には25時間ぶんの再生があり、
+      2時間前に上がった動画には2時間ぶんしかない。
+      **どうやっても昨日が勝つ。** 実際 9/2 に選ばれたのは
+      8/31（日本時間9/1）の試合で、上位5本すべてが前日ぶんだった。
+
+      年功で決まるなら、それは「いま最も見られている試合」ではない。
+
+    ただし新しい日に切り替えるのは、その日が**そろってから**。
+    取りに行く15時（日本時間）は、西海岸の試合が終わった直後で、
+    ハイライトがまだ上がっていないことがある。半分そろう前に
+    切り替えると、東海岸の試合だけから選ぶことになる。
+
+    そろっていない日は、これまでどおり前日のものが残る。
+    そのときは日付を持って回して、台本が「9月1日の試合」と言えるようにする。
+    """
+    for r in out:
+        r["game_date"] = game_date_from_title(r.get("title", ""),
+                                              r.get("published_at", ""))
+    days = {}
+    for r in out:
+        if r.get("game_date"):
+            days.setdefault(r["game_date"], []).append(r)
+    if not days:
+        return out
+    newest = max(days)
+    if len(days[newest]) < MIN_SAME_DAY:
+        older = max((d for d in days if d != newest), default=None)
+        print(f"[info] {newest} はまだ{len(days[newest])}本しか上がっていません"
+              f"（{MIN_SAME_DAY}本から）。{older or '窓の全部'}で選びます")
+        if older:
+            return days[older] + [r for r in out if r not in days[older]]
+        return out
+    print(f"[info] {newest} の試合({len(days[newest])}本)から選びます")
+    return days[newest] + [r for r in out if r not in days[newest]]
 
 
 MLB_API = "https://statsapi.mlb.com/api/v1"

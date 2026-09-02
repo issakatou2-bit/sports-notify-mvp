@@ -437,12 +437,15 @@ def team_standing(tid: str) -> list:
     if not t.get("w"):
         return []
     out = ["%d勝%d敗" % (t["w"], t.get("l") or 0)]
+    # 「ナ・リーグ第2シード」だけだと、もう決まった順位に読める。
+    # シードは毎日入れ替わるもので、**今日終わったらこうなる**という
+    # 途中経過でしかない。「現在」を付けて、そこを曖昧にしない。
     if t.get("clinched"):
         out.append("進出決定")
     elif t.get("seed"):
-        out.append("%s第%dシード" % (t.get("league_jp") or "", t["seed"]))
+        out.append("現在%s第%dシード" % (t.get("league_jp") or "", t["seed"]))
     elif t.get("wc_gb") not in (None, "-"):
-        out.append("ワイルドカードまで%s" % t["wc_gb"])
+        out.append("現在ワイルドカードまで%s" % t["wc_gb"])
     s = t.get("streak") or ""
     if len(s) >= 2 and s[0] in "WL" and s[1:].isdigit() and int(s[1:]) >= 2:
         out.append("%d%s中" % (int(s[1:]), "連勝" if s[0] == "W" else "連敗"))
@@ -477,20 +480,28 @@ def render_game(progress: float, g: dict, index: int, total: int):
     # **置けなかった日(サッカー)は書く。**そこが唯一の手がかりなので、
     # 消すと日本人選手が出る試合だと分からなくなる。
     shown_jp = False
-    # 箱の高さは中身で決める。
+    # 箱の中身は、行ごとに置く。
     #
-    # サッカーは先発も順位表も無いので、MLBと同じ高さにすると
-    # 名前1つの下に120pxの空白が残る。実際そうなっていた。
-    tops, hs = [], []
+    # 1行に詰め込んで、入らないぶんを削っていた。実際に描いてみたら
+    # 「82勝56敗・現在ナ・リーグ第2シード」から**シードのほうが落ちて**、
+    # 残ったのが勝敗だけ。日本人選手が2人いる球団ほどそうなる。
+    # 落とすのではなく、行を増やす。
+    #
+    # 高さも中身で決める。サッカーは先発も順位表も無いので、
+    # MLBと同じ高さにすると名前1つの下に120pxの空白が残る。
+    def rows_of(side):
+        jp = [n for n in jp_names if n not in starters
+              and n in team_jp_names(g.get(f"{side}_team_id"))]
+        return (team_standing(g.get(f"{side}_team_id")), jp,
+                g.get(f"{side}_probable") or {})
+
+    tops, hs, rows = [], [], {}
     yy = 236
     for side in ("home", "away"):
-        h = 118
-        if (team_standing(g.get(f"{side}_team_id"))
-                or [n for n in jp_names
-                    if n in team_jp_names(g.get(f"{side}_team_id"))]):
-            h += 56
-        if (g.get(f"{side}_probable") or {}).get("name"):
-            h += 62
+        st, jp, p = rows_of(side)
+        rows[side] = (st, jp, p)
+        h = 118 + (54 if st else 0) + (50 if jp else 0) + (62 if p.get("name")
+                                                           else 0)
         tops.append(yy)
         hs.append(h)
         yy += h + 20
@@ -513,35 +524,27 @@ def render_game(progress: float, g: dict, index: int, total: int):
         tag = "ホーム" if side == "home" else "ビジター"
         d.text((W - 100 - dx - d.textlength(tag, font=font(28)), top + 30),
                tag, font=font(28), fill=DIM)
-        # 先発ではない日本人選手。**先に置いて、場所を取る。**
-        # 名前は勝敗より大事なので、勝敗のほうを後ろから削る。
-        others = [n for n in jp_names if n not in starters
-                  and n in team_jp_names(g.get(f"{side}_team_id"))]
-        right = W - 100 - dx
-        if others:
-            s = "・".join(others[:2])
-            fw = font(30)
-            x = right - d.textlength(s, font=fw)
-            d.text((x, top + 84), s, font=fw, fill=JP)
-            flag_jp(d, x - 58, top + 82, 46, 30)
-            right = x - 74
+
+        st, jp, p = rows[side]
+        ry = top + 84
+        # いまの勝敗と立ち位置
+        if st:
+            d.text((240 - dx, ry), "・".join(st), font=font(30), fill=DIM)
+            ry += 54
+        # 先発ではない日本人選手。**1行を与える。**
+        # 「◯◯が所属」とは書かない。名前がそこにあれば所属は分かる。
+        if jp:
+            px = flag_jp(d, 104 - dx, ry - 2, 46, 30)
+            d.text((px, ry - 6), "・".join(jp[:3]), font=font(34), fill=JP)
+            ry += 50
             shown_jp = True
-        # いまの勝敗と立ち位置。入るところまで。
-        parts = team_standing(g.get(f"{side}_team_id"))
-        while parts and d.textlength("・".join(parts),
-                                     font=font(30)) > right - 260:
-            parts.pop()
-        if parts:
-            d.text((240 - dx, top + 84), "・".join(parts), font=font(30),
-                   fill=DIM)
         # 先発予定。**球団の下に小さく。**日本人なら日の丸を先に置く。
-        p = g.get(f"{side}_probable") or {}
-        px = 104 - dx
         if p.get("name"):
+            px = 104 - dx
             if p["name"] in starters or p.get("name_en") in starters:
-                px = flag_jp(d, px, top + 148)
+                px = flag_jp(d, px, ry + 4)
                 shown_jp = True
-            d.text((px, top + 146), "先発 " + str(p["name"]),
+            d.text((px, ry + 2), "先発 " + str(p["name"]),
                    font=font(36), fill=TEXT)
             bits = []
             if p.get("era"):
@@ -553,7 +556,7 @@ def render_game(progress: float, g: dict, index: int, total: int):
             if bits:
                 s = "　".join(bits)
                 d.text((W - 100 - dx - d.textlength(s, font=font(30)),
-                        top + 152), s, font=font(30), fill=ACCENT)
+                        ry + 8), s, font=font(30), fill=ACCENT)
 
     y = tops[-1] + hs[-1] + 22
 
