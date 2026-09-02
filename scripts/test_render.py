@@ -158,7 +158,11 @@ def main() -> int:
             lg = (ps.get("leagues") or {}).get(lid)
             if lg:
                 check("%s 進出争い(%s)" % (tag, lid),
-                      g.render_ps_league, p, lg)
+                      g.render_ps_league, p, lg, lid)
+        # 日本人選手のいる球団。名簿が無い日は空で返るので、
+        # **空でも描けること**を見る(そちらのほうが落ちやすい)。
+        check("%s 日本人選手の現在地" % tag, g.render_ps_japanese, p,
+              ps.get("japanese") or [])
         for lid in ("103", "104"):
             if (ps.get("leagues") or {}).get(lid):
                 check("%s トーナメント表(%s)" % (tag, lid),

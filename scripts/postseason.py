@@ -180,6 +180,76 @@ def race(teams: list) -> dict:
     return out
 
 
+def japanese(data: dict, teams: list = None,
+             roster_path: str = "data/roster_snapshot.json") -> list:
+    """日本人選手のいる球団が、いまどこにいるか。
+
+    なぜこの1枚を足すのか:
+      28日を測ったら、題に日本人選手の名前がある動画は
+      468回/本、無い動画は168回/本だった。2.8倍。
+      順位表は「見たい人が見るもの」だが、
+      **「大谷のドジャースは第何シードか」は誰でも分かる。**
+      同じ材料の、入口を変えただけの1枚。
+
+    所属は名簿(roster_snapshot.json)から引く。
+    APIを叩き直さない。**その日の朝に取ったものが既にある。**
+    名簿に無い選手（故障者リストや傘下）は出さない。
+    「いない」ことを書くより、確かなものだけを並べる。
+    """
+    try:
+        from notability_engine import JP_PLAYERS_MLB
+        import textkey
+        ros = json.loads(pathlib.Path(roster_path).read_text(
+            encoding="utf-8")).get("players") or {}
+    except Exception:                                # noqa: BLE001
+        return []
+    by_name = {textkey.key(v.get("name") or ""): v for v in ros.values()}
+
+    # 球団ID -> その球団にいる日本人選手
+    where = {}
+    for p in JP_PLAYERS_MLB:
+        r = by_name.get(textkey.key(p.get("name_en") or ""))
+        if not r or not r.get("team_id"):
+            continue
+        where.setdefault(str(r["team_id"]), []).append(p.get("name_jp"))
+
+    # 球団ID -> いまの立ち位置
+    seat = {}
+    for lid, r in data.items():
+        seeds = (r.get("leaders") or [])[:3] + (r.get("wildcards") or [])[:3]
+        for i, t in enumerate(seeds, 1):
+            seat[str(t.get("id"))] = (t, i,
+                                      "地区首位" if i <= 3 else "ワイルドカード")
+        for t in r.get("chasing") or []:
+            seat.setdefault(str(t.get("id")), (t, None, "追う"))
+    # 圏内にも追う位置にもいない球団。**ここも数に入れる。**
+    # 「日本人選手のいる11球団のうち6球団」と言うのに、
+    # 分母から静かに落ちている球団があってはいけない。
+    for t in teams or []:
+        seat.setdefault(str(t.get("id")), (t, None, "圏外"))
+
+    out = []
+    for tid, names in where.items():
+        t, seed, route = seat.get(tid, (None, None, "圏外"))
+        if t is None:
+            continue                    # 順位表に無い球団は出さない
+        out.append({
+            "team_id": int(tid), "team": t.get("name"),
+            "league": t.get("league"), "league_jp": t.get("league_jp"),
+            "seed": seed, "route": route,
+            "w": t.get("w"), "l": t.get("l"),
+            "magic": t.get("magic"), "wc_gb": t.get("wc_gb"),
+            "clinched": bool(t.get("clinched") or t.get("div_champ")),
+            "players": names,
+        })
+    # 進出に近い順。圏内はシード順、圏外は名前の数が多い順
+    # （多いほうが視聴者の見たい球団に当たりやすい）。
+    ORDER = {"地区首位": 0, "ワイルドカード": 0, "追う": 1, "圏外": 2}
+    out.sort(key=lambda x: (ORDER.get(x["route"], 3), x["seed"] or 99,
+                            -len(x["players"])))
+    return out
+
+
 def diff(now: dict, before: dict) -> list:
     """昨日との違い。**この枠の主題はここ。**
 
@@ -208,18 +278,18 @@ def diff(now: dict, before: dict) -> list:
     for tid, t in a.items():
         if tid not in b:
             out.append({"kind": "in", "name": t.get("name"),
-                        "text": f"{t.get('name')} が進出圏内に入った"})
+                        "text": f"{t.get('name')}が進出圏内に入った"})
     for tid, t in b.items():
         if tid not in a:
             out.append({"kind": "out", "name": t.get("name"),
-                        "text": f"{t.get('name')} が進出圏内から出た"})
+                        "text": f"{t.get('name')}が進出圏内から出た"})
 
     # マジックの減り方。減っていない日は出さない。
     for tid, t in a.items():
         m, pm = t.get("magic"), (b.get(tid) or {}).get("magic")
         if isinstance(m, int) and isinstance(pm, int) and m < pm:
             out.append({"kind": "magic", "name": t.get("name"),
-                        "text": f"{t.get('name')} のマジックが"
+                        "text": f"{t.get('name')}のマジックが"
                                 f"{pm}から{m}へ"})
 
     def flags(d, key):
@@ -230,11 +300,11 @@ def diff(now: dict, before: dict) -> list:
     for tid, t in flags(now, "clinched").items():
         if tid not in flags(before, "clinched"):
             out.append({"kind": "clinch", "name": t.get("name"),
-                        "text": f"{t.get('name')} が進出決定"})
+                        "text": f"{t.get('name')}が進出決定"})
     for tid, t in flags(now, "eliminated").items():
         if tid not in flags(before, "eliminated"):
             out.append({"kind": "elim", "name": t.get("name"),
-                        "text": f"{t.get('name')} が敗退決定"})
+                        "text": f"{t.get('name')}が敗退決定"})
     return out
 
 
@@ -312,6 +382,7 @@ def main() -> int:
         "headline": headline(data),
         "changes": changes,
         "prev_date": str(before.get("date") or ""),
+        "japanese": japanese(data, teams),
         "leagues": {str(k): v for k, v in data.items()},
     }
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -319,6 +390,15 @@ def main() -> int:
                  encoding="utf-8")
 
     print(f"[info] {out['headline']}")
+    jp = out["japanese"]
+    if jp:
+        inside = [x for x in jp if x["seed"]]
+        print(f"[info] 日本人選手のいる{len(jp)}球団のうち"
+              f"{len(inside)}球団が進出圏内")
+        for x in jp[:6]:
+            tag = f"第{x['seed']}シード" if x["seed"] else x["route"]
+            print("    %-8s %-12s %s" % (tag, x["team"],
+                                         "・".join(x["players"])))
     if changes:
         print("[info] 昨日からの変化 %d件" % len(changes))
         for c in changes[:6]:

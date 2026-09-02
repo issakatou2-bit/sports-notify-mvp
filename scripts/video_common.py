@@ -523,3 +523,39 @@ def ease_out(t: float) -> float:
     置き場が5つあると「どれが本物か」が決まらない。
     """
     return 1 - (1 - t) ** 3
+
+
+DEFAULT_TINT = (255, 176, 32)
+
+
+def lift_color(hexv, fallback=DEFAULT_TINT):
+    """「#0C2C56」を、暗い背景で読める明るさにして返す。
+
+    公式の色をそのまま使うと、濃紺(#0C2C56)や濃緑(#003831)、
+    濃茶(#2F241D)が背景(#0B0E14)に沈んで見えない。
+    **色みは保ったまま、明るさだけ上げる。**
+    ヤンキースの紺はヤンキースの紺のまま、見える濃さになる。
+
+    色が無い球団や、球団の出てこない画面では既定の橙に落とす。
+    """
+    import colorsys
+    hexv = hexv or ""
+    if not (isinstance(hexv, str) and hexv.startswith("#") and len(hexv) == 7):
+        return fallback
+    try:
+        r, g, b = (int(hexv[i:i + 2], 16) / 255 for i in (1, 3, 5))
+    except ValueError:
+        return fallback
+    h, s, v = colorsys.rgb_to_hsv(r, g, b)
+    r, g, b = colorsys.hsv_to_rgb(h, min(s, 0.78), max(v, 0.72))
+    return (int(r * 255), int(g * 255), int(b * 255))
+
+
+def blend(base, tint, amount: float):
+    """base に tint を amount(0..1) だけ混ぜる。
+
+    面で色を置くための道具。文字の下に敷く板を球団色に寄せると、
+    白い板を並べるより**どこが誰の行か**が一目で分かる。
+    濃く混ぜると文字が読めなくなるので、呼ぶ側で 0.1〜0.2 に留める。
+    """
+    return tuple(int(b + (t - b) * amount) for b, t in zip(base, tint))

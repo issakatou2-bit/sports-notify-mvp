@@ -1154,17 +1154,11 @@ def team_color(spec: dict):
     色みは保ったまま明るさだけ上げる。
 
     色が無い球団や、球団以外の回では既定のオレンジに落とす。
+
+    持ち上げ方そのものは video_common.lift_color にある。
+    進出争いの回でも同じ色が要るので、置き場を1つにした。
     """
-    import colorsys
-    hexv = (spec or {}).get("color") or ""
-    if not hexv.startswith("#") or len(hexv) != 7:
-        return ACCENT
-    r, g, b = (int(hexv[i:i + 2], 16) / 255 for i in (1, 3, 5))
-    h, s, v = colorsys.rgb_to_hsv(r, g, b)
-    v = max(v, 0.72)
-    s = min(s, 0.78)
-    r, g, b = colorsys.hsv_to_rgb(h, s, v)
-    return (int(r * 255), int(g * 255), int(b * 255))
+    return video_common.lift_color((spec or {}).get("color"), ACCENT)
 
 
 def render_map(p, spec):

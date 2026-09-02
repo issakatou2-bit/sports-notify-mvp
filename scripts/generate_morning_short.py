@@ -24,6 +24,11 @@ import subprocess
 import sys
 import wave
 from datetime import datetime
+
+# 球団の色は notability_engine にある。CIは `python scripts/…` で
+# 呼ぶので、直下(リポジトリの根)は自動では入らない。
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+
 from morning_recap import jst_label as _jst_label  # noqa: E402
 # 外国人選手はVOICEVOXがアクセント記号で読みを外す。日次と同じ処理を通す。
 from generate_narration import speech_name  # noqa: E402
@@ -152,6 +157,27 @@ DOWN = (200, 120, 120)
 # 現地の声の調子。褒めているのか怒っているのかで、同じ一言の
 # 意味が変わる。中立には色を付けない(付けると3色が並んで散らかる)。
 TONE_COLOR = {"称賛": (110, 205, 150), "批判": (200, 120, 120)}
+
+# リーグの色。MLB公式のロゴがア・リーグ＝赤、ナ・リーグ＝青。
+# 進出争いの回は同じ形の画面が4枚続くので、**いま
+# どちらのリーグを見ているか**が色だけで分かるようにする。
+# 暗い背景で読める明るさに寄せてある。
+LEAGUE_COLOR = {"103": (232, 104, 96), "104": (104, 156, 236)}
+
+
+def team_tint(team_id, fallback=ACCENT):
+    """その球団の色。暗い背景で読める明るさで返す。
+
+    順位表は名前と数字だけだと8行が同じ顔になる。
+    球団の色を1本入れるだけで、探している球団の行が先に目に入る。
+    持ち上げ方は video_common にある（資産動画と同じもの）。
+    """
+    try:
+        from notability_engine import MLB_TEAM_COLOR
+        return video_common.lift_color(MLB_TEAM_COLOR.get(str(team_id)),
+                                       fallback)
+    except Exception:                                # noqa: BLE001
+        return fallback
 
 
 
@@ -659,37 +685,73 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             "text": lead + f"{day}のポストシーズン進出争いです。",
             "meta": {"date": day_iso, "mode": mode},
         }]
+        # 日本人選手のいる球団が、いまどこにいるか。
+        #
+        # 順位表は「見たい人が見るもの」。この1枚だけは
+        # **「大谷のドジャースは第何シードか」**で、誰にでも入口がある。
+        # 28日の実測で、題に日本人選手の名前がある動画は2.8倍見られた。
+        jps = ps.get("japanese") or []
+        if jps:
+            ins = [x for x in jps if x.get("seed")]
+            top = ins[0] if ins else jps[0]
+            say = (f"日本人選手のいる{len(jps)}球団のうち、"
+                   f"{len(ins)}球団が進出圏内です。")
+            if ins:
+                say += (f"{'・'.join(top['players'])}の{top['team']}が"
+                        f"{top['league_jp']}第{top['seed']}シード。")
+                m = top.get("magic")
+                if isinstance(m, int):
+                    say += f"地区優勝マジックは{m}です。"
+            segments.append({"kind": "ps_japanese", "text": say, "meta": {}})
+
+        first = True
         for lid, name in (("104", "ナ・リーグ"), ("103", "ア・リーグ")):
             lg = (ps.get("leagues") or {}).get(lid)
             if not lg:
                 continue
-            rows = (lg.get("leaders") or [])[:3] + (lg.get("wildcards") or [])
-            say = []
-            for i, x in enumerate(rows, 1):
-                m = x.get("magic")
-                if isinstance(m, int):
-                    say.append(f"{x['name']}、マジック{m}")
-                elif i <= 3:
-                    say.append(f"{x['name']}")
+            lead = (lg.get("leaders") or [])[:3]
+            wc = (lg.get("wildcards") or [])[:3]
+            # 地区優勝の3つとワイルドカードの3つは、意味が違う。
+            # 「上位6球団」とまとめると、どちらの枠で入っているのかが
+            # 消える。マジックが出るのは地区優勝を争う側だけ。
+            # 画面に出ている12球団を全部読み上げない。
+            # 名前は画面が並べているので、**読み上げは枠の説明**に使う。
+            # 「地区優勝の3枠」と「ワイルドカードの3枠」は
+            # 別のものだと分かることが、この30秒でいちばん残る。
+            say = f"{name}。"
+            # 枠の説明は**先の1枚だけ**。2枚目で同じ規則をもう一度
+            # 読むと、そこは誰も聞いていない。
+            if first:
+                say += ("地区優勝の3枠が第1から第3シード、"
+                        "残る3枠がワイルドカードです。")
+            if lead and isinstance(lead[0].get("magic"), int):
+                say += f"首位{lead[0]['name']}の優勝マジックは{lead[0]['magic']}。"
             near = (lg.get("chasing") or [])[:1]
-            tail = ""
             if near and near[0].get("wc_gb") is not None:
-                tail = (f"追いかけているのは{near[0]['name']}で、"
-                        f"{near[0]['wc_gb']}ゲーム差です。")
-            segments.append({
-                "kind": "ps_league",
-                "text": f"{name}。進出圏内の6球団はこうです。"
-                        + "、".join(say[:3]) + "。" + tail,
-                "meta": {"league": lid},
-            })
+                say += (f"最後の枠を{near[0]['name']}が"
+                        f"{near[0]['wc_gb']}ゲーム差で追っています。")
+            segments.append({"kind": "ps_league", "text": say,
+                             "meta": {"league": lid}})
+            # 組み合わせ。ここで用語を1つずつ置いていく。
+            # 「第3シードと第6シードが当たる」は、画面の番号と
+            # そのまま重なるので、聞くだけで形が入る。
+            b = ("今日終わったら、ワイルドカードシリーズは" if first
+                 else "こちらは、")
+            if len(lead) >= 3 and len(wc) >= 3:
+                b += (f"第3シード{lead[2]['name']}と第6シード"
+                      f"{wc[2]['name']}、第4シード{wc[0]['name']}と"
+                      f"第5シード{wc[1]['name']}。")
+            else:
+                b = f"{name}の組み合わせです。"
+            if len(lead) >= 2 and first:
+                b += "第1と第2シードは免除で、地区シリーズから。"
             segments.append({
                 "kind": "ps_bracket",
-                "text": f"今シーズンが今日終わったら、{name}は"
-                        f"この組み合わせになります。"
-                        + ("同率の球団があるので、順番は入れ替わりえます。"
-                           if lg.get("ties") else ""),
+                "text": b + ("同率の球団があり、順番は入れ替わりえます。"
+                             if lg.get("ties") else ""),
                 "meta": {"league": lid},
             })
+            first = False
 
     elif mode == "voices":
         # ファンの声の回。
@@ -1379,7 +1441,74 @@ def scoreboard_ready(res) -> bool:
     return True
 
 
-def render_ps_league(p, league: dict):
+def league_badge(d, lid: str, name: str, y: int = 132):
+    """リーグ名を、リーグの色の札で置く。
+
+    進出争いの回は同じ形の画面が4枚続く。文字で「ア・リーグ」と
+    書いてあっても、見ている側は途中でどちらか分からなくなる。
+    **色が変われば分かる。**返すのはその色（画面の他の部分にも使う）。
+    """
+    lc = LEAGUE_COLOR.get(str(lid), ACCENT)
+    fn = font(44)
+    tw = d.textlength(name, font=fn)
+    d.rounded_rectangle([70, y, 70 + tw + 52, y + 66], 33, fill=lc)
+    d.text((96, y + 8), name, font=fn, fill=(12, 14, 20))
+    return lc
+
+
+def ps_right(tm: dict):
+    """その球団の、右に出す数字と見出し。
+
+    地区首位ならマジックナンバー、ワイルドカード圏内なら
+    枠へのリード、追う側なら差。**同じ「5.0」でも意味が逆**なので、
+    見出しを付けずに数字だけ出すことはしない。
+    """
+    m = tm.get("magic")
+    if tm.get("clinched") or tm.get("div_champ"):
+        return "決定", "地区優勝", True
+    if isinstance(m, int):
+        return str(m), "優勝マジック", m <= 10
+    gb = tm.get("wc_gb")
+    if gb is None:
+        # 最後の枠にいる球団は、差が返らない（自分が基準なので）。
+        return "圏内", "ワイルドカード最後の枠", False
+    gb = str(gb)
+    # 枠の中にいる球団は「+5.0」のように余裕が返る。
+    # 「差5.0」だと追う側と同じ言葉になって、どちらか分からない。
+    return gb, ("枠へのリード" if gb.startswith("+") else "枠との差"), False
+
+
+def ps_row(d, y, tm: dict, dx: int, seed=None, inside: bool = True,
+           bh: int = 88):
+    """順位表の1行。球団の色の帯と、シード番号と、右の数字。"""
+    tint = team_tint(tm.get("id"))
+    x0, x1 = 70 - dx, W - 70 - dx
+    bg = video_common.blend(SURF, tint, 0.16) if inside else (15, 18, 25)
+    d.rounded_rectangle([x0, y, x1, y + bh], 14, fill=bg)
+    # 左の色帯。球団の色はここだけで使い、文字は白のままにする。
+    # 色の上に色を重ねると、濃い球団の名前が読めなくなる。
+    d.rounded_rectangle([x0, y, x0 + 11, y + bh], 5,
+                        fill=tint if inside else video_common.blend(
+                            (15, 18, 25), tint, 0.55))
+    tx = x0 + 34
+    if seed:
+        # シード番号。数字だけを球団の色で置く。
+        d.text((tx, y + 20), str(seed), font=font(40), fill=tint)
+        tx += 46
+    d.text((tx, y + 8), tm.get("name", ""), font=font(44),
+           fill=TEXT if inside else DIM)
+    d.text((tx, y + 56), "%d勝%d敗" % (tm.get("w") or 0, tm.get("l") or 0),
+           font=font(26), fill=DIM)
+    right, sub, hot = ps_right(tm)
+    fw = font(50 if right not in ("決定", "圏内") else 36)
+    d.text((x1 - 34 - d.textlength(right, font=fw), y + 20), right,
+           font=fw, fill=ACCENT if hot else (TEXT if inside else DIM))
+    fs = font(24)
+    d.text((x1 - 34 - d.textlength(sub, font=fs), y - 2), sub,
+           font=fs, fill=DIM)
+
+
+def render_ps_league(p, league: dict, lid: str = "104"):
     """ポストシーズン進出争い。1リーグぶんを1画面に。
 
     なぜこの形か:
@@ -1387,66 +1516,138 @@ def render_ps_league(p, league: dict):
       マジックナンバーは毎日1つずつ減る数字で、減った理由も明快。
       順位表をそのまま出すのではなく、**進出の枠で区切って**出す。
 
-      上3つが地区優勝、次の3つがワイルドカード、その下が枠外。
-      **枠の線をはっきり引く**のがこの画面の全部で、
-      そこが1行でも動けば、その日の意味がある。
+      上3つが地区優勝（第1〜3シード）、次の3つがワイルドカード
+      （第4〜6シード）、その下が枠外。**枠の線をはっきり引く**のが
+      この画面の全部で、そこが1行でも動けば、その日の意味がある。
+
+      枠の名前も画面に書く。「上3つ」と言われても、それが
+      地区優勝の3つだと分かるのは、もう知っている人だけ。
     """
     im, d = base(p)
-    d.text((70, 150), league.get("league_jp", ""), font=font(56), fill=DIM)
-    d.text((70, 230), "ポストシーズン進出争い", font=font(72), fill=TEXT)
+    lc = league_badge(d, lid, league.get("league_short")
+                      or league.get("league_jp", ""))
+    d.text((70, 224), "ポストシーズン進出争い", font=font(64), fill=TEXT)
 
-    rows = ([(t, "地区首位") for t in league.get("leaders") or []]
-            + [(t, "ワイルドカード") for t in league.get("wildcards") or []])
-    out = [(t, "枠外") for t in league.get("chasing") or []]
+    lead = (league.get("leaders") or [])[:3]
+    wc = (league.get("wildcards") or [])[:3]
+    out = (league.get("chasing") or [])[:2]
+    groups = [("地区優勝　第1〜3シード", lead, True, 1),
+              ("ワイルドカード　第4〜6シード", wc, True, 4),
+              (None, out, False, None)]
 
-    y = 380
-    for i, (tm, tag) in enumerate(rows + out):
-        appear = 0.06 + i * 0.035
+    y, i = 330, 0
+    for title, rows, inside, seed0 in groups:
+        if not rows:
+            continue
+        if title:
+            d.text((78, y), title, font=font(28), fill=lc)
+            y += 44
+        else:
+            # 枠の線。ここが画面の主題なので、はっきり引く。
+            y += 12
+            s = "──── ここまでが進出 ────"
+            d.text(((W - d.textlength(s, font=font(30))) / 2, y), s,
+                   font=font(30), fill=ACCENT)
+            y += 56
+        for k, tm in enumerate(rows):
+            appear = 0.06 + i * 0.035
+            i += 1
+            if p >= appear:
+                e = ease_out(min(1.0, (p - appear) * 9))
+                ps_row(d, y, tm, int((1 - e) * 80),
+                       (seed0 + k) if seed0 else None, inside)
+            y += 104
+
+    # 用語の説明を1行だけ置く。
+    #
+    # 「マジック16」と出しても、意味を知らない人には数が動くだけ。
+    # 読み上げでは尺が無いので、**画面の空いている所で1行だけ**言う。
+    # 毎日同じ文なので、覚える人は3日で覚える。
+    if p > 0.30:
+        d.rounded_rectangle([70, y + 24, W - 70, y + 108], 14,
+                            fill=(15, 18, 25))
+        d.text((96, y + 38), "マジック", font=font(26), fill=ACCENT)
+        d.text((96, y + 70), "あと何回「勝つか、相手が負けるか」で地区優勝",
+               font=font(26), fill=DIM)
+    return im
+
+
+def render_ps_japanese(p, jp: list):
+    """日本人選手のいる球団が、いまどこにいるか。
+
+    なぜこの1枚を足すのか:
+      28日を測ったら、題に日本人選手の名前がある動画は468回/本、
+      無い動画は168回/本だった。順位表は「見たい人が見るもの」だが、
+      **「大谷のドジャースは第何シードか」は誰でも分かる。**
+      材料は同じで、入口だけを変えた1枚。
+
+      並びは進出に近い順。名前は球団の下に小さく置く。
+      主語は球団（順位表の話なので）で、選手は「誰の球団か」の印。
+    """
+    im, d = base(p)
+    inside = [x for x in jp if x.get("seed")]
+    d.text((70, 150), "日本人選手のいる球団", font=font(40), fill=JP)
+    d.text((70, 214), "%d球団中 %d球団が進出圏内" % (len(jp), len(inside)),
+           font=font(60), fill=TEXT)
+
+    # 6行しか置けない。圏内で埋めると**追っている球団が消える**。
+    # 岡本のブルージェイズが2.5ゲーム差、が出ないのは惜しい。
+    # 圏内5つ＋いちばん近い圏外1つにする。
+    rows = jp[:6]
+    if len(jp) > 6 and all(x.get("seed") for x in rows):
+        near = [x for x in jp[6:] if not x.get("seed")]
+        if near:
+            rows = jp[:5] + near[:1]
+
+    y = 330
+    for i, x in enumerate(rows):
+        appear = 0.06 + i * 0.05
         if p < appear:
-            y += 118
+            y += 168
             continue
         e = ease_out(min(1.0, (p - appear) * 9))
         dx = int((1 - e) * 80)
-        inside = tag != "枠外"
-        # 枠の線。ここが画面の主題なので、はっきり引く。
-        # 前の行に食い込まないよう、先に間を空けてから引く。
-        if i == len(rows):
-            y += 18
-            s = "──── ここまでが進出 ────"
-            d.text(((W - d.textlength(s, font=font(32))) / 2, y),
-                   s, font=font(32), fill=ACCENT)
-            y += 54
-        fill = SURF if inside else (14, 17, 24)
-        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 100], 16, fill=fill)
-        col = TEXT if inside else DIM
-        d.text((104 - dx, y + 14), tm.get("name", ""), font=font(46),
-               fill=col)
-        d.text((104 - dx, y + 66), "%d勝%d敗" % (tm.get("w") or 0,
-                                                tm.get("l") or 0),
-               font=font(30), fill=DIM)
-        # 右に、その球団のいまの数字。
-        # 地区首位ならマジック、それ以外は枠との差。
-        m = tm.get("magic")
-        if isinstance(m, int):
-            right, sub = str(m), "マジック"
-        elif tm.get("clinched") or tm.get("div_champ"):
-            right, sub = "決定", ""
-        elif tm.get("wc_gb") is None:
-            right, sub = "枠内", ""
+        tint = team_tint(x.get("team_id"))
+        seeded = bool(x.get("seed"))
+        x0, x1 = 70 - dx, W - 70 - dx
+        d.rounded_rectangle([x0, y, x1, y + 148], 16,
+                            fill=video_common.blend(
+                                SURF, tint, 0.18 if seeded else 0.07))
+        d.rounded_rectangle([x0, y, x0 + 11, y + 148], 5, fill=tint)
+        d.text((x0 + 34, y + 14), x.get("team", ""), font=font(46),
+               fill=TEXT if seeded else DIM)
+        # 選手の名前。ここが**この画面を見る理由**なので、
+        # 球団名の次に大きく、色を付けて置く。
+        d.text((x0 + 34, y + 74), "・".join(x.get("players") or []),
+               font=font(38), fill=JP)
+        d.text((x0 + 34, y + 110), "%s　%d勝%d敗" % (
+            x.get("league_jp", ""), x.get("w") or 0, x.get("l") or 0),
+            font=font(24), fill=DIM)
+        # 右。圏内はシード番号、外は枠との差。
+        if seeded:
+            tag, sub = "第%dシード" % x["seed"], x.get("route", "")
+        elif x.get("wc_gb") is not None:
+            tag, sub = "%s差" % x["wc_gb"], "ワイルドカード"
         else:
-            gb = str(tm.get("wc_gb"))
-            # 枠の中にいる球団は「+5.0」のように余裕が返る。
-            # 「差5.0」だと追う側と同じ言葉になって、どちらか分からない。
-            right, sub = gb, ("リード" if gb.startswith("+") else "差")
-        rc = ACCENT if (isinstance(m, int) and m <= 10) or right == "決定"             else (TEXT if inside else DIM)
-        fw = font(56 if right not in ("決定", "枠内") else 40)
-        w = d.textlength(right, font=fw)
-        d.text((W - 104 - dx - w, y + 20), right, font=fw, fill=rc)
+            tag, sub = "圏外", ""
+        fw = font(40)
+        d.text((x1 - 34 - d.textlength(tag, font=fw), y + 44), tag,
+               font=fw, fill=tint if seeded else DIM)
         if sub:
-            fs = font(26)
-            d.text((W - 104 - dx - d.textlength(sub, font=fs), y + 4),
-                   sub, font=fs, fill=DIM)
-        y += 118
+            fs = font(24)
+            d.text((x1 - 34 - d.textlength(sub, font=fs), y + 96), sub,
+                   font=fs, fill=DIM)
+        y += 168
+
+    # 画面に載らなかった球団。**数を合わせるために書く。**
+    # 「8球団中6球団が進出圏内」と出しておいて6行しか無いと、
+    # 見ている側は数えたときに合わないことに気付く。
+    rest = [x for x in jp if x not in rows]
+    if rest and p > 0.32:
+        s = "ほか " + "、".join(
+            "%s（%s）" % (x.get("team"), "・".join(x.get("players") or []))
+            for x in rest[:2])
+        d.text((80, y + 14), s, font=font(26), fill=DIM)
     return im
 
 
@@ -1474,9 +1675,10 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
     """
     im, d = base(p)
     lg = (data.get("leagues") or {}).get(league) or {}
-    d.text((70, 140), lg.get("league_jp", ""), font=font(46), fill=ACCENT)
-    d.text((70, 206), "今日終わったら、この組み合わせ",
-           font=font(60), fill=TEXT)
+    lc = league_badge(d, league, lg.get("league_short")
+                      or lg.get("league_jp", ""), y=124)
+    d.text((70, 212), "今日終わったら、この組み合わせ",
+           font=font(56), fill=TEXT)
 
     seeds = (lg.get("leaders") or [])[:3] + (lg.get("wildcards") or [])[:3]
     if len(seeds) < 6:
@@ -1486,8 +1688,10 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
 
     # 縦に6枠。上から第1シード〜第6シード。
     # 線で繋ぐので、位置は先に決めておく。
-    x0, bw, bh = 90, 620, 96
-    ys = [380 + i * 148 for i in range(6)]
+    x0, bw, bh = 80, 610, 92
+    # 当たる2つは寄せて、免除の球団との間は空ける。
+    # 等間隔に並べると、どれとどれが対戦なのかが線を追わないと分からない。
+    ys = [300, 452, 564, 726, 878, 990]
     order = [0, 3, 4, 1, 2, 5]        # 1位 / 4位・5位 / 2位 / 3位・6位
 
     def box(k, y, seed):
@@ -1497,15 +1701,22 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
         e = ease_out(min(1.0, (p - appear) * 9))
         dx = int((1 - e) * 70)
         t = seeds[seed]
+        tint = team_tint(t.get("id"))
         d.rounded_rectangle([x0 - dx, y, x0 + bw - dx, y + bh], 16,
-                            fill=SURF)
-        d.text((x0 + 26 - dx, y + 14), "%d" % (seed + 1),
-               font=font(34), fill=ACCENT)
-        d.text((x0 + 70 - dx, y + 12), t.get("name", ""), font=font(46),
+                            fill=video_common.blend(SURF, tint, 0.18))
+        # シード番号を球団の色の四角に入れる。
+        # 「第3シードと第6シードが当たる」と読み上げる回なので、
+        # 番号は名前と同じくらい目に入る必要がある。
+        d.rounded_rectangle([x0 + 14 - dx, y + 16, x0 + 74 - dx, y + 76],
+                            12, fill=tint)
+        n = "%d" % (seed + 1)
+        d.text((x0 + 44 - dx - d.textlength(n, font=font(40)) / 2, y + 22),
+               n, font=font(40), fill=(12, 14, 20))
+        d.text((x0 + 92 - dx, y + 10), t.get("name", ""), font=font(44),
                fill=TEXT)
-        d.text((x0 + 70 - dx, y + 60), "%d勝%d敗" % (t.get("w") or 0,
+        d.text((x0 + 92 - dx, y + 58), "%d勝%d敗" % (t.get("w") or 0,
                                                     t.get("l") or 0),
-               font=font(28), fill=DIM)
+               font=font(26), fill=DIM)
         return True
 
     for k, seed in enumerate(order):
@@ -1513,22 +1724,47 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
 
     # 線。ワイルドカードシリーズの2組を繋いで、その先を地区シリーズへ。
     if p > 0.34:
-        xa, xb = x0 + bw + 20, x0 + bw + 110
+        xa, xb = x0 + bw + 16, x0 + bw + 96
         for a, b in ((1, 2), (4, 5)):
             ya, yb = ys[a] + bh / 2, ys[b] + bh / 2
-            d.line([(xa, ya), (xb, ya), (xb, yb), (xa, yb)], fill=DIM,
+            d.line([(xa, ya), (xb, ya), (xb, yb), (xa, yb)], fill=lc,
                    width=4)
-            d.text((xb + 18, (ya + yb) / 2 - 20), "ワイルドカード",
-                   font=font(28), fill=DIM)
-        # 1位・2位はここを飛ばす
+            d.line([(xb, (ya + yb) / 2), (xb + 46, (ya + yb) / 2)],
+                   fill=lc, width=4)
+            d.text((xb + 12, (ya + yb) / 2 - 58), "ワイルドカード",
+                   font=font(26), fill=lc)
+            d.text((xb + 12, (ya + yb) / 2 - 28), "シリーズ",
+                   font=font(26), fill=lc)
+            d.text((xb + 12, (ya + yb) / 2 + 10), "勝者が次へ",
+                   font=font(22), fill=DIM)
+        # 1位・2位はここを飛ばす。免除は「バイ」と呼ぶ。
         for k in (0, 3):
             y = ys[k] + bh / 2
-            d.line([(xa, y), (xb + 170, y)], fill=DIM, width=4)
-            d.text((xa + 18, y - 44), "1回戦なし", font=font(28),
+            d.line([(xa, y), (xb + 150, y)], fill=ACCENT, width=4)
+            d.text((xa + 14, y - 42), "1回戦免除（バイ）", font=font(26),
                    fill=ACCENT)
+            d.text((xa + 14, y + 10), "地区シリーズから", font=font(22),
+                   fill=DIM)
 
-    note = "上位2球団はワイルドカードシリーズが免除"
-    d.text((70, H - 250), note, font=font(32), fill=DIM)
+    # 勝ち上がりの道筋。**用語はここで全部出す。**
+    # 読み上げで4つとも言うと尺が足りないが、画面なら1秒で通る。
+    if p > 0.38:
+        y = 1150
+        d.text((70, y), "勝ち上がると", font=font(26), fill=DIM)
+        steps = [("ワイルドカードシリーズ", "3戦2勝", True),
+                 ("地区シリーズ", "5戦3勝", False),
+                 ("リーグ優勝決定シリーズ", "7戦4勝", False),
+                 ("ワールドシリーズ", "7戦4勝", False)]
+        y += 42
+        for nm, fmt, now in steps:
+            col = lc if now else DIM
+            d.rounded_rectangle([70, y, 78, y + 46], 4, fill=col)
+            d.text((98, y), nm, font=font(30), fill=TEXT if now else DIM)
+            d.text((W - 70 - d.textlength(fmt, font=font(26)), y + 6),
+                   fmt, font=font(26), fill=DIM)
+            y += 58
+
+
     # 同率がいる日は断る。勝敗が並んだ2球団のどちらが上かは
     # 直接対決で決まり、こちらはそれを計算していない。
     # 「今日終わったら」と言い切る画面なので、ここは正直に。
@@ -2623,7 +2859,11 @@ def main():
                 elif kind == "ps_league":
                     im = render_ps_league(
                         pp, ((postseason.get("leagues") or {})
-                             .get(meta.get("league", "104")) or {}))
+                             .get(meta.get("league", "104")) or {}),
+                        meta.get("league", "104"))
+                elif kind == "ps_japanese":
+                    im = render_ps_japanese(pp,
+                                            postseason.get("japanese") or [])
                 elif kind == "ps_bracket":
                     im = render_ps_bracket(pp, postseason,
                                            meta.get("league", "104"))
