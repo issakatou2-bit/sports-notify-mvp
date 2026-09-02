@@ -74,7 +74,12 @@
           "text": "パドレスには松井裕樹が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822929",
@@ -149,7 +154,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824391",
@@ -224,7 +234,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823340",
@@ -291,7 +306,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 13,
+        "away": 12,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824716",
@@ -358,7 +378,12 @@
           "text": "マリナーズは5連敗中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822687",
@@ -425,7 +450,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 9,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824633",
@@ -501,7 +531,12 @@
           "text": "カブスには今永昇太・鈴木誠也が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823661",
@@ -568,7 +603,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 15,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824070",
@@ -635,7 +675,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822854",
@@ -702,7 +747,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 8,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824148",
@@ -792,7 +842,12 @@
       },
       "log_notes": [],
       "ai_summary": "【ア・リーグ各地区の首位チーム同士】の対戦である本試合は、シーズン終盤戦における上位チームの力関係を測る重要な一戦になる。ホワイトソックスが72勝65敗で中地区首位、アストロズが70勝68敗で西地区首位と、それぞれの地区で指導的立場にあるチーム同士の対戦は、スタンレー・カップへの道を目指すプレーオフ進出争いを占う上で貴重なデータとなる。先発投手の対比も見どころで、ホワイトソックスのSean Burkeは防御率3.32で安定した投球を見せる一方、アストロズのRonel Blancoは防御率7.71と課題を抱えており、投手戦がどのように展開するか、また左翼が浅い開閉式のダイキン・パークでの本塁打の出やすさがどう試合に作用するかに注目したい。",
-      "notification_hook": "地区首位同士の決戦。村上宗隆擁するホワイトソックスvs西地区覇者アストロズ"
+      "notification_hook": "地区首位同士の決戦。村上宗隆擁するホワイトソックスvs西地区覇者アストロズ",
+      "final_score": {
+        "home": 1,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824313",
@@ -881,7 +936,12 @@
       },
       "log_notes": [],
       "ai_summary": "オリオールズはア・リーグ東地区で4位(首位との差13.5ゲーム)と地区内の順位争いが厳しい中、直近10試合で8勝2敗と好調を維持している。一方のロッキーズはナ・リーグ西地区で5位に沈み、5連敗中と苦しい状況だ。先発投手の対比も興味深く、オリオールズのKyle Bradishは防御率4.03で133奪三振と実績を積み重ねているのに対し、ロッキーズのGabriel Hughesは防御率6.61で0勝6敗と課題を抱えている。【MLBで最も打者有利】とされるクアーズ・フィールドでの試合だけに、投手戦がどこまで成立するかに注目したい。",
-      "notification_hook": "Kyle Bradish対Gabriel Hughes、MLBで最も打ちやすい球場での投手戦は"
+      "notification_hook": "Kyle Bradish対Gabriel Hughes、MLBで最も打ちやすい球場での投手戦は",
+      "final_score": {
+        "home": 4,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823984",
@@ -956,7 +1016,12 @@
           "text": "エンゼルスには菊池雄星が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "825038",
@@ -1045,7 +1110,12 @@
       },
       "log_notes": [],
       "ai_summary": "フィリーズはナ・リーグ東地区で2位(首位との差4.0ゲーム)につけ、直近10試合で8勝2敗と好調を維持している。一方ダイヤモンドバックスは西地区3位で2連敗中だが、先発のEdardo Rodriguezは防御率2.50、14勝4敗と安定した成績を残している。対するフィリーズ先発のJesús Luzardoは203奪三振で強力な投手力を誇る。砂漠気候のチェイス・フィールドは開閉式屋根を備えており、屋根を閉じると【打球が伸びにくくなる】特性が、今試合の展開に影響を与える可能性がある。",
-      "notification_hook": "Luzardoの203奪三振vs防御率2.50のRodriguez。屋根が閉じたチェイス・フィールドでの投手戦が注目だ。"
+      "notification_hook": "Luzardoの203奪三振vs防御率2.50のRodriguez。屋根が閉じたチェイス・フィールドでの投手戦が注目だ。",
+      "final_score": {
+        "home": 1,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823908",
@@ -1122,7 +1192,12 @@
           "text": "ドジャースには大谷翔平・山本由伸が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 8,
+        "away": 13,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {

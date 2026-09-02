@@ -780,7 +780,12 @@
           "text": "昨季17位と13位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "558620",
@@ -837,7 +842,12 @@
           "text": "昨季11位と13位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "558624",
@@ -888,7 +898,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "558627",
@@ -939,7 +954,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "564653",
@@ -1001,7 +1021,12 @@
           "text": "昨季10位と11位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823539",
@@ -1461,7 +1486,12 @@
       ],
       "log_notes": [],
       "ai_summary": "セリエAの開幕戦となるユベントス対パルマは、昨季13位と12位の対戦である。両チームともシーズンの立ち上がりを左右する重要な一戦となり、【昨季下位同士の対抗戦】として、新シーズンの方向性を占う試合として注視される。また、パルマに所属する日本人選手の鈴木ザイオンの活躍ぶりに注目したい。",
-      "notification_hook": "鈴木ザイオン、開幕戦での存在感。パルマはユベントスとの初戦をどう戦うか。"
+      "notification_hook": "鈴木ザイオン、開幕戦での存在感。パルマはユベントスとの初戦をどう戦うか。",
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "559706",
@@ -1526,7 +1556,12 @@
       ],
       "log_notes": [],
       "ai_summary": "昨季のリーグ・アン成績で【4位と14位の実力差がある両チーム】が開幕早々に対戦する。ル・アーブルには日本代表経験者の瀬古歩夢、中村草太、水多海斗が所属しており、リヨンとの力の差がどう表れるかが焦点となる。開幕直後だからこそ、今後のシーズン展開を占う上で重要な一戦であり、両チームの現在地を測るべき試合である。日本人選手たちがフランスの舞台でどのようなパフォーマンスを見せるかに注目したい。",
-      "notification_hook": "昨季4位リヨン対14位ル・アーブル、瀬古歩夢ら日本人トリオの活躍は。"
+      "notification_hook": "昨季4位リヨン対14位ル・アーブル、瀬古歩夢ら日本人トリオの活躍は。",
+      "final_score": {
+        "home": 1,
+        "away": 1,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "559705",
@@ -1577,7 +1612,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "559708",
@@ -1634,7 +1674,12 @@
           "text": "昨季15位と13位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "559710",
@@ -1691,7 +1736,12 @@
           "text": "昨季12位と10位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 2,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "822770",
