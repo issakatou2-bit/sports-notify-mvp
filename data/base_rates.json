@@ -1,14 +1,14 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 129,
-    "home_wins": 74,
+    "games": 132,
+    "home_wins": 75,
     "draws": 0,
-    "away_wins": 55,
+    "away_wins": 57,
     "home_win_pct": 57,
     "avg_total": 8.5,
     "one_run": 41,
-    "one_run_pct": 32,
+    "one_run_pct": 31,
     "shutouts": 17,
     "shutout_pct": 13
   },
@@ -38,16 +38,16 @@
       "avg_total": 10.5
     },
     "クアーズ・フィールド": {
-      "games": 5,
-      "avg_total": 10.4
+      "games": 6,
+      "avg_total": 9.7
     },
     "ペトコ・パーク": {
       "games": 5,
       "avg_total": 8.6
     },
     "ダイキン・パーク": {
-      "games": 8,
-      "avg_total": 8.5
+      "games": 9,
+      "avg_total": 8.2
     },
     "ヤンキー・スタジアム": {
       "games": 6,
@@ -61,13 +61,13 @@
       "games": 7,
       "avg_total": 6.4
     },
+    "チェイス・フィールド": {
+      "games": 9,
+      "avg_total": 5.8
+    },
     "ロジャーズ・センター": {
       "games": 5,
       "avg_total": 5.8
-    },
-    "チェイス・フィールド": {
-      "games": 8,
-      "avg_total": 5.5
     }
   },
   "min_sample": 5
