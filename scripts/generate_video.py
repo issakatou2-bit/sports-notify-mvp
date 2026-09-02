@@ -367,36 +367,195 @@ def render_intro(progress: float, date_label: str, meta: dict = None):
     return im
 
 
+_PS_TEAMS = None
+
+
+def ps_teams() -> dict:
+    """球団IDで引く、いまの勝敗と立ち位置。無ければ空。
+
+    進出争いの回のために毎日取っている順位表を、そのまま使う。
+    「73勝67敗・3連敗中・ワイルドカードまで0.5」は、
+    APIを叩き直さずにここで出せる。
+    """
+    global _PS_TEAMS
+    if _PS_TEAMS is None:
+        try:
+            _PS_TEAMS = json.loads(pathlib.Path(
+                "data/postseason.json").read_text(encoding="utf-8")
+            ).get("teams") or {}
+        except (OSError, ValueError):
+            _PS_TEAMS = {}
+    return _PS_TEAMS
+
+
+@functools.lru_cache(maxsize=64)
+def team_jp_names(tid: str) -> list:
+    """その球団にいる日本人選手。取れなければ空。
+
+    フレームごとに呼ばれるので、球団IDで覚えておく
+    (1本の動画で数千回になる)。
+
+    試合データの jp_players は両チーム分がひとまとめなので、
+    どちらの球団の選手かが分からない。球団ごとの一覧は
+    進出争いのために毎日作っているので、そちらから引く。
+    """
+    try:
+        js = json.loads(pathlib.Path("data/postseason.json").read_text(
+            encoding="utf-8")).get("japanese") or []
+    except (OSError, ValueError):
+        return []
+    for x in js:
+        if str(x.get("team_id")) == str(tid):
+            return list(x.get("players") or [])
+    return []
+
+
+def flag_jp(d, x, y, w=46, h=32):
+    """日の丸。**絵文字は日本語フォントに無い**ので、描く。
+
+    「JP」の札より、こちらのほうが一瞬で分かる。
+    日本人投手が投げる日だとひと目で伝わることが、この枠の要。
+    """
+    d.rounded_rectangle([x, y, x + w, y + h], 5, fill=(250, 250, 250))
+    r = int(h * 0.32)
+    cx, cy = x + w / 2, y + h / 2
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(188, 0, 45))
+    return x + w + 12
+
+
+def team_standing(tid: str) -> list:
+    """その球団のいまを、短い部品に分けて返す。
+
+    「82勝56敗」「3連勝中」「ナ・リーグ第2シード」の3つ。
+    毎日変わる数字なので、同じ対戦カードでも画面が同じにならない。
+
+    1本の文字列で返さないのは、**右に日本人選手の名前が入る日**が
+    あるため。幅が足りない日は、呼ぶ側が後ろから落とす。
+    大事な順に並べてある(勝敗 → 立ち位置 → 連勝)。
+    """
+    t = ps_teams().get(str(tid)) or {}
+    if not t.get("w"):
+        return []
+    out = ["%d勝%d敗" % (t["w"], t.get("l") or 0)]
+    if t.get("clinched"):
+        out.append("進出決定")
+    elif t.get("seed"):
+        out.append("%s第%dシード" % (t.get("league_jp") or "", t["seed"]))
+    elif t.get("wc_gb") not in (None, "-"):
+        out.append("ワイルドカードまで%s" % t["wc_gb"])
+    s = t.get("streak") or ""
+    if len(s) >= 2 and s[0] in "WL" and s[1:].isdigit() and int(s[1:]) >= 2:
+        out.append("%d%s中" % (int(s[1:]), "連勝" if s[0] == "W" else "連敗"))
+    return out
+
+
 def render_game(progress: float, g: dict, index: int, total: int):
     im, d = base_frame(progress)
-    draw_brand(d)
+    draw_brand(d, small=True)
 
-    d.text((70, 180), f"PICK {index + 1} / {total}", font=font(40), fill=ACCENT)
+    # 上の1行に、何本目かと開始時刻を並べる。
+    # 縦に2つ積んでいたが、どちらも「案内」で、中身ではない。
+    d.text((70, 150), f"PICK {index + 1} / {total}", font=font(34),
+           fill=ACCENT)
     # 未明の試合はそう書き添える。20時に見ている人にとって「4:00」は
     # 今夜の続きで、翌日の昼ではない。判定は post_common に1本化してある。
-    d.text((70, 250),
-           post_common.kickoff_display(g.get("start_time_jst") or "") + " JST",
-           font=font(46), fill=DIM)
+    when = post_common.kickoff_display(g.get("start_time_jst") or "") + " JST"
+    d.text((W - 70 - d.textlength(when, font=font(38)), 148), when,
+           font=font(38), fill=DIM)
 
-    # --- 対戦カード(左からスライドイン) ---
+    # --- 対戦カード ---
+    #
+    # 1枚の箱に2球団を積んでいた。球団ごとに言えること
+    # (勝敗・連勝・先発・日本人選手)が増えたので、**球団ごとに1枚**にする。
+    # 箱の色帯はその球団の色。並べたときにどちらの話か迷わない。
     e = ease_out(min(1.0, progress * 3.2))
     dx = int((1 - e) * 160)
-    card_y = 380
-    card(d, 60 - dx, card_y, W - 60 - dx, card_y + 300, stripe=ACCENT)
+    jp_names = list(g.get("jp_players") or [])
+    starters = {s.get("name") for s in (g.get("jp_starters") or [])}
+    # 日本人選手の名前を、球団の欄に置けたかどうか。
+    # 置けた日は、下の理由の箱に「◯◯が所属」を書かない。
+    # **置けなかった日(サッカー)は書く。**そこが唯一の手がかりなので、
+    # 消すと日本人選手が出る試合だと分からなくなる。
+    shown_jp = False
+    # 箱の高さは中身で決める。
+    #
+    # サッカーは先発も順位表も無いので、MLBと同じ高さにすると
+    # 名前1つの下に120pxの空白が残る。実際そうなっていた。
+    tops, hs = [], []
+    yy = 236
+    for side in ("home", "away"):
+        h = 118
+        if (team_standing(g.get(f"{side}_team_id"))
+                or [n for n in jp_names
+                    if n in team_jp_names(g.get(f"{side}_team_id"))]):
+            h += 56
+        if (g.get(f"{side}_probable") or {}).get("name"):
+            h += 62
+        tops.append(yy)
+        hs.append(h)
+        yy += h + 20
 
     for i, side in enumerate(("home", "away")):
-        y = card_y + 40 + i * 120
-        team_badge(d, 100 - dx, y, g.get(f"{side}_abbr"), g.get(f"{side}_color"))
+        col = g.get(f"{side}_color") or "#3C4250"
+        if isinstance(col, str) and col.startswith("#"):
+            col = tuple(int(col[k:k + 2], 16) for k in (1, 3, 5))
+        col = video_common.lift_color(
+            "#%02X%02X%02X" % col if isinstance(col, tuple) else col, ACCENT)
+        top = tops[i]
+        card(d, 60 - dx, top, W - 60 - dx, top + hs[i], stripe=col,
+             fill=video_common.blend(SURF, col, 0.10))
+        team_badge(d, 100 - dx, top + 24, g.get(f"{side}_abbr"),
+                   g.get(f"{side}_color"))
         name = g.get(f"{side}_team_name", "")
-        d.text((240 - dx, y + 4), name, font=font(58), fill=TEXT)
-        if g.get(f"{side}_has_jp"):
-            nw = d.textlength(name, font=font(58))
-            d.rounded_rectangle(
-                [250 - dx + nw, y + 12, 250 - dx + nw + 74, y + 54], 8, fill=JP
-            )
-            d.text((262 - dx + nw, y + 14), "JP", font=font(30), fill=(11, 14, 20))
+        d.text((240 - dx, top + 18), name,
+               font=font(fit_size(d, name, W - 540, (56, 50, 44, 38))),
+               fill=TEXT)
+        tag = "ホーム" if side == "home" else "ビジター"
+        d.text((W - 100 - dx - d.textlength(tag, font=font(28)), top + 30),
+               tag, font=font(28), fill=DIM)
+        # 先発ではない日本人選手。**先に置いて、場所を取る。**
+        # 名前は勝敗より大事なので、勝敗のほうを後ろから削る。
+        others = [n for n in jp_names if n not in starters
+                  and n in team_jp_names(g.get(f"{side}_team_id"))]
+        right = W - 100 - dx
+        if others:
+            s = "・".join(others[:2])
+            fw = font(30)
+            x = right - d.textlength(s, font=fw)
+            d.text((x, top + 84), s, font=fw, fill=JP)
+            flag_jp(d, x - 58, top + 82, 46, 30)
+            right = x - 74
+            shown_jp = True
+        # いまの勝敗と立ち位置。入るところまで。
+        parts = team_standing(g.get(f"{side}_team_id"))
+        while parts and d.textlength("・".join(parts),
+                                     font=font(30)) > right - 260:
+            parts.pop()
+        if parts:
+            d.text((240 - dx, top + 84), "・".join(parts), font=font(30),
+                   fill=DIM)
+        # 先発予定。**球団の下に小さく。**日本人なら日の丸を先に置く。
+        p = g.get(f"{side}_probable") or {}
+        px = 104 - dx
+        if p.get("name"):
+            if p["name"] in starters or p.get("name_en") in starters:
+                px = flag_jp(d, px, top + 148)
+                shown_jp = True
+            d.text((px, top + 146), "先発 " + str(p["name"]),
+                   font=font(36), fill=TEXT)
+            bits = []
+            if p.get("era"):
+                bits.append("防御率" + str(p["era"]))
+            if p.get("wins") is not None and p.get("losses") is not None:
+                bits.append("%d勝%d敗" % (p["wins"], p["losses"]))
+            if p.get("strikeouts"):
+                bits.append("%d奪三振" % p["strikeouts"])
+            if bits:
+                s = "　".join(bits)
+                d.text((W - 100 - dx - d.textlength(s, font=font(30)),
+                        top + 152), s, font=font(30), fill=ACCENT)
 
-    y = 740
+    y = tops[-1] + hs[-1] + 22
 
     # --- どの大会か ---
     #
@@ -409,26 +568,33 @@ def render_game(progress: float, g: dict, index: int, total: int):
     if league and league != "MLB":
         y = label_chip(d, 70, y, league, JP) + 10
 
-    # --- 先発投手 ---
-    pitchers = []
-    for side, label in (("home", ""), ("away", "")):
-        p = g.get(f"{side}_probable")
-        if p and p.get("name"):
-            era = f" ({p['era']})" if p.get("era") else ""
-            pitchers.append(f"{p['name']}{era}")
-    if pitchers and progress > 0.08:
-        y = label_chip(d, 70, y, "先発予定", ACCENT_DIM, ACCENT)
-        for line in pitchers:
-            d.text((84, y), line, font=font(42), fill=TEXT)
-            y += 58
-        y += 20
+    # --- 何連戦の何戦目か ---
+    #
+    # 同じ相手と3日続けてやるのがMLBで、そこが日本の視聴者に伝わりにくい。
+    # 「昨日勝ったほうが今日も投げ勝てるか」は、この1行が無いと立たない。
+    sc = g.get("series_context") or {}
+    if sc.get("games_in_series") and progress > 0.06:
+        s = "%d連戦の第%d戦" % (sc["games_in_series"],
+                               sc.get("series_game_number") or 1)
+        hw = sc.get("home_wins_in_stretch")
+        aw = sc.get("away_wins_in_stretch")
+        if hw is not None and aw is not None and (hw or aw):
+            s += "　ここまで%s%d勝 - %s%d勝" % (
+                g.get("home_team_name", ""), hw,
+                g.get("away_team_name", ""), aw)
+        d.text((78, y), s, font=font(30), fill=DIM)
+        y += 52
 
     # --- 注目理由(1つずつ順に出す) ---
     # ライバル関係の理由文は「◯◯ vs ◯◯ は伝統の好カード — 由来…」の形で、
     # 由来まで入れると縦型の画面には収まらない。動画では見出し部分だけ使い、
     # 由来はサイト側(全文を出せる)に任せる。
+    #
+    # 「◯◯には△△が選手が所属」は、もう球団の欄に名前で出ている。
+    # ここに文で書くと、いちばん大きい箱がいちばん薄い情報で埋まる。
     reasons = [r["text"].split(" — ")[0] for r in (g.get("reasons") or [])
-               if r.get("visible", True) and r.get("text")][:3]
+               if r.get("visible", True) and r.get("text")
+               and not (shown_jp and r.get("tag") == "jp_team")][:3]
     if reasons and progress > 0.10:
         # 1枚のカードにまとめる。以前は文字が地の上に直接置かれていて、
         # 上の対戦カードと作りが違い、どこまでが理由なのか曖昧だった。
@@ -450,21 +616,22 @@ def render_game(progress: float, g: dict, index: int, total: int):
         y += h + 26
 
     # --- 球場の見どころと、開始時刻の天気 ---
+    #
+    # **余ったときだけ出す。**
+    # 球場の形はシーズンを通して変わらないので、その日の話ではない。
+    # 先発・勝敗・連勝・順位争いを置いたあとに場所が残っていれば置く。
+    # 無理に入れると、毎日変わる情報のほうが押し出される。
     if g.get("venue_note") and progress > 0.30:
-        # 高さを230で決め打ちしていたため、2行しか無い日も同じ大きさの
-        # 塊が残り、画面でいちばん大きくて重い箱が最も軽い情報になっていた。
-        note = wrap(d, g["venue_note"], font(34), W - 220)[:3]
+        note = wrap(d, g["venue_note"], font(34), W - 220)[:2]
         # その時刻・その球場の天気。気温と風と降水確率だけを置く。
         # 「打者有利」のような判断は書かない。数字だけあれば、
         # どう読むかは見ている人が決められる。
         wx = venue_weather(g.get("game_id"), g.get("venue_name"))
         h = 56 + len(note) * 48 + 30 + (46 if wx else 0)
-        # 中身のすぐ下に置く。下限を決め打ちしていたので、理由が少ない日は
-        # 上に空きができ、多い日は詰まった。並びは中身が決める。
-        #
-        # 下限は読み上げの帯より上に取る。帯は3行で H-434 から始まるので、
-        # そこへ食い込むと球場の話も読み上げ文も両方読めなくなる。
-        y = min(y + 20, H - 460 - h)
+        y += 20
+        # 読み上げの帯(3行で H-434 から)に食い込むなら、その日は出さない。
+        if y + h > H - 460:
+            return im
         card(d, 60, y, W - 60, y + h, stripe=ACCENT, fill=ACCENT_DIM)
         yy = y + 24
         # 球場名だけだと、どちらの本拠地なのかが分からない。
@@ -483,6 +650,15 @@ def render_game(progress: float, g: dict, index: int, total: int):
             yy += 48
         if wx:
             d.text((100, yy + 2), wx, font=font(32), fill=TEXT)
+            yy += 46
+        # その球場が点の入る所か入らない所か。
+        # 形の話(グリーンモンスター)だけだと毎日同じだが、
+        # 平均得点は順位つきの数字なので、球場ごとに違う。
+        runs = g.get("venue_runs_note") or ""
+        if runs and yy + 60 < H - 460:
+            for line in wrap(d, runs, font(30), W - 220)[:2]:
+                d.text((100, yy + 8), line, font=font(30), fill=TEXT)
+                yy += 42
     return im
 
 

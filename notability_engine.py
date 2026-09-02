@@ -177,14 +177,29 @@ def rule_japanese_player(game: Game, jp_team_map: dict) -> list[Reason]:
     reasons = []
     covered_team_ids = set()
 
-    # 今日の先発予定として確認できた場合は高めの重み
+    # 日本人投手が先発予定の日は、それがその日いちばんの理由になる。
+    #
+    # 重みを3から6へ上げた。所属(1〜2)との差が小さすぎて、
+    # 「山本由伸が投げる試合」と「吉田正尚が名簿にいる試合」が
+    # ほぼ並んでいた。この2つは、見る側にとって全く違う。
+    #
+    # 根拠:
+    #   28日の実測で、題に日本人選手の名前がある動画は468回/本、
+    #   無いものは168回/本。2.8倍。
+    #   そのうえ**先発は出場が確定している**。所属は出るかどうか
+    #   分からない(8/28に吉田正尚でスタメン外を引いたことがある)。
+    #
+    # 順位争い(+4)や伝統の一戦(+3)より上に置く。
+    # 日本語で見る人にとって、投げるか投げないかは他の何より大きい。
     for p in game.players:
         if p.is_japanese:
             reasons.append(
                 Reason(
                     tag="JP",
-                    text=f"{p.name}が{p.stat_context}の中での出場",
-                    weight=3,
+                    # 「が先発予定の中での出場」と書いていた。
+                    # 文として壊れているうえに、画面にそのまま出ていた。
+                    text=f"{p.name}が{p.stat_context}",
+                    weight=6 if p.is_starter else 3,
                 )
             )
             covered_team_ids.add(p.team_id)

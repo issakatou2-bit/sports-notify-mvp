@@ -250,6 +250,38 @@ def japanese(data: dict, teams: list = None,
     return out
 
 
+def flat(data: dict, teams: list) -> dict:
+    """30球団ぶんを、球団IDで引ける形に。
+
+    なぜ要るのか:
+      leagues の下は leaders / wildcards / chasing に分かれていて、
+      **どこにも入らない球団が落ちる**（1リーグ12球団のうち9球団まで）。
+      明日の注目試合の画面で「この球団はいま何勝何敗か」を出したいとき、
+      落ちている球団があると、出る日と出ない日ができる。
+
+      順位表はもう取ってあるので、ここで全球団を平らに並べておく。
+      進出争いの回だけでなく、他の枠からも読めるようにする。
+    """
+    seat = {}
+    for lid, r in data.items():
+        seeds = (r.get("leaders") or [])[:3] + (r.get("wildcards") or [])[:3]
+        for i, t in enumerate(seeds, 1):
+            seat[str(t.get("id"))] = i
+    out = {}
+    for t in teams or []:
+        tid = str(t.get("id"))
+        out[tid] = {
+            "name": t.get("name"), "league": t.get("league"),
+            "league_jp": t.get("league_jp"), "division": t.get("division"),
+            "w": t.get("w"), "l": t.get("l"), "pct": t.get("pct"),
+            "streak": t.get("streak"), "magic": t.get("magic"),
+            "wc_gb": t.get("wc_gb"), "gb": t.get("gb"),
+            "div_rank": t.get("div_rank"), "seed": seat.get(tid),
+            "clinched": bool(t.get("clinched") or t.get("div_champ")),
+        }
+    return out
+
+
 def diff(now: dict, before: dict) -> list:
     """昨日との違い。**この枠の主題はここ。**
 
@@ -383,6 +415,7 @@ def main() -> int:
         "changes": changes,
         "prev_date": str(before.get("date") or ""),
         "japanese": japanese(data, teams),
+        "teams": flat(data, teams),
         "leagues": {str(k): v for k, v in data.items()},
     }
     p.parent.mkdir(parents=True, exist_ok=True)
