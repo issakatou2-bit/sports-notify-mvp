@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-01T06:01:52.287350+00:00",
+  "updated_at": "2026-09-02T06:02:47.740216+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,74 +13,74 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 5,
-      "tone": "好調",
-      "gist": "キューバスが8月に62本塁打。Bregmanが3本。"
+      "team_id": "108",
+      "name": "エンゼルス",
+      "name_en": "Los Angeles Angels",
+      "mentions": 11,
+      "tone": "不振",
+      "gist": "大谷とトラウトを浪費しモレーノ会長がエンゼルスを売却"
     },
     {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 4,
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 3,
       "tone": "話題",
-      "gist": "Trevor Storyがサヨナラ。放送局が謝罪。"
+      "gist": "大谷がドジャースと契約し試合では13点差で敗戦"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
-      "mentions": 4,
+      "mentions": 3,
       "tone": "話題",
-      "gist": "若手捕手Salasを昇格。Kingが6回無失点。"
+      "gist": "パドレスがMLB史上最高額で売却されプレーオフへ"
     },
     {
       "team_id": "145",
       "name": "ホワイトソックス",
       "name_en": "Chicago White Sox",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ホワイトソックスがPhamをトレード獲得。"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "フィリーズがStottでD-backs下す。"
-    },
-    {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "ロッキーズが順位を落とす。"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
       "mentions": 2,
       "tone": "好調",
-      "gist": "ヤンキースがトップ5に返り咲く。"
+      "gist": "ホワイトソックスが楽しみながら勝利を重ねている"
     },
     {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
+      "team_id": "134",
+      "name": "パイレーツ",
+      "name_en": "Pittsburgh Pirates",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "パイレーツが歴史的な1イニングを演出し延長戦を制す"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ブリュワーズの外野手らが衝突事故を乗り越えて勝利"
+    },
+    {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
       "mentions": 2,
       "tone": "不振",
-      "gist": "エンゼルスに批判の声。守備ミスで失点。"
+      "gist": "カブスが得点ながら4勝8敗の成績に低迷"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "大谷がドジャース契約を選びエンゼルス首脳は対抗せず"
     }
   ],
   "players": [
     {
-      "name": "鈴木誠也",
-      "mentions": 1
+      "name": "大谷翔平",
+      "mentions": 2
     }
   ]
 }
