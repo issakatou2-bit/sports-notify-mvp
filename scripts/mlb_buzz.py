@@ -391,6 +391,42 @@ def fetch_result(date: str, teams: list) -> dict:
                 res["star_name"] = best[0][1]
                 res["star_line"] = best[0][2]
                 res["star_team"] = best[0][3]
+
+            # 両先発投手。**目立った選手(star)とは別に、必ず両方渡す。**
+            #
+            # コメント欄は先発投手の名前で盛り上がることが多いが、
+            # star は打者・投手どちらか1人しか選ばれない。9/2の回では
+            # 「Mizeは災厄だった」というコメントが読まれたが、Mizeが
+            # どちらの球団の、どんな投球だったかを渡していなかったので、
+            # 「7回で8奪三振」のような無関係な話にしかならなかった
+            # （実際はパドレスの先発で、4回4失点で負け投手）。
+            #
+            # boxscore の pitchers 配列は先発が先頭に来る(公式仕様)。
+            for side in ("away", "home"):
+                pids = (data.get("teams", {}).get(side, {})
+                       .get("pitchers") or [])
+                if not pids:
+                    continue
+                row = ((data.get("teams", {}).get(side, {})
+                       .get("players") or {}).get(f"ID{pids[0]}") or {})
+                pit = (row.get("stats") or {}).get("pitching") or {}
+                name = (row.get("person") or {}).get("fullName")
+                if not name or not pit.get("inningsPitched"):
+                    continue
+                # note は "(L, 5-9)" のような形。勝敗と通算成績を
+                # 日本語にする。読めない形が来ても、他の数字は出す。
+                decide = ""
+                note = (pit.get("note") or "").strip("() ")
+                mnote = re.match(r"^([WL]),\s*(\d+)-(\d+)$", note)
+                if mnote:
+                    tag = "勝利投手" if mnote.group(1) == "W" else "敗戦投手"
+                    decide = f"　{tag}（通算{mnote.group(2)}勝{mnote.group(3)}敗）"
+                res[side + "_starter"] = {
+                    "name": name, "team": res.get(f"{side}_jp") or "",
+                    "line": (f"{pit['inningsPitched']}回 "
+                            f"{pit.get('strikeOuts', 0)}奪三振 "
+                            f"自責{pit.get('earnedRuns', 0)}" + decide),
+                }
         except Exception:
             pass
         return res

@@ -271,7 +271,8 @@ def flat(data: dict, teams: list) -> dict:
     for t in teams or []:
         tid = str(t.get("id"))
         out[tid] = {
-            "name": t.get("name"), "league": t.get("league"),
+            "name": t.get("name"), "name_en": t.get("name_en"),
+            "league": t.get("league"),
             "league_jp": t.get("league_jp"), "division": t.get("division"),
             "w": t.get("w"), "l": t.get("l"), "pct": t.get("pct"),
             "streak": t.get("streak"), "magic": t.get("magic"),

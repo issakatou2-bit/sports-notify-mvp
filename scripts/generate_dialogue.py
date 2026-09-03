@@ -155,6 +155,74 @@ def find_players(texts: list) -> list:
     return out
 
 
+def team_standing(jp_name: str,
+                  postseason_path: str = "data/postseason.json") -> dict:
+    """その球団のいまの勝敗と、リーグでの立ち位置。引けなければ空。
+
+    「レッズは今日勝率.479で、ナ・リーグ中地区最下位」のように、
+    **対戦している側の球団自身の強さ**を言うのに要る。
+    比較のコメントに数字で返すには、比べられている側だけでなく、
+    比べている側（＝いま見ている試合の球団）の数字も要る。
+    """
+    try:
+        teams = json.loads(pathlib.Path(postseason_path).read_text(
+            encoding="utf-8")).get("teams") or {}
+    except Exception:                                # noqa: BLE001
+        return {}
+    for t in teams.values():
+        if t.get("name") == jp_name:
+            return t
+    return {}
+
+
+def team_mentions(texts: list, exclude_jp: set,
+                  postseason_path: str = "data/postseason.json") -> list:
+    """コメント・返信に出てくる、対戦の2球団以外の球団と、いまの勝率。
+
+    なぜ要るのか:
+      「CincinnatiはGiantsやRockies、Angelsより良くやってる」という
+      返信は、比べている側がどれだけ弱いのかが分からないと
+      意味が取れない。渡していなかったので、台本はこの返信を
+      そのまま読むだけで終わっていた。
+
+      勝率はもう毎日 postseason.py が取っている順位表にある。
+      比較に出てきた球団だけを渡す。全30球団を渡すと埋もれる。
+    """
+    try:
+        from notability_engine import MLB_TEAM_NAME_EN, MLB_TEAM_NAME_JP
+        teams = json.loads(pathlib.Path(postseason_path).read_text(
+            encoding="utf-8")).get("teams") or {}
+    except Exception:                                # noqa: BLE001
+        return []
+    # 「Red Sox」「White Sox」「Blue Jays」のような2語の愛称。
+    # 最後の1語(「Sox」「Jays」)だけでは他球団と紛れる。
+    TWO_WORD = {"Red Sox", "White Sox", "Blue Jays"}
+    text = " ".join(t for t in texts if t)
+    out, seen = [], set(exclude_jp)
+    for tid, en in MLB_TEAM_NAME_EN.items():
+        jp = MLB_TEAM_NAME_JP.get(tid, en)
+        if jp in seen:
+            continue
+        words = en.split()
+        two = " ".join(words[-2:])
+        nick = two if two in TWO_WORD else words[-1]
+        # 都市名（先頭の語）でも当たるようにする。「Cincinnati」は
+        # 「Reds」とは別の綴りで出てくることがある。
+        candidates = [nick] + [w for w in words[:-1] if len(w) >= 5]
+        # 大小文字は問わない。コメントは「giants」のように
+        # 小文字で書かれることがある。
+        if not any(re.search(r"\b" + re.escape(c) + r"\b", text, re.I)
+                  for c in candidates):
+            continue
+        t = teams.get(tid) or {}
+        if not t.get("w"):
+            continue
+        seen.add(jp)
+        out.append({"name": jp, "w": t["w"], "l": t["l"],
+                    "pct": t.get("pct")})
+    return out
+
+
 def lookup(name: str) -> dict:
     """その選手の、確かめられる数字。引けなければ空。
 
@@ -222,8 +290,17 @@ def team_of(name: str) -> str:
             return ""
         pid = ppl[0].get("id")
         q = _get(f"{MLB_API}/people/{pid}?hydrate=currentTeam")
-        return ((q.get("people") or [{}])[0].get("currentTeam")
-                or {}).get("name", "") or ""
+        en = ((q.get("people") or [{}])[0].get("currentTeam")
+             or {}).get("name", "") or ""
+        if not en:
+            return ""
+        # 日本語名に直す。英語のままだと、他は全部日本語なのに
+        # ここだけ「Toronto Blue Jays」と混じって出る。
+        try:
+            from mlb_buzz import jp_team
+            return jp_team(en)
+        except ImportError:
+            return en
     except Exception:                            # noqa: BLE001
         return ""
 
@@ -296,14 +373,36 @@ def material(buzz_path: str, voices_path: str) -> dict:
         print("[info] コメントに出ている日本人選手: " + "、".join(jp))
     # コメントに出てくる選手の所属を、こちらで引いておく。
     # 渡さないと、モデルが対戦カードから推測して外す。
+    #
+    # 返信の原文も見る。以前はコメント本文(title)しか見ておらず、
+    # 返信で名前が出てきた選手（「Dylan Cease」のような）は
+    # 所属を引く機会が無かった。原文は reply_texts、または
+    # reply_ja[].original に入っている。
+    texts = []
+    for c in voices:
+        texts.append(c.get("title", ""))
+        texts += c.get("reply_texts") or []
+        texts += [r.get("original", "") for r in (c.get("reply_ja") or [])]
     teams = {}
-    for n in find_players([c.get("title", "") for c in voices])[:8]:
+    for n in find_players(texts)[:10]:
         tm = team_of(n)
         if tm:
             teams[n] = tm
             print(f"[info] {n}: {tm}")
+
+    # コメント・返信に出てくる、対戦の2球団以外の球団の勝率。
+    # 「CincinnatiはGiantsより良くやってる」のような比較コメントは、
+    # 比べている側の弱さが分からないと意味が取れない。
+    exclude = set()
+    if top.get("result"):
+        exclude = {top["result"].get("away_jp"), top["result"].get("home_jp")}
+    others = team_mentions(texts, exclude)
+    if others:
+        print("[info] コメントに出てくる他球団: "
+             + "、".join(f"{o['name']}{o['pct']}" for o in others))
+
     return {"top": top, "voices": voices, "teams": teams, "jp": jp,
-            "source": v.get("source", "")}
+            "other_teams": others, "source": v.get("source", "")}
 
 
 def situation(m: dict) -> dict:
@@ -412,8 +511,6 @@ def angle(sit: dict) -> list:
             f"{win}を褒める話に寄せない。コメント欄がそこを見ていない。",
             "同じ負けに対して、突き放す人・かばう人・笑う人が並んでいるはず。"
             "**その温度差を並べる。**",
-            "点の入り方（何回に何点）は、大敗の説明として先に1度だけ置く。"
-            "そのあとはコメントの話に移る。",
         ]
     if m <= 1:
         return [
@@ -422,13 +519,13 @@ def angle(sit: dict) -> list:
         ]
     if (sit.get("total") or 0) >= 12:
         return [
-            "軸: **点の取り合いそのもの。**回ごとの得点を追うと形が見える。",
-            "投手が何人も出た試合なので、コメント欄は継投の話になりやすい。",
+            "軸: **点の取り合いそのもの。**投手が何人も出た試合なので、"
+            "コメント欄は継投の話になりやすい。",
         ]
     if (sit.get("total") or 0) <= 3:
         return [
             "軸: **投げ合い。**点が入らない試合は、1点の重みが主題になる。",
-            "目立った選手の投球内容から入る。",
+            "両先発投手の投球内容から入る。",
         ]
     return [
         "軸: **コメント欄でいちばん支持されている見方と、それへの反論。**",
@@ -452,21 +549,49 @@ def facts(m: dict, extra: list) -> str:
     if res.get("away_jp"):
         lines.append(f"結果: {res['away_jp']} {res.get('away_score')} "
                      f"- {res.get('home_score')} {res['home_jp']}")
+        # 対戦している2球団自身の、いまの勝敗と地区順位。
+        # コメントが「Cincinnatiはあそこよりマシ」のように自チームの
+        # 強さを主張していたら、その主張を数字で受けられるようにする。
+        for jp in (res["away_jp"], res["home_jp"]):
+            st = team_standing(jp)
+            if st.get("w"):
+                where = st.get("division", "")
+                if st.get("div_rank"):
+                    where += f"{st['div_rank']}位"
+                lines.append(
+                    f"{jp}のいまの成績: {st['w']}勝{st['l']}敗"
+                    f"（勝率{st.get('pct')}"
+                    + (f"、{where}" if where else "") + "）")
     if top.get("game_date"):
         lines.append(f"試合が行われた日（現地）: {top['game_date']}")
     inn = [i for i in (res.get("innings") or []) if i.get("num")]
     if inn:
-        lines.append("回ごとの得点(先攻/後攻): "
+        # **回ごとの得点は画面のスコアボードに出る。口では言わない。**
+        # 以前は「1回に2点、2回に1点で3点先取…」と全部読み上げていた。
+        # 冗長なうえ、タイトル・サムネイルで本題(コメント欄)を
+        # 見に来た人にとって、序盤の説明が長すぎた。
+        lines.append("回ごとの得点(先攻/後攻・画面のスコアボードに出るので"
+                     "逐一読み上げない): "
                      + " ".join(f"{i.get('away')}" for i in inn)
                      + " / " + " ".join(f"{i.get('home')}" for i in inn))
     # 安打と失策。**大敗の日は、たいていここに理由が出ている。**
-    # 渡していなかったので、10対1の回でも点差の話しかできなかった。
     if isinstance(res.get("away_hits"), int):
         lines.append(f"安打: {res['away_jp']} {res['away_hits']}本 / "
                      f"{res['home_jp']} {res.get('home_hits')}本")
     if isinstance(res.get("away_errors"), int):
         lines.append(f"失策: {res['away_jp']} {res['away_errors']} / "
                      f"{res['home_jp']} {res.get('home_errors')}")
+    # 両先発投手。**必ず両方渡す。**
+    #
+    # コメント欄は先発投手の名前で盛り上がることが多い
+    # (「Mizeは災厄だった」)。目立った選手(star)は打者・投手どちらか
+    # 1人しか選ばれないので、別に渡す。これがあることで、
+    # 先発投手を名指しするコメントに中身のある返しができる。
+    for side, label in (("away", "先攻"), ("home", "後攻")):
+        st = res.get(side + "_starter")
+        if st:
+            lines.append(f"{label}の先発投手: "
+                         f"{st['name']}（{st['team']}） {st['line']}")
     if res.get("star_name"):
         # 所属を必ず書く。書かないとモデルが対戦カードから推測して外す。
         team = res.get("star_team")
@@ -491,6 +616,15 @@ def facts(m: dict, extra: list) -> str:
                   "対戦カードから推測しない"]
         for n, tm in m["teams"].items():
             lines.append(f"- {n}: {tm}")
+
+    if m.get("other_teams"):
+        lines += ["", "## コメントに出てくる、対戦の2球団以外の球団の勝率"
+                  "（MLB公式）",
+                  "比較のコメント（「あそこよりマシだ」のような）に"
+                  "根拠を付けるための数字。使わなくてもよい"]
+        for o in m["other_teams"]:
+            lines.append(f"- {o['name']}: {o['w']}勝{o['l']}敗"
+                         f"（勝率{o['pct']}）")
 
     if extra:
         lines += ["", "## コメントに出てくる選手の、確かめた数字",
@@ -552,6 +686,13 @@ def panels(m: dict, extra: list) -> dict:
             "team": res.get("star_team") or "",
             "line": res.get("star_line") or "",
         }
+    # 両先発投手。scoreと同じ「star」の見た目で足りる
+    # (名前・所属・成績の3段)ので、新しい画面は作らない。
+    for side, key in (("away", "starter_away"), ("home", "starter_home")):
+        st = res.get(side + "_starter")
+        if st:
+            out[key] = {"type": "star", "name": st["name"],
+                       "team": st["team"], "line": st["line"]}
     for i, c in enumerate(m.get("voices") or [], 1):
         if not c.get("ja"):
             continue
@@ -571,9 +712,12 @@ def panels(m: dict, extra: list) -> dict:
 
 def panel_menu(ps: dict) -> str:
     """モデルに見せる、鍵の一覧。ここに無い鍵は書かせない。"""
-    label = {"score": "回ごとの得点と最終スコア",
+    label = {"score": "回ごとの得点と最終スコア（画面がスコアボード。"
+                      "口では逐一読まない）",
              "views": "その動画の再生回数",
              "star": "目立った選手の成績",
+             "starter_away": "先攻の先発投手の成績",
+             "starter_home": "後攻の先発投手の成績",
              "topic": "きょうの話（締めに使う）"}
     rows = []
     for k, v in ps.items():
@@ -648,18 +792,34 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   ・コメントを書いた人そのものを馬鹿にしない。
     突っ込む相手は**言い分**であって、人ではない
   ・特定の球団のファン全体を悪く言わない
-- **野球の決まりごとは説明してよい。**
-  用語・規則・数え方は、その日のデータに関係なく成り立つので、
-  事実を足すことにはならない。
-  例:「後攻が勝っていれば9回裏は行われないの」
-    「クオリティスタートは6回を自責点3以内のことよ」
-  ずんだもんが引っかかったところで、1本の動画に1つか2つ。
-  **ただし「珍しい」「多くない」「一流だ」のような評価はしない。**
+- **コメントが自チームの強さを主張していたら、上の勝率で受ける。**
+  「Cincinnatiはあそこよりマシだ」のような比較コメントには、
+  「対戦の2球団自身の成績」「対戦の2球団以外の勝率」が渡っていれば
+  それを使い、ずんだもんに数字で聞き返させてよい。
+  例（この通りでなくてよい。数字は渡されたものを使う）:
+    めたん[comment]「つまり、Cincinnati（レッズ）は
+    Giantsより良くやってるって」
+    ずんだもん「レッズは今日勝率いくつなのだ？」
+    めたん「.479よ。それでもGiantsの.414より上ではあるわね」
+  数字が渡っていなければ、この形はやらない（無い数字を作らない）。
+- **野球の決まりごとは、話の流れで要るときだけ説明する。**
+  「後攻が勝てば9回裏は行われない」のように、点差だけで
+  分かることをわざわざ説明しない。説明するとしても、
+  1本の動画に1つまで。
+  **「珍しい」「多くない」「一流だ」のような評価はしない。**
   それは数えないと言えないことで、ここに数字が無い。
 - **最初の2行で「何の動画のコメント欄を読むのか」を言う。**
   上の「動画の題（原文）」がそれ。日本語にして言う。
   見ている人は、どの動画の話なのかを知らないまま始まる
   （試作では最後まで何の動画か分からなかった、と言われた）
+- **回ごとの得点を1回ずつ読み上げない。**
+  [score]の札を出しながら「試合の流れはこうだったわ」くらいの
+  短い一言で済ませる。回ごとの数字は画面のスコアボードに出ている。
+  タイトルとサムネイルで見に来た人は本題（コメント欄）を見たいので、
+  試合経過の説明で前半を使い切らない。
+  そのあと、両先発投手の成績（[starter_away] [starter_home]。
+  無ければ省く）へ進み、そこから目立った選手（[star]）か
+  コメント欄へ入る。導入は合わせて4〜6行に収める。
 - 「話者[鍵]：台詞」または「話者：台詞」の形で、1行に1つ。
   それ以外は書かない
 - **話題が変わる行には必ず鍵を付ける。** 得点の話なら[score]、
@@ -694,8 +854,29 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   聞かせない。意味の取れない一言について「どういう意味なのだ？」と
   聞かせない。**そういうコメントは、そもそも取り上げない。**
 
-  取り上げるコメントは、上の6件から選んでよい。全部使う必要は無い。
+  取り上げるコメントは、上のコメントから選んでよい。全部使う必要は無い。
   **話が続くものだけを選ぶ。**
+- **返信は、意味が取れるものだけ拾う。**
+  返信の中には、この試合にもコメント全体の話題にも関係の無い
+  固有名詞が出てくることがある（渡した「所属」に無い選手・球団を
+  引き合いに出す、内輪の言い回しなど）。**それが誰・何なのか
+  上の材料だけでは判断できないなら、その返信は使わない。**
+  無理に訳して読み上げると、見ている側には意味不明な一文になる。
+
+  逆に、その選手の所属が上の「いまの所属」に書いてあるなら、
+  それは使ってよい材料になる。**「Mizeは災厄だった」に対して、
+  上に先攻の先発投手としてMizeの成績が渡っていれば、
+  「それ、今日の先発投手のことなのだ」と繋げてよい。**
+  渡っていなければ、その名前には触れない。
+- **英語のコメントは、意味が伝わる日本語にする。単語を1対1で
+  置き換えない。**
+  「a glorified beer league team」は「自称ビールリーグチーム」ではなく、
+  「格下扱いされるようなチーム」のように、**言いたいことが伝わる形**
+  にする。直訳すると原文の意味が消えるものは、意味を汲んで言い換える。
+  ただし**新しい主張を足さない**。「弱いチームに負けて恥だ」という
+  皮肉の温度はそのまま、日本語として通る言い方にするだけ。
+  それでも「翻訳」「現地の言葉」という断りは付ける（コレスポの
+  意見ではないため）。
 - **選手の所属は、上の「いまの所属」に書いてあるものだけを使う。**
   書いていない選手の所属には触れない。対戦カードから推測しない
   （試作では Kyle Tucker を「タイガースの打者」と書いたが、
