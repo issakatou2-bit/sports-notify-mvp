@@ -1,9 +1,135 @@
 {
-  "generated_at": "2026-09-02T09:54:00.309766+00:00",
-  "games": [],
+  "generated_at": "2026-09-03T09:53:55.800278+00:00",
+  "games": [
+    {
+      "game_id": "564682",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-92",
+      "away_team_id": "PD-558",
+      "home_team_name": "レアル・ソシエダ",
+      "away_team_name": "セルタ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "セルタ vs レアル・ソシエダ",
+      "abbr_matchup": null,
+      "start_time_jst": "09/04 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 13,
+        "games_back": 2.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 6.0
+      },
+      "away_standing": {
+        "rank": 16,
+        "games_back": 2.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 8.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "レアル・ソシエダには久保建英が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季10位と6位の対戦",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ラ・リーガの開幕戦となるこの一戦は、昨季10位のセルタと6位のレアル・ソシエダが対戦する。両チームは新シーズンの戦い方を示す最初の試金石となり、これからのリーグ戦で【昨季の成績をどう更新できるか】が問われることになる。特に注目すべきは、レアル・ソシエダに所属する日本代表の久保建英がシーズンをどのような形でスタートさせるかという点である。",
+      "notification_hook": "久保建英擁するソシエダ、開幕戦でセルタと激突。"
+    },
+    {
+      "game_id": "559696",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-511",
+      "away_team_id": "FL1-521",
+      "home_team_name": "トゥールーズ",
+      "away_team_name": "リール",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "リール vs トゥールーズ",
+      "abbr_matchup": null,
+      "start_time_jst": "09/04 03:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 16,
+        "games_back": 1.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 5.0
+      },
+      "away_standing": {
+        "rank": 3,
+        "games_back": 0.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 2.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "昨季10位と3位の対戦",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "リーグ・アンの全38試合の総当たり戦では、シーズン序盤から各チームの実力差が試される。【昨季の3位と10位】が対戦する本試合は、前季の上位争いに絡んだチームと中位層の実力をはかる指標になる。開幕直後のこの段階から、両チームがどのような戦い方を見せるのか、そしてそれぞれのシーズンの方向性を示すプレーぶりに注目したい。",
+      "notification_hook": "昨季3位と10位が開幕戦で激突"
+    }
+  ],
   "ai_status": {
-    "targets": 0,
-    "succeeded": 0,
-    "cost_usd": 0.0
+    "targets": 2,
+    "succeeded": 2,
+    "cost_usd": 0.00639
   }
 }
