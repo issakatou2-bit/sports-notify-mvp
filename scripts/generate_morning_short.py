@@ -673,18 +673,35 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # いちばん近い決着（マジックの小さい球団）から入る。
         ps = data.get("postseason") or {}
         changes = ps.get("changes") or []
+        # 1枚目だけ、ずんだもんとめたんの2人にする。
+        #
+        # **差分がこの枠の主題**で、そこは読み上げより
+        # 「気づいた人が言う」形のほうが早い。
+        # 「昨日と違うのだ？」に答える形なら、聞いている側も
+        # 何を聞かされているのか分かる。
+        #
+        # 2人にするのはここだけ。全部を対話にすると、順位表を
+        # 読み上げる12行が全部台詞になって、かえって遅くなる。
         if changes:
-            lead = changes[0]["text"] + "。"
+            ask = "ん？昨日と違うのだ？"
+            ans = changes[0]["text"] + "。"
             if len(changes) > 1:
-                lead += f"昨日から{len(changes)}つ動きました。"
+                ans += f"昨日から{len(changes)}つ動いたわ。"
         else:
-            lead = (ps.get("headline") or "ポストシーズン進出争い") + "。"
-            lead += "昨日から順位に動きはありません。"
-        segments = [{
-            "kind": "intro",
-            "text": lead + f"{day}のポストシーズン進出争いです。",
-            "meta": {"date": day_iso, "mode": mode},
-        }]
+            ask = "昨日から何か動いたのだ？"
+            ans = ("それが、順位も進出圏内の6球団も昨日と同じ。"
+                   + (ps.get("headline") or "") + "のままよ。")
+        segments = [
+            {"kind": "ps_talk", "text": ask,
+             "speaker": PS_SPEAKER[ZUNDA],
+             "meta": {"date": day_iso, "mode": mode, "who": ZUNDA,
+                      "day": day}},
+            {"kind": "ps_talk",
+             "text": ans + f"{day}のポストシーズン進出争いね。",
+             "speaker": PS_SPEAKER[METAN],
+             "meta": {"date": day_iso, "mode": mode, "who": METAN,
+                      "day": day}},
+        ]
         # 日本人選手のいる球団が、いまどこにいるか。
         #
         # 順位表は「見たい人が見るもの」。この1枚だけは
@@ -1569,6 +1586,95 @@ def render_ps_league(p, league: dict, lid: str = "104"):
         d.text((96, y + 38), "マジック", font=font(26), fill=ACCENT)
         d.text((96, y + 70), "あと何回「勝つか、相手が負けるか」で地区優勝",
                font=font(26), fill=DIM)
+    return im
+
+
+ZUNDA, METAN = "ずんだもん", "四国めたん"
+# 進出争いの回だけ、2人に喋らせる。話者IDはVOICEVOX。
+PS_SPEAKER = {ZUNDA: 3, METAN: 2}
+PS_COLOR = {ZUNDA: (150, 222, 130), METAN: (242, 152, 196)}
+
+
+def render_ps_talk(p, data: dict, who: str, day: str = ""):
+    """1枚目。**昨日から何が動いたか**を、2人で言う。
+
+    なぜここだけ2人なのか:
+      順位表は毎日出しても、変わらない日は見る理由が無い。
+      逆に1行入れ替わった日は、それがその日いちばんの出来事になる。
+      **差分がこの枠の主題**で、そこは「読み上げ」より
+      「気づいた人が言う」形のほうが早い。
+
+      「昨日と違うのだ？」「ドジャースのマジックが16から15へ」。
+      同じ内容でも、問いと答えの形なら、聞いている側が
+      何を聞かされているのか分かる。
+
+    立ち絵は1枚絵。口は動かさない（動かすと、動きが止まった画面を
+    使い回す仕組みが効かなくなり、生成時間が数倍になる）。
+    喋っているほうを明るく、そうでないほうを暗くして差を付ける。
+    """
+    im, d = base(p)
+    changes = data.get("changes") or []
+    d.text((70, 150), "ポストシーズン進出争い", font=font(38), fill=ACCENT)
+    d.text((70, 212), day or data.get("date", ""), font=font(56), fill=TEXT)
+
+    # 昨日からの変化。無い日は「変わらなかった」と書く。
+    # 変わらないことも、毎日見ている人には結果になる。
+    y = 330
+    head = ("昨日からの変化 %d件" % len(changes)) if changes else "昨日から変化なし"
+    d.text((78, y), head, font=font(34), fill=JP if changes else DIM)
+    y += 56
+    for i, c in enumerate((changes or [])[:4]):
+        appear = 0.08 + i * 0.06
+        if p < appear:
+            y += 92
+            continue
+        e = ease_out(min(1.0, (p - appear) * 9))
+        dx = int((1 - e) * 70)
+        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 76], 14, fill=SURF)
+        d.text((100 - dx, y + 16), (c.get("text") or "")[:26],
+               font=font(34), fill=TEXT)
+        y += 92
+    if not changes:
+        # 動かなかった日は、代わりに**いちばん近い決着**を出す。
+        # 「変化なし」の1行だけだと画面が空く。変わらなかったことは
+        # 結果だが、それだけでは見る理由にならない。
+        rows = []
+        best = None
+        for lid, r in (data.get("leagues") or {}).items():
+            for t in (r.get("leaders") or [])[:3]:
+                m = t.get("magic")
+                if isinstance(m, int) and (best is None or m < best[0]):
+                    best = (m, t.get("name"))
+            near = (r.get("chasing") or [])[:1]
+            if near and near[0].get("wc_gb") is not None:
+                rows.append("%s最後の枠 %s %s差"
+                            % (r.get("league_short") or "", near[0]["name"],
+                               near[0]["wc_gb"]))
+        if best:
+            rows.insert(0, "%s 優勝マジック%d" % (best[1], best[0]))
+        for s in rows[:3]:
+            d.rounded_rectangle([70, y, W - 70, y + 76], 14, fill=SURF)
+            d.text((100, y + 16), s[:30], font=font(32), fill=DIM)
+            y += 92
+
+    # 立ち絵。左にずんだもん、右にめたん。内側を向かせる。
+    for name, x_center, flip in ((ZUNDA, 250, True), (METAN, W - 250, False)):
+        art = video_common.portrait(name, 520, flip=flip)
+        if art is None:
+            continue
+        if name != who:
+            # 喋っていないほうは暗く。並べただけだと、どちらが
+            # 話しているのか分からない。
+            art = video_common.dim_art(art)
+        im.paste(art, (int(x_center - art.width / 2), 820), art)
+    # 名前の札。読み上げの帯(1446から)に掛からない高さに置く。
+    for name, x_center in ((ZUNDA, 250), (METAN, W - 250)):
+        col = PS_COLOR[name] if name == who else DIM
+        fn = font(28)
+        w = d.textlength(name, font=fn)
+        d.rounded_rectangle([x_center - w / 2 - 18, 1348,
+                             x_center + w / 2 + 18, 1392], 12, fill=col)
+        d.text((x_center - w / 2, 1352), name, font=fn, fill=(11, 14, 20))
     return im
 
 
@@ -2861,6 +2967,10 @@ def main():
                         pp, ((postseason.get("leagues") or {})
                              .get(meta.get("league", "104")) or {}),
                         meta.get("league", "104"))
+                elif kind == "ps_talk":
+                    im = render_ps_talk(pp, postseason,
+                                        meta.get("who", ZUNDA),
+                                        meta.get("day", ""))
                 elif kind == "ps_japanese":
                     im = render_ps_japanese(pp,
                                             postseason.get("japanese") or [])

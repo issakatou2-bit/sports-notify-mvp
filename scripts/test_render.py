@@ -163,6 +163,12 @@ def main() -> int:
         # **空でも描けること**を見る(そちらのほうが落ちやすい)。
         check("%s 日本人選手の現在地" % tag, g.render_ps_japanese, p,
               ps.get("japanese") or [])
+        # 2人が話す1枚目。変化がある日と無い日で作りが違うので両方見る。
+        # 立ち絵が無い環境（assets を持たない）でも描けること。
+        check("%s 2人の1枚目" % tag, g.render_ps_talk, p, ps, g.METAN,
+              "9月3日")
+        check("%s 2人の1枚目(変化なし)" % tag, g.render_ps_talk, p,
+              {**ps, "changes": []}, g.ZUNDA, "9月3日")
         for lid in ("103", "104"):
             if (ps.get("leagues") or {}).get(lid):
                 check("%s トーナメント表(%s)" % (tag, lid),

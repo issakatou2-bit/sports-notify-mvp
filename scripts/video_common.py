@@ -525,6 +525,60 @@ def ease_out(t: float) -> float:
     return 1 - (1 - t) ** 3
 
 
+_PORTRAIT_CACHE = {}
+
+
+def portrait(who: str, height: int, portrait_dir: str = "assets/portraits",
+             flip: bool = False):
+    """立ち絵の1枚絵を、その高さで返す。無ければ None。
+
+    長編は部品（眉・目・口・腕）を組み合わせて表情を作るが、
+    短編は**1枚絵で足りる**。短編の画面は動きが止まったところで
+    描画結果を使い回していて、口を動かすとその仕組みが効かなくなる。
+    1本あたりの生成時間が数倍になる。
+
+    透明な余白は落とす。落とさないと、画面の端に寄せたつもりが
+    余白ぶんだけ内側に入り、絵が中央へ寄って見える。
+    """
+    from PIL import Image
+    ck = (who, height, portrait_dir, flip)
+    if ck in _PORTRAIT_CACHE:
+        return _PORTRAIT_CACHE[ck]
+    im = None
+    for ext in (".png", ".webp"):
+        p = pathlib.Path(portrait_dir) / (who + ext)
+        if p.exists():
+            try:
+                im = Image.open(p).convert("RGBA")
+            except Exception:                        # noqa: BLE001
+                im = None
+            break
+    if im is not None:
+        box = im.getbbox()
+        if box:
+            im = im.crop(box)
+        w = max(1, int(im.width * height / max(1, im.height)))
+        im = im.resize((w, height), Image.LANCZOS)
+        if flip:
+            im = im.transpose(Image.FLIP_LEFT_RIGHT)
+    _PORTRAIT_CACHE[ck] = im
+    return im
+
+
+def dim_art(art, amount: float = 0.45):
+    """立ち絵を暗くする。**透明なところは透明のまま。**
+
+    暗い幕を重ねる手もあるが、それだと絵の無いところにも幕が乗る。
+    背景と同じ色の幕なら見えないので長編ではそれで済んでいるが、
+    背景に模様がある画面では四角い影として出てしまう。
+    ここは明るさだけを落とす。
+    """
+    from PIL import Image, ImageEnhance
+    r, g, b, a = art.split()
+    rgb = ImageEnhance.Brightness(Image.merge("RGB", (r, g, b))).enhance(amount)
+    return Image.merge("RGBA", (*rgb.split(), a))
+
+
 DEFAULT_TINT = (255, 176, 32)
 
 
