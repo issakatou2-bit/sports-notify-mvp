@@ -155,6 +155,32 @@ def find_players(texts: list) -> list:
     return out
 
 
+def _roster_team(name: str,
+                 roster_path: str = "data/roster_snapshot.json") -> str:
+    """手元の名簿から所属を引く。姓だけでも当てる。引けなければ空。
+
+    名簿は毎朝取っていて1400人ぶんある。APIを叩く前にここを見る。
+
+    **同じ姓が2人いたら諦める。**取り違えは「調べていない」より悪い。
+    """
+    try:
+        from notability_engine import MLB_TEAM_NAME_JP
+        ros = json.loads(pathlib.Path(roster_path).read_text(
+            encoding="utf-8")).get("players") or {}
+    except Exception:                                # noqa: BLE001
+        return ""
+    key = textkey.key(name)
+    hits = set()
+    for v in ros.values():
+        full = v.get("name") or ""
+        if textkey.key(full) == key or textkey.key(
+                textkey.surname(full) or "") == key:
+            hits.add(str(v.get("team_id") or ""))
+    if len(hits) != 1:
+        return ""
+    return MLB_TEAM_NAME_JP.get(hits.pop(), "")
+
+
 def team_standing(jp_name: str,
                   postseason_path: str = "data/postseason.json") -> dict:
     """その球団のいまの勝敗と、リーグでの立ち位置。引けなければ空。
@@ -282,6 +308,14 @@ def team_of(name: str) -> str:
       people/search で人を特定し、そこから現所属を取る。
       同姓が複数いるときは諦める（取り違えは「調べていない」より悪い）。
     """
+    # まず手元の名簿を見る。**その日の朝に取ったものが既にある。**
+    #
+    # ここは1人につきAPIを2回叩く。返信も見るようにして名前が
+    # 増えたので、1本あたり20回になっていた。名簿(1400人)に
+    # 載っていれば0回で済む。載っていない選手だけAPIへ行く。
+    hit = _roster_team(name)
+    if hit:
+        return hit
     try:
         d = _get(f"{MLB_API}/people/search?names="
                  + urllib.parse.quote(name))
