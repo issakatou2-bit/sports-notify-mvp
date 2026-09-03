@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-02T06:02:47.740216+00:00",
+  "updated_at": "2026-09-03T06:01:49.643899+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,73 +13,73 @@
   "titles_count": 51,
   "teams": [
     {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 4,
+      "tone": "不振",
+      "gist": "Hoerner好守も打線爆発と投手崩壊で混在"
+    },
+    {
       "team_id": "108",
       "name": "エンゼルス",
       "name_en": "Los Angeles Angels",
-      "mentions": 11,
-      "tone": "不振",
-      "gist": "大谷とトラウトを浪費しモレーノ会長がエンゼルスを売却"
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "新球場建設計画とSchlittler好投"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "AI動画問題とCease好投"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
       "mentions": 3,
-      "tone": "話題",
-      "gist": "大谷がドジャースと契約し試合では13点差で敗戦"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "パドレスがMLB史上最高額で売却されプレーオフへ"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "ホワイトソックスが楽しみながら勝利を重ねている"
-    },
-    {
-      "team_id": "134",
-      "name": "パイレーツ",
-      "name_en": "Pittsburgh Pirates",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "パイレーツが歴史的な1イニングを演出し延長戦を制す"
-    },
-    {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ブリュワーズの外野手らが衝突事故を乗り越えて勝利"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 2,
       "tone": "不振",
-      "gist": "カブスが得点ながら4勝8敗の成績に低迷"
+      "gist": "Yamamoto好投も延長戦で敗北"
     },
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 1,
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 2,
       "tone": "話題",
-      "gist": "大谷がドジャース契約を選びエンゼルス首脳は対抗せず"
+      "gist": "Guerrero Jr.3ラン、Cease好投"
+    },
+    {
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "O'Brien救援勝ちでCardinals勝利"
+    },
+    {
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "Orbit珍事件とWesneski/Velázquez好投"
+    },
+    {
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "Rockies優勝争い脱落"
     }
   ],
   "players": [
     {
-      "name": "大谷翔平",
+      "name": "山本由伸",
       "mentions": 2
     }
   ]

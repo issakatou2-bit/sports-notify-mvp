@@ -1,19 +1,89 @@
 {
-  "updated_at": "2026-09-02T06:02:36.863334+00:00",
+  "updated_at": "2026-09-03T06:01:39.541102+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "SyXuAExjrS0",
-      "title": "YANKEES vs. ANGELS: Official Full Game Highlights (August 31) | 2026 MLB Season",
-      "published_at": "2026-09-01T04:41:43Z",
-      "views": 257422,
-      "matchup": "YANKEES vs. ANGELS",
+      "video_id": "xUhDrkKOIuY",
+      "title": "PADRES vs. REDS: Official Full Game Highlights (September 2) | 2026 MLB Season",
+      "published_at": "2026-09-02T20:01:13Z",
+      "views": 101181,
+      "matchup": "PADRES vs. REDS",
+      "game_date": "2026-09-02",
       "result": {
-        "away_jp": "ヤンキース",
-        "home_jp": "エンゼルス",
-        "away_score": 1,
-        "home_score": 10,
+        "away_jp": "パドレス",
+        "home_jp": "レッズ",
+        "away_score": 3,
+        "home_score": 7,
+        "innings": [
+          {
+            "num": 1,
+            "away": 2,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 1,
+            "home": 4
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 2
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": null
+          }
+        ],
+        "away_hits": 7,
+        "away_errors": 1,
+        "home_hits": 10,
+        "home_errors": 0,
+        "star_name": "JJ Bleday",
+        "star_line": "4打数3安打 2打点 1本塁打",
+        "star_team": "レッズ"
+      },
+      "topic_jp": "パドレス 対 レッズ"
+    },
+    {
+      "video_id": "A4RDBpQgIH4",
+      "title": "BRAVES vs. NATIONALS: Official Full Game Highlights (September 2) | 2026 MLB Season",
+      "published_at": "2026-09-02T21:30:14Z",
+      "views": 81042,
+      "matchup": "BRAVES vs. NATIONALS",
+      "game_date": "2026-09-02",
+      "result": {
+        "away_jp": "ブレーブス",
+        "home_jp": "ナショナルズ",
+        "away_score": 9,
+        "home_score": 0,
         "innings": [
           {
             "num": 1,
@@ -28,80 +98,150 @@
           {
             "num": 3,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 4,
             "away": 0,
-            "home": 3
+            "home": 0
           },
           {
             "num": 5,
-            "away": 1,
-            "home": 2
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 7,
             "away": 0,
             "home": 0
           },
           {
+            "num": 6,
+            "away": 3,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 3,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 2,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 1,
+            "home": 0
+          }
+        ],
+        "away_hits": 11,
+        "away_errors": 0,
+        "home_hits": 2,
+        "home_errors": 1,
+        "star_name": "Sean Murphy",
+        "star_line": "4打数2安打 4打点 1本塁打",
+        "star_team": "ブレーブス"
+      },
+      "topic_jp": "ブレーブス 対 ナショナルズ"
+    },
+    {
+      "video_id": "2BIdQsdyXY8",
+      "title": "MARINERS vs. RED SOX: Official Full Game Highlights (September 2) | 2026 MLB Season",
+      "published_at": "2026-09-02T23:19:37Z",
+      "views": 73032,
+      "matchup": "MARINERS vs. RED SOX",
+      "game_date": "2026-09-02",
+      "result": {
+        "away_jp": "マリナーズ",
+        "home_jp": "レッドソックス",
+        "away_score": 8,
+        "home_score": 3,
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 4,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 4,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 2
+          },
+          {
             "num": 8,
             "away": 0,
-            "home": 3
+            "home": 0
           },
           {
             "num": 9,
             "away": 0,
-            "home": null
+            "home": 0
           }
         ],
-        "away_hits": 6,
-        "away_errors": 3,
+        "away_hits": 12,
+        "away_errors": 0,
         "home_hits": 12,
-        "home_errors": 0,
-        "star_name": "Walbert Ureña",
-        "star_line": "7.0回 8奪三振 自責1",
-        "star_team": "エンゼルス"
+        "home_errors": 1,
+        "star_name": "Roman Anthony",
+        "star_line": "5打数3安打 1打点 1本塁打",
+        "star_team": "レッドソックス"
       },
-      "topic_jp": "ヤンキース 対 エンゼルス"
+      "topic_jp": "マリナーズ 対 レッドソックス"
     },
     {
-      "video_id": "CYVE1dGj9XA",
-      "title": "BREWERS vs. CUBS: Official Full Game Highlights (August 31) | 2026 MLB Season",
-      "published_at": "2026-09-01T02:52:32Z",
-      "views": 190744,
-      "matchup": "BREWERS vs. CUBS",
+      "video_id": "MNMW8GJGYwI",
+      "title": "BLUE JAYS vs. GUARDIANS: Official Full Game Highlights (September 2) | 2026 MLB Season",
+      "published_at": "2026-09-03T01:50:24Z",
+      "views": 70560,
+      "matchup": "BLUE JAYS vs. GUARDIANS",
+      "game_date": "2026-09-02",
       "result": {
-        "away_jp": "ブリュワーズ",
-        "home_jp": "カブス",
-        "away_score": 3,
-        "home_score": 17,
+        "away_jp": "ブルージェイズ",
+        "home_jp": "ガーディアンズ",
+        "away_score": 11,
+        "home_score": 0,
         "innings": [
           {
             "num": 1,
-            "away": 0,
-            "home": 4
+            "away": 1,
+            "home": 0
           },
           {
             "num": 2,
-            "away": 0,
-            "home": 2
+            "away": 5,
+            "home": 0
           },
           {
             "num": 3,
-            "away": 0,
+            "away": 1,
             "home": 0
           },
           {
             "num": 4,
             "away": 0,
-            "home": 3
+            "home": 0
           },
           {
             "num": 5,
@@ -110,118 +250,43 @@
           },
           {
             "num": 6,
-            "away": 0,
+            "away": 2,
             "home": 0
           },
           {
             "num": 7,
-            "away": 2,
-            "home": 4
+            "away": 0,
+            "home": 0
           },
           {
             "num": 8,
             "away": 1,
-            "home": 4
+            "home": 0
           },
           {
             "num": 9,
-            "away": 0,
-            "home": null
+            "away": 1,
+            "home": 0
           }
         ],
-        "away_hits": 9,
+        "away_hits": 15,
         "away_errors": 1,
-        "home_hits": 20,
-        "home_errors": 0,
-        "star_name": "Alex Bregman",
-        "star_line": "6打数3安打 4打点 3本塁打",
-        "star_team": "カブス"
+        "home_hits": 6,
+        "home_errors": 1,
+        "star_name": "Vladimir Guerrero Jr.",
+        "star_line": "4打数3安打 5打点 1本塁打",
+        "star_team": "ブルージェイズ"
       },
-      "topic_jp": "ブリュワーズ 対 カブス"
+      "topic_jp": "ブルージェイズ 対 ガーディアンズ"
     },
     {
-      "video_id": "HCfAtEdZ310",
-      "title": "PHILLIES vs. D-BACKS: Official Full Game Highlights (August 31) | 2026 MLB Season",
-      "published_at": "2026-09-01T05:21:37Z",
-      "views": 126361,
+      "video_id": "uRBKFfGF0Hk",
+      "title": "PHILLIES vs. D-BACKS: Official Full Game Highlights (September 2) | 2026 MLB Season",
+      "published_at": "2026-09-02T22:19:33Z",
+      "views": 57398,
       "matchup": "PHILLIES vs. D-BACKS",
+      "game_date": "2026-09-02",
       "topic_jp": "フィリーズ 対 ダイヤモンドバックス"
-    },
-    {
-      "video_id": "F1SWfHjfSzs",
-      "title": "The Red Sox complete INSANE comeback with Trevor Story's walk-off hit 🤩 | MLB Highlights",
-      "published_at": "2026-09-01T03:16:41Z",
-      "views": 83007,
-      "matchup": "",
-      "topic_jp": "トレバー・ストーリーのサヨナラヒットでレッドソックスが劇的な逆転勝利を達成した。"
-    },
-    {
-      "video_id": "kJ105q7maKo",
-      "title": "WHITE SOX vs. ASTROS: Official Full Game Highlights (August 31) | 2026 MLB Season",
-      "published_at": "2026-09-01T03:41:14Z",
-      "views": 78578,
-      "matchup": "WHITE SOX vs. ASTROS",
-      "result": {
-        "away_jp": "ホワイトソックス",
-        "home_jp": "アストロズ",
-        "away_score": 3,
-        "home_score": 6,
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 4,
-            "away": 2,
-            "home": 2
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 3
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": null
-          }
-        ],
-        "away_hits": 5,
-        "away_errors": 1,
-        "home_hits": 8,
-        "home_errors": 2,
-        "star_name": "Colson Montgomery",
-        "star_line": "3打数2安打 1打点 1本塁打",
-        "star_team": "ホワイトソックス"
-      },
-      "topic_jp": "ホワイトソックス 対 アストロズ"
     }
   ]
 }
