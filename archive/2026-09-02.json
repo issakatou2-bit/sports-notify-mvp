@@ -79,7 +79,12 @@
           "text": "パドレス はポストシーズン圏内",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 7,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822686",
@@ -152,7 +157,12 @@
           "text": "ブレーブス はポストシーズン圏内",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822851",
@@ -225,7 +235,12 @@
           "text": "アスレチックスは5連敗中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824312",
@@ -305,7 +320,12 @@
           "text": "菅野智之が先発予定の中での出場",
           "weight": 3
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "825037",
@@ -390,7 +410,12 @@
           "text": "フィリーズは6連勝中",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824717",
@@ -465,7 +490,12 @@
           "text": "レッドソックス はポストシーズン圏内",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824390",
@@ -545,7 +575,12 @@
           "text": "ガーディアンズ はポストシーズン圏内、相手が追いかけている",
           "weight": 3
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 11,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822931",
@@ -625,7 +660,12 @@
           "text": "レイズ はポストシーズン圏内",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 10,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823339",
@@ -692,7 +732,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824634",
@@ -782,7 +827,12 @@
       },
       "log_notes": [],
       "ai_summary": "ナ・リーグ中地区で【首位ブリュワーズと2位カブスの直接対決】となる本戦は、両チームのポストシーズン進出を左右する重要な一戦である。ブリュワーズは86勝53敗で地区首位を走り、直近10試合で6勝4敗と好調を維持。一方、カブスは78勝61敗の2位から巻き返しを図る局面で、直近10試合は4勝6敗と課題を抱えている。先発投手の力量差も目立ち、ブリュワーズのJacob Misiorowski（防御率1.73、14勝5敗）に対し、カブスはDavid Peterson（防御率5.11、7勝7敗）という投げ合いになる。打撃面では、風向きによって試合の流れが変わるリグレー・フィールドでの攻防に注目したい。",
-      "notification_hook": "防御率1.73のMisiorowski vs 防御率5.11のPetersonで地区順位が動く"
+      "notification_hook": "防御率1.73のMisiorowski vs 防御率5.11のPetersonで地区順位が動く",
+      "final_score": {
+        "home": 5,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823660",
@@ -849,7 +899,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 6,
+        "away": 11,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824068",
@@ -916,7 +971,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 6,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824147",
@@ -1016,7 +1076,12 @@
       },
       "log_notes": [],
       "ai_summary": "ア・リーグ中地区首位のホワイトソックスと西地区首位のアストロズが対戦する。ホワイトソックスは73勝65敗で2位に【3.0ゲーム差】をつけ、アストロズは70勝69敗で【1.0ゲーム差】の首位という、両チームともポストシーズン圏内の立場にある。直近10試合ではホワイトソックスが6勝4敗、アストロズが5勝5敗と、安定度で差がついている状況だ。ダイキン・パークでの開催となるが、この球場は左翼が浅く本塁打が出やすい設計になっており、先発のDavis Martin（防御率4.32）とHayden Wesneskiの投げ合いで、どちらの打線が球場の特性を活かせるかが焦点となる。",
-      "notification_hook": "首位同士の対戦、村上宗隆とDavis Martinの活躍がカギを握る。"
+      "notification_hook": "首位同士の対戦、村上宗隆とDavis Martinの活躍がカギを握る。",
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823983",
@@ -1096,7 +1161,12 @@
           "text": "ヤンキース はポストシーズン圏内",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823906",
@@ -1184,7 +1254,12 @@
       },
       "log_notes": [],
       "ai_summary": "ドジャースはナ・リーグ西地区で【9.5ゲーム差をつけて首位】に立ち、ポストシーズン進出が現実的になる段階にある。一方、カージナルスは同じナ・リーグ中地区で3位に沈み、地区首位との差は17.0ゲーム離れている。シーズン終盤に向けて立場が大きく異なる両チームの対戦であり、ドジャースの順位争いにとって重要な一戦となる。先発する山本由伸は防御率2.56で12勝を挙げており、その投球内容に注目したい。",
-      "notification_hook": "山本由伸の防御率2.56で登板、ドジャース首位・9.5ゲーム差の重要戦。"
+      "notification_hook": "山本由伸の防御率2.56で登板、ドジャース首位・9.5ゲーム差の重要戦。",
+      "final_score": {
+        "home": 6,
+        "away": 8,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
