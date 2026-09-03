@@ -321,6 +321,26 @@ def set_spoken(text: str) -> None:
     _SPOKEN = (text or "").strip()
 
 
+def spoken_lines(d) -> list:
+    """読み上げの帯に載る行。空なら空の配列。
+
+    帯の上端を知りたいところが2つある（帯そのものと、その縁から
+    顔をのぞかせる立ち絵）ので、行を数えるところだけ分けた。
+    """
+    if not _SPOKEN:
+        return []
+    text = _SPOKEN
+    if len(text) > SPOKEN_MAX:
+        text = text[:SPOKEN_MAX].rstrip("、。") + "…"
+    return wrap(d, text, font(34), W - 200)[:3]
+
+
+def spoken_top(d) -> int:
+    """読み上げの帯の上端。帯が無い日は、あるつもりの位置を返す。"""
+    lines = spoken_lines(d)
+    return H - 300 - ((len(lines) * 46 + 36) if lines else 174)
+
+
 def draw_spoken(d, color=None) -> None:
     """
     読み上げの文を画面の下に置く。長い回は先頭だけにする。
@@ -328,12 +348,9 @@ def draw_spoken(d, color=None) -> None:
     全文を出すと下半分が文字で埋まる。読み上げに追いつくための
     手がかりなので、いま話している範囲が分かれば足りる。
     """
-    if not _SPOKEN:
+    lines = spoken_lines(d)
+    if not lines:
         return
-    text = _SPOKEN
-    if len(text) > SPOKEN_MAX:
-        text = text[:SPOKEN_MAX].rstrip("、。") + "…"
-    lines = wrap(d, text, font(34), W - 200)[:3]
     h = len(lines) * 46 + 36
     # 画面のいちばん下には、出典の断りと collespo.com が既に置いてある。
     # そこへ重ねると両方読めなくなるので、その上に載せる。
@@ -1595,6 +1612,50 @@ PS_SPEAKER = {ZUNDA: 3, METAN: 2}
 PS_COLOR = {ZUNDA: (150, 222, 130), METAN: (242, 152, 196)}
 
 
+def draw_peek(im, d, who: str, show: int = 168):
+    """読み上げの帯の上端から、2人が顔だけのぞく。
+
+    なぜこの形にしたか:
+      縦1080×1920に全身の立ち絵を2つ置くと、520px（画面の27%）を
+      2人が占める。**縦の画面で人に3割渡すと、肝心の情報が
+      入らなくなる。**進出争いの回は変化の一覧を出す枠なので、
+      そこが4行で頭打ちになっていた。
+
+      顔だけなら170pxで足りる。**350px、情報の側に戻る。**
+      帯の縁から出ているので「そこにいる」ことは伝わるし、
+      画面の主役が順位表のほうへ戻る。
+
+    立ち絵は**顔のところで切る**。全身を貼って帯で隠す手も
+    考えたが、帯の高さは読み上げの行数で変わるので、
+    2行の日は足が下に出た（実際そうなった）。切るほうが確実。
+
+    名前の札は顔の横ではなく画面の端に置く。顔の下に置くと
+    あごに掛かる。
+    """
+    top = spoken_top(d)
+    # 顔は中央寄りに置く。端に寄せると、画面の隅に置く名前の札と
+    # あごが重なる（実際そうなった）。
+    for name, cx, flip in ((ZUNDA, 390, True), (METAN, W - 390, False)):
+        art = video_common.portrait(name, 520, flip=flip)
+        if art is None:
+            continue
+        if name != who:
+            art = video_common.dim_art(art)
+        # 顔から上だけを切る。下端は帯に少し潜り込ませて、
+        # 「縁からのぞいている」形にする。
+        head = art.crop((0, 0, art.width, min(art.height, show + 30)))
+        im.paste(head, (int(cx - head.width / 2), top - show), head)
+    draw_spoken(d, PS_COLOR.get(who))
+    # 名前の札。顔に掛からないよう、画面の端へ寄せる。
+    for name, right in ((ZUNDA, False), (METAN, True)):
+        col = PS_COLOR[name] if name == who else DIM
+        fn = font(26)
+        w = d.textlength(name, font=fn) + 32
+        x0 = (W - 70 - w) if right else 70
+        d.rounded_rectangle([x0, top - 42, x0 + w, top - 4], 10, fill=col)
+        d.text((x0 + 16, top - 38), name, font=fn, fill=(11, 14, 20))
+
+
 def render_ps_talk(p, data: dict, who: str, day: str = ""):
     """1枚目。**昨日から何が動いたか**を、2人で言う。
 
@@ -1608,9 +1669,10 @@ def render_ps_talk(p, data: dict, who: str, day: str = ""):
       同じ内容でも、問いと答えの形なら、聞いている側が
       何を聞かされているのか分かる。
 
-    立ち絵は1枚絵。口は動かさない（動かすと、動きが止まった画面を
-    使い回す仕組みが効かなくなり、生成時間が数倍になる）。
-    喋っているほうを明るく、そうでないほうを暗くして差を付ける。
+    立ち絵は顔だけ、読み上げの帯の縁から出す（draw_peek）。
+    全身を置くと縦画面の27%を2人が占めて、肝心の一覧が
+    4行で頭打ちになっていた。口は動かさない（動かすと、
+    動きが止まった画面を使い回す仕組みが効かなくなる）。
     """
     im, d = base(p)
     changes = data.get("changes") or []
@@ -1622,24 +1684,27 @@ def render_ps_talk(p, data: dict, who: str, day: str = ""):
     y = 330
     head = ("昨日からの変化 %d件" % len(changes)) if changes else "昨日から変化なし"
     d.text((78, y), head, font=font(34), fill=JP if changes else DIM)
-    y += 56
-    for i, c in enumerate((changes or [])[:4]):
-        appear = 0.08 + i * 0.06
+    y += 60
+    # 立ち絵を顔だけにしたぶん、一覧を6行まで置ける（前は4行）。
+    for i, c in enumerate((changes or [])[:6]):
+        appear = 0.08 + i * 0.05
         if p < appear:
-            y += 92
+            y += 96
             continue
         e = ease_out(min(1.0, (p - appear) * 9))
         dx = int((1 - e) * 70)
-        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 76], 14, fill=SURF)
-        d.text((100 - dx, y + 16), (c.get("text") or "")[:26],
-               font=font(34), fill=TEXT)
-        y += 92
-    if not changes:
-        # 動かなかった日は、代わりに**いちばん近い決着**を出す。
-        # 「変化なし」の1行だけだと画面が空く。変わらなかったことは
-        # 結果だが、それだけでは見る理由にならない。
-        rows = []
-        best = None
+        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 80], 14, fill=SURF)
+        d.text((100 - dx, y + 18), (c.get("text") or "")[:26],
+               font=font(36), fill=TEXT)
+        y += 96
+
+    # 残った場所を「いちばん近い決着」で埋める。
+    #
+    # 顔だけにして350px空いたが、**空けただけでは意味が無い。**
+    # 変化が少ない日ほど下が空くので、そこへ近い決着を入れる。
+    # 変わらなかったことは結果だが、それだけでは見る理由にならない。
+    if y < 1180:
+        rows, best = [], None
         for lid, r in (data.get("leagues") or {}).items():
             for t in (r.get("leaders") or [])[:3]:
                 m = t.get("magic")
@@ -1650,31 +1715,33 @@ def render_ps_talk(p, data: dict, who: str, day: str = ""):
                 rows.append("%s最後の枠 %s %s差"
                             % (r.get("league_short") or "", near[0]["name"],
                                near[0]["wc_gb"]))
+            for t in (r.get("leaders") or [])[:1]:
+                if isinstance(t.get("magic"), int):
+                    rows.append("%s首位 %s マジック%d"
+                                % (r.get("league_short") or "", t["name"],
+                                   t["magic"]))
         if best:
-            rows.insert(0, "%s 優勝マジック%d" % (best[1], best[0]))
-        for s in rows[:3]:
-            d.rounded_rectangle([70, y, W - 70, y + 76], 14, fill=SURF)
-            d.text((100, y + 16), s[:30], font=font(32), fill=DIM)
-            y += 92
+            rows.insert(0, "いちばん近いのは %s マジック%d" % (best[1], best[0]))
+        seen, uniq = set(), []
+        for s in rows:
+            if s not in seen:
+                seen.add(s)
+                uniq.append(s)
+        if uniq and changes:
+            d.text((78, y + 8), "いちばん近い決着", font=font(30), fill=DIM)
+            y += 56
+        elif uniq:
+            # 変化が無い日はこれだけしか無いので、上に寄せると
+            # 下が大きく空く。全体を少し下げて、余白を分ける。
+            y += 110
+        # 帯の上端(顔が出るところ)に掛からない範囲だけ置く。
+        room = max(0, (spoken_top(d) - 210 - y) // 96)
+        for s in uniq[:min(5, room)]:
+            d.rounded_rectangle([70, y, W - 70, y + 80], 14, fill=SURF)
+            d.text((100, y + 18), s[:30], font=font(34), fill=DIM)
+            y += 96
 
-    # 立ち絵。左にずんだもん、右にめたん。内側を向かせる。
-    for name, x_center, flip in ((ZUNDA, 250, True), (METAN, W - 250, False)):
-        art = video_common.portrait(name, 520, flip=flip)
-        if art is None:
-            continue
-        if name != who:
-            # 喋っていないほうは暗く。並べただけだと、どちらが
-            # 話しているのか分からない。
-            art = video_common.dim_art(art)
-        im.paste(art, (int(x_center - art.width / 2), 820), art)
-    # 名前の札。読み上げの帯(1446から)に掛からない高さに置く。
-    for name, x_center in ((ZUNDA, 250), (METAN, W - 250)):
-        col = PS_COLOR[name] if name == who else DIM
-        fn = font(28)
-        w = d.textlength(name, font=fn)
-        d.rounded_rectangle([x_center - w / 2 - 18, 1348,
-                             x_center + w / 2 + 18, 1392], 12, fill=col)
-        d.text((x_center - w / 2, 1352), name, font=fn, fill=(11, 14, 20))
+    draw_peek(im, d, who)
     return im
 
 
