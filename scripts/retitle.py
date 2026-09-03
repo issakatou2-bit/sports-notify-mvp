@@ -134,6 +134,41 @@ def wanted_title(kind: str, date_label: str):
     return (meta.get("snippet") or {}).get("title") or ""
 
 
+ASSETS = "data/published_assets.json"
+
+
+def asset_targets(only: str = "") -> list:
+    """資産動画の (トピック, 動画ID)。
+
+    資産動画は日付ではなくトピック名で記録してある
+    （1トピック1本で、出す日は決まっていない）。
+    そのため published_videos.json の側には入っていない。
+
+    ここを見られるようにしたのは、**題の作り方を変えたのに
+    もう出た球団の回が古い題のまま残っていた**ため。
+    ドジャースの回が「本拠地の収容56,000人」で出ていて、
+    大谷翔平の名前が題に無かった。
+    """
+    try:
+        got = json.loads(pathlib.Path(ASSETS).read_text(
+            encoding="utf-8")).get("assets") or {}
+    except (OSError, json.JSONDecodeError):
+        return []
+    return [(k, v["video_id"]) for k, v in sorted(got.items())
+            if isinstance(v, dict) and v.get("video_id")
+            and (not only or k == only)]
+
+
+def wanted_asset_title(topic: str) -> str:
+    """いまの作り方で組み立て直した、資産動画の題。"""
+    try:
+        meta = uy.build_asset_metadata(topic)
+    except Exception as e:                           # noqa: BLE001
+        print("[warn] %s の題を組み立てられません: %s" % (topic, str(e)[:120]))
+        return ""
+    return (meta.get("snippet") or {}).get("title") or ""
+
+
 def apply(yt, video_id: str, title: str, dry: bool) -> bool:
     """題だけ差し替える。説明もタグも触らない。"""
     try:
@@ -170,7 +205,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", help="この日に出した分を対象にする (YYYY-MM-DD)")
     ap.add_argument("--video", help="この動画IDだけを対象にする")
-    ap.add_argument("--kind", help="種類を1つに絞る (morning_press など)")
+    ap.add_argument("--kind", help="種類を1つに絞る (morning_press など)。"
+                                   "asset にすると資産動画が対象")
+    ap.add_argument("--topic", help="--kind asset のときに、"
+                                    "このトピックだけを対象にする")
     ap.add_argument("--title", help="--video のときに、この題をそのまま付ける")
     ap.add_argument("--write", action="store_true",
                     help="実際に変える(既定は下読みだけ)")
@@ -184,6 +222,32 @@ def main() -> int:
 
     if args.video and args.title:
         apply(yt, args.video, args.title, not args.write)
+        return 0
+
+    # 資産動画はトピック名で記録してあるので、別に集める。
+    if args.kind == "asset":
+        views = view_counts()
+        changed = skipped = 0
+        rows = asset_targets(args.topic or "")
+        for topic, vid in rows:
+            if args.video and vid != args.video:
+                continue
+            got = views.get(vid)
+            if got is not None and got > SAFE_VIEWS and not args.force:
+                print("%s は %d回見られているので触りません" % (topic, got))
+                skipped += 1
+                continue
+            title = args.title or wanted_asset_title(topic)
+            if not title:
+                continue
+            print("%s" % topic)
+            if apply(yt, vid, title, not args.write):
+                changed += 1
+        print()
+        print("%d本を%s" % (changed, "変えました" if args.write else "変えます"))
+        if skipped:
+            print("%d本は触りませんでした（%d回を超えているもの）"
+                  % (skipped, SAFE_VIEWS))
         return 0
 
     try:

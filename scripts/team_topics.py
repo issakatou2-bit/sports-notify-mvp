@@ -25,6 +25,7 @@ MLBの球団ごとに、資産動画1本ぶんの材料を作る。
 """
 
 import argparse
+import functools
 import json
 import pathlib
 import sys
@@ -108,6 +109,33 @@ def _geo_edge(tid: str, coord: dict, all_coords: list) -> str:
     return ""
 
 
+@functools.lru_cache(maxsize=64)
+def _roster(tid: str, season: str) -> tuple:
+    """その球団の現役名簿と、今シーズンの成績。
+
+    1球団につき1回しか取らない。中心選手と日本人選手の両方が
+    同じ名簿を見るので、分けて叩くと30球団で60回になる。
+    """
+    try:
+        r = requests.get(
+            f"{API}/teams/{tid}/roster",
+            # 打者と投手の両方を明示して取る。
+            #
+            # group を書かないと、その選手の主なポジションのぶんしか
+            # 返らない。大谷翔平は投手として登録されているので
+            # 投球成績だけが返り、しかもその中の avg は**被打率**。
+            # 打率だと思って読むと .180 が出る。
+            params={"rosterType": "active",
+                    "hydrate": f"person(stats(type=season,season={season},"
+                               "group=[hitting,pitching]))"},
+            headers=UA, timeout=30)
+        r.raise_for_status()
+        return tuple(r.json().get("roster") or [])
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] {tid} の名簿を取れません: {e}", file=sys.stderr)
+        return ()
+
+
 def stars(tid: str, season: str = "") -> list:
     """いまその球団でいちばん打っている人と、いちばん抑えている人。
 
@@ -120,20 +148,8 @@ def stars(tid: str, season: str = "") -> list:
     この球団のものとして出すことになる。
     """
     season = season or str(datetime.now(timezone.utc).year)
-    try:
-        r = requests.get(
-            f"{API}/teams/{tid}/roster",
-            params={"rosterType": "active",
-                    "hydrate": f"person(stats(type=season,season={season}))"},
-            headers=UA, timeout=30)
-        r.raise_for_status()
-        roster = r.json().get("roster") or []
-    except Exception as e:  # noqa: BLE001
-        print(f"[warn] {tid} の名簿を取れません: {e}", file=sys.stderr)
-        return []
-
     bat, arm = None, None
-    for row in roster:
+    for row in _roster(tid, season):
         person = row.get("person") or {}
         name = person.get("fullName")
         if not name:
@@ -163,6 +179,63 @@ def stars(tid: str, season: str = "") -> list:
         out.append({"name": bat[1], "line": bat[2], "why": "今季チーム最多本塁打"})
     if arm:
         out.append({"name": arm[1], "line": arm[2], "why": "今季チーム最多奪三振"})
+    return out
+
+
+def japanese_on(tid: str, season: str = "") -> list:
+    """その球団にいる日本人選手と、今シーズンの成績。
+
+    なぜ球団の回に入れるのか:
+      28日の実測（171本）で、
+        題に日本人選手の名前あり  45本 平均435回 登録+12
+        なし                  126本 平均164回 登録+ 1
+      2.65倍で、登録した13人のうち12人がこちらから来ている。
+
+      球団の回は資産動画でいちばん見られている（16本平均207回）。
+      そこに名前が入る球団が30のうち11ある。**同じ本数のまま、
+      題に名前が入るだけで変わる。**
+
+      名前を足すために内容を変えるのではない。その球団に
+      その選手がいることは事実で、日本語で見る人がいちばん
+      知りたいことでもある。今まで入れていなかったほうがおかしい。
+
+    名簿は stars() と同じものを使う（1球団につき1回しか取らない）。
+    """
+    try:
+        from notability_engine import JP_PLAYERS_MLB
+    except ImportError:
+        return []
+    jp = {p["name_en"]: p for p in JP_PLAYERS_MLB}
+    out = []
+    for row in _roster(tid, season or str(datetime.now(timezone.utc).year)):
+        person = row.get("person") or {}
+        who = jp.get(person.get("fullName") or "")
+        if not who:
+            continue
+        # 打者の成績と投手の成績、どちらを出すか。
+        #
+        # 二刀流がいるので、後から来たほうで上書きすると
+        # 大谷翔平が「8勝2敗　防御率1.79」だけになる。
+        # 表に打者か投手かが書いてあるので、それに従う。
+        want = "pitching" if who.get("type") == "pitcher" else "hitting"
+        lines = {}
+        for st in (person.get("stats") or []):
+            grp = (st.get("group") or {}).get("displayName")
+            for sp in (st.get("splits") or []):
+                if str((sp.get("team") or {}).get("id") or tid) != str(tid):
+                    continue
+                s = sp.get("stat") or {}
+                if grp == "pitching" and s.get("inningsPitched"):
+                    lines["pitching"] = (
+                        f"{s.get('wins', 0)}勝{s.get('losses', 0)}敗"
+                        f"　防御率{s.get('era', '')}")
+                elif grp == "hitting" and s.get("atBats"):
+                    lines["hitting"] = (
+                        f"打率{s.get('avg', '')}　{s.get('homeRuns', 0)}本塁打"
+                        f"　{s.get('rbi', 0)}打点")
+        line = lines.get(want) or lines.get(
+            "pitching" if want == "hitting" else "hitting") or ""
+        out.append({"name": who["name_jp"], "line": line, "why": "日本人選手"})
     return out
 
 
@@ -246,6 +319,14 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
     #
     # 「いちばん古い部類」で済ませていたら、1890年以前の球団が
     # 5つ以上あって同じ言葉が並んだ。順位にすれば全部違う文になる。
+    #
+    # **日本人選手がいる球団は、その名前が先。**
+    # 28日の実測で、題に名前があるものは平均435回、無いものは164回。
+    # 創設年より、その球団に誰がいるかのほうが先に知りたいこと。
+    jps = japanese_on(tid)
+    if jps:
+        items.insert(0, ("日本人選手",
+                         "・".join(x["name"] for x in jps[:3]) + "が所属"))
     hook = ""
     if year and all_years:
         yr = sorted(all_years).index(int(year)) + 1
@@ -290,6 +371,12 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
     if not hook:
         hook = f"本拠地は{where}"
 
+    # 日本人選手がいる球団は、その名前を先頭に付ける。
+    # 題は「【MLB】{label}｜{hook}」の形なので、ここに入れば題に載る。
+    # 28日の実測で、題に名前があるものは平均435回、無いものは164回。
+    if jps:
+        hook = "・".join(x["name"] for x in jps[:3]) + "が所属　" + hook
+
     # 地図に打つための座標。同地区の4球団ぶんも一緒に持たせる。
     # 画面側でAPIを叩き直さずに済む。
     coord = (loc.get("defaultCoordinates") or {})
@@ -333,6 +420,7 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
         # 殿堂入りと、いま実際に打って抑えている選手を添える。
         "legends": legends(tid),
         "stars": stars(tid),
+        "japanese": jps,
         "where": where,
         "intro": f"{jp}。{where}を本拠地にする球団です。数字で見ていきます。",
         "items": [list(x) for x in items],

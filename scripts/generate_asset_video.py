@@ -1047,6 +1047,24 @@ def _narration_list(topic: str) -> dict:
     # 創設年・収容人数・地区が並ぶだけだと、その球団が何者なのかが
     # 残らない。殿堂入りと、いま実際に打って抑えている選手を1画面ずつ。
     # テンポを落とさないよう、それぞれ1画面に収める。
+    # 日本人選手がいる球団は、そこから。
+    #
+    # 題にも名前が入っている（28日の実測で、題に名前があるものは
+    # 平均435回、無いものは164回）。**題で来た人が探しているのは
+    # この画面**なので、殿堂入りより先に置く。
+    jps = (spec.get("japanese") or [])[:3]
+    if jps:
+        # 名前は前の画面で言っている（一覧の1行目）。
+        # ここは**今シーズンの数字**を出す。同じ名前を2回読むと、
+        # 47秒の動画では繰り返しがはっきり分かる。
+        said = ["%sが%s" % (x["name"], x["line"]) if x.get("line")
+                else x["name"] for x in jps]
+        segments.append({
+            "kind": "people",
+            "text": "今シーズンの成績は、" + "、".join(said) + "。",
+            "meta": {"topic": topic, "group": "japanese",
+                     "heading": "日本人選手"},
+        })
     legends = (spec.get("legends") or [])[:3]
     said = [s for s in (_say(x["name"]) for x in legends) if s]
     if legends and said:
