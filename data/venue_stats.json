@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-09-03T13:01:52.294802+00:00",
+  "updated_at": "2026-09-04T06:01:27.771214+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-09-03",
-  "total_games": 2237,
+  "end": "2026-09-04",
+  "total_games": 2246,
   "min_games": 20,
   "venues": {
     "Sutter Health Park": {
@@ -28,22 +28,22 @@
       "total": 30
     },
     "PNC Park": {
-      "games": 68,
-      "runs": 719,
-      "avg_runs": 10.57,
+      "games": 69,
+      "runs": 726,
+      "avg_runs": 10.52,
       "rank": 4,
       "total": 30
     },
     "Wrigley Field": {
-      "games": 71,
-      "runs": 706,
-      "avg_runs": 9.94,
+      "games": 72,
+      "runs": 709,
+      "avg_runs": 9.85,
       "rank": 5,
       "total": 30
     },
     "Kauffman Stadium": {
-      "games": 68,
-      "runs": 663,
+      "games": 69,
+      "runs": 673,
       "avg_runs": 9.75,
       "rank": 6,
       "total": 30
@@ -55,17 +55,17 @@
       "rank": 7,
       "total": 30
     },
-    "Daikin Park": {
-      "games": 73,
-      "runs": 672,
-      "avg_runs": 9.21,
-      "rank": 8,
-      "total": 30
-    },
     "Target Field": {
       "games": 71,
       "runs": 653,
       "avg_runs": 9.2,
+      "rank": 8,
+      "total": 30
+    },
+    "Daikin Park": {
+      "games": 74,
+      "runs": 680,
+      "avg_runs": 9.19,
       "rank": 9,
       "total": 30
     },
@@ -76,17 +76,17 @@
       "rank": 10,
       "total": 30
     },
+    "Oriole Park at Camden Yards": {
+      "games": 70,
+      "runs": 618,
+      "avg_runs": 8.83,
+      "rank": 11,
+      "total": 30
+    },
     "Yankee Stadium": {
       "games": 68,
       "runs": 599,
       "avg_runs": 8.81,
-      "rank": 11,
-      "total": 30
-    },
-    "Oriole Park at Camden Yards": {
-      "games": 69,
-      "runs": 607,
-      "avg_runs": 8.8,
       "rank": 12,
       "total": 30
     },
@@ -147,15 +147,15 @@
       "total": 30
     },
     "UNIQLO Field at Dodger Stadium": {
-      "games": 70,
-      "runs": 600,
-      "avg_runs": 8.57,
+      "games": 71,
+      "runs": 605,
+      "avg_runs": 8.52,
       "rank": 21,
       "total": 30
     },
     "Progressive Field": {
-      "games": 70,
-      "runs": 587,
+      "games": 71,
+      "runs": 596,
       "avg_runs": 8.39,
       "rank": 22,
       "total": 30
@@ -188,17 +188,17 @@
       "rank": 26,
       "total": 30
     },
-    "Globe Life Field": {
-      "games": 70,
-      "runs": 557,
-      "avg_runs": 7.96,
-      "rank": 27,
-      "total": 30
-    },
     "loanDepot park": {
       "games": 69,
       "runs": 549,
       "avg_runs": 7.96,
+      "rank": 27,
+      "total": 30
+    },
+    "Globe Life Field": {
+      "games": 71,
+      "runs": 563,
+      "avg_runs": 7.93,
       "rank": 28,
       "total": 30
     },
@@ -210,9 +210,9 @@
       "total": 30
     },
     "T-Mobile Park": {
-      "games": 68,
-      "runs": 520,
-      "avg_runs": 7.65,
+      "games": 69,
+      "runs": 531,
+      "avg_runs": 7.7,
       "rank": 30,
       "total": 30
     }

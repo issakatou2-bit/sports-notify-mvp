@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-03T06:01:49.643899+00:00",
+  "updated_at": "2026-09-04T06:01:44.485769+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -16,70 +16,70 @@
       "team_id": "112",
       "name": "カブス",
       "name_en": "Chicago Cubs",
-      "mentions": 4,
-      "tone": "不振",
-      "gist": "Hoerner好守も打線爆発と投手崩壊で混在"
-    },
-    {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "新球場建設計画とSchlittler好投"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "AI動画問題とCease好投"
+      "mentions": 5,
+      "tone": "好調",
+      "gist": "Pete Crow-Armstrong39号とGausman"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 3,
+      "mentions": 4,
       "tone": "不振",
-      "gist": "Yamamoto好投も延長戦で敗北"
+      "gist": "7月1日以降負け越しており、調査対象にもなる"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 4,
+      "tone": "好調",
+      "gist": "ガーディアンズに勝ち越し、ワイルドカード争いで有利"
     },
     {
       "team_id": "114",
       "name": "ガーディアンズ",
       "name_en": "Cleveland Guardians",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "Guerrero Jr.3ラン、Cease好投"
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "ブルージェイズにタイブレーカー失う、WC争いで後退"
     },
     {
-      "team_id": "138",
-      "name": "カージナルス",
-      "name_en": "St. Louis Cardinals",
+      "team_id": "142",
+      "name": "ツインズ",
+      "name_en": "Minnesota Twins",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "小児がん啓発月間で患者とコラボした選手写真を制作"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "O'Brien救援勝ちでCardinals勝利"
+      "tone": "不振",
+      "gist": "18三振14残塁、チームの打撃不調が顕著"
     },
     {
       "team_id": "117",
       "name": "アストロズ",
       "name_en": "Houston Astros",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "Orbit珍事件とWesneski/Velázquez好投"
+      "tone": "好調",
+      "gist": "ホワイトソックスに3勝1敗、AL2番目のシード争いで健闘"
     },
     {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
       "mentions": 1,
-      "tone": "不振",
-      "gist": "Rockies優勝争い脱落"
+      "tone": "話題",
+      "gist": "テオスカル・エルナンデスがサヨナラホームランでカージナルスを"
     }
   ],
   "players": [
     {
-      "name": "山本由伸",
+      "name": "大谷翔平",
       "mentions": 2
     }
   ]
