@@ -1293,6 +1293,12 @@ def render_intro(p, meta, top, extra=None):
     slide = int((1 - e) * 70)
     mode = meta.get("mode") or ("local" if meta.get("local") else "players")
     heading, lede = INTRO_HEADINGS.get(mode, INTRO_HEADINGS["players"])
+    # 誰も安打を打たなかった日は「活躍した順」と言わない。
+    # 帯だけ直しても、その真上に「その日活躍した順に紹介します」が
+    # 残っていては、同じ画面で言っていることが食い違う。
+    if mode == "players" and morning_recap.quiet_day(
+            (extra or {}).get("players") or []):
+        lede = "出場した選手の成績です"
 
     d.text((80, 430 + slide), jp_date(meta.get("date", "")),
            font=font(64), fill=DIM)
@@ -1315,6 +1321,14 @@ def render_list(p, players, start, count):
     im, d = base(p)
     d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
     d.text((70, 200), "今日の日本人選手", font=font(64), fill=ACCENT)
+
+    # 頼まれた数より選手が少ない日は、いるぶんだけ描く。
+    #
+    # 9/3は日本人選手の出場が2人だけで、3人ぶんを頼まれて落ちた。
+    # 本番は len(chunk) を渡すので当たらなかったが、**画面が
+    # 材料より多くを求められて落ちる**のは、どこから呼ばれても
+    # 起きてはいけない。少ない日は短い一覧になればよい。
+    count = max(0, min(count, len(players) - start))
 
     y = 380
     for i in range(count):
