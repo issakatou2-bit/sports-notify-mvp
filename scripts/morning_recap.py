@@ -493,6 +493,41 @@ def pitcher_role(row: dict) -> str:
 ROLE_LABEL = {"closer": "セーブ", "setup": "ホールド"}
 
 
+def did_something(row: dict) -> bool:
+    """その選手が、その日「何かした」と言えるか。
+
+    貢献スコアは**並べるための数字**で、活躍したかどうかの判定では
+    ない。打者の土台は50点あたりにあるので、0安打でも四球が2つ
+    あれば51点になり、1安打の43点を上回る。ふだんは他に打った人が
+    いるので表に出ないが、日本人選手が2人しか出ず、2人とも
+    無安打だった日（9/4）に、0打数3安打…ではなく3打数0安打の選手が
+    「今日いちばん活躍した選手」として出た。
+
+    スコアの計算は変えない。**言い方のほうを変える。**
+    ここで「何かしたか」を別に判定して、誰もしていない日は
+    「いちばん活躍」と呼ばない。
+    """
+    if row.get("type") == "two_way":
+        return did_something({**row.get("batting", {}), "type": "batter"}) \
+            or did_something({**row.get("pitching", {}), "type": "pitcher"})
+    if row.get("type") == "pitcher":
+        # 投げれば内容が残る。1球も投げていなければ何も無い。
+        return bool(outs_from_ip(row.get("ip")))
+    return bool(row.get("hits") or row.get("rbi") or row.get("runs")
+                or row.get("sb") or row.get("hr"))
+
+
+def quiet_day(players: list) -> bool:
+    """その日、日本人選手に語ることが何も起きなかったか。
+
+    安打も打点も得点も盗塁も無く、投げた人もいない日。
+    **枠を落とすほどではない。**「誰が出て、どうだったか」は
+    その日の事実で、無安打だったことも結果ではある。
+    ただし「いちばん活躍した選手」とは呼べない。
+    """
+    return bool(players) and not any(did_something(p) for p in players)
+
+
 def contribution(row: dict) -> int:
     """
     その日の「勝利貢献スコア」。投手と打者を同じ物差しに載せる。

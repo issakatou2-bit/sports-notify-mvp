@@ -1228,8 +1228,15 @@ def intro_topic(mode: str, meta: dict, top: dict, extra: dict) -> tuple:
     if mode == "players" and top:
         head = topic_short(top.get("headline") or "")
         if head:
+            # 誰も安打も登板もしなかった日は「活躍」と呼ばない。
+            # 貢献スコアは並べるための数字で、活躍の判定ではない。
+            # 9/4は3打数0安打の選手が「今日いちばん活躍した選手」に
+            # なった（出たのが2人だけで、2人とも無安打だった日）。
+            quiet = morning_recap.quiet_day(
+                extra.get("players") or [])
             return (f"{top.get('name', '')}　{head}",
-                    "コレスポが選ぶ、今日いちばん活躍した選手")
+                    "この日は日本人選手に安打が出ませんでした" if quiet
+                    else "コレスポが選ぶ、今日いちばん活躍した選手")
         return "", ""
 
     if mode == "local":
@@ -3023,7 +3030,8 @@ def main():
                     im = render_intro(pp, meta, top,
                                      {"buzz": buzz,
                                       "voices": voices_data,
-                                      "reporters": reporters_data})
+                                      "reporters": reporters_data,
+                                      "players": players})
                 elif kind == "list":
                     im = render_list(pp, players, meta.get("start", 0),
                                      meta.get("count", 1))

@@ -87,11 +87,23 @@ except ImportError:
 #
 #   COLLESPO_DIALOGUE_MODEL=claude-sonnet-5  で1本作って見比べる
 #
-# 「Haikuからいきなり Opus か」は、もっともな問い。
-# 間に Sonnet 5 があって、費用は Opus の 2.5分の1。
-# ただし**どれが良いかは出来上がりを見ないと分からない**ので、
-# 切り替えを1行にしておく。コードを触らずに戻せる。
-MODEL = os.environ.get("COLLESPO_DIALOGUE_MODEL") or "claude-opus-5"
+# 2026-09-04: Opus 5 から Sonnet 5 へ。
+#
+# Opusで5本作って、9/4の回は「コメント選びも反応も良い」という
+# 評価になった。**ここまで来たなら、費用の安いほうで同じ質が
+# 出るかを見る番。**文章を書く仕事はSonnetの得意分野でもある。
+#
+#   Opus 5    1本 $0.072（実測）  月 $2.2
+#   Sonnet 5  1本 $0.029（見込み） 月 $0.9
+#
+# 材料の作り方（先発投手・勝率・進出争い・弾く指示）は
+# 9/3〜9/4にだいぶ足したので、**モデルの読みに頼る部分は
+# 前より減っている。**そのぶん軽いモデルでも保つ見込みがある。
+#
+# 数日出して見比べる。落ちるようなら1行戻す。
+#
+#   COLLESPO_DIALOGUE_MODEL=claude-opus-5  で元に戻せる
+MODEL = os.environ.get("COLLESPO_DIALOGUE_MODEL") or "claude-sonnet-5"
 MLB_API = "https://statsapi.mlb.com/api/v1"
 
 # 話者ID(VOICEVOX)。
@@ -498,8 +510,19 @@ def situation(m: dict) -> dict:
             run_w += i.get(wk) or 0
             run_l += i.get(lk) or 0
             if run_l > run_w:
-                out["flow"] += f"。{lose}が先に前に出た回もある"
+                # 「。ドジャースが先に前に出た」と句点で始まる文が
+                # 出た日がある。3点差がつかなかった試合では
+                # flow が空のまま、ここで足していた。
+                out["flow"] += ("。" if out["flow"] else "") +                     f"{lose}が先に前に出た回もある"
                 break
+        # 延長。**その試合でいちばん語れるところなので、必ず拾う。**
+        # 9/2のカージナルス対ドジャースは10回に3点入って決まったが、
+        # 延長だと渡していなかったので台本に一度も出てこなかった。
+        if len(inn) > 9:
+            last = inn[-1]
+            got = (last.get("away") or 0) + (last.get("home") or 0)
+            out["flow"] += ("。" if out["flow"] else "") +                 f"{len(inn)}回まで延長" + (f"、最後の回に{got}点入った"
+                                          if got else "")
 
     # 守備と安打。大敗の日はここに理由が出ていることが多い。
     for side, key in (("away_jp", "away"), ("home_jp", "home")):
@@ -592,10 +615,28 @@ def facts(m: dict, extra: list) -> str:
                 where = st.get("division", "")
                 if st.get("div_rank"):
                     where += f"{st['div_rank']}位"
+                # **地区順位だけでは強さが伝わらない。**
+                #
+                # ブルージェイズは勝率.496で地区4位だが、
+                # ワイルドカード争いには残っていた。そこを渡さないと
+                # 「気の長い応援なのだ」のような、実態とずれた
+                # 相槌になる（実際そうなった）。
+                # 進出圏内なら第何シードか、外なら何ゲーム差かを足す。
+                race = ""
+                if st.get("clinched"):
+                    race = "、進出決定"
+                elif st.get("seed"):
+                    race = f"、いまなら第{st['seed']}シードで進出圏内"
+                elif st.get("wc_gb") not in (None, "-", "E"):
+                    race = f"、ワイルドカードまで{st['wc_gb']}ゲーム差"
+                elif st.get("wc_gb") == "E":
+                    race = "、進出の可能性は消滅"
+                if isinstance(st.get("magic"), int):
+                    race += f"（地区優勝マジック{st['magic']}）"
                 lines.append(
                     f"{jp}のいまの成績: {st['w']}勝{st['l']}敗"
                     f"（勝率{st.get('pct')}"
-                    + (f"、{where}" if where else "") + "）")
+                    + (f"、{where}" if where else "") + race + "）")
     if top.get("game_date"):
         lines.append(f"試合が行われた日（現地）: {top['game_date']}")
     inn = [i for i in (res.get("innings") or []) if i.get("num")]
@@ -826,6 +867,17 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   ・コメントを書いた人そのものを馬鹿にしない。
     突っ込む相手は**言い分**であって、人ではない
   ・特定の球団のファン全体を悪く言わない
+- **順位表の数字は、進出争いの文脈まで込みで読む。**
+  「勝率.493で地区4位」だけを見て「気の長い応援ね」と言わない。
+  上の成績に「ワイルドカードまで1.5ゲーム差」と書いてあれば、
+  **それは今週の試合が全部効くという意味**で、むしろ熱い。
+  逆に「進出の可能性は消滅」と書いてあれば、そこは静かに扱う。
+  書いてある立ち位置と、話の温度を合わせる。
+- **シーズン通算の数字で「最近」の主張は否定できない。**
+  「最近ひどい」というコメントに対して、シーズンのOPSが
+  リーグ4位だから噛み合っていない、とは言い切れない。
+  期間が違うものを突き合わせて勝ったことにしない。
+  言えるのは「シーズン通してはリーグ4位の数字ではある」まで。
 - **コメントが自チームの強さを主張していたら、上の勝率で受ける。**
   「Cincinnatiはあそこよりマシだ」のような比較コメントには、
   「対戦の2球団自身の成績」「対戦の2球団以外の勝率」が渡っていれば
