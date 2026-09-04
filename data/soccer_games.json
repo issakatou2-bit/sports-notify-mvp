@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-09-03T09:53:55.800278+00:00",
+  "generated_at": "2026-09-04T09:53:47.128131+00:00",
   "games": [
     {
-      "game_id": "564682",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-92",
-      "away_team_id": "PD-558",
-      "home_team_name": "レアル・ソシエダ",
-      "away_team_name": "セルタ",
+      "game_id": "560566",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-349",
+      "away_team_id": "PL-64",
+      "home_team_name": "イプスウィッチ",
+      "away_team_name": "リバプール",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "セルタ vs レアル・ソシエダ",
+      "matchup": "リバプール vs イプスウィッチ",
       "abbr_matchup": null,
-      "start_time_jst": "09/04 04:00",
+      "start_time_jst": "09/05 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -22,22 +22,162 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 13,
-        "games_back": 2.0,
+        "rank": 12,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 6.0
+        "points_back": 3.0
       },
       "away_standing": {
-        "rank": 16,
-        "games_back": 2.7,
+        "rank": 13,
+        "games_back": 1.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 8.0
+        "points_back": 4.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 5,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "イプスウィッチには前田大然が所属",
+          "weight": 1
+        },
+        {
+          "tag": "jp_team",
+          "text": "リバプールには遠藤航が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "リバプール の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季3位のリバプール",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "プレミアリーグの開幕戦となるこの一戦は、【昨季3位のリバプール】が新シーズンの滑り出しを占う重要な試合である。同時に、イプスウィッチとリバプールという両チームに日本人選手が所属していることも、日本のサッカーファンにとって大きな注目点となる。前田大然と遠藤航という日本代表選手がそれぞれのチームを代表して戦う中、両選手がどのようなパフォーマンスを見せるかに注目したい。",
+      "notification_hook": "前田大然vs遠藤航。日本人選手の対戦がプレミアリーグで実現。"
+    },
+    {
+      "game_id": "564667",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-90",
+      "away_team_id": "PD-86",
+      "home_team_name": "レアル・ベティス",
+      "away_team_name": "レアル・マドリード",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "レアル・マドリード vs レアル・ベティス",
+      "abbr_matchup": null,
+      "start_time_jst": "09/05 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 7,
+        "games_back": 1.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 3.0
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "レアル・マドリード の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季5位と9位の対戦",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "レアル・マドリードとレアル・ベティスが対戦する。昨シーズンのラ・リーガでレアル・マドリードは上位の成績を収め、ベティスは中位に位置していた。【昨季5位と9位の対戦】となる本試合は、スペイン国内最高峰のリーグで異なる立場にある両チームが、新シーズン開幕から間もない時期にどのような戦いを見せるかが焦点となる。両チームの構成選手がどのようなパフォーマンスを発揮するのかに注目したい。",
+      "notification_hook": "昨季5位マドリード、9位ベティスとの開幕戦。新シーズンの位置付けが決まる一戦。"
+    },
+    {
+      "game_id": "559697",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-524",
+      "away_team_id": "FL1-548",
+      "home_team_name": "パリ・サンジェルマン",
+      "away_team_name": "モナコ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "モナコ vs パリ・サンジェルマン",
+      "abbr_matchup": null,
+      "start_time_jst": "09/05 04:05",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 11,
+        "games_back": 1.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 5.0
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 0.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 1.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -53,33 +193,152 @@
       "reasons": [
         {
           "tag": "jp_team",
-          "text": "レアル・ソシエダには久保建英が所属",
+          "text": "モナコには南野拓実が所属",
           "weight": 1
         },
         {
           "tag": "quality",
-          "text": "昨季10位と6位の対戦",
+          "text": "パリ・サンジェルマン の試合",
           "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季11位と21位の対戦",
+          "weight": 0
         }
       ],
       "log_notes": [],
-      "ai_summary": "ラ・リーガの開幕戦となるこの一戦は、昨季10位のセルタと6位のレアル・ソシエダが対戦する。両チームは新シーズンの戦い方を示す最初の試金石となり、これからのリーグ戦で【昨季の成績をどう更新できるか】が問われることになる。特に注目すべきは、レアル・ソシエダに所属する日本代表の久保建英がシーズンをどのような形でスタートさせるかという点である。",
-      "notification_hook": "久保建英擁するソシエダ、開幕戦でセルタと激突。"
+      "ai_summary": "リーグ・アン開幕直後の重要な一戦として、【昨季11位のパリ・サンジェルマンと21位のモナコ】が対戦する。フランス国内最高峰のリーグで、前シーズンの成績に大きな差がある両チームがどのような戦いを繰り広げるかが注目される。また、モナコに所属する南野拓実の活躍がどうなるかという点も見どころとなる。",
+      "notification_hook": "南野拓実のモナコ、昨季11位PSGと対戦"
     },
     {
-      "game_id": "559696",
+      "game_id": "559699",
       "league": "リーグ・アン",
-      "home_team_id": "FL1-511",
-      "away_team_id": "FL1-521",
-      "home_team_name": "トゥールーズ",
-      "away_team_name": "リール",
+      "home_team_id": "FL1-523",
+      "away_team_id": "FL1-519",
+      "home_team_name": "リヨン",
+      "away_team_name": "オセール",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "リール vs トゥールーズ",
+      "matchup": "オセール vs リヨン",
       "abbr_matchup": null,
-      "start_time_jst": "09/04 03:45",
+      "start_time_jst": "09/05 02:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 4,
+        "games_back": 1.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 3.0
+      },
+      "away_standing": {
+        "rank": 18,
+        "games_back": 2.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 7.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "昨季4位と15位の対戦",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "game_id": "565791",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-10",
+      "away_team_id": "BL1-1",
+      "home_team_name": "シュツットガルト",
+      "away_team_name": "ケルン",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ケルン vs シュツットガルト",
+      "abbr_matchup": null,
+      "start_time_jst": "09/05 03:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 18,
+        "games_back": 1.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 3.0
+      },
+      "away_standing": {
+        "rank": 6,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "昨季4位と14位の対戦",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "game_id": "558609",
+      "league": "セリエA",
+      "home_team_id": "SA-107",
+      "away_team_id": "SA-7397",
+      "home_team_name": "ジェノア",
+      "away_team_name": "コモ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "コモ vs ジェノア",
+      "abbr_matchup": null,
+      "start_time_jst": "09/05 03:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -88,15 +347,15 @@
       "jp_players": [],
       "home_standing": {
         "rank": 16,
-        "games_back": 1.7,
+        "games_back": 2.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 5.0
+        "points_back": 6.0
       },
       "away_standing": {
-        "rank": 3,
+        "rank": 8,
         "games_back": 0.7,
         "streak": 0,
         "wins": 0,
@@ -112,24 +371,21 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 1,
+      "score": 0,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
       "reasons": [
         {
           "tag": "quality",
-          "text": "昨季10位と3位の対戦",
-          "weight": 1
+          "text": "昨季16位と4位の対戦",
+          "weight": 0
         }
-      ],
-      "log_notes": [],
-      "ai_summary": "リーグ・アンの全38試合の総当たり戦では、シーズン序盤から各チームの実力差が試される。【昨季の3位と10位】が対戦する本試合は、前季の上位争いに絡んだチームと中位層の実力をはかる指標になる。開幕直後のこの段階から、両チームがどのような戦い方を見せるのか、そしてそれぞれのシーズンの方向性を示すプレーぶりに注目したい。",
-      "notification_hook": "昨季3位と10位が開幕戦で激突"
+      ]
     }
   ],
   "ai_status": {
-    "targets": 2,
-    "succeeded": 2,
-    "cost_usd": 0.00639
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.01329
   }
 }
