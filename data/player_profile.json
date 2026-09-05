@@ -1,116 +1,111 @@
 {
-  "generated_at": "2026-09-04T06:00:59.893041+00:00",
-  "date_jst": "2026-09-04",
-  "name": "Adley Rutschman",
-  "player_id": "668939",
-  "team": "レッドソックス",
+  "generated_at": "2026-09-05T06:01:18.776265+00:00",
+  "date_jst": "2026-09-05",
+  "name": "Brayan Rocchio",
+  "player_id": "677587",
+  "team": "ガーディアンズ",
   "group": "hitting",
-  "why": "2026-09-04のMLBで最も活躍",
-  "headline": "4打数2安打　2本塁打　2打点",
-  "score": 151,
+  "why": "2026-09-05のMLBで最も活躍",
+  "headline": "4打数2安打　2本塁打　5打点",
+  "score": 172,
   "bio": {
-    "name_en": "Adley Rutschman",
-    "age": 28,
-    "birth_city": "Portland",
-    "birth_state": "OR",
-    "birth_country": "USA",
-    "birth_date": "1998-02-06",
-    "debut": "2022-05-21",
-    "draft_year": 2019,
+    "name_en": "Brayan Rocchio",
+    "age": 25,
+    "birth_city": "Caracas",
+    "birth_state": null,
+    "birth_country": "Venezuela",
+    "birth_date": "2001-01-13",
+    "debut": "2023-05-16",
+    "draft_year": null,
     "bats": "Switch",
     "throws": "Right",
-    "number": "31",
-    "position": "Catcher",
+    "number": "4",
+    "position": "Shortstop",
     "nickname": null,
-    "height": "6' 1\"",
-    "weight": 230
+    "height": "5' 9\"",
+    "weight": 170
   },
   "teams": [
     {
-      "team": "オリオールズ",
-      "from": 2022,
-      "to": 2026
-    },
-    {
-      "team": "レッドソックス",
-      "from": 2026,
+      "team": "ガーディアンズ",
+      "from": 2023,
       "to": 2026
     }
   ],
   "career": {
-    "games": 588,
-    "avg": ".252",
-    "hr": 72,
-    "rbi": 283,
-    "ops": ".753",
-    "sb": 6,
-    "hits": 551
+    "games": 416,
+    "avg": ".231",
+    "hr": 25,
+    "rbi": 147,
+    "ops": ".642",
+    "sb": 36,
+    "hits": 296
   },
   "this_season": {
-    "games": 83,
-    "avg": ".240",
-    "hr": 11,
-    "rbi": 53,
-    "ops": ".741",
-    "sb": 0,
-    "hits": 73
+    "games": 135,
+    "avg": ".247",
+    "hr": 12,
+    "rbi": 59,
+    "ops": ".682",
+    "sb": 18,
+    "hits": 117
   },
   "last_season": {
-    "games": 90,
-    "avg": ".220",
-    "hr": 9,
-    "rbi": 29,
-    "ops": ".673",
-    "sb": 0,
-    "hits": 71
+    "games": 115,
+    "avg": ".233",
+    "hr": 5,
+    "rbi": 44,
+    "ops": ".630",
+    "sb": 8,
+    "hits": 80
   },
   "recent": [
     {
+      "date": "2026-09-04",
+      "line": "3打数1安打",
+      "opponent": "Detroit Tigers"
+    },
+    {
+      "date": "2026-09-04",
+      "line": "4打数2安打 2本塁打 5打点",
+      "opponent": "Detroit Tigers"
+    },
+    {
       "date": "2026-09-03",
-      "line": "4打数2安打 2本塁打 2打点",
-      "opponent": "Baltimore Orioles"
+      "line": "3打数0安打",
+      "opponent": "Toronto Blue Jays"
+    },
+    {
+      "date": "2026-09-01",
+      "line": "3打数0安打",
+      "opponent": "Toronto Blue Jays"
     },
     {
       "date": "2026-08-30",
-      "line": "4打数0安打",
-      "opponent": "New York Yankees"
-    },
-    {
-      "date": "2026-08-29",
-      "line": "4打数3安打",
-      "opponent": "New York Yankees"
-    },
-    {
-      "date": "2026-08-28",
-      "line": "4打数0安打",
-      "opponent": "New York Yankees"
-    },
-    {
-      "date": "2026-08-24",
-      "line": "5打数0安打",
-      "opponent": "Miami Marlins"
+      "line": "4打数1安打",
+      "opponent": "Kansas City Royals"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "AL All-Star"
-    },
-    {
-      "season": "2024",
-      "name": "AL All-Star"
-    },
-    {
       "season": "2023",
-      "name": "AL Silver Slugger"
+      "name": "MiLB.com Organization All-Star"
     },
     {
-      "season": "2023",
-      "name": "AL All-Star"
+      "season": "2022",
+      "name": "MiLB.com Organization All-Star"
     },
     {
       "season": "2021",
       "name": "MiLB.com Organization All-Star"
+    },
+    {
+      "season": "2021",
+      "name": "EAS Player of the Week"
+    },
+    {
+      "season": "2019",
+      "name": "NYP Player of the Week"
     }
   ],
   "quotes": []

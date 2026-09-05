@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-04T06:01:44.485769+00:00",
+  "updated_at": "2026-09-05T06:02:35.238092+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,68 +13,68 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 5,
-      "tone": "好調",
-      "gist": "Pete Crow-Armstrong39号とGausman"
-    },
-    {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
       "mentions": 4,
-      "tone": "不振",
-      "gist": "7月1日以降負け越しており、調査対象にもなる"
+      "tone": "話題",
+      "gist": "Walter投手とドジャース経営陣が脱税疑惑で連邦調査対象に"
     },
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 4,
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
+      "mentions": 3,
       "tone": "好調",
-      "gist": "ガーディアンズに勝ち越し、ワイルドカード争いで有利"
+      "gist": "Suarez選手が市民権取得後3ランで活躍、Redsが好調"
     },
     {
       "team_id": "114",
       "name": "ガーディアンズ",
       "name_en": "Cleveland Guardians",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "ブルージェイズにタイブレーカー失う、WC争いで後退"
-    },
-    {
-      "team_id": "142",
-      "name": "ツインズ",
-      "name_en": "Minnesota Twins",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "小児がん啓発月間で患者とコラボした選手写真を制作"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "18三振14残塁、チームの打撃不調が顕著"
-    },
-    {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
       "mentions": 2,
       "tone": "好調",
-      "gist": "ホワイトソックスに3勝1敗、AL2番目のシード争いで健闘"
+      "gist": "Bazzana選手がタイ打ちし、Guardiansが同日2度"
     },
     {
-      "team_id": "138",
-      "name": "カージナルス",
-      "name_en": "St. Louis Cardinals",
-      "mentions": 1,
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "Blue Jaysが.500に戻りALワイルドカード争いに浮"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "Vargas選手が30号、White Soxが勝利"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "Gasper選手がサヨナラ打でRed Soxを救援"
+    },
+    {
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
+      "mentions": 2,
       "tone": "話題",
-      "gist": "テオスカル・エルナンデスがサヨナラホームランでカージナルスを"
+      "gist": "誤審で先制点を許すも、Carrigg選手の場内HR3本目で活"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "Campusano選手にサヨナラ2ランで敗北"
     }
   ],
   "players": [
