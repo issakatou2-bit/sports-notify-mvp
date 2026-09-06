@@ -142,6 +142,10 @@ PER_VIDEO = 40
 # 1試合に揃えるのが目的だが、4件しか無い日に画面が作れないほうが困る。
 MIN_COMMENTS = 12
 
+# 日本人選手宛のコメントを、何件まで訳しに回すか。
+# 画面に出るのは3件だが、訳したあと「称賛」に絞るので少し多めに取る。
+JP_READ = 8
+
 
 def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
                            per_video: int = PER_VIDEO) -> list:
@@ -246,6 +250,150 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
 
     print(f"[info] 公式ハイライトのコメント: {len(out)}件")
     return out
+
+
+def _jp_teams(recap_path: str = "data/morning_recap.json") -> dict:
+    """今日出た日本人選手と、その球団の英語呼び名。
+
+    返すのは {英語の呼び名(小文字): [選手名, ...]}。
+    球団名は mlb_buzz が持っている対応表を裏返して使う。
+    こちらで書き直すと、移籍や表記ゆれで二重管理になる。
+    """
+    try:
+        d = json.loads(pathlib.Path(recap_path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    try:
+        from mlb_buzz import TEAM_EN_TO_JP
+    except ImportError:
+        return {}
+    jp_to_en = {}
+    for en, jp in TEAM_EN_TO_JP.items():
+        jp_to_en.setdefault(jp, en)
+    out: dict = {}
+    for p in d.get("players") or []:
+        en = jp_to_en.get(p.get("team_jp") or "")
+        if en:
+            out.setdefault(en.lower(), []).append(p.get("name"))
+    return out
+
+
+def fetch_jp_comments(buzz_path: str = "data/mlb_buzz.json",
+                      recap_path: str = "data/morning_recap.json",
+                      videos: int = 2, per_video: int = PER_VIDEO) -> list:
+    """日本人選手が出た試合のハイライトから、その選手宛のコメントを取る。
+
+    なぜ別に取るのか:
+      これまでは「その日いちばん見られたハイライト」1本のコメントを
+      4件訳し、そこに日本人選手の名前があれば応援の枠に回していた。
+      **たまたま入っていたら使う、という取り方**なので、
+      9/6は村上への1件だけになり、画面が寂しくなった。
+
+      日本人選手がどの球団にいるかは、その日の成績データに入っている。
+      検索結果も mlb_buzz が全部持っている。
+      **その選手の試合の動画を名指しで見に行けば、たまたまではなくなる。**
+
+    賛同の多い順に取り、名前が出ているものだけを残す。
+    """
+    api_key = os.environ.get("YOUTUBE_API_KEY")
+    if not api_key:
+        return []
+    teams = _jp_teams(recap_path)
+    if not teams:
+        print("[info] 今日の日本人選手が分からないので、応援コメントは探しません")
+        return []
+    try:
+        buzz = json.loads(pathlib.Path(buzz_path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+
+    # 対戦カードに、日本人選手の球団が入っている動画を選ぶ。
+    # 見られている順に並んでいるので、そのまま上から取ればよい。
+    picks = []
+    for v in (buzz.get("all") or buzz.get("videos") or []):
+        low = str(v.get("matchup") or "").lower()
+        who = []
+        for en, names in teams.items():
+            if en in low:
+                who += names
+        if who and v.get("video_id"):
+            picks.append((v, sorted(set(who))))
+        if len(picks) >= videos:
+            break
+    if not picks:
+        print("[info] 日本人選手の試合のハイライトが見つかりませんでした")
+        return []
+
+    out = []
+    for v, who in picks:
+        print(f"[info] {v.get('matchup')} のコメントを見ます（{'、'.join(who)}）")
+        try:
+            r = requests.get(
+                "https://www.googleapis.com/youtube/v3/commentThreads",
+                params={"part": "snippet", "videoId": v["video_id"],
+                        "key": api_key, "order": "relevance",
+                        "maxResults": per_video, "textFormat": "plainText"},
+                timeout=25)
+            if r.status_code == 403:
+                continue
+            r.raise_for_status()
+            data = r.json()
+        except Exception as e:                   # noqa: BLE001
+            print(f"[warn] {v['video_id']} のコメント取得に失敗: {e}",
+                  file=sys.stderr)
+            continue
+        for item in data.get("items", []):
+            c = ((item.get("snippet") or {}).get("topLevelComment") or {}
+                 ).get("snippet") or {}
+            text = " ".join((c.get("textOriginal") or "").split())
+            # 短い応援も使うので、下限は本編より緩める（「Go Murakami!」）。
+            if not (5 <= len(text) <= 220):
+                continue
+            if not jp_mentioned(text):
+                continue
+            out.append({
+                "at": c.get("publishedAt", ""),
+                "title": text,
+                "url": f"https://www.youtube.com/watch?v={v['video_id']}",
+                "likes": int(c.get("likeCount") or 0),
+                "replies": int((item.get("snippet") or {})
+                               .get("totalReplyCount") or 0),
+                "reply_texts": [],
+                "author": c.get("authorDisplayName", ""),
+                "source": "MLB公式ハイライトのコメント",
+                "matchup": v.get("matchup") or "",
+                "slot": "jp",
+            })
+    out.sort(key=lambda x: -x["likes"])
+    print(f"[info] 日本人選手に触れたコメント: {len(out)}件")
+    return out[:JP_READ]
+
+
+def pick_praise(voices: list, want: int = 3) -> list:
+    """応援の枠に出す並び。**中身のあるものと、短い応援を混ぜる。**
+
+    「頑張れ」だけが2件並ぶ画面は寂しい、という指摘があった。
+    逆に長い意見だけでも、応援している感じにならない。
+    理由まで書いてある一言を先に置き、そのあとに短い声を添える。
+
+    どちらかしか無い日は、あるほうで埋める。
+    無理に混ぜるために件数を減らさない。
+    """
+    cand = [v for v in voices
+            if v.get("jp_players") and v.get("tone") == "称賛"]
+    cand.sort(key=lambda v: -(v.get("likes") or 0))
+    # 34字は、理由や場面まで書いてあるかどうかの線。
+    # 「頑張れMurakami!」は10字前後、「6週間離脱していたのに…」は40字を超える。
+    deep = [v for v in cand if len(v.get("ja") or "") >= 34]
+    quick = [v for v in cand if len(v.get("ja") or "") < 34]
+    out = deep[:2] + quick[:2]
+    if len(out) < want:
+        rest = [v for v in cand if v not in out]
+        out += rest[:want - len(out)]
+    # 中身のあるものが先。画面は上から読まれる。
+    out.sort(key=lambda v: (len(v.get("ja") or "") < 34,
+                            -(v.get("likes") or 0)))
+    return out[:want]
 
 
 def fetch_titles() -> list:
@@ -379,6 +527,10 @@ def build(limit: int = MAX_VOICES) -> dict:
         note("**現地の声: コメントもRSSも取れませんでした**")
         return {}
 
+    # 日本人選手が出た試合のコメントは、別に名指しで取りに行く。
+    # いちばん見られた1本にたまたま入っているのを待たない。
+    jp_items = fetch_jp_comments()
+
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key or anthropic is None:
         note("**現地の声: ANTHROPIC_API_KEY が渡っていません**")
@@ -386,7 +538,8 @@ def build(limit: int = MAX_VOICES) -> dict:
 
     client = anthropic.Anthropic(api_key=api_key)
     try:
-        voices = translate(client, items[:limit])
+        # 同じ1回のやり取りで両方訳す。呼び出しを増やさない。
+        voices = translate(client, items[:limit] + jp_items)
     except Exception as e:
         note(f"**現地の声: 翻訳に失敗しました** {type(e).__name__}: "
              f"{str(e)[:160]}")
@@ -410,8 +563,11 @@ def build(limit: int = MAX_VOICES) -> dict:
     # 貢献スコアの枠に添えるもの。用途が違うので置き場も分ける。
     for v in voices:
         v["jp_players"] = jp_mentioned(v.get("title", "") + " " + v.get("ja", ""))
-    praise = [v for v in voices
-              if v.get("jp_players") and v.get("tone") == "称賛"]
+    praise = pick_praise(voices)
+    # 本編の枠には、日本人選手用に取ってきた分を混ぜない。
+    # あちらは「その日いちばん見られた試合のコメント欄」という枠で、
+    # 別の試合の声を混ぜると、何を見ているのか分からなくなる。
+    voices = [v for v in voices if v.get("slot") != "jp"]
     if praise:
         print(f"[info] 日本人選手への称賛: {len(praise)}件")
         for v in praise:

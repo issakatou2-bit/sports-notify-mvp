@@ -484,6 +484,18 @@ def build(api_key: str, hours: int = 30, top: int = 5,
         # 覚えておく。次からは search を打たずに済む(100 -> 1ユニット)。
         "channel_id": cid,
         "videos": ranked[:top],
+        # その日取れたハイライト全部の、動画IDと対戦カードだけ。
+        #
+        # なぜ要るのか: 上位5本は再生回数で決まるので、日本人選手の
+        # 出た試合が入らない日が多い。**日本人選手への応援コメントを
+        # 探すには、その選手の試合の動画IDが要る。**
+        # 検索はもう済んでいるので、結果を捨てずに残しておけばよい。
+        # 成績や topic_jp は上位だけなので、ここは軽い4項目にする。
+        "all": [{"video_id": r.get("video_id"),
+                 "matchup": r.get("matchup") or "",
+                 "game_date": game_date_from_title(
+                     r.get("title", ""), r.get("published_at", "")),
+                 "views": r.get("views", 0)} for r in ranked],
     }
 
 

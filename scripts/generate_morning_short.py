@@ -461,39 +461,43 @@ def clip_sentences(jp: str, limit: int = REPORTER_MAX) -> str:
 
 
 def week_line(players: list, days: int = 7) -> tuple:
-    """今日の順位を、7日間の合計の中に置く。
+    """ここ7日の調子。**合計点ではなく、上がり下がりを見せる。**
 
-    なぜ足すのか:
-      この回はその日の数字と計算結果だけで終わる。1本1本は正しいが、
-      毎日「今日は誰が何点」で完結していて、昨日との繋がりが無い。
-      同じ順位でも、7日ずっと上位にいる人と今日だけ跳ねた人では
-      意味が違う。手元に13日ぶんの履歴があるので、そこは出せる。
+    なぜ作り直したか:
+      前は勝利貢献スコアの7日合計を5人ぶん並べていた。
+      合計そのものは正しいが、**あれはこちらの計算式の数字**で、
+      「231点で1位」と言われても見ている人には何も伝わらない。
+      内輪の集計を見せられている感じになる、という指摘は当たっている。
 
-      新しい話題を足すのではなく、いま出している数字に奥行きを足す。
-      足し算しかしていないので、間違えようもない。
+      伝えたいのは順位ではなく、いま上がっているのか落ちているのか。
+      それなら打数・安打・本塁打という、誰でも読める数字で足りる。
+      日ごとの棒を並べれば、形のほうが言葉より速い。
 
-    返すのは (読み上げる文, 画面に出す一覧)。
+      人数も5人から2人へ。5行の順位表は読むのに時間がかかるうえ、
+      1人あたり「名前と点数」しか無かった。2人なら中身が置ける。
+
+    返すのは (読み上げる文, 画面に出す行)。
     """
     try:
         import morning_recap as _mr
-        week = _mr.weekly_ranking(days=days)
+        rows = _mr.recent_form(players, days=days)
     except Exception:                            # noqa: BLE001
         return "", []
-    if len(week) < 3:
+    if not rows:
         return "", []
-    top = week[0]
-    today = players[0].get("name") if players else ""
-    lead = f"この{days}日間の合計では、{speech_name(top['name'])}が"     f"{top['total']}点で1位です。"
-    if today and today == top["name"]:
-        # 今日の1位が週でも1位なら、そう言ったほうが強い。
-        lead = (f"{speech_name(today)}は、この{days}日間の合計でも"
-                f"{top['total']}点で1位です。")
-    elif today:
-        for i, w in enumerate(week, 1):
-            if w["name"] == today:
-                lead += f"今日1位の{speech_name(today)}は{i}位。"
-                break
-    return lead, week[:5]
+    r = rows[0]
+    parts = [f"ここ{days}日では、{speech_name(r['name'])}が"
+             f"{yomi_stats(r['line'])}。"]
+    if r.get("late") and r.get("trend"):
+        # 「7日で打率.321、ただし直近3試合は0安打」のように、
+        # 期間の違う2つを並べる。片方だけだと今の状態が分からない。
+        parts.append(f"{yomi_stats(r['late'])}で、{r['trend']}ところです。")
+    elif r.get("late"):
+        parts.append(f"{yomi_stats(r['late'])}です。")
+    if len(rows) > 1:
+        parts.append(f"{speech_name(rows[1]['name'])}は"
+                     f"{yomi_stats(rows[1]['line'])}。")
+    return "".join(parts), rows
 
 
 def press_premise(heads: list) -> str:
@@ -917,7 +921,9 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     # こちらは「その選手が向こうでどう受け取られたか」という別の話で、
     # 貢献スコアの順位のすぐ後ろに置くのが自然な位置になる。
     if mode == "players":
-        praise = ((data.get("voices") or {}).get("jp_praise") or [])[:2]
+        # 3件まで。**2件だと「頑張れ」だけの画面になる日がある。**
+        # local_voices 側で、中身のある声と短い応援を混ぜて並べてある。
+        praise = ((data.get("voices") or {}).get("jp_praise") or [])[:3]
         if praise:
             parts = ["現地のコメント欄から、日本人選手への声です。"
                      "翻訳したものです。"]
@@ -1969,41 +1975,93 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
 
 
 def render_week(p, rows, today: str = ""):
-    """7日間の合計。今日の順位を、週の中に置いて見せる。
+    """ここ7日の調子。1人1枚のカードで、日ごとの棒を並べる。
 
-    その日の数字だけだと、毎日そこで完結して昨日と繋がらない。
-    同じ1位でも、ずっと上にいる人と今日だけ跳ねた人では意味が違う。
-    合計と試合数を並べれば、その差がそのまま出る。
+    棒の高さはその日の塁打（投手は奪三振）。**こちらが作った点数は
+    使わない。**打った日は高く、打てなかった日は低い、それだけの絵。
+    本塁打の日だけ色を変える。数字を読む前に、形で伝わる。
 
-    今日の1位には印を付ける。どこにいるのかが一目で分かる。
+    今日の選手には印を付ける。どれが今日の話なのかが分かる。
     """
     im, d = base(p)
     d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
-    d.text((70, 180), "この7日間の合計", font=font(64), fill=ACCENT)
-    d.text((74, 268), "勝利貢献スコアの積み上げ", font=font(32), fill=DIM)
+    d.text((70, 180), "ここ7日の調子", font=font(64), fill=ACCENT)
+    d.text((74, 268), "MLB公式の、1試合ごとの成績から", font=font(32), fill=DIM)
 
-    y = 360
-    for i, r in enumerate(rows[:5]):
-        if p < 0.08 + i * 0.09:
+    # 1人しかいない日は、カードを下げて余白を上下に分ける。
+    # 上に寄せたままだと、画面の下半分がまるごと空く。
+    y = 380 if len(rows) > 1 else 620
+    for i, r in enumerate(rows[:2]):
+        if p < 0.10 + i * 0.28:
             continue
         me = today and r.get("name") == today
-        d.rounded_rectangle([60, y, W - 60, y + 130], 18,
-                            fill=ACCENT if me else SURF)
-        fg = BG if me else TEXT
-        d.text((100, y + 22), f"{i + 1}位", font=font(40),
-               fill=BG if me else DIM)
+        card_h = 600
+        d.rounded_rectangle([60, y, W - 60, y + card_h], 22,
+                            fill=SURF,
+                            outline=ACCENT if me else None,
+                            width=3 if me else 0)
         name = str(r.get("name", ""))
-        ns = fit(d, name, W - 460, (56, 50, 44, 38))
-        d.text((190, y + 16), name, font=font(ns), fill=fg)
-        tot = f"{r.get('total', 0)}点"
-        tw = d.textlength(tot, font=font(52))
-        d.text((W - 110 - tw, y + 18), tot, font=font(52), fill=fg)
-        d.text((190, y + 78), f"{r.get('games', 0)}試合　最高"
-               f"{r.get('best', 0)}点", font=font(32),
-               fill=BG if me else DIM)
-        y += 146
-    d.text((70, H - 120), "計算方法 collespo.com/score.html",
-           font=font(32), fill=DIM)
+        ns = fit(d, name, W - 480, (58, 52, 46))
+        d.text((100, y + 24), name, font=font(ns), fill=TEXT)
+        big = str(r.get("big") or "")
+        if big:
+            bw = d.textlength(big, font=font(56))
+            d.text((W - 110 - bw, y + 24), big, font=font(56), fill=ACCENT)
+        d.text((100, y + 104), str(r.get("line") or ""),
+               font=font(34), fill=DIM)
+
+        # 日ごとの棒。**ここが本題。**
+        marks = (r.get("marks") or [])[-7:]
+        if marks:
+            unit = "1試合の奪三振" if r.get("type") == "pitcher" else "1試合の塁打"
+            uw = d.textlength(unit, font=font(26))
+            d.text((W - 110 - uw, y + 112), unit, font=font(26), fill=DIM)
+            top, bottom = y + 186, y + 412
+            span = bottom - top
+            cell = (W - 200) / max(1, len(marks))
+            bar_w = min(96, cell - 22)
+            peak = max([m.get("v") or 0 for m in marks] + [4])
+            for k, m in enumerate(marks):
+                cx = 100 + cell * k + cell / 2
+                v = m.get("v") or 0
+                h = int(span * v / peak)
+                x0, x1 = cx - bar_w / 2, cx + bar_w / 2
+                if h < 6:
+                    # 0の日も線を残す。抜けているのか0なのかが分かる。
+                    d.rounded_rectangle([x0, bottom - 6, x1, bottom], 3,
+                                        fill=ACCENT_DIM)
+                else:
+                    d.rounded_rectangle([x0, bottom - h, x1, bottom], 8,
+                                        fill=ACCENT if m.get("hr") else
+                                        (86, 104, 138))
+                if m.get("hr"):
+                    # 本塁打の印は棒の中に置く。上に出すと、
+                    # 高い日ほど成績の行に近づいて重なった。
+                    tw = d.textlength("本", font=font(26)) / 2
+                    inside = h >= 44
+                    d.text((cx - tw, bottom - h + (8 if inside else -34)),
+                           "本", font=font(26), fill=BG if inside else ACCENT)
+                lb = str(m.get("day") or "")
+                d.text((cx - d.textlength(lb, font=font(26)) / 2, y + 424),
+                       lb, font=font(26), fill=DIM)
+
+        # 直近3試合と、その向き。7日の平均だけだと今が分からない。
+        note = str(r.get("late") or "")
+        trend = str(r.get("trend") or "")
+        ty = y + 486
+        if trend:
+            tw = d.textlength(trend, font=font(36)) + 44
+            d.rounded_rectangle([100, ty, 100 + tw, ty + 64], 16,
+                                fill=ACCENT_DIM)
+            d.text((122, ty + 12), trend, font=font(36), fill=ACCENT)
+            if note:
+                d.text((100 + tw + 24, ty + 14), note, font=font(32),
+                       fill=TEXT)
+        elif note:
+            d.text((100, ty + 14), note, font=font(32), fill=TEXT)
+        y += card_h + 60
+
+    d.text((70, H - 120), "collespo.com", font=font(32), fill=DIM)
     return im
 
 
@@ -2021,14 +2079,31 @@ def render_praise(p, rows):
     d.text((74, 272), "MLB公式ハイライトのコメント欄・翻訳",
            font=font(30), fill=DIM)
 
-    y = 380
-    for i, v in enumerate(rows[:2]):
+    # 先に高さを測ってから置く。
+    #
+    # 件数は日によって1〜3件で、長さもばらばら。上から詰めていくと、
+    # 短い日は画面の下半分がまるごと空いた。合計を測っておけば、
+    # 余白を件数で割って均せる。
+    show = rows[:3]
+    heights = []
+    for v in show:
+        n = len(wrap(d, (v.get("ja") or "").strip(), font(38), W - 220)
+                [:4 if len(show) < 3 else 3])
+        heights.append(92 + n * 52)
+    room = (H - 260) - 380 - sum(heights)
+    gap = max(24, min(90, int(room / max(1, len(show)))))
+    # 残りは上下に等分する。塊が画面の真ん中に来る。
+    y = 380 + max(0, min(300, int((room - gap * (len(show) - 1)) / 2)))
+
+    for i, v in enumerate(show):
         if p < 0.08 + i * 0.10:
             continue
         who = "、".join(v.get("jp_players") or [])
         body = (v.get("ja") or "").strip()
-        lines = wrap(d, body, font(38), W - 220)[:4]
-        h = 92 + len(lines) * 52
+        # 3件並ぶ日があるので、1件あたりの行数を抑える。
+        # 4行×3件だと画面からはみ出す。
+        lines = wrap(d, body, font(38), W - 220)[:4 if len(show) < 3 else 3]
+        h = heights[i]
         d.rounded_rectangle([60, y, W - 60, y + h], 20, fill=SURF)
         d.text((100, y + 22), who, font=font(38), fill=ACCENT)
         likes = v.get("likes") or 0
@@ -2040,7 +2115,7 @@ def render_praise(p, rows):
         for line in lines:
             d.text((100, yy), line, font=font(38), fill=TEXT)
             yy += 52
-        y += h + 24
+        y += h + gap
 
     d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
     return im

@@ -777,6 +777,124 @@ def load_history(out_dir: str = "data/recap_history", days: int = 7) -> list:
     return out
 
 
+def _ip(v) -> float:
+    """「6.1回」の .1 は1アウト。10進の0.1ではない。"""
+    try:
+        s = float(v)
+    except (TypeError, ValueError):
+        return 0.0
+    whole = int(s)
+    return whole + round((s - whole) * 10) / 3.0
+
+
+def _ip_text(v: float) -> str:
+    """足したイニングを、野球の書き方に戻す。"""
+    whole = int(v + 1e-9)
+    outs = int(round((v - whole) * 3))
+    if outs >= 3:
+        whole, outs = whole + 1, 0
+    return f"{whole}.{outs}回"
+
+
+def _bases(p: dict) -> int:
+    """その日の塁打。**棒の高さに使う。**
+
+    安打数だけだと、単打4本と本塁打1本が同じ高さになる。
+    塁打なら、当たっている日ほど高くなる。
+    tb を持っていない日の記録があるので、そのときは
+    安打と本塁打から組み直す（二塁打・三塁打が無いぶん低めに出る）。
+    """
+    if isinstance(p.get("tb"), int):
+        return p["tb"]
+    return (p.get("hits") or 0) + 3 * (p.get("hr") or 0)
+
+
+def recent_form(players: list, days: int = 7, limit: int = 2,
+                out_dir: str = "data/recap_history") -> list:
+    """ここ数日の調子を、1人ずつ組み立てる。
+
+    なぜ作り直すのか:
+      前は「この7日間の合計」として勝利貢献スコアの積み上げを
+      5人ぶん並べていた。**あれはこちらの計算式の数字で、
+      見ている人には「231点」と言われても何も伝わらない。**
+      内輪の話に見える、という指摘はその通りだった。
+
+      伝えたいのは順位ではなく**上がっているか下がっているか**。
+      それなら、こちらが作った点数ではなく、打数・安打・本塁打
+      という誰でも読める数字で足りる。日ごとの棒を並べれば、
+      形は言葉より速く伝わる。
+
+      人数も5人から2人に減らす。5行の順位表は読むのに時間がかかり、
+      1人あたりの情報が「名前と点数」しか無かった。
+      2人なら、7日ぶんの中身まで置ける。
+
+    返すのは行の一覧。材料が足りない選手は入れない。
+    """
+    hist = load_history(out_dir, days)
+    by_name: dict = {}
+    for d in hist:
+        day = (d.get("date_jst") or d.get("date") or "")[5:].replace("-", "/")
+        for p in d.get("players") or []:
+            by_name.setdefault(p["name"], []).append((day, p))
+    for rows in by_name.values():
+        rows.sort(key=lambda x: x[0])
+
+    out = []
+    for who in players:
+        got = by_name.get(who.get("name")) or []
+        # 3試合ないと「上げ下げ」と呼べない。1日跳ねただけになる。
+        if len(got) < 3:
+            continue
+        kind = who.get("type") or got[-1][1].get("type") or "batter"
+        marks = []
+        for day, p in got:
+            marks.append({
+                "day": day,
+                "v": (p.get("so") or 0) if kind == "pitcher" else _bases(p),
+                "hr": bool(p.get("hr")) if kind != "pitcher" else False,
+                "note": p.get("headline") or "",
+            })
+        row = {"name": who.get("name"), "type": kind, "games": len(got),
+               "marks": marks}
+
+        if kind == "pitcher":
+            ip = sum(_ip(p.get("ip")) for _, p in got)
+            er = sum(p.get("er") or 0 for _, p in got)
+            so = sum(p.get("so") or 0 for _, p in got)
+            row["line"] = (f"{len(got)}登板　{_ip_text(ip)}　自責{er}　"
+                           f"{so}奪三振")
+            row["big"] = f"防御率{er * 9 / ip:.2f}" if ip else ""
+        else:
+            ab = sum(p.get("ab") or 0 for _, p in got)
+            h = sum(p.get("hits") or 0 for _, p in got)
+            hr = sum(p.get("hr") or 0 for _, p in got)
+            rbi = sum(p.get("rbi") or 0 for _, p in got)
+            row["line"] = (f"{ab}打数{h}安打　{hr}本塁打　{rbi}打点")
+            row["big"] = ("打率" + ("%.3f" % (h / ab)).lstrip("0")) if ab else ""
+            # 直近3試合。**ここが「今どうなのか」。**
+            last = [p for _, p in got[-3:]]
+            lab = sum(p.get("ab") or 0 for p in last)
+            lh = sum(p.get("hits") or 0 for p in last)
+            if lab:
+                row["late"] = f"直近3試合は{lab}打数{lh}安打"
+
+        # 上げているか下げているか。**直近3試合と、その前を比べる。**
+        # 比べるのは塁打（投手は奪三振）で、こちらが作った点数ではない。
+        late = [m["v"] for m in marks[-3:]]
+        early = [m["v"] for m in marks[:-3]]
+        if early and late:
+            a = sum(late) / len(late)
+            b = sum(early) / len(early)
+            if a >= b + 0.8:
+                row["trend"] = "上げてきた"
+            elif b >= a + 0.8:
+                row["trend"] = "落ちてきた"
+        out.append(row)
+        if len(out) >= limit:
+            break
+    return out
+
+
 def weekly_ranking(days: int = 7, out_dir: str = "data/recap_history") -> list:
     """
     直近の記録から、選手ごとの合計と平均を出す。
