@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-05T06:02:35.238092+00:00",
+  "updated_at": "2026-09-06T06:02:03.404767+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,73 +13,81 @@
   "titles_count": 51,
   "teams": [
     {
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
+      "mentions": 7,
+      "tone": "話題",
+      "gist": "帽子の角度をめぐるカージナルスと審判の騒動"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 5,
+      "tone": "好調",
+      "gist": "岡本4安打でブルージェイズが.500を上回る"
+    },
+    {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 4,
-      "tone": "話題",
-      "gist": "Walter投手とドジャース経営陣が脱税疑惑で連邦調査対象に"
-    },
-    {
-      "team_id": "113",
-      "name": "レッズ",
-      "name_en": "Cincinnati Reds",
       "mentions": 3,
       "tone": "好調",
-      "gist": "Suarez選手が市民権取得後3ランで活躍、Redsが好調"
+      "gist": "大谷不在もエドマンの3ラン砲がドジャースを勝利に導く"
+    },
+    {
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ロイヤルズの試合中にインフレータブルホットドグが得点"
     },
     {
       "team_id": "114",
       "name": "ガーディアンズ",
       "name_en": "Cleveland Guardians",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "Bazzana選手がタイ打ちし、Guardiansが同日2度"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "Blue Jaysが.500に戻りALワイルドカード争いに浮"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "Vargas選手が30号、White Soxが勝利"
+      "tone": "話題",
+      "gist": "ガーディアンズが1日に4つのサヨナラ勝ちを記録"
     },
     {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "Gasper選手がサヨナラ打でRed Soxを救援"
-    },
-    {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
-      "mentions": 2,
       "tone": "話題",
-      "gist": "誤審で先制点を許すも、Carrigg選手の場内HR3本目で活"
+      "gist": "キナー・ファレファの2ランダブルとからかい行為"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
       "mentions": 2,
-      "tone": "不振",
-      "gist": "Campusano選手にサヨナラ2ランで敗北"
+      "tone": "好調",
+      "gist": "グリーンがタイガースで2本塁打4安打の活躍"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ライスの投球がトニー・グウィンを連想させる"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
+      "mentions": 3
+    },
+    {
+      "name": "岡本和真",
+      "mentions": 2
+    },
+    {
+      "name": "村上宗隆",
       "mentions": 2
     }
   ]
