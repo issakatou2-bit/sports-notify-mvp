@@ -239,65 +239,8 @@ def panel_mood(panel) -> str:
     return ""
 
 
-_PARTS_CACHE: dict = {}
 _FACE_CACHE: dict = {}
 _DARK_CACHE: dict = {}
-
-
-def _parts(who: str, portrait_dir: str):
-    """部品一式。部品が無ければ1枚絵、それも無ければ None。"""
-    ck = (who, portrait_dir)
-    if ck in _PARTS_CACHE:
-        return _PARTS_CACHE[ck]
-    got = None
-    if portrait_dir:
-        d = pathlib.Path(portrait_dir) / who
-        meta = d / "parts.json"
-        if meta.exists():
-            try:
-                spec = json.loads(meta.read_text(encoding="utf-8"))
-                got = {"体": Image.open(d / spec["体"]).convert("RGBA")}
-                for g in ("眉", "目", "口", "右腕", "左腕"):
-                    got[g] = {k: Image.open(d / v).convert("RGBA")
-                              for k, v in (spec.get(g) or {}).items()}
-            except Exception as e:               # noqa: BLE001
-                print(f"[warn] {who} の部品を読めません({e})。1枚絵で描きます")
-                got = None
-        if got is None:
-            for ext in (".png", ".webp"):
-                one = pathlib.Path(portrait_dir) / (who + ext)
-                if one.exists():
-                    try:
-                        got = {"1枚": Image.open(one).convert("RGBA")}
-                    except Exception:            # noqa: BLE001
-                        got = None
-                    break
-    # 透明の余白を落とす。**全部品を同じ枠で切る。**
-    #
-    # PSDの画布は1082×1552で、絵はその中に収まっている。
-    # そのまま高さを揃えると、余白ぶんだけ横に広がって、
-    # 「どこまでが絵か」が座標から分からなくなる。実際、
-    # 端に寄せたつもりが中央の札に43px食い込んでいた。
-    #
-    # 部品ごとに切ると位置がずれるので、**全部の和を取って
-    # 1つの枠で切る**。腕を上げた絵も含めた、いちばん外側。
-    if got and "1枚" not in got:
-        ims = [got["体"]] + [im for g in ("眉", "目", "口", "右腕", "左腕")
-                             for im in (got.get(g) or {}).values()]
-        box = None
-        for im in ims:
-            b = im.getbbox()
-            if not b:
-                continue
-            box = b if box is None else (min(box[0], b[0]), min(box[1], b[1]),
-                                         max(box[2], b[2]), max(box[3], b[3]))
-        if box:
-            got["体"] = got["体"].crop(box)
-            for g in ("眉", "目", "口", "右腕", "左腕"):
-                if g in got:
-                    got[g] = {k: v.crop(box) for k, v in got[g].items()}
-    _PARTS_CACHE[ck] = got
-    return got
 
 
 def _face(who: str, portrait_dir: str, expr: str, blink: bool, mouth: int,
@@ -310,7 +253,8 @@ def _face(who: str, portrait_dir: str, expr: str, blink: bool, mouth: int,
     ck = (who, portrait_dir, expr, blink, mouth, flip)
     if ck in _FACE_CACHE:
         return _FACE_CACHE[ck]
-    parts = _parts(who, portrait_dir)
+    # 部品の読み込みは共通のもの。短編も同じところを使う。
+    parts = video_common._parts(who, portrait_dir)
     if not parts:
         _FACE_CACHE[ck] = None
         return None
@@ -751,7 +695,7 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None,
     # 立ち絵が無い日は、色の丸と名前で代用する。
     # 絵が無いから作れない、にはしない。
     for s in SPEAKERS.values():
-        if _parts(s["name"], portrait_dir):
+        if video_common._parts(s["name"], portrait_dir):
             continue
         talking = s["name"] == who["name"]
         x = PORTRAIT_X if s["side"] == "left" else W - PORTRAIT_X

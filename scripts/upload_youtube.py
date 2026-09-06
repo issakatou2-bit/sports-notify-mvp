@@ -541,7 +541,7 @@ def build_asset_metadata(topic: str) -> dict:
         *OTHER_CHANNEL_LINES,
         "",
         "―――",
-        "音声: VOICEVOX:ずんだもん",
+        "音声: VOICEVOX:ずんだもん / 四国めたん",
     ]
     return {
         "snippet": {

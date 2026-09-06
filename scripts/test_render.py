@@ -236,11 +236,66 @@ def main() -> int:
         print("    落とした: " + c)
 
     fails += check_still(players, vids, voices, reps, talk)
+    fails += check_peek_room(players, voices)
     fails += check_expression()
     fails += check_longform()
 
     print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
     return 1 if fails else 0
+
+
+def check_peek_room(players, voices) -> int:
+    """立ち絵が出る帯に、中身がはみ出していないか。
+
+    成績の回は、読み上げの帯の上から170pxのところに
+    ずんだもんとめたんの顔が出る。**そこに一覧や札が伸びていると、
+    数字が顔に隠れる。**画面ごとに高さを決め打ちしているので、
+    行数の多い日だけ被る、という形で起きる。
+
+    見るのは PEEK_FLOOR から帯の上端まで。明るい点(文字・色の札)が
+    ほとんど無ければよい。カードの下地(暗い灰)は顔の後ろに来ても
+    読みづらくならないので、明るさで見る。
+    """
+    from PIL import ImageDraw
+    bad = 0
+    print(chr(10) + "=== 立ち絵の場所が空いているか(成績の回) ===")
+    rows = []
+    if players:
+        line, week = g.week_line(players)
+        if week:
+            rows.append(("ここ7日の調子",
+                         lambda: g.render_week(1.0, week,
+                                               players[0].get("name", ""))))
+        n = min(g.PER_PAGE, len(players))
+        rows.append(("選手一覧(%d人)" % n,
+                     lambda: g.render_list(1.0, players, 0, n)))
+    pr = ((voices or {}).get("jp_praise") or [])[:3]
+    if pr:
+        rows.append(("現地の称賛", lambda: g.render_praise(1.0, pr)))
+    if not rows:
+        print("[skip] 材料が無いので飛ばします")
+        return 0
+    # いちばん帯が高くなる(3行)日を想定する。
+    g.set_spoken("あ" * 200)
+    for label, fn in rows:
+        try:
+            im = fn()
+        except Exception as e:                   # noqa: BLE001
+            bad += 1
+            print("NG  %s: %s" % (label, str(e)[:90]))
+            continue
+        top = g.spoken_top(ImageDraw.Draw(im))
+        box = im.crop((60, g.PEEK_FLOOR, g.W - 60, top)).convert("L")
+        px = list(box.getdata())
+        lit = sum(1 for v in px if v > 30) / max(1, len(px))
+        if lit > 0.02:
+            bad += 1
+            print("NG  %s: 顔の出る帯に中身が%.1f%%はみ出しています"
+                  % (label, lit * 100))
+        else:
+            print("ok  %s" % label)
+    g.set_spoken("")
+    return bad
 
 
 def check_still(players, vids, voices, reps, talk) -> int:

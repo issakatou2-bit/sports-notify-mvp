@@ -13,6 +13,7 @@
 
 import array
 import functools
+import json
 import os
 import random
 from PIL import ImageFont
@@ -613,3 +614,120 @@ def blend(base, tint, amount: float):
     濃く混ぜると文字が読めなくなるので、呼ぶ側で 0.1〜0.2 に留める。
     """
     return tuple(int(b + (t - b) * amount) for b, t in zip(base, tint))
+
+
+# 短編で使う表情。
+#
+# 長編は口を動かすので、口の形だけで3通り×表情ぶんの組み合わせを
+# 持っている。短編は**口を動かさない**（動きが止まった画面を使い回す
+# 仕組みが効かなくなり、1本の生成時間が数倍になる）。
+# だから眉・目・口の3つだけを決め打ちにする。
+FACES = {
+    "基本": ("基本", "開", "閉"),
+    "笑顔": ("基本", "笑", "笑"),
+    "問い": ("上げ", "開", "開"),
+    "驚き": ("上げ", "見開", "大"),
+    "困り": ("困り", "開", "閉"),
+}
+
+_PARTS_CACHE: dict = {}
+_FACE_CACHE: dict = {}
+
+
+# 立ち絵の部品の並び。短編は眉・目・口だけ使い、長編は腕も動かす。
+PART_GROUPS = ("眉", "目", "口", "右腕", "左腕")
+
+
+def _parts(who: str, portrait_dir: str):
+    """立ち絵の部品一式。部品が無ければ1枚絵、それも無ければ None。
+
+    部品ごとに透明の余白を落とすと、部品ごとに位置がずれる。
+    **全部品の和を1つの枠にして、そこで切る。**
+    腕を上げた絵も含めた、いちばん外側の枠になる。
+
+    短編(顔だけ)と長編(全身・腕つき)の両方がここを使う。
+    2か所に持つと、片方だけ直したときにもう片方が古いまま公開される。
+    """
+    from PIL import Image
+    ck = (who, portrait_dir)
+    if ck in _PARTS_CACHE:
+        return _PARTS_CACHE[ck]
+    got = None
+    if portrait_dir:
+        d = pathlib.Path(portrait_dir) / who
+        meta = d / "parts.json"
+        if meta.exists():
+            try:
+                spec = json.loads(meta.read_text(encoding="utf-8"))
+                got = {"体": Image.open(d / spec["体"]).convert("RGBA")}
+                for g in PART_GROUPS:
+                    got[g] = {k: Image.open(d / v).convert("RGBA")
+                              for k, v in (spec.get(g) or {}).items()}
+            except Exception as e:               # noqa: BLE001
+                print(f"[warn] {who} の部品を読めません({e})。1枚絵で描きます")
+                got = None
+        if got is None:
+            for ext in (".png", ".webp"):
+                one = pathlib.Path(portrait_dir) / (who + ext)
+                if one.exists():
+                    try:
+                        got = {"1枚": Image.open(one).convert("RGBA")}
+                    except Exception:            # noqa: BLE001
+                        got = None
+                    break
+    if got and "1枚" not in got:
+        box = None
+        for im in [got["体"]] + [x for g in PART_GROUPS
+                                 for x in (got.get(g) or {}).values()]:
+            b = im.getbbox()
+            if not b:
+                continue
+            box = b if box is None else (
+                min(box[0], b[0]), min(box[1], b[1]),
+                max(box[2], b[2]), max(box[3], b[3]))
+        if box:
+            got["体"] = got["体"].crop(box)
+            for g in PART_GROUPS:
+                if g in got:
+                    got[g] = {k: v.crop(box) for k, v in got[g].items()}
+    _PARTS_CACHE[ck] = got
+    return got
+
+
+def face(who: str, height: int, expr: str = "基本",
+         portrait_dir: str = "assets/portraits", flip: bool = False):
+    """表情つきの立ち絵。部品が無ければ1枚絵に落ちる。
+
+    なぜ短編にも要るのか:
+      成績を2人で交代しながら紹介する形にすると、喋っていない側が
+      ずっと同じ顔で映る。暗くするだけでは、その場に置いてあるだけの
+      絵になる。**聞いている顔と、話している顔が違う**だけで、
+      2人がそこにいる理由ができる。
+
+      組み合わせは1本で数通りしか出ないので、組んだものを持っておく。
+    """
+    from PIL import Image
+    ck = (who, height, expr, portrait_dir, flip)
+    if ck in _FACE_CACHE:
+        return _FACE_CACHE[ck]
+    parts = _parts(who, portrait_dir)
+    if not parts:
+        _FACE_CACHE[ck] = None
+        return None
+    if "1枚" in parts:
+        # 部品が無い置き場では、1枚絵をそのまま使う（表情は付かない）。
+        art = portrait(who, height, portrait_dir, flip)
+        _FACE_CACHE[ck] = art
+        return art
+    br, ey, mo = FACES.get(expr) or FACES["基本"]
+    art = parts["体"]
+    for g, tag in (("眉", br), ("目", ey), ("口", mo)):
+        part = (parts.get(g) or {}).get(tag)
+        if part is not None:
+            art = Image.alpha_composite(art, part)
+    w = max(1, int(art.width * height / max(1, art.height)))
+    art = art.resize((w, height), Image.LANCZOS)
+    if flip:
+        art = art.transpose(Image.FLIP_LEFT_RIGHT)
+    _FACE_CACHE[ck] = art
+    return art

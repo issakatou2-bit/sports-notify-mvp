@@ -182,7 +182,19 @@ def team_tint(team_id, fallback=ACCENT):
 
 
 # 1画面に載せる人数。多いと字が小さくなって読めない
-PER_PAGE = 4
+#
+# 4人から3人へ(2026-09-06)。成績の回は読み上げの帯の上に
+# ずんだもんとめたんの顔が出るので、その170pxぶんが使えない。
+# 4人だと4枚目のカードが顔に掛かる。
+# 人数が減っても画面が1枚増えるだけで、読み上げの量は変わらない。
+PER_PAGE = 3
+
+# 立ち絵が入る回で、中身を置いてよい下端。
+#
+# 顔は読み上げの帯の上端から170px出る。帯は1〜3行で高さが変わるので、
+# いちばん高くなる(3行)ときを見て決め打ちにする。
+# ここより下に置いたものは、顔に隠れる。
+PEEK_FLOOR = 1300
 
 # 報道編を作る最低の素材数(番記者の投稿+現地の見出し)。
 # 選手成績と違って毎日必ず湧く情報ではないので、下限を置く。
@@ -1109,7 +1121,35 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                  "見逃したくないかたは、チャンネル登録をお願いします。"),
         "meta": {},
     })
+    # 成績の回は、2人が交代で読む。
+    if mode == "players":
+        assign_pair(segments)
     return {"label": day, "segments": segments}
+
+
+def assign_pair(segments: list) -> None:
+    """成績の回を、ずんだもんとめたんの交代にする。
+
+    なぜ交代なのか:
+      1人が最後まで読むと、どこで話題が変わったのかが耳で分からない。
+      **声が変わるところが、そのまま区切りになる。**
+      区切りの画面を1枚挟むより速く、尺も伸びない。
+
+      区切りは画面の切り替わりに合わせる。同じ画面の途中で声が
+      変わると、何が起きたのか分からなくなる。
+
+    最初と最後に「コレスポ」を置く。長編と同じ形にすると、
+    別々の枠でも同じ番組だと分かる。読み上げは0.5秒ほど伸びるだけで、
+    画面は増えない。
+    """
+    who = ZUNDA
+    for seg in segments:
+        seg["speaker"] = PS_SPEAKER[who]
+        seg.setdefault("meta", {})["who"] = who
+        who = METAN if who == ZUNDA else ZUNDA
+    if segments:
+        segments[0]["text"] = "コレスポ。" + segments[0]["text"]
+        segments[-1]["text"] = segments[-1]["text"] + "コレスポ。"
 
 
 # 球団名の対応表は mlb_buzz 側に集約した。
@@ -1639,7 +1679,42 @@ PS_SPEAKER = {ZUNDA: 3, METAN: 2}
 PS_COLOR = {ZUNDA: (150, 222, 130), METAN: (242, 152, 196)}
 
 
-def draw_peek(im, d, who: str, show: int = 168):
+def pair_expr(kind: str, meta: dict, players: list, rows=None) -> tuple:
+    """その画面での2人の表情。(喋っている側, 聞いている側)。
+
+    台詞から言葉を拾うのではなく、**画面に出ている事実から決める。**
+    成績の回は読み上げが定型なので、言葉から拾っても差が出ない。
+    無安打の日に笑っている、本塁打の日に困っている、という
+    取り違えだけは起こさない。
+    """
+    meta = meta or {}
+    if kind in ("praise", "outro"):
+        return "笑顔", "笑顔"
+    if kind == "week":
+        for r in (rows or [])[:1]:
+            if r.get("trend") == "上げてきた":
+                return "笑顔", "笑顔"
+            if r.get("trend") == "落ちてきた":
+                return "困り", "基本"
+        return "基本", "基本"
+    if morning_recap.quiet_day(players or []):
+        return "困り", "基本"
+    if kind == "list":
+        start = meta.get("start", 0)
+        chunk = (players or [])[start:start + meta.get("count", 0)]
+        if any((x.get("hr") or 0) for x in chunk):
+            return "笑顔", "驚き"
+        if any(morning_recap.did_something(x) for x in chunk):
+            return "基本", "問い"
+        return "基本", "基本"
+    if kind == "intro":
+        top = (players or [{}])[0]
+        return ("笑顔" if (top.get("hr") or 0) else "基本"), "問い"
+    return "基本", "基本"
+
+
+def draw_peek(im, d, who: str, show: int = 168, expr: dict = None,
+              names: bool = True, edge: int = 390):
     """読み上げの帯の上端から、2人が顔だけのぞく。
 
     なぜこの形にしたか:
@@ -1662,8 +1737,12 @@ def draw_peek(im, d, who: str, show: int = 168):
     top = spoken_top(d)
     # 顔は中央寄りに置く。端に寄せると、画面の隅に置く名前の札と
     # あごが重なる（実際そうなった）。
-    for name, cx, flip in ((ZUNDA, 390, True), (METAN, W - 390, False)):
-        art = video_common.portrait(name, 520, flip=flip)
+    expr = expr or {}
+    for name, cx, flip in ((ZUNDA, edge, True), (METAN, W - edge, False)):
+        # 表情を付ける。喋っていない側は暗くするだけでなく、
+        # 聞いている顔にする。同じ顔を暗くしただけだと、
+        # そこに置いてあるだけの絵になる。
+        art = video_common.face(name, 520, expr.get(name, "基本"), flip=flip)
         if art is None:
             continue
         if name != who:
@@ -1674,6 +1753,13 @@ def draw_peek(im, d, who: str, show: int = 168):
         im.paste(head, (int(cx - head.width / 2), top - show), head)
     draw_spoken(d, PS_COLOR.get(who))
     # 名前の札。顔に掛からないよう、画面の端へ寄せる。
+    #
+    # 成績の回では出さない（names=False）。あちらは2人を画面の
+    # 左右の端まで寄せるので、端に置く札とあごが重なる。
+    # 誰が読んでいるかは明るさと表情で分かるし、話者の名前は
+    # アウトロの出典と説明欄に必ず出している。
+    if not names:
+        return
     for name, right in ((ZUNDA, False), (METAN, True)):
         col = PS_COLOR[name] if name == who else DIM
         fn = font(26)
@@ -1988,26 +2074,28 @@ def render_week(p, rows, today: str = ""):
     d.text((70, 180), "ここ7日の調子", font=font(64), fill=ACCENT)
     d.text((74, 268), "MLB公式の、1試合ごとの成績から", font=font(32), fill=DIM)
 
-    # 1人しかいない日は、カードを下げて余白を上下に分ける。
-    # 上に寄せたままだと、画面の下半分がまるごと空く。
-    y = 380 if len(rows) > 1 else 620
+    # 下端は PEEK_FLOOR まで。そこから2枚ぶんを逆算する。
+    # 1人しかいない日はカードを下げて、余白を上下に分ける。
+    # 2枚 + 隙間で PEEK_FLOOR にちょうど収まる高さ。
+    # 340 + 464 + 28 + 464 = 1296。
+    card_h, gap = 464, 28
+    y = 340 if len(rows) > 1 else 560
     for i, r in enumerate(rows[:2]):
         if p < 0.10 + i * 0.28:
             continue
         me = today and r.get("name") == today
-        card_h = 600
         d.rounded_rectangle([60, y, W - 60, y + card_h], 22,
                             fill=SURF,
                             outline=ACCENT if me else None,
                             width=3 if me else 0)
         name = str(r.get("name", ""))
-        ns = fit(d, name, W - 480, (58, 52, 46))
-        d.text((100, y + 24), name, font=font(ns), fill=TEXT)
+        ns = fit(d, name, W - 480, (54, 48, 42))
+        d.text((100, y + 20), name, font=font(ns), fill=TEXT)
         big = str(r.get("big") or "")
         if big:
-            bw = d.textlength(big, font=font(56))
-            d.text((W - 110 - bw, y + 24), big, font=font(56), fill=ACCENT)
-        d.text((100, y + 104), str(r.get("line") or ""),
+            bw = d.textlength(big, font=font(52))
+            d.text((W - 110 - bw, y + 20), big, font=font(52), fill=ACCENT)
+        d.text((100, y + 96), str(r.get("line") or ""),
                font=font(34), fill=DIM)
 
         # 日ごとの棒。**ここが本題。**
@@ -2015,8 +2103,8 @@ def render_week(p, rows, today: str = ""):
         if marks:
             unit = "1試合の奪三振" if r.get("type") == "pitcher" else "1試合の塁打"
             uw = d.textlength(unit, font=font(26))
-            d.text((W - 110 - uw, y + 112), unit, font=font(26), fill=DIM)
-            top, bottom = y + 186, y + 412
+            d.text((W - 110 - uw, y + 104), unit, font=font(26), fill=DIM)
+            top, bottom = y + 158, y + 330
             span = bottom - top
             cell = (W - 200) / max(1, len(marks))
             bar_w = min(96, cell - 22)
@@ -2042,13 +2130,13 @@ def render_week(p, rows, today: str = ""):
                     d.text((cx - tw, bottom - h + (8 if inside else -34)),
                            "本", font=font(26), fill=BG if inside else ACCENT)
                 lb = str(m.get("day") or "")
-                d.text((cx - d.textlength(lb, font=font(26)) / 2, y + 424),
+                d.text((cx - d.textlength(lb, font=font(26)) / 2, y + 340),
                        lb, font=font(26), fill=DIM)
 
         # 直近3試合と、その向き。7日の平均だけだと今が分からない。
         note = str(r.get("late") or "")
         trend = str(r.get("trend") or "")
-        ty = y + 486
+        ty = y + 392
         if trend:
             tw = d.textlength(trend, font=font(36)) + 44
             d.rounded_rectangle([100, ty, 100 + tw, ty + 64], 16,
@@ -2059,7 +2147,7 @@ def render_week(p, rows, today: str = ""):
                        fill=TEXT)
         elif note:
             d.text((100, ty + 14), note, font=font(32), fill=TEXT)
-        y += card_h + 60
+        y += card_h + gap
 
     d.text((70, H - 120), "collespo.com", font=font(32), fill=DIM)
     return im
@@ -2090,10 +2178,10 @@ def render_praise(p, rows):
         n = len(wrap(d, (v.get("ja") or "").strip(), font(38), W - 220)
                 [:4 if len(show) < 3 else 3])
         heights.append(92 + n * 52)
-    room = (H - 260) - 380 - sum(heights)
-    gap = max(24, min(90, int(room / max(1, len(show)))))
+    room = PEEK_FLOOR - 360 - sum(heights)
+    gap = max(20, min(70, int(room / max(1, len(show)))))
     # 残りは上下に等分する。塊が画面の真ん中に来る。
-    y = 380 + max(0, min(300, int((room - gap * (len(show) - 1)) / 2)))
+    y = 360 + max(0, min(240, int((room - gap * (len(show) - 1)) / 2)))
 
     for i, v in enumerate(show):
         if p < 0.08 + i * 0.10:
@@ -2732,7 +2820,10 @@ def render_outro(p, mode: str = ""):
     y += 124
 
     # 出典はいちばん下。一覧の下に積むので、件数が変わっても重ならない。
-    d.text((80, y), "音声: VOICEVOX:ずんだもん", font=font(30), fill=DIM)
+    # 話者の名前は必ず出す。進出争いと成績の回は四国めたんも読むので、
+    # ずんだもんだけの表記だと足りない。
+    d.text((80, y), "音声: VOICEVOX:ずんだもん / 四国めたん",
+           font=font(30), fill=DIM)
     d.text((80, y + 42), "データ: MLB Stats API", font=font(30), fill=DIM)
     d.text((80, y + 96), "collespo.com", font=font(38), fill=TEXT)
     return im
@@ -3173,6 +3264,20 @@ def main():
                     im = render_headlines(pp, hs)
                 else:
                     im = render_outro(pp, args.mode)
+                # 成績の回は、2人が帯の上から顔をのぞかせる。
+                #
+                # 縦画面なので全身は置けない（2人で画面の27%を取る）。
+                # 顔だけなら170pxで、成績の側はほとんど削られない。
+                # 喋っている側だけ明るく、聞いている側は暗くして
+                # 表情も変える。**誰が読んでいるかが、見て分かる。**
+                if args.mode == "players" and kind != "outro":
+                    who = meta.get("who") or ZUNDA
+                    mine, yours = pair_expr(kind, meta, players,
+                                            meta.get("week"))
+                    other = METAN if who == ZUNDA else ZUNDA
+                    draw_peek(im, ImageDraw.Draw(im), who,
+                              expr={who: mine, other: yours},
+                              names=False, edge=250)
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
