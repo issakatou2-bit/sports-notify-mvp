@@ -2308,7 +2308,7 @@ def render_reach(p, rows):
     im, d = base(p)
     d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
     d.text((70, 180), "あと少しで届く", font=font(64), fill=ACCENT)
-    d.text((74, 268), "MLB公式の通算成績から", font=font(32), fill=DIM)
+    d.text((74, 268), "MLB公式の成績と順位表から", font=font(32), fill=DIM)
 
     # 件数が1〜3で変わるので、余白を件数で割って均す。
     # 上に詰めると、下半分がまるごと空く。
@@ -2329,18 +2329,29 @@ def render_reach(p, rows):
         # 見た瞬間に入るのは差のほうで、そこが明日の理由になる。
         d.text((100 - dx, y + 96), str(r.get("kind") or ""),
                font=font(26), fill=ACCENT)
-        goal = f"{r.get('goal', '')}{r.get('unit', '')}"
+        # 画面は goal_text / prefix / big / small の4つだけを見る。
+        # 節目の種類が増えても（今季・通算・自己最多・ポストシーズン初出場）、
+        # ここを触らずに済む。作る側の milestones.py が形を揃えている。
+        goal = str(r.get("goal_text")
+                   or f"{r.get('goal', '')}{r.get('unit', '')}")
         d.text((100 - dx, y + 134), goal, font=font(40), fill=TEXT)
-        gap = str(r.get("gap", ""))
-        fw, fs = font(96), font(30)
-        gw = d.textlength(gap, font=fw)
-        d.text((W - 110 - dx - gw, y + 62), gap, font=fw, fill=ACCENT)
-        t = "あと"
-        d.text((W - 110 - dx - gw - d.textlength(t, font=fs) - 12, y + 108),
-               t, font=fs, fill=DIM)
-        now = f"いま{r.get('now', '')}"
-        d.text((W - 110 - dx - d.textlength(now, font=fs), y + 156),
-               now, font=fs, fill=DIM)
+        big = str(r.get("big", r.get("gap", "")))
+        fs = font(30)
+        # 「圏内」のような言葉が入る行もあるので、幅で大きさを決める。
+        fw = font(96 if len(big) <= 2 else 60)
+        gw = d.textlength(big, font=fw)
+        d.text((W - 110 - dx - gw, y + (62 if len(big) <= 2 else 80)),
+               big, font=fw, fill=ACCENT)
+        pre = str(r.get("prefix", "あと"))
+        if pre:
+            d.text((W - 110 - dx - gw - d.textlength(pre, font=fs) - 12,
+                    y + 108), pre, font=fs, fill=DIM)
+        small = str(r.get("small") or (f"いま{r['now']}" if "now" in r else ""))
+        if small:
+            # 大きい側が言葉のときは1段下げる。「圏内」の下端に掛かる。
+            d.text((W - 110 - dx - d.textlength(small, font=fs),
+                    y + (156 if len(big) <= 2 else 166)),
+                   small, font=fs, fill=DIM)
         y += 224
 
     d.text((70, H - 120), "collespo.com", font=font(32), fill=DIM)

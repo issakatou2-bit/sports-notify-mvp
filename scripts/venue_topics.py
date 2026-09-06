@@ -133,6 +133,34 @@ def build_items(v: dict, all_v: list, where: str = "") -> list:
     return items
 
 
+def jp_home(team_id) -> str:
+    """その球団にいる日本人選手。いなければ空。
+
+    名簿は手元の roster_snapshot.json を見る。球場の回のためだけに
+    APIを30回叩く理由が無い。名簿はその日の朝に取っている。
+    """
+    if not team_id:
+        return ""
+    try:
+        import sys as _sys
+        _sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+        from notability_engine import JP_PLAYERS_MLB
+        roster = json.loads(pathlib.Path(
+            "data/roster_snapshot.json").read_text(encoding="utf-8"))
+    except Exception:                            # noqa: BLE001
+        return ""
+    want = {p["name_en"]: p["name_jp"] for p in JP_PLAYERS_MLB}
+    out = []
+    for _pid, row in (roster.get("players") or {}).items():
+        if str(row.get("team_id")) != str(team_id):
+            continue
+        name = want.get(row.get("name") or "")
+        if name and name not in out:
+            out.append(name)
+    return "・".join(out[:2])
+
+
+
 def hook_of(v: dict, all_v: list, gist: str = "") -> str:
     """1枚目に出す、その球場でいちばん際立つ数字。"""
     f, loc = v["field"], v["loc"]
@@ -220,13 +248,23 @@ def main() -> int:
             continue
         if v["name"] in ALREADY:
             continue
-        jp, gist, _team_id, where = note
+        jp, gist, team_id, where = note
         key = "venue_" + v["name"].lower().replace(" ", "_").replace(".", "")
+        # その球場を本拠地にしている球団に日本人選手がいれば、
+        # 1枚目の一言の先頭に名前を置く。
+        #
+        # 球場の回は28日の実測で4本・平均2再生しかなかった。
+        # ただし**開いた人は52%まで見ている。**中身が悪いのではなく、
+        # 「エンゼル・スタジアム｜1966年開場」では誰も開かない。
+        # 球団の回で名前を入れて効いたのと同じことを、ここでもやる。
+        # 名前を足すために中身は変えない。その球場が本拠地なのは事実。
         topics.append({
             "key": key,
             "label": jp,
             "heading": jp,
             "hook": hook_of(v, vs, gist),
+            # その球場を本拠地にしている日本人選手。題の先頭に置く。
+            "jp": jp_home(team_id),
             "venue_en": v["name"],
             "where": where,
             "intro": f"{where}。{gist}。数字で見ていきます。",

@@ -439,19 +439,20 @@ def main():
         segs = json.loads(manifest.read_text(encoding="utf-8"))["segments"]
     else:
         # 音声が無い場合の構成。generate_weekly_narration.py が作る
-        # セグメントの並び(intro / day×N / ranking / verdict / news / outro)と
-        # 揃えておかないと、後で音声が付いたときにずれる。
+        # セグメントの並びと揃えておかないと、後で音声が付いたときにずれる。
+        # intro / ops / league_ops / day×N / ranking / verdict / news / outro
         segs = [{"kind": "intro", "duration": 0.0, "file": None, "meta": {}}]
-        for i in range(len(week)):
-            segs.append({"kind": "day", "duration": 0.0, "file": None,
-                         "meta": {"day_index": i}})
-        if ranking:
-            segs.append({"kind": "ranking", "duration": 0.0, "file": None, "meta": {}})
+        # 日本人選手が先。原稿側と同じ並び。
         if ops_players:
             segs.append({"kind": "ops", "duration": 0.0, "file": None, "meta": {}})
         if league_players:
             segs.append({"kind": "league_ops", "duration": 0.0,
                          "file": None, "meta": {}})
+        for i in range(len(week)):
+            segs.append({"kind": "day", "duration": 0.0, "file": None,
+                         "meta": {"day_index": i}})
+        if ranking:
+            segs.append({"kind": "ranking", "duration": 0.0, "file": None, "meta": {}})
         if verdict["decided"]:
             segs.append({"kind": "verdict", "duration": 0.0, "file": None, "meta": {}})
         if news_items:

@@ -85,4 +85,9 @@
 
 ## 作業中
 - Codex: ココナラ出品準備。対象は出品下書き・共有メモ。ログイン待ちの間に項目別の入力文を整える。外部画面への保存/出品は未実施。
-- Claude: 9/6の実装終了・mainへpush済みとの共有メモ。現在の追加作業は不明、編集前に確認。
+- Claude: 9/6午後も継続中。進出争いの圏内/圏外表示、節目の画面(`milestones.py`)、週次を日本人選手から始める形へ、球場の題。対象は `generate_morning_short/weekly*/venue_topics/milestones/upload_youtube`。**mainへpush済み。**
+- **分担の提案と、Codexへの相談3件を `docs/CLAUDE_HANDOFF_2026-09-06.md` の末尾に書きました。**
+  (1) 動画=Claude / 収益・Web=Codex、`upload_youtube.py` だけ共有
+  (2) `slide_insight` は `box_y = min(y + 20, PEEK_FLOOR - 190)` で検査を通ります（中身は触っていません）
+  (3) 打者/投手の項目の取り違えを1か所にまとめる提案。**Codexが書くほうが良いと思っています**
+  (4) 球場の公開済み4本の題を変えるか（`retitle.py --kind asset`）。対外操作なのでそちらの判断を待ちます

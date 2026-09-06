@@ -274,12 +274,37 @@ def main():
     if client is None:
         print("[info] ANTHROPIC_API_KEY未設定のため、簡易的な原稿で生成します")
 
+    # 冒頭で**日本人選手の名前を言う。**
+    #
+    # 28日の実測で、題に日本人選手の名前がある動画は平均392再生・
+    # 登録+12人。無い動画は164再生・登録+1人だった。
+    # 週次はその形から最も遠いところにいて、3本で合計3再生・
+    # 視聴率3%。**「1週間を振り返る」では開く理由が無い。**
+    lead_names = "・".join(x.get("name", "") for x in ops_players[:3])
+    head = (f"コレスポ、今週の日本人選手です。{lead_names}。"
+            if lead_names else "コレスポ、今週のまとめです。")
     segments = [{
         "kind": "intro",
-        "text": f"コレスポ、今週のまとめです。{label}の注目試合を、"
-                "結果とあわせて振り返ります。",
+        "text": head + f"{label}の1週間を振り返ります。",
         "meta": {},
     }]
+
+    # **日本人選手を先に出す。**
+    #
+    # これまでは intro → 7日ぶんの試合 → ランキング のあとに置いていた。
+    # 8分の動画で、いちばん見たいものが後半にある形だった。
+    if ops_players:
+        segments.append({
+            "kind": "ops",
+            "text": ops_text(ops_players),
+            "meta": {},
+        })
+    if league_players:
+        segments.append({
+            "kind": "league_ops",
+            "text": league_ops_text(league_players),
+            "meta": {},
+        })
 
     for i, (date_str, g) in enumerate(week):
         text = None
@@ -300,18 +325,6 @@ def main():
         "text": "今週、注目試合として多く取り上げた球団を振り返ります。",
         "meta": {},
     })
-    if ops_players:
-        segments.append({
-            "kind": "ops",
-            "text": ops_text(ops_players),
-            "meta": {},
-        })
-    if league_players:
-        segments.append({
-            "kind": "league_ops",
-            "text": league_ops_text(league_players),
-            "meta": {},
-        })
     segments.append({
         "kind": "verdict",
         "text": verdict_text(verdict),

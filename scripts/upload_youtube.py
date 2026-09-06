@@ -397,11 +397,21 @@ def asset_meta_from_spec(spec: dict) -> dict:
     items = spec.get("items") or []
     lead = [f"{label}（{where}）を、MLB公式データの数字で見ていきます。", ""]
     lead += [f"・{head}　{body}" for head, body in items]
+    # 日本人選手の本拠地なら、名前を題の先頭に置く。
+    #
+    # 球場の回は28日で4本・平均2再生。ただし開いた人は52%まで見ている。
+    # 中身ではなく「エンゼル・スタジアム｜1966年開場」という題が
+    # 開く理由になっていない。同じ期間、題に日本人選手の名前がある動画は
+    # 平均392再生（無い動画は164再生）だった。
+    # **その球場が本拠地なのは事実なので、盛っていない。**
+    who = (spec.get("jp") or "").strip()
+    title = (f"【MLB】{who}の本拠地｜{label} {hook} #Shorts" if who
+             else f"【MLB】{label}｜{hook} #Shorts")
     return {
-        "title": f"【MLB】{label}｜{hook} #Shorts",
+        "title": title,
         "lead": lead,
         "tags": ["MLB", "メジャーリーグ", "野球", label,
-                 "MLB入門", "コレスポ"],
+                 "MLB入門", "コレスポ"] + [x for x in who.split("・") if x],
     }
 
 
@@ -1094,6 +1104,24 @@ def _postseason_data(path: str = "data/postseason.json") -> dict:
         return {}
 
 
+def weekly_jp_names(path: str = "data/weekly_ops.json", n: int = 3) -> str:
+    """今週いちばん打った日本人選手の名前を、題の先頭に置く形で返す。
+
+    weekly_ops.py が既に取っているものをそのまま使う。
+    取れていない週は空を返し、これまでの題に落ちる。
+    """
+    try:
+        rows = json.loads(pathlib.Path(path).read_text(
+            encoding="utf-8")).get("players") or []
+    except (OSError, json.JSONDecodeError):
+        return ""
+    names = [title_name(r.get("name") or "") for r in rows[:n]
+             if r.get("name")]
+    if not names:
+        return ""
+    return "・".join(names) + ("ほか" if len(rows) > len(names) else "")
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
@@ -1276,12 +1304,23 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         else:
             title = f"【海外の反応】MLB公式コメント欄を読み解く｜{date_label}"
     elif kind == "weekly":
-        # 週次まとめは横型の通常動画なので #Shorts は付けない
-        lead = weekly_lead(archive_dir)
-        if lead:
-            title = f"【MLB】{lead}｜{date_label} 1週間を振り返る"
+        # 週次まとめは横型の通常動画なので #Shorts は付けない。
+        #
+        # **題を日本人選手から始める。**
+        # 28日の実測で、週次は3本で合計3再生・視聴率3%だった。
+        # 「アスレチックス連敗脱出、ヤンキース連勝ストップ｜1週間を振り返る」
+        # では、日本の視聴者が開く理由が1つも無い。
+        # 同じ期間に、題に日本人選手の名前がある動画は平均392再生・登録12人、
+        # 無い動画は164再生・登録1人だった。中身（日本人打者の週間OPS）は
+        # もともと入っていたので、**題と並びを中身に合わせる。**
+        who = weekly_jp_names()
+        if who:
+            title = (f"【MLB】{who}｜{date_label} 今週の日本人選手")
         else:
-            title = f"【MLB】今週の注目試合と答え合わせ｜{date_label} 週間まとめ"
+            lead = weekly_lead(archive_dir)
+            title = (f"【MLB】{lead}｜{date_label} 1週間を振り返る" if lead
+                     else f"【MLB】今週の注目試合と答え合わせ｜"
+                          f"{date_label} 週間まとめ")
     elif games:
         # 日付を先頭に置いていたが、「08/07」で検索する人はいない。
         # その日いちばん具体的な事実(動画の1枚目と同じもの)を先頭に出す。
@@ -1453,7 +1492,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     elif kind == "weekly":
         # 10分の動画に1行しか説明が無かった。週次はこのチャンネルの本命で、
         # 検索も関連動画も説明文を読む。中身はアーカイブに全部あるので使う。
-        lines = ["この1週間の注目試合を、結果とあわせて振り返ります。", ""]
+        _who = weekly_jp_names()
+        lines = [(f"{_who}。" if _who else "")
+                 + "今週の日本人選手の成績と、1週間の注目試合を"
+                   "結果とあわせて振り返ります。", ""]
         lines += weekly_description_lines(archive_dir)
     else:
         head = f"{daily_lead}。" if daily_lead else ""

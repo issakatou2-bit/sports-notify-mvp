@@ -114,6 +114,49 @@ def fetch(player_id: str, group: str, season: str = "2026") -> dict:
     return out
 
 
+def first_postseason(player: dict, postseason_path: str) -> dict:
+    """ポストシーズン初出場が見えている選手。
+
+    なぜこれを最優先にするか:
+      「あと3本で35号」より、**「初めてのポストシーズンが見えてきた」**
+      のほうが、その選手を追う理由になる。9月にしか出せない話でもある。
+
+    出す条件は2つだけ。**どちらも公式で確かめられる。**
+      ・その選手にポストシーズンの出場記録が1試合も無い
+      ・いまその球団が進出圏内にいる（postseason.json の seed）
+
+    「初出場する」とは書かない。書けるのは「初出場が見えている」まで。
+    """
+    pid = str(player.get("player_id") or "")
+    name = player.get("name") or ""
+    if not pid or not name:
+        return {}
+    try:
+        rows = json.loads(pathlib.Path(postseason_path).read_text(
+            encoding="utf-8")).get("japanese") or []
+    except (OSError, json.JSONDecodeError):
+        return {}
+    seat = next((r for r in rows
+                 if name in (r.get("players") or []) and r.get("seed")), None)
+    if not seat:
+        return {}
+    group = "pitching" if player.get("type") == "pitcher" else "hitting"
+    try:
+        d = _get(f"{API}/people/{pid}/stats?stats=career&gameType=P"
+                 f"&group={group}")
+    except Exception:                            # noqa: BLE001
+        return {}
+    sp = (d.get("stats") or [{}])[0].get("splits") or []
+    games = _num(sp[0].get("stat") or {}, "gamesPlayed") if sp else 0
+    if games:
+        return {}
+    return {"name": name, "rank": -1, "gap": 0, "reach": 1,
+            "kind": "ポストシーズン", "goal_text": "初出場が見えてきた",
+            "prefix": "", "big": "圏内", "small": f"第{seat['seed']}シード",
+            "text": f"ポストシーズン初出場が見えてきました。"
+                    f"{seat.get('team')}はいま第{seat['seed']}シードです"}
+
+
 def best_for(player: dict, season: str = "2026") -> dict:
     """その選手の、いちばん近い節目。無ければ空。
 
@@ -180,19 +223,31 @@ def best_for(player: dict, season: str = "2026") -> dict:
     # 単位が違うので、そのままの差では比べられない。
     # 「出す範囲」に対してどれだけ近いかで並べる。
     cands.sort(key=lambda c: (c["gap"] / c["reach"], c["rank"]))
-    return cands[0]
+    got = cands[0]
+    # 画面はこの4つだけを見る。節目の種類が増えても描く側を触らずに済む。
+    got.setdefault("goal_text", f"{got['goal']}{got['unit']}")
+    got.setdefault("prefix", "あと")
+    got.setdefault("big", str(got["gap"]))
+    got.setdefault("small", f"いま{got['now']}")
+    return got
 
 
-def build(players: list, season: str = "2026", limit: int = 3) -> list:
-    """その日出た選手のうち、節目が近い順に。"""
+def build(players: list, season: str = "2026", limit: int = 3,
+          postseason_path: str = "data/postseason.json") -> list:
+    """その日出た選手のうち、節目が近い順に。
+
+    ポストシーズン初出場が見えている選手は先に見る。9月にしか
+    出せない話で、数字の節目より追う理由になる。
+    """
     out = []
     for p in players or []:
-        got = best_for(p, season)
+        got = first_postseason(p, postseason_path) or best_for(p, season)
         if got:
             out.append(got)
     out.sort(key=lambda c: (c["gap"] / c["reach"], c["rank"]))
     for c in out[:limit]:
-        print(f"[info] {c['name']}: {c['text']}（いま{c['now']}）")
+        print(f"[info] {c['name']}: {c['text']}"
+              + (f"（いま{c['now']}）" if "now" in c else ""))
     return out[:limit]
 
 
