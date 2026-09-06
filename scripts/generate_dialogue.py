@@ -44,6 +44,7 @@
 """
 
 import argparse
+import datetime
 import json
 import os
 import pathlib
@@ -261,6 +262,271 @@ def team_mentions(texts: list, exclude_jp: set,
     return out
 
 
+SEASON = os.environ.get("MLB_SEASON", "2026")
+
+# 成績を足し合わせるときに見る項目。
+# 途中で移籍した選手は、球団ごとに1行ずつ返ってくる（同じ選手が
+# 2回出る）。数えるもの（本塁打・打点）は足せるが、率は足せない。
+# 材料を足してから出し直す。
+HIT_KEYS = ("atBats", "hits", "homeRuns", "rbi", "totalBases",
+            "baseOnBalls", "hitByPitch", "sacFlies", "runs",
+            "strikeOuts", "gamesPlayed")
+PIT_KEYS = ("wins", "losses", "strikeOuts", "earnedRuns", "outs",
+            "gamesStarted", "gamesPlayed")
+
+# 出場が空いた期間を「まとまった離脱」と見なす日数。
+#
+# オールスター前後の中断は3〜4日なので、そこは拾わない。
+# 8日空くのは、故障者リスト入り・マイナー降格・長期の欠場の
+# いずれか。**どれなのかはAPIに書いていないので決めつけない。**
+# 「出場が◯日空いた」という事実だけを渡す。
+GAP_DAYS = 8
+
+
+def _team_id(jp_name: str) -> str:
+    """日本語の球団名から球団ID。分からなければ空。"""
+    try:
+        from notability_engine import MLB_TEAM_NAME_JP
+    except ImportError:
+        return ""
+    for tid, jp in MLB_TEAM_NAME_JP.items():
+        if jp == jp_name:
+            return str(tid)
+    return ""
+
+
+def _roster_id(name: str, roster_path: str = "data/roster_snapshot.json") -> str:
+    """手元の名簿から選手ID。姓だけでも引くが、2人以上当たれば諦める。
+
+    その日の朝に取った1400人ぶんの名簿が既にある。APIで探し直すより
+    速いし、同姓の取り違えもここで止められる。
+    """
+    try:
+        d = json.loads(pathlib.Path(roster_path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ""
+    key = textkey.key(name)
+    last = textkey.key(textkey.surname(name) or "")
+    exact, sur = [], []
+    for pid, p in (d.get("players") or {}).items():
+        nm = p.get("name") or ""
+        if textkey.key(nm) == key:
+            exact.append(pid)
+        elif last and textkey.key(textkey.surname(nm) or "") == last:
+            sur.append(pid)
+    if len(exact) == 1:
+        return exact[0]
+    if not exact and len(sur) == 1:
+        return sur[0]
+    return ""
+
+
+def _add(splits: list, keys: tuple) -> dict:
+    """複数行に分かれた成績を足す。移籍した選手のため。"""
+    t = {k: 0 for k in keys}
+    for sp in splits:
+        st = sp.get("stat") or {}
+        for k in keys:
+            try:
+                t[k] += int(st.get(k) or 0)
+            except (TypeError, ValueError):
+                pass
+    return t
+
+
+def _hit_line(t: dict) -> str:
+    """打者の1行。率は足した数から出し直す。"""
+    ab = t.get("atBats") or 0
+    if not ab:
+        return ""
+    h, tb = t.get("hits") or 0, t.get("totalBases") or 0
+    bb, hbp = t.get("baseOnBalls") or 0, t.get("hitByPitch") or 0
+    sf = t.get("sacFlies") or 0
+    den = ab + bb + hbp + sf
+    ops = ((h + bb + hbp) / den if den else 0) + tb / ab
+    avg = ("%.3f" % (h / ab)).lstrip("0")
+    return (f"打率{avg} {t.get('homeRuns', 0)}本 {t.get('rbi', 0)}打点 "
+            f"OPS{('%.3f' % ops).lstrip('0')}")
+
+
+def _pit_line(t: dict) -> str:
+    """投手の1行。防御率は自責点とアウト数から出し直す。"""
+    outs = t.get("outs") or 0
+    if not outs:
+        return ""
+    era = (t.get("earnedRuns") or 0) * 27 / outs
+    ip = outs // 3 + (outs % 3) / 10
+    return (f"{t.get('wins', 0)}勝{t.get('losses', 0)}敗 "
+            f"防御率{era:.2f} {ip:.1f}回 {t.get('strikeOuts', 0)}奪三振")
+
+
+def squad(jp_name: str) -> dict:
+    """その球団の、いまの主な打者と投手。
+
+    なぜ要るのか:
+      コメント欄は、**チーム単位の節目**をよく話題にする。
+      9/6の回では「30本トリオが完成したね」という高評価コメントに
+      対して、めたんが「誰の名前も出ていないから分からないわね」と
+      答えて終わった。実際にはホワイトソックスの本塁打は
+      モンゴメリー31本・村上30本・バルガス30本で、**3人揃って
+      30本という、そのコメントの通りのことが起きていた。**
+      材料さえ渡っていれば、いちばん盛り上がる話にできた。
+
+      これはこの日だけの話ではない。「うちには100打点が2人いる」
+      「20勝カルテット」「.300打者が1人もいない」——コメント欄が
+      言うのは、たいていこの形をしている。**特定の言い回しを
+      当てにいくのではなく、その球団の顔ぶれを丸ごと渡す。**
+      そうすれば、この形のコメントは全部その場で確かめられる。
+
+    返すもの: {"hitters": [...], "pitchers": [...], "tiers": [...]}
+    引けなければ空。**推測はしない。**
+    """
+    tid = _team_id(jp_name)
+    if not tid:
+        return {}
+    try:
+        d = _get(f"{MLB_API}/teams/{tid}/roster?rosterType=active"
+                 f"&season={SEASON}&hydrate=person(stats(type=season,"
+                 f"season={SEASON},group=[hitting,pitching]))", timeout=25)
+    except Exception:                            # noqa: BLE001
+        return {}
+
+    try:
+        from notability_engine import JP_PLAYERS_MLB
+        jp_en = {x["name_en"]: x for x in JP_PLAYERS_MLB}
+    except ImportError:
+        jp_en = {}
+
+    hit, pit, ours = [], [], []
+    for e in d.get("roster") or []:
+        p = e.get("person") or {}
+        name = p.get("fullName") or ""
+        # この球団にいる日本人選手。**コメントで名前が出ていなくても拾う。**
+        # 日本語の番組で、その試合の球団に日本人選手がいるのに
+        # 一度も触れないのは、いちばん見たい人を置き去りにしている。
+        row = jp_en.get(name)
+        if row:
+            ours.append({"name_en": name, "name_jp": row["name_jp"],
+                         "id": str(p.get("id") or ""),
+                         "pos": "P" if row.get("type") == "pitcher" else ""})
+            # 日本人選手だけは日本語表記にする。他は全部日本語なのに
+            # ここだけ "Munetaka Murakami" と出るのは、画面でも
+            # 読み上げでも据わりが悪い。
+            name = row["name_jp"]
+        for s in (p.get("stats") or []):
+            grp = (s.get("group") or {}).get("displayName")
+            sp = s.get("splits") or []
+            if grp == "hitting":
+                t = _add(sp, HIT_KEYS)
+                line = _hit_line(t)
+                if line and (t.get("atBats") or 0) >= 80:
+                    hit.append({"name": name, "hr": t.get("homeRuns", 0),
+                                "rbi": t.get("rbi", 0), "line": line})
+            elif grp == "pitching":
+                t = _add(sp, PIT_KEYS)
+                line = _pit_line(t)
+                if line and (t.get("outs") or 0) >= 90:
+                    pit.append({"name": name, "w": t.get("wins", 0),
+                                "so": t.get("strikeOuts", 0), "line": line})
+
+    hit.sort(key=lambda x: (-x["hr"], -x["rbi"], x["name"]))
+    pit.sort(key=lambda x: (-x["w"], -x["so"], x["name"]))
+
+    # 「3人が30本以上」のような、コメントがそのまま言う形にして渡す。
+    # 一覧を読めば分かることではあるが、**数えるのはこちらの仕事。**
+    # モデルに数えさせると外れる。
+    tiers = []
+    for unit, key, steps, tail in (("本塁打", "hr", (40, 30, 20), "本"),
+                                   ("打点", "rbi", (100, 80), "打点"),
+                                   ("勝", "w", (15, 10), "勝")):
+        pool = pit if key == "w" else hit
+        for step in steps:
+            got = [x for x in pool if x.get(key, 0) >= step]
+            # いちばん高い区切りを1つだけ。20本以上が5人、30本以上が3人と
+            # 並べると、同じことを2回言っているように見える。
+            if len(got) >= 2:
+                tiers.append(f"{unit}{step}以上が{len(got)}人: "
+                             + "、".join(f"{x['name']}{x[key]}{tail}"
+                                       for x in got))
+                break
+    return {"hitters": hit[:6], "pitchers": pit[:4], "tiers": tiers,
+            "jp": ours}
+
+
+def form(name: str, player_id: str = "", pos: str = "") -> dict:
+    """その選手を、期間で分けた成績。
+
+    なぜ要るのか:
+      コメント欄は**期間の話**をする。「6週間離脱していた」
+      「復帰してから別人だ」「最近になって上げてきた」。
+      シーズン通算の1行しか渡っていないと、めたんは
+      「シーズン全体の数字だから、そこまでは言えないわね」としか
+      言えない。9/6の回が実際そうなった。**選手名が出ていて、
+      公式の試合ログがあるのに、答えられなかった。**
+
+      試合ログには、いつ出場したかが全部入っている。
+      **出場が空いた期間はそこに現れる。**空白の前と後で分ければ、
+      「離脱前と復帰後」の比較がそのまま作れる。直近15試合を足せば
+      「最近」の話にも数字で答えられる。
+
+      空白の理由（故障か、降格か、休養か）はAPIに書いていない。
+      だから理由は決めつけず、「出場が◯日空いた」とだけ渡す。
+      コメント側が「injury」と言っているなら、それはコメントの言い分
+      として扱えばよい。
+    """
+    pid = player_id or _roster_id(name)
+    if not pid:
+        return {}
+    group = "pitching" if (pos or "").upper() == "P" else "hitting"
+    try:
+        d = _get(f"{MLB_API}/people/{pid}/stats?stats=gameLog"
+                 f"&season={SEASON}&group={group}", timeout=25)
+    except Exception:                            # noqa: BLE001
+        return {}
+    sp = [x for x in ((d.get("stats") or [{}])[0].get("splits") or [])
+          if x.get("date")]
+    if len(sp) < 20:
+        return {}
+    sp.sort(key=lambda x: x["date"])
+    keys = PIT_KEYS if group == "pitching" else HIT_KEYS
+    line = _pit_line if group == "pitching" else _hit_line
+
+    def span(rows):
+        return line(_add(rows, keys))
+
+    out = {"name": name, "group": group, "games": len(sp),
+           "season": span(sp), "recent": span(sp[-15:])}
+
+    # いちばん長い空白を探す。
+    def days(a, b):
+        ya, ma, da = (int(x) for x in a.split("-"))
+        yb, mb, db = (int(x) for x in b.split("-"))
+        return (datetime.date(yb, mb, db)
+                - datetime.date(ya, ma, da)).days
+
+    gap, at = 0, -1
+    for i in range(len(sp) - 1):
+        n = days(sp[i]["date"], sp[i + 1]["date"])
+        if n > gap:
+            gap, at = n, i
+    if gap >= GAP_DAYS and at >= 9 and len(sp) - at - 1 >= 10:
+        before, after = sp[:at + 1], sp[at + 1:]
+        out["gap"] = {
+            "days": gap, "from": sp[at]["date"], "to": sp[at + 1]["date"],
+            "before": f"{len(before)}試合 {span(before)}",
+            "after": f"{len(after)}試合 {span(after)}",
+        }
+        # 「離脱前は60本ペースだった」という言い分に、数字で応じられる
+        # ようにする。162試合に伸ばすだけで、新しい事実は足していない。
+        if group == "hitting":
+            hr = _add(before, HIT_KEYS).get("homeRuns", 0)
+            if hr >= 5:
+                out["gap"]["pace"] = (
+                    f"空白より前のペースを162試合に伸ばすと"
+                    f"{round(hr * 162 / len(before))}本")
+    return out
+
+
 def lookup(name: str) -> dict:
     """その選手の、確かめられる数字。引けなければ空。
 
@@ -447,8 +713,67 @@ def material(buzz_path: str, voices_path: str) -> dict:
         print("[info] コメントに出てくる他球団: "
              + "、".join(f"{o['name']}{o['pct']}" for o in others))
 
+    # 対戦する2球団の顔ぶれ。
+    #
+    # コメント欄はチーム単位の節目をよく言う（「30本トリオが完成した」
+    # 「うちには100打点が2人いる」）。誰のことかが渡っていないと、
+    # そこで会話が終わる。**言い回しを当てにいくのではなく、
+    # その球団の主な打者と投手をまるごと渡す。**
+    res = top.get("result") or {}
+    squads = {}
+    for jpn in (res.get("away_jp"), res.get("home_jp")):
+        if not jpn:
+            continue
+        sq = squad(jpn)
+        if sq:
+            squads[jpn] = sq
+            if sq.get("tiers"):
+                print(f"[info] {jpn}: " + " / ".join(sq["tiers"]))
+
+    # 期間を指すコメントに数字で答えるための、選手ごとの試合ログ。
+    # 日本人選手を先に見る。この番組を見ている人が知りたいのはそこで、
+    # 実測でも題に日本人選手名がある回は再生が2.8倍だった。
+    forms = []
+    try:
+        from notability_engine import JP_PLAYERS_MLB
+        by_jp = {x["name_jp"]: x for x in JP_PLAYERS_MLB}
+    except ImportError:
+        by_jp = {}
+    want, seen = [], set()
+    for nm in jp[:2]:
+        row = by_jp.get(nm)
+        if row and row["name_en"] not in seen:
+            seen.add(row["name_en"])
+            want.append((row["name_en"], nm,
+                         "P" if row.get("type") == "pitcher" else "", ""))
+    # コメントに名前が出ていなくても、対戦した2球団に日本人選手が
+    # いれば引く。9/3のブルージェイズ戦には岡本和真がいたが、
+    # コメントに名前が無かったので一度も触れられなかった。
+    for sq in squads.values():
+        for row in sq.get("jp") or []:
+            if len(want) < 3 and row["name_en"] not in seen:
+                seen.add(row["name_en"])
+                # 選手IDは名簿を引き直さずに済むよう、そのまま渡す
+                want.append((row["name_en"], row["name_jp"], row["pos"],
+                             row.get("id", "")))
+    star = res.get("star_name")
+    if star and star not in seen and len(want) < 4:
+        # 打者か投手かは成績の書き方で分かる（投手の行には「回」が入る）
+        want.append((star, star, "P" if "回" in (res.get("star_line") or "")
+                     else "", ""))
+    for en, label, pos, pid in want:
+        fm = form(en, player_id=pid, pos=pos)
+        if fm:
+            fm["label"] = label
+            forms.append(fm)
+            print(f"[info] {label}: 通算 {fm['season']} / 直近15試合 "
+                  f"{fm['recent']}"
+                  + (f" / 出場が{fm['gap']['days']}日空いた期間あり"
+                     if fm.get("gap") else ""))
+
     return {"top": top, "voices": voices, "teams": teams, "jp": jp,
-            "other_teams": others, "source": v.get("source", "")}
+            "other_teams": others, "squads": squads, "forms": forms,
+            "source": v.get("source", "")}
 
 
 def situation(m: dict) -> dict:
@@ -701,6 +1026,49 @@ def facts(m: dict, extra: list) -> str:
             lines.append(f"- {o['name']}: {o['w']}勝{o['l']}敗"
                          f"（勝率{o['pct']}）")
 
+    if m.get("squads"):
+        lines += ["", "## 対戦した2球団の、いまの主な選手（MLB公式）",
+                  "コメントが**チーム単位の節目**を言ったときに使う材料。",
+                  "「30本トリオ」「100打点が2人」「.300打者が1人もいない」",
+                  "のようなコメントは、ここを見れば誰のことか分かる。",
+                  "**名前が書いていないからといって「分からない」で",
+                  "終わらせない。** 数えたものは下の行にしてあるので、",
+                  "そのまま使ってよい。ここに無い選手には触れない。"]
+        for jpn, sq in m["squads"].items():
+            lines.append(f"### {jpn}")
+            for t in sq.get("tiers") or []:
+                lines.append(f"- （数えたもの）{t}")
+            for h in sq.get("hitters") or []:
+                lines.append(f"- {h['name']}: {h['line']}")
+            for x in sq.get("pitchers") or []:
+                lines.append(f"- {x['name']}: {x['line']}")
+
+    if m.get("forms"):
+        lines += ["", "## 期間で分けた成績（MLB公式の試合ログ）",
+                  "「離脱していた」「復帰してから」「最近は」のような、",
+                  "**期間を指すコメントに数字で答えるための材料。**",
+                  "シーズン通算しか無いと「そこまでは言えない」で終わる。",
+                  "ここにあれば言える。",
+                  "※ 出場が空いた理由（故障・降格・休養）はAPIに無い。",
+                  "  こちらから理由を決めつけない。コメントが「injury」と",
+                  "  言っているなら、それはコメントの言い分として扱う。",
+                  "※ ここに名前があるのは**その球団に所属している**",
+                  "  という意味で、今日の試合に出たとは限らない。",
+                  "  今日の成績は上の「目立った選手」「先発投手」だけ。",
+                  "  「今日打った」「今日投げた」とは書かない。"]
+        for f in m["forms"]:
+            lines.append(f"- {f['label']}: シーズン {f['games']}試合 "
+                         f"{f['season']}")
+            lines.append(f"  直近15試合: {f['recent']}")
+            g = f.get("gap")
+            if g:
+                lines.append(f"  出場が{g['days']}日空いた期間: "
+                             f"{g['from']} → {g['to']}")
+                lines.append(f"  その空白より前: {g['before']}")
+                lines.append(f"  その空白より後: {g['after']}")
+                if g.get("pace"):
+                    lines.append(f"  {g['pace']}")
+
     if extra:
         lines += ["", "## コメントに出てくる選手の、確かめた数字",
                   "（MLB公式のリーグ順位。これ以外の経歴・記録は書かないこと）"]
@@ -768,6 +1136,31 @@ def panels(m: dict, extra: list) -> dict:
         if st:
             out[key] = {"type": "star", "name": st["name"],
                        "team": st["team"], "line": st["line"]}
+    # 節目の顔ぶれ。「30本トリオ」を口で3人読み上げても耳に残らない。
+    # 並べて出せば、それだけで伝わる。数えたのはこちらなので、
+    # 画面に出す中身もこちらで組み立てる。
+    n = 0
+    for jpn, sq in (m.get("squads") or {}).items():
+        for t in (sq.get("tiers") or [])[:1]:
+            head, _, body = t.partition(": ")
+            rows = []
+            for who in body.split("、"):
+                # 「Munetaka Murakami30本」を名前と数字に割る。
+                cut = len(who)
+                while cut and not who[cut - 1].isdigit():
+                    cut -= 1
+                start = cut
+                while start and who[start - 1].isdigit():
+                    start -= 1
+                if not start or start == len(who):
+                    continue
+                rows.append({"name": who[:start].strip(),
+                             "value": who[start:]})
+            if len(rows) >= 2:
+                n += 1
+                out["group%d" % n] = {"type": "group",
+                                      "head": f"{jpn}　{head}",
+                                      "rows": rows}
     for i, c in enumerate(m.get("voices") or [], 1):
         if not c.get("ja"):
             continue
@@ -800,6 +1193,8 @@ def panel_menu(ps: dict) -> str:
             rows.append(f"[{k}] コメント: {v['text'][:34]}")
         elif v["type"] == "stat":
             rows.append(f"[{k}] {v['name']}の{v['stat']}")
+        elif v["type"] == "group":
+            rows.append(f"[{k}] {v['head']}（名前が並ぶ画面）")
         else:
             rows.append(f"[{k}] {label.get(k, k)}")
     return "\n".join(rows)
@@ -867,6 +1262,27 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   ・コメントを書いた人そのものを馬鹿にしない。
     突っ込む相手は**言い分**であって、人ではない
   ・特定の球団のファン全体を悪く言わない
+- **皮肉を出す日と、出さない日がある。**
+  上の「皮肉ってよい」は、**コメント欄が実際に筋の通らないことを
+  言っている日**のためのもの。10対1で負けた試合の下に
+  「上り調子だ」と書いてあるなら、そこは突っ込んでよい。
+
+  そうでない日にまで斜に構えない。**記録・節目・日本人選手の
+  活躍の日は、素直に喜ぶ。**
+  称賛が並んだコメント欄を「称賛か称賛の上乗せかしかなかった」と
+  まとめない。それは水を差しているだけで、面白くもない。
+  「今日は文句なしの日ね」と言い切ってよい。
+- **この番組は日本語の番組で、日本人選手を応援して見ている。**
+  中立の実況席ではない。村上・大谷・鈴木といった選手が打った日は、
+  うれしいと言ってよい。
+  例: ずんだもん「日本の主砲が本場で30本なのだ。うれしいのだ」
+  **ただし、うれしさで数字を曲げない。**上にある成績だけを使い、
+  悪い数字も隠さない。応援というのは事実を選ぶことではなく、
+  同じ事実をどちら側から見るかという話。
+- **「見た人がそれぞれ受け取ればいい」で終わらせない。**
+  番組としての見方はあってよい。渡された数字から言えることは
+  言い切る。判断を客席に投げるのは、話すことが無いときの逃げで、
+  それをやると2人がそこにいる意味が無くなる。
 - **順位表の数字は、進出争いの文脈まで込みで読む。**
   「勝率.493で地区4位」だけを見て「気の長い応援ね」と言わない。
   上の成績に「ワイルドカードまで1.5ゲーム差」と書いてあれば、
@@ -878,6 +1294,9 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
   リーグ4位だから噛み合っていない、とは言い切れない。
   期間が違うものを突き合わせて勝ったことにしない。
   言えるのは「シーズン通してはリーグ4位の数字ではある」まで。
+
+  **ただし、上に「直近15試合」が渡っていれば、そちらで答える。**
+  期間の合う数字があるのに通算で答えるのは、ただの取り違え。
 - **コメントが自チームの強さを主張していたら、上の勝率で受ける。**
   「Cincinnatiはあそこよりマシだ」のような比較コメントには、
   「対戦の2球団自身の成績」「対戦の2球団以外の勝率」が渡っていれば
@@ -942,6 +1361,20 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
 
   取り上げるコメントは、上のコメントから選んでよい。全部使う必要は無い。
   **話が続くものだけを選ぶ。**
+
+  **そして、「分からない」と書く前に、必ず上の材料を全部見ること。**
+  とくに「対戦した2球団の、いまの主な選手」と「期間で分けた成績」は、
+  まさにこの種のコメントのために渡してある。
+  ・「30本トリオが完成した」→ 誰なのかは球団の一覧に出ている。
+    数えた行（「本塁打30以上が3人: ○○31本、○○30本…」）が
+    そのまま答えになる。名前が書いていないからといって
+    「このコメントからは分からない」で終わらせない。
+  ・「6週間離脱していた」「復帰してから別人だ」→
+    空白の前と後の成績が渡っている。
+  ・「離脱前は60本ペースだった」→ 162試合に伸ばした数が渡っている。
+  ・「最近ひどい」→ 直近15試合が渡っている。
+  **渡っているのに気づかず「分からない」と書くのが、
+  この番組でいちばんもったいない書き方。**
 - **返信は、意味が取れるものだけ拾う。**
   返信の中には、この試合にもコメント全体の話題にも関係の無い
   固有名詞が出てくることがある（渡した「所属」に無い選手・球団を

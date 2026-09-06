@@ -578,6 +578,36 @@ def _panel_star(d, p, y, dry=False):
                   fill=ACCENT, dry=dry)
 
 
+def _panel_group(d, p, y, dry=False):
+    """何人かの名前と数字を並べる札。
+
+    「30本トリオが完成した」のようなコメントは、**誰のことかが
+    画面に出ていないと伝わらない。**口で3人の名前を読み上げても
+    耳では残らない。並べて出せば、そのまま伝わる。
+
+    名前を左、数字を右にして1人1行。初版は名前と数字を別々の行に
+    置いたので、3人で札からはみ出した。同じ行に置けば収まるし、
+    数字が縦に揃うので、誰が上かも見た目で分かる。
+    """
+    y = _one(d, p.get("head", ""), y, 40, DIM, dry)
+    y += 6
+    rows = (p.get("rows") or [])[:4]
+    fn, fv = font(48), font(52)
+    for row in rows:
+        name = str(row.get("name", ""))
+        val = str(row.get("value", ""))
+        if not dry:
+            # 数字の場所は動かさない。名前が長い日は名前のほうを詰める。
+            vw = d.textlength(val, font=fv)
+            room = (COL_X1 - 40 - vw) - (COL_X0 + 40) - 30
+            while name and d.textlength(name, font=fn) > room:
+                name = name[:-1]
+            d.text((COL_X0 + 40, y + 4), name, font=fn, fill=TEXT)
+            d.text((COL_X1 - 40 - vw, y), val, font=fv, fill=ACCENT)
+        y += 74
+    return y
+
+
 def _panel_topic(d, p, y, dry=False):
     """札が指定されていないとき。空白にはしない。"""
     y = _block(d, p.get("topic") or "MLB", y, y + 260, (56, 48, 40), dry=dry)
@@ -586,12 +616,14 @@ def _panel_topic(d, p, y, dry=False):
 
 _PANELS = {"score": _panel_score, "views": _panel_views,
            "quote": _panel_quote, "stat": _panel_stat,
-           "star": _panel_star, "topic": _panel_topic}
+           "star": _panel_star, "topic": _panel_topic,
+           "group": _panel_group}
 
 _TITLES = {"score": "回ごとの得点",
            "views": "この日いちばん見られた（MLB公式）",
            "stat": "確かめた数字（MLB公式）",
            "star": "目立った選手",
+           "group": "そろっている顔ぶれ（MLB公式）",
            "topic": "きょうの話"}
 
 

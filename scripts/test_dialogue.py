@@ -1,0 +1,145 @@
+"""長編の材料づくりを、合成データで固める。
+
+ここで守りたいのは3つ。
+
+1. 移籍した選手は球団ごとに1行ずつ返ってくる。**足してから率を出す。**
+   足さずにどちらかを採ると、打率も本塁打も途中までの数になる。
+2. 「本塁打30以上が3人」を数えるのはこちら。モデルに数えさせない。
+3. 出場が空いた期間の前と後で成績を分ける。
+   9/6の回で「30本トリオって誰なのだ？」に答えられなかったのが、
+   この一式を足した理由。**通信はしない**（_get を差し替える）。
+"""
+import sys
+
+sys.stdout.reconfigure(encoding="utf-8")
+sys.path.insert(0, "scripts")
+sys.path.insert(0, ".")
+import generate_dialogue as g
+
+fails = 0
+
+
+def check(label, got, want):
+    global fails
+    ok = got == want
+    fails += not ok
+    print(f"{'ok ' if ok else 'NG '} {label}: {got!r}" +
+          ("" if ok else f" (期待 {want!r})"))
+
+
+def hit(**kw):
+    return {"stat": kw}
+
+
+print("=== 成績を足す（移籍した選手） ===")
+# 前の球団で50打数15安打、移籍後に50打数10安打。合計100打数25安打＝.250。
+rows = [hit(atBats=50, hits=15, homeRuns=3, rbi=10, totalBases=30,
+            baseOnBalls=5, hitByPitch=0, sacFlies=0),
+        hit(atBats=50, hits=10, homeRuns=2, rbi=8, totalBases=20,
+            baseOnBalls=5, hitByPitch=0, sacFlies=0)]
+t = g._add(rows, g.HIT_KEYS)
+check("打数が足される", t["atBats"], 100)
+check("本塁打が足される", t["homeRuns"], 5)
+check("打率は足した数から出す", g._hit_line(t).split()[0], "打率.250")
+check("打点も足される", "18打点" in g._hit_line(t), True)
+
+print("\n=== 投手 ===")
+# 自責18・アウト162（54回）＝ 防御率3.00
+p = g._add([hit(wins=9, losses=6, strikeOuts=60, earnedRuns=18, outs=162)],
+           g.PIT_KEYS)
+check("防御率を自責点とアウト数から出す", "防御率3.00" in g._pit_line(p), True)
+check("投球回もアウト数から出す", "54.0回" in g._pit_line(p), True)
+check("材料が無ければ空", g._pit_line({"outs": 0}), "")
+check("打者も材料が無ければ空", g._hit_line({"atBats": 0}), "")
+
+print("\n=== 節目の数え上げ ===")
+
+
+def fake_roster(hrs):
+    """本塁打だけ違う打者を並べた、球団の名簿の返事。"""
+    roster = []
+    for i, hr in enumerate(hrs):
+        roster.append({"person": {
+            "id": 1000 + i, "fullName": f"Player {i}",
+            "stats": [{"group": {"displayName": "hitting"}, "splits": [
+                hit(atBats=400, hits=100, homeRuns=hr, rbi=hr * 2,
+                    totalBases=200, baseOnBalls=40, hitByPitch=2,
+                    sacFlies=3)]}]}})
+    return {"roster": roster}
+
+
+def with_get(payload):
+    """通信を差し替える。テストからAPIは叩かない。"""
+    g._get = lambda url, timeout=20: payload
+
+
+keep = g._get
+with_get(fake_roster([31, 30, 30, 12]))
+sq = g.squad("ホワイトソックス")
+check("30本以上が3人と数える",
+      sq["tiers"][0], "本塁打30以上が3人: Player 031本、Player 130本、Player 230本")
+check("低いほうの区切りは重ねて出さない",
+      sum(1 for t in sq["tiers"] if "本塁打" in t), 1)
+check("多い順に並ぶ", [h["hr"] for h in sq["hitters"]], [31, 30, 30, 12])
+
+with_get(fake_roster([31, 12, 8]))
+check("1人しかいない節目は出さない",
+      [t for t in g.squad("ホワイトソックス")["tiers"] if "本塁打" in t], [])
+
+check("知らない球団名では引かない", g.squad("架空ズ"), {})
+
+print("\n=== 名前と数字に割る（画面の札） ===")
+m = {"top": {"topic_jp": "テスト", "result": {}},
+     "voices": [],
+     "squads": {"ホワイトソックス": {
+         "tiers": ["本塁打30以上が3人: Colson Montgomery31本、"
+                   "Miguel Vargas30本、村上宗隆30本"],
+         "hitters": [], "pitchers": [], "jp": []}}}
+ps = g.panels(m, [])
+rows = ps["group1"]["rows"]
+check("英語名と数字を割る", rows[0], {"name": "Colson Montgomery", "value": "31本"})
+check("日本語名でも割れる", rows[2], {"name": "村上宗隆", "value": "30本"})
+check("見出しに球団名が入る", ps["group1"]["head"].startswith("ホワイトソックス"), True)
+
+print("\n=== 出場が空いた期間 ===")
+
+
+def log(dates, hr_each=0):
+    return {"stats": [{"splits": [
+        {"date": d, "stat": {"atBats": 4, "hits": 1, "homeRuns": hr_each,
+                             "rbi": 1, "totalBases": 1 + 3 * hr_each,
+                             "baseOnBalls": 0, "hitByPitch": 0,
+                             "sacFlies": 0}} for d in dates]}]}
+
+
+def days(start_month, start_day, n):
+    """その日から連日で並べた日付。月末はきちんと繰り上げる。"""
+    import datetime
+    d0 = datetime.date(2026, start_month, start_day)
+    return [(d0 + datetime.timedelta(days=i)).isoformat() for i in range(n)]
+
+
+with_get(log(days(4, 1, 20) + days(7, 1, 20)))
+f = g.form("誰か", player_id="1")
+# 4/20の次が7/1。72日空いている。
+check("空白を見つける", f["gap"]["days"], 72)
+check("空白の前後で分ける",
+      (f["gap"]["before"].split("試合")[0], f["gap"]["after"].split("試合")[0]),
+      ("20", "20"))
+check("直近15試合も出す", f["recent"].startswith("打率"), True)
+
+with_get(log(days(4, 1, 20) + days(4, 22, 20)))  # 4/20の翌々日から
+check("1日空いただけでは離脱にしない",
+      "gap" in g.form("誰か", player_id="1"), False)
+
+with_get(log(days(4, 1, 12)))
+check("試合数が少なければ何も返さない", g.form("誰か", player_id="1"), {})
+
+with_get(log(days(4, 1, 25) + days(7, 1, 25), hr_each=1))
+f = g.form("誰か", player_id="1")
+check("162試合ペースに伸ばす", f["gap"]["pace"], "空白より前のペースを162試合に伸ばすと162本")
+
+g._get = keep
+
+print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
+sys.exit(1 if fails else 0)
