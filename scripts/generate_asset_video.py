@@ -65,6 +65,7 @@ import venue_stats
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import (  # noqa: E402
     JP_PLAYERS_MLB,
+    jp_airport,
     JP_PLAYERS_SOCCER,
     MLB_DIVISION_NAME_JP,
     MLB_DIVISIONS,
@@ -1033,6 +1034,18 @@ def _narration_list(topic: str) -> dict:
         if near:
             parts.append(f"同じ地区には{near}。")
         parts.append(f"{spec.get('where', '')}。ここが{spec['label']}の本拠地です。")
+        # 街まで寄る画面で、いちばん近い空港を言う。
+        #
+        # 州の名前だけでは「どんな場所か」が伝わらない。空港なら、
+        # 名前を聞いた瞬間にどのあたりか分かる人が多い。
+        # **距離は座標から計算したもの**で、書き足した知識ではない。
+        air = airports_of(spec, limit=2)
+        if air:
+            parts.append(f"いちばん近い空港は{jp_airport(air[0]['name'])}で、"
+                         f"球場からおよそ{air[0]['km']:.0f}キロ。")
+            if len(air) > 1:
+                parts.append(f"{jp_airport(air[1]['name'])}までは"
+                             f"{air[1]['km']:.0f}キロです。")
         segments.insert(1, {"kind": "map", "text": "".join(parts),
                             "meta": {"topic": topic}})
     for i in range(0, len(items), 2):
@@ -1179,6 +1192,26 @@ def team_color(spec: dict):
     return video_common.lift_color((spec or {}).get("color"), ACCENT)
 
 
+# 街まで寄ったときの倍率。画面のいちばん長い辺が30kmくらいになる。
+# ここを上げると、市街地の形が「ただの塗り」に見えるまで寄ってしまう。
+# 球場の敷地までは寄らない。その形のデータは持っていないので、
+# 寄っても粗い線を拡大するだけになる。
+CITY_ZOOM = 45.0
+
+
+def airports_of(spec: dict, limit: int = 2, max_km: float = 30.0) -> list:
+    """その球場の近くの空港。**距離は座標から計算したもの。**
+
+    近くに何があるかは、地図を見せるだけでは伝わらない。名前が要る。
+    ただし名前を書き足すと、出どころを説明できない記述になる。
+    空港なら、公開されている座標から距離を計算できる。
+    """
+    m = spec.get("map") or {}
+    if m.get("lat") is None:
+        return []
+    return usmap.airports_near(m["lat"], m["lon"], limit, max_km)
+
+
 def render_map(p, spec):
     """
     その球団がどこにあるかを、寄りながら見せる。
@@ -1191,10 +1224,21 @@ def render_map(p, spec):
       地図の画像は使わない。海岸線を粗い多角形で持っているだけなので、
       出どころを確かめる必要も、外部への通信も無い。
 
-    3段階に切ってある:
-      0.00-0.30  国全体。30球場が散らばっているのが見える
-      0.30-0.65  その地区へ。同地区の5球団が収まる範囲まで
-      0.65-1.00  その球場へ
+    4段階に切ってある:
+      0.00-0.22  国全体。30球場が散らばっているのが見える
+      0.22-0.46  その地区へ。同地区の5球団が収まる範囲まで
+      0.46-0.68  その州へ。州の形が見える
+      0.68-1.00  **その街へ。**海岸線と市街地の形、近くの空港まで
+
+    4段目を足した理由:
+      州の形まで見せても、「どんな場所にあるのか」は伝わらない。
+      湾のそばなのか、空港の隣なのか。そこまで寄って初めて像が結ぶ。
+
+      州境(1:110m)は10km単位なので、寄るとただの直線になる。
+      1:10m から球場のまわり55kmだけを切り出したものを別に持っている
+      (`data/us_places.json`)。全部入れると26MBだが、球場のまわりなら
+      200KB。**空港までの距離は座標から計算していて、書き足した知識では
+      ない。**
 
       連続で寄せると、序盤で中心が動いた時点で端の球団
       (シアトル、マイアミ)が画面の外へ出てしまう。実際そうなった。
@@ -1217,18 +1261,26 @@ def render_map(p, spec):
     else:
         div_c = (lat, lon)
 
-    if p < 0.30:
+    if p < 0.22:
         center, zoom, stage = country, 1.0, 0
-    elif p < 0.65:
-        e = ease_out((p - 0.30) / 0.35)
+    elif p < 0.46:
+        e = ease_out((p - 0.22) / 0.24)
         center = (country[0] + (div_c[0] - country[0]) * e,
                   country[1] + (div_c[1] - country[1]) * e)
         zoom, stage = 1.0 + e * 1.1, 1
-    else:
-        e = ease_out(min(1.0, (p - 0.65) / 0.30))
+    elif p < 0.68:
+        e = ease_out((p - 0.46) / 0.22)
         center = (div_c[0] + (lat - div_c[0]) * e,
                   div_c[1] + (lon - div_c[1]) * e)
         zoom, stage = 2.1 + e * 2.2, 2
+    else:
+        # ここからは街のスケール。倍率を足し算で上げると、
+        # 最後まで寄りきらない(4.3から70へは16倍)。掛け算で寄せる。
+        # ここは ease を掛けない。倍率を掛け算で上げているので、
+        # そのままで「一定の速さで近づいていく」動きになる。
+        # ease_out を重ねると、最初に一気に寄って残りが止まって見えた。
+        e = min(1.0, (p - 0.68) / 0.32)
+        center, zoom, stage = (lat, lon), 4.3 * (CITY_ZOOM / 4.3) ** e, 3
 
     # 州境。Natural Earth から取ってコミットしてあるので通信は無い。
     # 州の形があると、寄っても「どのあたりか」の手がかりが残る。
@@ -1240,27 +1292,53 @@ def render_map(p, spec):
         d.polygon(usmap.outline_points(W, H, center, zoom),
                   fill=(16, 21, 30), outline=(60, 70, 90))
 
-    def put(la, lo, r, fill, label=""):
+    # 街のスケールでは、市街地と海岸線を重ねる。
+    #
+    # 州の輪郭は10km単位なので、ここまで寄ると直線が拡大されるだけ。
+    # 上に細かいほうを乗せて、そちらを見せる。
+    # データが無ければ何も描かないだけで、州の形は残る。
+    if stage >= 2 and zoom > 6:
+        # 州の塗りの上に重ねる。**はっきり差を付ける。**
+        # 差が小さいと、街がどこまで広がっているのか読めない。
+        for line in usmap.place_lines("urban", W, H, center, zoom):
+            d.polygon(line, fill=(38, 48, 68))
+        for line in usmap.place_lines("coast", W, H, center, zoom):
+            if len(line) >= 2:
+                d.line(line, fill=(80, 128, 176), width=4)
+
+    def put(la, lo, r, fill, label="", dy=0):
         x, y = usmap.project(la, lo, W, H, center, zoom)
         if not (-150 < x < W + 150 and -150 < y < H + 150):
             return
         d.ellipse([x - r, y - r, x + r, y + r], fill=fill)
         if label:
-            d.text((x + r + 8, y - 16), label, font=font(30), fill=DIM)
+            # dy は札を上下に振るため。空港が2つ近くにあると、
+            # 同じ高さに書いて重なった（ラガーディアとJFKで実際に起きた）。
+            d.text((x + r + 8, y - 16 + dy), label, font=font(30), fill=DIM)
 
     # 全体のときは30球場を打つ。「MLBは30球団」と言う場所なので、
     # 数がそのまま画面に出ている方がよい。
     if stage == 0:
         for la, lo in (m.get("all") or []):
             put(la, lo, 7, (58, 70, 92))
-    else:
+    elif stage < 3:
         for n in near:
             put(n["lat"], n["lon"], 7 + 4 * (stage - 1), (58, 70, 92),
                 n["abbr"] if stage >= 1 else "")
+    else:
+        # 街まで寄ったら、他球団ではなく**近くの空港**を出す。
+        # 「どのあたりの街か」は、空港の名前がいちばん早い。
+        for i, a in enumerate(airports_of(spec)):
+            put(a["lat"], a["lon"], 11, (150, 160, 182),
+                f"{jp_airport(a['name'])} {a['km']:.0f}km",
+                dy=-46 if i == 0 else 46)
 
     x, y = usmap.project(lat, lon, W, H, center, zoom)
+    # 目印の輪。倍率に比例させていたので、街まで寄ると画面を覆っていた。
+    # 寄るほど「地図の方を見せたい」ので、そこでは小さくする。
+    ring = 24 if stage >= 3 else 24 + zoom * 6
     for i in range(3):
-        rr = 24 + i * 24 + zoom * 6
+        rr = ring + i * 24
         d.ellipse([x - rr, y - rr, x + rr, y + rr], outline=col, width=2)
     d.ellipse([x - 13, y - 13, x + 13, y + 13], fill=col)
 
@@ -1268,8 +1346,17 @@ def render_map(p, spec):
         big, small = "アメリカ", "MLBは30球団"
     elif stage == 1:
         big, small = m.get("division", ""), "同じ地区の4球団"
-    else:
+    elif stage == 2:
         big, small = (spec.get("where") or m.get("city", "")), spec.get("label", "")
+    else:
+        # 4段目は、この画面で初めて出る事実を大きく置く。
+        air = airports_of(spec)
+        if air:
+            big = f"{jp_airport(air[0]['name'])}から{air[0]['km']:.0f}km"
+            small = "いちばん近い空港"
+        else:
+            big = (spec.get("where") or m.get("city", ""))
+            small = spec.get("label", "")
     size = next((s for s in (84, 72, 60, 50)
                  if d.textlength(big, font=font(s)) <= W - 140), 50)
     d.text((70, 150), big, font=font(size), fill=col)

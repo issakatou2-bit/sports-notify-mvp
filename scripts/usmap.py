@@ -114,3 +114,65 @@ def state_polygons(w: int, h: int, center=None, zoom: float = 1.0,
                 continue
             out.append(pts)
     return out
+
+
+# ---------------------------------------------------------------------------
+# 球場のまわり。街の形・海岸線・空港。
+#
+# 州境（1:110m）は10km単位なので、街まで寄るとただの直線になる。
+# 「カリフォルニア州アナハイム」と言われても像が結ばないのと同じで、
+# 州の形まで見せて終わりだと、その球場がどんな場所にあるのかは伝わらない。
+#
+# 1:10m から球場の半径55kmだけを切り出してある（fetch_map_data.py --places）。
+# 全部入れると26MBだが、球場のまわりだけなら200KB。
+# ---------------------------------------------------------------------------
+
+PLACES_PATH = "data/us_places.json"
+
+
+def km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """2点の距離。数十kmの範囲で使うので、平面で足りる。"""
+    dy = (lat1 - lat2) * 111.0
+    dx = (lon1 - lon2) * 111.0 * math.cos(math.radians((lat1 + lat2) / 2))
+    return math.hypot(dx, dy)
+
+
+@functools.lru_cache(maxsize=1)
+def places(path: str = PLACES_PATH) -> dict:
+    """街・海岸線・空港。無ければ空。"""
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return d
+
+
+def place_lines(kind: str, w: int, h: int, center=None, zoom: float = 1.0,
+                margin: int = 300) -> list:
+    """画面に落とした街の形／海岸線。画面から大きく外れたものは省く。"""
+    out = []
+    for line in (places().get(kind) or []):
+        pts = [project(lat, lon, w, h, center, zoom) for lon, lat in line]
+        xs = [q[0] for q in pts]
+        ys = [q[1] for q in pts]
+        if (max(xs) < -margin or min(xs) > w + margin
+                or max(ys) < -margin or min(ys) > h + margin):
+            continue
+        out.append(pts)
+    return out
+
+
+def airports_near(lat: float, lon: float, limit: int = 3,
+                  max_km: float = 30.0) -> list:
+    """その球場の近くの空港。近い順。
+
+    「ラガーディア空港に近い」は、**座標から計算して言えること**。
+    こちらで書き足した知識ではないので、出どころを説明できる。
+    """
+    out = []
+    for a in (places().get("airports") or []):
+        d = km(lat, lon, a["lat"], a["lon"])
+        if d <= max_km:
+            out.append({**a, "km": round(d, 1)})
+    out.sort(key=lambda x: x["km"])
+    return out[:limit]

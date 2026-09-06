@@ -373,6 +373,66 @@ POSTSEASON_NAME = {
     "W": "ワールドシリーズ",
 }
 
+# 球場の近くにある空港の、日本語での呼び方。
+#
+# なぜ持つのか:
+#   球団紹介の回で「その球場がどんな場所にあるか」を示すのに、
+#   いちばん分かりやすい目印が空港だった。「ラガーディア空港から3km」
+#   と言えば、ニューヨークのどのあたりかが一言で伝わる。
+#
+#   距離は座標から計算しているので事実で、こちらが足した知識ではない。
+#   足しているのは**呼び方の日本語表記だけ**で、球団名や球場名を
+#   カタカナで持っているのと同じ性質のもの。
+#
+# 短く呼ぶ:
+#   正式名は長い（"Baltimore-Washington Int'l Thurgood Marshall"）。
+#   読み上げに載せると、それだけで5秒かかる。日本で通っている
+#   呼び方に寄せて短くしてある。
+#
+# 出どころ: Natural Earth の空港データ（1:10m・パブリックドメイン）。
+#   ここに無い空港は英語のまま出す（勝手な当て字はしない）。
+AIRPORT_NAME_JP = {
+    "LaGuardia": "ラガーディア空港",
+    "John F Kennedy Int'l": "ジョン・F・ケネディ空港",
+    "Newark Int'l": "ニューアーク空港",
+    "Washington Nat'l": "ワシントン・ナショナル空港",
+    "Baltimore-Washington Int'l Thurgood Marshall": "ボルティモア・ワシントン空港",
+    "Gen E L Logan Int'l": "ボストン・ローガン空港",
+    "Philadelphia Int'l": "フィラデルフィア空港",
+    "Greater Pittsburgh Int'l": "ピッツバーグ空港",
+    "Hopkins Int'l": "クリーブランド空港",
+    "Greater Cincinnati Int'l": "シンシナティ空港",
+    "Detroit City": "デトロイト・シティ空港",
+    "Windsor": "ウィンザー空港",
+    "Chicago O'Hare Int'l": "オヘア空港",
+    "Chicago Midway Int'l": "ミッドウェー空港",
+    "General Mitchell Int'l": "ミルウォーキー空港",
+    "Minneapolis St. Paul Int'l": "ミネアポリス空港",
+    "Lambert St Louis Int'l": "セントルイス空港",
+    "Hartsfield-Jackson Atlanta Int'l": "アトランタ空港",
+    "Miami Int'l": "マイアミ空港",
+    "Tampa Int'l": "タンパ空港",
+    "George Bush Intercontinental": "ヒューストン空港",
+    "Dallas-Ft. Worth Int'l": "ダラス・フォートワース空港",
+    "Dallas Love Field": "ダラス・ラブフィールド空港",
+    "Denver Int'l": "デンバー空港",
+    "Sky Harbor Int'l": "フェニックス空港",
+    "San Diego Int'l": "サンディエゴ空港",
+    "General Abelardo L Rodriguez Int'l": "ティフアナ空港",
+    "John Wayne": "ジョン・ウェイン空港",
+    "Los Angeles Int'l": "ロサンゼルス空港",
+    "Oakland Int'l": "オークランド空港",
+    "San Francisco Int'l": "サンフランシスコ空港",
+    "Sacramento Int'l": "サクラメント空港",
+    "Seattle-Tacoma Int'l": "シアトル・タコマ空港",
+    "Toronto-Pearson Int'l": "トロント・ピアソン空港",
+}
+
+
+def jp_airport(name: str) -> str:
+    """空港の日本語表記。表に無ければ英語のまま返す。"""
+    return AIRPORT_NAME_JP.get(name or "", name or "")
+
 
 def rule_postseason(game: Game) -> list[Reason]:
     """
