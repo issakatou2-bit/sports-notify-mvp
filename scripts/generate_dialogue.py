@@ -953,7 +953,14 @@ def facts(m: dict, extra: list) -> str:
                 elif st.get("seed"):
                     race = f"、いまなら第{st['seed']}シードで進出圏内"
                 elif st.get("wc_gb") not in (None, "-", "E"):
-                    race = f"、ワイルドカードまで{st['wc_gb']}ゲーム差"
+                    # **圏内か圏外かを言葉で書く。**
+                    # 「ワイルドカードまで0.5ゲーム差」だけだと、
+                    # 中にいるのか外にいるのか読み取れない。
+                    gb = str(st["wc_gb"])
+                    race = (f"、ワイルドカード圏内で6位に{gb.lstrip('+')}"
+                            "ゲーム差をつけている"
+                            if gb.startswith("+") else
+                            f"、いまは圏外で、進出圏内まであと{gb}ゲーム")
                 elif st.get("wc_gb") == "E":
                     race = "、進出の可能性は消滅"
                 if isinstance(st.get("magic"), int):

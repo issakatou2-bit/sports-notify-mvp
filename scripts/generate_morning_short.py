@@ -82,6 +82,9 @@ MIN_DURATION = {"intro": 4.5, "list": 6.5, "buzz": 7.5,
                 "reporters": 12.0, "headlines": 11.0,
                 # 7日間の合計。5行を目で追う画面
                 "week": 8.0,
+                # 2人の掛け合い。**短い問いに5秒の枠を当てると、
+                # 読み終わってから3秒以上黙る。**そこは詰める。
+                "ps_talk": 2.2,
                 # 「今日の1人」の画面
                 "p_intro": 5.0, "p_career": 6.0, "p_season": 6.0,
                 "p_recent": 6.0, "p_awards": 6.0, "p_quotes": 12.0,
@@ -715,15 +718,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         #
         # 2人にするのはここだけ。全部を対話にすると、順位表を
         # 読み上げる12行が全部台詞になって、かえって遅くなる。
-        if changes:
-            ask = "ん？昨日と違うのだ？"
-            ans = changes[0]["text"] + "。"
-            if len(changes) > 1:
-                ans += f"昨日から{len(changes)}つ動いたわ。"
-        else:
-            ask = "昨日から何か動いたのだ？"
-            ans = ("それが、順位も進出圏内の6球団も昨日と同じ。"
-                   + (ps.get("headline") or "") + "のままよ。")
+        ask, ans = ps_open(ps)
         segments = [
             {"kind": "ps_talk", "text": ask,
              "speaker": PS_SPEAKER[ZUNDA],
@@ -1124,6 +1119,11 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     # 成績の回は、2人が交代で読む。
     if mode == "players":
         assign_pair(segments)
+    elif mode == "postseason":
+        # 進出争いも2人が出る回なので、同じ印を付ける。
+        # 読み手の交代はしない（順位表を読む12行が全部台詞になると、
+        # かえって遅くなる。1枚目だけ掛け合いにしてある）。
+        bookend(segments)
     return {"label": day, "segments": segments}
 
 
@@ -1147,8 +1147,24 @@ def assign_pair(segments: list) -> None:
         seg["speaker"] = PS_SPEAKER[who]
         seg.setdefault("meta", {})["who"] = who
         who = METAN if who == ZUNDA else ZUNDA
-    if segments:
+    bookend(segments)
+
+
+def bookend(segments: list) -> None:
+    """最初と最後に「コレスポ」を置く。
+
+    長編は2人で「コレスポ」と言って始まり、同じ形で終わる。
+    短編でも同じ印を付けると、別々の枠でも同じ番組だと分かる。
+
+    **画面は増やさない。**冒頭の読み上げの頭と、締めの読み上げの
+    尻に足すだけ。0.6秒ずつしか伸びないし、動画が始まった瞬間に
+    鳴る（前に間を置かない）。
+    """
+    if not segments:
+        return
+    if not segments[0]["text"].startswith("コレスポ"):
         segments[0]["text"] = "コレスポ。" + segments[0]["text"]
+    if not segments[-1]["text"].rstrip("。").endswith("コレスポ"):
         segments[-1]["text"] = segments[-1]["text"] + "コレスポ。"
 
 
@@ -1574,9 +1590,59 @@ def ps_right(tm: dict):
         # 最後の枠にいる球団は、差が返らない（自分が基準なので）。
         return "圏内", "ワイルドカード最後の枠", False
     gb = str(gb)
-    # 枠の中にいる球団は「+5.0」のように余裕が返る。
-    # 「差5.0」だと追う側と同じ言葉になって、どちらか分からない。
-    return gb, ("枠へのリード" if gb.startswith("+") else "枠との差"), False
+    # **同じ「0.5」でも、圏内と圏外で意味が逆。**
+    #
+    # 「枠との差0.5」と書いていたが、これは中にいるのか外にいるのかが
+    # 読み取れない。実際「1.0差ワイルドカード」がどっちなのか
+    # 分からない、という指摘を受けた。**言葉のほうに圏内・圏外を書く。**
+    # APIは中にいる球団に「+5.0」のように符号を付けて返す。
+    if gb.startswith("+"):
+        return gb.lstrip("+"), "圏内・この差で6位を離す", False
+    return gb, "圏外・圏内まであと", False
+
+
+def ps_open(ps: dict) -> tuple:
+    """1枚目の掛け合い。**その日の中身から作る。**
+
+    「ん？昨日と違うのだ？」を毎日そのまま出していた。
+    あれは書き方の一例として置いたもので、**決まり文句にするつもりの
+    ものではなかった。**毎日同じ入りだと、2日目からは飛ばされる。
+
+    動いた数と、**誰の球団が動いたか**で言い方を変える。
+    日本人選手のいる球団が動いた日は、そこから入る。
+    28日の実測で、題に日本人選手の名前がある回は再生2.4倍・
+    登録12倍だった。**入口をそこに合わせない理由が無い。**
+    """
+    changes = ps.get("changes") or []
+    jp = ps.get("japanese") or []
+    n = len(changes)
+
+    # 日本人選手のいる球団が動いた日は、そこが今日いちばんの話。
+    for c in changes:
+        text = c.get("text") or ""
+        for x in jp:
+            team = x.get("team") or ""
+            if team and team in text:
+                names = "・".join(x.get("players") or [])
+                ask = (f"{names}のところが動いたのだ？" if names
+                       else f"{team}が動いたのだ？")
+                ans = text + "。"
+                if n > 1:
+                    ans += f"昨日から{n}つ動いたわ。"
+                return ask, ans
+
+    if not n:
+        return ("今日は動かなかったのだ？",
+                "それが、順位も進出圏内の6球団も昨日と同じ。"
+                + (ps.get("headline") or "") + "のままよ。")
+    if n == 1:
+        return "ん？1つだけ動いてるのだ", changes[0]["text"] + "。ここだけね。"
+    if n >= 4:
+        return (f"今日はやけに動いてるのだ。{n}つもあるのだ？",
+                changes[0]["text"] + f"。昨日から{n}つ動いたわ。")
+    return ("昨日と違うところがあるのだ。どこなのだ？",
+            changes[0]["text"] + f"。昨日から{n}つ動いたわ。")
+
 
 
 def ps_row(d, y, tm: dict, dx: int, seed=None, inside: bool = True,
@@ -1721,11 +1787,20 @@ def pair_expr(kind: str, meta: dict, players: list, rows=None) -> tuple:
 # 2人で値が違うのは、立ち絵の中で顔が占める割合が違うから。
 # 同じ数字で切ると、ずんだもんの口が消えてもめたんのあごが残る。
 # 高さ520pxに揃えたときの実測。
-PEEK_SHOW = {"ずんだもん": 128, "四国めたん": 112}
+PEEK_SHOW = {"ずんだもん": 150, "四国めたん": 110}
+
+
+# 顔を置く左右の位置（画面の端からの中心距離）。
+#
+# **両端に寄せる。**中央寄りに置くと、2人が画面の真ん中で
+# 向き合っている形になって、あいだの情報が挟まれて見える。
+# 端に立たせると、情報の側が広く使える。
+# 150より小さくすると、ずんだもんの耳が画面の外へ出る。
+PEEK_EDGE = 150
 
 
 def draw_peek(im, d, who: str, show: int = 0, expr: dict = None,
-              names: bool = True, edge: int = 390):
+              names: bool = True, edge: int = PEEK_EDGE):
     """読み上げの帯の上端から、2人が顔だけのぞく。
 
     なぜこの形にしたか:
@@ -1762,23 +1837,32 @@ def draw_peek(im, d, who: str, show: int = 0, expr: dict = None,
         # 顔から上だけを切る。下端は帯に少し潜り込ませて、
         # 「縁からのぞいている」形にする。
         head = art.crop((0, 0, art.width, min(art.height, cut + 30)))
-        im.paste(head, (int(cx - head.width / 2), top - cut), head)
+        # 顔の中心で置く。**絵の中心ではない。**
+        #
+        # 立ち絵は肩や髪まで入った1枚なので、切り出した頭の中で
+        # 顔が真ん中に来ているとは限らない。絵の幅で中心を取ると、
+        # 端に寄せたときに片方だけ画面の外へ出た（めたんがそうなった）。
+        box = head.getbbox()
+        mid = ((box[0] + box[2]) / 2) if box else (head.width / 2)
+        im.paste(head, (int(cx - mid), top - cut), head)
     draw_spoken(d, PS_COLOR.get(who))
-    # 名前の札。顔に掛からないよう、画面の端へ寄せる。
+    # 名前の札。**顔の上に置く。**
     #
-    # 成績の回では出さない（names=False）。あちらは2人を画面の
-    # 左右の端まで寄せるので、端に置く札とあごが重なる。
-    # 誰が読んでいるかは明るさと表情で分かるし、話者の名前は
-    # アウトロの出典と説明欄に必ず出している。
+    # 以前は画面の左右の端に置いていたが、2人を端へ寄せたので
+    # そこはもう顔がいる。頭の上なら、どちらの名前かも迷わない。
+    # 成績の回では出さない（names=False）。誰が読んでいるかは
+    # 明るさと表情で分かるし、話者の名前はアウトロの出典と
+    # 説明欄に必ず出している。
     if not names:
         return
-    for name, right in ((ZUNDA, False), (METAN, True)):
+    for name, cx in ((ZUNDA, edge), (METAN, W - edge)):
         col = PS_COLOR[name] if name == who else DIM
         fn = font(26)
         w = d.textlength(name, font=fn) + 32
-        x0 = (W - 70 - w) if right else 70
-        d.rounded_rectangle([x0, top - 42, x0 + w, top - 4], 10, fill=col)
-        d.text((x0 + 16, top - 38), name, font=fn, fill=(11, 14, 20))
+        x0 = max(16, min(W - 16 - w, cx - w / 2))
+        cy = top - (PEEK_SHOW.get(name, 150)) - 44
+        d.rounded_rectangle([x0, cy, x0 + w, cy + 38], 10, fill=col)
+        d.text((x0 + 16, cy + 4), name, font=fn, fill=(11, 14, 20))
 
 
 def render_ps_talk(p, data: dict, who: str, day: str = ""):
@@ -1888,20 +1972,38 @@ def render_ps_japanese(p, jp: list):
     d.text((70, 214), "%d球団中 %d球団が進出圏内" % (len(jp), len(inside)),
            font=font(60), fill=TEXT)
 
-    # 6行しか置けない。圏内で埋めると**追っている球団が消える**。
-    # 岡本のブルージェイズが2.5ゲーム差、が出ないのは惜しい。
-    # 圏内5つ＋いちばん近い圏外1つにする。
-    rows = jp[:6]
-    if len(jp) > 6 and all(x.get("seed") for x in rows):
-        near = [x for x in jp[6:] if not x.get("seed")]
-        if near:
-            rows = jp[:5] + near[:1]
+    # **圏内の球団は、1つも落とさない。**
+    #
+    # 前は6行に収めるため、圏内が6つある日に6番目を外して
+    # いちばん近い圏外の球団を入れていた。「11球団中6球団が進出圏内」
+    # と書いてある下に、圏内が5つしか無い画面になる。数が合わない。
+    #
+    # 圏内を全部出し、余った1行に「いちばん近い圏外」を置く。
+    # 行を少し詰めれば7行入る。
+    inside_rows = [x for x in jp if x.get("seed")][:6]
+    outside = [x for x in jp if not x.get("seed")]
+    rows = inside_rows + (outside[:1] if len(inside_rows) < 7 else [])
 
+    # 7行入れるので、1行ぶん詰める（148+20 → 148+12）。
+    ROW_H = 160
     y = 330
+    drew_line = False
     for i, x in enumerate(rows):
+        # **圏内と圏外のあいだに線を引く。**
+        #
+        # 「11球団中6球団が進出圏内」と書いた下に6行並べていたが、
+        # そのうち1行が圏外の球団という日があった。数と並びが
+        # 食い違って見える。順位表の画面と同じ線をここにも引く。
+        if not x.get("seed") and not drew_line and i:
+            drew_line = True
+            if p > 0.06 + i * 0.05:
+                t = "──── ここまでが進出圏内 ────"
+                d.text(((W - d.textlength(t, font=font(28))) / 2, y + 2),
+                       t, font=font(28), fill=ACCENT)
+            y += 46
         appear = 0.06 + i * 0.05
         if p < appear:
-            y += 168
+            y += ROW_H
             continue
         e = ease_out(min(1.0, (p - appear) * 9))
         dx = int((1 - e) * 80)
@@ -1923,9 +2025,10 @@ def render_ps_japanese(p, jp: list):
             font=font(24), fill=DIM)
         # 右。圏内はシード番号、外は枠との差。
         if seeded:
-            tag, sub = "第%dシード" % x["seed"], x.get("route", "")
+            tag, sub = "第%dシード" % x["seed"], "圏内・" + x.get("route", "")
         elif x.get("wc_gb") is not None:
-            tag, sub = "%s差" % x["wc_gb"], "ワイルドカード"
+            # 「0.5差 ワイルドカード」だと中か外か読めない。
+            tag, sub = "あと%s" % x["wc_gb"], "圏外・圏内まで"
         else:
             tag, sub = "圏外", ""
         fw = font(40)
@@ -1935,13 +2038,15 @@ def render_ps_japanese(p, jp: list):
             fs = font(24)
             d.text((x1 - 34 - d.textlength(sub, font=fs), y + 96), sub,
                    font=fs, fill=DIM)
-        y += 168
+        y += ROW_H
 
     # 画面に載らなかった球団。**数を合わせるために書く。**
     # 「8球団中6球団が進出圏内」と出しておいて6行しか無いと、
     # 見ている側は数えたときに合わないことに気付く。
     rest = [x for x in jp if x not in rows]
-    if rest and p > 0.32:
+    # 読み上げの帯は行数で高さが変わる。決め打ちだと、
+    # 2行の日にこの1行が帯に潜る。帯の上端から測る。
+    if rest and p > 0.32 and y + 44 < spoken_top(d):
         s = "ほか " + "、".join(
             "%s（%s）" % (x.get("team"), "・".join(x.get("players") or []))
             for x in rest[:2])
