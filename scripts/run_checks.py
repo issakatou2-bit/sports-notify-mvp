@@ -186,6 +186,13 @@ def check_tests(tmp: str) -> int:
             for line in (r.stdout or "").splitlines():
                 if line.startswith("NG "):
                     print(f"      {line}")
+            # stdout に何も出さずに落ちるテストがある(unittest は stderr)。
+            # 理由が1行も残らないと、実行ページには「(出力なし)」とだけ
+            # 並び、何を直せばいいのか分からないまま赤になる。
+            # 実際 test_revenue がその形で1日赤のままだった。
+            if not (r.stdout or "").strip():
+                for line in (r.stderr or "").strip().splitlines()[-6:]:
+                    print(f"      {line}")
         else:
             print(f"ok {f.stem:<22} {mark}")
     return bad

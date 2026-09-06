@@ -1,5 +1,6 @@
 """Regressions for revenue reporting and published entry points (no paid API)."""
 import copy
+import sys
 import unittest
 from pathlib import Path
 from revenue_report import summarize, yen
@@ -62,4 +63,16 @@ class RevenueTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # run_checks.py は各テストに一時フォルダを argv[1] で渡す。
+    # unittest.main() はその argv をテスト名として読むので、
+    # 「そんなテストは無い」で必ず落ちる。しかも unittest の出力は
+    # stderr なので、stdout の最終行しか見ない検査には
+    # 「(出力なし)」としか残らず、赤の理由が分からなかった。
+    #
+    # このリポジトリのテストは、最後に ALL OK を stdout へ出して
+    # 0/1 で終わる形で揃っている。ここも同じにする。
+    result = unittest.main(argv=[sys.argv[0]], exit=False,
+                           verbosity=0).result
+    bad = len(result.failures) + len(result.errors)
+    print("\nALL OK" if not bad else "\n%d FAILURES" % bad)
+    sys.exit(1 if bad else 0)
