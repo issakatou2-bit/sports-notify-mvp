@@ -9,16 +9,15 @@
 
   再生数だけなら videos.list で取れる。こちらは APIキー1本で動き、
   50本まとめて1ユニットしか使わない。維持率は分からないが、
-  「配られたのか、配られていないのか」はこれで分かる。
-  そして今いちばん知りたいのはそこ。
+  再生数の初動を確認できる。表示回数やスワイプ率が無いため、
+  表示不足と、表示されても見られなかった場合は区別できない。
 
-  実測では、公開から3日以内に伸びるものは伸び、伸びないものは
-  そのまま0のまま終わる。初動を見れば当日のうちに判断できる。
+  初動だけで今後の伸びを断定せず、同じ枠・公開後経過時間で比較する。
 
 見るもの:
   ・その日ごとの本数と再生数
   ・枠ごとの中央値(同じ枠の日ごとのばらつき)
-  ・「ほとんど配られていない」本数(10回未満)
+  ・再生10回未満の本数（配信不足の判定ではない）
 
 使い方:
   YOUTUBE_API_KEY=... python3 scripts/early_views.py --days 7
@@ -30,6 +29,7 @@ import datetime as dt
 import json
 import os
 import pathlib
+import re
 import statistics
 import sys
 import urllib.parse
@@ -52,8 +52,7 @@ def _labels() -> dict:
 
 KIND_LABEL = _labels()
 
-# これ未満なら「ほとんど配られていない」とみなす。
-# 実測で、フィードに乗った動画は初日から数十回は付く。
+# 再生数の集計用しきい値。表示・配信の有無は判定しない。
 BARELY = 10
 
 
@@ -93,21 +92,42 @@ def collect(days: int) -> list:
     return sorted(out)
 
 
+def iso_seconds(text: str) -> int:
+    """"PT1M12S" のような表記を秒に。読めなければ0。"""
+    m = re.match(r"^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$", text or "")
+    if not m:
+        return 0
+    h, mi, se = (int(x) if x else 0 for x in m.groups())
+    return h * 3600 + mi * 60 + se
+
+
 def stats_for(ids: list) -> dict:
-    """動画IDごとの再生数といいね。50本ずつまとめて引く。"""
+    """動画IDごとの再生数といいねと、**尺**。50本ずつまとめて引く。
+
+    尺も一緒に取るのは、初動との関係を毎日見たいから。
+    9/4までの実測で、morning枠は8/29に尺が34秒から42秒へ伸び、
+    同じ時期に初動が900台から200台以下へ落ちて、視聴率が100%を
+    超える回（最後まで見て頭に戻る回）が消えた。
+
+    **相関であって、因果と決まったわけではない。**同じ時期に他の
+    変更もある。だからこそ、尺を毎日そばに置いて見えるようにする。
+    part を1つ足すだけで、割り当ての消費は変わらない。
+    """
     out = {}
     for i in range(0, len(ids), 50):
         try:
-            res = get("videos", part="statistics",
+            res = get("videos", part="statistics,contentDetails",
                       id=",".join(ids[i:i + 50]), maxResults=50)
         except Exception as e:                       # noqa: BLE001
             print("[warn] 取れません: %s" % str(e)[:120])
             continue
         for it in res.get("items", []):
             st = it.get("statistics") or {}
+            cd = it.get("contentDetails") or {}
             out[it["id"]] = {
                 "views": int(st.get("viewCount") or 0),
                 "likes": int(st.get("likeCount") or 0),
+                "seconds": iso_seconds(cd.get("duration") or ""),
             }
     return out
 
@@ -208,7 +228,7 @@ def main() -> int:
             print("  公開から%d日: 中央 %6.0f  (%s は %6.0f) %s"
                   % (age, now_med, when, was_med, mark))
 
-    print("\n=== ほとんど配られていない動画 ===")
+    print("\n=== 再生10回未満の動画（表示・配信不足とは限らない） ===")
     barely = [(d, k, t, got.get(v, {}).get("views", 0))
               for d, k, v, t in rows
               if got.get(v, {}).get("views", 0) < BARELY]
@@ -236,7 +256,7 @@ def main() -> int:
         with open(summary, "a", encoding="utf-8") as f:
             f.write("\n## 初動(直近%d日)\n\n" % args.days)
             f.write("維持率はAnalyticsが要るので出せない。"
-                    "ここで見るのは「配られたかどうか」。\n\n")
+                    "ここで見るのは再生数の初動。表示・配信不足の判定はできない。\n\n")
             f.write("|日|経過|本数|合計再生|中央値|10回未満|\n")
             f.write("|---|--:|--:|--:|--:|--:|\n")
             for date in sorted(by_date, reverse=True):
