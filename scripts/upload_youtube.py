@@ -1103,7 +1103,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    buzz_path: str = "data/mlb_buzz.json",
                    profile_path: str = "data/player_profile.json",
                    topic: str = "",
-                   jp_names: list | None = None) -> dict:
+                   jp_names: list | None = None,
+                   jp_team: list | None = None,
+                   jp_team_name: str = "") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -1253,6 +1255,21 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             who = "・".join(jp)
             title = (f"【海外の反応】{who}への現地の声｜"
                      f"{topic or 'MLB'} {date_label}")
+        elif jp_team:
+            # コメントに名前は出ていないが、その球団に日本人選手がいる日。
+            #
+            # 「◯◯への現地の声」とは書けない（誰も彼の話をしていない）。
+            # 書けるのは「◯◯のいる球団の試合のコメント欄」まで。
+            # **そこまでなら事実で、名前も題に入る。**
+            # 題を強くするために、書いていないことを書かない。
+            #
+            # 長編は10本で合計24再生。名前が入っていた1本だけが11再生で、
+            # 残りは1〜3再生だった。題に名前が無いことが効いている。
+            who = "・".join(title_name(n) for n in jp_team[:2])
+            team = (jp_team_name or "").strip()
+            head = f"{who}のいる{team}" if team else f"{who}の球団"
+            title = (f"【海外の反応】{head}｜"
+                     f"MLB公式コメント欄を読み解く {date_label}")
         elif topic:
             title = (f"【海外の反応】{topic}｜"
                      f"MLB公式コメント欄を読み解く {date_label}")
@@ -1683,18 +1700,23 @@ def main():
 
         # コメントに日本人選手が出ていたら、題の先頭に置く。
         # 28日間の実測で、名前が題にある動画は再生2.8倍・登録12人 vs 0人。
-        jp_names = []
+        jp_names, jp_team, jp_team_name = [], [], ""
         if args.dialogue:
             try:
-                jp_names = json.loads(pathlib.Path(args.dialogue).read_text(
-                    encoding="utf-8")).get("jp") or []
+                _d = json.loads(pathlib.Path(args.dialogue).read_text(
+                    encoding="utf-8"))
+                jp_names = _d.get("jp") or []
+                # コメントには出ていないが、その球団にいる日本人選手。
+                jp_team = _d.get("jp_team") or []
+                jp_team_name = _d.get("jp_team_name") or ""
             except (OSError, json.JSONDecodeError) as e:
                 print(f"[info] 台本から日本人選手を読めません({e})")
         body = build_metadata(args.games, date_label, args.kind,
                               args.narration, args.archive_dir, morning_players,
                               args.morning_mode, args.sport, args.buzz,
                               args.profile, args.topic,
-                              jp_names=jp_names)
+                              jp_names=jp_names, jp_team=jp_team,
+                              jp_team_name=jp_team_name)
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)

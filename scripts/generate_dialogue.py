@@ -1632,7 +1632,23 @@ def main() -> int:
         {"kind": "dialogue", "segments": segs, "panels": ps,
          "top": m["top"].get("topic_jp") or m["top"].get("matchup"),
          "title": m["top"].get("title") or "",
+         # コメントに名前が出ている日本人選手。題の「◯◯への現地の声」は
+         # これがあるときだけ。**出ていない選手を題に置くと嘘になる。**
          "jp": m.get("jp") or [],
+         # コメントには出ていないが、対戦した2球団にいる日本人選手。
+         # 「◯◯のいるブルージェイズ」までなら事実なので、題に使える。
+         # 長編は10本で合計24再生しかなく、**題に名前が無いことが
+         # いちばんの理由**だった（名前ありの回だけ11再生）。
+         "jp_team": [x["name_jp"]
+                     for jpn, sq in (m.get("squads") or {}).items()
+                     for x in (sq.get("jp") or [])
+                     if x["name_jp"] not in (m.get("jp") or [])],
+         # その選手が**どちらの球団にいるか**。対戦カードの先攻を
+         # そのまま使うと、後攻にいる選手を先攻の球団と書いてしまう。
+         "jp_team_name": next(
+             (jpn for jpn, sq in (m.get("squads") or {}).items()
+              for x in (sq.get("jp") or [])
+              if x["name_jp"] not in (m.get("jp") or [])), ""),
          # サムネイルに載せる一言。いちばん支持されたコメント。
          # 「何の動画か」より「何が言われているか」のほうが、
          # 一目で押す理由になる。

@@ -152,6 +152,14 @@ def main() -> int:
             if week:
                 check("%s 7日間の合計" % tag, g.render_week, p, week,
                       players[0].get("name", ""))
+        # あと少しで届く節目。**通信はしない**（合成データで描くだけ）。
+        check("%s あと少しで届く" % tag, g.render_reach, p, [
+            {"name": "鈴木誠也", "gap": 1, "now": 24, "goal": 25,
+             "unit": "本塁打", "kind": "今季"},
+            {"name": "村上宗隆", "gap": 5, "now": 30, "goal": 35,
+             "unit": "本塁打", "kind": "今季"},
+            {"name": "佐々木朗希", "gap": 8, "now": 142, "goal": 150,
+             "unit": "奪三振", "kind": "通算"}])
         # ポストシーズン進出争い。9月から10月だけの枠なので、
         # 材料がある日だけ見る。
         for lid in ("103", "104"):

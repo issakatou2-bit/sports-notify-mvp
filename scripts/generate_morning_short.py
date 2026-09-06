@@ -93,7 +93,9 @@ MIN_DURATION = {"intro": 4.5, "list": 6.5, "buzz": 7.5,
                 # スコアボードは回の数で変わるので scoreboard_seconds で出す
                 "scoreboard": 7.0,
                 # 翻訳した文章なので、目で追う時間を取る。
-                "praise": 10.0}
+                "praise": 10.0,
+                # あと何本で節目か。3行を目で追う画面
+                "reach": 7.5}
 
 # --mode の名前と、投稿の記録に使う区分の対応。
 # 締めの一覧から「いま見ている回」を外すのに使う。
@@ -879,6 +881,25 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         if line:
             segments.append({"kind": "week", "text": line,
                              "meta": {"week": week}})
+
+    # あと少しで届く節目。**この回で唯一「明日また見る理由」になる画面。**
+    #
+    # 他の画面はその日で完結する。今日の成績を読んで終わり。
+    # 「あと1本で25号」は、それだけで明日の理由になるし、
+    # 毎日ひとりでに更新される。新しい取材はいらない。
+    if want_players and players:
+        try:
+            import milestones
+            reach = milestones.build(players)
+        except Exception as e:                   # noqa: BLE001
+            print(f"[info] 節目を取れないので飛ばします({e})")
+            reach = []
+        if reach:
+            parts = ["あと少しで届く記録です。"]
+            for r in reach:
+                parts.append(f"{speech_name(r['name'])}は{r['text']}。")
+            segments.append({"kind": "reach", "text": "".join(parts),
+                             "meta": {"reach": reach}})
 
     # ファンの声の回。コメントを読む前に、何の試合なのかを立てる。
     #
@@ -2270,6 +2291,63 @@ def render_week(p, rows, today: str = ""):
     return im
 
 
+def render_reach(p, rows):
+    """あと少しで届く節目。
+
+    なぜこの画面を足したか:
+      28日を測ったら、再生は41,562回あるのに登録は13人だった。
+      **1本1本は見られているが、明日また来る理由が無い。**
+      どの回もその日で完結していて、続きが無いからだと思う。
+
+      「あと1本で25号」は、その1行だけで明日の理由になる。
+      しかも公式の成績から毎日ひとりでに動く。作り足す手間が無い。
+
+    **予想は書かない。**「あと3本」とだけ出す。届くかどうかは
+    こちらには分からないし、外れたことを毎日言う番組になる。
+    """
+    im, d = base(p)
+    d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
+    d.text((70, 180), "あと少しで届く", font=font(64), fill=ACCENT)
+    d.text((74, 268), "MLB公式の通算成績から", font=font(32), fill=DIM)
+
+    # 件数が1〜3で変わるので、余白を件数で割って均す。
+    # 上に詰めると、下半分がまるごと空く。
+    show = rows[:3]
+    n = max(1, len(show))
+    gap = max(24, min(140, (PEEK_FLOOR - 380 - 200 * n) // n))
+    y = 380 + max(0, (PEEK_FLOOR - 380 - 200 * n - gap * (n - 1)) // 2)
+    for i, r in enumerate(show):
+        if p < 0.08 + i * 0.12:
+            continue
+        e = ease_out(min(1.0, max(0.0, (p - 0.08 - i * 0.12) * 8)))
+        dx = int((1 - e) * 100)
+        d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + 200], 20, fill=SURF)
+        name = str(r.get("name", ""))
+        ns = fit(d, name, W - 420, (54, 48, 42))
+        d.text((100 - dx, y + 24), name, font=font(ns), fill=TEXT)
+        # 「今季25本塁打」のような中身は小さく、「あと1」を大きく。
+        # 見た瞬間に入るのは差のほうで、そこが明日の理由になる。
+        d.text((100 - dx, y + 96), str(r.get("kind") or ""),
+               font=font(26), fill=ACCENT)
+        goal = f"{r.get('goal', '')}{r.get('unit', '')}"
+        d.text((100 - dx, y + 134), goal, font=font(40), fill=TEXT)
+        gap = str(r.get("gap", ""))
+        fw, fs = font(96), font(30)
+        gw = d.textlength(gap, font=fw)
+        d.text((W - 110 - dx - gw, y + 62), gap, font=fw, fill=ACCENT)
+        t = "あと"
+        d.text((W - 110 - dx - gw - d.textlength(t, font=fs) - 12, y + 108),
+               t, font=fs, fill=DIM)
+        now = f"いま{r.get('now', '')}"
+        d.text((W - 110 - dx - d.textlength(now, font=fs), y + 156),
+               now, font=fs, fill=DIM)
+        y += 224
+
+    d.text((70, H - 120), "collespo.com", font=font(32), fill=DIM)
+    return im
+
+
+
 def render_praise(p, rows):
     """日本人選手への称賛。翻訳であることを画面に必ず出す。
 
@@ -2957,8 +3035,11 @@ from post_common import MAX_SECONDS, fit_budget          # noqa: E402
 # 予算を超えたときに落とす順。前にあるものから落とす。
 # 冒頭と締めは入れない。冒頭は最も見られる画面で、
 # 締めは他の枠への案内なので、削ると回遊が止まる。
+# 節目の画面は praise より後ろに置く。**先に落とすのは称賛のほう。**
+# 称賛はその日の話で、節目は明日また見る理由になる。
 DROP_ORDER = ("talk", "headlines", "p_awards", "p_recent", "p_season",
-              "praise", "reporters", "scoreboard", "voices", "buzz")
+              "praise", "reach", "reporters", "scoreboard", "voices",
+              "buzz")
 
 
 def plan_durations(segs):
@@ -3352,6 +3433,8 @@ def main():
                 elif kind == "week":
                     im = render_week(pp, meta.get("week") or [],
                                      players[0].get("name") if players else "")
+                elif kind == "reach":
+                    im = render_reach(pp, meta.get("reach") or [])
                 elif kind == "praise":
                     im = render_praise(
                         pp, ((voices_data or {}).get("jp_praise") or [])
