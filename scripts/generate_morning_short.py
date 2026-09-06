@@ -1713,7 +1713,18 @@ def pair_expr(kind: str, meta: dict, players: list, rows=None) -> tuple:
     return "基本", "基本"
 
 
-def draw_peek(im, d, who: str, show: int = 168, expr: dict = None,
+# 帯の上から見せる高さ。**口が半分隠れるところで切る。**
+#
+# 顔ぜんぶ（168px）だとあごまで出て、縁から「のぞいている」形に
+# 見えない。口の高さで切ると、帯の向こうから顔を出している絵になる。
+#
+# 2人で値が違うのは、立ち絵の中で顔が占める割合が違うから。
+# 同じ数字で切ると、ずんだもんの口が消えてもめたんのあごが残る。
+# 高さ520pxに揃えたときの実測。
+PEEK_SHOW = {"ずんだもん": 128, "四国めたん": 112}
+
+
+def draw_peek(im, d, who: str, show: int = 0, expr: dict = None,
               names: bool = True, edge: int = 390):
     """読み上げの帯の上端から、2人が顔だけのぞく。
 
@@ -1739,6 +1750,7 @@ def draw_peek(im, d, who: str, show: int = 168, expr: dict = None,
     # あごが重なる（実際そうなった）。
     expr = expr or {}
     for name, cx, flip in ((ZUNDA, edge, True), (METAN, W - edge, False)):
+        cut = show or PEEK_SHOW.get(name, 128)
         # 表情を付ける。喋っていない側は暗くするだけでなく、
         # 聞いている顔にする。同じ顔を暗くしただけだと、
         # そこに置いてあるだけの絵になる。
@@ -1749,8 +1761,8 @@ def draw_peek(im, d, who: str, show: int = 168, expr: dict = None,
             art = video_common.dim_art(art)
         # 顔から上だけを切る。下端は帯に少し潜り込ませて、
         # 「縁からのぞいている」形にする。
-        head = art.crop((0, 0, art.width, min(art.height, show + 30)))
-        im.paste(head, (int(cx - head.width / 2), top - show), head)
+        head = art.crop((0, 0, art.width, min(art.height, cut + 30)))
+        im.paste(head, (int(cx - head.width / 2), top - cut), head)
     draw_spoken(d, PS_COLOR.get(who))
     # 名前の札。顔に掛からないよう、画面の端へ寄せる。
     #
