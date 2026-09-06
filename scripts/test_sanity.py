@@ -20,8 +20,11 @@
   python3 scripts/test_sanity.py
 """
 
+import json
 import pathlib
+import subprocess
 import sys
+import tempfile
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -48,6 +51,25 @@ check("桁区切りの中を単位に結び付けない（9/2に長編を止め�
       sanity.parse_line("およそ26万回ね。正確には257,422回よ。"), {})
 check("高評価の件数を成績と読まない",
       sanity.parse_line("高評価が1,240件、返信18件"), {})
+for text in (
+    "そうね。再生回数はおよそ6万7000回ね。",
+    "およそ6万7000回ね。",
+    "再生回数は67000回ね。",
+    "視聴回数は約67000回です。",
+    "67000回再生されました。",
+    "67,000回視聴されました。",
+    "1億2345万6789回再生されました。",
+    "再生回数は7回です。",
+):
+    check("再生/視聴の回数を投球回と読まない: " + text,
+          sanity.parse_line(text), {})
+check("再生回数と同じ文の本当の投球回は残す",
+      sanity.parse_line("再生回数は67000回で、20回を投げた。"), {"回": 20.0})
+check("投球回が先でも、再生回数だけ除く",
+      sanity.parse_line("7回を投げて8奪三振、67000回再生された。"),
+      {"回": 7.0, "奪三振": 8.0})
+check("再生という語があるだけで文全体を除外しない",
+      sanity.parse_line("再生すると、20回を投げたと分かる。"), {"回": 20.0})
 check("ふつうの投球はそのまま読む",
       sanity.parse_line("7回を投げて8奪三振"), {"回": 7.0, "奪三振": 8.0})
 check("防御率は小数のまま",
@@ -75,6 +97,24 @@ check("再生回数の桁区切り（9/2に長編を止めた）",
       sanity.check_line("X", "およそ26万回。正確には257,422回"), [])
 check("ふつうの好投", sanity.check_line("X", "7.0回　8奪三振　自責1"), [])
 check("延長15回", sanity.check_line("X", "15.0回　12奪三振"), [])
+
+# 実際の --strict の終了コードを確認。外部API・本番データは使わない。
+print("\n--- 長編の停止判定 ---")
+with tempfile.TemporaryDirectory() as tmp:
+    folder = pathlib.Path(tmp)
+    narration, result = folder / "dialogue.json", folder / "result.json"
+    for label, text, code in (
+        ("長編#16の再生回数で停止しない", "そうね。再生回数はおよそ6万7000回ね。", 0),
+        ("再生回数に続く異常な投球回は停止", "再生回数は67000回で、20回を投げた。", 1),
+        ("異常な打率は引き続き停止", "打率1.5です。", 1),
+    ):
+        narration.write_text(json.dumps({"segments": [{"text": text}]}, ensure_ascii=False), encoding="utf-8")
+        proc = subprocess.run(
+            [sys.executable, str(HERE / "sanity.py"), "--strict",
+             "--narration", str(narration), "--out", str(result)],
+            cwd=folder, capture_output=True, text=True, encoding="utf-8")
+        check(label, proc.returncode, code)
+        check(label + "（出力JSON）", bool(json.loads(result.read_text(encoding="utf-8"))["impossible"]), bool(code))
 
 print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
 sys.exit(1 if fails else 0)
