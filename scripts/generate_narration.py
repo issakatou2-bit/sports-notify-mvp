@@ -27,6 +27,7 @@ AIを使う箇所:
 """
 
 import argparse
+import datetime
 import functools
 import json
 import os
@@ -45,6 +46,7 @@ import unicodedata
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 import post_common  # noqa: E402
+import jp_absence  # noqa: E402
 import perspectives  # noqa: E402
 from notability_engine import (  # noqa: E402
     MLB_NAME_READINGS as _MLB_NAME_READINGS,
@@ -233,6 +235,20 @@ def downbeat(text: str) -> bool:
     return any(w in (text or "") for w in DOWNBEAT)
 
 
+def game_day(g: dict) -> str:
+    """その試合の日付。start_time_jst は "09/08 02:00" で年が無い。
+
+    明日の回を前の日に作るので、年をまたぐのは元日の前後だけ。
+    MLBは3月から10月なので、今年を補って構わない。
+    """
+    t = (g.get("start_time_jst") or "").split(" ")[0]
+    m = re.match(r"^([0-9]{1,2})/([0-9]{1,2})$", t)
+    if not m:
+        return ""
+    return "%d-%02d-%02d" % (datetime.date.today().year,
+                             int(m.group(1)), int(m.group(2)))
+
+
 def pick_hook(games: list) -> dict:
     """
     動画の1枚目に出す「最も具体的な事実」を選ぶ。
@@ -268,7 +284,29 @@ def pick_hook(games: list) -> dict:
             if p.get("name"):
                 return {"big": "先発予定", "sub": p["name"], "at": at}
 
-    # 2. 日本人選手が所属しているチームの試合。
+    # 2. しばらく出ていない日本人打者が、戻ってきそうな日。
+    #
+    #    9/7の「現地の報道」は「大谷翔平が4試合連続でスタメン外れる。
+    #    ロバーツ監督は月曜日の復帰に希望的」を扱っていた。同じ材料が、
+    #    明日の試合を薦める回では使われていなかった。
+    #    戻ってくる日は、その選手を追っている人がいちばん見に来る日でもある。
+    #
+    #    言えるのは「何日出ていないか」まで。打者のスタメンは当日発表なので、
+    #    **問いの形にする。**外れた日は、翌日また同じことを書くだけで済む。
+    #    数え方と除外(投手・長期離脱)は jp_absence 側にまとめてある。
+    for at, g in enumerate(games):
+        day = game_day(g)
+        if not day:
+            continue
+        try:
+            back = jp_absence.hook_for(g.get("jp_players") or [], day)
+        except Exception:                        # noqa: BLE001
+            back = {}
+        if back:
+            return {"big": back["text"], "sub": back["name"],
+                    "at": at, "key": back["name"]}
+
+    # 3. 日本人選手が所属しているチームの試合。
     #
     #    ここは長らく6番目だった。「◯◯が所属」はシーズンを通して
     #    ほぼ毎日どこかで成り立つので、その日を選んだ理由になっていない、
@@ -286,7 +324,7 @@ def pick_hook(games: list) -> dict:
             if name:
                 return {"big": "所属チームの一戦", "sub": name, "at": at}
 
-    # 3. サッカーで日本人選手が所属している場合。
+    # 4. サッカーで日本人選手が所属している場合。
     #     「先発予定」とは書かない。スタメンは前日には分からない。
     for at, g in enumerate(games):
         for r in g.get("reasons") or []:
@@ -299,7 +337,7 @@ def pick_hook(games: list) -> dict:
                         "sub": m.group("who").split("・")[0],
                         "key": m.group("club")}
 
-    # 4. 連勝。チームの話なので、選手を知らなくても意味が通る。
+    # 5. 連勝。チームの話なので、選手を知らなくても意味が通る。
     #
     #    **連敗はここでは使わない。**9/6「オリオールズ 5連敗中」、
     #    9/7「オリオールズ 6連敗中」と2日続けて、負けている事実が
@@ -317,7 +355,7 @@ def pick_hook(games: list) -> dict:
             if m:
                 return {"big": m.group("what"), "sub": m.group("who"), "at": at}
 
-    # 5. 首位攻防戦(ゲーム差という具体的な数字が入る)
+    # 6. 首位攻防戦(ゲーム差という具体的な数字が入る)
     #
     #    ゲーム差はその日その時点の数字で、なぜ今日この試合なのかに
     #    答えている。所属より上に置いていたのはそのため。
@@ -335,7 +373,7 @@ def pick_hook(games: list) -> dict:
                 return {"big": f"ゲーム差{m.group(1)}の首位攻防戦",
                         "sub": "", "at": at, "key": m.group(1)}
 
-    # 6. 地区優勝マジック。数字が入るぶん、その日を選んだ理由になる。
+    # 7. 地区優勝マジック。数字が入るぶん、その日を選んだ理由になる。
     #
     #    9月にしか出ない材料で、しかも毎日1つずつ減っていく。
     #    「明日また見る理由」がそのまま見出しになる、この時期だけの枠。
@@ -349,7 +387,7 @@ def pick_hook(games: list) -> dict:
                 return {"big": m.group("what"), "sub": m.group("who"),
                         "at": at, "key": m.group("who")}
 
-    # 7. どちらもポストシーズン圏内。直接対決の重みが伝わる。
+    # 8. どちらもポストシーズン圏内。直接対決の重みが伝わる。
     #
     #    片方だけ圏内の日は使わない。「◯◯は圏内」だけでは、
     #    その試合を今日見る理由になっていない。
@@ -363,7 +401,7 @@ def pick_hook(games: list) -> dict:
                 return {"big": "どちらも進出圏内", "sub": "",
                         "at": at, "key": m.group("a")}
 
-    # 8. ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
+    # 9. ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
     #
     #    理由の文は説明つきで長い。
     #      「カブス vs ホワイトソックス は同都市対決 —
@@ -382,7 +420,7 @@ def pick_hook(games: list) -> dict:
             if 3 <= len(name) <= 20:
                 return {"big": name, "sub": "", "at": at}
 
-    # 9. 連続安打・移籍後初登板などの個人記録。
+    # 10. 連続安打・移籍後初登板などの個人記録。
     #    外国人選手が主語になりやすく、実測どおり弱いので後ろに置く。
     for at, g in enumerate(games):
         for note in g.get("log_notes") or []:
@@ -390,19 +428,19 @@ def pick_hook(games: list) -> dict:
             if m:
                 return {"big": m.group("what"), "sub": m.group("who"), "at": at}
 
-    # 10. AIのフック文(短くまとまっているものだけ)
+    # 11. AIのフック文(短くまとまっているものだけ)
     for at, g in enumerate(games):
         h = (g.get("notification_hook") or "").strip().rstrip("。")
         if 6 <= len(h) <= 32:
             return {"big": h, "sub": "", "at": at}
 
-    # 11. 日本人選手の名前を並べるだけ(所属以上のことは書かない)
+    # 12. 日本人選手の名前を並べるだけ(所属以上のことは書かない)
     for at, g in enumerate(games):
         names = [n for n in (g.get("jp_players") or []) if n]
         if names:
             return {"big": "・".join(names[:3]), "sub": "", "at": at}
 
-    # 12. サッカーは、大会名を最後の手がかりにする。
+    # 13. サッカーは、大会名を最後の手がかりにする。
     #     クラブ名だけのタイトルだと、どのリーグの話か分からない。
     #     MLBは札で分かるので、ここはサッカーだけ。
     for at, g in enumerate(games):
