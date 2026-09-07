@@ -53,5 +53,55 @@ for title, _ in CASES:
         fails += 1
         print(f"NG  英字が残っている: {got}")
 
+# ------------------------------------------------------------------
+# 並べ替え。**まとめ動画を先頭に置かない。**
+#
+# 9/7に、題が "Highlights from ALL GAMES on 9/5 (Munetaka Murakami makes
+# history, ...)" という**その日の全試合まとめ**が先頭へ来た。
+# 村上の名前が入っているので「日本人選手を先頭へ」の条件には合っていた。
+# だが個別の試合ではないので、対戦カードも結果もスコアボードも取れず、
+# 再生回数ランキングの画面では3万回が19万回より上に並んでいた。
+# ------------------------------------------------------------------
+print(chr(10) + "=== 並べ替え ===")
+
+
+def _v(views, matchup, title):
+    return {"views": views, "matchup": matchup, "title": title}
+
+
+def _check(label, got, want):
+    global fails
+    ok = got == want
+    fails += not ok
+    print(f"{'ok ' if ok else 'NG '} {label}: {got!r}"
+          + ("" if ok else f"   (期待 {want!r})"))
+
+
+ALL_GAMES = _v(32853, "", "Highlights from ALL GAMES on 9/5 "
+                          "(Munetaka Murakami makes history)")
+rows = [ALL_GAMES,
+        _v(197774, "YANKEES vs. PADRES", "YANKEES vs. PADRES: Official"),
+        _v(144508, "BRAVES vs. PHILLIES", "BRAVES vs. PHILLIES: Official"),
+        _v(107226, "BLUE JAYS vs. ROYALS", "BLUE JAYS vs. ROYALS: Official")]
+got = mlb_buzz.prefer_japanese(list(rows))
+_check("先頭が個別の試合", bool(got[0]["matchup"]), True)
+_check("まとめ動画は末尾", got[-1]["matchup"], "")
+_check("試合どうしは再生順のまま",
+       [v["views"] for v in got if v["matchup"]], [197774, 144508, 107226])
+
+# 個別の試合に日本人選手がいる日は、これまで通り先頭へ。
+rows2 = [_v(200000, "YANKEES vs. PADRES", "YANKEES vs. PADRES: Official"),
+         _v(90000, "TWINS vs. WHITE SOX",
+            "TWINS vs. WHITE SOX (Munetaka Murakami homers)")]
+_check("日本人選手のいる試合を先頭へ",
+       mlb_buzz.prefer_japanese(list(rows2))[0]["matchup"],
+       "TWINS vs. WHITE SOX")
+
+# まとめ動画に日本人選手がいても、そちらは選ばない。
+_check("まとめ動画は選ばない",
+       mlb_buzz.prefer_japanese([ALL_GAMES,
+                                 _v(1, "A vs. B", "A vs. B")])[0]["matchup"],
+       "A vs. B")
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)

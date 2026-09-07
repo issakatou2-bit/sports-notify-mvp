@@ -174,23 +174,52 @@ def fetch_view_counts(api_key: str, items: list) -> list:
     out.sort(key=lambda x: -x["views"])
     out = newest_day_first(out)
 
-    # **日本人選手が題に入っているものを、先頭へ持ってくる。**
+    return prefer_japanese(out)
+
+
+def prefer_japanese(out: list) -> list:
+    """**日本人選手が題に入っているものを、先頭へ持ってくる。**
+
+    なぜここでやるのか:
+      28日146本の実測で、題に日本人選手の名前がある動画は
+      再生2.8倍（468回 vs 168回）、登録者は12人 vs 0人。
+      チャンネルの登録者は全部この形から来ている。
+      「大谷 海外の反応」は数百万回再生が並ぶ市場でもある。
+
+      **並べ替えはここ1か所でやる。**下流（local_voices がコメントを
+      取る先、コメント欄の短編、長編の台本）は全部 videos[0] を
+      見ているので、台本の側だけで選び直すと**違う動画のコメントを
+      読むことになる**。実際そうしかけた。
+
+      無い日はこれまでどおり再生数の順。作るのではなく、あれば選ぶ。
+
+    ただし**個別の試合に限る**:
+      9/7に、題が "Highlights from ALL GAMES on 9/5 (Munetaka Murakami
+      makes history, ...)" という**その日の全試合まとめ**が先頭へ来た。
+      村上の名前が入っているので条件には合っていた。だが個別の試合では
+      ないので、
+        ・対戦カードが取れない（matchup が空）
+        ・結果もスコアボードも先発投手も出せない
+        ・再生回数ランキングの画面で、3万回の動画が19万回より上に並ぶ
+      実際そう見えていた。名前で選ぶ方針は変えない。選ぶ相手を絞る。
+    """
+    def is_game(v):
+        """個別の試合のハイライトか。まとめ動画は matchup が空になる。"""
+        return bool((v.get("matchup") or "").strip())
+
+    # まとめ動画は末尾へ回す。**捨てはしない。**
     #
-    # 28日146本の実測で、題に日本人選手の名前がある動画は
-    # 再生2.8倍（468回 vs 168回）、登録者は12人 vs 0人。
-    # チャンネルの登録者は全部この形から来ている。
-    # 「大谷 海外の反応」は数百万回再生が並ぶ市場でもある。
-    #
-    # **並べ替えはここ1か所でやる。**
-    # 下流（local_voices がコメントを取る先、コメント欄の短編、
-    # 長編の台本）は全部 videos[0] を見ているので、
-    # 台本の側だけで選び直すと**違う動画のコメントを読むことになる**。
-    # 実際そうしかけた。
-    #
-    # 無い日はこれまでどおり再生数の順。作るのではなく、あれば選ぶ。
+    # この枠は「現地でいちばん見られた試合」を出すところで、
+    # まとめ動画はそこに並ぶものではない。先頭だけ入れ替えると、
+    # 3万回の動画が2位に残って、19万・14万を飛び越したままになる。
+    # 個別の試合どうしの再生順は、ここで崩さない。
+    out = [v for v in out if is_game(v)] + [v for v in out if not is_game(v)]
+
     try:
         import mentioned
         for i, v in enumerate(out):
+            if not is_game(v):
+                continue
             if mentioned.japanese_in(v.get("title") or ""):
                 if i:
                     print(f"[info] 日本人選手が題にあるものを先頭へ: "
@@ -199,6 +228,7 @@ def fetch_view_counts(api_key: str, items: list) -> list:
                 break
     except Exception as e:                       # noqa: BLE001
         print(f"[info] 並べ替えを飛ばします({e})")
+
     return out
 
 
