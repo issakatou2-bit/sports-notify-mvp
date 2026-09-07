@@ -143,8 +143,9 @@ PER_VIDEO = 40
 MIN_COMMENTS = 12
 
 # 日本人選手宛のコメントを、何件まで訳しに回すか。
-# 画面に出るのは3件だが、訳したあと「称賛」に絞るので少し多めに取る。
-JP_READ = 8
+# 画面に出るのは3件だが、訳したあと絞るので少し多めに取る。
+# 6件＋返信で、1回のやり取りに収まる量。
+JP_READ = 6
 
 
 def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
@@ -379,8 +380,16 @@ def pick_praise(voices: list, want: int = 3) -> list:
     どちらかしか無い日は、あるほうで埋める。
     無理に混ぜるために件数を減らさない。
     """
-    cand = [v for v in voices
-            if v.get("jp_players") and v.get("tone") == "称賛"]
+    named = [v for v in voices if v.get("jp_players")]
+    cand = [v for v in named if v.get("tone") == "称賛"]
+    # 称賛だけでは足りない日がある。
+    #
+    # 「あれこれ言いつつ応援する」声は、訳した側では「中立」に
+    # 分類されることが多い（事実の指摘を含むため）。称賛が2件に
+    # 満たないときだけ、中立も後ろに足す。**批判は入れない。**
+    # ここは「現地でどう言われたか」ではなく「応援の枠」なので。
+    if len(cand) < 2:
+        cand += [v for v in named if v.get("tone") == "中立"]
     cand.sort(key=lambda v: -(v.get("likes") or 0))
     # 34字は、理由や場面まで書いてあるかどうかの線。
     # 「頑張れMurakami!」は10字前後、「6週間離脱していたのに…」は40字を超える。
@@ -464,7 +473,9 @@ def translate(client, items: list) -> list:
         # 元が220字まで許してあるので、日本語にすると1行200字近くなる
         # ことがあり、2500では足りない日が出る。上限を上げても
         # 出力した分しか課金されないので、増やして困らない。
-        model=MODEL, max_tokens=4000,
+        # 4件の本文と、それぞれの返信3件まで。日本人選手の枠は
+        # 別のやり取りにしてあるので、ここが混み合うことはない。
+        model=MODEL, max_tokens=6000,
         messages=[{"role": "user", "content": prompt}],
     )
     token_log.record("voices", MODEL, resp)
@@ -538,8 +549,7 @@ def build(limit: int = MAX_VOICES) -> dict:
 
     client = anthropic.Anthropic(api_key=api_key)
     try:
-        # 同じ1回のやり取りで両方訳す。呼び出しを増やさない。
-        voices = translate(client, items[:limit] + jp_items)
+        voices = translate(client, items[:limit])
     except Exception as e:
         note(f"**現地の声: 翻訳に失敗しました** {type(e).__name__}: "
              f"{str(e)[:160]}")
@@ -561,13 +571,26 @@ def build(limit: int = MAX_VOICES) -> dict:
     #
     # 一方こちらは「日本人選手が現地でどう言われたか」という別の話で、
     # 貢献スコアの枠に添えるもの。用途が違うので置き場も分ける。
-    for v in voices:
+    # 応援の枠は**別のやり取りで訳す。**
+    #
+    # 最初は本編と一緒に1回で訳していた。ところが本編4件＋応援8件に
+    # それぞれの返信が付くと30行近くになり、4000トークンでは足りない。
+    # 途中で切れると後ろが丸ごと落ちるので、**後ろに付けた応援が
+    # 全部消えていた**（9/7の回は0件だった）。
+    #
+    # 呼び出しが1回増えるが、Haikuなので1本あたり1円もかからない。
+    # 枠として別のものなので、訳すのを分けるほうが設計としても素直。
+    jp_voices = []
+    if jp_items:
+        try:
+            jp_voices = translate(client, jp_items)
+        except Exception as e:                   # noqa: BLE001
+            note(f"**日本人選手への声: 翻訳に失敗しました** "
+                 f"{type(e).__name__}: {str(e)[:120]}")
+
+    for v in voices + jp_voices:
         v["jp_players"] = jp_mentioned(v.get("title", "") + " " + v.get("ja", ""))
-    praise = pick_praise(voices)
-    # 本編の枠には、日本人選手用に取ってきた分を混ぜない。
-    # あちらは「その日いちばん見られた試合のコメント欄」という枠で、
-    # 別の試合の声を混ぜると、何を見ているのか分からなくなる。
-    voices = [v for v in voices if v.get("slot") != "jp"]
+    praise = pick_praise(voices + jp_voices)
     if praise:
         print(f"[info] 日本人選手への称賛: {len(praise)}件")
         for v in praise:
