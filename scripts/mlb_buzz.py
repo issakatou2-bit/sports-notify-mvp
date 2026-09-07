@@ -619,6 +619,17 @@ def topic_jp(video: dict) -> str:
         out = "".join(b.text for b in resp.content
                       if b.type == "text").strip()
         if out and len(out) <= 40:
+            # 日本人選手だけ漢字に戻す。
+            #
+            # 上で「選手名はカタカナにする」と頼んでいるので、
+            # 外国人選手はカタカナで返る。それでよい。ところが
+            # 日本人選手まで「ムネタカ・ムラカミ」になり、その訳が
+            # そのまま動画の題になっていた。検索されるのは漢字。
+            try:
+                import mentioned
+                out = mentioned.to_kanji(out)
+            except Exception:                    # noqa: BLE001
+                pass
             print(f"[info] ハイライトの題を訳しました: {raw[:50]} -> {out}")
             return out
     except Exception as e:  # noqa: BLE001

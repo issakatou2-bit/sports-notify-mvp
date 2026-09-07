@@ -208,3 +208,52 @@ def japanese_in(text: str) -> list:
             if en not in out:
                 out.append(en)
     return out
+
+
+def to_kanji(text: str) -> str:
+    """訳文に出てくる日本人選手のカタカナ表記を、漢字に直す。
+
+    なぜ要るのか:
+      ハイライトの題を訳すとき「選手名はカタカナにする」と頼んでいる。
+      外国人選手にはそれでよいが、日本人選手まで
+      「ムネタカ・ムラカミが歴史的快挙を達成し」になっていた。
+      その訳がそのまま動画の題になる。
+
+      題に日本人選手の名前があるかどうかで、8/07〜9/04の177本では
+      再生が2.8倍(392対164)、登録者が12人対1人だった。
+      **「ムネタカ・ムラカミ」では、その効き目が出ない。**
+      検索されるのは漢字で、知っている名前として目に留まるのも漢字。
+
+      言語模型に「日本人だけ漢字で」と頼む手もあるが、ここは
+      名簿を持っているので、こちらで直せる。頼まない。
+
+    当てる表記:
+      名簿の読み「ムラカミ・ムネタカ」、訳文で出やすい逆順
+      「ムネタカ・ムラカミ」、中黒なし、姓だけ「ムラカミ」。
+      長いものから先に置き換える。
+    """
+    if not text:
+        return text
+    try:
+        from notability_engine import JP_PLAYERS_MLB
+    except Exception:                            # noqa: BLE001
+        return text
+    forms = []
+    for p in JP_PLAYERS_MLB:
+        jp = p.get("name_jp") or ""
+        kana = p.get("kana") or ""
+        if not jp or not kana or jp == kana:
+            continue
+        parts = kana.split("・")
+        if len(parts) == 2:
+            last, first = parts
+            forms += [(kana, jp), (first + "・" + last, jp),
+                      (last + first, jp), (first + last, jp), (last, jp)]
+        else:
+            forms.append((kana, jp))
+    # 長い表記から先に。「ムラカミ」を先に消すと、
+    # 「ムネタカ・ムラカミ」が「ムネタカ・村上宗隆」になる。
+    for form, jp in sorted(forms, key=lambda kv: -len(kv[0])):
+        if form in text:
+            text = text.replace(form, jp)
+    return text
