@@ -44,6 +44,31 @@ SINCE_ALWAYS = "0000-00-00"
 # ここに書き写していたので、時刻を動かすたびに直し忘れる場所が増えた。
 # 実際 16:30/17:30/21:00 が3つのファイルに散らばっていた。
 # 一次情報は1つにして、こちらは引くだけにする。
+def _record_key(kind: str) -> str:
+    """一覧の名前を、記録ファイルの名前に直す。**引くときだけ。**
+
+    一覧の名前は、再生リスト・その日ページ・読み上げも見ている。
+    そちらを改名すると全部がずれるので、名前は変えずにここで直す。
+
+    一覧(post_common.DAILY_LINEUP)は "postseason"、記録
+    (data/published_videos.json)は "morning_postseason"。
+    **健康診断は毎日この1件を「出ていない」と数えていた。**
+    それが本数の突き合わせで毎回打ち消されていたので、
+    9/7に成績の回が本当に欠けたときも、一緒に飲み込まれた。
+
+    ずれているのはこの1件だけ。upload_youtube.record_kind が正本で、
+    そちらと食い違っていないかは test_consistency が毎回見る。
+    """
+    return RECORD_KEY.get(kind, kind)
+
+
+# 一覧の名前 -> 記録ファイルの名前。
+RECORD_KEY = {"postseason": "morning_postseason"}
+
+
+
+
+
 def _lineup():
     import post_common
     since = {"morning_voices": "2026-08-17",
@@ -142,8 +167,14 @@ FEED = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
 
 
 def published_on(day: str) -> int:
+    """その日にチャンネルへ実際に公開された本数。取れなければ -1。"""
+    ids = published_ids(day)
+    return -1 if ids is None else len(ids)
+
+
+def published_ids(day: str):
     """
-    その日にチャンネルへ実際に公開された本数。取れなければ -1。
+    その日にチャンネルへ実際に公開された動画のID。取れなければ None。
 
     なぜ記録だけを信じないのか:
       8/17は7本すべて公開されているのに、健康診断は5本欠けと言った。
@@ -177,8 +208,8 @@ def published_on(day: str) -> int:
             continue
     if xml is None:
         print("[info] チャンネルの一覧を取れませんでした。記録の方で判断します")
-        return -1
-    n = 0
+        return None
+    out = set()
     for e in re.findall(r"<entry>(.*?)</entry>", xml, re.S):
         m = re.search(r"<published>(.*?)</published>", e)
         if not m:
@@ -187,9 +218,12 @@ def published_on(day: str) -> int:
             when = datetime.fromisoformat(m.group(1).replace("Z", "+00:00"))
         except ValueError:
             continue
-        if when.astimezone(JST).strftime("%Y-%m-%d") == day:
-            n += 1
-    return n
+        if when.astimezone(JST).strftime("%Y-%m-%d") != day:
+            continue
+        v = re.search(r"<yt:videoId>(.*?)</yt:videoId>", e)
+        if v:
+            out.add(v.group(1))
+    return out
 
 
 # 公開時刻を過ぎてから、何分待って判定するか。
@@ -208,7 +242,7 @@ PUBLISH_GRACE_MIN = 45
 
 def check_videos(day: str, only_past: bool = False) -> tuple:
     """
-    その日の動画が投稿されたか。(行, 欠けている数) を返す。
+    その日の動画が投稿されたか。(行, 欠けている数, 見ない数, 記録済みID) を返す。
 
     only_past を立てると、まだ公開時刻が来ていない枠は見ない。
     当日の途中で走らせるとき、これから出るものを「欠け」と言われても
@@ -222,16 +256,18 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
     # skipped は「出るはずが無かった枠」。サッカーの開催が無い日など。
     # これを本数に数えていたため、6本出た日を「7本中6本」と見なして
     # 材料の古さの補正が効かず、正常な日が毎回赤くなっていた。
-    lines, missing, skipped = [], 0, 0
+    lines, missing, skipped, seen = [], 0, 0, set()
     for kind, label, at, since in EXPECTED_DAILY + OPTIONAL_DAILY:
         if day < since:
             continue  # その枠がまだ無かった日
         if only_past and at > judge_from:
             continue  # まだ出そろう時刻になっていない
-        entry = (rec.get(kind) or {}).get(day)
+        entry = (rec.get(_record_key(kind)) or {}).get(day)
         optional = any(kind == k for k, _, _, _ in OPTIONAL_DAILY)
         if entry:
             lines.append(f"| {at} | {label} | 出た | {entry.get('video_id')} |")
+            if entry.get("video_id"):
+                seen.add(entry["video_id"])
         elif optional:
             # 「試合の無い日は欠けてよい」と一律に見逃していたので、
             # サッカーが1本も出ていないことに何週間も気付かなかった。
@@ -248,7 +284,7 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
         else:
             missing += 1
             lines.append(f"| {at} | {label} | **出ていない** | |")
-    return lines, missing, skipped
+    return lines, missing, skipped, seen
 
 
 def _today_jst(iso: str) -> bool:
@@ -452,17 +488,29 @@ def main() -> int:
     else:
         day = args.date or (now - timedelta(days=1)).strftime("%Y-%m-%d")
 
-    video_lines, missing, skipped = check_videos(day, only_past=args.today)
+    video_lines, missing, skipped, seen = check_videos(
+        day, only_past=args.today)
 
     # 記録が欠けていても、実際に公開されていれば異常ではない。
     # 記録の押し合いで記録だけが失われることがあり、そのとき
-    # 見張りが「出ていない」と嘘をつく。実物の本数と突き合わせる。
-    actual = published_on(day)
+    # 見張りが「出ていない」と嘘をつく。実物と突き合わせる。
+    #
+    # **本数では比べない。**9/7、17:00の成績が出ていないのに
+    # 「問題なし」で終わった。その時刻までに出るはずの3枠に対して
+    # チャンネルに3本あったので、数だけ合っていた。中身は
+    # 20:00の枠(予約公開ぶん)で、成績はどこにも無かった。
+    #
+    # 見るのは「記録に無いのに、実際にはある動画」。それが欠けと
+    # 同じ数だけあるなら、記録の側だけが失われたと言える。
+    ids = published_ids(day)
+    actual = -1 if ids is None else len(ids)
     # 出るはずの無かった枠は引く。サッカーが無い日に7本を期待すると、
     # 6本出ていても足りないことになる。
     expect = len(video_lines) - skipped
-    if missing and actual >= expect:
-        video_lines.append(f"| — | 実際の公開 | {actual}本ありました | "
+    extra = (ids - seen) if ids is not None else set()
+    if missing and len(extra) >= missing:
+        video_lines.append(f"| — | 実際の公開 | 記録に無い動画が"
+                           f"{len(extra)}本ありました | "
                            "記録が欠けているだけです |")
         missing = 0
     # 当日の途中では、材料が古いのは当たり前(夕方の回がまだ走っていない)。

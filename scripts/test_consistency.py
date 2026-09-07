@@ -225,6 +225,30 @@ check("冒頭で名乗った試合が、1つ目に来ている日数の欠け", 
 check("読み上げの試合と、画面が引く試合が同じ", _mismatch, 0)
 
 
+# 見張りが見る名前と、記録に残る名前が同じか。
+#
+# 一覧は "postseason"、記録は "morning_postseason" だった。
+# **健康診断は毎日この1件を「出ていない」と数えていた。**
+# それが本数の突き合わせで打ち消されていたので、9/7に成績の回が
+# 本当に欠けたときも一緒に飲み込まれ、「問題なし」で終わった。
+print("\n--- 見張りの名前と、記録の名前 ---")
+import healthcheck as hc4  # noqa: E402
+
+_rec = json.loads((ROOT / "data" / "published_videos.json")
+                  .read_text(encoding="utf-8"))
+_unknown = [k for k, _, _, _ in hc4.EXPECTED_DAILY + hc4.OPTIONAL_DAILY
+            if hc4._record_key(k) not in _rec]
+check("記録に無い名前を見張っていない", _unknown, [])
+
+# 対応表そのものが、投稿側の付け方と合っているか。
+import upload_youtube as uy4  # noqa: E402
+check("進出争いの記録名が投稿側と同じ",
+      hc4.RECORD_KEY.get("postseason"),
+      uy4.record_kind("morning", "postseason"))
+check("成績の記録名が投稿側と同じ",
+      hc4._record_key("morning"), uy4.record_kind("morning", "players"))
+
+
 # 「所属」を「対決」と読み替えられないようにしてあるか。
 #
 # 8/20の19時の回で、両チームに日本人投手が在籍しているだけの試合を
