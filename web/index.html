@@ -215,6 +215,10 @@
     padding: 4px;
   }
   .tab {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
     flex: 1;
     text-align: center;
     padding: 9px 0;
@@ -224,6 +228,10 @@
     letter-spacing: 0.04em;
     color: var(--text-dim);
     border-radius: 7px;
+  }
+  .tab:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
   }
   .tab.active {
     color: #0B0E14;
@@ -522,9 +530,9 @@
   </ol>
 </details>
 
-<div class="tabs" id="tabs">
-  <div class="tab active" data-league="MLB">MLB</div>
-  <div class="tab" data-league="SOCCER">欧州サッカー</div>
+<div class="tabs" id="tabs" role="tablist" aria-label="競技">
+  <button type="button" class="tab active" id="tab-mlb" role="tab" aria-selected="true" aria-controls="gamePanel" data-league="MLB">MLB</button>
+  <button type="button" class="tab" id="tab-soccer" role="tab" aria-selected="false" aria-controls="gamePanel" tabindex="-1" data-league="SOCCER">欧州サッカー</button>
 </div>
 
 <div class="section" id="newsSection" hidden>
@@ -533,6 +541,8 @@
   <p class="news-note">MLB公式データの変化から自動検出し、内容を確認できたものだけを掲載しています。</p>
 </div>
 
+<div id="gamePanel" role="tabpanel" aria-labelledby="tab-mlb" tabindex="0">
+<p id="gamesStatus" class="sub" role="status"></p>
 <p class="eyebrow" id="pickLabel">Pick</p>
 <div id="notableGames">読み込み中...</div>
 
@@ -543,6 +553,8 @@
     背景色つきの試合は、コレスポが特に注目度が高いと判定した試合です
   </p>
   <div class="board" id="allGames"></div>
+</div>
+
 </div>
 
 <div class="section">
@@ -904,19 +916,36 @@
     });
   }
 
-  async function renderGames() {
-    const notableEl = document.getElementById('notableGames');
-    const allEl = document.getElementById('allGames');
-    try {
-      const res = await fetch('games.json', { cache: 'no-store' });
-      if (!res.ok) throw new Error('games.json が見つかりません');
-      const data = await res.json();
-      allGamesCache = data.games || [];
-      renderTab();
-    } catch (e) {
-      notableEl.innerHTML = '<p class="sub">games.json の読み込みに失敗しました。まだデプロイされていない可能性があります。</p>';
-      allEl.innerHTML = '';
-    }
+  let gamesRequest = null;
+  let hasLoadedGames = false;
+
+  function renderGames() {
+    // 初期表示・PWA復帰が重なっても、同じ取得を共有する。
+    if (gamesRequest) return gamesRequest;
+    gamesRequest = (async () => {
+      const notableEl = document.getElementById('notableGames');
+      const allEl = document.getElementById('allGames');
+      const statusEl = document.getElementById('gamesStatus');
+      try {
+        const res = await fetch('games.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to load games');
+        const data = await res.json();
+        if (!Array.isArray(data.games)) throw new Error('Invalid games data');
+        allGamesCache = data.games;
+        renderTab();
+        hasLoadedGames = true;
+        statusEl.textContent = '';
+      } catch (e) {
+        statusEl.textContent = hasLoadedGames
+          ? '最新情報を取得できませんでした。前回取得した試合情報を表示しています。'
+          : '試合情報を読み込めませんでした。通信を確認して、ページを開き直してください。';
+        if (!hasLoadedGames) {
+          notableEl.textContent = '';
+          allEl.textContent = '';
+        }
+      }
+    })().finally(() => { gamesRequest = null; });
+    return gamesRequest;
   }
 
   // --- 最近の動き(ロースター変化のニュース) ---
@@ -960,32 +989,60 @@
     });
   })();
 
-  document.getElementById('tabs').addEventListener('click', (e) => {
-    const tab = e.target.closest('.tab');
+  function selectLeagueTab(tab) {
     if (!tab) return;
-    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
-    tab.classList.add('active');
+    document.querySelectorAll('.tab').forEach((item) => {
+      const selected = item === tab;
+      item.classList.toggle('active', selected);
+      item.setAttribute('aria-selected', String(selected));
+      item.tabIndex = selected ? 0 : -1;
+    });
+    document.getElementById('gamePanel').setAttribute('aria-labelledby', tab.id);
     activeLeague = tab.dataset.league;
     renderTab();
+  }
+
+  document.getElementById('tabs').addEventListener('click', (e) => {
+    selectLeagueTab(e.target.closest('.tab'));
+  });
+  document.getElementById('tabs').addEventListener('keydown', (e) => {
+    const tabs = [...document.querySelectorAll('.tab')];
+    const index = tabs.indexOf(e.target.closest('.tab'));
+    if (index < 0) return;
+    let next;
+    if (e.key === 'ArrowRight') next = (index + 1) % tabs.length;
+    else if (e.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = tabs.length - 1;
+    else return;
+    e.preventDefault();
+    selectLeagueTab(tabs[next]);
+    tabs[next].focus();
   });
 
-  // 左右スワイプでもタブを切り替えられるようにする
+  // 試合領域だけで横スワイプ。縦スクロールやリンク操作を奪わない。
   (() => {
-    let startX = null;
-    document.body.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
+    let start = null;
+    const panel = document.getElementById('gamePanel');
+    panel.addEventListener('touchstart', (e) => {
+      start = null;
+      if (e.touches.length !== 1 || e.target.closest('a, button, input, textarea, select, summary, [contenteditable]')) return;
+      start = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     }, { passive: true });
-    document.body.addEventListener('touchend', (e) => {
-      if (startX === null) return;
-      const deltaX = e.changedTouches[0].clientX - startX;
-      startX = null;
-      if (Math.abs(deltaX) < 60) return;
+    panel.addEventListener('touchcancel', () => { start = null; }, { passive: true });
+    panel.addEventListener('touchend', (e) => {
+      const origin = start;
+      start = null;
+      if (!origin || e.touches.length || e.changedTouches.length !== 1) return;
+      const dx = e.changedTouches[0].clientX - origin.x;
+      const dy = e.changedTouches[0].clientY - origin.y;
+      if (Math.abs(dx) < 60 || Math.abs(dx) <= Math.abs(dy)) return;
       const tabs = [...document.querySelectorAll('.tab')];
-      const currentIndex = tabs.findIndex((t) => t.classList.contains('active'));
-      const nextIndex = deltaX < 0
+      const currentIndex = tabs.findIndex((tab) => tab.classList.contains('active'));
+      const nextIndex = dx < 0
         ? Math.min(currentIndex + 1, tabs.length - 1)
         : Math.max(currentIndex - 1, 0);
-      if (nextIndex !== currentIndex) tabs[nextIndex].click();
+      if (nextIndex !== currentIndex) selectLeagueTab(tabs[nextIndex]);
     }, { passive: true });
   })();
 
@@ -1074,8 +1131,9 @@
       renderGames();
     }
   });
-  window.addEventListener('pageshow', () => {
-    renderGames();
+  window.addEventListener('pageshow', (e) => {
+    // 通常の初回は上で取得済み。履歴からの復帰時だけ更新する。
+    if (e.persisted) renderGames();
   });
 </script>
 
