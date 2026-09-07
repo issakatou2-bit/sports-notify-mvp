@@ -203,6 +203,22 @@ def main() -> int:
                  statistics.median(vs) if vs else 0,
                  sum(1 for v in vs if v < BARELY)))
 
+    # 尺と再生を並べる。
+    #
+    # 9/7に「尺が伸びたから初動が落ちた」と見立てたが、実測を並べたら
+    # 42秒で713再生の日があり、48秒で67再生の日もあった。**尺だけでは
+    # 説明できない。**ただし関係が無いとも言えないので、毎日そばに置く。
+    # 見立てを立て直すのは、この表が数週間ぶん貯まってからでよい。
+    print("\n=== 尺と再生（同じ日に出した分）===")
+    for date in sorted(by_date):
+        for kind, vid, title in by_date[date]:
+            g = got.get(vid, {})
+            if not g.get("seconds"):
+                continue
+            print("  %s %-18s %3d秒  %6d再生"
+                  % (date, KIND_LABEL.get(kind, kind)[:18],
+                     g["seconds"], g.get("views", 0)))
+
     print("\n=== 枠ごと(直近%d日) ===" % args.days)
     by_kind = collections.defaultdict(list)
     for date, kind, vid, title in rows:
