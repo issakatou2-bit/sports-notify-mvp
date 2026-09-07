@@ -222,6 +222,17 @@ def display_name(name: str) -> str:
     return kana
 
 
+# 1枚目と題に置きたくない、下向きの事実。
+#
+# 明日の試合を薦める回なので、いちばん目に入るところに
+# 負けや不調を置かない。事実として消すのではなく、置き場所を選ぶ。
+DOWNBEAT = ("連敗", "敗中", "失速", "不振", "最下位", "借金")
+
+
+def downbeat(text: str) -> bool:
+    return any(w in (text or "") for w in DOWNBEAT)
+
+
 def pick_hook(games: list) -> dict:
     """
     動画の1枚目に出す「最も具体的な事実」を選ぶ。
@@ -257,30 +268,102 @@ def pick_hook(games: list) -> dict:
             if p.get("name"):
                 return {"big": "先発予定", "sub": p["name"], "at": at}
 
-    # 2. 連勝・連敗。チームの話なので、選手を知らなくても意味が通る。
+    # 2. 日本人選手が所属しているチームの試合。
+    #
+    #    ここは長らく6番目だった。「◯◯が所属」はシーズンを通して
+    #    ほぼ毎日どこかで成り立つので、その日を選んだ理由になっていない、
+    #    という理屈で下に置いていた。理屈としては正しい。
+    #
+    #    **実測が逆を向いた。**8/07〜9/04の177本で、題に日本人選手の
+    #    名前がある55本は平均392再生・登録+12。無い122本は164再生・登録+1。
+    #    登録者13人のうち12人が「名前あり」から来ている。
+    #    その日を選んだ理由として弱くても、見てもらえなければ理由も届かない。
+    #
+    #    打者のスタメンは前日には分からないので、「出場」「先発」とは
+    #    書かない。書けるのは「その球団の試合がある」ことだけ。
+    for at, g in enumerate(games):
+        for name in (g.get("jp_players") or []):
+            if name:
+                return {"big": "所属チームの一戦", "sub": name, "at": at}
+
+    # 3. サッカーで日本人選手が所属している場合。
+    #     「先発予定」とは書かない。スタメンは前日には分からない。
+    for at, g in enumerate(games):
+        for r in g.get("reasons") or []:
+            if r.get("tag") != "jp_team":
+                continue
+            m = re.match(r"^(?P<club>.+?)には(?P<who>.+?)が所属$",
+                         (r.get("text") or "").strip())
+            if m:
+                return {"big": f"{m.group('club')}の試合",
+                        "sub": m.group("who").split("・")[0],
+                        "key": m.group("club")}
+
+    # 4. 連勝。チームの話なので、選手を知らなくても意味が通る。
+    #
+    #    **連敗はここでは使わない。**9/6「オリオールズ 5連敗中」、
+    #    9/7「オリオールズ 6連敗中」と2日続けて、負けている事実が
+    #    題の先頭に出た。明日の試合を薦める場所で、
+    #    いちばん目に入るところに置くものではない。
+    #    連敗そのものを隠すわけではなく、本編の見どころには残る。
     for at, g in enumerate(games):
         for r in g.get("reasons") or []:
             if r.get("tag") != "streak":
                 continue
-            m = HOOK_RE.match((r.get("text") or "").strip())
+            text = (r.get("text") or "").strip()
+            if downbeat(text):
+                continue
+            m = HOOK_RE.match(text)
             if m:
                 return {"big": m.group("what"), "sub": m.group("who"), "at": at}
 
-    # 3. 首位攻防戦(ゲーム差という具体的な数字が入る)
+    # 5. 首位攻防戦(ゲーム差という具体的な数字が入る)
     #
-    #    所属より上に置く。「◯◯が所属」はシーズンを通してほぼ毎日
-    #    どこかで成り立つので、その日を選んだ理由になっていない。
     #    ゲーム差はその日その時点の数字で、なぜ今日この試合なのかに
-    #    答えている。所属は見どころの一つとして、本編で触れれば足りる。
+    #    答えている。所属より上に置いていたのはそのため。
+    #    9/7に、実測を理由に日本人選手の所属を上へ移した(上の2番)。
+    #    理由の強さでは負けていないので、日本人選手がいない日は
+    #    ここが先頭に来る。
     for at, g in enumerate(games):
         for r in g.get("reasons") or []:
             if r.get("tag") != "div":
                 continue
             m = GAMES_BACK_RE.search(r.get("text") or "")
             if m:
-                return {"big": f"ゲーム差{m.group(1)}の首位攻防戦", "sub": "", "at": at}
+                # key は、選んだ試合を後から照合するための語。
+                # 見出しは組み立てた文なので、試合のJSONには出てこない。
+                return {"big": f"ゲーム差{m.group(1)}の首位攻防戦",
+                        "sub": "", "at": at, "key": m.group(1)}
 
-    # 4. ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
+    # 6. 地区優勝マジック。数字が入るぶん、その日を選んだ理由になる。
+    #
+    #    9月にしか出ない材料で、しかも毎日1つずつ減っていく。
+    #    「明日また見る理由」がそのまま見出しになる、この時期だけの枠。
+    for at, g in enumerate(games):
+        for r in g.get("reasons") or []:
+            if r.get("tag") != "ps_magic":
+                continue
+            m = re.match(r"^(?P<who>.+?)\s*は(?P<what>地区優勝マジック[0-9]+)$",
+                         (r.get("text") or "").strip())
+            if m:
+                return {"big": m.group("what"), "sub": m.group("who"),
+                        "at": at, "key": m.group("who")}
+
+    # 7. どちらもポストシーズン圏内。直接対決の重みが伝わる。
+    #
+    #    片方だけ圏内の日は使わない。「◯◯は圏内」だけでは、
+    #    その試合を今日見る理由になっていない。
+    for at, g in enumerate(games):
+        for r in g.get("reasons") or []:
+            if r.get("tag") != "ps_race":
+                continue
+            m = re.match(r"^(?P<a>.+?)\s*と\s*(?P<b>.+?)\s*は"
+                         r"どちらもポストシーズン圏内$", (r.get("text") or "").strip())
+            if m:
+                return {"big": "どちらも進出圏内", "sub": "",
+                        "at": at, "key": m.group("a")}
+
+    # 8. ダービー・伝統の一戦。名前そのものが最も具体的で、検索もされる。
     #
     #    理由の文は説明つきで長い。
     #      「カブス vs ホワイトソックス は同都市対決 —
@@ -299,7 +382,7 @@ def pick_hook(games: list) -> dict:
             if 3 <= len(name) <= 20:
                 return {"big": name, "sub": "", "at": at}
 
-    # 5. 連続安打・移籍後初登板などの個人記録。
+    # 9. 連続安打・移籍後初登板などの個人記録。
     #    外国人選手が主語になりやすく、実測どおり弱いので後ろに置く。
     for at, g in enumerate(games):
         for note in g.get("log_notes") or []:
@@ -307,45 +390,25 @@ def pick_hook(games: list) -> dict:
             if m:
                 return {"big": m.group("what"), "sub": m.group("who"), "at": at}
 
-    # 6. 日本人選手が所属しているチームの試合。
-    #    打者のスタメンは前日には分からないので、「出場」「先発」とは書かない。
-    #    ここまで何も無かった日の受け皿。
-    for at, g in enumerate(games):
-        for name in (g.get("jp_players") or []):
-            if name:
-                return {"big": "所属チームの一戦", "sub": name, "at": at}
-
-    # 7. サッカーで日本人選手が所属している場合。
-    #     「先発予定」とは書かない。スタメンは前日には分からない。
-    for at, g in enumerate(games):
-        for r in g.get("reasons") or []:
-            if r.get("tag") != "jp_team":
-                continue
-            m = re.match(r"^(?P<club>.+?)には(?P<who>.+?)が所属$",
-                         (r.get("text") or "").strip())
-            if m:
-                return {"big": f"{m.group('club')}の試合",
-                        "sub": m.group("who").split("・")[0]}
-
-    # 8. AIのフック文(短くまとまっているものだけ)
+    # 10. AIのフック文(短くまとまっているものだけ)
     for at, g in enumerate(games):
         h = (g.get("notification_hook") or "").strip().rstrip("。")
         if 6 <= len(h) <= 32:
             return {"big": h, "sub": "", "at": at}
 
-    # 9. 日本人選手の名前を並べるだけ(所属以上のことは書かない)
+    # 11. 日本人選手の名前を並べるだけ(所属以上のことは書かない)
     for at, g in enumerate(games):
         names = [n for n in (g.get("jp_players") or []) if n]
         if names:
             return {"big": "・".join(names[:3]), "sub": "", "at": at}
 
-    # 10. サッカーは、大会名を最後の手がかりにする。
+    # 12. サッカーは、大会名を最後の手がかりにする。
     #     クラブ名だけのタイトルだと、どのリーグの話か分からない。
     #     MLBは札で分かるので、ここはサッカーだけ。
     for at, g in enumerate(games):
         lg = g.get("league")
         if lg and _is_soccer_league(lg):
-            return {"big": f"{lg}の一戦", "sub": "", "at": at}
+            return {"big": f"{lg}の一戦", "sub": "", "at": at, "key": lg}
 
     # 何も当てはまらない日。
     #

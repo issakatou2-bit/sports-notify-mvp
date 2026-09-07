@@ -212,7 +212,9 @@ for _f in sorted((ROOT / "archive").glob("2026-*.json")):
     if isinstance(_at, int) and 0 < _at < len(_work):
         _work.insert(0, _work.pop(_at))
         _order.insert(0, _order.pop(_at))
-    _key = (_h.get("sub") or _h.get("big") or "").strip()
+    # 見出しを組み立てている枝(「ゲーム差2.5の首位攻防戦」など)は、
+    # その文字列が試合のJSONに出てこない。照合できる語を別に返している。
+    _key = (_h.get("key") or _h.get("sub") or _h.get("big") or "").strip()
     if _key and _key not in json.dumps(_work[0], ensure_ascii=False):
         _late += 1
     for _i, _g in enumerate(_work):
