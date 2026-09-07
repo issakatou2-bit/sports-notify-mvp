@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-07T06:02:01.683579+00:00",
+  "updated_at": "2026-09-07T12:54:53.974908+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -18,7 +18,7 @@
       "name_en": "Los Angeles Dodgers",
       "mentions": 4,
       "tone": "好調",
-      "gist": "Betts含む打線がNats相手に完勝"
+      "gist": "Betts本塁打でドジャース逆転勝利、スウィープ達成"
     },
     {
       "team_id": "112",
@@ -26,7 +26,7 @@
       "name_en": "Chicago Cubs",
       "mentions": 3,
       "tone": "好調",
-      "gist": "Crow-Armstrongが史上初の40HR&30盗塁達成"
+      "gist": "Crow-Armstrong40本40盗塁達成、打線が投手陣"
     },
     {
       "team_id": "114",
@@ -34,7 +34,15 @@
       "name_en": "Cleveland Guardians",
       "mentions": 3,
       "tone": "好調",
-      "gist": "Guardiandsがウォークオフ勝利でワイルドカード争いで"
+      "gist": "ガーディアンズがタイガース相手にサヨナラ勝ち、ワイルドカード"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "パドレスがGerrit Cole相手に連続本塁打3本"
     },
     {
       "team_id": "136",
@@ -42,15 +50,7 @@
       "name_en": "Seattle Mariners",
       "mentions": 2,
       "tone": "好調",
-      "gist": "Bryan Wooが8回無失点・1安打の好投"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "Padresが試合開始直後に3連発でCole攻略"
+      "gist": "Bryan Wooがシャットアウト8回1安打で立ち上がる"
     },
     {
       "team_id": "137",
@@ -58,15 +58,7 @@
       "name_en": "San Francisco Giants",
       "mentions": 2,
       "tone": "不振",
-      "gist": "Giantsがポストシーズン進出消滅"
-    },
-    {
-      "team_id": "118",
-      "name": "ロイヤルズ",
-      "name_en": "Kansas City Royals",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "Royalsファンがユニークな応援演出"
+      "gist": "ジャイアンツがポストシーズン消滅"
     },
     {
       "team_id": "120",
@@ -74,7 +66,15 @@
       "name_en": "Washington Nationals",
       "mentions": 1,
       "tone": "不振",
-      "gist": "Nationalsがセーブ失敗数でMLB記録タイ"
+      "gist": "ナショナルズがセーブ失敗数MLB記録タイ"
+    },
+    {
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "審判がカージナルス投手の帽子について謝罪"
     }
   ],
   "players": [

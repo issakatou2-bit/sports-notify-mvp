@@ -1,22 +1,13 @@
 {
-  "updated_at": "2026-09-07T06:01:51.140805+00:00",
+  "updated_at": "2026-09-07T12:54:42.204489+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "sv3xOJD4Gi8",
-      "title": "Highlights from ALL GAMES on 9/5 (Munetaka Murakami makes history, Caminero AL HR leader and MORE!)",
-      "published_at": "2026-09-06T10:00:04Z",
-      "views": 32853,
-      "matchup": "",
-      "game_date": "",
-      "topic_jp": "ムネタカ・ムラカミが歴史的快挙を達成し、カミネーロがALホームラン王となった。"
-    },
-    {
       "video_id": "F00oeeXwhMk",
       "title": "YANKEES vs. PADRES: Official Full Game Highlights (September 6) | 2026 MLB Season",
       "published_at": "2026-09-06T23:02:51Z",
-      "views": 197774,
+      "views": 274525,
       "matchup": "YANKEES vs. PADRES",
       "game_date": "2026-09-06",
       "result": {
@@ -92,10 +83,89 @@
       "topic_jp": "ヤンキース 対 パドレス"
     },
     {
+      "video_id": "L3a7U5piNj0",
+      "title": "NATIONALS vs. DODGERS: Official Full Game Highlights (September 6) | 2026 MLB Season",
+      "published_at": "2026-09-07T05:37:40Z",
+      "views": 274256,
+      "matchup": "NATIONALS vs. DODGERS",
+      "game_date": "2026-09-06",
+      "result": {
+        "away_jp": "ナショナルズ",
+        "home_jp": "ドジャース",
+        "away_score": 5,
+        "home_score": 7,
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 4,
+            "away": 4,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 3
+          },
+          {
+            "num": 6,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 3
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": null
+          }
+        ],
+        "away_hits": 9,
+        "away_errors": 0,
+        "home_hits": 10,
+        "home_errors": 1,
+        "star_name": "Mookie Betts",
+        "star_line": "5打数1安打 4打点 1本塁打",
+        "star_team": "ドジャース",
+        "away_starter": {
+          "name": "Andrew Alvarez",
+          "team": "ナショナルズ",
+          "line": "4.1回 5奪三振 自責3"
+        },
+        "home_starter": {
+          "name": "Justin Wrobleski",
+          "team": "ドジャース",
+          "line": "3.0回 6奪三振 自責4"
+        }
+      },
+      "topic_jp": "ナショナルズ 対 ドジャース"
+    },
+    {
       "video_id": "QNtiDKeFqL0",
       "title": "BRAVES vs. PHILLIES: Official Full Game Highlights (September 6) | 2026 MLB Season",
       "published_at": "2026-09-06T20:15:22Z",
-      "views": 144508,
+      "views": 172825,
       "matchup": "BRAVES vs. PHILLIES",
       "game_date": "2026-09-06",
       "result": {
@@ -174,7 +244,7 @@
       "video_id": "5rZCDivdp_Q",
       "title": "BLUE JAYS vs. ROYALS: Official Full Game Highlights (September 6) | 2026 MLB Season",
       "published_at": "2026-09-06T21:23:56Z",
-      "views": 107226,
+      "views": 129582,
       "matchup": "BLUE JAYS vs. ROYALS",
       "game_date": "2026-09-06",
       "result": {
@@ -253,7 +323,7 @@
       "video_id": "dSUuMfERpFk",
       "title": "GIANTS vs. METS: Official Full Game Highlights (September 6) | 2026 MLB Season",
       "published_at": "2026-09-06T20:38:17Z",
-      "views": 77989,
+      "views": 96532,
       "matchup": "GIANTS vs. METS",
       "game_date": "2026-09-06",
       "result": {
@@ -331,214 +401,148 @@
   ],
   "all": [
     {
-      "video_id": "sv3xOJD4Gi8",
-      "matchup": "",
-      "game_date": "",
-      "views": 32853
-    },
-    {
       "video_id": "F00oeeXwhMk",
       "matchup": "YANKEES vs. PADRES",
       "game_date": "2026-09-06",
-      "views": 197774
-    },
-    {
-      "video_id": "QNtiDKeFqL0",
-      "matchup": "BRAVES vs. PHILLIES",
-      "game_date": "2026-09-06",
-      "views": 144508
-    },
-    {
-      "video_id": "5rZCDivdp_Q",
-      "matchup": "BLUE JAYS vs. ROYALS",
-      "game_date": "2026-09-06",
-      "views": 107226
-    },
-    {
-      "video_id": "dSUuMfERpFk",
-      "matchup": "GIANTS vs. METS",
-      "game_date": "2026-09-06",
-      "views": 77989
-    },
-    {
-      "video_id": "m-xUf0A-JeA",
-      "matchup": "BREWERS vs. REDS",
-      "game_date": "2026-09-06",
-      "views": 77321
-    },
-    {
-      "video_id": "SJWiMuPAGgg",
-      "matchup": "RAYS vs. RANGERS",
-      "game_date": "2026-09-06",
-      "views": 57448
-    },
-    {
-      "video_id": "MMqBYaSfFps",
-      "matchup": "TIGERS vs. GUARDIANS",
-      "game_date": "2026-09-06",
-      "views": 52798
-    },
-    {
-      "video_id": "JtKDNEodg2Y",
-      "matchup": "RED SOX vs. ORIOLES",
-      "game_date": "2026-09-06",
-      "views": 48341
-    },
-    {
-      "video_id": "Z0-Iw_AWDy4",
-      "matchup": "ATHLETICS vs. MARINERS",
-      "game_date": "2026-09-06",
-      "views": 46765
-    },
-    {
-      "video_id": "5WTHLft9fSc",
-      "matchup": "TWINS vs. WHITE SOX",
-      "game_date": "2026-09-06",
-      "views": 41868
-    },
-    {
-      "video_id": "8dTq9xMiQls",
-      "matchup": "ANGELS vs. PIRATES",
-      "game_date": "2026-09-06",
-      "views": 41213
-    },
-    {
-      "video_id": "fgVkM4Uu8uU",
-      "matchup": "D-BACKS vs. ASTROS",
-      "game_date": "2026-09-06",
-      "views": 38923
-    },
-    {
-      "video_id": "2WBlqfd9oic",
-      "matchup": "CUBS vs. MARLINS",
-      "game_date": "2026-09-06",
-      "views": 35410
-    },
-    {
-      "video_id": "DMYgbfu4L2E",
-      "matchup": "CARDINALS vs. ROCKIES",
-      "game_date": "2026-09-06",
-      "views": 33562
+      "views": 274525
     },
     {
       "video_id": "L3a7U5piNj0",
       "matchup": "NATIONALS vs. DODGERS",
       "game_date": "2026-09-06",
-      "views": 10953
+      "views": 274256
     },
     {
-      "video_id": "jgaVsLvU08I",
-      "matchup": "NATIONALS vs. DODGERS",
-      "game_date": "2026-09-05",
-      "views": 446147
+      "video_id": "QNtiDKeFqL0",
+      "matchup": "BRAVES vs. PHILLIES",
+      "game_date": "2026-09-06",
+      "views": 172825
     },
     {
-      "video_id": "dp0efAIG7Rs",
-      "matchup": "YANKEES vs. PADRES",
-      "game_date": "2026-09-05",
-      "views": 341735
-    },
-    {
-      "video_id": "GhFyhYSStuA",
+      "video_id": "5rZCDivdp_Q",
       "matchup": "BLUE JAYS vs. ROYALS",
-      "game_date": "2026-09-05",
-      "views": 257094
+      "game_date": "2026-09-06",
+      "views": 129582
     },
     {
-      "video_id": "Di_r4BmIU8g",
-      "matchup": "Go-ahead three-run home run for Tommy Edman! 💪 | MLB Highlights (Dodgers vs. Nationals)",
-      "game_date": "",
-      "views": 121945
+      "video_id": "dSUuMfERpFk",
+      "matchup": "GIANTS vs. METS",
+      "game_date": "2026-09-06",
+      "views": 96532
     },
     {
-      "video_id": "cu6LwmsZuY8",
-      "matchup": "RAYS vs. RANGERS",
-      "game_date": "2026-09-05",
-      "views": 102568
-    },
-    {
-      "video_id": "Pan4PEMCB_k",
-      "matchup": "D-BACKS vs. ASTROS",
-      "game_date": "2026-09-05",
-      "views": 98441
-    },
-    {
-      "video_id": "eVuG8brZ9dk",
+      "video_id": "m-xUf0A-JeA",
       "matchup": "BREWERS vs. REDS",
-      "game_date": "2026-09-05",
-      "views": 87580
+      "game_date": "2026-09-06",
+      "views": 94141
     },
     {
-      "video_id": "zsV2Si6PzTY",
-      "matchup": "RED SOX vs. ORIOLES",
-      "game_date": "2026-09-05",
-      "views": 82470
+      "video_id": "SJWiMuPAGgg",
+      "matchup": "RAYS vs. RANGERS",
+      "game_date": "2026-09-06",
+      "views": 73859
     },
     {
-      "video_id": "Xz4y3LdQHs0",
-      "matchup": "",
-      "game_date": "",
-      "views": 62834
-    },
-    {
-      "video_id": "IY3iMqVazoY",
-      "matchup": "ATHLETICS vs. MARINERS",
-      "game_date": "2026-09-05",
-      "views": 61422
-    },
-    {
-      "video_id": "xn8LVwVgzUI",
-      "matchup": "CARDINALS vs. ROCKIES",
-      "game_date": "2026-09-05",
-      "views": 50071
-    },
-    {
-      "video_id": "crHDEOQtRkw",
+      "video_id": "5WTHLft9fSc",
       "matchup": "TWINS vs. WHITE SOX",
-      "game_date": "2026-09-05",
-      "views": 49465
+      "game_date": "2026-09-06",
+      "views": 73062
     },
     {
-      "video_id": "PAlZF-EHUAU",
-      "matchup": "",
-      "game_date": "",
-      "views": 25214
+      "video_id": "Z0-Iw_AWDy4",
+      "matchup": "ATHLETICS vs. MARINERS",
+      "game_date": "2026-09-06",
+      "views": 67824
     },
     {
-      "video_id": "92x9XaWuVvo",
-      "matchup": "",
-      "game_date": "",
-      "views": 21549
+      "video_id": "MMqBYaSfFps",
+      "matchup": "TIGERS vs. GUARDIANS",
+      "game_date": "2026-09-06",
+      "views": 67694
     },
     {
-      "video_id": "PVnfROaR_lU",
-      "matchup": "",
-      "game_date": "",
-      "views": 20899
+      "video_id": "JtKDNEodg2Y",
+      "matchup": "RED SOX vs. ORIOLES",
+      "game_date": "2026-09-06",
+      "views": 60988
     },
     {
-      "video_id": "pdjE83X-hGI",
-      "matchup": "",
-      "game_date": "",
-      "views": 18639
+      "video_id": "fgVkM4Uu8uU",
+      "matchup": "D-BACKS vs. ASTROS",
+      "game_date": "2026-09-06",
+      "views": 53707
+    },
+    {
+      "video_id": "8dTq9xMiQls",
+      "matchup": "ANGELS vs. PIRATES",
+      "game_date": "2026-09-06",
+      "views": 52440
+    },
+    {
+      "video_id": "2WBlqfd9oic",
+      "matchup": "CUBS vs. MARLINS",
+      "game_date": "2026-09-06",
+      "views": 47489
+    },
+    {
+      "video_id": "DMYgbfu4L2E",
+      "matchup": "CARDINALS vs. ROCKIES",
+      "game_date": "2026-09-06",
+      "views": 43287
     },
     {
       "video_id": "3uRkhskEiYo",
       "matchup": "",
       "game_date": "",
-      "views": 15996
+      "views": 91859
+    },
+    {
+      "video_id": "Xz4y3LdQHs0",
+      "matchup": "",
+      "game_date": "",
+      "views": 74195
+    },
+    {
+      "video_id": "PVnfROaR_lU",
+      "matchup": "",
+      "game_date": "",
+      "views": 37101
+    },
+    {
+      "video_id": "sv3xOJD4Gi8",
+      "matchup": "",
+      "game_date": "",
+      "views": 34042
+    },
+    {
+      "video_id": "PAlZF-EHUAU",
+      "matchup": "",
+      "game_date": "",
+      "views": 34009
+    },
+    {
+      "video_id": "92x9XaWuVvo",
+      "matchup": "",
+      "game_date": "",
+      "views": 23021
     },
     {
       "video_id": "Vb9bGW0eOUA",
       "matchup": "",
       "game_date": "",
-      "views": 14458
+      "views": 15402
     },
     {
       "video_id": "R9S7WerKUz0",
       "matchup": "",
       "game_date": "",
-      "views": 9327
+      "views": 11346
+    },
+    {
+      "video_id": "g8V8Lt7ZDG8",
+      "matchup": "",
+      "game_date": "",
+      "views": 4067
     }
   ]
 }
