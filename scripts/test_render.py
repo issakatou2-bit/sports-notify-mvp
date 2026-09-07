@@ -243,6 +243,7 @@ def main() -> int:
     for c in cut[:5]:
         print("    落とした: " + c)
 
+    fails += check_thumbnails()
     fails += check_still(players, vids, voices, reps, talk)
     fails += check_peek_room(players, voices)
     fails += check_expression()
@@ -252,6 +253,78 @@ def main() -> int:
     return 1 if fails else 0
 
 
+def check_thumbnails() -> int:
+    """長編のサムネイルが、その日の形で描き分けられるか。
+
+    なぜ要るのか:
+      長編はCTR0.5%で、10本出して合計24再生しかない。中身は
+      最後まで見られている（104%・99.7%）ので、残っているのは入口。
+      **サムネイルが毎日同じ絵**だったのが、いちばん近い説明だと思う。
+
+      台本の材料から形を決めているので、材料の形が変われば黙って
+      「いつもの形」に落ちる。落ちること自体は正しいが、
+      **落ちたことに気づけない**ので、ここで見る。
+    """
+    import json
+    import tempfile
+    bad = 0
+    print(chr(10) + "=== 長編サムネイルの出し分け ===")
+    try:
+        import generate_thumbnail as th
+    except Exception as e:                       # noqa: BLE001
+        print("[skip] 読み込めません: %s" % str(e)[:80])
+        return 0
+
+    cases = [
+        ("節目の日", {"jp": ["村上宗隆"], "panels": {"group1": {
+            "type": "group", "head": "ホワイトソックス　本塁打30以上が3人",
+            "rows": [{"name": "Colson Montgomery"}, {"name": "村上宗隆"}]}}},
+         "milestone"),
+        ("賛否が割れた日", {"jp": [], "panels": {
+            "c1": {"type": "quote", "tone": "称賛", "text": "巨大な勝利だった"},
+            "c2": {"type": "quote", "tone": "批判", "text": "がっかりさせない"}}},
+         "split"),
+        ("日本人選手の日", {"jp": ["大谷翔平"], "panels": {
+            "c1": {"type": "quote", "tone": "称賛", "text": "すごい"}}}, "jp"),
+        ("それ以外", {"jp": [], "panels": {}}, "plain"),
+    ]
+    tmp = pathlib.Path(tempfile.mkdtemp())
+    for label, payload, want in cases:
+        f = tmp / (want + ".json")
+        f.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        got = th.shape_from_dialogue(str(f)).get("kind")
+        ok = got == want
+        bad += not ok
+        print("%s %s: %s" % ("ok " if ok else "NG ", label, got))
+
+    # 台本が無い日でも落ちない（いつもの形になる）。
+    got = th.shape_from_dialogue("").get("kind")
+    ok = got == "plain"
+    bad += not ok
+    print("%s 台本が無い日: %s" % ("ok " if ok else "NG ", got))
+
+    # 実際に4つとも描けるか。落ちないこと・背景だけでないこと。
+    if not os.environ.get("COLLESPO_FONT"):
+        return bad
+    for label, payload, want in cases:
+        f = tmp / (want + ".json")
+        im, d = th.base()
+        try:
+            th.draw_longform(im, d, "ツインズ 対 ホワイトソックス", "9月7日",
+                             "assets/portraits", payload.get("jp"),
+                             "いちばん支持された一言",
+                             th.shape_from_dialogue(str(f)))
+        except Exception as e:                   # noqa: BLE001
+            bad += 1
+            print("NG  %s を描けません: %s: %s"
+                  % (label, type(e).__name__, str(e)[:90]))
+            continue
+        if blank(im):
+            bad += 1
+            print("NG  %s: 背景だけです" % label)
+        else:
+            print("ok  %s を描けた" % label)
+    return bad
 def check_peek_room(players, voices) -> int:
     """立ち絵が出る帯に、中身がはみ出していないか。
 

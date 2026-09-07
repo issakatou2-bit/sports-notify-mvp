@@ -357,6 +357,65 @@ def _jp_from_dialogue(path: str):
         out.append(n)
     return out
 
+def shape_from_dialogue(path: str) -> dict:
+    """その日のサムネイルを、どの形で描くか。
+
+    なぜ出し分けるのか:
+      いまは何が起きた日でも同じ枠に流し込んでいる。日付と対戦カードと
+      「海外の反応」。**一覧に並ぶと、昨日のものと見分けがつかない。**
+      長編はCTR0.5%で、10本出して合計24再生しかない。押す理由が
+      画面に無い、というのがいちばん近い説明だと思う。
+
+      材料はもう全部ある。台本を作るときに、節目もコメントの賛否も
+      札として組み立ててある（`panels`）。そこを見れば、その日が
+      どういう日かはコードで決まる。**モデルには選ばせない。**
+      外しても「いつもの形」に落ちるだけで、壊れない。
+
+    返すのは {"kind": ..., ...}。kind は4つ:
+      milestone … 節目が出た日（「30本トリオ」など）。数字を主役に
+      split     … コメント欄が割れた日。賛否を並べる
+      jp        … 日本人選手の名前がある日（これまでの形）
+      plain     … それ以外（これまでの形の、名前なし版）
+    """
+    if not path:
+        return {"kind": "plain"}
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"kind": "plain"}
+    panels = d.get("panels") or {}
+
+    # 節目がいちばん強い。「30本トリオ」は現地でも話題になっていた。
+    for v in panels.values():
+        if v.get("type") != "group":
+            continue
+        rows = v.get("rows") or []
+        num = _lead_number(v.get("head") or "")
+        if rows and num:
+            return {"kind": "milestone", "head": v.get("head") or "",
+                    "num": num, "rows": rows}
+
+    # 賛否が割れた日。両方あるときだけ。
+    quotes = [v for v in panels.values() if v.get("type") == "quote"]
+    good = [q for q in quotes if q.get("tone") == "称賛"]
+    bad = [q for q in quotes if q.get("tone") == "批判"]
+    if good and bad:
+        return {"kind": "split",
+                "good": (good[0].get("text") or "")[:44],
+                "bad": (bad[0].get("text") or "")[:44]}
+
+    return {"kind": "jp" if d.get("jp") else "plain"}
+
+
+def _lead_number(head: str) -> str:
+    """「ホワイトソックス　本塁打30以上が3人」から "30" を取る。
+
+    ここで拾うのは**区切りの数**であって、人数ではない。
+    「3人」を拾ってしまうと、画面に大きく「3」と出る。
+    """
+    m = re.search(r"(\d+)\s*以上", head or "")
+    return m.group(1) if m else ""
+
 SPLIT = re.compile(r"\s+(?:vs|VS|対)\s+")
 
 def _short_matchup(topic: str) -> str:
@@ -391,7 +450,7 @@ def _pick_from_dialogue(path: str) -> str:
 
 
 def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
-                  jp_names=None, pick: str = ""):
+                  jp_names=None, pick: str = "", shape=None):
     """長編（対話）。サムネイルは「目に入った瞬間」だけを担当する。
 
     題（検索）とサムネイル（一目）で役割が違う。
@@ -446,6 +505,16 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
 
     short_topic = _short_matchup(topic)
     jp = [n for n in (jp_names or []) if n][:2]
+
+    # その日の形で、本文だけ描き分ける。
+    #
+    # 日付の札と立ち絵は共通にしておく。**そこまで変えると、
+    # 同じ番組に見えなくなる。**変えるのは「何を大きく出すか」だけ。
+    kind = (shape or {}).get("kind", "plain")
+    if kind == "milestone":
+        return _lf_milestone(d, shape, short_topic)
+    if kind == "split":
+        return _lf_split(d, shape, short_topic)
 
     # 対戦カード。日付の右。
     # **名前が取れない日は、対戦カードが大きい行のほうへ回る。**
@@ -508,6 +577,105 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
     vc.pop_text(d, (70, H - 88), "コレスポ", font(50), JP,
                 stroke=(8, 10, 15), stroke_w=7, shadow=(0, 0, 0))
 
+
+# 批判の引用に使う色。既存の3色に赤が無いので足す。
+# 彩度は抑える。責める画面にはしたくない。
+BAD = (222, 118, 118)
+
+# 文字を置いてよい右端。
+#
+# 立ち絵は x=690 あたりから始まる。880で折り返していたので、
+# 2行目が右へ伸びてずんだもんに掛かっていた。**本文はここまで。**
+LF_TEXT_W = 620
+
+
+def _lf_milestone(d, shape: dict, short_topic: str):
+    """節目が出た日。**数字を主役にする。**
+
+    「30本トリオが完成したね」は、9/6のコメント欄でいちばん支持された
+    一言だった。**現地でも話題になる形**なので、そこを一目で出す。
+
+    文字は少なくする。数字ひとつと、そろった人数と、名前。
+    ここに対戦カードまで足すと、目安の20字を超える。
+    """
+    import video_common as vc
+    rows = shape.get("rows") or []
+    num = shape.get("num") or ""
+    head = shape.get("head") or ""
+    team = head.split("　")[0] if "　" in head else short_topic
+
+    if team:
+        vc.pop_text(d, (70, 150), team[:12], font(44), TEXT,
+                    stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
+
+    # 数字。ここだけで押す理由になる大きさにする。
+    unit = "勝" if "勝" in head else "本"
+    fn = font(210)
+    vc.pop_text(d, (66, 196), num, fn, ACCENT,
+                stroke=(8, 10, 15), stroke_w=14, shadow=(0, 0, 0),
+                shadow_off=(8, 9))
+    nw = d.textlength(num, font=fn)
+    vc.pop_text(d, (66 + nw + 10, 300), unit, font(88), ACCENT,
+                stroke=(8, 10, 15), stroke_w=10, shadow=(0, 0, 0))
+
+    vc.pop_text(d, (70, 444), f"そろった{len(rows)}人", font(64), JP,
+                stroke=(8, 10, 15), stroke_w=8, shadow=(0, 0, 0))
+
+    # 名前。3人ぶん入るように、幅で大きさを決める。
+    # 日本人選手を先頭に置く。
+    #
+    # この番組を見ている人がいちばん探すのはそこで、3人目に
+    # 小さく出ていると見つけられない。順番を入れ替えるだけで、
+    # 書いてあることは変わらない。
+    def _jp_first(r):
+        return all(ch.isascii() for ch in str(r.get("name", "")))
+    ordered = sorted(rows[:3], key=_jp_first)
+    names = "・".join(str(r.get("name", "")) for r in ordered)
+    size = fit(d, names, LF_TEXT_W, (38, 34, 30, 26, 22))
+    vc.pop_text(d, (70, 526), names, font(size), TEXT,
+                stroke=(8, 10, 15), stroke_w=5)
+
+    vc.pop_text(d, (70, H - 88), "コレスポ", font(50), JP,
+                stroke=(8, 10, 15), stroke_w=7, shadow=(0, 0, 0))
+
+
+def _lf_split(d, shape: dict, short_topic: str):
+    """賛否が割れた日。**両方をそのまま並べる。**
+
+    この番組の売りは「現地が何と言ったか」で、割れている日は
+    そこがいちばん面白い。片方だけ出すと、こちらが選んだことになる。
+
+    引用は2つまで。3つ目を足すと字が小さくなって、縮小したときに
+    どちらも読めなくなる。
+    """
+    import video_common as vc
+    if short_topic:
+        vc.pop_text(d, (70, 150), short_topic[:16], font(42), TEXT,
+                    stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
+
+    vc.pop_text(d, (70, 206), "現地は割れた", font(110), ACCENT,
+                stroke=(8, 10, 15), stroke_w=12, shadow=(0, 0, 0),
+                shadow_off=(6, 7))
+
+    y = 350
+    for text, color in ((shape.get("good") or "", JP),
+                        (shape.get("bad") or "", BAD)):
+        if not text:
+            continue
+        body = "「" + text + "」"
+        size = 40
+        lines = video_common.wrap(d, body, font(size), LF_TEXT_W)
+        while len(lines) > 2 and size > 26:
+            size -= 6
+            lines = video_common.wrap(d, body, font(size), LF_TEXT_W)
+        for ln in lines[:2]:
+            vc.pop_text(d, (70, y), ln, font(size), color,
+                        stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
+            y += size + 8
+        y += 18
+
+    vc.pop_text(d, (70, H - 88), "コレスポ", font(50), JP,
+                stroke=(8, 10, 15), stroke_w=7, shadow=(0, 0, 0))
 
 def draw_morning_postseason(d, day: str,
                             path: str = "data/postseason.json"):
@@ -608,7 +776,8 @@ def main():
             day = ""
         draw_longform(im, d, args.topic, day, args.portrait_dir,
                       _jp_from_dialogue(args.dialogue),
-                      _pick_from_dialogue(args.dialogue))
+                      _pick_from_dialogue(args.dialogue),
+                      shape_from_dialogue(args.dialogue))
     elif args.kind == "morning":
         try:
             rec = json.loads(pathlib.Path(args.recap).read_text(encoding="utf-8"))
