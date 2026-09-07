@@ -61,7 +61,12 @@
           "text": "昨季13位と3位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 2,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "558612",
@@ -118,7 +123,12 @@
           "text": "パルマには鈴木ザイオンが所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 1,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "558615",
@@ -169,7 +179,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "559700",
@@ -220,7 +235,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 6,
+        "winner": "away"
+      }
     },
     {
       "game_id": "565788",
@@ -282,7 +302,12 @@
           "text": "昨季13位と10位の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "564659",
@@ -352,7 +377,12 @@
       ],
       "log_notes": [],
       "ai_summary": "ラ・リーガの開幕戦となるこの一戦は、昨季【9位と5位】という異なる立場のチーム同士の対戦である。バルセロナは欧州の強豪として毎試合が注視される存在であり、対するバレンシアは昨季の成績からステップアップを目指す段階にある。また、バレンシアに所属する日本人選手・佐藤龍之介の活躍も見どころとなり、新シーズンの両チームの力関係がどのように表れるかに注目したい。",
-      "notification_hook": "バルセロナ開幕戦、佐藤龍之介が昨季9位のバレンシアからの挑戦に立ち向かう"
+      "notification_hook": "バルセロナ開幕戦、佐藤龍之介が昨季9位のバレンシアからの挑戦に立ち向かう",
+      "final_score": {
+        "home": 0,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "559698",
@@ -666,7 +696,12 @@
           "text": "ブリュワーズ はポストシーズン圏内",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 12,
+        "away": 8,
+        "winner": "home"
+      }
     },
     {
       "game_id": "564664",
@@ -847,7 +882,12 @@
           "text": "フィリーズ と ブレーブス はどちらもポストシーズン圏内",
           "weight": 4
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 5,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824794",
@@ -936,7 +976,12 @@
       },
       "log_notes": [],
       "ai_summary": "レッドソックスはポストシーズン圏内の3位(首位との差7.5ゲーム)で3連勝中、一方オリオールズは5連敗で地区5位(首位との差16.5ゲーム)と、明らかに勢いが分かれている同地区対決である。シリーズ第4戦を迎え、直近の対戦ではレッドソックスが3連勝と優位に立つ。防御率3.23の Payton Tolle と防御率4.01の Kyle Bradish の投げ合いで、どちらがこの一戦を左右するかに注目したい。",
-      "notification_hook": "3連敗中のオリオールズ、3連勝レッドソックスとの力関係。Tolle vs Bradish の先発対決"
+      "notification_hook": "3連敗中のオリオールズ、3連勝レッドソックスとの力関係。Tolle vs Bradish の先発対決",
+      "final_score": {
+        "home": 1,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823336",
@@ -1011,7 +1056,12 @@
           "text": "エンゼルスには菊池雄星が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823822",
@@ -1103,7 +1153,12 @@
         "Clay Holmesは直近4登板を自責1以下に抑えている"
       ],
       "ai_summary": "ナ・リーグ中地区の2位に付けるカブスが、東地区3位のマーリンズを迎える一戦である。カブスは【3連勝中で勢いがあり】、先発のClay Holmesは防御率2.09と好調を維持している一方、マーリンズは3連敗で調子を落としている。シリーズ第3戦にしてポストシーズン圏内を目指すカブスが、ここを制して勢いを続けられるかが焦点となる。ローンデポ・パークは得点が出にくい球場として知られており、Holmesと対するTyler Phillipsの先発投手対決がどう展開するかに注目したい。",
-      "notification_hook": "Clay Holmes防御率2.09、直近4登板自責1以下。カブスの連勝は続くか。"
+      "notification_hook": "Clay Holmes防御率2.09、直近4登板自責1以下。カブスの連勝は続くか。",
+      "final_score": {
+        "home": 10,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824385",
@@ -1176,7 +1231,12 @@
           "text": "ガーディアンズ はポストシーズン圏内",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823578",
@@ -1251,7 +1311,12 @@
           "text": "メッツには千賀滉大が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824142",
@@ -1351,7 +1416,12 @@
       },
       "log_notes": [],
       "ai_summary": "【ア・リーグ西地区首位のアストロズ】と【ナ・リーグ西地区2位のダイヤモンドバックス】が対戦する。アストロズは73勝70敗でポストシーズン圏内を確保しており、2位に3.0ゲーム差をつけた地位を守る重要な時期にある。一方、ダイヤモンドバックスは直近10試合で5勝5敗と勝ち越しを目指す状況だ。先発対決ではダイヤモンドバックスのEduardo Rodriguezが14勝5敗の成績を誇り、アストロズのPeter Lambertと投手戦が見どころになる。左翼が浅く得点が出やすいダキン・パークでの試合だけに、両先発の投げ合いでどちらが先制に結びつけるかに注目したい。",
-      "notification_hook": "Rodriguez14勝vs Lambert、両先発の投手戦が鍵。左翼浅いダキン・パークでの火花"
+      "notification_hook": "Rodriguez14勝vs Lambert、両先発の投手戦が鍵。左翼浅いダキン・パークでの火花",
+      "final_score": {
+        "home": 2,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824065",
@@ -1426,7 +1496,12 @@
           "text": "ブルージェイズには岡本和真が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 6,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822848",
@@ -1504,7 +1579,12 @@
           "text": "レンジャーズは自地区2位、レイズは自地区1位同士の好カード",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 8,
+        "away": 6,
+        "winner": "home"
+      }
     },
     {
       "game_id": "558618",
@@ -1758,7 +1838,12 @@
           "text": "ロッキーズには菅野智之が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 8,
+        "away": 10,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823253",
@@ -1838,7 +1923,12 @@
           "text": "ヤンキース はポストシーズン圏内、相手が追いかけている",
           "weight": 3
         }
-      ]
+      ],
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823091",
@@ -1905,7 +1995,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824552",
@@ -1985,7 +2080,12 @@
           "text": "ホワイトソックス はポストシーズン圏内",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 10,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823903",
@@ -2067,7 +2167,12 @@
           "text": "ドジャース はポストシーズン圏内",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 7,
+        "away": 5,
+        "winner": "home"
+      }
     }
   ],
   "ai_status": {
