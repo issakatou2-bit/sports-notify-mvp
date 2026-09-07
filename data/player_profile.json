@@ -1,111 +1,113 @@
 {
-  "generated_at": "2026-09-06T06:01:04.113509+00:00",
-  "date_jst": "2026-09-06",
-  "name": "Riley Greene",
-  "player_id": "682985",
-  "team": "タイガース",
+  "generated_at": "2026-09-07T06:01:03.395080+00:00",
+  "date_jst": "2026-09-07",
+  "name": "Jake Burger",
+  "player_id": "669394",
+  "team": "レンジャーズ",
   "group": "hitting",
-  "why": "2026-09-06のMLBで最も活躍",
-  "headline": "5打数4安打　2本塁打　1二塁打　4打点",
-  "score": 187,
+  "why": "2026-09-07のMLBで最も活躍",
+  "headline": "4打数2安打　2本塁打　3打点　1四球",
+  "score": 157,
   "bio": {
-    "name_en": "Riley Greene",
-    "age": 25,
-    "birth_city": "Orlando",
-    "birth_state": "FL",
+    "name_en": "Jake Burger",
+    "age": 30,
+    "birth_city": "St. Louis",
+    "birth_state": "MO",
     "birth_country": "USA",
-    "birth_date": "2000-09-28",
-    "debut": "2022-06-18",
-    "draft_year": 2019,
-    "bats": "Left",
-    "throws": "Left",
-    "number": "31",
-    "position": "Outfielder",
+    "birth_date": "1996-04-10",
+    "debut": "2021-07-02",
+    "draft_year": 2017,
+    "bats": "Right",
+    "throws": "Right",
+    "number": "21",
+    "position": "First Base",
     "nickname": null,
-    "height": "6' 2\"",
-    "weight": 200
+    "height": "6' 0\"",
+    "weight": 230
   },
   "teams": [
     {
-      "team": "タイガース",
-      "from": 2022,
+      "team": "ホワイトソックス",
+      "from": 2021,
+      "to": 2023
+    },
+    {
+      "team": "マーリンズ",
+      "from": 2023,
+      "to": 2024
+    },
+    {
+      "team": "レンジャーズ",
+      "from": 2025,
       "to": 2026
     }
   ],
   "career": {
-    "games": 607,
-    "avg": ".266",
-    "hr": 94,
-    "rbi": 324,
-    "ops": ".793",
-    "sb": 17,
-    "hits": 613
+    "games": 584,
+    "avg": ".245",
+    "hr": 113,
+    "rbi": 320,
+    "ops": ".759",
+    "sb": 6,
+    "hits": 511
   },
   "this_season": {
-    "games": 121,
-    "avg": ".273",
-    "hr": 18,
-    "rbi": 60,
-    "ops": ".825",
+    "games": 137,
+    "avg": ".239",
+    "hr": 25,
+    "rbi": 82,
+    "ops": ".738",
     "sb": 3,
-    "hits": 120
+    "hits": 118
   },
   "last_season": {
-    "games": 157,
-    "avg": ".258",
-    "hr": 36,
-    "rbi": 111,
-    "ops": ".806",
-    "sb": 2,
-    "hits": 155
+    "games": 103,
+    "avg": ".236",
+    "hr": 16,
+    "rbi": 53,
+    "ops": ".688",
+    "sb": 1,
+    "hits": 84
   },
   "recent": [
     {
+      "date": "2026-09-06",
+      "line": "4打数2安打 2本塁打 3打点",
+      "opponent": "Tampa Bay Rays"
+    },
+    {
       "date": "2026-09-05",
-      "line": "5打数4安打 2本塁打 4打点",
-      "opponent": "Cleveland Guardians"
+      "line": "4打数1安打",
+      "opponent": "Tampa Bay Rays"
     },
     {
       "date": "2026-09-04",
-      "line": "3打数0安打",
-      "opponent": "Cleveland Guardians"
+      "line": "1打数1安打",
+      "opponent": "Tampa Bay Rays"
+    },
+    {
+      "date": "2026-09-03",
+      "line": "3打数1安打 1打点",
+      "opponent": "Tampa Bay Rays"
     },
     {
       "date": "2026-09-02",
-      "line": "6打数1安打 1打点",
-      "opponent": "Minnesota Twins"
-    },
-    {
-      "date": "2026-09-01",
-      "line": "4打数0安打 1打点",
-      "opponent": "Minnesota Twins"
-    },
-    {
-      "date": "2026-08-11",
-      "line": "0打数0安打",
-      "opponent": "Cleveland Guardians"
+      "line": "4打数0安打",
+      "opponent": "Athletics"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "AL All-Star"
-    },
-    {
-      "season": "2025",
-      "name": "AL Silver Slugger"
-    },
-    {
-      "season": "2025",
-      "name": "AL All-Star"
-    },
-    {
-      "season": "2025",
-      "name": "AL Player of the Week"
-    },
-    {
       "season": "2024",
-      "name": "AL All-Star"
+      "name": "Marlins MVP"
+    },
+    {
+      "season": "2021",
+      "name": "MiLB.com Organization All-Star"
+    },
+    {
+      "season": "2017",
+      "name": "MiLB.com Organization All-Star"
     }
   ],
   "quotes": []
