@@ -60,9 +60,19 @@ for attempt in 1 2 3 4 5; do
   #   渡し忘れ自体は直したが、次に何かを足す人も同じ穴に落ちる。
   #   関係の無い汚れで記録を落とさないようにしておく。
   if ! git pull --rebase --autostash --quiet; then
-    echo "::warning::取り込みに失敗しました。中止します"
-    git rebase --abort 2>/dev/null || true
-    exit 0
+    # 取り込み自体が止まる場合。同じJSONの同じあたりを両方が
+    # 書き換えていると、ここへ来る。記録の中身は「別の枠・別の日が
+    # 増えた」だけのことがほとんどで、両方を残せば正しい。
+    #
+    # 8/17はサッカーが、9/6は週次2本がこれで記録から消えた。
+    # 動画は出ているのに記録だけ無い状態は、見張りに嘘をつかせる。
+    if python3 scripts/merge_json_conflict.py && GIT_EDITOR=true git rebase --continue; then
+      echo "ぶつかったところを、両方残す形で解きました"
+    else
+      echo "::warning::取り込みに失敗しました。中止します"
+      git rebase --abort 2>/dev/null || true
+      exit 0
+    fi
   fi
   sleep $((attempt * 3))
 done
