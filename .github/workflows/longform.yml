@@ -123,6 +123,19 @@ jobs:
           mkdir -p build/lf
           python scripts/generate_dialogue.py --out build/lf/dialogue.json
 
+      # 言ったことが、渡した材料と一致しているか。
+      #
+      # 9/8の回は「カブスは20本以上が5人」で公開の直前まで行った。
+      # 正しくは4人。移籍した選手の成績を二重に数えていたため。
+      # 56本も176打点もシーズンの数字としてはありえる範囲なので、
+      # 下の検算(ありえない値を見る)では捕まらない。
+      #
+      # 新しくAPIは叩かない。台本の facts に渡した数字が入っている。
+      - name: Verify the numbers against the material
+        run: |
+          python scripts/verify_numbers.py \
+            --dialogue build/lf/dialogue.json --strict
+
       # 台本にありえない数字が混ざっていないか。短編と同じ検査を通す。
       # 長編だからといって緩めない。
       - name: Sanity check the script

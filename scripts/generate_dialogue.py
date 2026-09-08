@@ -378,6 +378,27 @@ def _pit_line(t: dict) -> str:
             f"防御率{era:.2f} {ip:.1f}回 {t.get('strikeOuts', 0)}奪三振")
 
 
+def _facts(m: dict) -> dict:
+    """台詞と突き合わせるための、選手ごとの数字。
+
+    渡した材料をそのまま平たくするだけ。ここで計算はしない
+    (計算するなら、それは材料側の仕事で、間違いも一緒に写る)。
+    """
+    out = {}
+    for sq in (m.get("squads") or {}).values():
+        for h in (sq.get("hitters") or []):
+            if h.get("name"):
+                out.setdefault(h["name"], {})
+                out[h["name"]]["本"] = h.get("hr")
+                out[h["name"]]["打点"] = h.get("rbi")
+        for pi in (sq.get("pitchers") or []):
+            if pi.get("name"):
+                out.setdefault(pi["name"], {})
+                out[pi["name"]]["勝"] = pi.get("w")
+                out[pi["name"]]["奪三振"] = pi.get("so")
+    return out
+
+
 def squad(jp_name: str) -> dict:
     """その球団の、いまの主な打者と投手。
 
@@ -1648,6 +1669,16 @@ def main() -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(
         {"kind": "dialogue", "segments": segs, "panels": ps,
+         # **渡した数字そのもの。**台詞に出た数字と突き合わせるため。
+         #
+         # 9/8の長編は「カブスは20本以上が5人」で公開直前まで行った。
+         # 正しくは4人で、移籍した選手の成績を二重に数えていた。
+         # 56本も176打点もシーズンの数字としてはありえる範囲なので、
+         # 検算(sanity)は通ってしまう。**値の大小では捕まらない。**
+         #
+         # 材料と台詞を突き合わせれば、どこで壊れても捕まる。
+         # 新しくAPIを叩く必要は無い。ここにあるものを書き出すだけ。
+         "facts": _facts(m),
          "top": m["top"].get("topic_jp") or m["top"].get("matchup"),
          "title": m["top"].get("title") or "",
          # コメントに名前が出ている日本人選手。題の「◯◯への現地の声」は
