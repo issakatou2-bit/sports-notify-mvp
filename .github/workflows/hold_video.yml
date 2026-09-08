@@ -1,0 +1,48 @@
+name: 道具　公開を止める / 戻す
+
+# 出したあとに中身の誤りが分かった日に、公開を止める。
+#
+# 9/8、18:30公開予定の長編に「カブスは20本以上が5人」と入っていた。
+# 正しくは4人。移籍した選手の成績を二重に数えていたため。
+# 公開の1時間前に気づけたのに、止める道具が無かった。
+#
+# 消さない。非公開に戻すだけなので、取り違えてもすぐ戻せる。
+# 既定は下読み。実行ページに「いま」と「こう」を出すので、
+# 見てから write: true でもう一度動かす。
+
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: '動画ID (例 7VMEC9txt0k)'
+        required: true
+      write:
+        description: 'true にすると実際に変える(既定は下読みだけ)'
+        required: false
+        default: 'false'
+      release:
+        description: 'true にすると、逆に公開へ戻す'
+        required: false
+        default: 'false'
+
+jobs:
+  hold:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install google-api-python-client google-auth
+
+      - name: Hold or release
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          ARGS="--video ${{ inputs.video }}"
+          if [ "${{ inputs.write }}" = "true" ]; then ARGS="$ARGS --write"; fi
+          if [ "${{ inputs.release }}" = "true" ]; then ARGS="$ARGS --release"; fi
+          python scripts/hold_video.py $ARGS | tee "$GITHUB_STEP_SUMMARY"

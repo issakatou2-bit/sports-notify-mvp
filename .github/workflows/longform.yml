@@ -36,6 +36,13 @@ on:
         description: 'YouTubeへ上げるか (false なら動画ファイルだけ作る)'
         required: false
         default: 'true'
+      force:
+        description: 'true にすると、その日に投稿済みでも上げ直す'
+        required: false
+        default: 'false'
+      publish_at:
+        description: '公開時刻 (HH:MM、空なら即時)'
+        required: false
   workflow_run:
     workflows: ["毎日 17:00-20:00　夕方の4本"]
     types: [completed]
@@ -173,7 +180,8 @@ jobs:
             --dialogue build/lf/dialogue.json \
             --thumbnail build/lf/thumb.png \
             --privacy "${{ inputs.privacy || 'public' }}" \
-            --publish-at "${{ github.event_name == 'workflow_run' && '18:30' || '' }}"
+            ${{ inputs.force == 'true' && '--force' || '' }} \
+            --publish-at "${{ github.event_name == 'workflow_run' && '18:30' || inputs.publish_at }}"
 
       # 投稿の記録を残す。ここが無いと、上げたこと自体が
       # ランナーの中で消える。
