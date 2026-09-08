@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-09-07T13:02:01.356488+00:00",
+  "updated_at": "2026-09-08T06:01:55.039593+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-09-07",
-  "total_games": 2292,
+  "end": "2026-09-08",
+  "total_games": 2303,
   "min_games": 20,
   "venues": {
     "Coors Field": {
@@ -14,8 +14,8 @@
       "total": 30
     },
     "Sutter Health Park": {
-      "games": 64,
-      "runs": 722,
+      "games": 65,
+      "runs": 733,
       "avg_runs": 11.28,
       "rank": 2,
       "total": 30
@@ -42,16 +42,16 @@
       "total": 30
     },
     "Kauffman Stadium": {
-      "games": 72,
-      "runs": 698,
-      "avg_runs": 9.69,
+      "games": 73,
+      "runs": 707,
+      "avg_runs": 9.68,
       "rank": 6,
       "total": 30
     },
     "Citizens Bank Park": {
-      "games": 72,
-      "runs": 682,
-      "avg_runs": 9.47,
+      "games": 73,
+      "runs": 683,
+      "avg_runs": 9.36,
       "rank": 7,
       "total": 30
     },
@@ -104,31 +104,31 @@
       "rank": 14,
       "total": 30
     },
-    "Fenway Park": {
-      "games": 69,
-      "runs": 602,
-      "avg_runs": 8.72,
-      "rank": 15,
-      "total": 30
-    },
     "Citi Field": {
       "games": 74,
       "runs": 645,
       "avg_runs": 8.72,
+      "rank": 15,
+      "total": 30
+    },
+    "Fenway Park": {
+      "games": 70,
+      "runs": 609,
+      "avg_runs": 8.7,
       "rank": 16,
       "total": 30
     },
-    "American Family Field": {
-      "games": 73,
-      "runs": 633,
+    "Oracle Park": {
+      "games": 72,
+      "runs": 624,
       "avg_runs": 8.67,
       "rank": 17,
       "total": 30
     },
-    "Oracle Park": {
-      "games": 71,
-      "runs": 615,
-      "avg_runs": 8.66,
+    "American Family Field": {
+      "games": 74,
+      "runs": 640,
+      "avg_runs": 8.65,
       "rank": 18,
       "total": 30
     },
@@ -140,16 +140,16 @@
       "total": 30
     },
     "Oriole Park at Camden Yards": {
-      "games": 73,
-      "runs": 628,
-      "avg_runs": 8.6,
+      "games": 74,
+      "runs": 638,
+      "avg_runs": 8.62,
       "rank": 20,
       "total": 30
     },
     "UNIQLO Field at Dodger Stadium": {
-      "games": 74,
-      "runs": 636,
-      "avg_runs": 8.59,
+      "games": 75,
+      "runs": 645,
+      "avg_runs": 8.6,
       "rank": 21,
       "total": 30
     },
@@ -174,17 +174,17 @@
       "rank": 24,
       "total": 30
     },
+    "loanDepot park": {
+      "games": 73,
+      "runs": 593,
+      "avg_runs": 8.12,
+      "rank": 25,
+      "total": 30
+    },
     "Globe Life Field": {
       "games": 74,
       "runs": 599,
       "avg_runs": 8.09,
-      "rank": 25,
-      "total": 30
-    },
-    "loanDepot park": {
-      "games": 72,
-      "runs": 580,
-      "avg_runs": 8.06,
       "rank": 26,
       "total": 30
     },
@@ -196,9 +196,9 @@
       "total": 30
     },
     "Comerica Park": {
-      "games": 69,
-      "runs": 553,
-      "avg_runs": 8.01,
+      "games": 70,
+      "runs": 562,
+      "avg_runs": 8.03,
       "rank": 28,
       "total": 30
     },
@@ -210,9 +210,9 @@
       "total": 30
     },
     "Petco Park": {
-      "games": 72,
-      "runs": 549,
-      "avg_runs": 7.62,
+      "games": 73,
+      "runs": 554,
+      "avg_runs": 7.59,
       "rank": 30,
       "total": 30
     }
