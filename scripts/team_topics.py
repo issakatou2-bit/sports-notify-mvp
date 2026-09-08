@@ -158,6 +158,12 @@ def stars(tid: str, season: str = "") -> list:
             grp = (st.get("group") or {}).get("displayName")
             for sp in (st.get("splits") or []):
                 # その球団での分だけ。移籍組は他球団の行も返ってくる。
+                #
+                # 合計の行(numTeams が入っていて team が無い)は、
+                # `or tid` のところで「その球団」として通ってしまう。
+                # 移籍した選手の日に、合計と球団ごとの両方が入る。
+                if sp.get("numTeams"):
+                    continue
                 if str((sp.get("team") or {}).get("id") or tid) != str(tid):
                     continue
                 s = sp.get("stat") or {}
@@ -222,6 +228,8 @@ def japanese_on(tid: str, season: str = "") -> list:
         for st in (person.get("stats") or []):
             grp = (st.get("group") or {}).get("displayName")
             for sp in (st.get("splits") or []):
+                if sp.get("numTeams"):
+                    continue        # 合計の行。上と同じ理由
                 if str((sp.get("team") or {}).get("id") or tid) != str(tid):
                     continue
                 s = sp.get("stat") or {}

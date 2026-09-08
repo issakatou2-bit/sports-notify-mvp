@@ -25,7 +25,9 @@ from datetime import date, datetime, timedelta, timezone
 
 import requests
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+import mlb_splits  # noqa: E402
 from notability_engine import JP_PLAYERS_MLB, MLB_TEAM_NAME_JP  # noqa: E402
 
 MLB_API_BASE = "https://statsapi.mlb.com/api/v1"
@@ -52,7 +54,9 @@ def fetch_day_hitting(player_id: str, day: str, season: str):
     except Exception:
         return None
     for st in resp.json().get("stats", []):
-        for split in st.get("splits", []):
+        # 1日ぶんの取得なので、ふつうは1行しか返らない。ただし
+        # 移籍した日をまたぐと合計の行が付く。そのときは合計を使う。
+        for split in mlb_splits.prefer_total(st.get("splits")):
             s = split.get("stat") or {}
             ab = int(_f(s.get("atBats")))
             pa = int(_f(s.get("plateAppearances"))) or ab
@@ -95,7 +99,7 @@ def fetch_day_pitching(player_id: str, day: str, season: str):
     except Exception:
         return None
     for st in resp.json().get("stats", []):
-        for split in st.get("splits", []):
+        for split in mlb_splits.prefer_total(st.get("splits")):
             s = split.get("stat") or {}
             ip = s.get("inningsPitched")
             if not ip or _f(ip) <= 0:

@@ -630,6 +630,58 @@ def check_shared_owned() -> int:
     return 0
 
 
+def check_splits_reader() -> int:
+    """成績の行を、自前で選んでいないか。
+
+    なぜ要るのか:
+      シーズン途中に移籍した選手は、MLB APIが**合計と球団ごとの両方**を
+      返す。9/8の長編で「ルイス・ガルシア56本」と出たのは、3行を全部
+      足していたため（正しくは28本）。同じ形の読み方が5つのファイルに
+      あった。足しているところと、「最初の1行」を採っているところ。
+
+      **範囲では捕まらない。**56本も176打点も、シーズンの数字としては
+      ありえる値なので、検算(sanity)は通ってしまう。読み方を間違えた
+      ことは、値を見ても分からない。**書き方のほうを見るしかない。**
+
+      1か所(mlb_splits)に寄せたが、次に誰かが `st.get("splits")` と
+      書けば同じことが起きる。寄せたことを、ここで押さえる。
+
+    見逃すもの:
+      試合ログ(gameLog)は1行が1試合で、合計の行が返らない。
+      そちらを読むファイルは、名前で除く。
+    """
+    print(chr(10) + "--- 成績の行を、自前で選んでいないか ---")
+    # 試合ログだけを読むファイル。合計の行が無いので、対象外。
+    GAMELOG_ONLY = {"game_log_notes.py", "detect_roster_changes.py"}
+    # 年別・リーグ全体など、球団ごとの行に意味があるもの。
+    BY_TEAM_OK = {"player_profile.py", "generate_player_stats.py"}
+    bad = []
+    for f in sorted((ROOT / "scripts").glob("*.py")):
+        if f.name in GAMELOG_ONLY | BY_TEAM_OK:
+            continue
+        if f.name in ("mlb_splits.py", "run_checks.py", "test_splits.py"):
+            continue
+        t = f.read_text(encoding="utf-8-sig", errors="replace")
+        if 'get("splits"' not in t and '["splits"]' not in t:
+            continue
+        # 寄せ先を通しているか、合計の行(numTeams)を自分で見ているか。
+        # team_topics は「その球団の分だけ」を取りたいので、合計を
+        # 除くほうが自然な形になる。書き方を1つに強いる検査ではなく、
+        # **見落としていないこと**を見る検査にする。
+        if "mlb_splits" in t or "numTeams" in t:
+            continue
+        bad.append(f.name)
+    if bad:
+        print("NG  成績の行を自前で読んでいます: %d件" % len(bad))
+        for b in bad:
+            print("      " + b)
+        print("      移籍した選手の日に、合計と球団ごとを二重に数えます")
+        print("      mlb_splits.season_stat / prefer_total を通してください")
+        return 1
+    print("ok  自前で読んでいるところ 0件")
+    return 0
+
+
 def check_render_coverage() -> int:
     """描く関数が、全部いちど試験を通っているか。
 
@@ -937,6 +989,7 @@ def main() -> int:
     failed += check_inventory()
     failed += check_commit_list()
     failed += check_secrets_passed()
+    failed += check_splits_reader()
     failed += check_render_coverage()
     failed += check_shared_owned()
     failed += check_redefined()

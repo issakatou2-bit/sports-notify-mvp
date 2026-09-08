@@ -30,6 +30,9 @@ from datetime import date, datetime, timedelta, timezone
 
 import requests
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import mlb_splits  # noqa: E402
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import JP_PLAYERS_MLB  # noqa: E402
 from notability_engine import MLB_TEAM_ABBR as TEAM_ABBR  # noqa: E402
@@ -87,7 +90,8 @@ def fetch_range_hitting(player_id: str, start: str, end: str, season: str):
         return None
 
     for st in resp.json().get("stats", []):
-        for split in st.get("splits", []):
+        # 期間の集計。移籍した選手はその期間の合計の行が付く。
+        for split in mlb_splits.prefer_total(st.get("splits")):
             stat = split.get("stat") or {}
             pa = stat.get("plateAppearances") or stat.get("atBats")
             if not pa:
