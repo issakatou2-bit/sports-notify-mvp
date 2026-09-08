@@ -55,7 +55,58 @@ def names_in(title: str) -> list:
     return [x.strip() for x in re.split(r"[｜|/、]", body) if x.strip()]
 
 
+def check_voiced() -> int:
+    """コメント欄の題に出す名前が、**実際に言われた人**か。
+
+    所属しているだけの選手を「◯◯への声」と書くと、題が嘘になる。
+    材料は local_voices の jp_players で、これはコメントの文面に
+    名前が出た選手だけが入る。所属では入らない。
+    """
+    import json as _json
+    import tempfile
+    bad = 0
+    print(chr(10) + "--- コメント欄の題に出す名前 ---")
+    try:
+        import upload_youtube as uy
+    except Exception as e:                       # noqa: BLE001
+        print("[skip] 読み込めません: %s" % str(e)[:60])
+        return 0
+
+    def _w(folder, voices):
+        f = pathlib.Path(folder) / "lv.json"
+        f.write_text(_json.dumps({"voices": voices}, ensure_ascii=False),
+                     encoding="utf-8")
+        return str(f)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        cases = [
+            ("名前が挙がった選手を返す",
+             [{"jp_players": ["村上宗隆"]}], ["村上宗隆"]),
+            ("2人でも順に返す",
+             [{"jp_players": ["村上宗隆"]}, {"jp_players": ["岡本和真"]}],
+             ["村上宗隆", "岡本和真"]),
+            ("同じ人を重ねない",
+             [{"jp_players": ["村上宗隆"]}, {"jp_players": ["村上宗隆"]}],
+             ["村上宗隆"]),
+            ("誰にも触れていない日は空",
+             [{"jp_players": []}, {"tone": "称賛"}], []),
+        ]
+        for label, voices, want in cases:
+            got = uy.voiced_japanese(_w(tmp, voices))
+            ok = got == want
+            bad += not ok
+            print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
+                                   "" if ok else "   (期待 %r)" % (want,)))
+    got = uy.voiced_japanese("build/does-not-exist.json")
+    ok = got == []
+    bad += not ok
+    print("%s 材料が無い日でも落ちない: %r" % ("ok " if ok else "NG ", got))
+    return bad
+
+
 def main() -> int:
+    global fails
+    fails += check_voiced()
     prof = load("data/player_profile.json")
 
     print("--- 今日の1人 ---")

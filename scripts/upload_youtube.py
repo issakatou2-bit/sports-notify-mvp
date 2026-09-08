@@ -888,6 +888,35 @@ def thread_replies(path: str = "data/local_voices.json") -> int:
     return 0
 
 
+def voiced_japanese(path: str = "data/local_voices.json") -> list:
+    """その日のコメントで、名前が挙がった日本人選手。
+
+    なぜ題に出すのか:
+      コメント欄の回は8/11〜9/8で18本・平均132再生・登録0。同じ時間帯に
+      出している「現地の報道」は平均305・登録+1で、違いは題に日本人選手の
+      名前が入るかどうかだった。全体でも、題に名前がある53本は平均395再生・
+      登録+12、無い88本は平均192・登録0。
+
+      ここは「カブス vs ブリュワーズ 現地のファンは何と言ったか」で、
+      日本人選手が試合に出ていても題からは分からない。
+
+    嘘にしないために:
+      **所属しているだけでは出さない。**コメントの文面に名前が
+      挙がった選手だけを返す(local_voices の jp_players)。
+      「◯◯への声」と書いて中身が別人の話だったら、題が嘘になる。
+    """
+    try:
+        d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    out = []
+    for v in (d.get("voices") or []):
+        for n in (v.get("jp_players") or []):
+            if n and n not in out:
+                out.append(n)
+    return out
+
+
 def load_profile(path: str) -> dict:
     """「今日の1人」の材料。無ければ空。"""
     try:
@@ -1202,7 +1231,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # しかも「何を言ったらそんなに返ってきたのか」が残る。
         n = thread_replies()
         tail = f"｜返信{n}件ついたコメント {date_label} #Shorts" if n else             f"｜{date_label} 最も見られたハイライトのコメント欄 #Shorts"
-        if card:
+        # コメントで名前が挙がった日本人選手がいれば、先頭へ。
+        # 所属しているだけの日は出さない(voiced_japanese の説明を参照)。
+        who = "・".join(voiced_japanese()[:2])
+        if who and card:
+            title = f"【MLB】{who}｜{card} 現地のファンは何と言ったか{tail}"
+        elif who:
+            title = f"【MLB】{who} 現地のファンは何と言ったか{tail}"
+        elif card:
             title = f"【MLB】{card} 現地のファンは何と言ったか{tail}"
         else:
             title = f"【MLB】現地で最も見られた試合のコメント欄{tail}"
