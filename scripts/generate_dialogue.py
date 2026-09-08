@@ -57,6 +57,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 
+import mlb_splits  # noqa: E402
 import textkey  # noqa: E402
 import token_log  # noqa: E402
 
@@ -322,7 +323,24 @@ def _roster_id(name: str, roster_path: str = "data/roster_snapshot.json") -> str
 
 
 def _add(splits: list, keys: tuple) -> dict:
-    """複数行に分かれた成績を足す。移籍した選手のため。"""
+    """複数行に分かれた成績を足す。移籍した選手のため。
+
+    **合計の行を二重に数えない。**
+
+    シーズン途中に移籍した選手は、MLB APIが3行返す。
+
+      team=(なし)              numTeams=2  28本  ← 合計
+      team=Washington Nationals            23本
+      team=New York Yankees                 5本
+
+    全部足すと56本になる。9/7の長編で実際にそう出た
+    (「ルイス・ガルシア56本、ベン・ライス36本」)。176打点は
+    歴代最多に迫る数字で、それが台本にも題にも入っていた。
+
+    合計の行があるときは、それだけを使う。率(打率・OPS)も
+    同じ材料から出し直すので、そこもまとめて正しくなる。
+    """
+    splits = mlb_splits.prefer_total(splits)
     t = {k: 0 for k in keys}
     for sp in splits:
         st = sp.get("stat") or {}

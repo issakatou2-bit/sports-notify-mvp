@@ -36,6 +36,8 @@ import pathlib
 import sys
 import urllib.request
 
+import mlb_splits
+
 API = "https://statsapi.mlb.com/api/v1"
 UA = {"User-Agent": "collespo/1.0 (+https://collespo.com)"}
 
@@ -110,7 +112,10 @@ def fetch(player_id: str, group: str, season: str = "2026") -> dict:
         if name == "yearByYear":
             out["years"] = [(s.get("season"), s.get("stat") or {}) for s in sp]
         elif name in ("season", "career") and sp:
-            out[name] = sp[0].get("stat") or {}
+            # 移籍した選手は、合計と球団ごとの両方が返る。
+            # 「最初の1行」で合っていたのは、たまたま合計が先頭に
+            # 来ているから。順番が変わった日に静かにずれる。
+            out[name] = mlb_splits.season_stat(sp)
     return out
 
 
@@ -147,7 +152,7 @@ def first_postseason(player: dict, postseason_path: str) -> dict:
     except Exception:                            # noqa: BLE001
         return {}
     sp = (d.get("stats") or [{}])[0].get("splits") or []
-    games = _num(sp[0].get("stat") or {}, "gamesPlayed") if sp else 0
+    games = _num(mlb_splits.season_stat(sp), "gamesPlayed")
     if games:
         return {}
     return {"name": name, "rank": -1, "gap": 0, "reach": 1,

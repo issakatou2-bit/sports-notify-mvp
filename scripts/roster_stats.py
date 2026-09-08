@@ -35,7 +35,9 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+import mlb_splits  # noqa: E402
 from notability_engine import MLB_TEAM_NAME_JP  # noqa: E402
 
 API = "https://statsapi.mlb.com/api/v1"
@@ -51,10 +53,15 @@ def team_id_of(name_jp: str) -> str:
 
 
 def season_line(person: dict) -> tuple:
-    """(種別, 今季の1行)。成績が無ければ ("", "")。"""
+    """(種別, 今季の1行)。成績が無ければ ("", "")。
+
+    移籍した選手は、合計と球団ごとの行が両方返る。合計だけを見る
+    (`mlb_splits.season_stat`)。並び順に頼っていると、APIが順番を
+    変えた日から、球団ごとの数字を「今季」として出すことになる。
+    """
     for st in (person.get("stats") or []):
         group = ((st.get("group") or {}).get("displayName") or "")
-        for sp in st.get("splits", []):
+        for sp in mlb_splits.prefer_total(st.get("splits")):
             s = sp.get("stat") or {}
             if group == "hitting" and s.get("atBats"):
                 return ("batter",

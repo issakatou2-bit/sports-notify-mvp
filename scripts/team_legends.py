@@ -34,7 +34,9 @@ from datetime import datetime, timezone
 
 import requests
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+import mlb_splits  # noqa: E402
 from notability_engine import MLB_TEAM_NAME_JP  # noqa: E402
 
 API = "https://statsapi.mlb.com/api/v1"
@@ -59,7 +61,8 @@ def career(pid: int, position: str = "", timeout: int = 25) -> dict:
         except Exception:  # noqa: BLE001
             continue
         for st in r.get("stats", []):
-            for sp in st.get("splits", []):
+            # 移籍した選手は、合計と球団ごとの行が両方返る。合計だけ見る。
+            for sp in mlb_splits.prefer_total(st.get("splits")):
                 s = sp.get("stat") or {}
                 if group == "hitting" and s.get("gamesPlayed"):
                     if not s.get("atBats"):
