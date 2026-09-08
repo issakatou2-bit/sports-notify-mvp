@@ -249,6 +249,27 @@ check("成績の記録名が投稿側と同じ",
       hc4._record_key("morning"), uy4.record_kind("morning", "players"))
 
 
+# 二重投稿の守りが、全部の枠に効いているか。
+#
+# 9/7、成績の回を手で出し直したところ、その完走を合図にしている長編が
+# 続けて走り、その日2本目の長編が公開された。守りは daily と morning
+# にしか効いていなかった。週次と答え合わせも漏れていた。
+print("\n--- 二重投稿の守り ---")
+import upload_youtube as uy5  # noqa: E402
+
+# --kind の選択肢は main() の中で組み立てているので、外からは
+# 取り出せない。ソースの choices=[...] をそのまま読む。
+_kinds = set()
+for _line in (ROOT / "scripts" / "upload_youtube.py").read_text(
+        encoding="utf-8").split("choices=[", 1)[-1].split("]", 1)[0].split(","):
+    _line = _line.strip().strip('"' + "'")
+    if _line:
+        _kinds.add(_line)
+# 日付で引かないのは資産動画だけ。ほかは全部守りの対象に入っていること。
+check("守りから漏れている枠",
+      sorted(_kinds - set(uy5.DATED_KINDS) - {"asset"}), [])
+
+
 # 「所属」を「対決」と読み替えられないようにしてあるか。
 #
 # 8/20の19時の回で、両チームに日本人投手が在籍しているだけの試合を

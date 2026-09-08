@@ -635,6 +635,12 @@ def record_kind(kind: str, morning_mode: str = "players",
     return kind
 
 
+# 日付で引ける枠。**ここに無い kind は、二重投稿の守りが効かない。**
+# 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
+# --kind の選択肢と食い違っていないかは test_consistency が見る。
+DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict")
+
+
 def published_video(kind: str, date_key: str,
                     path: str = VIDEOS_PATH) -> dict:
     """その区分・その日が既に投稿済みなら記録を返す。無ければ空。"""
@@ -1658,11 +1664,21 @@ def main():
     # ワークフローが2度走った日に、同じ内容の動画が3種類とも2本ずつ
     # チャンネルに並んだ。記録は上書きされるので、片方はサイトからも
     # 辿れないまま残る。定刻の実行と手動の実行が重なるのは普通に起きる。
+    #
+    # **そのとき daily と morning しか直さなかった。**
+    # 9/7、成績の回を手で出し直したところ、その完走を合図にしている
+    # 長編が続けて走り、その日2本目の長編が公開された
+    # (20:30 u1Sc2jSldv0 と 22:05 yGqyZ_OjXKI)。記録は後から上書き
+    # されるので、先の1本はサイトからも辿れない。
+    # 週次と答え合わせも同じ形で、まだ守られていなかった。
+    #
+    # 日付で引ける枠は全部ここで止める。資産動画は日付ではなく
+    # 話題で引くので、上の分岐がそのまま受け持つ。
     from datetime import datetime as _dt, timezone as _tz
 
     date_key = args.video_date or _dt.now(_tz.utc).date().isoformat()
     rec_kind = record_kind(args.kind, args.morning_mode, args.sport)
-    if args.kind in ("daily", "morning") and not args.force:
+    if args.kind in DATED_KINDS and not args.force:
         already = published_video(rec_kind, date_key)
         if already:
             print(f"[info] {rec_kind} の {date_key} は投稿済みのため"
