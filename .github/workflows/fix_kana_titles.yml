@@ -1,0 +1,60 @@
+name: 道具　題のカナ表記を漢字に直す
+
+# 「ムネタカ・ムラカミ」を「村上宗隆」に。
+#
+# ハイライトの題を訳すとき「選手名はカタカナにする」と頼んでいたので、
+# 日本人選手まで巻き込んでいた。作り方は9/7に直したが、すでに出た
+# ものは古い題のまま残る。同じ変換をかけて揃える。
+#
+# 題に日本人選手の名前があるかどうかで、実測では再生2.8倍・
+# 登録者12人対0人。だがカナでは検索にも記憶にも届かない。
+#
+# 既定は下読み。実行ページに「いま」と「こう」を並べて出すので、
+# 見てから write: true でもう一度動かす。
+
+on:
+  workflow_dispatch:
+    inputs:
+      write:
+        description: 'true にすると実際に変える(既定は下読みだけ)'
+        required: false
+        default: 'false'
+      video:
+        description: '記録に無い動画を名指しで足す(カンマ区切り)'
+        required: false
+
+# 記録の題も揃えるのでコミットする
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install google-api-python-client google-auth
+
+      - name: Fix titles
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          VIDEOS: ${{ inputs.video }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.write }}" = "true" ]; then ARGS="--write"; fi
+          for v in $(echo "$VIDEOS" | tr ',' ' '); do
+            [ -n "$v" ] && ARGS="$ARGS --video $v"
+          done
+          python scripts/fix_kana_titles.py $ARGS | tee "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit
+        if: ${{ inputs.write == 'true' }}
+        run: |
+          bash scripts/commit_data.sh "titles: ${{ github.run_id }}" data/published_videos.json
