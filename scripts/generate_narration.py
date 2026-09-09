@@ -333,9 +333,13 @@ def pick_hook(games: list) -> dict:
             m = re.match(r"^(?P<club>.+?)には(?P<who>.+?)が所属$",
                          (r.get("text") or "").strip())
             if m:
+                # at を返し忘れていた。**「リバプールの試合」と
+                # 名乗りながら、1つ目に別の試合を出していた。**
+                # 画面は notable_games を別に読むので、位置がずれると
+                # 名乗りと映るものが食い違う。9/9がそうなっていた。
                 return {"big": f"{m.group('club')}の試合",
                         "sub": m.group("who").split("・")[0],
-                        "key": m.group("club")}
+                        "at": at, "key": m.group("club")}
 
     # 5. 連勝。チームの話なので、選手を知らなくても意味が通る。
     #
