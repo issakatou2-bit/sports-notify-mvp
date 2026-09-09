@@ -1,0 +1,26 @@
+name: 道具　MLBの日本人選手名簿を確かめる
+
+# JP_PLAYERS_MLB も手で書いた名簿で、自動では更新されない。
+# サッカーの名簿が16人抜けていたのと同じ形の穴が、こちらにもあった。
+# 9/9に Rikuu Nishida（ホワイトソックス・12試合出場）が見つかった。
+#
+# 移籍期限は7月末、開幕は3月末。その前後で人が動く。
+# シーズン中の昇格・降格もあるので、月に1度見る。
+#
+# 直しはしない。差分を出すだけ。名簿はコードなので人が見てから直す。
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 2 1 * *'   # 毎月1日 UTC 02:00 = JST 11:00
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check the roster
+        run: python scripts/check_mlb_roster.py | tee "$GITHUB_STEP_SUMMARY"

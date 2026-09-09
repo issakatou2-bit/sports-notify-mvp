@@ -1369,6 +1369,15 @@ JP_PLAYERS_MLB = [
     {"name_en": "Shinnosuke Ogasawara", "name_jp": "小笠原慎之介", "kana": "オガサワラ・シンノスケ", "type": "pitcher"},
     {"name_en": "Tatsuya Imai", "name_jp": "今井達也", "kana": "イマイ・タツヤ", "type": "pitcher"},
     {"name_en": "Lars Nootbaar", "name_jp": "ヌートバー", "type": "batter"},
+    # 2026-09-09に追加。MLB公式の登録から出身が日本の選手を引いて
+    # 突き合わせたところ、この選手だけ名簿に無かった
+    # （`scripts/check_mlb_roster.py`）。12試合29打数7安打で出場中。
+    #
+    # **日本語表記が確かめられなかったのでカタカナにしている。**
+    # 漢字が分かったら直す。名簿に無い間は、成績ランキングにも
+    # 題にも一度も出ない。
+    {"name_en": "Rikuu Nishida", "name_jp": "ニシダ・リクウ",
+     "kana": "ニシダ・リクウ", "type": "batter"},
 ]
 
 # 音声合成に渡すときの読み。
