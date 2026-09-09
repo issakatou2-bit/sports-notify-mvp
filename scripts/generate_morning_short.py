@@ -1396,6 +1396,86 @@ def intro_topic(mode: str, meta: dict, top: dict, extra: dict) -> tuple:
     return "", ""
 
 
+# 勝利貢献スコアが、ここを超えた日は特別扱いにする。
+#
+# 25日143人のうち16人（11%）。2日に1人くらいで、その日いちばんの
+# 出来事にあたる。毎日出ると特別感が消えるし、月に1度では
+# 仕組みを作る意味が薄い。実測でちょうどよい線。
+AURA_SCORE = 100
+
+
+def _score_of(row: dict) -> int:
+    """画面に出している点数。出していない日は0。"""
+    try:
+        return int(morning_recap.score_label(row) or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def render_intro_players(p, meta, top, extra=None):
+    """成績の回の1枚目。**選手の名前を主役にする。**
+
+    なぜ変えたのか:
+      ショートのサムネイルはこの絵そのもので、フィードで最初に
+      見えるのもここ。ところが**いちばん大きい文字が「日本人選手の
+      成績」で、毎日同じ**だった。選手名は帯の中に小さく入るだけ。
+
+      8/11〜9/8の実測では、題に日本人選手の名前がある動画は
+      平均395再生・登録+12、無い動画は192再生・登録0。
+      効いているのは名前のほう。1枚目でも逆にする。
+
+      見出しは消さずに下へ回す。何の回かは分かる必要があるが、
+      **押す理由になるのは名前と成績**なので、そこを大きくする。
+    """
+    im, d = base(p)
+    e = ease_out(min(1.0, p * 2.6))
+    slide = int((1 - e) * 70)
+    players = (extra or {}).get("players") or []
+    name = top.get("name") or ""
+    head = top.get("headline") or ""
+    score = _score_of(top)
+
+    d.text((80, 268 + slide), jp_date(meta.get("date", "")),
+           font=font(48), fill=DIM)
+
+    # 100点を超えた日は、名前のまわりを光らせる。
+    # 描く順番は光が先。あとから文字を重ねる。
+    if score >= AURA_SCORE and p > 0.12:
+        video_common.aura(im, (70, 350, W - 70, 640),
+                phase=(p * 0.55) % 1.0, strength=min(1.0, (p - 0.12) * 4))
+
+    size = fit(d, name, W - 170, (132, 116, 100, 88))
+    video_common.pop_text(d, (76, 356 + slide), name, font(size), ACCENT,
+                stroke=(8, 10, 15), stroke_w=9, shadow=(0, 0, 0),
+                shadow_off=(5, 6))
+
+    if head:
+        hs = fit(d, head, W - 170, (56, 50, 44, 40, 36))
+        d.text((80, 520 + slide), head, font=font(hs), fill=TEXT)
+
+    # 点数。特別な日だけ色を変える。
+    if score:
+        col = (255, 214, 120) if score >= AURA_SCORE else DIM
+        d.text((80, 600 + slide), f"スコア {score}", font=font(46), fill=col)
+        if score >= AURA_SCORE:
+            d.text((300, 604 + slide), "今季でも指折りの一日",
+                   font=font(38), fill=JP)
+
+    rest = "・".join(x.get("name", "") for x in players[1:4] if x.get("name"))
+    if rest:
+        d.text((80, 700), "ほか " + rest, font=font(44), fill=DIM)
+
+    heading, lede = INTRO_HEADINGS.get("players", ("", ""))
+    if morning_recap.quiet_day(players):
+        lede = "出場した選手の成績です"
+    d.text((80, 830), heading, font=font(52), fill=DIM)
+    d.text((80, 900), lede, font=font(38), fill=DIM)
+    d.text((80, 1000), f"出場 {meta.get('count', 0)}人",
+           font=font(50), fill=TEXT)
+    d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
+    return im
+
+
 def render_intro(p, meta, top, extra=None):
     """
     1枚目。ショートのサムネはこの絵そのものなので、ここで見る理由を出す。
@@ -1407,10 +1487,12 @@ def render_intro(p, meta, top, extra=None):
     見出しの下に、その回いちばんの事実を明るい帯で1つだけ置く。
     暗い背景に灰色の字を並べても、一覧に並んだ小さなサムネでは読めない。
     """
+    mode = meta.get("mode") or ("local" if meta.get("local") else "players")
+    if mode == "players":
+        return render_intro_players(p, meta, top, extra)
     im, d = base(p)
     e = ease_out(min(1.0, p * 2.6))
     slide = int((1 - e) * 70)
-    mode = meta.get("mode") or ("local" if meta.get("local") else "players")
     heading, lede = INTRO_HEADINGS.get(mode, INTRO_HEADINGS["players"])
     # 誰も安打を打たなかった日は「活躍した順」と言わない。
     # 帯だけ直しても、その真上に「その日活躍した順に紹介します」が

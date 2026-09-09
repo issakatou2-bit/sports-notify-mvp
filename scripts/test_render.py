@@ -191,6 +191,34 @@ def main() -> int:
         top = players[0] if players else {}
         check("冒頭 %s" % mode, g.render_intro, 1.0, meta, top, extra)
 
+    # 成績の回の1枚目は、名前が主役の別の形で描く。
+    #
+    # ショートのサムネイルはこの絵そのもので、フィードで最初に
+    # 見えるのもここ。**100点を超えた日だけ光をまとわせる**ので、
+    # 光る日と光らない日の両方を描いてみる。
+    print(chr(10) + "--- 成績の1枚目（名前が主役の形） ---")
+    ex = {"players": players}
+    meta = {"mode": "players", "date": "2026-08-30",
+            "count": len(players)}
+    if players:
+        check("ふつうの日", g.render_intro_players, 1.0, meta,
+              players[0], ex)
+        # 100点を超えた日。実際にあった数字で作る（ヌートバー181）。
+        big = dict(players[0])
+        big.update({"type": "batter", "ab": 4, "hits": 2, "hr": 1,
+                    "doubles": 1, "rbi": 5, "bb": 1, "runs": 2,
+                    "so": 0, "sb": 0, "pa": 5,
+                    "headline": "4打数2安打　1本塁打　1二塁打　5打点　1四球"})
+        check("100点を超えた日（光る）", g.render_intro_players, 1.0, meta,
+              big, {"players": [big] + players[1:]})
+        # 動きの途中。光の位相が変わる。
+        check("光り始め", g.render_intro_players, 0.3, meta, big,
+              {"players": [big] + players[1:]})
+        # 選手が1人だけの日。「ほか」が空になる。
+        check("選手が1人だけの日", g.render_intro_players, 1.0,
+              {"mode": "players", "date": "2026-08-30", "count": 1},
+              players[0], {"players": players[:1]})
+
     # 成績の行が、置ける幅に収まっているか。
     #
     # fit() は入らなくても最小の大きさを返すだけで、収まったとは
