@@ -477,6 +477,42 @@ def clip_sentences(jp: str, limit: int = REPORTER_MAX) -> str:
     return jp[:cut + 1] if cut >= 20 else ""
 
 
+def recap_facts(players: list) -> dict:
+    """読み上げた数字と突き合わせるための、その日の成績。
+
+    **打者と投手で、同じ鍵が別のものを指す。**投手の hits は
+    「打たれた数」で、打者の hits は「打った数」。混ぜると、
+    好投した投手を「4安打した」と読むことになる。
+    ここで単位の名前を分けておく（被安打 / 安打）。
+
+    ここに入れるのは**その日の成績だけ**。7日間の合計や
+    「あと1本で25号」は別の材料なので、照合の対象にしない。
+    """
+    out = {}
+    for p in (players or []):
+        name = p.get("name")
+        if not name:
+            continue
+        if (p.get("type") or "") == "pitcher":
+            ip = p.get("ip")
+            row = {"奪三振": p.get("so"), "自責": p.get("er"),
+                   "被安打": p.get("hits"), "四球": p.get("bb"),
+                   "勝": p.get("wins"), "セーブ": p.get("saves"),
+                   "ホールド": p.get("holds")}
+            if ip is not None:
+                try:
+                    row["回"] = float(ip)
+                except (TypeError, ValueError):
+                    pass
+        else:
+            row = {"打数": p.get("ab"), "安打": p.get("hits"),
+                   "本塁打": p.get("hr"), "打点": p.get("rbi"),
+                   "四球": p.get("bb"), "二塁打": p.get("doubles"),
+                   "三塁打": p.get("triples"), "盗塁": p.get("sb")}
+        out[name] = {k: v for k, v in row.items() if v is not None}
+    return out
+
+
 def week_line(players: list, days: int = 7) -> tuple:
     """ここ7日の調子。**合計点ではなく、上がり下がりを見せる。**
 
@@ -3338,6 +3374,14 @@ def main():
     if args.narration_out:
         p = pathlib.Path(args.narration_out)
         p.parent.mkdir(parents=True, exist_ok=True)
+        # **渡した数字そのもの。**読み上げた数字と突き合わせるため。
+        #
+        # 長編で「ルイス・ガルシア56本」が公開直前まで行った(9/8)。
+        # 値の大小では捕まらないので、材料と照らすしかない。
+        # ここは登録者の8割が来ている枠で、いちばん守りたい。
+        if args.mode == "players":
+            narration = dict(narration)
+            narration["facts"] = recap_facts(players)
         p.write_text(json.dumps(narration, ensure_ascii=False), encoding="utf-8")
         print(f"[info] 原稿を書き出しました: {p} "
               f"({len(narration['segments'])}セグメント)")

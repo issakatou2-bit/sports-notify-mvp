@@ -236,6 +236,21 @@ jobs:
               echo "::endgroup::"; continue
             fi
 
+            # 読み上げる数字が、渡した材料と一致しているか。
+            #
+            # 9/8の長編は「20本以上が5人」で公開の直前まで行った。
+            # 移籍した選手の成績を二重に数えていたため。56本も
+            # 176打点もシーズンの数字としてはありえる範囲なので、
+            # 下の常識の確認では捕まらない。**値の大小では無理。**
+            #
+            # 新しくAPIは叩かない。原稿の facts を読むだけ。
+            # この枠は登録者の8割が来ているので、いちばん守りたい。
+            if ! python scripts/verify_numbers.py \
+                --dialogue "build/mr_narration_${mode}.json" --strict; then
+              echo "::warning::$mode の数字が材料と違うため出しません"
+              echo "::endgroup::"; continue
+            fi
+
             # 原稿ができた時点で、常識で読み直す。
             #
             # ありえない数字が原稿に入っていたら、この1本だけ出さない。
