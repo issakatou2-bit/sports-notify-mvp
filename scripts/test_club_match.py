@@ -27,7 +27,18 @@ import notability_engine as ne  # noqa: E402
 CASES = [
     ("Liverpool FC", ["遠藤航"]),
     ("Brighton & Hove Albion FC", ["三笘薫"]),
-    ("Crystal Palace FC", ["鎌田大地"]),
+    ("Crystal Palace FC", ["鎌田大地", "冨安健洋"]),
+    # 2026年9月9日に足した選手のクラブ。
+    # クラブ名は football-data.org が実際に返した表記そのまま。
+    ("Lille OSC", ["上田綺世"]),
+    ("Cagliari Calcio", ["菅原由勢"]),
+    ("Burnley FC", ["旗手怜央"]),
+    ("Southampton FC", ["松木玖生"]),
+    ("Queens Park Rangers FC", ["斉藤光毅"]),
+    ("Blackburn Rovers FC", ["森下龍矢", "大橋祐紀"]),
+    ("Bolton Wanderers FC", ["伊藤敦樹"]),
+    ("Birmingham City FC", ["藤本寛也", "岩田智輝"]),
+    ("Bristol City FC", ["平川怜"]),
     ("Tottenham Hotspur FC", ["高井幸大"]),
     ("Leeds United FC", ["田中碧"]),
     ("Coventry City FC", ["坂元達裕"]),
@@ -37,10 +48,11 @@ CASES = [
     ("Valencia CF", ["佐藤龍之介"]),
     ("FC Bayern München", ["伊藤洋輝"]),
     ("TSG 1899 Hoffenheim", ["町田浩樹"]),
-    ("SC Freiburg", ["鈴木唯人"]),
-    ("Eintracht Frankfurt", ["堂安律"]),
+    ("SC Freiburg", ["鈴木唯人", "後藤啓介", "山本理仁"]),
+    ("Eintracht Frankfurt", ["堂安律", "小杉啓太"]),
     ("1. FSV Mainz 05", ["佐野海舟", "川﨑颯太"]),
-    ("Borussia Mönchengladbach", ["町野修斗", "宇野禅斗", "橋岡大樹"]),
+    ("Borussia Mönchengladbach",
+     ["町野修斗", "宇野禅斗", "橋岡大樹", "板倉滉"]),
     ("FC Schalke 04", ["田中聡"]),
     ("Parma Calcio 1913", ["鈴木ザイオン"]),
     ("AS Monaco FC", ["南野拓実"]),
@@ -48,11 +60,16 @@ CASES = [
 ]
 
 # 日本人選手が居ないクラブ。1人でも当たったら誤爆。
+#
+# 2026年9月9日、移籍市場ぶん16人を名簿へ足したので、ここからも
+# バーンリー(旗手怜央)とリール(上田綺世)を外した。
+# **「居ない」は名簿の写しではなく、その時点の事実。**
+# 名簿を増やしたら、ここも一緒に見直す。
 NEGATIVE = [
     "Arsenal FC", "Manchester City FC", "Manchester United FC", "Chelsea FC",
     "Newcastle United FC", "Aston Villa FC", "Everton FC", "Fulham FC",
     "West Ham United FC", "Nottingham Forest FC", "AFC Bournemouth",
-    "Wolverhampton Wanderers FC", "Brentford FC", "Burnley FC",
+    "Wolverhampton Wanderers FC", "Brentford FC",
     "Real Madrid CF", "FC Barcelona", "Club Atlético de Madrid",
     "Athletic Club", "Villarreal CF", "Real Betis Balompié", "Sevilla FC",
     "Borussia Dortmund", "Bayer 04 Leverkusen", "RB Leipzig",
@@ -61,7 +78,7 @@ NEGATIVE = [
     "Juventus FC", "AC Milan", "FC Internazionale Milano", "SSC Napoli",
     "AS Roma", "SS Lazio", "Atalanta BC", "ACF Fiorentina", "Bologna FC 1909",
     "Paris Saint-Germain FC", "Olympique de Marseille", "Olympique Lyonnais",
-    "LOSC Lille", "Stade Rennais FC 1901", "OGC Nice", "RC Lens",
+    "Stade Rennais FC 1901", "OGC Nice", "RC Lens",
     "FC Nantes", "Toulouse FC", "Stade Brestois 29",
 ]
 
@@ -186,8 +203,16 @@ for api_name in api_names:
     if jp == api_name:      # 変換されなかったものは対象外
         continue
     seen.setdefault(jp, set()).add(api_name)
+# 同じクラブの別表記。取り違えではない。
+#
+# football-data.org は時期や口によって表記が揺れる。
+# "LOSC Lille" と "Lille OSC" はどちらもリールで、正規化すれば
+# 同じところへ落ちる。**違うクラブが同じ日本語名になる**のが
+# ここで捕まえたいことなので、別表記は先に除く。
+ALIASES = [{"LOSC Lille", "Lille OSC"}]
+
 for jp, sources in seen.items():
-    if len(sources) > 1:
+    if len(sources) > 1 and not any(sources <= a for a in ALIASES):
         fails += 1
         print(f"NG  取り違え: {jp} <- {sorted(sources)}")
 

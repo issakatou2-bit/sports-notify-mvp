@@ -1617,8 +1617,16 @@ JP_PLAYERS_SOCCER = [
     # 2026-27シーズン、欧州主要リーグ所属の日本人選手。
     # 大半は5大リーグだが、イングランド2部・ドイツ2部の選手も含む。
     # 2026年8月4日に外部の一覧記事と突き合わせて更新。
-    # 欧州の移籍市場は9月2日早朝(日本時間)まで開いているため、
-    # 閉幕後にもう一度確認すること。
+    # **2026年9月9日、移籍市場の閉幕(9月2日)ぶんを反映。**
+    # football-data.org の各リーグのsquadから日本国籍の選手を引いて
+    # 突き合わせた(`scripts/check_soccer_roster.py`)。16人が抜けていた。
+    #
+    # 抜けていた間、その16人のクラブの試合は「日本人選手がいる」と
+    # 判定されなかった。題に日本人選手名を出せるかどうかは、この番組で
+    # いちばん効いている材料なので、そのぶん機会を落としていた。
+    #
+    # 次の市場は2027年2月上旬に閉じる。`check_soccer_roster.yml` が
+    # 2月と9月の3日に自分から走って、差分を出す。
     #
     # チーム名(team_en)はfootball-data.orgのAPIが返す表記と
     # 突き合わせるので、表記が合わないと検出できない点に注意。
@@ -1693,6 +1701,58 @@ JP_PLAYERS_SOCCER = [
      "team_jp": "ル・アーブル", "league": "FL1", "match": "havre"},
     {"name_en": "Kaito Mizuta", "name_jp": "水多海斗", "kana": "ミズタ・カイト", "team_en": "Le Havre",
      "team_jp": "ル・アーブル", "league": "FL1", "match": "havre"},
+    # --- 2026年9月9日に追加（8月の移籍市場ぶん） -------------------
+    # football-data.org が返した所属をそのまま写している。
+    # 日本語表記と読みは、こちらで付けた。
+    {"name_en": "Takehiro Tomiyasu", "name_jp": "冨安健洋",
+     "kana": "トミヤス・タケヒロ", "team_en": "Crystal Palace",
+     "team_jp": "クリスタル・パレス", "league": "PL", "match": "crystalpalace"},
+    {"name_en": "Ko Itakura", "name_jp": "板倉滉", "kana": "イタクラ・コウ",
+     "team_en": "Borussia Monchengladbach", "team_jp": "ボルシアMG",
+     "league": "BL1", "match": "monchengladbach"},
+    {"name_en": "Ayase Ueda", "name_jp": "上田綺世", "kana": "ウエダ・アヤセ",
+     "team_en": "Lille", "team_jp": "リール", "league": "FL1",
+     "match": "lille"},
+    {"name_en": "Keisuke Goto", "name_jp": "後藤啓介",
+     "kana": "ゴトウ・ケイスケ", "team_en": "Freiburg",
+     "team_jp": "フライブルク", "league": "BL1", "match": "freiburg"},
+    {"name_en": "Rihito Yamamoto", "name_jp": "山本理仁",
+     "kana": "ヤマモト・リヒト", "team_en": "Freiburg",
+     "team_jp": "フライブルク", "league": "BL1", "match": "freiburg"},
+    {"name_en": "Keita Kosugi", "name_jp": "小杉啓太",
+     "kana": "コスギ・ケイタ", "team_en": "Eintracht Frankfurt",
+     "team_jp": "フランクフルト", "league": "BL1",
+     "match": "eintrachtfrankfurt"},
+    {"name_en": "Yukinari Sugawara", "name_jp": "菅原由勢",
+     "kana": "スガワラ・ユキナリ", "team_en": "Cagliari",
+     "team_jp": "カリアリ", "league": "SA", "match": "cagliari"},
+    {"name_en": "Reo Hatate", "name_jp": "旗手怜央", "kana": "ハタテ・レオ",
+     "team_en": "Burnley", "team_jp": "バーンリー", "league": "ELC",
+     "match": "burnley"},
+    {"name_en": "Kuryu Matsuki", "name_jp": "松木玖生",
+     "kana": "マツキ・クリュウ", "team_en": "Southampton",
+     "team_jp": "サウサンプトン", "league": "ELC", "match": "southampton"},
+    {"name_en": "Koki Saito", "name_jp": "斉藤光毅",
+     "kana": "サイトウ・コウキ", "team_en": "Queens Park Rangers",
+     "team_jp": "QPR", "league": "ELC", "match": "queensparkrangers"},
+    {"name_en": "Ryoya Morishita", "name_jp": "森下龍矢",
+     "kana": "モリシタ・リュウヤ", "team_en": "Blackburn Rovers",
+     "team_jp": "ブラックバーン", "league": "ELC", "match": "blackburn"},
+    {"name_en": "Yuki Ohashi", "name_jp": "大橋祐紀", "kana": "オオハシ・ユウキ",
+     "team_en": "Blackburn Rovers", "team_jp": "ブラックバーン",
+     "league": "ELC", "match": "blackburn"},
+    {"name_en": "Atsuki Ito", "name_jp": "伊藤敦樹", "kana": "イトウ・アツキ",
+     "team_en": "Bolton Wanderers", "team_jp": "ボルトン", "league": "ELC",
+     "match": "bolton"},
+    {"name_en": "Kanya Fujimoto", "name_jp": "藤本寛也",
+     "kana": "フジモト・カンヤ", "team_en": "Birmingham City",
+     "team_jp": "バーミンガム", "league": "ELC", "match": "birmingham"},
+    {"name_en": "Tomoki Iwata", "name_jp": "岩田智輝", "kana": "イワタ・トモキ",
+     "team_en": "Birmingham City", "team_jp": "バーミンガム", "league": "ELC",
+     "match": "birmingham"},
+    {"name_en": "Yu Hirakawa", "name_jp": "平川怜", "kana": "ヒラカワ・リョウ",
+     "team_en": "Bristol City", "team_jp": "ブリストル・シティ",
+     "league": "ELC", "match": "bristolcity"},
 ]
 
 # クラブ名の照合について
