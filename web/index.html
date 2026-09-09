@@ -737,7 +737,18 @@
     return link;
   }
 
-  const SOCCER_LEAGUES = ['プレミアリーグ', 'ラ・リーガ', 'セリエA', 'ブンデスリーガ', 'リーグ・アン'];
+  // サッカーのタブに何を出すか。**MLB以外は全部サッカー。**
+  //
+  // 大会名を並べて持っていた（5大リーグだけ）。ところが
+  // チャンピオンズリーグはその一覧に無いので、**CLしかない日は
+  // タブが丸ごと空になり「今はシーズンオフのため試合がありません」
+  // と出ていた。**9/9がまさにそれで、代表ウィークでリーグ戦が休み、
+  // 翌日のCL6試合だけがある日だった。データには入っていたのに。
+  //
+  // 一覧で持つ限り、EL・カンファレンスリーグ・国内カップが来るたびに
+  // 同じことが起きる。**足し忘れても静かに消えるのが悪い。**
+  // この画面が扱うのはMLBとサッカーの2つだけなので、裏返して持つ。
+  const isSoccer = (g) => g.league !== 'MLB';
 
   let allGamesCache = [];
   let activeLeague = 'MLB';
@@ -747,7 +758,7 @@
     const allEl = document.getElementById('allGames');
 
     const games = allGamesCache.filter((g) =>
-      activeLeague === 'MLB' ? g.league === 'MLB' : SOCCER_LEAGUES.includes(g.league)
+      activeLeague === 'MLB' ? g.league === 'MLB' : isSoccer(g)
     );
 
     if (games.length === 0) {
