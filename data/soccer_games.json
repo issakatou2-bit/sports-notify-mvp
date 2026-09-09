@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-09-08T09:53:55.909253+00:00",
+  "generated_at": "2026-09-09T09:53:58.198124+00:00",
   "games": [
     {
-      "game_id": "575325",
+      "game_id": "575331",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-86",
-      "away_team_id": "CL-108",
-      "home_team_name": "レアル・マドリード",
-      "away_team_name": "インテル",
+      "home_team_id": "CL-64",
+      "away_team_id": "CL-78",
+      "home_team_name": "リバプール",
+      "away_team_name": "アトレティコ・マドリード",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "インテル vs レアル・マドリード",
+      "matchup": "アトレティコ・マドリード vs リバプール",
       "abbr_matchup": null,
-      "start_time_jst": "09/09 04:00",
+      "start_time_jst": "09/10 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -22,22 +22,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
       },
       "away_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -52,34 +52,39 @@
       "is_notable": true,
       "reasons": [
         {
+          "tag": "jp_team",
+          "text": "リバプールには遠藤航が所属",
+          "weight": 1
+        },
+        {
           "tag": "quality",
-          "text": "レアル・マドリード と インテル の対戦",
+          "text": "リバプール と アトレティコ・マドリード の対戦",
           "weight": 3
         },
         {
           "tag": "quality",
-          "text": "昨季9位と10位の対戦",
-          "weight": 1
+          "text": "昨季3位と14位の対戦",
+          "weight": 0
         }
       ],
       "log_notes": [],
-      "ai_summary": "チャンピオンズリーグの総当たり戦において、昨季9位のレアル・マドリードと【昨季10位のインテル】が対戦する。ヨーロッパの強豪クラブが集う本大会で、両チームとも前季から順位を上げることを目指す重要な一戦となる。開幕直後の段階であるが、こうした上位チーム同士の対戦は、シーズン全体の成績を左右する可能性がある。両チームの攻撃力がどの程度のレベルで発揮されるのか、また守備の堅さがどう機能するかに注目したい。",
-      "notification_hook": "昨季9位と10位が激突。ヨーロッパ強豪クラブの開幕戦、両チームはどこまで上位を目指すか。"
+      "ai_summary": "チャンピオンズリーグの1部リーグ総当たり戦において、昨季3位のリバプールと14位のアトレティコ・マドリードが対戦する。両チームは前季から大きく異なる成績を収めており、【昨季の成績差】がこの試合の背景にある。リバプールには日本代表の遠藤航が所属しており、彼がヨーロッパの強豪クラブとの対戦でどのようなパフォーマンスを見せるかが注目される。チャンピオンズリーグ全体の順位争いが進む中で、両チームがどの程度の力を発揮できるかに注視したい。",
+      "notification_hook": "遠藤航が昨季3位のリバプールを率いる。14位アトレティコとの力の差は。"
     },
     {
-      "game_id": "575328",
+      "game_id": "575329",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-521",
-      "away_team_id": "CL-90",
-      "home_team_name": "リール",
-      "away_team_name": "レアル・ベティス",
+      "home_team_id": "CL-81",
+      "away_team_id": "CL-675",
+      "home_team_name": "バルセロナ",
+      "away_team_name": "フェイエノールト",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "レアル・ベティス vs リール",
+      "matchup": "フェイエノールト vs バルセロナ",
       "abbr_matchup": null,
-      "start_time_jst": "09/09 04:00",
+      "start_time_jst": "09/10 01:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -87,22 +92,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
       },
       "away_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -118,28 +123,33 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "昨季3位のリールと5位のレアル・ベティス",
-          "weight": 3
+          "text": "バルセロナ の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季5位のバルセロナ",
+          "weight": 2
         }
       ],
       "log_notes": [],
-      "ai_summary": "チャンピオンズリーグの総当たり戦において、昨季3位のリールと5位のレアル・ベティスが対戦する。両チームとも【昨季の上位勢】として注目される中、シーズン序盤のこの一戦は、各チームの実力を測る重要な指標となる。新シーズンに向けた両チームの布陣と戦術が、どのように機能するかに注目したい。",
-      "notification_hook": "昨季3位リール vs 昨季5位ベティス、序盤の実力差を問う。"
+      "ai_summary": "チャンピオンズリーグの総当たり戦で、【昨季ヨーロッパの舞台で5位に終わったバルセロナ】がフェイエノールトと対戦する。開幕直後の段階では順位争いの明確な構図はまだ見えない中、欧州の強豪クラブ同士の実力が問われる一戦となる。両チームがこのシーズンのキャンペーンをどのように始めるのか、攻撃と守備の組み立てがどう機能するかに注目したい。",
+      "notification_hook": "昨季5位のバルセロナ、開幕戦でオランダの強豪に挑む"
     },
     {
-      "game_id": "575326",
+      "game_id": "575330",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-503",
-      "away_team_id": "CL-65",
-      "home_team_name": "ポルト",
-      "away_team_name": "マンチェスター・シティ",
+      "home_team_id": "CL-10",
+      "away_team_id": "CL-5720",
+      "home_team_name": "シュツットガルト",
+      "away_team_name": "Viking FK",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "マンチェスター・シティ vs ポルト",
+      "matchup": "Viking FK vs シュツットガルト",
       "abbr_matchup": null,
-      "start_time_jst": "09/09 04:00",
+      "start_time_jst": "09/10 01:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -147,22 +157,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
       },
       "away_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -172,34 +182,34 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 1,
+      "score": 2,
       "game_type": "R",
       "is_notable": true,
       "reasons": [
         {
           "tag": "quality",
-          "text": "マンチェスター・シティ の試合",
-          "weight": 1
+          "text": "昨季4位のシュツットガルト",
+          "weight": 2
         }
       ],
       "log_notes": [],
-      "ai_summary": "チャンピオンズリーグの舞台で、イングランドの強豪マンチェスター・シティが欧州の強敵ポルトと対戦する。両チームともシーズン開幕間もない時期での重要な一戦となり、【欧州最高峰の大会での戦いぶり】が早くも試される局面を迎える。攻撃的なサッカーで知られるマンチェスター・シティと、ポルト特有の組織的守備がぶつかることで、どちらが主導権を握るかが焦点になる。",
-      "notification_hook": "マンチェスター・シティが欧州の強敵と対峙、開幕戦での手応えはいかに。"
+      "ai_summary": "チャンピオンズリーグの新シーズンが開幕し、【昨季4位のシュツットガルト】が初戦でノルウェーの強豪Viking FKと対戦する。ドイツの強豪クラブとして毎年ヨーロッパの舞台で実績を積み重ねてきたシュツットガルトにとって、この大会での戦いは長いシーズンの中で重要な位置づけになる。新たなシーズンをどのように立ち上げるのか、開幕戦の結果と内容が以降の戦績に与える影響は大きい。両チームの攻撃と守備のバランスがどう機能するかに注目したい。",
+      "notification_hook": "ドイツ4位のシュツットガルト、チャンピオンズリーグ新シーズン始動。"
     },
     {
-      "game_id": "575327",
+      "game_id": "575332",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-4",
-      "away_team_id": "CL-94",
-      "home_team_name": "ドルトムント",
-      "away_team_name": "ビジャレアル",
+      "home_team_id": "CL-524",
+      "away_team_id": "CL-7509",
+      "home_team_name": "パリ・サンジェルマン",
+      "away_team_name": "スロバン・ブラチスラバ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "ビジャレアル vs ドルトムント",
+      "matchup": "スロバン・ブラチスラバ vs パリ・サンジェルマン",
       "abbr_matchup": null,
-      "start_time_jst": "09/09 04:00",
+      "start_time_jst": "09/10 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -207,22 +217,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
       },
       "away_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -238,30 +248,25 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "ドルトムント の試合",
+          "text": "パリ・サンジェルマン の試合",
           "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "昨季17位と35位の対戦",
-          "weight": 0
         }
       ]
     },
     {
-      "game_id": "575323",
+      "game_id": "575333",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-851",
-      "away_team_id": "CL-58",
-      "home_team_name": "クラブ・ブルージュ",
-      "away_team_name": "アストン・ヴィラ",
+      "home_team_id": "CL-113",
+      "away_team_id": "CL-57",
+      "home_team_name": "ナポリ",
+      "away_team_name": "アーセナル",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "アストン・ヴィラ vs クラブ・ブルージュ",
+      "matchup": "アーセナル vs ナポリ",
       "abbr_matchup": null,
-      "start_time_jst": "09/09 01:45",
+      "start_time_jst": "09/10 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -269,22 +274,84 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
       },
       "away_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 7,
+        "games_back": 1.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 3.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "アーセナル の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "昨季30位と1位の対戦",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "game_id": "575334",
+      "league": "チャンピオンズリーグ",
+      "home_team_id": "CL-498",
+      "away_team_id": "CL-610",
+      "home_team_name": "スポルティング",
+      "away_team_name": "ガラタサライ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ガラタサライ vs スポルティング",
+      "abbr_matchup": null,
+      "start_time_jst": "09/10 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 7,
+        "games_back": 1.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 3.0
+      },
+      "away_standing": {
+        "rank": 7,
+        "games_back": 1.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 3.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -300,66 +367,15 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "昨季19位と4位の対戦",
+          "text": "昨季7位と20位の対戦",
           "weight": 0
         }
       ]
-    },
-    {
-      "game_id": "575324",
-      "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-1899",
-      "away_team_id": "CL-2016",
-      "home_team_name": "PAE AEK",
-      "away_team_name": "LASK Linz",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "LASK Linz vs PAE AEK",
-      "abbr_matchup": null,
-      "start_time_jst": "09/09 01:45",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": {
-        "rank": 1,
-        "games_back": 0.0,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 0.0
-      },
-      "away_standing": {
-        "rank": 1,
-        "games_back": 0.0,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 0.0
-      },
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": []
     }
   ],
   "ai_status": {
     "targets": 3,
     "succeeded": 3,
-    "cost_usd": 0.01
+    "cost_usd": 0.0104
   }
 }
