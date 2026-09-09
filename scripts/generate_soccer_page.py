@@ -350,7 +350,30 @@ def render(preview: dict, games: list = None) -> str:
                  f'<a href="glossary.html">用語集</a>にあります。</p>')
     sections.append("\n".join(terms))
 
-    generated = preview.get("generated_at", "")[:10]
+    # 更新日は**このページを作った日**にする。
+    #
+    # 材料(soccer_preview)の取得日を出していたが、その材料は
+    # 夜22時の資産動画の回で取り直される。ページを作るのは19時なので、
+    # **毎日ちょうど1日古い日付が出ていた。**中身は今日のものなのに、
+    # 見た人には昨日のページに見える。
+    from datetime import datetime, timedelta, timezone
+    _now = datetime.now(timezone(timedelta(hours=9)))
+    generated = _now.strftime("%Y-%m-%d")
+
+    # 題も季節で変える。
+    #
+    # 8月に作ったまま「開幕ガイド」で固定していた。9月に入っても
+    # 「開幕」と名乗り続けるので、**中身が更新されていないように
+    # 見える。**実際は毎日更新されている。名乗りが合っていなかった。
+    if _now.month in (7, 8):
+        head = "欧州サッカー 開幕ガイド"
+        lede = "開幕日程、序盤に見ておきたいカード"
+    elif _now.month in (5, 6):
+        head = "欧州サッカー シーズンの終わりに"
+        lede = "残り数節の見どころ"
+    else:
+        head = "欧州サッカー 今節の見どころ"
+        lede = "今夜の注目カード"
     body = "\n\n".join(s for s in sections if s)
 
     return f"""<!DOCTYPE html>
@@ -358,10 +381,10 @@ def render(preview: dict, games: list = None) -> str:
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>欧州サッカー 開幕ガイド | コレスポ</title>
+<title>{head} | コレスポ</title>
 <meta name="description" content="欧州5大リーグの開幕日程、序盤の注目カード、日本人選手の所属クラブ、xGなどの指標の見方をまとめています。" />
 <link rel="canonical" href="{SITE_URL}soccer.html" />
-<meta property="og:title" content="欧州サッカー 開幕ガイド | コレスポ" />
+<meta property="og:title" content="{head} | コレスポ" />
 <meta property="og:description" content="開幕日程・注目カード・日本人選手の所属クラブ・指標の見方。" />
 <meta property="og:url" content="{SITE_URL}soccer.html" />
 <meta property="og:type" content="article" />
@@ -371,8 +394,8 @@ def render(preview: dict, games: list = None) -> str:
 </head>
 <body>
   <a class="back" href="index.html">&larr; コレスポ トップへ</a>
-  <h1>欧州サッカー 開幕ガイド</h1>
-  <p class="lead">開幕日程、序盤に見ておきたいカード、日本人選手の所属クラブ、
+  <h1>{head}</h1>
+  <p class="lead">{lede}、日本人選手の所属クラブ、
   そして中継で出てくる指標の見方をまとめています。</p>
 
 {body}
