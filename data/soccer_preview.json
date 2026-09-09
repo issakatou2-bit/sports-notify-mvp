@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T13:02:18.350831+00:00",
+  "generated_at": "2026-09-09T13:03:03.409846+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -7,7 +7,7 @@
       "season": {
         "start": "2026-08-21",
         "end": "2027-05-30",
-        "matchday": 3,
+        "matchday": 4,
         "year": 2026
       },
       "stale": false,
@@ -1826,7 +1826,7 @@
           "away_short": "Cagliari",
           "score": 30.0,
           "reasons": [
-            "鈴木ザイオンの所属クラブ"
+            "鈴木ザイオン・菅原由勢の所属クラブ"
           ]
         },
         {
@@ -1843,6 +1843,18 @@
         },
         {
           "matchday": 2,
+          "utc": "2026-08-30T18:45:00Z",
+          "home": "Cagliari Calcio",
+          "away": "FC Internazionale Milano",
+          "home_short": "Cagliari",
+          "away_short": "Inter",
+          "score": 30.0,
+          "reasons": [
+            "菅原由勢の所属クラブ"
+          ]
+        },
+        {
+          "matchday": 2,
           "utc": "2026-08-30T16:30:00Z",
           "home": "SSC Napoli",
           "away": "Como 1907",
@@ -1851,18 +1863,6 @@
           "score": 20.0,
           "reasons": [
             "昨季2位と4位"
-          ]
-        },
-        {
-          "matchday": 1,
-          "utc": "2026-08-22T16:30:00Z",
-          "home": "Udinese Calcio",
-          "away": "Como 1907",
-          "home_short": "Udinese",
-          "away_short": "Como 1907",
-          "score": 8.0,
-          "reasons": [
-            "昨季10位と4位"
           ]
         }
       ]
@@ -1873,7 +1873,7 @@
       "season": {
         "start": "2026-08-28",
         "end": "2027-05-22",
-        "matchday": 2,
+        "matchday": 3,
         "year": 2026
       },
       "stale": false,
@@ -2420,7 +2420,7 @@
           "score": 38.0,
           "reasons": [
             "昨季8位と9位",
-            "堂安律の所属クラブ"
+            "堂安律・小杉啓太の所属クラブ"
           ]
         },
         {
@@ -2433,7 +2433,7 @@
           "score": 38.0,
           "reasons": [
             "昨季10位と8位",
-            "佐野海舟・川﨑颯太・堂安律の所属クラブ"
+            "佐野海舟・川﨑颯太・堂安律・小杉啓太の所属クラブ"
           ]
         }
       ]
@@ -2444,7 +2444,7 @@
       "season": {
         "start": "2026-08-22",
         "end": "2027-05-29",
-        "matchday": 3,
+        "matchday": 4,
         "year": 2026
       },
       "stale": false,
@@ -2944,6 +2944,19 @@
       "highlights": [
         {
           "matchday": 2,
+          "utc": "2026-08-28T18:45:00Z",
+          "home": "Lille OSC",
+          "away": "Paris Saint-Germain FC",
+          "home_short": "Lille",
+          "away_short": "PSG",
+          "score": 56.7,
+          "reasons": [
+            "昨季3位と1位",
+            "上田綺世の所属クラブ"
+          ]
+        },
+        {
+          "matchday": 2,
           "utc": "2026-08-30T18:45:00Z",
           "home": "AS Monaco FC",
           "away": "Olympique de Marseille",
@@ -2953,6 +2966,19 @@
           "reasons": [
             "昨季7位と5位",
             "南野拓実の所属クラブ"
+          ]
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-03T18:45:00Z",
+          "home": "Toulouse FC",
+          "away": "Lille OSC",
+          "home_short": "Toulouse",
+          "away_short": "Lille",
+          "score": 38.0,
+          "reasons": [
+            "昨季10位と3位",
+            "上田綺世の所属クラブ"
           ]
         },
         {
@@ -2978,30 +3004,6 @@
           "score": 30.0,
           "reasons": [
             "瀬古歩夢・中村草太・水多海斗の所属クラブ"
-          ]
-        },
-        {
-          "matchday": 3,
-          "utc": "2026-09-05T18:45:00Z",
-          "home": "Le Havre AC",
-          "away": "Stade Brestois 29",
-          "home_short": "Le Havre",
-          "away_short": "Brest",
-          "score": 30.0,
-          "reasons": [
-            "瀬古歩夢・中村草太・水多海斗の所属クラブ"
-          ]
-        },
-        {
-          "matchday": 2,
-          "utc": "2026-08-28T18:45:00Z",
-          "home": "Lille OSC",
-          "away": "Paris Saint-Germain FC",
-          "home_short": "Lille",
-          "away_short": "PSG",
-          "score": 26.7,
-          "reasons": [
-            "昨季3位と1位"
           ]
         }
       ]
@@ -4011,6 +4013,18 @@
         },
         {
           "matchday": 1,
+          "utc": "2026-09-08T19:00:00Z",
+          "home": "Lille OSC",
+          "away": "Real Betis Balompié",
+          "home_short": "Lille",
+          "away_short": "Real Betis",
+          "score": 30.0,
+          "reasons": [
+            "上田綺世の所属クラブ"
+          ]
+        },
+        {
+          "matchday": 1,
           "utc": "2026-09-09T19:00:00Z",
           "home": "Liverpool FC",
           "away": "Club Atlético de Madrid",
@@ -4035,26 +4049,14 @@
         },
         {
           "matchday": 2,
-          "utc": "2026-10-14T16:45:00Z",
-          "home": "LASK Linz",
-          "away": "Liverpool FC",
-          "home_short": "LASK",
-          "away_short": "Liverpool",
+          "utc": "2026-10-13T19:00:00Z",
+          "home": "Arsenal FC",
+          "away": "Lille OSC",
+          "home_short": "Arsenal",
+          "away_short": "Lille",
           "score": 30.0,
           "reasons": [
-            "遠藤航の所属クラブ"
-          ]
-        },
-        {
-          "matchday": 1,
-          "utc": "2026-09-08T19:00:00Z",
-          "home": "Real Madrid CF",
-          "away": "FC Internazionale Milano",
-          "home_short": "Real Madrid",
-          "away_short": "Inter",
-          "score": 8.0,
-          "reasons": [
-            "昨季9位と10位"
+            "上田綺世の所属クラブ"
           ]
         }
       ]
