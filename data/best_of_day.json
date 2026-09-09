@@ -1,109 +1,23 @@
 {
-  "date": "2026-09-07",
-  "date_jst": "2026-09-08",
-  "updated_at": "2026-09-08T06:01:07.165240+00:00",
-  "scored": 314,
+  "date": "2026-09-08",
+  "date_jst": "2026-09-09",
+  "updated_at": "2026-09-09T06:01:05.712573+00:00",
+  "scored": 438,
   "players": [
     {
-      "name": "Coby Mayo",
-      "team": "オリオールズ",
+      "name": "Zach Neto",
+      "team": "エンゼルス",
       "type": "batter",
-      "score": 147,
-      "headline": "5打数2安打　2本塁打　3打点",
+      "score": 136,
+      "headline": "5打数4安打　1本塁打　1二塁打　2打点",
       "is_japanese": false,
       "stats": {
         "ab": 5,
         "pa": 5,
-        "hits": 2,
-        "hr": 2,
+        "hits": 4,
+        "hr": 1,
         "tb": 8,
-        "rbi": 3,
-        "bb": 0,
-        "so": 2,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 0
-      }
-    },
-    {
-      "name": "Jesús Luzardo",
-      "team": "フィリーズ",
-      "type": "pitcher",
-      "score": 130,
-      "headline": "9.0回　12奪三振　自責0　2被安打",
-      "is_japanese": false,
-      "stats": {
-        "ip": "9.0",
-        "er": 0,
-        "hits": 2,
-        "so": 12,
-        "bb": 1,
-        "gs": 1,
-        "saves": 0,
-        "save_opp": 0,
-        "blown": 0,
-        "holds": 0
-      }
-    },
-    {
-      "name": "Teoscar Hernández",
-      "team": "ドジャース",
-      "type": "batter",
-      "score": 128,
-      "headline": "3打数2安打　1本塁打　3打点　1四球　1盗塁",
-      "is_japanese": false,
-      "stats": {
-        "ab": 3,
-        "pa": 4,
-        "hits": 2,
-        "hr": 1,
-        "tb": 5,
-        "rbi": 3,
-        "bb": 1,
-        "so": 1,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 1
-      }
-    },
-    {
-      "name": "Henry Bolte",
-      "team": "アスレチックス",
-      "type": "batter",
-      "score": 128,
-      "headline": "2打数1安打　1本塁打　1打点　3四球　3盗塁",
-      "is_japanese": false,
-      "stats": {
-        "ab": 2,
-        "pa": 5,
-        "hits": 1,
-        "hr": 1,
-        "tb": 4,
-        "rbi": 1,
-        "bb": 3,
-        "so": 0,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 3
-      }
-    },
-    {
-      "name": "Moisés Ballesteros",
-      "team": "エンゼルス",
-      "type": "batter",
-      "score": 122,
-      "headline": "4打数3安打　1本塁打　1二塁打　1打点",
-      "is_japanese": false,
-      "stats": {
-        "ab": 4,
-        "pa": 4,
-        "hits": 3,
-        "hr": 1,
-        "tb": 7,
-        "rbi": 1,
+        "rbi": 2,
         "bb": 0,
         "so": 0,
         "doubles": 1,
@@ -113,20 +27,64 @@
       }
     },
     {
-      "name": "Riley Greene",
-      "team": "タイガース",
+      "name": "Jackson Chourio",
+      "team": "ブリュワーズ",
       "type": "batter",
-      "score": 122,
-      "headline": "4打数3安打　1本塁打　2打点",
+      "score": 136,
+      "headline": "5打数4安打　1本塁打　1二塁打　2打点",
+      "is_japanese": false,
+      "stats": {
+        "ab": 5,
+        "pa": 5,
+        "hits": 4,
+        "hr": 1,
+        "tb": 8,
+        "rbi": 2,
+        "bb": 0,
+        "so": 0,
+        "doubles": 1,
+        "triples": 0,
+        "hbp": 0,
+        "sb": 0
+      }
+    },
+    {
+      "name": "Juan Soto",
+      "team": "メッツ",
+      "type": "batter",
+      "score": 131,
+      "headline": "4打数2安打　1本塁打　1二塁打　3打点　1四球",
       "is_japanese": false,
       "stats": {
         "ab": 4,
-        "pa": 4,
-        "hits": 3,
+        "pa": 5,
+        "hits": 2,
         "hr": 1,
         "tb": 6,
-        "rbi": 2,
-        "bb": 0,
+        "rbi": 3,
+        "bb": 1,
+        "so": 0,
+        "doubles": 1,
+        "triples": 0,
+        "hbp": 0,
+        "sb": 0
+      }
+    },
+    {
+      "name": "Christian Walker",
+      "team": "アストロズ",
+      "type": "batter",
+      "score": 128,
+      "headline": "3打数2安打　1本塁打　3打点　1四球",
+      "is_japanese": false,
+      "stats": {
+        "ab": 3,
+        "pa": 4,
+        "hits": 2,
+        "hr": 1,
+        "tb": 5,
+        "rbi": 3,
+        "bb": 1,
         "so": 0,
         "doubles": 0,
         "triples": 0,
@@ -135,8 +93,52 @@
       }
     },
     {
-      "name": "Nathaniel Lowe",
-      "team": "ガーディアンズ",
+      "name": "Danny Jansen",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "score": 122,
+      "headline": "4打数2安打　1本塁打　4打点",
+      "is_japanese": false,
+      "stats": {
+        "ab": 4,
+        "pa": 4,
+        "hits": 2,
+        "hr": 1,
+        "tb": 5,
+        "rbi": 4,
+        "bb": 0,
+        "so": 1,
+        "doubles": 0,
+        "triples": 0,
+        "hbp": 0,
+        "sb": 0
+      }
+    },
+    {
+      "name": "Junior Caminero",
+      "team": "レイズ",
+      "type": "batter",
+      "score": 119,
+      "headline": "3打数2安打　1本塁打　1打点　1四球　1死球",
+      "is_japanese": false,
+      "stats": {
+        "ab": 3,
+        "pa": 5,
+        "hits": 2,
+        "hr": 1,
+        "tb": 5,
+        "rbi": 1,
+        "bb": 1,
+        "so": 0,
+        "doubles": 0,
+        "triples": 0,
+        "hbp": 1,
+        "sb": 0
+      }
+    },
+    {
+      "name": "Heliot Ramos",
+      "team": "ヤンキース",
       "type": "batter",
       "score": 118,
       "headline": "1打数1安打　1本塁打　3打点",
@@ -157,22 +159,22 @@
       }
     },
     {
-      "name": "Andrés Giménez",
-      "team": "ブルージェイズ",
+      "name": "Tim Tawa",
+      "team": "ダイヤモンドバックス",
       "type": "batter",
       "score": 118,
-      "headline": "4打数2安打　1本塁打　1二塁打　2打点",
+      "headline": "5打数3安打　1本塁打　2打点",
       "is_japanese": false,
       "stats": {
-        "ab": 4,
-        "pa": 4,
-        "hits": 2,
+        "ab": 5,
+        "pa": 5,
+        "hits": 3,
         "hr": 1,
         "tb": 6,
         "rbi": 2,
         "bb": 0,
         "so": 0,
-        "doubles": 1,
+        "doubles": 0,
         "triples": 0,
         "hbp": 0,
         "sb": 0
@@ -181,17 +183,17 @@
   ],
   "pitchers": [
     {
-      "name": "Jesús Luzardo",
-      "team": "フィリーズ",
+      "name": "Reid Detmers",
+      "team": "エンゼルス",
       "type": "pitcher",
-      "score": 130,
-      "headline": "9.0回　12奪三振　自責0　2被安打",
+      "score": 97,
+      "headline": "6.0回　9奪三振　自責0　1被安打",
       "is_japanese": false,
       "stats": {
-        "ip": "9.0",
+        "ip": "6.0",
         "er": 0,
-        "hits": 2,
-        "so": 12,
+        "hits": 1,
+        "so": 9,
         "bb": 1,
         "gs": 1,
         "saves": 0,
@@ -201,18 +203,18 @@
       }
     },
     {
-      "name": "Noah Cameron",
-      "team": "ロイヤルズ",
+      "name": "Cam Schlittler",
+      "team": "ヤンキース",
       "type": "pitcher",
-      "score": 88,
-      "headline": "6.0回　7奪三振　自責0　3被安打",
+      "score": 92,
+      "headline": "7.0回　10奪三振　防御率1.29　3被安打",
       "is_japanese": false,
       "stats": {
-        "ip": "6.0",
-        "er": 0,
+        "ip": "7.0",
+        "er": 1,
         "hits": 3,
-        "so": 7,
-        "bb": 2,
+        "so": 10,
+        "bb": 0,
         "gs": 1,
         "saves": 0,
         "save_opp": 0,
@@ -221,18 +223,18 @@
       }
     },
     {
-      "name": "Grant Holmes",
-      "team": "ブレーブス",
+      "name": "Michael Wacha",
+      "team": "ロイヤルズ",
       "type": "pitcher",
-      "score": 87,
-      "headline": "6.0回　6奪三振　自責0　3被安打",
+      "score": 82,
+      "headline": "6.0回　4奪三振　自責0　3被安打",
       "is_japanese": false,
       "stats": {
         "ip": "6.0",
         "er": 0,
         "hits": 3,
-        "so": 6,
-        "bb": 2,
+        "so": 4,
+        "bb": 4,
         "gs": 1,
         "saves": 0,
         "save_opp": 0,
@@ -243,482 +245,776 @@
   ],
   "everyone": [
     {
-      "name": "Coby Mayo",
-      "team": "オリオールズ",
-      "type": "batter",
-      "line": "5打数2安打　2本塁打　3打点"
-    },
-    {
-      "name": "Jesús Luzardo",
-      "team": "フィリーズ",
-      "type": "pitcher",
-      "line": "9.0回　12奪三振　自責0　2被安打"
-    },
-    {
-      "name": "Teoscar Hernández",
-      "team": "ドジャース",
-      "type": "batter",
-      "line": "3打数2安打　1本塁打　3打点　1四球　1盗塁"
-    },
-    {
-      "name": "Henry Bolte",
-      "team": "アスレチックス",
-      "type": "batter",
-      "line": "2打数1安打　1本塁打　1打点　3四球　3盗塁"
-    },
-    {
-      "name": "Moisés Ballesteros",
+      "name": "Zach Neto",
       "team": "エンゼルス",
       "type": "batter",
-      "line": "4打数3安打　1本塁打　1二塁打　1打点"
-    },
-    {
-      "name": "Riley Greene",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "4打数3安打　1本塁打　2打点"
-    },
-    {
-      "name": "Nathaniel Lowe",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "1打数1安打　1本塁打　3打点"
-    },
-    {
-      "name": "Andrés Giménez",
-      "team": "ブルージェイズ",
-      "type": "batter",
-      "line": "4打数2安打　1本塁打　1二塁打　2打点"
-    },
-    {
-      "name": "Pete Crow-Armstrong",
-      "team": "カブス",
-      "type": "batter",
-      "line": "4打数2安打　1本塁打　1打点　1死球　2盗塁"
-    },
-    {
-      "name": "Kazuma Okamoto",
-      "team": "ブルージェイズ",
-      "type": "batter",
-      "line": "2打数1安打　1本塁打　1打点　2四球"
-    },
-    {
-      "name": "Dylan Crews",
-      "team": "ナショナルズ",
-      "type": "batter",
-      "line": "4打数2安打　1本塁打　2打点"
-    },
-    {
-      "name": "Graham Pauley",
-      "team": "マーリンズ",
-      "type": "batter",
-      "line": "3打数1安打　1本塁打　3打点　1死球"
-    },
-    {
-      "name": "Jarren Duran",
-      "team": "レッドソックス",
-      "type": "batter",
-      "line": "4打数2安打　1本塁打　1二塁打　1打点"
-    },
-    {
-      "name": "Adley Rutschman",
-      "team": "レッドソックス",
-      "type": "batter",
-      "line": "4打数1安打　1本塁打　3打点"
-    },
-    {
-      "name": "Trevor Larnach",
-      "team": "ツインズ",
-      "type": "batter",
-      "line": "3打数2安打　1本塁打　1打点"
-    },
-    {
-      "name": "Alejandro Kirk",
-      "team": "ブルージェイズ",
-      "type": "batter",
-      "line": "4打数2安打　1本塁打　1打点"
-    },
-    {
-      "name": "Kyle Schwarber",
-      "team": "フィリーズ",
-      "type": "batter",
-      "line": "4打数2安打　1本塁打　1打点"
-    },
-    {
-      "name": "Elly De La Cruz",
-      "team": "レッズ",
-      "type": "batter",
-      "line": "4打数2安打　1本塁打　1打点　1盗塁"
-    },
-    {
-      "name": "Rafael Devers",
-      "team": "ジャイアンツ",
-      "type": "batter",
-      "line": "3打数2安打　2二塁打　1打点　2四球"
-    },
-    {
-      "name": "A.J. Ewing",
-      "team": "メッツ",
-      "type": "batter",
-      "line": "5打数3安打　1二塁打　3打点"
-    },
-    {
-      "name": "Pedro Ramírez",
-      "team": "カブス",
-      "type": "batter",
-      "line": "4打数1安打　1本塁打　1打点"
-    },
-    {
-      "name": "Kevin McGonigle",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "4打数1安打　1本塁打　1打点"
-    },
-    {
-      "name": "Jackson Merrill",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "4打数3安打　1二塁打　2打点　1盗塁"
-    },
-    {
-      "name": "Salvador Perez",
-      "team": "ロイヤルズ",
-      "type": "batter",
-      "line": "5打数3安打　1二塁打　3打点"
-    },
-    {
-      "name": "Javier Sanoja",
-      "team": "マーリンズ",
-      "type": "batter",
-      "line": "3打数2安打　1三塁打　1打点　1四球"
-    },
-    {
-      "name": "Noah Cameron",
-      "team": "ロイヤルズ",
-      "type": "pitcher",
-      "line": "6.0回　7奪三振　自責0　3被安打"
-    },
-    {
-      "name": "Grant Holmes",
-      "team": "ブレーブス",
-      "type": "pitcher",
-      "line": "6.0回　6奪三振　自責0　3被安打"
-    },
-    {
-      "name": "Eugenio Suárez",
-      "team": "レッズ",
-      "type": "batter",
-      "line": "4打数1安打　1本塁打　1打点"
-    },
-    {
-      "name": "Trevor Rogers",
-      "team": "オリオールズ",
-      "type": "pitcher",
-      "line": "7.1回　6奪三振　防御率1.23　6被安打"
-    },
-    {
-      "name": "Alec Burleson",
-      "team": "カージナルス",
-      "type": "batter",
-      "line": "5打数1安打　1本塁打　1打点"
-    },
-    {
-      "name": "Bryce Eldridge",
-      "team": "ジャイアンツ",
-      "type": "batter",
-      "line": "4打数2安打　1二塁打　3打点"
-    },
-    {
-      "name": "Walker Jenkins",
-      "team": "ツインズ",
-      "type": "batter",
-      "line": "3打数1安打　1二塁打　2打点　1死球"
-    },
-    {
-      "name": "Rece Hinds",
-      "team": "オリオールズ",
-      "type": "batter",
-      "line": "2打数2安打　2四球"
-    },
-    {
-      "name": "Nick Pivetta",
-      "team": "パドレス",
-      "type": "pitcher",
-      "line": "5.0回　2奪三振　自責0　2被安打"
-    },
-    {
-      "name": "Logan Webb",
-      "team": "ジャイアンツ",
-      "type": "pitcher",
-      "line": "6.0回　8奪三振　防御率1.50　3被安打"
-    },
-    {
-      "name": "Emmet Sheehan",
-      "team": "ドジャース",
-      "type": "pitcher",
-      "line": "5.2回　10奪三振　防御率1.59　3被安打"
-    },
-    {
-      "name": "Marcus Semien",
-      "team": "メッツ",
-      "type": "batter",
-      "line": "5打数2安打　2二塁打　1打点"
-    },
-    {
-      "name": "Brayan Bello",
-      "team": "レッドソックス",
-      "type": "pitcher",
-      "line": "5.0回　7奪三振　自責0　4被安打"
-    },
-    {
-      "name": "Zack Gelof",
-      "team": "アスレチックス",
-      "type": "batter",
-      "line": "4打数1安打　1二塁打　2打点　2盗塁"
-    },
-    {
-      "name": "Nick Morabito",
-      "team": "メッツ",
-      "type": "batter",
-      "line": "4打数2安打　1打点　1四球　1盗塁"
-    },
-    {
-      "name": "Alex Bregman",
-      "team": "カブス",
-      "type": "batter",
-      "line": "3打数2安打　1打点　1四球"
-    },
-    {
-      "name": "Luke Keaschall",
-      "team": "ツインズ",
-      "type": "batter",
-      "line": "2打数1安打　2四球　1死球　1盗塁"
-    },
-    {
-      "name": "Garrett Whitlock",
-      "team": "レッドソックス",
-      "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0　セーブ"
-    },
-    {
-      "name": "Manny Machado",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "4打数2安打　1二塁打　1打点"
-    },
-    {
-      "name": "Max Muncy",
-      "team": "ドジャース",
-      "type": "batter",
-      "line": "2打数1安打　1二塁打　2四球"
-    },
-    {
-      "name": "Evan Phillips",
-      "team": "ドジャース",
-      "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0　セーブ"
-    },
-    {
-      "name": "Carlos Cortes",
-      "team": "アスレチックス",
-      "type": "batter",
-      "line": "2打数2安打　1打点"
-    },
-    {
-      "name": "Matthew Boyd",
-      "team": "カブス",
-      "type": "pitcher",
-      "line": "7.0回　7奪三振　防御率3.86　5被安打"
-    },
-    {
-      "name": "Mason Miller",
-      "team": "パドレス",
-      "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0　1被安打　セーブ"
-    },
-    {
-      "name": "Isiah Kiner-Falefa",
-      "team": "レッドソックス",
-      "type": "batter",
-      "line": "2打数1安打　2四球　1盗塁"
-    },
-    {
-      "name": "Kenley Jansen",
-      "team": "タイガース",
-      "type": "pitcher",
-      "line": "1.0回　0奪三振　自責0　セーブ"
-    },
-    {
-      "name": "Jo Adell",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "4打数2安打　1二塁打　1打点"
-    },
-    {
-      "name": "Fernando Tatis Jr.",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "4打数3安打　1盗塁"
-    },
-    {
-      "name": "Pete Alonso",
-      "team": "オリオールズ",
-      "type": "batter",
-      "line": "2打数0安打　1打点　2四球　1死球"
-    },
-    {
-      "name": "Nolan Arenado",
-      "team": "ダイヤモンドバックス",
-      "type": "batter",
-      "line": "4打数2安打　1打点　1四球"
-    },
-    {
-      "name": "John Rave",
-      "team": "ロイヤルズ",
-      "type": "batter",
-      "line": "3打数1安打　1二塁打　1四球　1盗塁"
-    },
-    {
-      "name": "Garrett Mitchell",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "2打数1安打　1打点　1四球"
-    },
-    {
-      "name": "Michael McGreevy",
-      "team": "カージナルス",
-      "type": "pitcher",
-      "line": "6.2回　4奪三振　防御率2.70　6被安打"
-    },
-    {
-      "name": "Wade Meckler",
-      "team": "エンゼルス",
-      "type": "batter",
-      "line": "2打数1安打　2四球"
+      "line": "5打数4安打　1本塁打　1二塁打　2打点"
     },
     {
       "name": "Jackson Chourio",
       "team": "ブリュワーズ",
       "type": "batter",
-      "line": "4打数1安打　2打点　1盗塁"
+      "line": "5打数4安打　1本塁打　1二塁打　2打点"
     },
     {
-      "name": "Zach McKinstry",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "3打数1安打　1三塁打"
-    },
-    {
-      "name": "Bradgley Rodriguez",
-      "team": "パドレス",
-      "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0　ホールド"
-    },
-    {
-      "name": "Bo Bichette",
+      "name": "Juan Soto",
       "team": "メッツ",
       "type": "batter",
-      "line": "5打数2安打　1打点　1四球"
+      "line": "4打数2安打　1本塁打　1二塁打　3打点　1四球"
     },
     {
-      "name": "Samuel Basallo",
-      "team": "オリオールズ",
+      "name": "Christian Walker",
+      "team": "アストロズ",
       "type": "batter",
-      "line": "3打数2安打　1死球"
+      "line": "3打数2安打　1本塁打　3打点　1四球"
     },
     {
-      "name": "Carter Jensen",
-      "team": "ロイヤルズ",
+      "name": "Danny Jansen",
+      "team": "レンジャーズ",
       "type": "batter",
-      "line": "4打数1安打　1二塁打　1打点　1四球"
+      "line": "4打数2安打　1本塁打　4打点"
     },
     {
-      "name": "Adrian Morejon",
-      "team": "パドレス",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0　ホールド"
-    },
-    {
-      "name": "Luis Medina",
-      "team": "アスレチックス",
-      "type": "pitcher",
-      "line": "1.2回　2奪三振　自責0　1被安打　ホールド"
-    },
-    {
-      "name": "Dennis Santana",
-      "team": "ダイヤモンドバックス",
-      "type": "pitcher",
-      "line": "0.2回　1奪三振　自責0　セーブ"
-    },
-    {
-      "name": "Jacob Waguespack",
-      "team": "タイガース",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0　ホールド"
-    },
-    {
-      "name": "Caleb Durbin",
-      "team": "レッドソックス",
+      "name": "Junior Caminero",
+      "team": "レイズ",
       "type": "batter",
-      "line": "4打数2安打　1二塁打"
+      "line": "3打数2安打　1本塁打　1打点　1四球　1死球"
     },
     {
-      "name": "Eli White",
-      "team": "レッドソックス",
+      "name": "Heliot Ramos",
+      "team": "ヤンキース",
       "type": "batter",
-      "line": "4打数2安打　1打点"
+      "line": "1打数1安打　1本塁打　3打点"
     },
     {
-      "name": "Gabriel Moreno",
+      "name": "Tim Tawa",
       "team": "ダイヤモンドバックス",
       "type": "batter",
-      "line": "5打数2安打　1打点"
+      "line": "5打数3安打　1本塁打　2打点"
     },
     {
-      "name": "Trent Harris",
-      "team": "ジャイアンツ",
-      "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0　1被安打　ホールド"
-    },
-    {
-      "name": "Chase Burns",
+      "name": "Elly De La Cruz",
       "team": "レッズ",
-      "type": "pitcher",
-      "line": "3.0回　5奪三振　自責0"
+      "type": "batter",
+      "line": "4打数2安打　1本塁打　1二塁打　2打点"
     },
     {
-      "name": "Josh Walker",
+      "name": "Liam Hicks",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "3打数1安打　1本塁打　2打点　1四球　1死球"
+    },
+    {
+      "name": "Trea Turner",
+      "team": "フィリーズ",
+      "type": "batter",
+      "line": "4打数2安打　1本塁打　1二塁打　2打点"
+    },
+    {
+      "name": "Pete Alonso",
       "team": "オリオールズ",
-      "type": "pitcher",
-      "line": "0.1回　0奪三振　自責0　セーブ"
+      "type": "batter",
+      "line": "4打数2安打　1本塁打　2打点"
     },
     {
-      "name": "Vinnie Pasquantino",
+      "name": "Kevin McGonigle",
+      "team": "タイガース",
+      "type": "batter",
+      "line": "4打数2安打　1本塁打　2打点"
+    },
+    {
+      "name": "Daulton Varsho",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "5打数3安打　1本塁打　1二塁打　1打点"
+    },
+    {
+      "name": "Yandy Díaz",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "5打数2安打　1本塁打　1二塁打　2打点"
+    },
+    {
+      "name": "Rafael Flores Jr.",
+      "team": "パイレーツ",
+      "type": "batter",
+      "line": "5打数3安打　1本塁打　1打点"
+    },
+    {
+      "name": "Travis Bazzana",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "4打数1安打　1本塁打　3打点　1四球"
+    },
+    {
+      "name": "Kody Clemens",
+      "team": "ツインズ",
+      "type": "batter",
+      "line": "3打数1安打　1本塁打　2打点　1四球"
+    },
+    {
+      "name": "Donovan Walton",
+      "team": "アスレチックス",
+      "type": "batter",
+      "line": "3打数2安打　1本塁打　1打点"
+    },
+    {
+      "name": "Wyatt Langford",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "line": "4打数1安打　1本塁打　2打点　1四球　1盗塁"
+    },
+    {
+      "name": "Brett Baty",
+      "team": "メッツ",
+      "type": "batter",
+      "line": "3打数1安打　1本塁打　2打点"
+    },
+    {
+      "name": "Kyle Teel",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "3打数2安打　1本塁打　1打点"
+    },
+    {
+      "name": "Andrés Chaparro",
+      "team": "ナショナルズ",
+      "type": "batter",
+      "line": "1打数1安打　1本塁打　1打点"
+    },
+    {
+      "name": "Kazuma Okamoto",
+      "team": "ブルージェイズ",
+      "type": "batter",
+      "line": "4打数2安打　1本塁打　1打点"
+    },
+    {
+      "name": "Christian Koss",
+      "team": "ジャイアンツ",
+      "type": "batter",
+      "line": "3打数2安打　1本塁打　1打点"
+    },
+    {
+      "name": "Lazaro Montes",
+      "team": "マリナーズ",
+      "type": "batter",
+      "line": "4打数1安打　1本塁打　3打点"
+    },
+    {
+      "name": "Josh Smith",
+      "team": "ブルージェイズ",
+      "type": "batter",
+      "line": "4打数2安打　1本塁打　1打点"
+    },
+    {
+      "name": "Cam Smith",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "3打数1安打　1本塁打　1打点　1四球"
+    },
+    {
+      "name": "Will Smith",
+      "team": "ドジャース",
+      "type": "batter",
+      "line": "3打数1安打　1本塁打　1打点　1死球"
+    },
+    {
+      "name": "Teoscar Hernández",
+      "team": "ドジャース",
+      "type": "batter",
+      "line": "3打数3安打　1三塁打　1打点　1四球"
+    },
+    {
+      "name": "Reid Detmers",
+      "team": "エンゼルス",
+      "type": "pitcher",
+      "line": "6.0回　9奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Adael Amador",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "3打数1安打　1本塁打　1打点"
+    },
+    {
+      "name": "Hunter Goodman",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "4打数1安打　1本塁打　2打点"
+    },
+    {
+      "name": "John Rave",
       "team": "ロイヤルズ",
       "type": "batter",
-      "line": "4打数2安打　1四球"
+      "line": "3打数1安打　1本塁打　2打点"
     },
     {
-      "name": "César Prieto",
-      "team": "カージナルス",
+      "name": "Richie Palacios",
+      "team": "レイズ",
       "type": "batter",
-      "line": "0打数0安打　1四球　1盗塁"
+      "line": "4打数1安打　1本塁打　1打点　1四球　1盗塁"
     },
     {
-      "name": "Drew Sommers",
-      "team": "タイガース",
+      "name": "Corey Seager",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "line": "4打数1安打　1本塁打　1打点　1四球"
+    },
+    {
+      "name": "Bryce Eldridge",
+      "team": "ジャイアンツ",
+      "type": "batter",
+      "line": "3打数1安打　1本塁打　1打点　1四球"
+    },
+    {
+      "name": "Carlos Cortes",
+      "team": "アスレチックス",
+      "type": "batter",
+      "line": "4打数1安打　1本塁打　1打点"
+    },
+    {
+      "name": "Francisco Lindor",
+      "team": "メッツ",
+      "type": "batter",
+      "line": "4打数1安打　1本塁打　1打点　1死球"
+    },
+    {
+      "name": "Cam Schlittler",
+      "team": "ヤンキース",
       "type": "pitcher",
-      "line": "1.0回　0奪三振　自責0　1被安打　ホールド"
+      "line": "7.0回　10奪三振　防御率1.29　3被安打"
+    },
+    {
+      "name": "Brice Turang",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "4打数3安打　1二塁打　1打点　1四球"
+    },
+    {
+      "name": "Yohandy Morales",
+      "team": "ナショナルズ",
+      "type": "batter",
+      "line": "4打数1安打　1本塁打　1打点"
+    },
+    {
+      "name": "Nicky Lopez",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "line": "3打数3安打　1打点　1死球"
     },
     {
       "name": "Jakob Marsee",
       "team": "マーリンズ",
       "type": "batter",
+      "line": "4打数3安打　1二塁打　1打点"
+    },
+    {
+      "name": "Michael Wacha",
+      "team": "ロイヤルズ",
+      "type": "pitcher",
+      "line": "6.0回　4奪三振　自責0　3被安打"
+    },
+    {
+      "name": "Bryan Reynolds",
+      "team": "パイレーツ",
+      "type": "batter",
+      "line": "4打数2安打　2二塁打　2打点"
+    },
+    {
+      "name": "Oneil Cruz",
+      "team": "パイレーツ",
+      "type": "batter",
+      "line": "5打数3安打　1二塁打　2打点"
+    },
+    {
+      "name": "Landen Roupp",
+      "team": "ジャイアンツ",
+      "type": "pitcher",
+      "line": "6.0回　2奪三振　自責0　2被安打"
+    },
+    {
+      "name": "Vaughn Grissom",
+      "team": "エンゼルス",
+      "type": "batter",
+      "line": "3打数2安打　1二塁打　1打点　1四球"
+    },
+    {
+      "name": "Tarik Skubal",
+      "team": "ドジャース",
+      "type": "pitcher",
+      "line": "7.1回　5奪三振　防御率2.45　4被安打"
+    },
+    {
+      "name": "Jared Serna",
+      "team": "マーリンズ",
+      "type": "batter",
+      "line": "3打数2安打　2二塁打　1打点"
+    },
+    {
+      "name": "Carson Kelly",
+      "team": "カブス",
+      "type": "batter",
+      "line": "1打数1安打　1二塁打　2打点"
+    },
+    {
+      "name": "Jacob Misiorowski",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "6.1回　9奪三振　防御率1.42　4被安打"
+    },
+    {
+      "name": "Manny Machado",
+      "team": "パドレス",
+      "type": "batter",
+      "line": "3打数2安打　2打点　1四球"
+    },
+    {
+      "name": "Spencer Miles",
+      "team": "ブルージェイズ",
+      "type": "pitcher",
+      "line": "2.0回　3奪三振　自責0　セーブ"
+    },
+    {
+      "name": "Edmundo Sosa",
+      "team": "フィリーズ",
+      "type": "batter",
+      "line": "1打数1安打　1二塁打　1打点　1盗塁"
+    },
+    {
+      "name": "Spencer Horwitz",
+      "team": "パイレーツ",
+      "type": "batter",
+      "line": "5打数2安打　3打点"
+    },
+    {
+      "name": "Petey Halpin",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "4打数2安打　1打点　1四球　1盗塁"
+    },
+    {
+      "name": "Ryan Jeffers",
+      "team": "ツインズ",
+      "type": "batter",
+      "line": "3打数2安打　1二塁打　1四球"
+    },
+    {
+      "name": "Alec Burleson",
+      "team": "カージナルス",
+      "type": "batter",
+      "line": "1打数1安打　3四球"
+    },
+    {
+      "name": "Brayan Rocchio",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "4打数2安打　2打点"
+    },
+    {
+      "name": "Victor Mesa Jr.",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "5打数2安打　1二塁打　1打点　1盗塁"
+    },
+    {
+      "name": "Andrew Benintendi",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "4打数2安打　2二塁打"
+    },
+    {
+      "name": "Justin Foscue",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "line": "3打数2安打　2打点"
+    },
+    {
+      "name": "Yoendrys Gómez",
+      "team": "ツインズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　セーブ"
+    },
+    {
+      "name": "Bubba Chandler",
+      "team": "パイレーツ",
+      "type": "pitcher",
+      "line": "6.0回　8奪三振　防御率3.00　4被安打"
+    },
+    {
+      "name": "Adrian Morejon",
+      "team": "パドレス",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　セーブ"
+    },
+    {
+      "name": "Tanner Scott",
+      "team": "ドジャース",
+      "type": "pitcher",
+      "line": "1.0回　2奪三振　自責0　セーブ"
+    },
+    {
+      "name": "José Soriano",
+      "team": "ブルージェイズ",
+      "type": "pitcher",
+      "line": "7.0回　3奪三振　防御率2.57　6被安打"
+    },
+    {
+      "name": "Jo Adell",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "3打数1安打　1打点　1四球　1死球"
+    },
+    {
+      "name": "Ketel Marte",
+      "team": "ダイヤモンドバックス",
+      "type": "batter",
+      "line": "3打数1安打　1打点　2四球"
+    },
+    {
+      "name": "Brian Navarreto",
+      "team": "マーリンズ",
+      "type": "batter",
+      "line": "2打数1安打　1二塁打　1打点"
+    },
+    {
+      "name": "Lourdes Gurriel Jr.",
+      "team": "ダイヤモンドバックス",
+      "type": "batter",
+      "line": "3打数1安打　1三塁打　1打点"
+    },
+    {
+      "name": "Brady House",
+      "team": "ナショナルズ",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打　2打点"
+    },
+    {
+      "name": "Dylan Crews",
+      "team": "ナショナルズ",
+      "type": "batter",
+      "line": "4打数2安打　2二塁打"
+    },
+    {
+      "name": "Michael Massey",
+      "team": "ロイヤルズ",
+      "type": "batter",
+      "line": "4打数2安打　1二塁打　1四球"
+    },
+    {
+      "name": "Esmerlyn Valdez",
+      "team": "パイレーツ",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打　1打点　1四球"
+    },
+    {
+      "name": "Konnor Griffin",
+      "team": "パイレーツ",
+      "type": "batter",
+      "line": "5打数2安打　1二塁打　1四球"
+    },
+    {
+      "name": "Craig Yoho",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "1.1回　2奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Freddy Peralta",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "6.0回　2奪三振　防御率1.50　5被安打"
+    },
+    {
+      "name": "Michael Busch",
+      "team": "カブス",
+      "type": "batter",
+      "line": "3打数1安打　1打点　2四球"
+    },
+    {
+      "name": "Tyler Stephenson",
+      "team": "レッズ",
+      "type": "batter",
+      "line": "2打数1安打　2四球"
+    },
+    {
+      "name": "Joe Mack",
+      "team": "マーリンズ",
+      "type": "batter",
+      "line": "1打数1安打　1二塁打"
+    },
+    {
+      "name": "Travis d'Arnaud",
+      "team": "エンゼルス",
+      "type": "batter",
+      "line": "4打数2安打　2二塁打"
+    },
+    {
+      "name": "Brent Headrick",
+      "team": "ヤンキース",
+      "type": "pitcher",
+      "line": "1.0回　2奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Jake Mangum",
+      "team": "パイレーツ",
+      "type": "batter",
+      "line": "5打数2安打　1二塁打　1盗塁"
+    },
+    {
+      "name": "Jeff Hoffman",
+      "team": "ツインズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　ホールド"
+    },
+    {
+      "name": "A.J. Minter",
+      "team": "ツインズ",
+      "type": "pitcher",
+      "line": "1.1回　1奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Luke Keaschall",
+      "team": "ツインズ",
+      "type": "batter",
+      "line": "3打数1安打　1二塁打　1四球"
+    },
+    {
+      "name": "Dedniel Núñez",
+      "team": "メッツ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Gabriel Hughes",
+      "team": "ロッキーズ",
+      "type": "pitcher",
+      "line": "5.0回　6奪三振　防御率1.80　4被安打"
+    },
+    {
+      "name": "Brandon Lowe",
+      "team": "パイレーツ",
+      "type": "batter",
+      "line": "4打数2安打　1四球"
+    },
+    {
+      "name": "Grant McCray",
+      "team": "ジャイアンツ",
+      "type": "batter",
+      "line": "2打数1安打　1四球　1盗塁"
+    },
+    {
+      "name": "Bryan Abreu",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "1.0回　2奪三振　自責0　1被安打　ホールド"
+    },
+    {
+      "name": "Jonathan Loáisiga",
+      "team": "ダイヤモンドバックス",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Michael Conforto",
+      "team": "カブス",
+      "type": "batter",
+      "line": "0打数0安打　1四球　1死球"
+    },
+    {
+      "name": "Yovanny Cruz",
+      "team": "ナショナルズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Quinn Mathews",
+      "team": "カージナルス",
+      "type": "pitcher",
+      "line": "6.0回　4奪三振　防御率3.00　5被安打"
+    },
+    {
+      "name": "Patrick Bailey",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "4打数2安打　1打点"
+    },
+    {
+      "name": "Angel Martínez",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "5打数2安打　1三塁打"
+    },
+    {
+      "name": "Jackson Holliday",
+      "team": "オリオールズ",
+      "type": "batter",
+      "line": "5打数2安打　1二塁打　1打点"
+    },
+    {
+      "name": "Brandon Marsh",
+      "team": "フィリーズ",
+      "type": "batter",
+      "line": "3打数1安打　1二塁打　1打点"
+    },
+    {
+      "name": "Justin Crawford",
+      "team": "フィリーズ",
+      "type": "batter",
+      "line": "2打数1安打　1二塁打"
+    },
+    {
+      "name": "Dax Fulton",
+      "team": "マーリンズ",
+      "type": "pitcher",
+      "line": "3.0回　4奪三振　自責0"
+    },
+    {
+      "name": "Ryan McMahon",
+      "team": "ヤンキース",
+      "type": "batter",
+      "line": "3打数1安打　1二塁打　1打点"
+    },
+    {
+      "name": "Vinnie Pasquantino",
+      "team": "ロイヤルズ",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打　1打点"
+    },
+    {
+      "name": "Riley Cornelio",
+      "team": "ナショナルズ",
+      "type": "pitcher",
+      "line": "3.0回　4奪三振　自責0"
+    },
+    {
+      "name": "Luis Campusano",
+      "team": "パドレス",
+      "type": "batter",
+      "line": "4打数2安打　1打点"
+    },
+    {
+      "name": "Casey Mize",
+      "team": "パドレス",
+      "type": "pitcher",
+      "line": "5.2回　7奪三振　防御率4.76　4被安打"
+    },
+    {
+      "name": "Dominic Canzone",
+      "team": "マリナーズ",
+      "type": "batter",
+      "line": "5打数2安打　1二塁打　1打点"
+    },
+    {
+      "name": "Brock Rodden",
+      "team": "マリナーズ",
+      "type": "batter",
+      "line": "2打数1安打　1二塁打"
+    },
+    {
+      "name": "Max Muncy",
+      "team": "ドジャース",
+      "type": "batter",
+      "line": "4打数2安打　1二塁打"
+    },
+    {
+      "name": "Miguel Rojas",
+      "team": "ドジャース",
+      "type": "batter",
+      "line": "2打数1安打　1二塁打"
+    },
+    {
+      "name": "Nate Lavender",
+      "team": "メッツ",
+      "type": "pitcher",
+      "line": "1.0回　2奪三振　自責0　2被安打　ホールド"
+    },
+    {
+      "name": "Jonathan Pintaro",
+      "team": "メッツ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　自責0　1被安打　ホールド"
+    },
+    {
+      "name": "David Bednar",
+      "team": "ヤンキース",
+      "type": "pitcher",
+      "line": "0.1回　1奪三振　自責0　セーブ"
+    },
+    {
+      "name": "Gary Sánchez",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "1打数0安打　3四球"
+    },
+    {
+      "name": "Reiver Sanmartin",
+      "team": "ジャイアンツ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　自責0　1被安打　ホールド"
+    },
+    {
+      "name": "Randy Arozarena",
+      "team": "マリナーズ",
+      "type": "batter",
+      "line": "3打数1安打　1打点　1四球"
+    },
+    {
+      "name": "Bryan Torres",
+      "team": "カージナルス",
+      "type": "batter",
+      "line": "4打数1安打　1打点　1四球"
+    },
+    {
+      "name": "Isaac Paredes",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "3打数1安打　2四球"
+    },
+    {
+      "name": "Hayden Wesneski",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "6.0回　3奪三振　防御率4.50　5被安打"
+    },
+    {
+      "name": "Aaron Civale",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "2.0回　4奪三振　自責0"
+    },
+    {
+      "name": "Cal Quantrill",
+      "team": "レンジャーズ",
+      "type": "pitcher",
+      "line": "6.0回　4奪三振　防御率4.50　5被安打"
+    },
+    {
+      "name": "Leody Taveras",
+      "team": "オリオールズ",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打　1打点"
+    },
+    {
+      "name": "Blaze Alexander",
+      "team": "オリオールズ",
+      "type": "batter",
+      "line": "3打数1安打　1二塁打"
+    },
+    {
+      "name": "Christian Moore",
+      "team": "エンゼルス",
+      "type": "batter",
       "line": "4打数2安打"
     },
     {
-      "name": "Steven Kwan",
-      "team": "ガーディアンズ",
+      "name": "Nick Sogard",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "4打数2安打　1打点"
+    },
+    {
+      "name": "Jazz Chisholm Jr.",
+      "team": "ヤンキース",
       "type": "batter",
       "line": "4打数2安打"
     },
@@ -726,523 +1022,733 @@
       "name": "Lars Nootbaar",
       "team": "ダイヤモンドバックス",
       "type": "batter",
-      "line": "0打数0安打　1打点"
+      "line": "3打数2安打"
     },
     {
-      "name": "Ildemaro Vargas",
-      "team": "ダイヤモンドバックス",
+      "name": "Braden Montgomery",
+      "team": "ホワイトソックス",
       "type": "batter",
-      "line": "4打数2安打"
+      "line": "3打数1安打　1打点"
     },
     {
-      "name": "Nate Pearson",
-      "team": "ロイヤルズ",
-      "type": "pitcher",
-      "line": "2.0回　3奪三振　自責0"
-    },
-    {
-      "name": "Tyrone Taylor",
-      "team": "カブス",
-      "type": "batter",
-      "line": "2打数1安打　1二塁打"
-    },
-    {
-      "name": "Robert Gasser",
+      "name": "Christian Yelich",
       "team": "ブリュワーズ",
-      "type": "pitcher",
-      "line": "4.2回　5奪三振　防御率1.93　3被安打"
-    },
-    {
-      "name": "Kaelen Culpepper",
-      "team": "ツインズ",
       "type": "batter",
-      "line": "4打数2安打"
+      "line": "1打数1安打"
     },
     {
-      "name": "Shay Whitcomb",
-      "team": "ジャイアンツ",
+      "name": "Sal Frelick",
+      "team": "ブリュワーズ",
       "type": "batter",
-      "line": "5打数2安打　1打点"
+      "line": "1打数1安打"
     },
     {
-      "name": "Carlos Jorge",
-      "team": "レッズ",
-      "type": "batter",
-      "line": "4打数2安打"
-    },
-    {
-      "name": "Will Smith",
-      "team": "ドジャース",
+      "name": "Austin Hays",
+      "team": "パドレス",
       "type": "batter",
       "line": "0打数0安打　1打点"
     },
     {
-      "name": "Nathan Lukes",
-      "team": "ブルージェイズ",
+      "name": "Ty France",
+      "team": "パドレス",
       "type": "batter",
       "line": "4打数2安打"
     },
     {
-      "name": "Brett Baty",
-      "team": "メッツ",
+      "name": "Cole Young",
+      "team": "マリナーズ",
       "type": "batter",
-      "line": "4打数1安打　1二塁打　1四球"
+      "line": "4打数2安打"
     },
     {
-      "name": "Juan Soto",
+      "name": "Christian Encarnacion-Strand",
+      "team": "オリオールズ",
+      "type": "batter",
+      "line": "0打数0安打　1死球"
+    },
+    {
+      "name": "Ben Malgeri",
+      "team": "タイガース",
+      "type": "batter",
+      "line": "1打数0安打　1四球　1盗塁"
+    },
+    {
+      "name": "Gleyber Torres",
+      "team": "タイガース",
+      "type": "batter",
+      "line": "3打数1安打　1四球"
+    },
+    {
+      "name": "Bryson Stott",
+      "team": "フィリーズ",
+      "type": "batter",
+      "line": "3打数1安打　1死球"
+    },
+    {
+      "name": "Luis Arraez",
+      "team": "フィリーズ",
+      "type": "batter",
+      "line": "3打数1安打　1死球"
+    },
+    {
+      "name": "Jared Young",
       "team": "メッツ",
       "type": "batter",
-      "line": "5打数2安打　1四球"
+      "line": "4打数1安打　1打点　1四球"
+    },
+    {
+      "name": "Wilyer Abreu",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "3打数1安打　1四球"
     },
     {
       "name": "Geraldo Perdomo",
       "team": "ダイヤモンドバックス",
       "type": "batter",
-      "line": "4打数1安打　1打点　1四球"
+      "line": "2打数0安打　1打点　1四球"
     },
     {
-      "name": "Jake Bauers",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "0打数0安打　1四球"
-    },
-    {
-      "name": "Brooks Lee",
-      "team": "ツインズ",
-      "type": "batter",
-      "line": "4打数1安打　1四球　1盗塁"
-    },
-    {
-      "name": "Ryan Kreidler",
-      "team": "ツインズ",
-      "type": "batter",
-      "line": "0打数0安打　1四球"
-    },
-    {
-      "name": "John Peck",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "3打数1安打　1死球　1盗塁"
-    },
-    {
-      "name": "Jase Bowen",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "0打数0安打　1四球"
-    },
-    {
-      "name": "Christian Koss",
-      "team": "ジャイアンツ",
+      "name": "Andrés Giménez",
+      "team": "ブルージェイズ",
       "type": "batter",
       "line": "3打数1安打　1四球"
-    },
-    {
-      "name": "Taylor Clarke",
-      "team": "ダイヤモンドバックス",
-      "type": "pitcher",
-      "line": "2.0回　2奪三振　自責0　1被安打"
-    },
-    {
-      "name": "Cooper Pratt",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "2打数1安打"
-    },
-    {
-      "name": "Joey Ortiz",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "3打数1安打　1二塁打"
-    },
-    {
-      "name": "Trevor Megill",
-      "team": "ブリュワーズ",
-      "type": "pitcher",
-      "line": "1.0回　0奪三振　防御率9.00　1被安打　セーブ"
-    },
-    {
-      "name": "Jorbit Vivas",
-      "team": "ナショナルズ",
-      "type": "batter",
-      "line": "2打数1安打"
-    },
-    {
-      "name": "James Wood",
-      "team": "ナショナルズ",
-      "type": "batter",
-      "line": "4打数1安打　1二塁打"
     },
     {
       "name": "Nathan Church",
       "team": "カージナルス",
       "type": "batter",
+      "line": "3打数1安打　1四球"
+    },
+    {
+      "name": "Tim Herrin",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "1.1回　2奪三振　自責0"
+    },
+    {
+      "name": "Andrew Morris",
+      "team": "ツインズ",
+      "type": "pitcher",
+      "line": "0.2回　1奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Jeremy Peña",
+      "team": "アストロズ",
+      "type": "batter",
       "line": "5打数1安打　1二塁打　1打点"
     },
     {
-      "name": "José Fermín",
-      "team": "カージナルス",
+      "name": "Yainer Diaz",
+      "team": "アストロズ",
       "type": "batter",
-      "line": "1打数0安打　1打点"
+      "line": "5打数2安打"
     },
     {
-      "name": "Dane Myers",
-      "team": "レッズ",
-      "type": "batter",
-      "line": "1打数0安打　1打点"
-    },
-    {
-      "name": "Héctor Rodríguez",
-      "team": "レッズ",
-      "type": "batter",
-      "line": "4打数2安打"
-    },
-    {
-      "name": "Josh Smith",
-      "team": "ブルージェイズ",
-      "type": "batter",
-      "line": "1打数0安打　1打点"
-    },
-    {
-      "name": "Francisco Alvarez",
-      "team": "メッツ",
-      "type": "batter",
-      "line": "4打数1安打　1打点　1四球"
-    },
-    {
-      "name": "Chris Devenski",
+      "name": "Kodai Senga",
       "team": "メッツ",
       "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0"
+      "line": "1.0回　2奪三振　防御率9.00　2被安打　セーブ"
     },
     {
-      "name": "Bradley Blalock",
-      "team": "マーリンズ",
-      "type": "pitcher",
-      "line": "3.0回　3奪三振　自責0　3被安打"
-    },
-    {
-      "name": "Ian Happ",
-      "team": "カブス",
-      "type": "batter",
-      "line": "1打数0安打　1四球"
-    },
-    {
-      "name": "Xander Bogaerts",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "3打数1安打　1四球"
-    },
-    {
-      "name": "Bryan Torres",
-      "team": "カージナルス",
-      "type": "batter",
-      "line": "4打数1安打　1四球"
-    },
-    {
-      "name": "Justin Bruihl",
-      "team": "カージナルス",
-      "type": "pitcher",
-      "line": "1.1回　1奪三振　自責0"
-    },
-    {
-      "name": "Iván Herrera",
-      "team": "カージナルス",
-      "type": "batter",
-      "line": "3打数1安打　1四球"
-    },
-    {
-      "name": "Jung Hoo Lee",
-      "team": "ジャイアンツ",
-      "type": "batter",
-      "line": "4打数1安打　1四球"
-    },
-    {
-      "name": "Alex Vesia",
-      "team": "ドジャース",
-      "type": "pitcher",
-      "line": "0.1回　1奪三振　自責0　ホールド"
-    },
-    {
-      "name": "Brendon Little",
-      "team": "ブルージェイズ",
-      "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0"
-    },
-    {
-      "name": "Austin Warren",
+      "name": "A.J. Ewing",
       "team": "メッツ",
-      "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0"
-    },
-    {
-      "name": "Mitch Farris",
-      "team": "エンゼルス",
-      "type": "pitcher",
-      "line": "2.0回　3奪三振　自責0　2被安打"
-    },
-    {
-      "name": "Blaze Alexander",
-      "team": "オリオールズ",
-      "type": "batter",
-      "line": "3打数0安打　1打点　2四球"
-    },
-    {
-      "name": "Chad Patrick",
-      "team": "ブリュワーズ",
-      "type": "pitcher",
-      "line": "1.1回　1奪三振　自責0"
-    },
-    {
-      "name": "Brice Turang",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "2打数0安打　2四球"
-    },
-    {
-      "name": "Jared Simpson",
-      "team": "ナショナルズ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0"
-    },
-    {
-      "name": "Alex Call",
-      "team": "ドジャース",
-      "type": "batter",
-      "line": "2打数0安打　1四球　1死球"
-    },
-    {
-      "name": "Tyler Rogers",
-      "team": "ブルージェイズ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0"
-    },
-    {
-      "name": "Brandon Marsh",
-      "team": "フィリーズ",
-      "type": "batter",
-      "line": "3打数1安打"
-    },
-    {
-      "name": "Trea Turner",
-      "team": "フィリーズ",
       "type": "batter",
       "line": "4打数1安打　1二塁打"
     },
     {
-      "name": "Daniel Duarte",
+      "name": "Caleb Durbin",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "2打数0安打　2四球"
+    },
+    {
+      "name": "Cody Bellinger",
+      "team": "ヤンキース",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打"
+    },
+    {
+      "name": "Luis García Jr.",
+      "team": "ヤンキース",
+      "type": "batter",
+      "line": "4打数2安打"
+    },
+    {
+      "name": "Drake Baldwin",
+      "team": "ブレーブス",
+      "type": "batter",
+      "line": "4打数1安打　1打点"
+    },
+    {
+      "name": "Brent Suter",
+      "team": "ブレーブス",
+      "type": "pitcher",
+      "line": "3.2回　2奪三振　自責0　3被安打"
+    },
+    {
+      "name": "Nico Hoerner",
+      "team": "カブス",
+      "type": "batter",
+      "line": "5打数2安打"
+    },
+    {
+      "name": "Jorbit Vivas",
+      "team": "ナショナルズ",
+      "type": "batter",
+      "line": "3打数1安打　1二塁打"
+    },
+    {
+      "name": "Freddy Fermin",
+      "team": "パドレス",
+      "type": "batter",
+      "line": "1打数0安打　2四球"
+    },
+    {
+      "name": "Cal Raleigh",
+      "team": "マリナーズ",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打"
+    },
+    {
+      "name": "Vladimir Guerrero Jr.",
+      "team": "ブルージェイズ",
+      "type": "batter",
+      "line": "4打数2安打"
+    },
+    {
+      "name": "Turner Hill",
+      "team": "ジャイアンツ",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打"
+    },
+    {
+      "name": "Matt McLain",
+      "team": "レッズ",
+      "type": "batter",
+      "line": "3打数1安打　1盗塁"
+    },
+    {
+      "name": "Mookie Betts",
+      "team": "ドジャース",
+      "type": "batter",
+      "line": "2打数0安打　2四球"
+    },
+    {
+      "name": "Joel Kuhnel",
+      "team": "ジャイアンツ",
+      "type": "pitcher",
+      "line": "1.1回　0奪三振　防御率6.75　2被安打　セーブ"
+    },
+    {
+      "name": "Anthony Nunez",
+      "team": "オリオールズ",
+      "type": "pitcher",
+      "line": "1.1回　1奪三振　自責0"
+    },
+    {
+      "name": "Grant Wolfram",
+      "team": "オリオールズ",
+      "type": "pitcher",
+      "line": "1.1回　1奪三振　自責0"
+    },
+    {
+      "name": "Brant Hurter",
+      "team": "タイガース",
+      "type": "pitcher",
+      "line": "1.1回　1奪三振　自責0"
+    },
+    {
+      "name": "Beau Brieske",
+      "team": "タイガース",
+      "type": "pitcher",
+      "line": "1.2回　0奪三振　自責0"
+    },
+    {
+      "name": "Josh Hader",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　防御率9.00　2被安打　セーブ"
+    },
+    {
+      "name": "Bennett Sousa",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "0.1回　1奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Bo Bichette",
       "team": "メッツ",
-      "type": "pitcher",
-      "line": "1.0回　0奪三振　自責0"
+      "type": "batter",
+      "line": "4打数1安打　1四球"
     },
     {
-      "name": "Cade Gibson",
-      "team": "マーリンズ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0"
+      "name": "Mike Trout",
+      "team": "エンゼルス",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打　1四球"
     },
     {
-      "name": "Blake Weiman",
+      "name": "Tayler Saucedo",
       "team": "エンゼルス",
       "type": "pitcher",
-      "line": "1.0回　0奪三振　自責0"
+      "line": "0.2回　1奪三振　自責0　ホールド"
     },
     {
-      "name": "Austin Hedges",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "3打数1安打"
-    },
-    {
-      "name": "Brayan Rocchio",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "3打数1安打"
-    },
-    {
-      "name": "Dylan Beavers",
-      "team": "オリオールズ",
-      "type": "batter",
-      "line": "4打数1安打　1二塁打　1打点"
-    },
-    {
-      "name": "Justin Martinez",
-      "team": "ダイヤモンドバックス",
+      "name": "Ryan Watson",
+      "team": "エンゼルス",
       "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0"
+      "line": "0.1回　1奪三振　自責0　ホールド"
     },
     {
-      "name": "Brandyn Garcia",
-      "team": "ダイヤモンドバックス",
+      "name": "Mark Manfredi",
+      "team": "ロッキーズ",
       "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0　1被安打"
+      "line": "1.0回　2奪三振　自責0"
+    },
+    {
+      "name": "TJ Rumfield",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "3打数1安打　1四球"
+    },
+    {
+      "name": "George Lombard Jr.",
+      "team": "ヤンキース",
+      "type": "batter",
+      "line": "3打数1安打　1四球"
     },
     {
       "name": "Matthew Lugo",
       "team": "ロイヤルズ",
       "type": "batter",
+      "line": "1打数0安打　1四球"
+    },
+    {
+      "name": "DL Hall",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "1.2回　1奪三振　自責0"
+    },
+    {
+      "name": "Hoby Milner",
+      "team": "マリナーズ",
+      "type": "pitcher",
+      "line": "1.0回　2奪三振　自責0"
+    },
+    {
+      "name": "Michael Rucker",
+      "team": "マリナーズ",
+      "type": "pitcher",
+      "line": "1.0回　2奪三振　自責0"
+    },
+    {
+      "name": "Carlos Vargas",
+      "team": "マリナーズ",
+      "type": "pitcher",
+      "line": "1.1回　1奪三振　自責0"
+    },
+    {
+      "name": "Geoff Hartlieb",
+      "team": "アスレチックス",
+      "type": "pitcher",
+      "line": "2.0回　2奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Gordon Graceffo",
+      "team": "カージナルス",
+      "type": "pitcher",
+      "line": "2.0回　2奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Cade Smith",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "1.0回　2奪三振　自責0"
+    },
+    {
+      "name": "Dean Kremer",
+      "team": "ツインズ",
+      "type": "pitcher",
+      "line": "5.0回　3奪三振　防御率3.60　5被安打"
+    },
+    {
+      "name": "Drew Anderson",
+      "team": "タイガース",
+      "type": "pitcher",
+      "line": "5.1回　4奪三振　防御率5.06　4被安打"
+    },
+    {
+      "name": "José Alvarado",
+      "team": "フィリーズ",
+      "type": "pitcher",
+      "line": "1.0回　2奪三振　自責0"
+    },
+    {
+      "name": "Chase Shugart",
+      "team": "フィリーズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0"
+    },
+    {
+      "name": "Ben Rice",
+      "team": "ヤンキース",
+      "type": "batter",
+      "line": "2打数0安打　1四球　1死球"
+    },
+    {
+      "name": "Kevin Kelly",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0"
+    },
+    {
+      "name": "Nolan Arenado",
+      "team": "ダイヤモンドバックス",
+      "type": "batter",
+      "line": "3打数0安打　2四球"
+    },
+    {
+      "name": "Corbin Burnes",
+      "team": "ダイヤモンドバックス",
+      "type": "pitcher",
+      "line": "3.0回　2奪三振　自責0　2被安打"
+    },
+    {
+      "name": "Dennis Santana",
+      "team": "ダイヤモンドバックス",
+      "type": "pitcher",
+      "line": "1.0回　3奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Yohan Ramírez",
+      "team": "パイレーツ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0"
+    },
+    {
+      "name": "Zak Kent",
+      "team": "ナショナルズ",
+      "type": "pitcher",
+      "line": "2.0回　1奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Randy Vásquez",
+      "team": "パドレス",
+      "type": "pitcher",
+      "line": "1.1回　2奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Robert Garcia",
+      "team": "レンジャーズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0"
+    },
+    {
+      "name": "Carson Seymour",
+      "team": "ジャイアンツ",
+      "type": "pitcher",
+      "line": "0.2回　1奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Edgardo Henriquez",
+      "team": "ドジャース",
+      "type": "pitcher",
+      "line": "0.2回　1奪三振　自責0　1被安打　ホールド"
+    },
+    {
+      "name": "Steven Kwan",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "5打数1安打　1二塁打"
+    },
+    {
+      "name": "Hunter Gaddis",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0"
+    },
+    {
+      "name": "Brooks Lee",
+      "team": "ツインズ",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打"
+    },
+    {
+      "name": "Zach McKinstry",
+      "team": "タイガース",
+      "type": "batter",
       "line": "3打数1安打"
     },
     {
-      "name": "Abner Uribe",
-      "team": "ブリュワーズ",
+      "name": "Tim Mayza",
+      "team": "フィリーズ",
       "type": "pitcher",
       "line": "1.0回　0奪三振　自責0"
     },
     {
-      "name": "Tyler Kinley",
-      "team": "タイガース",
-      "type": "pitcher",
-      "line": "0.1回　1奪三振　自責0　ホールド"
-    },
-    {
-      "name": "Thomas Saggese",
-      "team": "カージナルス",
-      "type": "batter",
-      "line": "5打数2安打"
-    },
-    {
-      "name": "Jason Foley",
-      "team": "ジャイアンツ",
-      "type": "pitcher",
-      "line": "2.0回　0奪三振　自責0　1被安打"
-    },
-    {
-      "name": "Osleivis Basabe",
-      "team": "ジャイアンツ",
-      "type": "batter",
-      "line": "3打数1安打"
-    },
-    {
-      "name": "Jeff McNeil",
-      "team": "アスレチックス",
+      "name": "Kyle Schwarber",
+      "team": "フィリーズ",
       "type": "batter",
       "line": "5打数1安打　1打点"
     },
     {
-      "name": "Carson Benge",
-      "team": "メッツ",
+      "name": "Javier Sanoja",
+      "team": "マーリンズ",
       "type": "batter",
-      "line": "4打数1安打　1四球　1盗塁"
+      "line": "4打数1安打　1打点"
     },
     {
-      "name": "Jonah Tong",
-      "team": "メッツ",
-      "type": "pitcher",
-      "line": "5.0回　7奪三振　防御率7.20　4被安打"
-    },
-    {
-      "name": "Roman Anthony",
-      "team": "レッドソックス",
+      "name": "Otto Lopez",
+      "team": "マーリンズ",
       "type": "batter",
-      "line": "4打数1安打　1四球"
+      "line": "4打数1安打　1打点"
     },
     {
-      "name": "Craig Yoho",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0　1被安打"
-    },
-    {
-      "name": "Jose Cabrera",
-      "team": "ダイヤモンドバックス",
-      "type": "pitcher",
-      "line": "3.0回　1奪三振　自責0　3被安打"
-    },
-    {
-      "name": "Ketel Marte",
-      "team": "ダイヤモンドバックス",
-      "type": "batter",
-      "line": "4打数1安打　1四球"
-    },
-    {
-      "name": "Max Clark",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "3打数1安打　1四球"
-    },
-    {
-      "name": "Colt Keith",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "2打数0安打　1打点　1死球"
-    },
-    {
-      "name": "Freddie Freeman",
-      "team": "ドジャース",
-      "type": "batter",
-      "line": "3打数0安打　1四球　1盗塁"
-    },
-    {
-      "name": "Ben Joyce",
+      "name": "Moisés Ballesteros",
       "team": "エンゼルス",
-      "type": "pitcher",
-      "line": "1.0回　0奪三振　自責0　1被安打"
+      "type": "batter",
+      "line": "4打数2安打"
     },
     {
-      "name": "Daniel Espino",
-      "team": "ガーディアンズ",
+      "name": "Greg Weissert",
+      "team": "レッドソックス",
       "type": "pitcher",
-      "line": "1.0回　2奪三振　自責0　2被安打"
+      "line": "1.0回　2奪三振　自責0　1被安打"
     },
     {
-      "name": "Jack Sinclair",
-      "team": "ナショナルズ",
+      "name": "Cole Sulser",
+      "team": "レイズ",
       "type": "pitcher",
-      "line": "1.1回　0奪三振　自責0　1被安打"
+      "line": "1.0回　0奪三振　自責0"
+    },
+    {
+      "name": "Bryan Baker",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　自責0"
+    },
+    {
+      "name": "Pedro Ramírez",
+      "team": "カブス",
+      "type": "batter",
+      "line": "2打数1安打"
     },
     {
       "name": "Seiya Suzuki",
       "team": "カブス",
       "type": "batter",
-      "line": "3打数0安打　2四球"
+      "line": "5打数1安打　1二塁打"
     },
     {
-      "name": "Michael Harris II",
+      "name": "Antonio Senzatela",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　自責0"
+    },
+    {
+      "name": "Abimelec Ortiz",
+      "team": "ナショナルズ",
+      "type": "batter",
+      "line": "3打数1安打　1二塁打"
+    },
+    {
+      "name": "Evan Carter",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "line": "5打数2安打　1盗塁"
+    },
+    {
+      "name": "Alejandro Kirk",
+      "team": "ブルージェイズ",
+      "type": "batter",
+      "line": "4打数1安打　1打点"
+    },
+    {
+      "name": "Henry Bolte",
+      "team": "アスレチックス",
+      "type": "batter",
+      "line": "4打数2安打"
+    },
+    {
+      "name": "Luis Mey",
+      "team": "レッズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0"
+    },
+    {
+      "name": "Jack Ralston",
+      "team": "マーリンズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Samy Natera Jr.",
+      "team": "エンゼルス",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Blas Castaño",
+      "team": "ロッキーズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Jaden Hill",
+      "team": "ロッキーズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0"
+    },
+    {
+      "name": "Jonathan Aranda",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "4打数1安打　1四球"
+    },
+    {
+      "name": "Kevin Ginkel",
+      "team": "ダイヤモンドバックス",
+      "type": "pitcher",
+      "line": "1.1回　0奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Gabriel Moreno",
+      "team": "ダイヤモンドバックス",
+      "type": "batter",
+      "line": "5打数1安打　1四球"
+    },
+    {
+      "name": "Salvador Perez",
+      "team": "ロイヤルズ",
+      "type": "batter",
+      "line": "4打数1安打　1四球"
+    },
+    {
+      "name": "Tyler Schweitzer",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "2.2回　0奪三振　自責0　3被安打"
+    },
+    {
+      "name": "Xander Bogaerts",
+      "team": "パドレス",
+      "type": "batter",
+      "line": "2打数0安打　1四球"
+    },
+    {
+      "name": "Julian Garcia",
+      "team": "レッズ",
+      "type": "pitcher",
+      "line": "1.1回　0奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Enrique Hernández",
+      "team": "ドジャース",
+      "type": "batter",
+      "line": "2打数0安打　1四球"
+    },
+    {
+      "name": "Tommy Edman",
+      "team": "ドジャース",
+      "type": "batter",
+      "line": "3打数0安打　1打点　1死球"
+    },
+    {
+      "name": "Luis De León",
+      "team": "オリオールズ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Cam Sanders",
+      "team": "オリオールズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Kade Strowd",
+      "team": "ダイヤモンドバックス",
+      "type": "pitcher",
+      "line": "1.2回　0奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Ryan Rolison",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Chris Roycroft",
+      "team": "アスレチックス",
+      "type": "pitcher",
+      "line": "2.0回　1奪三振　自責0　3被安打"
+    },
+    {
+      "name": "Graham Ashcraft",
+      "team": "レッズ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Carson Benge",
+      "team": "メッツ",
+      "type": "batter",
+      "line": "3打数0安打　2四球　1盗塁"
+    },
+    {
+      "name": "Josh Bell",
+      "team": "ツインズ",
+      "type": "batter",
+      "line": "3打数0安打　1打点"
+    },
+    {
+      "name": "Eduardo Valencia",
+      "team": "タイガース",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Alec Bohm",
+      "team": "フィリーズ",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打"
+    },
+    {
+      "name": "Heriberto Hernández",
+      "team": "マーリンズ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Wade Meckler",
+      "team": "エンゼルス",
+      "type": "batter",
+      "line": "1打数0安打"
+    },
+    {
+      "name": "Mauricio Dubón",
       "team": "ブレーブス",
       "type": "batter",
-      "line": "3打数1安打"
+      "line": "4打数1安打"
     },
     {
       "name": "Matt Olson",
       "team": "ブレーブス",
       "type": "batter",
-      "line": "3打数1安打"
+      "line": "4打数1安打"
     },
     {
-      "name": "Dedniel Núñez",
-      "team": "メッツ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0　2被安打"
-    },
-    {
-      "name": "Adam Frazier",
-      "team": "エンゼルス",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Christian Moore",
-      "team": "エンゼルス",
-      "type": "batter",
-      "line": "4打数1安打　1打点"
-    },
-    {
-      "name": "Denzer Guzman",
-      "team": "エンゼルス",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Patrick Bailey",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "José Ramírez",
-      "team": "ガーディアンズ",
+      "name": "Ronald Acuña Jr.",
+      "team": "ブレーブス",
       "type": "batter",
       "line": "4打数1安打"
+    },
+    {
+      "name": "Jordan Lawlar",
+      "team": "ダイヤモンドバックス",
+      "type": "batter",
+      "line": "1打数0安打"
     },
     {
       "name": "Adrian Del Castillo",
@@ -1251,724 +1757,628 @@
       "line": "1打数0安打"
     },
     {
-      "name": "Derek Law",
-      "team": "ダイヤモンドバックス",
-      "type": "pitcher",
-      "line": "2.0回　0奪三振　自責0　1被安打"
-    },
-    {
-      "name": "Steven Cruz",
-      "team": "ロイヤルズ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0　2被安打"
-    },
-    {
-      "name": "Michael Busch",
-      "team": "カブス",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Joe Ryan",
-      "team": "ツインズ",
-      "type": "pitcher",
-      "line": "4.0回　7奪三振　防御率4.50　3被安打"
-    },
-    {
-      "name": "Eduardo Valencia",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Austin Hays",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Leo Bernal",
-      "team": "カージナルス",
-      "type": "batter",
-      "line": "5打数1安打　1打点"
-    },
-    {
-      "name": "Ernie Clement",
-      "team": "ブルージェイズ",
-      "type": "batter",
-      "line": "4打数1安打"
-    },
-    {
-      "name": "Dylan Cease",
-      "team": "ブルージェイズ",
-      "type": "pitcher",
-      "line": "5.0回　6奪三振　防御率7.20　4被安打"
-    },
-    {
-      "name": "Bryce Harper",
-      "team": "フィリーズ",
-      "type": "batter",
-      "line": "2打数0安打　1四球"
-    },
-    {
-      "name": "Alec Bohm",
-      "team": "フィリーズ",
-      "type": "batter",
-      "line": "2打数0安打　1四球"
-    },
-    {
-      "name": "Mickey Gasper",
-      "team": "レッドソックス",
-      "type": "batter",
-      "line": "3打数0安打　1四球"
-    },
-    {
-      "name": "Kody Clemens",
-      "team": "ツインズ",
-      "type": "batter",
-      "line": "4打数1安打　1四球"
-    },
-    {
-      "name": "Ryan Jeffers",
-      "team": "ツインズ",
-      "type": "batter",
-      "line": "4打数0安打　1打点　1死球"
-    },
-    {
-      "name": "Jake Irvin",
-      "team": "ナショナルズ",
-      "type": "pitcher",
-      "line": "5.2回　3奪三振　防御率4.76　8被安打"
-    },
-    {
-      "name": "Ty France",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "3打数0安打　1四球"
-    },
-    {
-      "name": "Jordan Walker",
-      "team": "カージナルス",
-      "type": "batter",
-      "line": "4打数1安打　1四球"
-    },
-    {
-      "name": "Ryne Stanek",
-      "team": "カージナルス",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0　2被安打"
-    },
-    {
-      "name": "Jack Dreyer",
-      "team": "ドジャース",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　防御率9.00　2被安打　ホールド"
-    },
-    {
-      "name": "Donovan Walton",
-      "team": "アスレチックス",
-      "type": "batter",
-      "line": "3打数0安打　1四球"
-    },
-    {
-      "name": "Jacob Lopez",
-      "team": "アスレチックス",
-      "type": "pitcher",
-      "line": "6.0回　1奪三振　防御率6.00　7被安打"
-    },
-    {
-      "name": "Wyatt Olds",
-      "team": "レッドソックス",
-      "type": "pitcher",
-      "line": "2.0回　5奪三振　防御率4.50　1被安打"
-    },
-    {
-      "name": "Troy Melton",
-      "team": "タイガース",
-      "type": "pitcher",
-      "line": "5.2回　3奪三振　防御率6.35　7被安打"
-    },
-    {
-      "name": "Didier Fuentes",
-      "team": "ブレーブス",
-      "type": "pitcher",
-      "line": "2.0回　4奪三振　防御率4.50　1被安打"
-    },
-    {
-      "name": "Otto Lopez",
-      "team": "マーリンズ",
-      "type": "batter",
-      "line": "4打数1安打"
-    },
-    {
-      "name": "Tim Tawa",
+      "name": "Tommy Troy",
       "team": "ダイヤモンドバックス",
       "type": "batter",
       "line": "3打数1安打"
     },
     {
-      "name": "Isaac Collins",
+      "name": "Tyler Tolbert",
       "team": "ロイヤルズ",
       "type": "batter",
       "line": "1打数0安打"
     },
     {
-      "name": "Andrew Vaughn",
-      "team": "ブリュワーズ",
+      "name": "Nick Loftin",
+      "team": "ロイヤルズ",
       "type": "batter",
-      "line": "3打数1安打"
-    },
-    {
-      "name": "Luis Lara",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "4打数1安打"
-    },
-    {
-      "name": "Ben Malgeri",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Abimelec Ortiz",
-      "team": "ナショナルズ",
-      "type": "batter",
-      "line": "4打数1安打"
-    },
-    {
-      "name": "Yohandy Morales",
-      "team": "ナショナルズ",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Ethan Salas",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Drew Cavanaugh",
-      "team": "ジャイアンツ",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Drew Gilbert",
-      "team": "ジャイアンツ",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Miguel Rojas",
-      "team": "ドジャース",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Alex Freeland",
-      "team": "ドジャース",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Vladimir Guerrero Jr.",
-      "team": "ブルージェイズ",
-      "type": "batter",
-      "line": "4打数1安打"
-    },
-    {
-      "name": "Myles Straw",
-      "team": "ブルージェイズ",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Paul Sewald",
-      "team": "ブルージェイズ",
-      "type": "pitcher",
-      "line": "0.2回　1奪三振　自責0"
-    },
-    {
-      "name": "Ronald Acuña Jr.",
-      "team": "ブレーブス",
-      "type": "batter",
-      "line": "3打数0安打　1四球"
-    },
-    {
-      "name": "Austin Riley",
-      "team": "ブレーブス",
-      "type": "batter",
-      "line": "2打数0安打　1死球"
-    },
-    {
-      "name": "Wilyer Abreu",
-      "team": "レッドソックス",
-      "type": "batter",
-      "line": "3打数0安打　1四球"
+      "line": "5打数1安打　1二塁打"
     },
     {
       "name": "Kyle Isbel",
       "team": "ロイヤルズ",
       "type": "batter",
-      "line": "3打数0安打　1四球"
-    },
-    {
-      "name": "Josh Bell",
-      "team": "ツインズ",
-      "type": "batter",
-      "line": "4打数0安打　1四球"
-    },
-    {
-      "name": "Luis Campusano",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "3打数0安打　1死球"
-    },
-    {
-      "name": "Turner Hill",
-      "team": "ジャイアンツ",
-      "type": "batter",
-      "line": "4打数0安打　1四球"
-    },
-    {
-      "name": "Franco Aleman",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "0.2回　2奪三振　自責0"
-    },
-    {
-      "name": "Rico Garcia",
-      "team": "オリオールズ",
-      "type": "pitcher",
-      "line": "0.2回　0奪三振　自責0"
-    },
-    {
-      "name": "Jacob Webb",
-      "team": "カブス",
-      "type": "pitcher",
-      "line": "0.2回　1奪三振　自責0"
-    },
-    {
-      "name": "Kyle Hart",
-      "team": "パドレス",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　防御率18.00　2被安打　ホールド"
-    },
-    {
-      "name": "Reiver Sanmartin",
-      "team": "ジャイアンツ",
-      "type": "pitcher",
-      "line": "0.1回　1奪三振　自責0"
-    },
-    {
-      "name": "Tejay Antone",
-      "team": "レッズ",
-      "type": "pitcher",
-      "line": "0.2回　0奪三振　自責0"
-    },
-    {
-      "name": "Mauricio Dubón",
-      "team": "ブレーブス",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Francisco Lindor",
-      "team": "メッツ",
-      "type": "batter",
-      "line": "6打数2安打"
-    },
-    {
-      "name": "Josh Lowe",
-      "team": "エンゼルス",
-      "type": "batter",
-      "line": "3打数0安打　1盗塁"
-    },
-    {
-      "name": "David Fry",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Angel Martínez",
-      "team": "ガーディアンズ",
-      "type": "batter",
       "line": "4打数1安打"
     },
     {
-      "name": "Gunnar Henderson",
-      "team": "オリオールズ",
-      "type": "batter",
-      "line": "5打数1安打"
-    },
-    {
-      "name": "Jackson Holliday",
-      "team": "オリオールズ",
-      "type": "batter",
-      "line": "5打数1安打"
-    },
-    {
-      "name": "Ryan Waldschmidt",
-      "team": "ダイヤモンドバックス",
-      "type": "batter",
-      "line": "4打数1安打"
-    },
-    {
-      "name": "BJ Murray Jr.",
-      "team": "カブス",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Christian Yelich",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "3打数0安打　1打点"
-    },
-    {
-      "name": "Gleyber Torres",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "4打数1安打"
-    },
-    {
-      "name": "Keibert Ruiz",
-      "team": "ナショナルズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Dustin Harris",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Jonah Cox",
-      "team": "ジャイアンツ",
-      "type": "batter",
-      "line": "4打数1安打"
-    },
-    {
-      "name": "Mason Fluharty",
-      "team": "ブルージェイズ",
-      "type": "pitcher",
-      "line": "0.1回　0奪三振　自責0"
-    },
-    {
-      "name": "Kyle Stowers",
-      "team": "マーリンズ",
-      "type": "batter",
-      "line": "3打数0安打　1死球"
-    },
-    {
-      "name": "Owen Caissie",
-      "team": "マーリンズ",
-      "type": "batter",
-      "line": "3打数0安打　1四球"
-    },
-    {
-      "name": "Zach Neto",
-      "team": "エンゼルス",
-      "type": "batter",
-      "line": "4打数0安打　1死球"
-    },
-    {
-      "name": "Christian Encarnacion-Strand",
-      "team": "オリオールズ",
-      "type": "batter",
-      "line": "4打数0安打　1四球"
-    },
-    {
-      "name": "Bobby Witt Jr.",
+      "name": "Steven Cruz",
       "team": "ロイヤルズ",
-      "type": "batter",
-      "line": "4打数0安打　1死球"
-    },
-    {
-      "name": "Nolan Gorman",
-      "team": "カージナルス",
-      "type": "batter",
-      "line": "4打数0安打　1四球"
-    },
-    {
-      "name": "Sal Stewart",
-      "team": "レッズ",
-      "type": "batter",
-      "line": "3打数0安打　1四球"
-    },
-    {
-      "name": "Shohei Ohtani",
-      "team": "ドジャース",
-      "type": "batter",
-      "line": "3打数0安打　1四球"
-    },
-    {
-      "name": "Brett Bateman",
-      "team": "ブルージェイズ",
-      "type": "batter",
-      "line": "4打数0安打　1四球"
-    },
-    {
-      "name": "Connor Prielipp",
-      "team": "ツインズ",
       "type": "pitcher",
-      "line": "4.0回　5奪三振　防御率4.50　5被安打"
-    },
-    {
-      "name": "George Soriano",
-      "team": "カージナルス",
-      "type": "pitcher",
-      "line": "0.1回　0奪三振　自責0　1被安打"
-    },
-    {
-      "name": "Justin Crawford",
-      "team": "フィリーズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Bryson Stott",
-      "team": "フィリーズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Luis Arraez",
-      "team": "フィリーズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Joe Mack",
-      "team": "マーリンズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Mike Trout",
-      "team": "エンゼルス",
-      "type": "batter",
-      "line": "4打数1安打"
-    },
-    {
-      "name": "Trevor Story",
-      "team": "レッドソックス",
-      "type": "batter",
-      "line": "4打数0安打"
-    },
-    {
-      "name": "Slade Cecconi",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "3.0回　3奪三振　防御率6.00　3被安打"
-    },
-    {
-      "name": "Petey Halpin",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Corbin Carroll",
-      "team": "ダイヤモンドバックス",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Lourdes Gurriel Jr.",
-      "team": "ダイヤモンドバックス",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Matt Shaw",
-      "team": "カブス",
-      "type": "batter",
-      "line": "3打数0安打"
+      "line": "1.0回　0奪三振　自責0　1被安打"
     },
     {
       "name": "Jacob Young",
       "team": "ナショナルズ",
       "type": "batter",
-      "line": "3打数0安打"
+      "line": "1打数0安打"
     },
     {
-      "name": "Joshua Báez",
-      "team": "カージナルス",
+      "name": "Samad Taylor",
+      "team": "パドレス",
       "type": "batter",
-      "line": "5打数1安打"
+      "line": "1打数0安打"
     },
     {
-      "name": "Andrew Knizner",
-      "team": "ジャイアンツ",
+      "name": "Cody Freeman",
+      "team": "レンジャーズ",
       "type": "batter",
-      "line": "3打数0安打"
+      "line": "1打数0安打"
     },
     {
-      "name": "Tommy Edman",
-      "team": "ドジャース",
+      "name": "Weston Wilson",
+      "team": "マリナーズ",
       "type": "batter",
-      "line": "4打数0安打"
+      "line": "1打数0安打"
     },
     {
-      "name": "Alika Williams",
-      "team": "アスレチックス",
+      "name": "Nathan Lukes",
+      "team": "ブルージェイズ",
       "type": "batter",
-      "line": "4打数0安打"
+      "line": "4打数1安打"
     },
     {
-      "name": "Max Muncy",
+      "name": "Jeff McNeil",
       "team": "アスレチックス",
       "type": "batter",
       "line": "4打数1安打"
     },
     {
-      "name": "Denzel Clarke",
-      "team": "アスレチックス",
+      "name": "Shay Whitcomb",
+      "team": "ジャイアンツ",
       "type": "batter",
-      "line": "2打数0安打"
+      "line": "4打数1安打"
     },
     {
-      "name": "Vaughn Grissom",
-      "team": "エンゼルス",
+      "name": "Jung Hoo Lee",
+      "team": "ジャイアンツ",
       "type": "batter",
-      "line": "3打数0安打　1四球"
-    },
-    {
-      "name": "Alec Gamboa",
-      "team": "レッドソックス",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　防御率9.00　1被安打"
-    },
-    {
-      "name": "Brandon Williamson",
-      "team": "レッズ",
-      "type": "pitcher",
-      "line": "4.1回　4奪三振　防御率6.23　3被安打"
-    },
-    {
-      "name": "Ozzie Albies",
-      "team": "ブレーブス",
-      "type": "batter",
-      "line": "4打数0安打"
-    },
-    {
-      "name": "Ha-Seong Kim",
-      "team": "ブレーブス",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Lane Thomas",
-      "team": "ブレーブス",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Griffin Conine",
-      "team": "マーリンズ",
-      "type": "batter",
-      "line": "4打数0安打"
-    },
-    {
-      "name": "Jordan Lawlar",
-      "team": "ダイヤモンドバックス",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Carson Kelly",
-      "team": "カブス",
-      "type": "batter",
-      "line": "4打数0安打"
-    },
-    {
-      "name": "Royce Lewis",
-      "team": "ツインズ",
-      "type": "batter",
-      "line": "4打数0安打"
-    },
-    {
-      "name": "Spencer Torkelson",
-      "team": "タイガース",
-      "type": "batter",
-      "line": "4打数0安打"
-    },
-    {
-      "name": "CJ Abrams",
-      "team": "ナショナルズ",
-      "type": "batter",
-      "line": "4打数0安打"
-    },
-    {
-      "name": "Daylen Lile",
-      "team": "ナショナルズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Jake Cronenworth",
-      "team": "パドレス",
-      "type": "batter",
-      "line": "4打数0安打"
-    },
-    {
-      "name": "Ke'Bryan Hayes",
-      "team": "レッズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Tyler Stephenson",
-      "team": "レッズ",
-      "type": "batter",
-      "line": "4打数0安打"
-    },
-    {
-      "name": "JJ Bleday",
-      "team": "レッズ",
-      "type": "batter",
-      "line": "3打数0安打"
+      "line": "1打数0安打"
     },
     {
       "name": "Kyle Tucker",
       "team": "ドジャース",
       "type": "batter",
-      "line": "4打数0安打"
+      "line": "1打数0安打"
     },
     {
-      "name": "Seth Halvorsen",
-      "team": "ドジャース",
+      "name": "Gunnar Henderson",
+      "team": "オリオールズ",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Coby Mayo",
+      "team": "オリオールズ",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Bobby Witt Jr.",
+      "team": "ロイヤルズ",
+      "type": "batter",
+      "line": "4打数0安打　1四球　1盗塁"
+    },
+    {
+      "name": "Tyler Davis",
+      "team": "ホワイトソックス",
       "type": "pitcher",
-      "line": "1.0回　0奪三振　防御率9.00　2被安打"
+      "line": "1.0回　0奪三振　自責0　2被安打"
+    },
+    {
+      "name": "William Contreras",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "4打数1安打　1四球"
+    },
+    {
+      "name": "Clayton Beeter",
+      "team": "ナショナルズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　防御率9.00　2被安打　ホールド"
+    },
+    {
+      "name": "Osleivis Basabe",
+      "team": "ジャイアンツ",
+      "type": "batter",
+      "line": "2打数0安打　1四球"
+    },
+    {
+      "name": "Nathaniel Lowe",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "3打数0安打　2四球"
+    },
+    {
+      "name": "Sean Manaea",
+      "team": "メッツ",
+      "type": "pitcher",
+      "line": "5.0回　4奪三振　防御率7.20　5被安打"
+    },
+    {
+      "name": "Patrick Sandoval",
+      "team": "レッドソックス",
+      "type": "pitcher",
+      "line": "6.0回　7奪三振　防御率6.00　10被安打"
+    },
+    {
+      "name": "Carter Jensen",
+      "team": "ロイヤルズ",
+      "type": "batter",
+      "line": "3打数0安打　2四球"
+    },
+    {
+      "name": "José Ramírez",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "5打数1安打"
+    },
+    {
+      "name": "Colt Keith",
+      "team": "タイガース",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "AJ Blubaugh",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "0.2回　0奪三振　防御率13.50　2被安打　ホールド"
+    },
+    {
+      "name": "Bryce Harper",
+      "team": "フィリーズ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Francisco Alvarez",
+      "team": "メッツ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Griffin Conine",
+      "team": "マーリンズ",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Owen Caissie",
+      "team": "マーリンズ",
+      "type": "batter",
+      "line": "1打数0安打"
+    },
+    {
+      "name": "Jose Siri",
+      "team": "エンゼルス",
+      "type": "batter",
+      "line": "5打数1安打　1打点"
+    },
+    {
+      "name": "Trevor Story",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "4打数1安打　1二塁打"
+    },
+    {
+      "name": "Jake McCarthy",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Connor Norby",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "1打数0安打"
+    },
+    {
+      "name": "Chandler Simpson",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "5打数1安打　1盗塁"
+    },
+    {
+      "name": "Austin Riley",
+      "team": "ブレーブス",
+      "type": "batter",
+      "line": "3打数1安打"
+    },
+    {
+      "name": "Sam Antonacci",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Andrew Vaughn",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Luis Lara",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "5打数1安打　1打点"
+    },
+    {
+      "name": "Jackson Merrill",
+      "team": "パドレス",
+      "type": "batter",
+      "line": "3打数0安打　1打点"
+    },
+    {
+      "name": "Joc Pederson",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Josh Naylor",
+      "team": "マリナーズ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Michael Arroyo",
+      "team": "マリナーズ",
+      "type": "batter",
+      "line": "1打数0安打"
+    },
+    {
+      "name": "Brett Bateman",
+      "team": "ブルージェイズ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Thomas Saggese",
+      "team": "カージナルス",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Joshua Báez",
+      "team": "カージナルス",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Iván Herrera",
+      "team": "カージナルス",
+      "type": "batter",
+      "line": "5打数1安打"
+    },
+    {
+      "name": "Dane Myers",
+      "team": "レッズ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Alex Freeland",
+      "team": "ドジャース",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Tyler Zuber",
+      "team": "マーリンズ",
+      "type": "pitcher",
+      "line": "0.2回　1奪三振　自責0"
+    },
+    {
+      "name": "David Peterson",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "4.1回　4奪三振　防御率2.08　6被安打"
+    },
+    {
+      "name": "Nick Lodolo",
+      "team": "レッズ",
+      "type": "pitcher",
+      "line": "4.2回　6奪三振　防御率5.79　5被安打"
+    },
+    {
+      "name": "Ozzie Albies",
+      "team": "ブレーブス",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Miguel Amaya",
+      "team": "カブス",
+      "type": "batter",
+      "line": "2打数0安打　1死球"
+    },
+    {
+      "name": "CJ Abrams",
+      "team": "ナショナルズ",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Fernando Tatis Jr.",
+      "team": "パドレス",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Leo Bernal",
+      "team": "カージナルス",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Eugenio Suárez",
+      "team": "レッズ",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Chad Patrick",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "0.1回　1奪三振　自責0"
+    },
+    {
+      "name": "Jake Burger",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "line": "3打数0安打　2四球"
+    },
+    {
+      "name": "Trevor Larnach",
+      "team": "ツインズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Brett Callahan",
+      "team": "タイガース",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Max Clark",
+      "team": "タイガース",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Derek Hill",
+      "team": "フィリーズ",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Esteury Ruiz",
+      "team": "マーリンズ",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Denzer Guzman",
+      "team": "エンゼルス",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Sean Murphy",
+      "team": "ブレーブス",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Mike Yastrzemski",
+      "team": "ブレーブス",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Nolan Hoffman",
+      "team": "ロイヤルズ",
+      "type": "pitcher",
+      "line": "0.1回　0奪三振　自責0"
+    },
+    {
+      "name": "Jacob Gonzalez",
+      "team": "パイレーツ",
+      "type": "batter",
+      "line": "5打数1安打"
+    },
+    {
+      "name": "Tristan Peters",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Colson Montgomery",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "4打数0安打　1打点"
+    },
+    {
+      "name": "Tyrone Taylor",
+      "team": "カブス",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Pete Crow-Armstrong",
+      "team": "カブス",
+      "type": "batter",
+      "line": "5打数1安打　1盗塁"
+    },
+    {
+      "name": "Trent Thornton",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "0.2回　1奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Cooper Pratt",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Joey Ortiz",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "4打数1安打"
     },
     {
       "name": "Aaron Ashby",
       "team": "ブリュワーズ",
       "type": "pitcher",
-      "line": "1.0回　0奪三振　防御率9.00　2被安打"
+      "line": "0.1回　0奪三振　自責0"
     },
     {
-      "name": "Riley O'Brien",
-      "team": "カージナルス",
-      "type": "pitcher",
-      "line": "1.0回　0奪三振　自責0　1被安打　セーブ失敗"
-    },
-    {
-      "name": "Drake Baldwin",
-      "team": "ブレーブス",
+      "name": "Harry Ford",
+      "team": "ナショナルズ",
       "type": "batter",
-      "line": "4打数0安打"
+      "line": "3打数0安打"
+    },
+    {
+      "name": "David Morgan",
+      "team": "パドレス",
+      "type": "pitcher",
+      "line": "0.1回　0奪三振　自責0"
+    },
+    {
+      "name": "Jesús Sánchez",
+      "team": "ブルージェイズ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Jonah Heim",
+      "team": "アスレチックス",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Alika Williams",
+      "team": "アスレチックス",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Nolan Gorman",
+      "team": "カージナルス",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Jonah Cox",
+      "team": "ジャイアンツ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Colton Cowser",
+      "team": "オリオールズ",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Yilber Díaz",
+      "team": "タイガース",
+      "type": "pitcher",
+      "line": "0.2回　0奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Jahmai Jones",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "3打数0安打　1死球"
+    },
+    {
+      "name": "Ryan Waldschmidt",
+      "team": "ダイヤモンドバックス",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Jose Cuas",
+      "team": "ロイヤルズ",
+      "type": "pitcher",
+      "line": "0.2回　0奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Isaac Collins",
+      "team": "ロイヤルズ",
+      "type": "batter",
+      "line": "4打数0安打　1四球"
+    },
+    {
+      "name": "Zack Gelof",
+      "team": "アスレチックス",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Jack Perkins",
+      "team": "アスレチックス",
+      "type": "pitcher",
+      "line": "5.0回　3奪三振　防御率7.20　7被安打"
+    },
+    {
+      "name": "Blake Walston",
+      "team": "ダイヤモンドバックス",
+      "type": "pitcher",
+      "line": "2.0回　2奪三振　自責0　セーブ失敗"
+    },
+    {
+      "name": "Wilber Dotel",
+      "team": "パイレーツ",
+      "type": "pitcher",
+      "line": "2.0回　1奪三振　防御率4.50　2被安打"
+    },
+    {
+      "name": "Samuel Basallo",
+      "team": "オリオールズ",
+      "type": "batter",
+      "line": "4打数0安打　1打点"
+    },
+    {
+      "name": "Walker Jenkins",
+      "team": "ツインズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Spencer Torkelson",
+      "team": "タイガース",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Taylor Trammell",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "4打数1安打"
     },
     {
       "name": "J.T. Realmuto",
       "team": "フィリーズ",
       "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Deyvison De Los Santos",
+      "team": "マーリンズ",
+      "type": "batter",
       "line": "3打数0安打"
+    },
+    {
+      "name": "Kyle Stowers",
+      "team": "マーリンズ",
+      "type": "batter",
+      "line": "2打数0安打"
     },
     {
       "name": "Kyren Paris",
@@ -1977,94 +2387,256 @@
       "line": "3打数0安打"
     },
     {
-      "name": "Tyler Heineman",
-      "team": "エンゼルス",
+      "name": "Connor Wong",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Ezequiel Tovar",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Zac Veen",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Kyle Karros",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Austin Wells",
+      "team": "ヤンキース",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Michael Harris II",
+      "team": "ブレーブス",
       "type": "batter",
       "line": "4打数0安打"
     },
     {
-      "name": "Angel Genao",
-      "team": "ガーディアンズ",
+      "name": "Chase Meidroth",
+      "team": "ホワイトソックス",
       "type": "batter",
-      "line": "4打数0安打"
+      "line": "3打数0安打"
     },
     {
-      "name": "Nick Loftin",
-      "team": "ロイヤルズ",
-      "type": "batter",
-      "line": "5打数0安打"
-    },
-    {
-      "name": "Michael Massey",
-      "team": "ロイヤルズ",
-      "type": "batter",
-      "line": "5打数0安打"
-    },
-    {
-      "name": "Nico Hoerner",
+      "name": "Ian Happ",
       "team": "カブス",
       "type": "batter",
-      "line": "4打数0安打"
+      "line": "2打数0安打"
     },
     {
-      "name": "William Contreras",
-      "team": "ブリュワーズ",
+      "name": "Dustin Harris",
+      "team": "パドレス",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Jake Cronenworth",
+      "team": "パドレス",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Julio Rodríguez",
+      "team": "マリナーズ",
       "type": "batter",
       "line": "4打数0安打"
     },
     {
-      "name": "Brady House",
-      "team": "ナショナルズ",
+      "name": "Ernie Clement",
+      "team": "ブルージェイズ",
       "type": "batter",
       "line": "4打数0安打"
     },
     {
-      "name": "Matt McLain",
-      "team": "レッズ",
+      "name": "Jordan Walker",
+      "team": "カージナルス",
       "type": "batter",
       "line": "4打数0安打"
     },
     {
-      "name": "Hunter Feduccia",
+      "name": "Masyn Winn",
+      "team": "カージナルス",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Alex Call",
       "team": "ドジャース",
       "type": "batter",
       "line": "3打数0安打"
     },
     {
-      "name": "Louis Varland",
-      "team": "ブルージェイズ",
+      "name": "Alex Hoppe",
+      "team": "オリオールズ",
       "type": "pitcher",
-      "line": "0.2回　0奪三振　防御率13.50　2被安打"
+      "line": "0.2回　1奪三振　自責0　2被安打"
     },
     {
-      "name": "Jonah Heim",
-      "team": "アスレチックス",
+      "name": "Brooks Raley",
+      "team": "フィリーズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　防御率9.00　1被安打"
+    },
+    {
+      "name": "Spencer Jones",
+      "team": "ヤンキース",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Anthony Gose",
+      "team": "ロイヤルズ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　防御率9.00　1被安打"
+    },
+    {
+      "name": "Caleb Thielbar",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "0.1回　1奪三振　自責0　2被安打"
+    },
+    {
+      "name": "Matt Shaw",
+      "team": "カブス",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Adam Macko",
+      "team": "レンジャーズ",
+      "type": "pitcher",
+      "line": "2.0回　3奪三振　防御率4.50　4被安打"
+    },
+    {
+      "name": "José A. Ferrer",
+      "team": "マリナーズ",
+      "type": "pitcher",
+      "line": "0.2回　2奪三振　防御率13.50　1被安打"
+    },
+    {
+      "name": "Alex Lange",
+      "team": "ロイヤルズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　防御率9.00　1被安打"
+    },
+    {
+      "name": "Dylan Beavers",
+      "team": "オリオールズ",
       "type": "batter",
       "line": "4打数0安打"
     },
     {
-      "name": "Josh Ekness",
-      "team": "マーリンズ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　防御率18.00　3被安打"
+      "name": "Kaelen Culpepper",
+      "team": "ツインズ",
+      "type": "batter",
+      "line": "3打数0安打"
     },
     {
-      "name": "Heriberto Hernández",
-      "team": "マーリンズ",
+      "name": "Royce Lewis",
+      "team": "ツインズ",
       "type": "batter",
       "line": "4打数0安打"
     },
     {
-      "name": "Dillon Dingler",
+      "name": "Hao-Yu Lee",
       "team": "タイガース",
       "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Marcus Semien",
+      "team": "メッツ",
+      "type": "batter",
       "line": "4打数0安打"
     },
     {
-      "name": "George Springer",
-      "team": "ブルージェイズ",
+      "name": "Agustín Ramírez",
+      "team": "マーリンズ",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "José Fermin",
+      "team": "エンゼルス",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　防御率9.00　2被安打"
+    },
+    {
+      "name": "Andruw Monasterio",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Aaron Judge",
+      "team": "ヤンキース",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Jorge Mateo",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "5打数1安打"
+    },
+    {
+      "name": "Elieser Hernández",
+      "team": "ブレーブス",
+      "type": "pitcher",
+      "line": "2.0回　4奪三振　防御率9.00　3被安打"
+    },
+    {
+      "name": "Ildemaro Vargas",
+      "team": "ダイヤモンドバックス",
       "type": "batter",
       "line": "5打数0安打"
+    },
+    {
+      "name": "Connor Thomas",
+      "team": "ロイヤルズ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　防御率9.00　2被安打"
+    },
+    {
+      "name": "Alex Bregman",
+      "team": "カブス",
+      "type": "batter",
+      "line": "5打数0安打"
+    },
+    {
+      "name": "Jake Bauers",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Yuki Matsui",
+      "team": "パドレス",
+      "type": "pitcher",
+      "line": "0.2回　1奪三振　防御率13.50　2被安打"
+    },
+    {
+      "name": "J.P. Crawford",
+      "team": "マリナーズ",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Cooper Criswell",
+      "team": "マリナーズ",
+      "type": "pitcher",
+      "line": "1.0回　2奪三振　防御率9.00　3被安打"
     },
     {
       "name": "Lawrence Butler",
@@ -2073,58 +2645,232 @@
       "line": "4打数0安打"
     },
     {
-      "name": "Hogan Harris",
+      "name": "Tommy White",
       "team": "アスレチックス",
-      "type": "pitcher",
-      "line": "1.1回　1奪三振　防御率6.75　1被安打　セーブ失敗"
+      "type": "batter",
+      "line": "4打数0安打"
     },
     {
-      "name": "Gerardo Carrillo",
-      "team": "ダイヤモンドバックス",
-      "type": "pitcher",
-      "line": "0.1回　1奪三振　防御率81.00　2被安打"
+      "name": "Andrew Knizner",
+      "team": "ジャイアンツ",
+      "type": "batter",
+      "line": "4打数0安打"
     },
     {
-      "name": "Andrew Kittredge",
-      "team": "オリオールズ",
-      "type": "pitcher",
-      "line": "0.2回　0奪三振　防御率40.50　3被安打"
+      "name": "Rafael Devers",
+      "team": "ジャイアンツ",
+      "type": "batter",
+      "line": "4打数0安打"
     },
     {
-      "name": "Ryan Zeferjahn",
-      "team": "カブス",
-      "type": "pitcher",
-      "line": "0.1回　1奪三振　防御率27.00　1被安打　セーブ失敗"
+      "name": "Sal Stewart",
+      "team": "レッズ",
+      "type": "batter",
+      "line": "4打数0安打"
     },
     {
-      "name": "Grayson Rodriguez",
-      "team": "エンゼルス",
-      "type": "pitcher",
-      "line": "4.0回　3奪三振　防御率11.25　6被安打"
+      "name": "Jose Trevino",
+      "team": "レッズ",
+      "type": "batter",
+      "line": "4打数0安打"
     },
     {
-      "name": "Joey Cantillo",
+      "name": "Héctor Rodríguez",
+      "team": "レッズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "José Urquidy",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "4.0回　1奪三振　防御率4.50　5被安打"
+    },
+    {
+      "name": "Ezequiel Duran",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "line": "4打数0安打　1四球"
+    },
+    {
+      "name": "Riley Greene",
+      "team": "タイガース",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Jose Altuve",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "5打数0安打"
+    },
+    {
+      "name": "Yordan Alvarez",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "5打数0安打"
+    },
+    {
+      "name": "Raymond Burgos",
+      "team": "レッドソックス",
+      "type": "pitcher",
+      "line": "2.0回　2奪三振　防御率9.00　4被安打"
+    },
+    {
+      "name": "Roman Anthony",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Eli White",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Cole Carrigg",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Jonny DeLuca",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "5打数0安打"
+    },
+    {
+      "name": "Miguel Vargas",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Daylen Lile",
+      "team": "ナショナルズ",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "James Wood",
+      "team": "ナショナルズ",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Bryce Miller",
+      "team": "マリナーズ",
+      "type": "pitcher",
+      "line": "3.2回　6奪三振　防御率9.82　4被安打"
+    },
+    {
+      "name": "JJ Bleday",
+      "team": "レッズ",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Andrew Painter",
+      "team": "フィリーズ",
+      "type": "pitcher",
+      "line": "5.0回　6奪三振　防御率9.00　10被安打"
+    },
+    {
+      "name": "Tim Hill",
+      "team": "ヤンキース",
+      "type": "pitcher",
+      "line": "0.2回　0奪三振　防御率27.00　1被安打"
+    },
+    {
+      "name": "Mickey Moniak",
+      "team": "ロッキーズ",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Garrett Mitchell",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Freddie Freeman",
+      "team": "ドジャース",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Tanner Bibee",
       "team": "ガーディアンズ",
       "type": "pitcher",
-      "line": "2.1回　3奪三振　防御率15.43　3被安打"
+      "line": "4.1回　1奪三振　防御率10.38　6被安打"
     },
     {
-      "name": "Dylan Smith",
-      "team": "ジャイアンツ",
+      "name": "Trevor Megill",
+      "team": "ブリュワーズ",
       "type": "pitcher",
-      "line": "1.2回　0奪三振　防御率5.40　4被安打　セーブ失敗"
+      "line": "0.1回　1奪三振　防御率54.00　3被安打"
     },
     {
-      "name": "Eury Pérez",
+      "name": "Munetaka Murakami",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "AJ Smith-Shawver",
+      "team": "ブレーブス",
+      "type": "pitcher",
+      "line": "3.1回　3奪三振　防御率10.80　5被安打"
+    },
+    {
+      "name": "Brandon Nimmo",
+      "team": "レンジャーズ",
+      "type": "batter",
+      "line": "5打数0安打"
+    },
+    {
+      "name": "Erik Tolman",
+      "team": "ナショナルズ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　防御率9.00　3被安打　セーブ失敗"
+    },
+    {
+      "name": "Juan Morillo",
+      "team": "ダイヤモンドバックス",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　防御率18.00　2被安打　セーブ失敗"
+    },
+    {
+      "name": "Jacob Webb",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　防御率18.00　2被安打　セーブ失敗"
+    },
+    {
+      "name": "Eduard Bazardo",
+      "team": "マリナーズ",
+      "type": "pitcher",
+      "line": "0.1回　1奪三振　防御率108.00　3被安打"
+    },
+    {
+      "name": "Sandy Alcantara",
       "team": "マーリンズ",
       "type": "pitcher",
-      "line": "4.0回　5奪三振　防御率11.25　10被安打"
+      "line": "4.1回　1奪三振　防御率14.54　7被安打"
     },
     {
-      "name": "Craig Kimbrel",
-      "team": "ロイヤルズ",
+      "name": "Brandon Young",
+      "team": "オリオールズ",
       "type": "pitcher",
-      "line": "1.0回　1奪三振　防御率36.00　5被安打"
+      "line": "3.2回　2奪三振　防御率14.73　8被安打"
+    },
+    {
+      "name": "Sean Burke",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "1.1回　2奪三振　防御率47.25　8被安打"
     }
   ]
 }
