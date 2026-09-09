@@ -283,6 +283,22 @@ PIT_KEYS = ("wins", "losses", "strikeOuts", "earnedRuns", "outs",
 # 「出場が◯日空いた」という事実だけを渡す。
 GAP_DAYS = 8
 
+# 「戻ってきたばかり」と言える空白の長さ（日）。
+#
+# 上の GAP_DAYS は「離脱前と復帰後を比べる」ための空白で、
+# 後ろに10試合以上あることを求めている。比較するにはそれが要る。
+# だが**戻ってきたその日**は、必ずその条件から外れる。
+#
+# 9/9のヤンキース戦は、コメント欄が「Welcome back Aaron Judge」で
+# 埋まっていたのに、台本は復帰を知らないまま進んだ。
+# **コメントが言っていることを、こちらが知らない。**
+# 5日空けば、休養ではなく離脱だったと見てよい。
+BACK_DAYS = 5
+
+# 直近の何試合まで遡って、その空白を探すか。
+# 復帰から間が空くと「戻ってきたばかり」ではなくなる。
+BACK_WITHIN = 5
+
 
 def _team_id(jp_name: str) -> str:
     """日本語の球団名から球団ID。分からなければ空。"""
@@ -543,6 +559,21 @@ def form(name: str, player_id: str = "", pos: str = "") -> dict:
         return (datetime.date(yb, mb, db)
                 - datetime.date(ya, ma, da)).days
 
+    # 戻ってきたばかりか。**復帰したその日が、いちばん話題になる。**
+    #
+    # 下の gap は「いちばん長い空白」で、後ろに10試合以上あることを
+    # 求めている。比較にはそれが要るが、戻ってきた直後は必ず外れる。
+    # ここは条件を分けて、直近だけを見る。
+    for k in range(1, min(BACK_WITHIN + 1, len(sp))):
+        n = days(sp[-k - 1]["date"], sp[-k]["date"])
+        if n >= BACK_DAYS:
+            out["back"] = {
+                "days": n, "since": sp[-k - 1]["date"],
+                "on": sp[-k]["date"], "games": k,
+                "line": span(sp[-k:]),
+            }
+            break
+
     gap, at = 0, -1
     for i in range(len(sp) - 1):
         n = days(sp[i]["date"], sp[i + 1]["date"])
@@ -795,6 +826,30 @@ def material(buzz_path: str, voices_path: str) -> dict:
                 # 選手IDは名簿を引き直さずに済むよう、そのまま渡す
                 want.append((row["name_en"], row["name_jp"], row["pos"],
                              row.get("id", "")))
+    # コメントで名前が挙がった選手も引く。
+    #
+    # 9/9のヤンキース戦は、いちばん高評価のコメントも、いちばん返信が
+    # ついたコメントも Aaron Judge の話だった。ところが want に入るのは
+    # 日本人選手とその日の主役だけで、**コメントが話している当人の
+    # 材料が無かった。**「お帰りなさい」と言われているのに、台本は
+    # 復帰を知らないまま進んだ。
+    #
+    # 名前を拾うのは英語の原文から。訳文は表記が揺れる。
+    try:
+        import mentioned as _mn
+        _text = " ".join((x.get("title") or "") + " "
+                         + " ".join(x.get("reply_texts") or [])
+                         for x in (voices or []))
+        for _row in _mn.find(_text, limit=3):
+            _en = _row.get("name") or ""
+            if _en and _en not in seen and len(want) < 6:
+                seen.add(_en)
+                want.append((_en, _en,
+                             "P" if _row.get("type") == "pitcher" else "",
+                             ""))
+    except Exception as _e:                      # noqa: BLE001
+        print(f"[info] コメントの選手を引けません({_e})")
+
     star = res.get("star_name")
     if star and star not in seen and len(want) < 4:
         # 打者か投手かは成績の書き方で分かる（投手の行には「回」が入る）
@@ -1106,6 +1161,11 @@ def facts(m: dict, extra: list) -> str:
             lines.append(f"- {f['label']}: シーズン {f['games']}試合 "
                          f"{f['season']}")
             lines.append(f"  直近15試合: {f['recent']}")
+            b = f.get("back")
+            if b:
+                lines.append(f"  **{b['days']}日ぶりに出場（{b['since']}"
+                             f"以来、{b['on']}に復帰）**")
+                lines.append(f"  復帰後{b['games']}試合: {b['line']}")
             g = f.get("gap")
             if g:
                 lines.append(f"  出場が{g['days']}日空いた期間: "
@@ -1407,6 +1467,19 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
 
   取り上げるコメントは、上のコメントから選んでよい。全部使う必要は無い。
   **話が続くものだけを選ぶ。**
+
+  **戻ってきたばかりの選手がいる日は、そこから話を始める。**
+  材料に「◯日ぶりに出場」と書いてある選手がいたら、それがその日の
+  いちばん大きな文脈。コメント欄の「お帰りなさい」も「何もしなかった」も、
+  **復帰明けだと知らずに読むと、ただの賛否にしか見えない。**
+  9/9のヤンキース戦がそうだった。Aaron Judgeは100日ぶりの出場で、
+  高評価トップも返信トップもその話だったのに、台本は復帰に一度も
+  触れないまま「意見が割れている」で終わった。
+  ・復帰後の成績が振るわなくても、そう書いてよい。
+    「戻ってきた初戦は無安打だった」は事実で、批判のコメントの
+    理由がそこにある、と読める。
+  ・「復帰」「離脱」の理由（故障か休養か）は材料に無いので書かない。
+    「◯日ぶりの出場」とだけ言う。
 
   **そして、「分からない」と書く前に、必ず上の材料を全部見ること。**
   とくに「対戦した2球団の、いまの主な選手」と「期間で分けた成績」は、

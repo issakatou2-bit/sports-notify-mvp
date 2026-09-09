@@ -152,12 +152,35 @@ def find(text: str, limit: int = 2) -> list:
     """
     if not text:
         return []
-    by_last, _by_full = _roster()
+    by_last, by_full = _roster()
     if not by_last:
         return []
     lower = {fold(k).lower(): v for k, v in by_last.items()}
     stop = {x.lower() for x in STOP}
     out, seen = [], set()
+
+    # **フルネームで書かれていれば、除外リストの姓でも拾う。**
+    #
+    # "Judge" は普通の単語なので STOP に入れてある。おかげで
+    # 「the judge was terrible」を選手の話と読まずに済む。
+    # ところが 9/9 のコメント欄は「Welcome back Aaron Judge」で
+    # 埋まっていて、**その日の主役なのに1件も拾えなかった。**
+    # 台本は Judge が復帰したことを知らないまま進んだ。
+    #
+    # 名が前に付いていれば、普通の単語ではなく人の名前だと決まる。
+    low_text = fold(text).lower()
+    for full, row in by_full.items():
+        if len(out) >= limit:
+            break
+        key = fold(full).lower()
+        if len(key) < 6 or key not in low_text:
+            continue
+        last = fold(_surname(full)).lower()
+        if last in seen:
+            continue
+        if row.get("line"):
+            seen.add(last)
+            out.append(row)
     for word in re.findall(r"[A-Za-z][A-Za-z'-]{2,}", text):
         key = fold(word).lower()
         if key in stop or key in seen:
