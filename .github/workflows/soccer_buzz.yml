@@ -1,0 +1,42 @@
+name: 道具　サッカーのハイライトを取ってみる
+
+# サッカーのコメント欄の回を作るための、入口の試し打ち。
+#
+# 10月にMLBのポストシーズンが終わると3月まではサッカーが主になる。
+# いまサッカーは「明日の注目試合」1本だけで、MLBは7本ある。
+# 枠の数がそのまま差になっている。
+#
+# MLB側の仕組み（公式ハイライトのコメントを取って訳す、そこから
+# 長編を作る）は、材料が「公式チャンネルのハイライト」であることしか
+# 前提にしていない。サッカーでもそのまま動くはず——を確かめる。
+#
+# **まだ動画は作らない。**どの試合が取れるかを見るだけ。
+# ハンドル名が合っているか、ハイライトが何本あるか、
+# 日本人選手のいる試合が拾えるか。
+
+on:
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: '何時間さかのぼるか'
+        required: false
+        default: '30'
+
+jobs:
+  buzz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Fetch highlights
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python scripts/soccer_buzz.py \
+            --out data/soccer_buzz.json \
+            --hours "${{ inputs.hours || '30' }}" | tee "$GITHUB_STEP_SUMMARY"

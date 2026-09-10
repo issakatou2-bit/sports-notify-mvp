@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""サッカーのハイライトから、対戦カードと日本人選手を取れるか。
+
+なぜ検査が要るのか:
+  題の形が大会ごとに違う。区切りが "vs" のことも "2-1" のことも
+  " - " のこともある。**推測で切っているので、外れ方を固定しておく。**
+
+  そして**取れないときに空を返すこと**が同じくらい大事。
+  記者会見や特集を試合として扱うと、「◯◯対◯◯のコメント欄」と
+  言いながら中身が別のものになる。
+"""
+
+import pathlib
+import sys
+
+HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent))
+import soccer_buzz as sb  # noqa: E402
+
+fails = 0
+
+
+def check(label, got, want):
+    global fails
+    ok = got == want
+    fails += not ok
+    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
+                           "" if ok else "   (期待 %r)" % (want,)))
+
+
+print("--- 対戦カードの取り出し ---")
+check("スコア区切り", sb.clubs("Liverpool 2-1 Atletico Madrid | Highlights"),
+      ["Liverpool", "Atletico Madrid"])
+check("vs 区切り", sb.clubs("Real Madrid vs Barcelona | LaLiga Highlights"),
+      ["Real Madrid", "Barcelona"])
+check("ハイフン区切り", sb.clubs("Bayern - Dortmund | Highlights"),
+      ["Bayern", "Dortmund"])
+check("全角の縦棒でも切れる",
+      sb.clubs("Arsenal vs Napoli ｜ Champions League"),
+      ["Arsenal", "Napoli"])
+check("括弧の前で切る",
+      sb.clubs("Inter vs Milan (Serie A Highlights)"),
+      ["Inter", "Milan"])
+
+print()
+print("--- 取れないときは空 ---")
+check("記者会見", sb.clubs("Press conference: Guardiola on the derby"), [])
+check("特集", sb.clubs("Top 10 goals of the month"), [])
+check("空文字", sb.clubs(""), [])
+check("クラブが3つ以上に割れる形",
+      sb.clubs("A vs B vs C | Highlights"), [])
+
+print()
+print("--- 日本人選手（名簿から引く） ---")
+check("リバプールの試合", sb.jp_in("Liverpool 2-1 Atletico Madrid | Highlights"),
+      ["遠藤航"])
+check("2クラブに日本人がいる試合",
+      sb.jp_in("Crystal Palace 1-0 Brighton | Highlights"),
+      ["鎌田大地", "冨安健洋", "三笘薫"])
+check("いない試合", sb.jp_in("Real Madrid vs Barcelona | Highlights"), [])
+check("カードが取れない題", sb.jp_in("Press conference"), [])
+
+print()
+print("--- ハイライトかどうか ---")
+# recent() の中で使っている語。ここが緩すぎると記者会見を拾い、
+# 厳しすぎるとリーグごとの言い回しを落とす。
+for title, want in (
+        ("Liverpool 2-1 Atletico | Highlights", True),
+        ("Real Madrid vs Barca | Extended Highlights", True),
+        ("Bayern - Dortmund | All Goals", True),
+        ("Resumen: Real Madrid 2-0 Sevilla", True),
+        ("Press conference: Guardiola", False),
+        ("Player of the Month award", False)):
+    got = any(w in title.lower() for w in sb.HIGHLIGHT_WORDS)
+    check(title[:40], got, want)
+
+print()
+print("--- 公式チャンネルの一覧 ---")
+check("大会が5つある", len(sb.OFFICIAL), 5)
+check("ハンドル名が重なっていない",
+      len({h for h, _ in sb.OFFICIAL}), len(sb.OFFICIAL))
+# プレミアリーグは公式がフルハイライトを出していないので入れていない。
+# 入れると毎日「0本」と出るだけになる。
+check("プレミアリーグは入れていない",
+      any("premier" in h.lower() for h, _ in sb.OFFICIAL), False)
+
+print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
+sys.exit(1 if fails else 0)
