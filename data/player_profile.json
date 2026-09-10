@@ -1,103 +1,111 @@
 {
-  "generated_at": "2026-09-09T06:01:06.122536+00:00",
-  "date_jst": "2026-09-09",
-  "name": "Zach Neto",
-  "player_id": "687263",
-  "team": "エンゼルス",
+  "generated_at": "2026-09-10T06:01:13.822687+00:00",
+  "date_jst": "2026-09-10",
+  "name": "Jackson Merrill",
+  "player_id": "701538",
+  "team": "パドレス",
   "group": "hitting",
-  "why": "2026-09-09のMLBで最も活躍",
-  "headline": "5打数4安打　1本塁打　1二塁打　2打点",
-  "score": 136,
+  "why": "2026-09-10のMLBで最も活躍",
+  "headline": "5打数4安打　2本塁打　1三塁打　6打点",
+  "score": 212,
   "bio": {
-    "name_en": "Zach Neto",
-    "age": 25,
-    "birth_city": "Miami",
-    "birth_state": "FL",
+    "name_en": "Jackson Merrill",
+    "age": 23,
+    "birth_city": "Baltimore",
+    "birth_state": "MD",
     "birth_country": "USA",
-    "birth_date": "2001-01-31",
-    "debut": "2023-04-15",
-    "draft_year": 2022,
-    "bats": "Right",
+    "birth_date": "2003-04-19",
+    "debut": "2024-03-20",
+    "draft_year": 2021,
+    "bats": "Left",
     "throws": "Right",
-    "number": "9",
-    "position": "Shortstop",
+    "number": "3",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "5' 11\"",
-    "weight": 185
+    "height": "6' 2\"",
+    "weight": 195
   },
   "teams": [
     {
-      "team": "エンゼルス",
-      "from": 2023,
+      "team": "パドレス",
+      "from": 2024,
       "to": 2026
     }
   ],
   "career": {
-    "games": 507,
-    "avg": ".245",
-    "hr": 82,
-    "rbi": 242,
-    "ops": ".756",
-    "sb": 80,
-    "hits": 464
+    "games": 414,
+    "avg": ".267",
+    "hr": 64,
+    "rbi": 236,
+    "ops": ".776",
+    "sb": 42,
+    "hits": 413
   },
   "this_season": {
-    "games": 140,
-    "avg": ".242",
+    "games": 143,
+    "avg": ".245",
     "hr": 24,
-    "rbi": 69,
-    "ops": ".757",
-    "sb": 19,
+    "rbi": 79,
+    "ops": ".726",
+    "sb": 25,
     "hits": 135
   },
   "last_season": {
-    "games": 128,
-    "avg": ".257",
-    "hr": 26,
-    "rbi": 62,
-    "ops": ".793",
-    "sb": 26,
-    "hits": 129
+    "games": 115,
+    "avg": ".264",
+    "hr": 16,
+    "rbi": 67,
+    "ops": ".774",
+    "sb": 1,
+    "hits": 116
   },
   "recent": [
     {
+      "date": "2026-09-09",
+      "line": "5打数4安打 2本塁打 6打点",
+      "opponent": "Washington Nationals"
+    },
+    {
       "date": "2026-09-08",
-      "line": "5打数4安打 1本塁打 2打点",
-      "opponent": "Boston Red Sox"
+      "line": "3打数0安打 1打点",
+      "opponent": "Washington Nationals"
     },
     {
       "date": "2026-09-07",
-      "line": "4打数0安打",
-      "opponent": "Boston Red Sox"
+      "line": "4打数3安打 2打点",
+      "opponent": "Washington Nationals"
     },
     {
       "date": "2026-09-06",
-      "line": "3打数1安打",
-      "opponent": "Pittsburgh Pirates"
+      "line": "3打数0安打",
+      "opponent": "New York Yankees"
     },
     {
       "date": "2026-09-05",
-      "line": "5打数3安打 1打点",
-      "opponent": "Pittsburgh Pirates"
-    },
-    {
-      "date": "2026-09-04",
-      "line": "4打数0安打",
-      "opponent": "Pittsburgh Pirates"
+      "line": "3打数0安打",
+      "opponent": "New York Yankees"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "AL Player of the Week"
+      "season": "2024",
+      "name": "Padres MVP"
     },
     {
-      "season": "2025",
-      "name": "AL Player of the Week"
+      "season": "2024",
+      "name": "NL Silver Slugger"
     },
     {
-      "season": "2023",
-      "name": "SOU Player of the Week"
+      "season": "2024",
+      "name": "NL Rookie of the Month"
+    },
+    {
+      "season": "2024",
+      "name": "NL Player of the Week"
+    },
+    {
+      "season": "2024",
+      "name": "NL All-Star"
     }
   ],
   "quotes": []

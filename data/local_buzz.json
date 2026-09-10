@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-09T06:02:03.395341+00:00",
+  "updated_at": "2026-09-10T06:02:13.200545+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,44 +13,20 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "Okamoto30号HRでワイルドカード争いをリード"
-    },
-    {
-      "team_id": "137",
-      "name": "ジャイアンツ",
-      "name_en": "San Francisco Giants",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "5年連続でプレーオフ進出を逃した"
-    },
-    {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "ロッキーズは守備ミスで失点"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "Montesがシアトル新記録のHRを放つ"
-    },
-    {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 2,
+      "mentions": 4,
       "tone": "好調",
-      "gist": "DodgersとBrewersが1位争いを続行中"
+      "gist": "ヤマモトが10奪三振、ドジャース連勝を7に伸ばす"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "ブリュワーズが100mph1000球投げ歴史を作る"
     },
     {
       "team_id": "146",
@@ -58,45 +34,57 @@
       "name_en": "Miami Marlins",
       "mentions": 2,
       "tone": "話題",
-      "gist": "マーリンズがSandy Alcantaraボブルヘッドを配布"
+      "gist": "マーリンズがメッツ戦で8点差を逆転も15-14で敗れる"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "Cam Schlittlerが歴史的ピッチング記録を達成"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
       "mentions": 2,
       "tone": "不振",
-      "gist": "CubsがLuis Laraの延長10回サヨナラで敗北"
+      "gist": "ブレーブスの打線に懸念、地区戦が接近"
+    },
+    {
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "メッツがマーリンズ戦を15-14で勝利"
+    },
+    {
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ロッキーズ選手がMLB本部でAMAを実施"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ホワイトソックス対パイレーツで乱闘、両チーム厳重注意"
+    },
+    {
+      "team_id": "134",
+      "name": "パイレーツ",
+      "name_en": "Pittsburgh Pirates",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ホワイトソックス対パイレーツで乱闘、両チーム厳重注意"
     }
   ],
   "players": [
-    {
-      "name": "岡本和真",
-      "mentions": 4
-    },
     {
       "name": "大谷翔平",
       "mentions": 3
     },
     {
-      "name": "鈴木誠也",
+      "name": "山本由伸",
       "mentions": 3
-    },
-    {
-      "name": "村上宗隆",
-      "mentions": 2
-    },
-    {
-      "name": "松井裕樹",
-      "mentions": 1
     }
   ]
 }
