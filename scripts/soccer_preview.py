@@ -117,7 +117,28 @@ def fetch_competition(code: str, api_key: str) -> dict:
     out["openers"] = [_match_row(m) for m in early if m.get("matchday") == 1]
     out["early"] = [_match_row(m) for m in early]
 
-    # 3) 昨季の最終順位。無料枠では403になることがあるので、失敗を許容する。
+    # 3) **今季の順位表。**
+    #
+    # 昨季の最終順位だけを取っていた。開幕ガイドを作るには足りるが、
+    # 「いま何位か」「CL圏内まであと何点か」は出せない。
+    #
+    # 実測でいちばん強いのは数字が主役の枠（成績ランキング・進出争い）で、
+    # コメント欄を読み解く枠はショートも長編もいちばん弱かった
+    # （長編は平均2再生・登録0）。サッカーで最初に作るべきは、
+    # MLBの進出争いに当たる**順位の争い**。その材料がここ。
+    #
+    # 無料枠で取れる。昨季ぶんが取れているので、季を指定しなければ今季。
+    try:
+        st = _football_data_get(
+            f"{FOOTBALL_DATA_BASE}/competitions/{code}/standings",
+            headers=h).json()
+        out["table"] = _table_rows(st)
+        print(f"[info] {code}: 今季の順位表 {len(out['table'])}件")
+    except Exception as e:  # noqa: BLE001
+        print(f"[info] {code}: 今季順位は取得できませんでした ({e})")
+        out["table"] = []
+
+    # 4) 昨季の最終順位。無料枠では403になることがあるので、失敗を許容する。
     year = out["season"].get("year")
     if year:
         try:
