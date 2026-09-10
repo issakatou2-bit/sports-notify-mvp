@@ -78,12 +78,29 @@ for title, want in (
 print()
 print("--- 公式チャンネルの一覧 ---")
 check("大会が5つある", len(sb.OFFICIAL), 5)
-check("ハンドル名が重なっていない",
-      len({h for h, _ in sb.OFFICIAL}), len(sb.OFFICIAL))
+# ハンドル名は候補を順に試す形にしてある。1つ書いて外すと、
+# その大会が丸ごと消えたまま毎日「0本」と出る（9/10のCLがそれ）。
+_handles = [h for hs, _ in sb.OFFICIAL for h in hs]
+check("ハンドル名が重なっていない", len(set(_handles)), len(_handles))
+check("チャンピオンズリーグに候補が2つ以上ある",
+      len(sb.OFFICIAL[0][0]) >= 2, True)
 # プレミアリーグは公式がフルハイライトを出していないので入れていない。
 # 入れると毎日「0本」と出るだけになる。
 check("プレミアリーグは入れていない",
-      any("premier" in h.lower() for h, _ in sb.OFFICIAL), False)
+      any("premier" in h.lower() for h in _handles), False)
+
+print()
+print("--- 試合以外を外す ---")
+# 9/10に実際に拾ったもの。公式はトップチームの試合以外もたくさん出す。
+for title, want in (
+        ("Ordenamos los 15 GOLES de AUBAMEYANG en LaLiga", True),
+        ("ALL ROUND 3 HIGHLIGHTS | PRIMAVERA 1 2026/27", True),
+        ("Top 10 goals of the month", True),
+        ("Real Madrid Femenino vs Barcelona | Highlights", True),
+        ("Liverpool 2-1 Atletico Madrid | Highlights", False),
+        ("Resumen: Real Madrid 2-0 Sevilla", False)):
+    got = any(w in title.lower() for w in sb.NOT_MATCH)
+    check(title[:44], got, want)
 
 print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
 sys.exit(1 if fails else 0)

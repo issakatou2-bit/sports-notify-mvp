@@ -50,13 +50,28 @@ YOUTUBE_API = "https://www.googleapis.com/youtube/v3"
 # プレミアリーグは公式チャンネルでフルハイライトを出していない
 # (放映権の扱いが他リーグと違う)。取れないものを並べても
 # 毎日「0本」と出るだけなので、入れていない。
+# ハンドル名は**候補を順に試す。**1つ書いて外すと、その大会が
+# 丸ごと消えたまま毎日「0本」と出る。9/10に
+# "UEFAChampionsLeague" で引けず、CLが取れなかった。
 OFFICIAL = [
-    ("UEFAChampionsLeague", "チャンピオンズリーグ"),
-    ("LaLiga", "ラ・リーガ"),
-    ("SerieA", "セリエA"),
-    ("Bundesliga", "ブンデスリーガ"),
-    ("Ligue1", "リーグ・アン"),
+    (("ChampionsLeague", "uefachampionsleague", "UEFA"),
+     "チャンピオンズリーグ"),
+    (("LaLiga",), "ラ・リーガ"),
+    (("SerieA",), "セリエA"),
+    (("Bundesliga",), "ブンデスリーガ"),
+    (("Ligue1",), "リーグ・アン"),
 ]
+
+# 題にこれが入っていたら、試合のハイライトではない。
+#
+# 9/10に実際に拾ってしまったもの:
+#   「Ordenamos los 15 GOLES de AUBAMEYANG」  選手のゴール集
+#   「ALL ROUND 3 HIGHLIGHTS | PRIMAVERA 1」  ユースリーグ
+# 公式チャンネルはトップチームの試合以外もたくさん出す。
+NOT_MATCH = ("primavera", "youth", "u19", "u21", "u23", "femenino",
+             "femminile", "frauen", "women", "academy", "futsal",
+             "esports", "efootball", "best goals", "top 5", "top 10",
+             "goals of the", "ordenamos", "compilation")
 
 # 題にこれが入っているものだけをハイライトと見なす。
 # 公式は記者会見・特集・過去の名場面も出す。
@@ -71,11 +86,23 @@ def _state(path: str) -> dict:
         return {}
 
 
-def channel_id(api_key: str, handle: str, cache: dict) -> str:
-    """ハンドル名からチャンネルID。一度引いたら覚える。"""
-    got = (cache.get("channel_ids") or {}).get(handle)
-    if got:
-        return got
+def channel_id(api_key: str, handles, cache: dict) -> str:
+    """ハンドル名の候補を順に試して、チャンネルID。一度引いたら覚える。"""
+    if isinstance(handles, str):
+        handles = (handles,)
+    for h in handles:
+        got = (cache.get("channel_ids") or {}).get(h)
+        if got:
+            return got
+    for h in handles:
+        cid = _one_handle(api_key, h)
+        if cid:
+            return cid
+    print(f"[warn] {handles} のどれも引けません", file=sys.stderr)
+    return ""
+
+
+def _one_handle(api_key: str, handle: str) -> str:
     try:
         r = requests.get(f"{YOUTUBE_API}/channels",
                          params={"key": api_key, "part": "id",
@@ -87,7 +114,6 @@ def channel_id(api_key: str, handle: str, cache: dict) -> str:
             if cid:
                 print(f"[info] {handle} のチャンネルIDを覚えました: {cid}")
                 return cid
-        print(f"[warn] {handle} が見つかりません", file=sys.stderr)
     except Exception as e:                       # noqa: BLE001
         print(f"[warn] {handle} を引けません: {e}", file=sys.stderr)
     return ""
@@ -124,6 +150,8 @@ def recent(api_key: str, cid: str, hours: int) -> list:
             continue
         low = title.lower()
         if not any(w in low for w in HIGHLIGHT_WORDS):
+            continue
+        if any(w in low for w in NOT_MATCH):
             continue
         out.append({"video_id": vid, "title": title, "published_at": pub})
     return out
@@ -199,10 +227,10 @@ def main() -> int:
     cache = _state(args.out)
     ids = dict(cache.get("channel_ids") or {})
     rows = []
-    for handle, name_jp in OFFICIAL:
-        cid = channel_id(api_key, handle, cache)
+    for handles, name_jp in OFFICIAL:
+        cid = channel_id(api_key, handles, cache)
         if cid:
-            ids[handle] = cid
+            ids[handles[0]] = cid
         got = recent(api_key, cid, args.hours)
         print(f"[info] {name_jp}: ハイライト {len(got)}本")
         for g in got:
@@ -220,12 +248,31 @@ def main() -> int:
         return 0
 
     counts = views(api_key, rows)
+    keep = []
     for r in rows:
-        r["views"] = counts.get(r["video_id"], 0)
         cs = clubs(r["title"])
+        # **対戦カードが取れないものは捨てる。**
+        #
+        # コメント欄の回は「◯◯対◯◯のファンが何と言ったか」で作る。
+        # カードが分からないと、その名乗りが嘘になる。
+        # 選手のゴール集やユースの回は、ここで落ちる。
+        if not cs:
+            print(f"[info] 対戦カードが取れないので外します: "
+                  f"{r['title'][:52]}")
+            continue
+        r["views"] = counts.get(r["video_id"], 0)
         r["clubs"] = cs
-        r["matchup_jp"] = " 対 ".join(club_name_jp(c) for c in cs) if cs else ""
+        r["matchup_jp"] = " 対 ".join(club_name_jp(c) for c in cs)
         r["jp_players"] = jp_in(r["title"])
+        keep.append(r)
+    rows = keep
+    if not rows:
+        print("[info] 試合のハイライトが1本もありません")
+        p.write_text(json.dumps(
+            {"updated_at": datetime.now(timezone.utc).isoformat(),
+             "channel_ids": ids, "videos": []}, ensure_ascii=False, indent=2),
+            encoding="utf-8")
+        return 0
 
     # 再生順に並べ、**日本人選手がいる試合を先頭へ。**
     #
