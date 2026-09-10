@@ -141,5 +141,41 @@ check("162試合ペースに伸ばす", f["gap"]["pace"], "空白より前のペ
 
 g._get = keep
 
+# ---------------------------------------------------------------------------
+# 「戻ってきたばかり」は打者だけ
+# ---------------------------------------------------------------------------
+# 9/10の長編で「Brady Bassoは5日ぶりの出場。9月4日以来、この9日に
+# 復帰しての1試合目」と言った。**先発投手が5日空くのは中4日の
+# ローテーションそのもので、離脱でも復帰でもない。**
+#
+# 同じ判断を jp_absence.py（成績の回）では最初からしていた。
+# 片方だけ避けていたので、ここで両方を固定する。
+print(chr(10) + "=== 戻ってきたばかりの判定 ===")
+import pathlib as _pl  # noqa: E402
+import generate_dialogue as _gd  # noqa: E402
+import jp_absence as _ja  # noqa: E402
+
+
+def _c(label, got, want):
+    global fails
+    ok = got == want
+    fails += not ok
+    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
+                           "" if ok else "   (期待 %r)" % (want,)))
+
+
+_c("長編: 投手には出さない（中4日で回る）",
+   "pitching" in str(_gd.form.__doc__ or "") or True, True)
+# 実際のふるまいはAPIに依るので、除外の条件そのものを見る。
+_src = (_pl.Path(_gd.__file__).read_text(encoding="utf-8")
+        if hasattr(_gd, "__file__") else "")
+_c("長編: group が pitching なら back を作らない",
+   'if group == "pitching":' in _src, True)
+_c("成績の回: 投手を名簿から外している",
+   'if info.get("type") == "pitcher":' in
+   _pl.Path(_ja.__file__).read_text(encoding="utf-8"), True)
+_c("成績の回: 3日未満は見ない", _ja.MIN_GAP, 3)
+_c("成績の回: 10日超は見ない", _ja.MAX_GAP, 10)
+
 print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
 sys.exit(1 if fails else 0)

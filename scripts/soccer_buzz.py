@@ -40,7 +40,31 @@ sys.path.insert(0, str(HERE.parent))
 from notability_engine import (  # noqa: E402
     club_name_jp,
     jp_players_for_club,
+    normalize_club,
 )
+
+# 公式が題で使う略記 → 正式名。
+#
+# club_name_jp は "milan" を意図して持っていない。"Inter Milan" と
+# 部分一致してしまうので、"acmilan" で登録してある（その理由は
+# notability_engine の表のコメントに書いてある）。
+# ところがセリエA公式は「JUVENTUS-MILAN」と書く。単独の MILAN は
+# ACミランなので、ここで正式名に直してから渡す。
+ALIAS = {
+    "milan": "AC Milan",
+    "inter": "FC Internazionale Milano",
+    "atleti": "Atletico Madrid",
+    "barca": "FC Barcelona",
+    "psg": "Paris Saint-Germain",
+    "bayern": "FC Bayern Munchen",
+    "dortmund": "Borussia Dortmund",
+    "spurs": "Tottenham",
+}
+
+
+def canon(name: str) -> str:
+    """略記を正式名に。知らない名前はそのまま返す。"""
+    return ALIAS.get(normalize_club(name), name)
 
 YOUTUBE_API = "https://www.googleapis.com/youtube/v3"
 
@@ -119,11 +143,37 @@ def _one_handle(api_key: str, handle: str) -> str:
     return ""
 
 
-def recent(api_key: str, cid: str, hours: int) -> list:
+def uploads_playlist(api_key: str, cid: str) -> str:
+    """投稿一覧のプレイリストID。
+
+    「UCの2文字目をUに変える」という対応は公開仕様で、MLB公式では
+    そのまま通る。**だがCL公式では404だった。**
+    (UCLcSuj4B8YyUVJdVDeozFQg → UULcSuj4B8YyUVJdVDeozFQg が Not Found)
+
+    規則で当てずに、APIに聞く。1回の呼び出しで済むし、
+    チャンネルIDと一緒に覚えておける。
+    """
+    try:
+        r = requests.get(f"{YOUTUBE_API}/channels",
+                         params={"key": api_key, "part": "contentDetails",
+                                 "id": cid}, timeout=20)
+        r.raise_for_status()
+        for it in r.json().get("items") or []:
+            pl = ((it.get("contentDetails") or {})
+                  .get("relatedPlaylists") or {}).get("uploads")
+            if pl:
+                return pl
+    except Exception as e:                       # noqa: BLE001
+        print(f"[warn] 投稿一覧のIDを引けません: {e}", file=sys.stderr)
+    # 引けなければ規則で当てる。MLB公式ではこれで通っている。
+    return "UU" + cid[2:] if cid else ""
+
+
+def recent(api_key: str, cid: str, hours: int, uploads: str = "") -> list:
     """そのチャンネルの直近の投稿。ハイライトだけ。"""
     if not cid:
         return []
-    uploads = "UU" + cid[2:]
+    uploads = uploads or ("UU" + cid[2:])
     after = datetime.now(timezone.utc) - timedelta(hours=hours)
     try:
         r = requests.get(f"{YOUTUBE_API}/playlistItems",
@@ -192,14 +242,56 @@ SPLIT = re.compile(r"\s+(?:vs\.?|v)\s+|\s+\d+\s*[-–]\s*\d+\s+"
                    r"|\s+[-–]\s+", re.I)
 
 
-def clubs(title: str) -> list:
-    """題から2つのクラブ名。取れなければ空。"""
-    head = re.split(r"[|｜(]", title)[0].strip()
-    parts = [p.strip(" -–") for p in SPLIT.split(head)
-             if p.strip(" -–")]
+# 大文字だけのハイフン区切り。セリエAの公式がこの形。
+#
+#   "JUVENTUS-MILAN 1-1 | EXTENDED HIGHLIGHTS"
+#   "Gattuso Vince Ancora | UDINESE-LAZIO | HIGHLIGHTS"
+#
+# スペースの無いハイフンを一律に切ると "Saint-Etienne" が
+# 2つに割れる。**両側が大文字だけのときに限る。**
+UPPER_PAIR = re.compile(r"^([A-Z][A-Z .'&]{2,})-([A-Z][A-Z .'&]{2,})$")
+
+
+# 題の先頭に付く言い回し。セリエAの公式が使う。
+#
+#   "MAXI SINTESI ROMA-ATALANTA 2-1 | EXTENDED HIGHLIGHTS"
+#
+# これを落とさないと、対戦カードが「MAXI SINTESI ROMA」対
+# 「ATALANTA」になる。クラブ名は2語のこともある（REAL MADRID）ので、
+# 「最後の語だけ取る」ではなく、**知っている前置きを落とす。**
+PREFIX = ("maxi sintesi", "sintesi", "extended highlights", "highlights")
+
+
+def _pair(text: str) -> list:
+    """1つの断片から2つのクラブ名。取れなければ空。"""
+    text = text.strip()
+    for w in PREFIX:
+        if text.lower().startswith(w):
+            text = text[len(w):].strip(" :-–")
+            break
+    if not text:
+        return []
+    m = UPPER_PAIR.match(re.sub(r"\s+\d+\s*[-–]\s*\d+\s*$", "", text).strip())
+    if m:
+        return [m.group(1).strip(), m.group(2).strip()]
+    parts = [x.strip(" -–") for x in SPLIT.split(text) if x.strip(" -–")]
     if len(parts) != 2:
         return []
-    return [p for p in parts if 2 <= len(p) <= 40]
+    return [x for x in parts if 2 <= len(x) <= 40]
+
+
+def clubs(title: str) -> list:
+    """題から2つのクラブ名。取れなければ空。
+
+    **題の全部を見る。**先頭だけを見ていたので、セリエAの
+    「Gattuso Vince Ancora | UDINESE-LAZIO | HIGHLIGHTS」のように
+    見出しが先に来る形を1本も拾えなかった（9/10に11本落とした）。
+    """
+    for part in re.split(r"[|｜(]", title):
+        got = _pair(part)
+        if len(got) == 2:
+            return [canon(x) for x in got]
+    return []
 
 
 def jp_in(title: str) -> list:
@@ -226,12 +318,16 @@ def main() -> int:
 
     cache = _state(args.out)
     ids = dict(cache.get("channel_ids") or {})
+    ups = dict(cache.get("uploads") or {})
     rows = []
     for handles, name_jp in OFFICIAL:
         cid = channel_id(api_key, handles, cache)
+        uploads = ""
         if cid:
             ids[handles[0]] = cid
-        got = recent(api_key, cid, args.hours)
+            uploads = (cache.get("uploads") or {}).get(cid) or                 uploads_playlist(api_key, cid)
+            ups[cid] = uploads
+        got = recent(api_key, cid, args.hours, uploads)
         print(f"[info] {name_jp}: ハイライト {len(got)}本")
         for g in got:
             g["competition"] = name_jp
@@ -243,7 +339,7 @@ def main() -> int:
         print("[info] ハイライトが1本もありません")
         p.write_text(json.dumps(
             {"updated_at": datetime.now(timezone.utc).isoformat(),
-             "channel_ids": ids, "videos": []}, ensure_ascii=False, indent=2),
+             "channel_ids": ids, "uploads": ups, "videos": []}, ensure_ascii=False, indent=2),
             encoding="utf-8")
         return 0
 
@@ -270,7 +366,7 @@ def main() -> int:
         print("[info] 試合のハイライトが1本もありません")
         p.write_text(json.dumps(
             {"updated_at": datetime.now(timezone.utc).isoformat(),
-             "channel_ids": ids, "videos": []}, ensure_ascii=False, indent=2),
+             "channel_ids": ids, "uploads": ups, "videos": []}, ensure_ascii=False, indent=2),
             encoding="utf-8")
         return 0
 
@@ -289,7 +385,8 @@ def main() -> int:
               f"{'・'.join(top['jp_players'])} / {top['title'][:48]}")
 
     out = {"updated_at": datetime.now(timezone.utc).isoformat(),
-           "channel_ids": ids, "videos": rows[:args.top]}
+           "channel_ids": ids, "uploads": ups,
+           "videos": rows[:args.top]}
     p.write_text(json.dumps(out, ensure_ascii=False, indent=2),
                  encoding="utf-8")
     print()

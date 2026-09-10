@@ -34,14 +34,16 @@ check("スコア区切り", sb.clubs("Liverpool 2-1 Atletico Madrid | Highlights
       ["Liverpool", "Atletico Madrid"])
 check("vs 区切り", sb.clubs("Real Madrid vs Barcelona | LaLiga Highlights"),
       ["Real Madrid", "Barcelona"])
+# 略記は正式名に読み替えて返す（canon）。名簿との照合も
+# club_name_jp も、正式名のほうが当たる。
 check("ハイフン区切り", sb.clubs("Bayern - Dortmund | Highlights"),
-      ["Bayern", "Dortmund"])
+      ["FC Bayern Munchen", "Borussia Dortmund"])
 check("全角の縦棒でも切れる",
       sb.clubs("Arsenal vs Napoli ｜ Champions League"),
       ["Arsenal", "Napoli"])
 check("括弧の前で切る",
       sb.clubs("Inter vs Milan (Serie A Highlights)"),
-      ["Inter", "Milan"])
+      ["FC Internazionale Milano", "AC Milan"])
 
 print()
 print("--- 取れないときは空 ---")
@@ -101,6 +103,33 @@ for title, want in (
         ("Resumen: Real Madrid 2-0 Sevilla", False)):
     got = any(w in title.lower() for w in sb.NOT_MATCH)
     check(title[:44], got, want)
+
+print()
+print("--- セリエAの形（9/10に11本落とした） ---")
+# 公式の題は「見出し | 対戦カード | HIGHLIGHTS」の順で、
+# しかもハイフンにスペースが無い。先頭だけ見ていたので1本も
+# 拾えなかった。
+check("スペース無しの大文字ハイフン",
+      sb.clubs("JUVENTUS-MILAN 1-1 | EXTENDED HIGHLIGHTS"),
+      ["JUVENTUS", "AC Milan"])
+check("見出しが先に来る形",
+      sb.clubs("Gattuso Vince Ancora | UDINESE-LAZIO | HIGHLIGHTS"),
+      ["UDINESE", "LAZIO"])
+check("前置き(MAXI SINTESI)を落とす",
+      sb.clubs("MAXI SINTESI ROMA-ATALANTA 2-1 | EXTENDED HIGHLIGHTS"),
+      ["ROMA", "ATALANTA"])
+# ハイフンを含むクラブ名を割らないこと。**両側が大文字のときだけ切る。**
+check("Saint-Etienne を割らない",
+      sb.clubs("AS Saint-Etienne vs Lyon | Highlights"),
+      ["AS Saint-Etienne", "Lyon"])
+
+print()
+print("--- 略記の読み替え ---")
+# club_name_jp は "milan" を意図して持っていない（"Inter Milan" と
+# 部分一致するため "acmilan" で登録してある）。公式は MILAN と書く。
+check("MILAN は ACミラン", sb.canon("MILAN"), "AC Milan")
+check("INTER はインテル", sb.canon("INTER"), "FC Internazionale Milano")
+check("知らない名前はそのまま", sb.canon("Sevilla"), "Sevilla")
 
 print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
 sys.exit(1 if fails else 0)
