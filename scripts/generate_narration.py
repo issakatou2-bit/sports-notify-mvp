@@ -146,6 +146,22 @@ def _jp_kana() -> dict:
 
 
 @functools.lru_cache(maxsize=1)
+def _soccer_out() -> frozenset:
+    """いま出られないと公表されているサッカーの日本人選手。
+
+    **取れない日は空。**誰も止めない。取得に失敗した日に全員を
+    外すと、その日は日本人選手の名前が題から丸ごと消える。
+    実測では題に名前がある動画が平均290再生、無い動画が171再生。
+    """
+    try:
+        import soccer_availability
+        return frozenset(soccer_availability.unavailable(
+            soccer_availability.load()))
+    except Exception:                            # noqa: BLE001
+        return frozenset()
+
+
+@functools.lru_cache(maxsize=1)
 def _jp_types() -> dict:
     """日本人選手の、漢字表記 → 投手か打者か。
 
@@ -354,12 +370,23 @@ def pick_hook(games: list) -> dict:
 
     # 4. サッカーで日本人選手が所属している場合。
     #     「先発予定」とは書かない。スタメンは前日には分からない。
+    #
+    #     **いま出られないと公表されている選手は出さない。**
+    #     9/11に調べたところ、三笘薫は今季まだ1分も出ていなかった
+    #     （ハムストリングの怪我、復帰見込み10月10日）。それを
+    #     「ブライトンの試合、三笘薫が所属」と題に出していた。
+    #     MLBの投手より悪い。投げない日があるのではなく、
+    #     1か月以上出られないと公式が公表している選手だった。
+    #     判定は soccer_availability（プレミアリーグ公式の発表）。
+    out_now = _soccer_out()
     for at, g in enumerate(games):
         for r in g.get("reasons") or []:
             if r.get("tag") != "jp_team":
                 continue
             m = re.match(r"^(?P<club>.+?)には(?P<who>.+?)が所属$",
                          (r.get("text") or "").strip())
+            if m and m.group("who").split("・")[0] in out_now:
+                continue
             if m:
                 # at を返し忘れていた。**「リバプールの試合」と
                 # 名乗りながら、1つ目に別の試合を出していた。**

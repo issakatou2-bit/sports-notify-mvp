@@ -266,6 +266,46 @@ check("日本人選手が枠を全部占めない上限がある",
       0 < lr.JP_CAP < lr.TOP_N, True)
 
 
+
+# いま出られないサッカー選手を題に出さないか。
+#
+# 9/11に調べたところ、三笘薫は今季まだ1分も出ていなかった
+# （ハムストリングの怪我、プレミアリーグ公式が復帰見込み10月10日と
+# 公表）。それを「ブライトンの試合、三笘薫が所属」と題に出していた。
+print(chr(10) + "--- 出られないサッカー選手を題に出さない ---")
+import soccer_availability as sa  # noqa: E402
+
+_out = sa.unavailable({"players": {
+    "三笘薫": {"out": True, "reason": "Hamstring injury"},
+    "遠藤航": {"out": False, "minutes": 0},
+}})
+check("怪我の選手だけを止める", sorted(_out), ["三笘薫"])
+# **取れない日は誰も止めない。**題から名前が丸ごと消えるのを避ける。
+check("材料が無い日は空", sa.unavailable({}), set())
+check("選手が空でも落ちない", sa.unavailable({"players": {}}), set())
+
+# 出場0分でも、公式が「出られる」と言っているなら止めない
+# （ベンチ入りしている選手をこちらの判断で外さない）。
+_built = sa.build([{"web_name": "Endo", "second_name": "Endo", "minutes": 0,
+                    "goals_scored": 0, "assists": 0,
+                    "chance_of_playing_next_round": 100, "news": ""}])
+check("出場0分でも見込み100%なら出す",
+      _built.get("遠藤航", {}).get("out"), False)
+_hurt = sa.build([{"web_name": "Mitoma", "second_name": "Mitoma",
+                   "minutes": 0, "goals_scored": 0, "assists": 0,
+                   "chance_of_playing_next_round": 0,
+                   "news": "Hamstring injury - Expected back 10 Oct"}])
+check("見込み0%なら止める", _hurt.get("三笘薫", {}).get("out"), True)
+check("理由も残す", "Hamstring" in (_hurt.get("三笘薫", {}).get("reason") or ""),
+      True)
+# 見込みが書かれていない選手（ふつうに出ている選手）を止めない。
+_fine = sa.build([{"web_name": "Kamada", "second_name": "Kamada",
+                   "minutes": 268, "goals_scored": 0, "assists": 1,
+                   "chance_of_playing_next_round": None, "news": ""}])
+check("ふつうに出ている選手は止めない",
+      _fine.get("鎌田大地", {}).get("out"), False)
+
+
 # 「所属チームの一戦」に投手の名前を出さないか。
 #
 # 9/11にユーザーから指摘。「明日今井達也が先発するわけでもないのに

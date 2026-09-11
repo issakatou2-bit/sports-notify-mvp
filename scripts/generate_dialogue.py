@@ -45,6 +45,7 @@
 
 import argparse
 import datetime
+import functools
 import json
 import os
 import pathlib
@@ -292,14 +293,19 @@ GAP_DAYS = 8
 # 9/9のヤンキース戦は、コメント欄が「Welcome back Aaron Judge」で
 # 埋まっていたのに、台本は復帰を知らないまま進んだ。
 # **コメントが言っていることを、こちらが知らない。**
-# 5日空けば、休養ではなく離脱だったと見てよい。
-# **打者だけに使う。**投手は役割で間隔が違うので、日数では
-# 離脱かどうか決められない（`form()` の中の説明を参照）。
-BACK_DAYS = 5
-
-# 直近の何試合まで遡って、その空白を探すか。
-# 復帰から間が空くと「戻ってきたばかり」ではなくなる。
-BACK_WITHIN = 5
+# 9/11に、日数で決めるのをやめた。
+#
+# 5日空いた理由は、故障・休養・降格・打順から外れたのどれでもあり、
+# 出場記録の隙間からは区別できない。実際9/10の長編で、先発投手の
+# 中4日を「5日ぶりの復帰」と言う事故が出た。そのときは
+# 「投手には出さない」で止めたが、**打者にも同じ推測が残っていた。**
+#
+# MLBは登録の動きを公式の記録として公開している。
+# 「故障者リストから復帰した（activated）」と記録された日だけを
+# 復帰として扱う。判定は `mlb_transactions.came_back`。
+# 記録が取れない日は何も言わない。
+#
+# 旧 BACK_DAYS / BACK_WITHIN はここで使わなくなった。
 
 
 def _team_id(jp_name: str) -> str:
@@ -510,6 +516,33 @@ def squad(jp_name: str) -> dict:
             "jp": ours}
 
 
+@functools.lru_cache(maxsize=1)
+def _transactions() -> dict:
+    """登録の動きの記録。取れなければ空。"""
+    try:
+        import mlb_transactions
+        return mlb_transactions.load()
+    except Exception:                            # noqa: BLE001
+        return {}
+
+
+def _came_back(player_id: str, on: str) -> dict:
+    """その選手が、直前に故障者リストから復帰していたか。
+
+    **公式が「activated」と記録した日だけ。**出場の隙間からは
+    推測しない。9/10に「先発投手の中4日」を「5日ぶりの復帰」と
+    言った事故は、隙間を理由にしていたことが原因だった。
+    """
+    data = _transactions()
+    if not data:
+        return {}
+    try:
+        import mlb_transactions
+        return mlb_transactions.came_back(data, player_id, on)
+    except Exception:                            # noqa: BLE001
+        return {}
+
+
 def form(name: str, player_id: str = "", pos: str = "") -> dict:
     """その選手を、期間で分けた成績。
 
@@ -579,17 +612,31 @@ def form(name: str, player_id: str = "", pos: str = "") -> dict:
     # 同じ判断を `jp_absence.py`（成績の回）では最初からしていた
     # ——「投手は見ない。中5日で5日空くのがふつう」と書いてある。
     # **同じ罠を、片方だけ避けていた。**
+    # 打者でも「出場が空いた」理由は分からない。故障・休養・降格・
+    # 打順から外れた、どれも同じ空白に見える。
+    #
+    # **推測をやめた。**MLBは登録の動きを公式の記録として公開して
+    # いるので、「故障者リストから復帰した」と記録された日だけを
+    # 復帰として扱う（`mlb_transactions.py`）。記録が取れない日は
+    # back を出さない。「復帰ではない」ではなく「そうは言えない」。
+    #
+    # 投手をここで返しているのは変えない。投げる間隔は役割で違い、
+    # 中4日を離脱と呼ぶ形が9/10に実際に出た。
     if group == "pitching":
         return out
-    for k in range(1, min(BACK_WITHIN + 1, len(sp))):
-        n = days(sp[-k - 1]["date"], sp[-k]["date"])
-        if n >= BACK_DAYS:
-            out["back"] = {
-                "days": n, "since": sp[-k - 1]["date"],
-                "on": sp[-k]["date"], "games": k,
-                "line": span(sp[-k:]),
-            }
-            break
+    back_rec = _came_back(pid, sp[-1]["date"])
+    if back_rec:
+        # 復帰の日以降の試合だけを数える。
+        since = back_rec["date"][:10]
+        after = [x for x in sp if x["date"] >= since]
+        out["back"] = {
+            "since": since,
+            "on": sp[-1]["date"],
+            "games": len(after) or 1,
+            "line": span(after or sp[-1:]),
+            # 公式の文をそのまま添える。こちらで言い換えない。
+            "note": back_rec.get("text", ""),
+        }
 
     gap, at = 0, -1
     for i in range(len(sp) - 1):

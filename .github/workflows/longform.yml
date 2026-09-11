@@ -116,6 +116,21 @@ jobs:
               print("%-26s %s%s" % (name, at or "(日付なし)", mark))
           PY
 
+      # 誰が故障者リストから復帰したか。**推測しない。**
+      #
+      # 9/10の長編で「Bassoは5日ぶりの出場、9日に復帰しての1試合目」
+      # と言った。先発投手の中4日を復帰と呼んでいた。そのときは
+      # 「投手には出さない」で止めたが、打者にも同じ推測が残っていた。
+      # 出場の隙間は、故障・休養・降格・打順から外れたのどれでも
+      # 同じに見える。
+      #
+      # MLBが登録の動きを公式の記録として公開しているので、それを読む。
+      # キーは要らない。落ちても止めない（取れない日は何も言わない）。
+      - name: Who came back
+        continue-on-error: true
+        run: |
+          python scripts/mlb_transactions.py --days 21             --out data/transactions.json | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Write the dialogue
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -204,7 +219,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "longform: ${{ github.run_id }}" \
-            data/published_videos.json data/token_usage.json
+            data/published_videos.json data/token_usage.json data/transactions.json
 
       - name: Say what happened
         if: always()

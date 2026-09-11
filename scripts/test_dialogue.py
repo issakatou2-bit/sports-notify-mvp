@@ -177,5 +177,71 @@ _c("成績の回: 投手を名簿から外している",
 _c("成績の回: 3日未満は見ない", _ja.MIN_GAP, 3)
 _c("成績の回: 10日超は見ない", _ja.MAX_GAP, 10)
 
+print()
+print("=== 復帰は公式の記録だけで言う ===")
+# 9/10の事故のあと「投手には出さない」で止めたが、打者にも同じ
+# 推測が残っていた。出場の隙間は、故障・休養・降格・打順から
+# 外れたのどれでも同じに見える。9/11に記録で見るようにした。
+import mlb_transactions as mtx  # noqa: E402
+
+_rec = {"players": {
+    "660271": {"kind": "from_il", "date": "2026-09-09",
+               "name_en": "Shohei Ohtani",
+               "text": "Los Angeles Dodgers activated DH Shohei Ohtani."},
+    "808967": {"kind": "to_il", "date": "2026-09-05",
+               "name_en": "Yoshinobu Yamamoto",
+               "text": "placed on the 15-day injured list"},
+}}
+check("復帰した当日は復帰と言える",
+      bool(mtx.came_back(_rec, "660271", "2026-09-09")), True)
+check("翌日も言える", bool(mtx.came_back(_rec, "660271", "2026-09-10")), True)
+check("何日目かも返す",
+      mtx.came_back(_rec, "660271", "2026-09-11")["days_since"], 2)
+# **いつまでも「復帰明け」と言わない。**
+check("4日経ったら言わない",
+      mtx.came_back(_rec, "660271", "2026-09-14"), {})
+check("故障者リストへ入った選手は復帰ではない",
+      mtx.came_back(_rec, "808967", "2026-09-09"), {})
+check("記録に無い選手は何も言わない",
+      mtx.came_back(_rec, "999999", "2026-09-09"), {})
+# 記録が取れなかった日は黙る（「復帰ではない」ではなく「言えない」）。
+check("記録そのものが無い日", mtx.came_back({}, "660271", "2026-09-09"), {})
+check("いま故障者リストに入っているか",
+      bool(mtx.on_il(_rec, "808967")), True)
+
+print()
+print("=== マイナーでの登録を復帰と読まない ===")
+# 8/28に「シャーロット（3A）が西田陸浮を出場登録」という記録があった。
+# その前日にマイナーへ降格しているので、メジャー復帰ではない。
+check("3Aの出場登録は無視",
+      mtx.classify({"typeDesc": "Status Change",
+                    "toTeam": {"id": 342, "name": "Charlotte Knights"},
+                    "description": "Charlotte Knights activated RF Rikuu Nishida."}),
+      "")
+check("メジャー球団の出場登録は復帰",
+      mtx.classify({"typeDesc": "Status Change",
+                    "toTeam": {"id": 108, "name": "Los Angeles Angels"},
+                    "description": "Los Angeles Angels activated LHP Yusei Kikuchi from the 60-day injured list."}),
+      "from_il")
+check("故障者リストへの登録",
+      mtx.classify({"typeDesc": "Status Change",
+                    "toTeam": {"id": 119},
+                    "description": "Los Angeles Dodgers placed RHP Roki Sasaki on the 15-day injured list."}),
+      "to_il")
+check("メジャー昇格",
+      mtx.classify({"typeDesc": "Recalled", "toTeam": {"id": 145},
+                    "description": "Chicago White Sox recalled RF Rikuu Nishida."}),
+      "up")
+check("マイナー降格",
+      mtx.classify({"typeDesc": "Optioned", "fromTeam": {"id": 145},
+                    "description": "Chicago White Sox optioned RF Rikuu Nishida."}),
+      "down")
+check("関係ない記録は空",
+      mtx.classify({"typeDesc": "Assigned", "toTeam": {"id": 145},
+                    "description": "Signed a minor league contract."}), "")
+# マイナー同士の動きは、そもそも見ない。
+check("マイナー同士は対象外",
+      mtx._is_major({"toTeam": {"id": 342}, "fromTeam": {"id": 494}}), False)
+
 print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
 sys.exit(1 if fails else 0)
