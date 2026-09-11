@@ -39,11 +39,13 @@ jobs:
       - name: Verify duplicate prevention and source validation
         run: python scripts/test_buffer_daily.py
       - name: Install media inspection tool
+        if: inputs.mode != 'reconcile'
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Validate or distribute the daily video
         env:
           GH_TOKEN: ${{ github.token }}
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNELS: ${{ vars.BUFFER_CHANNELS }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
           MODE: ${{ github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}

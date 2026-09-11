@@ -55,6 +55,16 @@ class BufferTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             daily.caption('twitter', '2026-09-11', {**self.record,'title':'今'*200})
 
+    def test_rollout_selects_only_verified_channels(self):
+        self.assertEqual(daily.selected_services('twitter,instagram'), ('twitter','instagram'))
+        self.assertNotIn('tiktok', daily.selected_services('twitter,instagram'))
+        self.assertEqual(daily.selected_services(None), tuple(daily.CHANNELS))
+
+    def test_invalid_channel_configuration_fails_closed(self):
+        for value in ('twitter,other', 'twitter,', ' '):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                daily.selected_services(value)
+
     def test_artifact_not_arbitrary_extraction(self):
         def archive(names):
             data=io.BytesIO()
