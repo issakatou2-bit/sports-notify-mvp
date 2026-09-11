@@ -12,6 +12,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, "scripts")
 import post_tiktok as pt
 
+real_wait_status = pt.wait_status
+
 fails = 0
 
 
@@ -194,7 +196,47 @@ check("審査後: creator_info を呼ぶ",
 saved = json.loads(rec.read_text(encoding="utf-8"))["daily"]
 check("記録に投稿方法が残る",
       [v["direct"] for v in saved.values()], [True])
+
+# 到達・完了・一般公開を取り違えず、未確定を成功終了にしない。
+for status, outcome, code, public in [
+    ({"status": "SEND_TO_USER_INBOX"}, "inbox", 0, False),
+    ({"status": "PROCESSING_UPLOAD"}, "pending", 2, False),
+    ({"status": "PROCESSING_DOWNLOAD"}, "pending", 2, False),
+    ({}, "pending", 2, False),
+    ({"status": "NEW_UNKNOWN_STATUS"}, "pending", 2, False),
+    ({"status": "FAILED", "fail_reason": "auth_removed"}, "failed", 1, False),
+    ({"status": "PUBLISH_COMPLETE"}, "posted", 0, False),
+    ({"status": "PUBLISH_COMPLETE", "publicaly_available_post_id": [123]},
+     "public", 0, True),
+    ({"status": "PROCESSING_UPLOAD", "publicaly_available_post_id": [123]},
+     "pending", 2, False),
+]:
+    pt.wait_status = lambda token, pid, tries=12, value=status: value
+    check(f"{outcome}: 終了コード", run_main("video.upload"), code)
+    entry = next(iter(json.loads(rec.read_text(encoding="utf-8"))["daily"].values()))
+    check(f"{outcome}: 記録した状態", entry["outcome"], outcome)
+    check(f"{outcome}: 一般公開の根拠", entry["publicly_available"], public)
+    check(f"{outcome}: 投稿時刻を捏造しない", bool(entry["posted_at"]),
+          status.get("status") == "PUBLISH_COMPLETE")
+    check(f"{outcome}: 確認IDを保持", entry["publish_id"], "p1")
+    check(f"{outcome}: 公開ID", entry["public_post_ids"], [123] if public else [])
+    check(f"{outcome}: 失敗理由", entry["fail_reason"], status.get("fail_reason"))
 rec.unlink()
+
+original_sleep = pt.time.sleep
+try:
+    pt.time.sleep = lambda seconds: None
+    responses = iter([{"status": "PROCESSING_UPLOAD"},
+                      {"status": "FAILED", "fail_reason": "auth_removed"}])
+    pt._post = lambda *args: next(responses)
+    check("待機中の失敗を理由ごと記録側へ返す",
+          real_wait_status("t", "p1", tries=3),
+          {"status": "FAILED", "fail_reason": "auth_removed"})
+    pt._post = lambda *args: {"status": "PROCESSING_UPLOAD"}
+    check("待機上限でも完了を作らない", real_wait_status("t", "p1", tries=2),
+          {"status": "PROCESSING_UPLOAD"})
+finally:
+    pt.time.sleep = original_sleep
 
 tmp.unlink()
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
