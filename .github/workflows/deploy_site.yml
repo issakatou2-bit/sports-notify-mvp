@@ -88,7 +88,10 @@ jobs:
           fi
 
       # mp3はリポジトリにあるので、そこから戻す。
-      # feed.xml は上で公開中のものを引き継いでいるので、ここでは触らない。
+      # feed.xml は公開中の回を維持し、番組紹介だけ現在の内容へ揃える。
+      - name: Refresh podcast description
+        run: python scripts/refresh_podcast_metadata.py --feed public/podcast/feed.xml
+
       - name: Restore podcast episodes
         run: |
           mkdir -p public/podcast
