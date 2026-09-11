@@ -11,3 +11,8 @@ button.primary,.button:not(.secondary),.wrap button{color:var(--on-accent)}
 .slot.elite .pstat{background:none;color:var(--accent)}
 @media(prefers-reduced-motion:reduce){.slot.elite{animation:none}}
 @media(max-width:640px){body>.theme-tools{margin:10px 0 4px}.wrap~.theme-tools{padding:0 18px}}
+:root{--good:#146c43;--bad:#a1262e}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--good:#78d5a8;--bad:#ff9898}}
+:root[data-theme="dark"]{--good:#78d5a8;--bad:#ff9898}
+#nextBtn,#retryBtn{background:var(--accent);color:var(--on-accent);border:0;border-radius:8px;padding:13px;font-family:inherit;font-size:14px;font-weight:600;line-height:1.5;cursor:pointer}
+.choices button.correct,.choices button.wrong{opacity:1}
