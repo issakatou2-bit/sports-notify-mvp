@@ -212,6 +212,13 @@ def x_weight(text):
                for c in re.sub(r'https?://[^\s]+', 'x' * 23, text))
 
 
+def selected_services(value):
+    services = tuple(dict.fromkeys(s.strip() for s in (value or ','.join(CHANNELS)).split(',')))
+    if not services or any(s not in CHANNELS for s in services):
+        raise ValueError('BUFFER_CHANNELS must name only twitter, instagram or tiktok')
+    return services
+
+
 def recent_posts(channel):
     posts, cursor = [], None
     for _ in range(5):
@@ -299,12 +306,14 @@ def main():
         return
     if not args.source_run:
         parser.error('--source-run is required for validation or publication')
+    services = selected_services(os.environ.get('BUFFER_CHANNELS'))
     run = github('/actions/runs/' + str(args.source_run))
     records = json.loads(Path('data/published_videos.json').read_text(encoding='utf-8'))
     day, record = select_record(run, records, datetime.now(timezone.utc))
     verify_youtube(record)
     available = graphql('{channels(input:{organizationId:' + json.dumps(ORG) + '}){id name service}}')['channels']
-    for service, channel in CHANNELS.items():
+    for service in services:
+        channel = CHANNELS[service]
         if not any(c['id'] == channel and c['service'] == service and c['name'] == ('collespo' if service == 'tiktok' else 'collespo_jp') for c in available):
             raise ValueError('Owned channel is missing: ' + service)
     artifacts = github('/actions/runs/' + str(args.source_run) + '/artifacts')['artifacts']
@@ -316,7 +325,7 @@ def main():
     video = output / 'collespo_short.mp4'
     digest = extract_video(artifact, video)
     duration = verify_media(video)
-    texts = {service: caption(service, day, record) for service in CHANNELS}
+    texts = {service: caption(service, day, record) for service in services}
     print(json.dumps({'edition': day, 'source_run': args.source_run, 'video_id': record['video_id'],
                       'duration': duration, 'sha256': digest, 'captions': texts}, ensure_ascii=False))
     if not args.publish:
@@ -325,7 +334,7 @@ def main():
     ledger = Ledger()
     url = host_video(run, day, video, digest)
     failed = False
-    for service in CHANNELS:
+    for service in services:
         key = day + ':daily:' + service
         try:
             post = submit_once(ledger, key, create_payload(service, texts[service], url),
@@ -338,7 +347,8 @@ def main():
     # Give platforms time to process the uploaded video. This is a runner, not an interactive wait.
     for _ in range(12):
         pending = False
-        for service, channel in CHANNELS.items():
+        for service in services:
+            channel = CHANNELS[service]
             key = day + ':daily:' + service
             entry = ledger.data['deliveries'].get(key, {})
             if not entry.get('post_id'):
@@ -353,12 +363,12 @@ def main():
         if not pending:
             break
         time.sleep(30)
-    statuses = {s: ledger.data['deliveries'].get(day + ':daily:' + s, {}).get('state') for s in CHANNELS}
+    statuses = {s: ledger.data['deliveries'].get(day + ':daily:' + s, {}).get('state') for s in services}
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a', encoding='utf-8') as report:
             report.write('## Bufferへの動画配信\n\n' + day + ' / YouTube: https://youtu.be/' + record['video_id'] + '\n\n')
-            for service in CHANNELS:
+            for service in services:
                 row = ledger.data['deliveries'].get(day + ':daily:' + service, {})
                 report.write(f'- {service}: {row.get("state", "未投入")} {row.get("external_link") or ""}\n')
             report.write('\n`sent`はBufferの配信結果です。公開範囲と画面・音声は各SNSでも確認してください。未確定の再実行では二重投稿しません。\n')

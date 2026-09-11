@@ -446,7 +446,9 @@ jobs:
       # 設定しない運用になるため、失敗として出すと毎日ノイズになる。
       # 審査前は video.publish が付かないので、自動的に下書き投稿になる。
       - name: Post to TikTok
-        if: steps.sanity.outcome == 'success' && vars.BUFFER_ENABLED != 'true'
+        if: >-
+          steps.sanity.outcome == 'success' &&
+          (vars.BUFFER_ENABLED != 'true' || (vars.BUFFER_CHANNELS != '' && !contains(vars.BUFFER_CHANNELS, 'tiktok')))
         continue-on-error: true
         env:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
