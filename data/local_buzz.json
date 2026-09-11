@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-10T06:02:13.200545+00:00",
+  "updated_at": "2026-09-11T06:02:10.573350+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,78 +13,74 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 4,
-      "tone": "好調",
-      "gist": "ヤマモトが10奪三振、ドジャース連勝を7に伸ばす"
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "レンジャーズ、マリナーズにシリーズ敗北"
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
       "mentions": 3,
       "tone": "好調",
-      "gist": "ブリュワーズが100mph1000球投げ歴史を作る"
+      "gist": "ヤンキース、若手選手の連続満塁弾が話題"
     },
     {
-      "team_id": "146",
-      "name": "マーリンズ",
-      "name_en": "Miami Marlins",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "マーリンズがメッツ戦で8点差を逆転も15-14で敗れる"
-    },
-    {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
-      "mentions": 2,
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 3,
       "tone": "不振",
-      "gist": "ブレーブスの打線に懸念、地区戦が接近"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "メッツがマーリンズ戦を15-14で勝利"
-    },
-    {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ロッキーズ選手がMLB本部でAMAを実施"
+      "gist": "レイズ、ブレーブスに敗れプレーオフ進出延期"
     },
     {
       "team_id": "145",
       "name": "ホワイトソックス",
       "name_en": "Chicago White Sox",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ホワイトソックス対パイレーツで乱闘、両チーム厳重注意"
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "ホワイトソックス、パイレーツに連敗"
     },
     {
-      "team_id": "134",
-      "name": "パイレーツ",
-      "name_en": "Pittsburgh Pirates",
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ブリュワーズ傘下フィッシャー、47本塁打で記録達成"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "パドレス監督の不手際でウエーラー交代"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ホワイトソックス対パイレーツで乱闘、両チーム厳重注意"
+      "gist": "ブルージェイズ、北極圏に野球場を建設"
+    },
+    {
+      "team_id": "133",
+      "name": "アスレチックス",
+      "name_en": "Athletics",
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "アスレチックス、ポストシーズン進出が消滅"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 3
-    },
-    {
-      "name": "山本由伸",
-      "mentions": 3
+      "mentions": 1
     }
   ]
 }
