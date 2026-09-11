@@ -1,0 +1,106 @@
+{
+  "updated_at": "2026-09-11T09:39:09.770958+00:00",
+  "season": "2026",
+  "min_pa": 300,
+  "min_ip": 60,
+  "players": {
+    "山本由伸": {
+      "player_id": "808967",
+      "items": [
+        {
+          "value": 0.8837209302325582,
+          "shown": "0.88",
+          "at": 2,
+          "of": 51,
+          "above": {
+            "name": "Jacob Misiorowski",
+            "shown": "0.80"
+          },
+          "below": {
+            "name": "Drew Rasmussen",
+            "shown": "0.91"
+          },
+          "key": "whip",
+          "label": "WHIP",
+          "note": "1回あたりに出した走者（被安打＋与四球）",
+          "group": "pitching",
+          "side": "top"
+        }
+      ]
+    },
+    "村上宗隆": {
+      "player_id": "808959",
+      "items": [
+        {
+          "value": 0.5823045267489712,
+          "shown": "58.2%",
+          "at": 1,
+          "of": 139,
+          "above": null,
+          "below": {
+            "name": "Kyle Schwarber",
+            "shown": "53.8%"
+          },
+          "key": "tto",
+          "label": "アダム・ダン率",
+          "note": "本塁打・四球・三振で終わった打席の割合",
+          "group": "hitting",
+          "side": "top",
+          "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
+        },
+        {
+          "value": 0.3497942386831276,
+          "shown": "35.0%",
+          "at": 1,
+          "of": 139,
+          "above": null,
+          "below": {
+            "name": "Colson Montgomery",
+            "shown": "34.7%"
+          },
+          "key": "k_rate",
+          "label": "三振率",
+          "note": "三振で終わった打席の割合",
+          "group": "hitting",
+          "side": "top"
+        },
+        {
+          "value": 0.16872427983539096,
+          "shown": "16.9%",
+          "at": 1,
+          "of": 139,
+          "above": null,
+          "below": {
+            "name": "James Wood",
+            "shown": "16.8%"
+          },
+          "key": "bb_rate",
+          "label": "四球率",
+          "note": "四球で終わった打席の割合",
+          "group": "hitting",
+          "side": "top"
+        },
+        {
+          "value": 0.267,
+          "shown": ".267",
+          "at": 5,
+          "of": 139,
+          "above": {
+            "name": "Hunter Goodman",
+            "shown": ".278"
+          },
+          "below": {
+            "name": "Luis García Jr.",
+            "shown": ".266"
+          },
+          "key": "iso",
+          "label": "ISO",
+          "note": "長打率から打率を引いた、単打を除いた長打力",
+          "group": "hitting",
+          "side": "top"
+        }
+      ],
+      "mendoza": "打率.208。メンドーサ・ライン（.200）のすぐ上"
+    }
+  }
+}

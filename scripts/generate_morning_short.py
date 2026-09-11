@@ -298,6 +298,52 @@ def fit_headline(d, row, max_w, sizes=HEAD_SIZES):
 
 
 @functools.lru_cache(maxsize=1)
+def _rarity_data() -> dict:
+    """名前のある指標での位置。取れなければ空。"""
+    try:
+        import rarity
+        return rarity.load()
+    except Exception:                            # noqa: BLE001
+        return {}
+
+
+def rare_lines(row: dict, limit: int = 2) -> list:
+    """その選手が、リーグの中でどれだけ極端か。
+
+    なぜ要るのか:
+      **出場が1人しかいない日がある。**9/10は村上宗隆だけで、
+      しかも4打数0安打だった。その日の成績だけを並べると、
+      画面に書くことがほとんど無い。
+
+      ユーザーから「結構内容がさみしいですね。どっかでライン
+      設けて動画挙げない判断も必要なのかな？」と相談を受けた。
+      **実測は逆を向いていた。**寂しい日（9/3）の翌日に出した
+      回は419再生で、成績ランキング37本の中央値222の2倍近い。
+      出さない根拠は無い。
+
+      代わりに**軸を移す。**「その日どうだったか」から
+      「その選手がいまどこにいるか」へ。村上は9/10に安打が無い
+      日でも、アダム・ダン率58.2%でリーグ1位、三振率も四球率も
+      1位という位置にいる。**そちらは毎日成り立つ事実。**
+
+    材料が取れない日は空。推測はしない。
+    """
+    try:
+        import rarity
+        x = rarity.for_player(_rarity_data(), row.get("name", ""))
+        out = []
+        for it in (x.get("items") or [])[:limit]:
+            out.append(rarity.phrase(it))
+            if it.get("namesake") and len(out) < limit + 1:
+                out.append(it["namesake"])
+        if x.get("mendoza") and len(out) < limit:
+            out.append(x["mendoza"])
+        return out[:limit + 1]
+    except Exception:                            # noqa: BLE001
+        return []
+
+
+@functools.lru_cache(maxsize=1)
 def _statcast_data() -> dict:
     """本塁打の計測（飛距離・打球速度）。取れなければ空。"""
     try:
@@ -795,6 +841,12 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         shot = hr_detail(top) if top else ""
         if shot:
             head += "%s。" % shot
+        # 出場が少ない日・誰も打てなかった日は、その選手がリーグの
+        # 中でどこにいるかを話す。**その日の成績だけでは話すことが
+        # ほとんど無い**（9/10は村上宗隆だけで4打数0安打だった）。
+        if top and (morning_recap.quiet_day(players) or len(players) <= 2):
+            for line in rare_lines(top, limit=2):
+                head += "%s。" % line
         segments = [{
             "kind": "intro",
             "text": f"{head}{day}、日本人選手{len(players)}人の成績です。",
@@ -1566,6 +1618,29 @@ def render_intro_players(p, meta, top, extra=None):
             sy = 604 + slide
         d.text((sx, sy), shot, font=font(32), fill=JP)
 
+    # 出場が少ない日・誰も打てなかった日は、**軸を移す。**
+    #
+    # 9/10は村上宗隆だけが出場して4打数0安打だった。その日の成績
+    # だけでは画面に書くことがほとんど無い。だが村上はアダム・ダン率
+    # でリーグ1位という位置にいて、**そちらは毎日成り立つ事実。**
+    #
+    # 出さない判断はしない。寂しい日（9/3）の翌日に出した回は
+    # 419再生で、成績ランキング37本の中央値222の2倍近い。
+    # ユーザーから「動画挙げない判断も必要なのかな？」と相談を
+    # 受けたが、実測は逆を向いていた。中身のほうを変える。
+    #
+    # そういう日はスコアも出ない（塁に出ていない打者は非表示）。
+    # **空いたところに置く。**
+    quiet = morning_recap.quiet_day(players)
+    rare_bottom = 0
+    if (quiet or len(players) <= 2) and not score:
+        y = 664 + slide
+        for line in rare_lines(top, limit=2):
+            size = fit(d, line, W - 170, (42, 38, 34, 30))
+            d.text((80, y), line, font=font(size), fill=JP)
+            y += size + 16
+        rare_bottom = y
+
     # 点数。特別な日だけ色を変える。
     if score:
         col = BADGE_BG if score >= AURA_SCORE else DIM
@@ -1591,11 +1666,14 @@ def render_intro_players(p, meta, top, extra=None):
         d.text((80, 740), "ほか " + rest, font=font(44), fill=DIM)
 
     heading, lede = INTRO_HEADINGS.get("players", ("", ""))
-    if morning_recap.quiet_day(players):
+    if quiet:
         lede = "出場した選手の成績です"
-    d.text((80, 830), heading, font=font(52), fill=DIM)
-    d.text((80, 900), lede, font=font(38), fill=DIM)
-    d.text((80, 1000), f"出場 {meta.get('count', 0)}人",
+    # 見出しの位置は、上に置いたものの下端から決める。
+    # 830で固定していたので、稀さの行を3行入れた日に詰まった。
+    hy = max(830, rare_bottom + 24)
+    d.text((80, hy), heading, font=font(52), fill=DIM)
+    d.text((80, hy + 70), lede, font=font(38), fill=DIM)
+    d.text((80, hy + 170), f"出場 {meta.get('count', 0)}人",
            font=font(50), fill=TEXT)
     d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im
