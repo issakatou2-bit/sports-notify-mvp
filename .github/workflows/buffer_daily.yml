@@ -49,7 +49,7 @@ jobs:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run || '34586367769' }}
-          MODE: ${{ github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
+          MODE: ${{ github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'publish' }}
         run: |
           args=()
           if [ "$MODE" = "publish" ]; then args+=(--publish); fi
