@@ -130,7 +130,7 @@ def main() -> int:
         title=f"MLB順位表 {args.season}｜6地区の勝敗・ゲーム差 | コレスポ",
         description=html.escape(desc),
         canonical=f"{ga.SITE_URL}standings.html",
-        root="",
+        root="./",
         style=ga.STYLE + STYLE_EXTRA,
         extra_head="",
     )

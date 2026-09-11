@@ -151,12 +151,24 @@ def add_channel_block(html: str, block: str = "") -> str:
         return html
     if "</head>" in html and "ch-list" not in html:
         html = html.replace("</head>", STYLE + "</head>", 1)
+    # The back link is at the top of some interactive pages: do not put promotions before the content.
     m = re.search(r'<a class="back"', html)
+    if m and '<h1' not in html[:m.start()]:
+        m = None
     if m:
         return html[:m.start()] + block + html[m.start():]
     if '<footer class="site-footer">' in html:
         return html.replace('<footer class="site-footer">', block + '<footer class="site-footer">', 1)
     return html.replace("</body>", block + "</body>", 1)
+
+
+def add_site_theme(html: str) -> str:
+    """Shared assets also apply to nested archive and player pages."""
+    if '</head>' not in html or 'site-theme.js' in html:
+        return html
+    assets = ('<script src="/site-theme.js"></script>\n'
+              '<link rel="stylesheet" href="/site-theme.css">\n')
+    return html.replace('</head>', assets + '</head>', 1)
 
 
 def main():
@@ -209,8 +221,11 @@ def main():
     # 絶対パスなら、日別/選手ページでも同じアイコンを参照できる。
     for page in site.rglob('*.html'):
         html = page.read_text(encoding='utf-8')
+        original = html
         if not re.search(r'rel=[\"\']icon[\"\']', html) and '</head>' in html:
             html = html.replace('</head>', '<link rel="icon" type="image/png" sizes="96x96" href="/icons/icon-96.png">\n</head>', 1)
+        html = add_site_theme(html)
+        if html != original:
             page.write_text(html, encoding='utf-8')
 
 
