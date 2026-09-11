@@ -1,0 +1,61 @@
+{
+  "updated_at": "2026-09-11T10:01:43.547999+00:00",
+  "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+  "players": {
+    "遠藤航": {
+      "name_en": "Wataru Endo",
+      "club_jp": "リバプール",
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": 100,
+      "news": "",
+      "out": false,
+      "reason": ""
+    },
+    "三笘薫": {
+      "name_en": "Kaoru Mitoma",
+      "club_jp": "ブライトン",
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": 0,
+      "news": "Hamstring injury - Expected back 10 Oct",
+      "out": true,
+      "reason": "Hamstring injury - Expected back 10 Oct"
+    },
+    "鎌田大地": {
+      "name_en": "Daichi Kamada",
+      "club_jp": "クリスタル・パレス",
+      "minutes": 268,
+      "goals": 0,
+      "assists": 1,
+      "chance_next": null,
+      "news": "",
+      "out": false,
+      "reason": ""
+    },
+    "田中碧": {
+      "name_en": "Ao Tanaka",
+      "club_jp": "リーズ",
+      "minutes": 117,
+      "goals": 0,
+      "assists": 1,
+      "chance_next": null,
+      "news": "",
+      "out": false,
+      "reason": ""
+    },
+    "冨安健洋": {
+      "name_en": "Takehiro Tomiyasu",
+      "club_jp": "クリスタル・パレス",
+      "minutes": 91,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": null,
+      "news": "",
+      "out": false,
+      "reason": ""
+    }
+  }
+}
