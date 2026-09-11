@@ -2,9 +2,6 @@ name: Buffer 接続確認（投稿しません）
 
 on:
   workflow_dispatch: {}
-  push:
-    branches: [codex/site-social-20260911]
-    paths: [scripts/buffer_api.py, .github/workflows/buffer_connection.yml]
 
 permissions:
   contents: read

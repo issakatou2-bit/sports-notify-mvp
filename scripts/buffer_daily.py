@@ -238,6 +238,29 @@ def create_payload(service, text, media_url):
     return payload
 
 
+def reconcile():
+    """Refresh saved deliveries without creating media or posts, even after midnight."""
+    ledger = Ledger()
+    posts_by_channel = {service: recent_posts(channel) for service, channel in CHANNELS.items()}
+    unresolved = []
+    for key, entry in list(ledger.data['deliveries'].items()):
+        service = key.rsplit(':', 1)[-1]
+        if entry.get('state') == 'sent' or service not in posts_by_channel:
+            continue
+        post = next((p for p in posts_by_channel[service]
+                     if p['id'] == entry.get('post_id') or p['text'] == entry.get('text')), None)
+        if post:
+            ledger.set(key, {**entry, 'state': post['status'], 'post_id': post['id'],
+                            'external_link': post.get('externalLink'),
+                            'checked_at': datetime.now(timezone.utc).isoformat()})
+        row = ledger.data['deliveries'][key]
+        print(key, row.get('state'), row.get('external_link'))
+        if row.get('state') != 'sent':
+            unresolved.append(key)
+    if unresolved:
+        raise SystemExit('Still unconfirmed: ' + ', '.join(unresolved))
+
+
 def submit_once(ledger, key, payload, metadata, retry_rejected=False):
     old = ledger.data['deliveries'].get(key)
     posts = recent_posts(payload['channelId'])
@@ -266,10 +289,16 @@ def submit_once(ledger, key, payload, metadata, retry_rejected=False):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--source-run', required=True, type=int)
+    parser.add_argument('--source-run', type=int)
+    parser.add_argument('--reconcile', action='store_true')
     parser.add_argument('--publish', action='store_true')
     parser.add_argument('--retry-rejected', action='store_true')
     args = parser.parse_args()
+    if args.reconcile:
+        reconcile()
+        return
+    if not args.source_run:
+        parser.error('--source-run is required for validation or publication')
     run = github('/actions/runs/' + str(args.source_run))
     records = json.loads(Path('data/published_videos.json').read_text(encoding='utf-8'))
     day, record = select_record(run, records, datetime.now(timezone.utc))
@@ -307,7 +336,7 @@ def main():
             print(service, 'Delivery did not complete:', type(exc).__name__, str(exc)[:300])
             failed = True
     # Give platforms time to process the uploaded video. This is a runner, not an interactive wait.
-    for _ in range(6):
+    for _ in range(12):
         pending = False
         for service, channel in CHANNELS.items():
             key = day + ':daily:' + service
@@ -316,8 +345,9 @@ def main():
                 continue
             post = next((p for p in recent_posts(channel) if p['id'] == entry['post_id']), None)
             if post:
-                ledger.set(key, {**entry, 'state': post['status'], 'external_link': post.get('externalLink'),
-                                 'checked_at': datetime.now(timezone.utc).isoformat()})
+                if entry.get('state') != post['status'] or entry.get('external_link') != post.get('externalLink'):
+                    ledger.set(key, {**entry, 'state': post['status'], 'external_link': post.get('externalLink'),
+                                     'checked_at': datetime.now(timezone.utc).isoformat()})
                 print(service, post['status'], post.get('externalLink'))
                 pending |= post['status'] not in ('sent', 'error')
         if not pending:

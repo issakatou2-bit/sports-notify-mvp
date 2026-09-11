@@ -5,19 +5,16 @@ on:
     inputs:
       source_run:
         description: 成功した当日のMLB日次実行ID
-        required: true
+        required: false
         type: string
       mode:
         description: 検証または公開
         type: choice
-        options: [validate, publish]
+        options: [validate, publish, reconcile]
         default: validate
   workflow_run:
     workflows: [毎日 19:00頃　明日の注目試合]
     types: [completed]
-  push:
-    branches: [codex/site-social-20260911]
-    paths: [scripts/buffer_daily.py, scripts/test_buffer_daily.py, .github/workflows/buffer_daily.yml]
 
 concurrency:
   group: buffer-daily-delivery
@@ -48,9 +45,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run || '34586367769' }}
-          MODE: ${{ github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'publish' }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
+          MODE: ${{ github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
+          PYTHONUNBUFFERED: '1'
         run: |
+          if [ "$MODE" = "reconcile" ]; then
+            python scripts/buffer_daily.py --reconcile
+            exit 0
+          fi
           args=()
           if [ "$MODE" = "publish" ]; then args+=(--publish); fi
           python scripts/buffer_daily.py --source-run "$SOURCE_RUN" "${args[@]}"
