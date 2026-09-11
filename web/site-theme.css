@@ -1,0 +1,13 @@
+/* Shared palette, including pages generated daily. */
+:root{color-scheme:light;--bg:#f3f1e9;--surface:#fffef9;--surface-raised:#eae8df;--border:#cdd1c9;--text:#15242d;--text-dim:#58656b;--accent:#805300;--accent-dim:#f9e8bf;--jp:#17685f;--jp-dim:#d9eee4;--highlight:#f3d896;--notable-bg:#e6ebe1;--on-accent:#fffef9;--brand-gold:#ffb020;--panel:var(--surface);--line:var(--border);--muted:var(--text-dim);--mint:var(--jp)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#10171d;--surface:#16212a;--surface-raised:#202d37;--border:#34444e;--text:#e5e9e6;--text-dim:#acb8bf;--accent:#f5bb52;--accent-dim:#42351e;--jp:#7bd1bd;--jp-dim:#203e3b;--highlight:#514326;--notable-bg:#20352f;--on-accent:#15242d}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#10171d;--surface:#16212a;--surface-raised:#202d37;--border:#34444e;--text:#e5e9e6;--text-dim:#acb8bf;--accent:#f5bb52;--accent-dim:#42351e;--jp:#7bd1bd;--jp-dim:#203e3b;--highlight:#514326;--notable-bg:#20352f;--on-accent:#15242d}
+html,body{background:var(--bg);color:var(--text)}
+.theme-tools{display:flex;align-items:center;justify-content:flex-end;gap:9px;max-width:1200px;margin:12px auto 6px;font:12px/1.5 -apple-system,BlinkMacSystemFont,"Yu Gothic",Meiryo,sans-serif;color:var(--text-dim)}
+.theme-tools label{font-weight:500}.theme-tools select{width:auto;min-height:36px;max-width:180px;margin:0;padding:6px 25px 6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--jp);outline-offset:3px}
+button.primary,.button:not(.secondary),.wrap button{color:var(--on-accent)}
+#lineupCard{background:linear-gradient(160deg,var(--surface),var(--bg))}
+.slot.elite .pstat{background:none;color:var(--accent)}
+@media(prefers-reduced-motion:reduce){.slot.elite{animation:none}}
+@media(max-width:640px){body>.theme-tools{margin:10px 0 4px}.wrap~.theme-tools{padding:0 18px}}

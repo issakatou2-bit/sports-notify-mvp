@@ -165,18 +165,20 @@ def latest_team_of(name: str, games: list):
 
 def render_game(date_str: str, g: dict) -> str:
     parts = ['<div class="game">']
-    parts.append(f'<div class="date">{html.escape(date_str)}</div>')
+    parts.append(f'<div class="date">掲載日: {html.escape(date_str)}</div>')
     parts.append(f'<p class="match">{html.escape(g.get("matchup", ""))}</p>')
 
     fs = g.get("final_score")
-    if fs:
-        winner = (
-            g.get("home_team_name") if fs.get("winner") == "home" else g.get("away_team_name")
-        )
+    if fs and fs.get("away") is not None and fs.get("home") is not None:
+        winner_side = fs.get("winner")
+        winner = g.get(f"{winner_side}_team_name") if winner_side in ("home", "away") else None
+        outcome = f"　{html.escape(winner)}勝利" if winner else ""
+        if not winner and fs.get("away") == fs.get("home"):
+            outcome = "　同点"
         parts.append(
-            f'<p class="result">{html.escape(g.get("home_team_name",""))} '
-            f'{fs.get("away")} - {fs.get("home")} '
-            f'{html.escape(g.get("away_team_name",""))}　{html.escape(winner or "")}勝利</p>'
+            f'<p class="result">{html.escape(g.get("away_team_name",""))} '
+            f'{html.escape(str(fs["away"]))} - {html.escape(str(fs["home"]))} '
+            f'{html.escape(g.get("home_team_name",""))}{outcome}</p>'
         )
 
     reasons = [r["text"] for r in g.get("reasons", []) if r.get("visible", True) and r.get("text")]
@@ -196,8 +198,8 @@ def render_player_page(name: str, games: list) -> str:
     team = latest_team_of(name, games)
     team_part = f"{team}所属の" if team else ""
     description = (
-        f"{team_part}{name}選手が出場する試合を、コレスポが注目試合として"
-        f"取り上げた記録です。試合の見どころと結果を日付ごとに振り返れます。"
+        f"{team_part}{name}選手について、所属チームの注目試合をまとめています。"
+        "試合の見どころと結果を掲載日ごとに振り返れます。選手本人の登板・出場実績の一覧ではありません。"
     )
     head = HEAD.format(
         title=f"{name} | 注目試合の記録 | コレスポ",
@@ -233,7 +235,7 @@ def render_index(by_player: dict) -> str:
     body = [head]
     body.append("<h1>日本人選手から探す</h1>")
     body.append(
-        '<p class="lead">選手ごとに、その選手が出場した注目試合の記録をまとめています。</p>'
+        '<p class="lead">選手ごとに、所属チームの注目試合をまとめています。選手本人の登板・出場実績の一覧ではありません。</p>'
     )
     body.append('<ul class="playerlist">')
     for name in sorted(by_player, key=lambda n: -len(by_player[n])):

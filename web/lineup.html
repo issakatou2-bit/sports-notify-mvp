@@ -42,6 +42,7 @@
   .card-brand { font-size: 0.7rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
 
   .slot {
+    width: 100%; text-align: left;
     display: flex; align-items: center; gap: 10px;
     padding: 7px 9px; border-radius: 8px; margin-bottom: 5px;
     background: var(--surface-raised); border: 1px solid var(--border);
@@ -56,6 +57,7 @@
   .slot .pname { font-size: 13.5px; font-weight: 600; white-space: nowrap;
                  overflow: hidden; text-overflow: ellipsis; }
   .slot .pteam { font-size: 10.5px; color: var(--text-dim);
+                 display: block;
                  font-family: 'JetBrains Mono', monospace; }
   .slot .pstat { font-family: 'JetBrains Mono', monospace; font-size: 12px;
                  color: var(--accent); flex-shrink: 0; }
@@ -109,7 +111,9 @@
   .picker-close { background: none; border: none; color: var(--text-dim); font-size: 20px;
                   width: auto; padding: 0 6px; }
   .opt { display: flex; align-items: center; gap: 10px; padding: 9px 8px;
-         border-bottom: 1px solid var(--border); cursor: pointer; }
+         width:100%; text-align:left; background:transparent; border:0;
+         border-bottom: 1px solid var(--border); border-radius:0; cursor: pointer; }
+  .opt .t { display:block; }
   .opt:active { background: var(--surface-raised); }
   .opt .rank { font-family: 'JetBrains Mono', monospace; font-size: 10px;
                color: var(--text-dim); width: 20px; flex-shrink: 0; }
@@ -136,6 +140,8 @@
 <meta name="twitter:title" content="マイ・ベストナイン | コレスポ" />
 <meta name="twitter:description" content="MLBの最新成績から、自分だけのベストナインを編成してシェアできます。OPS.900超えの選手は虹色に光ります。" />
 <meta name="twitter:image" content="https://collespo.com/icons/og-image.png" />
+<script src="/site-theme.js"></script>
+<link rel="stylesheet" href="/site-theme.css">
 </head>
 <body>
   <a class="back" href="index.html">&larr; コレスポ トップへ</a>
@@ -143,7 +149,7 @@
   <p class="lead">MLBの最新成績から、自分だけのベストナインを組んでみましょう。各枠をタップして選手を選べます。</p>
   <p class="updated" id="updatedAt"></p>
 
-  <div id="loadError" hidden>成績データをまだ読み込めていません。しばらくしてからもう一度お試しください。</div>
+  <div id="loadError" role="status" hidden>成績データを読み込めませんでした。保存した編成は消していません。<button id="retryLoadBtn">もう一度読み込む</button></div>
 
   <div id="lineupCard">
     <div class="card-head">
@@ -164,11 +170,13 @@
   </div>
 
   <p class="note">
+    投手1人と、DHを含む野手9人を選べます。同じ打者を野手の複数枠には選べません。<br>
     OPS.900以上の打者、防御率2.50未満の投手は<strong>虹色</strong>に光ります。<br>
     スクリーンショットを撮ってそのままシェアするのもおすすめです。<br>
     編成内容はこの端末にのみ保存され、外部には送信されません。
   </p>
 
+<div id="picker" role="dialog" aria-modal="true" aria-labelledby="pickerTitle"></div>
 <script>
 const SLOT_ORDER = ['P', 'C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'DH'];
 const SLOT_LABEL = { P: '投', C: '捕', '1B': '一', '2B': '二', '3B': '三',
@@ -177,6 +185,8 @@ const SLOT_LABEL = { P: '投', C: '捕', '1B': '一', '2B': '二', '3B': '三',
 let DATA = null;
 let selection = {};   // slot -> player
 let openSlot = null;
+let pickerTrigger = null;
+const STORAGE_KEY = 'collespo.lineup.v1';
 
 const slotsEl = document.getElementById('slots');
 const pickerEl = document.getElementById('picker');
@@ -198,19 +208,22 @@ function renderSlots() {
   let elite = 0;
   SLOT_ORDER.forEach((slot) => {
     const p = selection[slot];
-    const div = document.createElement('div');
+    const div = document.createElement('button');
+    div.type = 'button';
+    div.disabled = !DATA;
+    div.dataset.slot = slot;
+    div.setAttribute('aria-label', `${SLOT_LABEL[slot]}：${p ? p.name : '選手を選ぶ'}`);
     div.className = 'slot' + (p ? '' : ' empty') + (isElite(slot, p) ? ' elite' : '');
     if (isElite(slot, p)) elite += 1;
     div.innerHTML =
       `<span class="pos">${SLOT_LABEL[slot]}</span>` +
       `<span class="who"><span class="pname">${p ? escapeHtml(p.name) : 'タップして選ぶ'}</span>` +
       `<span class="pteam">${p ? escapeHtml(p.team || '') : ''}</span></span>` +
-      `<span class="pstat">${statText(slot, p)}</span>`;
-    div.addEventListener('click', () => openPicker(slot));
+      `<span class="pstat">${escapeHtml(statText(slot, p))}</span>`;
+    div.addEventListener('click', () => { pickerTrigger = div; openPicker(slot); });
     slotsEl.appendChild(div);
   });
   document.getElementById('eliteCount').textContent = elite > 0 ? `★${elite}` : '';
-  save();
 }
 
 function escapeHtml(s) {
@@ -218,18 +231,22 @@ function escapeHtml(s) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-function candidatesFor(slot) {
+function candidatesFor(slot, availableOnly = true) {
   if (!DATA) return [];
-  return slot === 'P' ? (DATA.pitchers || []) : ((DATA.batters || {})[slot] || []);
+  const list = slot === 'P' ? (DATA.pitchers || []) : ((DATA.batters || {})[slot] || []);
+  if (!availableOnly || slot === 'P') return list;
+  const used = new Set(SLOT_ORDER.filter(s => s !== slot && s !== 'P' && selection[s]).map(s => String(selection[s].id)));
+  return list.filter(p => !used.has(String(p.id)));
 }
 
 function openPicker(slot) {
+  if (!DATA) return;
   openSlot = slot;
   const list = candidatesFor(slot);
   const title = slot === 'P' ? '投手' : (DATA.position_names || {})[slot] || slot;
   let html =
-    `<div class="picker-inner"><div class="picker-head"><h2>${escapeHtml(title)}を選ぶ</h2>` +
-    `<button class="picker-close" id="closePicker">&times;</button></div>`;
+    `<div class="picker-inner"><div class="picker-head"><h2 id="pickerTitle">${escapeHtml(title)}を選ぶ</h2>` +
+    `<button class="picker-close" id="closePicker" aria-label="選手選択を閉じる">&times;</button></div>`;
   if (list.length === 0) {
     html += '<p class="note">この枠の候補データがまだありません。</p>';
   } else {
@@ -238,10 +255,10 @@ function openPicker(slot) {
         ? `${p.wins ?? '-'}勝${p.losses ?? '-'}敗 ${p.so ?? '-'}奪三振`
         : `打率${p.avg ?? '-'} ${p.hr ?? '-'}本 ${p.rbi ?? '-'}打点`;
       html +=
-        `<div class="opt" data-i="${i}"><span class="rank">${i + 1}</span>` +
+        `<button type="button" class="opt" data-i="${i}"><span class="rank">${i + 1}</span>` +
         `<span class="info"><span class="n">${escapeHtml(p.name)}</span>` +
         `<span class="t">${escapeHtml(p.team || '')} / ${escapeHtml(sub)}</span></span>` +
-        `<span class="s">${statText(slot, p)}</span></div>`;
+        `<span class="s">${escapeHtml(statText(slot, p))}</span></button>`;
     });
   }
   html += '</div>';
@@ -249,11 +266,15 @@ function openPicker(slot) {
   pickerEl.classList.add('open');
 
   document.getElementById('closePicker').addEventListener('click', closePicker);
+  document.getElementById('closePicker').focus();
   pickerEl.querySelectorAll('.opt').forEach((el) => {
     el.addEventListener('click', () => {
+      const chosenSlot = openSlot;
       selection[openSlot] = list[parseInt(el.dataset.i, 10)];
+      save();
       closePicker();
       renderSlots();
+      slotsEl.querySelector(`[data-slot="${chosenSlot}"]`).focus();
     });
   });
 }
@@ -262,36 +283,55 @@ function closePicker() {
   pickerEl.classList.remove('open');
   pickerEl.innerHTML = '';
   openSlot = null;
+  if (pickerTrigger) pickerTrigger.focus();
 }
 
 pickerEl.addEventListener('click', (e) => { if (e.target === pickerEl) closePicker(); });
+pickerEl.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.preventDefault(); closePicker(); }
+  if (e.key === 'Tab') {
+    const buttons = [...pickerEl.querySelectorAll('button')];
+    const first = buttons[0], last = buttons[buttons.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
 
 // --- 保存(この端末のみ) ---
 function save() {
   try {
     const slim = {};
-    Object.keys(selection).forEach((k) => { if (selection[k]) slim[k] = selection[k]; });
-    window.name = JSON.stringify({ collespoLineup: slim });
+    Object.keys(selection).forEach((k) => { if (selection[k]) slim[k] = String(selection[k].id); });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({season: String(DATA.season), slots: slim}));
   } catch (e) { /* 保存できなくても編成自体は続けられる */ }
 }
 function load() {
   try {
-    const parsed = JSON.parse(window.name || '{}');
-    if (parsed && parsed.collespoLineup) selection = parsed.collespoLineup;
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    selection = {};
+    if (String(parsed.season) !== String(DATA.season)) return;
+    SLOT_ORDER.forEach(slot => {
+      const player = candidatesFor(slot).find(p => String(p.id) === String(parsed.slots?.[slot]));
+      if (player) selection[slot] = player;
+    });
   } catch (e) { selection = {}; }
 }
 
 // --- 操作 ---
 document.getElementById('randomBtn').addEventListener('click', () => {
+  if (!DATA) return;
+  selection = {};
   SLOT_ORDER.forEach((slot) => {
     const list = candidatesFor(slot);
     if (list.length) selection[slot] = list[Math.floor(Math.random() * Math.min(list.length, 8))];
   });
+  save();
   renderSlots();
 });
 
 document.getElementById('clearBtn').addEventListener('click', () => {
   selection = {};
+  save();
   renderSlots();
 });
 
@@ -314,25 +354,43 @@ document.getElementById('shareBtn').addEventListener('click', () => {
 });
 
 // --- 起動 ---
-(async function init() {
-  load();
+async function init() {
+  document.getElementById('loadError').hidden = true;
+  document.getElementById('randomBtn').disabled = true;
+  document.getElementById('clearBtn').disabled = true;
+  document.getElementById('shareBtn').disabled = true;
+  document.getElementById('updatedAt').textContent = '成績データを読み込み中…';
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
   try {
-    const res = await fetch('player_stats.json?_=' + Date.now());
+    const res = await fetch('player_stats.json?_=' + Date.now(), {signal: controller.signal});
     if (!res.ok) throw new Error('not ok');
-    DATA = await res.json();
+    const result = await res.json();
+    if (!Array.isArray(result.pitchers) || !result.batters ||
+        ![result.pitchers, ...Object.values(result.batters)].some(list => Array.isArray(list) && list.length)) throw new Error('empty data');
+    DATA = result;
+    load();
     if (DATA.updated_at) {
       const d = new Date(DATA.updated_at);
       document.getElementById('updatedAt').textContent =
         '成績データ: ' + d.toLocaleDateString('ja-JP') + ' 時点';
     }
     document.getElementById('cardSeason').textContent = (DATA.season || '') + ' SEASON';
+    document.getElementById('randomBtn').disabled = false;
+    document.getElementById('clearBtn').disabled = false;
+    document.getElementById('shareBtn').disabled = false;
   } catch (e) {
+    DATA = null;
+    document.getElementById('updatedAt').textContent = '';
     document.getElementById('loadError').hidden = false;
+  } finally {
+    clearTimeout(timeout);
   }
   renderSlots();
-})();
+}
+document.getElementById('retryLoadBtn').addEventListener('click', init);
+renderSlots();
+init();
 </script>
-
-<div id="picker"></div>
 </body>
 </html>
