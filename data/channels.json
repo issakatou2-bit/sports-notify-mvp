@@ -5,13 +5,13 @@
       "key": "youtube",
       "name": "YouTube",
       "url": "https://www.youtube.com/@collespo_jp",
-      "what": "毎日7本。注目試合、日本人選手の成績、現地の反応"
+      "what": "注目試合、日本人選手の成績、現地の声を動画で"
     },
     {
       "key": "podcast",
       "name": "ポッドキャスト",
       "url": "https://collespo.com/podcast/feed.xml",
-      "what": "動画と同じ音声。Apple / Spotify などにこのRSSで登録できます"
+      "what": "注目試合の音声配信。RSS対応のアプリで購読できます"
     },
     {
       "key": "rss",
@@ -40,9 +40,14 @@
     {
       "key": "x",
       "name": "X",
-      "url": "",
-      "what": "その日の注目試合を投稿しています",
-      "_url_when_ready": "https://x.com/collespo_jp"
+      "url": "https://x.com/collespo_jp",
+      "what": "コレスポからのお知らせと動画・記事の案内"
+    },
+    {
+      "key": "instagram",
+      "name": "Instagram",
+      "url": "https://www.instagram.com/collespo_jp/",
+      "what": "コレスポのInstagramアカウント"
     }
   ]
 }

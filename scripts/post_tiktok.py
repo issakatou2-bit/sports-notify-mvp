@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 出来上がった動画をTikTokへ投稿する。
 
@@ -15,17 +15,21 @@
 
 直接投稿と受信箱について:
 
-  審査前は「受信箱(inbox)」にしか送れない。ここは TikTok アプリの
-  プロフィール内の「下書き」ではなく、アプリの通知欄に届く
-  システムメッセージのこと。そこから開いて投稿する。
-  (最初これを「下書き」と書いていたため、探す場所を間違わせた)
-  審査が通るまで video.publish は付与されないので、その間は
-  受信箱にしか送れない。両方に対応してあり、使える方を選ぶ。
-  審査後は何も変えずに直接投稿へ切り替わる。
+  受信箱(inbox)はアプリの通知欄に届くシステムメッセージ。
+  プロフィール内の「下書き」とは異なり、利用者が開いて公開する。
+  SEND_TO_USER_INBOX は公開済みという意味ではない。
+  video.publish のスコープと公開投稿を認める審査は別の条件。
+  未審査のDirect Postは非公開等の制限があり、スコープだけで
+  公開できるとは判断しない。この実装はスコープで経路を選ぶが、
+  現行の審査条件・投稿前の確認画面への対応を保証していない。
+  自分/チームのアカウントだけへ投稿する内部用ツールは審査対象外。
+  「審査を待てば変更なしで完全自動化できる」という以前の説明は撤回。
 
 公開範囲について:
-  審査前のクライアントは、TikTok側の制限で SELF_ONLY 以外を選べない。
-  creator_info が返す選択肢の中から選ぶので、こちらで決め打ちしない。
+  現行ガイドラインでは公開範囲を利用者が明示選択する画面等が必要。
+  下記の優先順による自動選択は既存動作であり、その要件の代用ではない。
+  対応案と確認元: docs/CHANNEL_AUTOMATION_2026-09-08.md (9/9整理)。
+  https://developers.tiktok.com/docs/en/content-sharing-guidelines
 """
 
 import argparse
@@ -186,20 +190,39 @@ def wait_status(token: str, publish_id: str, tries: int = 12) -> dict:
                      {"publish_id": publish_id})
         st = last.get("status")
         print(f"  状態: {st}")
-        if st in ("PUBLISH_COMPLETE", "SEND_TO_USER_INBOX"):
+        if st in ("PUBLISH_COMPLETE", "SEND_TO_USER_INBOX", "FAILED"):
             return last
-        if st == "FAILED":
-            raise RuntimeError(
-                f"TikTok側で失敗しました: {last.get('fail_reason', '')}"
-            )
     print("[warn] 完了を確認できませんでした(処理中の可能性があります)")
     return last
+
+
+def publication_result(status: dict) -> tuple[dict, int, str]:
+    """受信箱到達・投稿完了・一般公開を区別する。時刻は確認時刻。"""
+    st = status.get("status")
+    # API仕様のフィールド名は publicaly（原文の綴りを維持）。
+    ids = status.get("publicaly_available_post_id") or []
+    complete = st == "PUBLISH_COMPLETE"
+    public = complete and bool(ids)
+    outcome = ("public" if public else "posted" if complete else
+               "inbox" if st == "SEND_TO_USER_INBOX" else
+               "failed" if st == "FAILED" else "pending")
+    code, message = {
+        "public": (0, "一般公開をAPIで確認しました"),
+        "posted": (0, "投稿完了。一般公開は未確認です"),
+        "inbox": (0, "受信箱に到達しました。公開にはTikTokアプリでの操作が必要です"),
+        "failed": (1, "TikTok側で投稿に失敗しました"),
+        "pending": (2, "完了未確認。処理中の可能性があります。再送せず状態を確認してください"),
+    }[outcome]
+    return {"outcome": outcome, "publicly_available": public,
+            "public_post_ids": ids if public else [],
+            "fail_reason": status.get("fail_reason")}, code, message
 
 
 # YouTube用のタイトルに付けている #Shorts は、TikTokでは意味を持たない。
 # 代わりに、その動画の題材に合うタグを足す。
 TAGS_MLB = "#MLB #大リーグ #野球 #コレスポ"
-TAGS_SOCCER = "#サッカー #海外サッカー #プレミアリーグ #コレスポ"
+# 大会が特定できない共通タグにはリーグ名を混ぜない。
+TAGS_SOCCER = "#サッカー #海外サッカー #コレスポ"
 
 
 # 題材の判定に使う語。
@@ -296,7 +319,7 @@ def main():
     direct = "video.publish" in scopes
     print(f"権限: {tok.get('scope')}")
     print("投稿方法:", "直接投稿" if direct else
-          "受信箱へ送信(審査前のため。TikTokアプリの通知から投稿します)")
+          "受信箱へ送信(TikTokアプリの通知から投稿します)")
 
     # 返ってきたリフレッシュトークンは、渡したものと違う場合がある。
     # 次回はこちらを使う必要があるので、必ず表示する。
@@ -331,8 +354,8 @@ def main():
     res = init_upload(token, video, text, privacy, direct, info)
     publish_id = res.get("publish_id")
     upload_url = res.get("upload_url")
-    if not upload_url:
-        print(f"[error] アップロード先が返りませんでした: {res}")
+    if not upload_url or not publish_id:
+        print("[error] アップロード先または投稿確認IDが返りませんでした")
         return 1
 
     upload_file(upload_url, video)
@@ -346,21 +369,24 @@ def main():
             data = json.loads(rec.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             data = {}
+    result, exit_code, message = publication_result(status)
+    checked_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
     data.setdefault(args.kind, {})[time.strftime("%Y-%m-%d")] = {
         "publish_id": publish_id,
         "title": title,
         "privacy": privacy,
         "direct": direct,
         "status": status.get("status"),
-        "posted_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "checked_at": checked_at,
+        "posted_at": checked_at if status.get("status") == "PUBLISH_COMPLETE" else None,
+        **result,
     }
     rec.write_text(json.dumps(data, ensure_ascii=False, indent=2),
                    encoding="utf-8")
-    print(f"\n完了しました ({rec})")
-    return 0
+    print(f"\n{message} ({rec})")
+    return exit_code
 
 
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
     raise SystemExit(main())
-
