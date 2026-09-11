@@ -1,0 +1,56 @@
+name: Buffer 明日のMLBをX・Instagram・TikTokへ
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run:
+        description: 成功した当日のMLB日次実行ID
+        required: true
+        type: string
+      mode:
+        description: 検証または公開
+        type: choice
+        options: [validate, publish]
+        default: validate
+  workflow_run:
+    workflows: [毎日 19:00頃　明日の注目試合]
+    types: [completed]
+  push:
+    branches: [codex/site-social-20260911]
+    paths: [scripts/buffer_daily.py, scripts/test_buffer_daily.py, .github/workflows/buffer_daily.yml]
+
+concurrency:
+  group: buffer-daily-delivery
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  deliver:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (vars.BUFFER_ENABLED == 'true' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify duplicate prevention and source validation
+        run: python scripts/test_buffer_daily.py
+      - name: Install media inspection tool
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Validate or distribute the daily video
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run || '34586367769' }}
+          MODE: ${{ github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
+        run: |
+          args=()
+          if [ "$MODE" = "publish" ]; then args+=(--publish); fi
+          python scripts/buffer_daily.py --source-run "$SOURCE_RUN" "${args[@]}"
