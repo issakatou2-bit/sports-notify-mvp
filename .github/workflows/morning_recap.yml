@@ -397,6 +397,11 @@ jobs:
               --thumbnail "build/morning/short_${mode}.png" \
               --privacy public --publish-at "$AT" $FORCE; then
               echo "$mode: 投稿しました (公開 ${AT:-即時})"
+              # 後の枠が同じ出力名を上書きする前に、SNS用の完成品を分けて保存。
+              # 配信側は動画ID・元の実行時刻を照合してから使う。
+              mkdir -p build/social_shorts
+              cp "$VIDEO" "build/social_shorts/${mode}.mp4"
+              cp data/published_videos.json build/social_shorts/published_videos.json
             else
               echo "::error::$mode の投稿に失敗しました"
             fi
@@ -456,5 +461,14 @@ jobs:
         with:
           name: collespo-morning
           path: build/morning/collespo_morning.mp4
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Save separate Shorts for social distribution
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-social-shorts
+          path: build/social_shorts/
           retention-days: 7
           if-no-files-found: ignore

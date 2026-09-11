@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>コレスポ｜今日の注目試合を理由つきで｜MLB・欧州サッカー</title>
-<meta name="description" content="MLBと欧州サッカーの「今日の注目試合」を、なぜ注目なのかの理由つきで毎日19時にお届けします。日本人選手の出場、順位争い、連勝記録などから自動で選出。野球・サッカーを見始めた人が、生中継をもっと楽しめるようになるお供です。" />
+<meta name="description" content="MLBと欧州サッカーの「今日の注目試合」を、なぜ注目なのかの理由つきで毎日19時にお届けします。先発投手や順位争い、選手の記録から、その一戦を見る理由が分かります。" />
 <link rel="canonical" href="https://collespo.com/" />
 
 <!-- SNS共有時のカード。Bluesky・Xへ毎日リンクを投稿しているため、
@@ -38,6 +38,8 @@
 <link rel="manifest" href="manifest.json" />
 <link rel="alternate" type="application/rss+xml" title="コレスポ RSS" href="feed.xml" />
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/icons/icon-96.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -59,450 +61,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    color-scheme: dark;
-    --bg: #0B0E14;
-    --surface: #12161F;
-    --surface-raised: #171C27;
-    --border: #232838;
-    --text: #F2F0E6;
-    --text-dim: #8891A3;
-    --accent: #FFB020;
-    --accent-dim: #4A3A1A;
-    --jp: #49C5B6;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: max(1.5rem, env(safe-area-inset-top)) 1.25rem max(1.5rem, env(safe-area-inset-bottom));
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
-    line-height: 1.6;
-  }
-  .site-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-  .menu-btn {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-    background: var(--surface-raised);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 0;
-    cursor: pointer;
-  }
-  .menu-btn span {
-    display: block;
-    width: 16px;
-    height: 2px;
-    background: var(--text);
-    border-radius: 1px;
-    transition: transform 0.2s, opacity 0.2s;
-  }
-  .menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-  .menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-  .menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-  .drawer {
-    margin-top: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .drawer > a {
-    display: block;
-    padding: 13px 16px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-  }
-  .drawer > a span {
-    display: block;
-    font-size: 11.5px;
-    color: var(--text-dim);
-    font-weight: 400;
-    margin-top: 2px;
-  }
-  .drawer > a:active { background: var(--surface-raised); }
-  .drawer-foot {
-    display: flex;
-    gap: 16px;
-    padding: 11px 16px;
-    font-size: 12px;
-  }
-  .drawer-foot a { color: var(--text-dim); text-decoration: none; }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 2px;
-  }
-  .brand-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-  }
-  h1 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    margin: 0;
-  }
-  p.sub {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin: 6px 0 1.5rem;
-  }
-  .eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin: 0 0 10px;
-  }
-  .onboarding {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.7rem 1rem;
-    margin-bottom: 1rem;
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .onboarding summary {
-    cursor: pointer;
-    color: var(--accent);
-    font-weight: 500;
-  }
-  .onboarding ol {
-    margin: 8px 0 2px;
-    padding-left: 1.2em;
-  }
-  details summary {
-    cursor: pointer;
-    color: var(--text-dim);
-    font-size: 12px;
-  }
-  a {
-    color: var(--accent);
-  }
-  .tabs {
-    display: flex;
-    gap: 6px;
-    margin: 1.25rem 0 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 4px;
-  }
-  .tab {
-    appearance: none;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    flex: 1;
-    text-align: center;
-    padding: 9px 0;
-    font-family: 'Oswald', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: var(--text-dim);
-    border-radius: 7px;
-  }
-  .tab:focus-visible {
-    outline: 2px solid var(--text);
-    outline-offset: 2px;
-  }
-  .tab.active {
-    color: #0B0E14;
-    background: var(--accent);
-  }
-  .card .time-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text-dim);
-    margin: 0 0 6px;
-  }
-  .card {
-    background: var(--surface-raised);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 10px;
-    padding: 1rem 1.1rem;
-    margin-bottom: 12px;
-  }
-  .card .top {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 8px;
-    gap: 8px;
-  }
-  .card .league {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--accent);
-    background: var(--accent-dim);
-    padding: 3px 8px;
-    border-radius: 4px;
-    flex-shrink: 0;
-    letter-spacing: 0.05em;
-  }
-  .badges {
-    display: flex;
-    gap: 6px;
-    margin: 2px 0 8px;
-    flex-wrap: wrap;
-  }
-  .badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--jp);
-    background: rgba(73, 197, 182, 0.12);
-    padding: 2px 7px;
-    border-radius: 4px;
-    letter-spacing: 0.03em;
-  }
-  .badge-jp {
-    color: var(--bg);
-    background: var(--accent);
-    font-weight: 600;
-  }
-  .schedule-row .badge-mini {
-    font-size: 9px;
-    color: var(--text-dim);
-    flex-shrink: 0;
-  }
-  .share-btn {
-    display: inline-block;
-    margin-top: 10px;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--bg);
-    background: var(--text);
-    padding: 7px 14px;
-    border-radius: 7px;
-    text-decoration: none;
-  }
-  .preview-box {
-    background: var(--surface);
-    border: 1px dashed var(--border);
-    border-radius: 10px;
-    padding: 0.9rem 1rem;
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .video-wrap {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%; /* 16:9 */
-    margin: 10px 0;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .video-wrap iframe {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    border: 0;
-  }
-  .card .matchup {
-    font-family: 'Oswald', sans-serif;
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-  }
-  .card .reason {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin: 4px 0;
-  }
-  .card .ai-summary {
-    font-size: 14px;
-    color: var(--text);
-    margin: 2px 0 10px;
-    line-height: 1.5;
-  }
-  .card .series-context {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-    margin: 0 0 8px;
-  }
-  .news-list { list-style: none; padding: 0; margin: 0; }
-  .news-list li {
-    background: var(--surface); border: 1px solid var(--border);
-    border-left: 3px solid var(--jp); border-radius: 8px;
-    padding: 9px 12px; margin-bottom: 6px; font-size: 13px;
-  }
-  .news-note { font-size: 10.5px; color: var(--text-dim); margin: 6px 0 0; }
-  .ad-label {
-    display: inline-block;
-    margin-left: 8px;
-    font-size: 9.5px;
-    font-weight: 400;
-    letter-spacing: 0;
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 1px 5px;
-    vertical-align: middle;
-  }
-  mark {
-    background: linear-gradient(transparent 58%, rgba(255, 176, 32, 0.32) 58%);
-    color: var(--text);
-    font-weight: 600;
-    padding: 0 1px;
-  }
-  .card .venue-note {
-    font-size: 11.5px;
-    color: var(--accent);
-    background: var(--accent-dim);
-    border-radius: 6px;
-    padding: 6px 10px;
-    margin: 0 0 10px;
-    line-height: 1.6;
-  }
-  .board {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .schedule-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 12px;
-    border-bottom: 1px solid var(--border);
-    font-size: 12.5px;
-    border-left: 3px solid transparent;
-  }
-  .schedule-row:last-child { border-bottom: none; }
-  .schedule-row.notable {
-    border-left: 3px solid var(--accent);
-    background: rgba(255, 176, 32, 0.06);
-  }
-  .board-legend {
-    font-size: 0.78rem;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0.4rem 0 0.6rem;
-  }
-  .legend-swatch {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border-left: 3px solid var(--accent);
-    background: rgba(255, 176, 32, 0.06);
-    border-radius: 2px;
-  }
-  .schedule-row .time {
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text-dim);
-    width: 46px;
-    flex-shrink: 0;
-    font-size: 12px;
-  }
-  .schedule-row .matchup-abbr {
-    flex-grow: 1;
-  }
-  .schedule-row .league-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--text-dim);
-    flex-shrink: 0;
-  }
-  .section {
-    margin-top: 2rem;
-  }
-  .league-toggles {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .league-toggles label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .league-toggles input[type="checkbox"] {
-    accent-color: var(--accent);
-    width: 16px;
-    height: 16px;
-  }
-  button {
-    background: var(--surface-raised);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    width: 100%;
-  }
-  button:active {
-    transform: scale(0.98);
-    border-color: var(--accent);
-  }
-  #status {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin: 10px 0;
-    white-space: pre-wrap;
-  }
-  textarea {
-    width: 100%;
-    background: var(--surface);
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    padding: 8px;
-    height: 110px;
-    margin-bottom: 8px;
-  }
-</style>
+<link rel="stylesheet" href="home-base.css">
+<link rel="stylesheet" href="home-editorial.css">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3009257813842371"
      crossorigin="anonymous"></script>
 </head>
 <body>
-
+<a class="skip-link" href="#today">注目試合へ進む</a>
 <header class="site-header">
-  <div class="brand"><span class="brand-dot"></span><h1>コレスポ</h1></div>
-  <button id="menuBtn" class="menu-btn" aria-label="メニューを開く" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
+  <a class="brand" href="/" aria-label="コレスポ ホーム"><img src="icons/icon-192.png" width="52" height="52" alt=""><div><span class="brand-name">コレスポ</span><small>MLB / EUROPEAN FOOTBALL</small></div></a>
+  <nav class="header-nav" aria-label="主なページ"><a href="archive/">試合を振り返る</a><a href="players/">日本人選手</a><a href="about.html">コレスポについて</a></nav>
+  <button id="menuBtn" class="menu-btn" aria-label="メニューを開く" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
 </header>
-<p class="sub">端末内のフォロー設定に応じて、注目理由つきで表示します</p>
-
 <nav id="drawer" class="drawer" hidden>
   <a href="glossary.html">用語集<span>LAD・OPS・xGなどの略語を解説</span></a>
   <a href="watch-champions-league.html">CL・ELの視聴ガイド<span>月額とシーズンパスの選び方・広告を含みます</span></a>
@@ -520,16 +90,14 @@
     <a href="privacy.html">プライバシーポリシー</a>
   </div>
 </nav>
-
-<details class="onboarding">
-  <summary>はじめての方はこちら(通知の設定方法)</summary>
-  <ol>
-    <li>画面下(または上)の共有ボタンをタップ</li>
-    <li>「ホーム画面に追加」を選ぶ</li>
-    <li>ホーム画面のアイコンから開き直し、下の「通知を有効にする」をタップ</li>
-  </ol>
-</details>
-
+<main>
+<section class="edition-hero" aria-labelledby="homeTitle">
+  <div><p class="kicker">THE GAME, WITH A REASON.</p><h1 id="homeTitle">今日の一戦を、<br><span>もっと面白く。</span></h1><p>先発は誰か。順位争いはどう動くか。<br>MLBと欧州サッカーの「見る理由」を、数字とともに。</p></div>
+  <div class="edition-note"><strong>今夜、何を見る？</strong><p>注目試合の見どころを毎日更新。<br>選手の記録や用語をたどれば、<br>次の試合も少し違って見えてくる。</p><a href="#today">注目試合を読む ↓</a></div>
+</section>
+<nav class="browse-nav" aria-label="コンテンツを探す"><a href="standings.html">MLB順位表</a><a href="players/">日本人選手の記録</a><a href="glossary.html">観戦のための用語集</a><a href="watch-champions-league.html">CL・EL視聴ガイド</a></nav>
+<div class="today-layout" id="today">
+<section class="daily-main" aria-label="注目試合と試合一覧">
 <div class="tabs" id="tabs" role="tablist" aria-label="競技">
   <button type="button" class="tab active" id="tab-mlb" role="tab" aria-selected="true" aria-controls="gamePanel" data-league="MLB">MLB</button>
   <button type="button" class="tab" id="tab-soccer" role="tab" aria-selected="false" aria-controls="gamePanel" tabindex="-1" data-league="SOCCER">欧州サッカー</button>
@@ -557,6 +125,27 @@
 
 </div>
 
+
+<p class="board-legend">時刻は日本時間。先発・出場予定は変更される場合があります。<a href="about.html#editorial">出典と掲載方針</a></p>
+</section>
+<aside class="daily-side" aria-label="動画と読みもの">
+  <section class="side-panel video-section"><h2 class="side-heading">動画でも、コレスポ。</h2>
+    <a class="video-link" href="https://www.youtube.com/@collespo_jp/shorts" target="_blank" rel="noopener"><img src="icons/og-image.png" width="1200" height="630" alt="コレスポ 今日の一戦を、もっと面白く。"><span>ショート動画を見る ↗</span></a>
+    <p>日本人選手の活躍や注目試合を短い動画で。じっくり見たい日は、ずんだもんとめたんの解説も。</p>
+    <a href="https://www.youtube.com/@collespo_jp/videos" target="_blank" rel="noopener">解説動画の一覧へ ↗</a>
+  </section>
+  <section class="side-panel"><h2 class="side-heading">次の観戦が楽しみになる</h2><ul class="side-links">
+    <li><a href="standings.html">ポストシーズンへの距離<span>地区順位とゲーム差を確かめる</span></a></li>
+    <li><a href="players/">あの選手の試合をたどる<span>日本人選手ごとの記録と見どころ</span></a></li>
+    <li><a href="glossary.html">OPSって、何が分かる？<span>よく見る数字や略語を解説</span></a></li>
+  </ul></section>
+  <section class="side-panel"><h2 class="side-heading">少し遊んで、詳しくなる</h2><ul class="side-links">
+    <li><a href="quiz.html">球団クイズ<span>略称・球場・州から当ててみよう</span></a></li>
+    <li><a href="lineup.html">マイ・ベストナイン<span>成績を見ながら自分の9人を選ぶ</span></a></li>
+  </ul></section>
+</aside>
+</div>
+<div class="utility-grid">
 <div class="section">
   <p class="sub">通知の設定(初回のみ)</p>
   <div class="league-toggles">
@@ -574,8 +163,14 @@
       <button id="copyBtn">コピー</button>
     </details>
   </div>
-</div>
-
+<details class="onboarding">
+  <summary>はじめての方はこちら(通知の設定方法)</summary>
+  <ol>
+    <li>画面下(または上)の共有ボタンをタップ</li>
+    <li>「ホーム画面に追加」を選ぶ</li>
+    <li>ホーム画面のアイコンから開き直し、下の「通知を有効にする」をタップ</li>
+  </ol>
+</details></div>
 <div class="section" id="watchSection">
   <p class="eyebrow">日本での視聴方法<span class="ad-label">広告を含みます</span></p>
   <p class="sub">
@@ -594,19 +189,11 @@
   </p>
 </div>
 
-<div class="section" style="border: 1px solid var(--border); border-radius: 10px; padding: 18px;">
-  <p class="eyebrow">地域チームの広報担当者へ</p>
-  <p style="font-weight: 700;">試合の告知も、結果も。伝わる3枚に。</p>
-  <p class="sub">SNS用画像3枚・税込3,000円。制作見本を見てから相談できます。</p>
-  <a href="services.html?from=home" style="color: var(--accent);">画像制作の見本と受付を見る →</a>
-</div>
 
-<div class="section" style="opacity: 0.7; font-size: 0.85rem;">
-  <a href="about.html" style="color: inherit;">運営者情報</a>
-  ・
-  <a href="privacy.html" style="color: inherit;">プライバシーポリシー</a>
 </div>
-
+<section class="service-teaser"><p class="eyebrow">地域チームの広報担当者へ</p><strong>試合の告知も、結果も。伝わる3枚に。</strong><p>SNS用画像3枚・税込3,000円。制作見本を見てから相談できます。</p><a href="services.html?from=home">画像制作の見本と受付を見る →</a></section>
+</main>
+<footer class="site-footer"><a href="about.html">運営者情報・掲載方針</a><a href="privacy.html">プライバシーポリシー</a><a href="about.html#corrections">お問い合わせ・訂正</a><span>© コレスポ</span></footer>
 
 <script>
   // ここは generate_vapid_keys.py で生成した公開鍵に必ず差し替えること
@@ -642,20 +229,20 @@
   }
 
   function teamBadge(abbr, color) {
-    if (!abbr || !color) return '';
+    if (!abbr || !/^#[0-9a-f]{6}$/i.test(color || '')) return '';
     const fg = contrastColor(color);
     return (
       `<span style="display:inline-flex;align-items:center;justify-content:center;` +
       `width:26px;height:18px;border-radius:4px;background:${color};color:${fg};` +
       `font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;` +
-      `margin-right:4px;flex-shrink:0;">${abbr}</span>`
+      `margin-right:4px;flex-shrink:0;">${escapeHtml(abbr)}</span>`
     );
   }
 
   function nameWithAbbr(name, abbr, hasJp, color) {
     const flag = hasJp ? ' 🇯🇵' : '';
     const badge = teamBadge(abbr, color);
-    return badge + name + flag;
+    return badge + escapeHtml(name) + flag;
   }
 
   function makeBadge(label) {
@@ -777,7 +364,10 @@
       const [mm, dd] = dateFromGames.split('/').map(Number);
       const now = new Date();
       const jst = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + 9 * 3600000);
-      relLabel = (jst.getMonth() + 1 === mm && jst.getDate() === dd) ? '今日' : '明日';
+      const tomorrow = new Date(jst);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      relLabel = (jst.getMonth() + 1 === mm && jst.getDate() === dd) ? '今日'
+        : (tomorrow.getMonth() + 1 === mm && tomorrow.getDate() === dd) ? '明日' : '';
     }
     document.getElementById('pickLabel').textContent =
       dateFromGames ? `${relLabel}(${dateFromGames})特に注目の試合` : '特に注目の試合';
@@ -804,11 +394,11 @@
 
       const topRow = document.createElement('div');
       topRow.className = 'top';
-      const homeLabel = teamBadge(top.home_abbr, top.home_color) + top.home_team_name + (top.home_has_jp ? ' 🇯🇵' : '');
-      const awayLabel = teamBadge(top.away_abbr, top.away_color) + top.away_team_name + (top.away_has_jp ? ' 🇯🇵' : '');
+      const homeLabel = teamBadge(top.home_abbr, top.home_color) + escapeHtml(top.home_team_name) + (top.home_has_jp ? ' 🇯🇵' : '');
+      const awayLabel = teamBadge(top.away_abbr, top.away_color) + escapeHtml(top.away_team_name) + (top.away_has_jp ? ' 🇯🇵' : '');
       topRow.innerHTML =
         '<span class="matchup">' + awayLabel + ' vs ' + homeLabel + '</span>' +
-        '<span class="league">' + top.league + '</span>';
+        '<span class="league">' + escapeHtml(top.league) + '</span>';
       card.appendChild(topRow);
 
       const badgeRow = document.createElement('div');
@@ -920,7 +510,7 @@
       else if (g.same_division) miniBadge = '同地区';
       row.innerHTML =
         '<span class="time">' + time + '</span>' +
-        '<span class="matchup-abbr">' + home + ' vs ' + away + '</span>' +
+        '<span class="matchup-abbr">' + away + ' vs ' + home + '</span>' +
         (miniBadge ? '<span class="badge-mini">' + miniBadge + '</span>' : '') +
         '<span class="league-tag">' + g.league + '</span>';
       allEl.appendChild(row);

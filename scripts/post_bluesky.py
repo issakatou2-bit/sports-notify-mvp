@@ -28,6 +28,7 @@ import os
 import sys
 
 import post_common
+from public_short import public_short
 
 # Blueskyの投稿上限は300グラフェム。安全マージンを見て280までに収める
 MAX_POST_GRAPHEMES = 280
@@ -63,6 +64,7 @@ def main():
     # 1つにまとめるとどちらかの言い方が必ず嘘になる。
     ap = argparse.ArgumentParser()
     ap.add_argument("--games", default="notable_games.json")
+    ap.add_argument("--kind", choices=['daily', 'daily_soccer'], default='daily')
     args = ap.parse_args()
 
     # 300グラフェムまで入るので、収まる範囲で複数試合を載せる。
@@ -84,9 +86,10 @@ def main():
         return
 
     body, hashtags, site_url = post_common.build_post(games, MAX_POST_GRAPHEMES)
+    short = public_short(args.kind)
 
     try:
-        from atproto import Client, client_utils
+        from atproto import Client, client_utils, models
 
         client = Client()
         client.login(handle, app_password)
@@ -95,9 +98,15 @@ def main():
             builder = builder.tag(f"#{t} ", t)
         builder = builder.link(site_url, site_url)
         builder = builder.text('\n')
-        builder = builder.link(post_common.YOUTUBE_URL,
-                               post_common.YOUTUBE_URL)
-        client.send_post(builder)
+        embed = None
+        if short:
+            builder = builder.link('今回のショート動画', short['url'])
+            embed = models.AppBskyEmbedExternal.Main(external=models.AppBskyEmbedExternal.External(
+                uri=short['url'], title=short['title'], description='コレスポの注目試合を動画で。'))
+        else:
+            builder = builder.link(post_common.YOUTUBE_URL, post_common.YOUTUBE_URL)
+        client.send_post(builder, embed=embed)
+        print('[info] 対応する公開動画: ' + (short['url'] if short else '未確認のため一覧を案内'))
         print("[info] Blueskyに投稿しました")
     except Exception as e:
         print(f"[warn] Bluesky投稿に失敗しました: {e}", file=sys.stderr)

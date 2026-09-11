@@ -231,8 +231,9 @@ jobs:
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           SITE_URL: https://collespo.com/
-        run: python scripts/post_bluesky.py --games data/soccer_games.json
+        run: python scripts/post_bluesky.py --games data/soccer_games.json --kind daily_soccer
 
       - name: Post to Threads
         if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
