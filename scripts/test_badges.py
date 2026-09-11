@@ -147,12 +147,29 @@ print("--- 加点が点数に乗る ---")
 # 9/10の実データ。**この並びを直すために入れた。**
 yamamoto = P(ip="7.0", er=1, hits=3, so=10, bb=1, gs=1, wins=1)
 murakami = B(ab=3, hits=1, hr=1, rbi=1, so=2, hbp=1, tb=4)
-check("山本由伸（7回1失点10奪三振）", mr.contribution(yamamoto), 115)
-check("村上宗隆（3打数1安打1本塁打）", mr.contribution(murakami), 95)
+check("山本由伸（7回1失点10奪三振）", mr.contribution(yamamoto), 137)
+check("村上宗隆（3打数1安打1本塁打）", mr.contribution(murakami), 89)
 check("好投した投手が本塁打1本の打者より上に来る",
       mr.contribution(yamamoto) > mr.contribution(murakami), True)
 check("加点の合計", mr.badge_points(yamamoto), 24)
 check("何も付かない日は0", mr.badge_points(murakami), 0)
+
+print()
+print("--- 投手と打者の倍率がそろっているか ---")
+# 9/11に倍率を変えた（投手1.2→1.8、打者3.6→3.1）。それまでは
+# **投手が100点にほとんど届かなかった**（26日・151人日で2%、
+# 打者は16%）。完封162点の上に打者の2本塁打182点が来ていた。
+_shutout = P(ip="9.0", er=0, hits=2, so=8, bb=0, gs=1)
+_two_hr = B(ab=4, hits=2, hr=2, rbi=4, tb=8, so=1)
+check("完封が2本塁打より上",
+      mr.contribution(_shutout) > mr.contribution(_two_hr), True)
+# 1試合3本塁打は完封よりも稀なので、そこは打者が上でよい。
+_three_hr = B(ab=5, hits=3, hr=3, rbi=7, tb=12)
+check("3本塁打は完封より上",
+      mr.contribution(_three_hr) > mr.contribution(_shutout), True)
+# 倍率は定数から読む（数字をここに書き写すと、変えたときにずれる）。
+check("投手の倍率が定数になっている",
+      isinstance(mr.PITCHER_SCALE, float), True)
 
 print()
 print("--- 投げて打った日は二重に足さない ---")

@@ -1526,9 +1526,15 @@ def render_intro_players(p, meta, top, extra=None):
             # 300で固定していたので、**3桁になった日に重なっていた。**
             # 名前のある記録の加点を入れて3桁が普通になったため、
             # 100点台の日はほぼ毎回重なる形だった。
+            #
+            # 言葉は130点からにする。100点超えは実測で12%の人日に
+            # 出るので、**ほぼ毎日誰かが「今季でも指折り」になる。**
+            # それは言い過ぎ。光は100から、言葉は130から。
+            # 130超えは投手2%・打者4%で、月に数回。
+            note = ("今季でも指折りの一日"
+                    if score >= morning_recap.STANDOUT else "今日の主役")
             x = 80 + int(d.textlength(label, font=font(46))) + 30
-            d.text((x, 668 + slide), "今季でも指折りの一日",
-                   font=font(38), fill=JP)
+            d.text((x, 668 + slide), note, font=font(38), fill=JP)
 
     rest = "・".join(x.get("name", "") for x in players[1:4] if x.get("name"))
     if rest:
