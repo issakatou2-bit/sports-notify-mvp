@@ -163,6 +163,16 @@ DOWN = (200, 120, 120)
 # 意味が変わる。中立には色を付けない(付けると3色が並んで散らかる)。
 TONE_COLOR = {"称賛": (110, 205, 150), "批判": (200, 120, 120)}
 
+# 名前のある記録（QS・二桁奪三振・猛打賞など）の帯。
+#
+# なぜ塗りにするか:
+#   点数の隣に灰色の小さな字で書いても、フィードの小さな絵では
+#   読まれない。**帯で塗って背景色の字を抜く**のが、暗い画面で
+#   いちばん目に入る形。100点超えのオーラと同じ金色系に寄せて、
+#   「特別な日の印」であることを色でつなげる。
+BADGE_BG = (255, 214, 120)
+BADGE_FG = (24, 20, 12)
+
 # リーグの色。MLB公式のロゴがア・リーグ＝赤、ナ・リーグ＝青。
 # 進出争いの回は同じ形の画面が4枚続くので、**いま
 # どちらのリーグを見ているか**が色だけで分かるようにする。
@@ -285,6 +295,25 @@ def fit_headline(d, row, max_w, sizes=HEAD_SIZES):
         i = drop.pop(0)
         bits = [b for j, b in enumerate(bits) if j != i]
         drop = [j - 1 if j > i else j for j in drop]
+
+
+def draw_badges(d, row, x, y, limit=2, size=30, right=None):
+    """名前のある記録を帯にして横に並べる。返すのは並べ終わった右端。
+
+    right を渡すと、そこを越える帯は描かない。点数や他の文字と
+    重ねるくらいなら、**出さないほうがよい**。一覧は1行230pxしか
+    高さが無く、重なると両方読めなくなる。
+
+    呼び名と点は morning_recap が決める。ここは置き方だけを持つ。
+    """
+    for lab in morning_recap.badge_labels(row, limit=limit):
+        w = int(d.textlength(lab, font=font(size))) + 26
+        if right is not None and x + w > right:
+            break
+        d.rounded_rectangle([x, y, x + w, y + size + 16], 9, fill=BADGE_BG)
+        d.text((x + 13, y + 5), lab, font=font(size), fill=BADGE_FG)
+        x += w + 10
+    return x
 
 
 # いま何枚目か。generate_video.py と同じ作り。
@@ -603,8 +632,13 @@ def spoken_list(chunk: list, start: int, said_already: str = "") -> str:
             continue
         if worth_speaking(p, rank):
             score = morning_recap.score_label(p)
+            # 名前のある記録は声にも出す。**画面に金の帯が出ているのに
+            # 何も言わないと、なぜその点なのかが分からない。**
+            # 呼び名を並べるだけで、こちらで評価は足さない。
+            named = morning_recap.badge_speech(p, limit=2)
             parts.append(
                 f"{rank}位、{p['name']}、{yomi_stats(p['headline'])}。"
+                + (f"{'に'.join(named)}。" if named else "")
                 + (f"{p['clutch_label']}。" if p.get("clutch_label") else "")
                 + (f"スコア{score}。" if score else "")
             )
@@ -703,7 +737,13 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     # 日次ショートで同じ形を直したのと同じ理由で、ここも入れ替える。
     # 直近28日でショートの40.6%が途中でスワイプされている。
     if want_players:
+        # 主役に名前のある記録が付いた日は、冒頭でそれを言う。
+        # 1枚目の帯と声を合わせる（画面に金の帯だけ出て無言だと、
+        # 何の印なのか分からない）。
+        named = morning_recap.badge_speech(top, limit=2) if top else []
         head = f"{top['name']}は{yomi_stats(top['headline'])}。" if top else ""
+        if named:
+            head += "%s。" % "に".join(named)
         segments = [{
             "kind": "intro",
             "text": f"{head}{day}、日本人選手{len(players)}人の成績です。",
@@ -1440,8 +1480,13 @@ def render_intro_players(p, meta, top, extra=None):
 
     # 100点を超えた日は、名前のまわりを光らせる。
     # 描く順番は光が先。あとから文字を重ねる。
+    #
+    # 下端は、名前のある記録の帯と点数まで含める。640で切っていたら
+    # **点数の行のところで背景が四角く暗くなって、境目が見えていた。**
+    # 光は「その日いちばんの選手のかたまり」を囲むものなので、
+    # 帯も点数もその中に入る。
     if score >= AURA_SCORE and p > 0.12:
-        video_common.aura(im, (70, 350, W - 70, 640),
+        video_common.aura(im, (70, 340, W - 70, 730),
                 phase=(p * 0.55) % 1.0, strength=min(1.0, (p - 0.12) * 4))
 
     size = fit(d, name, W - 170, (132, 116, 100, 88))
@@ -1453,17 +1498,28 @@ def render_intro_players(p, meta, top, extra=None):
         hs = fit(d, head, W - 170, (56, 50, 44, 40, 36))
         d.text((80, 520 + slide), head, font=font(hs), fill=TEXT)
 
+    # 名前のある記録。**1枚目はサムネイルそのもの**なので、
+    # ここに「HQS」「二桁奪三振」と出るかどうかで、開く理由が変わる。
+    # 一覧の行より大きくして、3つまで並べる。
+    draw_badges(d, top, 80, 596 + slide, limit=3, size=34, right=W - 80)
+
     # 点数。特別な日だけ色を変える。
     if score:
-        col = (255, 214, 120) if score >= AURA_SCORE else DIM
-        d.text((80, 600 + slide), f"スコア {score}", font=font(46), fill=col)
+        col = BADGE_BG if score >= AURA_SCORE else DIM
+        label = f"スコア {score}"
+        d.text((80, 664 + slide), label, font=font(46), fill=col)
         if score >= AURA_SCORE:
-            d.text((300, 604 + slide), "今季でも指折りの一日",
+            # 添える言葉は、点数の幅を測ってから置く。
+            # 300で固定していたので、**3桁になった日に重なっていた。**
+            # 名前のある記録の加点を入れて3桁が普通になったため、
+            # 100点台の日はほぼ毎回重なる形だった。
+            x = 80 + int(d.textlength(label, font=font(46))) + 30
+            d.text((x, 668 + slide), "今季でも指折りの一日",
                    font=font(38), fill=JP)
 
     rest = "・".join(x.get("name", "") for x in players[1:4] if x.get("name"))
     if rest:
-        d.text((80, 700), "ほか " + rest, font=font(44), fill=DIM)
+        d.text((80, 740), "ほか " + rest, font=font(44), fill=DIM)
 
     heading, lede = INTRO_HEADINGS.get("players", ("", ""))
     if morning_recap.quiet_day(players):
@@ -1550,6 +1606,19 @@ def render_list(p, players, start, count):
         kind = pl.get("type")
         col = ACCENT if kind == "two_way" else (JP if kind == "pitcher" else TEXT)
         d.text((180 - dx, y + 26), pl.get("name", ""), font=font(58), fill=col)
+
+        # 名前のある記録を、名前のすぐ右に置く。
+        #
+        # なぜここか:
+        #   役割の行(y+180)には既に場面(逆転・勝ち越し)が入っていて、
+        #   その下に説明も入る。もう空いていない。
+        #   名前の隣なら「誰が何をした日か」が1行で読める。
+        #
+        #   右端は点数の手前で止める。点数は右寄せで、大きい日は
+        #   84pxで3桁になるので、W-300あたりから始まる。
+        nm_w = int(d.textlength(pl.get("name", ""), font=font(58)))
+        draw_badges(d, pl, 180 - dx + nm_w + 22, y + 30,
+                    limit=2, size=30, right=W - 300 - dx)
 
         # 勝利貢献スコア。投手と打者を同じ物差しに載せた、コレスポ独自の数字。
         # 右端に置いて、名前と成績の邪魔をしないようにする。

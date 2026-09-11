@@ -218,6 +218,51 @@ def main() -> int:
         check("選手が1人だけの日", g.render_intro_players, 1.0,
               {"mode": "players", "date": "2026-08-30", "count": 1},
               players[0], {"players": players[:1]})
+        # 名前のある記録が3つ付いた日。帯が右へはみ出さないか。
+        named = dict(players[0])
+        named.update({"type": "pitcher", "ip": "9.0", "er": 0, "hits": 0,
+                      "so": 12, "bb": 0, "gs": 1, "wins": 1,
+                      "headline": "9.0回　12奪三振　自責0　0被安打　勝ち投手"})
+        check("記録が3つ付いた日", g.render_intro_players, 1.0, meta,
+              named, {"players": [named] + players[1:]})
+
+    # 名前のある記録の帯が、一覧の行で点数と重ならないか。
+    #
+    # 帯は名前の右に置いて、点数の手前で切る。切らないと、
+    # **3桁の点数の上に「二桁奪三振」が重なって両方読めなくなる。**
+    # 1行は230pxしか高さが無く、逃げ場が無い。
+    print(chr(10) + "--- 名前のある記録の帯 ---")
+    named_rows = [
+        {"name": "山本由伸", "type": "pitcher", "ip": "7.0", "er": 1,
+         "hits": 3, "so": 10, "bb": 1, "gs": 1, "wins": 1,
+         "headline": "7.0回　10奪三振　防御率1.29　3被安打　勝ち投手",
+         "team_jp": "ドジャース", "prev_score": 68, "avg_score": 73,
+         "avg_games": 3},
+        {"name": "佐々木朗希", "type": "pitcher", "ip": "9.0", "er": 0,
+         "hits": 0, "so": 12, "bb": 0, "gs": 1, "wins": 1,
+         "headline": "9.0回　12奪三振　自責0　0被安打",
+         "team_jp": "ドジャース", "prev_score": 55, "avg_score": 60,
+         "avg_games": 3},
+        {"name": "村上宗隆", "type": "batter", "ab": 5, "hits": 3, "hr": 2,
+         "rbi": 5, "so": 0, "bb": 0, "hbp": 0, "tb": 10, "doubles": 0,
+         "triples": 0, "sb": 0,
+         "headline": "5打数3安打　2本塁打　5打点",
+         "team_jp": "ホワイトソックス", "prev_score": 21,
+         "avg_score": 42, "avg_games": 7},
+    ]
+    check("記録つきの一覧", g.render_list, 1.0, named_rows, 0, 3)
+    # 帯の右端が、点数の始まる位置を越えていないか。
+    from PIL import Image as _AI, ImageDraw as _AID
+    _ad = _AID.Draw(_AI.new("RGB", (g.W, g.H)))
+    for row in named_rows:
+        nm_w = int(_ad.textlength(row["name"], font=g.font(58)))
+        end = g.draw_badges(_ad, row, 180 + nm_w + 22, 100,
+                            limit=2, size=30, right=g.W - 300)
+        ok = end <= g.W - 300
+        print("%s %s の帯の右端 %d（上限 %d）"
+              % ("ok " if ok else "NG ", row["name"], end, g.W - 300))
+        if not ok:
+            fails += 1
 
     # 成績の行が、置ける幅に収まっているか。
     #

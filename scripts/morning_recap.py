@@ -508,6 +508,170 @@ def pitcher_role(row: dict) -> str:
 ROLE_LABEL = {"closer": "セーブ", "setup": "ホールド"}
 
 
+# 名前のある記録。
+#
+# なぜ要るのか:
+#   点数は「その日の中で並べるための数字」でしかなく、**野球を見ている人が
+#   共有している呼び名**とつながっていない。7回1失点は「クオリティスタート」
+#   であり10奪三振は「二桁奪三振」だが、画面には「91」とだけ出ていた。
+#
+#   呼び名が出ると、点数の意味がその場で分かる。「95」と「91」を並べても
+#   どちらが上か以上のことは言えないが、「二桁奪三振・HQS」と書けば
+#   何が起きた日なのかが伝わる。
+#
+#   同時に、点数のほうも直る。9/10は
+#     村上宗隆 3打数1安打 1本塁打 1打点 1死球  95点
+#     山本由伸 7回1失点 10奪三振 3被安打        91点
+#   で村上が上に来ていた。1本塁打は打者として良い日だが、月に何度もある。
+#   7回1失点10奪三振は先発の上位1割の出来で、しかも記録としての
+#   呼び名が3つ付く。**呼び名の数だけ希少**なので、そこを点に乗せる。
+#
+# 加点の置き方:
+#   「その記録が1シーズンで何回出るか」の逆に近い順に置いた。
+#   ノーヒッターは年に数回、完封は月に数回、QSは先発の半分弱。
+#   包含するものは上位だけを出す（完封が付く日にQSも並べない）。
+PITCHER_BADGES = [
+    # (呼び名, 説明, 点, 判定)
+    ("ノーヒッター", "無安打無得点", 60,
+     lambda r: outs_from_ip(r.get("ip")) >= 27 and not r.get("hits")),
+    ("完封", "9回を自責0", 30,
+     lambda r: outs_from_ip(r.get("ip")) >= 27 and not r.get("er")),
+    ("完投", "9回を投げ切り", 15,
+     lambda r: outs_from_ip(r.get("ip")) >= 27),
+    ("HQS", "7回以上を自責2以内", 12,
+     lambda r: (r.get("gs") and outs_from_ip(r.get("ip")) >= 21
+                and (r.get("er") or 0) <= 2)),
+    ("QS", "6回以上を自責3以内", 8,
+     lambda r: (r.get("gs") and outs_from_ip(r.get("ip")) >= 18
+                and (r.get("er") or 0) <= 3)),
+]
+
+# 上の並びのうち、どれか1つだけを出すまとまり。
+#
+# 回数と失点の話はすべて包含関係にある。9回を自責0で投げた日は
+# 完封であり完投でありHQSでありQSでもあるので、**そのまま並べると
+# 記録が4つ付いた日に見える。**上の並びの順（希少なものが先）で
+# 最初に当たった1つだけを残す。
+#
+# 「完投」と「HQS」は包含していないように見えるが、9回5失点の完投は
+# HQSの条件を満たさないので、そのときはHQSが付かない。
+# 序列で1つに絞って困る組み合わせは無い。
+PITCHER_BADGE_GROUPS = [("ノーヒッター", "完封", "完投", "HQS", "QS")]
+
+BATTER_BADGES = [
+    ("サイクル安打", "単打・二塁打・三塁打・本塁打", 45,
+     lambda r: (r.get("hr", 0) >= 1 and r.get("triples", 0) >= 1
+                and r.get("doubles", 0) >= 1
+                and (r.get("hits", 0) - r.get("doubles", 0)
+                     - r.get("triples", 0) - r.get("hr", 0)) >= 1)),
+    ("3本塁打", "1試合3本", 40, lambda r: r.get("hr", 0) >= 3),
+    ("マルチ本塁打", "1試合2本", 20, lambda r: r.get("hr", 0) >= 2),
+    ("猛打賞", "3安打以上", 10, lambda r: r.get("hits", 0) >= 3),
+    ("マルチ安打", "2安打", 4, lambda r: r.get("hits", 0) >= 2),
+]
+
+# 安打の本数はすべて包含関係にある。2本塁打の日は必ず2安打なので、
+# 「マルチ本塁打」と「マルチ安打」が並ぶ。上と同じく序列で1つに絞る。
+#
+# 3安打2本塁打の日は「猛打賞」も本当だが、より希少な
+# 「マルチ本塁打」を残す。中継では両方言うが、画面の帯に3つ4つ
+# 並べると読めなくなる。落ちたぶんの点は塁打の側に既に乗っている。
+BATTER_BADGE_GROUPS = [("サイクル安打", "3本塁打", "マルチ本塁打",
+                        "猛打賞", "マルチ安打")]
+
+
+def badges(row: dict) -> list:
+    """その日ついた「名前のある記録」。
+
+    返すのは [{"label": "HQS", "note": "...", "points": 12}, ...]。
+    何も付かない日は空。**投げて打った日は両方を見る。**
+
+    セーブとホールドは判定ではなく記録そのものなので、
+    APIの値をそのまま呼び名にする。セーブ機会で投げて付かなかった日を
+    「セーブ」と書くと嘘になるため、saves / holds の実数だけを見る。
+    """
+    if row.get("type") == "two_way":
+        return (badges({**(row.get("pitching") or {}), "type": "pitcher"})
+                + badges({**(row.get("batting") or {}), "type": "batter"}))
+
+    if row.get("type") == "pitcher":
+        table, groups = PITCHER_BADGES, PITCHER_BADGE_GROUPS
+    else:
+        table, groups = BATTER_BADGES, BATTER_BADGE_GROUPS
+
+    got = []
+    for label, note, pts, test in table:
+        try:
+            if test(row):
+                got.append({"label": label, "note": note, "points": pts})
+        except (TypeError, ValueError):
+            continue
+
+    # 包含するものは上位だけ残す
+    for group in groups:
+        found = [g for g in got if g["label"] in group]
+        for extra in found[1:]:
+            got.remove(extra)
+
+    if row.get("type") == "pitcher":
+        # 奪三振と四球は、回数や失点と別の軸なので上の表とは重ねない。
+        if (row.get("so") or 0) >= 10:
+            got.append({"label": "二桁奪三振", "note": "10個以上",
+                        "points": 12})
+        if (row.get("gs") and not row.get("bb")
+                and outs_from_ip(row.get("ip")) >= 15):
+            got.append({"label": "無四球", "note": "5回以上を四球0",
+                        "points": 5})
+        # 記録そのもの。判定しない。
+        if row.get("saves"):
+            got.append({"label": "セーブ", "note": "試合を締めた",
+                        "points": 8})
+        elif row.get("holds"):
+            got.append({"label": "ホールド", "note": "リードを次へ渡した",
+                        "points": 5})
+    else:
+        if (row.get("rbi") or 0) >= 5:
+            got.append({"label": "5打点", "note": "1試合5打点以上",
+                        "points": 12})
+        if (row.get("sb") or 0) >= 2:
+            got.append({"label": "マルチ盗塁", "note": "2個以上",
+                        "points": 6})
+
+    return got
+
+
+def badge_points(row: dict) -> int:
+    """名前のある記録に対する加点の合計。"""
+    return sum(b["points"] for b in badges(row))
+
+
+def badge_labels(row: dict, limit: int = 3) -> list:
+    """画面に出す呼び名。点の重い順に、多くても limit 個。
+
+    4つ以上並べると帯が読めなくなるので切る。切った先は
+    点数の側に残っているので、順位には効いたままになる。
+    """
+    got = sorted(badges(row), key=lambda b: -b["points"])
+    return [b["label"] for b in got[:limit]]
+
+
+# 読み上げでの言い換え。
+#
+# VOICEVOXはアルファベットを辞書で引けないものは1文字ずつ読む。
+# 「QS」が「キューエス」になるか「クエス」になるかは渡す側からは
+# 確かめられないので、**声のほうは略さず言う。**
+# 画面は略記のままにする（帯に「ハイクオリティスタート」は入らない）。
+BADGE_SPEECH = {
+    "QS": "クオリティスタート",
+    "HQS": "ハイクオリティスタート",
+}
+
+
+def badge_speech(row: dict, limit: int = 2) -> list:
+    """読み上げに渡す呼び名。略記は開いて返す。"""
+    return [BADGE_SPEECH.get(b, b) for b in badge_labels(row, limit)]
+
+
 def did_something(row: dict) -> bool:
     """その選手が、その日「何かした」と言えるか。
 
@@ -581,9 +745,16 @@ def contribution(row: dict) -> int:
 
     # 投げて打った日は両方を足す。7回10奪三振に3本塁打が乗れば200点前後になる。
     if row.get("type") == "two_way":
+        # 名前のある記録は、投げた側と打った側でそれぞれ数える。
+        # ここで badge_points を足すと、下の2回の呼び出しで
+        # すでに足したぶんと二重になる。
         return (contribution({**row["pitching"], "type": "pitcher"})
                 + contribution({**row["batting"], "type": "batter"})
                 + bonus)
+
+    # 名前のある記録への加点。QS・二桁奪三振・猛打賞など。
+    # なぜ点に乗せるかは badges の説明にある。
+    bonus += badge_points(row)
 
     if row.get("type") == "pitcher":
         outs = outs_from_ip(row.get("ip"))

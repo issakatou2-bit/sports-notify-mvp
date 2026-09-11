@@ -138,6 +138,33 @@ def render() -> str:
     setup = mr.RELIEF_BASE["setup"]
     reliever = mr.RELIEF_BASE["reliever"]
 
+    # 名前のある記録も morning_recap から読む。呼び名・条件・加点を
+    # ここに書き写すと、片方を直したときにページだけが古くなる。
+    # 奪三振・無四球・セーブ・ホールド・打点・盗塁は表ではなく
+    # badges() の中で直に判定しているので、手で並びを作る。
+    def _badge_rows(table, extra):
+        out = []
+        for label, note, pts, _test in table:
+            out.append(f"<tr><td>{esc(label)}</td>"
+                       f"<td class=\"note\">{esc(note)}</td>"
+                       f'<td class="num">+{pts}</td></tr>')
+        for label, note, pts in extra:
+            out.append(f"<tr><td>{esc(label)}</td>"
+                       f"<td class=\"note\">{esc(note)}</td>"
+                       f'<td class="num">+{pts}</td></tr>')
+        return "".join(out)
+
+    pitcher_badge_rows = _badge_rows(mr.PITCHER_BADGES, [
+        ("二桁奪三振", "10個以上", 12),
+        ("無四球", "5回以上を四球0", 5),
+        ("セーブ", "試合を締めた", 8),
+        ("ホールド", "リードを次へ渡した", 5),
+    ])
+    batter_badge_rows = _badge_rows(mr.BATTER_BADGES, [
+        ("5打点", "1試合5打点以上", 12),
+        ("マルチ盗塁", "2個以上", 6),
+    ])
+
     clutch_rows = "".join(
         f"<tr><td>{esc(k)}</td><td class=\"num\">+{v}</td>"
         f"<td class=\"note\">{esc(clutch.CLUTCH_NOTES.get(k, ''))}</td></tr>"
@@ -239,6 +266,27 @@ def render() -> str:
   1つだけ使います。0対0の初回に打った一発は点差の上では必ず
   勝ち越しになるので、そのまま足すと同じ打球を何度も数えることに
   なるためです。</p>
+
+  <h2>名前のある記録</h2>
+  <p>クオリティスタートや猛打賞のように、野球を見ている人のあいだで
+  呼び名が決まっている記録には、別に加点します。呼び名が付くということは
+  それだけで「めったにない日」の目印になっているためです。
+  該当した日は、画面でも金色の帯で呼び名を出します。</p>
+  <table>
+    <tr><th>投手</th><th>条件</th><th>加点</th></tr>
+    {pitcher_badge_rows}
+  </table>
+  <table>
+    <tr><th>打者</th><th>条件</th><th>加点</th></tr>
+    {batter_badge_rows}
+  </table>
+  <p class="note">回数と失点、安打の本数は互いを含んでいます。9回を自責0で
+  投げた日は完封でも完投でもクオリティスタートでもありますが、
+  表の上にあるものを1つだけ使います。そのまま並べると、
+  記録が4つ付いた日のように見えてしまうためです。</p>
+  <p class="note">セーブとホールドは判定ではなく、MLB公式に記録された実数を
+  そのまま見ています。セーブ機会で投げて付かなかった日を
+  「セーブ」と書くことはありません。</p>
 
   <h2>投げて打った日</h2>
   <p>両方に出場した日は、投手としてのスコアと打者としてのスコアを足します。</p>
