@@ -582,7 +582,7 @@ def week_line(players: list, days: int = 7) -> tuple:
     return "".join(parts), rows
 
 
-def press_premise(heads: list) -> str:
+def press_premise(heads: list, pool: list = None) -> str:
     """今日の報道が何についてのものか。数えるだけで、評価はしない。
 
     なぜ要るのか:
@@ -597,9 +597,17 @@ def press_premise(heads: list) -> str:
 
       代わりに数える。どの選手を引いた見出しが何件あったかは、
       集めた時点で分かっている事実で、そこは間違えようがない。
+
+    pool は絞る前の全見出し。
+      **「◯件のうち◯件」の母数は、絞った後の数では意味がない。**
+      9/10は画面に出した6件すべてが大谷と佐々木の記事で、そこで
+      「6件のうち4件が大谷」と言っていた。日本人選手の名前だけで
+      引いていたので当たり前の結果だった（local_reporters側で
+      リーグ全体の語も引くようにした）。数えるのは集めた全部で行う。
     """
     from collections import Counter
-    pairs = [(h.get("query") or "", h.get("source") or "") for h in heads]
+    src = pool or heads
+    pairs = [(h.get("query") or "", h.get("source") or "") for h in src]
     counts = Counter(q for q, _ in pairs if q)
     if not counts:
         return ""
@@ -607,9 +615,13 @@ def press_premise(heads: list) -> str:
     outlets = {s for q, s in pairs if q == top and s}
     if n < 2 or len(outlets) < 2:
         return ""
+    # リーグ全体の語（"MLB playoff race" など）が最多になる日は、
+    # 「話題」として読み上げても意味を持たない。選手の名前のときだけ言う。
+    if top.lower().startswith("mlb "):
+        return ""
     who = speech_name(top)
     return (f"今日は{who}の話題が最も多く、"
-            f"{len(heads)}件のうち{n}件、{len(outlets)}媒体が報じています。")
+            f"{len(src)}件のうち{n}件、{len(outlets)}媒体が報じています。")
 
 
 def spoken_list(chunk: list, start: int, said_already: str = "") -> str:
@@ -1157,7 +1169,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     if heads:
         used = (segments[0].get("meta") or {}).get("used_headline")
         rest = [h for i, h in enumerate(heads) if i != used]
-        parts = [press_premise(heads) or "現地の見出しです。"]
+        pool = (data.get("reporters") or {}).get("headline_pool") or []
+        parts = [press_premise(heads, pool) or "現地の見出しです。"]
         # 収まらない見出しは切らずに飛ばす。6件取れているので選び直せる。
         fits = [(i, h) for i, h in enumerate(heads)
                 if i != used

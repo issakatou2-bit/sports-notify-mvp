@@ -145,6 +145,24 @@ def _jp_kana() -> dict:
     return out
 
 
+@functools.lru_cache(maxsize=1)
+def _jp_types() -> dict:
+    """日本人選手の、漢字表記 → 投手か打者か。
+
+    「所属チームの一戦」の題に投手を出さないために使う。
+    理由は pick_hook の3番の説明にある。
+    """
+    out = {}
+    try:
+        from notability_engine import JP_PLAYERS_MLB, JP_PLAYERS_SOCCER
+    except ImportError:
+        return out
+    for p in list(JP_PLAYERS_SOCCER) + list(JP_PLAYERS_MLB):
+        if p.get("name_jp"):
+            out[p["name_jp"]] = p.get("type") or ""
+    return out
+
+
 def speech_name(name: str) -> str:
     """
     読み上げに渡す用に、外国人選手の名前を整える。画面表示には使わない。
@@ -319,9 +337,19 @@ def pick_hook(games: list) -> dict:
     #
     #    打者のスタメンは前日には分からないので、「出場」「先発」とは
     #    書かない。書けるのは「その球団の試合がある」ことだけ。
+    #
+    #    **投手はここでは出さない。**先発は中4〜6日で回るので、
+    #    明日投げないことが確定に近い日も多い。救援も連投を避ける。
+    #    それを「今井達也　所属チームの一戦」と題に出すと、
+    #    投げると思って開いた人にとっては題と中身が違う。
+    #    投げるとAPIで確認できた日は1番で先に拾っている。
+    #
+    #    打者は毎日スタメンの可能性があるので残す。それでも
+    #    「出場」とは書かず、球団の試合があることだけを言う。
+    types = _jp_types()
     for at, g in enumerate(games):
         for name in (g.get("jp_players") or []):
-            if name:
+            if name and types.get(name) != "pitcher":
                 return {"big": "所属チームの一戦", "sub": name, "at": at}
 
     # 4. サッカーで日本人選手が所属している場合。

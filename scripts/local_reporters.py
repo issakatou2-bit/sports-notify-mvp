@@ -103,7 +103,12 @@ HOURS = 30
 PER_AUTHOR = 12
 
 # 翻訳して出す件数。動画1画面に載る量。
-TOP_N = 6
+#
+# 6件だったのを8件に増やした（9/11）。見出しが6件しか無いと
+# 「今日は◯◯の話題が最も多く、6件のうち4件」のような読み上げに
+# なり、幅が伝わらない。訳すのは1回のまとめ呼び出しなので、
+# 増えるぶんは入力と出力の長さだけ（月あたり十円ほど）。
+TOP_N = 8
 
 
 def fetch_author(handle: str, limit: int = PER_AUTHOR) -> list:
@@ -239,19 +244,38 @@ def attach_replies(posts: list, sleep: float = 0.3) -> list:
     return posts
 
 
+# 日本人選手に触れている投稿を、先に確保する件数。
+#
+# これまでは**日本人絡みを全部上に持ってきていた**ので、
+# 枠がそれで埋まり、現地でいちばん話題になっていた投稿が
+# 1件も入らない日があった。「現地は何と言っているか」という題で
+# 日本人選手の話しか出てこないのは、題と中身が違う。
+#
+# 3件を確保して、残りは反応の大きさだけで並べる。日本人絡みが
+# 4件以上入る日もあるが、それは**反応量で勝ったから**なので、
+# 「幅広い中で注目されている」と言える形になる。
+JP_CAP = 3
+
+
 def rank(posts: list, top: int = TOP_N) -> list:
     """
     どれを出すか。こちらの好みではなく、現地の反応の大きさで決める。
 
-    日本人選手に触れている投稿は優先する。日本語圏に向けて出すので、
-    同じ反応量なら、そちらの方が読む理由がある。
+    日本人選手に触れている投稿は、JP_CAP件まで先に確保する。
+    日本語圏に向けて出すので、そこは読む理由がある。
+    それより先は反応の大きさだけで並べる。
     """
-    def key(p):
-        engage = p["likes"] + p["reposts"] * 2 + p["replies"]
-        return (-(1 if p["jp_players"] else 0), -engage)
+    def engage(p):
+        return p["likes"] + p["reposts"] * 2 + p["replies"]
+
+    jp_first = sorted((p for p in posts if p["jp_players"]),
+                      key=lambda p: -engage(p))[:JP_CAP]
+    # 残りは全部を反応量で並べる。上で確保したものは
+    # 下の重複除去（同じ本文・同じ記者）で落ちる。
+    order = jp_first + sorted(posts, key=lambda p: -engage(p))
 
     seen, out = set(), []
-    for p in sorted(posts, key=key):
+    for p in order:
         # 同じ記者ばかりにならないよう2件まで
         if sum(1 for x in out if x["handle"] == p["handle"]) >= 2:
             continue
@@ -406,8 +430,33 @@ def _mentions(title: str, name_en: str) -> bool:
     return any(w in low for w in _ball_terms())
 
 
+# リーグ全体の話題。
+#
+# なぜ要るのか:
+#   これまで見出しは**日本人選手17人の名前だけ**で引いていた。
+#   その結果、集まる見出しがその17人の記事しか無くなり、
+#   「今日は大谷翔平の話題が最も多く、6件のうち4件」という読み上げに
+#   なっていた。大谷で引いた記事が4件あるから最多、という循環で、
+#   9/10は6件すべてが大谷と佐々木の記事だった。
+#
+#   9/11にユーザーから指摘。「もっと幅広い中で大谷が注目を
+#   集めてるってニュアンスならいい」。そのとおりで、母数のほうが
+#   おかしかった。リーグ全体の語でも引いて、その中で数える。
+#
+# Googleニュースのフィードはキーも要らず無料なので、
+# **語を増やしてもお金は増えない。**増えるのは取得の待ち時間だけ。
+LEAGUE_QUERIES = (
+    "MLB playoff race",
+    "MLB wild card",
+    "MLB injury",
+    "MLB trade",
+    "MLB home run record",
+    "MLB manager",
+)
+
+
 def collect_headlines(sleep: float = 0.4) -> list:
-    """日本人選手の名前で、現地の見出しを引く。"""
+    """現地の見出しを引く。日本人選手の名前と、リーグ全体の話題。"""
     out, dropped = [], 0
     for p in JP_PLAYERS_MLB:
         try:
@@ -420,8 +469,25 @@ def collect_headlines(sleep: float = 0.4) -> list:
         dropped += len(got) - len(keep)
         out += keep
         time.sleep(sleep)
+
+    # リーグ全体。選手名との照合はできないので、
+    # 野球の記事かどうかだけを見る。
+    for q in LEAGUE_QUERIES:
+        try:
+            got = fetch_headlines(q, limit=6)
+        except Exception as e:  # noqa: BLE001
+            print(f"[warn] {q}: {e}", file=sys.stderr)
+            time.sleep(sleep)
+            continue
+        keep = [h for h in got
+                if any(w in (h.get("title") or "").lower()
+                       for w in _ball_terms())]
+        dropped += len(got) - len(keep)
+        out += keep
+        time.sleep(sleep)
+
     if dropped:
-        print(f"[info] 選手名の入っていない見出しを{dropped}件外しました")
+        print(f"[info] 野球以外の見出しを{dropped}件外しました")
 
     # 同じ見出しが複数の選手で出ることがある。
     # 媒体によって "Exclusive | " のような枕が付くので、そこも落として比べる。
@@ -511,6 +577,15 @@ def main():
         "collected": len(posts),
         "posts": top,
         "headlines": heads[:args.top],
+        # 「◯件のうち◯件」を言うための母数。
+        #
+        # 訳すのは上位だけだが、**何件の中から選んだのかは
+        # 絞る前の数でないと意味がない。**訳す前の題と検索語だけを
+        # 残す（訳さないので、ここを増やしても課金は増えない）。
+        "headline_pool": [{"query": h.get("query", ""),
+                           "title": h.get("title", ""),
+                           "source": h.get("source", "")}
+                          for h in heads],
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[done] {out}")
     return 0

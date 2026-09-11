@@ -225,6 +225,89 @@ check("冒頭で名乗った試合が、1つ目に来ている日数の欠け", 
 check("読み上げの試合と、画面が引く試合が同じ", _mismatch, 0)
 
 
+# 「◯件のうち◯件」の母数が、絞る前の件数になっているか。
+#
+# 9/10は画面に出した6件すべてが大谷と佐々木の記事で、そこで
+# 「6件のうち4件が大谷」と読み上げていた。見出しを**日本人選手の
+# 名前だけ**で引いていたので、母数がその17人の記事しか無かった。
+# 大谷で引いた記事が多いから大谷が最多、という循環。
+print("\n--- 報道の「◯件のうち◯件」の母数 ---")
+import generate_morning_short as gms2  # noqa: E402
+
+_shown = [{"query": "Shohei Ohtani", "source": "MLB.com", "title": "a"},
+          {"query": "Shohei Ohtani", "source": "Yahoo", "title": "b"}]
+_pool = _shown + [
+    {"query": "MLB playoff race", "source": "ESPN", "title": "c"},
+    {"query": "MLB wild card", "source": "CBS", "title": "d"},
+    {"query": "Roki Sasaki", "source": "NBC", "title": "e"},
+    {"query": "MLB trade", "source": "MLB.com", "title": "f"},
+]
+_line = gms2.press_premise(_shown, _pool)
+check("母数は絞る前の件数", "6件のうち2件" in _line, True)
+check("絞った件数を母数にしていない", "2件のうち2件" in _line, False)
+# リーグ全体の語が最多になる日に「MLB playoff raceの話題が最も多く」
+# と読み上げても意味を持たない。
+_league_pool = [
+    {"query": "MLB playoff race", "source": "ESPN", "title": "a"},
+    {"query": "MLB playoff race", "source": "CBS", "title": "b"},
+    {"query": "MLB playoff race", "source": "MLB.com", "title": "c"},
+    {"query": "Shohei Ohtani", "source": "Yahoo", "title": "d"},
+]
+check("リーグ全体の語が最多の日は何も言わない",
+      gms2.press_premise(_shown, _league_pool), "")
+check("母数が渡らない日も落ちない",
+      isinstance(gms2.press_premise(_shown), str), True)
+
+# 見出しを引く語に、リーグ全体のものが入っているか。
+import local_reporters as lr  # noqa: E402
+
+check("リーグ全体の語がある", len(lr.LEAGUE_QUERIES) >= 4, True)
+check("日本人選手が枠を全部占めない上限がある",
+      0 < lr.JP_CAP < lr.TOP_N, True)
+
+
+# 「所属チームの一戦」に投手の名前を出さないか。
+#
+# 9/11にユーザーから指摘。「明日今井達也が先発するわけでもないのに
+# タイトルにそう書くのは釣り感がある」。先発は中4〜6日で回るので
+# 明日投げないことが確定に近い日も多く、救援も連投は避ける。
+# **投げるとAPIで確認できた日は1番の枝で先に拾っている**ので、
+# ここに投手が残る意味がない。
+print("\n--- 「所属チームの一戦」に投手を出さない ---")
+_pitcher_game = [{
+    "matchup": "Astros vs Angels", "is_notable": True,
+    "jp_starters": [], "jp_players": ["今井達也"], "reasons": [],
+}]
+_h2 = gn2.pick_hook(_pitcher_game)
+check("投手しかいない試合では所属の枝を使わない",
+      _h2.get("big") != "所属チームの一戦", True)
+
+_batter_game = [{
+    "matchup": "White Sox vs Tigers", "is_notable": True,
+    "jp_starters": [], "jp_players": ["村上宗隆"], "reasons": [],
+}]
+check("打者なら残す（毎日スタメンの可能性がある）",
+      gn2.pick_hook(_batter_game).get("sub"), "村上宗隆")
+
+_both = [{
+    "matchup": "Cubs vs Reds", "is_notable": True,
+    "jp_starters": [], "jp_players": ["今永昇太", "鈴木誠也"],
+    "reasons": [],
+}]
+check("投手と打者が両方いる球団なら打者を選ぶ",
+      gn2.pick_hook(_both).get("sub"), "鈴木誠也")
+
+# 投げると分かっている日は、これまでどおり1番で拾う。
+_starting = [{
+    "matchup": "Dodgers vs Padres", "is_notable": True,
+    "jp_starters": [{"name": "山本由伸"}], "jp_players": ["山本由伸"],
+    "reasons": [],
+}]
+_h3 = gn2.pick_hook(_starting)
+check("先発予定は「先発予定」で出す", (_h3.get("big"), _h3.get("sub")),
+      ("先発予定", "山本由伸"))
+
+
 # サッカーのタブが、大会名の一覧で絞られていないか。
 #
 # トップページは 5大リーグの名前を配列で持っていて、
