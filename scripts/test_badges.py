@@ -209,5 +209,44 @@ check("投げて打った日で片方が欠ける",
       mr.contribution({"type": "two_way", "pitching": P(ip="1.0"),
                        "batting": B()}) >= 0, True)
 
+
+print()
+print("--- 本塁打の飛距離（Statcast） ---")
+import statcast as sc  # noqa: E402
+
+_shots = [{"distance_m": 116, "speed_kmh": 177},
+          {"distance_m": 130, "speed_kmh": 180}]
+check("1本のとき", sc.phrase(_shots[:1]), "飛距離116m・打球速度177km/h")
+# 2本打った日は遠いほうを出す。**「2本目が130m」とは言わない**
+# （何本目かは打順で決まり、こちらでは分からない）。
+check("2本のときは遠いほう", sc.phrase(_shots),
+      "最も遠い1本は飛距離130m・打球速度180km/h")
+check("飛距離だけ取れた日",
+      sc.phrase([{"distance_m": 120, "speed_kmh": None}]), "飛距離120m")
+check("何も取れない日", sc.phrase([{"distance_m": None, "speed_kmh": None}]),
+      "")
+check("本塁打が無い日", sc.phrase([]), "")
+
+# 突き合わせは姓で行う。Statcast は "Murakami, Munetaka" の形。
+check("Statcastの並びから姓を取る", sc._key("Murakami, Munetaka"), "murakami")
+check("名簿の並びからも同じ姓", sc._key("Munetaka Murakami"), "murakami")
+check("空の名前", sc._key(""), "")
+
+_built = sc.build([{"player_name": "Murakami, Munetaka",
+                    "hit_distance_sc": "381", "launch_speed": "110",
+                    "launch_angle": "29", "pitch_type": "FF",
+                    "release_speed": "95"}])
+check("フィートをメートルに直す",
+      _built["murakami"][0]["distance_m"], 116)
+check("マイルをkm/hに直す", _built["murakami"][0]["speed_kmh"], 177)
+check("名簿の英語名で引ける",
+      len(sc.for_player({"home_runs": _built}, "Munetaka Murakami")), 1)
+check("いない選手は空",
+      sc.for_player({"home_runs": _built}, "Shohei Ohtani"), [])
+# 計測が欠けた打球（屋内球場やトラッキングの不調）は入れない。
+check("計測が両方欠けた行は落とす",
+      sc.build([{"player_name": "A, B", "hit_distance_sc": "",
+                 "launch_speed": ""}]), {})
+
 print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
 sys.exit(1 if fails else 0)

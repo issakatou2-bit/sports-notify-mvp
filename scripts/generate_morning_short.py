@@ -297,6 +297,40 @@ def fit_headline(d, row, max_w, sizes=HEAD_SIZES):
         drop = [j - 1 if j > i else j for j in drop]
 
 
+@functools.lru_cache(maxsize=1)
+def _statcast_data() -> dict:
+    """本塁打の計測（飛距離・打球速度）。取れなければ空。"""
+    try:
+        import statcast
+        return statcast.load()
+    except Exception:                            # noqa: BLE001
+        return {}
+
+
+def hr_detail(row: dict) -> str:
+    """その選手の本塁打が、どんな1本だったか。
+
+    なぜ足すのか:
+      成績ランキングは実測でいちばん強い枠（37本で平均410再生・
+      登録8人）。ところが「1本塁打」と書くだけでは、どんな本塁打
+      だったかが分からない。MLBは全球場のトラッキングから
+      **打球速度・飛距離を1球ずつ公開している。**
+
+      9/9の村上宗隆は飛距離116m・打球速度177km/h。
+      同じ「1本塁打」でも、この数字が付くと中身が見える。
+
+    本塁打が無い日は空。計測が取れない日も空（推測しない）。
+    """
+    if not row.get("hr"):
+        return ""
+    try:
+        import statcast
+        return statcast.phrase(
+            statcast.for_player(_statcast_data(), row.get("name_en", "")))
+    except Exception:                            # noqa: BLE001
+        return ""
+
+
 def draw_badges(d, row, x, y, limit=2, size=30, right=None):
     """名前のある記録を帯にして横に並べる。返すのは並べ終わった右端。
 
@@ -756,6 +790,11 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         head = f"{top['name']}は{yomi_stats(top['headline'])}。" if top else ""
         if named:
             head += "%s。" % "に".join(named)
+        # 本塁打の飛距離も声に出す。画面に出しているのに黙っていると、
+        # なぜその数字が出ているのか分からない。
+        shot = hr_detail(top) if top else ""
+        if shot:
+            head += "%s。" % shot
         segments = [{
             "kind": "intro",
             "text": f"{head}{day}、日本人選手{len(players)}人の成績です。",
@@ -1514,7 +1553,18 @@ def render_intro_players(p, meta, top, extra=None):
     # 名前のある記録。**1枚目はサムネイルそのもの**なので、
     # ここに「HQS」「二桁奪三振」と出るかどうかで、開く理由が変わる。
     # 一覧の行より大きくして、3つまで並べる。
-    draw_badges(d, top, 80, 596 + slide, limit=3, size=34, right=W - 80)
+    bx = draw_badges(d, top, 80, 596 + slide, limit=3, size=34, right=W - 80)
+
+    # 本塁打の飛距離。帯の右に置く。帯が無い日は左端から。
+    shot = hr_detail(top)
+    if shot:
+        sx = bx if bx > 80 else 80
+        sw = int(d.textlength(shot, font=font(32)))
+        if sx + sw > W - 80:         # 入らなければ帯の下へ
+            sx, sy = 80, 646 + slide
+        else:
+            sy = 604 + slide
+        d.text((sx, sy), shot, font=font(32), fill=JP)
 
     # 点数。特別な日だけ色を変える。
     if score:
@@ -1710,6 +1760,20 @@ def render_list(p, players, start, count):
             note = pl.get("clutch_note")
             if note:
                 d.text((180 - dx, y + 214), note, font=font(24), fill=DIM)
+        else:
+            # 本塁打の飛距離と打球速度。**場面の説明がある日は出さない。**
+            # 1行230pxしか高さが無く、両方置くと重なる。
+            # 逆転打の事実のほうが、飛距離より先に伝えるべきこと。
+            shot = hr_detail(pl)
+            if shot:
+                sx = 180 - dx + int(d.textlength(role, font=font(30))) + 24
+                # 入らなければ飛距離だけにする。**はみ出させない。**
+                # 以前 fit() が「小さくすれば入る」を前提にしていて、
+                # 28字の行が右へ出たまま公開されたことがある。
+                if sx + d.textlength(shot, font=font(28)) > W - 70 - dx:
+                    shot = shot.split("・")[0]
+                if sx + d.textlength(shot, font=font(28)) <= W - 70 - dx:
+                    d.text((sx, y + 180), shot, font=font(28), fill=JP)
         y += 258
 
     d.text((70, H - 170), "collespo.com", font=font(38), fill=DIM)
