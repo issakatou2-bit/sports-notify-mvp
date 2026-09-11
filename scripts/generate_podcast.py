@@ -38,8 +38,14 @@ from datetime import datetime, timedelta, timezone
 SITE_URL = "https://collespo.com/"
 PODCAST_BASE = SITE_URL + "podcast/"
 
-TITLE = "コレスポ｜今日の注目試合"
+TITLE = "コレスポ｜明日のMLB注目試合"
 DESCRIPTION = (
+    "日本時間で翌日に行われるMLBの注目試合を、見る理由とともに短い音声で紹介します。"
+    "先発投手や順位争い、選手の記録を知って、生中継をもっと楽しむための予習に。"
+    "試合のある日に、翌日分の見どころをお届けします。"
+)
+# 過去の定型説明だけを訂正するために保持。個別回の試合説明は上書きしない。
+LEGACY_DESCRIPTION = (
     "MLBと欧州サッカーの「今日の注目試合」を、なぜ注目なのかの理由つきで"
     "毎日お届けします。野球・サッカーに触れ始めた方が、生中継をもっと"
     "楽しめるようになるためのお供です。"
