@@ -59,45 +59,16 @@ def load_news(path: str = "public/news.json", limit: int = 2) -> list:
         return []
 
 
-def collect_hashtags(games: list) -> list:
-    """
-    ハッシュタグにする値を集める。
-
-      1. 球団名 … 先頭(最注目)の試合の両チームのみ。全試合分を入れると
-         6個になりタグだらけになる
-      2. 日本人選手名 … 上限3人。本文でも名前に触れている以上、
-         タグにしても誤情報にはならない(所属を示すだけで出場は保証しない)
-      3. リーグ名 … 重複を除いて全部
-
-    球団名は日本語表記を使う。読者が日本語話者中心で、
-    日本語圏で実際に検索されているタグに合わせるため。
-    """
-    tags: list = []
+def collect_hashtags(games: list, platform: str = "bluesky", text: str | None = None) -> list:
+    """投稿に実際に残った試合と文章から、媒体に合う少数のタグを選ぶ。"""
+    import content_hashtags as ht
     if not games:
-        return tags
-
-    top = games[0]
-    for key in ("home_team_name", "away_team_name"):
-        name = top.get(key)
-        if name and name not in tags:
-            tags.append(name)
-
-    names: list = []
-    for g in games:
-        for name in g.get("jp_players") or []:
-            if name and name not in names:
-                names.append(name)
-        for p in g.get("jp_starters") or []:
-            name = p.get("name")
-            if name and name not in names:
-                names.append(name)
-    tags.extend(n for n in names[:MAX_PLAYER_TAGS] if n not in tags)
-
-    for g in games:
-        league = g.get("league")
-        if league and league not in tags:
-            tags.append(league)
-    return tags
+        return []
+    text = text if text is not None else "\n".join(game_line(g) for g in games)
+    subjects = [g.get(k) for g in games for k in ("home_team_name", "away_team_name")]
+    leagues = [g.get("league") for g in games]
+    sport = 'mlb' if all(x == 'MLB' for x in leagues) else 'soccer' if all(x and x != 'MLB' for x in leagues) else ''
+    return ht.select(text, platform, sport=sport, subjects=subjects, leagues=leagues)
 
 
 def build_rule_based_hook(game: dict) -> str:
@@ -306,19 +277,26 @@ def build_post_for_x(games: list, news_path: str = "public/news.json"):
     """
     kept = list(games)
     while kept:
-        hashtags = collect_hashtags(kept)
+        hashtags = collect_hashtags(kept, "twitter")
         display = " ".join(f"#{t}" for t in hashtags)
         body = build_post_body(kept, display, 1000)
         text = f"{body}\n{display}\n{SITE_URL}"
         # URLは23として数えられるので、実文字数との差を引く
         weight = x_weight(text) - x_weight(SITE_URL) + X_URL_WEIGHT
-        if weight <= X_LIMIT or len(kept) == 1:
+        while weight > X_LIMIT and hashtags:
+            hashtags.pop()
+            display = " ".join(f"#{t}" for t in hashtags)
+            text = f"{body}\n{display}\n{SITE_URL}"
+            weight = x_weight(text) - x_weight(SITE_URL) + X_URL_WEIGHT
+        if weight <= X_LIMIT:
             return text, weight
+        if len(kept) == 1:
+            return "", 0
         kept = kept[:-1]
     return "", 0
 
 
-def build_post(games: list, max_chars: int, news_path: str = "public/news.json"):
+def build_post(games: list, max_chars: int, news_path: str = "public/news.json", platform: str = "bluesky"):
     """
     投稿1件ぶんの材料をまとめて返す。
 
@@ -326,15 +304,32 @@ def build_post(games: list, max_chars: int, news_path: str = "public/news.json")
     送信先ごとにタグやリンクの付け方が違うので、組み立て済みの
     1つの文字列ではなく、部品のまま渡す。
     """
-    hashtags = collect_hashtags(games)
-    display = " ".join(f"#{t}" for t in hashtags)
-    body = build_post_body(games, display, max_chars)
+    kept = list(games)
+    while kept:
+        hashtags = collect_hashtags(kept, platform)
+        display = " ".join(f"#{t}" for t in hashtags)
+        body = "\n".join([today_or_tomorrow_label(kept)] + [game_line(g) for g in sort_for_display(kept)])
+        reserved = len(display) + len(SITE_URL) + len(YOUTUBE_URL) + 6
+        if len(body) + reserved <= max_chars:
+            break
+        if len(kept) > 1:
+            kept.pop()
+        else:
+            while hashtags and len(body) + reserved > max_chars:
+                hashtags.pop()
+                display = " ".join(f"#{t}" for t in hashtags)
+                reserved = len(display) + len(SITE_URL) + len(YOUTUBE_URL) + 6
+            if len(body) + reserved > max_chars:
+                raise ValueError("SNS本文が長すぎます。試合情報を途中で切らず配信を止めます")
+            break
+    if not kept:
+        return "", [], SITE_URL
 
     # 検証済みのニュースがあれば1件添える。文字数に収まる場合のみ。
     news = load_news(news_path)
     if news:
         candidate = body + "\n" + news[0]["text"]
-        reserved = len(display) + len(SITE_URL) + 4
+        reserved = len(display) + len(SITE_URL) + len(YOUTUBE_URL) + 6
         if len(candidate) + reserved <= max_chars:
             body = candidate
 

@@ -239,7 +239,8 @@ MLB_WORDS = ("【MLB】", "MLB", "大リーグ", "メジャーリーグ")
 
 def caption(title: str) -> str:
     """YouTubeのタイトルを、TikTokの説明文に作り替える。"""
-    t = title.replace("#Shorts", "").replace("#shorts", "").strip()
+    import content_hashtags as ht
+    t = ht.strip_tags(title)
 
     # 見出しの【サッカー】が最も確かな手掛かりなので先に見る。
     if "【サッカー】" in t:
@@ -251,7 +252,8 @@ def caption(title: str) -> str:
     else:
         # どちらとも決まらないものはMLB扱い。本数が圧倒的に多い。
         tags = TAGS_MLB
-    return f"{t}\n\n{tags}"
+    sport = 'soccer' if tags == TAGS_SOCCER else 'mlb'
+    return f"{t}\n\n{ht.display(ht.select(t, 'tiktok', sport=sport))}"
 
 
 def title_from_record(path: str, kind: str) -> str | None:

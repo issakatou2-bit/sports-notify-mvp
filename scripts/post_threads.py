@@ -113,7 +113,7 @@ def main() -> int:
         print("[info] 今日は注目試合が無いため投稿をスキップします")
         return 0
 
-    body, hashtags, site_url = post_common.build_post(games, MAX_CHARS)
+    body, hashtags, site_url = post_common.build_post(games, MAX_CHARS, platform="threads")
     # Threadsはタグやリンクの装飾が要らない。本文にそのまま並べる。
     text = body + "\n" + " ".join(f"#{t}" for t in hashtags) + "\n" + site_url + "\n" + post_common.YOUTUBE_URL
 
