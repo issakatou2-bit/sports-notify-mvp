@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "updated_on": "2026-09-12",
+  "purpose": "企画候補のストック。動画生成対象ではなく、事実確認・台本・図の制作は別工程。",
+  "targets": {"ideas": 12, "source_briefs": 6, "reviewed_scripts": 4},
+  "topics": [
+    {"id":"two-tables","status":"private_pilot_completed","title":"CLで負けると、国内リーグの順位も下がる？","hook":"同じクラブに順位表が二つある理由","kind":"evergreen","source":"UEFA男子CL 2026/27 第3条・第17条","diagram":"二つの順位表・勝ち点の行き先","episode":"football-two-tables","video_id":"ICFFYySKugQ"},
+    {"id":"two-hits","status":"brief","title":"同じ2安打なのに、試合への影響が違うのはなぜ？","hook":"走者とアウト数で変わる一打の意味","kind":"evergreen_with_current_example","source_needed":["MLB公式boxscoreとplay-by-play","必要に応じてRetrosheetの過去データ"],"diagram":"二つの塁状況と得点の前後","acceptance":"選手個人とチームの成績を分離。架空例なら明記。勝利貢献の独自指標を公式指標としない"},
+    {"id":"magic-two","status":"brief","title":"マジックが一日に2つ減るのは、どんな日？","hook":"自チームの勝利と競争相手の敗戦を図で追う","kind":"seasonal","source_needed":["MLB公式の進出条件と同率時の規則","当日の公式順位と残り試合"],"diagram":"2チームの結果から数字が変わる過程","acceptance":"地区優勝・ワイルドカードを混同せず、その年の例外を確認。説明式を全ケースに適用しない"},
+    {"id":"pitcher-no-win","status":"brief","title":"7回無失点でも、勝ち投手になれないのはなぜ？","hook":"好投と勝利投手の記録は同じではない","kind":"evergreen_with_current_example","source_needed":["MLB公式の勝利投手の規則","採用試合の継投・得点経過"],"diagram":"投手交代と得点の時間軸","acceptance":"規則の例外と責任走者を確認。特定選手の実例は実記録を照合"},
+    {"id":"next-club-game","status":"brief","title":"代表戦で気になった選手、その次はどこで見られる？","hook":"代表→所属クラブ→大会→次戦を一枚でつなぐ","kind":"triggered","source_needed":["選手の現在所属をクラブ公式で確認","公式試合日程","日本での公式視聴案内"],"diagram":"選手から次戦までの地図","acceptance":"移籍前クラブを出さない。日時はJST。放送対象と契約条件を直前確認"},
+    {"id":"same-velocity","status":"brief","title":"同じ150キロでも、打ちにくさが違うのはなぜ？","hook":"球速以外に、ボールの見え方を変えるもの","kind":"evergreen_with_current_example","source_needed":["Baseball Savantの指標定義","比較対象の公式投球データ"],"diagram":"リリース位置と打者までの距離","acceptance":"因果を断定せず、球種・打者・位置・標本数の違いを説明"},
+    {"id":"six-point-game","status":"brief","title":"勝ち点3なのに『6ポイントの試合』と呼ぶのはなぜ？","hook":"順位争いの相手との直接対決を二つの結果で比べる","kind":"evergreen_with_current_example","source_needed":["対象リーグの勝ち点規則","対象試合前の公式順位"],"diagram":"勝つ場合・負ける場合の差","acceptance":"実際に6点加算されると誤解させない。説明例と実順位を分離"},
+    {"id":"ballpark-distance","status":"idea","title":"この打球、別の球場ならホームラン？","hook":"同じ打球を球場の形で見比べる","kind":"evergreen_with_current_example","source_needed":["公式球場寸法","Statcastの関連指標と注意事項"],"diagram":"外野フェンスと打球の模式図","acceptance":"推計を実際の結果としない。風・高さ・飛距離だけで確定しない"},
+    {"id":"time-zones","status":"idea","title":"同じ開始時刻なのに、日本では一時間ずれる日がある？","hook":"海外スポーツと時差の見方","kind":"seasonal","source_needed":["公式試合開始時刻","対象地域のタイムゾーンと夏時間"],"diagram":"現地日付と日本日付の時計","acceptance":"固定時差を年中適用しない。日付またぎを確認"},
+    {"id":"walk-value","status":"idea","title":"ヒット0本でも、打線を助けたと言える？","hook":"四球と出塁を一場面から読む","kind":"evergreen_with_current_example","source_needed":["MLB公式の打席結果","出塁率の公式定義"],"diagram":"塁が埋まる前後","acceptance":"選手の貢献を一指標だけで断定しない"},
+    {"id":"next-round-home-away","status":"idea","title":"ホームとアウェー、同じ相手と二度戦う意味は？","hook":"リーグ戦と2試合の合計得点を分ける","kind":"seasonal","source_needed":["対象年度・大会・ラウンドの公式規則"],"diagram":"二試合の得点を一つに集める","acceptance":"旧アウェーゴール規則を混ぜない。すべての大会で同じとしない"},
+    {"id":"lineup-position","status":"idea","title":"同じ選手なのに、代表とクラブで役割が違う？","hook":"ポジション名と実際の立ち位置を分ける","kind":"triggered","source_needed":["公式先発表","利用条件を確認したイベントデータまたは試合観察記録"],"diagram":"二つのピッチの配置","acceptance":"出場位置だけで戦術や本人の能力を断定しない。架空の動きを実プレーに見せない"}
+  ]
+}

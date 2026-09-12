@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-09-12",
+  "llm_generation_enabled": false,
+  "approved_monthly_budget_usd": null,
+  "current_pilot_llm_calls": 0,
+  "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "proposal_only": {
+    "writer": {"model":"claude-sonnet-5","input_tokens":10000,"output_tokens":3000,"input_usd_per_million":2,"output_usd_per_million":10},
+    "reviewer": {"model":"claude-haiku-4-5-20251001","input_tokens":8000,"output_tokens":1000,"input_usd_per_million":1,"output_usd_per_million":5},
+    "max_additional_writer_attempts": 1,
+    "normal_episode_estimate_usd": 0.063,
+    "episode_with_one_revision_estimate_usd": 0.113,
+    "suggested_monthly_budget_usd": 2,
+    "fx_for_illustration_jpy_per_usd": 150,
+    "excludes": ["tax","chat subscriptions","development usage","CI compute and storage","paid data or media","server-side web search and other tools","different input size or provider prices"]
+  },
+  "activation_requirements": [
+    "モデル・概算・月の上限・失敗時の扱いをユーザーへ先に説明する",
+    "公開用の完成原稿とは別のdraftへ出力する",
+    "入力と出力の上限、呼び出し前の予算予約、実際のusageの記録を実装する",
+    "新モデル・単価不明・結果不明時に無制限再試行しない",
+    "出典をもとに内容を確認してからreadyへ移す"
+  ]
+}

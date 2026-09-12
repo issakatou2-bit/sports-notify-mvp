@@ -94,11 +94,23 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python scripts/pilot_upload.py upload --out build/pilot
-      - name: 見本・台本・字幕・検査結果を保存
+      # 公開repoのartifactはログインした読取者も取得できる。映像を残さない。
+      - name: 検査結果だけを保存
         if: always()
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: private-pilot-${{ github.run_id }}
+          name: pilot-receipts-${{ github.run_id }}
+          path: |
+            build/pilot/plan.json
+            build/pilot/quality.json
+            build/pilot/upload-receipt.json
+          retention-days: 30
+          if-no-files-found: warn
+      - name: 完成素材を保存（非公開リポジトリのみ）
+        if: always() && github.event.repository.private == true
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: private-pilot-media-${{ github.run_id }}
           path: build/pilot/
           retention-days: 30
           if-no-files-found: warn
@@ -108,7 +120,8 @@ jobs:
           python - <<'PY'
           import json, os, pathlib
           out = pathlib.Path('build/pilot')
-          lines = ['## 観戦の見取り図（非公開試作）', '公開設定はprivateに固定。SNS配信・公開予約はありません。']
+          lines = ['## 観戦の見取り図（非公開試作）', '公開設定はprivateに固定。SNS配信・公開予約はありません。',
+                   '公開リポジトリには検査結果だけを保存します。完成映像は所有者のYouTube Studioから確認してください。']
           for name in ['plan.json', 'quality.json', 'upload-receipt.json']:
               if (out / name).exists():
                   value = json.loads((out / name).read_text(encoding='utf-8'))
