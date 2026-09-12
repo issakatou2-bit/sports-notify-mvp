@@ -26,6 +26,8 @@ concurrency:
 jobs:
   build_and_notify:
     runs-on: ubuntu-latest
+    outputs:
+      standings_ready: ${{ steps.standings.outcome == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -190,6 +192,7 @@ jobs:
       # 「mlb順位表」で、それに当たるものが1つも無かった。
       # 数字はMLB公式APIから取るので、毎日ここで作り直す。
       - name: Build standings page
+        id: standings
         continue-on-error: true
         run: python scripts/generate_standings_page.py --out public/standings.html
 
@@ -292,6 +295,7 @@ jobs:
       # ポッドキャストのmp3をpublic/へ出した後に、Pagesへ渡す。
       # 順序が逆だと、その日のエピソードが公開されない。
       - name: Upload Pages artifact
+        if: steps.standings.outcome == 'success'
         # サイトが1日古くなるより、動画が出ない方が痛い。
         # 動画の生成はこれらより後ろに並んでいる。
         continue-on-error: true
@@ -517,8 +521,13 @@ jobs:
         if: always()
         run: python scripts/verify_published.py --kind daily
 
+      - name: Explain a skipped site update
+        if: always() && steps.standings.outcome != 'success'
+        run: echo "::warning::順位表を更新できなかったため、公開中のサイトを維持します。動画の投稿とは別の結果です。"
+
   deploy:
     needs: build_and_notify
+    if: needs.build_and_notify.outputs.standings_ready == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
