@@ -3,7 +3,7 @@
   const form = document.getElementById('inquiry-form');
   const draft = document.getElementById('draft');
   const send = document.getElementById('send-mail');
-  const sources = new Set(['home', 'about', 'watch', 'youtube', 'bluesky', 'tiktok', 'threads', 'podcast', 'direct']);
+  const sources = new Set(['home', 'about', 'guide', 'watch', 'youtube', 'bluesky', 'tiktok', 'threads', 'podcast', 'direct']);
   const requested = new URLSearchParams(location.search).get('from');
   const source = sources.has(requested) ? requested : 'direct';
   const id = 'CS-' + (globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`).slice(0, 18);
