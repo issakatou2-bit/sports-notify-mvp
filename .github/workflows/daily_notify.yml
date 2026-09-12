@@ -299,6 +299,9 @@ jobs:
 
       # ポッドキャストのmp3をpublic/へ出した後に、Pagesへ渡す。
       # 順序が逆だと、その日のエピソードが公開されない。
+      - name: Preserve published corrections
+        run: python scripts/apply_content_corrections.py --site public
+
       - name: Upload Pages artifact
         if: steps.standings.outcome == 'success' && steps.archive.outcome == 'success'
         # サイトが1日古くなるより、動画が出ない方が痛い。

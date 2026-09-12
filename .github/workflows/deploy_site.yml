@@ -157,6 +157,9 @@ jobs:
           echo "--- 合計 ---"
           find public -type f | wc -l
 
+      - name: Preserve published corrections
+        run: python scripts/apply_content_corrections.py --site public
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
