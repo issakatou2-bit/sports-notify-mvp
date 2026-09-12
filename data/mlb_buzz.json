@@ -1,20 +1,99 @@
 {
-  "updated_at": "2026-09-11T06:01:59.575277+00:00",
+  "updated_at": "2026-09-12T06:01:59.054255+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "ff_QRqsC01Q",
-      "title": "REDS vs. DODGERS: Official Full Game Highlights (September 9) | 2026 MLB Season",
-      "published_at": "2026-09-10T05:00:44Z",
-      "views": 616875,
-      "matchup": "REDS vs. DODGERS",
-      "game_date": "2026-09-09",
+      "video_id": "a-6V709EOd8",
+      "title": "PIRATES vs. CUBS: Official Full Game Highlights (September 11) | 2026 MLB Season",
+      "published_at": "2026-09-11T21:24:12Z",
+      "views": 107154,
+      "matchup": "PIRATES vs. CUBS",
+      "game_date": "2026-09-11",
       "result": {
-        "away_jp": "レッズ",
-        "home_jp": "ドジャース",
-        "away_score": 1,
-        "home_score": 14,
+        "away_jp": "パイレーツ",
+        "home_jp": "カブス",
+        "away_score": 2,
+        "home_score": 12,
+        "innings": [
+          {
+            "num": 1,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 3
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 2
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 4
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 1,
+            "home": 2
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": null
+          }
+        ],
+        "away_hits": 7,
+        "away_errors": 1,
+        "home_hits": 16,
+        "home_errors": 0,
+        "star_name": "Alex Bregman",
+        "star_line": "4打数3安打 2打点 1本塁打",
+        "star_team": "カブス",
+        "away_starter": {
+          "name": "Wilber Dotel",
+          "team": "パイレーツ",
+          "line": "2.0回 1奪三振 自責3　敗戦投手（通算1勝5敗）"
+        },
+        "home_starter": {
+          "name": "Shota Imanaga",
+          "team": "カブス",
+          "line": "6.0回 4奪三振 自責2　勝利投手（通算10勝10敗）"
+        }
+      },
+      "topic_jp": "パイレーツ 対 カブス"
+    },
+    {
+      "video_id": "1g2ohFR7wzw",
+      "title": "DODGERS vs. MARLINS: Official Full Game Highlights (September 11) | 2026 MLB Season",
+      "published_at": "2026-09-12T02:29:10Z",
+      "views": 47401,
+      "matchup": "DODGERS vs. MARLINS",
+      "game_date": "2026-09-11",
+      "result": {
+        "away_jp": "ドジャース",
+        "home_jp": "マーリンズ",
+        "away_score": 6,
+        "home_score": 2,
         "innings": [
           {
             "num": 1,
@@ -24,17 +103,17 @@
           {
             "num": 2,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 3,
-            "away": 0,
-            "home": 2
+            "away": 1,
+            "home": 0
           },
           {
             "num": 4,
-            "away": 1,
-            "home": 6
+            "away": 0,
+            "home": 0
           },
           {
             "num": 5,
@@ -43,13 +122,13 @@
           },
           {
             "num": 6,
-            "away": 0,
-            "home": 2
+            "away": 1,
+            "home": 1
           },
           {
             "num": 7,
-            "away": 0,
-            "home": 2
+            "away": 4,
+            "home": 0
           },
           {
             "num": 8,
@@ -59,56 +138,56 @@
           {
             "num": 9,
             "away": 0,
-            "home": null
+            "home": 0
           }
         ],
-        "away_hits": 6,
+        "away_hits": 8,
         "away_errors": 0,
-        "home_hits": 14,
+        "home_hits": 10,
         "home_errors": 0,
-        "star_name": "Yoshinobu Yamamoto",
-        "star_line": "7.0回 10奪三振 自責1",
+        "star_name": "Kyle Tucker",
+        "star_line": "3打数3安打 5打点 1本塁打",
         "star_team": "ドジャース",
         "away_starter": {
-          "name": "Rhett Lowder",
-          "team": "レッズ",
-          "line": "3.1回 4奪三振 自責7　敗戦投手（通算6勝10敗）"
+          "name": "Blake Snell",
+          "team": "ドジャース",
+          "line": "5.2回 8奪三振 自責1　勝利投手（通算4勝1敗）"
         },
         "home_starter": {
-          "name": "Yoshinobu Yamamoto",
-          "team": "ドジャース",
-          "line": "7.0回 10奪三振 自責1　勝利投手（通算13勝8敗）"
+          "name": "Ryan Gusto",
+          "team": "マーリンズ",
+          "line": "6.0回 3奪三振 自責2　敗戦投手（通算1勝5敗）"
         }
       },
-      "topic_jp": "レッズ 対 ドジャース"
+      "topic_jp": "ドジャース 対 マーリンズ"
     },
     {
-      "video_id": "RHj7hKqL-KU",
-      "title": "ROCKIES vs. YANKEES: Official Full Game Highlights (September 9) | 2026 MLB Season",
-      "published_at": "2026-09-10T01:56:07Z",
-      "views": 246618,
-      "matchup": "ROCKIES vs. YANKEES",
-      "game_date": "2026-09-09",
+      "video_id": "mjtEQvU9Bx0",
+      "title": "METS vs. YANKEES: Official Full Game Highlights (September 11) | 2026 MLB Season",
+      "published_at": "2026-09-12T02:27:26Z",
+      "views": 33551,
+      "matchup": "METS vs. YANKEES",
+      "game_date": "2026-09-11",
       "result": {
-        "away_jp": "ロッキーズ",
+        "away_jp": "メッツ",
         "home_jp": "ヤンキース",
-        "away_score": 1,
+        "away_score": 4,
         "home_score": 6,
         "innings": [
           {
             "num": 1,
             "away": 0,
-            "home": 0
+            "home": 1
           },
           {
             "num": 2,
-            "away": 0,
-            "home": 1
+            "away": 1,
+            "home": 3
           },
           {
             "num": 3,
             "away": 0,
-            "home": 4
+            "home": 0
           },
           {
             "num": 4,
@@ -117,8 +196,8 @@
           },
           {
             "num": 5,
-            "away": 1,
-            "home": 0
+            "away": 0,
+            "home": 1
           },
           {
             "num": 6,
@@ -127,72 +206,72 @@
           },
           {
             "num": 7,
-            "away": 0,
+            "away": 1,
             "home": 0
           },
           {
             "num": 8,
-            "away": 0,
+            "away": 1,
             "home": 1
           },
           {
             "num": 9,
-            "away": 0,
+            "away": 1,
             "home": null
           }
         ],
-        "away_hits": 5,
+        "away_hits": 7,
         "away_errors": 0,
-        "home_hits": 7,
-        "home_errors": 0,
-        "star_name": "Will Warren",
-        "star_line": "6.0回 8奪三振 自責1",
+        "home_hits": 13,
+        "home_errors": 1,
+        "star_name": "Carlos Rodón",
+        "star_line": "6.1回 8奪三振 自責1",
         "star_team": "ヤンキース",
         "away_starter": {
-          "name": "Tomoyuki Sugano",
-          "team": "ロッキーズ",
-          "line": "6.0回 5奪三振 自責5　敗戦投手（通算12勝9敗）"
+          "name": "Nolan McLean",
+          "team": "メッツ",
+          "line": "5.0回 5奪三振 自責5　敗戦投手（通算11勝9敗）"
         },
         "home_starter": {
-          "name": "Will Warren",
+          "name": "Carlos Rodón",
           "team": "ヤンキース",
-          "line": "6.0回 8奪三振 自責1　勝利投手（通算10勝6敗）"
+          "line": "6.1回 8奪三振 自責1　勝利投手（通算6勝3敗）"
         }
       },
-      "topic_jp": "ロッキーズ 対 ヤンキース"
+      "topic_jp": "メッツ 対 ヤンキース"
     },
     {
-      "video_id": "9YCaKJa-K4A",
-      "title": "CUBS vs. BREWERS: Official Full Game Highlights (September 9) | 2026 MLB Season",
-      "published_at": "2026-09-10T02:57:21Z",
-      "views": 151383,
-      "matchup": "CUBS vs. BREWERS",
-      "game_date": "2026-09-09",
+      "video_id": "2DPGBqoUFV0",
+      "title": "ORIOLES vs. BLUE JAYS: Official Full Game Highlights (September 11) | 2026 MLB Season",
+      "published_at": "2026-09-12T02:30:42Z",
+      "views": 25449,
+      "matchup": "ORIOLES vs. BLUE JAYS",
+      "game_date": "2026-09-11",
       "result": {
-        "away_jp": "カブス",
-        "home_jp": "ブリュワーズ",
-        "away_score": 6,
-        "home_score": 8,
+        "away_jp": "オリオールズ",
+        "home_jp": "ブルージェイズ",
+        "away_score": 7,
+        "home_score": 4,
         "innings": [
           {
             "num": 1,
-            "away": 0,
-            "home": 3
+            "away": 1,
+            "home": 0
           },
           {
             "num": 2,
-            "away": 0,
-            "home": 3
+            "away": 5,
+            "home": 0
           },
           {
             "num": 3,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 4,
-            "away": 1,
-            "home": 0
+            "away": 0,
+            "home": 1
           },
           {
             "num": 5,
@@ -206,7 +285,7 @@
           },
           {
             "num": 7,
-            "away": 0,
+            "away": 1,
             "home": 0
           },
           {
@@ -216,62 +295,62 @@
           },
           {
             "num": 9,
-            "away": 5,
-            "home": null
+            "away": 0,
+            "home": 2
           }
         ],
-        "away_hits": 5,
-        "away_errors": 2,
-        "home_hits": 9,
-        "home_errors": 1,
-        "star_name": "Logan Henderson",
-        "star_line": "5.0回 6奪三振 自責0",
-        "star_team": "ブリュワーズ",
+        "away_hits": 11,
+        "away_errors": 1,
+        "home_hits": 10,
+        "home_errors": 0,
+        "star_name": "Dylan Beavers",
+        "star_line": "5打数2安打 3打点 1本塁打",
+        "star_team": "オリオールズ",
         "away_starter": {
-          "name": "Kevin Gausman",
-          "team": "カブス",
-          "line": "4.0回 6奪三振 自責6　敗戦投手（通算9勝12敗）"
+          "name": "Chris Bassitt",
+          "team": "オリオールズ",
+          "line": "5.0回 5奪三振 自責2　勝利投手（通算7勝5敗）"
         },
         "home_starter": {
-          "name": "Logan Henderson",
-          "team": "ブリュワーズ",
-          "line": "5.0回 6奪三振 自責0　勝利投手（通算10勝3敗）"
+          "name": "Max Scherzer",
+          "team": "ブルージェイズ",
+          "line": "5.0回 3奪三振 自責6　敗戦投手（通算2勝8敗）"
         }
       },
-      "topic_jp": "カブス 対 ブリュワーズ"
+      "topic_jp": "オリオールズ 対 ブルージェイズ"
     },
     {
-      "video_id": "FRuskGCaa5Y",
-      "title": "METS vs. MARLINS: Official Full Game Highlights (September 9) | 2026 MLB Season",
-      "published_at": "2026-09-10T02:51:50Z",
-      "views": 128395,
-      "matchup": "METS vs. MARLINS",
-      "game_date": "2026-09-09",
+      "video_id": "ziuq6JjIpNM",
+      "title": "PHILLIES vs. BRAVES: Official Full Game Highlights (September 11) | 2026 MLB Season",
+      "published_at": "2026-09-12T03:44:11Z",
+      "views": 22760,
+      "matchup": "PHILLIES vs. BRAVES",
+      "game_date": "2026-09-11",
       "result": {
-        "away_jp": "メッツ",
-        "home_jp": "マーリンズ",
-        "away_score": 15,
-        "home_score": 14,
+        "away_jp": "フィリーズ",
+        "home_jp": "ブレーブス",
+        "away_score": 5,
+        "home_score": 6,
         "innings": [
           {
             "num": 1,
             "away": 0,
-            "home": 0
+            "home": 1
           },
           {
             "num": 2,
-            "away": 6,
+            "away": 3,
             "home": 0
           },
           {
             "num": 3,
-            "away": 2,
+            "away": 0,
             "home": 0
           },
           {
             "num": 4,
             "away": 0,
-            "home": 3
+            "home": 0
           },
           {
             "num": 5,
@@ -281,286 +360,205 @@
           {
             "num": 6,
             "away": 0,
-            "home": 5
+            "home": 0
           },
           {
             "num": 7,
-            "away": 6,
+            "away": 0,
             "home": 1
           },
           {
             "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 10,
+            "away": 1,
+            "home": 1
+          },
+          {
+            "num": 11,
             "away": 1,
             "home": 2
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": 3
           }
         ],
-        "away_hits": 15,
-        "away_errors": 0,
-        "home_hits": 20,
+        "away_hits": 7,
+        "away_errors": 1,
+        "home_hits": 11,
         "home_errors": 0,
-        "star_name": "Christopher Morel",
-        "star_line": "4打数3安打 3打点 1本塁打",
-        "star_team": "メッツ",
+        "star_name": "Chris Sale",
+        "star_line": "7.0回 6奪三振 自責3",
+        "star_team": "ブレーブス",
         "away_starter": {
-          "name": "Robert Stock",
-          "team": "メッツ",
-          "line": "4.0回 4奪三振 自責3"
-        },
-        "home_starter": {
-          "name": "Janson Junk",
-          "team": "マーリンズ",
-          "line": "3.0回 0奪三振 自責8"
-        }
-      },
-      "topic_jp": "メッツ 対 マーリンズ"
-    },
-    {
-      "video_id": "--aA1jztfz8",
-      "title": "ASTROS vs. PHILLIES: Official Full Game Highlights (September 9) | 2026 MLB Season",
-      "published_at": "2026-09-10T02:02:09Z",
-      "views": 124785,
-      "matchup": "ASTROS vs. PHILLIES",
-      "game_date": "2026-09-09",
-      "result": {
-        "away_jp": "アストロズ",
-        "home_jp": "フィリーズ",
-        "away_score": 7,
-        "home_score": 11,
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 4,
-            "home": 4
-          },
-          {
-            "num": 4,
-            "away": 2,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 6
-          },
-          {
-            "num": 7,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": null
-          }
-        ],
-        "away_hits": 12,
-        "away_errors": 2,
-        "home_hits": 12,
-        "home_errors": 2,
-        "star_name": "Isaac Paredes",
-        "star_line": "4打数2安打 3打点 1本塁打",
-        "star_team": "アストロズ",
-        "away_starter": {
-          "name": "Hunter Brown",
-          "team": "アストロズ",
-          "line": "5.0回 7奪三振 自責4"
-        },
-        "home_starter": {
-          "name": "Cristopher Sánchez",
+          "name": "Aaron Nola",
           "team": "フィリーズ",
-          "line": "6.0回 3奪三振 自責6　勝利投手（通算17勝5敗）"
+          "line": "6.1回 3奪三振 自責2"
+        },
+        "home_starter": {
+          "name": "Chris Sale",
+          "team": "ブレーブス",
+          "line": "7.0回 6奪三振 自責3"
         }
       },
-      "topic_jp": "アストロズ 対 フィリーズ"
+      "topic_jp": "フィリーズ 対 ブレーブス"
     }
   ],
   "all": [
     {
-      "video_id": "ff_QRqsC01Q",
-      "matchup": "REDS vs. DODGERS",
-      "game_date": "2026-09-09",
-      "views": 616875
+      "video_id": "a-6V709EOd8",
+      "matchup": "PIRATES vs. CUBS",
+      "game_date": "2026-09-11",
+      "views": 107154
     },
     {
-      "video_id": "RHj7hKqL-KU",
-      "matchup": "ROCKIES vs. YANKEES",
-      "game_date": "2026-09-09",
-      "views": 246618
+      "video_id": "1g2ohFR7wzw",
+      "matchup": "DODGERS vs. MARLINS",
+      "game_date": "2026-09-11",
+      "views": 47401
     },
     {
-      "video_id": "9YCaKJa-K4A",
-      "matchup": "CUBS vs. BREWERS",
-      "game_date": "2026-09-09",
-      "views": 151383
+      "video_id": "mjtEQvU9Bx0",
+      "matchup": "METS vs. YANKEES",
+      "game_date": "2026-09-11",
+      "views": 33551
     },
     {
-      "video_id": "FRuskGCaa5Y",
-      "matchup": "METS vs. MARLINS",
-      "game_date": "2026-09-09",
-      "views": 128395
+      "video_id": "2DPGBqoUFV0",
+      "matchup": "ORIOLES vs. BLUE JAYS",
+      "game_date": "2026-09-11",
+      "views": 25449
     },
     {
-      "video_id": "--aA1jztfz8",
-      "matchup": "ASTROS vs. PHILLIES",
-      "game_date": "2026-09-09",
-      "views": 124785
+      "video_id": "ziuq6JjIpNM",
+      "matchup": "PHILLIES vs. BRAVES",
+      "game_date": "2026-09-11",
+      "views": 22760
     },
     {
-      "video_id": "yLcMsOrrz8M",
-      "matchup": "RAYS vs. BRAVES",
-      "game_date": "2026-09-09",
-      "views": 104608
+      "video_id": "G6bsnM7X6VY",
+      "matchup": "ASTROS vs. RAYS",
+      "game_date": "2026-09-11",
+      "views": 21787
     },
     {
-      "video_id": "YRUi8ftzu80",
-      "matchup": "ANGELS vs. RED SOX",
-      "game_date": "2026-09-09",
-      "views": 67433
+      "video_id": "mbJrM3FYDzg",
+      "matchup": "REDS vs. BREWERS",
+      "game_date": "2026-09-11",
+      "views": 21707
     },
     {
-      "video_id": "qkYG7ldzmzQ",
-      "matchup": "GUARDIANS vs. ORIOLES",
-      "game_date": "2026-09-09",
-      "views": 61097
+      "video_id": "m40hFENH7Wo",
+      "matchup": "ROCKIES vs. TIGERS",
+      "game_date": "2026-09-11",
+      "views": 10177
     },
     {
-      "video_id": "YAUGFipjWkc",
-      "matchup": "PIRATES vs. WHITE SOX",
-      "game_date": "2026-09-09",
-      "views": 56908
+      "video_id": "nSHvhZB-jYU",
+      "matchup": "ROYALS vs. RED SOX",
+      "game_date": "2026-09-11",
+      "views": 7367
     },
     {
-      "video_id": "y-hUOL56exU",
-      "matchup": "D-BACKS vs. ROYALS",
-      "game_date": "2026-09-09",
-      "views": 47763
+      "video_id": "4NxPAIT3RVs",
+      "matchup": "GUARDIANS vs. TWINS",
+      "game_date": "2026-09-11",
+      "views": 5761
     },
     {
-      "video_id": "fy97MfnDaK4",
-      "matchup": "RAYS vs. BRAVES",
-      "game_date": "2026-09-10",
-      "views": 134302
+      "video_id": "BrxqMMquVhc",
+      "matchup": "WHITE SOX vs. CARDINALS",
+      "game_date": "2026-09-11",
+      "views": 4943
     },
     {
-      "video_id": "R2FK2jYFw4o",
-      "matchup": "ASTROS vs. PHILLIES",
-      "game_date": "2026-09-10",
-      "views": 86776
+      "video_id": "iW3lvltJ5ZQ",
+      "matchup": "ANGELS vs. NATIONALS",
+      "game_date": "2026-09-11",
+      "views": 4706
     },
     {
-      "video_id": "SD4UvqaOq3c",
-      "matchup": "RANGERS vs. MARINERS",
-      "game_date": "2026-09-10",
-      "views": 45864
+      "video_id": "BtRiY08mJjU",
+      "matchup": "RANGERS vs. D-BACKS",
+      "game_date": "2026-09-11",
+      "views": 3681
+    },
+    {
+      "video_id": "pi0mt6mH_AQ",
+      "matchup": "MARINERS vs. ATHLETICS",
+      "game_date": "2026-09-11",
+      "views": 2545
+    },
+    {
+      "video_id": "16XhM_5vQU0",
+      "matchup": "PADRES vs. GIANTS",
+      "game_date": "2026-09-11",
+      "views": 2009
     },
     {
       "video_id": "to86h_OiueQ",
       "matchup": "ROCKIES vs. YANKEES",
       "game_date": "2026-09-10",
-      "views": 31125
+      "views": 312164
     },
     {
       "video_id": "oUDscIT6cMs",
       "matchup": "PIRATES vs. WHITE SOX",
       "game_date": "2026-09-10",
-      "views": 13017
-    },
-    {
-      "video_id": "UwNA_WlAp7Q",
-      "matchup": "",
-      "game_date": "",
-      "views": 192283
-    },
-    {
-      "video_id": "apyZBmNFya4",
-      "matchup": "",
-      "game_date": "",
-      "views": 153106
-    },
-    {
-      "video_id": "eB-r82wQT6s",
-      "matchup": "",
-      "game_date": "",
-      "views": 120254
-    },
-    {
-      "video_id": "wYhStNqqsQY",
-      "matchup": "",
-      "game_date": "",
-      "views": 68844
-    },
-    {
-      "video_id": "Ic4oq9yCC7o",
-      "matchup": "",
-      "game_date": "",
-      "views": 59771
-    },
-    {
-      "video_id": "GCW9PPHupUc",
-      "matchup": "",
-      "game_date": "",
-      "views": 56798
-    },
-    {
-      "video_id": "ayoN6eFEuT4",
-      "matchup": "",
-      "game_date": "",
-      "views": 43702
-    },
-    {
-      "video_id": "UkrPixd8d6U",
-      "matchup": "",
-      "game_date": "",
-      "views": 38722
-    },
-    {
-      "video_id": "dm5SpY-5mT4",
-      "matchup": "",
-      "game_date": "",
-      "views": 24854
+      "views": 91225
     },
     {
       "video_id": "5EQL79FJ2i0",
       "matchup": "",
       "game_date": "",
-      "views": 22456
+      "views": 117873
     },
     {
-      "video_id": "7XxfHYldHWA",
+      "video_id": "hnWyyRSeHSc",
       "matchup": "",
       "game_date": "",
-      "views": 18495
+      "views": 47333
     },
     {
-      "video_id": "7YO8nSg5EQQ",
+      "video_id": "NEPvPYza7KY",
       "matchup": "",
       "game_date": "",
-      "views": 8843
+      "views": 39256
+    },
+    {
+      "video_id": "KlPVQzukOXo",
+      "matchup": "",
+      "game_date": "",
+      "views": 28628
+    },
+    {
+      "video_id": "VsRQukgGf80",
+      "matchup": "",
+      "game_date": "",
+      "views": 26689
+    },
+    {
+      "video_id": "065xm7C1ltw",
+      "matchup": "",
+      "game_date": "",
+      "views": 15708
+    },
+    {
+      "video_id": "oB7c1aNbK_A",
+      "matchup": "",
+      "game_date": "",
+      "views": 10280
+    },
+    {
+      "video_id": "TBLZVkR0UOs",
+      "matchup": "",
+      "game_date": "",
+      "views": 3154
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-11T09:39:09.770958+00:00",
+  "updated_at": "2026-09-12T06:01:55.051027+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
@@ -11,14 +11,15 @@
           "value": 0.8837209302325582,
           "shown": "0.88",
           "at": 2,
-          "of": 51,
+          "of": 50,
+          "ties": 1,
           "above": {
             "name": "Jacob Misiorowski",
             "shown": "0.80"
           },
           "below": {
             "name": "Drew Rasmussen",
-            "shown": "0.91"
+            "shown": "0.92"
           },
           "key": "whip",
           "label": "WHIP",
@@ -32,10 +33,11 @@
       "player_id": "808959",
       "items": [
         {
-          "value": 0.5823045267489712,
-          "shown": "58.2%",
+          "value": 0.5811088295687885,
+          "shown": "58.1%",
           "at": 1,
           "of": 139,
+          "ties": 1,
           "above": null,
           "below": {
             "name": "Kyle Schwarber",
@@ -49,14 +51,18 @@
           "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
         },
         {
-          "value": 0.3497942386831276,
-          "shown": "35.0%",
-          "at": 1,
+          "value": 0.3490759753593429,
+          "shown": "34.9%",
+          "at": 2,
           "of": 139,
-          "above": null,
-          "below": {
+          "ties": 1,
+          "above": {
             "name": "Colson Montgomery",
-            "shown": "34.7%"
+            "shown": "34.9%"
+          },
+          "below": {
+            "name": "Kyle Schwarber",
+            "shown": "32.7%"
           },
           "key": "k_rate",
           "label": "三振率",
@@ -65,14 +71,18 @@
           "side": "top"
         },
         {
-          "value": 0.16872427983539096,
-          "shown": "16.9%",
-          "at": 1,
+          "value": 0.16837782340862423,
+          "shown": "16.8%",
+          "at": 2,
           "of": 139,
-          "above": null,
-          "below": {
+          "ties": 1,
+          "above": {
             "name": "James Wood",
             "shown": "16.8%"
+          },
+          "below": {
+            "name": "Jake Bauers",
+            "shown": "16.5%"
           },
           "key": "bb_rate",
           "label": "四球率",
@@ -85,13 +95,14 @@
           "shown": ".267",
           "at": 5,
           "of": 139,
+          "ties": 1,
           "above": {
             "name": "Hunter Goodman",
-            "shown": ".278"
+            "shown": ".276"
           },
           "below": {
-            "name": "Luis García Jr.",
-            "shown": ".266"
+            "name": "Ben Rice",
+            "shown": ".264"
           },
           "key": "iso",
           "label": "ISO",
@@ -100,7 +111,7 @@
           "side": "top"
         }
       ],
-      "mendoza": "打率.208。メンドーサ・ライン（.200）のすぐ上"
+      "mendoza": "打率.207。メンドーサ・ライン（.200）のすぐ上"
     }
   }
 }

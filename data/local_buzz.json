@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-11T06:02:10.573350+00:00",
+  "updated_at": "2026-09-12T06:02:11.341881+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,28 +13,52 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "レンジャーズ、マリナーズにシリーズ敗北"
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 8,
+      "tone": "好調",
+      "gist": "ブリュワーズが20点以上の完封勝利を複数達成し初の記録"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "ヤンキース、若手選手の連続満塁弾が話題"
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
+      "mentions": 4,
+      "tone": "不振",
+      "gist": "レッズがブリュワーズに0-20で完封負け歴史的大敗"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
       "mentions": 3,
+      "tone": "好調",
+      "gist": "レイズがカミネロスの決勝打でプレーオフ出場決定"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 3,
       "tone": "不振",
-      "gist": "レイズ、ブレーブスに敗れプレーオフ進出延期"
+      "gist": "フィリーズがブレーブスに延長戦で逆転負けしNL東の望み薄れる"
+    },
+    {
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "レンジャーズがダイヤモンドバックスの猛攻で敗戦投手陣が崩壊"
+    },
+    {
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "ブレーブスが9回11回の激闘でフィリーズに5ゲーム差つける"
     },
     {
       "team_id": "145",
@@ -42,45 +66,16 @@
       "name_en": "Chicago White Sox",
       "mentions": 2,
       "tone": "不振",
-      "gist": "ホワイトソックス、パイレーツに連敗"
+      "gist": "ホワイトソックスが4連敗でAL中央リード0.5ゲームに"
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ブリュワーズ傘下フィッシャー、47本塁打で記録達成"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "パドレス監督の不手際でウエーラー交代"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブルージェイズ、北極圏に野球場を建設"
-    },
-    {
-      "team_id": "133",
-      "name": "アスレチックス",
-      "name_en": "Athletics",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "アスレチックス、ポストシーズン進出が消滅"
+      "gist": "マリナーズが22-0で歴史的大敗受ける"
     }
   ],
-  "players": [
-    {
-      "name": "大谷翔平",
-      "mentions": 1
-    }
-  ]
+  "players": []
 }

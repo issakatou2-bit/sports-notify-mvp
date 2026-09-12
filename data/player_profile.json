@@ -1,111 +1,121 @@
 {
-  "generated_at": "2026-09-11T06:01:15.558480+00:00",
-  "date_jst": "2026-09-11",
-  "name": "Anthony Volpe",
-  "player_id": "683011",
-  "team": "ヤンキース",
+  "generated_at": "2026-09-12T06:01:09.143674+00:00",
+  "date_jst": "2026-09-12",
+  "name": "Kyle Tucker",
+  "player_id": "663656",
+  "team": "ドジャース",
   "group": "hitting",
-  "why": "2026-09-11のMLBで最も活躍",
-  "headline": "4打数3安打　1本塁打　5打点　1盗塁",
-  "score": 147,
+  "why": "2026-09-12のMLBで最も活躍",
+  "headline": "3打数3安打　1本塁打　1三塁打　5打点",
+  "score": 168,
   "bio": {
-    "name_en": "Anthony Volpe",
-    "age": 25,
-    "birth_city": "New York",
-    "birth_state": "NY",
+    "name_en": "Kyle Tucker",
+    "age": 29,
+    "birth_city": "Tampa",
+    "birth_state": "FL",
     "birth_country": "USA",
-    "birth_date": "2001-04-28",
-    "debut": "2023-03-30",
-    "draft_year": 2019,
-    "bats": "Right",
+    "birth_date": "1997-01-17",
+    "debut": "2018-07-07",
+    "draft_year": 2015,
+    "bats": "Left",
     "throws": "Right",
-    "number": "11",
-    "position": "Shortstop",
+    "number": "23",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "5' 10\"",
-    "weight": 197
+    "height": "6' 3\"",
+    "weight": 212
   },
   "teams": [
     {
-      "team": "ヤンキース",
-      "from": 2023,
+      "team": "アストロズ",
+      "from": 2018,
+      "to": 2024
+    },
+    {
+      "team": "カブス",
+      "from": 2025,
+      "to": 2025
+    },
+    {
+      "team": "ドジャース",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 529,
-    "avg": ".225",
-    "hr": 54,
-    "rbi": 216,
-    "ops": ".664",
-    "sb": 78,
-    "hits": 426
+    "games": 908,
+    "avg": ".266",
+    "hr": 161,
+    "rbi": 555,
+    "ops": ".840",
+    "sb": 129,
+    "hits": 860
   },
   "this_season": {
-    "games": 57,
-    "avg": ".251",
-    "hr": 2,
-    "rbi": 24,
-    "ops": ".682",
-    "sb": 8,
-    "hits": 44
+    "games": 139,
+    "avg": ".230",
+    "hr": 14,
+    "rbi": 65,
+    "ops": ".701",
+    "sb": 10,
+    "hits": 112
   },
   "last_season": {
-    "games": 153,
-    "avg": ".212",
-    "hr": 19,
-    "rbi": 72,
-    "ops": ".663",
-    "sb": 18,
-    "hits": 114
+    "games": 136,
+    "avg": ".266",
+    "hr": 22,
+    "rbi": 73,
+    "ops": ".841",
+    "sb": 25,
+    "hits": 133
   },
   "recent": [
     {
-      "date": "2026-09-10",
-      "line": "4打数3安打 1本塁打 5打点",
-      "opponent": "Colorado Rockies"
+      "date": "2026-09-11",
+      "line": "3打数3安打 1本塁打 5打点",
+      "opponent": "Miami Marlins"
     },
     {
-      "date": "2026-08-01",
-      "line": "3打数0安打",
-      "opponent": "Chicago Cubs"
+      "date": "2026-09-09",
+      "line": "5打数3安打 1本塁打 1打点",
+      "opponent": "Cincinnati Reds"
     },
     {
-      "date": "2026-07-31",
-      "line": "3打数0安打",
-      "opponent": "Chicago Cubs"
+      "date": "2026-09-08",
+      "line": "1打数0安打",
+      "opponent": "Cincinnati Reds"
     },
     {
-      "date": "2026-07-30",
-      "line": "5打数0安打",
-      "opponent": "Chicago White Sox"
+      "date": "2026-09-07",
+      "line": "4打数0安打",
+      "opponent": "Cincinnati Reds"
     },
     {
-      "date": "2026-07-29",
-      "line": "0打数0安打 1打点",
-      "opponent": "Chicago White Sox"
+      "date": "2026-09-06",
+      "line": "4打数0安打",
+      "opponent": "Washington Nationals"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "INT Player of the Week"
+      "season": "2025",
+      "name": "NL Silver Slugger"
+    },
+    {
+      "season": "2025",
+      "name": "NL All-Star"
+    },
+    {
+      "season": "2025",
+      "name": "NL Player of the Week"
+    },
+    {
+      "season": "2024",
+      "name": "AL All-Star"
     },
     {
       "season": "2023",
-      "name": "Rawlings AL Gold Glove"
-    },
-    {
-      "season": "2022",
-      "name": "MiLB.com Organization All-Star"
-    },
-    {
-      "season": "2021",
-      "name": "MiLB.com Organization All-Star"
-    },
-    {
-      "season": "2021",
-      "name": "Baseball America Minor League All-Star"
+      "name": "AL Silver Slugger"
     }
   ],
   "quotes": []
