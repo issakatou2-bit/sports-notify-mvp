@@ -2,15 +2,9 @@
 """
 投稿した動画を、種類ごとの再生リストへ入れる。
 
-なぜ要るのか:
-  ショートの視聴からチャンネル登録に至る割合は、一般に0.3〜0.8%とされる。
-  コレスポは28日で3,712回の視聴に対して登録+2人、つまり0.054%で、
-  下限のさらに6分の1しかない。
-
-  ショートを見た人は「次々に流す」状態にあり、その場では登録しない。
-  そこから残ってもらうために名前が挙がるのが再生リストで、
-  「この人は同じものを毎日出している」が一覧で見えることが効く。
-  53本がバラバラに並んでいるだけの状態では、それが伝わらない。
+目的:
+  同じ番組の動画をまとめ、視聴者が次の一本を探せるようにする。
+  公開記録の動画IDを優先し、題名だけで分からない種類は保留する。
 
 必要な権限:
   再生リストの操作には youtube スコープが要る。投稿だけの
@@ -30,6 +24,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import post_common  # noqa: E402
+from playlist_classification import kind_for_video, recorded_kinds  # noqa: E402
 
 try:
     from google.oauth2.credentials import Credentials
@@ -47,6 +42,7 @@ NEEDED = "https://www.googleapis.com/auth/youtube"
 SCOPES = [NEEDED]
 
 VIDEOS_PATH = "data/published_videos.json"
+ASSETS_PATH = "data/published_assets.json"
 STORE = "data/playlists.json"
 
 def _at(kind: str) -> str:
@@ -94,16 +90,16 @@ PLAYLISTS = {
         "明日の注目試合（MLB）｜毎日更新",
         "翌日のMLBから3試合を、なぜ注目なのかの理由つきで。" + _at("daily") + "追加しています。"),
     "postseason": (
-        "ポストシーズン進出争い｜毎日更新",
-        "MLBの進出争いを、その日のマジックナンバー・ワイルドカードの差・"
-        "今シーズンが今日終わったらの組み合わせで。"
-        + _at("postseason") + "追加しています。"),
+        "MLBポストシーズン争い｜日付で追う",
+        "MLBの地区優勝・ワイルドカード争いを、各動画の日付時点で確認する再生リストです。"
+        "圏内と進出確定を分け、順位やマジックの変化をたどります。"
+        "現在の順位表：https://collespo.com/standings.html"),
     "longform": (
-        "海外の反応｜MLB公式コメント欄を読み解く",
-        "その日いちばん見られたMLB公式ハイライトのコメント欄を、"
-        "ずんだもんと四国めたんが3分で読み解きます。"
-        "コメントは現地のものをそのまま翻訳しています。"
-        + _at("longform") + "追加しています。"),
+        "MLB公式動画のコメントを読む｜ずんだもん・めたん",
+        "MLB公式ハイライトのコメントを翻訳し、試合の数字と照らし合わせて読む解説です。"
+        "ファンの声とコレスポの所見を分けて紹介します。"
+        "取り上げるコメントは一部で、ファン全体の総意ではありません。"
+        "試合情報：https://collespo.com/"),
     "daily_soccer": (
         "今夜の注目試合（欧州サッカー）｜毎日更新",
         "その夜の欧州5大リーグとCLから、注目カードを理由つきで。" + _at("daily_soccer") + "追加しています。"),
@@ -129,7 +125,6 @@ def client():
     # 権限はトークン側にあるので、こちらから指定する必要は無い。
     creds = Credentials(None, refresh_token=token, token_uri=TOKEN_URI,
                         client_id=cid, client_secret=secret)
-    print(f"[info] トークン: ...{token[-8:]}")
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
 
@@ -161,7 +156,7 @@ def granted_scopes(creds) -> list:
             return (json.load(r).get("scope") or "").split()
     except Exception as e:  # noqa: BLE001
         # ここが分からなくても本題(権限不足)は伝わるので、握って続ける。
-        print(f"[warn] 権限の確認に失敗しました: {e}")
+        print(f"[warn] 権限の確認に失敗しました: {type(e).__name__}")
         return []
 
 
@@ -218,32 +213,17 @@ def add_video(yt, store: dict, kind: str, video_id: str) -> bool:
     return True
 
 
-# タイトルから種類を見分ける。
-#
-# data/published_videos.json に残っているのは11本だけで、
-# チャンネルには53本ある(記録が4日間止まっていた分が抜けている)。
-# 過去分を入れるには、チャンネルにある動画そのものを見るしかない。
-#
-# 順番に意味がある。「注目試合」は複数の種類のタイトルに出てくるので、
-# より限定的なものから先に判定する。
-TITLE_RULES = [
-    ("morning_press", ("現地メディアは何と言っている", "番記者の投稿と現地の見出し")),
-    ("morning_local", ("現地で最も注目された試合", "現地での注目度",
-                       "現地で最も見られた試合")),
-    ("morning", ("勝利貢献スコア", "日本人選手の成績")),
-    ("weekly", ("週間ダイジェスト", "1週間を振り返", "今週の注目試合",
-                "答え合わせ")),
-    ("daily_soccer", ("の注目試合【サッカー】", "注目試合｜サッカー")),
-    ("daily", ("の注目試合【MLB】", "の注目試合", "注目試合")),
-]
-
-
-def classify(title: str) -> str:
-    """タイトルから種類を決める。当てはまらなければ資産動画とみなす。"""
-    for kind, needles in TITLE_RULES:
-        if any(n in title for n in needles):
-            return kind
-    return "asset"
+def publication_kinds() -> dict:
+    """日付ものと常設動画の記録を、動画IDから引ける形にする。"""
+    records = []
+    for path in (VIDEOS_PATH, ASSETS_PATH):
+        try:
+            data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+            records.append(data if isinstance(data, dict) else {})
+        except (OSError, json.JSONDecodeError):
+            print(f"[warn] {path} を読めません。記録不明の動画は題名の明示情報だけで分類します")
+            records.append({})
+    return recorded_kinds(records[0], records[1], PLAYLISTS)
 
 
 def uploads_playlist_id(yt) -> str:
@@ -297,14 +277,23 @@ def main() -> int:
             if not args.kind:
                 print("[error] --add には --kind が要ります")
                 return 1
-            ok = add_video(yt, store, args.kind, args.add)
-            print(f"[info] {'追加しました' if ok else '追加していません(既出か失敗)'}")
+            if args.dry_run:
+                print(f"[info] 追加予定: {args.kind} {args.add}")
+            else:
+                ok = add_video(yt, store, args.kind, args.add)
+                print(f"[info] {'追加しました' if ok else '追加していません(既出か失敗)'}")
         elif args.backfill:
             videos = all_uploads(yt)
             print(f"[info] チャンネルの動画 {len(videos)}本\n")
             counts, added = {}, 0
+            recorded = publication_kinds()
             for v in videos:
-                kind = classify(v["title"])
+                kind = kind_for_video(v["id"], v["title"], recorded)
+                if kind is None:
+                    counts["unclassified"] = counts.get("unclassified", 0) + 1
+                    if args.dry_run:
+                        print(f"  保留 {v['id']} {v['title'][:56]}")
+                    continue
                 counts[kind] = counts.get(kind, 0) + 1
                 if args.dry_run:
                     print(f"  {kind:<14} {v['title'][:56]}")
@@ -331,7 +320,9 @@ def main() -> int:
             for kind in PLAYLISTS:
                 for day in sorted(videos.get(kind, {})):
                     vid = videos[kind][day].get("video_id")
-                    if vid and add_video(yt, store, kind, vid):
+                    if vid and args.dry_run:
+                        print(f"  追加予定: {kind} {day} -> {vid}")
+                    elif vid and add_video(yt, store, kind, vid):
                         added += 1
                         print(f"  {kind} {day} -> {vid}")
             print(f"[info] {added}本を追加しました")
@@ -361,7 +352,8 @@ def main() -> int:
             return 1
         raise
 
-    save_store(store)
+    if not args.dry_run:
+        save_store(store)
     return 0
 
 
