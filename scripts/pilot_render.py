@@ -1,4 +1,4 @@
-"""独立番組用の図解とモーション。映像の借用・日次テンプレートへの依存なし。"""
+"""独立番組用の図解とモーション。実写は確認済み素材台帳から取得する。"""
 import functools
 import html
 import json
@@ -93,6 +93,9 @@ def headline(d, content):
 
 
 def artwork(data, segment, motion=1.):
+    if data.get("visual_style") == "baseball-hits-v1":
+        import pilot_baseball
+        return pilot_baseball.artwork(data, segment, motion)
     image = Image.new("RGB", (W, H), PAPER)
     d = ImageDraw.Draw(image)
     # 雑誌の見開きのような余白と、固定された番組の見出し。
@@ -210,7 +213,11 @@ def artwork(data, segment, motion=1.):
 def frame(data, segment, motion=1., progress=0.):
     image = artwork(data, segment, motion)
     d = ImageDraw.Draw(image)
-    if segment["scene"] != "end":
+    if segment["scene"].startswith("bb_") and segment["scene"] != "bb_end":
+        note = ("資料写真：2024.04.24 / David · CC BY 2.0 / 切り抜き・ズーム" if segment["scene"] == "bb_photo"
+                else "図は架空のイニングです。大谷選手の写真の試合を再現したものではありません。")
+        text(d, (98, 853), note, 22, MUTED, max_width=1730)
+    elif segment["scene"] not in {"end", "bb_end"}:
         note = "図は説明用の模式図" if segment["scene"] in {"hook", "fork", "national"} else "男子CL 2026–27 / リーグフェーズの模式図" if segment["scene"] == "points" else "男子CL 2026–27 / 原典は概要欄"
         text(d, (98, 853), note, 18, MUTED, max_width=1050)
     d.rectangle((0, 878, W, H), fill=INK)
@@ -225,7 +232,10 @@ def frame(data, segment, motion=1., progress=0.):
     return image
 
 
-def thumbnail():
+def thumbnail(data=None):
+    if data and data.get("visual_style") == "baseball-hits-v1":
+        import pilot_baseball
+        return pilot_baseball.thumbnail(data)
     image = Image.new("RGB", (W, H), INK)
     d = ImageDraw.Draw(image)
     text(d, (90, 70), "観戦の見取り図 / 01", 42, "#8bd4c2")
@@ -245,10 +255,12 @@ def preview(data, out):
     out = pathlib.Path(out)
     directory = out / "frames"
     directory.mkdir(parents=True, exist_ok=True)
+    import pilot_media
+    pilot_media.prepare(data, out)
     selections = [0, 3, 6, 11, 15, 18]
     board = Image.new("RGB", (1440, 89), "#dedbd3")
     d = ImageDraw.Draw(board)
-    text(d, (28, 22), "観戦の見取り図 / 第1回・構成と画面", 34)
+    text(d, (28, 22), f"観戦の見取り図 / 第{int(data['episode'])}回・構成と画面", 34)
     for i, segment in enumerate(data["segments"]):
         image = frame(data, segment, 1., i / len(data["segments"]))
         image.save(directory / f"{i:02d}.png")
@@ -259,7 +271,10 @@ def preview(data, out):
         image = Image.open(directory / f"{i:02d}.png")
         large.paste(image.resize((672, 378), Image.Resampling.LANCZOS), (32 + n % 2 * 704, 89 + n // 2 * 420))
     large.save(out / "storyboard.jpg", quality=94)
-    thumbnail().save(out / "thumbnail.png")
+    cover = thumbnail(data)
+    cover.save(out / "thumbnail.png")
+    if data.get("media_ids"):
+        cover.save(out / "thumbnail.jpg", quality=92, optimize=True)
     print("全画面の文字量と図を検査し、一覧と表紙を保存しました")
 
 
@@ -290,7 +305,9 @@ def render(data, out):
                     cached = frame(data, segment)
                     previous = index
                     print(f"映像 {index + 1}/{len(manifest['segments'])}: {at:.1f}秒", flush=True)
-                if local < .8:
+                if segment["scene"] == "bb_photo":
+                    image = frame(data, segment, min(1., local / segment["duration"]), at / duration)
+                elif local < .8:
                     motion = 1 - (1 - min(1., local / .8)) ** 3
                     image = frame(data, segment, motion, at / duration)
                 else:

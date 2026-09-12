@@ -163,18 +163,21 @@ def metadata(data, timeline):
             chapters.append((start, segment["chapter"]))
             last = start
     desc = data["summary"] + "\n\n" + data["source_note"]
-    desc += "\n\n観戦ガイド：" + data["guide_url"] + "\n\n"
+    desc += "\n\n" + data.get("guide_label", "観戦ガイド") + "：" + data["guide_url"] + "\n\n"
     if len(chapters) >= 3:
         desc += "\n".join(f"{s // 60:02}:{s % 60:02} {label}" for s, label in chapters) + "\n\n"
     desc += "出典（確認日 " + data["reviewed_on"] + "）\n"
     desc += "\n".join(s["label"] + "\n" + s["url"] for s in data["sources"])
     desc += "\n\n音声：VOICEVOX:四国めたん\n図・構成：コレスポ\n非公開で品質を確認する試作です。"
+    if data.get("media_ids"):
+        import pilot_media
+        desc += "\n\n写真の出典・利用条件\n" + pilot_media.credits(data)
     desc += "\n[COLLESPO-PILOT:" + episode_key(data) + "]"
     if len(desc.encode()) > 5000:
         raise ValueError("概要欄が長すぎます")
     return {"snippet": {"title": data["title"], "description": desc, "categoryId": "17",
                          "defaultLanguage": "ja", "defaultAudioLanguage": "ja",
-                         "tags": ["コレスポ", "観戦の見取り図", "サッカー", "チャンピオンズリーグ"]},
+                         "tags": ["コレスポ", "観戦の見取り図"] + data.get("tags", ["サッカー", "チャンピオンズリーグ"])},
             "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False}}
 
 
@@ -189,6 +192,10 @@ def upload(out, yt=None):
         raise ValueError("検証済みの原稿・音声・映像が一致しません")
     if hashlib.sha256(video.read_bytes()).hexdigest() != quality["video_sha256"]:
         raise ValueError("検査後に動画が変わっています")
+    cover = out / ("thumbnail.jpg" if (out / "thumbnail.jpg").is_file() else "thumbnail.png")
+    if cover.stat().st_size > 2_000_000:
+        raise ValueError("表紙画像を2MB以下に調整してください")
+    body = metadata(data, timeline)
     yt = yt or youtube_client()
     found = owned_videos(yt)
     state, _ = load_state()
@@ -202,7 +209,7 @@ def upload(out, yt=None):
             raise RuntimeError("前回の投稿が照合できません。追加投稿しません")
         # 通信が途切れたときも、次回が盲目的に2本目を作らないための記録。
         record(key, {"status": "pending", "run_id": os.environ.get("GITHUB_RUN_ID", "local")})
-        request = yt.videos().insert(part="snippet,status", body=metadata(data, timeline), notifySubscribers=False,
+        request = yt.videos().insert(part="snippet,status", body=body, notifySubscribers=False,
                                      media_body=MediaFileUpload(str(video), mimetype="video/mp4", chunksize=8 * 1024 * 1024, resumable=True))
         response = None
         while response is None:
@@ -210,7 +217,7 @@ def upload(out, yt=None):
         video_id = response["id"]
     record(key, {"status": "uploaded", "video_id": video_id, "run_id": os.environ.get("GITHUB_RUN_ID", "local")})
     write_json(out / "upload-receipt.json", {"episode_key": key, "video_id": video_id, "privacy": "private", "status": "processing"})
-    yt.thumbnails().set(videoId=video_id, media_body=MediaFileUpload(str(out / "thumbnail.png"), mimetype="image/png")).execute()
+    yt.thumbnails().set(videoId=video_id, media_body=MediaFileUpload(str(cover), mimetype="image/jpeg" if cover.suffix == ".jpg" else "image/png")).execute()
     for attempt in range(16):
         items = yt.videos().list(part="snippet,status,processingDetails", id=video_id).execute().get("items", [])
         if len(items) != 1:

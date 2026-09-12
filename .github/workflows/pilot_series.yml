@@ -36,7 +36,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: 制作と投稿の道具
-        run: python -m pip install 'pillow>=10,<13' google-api-python-client google-auth
+        run: python -m pip install 'pillow>=10,<13' google-api-python-client google-auth 'cryptography>=46,<50'
       - name: 原稿と既存の非公開投稿を照合
         id: plan
         env:
@@ -94,7 +94,20 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python scripts/pilot_upload.py upload --out build/pilot
-      # 公開repoのartifactはログインした読取者も取得できる。映像を残さない。
+      # 公開repoのartifactは読取者も取得できる。完成素材は暗号化してから置く。
+      - name: 完成素材を暗号化
+        if: always() && steps.plan.outputs.build == 'true'
+        env:
+          PILOT_ARCHIVE_KEY: ${{ secrets.PILOT_ARCHIVE_KEY }}
+        run: python scripts/pilot_archive.py encrypt --source build/pilot --out build/pilot-archive/pilot.cpa
+      - name: 暗号化した完成素材だけを保存
+        if: always() && steps.plan.outputs.build == 'true'
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: encrypted-pilot-${{ github.run_id }}
+          path: build/pilot-archive/pilot.cpa
+          retention-days: 30
+          if-no-files-found: error
       - name: 検査結果だけを保存
         if: always()
         uses: actions/upload-artifact@v7.0.1
@@ -121,7 +134,7 @@ jobs:
           import json, os, pathlib
           out = pathlib.Path('build/pilot')
           lines = ['## 観戦の見取り図（非公開試作）', '公開設定はprivateに固定。SNS配信・公開予約はありません。',
-                   '公開リポジトリには検査結果だけを保存します。完成映像は所有者のYouTube Studioから確認してください。']
+                   '公開リポジトリには検査結果と暗号化した完成素材を保存します。映像は所有者のYouTube Studio、または保存キーで復元して確認してください。']
           for name in ['plan.json', 'quality.json', 'upload-receipt.json']:
               if (out / name).exists():
                   value = json.loads((out / name).read_text(encoding='utf-8'))

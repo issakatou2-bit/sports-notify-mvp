@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r scripts/requirements.txt
-          pip install pyflakes pyyaml pillow
+          pip install pyflakes pyyaml pillow 'cryptography>=46,<50'
 
       - name: Install Japanese fonts for diagram checks
         timeout-minutes: 6

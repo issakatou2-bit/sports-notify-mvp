@@ -19,6 +19,8 @@ CATALOG = ROOT / "content/pilot_series"
 RENDER_VERSION = "1"
 SCENES = {"hook": 1, "fork": 2, "points": 2, "grid": 3,
           "ladder": 3, "national": 1, "checklist": 1, "end": 0}
+BASEBALL_SCENES = {"bb_photo": 3, "bb_hits": 1, "bb_inning": 6,
+                   "bb_compare": 1, "bb_check": 1, "bb_end": 0}
 
 
 def write_json(path, data):
@@ -54,23 +56,41 @@ def validate_episode(data, today=None):
         raise ValueError("試作枠で確認した音声設定を使ってください")
     if not 12 <= len(data.get("segments", [])) <= 35:
         raise ValueError("原稿の区切り数を確認してください")
+    baseball = data.get("visual_style") == "baseball-hits-v1"
+    scenes = BASEBALL_SCENES if baseball else SCENES
+    if data.get("visual_style") not in (None, "baseball-hits-v1"):
+        raise ValueError("対応していない画面の方式です")
     for segment in data["segments"]:
-        if segment.get("scene") not in SCENES or not isinstance(segment.get("phase"), int):
+        if segment.get("scene") not in scenes or not isinstance(segment.get("phase"), int):
             raise ValueError("対応していない画面です")
-        if not 0 <= segment["phase"] <= SCENES[segment["scene"]]:
+        if not 0 <= segment["phase"] <= scenes[segment["scene"]]:
             raise ValueError("対応していない画面の段階です")
         if not 5 <= len(segment.get("text", "")) <= 78 or not segment.get("chapter"):
             raise ValueError("字幕の量・章の名前を確認してください")
         if not 5 <= len(segment.get("speech", segment["text"])) <= 160:
             raise ValueError("読み上げ原稿が長すぎます")
     facts = data.get("facts", {})
-    # この画面は男子CL 2026/27の確認済み方式を説明するもの。
-    if facts != {"clubs": 36, "opponents": 8, "home": 4, "away": 4, "direct": 8, "playoff_end": 24}:
+    expected = ({"a_hits": 2, "a_total_bases": 2, "a_runs": 0, "b_hits": 2, "b_total_bases": 3, "b_runs": 1}
+                if baseball else {"clubs": 36, "opponents": 8, "home": 4, "away": 4, "direct": 8, "playoff_end": 24})
+    if facts != expected:
         raise ValueError("大会の方式が変わっています。図と原稿を再確認してください")
+    if baseball:
+        import pilot_media
+        assets = pilot_media.assets_for(data)
+        if len(assets) != 2 or any(a["kind"] != "image" for a in assets):
+            raise ValueError("第2回は確認済みの写真2枚が必要です")
+        for segment in data["segments"]:
+            if segment["scene"] == "bb_photo" and segment.get("media_id") not in data["media_ids"]:
+                raise ValueError("画面の写真が使用素材と一致しません")
 
 
 def episode_key(data):
-    raw = json.dumps({"episode": data, "renderer": RENDER_VERSION}, ensure_ascii=False, sort_keys=True)
+    payload = {"episode": data, "renderer": RENDER_VERSION}
+    # 既存第1回の識別子を変えず、実写を使う回だけ素材の版も含める。
+    if data.get("media_ids"):
+        import pilot_media
+        payload["media_assets"] = pilot_media.assets_for(data)
+    raw = json.dumps(payload, ensure_ascii=False, sort_keys=True)
     return data["id"] + "-" + hashlib.sha256(raw.encode()).hexdigest()[:16]
 
 
