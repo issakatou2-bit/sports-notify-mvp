@@ -114,5 +114,6 @@ jobs:
                   value = json.loads((out / name).read_text(encoding='utf-8'))
                   lines.extend(['', name, '```json', json.dumps(value, ensure_ascii=False, indent=2), '```'])
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as f:
-              f.write('\n'.join(lines))
+              for line in lines:
+                  print(line, file=f)
           PY
