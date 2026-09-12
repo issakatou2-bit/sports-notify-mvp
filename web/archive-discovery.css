@@ -1,0 +1,26 @@
+/* Uses the same semantic colors as the shared light/dark theme. */
+[hidden] { display: none !important; }
+nav[aria-label="パンくず"] { font-size: .8rem; color: var(--text-dim); margin-bottom: 1.3rem; }
+.archive-intro { padding: 1.1rem 0 1.7rem; border-bottom: 1px solid var(--border); }
+.archive-eyebrow { color: var(--jp); font-size: .8rem; font-weight: 700; letter-spacing: .06em; }
+.archive-intro h1 { color: var(--text); font-size: clamp(1.6rem, 5vw, 2.4rem); letter-spacing: -.04em; }
+.archive-intro p { color: var(--text-dim); }
+.archive-intro nav { display: flex; flex-wrap: wrap; gap: .6rem 1.2rem; font-size: .9rem; }
+.archive-search { margin: 1.8rem 0; }
+.archive-search label { display: block; font-weight: 700; margin-bottom: .6rem; }
+.archive-search > div { display: flex; gap: .6rem; }
+.archive-search input { min-width: 0; flex: 1; width: 100%; }
+.archive-search input, .archive-search button { font: inherit; font-size: 1rem; padding: .7rem .8rem; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.archive-search button { cursor: pointer; }
+.archive-search p { color: var(--text-dim); font-size: .8rem; line-height: 1.65; }
+.archive-list-title { font-size: 1rem; margin: 2rem 0 .8rem; }
+.archive-list { list-style: none; padding: 0; display: grid; gap: 1rem; }
+.archive-card { display: block; padding: 1.2rem; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); text-decoration: none; overflow-wrap: anywhere; }
+.archive-card:hover { border-color: var(--accent); }
+.archive-date { display: block; font-size: 1rem; font-weight: 700; color: var(--accent); }
+.archive-leagues { display: block; font-size: .75rem; color: var(--text-dim); margin-top: .2rem; }
+.archive-card h3 { font-size: 1.05rem; line-height: 1.65; margin: .75rem 0 .4rem; }
+.archive-card p { margin: .4rem 0; color: var(--text-dim); font-size: .8rem; }
+.archive-open { display: block; font-size: .8rem; color: var(--accent); margin-top: .9rem; }
+.archive-discovery :focus-visible { outline: 3px solid var(--jp); outline-offset: 3px; }
+@media (min-width: 700px) { body:has(.archive-discovery) { max-width: 960px; } .archive-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

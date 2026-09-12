@@ -7,7 +7,7 @@ archive/*.json から、日付ごとの静的HTMLページを生成する。
   何日分データが溜まっても検索エンジンからは「1ページのサイト」に見える。
   日付ごとに独立したURL(/archive/2026-07-28.html)を持たせることで、
   「ホワイトソックス アストロズ 7/28」のような検索に個別にヒットしうる
-  状態を作る。AdSenseが求める「コンテンツの厚み」の観点でも効いてくる。
+  状態を作る。ページ数だけで検索掲載やAdSense承認が決まるわけではない。
 
 生成物:
   public/archive/YYYY-MM-DD.html  … 各日のページ(JSON-LD構造化データ入り)
@@ -243,6 +243,10 @@ def parse_date_files(archive_dir: pathlib.Path) -> list:
         m = DATE_FILE_RE.match(p.name)
         if not m:
             continue  # index.json など、日付形式でないものは対象外
+        try:
+            datetime.strptime(p.stem, "%Y-%m-%d")
+        except ValueError:
+            continue
         entries.append((f"{m.group(1)}-{m.group(2)}-{m.group(3)}", p))
     entries.sort(key=lambda x: x[0], reverse=True)
     return entries
@@ -297,7 +301,7 @@ def build_jsonld(games: list, archive_date: str) -> str:
         return ""
     return (
         '<script type="application/ld+json">'
-        + json.dumps(events, ensure_ascii=False)
+        + json.dumps(events, ensure_ascii=False).replace("<", "\\u003c")
         + "</script>"
     )
 
@@ -439,7 +443,8 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     if games:
         top = games[0].get("matchup", "")
         description = (
-            f"{jp_date}にコレスポが選んだ注目試合。{top}ほか、"
+            f"{jp_date}にコレスポが選んだ注目試合。{top}"
+            + ("ほか、" if len(games) > 1 else "。") +
             "なぜ注目なのかの理由つきで振り返ります。"
         )
     else:
@@ -456,15 +461,17 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
             day_videos.append((label, v))
 
     head = HEAD_TMPL.format(
-        title=f"{jp_date}の注目試合 | コレスポ",
+        title=html.escape(f"{jp_date}の注目試合" +
+                          (f"｜{games[0].get('matchup', '')}" if games else "") + " | コレスポ"),
         description=html.escape(description),
         canonical=f"{SITE_URL}archive/{archive_date}.html",
         root="../",
         style=STYLE,
-        extra_head=build_jsonld(games, archive_date),
+        extra_head=build_jsonld(games, archive_date) + breadcrumb(archive_date, jp_date)[1],
     )
 
     body = [head]
+    body.append(breadcrumb(archive_date, jp_date)[0])
     body.append(f"<h1>{jp_date}の注目試合</h1>")
 
     # この日の動画。1本目は埋め込み、2本目以降はリンクにする
@@ -511,32 +518,84 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     return "\n".join(body)
 
 
-def render_index_page(entries: list, summaries: dict, labels: dict = None) -> str:
+def breadcrumb(archive_date=None, label=None):
+    """Visible navigation and structured data describe the same hierarchy."""
+    items = [("コレスポ", SITE_URL), ("注目試合アーカイブ", f"{SITE_URL}archive/")]
+    if archive_date:
+        items.append((label, f"{SITE_URL}archive/{archive_date}.html"))
+    links = [f'<a href="{html.escape(url)}">{html.escape(name)}</a>'
+             for name, url in items[:-1]]
+    nav = ('<nav aria-label="パンくず">' + ' › '.join(links +
+           [f'<span aria-current="page">{html.escape(items[-1][0])}</span>']) + '</nav>')
+    data = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": i, "name": name, "item": url}
+        for i, (name, url) in enumerate(items, 1)]}
+    script = '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False).replace("<", "\\u003c") + '</script>'
+    return nav, script
+
+
+def discovery_details(games):
+    """Related names aid discovery; affiliation is not proof of participation."""
+    matchups, players, leagues = [], [], []
+    for game in games:
+        if game.get('matchup'):
+            matchups.append(str(game['matchup']))
+        if game.get('league'):
+            leagues.append(str(game['league']))
+        for player in (game.get('jp_players') or []) + (game.get('jp_starters') or []):
+            name = player.get('name', '') if isinstance(player, dict) else player
+            if isinstance(name, str) and name:
+                players.append(name)
+    return {key: list(dict.fromkeys(values)) for key, values in
+            [('matchups', matchups), ('players', players), ('leagues', leagues)]}
+
+
+def render_index_page(entries: list, summaries: dict, labels: dict = None, details: dict = None) -> str:
     head = HEAD_TMPL.format(
-        title="注目試合アーカイブ | コレスポ",
-        description="コレスポがこれまでに選んだ日ごとの注目試合を、"
-        "理由つきで振り返れるアーカイブです。",
+        title="MLB・欧州サッカーの注目試合アーカイブ | コレスポ",
+        description="球団・クラブ・日本人選手名から、過去の注目試合を探せます。"
+        "コレスポが選んだカードと注目理由、公開済みの関連動画を日ごとに。",
         canonical=f"{SITE_URL}archive/",
         root="../",
         style=STYLE,
-        extra_head="",
+        extra_head=breadcrumb()[1] + '<link rel="stylesheet" href="../archive-discovery.css">'
+                   '<script src="../archive-discovery.js" defer></script>',
     )
     body = [head]
-    body.append("<h1>注目試合アーカイブ</h1>")
-    body.append(
-        '<p class="lead">日付ごとに、その日の注目カードと注目理由を振り返れます。</p>'
-    )
-    body.append('<ul class="datelist">')
+    body.append(breadcrumb()[0])
+    body.append('<main class="archive-discovery"><header class="archive-intro">'
+                '<p class="archive-eyebrow">MLB / 欧州サッカー</p>'
+                '<h1>あの試合を、もう一度。</h1>'
+                '<p>注目カードと、その試合を選んだ理由。<br>コレスポの記録を、日付や名前から探せます。</p>'
+                '<nav aria-label="関連するページ"><a href="../standings.html">いまの順位を見る →</a>'
+                '<a href="../players/">日本人選手の成績を見る →</a></nav></header>'
+                '<section class="archive-search" aria-labelledby="archive-search-label" hidden>'
+                '<label id="archive-search-label" for="archive-query">球団・クラブ・選手名で絞り込む</label>'
+                '<div><input id="archive-query" type="search" placeholder="例：カブス　今永" '
+                'aria-describedby="archive-search-help" aria-controls="archive-list">'
+                '<button type="button" id="archive-reset">クリア</button></div>'
+                '<p id="archive-search-help">複数の言葉はスペースで区切れます。関連する選手名は、出場を保証するものではありません。</p>'
+                '<p id="archive-count" role="status" aria-live="polite"></p></section>')
+    body.append('<h2 class="archive-list-title">注目試合アーカイブ</h2><ul id="archive-list" class="archive-list">')
     for date_str, _ in entries:
         y, m, d = date_str.split("-")
         label = (labels or {}).get(date_str) or f"{y}年{int(m)}月{int(d)}日"
-        sub = summaries.get(date_str, "")
-        body.append(
-            f'<li><a href="{date_str}.html">{label}</a>'
-            + (f'<span class="sub">{html.escape(sub)}</span>' if sub else "")
-            + "</li>"
-        )
-    body.append("</ul>")
+        item = (details or {}).get(date_str, {})
+        matchups = item.get('matchups') or ([summaries[date_str]] if summaries.get(date_str) else [])
+        players = item.get('players', [])
+        leagues = item.get('leagues', [])
+        search = ' '.join([date_str, label] + matchups + players + leagues)
+        body.append(f'<li data-archive-entry data-search="{html.escape(search)}">'
+                    f'<a class="archive-card" href="{date_str}.html">'
+                    f'<span class="archive-date">{html.escape(label)}</span>'
+                    f'<span class="archive-leagues">{html.escape(" / ".join(leagues))}</span>'
+                    '<h3>' + html.escape(' / '.join(matchups[:2]) or 'この日の記録') + '</h3>')
+        if len(matchups) > 2:
+            body.append(f'<p>ほか{len(matchups) - 2}カード</p>')
+        if players:
+            body.append('<p class="archive-players">関連する選手：' + html.escape('・'.join(players)) + '</p>')
+        body.append('<span class="archive-open">注目理由と関連動画を読む →</span></a></li>')
+    body.append('</ul><p id="archive-empty" hidden>該当する記録がありません。言葉を短くするか、別の名前でお試しください。</p></main>')
     body.append("</body></html>")
     return "\n".join(body)
 
@@ -576,7 +635,7 @@ def render_sitemap(entries: list, site_root: pathlib.Path = None) -> str:
     """
     sitemap.xml を組み立てる。日付ページは数が増えていく一方で、トップから
     直接リンクされているわけではないため、クローラーに存在を伝える手段として
-    用意する。lastmodにはその日付を入れる。
+    用意する。記録の日付は最終更新日ではないため、lastmodを推測しない。
     """
     urls = [
         (SITE_URL, None),
@@ -602,7 +661,7 @@ def render_sitemap(entries: list, site_root: pathlib.Path = None) -> str:
         for f in sorted(players_dir.glob("*.html")):
             if f.name != "index.html":
                 urls.append((f"{SITE_URL}players/{f.name}", None))
-    urls += [(f"{SITE_URL}archive/{d}.html", d) for d, _ in entries]
+    urls += [(f"{SITE_URL}archive/{d}.html", None) for d, _ in entries]
 
     lines = ['<?xml version="1.0" encoding="UTF-8"?>']
     lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
@@ -630,14 +689,23 @@ def main():
     archive_dir = pathlib.Path(args.archive_dir)
     out_dir = pathlib.Path(args.out_dir)
     if not archive_dir.exists():
-        print(f"[warn] {archive_dir} が見つからないため、アーカイブ生成をスキップします")
-        return
+        raise FileNotFoundError(f"{archive_dir} が見つからないため、公開用一覧は更新しません")
 
     entries = parse_date_files(archive_dir)
     if not entries:
-        print("[warn] アーカイブ対象のJSONが見つかりませんでした")
-        return
+        raise RuntimeError("アーカイブ対象のJSONがないため、公開用一覧は更新しません")
 
+    # Build navigation only from records that can actually generate a page.
+    records = {}
+    for date_str, path in entries:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(data, dict) or not isinstance(data.get("games"), list) or not all(
+                    isinstance(game, dict) for game in data["games"]):
+                raise ValueError("games must be a list of objects")
+            records[date_str] = data
+        except (ValueError, OSError) as error:
+            raise RuntimeError(f"{path} の内容を確認してください。公開用一覧は更新しません。") from error
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # entriesは新しい順。prev/nextは日付の前後で結びたいので、日付昇順の配列も作る
@@ -648,14 +716,10 @@ def main():
     # 一覧に出す日付も、ファイル名ではなく実際の試合日にする。
     # 個別ページだけ直すと、一覧では8月11日、開いたら8月12日になる。
     labels = {}
+    details = {}
     generated = 0
     for date_str, path in entries:
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except (json.JSONDecodeError, OSError) as e:
-            print(f"[warn] {path} の読み込みに失敗したためスキップします: {e}")
-            continue
+        data = records[date_str]
 
         i = date_to_index[date_str]
         prev_date = asc[i - 1][0] if i > 0 else None
@@ -669,9 +733,10 @@ def main():
         if notable:
             summaries[date_str] = notable[0].get("matchup", "")
         labels[date_str] = display_date(date_str, notable)
+        details[date_str] = discovery_details(notable)
 
     (out_dir / "index.html").write_text(
-        render_index_page(entries, summaries, labels), encoding="utf-8"
+        render_index_page(entries, summaries, labels, details), encoding="utf-8"
     )
     # 既存のarchive.html(JSで一覧を描画する方)が参照するため、日付一覧も出力する
     (out_dir / "index.json").write_text(
