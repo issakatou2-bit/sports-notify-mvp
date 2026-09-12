@@ -156,6 +156,7 @@ def prepare(episode, out, render_only=False):
 
 
 def metadata(data, timeline):
+    import content_hashtags as ht
     chapters, last = [], -100
     for segment in timeline["segments"]:
         start = int(segment["start"])
@@ -172,6 +173,8 @@ def metadata(data, timeline):
     if data.get("media_ids"):
         import pilot_media
         desc += "\n\n写真の出典・利用条件\n" + pilot_media.credits(data)
+    editorial = data['title'] + "\n" + "\n".join(s.get('text', '') for s in data['segments'])
+    desc += "\n\n" + ht.display(ht.select(editorial, 'youtube', subjects=data.get('tags', [])))
     desc += "\n[COLLESPO-PILOT:" + episode_key(data) + "]"
     if len(desc.encode()) > 5000:
         raise ValueError("概要欄が長すぎます")

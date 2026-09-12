@@ -16,6 +16,7 @@
   python3 scripts/upload_youtube.py --video build/video/collespo_short.mp4
 """
 
+import content_hashtags as ht
 import argparse
 import json
 import os
@@ -527,6 +528,13 @@ def subject_tags(kind: str, morning_mode: str, games: list,
             add(c)
         return out
 
+    if kind == "morning":
+        # 成績/報道を明日のカードの名簿で埋めない。
+        if morning_mode == "players":
+            for player in morning_players or []:
+                add(player.get("name"))
+        return out
+
     # 明日の注目試合と、週間まとめ。ここは並べた試合そのものが中身。
     for g in games[:3]:
         add(g.get("home_team_name"), g.get("away_team_name"))
@@ -544,7 +552,8 @@ def build_asset_metadata(topic: str) -> dict:
 
     lines = list(meta["lead"]) + [
         "",
-        "#Shorts",
+        ht.display(ht.select(meta["title"] + "\n" + "\n".join(meta["lead"]),
+                             'youtube', subjects=meta["tags"], shorts=True)),
         "",
         *DAILY_LINEUP_LINES,
         "",
@@ -834,7 +843,7 @@ SPORTS = {
     "soccer": {
         "badge": "【欧州サッカー】",
         "source": "データ: football-data.org",
-        "tags": ["サッカー", "海外サッカー", "欧州サッカー", "プレミアリーグ",
+        "tags": ["サッカー", "海外サッカー", "欧州サッカー",
                  "注目試合", "コレスポ"],
     },
 }
@@ -1547,8 +1556,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 長編の説明文に「明日の注目試合」が並んでいて、中身と合わなかった。
     # 試合の一覧は「明日の注目試合」のためのもの。
     # 長編にも進出争いにも関係が無い（中身と食い違う）。
-    _no_games = (kind == "longform"
-                 or (kind == "morning" and morning_mode == "postseason"))
+    _no_games = kind in ("longform", "weekly", "morning")
     for i, g in enumerate([] if _no_games else games, 1):
         lines.append(
             f"{i}. {g.get('start_time_jst')} "
@@ -1558,8 +1566,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             if r.get("visible", True) and r.get("text"):
                 lines.append(f"   ・{r['text']}")
         lines.append("")
+    editorial_text = title + "\n" + "\n".join(lines)
+    public_hashtags = ht.select(editorial_text, 'youtube', sport=sport,
+                                shorts=kind not in LANDSCAPE_KINDS)
     lines += [
-        "" if kind in LANDSCAPE_KINDS else "#Shorts",
+        ht.display(public_hashtags),
         "",
         *DAILY_LINEUP_LINES,
         "",
@@ -1589,8 +1600,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     #
     # 検索から来た人は平均102秒見ている。Shortsフィードから来た人の
     # 21秒に対して5倍で、いちばん濃い流入がそこだった。
-    tags = subject_tags(kind, morning_mode, games, morning_players,
-                        profile_path, buzz_path)
+    tags = [t for t in subject_tags(kind, morning_mode, games, morning_players,
+                                   profile_path, buzz_path) if ht.present(t, editorial_text)]
+    tags += [t for t in public_hashtags if t not in tags]
     for x in SPORTS.get(sport, SPORTS["mlb"])["tags"]:
         if x not in tags:
             tags.append(x)
@@ -1601,17 +1613,15 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         tags += ["海外の反応", "MLB 海外の反応", "コメント欄", "解説"]
     else:
         tags.append("Shorts")
-    if kind == "morning":
+    if kind == "morning" and morning_mode == "players":
         tags += [x for x in ("日本人選手", "MLB速報") if x not in tags]
-        for p in (morning_players or [])[:6]:
-            if p.get("name") and p["name"] not in tags:
+        for p in morning_players or []:
+            if p.get("name") and ht.present(p["name"], editorial_text) and p["name"] not in tags:
                 tags.append(p["name"])
-    if not (kind == "longform"
-            or (kind == "morning"
-                and morning_mode in ("player", "voices", "local"))):
+    if kind == "daily":
         for g in games:
-            for name in (g.get("jp_players") or [])[:2]:
-                if name not in tags:
+            for name in g.get("jp_players") or []:
+                if ht.present(name, editorial_text) and name not in tags:
                     tags.append(name)
 
     return {

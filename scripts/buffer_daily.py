@@ -21,6 +21,7 @@ import urllib.request
 import zipfile
 
 from buffer_api import graphql
+import content_hashtags as ht
 
 REPO = 'issakatou2-bit/sports-notify-mvp'
 API = 'https://api.github.com/repos/' + REPO
@@ -192,18 +193,23 @@ def host_video(run, day, path, digest):
 
 
 def caption(service, day, record):
-    title = record['title'].split('｜明日の注目試合')[0].replace('【MLB】', '').strip()
+    title = ht.strip_tags(record['title'].split('｜明日の注目試合')[0].replace('【MLB】', ''))
+    tags = ht.select(title, service, sport='mlb')
     youtube = 'https://www.youtube.com/watch?v=' + record['video_id']
     if service == 'twitter':
         # Unicode outside the single-weight X ranges counts twice; URLs are 23.
-        text = f'{day[5:].replace("-", "/")}更新｜明日のMLB\n{title}\n\n動画で見どころをチェック。\n{youtube}\nhttps://collespo.com/\n#MLB'
+        body = f'{day[5:].replace("-", "/")}更新｜明日のMLB\n{title}\n\n動画で見どころをチェック。\n{youtube}\nhttps://collespo.com/'
+        text = body + '\n' + ht.display(tags)
+        while x_weight(text) > 280 and tags:
+            tags.pop()
+            text = body + ('\n' + ht.display(tags) if tags else '')
         if x_weight(text) > 280:
             raise ValueError('X caption exceeds 280 weighted characters')
         return text
     return (f'{day[5:].replace("-", "/")}更新｜明日の注目試合\n{title}\n\n'
             '試合を見る前に、先発と注目ポイントをチェック。\n'
             '動画・記事はプロフィールの collespo.com から。\n' + youtube +
-            '\n\n音声：VOICEVOX:ずんだもん\n#MLB #コレスポ #野球')
+            '\n\n音声：VOICEVOX:ずんだもん\n' + ht.display(tags))
 
 
 def x_weight(text):
