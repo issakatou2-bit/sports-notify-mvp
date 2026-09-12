@@ -733,54 +733,50 @@ def face(who: str, height: int, expr: str = "基本",
     return art
 
 
-# うっすら光をまとわせる。**特別な日だけ。**
-#
-# 勝利貢献スコアが100を超える日は、25日143人のうち16人（11%）。
-# 2日に1人くらいで、その日いちばんの出来事にあたる。
-# 数字は出しているが、画面はいつもと同じだった。
-#
-# 派手にしない。数字を売りにしている番組で、演出が事実より目立つと
-# 嘘っぽくなる。彩度は抑えて、輪郭は出さない。
-AURA_SAT = 0.38          # 虹の濃さ。0.5を超えると玩具っぽくなる
-AURA_ALPHA = 165         # 乗せる強さ（0-255）
+# 100点超の名前にだけ、シャンパンゴールドの金属光沢を入れる。
+# 背景の大きなぼかしは使わず、光は文字の内側に閉じ込める。
+METAL_GOLD = (226, 207, 159)
 
 
-def aura(im, box, phase: float = 0.0, strength: float = 1.0, pad: int = 80):
-    """箱のまわりに、虹色の光をにじませる。
+@functools.lru_cache(maxsize=32)
+def _metal_assets(text, fnt):
+    bounds = fnt.getbbox(text)
+    w, h = bounds[2] - bounds[0], bounds[3] - bounds[1]
+    mask = Image.new("L", (max(1, w), max(1, h)))
+    ImageDraw.Draw(mask).text((-bounds[0], -bounds[1]), text, font=fnt, fill=255)
+    surface = Image.new("RGB", mask.size)
+    draw = ImageDraw.Draw(surface)
+    stops = [(0., (248, 239, 214)), (.38, METAL_GOLD),
+             (.56, (184, 161, 108)), (.78, (240, 225, 185)),
+             (1., (207, 180, 124))]
+    for y in range(mask.height):
+        q = y / max(1, mask.height - 1)
+        for (a, ca), (b, cb) in zip(stops, stops[1:]):
+            if a <= q <= b:
+                col = tuple(round(ca[i] + (cb[i] - ca[i]) * (q - a) / (b - a)) for i in range(3))
+                draw.line((0, y, w, y), fill=col)
+                break
+    return bounds, mask, surface
 
-    phase を動かすと色が横に流れる。動画では 1 フレームごとに
-    少しずつ進めて、**モワモワと動いて見える**ようにする。
 
-    box は光らせたい中身の矩形。中身より外側に広がるので、
-    描く順番はこれが先で、箱の中身は後から重ねる。
-    """
-    import colorsys
-    x0, y0, x1, y1 = (int(v) for v in box)
-    X0, Y0 = max(0, x0 - pad), max(0, y0 - pad)
-    X1, Y1 = min(im.width, x1 + pad), min(im.height, y1 + pad)
-    w, h = X1 - X0, Y1 - Y0
-    if w <= 2 or h <= 2:
+def metal_name(im, xy, text, fnt, progress=0.):
+    """A single restrained light sweep, settled before the frame cache begins."""
+    if not text:
         return
-
-    # 横方向に色相を回す。位相ぶんずらすと、次のフレームで流れる。
-    layer = Image.new("RGB", (w, h), (0, 0, 0))
-    ld = ImageDraw.Draw(layer)
-    step = 6
-    for i in range(0, w, step):
-        hue = ((i / w) * 0.8 + phase) % 1.0
-        r, g, b = colorsys.hsv_to_rgb(hue, AURA_SAT, 1.0)
-        ld.rectangle([i, 0, i + step, h],
-                     fill=(int(r * 255), int(g * 255), int(b * 255)))
-    layer = layer.filter(ImageFilter.GaussianBlur(pad * 0.45))
-
-    # 中心を明るく、縁を落とす。輪郭が出ると「枠」になってしまう。
-    mask = Image.new("L", (w, h), 0)
-    md = ImageDraw.Draw(mask)
-    inset = max(2, pad // 3)
-    md.rounded_rectangle([inset, inset, w - inset, h - inset],
-                         radius=36, fill=int(AURA_ALPHA * strength))
-    mask = mask.filter(ImageFilter.GaussianBlur(pad * 0.62))
-
-    region = im.crop((X0, Y0, X1, Y1))
-    im.paste(Image.composite(ImageChops.screen(region, layer), region, mask),
-             (X0, Y0))
+    bounds, mask, surface = _metal_assets(text, fnt)
+    w, h = mask.size
+    # One pass, no repeated flashing. Finish at .68; shared still-frame cutoff is .72.
+    sweep = max(0., min(1., (progress - .18) / .50))
+    if 0 < sweep < 1:
+        band = max(36, round(w * .16))
+        center = int(-band + sweep * (w + 2 * band))
+        light = Image.new("L", (w, h))
+        ld = ImageDraw.Draw(light)
+        for offset in range(-band, band + 1, 3):
+            alpha = int(65 * (1 - abs(offset) / band) ** 2)
+            ld.line((center + offset, 0, center + offset - h // 3, h), fill=alpha, width=3)
+        surface = Image.composite(Image.new("RGB", (w, h), (255, 251, 235)), surface, light)
+    x, y = round(xy[0] + bounds[0]), round(xy[1] + bounds[1])
+    # A small solid shadow preserves contrast without a heavy cartoon outline.
+    im.paste((4, 7, 12), (x + 2, y + 3, x + w + 2, y + h + 3), mask)
+    im.paste(surface, (x, y), mask)

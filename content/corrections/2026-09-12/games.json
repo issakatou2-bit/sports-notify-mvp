@@ -1,0 +1,286 @@
+{
+  "generated_at": "2026-09-12T09:54:29.504598+00:00",
+  "games": [
+    {
+      "game_id": "823819",
+      "league": "MLB",
+      "home_team_id": "146",
+      "away_team_id": "119",
+      "home_team_name": "マーリンズ",
+      "away_team_name": "ドジャース",
+      "home_abbr": "MIA",
+      "away_abbr": "LAD",
+      "home_color": "#00A3E0",
+      "away_color": "#005A9C",
+      "matchup": "ドジャース vs マーリンズ",
+      "abbr_matchup": "LAD vs MIA",
+      "start_time_jst": "09/13 05:10",
+      "home_division": "NLE",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "大谷翔平",
+        "佐々木朗希",
+        "山本由伸"
+      ],
+      "home_standing": {
+        "rank": 3,
+        "games_back": 15.0,
+        "streak": -4,
+        "wins": 72,
+        "losses": 76,
+        "last_ten": "3勝7敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 8,
+        "wins": 90,
+        "losses": 57,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Tyler Phillips",
+        "name_en": "Tyler Phillips",
+        "player_id": "663969",
+        "era": "3.51",
+        "wins": 5,
+        "losses": 6,
+        "strikeouts": 93
+      },
+      "away_probable": {
+        "name": "Tyler Glasnow",
+        "name_en": "Tyler Glasnow",
+        "player_id": "607192",
+        "era": "3.12",
+        "wins": 4,
+        "losses": 0,
+        "strikeouts": 70
+      },
+      "venue_name": "loanDepot park",
+      "venue_jp": "ローンデポ・パーク",
+      "venue_note": "開閉式屋根を持ち、湿度の高い気候の影響を抑えている",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.45点で、MLB30球場中22位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 8,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ドジャースには大谷翔平・山本由伸が所属",
+          "weight": 2
+        },
+        {
+          "tag": "ps_race",
+          "text": "ドジャース はポストシーズン圏内",
+          "weight": 2
+        },
+        {
+          "tag": "ps_magic",
+          "text": "ドジャース は地区優勝マジック5",
+          "weight": 2
+        },
+        {
+          "tag": "streak",
+          "text": "ドジャースは8連勝中",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [],
+      "ai_summary": "ナ・リーグ西地区で【首位から11.0ゲーム差をつけ独走するドジャース】が、東地区3位で4連敗中のマーリンズと対戦する。ドジャースは8連勝中でマジック5と優勝が近づいており、先発のTyler Glasnowは防御率3.12で4勝0敗と好調。対するマーリンズの先発Tyler Phillipsは防御率3.51で5勝6敗と安定感を欠く。開閉式屋根を持つローンデポ・パークでの投げ合いに、どちらの先発が主導権を握るかに注目したい。",
+      "notification_hook": "ドジャースマジック5、Glasnow4勝0敗の好投で優勝への最短距離を歩めるか"
+    },
+    {
+      "game_id": "822927",
+      "league": "MLB",
+      "home_team_id": "139",
+      "away_team_id": "117",
+      "home_team_name": "レイズ",
+      "away_team_name": "アストロズ",
+      "home_abbr": "TB",
+      "away_abbr": "HOU",
+      "home_color": "#092C5C",
+      "away_color": "#002D62",
+      "matchup": "アストロズ vs レイズ",
+      "abbr_matchup": "HOU vs TB",
+      "start_time_jst": "09/13 07:10",
+      "home_division": "ALE",
+      "away_division": "ALW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "今井達也"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 1,
+        "wins": 88,
+        "losses": 59,
+        "last_ten": "6勝4敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 75,
+        "losses": 73,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Ian Seymour",
+        "name_en": "Ian Seymour",
+        "player_id": "693855",
+        "era": "4.33",
+        "wins": 9,
+        "losses": 6,
+        "strikeouts": 140
+      },
+      "away_probable": {
+        "name": "Peter Lambert",
+        "name_en": "Peter Lambert",
+        "player_id": "663567",
+        "era": "3.67",
+        "wins": 8,
+        "losses": 8,
+        "strikeouts": 137
+      },
+      "venue_name": "Tropicana Field",
+      "venue_jp": "トロピカーナ・フィールド",
+      "venue_note": "MLBで数少ないドーム球場。天候に左右されない",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.71点で、MLB30球場中17位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 7,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "アストロズには今井達也が所属",
+          "weight": 1
+        },
+        {
+          "tag": "ps_race",
+          "text": "レイズ と アストロズ はどちらもポストシーズン圏内",
+          "weight": 4
+        },
+        {
+          "tag": "quality",
+          "text": "レイズは自地区1位、アストロズは自地区1位同士の好カード",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "ai_summary": "【ア・リーグ東地区首位のレイズと、ア・リーグ西地区首位のアストロズ】が対戦する本戦は、ともにポストシーズン圏内にある両チームの重要な一戦となる。レイズは88勝59敗で2位に3.0ゲーム差をつけ、直近10試合で6勝4敗と勝ち越している一方、アストロズは75勝73敗で同じく自地区内で3.0ゲーム差の首位だが、直近10試合は5勝5敗と足踏み状態にある。先発投手はレイズがIan Seymour（防御率4.33、9勝6敗）、アストロズがPeter Lambert（防御率3.67、8勝8敗）で、両投手の防御率の差がどう試合に影響するかに注目したい。",
+      "notification_hook": "両地区首位が激突、ドーム球場での投手戦がどう展開するか。"
+    },
+    {
+      "game_id": "824870",
+      "league": "MLB",
+      "home_team_id": "144",
+      "away_team_id": "143",
+      "home_team_name": "ブレーブス",
+      "away_team_name": "フィリーズ",
+      "home_abbr": "ATL",
+      "away_abbr": "PHI",
+      "home_color": "#CE1141",
+      "away_color": "#E81828",
+      "matchup": "フィリーズ vs ブレーブス",
+      "abbr_matchup": "PHI vs ATL",
+      "start_time_jst": "09/13 08:15",
+      "home_division": "NLE",
+      "away_division": "NLE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 2,
+        "wins": 87,
+        "losses": 61,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 5.0,
+        "streak": -2,
+        "wins": 82,
+        "losses": 66,
+        "last_ten": "4勝6敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Tyler Mahle",
+        "name_en": "Tyler Mahle",
+        "player_id": "641816",
+        "era": "4.05",
+        "wins": 5,
+        "losses": 10,
+        "strikeouts": 124
+      },
+      "away_probable": null,
+      "venue_name": "Truist Park",
+      "venue_jp": "トゥルーイスト・パーク",
+      "venue_note": "2017年開場。球場の外に商業施設が一体で作られた、比較的新しい形の球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.61点で、MLB30球場中21位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "ps_race",
+          "text": "ブレーブス と フィリーズ はどちらもポストシーズン圏内",
+          "weight": 4
+        },
+        {
+          "tag": "ps_magic",
+          "text": "ブレーブス は地区優勝マジック9",
+          "weight": 2
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [
+        "Tyler Mahleは直近3登板を自責1以下に抑えている"
+      ],
+      "ai_summary": "ナ・リーグ東地区で【首位ブレーブスと5.0ゲーム差で2位フィリーズ】が直接対決する。87勝61敗で地区優勝まであと9勝に迫るブレーブスは2連勝中、対する82勝66敗のフィリーズは2連敗中と、両チームの勢いが分かれている。先発のTyler Mahleは直近3登板で1点以下に抑える好調ぶりを見せており、ブレーブス先発がどこまで継続できるかが試合の行方を左右する。2017年開場のトゥルーイスト・パークは得点が出やすい球場環境にあるだけに、先発投手の出来とも相まって得点展開がどう進むかに注目したい。",
+      "notification_hook": "マジック9のブレーブス先発Mahleが直近3登板を1点以下に抑える好調。フィリーズとの地区対決で連敗脱出なるか"
+    }
+  ],
+  "ai_status": {
+    "targets": 6,
+    "succeeded": 6,
+    "cost_usd": 0.023719999999999998
+  }
+}

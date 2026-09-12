@@ -1582,21 +1582,13 @@ def render_intro_players(p, meta, top, extra=None):
     d.text((80, 268 + slide), jp_date(meta.get("date", "")),
            font=font(48), fill=DIM)
 
-    # 100点を超えた日は、名前のまわりを光らせる。
-    # 描く順番は光が先。あとから文字を重ねる。
-    #
-    # 下端は、名前のある記録の帯と点数まで含める。640で切っていたら
-    # **点数の行のところで背景が四角く暗くなって、境目が見えていた。**
-    # 光は「その日いちばんの選手のかたまり」を囲むものなので、
-    # 帯も点数もその中に入る。
-    if score >= AURA_SCORE and p > 0.12:
-        video_common.aura(im, (70, 340, W - 70, 730),
-                phase=(p * 0.55) % 1.0, strength=min(1.0, (p - 0.12) * 4))
-
     size = fit(d, name, W - 170, (132, 116, 100, 88))
-    video_common.pop_text(d, (76, 356 + slide), name, font(size), ACCENT,
-                stroke=(8, 10, 15), stroke_w=9, shadow=(0, 0, 0),
-                shadow_off=(5, 6))
+    if score > AURA_SCORE:
+        video_common.metal_name(im, (76, 356 + slide), name, font(size), p)
+    else:
+        video_common.pop_text(d, (76, 356 + slide), name, font(size), ACCENT,
+                    stroke=(8, 10, 15), stroke_w=9, shadow=(0, 0, 0),
+                    shadow_off=(5, 6))
 
     if head:
         hs = fit(d, head, W - 170, (56, 50, 44, 40, 36))
@@ -1643,10 +1635,10 @@ def render_intro_players(p, meta, top, extra=None):
 
     # 点数。特別な日だけ色を変える。
     if score:
-        col = BADGE_BG if score >= AURA_SCORE else DIM
+        col = video_common.METAL_GOLD if score > AURA_SCORE else DIM
         label = f"スコア {score}"
         d.text((80, 664 + slide), label, font=font(46), fill=col)
-        if score >= AURA_SCORE:
+        if score > AURA_SCORE:
             # 添える言葉は、点数の幅を測ってから置く。
             # 300で固定していたので、**3桁になった日に重なっていた。**
             # 名前のある記録の加点を入れて3桁が普通になったため、
@@ -1654,7 +1646,7 @@ def render_intro_players(p, meta, top, extra=None):
             #
             # 言葉は130点からにする。100点超えは実測で12%の人日に
             # 出るので、**ほぼ毎日誰かが「今季でも指折り」になる。**
-            # それは言い過ぎ。光は100から、言葉は130から。
+            # それは言い過ぎ。光は100超から、言葉は130から。
             # 130超えは投手2%・打者4%で、月に数回。
             note = ("今季でも指折りの一日"
                     if score >= morning_recap.STANDOUT else "今日の主役")
