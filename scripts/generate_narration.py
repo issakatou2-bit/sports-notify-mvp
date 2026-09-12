@@ -46,7 +46,7 @@ import unicodedata
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 import post_common  # noqa: E402
-import jp_absence  # noqa: E402
+import mlb_availability  # noqa: E402
 import perspectives  # noqa: E402
 from notability_engine import (  # noqa: E402
     MLB_NAME_READINGS as _MLB_NAME_READINGS,
@@ -283,7 +283,7 @@ def game_day(g: dict) -> str:
                              int(m.group(1)), int(m.group(2)))
 
 
-def pick_hook(games: list) -> dict:
+def pick_hook(games: list, availability=None) -> dict:
     """
     動画の1枚目に出す「最も具体的な事実」を選ぶ。
 
@@ -300,6 +300,8 @@ def pick_hook(games: list) -> dict:
     名前を並べるだけにして「出場」「先発」とは書かない
     (打者のスタメンは19時の生成時点ではまだ公表されていない)。
     """
+    games = mlb_availability.prepare(games, availability)
+
     # 1. 日本人投手の先発予定(APIで確認できている事実)
     #
     # 以前は「具体性が高い順」として、外国人選手の個人記録を先頭に置いていた。
@@ -318,27 +320,7 @@ def pick_hook(games: list) -> dict:
             if p.get("name"):
                 return {"big": "先発予定", "sub": p["name"], "at": at}
 
-    # 2. しばらく出ていない日本人打者が、戻ってきそうな日。
-    #
-    #    9/7の「現地の報道」は「大谷翔平が4試合連続でスタメン外れる。
-    #    ロバーツ監督は月曜日の復帰に希望的」を扱っていた。同じ材料が、
-    #    明日の試合を薦める回では使われていなかった。
-    #    戻ってくる日は、その選手を追っている人がいちばん見に来る日でもある。
-    #
-    #    言えるのは「何日出ていないか」まで。打者のスタメンは当日発表なので、
-    #    **問いの形にする。**外れた日は、翌日また同じことを書くだけで済む。
-    #    数え方と除外(投手・長期離脱)は jp_absence 側にまとめてある。
-    for at, g in enumerate(games):
-        day = game_day(g)
-        if not day:
-            continue
-        try:
-            back = jp_absence.hook_for(g.get("jp_players") or [], day)
-        except Exception:                        # noqa: BLE001
-            back = {}
-        if back:
-            return {"big": back["text"], "sub": back["name"],
-                    "at": at, "key": back["name"]}
+    # 欠場日数は復帰の根拠にならない。日数だけの復帰予告は作らない。
 
     # 3. 日本人選手が所属しているチームの試合。
     #
@@ -380,6 +362,8 @@ def pick_hook(games: list) -> dict:
     #     判定は soccer_availability（プレミアリーグ公式の発表）。
     out_now = _soccer_out()
     for at, g in enumerate(games):
+        if g.get("league") == "MLB":
+            continue
         for r in g.get("reasons") or []:
             if r.get("tag") != "jp_team":
                 continue
@@ -804,7 +788,8 @@ def main():
     args = parser.parse_args()
 
     data = _load(args.games, {})
-    games = [g for g in data.get("games", []) if g.get("is_notable")][:MAX_GAMES]
+    games = [g for g in mlb_availability.prepare(data.get("games", []))
+             if g.get("is_notable")][:MAX_GAMES]
 
     # コレスポがこれまで取り上げた試合の実測を添える。
     # 予測はしない。数えた結果を、件数つきで置くだけ。

@@ -50,13 +50,13 @@ with tempfile.TemporaryDirectory() as tmp:
     check("大谷は7日ぶり", got.get("大谷翔平", {}).get("gap"), 7)
     check("村上は3日ぶり（下限ちょうど）", got.get("村上宗隆", {}).get("gap"), 3)
     check("1日空いただけの選手は入れない", "鈴木誠也" in got, False)
-    check("19日空いた選手は入れない（故障者リスト）", "吉田正尚" in got, False)
+    check("19日空いた選手は入れない（内部比較の対象外。ILを意味しない）", "吉田正尚" in got, False)
     check("投手は入れない（中5日があるため）", "佐々木朗希" in got, False)
 
     # 同じ試合に2人いる日は、空きが長いほうを採る。
     h = jp_absence.hook_for(["村上宗隆", "大谷翔平"], "2026-09-08", str(f))
-    check("長く空いているほうを選ぶ", h.get("name"), "大谷翔平")
-    check("言い回し", h.get("text"), "7日ぶりの出場なるか")
+    check("欠場間隔だけでは選手を予告しない", h.get("name"), None)
+    check("言い回し", h.get("text"), None)
 
     check("誰も当てはまらない日は何も返さない",
           jp_absence.hook_for(["鈴木誠也"], "2026-09-08", str(f)), {})

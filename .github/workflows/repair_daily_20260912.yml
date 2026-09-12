@@ -1,0 +1,73 @@
+name: 9月12日のMLB予告を訂正
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: buffer-daily-delivery
+  cancel-in-progress: false
+jobs:
+  repair:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.11'
+      - name: 制作に必要な道具
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
+      - name: 特定した原稿と現在の登録を照合
+        run: python scripts/repair_daily_20260912.py prepare
+      - name: 音声エンジン
+        run: |
+          docker run -d --rm -p 127.0.0.1:50021:50021 --name correction-voice voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: 訂正した音声と映像を制作
+        run: |
+          python scripts/synthesize_narration.py --narration build/daily-correction/narration.json --out-dir build/daily-correction/audio
+          python scripts/generate_video.py --games build/daily-correction/games.json --audio-dir build/daily-correction/audio --out build/daily-correction/video --require-audio
+          ffmpeg -v error -i build/daily-correction/video/collespo_short.mp4 -f null -
+      - name: 訂正版を公開し元動画へ訂正を記録
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/repair_daily_20260912.py publish
+      - name: 同じ内容のPodcast音声も訂正
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,'scripts')
+          from generate_podcast import concat_to_mp3
+          if not concat_to_mp3(Path('build/daily-correction/audio'),Path('podcast/2026-09-12.mp3')):
+              raise SystemExit('Podcast correction failed')
+          PY
+          bash scripts/commit_data.sh 'Correct September 12 preview video and podcast' data/published_videos.json podcast/2026-09-12.mp3
+      - name: X・Instagram・TikTokにも訂正版を配信
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python scripts/repair_daily_20260912.py socials
+      - name: 完成素材と訂正結果
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: daily-correction
+          path: build/daily-correction/
+          retention-days: 7

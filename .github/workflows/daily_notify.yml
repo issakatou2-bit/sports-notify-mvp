@@ -56,6 +56,8 @@ jobs:
           # 無ければ加点0で通るので、落ちても止めない。
           python scripts/postseason.py --out data/postseason.json || true
           python notability_engine.py --source mlb --out notable_games.json
+          # 所属・欠場日数と出場可能な登録を区別。全配信より前に適用する。
+          python scripts/mlb_availability.py --games notable_games.json --archive-dir archive
 
       # 選手の所属変化を検知してニュース化する。
       # 差分は「候補」に過ぎないため、スクリプト内でAPIに問い合わせて
@@ -272,7 +274,9 @@ jobs:
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/sanity.py --general --strict
+        run: |
+          python scripts/mlb_availability.py --games notable_games.json --check-narration public/narration.json
+          python scripts/sanity.py --general --strict
 
       - name: Synthesize narration
         continue-on-error: true
