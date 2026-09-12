@@ -40,6 +40,12 @@ jobs:
           pip install -r scripts/requirements.txt
           pip install pyflakes pyyaml pillow
 
+      - name: Install Japanese fonts for diagram checks
+        timeout-minutes: 6
+        run: |
+          sudo timeout 120 apt-get update -qq -o Acquire::Retries=2
+          sudo timeout 180 apt-get install -y -qq fonts-noto-cjk
+
       - name: Run checks
         run: python scripts/run_checks.py
 
