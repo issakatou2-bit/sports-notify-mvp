@@ -812,7 +812,7 @@ def rule_soccer_table(game: Game, standings: dict) -> list[Reason]:
     return reasons
 
 
-def _last_season_ranks(path: str = "data/soccer_preview.json") -> dict:
+def _last_season_ranks(path: str = "data/soccer_preview.json", league=None) -> dict:
     """
     昨季の最終順位。クラブ名の正規化キーで引けるようにして返す。
 
@@ -821,8 +821,14 @@ def _last_season_ranks(path: str = "data/soccer_preview.json") -> dict:
     昨季の順位は soccer_preview.py が既に取っているので、それを使う。
     """
     global _LAST_SEASON_CACHE
-    if _LAST_SEASON_CACHE is not None:
-        return _LAST_SEASON_CACHE
+    code = next((c for c, name in SOCCER_COMPETITIONS.items() if league in (c, name)), None)
+    if code is None:
+        return {}
+    if _LAST_SEASON_CACHE is None:
+        _LAST_SEASON_CACHE = {}
+    cache_key = (str(path), code)
+    if cache_key in _LAST_SEASON_CACHE:
+        return _LAST_SEASON_CACHE[cache_key]
     ranks: dict = {}
     try:
         data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
@@ -830,14 +836,21 @@ def _last_season_ranks(path: str = "data/soccer_preview.json") -> dict:
         # 握り潰さない。ここが空だと開幕直後に全試合0点になるが、
         # 静かに0件を返すと「試合が地味だった」のと見分けが付かない。
         print(f"[warn] {path} を読めませんでした: {e}")
-        _LAST_SEASON_CACHE = ranks
+        _LAST_SEASON_CACHE[cache_key] = ranks
         return ranks
     for comp in data.get("competitions", []):
+        # 同じクラブのCL順位で国内リーグ順位を上書きしない。
+        if comp.get("code") != code:
+            continue
+        year = comp.get("season", {}).get("year")
+        if not isinstance(year, int) or comp.get("last_season_year") != year - 1:
+            continue
+        limit = {"PL": 20, "PD": 20, "SA": 20, "BL1": 18, "FL1": 18, "CL": 36}[code]
         for row in comp.get("last_season", []):
             team, pos = row.get("team"), row.get("position")
-            if team and pos:
-                ranks[normalize_club(team)] = int(pos)
-    _LAST_SEASON_CACHE = ranks
+            if team and type(pos) is int and 1 <= pos <= limit:
+                ranks[normalize_club(team)] = pos
+    _LAST_SEASON_CACHE[cache_key] = ranks
     return ranks
 
 
@@ -851,11 +864,15 @@ def rule_soccer_last_season(game: Game) -> list[Reason]:
     今季の順位が付いている時期には rule_soccer_table の方が実態に近いので、
     こちらは上位同士のときだけ、控えめな重みで足す。
     """
-    ranks = _last_season_ranks()
+    ranks = _last_season_ranks(league=game.league)
     if not ranks:
         return []
     hr = ranks.get(_club_key(game.home_team_name, ranks) or "")
     ar = ranks.get(_club_key(game.away_team_name, ranks) or "")
+    code = next(c for c, name in SOCCER_COMPETITIONS.items() if game.league in (c, name))
+    competition = "CLリーグフェーズ" if code == "CL" else SOCCER_COMPETITIONS[code]
+    def ranked(name, position):
+        return f"{club_name_jp(name)}（昨季{competition}{position}位）"
 
     # 片方しか順位が無い日。相手が昇格クラブだと必ずこうなる。
     #
@@ -868,7 +885,7 @@ def rule_soccer_last_season(game: Game) -> list[Reason]:
         if one and one <= 6:
             who = (game.home_team_name if hr else game.away_team_name)
             return [Reason(tag="quality",
-                           text=f"昨季{one}位の{club_name_jp(who)}",
+                           text=ranked(who, one),
                            weight=2)]
         return []
     worst = max(hr, ar)
@@ -877,17 +894,16 @@ def rule_soccer_last_season(game: Game) -> list[Reason]:
         # 開幕直後はこれ以外に 材料 が無く、重み2だと閾値3に届かず、
         # 昨季3位と5位の対戦が対象外になっていた。
         return [Reason(tag="quality",
-                       text=(f"昨季{hr}位の{club_name_jp(game.home_team_name)}と"
-                             f"{ar}位の{club_name_jp(game.away_team_name)}"),
+                       text=f"{ranked(game.home_team_name, hr)}と{ranked(game.away_team_name, ar)}",
                        weight=3)]
     if worst <= 10:
         return [Reason(tag="quality",
-                       text=f"昨季{hr}位と{ar}位の対戦", weight=1)]
+                       text=f"{ranked(game.home_team_name, hr)}と{ranked(game.away_team_name, ar)}の対戦", weight=1)]
     # 中位・下位同士でも、昨季の位置は語れる材料になる。
     # 点は付けない(注目度は上がらない)が、その日にこの試合しか無ければ
     # ナレーションが何も言えなくなるので、文面だけは残す。
     return [Reason(tag="quality",
-                   text=f"昨季{hr}位と{ar}位の対戦", weight=0)]
+                   text=f"{ranked(game.home_team_name, hr)}と{ranked(game.away_team_name, ar)}の対戦", weight=0)]
 
 
 SOCCER_GAME_RULES = [rule_soccer_japanese_player, rule_soccer_marquee,
