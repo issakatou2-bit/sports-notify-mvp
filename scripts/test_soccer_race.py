@@ -123,7 +123,68 @@ check("差が欠けていれば空",
       sr.phrase({"label": "CL圏内", "side": "inside"}), "")
 
 print()
-print("--- 線から遠すぎる話はしない ---")
+print("--- 線から遠すぎる話はしない（勝ち点で見る） ---")
+# **9/13に順位の差から勝ち点の差へ変えた。**本番で初めて分かった。
+# ラ・リーガ6節の日、久保建英のレアル・ソシエダは11位で、線
+# （CL圏内4位・EL圏内5位）から6〜7つ離れていた。だが勝ち点では
+#
+#     4位 セビージャ      勝点10
+#     5位 レアル・ベティス 勝点 9
+#    11位 レアル・ソシエダ 勝点 7
+#
+# EL圏内まで勝点2、CL圏内まで勝点3。**1勝で届く距離**だった。
+# 順位で切ると、いちばん話になる時期に何も出せない。
+_tight = {"generated_at": "2026-09-13T00:00:00Z", "competitions": [{
+    "code": "PD", "name_jp": "ラ・リーガ",
+    "table": [
+        {"position": 1, "team": "FC Barcelona", "points": 12, "played": 6,
+         "gf": 0, "ga": 0},
+        {"position": 2, "team": "Real Madrid CF", "points": 12, "played": 6,
+         "gf": 0, "ga": 0},
+        {"position": 3, "team": "Deportivo Alaves", "points": 10,
+         "played": 6, "gf": 0, "ga": 0},
+        {"position": 4, "team": "Sevilla FC", "points": 10, "played": 6,
+         "gf": 0, "ga": 0},
+        {"position": 5, "team": "Real Betis Balompie", "points": 9,
+         "played": 6, "gf": 0, "ga": 0},
+        {"position": 6, "team": "RC Deportivo La Coruna", "points": 8,
+         "played": 6, "gf": 0, "ga": 0},
+        {"position": 7, "team": "RCD Espanyol", "points": 7, "played": 6,
+         "gf": 0, "ga": 0},
+        {"position": 8, "team": "Athletic Club", "points": 7, "played": 6,
+         "gf": 0, "ga": 0},
+        {"position": 9, "team": "Atletico de Madrid", "points": 7,
+         "played": 6, "gf": 0, "ga": 0},
+        {"position": 10, "team": "Real Racing Club", "points": 7,
+         "played": 6, "gf": 0, "ga": 0},
+        {"position": 11, "team": "Real Sociedad de Futbol", "points": 7,
+         "played": 6, "gf": 0, "ga": 0},
+        {"position": 12, "team": "CA Osasuna", "points": 6, "played": 6,
+         "gf": 0, "ga": 0},
+    ]}]}
+_d = sr.build(_tight)
+_jp = {x["name"]: x for x in _d["competitions"][0]["jp"]}
+check("11位でも勝点2差なら出す",
+      bool(_jp.get("久保建英", {}).get("lines")), True)
+check("いちばん近い線はEL圏内",
+      _jp["久保建英"]["lines"][0]["label"], "EL圏内")
+check("差は勝点2", _jp["久保建英"]["lines"][0]["diff"], 2)
+check("言い方も正しい", _jp["久保建英"]["lines"][0]["text"],
+      "EL圏内まで勝点2")
+# 勝ち点で離れていれば落とす。
+_far = {"generated_at": "2026-09-13T00:00:00Z", "competitions": [{
+    "code": "PD", "name_jp": "ラ・リーガ",
+    "table": [{"position": i, "team": "T%d" % i, "points": 40 - 3 * i,
+               "played": 20, "gf": 0, "ga": 0} for i in range(1, 13)]
+    + [{"position": 13, "team": "Real Sociedad de Futbol", "points": 1,
+        "played": 20, "gf": 0, "ga": 0}]}]}
+_far_jp = {x["name"]: x for x in sr.build(_far)["competitions"][0]["jp"]}
+check("勝ち点で離れていれば落とす",
+      _far_jp.get("久保建英", {}).get("lines"), [])
+check("上限は定数", sr.MAX_POINT_GAP, 6)
+
+print()
+print("--- 順位が離れていても勝ち点が近ければ出す（旧・順位差の検査） ---")
 # 16位のクラブに「CL圏内まで勝点6」と言っても、間に12クラブいる。
 far = sr.build(preview(
     "PL", [20, 19, 18, 17, 16, 15, 14, 13, 12, 11,

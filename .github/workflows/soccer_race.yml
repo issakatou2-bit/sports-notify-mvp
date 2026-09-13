@@ -156,12 +156,17 @@ jobs:
 
       # ショート用に、動画の1枚目(1080x1920)を切り出す。
       # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
+      #
+      # ファイル名は generate_morning_short が決める形
+      # （collespo_morning_<mode>.mp4）。9/13の初回は
+      # collespo_short.mp4 を探していて、**動画はできたのに
+      # サムネイルが作れなかった。**
       - name: Vertical thumbnail
         if: steps.gate.outputs.count != '0'
         continue-on-error: true
         run: |
           bash scripts/shorts_thumbnail.sh \
-            build/race/collespo_short.mp4 build/race/short.png
+            build/race/collespo_morning_soccer_race.mp4 build/race/short.png
 
       # **まだ題と説明文を作っていない。**
       #
@@ -190,7 +195,7 @@ jobs:
             ARGS="--publish-at ${{ inputs.publish_at }}"
           fi
           python scripts/upload_youtube.py \
-            --video build/race/collespo_short.mp4 \
+            --video build/race/collespo_morning_soccer_race.mp4 \
             --kind soccer_race --sport soccer \
             --narration build/race_narration.json \
             --thumbnail build/race/short.png \
@@ -202,7 +207,7 @@ jobs:
         with:
           name: soccer-race
           path: |
-            build/race/collespo_short.mp4
+            build/race/collespo_morning_soccer_race.mp4
             build/race_narration.json
           if-no-files-found: warn
 
@@ -230,8 +235,8 @@ jobs:
           {
             echo "## 順位争い"
             echo
-            if [ -f build/race/collespo_short.mp4 ]; then
-              echo "- 動画: $(du -h build/race/collespo_short.mp4 | cut -f1)"
+            if [ -f build/race/collespo_morning_soccer_race.mp4 ]; then
+              echo "- 動画: $(du -h build/race/collespo_morning_soccer_race.mp4 | cut -f1)"
             else
               echo "- **動画は作れませんでした**"
             fi
