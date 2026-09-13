@@ -296,6 +296,46 @@ def main() -> int:
     check("圏内の行が無い日", g.render_race_line, 1.0, _comp,
           {**_line, "inside": []})
     check("動きの途中", g.render_race_line, 0.3, _comp, _line)
+
+    # 1枚目。**ショートのサムネイルはこの絵そのもの。**
+    # 線にいちばん近い日本人選手を立てる（実測で名前があると倍ちがう）。
+    _race = {"date_jst": "2026-09-13", "picked": ["PD"],
+             "competitions": [{
+                 "code": "PD", "name_jp": "ラ・リーガ", "played": 6,
+                 "ready": True, "lines": [_line],
+                 "jp": [{"name": "久保建英", "club_jp": "レアル・ソシエダ",
+                         "position": 9, "points": 7,
+                         "lines": [{"label": "CL圏内", "side": "outside",
+                                    "diff": 2,
+                                    "text": "CL圏内まで勝点2"}]}]}]}
+    check("順位争いの1枚目", g.render_race_intro, 1.0, _race, "9月13日")
+    check("順位争いの1枚目（動きの途中）", g.render_race_intro, 0.3,
+          _race, "9月13日")
+    # **日本人選手が線の近くにいない日**も、大会名で1枚目を立てる。
+    _no_jp = {**_race, "competitions": [
+        {**_race["competitions"][0], "jp": []}]}
+    check("日本人選手がいない日の1枚目", g.render_race_intro, 1.0,
+          _no_jp, "9月13日")
+    check("材料が空の1枚目", g.render_race_intro, 1.0,
+          {"picked": [], "competitions": []}, "9月13日")
+
+    check("日本人選手の現在地", g.render_race_japanese, 1.0, _race)
+    check("日本人選手がいない日", g.render_race_japanese, 1.0, _no_jp)
+    check("日本人選手の現在地（途中）", g.render_race_japanese, 0.3, _race)
+
+    # 線にいちばん近い選手を選べているか。
+    _lead = g.race_lead(_race)
+    if _lead is None:
+        fails += 1
+        print("NG  線に近い選手を選べていない")
+    else:
+        print("ok  線に近い選手: %s（%s）"
+              % (_lead[0]["name"], _lead[1]["text"]))
+    if g.race_lead(_no_jp) is not None:
+        fails += 1
+        print("NG  日本人がいないのに選手を返した")
+    else:
+        print("ok  日本人がいない日は選ばない")
     # クラブ名が長い日。**はみ出させない。**
     check("クラブ名が長い日", g.render_race_line, 1.0, _comp,
           {**_line, "inside": [{**_rows[0],

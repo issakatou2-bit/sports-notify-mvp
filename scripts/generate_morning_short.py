@@ -2166,6 +2166,8 @@ def render_ps_league(p, league: dict, lid: str = "104"):
 # 5大リーグ×3本の線を全部出すと15画面になり、ショートに入らない。
 # 日本人選手のいる大会を先に、1大会あたり2本の線まで。
 LINES_PER_COMP = 2
+# 日本人選手の画面に並べる人数。1画面に入る数。
+JP_SHOWN = 5
 # 読み上げで名前を出す日本人選手の数。
 JP_SPOKEN = 3
 
@@ -2223,6 +2225,113 @@ def race_gap_text(diff) -> str:
     if diff == 0:
         return "勝点で並んでいる"
     return "勝点%d差" % abs(diff)
+
+
+def race_lead(race: dict):
+    """順位争いの回で、1枚目に置く選手。
+
+    **線にいちばん近い日本人選手。**「久保建英、CL圏内まで勝点2」なら、
+    順位争いの話のまま名前を出せる。実測では題に日本人選手の名前が
+    ある動画が平均290再生、無い動画が171再生。
+
+    いなければ None。そのときは大会名だけの1枚目になる。
+    """
+    best = None
+    by_code = {c["code"]: c for c in (race.get("competitions") or [])}
+    for code in (race.get("picked") or []):
+        for x in (by_code.get(code, {}).get("jp") or []):
+            near = (x.get("lines") or [{}])[0]
+            if not near.get("text"):
+                continue
+            if best is None or near["diff"] < best[1]["diff"]:
+                best = (x, near, by_code[code].get("name_jp", ""))
+    return best
+
+
+def render_race_intro(p, race: dict, day: str = ""):
+    """順位争いの1枚目。**ショートのサムネイルはこの絵そのもの。**
+
+    フィードで最初に見えるのもここなので、「順位争い」という枠の名前
+    より先に、**線にいちばん近い日本人選手**を置く。
+    """
+    im, d = base(p)
+    e = ease_out(min(1.0, p * 2.6))
+    slide = int((1 - e) * 70)
+
+    d.text((80, 268 + slide), day or "", font=font(48), fill=DIM)
+    lead = race_lead(race)
+    if lead:
+        who, near, comp_jp = lead
+        size = fit(d, who["name"], W - 170, (132, 116, 100, 88))
+        video_common.pop_text(d, (76, 356 + slide), who["name"], font(size),
+                              ACCENT, stroke=(8, 10, 15), stroke_w=9,
+                              shadow=(0, 0, 0), shadow_off=(5, 6))
+        line2 = "%d位 %s" % (who["position"], who["club_jp"])
+        d.text((80, 520 + slide), line2, font=font(52), fill=TEXT)
+        ns = fit(d, near["text"], W - 170, (46, 42, 38, 34))
+        d.text((80, 600 + slide), near["text"], font=font(ns), fill=JP)
+        d.text((80, 676 + slide), comp_jp, font=font(36), fill=DIM)
+        y = 790
+    else:
+        # 日本人選手が線の近くにいない日。大会名で立てる。
+        names = [c.get("name_jp", "") for c in
+                 (race.get("competitions") or [])
+                 if c.get("code") in (race.get("picked") or [])]
+        head = "・".join(names[:2]) or "欧州サッカー"
+        hs = fit(d, head, W - 170, (96, 84, 72, 64))
+        d.text((80, 380 + slide), head, font=font(hs), fill=ACCENT)
+        y = 560
+
+    d.text((80, y), "順位争い", font=font(72), fill=TEXT)
+    d.text((80, y + 100), "CL圏内・EL圏内の境目を見ます",
+           font=font(38), fill=DIM)
+    d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
+    return im
+
+
+def render_race_japanese(p, race: dict):
+    """日本人選手が、いまどの順位にいるか。
+
+    順位表は「見たい人が見るもの」だが、この1枚だけは
+    **知っている名前から入れる**。MLBの進出争いの
+    render_ps_japanese と同じ考え方。
+    """
+    im, d = base(p)
+    d.text((70, 150), "日本人選手のいるクラブ", font=font(56), fill=ACCENT)
+
+    rows = []
+    by_code = {c["code"]: c for c in (race.get("competitions") or [])}
+    for code in (race.get("picked") or []):
+        comp = by_code.get(code) or {}
+        for x in (comp.get("jp") or []):
+            rows.append((x, comp.get("name_jp", "")))
+    if not rows:
+        d.text((70, 300), "この大会に日本人選手はいません",
+               font=font(40), fill=DIM)
+        return im
+
+    y = 270
+    for i, (x, comp_jp) in enumerate(rows[:JP_SHOWN]):
+        appear = 0.06 + i * 0.05
+        if p < appear:
+            break
+        e = ease_out(min(1.0, (p - appear) * 9))
+        dx = int((1 - e) * 80)
+        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + 124], 14, fill=SURF)
+        d.text((104 - dx, y + 22), str(x.get("position") or "-"),
+               font=font(46), fill=ACCENT)
+        nm = fit(d, x.get("name", ""), 380, (44, 40, 36, 32))
+        d.text((186 - dx, y + 16), x.get("name", ""), font=font(nm), fill=JP)
+        d.text((186 - dx, y + 70), "%s　%s" % (x.get("club_jp", ""), comp_jp),
+               font=font(28), fill=DIM)
+        near = (x.get("lines") or [{}])[0]
+        if near.get("text"):
+            ts = fit(d, near["text"], 420, (30, 28, 26, 24))
+            tw = d.textlength(near["text"], font=font(ts))
+            d.text((W - 104 - dx - tw, y + 46), near["text"],
+                   font=font(ts), fill=TEXT)
+        y += 136
+    return im
 
 
 def render_race_line(p, comp: dict, line: dict):
@@ -3727,6 +3836,8 @@ def main():
     parser.add_argument("--reporters", default="data/local_reporters.json")
     # 進出争い。9月と10月だけ材料がある。
     parser.add_argument("--postseason", default="data/postseason.json")
+    parser.add_argument("--race", default="data/soccer_race.json",
+                        help="--mode soccer_race のときの、順位争いの材料")
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--voices", default="data/local_voices.json")
@@ -3734,7 +3845,8 @@ def main():
                         help="--mode player のときの、今日の1人の材料")
     parser.add_argument("--mode", default="players",
                         choices=["players", "player", "local", "press",
-                                 "voices", "postseason", "all"],
+                                 "voices", "postseason", "soccer_race",
+                                 "all"],
                         help="players=選手成績 / local=現地の注目度(数字) / "
                              "press=現地の報道(番記者と見出し) / "
                              "voices=ハイライトのコメント欄 / "
@@ -3819,6 +3931,23 @@ def main():
         ch = postseason.get("changes") or []
         print(f"[info] 進出争い: {postseason.get('headline','')} / "
               f"昨日からの変化 {len(ch)}件")
+
+    # 欧州サッカーの順位争い。5節に満たない大会は soccer_race 側で
+    # 落としてあるので、ここで取れるのは出せる大会だけ。
+    race = {}
+    rp_ = pathlib.Path(args.race)
+    if rp_.exists():
+        try:
+            race = json.loads(rp_.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            race = {}
+    data["race"] = race
+    # 順位争いは「今日の順位」なので、日付をずらさない。
+    # 成績の回は米国日付を1日進めてJSTにするが、ここはその相手がいない。
+    if args.mode == "soccer_race" and race.get("date_jst"):
+        data["date_jst"] = race["date_jst"]
+    if race.get("picked"):
+        print("[info] 順位争い: " + "・".join(race["picked"]))
     if reporters_data.get("posts"):
         print(f"[info] 現地の番記者: {len(reporters_data['posts'])}件 / "
               f"見出し {len(reporters_data.get('headlines') or [])}件")
@@ -3966,6 +4095,16 @@ def main():
                                      meta.get("count", 1))
                 elif kind == "buzz":
                     im = render_buzz(pp, buzz, picks)
+                elif kind == "race_intro":
+                    im = render_race_intro(pp, race, meta.get("day", ""))
+                elif kind == "race_japanese":
+                    im = render_race_japanese(pp, race)
+                elif kind == "race_line":
+                    _c = next((c for c in (race.get("competitions") or [])
+                               if c.get("code") == meta.get("code")), {})
+                    _l = next((x for x in (_c.get("lines") or [])
+                               if x.get("at") == meta.get("at")), None)
+                    im = render_race_line(pp, _c, _l) if _l else None
                 elif kind == "ps_league":
                     im = render_ps_league(
                         pp, ((postseason.get("leagues") or {})

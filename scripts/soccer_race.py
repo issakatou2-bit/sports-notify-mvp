@@ -346,12 +346,41 @@ def main() -> int:
     ap.add_argument("--out", default="data/soccer_race.json")
     args = ap.parse_args()
 
-    preview = json.loads(pathlib.Path(args.preview).read_text(
-        encoding="utf-8"))
+    src = pathlib.Path(args.preview)
+    preview = json.loads(src.read_text(encoding="utf-8"))
+
+    # 前日の順位表。**「昨日またいだか」がこの枠の主題。**
+    #
+    # MLBの進出争い（postseason.py）と同じ形で退避する。
+    # 同じ日に2回走らせても上書きしないよう、日付で見る。
+    # 前日ぶんが無い日は moved が空になる（cutline 側で
+    # 「変化なし」と「分からない」を分けてある）。
     before = {}
-    if args.before and pathlib.Path(args.before).exists():
-        before = json.loads(pathlib.Path(args.before).read_text(
-            encoding="utf-8"))
+    if args.before:
+        p = pathlib.Path(args.before)
+        if p.exists():
+            try:
+                before = json.loads(p.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                before = {}
+    else:
+        prev_path = src.with_name(src.stem + "_prev.json")
+        today = datetime.now(timezone(timedelta(hours=9))).date().isoformat()
+        stamp = str(preview.get("generated_at") or "")[:10]
+        if prev_path.exists():
+            try:
+                before = json.loads(prev_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                before = {}
+        # 今日ぶんを次回のために取っておく。取り込み元が今日のもの
+        # であるときだけ（古い記録で上書きしない）。
+        if stamp == today:
+            try:
+                prev_path.write_text(
+                    json.dumps(preview, ensure_ascii=False, indent=2),
+                    encoding="utf-8")
+            except OSError as e:                        # noqa: BLE001
+                print(f"[warn] 前日ぶんを残せません: {e}", file=sys.stderr)
 
     data = build(preview, before)
     out = pathlib.Path(args.out)
