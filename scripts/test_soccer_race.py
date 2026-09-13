@@ -326,6 +326,93 @@ check("出ている選手に印は付かない",
 # **材料が取れない日は誰にも印を付けない**（名前が丸ごと消えるのを避ける）。
 check("材料が無い日は空", isinstance(sr._unavailable(), set), True)
 
+
+print()
+print("--- 節の終わりで出す ---")
+# **「昨日から動いたか」では6大会あるのでほぼ毎日出る。**しかも
+# 同じリーグの話を何度もする。節の終わりなら区切りに意味があり、
+# 題も「プレミアリーグ 第5節終了」と決まる。
+def table_mixed(code, played_list, name="リーグ"):
+    return {"generated_at": "2026-09-13T00:00:00Z", "competitions": [{
+        "code": code, "name_jp": name,
+        "table": [{"position": i + 1, "team": "T%d" % (i + 1),
+                   "points": 30 - i, "played": p, "gf": 0, "ga": 0}
+                  for i, p in enumerate(played_list)]}]}
+
+_done = sr.round_state([{"played": 5}, {"played": 5}, {"played": 5}])
+check("全クラブ同じなら節は完了", (_done["round"], _done["complete"]),
+      (5, True))
+_mid = sr.round_state([{"played": 4}, {"played": 5}, {"played": 5}])
+check("1クラブ遅れていれば進行中", (_mid["round"], _mid["complete"]),
+      (4, False))
+check("空の順位表", sr.round_state([]), {"round": 0, "complete": False})
+
+print()
+print("--- 何節から出してよいか ---")
+# **割合と絶対の下限の両方で見る。**一律5節だとCL（全8節）は
+# 12月まで出せない。かといって割合だけだとCLは1節からになり、
+# **1節の順位表は勝点0・1・3の3種類しかなく大半が同順位**になる。
+check("38節のリーグは5節から", sr.min_round("PL"), 5)
+check("34節のリーグも5節から", sr.min_round("BL1"), 5)
+check("CL（全8節）は3節から", sr.min_round("CL"), 3)
+check("知らない大会は既定", sr.min_round("XX"),
+      sr.SOCCER_TABLE_MIN_MATCHES)
+check("下限は定数", sr.MIN_ROUNDS_FLOOR, 3)
+
+print()
+print("--- いま出すべき大会 ---")
+check("節が終わっていなければ出さない",
+      sr.due(table_mixed("PL", [4, 5, 5])), [])
+check("最低節数に満たなければ出さない",
+      sr.due(table_mixed("PL", [4, 4, 4])), [])
+_due = sr.due(table_mixed("PL", [5, 5, 5], "プレミアリーグ"))
+check("節が終わって最低を満たせば出す",
+      [(x["code"], x["round"]) for x in _due], [("PL", 5)])
+# **同じ節を2回出さない。**
+check("前に出した節は出さない",
+      sr.due(table_mixed("PL", [5, 5, 5]), {"PL": 5}), [])
+check("次の節が終われば出す",
+      len(sr.due(table_mixed("PL", [6, 6, 6]), {"PL": 5})), 1)
+# CLは3節から。
+check("CLの2節はまだ出さない",
+      sr.due(table_mixed("CL", [2, 2, 2])), [])
+check("CLの3節は出す",
+      len(sr.due(table_mixed("CL", [3, 3, 3]))), 1)
+
+print()
+print("--- 1本1大会 ---")
+_two = {"generated_at": "2026-09-13T00:00:00Z", "competitions": [
+    {"code": "PD", "name_jp": "ラ・リーガ",
+     "table": [{"position": i + 1, "team": "S%d" % (i + 1),
+                "points": 20 - i, "played": 6, "gf": 0, "ga": 0}
+               for i in range(8)]},
+    {"code": "PL", "name_jp": "プレミアリーグ",
+     "table": [{"position": i + 1, "team": t, "points": 20 - i,
+                "played": 6, "gf": 0, "ga": 0}
+               for i, t in enumerate(PL_TEAMS[:8])]},
+]}
+check("大会を指定すればそれだけ", sr.build(_two, only="PD")["picked"],
+      ["PD"])
+check("指定しなければ1つだけ選ぶ", len(sr.build(_two)["picked"]), 1)
+check("1本に入る大会は1つ", sr.MAX_COMPETITIONS, 1)
+# 節の情報が材料に残る（題に使う）。
+_b = sr.build(_two, only="PL")
+_c = [c for c in _b["competitions"] if c["code"] == "PL"][0]
+check("何節まで終わったかを持つ", _c["round"], 6)
+check("節が完了しているか", _c["round_complete"], True)
+
+print()
+print("--- CLの線は国内リーグと違う ---")
+# 36クラブが8試合だけ戦い、上位8が直行、9〜24がプレーオフ、
+# 25位以下が敗退。**「CL圏内」という言葉を当てると嘘になる。**
+import cutline as _ctl  # noqa: E402
+check("CLの線は2本", len(_ctl.lines_for("CL")), 2)
+check("上位8が直行", _ctl.lines_for("CL")[0], (8, "決勝トーナメント直行"))
+check("24位までがプレーオフ", _ctl.lines_for("CL")[1],
+      (24, "プレーオフ圏内"))
+check("CLに「CL圏内」という線は無い",
+      any("CL圏内" == lab for _, lab in _ctl.lines_for("CL")), False)
+
 print()
 print("--- 欠けても落ちない ---")
 check("空の材料", sr.build({})["picked"], [])

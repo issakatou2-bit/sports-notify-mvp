@@ -63,9 +63,127 @@ except ImportError:                                     # pragma: no cover
 
 # 動画1本に入れる大会の数。
 #
-# 5大リーグ全部を入れると1本が長くなり、どのリーグの話をしているのか
-# 分からなくなる。日本人選手がいるリーグを先に、多くても4つ。
-MAX_COMPETITIONS = 4
+# **1本1大会にした（9/13）。**5大リーグとCLで6つあり、まとめると
+# どのリーグの話か分からなくなる。節ごとに区切るなら、
+# 「プレミアリーグ第5節が終わった」の1本にするのが自然。
+MAX_COMPETITIONS = 1
+
+# 大会の全節数。順位に意味が出る節を、ここから割合で決める。
+#
+# 20クラブの総当たり2回で38節、18クラブなら34節。
+# **CLのリーグフェーズは36クラブだが8節しかない**（総当たりではなく、
+# 各クラブが8試合だけ戦う形）。クラブ数からは出せないので持っておく。
+TOTAL_ROUNDS = {"PL": 38, "PD": 38, "SA": 38, "BL1": 34, "FL1": 34,
+                "CL": 8, "ELC": 46, "BL2": 34}
+
+# 全体のどれだけ進めば、順位を扱ってよいか。
+#
+# **割合と、絶対の下限の両方で見る。**
+#
+#   割合 … 大会の長さが違うものに同じ節数を当てない。
+#          一律5節だとCL（全8節）は12月まで出せない。
+#   下限 … 節数が少なくても、試合数が少なすぎると順位表が
+#          そもそも成り立たない。
+#
+# 下限を入れた理由は実物を見て分かった。**CL第1節の順位表は
+# 勝点0・1・3の3種類しかなく、大半が同順位**だった。
+# 「プレーオフ圏内（24位まで）: 22位 ／ 25位 → 差0」という、
+# 読む側に意味が伝わらない形になる。
+#
+#   38節のリーグ … max(38÷8, 3) = 5節から
+#   34節のリーグ … max(34÷8, 3) = 5節から
+#   CL（8節）    … max(8÷8,  3) = 3節から
+#
+# CLの3節は10月下旬。国内リーグは9月末。**枠が動き出すのは9月末。**
+ROUND_FRACTION = 8
+
+# 順位表が成り立つ最低の試合数。
+#
+# 3試合あれば勝点は0〜9の範囲に散り、同順位の塊が解ける。
+# 1〜2試合では「勝った組・引き分けた組・負けた組」でしかない。
+MIN_ROUNDS_FLOOR = 3
+
+# 節が終わったことの判定に、どれだけの猶予を持つか。
+#
+# 順延があると1クラブだけ遅れる。全クラブが揃うのを待つのが本筋だが、
+# 長期の順延だとその節が永遠に終わらない。**いまは待つ。**
+# 遅れているクラブが消化した時点で節が閉じる（min が増える）。
+# 待ちすぎる日が出たら、ここに猶予を入れる。
+
+
+def round_state(rows: list) -> dict:
+    """その大会が、いま何節まで全クラブ終えているか。
+
+    返すのは {"round": 4, "complete": True}。
+
+    **min(played) がその大会の「終わった節」。**順延で1クラブだけ
+    遅れていれば、そのクラブが消化するまで節は閉じない。
+    complete は全クラブが同じ試合数かどうか。
+    """
+    played = [r.get("played") or 0 for r in rows if r.get("played") is not None]
+    if not played:
+        return {"round": 0, "complete": False}
+    return {"round": min(played), "complete": min(played) == max(played)}
+
+
+def min_round(code: str) -> int:
+    """その大会で、何節から出してよいか。
+
+    総節数を ROUND_FRACTION で割った数（切り上げ）。
+    知らない大会は SOCCER_TABLE_MIN_MATCHES に倒す。
+    """
+    total = TOTAL_ROUNDS.get(code)
+    if not total:
+        return SOCCER_TABLE_MIN_MATCHES
+    return max(-(-total // ROUND_FRACTION), MIN_ROUNDS_FLOOR)  # 切り上げ
+
+
+def load_state(path: str = "data/soccer_race_state.json") -> dict:
+    """大会ごとに、最後に出した節。"""
+    try:
+        return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def due(preview: dict, state: dict = None) -> list:
+    """いま出すべき大会。**節が終わった大会だけ。**
+
+    条件は3つ。
+      ・その節を全クラブが終えている（順延中は待つ）
+      ::最低節数を満たしている（国内リーグ5節、CL3節）
+      ・前に出した節より進んでいる
+
+    返すのは [{"code": "CL", "round": 1, "name_jp": ...}, ...]。
+    日本人選手がいる大会を先に並べる。
+
+    なぜ節で区切るか:
+      「昨日から動いたか」で出すと、5大リーグとCLで6つあるので
+      **ほぼ毎日どこかが動く。**しかも同じリーグの話を何度もする。
+      節の終わりなら区切りに意味があり、題も
+      「プレミアリーグ 第5節終了」と決まる。
+    """
+    state = state or {}
+    jp_map = _jp_by_league()
+    out = []
+    for c in preview.get("competitions") or []:
+        code = c.get("code") or ""
+        rows = c.get("table") or []
+        if not rows:
+            continue
+        st = round_state(rows)
+        if not st["complete"]:
+            continue
+        if st["round"] < min_round(code):
+            continue
+        if st["round"] <= int(state.get(code) or 0):
+            continue
+        out.append({"code": code, "round": st["round"],
+                    "name_jp": (c.get("name_jp")
+                                or SOCCER_LEAGUE_NAME_JP.get(code) or code),
+                    "jp": bool(jp_map.get(code))})
+    out.sort(key=lambda x: (-(1 if x["jp"] else 0), -x["round"]))
+    return out
 
 # 線の上下に何クラブずつ見せるか。
 SPAN = 2
@@ -292,12 +410,16 @@ def build_lines(rows: list, code: str, played: int, players: list,
     return out
 
 
-def build(preview: dict, before: dict = None) -> dict:
+def build(preview: dict, before: dict = None, only: str = "") -> dict:
     """順位争いの材料。preview は data/soccer_preview.json の中身。
 
     before は前日の同じファイル。渡せば「昨日から線をまたいだクラブ」
     が入る。無い日は moved が空になる（「変化なし」ではなく
     「分からない」なので、cutline 側で空を返す）。
+
+    only に大会コードを渡すと、その大会だけを picked に入れる。
+    **1本1大会**にするため（節ごとに区切るなら、「プレミアリーグ
+    第5節が終わった」の1本にするのが自然）。
     """
     jp_map = _jp_by_league()
     prev_tables = {}
@@ -311,9 +433,13 @@ def build(preview: dict, before: dict = None) -> dict:
         rows = c.get("table") or []
         players = jp_map.get(code, [])
         played = max((r.get("played") or 0) for r in rows) if rows else 0
-        ready = bool(rows) and played >= SOCCER_TABLE_MIN_MATCHES
+        ready = bool(rows) and played >= min_round(code)
+        st = round_state(rows)
         entry = {
             "code": code,
+            # 何節まで全クラブが終えているか。題に使う。
+            "round": st["round"],
+            "round_complete": st["complete"],
             "name_jp": (c.get("name_jp")
                         or SOCCER_LEAGUE_NAME_JP.get(code) or code),
             "played": played,
@@ -334,6 +460,8 @@ def build(preview: dict, before: dict = None) -> dict:
     # 無い動画が192再生。**先頭に来た大会が題になる**ので、
     # そこに名前があるかで倍ちがう。
     ready = [c for c in comps if c["ready"] and c["lines"]]
+    if only:
+        ready = [c for c in ready if c["code"] == only]
     ready.sort(key=lambda c: (-(1 if c["jp"] else 0), -c["played"]))
 
     # 昨日から動いた大会の数。
@@ -466,6 +594,12 @@ def main() -> int:
     ap.add_argument("--before", default="",
                     help="前日の soccer_preview.json（昨日の動きを出す）")
     ap.add_argument("--out", default="data/soccer_race.json")
+    ap.add_argument("--only", default="",
+                    help="この大会だけを使う（PL / CL など）")
+    ap.add_argument("--due", action="store_true",
+                    help="いま節が終わった大会を1行ずつ出して終わる")
+    ap.add_argument("--state", default="data/soccer_race_state.json",
+                    help="大会ごとに最後に出した節の記録")
     args = ap.parse_args()
 
     src = pathlib.Path(args.preview)
@@ -504,7 +638,14 @@ def main() -> int:
             except OSError as e:                        # noqa: BLE001
                 print(f"[warn] 前日ぶんを残せません: {e}", file=sys.stderr)
 
-    data = build(preview, before)
+    # 節が終わった大会を調べるだけのとき。ワークフローが
+    # 「今日は出すか、どの大会か」を決めるのに使う。
+    if args.due:
+        for x in due(preview, load_state(args.state)):
+            print("%s	%d	%s" % (x["code"], x["round"], x["name_jp"]))
+        return 0
+
+    data = build(preview, before, only=args.only)
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, ensure_ascii=False, indent=2),

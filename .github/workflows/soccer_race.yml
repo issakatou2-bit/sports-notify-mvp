@@ -12,25 +12,28 @@ name: 欧州サッカー　順位争い
 #   数字を確かめに戻ってくる種類の画面で、サッカーにはその枠が無い。
 #   そして**順位争いは期間がいちばん長い。**MLBの進出争いは9〜10月の
 #   2か月だが、サッカーは9月から5月まで材料があり続ける。
-#   10月にMLBのポストシーズンが終わると3月まではサッカーが主になる。
 #
 # いつ出すか:
-#   **順位は毎日は変わらない。**欧州5大リーグは週末と週央の2回が
-#   基本で、間の日は昨日と同じ表になる。だから日次ではなく
-#   **「昨日から線をまたいだクラブがいた日」**に出す。
-#   実際には週2〜3回になる。判定はこの下の gate。
+#   **リーグごとに、その節が全クラブ終わったタイミング。**
+#
+#   最初は「昨日から線をまたいだクラブがいた日」にしていたが、
+#   5大リーグとCLで6つあるので**ほぼ毎日どこかが動く。**しかも
+#   同じリーグの話を何度もすることになる。
+#
+#   節の終わりなら区切りに意味があり、題も
+#   「プレミアリーグ 第5節終了｜順位争い」と決まる。
+#   **1本1大会。**まとめるとどのリーグの話か分からなくなる。
+#
+#   何節から出すかは大会の長さで変える（soccer_race.min_round）。
+#   38節のリーグは5節から、CL（全8節）は3節から。
+#   CLに5節を待たせると12月になり、1節から出すと順位表が
+#   勝点0・1・3の3種類にしかならない（実物で確認した）。
 #
 #   形はショート（縦・36秒）。MLBの進出争いと同じで、順位表は
-#   短いほうが繰り返し見られる（実測で視聴率206.9%）。
+#   短いほうが繰り返し見られる。
 #
-# 出せる大会が限られている件:
-#   5節に満たない大会は出さない作りにしてあり、9/13時点で出せるのは
-#   ラ・リーガだけ（他は3〜4節）。**全リーグがそろうのは9月末。**
-#   毎日出せる材料が無いうちに定時へ入れると、材料が無い日に
-#   「今日は出ませんでした」が並ぶ。そろってから workflow_run に変える。
-#
-#   毎日出すと決めたら post_common.DAILY_LINEUP へも足すこと
-#   （「毎日お届けしています」の一覧と健康診断が突き合わせている）。
+# 投稿について:
+#   いまは upload の既定が false。動画を目で見てから開ける。
 
 on:
   # 19時のサッカー枠が終わったのを合図にする。cronは増やさない。
@@ -40,16 +43,16 @@ on:
     types: [completed]
   workflow_dispatch:
     inputs:
+      only:
+        description: '大会を指定して作る (PL / PD / SA / BL1 / FL1 / CL)'
+        required: false
+        default: ''
       privacy:
         description: '公開設定 (private / unlisted / public)'
         required: false
         default: 'unlisted'
-      force:
-        description: '順位が動いていない日でも作る'
-        required: false
-        default: 'false'
       upload:
-        description: 'YouTubeへ上げるか（題が未実装。いまは false のまま）'
+        description: 'YouTubeへ上げるか'
         required: false
         default: 'false'
       publish_at:
@@ -88,62 +91,43 @@ jobs:
           python scripts/soccer_preview.py \
             --out data/soccer_preview.json --max-age-days 1
 
-      # 線の前後を切り出す。**前日ぶんはここで退避される**ので、
-      # 翌日から「昨日この線をまたいだクラブ」が出せる。
+      # 節が終わった大会があるか。**無ければここで打ち切る。**
+      #
+      # --due が、節が終わっていて・最低節数を満たしていて・まだ
+      # 出していない大会を1行ずつ返す。日本人選手がいる大会が先。
+      - name: Which competition is due
+        id: gate
+        run: |
+          DUE=$(python scripts/soccer_race.py \
+                  --preview data/soccer_preview.json --due | head -1)
+          CODE=$(printf '%s' "$DUE" | cut -f1)
+          ROUND=$(printf '%s' "$DUE" | cut -f2)
+          NAME=$(printf '%s' "$DUE" | cut -f3)
+          if [ -n "${{ inputs.only }}" ]; then
+            CODE="${{ inputs.only }}"
+            ROUND=""
+            echo "手で指定された大会を作ります: $CODE"
+          fi
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          echo "round=$ROUND" >> "$GITHUB_OUTPUT"
+          if [ -z "$CODE" ]; then
+            # 節の途中・最低節数に満たない・もう出した、のどれか。
+            echo "::notice::節が終わった大会がありません"
+            echo "count=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "$NAME 第${ROUND}節が終わりました"
+            echo "count=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      # その大会だけで材料を作る。**1本1大会。**
+      # 前日ぶんの順位表もここで退避される。
       - name: Build the race material
+        if: steps.gate.outputs.count != '0'
         run: |
           python scripts/soccer_race.py \
             --preview data/soccer_preview.json \
+            --only "${{ steps.gate.outputs.code }}" \
             --out data/soccer_race.json | tee -a "$GITHUB_STEP_SUMMARY"
-
-      # 出せる大会が無い日は、ここで打ち切る。
-      #
-      # **「まだ早い」と「データが無い」を区別する。**soccer_race は
-      # 5節未満の大会を ready=false で返すので、その理由は要約に出ている。
-      - name: Stop when nothing is ready
-        id: gate
-        run: |
-          COUNT=$(python -c "
-          import json
-          try:
-              d = json.load(open('data/soccer_race.json', encoding='utf-8'))
-              print(len(d.get('picked') or []))
-          except Exception:
-              print(0)
-          ")
-          MOVED=$(python -c "
-          import json
-          try:
-              d = json.load(open('data/soccer_race.json', encoding='utf-8'))
-              print(d.get('moved_count') or 0)
-          except Exception:
-              print(0)
-          ")
-          HAVE=$(python -c "
-          import json
-          try:
-              d = json.load(open('data/soccer_race.json', encoding='utf-8'))
-              print('yes' if d.get('have_before') else 'no')
-          except Exception:
-              print('no')
-          ")
-          if [ "$COUNT" -eq 0 ]; then
-            echo "::notice::出せる大会がまだありません（5節未満）"
-            echo "count=0" >> "$GITHUB_OUTPUT"
-          elif [ "$MOVED" -eq 0 ] && [ "$HAVE" = "yes" ]                && [ "${{ inputs.force }}" != "true" ]; then
-            # **順位は毎日は変わらない。**欧州5大リーグは週2回が基本で、
-            # 間の日は昨日と同じ表になる。同じ表をもう一度出しても
-            # 見る理由が無いので、その日は作らない。
-            #
-            # 前日の記録が無い日（have_before=no）は、動いたかどうかが
-            # 分からないだけなので作る。**「変化なし」と「分からない」を
-            # 混ぜない。**
-            echo "::notice::昨日から線をまたいだクラブがいないので作りません"
-            echo "count=0" >> "$GITHUB_OUTPUT"
-          else
-            echo "出せる大会 ${COUNT}件 / 動いた線 ${MOVED}"
-            echo "count=$COUNT" >> "$GITHUB_OUTPUT"
-          fi
 
       - name: Install video tools
         if: steps.gate.outputs.count != '0'
@@ -173,11 +157,12 @@ jobs:
 
       # 出す前に、常識で読み直す。
       #
-      # 順位・勝点はAPIの値をそのまま並べているので、桁が飛ぶことは
+      # 順位・勝点はAPIの値をそのまま並べているので桁が飛ぶことは
       # 無いはずだが、**無いはず**で出すものではない。
       # ここで落ちたら公開だけ止める。
       - name: Sanity check
         id: sanity
+        if: steps.gate.outputs.count != '0'
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -213,16 +198,6 @@ jobs:
           bash scripts/shorts_thumbnail.sh \
             build/race/collespo_morning_soccer_race.mp4 build/race/short.png
 
-      # **まだ題と説明文を作っていない。**
-      #
-      # upload_youtube.py の --kind に soccer_race がまだ無く、この枠の
-      # 題（「久保建英のソシエダ、CL圏内まで勝点2」のような形）を
-      # 作る処理も無い。既定の題に落ちると「明日の注目試合」になって、
-      # **中身と違う題で出る。**
-      #
-      # なので upload は既定 false のまま。true を渡すと --kind の
-      # 選択肢に無いので落ちる。**嘘の題で出るより落ちるほうがよい。**
-      # 題を作ってから、この注記を消すこと。
       - name: Upload to YouTube
         if: >-
           steps.gate.outputs.count != '0' &&
@@ -245,6 +220,31 @@ jobs:
             --narration build/race_narration.json \
             --thumbnail build/race/short.png \
             --privacy "${{ inputs.privacy }}" $ARGS
+
+      # 出した節を記録する。**同じ節を2回出さないため。**
+      # 投稿した回だけ記録する（作っただけの回で消費しない）。
+      - name: Remember the round
+        if: >-
+          steps.gate.outputs.count != '0' &&
+          steps.gate.outputs.round != '' &&
+          inputs.upload == 'true'
+        run: |
+          python - <<'PY'
+          import json, pathlib, os
+          p = pathlib.Path("data/soccer_race_state.json")
+          try:
+              state = json.loads(p.read_text(encoding="utf-8"))
+          except Exception:
+              state = {}
+          code = os.environ["RACE_CODE"]
+          state[code] = int(os.environ["RACE_ROUND"])
+          p.write_text(json.dumps(state, ensure_ascii=False, indent=2),
+                       encoding="utf-8")
+          print("記録しました:", state)
+          PY
+        env:
+          RACE_CODE: ${{ steps.gate.outputs.code }}
+          RACE_ROUND: ${{ steps.gate.outputs.round }}
 
       - name: Keep the video
         if: always() && steps.gate.outputs.count != '0'
@@ -271,7 +271,8 @@ jobs:
           bash scripts/commit_data.sh \
             "soccer race: ${{ github.run_id }}" \
             data/soccer_race.json data/soccer_preview.json \
-            data/soccer_preview_prev.json data/published_videos.json \
+            data/soccer_preview_prev.json data/soccer_race_state.json \
+            data/published_videos.json \
             data/morning_recap.json data/player_profile.json
 
       - name: Say what happened
@@ -280,6 +281,7 @@ jobs:
           {
             echo "## 順位争い"
             echo
+            echo "- 対象: ${{ steps.gate.outputs.code }} 第${{ steps.gate.outputs.round }}節"
             if [ -f build/race/collespo_morning_soccer_race.mp4 ]; then
               echo "- 動画: $(du -h build/race/collespo_morning_soccer_race.mp4 | cut -f1)"
             else
