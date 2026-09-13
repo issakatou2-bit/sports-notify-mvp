@@ -2321,8 +2321,21 @@ def render_race_japanese(p, race: dict):
         d.text((186 - dx, y + 16), x.get("name", ""), font=font(nm), fill=JP)
         d.text((186 - dx, y + 70), "%s　%s" % (x.get("club_jp", ""), comp_jp),
                font=font(28), fill=DIM)
+        # いま出られない選手は、その事実を添える。
+        #
+        # **順位表から消しはしない**（そのクラブに所属しているのは
+        # 本当）。ただし黙って名前だけ出すと、出ていると読まれる。
+        # 9/13の実行で三笘薫が入っていた（今季0分、ハムストリングの
+        # 怪我で復帰見込み10月10日）。題と1枚目には選ばないが、
+        # ここに名前が出るなら理由も出す。
         near = (x.get("lines") or [{}])[0]
-        if near.get("text"):
+        if x.get("out"):
+            note = "いまは出場していません"
+            ts = fit(d, note, 420, (28, 26, 24, 22))
+            tw = d.textlength(note, font=font(ts))
+            d.text((W - 104 - dx - tw, y + 46), note,
+                   font=font(ts), fill=DOWN)
+        elif near.get("text"):
             ts = fit(d, near["text"], 420, (30, 28, 26, 24))
             tw = d.textlength(near["text"], font=font(ts))
             d.text((W - 104 - dx - tw, y + 46), near["text"],

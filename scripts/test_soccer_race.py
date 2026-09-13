@@ -269,6 +269,39 @@ check("date_jst を持っている", "date_jst" in _race, True)
 _intro = _n["segments"][0]["text"]
 check("渡した日付がそのまま出る", "9月13日" in _intro, True)
 
+
+print()
+print("--- いま出られない選手を題と1枚目に出さない ---")
+# 9/13の実行で「9位 ブライトン 三笘薫（EL圏内まで勝点1）」が材料に
+# 入った。**三笘薫は今季まだ1分も出ていない**（ハムストリングの
+# 怪我、プレミアリーグ公式が復帰見込みを10月10日と公表）。
+# 所属は事実なので順位表からは消さないが、題と1枚目に立てるのは釣り。
+_pl = {"generated_at": "2026-09-13T00:00:00Z", "competitions": [{
+    "code": "PL", "name_jp": "プレミアリーグ",
+    "table": [{"position": i, "team": t, "points": 20 - i, "played": 6,
+               "gf": 0, "ga": 0}
+              for i, t in enumerate(
+                  ["Manchester City FC", "Arsenal FC", "Chelsea FC",
+                   "Newcastle United FC", "Aston Villa FC",
+                   "Brighton & Hove Albion FC", "Liverpool FC"], 1)]}]}
+_built = sr.build(_pl)
+_jp = {x["name"]: x for x in _built["competitions"][0]["jp"]}
+if "三笘薫" in _jp:
+    check("順位表には残す", _jp["三笘薫"]["position"], 6)
+    check("出られない印が付く", _jp["三笘薫"].get("out"), True)
+    check("理由も残す",
+          "Hamstring" in (_jp["三笘薫"].get("out_note") or ""), True)
+    _lead = sr.lead(_built)
+    check("題と1枚目には選ばない",
+          _lead is None or _lead[0]["name"] != "三笘薫", True)
+else:
+    print("ok  三笘薫が名簿から引けないため、この検査は飛ばします")
+# ふつうに出ている選手には印が付かない。
+check("出ている選手に印は付かない",
+      _jp.get("遠藤航", {}).get("out"), False)
+# **材料が取れない日は誰にも印を付けない**（名前が丸ごと消えるのを避ける）。
+check("材料が無い日は空", isinstance(sr._unavailable(), set), True)
+
 print()
 print("--- 欠けても落ちない ---")
 check("空の材料", sr.build({})["picked"], [])

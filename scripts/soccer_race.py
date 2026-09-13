@@ -101,6 +101,37 @@ MAX_POINT_GAP = 6
 RELEGATION_FROM = 19
 
 
+def _unavailable() -> set:
+    """いま出られないと公表されている選手。
+
+    **順位表に名前があるのは事実でも、題に出すと釣りになる。**
+    9/13の実行で「9位 ブライトン 三笘薫（EL圏内まで勝点1）」が
+    材料に入った。三笘薫は今季まだ1分も出ていない（ハムストリングの
+    怪我、プレミアリーグ公式が復帰見込みを10月10日と公表）。
+
+    順位表からは消さない（そのクラブに所属しているのは本当）。
+    題と1枚目に選ばないだけにする。
+
+    取れない日は空。誰も止めない。
+    """
+    try:
+        import soccer_availability
+        return set(soccer_availability.unavailable(
+            soccer_availability.load()))
+    except Exception:                                   # noqa: BLE001
+        return set()
+
+
+def _out_note(name: str) -> str:
+    """出られない理由。公式の発表をそのまま。"""
+    try:
+        import soccer_availability
+        x = (soccer_availability.load().get("players") or {}).get(name) or {}
+        return x.get("reason") or ""
+    except Exception:                                   # noqa: BLE001
+        return ""
+
+
 def _jp_by_league() -> dict:
     """リーグごとの、日本人選手と所属クラブ。"""
     out = {}
@@ -195,6 +226,10 @@ def jp_in_table(rows: list, players: list, code: str = "",
                             row.get("team", "")),
                         "position": row.get("position"),
                         "points": row.get("points"),
+                        # いま出られない選手。順位表には残すが、
+                        # 題と1枚目には選ばない（lead が見る）。
+                        "out": p["name"] in _unavailable(),
+                        "out_note": _out_note(p["name"]),
                         # 近い線から順に。いちばん近い線がその選手の話になる。
                         "lines": [{**x, "text": phrase(x)}
                                   for x in sorted(near,
@@ -337,6 +372,11 @@ def lead(race: dict):
             near = (x.get("lines") or [{}])[0]
             if not near.get("text"):
                 continue
+            # **いま出られない選手を題と1枚目に出さない。**
+            # 所属は事実だが、1か月出られないと公表されている選手を
+            # 立てるのは釣りになる。9/13に三笘薫でそうなりかけた。
+            if x.get("out"):
+                continue
             if best is None or near["diff"] < best[1]["diff"]:
                 best = (x, near, by_code[code].get("name_jp", ""))
     return best
@@ -391,9 +431,10 @@ def summary(data: dict) -> str:
         for x in (c.get("jp") or [])[:6]:
             near = (x.get("lines") or [{}])[0]
             note = near.get("text") or ""
+            mark = "　※出場不可" if x.get("out") else ""
             lines.append(f"   - {x['position']}位 {x['club_jp']}"
                          f" {x['name']} 勝点{x['points']}"
-                         + (f"（{note}）" if note else ""))
+                         + (f"（{note}）" if note else "") + mark)
     return "\n".join(lines)
 
 
