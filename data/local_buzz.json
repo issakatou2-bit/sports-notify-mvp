@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-13T06:01:51.694329+00:00",
+  "updated_at": "2026-09-13T15:38:00.183893+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,12 +13,20 @@
   "titles_count": 51,
   "teams": [
     {
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 4,
+      "tone": "好調",
+      "gist": "ブレーブスがフィリーズを圧倒"
+    },
+    {
       "team_id": "143",
       "name": "フィリーズ",
       "name_en": "Philadelphia Phillies",
-      "mentions": 5,
+      "mentions": 3,
       "tone": "不振",
-      "gist": "ブレーブスにフィリーズが12-2で大敗"
+      "gist": "フィリーズがブレーブスに大敗"
     },
     {
       "team_id": "136",
@@ -26,15 +34,7 @@
       "name_en": "Seattle Mariners",
       "mentions": 3,
       "tone": "好調",
-      "gist": "マリナーズがアスレチックスに19-1で圧勝"
-    },
-    {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "ブレーブスがフィリーズに12-2で大勝"
+      "gist": "マリナーズが史上最大差の19-1で勝利"
     },
     {
       "team_id": "139",
@@ -42,40 +42,45 @@
       "name_en": "Tampa Bay Rays",
       "mentions": 3,
       "tone": "話題",
-      "gist": "レイズが大リーグ最速投手ホプキンスを昇格"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ガーディアンズはホワイトソックスに1.5ゲーム差"
-    },
-    {
-      "team_id": "138",
-      "name": "カージナルス",
-      "name_en": "St. Louis Cardinals",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "ホワイトソックスにカージナルスが5-6で敗北"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "ホワイトソックスがグリチュク9回でAL中部首位を拡大"
+      "gist": "レイズがプレーオフ進出と東地区優勝を狙う"
     },
     {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
       "mentions": 2,
+      "tone": "不振",
+      "gist": "レッドソックスの守備が問題、投手陣は好調"
+    },
+    {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 2,
       "tone": "話題",
-      "gist": "レッドソックス野手が1プレーでパスクアンティーノに死球2度"
+      "gist": "ベッツがドジャーズの通算10000号HRを達成"
+    },
+    {
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "メッツがコール投手を打ち崩し大勝"
+    },
+    {
+      "team_id": "120",
+      "name": "ナショナルズ",
+      "name_en": "Washington Nationals",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ナショナルズがエクスポズユニフォーム配布"
     }
   ],
-  "players": []
+  "players": [
+    {
+      "name": "鈴木誠也",
+      "mentions": 1
+    }
+  ]
 }
