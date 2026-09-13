@@ -2236,16 +2236,13 @@ def race_lead(race: dict):
 
     いなければ None。そのときは大会名だけの1枚目になる。
     """
-    best = None
-    by_code = {c["code"]: c for c in (race.get("competitions") or [])}
-    for code in (race.get("picked") or []):
-        for x in (by_code.get(code, {}).get("jp") or []):
-            near = (x.get("lines") or [{}])[0]
-            if not near.get("text"):
-                continue
-            if best is None or near["diff"] < best[1]["diff"]:
-                best = (x, near, by_code[code].get("name_jp", ""))
-    return best
+    # **材料の側に置いてある。**題（upload_youtube）と1枚目で
+    # 別々に選ぶと、題の名前と画面の名前が違う日ができる。
+    try:
+        import soccer_race
+        return soccer_race.lead(race)
+    except Exception:                            # noqa: BLE001
+        return None
 
 
 def render_race_intro(p, race: dict, day: str = ""):

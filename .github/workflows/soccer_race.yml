@@ -1,0 +1,254 @@
+name: 欧州サッカー　順位争い
+
+# 欧州サッカーの順位争いショート。
+#
+# なぜこの枠を作るか:
+#   実測（8/16〜9/13、199本）で順位表の回は繰り返し見られている。
+#
+#     MLBの進出争い   11本 平均100再生 **視聴率206.9%**
+#     成績ランキング   34本 平均433再生  視聴率104.5%
+#     コメント欄       23本 平均111再生  視聴率 58.9%
+#
+#   数字を確かめに戻ってくる種類の画面で、サッカーにはその枠が無い。
+#   そして**順位争いは期間がいちばん長い。**MLBの進出争いは9〜10月の
+#   2か月だが、サッカーは9月から5月まで材料があり続ける。
+#   10月にMLBのポストシーズンが終わると3月まではサッカーが主になる。
+#
+# まだ手動だけにしている理由:
+#   5節に満たない大会は出さない作りにしてあり、9/13時点で出せるのは
+#   ラ・リーガだけ（他は3〜4節）。**全リーグがそろうのは9月末。**
+#   毎日出せる材料が無いうちに定時へ入れると、材料が無い日に
+#   「今日は出ませんでした」が並ぶ。そろってから workflow_run に変える。
+#
+#   毎日出すと決めたら post_common.DAILY_LINEUP へも足すこと
+#   （「毎日お届けしています」の一覧と健康診断が突き合わせている）。
+
+on:
+  workflow_dispatch:
+    inputs:
+      privacy:
+        description: '公開設定 (private / unlisted / public)'
+        required: false
+        default: 'unlisted'
+      upload:
+        description: 'YouTubeへ上げるか（題が未実装。いまは false のまま）'
+        required: false
+        default: 'false'
+      publish_at:
+        description: '公開時刻 (HH:MM、空なら即時)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: soccer-race
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+
+      # 今季の順位表。日次（19時）も取っているが、この枠を手で回す日は
+      # そちらが走っていないことがある。古ければ取り直す。
+      - name: Refresh standings
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: |
+          python scripts/soccer_preview.py \
+            --out data/soccer_preview.json --max-age-days 1
+
+      # 線の前後を切り出す。**前日ぶんはここで退避される**ので、
+      # 翌日から「昨日この線をまたいだクラブ」が出せる。
+      - name: Build the race material
+        run: |
+          python scripts/soccer_race.py \
+            --preview data/soccer_preview.json \
+            --out data/soccer_race.json | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # 出せる大会が無い日は、ここで打ち切る。
+      #
+      # **「まだ早い」と「データが無い」を区別する。**soccer_race は
+      # 5節未満の大会を ready=false で返すので、その理由は要約に出ている。
+      - name: Stop when nothing is ready
+        id: gate
+        run: |
+          COUNT=$(python -c "
+          import json
+          try:
+              d = json.load(open('data/soccer_race.json', encoding='utf-8'))
+              print(len(d.get('picked') or []))
+          except Exception:
+              print(0)
+          ")
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::notice::出せる大会がまだありません（5節未満）"
+          else
+            echo "出せる大会 ${COUNT}件"
+          fi
+
+      - name: Install video tools
+        if: steps.gate.outputs.count != '0'
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
+      - name: Start VOICEVOX engine
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Write the script
+        if: steps.gate.outputs.count != '0'
+        run: |
+          python scripts/generate_morning_short.py \
+            --mode soccer_race --race data/soccer_race.json \
+            --narration-out build/race_narration.json
+
+      # 出す前に、常識で読み直す。
+      #
+      # 順位・勝点はAPIの値をそのまま並べているので、桁が飛ぶことは
+      # 無いはずだが、**無いはず**で出すものではない。
+      # ここで落ちたら公開だけ止める。
+      - name: Sanity check
+        id: sanity
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/sanity.py --general --strict \
+            --narration build/race_narration.json
+
+      - name: Synthesize narration
+        if: steps.gate.outputs.count != '0'
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/race_narration.json \
+            --out-dir build/race_audio
+
+      - name: Build the video
+        if: steps.gate.outputs.count != '0'
+        run: |
+          python scripts/generate_morning_short.py \
+            --mode soccer_race --race data/soccer_race.json \
+            --audio-dir build/race_audio --out build/race --require-audio
+
+      # ショート用に、動画の1枚目(1080x1920)を切り出す。
+      # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
+      - name: Vertical thumbnail
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        run: |
+          bash scripts/shorts_thumbnail.sh \
+            build/race/collespo_short.mp4 build/race/short.png
+
+      # **まだ題と説明文を作っていない。**
+      #
+      # upload_youtube.py の --kind に soccer_race がまだ無く、この枠の
+      # 題（「久保建英のソシエダ、CL圏内まで勝点2」のような形）を
+      # 作る処理も無い。既定の題に落ちると「明日の注目試合」になって、
+      # **中身と違う題で出る。**
+      #
+      # なので upload は既定 false のまま。true を渡すと --kind の
+      # 選択肢に無いので落ちる。**嘘の題で出るより落ちるほうがよい。**
+      # 題を作ってから、この注記を消すこと。
+      - name: Upload to YouTube
+        if: >-
+          steps.gate.outputs.count != '0' &&
+          steps.sanity.outcome == 'success' &&
+          inputs.upload == 'true'
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.publish_at }}" ]; then
+            ARGS="--publish-at ${{ inputs.publish_at }}"
+          fi
+          python scripts/upload_youtube.py \
+            --video build/race/collespo_short.mp4 \
+            --kind soccer_race --sport soccer \
+            --narration build/race_narration.json \
+            --thumbnail build/race/short.png \
+            --privacy "${{ inputs.privacy }}" $ARGS
+
+      - name: Keep the video
+        if: always() && steps.gate.outputs.count != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-race
+          path: |
+            build/race/collespo_short.mp4
+            build/race_narration.json
+          if-no-files-found: warn
+
+      # 前日ぶんの順位表と、作った材料を残す。
+      # **翌日の「昨日またいだか」がこれに依る。**
+      #
+      # morning_recap / player_profile も並べているのは、
+      # generate_morning_short.py の引数の既定値がそれらを指していて、
+      # 検査（run_checks の「作ったのにコミットしていないもの」）が
+      # 書き込む可能性ありと見るため。この枠では書き換えないので
+      # 差分は出ないが、**渡し忘れと区別が付かない**ので並べておく。
+      - name: Commit the material
+        if: always()
+        continue-on-error: true
+        run: |
+          bash scripts/commit_data.sh \
+            "soccer race: ${{ github.run_id }}" \
+            data/soccer_race.json data/soccer_preview.json \
+            data/soccer_preview_prev.json data/published_videos.json \
+            data/morning_recap.json data/player_profile.json
+
+      - name: Say what happened
+        if: always()
+        run: |
+          {
+            echo "## 順位争い"
+            echo
+            if [ -f build/race/collespo_short.mp4 ]; then
+              echo "- 動画: $(du -h build/race/collespo_short.mp4 | cut -f1)"
+            else
+              echo "- **動画は作れませんでした**"
+            fi
+            echo "- 公開設定: ${{ inputs.privacy }} / 投稿: ${{ inputs.upload }}"
+            echo
+            echo '### 読み上げ'
+            echo
+            echo '```'
+            python - <<'PY'
+          import json, pathlib
+          try:
+              d = json.loads(pathlib.Path("build/race_narration.json")
+                             .read_text(encoding="utf-8"))
+              for s in d.get("segments", []):
+                  print("[%s] %s" % (s.get("kind", "?"), s.get("text", "")))
+          except Exception as e:
+              print("(原稿を読めません: %s)" % e)
+          PY
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

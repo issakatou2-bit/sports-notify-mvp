@@ -301,6 +301,48 @@ def build(preview: dict, before: dict = None) -> dict:
     }
 
 
+def lead(race: dict):
+    """その回の1枚目と題に置く選手。**線にいちばん近い日本人選手。**
+
+    「久保建英、CL圏内まで勝点2」なら、順位争いの話のまま名前を
+    出せる。実測では題に日本人選手の名前がある動画が平均290再生、
+    無い動画が171再生。
+
+    返すのは (選手, いちばん近い線, 大会名)。いなければ None。
+
+    **画面と題で同じ選手を出す。**別々に選ぶと、題の名前と
+    1枚目の名前が違う日ができる（成績の回で一度やっている）。
+    """
+    best = None
+    by_code = {c["code"]: c for c in (race.get("competitions") or [])}
+    for code in (race.get("picked") or []):
+        for x in (by_code.get(code, {}).get("jp") or []):
+            near = (x.get("lines") or [{}])[0]
+            if not near.get("text"):
+                continue
+            if best is None or near["diff"] < best[1]["diff"]:
+                best = (x, near, by_code[code].get("name_jp", ""))
+    return best
+
+
+def title_of(race: dict) -> str:
+    """YouTubeの題。**中身と違う題で出さない。**
+
+    線に近い日本人選手がいる日はその人から、いない日は大会名から。
+    どちらも作れない日は空を返す（呼ぶ側が既定の題に落とす）。
+    """
+    got = lead(race)
+    if got:
+        who, near, comp_jp = got
+        return "%sの%s、%s｜%s 順位争い" % (
+            who["name"], who["club_jp"], near["text"], comp_jp)
+    names = [c.get("name_jp", "") for c in (race.get("competitions") or [])
+             if c.get("code") in (race.get("picked") or [])]
+    if names:
+        return "%s 順位争い｜CL圏内・EL圏内の境目" % "・".join(names[:2])
+    return ""
+
+
 def summary(data: dict) -> str:
     """実行ページに出す1本ぶんの中身。"""
     lines = []

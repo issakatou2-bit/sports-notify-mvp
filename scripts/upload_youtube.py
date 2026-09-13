@@ -647,7 +647,8 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 日付で引ける枠。**ここに無い kind は、二重投稿の守りが効かない。**
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
-DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict")
+DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
+               "soccer_race")
 
 
 def published_video(kind: str, date_key: str,
@@ -1166,6 +1167,50 @@ def weekly_jp_names(path: str = "data/weekly_ops.json", n: int = 3) -> str:
     return "・".join(names) + ("ほか" if len(rows) > len(names) else "")
 
 
+def _race_data(path: str = "data/soccer_race.json") -> dict:
+    try:
+        return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def _soccer_race_title() -> str:
+    """順位争いの題。材料が無ければ空（呼ぶ側が既定に落とす）。"""
+    try:
+        import soccer_race
+        return soccer_race.title_of(_race_data())
+    except Exception:                            # noqa: BLE001
+        return ""
+
+
+def _soccer_race_lines() -> list:
+    """説明文に並べる、線の前後。**画面に出したものと同じ数字。**"""
+    race = _race_data()
+    out = []
+    by_code = {c["code"]: c for c in (race.get("competitions") or [])}
+    for code in (race.get("picked") or []):
+        comp = by_code.get(code) or {}
+        out.append("【%s】" % comp.get("name_jp", code))
+        for ln in (comp.get("lines") or [])[:2]:
+            ins = (ln.get("inside") or [])[-1:]
+            outs = (ln.get("outside") or [])[:1]
+            if not (ins and outs):
+                continue
+            out.append("%s　%d位 %s 勝点%s ／ %d位 %s 勝点%s"
+                       % (ln.get("label", ""),
+                          ins[0]["position"], ins[0]["team"],
+                          ins[0]["points"],
+                          outs[0]["position"], outs[0]["team"],
+                          outs[0]["points"]))
+        for x in (comp.get("jp") or [])[:4]:
+            near = (x.get("lines") or [{}])[0]
+            out.append("%d位 %s %s%s"
+                       % (x["position"], x["club_jp"], x["name"],
+                          "（%s）" % near["text"] if near.get("text") else ""))
+        out.append("")
+    return out
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
@@ -1354,6 +1399,15 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                      f"MLB公式コメント欄を読み解く {date_label}")
         else:
             title = f"【海外の反応】MLB公式コメント欄を読み解く｜{date_label}"
+    elif kind == "soccer_race":
+        # 欧州サッカーの順位争い。
+        #
+        # **題は材料の側で作る**（soccer_race.title_of）。1枚目に立てる
+        # 選手と同じ人を選ぶためで、別々に選ぶと題の名前と画面の名前が
+        # 違う日ができる。成績の回で一度やっている。
+        title = _soccer_race_title()
+        title = (f"{title}【欧州サッカー】#Shorts" if title
+                 else f"欧州サッカー 順位争い｜{date_label}#Shorts")
     elif kind == "weekly":
         # 週次まとめは横型の通常動画なので #Shorts は付けない。
         #
@@ -1540,6 +1594,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             "コレスポは、その動画とコメント欄を毎日見て話す番組です。",
             "",
         ]
+    elif kind == "soccer_race":
+        lines = ["欧州サッカーの順位争いを、CL圏内・EL圏内の境目で"
+                 "区切って見ます。順位と勝ち点はすべて公式の順位表の"
+                 "数字です。", ""]
+        lines += _soccer_race_lines()
     elif kind == "weekly":
         # 10分の動画に1行しか説明が無かった。週次はこのチャンネルの本命で、
         # 検索も関連動画も説明文を読む。中身はアーカイブに全部あるので使う。
@@ -1567,6 +1626,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                 lines.append(f"   ・{r['text']}")
         lines.append("")
     editorial_text = title + "\n" + "\n".join(lines)
+    # 順位争いは必ずサッカー。**渡し忘れると #MLB が付く。**
+    # 区分から分かることを、呼ぶ側の引数に頼らない。
+    if kind == "soccer_race":
+        sport = "soccer"
     public_hashtags = ht.select(editorial_text, 'youtube', sport=sport,
                                 shorts=kind not in LANDSCAPE_KINDS)
     lines += [
@@ -1647,10 +1710,11 @@ def main():
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
-                                 "morning", "longform"],
+                                 "morning", "longform", "soccer_race"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
-                             "morning=夕方の5本 / longform=対話の通常動画")
+                             "morning=夕方の5本 / longform=対話の通常動画 / "
+                             "soccer_race=欧州サッカーの順位争い")
     parser.add_argument("--topic", default="",
                         help="longform で題に出す主題(その日のハイライト)")
     parser.add_argument("--dialogue", default="",
