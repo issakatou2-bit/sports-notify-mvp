@@ -10,7 +10,7 @@ import subprocess
 
 from PIL import Image, ImageDraw, ImageFont
 
-from pilot_series import episode_key
+from pilot_series import episode_key, segment_voice, voice_credits
 
 W, H, FPS = 1920, 1080, 30
 PAPER, INK, TEAL, CORAL = "#f3f0e7", "#172b36", "#127d79", "#dc5946"
@@ -126,7 +126,11 @@ def artwork(data, segment, motion=1.):
             roundbox(d, (x, 548, x + 720, 775), WHITE, color if active else LINE)
             d.rectangle((x + 28, 585, x + 38, 732), fill=color)
             text(d, (x + 68, 575), label, 68, color)
-            text(d, (x + 68, 687), sub, 38, max_width=626)
+            if x == 156 and data.get("domestic_examples"):
+                text(d, (x + 68, 680), "イングランド：プレミアリーグ", 31, max_width=626)
+                text(d, (x + 68, 726), "スペイン：ラ・リーガ", 31, max_width=626)
+            else:
+                text(d, (x + 68, 687), sub, 38, max_width=626)
     elif scene == "points":
         headline(d, "勝ち点は、その大会の順位表へ。")
         for x, label, result, number, color in [(96, "国内リーグ", "この試合に勝った", "+3", TEAL),
@@ -206,13 +210,21 @@ def artwork(data, segment, motion=1.):
         text(d, (98, 391), "少し違って見える。", 110, GOLD)
         text(d, (106, 596), "図と原典は、概要欄の観戦ガイドへ。", 49, WHITE)
         text(d, (109, 716), "原典：UEFA大会規則 2026/27 第3条・第17条", 31, "#c2cfd1")
-        text(d, (109, 783), "音声：VOICEVOX:四国めたん  /  図・構成：コレスポ", 30, "#c2cfd1")
+        text(d, (109, 783), "音声：" + voice_credits(data) + "  /  図・構成：コレスポ", 27, "#c2cfd1", max_width=1730)
     return image
 
 
 def frame(data, segment, motion=1., progress=0.):
     image = artwork(data, segment, motion)
     d = ImageDraw.Draw(image)
+    # 話者名とブランドを固定位置へ。立ち絵がなくても声の切替が分かる。
+    d.rectangle((1490, 48, 1840, 105), fill=PAPER)
+    text(d, (1520, 58), "コレスポ / " + data["episode"], 30, INK)
+    if data.get("voices"):
+        voice = segment_voice(data, segment)
+        d.rectangle((1190, 48, 1480, 105), fill=PAPER)
+        text(d, (1240, 63), voice["name"], 26,
+             "#527a39" if segment.get("speaker") == "zundamon" else "#9a4e70", max_width=230)
     if segment["scene"].startswith("bb_") and segment["scene"] != "bb_end":
         note = ("資料写真：2024.04.24 / David · CC BY 2.0 / 切り抜き・ズーム" if segment["scene"] == "bb_photo"
                 else "図は架空のイニングです。大谷選手の写真の試合を再現したものではありません。")

@@ -11,7 +11,7 @@ import time
 import urllib.error
 import urllib.request
 
-from pilot_series import CATALOG, episode_key, load_episode, write_json
+from pilot_series import CATALOG, episode_key, load_episode, write_json, voice_credits
 
 CHANNEL_ID = "UCpZ_j8X8uOex5VvKwwTJj3Q"
 REPOSITORY = "issakatou2-bit/sports-notify-mvp"
@@ -115,12 +115,16 @@ def select_episode(candidates, state, found):
     for data in candidates:
         key = episode_key(data)
         old, existing = state.get("entries", {}).get(key), found.get(key)
-        if existing:
-            require_private(existing)
         if old and old.get("status") == "confirmed":
             if not existing or existing["id"] != old["video_id"]:
                 raise RuntimeError("以前の投稿が照合できません。再投稿は保留します")
+            # 手動で品質確認後に公開した完成回も、再生成・非公開化しない。
+            if (existing.get("snippet", {}).get("channelId") != CHANNEL_ID
+                    or existing.get("status", {}).get("uploadStatus") in {"failed", "rejected", "deleted"}):
+                raise RuntimeError("以前の投稿の所有者・処理結果を確認してください")
             continue
+        if existing:
+            require_private(existing)
         if old and not existing:
             raise RuntimeError("前回の投稿結果が不明です。動画を照合してから再開してください")
         return data, existing["id"] if existing else None
@@ -169,7 +173,7 @@ def metadata(data, timeline):
         desc += "\n".join(f"{s // 60:02}:{s % 60:02} {label}" for s, label in chapters) + "\n\n"
     desc += "出典（確認日 " + data["reviewed_on"] + "）\n"
     desc += "\n".join(s["label"] + "\n" + s["url"] for s in data["sources"])
-    desc += "\n\n音声：VOICEVOX:四国めたん\n図・構成：コレスポ\n非公開で品質を確認する試作です。"
+    desc += "\n\n音声：" + voice_credits(data) + "\n図・構成：コレスポ\n非公開で品質を確認する試作です。"
     if data.get("media_ids"):
         import pilot_media
         desc += "\n\n写真の出典・利用条件\n" + pilot_media.credits(data)

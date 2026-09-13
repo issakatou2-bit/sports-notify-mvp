@@ -16,11 +16,28 @@ from datetime import date
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "content/pilot_series"
-RENDER_VERSION = "1"
+RENDER_VERSION = "2"
 SCENES = {"hook": 1, "fork": 2, "points": 2, "grid": 3,
           "ladder": 3, "national": 1, "checklist": 1, "end": 0}
 BASEBALL_SCENES = {"bb_photo": 3, "bb_hits": 1, "bb_inning": 6,
                    "bb_compare": 1, "bb_check": 1, "bb_end": 0}
+PRESENTERS = {"metan": ("四国めたん", 2), "zundamon": ("ずんだもん", 3)}
+
+
+def voice_profiles(data):
+    return data.get("voices", {"metan": data.get("voice", {})})
+
+
+def segment_voice(data, segment):
+    key = segment.get("speaker", "metan")
+    if key not in voice_profiles(data):
+        raise ValueError("原稿の話者に対応する音声設定がありません")
+    return voice_profiles(data)[key]
+
+
+def voice_credits(data):
+    names = dict.fromkeys(segment_voice(data, s)["name"] for s in data["segments"])
+    return " / ".join("VOICEVOX:" + name for name in names)
 
 
 def write_json(path, data):
@@ -51,9 +68,18 @@ def validate_episode(data, today=None):
     if not data.get("sources") or not all(s.get("label") and s.get("url", "").startswith("https://")
                                           for s in data["sources"]):
         raise ValueError("公式出典が必要です")
-    voice = data.get("voice", {})
-    if voice.get("speaker") != 2 or voice.get("name") != "四国めたん" or not .9 <= voice.get("speed", 0) <= 1.3:
-        raise ValueError("試作枠で確認した音声設定を使ってください")
+    profiles = voice_profiles(data)
+    if not isinstance(profiles, dict) or not profiles:
+        raise ValueError("試作枠の音声設定が必要です")
+    for key, voice in profiles.items():
+        if (key not in PRESENTERS or not isinstance(voice, dict)
+                or (voice.get("name"), voice.get("speaker")) != PRESENTERS[key]
+                or voice.get("style") != "ノーマル"):
+            raise ValueError("試作枠で確認した話者とスタイルを使ってください")
+        for field, low, high, default in [("speed", .9, 1.3, 0), ("pitch", -.15, .15, 0)]:
+            value = voice.get(field, default)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not low <= value <= high:
+                raise ValueError("音声の速度・高さを確認してください")
     if not 12 <= len(data.get("segments", [])) <= 35:
         raise ValueError("原稿の区切り数を確認してください")
     baseball = data.get("visual_style") == "baseball-hits-v1"
@@ -61,6 +87,7 @@ def validate_episode(data, today=None):
     if data.get("visual_style") not in (None, "baseball-hits-v1"):
         raise ValueError("対応していない画面の方式です")
     for segment in data["segments"]:
+        segment_voice(data, segment)
         if segment.get("scene") not in scenes or not isinstance(segment.get("phase"), int):
             raise ValueError("対応していない画面です")
         if not 0 <= segment["phase"] <= scenes[segment["scene"]]:
@@ -126,16 +153,17 @@ def synthesize(data, out, base="http://127.0.0.1:50021"):
     directory.mkdir(parents=True, exist_ok=True)
     version = json.loads(voice_request(base, "/version"))
     speakers = json.loads(voice_request(base, "/speakers"))
-    voice = data["voice"]
-    if not any(s["name"] == voice["name"] and any(st["id"] == voice["speaker"] and st["name"] == voice["style"]
-                                                 for st in s["styles"]) for s in speakers):
-        raise ValueError("音声エンジンの話者が想定と違います")
+    for voice in voice_profiles(data).values():
+        if not any(s["name"] == voice["name"] and any(st["id"] == voice["speaker"] and st["name"] == voice["style"]
+                                                     for st in s["styles"]) for s in speakers):
+            raise ValueError("音声エンジンの話者が想定と違います")
     entries, start, rate = [], 0., None
     chunks = []
     for i, segment in enumerate(data["segments"]):
+        voice = segment_voice(data, segment)
         speech = segment.get("speech", segment["text"])
         query = json.loads(voice_request(base, "/audio_query", {"text": speech, "speaker": voice["speaker"]}))
-        query.update(speedScale=voice["speed"], intonationScale=1.05,
+        query.update(speedScale=voice["speed"], pitchScale=voice.get("pitch", 0), intonationScale=1.05,
                      prePhonemeLength=.06, postPhonemeLength=.15, outputStereo=False)
         if "pauseLengthScale" in query:
             query["pauseLengthScale"] = .95
@@ -148,7 +176,8 @@ def synthesize(data, out, base="http://127.0.0.1:50021"):
         rate = info["sample_rate"]
         with wave.open(io.BytesIO(raw), "rb") as audio:
             chunks.append(audio.readframes(audio.getnframes()))
-        entries.append({**segment, "start": start, **info, "kana": query.get("kana", ""), "file": f"audio/{i:02d}.wav"})
+        entries.append({**segment, "speaker_name": voice["name"], "speaker_id": voice["speaker"],
+                        "start": start, **info, "kana": query.get("kana", ""), "file": f"audio/{i:02d}.wav"})
         start += info["duration"]
         print(f"音声 {i + 1}/{len(data['segments'])}: {info['duration']:.1f}秒", flush=True)
     if not 100 <= start <= 240:

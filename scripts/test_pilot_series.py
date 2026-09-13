@@ -1,12 +1,14 @@
 """非公開固定、再送保留、所有者、文字・音声の欠落など公開事故の境界を検査。"""
 import array
 import copy
+import io
+import json
 import pathlib
 import tempfile
 import unittest
 import wave
 from datetime import date
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pilot_render
 import pilot_series as series
@@ -25,6 +27,53 @@ def private_video(video_id="private-video"):
 
 
 class ContentTests(unittest.TestCase):
+    def test_unknown_speaker_and_invalid_pitch_stop_generation(self):
+        data = episode()
+        data['segments'][0]['speaker'] = 'unknown'
+        with self.assertRaisesRegex(ValueError, '話者'):
+            series.validate_episode(data, TODAY)
+        for pitch in [float('nan'), float('inf'), True, .9, 'high']:
+            data = episode()
+            data['voices']['metan']['pitch'] = pitch
+            with self.assertRaisesRegex(ValueError, '高さ'):
+                series.validate_episode(data, TODAY)
+
+    def test_legacy_single_voice_content_still_validates(self):
+        data = episode()
+        del data['voices']
+        for segment in data['segments']:
+            segment.pop('speaker')
+        series.validate_episode(data, TODAY)
+        self.assertEqual(series.voice_credits(data), 'VOICEVOX:四国めたん')
+
+    def test_dialogue_routes_audio_and_pitch_to_the_named_presenter(self):
+        data = episode()
+        stream = io.BytesIO()
+        with wave.open(stream, 'wb') as audio:
+            audio.setparams((1, 2, 24000, 0, 'NONE', 'not compressed'))
+            audio.writeframes(array.array('h', [1000, -1000] * 84000).tobytes())
+        raw = stream.getvalue()
+        calls = []
+        def response(base, endpoint, params=None, body=None):
+            if endpoint == '/version':
+                return b'"test"'
+            if endpoint == '/speakers':
+                return json.dumps([{'name': name, 'styles': [{'id': sid, 'name': 'ノーマル'}]}
+                                   for name, sid in series.PRESENTERS.values()]).encode()
+            if endpoint == '/audio_query':
+                calls.append(('query', params['speaker']))
+                return b'{"kana":"","pauseLengthScale":1}'
+            calls.append(('audio', params['speaker'], body['pitchScale'], body['speedScale']))
+            return raw
+        with tempfile.TemporaryDirectory() as tmp, patch.object(series, 'voice_request', side_effect=response):
+            timeline = series.synthesize(data, tmp)
+        for source, rendered, query, audio in zip(data['segments'], timeline['segments'], calls[::2], calls[1::2]):
+            voice = series.segment_voice(data, source)
+            self.assertEqual(query[1], voice['speaker'])
+            self.assertEqual(audio[1:], (voice['speaker'], voice.get('pitch', 0), voice['speed']))
+            self.assertEqual(rendered['speaker_name'], voice['name'])
+        self.assertEqual({a[1] for a in calls}, {2, 3})
+
     def test_review_expiry_stops_generation(self):
         with self.assertRaisesRegex(ValueError, "期限"):
             series.validate_episode(episode(), date(2027, 1, 1))
@@ -95,6 +144,7 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(body["status"]["privacyStatus"], "private")
         self.assertNotIn("publishAt", body["status"])
         self.assertIn("VOICEVOX:四国めたん", body["snippet"]["description"])
+        self.assertIn("VOICEVOX:ずんだもん", body["snippet"]["description"])
         self.assertIn("[COLLESPO-PILOT:", body["snippet"]["description"])
 
     def test_public_or_wrong_owner_is_rejected(self):
@@ -109,6 +159,20 @@ class PublicationTests(unittest.TestCase):
         key = series.episode_key(data)
         state = {"entries": {key: {"status": "confirmed", "video_id": "private-video"}}}
         self.assertEqual(upload.select_episode([data], state, {key: private_video()}), (None, None))
+
+    def test_manually_released_confirmed_episode_is_skipped_without_privacy_change(self):
+        data = episode()
+        key = series.episode_key(data)
+        item = private_video()
+        item['status']['privacyStatus'] = 'public'
+        state = {'entries': {key: {'status': 'confirmed', 'video_id': item['id']}}}
+        self.assertEqual(upload.select_episode([data], state, {key: item}), (None, None))
+        self.assertEqual(item['status']['privacyStatus'], 'public')
+        with self.assertRaises(RuntimeError):
+            upload.select_episode([data], {}, {key: item})
+        item['snippet']['channelId'] = 'another-channel'
+        with self.assertRaises(RuntimeError):
+            upload.select_episode([data], state, {key: item})
 
     def test_missing_or_uncertain_upload_never_blindly_retries(self):
         data = episode()
