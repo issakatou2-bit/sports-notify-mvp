@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-12T06:01:55.051027+00:00",
+  "updated_at": "2026-09-13T06:01:37.359578+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
@@ -33,10 +33,10 @@
       "player_id": "808959",
       "items": [
         {
-          "value": 0.5811088295687885,
+          "value": 0.5813008130081301,
           "shown": "58.1%",
           "at": 1,
-          "of": 139,
+          "of": 138,
           "ties": 1,
           "above": null,
           "below": {
@@ -51,18 +51,15 @@
           "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
         },
         {
-          "value": 0.3490759753593429,
-          "shown": "34.9%",
-          "at": 2,
-          "of": 139,
+          "value": 0.34959349593495936,
+          "shown": "35.0%",
+          "at": 1,
+          "of": 138,
           "ties": 1,
-          "above": {
-            "name": "Colson Montgomery",
-            "shown": "34.9%"
-          },
+          "above": null,
           "below": {
-            "name": "Kyle Schwarber",
-            "shown": "32.7%"
+            "name": "Colson Montgomery",
+            "shown": "34.7%"
           },
           "key": "k_rate",
           "label": "三振率",
@@ -71,42 +68,19 @@
           "side": "top"
         },
         {
-          "value": 0.16837782340862423,
-          "shown": "16.8%",
-          "at": 2,
-          "of": 139,
+          "value": 0.16869918699186992,
+          "shown": "16.9%",
+          "at": 1,
+          "of": 138,
           "ties": 1,
-          "above": {
-            "name": "James Wood",
-            "shown": "16.8%"
-          },
+          "above": null,
           "below": {
-            "name": "Jake Bauers",
-            "shown": "16.5%"
+            "name": "James Wood",
+            "shown": "16.9%"
           },
           "key": "bb_rate",
           "label": "四球率",
           "note": "四球で終わった打席の割合",
-          "group": "hitting",
-          "side": "top"
-        },
-        {
-          "value": 0.267,
-          "shown": ".267",
-          "at": 5,
-          "of": 139,
-          "ties": 1,
-          "above": {
-            "name": "Hunter Goodman",
-            "shown": ".276"
-          },
-          "below": {
-            "name": "Ben Rice",
-            "shown": ".264"
-          },
-          "key": "iso",
-          "label": "ISO",
-          "note": "長打率から打率を引いた、単打を除いた長打力",
           "group": "hitting",
           "side": "top"
         }

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-12T06:02:11.341881+00:00",
+  "updated_at": "2026-09-13T06:01:51.694329+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,44 +13,20 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 8,
-      "tone": "好調",
-      "gist": "ブリュワーズが20点以上の完封勝利を複数達成し初の記録"
-    },
-    {
-      "team_id": "113",
-      "name": "レッズ",
-      "name_en": "Cincinnati Reds",
-      "mentions": 4,
-      "tone": "不振",
-      "gist": "レッズがブリュワーズに0-20で完封負け歴史的大敗"
-    },
-    {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "レイズがカミネロスの決勝打でプレーオフ出場決定"
-    },
-    {
       "team_id": "143",
       "name": "フィリーズ",
       "name_en": "Philadelphia Phillies",
-      "mentions": 3,
+      "mentions": 5,
       "tone": "不振",
-      "gist": "フィリーズがブレーブスに延長戦で逆転負けしNL東の望み薄れる"
+      "gist": "ブレーブスにフィリーズが12-2で大敗"
     },
     {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
       "mentions": 3,
-      "tone": "不振",
-      "gist": "レンジャーズがダイヤモンドバックスの猛攻で敗戦投手陣が崩壊"
+      "tone": "好調",
+      "gist": "マリナーズがアスレチックスに19-1で圧勝"
     },
     {
       "team_id": "144",
@@ -58,23 +34,47 @@
       "name_en": "Atlanta Braves",
       "mentions": 3,
       "tone": "好調",
-      "gist": "ブレーブスが9回11回の激闘でフィリーズに5ゲーム差つける"
+      "gist": "ブレーブスがフィリーズに12-2で大勝"
+    },
+    {
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "レイズが大リーグ最速投手ホプキンスを昇格"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ガーディアンズはホワイトソックスに1.5ゲーム差"
+    },
+    {
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "ホワイトソックスにカージナルスが5-6で敗北"
     },
     {
       "team_id": "145",
       "name": "ホワイトソックス",
       "name_en": "Chicago White Sox",
       "mentions": 2,
-      "tone": "不振",
-      "gist": "ホワイトソックスが4連敗でAL中央リード0.5ゲームに"
+      "tone": "好調",
+      "gist": "ホワイトソックスがグリチュク9回でAL中部首位を拡大"
     },
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 1,
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 2,
       "tone": "話題",
-      "gist": "マリナーズが22-0で歴史的大敗受ける"
+      "gist": "レッドソックス野手が1プレーでパスクアンティーノに死球2度"
     }
   ],
   "players": []
