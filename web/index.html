@@ -492,7 +492,7 @@
       notableEl.appendChild(card);
     });
 
-    if (games.some((g) => ['CL', 'チャンピオンズリーグ'].includes(g.league))) {
+    if (games.some((g) => g.league === 'CL' || g.league === 'チャンピオンズリーグ')) {
       const watch = document.createElement('p');
       watch.className = 'sub watch-guide';
       watch.innerHTML = '<a href="watch-champions-league.html">このCLの試合はどこで見られる？</a>' +
