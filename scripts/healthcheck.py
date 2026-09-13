@@ -100,6 +100,13 @@ OPTIONAL_DAILY = [("daily_soccer", "今夜の注目試合(サッカー)",
                          .DAILY_LINEUP if k == "daily_soccer"), "19:00"),
                    SINCE_ALWAYS)]
 
+# 「当日」を見るとき、何時より前なら前の日として扱うか。
+#
+# 夕方の枠は17:00から20:00に出る。JST 6時より前に走っているなら、
+# その日の枠はまだ1本も始まっていない。21時の見張りが深夜にずれた
+# 日（9/13→9/14の00:36）に「動画の欠け7件」と報告したのを直したもの。
+DAY_ROLLOVER_HOUR = 6
+
 # 材料。何時間以内に更新されていれば良しとするか。
 FRESH_HOURS = 30
 DATA_FILES = [
@@ -484,7 +491,20 @@ def main() -> int:
 
     now = datetime.now(JST)
     if args.today:
-        day = now.strftime("%Y-%m-%d")
+        # **深夜に走ったときは、前の日を見る。**
+        #
+        # 21時の見張りが、GitHubのscheduleの遅れでJST 00:36に走った
+        # （9/13→9/14）。日付が変わっているので「今日」は9/14になり、
+        # まだ1本も出ていないのは当たり前なのに「動画の欠け7件」と
+        # 報告した。**その日は9本すべて出ていた。**
+        #
+        # 夕方の枠は17:00から20:00に出る。JST 6時より前に走る日は、
+        # どう見てもその日の枠が始まる前なので、前の日を見るのが正しい。
+        day = ((now - timedelta(days=1)) if now.hour < DAY_ROLLOVER_HOUR
+               else now).strftime("%Y-%m-%d")
+        if now.hour < DAY_ROLLOVER_HOUR:
+            print(f"[info] {now.strftime('%H:%M')} に走っているので、"
+                  f"前日({day})を見ます", file=sys.stderr)
     else:
         day = args.date or (now - timedelta(days=1)).strftime("%Y-%m-%d")
 

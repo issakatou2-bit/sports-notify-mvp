@@ -27,6 +27,14 @@ from datetime import datetime, timedelta, timezone
 
 RECORD = "data/published_videos.json"
 
+# 前日の記録を「この実行で出したもの」とみなす時間の幅。
+#
+# 19時の枠がJST 0時台に走ることがある（GitHubのscheduleは2〜4時間
+# 遅れる）。5時間あれば、その遅れを吸収できる。
+# **これ以上広げない。**前日の朝に出したものまで拾うと、
+# 今日1本も出ていない日を緑にしてしまう。
+RECENT_HOURS = 5
+
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -37,14 +45,43 @@ def main() -> int:
                     help="出ていなくても赤くしない(記録だけ残す)")
     args = ap.parse_args()
 
-    day = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d")
+    jst = timezone(timedelta(hours=9))
+    now = datetime.now(jst)
+    day = now.strftime("%Y-%m-%d")
     try:
         rec = json.loads(pathlib.Path(args.record).read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError) as e:
         print(f"[warn] {args.record} を読めませんでした: {e}")
         rec = {}
 
-    entry = (rec.get(args.kind) or {}).get(day)
+    rows = rec.get(args.kind) or {}
+    entry = rows.get(day)
+
+    # **日をまたいだ実行を、欠けと数えない。**
+    #
+    # 9/13の19時の枠が、GitHubのscheduleの遅れでJST 00:30に走った。
+    # 動画は9/13の日付で作られて投稿されたのに、確認はJST 00:42に
+    # 「9/14のdailyはあるか」と探して、無いので赤くした。
+    # その回は**9本すべて出ていた。**
+    #
+    # 日付ではなく、**記録された時刻がこの実行の少し前か**で見る。
+    # 前日の記録でも、いま投稿したばかりなら「出た」でよい。
+    # 逆に前日の朝に出したものは拾わない（RECENT_HOURSで切る）。
+    if not (entry and entry.get("video_id")):
+        prev = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+        cand = rows.get(prev) or {}
+        at = cand.get("published_at") or ""
+        try:
+            posted = datetime.fromisoformat(at.replace("Z", "+00:00"))
+            hours = (now - posted.astimezone(jst)).total_seconds() / 3600
+        except (ValueError, TypeError):
+            hours = None
+        if cand.get("video_id") and hours is not None                 and 0 <= hours <= RECENT_HOURS:
+            print(f"[info] {day} の記録はありませんが、{prev} の分を"
+                  f"{hours:.1f}時間前に出しています。"
+                  "実行が日をまたいだものとして扱います。")
+            entry, day = cand, prev
+
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
 
     if entry and entry.get("video_id"):

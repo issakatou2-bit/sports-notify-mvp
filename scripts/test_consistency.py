@@ -307,6 +307,32 @@ check("ふつうに出ている選手は止めない",
 
 
 
+
+# 深夜に走った見張りが、その日の枠を「欠け」と言わないか。
+#
+# 9/13の21時の見張りが、GitHubのscheduleの遅れでJST 00:36に走った。
+# 日付が変わっているので「今日」は9/14になり、まだ1本も出ていないのは
+# 当たり前なのに**「動画の欠け7件」**と報告した。その日は9本すべて
+# 出ていた。日次とサッカーも同じ理由で赤くなり、3つ同時に落ちた。
+print(chr(10) + "--- 深夜に走ったときは前の日を見る ---")
+import healthcheck as hc2  # noqa: E402
+
+check("切り替えの時刻が定数になっている",
+      isinstance(hc2.DAY_ROLLOVER_HOUR, int), True)
+check("夕方の枠より前の時刻", hc2.DAY_ROLLOVER_HOUR <= 12, True)
+_src = inspect.getsource(hc2.main)
+check("--today のときに時刻を見ている",
+      "DAY_ROLLOVER_HOUR" in _src, True)
+
+# 出たかどうかの確認も同じ問題を持っていた。
+import verify_published as vp2  # noqa: E402
+
+check("前日の記録を拾う幅がある",
+      isinstance(vp2.RECENT_HOURS, (int, float)), True)
+# **広げすぎない。**前日の朝に出したものまで拾うと、今日1本も
+# 出ていない日を緑にしてしまう。
+check("幅は半日より短い", vp2.RECENT_HOURS <= 12, True)
+
 # 復帰は公式の登録記録だけで言う。
 #
 # 9/12に「大谷翔平の5日ぶりの出場なるか」が公開された。出場記録が
