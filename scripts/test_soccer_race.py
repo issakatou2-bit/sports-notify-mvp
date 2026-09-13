@@ -213,6 +213,30 @@ d0 = sr.build(now)
 check("昨日の記録が無い日は空",
       [ln["moved"] for ln in d0["competitions"][0]["lines"]][0], {})
 
+
+print()
+print("--- 動いた日かどうかを数える ---")
+# **順位は毎日は変わらない。**欧州5大リーグは週2回が基本で、間の日は
+# 昨日と同じ表になる。同じ表をもう一度出しても見る理由が無いので、
+# 呼ぶ側が「動いた日だけ出す」を選べるようにしておく。
+_now = preview("PD", [14, 12, 11, 10, 8, 7], played=6,
+               teams=["A", "B", "C", "D", "E", "F"], name="ラ・リーガ")
+_before = preview("PD", [14, 12, 11, 10, 8, 7], played=5,
+                  teams=["A", "B", "C", "E", "D", "F"], name="ラ・リーガ")
+_moved = sr.build(_now, _before)
+check("線をまたいだ日は数が立つ", _moved["moved_count"] >= 1, True)
+check("前日の記録を持っていた", _moved["have_before"], True)
+
+_same = sr.build(_now, _now)
+check("動かなかった日は0", _same["moved_count"], 0)
+check("それでも前日の記録は持っている", _same["have_before"], True)
+
+# **「動かなかった」と「分からない」を混ぜない。**
+# 前日の記録が無い日は、動いたかどうかが分からないだけ。
+_no_before = sr.build(_now)
+check("前日の記録が無い日は0", _no_before["moved_count"], 0)
+check("だが持っていないことが分かる", _no_before["have_before"], False)
+
 print()
 print("--- 出す順 ---")
 # 題に日本人選手の名前があると平均395再生、無いと192再生。

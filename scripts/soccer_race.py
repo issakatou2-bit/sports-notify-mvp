@@ -336,6 +336,23 @@ def build(preview: dict, before: dict = None) -> dict:
     ready = [c for c in comps if c["ready"] and c["lines"]]
     ready.sort(key=lambda c: (-(1 if c["jp"] else 0), -c["played"]))
 
+    # 昨日から動いた大会の数。
+    #
+    # **順位は毎日は変わらない。**試合があった日にだけ変わる。
+    # 欧州5大リーグは週2回（週末と、水曜か木曜）が基本で、
+    # 間の日は順位表がそのまま残る。「昨日と同じ表」を出しても
+    # 見る理由が無い。
+    #
+    # ここで数えておけば、呼ぶ側が「動いた日だけ出す」を選べる。
+    # 0 は「動いていない」で、**「分からない」とは違う**
+    # （前日の記録が無い日は moved が空になり、ここも0になるので、
+    #  呼ぶ側は have_before も一緒に見ること）。
+    moved_count = sum(
+        1 for c in ready
+        for ln in (c.get("lines") or [])
+        if (ln.get("moved") or {}).get("in")
+        or (ln.get("moved") or {}).get("out"))
+
     return {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         # 画面と読み上げに出す日付。
@@ -350,6 +367,11 @@ def build(preview: dict, before: dict = None) -> dict:
         "competitions": comps,
         # 動画に使うぶんだけを、使う順に。
         "picked": [c["code"] for c in ready[:MAX_COMPETITIONS]],
+        # 昨日から線をまたいだクラブがいた線の数。
+        "moved_count": moved_count,
+        # 前日の順位表を持っていたか。**moved_count が0のとき、
+        # 「動かなかった」のか「比べられなかった」のかを区別する。**
+        "have_before": bool(prev_tables),
     }
 
 

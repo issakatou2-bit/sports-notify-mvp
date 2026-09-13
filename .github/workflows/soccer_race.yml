@@ -14,7 +14,16 @@ name: 欧州サッカー　順位争い
 #   2か月だが、サッカーは9月から5月まで材料があり続ける。
 #   10月にMLBのポストシーズンが終わると3月まではサッカーが主になる。
 #
-# まだ手動だけにしている理由:
+# いつ出すか:
+#   **順位は毎日は変わらない。**欧州5大リーグは週末と週央の2回が
+#   基本で、間の日は昨日と同じ表になる。だから日次ではなく
+#   **「昨日から線をまたいだクラブがいた日」**に出す。
+#   実際には週2〜3回になる。判定はこの下の gate。
+#
+#   形はショート（縦・36秒）。MLBの進出争いと同じで、順位表は
+#   短いほうが繰り返し見られる（実測で視聴率206.9%）。
+#
+# 出せる大会が限られている件:
 #   5節に満たない大会は出さない作りにしてあり、9/13時点で出せるのは
 #   ラ・リーガだけ（他は3〜4節）。**全リーグがそろうのは9月末。**
 #   毎日出せる材料が無いうちに定時へ入れると、材料が無い日に
@@ -24,12 +33,21 @@ name: 欧州サッカー　順位争い
 #   （「毎日お届けしています」の一覧と健康診断が突き合わせている）。
 
 on:
+  # 19時のサッカー枠が終わったのを合図にする。cronは増やさない。
+  # 順位表はその日の日次（19時）が取り直しているので、その後に走る。
+  workflow_run:
+    workflows: ["毎日 19:00　欧州サッカー"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       privacy:
         description: '公開設定 (private / unlisted / public)'
         required: false
         default: 'unlisted'
+      force:
+        description: '順位が動いていない日でも作る'
+        required: false
+        default: 'false'
       upload:
         description: 'YouTubeへ上げるか（題が未実装。いまは false のまま）'
         required: false
@@ -93,11 +111,38 @@ jobs:
           except Exception:
               print(0)
           ")
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          MOVED=$(python -c "
+          import json
+          try:
+              d = json.load(open('data/soccer_race.json', encoding='utf-8'))
+              print(d.get('moved_count') or 0)
+          except Exception:
+              print(0)
+          ")
+          HAVE=$(python -c "
+          import json
+          try:
+              d = json.load(open('data/soccer_race.json', encoding='utf-8'))
+              print('yes' if d.get('have_before') else 'no')
+          except Exception:
+              print('no')
+          ")
           if [ "$COUNT" -eq 0 ]; then
             echo "::notice::出せる大会がまだありません（5節未満）"
+            echo "count=0" >> "$GITHUB_OUTPUT"
+          elif [ "$MOVED" -eq 0 ] && [ "$HAVE" = "yes" ]                && [ "${{ inputs.force }}" != "true" ]; then
+            # **順位は毎日は変わらない。**欧州5大リーグは週2回が基本で、
+            # 間の日は昨日と同じ表になる。同じ表をもう一度出しても
+            # 見る理由が無いので、その日は作らない。
+            #
+            # 前日の記録が無い日（have_before=no）は、動いたかどうかが
+            # 分からないだけなので作る。**「変化なし」と「分からない」を
+            # 混ぜない。**
+            echo "::notice::昨日から線をまたいだクラブがいないので作りません"
+            echo "count=0" >> "$GITHUB_OUTPUT"
           else
-            echo "出せる大会 ${COUNT}件"
+            echo "出せる大会 ${COUNT}件 / 動いた線 ${MOVED}"
+            echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Install video tools
