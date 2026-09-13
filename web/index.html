@@ -492,6 +492,14 @@
       notableEl.appendChild(card);
     });
 
+    if (games.some((g) => g.league === 'CL' || g.league === 'チャンピオンズリーグ')) {
+      const watch = document.createElement('p');
+      watch.className = 'sub watch-guide';
+      watch.innerHTML = '<a href="watch-champions-league.html">このCLの試合はどこで見られる？</a>' +
+        ' <span>対象試合・契約済みか・見る期間を確認するガイド（広告を含みます）</span>';
+      notableEl.appendChild(watch);
+    }
+
     // --- 全試合スケジュール(開始時刻順、名前+略称表記) ---
     const bySchedule = [...games].sort((a, b) => {
       const ta = a.start_time_jst || '99/99 99:99';

@@ -1,6 +1,9 @@
 name: Buffer 明日のMLBをX・Instagram・TikTokへ
 
 on:
+  # 日本時間19:47/23:47。投稿作成はせず、処理の遅い配信結果だけを照合。
+  schedule:
+    - cron: '47 10,14 * * *'
   workflow_dispatch:
     inputs:
       source_run:
@@ -27,8 +30,10 @@ permissions:
 jobs:
   deliver:
     if: >-
-      github.event_name != 'workflow_run' ||
-      (vars.BUFFER_ENABLED == 'true' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+      github.event_name == 'workflow_dispatch' ||
+      (vars.BUFFER_ENABLED == 'true' &&
+        (github.event_name == 'schedule' ||
+         (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -39,7 +44,7 @@ jobs:
       - name: Verify duplicate prevention and source validation
         run: python scripts/test_buffer_daily.py
       - name: Install media inspection tool
-        if: inputs.mode != 'reconcile'
+        if: github.event_name != 'schedule' && inputs.mode != 'reconcile'
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Validate or distribute the daily video
         env:
@@ -48,7 +53,7 @@ jobs:
           BUFFER_CHANNELS: ${{ vars.BUFFER_CHANNELS }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
-          MODE: ${{ github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
+          MODE: ${{ github.event_name == 'schedule' && 'reconcile' || github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
           PYTHONUNBUFFERED: '1'
         run: |
           if [ "$MODE" = "reconcile" ]; then
