@@ -169,6 +169,9 @@ def metadata(data, timeline):
             last = start
     desc = data["summary"] + "\n\n" + data["source_note"]
     desc += "\n\n" + data.get("guide_label", "観戦ガイド") + "：" + data["guide_url"] + "\n\n"
+    if data.get("guide_url") == "https://collespo.com/football-competitions.html":
+        desc += ("CL・ELの視聴方法：契約済みか、見たい試合が対象かを確認するガイド（広告を含みます）\n"
+                 "https://collespo.com/watch-champions-league.html\n\n")
     if len(chapters) >= 3:
         desc += "\n".join(f"{s // 60:02}:{s % 60:02} {label}" for s, label in chapters) + "\n\n"
     desc += "出典（確認日 " + data["reviewed_on"] + "）\n"

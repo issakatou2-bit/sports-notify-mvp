@@ -146,6 +146,9 @@ class PublicationTests(unittest.TestCase):
         self.assertIn("VOICEVOX:四国めたん", body["snippet"]["description"])
         self.assertIn("VOICEVOX:ずんだもん", body["snippet"]["description"])
         self.assertIn("[COLLESPO-PILOT:", body["snippet"]["description"])
+        self.assertIn("https://collespo.com/watch-champions-league.html", body["snippet"]["description"])
+        baseball = series.load_episode(series.CATALOG / 'baseball-two-hits.json', date(2026, 9, 12))
+        self.assertNotIn('watch-champions-league', upload.metadata(baseball, timeline)['snippet']['description'])
 
     def test_public_or_wrong_owner_is_rejected(self):
         for field, value in (("privacyStatus", "public"), ("privacyStatus", "unlisted"), ("channelId", "another-channel")):

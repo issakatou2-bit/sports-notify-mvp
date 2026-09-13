@@ -11,6 +11,26 @@ import buffer_daily as daily
 
 
 class BufferTests(unittest.TestCase):
+    def test_reconcile_skips_buffer_when_every_delivery_is_confirmed(self):
+        ledger = self.ledger()
+        ledger.data['deliveries'] = {'2026-09-11:daily:twitter': {'state': 'sent'}}
+        with patch.object(daily, 'Ledger', return_value=ledger), patch.object(daily, 'recent_posts') as read:
+            daily.reconcile()
+            read.assert_not_called()
+
+    def test_reconcile_reads_only_pending_channel_and_never_creates_a_post(self):
+        ledger = self.ledger()
+        ledger.data['deliveries'] = {
+            '2026-09-11:daily:twitter': {'state': 'sent'},
+            '2026-09-11:daily:tiktok': {'state': 'sending', 'post_id': 'pending-id'}}
+        with patch.object(daily, 'Ledger', return_value=ledger), patch.object(daily, 'recent_posts',
+                return_value=[{'id':'pending-id','text':'caption','status':'sent','externalLink':'https://www.tiktok.com/@collespo/video/example'}]) as read, \
+                patch.object(daily, 'graphql') as write:
+            daily.reconcile()
+            read.assert_called_once_with(daily.CHANNELS['tiktok'])
+            write.assert_not_called()
+        self.assertEqual(ledger.data['deliveries']['2026-09-11:daily:tiktok']['state'], 'sent')
+
     def setUp(self):
         self.run = {'path': '.github/workflows/daily_notify.yml', 'head_branch': 'main',
                     'conclusion': 'success', 'event': 'workflow_dispatch',

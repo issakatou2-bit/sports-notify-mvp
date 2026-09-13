@@ -254,7 +254,13 @@ def create_payload(service, text, media_url):
 def reconcile():
     """Refresh saved deliveries without creating media or posts, even after midnight."""
     ledger = Ledger()
-    posts_by_channel = {service: recent_posts(channel) for service, channel in CHANNELS.items()}
+    pending_services = {key.rsplit(':', 1)[-1] for key, entry in ledger.data['deliveries'].items()
+                        if entry.get('state') != 'sent'}
+    posts_by_channel = {service: recent_posts(channel) for service, channel in CHANNELS.items()
+                       if service in pending_services}
+    if not posts_by_channel:
+        print('No pending deliveries; no Buffer request needed')
+        return
     unresolved = []
     for key, entry in list(ledger.data['deliveries'].items()):
         service = key.rsplit(':', 1)[-1]
