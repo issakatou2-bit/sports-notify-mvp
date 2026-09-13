@@ -264,6 +264,43 @@ def main() -> int:
         if not ok:
             fails += 1
 
+
+    # サッカーの順位争い。1つの線（CL圏内など）を1画面に。
+    #
+    # 20クラブの順位表をそのまま出しても誰も追えないので、
+    # **線の前後だけ**を描く。線が画面の主題なので、
+    # 行が無い日・片側しか無い日でも落ちないことを見る。
+    print(chr(10) + "--- サッカーの順位争い ---")
+    import soccer_race as sr  # noqa: E402
+
+    _comp = {"code": "PD", "name_jp": "ラ・リーガ", "played": 6}
+    _rows = [{"position": i, "team": "クラブ%d" % i, "points": 20 - i,
+              "played": 6, "gf": 10, "ga": 5, "jp": []}
+             for i in (3, 4, 5, 6)]
+    _line = {"at": 4, "label": "CL圏内", "diff": 1,
+             "inside": _rows[:2], "outside": _rows[2:],
+             "moved": {"in": ["クラブ4"], "out": ["クラブ5"]}}
+    check("順位争い（動きあり）", g.render_race_line, 1.0, _comp, _line)
+    check("順位争い（動きなし）", g.render_race_line, 1.0, _comp,
+          {**_line, "moved": {}})
+    # 勝点で並んでいる日。「0点差」とは書かない。
+    check("勝点が並んだ日", g.render_race_line, 1.0, _comp,
+          {**_line, "diff": 0})
+    # 日本人選手がいるクラブは名前が乗る。
+    _jp_rows = [{**r, "jp": ["久保建英"]} for r in _rows]
+    check("日本人選手がいる日", g.render_race_line, 1.0, _comp,
+          {**_line, "inside": _jp_rows[:2], "outside": _jp_rows[2:]})
+    # 線が一覧の端にあると、片側が空になる。
+    check("圏外の行が無い日", g.render_race_line, 1.0, _comp,
+          {**_line, "outside": []})
+    check("圏内の行が無い日", g.render_race_line, 1.0, _comp,
+          {**_line, "inside": []})
+    check("動きの途中", g.render_race_line, 0.3, _comp, _line)
+    # クラブ名が長い日。**はみ出させない。**
+    check("クラブ名が長い日", g.render_race_line, 1.0, _comp,
+          {**_line, "inside": [{**_rows[0],
+                                "team": "ボルシア・メンヒェングラートバッハ"}]})
+
     # 成績の行が、置ける幅に収まっているか。
     #
     # fit() は入らなくても最小の大きさを返すだけで、収まったとは

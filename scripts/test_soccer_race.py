@@ -168,6 +168,46 @@ two = {"generated_at": "x", "competitions": [
 d = sr.build(two)
 check("日本人選手がいる大会を先に", d["picked"][0], "PL")
 
+
+print()
+print("--- 画面と読み上げで、差の言い方が同じか ---")
+# **別々に組み立てない。**画面が「勝点で並んでいる」で読み上げが
+# 「0点差」になると、どちらが本当か見ている側には確かめようがない。
+import generate_morning_short as gms  # noqa: E402
+
+check("差0", gms.race_gap_text(0), "勝点で並んでいる")
+check("差あり", gms.race_gap_text(2), "勝点2差")
+check("負の差も絶対値で", gms.race_gap_text(-2), "勝点2差")
+check("材料が無ければ空", gms.race_gap_text(None), "")
+
+print()
+print("--- 順位争いの読み上げ ---")
+_race = sr.build(preview("PD", [14, 12, 11, 10, 8, 7], played=6,
+                         teams=["Real Madrid CF", "FC Barcelona",
+                                "Sevilla FC", "Real Sociedad de Futbol",
+                                "Villarreal CF", "Athletic Club"],
+                         name="ラ・リーガ"))
+_n = gms.build_narration({"race": _race, "date_jst": "2026-09-13",
+                          "players": [], "voices": {}, "buzz": [],
+                          "talk": {}, "reporters": {}},
+                         mode="soccer_race")
+_kinds = [x["kind"] for x in _n["segments"]]
+check("順位争いの画面が入る", "race_line" in _kinds, True)
+check("日本人選手の画面が入る", "race_japanese" in _kinds, True)
+_line = next(x for x in _n["segments"] if x["kind"] == "race_line")
+check("線の名前を言う", "CL圏内" in _line["text"], True)
+# 差の言い方が画面と同じ関数から来ているか。
+check("差の言い方が揃っている",
+      any(gms.race_gap_text(l["diff"]) in _line["text"]
+          for c in _race["competitions"] for l in (c.get("lines") or [])),
+      True)
+
+# **日付をずらさない。**成績の回は米国日付を1日進めてJSTにするが、
+# 順位表は「いまの順位」なので、ずらす相手がいない。
+check("date_jst を持っている", "date_jst" in _race, True)
+_intro = _n["segments"][0]["text"]
+check("渡した日付がそのまま出る", "9月13日" in _intro, True)
+
 print()
 print("--- 欠けても落ちない ---")
 check("空の材料", sr.build({})["picked"], [])

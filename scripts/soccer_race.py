@@ -42,7 +42,7 @@ import argparse
 import json
 import pathlib
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -286,6 +286,14 @@ def build(preview: dict, before: dict = None) -> dict:
 
     return {
         "updated_at": datetime.now(timezone.utc).isoformat(),
+        # 画面と読み上げに出す日付。
+        #
+        # **これは日本時間の「今日」。**成績の回は米国日付を1日ずらして
+        # JSTに直すが（recap_day）、順位表は「いまの順位」なので
+        # ずらす相手がいない。date_jst を入れておかないと、
+        # 読む側が米国日付とみなして1日進める。
+        "date_jst": datetime.now(timezone(timedelta(hours=9)))
+                            .date().isoformat(),
         "source_at": preview.get("generated_at"),
         "competitions": comps,
         # 動画に使うぶんだけを、使う順に。

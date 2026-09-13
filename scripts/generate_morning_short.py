@@ -979,6 +979,67 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             })
             first = False
 
+    elif mode == "soccer_race":
+        # 欧州サッカーの順位争い。
+        #
+        # MLBの進出争いと同じ考え方で、**見るのは線の前後だけ。**
+        # 20クラブの順位表を読み上げても誰も追えない。
+        # CL圏内・EL圏内・残留の境目で区切って、そこが動いたかを言う。
+        #
+        # なぜこの枠を作るか:
+        #   実測で順位表の回は繰り返し見られている（MLBの進出争いは
+        #   視聴率206.9%）。そしてサッカーの順位争いは9月から5月まで
+        #   材料があり続ける。MLBの進出争い（9〜10月）より期間が長い。
+        race = data.get("race") or {}
+        picked = race.get("picked") or []
+        by_code = {c["code"]: c for c in (race.get("competitions") or [])}
+
+        segments = [{
+            "kind": "race_intro",
+            "text": f"{day}、欧州サッカーの順位争いです。",
+            "meta": {"date": day_iso, "mode": mode, "day": day},
+        }]
+
+        # 日本人選手がどこにいるか。
+        # **順位表は「見たい人が見るもの」。**この1枚だけは
+        # 「久保建英のソシエダはCL圏内まで勝点2」で、誰にでも入口がある。
+        jp_said = []
+        for code in picked:
+            for x in (by_code.get(code, {}).get("jp") or []):
+                near = (x.get("lines") or [{}])[0]
+                if not near.get("text"):
+                    continue
+                jp_said.append("%d位%sの%s。%s" % (
+                    x["position"], x["club_jp"], x["name"], near["text"]))
+        if jp_said:
+            segments.append({
+                "kind": "race_japanese",
+                "text": "".join(jp_said[:JP_SPOKEN]) + "。",
+                "meta": {},
+            })
+
+        for code in picked:
+            comp = by_code.get(code) or {}
+            for line in (comp.get("lines") or [])[:LINES_PER_COMP]:
+                inside = (line.get("inside") or [])[-1:]
+                outside = (line.get("outside") or [])[:1]
+                say = "%s、%sの境目。" % (comp.get("name_jp", ""),
+                                      line.get("label", ""))
+                if inside and outside:
+                    # 差の言い方は画面と同じ関数から作る。
+                    # 別々に組み立てると、画面が「勝点で並んでいる」で
+                    # 読み上げが「0点差」になる。
+                    say += "%d位%sと%d位%sは%s。" % (
+                        inside[0]["position"], inside[0]["team"],
+                        outside[0]["position"], outside[0]["team"],
+                        race_gap_text(line.get("diff")))
+                mv = line.get("moved") or {}
+                if mv.get("in"):
+                    say += "昨日%sが入りました。" % "・".join(mv["in"][:2])
+                segments.append({"kind": "race_line", "text": say,
+                                 "meta": {"code": code,
+                                          "at": line.get("at")}})
+
     elif mode == "voices":
         # ファンの声の回。
         # その日いちばん見られたハイライトを先に立て、そのコメント欄を読む。
@@ -2097,6 +2158,137 @@ def render_ps_league(p, league: dict, lid: str = "104"):
         d.text((96, y + 38), "マジック", font=font(26), fill=ACCENT)
         d.text((96, y + 70), "あと何回「勝つか、相手が負けるか」で地区優勝",
                font=font(26), fill=DIM)
+    return im
+
+
+# 順位争いの回で、1本に入れる量。
+#
+# 5大リーグ×3本の線を全部出すと15画面になり、ショートに入らない。
+# 日本人選手のいる大会を先に、1大会あたり2本の線まで。
+LINES_PER_COMP = 2
+# 読み上げで名前を出す日本人選手の数。
+JP_SPOKEN = 3
+
+
+def race_row(d, y, row: dict, dx: int, inside: bool, bh: int = 92):
+    """順位争いの1行。順位・クラブ名・勝点と、日本人選手がいれば名前。
+
+    MLBの ps_row と分けているのは、見せる数字が違うから。
+    野球は勝敗とゲーム差、サッカーは**勝点と得失点差**で、
+    クラブの色も持っていない（football-data.org は返さない）。
+    """
+    x0, x1 = 70 - dx, W - 70 - dx
+    bg = SURF if inside else (15, 18, 25)
+    d.rounded_rectangle([x0, y, x1, y + bh], 14, fill=bg)
+    # 圏内の側だけ左に帯を引く。線のどちら側かを色で分ける。
+    if inside:
+        d.rounded_rectangle([x0, y, x0 + 11, y + bh], 5, fill=ACCENT)
+
+    tx = x0 + 34
+    d.text((tx, y + 16), str(row.get("position") or "-"),
+           font=font(44), fill=ACCENT if inside else DIM)
+    tx += 76
+    name = row.get("team", "")
+    ns = fit(d, name, 460, (42, 38, 34, 30))
+    d.text((tx, y + 10), name, font=font(ns),
+           fill=TEXT if inside else DIM)
+
+    # 日本人選手がいるクラブは名前を添える。
+    # **実測では題に名前がある動画が平均290再生、無いと171再生。**
+    # 画面でも、知っている名前があるかどうかで見る理由が変わる。
+    jp = row.get("jp") or []
+    if jp:
+        d.text((tx, y + 56), "・".join(jp[:2]), font=font(26), fill=JP)
+
+    pts = "%d" % (row.get("points") or 0)
+    fw = font(46)
+    d.text((x1 - 118 - d.textlength(pts, font=fw), y + 18), pts,
+           font=fw, fill=TEXT if inside else DIM)
+    d.text((x1 - 104, y + 32), "勝点", font=font(24), fill=DIM)
+    gd = (row.get("gf") or 0) - (row.get("ga") or 0)
+    sub = "得失点 %+d  %d試合" % (gd, row.get("played") or 0)
+    fs = font(22)
+    d.text((x1 - 34 - d.textlength(sub, font=fs), y + bh - 30), sub,
+           font=fs, fill=DIM)
+
+
+def race_gap_text(diff) -> str:
+    """線をまたぐ差の言い方。**画面と読み上げで1つに揃える。**
+
+    差0を「0点差」と書くと意味が通らない。勝点では並んでいて
+    得失点差で分かれている状態なので、そう言う。
+    """
+    if diff is None:
+        return ""
+    if diff == 0:
+        return "勝点で並んでいる"
+    return "勝点%d差" % abs(diff)
+
+
+def render_race_line(p, comp: dict, line: dict):
+    """順位争い。1つの線（CL圏内など）を1画面に。
+
+    なぜ線ごとに分けるか:
+      20クラブの順位表をそのまま出しても、誰も追えない。
+      見るのは**線の前後だけ**。そこが1行動けば、その日の意味がある。
+
+      実測でも、順位表の回は繰り返し見られている
+      （MLBの進出争いは視聴率206.9%）。数字を確かめに戻ってくる
+      種類の画面なので、**1画面に1つの問い**にする。
+    """
+    im, d = base(p)
+    d.text((70, 150), comp.get("name_jp", ""), font=font(44), fill=JP)
+    d.text((70, 216), "%sをめぐる争い" % line.get("label", ""),
+           font=font(62), fill=TEXT)
+    # **「◯節終了」とは書かない。**comp["played"] はいちばん多く
+    # 消化したクラブの試合数で、節の数ではない。順延があると
+    # クラブごとに違う（9/13のラ・リーガはセビージャ5試合・
+    # レアル・マドリード4試合）。各クラブの試合数は行に出ている。
+    d.text((70, 300), "最大%d試合を消化" % (comp.get("played") or 0),
+           font=font(30), fill=DIM)
+
+    y, i = 366, 0
+    for row in (line.get("inside") or []):
+        appear = 0.06 + i * 0.05
+        i += 1
+        if p >= appear:
+            e = ease_out(min(1.0, (p - appear) * 9))
+            race_row(d, y, row, int((1 - e) * 80), True)
+        y += 104
+
+    # 線。この画面の主題なので、はっきり引く。
+    y += 10
+    s = "──── ここまでが%s ────" % line.get("label", "")
+    d.text(((W - d.textlength(s, font=font(30))) / 2, y), s,
+           font=font(30), fill=ACCENT)
+    y += 58
+
+    for row in (line.get("outside") or []):
+        appear = 0.06 + i * 0.05
+        i += 1
+        if p >= appear:
+            e = ease_out(min(1.0, (p - appear) * 9))
+            race_row(d, y, row, int((1 - e) * 80), False)
+        y += 104
+
+    gap = race_gap_text(line.get("diff"))
+    if gap and p > 0.28:
+        d.rounded_rectangle([70, y + 20, W - 70, y + 96], 14,
+                            fill=(15, 18, 25))
+        d.text((96, y + 40), "線をまたぐ差　" + gap,
+               font=font(34), fill=ACCENT)
+        y += 108
+
+    # 昨日この線をまたいだクラブ。**動いた日がいちばん見る理由になる。**
+    mv = line.get("moved") or {}
+    if (mv.get("in") or mv.get("out")) and p > 0.34:
+        parts = []
+        if mv.get("in"):
+            parts.append("入 " + "・".join(mv["in"][:2]))
+        if mv.get("out"):
+            parts.append("出 " + "・".join(mv["out"][:2]))
+        d.text((96, y + 30), "昨日から　" + "　".join(parts),
+               font=font(30), fill=JP)
     return im
 
 
