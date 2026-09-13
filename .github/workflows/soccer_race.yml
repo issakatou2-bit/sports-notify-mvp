@@ -114,6 +114,9 @@ jobs:
             # 節の途中・最低節数に満たない・もう出した、のどれか。
             echo "::notice::節が終わった大会がありません"
             echo "count=0" >> "$GITHUB_OUTPUT"
+          elif [ -z "$ROUND" ]; then
+            echo "$CODE を作ります（節の指定なし）"
+            echo "count=1" >> "$GITHUB_OUTPUT"
           else
             echo "$NAME 第${ROUND}節が終わりました"
             echo "count=1" >> "$GITHUB_OUTPUT"
@@ -281,7 +284,11 @@ jobs:
           {
             echo "## 順位争い"
             echo
-            echo "- 対象: ${{ steps.gate.outputs.code }} 第${{ steps.gate.outputs.round }}節"
+            if [ -n "${{ steps.gate.outputs.round }}" ]; then
+              echo "- 対象: ${{ steps.gate.outputs.code }} 第${{ steps.gate.outputs.round }}節"
+            else
+              echo "- 対象: ${{ steps.gate.outputs.code }}（手で指定）"
+            fi
             if [ -f build/race/collespo_morning_soccer_race.mp4 ]; then
               echo "- 動画: $(du -h build/race/collespo_morning_soccer_race.mp4 | cut -f1)"
             else
