@@ -162,6 +162,53 @@ def _soccer_out() -> frozenset:
 
 
 @functools.lru_cache(maxsize=1)
+def _recent_returns() -> dict:
+    """故障者リストから復帰したばかりの日本人選手。
+
+    返すのは {名前: {"text": "9月11日に復帰", "date": "2026-09-11"}}。
+
+    **推測しない。**MLBが「activated」と記録した日だけを見る
+    （`mlb_transactions`）。記録が取れない日は空を返し、
+    誰についても復帰と言わない。
+
+    `mlb_availability`（Codexが9/12に追加）とは役割が違う。
+    あちらは「いまアクティブロースターにいるか」＝**誰を推してよいか**、
+    こちらは「いつ復帰したか」＝**復帰と言ってよいか**。
+    両方を満たす日だけ、この枝が成り立つ。
+    """
+    out = {}
+    try:
+        import mlb_transactions
+        data = mlb_transactions.load()
+    except Exception:                            # noqa: BLE001
+        return out
+    for x in (data.get("japanese") or {}).values():
+        if x.get("kind") != "from_il" or not x.get("name_jp"):
+            continue
+        day = (x.get("date") or "")[:10]
+        try:
+            d = datetime.date.fromisoformat(day)
+        except (TypeError, ValueError):
+            continue
+        # 何日も前の復帰は、もう「復帰したばかり」ではない。
+        gap = (datetime.date.today() - d).days
+        if not 0 <= gap <= RETURN_WITHIN_DAYS:
+            continue
+        out[x["name_jp"]] = {
+            "date": day,
+            "text": "%d月%d日に復帰" % (d.month, d.day),
+        }
+    return out
+
+
+# 復帰から何日目までを「復帰したばかり」として題に出すか。
+#
+# 復帰の翌日・翌々日までは、その選手を追っている人が見に来る日。
+# それ以降は、復帰したこと自体がもう話題ではない。
+RETURN_WITHIN_DAYS = 3
+
+
+@functools.lru_cache(maxsize=1)
 def _jp_types() -> dict:
     """日本人選手の、漢字表記 → 投手か打者か。
 
@@ -320,7 +367,29 @@ def pick_hook(games: list, availability=None) -> dict:
             if p.get("name"):
                 return {"big": "先発予定", "sub": p["name"], "at": at}
 
-    # 欠場日数は復帰の根拠にならない。日数だけの復帰予告は作らない。
+    # 2. 故障者リストから復帰したばかりの選手がいる球団の試合。
+    #
+    #    **欠場日数は復帰の根拠にならない。**以前は出場記録が5日空いた
+    #    ことを理由に「◯日ぶりの出場なるか」を出していて、9/12に
+    #    「大谷翔平の5日ぶりの出場なるか」が公開された。大谷はその時
+    #    故障者リストに入っていたので、その問いは成り立たなかった。
+    #    日数だけの復帰予告は9/12に撤廃されている（jp_absence）。
+    #
+    #    **公式の登録記録なら言える。**MLBは「故障者リストから復帰した
+    #    （activated）」を記録として公開している。そこに載った日だけを
+    #    使う（`mlb_transactions`）。記録が無い日は何も言わない。
+    #
+    #    言うのは**復帰した事実**まで。「明日出るか」は言わない。
+    #    打者のスタメンは前日には分からないし、復帰した選手ほど
+    #    段階的に戻すことがある。
+    back = _recent_returns()
+    if back:
+        for at, g in enumerate(games):
+            for name in (g.get("jp_players") or []):
+                rec = back.get(name)
+                if rec:
+                    return {"big": rec["text"], "sub": name,
+                            "at": at, "key": name}
 
     # 3. 日本人選手が所属しているチームの試合。
     #

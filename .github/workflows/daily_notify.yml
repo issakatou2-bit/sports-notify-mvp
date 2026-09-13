@@ -58,6 +58,18 @@ jobs:
           python notability_engine.py --source mlb --out notable_games.json
           # 所属・欠場日数と出場可能な登録を区別。全配信より前に適用する。
           python scripts/mlb_availability.py --games notable_games.json --archive-dir archive
+          # 誰が故障者リストから復帰したか。**推測しない。**
+          #
+          # 9/12に「大谷翔平の5日ぶりの出場なるか」が公開された。
+          # 出場記録が5日空いたことを理由にしていたが、大谷は9/8に
+          # 15日故障者リストへ入っていた。日数からは復帰も出場も
+          # 予測できない。MLBが「activated」と記録した日だけを使う。
+          #
+          # 上の mlb_availability とは役割が違う。あちらは「いま登録に
+          # いるか」＝誰を推してよいか、こちらは「いつ復帰したか」＝
+          # 復帰と言ってよいか。落ちても止めない。
+          python scripts/mlb_transactions.py --days 21 \
+            --out data/transactions.json || true
 
       # 選手の所属変化を検知してニュース化する。
       # 差分は「候補」に過ぎないため、スクリプト内でAPIに問い合わせて
@@ -123,7 +135,7 @@ jobs:
           bash scripts/commit_data.sh \
             "archive: ${{ github.run_id }}" \
             archive/ podcast/ data/roster_snapshot.json data/news_log.json \
-            data/postseason.json
+            data/postseason.json data/transactions.json
 
       - name: Assemble Pages site
         # サイトが1日古くなるより、動画が出ない方が痛い。

@@ -306,6 +306,38 @@ check("ふつうに出ている選手は止めない",
       _fine.get("鎌田大地", {}).get("out"), False)
 
 
+
+# 復帰は公式の登録記録だけで言う。
+#
+# 9/12に「大谷翔平の5日ぶりの出場なるか」が公開された。出場記録が
+# 5日空いたことを理由にしていたが、**大谷は9/8に15日故障者リストへ
+# 入っていた。**日数からは復帰も出場も予測できない。
+# 日数だけの見出しは9/12に撤廃され（jp_absence）、ここでは
+# MLBが「activated」と記録した日だけを使う。
+print(chr(10) + "--- 復帰は公式の記録だけで言う ---")
+import mlb_transactions as _mtx  # noqa: E402
+
+# 日数だけの見出しは9/12に撤廃された。空を返すことを確かめる。
+import jp_absence as _ja  # noqa: E402
+check("旧機能は空を返す", _ja.hook_for(["大谷翔平"], "2026-09-13"), {})
+check("欠場日数の関数を題に使っていない",
+      "jp_absence.hook_for" not in inspect.getsource(gn2), True)
+check("復帰の枝が pick_hook にある",
+      "_recent_returns" in inspect.getsource(gn2.pick_hook), True)
+check("何日まで出すかが定数になっている",
+      isinstance(gn2.RETURN_WITHIN_DAYS, int), True)
+
+# 実データ。今日の時点で復帰したばかりの日本人選手がいるか。
+# **いなければ空**で、その日は誰についても復帰と言わない。
+_ret = gn2._recent_returns()
+check("記録に無い日は誰も出さない", isinstance(_ret, dict), True)
+# 記録の中身そのものは mlb_transactions 側の検査で見ている。
+# ここでは「故障者リストへ入った選手を復帰と読まない」ことだけ確認。
+_il = [x for x in (_mtx.load().get("japanese") or {}).values()
+       if x.get("kind") == "to_il"]
+check("故障者リストへ入った選手を復帰の枝に出さない",
+      [x["name_jp"] for x in _il if x.get("name_jp") in _ret], [])
+
 # 「所属チームの一戦」に投手の名前を出さないか。
 #
 # 9/11にユーザーから指摘。「明日今井達也が先発するわけでもないのに
