@@ -1,41 +1,37 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 210,
-    "home_wins": 118,
+    "games": 218,
+    "home_wins": 123,
     "draws": 0,
-    "away_wins": 92,
+    "away_wins": 95,
     "home_win_pct": 56,
-    "avg_total": 8.6,
-    "one_run": 65,
-    "one_run_pct": 31,
+    "avg_total": 8.7,
+    "one_run": 70,
+    "one_run_pct": 32,
     "shutouts": 26,
     "shutout_pct": 12
   },
   "same_division": {
-    "games": 51,
-    "home_wins": 25,
+    "games": 54,
+    "home_wins": 27,
     "draws": 0,
-    "away_wins": 26,
-    "home_win_pct": 49,
-    "avg_total": 8.7,
-    "one_run": 18,
-    "one_run_pct": 35,
+    "away_wins": 27,
+    "home_win_pct": 50,
+    "avg_total": 8.9,
+    "one_run": 20,
+    "one_run_pct": 37,
     "shutouts": 8,
-    "shutout_pct": 16
+    "shutout_pct": 15
   },
   "venues": {
     "フェンウェイ・パーク": {
       "games": 11,
       "avg_total": 11.7
     },
-    "トロピカーナ・フィールド": {
-      "games": 5,
-      "avg_total": 10.6
-    },
     "リグレー・フィールド": {
-      "games": 14,
-      "avg_total": 10.5
+      "games": 15,
+      "avg_total": 10.3
     },
     "グローブライフ・フィールド": {
       "games": 5,
@@ -49,6 +45,10 @@
       "games": 13,
       "avg_total": 9.8
     },
+    "トロピカーナ・フィールド": {
+      "games": 6,
+      "avg_total": 9.7
+    },
     "ナショナルズ・パーク": {
       "games": 5,
       "avg_total": 9.6
@@ -57,17 +57,13 @@
       "games": 5,
       "avg_total": 9.6
     },
+    "ヤンキー・スタジアム": {
+      "games": 10,
+      "avg_total": 9.1
+    },
     "カウフマン・スタジアム": {
       "games": 5,
       "avg_total": 9.0
-    },
-    "ヤンキー・スタジアム": {
-      "games": 9,
-      "avg_total": 8.6
-    },
-    "ローンデポ・パーク": {
-      "games": 5,
-      "avg_total": 8.6
     },
     "ドジャー・スタジアム": {
       "games": 17,
@@ -77,6 +73,10 @@
       "games": 7,
       "avg_total": 8.4
     },
+    "ローンデポ・パーク": {
+      "games": 6,
+      "avg_total": 8.3
+    },
     "ペトコ・パーク": {
       "games": 10,
       "avg_total": 8.1
@@ -85,13 +85,13 @@
       "games": 7,
       "avg_total": 7.9
     },
+    "トゥルーイスト・パーク": {
+      "games": 12,
+      "avg_total": 7.6
+    },
     "ダイキン・パーク": {
       "games": 14,
       "avg_total": 7.1
-    },
-    "トゥルーイスト・パーク": {
-      "games": 11,
-      "avg_total": 7.0
     },
     "ロジャーズ・センター": {
       "games": 5,
