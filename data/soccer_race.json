@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-13T13:08:19.488613+00:00",
+  "updated_at": "2026-09-13T13:30:53.192646+00:00",
   "date_jst": "2026-09-13",
   "source_at": "2026-09-13T13:04:16.382158+00:00",
   "competitions": [
@@ -63,28 +63,96 @@
           "club_jp": "リーズ",
           "position": 11,
           "points": 5,
-          "lines": []
+          "lines": [
+            {
+              "line": 5,
+              "position": 11,
+              "side": "outside",
+              "diff": 1,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点1"
+            },
+            {
+              "line": 4,
+              "position": 11,
+              "side": "outside",
+              "diff": 2,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点2"
+            }
+          ]
         },
         {
           "name": "鎌田大地",
           "club_jp": "クリスタル・パレス",
           "position": 16,
           "points": 3,
-          "lines": []
+          "lines": [
+            {
+              "line": 5,
+              "position": 16,
+              "side": "outside",
+              "diff": 3,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点3"
+            },
+            {
+              "line": 4,
+              "position": 16,
+              "side": "outside",
+              "diff": 4,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点4"
+            }
+          ]
         },
         {
           "name": "冨安健洋",
           "club_jp": "クリスタル・パレス",
           "position": 16,
           "points": 3,
-          "lines": []
+          "lines": [
+            {
+              "line": 5,
+              "position": 16,
+              "side": "outside",
+              "diff": 3,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点3"
+            },
+            {
+              "line": 4,
+              "position": 16,
+              "side": "outside",
+              "diff": 4,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点4"
+            }
+          ]
         },
         {
           "name": "高井幸大",
           "club_jp": "トッテナム",
           "position": 17,
           "points": 2,
-          "lines": []
+          "lines": [
+            {
+              "line": 5,
+              "position": 17,
+              "side": "outside",
+              "diff": 4,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点4"
+            },
+            {
+              "line": 4,
+              "position": 17,
+              "side": "outside",
+              "diff": 5,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点5"
+            }
+          ]
         }
       ],
       "lines": []
@@ -101,7 +169,24 @@
           "club_jp": "レアル・ソシエダ",
           "position": 11,
           "points": 7,
-          "lines": []
+          "lines": [
+            {
+              "line": 5,
+              "position": 11,
+              "side": "outside",
+              "diff": 2,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点2"
+            },
+            {
+              "line": 4,
+              "position": 11,
+              "side": "outside",
+              "diff": 3,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点3"
+            }
+          ]
         },
         {
           "name": "佐藤龍之介",
@@ -160,7 +245,11 @@
             }
           ],
           "diff": 1,
-          "moved": {},
+          "moved": {
+            "line": 4,
+            "in": [],
+            "out": []
+          },
           "jp": []
         },
         {
@@ -211,7 +300,11 @@
             }
           ],
           "diff": 1,
-          "moved": {},
+          "moved": {
+            "line": 5,
+            "in": [],
+            "out": []
+          },
           "jp": []
         }
       ]
@@ -461,7 +554,24 @@
           "club_jp": "ホッフェンハイム",
           "position": 13,
           "points": 3,
-          "lines": []
+          "lines": [
+            {
+              "line": 6,
+              "position": 13,
+              "side": "outside",
+              "diff": 1,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点1"
+            },
+            {
+              "line": 4,
+              "position": 13,
+              "side": "outside",
+              "diff": 3,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点3"
+            }
+          ]
         }
       ],
       "lines": []
@@ -526,21 +636,72 @@
           "club_jp": "ル・アーブル",
           "position": 16,
           "points": 2,
-          "lines": []
+          "lines": [
+            {
+              "line": 3,
+              "position": 16,
+              "side": "outside",
+              "diff": 6,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点6"
+            },
+            {
+              "line": 5,
+              "position": 16,
+              "side": "outside",
+              "diff": 6,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点6"
+            }
+          ]
         },
         {
           "name": "中村草太",
           "club_jp": "ル・アーブル",
           "position": 16,
           "points": 2,
-          "lines": []
+          "lines": [
+            {
+              "line": 3,
+              "position": 16,
+              "side": "outside",
+              "diff": 6,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点6"
+            },
+            {
+              "line": 5,
+              "position": 16,
+              "side": "outside",
+              "diff": 6,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点6"
+            }
+          ]
         },
         {
           "name": "水多海斗",
           "club_jp": "ル・アーブル",
           "position": 16,
           "points": 2,
-          "lines": []
+          "lines": [
+            {
+              "line": 3,
+              "position": 16,
+              "side": "outside",
+              "diff": 6,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点6"
+            },
+            {
+              "line": 5,
+              "position": 16,
+              "side": "outside",
+              "diff": 6,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点6"
+            }
+          ]
         }
       ],
       "lines": []
