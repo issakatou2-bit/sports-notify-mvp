@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "id": "baseball-two-hits",
-  "revision": 1,
+  "revision": 2,
   "status": "ready",
   "series": "観戦の見取り図",
   "episode": "02",
   "visual_style": "baseball-hits-v1",
-  "title": "同じ2安打なのに、得点が違うのはなぜ？｜写真と図で見る野球・観戦の見取り図",
+  "title": "同じ2安打なのに、なんで点が入らないの？｜ずんだもん・めたんの野球解説",
   "summary": "2安打という数字から、どんなヒットで走者がどこへ進んだかまで。二つの架空のイニングを比べ、次の試合で見たいポイントを整理します。",
   "reviewed_on": "2026-09-12",
   "valid_until": "2026-12-01",
@@ -14,38 +14,244 @@
   "source_note": "大谷翔平選手の写真は2024年4月24日の資料です。図のA・Bは架空の例で、写真の試合や大谷選手の実際の成績を再現していません。単打でどこまで進めるかは打球・走塁・守備により異なります。",
   "guide_url": "https://collespo.com/",
   "guide_label": "コレスポの試合・選手記録",
-  "tags": ["MLB", "野球", "安打", "塁打", "図解"],
-  "media_ids": ["ohtani-bat-2024", "ohtani-follow-2024"],
-  "sources": [
-    {"label": "MLB公式用語集：安打", "url": "https://www.mlb.com/glossary/standard-stats/hit"},
-    {"label": "MLB公式用語集：塁打", "url": "https://www.mlb.com/glossary/standard-stats/total-bases"}
+  "tags": [
+    "MLB",
+    "野球",
+    "安打",
+    "塁打",
+    "図解"
   ],
-  "facts": {"a_hits": 2, "a_total_bases": 2, "a_runs": 0, "b_hits": 2, "b_total_bases": 3, "b_runs": 1},
-  "voice": {"name": "四国めたん", "style": "ノーマル", "speaker": 2, "speed": 1.12},
+  "media_ids": [
+    "ohtani-bat-2024",
+    "ohtani-follow-2024"
+  ],
+  "sources": [
+    {
+      "label": "MLB公式用語集：安打",
+      "url": "https://www.mlb.com/glossary/standard-stats/hit"
+    },
+    {
+      "label": "MLB公式用語集：塁打",
+      "url": "https://www.mlb.com/glossary/standard-stats/total-bases"
+    }
+  ],
+  "facts": {
+    "a_hits": 2,
+    "a_total_bases": 2,
+    "a_runs": 0,
+    "b_hits": 2,
+    "b_total_bases": 3,
+    "b_runs": 1
+  },
+  "voice": {
+    "name": "四国めたん",
+    "style": "ノーマル",
+    "speaker": 2,
+    "speed": 1.232,
+    "pitch": 0.035
+  },
   "segments": [
-    {"scene":"bb_photo","phase":0,"media_id":"ohtani-bat-2024","chapter":"ひとつの疑問","text":"同じ二安打。それなのに、点が入る場合と、入らない場合があるのはなぜでしょう。"},
-    {"scene":"bb_photo","phase":1,"media_id":"ohtani-follow-2024","chapter":"ひとつの疑問","text":"見たいのは、本数の先にある中身です。どんなヒットで、走者がどこまで進んだのか。"},
-    {"scene":"bb_photo","phase":1,"media_id":"ohtani-follow-2024","chapter":"ひとつの疑問","text":"写真は二〇二四年の大谷選手。ここから比べるのは、実際の試合とは別に作った例です。"},
-    {"scene":"bb_hits","phase":0,"chapter":"01 / 本数と中身","text":"まず、単打を二本打っても、二塁打と単打を一本ずつ打っても、安打の数は二つです。"},
-    {"scene":"bb_hits","phase":1,"chapter":"01 / 本数と中身","text":"でも、塁打で数えると前者は二、後者は三。同じ二安打でも、打球の結果は違います。"},
-    {"scene":"bb_inning","phase":0,"chapter":"02 / 単打を二本","text":"では、チームの一イニングを比べます。例のエーは、アウトなし、走者なしから始めます。"},
-    {"scene":"bb_inning","phase":1,"chapter":"02 / 単打を二本","text":"最初の打者が単打を打って、一塁へ。これで安打が一本、走者が一人になりました。"},
-    {"scene":"bb_inning","phase":2,"chapter":"02 / 単打を二本","text":"次の打者も単打。この例では、先ほどの走者は二塁で止まり、一塁と二塁が埋まります。"},
-    {"scene":"bb_inning","phase":2,"chapter":"02 / 単打を二本","text":"ヒットは二本出ました。でも、まだ誰もホームには戻っていないので、得点はゼロです。"},
-    {"scene":"bb_inning","phase":3,"chapter":"02 / 単打を二本","text":"ここから三人続けて三振すると、イニング終了。二安打でも、点は入りませんでした。"},
-    {"scene":"bb_inning","phase":4,"chapter":"03 / 二塁打から始める","text":"例のビーも、アウトなし、走者なしから。ただし、最初の一本が二塁打だったとします。"},
-    {"scene":"bb_inning","phase":4,"chapter":"03 / 二塁打から始める","text":"同じ一本目のヒットでも、走者はもう二塁にいます。次の打者が迎える状況が変わりました。"},
-    {"scene":"bb_inning","phase":5,"chapter":"03 / 二塁打から始める","text":"次の打者が外野へ単打を打ち、二塁の走者がホームへ戻ったとします。これで一点です。"},
-    {"scene":"bb_inning","phase":6,"chapter":"03 / 二塁打から始める","text":"その後は同じく三人連続で三振。安打は二本のままでも、こちらには一点が残りました。"},
-    {"scene":"bb_compare","phase":0,"chapter":"04 / 同じ数、違う流れ","text":"比べると、エーは二安打でゼロ点、ビーは二安打で一点。本数だけでは、この違いは見えません。"},
-    {"scene":"bb_compare","phase":1,"chapter":"04 / 同じ数、違う流れ","text":"もちろん、二塁から単打で必ず帰れるわけではありません。打球や走塁、守備で結果は変わります。"},
-    {"scene":"bb_photo","phase":2,"media_id":"ohtani-bat-2024","chapter":"04 / 同じ数、違う流れ","text":"だから、二安打という見出しの次に、どんな二本だったかを見ると、試合がぐっと具体的になります。"},
-    {"scene":"bb_check","phase":0,"chapter":"05 / 次の試合で見ること","text":"一つ目は、ヒットの種類。単打なのか、二塁打やホームランのような長打なのかを見ます。"},
-    {"scene":"bb_check","phase":0,"chapter":"05 / 次の試合で見ること","text":"二つ目は、走者の位置。同じ一打でも、誰がどの塁にいたかで、その後の流れは変わります。"},
-    {"scene":"bb_check","phase":1,"chapter":"05 / 次の試合で見ること","text":"三つ目は、アウトの数。あと何人で攻撃が終わるのかを知ると、次の打席にも目が向きます。"},
-    {"scene":"bb_photo","phase":3,"media_id":"ohtani-follow-2024","chapter":"05 / 次の試合で見ること","text":"なお、チームの二安打と、一人の選手の二安打は別です。今日の図は、チームの一イニングでした。"},
-    {"scene":"bb_photo","phase":3,"media_id":"ohtani-follow-2024","chapter":"05 / 次の試合で見ること","text":"一試合の得点だけで、選手の力が決まるわけでもありません。まず、プレーの流れを知るための見方です。"},
-    {"scene":"bb_photo","phase":3,"media_id":"ohtani-bat-2024","chapter":"05 / 次の試合で見ること","text":"次に二安打のニュースを見たら、どんな二本だったか。本数の先に、試合の中身が見えてきます。"},
-    {"scene":"bb_end","phase":0,"chapter":"原典と素材","text":"コレスポ、観戦の見取り図でした。用語と写真の出典は概要欄に。次の一戦でも、確かめてみてください。"}
-  ]
+    {
+      "scene": "bb_photo",
+      "phase": 0,
+      "media_id": "ohtani-bat-2024",
+      "chapter": "ひとつの疑問",
+      "text": "同じ2安打なのに、点が入ったり入らなかったり。これ、何が違うのだ？",
+      "speaker": "zundamon",
+      "speech": "コレスポ。同じ二安打なのに、点が入ったり入らなかったり。これ、何が違うのだ？"
+    },
+    {
+      "scene": "bb_photo",
+      "phase": 1,
+      "media_id": "ohtani-follow-2024",
+      "chapter": "ひとつの疑問",
+      "text": "本数の先にある中身を見てみましょう。どんなヒットで、走者がどこまで進んだか、なの。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_photo",
+      "phase": 1,
+      "media_id": "ohtani-follow-2024",
+      "chapter": "ひとつの疑問",
+      "text": "写真は2024年の大谷選手よ。ここから比べる図は、写真の試合とは別に作った例ね。",
+      "speaker": "metan",
+      "speech": "写真は二千二十四年の大谷選手よ。ここから比べる図は、写真の試合とは別に作った例ね。"
+    },
+    {
+      "scene": "bb_hits",
+      "phase": 0,
+      "chapter": "01 / 本数と中身",
+      "text": "単打2本でも、二塁打と単打1本ずつでも、どっちも2安打になるのだね。",
+      "speaker": "zundamon",
+      "speech": "単打二本でも、二塁打と単打一本ずつでも、どっちも二安打になるのだね。"
+    },
+    {
+      "scene": "bb_hits",
+      "phase": 1,
+      "chapter": "01 / 本数と中身",
+      "text": "そう。でも塁打で数えると、前者は2、後者は3。同じ2安打でも、ヒットの中身は違うのよ。",
+      "speaker": "metan",
+      "speech": "そう。でも塁打で数えると、前者は二、後者は三。同じ二安打でも、ヒットの中身は違うのよ。"
+    },
+    {
+      "scene": "bb_inning",
+      "phase": 0,
+      "chapter": "02 / 単打を二本",
+      "text": "チームの1イニングを比べてみるわね。例のAは、アウトなし、走者なしから始めるわ。",
+      "speaker": "metan",
+      "speech": "チームの一イニングを比べてみるわね。例のエーは、アウトなし、走者なしから始めるわ。"
+    },
+    {
+      "scene": "bb_inning",
+      "phase": 1,
+      "chapter": "02 / 単打を二本",
+      "text": "最初の打者が単打を打って、一塁へ。これで安打が一本、走者が一人になりました。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_inning",
+      "phase": 2,
+      "chapter": "02 / 単打を二本",
+      "text": "次の打者も単打。この例では、先ほどの走者は二塁で止まり、一塁と二塁が埋まります。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_inning",
+      "phase": 2,
+      "chapter": "02 / 単打を二本",
+      "text": "ヒットは2本出たけど、まだ誰もホームに戻っていないのだ。だから0点なのだね。",
+      "speaker": "zundamon",
+      "speech": "ヒットは二本出たけど、まだ誰もホームに戻っていないのだ。だからゼロ点なのだね。"
+    },
+    {
+      "scene": "bb_inning",
+      "phase": 3,
+      "chapter": "02 / 単打を二本",
+      "text": "ええ。ここから3人続けて三振したら、イニング終了。2安打でも、点は入らなかったわ。",
+      "speaker": "metan",
+      "speech": "ええ。ここから三人続けて三振したら、イニング終了。二安打でも、点は入らなかったわ。"
+    },
+    {
+      "scene": "bb_inning",
+      "phase": 4,
+      "chapter": "03 / 二塁打から始める",
+      "text": "じゃあ、同じアウトなし、走者なしでも、最初が二塁打だったらどうなるのだ？",
+      "speaker": "zundamon"
+    },
+    {
+      "scene": "bb_inning",
+      "phase": 4,
+      "chapter": "03 / 二塁打から始める",
+      "text": "最初のヒットで、走者はもう二塁。この違いで、次の打者が迎える状況も変わるのよ。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_inning",
+      "phase": 5,
+      "chapter": "03 / 二塁打から始める",
+      "text": "次の打者が外野へ単打を打ち、二塁の走者がホームへ戻ったとします。これで一点です。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_inning",
+      "phase": 6,
+      "chapter": "03 / 二塁打から始める",
+      "text": "その後は同じく三人連続で三振。安打は二本のままでも、こちらには一点が残りました。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_compare",
+      "phase": 0,
+      "chapter": "04 / 同じ数、違う流れ",
+      "text": "Aは2安打で0点、Bは2安打で1点。本数だけ見ていたら、この違いは分からないのだ。",
+      "speaker": "zundamon",
+      "speech": "エーは二安打でゼロ点、ビーは二安打で一点。本数だけ見ていたら、この違いは分からないのだ。"
+    },
+    {
+      "scene": "bb_compare",
+      "phase": 1,
+      "chapter": "04 / 同じ数、違う流れ",
+      "text": "ただし、二塁から単打で必ず帰れるわけではないわ。打球や走塁、守備で結果は変わるの。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_photo",
+      "phase": 2,
+      "media_id": "ohtani-bat-2024",
+      "chapter": "04 / 同じ数、違う流れ",
+      "text": "2安打っていう見出しの次に、どんな2本だったかを見ると面白いのだね。",
+      "speaker": "zundamon",
+      "speech": "二安打っていう見出しの次に、どんな二本だったかを見ると面白いのだね。"
+    },
+    {
+      "scene": "bb_check",
+      "phase": 0,
+      "chapter": "05 / 次の試合で見ること",
+      "text": "一つ目は、ヒットの種類。単打なのか、二塁打やホームランのような長打なのかを見ます。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_check",
+      "phase": 0,
+      "chapter": "05 / 次の試合で見ること",
+      "text": "二つ目は、走者の位置。同じ一打でも、誰がどの塁にいたかで、その後の流れは変わります。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_check",
+      "phase": 1,
+      "chapter": "05 / 次の試合で見ること",
+      "text": "三つ目は、アウトの数。あと何人で攻撃が終わるのかを知ると、次の打席にも目が向きます。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_photo",
+      "phase": 3,
+      "media_id": "ohtani-follow-2024",
+      "chapter": "05 / 次の試合で見ること",
+      "text": "今日比べたのはチームの1イニング。大谷選手が実際に打った2安打の再現ではないのだね。",
+      "speaker": "zundamon",
+      "speech": "今日比べたのはチームの一イニング。大谷選手が実際に打った二安打の再現ではないのだね。"
+    },
+    {
+      "scene": "bb_photo",
+      "phase": 3,
+      "media_id": "ohtani-follow-2024",
+      "chapter": "05 / 次の試合で見ること",
+      "text": "そうよ。それに、一試合の得点だけで選手の力が決まるわけでもないの。まずはプレーの流れを見る手がかりね。",
+      "speaker": "metan"
+    },
+    {
+      "scene": "bb_photo",
+      "phase": 3,
+      "media_id": "ohtani-bat-2024",
+      "chapter": "05 / 次の試合で見ること",
+      "text": "次に2安打のニュースを見たら、ヒットの種類と、走者と、アウトの数も見てみるのだ。",
+      "speaker": "zundamon",
+      "speech": "次に二安打のニュースを見たら、ヒットの種類と、走者と、アウトの数も見てみるのだ。"
+    },
+    {
+      "scene": "bb_end",
+      "phase": 0,
+      "chapter": "原典と素材",
+      "text": "用語と写真の出典は概要欄に。次の試合で、ヒットの本数の先も楽しんでね。コレスポ。",
+      "speaker": "metan"
+    }
+  ],
+  "voices": {
+    "metan": {
+      "name": "四国めたん",
+      "style": "ノーマル",
+      "speaker": 2,
+      "speed": 1.232,
+      "pitch": 0.035
+    },
+    "zundamon": {
+      "name": "ずんだもん",
+      "style": "ノーマル",
+      "speaker": 3,
+      "speed": 1.232,
+      "pitch": 0
+    }
+  }
 }

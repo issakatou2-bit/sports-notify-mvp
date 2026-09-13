@@ -67,9 +67,13 @@ class MediaTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 pilot_media.assets_for({"media_ids": ids})
 
-    def test_the_first_pilot_deduplication_key_is_unchanged(self):
-        old = pilot_series.load_episode(pilot_series.CATALOG / "football-two-tables.json", date(2026, 9, 12))
-        self.assertEqual(pilot_series.episode_key(old), "football-two-tables-14d638c44eb39b29")
+    def test_dialogue_revision_is_distinct_from_old_upload_and_stable_on_retry(self):
+        data = pilot_series.load_episode(pilot_series.CATALOG / "football-two-tables.json", date(2026, 9, 12))
+        key = pilot_series.episode_key(data)
+        self.assertNotEqual(key, "football-two-tables-14d638c44eb39b29")
+        self.assertEqual(key, pilot_series.episode_key(copy.deepcopy(data)))
+        data["voices"]["metan"]["pitch"] += .01
+        self.assertNotEqual(key, pilot_series.episode_key(data))
 
     def test_source_revision_changes_the_new_pilot_key(self):
         data = episode()

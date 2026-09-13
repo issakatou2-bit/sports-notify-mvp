@@ -5,6 +5,7 @@ from PIL import Image, ImageDraw, ImageOps
 
 import pilot_media
 from pilot_render import W, H, INK, PAPER, TEAL, CORAL, GOLD, MUTED, WHITE, LINE, text, roundbox, arrow
+from pilot_series import voice_credits
 
 
 @functools.lru_cache(maxsize=12)
@@ -137,7 +138,7 @@ def artwork(data, segment, motion=1.):
         text(d, (98, 235), "本数から、試合の中身へ。", 106, GOLD, max_width=1730)
         text(d, (108, 466), "原典と写真の出典は、概要欄に。", 62, WHITE)
         text(d, (109, 633), "写真：David / CC BY 2.0（切り抜き・ズーム）", 38, WHITE)
-        text(d, (109, 722), "音声：VOICEVOX:四国めたん / 図・構成：コレスポ", 34, "#c2cfd1")
+        text(d, (109, 722), "音声：" + voice_credits(data) + " / 図・構成：コレスポ", 27, "#c2cfd1", max_width=1730)
     if scene not in {"bb_end", "bb_compare"}:
         text(d, (96, 817), segment["chapter"], 27, TEAL)
     return im
