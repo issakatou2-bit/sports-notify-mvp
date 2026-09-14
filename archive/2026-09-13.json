@@ -314,7 +314,12 @@
           "text": "レバンテ（昨季ラ・リーガ18位）とバルセロナ（昨季ラ・リーガ1位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "559686",
@@ -355,7 +360,12 @@
           "text": "ランス（昨季リーグ・アン2位）",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 2,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "560580",
@@ -409,7 +419,12 @@
       ],
       "log_notes": [],
       "ai_summary": "マンチェスター・ユナイテッドとマンチェスター・シティによるマンチェスター・ダービーは、プレミアリーグの開幕戦として注目を集めている。昨季プレミアリーグでユナイテッドが3位、シティが2位という【上位を占めた両強豪】の対戦であり、シーズンの序盤において両チームの現在地を測る重要な一戦となる。両チームの攻守の形成がいかに機能するか、そして中盤の支配をどちらが握るかに注目したい。",
-      "notification_hook": "マンチェスター・ダービー開幕、昨季上位2チームの実力比較"
+      "notification_hook": "マンチェスター・ダービー開幕、昨季上位2チームの実力比較",
+      "final_score": {
+        "home": 0,
+        "away": 1,
+        "winner": "away"
+      }
     },
     {
       "game_id": "565800",
@@ -463,7 +478,12 @@
       ],
       "log_notes": [],
       "ai_summary": "ブンデスリーガの開幕直後となるこの一戦は、【昨季1位のバイエルン】が新シーズンの滑り出しを見せる重要な試合である。一方のエルバースベルクは、ブンデスリーガの総当たり戦で上位チームとの対戦を重ねる中での初期段階にあたる。バイエルンには日本代表の伊藤洋輝が所属しており、開幕直後の試合がどう展開するかが注視される。昨季覇者がどの程度の仕上がりを見せるか、そして伊藤がどのようなパフォーマンスを発揮するかに注目したい。",
-      "notification_hook": "昨季ブンデスリーガ1位のバイエルン、伊藤洋輝の開幕戦での活躍に注目"
+      "notification_hook": "昨季ブンデスリーガ1位のバイエルン、伊藤洋輝の開幕戦での活躍に注目",
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "558599",
@@ -504,7 +524,12 @@
           "text": "ナポリ（昨季セリエA2位）とボローニャ（昨季セリエA8位）の対戦",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824225",
@@ -586,7 +611,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 8,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "564668",
@@ -709,7 +739,12 @@
       "log_notes": [],
       "ai_summary": "ナ・リーグ東地区で【首位のブレーブスと6.0ゲーム差の2位フィリーズ】による同地区対決である。ブレーブスは88勝61敗で3連勝中、地区優勝に向けてマジック7と迫る局面にあり、一方のフィリーズは82勝67敗で3連敗中と対照的な状況にある。先発投手は防御率3.46の Grant Holmes がブレーブスの先制攻撃を狙うのに対し、フィリーズは防御率5.71の Andrew Painter で対抗する。得点が出やすいとは言えない球場での投げ合いになるだけに、先発投手たちの投球がどれだけゲームを左右するかに注目したい。",
       "notification_hook": "マジック7のブレーブス、防御率3.46の Grant Holmes で連勝を狙う",
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 4,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823495",
@@ -796,7 +831,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822682",
@@ -873,7 +913,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 6,
+        "away": 5,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822764",
@@ -950,7 +995,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 8,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822928",
@@ -1049,7 +1099,12 @@
       ],
       "ai_summary": "ア・リーグ東地区首位のレイズと西地区首位のアストロズが対戦するシリーズ最終戦である。レイズは89勝59敗で【2位に4.0ゲーム差】をつけて地区を主導し、2連勝で勢いに乗っている。一方、アストロズは75勝74敗と勝敗が拮抗しながらも西地区の首位を守り、ポストシーズン進出圏内での激しい競争を繰り広げている。先発はアストロズのHayden Wesneski（防御率3.35、5勝1敗）とレイズのFreddy Peralta（防御率4.82、8勝11敗）による投げ合いになり、ドーム球場での天候に左右されない環境で、各投手がどのようなピッチングを見せるかに注目したい。",
       "notification_hook": "防御率3.35の好投手Wesneskiが、好調Peraltaと対戦。東西地区首位同士の最終決戦。",
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 14,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823815",
@@ -1136,7 +1191,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 6,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823734",
@@ -1229,7 +1289,12 @@
       "log_notes": [],
       "ai_summary": "ナ・リーグ中地区の首位ブリュワーズと5位レッズの同地区対決である。ブリュワーズは【93勝56敗で首位を守り】5連勝中と好調を維持しており、一方のレッズは69勝79敗で首位との差が23.5ゲーム開いており、5連敗中と苦しい状況にある。先発投手の投げ合いでは、レッズのChase Burnsが防御率2.73・15勝3敗と優位に立つのに対し、ブリュワーズのRobert Gasserは防御率4.43・4勝5敗とやや劣る。開閉式屋根を持つアメリカン・ファミリー・フィールドでの開催となるが、この球場は1試合平均得点がMLB中位レベルであり、先発投手の力量がどう試合を左右するかに注目したい。",
       "notification_hook": "Chase Burns(15勝3敗)対Robert Gasser、ナ・リーグ中地区の強者と弱者の先発投手対決",
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 3,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823658",
@@ -1304,7 +1369,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 2,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823008",
@@ -1386,7 +1456,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 3,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824628",
@@ -1469,7 +1544,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 3,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "558608",
@@ -1695,7 +1775,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824952",
@@ -1764,7 +1849,12 @@
       "is_notable": false,
       "reasons": [],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 8,
+        "away": 7,
+        "winner": "home"
+      }
     },
     {
       "game_id": "825033",
@@ -1841,7 +1931,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 6,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823171",
@@ -1928,7 +2023,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00"
+      "availability_checked_at": "2026-09-13T15:37:39.173853+00:00",
+      "final_score": {
+        "home": 4,
+        "away": 6,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
