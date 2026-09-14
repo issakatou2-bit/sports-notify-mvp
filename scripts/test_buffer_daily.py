@@ -1,6 +1,6 @@
 import io
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import tempfile
 import unittest
@@ -154,6 +154,71 @@ class BufferTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 daily.submit_once(ledger,'key',{'channelId':'x','text':'today'}, {})
             self.assertEqual(mutate.call_count,1)
+
+
+class StillProcessingIsNotAFailure(unittest.TestCase):
+    """9/14はXもInstagramも出ていたのに、実行は赤かった。
+
+    TikTokだけが `sending` のまま6分の待ちを超えたため。**出ているのに
+    出ていないと言うのは、出ていないのに出ていると言うのと同じくらい困る。**
+    毎日1本赤が出れば、色を見なくなる。
+
+    かといって、いつまでも待てば本当に詰まった日を見逃す。時間で切る。
+    """
+
+    def entry(self, state, hours_ago=0.5, field='reserved_at'):
+        when = datetime.now(timezone.utc) - timedelta(hours=hours_ago)
+        return {'state': state, field: when.isoformat()}
+
+    def test_a_post_handed_over_moments_ago_is_still_settling(self):
+        self.assertTrue(daily.still_settling(self.entry('sending', 0.2)))
+
+    def test_the_scheduled_reconciles_get_their_turn(self):
+        # 19:00に投げて、照合は19:47と23:47。どちらもこの窓の内側。
+        self.assertTrue(daily.still_settling(self.entry('sending', 0.8)))
+        self.assertTrue(daily.still_settling(self.entry('sending', 4.8)))
+
+    def test_a_post_stuck_past_the_window_is_a_real_problem(self):
+        self.assertFalse(daily.still_settling(self.entry('sending', 13)))
+
+    def test_a_refused_post_is_never_excused_by_the_clock(self):
+        for state in daily.FAILED_STATES:
+            self.assertFalse(daily.still_settling(self.entry(state, 0.1)), state)
+
+    def test_a_delivered_post_needs_no_waiting(self):
+        self.assertFalse(daily.still_settling(self.entry('sent', 0.1)))
+
+    def test_checked_at_stands_in_when_there_is_no_reservation(self):
+        self.assertTrue(daily.still_settling(self.entry('sending', 0.5, 'checked_at')))
+
+    def test_a_ledger_that_cannot_say_when_is_not_given_the_benefit_of_the_doubt(self):
+        self.assertFalse(daily.still_settling({'state': 'sending'}))
+        self.assertFalse(daily.still_settling({'state': 'sending', 'reserved_at': 'broken'}))
+        self.assertFalse(daily.still_settling({'state': 'sending', 'reserved_at': None}))
+        self.assertFalse(daily.still_settling({}))
+
+    def test_reconcile_stays_green_while_buffer_is_still_working(self):
+        ledger = daily.Ledger.__new__(daily.Ledger)
+        ledger.sha, ledger.data = None, {'version': 1, 'deliveries': {
+            '2026-09-14:daily:tiktok': self.entry('sending', 0.5)}}
+        ledger.set = lambda key, value: ledger.data['deliveries'].__setitem__(key, value)
+        with patch.object(daily, 'Ledger', return_value=ledger), \
+                patch.object(daily, 'recent_posts', return_value=[]):
+            daily.reconcile()  # 例外が出なければ緑
+
+    def test_reconcile_still_goes_red_once_the_window_has_passed(self):
+        ledger = daily.Ledger.__new__(daily.Ledger)
+        ledger.sha, ledger.data = None, {'version': 1, 'deliveries': {
+            '2026-09-14:daily:tiktok': self.entry('sending', 30)}}
+        ledger.set = lambda key, value: ledger.data['deliveries'].__setitem__(key, value)
+        with patch.object(daily, 'Ledger', return_value=ledger), \
+                patch.object(daily, 'recent_posts', return_value=[]):
+            with self.assertRaises(SystemExit):
+                daily.reconcile()
+
+    def test_the_window_is_a_named_constant(self):
+        self.assertIsInstance(daily.STUCK_AFTER_HOURS, (int, float))
+        self.assertEqual(daily.STUCK_AFTER_HOURS, 12)
 
 
 if __name__ == '__main__':

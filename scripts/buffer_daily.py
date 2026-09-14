@@ -34,12 +34,47 @@ CHANNELS = {'twitter': '6aa114c5cd8b9c702c36144a',
 ORG = '6aa11108acee3b0c72033754'
 MAX_BYTES = 80 * 1024 * 1024
 
+# A post Buffer is still processing is not a post that failed.
+#
+# TikTok's video ingest routinely outruns the six minutes this runner waits,
+# so 'sending' was painting one red run every single day while the Reel and
+# the tweet were already live. A watchdog that cries wolf daily stops being
+# read. Only a refused post, or one still unsettled long after both scheduled
+# reconciles have had their turn, is an actual problem.
+FAILED_STATES = ('error', 'rejected', 'failed')
+STUCK_AFTER_HOURS = 12
+
 
 def instant(value):
     stamp = datetime.fromisoformat(value.replace('Z', '+00:00'))
     if stamp.tzinfo is None:
         raise ValueError('Timestamp has no timezone')
     return stamp
+
+
+def handed_over_at(entry):
+    """When Buffer took this post. None when the ledger cannot say."""
+    for field in ('reserved_at', 'checked_at'):
+        value = entry.get(field)
+        if not value:
+            continue
+        try:
+            return instant(value)
+        except (ValueError, AttributeError, TypeError):
+            continue
+    return None
+
+
+def still_settling(entry, now=None):
+    """True while Buffer may yet deliver this post without our help."""
+    state = entry.get('state')
+    if state == 'sent' or state in FAILED_STATES:
+        return False
+    started = handed_over_at(entry)
+    if started is None:
+        return False  # Cannot tell how long it has been waiting; do not excuse it.
+    now = now or datetime.now(timezone.utc)
+    return now - started < timedelta(hours=STUCK_AFTER_HOURS)
 
 
 class SafeRedirect(urllib.request.HTTPRedirectHandler):
@@ -261,7 +296,7 @@ def reconcile():
     if not posts_by_channel:
         print('No pending deliveries; no Buffer request needed')
         return
-    unresolved = []
+    unresolved, settling = [], []
     for key, entry in list(ledger.data['deliveries'].items()):
         service = key.rsplit(':', 1)[-1]
         if entry.get('state') == 'sent' or service not in posts_by_channel:
@@ -274,8 +309,11 @@ def reconcile():
                             'checked_at': datetime.now(timezone.utc).isoformat()})
         row = ledger.data['deliveries'][key]
         print(key, row.get('state'), row.get('external_link'))
-        if row.get('state') != 'sent':
-            unresolved.append(key)
+        if row.get('state') == 'sent':
+            continue
+        (settling if still_settling(row) else unresolved).append(key)
+    if settling:
+        print('Buffer is still processing, which is not a failure: ' + ', '.join(settling))
     if unresolved:
         raise SystemExit('Still unconfirmed: ' + ', '.join(unresolved))
 
@@ -375,17 +413,26 @@ def main():
         if not pending:
             break
         time.sleep(30)
-    statuses = {s: ledger.data['deliveries'].get(day + ':daily:' + s, {}).get('state') for s in services}
+    rows = {s: ledger.data['deliveries'].get(day + ':daily:' + s, {}) for s in services}
+    statuses = {s: row.get('state') for s, row in rows.items()}
+    pending = [s for s, row in rows.items() if row.get('state') != 'sent']
+    waiting = [s for s in pending if still_settling(rows[s])]
+    stuck = [s for s in pending if s not in waiting]
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a', encoding='utf-8') as report:
             report.write('## Bufferへの動画配信\n\n' + day + ' / YouTube: https://youtu.be/' + record['video_id'] + '\n\n')
             for service in services:
-                row = ledger.data['deliveries'].get(day + ':daily:' + service, {})
+                row = rows.get(service, {})
                 report.write(f'- {service}: {row.get("state", "未投入")} {row.get("external_link") or ""}\n')
+            if waiting:
+                report.write('\n' + '・'.join(waiting) + ' はBufferがまだ処理中です。'
+                             '**失敗ではありません。**19:47と23:47の照合で確定します。\n')
             report.write('\n`sent`はBufferの配信結果です。公開範囲と画面・音声は各SNSでも確認してください。未確定の再実行では二重投稿しません。\n')
-    if failed or any(s != 'sent' for s in statuses.values()):
-        raise SystemExit('Some deliveries are unconfirmed: ' + json.dumps(statuses))
+    if failed or stuck:
+        raise SystemExit('Some deliveries did not go through: ' + json.dumps(statuses))
+    if waiting:
+        print('Handed over; Buffer is still processing: ' + json.dumps(statuses))
 
 
 if __name__ == '__main__':
