@@ -33,7 +33,8 @@ name: 欧州サッカー　順位争い
 #   短いほうが繰り返し見られる。
 #
 # 投稿について:
-#   いまは upload の既定が false。動画を目で見てから開ける。
+#   公開は21:00（その時刻だけが他の枠と重ならない）。
+#   手で回すときだけ upload=false で止められる。
 
 on:
   # 19時のサッカー枠が終わったのを合図にする。cronは増やさない。
@@ -50,13 +51,13 @@ on:
       privacy:
         description: '公開設定 (private / unlisted / public)'
         required: false
-        default: 'unlisted'
+        default: 'public'
       upload:
         description: 'YouTubeへ上げるか'
         required: false
-        default: 'false'
+        default: 'true'
       publish_at:
-        description: '公開時刻 (HH:MM、空なら即時)'
+        description: '公開時刻 (HH:MM、空なら 21:00)'
         required: false
         default: ''
 
@@ -201,11 +202,18 @@ jobs:
           bash scripts/shorts_thumbnail.sh \
             build/race/collespo_morning_soccer_race.mp4 build/race/short.png
 
+      # 自動で起動した回も投稿する。
+      #
+      # 最初は upload の既定を false にして様子を見ていたが、
+      # **workflow_run で起動したときは inputs が空**なので、
+      # 「既定を true にする」だけでは自動実行はいつまでも投稿しない。
+      # 手で回したときだけ false にできる形にする。
       - name: Upload to YouTube
         if: >-
           steps.gate.outputs.count != '0' &&
           steps.sanity.outcome == 'success' &&
-          inputs.upload == 'true'
+          (github.event_name != 'workflow_dispatch' ||
+           inputs.upload == 'true')
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -213,16 +221,17 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
         run: |
-          ARGS=""
-          if [ -n "${{ inputs.publish_at }}" ]; then
-            ARGS="--publish-at ${{ inputs.publish_at }}"
-          fi
+          # 21:00に置く理由は、その時刻だけが空いているから。
+          # 17:00成績 / 18:00報道・コメント欄 / 18:30長編 /
+          # 19:00注目試合・サッカー / 20:00進出争い / 22:00資産動画。
+          AT="${{ inputs.publish_at }}"
+          [ -n "$AT" ] || AT="21:00"
           python scripts/upload_youtube.py \
             --video build/race/collespo_morning_soccer_race.mp4 \
             --kind soccer_race --sport soccer \
             --narration build/race_narration.json \
             --thumbnail build/race/short.png \
-            --privacy "${{ inputs.privacy }}" $ARGS
+            --privacy "${{ inputs.privacy || 'public' }}" --publish-at "$AT"
 
       # 出した節を記録する。**同じ節を2回出さないため。**
       # 投稿した回だけ記録する（作っただけの回で消費しない）。
@@ -230,7 +239,8 @@ jobs:
         if: >-
           steps.gate.outputs.count != '0' &&
           steps.gate.outputs.round != '' &&
-          inputs.upload == 'true'
+          (github.event_name != 'workflow_dispatch' ||
+           inputs.upload == 'true')
         run: |
           python - <<'PY'
           import json, pathlib, os

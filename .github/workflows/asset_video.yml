@@ -104,6 +104,17 @@ jobs:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: python scripts/soccer_preview.py --out data/soccer_preview.json
 
+      # 名前のある指標から在庫を作る。
+      #
+      # 用語(平均8再生)・球場(4再生)・NPB(4再生)を止めたら、残りが
+      # 3件になった。毎日1本出しているので3日で尽きる。
+      # rarity.py が毎日出している順位を、常緑ものに組み直す。
+      - name: Build topics from the season's standings
+        continue-on-error: true
+        run: |
+          python scripts/rarity.py --out data/rarity.json || true
+          python scripts/rare_topics.py | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Start VOICEVOX engine
         continue-on-error: true
         run: |
@@ -215,7 +226,8 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "published assets: ${{ github.run_id }}" \
-            data/published_assets.json data/venue_topics.json data/team_topics.json data/venue_stats.json data/soccer_preview.json
+            data/published_assets.json data/venue_topics.json data/team_topics.json data/venue_stats.json data/soccer_preview.json \
+            data/rarity.json data/rare_topics.json
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
       - name: Save videos as artifact

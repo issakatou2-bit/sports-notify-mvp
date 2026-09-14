@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+"""進出争いの位置を日本語にする。**言い方を1か所で決める。**
+
+なぜ分けるか:
+  「ワイルドカードまで0.5ゲーム差」とだけ書くと、中にいるのか外にいるのかが
+  読み取れない。**同じ0.5でも圏内と圏外で意味が逆になる。**
+  MLB APIは圏内の球団に「+5.0」と符号を付けて返し、圏外には付けない。
+
+  この読み替えが台本・ショート・長編に散ると、どれか1つを直したときに
+  他が古いまま残る。実際に長編の材料を書いたとき「圏内まで+1.5」という、
+  圏内なのか圏内を目指しているのか分からない文になった。ここに集める。
+"""
+
+ELIMINATED = "E"
+NO_DIFF = (None, "-", "")
+
+
+def _gb(row: dict):
+    """差の文字列。無いとき None。敗退は ELIMINATED のまま返す。"""
+    value = row.get("wc_gb")
+    if value in NO_DIFF:
+        return None
+    return str(value)
+
+
+def _by_division(row: dict) -> bool:
+    """地区首位で進出しようとしているか。
+
+    **差が無いことの意味が、ここで変わる。**地区首位の球団には
+    ワイルドカードの差が返らない。それを「最後の枠」と読むと、
+    90勝59敗で地区を走っているドジャースが最後の枠にいることになる
+    （実際そう書いた）。
+    """
+    return str(row.get("route") or "").startswith("地区")
+
+
+def phrase(row: dict) -> str:
+    """台詞と事実に渡す言い方。圏内か圏外かを必ず書く。"""
+    if row.get("clinched") or row.get("div_champ"):
+        return "進出決定"
+    gb = _gb(row)
+    if gb == ELIMINATED:
+        return "進出の可能性は消滅"
+    bits = []
+    if _by_division(row):
+        bits.append("地区首位")
+    elif gb is None:
+        # ワイルドカードの最後の枠にいる球団には差が返らない（自分が基準）。
+        bits.append("ワイルドカード最後の枠")
+    elif gb.startswith("+"):
+        bits.append("ワイルドカード圏内で6位に%sゲーム差" % gb.lstrip("+"))
+    else:
+        bits.append("圏外で、進出圏内まであと%sゲーム" % gb)
+    if isinstance(row.get("magic"), int):
+        bits.append("地区優勝マジック%d" % row["magic"])
+    return "・".join(bits)
+
+
+def short(row: dict) -> str:
+    """札に入れる短い形。**圏内・圏外の語は落とさない。**
+
+    数字だけにすると、画面を見た人が中にいるのか外にいるのか分からない。
+    ここを削ると、口で補うしかなくなる。
+    """
+    if row.get("clinched") or row.get("div_champ"):
+        return "進出決定"
+    gb = _gb(row)
+    if gb == ELIMINATED:
+        return "敗退"
+    if isinstance(row.get("magic"), int):
+        return "M%d" % row["magic"]
+    if _by_division(row):
+        return "地区首位"
+    if gb is None:
+        return "圏内"
+    if gb.startswith("+"):
+        return "圏内 %s" % gb.lstrip("+")
+    return "圏外 %s" % gb

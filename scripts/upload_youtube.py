@@ -1222,7 +1222,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    topic: str = "",
                    jp_names: list | None = None,
                    jp_team: list | None = None,
-                   jp_team_name: str = "") -> dict:
+                   jp_team_name: str = "",
+                   longform_mode: str = "voices") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -1375,7 +1376,19 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 「現地/海外/コメント/反応」は 276 vs 236 で1.17倍。
         # どちらも効くが、桁が違う。名前が取れた日は名前を先に置く。
         jp = [title_name(n) for n in (jp_names or [])][:2]
-        if jp:
+        if longform_mode == "numbers":
+            # その日の数字の回。**コメント欄を読んでいないので
+            # 「海外の反応」とは書かない。**中身と題が食い違う。
+            #
+            # 名前を先に置くのは同じ（実測で再生2.8倍・登録は全部こちら）。
+            # 数字の回は出場した選手を必ず拾えるので、名前が毎回入る。
+            # 題に名前が無いことが長編のいちばんの弱さだった。
+            if jp:
+                title = (f"【MLB】{'・'.join(jp)}のきょう｜"
+                         f"成績と進出争い {date_label}")
+            else:
+                title = f"【MLB】きょうの日本人選手と進出争い｜{date_label}"
+        elif jp:
             who = "・".join(jp)
             title = (f"【海外の反応】{who}への現地の声｜"
                      f"{topic or 'MLB'} {date_label}")
@@ -1579,21 +1592,35 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 長編の説明文が「明日の注目試合」のままだった。
         # 中身と1文字も合っていないものを、公開した動画に付けていた。
         # 通常動画は検索から引かれるので、説明文はそのまま検索の材料。
-        lines = [
-            (f"{topic}。" if topic else "")
-            + "その日いちばん見られたMLB公式ハイライトの"
-              "コメント欄を、ずんだもんと四国めたんが読み解きます。",
-            "",
-            "・コメントは現地のものをそのまま翻訳しています。"
-            "コレスポの意見ではありません",
-            "・賛否が割れているときは、両方そのまま出します",
-            "・数字はMLB公式データ（statsapi.mlb.com）から引いたものだけ"
-            "を使っています",
-            "",
-            "ハイライト動画そのものはMLB公式チャンネルのものです。"
-            "コレスポは、その動画とコメント欄を毎日見て話す番組です。",
-            "",
-        ]
+        if longform_mode == "numbers":
+            lines = [
+                "その日の日本人選手の成績、進出争いの動き、"
+                "名前のある指標での位置を、"
+                "ずんだもんと四国めたんが数字で追います。",
+                "",
+                "・成績と順位はMLB公式データ（statsapi.mlb.com）"
+                "から引いたものだけを使っています",
+                "・打球の飛距離と速度はBaseball Savant（Statcast）の計測値です",
+                "・進出争いは、圏内か圏外かまで言葉で書いています",
+                "・**予想はしません。**記録として確定していることだけを話します",
+                "",
+            ]
+        else:
+            lines = [
+                (f"{topic}。" if topic else "")
+                + "その日いちばん見られたMLB公式ハイライトの"
+                  "コメント欄を、ずんだもんと四国めたんが読み解きます。",
+                "",
+                "・コメントは現地のものをそのまま翻訳しています。"
+                "コレスポの意見ではありません",
+                "・賛否が割れているときは、両方そのまま出します",
+                "・数字はMLB公式データ（statsapi.mlb.com）から引いたものだけ"
+                "を使っています",
+                "",
+                "ハイライト動画そのものはMLB公式チャンネルのものです。"
+                "コレスポは、その動画とコメント欄を毎日見て話す番組です。",
+                "",
+            ]
     elif kind == "soccer_race":
         lines = ["欧州サッカーの順位争いを、CL圏内・EL圏内の境目で"
                  "区切って見ます。順位と勝ち点はすべて公式の順位表の"
@@ -1673,7 +1700,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         tags.append("週間まとめ")
     elif kind == "longform":
         # 検索から引かれるための言葉。フィードが無いぶん、ここが効く。
-        tags += ["海外の反応", "MLB 海外の反応", "コメント欄", "解説"]
+        # **中身に無い言葉は入れない。**数字の回に「海外の反応」を
+        # 付けると、その語で来た人が違うものを見ることになる。
+        tags += (["MLB 成績", "日本人選手", "進出争い", "解説"]
+                 if longform_mode == "numbers"
+                 else ["海外の反応", "MLB 海外の反応", "コメント欄", "解説"])
     else:
         tags.append("Shorts")
     if kind == "morning" and morning_mode == "players":
@@ -1869,6 +1900,7 @@ def main():
         # コメントに日本人選手が出ていたら、題の先頭に置く。
         # 28日間の実測で、名前が題にある動画は再生2.8倍・登録12人 vs 0人。
         jp_names, jp_team, jp_team_name = [], [], ""
+        longform_mode = "voices"
         if args.dialogue:
             try:
                 _d = json.loads(pathlib.Path(args.dialogue).read_text(
@@ -1877,6 +1909,10 @@ def main():
                 # コメントには出ていないが、その球団にいる日本人選手。
                 jp_team = _d.get("jp_team") or []
                 jp_team_name = _d.get("jp_team_name") or ""
+                # **題と中身を合わせるため、主題も台本から読む。**
+                # 数字の回に「海外の反応」と書くと、コメント欄を
+                # 読んでいないのに読んだことになる。
+                longform_mode = _d.get("mode") or "voices"
             except (OSError, json.JSONDecodeError) as e:
                 print(f"[info] 台本から日本人選手を読めません({e})")
         body = build_metadata(args.games, date_label, args.kind,
@@ -1884,7 +1920,8 @@ def main():
                               args.morning_mode, args.sport, args.buzz,
                               args.profile, args.topic,
                               jp_names=jp_names, jp_team=jp_team,
-                              jp_team_name=jp_team_name)
+                              jp_team_name=jp_team_name,
+                              longform_mode=longform_mode)
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)

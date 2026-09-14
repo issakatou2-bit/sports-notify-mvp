@@ -1359,7 +1359,11 @@ def panel_menu(ps: dict) -> str:
              "topic": "きょうの話（締めに使う）"}
     rows = []
     for k, v in ps.items():
-        if v["type"] == "quote":
+        # 札が自分で説明を持っているなら、それを使う。
+        # 鍵の名前から説明を引くと、札を足すたびにここも直すことになる。
+        if v.get("menu"):
+            rows.append(f"[{k}] {v['menu']}")
+        elif v["type"] == "quote":
             rows.append(f"[{k}] コメント: {v['text'][:34]}")
         elif v["type"] == "stat":
             rows.append(f"[{k}] {v['name']}の{v['stat']}")
@@ -1370,7 +1374,9 @@ def panel_menu(ps: dict) -> str:
     return "\n".join(rows)
 
 
-PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放送作家です。
+# 2人の人物像と、事実・札の渡し方。**モードによらず同じ。**
+# ここを2つに写すと、片方だけ直したときに2人の性格が食い違う。
+CAST = """あなたは、日本語のスポーツ番組の台本を書く放送作家です。
 2人の会話として書いてください。
 
 この番組は「解説」ではなく、**野球を見ている2人の雑談**です。
@@ -1406,7 +1412,10 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
 付けなければ、直前の札がそのまま残る。ここに無い鍵は使わない。
 
 {menu}
+"""
 
+# コメント欄を主題にする回。**残す。**戻せるようにしておく。
+PROMPT = CAST + """
 条件:
 - **上の「この日の切り口」に従う。**
   材料を上から順に読むと、いつでも成り立つ形の台本になる。
@@ -1637,6 +1646,50 @@ PROMPT = """あなたは、日本語のスポーツ番組の台本を書く放�
 いちばん支持されているコメントが、これなの。
 """
 
+# その日の数字を主題にする回。
+#
+# なぜ分けるか: コメントは検算できない。9/10の「Bassoは5日ぶりの復帰」は
+# 数字の誤りではなく解釈の誤りで、数字を突き合わせる仕組みでは捕まらない。
+# 数字を主題にすれば、三段目の照合が台本の全文に効く。
+NUMBERS_PROMPT = CAST + """
+条件:
+- **数字を読み上げるだけにしない。比べる。**
+  「3打数1安打、1本塁打」と言って次へ行くのは、表を音読しているのと同じ。
+  前の試合と比べる、他の選手と比べる、今季の中での位置を言う。
+  **比べられる材料が無いなら、その選手は短く済ませて次へ行く。**
+- **コレスポの点数を主題にしない。**
+  点数は並べるための独自指標で、公式の記録ではない。
+  「95点でした」を話の中心にしない。順番の理由として軽く触れる程度。
+- **投手の被安打・被本塁打を、打った数として書かない。**
+  材料には「被安打3」と書いてある。そのまま被安打と言う。
+- **推測を断定しない。**
+  「明日も打つ」「そろそろ本塁打が出る」は書かない。
+  材料に書いてあることだけを言う。**この番組は予想をしない。**
+- 進出争いは、**圏内なのか圏外なのかを言葉で言う。**
+  「1.5ゲーム差」だけでは、中にいるのか外にいるのか伝わらない。
+  材料の言い方（「ワイルドカード圏内で6位に1.5ゲーム差」）をそのまま使う。
+- 名前のある指標（アダム・ダン率、WHIPなど）は、**数字よりも
+  「どれくらい珍しいか」を話す。**137人中1位、という位置が本体。
+  指標の意味は材料に書いてあるので、そこから短く説明する。
+- **説明を初学者向けにしすぎない。**
+  見ている人は野球をひととおり知っている。用語を教える番組ではない。
+  たとえば「WHIPは1回あたりに出した走者」は、教えるためではなく
+  **認識をすり合わせるために**一度だけ触れる。触れたら先へ進む。
+- **ずんだもんの一言に、毎回なにか足す。**
+  「そうなのだ」だけの行を続けない。直前に出た数字のどこが
+  引っかかったのかを言ってから聞く。
+- コレスポが毎日出しているのは、日本人選手の成績、今日の1人、
+  ファンのコメント欄、明日の注目試合、欧州サッカー、現地の報道。
+  これ以外を挙げない
+- 前置きや説明は書かない。台本だけを出力する
+
+書き出しの例（この通りでなくてよい）:
+ずんだもん：きょうの日本人選手、誰がいちばん動いたのだ？
+めたん[jp1]：岡本和真ね。3打数1安打だけど、その1本が本塁打よ。
+ずんだもん：本塁打のわりに、打数が少ないのだ。
+めたん[jp1]：四球も1つ選んでいるから、出塁は2回。
+"""
+
 
 def parse(text: str, keys=()) -> list:
     """「話者[鍵]：台詞」の行を、区間の配列にする。
@@ -1681,16 +1734,27 @@ def main() -> int:
     ap.add_argument("--out", default="build/dialogue.json")
     ap.add_argument("--print-only", action="store_true",
                     help="材料と台本を出すだけで、保存しない")
+    ap.add_argument("--mode", choices=("voices", "numbers"), default="voices",
+                    help="voices=公式コメント欄 / numbers=その日の数字")
+    ap.add_argument("--data", default="data",
+                    help="numbers のとき読む材料の場所")
     args = ap.parse_args()
 
-    m = material(args.buzz, args.voices)
-    if not m or not m.get("voices"):
-        print("[info] ハイライトかコメントが無いため、作りません")
-        return 0
-
-    extra = enrich(m["voices"])
-    body = facts(m, extra)
-    ps = panels(m, extra)
+    if args.mode == "numbers":
+        import numbers_material as nmat
+        m = nmat.load(args.data)
+        if not nmat.has_enough(m):
+            print("[info] 話せる数字が無いため、作りません")
+            return 0
+        print("[info] 材料: %s" % nmat.outline(m))
+        body, ps, prompt = nmat.facts(m), nmat.panels(m), NUMBERS_PROMPT
+    else:
+        m = material(args.buzz, args.voices)
+        if not m or not m.get("voices"):
+            print("[info] ハイライトかコメントが無いため、作りません")
+            return 0
+        extra = enrich(m["voices"])
+        body, ps, prompt = facts(m, extra), panels(m, extra), PROMPT
     print("--- モデルに渡す事実 ---")
     print(body)
     print("\n--- 画面に出せる札 ---")
@@ -1704,7 +1768,7 @@ def main() -> int:
         return 0
 
     client = anthropic.Anthropic(api_key=key)
-    ask = PROMPT.format(facts=body, menu=panel_menu(ps))
+    ask = prompt.format(facts=body, menu=panel_menu(ps))
     resp = client.messages.create(
         model=MODEL, max_tokens=16000,
         messages=[{"role": "user", "content": ask}],
@@ -1738,9 +1802,12 @@ def main() -> int:
                     "足すのは中身であって、言葉数ではありません。\n"
                     + ("まだ触れていない材料があります: "
                        + "、".join(unused) + "\n" if unused else "")
-                    + "・コメントは返信まで読む\n"
-                    "・賛否が割れているところを、両方そのまま出す\n"
-                    "・上に無い事実は、やはり一切足さない\n"
+                    + ("・数字は前の試合や他の選手と比べる\n"
+                       "・順位や差は、圏内なのか圏外なのかまで言う\n"
+                       if args.mode == "numbers" else
+                       "・コメントは返信まで読む\n"
+                       "・賛否が割れているところを、両方そのまま出す\n")
+                    + "・上に無い事実は、やはり一切足さない\n"
                     "台本だけを出力してください。")},
             ],
         )
@@ -1804,8 +1871,23 @@ def main() -> int:
 
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(
-        {"kind": "dialogue", "segments": segs, "panels": ps,
+    payload = {"kind": "dialogue", "segments": segs, "panels": ps}
+    payload.update(nmat.meta(m) if args.mode == "numbers"
+                   else _voices_meta(m))
+    if args.mode == "numbers":
+        # 照合の材料も、材料の作り方ごとに違う。
+        payload["facts"] = nmat.checkable(m)
+    out.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
+                   encoding="utf-8")
+    print(f"[info] 台本を出力しました -> {out}")
+    return 0
+
+
+def _voices_meta(m: dict) -> dict:
+    """コメント欄の回に添える、題とサムネイルの材料。"""
+    return {
+         # 題・説明文・タグを中身に合わせるため（upload_youtube が読む）。
+         "mode": "voices",
          # **渡した数字そのもの。**台詞に出た数字と突き合わせるため。
          #
          # 9/8の長編は「カブスは20本以上が5人」で公開直前まで行った。
@@ -1839,10 +1921,7 @@ def main() -> int:
          # 「何の動画か」より「何が言われているか」のほうが、
          # 一目で押す理由になる。
          "pick": ((m.get("voices") or [{}])[0].get("ja") or "")[:60],
-         "source": m.get("source")},
-        ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"[info] 台本を出力しました -> {out}")
-    return 0
+         "source": m.get("source")}
 
 
 if __name__ == "__main__":

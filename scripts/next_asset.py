@@ -51,6 +51,13 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
+# この本数を下回る種類は出さない。
+#
+# 直近の実測は球団もの178回、サッカー14回、用語8回、球場4回、NPB4回。
+# 10は球団ものとサッカーを残し、用語・球場・NPBを外す位置。
+# **平均が上がれば自動で戻ってくる。**表に書き写して固定しない。
+FLOOR = 10
+
 
 def published(path: str) -> set:
     try:
@@ -109,6 +116,22 @@ def main() -> int:
     avg = measured(args.published, args.analytics)
     mid = (sum(avg.values()) / len(avg)) if avg else 0.0
     todo.sort(key=lambda k: (-avg.get(kind_of(k), mid), k))
+
+    # **見られていない種類は、順番を下げるだけでなく出さない。**
+    #
+    # 用語(mlb_)は11本で平均8再生、球場(venue_)は5本で平均2再生だった。
+    # 順番を下げても在庫が尽きれば回ってくるし、その間ずっと
+    # 投稿枠を1つ使う。2再生の回を出すくらいなら、その日は出さない。
+    #
+    # 測れていない種類（まだ1本も出していない）は止めない。
+    # 測る前に切ると、新しい種類を一度も試せない。
+    dead = {k for k, v in avg.items() if v < FLOOR}
+    if dead:
+        alive = [k for k in todo if kind_of(k) not in dead]
+        print("[info] 見られていない種類を外しました: %s（%d件）"
+              % ("、".join(sorted(dead)), len(todo) - len(alive)),
+              file=sys.stderr)
+        todo = alive
 
     if args.report:
         print(f"トピック {len(gav.LIST_TOPICS)}件 / 投稿済み {len(done)}件 / "

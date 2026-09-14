@@ -43,6 +43,10 @@ on:
       publish_at:
         description: '公開時刻 (HH:MM、空なら即時)'
         required: false
+      mode:
+        description: '主題 (numbers=その日の数字 / voices=公式コメント欄)'
+        required: false
+        default: 'numbers'
   workflow_run:
     workflows: ["毎日 17:00-20:00　夕方の4本"]
     types: [completed]
@@ -136,7 +140,8 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           mkdir -p build/lf
-          python scripts/generate_dialogue.py --out build/lf/dialogue.json
+          python scripts/generate_dialogue.py --out build/lf/dialogue.json \
+            --mode "${{ inputs.mode || 'numbers' }}"
 
       # 言ったことが、渡した材料と一致しているか。
       #
