@@ -682,5 +682,22 @@ for _k, _mode in (("morning", "players"), ("postseason", "postseason"),
     check(f"ワークフローの {_mode} が {_at[_k]}",
           _m.group(1) if _m else "(行が無い)", _at[_k])
 
+# 編成の台帳が、実際の時刻と食い違っていないか。
+#
+# **9/14に、食い違っているのを見つけた。**docs/SCHEDULE.md には
+# 「20:00 欧州サッカー」「21:00 現地の報道」「17:00 今日の1人」と
+# 書いてあったが、実際は19:00・18:00で、「今日の1人」の枠はもう無い。
+# 枠を入れ替えたときに台帳を直していなかった。
+#
+# 人が読む文書なので一覧から生成はしない。**書いてあるかだけ見る。**
+print("\n--- 編成の台帳 ---")
+_doc = (ROOT / "docs" / "SCHEDULE.md").read_text(encoding="utf-8")
+_lineup = _doc.split("なぜその時刻なのか")[0]      # 前半が現役の一覧
+for _k, _label, _, _time in pc.DAILY_LINEUP:
+    # 同じ行に時刻と枠が並んでいるか（時刻だけなら別の枠のものかもしれない）
+    _found = any(_time in _row and _label[:4] in _row
+                 for _row in _lineup.split("\n"))
+    check(f"SCHEDULE.md に {_label} {_time} がある", _found, True)
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)
