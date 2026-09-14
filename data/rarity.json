@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-13T15:37:46.735082+00:00",
+  "updated_at": "2026-09-14T06:01:42.950552+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
@@ -11,15 +11,15 @@
           "value": 0.8837209302325582,
           "shown": "0.88",
           "at": 2,
-          "of": 50,
+          "of": 48,
           "ties": 1,
           "above": {
             "name": "Jacob Misiorowski",
             "shown": "0.80"
           },
           "below": {
-            "name": "Drew Rasmussen",
-            "shown": "0.92"
+            "name": "Cam Schlittler",
+            "shown": "0.90"
           },
           "key": "whip",
           "label": "WHIP",
@@ -33,15 +33,15 @@
       "player_id": "808959",
       "items": [
         {
-          "value": 0.5813008130081301,
-          "shown": "58.1%",
+          "value": 0.5826612903225806,
+          "shown": "58.3%",
           "at": 1,
-          "of": 138,
+          "of": 137,
           "ties": 1,
           "above": null,
           "below": {
             "name": "Kyle Schwarber",
-            "shown": "53.8%"
+            "shown": "53.6%"
           },
           "key": "tto",
           "label": "アダム・ダン率",
@@ -51,15 +51,15 @@
           "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
         },
         {
-          "value": 0.34959349593495936,
-          "shown": "35.0%",
+          "value": 0.35080645161290325,
+          "shown": "35.1%",
           "at": 1,
-          "of": 138,
+          "of": 137,
           "ties": 1,
           "above": null,
           "below": {
             "name": "Colson Montgomery",
-            "shown": "34.7%"
+            "shown": "34.6%"
           },
           "key": "k_rate",
           "label": "三振率",
@@ -68,10 +68,10 @@
           "side": "top"
         },
         {
-          "value": 0.16869918699186992,
+          "value": 0.1693548387096774,
           "shown": "16.9%",
           "at": 1,
-          "of": 138,
+          "of": 137,
           "ties": 1,
           "above": null,
           "below": {
@@ -85,7 +85,7 @@
           "side": "top"
         }
       ],
-      "mendoza": "打率.207。メンドーサ・ライン（.200）のすぐ上"
+      "mendoza": "打率.206。メンドーサ・ライン（.200）のすぐ上"
     }
   }
 }

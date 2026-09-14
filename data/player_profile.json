@@ -1,95 +1,121 @@
 {
-  "generated_at": "2026-09-13T15:37:19.819639+00:00",
+  "generated_at": "2026-09-14T06:01:07.981692+00:00",
   "date_jst": "2026-09-14",
-  "name": "Garrett Mitchell",
-  "player_id": "669003",
-  "team": "ブリュワーズ",
+  "name": "Randy Arozarena",
+  "player_id": "668227",
+  "team": "マリナーズ",
   "group": "hitting",
-  "why": "2026-09-13のMLBで最も活躍",
-  "headline": "5打数4安打　1本塁打　1二塁打　4打点　1盗塁",
-  "score": 150,
+  "why": "2026-09-14のMLBで最も活躍",
+  "headline": "5打数3安打　2本塁打　4打点",
+  "score": 175,
   "bio": {
-    "name_en": "Garrett Mitchell",
-    "age": 28,
-    "birth_city": "Orange",
-    "birth_state": "CA",
-    "birth_country": "USA",
-    "birth_date": "1998-09-04",
-    "debut": "2022-08-27",
-    "draft_year": 2020,
-    "bats": "Left",
+    "name_en": "Randy Arozarena",
+    "age": 31,
+    "birth_city": "Havana",
+    "birth_state": null,
+    "birth_country": "Cuba",
+    "birth_date": "1995-02-28",
+    "debut": "2019-08-14",
+    "draft_year": null,
+    "bats": "Right",
     "throws": "Right",
-    "number": "5",
+    "number": "56",
     "position": "Outfielder",
     "nickname": null,
-    "height": "6' 2\"",
-    "weight": 229
+    "height": "5' 10\"",
+    "weight": 185
   },
   "teams": [
     {
-      "team": "ブリュワーズ",
-      "from": 2022,
+      "team": "カージナルス",
+      "from": 2019,
+      "to": 2019
+    },
+    {
+      "team": "レイズ",
+      "from": 2020,
+      "to": 2024
+    },
+    {
+      "team": "マリナーズ",
+      "from": 2024,
       "to": 2026
     }
   ],
   "career": {
-    "games": 274,
-    "avg": ".262",
-    "hr": 24,
-    "rbi": 105,
-    "ops": ".778",
-    "sb": 37,
-    "hits": 213
+    "games": 943,
+    "avg": ".254",
+    "hr": 143,
+    "rbi": 465,
+    "ops": ".788",
+    "sb": 153,
+    "hits": 875
   },
   "this_season": {
-    "games": 133,
-    "avg": ".269",
-    "hr": 11,
-    "rbi": 65,
-    "ops": ".789",
-    "sb": 14,
-    "hits": 114
+    "games": 142,
+    "avg": ".276",
+    "hr": 25,
+    "rbi": 75,
+    "ops": ".849",
+    "sb": 22,
+    "hits": 146
   },
   "last_season": {
-    "games": 25,
-    "avg": ".206",
-    "hr": 0,
-    "rbi": 3,
-    "ops": ".580",
-    "sb": 3,
-    "hits": 14
+    "games": 160,
+    "avg": ".238",
+    "hr": 27,
+    "rbi": 76,
+    "ops": ".760",
+    "sb": 31,
+    "hits": 146
   },
   "recent": [
     {
+      "date": "2026-09-13",
+      "line": "5打数3安打 2本塁打 4打点",
+      "opponent": "Athletics"
+    },
+    {
       "date": "2026-09-12",
-      "line": "5打数4安打 1本塁打 4打点",
-      "opponent": "Cincinnati Reds"
+      "line": "5打数2安打 1本塁打 4打点",
+      "opponent": "Athletics"
     },
     {
       "date": "2026-09-11",
-      "line": "5打数3安打 1本塁打 4打点",
-      "opponent": "Cincinnati Reds"
+      "line": "5打数1安打",
+      "opponent": "Athletics"
+    },
+    {
+      "date": "2026-09-10",
+      "line": "2打数0安打",
+      "opponent": "Texas Rangers"
     },
     {
       "date": "2026-09-09",
-      "line": "4打数0安打",
-      "opponent": "Chicago Cubs"
-    },
-    {
-      "date": "2026-09-08",
-      "line": "4打数0安打",
-      "opponent": "Chicago Cubs"
-    },
-    {
-      "date": "2026-09-07",
-      "line": "2打数1安打 1打点",
-      "opponent": "Chicago Cubs"
+      "line": "4打数1安打",
+      "opponent": "Texas Rangers"
     }
   ],
   "awards": [
     {
+      "season": "2026",
+      "name": "AL All-Star"
+    },
+    {
+      "season": "2025",
+      "name": "AL All-Star"
+    },
+    {
+      "season": "2023",
+      "name": "AL All-Star"
+    },
+    {
+      "season": "2023",
+      "name": "World Baseball Classic Pool C MVP"
+    },
+    {
       "season": "2021",
-      "name": "MID Player of the Week"
+      "name": "Jackie Robinson AL Rookie of the Year"
     }
   ],
   "quotes": []
