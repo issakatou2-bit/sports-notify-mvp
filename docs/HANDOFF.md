@@ -4,9 +4,32 @@
 
 ## 最初に読む
 - 共有コピー: `C:\Users\issak\Desktop\pwa-mvp`。GitHub: `issakatou2-bit/sports-notify-mvp`。
-- 手順はAGENTS.md。計画PLAN、保留BACKLOG、理由DECISIONS、見た目DESIGN。
-- 過去の日誌は `docs/HANDOFF_ARCHIVE_2026-09-13.md` と `..._2026-09-14.md`。通常は読まなくてよい。
 - 共有メモを起点に継続し、全体調査を繰り返さない。日本語・非技術的に説明する。
+
+### どれをいつ読むか
+
+**全部を毎回読まない。**必要になったものだけ開く。
+
+| いつ | 読むもの |
+|---|---|
+| **毎回** | このページの「繰り返し起きる失敗の型」と「作業中」、`AGENTS.md` |
+| 動画の時刻・本数を変えるとき | `docs/SCHEDULE.md` |
+| なぜそう決めたか知りたいとき | `docs/DECISIONS.md` |
+| 次に何をやるか探すとき | `docs/BACKLOG.md` |
+| 画面の見た目を触るとき | `docs/DESIGN.md` |
+| 収益・Web（Codexの領分） | `docs/REVENUE_OPERATIONS.md` |
+| 過去の作業日誌 | `docs/HANDOFF_ARCHIVE_*.md`（通常は不要） |
+
+### 終わったと言ってよい条件
+
+順に上げる。**下から上へ飛ばさない。**
+
+1. ローカルの検査が全部通る（`for t in scripts/test_*.py; do python "$t"; done`）
+2. pushしたCI（「検査　pushのたびに」）が緑
+3. 実データで動かして、出た値を目で見た
+4. 実際に公開され、公開されたものを見た
+
+「コードを書いた」は1〜4のどれでもない。
 
 ## この仕組みで繰り返し起きる失敗の型
 

@@ -126,6 +126,9 @@ jobs:
         run: |
           python scripts/rarity.py --out data/rarity.json || true
           python scripts/rare_topics.py | tee -a "$GITHUB_STEP_SUMMARY"
+          # 球団ごとの殿堂入り選手。team_legends.json に通算成績つきで
+          # 入っていたのに、どこにも使われていなかった（27球団ぶん）。
+          python scripts/legend_topics.py | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Start VOICEVOX engine
         continue-on-error: true
@@ -240,7 +243,7 @@ jobs:
           bash scripts/commit_data.sh \
             "published assets: ${{ github.run_id }}" \
             data/published_assets.json data/venue_topics.json data/team_topics.json data/venue_stats.json data/soccer_preview.json \
-            data/rarity.json data/rare_topics.json
+            data/rarity.json data/rare_topics.json data/legend_topics.json
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
       - name: Save videos as artifact
