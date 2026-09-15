@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-14T06:01:56.936005+00:00",
+  "updated_at": "2026-09-15T06:02:04.029928+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,74 +13,74 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 4,
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 7,
       "tone": "好調",
-      "gist": "Okamoto含む3連発でブルージェイズが勝利"
+      "gist": "ホワイトソックス、ガーディアンズとのALC争いで勢い"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ドジャースス新人が衝撃的な初安打"
-    },
-    {
-      "team_id": "146",
-      "name": "マーリンズ",
-      "name_en": "Miami Marlins",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "Ramírezのサヨナラホームランでマーリンズ逆転"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 1,
+      "mentions": 5,
       "tone": "好調",
-      "gist": "Schlittlerが驚異的投球、メッツ戦で1.95ERA"
+      "gist": "ドジャース、14年連続プレーオフ進出でMLB記録タイ"
     },
     {
       "team_id": "114",
       "name": "ガーディアンズ",
       "name_en": "Cleveland Guardians",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "ガーディアンズが攻撃力で重要ホームスタンド勢い"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 1,
+      "mentions": 4,
       "tone": "不振",
-      "gist": "マリナーズの今季の不調の原因を疑問視"
+      "gist": "ガーディアンズ、ホワイトソックスにタイブレーカー譲る"
     },
     {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "3選手の連続ホームランでオリオールズを圧倒"
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ブレーブス、過去の栄光と現在の経営方針が話題"
     },
     {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "メッツ、プレーオフ進出が消滅"
+    },
+    {
+      "team_id": "108",
+      "name": "エンゼルス",
+      "name_en": "Los Angeles Angels",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "エンゼルス、93敗で100敗回避へ、地味な喜び"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "パドレス、5年連続勝越でワイルドカード争い首位"
+    },
+    {
+      "team_id": "137",
+      "name": "ジャイアンツ",
+      "name_en": "San Francisco Giants",
       "mentions": 1,
       "tone": "好調",
-      "gist": "Seagerのホームランでレンジャーズがロード連敗脱出"
+      "gist": "Rafael Devers、初年度は37本塁打で好成績"
     }
   ],
   "players": [
     {
       "name": "岡本和真",
-      "mentions": 4
+      "mentions": 1
     }
   ]
 }
