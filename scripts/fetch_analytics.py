@@ -177,6 +177,46 @@ def pick_for_curves(rows, videos_path="data/published_videos.json"):
     return picked[:CURVE_TOP]
 
 
+def traffic_by_day(yta, start, end) -> dict:
+    """日ごとの流入元。**どこから配られているかの推移。**
+
+    なぜ要るのか:
+      9/15に、公開翌日の再生数（初動）が全枠そろって落ちているのが
+      分かった。8/26-9/1は中央値177、9/2-8は52、9/9-14は20。
+      本数は変えていない。視聴率と視聴秒はむしろ上がっている。
+
+      **「配られていない」のか「配られているが見られていない」のか**で
+      打つ手が正反対になるが、Shortsには表示回数の指標がStudioの画面に
+      無い（通常動画にはある）。流入元別の視聴回数なら取れるので、
+      Shortsフィードからの数が落ちているかを見る。
+
+      ここが落ちていればフィードの問題。落ちていないのに再生が減って
+      いれば、フィードには出ているが見られていないということになる。
+
+    取れなければ空。ここで落ちても他の集計は続ける。
+    """
+    try:
+        res = yta.reports().query(
+            ids="channel==MINE",
+            startDate=start.isoformat(), endDate=end.isoformat(),
+            metrics="views,estimatedMinutesWatched",
+            dimensions="day,insightTrafficSourceType",
+            sort="day", maxResults=500,
+        ).execute()
+    except Exception as e:  # noqa: BLE001
+        print("[info] 流入元を取れません(%s)" % type(e).__name__)
+        return {}
+    cols = [c.get("name") for c in res.get("columnHeaders") or []]
+    out = {}
+    for row in res.get("rows") or []:
+        rec = dict(zip(cols, row))
+        day = str(rec.get("day") or "")
+        src = str(rec.get("insightTrafficSourceType") or "?")
+        if day:
+            out.setdefault(day, {})[src] = int(rec.get("views") or 0)
+    return out
+
+
 def retention_curve(yta, video_id: str, start, end) -> list:
     """
     その動画の、どこまで見られたか。[(位置0-1, 残っている割合), ...]
@@ -389,6 +429,7 @@ def _run() -> int:
                     **({"curve": curves[r["video"]]}
                        if r.get("video") in curves else {})}
                    for r in rows],
+        "sources": traffic_by_day(yta, start, end),
     }
     # 積み上げるが、際限なく増やさない。90日あれば季節の比較もできる。
     days = sorted(store["days"])[-90:]
