@@ -651,7 +651,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 1,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "824869",
@@ -1595,7 +1600,12 @@
           "text": "サッスオーロ（昨季セリエA11位）とユベントス（昨季セリエA6位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "559691",
