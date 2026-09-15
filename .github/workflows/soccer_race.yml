@@ -33,7 +33,7 @@ name: 欧州サッカー　順位争い
 #   短いほうが繰り返し見られる。
 #
 # 投稿について:
-#   公開は21:00（その時刻だけが他の枠と重ならない）。
+#   公開は20:30（17:00から21:00の30分刻みで、そこが空いている）。
 #   手で回すときだけ upload=false で止められる。
 
 on:
@@ -104,13 +104,19 @@ jobs:
           CODE=$(printf '%s' "$DUE" | cut -f1)
           ROUND=$(printf '%s' "$DUE" | cut -f2)
           NAME=$(printf '%s' "$DUE" | cut -f3)
+          # 出した節を覚える鍵。季を含む（PL:2026）。
+          # 大会コードだけで覚えると、来季の第1節が「もう出した」に
+          # なってシーズンが丸ごと飛ぶ。
+          KEY=$(printf '%s' "$DUE" | cut -f4)
           if [ -n "${{ inputs.only }}" ]; then
             CODE="${{ inputs.only }}"
             ROUND=""
+            KEY=""
             echo "手で指定された大会を作ります: $CODE"
           fi
           echo "code=$CODE" >> "$GITHUB_OUTPUT"
           echo "round=$ROUND" >> "$GITHUB_OUTPUT"
+          echo "key=$KEY" >> "$GITHUB_OUTPUT"
           if [ -z "$CODE" ]; then
             # 節の途中・最低節数に満たない・もう出した、のどれか。
             echo "::notice::節が終わった大会がありません"
@@ -221,11 +227,11 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
         run: |
-          # 21:00に置く理由は、その時刻だけが空いているから。
-          # 17:00成績 / 18:00報道・コメント欄 / 18:30長編 /
-          # 19:00注目試合・サッカー / 20:00進出争い / 22:00資産動画。
+          # 20:30に置く理由は、そこが空いているから。
+          # 17:00成績 / 17:30コメント欄 / 18:00報道 / 18:30資産動画 /
+          # 19:00注目試合 / 19:30サッカー / 20:00進出争い / 21:00長編。
           AT="${{ inputs.publish_at }}"
-          [ -n "$AT" ] || AT="21:00"
+          [ -n "$AT" ] || AT="20:30"
           python scripts/upload_youtube.py \
             --video build/race/collespo_morning_soccer_race.mp4 \
             --kind soccer_race --sport soccer \
@@ -249,8 +255,8 @@ jobs:
               state = json.loads(p.read_text(encoding="utf-8"))
           except Exception:
               state = {}
-          code = os.environ["RACE_CODE"]
-          state[code] = int(os.environ["RACE_ROUND"])
+          key = os.environ.get("RACE_KEY") or os.environ["RACE_CODE"]
+          state[key] = int(os.environ["RACE_ROUND"])
           p.write_text(json.dumps(state, ensure_ascii=False, indent=2),
                        encoding="utf-8")
           print("記録しました:", state)
@@ -258,6 +264,7 @@ jobs:
         env:
           RACE_CODE: ${{ steps.gate.outputs.code }}
           RACE_ROUND: ${{ steps.gate.outputs.round }}
+          RACE_KEY: ${{ steps.gate.outputs.key }}
 
       - name: Keep the video
         if: always() && steps.gate.outputs.count != '0'

@@ -220,7 +220,7 @@ jobs:
             --games data/soccer_games.json \
             --narration build/soccer_narration.json \
             --thumbnail build/soccer/short.png \
-            --privacy public --publish-at "19:00"
+            --privacy public --publish-at "19:30"
 
       # SNSは競技ごとに別の投稿にする。MLBは19時に「明日の注目試合」、
       # こちらは20時に「今夜の注目試合」で、1つにまとめると

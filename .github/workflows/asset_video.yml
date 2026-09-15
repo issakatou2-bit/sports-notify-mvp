@@ -28,6 +28,18 @@ on:
   #   出ていなかった。玉は79本のうち53本が未投稿で、素材切れではない。
   #   純正は遅れるだけでなく、実行そのものを飛ばす。
   #   しかも診断が日次の7枠しか見ておらず、7日空いても「問題なし」だった。
+  # **2026-09-15に、夕方の枠のあとにも走らせるようにした。**
+  #
+  # 22:00起動のままだと、公開も22:00になる。「22時に出しても
+  # しょうがない」というのがユーザーの判断で、17:00から21:00の
+  # 30分刻みに全部を収めることにした。18:30に公開するには
+  # その前に作り終えている必要があるので、夕方の枠に乗る。
+  #
+  # cron-job.orgの22:00も残るが、next_asset.py が「きょうはもう
+  # 1本出している」で止めるので、1日2本にはならない。
+  workflow_run:
+    workflows: ["毎日 17:00-20:00　夕方の4本"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       topic:
@@ -201,7 +213,8 @@ jobs:
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
               --thumbnail "build/asset_$t/short.png" \
-              --privacy "${PRIVACY:-public}" $FORCE
+              --privacy "${PRIVACY:-public}" $FORCE \
+              --publish-at "18:30"
             if [ $? -eq 0 ]; then
               echo "$t: 完了"
             else

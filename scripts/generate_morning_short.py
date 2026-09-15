@@ -59,6 +59,7 @@ FONT_CANDIDATES = video_common.FONT_CANDIDATES
 import local_voices
 import mlb_buzz
 import morning_recap
+from race_words import race_is_over
 
 W, H = 1080, 1920
 FPS = 24
@@ -3992,6 +3993,17 @@ def main():
             print(f"[info] 現地の報道が{items}件しかないため、"
                   f"報道編は作りません(最低{MIN_PRESS_ITEMS}件)")
             return
+
+    # 進出争いが終わっていたら、進出争いの回は作らない。
+    #
+    # **ポストシーズンが終われば、順位表は決着したまま残る。**
+    # 昨日からの動きが無く、全球団の行き先が決まっている形が
+    # 11月から3月まで続く。それでも画面は8枚できてしまうので、
+    # 「レイズ 進出決定」と言うだけの動画が毎日出ることになる。
+    # 実際に確かめた（変化0件・全球団確定でも8枚できた）。
+    if args.mode == "postseason" and race_is_over(postseason):
+        print("[info] 進出争いは決着しているため、進出争いの回は作りません")
+        return
 
     # コメント欄の回は、声が少ない日に出すと1件読んで終わってしまう。
     # 報道編と同じ理由で、1本ぶんの体裁になる最低量を求める。

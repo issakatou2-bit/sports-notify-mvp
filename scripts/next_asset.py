@@ -67,6 +67,34 @@ def published(path: str) -> set:
     return set((d.get("assets") or {}).keys())
 
 
+def posted_today(path: str, today=None) -> bool:
+    """きょう、もう1本出したか。
+
+    **起動する入口が2つある。**cron-job.org（JST 22:00）と、
+    夕方の枠のあと（18:30に公開するため）。どちらからでも走るので、
+    このガードが無いと1日2本出て、在庫が倍の速さで減る。
+    """
+    from datetime import datetime, timedelta, timezone
+    jst = timezone(timedelta(hours=9))
+    today = today or datetime.now(jst).date()
+    try:
+        rows = (json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+                .get("assets") or {})
+    except (json.JSONDecodeError, OSError):
+        return False
+    for rec in rows.values():
+        stamp = (rec or {}).get("published_at")
+        if not stamp:
+            continue
+        try:
+            when = datetime.fromisoformat(str(stamp).replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if when.astimezone(jst).date() == today:
+            return True
+    return False
+
+
 def kind_of(key: str) -> str:
     """トピックの種類。キーの頭で決まる（team_ana → team）。"""
     return (key or "").split("_")[0] or "?"
@@ -104,9 +132,21 @@ def main() -> int:
     ap.add_argument("--published", default="data/published_assets.json")
     ap.add_argument("--analytics", default="data/analytics.json")
     ap.add_argument("--report", action="store_true")
+    ap.add_argument("--again", action="store_true",
+                    help="きょう既に出していても、もう1本選ぶ")
     args = ap.parse_args()
 
     import generate_asset_video as gav
+
+    if not args.again and posted_today(args.published):
+        print("[info] きょうはもう1本出しています", file=sys.stderr)
+        out = os.environ.get("GITHUB_OUTPUT")
+        if out:
+            with open(out, "a", encoding="utf-8") as f:
+                f.write("topic=\nremaining=\n")
+        if not args.report:
+            print("")
+        return 0
 
     done = published(args.published)
     todo = sorted(k for k in gav.LIST_TOPICS if k not in done)

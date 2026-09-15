@@ -42,7 +42,7 @@ import argparse
 import json
 import pathlib
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -146,6 +146,39 @@ def load_state(path: str = "data/soccer_race_state.json") -> dict:
         return {}
 
 
+def state_key(comp: dict) -> str:
+    """出した節を覚えるときの鍵。**季を含める。**
+
+    大会コードだけで覚えると、来季の第1節が「もう出した」ことになる。
+    38節まで出したあとの `state["PL"] = 38` に対して、新しい季の
+    第1節は 1 <= 38 なので、シーズンが丸ごと飛ぶ。
+    """
+    year = ((comp.get("season") or {}).get("year")
+            if isinstance(comp.get("season"), dict) else None)
+    code = comp.get("code") or ""
+    return "%s:%s" % (code, year) if year else code
+
+
+def season_over(comp: dict, today: date = None) -> bool:
+    """その大会の季が終わっているか。
+
+    **終わったあとも順位表は残る。**最終節が「全クラブ終えている」
+    ままなので、節の条件だけ見ていると、6月も7月も
+    「第38節が終わりました」と言い続けられる状態になる
+    （出した節を覚えているので実際には止まるが、覚えを失えば出る）。
+
+    終わりの日が分からない大会は、終わっていないものとして扱う。
+    """
+    season = comp.get("season")
+    if not isinstance(season, dict):
+        return False
+    try:
+        end = date.fromisoformat(str(season.get("end"))[:10])
+    except (ValueError, TypeError):
+        return False
+    return (today or date.today()) > end
+
+
 def due(preview: dict, state: dict = None) -> list:
     """いま出すべき大会。**節が終わった大会だけ。**
 
@@ -171,14 +204,17 @@ def due(preview: dict, state: dict = None) -> list:
         rows = c.get("table") or []
         if not rows:
             continue
+        if season_over(c):
+            continue
         st = round_state(rows)
         if not st["complete"]:
             continue
         if st["round"] < min_round(code):
             continue
-        if st["round"] <= int(state.get(code) or 0):
+        if st["round"] <= int(state.get(state_key(c)) or 0):
             continue
         out.append({"code": code, "round": st["round"],
+                    "key": state_key(c),
                     "name_jp": (c.get("name_jp")
                                 or SOCCER_LEAGUE_NAME_JP.get(code) or code),
                     "jp": bool(jp_map.get(code))})
@@ -641,8 +677,11 @@ def main() -> int:
     # 節が終わった大会を調べるだけのとき。ワークフローが
     # 「今日は出すか、どの大会か」を決めるのに使う。
     if args.due:
+        # 4列目は、出した節を覚えるときの鍵（季を含む）。
+        # ワークフローはこれをそのまま記録する。
         for x in due(preview, load_state(args.state)):
-            print("%s	%d	%s" % (x["code"], x["round"], x["name_jp"]))
+            print("%s	%d	%s	%s"
+                  % (x["code"], x["round"], x["name_jp"], x["key"]))
         return 0
 
     data = build(preview, before, only=args.only)

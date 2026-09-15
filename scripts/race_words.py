@@ -23,6 +23,35 @@ def _gb(row: dict):
     return str(value)
 
 
+def settled(row: dict) -> bool:
+    """その球団の行き先が決まっているか（進出も敗退も含む）。"""
+    return bool(row.get("clinched") or row.get("div_champ")
+                or row.get("eliminated")
+                or str(row.get("wc_gb") or "") == ELIMINATED)
+
+
+def race_is_over(data: dict) -> bool:
+    """進出争いそのものが終わっているか。
+
+    **ポストシーズンが終わっても、順位表は決着した形のまま残る。**
+    昨日からの動きが無く、全球団の行き先が決まっている状態が
+    11月から3月まで続く。それを見ずに画面を組むと、
+    「レイズ 進出決定」と言うだけの動画が毎日出る（実際に作れた）。
+
+    材料そのものが無い日も、話すことが無いという意味で終わり扱い。
+    """
+    rows = data.get("teams")
+    if isinstance(rows, dict):
+        rows = list(rows.values())
+    if not rows:
+        rows = data.get("japanese") or []
+    if not rows:
+        return True
+    if data.get("changes"):
+        return False          # 昨日から動いた。まだ争っている
+    return all(settled(r) for r in rows)
+
+
 def _by_division(row: dict) -> bool:
     """地区首位で進出しようとしているか。
 

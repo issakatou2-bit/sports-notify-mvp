@@ -26,6 +26,7 @@ import json
 import pathlib
 import re
 import sys
+from datetime import date
 
 HERE = pathlib.Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
@@ -46,6 +47,19 @@ MAX_CHANGES = 4      # 進出争いで動いたこと
 MAX_SOCCER = 1       # 1本1大会。長編でも大会は1つに絞る
 MAX_ROWS = 4         # 1枚の札に並ぶ行数（描画側の上限）
 
+# 材料が何日前までなら使うか。
+#
+# **シーズンが終わると、更新の止まった材料がそのまま残る。**
+# morning_recap.json の中身は最後の試合日のままなので、日付を見ない限り
+# 「きょうの成績」として11月も12月も同じ動画を作り続ける。
+# 進出争いも同じで、ポストシーズンが終わったあとの `changes` が
+# 毎日「レイズ 進出決定」と言い続ける。
+#
+# 2日にするのは、枠がGitHubのscheduleの遅れで日をまたぐことがあるため
+# （9/13に19時の枠がJST 0時台に走った）。1日だと、その日の回が
+# 「昨日の材料」として落ちる。
+MAX_AGE_DAYS = 2
+
 
 def _read(path) -> dict:
     try:
@@ -54,11 +68,120 @@ def _read(path) -> dict:
         return {}
 
 
+def _day(value) -> date | None:
+    """"2026-09-15" や ISO時刻から、日付だけを取る。読めなければ None。"""
+    if not value:
+        return None
+    try:
+        return date.fromisoformat(str(value)[:10])
+    except ValueError:
+        return None
+
+
+def fresh(data: dict, today: date = None, days: int = MAX_AGE_DAYS,
+          *keys: str) -> bool:
+    """その材料が新しいか。**日付が読めないものは古いものとして扱う。**
+
+    シーズンが終われば材料の更新は止まる。止まったことに気づく手が
+    日付しかないので、読めないなら使わない。
+    """
+    today = today or date.today()
+    for key in (keys or ("date_jst", "date", "updated_at")):
+        got = _day(data.get(key))
+        if got is not None:
+            return 0 <= (today - got).days <= days
+    return False
+
+
+def _fresh_read(path, today: date, *keys: str) -> dict:
+    """新しければそのまま、古ければ空。何を落としたかは言う。"""
+    data = _read(path)
+    if not data:
+        return {}
+    if fresh(data, today, MAX_AGE_DAYS, *keys):
+        return data
+    print("[info] %s が古いので使いません（%s）"
+          % (pathlib.Path(path).name,
+             data.get("date_jst") or data.get("date")
+             or data.get("updated_at") or "日付なし"))
+    return {}
+
+
 def _score(row: dict) -> int:
     try:
         return int(mr.score_label(row) or 0)
     except Exception:
         return 0
+
+
+OUTS_PER_INNING = 3
+
+
+def outs(ip) -> int:
+    """投球回からアウトの数。"1.2" は1回と2アウトで5。
+
+    **これが無いと「1回で3三振はほとんどを三振で終わらせた」になる。**
+    1回は3アウトなので、3奪三振なら「ほとんど」ではなく全部。
+    """
+    try:
+        whole, _, frac = str(ip or "").partition(".")
+        return int(whole) * OUTS_PER_INNING + int(frac or 0)
+    except ValueError:
+        return 0
+
+
+def role_of(row: dict) -> str:
+    """その日の登板が先発か救援か。
+
+    **これが無いと「1回だけなのだ？ 短いのだ」が出る。**
+    救援の1回と先発の1回では、意味がまるで違う。
+    `gs` はその日に先発したかどうか（松井裕樹のセーブの日は0）。
+    """
+    if row.get("gs"):
+        return "先発"
+    if row.get("saves") or row.get("holds") or row.get("blown"):
+        return "救援"
+    return "救援" if outs(row.get("ip")) <= 9 else "先発"
+
+
+def readings(row: dict) -> list:
+    """その数字をどう読むか。**当たり前のことを珍しがらせない。**
+
+    材料に数字だけを並べると、何が普通で何が珍しいかが分からないまま
+    台本が書かれる。9/15の回は3つとも外した——3ランの3打点を「多い」、
+    救援の1回を「短い」、1回3奪三振を「ほとんど」と言った。
+    """
+    out = []
+    if is_pitcher(row):
+        got, so = outs(row.get("ip")), row.get("so") or 0
+        role = role_of(row)
+        out.append("この日は%s" % role)
+        if role == "救援" and got <= 4:
+            out.append("救援で1回前後を投げるのは、その役割では普通のこと"
+                       "（短い登板として珍しがらない）")
+        if got and so >= got:
+            out.append("取ったアウト%d個すべてが三振" % got)
+        elif got and so:
+            out.append("アウト%d個のうち%d個が三振" % (got, so))
+        if row.get("saves"):
+            out.append("セーブがついた")
+        if row.get("holds"):
+            out.append("ホールドがついた")
+        return out
+
+    nums = _numbers(row)
+    hits, hr = nums.get("安打", 0), nums.get("本塁打", 0)
+    rbi, ab = nums.get("打点", 0), nums.get("打数", 0)
+    if hr == 1 and hits == 1 and rbi >= 2:
+        # 安打が本塁打1本だけなら、その打点は全部その1本のもの。
+        out.append("安打はその本塁打1本だけなので、%d打点は%dランによるもの"
+                   "（本塁打が複数点を生むのは当たり前なので驚かない）"
+                   % (rbi, rbi))
+    if hits and hr == hits and hits > 1:
+        out.append("安打%d本がすべて本塁打" % hits)
+    if ab and not hits and (nums.get("四球") or nums.get("死球")):
+        out.append("安打は無いが出塁はしている")
+    return out
 
 
 def is_pitcher(row: dict) -> bool:
@@ -92,7 +215,11 @@ def _line(row: dict) -> str:
     return "・".join(bits)
 
 
-HEADLINE_UNITS = ("打数", "安打", "本塁打", "打点", "四球", "盗塁", "三振")
+# 見出しに出る単位。**ここに無い単位は照合されない。**
+# 9/15の回で「四球1、死球1」と言っていたが、死球がここに無かったので
+# 台詞の数字と材料を突き合わせる対象から外れていた。
+HEADLINE_UNITS = ("打数", "安打", "本塁打", "打点", "四球", "死球",
+                  "盗塁", "三振", "犠飛", "犠打")
 _HEAD = re.compile(r"([0-9]+)(%s)" % "|".join(HEADLINE_UNITS))
 
 
@@ -118,10 +245,15 @@ def _numbers(row: dict) -> dict:
     return out
 
 
-def load(root: str = "data") -> dict:
-    """その日の数字をまとめる。"""
+def load(root: str = "data", today: date = None) -> dict:
+    """その日の数字をまとめる。**古い材料は使わない。**
+
+    シーズンが終われば材料の更新は止まる。日付を見ないと、
+    止まった材料で毎日同じ動画を作り続けることになる。
+    """
     base = pathlib.Path(root)
-    recap = _read(base / "morning_recap.json")
+    today = today or date.today()
+    recap = _fresh_read(base / "morning_recap.json", today)
     rows = [r for r in (recap.get("players") or []) if r.get("name")]
     rows.sort(key=_score, reverse=True)
     players = []
@@ -135,40 +267,53 @@ def load(root: str = "data") -> dict:
             "type": row.get("type") or "",
             "player_id": str(row.get("player_id") or ""),
             "numbers": _numbers(row),
+            "readings": readings(row),
         })
 
     # 打球は {名前: [本塁打, ...]}。言い方は statcast.phrase に任せる。
     shots = []
-    for name, hits in (_read(base / "statcast.json").get("japanese")
-                       or {}).items():
+    for name, hits in (_fresh_read(base / "statcast.json", today)
+                       .get("japanese") or {}).items():
         text = sc.phrase(hits) if sc else ""
         if text:
             shots.append({"name": name, "text": text})
 
     # 指標は {名前: {items: [...]}}。**同率は出さない。**
     # 全員が同じ値の指標で「1位」と言うことになる（ties で外す）。
+    #
+    # 指標はシーズン通算なので、最終戦の翌日でも中身は正しい。
+    # ただし更新が止まったまま年を越すと去年の数字になるので、
+    # 他と同じ幅で切る（`updated_at` を見る）。
     rare = []
-    for name, row in (_read(base / "rarity.json").get("players")
-                      or {}).items():
+    for name, row in (_fresh_read(base / "rarity.json", today)
+                      .get("players") or {}).items():
         for item in (row.get("items") or []):
             if (item.get("ties") or 1) > 1 or not item.get("label"):
                 continue
+            above = item.get("above") or {}
             rare.append({"name": name, "stat": item["label"],
                          "value": item.get("shown") or "",
                          "rank": "%s人中%s位" % (item.get("of"),
                                                 item.get("at")),
                          "note": item.get("note") or "",
-                         "namesake": item.get("namesake") or ""})
+                         "namesake": item.get("namesake") or "",
+                         # 「1位は誰か」を聞かれたときに答えられるように。
+                         # 渡していなかったので「材料に出てないから
+                         # 分からない」と言う回になった（9/15）。
+                         "above": ("%s %s" % (above.get("name") or "",
+                                              above.get("shown") or "")
+                                   ).strip()})
             break
     rare = rare[:MAX_RARE]
 
-    post = _read(base / "postseason.json")
+    post = _fresh_read(base / "postseason.json", today)
     race = {"headline": post.get("headline") or "",
             "changes": (post.get("changes") or [])[:MAX_CHANGES],
             "japanese": post.get("japanese") or []}
 
     soccer = {}
-    for comp in (_read(base / "soccer_race.json").get("competitions") or []):
+    for comp in (_fresh_read(base / "soccer_race.json", today)
+                 .get("competitions") or []):
         if comp.get("ready") and comp.get("round_complete"):
             soccer = comp
             break
@@ -195,6 +340,10 @@ def facts(m: dict) -> str:
         if p["badges"]:
             row += " ／ " + "・".join(p["badges"])
         out.append(row)
+        # **その数字が普通か珍しいかを、ここで渡す。**
+        # 渡さないと、当たり前のことを珍しがる台詞になる。
+        for note in p.get("readings") or []:
+            out.append("  ・%s" % note)
 
     if m["shots"]:
         out.append("")
@@ -209,6 +358,8 @@ def facts(m: dict) -> str:
         for r in m["rare"]:
             out.append("- %s の%s %s（%s）"
                        % (r["name"], r["stat"], r["value"], r["rank"]))
+            if r.get("above"):
+                out.append("  1つ上にいるのは %s" % r["above"])
             if r.get("note"):
                 out.append("  %s とは: %s" % (r["stat"], r["note"]))
             if r.get("namesake"):

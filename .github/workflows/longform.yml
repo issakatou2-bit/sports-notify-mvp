@@ -214,7 +214,7 @@ jobs:
             --thumbnail build/lf/thumb.png \
             --privacy "${{ inputs.privacy || 'public' }}" \
             ${{ inputs.force == 'true' && '--force' || '' }} \
-            --publish-at "${{ github.event_name == 'workflow_run' && '18:30' || inputs.publish_at }}"
+            --publish-at "${{ github.event_name == 'workflow_run' && '21:00' || inputs.publish_at }}"
 
       # 投稿の記録を残す。ここが無いと、上げたこと自体が
       # ランナーの中で消える。
