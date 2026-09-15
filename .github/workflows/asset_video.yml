@@ -165,7 +165,12 @@ jobs:
           if [ "$TOPICS" = "next" ]; then
             TOPICS="$(python scripts/next_asset.py)"
             if [ -z "$TOPICS" ]; then
-              echo "::warning::未投稿の資産動画がありません。venue_topics.py で玉を足してください"
+              # 理由は2つある。**どちらも異常ではない。**
+              #   ・きょうはもう1本出した（22:00のcronと夕方の枠の両方から
+              #     起動するので、後から来たほうはここで止まる）
+              #   ・在庫が尽きた
+              # 理由は next_asset.py が標準エラーに書いている。
+              echo "::notice::きょうは作りません（すでに1本出したか、在庫切れ）"
               exit 0
             fi
             echo "::notice::今日の資産動画: $TOPICS"
