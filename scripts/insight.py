@@ -321,7 +321,7 @@ def player(player_id, name: str, season="2026", group="hitting") -> list:
     """1人について、いま言えること。多い順に並べて返す。"""
     data = mt.collect(player_id, season, group)
     said = []
-    said += from_splits(data["splits"], name)
+    said += from_splits(data.get("pairs") or [], name)
     said += from_scenes(data.get("scenes") or [], data["season_total"], name)
     said += from_months(data["months"], data["season_total"], name)
     said += from_recent(data["recent"], data["season_total"], name)

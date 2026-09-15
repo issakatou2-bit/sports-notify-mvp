@@ -31,6 +31,15 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+import pathlib
+import sys
+
+HERE = pathlib.Path(__file__).resolve().parent
+if str(HERE) not in sys.path:
+    sys.path.insert(0, str(HERE))
+
+import mlb_splits  # noqa: E402
+
 API = "https://statsapi.mlb.com/api/v1"
 TIMEOUT = 20
 
@@ -133,13 +142,23 @@ def situations(player_id, season, group: str = "hitting") -> dict:
     data = _get("/people/%s/stats" % player_id,
                 {"stats": "statSplits", "season": season, "group": group,
                  "sitCodes": ",".join(codes)})
-    got = {}
+    # **移籍した選手は、同じ符号で3行返る。**
+    #
+    # ヌートバーの昼の試合（2026-09-15に実データで確認）:
+    #   ダイヤモンドバックス 14打数 / カージナルス 58打数 /
+    #   合計(numTeams=2) 72打数
+    #
+    # 符号ごとに束ねてから mlb_splits に選ばせる。最初は「最後の行」を
+    # 使っていて、たまたま合計が最後だから合っていた。APIが順番を
+    # 変えた日から静かにずれる形だった（run_checks が捕まえた）。
+    rows = {}
     for block in data.get("stats") or []:
         for row in block.get("splits") or []:
             code = ((row.get("split") or {}).get("code") or "").lower()
             if code and code not in NOT_TAKEN:
-                got[code] = _stat(row)
-    return got
+                rows.setdefault(code, []).append(row)
+    return {code: _stat(mlb_splits.prefer_total(rs)[0])
+            for code, rs in rows.items() if rs}
 
 
 def splits(player_id, season, group: str = "hitting", got: dict = None):
@@ -171,36 +190,41 @@ def by_month(player_id, season, group: str = "hitting") -> list:
     """月ごとの成績。新しい月が後ろに来るよう並べ替える。"""
     data = _get("/people/%s/stats" % player_id,
                 {"stats": "byMonth", "season": season, "group": group})
-    out = []
+    # 移籍した月は、球団ごとと合計の両方が返る（ヌートバーの9月）。
+    rows = {}
     for block in data.get("stats") or []:
         for row in block.get("splits") or []:
-            month = row.get("month")
-            if month is None:
-                continue
-            out.append({"month": int(month), **_stat(row)})
+            if row.get("month") is not None:
+                rows.setdefault(int(row["month"]), []).append(row)
+    out = [{"month": m, **_stat(mlb_splits.prefer_total(rs)[0])}
+           for m, rs in rows.items() if rs]
     out.sort(key=lambda r: r["month"])
     return out
 
 
+def _one(data: dict) -> dict:
+    """**合計の行を選ぶ。**移籍した選手は球団ごとの行も返る。
+
+    「最初の1行」を採ると、たまたま合計が先頭に来ている日だけ合う。
+    順番が変われば静かにずれる。読み方は mlb_splits に寄せる。
+    """
+    rows = [r for block in (data.get("stats") or [])
+            for r in (block.get("splits") or [])]
+    return mlb_splits.season_stat(rows)
+
+
 def last_games(player_id, season, limit: int, group: str = "hitting") -> dict:
     """直近N試合の合計。取れなければ空。"""
-    data = _get("/people/%s/stats" % player_id,
-                {"stats": "lastXGames", "season": season, "group": group,
-                 "limit": limit})
-    for block in data.get("stats") or []:
-        for row in block.get("splits") or []:
-            return {"games": limit, **_stat(row)}
-    return {}
+    got = _one(_get("/people/%s/stats" % player_id,
+                    {"stats": "lastXGames", "season": season, "group": group,
+                     "limit": limit}))
+    return {"games": limit, **got} if got else {}
 
 
 def season_total(player_id, season, group: str = "hitting") -> dict:
     """今季の合計。比べる相手として要る。"""
-    data = _get("/people/%s/stats" % player_id,
-                {"stats": "season", "season": season, "group": group})
-    for block in data.get("stats") or []:
-        for row in block.get("splits") or []:
-            return _stat(row)
-    return {}
+    return _one(_get("/people/%s/stats" % player_id,
+                     {"stats": "season", "season": season, "group": group}))
 
 
 def collect(player_id, season, group: str = "hitting") -> dict:
@@ -212,7 +236,11 @@ def collect(player_id, season, group: str = "hitting") -> dict:
     out = {"player_id": str(player_id), "season": str(season),
            "group": group,
            "season_total": season_total(player_id, season, group),
-           "splits": splits(player_id, season, group, got=got),
+           # 鍵を "splits" にしない。**MLB APIの splits と紛らわしい。**
+           # run_checks は「APIの行を自前で読んでいないか」を
+           # `["splits"]` という書き方で見ているので、無関係な辞書でも
+           # 同じ鍵を使うと引っかかる。中身は対比型の組なので pairs。
+           "pairs": splits(player_id, season, group, got=got),
            "scenes": scenes(got),
            "months": by_month(player_id, season, group),
            "recent": {}}
