@@ -1710,6 +1710,33 @@ NUMBERS_PROMPT = CAST + """
 """
 
 
+# ずんだもんの語尾。ここに1つも当たらない行は、口調が混ざっている。
+ZUNDA_ENDINGS = ("のだ", "のだ？", "なのだ", "のだー", "のだっ")
+# 掛け合い以外の短い行（前後の挟み）は見ない。
+VOICE_SKIP = ("コレスポ",)
+
+
+def voice_slips(segs: list) -> list:
+    """話者の口調が入れ替わっていないか。
+
+    9/15の回で、ずんだもんが「じゃあここからは成績表の外の話ね。」と
+    **めたんの口調で仕切った。**二人で話す形にしている意味は、
+    どちらが言っているかが声と語尾で分かることにある。そこが崩れると、
+    画面を見ていない人には誰の発言か区別できなくなる。
+
+    返すのは、口調が外れている行の番号と中身。
+    """
+    out = []
+    for i, s in enumerate(segs):
+        who = (s.get("meta") or {}).get("who") or ""
+        text = (s.get("text") or "").strip()
+        if who != "ずんだもん" or not text or text in VOICE_SKIP:
+            continue
+        if not any(e in text for e in ZUNDA_ENDINGS):
+            out.append((i, text))
+    return out
+
+
 def parse(text: str, keys=()) -> list:
     """「話者[鍵]：台詞」の行を、区間の配列にする。
 
@@ -1844,6 +1871,14 @@ def main() -> int:
     for s in segs:
         tag = "[%s]" % s["panel"] if s.get("panel") else ""
         print(f"{s['meta']['who']}{tag}：{s['text']}")
+    # 話者の口調が混ざっていないか。落とさずに見えるようにする
+    # （1行だけなら動画としては成立するが、放っておくと増える）。
+    slips = voice_slips(segs)
+    for i, text in slips:
+        print(f"::warning::{i}行目のずんだもんが「のだ」で話していません: "
+              f"{text[:40]}")
+    if slips:
+        print(f"[warn] 口調の混ざった行が{len(slips)}行あります")
     # この1本にいくらかかったか。実行ページで見えるようにする。
     # モデルを上げたので、割に合っているかを毎日見られる状態にしておく。
     print(f"[info] モデル: {MODEL}")

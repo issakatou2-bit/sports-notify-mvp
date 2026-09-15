@@ -20,6 +20,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import generate_dialogue as gd  # noqa: E402
 import numbers_material as nm  # noqa: E402
 import race_words as rw  # noqa: E402
 
@@ -120,6 +121,31 @@ for key, panel in panels.items():
     check("%s に説明がある" % key, bool(panel.get("menu")), True)
     check("%s の型が描画にある" % key,
           panel["type"] in ("star", "stat", "group", "topic"), True)
+
+print()
+print("--- 二人の口調が混ざらないか ---")
+# 9/15の回で、ずんだもんが「じゃあここからは成績表の外の話ね。」と
+# **めたんの口調で仕切った。**二人で話す意味は、どちらが言っているかが
+# 語尾で分かることにあるので、そこが崩れると形が成り立たない。
+
+
+def _seg(who, text):
+    return {"meta": {"who": who}, "text": text}
+
+
+check("めたんの口調で話したら見つける",
+      [t for _, t in gd.voice_slips(
+          [_seg("ずんだもん", "じゃあここからは成績表の外の話ね。")])],
+      ["じゃあここからは成績表の外の話ね。"])
+check("「のだ」で終われば通す",
+      gd.voice_slips([_seg("ずんだもん", "安打1本で3打点なのだ。")]), [])
+check("問いかけの「のだ？」も通す",
+      gd.voice_slips([_seg("ずんだもん", "1位は誰なのだ？")]), [])
+check("前後の挟みは見ない",
+      gd.voice_slips([_seg("ずんだもん", "コレスポ")]), [])
+check("めたんの行は見ない",
+      gd.voice_slips([_seg("めたん", "そうね。")]), [])
+check("空の行で落ちない", gd.voice_slips([_seg("ずんだもん", "")]), [])
 
 print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
 sys.exit(1 if fails else 0)
