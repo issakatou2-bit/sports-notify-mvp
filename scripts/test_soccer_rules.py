@@ -145,7 +145,19 @@ print("\n--- MLB側に影響が無いこと ---")
 mlb = Game(game_id="m", league="MLB", home_team_id="119", away_team_id="135",
            home_team_name="ドジャース", away_team_name="パドレス",
            start_time_utc="2026-08-22T02:10:00Z")
-out = ne.build_output([mlb], {}, {"119": ["大谷翔平", "山本由伸"]})
+# **直近の出場記録を差し替える。**
+#
+# ここは「サッカーの変更がMLB側に影響していないか」を見る検査で、
+# 誰が出場しているかは関係ない。それなのに実データの
+# `recently_played()` を通していたので、大谷翔平が9/8にILへ入り、
+# 山本由伸も直近の出場が無い日になった9/15に落ちた。
+# **コードは何も変わっていないのに、日が変わって赤くなる検査。**
+_recent = ne.recently_played
+ne.recently_played = lambda: set()   # 履歴が取れない環境と同じ扱い
+try:
+    out = ne.build_output([mlb], {}, {"119": ["大谷翔平", "山本由伸"]})
+finally:
+    ne.recently_played = _recent
 g = out["games"][0]
 check("日本人選手の所属が理由になる",
       any(r.get("tag") == "jp_team" for r in g.get("reasons") or []), True)
