@@ -35,6 +35,7 @@
 import json
 import pathlib
 import sys
+from math import comb, sqrt
 
 HERE = pathlib.Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
@@ -69,11 +70,79 @@ SURE_AB = 80
 POSITIVE, NEUTRAL, NEGATIVE = "positive", "neutral", "negative"
 
 
+# 偶然でそうなる確率がこれ以下なら「傾向」として語ってよい。
+TREND_P = 0.05
+# これ以下なら「事実として置く」ところまで。これを超えたら出さない。
+FACT_P = 0.20
+# 打席がこれ未満だと、確率そのものが意味を持たない（1打数1安打など）。
+# **低くしてある。**落とすのは確率の側の仕事で、ここではない。
+# 満塁5打数.400は「偶然でも27%」として計算し、FACT_P を超えるから
+# 落ちる。打席数で先に切ると、5打数と29打数の区別がつかなくなる。
+MIN_AB_ANY = 3
+
+
 def _f(v, default=None):
     try:
         return float(v)
     except (TypeError, ValueError):
         return default
+
+
+def chance(n: int, hits: int, base: float) -> float:
+    """その成績が偶然で起きる確率。**小さいほど珍しい。**
+
+    打数と打率だけで判定していたのを、ここに置き換えた。
+    ユーザーの問い:「満塁で強いって情報、何がだめ？」への答えがこれ。
+
+      今季.204の打者が、満塁5打数で2安打（.400）以上打つ確率 … 27.1%
+      同じ打者が、初球29打数で10安打（.345）以上打つ確率     …  5.5%
+      同じ打者が、終盤の接戦42打数で9安打（.214）以上       … 49.5%
+
+    27%は「4人に1人はそう見える」ということで、30球団の主力を並べれば
+    8人が「満塁に強い」ことになる。**情報量がほぼ無い。**
+    一方で初球の5.5%は珍しく、捨てるほうが惜しい。
+
+    打数の下限で切ると、この2つを区別できない（5打数と29打数はどちらも
+    「少ない」）。確率で切れば、少ない打数でも極端なものは拾える。
+
+    期待より上なら上側、下なら下側の確率を返す（両方見る）。
+    """
+    if n < MIN_AB_ANY or not 0 < base < 1:
+        return 1.0
+    hits = max(0, min(n, int(hits)))
+    expected = n * base
+    if hits >= expected:
+        rng = range(hits, n + 1)
+    else:
+        rng = range(0, hits + 1)
+    return sum(comb(n, i) * base ** i * (1 - base) ** (n - i) for i in rng)
+
+
+def gap_chance(na, ha, nb, hb) -> float:
+    """2つの群の打率の差が、偶然で起きる確率（正規近似）。
+
+    対比型（昼と夜、対左と対右）はどちらも標本なので、片方を真の値と
+    みなす計算は使えない。差のzを見る。
+    """
+    if min(na, nb) < MIN_AB_ANY:
+        return 1.0
+    pa, pb = ha / na, hb / nb
+    var = pa * (1 - pa) / na + pb * (1 - pb) / nb
+    if var <= 0:
+        return 1.0
+    z = abs(pa - pb) / sqrt(var)
+    # 正規分布の両側確率。誤差関数を使わずに済ませる近似。
+    return max(0.0, min(1.0, 2 * (1 - _phi(z))))
+
+
+def _phi(z: float) -> float:
+    """標準正規分布の累積。Zelen & Severo の近似（誤差 7.5e-8）。"""
+    if z < 0:
+        return 1 - _phi(-z)
+    t = 1 / (1 + 0.2316419 * z)
+    poly = t * (0.319381530 + t * (-0.356563782 + t * (
+        1.781477937 + t * (-1.821255978 + t * 1.330274429))))
+    return 1 - 0.3989422804014327 * (2.718281828459045 ** (-z * z / 2)) * poly
 
 
 def _ops(row: dict):
@@ -83,6 +152,13 @@ def _ops(row: dict):
 def _ab(row: dict) -> int:
     try:
         return int(row.get("atBats") or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _hits(row: dict) -> int:
+    try:
+        return int(row.get("hits") or 0)
     except (TypeError, ValueError):
         return 0
 
@@ -99,26 +175,31 @@ def from_splits(rows: list, name: str) -> list:
     out = []
     for row in rows:
         a, b = row["a"], row["b"]
-        if min(_ab(a), _ab(b)) < mt.MIN_AB_SPLIT:
-            continue          # 片方が薄い切り口は比べない
+        p = gap_chance(_ab(a), _hits(a), _ab(b), _hits(b))
         oa, ob = _ops(a), _ops(b)
         if oa is None or ob is None:
             continue
-        gap = abs(oa - ob)
-        avg_gap = abs((_f(a.get("avg")) or 0) - (_f(b.get("avg")) or 0))
-        if gap < MIN_DIFF_OPS and avg_gap < MIN_DIFF_AVG:
-            continue          # 違いと呼べるほど違わない
+        if p > FACT_P:
+            continue          # 差と呼べるほど違わない
         hi, lo = (a, b) if oa > ob else (b, a)
+        if p <= TREND_P:
+            text = ("%sは%sでOPS%s、%sでは%s"
+                    % (name, hi["label"], hi.get("ops"),
+                       lo["label"], lo.get("ops")))
+            sure, weight = "high", min(100, 55 + (TREND_P - p) * 700)
+        else:
+            text = ("%sは%sで%s打数%s安打、%sでは%s打数%s安打"
+                    % (name, hi["label"], _ab(hi), _hits(hi),
+                       lo["label"], _ab(lo), _hits(lo)))
+            sure, weight = "low", 35
         out.append(_say(
-            "split",
-            "%sは%sでOPS%s、%sでは%s" % (name, hi["label"], hi.get("ops"),
-                                        lo["label"], lo.get("ops")),
+            "split", text,
             tone=NEUTRAL,     # どちらが良いという話ではなく、差の話
-            sure="high",
-            weight=min(100, 40 + gap * 200),
+            sure=sure, weight=weight,
             detail="%s %s打数 打率%s ／ %s %s打数 打率%s"
+                   "（差が偶然で出る確率 %.0f%%）"
                    % (hi["label"], _ab(hi), hi.get("avg"),
-                      lo["label"], _ab(lo), lo.get("avg")),
+                      lo["label"], _ab(lo), lo.get("avg"), p * 100),
             why=row.get("why", "")))
     return out
 
@@ -132,30 +213,34 @@ def from_scenes(rows: list, season_total: dict, name: str) -> list:
     ここでいちばん効くのが打数の下限。村上宗隆の満塁は今季5打数で
     打率.400・OPS1.771。**これを「満塁に強い」と書いたら終わり。**
     """
-    base = _ops(season_total)
-    if base is None:
+    base_avg = _f(season_total.get("avg"))
+    if base_avg is None:
         return []
     out = []
     for row in rows:
-        ab = _ab(row)
-        if ab < mt.MIN_AB_SPLIT:
-            continue          # 満塁5打数・初球29打数はここで落ちる
-        cur = _ops(row)
-        if cur is None:
-            continue
-        gap = cur - base
-        if abs(gap) < MIN_DIFF_OPS_SCENE:
-            continue
-        up = gap > 0
+        ab, hits = _ab(row), _hits(row)
+        p = chance(ab, hits, base_avg)
+        if p > FACT_P:
+            continue          # 満塁5打数(27%)・終盤の接戦42打数(50%)はここ
+        cur = _f(row.get("avg"))
+        up = cur is not None and cur > base_avg
+        if p <= TREND_P:
+            # 傾向として語ってよい。
+            text = ("%sは%sで打率%s。今季全体の%sを%s"
+                    % (name, row["label"], row.get("avg"),
+                       season_total.get("avg"),
+                       "上回っている" if up else "下回っている"))
+            tone, sure = (POSITIVE if up else NEGATIVE), "high"
+            weight = min(100, 60 + (TREND_P - p) * 600)
+        else:
+            # 珍しさが足りない。**起きたことをそのまま置く。**
+            text = ("%sは%sで%s打数%s安打" % (name, row["label"], ab, hits))
+            tone, sure = NEUTRAL, "low"
+            weight = 35
         out.append(_say(
-            "scene",
-            "%sは%sでOPS%s。今季全体の%sを%s"
-            % (name, row["label"], row.get("ops"), season_total.get("ops"),
-               "上回っている" if up else "下回っている"),
-            tone=POSITIVE if up else NEGATIVE,
-            sure="high",
-            weight=min(100, 45 + abs(gap) * 150),
-            detail="%s %s打数 打率%s" % (row["label"], ab, row.get("avg")),
+            "scene", text, tone=tone, sure=sure, weight=weight,
+            detail="%s 打率%s OPS%s（偶然でこうなる確率 %.0f%%）"
+                   % (row["label"], row.get("avg"), row.get("ops"), p * 100),
             why=row.get("why", "")))
     return out
 
