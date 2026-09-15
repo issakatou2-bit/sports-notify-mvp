@@ -579,7 +579,30 @@ def _top_game_meta(games: list) -> dict:
     return {
         "matchup": g.get("matchup") or "",
         "time": (start.split(" ")[1] + " JST") if " " in start else "",
+        # 何戦目と、ここまでの勝敗。**読み上げと同じことを画面にも出す。**
+        # 冒頭で言うようになったのに、画面はカード名だけだった。
+        "series": _series_line(g),
     }
+
+
+def _series_line(g: dict) -> str:
+    """「3連戦の2戦目・ここまでドジャースが1勝」。無ければ空。"""
+    s = g.get("series_context") or {}
+    n, total = s.get("series_game_number"), s.get("games_in_series")
+    if not (n and total):
+        return ""
+    line = f"{total}連戦の{n}戦目"
+    hw, aw = s.get("home_wins_in_stretch"), s.get("away_wins_in_stretch")
+    if n > 1 and hw is not None and aw is not None:
+        home = display_name(g.get("home_team_name") or "")
+        away = display_name(g.get("away_team_name") or "")
+        if hw > aw and home:
+            return f"{line}・ここまで{home}が{hw}勝{aw}敗"
+        if aw > hw and away:
+            return f"{line}・ここまで{away}が{aw}勝{hw}敗"
+        if hw:
+            return f"{line}・ここまで{hw}勝{aw}敗"
+    return line
 
 
 def _with_team(row) -> str:

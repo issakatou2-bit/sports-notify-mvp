@@ -342,8 +342,8 @@ def render_intro(progress: float, date_label: str, meta: dict = None):
     if progress > 0.14:
         # 見出しの材料が無い日は big がこの文言に落ちる。
         # そのまま下にも同じものを出すと、1枚目で同じ行を2回読ませることになる。
-        sub_line = f"{date_label} の注目試合"
-        if big != sub_line:
+        sub_line = f"{date_label}の注目試合"
+        if big != sub_line and big != f"{date_label} の注目試合":
             d.text((80, y + 40), sub_line, font=font(52), fill=TEXT)
 
     # 空いた下半分に、その日いちばんの試合を置く。
@@ -356,12 +356,23 @@ def render_intro(progress: float, date_label: str, meta: dict = None):
     top = (meta or {}).get("top_game") or {}
     if top.get("matchup") and progress > 0.22:
         e2 = ease_out(min(1.0, (progress - 0.22) * 4))
-        y2 = 1020 + int((1 - e2) * 50)
+        # **上へ寄せた。**見出しの下とカードの間が1画面ぶん空いていて、
+        # 下半分は飾りしか無かった。音を切って見ている人には、
+        # 空白のぶんだけ情報が届いていない。
+        y2 = 900 + int((1 - e2) * 50)
+        # 何戦目と、ここまでの勝敗。**読み上げと同じことを画面にも出す。**
+        # 冒頭で「3連戦の2戦目です。ここまでドジャースが1勝0敗」と
+        # 言うようになったのに、画面はカード名だけだった。
+        series = (top.get("series") or "").strip()
+        box_h = 250 if not series else 320
         mf = font(fit_size(d, top["matchup"], W - 240, (66, 58, 50, 44)))
-        d.rounded_rectangle([60, y2, W - 60, y2 + 250], 26, fill=ACCENT)
+        d.rounded_rectangle([60, y2, W - 60, y2 + box_h], 26, fill=ACCENT)
         d.text((110, y2 + 36), top.get("time") or "", font=font(44),
                fill=(92, 58, 8))
         d.text((110, y2 + 110), top["matchup"], font=mf, fill=BG)
+        if series:
+            sf = font(fit_size(d, series, W - 240, (46, 42, 38, 34)))
+            d.text((110, y2 + 228), series, font=sf, fill=(92, 58, 8))
 
     d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im

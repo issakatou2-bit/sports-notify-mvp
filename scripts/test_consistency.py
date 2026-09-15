@@ -740,5 +740,19 @@ check("サッカーは今夜の試合数を言う",
 # ユーザーの指摘で直した書き方。読点のあとに体言止め＋句点を並べない。
 check("「、〜を。」で終わらない", _open.endswith("を。"), False)
 
+# 画面にも同じことを出す。**読み上げだけに入れると、音を切って見ている
+# 人には届かない。**ショートの多くは音無しで見られている。
+_meta = _gn._top_game_meta([{**_mlb(2, 3, 0, 1)[0],
+                             "matchup": "ドジャース vs レッズ",
+                             "start_time_jst": "2026-09-16 08:10"}])
+check("画面にカードが出る", _meta["matchup"], "ドジャース vs レッズ")
+check("画面にも何戦目が出る", "3連戦の2戦目" in _meta["series"], True)
+check("画面にも勝敗が出る", "ドジャースが1勝0敗" in _meta["series"], True)
+check("初戦では勝敗を出さない",
+      "ここまで" in _gn._top_game_meta(
+          [{**_mlb(1, 3, 0, 0)[0], "matchup": "A vs B"}])["series"], False)
+check("連戦の情報が無ければ空",
+      _gn._top_game_meta([{**_mlb()[0], "matchup": "A vs B"}])["series"], "")
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)
