@@ -629,11 +629,49 @@ def _how_many(games: list, total: int) -> str:
     """
     n = len(games)
     if not (games and _is_soccer_league(games[0].get("league"))):
-        return f"注目の{n}試合を、理由つきで。"
+        # **MLBは「注目の3試合を、理由つきで。」をやめた。**
+        #
+        # 何の話が始まるのか分からないまま3秒使っていた。毎日同じ文なので
+        # 2回目からは中身がゼロで、ここで抜ける人がいてもおかしくない
+        # （直近28日のショートは40.6%が途中でスワイプされている）。
+        #
+        # 代わりに1本目の試合を先に置く。**カード → 何戦目 → 勝敗**の順。
+        # 「ドジャース対レッズ、3連戦の2戦目」まで聞けば、
+        # 見るかどうかをそこで決められる。
+        return _first_card(games)
     if not total or total <= n:
         # 全部紹介する日。「1試合から1試合を選ぶ」とは言わない。
         return f"今夜あるのはこの{n}試合です。理由つきで見ていきます。"
-    return f"今夜は{total}試合。そこから{n}試合を、理由つきで。"
+    return f"今夜は{total}試合。そこから{n}試合を、理由つきで見ていきます。"
+
+
+def _first_card(games: list) -> str:
+    """1本目のカードと、そのシリーズの位置。
+
+    材料は `series_context`（`lens_series` が使っているものと同じ）。
+    無ければカードだけ言う。**無いものは埋めない。**
+    """
+    g = games[0] if games else {}
+    away = display_name(g.get("away_team_name") or "")
+    home = display_name(g.get("home_team_name") or "")
+    if not (away and home):
+        return ""
+    card = f"{away}対{home}"
+    s = g.get("series_context") or {}
+    n, total = s.get("series_game_number"), s.get("games_in_series")
+    if not (n and total):
+        return card + "です。"
+    head = f"{card}、{total}連戦の{n}戦目です。"
+    # ここまでの勝敗。初戦は言うことが無い。
+    hw, aw = s.get("home_wins_in_stretch"), s.get("away_wins_in_stretch")
+    if n > 1 and hw is not None and aw is not None:
+        if hw > aw:
+            return head + f"ここまで{home}が{hw}勝{aw}敗。"
+        if aw > hw:
+            return head + f"ここまで{away}が{aw}勝{hw}敗。"
+        if hw:
+            return head + f"ここまで{hw}勝{aw}敗の五分です。"
+    return head
 
 
 def _yesterday_recap(archive_dir: str, games: list,

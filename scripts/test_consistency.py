@@ -699,5 +699,46 @@ for _k, _label, _, _time in pc.DAILY_LINEUP:
                  for _row in _lineup.split("\n"))
     check(f"SCHEDULE.md に {_label} {_time} がある", _found, True)
 
+# 冒頭が、毎日同じ文にならないか。
+#
+# 以前は「注目の3試合を、理由つきで。」だった。毎日同じで中身がゼロ、
+# しかも何の話が始まるのか分からないまま3秒使う。
+# ユーザーの指摘:「テンポが悪いので、すぐ本題に入りませんか？」
+print("\n--- 冒頭は、その日の中身から作る ---")
+import generate_narration as _gn  # noqa: E402
+
+
+def _mlb(n=None, total=None, hw=None, aw=None):
+    g = {"league": "MLB", "away_team_name": "ドジャース",
+         "home_team_name": "レッズ"}
+    if n:
+        g["series_context"] = {"series_game_number": n,
+                               "games_in_series": total,
+                               "home_wins_in_stretch": hw,
+                               "away_wins_in_stretch": aw}
+    return [g]
+
+
+_open = _gn._how_many(_mlb(2, 3, 0, 1), 15)
+check("カードを言う", "ドジャース対レッズ" in _open, True)
+check("何戦目かを言う", "3連戦の2戦目" in _open, True)
+check("ここまでの勝敗を言う", "ドジャースが1勝0敗" in _open, True)
+check("毎日同じ文にならない",
+      _open == _gn._how_many(_mlb(1, 3, 0, 0), 15), False)
+check("初戦では勝敗を言わない",
+      "ここまで" in _gn._how_many(_mlb(1, 3, 0, 0), 15), False)
+check("五分は五分と言う",
+      "1勝1敗の五分" in _gn._how_many(_mlb(3, 3, 1, 1), 15), True)
+check("連戦の情報が無ければカードだけ",
+      _gn._how_many(_mlb(), 15), "ドジャース対レッズです。")
+check("球団名が取れなければ黙る",
+      _gn._how_many([{"league": "MLB"}], 15), "")
+# サッカーは試合数が日によって変わるので、そちらの言い方を残す。
+check("サッカーは今夜の試合数を言う",
+      "今夜" in _gn._how_many([{"league": "PL", "away_team_name": "A",
+                                "home_team_name": "B"}], 8), True)
+# ユーザーの指摘で直した書き方。読点のあとに体言止め＋句点を並べない。
+check("「、〜を。」で終わらない", _open.endswith("を。"), False)
+
 print("\nALL OK" if not fails else f"\n{fails} FAILURES")
 sys.exit(1 if fails else 0)
