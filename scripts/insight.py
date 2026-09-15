@@ -49,6 +49,17 @@ import mlb_trends as mt  # noqa: E402
 MIN_DIFF_OPS = 0.120
 MIN_DIFF_AVG = 0.050
 
+# 場面型（得点圏など）は、対比型より狭い幅で見る。
+#
+# 対比型は**独立した2つの群の差**なので、両方の揺れが乗る（√2倍）。
+# 場面型は「その場面」と「今季全体」の比較で、場面は全体の一部だから
+# 揺れが小さい。同じ基準で切ると、対比型に合わせて場面型が
+# ほぼ全部落ちる（村上宗隆の得点圏.103、2アウト.100、先頭.103が
+# すべて.120のすぐ下だった）。
+#
+# 0.120 / √2 ≈ 0.085。
+MIN_DIFF_OPS_SCENE = 0.085
+
 # 月の成績を比べるのに要る打数。月の途中は届かない日がある。
 MIN_AB_MONTH = 50
 
@@ -108,6 +119,43 @@ def from_splits(rows: list, name: str) -> list:
             detail="%s %s打数 打率%s ／ %s %s打数 打率%s"
                    % (hi["label"], _ab(hi), hi.get("avg"),
                       lo["label"], _ab(lo), lo.get("avg")),
+            why=row.get("why", "")))
+    return out
+
+
+def from_scenes(rows: list, season_total: dict, name: str) -> list:
+    """場面ごとの成績。**比べる相手は今季全体。**
+
+    「得点圏で.160」はそれ単体では読めない。今季の.204と並べて初めて
+    「チャンスで打てていない」という話になる。
+
+    ここでいちばん効くのが打数の下限。村上宗隆の満塁は今季5打数で
+    打率.400・OPS1.771。**これを「満塁に強い」と書いたら終わり。**
+    """
+    base = _ops(season_total)
+    if base is None:
+        return []
+    out = []
+    for row in rows:
+        ab = _ab(row)
+        if ab < mt.MIN_AB_SPLIT:
+            continue          # 満塁5打数・初球29打数はここで落ちる
+        cur = _ops(row)
+        if cur is None:
+            continue
+        gap = cur - base
+        if abs(gap) < MIN_DIFF_OPS_SCENE:
+            continue
+        up = gap > 0
+        out.append(_say(
+            "scene",
+            "%sは%sでOPS%s。今季全体の%sを%s"
+            % (name, row["label"], row.get("ops"), season_total.get("ops"),
+               "上回っている" if up else "下回っている"),
+            tone=POSITIVE if up else NEGATIVE,
+            sure="high",
+            weight=min(100, 45 + abs(gap) * 150),
+            detail="%s %s打数 打率%s" % (row["label"], ab, row.get("avg")),
             why=row.get("why", "")))
     return out
 
@@ -189,6 +237,7 @@ def player(player_id, name: str, season="2026", group="hitting") -> list:
     data = mt.collect(player_id, season, group)
     said = []
     said += from_splits(data["splits"], name)
+    said += from_scenes(data.get("scenes") or [], data["season_total"], name)
     said += from_months(data["months"], data["season_total"], name)
     said += from_recent(data["recent"], data["season_total"], name)
     said.sort(key=lambda s: -s["weight"])

@@ -90,6 +90,61 @@ check("108打数なら傾向として言う", long[0]["sure"], "high")
 check("下を向いていると分かる", long[0]["tone"], "negative")
 
 print()
+print("--- 場面ごとの成績 ---")
+season = {"ops": ".810", "avg": ".204", "atBats": 411}
+
+
+def scene(code, label, ab, ops, avg):
+    return [{"kind": code, "label": label, "why": "検査",
+             "atBats": ab, "ops": ops, "avg": avg}]
+
+
+# **村上宗隆の満塁は今季5打数で打率.400・OPS1.771。**
+# これを「満塁に強い」と書いたら終わり。打数で落とす。
+check("満塁5打数は出さない",
+      ins.from_scenes(scene("r123", "満塁", 5, "1.771", ".400"), season, "X"),
+      [])
+check("初球29打数も出さない",
+      ins.from_scenes(scene("fp", "初球", 29, "1.229", ".345"), season, "X"),
+      [])
+# 得点圏81打数・OPS.707は、今季.810との差.103。言える。
+got = ins.from_scenes(scene("risp", "得点圏", 81, ".707", ".160"),
+                      season, "X")
+check("得点圏81打数は言う", len(got), 1)
+check("下を向いていると分かる", got[0]["tone"], "negative")
+check("今季全体と並べて書く", "今季全体の.810" in got[0]["text"], True)
+got = ins.from_scenes(scene("lo", "イニングの先頭", 88, ".913", ".273"),
+                      season, "X")
+check("上回っていれば positive", got[0]["tone"], "positive")
+check("差が小さければ黙る",
+      ins.from_scenes(scene("ig07", "7回以降", 128, ".850", ".211"),
+                      season, "X"), [])
+
+print()
+print("--- 場面型は対比型より狭い幅で見る ---")
+# 対比型は独立した2群の差なので両方の揺れが乗る（√2倍）。
+# 場面型は部分と全体の比較なので揺れが小さい。同じ基準だと
+# 場面型がほぼ全部落ちる（村上は得点圏.103・2アウト.100・先頭.103で、
+# どれも対比型の.120のすぐ下だった）。
+check("場面型のほうが狭い", ins.MIN_DIFF_OPS_SCENE < ins.MIN_DIFF_OPS, True)
+check("対比型は0.120", ins.MIN_DIFF_OPS, 0.120)
+check("場面型は0.085", ins.MIN_DIFF_OPS_SCENE, 0.085)
+
+print()
+print("--- 持たないと決めた切り口 ---")
+codes = {c for c, _, _ in mt.SITUATIONS}
+check("得点圏は持つ", "risp" in codes, True)
+check("2アウトは持つ", "o2" in codes, True)
+# **曜日別は打数が集まってしまうので、下限では落ちない。**
+# 最初から取らないしかない。
+check("曜日別は取らない一覧に入っている",
+      {"dmo", "dsu"} <= set(mt.NOT_TAKEN), True)
+check("曜日別を場面にも入れていない",
+      any(c.startswith("d") and len(c) == 3 for c in codes), False)
+check("どの場面にも理由が書いてある",
+      all(len(s) == 3 and s[2] for s in mt.SITUATIONS), True)
+
+print()
 print("--- 向きで絞れる ---")
 rows = [{"tone": "positive", "sure": "high", "weight": 90, "text": "上"},
         {"tone": "negative", "sure": "high", "weight": 80, "text": "下"},

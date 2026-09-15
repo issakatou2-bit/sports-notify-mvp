@@ -44,7 +44,37 @@ SPLITS = (
      "球場の形と移動。本拠地の広さは打者ごとに向き不向きがある"),
     ("vl", "vr", "対左投手", "対右投手",
      "投げる腕と打つ側の関係。打者の得手不得手が最も出る切り口"),
+    ("g", "t", "天然芝", "人工芝",
+     "打球の速さと弾み方が変わる。内野安打の出方に響く"),
+    ("h1", "h2", "前半戦", "後半戦",
+     "オールスターを挟んで、疲れと対策の両方が出る"),
 )
+
+# 場面ごとの成績。**比べる相手は今季全体。**
+#
+# 対比型（上のSPLITS）と違い、片方しかない切り口。「得点圏で.160」は
+# それ単体では読めず、今季全体の.204と並べて初めて意味を持つ。
+#
+# (符号, 日本語, なぜ見るか)
+SITUATIONS = (
+    ("risp", "得点圏", "走者を還す場面。打線の中心ほど問われる"),
+    ("o2", "2アウト", "ここで打てるかで、イニングが終わるか続くかが決まる"),
+    ("lo", "イニングの先頭", "出塁すれば、その回の得点確率が大きく動く"),
+    ("ig07", "7回以降", "終盤は相手の継投が変わり、疲れも出る"),
+    ("sah", "リードしている場面", "追加点が要る場面での働き"),
+    ("sbh", "ビハインドの場面", "追う展開で、どれだけ食い下がれるか"),
+)
+
+# **持たない切り口。**取れるが出さない。
+#
+# 曜日別（dmo〜dsu）… 意味が想像できない。7通り試せば1つは極端に出る
+# 満塁（r123）      … 村上宗隆で今季5打数。打席が集まらない
+# 初球（fp）        … 29打数。同上
+# 終盤の接戦（lc）  … 42打数。惜しいが、この打数では読めない
+#
+# サンプルで落ちるものは下限で自動的に落ちる。曜日別だけは
+# 打数が集まってしまうので、**最初から取らない**しかない。
+NOT_TAKEN = ("dmo", "dtu", "dwe", "dth", "dfr", "dsa", "dsu")
 
 # 切り口ごとに、これだけの打数が無ければ比べない。
 #
@@ -83,12 +113,15 @@ def _f(value, default=None):
         return default
 
 
-def splits(player_id, season, group: str = "hitting") -> list:
-    """登録した切り口の成績。**差が小さいものはここでは落とさない。**
+def situations(player_id, season, group: str = "hitting") -> dict:
+    """登録した切り口を**まとめて1回で**取る。
 
-    落とすのは `insight` の役目。ここは取れたものをそのまま返す。
+    sitCodesはカンマ区切りで何個でも渡せる。実際に23個を1リクエストで
+    取れることを確認した（19個ぶんの打席があった）。**切り口を増やしても
+    API回数は増えない**ので、費用も実行時間もほぼ変わらない。
     """
     codes = [c for pair in SPLITS for c in pair[:2]]
+    codes += [c for c, _, _ in SITUATIONS]
     data = _get("/people/%s/stats" % player_id,
                 {"stats": "statSplits", "season": season, "group": group,
                  "sitCodes": ",".join(codes)})
@@ -96,8 +129,17 @@ def splits(player_id, season, group: str = "hitting") -> list:
     for block in data.get("stats") or []:
         for row in block.get("splits") or []:
             code = ((row.get("split") or {}).get("code") or "").lower()
-            if code:
+            if code and code not in NOT_TAKEN:
                 got[code] = _stat(row)
+    return got
+
+
+def splits(player_id, season, group: str = "hitting", got: dict = None):
+    """対比型（AとBを並べる）。**差が小さいものはここでは落とさない。**
+
+    落とすのは `insight` の役目。ここは取れたものをそのまま返す。
+    """
+    got = situations(player_id, season, group) if got is None else got
     out = []
     for a, b, ja, jb, why in SPLITS:
         if a not in got or b not in got:
@@ -105,6 +147,15 @@ def splits(player_id, season, group: str = "hitting") -> list:
         out.append({"kind": "%s_%s" % (a, b), "why": why,
                     "a": {"label": ja, **got[a]},
                     "b": {"label": jb, **got[b]}})
+    return out
+
+
+def scenes(got: dict) -> list:
+    """場面型（今季全体と比べる）。比べる相手は呼ぶ側が持つ。"""
+    out = []
+    for code, ja, why in SITUATIONS:
+        if code in got:
+            out.append({"kind": code, "label": ja, "why": why, **got[code]})
     return out
 
 
@@ -149,10 +200,12 @@ def collect(player_id, season, group: str = "hitting") -> dict:
 
     毎日全選手ぶん叩くものではない。問い合わせられた選手だけ。
     """
+    got = situations(player_id, season, group)
     out = {"player_id": str(player_id), "season": str(season),
            "group": group,
            "season_total": season_total(player_id, season, group),
-           "splits": splits(player_id, season, group),
+           "splits": splits(player_id, season, group, got=got),
+           "scenes": scenes(got),
            "months": by_month(player_id, season, group),
            "recent": {}}
     for n in RECENT_GAMES:
