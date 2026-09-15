@@ -156,6 +156,49 @@ class BufferTests(unittest.TestCase):
             self.assertEqual(mutate.call_count,1)
 
 
+class EachKindSpeaksForItself(unittest.TestCase):
+    """枠ごとに、1行目でその回が何なのかを言い切るか。
+
+    明日の注目試合の文面だけが埋め込まれていて、他の枠を投げられ
+    なかった。同じ文で全部出すと「明日の注目試合」が7本並ぶことになり、
+    どれが何の回か分からなくなる。
+    """
+
+    record = {'video_id': 'abc12345678', 'title': '【MLB】村上宗隆・岡本和真'
+                                                 'ほか｜9月15日 日本人選手 #Shorts'}
+
+    def test_every_kind_has_its_own_first_line(self):
+        seen = set()
+        for kind in daily.KIND_WORDS:
+            text = daily.caption('instagram', '2026-09-15', self.record, kind)
+            head = text.split('\n')[0]
+            self.assertIn('09/15更新', head)
+            self.assertNotIn(head, seen, '1行目が他の枠と同じ: ' + kind)
+            seen.add(head)
+
+    def test_soccer_kinds_do_not_get_mlb_tags(self):
+        text = daily.caption('instagram', '2026-09-15', self.record,
+                             'daily_soccer')
+        self.assertNotIn('#MLB', text)
+
+    def test_unknown_kind_falls_back_instead_of_crashing(self):
+        text = daily.caption('instagram', '2026-09-15', self.record, 'なぞ')
+        self.assertIn('明日の注目試合', text)
+
+    def test_x_stays_within_the_limit_for_every_kind(self):
+        long_title = {'video_id': 'abc12345678',
+                      'title': '【MLB】' + '村上宗隆・' * 12 + 'ほか｜9月15日'}
+        for kind in daily.KIND_WORDS:
+            text = daily.caption('twitter', '2026-09-15', long_title, kind)
+            self.assertLessEqual(daily.x_weight(text), 280, kind)
+
+    def test_the_youtube_link_is_always_there(self):
+        for kind in daily.KIND_WORDS:
+            for service in ('twitter', 'instagram', 'tiktok'):
+                text = daily.caption(service, '2026-09-15', self.record, kind)
+                self.assertIn('abc12345678', text, kind + '/' + service)
+
+
 class StillProcessingIsNotAFailure(unittest.TestCase):
     """9/14はXもInstagramも出ていたのに、実行は赤かった。
 

@@ -227,22 +227,73 @@ def host_video(run, day, path, digest):
     return asset['browser_download_url']
 
 
-def caption(service, day, record):
-    title = ht.strip_tags(record['title'].split('｜明日の注目試合')[0].replace('【MLB】', ''))
-    tags = ht.select(title, service, sport='mlb')
+# 枠ごとの言い方。**1行目でその回が何なのかを言い切る。**
+#
+# 明日の注目試合の文面だけが埋め込まれていて、他の枠を投げられなかった。
+# 同じ文で全部を出すと「明日の注目試合」が7本並ぶことになり、
+# どれが何の回か分からなくなる。
+#
+# short … Xの1行目（文字数が厳しいので短く）
+# long  … Instagram / TikTokの1行目
+# lead  … 何を見られるかの一言
+# cut   … 題からここより後ろを落とす（枠の名前が二重に出るため）
+# sport … ハッシュタグを選ぶときの競技
+KIND_WORDS = {
+    'daily': {'short': '明日のMLB', 'long': '明日の注目試合',
+              'lead': '試合を見る前に、先発と注目ポイントをチェック。',
+              'cut': '｜明日の注目試合', 'sport': 'mlb'},
+    'morning': {'short': 'きょうの日本人選手', 'long': '日本人選手の成績',
+                'lead': '誰がどれだけ動いたかを、成績の順に。',
+                'cut': '｜', 'sport': 'mlb'},
+    'morning_press': {'short': '現地の報道', 'long': '現地の報道',
+                      'lead': '現地の記者と見出しが、何を伝えているか。',
+                      'cut': '｜', 'sport': 'mlb'},
+    'morning_voices': {'short': '現地の反応', 'long': 'ファンのコメント欄',
+                       'lead': '現地のファンが何と言っているか。',
+                       'cut': '｜', 'sport': 'mlb'},
+    'morning_postseason': {'short': '進出争い', 'long': 'ポストシーズン進出争い',
+                           'lead': 'マジックと、いまの並び。',
+                           'cut': '｜', 'sport': 'mlb'},
+    'daily_soccer': {'short': '今夜の欧州サッカー', 'long': '今夜の注目カード',
+                     'lead': 'キックオフ前に、見どころを。',
+                     'cut': '｜', 'sport': 'soccer'},
+    'soccer_race': {'short': '欧州サッカー 順位争い',
+                    'long': '欧州サッカー 順位争い',
+                    'lead': '圏内と圏外の境目が、いまどうなっているか。',
+                    'cut': '｜', 'sport': 'soccer'},
+}
+DEFAULT_KIND = 'daily'
+
+
+def words(kind: str) -> dict:
+    return KIND_WORDS.get(kind) or KIND_WORDS[DEFAULT_KIND]
+
+
+def caption(service, day, record, kind=DEFAULT_KIND):
+    w = words(kind)
+    title = ht.strip_tags(record['title'].split(w['cut'])[0]
+                          .replace('【MLB】', '').strip())
+    tags = ht.select(title, service, sport=w['sport'])
     youtube = 'https://www.youtube.com/watch?v=' + record['video_id']
+    stamp = day[5:].replace('-', '/')
     if service == 'twitter':
         # Unicode outside the single-weight X ranges counts twice; URLs are 23.
-        body = f'{day[5:].replace("-", "/")}更新｜明日のMLB\n{title}\n\n動画で見どころをチェック。\n{youtube}\nhttps://collespo.com/'
-        text = body + '\n' + ht.display(tags)
-        while x_weight(text) > 280 and tags:
-            tags.pop()
-            text = body + ('\n' + ht.display(tags) if tags else '')
-        if x_weight(text) > 280:
-            raise ValueError('X caption exceeds 280 weighted characters')
-        return text
-    return (f'{day[5:].replace("-", "/")}更新｜明日の注目試合\n{title}\n\n'
-            '試合を見る前に、先発と注目ポイントをチェック。\n'
+        #
+        # 削る順は「一言 → タグ」。**枠の名前と題は最後まで残す。**
+        # どの回なのかが消えると、投稿そのものの意味が無くなる。
+        head = f'{stamp}更新｜{w["short"]}\n{title}\n\n'
+        tail = f'{youtube}\nhttps://collespo.com/'
+        for lead in (w['lead'] + '\n', ''):
+            body = head + lead + tail
+            text = body + '\n' + ht.display(tags)
+            while x_weight(text) > 280 and tags:
+                tags.pop()
+                text = body + ('\n' + ht.display(tags) if tags else '')
+            if x_weight(text) <= 280:
+                return text
+        raise ValueError('X caption exceeds 280 weighted characters')
+    return (f'{stamp}更新｜{w["long"]}\n{title}\n\n'
+            + w['lead'] + '\n'
             '動画・記事はプロフィールの collespo.com から。\n' + youtube +
             '\n\n音声：VOICEVOX:ずんだもん\n' + ht.display(tags))
 
