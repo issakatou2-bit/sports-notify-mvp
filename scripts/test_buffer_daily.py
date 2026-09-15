@@ -71,6 +71,32 @@ class BufferTests(unittest.TestCase):
             self.assertEqual(payload['assets'][0]['video']['url'], 'https://example.test/a.mp4')
         self.assertEqual(daily.create_payload('instagram', x, '')['metadata']['instagram']['type'], 'reel')
 
+    def test_caption_uses_one_published_game_reason_without_inventing_stakes(self):
+        record={**self.record, 'title':'【MLB】菅野智之 先発予定｜明日の注目試合',
+                'description':'紹介文\n\n1. 09/15 09:40 ロッキーズ vs パドレス\n   ・パドレスは7連勝中\n\n2. 09/15 10:00 A vs B\n   ・別の試合\n\nコレスポでは毎日配信'}
+        for service in daily.CHANNELS:
+            text=daily.caption(service,'2026-09-14',record)
+            self.assertIn('菅野智之が先発予定です。',text)
+            self.assertIn('パドレスは7連勝中。',text)
+            self.assertNotIn('別の試合',text)
+            self.assertNotIn('正念場',text)
+            self.assertNotIn('プロフィールの',text)
+
+    def test_caption_missing_description_and_long_reason_remain_safe(self):
+        self.assertEqual(daily.first_game_reason('・別枠の宣伝'), '')
+        self.assertEqual(daily.first_game_reason('1. 09/15 09:40 A vs B\n\n・宣伝'), '')
+        self.assertEqual(daily.first_game_reason('1. 09/15 09:40 A vs B\n・https://example.test'), '')
+        record={**self.record,'title':'【MLB】菅野智之 先発予定｜明日の注目試合',
+                'description':'1. 09/15 09:40 A vs B\n・'+('あ'*70)}
+        text=daily.caption('twitter','2026-09-14',record)
+        self.assertLessEqual(daily.x_weight(text),280)
+        self.assertIn('菅野智之が先発予定です。',text)
+        self.assertTrue('あ' not in text or ('あ'*70+'。') in text)
+        longer={**record, 'title':'【MLB】菅野智之 先発予定・パドレスは7連勝中｜明日の注目試合'}
+        shortened=daily.caption('twitter','2026-09-14',longer)
+        self.assertLessEqual(daily.x_weight(shortened),280)
+        self.assertNotIn('あ',shortened)
+
     def test_overlong_x_fails_instead_of_bad_post(self):
         with self.assertRaises(ValueError):
             daily.caption('twitter', '2026-09-11', {**self.record,'title':'今'*200})
