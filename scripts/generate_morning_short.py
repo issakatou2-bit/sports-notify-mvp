@@ -45,6 +45,10 @@ import video_common
 # **数字の連なりを切らない直し(0.05 → 0.0/5)が届いていなかった。**
 build_narration_track = video_common.build_narration_track
 wrap = video_common.wrap
+# 絵文字を含む行を描く。**日本語フォントには絵文字のグリフが無い。**
+# 現地のコメントには絵文字が入っていて（🏆👏💪など）、そのまま
+# 日本語フォントで描いていたので、動画では全部□になっていた。
+text_emoji = video_common.text_emoji
 
 
 # フォントと ease_out は video_common に1つだけ置いてある。
@@ -3384,7 +3388,7 @@ def render_reporters(p, posts):
             wy += wstep
         yy = wy + 14
         for line in lines:
-            d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
+            text_emoji(im, d, (100 - dx, yy), line, font(42), TEXT)
             yy += 56
         d.text((100 - dx, y + h - 46),
                f"いいね {r.get('likes', 0)}　担当 {r.get('team', '')}",
@@ -3428,7 +3432,7 @@ def render_headlines(p, heads):
                font=font(32), fill=JP)
         yy = y + 76
         for line in lines:
-            d.text((100 - dx, yy), line, font=font(40), fill=TEXT)
+            text_emoji(im, d, (100 - dx, yy), line, font(40), TEXT)
             yy += 54
         y += hh + 30
 
@@ -3608,11 +3612,12 @@ def render_voices(p, voices, picked=None):
 
         yy = y + 66
         for line in lines:
-            d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
+            text_emoji(im, d, (100 - dx, yy), line, font(42), TEXT)
             yy += 58
         # 原文の一部を小さく添える。訳が気になる人が確かめられるように
+        # 原文にこそ絵文字が入っているので、ここも貼れるようにする。
         src = (v.get("title") or "")[:38]
-        d.text((100 - dx, yy + 4), src, font=font(24), fill=DIM)
+        text_emoji(im, d, (100 - dx, yy + 4), src, font(24), DIM)
         # コメントで名前が挙がった選手の、その日の成績。
         #
         # 「Sanchezが今日の負けの唯一の理由だ」と書かれていても、
