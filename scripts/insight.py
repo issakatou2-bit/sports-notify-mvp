@@ -43,6 +43,11 @@ if str(HERE) not in sys.path:
 
 import mlb_trends as mt  # noqa: E402
 
+try:
+    import savant
+except Exception:                                        # noqa: BLE001
+    savant = None
+
 # 差がこれ未満なら、そもそも言わない。
 #
 # OPSを主に見る。打率だけだと長打が消える（対右投手は打率で.026しか
@@ -341,6 +346,33 @@ def from_recent(recent: dict, season_total: dict, name: str,
     return out
 
 
+def from_percentiles(rows: list, name: str) -> list:
+    """リーグの中での位置（Baseball Savantのパーセンタイル）。
+
+    **「アダム・ダン率しか話題に出せない」を解くための材料。**
+    rarity は指標が9つで、規定に届く日本人選手も少ないので毎日同じ
+    話になる。こちらは18項目あり、打球速度・バレル率・空振り率・
+    選球眼・走塁・守備まで入っている。どれも解説が使う語。
+
+    真ん中は返さない。50前後の項目を並べても「平均です」としか
+    言えないので、`savant.notable` が端だけを渡してくる。
+    """
+    out = []
+    for r in rows or []:
+        out.append(_say(
+            "percentile",
+            "%sの%sは%s（%d パーセンタイル）"
+            % (name, r["label"], r["side"], r["percentile"]),
+            # 良し悪しではなく位置の話。極端であること自体が中身。
+            tone=POSITIVE if r["high"] else NEGATIVE,
+            sure="high",
+            weight=min(100, 50 + abs(r["percentile"] - 50)),
+            detail="%d パーセンタイル（100が最高）" % r["percentile"],
+            why=r["why"],
+            source="Baseball Savant"))
+    return out
+
+
 def player(player_id, name: str, season="2026", group="hitting") -> list:
     """1人について、いま言えること。多い順に並べて返す。"""
     data = mt.collect(player_id, season, group)
@@ -350,6 +382,11 @@ def player(player_id, name: str, season="2026", group="hitting") -> list:
                         name, group)
     said += from_months(data["months"], data["season_total"], name, group)
     said += from_recent(data["recent"], data["season_total"], name, group)
+    # リーグの中での位置。1日1回取れば足りる（シーズン通算の値）。
+    if savant is not None:
+        kind = "pitcher" if group == "pitching" else "batter"
+        rows = savant.fetch(season, kind).get(str(player_id)) or {}
+        said += from_percentiles(savant.notable(rows), name)
     said.sort(key=lambda s: -s["weight"])
     return said
 

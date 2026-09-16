@@ -187,6 +187,43 @@ check("投手が下回るのは positive", got[0]["tone"], "positive")
 check("OPSも被OPSと書く", ins._ops_word("pitching"), "被OPS")
 
 print()
+print("--- リーグの中での位置（Savantのパーセンタイル）---")
+# ユーザーの指摘:「アダム・ダン率しか話題に出せないとかじゃなければ
+# 良いんですけどね」。rarity は指標が9つで毎日同じ話になる。
+# こちらは18項目あって、打球速度・空振り率・走塁・守備まで入る。
+import savant  # noqa: E402
+
+_row = {"name": "X", "brl_percent": 100, "exit_velocity": 97,
+        "k_percent": 1, "sprint_speed": 52, "bb_percent": 50}
+_got = savant.notable(_row)
+_keys = [r["key"] for r in _got]
+check("リーグ最高を拾う", "brl_percent" in _keys, True)
+check("上位を拾う", "exit_velocity" in _keys, True)
+check("下位も拾う", "k_percent" in _keys, True)
+# **真ん中は返さない。**「平均です」としか言えない項目を並べない。
+check("真ん中は返さない", "sprint_speed" in _keys, False)
+check("ちょうど50も返さない", "bb_percent" in _keys, False)
+check("端から順に並ぶ", _keys[0], "brl_percent")
+_by = {r["key"]: r for r in _got}
+check("100は「リーグ最高」", _by["brl_percent"]["side"], "リーグ最高")
+check("「上位0%」とは書かない",
+      "0%" in _by["brl_percent"]["side"], False)
+check("97は上位3%", _by["exit_velocity"]["side"], "リーグ上位3%")
+check("1は下位1%", _by["k_percent"]["side"], "リーグ下位1%")
+check("どの項目にも説明がある",
+      all(r["why"] for r in _got), True)
+check("知らない項目は返さない",
+      savant.notable({"name": "X", "なぞの指標": 99}), [])
+check("空でも落ちない", savant.notable({}), [])
+
+_said = ins.from_percentiles(_got, "選手X")
+check("言える形になる", len(_said), len(_got))
+check("出どころを書く", _said[0]["source"], "Baseball Savant")
+check("上位は positive", _said[0]["tone"], "positive")
+check("下位は negative",
+      [s["tone"] for s in _said if "三振率" in s["text"]][0], "negative")
+
+print()
 print("--- 向きで絞れる ---")
 rows = [{"tone": "positive", "sure": "high", "weight": 90, "text": "上"},
         {"tone": "negative", "sure": "high", "weight": 80, "text": "下"},
