@@ -420,6 +420,10 @@ def facts(m: dict) -> str:
         out.append("※ ここは**その日の成績ではなく今季の傾向。**")
         out.append("  「きょう」と混ぜない。確からしさが low のものは")
         out.append("  傾向として語らず、起きたことをそのまま置く。")
+        out.append("※ **確率から理由を決めつけない。**")
+        out.append("  「偶然でこうなる確率0%だから狙われている」は書かない。")
+        out.append("  差があることは言えるが、**なぜそうなるかは分からない。**")
+        out.append("  確率そのものも声に出さない（判定に使った数字）。")
         for t in m["trends"]:
             out.append("- %s（確からしさ %s）" % (t["text"], t["sure"]))
             if t.get("detail"):

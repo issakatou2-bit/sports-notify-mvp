@@ -77,9 +77,13 @@ def phrase(row: dict) -> str:
         # ワイルドカードの最後の枠にいる球団には差が返らない（自分が基準）。
         bits.append("ワイルドカード最後の枠")
     elif gb.startswith("+"):
-        bits.append("ワイルドカード圏内で6位に%sゲーム差" % gb.lstrip("+"))
+        # **「圏内で6位に6.5ゲーム差」は誤読された。**台本が「圏外側」と
+        # 書いた。数字と語が続くと、どちらに付く差なのか読み取れない。
+        # 「つけている」まで書いて、向きを言い切る。
+        bits.append("ワイルドカード圏内（6位に%sゲーム差をつけている）"
+                    % gb.lstrip("+"))
     else:
-        bits.append("圏外で、進出圏内まであと%sゲーム" % gb)
+        bits.append("ワイルドカード圏外（進出圏内まであと%sゲーム）" % gb)
     if isinstance(row.get("magic"), int):
         bits.append("地区優勝マジック%d" % row["magic"])
     return "・".join(bits)

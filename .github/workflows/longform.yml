@@ -156,6 +156,21 @@ jobs:
           python scripts/verify_numbers.py \
             --dialogue build/lf/dialogue.json --strict
 
+      # 用語を勝手に作っていないか。**ここで落ちたら公開しない。**
+      #
+      # 9/16の回が「HQS」を「ヒットクオリティスタート」と読み、
+      # 投手の被打率を「打率」と書いた。**どちらも数字は正しい**ので、
+      # 上の照合も下の検算も通る。値ではなく呼び方の問題なので、
+      # 値を見る検査では捕まらない。
+      #
+      # 毎日人が見るのはルーティンが増える（ユーザー:「わざわざ毎日
+      # 見てからっていうのは手間すぎます」）。機械で決められるところは
+      # 機械で止める。ここは辞書と突き合わせるだけで、判断は入れない。
+      - name: Verify the wording
+        run: |
+          python scripts/verify_terms.py \
+            --dialogue build/lf/dialogue.json --strict
+
       # 台本にありえない数字が混ざっていないか。短編と同じ検査を通す。
       # 長編だからといって緩めない。
       - name: Sanity check the script
