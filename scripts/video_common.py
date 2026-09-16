@@ -15,6 +15,7 @@ import array
 import functools
 import json
 import os
+import re
 import random
 from PIL import ImageChops, ImageDraw, ImageFilter, ImageFont, Image
 import wave
@@ -399,6 +400,137 @@ WORD_CHARS |= set("abcdefghijklmnopqrstuvwxyz")
 WORD_CHARS |= set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 
+# 絵文字のフォント。**日本語フォントには絵文字のグリフが無い。**
+#
+# 現地のコメントには絵文字が入っている（9/16時点で local_voices に24個、
+# 🏆👏💪😁😃など）。それをそのまま日本語フォントで描いていたので、
+# 動画では全部□になっていた。
+#
+# GitHub Actionsのランナーには fonts-noto-color-emoji が最初から入って
+# いる（install_video_tools.sh のコメントにもそう書いてある）。
+# 入っているのに使っていなかっただけ。
+EMOJI_CANDIDATES = [
+    "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf",
+    "/usr/share/fonts/truetype/noto-color-emoji/NotoColorEmoji.ttf",
+    "/usr/share/fonts/opentype/noto/NotoColorEmoji.ttf",
+    "C:\\Windows\\Fonts\\seguiemj.ttf",      # 手元で確かめるとき用
+]
+
+# 絵文字とみなす範囲。異体字セレクタ(FE0F)と接合子(200D)も一緒に拾う。
+# 「👨‍👩‍👧」のような合字は、分けて描くと崩れる。
+EMOJI_RE = re.compile(
+    "([\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF"
+    "\U0001F1E6-\U0001F1FF\uFE0F\u200D\u2190-\u21FF\u2B05-\u2B07]+)")
+
+_EMOJI_FILE = "?"
+
+
+def emoji_font_file():
+    """絵文字フォントの場所。無ければ None（そのときは絵文字を落とす）。"""
+    global _EMOJI_FILE
+    if _EMOJI_FILE != "?":
+        return _EMOJI_FILE
+    env = os.environ.get("COLLESPO_EMOJI_FONT")
+    paths = ([env] if env else []) + EMOJI_CANDIDATES
+    _EMOJI_FILE = next((p for p in paths if p and pathlib.Path(p).exists()),
+                       None)
+    if not _EMOJI_FILE:
+        print("[info] 絵文字フォントが見つかりません。絵文字は落とします")
+    return _EMOJI_FILE
+
+
+@functools.lru_cache(maxsize=256)
+def emoji_image(ch: str, size: int):
+    """絵文字1文字を、その大きさの画像にする。無理なら None。
+
+    **Noto Color Emoji は109pxでしか開けない**（ビットマップのため）。
+    そのサイズで描いてから縮める。Segoe UI Emoji は任意サイズで開ける。
+    """
+    path = emoji_font_file()
+    if not path or not ch.strip():
+        return None
+    try:
+        f, native = ImageFont.truetype(path, size), size
+    except OSError:
+        try:
+            f, native = ImageFont.truetype(path, 109), 109
+        except OSError:
+            return None
+    box = max(8, int(native * 1.6))
+    im = Image.new("RGBA", (box, box), (0, 0, 0, 0))
+    try:
+        ImageDraw.Draw(im).text((0, 0), ch, font=f, embedded_color=True)
+    except Exception:                                    # noqa: BLE001
+        return None
+    cut = im.getbbox()
+    if not cut:
+        return None
+    im = im.crop(cut)
+    if im.width != size:
+        h = max(1, round(im.height * size / im.width))
+        im = im.resize((max(1, size), h), Image.LANCZOS)
+    return im
+
+
+def emoji_width(ch: str, size: int) -> int:
+    """絵文字1つぶんの幅。描けないときは0（＝落とす）。"""
+    im = emoji_image(ch, size)
+    return (im.width + max(2, size // 12)) if im else 0
+
+
+def text_emoji(base, d, xy, text, fnt, fill):
+    """絵文字を含む文字列を描く。**絵文字だけ別フォントで貼る。**
+
+    base は貼り付け先の画像。d はその ImageDraw。
+    絵文字フォントが無い環境では、絵文字を飛ばして文字だけ描く
+    （□を並べるよりよい）。
+    """
+    x, y = xy
+    size = getattr(fnt, "size", 40)
+    for part in EMOJI_RE.split(str(text)):
+        if not part:
+            continue
+        if EMOJI_RE.fullmatch(part):
+            for ch in _emoji_chunks(part):
+                im = emoji_image(ch, size)
+                if im is None:
+                    continue
+                base.paste(im, (int(x), int(y + size * 0.12)), im)
+                x += im.width + max(2, size // 12)
+            continue
+        d.text((x, y), part, font=fnt, fill=fill)
+        x += d.textlength(part, font=fnt)
+    return x
+
+
+def _emoji_chunks(run: str):
+    """接合子でつながった絵文字を、1つのまとまりとして返す。"""
+    out, cur = [], ""
+    for ch in run:
+        if cur and not (cur.endswith("\u200d") or ch in "\ufe0f\u200d"):
+            out.append(cur)
+            cur = ch
+        else:
+            cur += ch
+    if cur:
+        out.append(cur)
+    return out
+
+
+def text_width(d, text, fnt) -> float:
+    """絵文字を含む文字列の幅。折り返しの計算に使う。"""
+    size = getattr(fnt, "size", 40)
+    total = 0.0
+    for part in EMOJI_RE.split(str(text)):
+        if not part:
+            continue
+        if EMOJI_RE.fullmatch(part):
+            total += sum(emoji_width(c, size) for c in _emoji_chunks(part))
+        else:
+            total += d.textlength(part, font=fnt)
+    return total
+
+
 def wrap(d, text, fnt, max_w):
     """
     指定幅で折り返す。日本語なので単語境界は見ず1文字ずつ詰める。
@@ -409,9 +541,14 @@ def wrap(d, text, fnt, max_w):
     禁則も見る。開き括弧で行を終えない、句読点で行を始めない。
     """
     text = " ".join(str(text).split())
+    # 絵文字は別フォントで貼るので、PILの textlength では幅が0になる。
+    # そのまま折り返すと、絵文字のぶんだけ行が伸びて箱から出る。
+    # **絵文字が入っている行だけ**、貼る幅を含めて測る（毎文字やると遅い）。
+    width = (lambda s: text_width(d, s, fnt)) if EMOJI_RE.search(text) \
+        else (lambda s: d.textlength(s, font=fnt))
     lines, cur = [], ""
     for ch in text:
-        if d.textlength(cur + ch, font=fnt) > max_w and cur:
+        if width(cur + ch) > max_w and cur:
             # 開き括弧で終わりそうなら、それを次の行へ送る
             if cur[-1] in NO_LINE_END:
                 lines.append(cur[:-1])
@@ -428,7 +565,7 @@ def wrap(d, text, fnt, max_w):
                 while i > 0 and cur[i - 1] in WORD_CHARS:
                     i -= 1
                 head, tail = cur[:i], cur[i:]
-                if head and d.textlength(tail + ch, font=fnt) <= max_w:
+                if head and width(tail + ch) <= max_w:
                     lines.append(head)
                     cur = tail + ch
                     continue

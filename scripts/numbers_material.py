@@ -42,7 +42,19 @@ except Exception:  # noqa: BLE001  取れない日でも材料は作る
 
 # 話す順。上から、取れたものだけを使う。
 MAX_PLAYERS = 4      # 全員並べると点呼になる。上位だけ
+
+# 主役からこれだけ離れた選手は出さない（主役の点数に対する割合）。
+#
+# **「4打数1安打」を「きょうの日本人選手」として並べない。**
+# ユーザーの指摘:「山本だけでいいのに、4打数1安打の岡本を無理して
+# 出す理由は何？」。材料に入れれば、モデルはそれについて何か言おうと
+# する。言うことが無い選手は、最初から渡さない。
+#
+# 絶対値で切らないのは、主役が小さい日もあるため。7回無失点の145点が
+# いる日の44点と、最高が50点の日の44点では、意味がまるで違う。
+RELATIVE_FLOOR = 0.45
 MAX_RARE = 2
+MAX_TRENDS = 3      # 主役1人ぶんの切り口。多いと読み切れない
 MAX_CHANGES = 4      # 進出争いで動いたこと
 MAX_SOCCER = 1       # 1本1大会。長編でも大会は1つに絞る
 MAX_ROWS = 4         # 1枚の札に並ぶ行数（描画側の上限）
@@ -254,8 +266,23 @@ def load(root: str = "data", today: date = None) -> dict:
     base = pathlib.Path(root)
     today = today or date.today()
     recap = _fresh_read(base / "morning_recap.json", today)
-    rows = [r for r in (recap.get("players") or []) if r.get("name")]
+    # **その日「何かした」選手だけを渡す。**
+    #
+    # 出場した順に上から4人を渡していたので、4打数1安打の選手が
+    # 「きょうの日本人選手」として並んだ。ユーザーの指摘:
+    # 「山本だけでいいのに、4打数1安打の岡本を無理して出す理由は何？」
+    #
+    # 材料に入っていれば、モデルはそれについて何か言おうとする。
+    # 言うことが無い選手は、最初から渡さない。
+    rows = [r for r in (recap.get("players") or [])
+            if r.get("name") and mr.did_something(r)]
     rows.sort(key=_score, reverse=True)
+    if rows:
+        floor = _score(rows[0]) * RELATIVE_FLOOR
+        # 名前のある記録（完封・HQS・猛打賞など）がある選手は、
+        # 点数が低くても残す。**記録そのものが話すことなので。**
+        rows = [r for r in rows
+                if _score(r) >= floor or mr.badge_labels(r, limit=1)]
     players = []
     for row in rows[:MAX_PLAYERS]:
         players.append({
@@ -264,6 +291,17 @@ def load(root: str = "data", today: date = None) -> dict:
             "line": _line(row),
             "score": _score(row),
             "badges": mr.badge_labels(row, limit=3),
+            # **読み上げには開いた表記を渡す。**
+            # 「HQS」をそのまま渡したら「ヒットクオリティスタート」と
+            # 読まれた（正しくはハイクオリティスタート）。長編は声が主
+            # なので、略記のままにしておくとモデルが勝手に開く。
+            "badges_speech": mr.badge_speech(row, limit=3),
+            # **はっきり称賛してよい内容か。**
+            # ユーザーの判断:「日本人選手が素晴らしい内容だったら、
+            # 今日の山本くらいの内容だったら、もう少し称賛を入れてもいい」。
+            # 良し悪しをモデルに決めさせると、4打数1安打も褒めることに
+            # なる。材料の側で線を引く（morning_recap.STANDOUT=130）。
+            "standout": _score(row) >= mr.STANDOUT,
             "type": row.get("type") or "",
             "player_id": str(row.get("player_id") or ""),
             "numbers": _numbers(row),
@@ -306,6 +344,27 @@ def load(root: str = "data", today: date = None) -> dict:
             break
     rare = rare[:MAX_RARE]
 
+    # 主役の1人だけ、切り口ごとの成績を足す。
+    #
+    # **MLBを見ている人が見るに耐える回にする**ための材料。
+    # 成績を並べるだけだと、その日の表を読み上げたのと変わらない。
+    # 「夜の試合ではOPS.921」「得点圏では今季全体を下回っている」まで
+    # 入って、はじめて解説になる。
+    #
+    # 1人だけにするのはAPIの回数（1人4回）と、尺の都合。
+    # 3分で全員ぶん入れても読み切れない。
+    trends = []
+    if players and players[0].get("player_id"):
+        try:
+            import insight
+            trends = insight.player(
+                players[0]["player_id"], players[0]["name"],
+                season=(recap.get("date_jst") or "")[:4] or "2026",
+                group="pitching" if players[0]["type"].startswith("p")
+                else "hitting")[:MAX_TRENDS]
+        except Exception as e:                       # noqa: BLE001
+            print("[info] 切り口ごとの成績を取れません(%s)" % e)
+
     post = _fresh_read(base / "postseason.json", today)
     race = {"headline": post.get("headline") or "",
             "changes": (post.get("changes") or [])[:MAX_CHANGES],
@@ -319,7 +378,7 @@ def load(root: str = "data", today: date = None) -> dict:
             break
 
     return {"date": recap.get("date_jst") or recap.get("date") or "",
-            "players": players, "shots": shots, "rare": rare,
+            "players": players, "trends": trends, "shots": shots, "rare": rare,
             "race": race, "soccer": soccer}
 
 
@@ -337,9 +396,13 @@ def facts(m: dict) -> str:
         out.append("（出場した選手がいない）")
     for p in m["players"]:
         row = "- %s（%s）%s" % (p["name"], p["team"], p["line"] or "出場")
-        if p["badges"]:
-            row += " ／ " + "・".join(p["badges"])
+        if p.get("badges_speech"):
+            # **声に出す表記で渡す。**略記だと読み方を作られる。
+            row += " ／ " + "・".join(p["badges_speech"])
         out.append(row)
+        if p.get("standout"):
+            out.append("  ★きょうの主役。**はっきり称賛してよい内容。**"
+                       "「素晴らしい投球だった」と書いてよい")
         # **その数字が普通か珍しいかを、ここで渡す。**
         # 渡さないと、当たり前のことを珍しがる台詞になる。
         for note in p.get("readings") or []:
@@ -351,17 +414,35 @@ def facts(m: dict) -> str:
         for s in m["shots"]:
             out.append("- %s: %s" % (s["name"], s["text"]))
 
+    if m.get("trends"):
+        out.append("")
+        out.append("## %s の、切り口ごとの成績" % m["players"][0]["name"])
+        out.append("※ ここは**その日の成績ではなく今季の傾向。**")
+        out.append("  「きょう」と混ぜない。確からしさが low のものは")
+        out.append("  傾向として語らず、起きたことをそのまま置く。")
+        for t in m["trends"]:
+            out.append("- %s（確からしさ %s）" % (t["text"], t["sure"]))
+            if t.get("detail"):
+                out.append("  %s" % t["detail"])
+            if t.get("why"):
+                out.append("  なぜ見るか: %s" % t["why"])
+
     if m["rare"]:
         out.append("")
         out.append("## 名前のある指標での位置")
         out.append("※ 公式記録ではないが、今季の規定到達者の中での実際の順位。")
+        out.append("※ **「とは」の行は画面に出る。声では説明しない。**")
+        out.append("  用語の意味を読み上げると、そこで話が止まる。")
+        out.append("  気になる人は画面を止めて読める。声で話すのは")
+        out.append("  **どれくらい珍しいか**のほう。")
         for r in m["rare"]:
             out.append("- %s の%s %s（%s）"
                        % (r["name"], r["stat"], r["value"], r["rank"]))
             if r.get("above"):
                 out.append("  1つ上にいるのは %s" % r["above"])
             if r.get("note"):
-                out.append("  %s とは: %s" % (r["stat"], r["note"]))
+                out.append("  %s とは（画面に出る・読まない）: %s"
+                           % (r["stat"], r["note"]))
             if r.get("namesake"):
                 out.append("  %s" % r["namesake"])
 
@@ -418,6 +499,9 @@ def panels(m: dict) -> dict:
         out["rare%d" % i] = {"type": "stat", "name": r["name"],
                              "stat": r["stat"], "value": r["value"],
                              "rank": r["rank"],
+                             # 用語の意味は**画面にだけ**出す。声で
+                             # 説明すると、そこで話が止まる。
+                             "note": r.get("note") or "",
                              "menu": "%sの%s" % (r["name"], r["stat"])}
 
     rows = [{"name": j["team"], "value": rw.short(j)}

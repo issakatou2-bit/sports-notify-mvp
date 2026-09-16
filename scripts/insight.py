@@ -59,6 +59,33 @@ SURE_AB = 80
 
 POSITIVE, NEUTRAL, NEGATIVE = "positive", "neutral", "negative"
 
+# 投手と打者で、同じ項目が反対の意味を持つ。
+#
+# **投手の `avg` は被打率。**「山本由伸は初球で打率.338」と書いて
+# しまった回があった。しかも「今季全体を上回っている」は、投手には
+# 「打たれている」という意味で、褒め言葉ではない。
+#
+# 数字は正しく、**呼び方と向きだけが逆**なので、検算では捕まらない。
+AVG_WORD = {"hitting": "打率", "pitching": "被打率"}
+OPS_WORD = {"hitting": "OPS", "pitching": "被OPS"}
+
+
+def _avg_word(group: str) -> str:
+    return AVG_WORD.get(group, "打率")
+
+
+def _ops_word(group: str) -> str:
+    return OPS_WORD.get(group, "OPS")
+
+
+def _tone(up: bool, group: str) -> str:
+    """上回っていることが、良いことか悪いことか。
+
+    打者は上回れば良い。**投手は被打率が上回れば悪い。**
+    """
+    good = up if group != "pitching" else not up
+    return POSITIVE if good else NEGATIVE
+
 
 # 偶然でそうなる確率がこれ以下なら「傾向」として語ってよい。
 TREND_P = 0.05
@@ -160,7 +187,7 @@ def _say(kind, text, tone=NEUTRAL, sure="high", weight=50, detail="",
             "source": source}
 
 
-def from_splits(rows: list, name: str) -> list:
+def from_splits(rows: list, name: str, group: str = "hitting") -> list:
     """昼夜・対左右・ホーム/ビジター。**差が小さければ黙る。**"""
     out = []
     for row in rows:
@@ -173,8 +200,8 @@ def from_splits(rows: list, name: str) -> list:
             continue          # 差と呼べるほど違わない
         hi, lo = (a, b) if oa > ob else (b, a)
         if p <= TREND_P:
-            text = ("%sは%sでOPS%s、%sでは%s"
-                    % (name, hi["label"], hi.get("ops"),
+            text = ("%sは%sで%s%s、%sでは%s"
+                    % (name, hi["label"], _ops_word(group), hi.get("ops"),
                        lo["label"], lo.get("ops")))
             sure, weight = "high", min(100, 55 + (TREND_P - p) * 700)
         else:
@@ -186,15 +213,17 @@ def from_splits(rows: list, name: str) -> list:
             "split", text,
             tone=NEUTRAL,     # どちらが良いという話ではなく、差の話
             sure=sure, weight=weight,
-            detail="%s %s打数 打率%s ／ %s %s打数 打率%s"
+            detail="%s %s打数 %s%s ／ %s %s打数 %s%s"
                    "（差が偶然で出る確率 %.0f%%）"
-                   % (hi["label"], _ab(hi), hi.get("avg"),
-                      lo["label"], _ab(lo), lo.get("avg"), p * 100),
+                   % (hi["label"], _ab(hi), _avg_word(group), hi.get("avg"),
+                      lo["label"], _ab(lo), _avg_word(group), lo.get("avg"),
+                      p * 100),
             why=row.get("why", "")))
     return out
 
 
-def from_scenes(rows: list, season_total: dict, name: str) -> list:
+def from_scenes(rows: list, season_total: dict, name: str,
+                group: str = "hitting") -> list:
     """場面ごとの成績。**比べる相手は今季全体。**
 
     「得点圏で.160」はそれ単体では読めない。今季の.204と並べて初めて
@@ -216,11 +245,11 @@ def from_scenes(rows: list, season_total: dict, name: str) -> list:
         up = cur is not None and cur > base_avg
         if p <= TREND_P:
             # 傾向として語ってよい。
-            text = ("%sは%sで打率%s。今季全体の%sを%s"
-                    % (name, row["label"], row.get("avg"),
+            text = ("%sは%sで%s%s。今季全体の%sを%s"
+                    % (name, row["label"], _avg_word(group), row.get("avg"),
                        season_total.get("avg"),
                        "上回っている" if up else "下回っている"))
-            tone, sure = (POSITIVE if up else NEGATIVE), "high"
+            tone, sure = _tone(up, group), "high"
             weight = min(100, 60 + (TREND_P - p) * 600)
         else:
             # 珍しさが足りない。**起きたことをそのまま置く。**
@@ -229,13 +258,15 @@ def from_scenes(rows: list, season_total: dict, name: str) -> list:
             weight = 35
         out.append(_say(
             "scene", text, tone=tone, sure=sure, weight=weight,
-            detail="%s 打率%s OPS%s（偶然でこうなる確率 %.0f%%）"
-                   % (row["label"], row.get("avg"), row.get("ops"), p * 100),
+            detail="%s %s%s %s%s（偶然でこうなる確率 %.0f%%）"
+                   % (row["label"], _avg_word(group), row.get("avg"),
+                      _ops_word(group), row.get("ops"), p * 100),
             why=row.get("why", "")))
     return out
 
 
-def from_months(rows: list, season_total: dict, name: str) -> list:
+def from_months(rows: list, season_total: dict, name: str,
+                group: str = "hitting") -> list:
     """月別。**今月と今季全体を比べる。**"""
     usable = [r for r in rows if _ab(r) >= MIN_AB_MONTH]
     if not usable:
@@ -251,18 +282,19 @@ def from_months(rows: list, season_total: dict, name: str) -> list:
     up = gap > 0
     return [_say(
         "month",
-        "%sの%d月はOPS%s。今季全体の%sより%s"
-        % (name, now["month"], now.get("ops"), season_total.get("ops"),
-           "高い" if up else "低い"),
-        tone=POSITIVE if up else NEGATIVE,
+        "%sの%d月は%s%s。今季全体の%sより%s"
+        % (name, now["month"], _ops_word(group), now.get("ops"),
+           season_total.get("ops"), "高い" if up else "低い"),
+        tone=_tone(up, group),
         sure="high",
         weight=min(100, 40 + abs(gap) * 150),
-        detail="%d月 %s打数 打率%s" % (now["month"], _ab(now),
-                                      now.get("avg")),
+        detail="%d月 %s打数 %s%s" % (now["month"], _ab(now),
+                                     _avg_word(group), now.get("avg")),
         why="月単位は調子の波が見える長さ。1試合の上下には引きずられない")]
 
 
-def from_recent(recent: dict, season_total: dict, name: str) -> list:
+def from_recent(recent: dict, season_total: dict, name: str,
+                group: str = "hitting") -> list:
     """直近N試合。**短いほうは事実として置くだけ。**
 
     ユーザーの判断:「事実として、参考程度に直近40打数何安打っていうのは
@@ -287,7 +319,8 @@ def from_recent(recent: dict, season_total: dict, name: str) -> list:
                 "%sの直近%d試合は%s打数%s安打" % (name, games, ab,
                                                 row.get("hits")),
                 tone=NEUTRAL, sure="low", weight=30,
-                detail="打率%s OPS%s" % (row.get("avg"), row.get("ops")),
+                detail="%s%s %s%s" % (_avg_word(group), row.get("avg"),
+                                      _ops_word(group), row.get("ops")),
                 why="この長さでは傾向とは言えない。事実として置くだけ"))
             continue
         if gap is None or abs(gap) < MIN_DIFF_OPS:
@@ -295,14 +328,15 @@ def from_recent(recent: dict, season_total: dict, name: str) -> list:
         up = gap > 0
         out.append(_say(
             "recent",
-            "%sの直近%d試合はOPS%s。今季の%sを%s"
-            % (name, games, row.get("ops"), season_total.get("ops"),
+            "%sの直近%d試合は%s%s。今季の%sを%s"
+            % (name, games, _ops_word(group), row.get("ops"),
+               season_total.get("ops"),
                "上回っている" if up else "下回っている"),
-            tone=POSITIVE if up else NEGATIVE,
+            tone=_tone(up, group),
             sure="high",
             weight=min(100, 50 + abs(gap) * 150),
-            detail="%s打数%s安打 打率%s" % (ab, row.get("hits"),
-                                           row.get("avg")),
+            detail="%s打数%s安打 %s%s" % (ab, row.get("hits"),
+                                          _avg_word(group), row.get("avg")),
             why="今季全体と比べることで、いまどちらを向いているかが出る"))
     return out
 
@@ -311,10 +345,11 @@ def player(player_id, name: str, season="2026", group="hitting") -> list:
     """1人について、いま言えること。多い順に並べて返す。"""
     data = mt.collect(player_id, season, group)
     said = []
-    said += from_splits(data.get("pairs") or [], name)
-    said += from_scenes(data.get("scenes") or [], data["season_total"], name)
-    said += from_months(data["months"], data["season_total"], name)
-    said += from_recent(data["recent"], data["season_total"], name)
+    said += from_splits(data.get("pairs") or [], name, group)
+    said += from_scenes(data.get("scenes") or [], data["season_total"],
+                        name, group)
+    said += from_months(data["months"], data["season_total"], name, group)
+    said += from_recent(data["recent"], data["season_total"], name, group)
     said.sort(key=lambda s: -s["weight"])
     return said
 

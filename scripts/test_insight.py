@@ -164,6 +164,29 @@ check("どの場面にも理由が書いてある",
       all(len(s) == 3 and s[2] for s in mt.SITUATIONS), True)
 
 print()
+print("--- 投手と打者で、呼び方も向きも逆 ---")
+# **投手の avg は被打率。**「山本由伸は初球で打率.338。今季全体の.180を
+# 上回っている」と書いた回があった。数字は正しく、呼び方と向きだけが
+# 逆なので、検算では捕まらない。
+_pit = {"ops": ".560", "avg": ".180", "atBats": 411, "hits": 74}
+got = ins.from_scenes(scene("fp", "初球", 65, 22, ".935", ".338"),
+                      _pit, "投手X", group="pitching")
+check("投手には被打率と書く", "被打率" in got[0]["text"], True)
+check("投手に「打率.338」とは書かない",
+      "は初球で打率" in got[0]["text"], False)
+check("打たれているので negative", got[0]["tone"], "negative")
+# 同じ数字でも、打者なら良いこと。
+got = ins.from_scenes(scene("fp", "初球", 65, 22, ".935", ".338"),
+                      season, "打者X")
+check("打者には打率と書く", "打率.338" in got[0]["text"], True)
+check("打者が上回るのは positive", got[0]["tone"], "positive")
+# 投手が下回る＝抑えている。
+got = ins.from_scenes(scene("risp", "得点圏", 300, 30, ".400", ".100"),
+                      _pit, "投手X", group="pitching")
+check("投手が下回るのは positive", got[0]["tone"], "positive")
+check("OPSも被OPSと書く", ins._ops_word("pitching"), "被OPS")
+
+print()
 print("--- 向きで絞れる ---")
 rows = [{"tone": "positive", "sure": "high", "weight": 90, "text": "上"},
         {"tone": "negative", "sure": "high", "weight": 80, "text": "下"},
