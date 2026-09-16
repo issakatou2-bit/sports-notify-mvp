@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-09-15T09:53:52.151611+00:00",
+  "generated_at": "2026-09-16T09:54:03.911525+00:00",
   "games": [
     {
-      "game_id": "564680",
+      "game_id": "564687",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-263",
-      "away_team_id": "PD-95",
-      "home_team_name": "アラベス",
-      "away_team_name": "バレンシア",
+      "home_team_id": "PD-81",
+      "away_team_id": "PD-5335",
+      "home_team_name": "バルセロナ",
+      "away_team_name": "ラシン・サンタンデール",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "バレンシア vs アラベス",
+      "matchup": "ラシン・サンタンデール vs バルセロナ",
       "abbr_matchup": null,
-      "start_time_jst": "09/16 03:00",
+      "start_time_jst": "09/17 04:30",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -22,7 +22,132 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 4,
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "away_standing": {
+        "rank": 10,
+        "games_back": 2.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 8.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "バルセロナ の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "バルセロナ（昨季ラ・リーガ1位）",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "シーズン序盤の5試合を消化したラ・リーガで、【リーグ首位のバルセロナ】と10位のラシン・サンタンデールが対戦する。首位と10位には【勝ち点差8】が開いており、昨季ラ・リーガ1位のバルセロナが今季も主導権を握る形での戦いとなる。まだシーズンは序盤段階だが、上位チームの得点力と下位チームの守備がどのように機能するかに注目したい。",
+      "notification_hook": "リーグ首位バルセロナが勝ち点差8の10位ラシン・サンタンデールに挑む"
+    },
+    {
+      "game_id": "564679",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-560",
+      "away_team_id": "PD-559",
+      "home_team_name": "デポルティボ",
+      "away_team_name": "セビージャ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "セビージャ vs デポルティボ",
+      "abbr_matchup": null,
+      "start_time_jst": "09/17 02:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 7,
+        "games_back": 2.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 6.0
+      },
+      "away_standing": {
+        "rank": 6,
+        "games_back": 1.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 5.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "デポルティボ7位 と セビージャ6位",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ラ・リーガ5試合を消化した現在、セビージャが6位で首位との勝ち点差5、デポルティボが7位で同差6という、【上位争いに関わる両チーム】が対戦する。シーズン序盤から首位との距離が近い状況下での直接対決となるため、勝者が上位進出に向けて大きく前進し、敗者が出遅れの懸念を深める可能性がある。両チームの攻防がどのように機能するかに注目したい。",
+      "notification_hook": "首位と勝ち点差わずか5と6、上位争い関係のセビージャとデポルティボが激突。"
+    },
+    {
+      "game_id": "564684",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-78",
+      "away_team_id": "PD-79",
+      "home_team_name": "アトレティコ・マドリード",
+      "away_team_name": "オサスナ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "オサスナ vs アトレティコ・マドリード",
+      "abbr_matchup": null,
+      "start_time_jst": "09/17 02:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 5,
         "games_back": 1.7,
         "streak": 0,
         "wins": 0,
@@ -31,78 +156,13 @@
         "points_back": 5.0
       },
       "away_standing": {
-        "rank": 20,
-        "games_back": 4.7,
+        "rank": 11,
+        "games_back": 2.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 14.0
-      },
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 1,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "jp_team",
-          "text": "バレンシアには佐藤龍之介が所属",
-          "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "アラベス（昨季ラ・リーガ14位）とバレンシア（昨季ラ・リーガ9位）の対戦",
-          "weight": 0
-        }
-      ],
-      "log_notes": [],
-      "ai_summary": "ラ・リーガ5節終了時点で、アラベス（4位）はリーグ上位に位置する一方、バレンシア（20位）は首位との勝ち点差が14に開いている。昨季ラ・リーガ9位だったバレンシアの【大幅な成績低下】と、昨季14位から躍進したアラベスの対比が、この対戦を興味深くしている。また、バレンシアに所属する日本代表の佐藤龍之介の活躍がどう左右するかが、試合を見る際の具体的な見どころになる。",
-      "notification_hook": "佐藤龍之介擁するバレンシア、沈みゆく戦況を変えられるか。"
-    },
-    {
-      "game_id": "564681",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-285",
-      "away_team_id": "PD-86",
-      "home_team_name": "エルチェ",
-      "away_team_name": "レアル・マドリード",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "レアル・マドリード vs エルチェ",
-      "abbr_matchup": null,
-      "start_time_jst": "09/16 04:30",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": {
-        "rank": 19,
-        "games_back": 4.3,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 13.0
-      },
-      "away_standing": {
-        "rank": 2,
-        "games_back": 1.0,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 3.0
+        "points_back": 8.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -118,33 +178,33 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "レアル・マドリード の試合",
+          "text": "アトレティコ・マドリード の試合",
           "weight": 1
         },
         {
           "tag": "quality",
-          "text": "エルチェ（昨季ラ・リーガ13位）とレアル・マドリード（昨季ラ・リーガ2位）の対戦",
+          "text": "アトレティコ・マドリード（昨季ラ・リーガ4位）とオサスナ（昨季ラ・リーガ16位）の対戦",
           "weight": 0
         }
       ],
       "log_notes": [],
-      "ai_summary": "レアル・マドリードは首位との勝ち点差が3と接戦を繰り広げており、【リーグ2位の立場で上位争いを続ける重要な局面】にある。対するエルチェは昨季ラ・リーガ13位から今季19位と順位を下げ、首位との勝ち点差13という厳しい状況にある。シーズン序盤の5試合消化という段階で、レアル・マドリードにとっては首位奪取への足がかりとなる一戦であり、エルチェにとっては下位からの脱出を目指す重要な試合になる。両者の実力差と置かれた立場の違いが、試合結果にどう影響するかに注目したい。",
-      "notification_hook": "首位との勝ち点差3、レアル・マドリードが巻き返しを狙う"
+      "ai_summary": "シーズン序盤の5試合を消化した現在、【首位から5勝ち点差の5位】に位置するアトレティコ・マドリードが、11位のオサスナを迎える。昨季ラ・リーガで4位に入ったアトレティコ・マドリードと16位だったオサスナの対戦は、格上の立場にあるアトレティコ・マドリードが首位との勝ち点差を詰めるために勝利が求められる一戦である。攻守のバランスに定評のあるアトレティコ・マドリードの堅い守備が、どこまでオサスナの攻撃を抑え込むかに注目したい。",
+      "notification_hook": "首位との勝ち点差5、アトレティコ・マドリードが5位で迎える重要戦"
     },
     {
-      "game_id": "564678",
+      "game_id": "564685",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-87",
-      "away_team_id": "PD-80",
-      "home_team_name": "ラージョ・バジェカーノ",
-      "away_team_name": "エスパニョール",
+      "home_team_id": "PD-88",
+      "away_team_id": "PD-77",
+      "home_team_name": "レバンテ",
+      "away_team_name": "アスレティック・ビルバオ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "エスパニョール vs ラージョ・バジェカーノ",
+      "matchup": "アスレティック・ビルバオ vs レバンテ",
       "abbr_matchup": null,
-      "start_time_jst": "09/16 02:00",
+      "start_time_jst": "09/17 04:30",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -152,16 +212,16 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 16,
-        "games_back": 3.7,
+        "rank": 14,
+        "games_back": 3.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 11.0
+        "points_back": 10.0
       },
       "away_standing": {
-        "rank": 8,
+        "rank": 9,
         "games_back": 2.7,
         "streak": 0,
         "wins": 0,
@@ -179,22 +239,19 @@
       "away_has_jp": false,
       "score": 0,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
       "reasons": [
         {
           "tag": "quality",
-          "text": "ラージョ・バジェカーノ（昨季ラ・リーガ8位）とエスパニョール（昨季ラ・リーガ11位）の対戦",
+          "text": "レバンテ（昨季ラ・リーガ18位）とアスレティック・ビルバオ（昨季ラ・リーガ12位）の対戦",
           "weight": 0
         }
-      ],
-      "log_notes": [],
-      "ai_summary": "シーズン序盤の5試合を消化した現在、エスパニョール（8位）とラージョ・バジェカーノ（16位）は【首位との勝ち点差で3ポイントの開き】がある状況で対峙する。昨季ラ・リーガでエスパニョールは11位、ラージョ・バジェカーノは8位という立場から、今季の成績分布が逆転している点が興味深い。上位争いを目指すエスパニョールが下位グループのラージョ・バジェカーノからいかに勝ち点を奪うかが、今後の順位構図に影響する一戦となる。攻撃面での工夫と守備の堅さがどちらのチームに傾くかに注目したい。",
-      "notification_hook": "昨季8位ラージョが今季16位に転落。エスパニョールが勝ち点差を広げるか。"
+      ]
     }
   ],
   "ai_status": {
     "targets": 3,
     "succeeded": 3,
-    "cost_usd": 0.01131
+    "cost_usd": 0.01074
   }
 }
