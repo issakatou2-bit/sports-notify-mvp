@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-15T06:02:04.029928+00:00",
+  "updated_at": "2026-09-16T06:02:10.366058+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,73 +13,77 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 7,
-      "tone": "好調",
-      "gist": "ホワイトソックス、ガーディアンズとのALC争いで勢い"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 5,
-      "tone": "好調",
-      "gist": "ドジャース、14年連続プレーオフ進出でMLB記録タイ"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
+      "team_id": "134",
+      "name": "パイレーツ",
+      "name_en": "Pittsburgh Pirates",
       "mentions": 4,
       "tone": "不振",
-      "gist": "ガーディアンズ、ホワイトソックスにタイブレーカー譲る"
+      "gist": "パイレーツは走塁で失敗し、通算成績が同数"
+    },
+    {
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "ピート・アロンソが300号本塁打を放ち、ファンと交流"
+    },
+    {
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "山本由伸がシンシナティで快投、防御率2.51に改善"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "マリナーズが9月の天使・アスレチックス戦で苦戦、5割以下確定"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "ブリュワーズがNL中部地区優勝を4年連続で達成"
     },
     {
       "team_id": "144",
       "name": "ブレーブス",
       "name_en": "Atlanta Braves",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "ブレーブス、過去の栄光と現在の経営方針が話題"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "メッツ、プレーオフ進出が消滅"
-    },
-    {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "エンゼルス、93敗で100敗回避へ、地味な喜び"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 2,
       "tone": "好調",
-      "gist": "パドレス、5年連続勝越でワイルドカード争い首位"
+      "gist": "アルビエス、アクーニャが本塁打、ブレーブスがNL東地区優勝に"
     },
     {
-      "team_id": "137",
-      "name": "ジャイアンツ",
-      "name_en": "San Francisco Giants",
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "Rafael Devers、初年度は37本塁打で好成績"
+      "tone": "話題",
+      "gist": "ピート・アロンソが300号本塁打の捕球者とボルチモアでチケッ"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "タイガースがブルージェイズを破り6連勝"
     }
   ],
   "players": [
     {
-      "name": "岡本和真",
+      "name": "山本由伸",
+      "mentions": 2
+    },
+    {
+      "name": "大谷翔平",
       "mentions": 1
     }
   ]
