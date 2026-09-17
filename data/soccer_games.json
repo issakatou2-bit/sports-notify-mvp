@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-09-16T09:54:03.911525+00:00",
+  "generated_at": "2026-09-17T09:54:03.217981+00:00",
   "games": [
     {
-      "game_id": "564687",
+      "game_id": "564683",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-81",
-      "away_team_id": "PD-5335",
-      "home_team_name": "バルセロナ",
-      "away_team_name": "ラシン・サンタンデール",
+      "home_team_id": "PD-84",
+      "away_team_id": "PD-94",
+      "home_team_name": "マラガ",
+      "away_team_name": "ビジャレアル",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "ラシン・サンタンデール vs バルセロナ",
+      "matchup": "ビジャレアル vs マラガ",
       "abbr_matchup": null,
-      "start_time_jst": "09/17 04:30",
+      "start_time_jst": "09/18 04:30",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -22,22 +22,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 1,
-        "games_back": 0.0,
+        "rank": 18,
+        "games_back": 5.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 0.0
+        "points_back": 15.0
       },
       "away_standing": {
-        "rank": 10,
-        "games_back": 2.7,
+        "rank": 19,
+        "games_back": 5.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 8.0
+        "points_back": 16.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -47,99 +47,34 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 3,
+      "score": 2,
       "game_type": "R",
       "is_notable": true,
       "reasons": [
         {
           "tag": "quality",
-          "text": "バルセロナ の試合",
-          "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "バルセロナ（昨季ラ・リーガ1位）",
+          "text": "ビジャレアル（昨季ラ・リーガ3位）",
           "weight": 2
         }
       ],
       "log_notes": [],
-      "ai_summary": "シーズン序盤の5試合を消化したラ・リーガで、【リーグ首位のバルセロナ】と10位のラシン・サンタンデールが対戦する。首位と10位には【勝ち点差8】が開いており、昨季ラ・リーガ1位のバルセロナが今季も主導権を握る形での戦いとなる。まだシーズンは序盤段階だが、上位チームの得点力と下位チームの守備がどのように機能するかに注目したい。",
-      "notification_hook": "リーグ首位バルセロナが勝ち点差8の10位ラシン・サンタンデールに挑む"
+      "ai_summary": "ラ・リーガは全38試合の総当たり戦で、現在両チームとも5試合を消化した段階である。【ビジャレアル（昨季ラ・リーガ3位）とマラガ（18位）】という大きな戦力差がありながら、両チームともリーグ下位に沈んでおり、シーズンの序盤から苦しい状況にある。昨季の上位チームがなぜ今季ここまで落ちているのか、その実態がこの一戦で浮き彫りになる可能性がある。ビジャレアルの攻撃がマラガのディフェンスをどう崩すか、あるいは下位チーム同士の対戦でどちらが勢いを取り戻すかに注目したい。",
+      "notification_hook": "昨季3位ビジャレアルが18位マラガとの下位対決へ、序盤戦の立て直しなるか。"
     },
     {
-      "game_id": "564679",
+      "game_id": "564686",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-560",
-      "away_team_id": "PD-559",
-      "home_team_name": "デポルティボ",
-      "away_team_name": "セビージャ",
+      "home_team_id": "PD-90",
+      "away_team_id": "PD-82",
+      "home_team_name": "レアル・ベティス",
+      "away_team_name": "ヘタフェ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "セビージャ vs デポルティボ",
+      "matchup": "ヘタフェ vs レアル・ベティス",
       "abbr_matchup": null,
-      "start_time_jst": "09/17 02:00",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": {
-        "rank": 7,
-        "games_back": 2.0,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 6.0
-      },
-      "away_standing": {
-        "rank": 6,
-        "games_back": 1.7,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 5.0
-      },
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 1,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "デポルティボ7位 と セビージャ6位",
-          "weight": 1
-        }
-      ],
-      "log_notes": [],
-      "ai_summary": "ラ・リーガ5試合を消化した現在、セビージャが6位で首位との勝ち点差5、デポルティボが7位で同差6という、【上位争いに関わる両チーム】が対戦する。シーズン序盤から首位との距離が近い状況下での直接対決となるため、勝者が上位進出に向けて大きく前進し、敗者が出遅れの懸念を深める可能性がある。両チームの攻防がどのように機能するかに注目したい。",
-      "notification_hook": "首位と勝ち点差わずか5と6、上位争い関係のセビージャとデポルティボが激突。"
-    },
-    {
-      "game_id": "564684",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-78",
-      "away_team_id": "PD-79",
-      "home_team_name": "アトレティコ・マドリード",
-      "away_team_name": "オサスナ",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "オサスナ vs アトレティコ・マドリード",
-      "abbr_matchup": null,
-      "start_time_jst": "09/17 02:00",
+      "start_time_jst": "09/18 02:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -148,21 +83,21 @@
       "jp_players": [],
       "home_standing": {
         "rank": 5,
-        "games_back": 1.7,
+        "games_back": 2.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 5.0
+        "points_back": 6.0
       },
       "away_standing": {
-        "rank": 11,
-        "games_back": 2.7,
+        "rank": 15,
+        "games_back": 4.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 8.0
+        "points_back": 13.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -178,80 +113,18 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "アトレティコ・マドリード の試合",
+          "text": "レアル・ベティス（昨季ラ・リーガ5位）とヘタフェ（昨季ラ・リーガ7位）の対戦",
           "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "アトレティコ・マドリード（昨季ラ・リーガ4位）とオサスナ（昨季ラ・リーガ16位）の対戦",
-          "weight": 0
         }
       ],
       "log_notes": [],
-      "ai_summary": "シーズン序盤の5試合を消化した現在、【首位から5勝ち点差の5位】に位置するアトレティコ・マドリードが、11位のオサスナを迎える。昨季ラ・リーガで4位に入ったアトレティコ・マドリードと16位だったオサスナの対戦は、格上の立場にあるアトレティコ・マドリードが首位との勝ち点差を詰めるために勝利が求められる一戦である。攻守のバランスに定評のあるアトレティコ・マドリードの堅い守備が、どこまでオサスナの攻撃を抑え込むかに注目したい。",
-      "notification_hook": "首位との勝ち点差5、アトレティコ・マドリードが5位で迎える重要戦"
-    },
-    {
-      "game_id": "564685",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-88",
-      "away_team_id": "PD-77",
-      "home_team_name": "レバンテ",
-      "away_team_name": "アスレティック・ビルバオ",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "アスレティック・ビルバオ vs レバンテ",
-      "abbr_matchup": null,
-      "start_time_jst": "09/17 04:30",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": {
-        "rank": 14,
-        "games_back": 3.3,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 10.0
-      },
-      "away_standing": {
-        "rank": 9,
-        "games_back": 2.7,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 8.0
-      },
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "レバンテ（昨季ラ・リーガ18位）とアスレティック・ビルバオ（昨季ラ・リーガ12位）の対戦",
-          "weight": 0
-        }
-      ]
+      "ai_summary": "シーズン序盤の5試合を終えた段階で、昨季ラ・リーガ5位のレアル・ベティスは【首位と6ポイント差】で追う立場にある一方、昨季同7位のヘタフェは15位に位置し、上位勢との差を広げられている状況での対戦となる。上位争いを狙うベティスにとっては勝利が必須であり、下位に沈むヘタフェにとっては反発の足がかりを掴める機会である。両者の成績差が明確に表れる中、ベティスの攻撃力がどこまで機能し、ヘタフェがどう対抗するかに注目したい。",
+      "notification_hook": "昨季5位ベティスと7位ヘタフェ、シーズン序盤での成績差が拡大する中での激突"
     }
   ],
   "ai_status": {
-    "targets": 3,
-    "succeeded": 3,
-    "cost_usd": 0.01074
+    "targets": 2,
+    "succeeded": 2,
+    "cost_usd": 0.00767
   }
 }

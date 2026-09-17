@@ -1,28 +1,28 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 238,
-    "home_wins": 132,
+    "games": 246,
+    "home_wins": 137,
     "draws": 0,
-    "away_wins": 106,
-    "home_win_pct": 55,
+    "away_wins": 109,
+    "home_win_pct": 56,
     "avg_total": 8.7,
-    "one_run": 74,
-    "one_run_pct": 31,
+    "one_run": 75,
+    "one_run_pct": 30,
     "shutouts": 28,
-    "shutout_pct": 12
+    "shutout_pct": 11
   },
   "same_division": {
-    "games": 63,
-    "home_wins": 29,
+    "games": 67,
+    "home_wins": 30,
     "draws": 0,
-    "away_wins": 34,
-    "home_win_pct": 46,
+    "away_wins": 37,
+    "home_win_pct": 45,
     "avg_total": 9.1,
-    "one_run": 24,
-    "one_run_pct": 38,
+    "one_run": 25,
+    "one_run_pct": 37,
     "shutouts": 8,
-    "shutout_pct": 13
+    "shutout_pct": 12
   },
   "venues": {
     "フェンウェイ・パーク": {
@@ -38,16 +38,16 @@
       "avg_total": 10.9
     },
     "クアーズ・フィールド": {
-      "games": 9,
-      "avg_total": 10.7
-    },
-    "プログレッシブ・フィールド": {
-      "games": 6,
-      "avg_total": 10.3
+      "games": 10,
+      "avg_total": 10.8
     },
     "リグレー・フィールド": {
-      "games": 18,
-      "avg_total": 10.0
+      "games": 19,
+      "avg_total": 10.1
+    },
+    "プログレッシブ・フィールド": {
+      "games": 7,
+      "avg_total": 10.1
     },
     "レート・フィールド": {
       "games": 13,
@@ -58,12 +58,12 @@
       "avg_total": 9.6
     },
     "エンゼル・スタジアム": {
-      "games": 5,
-      "avg_total": 9.6
+      "games": 6,
+      "avg_total": 9.5
     },
     "グローブライフ・フィールド": {
-      "games": 6,
-      "avg_total": 9.3
+      "games": 7,
+      "avg_total": 9.4
     },
     "カウフマン・スタジアム": {
       "games": 5,
@@ -102,8 +102,8 @@
       "avg_total": 7.1
     },
     "ロジャーズ・センター": {
-      "games": 6,
-      "avg_total": 6.7
+      "games": 7,
+      "avg_total": 6.6
     },
     "チェイス・フィールド": {
       "games": 10,
