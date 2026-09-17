@@ -15,6 +15,11 @@ on:
         type: choice
         options: [validate, publish, reconcile]
         default: validate
+      kind:
+        description: '投げる枠（daily / morning / morning_voices / morning_press / morning_postseason）'
+        type: choice
+        options: [daily, morning, morning_voices, morning_press, morning_postseason]
+        default: daily
   workflow_run:
     workflows: [毎日 19:00頃　明日の注目試合]
     types: [completed]
@@ -57,9 +62,30 @@ jobs:
           PYTHONUNBUFFERED: '1'
         run: |
           if [ "$MODE" = "reconcile" ]; then
-            python scripts/buffer_daily.py --reconcile
-            exit 0
+            # まず、前の回の配信結果を確かめる（TikTokは処理が遅い）。
+            python scripts/buffer_daily.py --reconcile || RECON=1
+
+            # **公開済みで、まだ投げていない枠を追いかける。**
+            #
+            # 夕方の4本は15時台に作られ、公開は17:00〜20:00の予約になる。
+            # 作った時点では「公開は未来」なので投げられない。
+            # 19:47/23:47のこの枠で追いつく。cronは増やさない。
+            #
+            # 1本ごとに独立して投げる。台帳が枠ごとに分かれているので、
+            # 途中で失敗しても他の枠は投げられる。
+            python scripts/buffer_daily.py --list-due > /tmp/due.tsv || true
+            while IFS="$(printf '\t')" read -r KIND RUN; do
+              [ -n "$KIND" ] || continue
+              echo "::group::$KIND （実行 $RUN）"
+              python scripts/buffer_daily.py \
+                --kind "$KIND" --source-run "$RUN" --publish \
+                || echo "::warning::$KIND を投げられませんでした"
+              echo "::endgroup::"
+            done < /tmp/due.tsv
+
+            exit "${RECON:-0}"
           fi
           args=()
           if [ "$MODE" = "publish" ]; then args+=(--publish); fi
-          python scripts/buffer_daily.py --source-run "$SOURCE_RUN" "${args[@]}"
+          python scripts/buffer_daily.py --source-run "$SOURCE_RUN" \
+            --kind "${{ inputs.kind || 'daily' }}" "${args[@]}"

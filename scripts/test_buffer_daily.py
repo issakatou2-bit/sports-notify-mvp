@@ -96,11 +96,26 @@ class BufferTests(unittest.TestCase):
             target=Path(tmp)/'video.mp4'
             with self.assertRaises(ValueError):
                 daily.extract_video(archive(['anything.txt']),target)
+            # 知らない名前が混ざっていたら止める。
             with self.assertRaises(ValueError):
                 daily.extract_video(archive(['collespo_short.mp4','extra.txt']),target)
             digest=daily.extract_video(archive(['../../collespo_short.mp4']),target)
             self.assertEqual(len(digest),64)
             self.assertEqual(target.stat().st_size,1200)
+            # **夕方の4本は、1つの成果物に4本と記録がまとめて入る。**
+            # 「1ファイルだけ」では通らないので、名前で選んで取り出す。
+            social=['players.mp4','voices.mp4','press.mp4','postseason.mp4',
+                    'published_videos.json']
+            for want in ('players.mp4','voices.mp4','press.mp4','postseason.mp4'):
+                digest=daily.extract_video(archive(social),target,want)
+                self.assertEqual(len(digest),64,want)
+            # 同じ名前が2つあれば止める（どちらか分からない）。
+            with self.assertRaises(ValueError):
+                daily.extract_video(archive(['a/players.mp4','b/players.mp4']),
+                                    target,'players.mp4')
+            # 入っていない枠を求めたら止める。
+            with self.assertRaises(ValueError):
+                daily.extract_video(archive(['players.mp4']),target,'voices.mp4')
 
     def ledger(self, old=None, fail=False):
         class Ledger:
@@ -197,6 +212,24 @@ class EachKindSpeaksForItself(unittest.TestCase):
             for service in ('twitter', 'instagram', 'tiktok'):
                 text = daily.caption(service, '2026-09-15', self.record, kind)
                 self.assertIn('abc12345678', text, kind + '/' + service)
+
+    def test_every_postable_kind_knows_where_to_look(self):
+        """投げられる枠は、どの成果物のどのファイルかまで決まっているか。
+
+        文面（KIND_WORDS）だけ足して出どころ（SOURCES）を足し忘れると、
+        「投げられるのに材料が取れない」状態になる。
+        """
+        for kind, (key, artifact, name, wf) in daily.SOURCES.items():
+            self.assertIn(kind, daily.KIND_WORDS, kind + ' に文面が無い')
+            self.assertTrue(key and artifact and name and wf, kind)
+            self.assertIn(name, daily.ALLOWED_IN_ARTIFACT,
+                          name + ' が取り出しの許可一覧に無い')
+            self.assertTrue(wf.endswith('.yml'), wf)
+
+    def test_the_ledger_separates_kinds(self):
+        """台帳の鍵に枠が入るか。**入らないと1日1枠しか投げられない。**"""
+        keys = {'2026-09-17:' + k + ':twitter' for k in daily.SOURCES}
+        self.assertEqual(len(keys), len(daily.SOURCES))
 
 
 class StillProcessingIsNotAFailure(unittest.TestCase):
