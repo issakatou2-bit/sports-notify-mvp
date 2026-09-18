@@ -1,24 +1,24 @@
 {
-  "updated_at": "2026-09-17T06:02:59.411890+00:00",
+  "updated_at": "2026-09-18T06:03:20.757815+00:00",
   "hours": 30,
   "reporters": 38,
-  "collected": 102,
+  "collected": 70,
   "posts": [
     {
-      "handle": "jefffletcherocr.bsky.social",
-      "author": "Jeff Fletcher",
-      "team": "エンゼルス",
-      "outlet": "Orange County Register",
-      "text": "Kurt Suzuki called that Ryan Johnson's best game of the year. Josh Lowe hit a HR just in time for him to get a victory. www.ocregister.com/2026/09/15/r...",
-      "likes": 3,
-      "reposts": 0,
-      "replies": 0,
-      "at": "2026-09-16T05:08:34.278Z",
-      "uri": "at://did:plc:i7crh3l2vsxokb3pdej6some/app.bsky.feed.post/3mvmeofkxnk2y",
+      "handle": "jasonbeck.bsky.social",
+      "author": "Jason Beck",
+      "team": "タイガース",
+      "outlet": "MLB.com",
+      "text": "Tigers infield defense didn't do Framber Valdez any favors missing chances to keep Murakami from stepping to plate in opening inning. But ...",
+      "likes": 7,
+      "reposts": 1,
+      "replies": 1,
+      "at": "2026-09-18T00:03:00.694Z",
+      "uri": "at://did:plc:ug2irz5m3k7nlbpiggqc73wt/app.bsky.feed.post/3mvquju7vys2v",
       "jp_players": [
-        "Suzuki"
+        "Murakami"
       ],
-      "jp": "クルト・スズキがライアン・ジョンソンの今季最高の試合だと評価。ジョシュ・ロウが好タイミングで本塁打を放ち、ジョンソンが勝利を手にした。"
+      "jp": "Tiger内野陣の守備ミスがFramber Valdezの足を引っ張り、村上宗隆を初回で打席に立たせてしまった。ただし…"
     },
     {
       "handle": "mattgelb.bsky.social",
@@ -26,9 +26,9 @@
       "team": "フィリーズ",
       "outlet": "The Athletic",
       "text": "Impressively, Phillies become the first MLB team in 71 years to walk 13 times in a nine-inning game but score only three runs. What a feat. (They won.)",
-      "likes": 110,
+      "likes": 135,
       "reposts": 18,
-      "replies": 9,
+      "replies": 10,
       "at": "2026-09-17T01:39:57.064Z",
       "uri": "at://did:plc:hoy6e5tru27j3r7xyfzdojwk/app.bsky.feed.post/3mvojibrdj32n",
       "jp_players": [],
@@ -54,7 +54,57 @@
           "author": "marcc856.bsky.social"
         }
       ],
-      "jp": "フィリーズが71年ぶりにナインイニングで13四球を記録したが、得点はわずか3点。驚くべき試合内容だ。(勝利した。)"
+      "jp": "Phillies は71年ぶりにMLBチームとして9回で13四球を選びながら、得点はわずか3。それでも勝った。"
+    },
+    {
+      "handle": "mattgelb.bsky.social",
+      "author": "Matt Gelb",
+      "team": "フィリーズ",
+      "outlet": "The Athletic",
+      "text": "Seven scoreless for Aaron Nola, who has a 2.10 ERA over his last 10 starts (60 innings). What a boost he's given Phillies.",
+      "likes": 87,
+      "reposts": 8,
+      "replies": 6,
+      "at": "2026-09-18T01:27:28.173Z",
+      "uri": "at://did:plc:hoy6e5tru27j3r7xyfzdojwk/app.bsky.feed.post/3mvqzav7pt62z",
+      "jp_players": [],
+      "reply_texts": [
+        {
+          "text": "Absolutely.\n\nAnd going forward, the Phillies 2027 are a MUCH better team with a solid Nola.",
+          "likes": 0,
+          "author": "jrvj1971.bsky.social"
+        },
+        {
+          "text": "Lazarus",
+          "likes": 0,
+          "author": "ruckus.bsky.social"
+        },
+        {
+          "text": "The Fox Broadcast had him back in for 8…🥴",
+          "likes": 0,
+          "author": "atrain21.bsky.social"
+        },
+        {
+          "text": "Any reason why he didn't go out for 8th at 80 pitches?",
+          "likes": 0,
+          "author": "melkasinkas.bsky.social"
+        }
+      ],
+      "jp": "Aaron Nola は7回無失点。ここ10先発（60イニング）で防御率2.10。Philliesの大きな支え。"
+    },
+    {
+      "handle": "mmontemurro.bsky.social",
+      "author": "Meghan Montemurro",
+      "team": "カブス",
+      "outlet": "Chicago Tribune",
+      "text": "Pete Crow-Armstrong's 81 RBIs out of the leadoff spot this season set a Cubs record dating to at least 1898, per team historian Ed Hartig. Tonight marked his 6th game this year with at least 10 total bases, tying Nelson Cruz in 2019 for most such games in a single season in MLB history (since 1900)",
+      "likes": 76,
+      "reposts": 12,
+      "replies": 0,
+      "at": "2026-09-17T03:12:28.226Z",
+      "uri": "at://did:plc:nbtbg72x4ai35yy2mmx4o2mb/app.bsky.feed.post/3mvoonponjc2i",
+      "jp_players": [],
+      "jp": "Pete Crow-Armstrong のリードオフ打者としての81打点は Cubs の1898年以降の記録。今夜の6試合目で10塁打以上、これは2019年の Nelson Cruz と並び MLB 史上最多。"
     },
     {
       "handle": "mmontemurro.bsky.social",
@@ -62,213 +112,185 @@
       "team": "カブス",
       "outlet": "Chicago Tribune",
       "text": "Another multi-homer game for Pete Crow-Armstrong as he goes deep for his second of the night and 44th on the season. His 7th multi-HR game this season. The \"M-V-P!\" chants follow him around the bases at Wrigley as Cubs take a 7-2 lead in the 7th.",
-      "likes": 74,
+      "likes": 79,
       "reposts": 7,
       "replies": 3,
       "at": "2026-09-17T01:38:49.681Z",
       "uri": "at://did:plc:nbtbg72x4ai35yy2mmx4o2mb/app.bsky.feed.post/3mvojgbgc5c2i",
       "jp_players": [],
-      "jp": "ピート・クロー=アームストロングが2打席連続本塁打で今季44号。今季7度目の複数本塁打試合。ラッグリーでMVP!の声援を受けながら走塁し、カブスが7回に7-2とリード。"
+      "jp": "Pete Crow-Armstrong が本塁打！シーズン2本目、通算44号。今季7度目の複数本塁打試合。Wrigley での \"M-V-P!\" コール。Cubs は7回に7-2とリード。🔴⚪🔵"
     },
     {
-      "handle": "mmontemurro.bsky.social",
-      "author": "Meghan Montemurro",
-      "team": "カブス",
-      "outlet": "Chicago Tribune",
-      "text": "Pete Crow-Armstrong slugs his 43rd home run of the season, passing HOFer Billy Williams' mark in 1970 for most homers in a single season by a left-handed hitter in franchise history. The homer puts the Cubs up 2-0 in the 3rd.",
-      "likes": 67,
-      "reposts": 9,
+      "handle": "samdykstramilb.bsky.social",
+      "author": "Sam Dykstra",
+      "team": "全国",
+      "outlet": "MLB Pipeline",
+      "text": "Xander Bogaerts has a shot at hitting for the reverse cycle after homering in his first at-bat, tripling in his second and knocking a ground-rule double in his third. The Padres-Rockies game is only in the fourth inning.",
+      "likes": 68,
+      "reposts": 10,
       "replies": 4,
-      "at": "2026-09-17T00:32:42.738Z",
-      "uri": "at://did:plc:nbtbg72x4ai35yy2mmx4o2mb/app.bsky.feed.post/3mvofq2arfc2i",
+      "at": "2026-09-17T20:25:19.233Z",
+      "uri": "at://did:plc:bdxjovzqrf4q66ptu3dplmeb/app.bsky.feed.post/3mvqieltp222c",
       "jp_players": [],
-      "jp": "ピート・クロー=アームストロングが今季43号本塁打を放ち、フランチャイズ史上シーズン左打者最多本塁打のビリー・ウィリアムス(1970年)の記録を上回った。本塁打でカブスが3回に2-0とリード。"
+      "jp": "Xander Bogaerts は逆サイクルを狙える位置。1打席目は本塁打、2打席目は3塁打、3打席目はグラウンドルール二塁打。Padres-Rockies は4回途中。"
     },
     {
-      "handle": "mattgelb.bsky.social",
-      "author": "Matt Gelb",
-      "team": "フィリーズ",
-      "outlet": "The Athletic",
-      "text": "Zack Wheeler's 91st and last pitch was 96.6 mph. With seven scoreless innings, his ERA is back down to 2.99. He's had four strong ones in a row.",
-      "likes": 75,
+      "handle": "afkostka.bsky.social",
+      "author": "Andy Kostka",
+      "team": "オリオールズ",
+      "outlet": "Baltimore Banner",
+      "text": "The Orioles beat the Mets, 7-1, to complete a sweep. Baltimore is 75-78 and now 2.5 games back of the Chicago White Sox for the third AL wild card spot with nine games left. Not dead yet. Not exactly heart-healthy, either, but the Orioles have a beat",
+      "likes": 51,
       "reposts": 2,
-      "replies": 1,
-      "at": "2026-09-17T00:55:18.008Z",
-      "uri": "at://did:plc:hoy6e5tru27j3r7xyfzdojwk/app.bsky.feed.post/3mvogygwd4k2e",
+      "replies": 2,
+      "at": "2026-09-17T01:59:25.403Z",
+      "uri": "at://did:plc:licyksm72ljqiq4oxbwxu2mi/app.bsky.feed.post/3mvokl3vjvs2c",
       "jp_players": [],
-      "jp": "ザック・ウィーラーの91投目は96.6mph。7イニング無失点で防御率は2.99に低下。4試合連続で良好な投球を見せている。"
+      "jp": "Orioles が Mets を7-1で倒し、スイープ完了。Baltimore は75-78で AL ワイルドカード第3枠まで2.5ゲーム差、残り9試合。望みはある。"
     },
     {
-      "handle": "timstebbins.bsky.social",
-      "author": "Tim Stebbins",
-      "team": "ガーディアンズ",
-      "outlet": "MLB.com",
-      "text": "Final: Guardians 6, White Sox 3 Cleveland (78-75) has a half-game lead on Chicago (77-75) in the AL Central. First time with sole possession of first since morning of July 4.",
-      "likes": 59,
-      "reposts": 7,
-      "replies": 4,
-      "at": "2026-09-16T19:45:57.679Z",
-      "uri": "at://did:plc:jrwmzzblbtbegomwff262gv4/app.bsky.feed.post/3mvnvpc7zxk2t",
-      "jp_players": [],
-      "jp": "最終スコア ガーディアンズ6、ホワイトソックス3。クリーブランド(78-75)がシカゴ(77-75)をAL中部で0.5ゲーム上回る。7月4日朝以来初めての単独首位。"
-    },
-    {
-      "handle": "keeganmatheson.bsky.social",
-      "author": "Keegan Matheson",
-      "team": "ブルージェイズ",
-      "outlet": "MLB.com",
-      "text": "#BlueJays win, 5-1. They are now 1.5 games back of the White Sox in the AL Wild Card race (and tied with the Rangers). They do not hold the tiebreaker over Chicago. They’re 76-77.",
-      "likes": 64,
-      "reposts": 4,
-      "replies": 4,
-      "at": "2026-09-16T21:40:38.961Z",
-      "uri": "at://did:plc:wwjv37n37xrozzfku6zvduez/app.bsky.feed.post/3mvo44eq3w223",
-      "jp_players": [],
-      "jp": "ブルージェイズが5-1で勝利。AL Wild Cardではホワイトソックスから1.5ゲーム差でレンジャーズと並ぶ。シカゴとのタイブレーカーは保持していない。成績は76-77。"
-    },
-    {
-      "handle": "chandlerrome.bsky.social",
-      "author": "Chandler Rome",
-      "team": "アストロズ",
-      "outlet": "The Athletic",
-      "text": "The Astros won 4-2. They are 76-75. Yordan Alvarez and Jeremy Peña had all four of Houston's hits and drove in all four of their runs. Hunter Brown struck out 10 across five innings of one-run ball.",
-      "likes": 53,
-      "reposts": 3,
+      "handle": "afkostka.bsky.social",
+      "author": "Andy Kostka",
+      "team": "オリオールズ",
+      "outlet": "Baltimore Banner",
+      "text": "Pete Alonso, Christian Encarnacion-Strand, and Jeremiah Jackson have all homered in back-to-back games. That's the first time since Aug. 18-19, 2016, that the same three Orioles homered in a two-game span, per to Elias Sports Bureau (Chris Davis, Manny Machado, and Mark Trumbo)",
+      "likes": 39,
+      "reposts": 6,
       "replies": 0,
-      "at": "2026-09-16T02:31:31.059Z",
-      "uri": "at://did:plc:hqnn3kfpfuhkhv2b4izkrzpa/app.bsky.feed.post/3mvm3vlbpht2f",
+      "at": "2026-09-17T00:17:41.715Z",
+      "uri": "at://did:plc:licyksm72ljqiq4oxbwxu2mi/app.bsky.feed.post/3mvoev6xr3s2d",
       "jp_players": [],
-      "jp": "アストロズが4-2で勝利。成績は76-75。ヨルダン・アルバレスとジェレミー・ペーニャがヒューストンの4安打全て、得点全てを記録。ハンター・ブラウンが5イニング1失点で10奪三振。"
+      "jp": "Pete Alonso、Christian Encarnacion-Strand、Jeremiah Jackson が連続試合本塁打。3選手揃うのは2016年8月18-19日以来。当時は Chris Davis、Manny Machado、Mark Trumbo。"
     }
   ],
   "headlines": [
     {
       "query": "Shohei Ohtani",
-      "title": "Dodgers Get Big Injury Update as Shohei Ohtani ‘Feeling Good’",
-      "source": "Dodgers Nation",
-      "at": "Thu, 17 Sep 2026 02:37:30 GMT",
-      "jp": "ドジャースに朗報。大谷翔平は「調子が良い」🔵⚾"
-    },
-    {
-      "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani, Carlos Correa and more: How star injuries could reshape the MLB playoffs",
-      "source": "Los Angeles Times",
-      "at": "Wed, 16 Sep 2026 20:18:25 GMT",
-      "jp": "大谷翔平、カルロス・コレアら主力選手の怪我がMLBプレーオフの行方を左右する可能性"
-    },
-    {
-      "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani (biceps) hits in batting cage",
-      "source": "NBC Sports",
-      "at": "Wed, 16 Sep 2026 22:53:58 GMT",
-      "jp": "大谷翔平（二頭筋）、打撃練習で打球を放つ 🔵⚾"
-    },
-    {
-      "query": "Shohei Ohtani",
-      "title": "Dodgers notes: Yoshinobu Yamamoto, Teoscar Hernández, Shohei Ohtani",
-      "source": "True Blue LA",
-      "at": "Wed, 16 Sep 2026 12:05:00 GMT",
-      "jp": "ドジャースメモ：山本由伸、テオスカル・ヘルナンデス、大谷翔平"
-    },
-    {
-      "query": "Roki Sasaki",
-      "title": "Dodgers’ Roki Sasaki throws simulated game – but what role awaits him?",
-      "source": "ocregister.com",
-      "at": "Thu, 17 Sep 2026 02:50:56 GMT",
-      "jp": "佐々木朗希、シミュレーションゲームに登板も、本番での役割は不透明"
-    },
-    {
-      "query": "Roki Sasaki",
-      "title": "Los Angeles Dodgers Get Critical Roki Sasaki Update During Reds Series",
+      "title": "When is Shohei Ohtani coming back? Dodgers reveal injury update",
       "source": "Yahoo Sports",
-      "at": "Thu, 17 Sep 2026 01:28:00 GMT",
-      "jp": "ドジャース、レッズシリーズで佐々木朗希の重要な更新情報を入手"
+      "at": "Thu, 17 Sep 2026 22:13:44 GMT",
+      "jp": "大谷翔平の復帰はいつ？ドジャースが故障者情報を公開"
+    },
+    {
+      "query": "Shohei Ohtani",
+      "title": "Shohei Ohtani’s feeling ‘normal…ish’ as Dodgers sort out health issues before playoffs",
+      "source": "nytimes.com",
+      "at": "Thu, 17 Sep 2026 17:33:22 GMT",
+      "jp": "大谷翔平は「ほぼ普通」と感じているが、ドジャースはプレーオフ前に健康問題を整理中"
+    },
+    {
+      "query": "Shohei Ohtani",
+      "title": "Dodgers Manager Has Ominous Shohei Ohtani Injury Update as Postseason Nears",
+      "source": "Sports Illustrated",
+      "at": "Thu, 17 Sep 2026 23:30:00 GMT",
+      "jp": "ドジャース監督、ポストシーズン控え大谷翔平の故障者情報を懸念"
+    },
+    {
+      "query": "Shohei Ohtani",
+      "title": "Dodgers GM: Shohei Ohtani to return in regular season",
+      "source": "Reuters",
+      "at": "Thu, 17 Sep 2026 23:29:43 GMT",
+      "jp": "ドジャースGM：大谷翔平はレギュラーシーズン中に復帰する予定"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Dodgers' Roki Sasaki: Tosses 48-pitch bullpen Wednesday",
-      "source": "CBS Sports",
-      "at": "Wed, 16 Sep 2026 22:06:29 GMT",
-      "jp": "佐々木朗希、水曜にブルペン48球を投げ込む 🔵⚾"
+      "title": "Roki Sasaki Watch Takes Another Turn for Dodgers",
+      "source": "Sports Illustrated",
+      "at": "Thu, 17 Sep 2026 21:30:00 GMT",
+      "jp": "ドジャースの佐々木朗希ウォッチが新たな局面へ"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Roki Sasaki Close to Dodgers Return After Bullpen",
-      "source": "dodgersbeat.com",
-      "at": "Wed, 16 Sep 2026 23:53:29 GMT",
-      "jp": "佐々木朗希、ブルペン後、ドジャース復帰が近い"
+      "title": "Dodgers latest injury crisis throws Roki Sasaki usage plan in flux",
+      "source": "New York Post",
+      "at": "Thu, 17 Sep 2026 16:15:00 GMT",
+      "jp": "ドジャースの最新の故障者危機が佐々木朗希の運用計画を揺るがす"
+    },
+    {
+      "query": "Roki Sasaki",
+      "title": "Dave Roberts Makes Final Decision on Roki Sasaki Ahead of Return From Injured List",
+      "source": "Yahoo Sports",
+      "at": "Thu, 17 Sep 2026 13:40:00 GMT",
+      "jp": "デイブ・ロバーツが佐々木朗希の復帰前の最終判断を下す"
+    },
+    {
+      "query": "Roki Sasaki",
+      "title": "Dodgers Marlins Baseball",
+      "source": "Idaho State Journal",
+      "at": "Thu, 17 Sep 2026 23:21:18 GMT",
+      "jp": "ドジャース対マーリンズの試合"
     }
   ],
   "headline_pool": [
     {
       "query": "Shohei Ohtani",
-      "title": "Dodgers Get Big Injury Update as Shohei Ohtani ‘Feeling Good’",
-      "source": "Dodgers Nation"
+      "title": "When is Shohei Ohtani coming back? Dodgers reveal injury update",
+      "source": "Yahoo Sports"
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani, Carlos Correa and more: How star injuries could reshape the MLB playoffs",
-      "source": "Los Angeles Times"
+      "title": "Shohei Ohtani’s feeling ‘normal…ish’ as Dodgers sort out health issues before playoffs",
+      "source": "nytimes.com"
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani (biceps) hits in batting cage",
-      "source": "NBC Sports"
+      "title": "Dodgers Manager Has Ominous Shohei Ohtani Injury Update as Postseason Nears",
+      "source": "Sports Illustrated"
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Dodgers notes: Yoshinobu Yamamoto, Teoscar Hernández, Shohei Ohtani",
-      "source": "True Blue LA"
+      "title": "Dodgers GM: Shohei Ohtani to return in regular season",
+      "source": "Reuters"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Dodgers’ Roki Sasaki throws simulated game – but what role awaits him?",
-      "source": "ocregister.com"
+      "title": "Roki Sasaki Watch Takes Another Turn for Dodgers",
+      "source": "Sports Illustrated"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Los Angeles Dodgers Get Critical Roki Sasaki Update During Reds Series",
+      "title": "Dodgers latest injury crisis throws Roki Sasaki usage plan in flux",
+      "source": "New York Post"
+    },
+    {
+      "query": "Roki Sasaki",
+      "title": "Dave Roberts Makes Final Decision on Roki Sasaki Ahead of Return From Injured List",
       "source": "Yahoo Sports"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Dodgers' Roki Sasaki: Tosses 48-pitch bullpen Wednesday",
-      "source": "CBS Sports"
-    },
-    {
-      "query": "Roki Sasaki",
-      "title": "Roki Sasaki Close to Dodgers Return After Bullpen",
-      "source": "dodgersbeat.com"
+      "title": "Dodgers Marlins Baseball",
+      "source": "Idaho State Journal"
     },
     {
       "query": "Yoshinobu Yamamoto",
-      "title": "Yoshinobu Yamamoto Shows Dodgers Exactly Why He Should Start Game 1",
-      "source": "Dodgers Nation"
+      "title": "Tarik Skubal Embraces Yoshinobu Yamamoto’s Unusual Dodgers Training Method",
+      "source": "Yahoo Sports"
     },
     {
       "query": "Yoshinobu Yamamoto",
-      "title": "Dodgers' Yoshinobu Yamamoto: Blanks Cincy for 14th win",
-      "source": "CBS Sports"
+      "title": "Yoshinobu Yamamoto limits Reds to one hit in win",
+      "source": "NBC Sports"
+    },
+    {
+      "query": "Yoshinobu Yamamoto",
+      "title": "Dodgers’ Tarik Skubal takes part in Yoshinobu Yamamoto’s intense training routine",
+      "source": "The Big Lead"
     },
     {
       "query": "Tomoyuki Sugano",
-      "title": "Wednesday Rockpile: The Rockies’ pitching is fading in September",
-      "source": "Purple Row"
-    },
-    {
-      "query": "Tomoyuki Sugano",
-      "title": "Surging Padres edge Rockies to extend winning streak to eight",
-      "source": "Field Level Media"
-    },
-    {
-      "query": "Tomoyuki Sugano",
-      "title": "Padres Rockies Baseball",
-      "source": "The Herald Journal"
+      "title": "Padres stretch winning streak to 8 as Machado and Tatis homer in 8-7 victory over Rockies",
+      "source": "10News.com"
     },
     {
       "query": "Yusei Kikuchi",
-      "title": "Breaking down Yusei Kikuchi's pitches",
+      "title": "Kikuchi taking important steps in final starts of injury-plagued season",
       "source": "MLB.com"
+    },
+    {
+      "query": "Yusei Kikuchi",
+      "title": "Yusei Kikuchi fights control in loss to Mariners",
+      "source": "FantasyPros"
     },
     {
       "query": "Yusei Kikuchi",
@@ -276,69 +298,64 @@
       "source": "NBC Sports"
     },
     {
-      "query": "Shota Imanaga",
-      "title": "Check out Japanese call of Shota Imanaga's eight K's",
-      "source": "MLB.com"
+      "query": "Yusei Kikuchi",
+      "title": "Angels' Yusei Kikuchi: Struggles against Mariners",
+      "source": "CBS Sports"
     },
     {
       "query": "Shota Imanaga",
-      "title": "Shota Imanaga fans eight in win vs. Braves",
-      "source": "NBC Sports"
-    },
-    {
-      "query": "Shota Imanaga",
-      "title": "Braves at Cubs chat and discussion: JR Ritchie vs Shota Imanaga",
+      "title": "Cubs Lefty Shota Imanaga Emerging As Potential Playoff Starter",
       "source": "Yahoo Sports"
     },
     {
       "query": "Shota Imanaga",
+      "title": "2026 Cubs Heroes and Goats: Shōta Imanaga is the Superhero vs. the Braves",
+      "source": "Bleed Cubbie Blue"
+    },
+    {
+      "query": "Shota Imanaga",
+      "title": "A Mid-Game Adjustment Wednesday Neatly Captures Shota Imanaga's Longer-Term Ones",
+      "source": "North Side Baseball"
+    },
+    {
+      "query": "Shota Imanaga",
       "title": "Crow-Armstrong homers twice, Imanaga shines as Cubs beat Braves 8-4",
-      "source": "Bozeman Daily Chronicle"
+      "source": "wtvcfox"
     },
     {
       "query": "Seiya Suzuki",
-      "title": "MLB Gameday: Braves 4, Cubs 8 Final Score (09/16/2026)",
-      "source": "MLB.com"
+      "title": "September 18, 2026: Chicago C vs Cincinnati: Hits + Runs + RBIs Prediction Market",
+      "source": "Robinhood"
     },
     {
       "query": "Seiya Suzuki",
-      "title": "Braves Cubs Baseball",
-      "source": "Idaho State Journal"
+      "title": "Cubs' ideal playoff starting lineups with Dansby Swanson's return should eliminate risks",
+      "source": "Cubbies Crib"
     },
     {
       "query": "Seiya Suzuki",
-      "title": "Cubs lineup vs. Braves: PCA in CF, Conforto at DH, Imanaga pitching",
-      "source": "CubsHQ"
+      "title": "Cubs Brewers Baseball",
+      "source": "hjnews.com"
     },
     {
       "query": "Kodai Senga",
-      "title": "Mets' Kodai Senga: Blows save vs. former team",
-      "source": "CBS Sports"
-    },
-    {
-      "query": "Kodai Senga",
-      "title": "Kodai Senga News: Blows save vs. former team",
-      "source": "RotoWire"
+      "title": "Kodai Senga: Must-Add Waiver Wire Pickup for Week 25 Fantasy Baseball? - MLB News",
+      "source": "RotoBaller"
     },
     {
       "query": "Yuki Matsui",
-      "title": "Yuki Matsui secures Padres' win with a groundout",
+      "title": "Japanese call of Yuki Matsui's scoreless inning",
       "source": "MLB.com"
     },
     {
       "query": "Yuki Matsui",
-      "title": "Padres' Yuki Matsui becomes breakout candidate at perfect time after arsenal switch",
-      "source": "Friars on Base"
+      "title": "Padres Predicted to Retain 2 Key Pitchers Who Could Opt Out This Offseason",
+      "source": "Yahoo Sports"
     },
     {
       "query": "Masataka Yoshida",
-      "title": "Boston Red Sox at Texas Rangers - Where to Watch, Stream Info, TV Channel, and Live Updates (September 16, 2026)",
+      "title": "Boston Red Sox at Texas Rangers - Where to Watch, Stream Info, TV Channel, and Live Updates (September 17, 2026)",
       "source": "Fubo"
-    },
-    {
-      "query": "Kazuma Okamoto",
-      "title": "Keider Montero strikes out Kazuma Okamoto",
-      "source": "MLB.com"
     },
     {
       "query": "Kazuma Okamoto",
@@ -347,67 +364,57 @@
     },
     {
       "query": "Kazuma Okamoto",
-      "title": "Kazuma Okamoto’s first Blue Jays season has been defined by extreme highs and lows",
-      "source": "Jays Journal"
-    },
-    {
-      "query": "Kazuma Okamoto",
-      "title": "Kazuma Okamoto And Blue Jays Face Tigers On Sept. 16",
-      "source": "FanDuel"
+      "title": "Ninth-inning error sends streaking Tigers to victory over Blue Jays",
+      "source": "Field Level Media"
     },
     {
       "query": "Munetaka Murakami",
-      "title": "Pregame notes: White Sox reinstate Tommy Pham, sit Munetaka Murakami for Cleveland finale",
-      "source": "Sox Machine"
-    },
-    {
-      "query": "Munetaka Murakami",
-      "title": "White Sox vs. Guardians Lineup: Munetaka Murakami Sits? Tommy Pham is Back, More",
-      "source": "Sports Illustrated"
-    },
-    {
-      "query": "Munetaka Murakami",
-      "title": "White Sox's Munetaka Murakami: Sitting out versus southpaw",
+      "title": "White Sox's Munetaka Murakami: Homer, triple in win",
       "source": "CBS Sports"
     },
     {
       "query": "Munetaka Murakami",
-      "title": "Munetaka Murakami is in an awful slump",
-      "source": "Audacy"
+      "title": "Munetaka Murakami powers White Sox past Tigers",
+      "source": "NBC Sports"
+    },
+    {
+      "query": "Munetaka Murakami",
+      "title": "Munetaka Murakami’s 3-run HR helps Chicago White Sox move into tie for 1st in AL Central with 3-1 win",
+      "source": "Chicago Tribune"
     },
     {
       "query": "Tatsuya Imai",
-      "title": "Royals Astros Baseball",
-      "source": "Idaho State Journal"
+      "title": "Statcast Game Preview: Kansas City Royals at Houston Astros - 2026-09-17",
+      "source": "Baseball Savant"
+    },
+    {
+      "query": "Tatsuya Imai",
+      "title": "The most disappointing player from every MLB team for the 2026 season",
+      "source": "Yardbarker"
+    },
+    {
+      "query": "Tatsuya Imai",
+      "title": "Red Sox considering 'creative' postseason roster move to add speed",
+      "source": "sportingnews.com"
     },
     {
       "query": "Lars Nootbaar",
-      "title": "Cardinals Didn't Make a Mistake Trading Lars Nootbaar Away",
-      "source": "Sports Illustrated"
+      "title": "Miami Marlins hold off Arizona Diamondbacks 4-3 with Sandy Alcantara getting 1st career save",
+      "source": "CBS News"
     },
     {
       "query": "Lars Nootbaar",
-      "title": "Michael Soroka, Lars Nootbaar react to D-backs' 4-2 loss to Marlins",
-      "source": "Arizona Sports"
-    },
-    {
-      "query": "Lars Nootbaar",
-      "title": "Marlins Diamondbacks Baseball",
-      "source": "WV News"
+      "title": "Sandy Alcantara comes out of the bullpen on 1 day of rest and earns 1st career save for Marlins",
+      "source": "Click2Houston"
     },
     {
       "query": "Rikuu Nishida",
-      "title": "Christian Franklin grounds out, second baseman Rikuu Nishida to first baseman Ryan Galanie. Brandon Butterworth scores. Jud Fabian to 3rd.",
+      "title": "Rikuu Nishida singles on a line drive to center fielder Jud Fabian. Riley Unroe scores. Korey Lee to 2nd.",
       "source": "MLB.com"
     },
     {
       "query": "Rikuu Nishida",
-      "title": "Riley Unroe singles on a line drive to center fielder Enrique Bradfield Jr. Andy Weber scores. Rikuu Nishida to 3rd.",
-      "source": "MLB.com"
-    },
-    {
-      "query": "Rikuu Nishida",
-      "title": "Knights Eliminated from Playoff Race in Tight Loss to the Tides",
+      "title": "Michael Turner out on a sacrifice fly to left fielder Tavian Josenberger. Rikuu Nishida scores.",
       "source": "MLB.com"
     },
     {
@@ -417,103 +424,93 @@
     },
     {
       "query": "MLB playoff race",
-      "title": "MLB playoffs 2026 tracker: Standings, schedule, clinch scenarios, tiebreakers, playoff bracket and more",
-      "source": "Yahoo Sports"
-    },
-    {
-      "query": "MLB playoff race",
       "title": "MLB playoff picture 2026: Clinching scenarios, bracket, schedule",
       "source": "ESPN"
     },
     {
       "query": "MLB playoff race",
-      "title": "Alonso caps Queens reunion with another HR to help O's postseason hopes",
-      "source": "MLB.com"
-    },
-    {
-      "query": "MLB playoff race",
-      "title": "4 Most Overrated MLB Teams in Playoff Picture, Including Cubs",
-      "source": "Sports Illustrated"
-    },
-    {
-      "query": "MLB playoff race",
-      "title": "Supercomputer predicts the final MLB standings and Wild Card race with 2 weeks to go",
-      "source": "FanSided"
-    },
-    {
-      "query": "MLB wild card",
-      "title": "Blue Jays face tougher postseason path but there's still 'plenty of baseball'",
-      "source": "MLB.com"
-    },
-    {
-      "query": "MLB wild card",
-      "title": "Can the Orioles Make the AL Wild Card Push? Stream of Major League Baseball",
-      "source": "CBS Sports"
-    },
-    {
-      "query": "MLB injury",
-      "title": "Will Ryne Nelson’s return to the Diamondbacks help their postseason push?",
-      "source": "Burn City Sports"
-    },
-    {
-      "query": "MLB trade",
-      "title": "Red Sox Weighing Possible Playoff Promotion For Braiden Ward",
-      "source": "MLB Trade Rumors"
-    },
-    {
-      "query": "MLB trade",
-      "title": "The MLB trade heists that have swung this season",
-      "source": "MLB.com"
-    },
-    {
-      "query": "MLB trade",
-      "title": "Kalshi Promo Code STREET: Trade $25, Get $25 Bonus for MLB Trades (Sept. 16)",
-      "source": "Russell Street Report"
-    },
-    {
-      "query": "MLB trade",
-      "title": "Previewing Every MLB Team's Biggest '26-27 Offseason Decision",
-      "source": "bleacherreport.com"
-    },
-    {
-      "query": "MLB trade",
-      "title": "Polymarket extends $50 promo code “OREGON” for Mariners-Angels, MLB Wednesday",
-      "source": "OregonLive.com"
-    },
-    {
-      "query": "MLB home run record",
-      "title": "Cubs news: Pete Crow-Armstrong accomplishes feat never before reached in MLB history",
+      "title": "MLB playoff picture: Updated standings, tightest races and games to watch Sept. 17",
       "source": "Yahoo Sports"
     },
     {
-      "query": "MLB home run record",
-      "title": "Padres rookie Ethan Salas makes homer history",
-      "source": "NBC 7 San Diego"
+      "query": "MLB playoff race",
+      "title": "Tracking the 2026 postseason field",
+      "source": "MLB.com"
     },
     {
-      "query": "MLB home run record",
-      "title": "Padres rookie Ethan Salas becomes youngest catcher in MLB history with multi-homer game",
+      "query": "MLB playoff race",
+      "title": "Rangers fall back in playoff race with loss to Red Sox",
       "source": "Sportsnet.ca"
     },
     {
-      "query": "MLB home run record",
-      "title": "Minor League Home Run Records Of The Modern Era",
-      "source": "Baseball America"
+      "query": "MLB playoff race",
+      "title": "A look at the Guardians' playoff race standing in AL Central, wild card",
+      "source": "Akron Beacon Journal"
     },
     {
-      "query": "MLB home run record",
-      "title": "Pete Alonso hits 300th career home run against the Mets",
-      "source": "KarloBag.eu"
+      "query": "MLB wild card",
+      "title": "Updated MLB Playoff bracket with 10 games remaining",
+      "source": "FanSided"
     },
     {
-      "query": "MLB manager",
-      "title": "MLB teams with potential 2026 managerial, front office changes",
+      "query": "MLB injury",
+      "title": "Red Sox Hit With More Bad Injury News Before MLB Playoffs",
+      "source": "Yahoo Sports"
+    },
+    {
+      "query": "MLB trade",
+      "title": "2026 MLB trade deadline recap: Red Sox, Phillies, Dodgers go big",
+      "source": "ABC7 Bay Area"
+    },
+    {
+      "query": "MLB trade",
+      "title": "White Sox Make Significant Rotation Move",
+      "source": "Tri-City Herald"
+    },
+    {
+      "query": "MLB trade",
+      "title": "2026 MLB Awards Watch: MVP, Cy Young and more for September",
       "source": "ESPN"
     },
     {
+      "query": "MLB home run record",
+      "title": "Venezuelan Ethan Salas Breaks 47-Year-Old MLB Record in Historic Debut",
+      "source": "teleSUR English"
+    },
+    {
+      "query": "MLB home run record",
+      "title": "MLB roundup: Mariners clobber A’s by franchise-record 18 runs",
+      "source": "Field Level Media"
+    },
+    {
+      "query": "MLB home run record",
+      "title": "Padres' 20-Year-Old Prospect Ethan Salas Adds His Name to MLB Record Books",
+      "source": "Sports Illustrated"
+    },
+    {
+      "query": "MLB home run record",
+      "title": "Pirates’ franchise home run record makes another October absence sting even more",
+      "source": "Rum Bunter"
+    },
+    {
       "query": "MLB manager",
-      "title": "ECU Baseball Coach Cliff Godwin To Take Leave of Absence",
-      "source": "East Carolina University Athletics"
+      "title": "Mariners Could Soon Offer MLB’s Best Manager Job and Biggest Risk",
+      "source": "Sports Illustrated"
+    },
+    {
+      "query": "MLB manager",
+      "title": "Breaking down MLB managers who are on hot — and warm — seat",
+      "source": "New York Post"
+    },
+    {
+      "query": "MLB manager",
+      "title": "Sports Final: Tony Vitello reflects on first year as MLB manager",
+      "source": "FOX 2"
+    },
+    {
+      "query": "MLB manager",
+      "title": "Who will be the next MLB GM? Baseball execs discuss the top candidates for front-office jobs around the league",
+      "source": "Yahoo Sports"
     }
   ]
 }

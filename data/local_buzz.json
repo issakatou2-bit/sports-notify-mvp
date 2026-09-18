@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-17T06:01:57.395059+00:00",
+  "updated_at": "2026-09-18T06:02:17.158694+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,69 +13,74 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "Judge下肢張りで早期交代、13回延長戦敗北"
-    },
-    {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 3,
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 5,
       "tone": "好調",
-      "gist": "Simpsonが打率でAlvarezを上回り5連勝"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "Halpin本塁打でガーディアンズがAL Central首位"
+      "gist": "村上32号でホワイトソックス首位"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "Snell早期交代、ドジャースの計画に支障"
+      "mentions": 4,
+      "tone": "好調",
+      "gist": "ドジャース過去14年で13度目の地区優勝"
     },
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 2,
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 3,
       "tone": "話題",
-      "gist": "Eovaldi救援登板で勝利、AL West同率首位"
-    },
-    {
-      "team_id": "142",
-      "name": "ツインズ",
-      "name_en": "Minnesota Twins",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "Schreiber12回2球で歴史的な投球"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "メッツ左翼の守備失敗、Alonso300号本塁打"
+      "gist": "レンジャーズとのプレーオフ争いが大詰め"
     },
     {
       "team_id": "141",
       "name": "ブルージェイズ",
       "name_en": "Toronto Blue Jays",
-      "mentions": 1,
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ブルージェイズのプレーオフ争いが大詰め"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 2,
       "tone": "不振",
-      "gist": "ブルージェイズ勝利もWildCard争い厳しく"
+      "gist": "レッドソックス複数選手が負傷で戦力ダウン"
+    },
+    {
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "タイガースがホワイトソックスに敗北"
+    },
+    {
+      "team_id": "137",
+      "name": "ジャイアンツ",
+      "name_en": "San Francisco Giants",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ジャイアンツのチキンテンダー問題が話題"
+    },
+    {
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "レイズが6連勝でAL東優勝争い"
     }
   ],
-  "players": []
+  "players": [
+    {
+      "name": "村上宗隆",
+      "mentions": 2
+    }
+  ]
 }
