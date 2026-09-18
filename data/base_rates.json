@@ -1,28 +1,28 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 246,
-    "home_wins": 137,
+    "games": 254,
+    "home_wins": 141,
     "draws": 0,
-    "away_wins": 109,
+    "away_wins": 113,
     "home_win_pct": 56,
     "avg_total": 8.7,
-    "one_run": 75,
+    "one_run": 76,
     "one_run_pct": 30,
-    "shutouts": 28,
+    "shutouts": 29,
     "shutout_pct": 11
   },
   "same_division": {
-    "games": 67,
-    "home_wins": 30,
+    "games": 71,
+    "home_wins": 32,
     "draws": 0,
-    "away_wins": 37,
+    "away_wins": 39,
     "home_win_pct": 45,
-    "avg_total": 9.1,
+    "avg_total": 9.0,
     "one_run": 25,
-    "one_run_pct": 37,
-    "shutouts": 8,
-    "shutout_pct": 12
+    "one_run_pct": 35,
+    "shutouts": 9,
+    "shutout_pct": 13
   },
   "venues": {
     "フェンウェイ・パーク": {
@@ -34,11 +34,11 @@
       "avg_total": 11.0
     },
     "トロピカーナ・フィールド": {
-      "games": 7,
+      "games": 8,
       "avg_total": 10.9
     },
     "クアーズ・フィールド": {
-      "games": 10,
+      "games": 11,
       "avg_total": 10.8
     },
     "リグレー・フィールド": {
@@ -49,10 +49,6 @@
       "games": 7,
       "avg_total": 10.1
     },
-    "レート・フィールド": {
-      "games": 13,
-      "avg_total": 9.8
-    },
     "ナショナルズ・パーク": {
       "games": 5,
       "avg_total": 9.6
@@ -61,9 +57,13 @@
       "games": 6,
       "avg_total": 9.5
     },
-    "グローブライフ・フィールド": {
-      "games": 7,
+    "レート・フィールド": {
+      "games": 14,
       "avg_total": 9.4
+    },
+    "グローブライフ・フィールド": {
+      "games": 8,
+      "avg_total": 9.1
     },
     "カウフマン・スタジアム": {
       "games": 5,
@@ -97,9 +97,13 @@
       "games": 7,
       "avg_total": 7.9
     },
+    "グレート・アメリカン・ボール・パーク": {
+      "games": 5,
+      "avg_total": 7.4
+    },
     "ダイキン・パーク": {
-      "games": 14,
-      "avg_total": 7.1
+      "games": 15,
+      "avg_total": 7.2
     },
     "ロジャーズ・センター": {
       "games": 7,
@@ -108,6 +112,10 @@
     "チェイス・フィールド": {
       "games": 10,
       "avg_total": 5.3
+    },
+    "シティ・フィールド": {
+      "games": 5,
+      "avg_total": 4.6
     }
   },
   "min_sample": 5
