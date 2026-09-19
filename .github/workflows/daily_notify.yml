@@ -357,11 +357,15 @@ jobs:
             --narration public/narration.json \
             --out build/video/thumb.png
 
-      # ショート用に、動画の1枚目(1080x1920)を切り出す。
-      # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
+      # 原稿と同じ主役・事実から専用表紙。失敗時のみ動画のコマへ戻す。
       - name: Vertical thumbnail
         run: |
-          bash scripts/shorts_thumbnail.sh build/video/collespo_short.mp4 build/video/short.png
+          if ! python scripts/render_shorts_cover.py \
+            --games notable_games.json --narration public/narration.json \
+            --out build/video/short.png; then
+            echo "::warning::専用表紙を生成できなかったため動画のコマを使用します"
+            bash scripts/shorts_thumbnail.sh build/video/collespo_short.mp4 build/video/short.png
+          fi
 
       - name: Upload to YouTube
         if: steps.sanity.outcome == 'success'
@@ -529,7 +533,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: collespo-video
-          path: build/video/collespo_short.mp4
+          path: |
+            build/video/collespo_short.mp4
+            build/video/short.png
+            build/video/short.json
           retention-days: 7
           if-no-files-found: ignore
 
