@@ -648,6 +648,7 @@ def render_sitemap(entries: list, site_root: pathlib.Path = None) -> str:
         (f"{SITE_URL}team-post-guide.html", None),
         (f"{SITE_URL}football-competitions.html", None),
         (f"{SITE_URL}watch-champions-league.html", None),
+        (f"{SITE_URL}sports-reading.html", None),
         (f"{SITE_URL}privacy.html", None),
         (f"{SITE_URL}standings.html", None),
         (f"{SITE_URL}quiz.html", None),
