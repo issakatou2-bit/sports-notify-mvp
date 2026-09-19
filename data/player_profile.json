@@ -1,95 +1,116 @@
 {
-  "generated_at": "2026-09-17T06:01:04.487842+00:00",
-  "date_jst": "2026-09-17",
-  "name": "Ethan Salas",
-  "player_id": "806956",
-  "team": "パドレス",
+  "generated_at": "2026-09-19T06:01:12.467207+00:00",
+  "date_jst": "2026-09-19",
+  "name": "Mookie Betts",
+  "player_id": "605141",
+  "team": "ドジャース",
   "group": "hitting",
-  "why": "2026-09-17のMLBで最も活躍",
-  "headline": "4打数2安打　2本塁打　3打点",
-  "score": 163,
+  "why": "2026-09-19のMLBで最も活躍",
+  "headline": "4打数3安打　2本塁打　3打点　1四球",
+  "score": 177,
   "bio": {
-    "name_en": "Ethan Salas",
-    "age": 20,
-    "birth_city": "Kissimmee",
-    "birth_state": "FL",
+    "name_en": "Mookie Betts",
+    "age": 33,
+    "birth_city": "Nashville",
+    "birth_state": "TN",
     "birth_country": "USA",
-    "birth_date": "2006-06-01",
-    "debut": "2026-09-02",
-    "draft_year": null,
-    "bats": "Left",
+    "birth_date": "1992-10-07",
+    "debut": "2014-06-29",
+    "draft_year": 2011,
+    "bats": "Right",
     "throws": "Right",
-    "number": "8",
-    "position": "Catcher",
+    "number": "50",
+    "position": "Shortstop",
     "nickname": null,
-    "height": "6' 1\"",
-    "weight": 185
+    "height": "5' 9\"",
+    "weight": 180
   },
   "teams": [
     {
-      "team": "パドレス",
-      "from": 2026,
+      "team": "レッドソックス",
+      "from": 2014,
+      "to": 2019
+    },
+    {
+      "team": "ドジャース",
+      "from": 2020,
       "to": 2026
     }
   ],
   "career": {
-    "games": 9,
-    "avg": ".143",
-    "hr": 2,
-    "rbi": 3,
-    "ops": ".667",
-    "sb": 0,
-    "hits": 3
+    "games": 1646,
+    "avg": ".288",
+    "hr": 313,
+    "rbi": 978,
+    "ops": ".873",
+    "sb": 198,
+    "hits": 1881
   },
   "this_season": {
-    "games": 9,
-    "avg": ".143",
-    "hr": 2,
-    "rbi": 3,
-    "ops": ".667",
-    "sb": 0,
-    "hits": 3
+    "games": 115,
+    "avg": ".254",
+    "hr": 22,
+    "rbi": 65,
+    "ops": ".766",
+    "sb": 2,
+    "hits": 114
   },
-  "last_season": {},
+  "last_season": {
+    "games": 150,
+    "avg": ".258",
+    "hr": 20,
+    "rbi": 82,
+    "ops": ".732",
+    "sb": 8,
+    "hits": 152
+  },
   "recent": [
     {
+      "date": "2026-09-18",
+      "line": "4打数3安打 2本塁打 3打点",
+      "opponent": "San Francisco Giants"
+    },
+    {
       "date": "2026-09-16",
-      "line": "4打数2安打 2本塁打 3打点",
-      "opponent": "Colorado Rockies"
+      "line": "4打数3安打",
+      "opponent": "Cincinnati Reds"
     },
     {
       "date": "2026-09-15",
-      "line": "1打数0安打",
-      "opponent": "Colorado Rockies"
+      "line": "4打数0安打",
+      "opponent": "Cincinnati Reds"
+    },
+    {
+      "date": "2026-09-14",
+      "line": "4打数0安打",
+      "opponent": "Cincinnati Reds"
     },
     {
       "date": "2026-09-13",
-      "line": "2打数1安打",
-      "opponent": "San Francisco Giants"
-    },
-    {
-      "date": "2026-09-12",
-      "line": "2打数0安打",
-      "opponent": "San Francisco Giants"
-    },
-    {
-      "date": "2026-09-09",
-      "line": "2打数0安打",
-      "opponent": "Washington Nationals"
+      "line": "4打数2安打 1打点",
+      "opponent": "Miami Marlins"
     }
   ],
   "awards": [
     {
-      "season": "2023",
-      "name": "MiLB.com Organization All-Star"
+      "season": "2025",
+      "name": "World Series Championship"
     },
     {
-      "season": "2023",
-      "name": "CAL Player of the Month"
+      "season": "2025",
+      "name": "NL Player of the Week"
     },
     {
-      "season": "2023",
-      "name": "CAL Player of the Week"
+      "season": "2024",
+      "name": "NL Silver Slugger"
+    },
+    {
+      "season": "2024",
+      "name": "World Series Championship"
+    },
+    {
+      "season": "2024",
+      "name": "NL All-Star"
     }
   ],
   "quotes": []
