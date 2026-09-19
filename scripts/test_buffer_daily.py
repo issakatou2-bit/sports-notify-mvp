@@ -198,6 +198,20 @@ class BufferTests(unittest.TestCase):
 
 
 class ReleaseIsolation(unittest.TestCase):
+    def test_new_media_release_targets_main_and_keeps_source_provenance(self):
+        missing = daily.urllib.error.HTTPError('https://example.test', 404, 'Not Found', {}, None)
+        run = {'head_sha': 'old-source-sha', 'html_url': 'https://example.test/run/1'}
+        asset = {'assets': [{'name': 'collespo-morning-2026-09-19.mp4',
+                            'digest': 'sha256:media', 'browser_download_url': 'https://example.test/video'}]}
+        with patch.object(daily, 'github', side_effect=[missing, asset]) as api:
+            daily.host_video(run, '2026-09-19', None, 'media', 'morning')
+        path, method, body = api.call_args.args
+        self.assertEqual((path, method), ('/releases', 'POST'))
+        self.assertEqual(body['target_commitish'], 'main')
+        self.assertIn(run['head_sha'], body['body'])
+        self.assertIn(run['html_url'], body['body'])
+        self.assertIn('動画SHA256: media', body['body'])
+
     def test_each_kind_reuses_only_its_own_immutable_asset(self):
         calls = []
         def release(path):

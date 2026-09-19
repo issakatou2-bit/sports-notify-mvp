@@ -324,9 +324,13 @@ def host_video(run, day, path, digest, kind=DEFAULT_KIND):
         if exc.code != 404:
             raise
         release = github('/releases', 'POST', {
-            'tag_name': tag, 'target_commitish': run['head_sha'],
+            # This release hosts media, not source code. Older source commits
+            # can require workflows:write to tag when workflows changed since.
+            # Use the maintained branch, keeping media provenance below and in
+            # the delivery ledger; never broaden the publishing token's scope.
+            'tag_name': tag, 'target_commitish': 'main',
             'name': day + ' ' + words(kind)['long'] + '・配信用動画',
-            'body': 'コレスポの自動生成動画。YouTubeでの公開を確認後、SNS配信に利用します。\n元の実行: ' + run['html_url'],
+            'body': 'コレスポの自動生成動画。YouTubeでの公開を確認後、SNS配信に利用します。\n元の実行: ' + run['html_url'] + '\n動画生成元SHA: ' + run['head_sha'] + '\n動画SHA256: ' + digest,
             'make_latest': 'false'})
     name = 'collespo-' + kind + '-' + day + '.mp4'
     asset = next((a for a in release['assets'] if a['name'] == name), None)
