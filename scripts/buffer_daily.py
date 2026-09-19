@@ -250,6 +250,7 @@ def verify_youtube(record):
         raise ValueError('YouTube video is not public')
     if items[0]['snippet']['channelId'] != 'UCpZ_j8X8uOex5VvKwwTJj3Q':
         raise ValueError('YouTube video belongs to a different channel')
+    return items[0]['snippet']
 
 
 # 成果物に入っていてよいファイル。**知らない名前があれば止める。**
@@ -314,8 +315,9 @@ def verify_media(path):
     return round(duration, 2)
 
 
-def host_video(run, day, path, digest):
-    tag = 'social-daily-' + day
+def host_video(run, day, path, digest, kind=DEFAULT_KIND):
+    source_of(kind)
+    tag = 'social-' + kind + '-' + day
     try:
         release = github('/releases/tags/' + tag)
     except urllib.error.HTTPError as exc:
@@ -323,10 +325,10 @@ def host_video(run, day, path, digest):
             raise
         release = github('/releases', 'POST', {
             'tag_name': tag, 'target_commitish': run['head_sha'],
-            'name': day + ' 明日の注目試合・配信用動画',
+            'name': day + ' ' + words(kind)['long'] + '・配信用動画',
             'body': 'コレスポの自動生成動画。YouTubeでの公開を確認後、SNS配信に利用します。\n元の実行: ' + run['html_url'],
             'make_latest': 'false'})
-    name = 'collespo-daily-' + day + '.mp4'
+    name = 'collespo-' + kind + '-' + day + '.mp4'
     asset = next((a for a in release['assets'] if a['name'] == name), None)
     if asset:
         if asset.get('digest') != 'sha256:' + digest:
@@ -387,32 +389,63 @@ def words(kind: str) -> dict:
     return KIND_WORDS.get(kind) or KIND_WORDS[DEFAULT_KIND]
 
 
+def first_game_reason(description):
+    """Reuse one published reason from game 1, never a promotional footer.
+
+    This is selection, not new reporting. A title alone cannot establish that
+    a team is in a must-win game or a player will return from an injury.
+    """
+    in_game = False
+    for line in (description or '').splitlines():
+        line = line.strip()
+        if re.match(r'^1\.\s+\d{2}/\d{2}\s+\d{2}:\d{2}\s+', line):
+            in_game = True
+            continue
+        if in_game:
+            if not line or not line.startswith('・'):
+                break
+            fact = line[1:].strip()
+            if fact and len(fact) <= 72 and not re.search(r'https?://|#|[<>]', fact):
+                return fact if fact.endswith(('。', '！', '？', '!', '?')) else fact + '。'
+    return ''
+
+
+def friendly_lead(title):
+    # Only add grammar around facts already stated, preserving uncertainty.
+    match = re.fullmatch(r'(.+?)\s+先発予定', title)
+    if match:
+        return match[1] + 'が先発予定です。'
+    match = re.fullmatch(r'(.+?)\s+(\d+連勝中)', title)
+    if match:
+        return match[1] + 'は' + match[2] + 'です。'
+    return title if title.endswith(('。', '！', '？', '!', '?')) else title + '。'
+
+
 def caption(service, day, record, kind=DEFAULT_KIND):
     w = words(kind)
-    title = ht.strip_tags(record['title'].split(w['cut'])[0]
-                          .replace('【MLB】', '').strip())
-    tags = ht.select(title, service, sport=w['sport'])
+    title = ht.strip_tags(record['title'].split(w['cut'])[0].replace('【MLB】', '').strip())
+    lead = friendly_lead(title) if kind == DEFAULT_KIND else title
+    reason = first_game_reason(record.get('description', '')) if kind == DEFAULT_KIND else ''
+    details = [lead] + ([reason] if reason and reason != lead else [])
     youtube = 'https://www.youtube.com/watch?v=' + record['video_id']
     stamp = day[5:].replace('-', '/')
     if service == 'twitter':
-        # Unicode outside the single-weight X ranges counts twice; URLs are 23.
-        #
-        # 削る順は「一言 → タグ」。**枠の名前と題は最後まで残す。**
-        # どの回なのかが消えると、投稿そのものの意味が無くなる。
-        head = f'{stamp}更新｜{w["short"]}\n{title}\n\n'
-        tail = f'{youtube}\nhttps://collespo.com/'
-        for lead in (w['lead'] + '\n', ''):
-            body = head + lead + tail
-            text = body + '\n' + ht.display(tags)
-            while x_weight(text) > 280 and tags:
-                tags.pop()
-                text = body + ('\n' + ht.display(tags) if tags else '')
-            if x_weight(text) <= 280:
-                return text
+        # Retain the topic and links. Drop optional whole sentences, never half a fact.
+        for summary in dict.fromkeys(('\n'.join(details), lead)):
+            for note in (w['lead'] + '。\n', ''):
+                tags = ht.select(summary, service, sport=w['sport'])
+                body = f'{stamp}更新｜{w["short"]}\n{summary}\n\n{note}{youtube}\nhttps://collespo.com/'
+                text = body + '\n' + ht.display(tags)
+                while x_weight(text) > 280 and tags:
+                    tags.pop()
+                    text = body + ('\n' + ht.display(tags) if tags else '')
+                if x_weight(text) <= 280:
+                    return text
         raise ValueError('X caption exceeds 280 weighted characters')
-    return (f'{stamp}更新｜{w["long"]}\n{title}\n\n'
-            + w['lead'] + '\n'
-            '動画・記事はプロフィールの collespo.com から。\n' + youtube +
+    summary = '\n'.join(details)
+    tags = ht.select(summary, service, sport=w['sport'])
+    return (f'{stamp}更新｜{w["long"]}\n{summary}\n\n' + w['lead'] + '。\n'
+            '動画・記事はこちら：collespo.com\nYouTube：' + youtube +
             '\n\n音声：VOICEVOX:ずんだもん\n' + ht.display(tags))
 
 
@@ -545,7 +578,8 @@ def main():
     day, record = select_record(run, records, datetime.now(timezone.utc),
                                 args.kind)
     _key, _artifact, _file, _wf = source_of(args.kind)
-    verify_youtube(record)
+    snippet = verify_youtube(record)
+    record = {**record, 'title': snippet['title'], 'description': snippet.get('description', '')}
     available = graphql('{channels(input:{organizationId:' + json.dumps(ORG) + '}){id name service}}')['channels']
     for service in services:
         channel = CHANNELS[service]
@@ -569,7 +603,7 @@ def main():
         print('Validation only: no releases, reservations or posts created')
         return
     ledger = Ledger()
-    url = host_video(run, day, video, digest)
+    url = host_video(run, day, video, digest, args.kind)
     failed = False
     for service in services:
         key = day + ':' + args.kind + ':' + service
