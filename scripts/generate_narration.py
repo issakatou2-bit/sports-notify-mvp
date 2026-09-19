@@ -391,6 +391,13 @@ def pick_hook(games: list, availability=None) -> dict:
                     return {"big": rec["text"], "sub": name,
                             "at": at, "key": name}
 
+    # 9/20: 登板日でなくても所属球団の試合を優先する。球団の事実だけを
+    # 出し、所属フラグから選手の出場・復帰を推測しない。
+    from daily_focus import affiliated_team_hook
+    team_hook = affiliated_team_hook(games)
+    if team_hook:
+        return team_hook
+
     # 3. 日本人選手が所属しているチームの試合。
     #
     #    ここは長らく6番目だった。「◯◯が所属」はシーズンを通して

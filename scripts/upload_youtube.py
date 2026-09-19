@@ -1484,6 +1484,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             title = f"{badge}{lead}｜{slot}｜{matchup} ほか #Shorts"
         else:
             title = f"{badge}{slot}｜{matchup} ほか #Shorts"
+        if kind == 'daily' and sport == 'mlb':
+            from daily_focus import cover_metadata
+            try:
+                cover = cover_metadata(games, hook)
+                title = cover['title']
+                daily_lead = f"{cover['subject']} {cover['fact']}"
+            except ValueError:
+                pass  # Older narration may not contain a usable game reference.
     else:
         title = (f"{SPORTS.get(sport, SPORTS['mlb'])['badge']}"
                  f"{date_label}の注目試合 #Shorts")
