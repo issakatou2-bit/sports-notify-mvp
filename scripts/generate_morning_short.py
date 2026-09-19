@@ -45,6 +45,10 @@ import video_common
 # **数字の連なりを切らない直し(0.05 → 0.0/5)が届いていなかった。**
 build_narration_track = video_common.build_narration_track
 wrap = video_common.wrap
+# 絵文字を含む行を描く。**日本語フォントには絵文字のグリフが無い。**
+# 現地のコメントには絵文字が入っていて（🏆👏💪など）、そのまま
+# 日本語フォントで描いていたので、動画では全部□になっていた。
+text_emoji = video_common.text_emoji
 
 
 # フォントと ease_out は video_common に1つだけ置いてある。
@@ -3367,13 +3371,24 @@ def render_reporters(p, posts):
         body = r.get("jp") or r.get("text", "")
         lines = wrap(d, body, font(42), W - 220)[:4]
         h = 150 + len(lines) * 56
+        # 名前と媒体は、幅を測ってから置く。
+        #
+        # **「Jeff Fletcher（Orange County Register）」で右端ギリギリ**で、
+        # これより長い組み合わせは箱から出ていた。34固定で書いていたため。
+        # 縮めても収まらないときは2行に分ける。**誰が言ったかは
+        # この画面の価値そのものなので、切り捨てない。**
+        who = f"{r.get('author', '')}（{r.get('outlet', '')}）"
+        wsize, who_lines = fit_lines(d, who, W - 220, (34, 30, 26), 2)
+        wstep = wsize + 8
+        h += max(0, (len(who_lines) - 1) * wstep)
         d.rounded_rectangle([60 - dx, y, W - 60 - dx, y + h], 20, fill=(31, 25, 43))
-        d.text((100 - dx, y + 26),
-               f"{r.get('author', '')}（{r.get('outlet', '')}）",
-               font=font(34), fill=JP)
-        yy = y + 82
+        wy = y + 26
+        for wl in who_lines:
+            d.text((100 - dx, wy), wl, font=font(wsize), fill=JP)
+            wy += wstep
+        yy = wy + 14
         for line in lines:
-            d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
+            text_emoji(im, d, (100 - dx, yy), line, font(42), TEXT)
             yy += 56
         d.text((100 - dx, y + h - 46),
                f"いいね {r.get('likes', 0)}　担当 {r.get('team', '')}",
@@ -3417,7 +3432,7 @@ def render_headlines(p, heads):
                font=font(32), fill=JP)
         yy = y + 76
         for line in lines:
-            d.text((100 - dx, yy), line, font=font(40), fill=TEXT)
+            text_emoji(im, d, (100 - dx, yy), line, font(40), TEXT)
             yy += 54
         y += hh + 30
 
@@ -3597,11 +3612,12 @@ def render_voices(p, voices, picked=None):
 
         yy = y + 66
         for line in lines:
-            d.text((100 - dx, yy), line, font=font(42), fill=TEXT)
+            text_emoji(im, d, (100 - dx, yy), line, font(42), TEXT)
             yy += 58
         # 原文の一部を小さく添える。訳が気になる人が確かめられるように
+        # 原文にこそ絵文字が入っているので、ここも貼れるようにする。
         src = (v.get("title") or "")[:38]
-        d.text((100 - dx, yy + 4), src, font=font(24), fill=DIM)
+        text_emoji(im, d, (100 - dx, yy + 4), src, font(24), DIM)
         # コメントで名前が挙がった選手の、その日の成績。
         #
         # 「Sanchezが今日の負けの唯一の理由だ」と書かれていても、

@@ -92,7 +92,7 @@ class BufferTests(unittest.TestCase):
         self.assertLessEqual(daily.x_weight(text),280)
         self.assertIn('菅野智之が先発予定です。',text)
         self.assertTrue('あ' not in text or ('あ'*70+'。') in text)
-        longer={**record, 'title':'【MLB】菅野智之 先発予定・パドレスは7連勝中｜明日の注目試合'}
+        longer={**record, 'title':'【MLB】菅野智之 先発予定・パドレスは7連勝中・両チームの先発と直近の成績も紹介｜明日の注目試合'}
         shortened=daily.caption('twitter','2026-09-14',longer)
         self.assertLessEqual(daily.x_weight(shortened),280)
         self.assertNotIn('あ',shortened)
@@ -122,11 +122,26 @@ class BufferTests(unittest.TestCase):
             target=Path(tmp)/'video.mp4'
             with self.assertRaises(ValueError):
                 daily.extract_video(archive(['anything.txt']),target)
+            # 知らない名前が混ざっていたら止める。
             with self.assertRaises(ValueError):
                 daily.extract_video(archive(['collespo_short.mp4','extra.txt']),target)
             digest=daily.extract_video(archive(['../../collespo_short.mp4']),target)
             self.assertEqual(len(digest),64)
             self.assertEqual(target.stat().st_size,1200)
+            # **夕方の4本は、1つの成果物に4本と記録がまとめて入る。**
+            # 「1ファイルだけ」では通らないので、名前で選んで取り出す。
+            social=['players.mp4','voices.mp4','press.mp4','postseason.mp4',
+                    'published_videos.json']
+            for want in ('players.mp4','voices.mp4','press.mp4','postseason.mp4'):
+                digest=daily.extract_video(archive(social),target,want)
+                self.assertEqual(len(digest),64,want)
+            # 同じ名前が2つあれば止める（どちらか分からない）。
+            with self.assertRaises(ValueError):
+                daily.extract_video(archive(['a/players.mp4','b/players.mp4']),
+                                    target,'players.mp4')
+            # 入っていない枠を求めたら止める。
+            with self.assertRaises(ValueError):
+                daily.extract_video(archive(['players.mp4']),target,'voices.mp4')
 
     def ledger(self, old=None, fail=False):
         class Ledger:
@@ -180,6 +195,90 @@ class BufferTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 daily.submit_once(ledger,'key',{'channelId':'x','text':'today'}, {})
             self.assertEqual(mutate.call_count,1)
+
+
+class ReleaseIsolation(unittest.TestCase):
+    def test_each_kind_reuses_only_its_own_immutable_asset(self):
+        calls = []
+        def release(path):
+            calls.append(path)
+            kind = path.removeprefix('/releases/tags/social-').removesuffix('-2026-09-19')
+            return {'assets': [{'name': 'collespo-' + kind + '-2026-09-19.mp4',
+                    'digest': 'sha256:' + kind, 'browser_download_url': 'https://example.test/' + kind}]}
+        with patch.object(daily, 'github', side_effect=release), patch.object(daily.urllib.request, 'urlopen') as upload:
+            urls = {daily.host_video({}, '2026-09-19', None, kind, kind) for kind in daily.SOURCES}
+            self.assertEqual(len(urls), len(daily.SOURCES))
+            self.assertIn('/releases/tags/social-daily-2026-09-19', calls)
+            upload.assert_not_called()
+
+    def test_changed_media_is_never_silently_replaced(self):
+        release = {'assets': [{'name': 'collespo-morning-2026-09-19.mp4',
+                              'digest': 'sha256:original'}]}
+        with patch.object(daily, 'github', return_value=release), patch.object(daily.urllib.request, 'urlopen') as upload:
+            with self.assertRaises(ValueError):
+                daily.host_video({}, '2026-09-19', None, 'changed', 'morning')
+            upload.assert_not_called()
+
+
+class EachKindSpeaksForItself(unittest.TestCase):
+    """枠ごとに、1行目でその回が何なのかを言い切るか。
+
+    明日の注目試合の文面だけが埋め込まれていて、他の枠を投げられ
+    なかった。同じ文で全部出すと「明日の注目試合」が7本並ぶことになり、
+    どれが何の回か分からなくなる。
+    """
+
+    record = {'video_id': 'abc12345678', 'title': '【MLB】村上宗隆・岡本和真'
+                                                 'ほか｜9月15日 日本人選手 #Shorts'}
+
+    def test_every_kind_has_its_own_first_line(self):
+        seen = set()
+        for kind in daily.KIND_WORDS:
+            text = daily.caption('instagram', '2026-09-15', self.record, kind)
+            head = text.split('\n')[0]
+            self.assertIn('09/15更新', head)
+            self.assertNotIn(head, seen, '1行目が他の枠と同じ: ' + kind)
+            seen.add(head)
+
+    def test_soccer_kinds_do_not_get_mlb_tags(self):
+        text = daily.caption('instagram', '2026-09-15', self.record,
+                             'daily_soccer')
+        self.assertNotIn('#MLB', text)
+
+    def test_unknown_kind_falls_back_instead_of_crashing(self):
+        text = daily.caption('instagram', '2026-09-15', self.record, 'なぞ')
+        self.assertIn('明日の注目試合', text)
+
+    def test_x_stays_within_the_limit_for_every_kind(self):
+        long_title = {'video_id': 'abc12345678',
+                      'title': '【MLB】' + '村上宗隆・' * 12 + 'ほか｜9月15日'}
+        for kind in daily.KIND_WORDS:
+            text = daily.caption('twitter', '2026-09-15', long_title, kind)
+            self.assertLessEqual(daily.x_weight(text), 280, kind)
+
+    def test_the_youtube_link_is_always_there(self):
+        for kind in daily.KIND_WORDS:
+            for service in ('twitter', 'instagram', 'tiktok'):
+                text = daily.caption(service, '2026-09-15', self.record, kind)
+                self.assertIn('abc12345678', text, kind + '/' + service)
+
+    def test_every_postable_kind_knows_where_to_look(self):
+        """投げられる枠は、どの成果物のどのファイルかまで決まっているか。
+
+        文面（KIND_WORDS）だけ足して出どころ（SOURCES）を足し忘れると、
+        「投げられるのに材料が取れない」状態になる。
+        """
+        for kind, (key, artifact, name, wf) in daily.SOURCES.items():
+            self.assertIn(kind, daily.KIND_WORDS, kind + ' に文面が無い')
+            self.assertTrue(key and artifact and name and wf, kind)
+            self.assertIn(name, daily.ALLOWED_IN_ARTIFACT,
+                          name + ' が取り出しの許可一覧に無い')
+            self.assertTrue(wf.endswith('.yml'), wf)
+
+    def test_the_ledger_separates_kinds(self):
+        """台帳の鍵に枠が入るか。**入らないと1日1枠しか投げられない。**"""
+        keys = {'2026-09-17:' + k + ':twitter' for k in daily.SOURCES}
+        self.assertEqual(len(keys), len(daily.SOURCES))
 
 
 class StillProcessingIsNotAFailure(unittest.TestCase):

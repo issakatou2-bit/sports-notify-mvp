@@ -510,7 +510,16 @@ def _panel_stat(d, p, y, dry=False):
     y = _one(d, p.get("stat", ""), y + 8, 34, DIM, dry)
     y = _one(d, p.get("value", ""), y + 4, 92, ACCENT, dry)
     if p.get("rank"):
-        y = _one(d, f"リーグ{p['rank']}位", y + 6, 40, TEXT, dry)
+        y = _one(d, f"{p['rank']}", y + 6, 40, TEXT, dry)
+    # 用語の意味は**画面にだけ**出す。
+    #
+    # ユーザーの案:「単語とかの意味とか解説は画面に表示させるだけに
+    # するとか。気になる人は動画止めて見れればいい」。
+    # 声で説明すると、そこで話が止まる。3分の回でそれを何度もやると
+    # 用語集を読み上げているのと変わらなくなる。
+    if p.get("note"):
+        y = _block(d, p["note"], y + 14, y + 140, (30, 26, 22),
+                   fill=DIM, dry=dry)
     return y
 
 

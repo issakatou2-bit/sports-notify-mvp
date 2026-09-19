@@ -1,7 +1,7 @@
-name: Buffer 明日のMLBをX・Instagram・TikTokへ
+name: Buffer 日次ショートをX・Instagram・TikTokへ
 
 on:
-  # 日本時間19:47/23:47。投稿作成はせず、処理の遅い配信結果だけを照合。
+  # 日本時間19:47/23:47。配信結果を照合し、公開済みの未送信枠も配信。
   schedule:
     - cron: '47 10,14 * * *'
   workflow_dispatch:
@@ -13,8 +13,13 @@ on:
       mode:
         description: 検証または公開
         type: choice
-        options: [validate, publish, reconcile]
+        options: [validate, publish, reconcile, publish_due]
         default: validate
+      kind:
+        description: '投げる枠（daily / morning / morning_voices / morning_press / morning_postseason）'
+        type: choice
+        options: [daily, morning, morning_voices, morning_press, morning_postseason]
+        default: daily
   workflow_run:
     workflows: [毎日 19:00頃　明日の注目試合]
     types: [completed]
@@ -35,7 +40,7 @@ jobs:
         (github.event_name == 'schedule' ||
          (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')))
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -44,7 +49,7 @@ jobs:
       - name: Verify duplicate prevention and source validation
         run: python scripts/test_buffer_daily.py
       - name: Install media inspection tool
-        if: github.event_name != 'schedule' && inputs.mode != 'reconcile'
+        if: inputs.mode != 'reconcile'
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Validate or distribute the daily video
         env:
@@ -53,13 +58,40 @@ jobs:
           BUFFER_CHANNELS: ${{ vars.BUFFER_CHANNELS }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
-          MODE: ${{ github.event_name == 'schedule' && 'reconcile' || github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
+          MODE: ${{ github.event_name == 'schedule' && 'publish_due' || github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
           PYTHONUNBUFFERED: '1'
         run: |
           if [ "$MODE" = "reconcile" ]; then
             python scripts/buffer_daily.py --reconcile
             exit 0
           fi
+          if [ "$MODE" = "publish_due" ]; then
+            # まず、前の回の配信結果を確かめる（TikTokは処理が遅い）。
+            python scripts/buffer_daily.py --reconcile || RECON=1
+
+            # **公開済みで、まだ投げていない枠を追いかける。**
+            #
+            # 夕方の4本は15時台に作られ、公開は17:00〜20:00の予約になる。
+            # 作った時点では「公開は未来」なので投げられない。
+            # 19:47/23:47のこの枠で追いつく。cronは増やさない。
+            #
+            # 1本ごとに独立して投げる。台帳が枠ごとに分かれているので、
+            # 途中で失敗しても他の枠は投げられる。
+            python scripts/buffer_daily.py --list-due > /tmp/due.tsv
+            FAILED=0
+            while IFS="$(printf '\t')" read -r KIND RUN; do
+              [ -n "$KIND" ] || continue
+              echo "::group::$KIND （実行 $RUN）"
+              python scripts/buffer_daily.py \
+                --kind "$KIND" --source-run "$RUN" --publish \
+                || { echo "::error::$KIND を投げられませんでした"; FAILED=1; }
+              echo "::endgroup::"
+            done < /tmp/due.tsv
+
+            if [ "$FAILED" -ne 0 ] || [ "${RECON:-0}" -ne 0 ]; then exit 1; fi
+            exit 0
+          fi
           args=()
           if [ "$MODE" = "publish" ]; then args+=(--publish); fi
-          python scripts/buffer_daily.py --source-run "$SOURCE_RUN" "${args[@]}"
+          python scripts/buffer_daily.py --source-run "$SOURCE_RUN" \
+            --kind "${{ inputs.kind || 'daily' }}" "${args[@]}"

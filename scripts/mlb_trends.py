@@ -31,6 +31,15 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+import pathlib
+import sys
+
+HERE = pathlib.Path(__file__).resolve().parent
+if str(HERE) not in sys.path:
+    sys.path.insert(0, str(HERE))
+
+import mlb_splits  # noqa: E402
+
 API = "https://statsapi.mlb.com/api/v1"
 TIMEOUT = 20
 
@@ -44,14 +53,51 @@ SPLITS = (
      "球場の形と移動。本拠地の広さは打者ごとに向き不向きがある"),
     ("vl", "vr", "対左投手", "対右投手",
      "投げる腕と打つ側の関係。打者の得手不得手が最も出る切り口"),
+    ("g", "t", "天然芝", "人工芝",
+     "打球の速さと弾み方が変わる。内野安打の出方に響く"),
+    ("h1", "h2", "前半戦", "後半戦",
+     "オールスターを挟んで、疲れと対策の両方が出る"),
 )
 
-# 切り口ごとに、これだけの打数が無ければ比べない。
+# 場面ごとの成績。**比べる相手は今季全体。**
 #
-# 80は「打率の偶然の揺れが.045前後に収まる」あたり。これを下回ると、
-# 差が出ても中身を読めない。投手は打者と数が違うので別に持つ。
-MIN_AB_SPLIT = 80
-MIN_IP_SPLIT = 20
+# 対比型（上のSPLITS）と違い、片方しかない切り口。「得点圏で.160」は
+# それ単体では読めず、今季全体の.204と並べて初めて意味を持つ。
+#
+# (符号, 日本語, なぜ見るか)
+SITUATIONS = (
+    ("risp", "得点圏", "走者を還す場面。打線の中心ほど問われる"),
+    ("risp2", "得点圏で2アウト", "最後の1人。ここを抑えられると点が入らない"),
+    ("o2", "2アウト", "ここで打てるかで、イニングが終わるか続くかが決まる"),
+    ("lo", "イニングの先頭", "出塁すれば、その回の得点確率が大きく動く"),
+    ("ig07", "7回以降", "終盤は相手の継投が変わり、疲れも出る"),
+    ("ig09", "9回以降", "最後の攻撃。相手は抑えを出してくる"),
+    ("lc", "終盤の接戦", "勝敗が動く場面での働き。解説がいちばん見るところ"),
+    ("sah", "リードしている場面", "追加点が要る場面での働き"),
+    ("sbh", "ビハインドの場面", "追う展開で、どれだけ食い下がれるか"),
+    ("fp", "初球", "打ちにいくか待つか。打者の狙い方が出る"),
+    ("r123", "満塁", "1本で状況が大きく動く場面"),
+    ("ix", "延長", "疲れた投手と、手駒の減ったベンチで戦う時間"),
+)
+
+# **持たない切り口。**取れるが、最初から取らない。
+#
+# 曜日別（dmo〜dsu）だけ。意味が想像できないうえに、**打数が集まって
+# しまうので確率の判定では落ちない。**村上宗隆は1日目40打数で打率.300、
+# 4日目39打数で.103。差は昼夜より大きく出る。7通りも試せば、
+# どれかが極端になるのが当たり前。
+#
+# 満塁・初球・終盤の接戦は、以前はここに入れていた。**確率で切るように
+# してからは入れる必要がない。**満塁5打数.400は「偶然でもこうなる確率
+# 27%」で自動的に落ち、初球29打数.345は「5.5%」で拾われる。
+# 下限打数で切っていたときは、この2つを区別できなかった。
+NOT_TAKEN = ("dmo", "dtu", "dwe", "dth", "dfr", "dsa", "dsu")
+
+# 打数の下限はここに置かない。**落とすのは insight の確率の側。**
+#
+# 最初は80打数を下限にしていたが、それだと満塁5打数（偶然でも27%起きる）と
+# 初球29打数（5.5%）を区別できない。どちらも「少ない」で片づく。
+# 確率で切れば、少ない打数でも極端なものは拾える。
 
 # 直近N試合。Nは2つ持つ。
 #
@@ -83,21 +129,43 @@ def _f(value, default=None):
         return default
 
 
-def splits(player_id, season, group: str = "hitting") -> list:
-    """登録した切り口の成績。**差が小さいものはここでは落とさない。**
+def situations(player_id, season, group: str = "hitting") -> dict:
+    """登録した切り口を**まとめて1回で**取る。
 
-    落とすのは `insight` の役目。ここは取れたものをそのまま返す。
+    sitCodesはカンマ区切りで何個でも渡せる。実際に23個を1リクエストで
+    取れることを確認した（19個ぶんの打席があった）。**切り口を増やしても
+    API回数は増えない**ので、費用も実行時間もほぼ変わらない。
     """
     codes = [c for pair in SPLITS for c in pair[:2]]
+    codes += [c for c, _, _ in SITUATIONS]
     data = _get("/people/%s/stats" % player_id,
                 {"stats": "statSplits", "season": season, "group": group,
                  "sitCodes": ",".join(codes)})
-    got = {}
+    # **移籍した選手は、同じ符号で3行返る。**
+    #
+    # ヌートバーの昼の試合（2026-09-15に実データで確認）:
+    #   ダイヤモンドバックス 14打数 / カージナルス 58打数 /
+    #   合計(numTeams=2) 72打数
+    #
+    # 符号ごとに束ねてから mlb_splits に選ばせる。最初は「最後の行」を
+    # 使っていて、たまたま合計が最後だから合っていた。APIが順番を
+    # 変えた日から静かにずれる形だった（run_checks が捕まえた）。
+    rows = {}
     for block in data.get("stats") or []:
         for row in block.get("splits") or []:
             code = ((row.get("split") or {}).get("code") or "").lower()
-            if code:
-                got[code] = _stat(row)
+            if code and code not in NOT_TAKEN:
+                rows.setdefault(code, []).append(row)
+    return {code: _stat(mlb_splits.prefer_total(rs)[0])
+            for code, rs in rows.items() if rs}
+
+
+def splits(player_id, season, group: str = "hitting", got: dict = None):
+    """対比型（AとBを並べる）。**差が小さいものはここでは落とさない。**
+
+    落とすのは `insight` の役目。ここは取れたものをそのまま返す。
+    """
+    got = situations(player_id, season, group) if got is None else got
     out = []
     for a, b, ja, jb, why in SPLITS:
         if a not in got or b not in got:
@@ -108,40 +176,54 @@ def splits(player_id, season, group: str = "hitting") -> list:
     return out
 
 
+def scenes(got: dict) -> list:
+    """場面型（今季全体と比べる）。比べる相手は呼ぶ側が持つ。"""
+    out = []
+    for code, ja, why in SITUATIONS:
+        if code in got:
+            out.append({"kind": code, "label": ja, "why": why, **got[code]})
+    return out
+
+
 def by_month(player_id, season, group: str = "hitting") -> list:
     """月ごとの成績。新しい月が後ろに来るよう並べ替える。"""
     data = _get("/people/%s/stats" % player_id,
                 {"stats": "byMonth", "season": season, "group": group})
-    out = []
+    # 移籍した月は、球団ごとと合計の両方が返る（ヌートバーの9月）。
+    rows = {}
     for block in data.get("stats") or []:
         for row in block.get("splits") or []:
-            month = row.get("month")
-            if month is None:
-                continue
-            out.append({"month": int(month), **_stat(row)})
+            if row.get("month") is not None:
+                rows.setdefault(int(row["month"]), []).append(row)
+    out = [{"month": m, **_stat(mlb_splits.prefer_total(rs)[0])}
+           for m, rs in rows.items() if rs]
     out.sort(key=lambda r: r["month"])
     return out
 
 
+def _one(data: dict) -> dict:
+    """**合計の行を選ぶ。**移籍した選手は球団ごとの行も返る。
+
+    「最初の1行」を採ると、たまたま合計が先頭に来ている日だけ合う。
+    順番が変われば静かにずれる。読み方は mlb_splits に寄せる。
+    """
+    rows = [r for block in (data.get("stats") or [])
+            for r in (block.get("splits") or [])]
+    return mlb_splits.season_stat(rows)
+
+
 def last_games(player_id, season, limit: int, group: str = "hitting") -> dict:
     """直近N試合の合計。取れなければ空。"""
-    data = _get("/people/%s/stats" % player_id,
-                {"stats": "lastXGames", "season": season, "group": group,
-                 "limit": limit})
-    for block in data.get("stats") or []:
-        for row in block.get("splits") or []:
-            return {"games": limit, **_stat(row)}
-    return {}
+    got = _one(_get("/people/%s/stats" % player_id,
+                    {"stats": "lastXGames", "season": season, "group": group,
+                     "limit": limit}))
+    return {"games": limit, **got} if got else {}
 
 
 def season_total(player_id, season, group: str = "hitting") -> dict:
     """今季の合計。比べる相手として要る。"""
-    data = _get("/people/%s/stats" % player_id,
-                {"stats": "season", "season": season, "group": group})
-    for block in data.get("stats") or []:
-        for row in block.get("splits") or []:
-            return _stat(row)
-    return {}
+    return _one(_get("/people/%s/stats" % player_id,
+                     {"stats": "season", "season": season, "group": group}))
 
 
 def collect(player_id, season, group: str = "hitting") -> dict:
@@ -149,10 +231,16 @@ def collect(player_id, season, group: str = "hitting") -> dict:
 
     毎日全選手ぶん叩くものではない。問い合わせられた選手だけ。
     """
+    got = situations(player_id, season, group)
     out = {"player_id": str(player_id), "season": str(season),
            "group": group,
            "season_total": season_total(player_id, season, group),
-           "splits": splits(player_id, season, group),
+           # 鍵を "splits" にしない。**MLB APIの splits と紛らわしい。**
+           # run_checks は「APIの行を自前で読んでいないか」を
+           # `["splits"]` という書き方で見ているので、無関係な辞書でも
+           # 同じ鍵を使うと引っかかる。中身は対比型の組なので pairs。
+           "pairs": splits(player_id, season, group, got=got),
+           "scenes": scenes(got),
            "months": by_month(player_id, season, group),
            "recent": {}}
     for n in RECENT_GAMES:

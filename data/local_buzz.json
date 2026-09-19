@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-15T06:02:04.029928+00:00",
+  "updated_at": "2026-09-19T06:02:16.186627+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,73 +13,77 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 7,
-      "tone": "好調",
-      "gist": "ホワイトソックス、ガーディアンズとのALC争いで勢い"
-    },
-    {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 5,
+      "mentions": 6,
       "tone": "好調",
-      "gist": "ドジャース、14年連続プレーオフ進出でMLB記録タイ"
+      "gist": "ドジャース8回に4本塁打、選手らが連続本塁打"
     },
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
       "mentions": 4,
-      "tone": "不振",
-      "gist": "ガーディアンズ、ホワイトソックスにタイブレーカー譲る"
+      "tone": "好調",
+      "gist": "タイガース9連続得点でホワイトソックスに勝利"
     },
     {
       "team_id": "144",
       "name": "ブレーブス",
       "name_en": "Atlanta Braves",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ブレーブス、過去の栄光と現在の経営方針が話題"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "メッツ、プレーオフ進出が消滅"
-    },
-    {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "エンゼルス、93敗で100敗回避へ、地味な喜び"
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "ブレーブス9年で8度目のポストシーズン進出"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "パドレス、5年連続勝越でワイルドカード争い首位"
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "パドレスワイルドカード上位争いで0.5ゲーム差"
     },
     {
-      "team_id": "137",
-      "name": "ジャイアンツ",
-      "name_en": "San Francisco Giants",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "Rafael Devers、初年度は37本塁打で好成績"
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "カブスホームズが6回に失点、ポストシーズン危機"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "ホワイトソックス6点リードを失いAL中地区首位陥落"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "フィリーズワイルドカード上位争いで後退"
+    },
+    {
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "アストロズ敗北でAL西地区全球団が5割以下"
     }
   ],
   "players": [
     {
-      "name": "岡本和真",
+      "name": "大谷翔平",
+      "mentions": 1
+    },
+    {
+      "name": "村上宗隆",
       "mentions": 1
     }
   ]
