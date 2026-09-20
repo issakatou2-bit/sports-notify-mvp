@@ -429,5 +429,41 @@ check("played が欠けている行",
       ["competitions"][0]["played"], 0)
 check("要約が落ちない", isinstance(sr.summary(sr.build({})), str), True)
 
+print()
+print("--- 次の節が始まっていても、終わった節は出せる ---")
+# **9/20に初回が出なかった原因。**
+#
+# ラ・リーガは min(played)=5 / max=6 で、第5節は全クラブ終えているのに
+# 「全クラブが同じ試合数ではない」として打ち切られていた。
+# 5大リーグは週末に節が割れるので、min==max になる時間帯はほとんど無い。
+# 順延を待つ役目は min(played) が果たしている。
+
+
+def _table(played_list, code="PD", name="ラ・リーガ"):
+    return {"competitions": [{
+        "code": code, "name_jp": name,
+        "season": {"year": 2026, "end": "2027-05-30"},
+        "table": [{"position": i + 1, "team": "T%d" % (i + 1),
+                   "points": 30 - i, "played": p, "gf": 0, "ga": 0}
+                  for i, p in enumerate(played_list)]}]}
+
+
+# 全クラブ5試合＝第5節が終わった。
+check("全部そろっていれば出せる",
+      [d["round"] for d in sr.due(_table([5] * 20), {})], [5])
+# 一部が6試合＝第6節が始まっている。**それでも第5節は出せる。**
+check("次の節が始まっていても出せる",
+      [d["round"] for d in sr.due(_table([5] * 10 + [6] * 10), {})], [5])
+# 1クラブが4試合＝第5節はまだ終わっていない。
+check("遅れているクラブがいれば待つ",
+      sr.due(_table([4] + [5] * 19), {}), [])
+# 最低節数に届かない。
+check("4節では出さない", sr.due(_table([4] * 20), {}), [])
+# 同じ節は二度出さない。
+check("出した節は繰り返さない",
+      sr.due(_table([5] * 20), {"PD:2026": 5}), [])
+check("次の節になれば出す",
+      [d["round"] for d in sr.due(_table([6] * 20), {"PD:2026": 5})], [6])
+
 print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
 sys.exit(1 if fails else 0)

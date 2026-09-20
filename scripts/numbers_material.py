@@ -373,7 +373,10 @@ def load(root: str = "data", today: date = None) -> dict:
     soccer = {}
     for comp in (_fresh_read(base / "soccer_race.json", today)
                  .get("competitions") or []):
-        if comp.get("ready") and comp.get("round_complete"):
+        # round_complete（全クラブが同じ試合数）は求めない。
+        # **次の節が始まった瞬間に False になる**ので、これを条件に
+        # するとサッカーが長編に入らない（9/20のラ・リーガがそうだった）。
+        if comp.get("ready"):
             soccer = comp
             break
 

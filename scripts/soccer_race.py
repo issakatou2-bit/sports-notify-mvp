@@ -207,7 +207,17 @@ def due(preview: dict, state: dict = None) -> list:
         if season_over(c):
             continue
         st = round_state(rows)
-        if not st["complete"]:
+        # **「全クラブが同じ試合数」は求めない。**
+        #
+        # min(played) が「終わった節」なので、遅れているクラブがいれば
+        # そこで節は進まない。順延を待つ役目は min が果たしている。
+        #
+        # そのうえで complete（min == max）も求めると、**次の節が
+        # 始まった瞬間に出せなくなる。**9/20のラ・リーガは min=5 /
+        # max=6 で、第5節は全クラブ終えているのに出なかった。
+        # 5大リーグは週末に節が割れるので、min==max になる時間帯は
+        # ほとんど無い。
+        if st["round"] <= 0:
             continue
         if st["round"] < min_round(code):
             continue
