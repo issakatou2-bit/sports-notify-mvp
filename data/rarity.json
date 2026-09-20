@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-19T13:04:00.932249+00:00",
+  "updated_at": "2026-09-20T06:01:41.527026+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
@@ -11,7 +11,7 @@
           "value": 0.8659217877094972,
           "shown": "0.87",
           "at": 2,
-          "of": 50,
+          "of": 46,
           "ties": 1,
           "above": {
             "name": "Jacob Misiorowski",
@@ -19,7 +19,7 @@
           },
           "below": {
             "name": "Cam Schlittler",
-            "shown": "0.90"
+            "shown": "0.91"
           },
           "key": "whip",
           "label": "WHIP",
@@ -33,10 +33,10 @@
       "player_id": "808959",
       "items": [
         {
-          "value": 0.5899419729206963,
-          "shown": "59.0%",
+          "value": 0.5892514395393474,
+          "shown": "58.9%",
           "at": 1,
-          "of": 137,
+          "of": 135,
           "ties": 1,
           "above": null,
           "below": {
@@ -51,15 +51,15 @@
           "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
         },
         {
-          "value": 0.3578336557059961,
-          "shown": "35.8%",
+          "value": 0.35892514395393477,
+          "shown": "35.9%",
           "at": 1,
-          "of": 137,
+          "of": 135,
           "ties": 1,
           "above": null,
           "below": {
             "name": "Colson Montgomery",
-            "shown": "35.0%"
+            "shown": "35.4%"
           },
           "key": "k_rate",
           "label": "三振率",
@@ -68,15 +68,15 @@
           "side": "top"
         },
         {
-          "value": 0.1702127659574468,
-          "shown": "17.0%",
+          "value": 0.1689059500959693,
+          "shown": "16.9%",
           "at": 1,
-          "of": 137,
+          "of": 135,
           "ties": 1,
           "above": null,
           "below": {
             "name": "James Wood",
-            "shown": "16.8%"
+            "shown": "16.7%"
           },
           "key": "bb_rate",
           "label": "四球率",

@@ -1,116 +1,103 @@
 {
-  "generated_at": "2026-09-19T06:01:12.467207+00:00",
-  "date_jst": "2026-09-19",
-  "name": "Mookie Betts",
-  "player_id": "605141",
-  "team": "ドジャース",
+  "generated_at": "2026-09-20T06:01:09.333787+00:00",
+  "date_jst": "2026-09-20",
+  "name": "Angel Martínez",
+  "player_id": "682657",
+  "team": "ガーディアンズ",
   "group": "hitting",
-  "why": "2026-09-19のMLBで最も活躍",
-  "headline": "4打数3安打　2本塁打　3打点　1四球",
-  "score": 177,
+  "why": "2026-09-20のMLBで最も活躍",
+  "headline": "5打数4安打　2本塁打　1二塁打　4打点",
+  "score": 191,
   "bio": {
-    "name_en": "Mookie Betts",
-    "age": 33,
-    "birth_city": "Nashville",
-    "birth_state": "TN",
-    "birth_country": "USA",
-    "birth_date": "1992-10-07",
-    "debut": "2014-06-29",
-    "draft_year": 2011,
-    "bats": "Right",
+    "name_en": "Angel Martínez",
+    "age": 24,
+    "birth_city": "Santo Domingo",
+    "birth_state": null,
+    "birth_country": "Dominican Republic",
+    "birth_date": "2002-01-27",
+    "debut": "2024-06-22",
+    "draft_year": null,
+    "bats": "Switch",
     "throws": "Right",
-    "number": "50",
-    "position": "Shortstop",
+    "number": "1",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "5' 9\"",
-    "weight": 180
+    "height": "5' 11\"",
+    "weight": 200
   },
   "teams": [
     {
-      "team": "レッドソックス",
-      "from": 2014,
-      "to": 2019
-    },
-    {
-      "team": "ドジャース",
-      "from": 2020,
+      "team": "ガーディアンズ",
+      "from": 2024,
       "to": 2026
     }
   ],
   "career": {
-    "games": 1646,
-    "avg": ".288",
-    "hr": 313,
-    "rbi": 978,
-    "ops": ".873",
-    "sb": 198,
-    "hits": 1881
+    "games": 289,
+    "avg": ".237",
+    "hr": 31,
+    "rbi": 113,
+    "ops": ".678",
+    "sb": 22,
+    "hits": 228
   },
   "this_season": {
-    "games": 115,
-    "avg": ".254",
-    "hr": 22,
-    "rbi": 65,
-    "ops": ".766",
-    "sb": 2,
-    "hits": 114
+    "games": 107,
+    "avg": ".255",
+    "hr": 17,
+    "rbi": 57,
+    "ops": ".759",
+    "sb": 11,
+    "hits": 93
   },
   "last_season": {
-    "games": 150,
-    "avg": ".258",
-    "hr": 20,
-    "rbi": 82,
-    "ops": ".732",
+    "games": 139,
+    "avg": ".224",
+    "hr": 11,
+    "rbi": 45,
+    "ops": ".628",
     "sb": 8,
-    "hits": 152
+    "hits": 100
   },
   "recent": [
     {
-      "date": "2026-09-18",
-      "line": "4打数3安打 2本塁打 3打点",
-      "opponent": "San Francisco Giants"
-    },
-    {
-      "date": "2026-09-16",
-      "line": "4打数3安打",
-      "opponent": "Cincinnati Reds"
-    },
-    {
-      "date": "2026-09-15",
-      "line": "4打数0安打",
-      "opponent": "Cincinnati Reds"
+      "date": "2026-09-19",
+      "line": "5打数4安打 2本塁打 4打点",
+      "opponent": "Athletics"
     },
     {
       "date": "2026-09-14",
-      "line": "4打数0安打",
-      "opponent": "Cincinnati Reds"
+      "line": "3打数0安打",
+      "opponent": "Chicago White Sox"
     },
     {
       "date": "2026-09-13",
-      "line": "4打数2安打 1打点",
-      "opponent": "Miami Marlins"
+      "line": "5打数2安打 1打点",
+      "opponent": "Minnesota Twins"
+    },
+    {
+      "date": "2026-09-12",
+      "line": "4打数1安打",
+      "opponent": "Minnesota Twins"
+    },
+    {
+      "date": "2026-09-11",
+      "line": "4打数2安打 1本塁打 2打点",
+      "opponent": "Minnesota Twins"
     }
   ],
   "awards": [
     {
-      "season": "2025",
-      "name": "World Series Championship"
+      "season": "2026",
+      "name": "AL Player of the Week"
     },
     {
-      "season": "2025",
-      "name": "NL Player of the Week"
+      "season": "2023",
+      "name": "MiLB.com Organization All-Star"
     },
     {
-      "season": "2024",
-      "name": "NL Silver Slugger"
-    },
-    {
-      "season": "2024",
-      "name": "World Series Championship"
-    },
-    {
-      "season": "2024",
-      "name": "NL All-Star"
+      "season": "2019",
+      "name": "DSL Mid-Season All-Star"
     }
   ],
   "quotes": []
