@@ -253,36 +253,26 @@ def verify_youtube(record):
     return items[0]['snippet']
 
 
-# 成果物に入っていてよいファイル。**知らない名前があれば止める。**
-#
-# 以前は「1ファイルだけ」を求めていた。夕方の4本は
-# collespo-social-shorts に4本＋記録がまとめて入るので、その数え方では
-# 通らない。ただし「余計なものが混ざっていたら止める」という警戒は
-# 残したいので、名前を並べるほうに変える。
-ALLOWED_IN_ARTIFACT = frozenset(
-    ['collespo_short.mp4', 'players.mp4', 'voices.mp4', 'press.mp4',
-     'postseason.mp4', 'published_videos.json'])
-
-
 def extract_video(archive, destination, wanted='collespo_short.mp4'):
-    """成果物から1本だけ取り出す。**名前で選ぶ。**
+    """成果物から1本だけ取り出す。**動画だけを見て、名前で選ぶ。**
 
     夕方の4本は `collespo-social-shorts` に4本まとめて入っていて
     （players.mp4 / voices.mp4 / press.mp4 / postseason.mp4）、
-    published_videos.json も同梱されている。どれを投げるかは
-    呼ぶ側が名前で指定する。
+    サムネイル（short.png）や記録（published_videos.json）も同梱される。
 
-    知らない名前のファイルが1つでもあれば止める。
+    **「知らない名前があれば止める」にしていたら、short.png で
+    9/19と9/20の2日続けて落ちた。**成果物の中身は枠を足すたびに
+    変わるので、許す名前を並べる形は脆い。取り出すのは .mp4 だけで、
+    それ以外は見ない。ここは自分のワークフローが作った成果物なので、
+    外から知らないファイルが入ってくる経路は無い。
+
+    `wanted` に合う .mp4 がちょうど1つでなければ止める（同名が2つ
+    あればどちらか分からず、0なら枠を間違えている）。
     """
     with zipfile.ZipFile(io.BytesIO(archive)) as source:
-        entries = source.infolist()
-        unknown = [e.filename for e in entries
-                   if e.filename.split('/')[-1] not in ALLOWED_IN_ARTIFACT]
-        if unknown:
-            raise ValueError('Unexpected file in the artifact: '
-                             + unknown[0])
-        hits = [e for e in entries
-                if e.filename.split('/')[-1] == wanted]
+        hits = [e for e in source.infolist()
+                if e.filename.lower().endswith('.mp4')
+                and e.filename.split('/')[-1] == wanted]
         if len(hits) != 1:
             raise ValueError('Expected exactly one %s in the artifact'
                              % wanted)

@@ -122,16 +122,24 @@ class BufferTests(unittest.TestCase):
             target=Path(tmp)/'video.mp4'
             with self.assertRaises(ValueError):
                 daily.extract_video(archive(['anything.txt']),target)
-            # 知らない名前が混ざっていたら止める。
+            # **同梱されているものは無視する。**
+            #
+            # 「知らない名前があれば止める」にしていたら、成果物に
+            # 入っている short.png で9/19と9/20の2日続けて落ちた。
+            # 成果物の中身は枠を足すたびに変わるので、許す名前を
+            # 並べる形は脆い。.mp4 だけを見る。
+            digest=daily.extract_video(
+                archive(['collespo_short.mp4','extra.txt','short.png']),target)
+            self.assertEqual(len(digest),64)
+            # 動画そのものは取り違えない。
             with self.assertRaises(ValueError):
-                daily.extract_video(archive(['collespo_short.mp4','extra.txt']),target)
+                daily.extract_video(archive(['extra.txt','short.png']),target)
             digest=daily.extract_video(archive(['../../collespo_short.mp4']),target)
             self.assertEqual(len(digest),64)
             self.assertEqual(target.stat().st_size,1200)
-            # **夕方の4本は、1つの成果物に4本と記録がまとめて入る。**
-            # 「1ファイルだけ」では通らないので、名前で選んで取り出す。
+            # **夕方の4本は、1つの成果物に4本と記録とサムネイルが入る。**
             social=['players.mp4','voices.mp4','press.mp4','postseason.mp4',
-                    'published_videos.json']
+                    'published_videos.json','short.png']
             for want in ('players.mp4','voices.mp4','press.mp4','postseason.mp4'):
                 digest=daily.extract_video(archive(social),target,want)
                 self.assertEqual(len(digest),64,want)
@@ -285,8 +293,8 @@ class EachKindSpeaksForItself(unittest.TestCase):
         for kind, (key, artifact, name, wf) in daily.SOURCES.items():
             self.assertIn(kind, daily.KIND_WORDS, kind + ' に文面が無い')
             self.assertTrue(key and artifact and name and wf, kind)
-            self.assertIn(name, daily.ALLOWED_IN_ARTIFACT,
-                          name + ' が取り出しの許可一覧に無い')
+            self.assertTrue(name.lower().endswith('.mp4'),
+                            name + ' は動画ではない（取り出せない）')
             self.assertTrue(wf.endswith('.yml'), wf)
 
     def test_the_ledger_separates_kinds(self):

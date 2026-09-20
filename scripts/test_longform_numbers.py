@@ -112,7 +112,12 @@ check("選手が並ぶ", bool(real["players"]), True)
 check("人数を絞る", len(real["players"]) <= nm.MAX_PLAYERS, True)
 check("話せる材料がある", nm.has_enough(real), True)
 text = nm.facts(real)
-hasnt("圏内まで、という曖昧な書き方をしない", text, "圏内まで")
+# 禁じたいのは「圏内まで+1.5」という**符号付きの曖昧な形**。
+# 9/15にこう書いて、圏内なのか圏内を目指しているのか読めなかった。
+# 「進出圏内まであと3.0ゲーム」は圏外の球団について正しい表現なので、
+# こちらは通す。
+hasnt("圏内まで＋符号、という書き方をしない", text, "圏内まで+")
+hasnt("圏内で＋符号も書かない", text, "圏内で+")
 for row in real["rare"]:
     check("同率を拾わない（%s）" % row["stat"], "タイ" in row["rank"], False)
 panels = nm.panels(real)
