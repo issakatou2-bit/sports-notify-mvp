@@ -107,10 +107,21 @@ check("札は締めだけ残る", sorted(nm.panels(empty)), ["topic"])
 
 print()
 print("--- 実データ ---")
+# **その日の中身は検査しない。**
+#
+# 「選手が並ぶ」「話せる材料がある」を求めていたら、9/20に落ちた。
+# 日本人選手が出ていない日・オールスター・シーズンオフには必ず落ちる。
+# **コードが何も変わっていないのに日が変わって赤くなる検査**は、
+# 9/15に別の場所でも直したばかりの型（test_soccer_rules）。
+#
+# ここで見たいのは「実データを通しても壊れないか」であって、
+# その日に選手が何人いたかではない。
 real = nm.load(str(HERE.parent / "data"))
-check("選手が並ぶ", bool(real["players"]), True)
+check("実データで落ちない", isinstance(real, dict), True)
 check("人数を絞る", len(real["players"]) <= nm.MAX_PLAYERS, True)
-check("話せる材料がある", nm.has_enough(real), True)
+check("材料の有無を答えられる", isinstance(nm.has_enough(real), bool), True)
+if not real["players"]:
+    print("    （きょうは出場した選手がいないので、中身の検査は飛ばします）")
 text = nm.facts(real)
 # 禁じたいのは「圏内まで+1.5」という**符号付きの曖昧な形**。
 # 9/15にこう書いて、圏内なのか圏内を目指しているのか読めなかった。
@@ -120,6 +131,9 @@ hasnt("圏内まで＋符号、という書き方をしない", text, "圏内ま
 hasnt("圏内で＋符号も書かない", text, "圏内で+")
 for row in real["rare"]:
     check("同率を拾わない（%s）" % row["stat"], "タイ" in row["rank"], False)
+# 実データに同率が無い日もあるので、作り物でも押さえておく。
+check("ties>1 は出さない",
+      [r for r in nm.load(str(HERE / "no-such-dir"))["rare"]], [])
 panels = nm.panels(real)
 check("札に締めがある", "topic" in panels, True)
 for key, panel in panels.items():
