@@ -1,103 +1,111 @@
 {
-  "generated_at": "2026-09-20T06:01:09.333787+00:00",
-  "date_jst": "2026-09-20",
-  "name": "Angel Martínez",
-  "player_id": "682657",
-  "team": "ガーディアンズ",
+  "generated_at": "2026-09-21T06:01:15.039439+00:00",
+  "date_jst": "2026-09-21",
+  "name": "Jake Cronenworth",
+  "player_id": "630105",
+  "team": "パドレス",
   "group": "hitting",
-  "why": "2026-09-20のMLBで最も活躍",
-  "headline": "5打数4安打　2本塁打　1二塁打　4打点",
-  "score": 191,
+  "why": "2026-09-21のMLBで最も活躍",
+  "headline": "4打数3安打　2本塁打　1二塁打　5打点",
+  "score": 200,
   "bio": {
-    "name_en": "Angel Martínez",
-    "age": 24,
-    "birth_city": "Santo Domingo",
-    "birth_state": null,
-    "birth_country": "Dominican Republic",
-    "birth_date": "2002-01-27",
-    "debut": "2024-06-22",
-    "draft_year": null,
-    "bats": "Switch",
+    "name_en": "Jake Cronenworth",
+    "age": 32,
+    "birth_city": "St. Clair",
+    "birth_state": "MI",
+    "birth_country": "USA",
+    "birth_date": "1994-01-21",
+    "debut": "2020-07-26",
+    "draft_year": 2015,
+    "bats": "Left",
     "throws": "Right",
-    "number": "1",
-    "position": "Outfielder",
+    "number": "9",
+    "position": "Second Base",
     "nickname": null,
     "height": "5' 11\"",
-    "weight": 200
+    "weight": 187
   },
   "teams": [
     {
-      "team": "ガーディアンズ",
-      "from": 2024,
+      "team": "パドレス",
+      "from": 2020,
       "to": 2026
     }
   ],
   "career": {
-    "games": 289,
-    "avg": ".237",
-    "hr": 31,
-    "rbi": 113,
-    "ops": ".678",
-    "sb": 22,
-    "hits": 228
+    "games": 884,
+    "avg": ".245",
+    "hr": 87,
+    "rbi": 405,
+    "ops": ".730",
+    "sb": 33,
+    "hits": 769
   },
   "this_season": {
-    "games": 107,
-    "avg": ".255",
-    "hr": 17,
-    "rbi": 57,
-    "ops": ".759",
-    "sb": 11,
-    "hits": 93
+    "games": 103,
+    "avg": ".229",
+    "hr": 7,
+    "rbi": 36,
+    "ops": ".637",
+    "sb": 9,
+    "hits": 82
   },
   "last_season": {
-    "games": 139,
-    "avg": ".224",
+    "games": 135,
+    "avg": ".246",
     "hr": 11,
-    "rbi": 45,
-    "ops": ".628",
-    "sb": 8,
-    "hits": 100
+    "rbi": 59,
+    "ops": ".744",
+    "sb": 3,
+    "hits": 103
   },
   "recent": [
     {
+      "date": "2026-09-20",
+      "line": "4打数3安打 2本塁打 5打点",
+      "opponent": "Miami Marlins"
+    },
+    {
       "date": "2026-09-19",
-      "line": "5打数4安打 2本塁打 4打点",
-      "opponent": "Athletics"
+      "line": "4打数1安打 1打点",
+      "opponent": "Miami Marlins"
     },
     {
-      "date": "2026-09-14",
-      "line": "3打数0安打",
-      "opponent": "Chicago White Sox"
+      "date": "2026-09-18",
+      "line": "3打数2安打",
+      "opponent": "Miami Marlins"
     },
     {
-      "date": "2026-09-13",
+      "date": "2026-09-17",
+      "line": "5打数2安打",
+      "opponent": "Colorado Rockies"
+    },
+    {
+      "date": "2026-09-16",
       "line": "5打数2安打 1打点",
-      "opponent": "Minnesota Twins"
-    },
-    {
-      "date": "2026-09-12",
-      "line": "4打数1安打",
-      "opponent": "Minnesota Twins"
-    },
-    {
-      "date": "2026-09-11",
-      "line": "4打数2安打 1本塁打 2打点",
-      "opponent": "Minnesota Twins"
+      "opponent": "Colorado Rockies"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "AL Player of the Week"
+      "season": "2022",
+      "name": "NL All-Star"
     },
     {
-      "season": "2023",
-      "name": "MiLB.com Organization All-Star"
+      "season": "2021",
+      "name": "NL All-Star"
+    },
+    {
+      "season": "2021",
+      "name": "NL Player of the Week"
+    },
+    {
+      "season": "2020",
+      "name": "NL Rookie of the Month"
     },
     {
       "season": "2019",
-      "name": "DSL Mid-Season All-Star"
+      "name": "INT Post-Season All-Star"
     }
   ],
   "quotes": []
