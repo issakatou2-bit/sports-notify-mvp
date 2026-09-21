@@ -1,80 +1,80 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 273,
-    "home_wins": 152,
+    "games": 285,
+    "home_wins": 158,
     "draws": 0,
-    "away_wins": 121,
-    "home_win_pct": 56,
-    "avg_total": 8.8,
-    "one_run": 80,
+    "away_wins": 127,
+    "home_win_pct": 55,
+    "avg_total": 8.7,
+    "one_run": 82,
     "one_run_pct": 29,
-    "shutouts": 30,
+    "shutouts": 32,
     "shutout_pct": 11
   },
   "same_division": {
-    "games": 81,
-    "home_wins": 39,
+    "games": 86,
+    "home_wins": 42,
     "draws": 0,
-    "away_wins": 42,
-    "home_win_pct": 48,
-    "avg_total": 9.1,
+    "away_wins": 44,
+    "home_win_pct": 49,
+    "avg_total": 9.0,
     "one_run": 26,
-    "one_run_pct": 32,
+    "one_run_pct": 30,
     "shutouts": 9,
-    "shutout_pct": 11
+    "shutout_pct": 10
   },
   "venues": {
     "フェンウェイ・パーク": {
       "games": 11,
       "avg_total": 11.7
     },
-    "プログレッシブ・フィールド": {
-      "games": 8,
-      "avg_total": 11.1
-    },
     "アメリカン・ファミリー・フィールド": {
       "games": 5,
       "avg_total": 11.0
     },
     "クアーズ・フィールド": {
-      "games": 11,
-      "avg_total": 10.8
+      "games": 12,
+      "avg_total": 10.2
     },
     "リグレー・フィールド": {
       "games": 19,
       "avg_total": 10.1
     },
+    "プログレッシブ・フィールド": {
+      "games": 9,
+      "avg_total": 10.0
+    },
     "レート・フィールド": {
-      "games": 16,
-      "avg_total": 9.7
+      "games": 17,
+      "avg_total": 9.6
     },
     "ナショナルズ・パーク": {
       "games": 5,
-      "avg_total": 9.6
-    },
-    "トロピカーナ・フィールド": {
-      "games": 10,
       "avg_total": 9.6
     },
     "エンゼル・スタジアム": {
       "games": 6,
       "avg_total": 9.5
     },
+    "トロピカーナ・フィールド": {
+      "games": 11,
+      "avg_total": 9.3
+    },
     "グローブライフ・フィールド": {
-      "games": 8,
+      "games": 9,
       "avg_total": 9.1
     },
     "カウフマン・スタジアム": {
       "games": 5,
       "avg_total": 9.0
     },
-    "ドジャー・スタジアム": {
-      "games": 19,
-      "avg_total": 8.9
-    },
     "ペトコ・パーク": {
-      "games": 12,
+      "games": 13,
+      "avg_total": 8.8
+    },
+    "ドジャー・スタジアム": {
+      "games": 20,
       "avg_total": 8.7
     },
     "ローンデポ・パーク": {
@@ -89,33 +89,33 @@
       "games": 13,
       "avg_total": 8.0
     },
-    "カムデン・ヤーズ": {
-      "games": 9,
-      "avg_total": 7.9
+    "グレート・アメリカン・ボール・パーク": {
+      "games": 8,
+      "avg_total": 8.0
     },
     "シチズンズ・バンク・パーク": {
       "games": 7,
       "avg_total": 7.9
     },
-    "グレート・アメリカン・ボール・パーク": {
-      "games": 7,
-      "avg_total": 7.7
+    "カムデン・ヤーズ": {
+      "games": 10,
+      "avg_total": 7.4
     },
     "ダイキン・パーク": {
-      "games": 17,
-      "avg_total": 7.4
+      "games": 18,
+      "avg_total": 7.3
+    },
+    "シティ・フィールド": {
+      "games": 8,
+      "avg_total": 6.8
     },
     "ロジャーズ・センター": {
       "games": 7,
       "avg_total": 6.6
     },
-    "シティ・フィールド": {
-      "games": 7,
-      "avg_total": 6.4
-    },
     "チェイス・フィールド": {
-      "games": 12,
-      "avg_total": 6.0
+      "games": 13,
+      "avg_total": 6.5
     }
   },
   "min_sample": 5
