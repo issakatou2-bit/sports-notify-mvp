@@ -40,7 +40,12 @@
           "text": "フィオレンティーナ（昨季セリエA15位）とナポリ（昨季セリエA2位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 1,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "564697",
@@ -91,7 +96,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "560582",
@@ -145,7 +155,12 @@
       ],
       "log_notes": [],
       "ai_summary": "プレミアリーグの開幕直後となる今節、昨季プレミアリーグ6位のボーンマスと昨季5位のリバプールが対戦する。両チームは前シーズン上位に位置した経験を持つ強豪同士であり、【シーズン全体の勢力図を占う重要な一戦】となる。加えて、リバプールには日本代表の遠藤航が所属しており、彼がどのようなパフォーマンスを見せるかに注目したい。",
-      "notification_hook": "遠藤航が昨季5位のリバプール、6位ボーンマスとの開幕戦で躍動するか。"
+      "notification_hook": "遠藤航が昨季5位のリバプール、6位ボーンマスとの開幕戦で躍動するか。",
+      "final_score": {
+        "home": 0,
+        "away": 1,
+        "winner": "away"
+      }
     },
     {
       "game_id": "560585",
@@ -196,7 +211,12 @@
           "text": "リーズ（昨季プレミアリーグ14位）とクリスタル・パレス（昨季プレミアリーグ15位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 0,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "560590",
@@ -242,7 +262,12 @@
           "text": "マンチェスター・シティ（昨季プレミアリーグ2位）とサンダーランド（昨季プレミアリーグ7位）の対戦",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "558592",
@@ -283,7 +308,12 @@
           "text": "コモ（昨季セリエA4位）",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "558590",
@@ -329,7 +359,12 @@
           "text": "パルマ（昨季セリエA12位）とジェノア（昨季セリエA16位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "559676",
@@ -370,7 +405,12 @@
           "text": "オセール（昨季リーグ・アン15位）とブレスト（昨季リーグ・アン12位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "565807",
@@ -411,7 +451,12 @@
           "text": "レバークーゼン（昨季ブンデスリーガ6位）とライプツィヒ（昨季ブンデスリーガ3位）",
           "weight": 3
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "564688",
@@ -481,7 +526,12 @@
       ],
       "log_notes": [],
       "ai_summary": "マドリード市内の有力クラブ同士による対戦で、現在【レアル・マドリードが2位、アトレティコ・マドリードが4位】に位置する両チームが激突する。首位との勝ち点差がレアル・マドリードは6、アトレティコ・マドリードは8であり、シーズンの早い段階での上位順位争いを占う一戦となる。昨季のラ・リーガではレアル・マドリードが2位、アトレティコ・マドリードが4位と、この順位関係が継続している。両チームの攻撃力がどの程度機能し、試合の主導権がどちらに傾くかに注目したい。",
-      "notification_hook": "首位と勝ち点差6・8。マドリード内戦で順位争いの行方が左右される。"
+      "notification_hook": "首位と勝ち点差6・8。マドリード内戦で順位争いの行方が左右される。",
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "559678",
@@ -861,7 +911,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 2,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "565803",
@@ -976,7 +1031,12 @@
       "is_notable": false,
       "reasons": [],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824381",
@@ -1071,7 +1131,12 @@
       "log_notes": [],
       "ai_summary": "ガーディアンズはア・リーグ中地区で【2位に1.0ゲーム差】をつけて首位に立ち、地区優勝マジック7と迫ったポストシーズン争いの最中にある。一方、アスレチックスは西地区で首位との差17.0ゲームという大きく離された位置から、5連敗で勢いを失っている。シリーズ第3戦となる本試合は、好調なガーディアンズが防御率3.78のGavin Williamsを先発させ、低調なアスレチックスの防御率6.14のJack Perkinsと対戦する。プログレッシブ・フィールドでの投手力の差がどう映るかに注目したい。",
       "notification_hook": "マジック7のガーディアンズ、好投手Williamsで連勝を狙う",
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824462",
@@ -1146,7 +1211,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 1,
+        "away": 9,
+        "winner": "away"
+      }
     },
     {
       "game_id": "822922",
@@ -1221,7 +1291,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 5,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824139",
@@ -1318,7 +1393,12 @@
       "log_notes": [],
       "ai_summary": "ナ・リーグ東地区で【91勝64敗で首位に6.0ゲーム差をつけるブレーブス】が、ア・リーグ西地区2位で連敗中のアストロズと対戦する。ブレーブスは直近10試合で6勝4敗と安定した成績を収めており、ポストシーズン進出に向けた重要な局面にある。一方、アストロズは77勝78敗と首位との差が詮索される中での低迷を余儀なくされている。Hunter Brown（防御率3.43、6勝3敗）対Martín Pérez（防御率3.07、9勝9敗）という両先発の投げ合いと、左翼が浅いダイキン・パークでの本塁打が出やすい環境がどう影響するかに注目したい。",
       "notification_hook": "ブレーブス首位キープ狙う一戦。Hunter Brown対Pérezの投げ合い次第",
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 2,
+        "away": 4,
+        "winner": "away"
+      }
     },
     {
       "game_id": "824546",
@@ -1400,7 +1480,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 8,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823001",
@@ -1469,7 +1554,12 @@
       "is_notable": false,
       "reasons": [],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 5,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "822844",
@@ -1566,7 +1656,12 @@
       "log_notes": [],
       "ai_summary": "レンジャーズはア・リーグ西地区で【地区優勝マジック7】と迫られた重要な局面にあり、本シリーズで2連勝中の勢いを生かしたい一方、ブルージェイズは地区4位で首位との差18.5ゲームと後塵を拝する立場から反撃を狙う。直近10試合で6勝4敗と調子を上げるレンジャーズに対し、4勝6敗で2連敗中のブルージェイズが、本シリーズ第3戦でどう挑むかが焦点となる。先発投手では防御率2.65で6勝2敗のSpencer Milesがブルージェイズの好調を支える一方、レンジャーズはJacob deGromの194奪三振を背景とした投げ合いの行方に注目したい。",
       "notification_hook": "地区優勝マジック7のレンジャーズ、防御率2.65のMilesに立ち向かう",
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 2,
+        "away": 7,
+        "winner": "away"
+      }
     },
     {
       "game_id": "559675",
@@ -1810,7 +1905,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823975",
@@ -1887,7 +1987,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 0,
+        "away": 8,
+        "winner": "away"
+      }
     },
     {
       "game_id": "823896",
@@ -1966,7 +2071,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 3,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "825028",
@@ -2048,7 +2158,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 8,
+        "away": 4,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823247",
@@ -2130,7 +2245,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 7,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824789",
@@ -2205,7 +2325,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00"
+      "availability_checked_at": "2026-09-20T09:52:42.720362+00:00",
+      "final_score": {
+        "home": 0,
+        "away": 3,
+        "winner": "away"
+      }
     }
   ],
   "ai_status": {
