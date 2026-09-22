@@ -82,4 +82,49 @@ none = snippet([])
 check("落ちずに題を作る", bool(none["title"]), True)
 hasnt("「ほか」を付けない", none["title"], "ほか")
 
+# --- コメント紹介の回 -------------------------------------------------------
+# 9/22の回は「9月22日のメジャーリーグで、現地で最も見られた…」と書いたが、
+# 試合は米国9/20（日本9/21）だった。更新した日・試合の日・元動画・
+# 再生回数を取った時刻は、すべて別の日付。
+section("日付の言い方")
+check("米国の試合日と日本の日付", uy.us_and_jp_day("2026-09-20"),
+      "米国9月20日（日本時間9月21日）")
+check("月をまたぐ", uy.us_and_jp_day("2026-09-30"),
+      "米国9月30日（日本時間10月1日）")
+check("日付が無ければ書かない", uy.us_and_jp_day(None), "")
+check("壊れた日付でも落ちない", uy.us_and_jp_day("9/20"), "")
+check("取得時刻は日本時間で", uy.jst_stamp("2026-09-22T06:01:49.379630+00:00"),
+      "9月22日15時")
+check("時差の無い時刻は使わない", uy.jst_stamp("2026-09-22T06:01:49"), "")
+
+BUZZ = {"updated_at": "2026-09-22T06:01:49.379630+00:00",
+        "videos": [{"video_id": "YKfsJ5LKk_8", "game_date": "2026-09-20",
+                    "published_at": "2026-09-21T02:39:09Z", "views": 147184,
+                    "matchup": "MIL vs BAL",
+                    "result": {"away_jp": "ブリュワーズ", "home_jp": "オリオールズ",
+                               "away_score": 3, "home_score": 0}}]}
+
+
+def voices_snippet():
+    with tempfile.TemporaryDirectory() as tmp:
+        games = pathlib.Path(tmp) / "games.json"
+        games.write_text(json.dumps({"games": []}), encoding="utf-8")
+        buzz = pathlib.Path(tmp) / "buzz.json"
+        buzz.write_text(json.dumps(BUZZ), encoding="utf-8")
+        return uy.build_metadata(str(games), "9月22日", kind="morning",
+                                 morning_mode="voices",
+                                 buzz_path=str(buzz))["snippet"]
+
+
+section("コメント紹介の説明と題")
+v = voices_snippet()
+hasnt("更新日を試合日として書かない", v["description"], "9月22日のメジャーリーグで")
+has("更新した日だと書く", v["description"], "9月22日更新")
+has("試合日を別に書く", v["description"], "試合日: 米国9月20日（日本時間9月21日）")
+has("元動画を示す", v["description"], "https://youtu.be/YKfsJ5LKk_8")
+has("再生回数がいつの値か書く", v["description"], "147,184回（9月22日15時時点）")
+hasnt("集めた範囲の1位を「現地で最も」と言わない", v["description"],
+      "現地で最も見られた")
+has("題の日付も更新日だと分かる", v["title"], "9月22日更新")
+
 sys.exit(done())

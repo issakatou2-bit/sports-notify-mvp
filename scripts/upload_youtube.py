@@ -22,7 +22,7 @@ import json
 import os
 import pathlib
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import post_common  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
@@ -1067,6 +1067,32 @@ def top_talked_team(path: str = "data/local_buzz.json") -> str:
     return top.get("name") or ""
 
 
+def us_and_jp_day(us_date: str) -> str:
+    """米国の試合日を「米国9月20日（日本時間9月21日）」の形に。
+
+    MLBの試合は米国東部の11時より前には始まらないので、日本時間では
+    必ず翌日になる。
+    """
+    try:
+        d = datetime.strptime(us_date or "", "%Y-%m-%d")
+    except ValueError:
+        return ""
+    jp = d + timedelta(days=1)
+    return (f"米国{d.month}月{d.day}日（日本時間{jp.month}月{jp.day}日）")
+
+
+def jst_stamp(utc_text: str) -> str:
+    """UTCの時刻を「9月22日15時」の形に。数字がいつの値かを添えるために。"""
+    try:
+        t = datetime.fromisoformat((utc_text or "").replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    if t.tzinfo is None:
+        return ""
+    t = t.astimezone(timezone(timedelta(hours=9)))
+    return f"{t.month}月{t.day}日{t.hour}時"
+
+
 def buzz_top(path: str) -> dict:
     """
     その日いちばん見られたMLB公式ハイライト。無ければ空。
@@ -1076,15 +1102,20 @@ def buzz_top(path: str) -> dict:
     表記は日本語にする(mlb_buzz.json は英語の対戦名で持っている)。
     """
     try:
-        vids = json.loads(pathlib.Path(path).read_text(
-            encoding="utf-8")).get("videos") or []
+        data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return {}
+    vids = data.get("videos") or []
     if not vids:
         return {}
     v = vids[0]
     res = v.get("result") or {}
-    out = {"views": v.get("views")}
+    # 日付は3つあって、どれも違う。**更新した日を試合の日として書かない。**
+    out = {"views": v.get("views"),
+           "game_date": v.get("game_date"),        # 米国の日付
+           "video_id": v.get("video_id"),
+           "published_at": v.get("published_at"),  # 元動画の公開(UTC)
+           "fetched_at": data.get("updated_at")}   # 再生回数を取った時刻(UTC)
     if res.get("away_jp") and res.get("home_jp"):
         out["matchup_jp"] = f"{res['away_jp']} vs {res['home_jp']}"
         if res.get("away_score") is not None:
@@ -1299,7 +1330,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 「ファンの反応」は毎日同じ言い方になるが、件数はその日だけの数字で、
         # しかも「何を言ったらそんなに返ってきたのか」が残る。
         n = thread_replies()
-        tail = f"｜返信{n}件ついたコメント {date_label} #Shorts" if n else             f"｜{date_label} 最も見られたハイライトのコメント欄 #Shorts"
+        # 日付は「更新した日」。付けないと試合の日に読める
+        # （9/22の回の試合は米国9/20、日本9/21だった）。
+        tail = (f"｜返信{n}件ついたコメント {date_label}更新 #Shorts" if n else
+                f"｜{date_label}更新 最も見られたハイライトのコメント欄 #Shorts")
         # コメントで名前が挙がった日本人選手がいれば、先頭へ。
         # 所属しているだけの日は出さない(voiced_japanese の説明を参照)。
         who = "・".join(voiced_japanese()[:2])
@@ -1567,14 +1601,25 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                   "入れ替わることがあります。", ""]
     elif kind == "morning" and morning_mode == "voices":
         top = buzz_top(buzz_path) or {}
-        lines = [f"{date_label}のメジャーリーグで、"
-                 "現地で最も見られたハイライトのコメント欄を紹介します。", ""]
+        # **更新した日・試合の日・元動画は別。**以前は
+        # 「{date_label}のメジャーリーグで」と書き、更新日を試合日に見せて
+        # いた（9/22の回は米国9/20の試合）。「現地で最も見られた」も、
+        # 集めた範囲の中での1位を言い過ぎていた（Codexの内容点検）。
+        lines = [f"{date_label}更新。MLB公式ハイライトのうち、取得した時点で"
+                 "いちばん再生されていた動画のコメント欄を紹介します。", ""]
         if top.get("matchup_jp"):
             lines.append(f"・試合: {top['matchup_jp']}")
+        game_day = us_and_jp_day(top.get("game_date"))
+        if game_day:
+            lines.append(f"・試合日: {game_day}")
         if top.get("score_line"):
             lines.append(f"・結果: {top['score_line']}")
+        if top.get("video_id"):
+            lines.append(f"・元動画: https://youtu.be/{top['video_id']}")
         if top.get("views"):
-            lines.append(f"・MLB公式ハイライトの再生回数: {top['views']:,}回")
+            when = jst_stamp(top.get("fetched_at"))
+            lines.append(f"・MLB公式ハイライトの再生回数: {top['views']:,}回"
+                         + (f"（{when}時点）" if when else ""))
         n = thread_replies()
         if n:
             lines.append(f"・最も返信の付いたコメント: 返信{n}件"
