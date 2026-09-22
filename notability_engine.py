@@ -63,6 +63,13 @@ class Standing:
     # 「ラシン・サンタンデールが3位、ビジャレアルが3位の上位対決」
     # 「首位争い、勝ち点差は0」のような、事実でない文が出る(実際に出た)。
     played: Optional[int] = None
+    # **決まったこと。**MLBのみ。順位と差だけ渡すと、地区優勝を決めた
+    # 球団と2位の対戦を「地区順位を直接争う」と書く(9/22、LAD対SD。
+    # LADは優勝確定、差9.0は正しい数字だった)。
+    division_champ: bool = False     # 地区優勝を決めた
+    clinched: bool = False           # ポストシーズン進出を決めた
+    division_out: bool = False       # 地区優勝の可能性が消えた
+    playoff_out: bool = False        # ポストシーズン進出の可能性も消えた
 
 
 @dataclass
@@ -2334,6 +2341,13 @@ def fetch_mlb_games_and_standings(date_str: str):
                 wins=int(team_record.get("wins", 0)),
                 losses=int(team_record.get("losses", 0)),
                 last_ten=last_ten,
+                division_champ=bool(team_record.get("divisionChamp")),
+                clinched=bool(team_record.get("clinched")),
+                # "E" は可能性が消えた印。数字や "-" は生きている。
+                division_out=team_record.get("eliminationNumber") == "E",
+                playoff_out=(team_record.get("eliminationNumber") == "E"
+                             and team_record.get(
+                                 "wildCardEliminationNumber") == "E"),
             )
 
     jp_names_en = {p["name_en"] for p in JP_PLAYERS_MLB}
@@ -2730,7 +2744,53 @@ def _team_context_line(team_id: str, team_name: str, standings: dict) -> str:
     parts = f"{team_name}: {record}、{rank_part}、{streak}"
     if s.last_ten:
         parts += f"、直近10試合は{s.last_ten}"
+    status = standing_status(s)
+    if status:
+        parts += f"、{status}"
     return parts
+
+
+def standing_status(s) -> str:
+    """決まったことを1つの言い方で。**言える順に強いものから。**"""
+    if s is None:
+        return ""
+    if getattr(s, "division_champ", False):
+        return "地区優勝を決めている"
+    if getattr(s, "clinched", False):
+        # 「地区優勝はまだ」は、可能性が消えた球団にも言えてしまう。分ける。
+        if getattr(s, "division_out", False):
+            return "ポストシーズン進出を決めている(地区優勝の可能性は消えた)"
+        return "ポストシーズン進出を決めている(地区優勝はまだ決まっていない)"
+    if getattr(s, "playoff_out", False):
+        return "ポストシーズン進出の可能性は消えている"
+    if getattr(s, "division_out", False):
+        return "地区優勝の可能性は消えている(ワイルドカードの争いは続く)"
+    return ""
+
+
+def division_note(game: dict, div_name: str, standings: dict) -> str:
+    """同地区対決の注記。**地区の争いが終わっていれば、そう書く。**
+
+    同じ地区というだけで「順位を直接争う関係にある」と渡していた。
+    9/22、地区優勝を決めたドジャースと2位のパドレスの対戦を、Webで
+    「地区順位を直接争う」「9ゲーム差を巡る」と書いた。差の数字は
+    正しかったので、数字の照合では止まらなかった。
+    """
+    home = standings.get(game.get("home_team_id")) if standings else None
+    away = standings.get(game.get("away_team_id")) if standings else None
+    base = f"両チームとも{div_name}に所属する同地区対決"
+    for s, name in ((home, game.get("home_team_name")),
+                    (away, game.get("away_team_name"))):
+        if s is not None and getattr(s, "division_champ", False):
+            return (f"{base}だが、{name}がすでに地区優勝を決めている。"
+                    "**地区順位を争っている・首位を巡る、とは書かないこと。**"
+                    "ゲーム差の数字を出すなら、決着後の差として扱う")
+    if (home is not None and away is not None
+            and getattr(home, "division_out", False)
+            and getattr(away, "division_out", False)):
+        return (f"{base}だが、両チームとも地区優勝の可能性は消えている。"
+                "**地区の首位争いとは書かないこと**")
+    return f"{base}であり、順位を直接争う関係にある"
 
 
 def _soccer_context_line(team_id: str, team_name: str, standings: dict) -> str:
@@ -2786,10 +2846,8 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
     away_div = MLB_DIVISIONS.get(game["away_team_id"]) if not soccer else None
     if home_div and away_div:
         if home_div == away_div:
-            structural_notes.append(
-                f"両チームとも{MLB_DIVISION_NAME_JP.get(home_div, '同じ地区')}に所属する"
-                "同地区対決であり、順位を直接争う関係にある"
-            )
+            structural_notes.append(division_note(
+                game, MLB_DIVISION_NAME_JP.get(home_div, "同じ地区"), standings))
         else:
             # 別地区であることを明示しないと、両チームの順位(1位/2位など)を
             # 見たAIが「同じ地区で首位を争っている」かのような誤った文章を
