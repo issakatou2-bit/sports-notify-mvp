@@ -77,10 +77,27 @@ class BufferTests(unittest.TestCase):
         for service in daily.CHANNELS:
             text=daily.caption(service,'2026-09-14',record)
             self.assertIn('菅野智之が先発予定です。',text)
-            self.assertIn('パドレスは7連勝中。',text)
+            self.assertNotIn('パドレスは7連勝中。',text)
             self.assertNotIn('別の試合',text)
             self.assertNotIn('正念場',text)
             self.assertNotIn('プロフィールの',text)
+
+    def test_caption_matches_headline_to_third_game_not_first(self):
+        record = {**self.record, 'title': 'エンゼルス 菊池雄星、先発予定｜9/23の注目試合【MLB】#Shorts',
+                  'description': '1. 09/23 11:10 パドレス vs ドジャース\n・パドレスには松井裕樹が所属\n\n'
+                                 '3. 09/23 10:40 エンゼルス vs アスレチックス\n・菊池雄星が先発予定\n\n・広告'}
+        for service in daily.CHANNELS:
+            text = daily.caption(service, '2026-09-22', record)
+            self.assertIn('菊池雄星が先発予定。', text)
+            self.assertNotIn('松井裕樹', text)
+            self.assertNotIn('9/23の注目試合', text)
+            self.assertNotIn('広告', text)
+
+    def test_ambiguous_or_unmatched_games_do_not_add_a_reason(self):
+        description = ('1. 09/23 10:00 エンゼルス vs アスレチックス\n・第1試合\n\n'
+                       '2. 09/23 15:00 エンゼルス vs アスレチックス\n・第2試合')
+        self.assertEqual(daily.headline_game_reason('エンゼルス', description), '')
+        self.assertEqual(daily.headline_game_reason('ドジャース', description), '')
 
     def test_caption_missing_description_and_long_reason_remain_safe(self):
         self.assertEqual(daily.first_game_reason('・別枠の宣伝'), '')
