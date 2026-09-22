@@ -68,7 +68,12 @@
         }
       ],
       "log_notes": [],
-      "availability_checked_at": "2026-09-21T09:52:27.228706+00:00"
+      "availability_checked_at": "2026-09-21T09:52:27.228706+00:00",
+      "final_score": {
+        "home": 4,
+        "away": 3,
+        "winner": "home"
+      }
     },
     {
       "game_id": "824221",
@@ -121,7 +126,12 @@
       "is_notable": false,
       "reasons": [],
       "log_notes": [],
-      "availability_checked_at": "2026-09-21T09:52:27.228706+00:00"
+      "availability_checked_at": "2026-09-21T09:52:27.228706+00:00",
+      "final_score": {
+        "home": 9,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "823169",
@@ -190,7 +200,12 @@
       "is_notable": false,
       "reasons": [],
       "log_notes": [],
-      "availability_checked_at": "2026-09-21T09:52:27.228706+00:00"
+      "availability_checked_at": "2026-09-21T09:52:27.228706+00:00",
+      "final_score": {
+        "home": 5,
+        "away": 2,
+        "winner": "home"
+      }
     }
   ],
   "ai_status": {
