@@ -95,6 +95,31 @@ def hasnt(label, got, part) -> bool:
     return False
 
 
+def near(label, got, want, tol=0.001) -> bool:
+    """近いか。小数の指標（打率・率の類）で使う。"""
+    global _ok
+    if got is not None and abs(got - want) <= tol:
+        _ok += 1
+        return True
+    _fail("NG %s: %s   (期待 %s±%s)" % (label, _short(got), _short(want), tol))
+    return False
+
+
+def passed() -> None:
+    """自前で判定して通ったとき。数えるだけで何も出さない。
+
+    近さを見る `near` のように、この3つの形に収まらない判定が
+    各所にある。そこから呼べるようにしておく。
+    """
+    global _ok
+    _ok += 1
+
+
+def fail(line: str) -> None:
+    """自前で判定して落ちたとき。"""
+    _fail("NG " + line)
+
+
 def note(text: str) -> None:
     """検査ではない一言。材料が無くて飛ばしたときなどに。"""
     print("（%s）" % text)
