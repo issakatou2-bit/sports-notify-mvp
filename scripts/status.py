@@ -139,17 +139,18 @@ def published(days: int = 2) -> list:
 
 
 def handoffs() -> list:
-    """共有メモの置き場。
+    """共有メモの置き場。**共有コピー側の1つだけ。**
 
-    ここは枝（worktree）で、共有コピーは2つ上にある。**同じ名前の
-    ファイルが2つあり、中身が違う。**Codexは共有コピー側を書いて
-    いるので、他の担当と重ならないために見るのはそちら。
+    枝（build/wt-*）で動かしても、読むのは2つ上の共有コピー側。
+    以前は枝側にも同じ名前のファイルがあり中身が違っていたので、
+    9/23に1つへまとめた。リポジトリは公開なので、メモはコミットしない。
     """
-    out = [ROOT / "docs" / "HANDOFF.md"]
     shared = ROOT.parent.parent / "docs" / "HANDOFF.md"
-    if shared.exists() and shared.resolve() != out[0].resolve():
-        out.append(shared)
-    return [p for p in out if p.exists()]
+    here = ROOT / "docs" / "HANDOFF.md"
+    for p in (shared, here):
+        if p.exists():
+            return [p]
+    return []
 
 
 def working() -> list:
