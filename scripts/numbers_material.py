@@ -390,6 +390,45 @@ def has_enough(m: dict) -> bool:
     return bool(m.get("players")) or bool(m.get("race", {}).get("changes"))
 
 
+def _soccer_head(c: dict, short: bool = False) -> str:
+    """大会と節の言い方。**終わっていない節を「終わった」と書かない。**
+
+    `round` は「全クラブが終えた節」（played の最小値）で、順位表は
+    その節までの姿。次の節が始まると `round_complete` が False になる
+    が、順位表の中身は変わらないので、「終了時点」か「進行中」かだけ
+    書き分ける。
+    """
+    name = c.get("name_jp") or c.get("jp") or ""
+    rnd = c.get("round")
+    if not rnd:
+        return name
+    if short:
+        return "%s 第%s節" % (name, rnd)
+    if c.get("round_complete"):
+        return "%s 第%s節終了時点" % (name, rnd)
+    return "%s 第%s節まで（第%s節は進行中）" % (name, rnd, rnd + 1)
+
+
+def _soccer_line(j: dict) -> str:
+    """日本人選手1人の現在地。
+
+    言い回し（「CL圏内。落ちるまで勝点1」など）は soccer_race が
+    作ったものをそのまま使う。**ここで言い換えない。**同じことを
+    2か所で決めると、片方だけ直した日に食い違う。
+    """
+    bits = ["%s（%s・%s位・勝点%s）"
+            % (j.get("name") or "", j.get("club_jp") or "",
+               j.get("position"), j.get("points"))]
+    texts = [ln.get("text") for ln in (j.get("lines") or []) if ln.get("text")]
+    if texts:
+        bits.append(texts[0])
+    if j.get("out"):
+        # **出ていない選手を「きょう活躍した」と書かせない。**
+        # out_note は英語で来るので、こちらで言い切る。
+        bits.append("負傷などで離脱中")
+    return "・".join(bits)
+
+
 def facts(m: dict) -> str:
     """モデルに渡す事実。ここに無いことは書かせない。"""
     out = ["## きょうの日本人選手（点数の高い順）",
@@ -476,10 +515,10 @@ def facts(m: dict) -> str:
     if m["soccer"]:
         c = m["soccer"]
         out.append("")
-        out.append("## 欧州サッカー（%s 第%s節が終わった）"
-                   % (c.get("name_jp") or c.get("jp") or "", c.get("round")))
-        for line in (c.get("lines") or [])[:3]:
-            out.append("- %s" % (line.get("text") or line))
+        out.append("## 欧州サッカー（%s）" % _soccer_head(c))
+        out.append("※ 順位表そのものではなく、**日本人選手のいるクラブ**の位置。")
+        for j in (c.get("jp") or [])[:MAX_ROWS]:
+            out.append("- " + _soccer_line(j))
 
     return "\n".join(out)
 
@@ -519,18 +558,21 @@ def panels(m: dict) -> dict:
 
     if m["soccer"]:
         c = m["soccer"]
+        # **`clubs` はクラブ数（20 という int）で、クラブの一覧ではない。**
+        # ここを一覧だと思って添字で切っていたため、サッカーの材料が
+        # 実際に出た9/21と9/22の長編が2日続けて落ちた。
+        # 並べたいのは日本人選手と、その所属クラブの順位。
         srows = []
-        for club in (c.get("clubs") or [])[:MAX_ROWS]:
-            if club.get("name_jp") or club.get("name"):
-                srows.append({"name": club.get("name_jp") or club.get("name"),
-                              "value": "%s位" % club.get("position", "")})
+        for j in (c.get("jp") or [])[:MAX_ROWS]:
+            if j.get("name") and j.get("position"):
+                srows.append({"name": "%s（%s）"
+                                      % (j["name"], j.get("club_jp") or ""),
+                              "value": "%s位" % j["position"]})
         if srows:
             out["soccer"] = {"type": "group",
-                             "head": "%s 第%s節"
-                                     % (c.get("name_jp") or c.get("jp") or "",
-                                        c.get("round")),
+                             "head": _soccer_head(c, short=True),
                              "rows": srows,
-                             "menu": "欧州サッカーの順位"}
+                             "menu": "日本人選手の所属クラブの順位"}
 
     out["topic"] = {"type": "topic", "topic": "きょうのMLB、数字で",
                     "menu": "きょうの話（締めに使う）"}
