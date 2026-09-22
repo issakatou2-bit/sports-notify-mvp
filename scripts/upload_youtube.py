@@ -1149,6 +1149,20 @@ def _postseason_data(path: str = "data/postseason.json") -> dict:
         return {}
 
 
+def morning_who(players: list, n: int = 3) -> tuple:
+    """朝の成績ショートの主役の並べ方。**題と説明文で同じものを使う。**
+
+    9/22は岡本和真1人だけだったのに、題が「岡本和真 ほか｜…ランキング」、
+    説明が「岡本和真ほか。」になった。題と説明の2か所で、どちらも人数を
+    見ずに「ほか」を付けていた。
+
+    返り値: (先頭に出す名前, 残りがいるか, 名前のある人数)
+    """
+    names = [p.get("name") for p in (players or []) if p.get("name")]
+    shown = names[:n]
+    return shown, len(names) > len(shown), len(names)
+
+
 def weekly_jp_names(path: str = "data/weekly_ops.json", n: int = 3) -> str:
     """今週いちばん打った日本人選手の名前を、題の先頭に置く形で返す。
 
@@ -1334,12 +1348,18 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  f"｜{date_label} 再生回数と話題のチーム #Shorts")
     elif kind == "morning":
         # 検索されるのは選手名なので、貢献度の高い順に先頭へ置く。
-        # 「成績まとめ」だけだと淡々と読み上げるだけの動画に見えるので、
-        # 順位をつけていることをタイトルにも出す。
-        names = [p.get("name") for p in (morning_players or [])][:3]
-        who = "・".join(n for n in names if n)
-        if who:
-            title = (f"【MLB】{who} ほか｜{date_label} 日本人選手 "
+        # 2人以上の日は、順位をつけていることを題にも出す。
+        # **1人の日は並べていないので「ほか」も「ランキング」も言わない。**
+        shown, more, count = morning_who(morning_players)
+        if count == 1:
+            p = next(x for x in morning_players if x.get("name"))
+            team = f"{p['team_jp']} " if p.get("team_jp") else ""
+            line = f"、{p['headline']}" if p.get("headline") else ""
+            title = (f"【MLB】{team}{shown[0]}{line}｜{date_label}の"
+                     f"日本人選手 #Shorts")
+        elif shown:
+            who = "・".join(shown) + (" ほか" if more else "")
+            title = (f"【MLB】{who}｜{date_label} 日本人選手 "
                      f"勝利貢献スコア ランキング #Shorts")
         else:
             title = (f"【MLB】{date_label} 日本人選手 "
@@ -1580,13 +1600,22 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  "数字はいずれも公開されているものです。"
                  "「現地の声」は翻訳であり、当チャンネルの見解ではありません。", ""]
     elif kind == "morning":
-        who = "、".join(p.get("name", "") for p in (morning_players or [])[:3])
-        head = f"{who}ほか。" if who else ""
-        lines = [f"{head}{date_label}のメジャーリーグから、"
-                 "日本人選手の成績をまとめました。", ""]
+        shown, more, count = morning_who(morning_players)
+        if count == 1:
+            lines = [f"{date_label}のメジャーリーグから、"
+                     f"{shown[0]}の成績です。", ""]
+        else:
+            head = ("、".join(shown) + ("ほか" if more else "") + "。"
+                    if shown else "")
+            lines = [f"{head}{date_label}のメジャーリーグから、"
+                     "日本人選手の成績をまとめました。", ""]
         for p in (morning_players or [])[:8]:
             lines.append(f"・{p.get('name')} … {p.get('headline')}")
-        lines += ["", "数字はMLB公式データをそのまま集計したものです。", ""]
+        # **公式なのは成績だけ。**点数はコレスポが付けている。
+        # 以前は「MLB公式データをそのまま集計」と書き、点数まで公式に
+        # 見えていた（9/22 Codexの内容点検で指摘）。
+        lines += ["", "成績はMLB公式データです。動画内の「勝利貢献スコア」は"
+                  "コレスポ独自の指標で、公式の記録ではありません。", ""]
     elif kind == "verdict":
         lines = [
             "コレスポが先週「◯連勝中だから注目」として取り上げた試合が、"
