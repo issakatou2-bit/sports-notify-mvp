@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-21T06:02:22.844180+00:00",
+  "updated_at": "2026-09-22T06:02:00.544079+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,74 +13,74 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "ブレーブスがNLイーストを制覇、9シーズン中7度目の優勝"
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "6月に50敗だったレッドソックスがポストシーズン進出"
-    },
-    {
       "team_id": "116",
       "name": "タイガース",
       "name_en": "Detroit Tigers",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "タイガースがホワイトソックスに3試合中1試合のみ勝利、ポスト"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 2,
+      "mentions": 5,
       "tone": "話題",
-      "gist": "ドジャースのスクバルが喪失休暇リストに登録"
+      "gist": "スタジアム名がFifth Third Parkに変更、Riv"
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "ブリュワーズが98勝でフランチャイズ最多、2年連続で記録更新"
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "レイズの新しロードユニフォームがデビュー"
     },
     {
       "team_id": "112",
       "name": "カブス",
       "name_en": "Chicago Cubs",
       "mentions": 2,
+      "tone": "不振",
+      "gist": "Alex Bregman選手が顔面骨折、悪天候で日程に支障"
+    },
+    {
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "Pete Alonso選手の40号ホームランでオリオールズが"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "Pete Alonso選手の40号でブルージェイズ、ワイルド"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "悪天候の影響と複数選手のケガ"
+    },
+    {
+      "team_id": "137",
+      "name": "ジャイアンツ",
+      "name_en": "San Francisco Giants",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "Jung-Hoo Lee選手の故障でジャイアンツ、開幕ロスタ"
+    },
+    {
+      "team_id": "120",
+      "name": "ナショナルズ",
+      "name_en": "Washington Nationals",
+      "mentions": 1,
       "tone": "話題",
-      "gist": "ビュシュのファウルボールでベルグマンが顔に直撃"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "マリナーズがワイルドカード進出争いから脱落"
-    },
-    {
-      "team_id": "142",
-      "name": "ツインズ",
-      "name_en": "Minnesota Twins",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "ツインズがポストシーズン進出から脱落"
+      "gist": "River Ryan選手がナショナルズ戦でタイガース初先発"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 2
+      "mentions": 1
     },
     {
       "name": "佐々木朗希",

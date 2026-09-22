@@ -1,111 +1,116 @@
 {
-  "generated_at": "2026-09-21T06:01:15.039439+00:00",
-  "date_jst": "2026-09-21",
-  "name": "Jake Cronenworth",
-  "player_id": "630105",
-  "team": "パドレス",
+  "generated_at": "2026-09-22T06:01:06.921051+00:00",
+  "date_jst": "2026-09-22",
+  "name": "Pete Alonso",
+  "player_id": "624413",
+  "team": "オリオールズ",
   "group": "hitting",
-  "why": "2026-09-21のMLBで最も活躍",
-  "headline": "4打数3安打　2本塁打　1二塁打　5打点",
-  "score": 200,
+  "why": "2026-09-22のMLBで最も活躍",
+  "headline": "4打数2安打　2本塁打　3打点",
+  "score": 160,
   "bio": {
-    "name_en": "Jake Cronenworth",
-    "age": 32,
-    "birth_city": "St. Clair",
-    "birth_state": "MI",
+    "name_en": "Pete Alonso",
+    "age": 31,
+    "birth_city": "Tampa",
+    "birth_state": "FL",
     "birth_country": "USA",
-    "birth_date": "1994-01-21",
-    "debut": "2020-07-26",
-    "draft_year": 2015,
-    "bats": "Left",
+    "birth_date": "1994-12-07",
+    "debut": "2019-03-28",
+    "draft_year": 2016,
+    "bats": "Right",
     "throws": "Right",
-    "number": "9",
-    "position": "Second Base",
-    "nickname": null,
-    "height": "5' 11\"",
-    "weight": 187
+    "number": "25",
+    "position": "First Base",
+    "nickname": "Polar Bear",
+    "height": "6' 3\"",
+    "weight": 245
   },
   "teams": [
     {
-      "team": "パドレス",
-      "from": 2020,
+      "team": "メッツ",
+      "from": 2019,
+      "to": 2025
+    },
+    {
+      "team": "オリオールズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 884,
-    "avg": ".245",
-    "hr": 87,
-    "rbi": 405,
-    "ops": ".730",
-    "sb": 33,
-    "hits": 769
+    "games": 1165,
+    "avg": ".254",
+    "hr": 304,
+    "rbi": 820,
+    "ops": ".858",
+    "sb": 23,
+    "hits": 1107
   },
   "this_season": {
-    "games": 103,
-    "avg": ".229",
-    "hr": 7,
-    "rbi": 36,
-    "ops": ".637",
-    "sb": 9,
-    "hits": 82
+    "games": 157,
+    "avg": ".265",
+    "hr": 40,
+    "rbi": 108,
+    "ops": ".869",
+    "sb": 5,
+    "hits": 156
   },
   "last_season": {
-    "games": 135,
-    "avg": ".246",
-    "hr": 11,
-    "rbi": 59,
-    "ops": ".744",
-    "sb": 3,
-    "hits": 103
+    "games": 162,
+    "avg": ".272",
+    "hr": 38,
+    "rbi": 126,
+    "ops": ".871",
+    "sb": 1,
+    "hits": 170
   },
   "recent": [
     {
+      "date": "2026-09-21",
+      "line": "4打数2安打 2本塁打 3打点",
+      "opponent": "Toronto Blue Jays"
+    },
+    {
       "date": "2026-09-20",
-      "line": "4打数3安打 2本塁打 5打点",
-      "opponent": "Miami Marlins"
+      "line": "4打数0安打",
+      "opponent": "Milwaukee Brewers"
     },
     {
       "date": "2026-09-19",
-      "line": "4打数1安打 1打点",
-      "opponent": "Miami Marlins"
+      "line": "3打数0安打",
+      "opponent": "Milwaukee Brewers"
     },
     {
       "date": "2026-09-18",
-      "line": "3打数2安打",
-      "opponent": "Miami Marlins"
-    },
-    {
-      "date": "2026-09-17",
-      "line": "5打数2安打",
-      "opponent": "Colorado Rockies"
+      "line": "4打数1安打 1本塁打 3打点",
+      "opponent": "Milwaukee Brewers"
     },
     {
       "date": "2026-09-16",
-      "line": "5打数2安打 1打点",
-      "opponent": "Colorado Rockies"
+      "line": "4打数1安打 1本塁打 1打点",
+      "opponent": "New York Mets"
     }
   ],
   "awards": [
     {
-      "season": "2022",
+      "season": "2026",
+      "name": "AL Player of the Week"
+    },
+    {
+      "season": "2025",
+      "name": "NL Silver Slugger"
+    },
+    {
+      "season": "2025",
       "name": "NL All-Star"
     },
     {
-      "season": "2021",
-      "name": "NL All-Star"
-    },
-    {
-      "season": "2021",
+      "season": "2025",
       "name": "NL Player of the Week"
     },
     {
-      "season": "2020",
-      "name": "NL Rookie of the Month"
-    },
-    {
-      "season": "2019",
-      "name": "INT Post-Season All-Star"
+      "season": "2025",
+      "name": "NL Player of the Month"
     }
   ],
   "quotes": []
