@@ -183,15 +183,21 @@ def check_tests(tmp: str) -> int:
         if r.returncode:
             bad += 1
             print(f"NG {f.stem:<22} {mark}")
-            for line in (r.stdout or "").splitlines():
-                if line.startswith("NG "):
-                    print(f"      {line}")
-            # stdout に何も出さずに落ちるテストがある(unittest は stderr)。
-            # 理由が1行も残らないと、実行ページには「(出力なし)」とだけ
-            # 並び、何を直せばいいのか分からないまま赤になる。
-            # 実際 test_revenue がその形で1日赤のままだった。
-            if not (r.stdout or "").strip():
-                for line in (r.stderr or "").strip().splitlines()[-6:]:
+            ng = [x for x in (r.stdout or "").splitlines()
+                  if x.startswith("NG ")]
+            for line in ng:
+                print(f"      {line}")
+            # **NGが1行も無いのに落ちた＝例外で死んでいる。**
+            #
+            # 以前は「stdout が空なら stderr」としていたが、途中まで
+            # 出力していれば stdout は空ではない。9/22に長編が
+            # TypeError で落ちたとき、ここには直前の "ok ..." が
+            # 並ぶだけで、**例外が起きたことすら見えなかった**。
+            # 原因を知るのに実行ログのzipを落として展開する羽目になる。
+            #
+            # unittest のように stdout へ何も出さない形もここで拾う。
+            if not ng:
+                for line in (r.stderr or "").strip().splitlines()[-8:]:
                     print(f"      {line}")
         else:
             print(f"ok {f.stem:<22} {mark}")

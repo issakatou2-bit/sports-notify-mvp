@@ -18,20 +18,11 @@ sys.path.insert(0, ".")
 import notability_engine as ne  # noqa: E402
 
 import pathlib
+from checks_report import check, section, done  # noqa: E402
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
-fails = 0
 
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    if not ok:
-        fails += 1
-    print(f"{'ok ' if ok else 'NG '} {label}: {got}" + ("" if ok else f" (期待 {want})"))
-
-
-print("--- 結果の言い当て ---")
+section("結果の言い当て")
 for w in ("だろう", "予想される", "必至", "間違いなく"):
     check(f"{w} を弾く",
           w in ne.forbidden_wording(f"投手戦になる{w}。"), True)
@@ -53,6 +44,4 @@ got = ne.forbidden_wording(soccer_bad, soccer=True)
 check("ゲーム差を弾く", "ゲーム差" in got, True)
 check("地区を弾く", "地区" in got, True)
 check("MLBの文では弾かない", ne.forbidden_wording(soccer_bad, soccer=False), [])
-
-print("\nALL OK" if not fails else f"\n{fails} FAILURES")
-sys.exit(1 if fails else 0)
+sys.exit(done())

@@ -5,16 +5,7 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, "scripts")
 import clutch
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print(f"{'ok ' if ok else 'NG '} {label}: {got!r}" +
-          ("" if ok else f" (期待 {want!r})"))
+from checks_report import check, done  # noqa: E402
 
 
 print("=== classify ===")
@@ -54,6 +45,4 @@ else:
         print(f"  {name}: +{e['points']}点  {e['label']}")
         for p in e["plays"]:
             print(f"      {p['inning']}回 {p['kind']} {p['event']} 打点{p['rbi']}")
-
-print("\nALL OK" if not fails else f"\n{fails} FAILURES")
-sys.exit(1 if fails else 0)
+sys.exit(done())

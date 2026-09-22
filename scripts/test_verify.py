@@ -14,16 +14,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import verify_numbers as vn  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, section, done  # noqa: E402
 
 
 def seg(*texts):
@@ -37,7 +28,7 @@ FACTS = {
     "Jacob Misiorowski": {"勝": 14, "奪三振": 180},
 }
 
-print("--- 捕まえるもの ---")
+section("捕まえるもの")
 # 9/8に実際に出た誤り。
 d = seg("カブスは20本以上打ってる選手が5人いるのよ。"
         "Pete Crow-Armstrongが41本、Tyrone Taylorが22本打ってるわ。")
@@ -109,8 +100,7 @@ check("スコアの数字は拾わない",
 check("名前だけ読む選手は照合しない",
       vn.check(rec("ほか、ヌートバー、センガ。")), [])
 
-print()
-print("--- 1試合の成績は、今季の累計と突き合わせない ---")
+section("1試合の成績は、今季の累計と突き合わせない")
 # 9/11に**正しい台詞を止めた。**「山本由伸が7回10奪三振」に対して
 # 「材料は171奪三振です」と言って長編を落とした。台詞はその日の
 # 登板の話で、材料が持っているのは今季の累計。別のものだった。
@@ -136,6 +126,4 @@ check("今季の累計が違えば止める", len(_bad), 1)
 _bad2 = vn.check({"facts": {"Ben Rice": {"本": 36}},
                   "segments": [{"text": "Ben Riceが56本打っているのだ。"}]})
 check("本塁打の誤りは捕まえたまま", len(_bad2), 1)
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

@@ -21,26 +21,16 @@ import json
 import pathlib
 import re
 import sys
+from checks_report import check, section, done  # noqa: E402
 
 sys.stdout.reconfigure(encoding="utf-8")
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    if not ok:
-        fails += 1
-    print(f"{'ok ' if ok else 'NG '} {label}: {got}"
-          + ("" if ok else f" (期待 {want})"))
-
 
 # --- 冒頭で挙げる選手が、読み上げと画面で同じか -----------------------------
-print("--- 冒頭の選手 ---")
+section("冒頭の選手")
 import generate_morning_short as ms  # noqa: E402
 import morning_recap as mr  # noqa: E402
 
@@ -135,7 +125,6 @@ check("畳んだ枠が毎日の一覧に残っていない",
       sorted(set(hc.RETIRED) & expected), [])
 
 
-
 # --- コメント欄の回で、読み上げと画面が同じ声を見ているか -------------------
 #
 # 読み上げは冒頭で使った1件とやり取りの1件を外して読むのに、画面は
@@ -167,7 +156,6 @@ check("やり取りで使う一言を、声の並びでもう一度読んでい�
       _vs["voices"][0]["ja"] in _seg["text"], False)
 check("画面と読み上げの件数が同じ",
       len(_picked), min(gms.VOICES_SHOWN, len(_vs["voices"]) - 1))
-
 
 
 # 「毎日これを出しています」の一覧が、実際の枠と合っているか。
@@ -266,7 +254,6 @@ check("日本人選手が枠を全部占めない上限がある",
       0 < lr.JP_CAP < lr.TOP_N, True)
 
 
-
 # いま出られないサッカー選手を題に出さないか。
 #
 # 9/11に調べたところ、三笘薫は今季まだ1分も出ていなかった
@@ -304,8 +291,6 @@ _fine = sa.build([{"web_name": "Kamada", "second_name": "Kamada",
                    "chance_of_playing_next_round": None, "news": ""}])
 check("ふつうに出ている選手は止めない",
       _fine.get("鎌田大地", {}).get("out"), False)
-
-
 
 
 # 深夜に走った見張りが、その日の枠を「欠け」と言わないか。
@@ -753,6 +738,4 @@ check("初戦では勝敗を出さない",
           [{**_mlb(1, 3, 0, 0)[0], "matchup": "A vs B"}])["series"], False)
 check("連戦の情報が無ければ空",
       _gn._top_game_meta([{**_mlb()[0], "matchup": "A vs B"}])["series"], "")
-
-print("\nALL OK" if not fails else f"\n{fails} FAILURES")
-sys.exit(1 if fails else 0)
+sys.exit(done())

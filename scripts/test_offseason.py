@@ -32,20 +32,12 @@ sys.path.insert(0, str(HERE))
 import numbers_material as nm  # noqa: E402
 import race_words as rw  # noqa: E402
 import soccer_race as sr  # noqa: E402
+from checks_report import check, section, done  # noqa: E402
 
 DATA = HERE.parent / "data"
-fails = 0
 
 
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
-
-
-print("--- ポストシーズンが終わったあと ---")
+section("ポストシーズンが終わったあと")
 _over = {"changes": [],
          "teams": {"1": {"clinched": True}, "2": {"wc_gb": "E"},
                    "3": {"eliminated": True}}}
@@ -59,13 +51,11 @@ check("昨日から動いていれば続いている",
       rw.race_is_over({"changes": [{"text": "マジックが3から2へ"}],
                        "teams": {"1": {"clinched": True}}}), False)
 
-print()
-print("--- 実データは、まだ争っている ---")
+section("実データは、まだ争っている")
 _real = json.loads((DATA / "postseason.json").read_text(encoding="utf-8"))
 check("9月のいまは終わっていない", rw.race_is_over(_real), False)
 
-print()
-print("--- 長編は、古い材料で作らない ---")
+section("長編は、古い材料で作らない")
 _today = date.today()
 
 
@@ -86,8 +76,7 @@ check("日付が無いものは使わない", nm.fresh({"players": [1, 2]}, _tod
 # 止まった材料を一生使い続けることになる。
 check("未来の日付は使わない", nm.fresh(_stamp(-5), _today), False)
 
-print()
-print("--- シーズンが終われば、長編も止まる ---")
+section("シーズンが終われば、長編も止まる")
 _after = nm.load(str(DATA), today=_today + timedelta(days=90))
 check("3か月後は選手がいない", _after["players"], [])
 check("3か月後は進出争いも無い", _after["race"]["changes"], [])
@@ -95,8 +84,7 @@ check("3か月後は作らない", nm.has_enough(_after), False)
 _now = nm.load(str(DATA), today=_today)
 check("いまは作れる", nm.has_enough(_now), True)
 
-print()
-print("--- サッカーの季 ---")
+section("サッカーの季")
 _comp = {"code": "PL", "season": {"year": 2026, "end": "2027-05-30"}}
 check("覚える鍵に季が入る", sr.state_key(_comp), "PL:2026")
 check("季が取れなければ大会コードのまま",
@@ -110,8 +98,7 @@ check("夏は終わっている", sr.season_over(_comp, date(2027, 7, 15)), True
 check("終わりの日が無ければ、終わっていないものとして扱う",
       sr.season_over({"code": "CL"}), False)
 
-print()
-print("--- 来季の第1節が飛ばないか ---")
+section("来季の第1節が飛ばないか")
 # 今季38節まで出したあと。**鍵が大会コードだけだと、来季の1節が
 # 「もう出した」ことになってシーズンが丸ごと飛ぶ。**
 _next = {"competitions": [{
@@ -127,6 +114,4 @@ check("季が終わっていれば出さない",
       sr.due({"competitions": [dict(_next["competitions"][0],
                                     season={"year": 2027,
                                             "end": "2020-01-01"})]}, {}), [])
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())
