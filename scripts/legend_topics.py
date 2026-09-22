@@ -37,8 +37,12 @@ def build(legends: dict) -> list:
     out = []
     for team_id, row in (legends.get("teams") or {}).items():
         name = (row or {}).get("team") or ""
+        # 監督・経営者として選ばれた人を「でプレーした選手」と呼ばない。
+        # 材料を作る側でも落としているが、古い材料が残っていても
+        # ここで止める（9/21、監督のスパーキー・アンダーソンを選手扱い）。
         players = [p for p in ((row or {}).get("players") or [])
-                   if p.get("name")]
+                   if p.get("name")
+                   and (p.get("position") or "") not in ("Unknown", "")]
         if not name or len(players) < MIN_PLAYERS:
             continue
         items = []
