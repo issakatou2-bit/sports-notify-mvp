@@ -49,6 +49,25 @@ PATTERNS = [
 ]
 
 
+def uploads_entries(days: int = 15) -> list:
+    """RSSが取れない日の取り直し。形は feed_entries と同じ。"""
+    import os
+    key = os.environ.get("YOUTUBE_API_KEY") or ""
+    if not key:
+        return []
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import channel_feeds
+    out = []
+    for v in channel_feeds.fetch_uploads(key, CHANNEL_ID, hours=24 * days):
+        try:
+            t = datetime.fromisoformat(v["published_at"].replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        out.append((t.astimezone(JST), v["video_id"], v["title"]))
+    out.sort()
+    return out
+
+
 def feed_entries() -> list:
     """チャンネルの直近の投稿。(公開日時JST, 動画ID, タイトル) の並び。"""
     req = urllib.request.Request(FEED, headers={"User-Agent": "collespo/1.0"})
@@ -97,9 +116,14 @@ def main() -> int:
     try:
         entries = feed_entries()
     except Exception as e:                           # noqa: BLE001
-        print(f"[warn] チャンネルの一覧を取れません（{e}）。")
-        print("[warn] 今回は台帳を触りません。続けて落ちるようなら経路を疑う。")
-        return 0
+        print(f"[warn] チャンネルのRSSを取れません（{e}）。")
+        # 9/19から毎日404なので、鍵があればアップロード一覧で取り直す
+        # （1回1ユニット。channel_feeds と同じ取り方）。
+        entries = uploads_entries()
+        if not entries:
+            print("[warn] 今回は台帳を触りません。続けて落ちるようなら経路を疑う。")
+            return 0
+        print(f"[info] アップロード一覧から{len(entries)}本")
 
     added = []
     for when, vid, title in entries:

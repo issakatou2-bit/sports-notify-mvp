@@ -160,12 +160,59 @@ def load_sources(path: str) -> list:
     return d.get("channels") or []
 
 
-def fetch_feed(channel_id: str, hours: int = LOOKBACK_HOURS) -> list:
+def fetch_uploads(api_key: str, channel_id: str,
+                  hours: int = LOOKBACK_HOURS) -> list:
+    """RSSが取れないときの取り直し。アップロード一覧を API で引く。
+
+    **9/19から毎日、GitHubの実行環境だけRSSが404を返している**
+    （同じURLが手元からは200）。5〜6チャンネルすべてが落ち、材料が
+    作られない日が続いていた。
+
+    playlistItems.list は1回1ユニット（search の100分の1）。
+    アップロード一覧のIDは、チャンネルIDの先頭 "UC" を "UU" にしたもの。
+    """
+    if not channel_id.startswith("UC"):
+        return []
+    try:
+        r = requests.get(f"{YOUTUBE_API}/playlistItems", params={
+            "part": "snippet,contentDetails", "maxResults": 25,
+            "playlistId": "UU" + channel_id[2:], "key": api_key},
+            timeout=20)
+        r.raise_for_status()
+        got = r.json().get("items") or []
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] {channel_id} のアップロード一覧も取れませんでした: {e}",
+              file=sys.stderr)
+        return []
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+    out = []
+    for it in got:
+        sn = it.get("snippet") or {}
+        vid = ((sn.get("resourceId") or {}).get("videoId")
+               or (it.get("contentDetails") or {}).get("videoId"))
+        pub = ((it.get("contentDetails") or {}).get("videoPublishedAt")
+               or sn.get("publishedAt"))
+        if not (vid and sn.get("title") and pub):
+            continue
+        try:
+            when = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if when < cutoff:
+            continue
+        out.append({"video_id": vid, "title": sn["title"],
+                    "published_at": pub})
+    return out
+
+
+def fetch_feed(channel_id: str, hours: int = LOOKBACK_HOURS,
+               api_key: str = "") -> list:
     """
     そのチャンネルの直近の投稿。RSSなので枠を消費しない。
 
     APIの search を使うと1回100ユニットかかるが、ここは0。
     足すチャンネルを増やしても費用が増えない。
+    RSSが取れないときだけ、鍵があれば1ユニットで取り直す。
     """
     url = FEED.format(channel_id)
     try:
@@ -175,7 +222,11 @@ def fetch_feed(channel_id: str, hours: int = LOOKBACK_HOURS) -> list:
     except Exception as e:  # noqa: BLE001
         print(f"[warn] {channel_id} のRSSを取れませんでした: {e}",
               file=sys.stderr)
-        return []
+        if not api_key:
+            return []
+        got = fetch_uploads(api_key, channel_id, hours)
+        print(f"[info] {channel_id} はアップロード一覧から{len(got)}本")
+        return got
 
     cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
     out = []
@@ -254,10 +305,11 @@ def main() -> int:
         return 0
 
     rows = []
+    key_for_fallback = os.environ.get("YOUTUBE_API_KEY") or ""
     for ch in channels:
         hours = int(ch.get("lookback_hours") or LOOKBACK_HOURS)
         keep = ch.get("keep_pattern") or ""
-        items = [v for v in fetch_feed(ch["id"], hours)
+        items = [v for v in fetch_feed(ch["id"], hours, key_for_fallback)
                  if wanted(v["title"], keep)]
         items = items[:PER_CHANNEL]
         for v in items:
