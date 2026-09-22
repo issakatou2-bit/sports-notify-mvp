@@ -89,8 +89,20 @@ def main() -> int:
     except (OSError, json.JSONDecodeError):
         rec = {}
 
+    # **取れないことと、間違っていることは別。**
+    # YouTube の一覧は GitHub の実行環境から 404 が返る日がある
+    # （手元からは同じURLが200で返る）。台帳を埋める道具なので、
+    # 取れない日は何もしないのが正しく、健康診断ごと赤にする理由はない。
+    # ただし黙ると気づけないので、理由は必ず残す。
+    try:
+        entries = feed_entries()
+    except Exception as e:                           # noqa: BLE001
+        print(f"[warn] チャンネルの一覧を取れません（{e}）。")
+        print("[warn] 今回は台帳を触りません。続けて落ちるようなら経路を疑う。")
+        return 0
+
     added = []
-    for when, vid, title in feed_entries():
+    for when, vid, title in entries:
         kind = kind_of(title)
         if not kind:
             print(f"(区分が分かりません) {title[:60]}")
