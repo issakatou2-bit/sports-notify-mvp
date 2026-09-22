@@ -30,11 +30,36 @@
     sys.exit(done())
 """
 
+import contextlib
+import io
+
 LIMIT = 160          # 値を写す長さ。これより長ければ切る
+HELD = 12            # 伏せた出力を出すときの行数
 
 _ok = 0
 _ng = 0
 _section = None      # まだ出していない見出し
+_held = ""           # 直前に伏せた、検査の相手の出力
+
+
+@contextlib.contextmanager
+def quiet():
+    """検査の**相手**が喋るぶんを、落ちるまで伏せておく。
+
+    TikTokの投稿手順を1回通すと、説明文と状態が20行ほど出る。それを
+    10回通せば200行になるが、通っている間は誰も読まない。ここで出て
+    いるのは検査の言葉ではなく、検査している側のプログラムの言葉。
+
+    捨てはしない。**次に落ちたときに、その直前のぶんを出す。**
+    何が起きたか見たいのは、そのときだけ。
+    """
+    global _held
+    buf = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(buf):
+            yield buf
+    finally:
+        _held = buf.getvalue()
 
 
 def _short(v) -> str:
@@ -56,11 +81,16 @@ def section(name: str) -> None:
 
 
 def _fail(line: str) -> None:
-    global _ng, _section
+    global _ng, _section, _held
     _ng += 1
     if _section:
         print("--- %s ---" % _section)
         _section = None
+    if _held:
+        # 伏せてあった相手の出力を、ここでだけ出す。
+        for ln in _held.strip().splitlines()[-HELD:]:
+            print("   | " + ln)
+        _held = ""
     print(line)
 
 
@@ -127,6 +157,11 @@ def note(text: str) -> None:
 
 def failures() -> int:
     return _ng
+
+
+def passes() -> int:
+    """通った件数。自前で締めを書く検査のために。"""
+    return _ok
 
 
 def done() -> int:

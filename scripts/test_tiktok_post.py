@@ -7,6 +7,7 @@ import json
 import os
 import pathlib
 import sys
+from checks_report import check, section, done, passed, fail, quiet  # noqa: E402
 
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, "scripts")
@@ -14,26 +15,16 @@ import post_tiktok as pt
 
 real_wait_status = pt.wait_status
 
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    if not ok:
-        fails += 1
-    print(f"{'ok ' if ok else 'NG '} {label}: {got}" + ("" if ok else f" (期待 {want})"))
-
 
 # --- 分割の計算 -------------------------------------------------------------
-print("--- chunks ---")
+section("chunks")
 check("1MB(ショート想定)", pt.chunks(1_000_000), (1_000_000, 1))
 check("4.9MB(境界の下)", pt.chunks(5 * 1024 * 1024 - 1), (5 * 1024 * 1024 - 1, 1))
 c, n = pt.chunks(5 * 1024 * 1024)
-print(f"ok  5MBちょうど: chunk={c:,} count={n}")
+passed()
 assert n >= 1 and c <= pt.MAX_CHUNK
 c, n = pt.chunks(200 * 1024 * 1024)
-print(f"ok  200MB: chunk={c:,} count={n}")
+passed()
 assert c <= pt.MAX_CHUNK, "1塊が上限を超えている"
 assert c >= pt.MIN_CHUNK, "1塊が下限を下回っている"
 # 分割しても全部のバイトが送られるか(最後が端数を飲む前提)
@@ -46,7 +37,7 @@ for i in range(n):
 check("200MBを過不足なく送れる", covered, size)
 
 # --- 公開範囲の選択 ---------------------------------------------------------
-print("\n--- pick_privacy ---")
+section("pick_privacy")
 check("審査前(SELF_ONLYのみ)",
       pt.pick_privacy({"privacy_level_options": ["SELF_ONLY"]}, None), "SELF_ONLY")
 check("審査後(全部使える)",
@@ -65,7 +56,7 @@ check("情報が取れないときは最も安全側",
       pt.pick_privacy({}, "PUBLIC_TO_EVERYONE"), "SELF_ONLY")
 
 # --- init の組み立て --------------------------------------------------------
-print("\n--- init_upload の中身 ---")
+section("init_upload の中身")
 sent = {}
 
 
@@ -102,7 +93,7 @@ check("タイトルは2200で切る",
       len(sent["payload"]["post_info"]["title"]), 2200)
 
 # --- エラー応答の扱い -------------------------------------------------------
-print("\n--- エラー応答 ---")
+section("エラー応答")
 
 
 class R:
@@ -117,23 +108,21 @@ class R:
 
 try:
     pt._check(R(200, {"error": {"code": "ok"}, "data": {"x": 1}}), "u")
-    print("ok  code=ok は成功として扱う")
+    passed()
 except RuntimeError as e:
-    fails += 1
-    print(f"NG  code=ok を失敗にしている: {e}")
+    fail(f"code=ok を失敗にしている: {e}")
 
 try:
     pt._check(R(200, {"error": {"code": "spam_risk_too_many_posts",
                                 "message": "too many"}}), "u")
-    fails += 1
-    print("NG  HTTP200のエラーを見逃した")
-except RuntimeError as e:
-    print(f"ok  HTTP200でもエラーを拾う: {e}")
+    fail("HTTP200のエラーを見逃した")
+except RuntimeError:
+    passed()
 
 # --- 題材の判定 -------------------------------------------------------------
 # MLBのタイトルには「ア・リーグ」「ナ・リーグ」「インターリーグ」が出る。
 # 「リーグ」で部分一致させると、これらがサッカー扱いになる。
-print("\n--- caption の題材判定 ---")
+section("caption の題材判定")
 TOPIC_CASES = [
     ("ア・リーグ東地区の首位攻防｜ヤンキース vs レッドソックス ほか #Shorts", False),
     ("ナ・リーグ西地区 ドジャースが首位をキープ #Shorts", False),
@@ -151,14 +140,13 @@ for title, want_soccer in TOPIC_CASES:
     got = "#サッカー" in c
     check(("サッカー" if want_soccer else "MLB   ") + " " + title[:34], got, want_soccer)
     if "#Shorts" in c:
-        fails += 1
-        print("NG  #Shorts が残っている")
+        fail("#Shorts が残っている")
 
 # --- creator_info を呼ぶ条件 ------------------------------------------------
 # creator_info は直接投稿のためのAPIで video.publish が要る。
 # 下書きしか許されていない審査前に呼ぶと scope_not_authorized で落ち、
 # その間の自動投稿が毎日すべて失敗する。実際にそうなった。
-print("\n--- creator_info を呼ぶ条件 ---")
+section("creator_info を呼ぶ条件")
 called = []
 pt.creator_info = lambda token: (called.append(token),
                                  {"privacy_level_options": ["SELF_ONLY"],
@@ -181,7 +169,9 @@ def run_main(scope):
     sys.argv = ["post_tiktok.py", "--video", str(tmp), "--title", "確認",
                 "--record", str(rec)]
     try:
-        return pt.main()
+        # 投稿手順そのものが毎回20行ほど喋る。落ちたときだけ見せる。
+        with quiet():
+            return pt.main()
     finally:
         sys.argv = argv
 
@@ -239,5 +229,4 @@ finally:
     pt.time.sleep = original_sleep
 
 tmp.unlink()
-print("\nALL OK" if not fails else f"\n{fails} FAILURES")
-sys.exit(1 if fails else 0)
+sys.exit(done())
