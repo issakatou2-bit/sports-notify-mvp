@@ -287,7 +287,13 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python scripts/mlb_availability.py --games notable_games.json --check-narration public/narration.json
+          # 注目試合が無くて原稿を作らなかった日は、確かめる原稿が無い。
+          # 9/21はここがファイル無しで落ちていた。
+          if [ -f build/narration_skipped.txt ]; then
+            echo "注目試合が無い日なので、出場の確認はしません"
+          else
+            python scripts/mlb_availability.py --games notable_games.json --check-narration public/narration.json
+          fi
           python scripts/sanity.py --general --strict
 
       - name: Synthesize narration
@@ -546,7 +552,17 @@ jobs:
       # 途中では止めず、最後に落とす。順序はそのまま、結果だけ正直にする。
       - name: Confirm the video went out
         if: always()
-        run: python scripts/verify_published.py --kind daily
+        run: |
+          # **出さなかった日と、出し損ねた日は別。**
+          # 注目試合が無いと決めたのは原稿を作る段で、そこが印を置く。
+          # 印が無いのに動画が無ければ、これまでどおり落とす。
+          # 9/21は見送りの日を「出し損ね」として実行全体を赤にした。
+          if [ -f build/narration_skipped.txt ]; then
+            echo "### 注目試合が無い日のため、今日の注目試合の動画は作っていません（見送りで、失敗ではありません）" >> "$GITHUB_STEP_SUMMARY"
+            echo "注目試合が無い日なので、公開の確認はしません"
+            exit 0
+          fi
+          python scripts/verify_published.py --kind daily
 
       - name: Explain a skipped site update
         if: always() && (steps.standings.outcome != 'success' || steps.archive.outcome != 'success')

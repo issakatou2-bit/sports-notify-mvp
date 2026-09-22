@@ -120,8 +120,17 @@ def check(d: dict) -> list:
                 # 投球回は小数で出る（1.0回、0.2回）。
                 pat = (re.escape(name) + "[^。]{0,%d}?([0-9]+(?:[.][0-9]+)?)"
                        % NEAR + re.escape(unit))
+                if unit == "回":
+                    # **読み上げでは「0回3分の1」になっている。**
+                    # 原稿は投球回を声で読める形に直してから渡される
+                    # （yomi_stats）。9/21、正しく「千賀滉大、0回3分の1」と
+                    # 言っていたのに、ここが「0回」までしか拾わず、材料の
+                    # 0.1回と違うとして日本人成績の回を止めた。
+                    pat += "(?:3分の([12]))?"
                 for m in re.finditer(pat, text):
                     got = float(m.group(1))
+                    if unit == "回" and m.group(2):
+                        got = int(got) + int(m.group(2)) / 10.0
                     if abs(got - float(want)) > 1e-9:
                         bad.append(
                             "%s: 「%s」と言っていますが、材料は%s%s です"
