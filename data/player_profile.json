@@ -1,116 +1,65 @@
 {
-  "generated_at": "2026-09-22T06:01:06.921051+00:00",
-  "date_jst": "2026-09-22",
-  "name": "Pete Alonso",
-  "player_id": "624413",
-  "team": "オリオールズ",
+  "generated_at": "2026-09-23T06:01:15.562046+00:00",
+  "date_jst": "2026-09-23",
+  "name": "Carlos Rodón",
+  "player_id": "607074",
+  "team": "ヤンキース",
   "group": "hitting",
-  "why": "2026-09-22のMLBで最も活躍",
-  "headline": "4打数2安打　2本塁打　3打点",
-  "score": 160,
+  "why": "2026-09-23のMLBで最も活躍",
+  "headline": "8.0回　8奪三振　自責0　3被安打",
+  "score": 165,
   "bio": {
-    "name_en": "Pete Alonso",
-    "age": 31,
-    "birth_city": "Tampa",
+    "name_en": "Carlos Rodón",
+    "age": 33,
+    "birth_city": "Miami",
     "birth_state": "FL",
     "birth_country": "USA",
-    "birth_date": "1994-12-07",
-    "debut": "2019-03-28",
-    "draft_year": 2016,
-    "bats": "Right",
-    "throws": "Right",
-    "number": "25",
-    "position": "First Base",
-    "nickname": "Polar Bear",
-    "height": "6' 3\"",
-    "weight": 245
+    "birth_date": "1992-12-10",
+    "debut": "2015-04-21",
+    "draft_year": 2014,
+    "bats": "Left",
+    "throws": "Left",
+    "number": "55",
+    "position": "Pitcher",
+    "nickname": "Los",
+    "height": "6' 2\"",
+    "weight": 255
   },
   "teams": [
     {
-      "team": "メッツ",
-      "from": 2019,
-      "to": 2025
-    },
-    {
-      "team": "オリオールズ",
-      "from": 2026,
-      "to": 2026
+      "team": "ホワイトソックス",
+      "from": 2015,
+      "to": 2021
     }
   ],
   "career": {
-    "games": 1165,
-    "avg": ".254",
-    "hr": 304,
-    "rbi": 820,
-    "ops": ".858",
-    "sb": 23,
-    "hits": 1107
+    "games": 121,
+    "avg": ".154",
+    "hr": 0,
+    "rbi": 2,
+    "ops": ".385",
+    "sb": 0,
+    "hits": 2
   },
-  "this_season": {
-    "games": 157,
-    "avg": ".265",
-    "hr": 40,
-    "rbi": 108,
-    "ops": ".869",
-    "sb": 5,
-    "hits": 156
-  },
-  "last_season": {
-    "games": 162,
-    "avg": ".272",
-    "hr": 38,
-    "rbi": 126,
-    "ops": ".871",
-    "sb": 1,
-    "hits": 170
-  },
-  "recent": [
-    {
-      "date": "2026-09-21",
-      "line": "4打数2安打 2本塁打 3打点",
-      "opponent": "Toronto Blue Jays"
-    },
-    {
-      "date": "2026-09-20",
-      "line": "4打数0安打",
-      "opponent": "Milwaukee Brewers"
-    },
-    {
-      "date": "2026-09-19",
-      "line": "3打数0安打",
-      "opponent": "Milwaukee Brewers"
-    },
-    {
-      "date": "2026-09-18",
-      "line": "4打数1安打 1本塁打 3打点",
-      "opponent": "Milwaukee Brewers"
-    },
-    {
-      "date": "2026-09-16",
-      "line": "4打数1安打 1本塁打 1打点",
-      "opponent": "New York Mets"
-    }
-  ],
+  "this_season": {},
+  "last_season": {},
+  "recent": [],
   "awards": [
     {
-      "season": "2026",
-      "name": "AL Player of the Week"
+      "season": "2025",
+      "name": "AL All-Star"
     },
     {
-      "season": "2025",
-      "name": "NL Silver Slugger"
-    },
-    {
-      "season": "2025",
+      "season": "2022",
       "name": "NL All-Star"
     },
     {
-      "season": "2025",
-      "name": "NL Player of the Week"
+      "season": "2021",
+      "name": "AL All-Star"
     },
     {
-      "season": "2025",
-      "name": "NL Player of the Month"
+      "season": "2021",
+      "name": "AL Player of the Week"
     }
   ],
   "quotes": []

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-22T06:02:00.544079+00:00",
+  "updated_at": "2026-09-23T06:02:32.283023+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,68 +13,68 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
-      "mentions": 5,
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 7,
+      "tone": "好調",
+      "gist": "ドジャース8投手でシャットアウト達成"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 6,
       "tone": "話題",
-      "gist": "スタジアム名がFifth Third Parkに変更、Riv"
+      "gist": "ホワイトソックス村上34号ホーマー"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "レイズの新しロードユニフォームがデビュー"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "Alex Bregman選手が顔面骨折、悪天候で日程に支障"
-    },
-    {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
-      "mentions": 2,
+      "mentions": 4,
       "tone": "好調",
-      "gist": "Pete Alonso選手の40号ホームランでオリオールズが"
+      "gist": "レイズALイースト制覇5度目"
     },
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "ロッキーズ4年連続100敗達成"
+    },
+    {
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "レンジャーズALウェスト首位"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
       "mentions": 2,
       "tone": "不振",
-      "gist": "Pete Alonso選手の40号でブルージェイズ、ワイルド"
+      "gist": "パドレスドジャースに敗北"
     },
     {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "悪天候の影響と複数選手のケガ"
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ガーディアンズ6連勝で首位"
     },
     {
-      "team_id": "137",
-      "name": "ジャイアンツ",
-      "name_en": "San Francisco Giants",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "Jung-Hoo Lee選手の故障でジャイアンツ、開幕ロスタ"
-    },
-    {
-      "team_id": "120",
-      "name": "ナショナルズ",
-      "name_en": "Washington Nationals",
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
       "mentions": 1,
       "tone": "話題",
-      "gist": "River Ryan選手がナショナルズ戦でタイガース初先発"
+      "gist": "カージナルス球場で麻疹感染警告"
     }
   ],
   "players": [
@@ -84,6 +84,10 @@
     },
     {
       "name": "佐々木朗希",
+      "mentions": 1
+    },
+    {
+      "name": "村上宗隆",
       "mentions": 1
     }
   ]

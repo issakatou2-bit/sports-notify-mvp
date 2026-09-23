@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-22T13:04:32.955836+00:00",
+  "updated_at": "2026-09-23T06:02:17.800428+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
@@ -33,15 +33,15 @@
       "player_id": "808959",
       "items": [
         {
-          "value": 0.5893536121673004,
+          "value": 0.5894538606403014,
           "shown": "58.9%",
           "at": 1,
-          "of": 135,
+          "of": 134,
           "ties": 1,
           "above": null,
           "below": {
             "name": "Kyle Schwarber",
-            "shown": "53.7%"
+            "shown": "53.5%"
           },
           "key": "tto",
           "label": "アダム・ダン率",
@@ -51,15 +51,15 @@
           "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
         },
         {
-          "value": 0.3574144486692015,
-          "shown": "35.7%",
+          "value": 0.3559322033898305,
+          "shown": "35.6%",
           "at": 1,
-          "of": 135,
+          "of": 134,
           "ties": 1,
           "above": null,
           "below": {
             "name": "Colson Montgomery",
-            "shown": "35.1%"
+            "shown": "35.3%"
           },
           "key": "k_rate",
           "label": "三振率",
@@ -68,15 +68,15 @@
           "side": "top"
         },
         {
-          "value": 0.17110266159695817,
+          "value": 0.1713747645951036,
           "shown": "17.1%",
           "at": 1,
-          "of": 135,
+          "of": 134,
           "ties": 1,
           "above": null,
           "below": {
-            "name": "Jake Bauers",
-            "shown": "16.8%"
+            "name": "Mike Trout",
+            "shown": "16.7%"
           },
           "key": "bb_rate",
           "label": "四球率",
@@ -85,7 +85,7 @@
           "side": "top"
         }
       ],
-      "mendoza": "打率.202。メンドーサ・ライン（.200）のすぐ上"
+      "mendoza": "打率.203。メンドーサ・ライン（.200）のすぐ上"
     }
   }
 }
