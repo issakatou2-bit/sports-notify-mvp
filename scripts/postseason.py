@@ -408,15 +408,46 @@ def main() -> int:
             before = {}
 
     changes = diff({"leagues": {str(k): v for k, v in data.items()}}, before)
+    jp_rows = japanese(data, teams)
+    flat_teams = flat(data, teams)
+    head = headline(data)
+
+    # --- ポストシーズン -------------------------------------------------
+    # 始まったら、話の中心を順位表からシリーズへ移す。
+    # 前日比もシリーズで取る（順位表はもう動かない）。
+    phase, series = "regular", []
+    import ps_series
+    dates = ps_series.season_dates(season)
+    if ps_series.in_postseason(dates):
+        end = min(dates["end"], (datetime.now(JST).date()
+                                 + timedelta(days=7)).isoformat())
+        try:
+            games = ps_series.fetch(season, dates["start"], end)
+        except Exception as e:                       # noqa: BLE001
+            print(f"[warn] ポストシーズンの日程を取れません({e})")
+            games = []
+        series = ps_series.build(
+            games, {k: v.get("name") for k, v in flat_teams.items()},
+            {x["team_id"]: x["players"] for x in jp_rows})
+        # **シリーズが1つも組まれていない日は、まだ順位表の日。**
+        # 開始日は米国の日付なので、日本の開始日の夕方に話すのは
+        # レギュラーシーズン最終日の結果（最後の枠が決まる日）になる。
+        if series:
+            phase = "postseason"
+            changes = ps_series.changes(series, before.get("series") or [])
+            head = ps_series.headline(series, changes) or head
+
     out = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "date": today,
         "season": season,
-        "headline": headline(data),
+        "phase": phase,
+        "series": series,
+        "headline": head,
         "changes": changes,
         "prev_date": str(before.get("date") or ""),
-        "japanese": japanese(data, teams),
-        "teams": flat(data, teams),
+        "japanese": jp_rows,
+        "teams": flat_teams,
         "leagues": {str(k): v for k, v in data.items()},
     }
     p.parent.mkdir(parents=True, exist_ok=True)

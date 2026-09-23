@@ -685,6 +685,7 @@ def draw_morning_postseason(d, day: str,
     変わらない日は、いちばん近い決着（マジックの小さい球団）を出す。
     毎日同じ絵にしないのが、この枠を毎日見る理由になる。
     """
+    from race_words import ps_label as _ps_label
     ps = {}
     try:
         ps = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
@@ -693,11 +694,12 @@ def draw_morning_postseason(d, day: str,
     d.text((70, 90), day, font=font(50), fill=DIM)
     changes = ps.get("changes") or []
     if changes:
-        d.text((70, 170), "順位が動いた", font=font(100), fill=TEXT)
+        d.text((70, 170), ("シリーズが動いた" if ps.get("phase") == "postseason"
+                           else "順位が動いた"), font=font(100), fill=TEXT)
         s = fit(d, changes[0]["text"], W - 140, (80, 64, 50, 40))
         d.text((70, 290), changes[0]["text"], font=font(s), fill=ACCENT)
         sub = (f"ほか{len(changes) - 1}件" if len(changes) > 1
-               else "ポストシーズン進出争い")
+               else _ps_label(ps))
         d.text((70, 430), sub, font=font(50), fill=TEXT)
     else:
         d.text((70, 170), "ポストシーズン", font=font(100), fill=TEXT)

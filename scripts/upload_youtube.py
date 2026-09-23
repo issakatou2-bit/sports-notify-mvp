@@ -25,6 +25,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import post_common  # noqa: E402
+import race_words as _rw  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
 
 try:
@@ -1314,11 +1315,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         if ch:
             lead = ch[0]["text"].replace(" が", "が")
             title = (f"【MLB】{lead}｜{date_label} "
-                     f"ポストシーズン進出争い #Shorts")
+                     f"{_rw.ps_label(ps)} #Shorts")
         else:
             head = ps.get("headline") or "進出争い"
             title = (f"【MLB】{head}｜{date_label} "
-                     f"ポストシーズン進出争い #Shorts")
+                     f"{_rw.ps_label(ps)} #Shorts")
     elif kind == "morning" and morning_mode == "voices":
         # コメント欄の回。何の試合かがタイトルで分かるようにする。
         # 「現地の声」だけでは、どの試合の話なのか見当が付かない。
@@ -1582,7 +1583,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     elif kind == "morning" and morning_mode == "postseason":
         ps = _postseason_data()
         ch = ps.get("changes") or []
-        lines = ["MLBのポストシーズン進出争いを、毎日その日の数字で。", ""]
+        lines = (["MLBのポストシーズンを、シリーズごとの勝敗で毎日。", ""]
+                 if ps.get("phase") == "postseason" else
+                 ["MLBのポストシーズン進出争いを、毎日その日の数字で。", ""])
         if ch:
             lines.append("きょう動いたところ:")
             lines += ["・" + c["text"] for c in ch[:5]]

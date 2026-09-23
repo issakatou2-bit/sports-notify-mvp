@@ -30,6 +30,17 @@ def settled(row: dict) -> bool:
                 or str(row.get("wc_gb") or "") == ELIMINATED)
 
 
+def ps_label(data: dict) -> str:
+    """20:00の回の呼び名。**1か所で決める。**
+
+    題・説明・画面・サムネイル・掛け合いの5か所に「ポストシーズン進出争い」
+    と書いてあった。短期決戦に入ったら、もう進出を争ってはいない。
+    """
+    if (data or {}).get("phase") == "postseason":
+        return "ポストシーズン"
+    return "ポストシーズン進出争い"
+
+
 def race_is_over(data: dict) -> bool:
     """進出争いそのものが終わっているか。
 
@@ -39,7 +50,14 @@ def race_is_over(data: dict) -> bool:
     「レイズ 進出決定」と言うだけの動画が毎日出る（実際に作れた）。
 
     材料そのものが無い日も、話すことが無いという意味で終わり扱い。
+
+    **ポストシーズンに入ったら、順位表ではなくシリーズで決める。**
+    順位表は全球団が決着した形で止まるので、上の見方だと
+    短期決戦のあいだずっと「終わった」ことになる。昨日から動いた
+    シリーズがあれば話し、試合の無い日（回戦の合間）は出さない。
     """
+    if data.get("phase") == "postseason":
+        return not data.get("changes")
     rows = data.get("teams")
     if isinstance(rows, dict):
         rows = list(rows.values())

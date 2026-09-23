@@ -186,6 +186,27 @@ def main() -> int:
             if (ps.get("leagues") or {}).get(lid):
                 check("%s トーナメント表(%s)" % (tag, lid),
                       g.render_ps_bracket, p, ps, lid)
+        # ポストシーズン中のシリーズの画面。9/28からの形なので、
+        # 材料は作り物で見る（王手・決着・日本人選手の行）。
+        _sr = [{"key": "D:119-143", "round": "D", "round_jp": "地区シリーズ",
+                "stage": 2, "league_jp": "ナ・リーグ", "best_of": 5,
+                "need": 3, "played": 2, "over": False, "winner": None,
+                "next": {"day": "10月9日", "game": 3},
+                "teams": [{"id": 119, "name": "ドジャース", "wins": 2,
+                           "players": ["大谷翔平", "山本由伸"]},
+                          {"id": 143, "name": "フィリーズ", "wins": 0,
+                           "players": []}]},
+               {"key": "D:112-158", "round": "D", "round_jp": "地区シリーズ",
+                "stage": 2, "league_jp": "ナ・リーグ", "best_of": 5,
+                "need": 3, "played": 3, "over": True, "winner": 158,
+                "next": None,
+                "teams": [{"id": 158, "name": "ブリュワーズ", "wins": 3,
+                           "players": []},
+                          {"id": 112, "name": "カブス", "wins": 0,
+                           "players": ["今永昇太", "鈴木誠也"]}]}]
+        check("%s シリーズの現在地" % tag, g.render_ps_series, p,
+              {"series": _sr}, ["D:119-143", "D:112-158"],
+              "日本人選手のいるシリーズ")
         check("%s アウトロ" % tag, g.render_outro, p)
 
     print("\n--- 冒頭(枠ごとに材料が違う) ---")

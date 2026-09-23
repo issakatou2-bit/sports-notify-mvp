@@ -63,7 +63,7 @@ FONT_CANDIDATES = video_common.FONT_CANDIDATES
 import local_voices
 import mlb_buzz
 import morning_recap
-from race_words import race_is_over
+from race_words import ps_label, race_is_over
 
 W, H = 1080, 1920
 FPS = 24
@@ -911,7 +911,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
              "meta": {"date": day_iso, "mode": mode, "who": ZUNDA,
                       "day": day}},
             {"kind": "ps_talk",
-             "text": ans + f"{day}のポストシーズン進出争いね。",
+             "text": ans + f"{day}の{ps_label(ps)}ね。",
              "speaker": PS_SPEAKER[METAN],
              "meta": {"date": day_iso, "mode": mode, "who": METAN,
                       "day": day}},
@@ -921,7 +921,13 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 順位表は「見たい人が見るもの」。この1枚だけは
         # **「大谷のドジャースは第何シードか」**で、誰にでも入口がある。
         # 28日の実測で、題に日本人選手の名前がある動画は2.8倍見られた。
-        jps = ps.get("japanese") or []
+        # **ポストシーズンに入ったら、順位表ではなくシリーズを並べる。**
+        # 順位表とシードの話はそこで終わっている。
+        series_mode = (ps.get("phase") == "postseason"
+                       and bool(ps.get("series")))
+        if series_mode:
+            segments += ps_series_segments(ps)
+        jps = [] if series_mode else (ps.get("japanese") or [])
         if jps:
             ins = [x for x in jps if x.get("seed")]
             top = ins[0] if ins else jps[0]
@@ -936,7 +942,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             segments.append({"kind": "ps_japanese", "text": say, "meta": {}})
 
         first = True
-        for lid, name in (("104", "ナ・リーグ"), ("103", "ア・リーグ")):
+        for lid, name in (() if series_mode else
+                          (("104", "ナ・リーグ"), ("103", "ア・リーグ"))):
             lg = (ps.get("leagues") or {}).get(lid)
             if not lg:
                 continue
@@ -2562,7 +2569,7 @@ def render_ps_talk(p, data: dict, who: str, day: str = ""):
     """
     im, d = base(p)
     changes = data.get("changes") or []
-    d.text((70, 150), "ポストシーズン進出争い", font=font(38), fill=ACCENT)
+    d.text((70, 150), ps_label(data), font=font(38), fill=ACCENT)
     d.text((70, 212), day or data.get("date", ""), font=font(56), fill=TEXT)
 
     # 昨日からの変化。無い日は「変わらなかった」と書く。
@@ -2728,6 +2735,104 @@ def render_ps_japanese(p, jp: list):
             "%s（%s）" % (x.get("team"), "・".join(x.get("players") or []))
             for x in rest[:2])
         d.text((80, y + 14), s, font=font(26), fill=DIM)
+    return im
+
+
+def ps_series_segments(ps: dict) -> list:
+    """ポストシーズンに入った日の本編。**シリーズごとの現在地。**
+
+    並べるのは、まだ続いているシリーズと、昨日決着したシリーズだけ。
+    回戦が入れ替わる時期は、次の回戦の日程が先に載る。最新の回戦だけを
+    見ると、まだ続いている前の回戦が画面から消える。
+
+    1枚目は日本人選手のいるシリーズ。その球団の側から勝敗を言う。
+    リーグの画面では、そこで言ったシリーズを読み直さない。
+    """
+    import ps_series
+    series = ps.get("series") or []
+    moved = {c.get("key") for c in (ps.get("changes") or [])}
+    show = [s for s in series if not s["over"] or s["key"] in moved]
+    out, said = [], set()
+    mine = [s for s in show if any(x["players"] for x in s["teams"])][:4]
+    if mine:
+        out.append({"kind": "ps_series",
+                    "text": "。".join(ps_series.jp_text(s) for s in mine) + "。",
+                    "meta": {"keys": [s["key"] for s in mine],
+                             "head": "日本人選手のいるシリーズ", "league": ""}})
+        said.update(s["key"] for s in mine)
+    for lg, lid in (("ア・リーグ", "103"), ("ナ・リーグ", "104"),
+                    ("", "")):
+        rows = [s for s in show if s["league_jp"] == lg][:4]
+        rest = [s for s in rows if s["key"] not in said]
+        if not rest:
+            continue
+        head = lg or "ワールドシリーズ"
+        # 回戦が1つなら、見出しで1度だけ言う（毎行「地区シリーズ」と
+        # 読むと、そこだけで数秒かかる）。
+        rounds = {s["round_jp"] for s in rest}
+        one = len(rounds) == 1
+        say = (f"{lg}の{next(iter(rounds))}。" if lg and one else f"{head}。")
+        out.append({"kind": "ps_series",
+                    "text": say + "。".join(
+                        ps_series.text(s, with_round=bool(lg) and not one)
+                        for s in rest) + "。",
+                    "meta": {"keys": [s["key"] for s in rows],
+                             "head": head, "league": lid}})
+    return out
+
+
+def render_ps_series(p, data: dict, keys: list, head: str, league: str = ""):
+    """シリーズを1枚に最大4つ。**何勝何敗か、あと何勝か**が一目で。"""
+    import ps_series
+    im, d = base(p)
+    by = {s["key"]: s for s in (data.get("series") or [])}
+    rows = [by[k] for k in keys if k in by][:4]
+    if league:
+        league_badge(d, league, head, y=124)
+    else:
+        d.text((70, 132), head, font=font(52), fill=JP if "日本人" in head
+               else ACCENT)
+    if rows:
+        s0 = rows[0]
+        d.text((70, 212), "%d回戦制・%d勝で勝ち抜け"
+               % (s0["best_of"], s0["need"]) if len(
+                   {s["best_of"] for s in rows}) == 1 else "何勝で勝ち抜けかは回戦ごと",
+               font=font(36), fill=DIM)
+    y = 290
+    for s in rows:
+        x0, x1, ch = 70, W - 70, 234
+        d.rounded_rectangle([x0, y, x1, y + ch], 18, fill=SURF)
+        label = s["round_jp"] + ("" if not s["league_jp"] or league
+                                 else f"（{s['league_jp']}）")
+        d.text((x0 + 30, y + 12), label, font=font(28), fill=DIM)
+        # **王手はどちらの王手か**を書く。日本人選手のいる側が負けて
+        # いるとき、ただ「王手」とあるとその球団の王手に見える。
+        tag = ("決着" if s["over"] else
+               ("%sが王手" % s["teams"][0]["name"])
+               if ps_series.elimination_game(s) else
+               ("第%d戦へ" % s["next"]["game"]) if s.get("next") else "")
+        if tag:
+            ft = font(30)
+            d.text((x1 - 30 - d.textlength(tag, font=ft), y + 10), tag,
+                   font=ft, fill=ACCENT if ("王手" in tag or tag == "決着")
+                   else DIM)
+        for i, t in enumerate(s["teams"][:2]):
+            ry = y + 54 + i * 88
+            lead = (s["winner"] == t["id"] if s["over"]
+                    else t["wins"] > min(x["wins"] for x in s["teams"]))
+            lost = s["over"] and s["winner"] != t["id"]
+            tint = team_tint(t["id"])
+            d.rounded_rectangle([x0 + 18, ry, x0 + 28, ry + 74], 5, fill=tint)
+            d.text((x0 + 48, ry), t["name"], font=font(46),
+                   fill=DIM if lost else TEXT)
+            if t["players"]:
+                d.text((x0 + 48, ry + 52), "・".join(t["players"]),
+                       font=font(24), fill=JP)
+            fw = font(66)
+            num = str(t["wins"])
+            d.text((x1 - 40 - d.textlength(num, font=fw), ry - 4), num,
+                   font=fw, fill=ACCENT if lead else (DIM if lost else TEXT))
+        y += ch + 14
     return im
 
 
@@ -4155,6 +4260,11 @@ def main():
                 elif kind == "ps_japanese":
                     im = render_ps_japanese(pp,
                                             postseason.get("japanese") or [])
+                elif kind == "ps_series":
+                    im = render_ps_series(pp, postseason,
+                                          meta.get("keys") or [],
+                                          meta.get("head", ""),
+                                          meta.get("league", ""))
                 elif kind == "ps_bracket":
                     im = render_ps_bracket(pp, postseason,
                                            meta.get("league", "104"))

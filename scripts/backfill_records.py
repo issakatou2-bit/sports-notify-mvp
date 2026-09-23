@@ -49,7 +49,7 @@ PATTERNS = [
     ("daily_soccer", r"欧州サッカー|注目試合【サッカー】"),
     ("verdict", r"答え合わせ"),
     ("weekly", r"1週間を振り返る|今週の日本人選手"),
-    ("morning_postseason", r"ポストシーズン進出争い"),
+    ("morning_postseason", r"ポストシーズン(?:進出争い)? #Shorts"),
     ("morning_press", r"現地メディア|番記者の投稿|現地はこう報じた"),
     ("morning_voices", r"現地のファンは何と言った|コメント欄"),
     ("morning_local", r"現地で最も(?:注目された|見られた)試合|現地での注目度"
