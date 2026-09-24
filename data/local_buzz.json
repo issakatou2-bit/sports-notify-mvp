@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-23T06:02:32.283023+00:00",
+  "updated_at": "2026-09-24T06:02:32.529544+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,82 +13,78 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 7,
-      "tone": "好調",
-      "gist": "ドジャース8投手でシャットアウト達成"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 6,
-      "tone": "話題",
-      "gist": "ホワイトソックス村上34号ホーマー"
-    },
-    {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
       "mentions": 4,
       "tone": "好調",
-      "gist": "レイズALイースト制覇5度目"
+      "gist": "Pete Alonsoがオリオールズに加入し、ブルージェイズ"
     },
     {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "ロッキーズ4年連続100敗達成"
-    },
-    {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
-      "mentions": 3,
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 4,
       "tone": "好調",
-      "gist": "レンジャーズALウェスト首位"
+      "gist": "Josh Naylorが延長10回でアストロズから勝利を奪い"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
+      "mentions": 4,
+      "tone": "好調",
+      "gist": "Manny Machadoがヤマモトを打ち、パドレスが木曜に"
+    },
+    {
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "アストロズが4点リードを失い、アルウエスト首位奪取を逃した"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
       "mentions": 2,
       "tone": "不振",
-      "gist": "パドレスドジャースに敗北"
+      "gist": "ブルージェイズがオリオールズに敗れてポストシーズン敗退が決定"
     },
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "ガーディアンズ6連勝で首位"
-    },
-    {
-      "team_id": "138",
-      "name": "カージナルス",
-      "name_en": "St. Louis Cardinals",
-      "mentions": 1,
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 2,
       "tone": "話題",
-      "gist": "カージナルス球場で麻疹感染警告"
+      "gist": "メッツがプライド関連の取り組みを展開し、Sean Manae"
+    },
+    {
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "レンジャーズが勝つ必要があり、アルウエスト争いで緊迫している"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "Red Boxがプレーオフ進出を視野に、投手陣に自信を持って"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 1
+      "mentions": 3
     },
     {
-      "name": "佐々木朗希",
-      "mentions": 1
-    },
-    {
-      "name": "村上宗隆",
-      "mentions": 1
+      "name": "山本由伸",
+      "mentions": 2
     }
   ]
 }
