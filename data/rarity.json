@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-24T13:04:24.765951+00:00",
+  "updated_at": "2026-09-25T06:02:21.233935+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
@@ -18,7 +18,7 @@
             "shown": "0.80"
           },
           "below": {
-            "name": "Cam Schlittler",
+            "name": "Drew Rasmussen",
             "shown": "0.91"
           },
           "key": "whip",
@@ -33,7 +33,7 @@
       "player_id": "808959",
       "items": [
         {
-          "value": 0.5869158878504673,
+          "value": 0.587037037037037,
           "shown": "58.7%",
           "at": 1,
           "of": 134,
@@ -41,7 +41,7 @@
           "above": null,
           "below": {
             "name": "Kyle Schwarber",
-            "shown": "53.4%"
+            "shown": "53.1%"
           },
           "key": "tto",
           "label": "アダム・ダン率",
@@ -51,7 +51,24 @@
           "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
         },
         {
-          "value": 0.17009345794392525,
+          "value": 0.35555555555555557,
+          "shown": "35.6%",
+          "at": 1,
+          "of": 134,
+          "ties": 1,
+          "above": null,
+          "below": {
+            "name": "Colson Montgomery",
+            "shown": "35.5%"
+          },
+          "key": "k_rate",
+          "label": "三振率",
+          "note": "三振で終わった打席の割合",
+          "group": "hitting",
+          "side": "top"
+        },
+        {
+          "value": 0.17037037037037037,
           "shown": "17.0%",
           "at": 1,
           "of": 134,
@@ -59,31 +76,11 @@
           "above": null,
           "below": {
             "name": "Mike Trout",
-            "shown": "16.6%"
+            "shown": "16.8%"
           },
           "key": "bb_rate",
           "label": "四球率",
           "note": "四球で終わった打席の割合",
-          "group": "hitting",
-          "side": "top"
-        },
-        {
-          "value": 0.35514018691588783,
-          "shown": "35.5%",
-          "at": 2,
-          "of": 134,
-          "ties": 1,
-          "above": {
-            "name": "Colson Montgomery",
-            "shown": "35.5%"
-          },
-          "below": {
-            "name": "Kyle Schwarber",
-            "shown": "31.9%"
-          },
-          "key": "k_rate",
-          "label": "三振率",
-          "note": "三振で終わった打席の割合",
           "group": "hitting",
           "side": "top"
         }

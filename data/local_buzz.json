@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-24T06:02:32.529544+00:00",
+  "updated_at": "2026-09-25T06:02:36.638198+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,20 +13,20 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
-      "mentions": 4,
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 6,
       "tone": "好調",
-      "gist": "Pete Alonsoがオリオールズに加入し、ブルージェイズ"
+      "gist": "Pete Crow-Armstrong40/40達成、キュー"
     },
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 4,
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 5,
       "tone": "好調",
-      "gist": "Josh Naylorが延長10回でアストロズから勝利を奪い"
+      "gist": "ホワイトソックス100敗後のプレーオフ進出は史上初"
     },
     {
       "team_id": "135",
@@ -34,57 +34,61 @@
       "name_en": "San Diego Padres",
       "mentions": 4,
       "tone": "好調",
-      "gist": "Manny Machadoがヤマモトを打ち、パドレスが木曜に"
+      "gist": "パドレスが3年連続でプレーオフ進出"
     },
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
       "mentions": 3,
-      "tone": "不振",
-      "gist": "アストロズが4点リードを失い、アルウエスト首位奪取を逃した"
+      "tone": "好調",
+      "gist": "ガーディアンズが3年連続でプレーオフ進出"
     },
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "ブルージェイズがオリオールズに敗れてポストシーズン敗退が決定"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "メッツがプライド関連の取り組みを展開し、Sean Manae"
-    },
-    {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "レンジャーズが勝つ必要があり、アルウエスト争いで緊迫している"
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
       "mentions": 2,
       "tone": "好調",
-      "gist": "Red Boxがプレーオフ進出を視野に、投手陣に自信を持って"
+      "gist": "ブリュワーズが初の100勝達成、1番シードで確定"
+    },
+    {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "ドジャースが2番シード確定、1回戦バイ獲得"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "Schlittlerが歴史的ERA、ヤンキース-オリオールズ"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "マリナーズがプレーオフ進出から消滅"
     }
   ],
   "players": [
     {
-      "name": "大谷翔平",
-      "mentions": 3
+      "name": "村上宗隆",
+      "mentions": 2
     },
     {
-      "name": "山本由伸",
-      "mentions": 2
+      "name": "大谷翔平",
+      "mentions": 1
+    },
+    {
+      "name": "今永昇太",
+      "mentions": 1
     }
   ]
 }

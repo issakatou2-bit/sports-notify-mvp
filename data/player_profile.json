@@ -1,112 +1,83 @@
 {
-  "generated_at": "2026-09-24T06:01:19.246099+00:00",
-  "date_jst": "2026-09-24",
-  "name": "Ben Rice",
-  "player_id": "700250",
-  "team": "ヤンキース",
+  "generated_at": "2026-09-25T06:01:15.262251+00:00",
+  "date_jst": "2026-09-25",
+  "name": "Lucas Spence",
+  "player_id": "828599",
+  "team": "アストロズ",
   "group": "hitting",
-  "why": "2026-09-24のMLBで最も活躍",
-  "headline": "4打数3安打　2本塁打　2打点　1四球",
-  "score": 171,
+  "why": "2026-09-25のMLBで最も活躍",
+  "headline": "4打数3安打　3本塁打　5打点",
+  "score": 251,
   "bio": {
-    "name_en": "Ben Rice",
-    "age": 27,
-    "birth_city": "Cohasset",
-    "birth_state": "MA",
+    "name_en": "Lucas Spence",
+    "age": 23,
+    "birth_city": "Chicago Heights",
+    "birth_state": "IL",
     "birth_country": "USA",
-    "birth_date": "1999-02-22",
-    "debut": "2024-06-18",
-    "draft_year": 2021,
+    "birth_date": "2003-01-27",
+    "debut": "2026-07-17",
+    "draft_year": null,
     "bats": "Left",
-    "throws": "Right",
-    "number": "22",
-    "position": "Designated Hitter",
+    "throws": "Left",
+    "number": "28",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "6' 2\"",
-    "weight": 228
+    "height": "6' 0\"",
+    "weight": 195
   },
   "teams": [
     {
-      "team": "ヤンキース",
-      "from": 2024,
+      "team": "アストロズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 339,
-    "avg": ".248",
-    "hr": 74,
-    "rbi": 185,
-    "ops": ".838",
-    "sb": 6,
-    "hits": 293
+    "games": 16,
+    "avg": ".205",
+    "hr": 3,
+    "rbi": 8,
+    "ops": ".718",
+    "sb": 0,
+    "hits": 9
   },
   "this_season": {
-    "games": 151,
-    "avg": ".263",
-    "hr": 41,
-    "rbi": 97,
-    "ops": ".899",
-    "sb": 3,
-    "hits": 148
+    "games": 16,
+    "avg": ".205",
+    "hr": 3,
+    "rbi": 8,
+    "ops": ".718",
+    "sb": 0,
+    "hits": 9
   },
-  "last_season": {
-    "games": 138,
-    "avg": ".255",
-    "hr": 26,
-    "rbi": 65,
-    "ops": ".836",
-    "sb": 3,
-    "hits": 119
-  },
+  "last_season": {},
   "recent": [
     {
+      "date": "2026-09-24",
+      "line": "4打数3安打 3本塁打 5打点",
+      "opponent": "Athletics"
+    },
+    {
       "date": "2026-09-23",
-      "line": "4打数3安打 2本塁打 2打点",
-      "opponent": "Tampa Bay Rays"
-    },
-    {
-      "date": "2026-09-22",
-      "line": "4打数0安打",
-      "opponent": "Tampa Bay Rays"
-    },
-    {
-      "date": "2026-09-22",
-      "line": "3打数1安打",
-      "opponent": "Tampa Bay Rays"
-    },
-    {
-      "date": "2026-09-20",
       "line": "3打数0安打",
-      "opponent": "Arizona Diamondbacks"
+      "opponent": "Seattle Mariners"
     },
     {
-      "date": "2026-09-19",
-      "line": "3打数0安打 1打点",
-      "opponent": "Arizona Diamondbacks"
+      "date": "2026-07-31",
+      "line": "1打数1安打 1打点",
+      "opponent": "Texas Rangers"
+    },
+    {
+      "date": "2026-07-29",
+      "line": "3打数0安打",
+      "opponent": "Los Angeles Angels"
+    },
+    {
+      "date": "2026-07-28",
+      "line": "1打数0安打",
+      "opponent": "Los Angeles Angels"
     }
   ],
-  "awards": [
-    {
-      "season": "2026",
-      "name": "AL All-Star"
-    },
-    {
-      "season": "2026",
-      "name": "AL Player of the Week"
-    },
-    {
-      "season": "2023",
-      "name": "MiLB.com Organization All-Star"
-    },
-    {
-      "season": "2023",
-      "name": "EAS Player of the Month"
-    },
-    {
-      "season": "2023",
-      "name": "EAS Player of the Week"
-    }
-  ],
+  "awards": [],
   "quotes": []
 }
