@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-25T06:14:20.777184+00:00",
+  "updated_at": "2026-09-25T09:52:44.319576+00:00",
   "start": "2026-09-04",
   "end": "2026-09-25",
   "players": {
@@ -24,13 +24,6 @@
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays placed RHP Manuel Rodríguez on the 15-day injured list retroactive to September 3, 2026. Low back strain."
     },
-    "502054": {
-      "kind": "from_il",
-      "date": "2026-09-16",
-      "name_en": "Tommy Pham",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated LF Tommy Pham from the 10-day injured list."
-    },
     "678882": {
       "kind": "from_il",
       "date": "2026-09-23",
@@ -38,40 +31,12 @@
       "team": "Boston Red Sox",
       "text": "Boston Red Sox activated CF Ceddanne Rafaela from the 10-day injured list."
     },
-    "804606": {
+    "502054": {
       "kind": "from_il",
-      "date": "2026-09-04",
-      "name_en": "Konnor Griffin",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates activated SS Konnor Griffin from the 60-day injured list."
-    },
-    "670059": {
-      "kind": "to_il",
-      "date": "2026-09-04",
-      "name_en": "Colin Holderman",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians placed RHP Colin Holderman on the 15-day injured list. Right wrist inflammation."
-    },
-    "691019": {
-      "kind": "from_il",
-      "date": "2026-09-04",
-      "name_en": "Kyle Teel",
+      "date": "2026-09-16",
+      "name_en": "Tommy Pham",
       "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated C Kyle Teel from the 10-day injured list."
-    },
-    "677944": {
-      "kind": "from_il",
-      "date": "2026-09-04",
-      "name_en": "Slade Cecconi",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Slade Cecconi from the 15-day injured list."
-    },
-    "669467": {
-      "kind": "from_il",
-      "date": "2026-09-04",
-      "name_en": "Andre Pallante",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals activated RHP Andre Pallante from the 15-day injured list."
+      "text": "Chicago White Sox activated LF Tommy Pham from the 10-day injured list."
     },
     "642121": {
       "kind": "from_il",
@@ -80,6 +45,13 @@
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays activated RHP Cole Sulser from the 15-day injured list."
     },
+    "677944": {
+      "kind": "from_il",
+      "date": "2026-09-04",
+      "name_en": "Slade Cecconi",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated RHP Slade Cecconi from the 15-day injured list."
+    },
     "663556": {
       "kind": "to_il",
       "date": "2026-09-04",
@@ -87,12 +59,12 @@
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays placed LHP Shane McClanahan on the 15-day injured list. Left forearm tightness."
     },
-    "592791": {
-      "kind": "to_il",
-      "date": "2026-09-05",
-      "name_en": "Jameson Taillon",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays placed RHP Jameson Taillon on the 15-day injured list. Right elbow inflammation."
+    "804606": {
+      "kind": "from_il",
+      "date": "2026-09-04",
+      "name_en": "Konnor Griffin",
+      "team": "Pittsburgh Pirates",
+      "text": "Pittsburgh Pirates activated SS Konnor Griffin from the 60-day injured list."
     },
     "694371": {
       "kind": "down",
@@ -108,26 +80,33 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants placed C Jesus Rodriguez on the 60-day injured list. Right elbow neuritis."
     },
-    "699115": {
-      "kind": "up",
+    "669467": {
+      "kind": "from_il",
       "date": "2026-09-04",
-      "name_en": "Carlos Jorge",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds selected the contract of CF Carlos Jorge from Louisville Bats."
+      "name_en": "Andre Pallante",
+      "team": "St. Louis Cardinals",
+      "text": "St. Louis Cardinals activated RHP Andre Pallante from the 15-day injured list."
     },
-    "671155": {
-      "kind": "down",
+    "592791": {
+      "kind": "to_il",
+      "date": "2026-09-05",
+      "name_en": "Jameson Taillon",
+      "team": "Toronto Blue Jays",
+      "text": "Toronto Blue Jays placed RHP Jameson Taillon on the 15-day injured list. Right elbow inflammation."
+    },
+    "691019": {
+      "kind": "from_il",
       "date": "2026-09-04",
-      "name_en": "Ivan Johnson",
-      "team": "Louisville Bats",
-      "text": "Cincinnati Reds optioned 2B Ivan Johnson to Louisville Bats."
+      "name_en": "Kyle Teel",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated C Kyle Teel from the 10-day injured list."
     },
-    "685126": {
-      "kind": "up",
-      "date": "2026-09-08",
-      "name_en": "Brandon Eisert",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled LHP Brandon Eisert from Indianapolis Indians."
+    "670059": {
+      "kind": "to_il",
+      "date": "2026-09-04",
+      "name_en": "Colin Holderman",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians placed RHP Colin Holderman on the 15-day injured list. Right wrist inflammation."
     },
     "804926": {
       "kind": "down",
@@ -136,26 +115,12 @@
       "team": "Columbus Clippers",
       "text": "Cleveland Guardians optioned RHP Austin Peterson to Columbus Clippers."
     },
-    "691011": {
+    "802686": {
       "kind": "down",
       "date": "2026-09-04",
-      "name_en": "Drew Romo",
-      "team": "Charlotte Knights",
-      "text": "Chicago White Sox optioned C Drew Romo to Charlotte Knights."
-    },
-    "681676": {
-      "kind": "down",
-      "date": "2026-09-04",
-      "name_en": "Ryan Fernandez",
-      "team": "Memphis Redbirds",
-      "text": "St. Louis Cardinals optioned RHP Ryan Fernandez to Memphis Redbirds."
-    },
-    "687911": {
-      "kind": "up",
-      "date": "2026-09-04",
-      "name_en": "Bryan King",
-      "team": "Houston Astros",
-      "text": "Houston Astros recalled LHP Bryan King from Sugar Land Space Cowboys."
+      "name_en": "Hayden Harris",
+      "team": "Albuquerque Isotopes",
+      "text": "Colorado Rockies optioned LHP Hayden Harris to Albuquerque Isotopes."
     },
     "702047": {
       "kind": "down",
@@ -164,19 +129,12 @@
       "team": "Durham Bulls",
       "text": "Tampa Bay Rays optioned RHP Alex Cook to Durham Bulls."
     },
-    "671106": {
-      "kind": "down",
-      "date": "2026-09-04",
-      "name_en": "Logan Allen",
-      "team": "Columbus Clippers",
-      "text": "Cleveland Guardians optioned LHP Logan Allen to Columbus Clippers."
-    },
-    "695378": {
+    "682982": {
       "kind": "up",
       "date": "2026-09-04",
-      "name_en": "Jack Sinclair",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals selected the contract of RHP Jack Sinclair from Rochester Red Wings."
+      "name_en": "Daniel Espino",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians recalled RHP Daniel Espino from Columbus Clippers."
     },
     "700187": {
       "kind": "down",
@@ -185,19 +143,26 @@
       "team": "Tacoma Rainiers",
       "text": "Seattle Mariners optioned RHP Troy Taylor to Tacoma Rainiers."
     },
-    "676755": {
-      "kind": "to_il",
-      "date": "2026-09-08",
-      "name_en": "Isaac Mattson",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates placed RHP Isaac Mattson on the 15-day injured list. Right hip impingement."
-    },
-    "802686": {
+    "691011": {
       "kind": "down",
       "date": "2026-09-04",
-      "name_en": "Hayden Harris",
-      "team": "Albuquerque Isotopes",
-      "text": "Colorado Rockies optioned LHP Hayden Harris to Albuquerque Isotopes."
+      "name_en": "Drew Romo",
+      "team": "Charlotte Knights",
+      "text": "Chicago White Sox optioned C Drew Romo to Charlotte Knights."
+    },
+    "671106": {
+      "kind": "down",
+      "date": "2026-09-04",
+      "name_en": "Logan Allen",
+      "team": "Columbus Clippers",
+      "text": "Cleveland Guardians optioned LHP Logan Allen to Columbus Clippers."
+    },
+    "681676": {
+      "kind": "down",
+      "date": "2026-09-04",
+      "name_en": "Ryan Fernandez",
+      "team": "Memphis Redbirds",
+      "text": "St. Louis Cardinals optioned RHP Ryan Fernandez to Memphis Redbirds."
     },
     "678022": {
       "kind": "up",
@@ -206,12 +171,54 @@
       "team": "Athletics",
       "text": "Athletics recalled RHP Jack Perkins from Las Vegas Aviators."
     },
+    "676755": {
+      "kind": "to_il",
+      "date": "2026-09-08",
+      "name_en": "Isaac Mattson",
+      "team": "Pittsburgh Pirates",
+      "text": "Pittsburgh Pirates placed RHP Isaac Mattson on the 15-day injured list. Right hip impingement."
+    },
+    "699115": {
+      "kind": "up",
+      "date": "2026-09-04",
+      "name_en": "Carlos Jorge",
+      "team": "Cincinnati Reds",
+      "text": "Cincinnati Reds selected the contract of CF Carlos Jorge from Louisville Bats."
+    },
     "694357": {
       "kind": "down",
       "date": "2026-09-14",
       "name_en": "Ricky Tiedemann",
       "team": "Buffalo Bisons",
       "text": "Toronto Blue Jays optioned LHP Ricky Tiedemann to Buffalo Bisons."
+    },
+    "671155": {
+      "kind": "down",
+      "date": "2026-09-04",
+      "name_en": "Ivan Johnson",
+      "team": "Louisville Bats",
+      "text": "Cincinnati Reds optioned 2B Ivan Johnson to Louisville Bats."
+    },
+    "695378": {
+      "kind": "up",
+      "date": "2026-09-04",
+      "name_en": "Jack Sinclair",
+      "team": "Washington Nationals",
+      "text": "Washington Nationals selected the contract of RHP Jack Sinclair from Rochester Red Wings."
+    },
+    "687911": {
+      "kind": "up",
+      "date": "2026-09-04",
+      "name_en": "Bryan King",
+      "team": "Houston Astros",
+      "text": "Houston Astros recalled LHP Bryan King from Sugar Land Space Cowboys."
+    },
+    "685126": {
+      "kind": "up",
+      "date": "2026-09-08",
+      "name_en": "Brandon Eisert",
+      "team": "Pittsburgh Pirates",
+      "text": "Pittsburgh Pirates recalled LHP Brandon Eisert from Indianapolis Indians."
     },
     "683155": {
       "kind": "down",
@@ -220,33 +227,12 @@
       "team": "Las Vegas Aviators",
       "text": "Athletics optioned RHP Joey Estes to Las Vegas Aviators."
     },
-    "682982": {
-      "kind": "up",
-      "date": "2026-09-04",
-      "name_en": "Daniel Espino",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled RHP Daniel Espino from Columbus Clippers."
-    },
     "687377": {
       "kind": "to_il",
       "date": "2026-09-04",
       "name_en": "Orlando Ribalta",
       "team": "Washington Nationals",
       "text": "Washington Nationals placed RHP Orlando Ribalta on the 15-day injured list retroactive to September 4, 2026. Right forearm inflammation."
-    },
-    "663757": {
-      "kind": "to_il",
-      "date": "2026-09-05",
-      "name_en": "Trent Grisham",
-      "team": "New York Yankees",
-      "text": "New York Yankees placed CF Trent Grisham on the 10-day injured list. Right hamstring strain."
-    },
-    "676272": {
-      "kind": "down",
-      "date": "2026-09-17",
-      "name_en": "Bobby Miller",
-      "team": "Oklahoma City Comets",
-      "text": "Los Angeles Dodgers optioned RHP Bobby Miller to Oklahoma City Comets."
     },
     "669372": {
       "kind": "to_il",
@@ -255,12 +241,12 @@
       "team": "Athletics",
       "text": "Athletics placed RHP J.T. Ginn on the 15-day injured list. Right elbow impingement."
     },
-    "669270": {
-      "kind": "from_il",
+    "663757": {
+      "kind": "to_il",
       "date": "2026-09-05",
-      "name_en": "Joel Kuhnel",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated RHP Joel Kuhnel."
+      "name_en": "Trent Grisham",
+      "team": "New York Yankees",
+      "text": "New York Yankees placed CF Trent Grisham on the 10-day injured list. Right hamstring strain."
     },
     "664076": {
       "kind": "to_il",
@@ -269,12 +255,26 @@
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays placed LHP Garrett Cleavinger on the 15-day injured list. Left forearm tightness."
     },
-    "691176": {
+    "669270": {
+      "kind": "from_il",
+      "date": "2026-09-05",
+      "name_en": "Joel Kuhnel",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated RHP Joel Kuhnel."
+    },
+    "676272": {
       "kind": "down",
-      "date": "2026-09-11",
-      "name_en": "Jasson Domínguez",
-      "team": "Scranton/Wilkes-Barre RailRiders",
-      "text": "New York Yankees optioned RF Jasson Domínguez to Scranton/Wilkes-Barre RailRiders."
+      "date": "2026-09-17",
+      "name_en": "Bobby Miller",
+      "team": "Oklahoma City Comets",
+      "text": "Los Angeles Dodgers optioned RHP Bobby Miller to Oklahoma City Comets."
+    },
+    "605353": {
+      "kind": "down",
+      "date": "2026-09-15",
+      "name_en": "Vimael Machín",
+      "team": "Albuquerque Isotopes",
+      "text": "Colorado Rockies optioned SS Vimael Machín to Albuquerque Isotopes."
     },
     "665871": {
       "kind": "up",
@@ -282,6 +282,20 @@
       "name_en": "Javier Assad",
       "team": "Chicago Cubs",
       "text": "Chicago Cubs recalled RHP Javier Assad from Iowa Cubs."
+    },
+    "695034": {
+      "kind": "down",
+      "date": "2026-09-05",
+      "name_en": "Kade Morris",
+      "team": "Las Vegas Aviators",
+      "text": "Athletics optioned RHP Kade Morris to Las Vegas Aviators."
+    },
+    "691176": {
+      "kind": "down",
+      "date": "2026-09-11",
+      "name_en": "Jasson Domínguez",
+      "team": "Scranton/Wilkes-Barre RailRiders",
+      "text": "New York Yankees optioned RF Jasson Domínguez to Scranton/Wilkes-Barre RailRiders."
     },
     "676254": {
       "kind": "down",
@@ -297,26 +311,12 @@
       "team": "Iowa Cubs",
       "text": "Chicago Cubs optioned RHP Tyler Ferguson to Iowa Cubs."
     },
-    "686751": {
+    "694494": {
       "kind": "up",
       "date": "2026-09-05",
-      "name_en": "Seth Johnson",
-      "team": "Athletics",
-      "text": "Athletics recalled RHP Seth Johnson from Las Vegas Aviators."
-    },
-    "605353": {
-      "kind": "down",
-      "date": "2026-09-15",
-      "name_en": "Vimael Machín",
-      "team": "Albuquerque Isotopes",
-      "text": "Colorado Rockies optioned SS Vimael Machín to Albuquerque Isotopes."
-    },
-    "695034": {
-      "kind": "down",
-      "date": "2026-09-05",
-      "name_en": "Kade Morris",
-      "team": "Las Vegas Aviators",
-      "text": "Athletics optioned RHP Kade Morris to Las Vegas Aviators."
+      "name_en": "Ty Johnson",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays selected the contract of RHP Ty Johnson from Durham Bulls."
     },
     "669165": {
       "kind": "down",
@@ -325,19 +325,12 @@
       "team": "Oklahoma City Comets",
       "text": "Los Angeles Dodgers optioned RHP Kyle Hurt to Oklahoma City Comets."
     },
-    "694494": {
+    "686751": {
       "kind": "up",
       "date": "2026-09-05",
-      "name_en": "Ty Johnson",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays selected the contract of RHP Ty Johnson from Durham Bulls."
-    },
-    "687221": {
-      "kind": "to_il",
-      "date": "2026-09-05",
-      "name_en": "Dalton Rushing",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers placed C Dalton Rushing on the 10-day injured list retroactive to September 5, 2026. Right elbow discomfort."
+      "name_en": "Seth Johnson",
+      "team": "Athletics",
+      "text": "Athletics recalled RHP Seth Johnson from Las Vegas Aviators."
     },
     "673357": {
       "kind": "to_il",
@@ -345,6 +338,13 @@
       "name_en": "Luis Robert Jr.",
       "team": "Baltimore Orioles",
       "text": "Baltimore Orioles placed CF Luis Robert Jr. on the 10-day injured list retroactive to September 5, 2026. Left hamstring discomfort."
+    },
+    "687221": {
+      "kind": "to_il",
+      "date": "2026-09-05",
+      "name_en": "Dalton Rushing",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers placed C Dalton Rushing on the 10-day injured list retroactive to September 5, 2026. Right elbow discomfort."
     },
     "663362": {
       "kind": "to_il",
@@ -360,13 +360,6 @@
       "team": "Buffalo Bisons",
       "text": "Toronto Blue Jays optioned C Shawn Ross to Buffalo Bisons."
     },
-    "668933": {
-      "kind": "from_il",
-      "date": "2026-09-06",
-      "name_en": "Graham Ashcraft",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds activated RHP Graham Ashcraft from the 60-day injured list."
-    },
     "676428": {
       "kind": "from_il",
       "date": "2026-09-06",
@@ -381,19 +374,26 @@
       "team": "Houston Astros",
       "text": "Houston Astros placed RHP Mike Burrows on the 60-day injured list."
     },
+    "668933": {
+      "kind": "from_il",
+      "date": "2026-09-06",
+      "name_en": "Graham Ashcraft",
+      "team": "Cincinnati Reds",
+      "text": "Cincinnati Reds activated RHP Graham Ashcraft from the 60-day injured list."
+    },
+    "703197": {
+      "kind": "up",
+      "date": "2026-09-06",
+      "name_en": "Michael Arroyo",
+      "team": "Seattle Mariners",
+      "text": "Seattle Mariners selected the contract of SS Michael Arroyo from Tacoma Rainiers."
+    },
     "642376": {
       "kind": "up",
       "date": "2026-09-16",
       "name_en": "Jefry Yan",
       "team": "New York Mets",
       "text": "New York Mets recalled LHP Jefry Yan from Syracuse Mets."
-    },
-    "682927": {
-      "kind": "up",
-      "date": "2026-09-12",
-      "name_en": "Ronny Simon",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled 2B Ronny Simon from Indianapolis Indians."
     },
     "689296": {
       "kind": "up",
@@ -402,26 +402,19 @@
       "team": "Baltimore Orioles",
       "text": "Baltimore Orioles recalled RHP Anthony Nunez from Norfolk Tides."
     },
-    "687309": {
-      "kind": "up",
-      "date": "2026-09-06",
-      "name_en": "Cooper Hjerpe",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals recalled LHP Cooper Hjerpe from Memphis Redbirds."
-    },
-    "699044": {
-      "kind": "up",
-      "date": "2026-09-06",
-      "name_en": "Miguel Ullola",
-      "team": "Houston Astros",
-      "text": "Houston Astros recalled RHP Miguel Ullola from Sugar Land Space Cowboys."
-    },
     "681987": {
       "kind": "down",
       "date": "2026-09-23",
       "name_en": "Nate Eaton",
       "team": "Worcester Red Sox",
       "text": "Boston Red Sox optioned LF Nate Eaton to Worcester Red Sox."
+    },
+    "682927": {
+      "kind": "up",
+      "date": "2026-09-12",
+      "name_en": "Ronny Simon",
+      "team": "Pittsburgh Pirates",
+      "text": "Pittsburgh Pirates recalled 2B Ronny Simon from Indianapolis Indians."
     },
     "694377": {
       "kind": "down",
@@ -430,61 +423,12 @@
       "team": "Indianapolis Indians",
       "text": "Pittsburgh Pirates optioned 3B Nick Yorke to Indianapolis Indians."
     },
-    "678906": {
-      "kind": "down",
-      "date": "2026-09-06",
-      "name_en": "Kai-Wei Teng",
-      "team": "Sugar Land Space Cowboys",
-      "text": "Houston Astros optioned RHP Kai-Wei Teng to Sugar Land Space Cowboys."
-    },
-    "621550": {
-      "kind": "down",
-      "date": "2026-09-06",
-      "name_en": "Patrick Wisdom",
-      "team": "Tacoma Rainiers",
-      "text": "Seattle Mariners optioned 3B Patrick Wisdom to Tacoma Rainiers."
-    },
     "680916": {
       "kind": "down",
       "date": "2026-09-13",
       "name_en": "Franco Aleman",
       "team": "Columbus Clippers",
       "text": "Cleveland Guardians optioned RHP Franco Aleman to Columbus Clippers."
-    },
-    "680728": {
-      "kind": "down",
-      "date": "2026-09-12",
-      "name_en": "Adrian Del Castillo",
-      "team": "Reno Aces",
-      "text": "Arizona Diamondbacks optioned DH Adrian Del Castillo to Reno Aces."
-    },
-    "677956": {
-      "kind": "up",
-      "date": "2026-09-06",
-      "name_en": "Rece Hinds",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled RF Rece Hinds from Norfolk Tides."
-    },
-    "700337": {
-      "kind": "down",
-      "date": "2026-09-16",
-      "name_en": "Edgar Quero",
-      "team": "Charlotte Knights",
-      "text": "Chicago White Sox optioned C Edgar Quero to Charlotte Knights."
-    },
-    "684516": {
-      "kind": "down",
-      "date": "2026-09-06",
-      "name_en": "Hancel Rincon",
-      "team": "Memphis Redbirds",
-      "text": "St. Louis Cardinals optioned RHP Hancel Rincon to Memphis Redbirds."
-    },
-    "703197": {
-      "kind": "up",
-      "date": "2026-09-06",
-      "name_en": "Michael Arroyo",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners selected the contract of SS Michael Arroyo from Tacoma Rainiers."
     },
     "808825": {
       "kind": "up",
@@ -500,12 +444,68 @@
       "team": "Oklahoma City Comets",
       "text": "Los Angeles Dodgers optioned C Eliezer Alfonzo to Oklahoma City Comets."
     },
+    "699044": {
+      "kind": "up",
+      "date": "2026-09-06",
+      "name_en": "Miguel Ullola",
+      "team": "Houston Astros",
+      "text": "Houston Astros recalled RHP Miguel Ullola from Sugar Land Space Cowboys."
+    },
+    "680728": {
+      "kind": "down",
+      "date": "2026-09-12",
+      "name_en": "Adrian Del Castillo",
+      "team": "Reno Aces",
+      "text": "Arizona Diamondbacks optioned DH Adrian Del Castillo to Reno Aces."
+    },
+    "687309": {
+      "kind": "up",
+      "date": "2026-09-06",
+      "name_en": "Cooper Hjerpe",
+      "team": "St. Louis Cardinals",
+      "text": "St. Louis Cardinals recalled LHP Cooper Hjerpe from Memphis Redbirds."
+    },
+    "684516": {
+      "kind": "down",
+      "date": "2026-09-06",
+      "name_en": "Hancel Rincon",
+      "team": "Memphis Redbirds",
+      "text": "St. Louis Cardinals optioned RHP Hancel Rincon to Memphis Redbirds."
+    },
+    "677956": {
+      "kind": "up",
+      "date": "2026-09-06",
+      "name_en": "Rece Hinds",
+      "team": "Baltimore Orioles",
+      "text": "Baltimore Orioles recalled RF Rece Hinds from Norfolk Tides."
+    },
+    "678906": {
+      "kind": "down",
+      "date": "2026-09-06",
+      "name_en": "Kai-Wei Teng",
+      "team": "Sugar Land Space Cowboys",
+      "text": "Houston Astros optioned RHP Kai-Wei Teng to Sugar Land Space Cowboys."
+    },
+    "621550": {
+      "kind": "down",
+      "date": "2026-09-06",
+      "name_en": "Patrick Wisdom",
+      "team": "Tacoma Rainiers",
+      "text": "Seattle Mariners optioned 3B Patrick Wisdom to Tacoma Rainiers."
+    },
     "668964": {
       "kind": "up",
       "date": "2026-09-06",
       "name_en": "Tobias Myers",
       "team": "New York Mets",
       "text": "New York Mets recalled RHP Tobias Myers from Syracuse Mets."
+    },
+    "700337": {
+      "kind": "down",
+      "date": "2026-09-16",
+      "name_en": "Edgar Quero",
+      "team": "Charlotte Knights",
+      "text": "Chicago White Sox optioned C Edgar Quero to Charlotte Knights."
     },
     "670764": {
       "kind": "from_il",
@@ -521,12 +521,54 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves placed RHP Bryce Elder on the 15-day injured list retroactive to September 6, 2026. Right knee surgery."
     },
+    "676395": {
+      "kind": "from_il",
+      "date": "2026-09-07",
+      "name_en": "Robert Garcia",
+      "team": "Texas Rangers",
+      "text": "Texas Rangers activated LHP Robert Garcia from the 60-day injured list."
+    },
     "669684": {
       "kind": "down",
       "date": "2026-09-20",
       "name_en": "Chris Murphy",
       "team": "Charlotte Knights",
       "text": "Chicago White Sox optioned LHP Chris Murphy to Charlotte Knights."
+    },
+    "601713": {
+      "kind": "from_il",
+      "date": "2026-09-07",
+      "name_en": "Nick Pivetta",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Nick Pivetta from the 60-day injured list."
+    },
+    "691720": {
+      "kind": "from_il",
+      "date": "2026-09-07",
+      "name_en": "Kyle Karros",
+      "team": "Colorado Rockies",
+      "text": "Colorado Rockies activated 3B Kyle Karros from the 7-day injured list."
+    },
+    "678489": {
+      "kind": "up",
+      "date": "2026-09-24",
+      "name_en": "Jorge Barrosa",
+      "team": "Houston Astros",
+      "text": "Houston Astros selected the contract of CF Jorge Barrosa from Sugar Land Space Cowboys."
+    },
+    "592450": {
+      "kind": "to_il",
+      "date": "2026-09-17",
+      "name_en": "Aaron Judge",
+      "team": "New York Yankees",
+      "text": "New York Yankees placed RF Aaron Judge on the 10-day injured list retroactive to September 17, 2026. Right calf strain."
+    },
+    "663647": {
+      "kind": "from_il",
+      "date": "2026-09-07",
+      "name_en": "Ke'Bryan Hayes",
+      "team": "Cincinnati Reds",
+      "text": "Cincinnati Reds activated 3B Ke'Bryan Hayes from the 10-day injured list."
     },
     "657746": {
       "kind": "from_il",
@@ -542,54 +584,12 @@
       "team": "Milwaukee Brewers",
       "text": "Milwaukee Brewers placed RHP Grant Anderson on the 15-day injured list. Right biceps inflammation."
     },
-    "676395": {
-      "kind": "from_il",
+    "663795": {
+      "kind": "down",
       "date": "2026-09-07",
-      "name_en": "Robert Garcia",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers activated LHP Robert Garcia from the 60-day injured list."
-    },
-    "663647": {
-      "kind": "from_il",
-      "date": "2026-09-07",
-      "name_en": "Ke'Bryan Hayes",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds activated 3B Ke'Bryan Hayes from the 10-day injured list."
-    },
-    "592450": {
-      "kind": "to_il",
-      "date": "2026-09-17",
-      "name_en": "Aaron Judge",
-      "team": "New York Yankees",
-      "text": "New York Yankees placed RF Aaron Judge on the 10-day injured list retroactive to September 17, 2026. Right calf strain."
-    },
-    "601713": {
-      "kind": "from_il",
-      "date": "2026-09-07",
-      "name_en": "Nick Pivetta",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Nick Pivetta from the 60-day injured list."
-    },
-    "678489": {
-      "kind": "up",
-      "date": "2026-09-24",
-      "name_en": "Jorge Barrosa",
-      "team": "Houston Astros",
-      "text": "Houston Astros selected the contract of CF Jorge Barrosa from Sugar Land Space Cowboys."
-    },
-    "691720": {
-      "kind": "from_il",
-      "date": "2026-09-07",
-      "name_en": "Kyle Karros",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies activated 3B Kyle Karros from the 7-day injured list."
-    },
-    "694820": {
-      "kind": "up",
-      "date": "2026-09-22",
-      "name_en": "Braxton Roxby",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants recalled RHP Braxton Roxby from Sacramento River Cats."
+      "name_en": "Justin Hagenman",
+      "team": "Syracuse Mets",
+      "text": "New York Mets optioned RHP Justin Hagenman to Syracuse Mets."
     },
     "695684": {
       "kind": "down",
@@ -598,12 +598,40 @@
       "team": "Scranton/Wilkes-Barre RailRiders",
       "text": "New York Yankees optioned RHP Elmer Rodríguez to Scranton/Wilkes-Barre RailRiders."
     },
+    "687075": {
+      "kind": "down",
+      "date": "2026-09-10",
+      "name_en": "Brandon Sproat",
+      "team": "Nashville Sounds",
+      "text": "Milwaukee Brewers optioned RHP Brandon Sproat to Nashville Sounds."
+    },
+    "691769": {
+      "kind": "down",
+      "date": "2026-09-20",
+      "name_en": "Philip Abner",
+      "team": "Sacramento River Cats",
+      "text": "San Francisco Giants optioned LHP Philip Abner to Sacramento River Cats."
+    },
+    "666745": {
+      "kind": "down",
+      "date": "2026-09-07",
+      "name_en": "Jhony Brito",
+      "team": "El Paso Chihuahuas",
+      "text": "San Diego Padres optioned RHP Jhony Brito to El Paso Chihuahuas."
+    },
     "690022": {
       "kind": "down",
       "date": "2026-09-07",
       "name_en": "Ryan Ritter",
       "team": "Albuquerque Isotopes",
       "text": "Colorado Rockies optioned SS Ryan Ritter to Albuquerque Isotopes."
+    },
+    "670183": {
+      "kind": "down",
+      "date": "2026-09-07",
+      "name_en": "Garrett Acton",
+      "team": "St. Paul Saints",
+      "text": "Minnesota Twins optioned RHP Garrett Acton to St. Paul Saints."
     },
     "695490": {
       "kind": "down",
@@ -612,26 +640,19 @@
       "team": "Louisville Bats",
       "text": "Cincinnati Reds optioned 2B Edwin Arroyo to Louisville Bats."
     },
+    "676694": {
+      "kind": "to_il",
+      "date": "2026-09-23",
+      "name_en": "Jake Meyers",
+      "team": "Houston Astros",
+      "text": "Houston Astros placed CF Jake Meyers on the 60-day injured list."
+    },
     "687239": {
       "kind": "down",
       "date": "2026-09-07",
       "name_en": "Ben Peoples",
       "team": "Round Rock Express",
       "text": "Texas Rangers optioned RHP Ben Peoples to Round Rock Express."
-    },
-    "804636": {
-      "kind": "up",
-      "date": "2026-09-07",
-      "name_en": "Jonah Tong",
-      "team": "New York Mets",
-      "text": "New York Mets recalled RHP Jonah Tong from Syracuse Mets."
-    },
-    "663795": {
-      "kind": "down",
-      "date": "2026-09-07",
-      "name_en": "Justin Hagenman",
-      "team": "Syracuse Mets",
-      "text": "New York Mets optioned RHP Justin Hagenman to Syracuse Mets."
     },
     "672442": {
       "kind": "up",
@@ -647,40 +668,19 @@
       "team": "Oklahoma City Comets",
       "text": "Los Angeles Dodgers optioned RHP Emmet Sheehan to Oklahoma City Comets."
     },
-    "676694": {
-      "kind": "to_il",
-      "date": "2026-09-23",
-      "name_en": "Jake Meyers",
-      "team": "Houston Astros",
-      "text": "Houston Astros placed CF Jake Meyers on the 60-day injured list."
+    "694820": {
+      "kind": "up",
+      "date": "2026-09-22",
+      "name_en": "Braxton Roxby",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants recalled RHP Braxton Roxby from Sacramento River Cats."
     },
-    "687075": {
-      "kind": "down",
-      "date": "2026-09-10",
-      "name_en": "Brandon Sproat",
-      "team": "Nashville Sounds",
-      "text": "Milwaukee Brewers optioned RHP Brandon Sproat to Nashville Sounds."
-    },
-    "666745": {
-      "kind": "down",
+    "804636": {
+      "kind": "up",
       "date": "2026-09-07",
-      "name_en": "Jhony Brito",
-      "team": "El Paso Chihuahuas",
-      "text": "San Diego Padres optioned RHP Jhony Brito to El Paso Chihuahuas."
-    },
-    "670183": {
-      "kind": "down",
-      "date": "2026-09-07",
-      "name_en": "Garrett Acton",
-      "team": "St. Paul Saints",
-      "text": "Minnesota Twins optioned RHP Garrett Acton to St. Paul Saints."
-    },
-    "691769": {
-      "kind": "down",
-      "date": "2026-09-20",
-      "name_en": "Philip Abner",
-      "team": "Sacramento River Cats",
-      "text": "San Francisco Giants optioned LHP Philip Abner to Sacramento River Cats."
+      "name_en": "Jonah Tong",
+      "team": "New York Mets",
+      "text": "New York Mets recalled RHP Jonah Tong from Syracuse Mets."
     },
     "677952": {
       "kind": "to_il",
@@ -696,6 +696,13 @@
       "team": "Seattle Mariners",
       "text": "Seattle Mariners activated RF Victor Robles."
     },
+    "669203": {
+      "kind": "from_il",
+      "date": "2026-09-08",
+      "name_en": "Corbin Burnes",
+      "team": "Arizona Diamondbacks",
+      "text": "Arizona Diamondbacks activated RHP Corbin Burnes from the 60-day injured list."
+    },
     "691026": {
       "kind": "from_il",
       "date": "2026-09-08",
@@ -710,12 +717,12 @@
       "team": "Seattle Mariners",
       "text": "Seattle Mariners activated LHP Hoby Milner."
     },
-    "669203": {
-      "kind": "from_il",
-      "date": "2026-09-08",
-      "name_en": "Corbin Burnes",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks activated RHP Corbin Burnes from the 60-day injured list."
+    "663611": {
+      "kind": "down",
+      "date": "2026-09-17",
+      "name_en": "Nick Madrigal",
+      "team": "Durham Bulls",
+      "text": "Tampa Bay Rays optioned 3B Nick Madrigal to Durham Bulls."
     },
     "681439": {
       "kind": "down",
@@ -724,26 +731,12 @@
       "team": "Sacramento River Cats",
       "text": "San Francisco Giants optioned C Zach Morgan to Sacramento River Cats."
     },
-    "695391": {
-      "kind": "up",
-      "date": "2026-09-08",
-      "name_en": "Brett Harris",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants recalled 3B Brett Harris from Sacramento River Cats."
-    },
-    "672629": {
+    "687849": {
       "kind": "down",
-      "date": "2026-09-08",
-      "name_en": "Gerardo Carrillo",
-      "team": "Reno Aces",
-      "text": "Arizona Diamondbacks optioned RHP Gerardo Carrillo to Reno Aces."
-    },
-    "663611": {
-      "kind": "down",
-      "date": "2026-09-17",
-      "name_en": "Nick Madrigal",
-      "team": "Durham Bulls",
-      "text": "Tampa Bay Rays optioned 3B Nick Madrigal to Durham Bulls."
+      "date": "2026-09-09",
+      "name_en": "Zak Kent",
+      "team": "Rochester Red Wings",
+      "text": "Washington Nationals optioned RHP Zak Kent to Rochester Red Wings."
     },
     "669704": {
       "kind": "down",
@@ -752,19 +745,12 @@
       "team": "Reno Aces",
       "text": "Arizona Diamondbacks optioned RHP Kade Strowd to Reno Aces."
     },
-    "703615": {
-      "kind": "down",
+    "695391": {
+      "kind": "up",
       "date": "2026-09-08",
-      "name_en": "Jose Cabrera",
-      "team": "Reno Aces",
-      "text": "Arizona Diamondbacks optioned RHP Jose Cabrera to Reno Aces."
-    },
-    "687849": {
-      "kind": "down",
-      "date": "2026-09-09",
-      "name_en": "Zak Kent",
-      "team": "Rochester Red Wings",
-      "text": "Washington Nationals optioned RHP Zak Kent to Rochester Red Wings."
+      "name_en": "Brett Harris",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants recalled 3B Brett Harris from Sacramento River Cats."
     },
     "693409": {
       "kind": "up",
@@ -773,12 +759,19 @@
       "team": "St. Louis Cardinals",
       "text": "St. Louis Cardinals recalled 3B César Prieto from Memphis Redbirds."
     },
-    "660271": {
-      "kind": "from_il",
-      "date": "2026-09-23",
-      "name_en": "Shohei Ohtani",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated TWP Shohei Ohtani from the 15-day injured list."
+    "703615": {
+      "kind": "down",
+      "date": "2026-09-08",
+      "name_en": "Jose Cabrera",
+      "team": "Reno Aces",
+      "text": "Arizona Diamondbacks optioned RHP Jose Cabrera to Reno Aces."
+    },
+    "672629": {
+      "kind": "down",
+      "date": "2026-09-08",
+      "name_en": "Gerardo Carrillo",
+      "team": "Reno Aces",
+      "text": "Arizona Diamondbacks optioned RHP Gerardo Carrillo to Reno Aces."
     },
     "657041": {
       "kind": "to_il",
@@ -787,12 +780,40 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves placed LF Lane Thomas on the 10-day injured list retroactive to September 8, 2026. Strained left intercostal muscle."
     },
+    "660271": {
+      "kind": "from_il",
+      "date": "2026-09-23",
+      "name_en": "Shohei Ohtani",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated TWP Shohei Ohtani from the 15-day injured list."
+    },
+    "664126": {
+      "kind": "to_il",
+      "date": "2026-09-15",
+      "name_en": "Pete Fairbanks",
+      "team": "Miami Marlins",
+      "text": "Miami Marlins placed RHP Pete Fairbanks on the 15-day injured list. Right median nerve irritation."
+    },
     "699823": {
       "kind": "up",
       "date": "2026-09-24",
       "name_en": "Tyler Davis",
       "team": "Chicago White Sox",
       "text": "Chicago White Sox recalled RHP Tyler Davis from Charlotte Knights."
+    },
+    "663559": {
+      "kind": "up",
+      "date": "2026-09-09",
+      "name_en": "Bailey Falter",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves selected the contract of LHP Bailey Falter from Gwinnett Stripers."
+    },
+    "668678": {
+      "kind": "from_il",
+      "date": "2026-09-09",
+      "name_en": "Zac Gallen",
+      "team": "Arizona Diamondbacks",
+      "text": "Arizona Diamondbacks activated RHP Zac Gallen from the 60-day injured list."
     },
     "647336": {
       "kind": "from_il",
@@ -808,47 +829,12 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves placed RHP Reynaldo López on the 15-day injured list. Right shoulder inflammation."
     },
-    "668678": {
-      "kind": "from_il",
-      "date": "2026-09-09",
-      "name_en": "Zac Gallen",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks activated RHP Zac Gallen from the 60-day injured list."
-    },
     "677942": {
       "kind": "to_il",
       "date": "2026-09-09",
       "name_en": "Blaze Alexander",
       "team": "Baltimore Orioles",
       "text": "Baltimore Orioles placed 3B Blaze Alexander on the 10-day injured list. Low back discomfort."
-    },
-    "663559": {
-      "kind": "up",
-      "date": "2026-09-09",
-      "name_en": "Bailey Falter",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves selected the contract of LHP Bailey Falter from Gwinnett Stripers."
-    },
-    "664126": {
-      "kind": "to_il",
-      "date": "2026-09-15",
-      "name_en": "Pete Fairbanks",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins placed RHP Pete Fairbanks on the 15-day injured list. Right median nerve irritation."
-    },
-    "678868": {
-      "kind": "down",
-      "date": "2026-09-13",
-      "name_en": "Eddy Yean",
-      "team": "Rochester Red Wings",
-      "text": "Washington Nationals optioned RHP Eddy Yean to Rochester Red Wings."
-    },
-    "687134": {
-      "kind": "up",
-      "date": "2026-09-15",
-      "name_en": "Bradley Blalock",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins recalled RHP Bradley Blalock from Jacksonville Jumbo Shrimp."
     },
     "686796": {
       "kind": "down",
@@ -857,12 +843,26 @@
       "team": "Reno Aces",
       "text": "Arizona Diamondbacks optioned LHP Blake Walston to Reno Aces."
     },
+    "678868": {
+      "kind": "down",
+      "date": "2026-09-13",
+      "name_en": "Eddy Yean",
+      "team": "Rochester Red Wings",
+      "text": "Washington Nationals optioned RHP Eddy Yean to Rochester Red Wings."
+    },
     "669236": {
       "kind": "up",
       "date": "2026-09-09",
       "name_en": "Jeremiah Jackson",
       "team": "Baltimore Orioles",
       "text": "Baltimore Orioles recalled 2B Jeremiah Jackson from Norfolk Tides."
+    },
+    "687134": {
+      "kind": "up",
+      "date": "2026-09-15",
+      "name_en": "Bradley Blalock",
+      "team": "Miami Marlins",
+      "text": "Miami Marlins recalled RHP Bradley Blalock from Jacksonville Jumbo Shrimp."
     },
     "665862": {
       "kind": "from_il",
@@ -892,33 +892,12 @@
       "team": "Washington Nationals",
       "text": "Washington Nationals activated 2B Nasim Nuñez from the bereavement list."
     },
-    "668831": {
-      "kind": "down",
-      "date": "2026-09-18",
-      "name_en": "Garrett Stallings",
-      "team": "Nashville Sounds",
-      "text": "Milwaukee Brewers optioned RHP Garrett Stallings to Nashville Sounds."
-    },
     "687605": {
       "kind": "down",
       "date": "2026-09-17",
       "name_en": "Andrew Pinckney",
       "team": "Rochester Red Wings",
       "text": "Washington Nationals optioned LF Andrew Pinckney to Rochester Red Wings."
-    },
-    "683011": {
-      "kind": "up",
-      "date": "2026-09-10",
-      "name_en": "Anthony Volpe",
-      "team": "New York Yankees",
-      "text": "New York Yankees recalled SS Anthony Volpe from Scranton/Wilkes-Barre RailRiders."
-    },
-    "699008": {
-      "kind": "up",
-      "date": "2026-09-10",
-      "name_en": "Antwone Kelly",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled RHP Antwone Kelly from Indianapolis Indians."
     },
     "694224": {
       "kind": "down",
@@ -927,12 +906,26 @@
       "team": "St. Paul Saints",
       "text": "Minnesota Twins optioned RF Gabriel Gonzalez to St. Paul Saints."
     },
-    "664034": {
-      "kind": "from_il",
-      "date": "2026-09-14",
-      "name_en": "Ty France",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated 1B Ty France from the paternity list."
+    "683011": {
+      "kind": "up",
+      "date": "2026-09-10",
+      "name_en": "Anthony Volpe",
+      "team": "New York Yankees",
+      "text": "New York Yankees recalled SS Anthony Volpe from Scranton/Wilkes-Barre RailRiders."
+    },
+    "668831": {
+      "kind": "down",
+      "date": "2026-09-18",
+      "name_en": "Garrett Stallings",
+      "team": "Nashville Sounds",
+      "text": "Milwaukee Brewers optioned RHP Garrett Stallings to Nashville Sounds."
+    },
+    "699008": {
+      "kind": "up",
+      "date": "2026-09-10",
+      "name_en": "Antwone Kelly",
+      "team": "Pittsburgh Pirates",
+      "text": "Pittsburgh Pirates recalled RHP Antwone Kelly from Indianapolis Indians."
     },
     "656811": {
       "kind": "from_il",
@@ -941,12 +934,19 @@
       "team": "Pittsburgh Pirates",
       "text": "Pittsburgh Pirates activated RF Ryan O'Hearn from the 10-day injured list."
     },
-    "680577": {
-      "kind": "up",
-      "date": "2026-09-11",
-      "name_en": "DaShawn Keirsey Jr.",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves recalled CF DaShawn Keirsey Jr. from Gwinnett Stripers."
+    "664034": {
+      "kind": "from_il",
+      "date": "2026-09-14",
+      "name_en": "Ty France",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated 1B Ty France from the paternity list."
+    },
+    "800543": {
+      "kind": "down",
+      "date": "2026-09-23",
+      "name_en": "Josue De Paula",
+      "team": "Oklahoma City Comets",
+      "text": "Los Angeles Dodgers optioned DH Josue De Paula to Oklahoma City Comets."
     },
     "690440": {
       "kind": "down",
@@ -954,13 +954,6 @@
       "name_en": "Bradley Hanner",
       "team": "FCL Yankees",
       "text": "New York Yankees optioned RHP Bradley Hanner to FCL Yankees."
-    },
-    "657675": {
-      "kind": "to_il",
-      "date": "2026-09-13",
-      "name_en": "Rudy Martin Jr.",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays placed RF Rudy Martin Jr. on the 10-day injured list retroactive to September 13, 2026. Left hamstring strain."
     },
     "669200": {
       "kind": "down",
@@ -976,6 +969,13 @@
       "team": "Boston Red Sox",
       "text": "Boston Red Sox placed 2B Anthony Seigler on the 10-day injured list. Right wrist inflammation."
     },
+    "657675": {
+      "kind": "to_il",
+      "date": "2026-09-13",
+      "name_en": "Rudy Martin Jr.",
+      "team": "Toronto Blue Jays",
+      "text": "Toronto Blue Jays placed RF Rudy Martin Jr. on the 10-day injured list retroactive to September 13, 2026. Left hamstring strain."
+    },
     "674073": {
       "kind": "up",
       "date": "2026-09-11",
@@ -983,47 +983,12 @@
       "team": "New York Mets",
       "text": "New York Mets recalled RHP Jack Weisenburger from Syracuse Mets."
     },
-    "800543": {
-      "kind": "down",
-      "date": "2026-09-23",
-      "name_en": "Josue De Paula",
-      "team": "Oklahoma City Comets",
-      "text": "Los Angeles Dodgers optioned DH Josue De Paula to Oklahoma City Comets."
-    },
-    "663992": {
-      "kind": "from_il",
-      "date": "2026-09-12",
-      "name_en": "Richard Lovelady",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals activated LHP Richard Lovelady from the 60-day injured list."
-    },
-    "663423": {
-      "kind": "to_il",
-      "date": "2026-09-12",
-      "name_en": "Trent Thornton",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs placed RHP Trent Thornton on the 15-day injured list. Left ankle sprain."
-    },
-    "669127": {
-      "kind": "from_il",
-      "date": "2026-09-12",
-      "name_en": "Shea Langeliers",
-      "team": "Athletics",
-      "text": "Athletics activated C Shea Langeliers from the 10-day injured list."
-    },
-    "673962": {
-      "kind": "from_il",
-      "date": "2026-09-12",
-      "name_en": "Josh Jung",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers activated 3B Josh Jung from the 10-day injured list."
-    },
-    "682988": {
+    "680577": {
       "kind": "up",
-      "date": "2026-09-12",
-      "name_en": "Tyler Locklear",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled 1B Tyler Locklear from Reno Aces."
+      "date": "2026-09-11",
+      "name_en": "DaShawn Keirsey Jr.",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves recalled CF DaShawn Keirsey Jr. from Gwinnett Stripers."
     },
     "699013": {
       "kind": "to_il",
@@ -1032,19 +997,19 @@
       "team": "Pittsburgh Pirates",
       "text": "Pittsburgh Pirates placed RF Esmerlyn Valdez on the 10-day injured list. Left hamstring strain."
     },
-    "672456": {
-      "kind": "from_il",
-      "date": "2026-09-14",
-      "name_en": "Keider Montero",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated RHP Keider Montero from the paternity list."
+    "682988": {
+      "kind": "up",
+      "date": "2026-09-12",
+      "name_en": "Tyler Locklear",
+      "team": "Arizona Diamondbacks",
+      "text": "Arizona Diamondbacks recalled 1B Tyler Locklear from Reno Aces."
     },
-    "665795": {
+    "663992": {
       "kind": "from_il",
       "date": "2026-09-12",
-      "name_en": "Edward Cabrera",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Edward Cabrera from the 15-day injured list."
+      "name_en": "Richard Lovelady",
+      "team": "Washington Nationals",
+      "text": "Washington Nationals activated LHP Richard Lovelady from the 60-day injured list."
     },
     "543135": {
       "kind": "from_il",
@@ -1053,19 +1018,40 @@
       "team": "Texas Rangers",
       "text": "Texas Rangers activated RHP Nathan Eovaldi from the 15-day injured list."
     },
-    "687231": {
-      "kind": "down",
+    "669127": {
+      "kind": "from_il",
       "date": "2026-09-12",
-      "name_en": "Darell Hernaiz",
-      "team": "Las Vegas Aviators",
-      "text": "Athletics optioned SS Darell Hernaiz to Las Vegas Aviators."
+      "name_en": "Shea Langeliers",
+      "team": "Athletics",
+      "text": "Athletics activated C Shea Langeliers from the 10-day injured list."
     },
-    "671936": {
-      "kind": "down",
-      "date": "2026-09-22",
-      "name_en": "Adam Macko",
-      "team": "ACL Rangers",
-      "text": "Texas Rangers optioned LHP Adam Macko to ACL Rangers."
+    "665795": {
+      "kind": "from_il",
+      "date": "2026-09-12",
+      "name_en": "Edward Cabrera",
+      "team": "Chicago Cubs",
+      "text": "Chicago Cubs activated RHP Edward Cabrera from the 15-day injured list."
+    },
+    "673962": {
+      "kind": "from_il",
+      "date": "2026-09-12",
+      "name_en": "Josh Jung",
+      "team": "Texas Rangers",
+      "text": "Texas Rangers activated 3B Josh Jung from the 10-day injured list."
+    },
+    "672456": {
+      "kind": "from_il",
+      "date": "2026-09-14",
+      "name_en": "Keider Montero",
+      "team": "Detroit Tigers",
+      "text": "Detroit Tigers activated RHP Keider Montero from the paternity list."
+    },
+    "663423": {
+      "kind": "to_il",
+      "date": "2026-09-12",
+      "name_en": "Trent Thornton",
+      "team": "Chicago Cubs",
+      "text": "Chicago Cubs placed RHP Trent Thornton on the 15-day injured list. Left ankle sprain."
     },
     "805346": {
       "kind": "up",
@@ -1074,19 +1060,12 @@
       "team": "Minnesota Twins",
       "text": "Minnesota Twins recalled SS Ben Ross from St. Paul Saints."
     },
-    "681351": {
+    "694633": {
       "kind": "down",
       "date": "2026-09-12",
-      "name_en": "Logan O'Hoppe",
-      "team": "Round Rock Express",
-      "text": "Texas Rangers optioned DH Logan O'Hoppe to Round Rock Express."
-    },
-    "656976": {
-      "kind": "up",
-      "date": "2026-09-12",
-      "name_en": "Pavin Smith",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks selected the contract of 1B Pavin Smith from Reno Aces."
+      "name_en": "Chase Hampton",
+      "team": "Harrisburg Senators",
+      "text": "Washington Nationals optioned RHP Chase Hampton to Harrisburg Senators."
     },
     "811315": {
       "kind": "up",
@@ -1095,12 +1074,33 @@
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays selected the contract of RHP Brody Hopkins from Durham Bulls."
     },
-    "694633": {
+    "656976": {
+      "kind": "up",
+      "date": "2026-09-12",
+      "name_en": "Pavin Smith",
+      "team": "Arizona Diamondbacks",
+      "text": "Arizona Diamondbacks selected the contract of 1B Pavin Smith from Reno Aces."
+    },
+    "691181": {
+      "kind": "up",
+      "date": "2026-09-12",
+      "name_en": "Emmanuel Rodriguez",
+      "team": "Minnesota Twins",
+      "text": "Minnesota Twins recalled CF Emmanuel Rodriguez from St. Paul Saints."
+    },
+    "681351": {
       "kind": "down",
       "date": "2026-09-12",
-      "name_en": "Chase Hampton",
-      "team": "Harrisburg Senators",
-      "text": "Washington Nationals optioned RHP Chase Hampton to Harrisburg Senators."
+      "name_en": "Logan O'Hoppe",
+      "team": "Round Rock Express",
+      "text": "Texas Rangers optioned DH Logan O'Hoppe to Round Rock Express."
+    },
+    "687231": {
+      "kind": "down",
+      "date": "2026-09-12",
+      "name_en": "Darell Hernaiz",
+      "team": "Las Vegas Aviators",
+      "text": "Athletics optioned SS Darell Hernaiz to Las Vegas Aviators."
     },
     "690925": {
       "kind": "down",
@@ -1109,12 +1109,12 @@
       "team": "Rochester Red Wings",
       "text": "Washington Nationals optioned RHP Clayton Beeter to Rochester Red Wings."
     },
-    "691181": {
-      "kind": "up",
-      "date": "2026-09-12",
-      "name_en": "Emmanuel Rodriguez",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled CF Emmanuel Rodriguez from St. Paul Saints."
+    "671936": {
+      "kind": "down",
+      "date": "2026-09-22",
+      "name_en": "Adam Macko",
+      "team": "ACL Rangers",
+      "text": "Texas Rangers optioned LHP Adam Macko to ACL Rangers."
     },
     "702352": {
       "kind": "up",
@@ -1137,13 +1137,6 @@
       "team": "Baltimore Orioles",
       "text": "Baltimore Orioles placed RHP Kyle Bradish on the 15-day injured list. Lower abdominal discomfort."
     },
-    "575929": {
-      "kind": "from_il",
-      "date": "2026-09-13",
-      "name_en": "Willson Contreras",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated 1B Willson Contreras from the 10-day injured list."
-    },
     "621383": {
       "kind": "from_il",
       "date": "2026-09-13",
@@ -1165,26 +1158,26 @@
       "team": "Miami Marlins",
       "text": "Miami Marlins placed RF Owen Caissie on the 10-day injured list. Lumbar stress reaction."
     },
+    "575929": {
+      "kind": "from_il",
+      "date": "2026-09-13",
+      "name_en": "Willson Contreras",
+      "team": "Boston Red Sox",
+      "text": "Boston Red Sox activated 1B Willson Contreras from the 10-day injured list."
+    },
+    "689818": {
+      "kind": "up",
+      "date": "2026-09-13",
+      "name_en": "David Sandlin",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox recalled RHP David Sandlin from Charlotte Knights."
+    },
     "680723": {
       "kind": "up",
       "date": "2026-09-13",
       "name_en": "Drew Rom",
       "team": "Athletics",
       "text": "Athletics recalled LHP Drew Rom from Las Vegas Aviators."
-    },
-    "680880": {
-      "kind": "down",
-      "date": "2026-09-13",
-      "name_en": "Grant Holman",
-      "team": "Lehigh Valley IronPigs",
-      "text": "Philadelphia Phillies optioned RHP Grant Holman to Lehigh Valley IronPigs."
-    },
-    "641401": {
-      "kind": "up",
-      "date": "2026-09-13",
-      "name_en": "Connor Brogdon",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians selected the contract of RHP Connor Brogdon from Columbus Clippers."
     },
     "682274": {
       "kind": "down",
@@ -1207,13 +1200,6 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants selected the contract of LF Scott Bandura from Sacramento River Cats."
     },
-    "689818": {
-      "kind": "up",
-      "date": "2026-09-13",
-      "name_en": "David Sandlin",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled RHP David Sandlin from Charlotte Knights."
-    },
     "699912": {
       "kind": "up",
       "date": "2026-09-13",
@@ -1221,12 +1207,19 @@
       "team": "Arizona Diamondbacks",
       "text": "Arizona Diamondbacks recalled DH Jose Fernandez from Reno Aces."
     },
-    "695611": {
-      "kind": "to_il",
+    "680880": {
+      "kind": "down",
       "date": "2026-09-13",
-      "name_en": "Gage Jump",
-      "team": "Athletics",
-      "text": "Athletics placed LHP Gage Jump on the 15-day injured list retroactive to September 13, 2026. Left shoulder impingement."
+      "name_en": "Grant Holman",
+      "team": "Lehigh Valley IronPigs",
+      "text": "Philadelphia Phillies optioned RHP Grant Holman to Lehigh Valley IronPigs."
+    },
+    "641401": {
+      "kind": "up",
+      "date": "2026-09-13",
+      "name_en": "Connor Brogdon",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians selected the contract of RHP Connor Brogdon from Columbus Clippers."
     },
     "669330": {
       "kind": "to_il",
@@ -1235,12 +1228,12 @@
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays placed RHP Tyler Wells on the 15-day injured list retroactive to September 13, 2026. Right forearm tightness."
     },
-    "476594": {
+    "695611": {
       "kind": "to_il",
       "date": "2026-09-13",
-      "name_en": "Robert Stock",
-      "team": "New York Mets",
-      "text": "New York Mets placed RHP Robert Stock on the 15-day injured list retroactive to September 13, 2026. Finger numbness."
+      "name_en": "Gage Jump",
+      "team": "Athletics",
+      "text": "Athletics placed LHP Gage Jump on the 15-day injured list retroactive to September 13, 2026. Left shoulder impingement."
     },
     "696519": {
       "kind": "to_il",
@@ -1249,19 +1242,19 @@
       "team": "Los Angeles Angels",
       "text": "Los Angeles Angels placed LHP Samy Natera Jr. on the 15-day injured list retroactive to September 13, 2026. Left forearm inflammation."
     },
+    "476594": {
+      "kind": "to_il",
+      "date": "2026-09-13",
+      "name_en": "Robert Stock",
+      "team": "New York Mets",
+      "text": "New York Mets placed RHP Robert Stock on the 15-day injured list retroactive to September 13, 2026. Finger numbness."
+    },
     "683618": {
       "kind": "to_il",
       "date": "2026-09-14",
       "name_en": "Edgardo Henriquez",
       "team": "Los Angeles Dodgers",
       "text": "Los Angeles Dodgers placed RHP Edgardo Henriquez on the 15-day injured list. Lower back discomfort."
-    },
-    "696030": {
-      "kind": "up",
-      "date": "2026-09-14",
-      "name_en": "Alejandro Osuna",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled LF Alejandro Osuna from Round Rock Express."
     },
     "676914": {
       "kind": "up",
@@ -1270,26 +1263,26 @@
       "team": "Toronto Blue Jays",
       "text": "Toronto Blue Jays recalled LF Davis Schneider from Buffalo Bisons."
     },
-    "676454": {
+    "668674": {
       "kind": "up",
       "date": "2026-09-14",
-      "name_en": "Brendan Cellucci",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays recalled LHP Brendan Cellucci from Buffalo Bisons."
+      "name_en": "Lucas Erceg",
+      "team": "Kansas City Royals",
+      "text": "Kansas City Royals recalled RHP Lucas Erceg from Omaha Storm Chasers."
     },
-    "695508": {
+    "700270": {
       "kind": "down",
       "date": "2026-09-14",
-      "name_en": "Cam Cauley",
-      "team": "Round Rock Express",
-      "text": "Texas Rangers optioned CF Cam Cauley to Round Rock Express."
+      "name_en": "Yilber Díaz",
+      "team": "Toledo Mud Hens",
+      "text": "Detroit Tigers optioned RHP Yilber Díaz to Toledo Mud Hens."
     },
-    "702566": {
-      "kind": "down",
-      "date": "2026-09-23",
-      "name_en": "Owen Murphy",
-      "team": "Gwinnett Stripers",
-      "text": "Atlanta Braves optioned RHP Owen Murphy to Gwinnett Stripers."
+    "696030": {
+      "kind": "up",
+      "date": "2026-09-14",
+      "name_en": "Alejandro Osuna",
+      "team": "Texas Rangers",
+      "text": "Texas Rangers recalled LF Alejandro Osuna from Round Rock Express."
     },
     "801434": {
       "kind": "down",
@@ -1312,26 +1305,26 @@
       "team": "Norfolk Tides",
       "text": "Baltimore Orioles optioned RHP Codi Heuer to Norfolk Tides."
     },
-    "668674": {
+    "676454": {
       "kind": "up",
       "date": "2026-09-14",
-      "name_en": "Lucas Erceg",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled RHP Lucas Erceg from Omaha Storm Chasers."
+      "name_en": "Brendan Cellucci",
+      "team": "Toronto Blue Jays",
+      "text": "Toronto Blue Jays recalled LHP Brendan Cellucci from Buffalo Bisons."
     },
-    "700270": {
+    "695508": {
       "kind": "down",
       "date": "2026-09-14",
-      "name_en": "Yilber Díaz",
-      "team": "Toledo Mud Hens",
-      "text": "Detroit Tigers optioned RHP Yilber Díaz to Toledo Mud Hens."
+      "name_en": "Cam Cauley",
+      "team": "Round Rock Express",
+      "text": "Texas Rangers optioned CF Cam Cauley to Round Rock Express."
     },
-    "697812": {
+    "702566": {
       "kind": "down",
-      "date": "2026-09-18",
-      "name_en": "Joe Rock",
-      "team": "Las Vegas Aviators",
-      "text": "Athletics optioned LHP Joe Rock to Las Vegas Aviators."
+      "date": "2026-09-23",
+      "name_en": "Owen Murphy",
+      "team": "Gwinnett Stripers",
+      "text": "Atlanta Braves optioned RHP Owen Murphy to Gwinnett Stripers."
     },
     "672580": {
       "kind": "from_il",
@@ -1347,12 +1340,26 @@
       "team": "Colorado Rockies",
       "text": "Colorado Rockies activated LHP Kyle Freeland from the 15-day injured list."
     },
+    "641584": {
+      "kind": "from_il",
+      "date": "2026-09-15",
+      "name_en": "Jake Fraley",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated RF Jake Fraley from the 60-day injured list."
+    },
     "660821": {
       "kind": "from_il",
       "date": "2026-09-15",
       "name_en": "Jesús Sánchez",
       "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks activated RF Jesús Sánchez."
+      "text": "Arizona Diamondbacks activated DH Jesús Sánchez."
+    },
+    "697812": {
+      "kind": "down",
+      "date": "2026-09-18",
+      "name_en": "Joe Rock",
+      "team": "Las Vegas Aviators",
+      "text": "Athletics optioned LHP Joe Rock to Las Vegas Aviators."
     },
     "666211": {
       "kind": "from_il",
@@ -1361,40 +1368,12 @@
       "team": "Houston Astros",
       "text": "Houston Astros activated LF Taylor Trammell from the paternity list."
     },
-    "641584": {
-      "kind": "from_il",
-      "date": "2026-09-15",
-      "name_en": "Jake Fraley",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RF Jake Fraley from the 60-day injured list."
-    },
-    "686551": {
+    "700652": {
       "kind": "down",
       "date": "2026-09-15",
-      "name_en": "Christian Cairo",
-      "team": "Syracuse Mets",
-      "text": "New York Mets optioned SS Christian Cairo to Syracuse Mets."
-    },
-    "694388": {
-      "kind": "down",
-      "date": "2026-09-17",
-      "name_en": "Joey Loperfido",
-      "team": "Sugar Land Space Cowboys",
-      "text": "Houston Astros optioned LF Joey Loperfido to Sugar Land Space Cowboys."
-    },
-    "679775": {
-      "kind": "down",
-      "date": "2026-09-18",
-      "name_en": "Kyle Backhus",
-      "team": "Lehigh Valley IronPigs",
-      "text": "Philadelphia Phillies optioned LHP Kyle Backhus to Lehigh Valley IronPigs."
-    },
-    "680604": {
-      "kind": "down",
-      "date": "2026-09-15",
-      "name_en": "Blas Castaño",
-      "team": "Albuquerque Isotopes",
-      "text": "Colorado Rockies optioned RHP Blas Castaño to Albuquerque Isotopes."
+      "name_en": "Kenny Piper",
+      "team": "Durham Bulls",
+      "text": "Tampa Bay Rays optioned C Kenny Piper to Durham Bulls."
     },
     "690924": {
       "kind": "up",
@@ -1410,6 +1389,27 @@
       "team": "Chicago White Sox",
       "text": "Chicago White Sox recalled LHP Noah Schultz from Charlotte Knights."
     },
+    "686551": {
+      "kind": "down",
+      "date": "2026-09-15",
+      "name_en": "Christian Cairo",
+      "team": "Syracuse Mets",
+      "text": "New York Mets optioned SS Christian Cairo to Syracuse Mets."
+    },
+    "679775": {
+      "kind": "down",
+      "date": "2026-09-18",
+      "name_en": "Kyle Backhus",
+      "team": "Lehigh Valley IronPigs",
+      "text": "Philadelphia Phillies optioned LHP Kyle Backhus to Lehigh Valley IronPigs."
+    },
+    "694388": {
+      "kind": "down",
+      "date": "2026-09-17",
+      "name_en": "Joey Loperfido",
+      "team": "Sugar Land Space Cowboys",
+      "text": "Houston Astros optioned LF Joey Loperfido to Sugar Land Space Cowboys."
+    },
     "702275": {
       "kind": "up",
       "date": "2026-09-15",
@@ -1417,12 +1417,12 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves recalled RHP JR Ritchie from Gwinnett Stripers."
     },
-    "700652": {
+    "680604": {
       "kind": "down",
       "date": "2026-09-15",
-      "name_en": "Kenny Piper",
-      "team": "Durham Bulls",
-      "text": "Tampa Bay Rays optioned C Kenny Piper to Durham Bulls."
+      "name_en": "Blas Castaño",
+      "team": "Albuquerque Isotopes",
+      "text": "Colorado Rockies optioned RHP Blas Castaño to Albuquerque Isotopes."
     },
     "683090": {
       "kind": "down",
@@ -1473,6 +1473,13 @@
       "team": "Los Angeles Dodgers",
       "text": "Los Angeles Dodgers activated LHP Kris Bubic from the 60-day injured list."
     },
+    "657265": {
+      "kind": "from_il",
+      "date": "2026-09-16",
+      "name_en": "Peter Strzelecki",
+      "team": "St. Louis Cardinals",
+      "text": "St. Louis Cardinals activated RHP Peter Strzelecki from the 15-day injured list."
+    },
     "675540": {
       "kind": "down",
       "date": "2026-09-17",
@@ -1487,19 +1494,26 @@
       "team": "Pittsburgh Pirates",
       "text": "Pittsburgh Pirates activated RHP Camilo Doval."
     },
+    "802139": {
+      "kind": "from_il",
+      "date": "2026-09-16",
+      "name_en": "JJ Wetherholt",
+      "team": "St. Louis Cardinals",
+      "text": "St. Louis Cardinals activated 2B JJ Wetherholt from the 10-day injured list."
+    },
+    "701785": {
+      "kind": "to_il",
+      "date": "2026-09-16",
+      "name_en": "Kaelen Culpepper",
+      "team": "Minnesota Twins",
+      "text": "Minnesota Twins placed SS Kaelen Culpepper on the 10-day injured list. Left hamstring strain."
+    },
     "689672": {
       "kind": "down",
       "date": "2026-09-16",
       "name_en": "Drew Thorpe",
       "team": "Charlotte Knights",
       "text": "Chicago White Sox optioned RHP Drew Thorpe to Charlotte Knights."
-    },
-    "696147": {
-      "kind": "from_il",
-      "date": "2026-09-16",
-      "name_en": "Sam Bachman",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels activated RHP Sam Bachman from the 15-day injured list."
     },
     "650960": {
       "kind": "to_il",
@@ -1515,20 +1529,6 @@
       "team": "Arizona Diamondbacks",
       "text": "Arizona Diamondbacks activated RHP Ryne Nelson from the 60-day injured list."
     },
-    "657265": {
-      "kind": "from_il",
-      "date": "2026-09-16",
-      "name_en": "Peter Strzelecki",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals activated RHP Peter Strzelecki from the 15-day injured list."
-    },
-    "701785": {
-      "kind": "to_il",
-      "date": "2026-09-16",
-      "name_en": "Kaelen Culpepper",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins placed SS Kaelen Culpepper on the 10-day injured list. Left hamstring strain."
-    },
     "657376": {
       "kind": "to_il",
       "date": "2026-09-21",
@@ -1536,12 +1536,12 @@
       "team": "New York Yankees",
       "text": "New York Yankees placed RHP Clarke Schmidt on the 15-day injured list retroactive to September 21, 2026. Right bicep neuritis."
     },
-    "802139": {
+    "696147": {
       "kind": "from_il",
       "date": "2026-09-16",
-      "name_en": "JJ Wetherholt",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals activated 2B JJ Wetherholt from the 10-day injured list."
+      "name_en": "Sam Bachman",
+      "team": "Los Angeles Angels",
+      "text": "Los Angeles Angels activated RHP Sam Bachman from the 15-day injured list."
     },
     "676480": {
       "kind": "up",
@@ -1564,19 +1564,19 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants placed 2B Nate Furman on the 10-day injured list retroactive to September 16, 2026. Right oblique strain."
     },
-    "689017": {
-      "kind": "down",
-      "date": "2026-09-18",
-      "name_en": "Landon Knack",
-      "team": "Oklahoma City Comets",
-      "text": "Los Angeles Dodgers optioned RHP Landon Knack to Oklahoma City Comets."
-    },
     "680686": {
       "kind": "from_il",
       "date": "2026-09-17",
       "name_en": "Josiah Gray",
       "team": "Washington Nationals",
       "text": "Washington Nationals activated RHP Josiah Gray from the 60-day injured list."
+    },
+    "689017": {
+      "kind": "down",
+      "date": "2026-09-18",
+      "name_en": "Landon Knack",
+      "team": "Oklahoma City Comets",
+      "text": "Los Angeles Dodgers optioned RHP Landon Knack to Oklahoma City Comets."
     },
     "680744": {
       "kind": "up",
@@ -1606,20 +1606,6 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants placed LHP Reiver Sanmartin on the 15-day injured list retroactive to September 17, 2026. Right oblique strain."
     },
-    "664353": {
-      "kind": "from_il",
-      "date": "2026-09-18",
-      "name_en": "José Urquidy",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RHP José Urquidy."
-    },
-    "621242": {
-      "kind": "from_il",
-      "date": "2026-09-18",
-      "name_en": "Edwin Díaz",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Edwin Díaz from the 15-day injured list."
-    },
     "621020": {
       "kind": "from_il",
       "date": "2026-09-18",
@@ -1634,13 +1620,6 @@
       "team": "St. Louis Cardinals",
       "text": "St. Louis Cardinals placed LF Joshua Báez on the 10-day injured list. Left oblique strain."
     },
-    "676724": {
-      "kind": "to_il",
-      "date": "2026-09-18",
-      "name_en": "Jared Young",
-      "team": "New York Mets",
-      "text": "New York Mets placed 1B Jared Young on the 7-day injured list. Concussion."
-    },
     "682674": {
       "kind": "from_il",
       "date": "2026-09-18",
@@ -1648,75 +1627,26 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants activated LF Victor Bericoto from the 10-day injured list."
     },
-    "702176": {
-      "kind": "up",
+    "676724": {
+      "kind": "to_il",
       "date": "2026-09-18",
-      "name_en": "Alan Roden",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled RF Alan Roden from St. Paul Saints."
-    },
-    "686930": {
-      "kind": "up",
-      "date": "2026-09-18",
-      "name_en": "Mason Barnett",
-      "team": "Athletics",
-      "text": "Athletics recalled RHP Mason Barnett from Las Vegas Aviators."
-    },
-    "669326": {
-      "kind": "up",
-      "date": "2026-09-18",
-      "name_en": "Bryce Teodosio",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels recalled LF Bryce Teodosio from Salt Lake Bees."
-    },
-    "687924": {
-      "kind": "down",
-      "date": "2026-09-19",
-      "name_en": "Julian Aguiar",
-      "team": "Louisville Bats",
-      "text": "Cincinnati Reds optioned RHP Julian Aguiar to Louisville Bats."
-    },
-    "676467": {
-      "kind": "down",
-      "date": "2026-09-23",
-      "name_en": "Colton Gordon",
-      "team": "Biloxi Shuckers",
-      "text": "Milwaukee Brewers optioned LHP Colton Gordon to Biloxi Shuckers."
-    },
-    "700249": {
-      "kind": "down",
-      "date": "2026-09-19",
-      "name_en": "Cade Povich",
-      "team": "Norfolk Tides",
-      "text": "Baltimore Orioles optioned LHP Cade Povich to Norfolk Tides."
-    },
-    "677595": {
-      "kind": "up",
-      "date": "2026-09-18",
-      "name_en": "Ronny Mauricio",
+      "name_en": "Jared Young",
       "team": "New York Mets",
-      "text": "New York Mets recalled SS Ronny Mauricio from Syracuse Mets."
+      "text": "New York Mets placed 1B Jared Young on the 7-day injured list. Concussion."
     },
-    "692064": {
-      "kind": "down",
-      "date": "2026-09-23",
-      "name_en": "José Rodríguez",
-      "team": "FCL Blue Jays",
-      "text": "Toronto Blue Jays optioned RHP José Rodríguez to FCL Blue Jays."
-    },
-    "681230": {
-      "kind": "down",
+    "664353": {
+      "kind": "from_il",
       "date": "2026-09-18",
-      "name_en": "BJ Murray Jr.",
-      "team": "Iowa Cubs",
-      "text": "Chicago Cubs optioned 3B BJ Murray Jr. to Iowa Cubs."
+      "name_en": "José Urquidy",
+      "team": "Philadelphia Phillies",
+      "text": "Philadelphia Phillies activated RHP José Urquidy."
     },
-    "695239": {
-      "kind": "down",
+    "621242": {
+      "kind": "from_il",
       "date": "2026-09-18",
-      "name_en": "Robby Ahlstrom",
-      "team": "Round Rock Express",
-      "text": "Texas Rangers optioned LHP Robby Ahlstrom to Round Rock Express."
+      "name_en": "Edwin Díaz",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Edwin Díaz from the 15-day injured list."
     },
     "701474": {
       "kind": "up",
@@ -1725,6 +1655,62 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants recalled RHP Duncan Davitt from Sacramento River Cats."
     },
+    "702176": {
+      "kind": "up",
+      "date": "2026-09-18",
+      "name_en": "Alan Roden",
+      "team": "Minnesota Twins",
+      "text": "Minnesota Twins recalled RF Alan Roden from St. Paul Saints."
+    },
+    "669326": {
+      "kind": "up",
+      "date": "2026-09-18",
+      "name_en": "Bryce Teodosio",
+      "team": "Los Angeles Angels",
+      "text": "Los Angeles Angels recalled LF Bryce Teodosio from Salt Lake Bees."
+    },
+    "695239": {
+      "kind": "down",
+      "date": "2026-09-18",
+      "name_en": "Robby Ahlstrom",
+      "team": "Round Rock Express",
+      "text": "Texas Rangers optioned LHP Robby Ahlstrom to Round Rock Express."
+    },
+    "681230": {
+      "kind": "down",
+      "date": "2026-09-18",
+      "name_en": "BJ Murray Jr.",
+      "team": "Iowa Cubs",
+      "text": "Chicago Cubs optioned 3B BJ Murray Jr. to Iowa Cubs."
+    },
+    "677595": {
+      "kind": "up",
+      "date": "2026-09-18",
+      "name_en": "Ronny Mauricio",
+      "team": "New York Mets",
+      "text": "New York Mets recalled SS Ronny Mauricio from Syracuse Mets."
+    },
+    "700249": {
+      "kind": "down",
+      "date": "2026-09-19",
+      "name_en": "Cade Povich",
+      "team": "Norfolk Tides",
+      "text": "Baltimore Orioles optioned LHP Cade Povich to Norfolk Tides."
+    },
+    "686930": {
+      "kind": "up",
+      "date": "2026-09-18",
+      "name_en": "Mason Barnett",
+      "team": "Athletics",
+      "text": "Athletics recalled RHP Mason Barnett from Las Vegas Aviators."
+    },
+    "676467": {
+      "kind": "down",
+      "date": "2026-09-23",
+      "name_en": "Colton Gordon",
+      "team": "Biloxi Shuckers",
+      "text": "Milwaukee Brewers optioned LHP Colton Gordon to Biloxi Shuckers."
+    },
     "671305": {
       "kind": "to_il",
       "date": "2026-09-18",
@@ -1732,26 +1718,26 @@
       "team": "Texas Rangers",
       "text": "Texas Rangers placed RHP Michel Otañez on the 15-day injured list retroactive to September 18, 2026. Viral illness."
     },
+    "687924": {
+      "kind": "down",
+      "date": "2026-09-19",
+      "name_en": "Julian Aguiar",
+      "team": "Louisville Bats",
+      "text": "Cincinnati Reds optioned RHP Julian Aguiar to Louisville Bats."
+    },
+    "692064": {
+      "kind": "down",
+      "date": "2026-09-23",
+      "name_en": "José Rodríguez",
+      "team": "FCL Blue Jays",
+      "text": "Toronto Blue Jays optioned RHP José Rodríguez to FCL Blue Jays."
+    },
     "805811": {
       "kind": "to_il",
       "date": "2026-09-18",
       "name_en": "Bryce Eldridge",
       "team": "San Francisco Giants",
       "text": "San Francisco Giants placed DH Bryce Eldridge on the 7-day injured list retroactive to September 18, 2026. Concussion."
-    },
-    "665828": {
-      "kind": "from_il",
-      "date": "2026-09-19",
-      "name_en": "Oswaldo Cabrera",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds activated 3B Oswaldo Cabrera."
-    },
-    "500779": {
-      "kind": "from_il",
-      "date": "2026-09-19",
-      "name_en": "Jose Quintana",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies activated LHP Jose Quintana from the 60-day injured list."
     },
     "672335": {
       "kind": "from_il",
@@ -1767,19 +1753,12 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants activated LHP Sam Hentges from the 15-day injured list."
     },
-    "681047": {
+    "665828": {
       "kind": "from_il",
       "date": "2026-09-19",
-      "name_en": "Christian Franklin",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles activated CF Christian Franklin from the 10-day injured list."
-    },
-    "694728": {
-      "kind": "to_il",
-      "date": "2026-09-23",
-      "name_en": "Brice Matthews",
-      "team": "Houston Astros",
-      "text": "Houston Astros placed CF Brice Matthews on the 10-day injured list. Left knee inflammation."
+      "name_en": "Oswaldo Cabrera",
+      "team": "Cincinnati Reds",
+      "text": "Cincinnati Reds activated 3B Oswaldo Cabrera."
     },
     "642585": {
       "kind": "from_il",
@@ -1788,6 +1767,13 @@
       "team": "Baltimore Orioles",
       "text": "Baltimore Orioles activated RHP Félix Bautista from the 60-day injured list."
     },
+    "660853": {
+      "kind": "to_il",
+      "date": "2026-09-19",
+      "name_en": "Enyel De Los Santos",
+      "team": "Houston Astros",
+      "text": "Houston Astros placed RHP Enyel De Los Santos on the 15-day injured list. Right knee tendinitis."
+    },
     "518886": {
       "kind": "to_il",
       "date": "2026-09-19",
@@ -1795,12 +1781,54 @@
       "team": "Kansas City Royals",
       "text": "Kansas City Royals placed RHP Craig Kimbrel on the bereavement list."
     },
-    "660853": {
+    "694728": {
       "kind": "to_il",
-      "date": "2026-09-19",
-      "name_en": "Enyel De Los Santos",
+      "date": "2026-09-23",
+      "name_en": "Brice Matthews",
       "team": "Houston Astros",
-      "text": "Houston Astros placed RHP Enyel De Los Santos on the 15-day injured list. Right knee tendinitis."
+      "text": "Houston Astros placed CF Brice Matthews on the 10-day injured list. Left knee inflammation."
+    },
+    "500779": {
+      "kind": "from_il",
+      "date": "2026-09-19",
+      "name_en": "Jose Quintana",
+      "team": "Colorado Rockies",
+      "text": "Colorado Rockies activated LHP Jose Quintana from the 60-day injured list."
+    },
+    "681047": {
+      "kind": "from_il",
+      "date": "2026-09-19",
+      "name_en": "Christian Franklin",
+      "team": "Baltimore Orioles",
+      "text": "Baltimore Orioles activated CF Christian Franklin from the 10-day injured list."
+    },
+    "701121": {
+      "kind": "up",
+      "date": "2026-09-19",
+      "name_en": "Logan VanWey",
+      "team": "Houston Astros",
+      "text": "Houston Astros recalled RHP Logan VanWey from Sugar Land Space Cowboys."
+    },
+    "687312": {
+      "kind": "down",
+      "date": "2026-09-19",
+      "name_en": "Gabriel Hughes",
+      "team": "Albuquerque Isotopes",
+      "text": "Colorado Rockies optioned RHP Gabriel Hughes to Albuquerque Isotopes."
+    },
+    "670770": {
+      "kind": "down",
+      "date": "2026-09-19",
+      "name_en": "TJ Friedl",
+      "team": "Louisville Bats",
+      "text": "Cincinnati Reds optioned CF TJ Friedl to Louisville Bats."
+    },
+    "677008": {
+      "kind": "up",
+      "date": "2026-09-23",
+      "name_en": "Heston Kjerstad",
+      "team": "Baltimore Orioles",
+      "text": "Baltimore Orioles recalled LF Heston Kjerstad from Norfolk Tides."
     },
     "680474": {
       "kind": "down",
@@ -1815,34 +1843,6 @@
       "name_en": "Zach McCambley",
       "team": "Cincinnati Reds",
       "text": "Cincinnati Reds recalled RHP Zach McCambley from Louisville Bats."
-    },
-    "701121": {
-      "kind": "up",
-      "date": "2026-09-19",
-      "name_en": "Logan VanWey",
-      "team": "Houston Astros",
-      "text": "Houston Astros recalled RHP Logan VanWey from Sugar Land Space Cowboys."
-    },
-    "677008": {
-      "kind": "up",
-      "date": "2026-09-23",
-      "name_en": "Heston Kjerstad",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled LF Heston Kjerstad from Norfolk Tides."
-    },
-    "670770": {
-      "kind": "down",
-      "date": "2026-09-19",
-      "name_en": "TJ Friedl",
-      "team": "Louisville Bats",
-      "text": "Cincinnati Reds optioned CF TJ Friedl to Louisville Bats."
-    },
-    "687312": {
-      "kind": "down",
-      "date": "2026-09-19",
-      "name_en": "Gabriel Hughes",
-      "team": "Albuquerque Isotopes",
-      "text": "Colorado Rockies optioned RHP Gabriel Hughes to Albuquerque Isotopes."
     },
     "695505": {
       "kind": "to_il",
@@ -1865,20 +1865,6 @@
       "team": "Cincinnati Reds",
       "text": "Cincinnati Reds placed RHP Tony Santillan on the 15-day injured list retroactive to September 19, 2026. Left hip labral tear."
     },
-    "594027": {
-      "kind": "from_il",
-      "date": "2026-09-20",
-      "name_en": "Tyron Guerrero",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated RHP Tyron Guerrero from the 15-day injured list."
-    },
-    "623211": {
-      "kind": "from_il",
-      "date": "2026-09-20",
-      "name_en": "Huascar Brazobán",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Huascar Brazobán from the 15-day injured list."
-    },
     "615698": {
       "kind": "to_il",
       "date": "2026-09-20",
@@ -1893,26 +1879,26 @@
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays activated 2B Ben Williamson from the 10-day injured list."
     },
+    "623211": {
+      "kind": "from_il",
+      "date": "2026-09-20",
+      "name_en": "Huascar Brazobán",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RHP Huascar Brazobán from the 15-day injured list."
+    },
+    "594027": {
+      "kind": "from_il",
+      "date": "2026-09-20",
+      "name_en": "Tyron Guerrero",
+      "team": "Boston Red Sox",
+      "text": "Boston Red Sox activated RHP Tyron Guerrero from the 15-day injured list."
+    },
     "669373": {
       "kind": "from_il",
       "date": "2026-09-23",
       "name_en": "Tarik Skubal",
       "team": "Los Angeles Dodgers",
       "text": "Los Angeles Dodgers activated LHP Tarik Skubal from the bereavement list."
-    },
-    "678020": {
-      "kind": "down",
-      "date": "2026-09-20",
-      "name_en": "Seth Halvorsen",
-      "team": "Oklahoma City Comets",
-      "text": "Los Angeles Dodgers optioned RHP Seth Halvorsen to Oklahoma City Comets."
-    },
-    "686730": {
-      "kind": "up",
-      "date": "2026-09-20",
-      "name_en": "Carson Spiers",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds selected the contract of RHP Carson Spiers from Louisville Bats."
     },
     "676661": {
       "kind": "up",
@@ -1921,12 +1907,12 @@
       "team": "Philadelphia Phillies",
       "text": "Philadelphia Phillies recalled RHP Max Lazar from Lehigh Valley IronPigs."
     },
-    "692437": {
+    "678020": {
       "kind": "down",
-      "date": "2026-09-23",
-      "name_en": "Winston Santos",
-      "team": "ACL Rangers",
-      "text": "Texas Rangers optioned RHP Winston Santos to ACL Rangers."
+      "date": "2026-09-20",
+      "name_en": "Seth Halvorsen",
+      "team": "Oklahoma City Comets",
+      "text": "Los Angeles Dodgers optioned RHP Seth Halvorsen to Oklahoma City Comets."
     },
     "663941": {
       "kind": "up",
@@ -1949,6 +1935,20 @@
       "team": "Worcester Red Sox",
       "text": "Boston Red Sox optioned RHP Wyatt Olds to Worcester Red Sox."
     },
+    "692437": {
+      "kind": "down",
+      "date": "2026-09-23",
+      "name_en": "Winston Santos",
+      "team": "ACL Rangers",
+      "text": "Texas Rangers optioned RHP Winston Santos to ACL Rangers."
+    },
+    "686730": {
+      "kind": "up",
+      "date": "2026-09-20",
+      "name_en": "Carson Spiers",
+      "team": "Cincinnati Reds",
+      "text": "Cincinnati Reds selected the contract of RHP Carson Spiers from Louisville Bats."
+    },
     "690993": {
       "kind": "to_il",
       "date": "2026-09-20",
@@ -1962,13 +1962,6 @@
       "name_en": "Dylan Cease",
       "team": "Toronto Blue Jays",
       "text": "Toronto Blue Jays placed RHP Dylan Cease on the 15-day injured list retroactive to September 20, 2026. Right shoulder inflammation."
-    },
-    "681624": {
-      "kind": "from_il",
-      "date": "2026-09-21",
-      "name_en": "Andy Pages",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated CF Andy Pages from the 10-day injured list."
     },
     "702056": {
       "kind": "from_il",
@@ -1984,33 +1977,19 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants placed RF Jung Hoo Lee on the 10-day injured list. Groin contusion."
     },
+    "681624": {
+      "kind": "from_il",
+      "date": "2026-09-21",
+      "name_en": "Andy Pages",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated CF Andy Pages from the 10-day injured list."
+    },
     "675512": {
       "kind": "to_il",
       "date": "2026-09-21",
       "name_en": "Troy Melton",
       "team": "Detroit Tigers",
       "text": "Detroit Tigers placed RHP Troy Melton on the 15-day injured list."
-    },
-    "664062": {
-      "kind": "from_il",
-      "date": "2026-09-21",
-      "name_en": "Tony Gonsolin",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals activated RHP Tony Gonsolin from the 15-day injured list."
-    },
-    "687792": {
-      "kind": "from_il",
-      "date": "2026-09-21",
-      "name_en": "DJ Herz",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals activated LHP DJ Herz from the 60-day injured list."
-    },
-    "808963": {
-      "kind": "from_il",
-      "date": "2026-09-21",
-      "name_en": "Roki Sasaki",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Roki Sasaki from the 15-day injured list."
     },
     "691785": {
       "kind": "from_il",
@@ -2019,12 +1998,26 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants activated 2B Marcelo Mayer from the 10-day injured list."
     },
-    "689981": {
-      "kind": "up",
+    "664062": {
+      "kind": "from_il",
       "date": "2026-09-21",
-      "name_en": "River Ryan",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled RHP River Ryan from Toledo Mud Hens."
+      "name_en": "Tony Gonsolin",
+      "team": "Kansas City Royals",
+      "text": "Kansas City Royals activated RHP Tony Gonsolin from the 15-day injured list."
+    },
+    "808963": {
+      "kind": "from_il",
+      "date": "2026-09-21",
+      "name_en": "Roki Sasaki",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Roki Sasaki from the 15-day injured list."
+    },
+    "687792": {
+      "kind": "from_il",
+      "date": "2026-09-21",
+      "name_en": "DJ Herz",
+      "team": "Washington Nationals",
+      "text": "Washington Nationals activated LHP DJ Herz from the 60-day injured list."
     },
     "815589": {
       "kind": "up",
@@ -2033,19 +2026,19 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants selected the contract of LF Bo Davidson from Sacramento River Cats."
     },
-    "688692": {
-      "kind": "down",
-      "date": "2026-09-21",
-      "name_en": "Jared Simpson",
-      "team": "Rochester Red Wings",
-      "text": "Washington Nationals optioned LHP Jared Simpson to Rochester Red Wings."
-    },
     "690291": {
       "kind": "up",
       "date": "2026-09-21",
       "name_en": "Jace Jung",
       "team": "Detroit Tigers",
       "text": "Detroit Tigers recalled 3B Jace Jung from Toledo Mud Hens."
+    },
+    "681293": {
+      "kind": "down",
+      "date": "2026-09-21",
+      "name_en": "Spencer Arrighetti",
+      "team": "FCL Blue Jays",
+      "text": "Toronto Blue Jays optioned RHP Spencer Arrighetti to FCL Blue Jays."
     },
     "689149": {
       "kind": "up",
@@ -2054,19 +2047,26 @@
       "team": "Toronto Blue Jays",
       "text": "Toronto Blue Jays recalled RHP Chad Dallas from Buffalo Bisons."
     },
+    "688692": {
+      "kind": "down",
+      "date": "2026-09-21",
+      "name_en": "Jared Simpson",
+      "team": "Rochester Red Wings",
+      "text": "Washington Nationals optioned LHP Jared Simpson to Rochester Red Wings."
+    },
+    "689981": {
+      "kind": "up",
+      "date": "2026-09-21",
+      "name_en": "River Ryan",
+      "team": "Detroit Tigers",
+      "text": "Detroit Tigers recalled RHP River Ryan from Toledo Mud Hens."
+    },
     "693306": {
       "kind": "up",
       "date": "2026-09-21",
       "name_en": "Aaron Sabato",
       "team": "Minnesota Twins",
       "text": "Minnesota Twins selected the contract of 1B Aaron Sabato from St. Paul Saints."
-    },
-    "681293": {
-      "kind": "down",
-      "date": "2026-09-21",
-      "name_en": "Spencer Arrighetti",
-      "team": "FCL Blue Jays",
-      "text": "Toronto Blue Jays optioned RHP Spencer Arrighetti to FCL Blue Jays."
     },
     "527048": {
       "kind": "to_il",
@@ -2081,13 +2081,6 @@
       "name_en": "Ben Joyce",
       "team": "Los Angeles Angels",
       "text": "Los Angeles Angels placed RHP Ben Joyce on the 15-day injured list retroactive to September 21, 2026. Right shoulder impingement."
-    },
-    "682608": {
-      "kind": "from_il",
-      "date": "2026-09-22",
-      "name_en": "Peyton Gray",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers activated RHP Peyton Gray from the 15-day injured list."
     },
     "694918": {
       "kind": "to_il",
@@ -2110,6 +2103,20 @@
       "team": "New York Mets",
       "text": "New York Mets activated RHP Devin Williams from the 15-day injured list."
     },
+    "682608": {
+      "kind": "from_il",
+      "date": "2026-09-22",
+      "name_en": "Peyton Gray",
+      "team": "Texas Rangers",
+      "text": "Texas Rangers activated RHP Peyton Gray from the 15-day injured list."
+    },
+    "691777": {
+      "kind": "to_il",
+      "date": "2026-09-22",
+      "name_en": "Max Muncy",
+      "team": "Athletics",
+      "text": "Athletics placed 3B Max Muncy on the 10-day injured list. Left knee chondromalacia."
+    },
     "681035": {
       "kind": "to_il",
       "date": "2026-09-22",
@@ -2123,13 +2130,6 @@
       "name_en": "Kirby Yates",
       "team": "Pittsburgh Pirates",
       "text": "Pittsburgh Pirates activated RHP Kirby Yates from the 15-day injured list."
-    },
-    "691777": {
-      "kind": "to_il",
-      "date": "2026-09-22",
-      "name_en": "Max Muncy",
-      "team": "Athletics",
-      "text": "Athletics placed 3B Max Muncy on the 10-day injured list. Left knee chondromalacia."
     },
     "680737": {
       "kind": "from_il",
@@ -2152,13 +2152,6 @@
       "team": "Baltimore Orioles",
       "text": "Baltimore Orioles placed C Samuel Basallo on the 7-day injured list retroactive to September 22, 2026. Concussion."
     },
-    "664299": {
-      "kind": "to_il",
-      "date": "2026-09-23",
-      "name_en": "Cristian Javier",
-      "team": "Houston Astros",
-      "text": "Houston Astros placed RHP Cristian Javier on the 15-day injured list."
-    },
     "663158": {
       "kind": "from_il",
       "date": "2026-09-23",
@@ -2179,6 +2172,34 @@
       "name_en": "Jason Adam",
       "team": "San Diego Padres",
       "text": "San Diego Padres activated RHP Jason Adam from the 60-day injured list."
+    },
+    "664299": {
+      "kind": "to_il",
+      "date": "2026-09-23",
+      "name_en": "Cristian Javier",
+      "team": "Houston Astros",
+      "text": "Houston Astros placed RHP Cristian Javier on the 15-day injured list."
+    },
+    "801725": {
+      "kind": "down",
+      "date": "2026-09-23",
+      "name_en": "Luis De León",
+      "team": "FCL Orioles",
+      "text": "Baltimore Orioles optioned LHP Luis De León to FCL Orioles."
+    },
+    "686560": {
+      "kind": "up",
+      "date": "2026-09-23",
+      "name_en": "Gavin Collyer",
+      "team": "Texas Rangers",
+      "text": "Texas Rangers recalled RHP Gavin Collyer from Round Rock Express."
+    },
+    "656288": {
+      "kind": "down",
+      "date": "2026-09-23",
+      "name_en": "Griffin Canning",
+      "team": "ACL Padres",
+      "text": "San Diego Padres optioned RHP Griffin Canning to ACL Padres."
     },
     "680689": {
       "kind": "up",
@@ -2201,47 +2222,12 @@
       "team": "Rochester Red Wings",
       "text": "Washington Nationals optioned LHP Jackson Kent to Rochester Red Wings."
     },
-    "695445": {
-      "kind": "up",
-      "date": "2026-09-23",
-      "name_en": "Chase Lee",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays recalled RHP Chase Lee from Buffalo Bisons."
-    },
     "669310": {
       "kind": "up",
       "date": "2026-09-23",
       "name_en": "CJ Van Eyk",
       "team": "Toronto Blue Jays",
       "text": "Toronto Blue Jays recalled RHP CJ Van Eyk from Buffalo Bisons."
-    },
-    "681973": {
-      "kind": "up",
-      "date": "2026-09-23",
-      "name_en": "Josh Hendrickson",
-      "team": "Houston Astros",
-      "text": "Houston Astros selected the contract of LHP Josh Hendrickson from Sugar Land Space Cowboys."
-    },
-    "686560": {
-      "kind": "up",
-      "date": "2026-09-23",
-      "name_en": "Gavin Collyer",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled RHP Gavin Collyer from Round Rock Express."
-    },
-    "801725": {
-      "kind": "down",
-      "date": "2026-09-23",
-      "name_en": "Luis De León",
-      "team": "FCL Orioles",
-      "text": "Baltimore Orioles optioned LHP Luis De León to FCL Orioles."
-    },
-    "694346": {
-      "kind": "down",
-      "date": "2026-09-24",
-      "name_en": "Trey Gibson",
-      "team": "FCL Orioles",
-      "text": "Baltimore Orioles optioned RHP Trey Gibson to FCL Orioles."
     },
     "669438": {
       "kind": "down",
@@ -2250,12 +2236,26 @@
       "team": "Durham Bulls",
       "text": "Tampa Bay Rays optioned RHP Mason Englert to Durham Bulls."
     },
-    "656288": {
-      "kind": "down",
+    "681973": {
+      "kind": "up",
       "date": "2026-09-23",
-      "name_en": "Griffin Canning",
-      "team": "ACL Padres",
-      "text": "San Diego Padres optioned RHP Griffin Canning to ACL Padres."
+      "name_en": "Josh Hendrickson",
+      "team": "Houston Astros",
+      "text": "Houston Astros selected the contract of LHP Josh Hendrickson from Sugar Land Space Cowboys."
+    },
+    "694346": {
+      "kind": "down",
+      "date": "2026-09-24",
+      "name_en": "Trey Gibson",
+      "team": "FCL Orioles",
+      "text": "Baltimore Orioles optioned RHP Trey Gibson to FCL Orioles."
+    },
+    "695445": {
+      "kind": "up",
+      "date": "2026-09-23",
+      "name_en": "Chase Lee",
+      "team": "Toronto Blue Jays",
+      "text": "Toronto Blue Jays recalled RHP Chase Lee from Buffalo Bisons."
     },
     "681402": {
       "kind": "up",
@@ -2278,19 +2278,19 @@
       "team": "Seattle Mariners",
       "text": "Seattle Mariners placed SS Brock Rodden on the 10-day injured list retroactive to September 23, 2026. Left patella tendon inflammation."
     },
-    "622694": {
-      "kind": "up",
-      "date": "2026-09-24",
-      "name_en": "Elieser Hernández",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves selected the contract of RHP Elieser Hernández from Gwinnett Stripers."
-    },
     "694462": {
       "kind": "up",
       "date": "2026-09-24",
       "name_en": "Hurston Waldrep",
       "team": "Atlanta Braves",
       "text": "Atlanta Braves recalled RHP Hurston Waldrep from Gwinnett Stripers."
+    },
+    "622491": {
+      "kind": "to_il",
+      "date": "2026-09-24",
+      "name_en": "Luis Castillo",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox placed RHP Luis Castillo on the 15-day injured list. Right shoulder impingement."
     },
     "674444": {
       "kind": "to_il",
@@ -2299,12 +2299,12 @@
       "team": "Kansas City Royals",
       "text": "Kansas City Royals placed RHP Steven Cruz on the paternity list."
     },
-    "622491": {
-      "kind": "to_il",
+    "622694": {
+      "kind": "up",
       "date": "2026-09-24",
-      "name_en": "Luis Castillo",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox placed RHP Luis Castillo on the 15-day injured list. Right shoulder impingement."
+      "name_en": "Elieser Hernández",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves selected the contract of RHP Elieser Hernández from Gwinnett Stripers."
     },
     "660844": {
       "kind": "up",
@@ -2320,12 +2320,12 @@
       "team": "FCL Pirates",
       "text": "Pittsburgh Pirates optioned RHP Khristian Curtis to FCL Pirates."
     },
-    "663765": {
+    "694680": {
       "kind": "up",
       "date": "2026-09-24",
-      "name_en": "Jake Woodford",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays selected the contract of RHP Jake Woodford from Durham Bulls."
+      "name_en": "Trevor Martin",
+      "team": "Los Angeles Angels",
+      "text": "Los Angeles Angels recalled RHP Trevor Martin from Salt Lake Bees."
     },
     "544150": {
       "kind": "up",
@@ -2334,12 +2334,12 @@
       "team": "Baltimore Orioles",
       "text": "Baltimore Orioles selected the contract of RHP Albert Suárez from Norfolk Tides."
     },
-    "694680": {
+    "663765": {
       "kind": "up",
       "date": "2026-09-24",
-      "name_en": "Trevor Martin",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels recalled RHP Trevor Martin from Salt Lake Bees."
+      "name_en": "Jake Woodford",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays selected the contract of RHP Jake Woodford from Durham Bulls."
     },
     "681895": {
       "kind": "up",
