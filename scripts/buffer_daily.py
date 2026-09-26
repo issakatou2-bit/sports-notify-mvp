@@ -379,8 +379,21 @@ KIND_WORDS = {
 }
 
 
-def words(kind: str) -> dict:
-    return KIND_WORDS.get(kind) or KIND_WORDS[DEFAULT_KIND]
+def words(kind: str, record=None) -> dict:
+    result = dict(KIND_WORDS.get(kind) or KIND_WORDS[DEFAULT_KIND])
+    if kind == 'morning_postseason':
+        from race_words import ps_label
+        # Use the verified video's edition, not today's possibly newer JSON.
+        # The generator includes ps_label in the published title.
+        title = (record or {}).get('title', '')
+        if ps_label({}) in title:
+            return result
+        result.update(short=ps_label({'phase': 'postseason'}),
+                      long=ps_label({'phase': 'postseason'}),
+                      lead='各シリーズの勝敗と、勝ち上がりの状況を確認します')
+        if 'ポストシーズン' not in title:
+            result['lead'] = '公開動画で最新の状況を確認できます'
+    return result
 
 
 def first_game_reason(description):
@@ -404,6 +417,40 @@ def first_game_reason(description):
     return ''
 
 
+def headline_game_reason(title, description):
+    """Only reuse a reason from a game that explicitly matches the headline.
+
+    The highlighted game is not necessarily game 1. Match registered subjects
+    in the published text, without inferring rosters or inventing context.
+    """
+    subjects = [aliases for _, aliases in ht.entities()
+                if any(ht.present(alias, title) for alias in aliases)]
+    if not subjects:
+        return ''
+    blocks = re.split(r'(?m)^(?=\d+\.\s+\d{2}/\d{2}\s+\d{2}:\d{2}\s+)', description or '')
+    matches = []
+    for block in blocks:
+        lines = block.splitlines()
+        if not lines or not re.match(r'^\d+\.\s+\d{2}/\d{2}\s+\d{2}:\d{2}\s+', lines[0]):
+            continue
+        game = [lines[0]]
+        for line in lines[1:]:
+            if not line.strip().startswith('・'):
+                break
+            game.append(line.strip())
+        text = '\n'.join(game)
+        score = sum(any(ht.present(alias, text) for alias in aliases) for aliases in subjects)
+        if score:
+            reason = first_game_reason(re.sub(r'^\d+\.', '1.', text))
+            if reason:
+                matches.append((score, reason))
+    if not matches:
+        return ''
+    best = max(score for score, _ in matches)
+    reasons = {reason for score, reason in matches if score == best}
+    return next(iter(reasons)) if len(reasons) == 1 else ''
+
+
 def friendly_lead(title):
     # Only add grammar around facts already stated, preserving uncertainty.
     match = re.fullmatch(r'(.+?)\s+先発予定', title)
@@ -416,10 +463,12 @@ def friendly_lead(title):
 
 
 def caption(service, day, record, kind=DEFAULT_KIND):
-    w = words(kind)
+    w = words(kind, record)
     title = ht.strip_tags(record['title'].split(w['cut'])[0].replace('【MLB】', '').strip())
+    if kind == DEFAULT_KIND:
+        title = re.split(r'｜\d{1,2}/\d{1,2}の注目試合', title)[0].strip()
     lead = friendly_lead(title) if kind == DEFAULT_KIND else title
-    reason = first_game_reason(record.get('description', '')) if kind == DEFAULT_KIND else ''
+    reason = headline_game_reason(title, record.get('description', '')) if kind == DEFAULT_KIND else ''
     details = [lead] + ([reason] if reason and reason != lead else [])
     youtube = 'https://www.youtube.com/watch?v=' + record['video_id']
     stamp = day[5:].replace('-', '/')

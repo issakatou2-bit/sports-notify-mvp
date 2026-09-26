@@ -77,10 +77,27 @@ class BufferTests(unittest.TestCase):
         for service in daily.CHANNELS:
             text=daily.caption(service,'2026-09-14',record)
             self.assertIn('菅野智之が先発予定です。',text)
-            self.assertIn('パドレスは7連勝中。',text)
+            self.assertNotIn('パドレスは7連勝中。',text)
             self.assertNotIn('別の試合',text)
             self.assertNotIn('正念場',text)
             self.assertNotIn('プロフィールの',text)
+
+    def test_caption_matches_headline_to_third_game_not_first(self):
+        record = {**self.record, 'title': 'エンゼルス 菊池雄星、先発予定｜9/23の注目試合【MLB】#Shorts',
+                  'description': '1. 09/23 11:10 パドレス vs ドジャース\n・パドレスには松井裕樹が所属\n\n'
+                                 '3. 09/23 10:40 エンゼルス vs アスレチックス\n・菊池雄星が先発予定\n\n・広告'}
+        for service in daily.CHANNELS:
+            text = daily.caption(service, '2026-09-22', record)
+            self.assertIn('菊池雄星が先発予定。', text)
+            self.assertNotIn('松井裕樹', text)
+            self.assertNotIn('9/23の注目試合', text)
+            self.assertNotIn('広告', text)
+
+    def test_ambiguous_or_unmatched_games_do_not_add_a_reason(self):
+        description = ('1. 09/23 10:00 エンゼルス vs アスレチックス\n・第1試合\n\n'
+                       '2. 09/23 15:00 エンゼルス vs アスレチックス\n・第2試合')
+        self.assertEqual(daily.headline_game_reason('エンゼルス', description), '')
+        self.assertEqual(daily.headline_game_reason('ドジャース', description), '')
 
     def test_caption_missing_description_and_long_reason_remain_safe(self):
         self.assertEqual(daily.first_game_reason('・別枠の宣伝'), '')
@@ -100,6 +117,27 @@ class BufferTests(unittest.TestCase):
     def test_overlong_x_fails_instead_of_bad_post(self):
         with self.assertRaises(ValueError):
             daily.caption('twitter', '2026-09-11', {**self.record,'title':'今'*200})
+
+    def test_postseason_caption_tracks_the_video_not_the_wall_clock(self):
+        for service in daily.CHANNELS:
+            for day, title in [('2026-09-29', 'カブス 0勝1敗｜ポストシーズン'),
+                               ('2026-10-31', 'ドジャース WS制覇｜ポストシーズン')]:
+                text = daily.caption(service, day, {**self.record, 'title': title},
+                                     'morning_postseason')
+                self.assertNotIn('進出争い', text)
+                self.assertNotIn('マジック', text)
+                self.assertIn('勝敗', text)
+            regular = daily.caption(service, '2026-09-26', {**self.record,
+                'title': 'ガーディアンズ M1｜ポストシーズン進出争い'}, 'morning_postseason')
+            self.assertIn('進出争い', regular)
+            self.assertIn('マジック', regular)
+
+    def test_unknown_postseason_title_does_not_invent_a_phase_or_mutate_defaults(self):
+        text = daily.caption('instagram', '2026-11-05', {**self.record,
+            'title': 'シーズンを振り返る'}, 'morning_postseason')
+        self.assertNotIn('マジック', text)
+        self.assertNotIn('各シリーズの勝敗', text)
+        self.assertEqual(daily.KIND_WORDS['morning_postseason']['short'], '進出争い')
 
     def test_rollout_selects_only_verified_channels(self):
         self.assertEqual(daily.selected_services('twitter,instagram'), ('twitter','instagram'))
