@@ -2425,6 +2425,9 @@ def render_race_line(p, comp: dict, line: dict):
             parts.append("出 " + "・".join(mv["out"][:2]))
         d.text((96, y + 30), "昨日から　" + "　".join(parts),
                font=font(30), fill=JP)
+    note_y = y + (100 if mv.get("in") or mv.get("out") else 40)
+    d.text((70, note_y), "現時点の順位です。出場決定ではありません", font=font(30), fill=DIM)
+    d.text((70, note_y + 46), "欧州出場枠は追加枠・カップ戦の結果等で変動", font=font(28), fill=DIM)
     return im
 
 

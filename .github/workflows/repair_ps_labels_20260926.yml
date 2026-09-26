@@ -1,0 +1,55 @@
+name: PS確定表示の修正版を非公開で作る
+on:
+  workflow_dispatch:
+    inputs:
+      day:
+        type: choice
+        description: 元の日付の材料で修正版を作る（既存動画は変更しない）
+        default: '2026-09-25'
+        options: ['2026-09-25', '2026-09-26', '2026-09-24', 'all']
+permissions:
+  contents: write
+concurrency:
+  group: ps-label-repair-20260926
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      PYTHONUNBUFFERED: '1'
+      REPAIR_DAY: ${{ inputs.day }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 制作ツール
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
+      - name: 修正内容と過去材料の検査
+        run: |
+          python scripts/test_ps_clinch_labels.py
+          python scripts/repair_ps_labels_20260926.py prepare --day "$REPAIR_DAY"
+      - name: 音声エンジン
+        run: |
+          docker run -d --rm -p 127.0.0.1:50021:50021 --name ps-repair-voice voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: 音声付きの修正版を制作・復号検査
+        run: python scripts/repair_ps_labels_20260926.py render --day "$REPAIR_DAY"
+      - name: 所有チャンネルへ非公開で保存
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/repair_ps_labels_20260926.py upload --day "$REPAIR_DAY"

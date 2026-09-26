@@ -214,10 +214,19 @@ jobs:
       # **workflow_run で起動したときは inputs が空**なので、
       # 「既定を true にする」だけでは自動実行はいつまでも投稿しない。
       # 手で回したときだけ false にできる形にする。
+      - name: 順位の表示と根拠を検査
+        id: claims
+        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        run: |
+          python scripts/check_rendered_claims.py --kind soccer_race \
+            --input data/soccer_race.json --out build/race_rendered_claims.json
+
       - name: Upload to YouTube
+        id: upload
         if: >-
           steps.gate.outputs.count != '0' &&
           steps.sanity.outcome == 'success' &&
+          steps.claims.outcome == 'success' &&
           (github.event_name != 'workflow_dispatch' ||
            inputs.upload == 'true')
         continue-on-error: true
@@ -243,6 +252,7 @@ jobs:
       # 投稿した回だけ記録する（作っただけの回で消費しない）。
       - name: Remember the round
         if: >-
+          steps.upload.outcome == 'success' &&
           steps.gate.outputs.count != '0' &&
           steps.gate.outputs.round != '' &&
           (github.event_name != 'workflow_dispatch' ||
