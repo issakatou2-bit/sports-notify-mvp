@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-22T06:15:49.564902+00:00",
+  "updated_at": "2026-09-26T06:17:58.365299+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
@@ -8,7 +8,7 @@
       "player_id": "808967",
       "items": [
         {
-          "value": 0.8659217877094972,
+          "value": 0.8702702702702703,
           "shown": "0.87",
           "at": 2,
           "of": 45,
@@ -18,7 +18,7 @@
             "shown": "0.80"
           },
           "below": {
-            "name": "Cam Schlittler",
+            "name": "Drew Rasmussen",
             "shown": "0.91"
           },
           "key": "whip",
@@ -33,15 +33,15 @@
       "player_id": "808959",
       "items": [
         {
-          "value": 0.5893536121673004,
-          "shown": "58.9%",
+          "value": 0.5882352941176471,
+          "shown": "58.8%",
           "at": 1,
-          "of": 135,
+          "of": 134,
           "ties": 1,
           "above": null,
           "below": {
             "name": "Kyle Schwarber",
-            "shown": "53.7%"
+            "shown": "53.0%"
           },
           "key": "tto",
           "label": "アダム・ダン率",
@@ -51,15 +51,15 @@
           "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
         },
         {
-          "value": 0.3574144486692015,
-          "shown": "35.7%",
+          "value": 0.3547794117647059,
+          "shown": "35.5%",
           "at": 1,
-          "of": 135,
+          "of": 134,
           "ties": 1,
           "above": null,
           "below": {
             "name": "Colson Montgomery",
-            "shown": "35.1%"
+            "shown": "35.4%"
           },
           "key": "k_rate",
           "label": "三振率",
@@ -68,24 +68,44 @@
           "side": "top"
         },
         {
-          "value": 0.17110266159695817,
-          "shown": "17.1%",
+          "value": 0.16911764705882354,
+          "shown": "16.9%",
           "at": 1,
-          "of": 135,
+          "of": 134,
           "ties": 1,
           "above": null,
           "below": {
-            "name": "Jake Bauers",
-            "shown": "16.8%"
+            "name": "Mike Trout",
+            "shown": "16.9%"
           },
           "key": "bb_rate",
           "label": "四球率",
           "note": "四球で終わった打席の割合",
           "group": "hitting",
           "side": "top"
+        },
+        {
+          "value": 0.274,
+          "shown": ".274",
+          "at": 4,
+          "of": 134,
+          "ties": 1,
+          "above": {
+            "name": "Hunter Goodman",
+            "shown": ".277"
+          },
+          "below": {
+            "name": "Kyle Schwarber",
+            "shown": ".272"
+          },
+          "key": "iso",
+          "label": "ISO",
+          "note": "長打率から打率を引いた、単打を除いた長打力",
+          "group": "hitting",
+          "side": "top"
         }
       ],
-      "mendoza": "打率.202。メンドーサ・ライン（.200）のすぐ上"
+      "mendoza": "打率.209。メンドーサ・ライン（.200）のすぐ上"
     }
   }
 }

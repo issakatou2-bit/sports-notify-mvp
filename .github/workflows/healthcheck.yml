@@ -87,6 +87,9 @@ jobs:
 
       - name: Backfill lost records
         continue-on-error: true
+        # RSSが404の日に、アップロード一覧で取り直すための鍵（1回1ユニット）。
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python scripts/backfill_records.py --write
 
       # 立場の違う5人が、昨日出したものを見て指摘する。

@@ -371,6 +371,178 @@
           "out": 228
         }
       }
+    },
+    "2026-09-23": {
+      "calls": 21,
+      "in": 29447,
+      "out": 14045,
+      "usd": 0.13578,
+      "by": {
+        "buzz": {
+          "calls": 1,
+          "in": 1026,
+          "out": 172
+        },
+        "voices": {
+          "calls": 2,
+          "in": 1334,
+          "out": 521
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 1692,
+          "out": 803
+        },
+        "sanity": {
+          "calls": 6,
+          "in": 11195,
+          "out": 2368
+        },
+        "localize": {
+          "calls": 6,
+          "in": 7493,
+          "out": 3584
+        },
+        "dialogue": {
+          "calls": 1,
+          "in": 4412,
+          "out": 6339
+        },
+        "narration": {
+          "calls": 3,
+          "in": 2295,
+          "out": 258
+        }
+      }
+    },
+    "2026-09-24": {
+      "calls": 20,
+      "in": 29185,
+      "out": 10242,
+      "usd": 0.09384,
+      "by": {
+        "buzz": {
+          "calls": 1,
+          "in": 964,
+          "out": 293
+        },
+        "voices": {
+          "calls": 1,
+          "in": 995,
+          "out": 743
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 1756,
+          "out": 786
+        },
+        "sanity": {
+          "calls": 6,
+          "in": 11202,
+          "out": 2726
+        },
+        "localize": {
+          "calls": 6,
+          "in": 7530,
+          "out": 3600
+        },
+        "dialogue": {
+          "calls": 1,
+          "in": 4344,
+          "out": 1820
+        },
+        "narration": {
+          "calls": 3,
+          "in": 2394,
+          "out": 274
+        }
+      }
+    },
+    "2026-09-25": {
+      "calls": 21,
+      "in": 34297,
+      "out": 14052,
+      "usd": 0.14624,
+      "by": {
+        "buzz": {
+          "calls": 1,
+          "in": 869,
+          "out": 231
+        },
+        "voices": {
+          "calls": 1,
+          "in": 728,
+          "out": 364
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 1746,
+          "out": 737
+        },
+        "sanity": {
+          "calls": 6,
+          "in": 11019,
+          "out": 2573
+        },
+        "localize": {
+          "calls": 6,
+          "in": 7444,
+          "out": 3620
+        },
+        "dialogue": {
+          "calls": 2,
+          "in": 10214,
+          "out": 6292
+        },
+        "narration": {
+          "calls": 3,
+          "in": 2277,
+          "out": 235
+        }
+      }
+    },
+    "2026-09-26": {
+      "calls": 20,
+      "in": 28405,
+      "out": 9756,
+      "usd": 0.09142,
+      "by": {
+        "buzz": {
+          "calls": 1,
+          "in": 718,
+          "out": 274
+        },
+        "voices": {
+          "calls": 1,
+          "in": 695,
+          "out": 311
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 1687,
+          "out": 722
+        },
+        "sanity": {
+          "calls": 6,
+          "in": 11155,
+          "out": 2617
+        },
+        "localize": {
+          "calls": 6,
+          "in": 7481,
+          "out": 3586
+        },
+        "dialogue": {
+          "calls": 1,
+          "in": 4308,
+          "out": 1988
+        },
+        "narration": {
+          "calls": 3,
+          "in": 2361,
+          "out": 258
+        }
+      }
     }
   }
 }

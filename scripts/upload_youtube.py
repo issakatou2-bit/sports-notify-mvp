@@ -22,9 +22,10 @@ import json
 import os
 import pathlib
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import post_common  # noqa: E402
+import race_words as _rw  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
 
 try:
@@ -1067,6 +1068,32 @@ def top_talked_team(path: str = "data/local_buzz.json") -> str:
     return top.get("name") or ""
 
 
+def us_and_jp_day(us_date: str) -> str:
+    """米国の試合日を「米国9月20日（日本時間9月21日）」の形に。
+
+    MLBの試合は米国東部の11時より前には始まらないので、日本時間では
+    必ず翌日になる。
+    """
+    try:
+        d = datetime.strptime(us_date or "", "%Y-%m-%d")
+    except ValueError:
+        return ""
+    jp = d + timedelta(days=1)
+    return (f"米国{d.month}月{d.day}日（日本時間{jp.month}月{jp.day}日）")
+
+
+def jst_stamp(utc_text: str) -> str:
+    """UTCの時刻を「9月22日15時」の形に。数字がいつの値かを添えるために。"""
+    try:
+        t = datetime.fromisoformat((utc_text or "").replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    if t.tzinfo is None:
+        return ""
+    t = t.astimezone(timezone(timedelta(hours=9)))
+    return f"{t.month}月{t.day}日{t.hour}時"
+
+
 def buzz_top(path: str) -> dict:
     """
     その日いちばん見られたMLB公式ハイライト。無ければ空。
@@ -1076,15 +1103,20 @@ def buzz_top(path: str) -> dict:
     表記は日本語にする(mlb_buzz.json は英語の対戦名で持っている)。
     """
     try:
-        vids = json.loads(pathlib.Path(path).read_text(
-            encoding="utf-8")).get("videos") or []
+        data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return {}
+    vids = data.get("videos") or []
     if not vids:
         return {}
     v = vids[0]
     res = v.get("result") or {}
-    out = {"views": v.get("views")}
+    # 日付は3つあって、どれも違う。**更新した日を試合の日として書かない。**
+    out = {"views": v.get("views"),
+           "game_date": v.get("game_date"),        # 米国の日付
+           "video_id": v.get("video_id"),
+           "published_at": v.get("published_at"),  # 元動画の公開(UTC)
+           "fetched_at": data.get("updated_at")}   # 再生回数を取った時刻(UTC)
     if res.get("away_jp") and res.get("home_jp"):
         out["matchup_jp"] = f"{res['away_jp']} vs {res['home_jp']}"
         if res.get("away_score") is not None:
@@ -1147,6 +1179,20 @@ def _postseason_data(path: str = "data/postseason.json") -> dict:
         return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return {}
+
+
+def morning_who(players: list, n: int = 3) -> tuple:
+    """朝の成績ショートの主役の並べ方。**題と説明文で同じものを使う。**
+
+    9/22は岡本和真1人だけだったのに、題が「岡本和真 ほか｜…ランキング」、
+    説明が「岡本和真ほか。」になった。題と説明の2か所で、どちらも人数を
+    見ずに「ほか」を付けていた。
+
+    返り値: (先頭に出す名前, 残りがいるか, 名前のある人数)
+    """
+    names = [p.get("name") for p in (players or []) if p.get("name")]
+    shown = names[:n]
+    return shown, len(names) > len(shown), len(names)
 
 
 def weekly_jp_names(path: str = "data/weekly_ops.json", n: int = 3) -> str:
@@ -1269,11 +1315,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         if ch:
             lead = ch[0]["text"].replace(" が", "が")
             title = (f"【MLB】{lead}｜{date_label} "
-                     f"ポストシーズン進出争い #Shorts")
+                     f"{_rw.ps_label(ps)} #Shorts")
         else:
             head = ps.get("headline") or "進出争い"
             title = (f"【MLB】{head}｜{date_label} "
-                     f"ポストシーズン進出争い #Shorts")
+                     f"{_rw.ps_label(ps)} #Shorts")
     elif kind == "morning" and morning_mode == "voices":
         # コメント欄の回。何の試合かがタイトルで分かるようにする。
         # 「現地の声」だけでは、どの試合の話なのか見当が付かない。
@@ -1285,7 +1331,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 「ファンの反応」は毎日同じ言い方になるが、件数はその日だけの数字で、
         # しかも「何を言ったらそんなに返ってきたのか」が残る。
         n = thread_replies()
-        tail = f"｜返信{n}件ついたコメント {date_label} #Shorts" if n else             f"｜{date_label} 最も見られたハイライトのコメント欄 #Shorts"
+        # 日付は「更新した日」。付けないと試合の日に読める
+        # （9/22の回の試合は米国9/20、日本9/21だった）。
+        tail = (f"｜返信{n}件ついたコメント {date_label}更新 #Shorts" if n else
+                f"｜{date_label}更新 最も見られたハイライトのコメント欄 #Shorts")
         # コメントで名前が挙がった日本人選手がいれば、先頭へ。
         # 所属しているだけの日は出さない(voiced_japanese の説明を参照)。
         who = "・".join(voiced_japanese()[:2])
@@ -1334,12 +1383,18 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  f"｜{date_label} 再生回数と話題のチーム #Shorts")
     elif kind == "morning":
         # 検索されるのは選手名なので、貢献度の高い順に先頭へ置く。
-        # 「成績まとめ」だけだと淡々と読み上げるだけの動画に見えるので、
-        # 順位をつけていることをタイトルにも出す。
-        names = [p.get("name") for p in (morning_players or [])][:3]
-        who = "・".join(n for n in names if n)
-        if who:
-            title = (f"【MLB】{who} ほか｜{date_label} 日本人選手 "
+        # 2人以上の日は、順位をつけていることを題にも出す。
+        # **1人の日は並べていないので「ほか」も「ランキング」も言わない。**
+        shown, more, count = morning_who(morning_players)
+        if count == 1:
+            p = next(x for x in morning_players if x.get("name"))
+            team = f"{p['team_jp']} " if p.get("team_jp") else ""
+            line = f"、{p['headline']}" if p.get("headline") else ""
+            title = (f"【MLB】{team}{shown[0]}{line}｜{date_label}の"
+                     f"日本人選手 #Shorts")
+        elif shown:
+            who = "・".join(shown) + (" ほか" if more else "")
+            title = (f"【MLB】{who}｜{date_label} 日本人選手 "
                      f"勝利貢献スコア ランキング #Shorts")
         else:
             title = (f"【MLB】{date_label} 日本人選手 "
@@ -1528,7 +1583,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     elif kind == "morning" and morning_mode == "postseason":
         ps = _postseason_data()
         ch = ps.get("changes") or []
-        lines = ["MLBのポストシーズン進出争いを、毎日その日の数字で。", ""]
+        lines = (["MLBのポストシーズンを、シリーズごとの勝敗で毎日。", ""]
+                 if ps.get("phase") == "postseason" else
+                 ["MLBのポストシーズン進出争いを、毎日その日の数字で。", ""])
         if ch:
             lines.append("きょう動いたところ:")
             lines += ["・" + c["text"] for c in ch[:5]]
@@ -1547,14 +1604,25 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                   "入れ替わることがあります。", ""]
     elif kind == "morning" and morning_mode == "voices":
         top = buzz_top(buzz_path) or {}
-        lines = [f"{date_label}のメジャーリーグで、"
-                 "現地で最も見られたハイライトのコメント欄を紹介します。", ""]
+        # **更新した日・試合の日・元動画は別。**以前は
+        # 「{date_label}のメジャーリーグで」と書き、更新日を試合日に見せて
+        # いた（9/22の回は米国9/20の試合）。「現地で最も見られた」も、
+        # 集めた範囲の中での1位を言い過ぎていた（Codexの内容点検）。
+        lines = [f"{date_label}更新。MLB公式ハイライトのうち、取得した時点で"
+                 "いちばん再生されていた動画のコメント欄を紹介します。", ""]
         if top.get("matchup_jp"):
             lines.append(f"・試合: {top['matchup_jp']}")
+        game_day = us_and_jp_day(top.get("game_date"))
+        if game_day:
+            lines.append(f"・試合日: {game_day}")
         if top.get("score_line"):
             lines.append(f"・結果: {top['score_line']}")
+        if top.get("video_id"):
+            lines.append(f"・元動画: https://youtu.be/{top['video_id']}")
         if top.get("views"):
-            lines.append(f"・MLB公式ハイライトの再生回数: {top['views']:,}回")
+            when = jst_stamp(top.get("fetched_at"))
+            lines.append(f"・MLB公式ハイライトの再生回数: {top['views']:,}回"
+                         + (f"（{when}時点）" if when else ""))
         n = thread_replies()
         if n:
             lines.append(f"・最も返信の付いたコメント: 返信{n}件"
@@ -1580,13 +1648,22 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  "数字はいずれも公開されているものです。"
                  "「現地の声」は翻訳であり、当チャンネルの見解ではありません。", ""]
     elif kind == "morning":
-        who = "、".join(p.get("name", "") for p in (morning_players or [])[:3])
-        head = f"{who}ほか。" if who else ""
-        lines = [f"{head}{date_label}のメジャーリーグから、"
-                 "日本人選手の成績をまとめました。", ""]
+        shown, more, count = morning_who(morning_players)
+        if count == 1:
+            lines = [f"{date_label}のメジャーリーグから、"
+                     f"{shown[0]}の成績です。", ""]
+        else:
+            head = ("、".join(shown) + ("ほか" if more else "") + "。"
+                    if shown else "")
+            lines = [f"{head}{date_label}のメジャーリーグから、"
+                     "日本人選手の成績をまとめました。", ""]
         for p in (morning_players or [])[:8]:
             lines.append(f"・{p.get('name')} … {p.get('headline')}")
-        lines += ["", "数字はMLB公式データをそのまま集計したものです。", ""]
+        # **公式なのは成績だけ。**点数はコレスポが付けている。
+        # 以前は「MLB公式データをそのまま集計」と書き、点数まで公式に
+        # 見えていた（9/22 Codexの内容点検で指摘）。
+        lines += ["", "成績はMLB公式データです。動画内の「勝利貢献スコア」は"
+                  "コレスポ独自の指標で、公式の記録ではありません。", ""]
     elif kind == "verdict":
         lines = [
             "コレスポが先週「◯連勝中だから注目」として取り上げた試合が、"

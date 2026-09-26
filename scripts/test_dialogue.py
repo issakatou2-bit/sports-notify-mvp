@@ -10,21 +10,12 @@
    この一式を足した理由。**通信はしない**（_get を差し替える）。
 """
 import sys
+from checks_report import check, done  # noqa: E402
 
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, "scripts")
 sys.path.insert(0, ".")
 import generate_dialogue as g
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print(f"{'ok ' if ok else 'NG '} {label}: {got!r}" +
-          ("" if ok else f" (期待 {want!r})"))
 
 
 def hit(**kw):
@@ -156,26 +147,18 @@ import generate_dialogue as _gd  # noqa: E402
 import jp_absence as _ja  # noqa: E402
 
 
-def _c(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
-
-
-_c("長編: 投手には出さない（中4日で回る）",
+check("長編: 投手には出さない（中4日で回る）",
    "pitching" in str(_gd.form.__doc__ or "") or True, True)
 # 実際のふるまいはAPIに依るので、除外の条件そのものを見る。
 _src = (_pl.Path(_gd.__file__).read_text(encoding="utf-8")
         if hasattr(_gd, "__file__") else "")
-_c("長編: group が pitching なら back を作らない",
+check("長編: group が pitching なら back を作らない",
    'if group == "pitching":' in _src, True)
-_c("成績の回: 投手を名簿から外している",
+check("成績の回: 投手を名簿から外している",
    'if info.get("type") == "pitcher":' in
    _pl.Path(_ja.__file__).read_text(encoding="utf-8"), True)
-_c("成績の回: 3日未満は見ない", _ja.MIN_GAP, 3)
-_c("成績の回: 10日超は見ない", _ja.MAX_GAP, 10)
+check("成績の回: 3日未満は見ない", _ja.MIN_GAP, 3)
+check("成績の回: 10日超は見ない", _ja.MAX_GAP, 10)
 
 print()
 print("=== 復帰は公式の記録だけで言う ===")
@@ -242,6 +225,4 @@ check("関係ない記録は空",
 # マイナー同士の動きは、そもそも見ない。
 check("マイナー同士は対象外",
       mtx._is_major({"toTeam": {"id": 342}, "fromTeam": {"id": 494}}), False)
-
-print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
-sys.exit(1 if fails else 0)
+sys.exit(done())

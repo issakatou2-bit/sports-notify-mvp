@@ -64,6 +64,10 @@ MODEL = "claude-haiku-4-5-20251001"
 # ショート動画(60秒以内)に収まる範囲で、情報量も確保する。
 # 1試合75文字前後 × 3試合 + 前後 で、1.3倍速で40秒前後になる。
 MAX_GAMES = 3
+# 注目試合が無くて原稿を作らなかった日に置く印。後の段がこれを見て、
+# 「出し損ねた」ではなく「出さなかった」と分かる。
+# public/ に置くとサイトへそのまま公開されるので、build/ に置く。
+SKIPPED_PATH = pathlib.Path("build") / "narration_skipped.txt"
 
 # 競技の見分けは notability_engine に寄せる。ここでコードだけを並べて
 # いたが、データに入っているのは日本語のリーグ名なので一度も一致せず、
@@ -945,9 +949,18 @@ def main():
             note = _br.venue_line(rates, venue) if venue else ""
             if note:
                 g["base_rate_note"] = note
+    # **見送ったことを残す。**原稿が無い理由は2つあって、ここで
+    # 「注目試合が無い」と決めた場合と、作るのに失敗した場合。後の段は
+    # 原稿の有無しか見られないので、9/21は見送りを「出し損ね」として
+    # 実行全体を赤にした。決めたのはここなので、ここで印を置く。
+    skipped = SKIPPED_PATH
     if not games:
         print("[info] 注目試合が無いため、ナレーション原稿は作りません")
+        skipped.parent.mkdir(parents=True, exist_ok=True)
+        skipped.write_text("注目に値する試合が無い日", encoding="utf-8")
         return
+    if skipped.exists():
+        skipped.unlink()
 
     date_label = (games[0].get("start_time_jst") or "").split(" ")[0]
     news = (_load(args.news, {}).get("news") or [])[:1]

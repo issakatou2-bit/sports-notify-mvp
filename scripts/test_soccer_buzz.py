@@ -17,19 +17,10 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 import soccer_buzz as sb  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, section, done  # noqa: E402
 
 
-print("--- 対戦カードの取り出し ---")
+section("対戦カードの取り出し")
 check("スコア区切り", sb.clubs("Liverpool 2-1 Atletico Madrid | Highlights"),
       ["Liverpool", "Atletico Madrid"])
 check("vs 区切り", sb.clubs("Real Madrid vs Barcelona | LaLiga Highlights"),
@@ -45,16 +36,14 @@ check("括弧の前で切る",
       sb.clubs("Inter vs Milan (Serie A Highlights)"),
       ["FC Internazionale Milano", "AC Milan"])
 
-print()
-print("--- 取れないときは空 ---")
+section("取れないときは空")
 check("記者会見", sb.clubs("Press conference: Guardiola on the derby"), [])
 check("特集", sb.clubs("Top 10 goals of the month"), [])
 check("空文字", sb.clubs(""), [])
 check("クラブが3つ以上に割れる形",
       sb.clubs("A vs B vs C | Highlights"), [])
 
-print()
-print("--- 日本人選手（名簿から引く） ---")
+section("日本人選手（名簿から引く）")
 check("リバプールの試合", sb.jp_in("Liverpool 2-1 Atletico Madrid | Highlights"),
       ["遠藤航"])
 check("2クラブに日本人がいる試合",
@@ -63,8 +52,7 @@ check("2クラブに日本人がいる試合",
 check("いない試合", sb.jp_in("Real Madrid vs Barcelona | Highlights"), [])
 check("カードが取れない題", sb.jp_in("Press conference"), [])
 
-print()
-print("--- ハイライトかどうか ---")
+section("ハイライトかどうか")
 # recent() の中で使っている語。ここが緩すぎると記者会見を拾い、
 # 厳しすぎるとリーグごとの言い回しを落とす。
 for title, want in (
@@ -77,8 +65,7 @@ for title, want in (
     got = any(w in title.lower() for w in sb.HIGHLIGHT_WORDS)
     check(title[:40], got, want)
 
-print()
-print("--- 公式チャンネルの一覧 ---")
+section("公式チャンネルの一覧")
 check("大会が5つある", len(sb.OFFICIAL), 5)
 # ハンドル名は候補を順に試す形にしてある。1つ書いて外すと、
 # その大会が丸ごと消えたまま毎日「0本」と出る（9/10のCLがそれ）。
@@ -91,8 +78,7 @@ check("チャンピオンズリーグに候補が2つ以上ある",
 check("プレミアリーグは入れていない",
       any("premier" in h.lower() for h in _handles), False)
 
-print()
-print("--- 試合以外を外す ---")
+section("試合以外を外す")
 # 9/10に実際に拾ったもの。公式はトップチームの試合以外もたくさん出す。
 for title, want in (
         ("Ordenamos los 15 GOLES de AUBAMEYANG en LaLiga", True),
@@ -104,8 +90,7 @@ for title, want in (
     got = any(w in title.lower() for w in sb.NOT_MATCH)
     check(title[:44], got, want)
 
-print()
-print("--- セリエAの形（9/10に11本落とした） ---")
+section("セリエAの形（9/10に11本落とした）")
 # 公式の題は「見出し | 対戦カード | HIGHLIGHTS」の順で、
 # しかもハイフンにスペースが無い。先頭だけ見ていたので1本も
 # 拾えなかった。
@@ -123,13 +108,10 @@ check("Saint-Etienne を割らない",
       sb.clubs("AS Saint-Etienne vs Lyon | Highlights"),
       ["AS Saint-Etienne", "Lyon"])
 
-print()
-print("--- 略記の読み替え ---")
+section("略記の読み替え")
 # club_name_jp は "milan" を意図して持っていない（"Inter Milan" と
 # 部分一致するため "acmilan" で登録してある）。公式は MILAN と書く。
 check("MILAN は ACミラン", sb.canon("MILAN"), "AC Milan")
 check("INTER はインテル", sb.canon("INTER"), "FC Internazionale Milano")
 check("知らない名前はそのまま", sb.canon("Sevilla"), "Sevilla")
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

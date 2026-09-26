@@ -21,18 +21,10 @@ import subprocess
 import sys
 import tempfile
 from datetime import datetime, timedelta, timezone
+from checks_report import check, section, done  # noqa: E402
 
 HERE = pathlib.Path(__file__).resolve().parent
 JST = timezone(timedelta(hours=9))
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
 
 
 def run(record: dict, kind: str = "daily", allow_missing=False) -> int:
@@ -60,17 +52,15 @@ def rec(day_offset: int, hours_ago: float, kind: str = "daily") -> dict:
                          "published_at": at.isoformat()}}}
 
 
-print("--- 今日の記録があれば緑 ---")
+section("今日の記録があれば緑")
 check("今日出した", run(rec(0, 1.0)), 0)
 
-print()
-print("--- 記録が無ければ赤 ---")
+section("記録が無ければ赤")
 check("1本も出ていない", run({}), 1)
 check("別の区分しかない", run(rec(0, 1.0, kind="morning")), 1)
 check("--allow-missing なら赤くしない", run({}, allow_missing=True), 0)
 
-print()
-print("--- 日をまたいだ実行 ---")
+section("日をまたいだ実行")
 # **9/13の19時の枠がJST 0時台に走った日の形。**
 # 前日の日付で記録されているが、出したのはついさっき。
 check("前日の記録でも、1時間前に出していれば緑", run(rec(-1, 1.0)), 0)
@@ -80,8 +70,7 @@ check("4時間前でも緑", run(rec(-1, 4.0)), 0)
 check("6時間前は赤（前日の分として扱わない）", run(rec(-1, 6.0)), 1)
 check("前日の朝に出したもの（20時間前）は赤", run(rec(-1, 20.0)), 1)
 
-print()
-print("--- 壊れた記録でも落ちない ---")
+section("壊れた記録でも落ちない")
 check("時刻が読めない",
       run({"daily": {(datetime.now(JST) - timedelta(days=1))
                      .strftime("%Y-%m-%d"):
@@ -93,12 +82,9 @@ check("動画IDが無い",
       run({"daily": {datetime.now(JST).strftime("%Y-%m-%d"):
                      {"title": "IDなし"}}}), 1)
 
-print()
-print("--- 幅は定数で持つ ---")
+section("幅は定数で持つ")
 sys.path.insert(0, str(HERE))
 import verify_published as vp  # noqa: E402
 check("RECENT_HOURS がある", isinstance(vp.RECENT_HOURS, (int, float)), True)
 check("5時間", vp.RECENT_HOURS, 5)
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

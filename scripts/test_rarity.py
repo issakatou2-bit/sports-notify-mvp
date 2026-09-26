@@ -19,27 +19,10 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 import rarity as ra  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, near, section, done  # noqa: E402
 
 
-def near(label, got, want, tol=0.001):
-    global fails
-    ok = got is not None and abs(got - want) <= tol
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r±%s)" % (want, tol)))
-
-
-print("--- 指標の計算（村上宗隆 2026の実データ） ---")
+section("指標の計算（村上宗隆 2026の実データ）")
 # 486打席 31本 82四球 170三振 打率.208 長打率.475
 MURAKAMI = {"plateAppearances": 486, "atBats": 400, "hits": 83,
             "homeRuns": 31, "baseOnBalls": 82, "strikeOuts": 170,
@@ -52,8 +35,7 @@ near("四球三振比", ra.bb_per_k(MURAKAMI), 82 / 170)
 near("三振率", ra.k_rate(MURAKAMI), 170 / 486)
 near("四球率", ra.bb_rate(MURAKAMI), 82 / 486)
 
-print()
-print("--- 投手の指標 ---")
+section("投手の指標")
 # 7回1失点3被安打1四球10奪三振の登板を、季で 150.1回 に見立てる
 PITCHER = {"inningsPitched": "150.1", "strikeOuts": 180, "hits": 120,
            "baseOnBalls": 40, "earnedRuns": 50, "avg": ".185"}
@@ -67,8 +49,7 @@ check("回の小数を取り違えない（150.1回は451アウト）",
       ra._outs("150.1"), 451)
 check("6.2回は20アウト", ra._outs("6.2"), 20)
 
-print()
-print("--- 欠けても落ちない ---")
+section("欠けても落ちない")
 check("空の成績", ra.tto({}), None)
 check("打席0", ra.tto({"plateAppearances": 0}), None)
 check("長打率が無い", ra.iso({"avg": ".250"}), None)
@@ -83,15 +64,13 @@ check("回が読めない文字列", ra.k_per_9({"inningsPitched": "-",
 check("BABIPの分母が0", ra.babip({"atBats": 3, "strikeOuts": 3,
                                 "homeRuns": 0, "hits": 0}), None)
 
-print()
-print("--- 出し方 ---")
+section("出し方")
 check("割合は小数1桁のパーセント", ra.fmt(0.582, "pct"), "58.2%")
 check("打率の形は先頭の0を落とす", ra.fmt(0.267, "avg3"), ".267")
 check("比は小数2桁", ra.fmt(1.064, "ratio"), "1.06")
 check("計算できない値は空", ra.fmt(None, "pct"), "")
 
-print()
-print("--- リーグの中での位置 ---")
+section("リーグの中での位置")
 ROWS = [
     {"player_id": "1", "name": "A", "stat": {"plateAppearances": 500,
      "homeRuns": 40, "baseOnBalls": 80, "strikeOuts": 180}},   # 60.0%
@@ -124,8 +103,7 @@ PROWS = [
 ]
 check("WHIPは小さいほうが1位", ra.rank(PROWS, W, "p1")["at"], 1)
 
-print()
-print("--- 話にする価値があるものだけ ---")
+section("話にする価値があるものだけ")
 # 139人中70位の指標を並べても「ふつう」という意味しかない。
 _many = [{"player_id": str(i), "name": "P%d" % i,
           "stat": {"plateAppearances": 500, "homeRuns": 10,
@@ -159,8 +137,7 @@ check("材料が無ければ空", ra.notable({}, "1", {}), [])
 # 「◯位タイ」で、極端であることの証明にならない。
 # 検査データで四球率が全員同じだったとき、それが「下から1番目」
 # として拾われて上位の指標より先に並んだ。
-print()
-print("--- 同じ値が並ぶ指標は扱わない ---")
+section("同じ値が並ぶ指標は扱わない")
 _same = [{"player_id": str(i), "name": "P%d" % i,
           "stat": {"plateAppearances": 500, "homeRuns": 10,
                    "baseOnBalls": 40, "strikeOuts": 100}}
@@ -172,8 +149,7 @@ check("全員同じ値なら何も出さない",
 _r2 = ra.rank(ROWS, M, "1")
 check("値がばらけていればタイは1人", _r2["ties"], 1)
 
-print()
-print("--- 言い方 ---")
+section("言い方")
 check("上位", ra.phrase({"side": "top", "label": "アダム・ダン率",
                        "shown": "58.2%", "at": 1, "of": 139}),
       "アダム・ダン率 58.2%（139人中1位）")
@@ -183,8 +159,7 @@ check("下位は下から何番目かも言う",
       "BABIP .210（139人中139位＝下から1番目）")
 check("材料が無ければ空", ra.phrase({}), "")
 
-print()
-print("--- 呼び名の由来になっている選手との比較 ---")
+section("呼び名の由来になっている選手との比較")
 # **超えたときだけ言う。**比較そのものが話題になるのは、
 # 超えたときだけ。
 _mine = {"value": 0.582, "shown": "58.2%"}
@@ -206,8 +181,7 @@ check("小さいほうが良い指標の向き",
                           "season": "2010"}),
       "X本人の最高（2010年 1.10）を上回っている")
 
-print()
-print("--- メンドーサ・ラインは打者だけ ---")
+section("メンドーサ・ラインは打者だけ")
 # **投手の avg は被打率。**打率として扱うと意味が逆になる。
 # 作った直後に山本由伸へ「打率.185。メンドーサ・ラインのすぐ下」
 # が付いた。被打率.185は良い投球。
@@ -215,6 +189,4 @@ src = (HERE / "rarity.py").read_text(encoding="utf-8")
 check("打者に限る条件が入っている",
       'if group == "hitting" else None' in src, True)
 check("線は.200", ra.MENDOZA_LINE, 0.200)
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

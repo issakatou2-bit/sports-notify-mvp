@@ -22,6 +22,7 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 import notability_engine as ne  # noqa: E402
+from checks_report import check, note, section, done, passed, fail  # noqa: E402
 
 # (APIが返しうる正式名称, 期待する日本人選手)
 CASES = [
@@ -82,37 +83,33 @@ NEGATIVE = [
     "FC Nantes", "Toulouse FC", "Stade Brestois 29",
 ]
 
-fails = 0
+section("クラブ名から日本人選手を引く")
+missed = 0
 for api_name, expected in CASES:
     got = [p["name_jp"] for p in ne.jp_players_for_club(api_name)]
-    ok = sorted(got) == sorted(expected)
-    if not ok:
-        fails += 1
-    print(f"{'ok ' if ok else 'NG '} {api_name:32} -> {got}"
-          + ("" if ok else f"   expected {expected}"))
+    if not check(api_name, sorted(got), sorted(expected)):
+        missed += 1
 
-print()
+section("名簿にいないクラブで誤爆しない")
 for api_name in NEGATIVE:
-    got = [p["name_jp"] for p in ne.jp_players_for_club(api_name)]
-    if got:
-        fails += 1
-        print(f"NG  誤爆: {api_name} -> {got}")
-print(f"誤爆チェック {len(NEGATIVE)}クラブ: "
-      f"{'問題なし' if not any(ne.jp_players_for_club(n) for n in NEGATIVE) else '誤爆あり'}")
+    check("誤爆しない: " + api_name,
+          [p["name_jp"] for p in ne.jp_players_for_club(api_name)], [])
 
 # 完全一致に戻したら何件当たるか。この差が、この照合が要る理由そのもの。
-old = sum(1 for n, _ in CASES if n in {p["team_en"] for p in ne.JP_PLAYERS_SOCCER})
-print(f"\n完全一致だった場合の的中: {old}/{len(CASES)} クラブ")
-print(f"正規化照合での的中: {len(CASES) - fails}/{len(CASES)} クラブ")
+# **合わなかったときだけ**、どれだけ落ちたかを添える。
+if missed:
+    old = sum(1 for n, _ in CASES
+              if n in {p["team_en"] for p in ne.JP_PLAYERS_SOCCER})
+    note("正規化照合での的中 %d/%d（完全一致なら %d/%d）"
+         % (len(CASES) - missed, len(CASES), old, len(CASES)))
 
 # 名簿の全員がいずれかのケースで拾えているか
 covered = set()
 for api_name, _ in CASES:
     covered.update(p["name_jp"] for p in ne.jp_players_for_club(api_name))
-missing = [p["name_jp"] for p in ne.JP_PLAYERS_SOCCER if p["name_jp"] not in covered]
-print("未カバーの選手:", missing or "なし")
-if missing:
-    fails += 1
+check("名簿の全員がどこかのクラブで拾える",
+      [p["name_jp"] for p in ne.JP_PLAYERS_SOCCER
+       if p["name_jp"] not in covered], [])
 
 
 # ---------------------------------------------------------------------------
@@ -172,22 +169,15 @@ NAME_CASES = [
     ("Some Unknown FC", "Some Unknown FC"),
 ]
 
-print()
+section("クラブ名の日本語表記")
 for api_name, want in NAME_CASES:
-    got = ne.club_name_jp(api_name)
-    ok = got == want
-    if not ok:
-        fails += 1
-    print(f"{'ok ' if ok else 'NG '} {api_name:28} -> {got}"
-          + ("" if ok else f"  (期待 {want})"))
+    check(api_name, ne.club_name_jp(api_name), want)
 
 # 名簿にいるクラブは名簿の team_jp と必ず一致すること。
 # ここが割れると、同じクラブが動画とサイトで別名になる。
 for p in ne.JP_PLAYERS_SOCCER:
-    got = ne.club_name_jp(p["team_en"])
-    if got != p["team_jp"]:
-        fails += 1
-        print(f"NG  表記割れ: {p['team_en']} -> {got} (名簿は {p['team_jp']})")
+    check("表記が名簿と揃う: " + p["team_en"],
+          ne.club_name_jp(p["team_en"]), p["team_jp"])
 
 # 1つの日本語名に2つ以上の「別クラブ」が割り当たっていないか。
 # 個別ケースを増やすより、こちらの方が新しい取り違えを拾える。
@@ -213,8 +203,8 @@ ALIASES = [{"LOSC Lille", "Lille OSC"}]
 
 for jp, sources in seen.items():
     if len(sources) > 1 and not any(sources <= a for a in ALIASES):
-        fails += 1
-        print(f"NG  取り違え: {jp} <- {sorted(sources)}")
+        fail(f"取り違え: {jp} <- {sorted(sources)}")
+    else:
+        passed()
 
-print("\nALL OK" if fails == 0 else f"\n{fails} FAILURES")
-sys.exit(1 if fails else 0)
+sys.exit(done())

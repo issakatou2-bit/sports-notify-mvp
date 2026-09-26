@@ -19,16 +19,7 @@ import tempfile
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import merge_json_conflict  # noqa: E402  (混ぜる関数の単体確認に使う)
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, section, done  # noqa: E402
 
 
 def git(folder, *args, **kw):
@@ -47,7 +38,7 @@ def write(folder, obj):
         json.dumps(obj, ensure_ascii=False), encoding="utf-8")
 
 
-print("--- 混ぜ方 ---")
+section("混ぜ方")
 check("別の枠と別の日が増えただけなら、両方残す",
       merge_json_conflict.merge(
           {"morning": {"9/6": "A"}, "daily": {"9/6": "B"}},
@@ -102,6 +93,4 @@ with tempfile.TemporaryDirectory() as tmp:
     check("自分の記録も残っている", got.get("morning", {}).get("2026-09-06"), "A")
     check("もとからあった記録も無事",
           got.get("morning", {}).get("2026-09-05"), "old")
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

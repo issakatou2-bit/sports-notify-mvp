@@ -1,427 +1,483 @@
 {
-  "updated_at": "2026-09-22T06:02:57.070380+00:00",
+  "updated_at": "2026-09-26T06:03:24.673123+00:00",
   "hours": 30,
   "reporters": 38,
-  "collected": 71,
+  "collected": 133,
   "posts": [
+    {
+      "handle": "keeganmatheson.bsky.social",
+      "author": "Keegan Matheson",
+      "team": "ブルージェイズ",
+      "outlet": "MLB.com",
+      "text": "#BlueJays win, 6-5. If it weren’t for Kazuma Okamoto this season… whew. They’re 78-82.",
+      "likes": 93,
+      "reposts": 2,
+      "replies": 5,
+      "at": "2026-09-26T01:53:10.779Z",
+      "uri": "at://did:plc:wwjv37n37xrozzfku6zvduez/app.bsky.feed.post/3mwf6g7ro5s2y",
+      "jp_players": [
+        "Kazuma Okamoto",
+        "Okamoto"
+      ],
+      "jp": "ブルージェイズが6-5で勝利。岡本和真がいなかったら…。78勝82敗。"
+    },
+    {
+      "handle": "keeganmatheson.bsky.social",
+      "author": "Keegan Matheson",
+      "team": "ブルージェイズ",
+      "outlet": "MLB.com",
+      "text": "That's Kazuma Okamoto's 90th RBI of the season on a double into the left-field corner. Really impressive MLB debut for him. Andrés Giménez is 2nd on the team... with 58. #BlueJays",
+      "likes": 60,
+      "reposts": 2,
+      "replies": 2,
+      "at": "2026-09-25T23:22:11.791Z",
+      "uri": "at://did:plc:wwjv37n37xrozzfku6zvduez/app.bsky.feed.post/3mwevyahc6s2e",
+      "jp_players": [
+        "Kazuma Okamoto",
+        "Okamoto"
+      ],
+      "jp": "岡本和真が左翼隅への二塁打で90打点目。MLBデビューとしてはほんとに素晴らしい。アンドレス・ヒメネスは58打点で2位。#ブルージェイズ"
+    },
+    {
+      "handle": "mmontemurro.bsky.social",
+      "author": "Meghan Montemurro",
+      "team": "カブス",
+      "outlet": "Chicago Tribune",
+      "text": "Cubs' Pete Crow-Armstrong had the 3rd-best selling MLB jersey this season, dating to opening day, based on sales of Nike jerseys from Fanatics sites. Shohei Ohtani and Aaron Judge had the top 2 most popular jerseys.",
+      "likes": 27,
+      "reposts": 2,
+      "replies": 0,
+      "at": "2026-09-25T16:58:33.540Z",
+      "uri": "at://did:plc:nbtbg72x4ai35yy2mmx4o2mb/app.bsky.feed.post/3mweakajyhs2x",
+      "jp_players": [
+        "Shohei Ohtani",
+        "Ohtani"
+      ],
+      "jp": "Cubs's Pete Crow-Armstrongのユニフォームが今季のMLB販売数3位。大谷翔平とアーロン・ジャッジが1、2位。"
+    },
+    {
+      "handle": "afkostka.bsky.social",
+      "author": "Andy Kostka",
+      "team": "オリオールズ",
+      "outlet": "Baltimore Banner",
+      "text": "The Orioles are 79-82, guaranteed of a losing season. If that's all ... thank you so much for following",
+      "likes": 117,
+      "reposts": 6,
+      "replies": 31,
+      "at": "2026-09-26T02:27:49.640Z",
+      "uri": "at://did:plc:licyksm72ljqiq4oxbwxu2mi/app.bsky.feed.post/3mwfae6dgus24",
+      "jp_players": [],
+      "reply_texts": [
+        {
+          "text": "Thanks everyone for your very kind words. They really do mean a lot. This job is nothing without readers",
+          "likes": 25,
+          "author": "afkostka.bsky.social"
+        },
+        {
+          "text": "Thank you, Andy, for doing a good job covering the team and for being active on here and keeping us informed without having to go to the other place. I truly appreciate you.",
+          "likes": 17,
+          "author": "lizzierie.bsky.social"
+        },
+        {
+          "text": "thank you for covering, andy. you're a key resource for us on here and i want you to know that we all value you.",
+          "likes": 12,
+          "author": "etgoch.bsky.social"
+        },
+        {
+          "text": "Thank you for everything, Andy. We fans are so lucky to have you!",
+          "likes": 9,
+          "author": "kimschuss.bsky.social"
+        }
+      ],
+      "jp": "オリオールズが79勝82敗で負け越し確定。これ以上言うことはありません。ご視聴ありがとう。"
+    },
+    {
+      "handle": "mmontemurro.bsky.social",
+      "author": "Meghan Montemurro",
+      "team": "カブス",
+      "outlet": "Chicago Tribune",
+      "text": "Let’s play two 📍Fenway Park",
+      "likes": 137,
+      "reposts": 4,
+      "replies": 11,
+      "at": "2026-09-25T16:14:37.330Z",
+      "uri": "at://did:plc:nbtbg72x4ai35yy2mmx4o2mb/app.bsky.feed.post/3mwe63ohcls22",
+      "jp_players": [],
+      "jp": "Let's play two 📍Fenway Park"
+    },
+    {
+      "handle": "mattgelb.bsky.social",
+      "author": "Matt Gelb",
+      "team": "フィリーズ",
+      "outlet": "The Athletic",
+      "text": "Rays 2, Phillies 0. The Phillies have scored two runs in their last three games. They have homered once in their last 55 innings. They are teetering. Bullpen game on national TV tomorrow night during a nor'easter.",
+      "likes": 99,
+      "reposts": 17,
+      "replies": 12,
+      "at": "2026-09-26T01:11:01.149Z",
+      "uri": "at://did:plc:hoy6e5tru27j3r7xyfzdojwk/app.bsky.feed.post/3mwf42tdieceq",
+      "jp_players": [],
+      "reply_texts": [
+        {
+          "text": "Whatever could go wrong 🥴😖🤦‍♀️",
+          "likes": 5,
+          "author": "jeanmorrison.bsky.social"
+        },
+        {
+          "text": "Sunday’s “Fan Appreciation Game” will be ugly, ugly, ugly. And guess who has tickets.",
+          "likes": 3,
+          "author": "agbixler.bsky.social"
+        },
+        {
+          "text": "Immaculate vibes",
+          "likes": 2,
+          "author": "wetluzinski.bsky.social"
+        },
+        {
+          "text": "Fan Appreciation Day on Sunday. \n\nWill be wild.",
+          "likes": 2,
+          "author": "johnmlatimer.bsky.social"
+        }
+      ],
+      "jp": "ライズ2、フィリーズ0。フィリーズは過去3試合で2点。過去55イニングで本塁打1本。ぐらついている。明夜、全国放送のブルペンゲーム。"
+    },
+    {
+      "handle": "mattgelb.bsky.social",
+      "author": "Matt Gelb",
+      "team": "フィリーズ",
+      "outlet": "The Athletic",
+      "text": "The Phillies, who are making it much harder on themselves, have lost again. They might have lost Luis Arraez too. Those who stayed until the end are booing. The vibes are not great.",
+      "likes": 93,
+      "reposts": 16,
+      "replies": 2,
+      "at": "2026-09-25T00:57:44.477Z",
+      "uri": "at://did:plc:hoy6e5tru27j3r7xyfzdojwk/app.bsky.feed.post/3mwcku64aec7d",
+      "jp_players": [],
+      "jp": "自分たちで難しくしているフィリーズが負けた。ルイス・アライエスまで失った可能性。最後まで見てた人はブーイング。雰囲気が最悪だ。"
+    },
     {
       "handle": "adammccalvy.bsky.social",
       "author": "Adam McCalvy",
       "team": "ブルワーズ",
       "outlet": "MLB.com",
-      "text": "Win No. 98 for the Brewers. A new franchise record with six regular season games to go.",
-      "likes": 279,
-      "reposts": 20,
+      "text": "Brewers 8, Cardinals 4. Win No. 101 guarantees the Brewers will finish with sole possession of the best record in baseball for the second straight season.",
+      "likes": 93,
+      "reposts": 10,
       "replies": 7,
-      "at": "2026-09-21T02:15:58.857Z",
-      "uri": "at://did:plc:idooavtb3a4mlluqclqzel5p/app.bsky.feed.post/3mvynef6lnc2w",
+      "at": "2026-09-26T02:34:39.308Z",
+      "uri": "at://did:plc:idooavtb3a4mlluqclqzel5p/app.bsky.feed.post/3mwfaqezjbs25",
       "jp_players": [],
-      "jp": "ブルワーズの98勝目。残り6試合を控えてフランチャイズ新記録🔥"
-    },
-    {
-      "handle": "jasonbeck.bsky.social",
-      "author": "Jason Beck",
-      "team": "タイガース",
-      "outlet": "MLB.com",
-      "text": "Comerica Park will become Fifth Third Park starting next season.",
-      "likes": 47,
-      "reposts": 5,
-      "replies": 60,
-      "at": "2026-09-21T19:29:17.947Z",
-      "uri": "at://did:plc:ug2irz5m3k7nlbpiggqc73wt/app.bsky.feed.post/3mw2h444vrs23",
-      "jp_players": [],
-      "reply_texts": [
-        {
-          "text": "I get it's a bank, but man, what a dumb name.",
-          "likes": 54,
-          "author": "originalseahawk.bsky.social"
-        },
-        {
-          "text": "This has Ruth's Chris Steak House vibes.",
-          "likes": 20,
-          "author": "fredwesley.bsky.social"
-        },
-        {
-          "text": "I'll be goddamned, these fucking morons",
-          "likes": 17,
-          "author": "demeralda.bsky.social"
-        },
-        {
-          "text": "Rolls off the tongue",
-          "likes": 7,
-          "author": "realchet.bsky.social"
-        }
-      ],
-      "jp": "コメリカ・パークは来シーズンからフィフス・サード・パークに改名される。"
-    },
-    {
-      "handle": "mmontemurro.bsky.social",
-      "author": "Meghan Montemurro",
-      "team": "カブス",
-      "outlet": "Chicago Tribune",
-      "text": "After Pete Crow-Armstrong broke HOFer Billy Williams’ 56-year Cubs record for HRs in season by LHH, he told PCA in phone convo after game he too would’ve been chanting M-V-P with the crowd. “Ain’t no telling what this kid is going to do,” Williams told Tribune www.chicagotribune.com/2026/09/19/c...",
-      "likes": 85,
-      "reposts": 6,
-      "replies": 4,
-      "at": "2026-09-21T15:38:16.570Z",
-      "uri": "at://did:plc:nbtbg72x4ai35yy2mmx4o2mb/app.bsky.feed.post/3mw226yur6k2o",
-      "jp_players": [],
-      "jp": "Pete Crow-Armstrongが左打者の シーズン本塁打でBilly Williamsの56年ぶり記録を更新。本人も「試合後に電話でそう言った。このガキが何をやるのか、見当も付かねえ」とWilliams氏。"
-    },
-    {
-      "handle": "afkostka.bsky.social",
-      "author": "Andy Kostka",
-      "team": "オリオールズ",
-      "outlet": "Baltimore Banner",
-      "text": "Pete Alonso fires the Orioles into the lead with his second home run of the game. That's his 40th home run of the season, and it gives Baltimore a 4-3 lead over the Blue Jays in the eighth. Where would the Orioles be without that guy?",
-      "likes": 53,
-      "reposts": 6,
-      "replies": 7,
-      "at": "2026-09-22T01:40:31.536Z",
-      "uri": "at://did:plc:licyksm72ljqiq4oxbwxu2mi/app.bsky.feed.post/3mw33tvuews2z",
-      "jp_players": [],
-      "jp": "Pete Alonsoの2試合連発で、オリオールズが逆転リード。今季40号本塁打でブルージェイズ相手に8回4-3とリード。このチームにAlonsoがいなかったらどうなってた？"
-    },
-    {
-      "handle": "keeganmatheson.bsky.social",
-      "author": "Keegan Matheson",
-      "team": "ブルージェイズ",
-      "outlet": "MLB.com",
-      "text": "#BlueJays lose, 4-3. The arse... is out of 'er.",
-      "likes": 59,
-      "reposts": 1,
-      "replies": 7,
-      "at": "2026-09-22T01:52:55.776Z",
-      "uri": "at://did:plc:wwjv37n37xrozzfku6zvduez/app.bsky.feed.post/3mw34k3mrss2x",
-      "jp_players": [],
-      "jp": "#BlueJaysは4-3で敗北。試合終了🏁"
-    },
-    {
-      "handle": "keeganmatheson.bsky.social",
-      "author": "Keegan Matheson",
-      "team": "ブルージェイズ",
-      "outlet": "MLB.com",
-      "text": "Brett Bateman is leaving the game with an injury. He walked off himself, slowly, and just got help going down the dugout steps with his arms over the shoulders of the #BlueJays trainer and John Schneider.",
-      "likes": 42,
-      "reposts": 6,
-      "replies": 5,
-      "at": "2026-09-22T00:07:29.108Z",
-      "uri": "at://did:plc:wwjv37n37xrozzfku6zvduez/app.bsky.feed.post/3mw2wnk2a322l",
-      "jp_players": [],
-      "jp": "Brett Batemanが負傷で交代。自分で歩いて出たが、ダグアウト段を下りる時には#BlueJeysのトレーナーとSchneideerに肩を支えられた。"
-    },
-    {
-      "handle": "afkostka.bsky.social",
-      "author": "Andy Kostka",
-      "team": "オリオールズ",
-      "outlet": "Baltimore Banner",
-      "text": "Today is Teddy Alonso’s first birthday. Pete Alonso acknowledged Teddy is too young to really know what happened tonight, but maybe in a few years, the two home runs from Pete will be a cool birthday moment to look back on",
-      "likes": 46,
-      "reposts": 5,
-      "replies": 1,
-      "at": "2026-09-22T02:27:35.748Z",
-      "uri": "at://did:plc:licyksm72ljqiq4oxbwxu2mi/app.bsky.feed.post/3mw36i3aodc2p",
-      "jp_players": [],
-      "jp": "Teddy Alonsoは今日が1歳の誕生日。Pete Alonso本人も言ってるけど、数年したら今夜の2本の本塁打が素敵な思い出になるかな🥰"
-    },
-    {
-      "handle": "mmontemurro.bsky.social",
-      "author": "Meghan Montemurro",
-      "team": "カブス",
-      "outlet": "Chicago Tribune",
-      "text": "Alex Bregman shared another update to his IG story this morning of how his face is looking after getting hit with the foul ball yesterday:",
-      "likes": 38,
-      "reposts": 5,
-      "replies": 6,
-      "at": "2026-09-21T15:04:03.734Z",
-      "uri": "at://did:plc:nbtbg72x4ai35yy2mmx4o2mb/app.bsky.feed.post/3mvzybt5gdk2o",
-      "jp_players": [],
-      "jp": "Alex Bergmanが昨日のファウルボールで被った顔の怪我の最新状況をIG ストーリーで投稿。"
+      "jp": "ブルワーズ8、カージナルス4。101勝目でブルワーズ、2年連続でMLB最高勝率が確定した。"
     }
   ],
   "headlines": [
     {
       "query": "Shohei Ohtani",
-      "title": "MLB Injury Report: Dodgers to get Shohei Ohtani, Andy Pages, and Roki Sasaki back for postseason run",
-      "source": "Yahoo Sports",
-      "at": "Tue, 22 Sep 2026 04:13:00 GMT",
-      "jp": "MLBの故障者リスト：ドジャースはポストシーズンに向けて大谷翔平、Andy Pages、佐々木朗希の復帰を予定"
-    },
-    {
-      "query": "Shohei Ohtani",
-      "title": "'Good chance' Ohtani will be activated Wed. after minimum IL stint",
+      "title": "Yunior Marte fans Shohei Ohtani after ABS challenge",
       "source": "MLB.com",
-      "at": "Mon, 21 Sep 2026 10:08:43 GMT",
-      "jp": "大谷翔平が水曜日に復帰する「可能性が高い」（最短IL離脱後）"
+      "at": "Sat, 26 Sep 2026 02:42:45 GMT",
+      "jp": "ユニオル・マルテがABS判定に異議を唱えた後、大谷翔平を三振に仕留める"
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Dodgers’ plan for Shohei Ohtani is unnecessarily risky",
-      "source": "New York Post",
-      "at": "Tue, 22 Sep 2026 02:19:00 GMT",
-      "jp": "大谷翔平へのドジャースのプランは不必要なリスクを抱えている"
+      "title": "Shohei Ohtani leads MLB jersey sales for 4th straight season. See the list",
+      "source": "NBC Los Angeles",
+      "at": "Fri, 25 Sep 2026 21:34:04 GMT",
+      "jp": "大谷翔平がMLB jersey sales4連覇。リストを確認"
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Window tightens for Shohei Ohtani to get ready for playoffs",
-      "source": "Marco Eagle",
-      "at": "Mon, 21 Sep 2026 22:38:00 GMT",
-      "jp": "大谷翔平がプレーオフに向けた準備を整える時間が限られている"
+      "title": "Shohei Ohtani",
+      "source": "LAist",
+      "at": "Sat, 26 Sep 2026 00:41:00 GMT",
+      "jp": "大谷翔平"
+    },
+    {
+      "query": "Shohei Ohtani",
+      "title": "Dodgers' Shohei Ohtani first to top MLB jersey sales at end of 4 straight seasons",
+      "source": "ABC News - Breaking News, Latest News and Videos",
+      "at": "Fri, 25 Sep 2026 19:10:12 GMT",
+      "jp": "ドジャースの大谷翔平、4年連続でMLBユニフォーム販売数1位に"
     },
     {
       "query": "Yu Darvish",
-      "title": "'Giving up 20.6 billion won in salary': Japanese star Darvish also made a massive donation! Is he a baseball player or a philanthropist?",
-      "source": "starnewskorea.com",
-      "at": "Mon, 21 Sep 2026 18:33:00 GMT",
-      "jp": "「20億6000万ウォンの給与を放棄」：日本の大スター・ダルビッシュ有も巨額寄付！野球選手か慈善家か？"
+      "title": "A franchise-record 3rd straight postseason, and the Padres still want more",
+      "source": "ABC News - Breaking News, Latest News and Videos",
+      "at": "Fri, 25 Sep 2026 15:42:35 GMT",
+      "jp": "フランチャイズ記録の3年連続ポストシーズン進出。パドレスはさらなる栄光を目指す"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Dodgers' Roki Sasaki: Back from IL",
-      "source": "CBS Sports",
-      "at": "Tue, 22 Sep 2026 02:52:37 GMT",
-      "jp": "ドジャースの佐々木朗希：IL復帰"
+      "title": "Roki Sasaki’s Dodgers Bullpen Transformation Continues With Dominant Outing",
+      "source": "Dodgers Nation",
+      "at": "Sat, 26 Sep 2026 05:48:01 GMT",
+      "jp": "佐々木朗希がドジャースのブルペン改革を継続、圧倒的な投球で貢献"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Dodgers activate Roki Sasaki from injured list",
-      "source": "NBC Sports",
-      "at": "Tue, 22 Sep 2026 01:17:55 GMT",
-      "jp": "ドジャースが佐々木朗希をILから復帰指定"
+      "title": "Teoscar Hernández, Andy Pages hit home runs, Skubal strikes out 10 as Dodgers beat Giants 2-0",
+      "source": "Bozeman Daily Chronicle",
+      "at": "Sat, 26 Sep 2026 04:21:52 GMT",
+      "jp": "テオスカー・ヘルナンデスとアンディ・ペイジズがホームラン、スクバルは10奪三振でドジャースが巨人に2-0で勝利"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Dave Roberts' handling of Roki Sasaki shows why the Dodgers keep winning",
-      "source": "FanSided",
-      "at": "Mon, 21 Sep 2026 23:47:26 GMT",
-      "jp": "Dave Roberts の佐々木朗希への采配がドジャースの強さの理由を物語っている"
+      "title": "Dodgers bolster roster, return CF Andy Pages, RHP Roki Sasaki from IL",
+      "source": "Field Level Media",
+      "at": "Fri, 25 Sep 2026 17:16:53 GMT",
+      "jp": "ドジャース、ロスターを補強。センター・アンディ・ペイジズと右腕・佐々木朗希がILから復帰"
     }
   ],
   "headline_pool": [
     {
       "query": "Shohei Ohtani",
-      "title": "MLB Injury Report: Dodgers to get Shohei Ohtani, Andy Pages, and Roki Sasaki back for postseason run",
-      "source": "Yahoo Sports"
-    },
-    {
-      "query": "Shohei Ohtani",
-      "title": "'Good chance' Ohtani will be activated Wed. after minimum IL stint",
+      "title": "Yunior Marte fans Shohei Ohtani after ABS challenge",
       "source": "MLB.com"
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Dodgers’ plan for Shohei Ohtani is unnecessarily risky",
-      "source": "New York Post"
+      "title": "Shohei Ohtani leads MLB jersey sales for 4th straight season. See the list",
+      "source": "NBC Los Angeles"
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Window tightens for Shohei Ohtani to get ready for playoffs",
-      "source": "Marco Eagle"
+      "title": "Shohei Ohtani",
+      "source": "LAist"
+    },
+    {
+      "query": "Shohei Ohtani",
+      "title": "Dodgers' Shohei Ohtani first to top MLB jersey sales at end of 4 straight seasons",
+      "source": "ABC News - Breaking News, Latest News and Videos"
     },
     {
       "query": "Yu Darvish",
-      "title": "'Giving up 20.6 billion won in salary': Japanese star Darvish also made a massive donation! Is he a baseball player or a philanthropist?",
-      "source": "starnewskorea.com"
+      "title": "A franchise-record 3rd straight postseason, and the Padres still want more",
+      "source": "ABC News - Breaking News, Latest News and Videos"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Dodgers' Roki Sasaki: Back from IL",
-      "source": "CBS Sports"
+      "title": "Roki Sasaki’s Dodgers Bullpen Transformation Continues With Dominant Outing",
+      "source": "Dodgers Nation"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Dodgers activate Roki Sasaki from injured list",
-      "source": "NBC Sports"
+      "title": "Teoscar Hernández, Andy Pages hit home runs, Skubal strikes out 10 as Dodgers beat Giants 2-0",
+      "source": "Bozeman Daily Chronicle"
     },
     {
       "query": "Roki Sasaki",
-      "title": "Dave Roberts' handling of Roki Sasaki shows why the Dodgers keep winning",
-      "source": "FanSided"
+      "title": "Dodgers bolster roster, return CF Andy Pages, RHP Roki Sasaki from IL",
+      "source": "Field Level Media"
     },
     {
       "query": "Yoshinobu Yamamoto",
-      "title": "Dodgers Week 26: Back in the postseason saddle again",
-      "source": "True Blue LA"
+      "title": "Dodgers' Ohtani 1st to top MLB jersey sales 4 straight seasons",
+      "source": "ABC7 Los Angeles"
     },
     {
       "query": "Yoshinobu Yamamoto",
-      "title": "San Diego Padres vs Los Angeles Dodgers Preview &amp; Start Time — September 22, 2026 | SI",
-      "source": "Sports Illustrated"
-    },
-    {
-      "query": "Yoshinobu Yamamoto",
-      "title": "Dodgers playoff roster projection: Could Edwin Díaz, Josue De Paula, even Hyeseong Kim surprise?",
+      "title": "Dodgers have key decision to make with postseason starting rotation",
       "source": "New York Post"
     },
     {
       "query": "Yoshinobu Yamamoto",
-      "title": "The latest on MLB postseason clinches, Ohtani and Judge health updates, awards races and more",
-      "source": "Eyewitness News (WEHT/WTVW)"
-    },
-    {
-      "query": "Tomoyuki Sugano",
-      "title": "Rockies Tomoyuki Sugano Doesn't Hide Frustration After Sunday Start Against Mariners",
-      "source": "Sports Illustrated"
-    },
-    {
-      "query": "Tomoyuki Sugano",
-      "title": "Tomoyuki Sugano strong on mound in loss to Mariners",
-      "source": "FantasyPros"
-    },
-    {
-      "query": "Tomoyuki Sugano",
-      "title": "Feltner growing into new 'piggyback' role after Sugano's strong start",
+      "title": "Starting Pitcher Power Rankings: The best of playoff hopefuls",
       "source": "MLB.com"
     },
     {
-      "query": "Yusei Kikuchi",
-      "title": "Fantasy baseball lineup advice for Tuesday: Jared Jones dominant down the stretch",
-      "source": "ESPN"
+      "query": "Yoshinobu Yamamoto",
+      "title": "Dodgers Dugout: A look at how NL postseason teams have fared against each other",
+      "source": "Los Angeles Times"
+    },
+    {
+      "query": "Tomoyuki Sugano",
+      "title": "Sugano bested by former NPB foe Murakami in possible last start with Rockies",
+      "source": "MLB.com"
+    },
+    {
+      "query": "Tomoyuki Sugano",
+      "title": "Rockies' Tomoyuki Sugano: Gives up four runs in loss",
+      "source": "cbssports.com"
+    },
+    {
+      "query": "Tomoyuki Sugano",
+      "title": "Colorado Rockies at Chicago White Sox game discussion: Tomoyuki Sugano vs. Sean Burke",
+      "source": "Purple Row"
+    },
+    {
+      "query": "Tomoyuki Sugano",
+      "title": "Tomoyuki Sugano strikes out five vs. the White Sox",
+      "source": "Yahoo Sports"
     },
     {
       "query": "Yusei Kikuchi",
-      "title": "MLB DFS Live Before Lock: September 22, 2026 Slate",
-      "source": "Stokastic"
+      "title": "Angels, Athletics battle to avoid 100-loss seasons",
+      "source": "Field Level Media"
     },
     {
       "query": "Yusei Kikuchi",
-      "title": "Alan Roden's 3-run homer, Dean Kremer's stellar start send Twins past Angels 8-0",
-      "source": "KIMT"
-    },
-    {
-      "query": "Shota Imanaga",
-      "title": "Could David Peterson Be Chicago Cubs' Playoff Ace?",
-      "source": "North Side Baseball"
-    },
-    {
-      "query": "Shota Imanaga",
-      "title": "2026 MLB playoff rotation tiers: Ranking October pitching options",
-      "source": "ESPN"
-    },
-    {
-      "query": "Shota Imanaga",
-      "title": "Cubs look to clinch playoff berth in series opener vs. Marlins",
-      "source": "CBS Sports"
-    },
-    {
-      "query": "Shota Imanaga",
-      "title": "Starting Pitcher Streamer Ranks Fantasy Baseball: 9/21 &amp; 9/22 &amp; 9/23",
+      "title": "The List 9/21: Starting Pitcher Daily Rankings Cheat Sheet UPDATED 9/25",
       "source": "Pitcher List"
     },
     {
-      "query": "Seiya Suzuki",
-      "title": "Seiya Suzuki goes deep Sunday",
-      "source": "FantasyPros"
+      "query": "Yusei Kikuchi",
+      "title": "Twins turn to Taj Bradley (190 strikeouts) in series opener vs. Angels",
+      "source": "Field Level Media"
     },
     {
-      "query": "Seiya Suzuki",
-      "title": "Baseball: Suzuki breaks home run drought as Cubs hammer Reds",
-      "source": "mainichi.jp"
-    },
-    {
-      "query": "Kodai Senga",
-      "title": "Philadelphia Phillies at New York Mets Game Story, Scores/Highlights - 09/20/2026",
-      "source": "MLB.com"
-    },
-    {
-      "query": "Kodai Senga",
-      "title": "Man leaves job, inks minor league contract with MLB team",
-      "source": "朝日新聞"
-    },
-    {
-      "query": "Kodai Senga",
-      "title": "MLB roundup: Braves clinch NL East with win over Astros",
-      "source": "WKZO"
-    },
-    {
-      "query": "Yuki Matsui",
-      "title": "Padres Rockies Baseball",
-      "source": "Bluefield Daily Telegraph"
-    },
-    {
-      "query": "Masataka Yoshida",
-      "title": "Could Boston Red Sox Target Randy Arozarena in Free Agency?",
+      "query": "Shota Imanaga",
+      "title": "Shota Imanaga blasts himself in face with beer in wild Cubs celebration",
       "source": "Yahoo Sports"
     },
     {
-      "query": "Masataka Yoshida",
-      "title": "MLB: Is This Goodbye for Good? 5 Players Living Their Final Hours in a Red Sox Uniform",
-      "source": "Al Bat"
+      "query": "Shota Imanaga",
+      "title": "WATCH: Shota Imanaga has hilarious 'Yummy!' reaction during Cubs playoff celebration",
+      "source": "CubsHQ"
     },
     {
-      "query": "Kazuma Okamoto",
-      "title": "Toronto Blue Jays Announce Kazuma Okamoto Demotion Before Crucial Orioles Series",
-      "source": "Yahoo Sports"
+      "query": "Shota Imanaga",
+      "title": "Munetaka Murakami and MLB's best playoff-clinching locker room celebrations, ranked",
+      "source": "USA Today"
     },
     {
-      "query": "Kazuma Okamoto",
-      "title": "Daily Dinger: Best MLB Home Run Prop Bet Picks Today (Target James Wood, Kazuma Okamoto, Giants Outfielder)",
-      "source": "Sports Illustrated"
-    },
-    {
-      "query": "Kazuma Okamoto",
-      "title": "Kazuma Okamoto And Blue Jays Square Off Against Orioles On Sept. 21",
+      "query": "Seiya Suzuki",
+      "title": "Seiya Suzuki Goes 2 for 3 In Loss To Red Sox",
       "source": "FanDuel"
     },
     {
-      "query": "Kazuma Okamoto",
-      "title": "September 22, 2026: Toronto vs Baltimore: Hits + Runs + RBIs Baseball Prediction Market",
+      "query": "Seiya Suzuki",
+      "title": "Jed Hoyer can address a quiet offensive flaw when replacing Ian Happ, Seiya Suzuki this winter",
+      "source": "Cubbies Crib"
+    },
+    {
+      "query": "Seiya Suzuki",
+      "title": "Baseball: Murakami, Suzuki deliver at plate as Chicago clubs reach playoffs",
+      "source": "Japan Wire by Kyodo News"
+    },
+    {
+      "query": "Seiya Suzuki",
+      "title": "September 25, 2026: Chicago C vs Boston: Game 2 Hits + Runs + RBIs Baseball Prediction Market",
       "source": "Robinhood"
     },
     {
-      "query": "Munetaka Murakami",
-      "title": "White Sox Extension Talks With Munetaka Murakami May Have Hit a Wall",
+      "query": "Kodai Senga",
+      "title": "Polarizing New York Mets Player Owed $14 Million Next Season",
+      "source": "heavy.com"
+    },
+    {
+      "query": "Kodai Senga",
+      "title": "New Mets Skipper Addresses $75 Million All-Star Immediately After Taking Job",
+      "source": "Forbes"
+    },
+    {
+      "query": "Kodai Senga",
+      "title": "Best styled MLB players September 25",
+      "source": "MLB.com"
+    },
+    {
+      "query": "Yuki Matsui",
+      "title": "Japanese player reel: Yuki Matsui",
+      "source": "MLB.com"
+    },
+    {
+      "query": "Yuki Matsui",
+      "title": "Padres beat Dodgers 4-2 to clinch a franchise-record 3rd straight postseason berth",
+      "source": "ABC News - Breaking News, Latest News and Videos"
+    },
+    {
+      "query": "Yuki Matsui",
+      "title": "San Diego Padres vs Los Angeles Dodgers Final Score &amp; Box Score — September 24, 2026 | SI",
       "source": "Sports Illustrated"
     },
     {
-      "query": "Munetaka Murakami",
-      "title": "Column: After all the highs and lows, the Chicago White Sox have a clear path to the postseason",
-      "source": "chicagotribune.com"
+      "query": "Yuki Matsui",
+      "title": "Photos: Padres clinch postseason berth",
+      "source": "San Diego Union-Tribune"
+    },
+    {
+      "query": "Masataka Yoshida",
+      "title": "State of the Sox: Sitting Jarren Duran may be part of tough postseason decisions",
+      "source": "MassLive.com"
+    },
+    {
+      "query": "Masataka Yoshida",
+      "title": "Boston Red Sox vs New York Yankees Box Score - September 30, 2026 - The Athletic",
+      "source": "The New York Times"
+    },
+    {
+      "query": "Kazuma Okamoto",
+      "title": "Kazuma Okamoto's two RBI doubles lead Blue Jays' win",
+      "source": "MLB.com"
+    },
+    {
+      "query": "Kazuma Okamoto",
+      "title": "Blue Jays' Kazuma Okamoto: Drives in three runs Friday",
+      "source": "cbssports.com"
+    },
+    {
+      "query": "Kazuma Okamoto",
+      "title": "Toronto Blue Jays Manager Makes Kazuma Okamoto Statement After Win Over Reds",
+      "source": "heavy.com"
+    },
+    {
+      "query": "Kazuma Okamoto",
+      "title": "Lukes has go-ahead hit in four-run seventh, Okamoto drives in three as Blue Jays beat Reds 6-5",
+      "source": "ABC News - Breaking News, Latest News and Videos"
     },
     {
       "query": "Munetaka Murakami",
-      "title": "Tigers White Sox Baseball | National Sports | bdtonline.com",
-      "source": "Bluefield Daily Telegraph"
+      "title": "Murakami homers twice as White Sox stay laser-focused on AL Central race",
+      "source": "MLB.com"
+    },
+    {
+      "query": "Munetaka Murakami",
+      "title": "Munetaka Murakami homers twice as playoff-bound White Sox top Rockies 6-1",
+      "source": "ABC News - Breaking News, Latest News and Videos"
+    },
+    {
+      "query": "Munetaka Murakami",
+      "title": "White Sox' Munetaka Murakami getting hot at perfect time, homers twice in win",
+      "source": "Chicago Sun-Times"
+    },
+    {
+      "query": "Munetaka Murakami",
+      "title": "Munetaka Murakami's 2 homers power White Sox past Rockies",
+      "source": "Reuters"
     },
     {
       "query": "Tatsuya Imai",
-      "title": "Astros’ Playoff Hopes Come Down to 6 Games: Will They Stand or Fall?",
-      "source": "The Crawfish Boxes"
-    },
-    {
-      "query": "Tatsuya Imai",
-      "title": "Astros bullpen may have finally passed its breaking point as season hangs in balance",
-      "source": "Climbing Tal's Hill"
-    },
-    {
-      "query": "Tatsuya Imai",
-      "title": "The most disappointing player from every MLB team for the 2026 season",
-      "source": "Yardbarker"
+      "title": "What to watch during MLB's final weekend of the 2026 season",
+      "source": "ESPN"
     },
     {
       "query": "Lars Nootbaar",
-      "title": "Statcast Game Preview: Arizona Diamondbacks at Colorado Rockies - 2026-09-22",
-      "source": "Baseball Savant"
+      "title": "Arizona Diamondbacks at San Diego Padres Game Story, Scores/Highlights - 09/25/2026",
+      "source": "MLB.com"
     },
     {
       "query": "Lars Nootbaar",
-      "title": "2026 Fantasy Baseball Top 300: Pete Crow-Armstrong tops the list, Shohei Ohtani returns with one week to go",
-      "source": "NBC Sports"
+      "title": "Lars Nootbaar smashes a home run",
+      "source": "ESPN"
     },
     {
       "query": "Lars Nootbaar",
-      "title": "Fantasy Baseball Waiver Wire: 9/21/26",
-      "source": "Pitcher List"
-    },
-    {
-      "query": "MLB playoff race",
-      "title": "MLB playoff picture: Wild card standings, AL and NL postseason bracket",
+      "title": "Lars Nootbaar's leadoff home run (8)",
       "source": "Yahoo Sports"
     },
     {
       "query": "MLB playoff race",
-      "title": "2026 MLB playoff picture: Standings, bracket, clinching scenarios, postseason projections as Red Sox clinch",
-      "source": "CBS Sports"
+      "title": "Bracket, tiebreakers and more: Here is the current playoff picture",
+      "source": "MLB.com"
+    },
+    {
+      "query": "MLB playoff race",
+      "title": "MLB playoffs 2026 tracker: Standings, schedule, clinch scenarios, tiebreakers, playoff bracket and more",
+      "source": "Yahoo Sports"
+    },
+    {
+      "query": "MLB playoff race",
+      "title": "2026 MLB playoff picture: Standings, bracket, clinching scenarios, postseason projections as field fills out",
+      "source": "cbssports.com"
     },
     {
       "query": "MLB playoff race",
@@ -430,63 +486,88 @@
     },
     {
       "query": "MLB playoff race",
-      "title": "MLB Playoff Picture 2026: Wild Card Standings and Clinching Scenarios Explained",
-      "source": "Stadium Rant"
+      "title": "MLB Playoff Race Drama: Red Sox Change Start Time For Doubleheader With Cubs",
+      "source": "FOX Sports"
     },
     {
-      "query": "MLB playoff race",
-      "title": "MLB Playoffs 2026: Bracket forecast and team-by-team scenarios - The Athletic",
-      "source": "nytimes.com"
+      "query": "MLB wild card",
+      "title": "How to watch Red Sox vs. Yankees in 2026 MLB Wild Card Series: Schedule, TV/stream info, preview",
+      "source": "NBC Sports"
     },
     {
-      "query": "MLB trade",
-      "title": "MLB picks today with Kalshi promo code CBSSPORTS5: Top trades for Blue Jays-Orioles, Twins-Giants, more Monday",
-      "source": "CBS Sports"
-    },
-    {
-      "query": "MLB home run record",
-      "title": "Biloxi Shuckers 1B Blake Burke named Southern League MVP; Made, Adamczewski and Fischer earn All-Star honors",
-      "source": "WLOX"
-    },
-    {
-      "query": "MLB home run record",
-      "title": "MLB Home Run Props &amp; Predictions Today: Best HR Picks &amp; Parlay for Sept. 21",
-      "source": "Covers.com"
-    },
-    {
-      "query": "MLB home run record",
-      "title": "Miami Marlins at Chicago Cubs odds, picks and predictions",
-      "source": "Pocono Record"
-    },
-    {
-      "query": "MLB home run record",
-      "title": "This Date in Baseball - Alfonso Soriano became baseball’s",
-      "source": "theScore"
-    },
-    {
-      "query": "MLB home run record",
-      "title": "Home Run Props Today: Best MLB Home Run Predictions, Picks for Monday, September 21",
-      "source": "FanDuel"
-    },
-    {
-      "query": "MLB manager",
-      "title": "Prada named Manager of the Year, Dishmey named Pitcher of the Year in 2026 Southern League Awards",
+      "query": "MLB injury",
+      "title": "Significant biceps injury likely to sideline red-hot Gasper for postseason",
       "source": "MLB.com"
     },
     {
-      "query": "MLB manager",
-      "title": "Giants manager Tony Vitello shares expectations for Bo Davidson's MLB debut",
-      "source": "nbcsportsbayarea.com"
+      "query": "MLB injury",
+      "title": "Red Sox dealt another injury blow as postseason looms",
+      "source": "98.5 The Sports Hub"
+    },
+    {
+      "query": "MLB injury",
+      "title": "Mickey Gasper ‘probably' out for postseason with biceps injury",
+      "source": "NBC Boston"
+    },
+    {
+      "query": "MLB trade",
+      "title": "MLB Polymarket referral code “CUSE” highlights $50 deal for Yankees-Orioles tonight",
+      "source": "Syracuse.com"
+    },
+    {
+      "query": "MLB trade",
+      "title": "ProphetX Promo Code WTOP: Claim $75 Bonus for College Football + MLB Trades (Sept. 25) – WTOP News",
+      "source": "WTOP News"
+    },
+    {
+      "query": "MLB trade",
+      "title": "Baseball Wiretap",
+      "source": "RealGM"
+    },
+    {
+      "query": "MLB trade",
+      "title": "The 5 Biggest 2026 MLB Trade Deadline Losers With One Series Left in the Season",
+      "source": "SportsGrid"
+    },
+    {
+      "query": "MLB home run record",
+      "title": "AL RBI leader Alonso now 1st in HRs after blasting 2, including 471-footer",
+      "source": "MLB.com"
+    },
+    {
+      "query": "MLB home run record",
+      "title": "Murakami's 34th Home Run Breaks Japanese Debut Record in MLB",
+      "source": "조선일보"
+    },
+    {
+      "query": "MLB home run record",
+      "title": "White Sox's Colson Montgomery Sets MLB Record No Player Wants to Own",
+      "source": "Sports Illustrated"
+    },
+    {
+      "query": "MLB home run record",
+      "title": "What is the 40/40 club in baseball? More about PCA's feat",
+      "source": "ABC7 San Francisco"
+    },
+    {
+      "query": "MLB home run record",
+      "title": "Milwaukee Brewers clinch MLB’s best record, home-field advantage throughout playoffs",
+      "source": "WFRV Local 5"
     },
     {
       "query": "MLB manager",
-      "title": "How to prepare for a potential lockout as a fantasy baseball league manager",
-      "source": "ESPN"
+      "title": "MLB news: Chicago baseball fans celebrate as Cubs, White Sox clinch playoff berths",
+      "source": "ABC7 Chicago"
     },
     {
       "query": "MLB manager",
-      "title": "Giants Talk: What Tony Vitello must improve in second season as MLB manager",
-      "source": "Yahoo Sports"
+      "title": "Pirates dodging MLB manager hot seat misses Pittsburgh's bigger problem",
+      "source": "Rum Bunter"
+    },
+    {
+      "query": "MLB manager",
+      "title": "Dodgers manager Roberts expects Ohtani to get the at-bats he needs for playoffs by season's end",
+      "source": "LancasterOnline"
     }
   ]
 }

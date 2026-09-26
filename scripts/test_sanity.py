@@ -31,22 +31,12 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 
 import sanity  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    if got != want:
-        fails += 1
-        print("NG  %s: %r (期待 %r)" % (label, got, want))
-    else:
-        print("ok  %s" % label)
+from checks_report import check, section, done  # noqa: E402
 
 
 # --- 読み取り -------------------------------------------------------------
 # 実際に止めてしまった文を、そのまま置く。
-print("--- 数字の読み取り ---")
+section("数字の読み取り")
 check("桁区切りの中を単位に結び付けない（9/2に長編を止めた）",
       sanity.parse_line("およそ26万回ね。正確には257,422回よ。"), {})
 check("高評価の件数を成績と読まない",
@@ -143,6 +133,4 @@ with tempfile.TemporaryDirectory() as tmp:
             cwd=folder, capture_output=True, text=True, encoding="utf-8")
         check(label, proc.returncode, code)
         check(label + "（出力JSON）", bool(json.loads(result.read_text(encoding="utf-8"))["impossible"]), bool(code))
-
-print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
-sys.exit(1 if fails else 0)
+sys.exit(done())

@@ -29,6 +29,11 @@ import json
 import os
 import pathlib
 import sys
+import warnings
+from checks_report import passed, passes  # noqa: E402
+
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, module="PIL")
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -81,7 +86,7 @@ def check(label, fn, *args, allow_none=False, **kw):
         return
     if im is None:
         if allow_none:
-            print("ok  %s: 材料が足りないので描かない(想定どおり)" % label)
+            passed()
         else:
             fails += 1
             print("NG  %s: 何も返しませんでした" % label)
@@ -90,7 +95,7 @@ def check(label, fn, *args, allow_none=False, **kw):
         fails += 1
         print("NG  %s: 背景だけです(材料が渡っていない可能性)" % label)
         return
-    print("ok  %s" % label)
+    passed()
 
 
 def main() -> int:
@@ -181,6 +186,27 @@ def main() -> int:
             if (ps.get("leagues") or {}).get(lid):
                 check("%s トーナメント表(%s)" % (tag, lid),
                       g.render_ps_bracket, p, ps, lid)
+        # ポストシーズン中のシリーズの画面。9/28からの形なので、
+        # 材料は作り物で見る（王手・決着・日本人選手の行）。
+        _sr = [{"key": "D:119-143", "round": "D", "round_jp": "地区シリーズ",
+                "stage": 2, "league_jp": "ナ・リーグ", "best_of": 5,
+                "need": 3, "played": 2, "over": False, "winner": None,
+                "next": {"day": "10月9日", "game": 3},
+                "teams": [{"id": 119, "name": "ドジャース", "wins": 2,
+                           "players": ["大谷翔平", "山本由伸"]},
+                          {"id": 143, "name": "フィリーズ", "wins": 0,
+                           "players": []}]},
+               {"key": "D:112-158", "round": "D", "round_jp": "地区シリーズ",
+                "stage": 2, "league_jp": "ナ・リーグ", "best_of": 5,
+                "need": 3, "played": 3, "over": True, "winner": 158,
+                "next": None,
+                "teams": [{"id": 158, "name": "ブリュワーズ", "wins": 3,
+                           "players": []},
+                          {"id": 112, "name": "カブス", "wins": 0,
+                           "players": ["今永昇太", "鈴木誠也"]}]}]
+        check("%s シリーズの現在地" % tag, g.render_ps_series, p,
+              {"series": _sr}, ["D:119-143", "D:112-158"],
+              "日本人選手のいるシリーズ")
         check("%s アウトロ" % tag, g.render_outro, p)
 
     print("\n--- 冒頭(枠ごとに材料が違う) ---")
@@ -329,13 +355,12 @@ def main() -> int:
         fails += 1
         print("NG  線に近い選手を選べていない")
     else:
-        print("ok  線に近い選手: %s（%s）"
-              % (_lead[0]["name"], _lead[1]["text"]))
+        passed()
     if g.race_lead(_no_jp) is not None:
         fails += 1
         print("NG  日本人がいないのに選手を返した")
     else:
-        print("ok  日本人がいない日は選ばない")
+        passed()
     # クラブ名が長い日。**はみ出させない。**
     check("クラブ名が長い日", g.render_race_line, 1.0, _comp,
           {**_line, "inside": [{**_rows[0],
@@ -365,7 +390,7 @@ def main() -> int:
         print("NG  動きの終わり %.2f に間に合わない: %s"
               % (g.ANIM_END, "、".join(late)))
     else:
-        print("ok  9〜18回まで、最後の列が動きの終わりまでに開く")
+        passed()
 
     print("\n--- 成績の行が幅に収まるか ---")
     from PIL import Image as _I, ImageDraw as _ID
@@ -387,7 +412,7 @@ def main() -> int:
         for o in over[:3]:
             print("      " + o)
     else:
-        print("ok  すべて収まる(%d件)" % len(recap.get("players") or []))
+        passed()
     # 落とした行は、失敗ではないが黙って消えるので出す。
     # 落とすものが無くなってなお入らない日は、上の NG に出る。
     for c in cut[:5]:
@@ -399,7 +424,8 @@ def main() -> int:
     fails += check_expression()
     fails += check_longform()
 
-    print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
+    print("%d件すべて通過" % passes() if not fails
+          else "%d件失敗 / %d件中" % (fails, fails + passes()))
     return 1 if fails else 0
 
 
@@ -473,7 +499,7 @@ def check_thumbnails() -> int:
             bad += 1
             print("NG  %s: 背景だけです" % label)
         else:
-            print("ok  %s を描けた" % label)
+            passed()
     return bad
 def check_peek_room(players, voices) -> int:
     """立ち絵が出る帯に、中身がはみ出していないか。
@@ -524,7 +550,7 @@ def check_peek_room(players, voices) -> int:
             print("NG  %s: 顔の出る帯に中身が%.1f%%はみ出しています"
                   % (label, lit * 100))
         else:
-            print("ok  %s" % label)
+            passed()
     g.set_spoken("")
     return bad
 
@@ -594,8 +620,7 @@ def check_still(players, vids, voices, reps, talk) -> int:
               % (cut, "、".join(late)))
         print("      video_common.STILL_AFTER を上げてください")
         return 1
-    print("ok  いちばん遅いもの %.3f < %.2f（%d画面）"
-          % (worst, cut, len(cases)))
+    passed()
     return 0
 
 
@@ -647,7 +672,7 @@ def check_expression() -> int:
             print("NG  「%s」%s → %s（%s のはず）"
                   % (text[:30], ("／空気=" + mood) if mood else "", got, want))
     if not bad:
-        print("ok  %d通り、当てた表情が変わっていません" % len(cases))
+        passed()
 
     # 偏り。ずんだもんの台詞は問いばかりなので、
     # 1つの表情に寄りすぎていないかを見る。
@@ -669,8 +694,7 @@ def check_expression() -> int:
         print("NG  ずんだもんの台詞10行が「%s」に%d行寄っています" % (top, n))
         print("      台詞は変わっているのに、絵が同じままになります")
     else:
-        print("ok  偏りなし（いちばん多い「%s」で%d/%d行）"
-              % (top, n, len(zunda)))
+        passed()
     return bad
 
 
@@ -754,8 +778,7 @@ def check_longform() -> int:
         print("NG  冒頭の札: %s: %s" % (type(e).__name__, str(e)[:90]))
 
     if not bad:
-        print("ok  札%d種 × 長さ%d通り、はみ出しも捨てもありません"
-              % (len(cards), len(texts)))
+        passed()
 
     # 置ける場所どうしが重なっていないか。座標なので数えれば分かる。
     print("\n--- 長編の割りつけが重なっていないか ---")
@@ -774,7 +797,7 @@ def check_longform() -> int:
         bad += 1
         print("NG  " + "、".join(over))
     else:
-        print("ok  札・台詞・立ち絵が重なりません")
+        passed()
     return bad
 
 

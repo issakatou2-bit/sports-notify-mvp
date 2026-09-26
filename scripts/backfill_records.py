@@ -37,16 +37,46 @@ RECORD = "data/published_videos.json"
 # 上から順に見て、最初に当たったものを採る。順番に意味がある:
 # 「現地のファンは何と言ったか」と「現地メディアは何と言っているか」は
 # よく似ているので、取り違えないよう長い方を先に置く。
+#
+# 9/23に、公開済みの全タイトルを通して作り直した。8月の規則のままで、
+# 長編11本を「コメント欄の回」（題に「MLB公式コメント欄を読み解く」が
+# 入る）、順位争い3本を「欧州サッカーの日次」と取り違え、進出争い22本・
+# 現地の報道33本は見分けられていなかった。**取り違えると、欠けた記録を
+# 別の枠に書き込む。**具体的なものから先に置く。
 PATTERNS = [
-    ("weekly", r"MLBの1週間を振り返る"),
-    ("daily_soccer", r"欧州サッカー"),
-    ("daily", r"明日の注目試合|今夜の注目試合"),
-    ("morning_press", r"現地メディアは何と言っている"),
+    ("longform", r"【海外の反応】|コメント欄を読み解く|成績と進出争い"),
+    ("soccer_race", r"順位争い【欧州サッカー】"),
+    ("daily_soccer", r"欧州サッカー|注目試合【サッカー】"),
+    ("verdict", r"答え合わせ"),
+    ("weekly", r"1週間を振り返る|今週の日本人選手"),
+    ("morning_postseason", r"ポストシーズン(?:進出争い)? #Shorts"),
+    ("morning_press", r"現地メディア|番記者の投稿|現地はこう報じた"),
     ("morning_voices", r"現地のファンは何と言った|コメント欄"),
-    ("morning_local", r"現地で最も注目された試合"),
-    ("morning_player", r"通算成績[・･]今季"),
-    ("morning", r"勝利貢献スコア"),
+    ("morning_local", r"現地で最も(?:注目された|見られた)試合|現地での注目度"
+                      r"|再生回数ランキングと話題のチーム"),
+    ("morning_player", r"通算成績[・･]"),
+    ("morning", r"勝利貢献スコア|日本人選手の成績まとめ|の日本人選手 #Shorts"),
+    ("daily", r"注目試合"),
 ]
+
+
+def uploads_entries(days: int = 15) -> list:
+    """RSSが取れない日の取り直し。形は feed_entries と同じ。"""
+    import os
+    key = os.environ.get("YOUTUBE_API_KEY") or ""
+    if not key:
+        return []
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import channel_feeds
+    out = []
+    for v in channel_feeds.fetch_uploads(key, CHANNEL_ID, hours=24 * days):
+        try:
+            t = datetime.fromisoformat(v["published_at"].replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        out.append((t.astimezone(JST), v["video_id"], v["title"]))
+    out.sort()
+    return out
 
 
 def feed_entries() -> list:
@@ -89,8 +119,25 @@ def main() -> int:
     except (OSError, json.JSONDecodeError):
         rec = {}
 
+    # **取れないことと、間違っていることは別。**
+    # YouTube の一覧は GitHub の実行環境から 404 が返る日がある
+    # （手元からは同じURLが200で返る）。台帳を埋める道具なので、
+    # 取れない日は何もしないのが正しく、健康診断ごと赤にする理由はない。
+    # ただし黙ると気づけないので、理由は必ず残す。
+    try:
+        entries = feed_entries()
+    except Exception as e:                           # noqa: BLE001
+        print(f"[warn] チャンネルのRSSを取れません（{e}）。")
+        # 9/19から毎日404なので、鍵があればアップロード一覧で取り直す
+        # （1回1ユニット。channel_feeds と同じ取り方）。
+        entries = uploads_entries()
+        if not entries:
+            print("[warn] 今回は台帳を触りません。続けて落ちるようなら経路を疑う。")
+            return 0
+        print(f"[info] アップロード一覧から{len(entries)}本")
+
     added = []
-    for when, vid, title in feed_entries():
+    for when, vid, title in entries:
         kind = kind_of(title)
         if not kind:
             print(f"(区分が分かりません) {title[:60]}")
