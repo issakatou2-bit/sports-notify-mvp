@@ -15,6 +15,15 @@ ELIMINATED = "E"
 NO_DIFF = (None, "-", "")
 
 
+def clinch_label(row: dict):
+    """A postseason berth does not imply winning the division."""
+    if row.get("div_champ"):
+        return "地区優勝"
+    if row.get("clinched") or row.get("wc_clinched"):
+        return "PS進出"
+    return None
+
+
 def _gb(row: dict):
     """差の文字列。無いとき None。敗退は ELIMINATED のまま返す。"""
     value = row.get("wc_gb")

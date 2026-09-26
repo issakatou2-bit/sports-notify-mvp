@@ -63,7 +63,7 @@ FONT_CANDIDATES = video_common.FONT_CANDIDATES
 import local_voices
 import mlb_buzz
 import morning_recap
-from race_words import ps_label, race_is_over
+from race_words import clinch_label, ps_label, race_is_over
 
 W, H = 1080, 1920
 FPS = 24
@@ -2015,11 +2015,16 @@ def ps_right(tm: dict):
     見出しを付けずに数字だけ出すことはしない。
     """
     m = tm.get("magic")
-    if tm.get("clinched") or tm.get("div_champ"):
-        return "決定", "地区優勝", True
+    clinch = clinch_label(tm)
+    if clinch:
+        return "決定", clinch, True
     if isinstance(m, int):
         return str(m), "優勝マジック", m <= 10
+    if tm.get("div_rank") == 1:
+        return "首位", "地区（未確定）", False
     gb = tm.get("wc_gb")
+    if tm.get("eliminated") or gb == "E":
+        return "敗退", "PS進出", False
     if gb is None:
         # 最後の枠にいる球団は、差が返らない（自分が基準なので）。
         return "圏内", "ワイルドカード最後の枠", False
@@ -2132,7 +2137,7 @@ def render_ps_league(p, league: dict, lid: str = "104"):
     lead = (league.get("leaders") or [])[:3]
     wc = (league.get("wildcards") or [])[:3]
     out = (league.get("chasing") or [])[:2]
-    groups = [("地区優勝　第1〜3シード", lead, True, 1),
+    groups = [("地区首位　第1〜3シード", lead, True, 1),
               ("ワイルドカード　第4〜6シード", wc, True, 4),
               (None, out, False, None)]
 
@@ -2146,7 +2151,7 @@ def render_ps_league(p, league: dict, lid: str = "104"):
         else:
             # 枠の線。ここが画面の主題なので、はっきり引く。
             y += 12
-            s = "──── ここまでが進出 ────"
+            s = "── 今日終われば進出圏内 ──"
             d.text(((W - d.textlength(s, font=font(30))) / 2, y), s,
                    font=font(30), fill=ACCENT)
             y += 56
@@ -2420,6 +2425,9 @@ def render_race_line(p, comp: dict, line: dict):
             parts.append("出 " + "・".join(mv["out"][:2]))
         d.text((96, y + 30), "昨日から　" + "　".join(parts),
                font=font(30), fill=JP)
+    note_y = y + (100 if mv.get("in") or mv.get("out") else 40)
+    d.text((70, note_y), "現時点の順位です。出場決定ではありません", font=font(30), fill=DIM)
+    d.text((70, note_y + 46), "欧州出場枠は追加枠・カップ戦の結果等で変動", font=font(28), fill=DIM)
     return im
 
 
