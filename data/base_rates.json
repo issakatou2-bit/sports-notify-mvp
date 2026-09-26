@@ -1,28 +1,28 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 307,
-    "home_wins": 167,
+    "games": 317,
+    "home_wins": 173,
     "draws": 0,
-    "away_wins": 140,
-    "home_win_pct": 54,
-    "avg_total": 8.7,
-    "one_run": 89,
+    "away_wins": 144,
+    "home_win_pct": 55,
+    "avg_total": 8.6,
+    "one_run": 91,
     "one_run_pct": 29,
-    "shutouts": 35,
-    "shutout_pct": 11
+    "shutouts": 39,
+    "shutout_pct": 12
   },
   "same_division": {
-    "games": 98,
-    "home_wins": 48,
+    "games": 104,
+    "home_wins": 51,
     "draws": 0,
-    "away_wins": 50,
+    "away_wins": 53,
     "home_win_pct": 49,
     "avg_total": 9.2,
-    "one_run": 28,
-    "one_run_pct": 29,
-    "shutouts": 10,
-    "shutout_pct": 10
+    "one_run": 29,
+    "one_run_pct": 28,
+    "shutouts": 12,
+    "shutout_pct": 12
   },
   "venues": {
     "カウフマン・スタジアム": {
@@ -41,20 +41,16 @@
       "games": 9,
       "avg_total": 10.0
     },
-    "フェンウェイ・パーク": {
-      "games": 14,
-      "avg_total": 9.7
-    },
-    "レート・フィールド": {
-      "games": 17,
-      "avg_total": 9.6
-    },
     "ナショナルズ・パーク": {
       "games": 5,
       "avg_total": 9.6
     },
     "リグレー・フィールド": {
       "games": 22,
+      "avg_total": 9.5
+    },
+    "レート・フィールド": {
+      "games": 18,
       "avg_total": 9.5
     },
     "エンゼル・スタジアム": {
@@ -65,21 +61,21 @@
       "games": 11,
       "avg_total": 9.3
     },
+    "ペトコ・パーク": {
+      "games": 14,
+      "avg_total": 9.2
+    },
+    "フェンウェイ・パーク": {
+      "games": 16,
+      "avg_total": 9.1
+    },
     "グローブライフ・フィールド": {
       "games": 10,
       "avg_total": 9.1
     },
-    "ペトコ・パーク": {
-      "games": 13,
-      "avg_total": 8.8
-    },
     "ヤンキー・スタジアム": {
-      "games": 14,
-      "avg_total": 8.6
-    },
-    "ローンデポ・パーク": {
-      "games": 7,
-      "avg_total": 8.6
+      "games": 16,
+      "avg_total": 8.9
     },
     "ドジャー・スタジアム": {
       "games": 23,
@@ -93,9 +89,9 @@
       "games": 8,
       "avg_total": 8.0
     },
-    "シチズンズ・バンク・パーク": {
-      "games": 10,
-      "avg_total": 7.6
+    "ローンデポ・パーク": {
+      "games": 8,
+      "avg_total": 7.9
     },
     "カムデン・ヤーズ": {
       "games": 10,
@@ -104,6 +100,10 @@
     "ダイキン・パーク": {
       "games": 18,
       "avg_total": 7.3
+    },
+    "シチズンズ・バンク・パーク": {
+      "games": 11,
+      "avg_total": 7.1
     },
     "シティ・フィールド": {
       "games": 8,
