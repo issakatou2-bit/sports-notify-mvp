@@ -298,6 +298,21 @@ def _jp_name_hint() -> str:
                      for p in JP_PLAYERS_MLB)
 
 
+def guard_translation(source: str, translated: str) -> str:
+    """Keep baseball shorthand from inventing a run count or challenge actor."""
+    hit = re.search(r"\bRBI\s+(double|triple)\b", source, re.I)
+    counted = re.search(r"\b(?:one|two|three|four|\d+)[ -]+(?:run|RBI)\b", source, re.I)
+    if hit and not counted:
+        base = "二塁打" if hit.group(1).lower() == "double" else "三塁打"
+        translated = re.sub(r"[0-9０-９一二三四]+(?:点|打点)(?:の)?(?:適時|タイムリー)?" + base,
+                            "適時" + base, translated)
+    # The English headline says only *after* a challenge. It doesn't say who
+    # challenged. Retain the named pitcher as the actor of the strikeout only.
+    if re.fullmatch(r".+ (?:fans|strikes out) .+ after (?:an? )?ABS challenge[.!]?", source, re.I):
+        translated = re.sub(r"^(.+?)がABS判定に異議を唱えた後、", r"ABSチャレンジ後、\1が", translated)
+    return translated
+
+
 def translate(posts: list, api_key: str) -> list:
     """
     まとめて1回で訳す。1件ずつ呼ぶと件数ぶん課金される。
@@ -324,6 +339,8 @@ def translate(posts: list, api_key: str) -> list:
         "    Rocchio October → ×「ロッチオクトーバーのロッチオ」\n"
         "  何のことか分からない語は、訳さずに英語のまま置く\n"
         "・書かれていないことは足さない\n"
+        "・RBI doubleは適時二塁打。doubleを2点、tripleを3点と解釈しない。得点数は明記された場合だけ訳す\n"
+        "・after ABS challengeはABSチャレンジ後。誰が要求したか書かれていなければ主語を補わない\n"
         "・**絵文字はそのまま残す**（書き手の熱量の一部）\n"
         "・80文字以内に収める\n"
         "・URLや記事へのリンクは訳さず省く\n"
@@ -359,7 +376,7 @@ def translate(posts: list, api_key: str) -> list:
             lines[int(m.group(1))] = m.group(2).strip()
     for i, p in enumerate(posts, 1):
         if i in lines:
-            p["jp"] = lines[i]
+            p["jp"] = guard_translation(p["text"], lines[i])
     return posts
 
 
