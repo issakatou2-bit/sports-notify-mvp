@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-09-25T13:02:04.913107+00:00",
+  "updated_at": "2026-09-26T06:02:13.712764+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-09-25",
-  "total_games": 2523,
+  "end": "2026-09-26",
+  "total_games": 2540,
   "min_games": 20,
   "venues": {
     "Sutter Health Park": {
-      "games": 73,
-      "runs": 825,
+      "games": 74,
+      "runs": 836,
       "avg_runs": 11.3,
       "rank": 1,
       "total": 30
@@ -21,23 +21,23 @@
       "total": 30
     },
     "Nationals Park": {
-      "games": 79,
-      "runs": 847,
-      "avg_runs": 10.72,
+      "games": 80,
+      "runs": 860,
+      "avg_runs": 10.75,
       "rank": 3,
+      "total": 30
+    },
+    "Kauffman Stadium": {
+      "games": 79,
+      "runs": 787,
+      "avg_runs": 9.96,
+      "rank": 4,
       "total": 30
     },
     "PNC Park": {
       "games": 81,
       "runs": 803,
       "avg_runs": 9.91,
-      "rank": 4,
-      "total": 30
-    },
-    "Kauffman Stadium": {
-      "games": 78,
-      "runs": 766,
-      "avg_runs": 9.82,
       "rank": 5,
       "total": 30
     },
@@ -49,30 +49,30 @@
       "total": 30
     },
     "Citizens Bank Park": {
-      "games": 79,
-      "runs": 736,
-      "avg_runs": 9.32,
+      "games": 80,
+      "runs": 738,
+      "avg_runs": 9.22,
       "rank": 7,
       "total": 30
     },
     "Target Field": {
-      "games": 77,
-      "runs": 707,
-      "avg_runs": 9.18,
+      "games": 78,
+      "runs": 719,
+      "avg_runs": 9.22,
       "rank": 8,
       "total": 30
     },
     "American Family Field": {
-      "games": 79,
-      "runs": 710,
-      "avg_runs": 8.99,
+      "games": 80,
+      "runs": 722,
+      "avg_runs": 9.03,
       "rank": 9,
       "total": 30
     },
     "Rate Field": {
-      "games": 78,
-      "runs": 699,
-      "avg_runs": 8.96,
+      "games": 79,
+      "runs": 706,
+      "avg_runs": 8.94,
       "rank": 10,
       "total": 30
     },
@@ -91,9 +91,9 @@
       "total": 30
     },
     "Yankee Stadium": {
-      "games": 78,
-      "runs": 683,
-      "avg_runs": 8.76,
+      "games": 80,
+      "runs": 704,
+      "avg_runs": 8.8,
       "rank": 13,
       "total": 30
     },
@@ -119,9 +119,9 @@
       "total": 30
     },
     "Oracle Park": {
-      "games": 80,
-      "runs": 693,
-      "avg_runs": 8.66,
+      "games": 81,
+      "runs": 695,
+      "avg_runs": 8.58,
       "rank": 17,
       "total": 30
     },
@@ -153,38 +153,38 @@
       "rank": 21,
       "total": 30
     },
-    "loanDepot park": {
-      "games": 78,
-      "runs": 659,
-      "avg_runs": 8.45,
-      "rank": 22,
-      "total": 30
-    },
     "Busch Stadium": {
       "games": 81,
       "runs": 683,
       "avg_runs": 8.43,
+      "rank": 22,
+      "total": 30
+    },
+    "loanDepot park": {
+      "games": 79,
+      "runs": 662,
+      "avg_runs": 8.38,
       "rank": 23,
       "total": 30
     },
     "Rogers Centre": {
-      "games": 78,
-      "runs": 649,
-      "avg_runs": 8.32,
+      "games": 79,
+      "runs": 660,
+      "avg_runs": 8.35,
       "rank": 24,
       "total": 30
     },
     "Fenway Park": {
-      "games": 78,
-      "runs": 649,
-      "avg_runs": 8.32,
+      "games": 80,
+      "runs": 658,
+      "avg_runs": 8.22,
       "rank": 25,
       "total": 30
     },
     "Comerica Park": {
-      "games": 78,
-      "runs": 632,
-      "avg_runs": 8.1,
+      "games": 79,
+      "runs": 647,
+      "avg_runs": 8.19,
       "rank": 26,
       "total": 30
     },
@@ -202,17 +202,17 @@
       "rank": 28,
       "total": 30
     },
-    "T-Mobile Park": {
-      "games": 78,
-      "runs": 609,
-      "avg_runs": 7.81,
+    "Petco Park": {
+      "games": 79,
+      "runs": 622,
+      "avg_runs": 7.87,
       "rank": 29,
       "total": 30
     },
-    "Petco Park": {
-      "games": 78,
-      "runs": 607,
-      "avg_runs": 7.78,
+    "T-Mobile Park": {
+      "games": 79,
+      "runs": 621,
+      "avg_runs": 7.86,
       "rank": 30,
       "total": 30
     }

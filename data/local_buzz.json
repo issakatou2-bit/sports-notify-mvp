@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-25T06:02:36.638198+00:00",
+  "updated_at": "2026-09-26T06:02:26.876142+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,81 +13,77 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 6,
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 3,
       "tone": "好調",
-      "gist": "Pete Crow-Armstrong40/40達成、キュー"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 5,
-      "tone": "好調",
-      "gist": "ホワイトソックス100敗後のプレーオフ進出は史上初"
+      "gist": "レッドソックスがフェンウェイでの定期シーズン最終戦で好調"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
-      "mentions": 4,
-      "tone": "好調",
-      "gist": "パドレスが3年連続でプレーオフ進出"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
       "mentions": 3,
-      "tone": "好調",
-      "gist": "ガーディアンズが3年連続でプレーオフ進出"
+      "tone": "不振",
+      "gist": "パドレスがダイヤモンドバックスに敗れワイルドカード争いで失敗"
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
       "mentions": 2,
       "tone": "好調",
-      "gist": "ブリュワーズが初の100勝達成、1番シードで確定"
+      "gist": "ムラカミが2本塁打、ホワイトソックスがALセントラル争いに集"
     },
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "ドジャースが2番シード確定、1回戦バイ獲得"
+      "tone": "不振",
+      "gist": "フィリーズがワイルドカード最終枠をダイヤモンドバックスに脅か"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
       "mentions": 2,
       "tone": "話題",
-      "gist": "Schlittlerが歴史的ERA、ヤンキース-オリオールズ"
+      "gist": "ベルランダーがタイガーズへの思いを語る"
     },
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 1,
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 2,
       "tone": "不振",
-      "gist": "マリナーズがプレーオフ進出から消滅"
+      "gist": "deGromの最終登板で敗れ、ユングが骨折で離脱"
+    },
+    {
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "ロイヤルズがガーディアンズに敗れALセントラル争いで後退"
+    },
+    {
+      "team_id": "137",
+      "name": "ジャイアンツ",
+      "name_en": "San Francisco Giants",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ドジャースがジャイアンツをシャットアウト、最速試合になる"
     }
   ],
   "players": [
     {
       "name": "村上宗隆",
-      "mentions": 2
+      "mentions": 4
     },
     {
-      "name": "大谷翔平",
-      "mentions": 1
-    },
-    {
-      "name": "今永昇太",
+      "name": "佐々木朗希",
       "mentions": 1
     }
   ]
