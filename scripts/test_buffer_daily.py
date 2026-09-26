@@ -118,6 +118,27 @@ class BufferTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             daily.caption('twitter', '2026-09-11', {**self.record,'title':'今'*200})
 
+    def test_postseason_caption_tracks_the_video_not_the_wall_clock(self):
+        for service in daily.CHANNELS:
+            for day, title in [('2026-09-29', 'カブス 0勝1敗｜ポストシーズン'),
+                               ('2026-10-31', 'ドジャース WS制覇｜ポストシーズン')]:
+                text = daily.caption(service, day, {**self.record, 'title': title},
+                                     'morning_postseason')
+                self.assertNotIn('進出争い', text)
+                self.assertNotIn('マジック', text)
+                self.assertIn('勝敗', text)
+            regular = daily.caption(service, '2026-09-26', {**self.record,
+                'title': 'ガーディアンズ M1｜ポストシーズン進出争い'}, 'morning_postseason')
+            self.assertIn('進出争い', regular)
+            self.assertIn('マジック', regular)
+
+    def test_unknown_postseason_title_does_not_invent_a_phase_or_mutate_defaults(self):
+        text = daily.caption('instagram', '2026-11-05', {**self.record,
+            'title': 'シーズンを振り返る'}, 'morning_postseason')
+        self.assertNotIn('マジック', text)
+        self.assertNotIn('各シリーズの勝敗', text)
+        self.assertEqual(daily.KIND_WORDS['morning_postseason']['short'], '進出争い')
+
     def test_rollout_selects_only_verified_channels(self):
         self.assertEqual(daily.selected_services('twitter,instagram'), ('twitter','instagram'))
         self.assertNotIn('tiktok', daily.selected_services('twitter,instagram'))

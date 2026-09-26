@@ -379,8 +379,21 @@ KIND_WORDS = {
 }
 
 
-def words(kind: str) -> dict:
-    return KIND_WORDS.get(kind) or KIND_WORDS[DEFAULT_KIND]
+def words(kind: str, record=None) -> dict:
+    result = dict(KIND_WORDS.get(kind) or KIND_WORDS[DEFAULT_KIND])
+    if kind == 'morning_postseason':
+        from race_words import ps_label
+        # Use the verified video's edition, not today's possibly newer JSON.
+        # The generator includes ps_label in the published title.
+        title = (record or {}).get('title', '')
+        if ps_label({}) in title:
+            return result
+        result.update(short=ps_label({'phase': 'postseason'}),
+                      long=ps_label({'phase': 'postseason'}),
+                      lead='各シリーズの勝敗と、勝ち上がりの状況を確認します')
+        if 'ポストシーズン' not in title:
+            result['lead'] = '公開動画で最新の状況を確認できます'
+    return result
 
 
 def first_game_reason(description):
@@ -450,7 +463,7 @@ def friendly_lead(title):
 
 
 def caption(service, day, record, kind=DEFAULT_KIND):
-    w = words(kind)
+    w = words(kind, record)
     title = ht.strip_tags(record['title'].split(w['cut'])[0].replace('【MLB】', '').strip())
     if kind == DEFAULT_KIND:
         title = re.split(r'｜\d{1,2}/\d{1,2}の注目試合', title)[0].strip()
