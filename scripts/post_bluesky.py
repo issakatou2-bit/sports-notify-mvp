@@ -34,6 +34,21 @@ from public_short import public_short
 MAX_POST_GRAPHEMES = 280
 
 
+def report_failure(error, stage):
+    # Transport errors can stringify to an empty string. Do not dump response
+    # bodies or request headers (which can contain credentials).
+    cause = error.__cause__
+    detail = type(error).__name__ + (f" / {type(cause).__name__}" if cause else "")
+    message = f"Bluesky投稿失敗: {stage} / {detail}"
+    print(f"::warning::{message}", file=sys.stderr)
+    if stage == "送信":
+        message += "。送達は未確定です。公開投稿を照合するまで再送しません"
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as f:
+            f.write("\n## Bluesky\n" + message + "\n")
+
+
 def emit_x_text(games: list) -> None:
     """
     Xへ貼るための本文を、実行ページに出す。
@@ -85,14 +100,17 @@ def main():
         print("[info] BLUESKY_HANDLE/BLUESKY_APP_PASSWORD未設定のためスキップします")
         return
 
-    body, hashtags, site_url = post_common.build_post(games, MAX_POST_GRAPHEMES)
-    short = public_short(args.kind)
-
+    stage = "本文・動画確認"
     try:
+        body, hashtags, site_url = post_common.build_post(games, MAX_POST_GRAPHEMES)
+        short = public_short(args.kind)
+        stage = "ライブラリ読込"
         from atproto import Client, client_utils, models
 
         client = Client()
+        stage = "ログイン"
         client.login(handle, app_password)
+        stage = "投稿組立"
         builder = client_utils.TextBuilder().text(body + "\n")
         for t in hashtags:
             builder = builder.tag(f"#{t} ", t)
@@ -105,11 +123,12 @@ def main():
                 uri=short['url'], title=short['title'], description='コレスポの注目試合を動画で。'))
         else:
             builder = builder.link(post_common.YOUTUBE_URL, post_common.YOUTUBE_URL)
+        stage = "送信"
         client.send_post(builder, embed=embed)
         print('[info] 対応する公開動画: ' + (short['url'] if short else '未確認のため一覧を案内'))
         print("[info] Blueskyに投稿しました")
     except Exception as e:
-        print(f"[warn] Bluesky投稿に失敗しました: {e}", file=sys.stderr)
+        report_failure(e, stage)
         sys.exit(1)
 
 
