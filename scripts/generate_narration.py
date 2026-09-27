@@ -334,6 +334,16 @@ def game_day(g: dict) -> str:
                              int(m.group(1)), int(m.group(2)))
 
 
+def _ps_round(g: dict) -> str:
+    """ポストシーズンの試合なら「地区シリーズ 第1戦」。違えば空。"""
+    for r in g.get("reasons") or []:
+        if r.get("tag") == "postseason":
+            m = re.match(r"^(.+?第[0-9]+戦)", (r.get("text") or "").strip())
+            if m:
+                return m.group(1)
+    return ""
+
+
 def pick_hook(games: list, availability=None) -> dict:
     """
     動画の1枚目に出す「最も具体的な事実」を選ぶ。
@@ -369,7 +379,30 @@ def pick_hook(games: list, availability=None) -> dict:
     for at, g in enumerate(games):
         for p in g.get("jp_starters") or []:
             if p.get("name"):
-                return {"big": "先発予定", "sub": p["name"], "at": at}
+                # PSなら回戦も言う（「地区シリーズ 第1戦に先発予定」）
+                rnd = _ps_round(g)
+                return {"big": (f"{rnd}に先発予定" if rnd else "先発予定"),
+                        "sub": p["name"], "at": at}
+
+    # 1.5 ポストシーズン。**回戦と第何戦、どちらが王手か**が、その日を
+    # 選んだ理由そのもの。これが無いと、PSの日の題が「所属チームの一戦」
+    # になる（レギュラーシーズンの言い方のまま）。
+    for at, g in enumerate(games):
+        for r in g.get("reasons") or []:
+            if r.get("tag") != "postseason":
+                continue
+            m = re.match(r"^(?P<what>.+?第[0-9]+戦)(?:\((?P<note>[^)]*)\))?$",
+                         (r.get("text") or "").strip())
+            if m:
+                note = m.group("note") or ""
+                if "王手" in note or "リード" in note:
+                    # 「ドジャースが2勝1敗で王手、フィリーズは負ければ敗退」は長い
+                    return {"big": m.group("what"), "sub": note.split("、")[0],
+                            "at": at}
+                # タイ・第1戦は球団名が入らないので、対戦カードを主語に
+                card = f"{g.get('away_team_name')}対{g.get('home_team_name')}"
+                return {"big": m.group("what") + (f"（{note}）" if note else ""),
+                        "sub": card, "at": at}
 
     # 2. 故障者リストから復帰したばかりの選手がいる球団の試合。
     #

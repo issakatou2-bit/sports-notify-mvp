@@ -187,4 +187,33 @@ op = ms.ps_open({"changes": ps.changes(held, []), "japanese": []})
 check("組み合わせが決まった日の入り", op[0],
       "ポストシーズンの組み合わせが決まったのだ？")
 
+section("19:00の注目試合（PSの日）")
+import generate_narration as gn  # noqa: E402
+import notability_engine as ne  # noqa: E402
+_g = ne.Game(game_id="1", league="MLB", home_team_id="119",
+             away_team_id="143", home_team_name="ドジャース",
+             away_team_name="フィリーズ", game_type="D", series_game=4,
+             series_length=5, series_wins=2, series_losses=1,
+             series_leader="143")
+check("王手はどちらの王手かを書く", ne.rule_postseason(_g)[0].text,
+      "地区シリーズ 第4戦(フィリーズが2勝1敗で王手、ドジャースは負ければ敗退)")
+_st = {"119": ne.Standing(team_id="119", division_rank=1, games_back=0.0,
+                          win_streak=5, wins=96, losses=66),
+       "143": ne.Standing(team_id="143", division_rank=1, games_back=0.0,
+                          win_streak=4, wins=95, losses=67)}
+_tags = {r.tag for r in ne.generate_reasons(_g, _st, {})}
+check("PSの試合に連勝・首位攻防などを付けない",
+      sorted(_tags & {"streak", "div", "ps_magic", "ps_race", "quality"}), [])
+check("PSの理由は付く", "postseason" in _tags, True)
+_base = {"league": "MLB", "home_team_name": "ドジャース",
+         "away_team_name": "フィリーズ"}
+check("見出しは回戦と王手",
+      gn.pick_hook([dict(_base, reasons=[{"tag": "postseason", "text":
+          "地区シリーズ 第4戦(ドジャースが2勝1敗で王手、フィリーズは負ければ敗退)"}])]),
+      {"big": "地区シリーズ 第4戦", "sub": "ドジャースが2勝1敗で王手", "at": 0})
+check("タイの日は対戦カードを主語に",
+      gn.pick_hook([dict(_base, reasons=[{"tag": "postseason",
+                                          "text": "地区シリーズ 第3戦(1勝1敗のタイ)"}])])["sub"],
+      "フィリーズ対ドジャース")
+
 sys.exit(done())

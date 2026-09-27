@@ -124,6 +124,9 @@ class Game:
     series_length: Optional[int] = None  # 何戦制か
     series_wins: Optional[int] = None    # そのシリーズのここまでの勝敗
     series_losses: Optional[int] = None
+    # リードしている球団のID（タイなら None）。**王手はどちらの王手か。**
+    # 勝敗の数字だけだと、AIが逆の球団を王手と書く余地がある。
+    series_leader: Optional[str] = None
 
 
 @dataclass
@@ -474,14 +477,23 @@ def rule_postseason(game: Game) -> list[Reason]:
     if w1 is not None and w2 is not None and game.series_length:
         need = (game.series_length + 1) // 2
         lead, trail = max(w1, w2), min(w1, w2)
+        who = {game.home_team_id: game.home_team_name,
+               game.away_team_id: game.away_team_name}.get(
+                   game.series_leader or "", "")
         if lead == need - 1 and trail == need - 1:
             text += f"({lead}勝{trail}敗。勝った方が突破)"
-        elif lead == need - 1:
-            text += f"({lead}勝{trail}敗で王手)"
         elif lead == trail:
             text += f"({lead}勝{trail}敗のタイ)"
+        elif lead == need - 1:
+            # **どちらの王手かを書く。**負けている側は後が無い。
+            other = (game.away_team_name if who == game.home_team_name
+                     else game.home_team_name)
+            text += (f"({who}が{lead}勝{trail}敗で王手、"
+                     f"{other}は負ければ敗退)" if who
+                     else f"({lead}勝{trail}敗で王手)")
         else:
-            text += f"({lead}勝{trail}敗)"
+            text += (f"({who}が{lead}勝{trail}敗でリード)" if who
+                     else f"({lead}勝{trail}敗)")
     return [Reason(tag="postseason", text=text, weight=w)]
 
 
@@ -1038,6 +1050,14 @@ def generate_reasons(game: Game, standings: dict, jp_team_map: dict) -> list[Rea
         return reasons
 
     reasons.extend(rule_japanese_player(game, jp_team_map))
+    # **ポストシーズンの試合には、レギュラーシーズンの規則を当てない。**
+    # 連勝・首位攻防・マジック・進出圏内同士は、順位表（レギュラー
+    # シーズンの最終成績）から作る理由で、PSでは意味が無い。当てると
+    # 「5連勝中」（シーズン最後の連勝）や「どちらも進出圏内」が並ぶ。
+    if (game.game_type or "R") != "R":
+        for rule in GAME_ONLY_RULES:
+            reasons.extend(rule(game))
+        return reasons
     # 9月・10月は、勝ち負けの意味が試合によって全く違う。
     reasons.extend(rule_postseason_race(game))
     for rule in GAME_ONLY_RULES:
@@ -2399,6 +2419,11 @@ def fetch_mlb_games_and_standings(date_str: str):
                     series_length=g.get("gamesInSeries"),
                     series_wins=(g.get("seriesStatus") or {}).get("wins"),
                     series_losses=(g.get("seriesStatus") or {}).get("losses"),
+                    series_leader=(None if (g.get("seriesStatus") or {})
+                                   .get("isTied") else
+                                   str(((g.get("seriesStatus") or {})
+                                        .get("winningTeam") or {})
+                                       .get("id") or "") or None),
                     home_probable=probables["home"],
                     away_probable=probables["away"],
                     venue_name=(g.get("venue") or {}).get("name"),
@@ -2842,8 +2867,23 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         structural_notes.append(
             "順位の差は勝ち点で表す。「ゲーム差」は野球の言い方なので"
             "使わないこと")
-    home_div = MLB_DIVISIONS.get(game["home_team_id"]) if not soccer else None
-    away_div = MLB_DIVISIONS.get(game["away_team_id"]) if not soccer else None
+    # **ポストシーズンの試合。**下に渡す勝敗・地区順位・連勝・直近10試合は
+    # レギュラーシーズンのもので、もう動かない。そのまま渡すと
+    # 「4連勝中の勢いで」「首位攻防」とレギュラーシーズンの話を書く。
+    # 同地区同士もPSでは当たる（ヤンキース対レッドソックス）が、もう
+    # 地区順位を争ってはいないので、同地区の注記も付けない。
+    ps_game = (not soccer) and (game.get("game_type") or "R") != "R"
+    if ps_game:
+        structural_notes.append(
+            f"この試合はポストシーズン（{POSTSEASON_NAME.get(game.get('game_type'), 'ポストシーズン')}）。"
+            "下の勝敗・地区順位・連勝・直近10試合はレギュラーシーズンの"
+            "最終成績で、ポストシーズンの勝敗ではない。**連勝・マジック・"
+            "地区の順位争い・首位攻防の話は書かないこと。**シリーズの勝敗は"
+            "理由の欄にあるとおりで、それ以外の勝敗を作らないこと")
+    home_div = (MLB_DIVISIONS.get(game["home_team_id"])
+                if not soccer and not ps_game else None)
+    away_div = (MLB_DIVISIONS.get(game["away_team_id"])
+                if not soccer and not ps_game else None)
     if home_div and away_div:
         if home_div == away_div:
             structural_notes.append(division_note(
