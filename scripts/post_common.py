@@ -15,6 +15,7 @@ SNSへ投稿する本文の組み立て。送信先に依存しない部分だ�
 
 import json
 import os
+from game_hook_guard import validated_hook
 from datetime import datetime, timedelta, timezone
 
 SITE_URL = os.environ.get("SITE_URL", "https://collespo.com/")
@@ -94,7 +95,7 @@ def build_rule_based_hook(game: dict) -> str:
 def game_line(game: dict) -> str:
     """1試合分の1行。'23:10 CWS vs HOU 村上の一発は出るか' の形。"""
     matchup = game.get("abbr_matchup") or game.get("matchup", "")
-    hook = game.get("notification_hook") or build_rule_based_hook(game)
+    hook = validated_hook(game) or build_rule_based_hook(game)
     # 解説文の要点強調に使う【】が混ざることがあるので取り除く。
     # ライバル関係の理由文は「見出し — 由来」の形なので見出しだけ使う。
     hook = hook.replace("【", "").replace("】", "").split(" — ")[0]

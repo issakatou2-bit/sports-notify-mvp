@@ -87,6 +87,18 @@ jobs:
             exit 1
           fi
 
+      - name: Verify carried-over game hooks
+        run: python scripts/game_hook_guard.py --games public/games.json --report build/carried_hook_claims.json
+
+      - name: Save hook validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-game-hook-checks
+          path: build/*hook_claims.json
+          retention-days: 7
+          if-no-files-found: ignore
+
       # mp3はリポジトリにあるので、そこから戻す。
       # feed.xml は公開中の回を維持し、番組紹介だけ現在の内容へ揃える。
       - name: Refresh podcast description
