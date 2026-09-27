@@ -42,6 +42,11 @@ on:
       player:
         description: '「今日の1人」をこの選手で作る (例: Pete Crow-Armstrong)'
         required: false
+      tiktok_inbox:
+        description: 'TikTokアプリの受信箱へも送る（公開は別操作、通常はBufferのみ）'
+        required: false
+        type: boolean
+        default: false
       force:
         description: 'true にすると、その日に投稿済みでも上げ直す'
         required: false
@@ -276,6 +281,7 @@ jobs:
           # 1本だけ落ちた日に、成功した分まで上げ直すと重複するため。
           MODES="${{ inputs.modes }}"
           CLAIM_FAILED=0
+          TIKTOK_FAILED=0
           for mode in ${MODES:-players postseason voices press}; do
             echo "::group::$mode"
             if [ "$mode" = "players" ]; then
@@ -435,11 +441,17 @@ jobs:
               echo "::error::$mode の投稿に失敗しました"
             fi
 
-            # TikTokへも同じものを出す。タイトルはYouTube側の記録から借りる。
+            # 通常のTikTok公開はBufferが担当。受信箱への二重転送を避けるため、
+            # アプリ側で仕上げる場合だけ手動入力で明示的に指定する。
             # 記録上の区分は players→morning / それ以外→morning_<mode>。
-            if [ -n "$TIKTOK_REFRESH_TOKEN" ]; then
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ] && \
+                [ "${{ inputs.tiktok_inbox }}" = "true" ] && \
+                [ -n "$TIKTOK_REFRESH_TOKEN" ]; then
               if [ "$mode" = "players" ]; then TK=morning; else TK="morning_${mode}"; fi
-              python scripts/post_tiktok.py --video "$VIDEO" --kind "$TK"
+              if ! python scripts/post_tiktok.py --video "$VIDEO" --kind "$TK"; then
+                echo "::warning::$mode のTikTok受信箱への転送に失敗しました（他の枠は続行します）"
+                TIKTOK_FAILED=1
+              fi
             fi
             echo "::endgroup::"
 
@@ -448,7 +460,22 @@ jobs:
             # したので、アップロードが何分に終わろうと公開は散る。
           done
           echo "claims_failed=$CLAIM_FAILED" >> "$GITHUB_OUTPUT"
+          echo "tiktok_failed=$TIKTOK_FAILED" >> "$GITHUB_OUTPUT"
           set -e
+
+      # Bufferは成功した実行の成果物だけを配信する。任意の受信箱転送の
+      # 失敗で、YouTube投稿済みの動画まで配信対象から外さない。
+      - name: Record optional TikTok inbox transfer failures
+        if: always() && steps.shorts.outputs.tiktok_failed == '1'
+        continue-on-error: true
+        run: |
+          echo "::warning::明示指定されたTikTok受信箱への転送に失敗しました"
+          {
+            echo "### TikTok受信箱への転送"
+            echo "明示指定された転送に失敗しました。ほかの枠の制作は継続しました。"
+            echo "この転送結果はTikTokでの公開結果ではありません。Buffer配信は別に確認してください。"
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1
 
       - name: 描画検査の失敗を実行結果に反映
         if: steps.shorts.outputs.claims_failed == '1'
@@ -488,6 +515,15 @@ jobs:
           bash scripts/commit_data.sh \
             "recap: ${{ github.run_id }}" \
             data/morning_recap.json data/venue_stats.json data/published_videos.json data/mlb_buzz.json data/local_buzz.json data/published_tiktok.json data/local_reporters.json data/local_voices.json data/playlists.json data/localized.json data/recap_history data/best_of_day.json data/player_profile.json data/player_kana.json data/roster_stats.json data/featured_players.json data/statcast.json data/rarity.json data/token_usage.json data/postseason.json data/postseason_prev.json
+
+      - name: Save postseason claim evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-ps-rendered-claims
+          path: build/ps_rendered_claims.json
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Save video as artifact
         if: always()

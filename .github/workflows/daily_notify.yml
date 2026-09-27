@@ -57,6 +57,7 @@ jobs:
           python scripts/postseason.py --out data/postseason.json || true
           python notability_engine.py --source mlb --out notable_games.json
           # 所属・欠場日数と出場可能な登録を区別。全配信より前に適用する。
+          python scripts/game_hook_guard.py --games notable_games.json --archive-dir archive --report build/mlb_hook_claims.json
           python scripts/mlb_availability.py --games notable_games.json --archive-dir archive
           # 誰が故障者リストから復帰したか。**推測しない。**
           #
@@ -87,6 +88,16 @@ jobs:
         run: |
           python notability_engine.py --source soccer \
             --out data/soccer_games.json
+          python scripts/game_hook_guard.py --games data/soccer_games.json --archive-dir archive --report build/soccer_hook_claims.json
+
+      - name: Save hook validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-game-hook-checks
+          path: build/*hook_claims.json
+          retention-days: 7
+          if-no-files-found: ignore
 
       # ニュースが取れなくても、動画もサイトも作れる。
       - name: Detect roster changes
