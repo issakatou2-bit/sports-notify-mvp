@@ -45,9 +45,18 @@ def ps_label(data: dict) -> str:
     題・説明・画面・サムネイル・掛け合いの5か所に「ポストシーズン進出争い」
     と書いてあった。短期決戦に入ったら、もう進出を争ってはいない。
     """
-    if (data or {}).get("phase") == "postseason":
+    if (data or {}).get("phase") in ("postseason", "settled"):
         return "ポストシーズン"
     return "ポストシーズン進出争い"
+
+
+def is_settled(data: dict) -> bool:
+    """レギュラーシーズンが終わって、組み合わせが確定しているか。
+
+    **確定したあとに「今日終わったら」と言わない。**言い方を分ける
+    場所はすべてこれを見る。
+    """
+    return (data or {}).get("phase") in ("postseason", "settled")
 
 
 def race_is_over(data: dict) -> bool:

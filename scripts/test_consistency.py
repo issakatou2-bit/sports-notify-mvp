@@ -172,7 +172,28 @@ check("一覧の区分が、健康診断の見る枠と同じ",
 check("一覧に重複が無い", len(pc.DAILY_LINEUP), len(_kinds))
 check("説明文が一覧から作られている",
       all(name in "".join(uy.DAILY_LINEUP_LINES)
-          for _, name, _, _ in pc.DAILY_LINEUP), True)
+          for _, name, _, _ in pc.lineup()), True)
+
+# 時期で変わる枠。**材料は固定**（その日の postseason.json に頼ると
+# 日が変わって落ちる検査になる）。
+_row = lambda ps: {k: (n, w) for k, n, w, _ in pc.lineup(ps=ps)}.get("postseason")
+check("レギュラーシーズン中は進出争い",
+      _row({"phase": "regular", "teams": {"1": {"wc_gb": "1.5"}}})[0],
+      "ポストシーズン進出争い")
+check("確定後は「今日終わったら」と言わない",
+      "今日終わったら" in "".join(_row({"phase": "settled", "changes": []})),
+      False)
+check("ポストシーズン中",
+      _row({"phase": "postseason", "series": [{"over": False}], "changes": []}),
+      ("ポストシーズン", "シリーズごとの勝敗と勝ち上がり"))
+check("ワールドシリーズが終わったら一覧から外す",
+      _row({"phase": "postseason", "series": [{"over": True}], "changes": []}),
+      None)
+check("オフシーズン（材料が無い）は外す", _row({}), None)
+check("長編の説明もポストシーズンに",
+      "進出争い" in {k: w for k, _, w, _ in pc.lineup(
+          ps={"phase": "postseason", "series": [{"over": False}]})}["longform"],
+      False)
 
 
 # 冒頭で名乗った試合が、いちばん最初に紹介されるか。

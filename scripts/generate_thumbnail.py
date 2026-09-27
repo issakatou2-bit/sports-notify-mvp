@@ -703,14 +703,20 @@ def draw_morning_postseason(d, day: str,
         d.text((70, 430), sub, font=font(50), fill=TEXT)
     else:
         d.text((70, 170), "ポストシーズン", font=font(100), fill=TEXT)
-        d.text((70, 280), "進出争い", font=font(100), fill=ACCENT)
+        if ps.get("phase") not in ("postseason", "settled"):
+            d.text((70, 280), "進出争い", font=font(100), fill=ACCENT)
         head = ps.get("headline") or ""
         if head:
             s = fit(d, head, W - 140, (64, 50, 40))
             d.text((70, 430), head, font=font(s), fill=TEXT)
-    d.text((70, 520), "マジック・ワイルドカード・今日終わったらの組み合わせ",
+    # 時期で言い方を変える。**確定したあとに「今日終わったら」と言わない。**
+    from race_words import is_settled as _settled
+    d.text((70, 520), ("シリーズごとの勝敗と勝ち上がり" if _settled(ps)
+                       else "マジック・ワイルドカード・今日終わったらの組み合わせ"),
            font=font(32), fill=DIM)
-    d.text((70, H - 78), "コレスポ  進出争い", font=font(40), fill=JP)
+    d.text((70, H - 78), "コレスポ  " + ("ポストシーズン" if _settled(ps)
+                                        else "進出争い"),
+           font=font(40), fill=JP)
 
 
 def draw_verdict(d, label: str):

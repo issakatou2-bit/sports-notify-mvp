@@ -18,8 +18,13 @@
 """
 
 import json
+import pathlib
+import sys
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
+
+# notability_engine（実在の30球団の名簿）はリポジトリの直下にある
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 API = "https://statsapi.mlb.com/api/v1"
 JST = timezone(timedelta(hours=9))
@@ -63,19 +68,49 @@ def fetch(season: str, start: str, end: str) -> list:
     return out
 
 
+def _real_teams() -> set:
+    """実在の30球団のID。"""
+    try:
+        from notability_engine import MLB_TEAM_NAME_JP
+        return {int(k) for k in MLB_TEAM_NAME_JP}
+    except Exception:                                  # noqa: BLE001
+        return set()
+
+
+def is_real(team: dict, real: set = None) -> bool:
+    """**まだ決まっていない相手は、実在の球団ではない。**
+
+    APIの日程には、未定の相手が仮の名前で入っている
+    （"HOU/TEX" id 4614、"AL 3/6 Winner" id 5528 など。9/27に確認）。
+    そのまま数えると「ホワイトソックス対HOU/TEX」と言う。
+    """
+    tid = (team or {}).get("id")
+    name = (team or {}).get("name") or ""
+    if not tid or "/" in name or "Winner" in name:
+        return False
+    real = _real_teams() if real is None else real
+    return int(tid) in real if real else True
+
+
 def series_key(game_type: str, a: int, b: int) -> str:
     lo, hi = sorted((int(a), int(b)))
     return f"{game_type}:{lo}-{hi}"
 
 
-def _jp_day(iso: str) -> str:
-    """試合開始（UTC）を日本の日付に。"""
+def _jp_day(official: str) -> str:
+    """米国の試合日を、日本の日付に。
+
+    **開始時刻からは出さない。**時刻が未定の試合には仮の時刻が入って
+    いて、そこから出すと日本の日付が1日ずれた（9/27に「9月29日に
+    第1戦」と出た。日本では30日）。MLBの試合は米国東部11時より前には
+    始まらないので、日本では必ず米国の日付の翌日になる。
+    """
     try:
-        t = datetime.fromisoformat((iso or "").replace("Z", "+00:00"))
+        d = date.fromisoformat(official or "")
     except ValueError:
         return ""
-    t = t.astimezone(JST)
-    return f"{t.month}月{t.day}日"
+    d += timedelta(days=1)
+    return f"{d.month}月{d.day}日"
 
 
 def build(games: list, names: dict = None, players: dict = None) -> list:
@@ -86,7 +121,8 @@ def build(games: list, names: dict = None, players: dict = None) -> list:
     """
     names = names or {}
     players = players or {}
-    by = {}
+    real = _real_teams()
+    by, waiting = {}, {}
     for g in games:
         gt = g.get("gameType")
         if gt not in ROUNDS:
@@ -95,7 +131,25 @@ def build(games: list, names: dict = None, players: dict = None) -> list:
         h = ((g.get("teams") or {}).get("home") or {})
         aid = (a.get("team") or {}).get("id")
         hid = (h.get("team") or {}).get("id")
-        if not (aid and hid):
+        ra, rh = is_real(a.get("team"), real), is_real(h.get("team"), real)
+        if not (ra or rh):
+            continue
+        if not (ra and rh):
+            # **相手待ち。**免除で地区シリーズから入る球団（9/28の
+            # ドジャースなど）は、相手が「NL 3/6 Winner」のまま。
+            # 数えないと、いちばん見られる球団が画面から消える。
+            me = a if ra else h
+            mid = (me.get("team") or {}).get("id")
+            key = f"{gt}:{mid}-wait"
+            w = waiting.setdefault(key, {
+                "key": key, "round": gt, "round_jp": ROUNDS[gt][0],
+                "stage": ROUNDS[gt][1],
+                "league": (me.get("team") or {}).get("league", {}).get("id"),
+                "best_of": int(g.get("gamesInSeries") or 0), "id": mid,
+                "name": (me.get("team") or {}).get("name", ""), "days": []})
+            w["days"].append((g.get("officialDate")
+                              or (g.get("gameDate") or "")[:10],
+                              int(g.get("seriesGameNumber") or 0)))
             continue
         key = series_key(gt, aid, hid)
         s = by.setdefault(key, {
@@ -120,7 +174,8 @@ def build(games: list, names: dict = None, players: dict = None) -> list:
                     s["wins"][tid] += 1
                     s["played"] += 1
         else:
-            s["upcoming"].append((g.get("gameDate") or "",
+            s["upcoming"].append((g.get("officialDate")
+                                  or (g.get("gameDate") or "")[:10],
                                   int(g.get("seriesGameNumber") or 0)))
 
     out = []
@@ -150,6 +205,26 @@ def build(games: list, names: dict = None, players: dict = None) -> list:
                                        or players.get(str(t)) or [])}
                       for t in teams],
         })
+    for w in waiting.values():
+        # 相手が決まって本物のシリーズが組めたら、相手待ちは出さない
+        if any(s["round"] == w["round"] and w["id"] in
+               [t["id"] for t in s["teams"]] for s in out):
+            continue
+        day, num = sorted(w["days"])[0]
+        out.append({
+            "key": w["key"], "round": w["round"], "round_jp": w["round_jp"],
+            "stage": w["stage"], "waiting": True,
+            "league_jp": ("" if w["round"] == "W"
+                          else LEAGUE_JP.get(w["league"], "")),
+            "best_of": w["best_of"], "need": w["best_of"] // 2 + 1,
+            "played": 0, "over": False, "winner": None,
+            "next": {"day": _jp_day(day), "game": num},
+            "teams": [{"id": w["id"],
+                       "name": names.get(w["id"]) or names.get(str(w["id"]))
+                       or w["name"], "wins": 0,
+                       "players": list(players.get(w["id"])
+                                       or players.get(str(w["id"])) or [])}],
+        })
     out.sort(key=lambda x: (x["stage"], x["league_jp"] != "ア・リーグ",
                             x["key"]))
     return out
@@ -170,6 +245,10 @@ def text(s: dict, with_round: bool = True) -> str:
     """
     t = s["teams"]
     rnd = f"{s['round_jp']} " if with_round else ""
+    day = (s.get("next") or {}).get("day") or ""
+    if s.get("waiting") and t:
+        return (f"{rnd}{t[0]['name']}は相手待ち"
+                + (f"、{day}に第1戦" if day else ""))
     if len(t) < 2:
         return ""
     a, b = t[0], t[1]
@@ -198,6 +277,12 @@ def jp_text(s: dict) -> str:
     """
     t = s["teams"]
     mine = next((x for x in t if x["players"]), None)
+    day = (s.get("next") or {}).get("day") or ""
+    if s.get("waiting") and mine is not None:
+        who = f"{'・'.join(mine['players'])}の{mine['name']}"
+        head = (f"{who}はワイルドカードシリーズを免除され、{s['round_jp']}から"
+                if s["stage"] == 2 else f"{who}は{s['round_jp']}で相手を待つ")
+        return head + (f"。{day}に第1戦" if day else "")
     if mine is None or len(t) < 2:
         return ""
     opp = t[1] if mine is t[0] else t[0]

@@ -142,4 +142,49 @@ old = {"phase": "postseason", "series": ps.build(SWEEP, NAMES, JP),
 hasnt("昨日より前に決着したシリーズは並べない",
       " ".join(s["text"] for s in ms.ps_series_segments(old)), "フィリーズ")
 
+section("まだ決まっていない相手（9/27に実物で確認した形）")
+
+
+def ph(pk, gt, away, home, of=3, off="2026-09-29"):
+    """APIの仮の相手。名前が "HOU/TEX" や "NL 3/6 Winner" で、IDは4000番台以上。"""
+    g = game(pk, gt, 0, 0, None, 1, of)
+    g["officialDate"] = off
+    g["gameDate"] = off + "T07:33:00Z"      # 時刻未定の仮の時刻
+    g["teams"]["away"]["team"] = away
+    g["teams"]["home"]["team"] = home
+    return g
+
+
+HOUTEX = {"id": 4614, "name": "HOU/TEX", "league": {"id": 103}}
+NL36 = {"id": 5532, "name": "NL 3/6 Winner", "league": {"id": 104}}
+REAL = lambda i: {"id": i, "name": "x", "league": {"id": 104}}
+held = ps.build([ph(91, "F", {"id": 145, "name": "Chicago White Sox",
+                              "league": {"id": 103}}, HOUTEX),
+                 ph(92, "D", NL36, REAL(LAD), of=5, off="2026-10-03"),
+                 ph(93, "F", REAL(CHC), REAL(135))], NAMES, JP)
+names_all = " ".join(t["name"] for s in held for t in s["teams"])
+hasnt("仮の名前を球団として言わない", names_all, "HOU/TEX")
+hasnt("「勝者」を球団として言わない", names_all, "Winner")
+dw = next(s for s in held if s.get("waiting") and s["teams"][0]["id"] == LAD)
+check("免除の球団は相手待ちとして残す", dw["round"], "D")
+check("相手待ちの言い方", ps.jp_text(dw),
+      "大谷翔平・山本由伸のドジャースはワイルドカードシリーズを免除され、"
+      "地区シリーズから。10月4日に第1戦")
+cp = next(s for s in held if not s.get("waiting"))
+check("日本の日付は米国の日付の翌日（仮の時刻からは出さない）",
+      cp["next"]["day"], "9月30日")
+check("相手が決まったら相手待ちは消える",
+      [s for s in ps.build([ph(92, "D", REAL(PHI), REAL(LAD), of=5,
+                               off="2026-10-03")], NAMES, JP)
+       if s.get("waiting")], [])
+
+section("確定したあとの言い方")
+check("確定後の呼び名", rw.ps_label({"phase": "settled"}), "ポストシーズン")
+check("確定は確定", rw.is_settled({"phase": "settled"}), True)
+check("レギュラーシーズン中は確定ではない", rw.is_settled({"phase": "regular"}),
+      False)
+op = ms.ps_open({"changes": ps.changes(held, []), "japanese": []})
+check("組み合わせが決まった日の入り", op[0],
+      "ポストシーズンの組み合わせが決まったのだ？")
+
 sys.exit(done())

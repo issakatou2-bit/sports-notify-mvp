@@ -419,6 +419,10 @@ def main() -> int:
     import ps_series
     dates = ps_series.season_dates(season)
     if ps_series.in_postseason(dates):
+        # **シーズンは終わっている。**シリーズが組めない日（相手が
+        # まだ仮の名前、日程が取れない）でも、もう「今日終わったら」とは
+        # 言わない。組み合わせは確定している。
+        phase = "settled"
         end = min(dates["end"], (datetime.now(JST).date()
                                  + timedelta(days=7)).isoformat())
         try:

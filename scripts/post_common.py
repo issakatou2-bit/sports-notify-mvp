@@ -382,15 +382,64 @@ DAILY_LINEUP = [
 ]
 
 
+def _postseason_now(path: str = None) -> dict:
+    """その日の進出争い・ポストシーズンの材料。無ければ空。"""
+    p = (path or os.path.join(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))), "data", "postseason.json"))
+    try:
+        with open(p, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def lineup(exclude: str = "", ps: dict = None) -> list:
+    """**表示用の**毎日の一覧。時期で変わる枠を、その日の姿にする。
+
+    DAILY_LINEUP は時刻と種類の台帳で、健康診断などもそれを見る。
+    表示（全動画の説明文・読み上げ・締めの画面）はこちらを使う。
+
+    なぜ要るのか:
+      20:00の枠は「ポストシーズン進出争い / マジックと今日終わったらの
+      組み合わせ」と書いてあり、全動画の説明文と締めの画面に出ていた。
+      組み合わせが確定した9/28以降もそう言い続けることになる。
+      ワールドシリーズが終わると枠そのものが無くなるのに、翌年の9月まで
+      「毎日お届け」と並べることにもなる。
+
+        レギュラーシーズン中    ポストシーズン進出争い
+        確定後・ポストシーズン中  ポストシーズン（シリーズの勝敗と勝ち上がり）
+        それ以外（オフなど）    一覧から外す
+    """
+    import race_words as rw
+    ps = _postseason_now() if ps is None else ps
+    out = []
+    for kind, name, what, at in DAILY_LINEUP:
+        if kind == exclude:
+            continue
+        if kind == "postseason":
+            if rw.is_settled(ps):
+                live = (any(not x.get("over") for x in ps.get("series") or [])
+                        or bool(ps.get("changes"))
+                        or ps.get("phase") == "settled")
+                if not live:
+                    continue          # ワールドシリーズまで終わった
+                name, what = "ポストシーズン", "シリーズごとの勝敗と勝ち上がり"
+            elif rw.race_is_over(ps):
+                continue              # 材料が無い・争いが無い時期
+        if kind == "longform" and rw.is_settled(ps):
+            what = what.replace("進出争い", "ポストシーズン")
+        out.append((kind, name, what, at))
+    return out
+
+
 def lineup_names(exclude: str = "") -> list:
     """読み上げ用。自分の回は外す(その動画を見ている人には要らない)。"""
-    return [name for kind, name, _, _ in DAILY_LINEUP if kind != exclude]
+    return [name for _, name, _, _ in lineup(exclude)]
 
 
 def lineup_lines(exclude: str = "") -> list:
     """説明文用。名前とひとことを箇条書きにする。"""
-    return [f"・{name} … {what}"
-            for kind, name, what, _ in DAILY_LINEUP if kind != exclude]
+    return [f"・{name} … {what}" for _, name, what, _ in lineup(exclude)]
 
 
 

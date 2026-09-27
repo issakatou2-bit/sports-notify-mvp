@@ -63,7 +63,7 @@ FONT_CANDIDATES = video_common.FONT_CANDIDATES
 import local_voices
 import mlb_buzz
 import morning_recap
-from race_words import clinch_label, ps_label, race_is_over
+from race_words import clinch_label, is_settled, ps_label, race_is_over
 
 W, H = 1080, 1920
 FPS = 24
@@ -973,7 +973,10 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             # 組み合わせ。ここで用語を1つずつ置いていく。
             # 「第3シードと第6シードが当たる」は、画面の番号と
             # そのまま重なるので、聞くだけで形が入る。
-            b = ("今日終わったら、ワイルドカードシリーズは" if first
+            # 確定したあとは「今日終わったら」と言わない（9/28以降）
+            b = ((("確定した組み合わせは、ワイルドカードシリーズが"
+                   if is_settled(ps) else
+                   "今日終わったら、ワイルドカードシリーズは")) if first
                  else "こちらは、")
             if len(lead) >= 3 and len(wc) >= 3:
                 b += (f"第3シード{lead[2]['name']}と第6シード"
@@ -986,7 +989,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             segments.append({
                 "kind": "ps_bracket",
                 "text": b + ("同率の球団があり、順番は入れ替わりえます。"
-                             if lg.get("ties") else ""),
+                             if lg.get("ties") and not is_settled(ps)
+                             else ""),
                 "meta": {"league": lid},
             })
             first = False
@@ -2056,6 +2060,13 @@ def ps_open(ps: dict) -> tuple:
     jp = ps.get("japanese") or []
     n = len(changes)
 
+    # **組み合わせが決まった日。**ポストシーズンの初日は全シリーズが
+    # 「開幕」として動いたことになる。「動いたのだ？」で入ると、
+    # 何が決まった日なのかが伝わらない。
+    if changes and all(c.get("kind") == "start" for c in changes):
+        return ("ポストシーズンの組み合わせが決まったのだ？",
+                "決まったわ。" + changes[0]["text"] + "。")
+
     # 日本人選手のいる球団が動いた日は、そこが今日いちばんの話。
     for c in changes:
         text = c.get("text") or ""
@@ -2761,7 +2772,10 @@ def ps_series_segments(ps: dict) -> list:
     moved = {c.get("key") for c in (ps.get("changes") or [])}
     show = [s for s in series if not s["over"] or s["key"] in moved]
     out, said = [], set()
-    mine = [s for s in show if any(x["players"] for x in s["teams"])][:4]
+    # 日本人選手の多い球団から（見出しと同じ球団が先頭に来る）
+    mine = sorted([s for s in show if any(x["players"] for x in s["teams"])],
+                  key=lambda s: (-sum(len(x["players"]) for x in s["teams"]),
+                                 -s["stage"]))[:4]
     if mine:
         out.append({"kind": "ps_series",
                     "text": "。".join(ps_series.jp_text(s) for s in mine) + "。",
@@ -2771,7 +2785,9 @@ def ps_series_segments(ps: dict) -> list:
     for lg, lid in (("ア・リーグ", "103"), ("ナ・リーグ", "104"),
                     ("", "")):
         rows = [s for s in show if s["league_jp"] == lg][:4]
-        rest = [s for s in rows if s["key"] not in said]
+        # 相手待ちだけの画面は出さない（「○○は相手待ち」が並ぶだけ）
+        rest = [s for s in rows if s["key"] not in said
+                and not s.get("waiting")]
         if not rest:
             continue
         head = lg or "ワールドシリーズ"
@@ -2815,7 +2831,12 @@ def render_ps_series(p, data: dict, keys: list, head: str, league: str = ""):
         d.text((x0 + 30, y + 12), label, font=font(28), fill=DIM)
         # **王手はどちらの王手か**を書く。日本人選手のいる側が負けて
         # いるとき、ただ「王手」とあるとその球団の王手に見える。
-        tag = ("決着" if s["over"] else
+        nday = (s.get("next") or {}).get("day") or ""
+        tag = (("相手待ち・%s 第1戦" % nday if nday else "相手待ち")
+               if s.get("waiting") else
+               ("%s 第1戦" % nday if nday else "第1戦へ")
+               if s["played"] == 0 else
+               "決着" if s["over"] else
                ("%sが王手" % s["teams"][0]["name"])
                if ps_series.elimination_game(s) else
                ("第%d戦へ" % s["next"]["game"]) if s.get("next") else "")
@@ -2836,10 +2857,16 @@ def render_ps_series(p, data: dict, keys: list, head: str, league: str = ""):
             if t["players"]:
                 d.text((x0 + 48, ry + 52), "・".join(t["players"]),
                        font=font(24), fill=JP)
+            if s["played"] == 0:
+                continue      # 始まる前は数字を出さない（スコアに見える）
             fw = font(66)
             num = str(t["wins"])
             d.text((x1 - 40 - d.textlength(num, font=fw), ry - 4), num,
                    font=fw, fill=ACCENT if lead else (DIM if lost else TEXT))
+        if s.get("waiting"):
+            # 相手がまだ決まっていない（免除で地区シリーズから入る球団など）
+            d.text((x0 + 48, y + 54 + 88), "相手は未定", font=font(40),
+                   fill=DIM)
         y += ch + 14
     return im
 
@@ -2870,7 +2897,8 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
     lg = (data.get("leagues") or {}).get(league) or {}
     lc = league_badge(d, league, lg.get("league_short")
                       or lg.get("league_jp", ""), y=124)
-    d.text((70, 212), "今日終わったら、この組み合わせ",
+    d.text((70, 212), ("確定した組み合わせ" if is_settled(data)
+                       else "今日終わったら、この組み合わせ"),
            font=font(56), fill=TEXT)
 
     seeds = (lg.get("leaders") or [])[:3] + (lg.get("wildcards") or [])[:3]
@@ -2961,7 +2989,8 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
     # 同率がいる日は断る。勝敗が並んだ2球団のどちらが上かは
     # 直接対決で決まり、こちらはそれを計算していない。
     # 「今日終わったら」と言い切る画面なので、ここは正直に。
-    if lg.get("ties"):
+    # 確定したあとは入れ替わらない。
+    if lg.get("ties") and not is_settled(data):
         d.text((70, H - 196), "※ 同率の球団があり、順番は入れ替わりえます",
                font=font(30), fill=ACCENT)
     return im
@@ -3764,7 +3793,7 @@ def render_voices(p, voices, picked=None):
 # 以前はここと説明文と「今日の1人」の締めで別々に書いていて、
 # 3つとも中身が違っていた。
 DAILY_LINEUP = [(name, what)
-                for _, name, what, _ in post_common.DAILY_LINEUP]
+                for _, name, what, _ in post_common.lineup()]
 
 
 def render_outro(p, mode: str = ""):
@@ -3781,7 +3810,8 @@ def render_outro(p, mode: str = ""):
     d.text((80, 380), "毎日、更新中", font=font(64), fill=TEXT)
 
     # 見ている回そのものは外す。読み上げと同じ扱いにする。
-    rows = [(name, what) for kind, name, what, _ in post_common.DAILY_LINEUP
+    # 時期で変わる枠はその日の姿で（post_common.lineup）。
+    rows = [(name, what) for kind, name, what, _ in post_common.lineup()
             if kind != MODE_KIND.get(mode, "")]
 
     # 1行ずつ滑り込ませる。全部を一度に出すと、ただの箇条書きに見える。
