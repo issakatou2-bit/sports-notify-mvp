@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-26T13:03:58.211451+00:00",
+  "updated_at": "2026-09-27T13:03:56.276087+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
@@ -11,7 +11,7 @@
           "value": 0.8702702702702703,
           "shown": "0.87",
           "at": 2,
-          "of": 45,
+          "of": 44,
           "ties": 1,
           "above": {
             "name": "Jacob Misiorowski",
@@ -33,15 +33,15 @@
       "player_id": "808959",
       "items": [
         {
-          "value": 0.5882352941176471,
-          "shown": "58.8%",
+          "value": 0.5865209471766849,
+          "shown": "58.7%",
           "at": 1,
           "of": 134,
           "ties": 1,
           "above": null,
           "below": {
             "name": "Kyle Schwarber",
-            "shown": "53.0%"
+            "shown": "52.9%"
           },
           "key": "tto",
           "label": "アダム・ダン率",
@@ -51,7 +51,7 @@
           "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
         },
         {
-          "value": 0.3547794117647059,
+          "value": 0.3551912568306011,
           "shown": "35.5%",
           "at": 1,
           "of": 134,
@@ -59,7 +59,7 @@
           "above": null,
           "below": {
             "name": "Colson Montgomery",
-            "shown": "35.4%"
+            "shown": "35.5%"
           },
           "key": "k_rate",
           "label": "三振率",
@@ -68,15 +68,18 @@
           "side": "top"
         },
         {
-          "value": 0.16911764705882354,
-          "shown": "16.9%",
-          "at": 1,
+          "value": 0.16757741347905283,
+          "shown": "16.8%",
+          "at": 2,
           "of": 134,
           "ties": 1,
-          "above": null,
-          "below": {
+          "above": {
             "name": "Mike Trout",
             "shown": "16.9%"
+          },
+          "below": {
+            "name": "Jake Bauers",
+            "shown": "16.4%"
           },
           "key": "bb_rate",
           "label": "四球率",
@@ -85,18 +88,18 @@
           "side": "top"
         },
         {
-          "value": 0.274,
-          "shown": ".274",
+          "value": 0.271,
+          "shown": ".271",
           "at": 4,
           "of": 134,
           "ties": 1,
           "above": {
             "name": "Hunter Goodman",
-            "shown": ".277"
+            "shown": ".285"
           },
           "below": {
-            "name": "Kyle Schwarber",
-            "shown": ".272"
+            "name": "Ben Rice",
+            "shown": ".270"
           },
           "key": "iso",
           "label": "ISO",
@@ -105,7 +108,7 @@
           "side": "top"
         }
       ],
-      "mendoza": "打率.209。メンドーサ・ライン（.200）のすぐ上"
+      "mendoza": "打率.207。メンドーサ・ライン（.200）のすぐ上"
     }
   }
 }
