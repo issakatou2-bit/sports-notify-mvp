@@ -406,5 +406,13 @@ class StillProcessingIsNotAFailure(unittest.TestCase):
         self.assertEqual(daily.STUCK_AFTER_HOURS, 12)
 
 
+class SnapshotCaption(unittest.TestCase):
+    def test_clinch_status_title_is_not_series_results(self):
+        title = '【9/27更新】MLBポストシーズン最新情勢｜地区優勝・PS進出の確定状況 #Shorts'
+        words = daily.words('morning_postseason', {'title': title})
+        self.assertEqual(words['long'], '地区優勝・PS進出の確定状況')
+        self.assertNotIn('シリーズ', words['lead'])
+
+
 if __name__ == '__main__':
     unittest.main(argv=['test_buffer_daily'])

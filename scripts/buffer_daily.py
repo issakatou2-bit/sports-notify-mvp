@@ -386,6 +386,10 @@ def words(kind: str, record=None) -> dict:
         # Use the verified video's edition, not today's possibly newer JSON.
         # The generator includes ps_label in the published title.
         title = (record or {}).get('title', '')
+        if '進出' in title and '確定状況' in title:
+            result.update(short='PS進出状況', long='地区優勝・PS進出の確定状況',
+                          lead='現在の順位と確定状況を確認します')
+            return result
         if ps_label({}) in title:
             return result
         result.update(short=ps_label({'phase': 'postseason'}),
