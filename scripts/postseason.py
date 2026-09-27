@@ -23,7 +23,7 @@
   数字が入っていないことと0であることは違うので、そのまま持ち回す。
 
 2026年のポストシーズン:
-  各リーグ12球団中6球団。地区優勝3つ＋ワイルドカード3つ。
+  各リーグ15球団中6球団。地区優勝3つ＋ワイルドカード3つ。
   上位2つの地区優勝はワイルドカードシリーズを免除（bye）。
   3位の地区優勝 vs 第6シード、第4 vs 第5 がワイルドカードシリーズ。
 
@@ -341,27 +341,31 @@ def diff(now: dict, before: dict) -> list:
     return out
 
 
-def headline(data: dict) -> str:
+def headline(data: dict, changes=None) -> str:
     """その日いちばん短い一言。動画の1枚目に出す。
 
     優先順:
-      1. 今日決まった球団があれば、それ
+      1. 前日との比較で新たに進出確定した球団があれば、それ
       2. マジックが1桁の球団があれば、いちばん小さいもの
       3. ワイルドカード最終枠の差
     """
+    # clinched is a persistent state, not the date of clinching. Never pick
+    # its first entry as today's news (9/27 repeated the Rays' older clinch).
+    clinched = {t.get("name") for r in data.values()
+                for t in r.get("clinched", [])}
+    for change in changes or []:
+        name = change.get("name")
+        if change.get("kind") == "clinch" and name and name in clinched:
+            return f"{name} 進出決定"
     best = None
     for r in data.values():
-        for t in r["leaders"]:
+        for t in r.get("leaders", []):
             m = t.get("magic")
-            if isinstance(m, int) and (best is None or m < best[0]):
+            if (type(m) is int and m > 0 and not t.get("div_champ")
+                    and (best is None or m < best[0])):
                 best = (m, t)
-    done = [t for r in data.values() for t in r["clinched"]]
-    if done:
-        return f"{done[0]['name']} 進出決定"
-    if best and best[0] <= 15:
-        return f"{best[1]['name']} マジック{best[0]}"
     if best:
-        return f"{best[1]['name']} マジック{best[0]}"
+        return f"{best[1]['name']} 地区優勝マジック{best[0]}"
     return "ポストシーズン進出争い"
 
 
@@ -410,7 +414,9 @@ def main() -> int:
     changes = diff({"leagues": {str(k): v for k, v in data.items()}}, before)
     jp_rows = japanese(data, teams)
     flat_teams = flat(data, teams)
-    head = headline(data)
+    # An older/missing snapshot cannot establish that an event happened today.
+    yesterday = (datetime.now(JST).date() - timedelta(days=1)).isoformat()
+    head = headline(data, changes if before.get("date") == yesterday else None)
 
     # --- ポストシーズン -------------------------------------------------
     # 始まったら、話の中心を順位表からシリーズへ移す。
