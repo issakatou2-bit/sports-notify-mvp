@@ -60,8 +60,11 @@ def public_short(kind, path='data/published_videos.json', now=None):
                         print('[info] Short link: video/channel mismatch; use channel link')
                         return None
                     if video['status'].get('privacyStatus') == 'public' and video['status'].get('embeddable'):
-                        return {'video_id': row['video_id'], 'url': 'https://www.youtube.com/watch?v=' + row['video_id'],
-                                'title': video['snippet']['title']}
+                        result = {'video_id': row['video_id'], 'url': 'https://www.youtube.com/watch?v=' + row['video_id'],
+                                  'title': video['snippet']['title']}
+                        if row.get('program_version'):
+                            result.update(program_version=row['program_version'], social_summary=row['social_summary'])
+                        return result
                 reason = 'public embeddable video not yet confirmed'
             except Exception:
                 # Network exceptions may include the key-bearing URL.

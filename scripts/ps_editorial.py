@@ -62,6 +62,18 @@ def editorial(snapshot, schedule, now, schedule_url):
         if row.get('clinched') or row.get('div_champ') or row.get('wc_clinched'):
             qualifiers.add(ident)
     games = [g for d in schedule.get('dates', []) for g in d.get('games', [])]
+    if not games and snapshot.get('phase') == 'postseason':
+        raise ValueError('PS資料の日程が欠落。取得失敗と試合なしを確認してください')
+    for game in games:
+        if game.get('gameType') not in ('F', 'D', 'L', 'W'):
+            continue
+        try:
+            official_year = datetime.fromisoformat(game['officialDate']).year
+            source_year = int(game.get('season', official_year))
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError('PS試合の年度を確認できません') from exc
+        if official_year != now.astimezone(JST).year or source_year != official_year:
+            raise ValueError('PS日程の年度が当年資料と一致しません')
     first = {}
     byes = []
     for game in games:

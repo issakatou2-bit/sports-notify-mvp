@@ -1,0 +1,63 @@
+name: PS新構成の音声付き確認（投稿しない）
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [codex/ps-template-rollout-20260928]
+    paths:
+      - 'scripts/ps_*'
+      - 'scripts/video_design/**'
+      - '.github/workflows/ps_program_preview.yml'
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      PS_PROGRAM_LAYOUT: v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install the existing production dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
+      - name: Start existing VOICEVOX
+        run: |
+          docker run -d --rm -p 50021:50021 voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Prepare and voice the current situation program
+        run: |
+          python scripts/ps_voice_gate.py
+          python scripts/ps_program.py --slot situation --fresh \
+            --program build/ps_program_situation.json \
+            --narration-out build/ps_situation_narration.json
+          if [ -f build/ps_program_situation.json ]; then
+            python scripts/synthesize_narration.py --narration build/ps_situation_narration.json --out-dir build/ps_situation_audio
+            python scripts/ps_program.py --program build/ps_program_situation.json --audio-dir build/ps_situation_audio --out build/ps_situation_preview
+          fi
+      - name: Rehearse all four forecast cards with visibly dated saved fixtures
+        run: |
+          # Tomorrow's program is a rehearsal, never an upload path.
+          python scripts/ps_program_rehearsal.py --out build/ps_forecast_narration.json
+          if [ -f build/ps_forecast_narration.json ]; then
+            python scripts/synthesize_narration.py --narration build/ps_forecast_narration.json --out-dir build/ps_forecast_audio
+            python scripts/ps_program.py --program build/ps_program_forecast.json --audio-dir build/ps_forecast_audio --out build/ps_forecast_preview
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ps-program-preview
+          path: |
+            build/ps_*preview/
+            build/ps_program_*.json
+            build/ps_*narration.json
+            build/ps_editorial_source.json
+            build/ps_voice_check.json

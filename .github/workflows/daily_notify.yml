@@ -16,6 +16,10 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  # v2 / hold / legacy. Old producer is retained; failed v2 never falls back.
+  PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}
+
 # deploy_site.yml と同じグループにしておく。両方が同時にPagesへ出すと、
 # 後から終わった方が相手の成果物で上書きしてしまう。
 # cancel-in-progress: false なので、日次実行が途中で止められることはない。
@@ -281,7 +285,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python scripts/generate_narration.py \
+          python scripts/ps_daily_entry.py --stage narration \
             --games notable_games.json \
             --news public/news.json \
             --out public/narration.json
@@ -357,7 +361,7 @@ jobs:
       - name: Generate video
         continue-on-error: true
         run: |
-          python scripts/generate_video.py \
+          python scripts/ps_daily_entry.py --stage video \
             --games notable_games.json \
             --audio-dir build/audio \
             --out build/video --require-audio
@@ -368,7 +372,7 @@ jobs:
       - name: Generate thumbnail
         continue-on-error: true
         run: |
-          python scripts/generate_thumbnail.py \
+          python scripts/ps_daily_entry.py --stage thumbnail \
             --kind daily \
             --games notable_games.json \
             --narration public/narration.json \
@@ -377,7 +381,7 @@ jobs:
       # 原稿と同じ主役・事実から専用表紙。失敗時のみ動画のコマへ戻す。
       - name: Vertical thumbnail
         run: |
-          if ! python scripts/render_shorts_cover.py \
+          if ! python scripts/ps_daily_entry.py --stage cover \
             --games notable_games.json --narration public/narration.json \
             --out build/video/short.png; then
             echo "::warning::専用表紙を生成できなかったため動画のコマを使用します"
@@ -393,7 +397,7 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
-          python scripts/upload_youtube.py \
+          python scripts/ps_daily_entry.py --stage upload \
             --video build/video/collespo_short.mp4 \
             --games notable_games.json \
             --narration public/narration.json \
