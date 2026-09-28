@@ -58,6 +58,7 @@ MAX_TRENDS = 3      # 主役1人ぶんの切り口。多いと読み切れない
 MAX_CHANGES = 4      # 進出争いで動いたこと
 MAX_SOCCER = 1       # 1本1大会。長編でも大会は1つに絞る
 MAX_ROWS = 4         # 1枚の札に並ぶ行数（描画側の上限）
+MAX_BEYOND = 2       # 今日以外の節目を引く人数（問い合わせの数）
 
 # 材料が何日前までなら使うか。
 #
@@ -306,7 +307,24 @@ def load(root: str = "data", today: date = None) -> dict:
             "player_id": str(row.get("player_id") or ""),
             "numbers": _numbers(row),
             "readings": readings(row),
+            "_row": row,
         })
+    # **今日以外の材料。**出番が短い選手（称賛の印も名前のある記録も
+    # 無い）は、長編で「5打数1安打ね。今日はここは短く」の3行で終わって
+    # いた。いちばん見られる大谷がいちばん短い日がある。足すのは公式の
+    # 通算・今季の数字から作った節目だけ（milestones。17:00の回と同じ）。
+    # 問い合わせを増やしすぎないよう2人まで。
+    quiet = [p for p in players if not p["standout"] and not p["badges"]]
+    for p in quiet[:MAX_BEYOND]:
+        try:
+            import milestones
+            got = milestones.best_for(p["_row"])
+        except Exception:                              # noqa: BLE001
+            got = {}
+        if got.get("text"):
+            p["beyond"] = got["text"]
+    for p in players:
+        p.pop("_row", None)
 
     # 打球は {名前: [本塁打, ...]}。言い方は statcast.phrase に任せる。
     shots = []
@@ -459,6 +477,10 @@ def facts(m: dict) -> str:
         # 渡さないと、当たり前のことを珍しがる台詞になる。
         for note in p.get("readings") or []:
             out.append("  ・%s" % note)
+        if p.get("beyond"):
+            out.append("  ・今日以外の材料（公式の今季・通算の数字）: %sは%s。"
+                       "**言うなら1文。今日の成績と混ぜない**"
+                       % (p["name"], p["beyond"]))
 
     if m["shots"]:
         out.append("")
@@ -669,14 +691,21 @@ def meta(m: dict) -> dict:
     """
     names = [p["name"] for p in m["players"]]
     best = m["players"][0] if m["players"] else {}
+    # 表紙の引用は、その日いちばん珍しい数字から。名前のある指標で
+    # リーグ1位がいればそれ（「3打数0安打」を引用していた日があった）。
+    top_rare = next((r for r in m.get("rare") or []
+                     if "中1位" in str(r.get("rank") or "")), None)
+    pick = (("%s %s %s（%s）" % (top_rare["name"], top_rare["stat"],
+                                top_rare["value"], top_rare["rank"]))
+            if top_rare else
+            ("%s %s" % (best.get("name", ""), best.get("line", ""))))
     return {"mode": "numbers",
             "top": "きょうのMLB、数字で",
             "title": "",
             "jp": names,
             "jp_team": [],
             "jp_team_name": best.get("team", ""),
-            "pick": (("%s %s" % (best.get("name", ""), best.get("line", "")))
-                     .strip()[:60]),
+            "pick": pick.strip()[:60],
             "source": "その日の成績・進出争い・指標"}
 
 

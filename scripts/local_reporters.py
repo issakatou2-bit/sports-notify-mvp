@@ -339,6 +339,13 @@ def translate(posts: list, api_key: str) -> list:
         "    Rocchio October → ×「ロッチオクトーバーのロッチオ」\n"
         "  何のことか分からない語は、訳さずに英語のまま置く\n"
         "・書かれていないことは足さない\n"
+        # 9/27、"held until a possible NLDS" を「ワイルドカード進出まで温存」
+        # と訳した（正しくは地区シリーズ）。「ゲーム1-2」も直訳のまま出た。
+        "・ポストシーズンの用語: Wild Card Series=ワイルドカードシリーズ、"
+        "ALDS/NLDS=地区シリーズ、ALCS/NLCS=リーグ優勝決定シリーズ、"
+        "World Series=ワールドシリーズ。Game 3=第3戦、Games 1-2=第1・2戦、"
+        "Game 162=レギュラーシーズン最終戦\n"
+        "・78-82のような球団の勝敗は「78勝82敗」と訳す\n"
         "・RBI doubleは適時二塁打。doubleを2点、tripleを3点と解釈しない。得点数は明記された場合だけ訳す\n"
         "・after ABS challengeはABSチャレンジ後。誰が要求したか書かれていなければ主語を補わない\n"
         "・**絵文字はそのまま残す**（書き手の熱量の一部）\n"
@@ -376,8 +383,28 @@ def translate(posts: list, api_key: str) -> list:
             lines[int(m.group(1))] = m.group(2).strip()
     for i, p in enumerate(posts, 1):
         if i in lines:
-            p["jp"] = guard_translation(p["text"], lines[i])
+            p["jp"] = baseball_jp(guard_translation(p["text"], lines[i]))
     return posts
+
+
+def baseball_jp(text: str) -> str:
+    """訳文の野球の言い方を、決まった規則で直す。AIが指示を外しても効く。
+
+    ゲーム1-2 → 第1・2戦、ゲーム3 → 第3戦、ゲーム162 → レギュラーシーズン
+    最終戦、78-82（球団の勝敗）→ 78勝82敗。スコア（6-5）とは区別する:
+    どちらも30以上で合計162以下のものだけを勝敗とみなす。
+    """
+    if not text:
+        return text
+    t = re.sub(r"ゲーム\s?162", "レギュラーシーズン最終戦", text)
+    t = re.sub(r"ゲーム\s?([1-7])\s?[-–・]\s?([1-7])", r"第\1・\2戦", t)
+    t = re.sub(r"ゲーム\s?([1-7])(?![0-9])", r"第\1戦", t)
+
+    def _rec(m):
+        w, l = int(m.group(1)), int(m.group(2))
+        return (f"{w}勝{l}敗" if w >= 30 and l >= 30 and w + l <= 162
+                else m.group(0))
+    return re.sub(r"(?<![0-9.])([0-9]{2,3})-([0-9]{2,3})(?![0-9])", _rec, t)
 
 
 # ---------------------------------------------------------------------------
