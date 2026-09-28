@@ -74,6 +74,7 @@ def render(context, segment):
     view = segment['meta']['view']
     matchups = context.get('matchups', [])
     if view == 'opening':
+        d.text((70, 330), '年間王者を決める短期決戦', font=vc.font(32), fill=MUTED)
         draw_lines(d, '組み合わせ\n決定', 70, 385, 96, width=925)
         day = datetime.fromisoformat(min(m['first_game']['day_jst'] for m in matchups))
         d.text((70, 740), f'{day.month}/{day.day} 開幕', font=vc.font(82), fill=ACCENT)
@@ -85,7 +86,8 @@ def render(context, segment):
         lid = segment['meta']['league']
         name = 'ア・リーグ' if lid == 103 else 'ナ・リーグ'
         d.text((70, 390), name + 'の勝ち上がり', font=vc.font(52), fill=ACCENT)
-        d.text((90, 505), 'WC・2勝先取', font=vc.font(34), fill=MUTED)
+        d.text((90, 505), 'ワイルドカード', font=vc.font(34), fill=MUTED)
+        d.text((90, 553), '2勝先取', font=vc.font(29), fill=MUTED)
         d.text((635, 505), '地区シリーズ', font=vc.font(34), fill=MUTED)
         for i, m in enumerate(x for x in matchups if x['league'] == lid):
             y = 610 + i * 465
@@ -97,12 +99,13 @@ def render(context, segment):
             d.polygon([(610, y + 148), (589, y + 135), (589, y + 161)], fill=ACCENT)
             d.rounded_rectangle((630, y + 72, 1010, y + 248), radius=20, fill=PANEL)
             draw_lines(d, m['bye']['name'], 650, y + 105, 38, width=342)
-            d.text((650, y + 179), 'WC免除・相手待ち', font=vc.font(25), fill=MUTED)
+            d.text((650, y + 179), '1回戦免除・相手待ち', font=vc.font(25), fill=MUTED)
             d.text((90, y + 332), '初戦 ' + m['first_game']['label'], font=vc.font(32), fill=INK)
         draw_lines(d, '左の勝者が、矢印の先の球団と対戦', 70, 1530, 32, MUTED)
         draw_lines(d, '地区S → リーグ優勝決定S → ワールドシリーズ', 70, 1600, 30, ACCENT)
     elif view == 'schedule':
-        d.text((70, 390), 'WC初戦・日本時間', font=vc.font(56), fill=ACCENT)
+        d.text((70, 390), 'ワイルドカード初戦', font=vc.font(56), fill=ACCENT)
+        d.text((70, 469), 'すべて日本時間', font=vc.font(34), fill=MUTED)
         for i, m in enumerate(matchups):
             y = 540 + i * 237
             d.rounded_rectangle((70, y, 1010, y + 207), radius=20, fill=PANEL)
