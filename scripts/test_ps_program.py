@@ -38,6 +38,57 @@ def fixture(day=28):
 
 
 class ProgramTests(unittest.TestCase):
+    def test_unfinished_prior_game_is_not_always_a_conditional_game(self):
+        for kind,need in [('F',2),('D',3),('L',4),('W',4)]:
+            snap,ev,now=fixture(29)
+            games=[g for g in ev['schedule']['dates'][0]['games'] if g['gameType']=='F']
+            for g in games:
+                g['gameType']=kind;g['gamesInSeries']=need*2-1
+                if g['seriesGameNumber']==1:g['status']['abstractGameState']='Live'
+            rows=p.series.build(games,{int(k):v['name'] for k,v in snap['teams'].items()})
+            pr=p.forecast(dict(date_jst='2026-09-30',source_url=ev['source_url']),games,rows,now,target_day='2026-10-01')
+            self.assertNotIn('結果次第で開催',str(pr))
+            self.assertNotIn('開催条件付き',pr['title'])
+            self.assertIn('前戦は結果未確定',str(pr))
+            self.assertIn('確定済みの勝数は',str(pr))
+            if kind=='F':
+                later=p.forecast(dict(date_jst='2026-10-01',source_url=ev['source_url']),games,rows,now,target_day='2026-10-02')
+                self.assertIn('結果次第で開催',str(later))
+                self.assertIn('開催条件付き',later['title'])
+
+    def test_unconfirmed_relevant_card_blocks_all_game_claim(self):
+        snap,ev,now=fixture(29)
+        games=ev['schedule']['dates'][0]['games']
+        games[0]['status']['startTimeTBD']=True
+        with self.assertRaisesRegex(ValueError,'全試合を確定できません'):
+            p.prepare(snap,ev,'forecast',now)
+        missing_day=copy.deepcopy(games);missing_day[0].pop('officialDate')
+        rows=p.series.build(games,{int(k):v['name'] for k,v in snap['teams'].items()})
+        with self.assertRaisesRegex(ValueError,'全試合を確定できません'):
+            p.forecast(dict(date_jst='2026-09-29',source_url=ev['source_url']),missing_day,rows,now)
+        # Distant unconfirmed games and completed series do not block tomorrow.
+        games[0]['officialDate']='2026-10-15'
+        pr=p.prepare(snap,ev,'forecast',now)
+        self.assertEqual(len(pr['game_ids']),3)
+        games[0]['officialDate']='2026-09-29'
+        for game in games[:2]:
+            game['status']['abstractGameState']='Final'
+            game['teams']['home']['isWinner']=True
+        pr=p.prepare(snap,ev,'forecast',now)
+        self.assertEqual(len(pr['game_ids']),3)
+
+    def test_postponed_cancelled_cards_are_not_future_fixtures(self):
+        for state in ('Postponed','Cancelled','Canceled'):
+            snap,ev,now=fixture(29)
+            game=ev['schedule']['dates'][0]['games'][0]
+            game['status']['detailedState']=state
+            pr=p.prepare(snap,ev,'forecast',now)
+            self.assertNotIn(game['gamePk'],pr['game_ids'])
+            self.assertEqual(len(pr['game_ids']),3)
+        snap,ev,now=fixture(29)
+        ev['schedule']['dates'][0]['games'][0]['status']['codedGameState']='D'
+        self.assertNotIn(ev['schedule']['dates'][0]['games'][0]['gamePk'],p.prepare(snap,ev,'forecast',now)['game_ids'])
+
     def test_intro_does_not_duplicate_the_all_card_forecast(self):
         snap,ev,now=fixture()
         a=p.prepare(snap,ev,'situation',now)

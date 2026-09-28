@@ -133,14 +133,17 @@ def render_segment(seg,layers=False):
 
 def forecast(ctx, games, rows, now, target_day=None):
     target = target_day or (now.astimezone(JST).date() + timedelta(days=1)).isoformat()
+    target_date = datetime.fromisoformat(target).date()
+    # An unknown US start can fall on either this Japanese date or the previous
+    # one. Do not silently omit it while promising coverage of every game.
+    unresolved_days = {target_date.isoformat(), (target_date - timedelta(days=1)).isoformat()}
     by = {row['key']: row for row in rows if row.get('teams')}
     cards = []
     for g in games:
         status = g.get('status', {})
-        if status.get('startTimeTBD', True):
-            continue  # A dummy timestamp cannot establish tomorrow in JST.
-        start = datetime.fromisoformat(g['gameDate'].replace('Z', '+00:00')).astimezone(JST)
-        if start.date().isoformat() != target or status.get('abstractGameState') == 'Final':
+        if (status.get('abstractGameState') == 'Final'
+                or status.get('detailedState') in ('Postponed', 'Cancelled', 'Canceled')
+                or status.get('codedGameState') in ('D', 'C')):
             continue
         teams = g['teams']
         if not all(series.is_real(teams[s]['team']) for s in ('home', 'away')):
@@ -149,11 +152,18 @@ def forecast(ctx, games, rows, now, target_day=None):
         row = by.get(series.series_key(g['gameType'], *ids))
         if not row or row['over']:
             continue
+        if status.get('startTimeTBD', True):
+            if not g.get('officialDate') or g['officialDate'] in unresolved_days:
+                raise ValueError(f'試合{g["gamePk"]}の時刻未定で対象日の全試合を確定できません')
+            continue  # A dummy timestamp cannot establish tomorrow in JST.
+        start = datetime.fromisoformat(g['gameDate'].replace('Z', '+00:00')).astimezone(JST)
+        if start.date().isoformat() != target:
+            continue
         keyed = {t['id']: t for t in row['teams']}
         card = dict(game_id=g['gamePk'], round=g['gameType'], game_number=g['seriesGameNumber'],
                     home=keyed[ids[0]]['name'], away=keyed[ids[1]]['name'],
                     home_wins=keyed[ids[0]]['wins'], away_wins=keyed[ids[1]]['wins'],
-                    when=start.strftime('%H:%M'), conditional=g['seriesGameNumber'] > row['played'] + 1,
+                    when=start.strftime('%H:%M'), conditional=g['seriesGameNumber'] > row['need'],
                     jp_team=any(t.get('players') for t in row['teams']),
                     jp_home=bool(keyed[ids[0]]['players']), jp_away=bool(keyed[ids[1]]['players']),
                     home_players=keyed[ids[0]]['players'],away_players=keyed[ids[1]]['players'],
@@ -188,7 +198,7 @@ def forecast(ctx, games, rows, now, target_day=None):
     for index,c in enumerate(cards,1):
         state = situation(c)
         rnd = ROUND[c['round']][0]
-        note = ('前戦の結果次第で開催' if state == 'pending_results' else
+        note = (('前戦の結果次第で開催' if c['conditional'] else '前戦は結果未確定') if state == 'pending_results' else
                 '勝った球団がシリーズを制する' if state == 'decider' else
                 '世界一がかかる試合' if c['round'] == 'W' and state == 'clinch_chance' else
                 '突破と敗退回避がかかる' if state == 'clinch_chance' else 'シリーズの初戦' if state == 'opening' else 'シリーズの次戦')
@@ -208,7 +218,9 @@ def forecast(ctx, games, rows, now, target_day=None):
                     headline=f'{c["home"]}\n対{c["away"]}', subhead=note,
                     items=items,card_index=index,card_total=len(cards),headline_colors=[c['home_color'],c['away_color']],
                     affiliations=['・'.join(c[s+'_players'])+' / '+c[s] for s in ('home','away') if c[s+'_players']])
-        record='' if state=='opening' else f'ここまで{c["home_wins"]}勝対{c["away_wins"]}勝。'
+        record = ('' if state=='opening' else
+                  ('確定済みの勝数は' if state=='pending_results' else 'ここまで')
+                  + f'{c["home_wins"]}勝対{c["away_wins"]}勝。')
         speech = (f'{c["home"]}対{c["away"]}は{rnd}第{c["game_number"]}戦。'
                   f'{record}日本時間{spoken_clock(c["when"])}の予定です。')
         if state=='opening' and c['bye']:speech+='勝者は地区シリーズで'+c['bye']+'と対戦します。'
