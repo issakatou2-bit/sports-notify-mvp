@@ -278,6 +278,7 @@ jobs:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
           TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          PS_PREVIEW_APPROVED: ${{ vars.PS_PREVIEW_APPROVED }}
         run: |
           set +e
           # 定期実行では4本とも作る。手動実行では絞れるようにしてある。
@@ -292,6 +293,10 @@ jobs:
             if [ "$mode" = "postseason" ] && [ "${{ steps.ps_editorial.outcome }}" != "success" ]; then
               echo "::error::PS日程/編集段階を確認できないため、古い資料で公開しません"
               CLAIM_FAILED=1
+              echo "::endgroup::"; continue
+            fi
+            if [ "$mode" = "postseason" ] && python -c "import json, os, sys; sys.path.insert(0, 'scripts'); from ps_editorial import preview_review_required; sys.exit(0 if preview_review_required(json.load(open('data/postseason.json', encoding='utf-8')), os.getenv('PS_PREVIEW_APPROVED', '')) else 1)"; then
+              echo "新しいPS構成はプレビュー確認待ちのため公開しません" | tee -a "$GITHUB_STEP_SUMMARY"
               echo "::endgroup::"; continue
             fi
             if [ "$mode" = "players" ]; then

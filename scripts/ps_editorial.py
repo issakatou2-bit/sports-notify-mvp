@@ -15,6 +15,13 @@ JST = timezone(timedelta(hours=9))
 API = 'https://statsapi.mlb.com/api/v1/'
 
 
+def preview_review_required(snapshot, approved=''):
+    """Hold new public formats until their concrete preview is approved."""
+    return (snapshot.get('editorial', {}).get('stage') in
+            ('bracket_preview', 'bracket_pending') and
+            str(approved).lower() != 'true')
+
+
 def fetch(url):
     with urllib.request.urlopen(url, timeout=35) as response:
         return json.load(response)
