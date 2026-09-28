@@ -71,6 +71,32 @@ LABELS = {
     "gb_percent": ("ゴロの割合", "打たせて取る型かどうか"),
 }
 
+# 同じCSVキーでも、投手では相手打者に許した結果。投球速度とは別。
+PITCHER_LABELS = {
+    "exit_velocity": ("被打球の平均速度", "この投手が相手打者に打たれた打球の平均速度。投球の球速や本人の打撃ではない"),
+    "max_ev": ("被打球の最高速度", "この投手が相手打者に打たれた打球の最高速度。最速投球や本人の打撃能力ではない"),
+    "hard_hit_percent": ("被ハードヒット率", "相手打者に打たれた打球のうち、打球速度95マイル以上の割合"),
+    "brl_percent": ("被バレル率", "相手打者に打たれた打球のうち、角度と速度がバレルに該当する割合"),
+    "whiff_percent": ("空振りを取る割合", "相手打者のスイングのうち空振りを取った割合"),
+    "chase_percent": ("ボール球を振らせる割合", "ストライクゾーン外の投球で相手打者がスイングした割合"),
+    "k_percent": ("奪三振率", "対戦した打者のうち三振を奪った割合"),
+    "bb_percent": ("与四球率", "対戦した打者のうち四球を与えた割合"),
+    "xba": ("被期待打率", "相手打者の打球の質などから推定される被打率"),
+    "xslg": ("被期待長打率", "相手打者の打球の質などから推定される被長打率"),
+    "xwoba": ("被期待wOBA", "この投手に対する相手打者の期待wOBA"),
+    "xiso": ("被期待ISO", "この投手に対する相手打者の期待ISO（期待長打率と期待打率の差）"),
+    "xera": LABELS["xera"],
+    "fastball_velo": ("速球の平均球速", "この投手の速球の平均球速。被打球の速度とは別"),
+    "fb_velocity": ("速球の平均球速", "この投手の速球の平均球速。被打球の速度とは別"),
+    "fastball_spin": LABELS["fastball_spin"],
+    "fb_spin": LABELS["fastball_spin"],
+    "curve_spin": LABELS["curve_spin"],
+    "gb_percent": LABELS["gb_percent"],
+}
+# 投手専用指標が混じっても、打者の指標として出さない。
+BATTER_LABELS = {k: v for k, v in LABELS.items()
+                 if k not in {"fastball_velo", "fastball_spin", "curve_spin", "xera", "gb_percent"}}
+
 # 上位・下位これを超えたら「極端」とみなす。
 TOP_AT = 90
 BOTTOM_AT = 10
@@ -113,15 +139,18 @@ def fetch(year=2026, kind="batter") -> dict:
     return out
 
 
-def notable(row: dict, top=TOP_AT, bottom=BOTTOM_AT, limit=4) -> list:
+def notable(row: dict, top=TOP_AT, bottom=BOTTOM_AT, limit=4, *, kind="batter") -> list:
     """その選手の、**極端な項目だけ**。真ん中は返さない。
 
     50前後の項目を並べても「平均です」としか言えない。
     上位と下位だけを、離れている順に返す。
     """
+    if kind not in ("batter", "pitcher"):
+        raise ValueError("Savantの投打区分を指定してください")
+    labels = PITCHER_LABELS if kind == "pitcher" else BATTER_LABELS
     out = []
     for key, value in (row or {}).items():
-        if key == "name" or key not in LABELS:
+        if key == "name" or key not in labels:
             continue
         # 「上位0%」とは書かない。100パーセンタイルはリーグ最高のこと。
         if value >= 100:
@@ -134,8 +163,8 @@ def notable(row: dict, top=TOP_AT, bottom=BOTTOM_AT, limit=4) -> list:
             side = "リーグ下位%d%%" % value
         else:
             continue
-        label, why = LABELS[key]
-        out.append({"key": key, "label": label, "why": why,
+        label, why = labels[key]
+        out.append({"key": key, "kind": kind, "label": label, "why": why,
                     "percentile": value, "side": side,
                     "high": value >= top})
     # 端に近い順（50から遠い順）
@@ -156,7 +185,7 @@ def main() -> int:
     if args.player:
         row = rows.get(args.player) or {}
         print("== %s" % (row.get("name") or args.player))
-        for x in notable(row, limit=8):
+        for x in notable(row, limit=8, kind=args.kind):
             print("   %-16s %3d（%s） … %s"
                   % (x["label"], x["percentile"], x["side"], x["why"]))
     if args.out and rows:

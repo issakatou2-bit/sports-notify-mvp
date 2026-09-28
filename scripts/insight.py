@@ -361,7 +361,9 @@ def from_percentiles(rows: list, name: str) -> list:
     for r in rows or []:
         out.append(_say(
             "percentile",
-            "%sの%sは%s（%d パーセンタイル）"
+            ("%sの%sについて、Savantの評価は%s（%d パーセンタイル）"
+             if r["kind"] == "pitcher" else
+             "%sの%sは%s（%d パーセンタイル）")
             % (name, r["label"], r["side"], r["percentile"]),
             # 良し悪しではなく位置の話。極端であること自体が中身。
             tone=POSITIVE if r["high"] else NEGATIVE,
@@ -370,6 +372,9 @@ def from_percentiles(rows: list, name: str) -> list:
             detail="%d パーセンタイル（100が最高）" % r["percentile"],
             why=r["why"],
             source="Baseball Savant"))
+        # 原稿へ渡す材料にも投打・指標キーを残す（数値一致だけでは意味を検査できない）。
+        out[-1]["metric_key"] = r["key"]
+        out[-1]["statcast_kind"] = r["kind"]
     return out
 
 
@@ -386,7 +391,7 @@ def player(player_id, name: str, season="2026", group="hitting") -> list:
     if savant is not None:
         kind = "pitcher" if group == "pitching" else "batter"
         rows = savant.fetch(season, kind).get(str(player_id)) or {}
-        said += from_percentiles(savant.notable(rows), name)
+        said += from_percentiles(savant.notable(rows, kind=kind), name)
     said.sort(key=lambda s: -s["weight"])
     return said
 
