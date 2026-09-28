@@ -38,15 +38,55 @@ def fixture(day=28):
 
 
 class ProgramTests(unittest.TestCase):
-    def test_two_distinct_intro_episodes(self):
+    def test_intro_does_not_duplicate_the_all_card_forecast(self):
         snap,ev,now=fixture()
         a=p.prepare(snap,ev,'situation',now)
         snap2,ev2,now2=fixture(29)
         b=p.prepare(snap2,ev2,'situation',now2)
-        self.assertEqual(a['phase'],'intro_103');self.assertEqual(b['phase'],'intro_104')
-        self.assertNotEqual(a['edition_key'],b['edition_key'])
-        self.assertEqual(len(a['game_ids']),2)
-        p.check_program(a);p.check_program(b)
+        self.assertEqual(a['phase'],'intro_all');self.assertIsNone(b)
+        self.assertEqual(len(a['game_ids']),4)
+        p.check_program(a)
+        self.assertEqual(len(p.prepare(snap2,ev2,'forecast',now2)['game_ids']),4)
+
+    def test_numbering_colors_black_outfit_and_probables(self):
+        snap,ev,now=fixture(29)
+        first=ev['schedule']['dates'][0]['games'][0]
+        first['teams']['home']['probablePitcher']=dict(id=123,fullName='Michael King')
+        pr=p.prepare(snap,ev,'forecast',now)
+        details=[s['meta']['card'] for s in pr['segments'][1:]]
+        self.assertEqual([c['card_index'] for c in details],[1,2,3,4])
+        self.assertTrue(all(c['card_total']==4 for c in details))
+        self.assertNotIn('card_index',pr['segments'][0]['meta']['card'])
+        self.assertIn('明日9/30',pr['segments'][0]['meta']['card']['headline'])
+        self.assertEqual(details[0]['headline_colors'],[p.club_color(117),p.club_color(145)])
+        self.assertEqual(details[0]['items'][2]['value'],'確認中')
+        self.assertNotEqual(details[0]['items'][1]['value'],'確認中')
+        self.assertNotIn('0勝対0勝',pr['segments'][1]['text'])
+        self.assertIn('地区シリーズ',pr['segments'][1]['text'])
+        manifests=p.check_program(pr)['rendered']
+        self.assertTrue(all('black' in x['presenters'][0]['asset'] for x in manifests))
+        self.assertIsNone(p.probable({'probablePitcher':{'fullName':'Unidentified'}}))
+        details[0]['card_index']=0
+        with self.assertRaises(ValueError):p.render_segment(pr['segments'][1])
+
+    def test_opening_details_follow_each_round_and_new_schedule(self):
+        for kind,need,next_label in [('D',3,'リーグ優勝決定シリーズ'),('L',4,'ワールドシリーズ'),('W',4,'世界一')]:
+            snap,ev,now=fixture(29)
+            games=[g for g in ev['schedule']['dates'][0]['games'] if g['gameType']=='F']
+            for game in games:game['gameType']=kind;game['gamesInSeries']=need*2-1
+            rows=p.series.build(games,{int(k):v['name'] for k,v in snap['teams'].items()})
+            pr=p.forecast(dict(date_jst='2026-09-29',source_url=ev['source_url']),games,rows,now)
+            details=pr['segments'][1:]
+            self.assertTrue(all(s['meta']['card']['items'][1]['value']==next_label for s in details))
+            self.assertTrue(all(s['meta']['card']['items'][2]['value']==f'{need}勝先取' for s in details))
+            self.assertNotIn('勝者の地区シリーズの相手',str(details))
+        snap,ev,now=fixture(29)
+        first=ev['schedule']['dates'][0]['games'][0]
+        first['gameDate']='2026-09-29T23:30:00+00:00'
+        pr=p.prepare(snap,ev,'forecast',now)
+        detail=next(s for s in pr['segments'][1:] if first['gamePk'] in s['meta']['game_ids'])
+        self.assertEqual(detail['meta']['card']['items'][0]['value'],'08:30')
+        self.assertIn('8時30分',detail['text'])
 
     def test_no_tomorrow_game(self):
         snap,ev,now=fixture()

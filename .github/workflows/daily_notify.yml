@@ -551,6 +551,7 @@ jobs:
             data/published_videos.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json data/token_usage.json
 
       - name: Save video as artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: collespo-video
@@ -558,6 +559,10 @@ jobs:
             build/video/collespo_short.mp4
             build/video/short.png
             build/video/short.json
+            build/video/ps_program_gate.json
+            build/ps_program_forecast*.json
+            build/ps_forecast_status.json
+            build/ps_forecast_source.json
           retention-days: 7
           if-no-files-found: ignore
 

@@ -557,7 +557,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: collespo-ps-rendered-claims
-          path: build/ps_rendered_claims.json
+          path: |
+            build/ps_rendered_claims.json
+            build/ps_program_situation*.json
+            build/ps_editorial_source.json
+            build/morning/ps_program_gate.json
           retention-days: 7
           if-no-files-found: ignore
 

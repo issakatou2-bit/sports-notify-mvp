@@ -5,6 +5,7 @@ from io import BytesIO
 from pathlib import Path
 from PIL import Image, ImageDraw
 from ps_brand_components import TOKENS, THEME, text, font
+from video_common import lift_color
 
 ROOT=Path(__file__).resolve().parents[1]
 LAYOUTS={'schedule':4,'facts':3,'bracket':2,'quote':1}
@@ -52,8 +53,16 @@ def render(card,presenters=None,style='stadium',layers=False):
     put(72,65,'コレスポ',44,role='brand')
     badge=card.get('sport','MLB')+' / '+card.get('label','')
     put(354,90,badge,26,role='brand',color=t['muted'],latin=badge.isascii())
+    if card.get('card_index') is not None:
+        index,total=card['card_index'],card.get('card_total')
+        if type(index) is not int or type(total) is not int or not 1<=index<=total:
+            raise ValueError('Invalid card progress')
+        put(748,156,'カード',26,width=105,role='utility',color=t['muted'])
+        put(865,145,f'{index}/{total}',40,width=125,role='utility',color=t['accent'],latin=True)
     for i,line in enumerate(card['headline'].split('\n')):
         if i>1:raise ValueError('Headline needs an editorial rewrite')
+        marker=(card.get('headline_colors') or [None,None])[i]
+        if marker:d.line((72,222+i*125,936,222+i*125),fill=lift_color(marker),width=6)
         put(72,230+i*125,line,100)
     put(72,485,card.get('subhead',''),40,color=t['accent'])
     layout=card['layout']
@@ -66,14 +75,19 @@ def render(card,presenters=None,style='stadium',layers=False):
                 put(72,y+55,time,50,width=235,color=t['accent'],latin=time.isascii())
             else:
                 put(72,y,item['when'],42,width=235,color=t['accent'],latin=item['when'].isascii())
-            put(350,y,item['home'],48,width=575)
-            put(350,y+70,'vs '+item['away'],46,width=575)
+            for offset,side in ((0,'home'),(70,'away')):
+                tint=lift_color(item.get(side+'_color'),fallback=t['ink'])
+                d.line((329,y+offset+7,329,y+offset+48),fill=tint,width=6)
+                put(350,y+offset,('vs ' if side=='away' else '')+item[side],48 if side=='home' else 46,width=575)
         elif layout=='facts':
             y=580+i*200;d.line((72,y-10,936,y-10),fill=t['line'],width=2)
             put(72,y,item['label'],40,color=t['muted'])
+            if item.get('team_color'):d.line((72,y-10,936,y-10),fill=lift_color(item['team_color']),width=5)
             put(72,y+57,item['value'],86,color=t['accent'])
         elif layout=='bracket':
             y=590+i*350;d.rounded_rectangle((72,y,560,y+260),radius=18,fill=t['panel'])
+            for offset,side in ((22,'home'),(111,'away')):
+                if item.get(side+'_color'):d.line((81,y+offset+8,81,y+offset+51),fill=lift_color(item[side+'_color']),width=5)
             put(98,y+22,item['home'],50,width=435)
             put(98,y+111,'vs '+item['away'],46,width=435)
             put(98,y+193,item['when'],32,width=435,role='utility',color=t['muted'])
@@ -91,6 +105,9 @@ def render(card,presenters=None,style='stadium',layers=False):
             if len(lines)>7:raise ValueError('Quote needs an editorial excerpt')
             for row,line in enumerate(lines):put(100,610+row*85,line,56,width=805)
             put(100,1220,item['attribution'],28,role='utility',color=t['muted'])
+    if len(card.get('affiliations',[]))>2:raise ValueError('Too many affiliation rows')
+    for i,value in enumerate(card.get('affiliations',[])):
+        put(72,1165+i*55,value,40,color=t['muted'])
     suffix=' / 日本時間' if card.get('production') else ' / 日本時間・デザイン確認用'
     put(72,1320,card['date']+suffix,28,role='utility',color=t['muted'])
     put(350,1490,'用語メモ',26,width=320,role='utility',color=t['accent'])
@@ -98,7 +115,7 @@ def render(card,presenters=None,style='stadium',layers=False):
     put(350,1625,'出典：'+card.get('source_label','説明欄'),26,width=320,role='utility',color=t['muted'])
     avatars=[]
     framing=THEME['presenter']
-    config=[('left','zundamon/C-cheer/base-brow-candidate.png'),('right','metan/3-white/base.png')]
+    config=[('left','zundamon/C-cheer/base-black-brow-candidate.png'),('right','metan/3-black/base.png')]
     for side,path in config:
         if presenters not in (side,'both'):continue
         data=(ROOT/'assets/portraits/collespo-20260923'/path).read_bytes()

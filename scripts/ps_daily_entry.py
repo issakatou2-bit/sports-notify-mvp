@@ -30,7 +30,7 @@ def main():
             ps.write(STATUS, dict(state='blocked', reason='Preparation has not succeeded'))
             now = datetime.now(timezone.utc)
             year = now.astimezone(ps.JST).year
-            url = ps.pe.API + f'schedule?sportId=1&season={year}&startDate={year}-09-01&endDate={year}-11-15&gameType=F,D,L,W&hydrate=team'
+            url = ps.pe.API + f'schedule?sportId=1&season={year}&startDate={year}-09-01&endDate={year}-11-15&gameType=F,D,L,W&hydrate=team,probablePitcher'
             if ps.layout() == 'hold':
                 program = None
             else:
