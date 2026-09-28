@@ -1,0 +1,14 @@
+{
+  "version": "draft-20260928-2",
+  "main_audience": "MLBをある程度見ている人",
+  "colors": {
+    "stadium": {"bg":"#102d2a","ink":"#f7f2df","muted":"#a9c5bb","accent":"#ffd16c","line":"#36544a","panel":"#183b35"},
+    "editorial": {"bg":"#f1eee4","ink":"#212a36","muted":"#64707b","accent":"#c04c36","line":"#c3c7bf","panel":"#e5e7de"}
+  },
+  "canvas": [1080,1920],
+  "important_area": [72,210,936,1280],
+  "presenter_area_top": 1430,
+  "presenter": {"default":"right","crop":[130,0,930,660],"max_size":[220,210],"edge_px":24,"vertical_anchor":"bottom"},
+  "voice_policy": "事実・対戦・見どころを優先。初学者向け用語は画面/説明欄で補足",
+  "publish_policy": "新設/変更は具体的な画像/動画確認後。テンプレート生成だけでは公開しない"
+}

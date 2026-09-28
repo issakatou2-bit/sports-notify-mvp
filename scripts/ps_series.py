@@ -169,8 +169,12 @@ def build(games: list, names: dict = None, players: dict = None) -> list:
         s["_seen"].add(pk)
         state = ((g.get("status") or {}).get("abstractGameState") or "")
         if state == "Final":
+            winner_flags = [a.get('isWinner'), h.get('isWinner')]
+            if (sum(value is True for value in winner_flags) != 1
+                    or any(value is not None and type(value) is not bool for value in winner_flags)):
+                raise ValueError(f'終了試合{pk}の勝者を1球団に確定できません')
             for side, tid in ((a, aid), (h, hid)):
-                if side.get("isWinner"):
+                if side.get("isWinner") is True:
                     s["wins"][tid] += 1
                     s["played"] += 1
         else:
@@ -265,7 +269,8 @@ def text(s: dict, with_round: bool = True) -> str:
         return f"{rnd}{a['name']}対{b['name']}は{rec}のタイ"
     if a["wins"] == s["need"] - 1:
         # **あと1勝なのは勝っている側。**負けている側から見れば後が無い。
-        return f"{rnd}{a['name']}が{rec}とし、突破に王手"
+        stake = "世界一に王手" if s["round"] == "W" else "突破に王手"
+        return f"{rnd}{a['name']}が{rec}とし、{stake}"
     return f"{rnd}{a['name']}が{rec}でリード"
 
 
@@ -304,7 +309,7 @@ def jp_text(s: dict) -> str:
                 + (f"。{day}に第1戦" if day else ""))
     out = f"{who}は{s['round_jp']}で{opp['name']}に{rec}"
     if mine["wins"] == s["need"] - 1:
-        out += "、突破に王手"
+        out += "、世界一に王手" if s["round"] == "W" else "、突破に王手"
     if opp["wins"] == s["need"] - 1:
         out += "、負ければ敗退"
     return out

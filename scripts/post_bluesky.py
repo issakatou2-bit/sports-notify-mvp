@@ -86,7 +86,8 @@ def main():
     # (以前Xの文字数に合わせて1試合に固定していたが、Xは手動投稿なので
     #  自動投稿側をXの制限に合わせる必要はなかった)
     games = post_common.load_notable_games(args.games, limit=3)
-    if not games:
+    short = public_short(args.kind)
+    if not games and not (short and short.get('program_version')):
         print("[info] 今日は注目試合が無いため投稿をスキップします")
         return
 
@@ -103,7 +104,9 @@ def main():
     stage = "本文・動画確認"
     try:
         body, hashtags, site_url = post_common.build_post(games, MAX_POST_GRAPHEMES)
-        short = public_short(args.kind)
+        if short and short.get('program_version'):
+            body = short['social_summary']
+            hashtags = post_common.collect_hashtags(games, text=body)
         stage = "ライブラリ読込"
         from atproto import Client, client_utils, models
 

@@ -479,6 +479,12 @@ def caption(service, day, record, kind=DEFAULT_KIND):
         title = re.split(r'｜\d{1,2}/\d{1,2}の注目試合', title)[0].strip()
     lead = friendly_lead(title) if kind == DEFAULT_KIND else title
     reason = headline_game_reason(title, record.get('description', '')) if kind == DEFAULT_KIND else ''
+    if record.get('program_version'):
+        lead = record['social_summary']
+        reason = ''
+        w = dict(w, short='PS試合予告' if kind == DEFAULT_KIND else 'PSカード・情勢',
+                 long='PS試合予告' if kind == DEFAULT_KIND else 'PSカード・情勢',
+                 lead='日本時間の日程とシリーズの状況を動画で紹介します')
     details = [lead] + ([reason] if reason and reason != lead else [])
     youtube = 'https://www.youtube.com/watch?v=' + record['video_id']
     stamp = day[5:].replace('-', '/')
@@ -499,7 +505,7 @@ def caption(service, day, record, kind=DEFAULT_KIND):
     tags = ht.select(summary, service, sport=w['sport'])
     return (f'{stamp}更新｜{w["long"]}\n{summary}\n\n' + w['lead'] + '。\n'
             '動画・記事はこちら：collespo.com\nYouTube：' + youtube +
-            '\n\n音声：VOICEVOX:ずんだもん\n' + ht.display(tags))
+            '\n\n音声：VOICEVOX:ずんだもん / VOICEVOX:四国めたん\n' + ht.display(tags))
 
 
 def x_weight(text):

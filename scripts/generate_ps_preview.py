@@ -261,6 +261,31 @@ def main():
         return
     data = json.loads(Path(args.postseason).read_text(encoding='utf-8')) if Path(args.postseason).exists() else {}
     context = data.get('editorial', {})
+    import ps_program as program
+    if program.desired(data) and program.layout() != 'legacy':
+        stored = Path('build/ps_program_situation.json')
+        if program.layout() == 'hold':
+            if args.narration_out:
+                Path(args.narration_out).unlink(missing_ok=True)
+            print('[info] PS新構成はhold設定'); return
+        if args.upload:
+            program.upload(program.read(stored), [x for x in sys.argv[1:] if x != '--upload'])
+        elif args.thumbnail_out:
+            current = program.read(stored)
+            image, _ = program.render(current['segments'][0]['meta']['card'])
+            path = Path(args.thumbnail_out); path.parent.mkdir(parents=True, exist_ok=True); image.save(path)
+        elif args.narration_out:
+            from datetime import timezone
+            current = program.prepare(data, program.read('build/ps_editorial_source.json'), 'situation',
+                                      datetime.now(timezone.utc), program.read('data/published_videos.json'))
+            if current is None:
+                Path(args.narration_out).unlink(missing_ok=True); stored.unlink(missing_ok=True)
+                print('[info] 新しいPS情勢がないため正常省略'); return
+            program.check_program(current)
+            program.write(stored, current); program.write(args.narration_out, program.script(current))
+        else:
+            program.movie(program.read(stored), args.audio_dir, args.out)
+        return
     if args.upload:
         upload(context)
         return
