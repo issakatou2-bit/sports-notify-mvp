@@ -1,30 +1,34 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 322,
-    "home_wins": 174,
+    "games": 329,
+    "home_wins": 179,
     "draws": 0,
-    "away_wins": 148,
+    "away_wins": 150,
     "home_win_pct": 54,
     "avg_total": 8.7,
     "one_run": 92,
-    "one_run_pct": 29,
+    "one_run_pct": 28,
     "shutouts": 39,
     "shutout_pct": 12
   },
   "same_division": {
-    "games": 107,
-    "home_wins": 52,
+    "games": 111,
+    "home_wins": 55,
     "draws": 0,
-    "away_wins": 55,
-    "home_win_pct": 49,
+    "away_wins": 56,
+    "home_win_pct": 50,
     "avg_total": 9.2,
     "one_run": 30,
-    "one_run_pct": 28,
+    "one_run_pct": 27,
     "shutouts": 12,
     "shutout_pct": 11
   },
   "venues": {
+    "Tモバイル・パーク": {
+      "games": 5,
+      "avg_total": 12.4
+    },
     "カウフマン・スタジアム": {
       "games": 8,
       "avg_total": 11.1
@@ -41,13 +45,13 @@
       "games": 9,
       "avg_total": 10.0
     },
-    "レート・フィールド": {
-      "games": 19,
-      "avg_total": 9.8
-    },
     "ペトコ・パーク": {
-      "games": 15,
-      "avg_total": 9.7
+      "games": 16,
+      "avg_total": 9.9
+    },
+    "レート・フィールド": {
+      "games": 20,
+      "avg_total": 9.6
     },
     "ナショナルズ・パーク": {
       "games": 5,
@@ -62,8 +66,8 @@
       "avg_total": 9.5
     },
     "トロピカーナ・フィールド": {
-      "games": 11,
-      "avg_total": 9.3
+      "games": 12,
+      "avg_total": 9.2
     },
     "フェンウェイ・パーク": {
       "games": 16,
@@ -77,16 +81,16 @@
       "games": 16,
       "avg_total": 8.9
     },
-    "オラクル・パーク": {
-      "games": 5,
-      "avg_total": 8.8
-    },
     "ドジャー・スタジアム": {
       "games": 23,
       "avg_total": 8.3
     },
+    "オラクル・パーク": {
+      "games": 6,
+      "avg_total": 8.3
+    },
     "ローンデポ・パーク": {
-      "games": 9,
+      "games": 10,
       "avg_total": 8.2
     },
     "トゥルーイスト・パーク": {
@@ -98,8 +102,8 @@
       "avg_total": 8.0
     },
     "シチズンズ・バンク・パーク": {
-      "games": 12,
-      "avg_total": 7.6
+      "games": 13,
+      "avg_total": 7.8
     },
     "カムデン・ヤーズ": {
       "games": 10,
