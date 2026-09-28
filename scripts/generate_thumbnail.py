@@ -449,8 +449,17 @@ def _pick_from_dialogue(path: str) -> str:
     return " ".join(str(d.get("pick") or "").split())
 
 
+def _mode_from_dialogue(path: str) -> str:
+    """台本の回の種類（"numbers" など）。読めなければ空。"""
+    try:
+        return str(json.loads(pathlib.Path(path).read_text(
+            encoding="utf-8")).get("mode") or "")
+    except (OSError, ValueError, TypeError):
+        return ""
+
+
 def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
-                  jp_names=None, pick: str = "", shape=None):
+                  jp_names=None, pick: str = "", shape=None, mode: str = ""):
     """長編（対話）。サムネイルは「目に入った瞬間」だけを担当する。
 
     題（検索）とサムネイル（一目）で役割が違う。
@@ -542,7 +551,12 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
     else:
         who = short_topic or "MLB"
         lines.append((who, shrink(who, 100), TEXT))
-    lines.append(("海外の反応", 156, ACCENT))
+    # **数字の回に「海外の反応」と描かない。**9/14に長編を「数字で」の
+    # 回へ切り替えたあとも、表紙だけコメント欄の回の形のままで、
+    # 「ヌートバー 3打数0安打 2四球」を「現地のコメント（翻訳）」として
+    # 載せていた（9/28に表紙を見て気づいた）。題とも食い違う。
+    numbers = mode == "numbers"
+    lines.append(("きょうの数字" if numbers else "海外の反応", 156, ACCENT))
 
     y = 168
     for text, size, color in lines:
@@ -567,10 +581,13 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
             vc.pop_text(d, (70, y + 8), ln, font(ps), TEXT,
                         stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
             y += ps + 8
-        vc.pop_text(d, (70, y + 6), "現地のコメント（翻訳）", font(26), DIM,
-                    stroke=(8, 10, 15), stroke_w=4)
+        vc.pop_text(d, (70, y + 6),
+                    "きょうの成績" if numbers else "現地のコメント（翻訳）",
+                    font(26), DIM, stroke=(8, 10, 15), stroke_w=4)
     else:
-        vc.pop_text(d, (70, y + 8), "公式コメント欄を読む", font(40), DIM,
+        vc.pop_text(d, (70, y + 8),
+                    "成績と指標を数字で" if numbers else "公式コメント欄を読む",
+                    font(40), DIM,
                     stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
 
     # 番組名は左下。右下は再生時間の表示と重なるので置かない。
@@ -785,7 +802,8 @@ def main():
         draw_longform(im, d, args.topic, day, args.portrait_dir,
                       _jp_from_dialogue(args.dialogue),
                       _pick_from_dialogue(args.dialogue),
-                      shape_from_dialogue(args.dialogue))
+                      shape_from_dialogue(args.dialogue),
+                      _mode_from_dialogue(args.dialogue))
     elif args.kind == "morning":
         try:
             rec = json.loads(pathlib.Path(args.recap).read_text(encoding="utf-8"))
