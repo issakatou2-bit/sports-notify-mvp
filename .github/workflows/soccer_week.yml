@@ -170,7 +170,7 @@ jobs:
           bash scripts/commit_data.sh \
             "soccer week: ${{ github.run_id }}" \
             data/soccer_jp_week.json data/soccer_week_state.json \
-            data/published_videos.json
+            data/published_videos.json data/morning_recap.json data/player_profile.json
 
       - name: Say what happened
         if: always()
