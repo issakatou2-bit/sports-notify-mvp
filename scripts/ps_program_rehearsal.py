@@ -2,7 +2,6 @@
 import argparse
 import copy
 from datetime import datetime, timedelta
-from pathlib import Path
 import ps_program as p
 
 
@@ -13,7 +12,7 @@ def main():
     source=p.read('build/ps_editorial_source.json')
     snapshot=p.read('data/postseason.json')
     real=datetime.fromisoformat(source['retrieved_at'])
-    ctx,games=p.validate_source(snapshot,source,real)
+    ctx,_=p.validate_source(snapshot,source,real)
     if ctx['stage']!='bracket_preview':
         print('[info] WCS開幕前の4カード再現は対象外');return
     start=min(datetime.fromisoformat(m['first_game']['start_utc']).astimezone(p.JST) for m in ctx['matchups'])

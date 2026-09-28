@@ -1,6 +1,12 @@
 name: PS新構成の音声付き確認（投稿しない）
 on:
   workflow_dispatch: {}
+  push:
+    branches: [codex/ps-template-rollout-20260928]
+    paths:
+      - 'scripts/ps_*'
+      - 'scripts/video_design/**'
+      - '.github/workflows/ps_program_preview.yml'
 permissions:
   contents: read
 jobs:
