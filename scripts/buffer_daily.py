@@ -160,6 +160,27 @@ def source_of(kind: str):
     return SOURCES[kind]
 
 
+class MissingVideoRecord(ValueError):
+    pass
+
+
+def verified_ps_skip(run, kind):
+    """A missing record alone is an error; require this run's explicit PS skip."""
+    if kind != 'daily':return None
+    artifacts=github('/actions/runs/'+str(run['id'])+'/artifacts')['artifacts']
+    matches=[a for a in artifacts if a['name']=='collespo-video' and not a['expired']]
+    if len(matches)!=1 or matches[0]['size_in_bytes']>2*1024*1024:return None
+    raw=github('/actions/artifacts/'+str(matches[0]['id'])+'/zip',raw=True)
+    with zipfile.ZipFile(io.BytesIO(raw)) as z:
+        names=z.namelist()
+        if any(n.endswith('.mp4') for n in names):return None
+        markers=[n for n in names if n.rsplit('/',1)[-1]=='ps_forecast_status.json']
+        if len(markers)!=1 or z.getinfo(markers[0]).file_size>4096:return None
+        marker=json.loads(z.read(markers[0]))
+    if marker.get('state')!='skipped' or not marker.get('reason'):return None
+    return marker['reason']
+
+
 def select_record(run, records, now, kind=DEFAULT_KIND):
     key, _, _, wf = source_of(kind)
     if run.get('head_branch') != 'main' or run.get('path') != '.github/workflows/' + wf:
@@ -173,8 +194,10 @@ def select_record(run, records, now, kind=DEFAULT_KIND):
     if day != now.astimezone(JST).date().isoformat():
         raise ValueError('Stale source: only the current JST edition may be posted')
     record = records.get(key, {}).get(day)
-    if not record or not re.fullmatch(r'[A-Za-z0-9_-]{11}', record.get('video_id', '')):
-        raise ValueError('No matching YouTube record for ' + key)
+    if not record:
+        raise MissingVideoRecord('No matching YouTube record for ' + key)
+    if not re.fullmatch(r'[A-Za-z0-9_-]{11}', record.get('video_id', '')):
+        raise ValueError('Malformed YouTube record for ' + key)
     if not created <= instant(record['published_at']) <= instant(run['updated_at']):
         raise ValueError('Video record was not produced during this workflow run')
     if instant(record.get('publish_at') or record['published_at']) > now:
@@ -634,8 +657,13 @@ def main():
     services = selected_services(os.environ.get('BUFFER_CHANNELS'))
     run = github('/actions/runs/' + str(args.source_run))
     records = json.loads(Path('data/published_videos.json').read_text(encoding='utf-8'))
-    day, record = select_record(run, records, datetime.now(timezone.utc),
-                                args.kind)
+    try:
+        day, record = select_record(run, records, datetime.now(timezone.utc), args.kind)
+    except MissingVideoRecord:
+        reason=verified_ps_skip(run,args.kind)
+        if not reason:raise
+        print('[info] Source PS program explicitly skipped; no SNS post: '+reason)
+        return
     _key, _artifact, _file, _wf = source_of(args.kind)
     snippet = verify_youtube(record)
     record = {**record, 'title': snippet['title'], 'description': snippet.get('description', '')}

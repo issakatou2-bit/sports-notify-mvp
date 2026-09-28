@@ -11,6 +11,26 @@ import buffer_daily as daily
 
 
 class BufferTests(unittest.TestCase):
+    def test_ps_skip_requires_explicit_same_run_artifact_without_video(self):
+        def archive(state,video=False):
+            out=io.BytesIO()
+            with zipfile.ZipFile(out,'w') as z:
+                z.writestr('ps_forecast_status.json',json.dumps({'state':state,'reason':'No PS games tomorrow'}))
+                if video:z.writestr('video/collespo_short.mp4',b'video')
+            return out.getvalue()
+        meta={'artifacts':[{'id':8,'name':'collespo-video','expired':False,'size_in_bytes':1000}]}
+        for state,video,accepted in [('skipped',False,True),('blocked',False,False),('v2',False,False),('skipped',True,False)]:
+            with patch.object(daily,'github',side_effect=[meta,archive(state,video)]) as read:
+                self.assertEqual(bool(daily.verified_ps_skip({'id':99},'daily')),accepted)
+                self.assertEqual(read.call_args_list[0].args[0],'/actions/runs/99/artifacts')
+        with patch.object(daily,'github') as read:
+            self.assertIsNone(daily.verified_ps_skip({'id':99},'morning'))
+            read.assert_not_called()
+        with self.assertRaises(daily.MissingVideoRecord):daily.select_record(self.run,{},self.now)
+        with self.assertRaises(ValueError) as bad:
+            daily.select_record(self.run,{'daily':{'2026-09-11':{'video_id':'bad'}}},self.now)
+        self.assertNotIsInstance(bad.exception,daily.MissingVideoRecord)
+
     def test_reconcile_skips_buffer_when_every_delivery_is_confirmed(self):
         ledger = self.ledger()
         ledger.data['deliveries'] = {'2026-09-11:daily:twitter': {'state': 'sent'}}
