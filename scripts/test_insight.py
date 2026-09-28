@@ -236,4 +236,42 @@ check("打数が文字", ins.from_splits(
     split("たくさん", ".600", ".100", 200, ".900", ".300"), "X"), [])
 check("月が空", ins.from_months([], season, "X"), [])
 check("直近が空", ins.from_recent({}, season, "X"), [])
+
+section("Savantの投手指標は本人の打撃・最速投球ではない")
+from unittest.mock import patch
+_ev = {"max_ev": 5, "fb_velocity": 93, "bb_percent": 1, "bat_speed": 99}
+_pit_rows = {r["key"]: r for r in savant.notable(_ev, kind="pitcher")}
+check("被打球と平均球速は別に残す", set(_pit_rows), {"max_ev", "fb_velocity", "bb_percent"})
+check("最高被打球速度のラベル", _pit_rows["max_ev"]["label"], "被打球の最高速度")
+check("相手打者に打たれた速度と説明", "相手打者に打たれた" in _pit_rows["max_ev"]["why"], True)
+check("値5は変えない", _pit_rows["max_ev"]["percentile"], 5)
+check("平均球速の値93も変えない", _pit_rows["fb_velocity"]["percentile"], 93)
+check("投手の四球は与四球", _pit_rows["bb_percent"]["label"], "与四球率")
+_bat_rows = {r["key"]: r for r in savant.notable(_ev, kind="batter")}
+check("打者の打球は従来通り", _bat_rows["max_ev"]["label"], "最速の打球")
+check("打者に投手の球速を入れない", "fb_velocity" in _bat_rows, False)
+check("打者の四球は四球率", _bat_rows["bb_percent"]["label"], "四球率")
+try:
+    savant.notable(_ev, kind="unknown")
+    _unknown_rejected = False
+except ValueError:
+    _unknown_rejected = True
+check("不明な投打を打者扱いしない", _unknown_rejected, True)
+_role_rows = {r["key"]: r for r in savant.notable(
+    {"whiff_percent": 99, "chase_percent": 98, "k_percent": 97}, kind="pitcher")}
+check("空振りを取る側", _role_rows["whiff_percent"]["label"], "空振りを取る割合")
+check("ボール球を振らせる側", _role_rows["chase_percent"]["label"], "ボール球を振らせる割合")
+check("奪三振の側", _role_rows["k_percent"]["label"], "奪三振率")
+_empty_material = {"pairs": [], "scenes": [], "season_total": {}, "months": [], "recent": {}}
+for _group, _kind, _word in (("pitching", "pitcher", "被打球の最高速度"),
+                             ("hitting", "batter", "最速の打球")):
+    with patch.object(ins.mt, "collect", return_value=_empty_material), \
+         patch.object(ins.savant, "fetch", return_value={"808963": {"max_ev": 5}}) as _fetch:
+        _material = ins.player("808963", "選手X", group=_group)
+    check(_group + "の取得区分", _fetch.call_args.args, ("2026", _kind))
+    check(_group + "の原稿材料の主語", _word in _material[0]["text"], True)
+    check(_group + "の原稿材料に投打区分", _material[0]["statcast_kind"], _kind)
+    check(_group + "の原稿材料に指標キー", _material[0]["metric_key"], "max_ev")
+    check(_group + "の評価と生速度の区別", "Savantの評価" in _material[0]["text"], _kind == "pitcher")
+
 sys.exit(done())
