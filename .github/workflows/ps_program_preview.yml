@@ -35,6 +35,7 @@ jobs:
           exit 1
       - name: Prepare and voice the current situation program
         run: |
+          python scripts/ps_voice_gate.py
           python scripts/ps_program.py --slot situation --fresh \
             --program build/ps_program_situation.json \
             --narration-out build/ps_situation_narration.json
@@ -59,3 +60,4 @@ jobs:
             build/ps_program_*.json
             build/ps_*narration.json
             build/ps_editorial_source.json
+            build/ps_voice_check.json
