@@ -46,6 +46,7 @@ RECORD = "data/published_videos.json"
 PATTERNS = [
     ("longform", r"【海外の反応】|コメント欄を読み解く|成績と進出争い"),
     ("soccer_race", r"順位争い【欧州サッカー】"),
+    ("soccer_week", r"日本人選手の週末"),
     ("daily_soccer", r"欧州サッカー|注目試合【サッカー】"),
     ("verdict", r"答え合わせ"),
     ("weekly", r"1週間を振り返る|今週の日本人選手"),

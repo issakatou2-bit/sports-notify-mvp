@@ -207,6 +207,21 @@ def main() -> int:
         check("%s シリーズの現在地" % tag, g.render_ps_series, p,
               {"series": _sr}, ["D:119-143", "D:112-158"],
               "日本人選手のいるシリーズ")
+        _wk = {"date": "2026-09-23", "headline": "鎌田大地が得点",
+               "rows": [{"name": "鎌田大地・冨安健洋", "club": "クリスタル・パレス",
+                         "league": "PL", "league_jp": "プレミアリーグ",
+                         "opp": "エバートン", "home": False, "gf": 1, "ga": 1,
+                         "result": "引き分け", "day": "9月20日（土）",
+                         "utc": "2026-09-20T14:00:00Z", "out": False,
+                         "stats": None, "players": [
+                             {"name": "鎌田大地", "out": False,
+                              "stats": {"minutes": 90, "goals": 1,
+                                        "assists": 0}},
+                             {"name": "冨安健洋", "out": False,
+                              "stats": {"minutes": 45, "goals": 0,
+                                        "assists": 0}}]}]}
+        check("%s 週末の日本人選手（冒頭）" % tag, g.render_week_intro, p, _wk)
+        check("%s 週末の日本人選手（行）" % tag, g.render_week_rows, p, _wk, [0])
         check("%s アウトロ" % tag, g.render_outro, p)
 
     print("\n--- 冒頭(枠ごとに材料が違う) ---")

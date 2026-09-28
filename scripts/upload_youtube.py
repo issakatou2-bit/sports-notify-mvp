@@ -649,7 +649,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race")
+               "soccer_race", "soccer_week")
 
 
 def published_video(kind: str, date_key: str,
@@ -1229,6 +1229,13 @@ def _soccer_race_title() -> str:
         return ""
 
 
+def _json_or_empty(path: str) -> dict:
+    try:
+        return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
 def _soccer_race_lines() -> list:
     """説明文に並べる、線の前後。**画面に出したものと同じ数字。**"""
     race = _race_data()
@@ -1470,6 +1477,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                      f"MLB公式コメント欄を読み解く {date_label}")
         else:
             title = f"【海外の反応】MLB公式コメント欄を読み解く｜{date_label}"
+    elif kind == "soccer_week":
+        # 欧州の日本人選手の週末。見出し（得点した選手・勝ったクラブ）を先に。
+        wk = _json_or_empty("data/soccer_jp_week.json")
+        head = wk.get("headline") or "欧州の日本人選手"
+        title = f"【欧州サッカー】{head}｜日本人選手の週末 #Shorts"
     elif kind == "soccer_race":
         # 欧州サッカーの順位争い。
         #
@@ -1726,6 +1738,16 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                 "コレスポは、その動画とコメント欄を毎日見て話す番組です。",
                 "",
             ]
+    elif kind == "soccer_week":
+        import soccer_jp_week as _sjw
+        wk = _json_or_empty("data/soccer_jp_week.json")
+        lines = ["欧州5大リーグの日本人選手の、週末の結果です。", ""]
+        lines += ["・" + _sjw.line(r) for r in (wk.get("rows") or [])[:12]]
+        lines += ["",
+                  "クラブの結果は5大リーグすべて（football-data.org）。"
+                  "選手本人の出場時間・得点・アシストは、公式データがある"
+                  "プレミアリーグのみ載せています。ほかのリーグの選手の"
+                  "出場は、この動画では扱っていません。", ""]
     elif kind == "soccer_race":
         lines = ["欧州サッカーの順位争いを、CL圏内・EL圏内の境目で"
                  "区切って見ます。順位と勝ち点はすべて公式の順位表の"
@@ -1760,7 +1782,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     editorial_text = title + "\n" + "\n".join(lines)
     # 順位争いは必ずサッカー。**渡し忘れると #MLB が付く。**
     # 区分から分かることを、呼ぶ側の引数に頼らない。
-    if kind == "soccer_race":
+    if kind in ("soccer_race", "soccer_week"):
         sport = "soccer"
     public_hashtags = ht.select(editorial_text, 'youtube', sport=sport,
                                 shorts=kind not in LANDSCAPE_KINDS)
@@ -1848,7 +1870,8 @@ def main():
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
-                                 "morning", "longform", "soccer_race"],
+                                 "morning", "longform", "soccer_race",
+                                 "soccer_week"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "

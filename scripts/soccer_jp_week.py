@@ -50,15 +50,17 @@ def _get(url: str, timeout: int = 30):
 def fetch_matches(api_key: str, today) -> dict:
     """{大会: [終わった試合]}。1大会1回の呼び出し（無料枠は1分10回）。"""
     import notability_engine as ne
+    # 状態で絞らず、明日までを取る。今日これから試合があるか（＝19:30が
+    # 通常の回で埋まるか）も同じ1回で分かる。
     start = (today - timedelta(days=WINDOW_DAYS)).isoformat()
+    end = (today + timedelta(days=1)).isoformat()
     out = {}
     for code in LEAGUES:
         try:
             r = ne._football_data_get(
                 f"{ne.FOOTBALL_DATA_BASE}/competitions/{code}/matches",
                 {"X-Auth-Token": api_key},
-                params={"status": "FINISHED", "dateFrom": start,
-                        "dateTo": today.isoformat()})
+                params={"dateFrom": start, "dateTo": end})
             out[code] = r.json().get("matches") or []
         except Exception as e:                          # noqa: BLE001
             print(f"[warn] {code} の試合を取れません({e})", file=sys.stderr)
@@ -182,24 +184,40 @@ def build(matches: dict, fpl: dict = None, out_now: set = None,
                     old = rows.get(p["name_jp"])
                     if old is None or row["utc"] > old["utc"]:
                         rows[p["name_jp"]] = row
-    out = list(rows.values())
+    # **同じクラブの試合は1行にまとめる。**選手ごとに1行にすると、
+    # フライブルクの3人で「フライブルクに1対3の敗戦」を3回読んだ。
+    merged = {}
+    for r in rows.values():
+        k = (r["league"], r["club"], r["utc"])
+        g = merged.setdefault(k, dict(r, players=[]))
+        g["players"].append({"name": r["name"], "stats": r["stats"],
+                             "out": r["out"]})
+    out = []
+    for g in merged.values():
+        g["name"] = "・".join(x["name"] for x in g["players"])
+        g["stats"] = next((x["stats"] for x in g["players"]
+                           if x["stats"] is not None), None)
+        g["out"] = all(x["out"] for x in g["players"])
+        out.append(g)
     # 得点 → 勝ち → 引き分け → 負け、同じならリーグ・名前順
     rank = {"勝ち": 0, "引き分け": 1, "負け": 2}
     league = list(LEAGUES)
-    out.sort(key=lambda r: (-((r["stats"] or {}).get("goals") or 0),
-                            -((r["stats"] or {}).get("assists") or 0),
+
+    def goals(r, key):
+        return sum(((x["stats"] or {}).get(key) or 0) for x in r["players"])
+    out.sort(key=lambda r: (-goals(r, "goals"), -goals(r, "assists"),
                             rank[r["result"]], league.index(r["league"]),
                             r["name"]))
     return out
 
 
-def player_part(r: dict) -> str:
-    """選手本人のこと。**言えるのはプレミアの公式データがあるときだけ。**"""
-    st = r.get("stats")
+def _one(p: dict) -> str:
+    """選手1人の本人の数字。プレミアの公式データがあるときだけ。"""
+    st = p.get("stats")
     if st is None:
         return ""
     if not st["minutes"]:
-        return "負傷で離脱中" if r.get("out") else "出場なし"
+        return "負傷で離脱中" if p.get("out") else "出場なし"
     bits = [f"{st['minutes']}分出場"]
     if st["goals"]:
         bits.append(f"{st['goals']}得点")
@@ -208,10 +226,29 @@ def player_part(r: dict) -> str:
     return "・".join(bits)
 
 
-def sat_out(r: dict) -> bool:
-    """出ていないと**分かっている**か。分からないリーグは False。"""
-    st = r.get("stats")
-    return bool(r.get("out") or (st is not None and not st["minutes"]))
+def player_part(r: dict) -> str:
+    """選手本人のこと。**言えるのはプレミアの公式データがあるときだけ。**
+
+    まとめた行（players あり）は「鎌田大地は90分出場・1得点、冨安健洋は
+    45分出場」。1人だけの行は名前を付けずに返す（呼ぶ側で付ける）。
+    """
+    people = r.get("players") or [{"name": r.get("name"), "stats":
+                                   r.get("stats"), "out": r.get("out")}]
+    parts = [(x["name"], _one(x)) for x in people]
+    parts = [(n, t) for n, t in parts if t]
+    if not parts:
+        return ""
+    if len(people) == 1:
+        return parts[0][1]
+    return "、".join(f"{n}は{t}" for n, t in parts)
+
+
+def sat_out(r: dict) -> str:
+    """出ていないと**分かっている**か（全員）。分からないリーグは False。"""
+    people = r.get("players") or [r]
+    return all(bool(x.get("out") or (x.get("stats") is not None
+                                     and not x["stats"]["minutes"]))
+               for x in people)
 
 
 def line(r: dict) -> str:
@@ -221,15 +258,30 @@ def line(r: dict) -> str:
     s = (f"{r['name']}の{r['club']}、{where}で{r['opp']}に"
          f"{r['gf']}-{r['ga']}の{res}")
     me = player_part(r)
-    return s + (f"（{r['name']}は{me}）" if me else "")
+    if me and len(r.get("players") or [1]) == 1:
+        me = f"{r['name']}は{me}"
+    return s + (f"（{me}）" if me else "")
+
+
+def spoken(r: dict) -> str:
+    """読み上げ用の1文。スコアは「2対1」、選手本人はプレミアのときだけ。"""
+    where = "ホーム" if r["home"] else "アウェー"
+    res = {"勝ち": "勝利", "負け": "敗戦", "引き分け": "引き分け"}[r["result"]]
+    s = f"{r['name']}の{r['club']}は{where}で{r['opp']}に{r['gf']}対{r['ga']}の{res}"
+    me = player_part(r)
+    if me and len(r.get("players") or [1]) == 1:
+        me = f"{r['name']}は{me}"
+    return s + (f"、{me}" if me else "")
 
 
 def headline(rows: list) -> str:
     """見出し。プレミアで得点した選手がいれば本人、いなければクラブの勝ち。"""
     for r in rows:
-        st = r.get("stats") or {}
-        if st.get("goals"):
-            return f"{r['name']}が{st['goals']}得点、{r['club']}は{r['result']}"
+        for x in r.get("players") or [r]:
+            st = x.get("stats") or {}
+            if st.get("goals"):
+                return (f"{x['name']}が{st['goals']}得点、"
+                        f"{r['club']}は{r['result']}")
     # **出ていないと分かっている選手の名前は題に出さない。**
     # 「ブライトンの試合、三笘薫が所属」と出していたが、三笘は負傷で
     # 1分も出ていなかった（9/11の指摘と同じ形の誤り）。
@@ -239,16 +291,67 @@ def headline(rows: list) -> str:
     return f"欧州の日本人選手{len(rows)}人の週末" if rows else ""
 
 
+def finished(matches: dict) -> dict:
+    return {c: [m for m in ms if m.get("status") == "FINISHED"]
+            for c, ms in matches.items()}
+
+
+def today_count(matches: dict, today) -> int:
+    """日本時間の今日に始まる（始まった）5大リーグの試合の数。"""
+    n = 0
+    for ms in matches.values():
+        for m in ms:
+            if _jst_date(m.get("utcDate")) == today.isoformat():
+                n += 1
+    return n
+
+
+def _jst_date(utc: str) -> str:
+    try:
+        t = datetime.fromisoformat((utc or "").replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    return t.astimezone(JST).date().isoformat()
+
+
+def week_key(rows: list) -> str:
+    """どの週末の回か。いちばん新しい試合の日（日本時間）。"""
+    days = [_jst_date(r.get("utc")) for r in rows]
+    return max((d for d in days if d), default="")
+
+
+def due(data: dict, state: dict, record: dict) -> tuple:
+    """19:30に週末の回を出すか。(出す, 理由)。
+
+    出すのは、5大リーグの試合が今日なく、19:30の通常の回も出ておらず、
+    その週末をまだ出していない日だけ。同じ週末を2度出さない。
+    """
+    today = data.get("date") or ""
+    if data.get("today_matches"):
+        return False, f"今日は5大リーグの試合が{data['today_matches']}試合ある"
+    if today in (record.get("daily_soccer") or {}):
+        return False, "19:30の通常の回が出ている"
+    if not data.get("rows"):
+        return False, f"直近{data.get('window_days', WINDOW_DAYS)}日に日本人選手の試合が無い"
+    key = data.get("key") or ""
+    if key and key in (state.get("done") or []):
+        return False, f"{key}までの週末はもう出した"
+    return True, f"{key}までの週末（{len(data['rows'])}行）"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/soccer_jp_week.json")
+    ap.add_argument("--state", default="data/soccer_week_state.json")
+    ap.add_argument("--record", default="data/published_videos.json")
     args = ap.parse_args()
     key = os.environ.get("FOOTBALL_DATA_API_KEY") or ""
     if not key:
         print("[info] FOOTBALL_DATA_API_KEY が無いので作りません")
         return 0
     today = datetime.now(JST).date()
-    matches = fetch_matches(key, today)
+    fetched = fetch_matches(key, today)
+    matches = finished(fetched)
     mds = {m.get("matchday") for m in matches.get("PL") or []
            if m.get("matchday")}
     try:
@@ -259,7 +362,9 @@ def main() -> int:
     rows = build(matches, fpl_stats(mds), out_now)
     data = {"updated_at": datetime.now(timezone.utc).isoformat(),
             "date": today.isoformat(), "window_days": WINDOW_DAYS,
-            "headline": headline(rows), "rows": rows}
+            "headline": headline(rows), "rows": rows,
+            "key": week_key(rows),
+            "today_matches": today_count(fetched, today)}
     p = pathlib.Path(args.out)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(data, ensure_ascii=False, indent=2),
@@ -267,7 +372,21 @@ def main() -> int:
     print(f"[info] {data['headline']} / {len(rows)}人 -> {p}")
     for r in rows[:10]:
         print("   " + line(r))
+    ok, why = due(data, _load(args.state), _load(args.record))
+    print(f"[gate] {'出す' if ok else '出さない'}: {why}")
+    gh = os.environ.get("GITHUB_OUTPUT")
+    if gh:
+        with open(gh, "a", encoding="utf-8") as f:
+            f.write(f"due={'1' if ok else '0'}\nkey={data['key']}\n"
+                    f"why={why}\n")
     return 0
+
+
+def _load(path: str) -> dict:
+    try:
+        return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
 
 
 if __name__ == "__main__":

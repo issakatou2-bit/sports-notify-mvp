@@ -112,7 +112,12 @@ MODE_KIND = {
     "local": "morning_local",
     "press": "morning_press",
     "postseason": "postseason",
+    "soccer_week": "soccer_week",
 }
+
+# 週末の日本人選手の回。1枚に並べる人数と、全体の上限。
+WEEK_ROWS_PER_SLIDE = 4
+WEEK_ROWS_MAX = 12
 
 # 声の画面に並べる件数。読み上げと画面で別々の数を持つと、
 # 4件読んで3件しか映らない、という食い違いが静かに生まれる。
@@ -1022,6 +1027,28 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 "meta": {"league": lid},
             })
             first = False
+
+    elif mode == "soccer_week":
+        # 欧州の日本人選手の、直前の週末。**試合の無い日の19:30に出す。**
+        #
+        # 平日（CLの無い日）と代表戦の期間は19:30が空いていた。
+        # クラブの結果は5大リーグすべて、選手本人の出場・得点は
+        # プレミアの公式データがあるときだけ言う（soccer_jp_week）。
+        import soccer_jp_week as sjw
+        week = data.get("week") or {}
+        rows = (week.get("rows") or [])[:WEEK_ROWS_MAX]
+        head = week.get("headline") or ""
+        segments = [{
+            "kind": "week_intro",
+            "text": (f"{head}。" if head else "")
+            + "欧州5大リーグの日本人選手、週末の結果です。",
+            "meta": {"date": day_iso, "mode": mode, "day": day}}]
+        for i in range(0, len(rows), WEEK_ROWS_PER_SLIDE):
+            chunk = rows[i:i + WEEK_ROWS_PER_SLIDE]
+            segments.append({
+                "kind": "week_rows",
+                "text": "".join(sjw.spoken(r) + "。" for r in chunk),
+                "meta": {"rows": list(range(i, i + len(chunk)))}})
 
     elif mode == "soccer_race":
         # 欧州サッカーの順位争い。
@@ -2306,6 +2333,58 @@ def race_lead(race: dict):
         return soccer_race.lead(race)
     except Exception:                            # noqa: BLE001
         return None
+
+
+def render_week_intro(p, week: dict, day: str = ""):
+    """週末の日本人選手の1枚目。見出し（得点した選手・勝ったクラブ）を大きく。"""
+    im, d = base(p)
+    d.text((70, 150), "欧州サッカー", font=font(40), fill=ACCENT)
+    d.text((70, 206), "日本人選手の週末", font=font(72), fill=TEXT)
+    d.text((70, 300), day or "", font=font(40), fill=DIM)
+    head = week.get("headline") or ""
+    if head:
+        lines = video_common.wrap(d, head, font(64), W - 140)
+        y = 420
+        for ln in lines[:3]:
+            d.text((70, y), ln, font=font(64), fill=JP)
+            y += 84
+    d.text((70, 1180), "クラブの結果は5大リーグ、選手本人の出場・得点は"
+           "プレミアのみ（公式）", font=font(26), fill=DIM)
+    return im
+
+
+def render_week_rows(p, week: dict, idx: list):
+    """1枚に4人。選手（クラブ）・相手・スコア・勝敗、プレミアは本人の数字。"""
+    import soccer_jp_week as sjw
+    im, d = base(p)
+    rows = [(week.get("rows") or [])[i] for i in idx
+            if i < len(week.get("rows") or [])]
+    y = 150
+    for r in rows:
+        d.rounded_rectangle([70, y, W - 70, y + 250], 18, fill=SURF)
+        d.text((100, y + 14), f"{r['league_jp']}", font=font(26), fill=DIM)
+        # 3人並ぶと右のスコアに届くので、幅に収まるまで縮める
+        ns = 52
+        while ns > 30 and d.textlength(r["name"], font=font(ns)) > W - 440:
+            ns -= 4
+        d.text((100, y + 50 + (52 - ns) // 2), r["name"], font=font(ns),
+               fill=JP)
+        d.text((100, y + 116), f"{r['club']}  {'ホーム' if r['home'] else 'アウェー'}"
+               f"  vs {r['opp']}", font=font(32), fill=TEXT)
+        res = f"{r['gf']}-{r['ga']}"
+        col = ACCENT if r["result"] == "勝ち" else (DIM if r["result"] == "負け"
+                                                    else TEXT)
+        fw = font(64)
+        d.text((W - 110 - d.textlength(res, font=fw), y + 40), res, font=fw,
+               fill=col)
+        d.text((W - 110 - d.textlength(r["result"], font=font(30)), y + 118),
+               r["result"], font=font(30), fill=col)
+        me = sjw.player_part(r)
+        if me:
+            d.text((100, y + 176), me, font=font(32),
+                   fill=ACCENT if "得点" in me or "アシスト" in me else DIM)
+        y += 272
+    return im
 
 
 def render_race_intro(p, race: dict, day: str = ""):
@@ -4048,6 +4127,8 @@ def main():
     parser.add_argument("--postseason", default="data/postseason.json")
     parser.add_argument("--race", default="data/soccer_race.json",
                         help="--mode soccer_race のときの、順位争いの材料")
+    parser.add_argument("--week", default="data/soccer_jp_week.json",
+                        help="--mode soccer_week のときの、週末の日本人選手")
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--voices", default="data/local_voices.json")
@@ -4056,7 +4137,7 @@ def main():
     parser.add_argument("--mode", default="players",
                         choices=["players", "player", "local", "press",
                                  "voices", "postseason", "soccer_race",
-                                 "all"],
+                                 "soccer_week", "all"],
                         help="players=選手成績 / local=現地の注目度(数字) / "
                              "press=現地の報道(番記者と見出し) / "
                              "voices=ハイライトのコメント欄 / "
@@ -4152,6 +4233,16 @@ def main():
         except (json.JSONDecodeError, OSError):
             race = {}
     data["race"] = race
+    week = {}
+    wp_ = pathlib.Path(args.week)
+    if args.mode == "soccer_week" and wp_.exists():
+        try:
+            week = json.loads(wp_.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            week = {}
+        if week.get("date"):
+            data["date_jst"] = week["date"]
+    data["week"] = week
     # 順位争いは「今日の順位」なので、日付をずらさない。
     # 成績の回は米国日付を1日進めてJSTにするが、ここはその相手がいない。
     if args.mode == "soccer_race" and race.get("date_jst"):
@@ -4316,6 +4407,12 @@ def main():
                                      meta.get("count", 1))
                 elif kind == "buzz":
                     im = render_buzz(pp, buzz, picks)
+                elif kind == "week_intro":
+                    im = render_week_intro(pp, data.get("week") or {},
+                                           meta.get("day", ""))
+                elif kind == "week_rows":
+                    im = render_week_rows(pp, data.get("week") or {},
+                                          meta.get("rows") or [])
                 elif kind == "race_intro":
                     im = render_race_intro(pp, race, meta.get("day", ""))
                 elif kind == "race_japanese":
