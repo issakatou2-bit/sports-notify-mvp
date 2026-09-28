@@ -1,0 +1,52 @@
+name: PS組み合わせ案内の制作確認（投稿しない）
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install rendering dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-noto-cjk ffmpeg
+      - name: Fetch and verify official bracket
+        run: |
+          python scripts/postseason.py --out data/postseason.json
+          python scripts/ps_editorial.py --input data/postseason.json
+          python scripts/generate_ps_preview.py --mode postseason --narration-out build/ps_narration.json
+          python scripts/check_rendered_claims.py --kind postseason --input data/postseason.json --out build/ps_rendered_claims.json
+      - name: Start narration engine
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Build voiced preview
+        run: |
+          python scripts/synthesize_narration.py --narration build/ps_narration.json --out-dir build/ps_audio
+          python scripts/generate_ps_preview.py --mode postseason --audio-dir build/ps_audio --out build/ps_preview --require-audio
+          python scripts/generate_ps_preview.py --thumbnail-out build/ps_preview/thumbnail.png
+          ffprobe -v error -show_entries stream=codec_type,width,height -show_entries format=duration -of json build/ps_preview/collespo_morning_postseason.mp4 > build/ps_preview/probe.json
+      - name: Save preview for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: ps-editorial-preview
+          retention-days: 3
+          path: |
+            build/ps_preview/
+            build/ps_narration.json
+            build/ps_rendered_claims.json
+            build/ps_editorial_source.json
+            data/postseason.json

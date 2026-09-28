@@ -39,6 +39,8 @@ def drawn_rows(video, row_name, render):
 
 
 def check_ps(data, expected_date, video=None):
+    if data.get('editorial', {}).get('stage') in ('bracket_preview', 'bracket_pending'):
+        return check_ps_preview(data, expected_date)
     import generate_morning_short
     video = video or generate_morning_short
     errors, cards, scope = [], [], []
@@ -89,6 +91,52 @@ def check_ps(data, expected_date, video=None):
                 errors.append(name + ': 描画の勝敗と資料が不一致')
     scope.append('地区順位カードのみ。音声・翻訳・シリーズ表・公式API再照合は別検査')
     return errors, cards, scope
+
+
+def check_ps_preview(data, expected_date):
+    import generate_ps_preview as preview
+    from ps_editorial import editorial
+    context = data['editorial']
+    errors, output = [], []
+    if data.get('date') != expected_date or context.get('date_jst') != expected_date:
+        errors.append('PS案内の日付が公開対象日と不一致')
+    try:
+        observed = datetime.fromisoformat(context['retrieved_at'])
+        if observed.tzinfo is None or observed.astimezone(timezone(timedelta(hours=9))).date().isoformat() != expected_date:
+            errors.append('公式日程の取得時点が対象日と不一致')
+        rebuilt = editorial(data, context['fixture_evidence'], observed, context['source_url'])
+        if rebuilt['stage'] != context['stage'] or rebuilt['matchups'] != context['matchups']:
+            errors.append('対戦表・進路・日本時間が保存した公式日程と不一致')
+    except (KeyError, ValueError, TypeError) as exc:
+        errors.append('公式日程の根拠を再構築できない: ' + str(exc))
+    original = preview.ImageDraw.ImageDraw.text
+    for segment in preview.cards(context):
+        words = []
+
+        def capture(draw, xy, value, *args, **kwargs):
+            words.append(str(value))
+            return original(draw, xy, value, *args, **kwargs)
+
+        with patch.object(preview.ImageDraw.ImageDraw, 'text', capture):
+            preview.render(context, segment)
+        output.append({'view': segment['meta'], 'drawn': words, 'spoken': segment['text']})
+        if any(w in ''.join(words) + segment['text'] for w in ('進出争い', '昨日と同じ', '地区優勝決定')):
+            errors.append('確定後の案内に進出争い/不要な順位速報/優勝断定が混在')
+        if segment['meta']['view'] == 'bracket':
+            joined = ''.join(words)
+            for matchup in context['matchups']:
+                if matchup['league'] == segment['meta']['league']:
+                    for key in ('home', 'away', 'bye'):
+                        if matchup[key]['name'] not in joined:
+                            errors.append('描画の対戦相手・勝ち上がり先が欠落')
+        if segment['meta']['view'] == 'schedule':
+            joined = ''.join(words)
+            for matchup in context['matchups']:
+                if matchup['first_game']['label'] not in joined:
+                    errors.append('描画の日本時間が材料と不一致')
+            if '日本時間' not in joined:
+                errors.append('時刻の基準が表示されていない')
+    return errors, output, ['WC対戦/DS進路/JST/時刻未定/段階と本番描画・原稿を検査。完成MP4全フレーム・音声認識・引用翻訳の独立検査は対象外']
 
 
 def check_soccer(data, expected_date, video=None):

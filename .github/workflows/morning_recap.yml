@@ -261,6 +261,11 @@ jobs:
       # 主題が3つ混ざってタイトルもサムネイルも1つしか表せなくなる。
       # 実際、最も見られた動画は単一主題のもので、情報を詰めたものほど
       # 視聴率が落ちていた。2本に分けて、それぞれ主題を1つにする。
+      - name: Verify PS editorial stage from official fixtures
+        id: ps_editorial
+        continue-on-error: true
+        run: python scripts/ps_editorial.py --input data/postseason.json
+
       - name: Build and upload both shorts
         id: shorts
         continue-on-error: true
@@ -284,15 +289,24 @@ jobs:
           TIKTOK_FAILED=0
           for mode in ${MODES:-players postseason voices press}; do
             echo "::group::$mode"
+            if [ "$mode" = "postseason" ] && [ "${{ steps.ps_editorial.outcome }}" != "success" ]; then
+              echo "::error::PS日程/編集段階を確認できないため、古い資料で公開しません"
+              CLAIM_FAILED=1
+              echo "::endgroup::"; continue
+            fi
             if [ "$mode" = "players" ]; then
               VIDEO="build/morning/collespo_morning.mp4"
             else
               VIDEO="build/morning/collespo_morning_${mode}.mp4"
             fi
 
-            python scripts/generate_morning_short.py \
+            if ! python scripts/generate_ps_preview.py \
               --recap data/morning_recap.json --mode "$mode" \
-              --narration-out "build/mr_narration_${mode}.json"
+              --narration-out "build/mr_narration_${mode}.json"; then
+              echo "::error::$mode の原稿作成に失敗しました"
+              if [ "$mode" = "postseason" ]; then CLAIM_FAILED=1; fi
+              echo "::endgroup::"; continue
+            fi
             if [ ! -f "build/mr_narration_${mode}.json" ]; then
               echo "素材が無いため $mode は作りません"
               echo "::endgroup::"; continue
@@ -330,18 +344,23 @@ jobs:
               --narration "build/mr_narration_${mode}.json" \
               --out-dir "build/mr_audio_${mode}"
 
-            python scripts/generate_morning_short.py \
+            python scripts/generate_ps_preview.py \
               --recap data/morning_recap.json --mode "$mode" \
               --audio-dir "build/mr_audio_${mode}" --out build/morning \
               --require-audio
             if [ $? -ne 0 ]; then
               echo "::warning::$mode の動画生成に失敗しました"
+              if [ "$mode" = "postseason" ]; then CLAIM_FAILED=1; fi
               echo "::endgroup::"; continue
             fi
 
-            python scripts/generate_thumbnail.py \
-              --kind "morning" --recap data/morning_recap.json \
-              --mode "$mode" --out "build/morning/thumb_${mode}.png"
+            if [ "$mode" = "postseason" ]; then
+              python scripts/generate_ps_preview.py --thumbnail-out "build/morning/thumb_${mode}.png"
+            else
+              python scripts/generate_thumbnail.py \
+                --kind "morning" --recap data/morning_recap.json \
+                --mode "$mode" --out "build/morning/thumb_${mode}.png"
+            fi
 
             # ショート用に、動画の1枚目(1080x1920)を切り出す。
             # 上の16:9は、ショート棚では中央405pxに切り抜かれて
@@ -424,7 +443,7 @@ jobs:
                 echo "::endgroup::"; continue
               fi
             fi
-            if python scripts/upload_youtube.py \
+            if python scripts/generate_ps_preview.py --upload \
               --video "$VIDEO" --kind morning --morning-mode "$mode" \
               --recap data/morning_recap.json \
               --buzz data/mlb_buzz.json \
@@ -439,6 +458,7 @@ jobs:
               cp data/published_videos.json build/social_shorts/published_videos.json
             else
               echo "::error::$mode の投稿に失敗しました"
+              if [ "$mode" = "postseason" ]; then CLAIM_FAILED=1; fi
             fi
 
             # 通常のTikTok公開はBufferが担当。受信箱への二重転送を避けるため、
