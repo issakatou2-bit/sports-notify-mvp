@@ -112,4 +112,23 @@ check("名で絞れれば引く", w.resolve(els, "Ao Tanaka"), 1)
 check("絞れなければ引かない", w.resolve(els, "Hiroshi Tanaka"), None)
 check("1人なら姓だけで引く", w.resolve(els[:1], "Ao Tanaka"), 1)
 
+section("19:30に出すかどうか")
+_rows = [{"utc": "2026-09-20T13:00:00Z"}, {"utc": "2026-09-21T19:00:00Z"}]
+check("週末はいちばん新しい試合の日（日本時間）", w.week_key(_rows), "2026-09-22")
+_d = {"date": "2026-09-23", "rows": _rows, "key": "2026-09-22",
+      "today_matches": 0}
+check("試合が無く未公開なら出す", w.due(_d, {}, {})[0], True)
+check("同じ週末は2度出さない",
+      w.due(_d, {"done": ["2026-09-22"]}, {})[0], False)
+check("通常の回が出た日は出さない",
+      w.due(_d, {}, {"daily_soccer": {"2026-09-23": {}}})[0], False)
+check("今日試合がある日は出さない", w.due(dict(_d, today_matches=3), {}, {})[0], False)
+check("材料が無ければ出さない", w.due(dict(_d, rows=[]), {}, {})[0], False)
+check("終わった試合だけ使う",
+      len(w.finished({"PL": [{"status": "FINISHED"}, {"status": "TIMED"}]})["PL"]), 1)
+check("今日の試合を日本時間で数える",
+      w.today_count({"PL": [{"utcDate": "2026-09-22T16:00:00Z"},
+                            {"utcDate": "2026-09-22T14:00:00Z"}]},
+                    __import__("datetime").date(2026, 9, 23)), 1)
+
 sys.exit(done())

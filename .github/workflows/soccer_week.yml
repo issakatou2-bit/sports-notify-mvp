@@ -1,0 +1,186 @@
+name: 欧州サッカー　日本人選手の週末
+
+# 19:30の欧州サッカーの回が出ない日（5大リーグの試合が無い平日・代表戦期間）に、
+# 直前の週末の日本人選手の結果を1本にする。同じ週末は2度出さない
+# （data/soccer_week_state.json）。19:00の回が終わった後に動くので、
+# その日に通常の回が出ていれば何もしない。
+
+on:
+  workflow_run:
+    workflows: ["毎日 19:00　欧州サッカー"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      privacy:
+        description: '公開設定 (private / unlisted / public)'
+        required: false
+        default: 'public'
+      upload:
+        description: 'YouTubeへ上げるか'
+        required: false
+        default: 'true'
+      publish_at:
+        description: '公開時刻 (HH:MM、空なら 19:30)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: soccer-week
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+
+      - name: Build the week material
+        id: gate
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: |
+          python scripts/soccer_jp_week.py --out data/soccer_jp_week.json \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Install video tools
+        if: steps.gate.outputs.due == '1'
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
+      - name: Start VOICEVOX engine
+        if: steps.gate.outputs.due == '1'
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Write the script
+        if: steps.gate.outputs.due == '1'
+        run: |
+          python scripts/generate_morning_short.py \
+            --mode soccer_week --week data/soccer_jp_week.json \
+            --narration-out build/week_narration.json
+
+      - name: Sanity check
+        id: sanity
+        if: steps.gate.outputs.due == '1'
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/sanity.py --general --strict \
+            --narration build/week_narration.json
+
+      - name: Synthesize narration
+        if: steps.gate.outputs.due == '1'
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/week_narration.json \
+            --out-dir build/week_audio
+
+      - name: Build the video
+        if: steps.gate.outputs.due == '1'
+        run: |
+          python scripts/generate_morning_short.py \
+            --mode soccer_week --week data/soccer_jp_week.json \
+            --audio-dir build/week_audio --out build/week --require-audio
+
+      - name: Vertical thumbnail
+        if: steps.gate.outputs.due == '1'
+        continue-on-error: true
+        run: |
+          bash scripts/shorts_thumbnail.sh \
+            build/week/collespo_morning_soccer_week.mp4 build/week/short.png
+
+      - name: Upload to YouTube
+        id: upload
+        if: >-
+          steps.gate.outputs.due == '1' &&
+          steps.sanity.outcome == 'success' &&
+          (github.event_name != 'workflow_dispatch' ||
+           inputs.upload == 'true')
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          AT="${{ inputs.publish_at }}"
+          [ -n "$AT" ] || AT="19:30"
+          python scripts/upload_youtube.py \
+            --video build/week/collespo_morning_soccer_week.mp4 \
+            --kind soccer_week --sport soccer \
+            --narration build/week_narration.json \
+            --thumbnail build/week/short.png \
+            --privacy "${{ inputs.privacy || 'public' }}" --publish-at "$AT"
+
+      - name: Remember the weekend
+        if: steps.upload.outcome == 'success' && steps.gate.outputs.key != ''
+        run: |
+          python - <<'PY'
+          import json, pathlib, os
+          p = pathlib.Path("data/soccer_week_state.json")
+          try:
+              state = json.loads(p.read_text(encoding="utf-8"))
+          except Exception:
+              state = {}
+          done = state.setdefault("done", [])
+          if os.environ["WEEK_KEY"] not in done:
+              done.append(os.environ["WEEK_KEY"])
+          state["done"] = done[-20:]
+          p.write_text(json.dumps(state, ensure_ascii=False, indent=2),
+                       encoding="utf-8")
+          print("記録しました:", state)
+          PY
+        env:
+          WEEK_KEY: ${{ steps.gate.outputs.key }}
+
+      - name: Keep the video
+        if: always() && steps.gate.outputs.due == '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-week
+          path: |
+            build/week/collespo_morning_soccer_week.mp4
+            build/week_narration.json
+          if-no-files-found: warn
+
+      - name: Commit the material
+        if: always() && steps.gate.outputs.due == '1'
+        continue-on-error: true
+        run: |
+          bash scripts/commit_data.sh \
+            "soccer week: ${{ github.run_id }}" \
+            data/soccer_jp_week.json data/soccer_week_state.json \
+            data/published_videos.json
+
+      - name: Say what happened
+        if: always()
+        run: |
+          {
+            echo "## 日本人選手の週末"
+            echo
+            echo "- 判定: ${{ steps.gate.outputs.why || '材料を作れませんでした' }}"
+            if [ -f build/week/collespo_morning_soccer_week.mp4 ]; then
+              echo "- 動画: $(du -h build/week/collespo_morning_soccer_week.mp4 | cut -f1)"
+            fi
+            echo "- 公開: ${{ steps.upload.outcome || '対象外' }}"
+          } >> "$GITHUB_STEP_SUMMARY"
