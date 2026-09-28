@@ -216,4 +216,19 @@ check("タイの日は対戦カードを主語に",
                                           "text": "地区シリーズ 第3戦(1勝1敗のタイ)"}])])["sub"],
       "フィリーズ対ドジャース")
 
+section("健康診断は、MLBの試合が無い日を欠けと数えない")
+import healthcheck as hc  # noqa: E402
+_load, _games = hc.load, hc._mlb_games
+hc.load = lambda path: {}                 # 何も出ていない日
+hc._mlb_games = lambda d: 0               # 試合が無い
+_l, _miss, _skip, _ = hc.check_videos("2026-10-03")
+check("試合が無ければ欠けは0", _miss, 0)
+hc._mlb_games = lambda d: None            # 日程が取れない
+_l, _miss, _skip, _ = hc.check_videos("2026-10-03")
+check("取れない日は欠けとして数える（黙って見逃さない）", _miss >= 6, True)
+hc._mlb_games = lambda d: 4               # 試合があった
+_l, _miss, _skip, _ = hc.check_videos("2026-10-03")
+check("試合があれば欠けは欠け", _miss >= 6, True)
+hc.load, hc._mlb_games = _load, _games
+
 sys.exit(done())

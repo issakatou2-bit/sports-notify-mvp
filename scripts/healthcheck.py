@@ -247,6 +247,36 @@ def published_ids(day: str):
 PUBLISH_GRACE_MIN = 45
 
 
+# MLBの試合があって初めて作る枠。**試合の無い日は出ないのが正しい。**
+#
+# これらを毎日必ず出るものとして数えていたので、オールスター休み・
+# ポストシーズンの回戦の合間・11月からのオフシーズンに、毎日
+# 「出ていない」と報告することになる（PSは試合の無い日が多い）。
+# 値は「どの日の試合を見るか」: 前の晩の試合（米国の日付＝日本の前日）
+# なら -1、翌日の試合（日本の日付＝米国の日付）なら 0。
+MLB_GAME_KINDS = {"morning": -1, "morning_voices": -1, "morning_press": -1,
+                  "postseason": -1, "longform": -1, "daily": 0}
+
+
+def _mlb_games(us_date: str):
+    """その米国の日付のMLBの試合数。取れなければ None（判断しない）。"""
+    if us_date in _MLB_CACHE:
+        return _MLB_CACHE[us_date]
+    import urllib.request
+    try:
+        with urllib.request.urlopen(
+                "https://statsapi.mlb.com/api/v1/schedule?sportId=1"
+                f"&date={us_date}", timeout=20) as r:
+            n = int(json.load(r).get("totalGames") or 0)
+    except Exception:                                   # noqa: BLE001
+        n = None
+    _MLB_CACHE[us_date] = n
+    return n
+
+
+_MLB_CACHE = {}
+
+
 def check_videos(day: str, only_past: bool = False) -> tuple:
     """
     その日の動画が投稿されたか。(行, 欠けている数, 見ない数, 記録済みID) を返す。
@@ -275,6 +305,14 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
             lines.append(f"| {at} | {label} | 出た | {entry.get('video_id')} |")
             if entry.get("video_id"):
                 seen.add(entry["video_id"])
+        elif kind in MLB_GAME_KINDS and _mlb_games(
+                (datetime.fromisoformat(day)
+                 + timedelta(days=MLB_GAME_KINDS[kind])).strftime("%Y-%m-%d")
+        ) == 0:
+            # 試合が無かった。**分からないとき（取得失敗）は欠けとして数える**
+            # （黙って見逃すと、サッカーのように何週間も気付かない）。
+            lines.append(f"| {at} | {label} | — | MLBの試合が無い日 |")
+            skipped += 1
         elif optional:
             # 「試合の無い日は欠けてよい」と一律に見逃していたので、
             # サッカーが1本も出ていないことに何週間も気付かなかった。
