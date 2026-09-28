@@ -129,7 +129,8 @@ def forecast(ctx, games, rows, now):
                     home_wins=keyed[ids[0]]['wins'], away_wins=keyed[ids[1]]['wins'],
                     when=start.strftime('%H:%M'), conditional=g['seriesGameNumber'] > row['played'] + 1,
                     jp_team=any(t.get('players') for t in row['teams']),
-                    jp_home=bool(keyed[ids[0]]['players']), jp_away=bool(keyed[ids[1]]['players']))
+                    jp_home=bool(keyed[ids[0]]['players']), jp_away=bool(keyed[ids[1]]['players']),
+                    home_players=keyed[ids[0]]['players'],away_players=keyed[ids[1]]['players'])
         situation(card)
         cards.append(card)
     cards.sort(key=lambda c: (c['when'], c['game_id']))
@@ -137,8 +138,10 @@ def forecast(ctx, games, rows, now):
         return None
     lead = next((i for i, c in enumerate(cards) if c['jp_team']), 0)
     chosen = cards[lead]
-    lead_side = 'away' if chosen['jp_away'] and not chosen['jp_home'] else 'home'
+    lead_side = 'away' if len(chosen['away_players'])>len(chosen['home_players']) else 'home'
     title = forecast_title(cards, target, lead, lead_side)
+    if chosen[lead_side+'_players']:
+        title=title.replace(chosen[lead_side],chosen[lead_side+'_players'][0]+'が所属する'+chosen[lead_side],1)
     pages = []
     date_label = datetime.fromisoformat(target).strftime('%m/%d').lstrip('0')
     for start in range(0, len(cards), 4):
@@ -171,7 +174,7 @@ def forecast(ctx, games, rows, now):
                 social_summary=title.split('｜')[0] + f'。{date_label}のPS全{len(cards)}試合を日本時間でまとめました。')
 
 
-def intro(ctx, now):
+def intro(ctx, now, rows=None):
     matches = ctx['matchups']
     if len(matches) != 4 or any(not m['first_game']['start_utc'] for m in matches):
         raise ValueError('WCS全4カードの実時刻を確認できません')
@@ -180,6 +183,10 @@ def intro(ctx, now):
     lid = 103 if days >= 2 else 104
     selected = [m for m in matches if m['league'] == lid]
     name = 'ア・リーグ' if lid == 103 else 'ナ・リーグ'
+    players={t['id']:t['players'] for r in rows or [] for t in r['teams']}
+    def affiliation(team):
+        people=players.get(team['id'],[])
+        return 'と'.join(people)+'が所属する'+team['name'] if people else team['name']
     pages = []
     cover = dict(common(ctx, 'WCSカード紹介'), layout='bracket', headline='ワイルドカード\n' + name + '2カード',
                  subhead='初戦日程と勝者の次戦', items=[dict(home=m['home']['name'], away=m['away']['name'],
@@ -189,12 +196,19 @@ def intro(ctx, now):
         card = dict(common(ctx, 'WCSカード紹介'), layout='facts', headline=m['home']['name'] + '\n対' + m['away']['name'],
                     subhead='ワイルドカード第1戦', items=[dict(label='初戦 / 日本時間', value=m['first_game']['label']),
                     dict(label='勝者の地区シリーズの相手', value=m['bye']['name']), dict(label='シリーズの決着', value='2勝先取')])
-        speech = (f'{m["home"]["name"]}対{m["away"]["name"]}。初戦は日本時間{spoken_start(m["first_game"]["label"])}です。'
-                  f'勝者は地区シリーズで{m["bye"]["name"]}と対戦します。まずは先発がどこまで投げ、どの場面で継投するかに注目です。')
+        speech = (f'{affiliation(m["home"])}対{affiliation(m["away"])}。初戦は日本時間{spoken_start(m["first_game"]["label"])}です。'
+                  f'勝者は地区シリーズで{m["bye"]["name"]}と対戦します。')
         pages.append(segment(card, speech, [m['game_pk']]))
-    return dict(title='WCS' + name + '2カード紹介｜' + '／'.join(m['home']['name'] + '対' + m['away']['name'] for m in selected),
+    titled=next((m for m in selected if any(players.get(m[s]['id']) for s in ('home','away'))),None)
+    if titled:
+        mine=max((titled['home'],titled['away']),key=lambda t:len(players.get(t['id'],[])))
+        other=titled['away'] if mine is titled['home'] else titled['home']
+        title=players[mine['id']][0]+'の'+mine['name']+'が'+other['name']+'と対戦｜WCS'+name+'2カード'
+    else:
+        title='WCS'+name+'2カード紹介｜'+'／'.join(m['home']['name']+'対'+m['away']['name'] for m in selected)
+    return dict(title=title,
                 segments=pages, game_ids=[m['game_pk'] for m in selected], phase='intro_' + str(lid),
-                social_summary=name + 'のWCS2カードについて、初戦の日本時間と勝ち上がり先をまとめました。')
+                social_summary=title.split('｜')[0]+'。'+name+'のWCS2カードについて、初戦の日本時間と勝ち上がり先をまとめました。')
 
 
 def situation_program(ctx, rows, before):
@@ -273,7 +287,7 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
     if slot == 'forecast':
         program = forecast(ctx, games, rows, now)
     elif ctx['stage'] == 'bracket_preview':
-        program = intro(ctx, now)
+        program = intro(ctx, now, rows)
     elif ctx['stage'] == 'series':
         program = situation_program(ctx, rows, before)
     else:

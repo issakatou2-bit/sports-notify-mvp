@@ -113,7 +113,7 @@ def _jp_day(official: str) -> str:
     return f"{d.month}月{d.day}日"
 
 
-def build(games: list, names: dict = None, players: dict = None) -> list:
+def build(games: list, names: dict = None, players: dict = None, strict: bool = True) -> list:
     """シリーズの一覧。回戦の早い順、同じ回戦ならア・リーグから。
 
     names:   {team_id: 日本語の球団名}
@@ -122,7 +122,7 @@ def build(games: list, names: dict = None, players: dict = None) -> list:
     names = names or {}
     players = players or {}
     real = _real_teams()
-    by, waiting = {}, {}
+    by, waiting, invalid = {}, {}, set()
     for g in games:
         gt = g.get("gameType")
         if gt not in ROUNDS:
@@ -172,7 +172,12 @@ def build(games: list, names: dict = None, players: dict = None) -> list:
             winner_flags = [a.get('isWinner'), h.get('isWinner')]
             if (sum(value is True for value in winner_flags) != 1
                     or any(value is not None and type(value) is not bool for value in winner_flags)):
-                raise ValueError(f'終了試合{pk}の勝者を1球団に確定できません')
+                message=f'終了試合{pk}の勝者を1球団に確定できません'
+                if strict:raise ValueError(message)
+                import sys
+                print('[warn] '+message+'。このシリーズを表示から除外します',file=sys.stderr)
+                invalid.add(key)
+                continue
             for side, tid in ((a, aid), (h, hid)):
                 if side.get("isWinner") is True:
                     s["wins"][tid] += 1
@@ -184,6 +189,7 @@ def build(games: list, names: dict = None, players: dict = None) -> list:
 
     out = []
     for s in by.values():
+        if s['key'] in invalid:continue
         need = s["best_of"] // 2 + 1 if s["best_of"] else 0
         winner = next((t for t, w in s["wins"].items() if need and w >= need),
                       None)

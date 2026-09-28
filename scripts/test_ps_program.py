@@ -1,5 +1,7 @@
 """Fixed PS cases: all four cards, series boundaries and publication gates."""
 import copy
+import contextlib
+import io
 from datetime import datetime, timedelta, timezone
 from unittest import mock
 import unittest
@@ -180,6 +182,20 @@ class ProgramTests(unittest.TestCase):
             base=p.motion.background(seconds=2);base.paste(foreground,(0,0),foreground)
             self.assertEqual(settled.tobytes(),base.tobytes())
             self.assertEqual(image.size,early.size)
+
+    def test_bad_series_excluded_without_blocking_shared_material(self):
+        snap,ev,now=fixture()
+        ctx,games=p.validate_source(snap,ev,now)
+        game=games[0];game['status']['abstractGameState']='Final'
+        game['teams']['home']['isWinner']=True;game['teams']['away']['isWinner']=True
+        key=p.series.series_key(game['gameType'],*(game['teams'][s]['team']['id'] for s in ('home','away')))
+        with self.assertRaises(ValueError):p.series.build(games)
+        with contextlib.redirect_stderr(io.StringIO()) as warning:
+            rows=p.series.build(games,strict=False)
+        self.assertNotIn(key,[r['key'] for r in rows])
+        self.assertTrue(rows)
+        self.assertIn('除外',warning.getvalue())
+        with self.assertRaises(ValueError):p.prepare(snap,ev,'situation',now)
 
 
 if __name__=='__main__':unittest.main(argv=[__file__])

@@ -438,7 +438,9 @@ def main() -> int:
             games = []
         series = ps_series.build(
             games, {k: v.get("name") for k, v in flat_teams.items()},
-            {x["team_id"]: x["players"] for x in jp_rows})
+            {x["team_id"]: x["players"] for x in jp_rows}, strict=False)
+        # PS専用公開検査は不整合で止める。共有材料はそのシリーズを除外し、
+        # 別の成績・報道などまで前日の材料へ巻き戻さない。
         # **シリーズが1つも組まれていない日は、まだ順位表の日。**
         # 開始日は米国の日付なので、日本の開始日の夕方に話すのは
         # レギュラーシーズン最終日の結果（最後の枠が決まる日）になる。
