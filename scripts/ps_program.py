@@ -20,6 +20,8 @@ import ps_editorial as pe
 import ps_series as series
 import video_common as vc
 import ps_motion_template as motion
+from notability_engine import MLB_TEAM_COLOR
+from generate_narration import display_name, speech_name
 
 JST = timezone(timedelta(hours=9))
 ROOT = Path(__file__).resolve().parent.parent
@@ -99,14 +101,38 @@ def spoken_start(value):
     return f'{month}月{date}日' + spoken_clock(clock)
 
 
+def club_color(team_id):
+    return MLB_TEAM_COLOR.get(str(team_id))
+
+
+def probable(team):
+    """Only a named, identified probable pitcher from this exact official game."""
+    row=team.get('probablePitcher') or {}
+    if type(row.get('id')) is not int or not row.get('fullName'):
+        return None
+    return dict(id=row['id'],name=row['fullName'],display=display_name(row['fullName']))
+
+
+def pitcher_speech(card):
+    statements=[]
+    for side in ('home','away'):
+        pitcher=card.get(side+'_pitcher')
+        if pitcher:
+            name=speech_name(pitcher['name'])
+            # Preserve unknown Latin spellings on screen, rather than guessing a reading.
+            if not any(c.isascii() and c.isalpha() for c in name):
+                statements.append(card[side]+'の先発予定は'+name+'です。')
+    return ''.join(statements)
+
+
 def render_segment(seg,layers=False):
     side={2:'right',3:'left'}.get(seg['speaker'])
     if side is None:raise ValueError('画面素材のない話者です')
     return render(seg['meta']['card'],presenters=side,layers=layers)
 
 
-def forecast(ctx, games, rows, now):
-    target = (now.astimezone(JST).date() + timedelta(days=1)).isoformat()
+def forecast(ctx, games, rows, now, target_day=None):
+    target = target_day or (now.astimezone(JST).date() + timedelta(days=1)).isoformat()
     by = {row['key']: row for row in rows if row.get('teams')}
     cards = []
     for g in games:
@@ -130,7 +156,11 @@ def forecast(ctx, games, rows, now):
                     when=start.strftime('%H:%M'), conditional=g['seriesGameNumber'] > row['played'] + 1,
                     jp_team=any(t.get('players') for t in row['teams']),
                     jp_home=bool(keyed[ids[0]]['players']), jp_away=bool(keyed[ids[1]]['players']),
-                    home_players=keyed[ids[0]]['players'],away_players=keyed[ids[1]]['players'])
+                    home_players=keyed[ids[0]]['players'],away_players=keyed[ids[1]]['players'],
+                    home_color=club_color(ids[0]),away_color=club_color(ids[1]),
+                    home_pitcher=probable(teams['home']),away_pitcher=probable(teams['away']))
+        match=next((m for m in ctx.get('matchups',[]) if m.get('game_pk')==g['gamePk']),None)
+        card['bye']=match['bye']['name'] if match else None
         situation(card)
         cards.append(card)
     cards.sort(key=lambda c: (c['when'], c['game_id']))
@@ -148,67 +178,66 @@ def forecast(ctx, games, rows, now):
         group = cards[start:start + 4]
         lead_name = chosen[lead_side]
         round_label = {'F':'WCS','D':'DS','L':'LCS','W':'WS'}[chosen['round']]
-        headline = lead_name + '\n' + round_label + ('初戦' if chosen['game_number'] == 1 else f'第{chosen["game_number"]}戦')
+        headline = lead_name + '\n明日' + date_label + ' ' + round_label
         cover = dict(common(ctx, 'PS予告', target), layout='schedule',
-                     headline=headline if start == 0 else 'PS全試合日程\n続き', subhead=f'{date_label} 日本時間 / 全{len(cards)}試合',
-                     items=[dict(when=f'{date_label} {c["when"]}', home=c['home'], away=c['away']) for c in group])
+                     headline=headline if start == 0 else 'PS全試合日程\n続き', subhead=f'第{chosen["game_number"]}戦 / 日本時間 / 全{len(cards)}試合',
+                     items=[dict(when=f'{date_label} {c["when"]}', home=c['home'], away=c['away'],home_color=c['home_color'],away_color=c['away_color']) for c in group],
+                     headline_colors=[chosen[lead_side+'_color'],None])
         text = title.split('｜')[0] + '。' if start == 0 else '残りの試合の日程です。'
         pages.append(segment(cover, text, [c['game_id'] for c in group], 3))
-    for c in cards:
+    for index,c in enumerate(cards,1):
         state = situation(c)
         rnd = ROUND[c['round']][0]
         note = ('前戦の結果次第で開催' if state == 'pending_results' else
                 '勝った球団がシリーズを制する' if state == 'decider' else
                 '世界一がかかる試合' if c['round'] == 'W' and state == 'clinch_chance' else
                 '突破と敗退回避がかかる' if state == 'clinch_chance' else 'シリーズの初戦' if state == 'opening' else 'シリーズの次戦')
-        card = dict(common(ctx, 'PS予告', target), layout='facts',
-                    headline=f'{c["home"]}\n対{c["away"]}', subhead=f'{rnd}第{c["game_number"]}戦 / {note}',
-                    items=[dict(label=c['home'], value=f'{c["home_wins"]}勝'),
-                           dict(label=c['away'], value=f'{c["away_wins"]}勝'),
-                           dict(label='日本時間の開始予定', value=c['when'])])
+        first_item=dict(label='日本時間の開始予定',value=c['when'])
+        if state=='opening':
+            if c['home_pitcher'] or c['away_pitcher']:
+                items=[first_item]+[dict(label=c[s]+' / 先発予定',value=(c[s+'_pitcher'] or {}).get('display','確認中'),team_color=c[s+'_color']) for s in ('home','away')]
+            else:
+                onward={'F':'地区シリーズ','D':'リーグ優勝決定シリーズ','L':'ワールドシリーズ','W':'世界一'}[c['round']]
+                advance=dict(label='勝者の地区シリーズの相手',value=c['bye']) if c['round']=='F' and c['bye'] else dict(label='勝者が進む先' if c['round']!='W' else 'シリーズ勝者',value=onward)
+                items=[first_item,advance,dict(label='シリーズの決着',value=f'{ROUND[c["round"]][1]//2+1}勝先取')]
+            if c['bye']:note='勝者は'+c['bye']+'とDSへ'
+        else:
+            items=[dict(label=c[s],value=f'{c[s+"_wins"]}勝',team_color=c[s+'_color']) for s in ('home','away')]+[first_item]
+        short_round={'F':'WCS','D':'DS','L':'LCS','W':'WS'}[c['round']]
+        card = dict(common(ctx, f'PS予告 / {short_round}第{c["game_number"]}戦', target), layout='facts',
+                    headline=f'{c["home"]}\n対{c["away"]}', subhead=note,
+                    items=items,card_index=index,card_total=len(cards),headline_colors=[c['home_color'],c['away_color']],
+                    affiliations=['・'.join(c[s+'_players'])+' / '+c[s] for s in ('home','away') if c[s+'_players']])
+        record='' if state=='opening' else f'ここまで{c["home_wins"]}勝対{c["away_wins"]}勝。'
         speech = (f'{c["home"]}対{c["away"]}は{rnd}第{c["game_number"]}戦。'
-                  f'ここまで{c["home_wins"]}勝対{c["away_wins"]}勝。日本時間{spoken_clock(c["when"])}の予定です。{note}です。')
+                  f'{record}日本時間{spoken_clock(c["when"])}の予定です。')
+        if state=='opening' and c['bye']:speech+='勝者は地区シリーズで'+c['bye']+'と対戦します。'
+        elif state!='opening':speech+=note+'です。'
+        speech+=pitcher_speech(c)
         pages.append(segment(card, speech, [c['game_id']]))
     return dict(title=title, segments=pages, game_ids=[c['game_id'] for c in cards],
                 phase='forecast', target_day=target,
                 social_summary=title.split('｜')[0] + f'。{date_label}のPS全{len(cards)}試合を日本時間でまとめました。')
 
 
-def intro(ctx, now, rows=None):
+def intro(ctx, now, rows=None, games=None):
     matches = ctx['matchups']
     if len(matches) != 4 or any(not m['first_game']['start_utc'] for m in matches):
         raise ValueError('WCS全4カードの実時刻を確認できません')
     first = min(datetime.fromisoformat(m['first_game']['start_utc']).astimezone(JST).date() for m in matches)
     days = (first - now.astimezone(JST).date()).days
-    lid = 103 if days >= 2 else 104
-    selected = [m for m in matches if m['league'] == lid]
-    name = 'ア・リーグ' if lid == 103 else 'ナ・リーグ'
-    players={t['id']:t['players'] for r in rows or [] for t in r['teams']}
-    def affiliation(team):
-        people=players.get(team['id'],[])
-        return 'と'.join(people)+'が所属する'+team['name'] if people else team['name']
-    pages = []
-    cover = dict(common(ctx, 'WCSカード紹介'), layout='bracket', headline='ワイルドカード\n' + name + '2カード',
-                 subhead='初戦日程と勝者の次戦', items=[dict(home=m['home']['name'], away=m['away']['name'],
-                 when=m['first_game']['label'], next=m['bye']['name']) for m in selected])
-    pages.append(segment(cover, name + 'のワイルドカードは、この2カードです。', [m['game_pk'] for m in selected], 3))
-    for m in selected:
-        card = dict(common(ctx, 'WCSカード紹介'), layout='facts', headline=m['home']['name'] + '\n対' + m['away']['name'],
-                    subhead='ワイルドカード第1戦', items=[dict(label='初戦 / 日本時間', value=m['first_game']['label']),
-                    dict(label='勝者の地区シリーズの相手', value=m['bye']['name']), dict(label='シリーズの決着', value='2勝先取')])
-        speech = (f'{affiliation(m["home"])}対{affiliation(m["away"])}。初戦は日本時間{spoken_start(m["first_game"]["label"])}です。'
-                  f'勝者は地区シリーズで{m["bye"]["name"]}と対戦します。')
-        pages.append(segment(card, speech, [m['game_pk']]))
-    titled=next((m for m in selected if any(players.get(m[s]['id']) for s in ('home','away'))),None)
-    if titled:
-        mine=max((titled['home'],titled['away']),key=lambda t:len(players.get(t['id'],[])))
-        other=titled['away'] if mine is titled['home'] else titled['home']
-        title=players[mine['id']][0]+'の'+mine['name']+'が'+other['name']+'と対戦｜WCS'+name+'2カード'
-    else:
-        title='WCS'+name+'2カード紹介｜'+'／'.join(m['home']['name']+'対'+m['away']['name'] for m in selected)
-    return dict(title=title,
-                segments=pages, game_ids=[m['game_pk'] for m in selected], phase='intro_' + str(lid),
-                social_summary=title.split('｜')[0]+'。'+name+'のWCS2カードについて、初戦の日本時間と勝ち上がり先をまとめました。')
+    if days<=1:
+        return None  # Card introductions live in tomorrow's all-game forecast; no duplicate NL episode.
+    # Reuse the daily construction, rather than a second competing card script.
+    program=forecast(ctx,games or [],rows or [],now,target_day=first.isoformat())
+    if not program or len(program['game_ids'])!=4:raise ValueError('紹介対象の初戦全4試合が一致しません')
+    cover=program['segments'][0]['meta']['card']
+    cover.update(headline=f'{first.month}/{first.day}開幕\nWCS全4カード',label='WCS組み合わせ')
+    program['phase']='intro_all'
+    program['title']=f'{first.month}/{first.day}開幕のWCS全4カード紹介｜'+program['title'].split('｜')[0]
+    program['social_summary']=f'日本時間{first.month}月{first.day}にWCS開幕。全4カードの初戦時刻と勝ち上がり先をまとめました。'
+    program['segments'][0]['text']=program['social_summary']
+    return program
 
 
 def situation_program(ctx, rows, before):
@@ -240,7 +269,8 @@ def situation_program(ctx, rows, before):
                  f'次は第{next_number}戦' if next_number else '次戦日程確認中')
         card = dict(common(ctx, 'PS情勢'), layout='facts', headline=teams[0]['name'] + '\n対' + teams[1]['name'],
                     subhead=row['round_jp'] + ' / ' + after,
-                    items=[dict(label=t['name'], value=f'{t["wins"]}勝') for t in teams] +
+                    card_index=len(pages)+1,card_total=len(selected),headline_colors=[club_color(t['id']) for t in teams],
+                    items=[dict(label=t['name'], value=f'{t["wins"]}勝',team_color=club_color(t['id'])) for t in teams] +
                           [dict(label='シリーズの現在地', value='決着' if row['over'] else f'第{next_number}戦進行中' if live else f'第{next_number}戦へ' if next_number else '日程確認中')])
         pages.append(segment(card, text, speaker=2 if len(pages) % 2 else 3))
     top = selected[0]
@@ -287,7 +317,7 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
     if slot == 'forecast':
         program = forecast(ctx, games, rows, now)
     elif ctx['stage'] == 'bracket_preview':
-        program = intro(ctx, now, rows)
+        program = intro(ctx, now, rows, games)
     elif ctx['stage'] == 'series':
         program = situation_program(ctx, rows, before)
     else:
@@ -321,6 +351,10 @@ def check_program(program):
     found = {i for s in program['segments'] for i in s['meta']['game_ids']}
     if found != set(program['game_ids']) or not program['segments']:
         raise ValueError('素材と全画面の試合IDが一致しません')
+    numbered=[s['meta']['card'] for s in program['segments'] if s['meta']['card'].get('card_index') is not None]
+    if numbered and (any(c['card_total']!=len(numbered) for c in numbered) or
+                     [c['card_index'] for c in numbered]!=list(range(1,len(numbered)+1))):
+        raise ValueError('紹介カードの番号・総数・順番が一致しません')
     manifests = []
     for s in program['segments']:
         _, manifest = render_segment(s)
@@ -356,6 +390,7 @@ def movie(program, audio_dir, out):
            '-s', '1080x1920', '-framerate', '30', '-i', '-', '-i', str(track), '-c:v', 'libx264',
            '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k',
            '-shortest', '-movflags', '+faststart', str(path)]
+    previous_frame=None
     with subprocess.Popen(cmd, stdin=subprocess.PIPE) as proc:
         for i, (seg, duration) in enumerate(zip(program['segments'], durations)):
             image, _, foreground = render_segment(seg,layers=True)
@@ -364,12 +399,15 @@ def movie(program, audio_dir, out):
                 image.save(out / ('short.png' if program['kind'] == 'daily' else 'short_postseason.png'))
             prepared=motion.prepare(foreground,seg['meta']['card'])
             for n in range(round(duration * 30)):
-                proc.stdin.write(motion.frame(prepared,n/30).tobytes())
+                frame=motion.frame(prepared,n/30)
+                raw=vc.crossfade(previous_frame,frame,n,round(vc.FADE_SECONDS*30),(1080,1920))
+                proc.stdin.write(raw)
+            previous_frame=raw
         proc.stdin.close()
         if proc.wait():
             raise ValueError('PS動画の書き出しに失敗')
     check.update(video=str(path), expected_segments=len(audio), durations=durations,
-                 motion='sequential-left-entry / subtle-background-drift')
+                 motion='sequential-left-entry / subtle-background-drift / shared-crossfade')
     write(out / 'ps_program_gate.json', check)
 
 
@@ -445,7 +483,7 @@ def main():
         print('[info] PS枠はhold設定です'); return
     if args.fresh:
         year = now.astimezone(JST).year
-        url = pe.API + f'schedule?sportId=1&season={year}&startDate={year}-09-01&endDate={year}-11-15&gameType=F,D,L,W&hydrate=team'
+        url = pe.API + f'schedule?sportId=1&season={year}&startDate={year}-09-01&endDate={year}-11-15&gameType=F,D,L,W&hydrate=team,probablePitcher'
         evidence = dict(retrieved_at=now.isoformat(), source_url=url, schedule=pe.fetch(url))
         write(args.evidence, evidence)
     evidence = read(args.evidence)

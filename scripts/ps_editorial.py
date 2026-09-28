@@ -204,7 +204,7 @@ def main():
         path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding='utf-8')
         return
     url = (API + f'schedule?sportId=1&season={year}&startDate={year}-09-15'
-           f'&endDate={year}-11-10&gameType=F,D,L,W&hydrate=team')
+           f'&endDate={year}-11-10&gameType=F,D,L,W&hydrate=team,probablePitcher')
     schedule = fetch(url)
     context = editorial(snapshot, schedule, now, url)
     reporters = Path(args.reporters)
