@@ -18,6 +18,7 @@ from ps_render_template import render
 from ps_daily_titles import ROUND, forecast_title, situation
 import ps_editorial as pe
 import ps_series as series
+import ps_focus as focus
 import video_common as vc
 import ps_motion_template as motion
 from notability_engine import MLB_TEAM_COLOR
@@ -224,6 +225,14 @@ def forecast(ctx, games, rows, now, target_day=None):
                     headline=f'{c["home"]}\n対{c["away"]}', subhead=note,
                     items=items,card_index=index,card_total=len(cards),headline_colors=[c['home_color'],c['away_color']],
                     affiliations=['・'.join(c[s+'_players'])+' / '+c[s] for s in ('home','away') if c[s+'_players']])
+        supplement=None
+        if index-1 == lead and state == 'opening' and not (c['home_pitcher'] or c['away_pitcher']):
+            raw=next(g for g in games if g['gamePk']==c['game_id'])
+            supplement=focus.venue_focus(raw,games)
+            if supplement:
+                card['subhead']=supplement['fact_text']
+                card['items']=[first_item,dict(label='開催球場',value=supplement['venue']),items[1]]
+                card['focus_evidence']=supplement
         record = ('' if state=='opening' else
                   ('確定済みの勝数は' if state=='pending_results' else 'ここまで')
                   + f'{c["home_wins"]}勝対{c["away_wins"]}勝。')
@@ -232,6 +241,7 @@ def forecast(ctx, games, rows, now, target_day=None):
         if state=='opening' and c['bye']:speech+='勝者は地区シリーズで'+c['bye']+'と対戦します。'
         elif state!='opening':speech+=note+'です。'
         speech+=pitcher_speech(c)
+        if supplement:speech+='第3戦が必要になった場合も、同じ球場で行われる予定です。'
         pages.append(segment(card, speech, [c['game_id']]))
     return dict(title=title, segments=pages, game_ids=[c['game_id'] for c in cards],
                 phase='forecast', target_day=target,
@@ -253,7 +263,7 @@ def intro(ctx, now, rows=None, games=None):
     cover.update(headline=f'{first.month}/{first.day}開幕\nWCS全4カード',label='WCS組み合わせ')
     program['phase']='intro_all'
     program['title']=f'{first.month}/{first.day}開幕のWCS全4カード紹介｜'+program['title'].split('｜')[0]
-    program['social_summary']=f'日本時間{first.month}月{first.day}にWCS開幕。全4カードの初戦時刻と勝ち上がり先をまとめました。'
+    program['social_summary']=f'日本時間{first.month}月{first.day}日にWCS開幕。全4カードの初戦時刻と勝ち上がり先をまとめました。'
     program['segments'][0]['text']=program['social_summary']
     return program
 
