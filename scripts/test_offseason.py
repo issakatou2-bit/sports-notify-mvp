@@ -51,9 +51,14 @@ check("昨日から動いていれば続いている",
       rw.race_is_over({"changes": [{"text": "マジックが3から2へ"}],
                        "teams": {"1": {"clinched": True}}}), False)
 
-section("実データは、まだ争っている")
+section("実データで落ちない")
+# **その日の中身は検査しない。**「9月のいまは終わっていない」を実データで
+# 見ていたため、PSに入った9/28に落ちた（日が変わると落ちる検査）。
+# 見たいのは実データを通しても壊れないことで、争いが続いているかではない。
 _real = json.loads((DATA / "postseason.json").read_text(encoding="utf-8"))
-check("9月のいまは終わっていない", rw.race_is_over(_real), False)
+check("実データで判定できる", isinstance(rw.race_is_over(_real), bool), True)
+check("PS中は動いた日だけ話す（固定の材料）",
+      rw.race_is_over({"phase": "postseason", "changes": []}), True)
 
 section("長編は、古い材料で作らない")
 _today = date.today()

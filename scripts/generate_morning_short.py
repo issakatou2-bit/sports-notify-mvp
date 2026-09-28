@@ -667,6 +667,18 @@ def week_line(players: list, days: int = 7) -> tuple:
     return "".join(parts), rows
 
 
+def on_base_lead(p: dict) -> str:
+    """無安打でも四球・死球で出塁した打者の、冒頭の言い方。当たらなければ空。"""
+    if not p or p.get("type") == "pitcher" or (p.get("hits") or 0):
+        return ""
+    bb, hbp = int(p.get("bb") or 0), int(p.get("hbp") or 0)
+    if bb + hbp < 1:
+        return ""
+    how = "・".join(x for x in (f"四球{bb}つ" if bb else "",
+                                f"死球{hbp}つ" if hbp else "") if x)
+    return f"{p['name']}は無安打ながら、{how}で{bb + hbp}度出塁。"
+
+
 def boilerplate_headline(text: str) -> bool:
     """中身の無い定型の見出しか。
 
@@ -736,12 +748,11 @@ def spoken_list(chunk: list, start: int, said_already: str = "") -> str:
     for j, p in enumerate(chunk):
         rank = start + j + 1
         if said_already and p.get("name") == said_already:
-            score = morning_recap.score_label(p)
-            parts.append(f"{rank}位は{p['name']}。"
-                         + (f"スコア{score}。" if score else ""))
+            # 独自の点数は声で言わない（画面にはある）。初めて見る人には
+            # 「スコア44」が何か分からず、見慣れた人には公式の数字に聞こえる。
+            parts.append(f"{rank}位は{p['name']}。")
             continue
         if worth_speaking(p, rank):
-            score = morning_recap.score_label(p)
             # 名前のある記録は声にも出す。**画面に金の帯が出ているのに
             # 何も言わないと、なぜその点なのかが分からない。**
             # 呼び名を並べるだけで、こちらで評価は足さない。
@@ -750,7 +761,6 @@ def spoken_list(chunk: list, start: int, said_already: str = "") -> str:
                 f"{rank}位、{p['name']}、{yomi_stats(p['headline'])}。"
                 + (f"{'に'.join(named)}。" if named else "")
                 + (f"{p['clutch_label']}。" if p.get("clutch_label") else "")
-                + (f"スコア{score}。" if score else "")
             )
         else:
             skipped += 1
@@ -852,6 +862,11 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 何の印なのか分からない）。
         named = morning_recap.badge_speech(top, limit=2) if top else []
         head = f"{top['name']}は{yomi_stats(top['headline'])}。" if top else ""
+        # **無安打で1位の日は、何が良かったかから言う。**「3打数0安打」で
+        # 始めると、初めて見る人には「なぜ無安打が1位か」が分からない。
+        walked = on_base_lead(top) if top else ""
+        if walked:
+            head = walked
         if named:
             head += "%s。" % "に".join(named)
         # 本塁打の飛距離も声に出す。画面に出しているのに黙っていると、
@@ -1385,7 +1400,10 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 途中で切って句点を足すと、意味の無い一文になる。
         usable = []
         for r in reporters:
-            body = clip_sentences(r.get("jp") or r.get("text", ""))
+            # 古い材料の訳文にも、野球の言い方の直しを当てる
+            import local_reporters as _lr
+            body = clip_sentences(_lr.baseball_jp(r.get("jp") or "")
+                                  or r.get("text", ""))
             if body:
                 usable.append((r, body))
             if len(usable) >= REPORTERS_SHOWN:
