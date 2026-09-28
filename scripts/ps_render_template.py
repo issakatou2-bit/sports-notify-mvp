@@ -4,9 +4,9 @@ from functools import lru_cache
 from io import BytesIO
 from pathlib import Path
 from PIL import Image, ImageDraw
-from brand_components import TOKENS, THEME, text, font
+from ps_brand_components import TOKENS, THEME, text, font
 
-ROOT=Path(__file__).resolve().parents[2]
+ROOT=Path(__file__).resolve().parents[1]
 LAYOUTS={'schedule':4,'facts':3,'bracket':2,'quote':1}
 
 @lru_cache(maxsize=8)

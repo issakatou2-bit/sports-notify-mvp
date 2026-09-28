@@ -20,9 +20,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install minimal rendering and voice dependencies
+      - name: Install the existing production dependencies
         run: |
-          pip install pillow requests
+          pip install -r scripts/requirements.txt
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
       - name: Start existing VOICEVOX

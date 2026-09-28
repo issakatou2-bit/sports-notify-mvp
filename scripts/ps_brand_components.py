@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from PIL import ImageFont
 
-THEME=json.loads(Path(__file__).with_name('brand-theme.json').read_text(encoding='utf-8'))
+THEME=json.loads(Path(__file__).with_name('ps-brand-theme.json').read_text(encoding='utf-8'))
 TOKENS=THEME['colors']
 FONT_CANDIDATES={
     'jp':['C:/Windows/Fonts/meiryob.ttc','/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc'],

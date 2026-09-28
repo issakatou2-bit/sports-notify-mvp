@@ -14,8 +14,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-sys.path.insert(0, str(Path(__file__).with_name('video_design')))
-from render_daily_template import render
+from ps_render_template import render
 from ps_daily_titles import ROUND, forecast_title, situation
 import ps_editorial as pe
 import ps_series as series
@@ -198,11 +197,19 @@ def situation_program(ctx, rows, before):
         teams = row['teams']
         text = series.text(row)
         next_number = (row.get('next') or {}).get('game')
-        after = 'シリーズ終了' if row['over'] else f'次は第{next_number}戦' if next_number else '次戦日程確認中'
+        live = bool((row.get('next') or {}).get('live'))
+        next_label = (row.get('next') or {}).get('verified_label')
+        if not row['played']:
+            text = row['round_jp'] + teams[0]['name'] + '対' + teams[1]['name'] + '。'
+            text += ('初戦は' + next_label + 'の予定です。') if next_label else '初戦の開始時刻は確認中です。'
+        if live:
+            text += f'。第{next_number}戦は進行中で、この試合の結果はまだ含めていません。'
+        after = ('シリーズ終了' if row['over'] else f'第{next_number}戦進行中' if live else
+                 f'次は第{next_number}戦' if next_number else '次戦日程確認中')
         card = dict(common(ctx, 'PS情勢'), layout='facts', headline=teams[0]['name'] + '\n対' + teams[1]['name'],
                     subhead=row['round_jp'] + ' / ' + after,
                     items=[dict(label=t['name'], value=f'{t["wins"]}勝') for t in teams] +
-                          [dict(label='シリーズの現在地', value='決着' if row['over'] else f'第{next_number}戦へ' if next_number else '日程確認中')])
+                          [dict(label='シリーズの現在地', value='決着' if row['over'] else f'第{next_number}戦進行中' if live else f'第{next_number}戦へ' if next_number else '日程確認中')])
         pages.append(segment(card, text, speaker=2 if len(pages) % 2 else 3))
     top = selected[0]
     rnd = ROUND[top['round']][0]
@@ -212,7 +219,26 @@ def situation_program(ctx, rows, before):
              mine['name'] + 'の' + rnd + f'は{mine["wins"]}勝{other["wins"]}敗')
     title += '｜PSシリーズの最新情勢'
     return dict(title=title, segments=pages, game_ids=[], phase='situation',
-                social_summary=series.text(selected[0]) + '各カードの勝敗と勝ち上がりをまとめました。')
+                social_summary=pages[0]['text'] + '。各カードの勝敗と勝ち上がりをまとめました。')
+
+
+def verify_next_games(rows, games):
+    """Do not turn provisional API timestamps into confirmed Japanese dates."""
+    for row in rows:
+        nxt = row.get('next')
+        if not nxt or row['over'] or len(row['teams']) != 2:
+            continue
+        matching = [g for g in games if g['gameType'] == row['round']
+                    and g['seriesGameNumber'] == nxt['game']
+                    and {g['teams'][s]['team']['id'] for s in ('home', 'away')} == {t['id'] for t in row['teams']}
+                    and g.get('status', {}).get('abstractGameState') != 'Final']
+        if len(matching) != 1:
+            raise ValueError('次戦を公式の1試合に対応付けられません')
+        game = matching[0]
+        nxt['live'] = game.get('status', {}).get('abstractGameState') == 'Live'
+        if not game.get('status', {}).get('startTimeTBD', True):
+            start = datetime.fromisoformat(game['gameDate'].replace('Z', '+00:00')).astimezone(JST)
+            nxt['verified_label'] = f'日本時間{start.month}月{start.day}日{start.hour}時{start.minute:02d}分'
 
 
 def prepare(snapshot, evidence, slot, now, ledger=None):
@@ -223,6 +249,7 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
     for team in snapshot.get('japanese', []):
         players[int(team['team_id'])] = team.get('players', [])
     rows = series.build(games, names, players)
+    verify_next_games(rows, games)
     kind = 'daily' if slot == 'forecast' else 'morning_postseason'
     before = previous(ledger or {}, kind)
     if slot == 'forecast':

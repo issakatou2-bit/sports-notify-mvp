@@ -23,6 +23,7 @@ def main():
     if not program:
         raise ValueError('公式の翌日全カードを再現できません')
     program['rehearsal']=True
+    program['rehearsal_real_retrieved_at']=real.isoformat()
     p.write('build/ps_program_forecast.json',program)
     p.write(args.out,p.script(program))
     print('[info] 翌日を想定した非公開再現。実際の取得時刻: '+real.isoformat())

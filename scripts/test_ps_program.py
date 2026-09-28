@@ -113,5 +113,53 @@ class ProgramTests(unittest.TestCase):
             with mock.patch.dict(p.os.environ,PS_PROGRAM_LAYOUT=value):self.assertEqual(p.layout(),value)
         with mock.patch.dict(p.os.environ,PS_PROGRAM_LAYOUT='typo'),self.assertRaises(ValueError):p.layout()
 
+    def test_every_round_and_world_series_final_report_once(self):
+        ctx=dict(date_jst='2026-10-31',source_url='https://statsapi.mlb.com/api/v1/schedule')
+        now=datetime(2026,10,31,7,tzinfo=timezone.utc)
+        for kind,need in [('F',2),('D',3),('L',4),('W',4)]:
+            games=[]
+            for n in range(1,need+1):
+                games.append(dict(gamePk=500+n,gameType=kind,seriesGameNumber=n,gamesInSeries=need*2-1,
+                    officialDate='2026-10-31',gameDate='2026-10-31T18:00:00+00:00',
+                    status=dict(abstractGameState='Final' if n<need else 'Preview',startTimeTBD=False),
+                    teams=dict(home=dict(team=dict(id=117,name='アストロズ',league=dict(id=103)),isWinner=n<need),
+                               away=dict(team=dict(id=145,name='ホワイトソックス',league=dict(id=103)),isWinner=False))))
+            rows=p.series.build(games,{117:'アストロズ',145:'ホワイトソックス'})
+            program=p.forecast(ctx,games,rows,now)
+            with self.subTest(round=kind):
+                self.assertIsNotNone(program)
+                self.assertIn('世界一' if kind=='W' else '突破',program['title'])
+                games[-1]['status']['abstractGameState']='Final';games[-1]['teams']['home']['isWinner']=True
+                finished=p.series.build(games,{117:'アストロズ',145:'ホワイトソックス'})
+                self.assertIsNone(p.forecast(ctx,games,finished,now))
+                result=p.situation_program(ctx,finished,{})
+                self.assertIsNotNone(result)
+                self.assertIsNone(p.situation_program(ctx,finished,dict(program_series=finished)))
+                if kind=='W':self.assertIn('世界一',result['title'])
 
-if __name__=='__main__':unittest.main()
+    def test_unchanged_intro_and_rehearsal_cannot_publish(self):
+        snap,ev,now=fixture()
+        pr=p.prepare(snap,ev,'situation',now)
+        ledger=dict(morning_postseason={'2026-09-28':dict(video_id='abcdef12345',program_version=p.VERSION,program_edition=pr['edition_key'])})
+        self.assertIsNone(p.prepare(snap,ev,'situation',now,ledger))
+        pr['rehearsal']=True
+        with self.assertRaises(ValueError):p.upload(pr,[])
+
+    def test_unconfirmed_dates_and_live_game_not_final(self):
+        snap,ev,now=fixture()
+        ctx,games=p.validate_source(snap,ev,now)
+        rows=p.series.build(games,{int(k):v['name'] for k,v in snap['teams'].items()})
+        for game in games:
+            game['status']['startTimeTBD']=True
+        p.verify_next_games(rows,games)
+        result=p.situation_program(ctx,rows,dict(program_series=[]))
+        self.assertTrue(all('開始時刻は確認中' in s['text'] for s in result['segments']))
+        self.assertNotIn('9月30日',str(result))
+        game=games[0];game['status']['abstractGameState']='Live'
+        p.verify_next_games(rows,games)
+        result=p.situation_program(ctx,rows,dict(program_series=[]))
+        self.assertIn('進行中',str(result))
+        self.assertIn('結果はまだ含めていません',str(result))
+
+
+if __name__=='__main__':unittest.main(argv=[__file__])

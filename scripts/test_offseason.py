@@ -21,7 +21,6 @@
   なってシーズンが丸ごと飛ぶところだった。
 """
 
-import json
 import pathlib
 import sys
 from datetime import date, datetime, timedelta, timezone
@@ -51,9 +50,11 @@ check("昨日から動いていれば続いている",
       rw.race_is_over({"changes": [{"text": "マジックが3から2へ"}],
                        "teams": {"1": {"clinched": True}}}), False)
 
-section("実データは、まだ争っている")
-_real = json.loads((DATA / "postseason.json").read_text(encoding="utf-8"))
-check("9月のいまは終わっていない", rw.race_is_over(_real), False)
+section("シーズンの境目は固定資料で検査する")
+_race = {"changes": [], "teams": {"1": {"magic": 3}, "2": {"wc_gb": "1.0"}}}
+_settled = {"changes": [], "teams": {str(i): {"clinched": True} for i in range(12)}}
+check("未確定の球団がある資料では争いを続ける", rw.race_is_over(_race), False)
+check("12球団確定後の資料では進出争いを終える", rw.race_is_over(_settled), True)
 
 section("長編は、古い材料で作らない")
 _today = date.today()
