@@ -2043,6 +2043,263 @@
       "title": "【9/27更新】MLBポストシーズン進出争い最新情勢｜地区優勝・PS進出の確定状況 #Shorts",
       "published_at": "2026-09-27T06:06:59.548740+00:00",
       "publish_at": "2026-09-27T11:00:00Z"
+    },
+    "2026-09-28": {
+      "video_id": "NKVsN0j04IU",
+      "url": "https://youtu.be/NKVsN0j04IU",
+      "title": "【9/28更新】村上宗隆のホワイトソックスがアストロズと対戦｜WCSア・リーグ2カード #Shorts",
+      "published_at": "2026-09-28T08:02:30.420764+00:00",
+      "publish_at": "2026-09-28T11:00:00Z",
+      "program_version": "ps-program-20260928-v2",
+      "program_edition": "dbda7c041b2c5620b6ea34acf7f934d713651127cda6e0037300a5f15771a082",
+      "program_phase": "intro_103",
+      "program_series": [
+        {
+          "key": "F:111-147",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "9月30日",
+            "game": 1,
+            "live": false,
+            "verified_label": "日本時間9月30日9時"
+          },
+          "teams": [
+            {
+              "id": 111,
+              "name": "レッドソックス",
+              "wins": 0,
+              "players": [
+                "吉田正尚"
+              ]
+            },
+            {
+              "id": 147,
+              "name": "ヤンキース",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "F:117-145",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "9月30日",
+            "game": 1,
+            "live": false,
+            "verified_label": "日本時間9月30日6時"
+          },
+          "teams": [
+            {
+              "id": 117,
+              "name": "アストロズ",
+              "wins": 0,
+              "players": [
+                "今井達也"
+              ]
+            },
+            {
+              "id": 145,
+              "name": "ホワイトソックス",
+              "wins": 0,
+              "players": [
+                "村上宗隆",
+                "西田陸浮"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:112-135",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "9月30日",
+            "game": 1,
+            "live": false,
+            "verified_label": "日本時間9月30日11時"
+          },
+          "teams": [
+            {
+              "id": 112,
+              "name": "カブス",
+              "wins": 0,
+              "players": [
+                "今永昇太",
+                "鈴木誠也"
+              ]
+            },
+            {
+              "id": 135,
+              "name": "パドレス",
+              "wins": 0,
+              "players": [
+                "松井裕樹"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:143-144",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "9月30日",
+            "game": 1,
+            "live": false,
+            "verified_label": "日本時間9月30日3時"
+          },
+          "teams": [
+            {
+              "id": 143,
+              "name": "フィリーズ",
+              "wins": 0,
+              "players": []
+            },
+            {
+              "id": 144,
+              "name": "ブレーブス",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:114-wait",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "waiting": true,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月4日",
+            "game": 1
+          },
+          "teams": [
+            {
+              "id": 114,
+              "name": "ガーディアンズ",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:139-wait",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "waiting": true,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月4日",
+            "game": 1
+          },
+          "teams": [
+            {
+              "id": 139,
+              "name": "レイズ",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:119-wait",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "waiting": true,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月4日",
+            "game": 1
+          },
+          "teams": [
+            {
+              "id": 119,
+              "name": "ドジャース",
+              "wins": 0,
+              "players": [
+                "大谷翔平",
+                "佐々木朗希",
+                "山本由伸"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "D:158-wait",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "waiting": true,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月4日",
+            "game": 1
+          },
+          "teams": [
+            {
+              "id": 158,
+              "name": "ブリュワーズ",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        }
+      ],
+      "social_summary": "村上宗隆のホワイトソックスがアストロズと対戦。ア・リーグのWCS2カードについて、初戦の日本時間と勝ち上がり先をまとめました。"
     }
   },
   "soccer_race": {

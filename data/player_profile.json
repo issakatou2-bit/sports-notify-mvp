@@ -1,121 +1,111 @@
 {
-  "generated_at": "2026-09-28T06:01:04.797072+00:00",
+  "generated_at": "2026-09-28T07:59:40.218267+00:00",
   "date_jst": "2026-09-28",
-  "name": "Alex Bregman",
-  "player_id": "608324",
-  "team": "カブス",
+  "name": "Andrés Chaparro",
+  "player_id": "665953",
+  "team": "ナショナルズ",
   "group": "hitting",
   "why": "2026-09-28のMLBで最も活躍",
-  "headline": "4打数4安打　2本塁打　1二塁打　4打点　1四球",
-  "score": 199,
+  "headline": "4打数3安打　2本塁打　2打点",
+  "score": 166,
   "bio": {
-    "name_en": "Alex Bregman",
-    "age": 32,
-    "birth_city": "Albuquerque",
-    "birth_state": "NM",
-    "birth_country": "USA",
-    "birth_date": "1994-03-30",
-    "debut": "2016-07-25",
-    "draft_year": 2015,
+    "name_en": "Andrés Chaparro",
+    "age": 27,
+    "birth_city": "El Vigia",
+    "birth_state": null,
+    "birth_country": "Venezuela",
+    "birth_date": "1999-05-04",
+    "debut": "2024-08-13",
+    "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "3",
-    "position": "Third Base",
-    "nickname": "A-Breg",
-    "height": "5' 10\"",
-    "weight": 190
+    "number": "87",
+    "position": "First Base",
+    "nickname": null,
+    "height": "6' 0\"",
+    "weight": 200
   },
   "teams": [
     {
-      "team": "アストロズ",
-      "from": 2016,
-      "to": 2024
-    },
-    {
-      "team": "レッドソックス",
-      "from": 2025,
-      "to": 2025
-    },
-    {
-      "team": "カブス",
-      "from": 2026,
+      "team": "ナショナルズ",
+      "from": 2024,
       "to": 2026
     }
   ],
   "career": {
-    "games": 1380,
-    "avg": ".271",
-    "hr": 237,
-    "rbi": 818,
-    "ops": ".843",
-    "sb": 46,
-    "hits": 1411
+    "games": 150,
+    "avg": ".236",
+    "hr": 18,
+    "rbi": 59,
+    "ops": ".766",
+    "sb": 1,
+    "hits": 91
   },
   "this_season": {
-    "games": 155,
-    "avg": ".265",
-    "hr": 28,
-    "rbi": 93,
-    "ops": ".819",
-    "sb": 3,
-    "hits": 161
+    "games": 83,
+    "avg": ".268",
+    "hr": 13,
+    "rbi": 39,
+    "ops": ".894",
+    "sb": 0,
+    "hits": 53
   },
   "last_season": {
-    "games": 114,
-    "avg": ".273",
-    "hr": 18,
-    "rbi": 62,
-    "ops": ".822",
-    "sb": 1,
-    "hits": 118
+    "games": 34,
+    "avg": ".182",
+    "hr": 1,
+    "rbi": 5,
+    "ops": ".505",
+    "sb": 0,
+    "hits": 12
   },
   "recent": [
     {
       "date": "2026-09-27",
-      "line": "4打数4安打 2本塁打 4打点",
-      "opponent": "Boston Red Sox"
+      "line": "4打数3安打 2本塁打 2打点",
+      "opponent": "New York Mets"
     },
     {
       "date": "2026-09-25",
-      "line": "4打数0安打",
-      "opponent": "Boston Red Sox"
+      "line": "3打数1安打",
+      "opponent": "New York Mets"
+    },
+    {
+      "date": "2026-09-23",
+      "line": "4打数1安打",
+      "opponent": "Detroit Tigers"
+    },
+    {
+      "date": "2026-09-22",
+      "line": "4打数1安打",
+      "opponent": "Detroit Tigers"
     },
     {
       "date": "2026-09-20",
-      "line": "1打数1安打 1打点",
-      "opponent": "Cincinnati Reds"
-    },
-    {
-      "date": "2026-09-19",
-      "line": "4打数0安打",
-      "opponent": "Cincinnati Reds"
-    },
-    {
-      "date": "2026-09-18",
-      "line": "5打数0安打",
-      "opponent": "Cincinnati Reds"
+      "line": "2打数0安打",
+      "opponent": "St. Louis Cardinals"
     }
   ],
   "awards": [
     {
       "season": "2025",
-      "name": "AL All-Star"
-    },
-    {
-      "season": "2025",
-      "name": "AL Player of the Week"
+      "name": "INT Player of the Week"
     },
     {
       "season": "2024",
-      "name": "Rawlings AL Gold Glove"
+      "name": "Baseball America Triple-A All-Star"
     },
     {
-      "season": "2022",
-      "name": "World Series Championship"
+      "season": "2024",
+      "name": "PCL Player of the Week"
     },
     {
-      "season": "2022",
-      "name": "AL Player of the Month"
+      "season": "2023",
+      "name": "VWL Rookie of the Year"
+    },
+    {
+      "season": "2023",
+      "name": "MiLB.com Organization All-Star"
     }
   ],
   "quotes": []
