@@ -407,6 +407,13 @@ class StillProcessingIsNotAFailure(unittest.TestCase):
 
 
 class SnapshotCaption(unittest.TestCase):
+    def test_confirmed_bracket_title_promotes_schedule_not_results(self):
+        title = '【9/28更新】MLBポストシーズン 組み合わせ確定｜日本時間9/30開幕 #Shorts'
+        words = daily.words('morning_postseason', {'title': title})
+        self.assertIn('日程', words['long'])
+        self.assertNotIn('勝敗', words['lead'])
+        self.assertNotIn('進出争い', words['long'])
+
     def test_clinch_status_title_is_not_series_results(self):
         title = '【9/27更新】MLBポストシーズン最新情勢｜地区優勝・PS進出の確定状況 #Shorts'
         words = daily.words('morning_postseason', {'title': title})

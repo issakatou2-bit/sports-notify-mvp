@@ -386,6 +386,12 @@ def words(kind: str, record=None) -> dict:
         # Use the verified video's edition, not today's possibly newer JSON.
         # The generator includes ps_label in the published title.
         title = (record or {}).get('title', '')
+        if '組み合わせ確定' in title or '出場12球団決定' in title:
+            result.update(short='PS対戦表・日程', long='ポストシーズンの組み合わせと開幕日程',
+                          lead='どの球団と戦うか、初戦は日本時間の何時かをまとめました')
+            if '確認中' in title:
+                result['lead'] = '出場球団が決まりました。組み合わせと時刻は公式日程で確認中です'
+            return result
         if '進出' in title and '確定状況' in title:
             result.update(short='PS進出状況', long='地区優勝・PS進出の確定状況',
                           lead='現在の順位と確定状況を確認します')
