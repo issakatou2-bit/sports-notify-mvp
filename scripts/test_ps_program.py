@@ -38,6 +38,20 @@ def fixture(day=28):
 
 
 class ProgramTests(unittest.TestCase):
+    def test_unresolved_opponent_cannot_disappear_from_all_game_forecast(self):
+        for tbd in (False,True):
+            snap,ev,now=fixture(29)
+            game=ev['schedule']['dates'][0]['games'][0]
+            game['teams']['away']['team']=dict(id=9999,name='未確定',league=dict(id=103))
+            game['status']['startTimeTBD']=tbd
+            rows=p.series.build(ev['schedule']['dates'][0]['games'])
+            ctx=dict(date_jst='2026-09-29',source_url=ev['source_url'])
+            with self.assertRaisesRegex(ValueError,'対戦相手が未確定'):
+                p.forecast(ctx,ev['schedule']['dates'][0]['games'],rows,now)
+            # Distant placeholders do not halt the independently confirmed slate.
+            game['officialDate']='2026-10-15';game['gameDate']='2026-10-15T18:00:00Z'
+            self.assertEqual(len(p.forecast(ctx,ev['schedule']['dates'][0]['games'],rows,now)['game_ids']),3)
+
     def test_unfinished_prior_game_is_not_always_a_conditional_game(self):
         for kind,need in [('F',2),('D',3),('L',4),('W',4)]:
             snap,ev,now=fixture(29)

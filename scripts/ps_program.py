@@ -147,6 +147,12 @@ def forecast(ctx, games, rows, now, target_day=None):
             continue
         teams = g['teams']
         if not all(series.is_real(teams[s]['team']) for s in ('home', 'away')):
+            if status.get('startTimeTBD', True):
+                relevant = not g.get('officialDate') or g['officialDate'] in unresolved_days
+            else:
+                relevant = datetime.fromisoformat(g['gameDate'].replace('Z', '+00:00')).astimezone(JST).date().isoformat() == target
+            if relevant:
+                raise ValueError(f'試合{g["gamePk"]}の対戦相手が未確定で対象日の全試合を確定できません')
             continue
         ids = [teams[s]['team']['id'] for s in ('home', 'away')]
         row = by.get(series.series_key(g['gameType'], *ids))
