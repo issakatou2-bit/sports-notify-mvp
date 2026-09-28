@@ -120,6 +120,16 @@ class SeasonBoundary(unittest.TestCase):
         text = ''.join(s['text'] for s in preview.cards(self.context()))
         self.assertIn('第3戦は必要な場合のみ', text)
 
+    def test_new_preview_requires_review_but_existing_formats_keep_running(self):
+        for stage in ('bracket_preview', 'bracket_pending'):
+            snapshot = {'editorial': {'stage': stage}}
+            for value in ('', 'false', '1', None):
+                self.assertTrue(policy.preview_review_required(snapshot, value))
+            self.assertFalse(policy.preview_review_required(snapshot, 'true'))
+        for stage in ('race', 'series', 'offseason'):
+            self.assertFalse(policy.preview_review_required({'editorial': {'stage': stage}}))
+        self.assertFalse(policy.preview_review_required({}))
+
     def test_retrieval_time_alone_is_not_a_new_edition(self):
         context = self.context()
         later = dict(context, date_jst='2026-09-29', retrieved_at='2026-09-29T01:00:00+00:00')

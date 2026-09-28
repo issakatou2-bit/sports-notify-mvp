@@ -6,12 +6,14 @@ material. This avoids presenting an already settled qualification race.
 import argparse
 from datetime import datetime
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
 
 from PIL import Image, ImageDraw
 import video_common as vc
+from ps_editorial import preview_review_required
 
 W, H, FPS = 1080, 1920, 24
 BG, PANEL, INK, MUTED, ACCENT = '#111827', '#1e293b', '#f8fafc', '#b6c5d6', '#79d5bd'
@@ -202,6 +204,8 @@ def metadata(context):
 
 
 def upload(context):
+    if preview_review_required({'editorial': context}, os.getenv('PS_PREVIEW_APPROVED', '')):
+        raise ValueError('新しいPS構成はプレビュー確認待ちです。公開承認後だけ投稿します')
     # Keep credentials, scheduling and publication ledger in the canonical
     # uploader. Only replace metadata for the verified preview edition.
     import inspect
