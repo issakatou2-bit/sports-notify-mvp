@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-27T13:03:56.276087+00:00",
+  "updated_at": "2026-09-28T06:01:35.608987+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
@@ -11,7 +11,7 @@
           "value": 0.8702702702702703,
           "shown": "0.87",
           "at": 2,
-          "of": 44,
+          "of": 46,
           "ties": 1,
           "above": {
             "name": "Jacob Misiorowski",
@@ -33,15 +33,15 @@
       "player_id": "808959",
       "items": [
         {
-          "value": 0.5865209471766849,
-          "shown": "58.7%",
+          "value": 0.5840867992766727,
+          "shown": "58.4%",
           "at": 1,
-          "of": 134,
+          "of": 135,
           "ties": 1,
           "above": null,
           "below": {
             "name": "Kyle Schwarber",
-            "shown": "52.9%"
+            "shown": "52.8%"
           },
           "key": "tto",
           "label": "アダム・ダン率",
@@ -51,15 +51,18 @@
           "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
         },
         {
-          "value": 0.3551912568306011,
-          "shown": "35.5%",
-          "at": 1,
-          "of": 134,
+          "value": 0.35443037974683544,
+          "shown": "35.4%",
+          "at": 2,
+          "of": 135,
           "ties": 1,
-          "above": null,
-          "below": {
+          "above": {
             "name": "Colson Montgomery",
-            "shown": "35.5%"
+            "shown": "35.6%"
+          },
+          "below": {
+            "name": "Austin Riley",
+            "shown": "31.9%"
           },
           "key": "k_rate",
           "label": "三振率",
@@ -68,42 +71,22 @@
           "side": "top"
         },
         {
-          "value": 0.16757741347905283,
-          "shown": "16.8%",
+          "value": 0.16636528028933092,
+          "shown": "16.6%",
           "at": 2,
-          "of": 134,
+          "of": 135,
           "ties": 1,
           "above": {
             "name": "Mike Trout",
             "shown": "16.9%"
           },
           "below": {
-            "name": "Jake Bauers",
+            "name": "James Wood",
             "shown": "16.4%"
           },
           "key": "bb_rate",
           "label": "四球率",
           "note": "四球で終わった打席の割合",
-          "group": "hitting",
-          "side": "top"
-        },
-        {
-          "value": 0.271,
-          "shown": ".271",
-          "at": 4,
-          "of": 134,
-          "ties": 1,
-          "above": {
-            "name": "Hunter Goodman",
-            "shown": ".285"
-          },
-          "below": {
-            "name": "Ben Rice",
-            "shown": ".270"
-          },
-          "key": "iso",
-          "label": "ISO",
-          "note": "長打率から打率を引いた、単打を除いた長打力",
           "group": "hitting",
           "side": "top"
         }
