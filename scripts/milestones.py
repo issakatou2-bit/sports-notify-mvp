@@ -155,6 +155,19 @@ def first_postseason(player: dict, postseason_path: str) -> dict:
     games = _num(mlb_splits.season_stat(sp), "gamesPlayed")
     if games:
         return {}
+    if seat.get("clinched"):
+        # **決めたあとに「見えてきました」「いま第6シード」と言わない。**
+        # 9/27の回で、進出を決めていたホワイトソックスについてそう言った。
+        # 出場するかどうか（登録に入るか）までは分からないので、
+        # 言うのは「出場経験がまだ無い」まで。
+        return {"name": name, "rank": -1, "gap": 0, "reach": 1,
+                "kind": "ポストシーズン", "goal_text": "球団が進出決定",
+                "prefix": "", "big": "進出決定",
+                "small": f"第{seat['seed']}シード",
+                # 読み上げは「{名前}は」＋この文。述語から始める。
+                "text": f"まだポストシーズンの出場経験がありません。"
+                        f"{seat.get('team')}は第{seat['seed']}シードで"
+                        f"進出を決めています"}
     return {"name": name, "rank": -1, "gap": 0, "reach": 1,
             "kind": "ポストシーズン", "goal_text": "初出場が見えてきた",
             "prefix": "", "big": "圏内", "small": f"第{seat['seed']}シード",

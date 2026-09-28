@@ -667,6 +667,19 @@ def week_line(players: list, days: int = 7) -> tuple:
     return "".join(parts), rows
 
 
+def boilerplate_headline(text: str) -> bool:
+    """中身の無い定型の見出しか。
+
+    「ロサンゼルス・ドジャース対サンフランシスコ・ジャイアンツ 09/26/2026」
+    のような試合記録ページの題は、何が起きたかを1文字も言っていない。
+    9/27の回はこれを「現地の見出し」として読んだ。
+    """
+    import re as _re
+    t = (text or "").strip()
+    return bool(_re.search(r"[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}$", t)
+                and _re.search(r"対|vs|@", t))
+
+
 def press_premise(heads: list, pool: list = None) -> str:
     """今日の報道が何についてのものか。数えるだけで、評価はしない。
 
@@ -1342,7 +1355,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 収まらない見出しは切らずに飛ばす。6件取れているので選び直せる。
         fits = [(i, h) for i, h in enumerate(heads)
                 if i != used
-                and len((h.get("jp") or h.get("title", ""))) <= HEADLINE_MAX]
+                and len((h.get("jp") or h.get("title", ""))) <= HEADLINE_MAX
+                and not boilerplate_headline(h.get("jp") or h.get("title", ""))]
         if not fits:
             fits = [(i, h) for i, h in enumerate(heads) if i != used]
         picked = []
@@ -2064,8 +2078,11 @@ def ps_open(ps: dict) -> tuple:
     # 「開幕」として動いたことになる。「動いたのだ？」で入ると、
     # 何が決まった日なのかが伝わらない。
     if changes and all(c.get("kind") == "start" for c in changes):
+        last = "、".join(ps.get("final_day") or [])
         return ("ポストシーズンの組み合わせが決まったのだ？",
-                "決まったわ。" + changes[0]["text"] + "。")
+                "決まったわ。"
+                + (f"レギュラーシーズン最終日で、{last}。" if last else "")
+                + changes[0]["text"] + "。")
 
     # 日本人選手のいる球団が動いた日は、そこが今日いちばんの話。
     for c in changes:
@@ -2777,8 +2794,13 @@ def ps_series_segments(ps: dict) -> list:
                   key=lambda s: (-sum(len(x["players"]) for x in s["teams"]),
                                  -s["stage"]))[:4]
     if mine:
+        # 冒頭の掛け合いで読んだ文は、ここで読み直さない（画面には残る）
+        lead = ((ps.get("changes") or [{}])[0]).get("text")
+        said_text = [t for t in (ps_series.jp_text(s) for s in mine)
+                     if t and t != lead]
         out.append({"kind": "ps_series",
-                    "text": "。".join(ps_series.jp_text(s) for s in mine) + "。",
+                    "text": ("。".join(said_text) + "。") if said_text
+                    else "日本人選手のいるシリーズです。",
                     "meta": {"keys": [s["key"] for s in mine],
                              "head": "日本人選手のいるシリーズ", "league": ""}})
         said.update(s["key"] for s in mine)

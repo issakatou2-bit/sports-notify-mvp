@@ -287,6 +287,10 @@ def jp_text(s: dict) -> str:
         return ""
     opp = t[1] if mine is t[0] else t[0]
     who = f"{'・'.join(mine['players'])}の{mine['name']}"
+    # **相手にも日本人選手がいれば、その名前も言う。**言わないと
+    # 「アストロズ対ホワイトソックス」で村上宗隆が消える。
+    if opp["players"]:
+        opp = dict(opp, name=f"{'・'.join(opp['players'])}の{opp['name']}")
     rec = f"{mine['wins']}勝{opp['wins']}敗"
     if s["over"]:
         if s["winner"] == mine["id"]:

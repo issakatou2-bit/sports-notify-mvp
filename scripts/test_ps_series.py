@@ -231,4 +231,29 @@ _l, _miss, _skip, _ = hc.check_videos("2026-10-03")
 check("試合があれば欠けは欠け", _miss >= 6, True)
 hc.load, hc._mlb_games = _load, _games
 
+section("視聴者の目で見つけたもの（9/28）")
+_both = {"key": "F:117-145", "round": "F", "round_jp": "ワイルドカードシリーズ",
+         "stage": 1, "league_jp": "ア・リーグ", "best_of": 3, "need": 2,
+         "played": 0, "over": False, "winner": None,
+         "next": {"day": "9月30日", "game": 1},
+         "teams": [{"id": 117, "name": "アストロズ", "wins": 0,
+                    "players": ["今井達也"]},
+                   {"id": 145, "name": "ホワイトソックス", "wins": 0,
+                    "players": ["村上宗隆"]}]}
+has("相手にも日本人選手がいれば名前を言う", ps.jp_text(_both),
+    "村上宗隆のホワイトソックスと対戦")
+_op = ms.ps_open({"changes": [{"kind": "start", "text": "X"}],
+                  "final_day": ["アストロズが地区優勝"]})[1]
+has("初日は最終日に決まったことにも触れる", _op,
+    "レギュラーシーズン最終日で、アストロズが地区優勝")
+_segs = ms.ps_series_segments({"phase": "postseason", "series": [_both],
+                               "changes": [{"key": _both["key"],
+                                            "text": ps.jp_text(_both)}]})
+hasnt("掛け合いで読んだ文を画面で読み直さない", _segs[0]["text"], "今井達也")
+check("定型の見出し（日付だけの試合記録）は読まない",
+      ms.boilerplate_headline("ドジャース対ジャイアンツ 09/26/2026"), True)
+check("中身のある見出しは読む",
+      ms.boilerplate_headline("大谷翔平の不調でドジャースファンは慌てるべきか"),
+      False)
+
 sys.exit(done())

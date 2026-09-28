@@ -421,7 +421,7 @@ def main() -> int:
     # --- ポストシーズン -------------------------------------------------
     # 始まったら、話の中心を順位表からシリーズへ移す。
     # 前日比もシリーズで取る（順位表はもう動かない）。
-    phase, series = "regular", []
+    phase, series, final_day = "regular", [], []
     import ps_series
     dates = ps_series.season_dates(season)
     if ps_series.in_postseason(dates):
@@ -444,6 +444,13 @@ def main() -> int:
         # レギュラーシーズン最終日の結果（最後の枠が決まる日）になる。
         if series:
             phase = "postseason"
+            # PSの初日だけ、レギュラーシーズン最終日に決まったことを残す
+            # （最後の枠や地区優勝が決まる日。シリーズの前日比で上書きすると
+            # 消える）。
+            if not before.get("series"):
+                # 「アストロズ 地区優勝」→「アストロズが地区優勝」（読み上げ用）
+                final_day = [c["text"].replace(" ", "が", 1) for c in changes
+                             if c.get("text")][:3]
             changes = ps_series.changes(series, before.get("series") or [])
             head = ps_series.headline(series, changes) or head
 
@@ -453,6 +460,7 @@ def main() -> int:
         "season": season,
         "phase": phase,
         "series": series,
+        "final_day": final_day,
         "headline": head,
         "changes": changes,
         "prev_date": str(before.get("date") or ""),
