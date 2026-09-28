@@ -117,8 +117,19 @@ check("健康診断が見る区分に、再生リストが全部ある",
 # サイトのその日ページに、その日出した動画が全部並んでいるか。
 # 枠を足すたびにここを直し忘れると、作った動画がどこからも辿れなくなる。
 import generate_archive_pages as ga  # noqa: E402
-check("その日ページに、毎日出す動画が全部ある",
-      sorted(expected - {k for k, _ in ga.DAY_VIDEO_KINDS}), [])
+# **記録の名前で突き合わせる。**一覧の名前（"postseason"）で見ていた
+# ため、その日ページには記録と違う名前が入り、9/2から進出争いの動画が
+# 1本も載っていなかった。ページが引くのは記録（published_videos）。
+check("その日ページに、毎日出す動画が全部ある（記録の名前で）",
+      sorted({hc._record_key(k) for k in expected}
+             - {k for k, _ in ga.DAY_VIDEO_KINDS}), [])
+import json as _json  # noqa: E402
+_rec = set(_json.loads((pathlib.Path(__file__).resolve().parent.parent
+                        / "data/published_videos.json")
+                       .read_text(encoding="utf-8")))
+check("その日ページの名前は、記録に実在する名前だけ",
+      sorted({k for k, _ in ga.DAY_VIDEO_KINDS} - _rec
+             - set(hc.RETIRED)), [])
 # 畳んだ枠は、その日ページには残す(過去の動画へ辿れなくなるため)。
 # 毎日の一覧と健康診断からは外れているのが正しい。
 check("畳んだ枠が毎日の一覧に残っていない",

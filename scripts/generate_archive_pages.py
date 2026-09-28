@@ -163,9 +163,22 @@ DAY_VIDEO_KINDS = (
     ("morning_voices", "この日のコメント欄"),
     ("morning_local", "この日の現地での注目度"),
     ("morning_press", "この日の現地の報道"),
-    ("postseason", "この日の進出争い"),
-    ("longform", "この日の海外の反応（3分）"),
+    # 記録の名前は "morning_postseason"。"postseason" で引いていたため、
+    # 9/2から進出争いの動画が1本もこのページに載っていなかった。
+    # 見出しは時期で変わるので、動画の題から決める（_day_label）。
+    ("morning_postseason", "この日の進出争い"),
+    ("soccer_race", "この日の欧州サッカー順位争い"),
+    # 9/14から長編は「数字で」の回。海外の反応ではない。
+    ("longform", "この日の長編（3分）"),
 )
+
+
+def _day_label(kind: str, label: str, video: dict) -> str:
+    """時期で変わる見出し。**題に「進出争い」が無ければポストシーズン。**"""
+    if kind == "morning_postseason" and "進出争い" not in (
+            video.get("title") or "進出争い"):
+        return "この日のポストシーズン"
+    return label
 
 
 def load_published_videos(path: str = "data/published_videos.json") -> dict:
@@ -458,7 +471,7 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     for kind, label in DAY_VIDEO_KINDS:
         v = (videos.get(kind) or {}).get(archive_date)
         if v and v.get("video_id") and not is_scheduled(v):
-            day_videos.append((label, v))
+            day_videos.append((_day_label(kind, label, v), v))
 
     head = HEAD_TMPL.format(
         title=html.escape(f"{jp_date}の注目試合" +
