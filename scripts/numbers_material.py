@@ -368,7 +368,10 @@ def load(root: str = "data", today: date = None) -> dict:
     post = _fresh_read(base / "postseason.json", today)
     race = {"headline": post.get("headline") or "",
             "changes": (post.get("changes") or [])[:MAX_CHANGES],
-            "japanese": post.get("japanese") or []}
+            "japanese": post.get("japanese") or [],
+            # 確定後・PS中はシリーズで話す（順位表はもう動かない）
+            "phase": post.get("phase") or "regular",
+            "series": post.get("series") or []}
 
     soccer = {}
     for comp in (_fresh_read(base / "soccer_race.json", today)
@@ -383,6 +386,13 @@ def load(root: str = "data", today: date = None) -> dict:
     return {"date": recap.get("date_jst") or recap.get("date") or "",
             "players": players, "trends": trends, "shots": shots, "rare": rare,
             "race": race, "soccer": soccer}
+
+
+def _live_series(race: dict) -> list:
+    """まだ続いているシリーズと、昨日決着したシリーズ。"""
+    moved = {c.get("key") for c in (race.get("changes") or [])}
+    return [x for x in (race.get("series") or [])
+            if not x.get("over") or x.get("key") in moved]
 
 
 def has_enough(m: dict) -> bool:
@@ -493,7 +503,27 @@ def facts(m: dict) -> str:
                 out.append("  %s" % r["namesake"])
 
     race = m["race"]
-    if race.get("headline") or race.get("changes"):
+    if rw.is_settled(race) and (race.get("series") or race.get("changes")):
+        # **確定後は順位表の話をしない。**勝敗はシリーズの勝敗だけ。
+        import ps_series
+        out.append("")
+        out.append("## ポストシーズン")
+        out.append("※ レギュラーシーズンは終わっている。**シーズンの勝敗・"
+                   "マジック・進出争い・「今日終わったら」の話はしない。**"
+                   "勝敗はシリーズの勝敗（下のとおり）だけ。")
+        if race.get("headline"):
+            out.append("見出し: %s" % race["headline"])
+        for c in race["changes"]:
+            out.append("- %s" % (c.get("text") or ""))
+        said = {c.get("text") for c in race["changes"]}
+        mine = [ps_series.jp_text(x) for x in _live_series(race)
+                if any(t["players"] for t in x["teams"])]
+        mine = [t for t in mine if t and t not in said]   # 同じ文を2度渡さない
+        if mine:
+            out.append("日本人選手のいる球団のシリーズ:")
+            for t in mine[:6]:
+                out.append("- " + t)
+    elif race.get("headline") or race.get("changes"):
         out.append("")
         out.append("## 進出争い")
         if race.get("headline"):
@@ -550,11 +580,36 @@ def panels(m: dict) -> dict:
                              "note": r.get("note") or "",
                              "menu": "%sの%s" % (r["name"], r["stat"])}
 
-    rows = [{"name": j["team"], "value": rw.short(j)}
-            for j in (m["race"].get("japanese") or []) if j.get("team")]
-    if rows:
-        out["race"] = {"type": "group", "head": "進出争い",
-                       "rows": rows[:MAX_ROWS], "menu": "進出争いの現在地"}
+    if rw.is_settled(m["race"]):
+        rows = []
+        for x in _live_series(m["race"]):
+            for t in x["teams"]:
+                if not t["players"]:
+                    continue
+                opp = [o for o in x["teams"] if o is not t]
+                day = (x.get("next") or {}).get("day") or ""
+                # 始まる前は「0勝0敗」と出さない（スコアに見える）
+                val = ("%s 第1戦" % day if (x.get("waiting")
+                                              or not x["played"]) and day
+                       else "%d勝%d敗" % (t["wins"], opp[0]["wins"]) if opp
+                       else "")
+                rows.append({"name": t["name"], "value": val,
+                             "_n": len(t["players"])})
+        # 日本人選手の多い球団から（4行で切れてもドジャースが残る）
+        rows.sort(key=lambda r: -r["_n"])
+        for r in rows:
+            r.pop("_n")
+        if rows:
+            out["race"] = {"type": "group", "head": "ポストシーズン",
+                           "rows": rows[:MAX_ROWS],
+                           "menu": "日本人選手のいる球団のシリーズ"}
+    else:
+        rows = [{"name": j["team"], "value": rw.short(j)}
+                for j in (m["race"].get("japanese") or []) if j.get("team")]
+        if rows:
+            out["race"] = {"type": "group", "head": "進出争い",
+                           "rows": rows[:MAX_ROWS],
+                           "menu": "進出争いの現在地"}
 
     if m["soccer"]:
         c = m["soccer"]
@@ -587,6 +642,16 @@ def checkable(m: dict) -> dict:
     """
     out = {p["name"]: dict(p["numbers"]) for p in m["players"]
            if p["numbers"]}
+    if rw.is_settled(m["race"]):
+        # **照合もシリーズの勝敗で。**シーズンの「90勝」のままだと、
+        # 台本が正しく「カブスは1勝0敗」と言っても食い違いで止まる。
+        for x in _live_series(m["race"]):
+            if x.get("waiting") or len(x["teams"]) < 2:
+                continue
+            a, b = x["teams"][0], x["teams"][1]
+            out[a["name"]] = {"勝": a["wins"], "敗": b["wins"]}
+            out[b["name"]] = {"勝": b["wins"], "敗": a["wins"]}
+        return out
     for j in (m["race"].get("japanese") or []):
         if j.get("team") and j.get("w") is not None:
             row = {"勝": j["w"], "敗": j["l"]}
@@ -623,7 +688,8 @@ def outline(m: dict) -> str:
     if m["rare"]:
         bits.append("指標%d" % len(m["rare"]))
     if m["race"].get("changes"):
-        bits.append("進出争い%d件" % len(m["race"]["changes"]))
+        bits.append(("ポストシーズン%d件" if rw.is_settled(m["race"])
+                     else "進出争い%d件") % len(m["race"]["changes"]))
     if m["soccer"]:
         bits.append("サッカー%s" % (m["soccer"].get("name_jp") or ""))
     return "・".join(bits)

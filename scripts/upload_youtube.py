@@ -1438,11 +1438,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             # 名前を先に置くのは同じ（実測で再生2.8倍・登録は全部こちら）。
             # 数字の回は出場した選手を必ず拾えるので、名前が毎回入る。
             # 題に名前が無いことが長編のいちばんの弱さだった。
+            # 確定後は「進出争い」ではない（race_words.ps_label と同じ判断）
+            race = ("ポストシーズン" if _rw.is_settled(_postseason_data())
+                    else "進出争い")
             if jp:
                 title = (f"【MLB】{'・'.join(jp)}のきょう｜"
-                         f"成績と進出争い {date_label}")
+                         f"成績と{race} {date_label}")
             else:
-                title = f"【MLB】きょうの日本人選手と進出争い｜{date_label}"
+                title = f"【MLB】きょうの日本人選手と{race}｜{date_label}"
         elif jp:
             who = "・".join(jp)
             title = (f"【海外の反応】{who}への現地の声｜"
@@ -1690,15 +1693,20 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 中身と1文字も合っていないものを、公開した動画に付けていた。
         # 通常動画は検索から引かれるので、説明文はそのまま検索の材料。
         if longform_mode == "numbers":
+            settled = _rw.is_settled(_postseason_data())
             lines = [
-                "その日の日本人選手の成績、進出争いの動き、"
-                "名前のある指標での位置を、"
+                "その日の日本人選手の成績、"
+                + ("ポストシーズンのシリーズの勝敗、" if settled
+                   else "進出争いの動き、")
+                + "名前のある指標での位置を、"
                 "ずんだもんと四国めたんが数字で追います。",
                 "",
                 "・成績と順位はMLB公式データ（statsapi.mlb.com）"
                 "から引いたものだけを使っています",
                 "・打球の飛距離と速度はBaseball Savant（Statcast）の計測値です",
-                "・進出争いは、圏内か圏外かまで言葉で書いています",
+                ("・シリーズの勝敗は、どちらの球団から見た数字かまで書いています"
+                 if settled else
+                 "・進出争いは、圏内か圏外かまで言葉で書いています"),
                 "・**予想はしません。**記録として確定していることだけを話します",
                 "",
             ]
@@ -1799,7 +1807,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 検索から引かれるための言葉。フィードが無いぶん、ここが効く。
         # **中身に無い言葉は入れない。**数字の回に「海外の反応」を
         # 付けると、その語で来た人が違うものを見ることになる。
-        tags += (["MLB 成績", "日本人選手", "進出争い", "解説"]
+        tags += (["MLB 成績", "日本人選手",
+                  ("ポストシーズン" if _rw.is_settled(_postseason_data())
+                   else "進出争い"), "解説"]
                  if longform_mode == "numbers"
                  else ["海外の反応", "MLB 海外の反応", "コメント欄", "解説"])
     else:

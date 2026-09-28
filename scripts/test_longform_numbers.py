@@ -183,4 +183,37 @@ check("めたんの行は見ない",
       gd.voice_slips([_seg("めたん", "そうね。")]), [])
 check("空の行で落ちない", gd.voice_slips([_seg("ずんだもん", "")]), [])
 
+section("ポストシーズンに入ったら（固定の材料）")
+_ser = [{"key": "F:112-135", "round": "F", "round_jp": "ワイルドカードシリーズ",
+         "stage": 1, "league_jp": "ナ・リーグ", "best_of": 3, "need": 2,
+         "played": 1, "over": False, "winner": None,
+         "next": {"day": "10月1日", "game": 2},
+         "teams": [{"id": 112, "name": "カブス", "wins": 1,
+                    "players": ["今永昇太", "鈴木誠也"]},
+                   {"id": 135, "name": "パドレス", "wins": 0,
+                    "players": ["松井裕樹"]}]},
+        {"key": "D:119-wait", "round": "D", "round_jp": "地区シリーズ",
+         "stage": 2, "waiting": True, "league_jp": "ナ・リーグ", "best_of": 5,
+         "need": 3, "played": 0, "over": False, "winner": None,
+         "next": {"day": "10月4日", "game": 1},
+         "teams": [{"id": 119, "name": "ドジャース", "wins": 0,
+                    "players": ["大谷翔平", "山本由伸", "佐々木朗希"]}]}]
+psm = nm.load(str(HERE / "no-such-dir"))
+psm["race"] = {"headline": "", "changes": [], "japanese": [
+    {"team": "カブス", "w": 90, "l": 72, "route": "ワイルドカード",
+     "players": ["今永昇太"]}], "phase": "postseason", "series": _ser}
+pf = nm.facts(psm)
+has("見出しはポストシーズン", pf, "## ポストシーズン")
+hasnt("進出争いと呼ばない", pf.split("## ポストシーズン")[1], "## 進出争い")
+has("シーズンの話をしないと明記", pf, "「今日終わったら」の話はしない")
+has("日本人選手の球団の側から", pf, "今永昇太・鈴木誠也のカブスは")
+check("照合はシリーズの勝敗（シーズンの90勝ではない）",
+      nm.checkable(psm).get("カブス"), {"勝": 1, "敗": 0})
+check("相手待ちは照合に入れない", "ドジャース" in nm.checkable(psm), False)
+_rows = nm.panels(psm)["race"]["rows"]
+check("札は日本人選手の多い球団から", _rows[0]["name"], "ドジャース")
+check("始まる前は日付", _rows[0]["value"], "10月4日 第1戦")
+check("始まったら勝敗", [r["value"] for r in _rows if r["name"] == "カブス"],
+      ["1勝0敗"])
+
 sys.exit(done())
