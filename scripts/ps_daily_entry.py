@@ -57,7 +57,7 @@ def main():
             if args.stage == 'video':
                 ps.movie(program, option(rest, '--audio-dir', 'build/audio'), option(rest, '--out', 'build/video'))
             elif args.stage in ('thumbnail', 'cover'):
-                image, _ = ps.render(program['segments'][0]['meta']['card'])
+                image, _ = ps.render_segment(program['segments'][0])
                 path = Path(option(rest, '--out', 'build/video/short.png'))
                 path.parent.mkdir(parents=True, exist_ok=True); image.save(path)
             else:

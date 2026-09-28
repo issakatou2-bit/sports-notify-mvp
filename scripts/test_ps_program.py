@@ -161,5 +161,25 @@ class ProgramTests(unittest.TestCase):
         self.assertIn('進行中',str(result))
         self.assertIn('結果はまだ含めていません',str(result))
 
+    def test_spoken_time_presenter_and_briefing_motion(self):
+        self.assertEqual(p.spoken_clock('06:00'),'6時')
+        self.assertEqual(p.spoken_start('09/30 06:05'),'9月30日6時5分')
+        snap,ev,now=fixture()
+        pr=p.prepare(snap,ev,'situation',now)
+        for seg in pr['segments']:
+            image,manifest,foreground=p.render_segment(seg,layers=True)
+            expected='left' if seg['speaker']==3 else 'right'
+            self.assertEqual(manifest['presenters'][0]['side'],expected)
+            prepared=p.motion.prepare(foreground,seg['meta']['card'])
+            early=p.motion.frame(prepared,0.1)
+            settled=p.motion.frame(prepared,2)
+            later=p.motion.frame(prepared,6)
+            self.assertNotEqual(early.tobytes(),settled.tobytes())
+            self.assertNotEqual(settled.tobytes(),later.tobytes())
+            # All foreground bands must exactly settle; only the background moves.
+            base=p.motion.background(seconds=2);base.paste(foreground,(0,0),foreground)
+            self.assertEqual(settled.tobytes(),base.tobytes())
+            self.assertEqual(image.size,early.size)
+
 
 if __name__=='__main__':unittest.main(argv=[__file__])

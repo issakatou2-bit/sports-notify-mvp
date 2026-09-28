@@ -272,7 +272,7 @@ def main():
             program.upload(program.read(stored), [x for x in sys.argv[1:] if x != '--upload'])
         elif args.thumbnail_out:
             current = program.read(stored)
-            image, _ = program.render(current['segments'][0]['meta']['card'])
+            image, _ = program.render_segment(current['segments'][0])
             path = Path(args.thumbnail_out); path.parent.mkdir(parents=True, exist_ok=True); image.save(path)
         elif args.narration_out:
             from datetime import timezone

@@ -19,6 +19,7 @@ from ps_daily_titles import ROUND, forecast_title, situation
 import ps_editorial as pe
 import ps_series as series
 import video_common as vc
+import ps_motion_template as motion
 
 JST = timezone(timedelta(hours=9))
 ROOT = Path(__file__).resolve().parent.parent
@@ -87,6 +88,23 @@ def segment(card, text, ids=(), speaker=2):
                 meta=dict(card=card, game_ids=list(ids)))
 
 
+def spoken_clock(value):
+    hour,minute=map(int,value.split(':'))
+    return f'{hour}時' + (f'{minute}分' if minute else '')
+
+
+def spoken_start(value):
+    day,clock=value.split()
+    month,date=map(int,day.split('/'))
+    return f'{month}月{date}日' + spoken_clock(clock)
+
+
+def render_segment(seg,layers=False):
+    side={2:'right',3:'left'}.get(seg['speaker'])
+    if side is None:raise ValueError('画面素材のない話者です')
+    return render(seg['meta']['card'],presenters=side,layers=layers)
+
+
 def forecast(ctx, games, rows, now):
     target = (now.astimezone(JST).date() + timedelta(days=1)).isoformat()
     by = {row['key']: row for row in rows if row.get('teams')}
@@ -146,7 +164,7 @@ def forecast(ctx, games, rows, now):
                            dict(label=c['away'], value=f'{c["away_wins"]}勝'),
                            dict(label='日本時間の開始予定', value=c['when'])])
         speech = (f'{c["home"]}対{c["away"]}は{rnd}第{c["game_number"]}戦。'
-                  f'ここまで{c["home_wins"]}勝対{c["away_wins"]}勝。日本時間{c["when"].replace(":", "時")}分の予定です。{note}です。')
+                  f'ここまで{c["home_wins"]}勝対{c["away_wins"]}勝。日本時間{spoken_clock(c["when"])}の予定です。{note}です。')
         pages.append(segment(card, speech, [c['game_id']]))
     return dict(title=title, segments=pages, game_ids=[c['game_id'] for c in cards],
                 phase='forecast', target_day=target,
@@ -171,7 +189,7 @@ def intro(ctx, now):
         card = dict(common(ctx, 'WCSカード紹介'), layout='facts', headline=m['home']['name'] + '\n対' + m['away']['name'],
                     subhead='ワイルドカード第1戦', items=[dict(label='初戦 / 日本時間', value=m['first_game']['label']),
                     dict(label='勝者の地区シリーズの相手', value=m['bye']['name']), dict(label='シリーズの決着', value='2勝先取')])
-        speech = (f'{m["home"]["name"]}対{m["away"]["name"]}。初戦は日本時間{m["first_game"]["label"].replace("/", "月").replace(" ", "日").replace(":", "時")}分です。'
+        speech = (f'{m["home"]["name"]}対{m["away"]["name"]}。初戦は日本時間{spoken_start(m["first_game"]["label"])}です。'
                   f'勝者は地区シリーズで{m["bye"]["name"]}と対戦します。まずは先発がどこまで投げ、どの場面で継投するかに注目です。')
         pages.append(segment(card, speech, [m['game_pk']]))
     return dict(title='WCS' + name + '2カード紹介｜' + '／'.join(m['home']['name'] + '対' + m['away']['name'] for m in selected),
@@ -238,7 +256,7 @@ def verify_next_games(rows, games):
         nxt['live'] = game.get('status', {}).get('abstractGameState') == 'Live'
         if not game.get('status', {}).get('startTimeTBD', True):
             start = datetime.fromisoformat(game['gameDate'].replace('Z', '+00:00')).astimezone(JST)
-            nxt['verified_label'] = f'日本時間{start.month}月{start.day}日{start.hour}時{start.minute:02d}分'
+            nxt['verified_label'] = f'日本時間{start.month}月{start.day}日' + spoken_clock(start.strftime('%H:%M'))
 
 
 def prepare(snapshot, evidence, slot, now, ledger=None):
@@ -291,7 +309,8 @@ def check_program(program):
         raise ValueError('素材と全画面の試合IDが一致しません')
     manifests = []
     for s in program['segments']:
-        _, manifest = render(s['meta']['card'])
+        _, manifest = render_segment(s)
+        manifest['speaker']=s['speaker']
         manifests.append(manifest)
     return dict(version=VERSION, edition_key=program['edition_key'], material_sha256=program['material_sha256'],
                 expected_game_ids=program['game_ids'], represented_game_ids=sorted(found), rendered=manifests,
@@ -325,17 +344,18 @@ def movie(program, audio_dir, out):
            '-shortest', '-movflags', '+faststart', str(path)]
     with subprocess.Popen(cmd, stdin=subprocess.PIPE) as proc:
         for i, (seg, duration) in enumerate(zip(program['segments'], durations)):
-            image, _ = render(seg['meta']['card'])
+            image, _, foreground = render_segment(seg,layers=True)
             image.save(out / f'ps_{i:02d}.png')
             if i == 0:
                 image.save(out / ('short.png' if program['kind'] == 'daily' else 'short_postseason.png'))
-            frame = image.tobytes()
-            for _ in range(round(duration * 30)):
-                proc.stdin.write(frame)
+            prepared=motion.prepare(foreground,seg['meta']['card'])
+            for n in range(round(duration * 30)):
+                proc.stdin.write(motion.frame(prepared,n/30).tobytes())
         proc.stdin.close()
         if proc.wait():
             raise ValueError('PS動画の書き出しに失敗')
-    check.update(video=str(path), expected_segments=len(audio), durations=durations)
+    check.update(video=str(path), expected_segments=len(audio), durations=durations,
+                 motion='sequential-left-entry / subtle-background-drift')
     write(out / 'ps_program_gate.json', check)
 
 

@@ -1,5 +1,5 @@
 """Data-bound channel templates. Draft renderer, with no upload capability."""
-import argparse, json, copy
+import argparse, json, copy, math
 from functools import lru_cache
 from io import BytesIO
 from pathlib import Path
@@ -33,18 +33,22 @@ def paginate(card):
 def overlaps(a,b):
     return a[0]<b[2] and a[2]>b[0] and a[1]<b[3] and a[3]>b[1]
 
-def render(card,presenters=None,style='stadium'):
+def background(style='stadium',seconds=0):
+    t=TOKENS[style];im=Image.new('RGB',(1080,1920),t['bg']);d=ImageDraw.Draw(im)
+    drift=round(9*math.sin(seconds/6))
+    for r in (340,430,520):d.arc((680-r+drift,140-r,680+r+drift,140+r),10,155,fill=t['line'],width=2)
+    d.polygon([(540,1520),(800,1750),(540,1890),(280,1750)],outline=t['line'],width=2)
+    return im
+
+def render(card,presenters=None,style='stadium',layers=False):
     if presenters is None:presenters=THEME['presenter']['default']
     if presenters not in ('none','left','right','both'):raise ValueError('Unsupported presenter placement')
-    t=TOKENS[style];im=Image.new('RGB',(1080,1920),t['bg']);d=ImageDraw.Draw(im);trace=[]
+    t=TOKENS[style];im=Image.new('RGBA',(1080,1920),(0,0,0,0));d=ImageDraw.Draw(im);trace=[]
     def put(x,y,value,size=48,width=864,role='important',color=None,latin=False):
         box=text(d,(x,y),str(value),size,color or t['ink'],width=width,latin=latin,minimum=40 if role=='important' else 24)
         trace.append({'text':str(value),'box':list(box),'role':role})
         if role=='important' and (box[0]<72 or box[2]>936 or box[1]<210 or box[3]>1280):
             raise ValueError('Important text outside the reserved area: '+str(value))
-    # Shared physical motifs; content remains the most prominent layer.
-    for r in (340,430,520):d.arc((680-r,140-r,680+r,140+r),10,155,fill=t['line'],width=2)
-    d.polygon([(540,1520),(800,1750),(540,1890),(280,1750)],outline=t['line'],width=2)
     put(72,65,'コレスポ',44,role='brand')
     badge=card.get('sport','MLB')+' / '+card.get('label','')
     put(354,90,badge,26,role='brand',color=t['muted'],latin=badge.isascii())
@@ -103,8 +107,10 @@ def render(card,presenters=None,style='stadium'):
         y=im.height-sprite.height;box=(x,y,x+sprite.width,y+sprite.height)
         for row in trace:
             if row['role']=='important' and overlaps(box,row['box']):raise ValueError('Presenter covers content')
-        im.paste(sprite,(x,y),sprite);avatars.append({'side':side,'box':box,'asset':path})
-    return im,{'theme_version':THEME['version'],'card':card,'text':trace,'presenters':avatars,'public':False}
+        im.alpha_composite(sprite,(x,y));avatars.append({'side':side,'box':box,'asset':path})
+    result=background(style);result.paste(im,(0,0),im)
+    manifest={'theme_version':THEME['version'],'card':card,'text':trace,'presenters':avatars,'public':False}
+    return (result,manifest,im) if layers else (result,manifest)
 
 def ps_cards(snapshot):
     ctx=snapshot['editorial']
