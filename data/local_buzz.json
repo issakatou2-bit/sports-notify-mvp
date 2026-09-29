@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-28T08:00:26.193167+00:00",
+  "updated_at": "2026-09-29T06:02:05.088942+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,70 +13,75 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 4,
-      "tone": "好調",
-      "gist": "フィリーズ5年連続でポストシーズン進出を決定"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 3,
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
+      "mentions": 5,
       "tone": "話題",
-      "gist": "Rick Rizzs41シーズンの解説者生活に幕"
-    },
-    {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "レンジャーズ最終日にプレーオフ進出ならず"
+      "gist": "アストロズはブルペンゲームを実施、MVP候補アルバレスがワー"
     },
     {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
+      "mentions": 5,
+      "tone": "話題",
+      "gist": "レッドソックスはヤンキース戦WCシリーズ、Tolleが先発、"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ホワイトソックスはアストロズ戦WCシリーズでブルペンゲームT"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "フィリーズはブレーブス戦NLWCシリーズ、Luzardoが先"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ヤンキースはレッドソックス戦AL WCシリーズ開始"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "パドレスはカブス戦NL WCシリーズ、放映にKershawが"
+    },
+    {
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "タイガースのスタジアム設備不備で選手が負傷、訴訟に発展"
+    },
+    {
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
       "mentions": 2,
       "tone": "話題",
-      "gist": "レッドソックス本拠地での試合がタンパにて開催"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "ドジャーズ100勝で優勝、エンゼルス同地区で100敗"
-    },
-    {
-      "team_id": "146",
-      "name": "マーリンズ",
-      "name_en": "Miami Marlins",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "マーリンズティールユニ着用時11勝3敗"
-    },
-    {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "Rick Rizzs引退試合はエンゼルス100敗時"
-    },
-    {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 2,
-      "gist": "アストロズ8度目AL西地区制覇を決定"
+      "gist": "ブレーブスはフィリーズ戦NL WCシリーズ開始"
     }
   ],
   "players": [
+    {
+      "name": "村上宗隆",
+      "mentions": 2
+    },
     {
       "name": "大谷翔平",
       "mentions": 1

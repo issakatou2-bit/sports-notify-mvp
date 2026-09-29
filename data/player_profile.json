@@ -1,111 +1,108 @@
 {
-  "generated_at": "2026-09-28T07:59:40.218267+00:00",
-  "date_jst": "2026-09-28",
-  "name": "Andrés Chaparro",
-  "player_id": "665953",
-  "team": "ナショナルズ",
+  "generated_at": "2026-09-29T06:01:06.398195+00:00",
+  "date_jst": "2026-09-29",
+  "name": "Jonny DeLuca",
+  "player_id": "676356",
+  "team": "レイズ",
   "group": "hitting",
   "why": "2026-09-28のMLBで最も活躍",
-  "headline": "4打数3安打　2本塁打　2打点",
-  "score": 166,
+  "headline": "4打数2安打　2本塁打　2打点",
+  "score": 157,
   "bio": {
-    "name_en": "Andrés Chaparro",
-    "age": 27,
-    "birth_city": "El Vigia",
-    "birth_state": null,
-    "birth_country": "Venezuela",
-    "birth_date": "1999-05-04",
-    "debut": "2024-08-13",
-    "draft_year": null,
+    "name_en": "Jonny DeLuca",
+    "age": 28,
+    "birth_city": "Thousand Oaks",
+    "birth_state": "CA",
+    "birth_country": "USA",
+    "birth_date": "1998-07-10",
+    "debut": "2023-06-07",
+    "draft_year": 2019,
     "bats": "Right",
     "throws": "Right",
-    "number": "87",
-    "position": "First Base",
+    "number": "21",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "6' 0\"",
-    "weight": 200
+    "height": "5' 10\"",
+    "weight": 195
   },
   "teams": [
     {
-      "team": "ナショナルズ",
+      "team": "ドジャース",
+      "from": 2023,
+      "to": 2023
+    },
+    {
+      "team": "レイズ",
       "from": 2024,
       "to": 2026
     }
   ],
   "career": {
-    "games": 150,
-    "avg": ".236",
-    "hr": 18,
-    "rbi": 59,
-    "ops": ".766",
-    "sb": 1,
-    "hits": 91
+    "games": 263,
+    "avg": ".250",
+    "hr": 19,
+    "rbi": 91,
+    "ops": ".684",
+    "sb": 40,
+    "hits": 195
   },
   "this_season": {
-    "games": 83,
-    "avg": ".268",
-    "hr": 13,
-    "rbi": 39,
-    "ops": ".894",
-    "sb": 0,
-    "hits": 53
+    "games": 112,
+    "avg": ".266",
+    "hr": 11,
+    "rbi": 50,
+    "ops": ".729",
+    "sb": 17,
+    "hits": 93
   },
   "last_season": {
-    "games": 34,
-    "avg": ".182",
-    "hr": 1,
-    "rbi": 5,
-    "ops": ".505",
-    "sb": 0,
-    "hits": 12
+    "games": 20,
+    "avg": ".333",
+    "hr": 0,
+    "rbi": 4,
+    "ops": ".812",
+    "sb": 6,
+    "hits": 19
   },
   "recent": [
     {
       "date": "2026-09-27",
-      "line": "4打数3安打 2本塁打 2打点",
-      "opponent": "New York Mets"
+      "line": "4打数2安打 2本塁打 2打点",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-26",
+      "line": "4打数1安打",
+      "opponent": "Philadelphia Phillies"
     },
     {
       "date": "2026-09-25",
+      "line": "4打数1安打 1打点",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-24",
       "line": "3打数1安打",
-      "opponent": "New York Mets"
+      "opponent": "New York Yankees"
     },
     {
       "date": "2026-09-23",
-      "line": "4打数1安打",
-      "opponent": "Detroit Tigers"
-    },
-    {
-      "date": "2026-09-22",
-      "line": "4打数1安打",
-      "opponent": "Detroit Tigers"
-    },
-    {
-      "date": "2026-09-20",
-      "line": "2打数0安打",
-      "opponent": "St. Louis Cardinals"
+      "line": "4打数3安打 1打点",
+      "opponent": "New York Yankees"
     }
   ],
   "awards": [
     {
-      "season": "2025",
-      "name": "INT Player of the Week"
-    },
-    {
-      "season": "2024",
-      "name": "Baseball America Triple-A All-Star"
-    },
-    {
-      "season": "2024",
-      "name": "PCL Player of the Week"
-    },
-    {
-      "season": "2023",
-      "name": "VWL Rookie of the Year"
-    },
-    {
       "season": "2023",
       "name": "MiLB.com Organization All-Star"
+    },
+    {
+      "season": "2022",
+      "name": "MID Player of the Week"
+    },
+    {
+      "season": "2021",
+      "name": "CAL Player of the Week"
     }
   ],
   "quotes": []
