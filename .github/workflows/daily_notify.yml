@@ -328,12 +328,17 @@ jobs:
             --audio-dir build/audio \
             --store podcast \
             --public public/podcast \
-            --games notable_games.json
+            --games notable_games.json \
+            --narration public/narration.json
 
       # ポッドキャストのmp3をpublic/へ出した後に、Pagesへ渡す。
       # 順序が逆だと、その日のエピソードが公開されない。
       - name: Preserve published corrections
-        run: python scripts/apply_content_corrections.py --site public
+        run: |
+          python scripts/apply_content_corrections.py --site public
+          if [ -f public/podcast/feed.xml ]; then
+            python scripts/refresh_podcast_metadata.py --feed public/podcast/feed.xml
+          fi
 
       - name: Upload Pages artifact
         if: steps.standings.outcome == 'success' && steps.archive.outcome == 'success'

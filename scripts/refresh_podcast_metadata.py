@@ -1,6 +1,7 @@
 """公開済みRSSの番組紹介を更新する。音声・回のID・配信日時は維持する。"""
 
 import argparse
+import json
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -11,7 +12,10 @@ ET.register_namespace("itunes", ITUNES)
 ET.register_namespace("content", "http://purl.org/rss/1.0/modules/content/")
 
 
-def refresh_metadata(path: Path) -> None:
+CORRECTIONS = Path("content/corrections/podcast-metadata.json")
+
+
+def refresh_metadata(path: Path, corrections: Path = CORRECTIONS) -> None:
     tree = ET.parse(path)
     root = tree.getroot()
     channels = root.findall("channel")
@@ -32,6 +36,19 @@ def refresh_metadata(path: Path) -> None:
     for description in channel.findall("item/description"):
         if description.text == LEGACY_DESCRIPTION:
             description.text = DESCRIPTION
+    # 同じ回の説明だけを直す。GUID・日時・音声URLを変えて再配信しない。
+    catalog = json.loads(corrections.read_text(encoding="utf-8")) if corrections.exists() else []
+    for correction in catalog:
+        matches = [item for item in channel.findall("item")
+                   if item.findtext("guid") == correction["guid"]]
+        if len(matches) > 1:
+            raise ValueError("Podcastの補正対象が重複しています")
+        if not matches:
+            continue  # 保存期限を過ぎた回は復活させない。
+        descriptions = matches[0].findall("description")
+        if len(descriptions) != 1 or not correction["description"].strip():
+            raise ValueError("Podcastの補正説明を一意に確認できません")
+        descriptions[0].text = correction["description"]
     # 検証を通ったものだけ置き換え、失敗時は取得済みの原本を残す。
     temporary = path.with_suffix(path.suffix + ".tmp")
     try:
