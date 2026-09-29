@@ -4148,6 +4148,8 @@ def main():
                         help="音声が作れなければ動画を作らずに終わる")
     parser.add_argument("--out", default="build/morning")
     args = parser.parse_args()
+    if args.narration_out:
+        pathlib.Path(args.narration_out).unlink(missing_ok=True)
 
     # 「今日の1人」は他の枠と材料が違うので、ここで分岐して先に処理する。
     # 前夜の出場に依存しないため、成績データが無い日でも作れる。
@@ -4156,9 +4158,17 @@ def main():
 
     path = pathlib.Path(args.recap)
     if not path.exists():
-        print(f"[info] {path} が無いため、夕方のショートは作りません")
-        return
-    data = json.loads(path.read_text(encoding="utf-8"))
+        data = {}
+    else:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    import recap_freshness
+    if args.mode == "players":
+        data = recap_freshness.read_for_edition(data)
+    else:
+        # コメント・報道・サッカーは当日の成績の有無に巻き込まない。
+        # 古い成績を混ぜず、各枠の独立した材料とその日付を使う。
+        data = recap_freshness.read_for_edition(data) or {"players": []}
+        data["date_jst"] = recap_freshness.current_day().isoformat()
     # 並べ替えはここで一度だけ行う。
     # build_narration の中だけで並べ替えていたとき、原稿は貢献度順なのに
     # 画面は元の順のままで、「1位 34点、3位 44点」と食い違った。
@@ -4166,7 +4176,7 @@ def main():
     # 原稿と画面が同じリストを見るようにする。
     players = sort_players(data.get("players") or [])
     data["players"] = players
-    if not players:
+    if not players and args.mode == "players":
         print("[info] 出場した日本人選手がいないため作りません")
         return
 
