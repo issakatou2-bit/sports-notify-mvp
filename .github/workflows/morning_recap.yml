@@ -129,8 +129,10 @@ jobs:
         run: bash scripts/install_video_tools.sh
 
       # 出場した選手が1人もいない日(オールスター休みなど)は、
-      # ここでファイルが更新されず、以降のステップが自然に何も作らない
+      # 当日の空材料へ更新する。取得失敗も記録し、独立した枠は続ける。
       - name: Fetch last night's results
+        id: recap_results
+        continue-on-error: true
         run: python scripts/morning_recap.py --out data/morning_recap.json
 
       # 本塁打の飛距離と打球速度。
@@ -291,6 +293,10 @@ jobs:
           # 1本だけ落ちた日に、成功した分まで上げ直すと重複するため。
           MODES="${{ inputs.modes }}"
           CLAIM_FAILED=0
+          if [ "${{ steps.recap_results.outcome }}" != "success" ]; then
+            echo "::error::成績取得に失敗。成績の回を止め、独立した枠は続行します"
+            CLAIM_FAILED=1
+          fi
           TIKTOK_FAILED=0
           for mode in ${MODES:-players postseason voices press}; do
             echo "::group::$mode"

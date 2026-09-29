@@ -34,6 +34,7 @@ if str(HERE) not in sys.path:
 
 import morning_recap as mr  # noqa: E402
 import race_words as rw  # noqa: E402
+import recap_freshness as rf  # noqa: E402
 
 try:
     import statcast as sc
@@ -106,12 +107,12 @@ def fresh(data: dict, today: date = None, days: int = MAX_AGE_DAYS,
     return False
 
 
-def _fresh_read(path, today: date, *keys: str) -> dict:
+def _fresh_read(path, today: date, *keys: str, days=MAX_AGE_DAYS) -> dict:
     """新しければそのまま、古ければ空。何を落としたかは言う。"""
     data = _read(path)
     if not data:
         return {}
-    if fresh(data, today, MAX_AGE_DAYS, *keys):
+    if fresh(data, today, days, *keys):
         return data
     print("[info] %s が古いので使いません（%s）"
           % (pathlib.Path(path).name,
@@ -265,8 +266,8 @@ def load(root: str = "data", today: date = None) -> dict:
     止まった材料で毎日同じ動画を作り続けることになる。
     """
     base = pathlib.Path(root)
-    today = today or date.today()
-    recap = _fresh_read(base / "morning_recap.json", today)
+    today = today or rf.current_day()
+    recap = rf.read_for_edition(_read(base / "morning_recap.json"), today)
     # **その日「何かした」選手だけを渡す。**
     #
     # 出場した順に上から4人を渡していたので、4打数1安打の選手が
@@ -328,8 +329,9 @@ def load(root: str = "data", today: date = None) -> dict:
 
     # 打球は {名前: [本塁打, ...]}。言い方は statcast.phrase に任せる。
     shots = []
-    for name, hits in (_fresh_read(base / "statcast.json", today)
-                       .get("japanese") or {}).items():
+    tracking = _read(base / "statcast.json")
+    tracked = (tracking.get("japanese") or {}) if recap and tracking.get("date") == recap.get("date") else {}
+    for name, hits in tracked.items():
         text = sc.phrase(hits) if sc else ""
         if text:
             shots.append({"name": name, "text": text})
@@ -383,7 +385,7 @@ def load(root: str = "data", today: date = None) -> dict:
         except Exception as e:                       # noqa: BLE001
             print("[info] 切り口ごとの成績を取れません(%s)" % e)
 
-    post = _fresh_read(base / "postseason.json", today)
+    post = _fresh_read(base / "postseason.json", today, days=0)
     race = {"headline": post.get("headline") or "",
             "changes": (post.get("changes") or [])[:MAX_CHANGES],
             "japanese": post.get("japanese") or [],
