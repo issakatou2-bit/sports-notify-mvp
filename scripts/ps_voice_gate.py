@@ -21,7 +21,7 @@ def main():
     rounds=[]
     # VOICEVOX kana represents long vowels as ア/イ/オ as well as ー.
     for abbreviation, expected in (('WCS',r'ワイルドカ[ーア]ドシリ[ーイ]ズ'), ('DS',r'チクシリ[ーイ]ズ'),
-                                   ('LCS',r'リ[ーイ]グユ[ウー]ショ[ウオー]ケッテ[イー]シリ[ーイ]ズ'),
+                                   ('LCS',r'リ[ーイ]グユ[ウー]ショ[ウオー]ケッテ[イエー]シリ[ーイ]ズ'),
                                    ('WS',r'ワ[ーア]ルドシリ[ーイ]ズ')):
         spoken=apply_readings(abbreviation+'第1戦です。')
         reply=requests.post('http://127.0.0.1:50021/audio_query',
