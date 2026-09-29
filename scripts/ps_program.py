@@ -397,7 +397,9 @@ def check_program(program):
 
 
 def script(program):
-    return dict(title=program['title'], date_jst=program['date_jst'], segments=program['segments'],
+    target=program.get('target_day',program['date_jst'])
+    return dict(title=program['title'], date_jst=target,
+                date_label=datetime.fromisoformat(target).strftime('%m/%d'), segments=program['segments'],
                 source_url=program['source_url'], ps_program=program)
 
 
