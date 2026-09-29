@@ -21,10 +21,16 @@ def font(size,latin=False,serif=False):
 
 def text(draw,xy,value,size,color,width=None,latin=False,serif=False,minimum=24):
     f=font(size,latin,serif)
+    bounds=draw.textbbox((0,0),value,font=f)
     if width:
-        while draw.textbbox((0,0),value,font=f)[2]>width and size>minimum:
+        while bounds[2]-bounds[0]>width and size>minimum:
             size-=1;f=font(size,latin,serif)
-        if draw.textbbox((0,0),value,font=f)[2]>width:
+            bounds=draw.textbbox((0,0),value,font=f)
+        if bounds[2]-bounds[0]>width:
             raise ValueError('Text needs another line/page, do not squeeze it: '+value)
-    draw.text(xy,value,font=f,fill=color)
-    return draw.textbbox(xy,value,font=f)
+    # xy marks the ink's left edge. Noto CJK gives some Latin capitals a
+    # negative bearing (e.g. AJ), even when the full name fits the row.
+    # Align the measured glyphs; retain the existing font size and safety gate.
+    position=(xy[0]-bounds[0],xy[1])
+    draw.text(position,value,font=f,fill=color)
+    return draw.textbbox(position,value,font=f)
