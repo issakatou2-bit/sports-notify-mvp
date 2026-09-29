@@ -38,6 +38,35 @@ def fixture(day=28):
 
 
 class ProgramTests(unittest.TestCase):
+    def test_spoken_rounds_preserve_team_abbreviations_and_display(self):
+        from notability_engine import apply_readings
+        from ps_render_template import overlaps
+        import synthesize_narration as synth
+        source='WCS第1戦。DS・LCS・WS。ALDS / NLDS / ALCS / NLCS。CWSとWSH。'
+        spoken=apply_readings(source)
+        self.assertIn('ワイルドカードシリーズ第1戦',spoken)
+        self.assertIn('地区シリーズ・リーグ優勝決定シリーズ・ワールドシリーズ',spoken)
+        self.assertIn('ア・リーグ地区シリーズ / ナ・リーグ地区シリーズ',spoken)
+        self.assertIn('ア・リーグ優勝決定シリーズ / ナ・リーグ優勝決定シリーズ',spoken)
+        self.assertIn('CWSとWSH',spoken)
+        self.assertEqual(apply_readings('NEWS lowercase ws CWCS'), 'NEWS lowercase ws CWCS')
+        reply=mock.Mock();reply.json.return_value={};reply.content=b'audio'
+        with mock.patch.object(synth.requests,'post',return_value=reply) as post:
+            self.assertTrue(synth.synth_one(source,2,mock.Mock()))
+            self.assertEqual(post.call_args_list[0].kwargs['params']['text'],spoken)
+        snap,ev,now=fixture(29)
+        program=p.prepare(snap,ev,'forecast',now)
+        card=program['segments'][1]['meta']['card']
+        self.assertEqual(card['round_game'],'WCS 第1戦')
+        _, manifest=p.render_segment(program['segments'][1])
+        text=[row['text'] for row in manifest['text']]
+        self.assertIn('1/4',text)
+        self.assertNotIn('カード',text)
+        self.assertIn('WCS 第1戦',text)
+        page=next(row for row in manifest['text'] if row['text']=='1/4')
+        nth=next(row for row in manifest['text'] if row['text']=='WCS 第1戦')
+        self.assertFalse(overlaps(page['box'],nth['box']))
+
     def test_forecast_exposes_game_day_to_existing_publication_gate(self):
         import mlb_availability
         snap,ev,now=fixture(29)

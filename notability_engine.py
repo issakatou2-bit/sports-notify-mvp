@@ -25,6 +25,7 @@
 """
 
 import json
+import re
 import pathlib
 import argparse
 import time
@@ -1556,6 +1557,18 @@ MLB_NAME_READINGS = {
 }
 
 
+PS_ROUND_READINGS = {
+    "WCS": "ワイルドカードシリーズ",
+    "DS": "地区シリーズ", "LCS": "リーグ優勝決定シリーズ", "WS": "ワールドシリーズ",
+    "ALDS": "ア・リーグ地区シリーズ", "NLDS": "ナ・リーグ地区シリーズ",
+    "ALCS": "ア・リーグ優勝決定シリーズ", "NLCS": "ナ・リーグ優勝決定シリーズ",
+}
+_PS_ROUND_PATTERN = re.compile(
+    r"(?<![A-Za-z0-9_])(" + "|".join(sorted(PS_ROUND_READINGS, key=len, reverse=True))
+    + r")(?![A-Za-z0-9_])"
+)
+
+
 def apply_readings(text: str) -> str:
     """
     音声合成へ渡す直前に、選手名を読み仮名へ置き換える。
@@ -1567,7 +1580,9 @@ def apply_readings(text: str) -> str:
         return text
     for kanji in sorted(JP_PLAYER_READINGS, key=len, reverse=True):
         text = text.replace(kanji, JP_PLAYER_READINGS[kanji])
-    return text
+    # Only speech changes: preserve WCS/WS in cards, captions, titles and ledgers.
+    # ASCII boundaries avoid corrupting team abbreviations such as CWS/WSH.
+    return _PS_ROUND_PATTERN.sub(lambda match: PS_ROUND_READINGS[match[0]], text)
 
 
 # 全米的に注目度・話題性が高いとされる伝統的な人気球団(市場規模・ファン数などが根拠)

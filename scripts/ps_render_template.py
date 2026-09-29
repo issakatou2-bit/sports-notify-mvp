@@ -57,7 +57,6 @@ def render(card,presenters=None,style='stadium',layers=False):
         index,total=card['card_index'],card.get('card_total')
         if type(index) is not int or type(total) is not int or not 1<=index<=total:
             raise ValueError('Invalid card progress')
-        put(748,156,'カード',26,width=105,role='utility',color=t['muted'])
         put(865,145,f'{index}/{total}',40,width=125,role='utility',color=t['accent'],latin=True)
     if card.get('round_game'):
         put(72,151,card['round_game'],36,width=620,role='utility',color=t['accent'])
