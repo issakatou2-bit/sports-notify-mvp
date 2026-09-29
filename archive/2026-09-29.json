@@ -1,0 +1,354 @@
+{
+  "generated_at": "2026-09-29T09:52:59.416886+00:00",
+  "games": [
+    {
+      "game_id": "849845",
+      "league": "MLB",
+      "home_team_id": "144",
+      "away_team_id": "143",
+      "home_team_name": "ブレーブス",
+      "away_team_name": "フィリーズ",
+      "home_abbr": "ATL",
+      "away_abbr": "PHI",
+      "home_color": "#CE1141",
+      "away_color": "#E81828",
+      "matchup": "フィリーズ vs ブレーブス",
+      "abbr_matchup": "PHI vs ATL",
+      "start_time_jst": "09/30 03:00",
+      "home_division": "NLE",
+      "away_division": "NLE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 94,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 6.0,
+        "streak": 1,
+        "wins": 88,
+        "losses": 74,
+        "last_ten": "4勝6敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Chris Sale",
+        "name_en": "Chris Sale",
+        "player_id": "519242",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Jesús Luzardo",
+        "name_en": "Jesús Luzardo",
+        "player_id": "666200",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Truist Park",
+      "venue_jp": "トゥルーイスト・パーク",
+      "venue_note": "2017年開場。球場の外に商業施設が一体で作られた、比較的新しい形の球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.68点で、MLB30球場中15位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 4,
+      "game_type": "F",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "ワイルドカードシリーズ 第1戦(0勝0敗のタイ)",
+          "weight": 4
+        }
+      ],
+      "log_notes": [],
+      "availability_checked_at": "2026-09-29T09:52:46.204505+00:00"
+    },
+    {
+      "game_id": "849849",
+      "league": "MLB",
+      "home_team_id": "117",
+      "away_team_id": "145",
+      "home_team_name": "アストロズ",
+      "away_team_name": "ホワイトソックス",
+      "home_abbr": "HOU",
+      "away_abbr": "CWS",
+      "home_color": "#002D62",
+      "away_color": "#27251F",
+      "matchup": "ホワイトソックス vs アストロズ",
+      "abbr_matchup": "CWS vs HOU",
+      "start_time_jst": "09/30 06:00",
+      "home_division": "ALW",
+      "away_division": "ALC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "今井達也",
+        "村上宗隆"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 2,
+        "wins": 81,
+        "losses": 81,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 1.0,
+        "streak": 1,
+        "wins": 84,
+        "losses": 78,
+        "last_ten": "7勝3敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "AJ Blubaugh",
+        "name_en": "AJ Blubaugh",
+        "player_id": "805123",
+        "era": "3.66",
+        "wins": 5,
+        "losses": 3,
+        "strikeouts": 94
+      },
+      "away_probable": {
+        "name": "Hagen Smith",
+        "name_en": "Hagen Smith",
+        "player_id": "696146",
+        "era": "1.29",
+        "wins": 3,
+        "losses": 3,
+        "strikeouts": 41
+      },
+      "venue_name": "Daikin Park",
+      "venue_jp": "ダイキン・パーク",
+      "venue_note": "左翼が浅く、開閉式屋根を持つ球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.92点で、MLB30球場中11位",
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "score": 6,
+      "game_type": "F",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "アストロズには今井達也が所属",
+          "weight": 1
+        },
+        {
+          "tag": "jp_team",
+          "text": "ホワイトソックスには村上宗隆が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "ワイルドカードシリーズ 第1戦(0勝0敗のタイ)",
+          "weight": 4
+        }
+      ],
+      "series_context": {
+        "series_game_number": 1,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "ai_summary": "ポストシーズン（ワイルドカードシリーズ）の第1戦として、【直近10試合で7勝3敗】と好調なホワイトソックスが、【2連勝中】のアストロズと対戦する。両チームともレギュラーシーズンでポストシーズン進出を決めており、ここからは勝ち進むための本番の戦いが始まる。先発投手の対比も見どころで、ホワイトソックスのHagen Smithは防御率1.29と優れた成績を残す一方、アストロズのAJ Blubaugh は防御率3.66であり、投手戦がどう展開するか注視したい。また、左翼が浅いダイキン・パークでの開催となるため、本塁打が決まりやすい環境での試合展開に注目したい。",
+      "notification_hook": "村上宗隆率いるホワイトソックス、防御率1.29の先発でアストロズに挑む",
+      "availability_checked_at": "2026-09-29T09:52:46.204505+00:00"
+    },
+    {
+      "game_id": "849851",
+      "league": "MLB",
+      "home_team_id": "147",
+      "away_team_id": "111",
+      "home_team_name": "ヤンキース",
+      "away_team_name": "レッドソックス",
+      "home_abbr": "NYY",
+      "away_abbr": "BOS",
+      "home_color": "#003087",
+      "away_color": "#BD3039",
+      "matchup": "レッドソックス vs ヤンキース",
+      "abbr_matchup": "BOS vs NYY",
+      "start_time_jst": "09/30 09:00",
+      "home_division": "ALE",
+      "away_division": "ALE",
+      "same_division": true,
+      "rivalry_type": "historic",
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 4.5,
+        "streak": 1,
+        "wins": 93,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 3,
+        "games_back": 11.0,
+        "streak": -1,
+        "wins": 87,
+        "losses": 75,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Cam Schlittler",
+        "name_en": "Cam Schlittler",
+        "player_id": "693645",
+        "era": "1.95",
+        "wins": 14,
+        "losses": 6,
+        "strikeouts": 239
+      },
+      "away_probable": {
+        "name": "Payton Tolle",
+        "name_en": "Payton Tolle",
+        "player_id": "801139",
+        "era": "3.03",
+        "wins": 9,
+        "losses": 6,
+        "strikeouts": 171
+      },
+      "venue_name": "Yankee Stadium",
+      "venue_jp": "ヤンキー・スタジアム",
+      "venue_note": "右翼が浅く、左打者の本塁打が出やすい形状",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.8点で、MLB30球場中13位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 6,
+      "game_type": "F",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "rivalry",
+          "text": "レッドソックス vs ヤンキース は伝統の好カード — 1919年のベーブ・ルース移籍に端を発する、MLBで最も長く続くライバル関係",
+          "weight": 2
+        },
+        {
+          "tag": "postseason",
+          "text": "ワイルドカードシリーズ 第1戦(0勝0敗のタイ)",
+          "weight": 4
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ポストシーズンワイルドカードシリーズ第1戦として、1919年のベーブ・ルース移籍に端を発するMLB最古のライバル関係にある両チームが対戦する。【93勝68敗のヤンキース】と87勝75敗のレッドソックスは、ともに直近10試合で5勝5敗と互角の成績を収めており、どちらが勝ち進むかは未知数である。先発するヤンキースのCam Schlittlerは防御率1.95、14勝の好成績を残す一方、レッドソックスのPayton Tolleは防御率3.03、9勝と対比される。右翼が浅いヤンキー・スタジアムでの開催だけに、左打者の本塁打がどう影響するかに注目したい。",
+      "notification_hook": "防御率1.95の先発Schlittlerが投げるヤンキース、本塁打の出やすい球場で逆転なるか。",
+      "availability_checked_at": "2026-09-29T09:52:46.204505+00:00"
+    },
+    {
+      "game_id": "849843",
+      "league": "MLB",
+      "home_team_id": "135",
+      "away_team_id": "112",
+      "home_team_name": "パドレス",
+      "away_team_name": "カブス",
+      "home_abbr": "SD",
+      "away_abbr": "CHC",
+      "home_color": "#2F241D",
+      "away_color": "#0E3386",
+      "matchup": "カブス vs パドレス",
+      "abbr_matchup": "CHC vs SD",
+      "start_time_jst": "09/30 11:00",
+      "home_division": "NLW",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "松井裕樹",
+        "今永昇太",
+        "鈴木誠也"
+      ],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 9.0,
+        "streak": 2,
+        "wins": 91,
+        "losses": 71,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 14.0,
+        "streak": 1,
+        "wins": 89,
+        "losses": 73,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Michael King",
+        "name_en": "Michael King",
+        "player_id": "650633",
+        "era": "3.21",
+        "wins": 12,
+        "losses": 10,
+        "strikeouts": 159
+      },
+      "away_probable": {
+        "name": "Matthew Boyd",
+        "name_en": "Matthew Boyd",
+        "player_id": "571510",
+        "era": "3.91",
+        "wins": 10,
+        "losses": 5,
+        "strikeouts": 96
+      },
+      "venue_name": "Petco Park",
+      "venue_jp": "ペトコ・パーク",
+      "venue_note": "広い外野と海沿いの気候により、投手有利とされる球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.05点で、MLB30球場中28位",
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "score": 7,
+      "game_type": "F",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 1
+        },
+        {
+          "tag": "jp_team",
+          "text": "カブスには今永昇太・鈴木誠也が所属",
+          "weight": 2
+        },
+        {
+          "tag": "postseason",
+          "text": "ワイルドカードシリーズ 第1戦(0勝0敗のタイ)",
+          "weight": 4
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ポストシーズン初戦となるこの一戦は、レギュラーシーズンで【ナ・リーグ西地区2位】のパドレスと【中地区2位】のカブスが、ワイルドカードシリーズの勝ち上がりを争う重要な試合である。パドレスは直近10試合で8勝2敗と好調を維持し、一方のカブスは直近10試合で5勝5敗と足踏みしている状況での対戦となる。先発投手陣も注目で、パドレスの先発Michael Kingは防御率3.21で12勝をあげており、カブスの先発Matthew Boydは防御率3.91で10勝をあげている投手対決になる。投手有利とされるペトコ・パークでの開催となるだけに、先発投手たちの投げ合いがどう展開するかに注目したい。",
+      "notification_hook": "パドレスの好調vs.カブスの足踏み。ワイルドカード初戦、先発投手の投げ合いが試合を左右する。",
+      "availability_checked_at": "2026-09-29T09:52:46.204505+00:00"
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}

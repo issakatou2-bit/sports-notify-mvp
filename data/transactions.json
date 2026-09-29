@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-29T06:11:05.638532+00:00",
+  "updated_at": "2026-09-29T09:52:47.281144+00:00",
   "start": "2026-09-08",
   "end": "2026-09-29",
   "players": {
@@ -647,19 +647,19 @@
       "team": "Columbus Clippers",
       "text": "Cleveland Guardians optioned RHP Franco Aleman to Columbus Clippers."
     },
-    "695611": {
-      "kind": "to_il",
-      "date": "2026-09-13",
-      "name_en": "Gage Jump",
-      "team": "Athletics",
-      "text": "Athletics placed LHP Gage Jump on the 15-day injured list retroactive to September 13, 2026. Left shoulder impingement."
-    },
     "669330": {
       "kind": "to_il",
       "date": "2026-09-13",
       "name_en": "Tyler Wells",
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays placed RHP Tyler Wells on the 15-day injured list retroactive to September 13, 2026. Right forearm tightness."
+    },
+    "695611": {
+      "kind": "to_il",
+      "date": "2026-09-13",
+      "name_en": "Gage Jump",
+      "team": "Athletics",
+      "text": "Athletics placed LHP Gage Jump on the 15-day injured list retroactive to September 13, 2026. Left shoulder impingement."
     },
     "696519": {
       "kind": "to_il",
@@ -773,13 +773,6 @@
       "team": "Toledo Mud Hens",
       "text": "Detroit Tigers optioned RHP Yilber Díaz to Toledo Mud Hens."
     },
-    "672580": {
-      "kind": "from_il",
-      "date": "2026-09-15",
-      "name_en": "Maikel Garcia",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals activated 3B Maikel Garcia from the 10-day injured list."
-    },
     "697812": {
       "kind": "down",
       "date": "2026-09-18",
@@ -787,19 +780,19 @@
       "team": "Las Vegas Aviators",
       "text": "Athletics optioned LHP Joe Rock to Las Vegas Aviators."
     },
+    "672580": {
+      "kind": "from_il",
+      "date": "2026-09-15",
+      "name_en": "Maikel Garcia",
+      "team": "Kansas City Royals",
+      "text": "Kansas City Royals activated 3B Maikel Garcia from the 10-day injured list."
+    },
     "607536": {
       "kind": "from_il",
       "date": "2026-09-15",
       "name_en": "Kyle Freeland",
       "team": "Colorado Rockies",
       "text": "Colorado Rockies activated LHP Kyle Freeland from the 15-day injured list."
-    },
-    "666211": {
-      "kind": "from_il",
-      "date": "2026-09-17",
-      "name_en": "Taylor Trammell",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated LF Taylor Trammell from the paternity list."
     },
     "641584": {
       "kind": "from_il",
@@ -815,47 +808,12 @@
       "team": "Arizona Diamondbacks",
       "text": "Arizona Diamondbacks activated DH Jesús Sánchez."
     },
-    "694388": {
-      "kind": "down",
+    "666211": {
+      "kind": "from_il",
       "date": "2026-09-17",
-      "name_en": "Joey Loperfido",
-      "team": "Sugar Land Space Cowboys",
-      "text": "Houston Astros optioned LF Joey Loperfido to Sugar Land Space Cowboys."
-    },
-    "683090": {
-      "kind": "up",
-      "date": "2026-09-26",
-      "name_en": "Matthew Lugo",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled LF Matthew Lugo from Omaha Storm Chasers."
-    },
-    "679775": {
-      "kind": "down",
-      "date": "2026-09-18",
-      "name_en": "Kyle Backhus",
-      "team": "Lehigh Valley IronPigs",
-      "text": "Philadelphia Phillies optioned LHP Kyle Backhus to Lehigh Valley IronPigs."
-    },
-    "702273": {
-      "kind": "up",
-      "date": "2026-09-15",
-      "name_en": "Noah Schultz",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled LHP Noah Schultz from Charlotte Knights."
-    },
-    "690924": {
-      "kind": "up",
-      "date": "2026-09-15",
-      "name_en": "Braxton Fulford",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled DH Braxton Fulford from Albuquerque Isotopes."
-    },
-    "702275": {
-      "kind": "up",
-      "date": "2026-09-15",
-      "name_en": "JR Ritchie",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves recalled RHP JR Ritchie from Gwinnett Stripers."
+      "name_en": "Taylor Trammell",
+      "team": "Houston Astros",
+      "text": "Houston Astros activated LF Taylor Trammell from the paternity list."
     },
     "605353": {
       "kind": "down",
@@ -864,12 +822,12 @@
       "team": "Albuquerque Isotopes",
       "text": "Colorado Rockies optioned SS Vimael Machín to Albuquerque Isotopes."
     },
-    "680604": {
-      "kind": "down",
-      "date": "2026-09-15",
-      "name_en": "Blas Castaño",
-      "team": "Albuquerque Isotopes",
-      "text": "Colorado Rockies optioned RHP Blas Castaño to Albuquerque Isotopes."
+    "683090": {
+      "kind": "up",
+      "date": "2026-09-26",
+      "name_en": "Matthew Lugo",
+      "team": "Kansas City Royals",
+      "text": "Kansas City Royals recalled LF Matthew Lugo from Omaha Storm Chasers."
     },
     "686551": {
       "kind": "down",
@@ -878,6 +836,20 @@
       "team": "Syracuse Mets",
       "text": "New York Mets optioned SS Christian Cairo to Syracuse Mets."
     },
+    "694388": {
+      "kind": "down",
+      "date": "2026-09-17",
+      "name_en": "Joey Loperfido",
+      "team": "Sugar Land Space Cowboys",
+      "text": "Houston Astros optioned LF Joey Loperfido to Sugar Land Space Cowboys."
+    },
+    "679775": {
+      "kind": "down",
+      "date": "2026-09-18",
+      "name_en": "Kyle Backhus",
+      "team": "Lehigh Valley IronPigs",
+      "text": "Philadelphia Phillies optioned LHP Kyle Backhus to Lehigh Valley IronPigs."
+    },
     "700652": {
       "kind": "down",
       "date": "2026-09-15",
@@ -885,12 +857,40 @@
       "team": "Durham Bulls",
       "text": "Tampa Bay Rays optioned C Kenny Piper to Durham Bulls."
     },
+    "702275": {
+      "kind": "up",
+      "date": "2026-09-15",
+      "name_en": "JR Ritchie",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves recalled RHP JR Ritchie from Gwinnett Stripers."
+    },
+    "680604": {
+      "kind": "down",
+      "date": "2026-09-15",
+      "name_en": "Blas Castaño",
+      "team": "Albuquerque Isotopes",
+      "text": "Colorado Rockies optioned RHP Blas Castaño to Albuquerque Isotopes."
+    },
     "694371": {
       "kind": "down",
       "date": "2026-09-15",
       "name_en": "Tommy Troy",
       "team": "Reno Aces",
       "text": "Arizona Diamondbacks optioned LF Tommy Troy to Reno Aces."
+    },
+    "690924": {
+      "kind": "up",
+      "date": "2026-09-15",
+      "name_en": "Braxton Fulford",
+      "team": "Colorado Rockies",
+      "text": "Colorado Rockies recalled DH Braxton Fulford from Albuquerque Isotopes."
+    },
+    "702273": {
+      "kind": "up",
+      "date": "2026-09-15",
+      "name_en": "Noah Schultz",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox recalled LHP Noah Schultz from Charlotte Knights."
     },
     "702616": {
       "kind": "to_il",
