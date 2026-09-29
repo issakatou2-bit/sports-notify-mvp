@@ -38,6 +38,20 @@ def fixture(day=28):
 
 
 class ProgramTests(unittest.TestCase):
+    def test_forecast_exposes_game_day_to_existing_publication_gate(self):
+        import mlb_availability
+        snap,ev,now=fixture(29)
+        program=p.prepare(snap,ev,'forecast',now)
+        narration=p.script(program)
+        self.assertEqual(program['date_jst'],'2026-09-29')
+        self.assertEqual(narration['date_jst'],'2026-09-30')
+        self.assertEqual(narration['date_label'],'09/30')
+        payload={'games':[dict(is_notable=True,league='MLB',start_time_jst='09/30 03:00')]}
+        mlb_availability.check_narration(payload,narration,{},now)
+        wrong={**narration,'date_label':'09/29'}
+        with self.assertRaisesRegex(ValueError,'date does not match'):
+            mlb_availability.check_narration(payload,wrong,{},now)
+
     def test_probable_pitcher_names_keep_their_ink_inside_the_safe_area(self):
         for name in ('AJ Blubaugh', 'Alex Wood', 'José Berríos', 'Jordan Montgomery'):
             snap,ev,now=fixture(29)
