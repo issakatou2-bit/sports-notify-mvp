@@ -2,7 +2,9 @@
 import json
 from pathlib import Path
 import re
+import sys
 import requests
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from ps_program import spoken_start
 from notability_engine import apply_readings
 
@@ -17,14 +19,16 @@ def main():
     if 'ゼロ' in sounds or 'ロクジ' not in sounds:
         raise ValueError('6時の読みが自然な日本語として確認できません: '+kana)
     rounds=[]
-    for abbreviation, expected in (('WCS','ワイルドカードシリーズ'), ('DS','チクシリーズ'),
-                                   ('LCS','リーグユウショウケッテイシリーズ'), ('WS','ワールドシリーズ')):
+    # VOICEVOX kana represents long vowels as ア/イ/オ as well as ー.
+    for abbreviation, expected in (('WCS',r'ワイルドカ[ーア]ドシリ[ーイ]ズ'), ('DS',r'チクシリ[ーイ]ズ'),
+                                   ('LCS',r'リ[ーイ]グユ[ウー]ショ[ウオー]ケッテ[イー]シリ[ーイ]ズ'),
+                                   ('WS',r'ワ[ーア]ルドシリ[ーイ]ズ')):
         spoken=apply_readings(abbreviation+'第1戦です。')
         reply=requests.post('http://127.0.0.1:50021/audio_query',
                             params={'text':spoken,'speaker':2},timeout=20)
         reply.raise_for_status()
         round_kana=reply.json()['kana']
-        if expected not in re.sub('[^ァ-ヶー]','',round_kana):
+        if not re.search(expected,re.sub('[^ァ-ヶー]','',round_kana)):
             raise ValueError('PS回戦名の正式な読みを確認できません: '+round_kana)
         rounds.append(dict(display=abbreviation,spoken=spoken,engine_kana=round_kana))
     out=Path('build/ps_voice_check.json');out.parent.mkdir(parents=True,exist_ok=True)

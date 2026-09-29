@@ -2,9 +2,12 @@
 import copy
 import contextlib
 import io
+from pathlib import Path
+import sys
 from datetime import datetime, timedelta, timezone
 from unittest import mock
 import unittest
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import ps_program as p
 
 
