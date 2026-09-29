@@ -205,12 +205,13 @@ _tags = {r.tag for r in ne.generate_reasons(_g, _st, {})}
 check("PSの試合に連勝・首位攻防などを付けない",
       sorted(_tags & {"streak", "div", "ps_magic", "ps_race", "quality"}), [])
 check("PSの理由は付く", "postseason" in _tags, True)
-_base = {"league": "MLB", "home_team_name": "ドジャース",
+_base = {"league": "MLB", "matchup": "フィリーズ vs ドジャース", "home_team_name": "ドジャース",
          "away_team_name": "フィリーズ"}
 check("見出しは回戦と王手",
       gn.pick_hook([dict(_base, reasons=[{"tag": "postseason", "text":
           "地区シリーズ 第4戦(ドジャースが2勝1敗で王手、フィリーズは負ければ敗退)"}])]),
-      {"big": "地区シリーズ 第4戦", "sub": "ドジャースが2勝1敗で王手", "at": 0})
+      {"big": "地区シリーズ 第4戦", "sub": "ドジャースが2勝1敗で王手", "at": 0,
+       "key": "フィリーズ vs ドジャース"})
 check("タイの日は対戦カードを主語に",
       gn.pick_hook([dict(_base, reasons=[{"tag": "postseason",
                                           "text": "地区シリーズ 第3戦(1勝1敗のタイ)"}])])["sub"],
