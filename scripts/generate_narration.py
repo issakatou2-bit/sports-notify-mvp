@@ -395,14 +395,16 @@ def pick_hook(games: list, availability=None) -> dict:
                          (r.get("text") or "").strip())
             if m:
                 note = m.group("note") or ""
+                # 表示用の「対」と元データの「vs」を文字一致で混同しない。
+                key = g.get("matchup") or g.get("abbr_matchup") or r["text"]
                 if "王手" in note or "リード" in note:
                     # 「ドジャースが2勝1敗で王手、フィリーズは負ければ敗退」は長い
                     return {"big": m.group("what"), "sub": note.split("、")[0],
-                            "at": at}
+                            "at": at, "key": key}
                 # タイ・第1戦は球団名が入らないので、対戦カードを主語に
                 card = f"{g.get('away_team_name')}対{g.get('home_team_name')}"
                 return {"big": m.group("what") + (f"（{note}）" if note else ""),
-                        "sub": card, "at": at}
+                        "sub": card, "at": at, "key": key}
 
     # 2. 故障者リストから復帰したばかりの選手がいる球団の試合。
     #

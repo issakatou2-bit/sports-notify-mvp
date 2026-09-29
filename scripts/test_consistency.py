@@ -219,6 +219,14 @@ check("長編の説明もポストシーズンに",
 print("\n--- 冒頭の試合と、その後の並び ---")
 import generate_narration as gn2  # noqa: E402
 
+_ps_fixture = {"sport": "mlb", "matchup": "フィリーズ vs ブレーブス",
+               "away_team_name": "フィリーズ", "home_team_name": "ブレーブス",
+               "jp_starters": [], "reasons": [{"tag": "postseason",
+                   "text": "ワイルドカードシリーズ 第1戦(0勝0敗のタイ)"}]}
+_ps_hook = gn2.pick_hook([_ps_fixture])
+check("PS対戦カードの表示は読みやすい日本語", _ps_hook["sub"], "フィリーズ対ブレーブス")
+check("PS冒頭の照合は表示文でなく元カードを使う", _ps_hook.get("key"), _ps_fixture["matchup"])
+
 _late = _mismatch = 0
 for _f in sorted((ROOT / "archive").glob("2026-*.json")):
     _d = json.loads(_f.read_text(encoding="utf-8"))

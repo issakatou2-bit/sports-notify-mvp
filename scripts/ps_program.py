@@ -22,6 +22,7 @@ import ps_focus as focus
 import video_common as vc
 import ps_motion_template as motion
 from notability_engine import MLB_TEAM_COLOR
+from ps_brand_components import TEAM_SECONDARY_COLORS
 from generate_narration import display_name, speech_name
 
 JST = timezone(timedelta(hours=9))
@@ -175,6 +176,7 @@ def forecast(ctx, games, rows, now, target_day=None):
                     jp_home=bool(keyed[ids[0]]['players']), jp_away=bool(keyed[ids[1]]['players']),
                     home_players=keyed[ids[0]]['players'],away_players=keyed[ids[1]]['players'],
                     home_color=club_color(ids[0]),away_color=club_color(ids[1]),
+                    home_secondary=TEAM_SECONDARY_COLORS.get(str(ids[0])),away_secondary=TEAM_SECONDARY_COLORS.get(str(ids[1])),
                     home_pitcher=probable(teams['home']),away_pitcher=probable(teams['away']))
         match=next((m for m in ctx.get('matchups',[]) if m.get('game_pk')==g['gamePk']),None)
         card['bye']=match['bye']['name'] if match else None
@@ -198,7 +200,7 @@ def forecast(ctx, games, rows, now, target_day=None):
         headline = lead_name + '\n明日' + date_label + ' ' + round_label
         cover = dict(common(ctx, 'PS予告', target), layout='schedule',
                      headline=headline if start == 0 else 'PS全試合日程\n続き', subhead=f'第{chosen["game_number"]}戦 / 日本時間 / 全{len(cards)}試合',
-                     items=[dict(when=f'{date_label} {c["when"]}', home=c['home'], away=c['away'],home_color=c['home_color'],away_color=c['away_color']) for c in group],
+                     items=[dict(when=f'{date_label} {c["when"]}', home=c['home'], away=c['away'],home_color=c['home_color'],away_color=c['away_color'],home_secondary=c['home_secondary'],away_secondary=c['away_secondary']) for c in group],
                      headline_colors=[chosen[lead_side+'_color'],None])
         text = title.split('｜')[0] + '。' if start == 0 else '残りの試合の日程です。'
         pages.append(segment(cover, text, [c['game_id'] for c in group], 3))
@@ -209,10 +211,10 @@ def forecast(ctx, games, rows, now, target_day=None):
                 '勝った球団がシリーズを制する' if state == 'decider' else
                 '世界一がかかる試合' if c['round'] == 'W' and state == 'clinch_chance' else
                 '突破と敗退回避がかかる' if state == 'clinch_chance' else 'シリーズの初戦' if state == 'opening' else 'シリーズの次戦')
-        first_item=dict(label='日本時間の開始予定',value=c['when'])
+        first_item=dict(label='日本時間の開始予定',value=c['when'],value_size=110)
         if state=='opening':
             if c['home_pitcher'] or c['away_pitcher']:
-                items=[first_item]+[dict(label=c[s]+' / 先発予定',value=(c[s+'_pitcher'] or {}).get('display','確認中'),team_color=c[s+'_color']) for s in ('home','away')]
+                items=[first_item]+[dict(label=c[s]+' / 先発予定',value=(c[s+'_pitcher'] or {}).get('display','確認中'),value_size=60,team_color=c[s+'_color'],team_secondary=c[s+'_secondary']) for s in ('home','away')]
             else:
                 onward={'F':'地区シリーズ','D':'リーグ優勝決定シリーズ','L':'ワールドシリーズ','W':'世界一'}[c['round']]
                 advance=dict(label='勝者の地区シリーズの相手',value=c['bye']) if c['round']=='F' and c['bye'] else dict(label='勝者が進む先' if c['round']!='W' else 'シリーズ勝者',value=onward)
@@ -224,6 +226,7 @@ def forecast(ctx, games, rows, now, target_day=None):
         card = dict(common(ctx, f'PS予告 / {short_round}第{c["game_number"]}戦', target), layout='facts',
                     headline=f'{c["home"]}\n対{c["away"]}', subhead=note,
                     items=items,card_index=index,card_total=len(cards),headline_colors=[c['home_color'],c['away_color']],
+                    headline_secondary_colors=[c['home_secondary'],c['away_secondary']],round_game=f'{short_round} 第{c["game_number"]}戦',
                     affiliations=['・'.join(c[s+'_players'])+' / '+c[s] for s in ('home','away') if c[s+'_players']])
         supplement=None
         if index-1 == lead and state == 'opening' and not (c['home_pitcher'] or c['away_pitcher']):

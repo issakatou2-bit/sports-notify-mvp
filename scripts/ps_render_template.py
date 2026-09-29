@@ -59,10 +59,15 @@ def render(card,presenters=None,style='stadium',layers=False):
             raise ValueError('Invalid card progress')
         put(748,156,'カード',26,width=105,role='utility',color=t['muted'])
         put(865,145,f'{index}/{total}',40,width=125,role='utility',color=t['accent'],latin=True)
+    if card.get('round_game'):
+        put(72,151,card['round_game'],36,width=620,role='utility',color=t['accent'])
     for i,line in enumerate(card['headline'].split('\n')):
         if i>1:raise ValueError('Headline needs an editorial rewrite')
         marker=(card.get('headline_colors') or [None,None])[i]
-        if marker:d.line((72,222+i*125,936,222+i*125),fill=lift_color(marker),width=6)
+        if marker:
+            d.line((72,222+i*125,936,222+i*125),fill=marker,width=7)
+            secondary=(card.get('headline_secondary_colors') or [None,None])[i]
+            if secondary:d.line((72,228+i*125,936,228+i*125),fill=secondary,width=3)
         put(72,230+i*125,line,100)
     put(72,485,card.get('subhead',''),40,color=t['accent'])
     layout=card['layout']
@@ -78,12 +83,15 @@ def render(card,presenters=None,style='stadium',layers=False):
             for offset,side in ((0,'home'),(70,'away')):
                 tint=lift_color(item.get(side+'_color'),fallback=t['ink'])
                 d.line((329,y+offset+7,329,y+offset+48),fill=tint,width=6)
+                if item.get(side+'_secondary'):d.line((338,y+offset+7,338,y+offset+48),fill=item[side+'_secondary'],width=3)
                 put(350,y+offset,('vs ' if side=='away' else '')+item[side],48 if side=='home' else 46,width=575)
         elif layout=='facts':
             y=580+i*200;d.line((72,y-10,936,y-10),fill=t['line'],width=2)
             put(72,y,item['label'],40,color=t['muted'])
-            if item.get('team_color'):d.line((72,y-10,936,y-10),fill=lift_color(item['team_color']),width=5)
-            put(72,y+57,item['value'],86,color=t['accent'])
+            if item.get('team_color'):
+                d.line((72,y-10,936,y-10),fill=item['team_color'],width=5)
+                if item.get('team_secondary'):d.line((72,y-5,936,y-5),fill=item['team_secondary'],width=2)
+            put(72,y+57,item['value'],item.get('value_size',86),color=t['accent'])
         elif layout=='bracket':
             y=590+i*350;d.rounded_rectangle((72,y,560,y+260),radius=18,fill=t['panel'])
             for offset,side in ((22,'home'),(111,'away')):

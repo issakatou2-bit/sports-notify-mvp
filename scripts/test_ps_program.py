@@ -38,6 +38,32 @@ def fixture(day=28):
 
 
 class ProgramTests(unittest.TestCase):
+    def test_probable_pitcher_names_keep_their_ink_inside_the_safe_area(self):
+        for name in ('AJ Blubaugh', 'Alex Wood', 'José Berríos', 'Jordan Montgomery'):
+            snap,ev,now=fixture(29)
+            ev['schedule']['dates'][0]['games'][0]['teams']['home']['probablePitcher']=dict(id=123,fullName=name)
+            pr=p.prepare(snap,ev,'forecast',now)
+            manifests=p.check_program(pr)['rendered']
+            ink=next(row for m in manifests for row in m['text'] if row['text']==p.display_name(name))
+            self.assertGreaterEqual(ink['box'][0],72)
+            self.assertLessEqual(ink['box'][2],936)
+
+    def test_negative_font_bearing_is_aligned_without_relaxing_width(self):
+        import ps_brand_components as brand
+        class InkDraw:
+            def textbbox(self,xy,value,font):
+                x,y=xy
+                return (x-1,y+5,x+100,y+35)
+            def text(self,xy,value,font,fill):
+                self.position=xy
+        draw=InkDraw()
+        with mock.patch.object(brand,'font',return_value=object()):
+            box=brand.text(draw,(72,1000),'AJ Blubaugh',40,'white',width=101,minimum=40)
+            self.assertEqual(box,(72,1005,173,1035))
+            self.assertEqual(draw.position,(73,1000))
+            with self.assertRaisesRegex(ValueError,'another line/page'):
+                brand.text(draw,(72,1000),'AJ Blubaugh',40,'white',width=100,minimum=40)
+
     def test_unresolved_opponent_cannot_disappear_from_all_game_forecast(self):
         for tbd in (False,True):
             snap,ev,now=fixture(29)
@@ -124,6 +150,9 @@ class ProgramTests(unittest.TestCase):
         self.assertNotIn('card_index',pr['segments'][0]['meta']['card'])
         self.assertIn('明日9/30',pr['segments'][0]['meta']['card']['headline'])
         self.assertEqual(details[0]['headline_colors'],[p.club_color(117),p.club_color(145)])
+        self.assertEqual(details[0]['headline_secondary_colors'],['#EB6E1F','#C4CED4'])
+        self.assertEqual(details[0]['round_game'],'WCS 第1戦')
+        self.assertGreater(details[0]['items'][0]['value_size'],details[0]['items'][1]['value_size'])
         self.assertEqual(details[0]['items'][2]['value'],'確認中')
         self.assertNotEqual(details[0]['items'][1]['value'],'確認中')
         self.assertNotIn('0勝対0勝',pr['segments'][1]['text'])
