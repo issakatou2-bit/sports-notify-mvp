@@ -1,16 +1,81 @@
 """サイトだけの更新で、購読者に同じ回を再配信しないための回帰検査。"""
 
 from datetime import date
+import json
 from pathlib import Path
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 
-from generate_podcast import DESCRIPTION, LEGACY_DESCRIPTION, TITLE, build_feed
+from generate_podcast import DESCRIPTION, LEGACY_DESCRIPTION, TITLE, build_feed, episode_description
 from refresh_podcast_metadata import ITUNES, refresh_metadata
 
 
 class PodcastMetadataTests(unittest.TestCase):
+    def test_ps_all_cards_and_actual_speakers(self):
+        for game_type in ("F", "D", "L", "W", "R"):
+            with self.subTest(game_type=game_type), tempfile.TemporaryDirectory() as directory:
+                games = Path(directory) / "games.json"
+                narration = Path(directory) / "narration.json"
+                rows = [dict(is_notable=True, game_type=game_type,
+                             start_time_jst=f"09/30 {n:02d}:00",
+                             away_team_name=f"Away{n}", home_team_name=f"Home{n}",
+                             reasons=[dict(text="旧構成の見どころ")])
+                        for n in (11, 6, 9, 3)]
+                games.write_text(json.dumps({"games": rows}), encoding="utf-8")
+                narration.write_text(json.dumps({"segments": [{"speaker": 3}, {"speaker": 2}]}), encoding="utf-8")
+                description = episode_description(str(games), str(narration))
+                if game_type == "R":
+                    self.assertNotIn("Away3", description)
+                    self.assertIn("旧構成の見どころ", description)
+                else:
+                    self.assertNotIn("旧構成の見どころ", description)
+                    offsets = [description.index(f"Away{n}") for n in (3, 6, 9, 11)]
+                    self.assertEqual(offsets, sorted(offsets))
+                self.assertIn("VOICEVOX:ずんだもん / VOICEVOX:四国めたん", description)
+
+    def test_default_and_unknown_speaker(self):
+        with tempfile.TemporaryDirectory() as directory:
+            games = Path(directory) / "games.json"
+            narration = Path(directory) / "narration.json"
+            games.write_text(json.dumps({"games": [dict(is_notable=True)]}), encoding="utf-8")
+            narration.write_text(json.dumps({"segments": [{"text": "legacy"}]}), encoding="utf-8")
+            self.assertIn("VOICEVOX:ずんだもん", episode_description(str(games), str(narration)))
+            self.assertNotIn("四国めたん", episode_description(str(games), str(narration)))
+            narration.write_text(json.dumps({"segments": [{"speaker": 999}]}), encoding="utf-8")
+            with self.assertRaises(ValueError):
+                episode_description(str(games), str(narration))
+
+    def test_exact_episode_correction_preserves_delivery_identity(self):
+        episodes = [dict(date=date(2026, 9, n), file=f"2026-09-{n}.mp3", title="daily",
+                         description="old", duration=42, size=64000) for n in (29, 28)]
+        before = ET.fromstring(build_feed(episodes))
+        with tempfile.TemporaryDirectory() as directory:
+            feed = Path(directory) / "feed.xml"
+            catalog = Path(directory) / "corrections.json"
+            feed.write_text(build_feed(episodes), encoding="utf-8")
+            catalog.write_text(json.dumps([dict(guid="https://collespo.com/podcast/2026-09-29.mp3",
+                                                description="four verified games")]), encoding="utf-8")
+            refresh_metadata(feed, catalog)
+            after = ET.parse(feed).getroot()
+            first = feed.read_bytes()
+            refresh_metadata(feed, catalog)
+            self.assertEqual(first, feed.read_bytes())
+            self.assertEqual(after.findtext("channel/item/description"), "four verified games")
+            self.assertEqual(after.findall("channel/item")[1].findtext("description"), "old")
+            for old, new in zip(before.findall("channel/item"), after.findall("channel/item")):
+                for tag in ("title", "pubDate", "guid", "enclosure", f"{{{ITUNES}}}duration"):
+                    self.assertEqual(ET.tostring(old.find(tag)), ET.tostring(new.find(tag)))
+            # 対象が重複していたら、元のRSSを壊さず止める。
+            duplicate = ET.parse(feed)
+            import copy
+            duplicate.find("channel").append(copy.deepcopy(duplicate.find("channel/item")))
+            duplicate.write(feed, encoding="utf-8")
+            original = feed.read_bytes()
+            with self.assertRaises(ValueError):
+                refresh_metadata(feed, catalog)
+            self.assertEqual(original, feed.read_bytes())
+
     def test_preserves_episode_identity_audio_and_specific_description(self):
         episodes = [
             {"date": date(2026, 9, 11), "file": "2026-09-11.mp3",
