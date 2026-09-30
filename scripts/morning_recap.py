@@ -31,6 +31,11 @@ import mlb_splits  # noqa: E402
 from notability_engine import JP_PLAYERS_MLB, MLB_TEAM_NAME_JP  # noqa: E402
 
 MLB_API_BASE = "https://statsapi.mlb.com/api/v1"
+# **種類を指定しないと、レギュラーシーズンの試合しか返らない。**
+# 9/30、WCS初戦で村上宗隆が3打数1安打だったのに「出場0名」になり、
+# 17:00の成績が出ず、長編は「きょうは試合が無い日」と言った。
+# 1日ぶんの取得なので、種類を並べても同じ試合を二重に数えない。
+GAME_TYPES = "R,F,D,L,W"
 JST = timezone(timedelta(hours=9))
 
 
@@ -47,7 +52,8 @@ def fetch_day_hitting(player_id: str, day: str, season: str):
         resp = requests.get(
             f"{MLB_API_BASE}/people/{player_id}/stats",
             params={"stats": "byDateRange", "group": "hitting",
-                    "startDate": day, "endDate": day, "season": season},
+                    "startDate": day, "endDate": day, "season": season,
+                    "gameType": GAME_TYPES},
             timeout=20,
         )
         resp.raise_for_status()
@@ -92,7 +98,8 @@ def fetch_day_pitching(player_id: str, day: str, season: str):
         resp = requests.get(
             f"{MLB_API_BASE}/people/{player_id}/stats",
             params={"stats": "byDateRange", "group": "pitching",
-                    "startDate": day, "endDate": day, "season": season},
+                    "startDate": day, "endDate": day, "season": season,
+                    "gameType": GAME_TYPES},
             timeout=20,
         )
         resp.raise_for_status()

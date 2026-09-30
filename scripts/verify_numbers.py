@@ -128,6 +128,14 @@ def check(d: dict) -> list:
                     # 0.1回と違うとして日本人成績の回を止めた。
                     pat += "(?:3分の([12]))?"
                 for m in re.finditer(pat, text):
+                    # **「アストロズに1勝0敗」の1勝はアストロズのものではない。**
+                    # 相手を表す「に」「相手に」「との」のすぐ後の勝敗は、
+                    # 文の主語（ホワイトソックス）の数字。9/30、WCS初戦に
+                    # 勝ったホワイトソックスを正しく言った長編を止めた。
+                    if unit == "勝" and re.match(
+                            re.escape(name) + r"(?:を?相手に|に|との)",
+                            m.group(0)):
+                        continue
                     got = float(m.group(1))
                     if unit == "回" and m.group(2):
                         got = int(got) + int(m.group(2)) / 10.0

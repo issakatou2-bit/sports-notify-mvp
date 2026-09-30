@@ -174,7 +174,8 @@ def pick_from_best(best_path: str, history: dict) -> dict:
             why += "(日本人選手)"
         return {"name_en": x["name"], "name_jp": x["name"],
                 "why": why, "score": x.get("score"),
-                "headline": x.get("headline"), "team": x.get("team")}
+                "headline": x.get("headline"), "team": x.get("team"),
+                "type": x.get("type")}
     return {}
 
 
@@ -196,7 +197,8 @@ def pinned_player(name: str, best_path: str) -> dict:
                 day = d.get("date_jst") or d.get("date")
                 return {"name_en": x["name"], "name_jp": x["name"],
                         "why": f"{day}の成績", "score": x.get("score"),
-                        "headline": x.get("headline"), "team": x.get("team")}
+                        "headline": x.get("headline"), "team": x.get("team"),
+                        "type": x.get("type")}
     return {"name_en": name, "name_jp": name, "why": "",
             "score": None, "headline": "", "team": ""}
 
@@ -386,8 +388,11 @@ def build(args) -> dict:
         # まず、その日いちばん活躍した選手。取れなければ名簿から回す。
         best = pick_from_best(args.best, history)
     if best:
+        # **採点表の種類を使う。**打者に決め打ちしていたので、投手が
+        # 1位の日（9/30のCam Schlittler、6.1回10奪三振）は打撃成績を
+        # 探して「成績が1つも取れません」と止まった。
         p = {"name_en": best["name_en"], "name_jp": best["name_jp"],
-             "type": "batter"}
+             "type": "pitcher" if best.get("type") == "pitcher" else "batter"}
         chosen = {"player": p, "why": best["why"]}
         how = "指名" if getattr(args, "name", "") else "その日の1位"
         print(f"[info] {how}: {best['name_jp']} "

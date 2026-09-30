@@ -52,4 +52,45 @@ _m["rare"] = [{"name": "山本由伸", "stat": "WHIP", "value": "0.87",
                "rank": "44人中2位"}]
 check("1位が無ければ主役の成績", nm.meta(_m)["pick"], "ヌートバー 3打数0安打")
 
+section("9/30 PSの試合の成績")
+import json as _json  # noqa: E402
+import tempfile as _tf  # noqa: E402
+import morning_recap as mr  # noqa: E402
+import player_profile as pp  # noqa: E402
+_seen = []
+
+
+class _Resp:
+    def raise_for_status(self):
+        pass
+
+    def json(self):
+        return {"stats": []}
+
+
+def _fake_get(url, params=None, **kw):
+    _seen.append(params or {})
+    return _Resp()
+
+
+_real = mr.requests.get
+mr.requests.get = _fake_get
+try:
+    mr.fetch_day_hitting("1", "2026-09-29", "2026")
+    mr.fetch_day_pitching("1", "2026-09-29", "2026")
+finally:
+    mr.requests.get = _real
+check("打撃も投球もPSの試合を含めて取る",
+      [x.get("gameType") for x in _seen], ["R,F,D,L,W", "R,F,D,L,W"])
+
+with _tf.NamedTemporaryFile("w", suffix=".json", delete=False,
+                            encoding="utf-8") as _f:
+    _json.dump({"date_jst": "2026-09-30", "players": [
+        {"name": "Cam Schlittler", "type": "pitcher", "score": 146,
+         "headline": "6.1回", "team": "ヤンキース"}]}, _f)
+check("1位が投手なら投手として紹介する",
+      pp.pick_from_best(_f.name, {}).get("type"), "pitcher")
+check("指名でも種類を引き継ぐ",
+      pp.pinned_player("Cam Schlittler", _f.name).get("type"), "pitcher")
+
 sys.exit(done())
