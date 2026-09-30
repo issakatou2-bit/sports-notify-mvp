@@ -1334,6 +1334,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         m = (buzz_top(buzz_path) or {})
         # 対戦カードがあればそれ、無ければ何のハイライトかを日本語で。
         card = m.get("matchup_jp") or m.get("topic_jp") or ""
+        # **訳せなかった日は英語の動画名がそのまま来る。**9/29の題が
+        # 「大谷翔平｜2026 MLB Season Leaders in HR (Schwarber/PCA), Ks
+        # (Miz), AVG (Yordan), AND MORE! 現地のファンは…」になった。
+        # 日本語が無ければ使わない。長すぎる時も使わない。
+        import re as _re
+        if card and (not _re.search(r"[ぁ-んァ-ヶ一-龠]", card)
+                     or len(card) > 30):
+            card = ""
         # 返信が付いた一言を扱った回は、その件数を出す。
         # 「ファンの反応」は毎日同じ言い方になるが、件数はその日だけの数字で、
         # しかも「何を言ったらそんなに返ってきたのか」が残る。

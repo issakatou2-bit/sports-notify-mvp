@@ -50,5 +50,17 @@ check("順位争いを欧州サッカーの日次にしない",
 check("サッカーの注目試合をMLBの注目試合にしない",
       br.kind_of("今夜の注目試合【サッカー】｜X #Shorts"), "daily_soccer")
 check("分からない題は空（書き込まない）", br.kind_of("何かの動画"), "")
+# 9/26からの新しいPSの題
+check("PSの予告は19:00の注目試合",
+      br.kind_of("【9/30更新】村上宗隆が所属するホワイトソックスの突破がかかるWCS第2戦｜10/1 PS全4試合 #Shorts"),
+      "daily")
+check("PSの情勢は20:00の回",
+      br.kind_of("【9/30更新】レッドソックスのWCSは0勝1敗｜PSシリーズの最新情勢 #Shorts"),
+      "morning_postseason")
+check("長編のPS期の題", br.kind_of("【MLB】佐々木朗希・ヌートバーのきょう｜成績とポストシーズン"),
+      "longform")
+check("注目3試合も注目試合",
+      br.kind_of("【訂正版・9/13】ドジャース8連勝、地区優勝マジック5｜MLBの注目3試合 #Shorts"),
+      "daily")
 
 sys.exit(done())
