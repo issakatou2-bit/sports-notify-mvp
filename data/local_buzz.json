@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-30T06:01:59.586519+00:00",
+  "updated_at": "2026-09-30T10:19:54.598327+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -16,33 +16,25 @@
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
-      "mentions": 8,
+      "mentions": 9,
       "tone": "好調",
-      "gist": "パドレス、マッハドらの活躍でワイルドカード第1戦8-0で勝利"
+      "gist": "パドレス、ムスグローブとマチャドらで8-0でカブス撃破"
     },
     {
       "team_id": "145",
       "name": "ホワイトソックス",
       "name_en": "Chicago White Sox",
-      "mentions": 6,
+      "mentions": 5,
       "tone": "好調",
-      "gist": "ホワイトソックス、11安打で第1戦勝利、5年ぶりのプレーオフ"
+      "gist": "ホワイトソックス11安打で5年ぶりのプレーオフ勝利"
     },
     {
       "team_id": "143",
       "name": "フィリーズ",
       "name_en": "Philadelphia Phillies",
-      "mentions": 5,
-      "tone": "不振",
-      "gist": "フィリーズ、ブレーブスとの第1戦で8回のホームランで逆転負け"
-    },
-    {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
       "mentions": 4,
-      "tone": "好調",
-      "gist": "ブレーブス、フィリーズとの接戦のワイルドカード第1戦を勝利"
+      "tone": "話題",
+      "gist": "フィリーズ-ブレーブス、接戦のワイルドカードシリーズ開幕"
     },
     {
       "team_id": "111",
@@ -50,7 +42,15 @@
       "name_en": "Boston Red Sox",
       "mentions": 3,
       "tone": "不振",
-      "gist": "レッドソックス、ヤンキースに0-9で歴史的大敗"
+      "gist": "レッドソックス、ヤンキーに9-0で歴史的大敗"
+    },
+    {
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ブレーブス-フィリーズ、接戦のワイルドカードシリーズ開幕"
     },
     {
       "team_id": "112",
@@ -58,7 +58,7 @@
       "name_en": "Chicago Cubs",
       "mentions": 3,
       "tone": "不振",
-      "gist": "カブス、パドレスにワイルドカード第1戦で0-8で完敗"
+      "gist": "カブス、パドレスに0-8で大敗、打線沈黙"
     },
     {
       "team_id": "117",
@@ -66,7 +66,7 @@
       "name_en": "Houston Astros",
       "mentions": 2,
       "tone": "不振",
-      "gist": "アストロズ、救援陣の不調でワイルドカード第2戦が必勝試合に"
+      "gist": "アストロズ、ブルペン失敗で負け越し、ファン反発"
     }
   ],
   "players": [

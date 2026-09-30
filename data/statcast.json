@@ -1,6 +1,101 @@
 {
-  "updated_at": "2026-09-30T06:01:41.622827+00:00",
+  "updated_at": "2026-09-30T10:19:38.627495+00:00",
   "date": "2026-09-29",
-  "home_runs": {},
+  "home_runs": {
+    "bogaerts": [
+      {
+        "name_raw": "Bogaerts, Xander",
+        "distance_m": 122,
+        "distance_ft": 399,
+        "speed_kmh": 169,
+        "speed_mph": 104.9,
+        "angle": 26.0,
+        "pitch": "",
+        "pitch_kmh": 129
+      }
+    ],
+    "riley": [
+      {
+        "name_raw": "Riley, Austin",
+        "distance_m": 117,
+        "distance_ft": 385,
+        "speed_kmh": 168,
+        "speed_mph": 104.6,
+        "angle": 32.0,
+        "pitch": "",
+        "pitch_kmh": 161
+      }
+    ],
+    "montgomery": [
+      {
+        "name_raw": "Montgomery, Colson",
+        "distance_m": 132,
+        "distance_ft": 432,
+        "speed_kmh": 171,
+        "speed_mph": 106.0,
+        "angle": 29.0,
+        "pitch": "",
+        "pitch_kmh": 153
+      }
+    ],
+    "rice": [
+      {
+        "name_raw": "Rice, Ben",
+        "distance_m": 124,
+        "distance_ft": 408,
+        "speed_kmh": 175,
+        "speed_mph": 108.6,
+        "angle": 26.0,
+        "pitch": "",
+        "pitch_kmh": 157
+      },
+      {
+        "name_raw": "Rice, Ben",
+        "distance_m": 129,
+        "distance_ft": 423,
+        "speed_kmh": 174,
+        "speed_mph": 108.0,
+        "angle": 27.0,
+        "pitch": "",
+        "pitch_kmh": 156
+      }
+    ],
+    "velázquez": [
+      {
+        "name_raw": "Velázquez, Nelson",
+        "distance_m": 118,
+        "distance_ft": 388,
+        "speed_kmh": 170,
+        "speed_mph": 105.5,
+        "angle": 30.0,
+        "pitch": "",
+        "pitch_kmh": 156
+      }
+    ],
+    "machado": [
+      {
+        "name_raw": "Machado, Manny",
+        "distance_m": 119,
+        "distance_ft": 391,
+        "speed_kmh": 166,
+        "speed_mph": 103.3,
+        "angle": 28.0,
+        "pitch": "",
+        "pitch_kmh": 131
+      }
+    ],
+    "tatis jr.": [
+      {
+        "name_raw": "Tatis Jr., Fernando",
+        "distance_m": 123,
+        "distance_ft": 405,
+        "speed_kmh": 166,
+        "speed_mph": 103.4,
+        "angle": 28.0,
+        "pitch": "",
+        "pitch_kmh": 134
+      }
+    ]
+  },
   "japanese": {}
 }
