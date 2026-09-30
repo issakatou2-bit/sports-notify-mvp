@@ -33,6 +33,7 @@ import argparse
 import json
 import os
 import pathlib
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 
@@ -279,6 +280,59 @@ def _report(why: str) -> None:
         f.write("- %s\n" % why)
 
 
+def known_video_ids():
+    """Include daily and evergreen ledgers; deduplicate IDs across slots."""
+    ids = set()
+    for path in ("data/published_videos.json", "data/published_assets.json"):
+        for group in load(path).values():
+            if not isinstance(group, dict):
+                continue
+            for row in group.values():
+                video = row.get("video_id") if isinstance(row, dict) else None
+                if isinstance(video, str) and re.fullmatch(r"[A-Za-z0-9_-]{11}", video):
+                    ids.add(video)
+    return sorted(ids)
+
+
+def video_rows(yta, start, end, video_ids=()):
+    """Supplement the top-200 report with explicitly requested ledger videos.
+
+    Top-video reports are limited to 200 results. Filtered batches of 100
+    known IDs also cover the low-view tail, without assuming that pagination
+    extends that report's ranking limit. Missing activity is not a zero.
+    """
+    rows, seen = [], set()
+    def fetch(wanted=None):
+        filters = {"filters": "video==" + ",".join(wanted)} if wanted else {}
+        res = yta.reports().query(
+            ids="channel==MINE", startDate=start.isoformat(),
+            endDate=end.isoformat(), metrics=METRICS, dimensions="video",
+            sort="-views", maxResults=200, **filters,
+        ).execute()
+        batch = res.get("rows") or []
+        if not batch:
+            return
+        cols = [h["name"] for h in res.get("columnHeaders", [])]
+        if "video" not in cols:
+            raise ValueError("Analytics response has no video column")
+        for values in batch:
+            if len(values) != len(cols):
+                raise ValueError("Analytics row has incomplete columns")
+            row = dict(zip(cols, values))
+            video = row["video"]
+            if not video or video in seen:
+                raise ValueError("Analytics pages contain missing or repeated video IDs")
+            if wanted and video not in wanted:
+                raise ValueError("Analytics returned a video outside the requested batch")
+            seen.add(video)
+            rows.append(row)
+    fetch()
+    missing = sorted(set(video_ids) - seen)
+    for at in range(0, len(missing), 100):
+        fetch(missing[at:at + 100])
+    return sorted(rows, key=lambda row: (-(row.get("views") or 0), row["video"]))
+
+
 def main() -> int:
     """外側で必ず受け止める。
 
@@ -352,15 +406,8 @@ def _run() -> int:
     end = datetime.now(JST).date()
     start = end - timedelta(days=args.days)
     try:
-        res = yta.reports().query(
-            ids="channel==MINE",
-            startDate=start.isoformat(), endDate=end.isoformat(),
-            metrics=METRICS, dimensions="video",
-            # 上位50本だけを取っていたので、本数が50を超えてから
-            # 中央値も「再生10回未満が何本あるか」も測れなくなっていた。
-            # 見えていないのは必ず下位——つまり、いちばん知りたい側。
-            sort="-views", maxResults=200,
-        ).execute()
+        known = known_video_ids()
+        rows = video_rows(yta, start, end, known)
     except HttpError as e:
         if e.resp.status in (401, 403):
             # 403は2つの理由で返る。取り違えると、直っているトークンを
@@ -388,10 +435,6 @@ def _run() -> int:
         _report("取得に失敗しました: %s" % str(e)[:200])
         return 0
 
-    cols = [h["name"] for h in res.get("columnHeaders", [])]
-    rows = []
-    for row in res.get("rows", []):
-        rows.append(dict(zip(cols, row)))
     if not rows:
         print("[info] 対象の動画がありません")
         return 0
@@ -400,7 +443,7 @@ def _run() -> int:
     titles = {}
     yt = client("youtube", "v3")
     if yt:
-        # videos.list は1回50件まで。上限を200に上げたので、
+        # videos.list は1回50件まで。分析の全ページを取得するので、
         # 50で切ると51本目から題名が空になる——そして空になるのは
         # 再生数の少ない側、つまり調べたい側から先に消える。
         ids = [r["video"] for r in rows]
@@ -425,6 +468,10 @@ def _run() -> int:
     today = end.isoformat()
     store.setdefault("days", {})[today] = {
         "range": [start.isoformat(), end.isoformat()],
+        "coverage": {"known_video_count": len(known),
+                     "returned_video_count": len(rows),
+                     "missing_known_ids": sorted(set(known) - {r["video"] for r in rows}),
+                     "note": "Missing rows are unavailable activity, not confirmed zero views."},
         "videos": [{**r, "title": titles.get(r.get("video"), ""),
                     **({"curve": curves[r["video"]]}
                        if r.get("video") in curves else {})}
