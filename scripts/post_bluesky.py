@@ -31,6 +31,7 @@ from pathlib import Path
 import sys
 
 import post_common
+import content_hashtags
 from public_short import JST, edition_metadata, public_short
 
 # Blueskyの投稿上限は300グラフェム。安全マージンを見て280までに収める
@@ -42,7 +43,7 @@ def post_context(games, short, edition):
     source = short or edition
     if source and source.get('program_version'):
         body = source['social_summary']
-        hashtags = post_common.collect_hashtags(games, text=body)
+        hashtags = content_hashtags.select(body, 'bluesky', sport='mlb')
     return body, hashtags, site_url
 
 
@@ -105,6 +106,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--games", default="notable_games.json")
     ap.add_argument("--kind", choices=['daily', 'daily_soccer'], default='daily')
+    routing = ap.add_mutually_exclusive_group()
+    routing.add_argument('--defer-ps', action='store_true')
+    routing.add_argument('--ps-only', action='store_true')
     args = ap.parse_args()
 
     # 300グラフェムまで入るので、収まる範囲で複数試合を載せる。
@@ -112,7 +116,20 @@ def main():
     #  自動投稿側をXの制限に合わせる必要はなかった)
     games = post_common.load_notable_games(args.games, limit=3)
     edition = edition_metadata(args.kind)
+    is_ps = bool(edition and edition.get('program_version'))
+    if (args.defer_ps and is_ps) or (args.ps_only and not is_ps):
+        print('[info] PSは動画・サイト公開後の配信処理へ分担します')
+        return
+    if args.ps_only:
+        ledger_path = Path('data/bluesky_delivery.json')
+        ledger = json.loads(ledger_path.read_text(encoding='utf-8'))
+        key = args.kind + ':' + datetime.now(JST).date().isoformat()
+        if ledger.get('editions', {}).get(key, {}).get('uri'):
+            print('[info] 当日PS投稿は既に存在するため、新しい投稿を作りません')
+            return
     short = public_short(args.kind)
+    if args.ps_only and not short:
+        raise SystemExit('PS動画の公開確認ができないためBluesky配信を停止しました')
     if not games and not (edition and edition.get('program_version')):
         print("[info] 今日は注目試合が無いため投稿をスキップします")
         return

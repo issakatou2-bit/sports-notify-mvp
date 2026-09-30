@@ -1,35 +1,37 @@
-name: 道具　既存BlueskyのPS予告を照合
+name: 配信　公開確認後のBluesky PS予告
 on:
   workflow_run:
     workflows: ['毎日 19:00頃　明日の注目試合']
     types: [completed]
-  workflow_dispatch:
-    inputs:
-      post_uri:
-        description: 自分の当日PS予告の正確なat URI
-        required: true
-        type: string
-      video_id:
-        description: 対応する当日の公開YouTube ID
-        required: true
-        type: string
+  workflow_dispatch: {}
 permissions:
-  contents: read
+  contents: write
+concurrency:
+  group: bluesky-ps-publication
+  cancel-in-progress: false
 jobs:
   reconcile:
     if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: pip install -r scripts/requirements.txt
-      - name: Update only the matching owned record
+      - name: Publish only an unsent current PS edition with a public video
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          TARGET_POST: ${{ inputs.post_uri }}
-          TARGET_VIDEO: ${{ inputs.video_id }}
-        run: python scripts/update_bluesky_ps.py
+        run: python scripts/post_bluesky.py --ps-only
+      - name: Keep the exact post receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bluesky-delivery-receipt
+          path: data/bluesky_delivery.json
+      - name: Save delivery ledger
+        run: bash scripts/commit_data.sh "Bluesky PS delivery $GITHUB_RUN_ID" data/bluesky_delivery.json
