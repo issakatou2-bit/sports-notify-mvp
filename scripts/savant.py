@@ -97,6 +97,13 @@ PITCHER_LABELS = {
 BATTER_LABELS = {k: v for k, v in LABELS.items()
                  if k not in {"fastball_velo", "fastball_spin", "curve_spin", "xera", "gb_percent"}}
 
+# 値が小さいほど良い項目（Savantの順位と値の大小が逆になる）。
+INVERSE = {
+    "batter": {"k_percent", "whiff_percent", "chase_percent"},
+    "pitcher": {"exit_velocity", "max_ev", "hard_hit_percent", "brl_percent",
+                "bb_percent", "xba", "xslg", "xwoba", "xiso", "xera"},
+}
+
 # 上位・下位これを超えたら「極端」とみなす。
 TOP_AT = 90
 BOTTOM_AT = 10
@@ -151,6 +158,26 @@ def notable(row: dict, top=TOP_AT, bottom=BOTTOM_AT, limit=4, *, kind="batter") 
     out = []
     for key, value in (row or {}).items():
         if key == "name" or key not in labels:
+            continue
+        # **値が小さいほど良い項目は、値の向きで言う。**Savantの順位は
+        # 良し悪しに揃えてあるので、三振率の「下位1%」は三振が最も多い側。
+        # 9/30、「村上の三振率はリーグ下位1%」を台本が「三振で終わる割合は
+        # 低い」と逆に読んだ（村上は三振が多い）。
+        if key in INVERSE.get(kind, ()):
+            label, why = labels[key]
+            if value >= 100:
+                side = "リーグで最も低い（Savant評価は最高）"
+            elif value >= top:
+                side = "リーグで低い方から%d%%（Savant評価は上位）" % (100 - value)
+            elif value <= 0:
+                side = "リーグで最も高い（Savant評価は最低）"
+            elif value <= bottom:
+                side = "リーグで高い方から%d%%（Savant評価は下位）" % value
+            else:
+                continue
+            out.append({"key": key, "kind": kind, "label": label, "why": why,
+                        "percentile": value, "side": side,
+                        "high": value >= top})
             continue
         # 「上位0%」とは書かない。100パーセンタイルはリーグ最高のこと。
         if value >= 100:

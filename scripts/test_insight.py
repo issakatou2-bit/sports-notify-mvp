@@ -193,7 +193,7 @@ check("100は「リーグ最高」", _by["brl_percent"]["side"], "リーグ最�
 check("「上位0%」とは書かない",
       "0%" in _by["brl_percent"]["side"], False)
 check("97は上位3%", _by["exit_velocity"]["side"], "リーグ上位3%")
-check("1は下位1%", _by["k_percent"]["side"], "リーグ下位1%")
+check("三振率1は三振が多い側（値の向きで言う）", _by["k_percent"]["side"], "リーグで高い方から1%（Savant評価は下位）")
 check("どの項目にも説明がある",
       all(r["why"] for r in _got), True)
 check("知らない項目は返さない",
@@ -273,5 +273,13 @@ for _group, _kind, _word in (("pitching", "pitcher", "被打球の最高速度")
     check(_group + "の原稿材料に投打区分", _material[0]["statcast_kind"], _kind)
     check(_group + "の原稿材料に指標キー", _material[0]["metric_key"], "max_ev")
     check(_group + "の評価と生速度の区別", "Savantの評価" in _material[0]["text"], _kind == "pitcher")
+
+section("値が小さいほど良い項目は、値の向きで言う（9/30）")
+_k = savant.notable({"k_percent": 1}, kind="batter")[0]["side"]
+check("三振率1パーセンタイルは三振が多い側", _k, "リーグで高い方から1%（Savant評価は下位）")
+_x = savant.notable({"xera": 97}, kind="pitcher")[0]["side"]
+check("期待防御率97は低い側", _x, "リーグで低い方から3%（Savant評価は上位）")
+check("値が大きいほど良い項目はこれまでどおり",
+      savant.notable({"brl_percent": 96}, kind="batter")[0]["side"], "リーグ上位4%")
 
 sys.exit(done())
