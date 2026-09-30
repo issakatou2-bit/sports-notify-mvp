@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-29T06:02:05.088942+00:00",
+  "updated_at": "2026-09-30T06:01:59.586519+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,77 +13,69 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 5,
-      "tone": "話題",
-      "gist": "アストロズはブルペンゲームを実施、MVP候補アルバレスがワー"
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 5,
-      "tone": "話題",
-      "gist": "レッドソックスはヤンキース戦WCシリーズ、Tolleが先発、"
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 8,
+      "tone": "好調",
+      "gist": "パドレス、マッハドらの活躍でワイルドカード第1戦8-0で勝利"
     },
     {
       "team_id": "145",
       "name": "ホワイトソックス",
       "name_en": "Chicago White Sox",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ホワイトソックスはアストロズ戦WCシリーズでブルペンゲームT"
+      "mentions": 6,
+      "tone": "好調",
+      "gist": "ホワイトソックス、11安打で第1戦勝利、5年ぶりのプレーオフ"
     },
     {
       "team_id": "143",
       "name": "フィリーズ",
       "name_en": "Philadelphia Phillies",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "フィリーズはブレーブス戦NLWCシリーズ、Luzardoが先"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ヤンキースはレッドソックス戦AL WCシリーズ開始"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "パドレスはカブス戦NL WCシリーズ、放映にKershawが"
-    },
-    {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
-      "mentions": 2,
+      "mentions": 5,
       "tone": "不振",
-      "gist": "タイガースのスタジアム設備不備で選手が負傷、訴訟に発展"
+      "gist": "フィリーズ、ブレーブスとの第1戦で8回のホームランで逆転負け"
     },
     {
       "team_id": "144",
       "name": "ブレーブス",
       "name_en": "Atlanta Braves",
+      "mentions": 4,
+      "tone": "好調",
+      "gist": "ブレーブス、フィリーズとの接戦のワイルドカード第1戦を勝利"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "レッドソックス、ヤンキースに0-9で歴史的大敗"
+    },
+    {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "カブス、パドレスにワイルドカード第1戦で0-8で完敗"
+    },
+    {
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "ブレーブスはフィリーズ戦NL WCシリーズ開始"
+      "tone": "不振",
+      "gist": "アストロズ、救援陣の不調でワイルドカード第2戦が必勝試合に"
     }
   ],
   "players": [
     {
-      "name": "村上宗隆",
-      "mentions": 2
+      "name": "大谷翔平",
+      "mentions": 1
     },
     {
-      "name": "大谷翔平",
+      "name": "村上宗隆",
       "mentions": 1
     }
   ]
