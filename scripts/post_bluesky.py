@@ -24,14 +24,39 @@ Blueskyを選ぶ理由: X(旧Twitter) APIは2026年2月に無料枠が完全終�
 """
 
 import argparse
+from datetime import datetime
+import json
 import os
+from pathlib import Path
 import sys
 
 import post_common
-from public_short import public_short
+from public_short import JST, edition_metadata, public_short
 
 # Blueskyの投稿上限は300グラフェム。安全マージンを見て280までに収める
 MAX_POST_GRAPHEMES = 280
+
+
+def post_context(games, short, edition):
+    body, hashtags, site_url = post_common.build_post(games, MAX_POST_GRAPHEMES)
+    source = short or edition
+    if source and source.get('program_version'):
+        body = source['social_summary']
+        hashtags = post_common.collect_hashtags(games, text=body)
+    return body, hashtags, site_url
+
+
+def save_ps_delivery(uri, kind, edition, linked, path=Path('data/bluesky_delivery.json')):
+    if not edition or not edition.get('program_version'):
+        return
+    payload = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {'editions': {}}
+    day = datetime.fromisoformat(edition['published_at'].replace('Z', '+00:00')).astimezone(JST).date().isoformat()
+    payload['editions'][kind + ':' + day] = dict(uri=uri, video_id=edition['video_id'],
+                                             state='linked' if linked else 'pending_video')
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix('.tmp')
+    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    temporary.replace(path)
 
 
 def report_failure(error, stage):
@@ -86,8 +111,9 @@ def main():
     # (以前Xの文字数に合わせて1試合に固定していたが、Xは手動投稿なので
     #  自動投稿側をXの制限に合わせる必要はなかった)
     games = post_common.load_notable_games(args.games, limit=3)
+    edition = edition_metadata(args.kind)
     short = public_short(args.kind)
-    if not games and not (short and short.get('program_version')):
+    if not games and not (edition and edition.get('program_version')):
         print("[info] 今日は注目試合が無いため投稿をスキップします")
         return
 
@@ -103,10 +129,8 @@ def main():
 
     stage = "本文・動画確認"
     try:
-        body, hashtags, site_url = post_common.build_post(games, MAX_POST_GRAPHEMES)
-        if short and short.get('program_version'):
-            body = short['social_summary']
-            hashtags = post_common.collect_hashtags(games, text=body)
+        # 動画の公開待ちと、検証済みPS本文が無いことを混同しない。
+        body, hashtags, site_url = post_context(games, short, edition)
         stage = "ライブラリ読込"
         from atproto import Client, client_utils, models
 
@@ -127,7 +151,8 @@ def main():
         else:
             builder = builder.link(post_common.YOUTUBE_URL, post_common.YOUTUBE_URL)
         stage = "送信"
-        client.send_post(builder, embed=embed)
+        sent = client.send_post(builder, embed=embed)
+        save_ps_delivery(sent.uri, args.kind, edition, bool(short))
         print('[info] 対応する公開動画: ' + (short['url'] if short else '未確認のため一覧を案内'))
         print("[info] Blueskyに投稿しました")
     except Exception as e:

@@ -31,6 +31,15 @@ def candidate(records, kind, now):
     return row
 
 
+def edition_metadata(kind, path='data/published_videos.json', now=None):
+    """Current due edition for factual caption context; this does not prove video access."""
+    try:
+        return candidate(json.loads(Path(path).read_text(encoding='utf-8')), kind,
+                         now or datetime.now(timezone.utc))
+    except (OSError, ValueError, TypeError):
+        return None
+
+
 def public_short(kind, path='data/published_videos.json', now=None):
     now = now or datetime.now(timezone.utc)
     key = os.environ.get('YOUTUBE_API_KEY')
@@ -38,7 +47,7 @@ def public_short(kind, path='data/published_videos.json', now=None):
         print('[info] Short link: API key unavailable; use channel link')
         return None
     try:
-        row = candidate(json.loads(Path(path).read_text(encoding='utf-8')), kind, now)
+        row = edition_metadata(kind, path, now)
         if not row:
             print('[info] Short link: no eligible current-edition record; use channel link')
             return None

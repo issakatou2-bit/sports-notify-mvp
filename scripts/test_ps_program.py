@@ -41,6 +41,24 @@ def fixture(day=28):
 
 
 class ProgramTests(unittest.TestCase):
+    def test_clinch_and_decider_narration_end_as_natural_sentences(self):
+        for played in (1, 2):
+            snap, ev, now = fixture(30)
+            now += timedelta(days=played-1)
+            snap['date'] = now.astimezone(p.JST).date().isoformat()
+            ev['retrieved_at'] = now.isoformat()
+            for g in ev['schedule']['dates'][0]['games']:
+                if g['gameType'] == 'F' and g['seriesGameNumber'] <= played:
+                    g['status']['abstractGameState'] = 'Final'
+                    winner = 'home' if g['seriesGameNumber'] == 1 else 'away'
+                    g['teams'][winner]['isWinner'] = True
+            with self.subTest(played=played):
+                program = p.prepare(snap, ev, 'forecast', now)
+                texts = ' '.join(s['text'] for s in program['segments'])
+                self.assertIn('試合です。', texts)
+                self.assertNotIn('かかるです', texts)
+                self.assertNotIn('制するです', texts)
+
     def test_spoken_rounds_preserve_team_abbreviations_and_display(self):
         from notability_engine import apply_readings
         from ps_render_template import overlaps

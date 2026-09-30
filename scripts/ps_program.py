@@ -207,10 +207,10 @@ def forecast(ctx, games, rows, now, target_day=None):
     for index,c in enumerate(cards,1):
         state = situation(c)
         rnd = ROUND[c['round']][0]
-        note = (('前戦の結果次第で開催' if c['conditional'] else '前戦は結果未確定') if state == 'pending_results' else
-                '勝った球団がシリーズを制する' if state == 'decider' else
+        note = (('前戦の結果次第で開催される試合' if c['conditional'] else '前戦は結果未確定') if state == 'pending_results' else
+                '勝った球団がシリーズを制する試合' if state == 'decider' else
                 '世界一がかかる試合' if c['round'] == 'W' and state == 'clinch_chance' else
-                '突破と敗退回避がかかる' if state == 'clinch_chance' else 'シリーズの初戦' if state == 'opening' else 'シリーズの次戦')
+                '突破と敗退回避がかかる試合' if state == 'clinch_chance' else 'シリーズの初戦' if state == 'opening' else 'シリーズの次戦')
         first_item=dict(label='日本時間の開始予定',value=c['when'],value_size=110)
         if state=='opening':
             if c['home_pitcher'] or c['away_pitcher']:
