@@ -133,7 +133,7 @@ def check(d: dict) -> list:
                     # 文の主語（ホワイトソックス）の数字。9/30、WCS初戦に
                     # 勝ったホワイトソックスを正しく言った長編を止めた。
                     if unit == "勝" and re.match(
-                            re.escape(name) + r"(?:を?相手に|に|との)",
+                            re.escape(name) + r"(?:を?相手に|に|との|を)",
                             m.group(0)):
                         continue
                     got = float(m.group(1))
