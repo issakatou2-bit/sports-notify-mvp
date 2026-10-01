@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T13:05:07.507420+00:00",
+  "generated_at": "2026-10-01T06:23:16.840975+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -2247,8 +2247,242 @@
           "ga": 13
         }
       ],
-      "last_season": [],
+      "last_season": [
+        {
+          "position": 1,
+          "team": "FC Internazionale Milano",
+          "played": 38,
+          "won": 27,
+          "draw": 6,
+          "lost": 5,
+          "points": 87,
+          "gf": 89,
+          "ga": 35
+        },
+        {
+          "position": 2,
+          "team": "SSC Napoli",
+          "played": 38,
+          "won": 23,
+          "draw": 7,
+          "lost": 8,
+          "points": 76,
+          "gf": 58,
+          "ga": 36
+        },
+        {
+          "position": 3,
+          "team": "AS Roma",
+          "played": 38,
+          "won": 23,
+          "draw": 4,
+          "lost": 11,
+          "points": 73,
+          "gf": 59,
+          "ga": 31
+        },
+        {
+          "position": 4,
+          "team": "Como 1907",
+          "played": 38,
+          "won": 20,
+          "draw": 11,
+          "lost": 7,
+          "points": 71,
+          "gf": 65,
+          "ga": 29
+        },
+        {
+          "position": 5,
+          "team": "AC Milan",
+          "played": 38,
+          "won": 20,
+          "draw": 10,
+          "lost": 8,
+          "points": 70,
+          "gf": 53,
+          "ga": 35
+        },
+        {
+          "position": 6,
+          "team": "Juventus FC",
+          "played": 38,
+          "won": 19,
+          "draw": 12,
+          "lost": 7,
+          "points": 69,
+          "gf": 61,
+          "ga": 34
+        },
+        {
+          "position": 7,
+          "team": "Atalanta BC",
+          "played": 38,
+          "won": 15,
+          "draw": 14,
+          "lost": 9,
+          "points": 59,
+          "gf": 51,
+          "ga": 36
+        },
+        {
+          "position": 8,
+          "team": "Bologna FC 1909",
+          "played": 38,
+          "won": 16,
+          "draw": 8,
+          "lost": 14,
+          "points": 56,
+          "gf": 49,
+          "ga": 46
+        },
+        {
+          "position": 9,
+          "team": "SS Lazio",
+          "played": 38,
+          "won": 14,
+          "draw": 12,
+          "lost": 12,
+          "points": 54,
+          "gf": 41,
+          "ga": 40
+        },
+        {
+          "position": 10,
+          "team": "Udinese Calcio",
+          "played": 38,
+          "won": 14,
+          "draw": 8,
+          "lost": 16,
+          "points": 50,
+          "gf": 45,
+          "ga": 48
+        },
+        {
+          "position": 11,
+          "team": "US Sassuolo Calcio",
+          "played": 38,
+          "won": 14,
+          "draw": 7,
+          "lost": 17,
+          "points": 49,
+          "gf": 46,
+          "ga": 50
+        },
+        {
+          "position": 12,
+          "team": "Parma Calcio 1913",
+          "played": 38,
+          "won": 11,
+          "draw": 12,
+          "lost": 15,
+          "points": 45,
+          "gf": 28,
+          "ga": 46
+        },
+        {
+          "position": 13,
+          "team": "Torino FC",
+          "played": 38,
+          "won": 12,
+          "draw": 9,
+          "lost": 17,
+          "points": 45,
+          "gf": 44,
+          "ga": 63
+        },
+        {
+          "position": 14,
+          "team": "Cagliari Calcio",
+          "played": 38,
+          "won": 11,
+          "draw": 10,
+          "lost": 17,
+          "points": 43,
+          "gf": 40,
+          "ga": 53
+        },
+        {
+          "position": 15,
+          "team": "ACF Fiorentina",
+          "played": 38,
+          "won": 9,
+          "draw": 15,
+          "lost": 14,
+          "points": 42,
+          "gf": 41,
+          "ga": 50
+        },
+        {
+          "position": 16,
+          "team": "Genoa CFC",
+          "played": 38,
+          "won": 10,
+          "draw": 11,
+          "lost": 17,
+          "points": 41,
+          "gf": 41,
+          "ga": 51
+        },
+        {
+          "position": 17,
+          "team": "US Lecce",
+          "played": 38,
+          "won": 10,
+          "draw": 8,
+          "lost": 20,
+          "points": 38,
+          "gf": 28,
+          "ga": 50
+        },
+        {
+          "position": 18,
+          "team": "US Cremonese",
+          "played": 38,
+          "won": 8,
+          "draw": 10,
+          "lost": 20,
+          "points": 34,
+          "gf": 32,
+          "ga": 57
+        },
+        {
+          "position": 19,
+          "team": "Hellas Verona FC",
+          "played": 38,
+          "won": 3,
+          "draw": 12,
+          "lost": 23,
+          "points": 21,
+          "gf": 25,
+          "ga": 61
+        },
+        {
+          "position": 20,
+          "team": "AC Pisa 1909",
+          "played": 38,
+          "won": 2,
+          "draw": 12,
+          "lost": 24,
+          "points": 18,
+          "gf": 26,
+          "ga": 71
+        }
+      ],
+      "last_season_year": 2025,
       "highlights": [
+        {
+          "matchday": 3,
+          "utc": "2026-09-05T16:00:00Z",
+          "home": "FC Internazionale Milano",
+          "away": "SSC Napoli",
+          "home_short": "Inter",
+          "away_short": "Napoli",
+          "score": 33.3,
+          "reasons": [
+            "昨季1位と2位"
+          ]
+        },
         {
           "matchday": 1,
           "utc": "2026-08-22T18:45:00Z",
@@ -2284,13 +2518,791 @@
           "reasons": [
             "菅原由勢の所属クラブ"
           ]
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-08-30T16:30:00Z",
+          "home": "SSC Napoli",
+          "away": "Como 1907",
+          "home_short": "Napoli",
+          "away_short": "Como 1907",
+          "score": 20.0,
+          "reasons": [
+            "昨季2位と4位"
+          ]
         }
       ]
     },
     {
       "code": "BL1",
       "name_jp": "ブンデスリーガ",
-      "highlights": []
+      "season": {
+        "start": "2026-08-28",
+        "end": "2027-05-22",
+        "matchday": 5,
+        "year": 2026
+      },
+      "stale": false,
+      "openers": [
+        {
+          "matchday": 1,
+          "utc": "2026-08-28T18:30:00Z",
+          "home": "FC Bayern München",
+          "away": "VfB Stuttgart",
+          "home_short": "Bayern",
+          "away_short": "Stuttgart"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "RB Leipzig",
+          "away": "Borussia Mönchengladbach",
+          "home_short": "RB Leipzig",
+          "away_short": "M'gladbach"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "1. FSV Mainz 05",
+          "away": "SC Paderborn 07",
+          "home_short": "Mainz",
+          "away_short": "SC Paderborn"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "1. FC Union Berlin",
+          "away": "Eintracht Frankfurt",
+          "home_short": "Union Berlin",
+          "away_short": "Frankfurt"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "SV 07 Elversberg",
+          "away": "Bayer 04 Leverkusen",
+          "home_short": "Elversberg",
+          "away_short": "Leverkusen"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "1. FC Köln",
+          "away": "TSG 1899 Hoffenheim",
+          "home_short": "1. FC Köln",
+          "away_short": "Hoffenheim"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T16:30:00Z",
+          "home": "Borussia Dortmund",
+          "away": "Hamburger SV",
+          "home_short": "Dortmund",
+          "away_short": "HSV"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-30T13:30:00Z",
+          "home": "SC Freiburg",
+          "away": "SV Werder Bremen",
+          "home_short": "Freiburg",
+          "away_short": "Bremen"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-30T15:30:00Z",
+          "home": "FC Augsburg",
+          "away": "FC Schalke 04",
+          "home_short": "Augsburg",
+          "away_short": "Schalke"
+        }
+      ],
+      "early": [
+        {
+          "matchday": 1,
+          "utc": "2026-08-28T18:30:00Z",
+          "home": "FC Bayern München",
+          "away": "VfB Stuttgart",
+          "home_short": "Bayern",
+          "away_short": "Stuttgart"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "RB Leipzig",
+          "away": "Borussia Mönchengladbach",
+          "home_short": "RB Leipzig",
+          "away_short": "M'gladbach"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "1. FSV Mainz 05",
+          "away": "SC Paderborn 07",
+          "home_short": "Mainz",
+          "away_short": "SC Paderborn"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "1. FC Union Berlin",
+          "away": "Eintracht Frankfurt",
+          "home_short": "Union Berlin",
+          "away_short": "Frankfurt"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "SV 07 Elversberg",
+          "away": "Bayer 04 Leverkusen",
+          "home_short": "Elversberg",
+          "away_short": "Leverkusen"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T13:30:00Z",
+          "home": "1. FC Köln",
+          "away": "TSG 1899 Hoffenheim",
+          "home_short": "1. FC Köln",
+          "away_short": "Hoffenheim"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-29T16:30:00Z",
+          "home": "Borussia Dortmund",
+          "away": "Hamburger SV",
+          "home_short": "Dortmund",
+          "away_short": "HSV"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-30T13:30:00Z",
+          "home": "SC Freiburg",
+          "away": "SV Werder Bremen",
+          "home_short": "Freiburg",
+          "away_short": "Bremen"
+        },
+        {
+          "matchday": 1,
+          "utc": "2026-08-30T15:30:00Z",
+          "home": "FC Augsburg",
+          "away": "FC Schalke 04",
+          "home_short": "Augsburg",
+          "away_short": "Schalke"
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-04T18:30:00Z",
+          "home": "VfB Stuttgart",
+          "away": "1. FC Köln",
+          "home_short": "Stuttgart",
+          "away_short": "1. FC Köln"
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-05T13:30:00Z",
+          "home": "SV Werder Bremen",
+          "away": "RB Leipzig",
+          "home_short": "Bremen",
+          "away_short": "RB Leipzig"
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-05T13:30:00Z",
+          "home": "TSG 1899 Hoffenheim",
+          "away": "Borussia Dortmund",
+          "home_short": "Hoffenheim",
+          "away_short": "Dortmund"
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-05T13:30:00Z",
+          "home": "Bayer 04 Leverkusen",
+          "away": "1. FC Union Berlin",
+          "home_short": "Leverkusen",
+          "away_short": "Union Berlin"
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-05T13:30:00Z",
+          "home": "Borussia Mönchengladbach",
+          "away": "SV 07 Elversberg",
+          "home_short": "M'gladbach",
+          "away_short": "Elversberg"
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-05T13:30:00Z",
+          "home": "SC Paderborn 07",
+          "away": "SC Freiburg",
+          "home_short": "SC Paderborn",
+          "away_short": "Freiburg"
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-05T16:30:00Z",
+          "home": "FC Schalke 04",
+          "away": "FC Bayern München",
+          "home_short": "Schalke",
+          "away_short": "Bayern"
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-06T13:30:00Z",
+          "home": "Hamburger SV",
+          "away": "1. FSV Mainz 05",
+          "home_short": "HSV",
+          "away_short": "Mainz"
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-06T15:30:00Z",
+          "home": "Eintracht Frankfurt",
+          "away": "FC Augsburg",
+          "home_short": "Frankfurt",
+          "away_short": "Augsburg"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-11T18:30:00Z",
+          "home": "1. FC Union Berlin",
+          "away": "FC Schalke 04",
+          "home_short": "Union Berlin",
+          "away_short": "Schalke"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-12T13:30:00Z",
+          "home": "TSG 1899 Hoffenheim",
+          "away": "VfB Stuttgart",
+          "home_short": "Hoffenheim",
+          "away_short": "Stuttgart"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-12T13:30:00Z",
+          "home": "Borussia Dortmund",
+          "away": "SC Paderborn 07",
+          "home_short": "Dortmund",
+          "away_short": "SC Paderborn"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-12T13:30:00Z",
+          "home": "FC Augsburg",
+          "away": "Bayer 04 Leverkusen",
+          "home_short": "Augsburg",
+          "away_short": "Leverkusen"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-12T13:30:00Z",
+          "home": "1. FSV Mainz 05",
+          "away": "Eintracht Frankfurt",
+          "home_short": "Mainz",
+          "away_short": "Frankfurt"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-12T13:30:00Z",
+          "home": "SC Freiburg",
+          "away": "Borussia Mönchengladbach",
+          "home_short": "Freiburg",
+          "away_short": "M'gladbach"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-12T16:30:00Z",
+          "home": "1. FC Köln",
+          "away": "SV Werder Bremen",
+          "home_short": "1. FC Köln",
+          "away_short": "Bremen"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-13T13:30:00Z",
+          "home": "RB Leipzig",
+          "away": "Hamburger SV",
+          "home_short": "RB Leipzig",
+          "away_short": "HSV"
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-13T15:30:00Z",
+          "home": "SV 07 Elversberg",
+          "away": "FC Bayern München",
+          "home_short": "Elversberg",
+          "away_short": "Bayern"
+        }
+      ],
+      "table": [
+        {
+          "position": 1,
+          "team": "Borussia Dortmund",
+          "played": 4,
+          "won": 4,
+          "draw": 0,
+          "lost": 0,
+          "points": 12,
+          "gf": 9,
+          "ga": 2
+        },
+        {
+          "position": 2,
+          "team": "FC Bayern München",
+          "played": 4,
+          "won": 3,
+          "draw": 1,
+          "lost": 0,
+          "points": 10,
+          "gf": 14,
+          "ga": 2
+        },
+        {
+          "position": 3,
+          "team": "SC Freiburg",
+          "played": 4,
+          "won": 3,
+          "draw": 1,
+          "lost": 0,
+          "points": 10,
+          "gf": 12,
+          "ga": 3
+        },
+        {
+          "position": 4,
+          "team": "FC Augsburg",
+          "played": 4,
+          "won": 2,
+          "draw": 1,
+          "lost": 1,
+          "points": 7,
+          "gf": 11,
+          "ga": 6
+        },
+        {
+          "position": 5,
+          "team": "Bayer 04 Leverkusen",
+          "played": 4,
+          "won": 2,
+          "draw": 1,
+          "lost": 1,
+          "points": 7,
+          "gf": 10,
+          "ga": 5
+        },
+        {
+          "position": 6,
+          "team": "1. FSV Mainz 05",
+          "played": 4,
+          "won": 2,
+          "draw": 1,
+          "lost": 1,
+          "points": 7,
+          "gf": 10,
+          "ga": 6
+        },
+        {
+          "position": 7,
+          "team": "SV 07 Elversberg",
+          "played": 4,
+          "won": 2,
+          "draw": 1,
+          "lost": 1,
+          "points": 7,
+          "gf": 8,
+          "ga": 7
+        },
+        {
+          "position": 8,
+          "team": "SV Werder Bremen",
+          "played": 4,
+          "won": 2,
+          "draw": 1,
+          "lost": 1,
+          "points": 7,
+          "gf": 8,
+          "ga": 8
+        },
+        {
+          "position": 9,
+          "team": "RB Leipzig",
+          "played": 4,
+          "won": 2,
+          "draw": 0,
+          "lost": 2,
+          "points": 6,
+          "gf": 9,
+          "ga": 5
+        },
+        {
+          "position": 10,
+          "team": "Eintracht Frankfurt",
+          "played": 4,
+          "won": 1,
+          "draw": 2,
+          "lost": 1,
+          "points": 5,
+          "gf": 9,
+          "ga": 10
+        },
+        {
+          "position": 11,
+          "team": "FC Schalke 04",
+          "played": 4,
+          "won": 1,
+          "draw": 2,
+          "lost": 1,
+          "points": 5,
+          "gf": 3,
+          "ga": 4
+        },
+        {
+          "position": 12,
+          "team": "SC Paderborn 07",
+          "played": 4,
+          "won": 1,
+          "draw": 1,
+          "lost": 2,
+          "points": 4,
+          "gf": 3,
+          "ga": 5
+        },
+        {
+          "position": 13,
+          "team": "1. FC Köln",
+          "played": 4,
+          "won": 1,
+          "draw": 1,
+          "lost": 2,
+          "points": 4,
+          "gf": 6,
+          "ga": 9
+        },
+        {
+          "position": 14,
+          "team": "TSG 1899 Hoffenheim",
+          "played": 4,
+          "won": 1,
+          "draw": 0,
+          "lost": 3,
+          "points": 3,
+          "gf": 7,
+          "ga": 10
+        },
+        {
+          "position": 15,
+          "team": "VfB Stuttgart",
+          "played": 4,
+          "won": 1,
+          "draw": 0,
+          "lost": 3,
+          "points": 3,
+          "gf": 6,
+          "ga": 9
+        },
+        {
+          "position": 16,
+          "team": "Hamburger SV",
+          "played": 4,
+          "won": 1,
+          "draw": 0,
+          "lost": 3,
+          "points": 3,
+          "gf": 2,
+          "ga": 13
+        },
+        {
+          "position": 17,
+          "team": "1. FC Union Berlin",
+          "played": 4,
+          "won": 0,
+          "draw": 1,
+          "lost": 3,
+          "points": 1,
+          "gf": 4,
+          "ga": 17
+        },
+        {
+          "position": 18,
+          "team": "Borussia Mönchengladbach",
+          "played": 4,
+          "won": 0,
+          "draw": 0,
+          "lost": 4,
+          "points": 0,
+          "gf": 6,
+          "ga": 16
+        }
+      ],
+      "last_season": [
+        {
+          "position": 1,
+          "team": "FC Bayern München",
+          "played": 34,
+          "won": 28,
+          "draw": 5,
+          "lost": 1,
+          "points": 89,
+          "gf": 122,
+          "ga": 36
+        },
+        {
+          "position": 2,
+          "team": "Borussia Dortmund",
+          "played": 34,
+          "won": 22,
+          "draw": 7,
+          "lost": 5,
+          "points": 73,
+          "gf": 70,
+          "ga": 34
+        },
+        {
+          "position": 3,
+          "team": "RB Leipzig",
+          "played": 34,
+          "won": 20,
+          "draw": 5,
+          "lost": 9,
+          "points": 65,
+          "gf": 66,
+          "ga": 47
+        },
+        {
+          "position": 4,
+          "team": "VfB Stuttgart",
+          "played": 34,
+          "won": 18,
+          "draw": 8,
+          "lost": 8,
+          "points": 62,
+          "gf": 71,
+          "ga": 49
+        },
+        {
+          "position": 5,
+          "team": "TSG 1899 Hoffenheim",
+          "played": 34,
+          "won": 18,
+          "draw": 7,
+          "lost": 9,
+          "points": 61,
+          "gf": 65,
+          "ga": 52
+        },
+        {
+          "position": 6,
+          "team": "Bayer 04 Leverkusen",
+          "played": 34,
+          "won": 17,
+          "draw": 8,
+          "lost": 9,
+          "points": 59,
+          "gf": 68,
+          "ga": 47
+        },
+        {
+          "position": 7,
+          "team": "SC Freiburg",
+          "played": 34,
+          "won": 13,
+          "draw": 8,
+          "lost": 13,
+          "points": 47,
+          "gf": 51,
+          "ga": 57
+        },
+        {
+          "position": 8,
+          "team": "Eintracht Frankfurt",
+          "played": 34,
+          "won": 11,
+          "draw": 11,
+          "lost": 12,
+          "points": 44,
+          "gf": 61,
+          "ga": 65
+        },
+        {
+          "position": 9,
+          "team": "FC Augsburg",
+          "played": 34,
+          "won": 12,
+          "draw": 7,
+          "lost": 15,
+          "points": 43,
+          "gf": 45,
+          "ga": 61
+        },
+        {
+          "position": 10,
+          "team": "1. FSV Mainz 05",
+          "played": 34,
+          "won": 10,
+          "draw": 10,
+          "lost": 14,
+          "points": 40,
+          "gf": 44,
+          "ga": 53
+        },
+        {
+          "position": 11,
+          "team": "1. FC Union Berlin",
+          "played": 34,
+          "won": 10,
+          "draw": 9,
+          "lost": 15,
+          "points": 39,
+          "gf": 44,
+          "ga": 58
+        },
+        {
+          "position": 12,
+          "team": "Borussia Mönchengladbach",
+          "played": 34,
+          "won": 9,
+          "draw": 11,
+          "lost": 14,
+          "points": 38,
+          "gf": 42,
+          "ga": 53
+        },
+        {
+          "position": 13,
+          "team": "Hamburger SV",
+          "played": 34,
+          "won": 9,
+          "draw": 11,
+          "lost": 14,
+          "points": 38,
+          "gf": 40,
+          "ga": 54
+        },
+        {
+          "position": 14,
+          "team": "1. FC Köln",
+          "played": 34,
+          "won": 7,
+          "draw": 11,
+          "lost": 16,
+          "points": 32,
+          "gf": 49,
+          "ga": 63
+        },
+        {
+          "position": 15,
+          "team": "SV Werder Bremen",
+          "played": 34,
+          "won": 8,
+          "draw": 8,
+          "lost": 18,
+          "points": 32,
+          "gf": 37,
+          "ga": 60
+        },
+        {
+          "position": 16,
+          "team": "VfL Wolfsburg",
+          "played": 34,
+          "won": 7,
+          "draw": 8,
+          "lost": 19,
+          "points": 29,
+          "gf": 45,
+          "ga": 69
+        },
+        {
+          "position": 17,
+          "team": "1. FC Heidenheim 1846",
+          "played": 34,
+          "won": 6,
+          "draw": 8,
+          "lost": 20,
+          "points": 26,
+          "gf": 41,
+          "ga": 72
+        },
+        {
+          "position": 18,
+          "team": "FC St. Pauli 1910",
+          "played": 34,
+          "won": 6,
+          "draw": 8,
+          "lost": 20,
+          "points": 26,
+          "gf": 29,
+          "ga": 60
+        }
+      ],
+      "last_season_year": 2025,
+      "highlights": [
+        {
+          "matchday": 1,
+          "utc": "2026-08-28T18:30:00Z",
+          "home": "FC Bayern München",
+          "away": "VfB Stuttgart",
+          "home_short": "Bayern",
+          "away_short": "Stuttgart",
+          "score": 50.0,
+          "reasons": [
+            "昨季1位と4位",
+            "伊藤洋輝の所属クラブ"
+          ]
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-05T13:30:00Z",
+          "home": "TSG 1899 Hoffenheim",
+          "away": "Borussia Dortmund",
+          "home_short": "Hoffenheim",
+          "away_short": "Dortmund",
+          "score": 43.3,
+          "reasons": [
+            "昨季5位と2位",
+            "町田浩樹の所属クラブ"
+          ]
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-12T13:30:00Z",
+          "home": "TSG 1899 Hoffenheim",
+          "away": "VfB Stuttgart",
+          "home_short": "Hoffenheim",
+          "away_short": "Stuttgart",
+          "score": 43.3,
+          "reasons": [
+            "昨季5位と4位",
+            "町田浩樹の所属クラブ"
+          ]
+        },
+        {
+          "matchday": 2,
+          "utc": "2026-09-06T15:30:00Z",
+          "home": "Eintracht Frankfurt",
+          "away": "FC Augsburg",
+          "home_short": "Frankfurt",
+          "away_short": "Augsburg",
+          "score": 38.0,
+          "reasons": [
+            "昨季8位と9位",
+            "堂安律・小杉啓太の所属クラブ"
+          ]
+        },
+        {
+          "matchday": 3,
+          "utc": "2026-09-12T13:30:00Z",
+          "home": "1. FSV Mainz 05",
+          "away": "Eintracht Frankfurt",
+          "home_short": "Mainz",
+          "away_short": "Frankfurt",
+          "score": 38.0,
+          "reasons": [
+            "昨季10位と8位",
+            "佐野海舟・川﨑颯太・堂安律・小杉啓太の所属クラブ"
+          ]
+        }
+      ]
     },
     {
       "code": "FL1",
@@ -4050,8 +5062,419 @@
           "ga": 5
         }
       ],
-      "last_season": [],
+      "last_season": [
+        {
+          "position": 1,
+          "team": "Arsenal FC",
+          "played": 8,
+          "won": 8,
+          "draw": 0,
+          "lost": 0,
+          "points": 24,
+          "gf": 23,
+          "ga": 4
+        },
+        {
+          "position": 2,
+          "team": "FC Bayern München",
+          "played": 8,
+          "won": 7,
+          "draw": 0,
+          "lost": 1,
+          "points": 21,
+          "gf": 22,
+          "ga": 8
+        },
+        {
+          "position": 3,
+          "team": "Liverpool FC",
+          "played": 8,
+          "won": 6,
+          "draw": 0,
+          "lost": 2,
+          "points": 18,
+          "gf": 20,
+          "ga": 8
+        },
+        {
+          "position": 4,
+          "team": "Tottenham Hotspur FC",
+          "played": 8,
+          "won": 5,
+          "draw": 2,
+          "lost": 1,
+          "points": 17,
+          "gf": 17,
+          "ga": 7
+        },
+        {
+          "position": 5,
+          "team": "FC Barcelona",
+          "played": 8,
+          "won": 5,
+          "draw": 1,
+          "lost": 2,
+          "points": 16,
+          "gf": 22,
+          "ga": 14
+        },
+        {
+          "position": 6,
+          "team": "Chelsea FC",
+          "played": 8,
+          "won": 5,
+          "draw": 1,
+          "lost": 2,
+          "points": 16,
+          "gf": 17,
+          "ga": 10
+        },
+        {
+          "position": 7,
+          "team": "Sporting Clube de Portugal",
+          "played": 8,
+          "won": 5,
+          "draw": 1,
+          "lost": 2,
+          "points": 16,
+          "gf": 17,
+          "ga": 11
+        },
+        {
+          "position": 8,
+          "team": "Manchester City FC",
+          "played": 8,
+          "won": 5,
+          "draw": 1,
+          "lost": 2,
+          "points": 16,
+          "gf": 15,
+          "ga": 9
+        },
+        {
+          "position": 9,
+          "team": "Real Madrid CF",
+          "played": 8,
+          "won": 5,
+          "draw": 0,
+          "lost": 3,
+          "points": 15,
+          "gf": 21,
+          "ga": 12
+        },
+        {
+          "position": 10,
+          "team": "FC Internazionale Milano",
+          "played": 8,
+          "won": 5,
+          "draw": 0,
+          "lost": 3,
+          "points": 15,
+          "gf": 15,
+          "ga": 7
+        },
+        {
+          "position": 11,
+          "team": "Paris Saint-Germain FC",
+          "played": 8,
+          "won": 4,
+          "draw": 2,
+          "lost": 2,
+          "points": 14,
+          "gf": 21,
+          "ga": 11
+        },
+        {
+          "position": 12,
+          "team": "Newcastle United FC",
+          "played": 8,
+          "won": 4,
+          "draw": 2,
+          "lost": 2,
+          "points": 14,
+          "gf": 17,
+          "ga": 7
+        },
+        {
+          "position": 13,
+          "team": "Juventus FC",
+          "played": 8,
+          "won": 3,
+          "draw": 4,
+          "lost": 1,
+          "points": 13,
+          "gf": 14,
+          "ga": 10
+        },
+        {
+          "position": 14,
+          "team": "Club Atlético de Madrid",
+          "played": 8,
+          "won": 4,
+          "draw": 1,
+          "lost": 3,
+          "points": 13,
+          "gf": 17,
+          "ga": 15
+        },
+        {
+          "position": 15,
+          "team": "Atalanta BC",
+          "played": 8,
+          "won": 4,
+          "draw": 1,
+          "lost": 3,
+          "points": 13,
+          "gf": 10,
+          "ga": 10
+        },
+        {
+          "position": 16,
+          "team": "Bayer 04 Leverkusen",
+          "played": 8,
+          "won": 3,
+          "draw": 3,
+          "lost": 2,
+          "points": 12,
+          "gf": 13,
+          "ga": 14
+        },
+        {
+          "position": 17,
+          "team": "Borussia Dortmund",
+          "played": 8,
+          "won": 3,
+          "draw": 2,
+          "lost": 3,
+          "points": 11,
+          "gf": 19,
+          "ga": 17
+        },
+        {
+          "position": 18,
+          "team": "PAE Olympiakos SFP",
+          "played": 8,
+          "won": 3,
+          "draw": 2,
+          "lost": 3,
+          "points": 11,
+          "gf": 10,
+          "ga": 14
+        },
+        {
+          "position": 19,
+          "team": "Club Brugge KV",
+          "played": 8,
+          "won": 3,
+          "draw": 1,
+          "lost": 4,
+          "points": 10,
+          "gf": 15,
+          "ga": 17
+        },
+        {
+          "position": 20,
+          "team": "Galatasaray SK",
+          "played": 8,
+          "won": 3,
+          "draw": 1,
+          "lost": 4,
+          "points": 10,
+          "gf": 9,
+          "ga": 11
+        },
+        {
+          "position": 21,
+          "team": "AS Monaco FC",
+          "played": 8,
+          "won": 2,
+          "draw": 4,
+          "lost": 2,
+          "points": 10,
+          "gf": 8,
+          "ga": 14
+        },
+        {
+          "position": 22,
+          "team": "Qarabağ Ağdam FK",
+          "played": 8,
+          "won": 3,
+          "draw": 1,
+          "lost": 4,
+          "points": 10,
+          "gf": 13,
+          "ga": 21
+        },
+        {
+          "position": 23,
+          "team": "FK Bodø/Glimt",
+          "played": 8,
+          "won": 2,
+          "draw": 3,
+          "lost": 3,
+          "points": 9,
+          "gf": 14,
+          "ga": 15
+        },
+        {
+          "position": 24,
+          "team": "Sport Lisboa e Benfica",
+          "played": 8,
+          "won": 3,
+          "draw": 0,
+          "lost": 5,
+          "points": 9,
+          "gf": 10,
+          "ga": 12
+        },
+        {
+          "position": 25,
+          "team": "Olympique de Marseille",
+          "played": 8,
+          "won": 3,
+          "draw": 0,
+          "lost": 5,
+          "points": 9,
+          "gf": 11,
+          "ga": 14
+        },
+        {
+          "position": 26,
+          "team": "Paphos FC",
+          "played": 8,
+          "won": 2,
+          "draw": 3,
+          "lost": 3,
+          "points": 9,
+          "gf": 8,
+          "ga": 11
+        },
+        {
+          "position": 27,
+          "team": "Royale Union Saint-Gilloise",
+          "played": 8,
+          "won": 3,
+          "draw": 0,
+          "lost": 5,
+          "points": 9,
+          "gf": 8,
+          "ga": 17
+        },
+        {
+          "position": 28,
+          "team": "PSV",
+          "played": 8,
+          "won": 2,
+          "draw": 2,
+          "lost": 4,
+          "points": 8,
+          "gf": 16,
+          "ga": 16
+        },
+        {
+          "position": 29,
+          "team": "Athletic Club",
+          "played": 8,
+          "won": 2,
+          "draw": 2,
+          "lost": 4,
+          "points": 8,
+          "gf": 9,
+          "ga": 14
+        },
+        {
+          "position": 30,
+          "team": "SSC Napoli",
+          "played": 8,
+          "won": 2,
+          "draw": 2,
+          "lost": 4,
+          "points": 8,
+          "gf": 9,
+          "ga": 15
+        },
+        {
+          "position": 31,
+          "team": "FC København",
+          "played": 8,
+          "won": 2,
+          "draw": 2,
+          "lost": 4,
+          "points": 8,
+          "gf": 12,
+          "ga": 21
+        },
+        {
+          "position": 32,
+          "team": "AFC Ajax",
+          "played": 8,
+          "won": 2,
+          "draw": 0,
+          "lost": 6,
+          "points": 6,
+          "gf": 8,
+          "ga": 21
+        },
+        {
+          "position": 33,
+          "team": "Eintracht Frankfurt",
+          "played": 8,
+          "won": 1,
+          "draw": 1,
+          "lost": 6,
+          "points": 4,
+          "gf": 10,
+          "ga": 21
+        },
+        {
+          "position": 34,
+          "team": "SK Slavia Praha",
+          "played": 8,
+          "won": 0,
+          "draw": 3,
+          "lost": 5,
+          "points": 3,
+          "gf": 5,
+          "ga": 19
+        },
+        {
+          "position": 35,
+          "team": "Villarreal CF",
+          "played": 8,
+          "won": 0,
+          "draw": 1,
+          "lost": 7,
+          "points": 1,
+          "gf": 5,
+          "ga": 18
+        },
+        {
+          "position": 36,
+          "team": "FK Kairat",
+          "played": 8,
+          "won": 0,
+          "draw": 1,
+          "lost": 7,
+          "points": 1,
+          "gf": 7,
+          "ga": 22
+        }
+      ],
+      "last_season_year": 2025,
       "highlights": [
+        {
+          "matchday": 3,
+          "utc": "2026-10-21T19:00:00Z",
+          "home": "FC Bayern München",
+          "away": "Arsenal FC",
+          "home_short": "Bayern",
+          "away_short": "Arsenal",
+          "score": 63.3,
+          "reasons": [
+            "昨季2位と1位",
+            "伊藤洋輝の所属クラブ"
+          ]
+        },
         {
           "matchday": 1,
           "utc": "2026-09-08T19:00:00Z",
@@ -4098,18 +5521,6 @@
           "score": 30.0,
           "reasons": [
             "上田綺世の所属クラブ"
-          ]
-        },
-        {
-          "matchday": 2,
-          "utc": "2026-10-13T19:00:00Z",
-          "home": "Viking FK",
-          "away": "FC Bayern München",
-          "home_short": "Viking",
-          "away_short": "Bayern",
-          "score": 30.0,
-          "reasons": [
-            "伊藤洋輝の所属クラブ"
           ]
         }
       ]
