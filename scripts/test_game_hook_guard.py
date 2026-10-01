@@ -171,5 +171,73 @@ class GameHookGuard(unittest.TestCase):
             self.assertEqual(games.read_bytes(), before)
 
 
+
+class PostseasonPurposeGuard(unittest.TestCase):
+    def test_current_game_objective_is_rejected_in_each_round(self):
+        for round_code in ('F', 'D', 'L', 'W'):
+            game = {'league': 'MLB', 'game_type': round_code,
+                    'notification_hook': 'PS戦。ポストシーズン進出を決める第3戦',
+                    'ai_summary': 'この第3戦は、ポストシーズンへの進出をかけた一戦。'}
+            self.assertTrue(guard.rejection_reasons(game))
+            self.assertTrue(guard.postseason_rejections(game, 'ai_summary'))
+            self.assertEqual(guard.validated_hook(game), '')
+
+    def test_regular_season_and_soccer_stay_untouched(self):
+        for league, kind in [('MLB', 'R'), ('MLB', None), ('soccer', 'F')]:
+            game = {'league': league, 'game_type': kind,
+                    'notification_hook': 'ポストシーズン進出を決める第3戦',
+                    'ai_summary': 'この試合はポストシーズンへの進出をかけた一戦。'}
+            self.assertFalse(guard.rejection_reasons(game))
+            self.assertFalse(guard.postseason_rejections(game, 'ai_summary'))
+
+    def test_correct_stage_and_historical_mentions_are_preserved(self):
+        for text in ['この第3戦は地区シリーズへの進出をかけた一戦。',
+                     '昨年ポストシーズン進出を決めた第3戦。',
+                     'レギュラーシーズンでポストシーズン進出を決めた。']:
+            self.assertFalse(guard.postseason_rejections(
+                {'league': 'MLB', 'game_type': 'F', 'ai_summary': text}, 'ai_summary'))
+
+    def test_matching_rss_archive_and_other_items_are_preserved(self):
+        import xml.etree.ElementTree as ET
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); game = {'league': 'MLB', 'game_type': 'F', 'game_id': '849844',
+                'notification_hook': 'ポストシーズン進出を決める第3戦',
+                'ai_summary': 'この第3戦はポストシーズンへの進出をかけた最終戦。',
+                'reasons': [{'text': 'WCS第3戦。1勝1敗。'}]}
+            data = {'generated_at': '2026-10-01T09:52:31Z', 'games': [game]}
+            write_json(root/'games.json', data); write_json(root/'archive/2026-10-01.json', data)
+            rss = ET.Element('rss'); channel = ET.SubElement(rss, 'channel')
+            for guid in ('849844-2026-10-01', '849844-2026-09-30', 'soccer-2026-10-01'):
+                item = ET.SubElement(channel, 'item'); ET.SubElement(item, 'guid').text = guid
+                ET.SubElement(item, 'pubDate').text = 'Thu, 01 Oct 2026 09:52:31 +0000'
+                desc = ET.SubElement(item, 'description'); desc.text = game['ai_summary']
+                ET.SubElement(desc, 'br').tail = '・WCS第3戦。1勝1敗。'
+            feed = root/'feed.xml'; ET.ElementTree(rss).write(feed,encoding='utf-8')
+            result = guard.sanitize_files(root/'games.json', root/'archive', feed_path=feed)
+            self.assertEqual(result['rejected_count'], 2)
+            self.assertEqual(result['modified_games'], 1)
+            self.assertEqual(result['archive']['modified_games'], 1)
+            self.assertEqual(result['rss_refreshed'], 1)
+            items = ET.parse(feed).findall('.//item')
+            self.assertEqual(items[0].findtext('description'), '・WCS第3戦。1勝1敗。')
+            self.assertEqual(items[1].findtext('description'), game['ai_summary'])
+            self.assertEqual(items[2].findtext('description'), game['ai_summary'])
+            self.assertEqual(items[0].findtext('guid'), '849844-2026-10-01')
+            self.assertEqual(items[0].findtext('pubDate'), 'Thu, 01 Oct 2026 09:52:31 +0000')
+            self.assertEqual(json.loads((root/'games.json').read_text(encoding='utf-8'))['games'][0]['reasons'],game['reasons'])
+            before = feed.read_bytes()
+            self.assertEqual(guard.sanitize_files(root/'games.json', feed_path=feed)['rss_refreshed'],0)
+            self.assertEqual(feed.read_bytes(), before)
+
+    def test_invalid_feed_never_partially_changes_inputs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); games = root/'games.json'; feed = root/'feed.xml'
+            data = {'games': [{'league': 'MLB', 'game_type': 'F', 'game_id': '1',
+                    'notification_hook': 'ポストシーズン進出を決める第3戦'}]}
+            write_json(games,data); feed.write_text('invalid')
+            before = games.read_bytes()
+            with self.assertRaises(Exception): guard.sanitize_files(games,feed_path=feed)
+            self.assertEqual(games.read_bytes(),before)
+
 if __name__ == '__main__':
     unittest.main(argv=['test_game_hook_guard'])
