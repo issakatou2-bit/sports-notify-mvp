@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-10-01T09:53:45.798049+00:00",
+  "games": [
+    {
+      "game_id": "849844",
+      "league": "MLB",
+      "home_team_id": "144",
+      "away_team_id": "143",
+      "home_team_name": "ブレーブス",
+      "away_team_name": "フィリーズ",
+      "home_abbr": "ATL",
+      "away_abbr": "PHI",
+      "home_color": "#CE1141",
+      "away_color": "#E81828",
+      "matchup": "フィリーズ vs ブレーブス",
+      "abbr_matchup": "PHI vs ATL",
+      "start_time_jst": "10/02 09:00",
+      "home_division": "NLE",
+      "away_division": "NLE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 94,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 6.0,
+        "streak": 1,
+        "wins": 88,
+        "losses": 74,
+        "last_ten": "4勝6敗",
+        "points_back": null
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": "Truist Park",
+      "venue_jp": "トゥルーイスト・パーク",
+      "venue_note": "2017年開場。球場の外に商業施設が一体で作られた、比較的新しい形の球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.65点で、MLB30球場中16位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 4,
+      "game_type": "F",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "ワイルドカードシリーズ 第3戦(1勝1敗。勝った方が突破)",
+          "weight": 4
+        }
+      ],
+      "series_context": {
+        "series_game_number": null,
+        "games_in_series": null,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [],
+      "ai_summary": "ナ・リーグ東地区の上位2チームによるワイルドカードシリーズの決勝戦である。レギュラーシーズンでブレーブスが【94勝68敗で首位】を占める一方、フィリーズは88勝74敗で2位につけており、勝敗数の差が両者の力関係を物語っている。現在【1勝1敗の同点】で迎えるこの第3戦は、ポストシーズンへの進出をかけた最終決戦となる。2017年開場の新しいトゥルーイスト・パークでの一戦だけに、球場環境がどう試合に影響するかも見どころになる。",
+      "notification_hook": "ブレーブスかフィリーズか、ポストシーズン進出を決める第3戦は東地区1位と2位の対決",
+      "availability_checked_at": "2026-10-01T09:52:37.137220+00:00"
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}
