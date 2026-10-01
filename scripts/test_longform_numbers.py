@@ -210,6 +210,18 @@ has("日本人選手の球団の側から", pf, "今永昇太・鈴木誠也の�
 check("照合はシリーズの勝敗（シーズンの90勝ではない）",
       nm.checkable(psm).get("カブス"), {"勝": 1, "敗": 0})
 check("相手待ちは照合に入れない", "ドジャース" in nm.checkable(psm), False)
+# 10/1: 昨日WCSを2勝0敗で突破し、次の地区シリーズが0勝0敗
+_two = [dict(_ser[0], key="F:145-117", over=True, winner=145, played=2,
+             teams=[{"id": 145, "name": "ホワイトソックス", "wins": 2, "players": ["村上宗隆"]},
+                    {"id": 117, "name": "アストロズ", "wins": 0, "players": ["今井達也"]}]),
+        dict(_ser[0], key="D:114-145", round="D", over=False, played=0,
+             teams=[{"id": 114, "name": "ガーディアンズ", "wins": 0, "players": []},
+                    {"id": 145, "name": "ホワイトソックス", "wins": 0, "players": ["村上宗隆"]}])]
+psm2 = dict(psm, race=dict(psm["race"], series=_two,
+                            changes=[{"key": "F:145-117", "text": "突破"}]))
+_c2 = nm.checkable(psm2)
+check("2つのシリーズにまたがる球団は照合しない", "ホワイトソックス" in _c2, False)
+check("片方だけの球団は照合する", _c2.get("アストロズ"), {"勝": 0, "敗": 2})
 _rows = nm.panels(psm)["race"]["rows"]
 check("札は日本人選手の多い球団から", _rows[0]["name"], "ドジャース")
 check("始まる前は日付", _rows[0]["value"], "10月4日 第1戦")

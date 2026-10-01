@@ -669,12 +669,21 @@ def checkable(m: dict) -> dict:
     if rw.is_settled(m["race"]):
         # **照合もシリーズの勝敗で。**シーズンの「90勝」のままだと、
         # 台本が正しく「カブスは1勝0敗」と言っても食い違いで止まる。
+        # **決着した回と次の回の両方に出る球団は照合しない。**10/1、
+        # ホワイトソックスは昨日WCSを2勝0敗で突破し、地区シリーズは0勝0敗。
+        # 後の0勝で上書きして、正しい「2勝0敗で破り」を止めた。
+        # 台詞がどちらのシリーズの話かは、数字だけでは決められない。
+        seen = {}
         for x in _live_series(m["race"]):
             if x.get("waiting") or len(x["teams"]) < 2:
                 continue
             a, b = x["teams"][0], x["teams"][1]
-            out[a["name"]] = {"勝": a["wins"], "敗": b["wins"]}
-            out[b["name"]] = {"勝": b["wins"], "敗": a["wins"]}
+            for me, opp in ((a, b), (b, a)):
+                seen.setdefault(me["name"], []).append(
+                    {"勝": me["wins"], "敗": opp["wins"]})
+        for name, rows in seen.items():
+            if len(rows) == 1:
+                out[name] = rows[0]
         return out
     for j in (m["race"].get("japanese") or []):
         if j.get("team") and j.get("w") is not None:
