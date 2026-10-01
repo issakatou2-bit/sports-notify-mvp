@@ -93,4 +93,17 @@ check("1位が投手なら投手として紹介する",
 check("指名でも種類を引き継ぐ",
       pp.pinned_player("Cam Schlittler", _f.name).get("type"), "pitcher")
 
+section("10/1 シーズン後の節目")
+import milestones as ms_  # noqa: E402
+for _ph, _want in (("settled", {}), ("postseason", {})):
+    with _tf.NamedTemporaryFile("w", suffix=".json", delete=False,
+                                encoding="utf-8") as _f:
+        _json.dump({"phase": _ph}, _f)
+    check("%sでは今季・通算の節目を出さない" % _ph,
+          ms_.best_for({"player_id": "673548", "name": "鈴木誠也"},
+                       postseason_path=_f.name), _want)
+check("PSに入ったら初出場の話もしない",
+      ms_.build([{"player_id": "673548", "name": "鈴木誠也"}],
+                postseason_path=_f.name), [])
+
 sys.exit(done())

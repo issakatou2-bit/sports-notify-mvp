@@ -175,13 +175,34 @@ def first_postseason(player: dict, postseason_path: str) -> dict:
                     f"{seat.get('team')}はいま第{seat['seed']}シードです"}
 
 
-def best_for(player: dict, season: str = "2026") -> dict:
+POSTSEASON_PATH = "data/postseason.json"
+
+
+def phase(postseason_path: str = POSTSEASON_PATH) -> str:
+    """regular / settled / postseason。読めなければ regular。"""
+    try:
+        return json.loads(pathlib.Path(postseason_path).read_text(
+            encoding="utf-8")).get("phase") or "regular"
+    except (OSError, json.JSONDecodeError):
+        return "regular"
+
+
+def best_for(player: dict, season: str = "2026",
+             postseason_path: str = POSTSEASON_PATH) -> dict:
     """その選手の、いちばん近い節目。無ければ空。
+
+    **レギュラーシーズンが終わったら出さない。**今季・通算・自己最多は
+    どれもレギュラーシーズンの記録で、ポストシーズンの試合では増えない。
+    10/1の長編が、敗退したカブスの鈴木誠也を「今季150安打まであと3本に
+    迫っている」と言った（9/30には松井裕樹を「次の登板で自己最多に並ぶ
+    かも」）。
 
     近い順に選ぶ。**いちばん早く届くものが、いちばん見る理由になる。**
     同じくらい近いときは、自己最多 → 通算 → 今季の順で選ぶ。
     その順にしたのは、珍しさがその順だから。
     """
+    if phase(postseason_path) in ("settled", "postseason"):
+        return {}
     pid = str(player.get("player_id") or "")
     if not pid:
         return {}
@@ -259,7 +280,11 @@ def build(players: list, season: str = "2026", limit: int = 3,
     """
     out = []
     for p in players or []:
-        got = first_postseason(p, postseason_path) or best_for(p, season)
+        # PSが始まったら「初出場が見えている」も言わない（出ているか、
+        # 敗退しているか、登録外か。どれもこの言い方に合わない）。
+        got = ((first_postseason(p, postseason_path)
+                if phase(postseason_path) != "postseason" else {})
+               or best_for(p, season, postseason_path))
         if got:
             out.append(got)
     out.sort(key=lambda c: (c["gap"] / c["reach"], c["rank"]))
