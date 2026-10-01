@@ -77,13 +77,15 @@ jobs:
             #
             # 1本ごとに独立して投げる。台帳が枠ごとに分かれているので、
             # 途中で失敗しても他の枠は投げられる。
-            python scripts/buffer_daily.py --list-due > /tmp/due.tsv
+            # cronの遅延で日付が変わっても、夕方枠のみ03時まで補完。
+            # 明日の予告(daily)を当日の予告として再配信しない。
+            python scripts/buffer_daily.py --list-due --late-edition > /tmp/due.tsv
             FAILED=0
             while IFS="$(printf '\t')" read -r KIND RUN; do
               [ -n "$KIND" ] || continue
               echo "::group::$KIND （実行 $RUN）"
               python scripts/buffer_daily.py \
-                --kind "$KIND" --source-run "$RUN" --publish \
+                --kind "$KIND" --source-run "$RUN" --publish --late-edition \
                 || { echo "::error::$KIND を投げられませんでした"; FAILED=1; }
               echo "::endgroup::"
             done < /tmp/due.tsv
