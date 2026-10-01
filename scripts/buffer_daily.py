@@ -181,7 +181,20 @@ def verified_ps_skip(run, kind):
     return marker['reason']
 
 
-def select_record(run, records, now, kind=DEFAULT_KIND):
+def eligible_editions(now, kind, late_edition=False):
+    """Only delayed evening backfill may cross midnight, before 03:00 JST.
+
+    Tomorrow's forecast is never carried over after its target day begins.
+    Ordinary/manual publication retains the current-edition-only safeguard.
+    """
+    local = now.astimezone(JST)
+    days = [local.date().isoformat()]
+    if late_edition and kind != 'daily' and local.hour < 3:
+        days.append((local.date() - timedelta(days=1)).isoformat())
+    return days
+
+
+def select_record(run, records, now, kind=DEFAULT_KIND, late_edition=False):
     key, _, _, wf = source_of(kind)
     if run.get('head_branch') != 'main' or run.get('path') != '.github/workflows/' + wf:
         raise ValueError('Source must be ' + wf)
@@ -191,7 +204,7 @@ def select_record(run, records, now, kind=DEFAULT_KIND):
         raise ValueError('Unexpected source repository')
     created = instant(run['created_at'])
     day = created.astimezone(JST).date().isoformat()
-    if day != now.astimezone(JST).date().isoformat():
+    if day not in eligible_editions(now, kind, late_edition):
         raise ValueError('Stale source: only the current JST edition may be posted')
     record = records.get(key, {}).get(day)
     if not record:
@@ -223,7 +236,7 @@ def latest_run(workflow: str, day: str):
     return None
 
 
-def due(services) -> list:
+def due(services, late_edition=False) -> list:
     """いま投げられる枠。**公開済みで、まだ投げていないものだけ。**
 
     なぜ要るのか:
@@ -240,24 +253,27 @@ def due(services) -> list:
         return []
     ledger = Ledger()
     now = datetime.now(timezone.utc)
-    day = now.astimezone(JST).date().isoformat()
     out = []
+    runs = {}
     for kind, (key, _artifact, _name, wf) in sorted(SOURCES.items()):
-        rec = (records.get(key) or {}).get(day)
-        if not rec or not rec.get('video_id'):
-            continue
-        try:
-            when = instant(rec.get('publish_at') or rec['published_at'])
-        except Exception:                                # noqa: BLE001
-            continue
-        if when > now:
-            continue                 # まだ公開されていない
-        if all(ledger.data['deliveries'].get(day + ':' + kind + ':' + s)
-               for s in services):
-            continue                 # もう全部投げた
-        run = latest_run(wf, day)
-        if run:
-            out.append((kind, run['id']))
+        for day in eligible_editions(now, kind, late_edition):
+            rec = (records.get(key) or {}).get(day)
+            if not rec or not rec.get('video_id'):
+                continue
+            try:
+                when = instant(rec.get('publish_at') or rec['published_at'])
+            except Exception:                            # noqa: BLE001
+                continue
+            if when > now:
+                continue             # まだ公開されていない
+            if all(ledger.data['deliveries'].get(day + ':' + kind + ':' + s)
+                   for s in services):
+                continue             # sent/処理中とも二重投入しない
+            if (wf, day) not in runs:
+                runs[wf, day] = latest_run(wf, day)
+            run = runs[wf, day]
+            if run:
+                out.append((kind, run['id']))
     return out
 
 
@@ -640,10 +656,12 @@ def main():
                         help='いま投げられる枠と実行IDを1行ずつ出す')
     parser.add_argument('--publish', action='store_true')
     parser.add_argument('--retry-rejected', action='store_true')
+    parser.add_argument('--late-edition', action='store_true',
+                        help='遅延した夕方枠だけ03:00 JSTまで前日版を補完（daily対象外）')
     args = parser.parse_args()
     if args.list_due:
         # 投げられる枠を1行ずつ。ワークフローがこれを読んで回す。
-        rows = due(selected_services(os.environ.get('BUFFER_CHANNELS')))
+        rows = due(selected_services(os.environ.get('BUFFER_CHANNELS')), args.late_edition)
         for kind, run_id in rows:
             print('%s\t%s' % (kind, run_id))
         if not rows:
@@ -658,7 +676,8 @@ def main():
     run = github('/actions/runs/' + str(args.source_run))
     records = json.loads(Path('data/published_videos.json').read_text(encoding='utf-8'))
     try:
-        day, record = select_record(run, records, datetime.now(timezone.utc), args.kind)
+        day, record = select_record(run, records, datetime.now(timezone.utc), args.kind,
+                                    args.late_edition)
     except MissingVideoRecord:
         reason=verified_ps_skip(run,args.kind)
         if not reason:raise

@@ -81,6 +81,62 @@ class BufferTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             daily.select_record(self.run, self.records, datetime(2026,9,11,15,0,tzinfo=timezone.utc))
 
+    def test_delayed_backfill_is_bounded_and_forecast_stays_excluded(self):
+        before = datetime(2026,9,11,17,59,tzinfo=timezone.utc)  # JST 02:59
+        cutoff = datetime(2026,9,11,18,0,tzinfo=timezone.utc)  # JST 03:00
+        run = {**self.run, 'path': '.github/workflows/morning_recap.yml'}
+        records = {'morning': {'2026-09-11': self.record}}
+        self.assertEqual(daily.select_record(run,records,before,'morning',True)[0], '2026-09-11')
+        for now, kind, late in [(cutoff,'morning',True),(before,'morning',False),
+                                (before,'daily',True)]:
+            with self.subTest(kind=kind,late=late), self.assertRaises(ValueError):
+                daily.select_record(run if kind=='morning' else self.run,
+                                    records if kind=='morning' else self.records,now,kind,late)
+
+    def test_late_mode_keeps_source_and_publication_validation(self):
+        now = datetime(2026,9,11,16,31,tzinfo=timezone.utc)
+        run = {**self.run, 'path': '.github/workflows/morning_recap.yml'}
+        records = {'morning': {'2026-09-11': self.record}}
+        for change in ({'conclusion':'failure'},{'head_branch':'feature'},
+                       {'repository':{'full_name':'other/repo'}},
+                       {'created_at':'2026-09-10T09:00:00Z'}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                daily.select_record({**run,**change},records,now,'morning',True)
+        for change in ({'publish_at':'2026-09-12T10:00:00Z'},
+                       {'published_at':'2026-09-11T08:00:00Z'}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                daily.select_record(run,{'morning':{'2026-09-11':{**self.record,**change}}},now,'morning',True)
+
+    def test_delayed_due_reproduces_missing_four_slots_without_duplicates(self):
+        class Clock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return datetime(2026,9,11,16,31,tzinfo=timezone.utc)
+        records = {key:{'2026-09-11':self.record} for key, *_ in daily.SOURCES.values()}
+        entries = {'2026-09-11:morning:twitter':{'state':'sent'},
+                   '2026-09-11:morning:instagram':{'state':'sending'}}
+        with patch.object(daily,'datetime',Clock), patch.object(daily.Path,'read_text',return_value=json.dumps(records)), \
+             patch.object(daily,'Ledger') as ledger, patch.object(daily,'latest_run',return_value={'id':99}) as runs:
+            ledger.return_value.data={'deliveries':entries}
+            self.assertEqual(daily.due(('twitter','instagram')), [])
+            ledger.return_value.data={'deliveries':{}}
+            self.assertEqual(len(daily.due(('twitter','instagram'),True)),4)
+            runs.reset_mock()
+            ledger.return_value.data={'deliveries':entries}
+            rows=daily.due(('twitter','instagram'),True)
+            self.assertEqual({kind for kind,_ in rows}, {'morning_voices','morning_press','morning_postseason'})
+            self.assertEqual(runs.call_count,1)  # 同じ素材実行は1回だけ取得
+            entries['2026-09-11:morning:instagram']={'state':'sent'}
+            self.assertNotIn(('morning',99),daily.due(('twitter','instagram'),True))
+
+    def test_late_caption_preserves_original_edition(self):
+        now=datetime(2026,9,11,16,31,tzinfo=timezone.utc)
+        run={**self.run,'path':'.github/workflows/morning_recap.yml'}
+        day,record=daily.select_record(run,{'morning':{'2026-09-11':self.record}},now,'morning',True)
+        text=daily.caption('twitter',day,record,'morning')
+        self.assertIn('09/11更新',text)
+        self.assertNotIn('09/12更新',text)
+
     def test_caption_and_platform_options(self):
         x = daily.caption('twitter', '2026-09-11', self.record)
         self.assertLessEqual(daily.x_weight(x), 280)
