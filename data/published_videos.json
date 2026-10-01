@@ -1151,6 +1151,13 @@
       "url": "https://youtu.be/UCY4UvCJ35c",
       "title": "【MLB】松井裕樹・鈴木誠也・村上宗隆｜9月30日 日本人選手 勝利貢献スコア ランキング #Shorts",
       "published_at": "2026-09-30T10:24:04.834873+00:00"
+    },
+    "2026-10-01": {
+      "video_id": "tyIWNqnQCoc",
+      "url": "https://youtu.be/tyIWNqnQCoc",
+      "title": "【MLB】鈴木誠也・村上宗隆｜10月1日 日本人選手 勝利貢献スコア ランキング #Shorts",
+      "published_at": "2026-10-01T06:14:44.448643+00:00",
+      "publish_at": "2026-10-01T08:00:00Z"
     }
   },
   "morning_local": {
@@ -1564,6 +1571,13 @@
       "title": "【MLB】現地はこう報じた「ドジャースは地区シリーズ開幕戦に向けて大谷翔平の回復を期待 🔵」｜9月30日 番記者の投稿と現地の見出し #Shorts",
       "published_at": "2026-09-30T06:06:06.243429+00:00",
       "publish_at": "2026-09-30T09:00:00Z"
+    },
+    "2026-10-01": {
+      "video_id": "Uk23TOkjQ5M",
+      "url": "https://youtu.be/Uk23TOkjQ5M",
+      "title": "【MLB】現地はこう報じた「大谷翔平、フィリーズ戦の予定先発登板を見送り」｜10月1日 番記者の投稿と現地の見出し #Shorts",
+      "published_at": "2026-10-01T06:19:21.611956+00:00",
+      "publish_at": "2026-10-01T09:00:00Z"
     }
   },
   "daily_soccer": {
@@ -2216,6 +2230,13 @@
       "title": "【MLB】ホワイトソックス vs アストロズ 現地のファンは何と言ったか｜返信21件ついたコメント 9月30日更新 #Shorts",
       "published_at": "2026-09-30T06:05:06.418240+00:00",
       "publish_at": "2026-09-30T08:30:00Z"
+    },
+    "2026-10-01": {
+      "video_id": "XX4Dt3dYkBQ",
+      "url": "https://youtu.be/XX4Dt3dYkBQ",
+      "title": "【MLB】フィリーズ vs ブレーブス 現地のファンは何と言ったか｜返信19件ついたコメント 10月1日更新 #Shorts",
+      "published_at": "2026-10-01T06:17:28.202422+00:00",
+      "publish_at": "2026-10-01T08:30:00Z"
     }
   },
   "verdict": {
@@ -3124,6 +3145,274 @@
         }
       ],
       "social_summary": "ワイルドカードシリーズ ヤンキースが1勝0敗とし、突破に王手。各カードの勝敗と勝ち上がりをまとめました。"
+    },
+    "2026-10-01": {
+      "video_id": "DJDHbCmmkYo",
+      "url": "https://youtu.be/DJDHbCmmkYo",
+      "title": "【10/1更新】ヤンキースがWCS突破｜PSシリーズの最新情勢 #Shorts",
+      "published_at": "2026-10-01T06:15:40.670430+00:00",
+      "publish_at": "2026-10-01T11:00:00Z",
+      "program_version": "ps-program-20260928-v2",
+      "program_edition": "ee4aaf58d7fd8f83a3ff6062bba47aa258ace6782b98fa9da34dce5ace6fa575",
+      "program_phase": "situation",
+      "program_series": [
+        {
+          "key": "F:111-147",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 147,
+          "next": null,
+          "teams": [
+            {
+              "id": 147,
+              "name": "ヤンキース",
+              "wins": 2,
+              "players": []
+            },
+            {
+              "id": 111,
+              "name": "レッドソックス",
+              "wins": 0,
+              "players": [
+                "吉田正尚"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:117-145",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 145,
+          "next": null,
+          "teams": [
+            {
+              "id": 145,
+              "name": "ホワイトソックス",
+              "wins": 2,
+              "players": [
+                "村上宗隆",
+                "西田陸浮"
+              ]
+            },
+            {
+              "id": 117,
+              "name": "アストロズ",
+              "wins": 0,
+              "players": [
+                "今井達也"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:112-135",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 135,
+          "next": null,
+          "teams": [
+            {
+              "id": 135,
+              "name": "パドレス",
+              "wins": 2,
+              "players": [
+                "松井裕樹"
+              ]
+            },
+            {
+              "id": 112,
+              "name": "カブス",
+              "wins": 0,
+              "players": [
+                "今永昇太",
+                "鈴木誠也"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:143-144",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月2日",
+            "game": 3,
+            "live": false,
+            "verified_label": "日本時間10月2日9時"
+          },
+          "teams": [
+            {
+              "id": 143,
+              "name": "フィリーズ",
+              "wins": 1,
+              "players": []
+            },
+            {
+              "id": 144,
+              "name": "ブレーブス",
+              "wins": 1,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:114-145",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月4日",
+            "game": 1,
+            "live": false,
+            "verified_label": "日本時間10月4日2時"
+          },
+          "teams": [
+            {
+              "id": 114,
+              "name": "ガーディアンズ",
+              "wins": 0,
+              "players": []
+            },
+            {
+              "id": 145,
+              "name": "ホワイトソックス",
+              "wins": 0,
+              "players": [
+                "村上宗隆",
+                "西田陸浮"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "D:139-147",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月4日",
+            "game": 1,
+            "live": false,
+            "verified_label": "日本時間10月4日7時30分"
+          },
+          "teams": [
+            {
+              "id": 139,
+              "name": "レイズ",
+              "wins": 0,
+              "players": []
+            },
+            {
+              "id": 147,
+              "name": "ヤンキース",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:119-wait",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "waiting": true,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月4日",
+            "game": 1
+          },
+          "teams": [
+            {
+              "id": 119,
+              "name": "ドジャース",
+              "wins": 0,
+              "players": [
+                "大谷翔平",
+                "佐々木朗希",
+                "山本由伸"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "D:135-158",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月4日",
+            "game": 1,
+            "live": false,
+            "verified_label": "日本時間10月4日9時30分"
+          },
+          "teams": [
+            {
+              "id": 135,
+              "name": "パドレス",
+              "wins": 0,
+              "players": [
+                "松井裕樹"
+              ]
+            },
+            {
+              "id": 158,
+              "name": "ブリュワーズ",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        }
+      ],
+      "social_summary": "ヤンキースが2勝0敗でレッドソックスを破り、地区シリーズへ。各カードの勝敗と勝ち上がりをまとめました。"
     }
   },
   "soccer_race": {

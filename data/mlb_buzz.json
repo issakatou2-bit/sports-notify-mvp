@@ -1,29 +1,29 @@
 {
-  "updated_at": "2026-09-30T10:19:44.124962+00:00",
+  "updated_at": "2026-10-01T06:11:15.410938+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "s1V2O_5eSf0",
-      "title": "WHITE SOX vs. ASTROS: Wild Card Full Game 1 Highlights (September 29) | 2026 MLB (Munetaka Murakami)",
-      "published_at": "2026-09-30T00:53:11Z",
-      "views": 383697,
-      "matchup": "WHITE SOX vs. ASTROS",
-      "game_date": "2026-09-29",
+      "video_id": "Vrjvltn_9HY",
+      "title": "PHILLIES vs. BRAVES: Wild Card Full Game 2 Highlights (September 30) | 2026 MLB Season",
+      "published_at": "2026-09-30T21:55:40Z",
+      "views": 527766,
+      "matchup": "PHILLIES vs. BRAVES",
+      "game_date": "2026-09-30",
       "result": {
-        "away_jp": "ホワイトソックス",
-        "home_jp": "アストロズ",
-        "away_score": 6,
+        "away_jp": "フィリーズ",
+        "home_jp": "ブレーブス",
+        "away_score": 4,
         "home_score": 3,
         "innings": [
           {
             "num": 1,
             "away": 1,
-            "home": 0
+            "home": 1
           },
           {
             "num": 2,
-            "away": 2,
+            "away": 0,
             "home": 0
           },
           {
@@ -33,145 +33,150 @@
           },
           {
             "num": 4,
-            "away": 1,
+            "away": 0,
             "home": 0
           },
           {
             "num": 5,
-            "away": 1,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
             "home": 2
           },
           {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 1,
-            "home": 0
-          },
-          {
             "num": 8,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": 0
-          }
-        ],
-        "away_hits": 11,
-        "away_errors": 1,
-        "home_hits": 6,
-        "home_errors": 1,
-        "star_name": "Nelson Velázquez",
-        "star_line": "3打数1安打 2打点 1本塁打",
-        "star_team": "アストロズ",
-        "away_starter": {
-          "name": "Hagen Smith",
-          "team": "ホワイトソックス",
-          "line": "3.0回 1奪三振 自責0"
-        },
-        "home_starter": {
-          "name": "AJ Blubaugh",
-          "team": "アストロズ",
-          "line": "0.2回 0奪三振 自責0　敗戦投手（通算0勝1敗）"
-        }
-      },
-      "topic_jp": "ホワイトソックス 対 アストロズ"
-    },
-    {
-      "video_id": "ukY1sdEsNKA",
-      "title": "PHILLIES vs. BRAVES: Wild Card Game 1 Full Game Highlights (September 29) | 2026 MLB Season",
-      "published_at": "2026-09-29T21:28:28Z",
-      "views": 611913,
-      "matchup": "PHILLIES vs. BRAVES",
-      "game_date": "2026-09-29",
-      "result": {
-        "away_jp": "フィリーズ",
-        "home_jp": "ブレーブス",
-        "away_score": 3,
-        "home_score": 5,
-        "innings": [
-          {
-            "num": 1,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 7,
             "away": 2,
             "home": 0
           },
           {
-            "num": 8,
-            "away": 0,
-            "home": 3
-          },
-          {
             "num": 9,
             "away": 0,
-            "home": null
+            "home": 0
+          },
+          {
+            "num": 10,
+            "away": 1,
+            "home": 0
           }
         ],
-        "away_hits": 6,
+        "away_hits": 12,
         "away_errors": 0,
-        "home_hits": 7,
+        "home_hits": 9,
         "home_errors": 0,
-        "star_name": "Jesús Luzardo",
-        "star_line": "5.0回 6奪三振 自責1",
-        "star_team": "フィリーズ",
+        "star_name": "Tyler Mahle",
+        "star_line": "7.0回 6奪三振 自責1",
+        "star_team": "ブレーブス",
         "away_starter": {
-          "name": "Jesús Luzardo",
+          "name": "Cristopher Sánchez",
           "team": "フィリーズ",
-          "line": "5.0回 6奪三振 自責1"
+          "line": "6.2回 6奪三振 自責3"
         },
         "home_starter": {
-          "name": "Chris Sale",
+          "name": "Tyler Mahle",
           "team": "ブレーブス",
-          "line": "6.1回 9奪三振 自責3"
+          "line": "7.0回 6奪三振 自責1"
         }
       },
       "topic_jp": "フィリーズ 対 ブレーブス"
     },
     {
-      "video_id": "PuaOVH3HI-s",
-      "title": "RED SOX vs. YANKEES: Wild Card Full Game 1 Highlights (September 29) | 2026 MLB Season",
-      "published_at": "2026-09-30T03:42:34Z",
-      "views": 467249,
+      "video_id": "HwWp7A7tElg",
+      "title": "WHITE SOX vs. ASTROS: Wild Card Full Game 2 Highlights (September 30) | 2026 MLB Season",
+      "published_at": "2026-10-01T00:49:52Z",
+      "views": 229269,
+      "matchup": "WHITE SOX vs. ASTROS",
+      "game_date": "2026-09-30",
+      "result": {
+        "away_jp": "ホワイトソックス",
+        "home_jp": "アストロズ",
+        "away_score": 7,
+        "home_score": 3,
+        "innings": [
+          {
+            "num": 1,
+            "away": 4,
+            "home": 1
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 3,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": 0
+          }
+        ],
+        "away_hits": 8,
+        "away_errors": 0,
+        "home_hits": 5,
+        "home_errors": 2,
+        "star_name": "Chase Meidroth",
+        "star_line": "3打数2安打 3打点 1本塁打",
+        "star_team": "ホワイトソックス",
+        "away_starter": {
+          "name": "Sean Burke",
+          "team": "ホワイトソックス",
+          "line": "4.0回 8奪三振 自責3"
+        },
+        "home_starter": {
+          "name": "Hunter Brown",
+          "team": "アストロズ",
+          "line": "0.2回 2奪三振 自責3　敗戦投手（通算0勝1敗）"
+        }
+      },
+      "topic_jp": "ホワイトソックス 対 アストロズ"
+    },
+    {
+      "video_id": "5_SghrAnxHI",
+      "title": "RED SOX vs. YANKEES: Wild Card Full Game 2 Highlights (September 30) | 2026 MLB Season",
+      "published_at": "2026-10-01T03:39:48Z",
+      "views": 65524,
       "matchup": "RED SOX vs. YANKEES",
-      "game_date": "2026-09-29",
+      "game_date": "2026-09-30",
       "result": {
         "away_jp": "レッドソックス",
         "home_jp": "ヤンキース",
-        "away_score": 0,
+        "away_score": 2,
         "home_score": 9,
         "innings": [
           {
@@ -182,7 +187,7 @@
           {
             "num": 2,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 3,
@@ -192,7 +197,7 @@
           {
             "num": 4,
             "away": 0,
-            "home": 0
+            "home": 1
           },
           {
             "num": 5,
@@ -201,18 +206,18 @@
           },
           {
             "num": 6,
-            "away": 0,
-            "home": 0
+            "away": 1,
+            "home": 6
           },
           {
             "num": 7,
-            "away": 0,
-            "home": 2
+            "away": 1,
+            "home": 1
           },
           {
             "num": 8,
             "away": 0,
-            "home": 5
+            "home": 0
           },
           {
             "num": 9,
@@ -220,63 +225,63 @@
             "home": null
           }
         ],
-        "away_hits": 3,
-        "away_errors": 0,
-        "home_hits": 12,
+        "away_hits": 4,
+        "away_errors": 1,
+        "home_hits": 14,
         "home_errors": 0,
-        "star_name": "Ben Rice",
-        "star_line": "5打数4安打 6打点 2本塁打",
+        "star_name": "Cody Bellinger",
+        "star_line": "5打数2安打 4打点 1本塁打",
         "star_team": "ヤンキース",
         "away_starter": {
-          "name": "Payton Tolle",
+          "name": "Sonny Gray",
           "team": "レッドソックス",
-          "line": "4.2回 4奪三振 自責1　敗戦投手（通算0勝1敗）"
+          "line": "4.2回 5奪三振 自責2　敗戦投手（通算0勝1敗）"
         },
         "home_starter": {
-          "name": "Cam Schlittler",
+          "name": "Max Fried",
           "team": "ヤンキース",
-          "line": "6.1回 10奪三振 自責0　勝利投手（通算1勝0敗）"
+          "line": "6.0回 6奪三振 自責1　勝利投手（通算1勝0敗）"
         }
       },
       "topic_jp": "レッドソックス 対 ヤンキース"
     },
     {
-      "video_id": "-yliQfPpKpk",
-      "title": "CUBS vs. PADRES: Wild Card Full Game 1 Highlights (September 29) | 2026 MLB Posteason",
-      "published_at": "2026-09-30T05:12:51Z",
-      "views": 227994,
+      "video_id": "T2uRTx2Cyrg",
+      "title": "CUBS vs. PADRES: Wild Card Full Game 2 Highlights (September 30) | 2026 MLB Season",
+      "published_at": "2026-10-01T05:21:23Z",
+      "views": 15805,
       "matchup": "CUBS vs. PADRES",
-      "game_date": "2026-09-29",
+      "game_date": "2026-09-30",
       "result": {
         "away_jp": "カブス",
         "home_jp": "パドレス",
-        "away_score": 0,
-        "home_score": 8,
+        "away_score": 1,
+        "home_score": 4,
         "innings": [
           {
             "num": 1,
             "away": 0,
-            "home": 2
+            "home": 0
           },
           {
             "num": 2,
             "away": 0,
-            "home": 0
+            "home": 2
           },
           {
             "num": 3,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 4,
-            "away": 0,
-            "home": 1
+            "away": 1,
+            "home": 2
           },
           {
             "num": 5,
             "away": 0,
-            "home": 3
+            "home": 0
           },
           {
             "num": 6,
@@ -286,7 +291,7 @@
           {
             "num": 7,
             "away": 0,
-            "home": 1
+            "home": 0
           },
           {
             "num": 8,
@@ -299,132 +304,96 @@
             "home": null
           }
         ],
-        "away_hits": 3,
-        "away_errors": 1,
-        "home_hits": 13,
-        "home_errors": 1,
-        "star_name": "Michael King",
-        "star_line": "7.0回 8奪三振 自責0",
+        "away_hits": 5,
+        "away_errors": 0,
+        "home_hits": 8,
+        "home_errors": 0,
+        "star_name": "Gavin Sheets",
+        "star_line": "1打数1安打 2打点 1本塁打",
         "star_team": "パドレス",
         "away_starter": {
-          "name": "Matthew Boyd",
+          "name": "Kevin Gausman",
           "team": "カブス",
-          "line": "4.0回 4奪三振 自責4　敗戦投手（通算0勝1敗）"
+          "line": "3.1回 1奪三振 自責3　敗戦投手（通算0勝1敗）"
         },
         "home_starter": {
-          "name": "Michael King",
+          "name": "Nick Pivetta",
           "team": "パドレス",
-          "line": "7.0回 8奪三振 自責0　勝利投手（通算1勝0敗）"
+          "line": "3.1回 4奪三振 自責1"
         }
       },
       "topic_jp": "カブス 対 パドレス"
     },
     {
-      "video_id": "MIthyGZ1UaA",
-      "title": "Munetaka Murakami gives the White Sox a QUICK lead in the 1st inning! 😤 | MLB Highlights",
-      "published_at": "2026-09-29T22:24:42Z",
-      "views": 144416,
+      "video_id": "WP43LvRfZds",
+      "title": "FULL FIRST INNING: White Sox score 4 runs vs. Astros! 💪 | MLB Highlights",
+      "published_at": "2026-09-30T21:47:41Z",
+      "views": 211350,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "村上宗隆が1回裏にホワイトソックスに素早いリードをもたらした。"
+      "topic_jp": "ホワイトソックスが1回表にアストロズ相手に4点を先制した。"
     }
   ],
   "all": [
     {
-      "video_id": "s1V2O_5eSf0",
-      "matchup": "WHITE SOX vs. ASTROS",
-      "game_date": "2026-09-29",
-      "views": 383697
-    },
-    {
-      "video_id": "ukY1sdEsNKA",
+      "video_id": "Vrjvltn_9HY",
       "matchup": "PHILLIES vs. BRAVES",
-      "game_date": "2026-09-29",
-      "views": 611913
+      "game_date": "2026-09-30",
+      "views": 527766
     },
     {
-      "video_id": "PuaOVH3HI-s",
+      "video_id": "HwWp7A7tElg",
+      "matchup": "WHITE SOX vs. ASTROS",
+      "game_date": "2026-09-30",
+      "views": 229269
+    },
+    {
+      "video_id": "5_SghrAnxHI",
       "matchup": "RED SOX vs. YANKEES",
-      "game_date": "2026-09-29",
-      "views": 467249
+      "game_date": "2026-09-30",
+      "views": 65524
     },
     {
-      "video_id": "-yliQfPpKpk",
+      "video_id": "T2uRTx2Cyrg",
       "matchup": "CUBS vs. PADRES",
-      "game_date": "2026-09-29",
-      "views": 227994
+      "game_date": "2026-09-30",
+      "views": 15805
     },
     {
-      "video_id": "MIthyGZ1UaA",
+      "video_id": "WP43LvRfZds",
       "matchup": "",
       "game_date": "",
-      "views": 144416
+      "views": 211350
     },
     {
-      "video_id": "TK0D06RYDec",
+      "video_id": "fRQblh-oDCI",
       "matchup": "",
       "game_date": "",
-      "views": 95528
+      "views": 132455
     },
     {
-      "video_id": "KKQOK1EzwjY",
+      "video_id": "6AxaoOl1NKs",
       "matchup": "",
       "game_date": "",
-      "views": 65034
+      "views": 48536
     },
     {
-      "video_id": "FGknOzALneM",
+      "video_id": "upCtztKb9E0",
       "matchup": "",
       "game_date": "",
-      "views": 61777
+      "views": 44097
     },
     {
-      "video_id": "8uIUzNV4GcY",
+      "video_id": "xscAt1g01kY",
       "matchup": "",
       "game_date": "",
-      "views": 59053
+      "views": 24987
     },
     {
-      "video_id": "ptXqtcnWgiQ",
+      "video_id": "_D3037LCIs0",
       "matchup": "",
       "game_date": "",
-      "views": 49895
-    },
-    {
-      "video_id": "IYtt9c5FTC8",
-      "matchup": "",
-      "game_date": "",
-      "views": 43375
-    },
-    {
-      "video_id": "iNA3FJqd9tY",
-      "matchup": "",
-      "game_date": "",
-      "views": 39633
-    },
-    {
-      "video_id": "dzXi5xXo_0s",
-      "matchup": "",
-      "game_date": "",
-      "views": 38490
-    },
-    {
-      "video_id": "q_Ssh5NVpGU",
-      "matchup": "",
-      "game_date": "",
-      "views": 33752
-    },
-    {
-      "video_id": "TfpBbIQwGVM",
-      "matchup": "",
-      "game_date": "",
-      "views": 26766
-    },
-    {
-      "video_id": "ZtGJJm4f6vw",
-      "matchup": "",
-      "game_date": "",
-      "views": 21440
+      "views": 10412
     }
   ]
 }
