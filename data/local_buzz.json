@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-01T06:11:26.800240+00:00",
+  "updated_at": "2026-10-02T06:02:01.560148+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,74 +13,74 @@
   "titles_count": 51,
   "teams": [
     {
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 13,
+      "tone": "好調",
+      "gist": "ブレーブスがフィリーズを破りドジャースとのNLDS進出決定"
+    },
+    {
       "team_id": "145",
       "name": "ホワイトソックス",
       "name_en": "Chicago White Sox",
-      "mentions": 8,
-      "tone": "好調",
-      "gist": "ホワイトソックスがワイルドカード制覇し21年ぶり躍進"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 6,
-      "tone": "好調",
-      "gist": "パドレスがカブスをワイルドカードで掃討"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
       "mentions": 5,
-      "tone": "不振",
-      "gist": "カブスがパドレスとのワイルドカードで掃討され敗退"
+      "tone": "話題",
+      "gist": "ホワイトソックスが大学のような若い雰囲気でプレーオフへ"
     },
     {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 4,
-      "tone": "不振",
-      "gist": "レッドソックスが2年連続ヤンキースに敗退"
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 5,
+      "tone": "話題",
+      "gist": "ドジャースがブレーブスとのNLDSに向けて準備中"
     },
     {
       "team_id": "143",
       "name": "フィリーズ",
       "name_en": "Philadelphia Phillies",
       "mentions": 4,
-      "tone": "話題",
-      "gist": "フィリーズがNLワイルドカードでブレーブスと接戦中"
-    },
-    {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 3,
       "tone": "不振",
-      "gist": "アストロズがワイルドカードでホワイトソックスに掃討され敗退"
+      "gist": "フィリーズがワールドシリーズ出場を逃し敗退"
     },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "ヤンキースがベリンジャーの3ラン含め8得点で主導権確保"
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "アーロン・ジャッジが実験的血液治療を受けるなどヤンキースが課"
     },
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ブレーブスがフィリーズとのゲーム3でピッチャー選択検討中"
+      "gist": "ガーディアンズがホワイトソックスとのALDS開始を待つ"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "パドレスとブリュワーズがNLDSで対戦予定"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "パドレスとブリュワーズがNLDSで対戦予定"
     }
   ],
   "players": [
     {
       "name": "村上宗隆",
-      "mentions": 4
+      "mentions": 1
     }
   ]
 }

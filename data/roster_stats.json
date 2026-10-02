@@ -1,329 +1,17 @@
 {
-  "updated_at": "2026-10-01T06:01:12.471983+00:00",
+  "updated_at": "2026-10-02T06:01:10.035286+00:00",
   "season": "2026",
   "teams": [
-    "アストロズ",
-    "ホワイトソックス",
     "ブレーブス",
     "フィリーズ",
+    "アストロズ",
+    "ホワイトソックス",
     "ヤンキース",
     "レッドソックス",
     "パドレス",
     "カブス"
   ],
   "players": [
-    {
-      "name": "AJ Blubaugh",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 5勝3敗　防御率3.66　94奪三振"
-    },
-    {
-      "name": "Bennett Sousa",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 1勝3敗　防御率6.00　32奪三振"
-    },
-    {
-      "name": "Bryan Abreu",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 6勝4敗　防御率3.73　80奪三振"
-    },
-    {
-      "name": "Bryan King",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 3勝6敗　防御率5.19　51奪三振"
-    },
-    {
-      "name": "Cam Smith",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.210　21本塁打　56打点"
-    },
-    {
-      "name": "Christian Vázquez",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.207　7本塁打　25打点"
-    },
-    {
-      "name": "Christian Walker",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.226　29本塁打　87打点"
-    },
-    {
-      "name": "Hayden Wesneski",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 6勝2敗　防御率3.25　46奪三振"
-    },
-    {
-      "name": "Hunter Brown",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 6勝4敗　防御率3.19　124奪三振"
-    },
-    {
-      "name": "Isaac Paredes",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.262　25本塁打　94打点"
-    },
-    {
-      "name": "Jeremy Peña",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.277　22本塁打　56打点"
-    },
-    {
-      "name": "Joey Loperfido",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.214　1本塁打　12打点"
-    },
-    {
-      "name": "Jose Altuve",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.250　16本塁打　50打点"
-    },
-    {
-      "name": "Josh Hader",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 4勝2敗　防御率1.01　55奪三振"
-    },
-    {
-      "name": "Josh Hendrickson",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 0勝0敗　防御率3.38　3奪三振"
-    },
-    {
-      "name": "Logan VanWey",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 1勝0敗　防御率1.42　9奪三振"
-    },
-    {
-      "name": "Lucas Spence",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.218　4本塁打　12打点"
-    },
-    {
-      "name": "Miguel Ullola",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 2勝0敗　防御率2.16　16奪三振"
-    },
-    {
-      "name": "Nelson Velázquez",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.188　6本塁打　18打点"
-    },
-    {
-      "name": "Nick Allen",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.283　3本塁打　14打点"
-    },
-    {
-      "name": "Peter Lambert",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 8勝10敗　防御率3.82　154奪三振"
-    },
-    {
-      "name": "Raynel Delgado",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.243　1本塁打　4打点"
-    },
-    {
-      "name": "Tatsuya Imai",
-      "team": "アストロズ",
-      "type": "pitcher",
-      "line": "今季 6勝4敗　防御率4.93　97奪三振"
-    },
-    {
-      "name": "Taylor Trammell",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.192　8本塁打　22打点"
-    },
-    {
-      "name": "Yainer Diaz",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.285　14本塁打　45打点"
-    },
-    {
-      "name": "Yordan Alvarez",
-      "team": "アストロズ",
-      "type": "batter",
-      "line": "今季 打率.316　42本塁打　106打点"
-    },
-    {
-      "name": "Andrew Benintendi",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.240　15本塁打　78打点"
-    },
-    {
-      "name": "Anthony Kay",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 10勝9敗　防御率4.44　129奪三振"
-    },
-    {
-      "name": "Braden Montgomery",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.226　6本塁打　38打点"
-    },
-    {
-      "name": "Brenton Doyle",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.233　6本塁打　16打点"
-    },
-    {
-      "name": "Bryan Hudson",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 5勝4敗　防御率3.74　59奪三振"
-    },
-    {
-      "name": "Chase Meidroth",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.276　16本塁打　63打点"
-    },
-    {
-      "name": "Colson Montgomery",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.197　31本塁打　87打点"
-    },
-    {
-      "name": "David Sandlin",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 3勝2敗　防御率5.58　40奪三振"
-    },
-    {
-      "name": "Davis Martin",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 9勝8敗　防御率3.95　122奪三振"
-    },
-    {
-      "name": "Erick Fedde",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 8勝9敗　防御率3.83　99奪三振"
-    },
-    {
-      "name": "Grant Taylor",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 7勝3敗　防御率2.25　106奪三振"
-    },
-    {
-      "name": "Hagen Smith",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 3勝3敗　防御率1.29　41奪三振"
-    },
-    {
-      "name": "Huascar Brazobán",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 6勝2敗　防御率2.96　56奪三振"
-    },
-    {
-      "name": "Jake Rogers",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.161　4本塁打　14打点"
-    },
-    {
-      "name": "Jordan Hicks",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 3勝2敗　防御率3.94　64奪三振"
-    },
-    {
-      "name": "Kyle Teel",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.210　5本塁打　26打点"
-    },
-    {
-      "name": "Luisangel Acuña",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.229　2本塁打　13打点"
-    },
-    {
-      "name": "Miguel Vargas",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.250　33本塁打　93打点"
-    },
-    {
-      "name": "Munetaka Murakami",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.207　35本塁打　77打点"
-    },
-    {
-      "name": "Noah Schultz",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 4勝9敗　防御率5.57　67奪三振"
-    },
-    {
-      "name": "Randal Grichuk",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.287　15本塁打　46打点"
-    },
-    {
-      "name": "Sam Antonacci",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.277　8本塁打　48打点"
-    },
-    {
-      "name": "Sean Burke",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 11勝7敗　防御率3.34　185奪三振"
-    },
-    {
-      "name": "Sean Newcomb",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "今季 2勝5敗　防御率3.09　84奪三振"
-    },
-    {
-      "name": "Tommy Pham",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.100　1本塁打　3打点"
-    },
-    {
-      "name": "Tristan Peters",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "今季 打率.265　12本塁打　56打点"
-    },
     {
       "name": "Austin Riley",
       "team": "ブレーブス",
@@ -631,6 +319,402 @@
       "line": "今季 14勝5敗　防御率3.00　193奪三振"
     },
     {
+      "name": "AJ Blubaugh",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 5勝3敗　防御率3.66　94奪三振"
+    },
+    {
+      "name": "Alimber Santa",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 0勝1敗　防御率1.17　9奪三振"
+    },
+    {
+      "name": "Bennett Sousa",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 1勝3敗　防御率6.00　32奪三振"
+    },
+    {
+      "name": "Brice Matthews",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.201　7本塁打　22打点"
+    },
+    {
+      "name": "Bryan Abreu",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 6勝4敗　防御率3.73　80奪三振"
+    },
+    {
+      "name": "Bryan King",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 3勝6敗　防御率5.19　51奪三振"
+    },
+    {
+      "name": "Cam Smith",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.210　21本塁打　56打点"
+    },
+    {
+      "name": "Christian Vázquez",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.207　7本塁打　25打点"
+    },
+    {
+      "name": "Christian Walker",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.226　29本塁打　87打点"
+    },
+    {
+      "name": "Collin Price",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.167　0本塁打　0打点"
+    },
+    {
+      "name": "Cristian Javier",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 2勝6敗　防御率5.14　59奪三振"
+    },
+    {
+      "name": "Daulton Varsho",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.221　12本塁打　40打点"
+    },
+    {
+      "name": "Enyel De Los Santos",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 3勝3敗　防御率4.79　67奪三振"
+    },
+    {
+      "name": "Ethan Pecko",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 2勝0敗　防御率3.93　23奪三振"
+    },
+    {
+      "name": "Hayden Wesneski",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 6勝2敗　防御率3.25　46奪三振"
+    },
+    {
+      "name": "Hunter Brown",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 6勝4敗　防御率3.19　124奪三振"
+    },
+    {
+      "name": "Isaac Paredes",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.262　25本塁打　94打点"
+    },
+    {
+      "name": "Jeremy Peña",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.277　22本塁打　56打点"
+    },
+    {
+      "name": "Joey Loperfido",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.214　1本塁打　12打点"
+    },
+    {
+      "name": "Jorge Barrosa",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.193　2本塁打　12打点"
+    },
+    {
+      "name": "Jose Altuve",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.250　16本塁打　50打点"
+    },
+    {
+      "name": "Josh Hader",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 4勝2敗　防御率1.01　55奪三振"
+    },
+    {
+      "name": "Josh Hendrickson",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 0勝0敗　防御率3.38　3奪三振"
+    },
+    {
+      "name": "Kai-Wei Teng",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 5勝7敗　防御率4.76　73奪三振"
+    },
+    {
+      "name": "LaMonte Wade Jr.",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.205　4本塁打　19打点"
+    },
+    {
+      "name": "Logan VanWey",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 1勝0敗　防御率1.42　9奪三振"
+    },
+    {
+      "name": "Lucas Spence",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.218　4本塁打　12打点"
+    },
+    {
+      "name": "Miguel Ullola",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 2勝0敗　防御率2.16　16奪三振"
+    },
+    {
+      "name": "Nelson Velázquez",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.188　6本塁打　18打点"
+    },
+    {
+      "name": "Nick Allen",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.283　3本塁打　14打点"
+    },
+    {
+      "name": "Peter Lambert",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 8勝10敗　防御率3.82　154奪三振"
+    },
+    {
+      "name": "Raynel Delgado",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.243　1本塁打　4打点"
+    },
+    {
+      "name": "Ronel Blanco",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 0勝1敗　防御率6.68　29奪三振"
+    },
+    {
+      "name": "Steven Okert",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 6勝2敗　防御率2.13　68奪三振"
+    },
+    {
+      "name": "Tatsuya Imai",
+      "team": "アストロズ",
+      "type": "pitcher",
+      "line": "今季 6勝4敗　防御率4.93　97奪三振"
+    },
+    {
+      "name": "Taylor Trammell",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.192　8本塁打　22打点"
+    },
+    {
+      "name": "Yainer Diaz",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.285　14本塁打　45打点"
+    },
+    {
+      "name": "Yordan Alvarez",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.316　42本塁打　106打点"
+    },
+    {
+      "name": "Zach Cole",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.157　3本塁打　8打点"
+    },
+    {
+      "name": "Zach Dezenzo",
+      "team": "アストロズ",
+      "type": "batter",
+      "line": "今季 打率.213　1本塁打　3打点"
+    },
+    {
+      "name": "Andrew Benintendi",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.240　15本塁打　78打点"
+    },
+    {
+      "name": "Anthony Kay",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 10勝9敗　防御率4.44　129奪三振"
+    },
+    {
+      "name": "Braden Montgomery",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.226　6本塁打　38打点"
+    },
+    {
+      "name": "Brenton Doyle",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.233　6本塁打　16打点"
+    },
+    {
+      "name": "Bryan Hudson",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 5勝4敗　防御率3.74　59奪三振"
+    },
+    {
+      "name": "Chase Meidroth",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.276　16本塁打　63打点"
+    },
+    {
+      "name": "Colson Montgomery",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.197　31本塁打　87打点"
+    },
+    {
+      "name": "David Sandlin",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 3勝2敗　防御率5.58　40奪三振"
+    },
+    {
+      "name": "Davis Martin",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 9勝8敗　防御率3.95　122奪三振"
+    },
+    {
+      "name": "Erick Fedde",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 8勝9敗　防御率3.83　99奪三振"
+    },
+    {
+      "name": "Grant Taylor",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 7勝3敗　防御率2.25　106奪三振"
+    },
+    {
+      "name": "Hagen Smith",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 3勝3敗　防御率1.29　41奪三振"
+    },
+    {
+      "name": "Huascar Brazobán",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 6勝2敗　防御率2.96　56奪三振"
+    },
+    {
+      "name": "Jake Rogers",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.161　4本塁打　14打点"
+    },
+    {
+      "name": "Jordan Hicks",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 3勝2敗　防御率3.94　64奪三振"
+    },
+    {
+      "name": "Kyle Teel",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.210　5本塁打　26打点"
+    },
+    {
+      "name": "Luisangel Acuña",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.229　2本塁打　13打点"
+    },
+    {
+      "name": "Miguel Vargas",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.250　33本塁打　93打点"
+    },
+    {
+      "name": "Munetaka Murakami",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.207　35本塁打　77打点"
+    },
+    {
+      "name": "Noah Schultz",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 4勝9敗　防御率5.57　67奪三振"
+    },
+    {
+      "name": "Randal Grichuk",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.287　15本塁打　46打点"
+    },
+    {
+      "name": "Sam Antonacci",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.277　8本塁打　48打点"
+    },
+    {
+      "name": "Sean Burke",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 11勝7敗　防御率3.34　185奪三振"
+    },
+    {
+      "name": "Sean Newcomb",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "今季 2勝5敗　防御率3.09　84奪三振"
+    },
+    {
+      "name": "Tommy Pham",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.100　1本塁打　3打点"
+    },
+    {
+      "name": "Tristan Peters",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "今季 打率.265　12本塁打　56打点"
+    },
+    {
       "name": "Ali Sánchez",
       "team": "ヤンキース",
       "type": "batter",
@@ -805,6 +889,12 @@
       "line": "今季 打率.233　6本塁打　43打点"
     },
     {
+      "name": "Anthony Seigler",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "今季 打率.247　3本塁打　13打点"
+    },
+    {
       "name": "Aroldis Chapman",
       "team": "レッドソックス",
       "type": "pitcher",
@@ -889,6 +979,30 @@
       "line": "今季 打率.207　20本塁打　69打点"
     },
     {
+      "name": "Jedixson Paez",
+      "team": "レッドソックス",
+      "type": "pitcher",
+      "line": "今季 1勝1敗　防御率10.80　8奪三振"
+    },
+    {
+      "name": "Jovani Morán",
+      "team": "レッドソックス",
+      "type": "pitcher",
+      "line": "今季 2勝3敗　防御率3.15　73奪三振"
+    },
+    {
+      "name": "Masataka Yoshida",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "今季 打率.274　5本塁打　28打点"
+    },
+    {
+      "name": "Mickey Gasper",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "今季 打率.251　10本塁打　24打点"
+    },
+    {
       "name": "Nate Eaton",
       "team": "レッドソックス",
       "type": "batter",
@@ -899,6 +1013,12 @@
       "team": "レッドソックス",
       "type": "batter",
       "line": "今季 打率.255　5本塁打　19打点"
+    },
+    {
+      "name": "Patrick Sandoval",
+      "team": "レッドソックス",
+      "type": "pitcher",
+      "line": "今季 1勝7敗　防御率5.12　73奪三振"
     },
     {
       "name": "Payton Tolle",
@@ -913,16 +1033,58 @@
       "line": "今季 8勝5敗　防御率3.22　140奪三振"
     },
     {
+      "name": "Raymond Burgos",
+      "team": "レッドソックス",
+      "type": "pitcher",
+      "line": "今季 0勝0敗　防御率4.22　16奪三振"
+    },
+    {
+      "name": "Roman Anthony",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "今季 打率.245　5本塁打　15打点"
+    },
+    {
+      "name": "Romy Gonzalez",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "今季 打率.185　1本塁打　7打点"
+    },
+    {
       "name": "Sonny Gray",
       "team": "レッドソックス",
       "type": "pitcher",
       "line": "今季 18勝5敗　防御率2.72　149奪三振"
     },
     {
+      "name": "Tanner Houck",
+      "team": "レッドソックス",
+      "type": "pitcher",
+      "line": "今季 0勝1敗　防御率9.00　1奪三振"
+    },
+    {
       "name": "Trevor Story",
       "team": "レッドソックス",
       "type": "batter",
       "line": "今季 打率.235　5本塁打　29打点"
+    },
+    {
+      "name": "Tsung-Che Cheng",
+      "team": "レッドソックス",
+      "type": "batter",
+      "line": "今季 打率.256　0本塁打　5打点"
+    },
+    {
+      "name": "Tyler Samaniego",
+      "team": "レッドソックス",
+      "type": "pitcher",
+      "line": "今季 0勝3敗　防御率2.66　17奪三振"
+    },
+    {
+      "name": "Tyron Guerrero",
+      "team": "レッドソックス",
+      "type": "pitcher",
+      "line": "今季 1勝2敗　防御率3.10　41奪三振"
     },
     {
       "name": "Willson Contreras",
@@ -1105,6 +1267,24 @@
       "line": "今季 打率.265　28本塁打　93打点"
     },
     {
+      "name": "BJ Murray Jr.",
+      "team": "カブス",
+      "type": "batter",
+      "line": "今季 打率.091　0本塁打　0打点"
+    },
+    {
+      "name": "Braxton Garrett",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 1勝1敗　防御率7.71　7奪三振"
+    },
+    {
+      "name": "Caleb Thielbar",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 3勝4敗　防御率4.86　60奪三振"
+    },
+    {
       "name": "Carson Kelly",
       "team": "カブス",
       "type": "batter",
@@ -1141,10 +1321,28 @@
       "line": "今季 9勝8敗　防御率4.79　137奪三振"
     },
     {
+      "name": "Edward Cabrera",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 5勝5敗　防御率5.96　71奪三振"
+    },
+    {
+      "name": "Ethan Roberts",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 0勝2敗　防御率4.21　17奪三振"
+    },
+    {
       "name": "Gabriel Arias",
       "team": "カブス",
       "type": "batter",
       "line": "今季 打率.243　5本塁打　14打点"
+    },
+    {
+      "name": "Gavin Hollowell",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 0勝0敗　防御率2.45　13奪三振"
     },
     {
       "name": "Ian Happ",
@@ -1159,10 +1357,46 @@
       "line": "今季 6勝5敗　防御率3.36　73奪三振"
     },
     {
+      "name": "James Triantos",
+      "team": "カブス",
+      "type": "batter",
+      "line": "今季 打率.125　0本塁打　0打点"
+    },
+    {
       "name": "Javier Assad",
       "team": "カブス",
       "type": "pitcher",
       "line": "今季 6勝2敗　防御率3.63　63奪三振"
+    },
+    {
+      "name": "Jayden Murray",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 0勝0敗　防御率9.37　14奪三振"
+    },
+    {
+      "name": "Jordan Wicks",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 0勝2敗　防御率10.45　8奪三振"
+    },
+    {
+      "name": "Julian Aguiar",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 1勝0敗　防御率6.00　2奪三振"
+    },
+    {
+      "name": "Justin Dean",
+      "team": "カブス",
+      "type": "batter",
+      "line": "今季 打率.375　0本塁打　3打点"
+    },
+    {
+      "name": "Kevin Alcántara",
+      "team": "カブス",
+      "type": "batter",
+      "line": "今季 打率.240　1本塁打　6打点"
     },
     {
       "name": "Kevin Gausman",
@@ -1241,6 +1475,18 @@
       "team": "カブス",
       "type": "pitcher",
       "line": "今季 11勝10敗　防御率3.77　174奪三振"
+    },
+    {
+      "name": "Trent Thornton",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 5勝5敗　防御率3.35　31奪三振"
+    },
+    {
+      "name": "Tyler Ferguson",
+      "team": "カブス",
+      "type": "pitcher",
+      "line": "今季 0勝1敗　防御率5.30　21奪三振"
     },
     {
       "name": "Tyrone Taylor",
@@ -1337,7 +1583,7 @@
     },
     {
       "name": "Julian Aguiar",
-      "team": "レッズ",
+      "team": "カブス",
       "id": 687924
     },
     {
@@ -2309,6 +2555,11 @@
       "name": "Junior Caminero",
       "team": "レイズ",
       "id": 691406
+    },
+    {
+      "name": "Kristian Campbell",
+      "team": "レッドソックス",
+      "id": 692225
     },
     {
       "name": "Gustavo Campero",

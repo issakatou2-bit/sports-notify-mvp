@@ -1,95 +1,111 @@
 {
-  "generated_at": "2026-10-01T06:01:08.874342+00:00",
-  "date_jst": "2026-10-01",
-  "name": "Chase Meidroth",
-  "player_id": "805367",
-  "team": "ホワイトソックス",
+  "generated_at": "2026-10-02T06:01:04.436391+00:00",
+  "date_jst": "2026-10-02",
+  "name": "Michael Harris II",
+  "player_id": "671739",
+  "team": "ブレーブス",
   "group": "hitting",
-  "why": "2026-10-01のMLBで最も活躍",
-  "headline": "3打数2安打　1本塁打　3打点　1四球",
-  "score": 121,
+  "why": "2026-10-02のMLBで最も活躍",
+  "headline": "3打数1安打　1本塁打　3打点　1死球",
+  "score": 105,
   "bio": {
-    "name_en": "Chase Meidroth",
+    "name_en": "Michael Harris II",
     "age": 25,
-    "birth_city": "Torrance",
-    "birth_state": "CA",
+    "birth_city": "DeKalb",
+    "birth_state": "GA",
     "birth_country": "USA",
-    "birth_date": "2001-07-23",
-    "debut": "2025-04-11",
-    "draft_year": 2022,
-    "bats": "Right",
-    "throws": "Right",
-    "number": "10",
-    "position": "Second Base",
+    "birth_date": "2001-03-07",
+    "debut": "2022-05-28",
+    "draft_year": 2019,
+    "bats": "Left",
+    "throws": "Left",
+    "number": "23",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "5' 9\"",
-    "weight": 190
+    "height": "5' 11\"",
+    "weight": 195
   },
   "teams": [
     {
-      "team": "ホワイトソックス",
-      "from": 2025,
+      "team": "ブレーブス",
+      "from": 2022,
       "to": 2026
     }
   ],
   "career": {
-    "games": 276,
-    "avg": ".266",
-    "hr": 21,
-    "rbi": 86,
-    "ops": ".714",
-    "sb": 18,
-    "hits": 270
+    "games": 677,
+    "avg": ".278",
+    "hr": 99,
+    "rbi": 342,
+    "ops": ".771",
+    "sb": 82,
+    "hits": 713
   },
   "this_season": {
-    "games": 154,
-    "avg": ".276",
-    "hr": 16,
-    "rbi": 63,
-    "ops": ".765",
-    "sb": 4,
-    "hits": 156
+    "games": 155,
+    "avg": ".294",
+    "hr": 26,
+    "rbi": 87,
+    "ops": ".812",
+    "sb": 12,
+    "hits": 174
   },
   "last_season": {
-    "games": 122,
-    "avg": ".253",
-    "hr": 5,
-    "rbi": 23,
-    "ops": ".649",
-    "sb": 14,
-    "hits": 114
+    "games": 160,
+    "avg": ".249",
+    "hr": 20,
+    "rbi": 86,
+    "ops": ".677",
+    "sb": 20,
+    "hits": 152
   },
   "recent": [
     {
       "date": "2026-09-26",
-      "line": "2打数1安打",
-      "opponent": "Colorado Rockies"
+      "line": "5打数4安打 1打点",
+      "opponent": "Miami Marlins"
+    },
+    {
+      "date": "2026-09-25",
+      "line": "3打数0安打",
+      "opponent": "Miami Marlins"
     },
     {
       "date": "2026-09-24",
-      "line": "3打数2安打",
-      "opponent": "Kansas City Royals"
+      "line": "5打数3安打 1打点",
+      "opponent": "Cincinnati Reds"
     },
     {
       "date": "2026-09-23",
-      "line": "4打数2安打",
-      "opponent": "Kansas City Royals"
+      "line": "4打数0安打",
+      "opponent": "Cincinnati Reds"
     },
     {
       "date": "2026-09-22",
-      "line": "4打数3安打 1本塁打 5打点",
-      "opponent": "Kansas City Royals"
-    },
-    {
-      "date": "2026-09-20",
-      "line": "5打数1安打 1本塁打 2打点",
-      "opponent": "Detroit Tigers"
+      "line": "4打数2安打",
+      "opponent": "Cincinnati Reds"
     }
   ],
   "awards": [
     {
-      "season": "2024",
-      "name": "Baseball America Triple-A All-Star"
+      "season": "2025",
+      "name": "NL Player of the Week"
+    },
+    {
+      "season": "2023",
+      "name": "NL Player of the Week"
+    },
+    {
+      "season": "2022",
+      "name": "Jackie Robinson NL Rookie of the Year"
+    },
+    {
+      "season": "2022",
+      "name": "NL Rookie of the Month"
+    },
+    {
+      "season": "2021",
+      "name": "MiLB.com Organization All-Star"
     }
   ],
   "quotes": []
