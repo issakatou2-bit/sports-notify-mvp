@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02T06:10:02.338978+00:00",
+  "updated_at": "2026-10-02T09:52:33.401472+00:00",
   "start": "2026-09-11",
   "end": "2026-10-02",
   "players": {
@@ -262,13 +262,6 @@
       "team": "Philadelphia Phillies",
       "text": "Philadelphia Phillies activated LHP Jesús Luzardo from the 15-day injured list."
     },
-    "575929": {
-      "kind": "from_il",
-      "date": "2026-09-13",
-      "name_en": "Willson Contreras",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated 1B Willson Contreras from the 10-day injured list."
-    },
     "669364": {
       "kind": "from_il",
       "date": "2026-09-13",
@@ -283,13 +276,6 @@
       "team": "Washington Nationals",
       "text": "Washington Nationals activated 2B Nasim Nuñez from the bereavement list."
     },
-    "680694": {
-      "kind": "to_il",
-      "date": "2026-09-13",
-      "name_en": "Kyle Bradish",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles placed RHP Kyle Bradish on the 15-day injured list. Lower abdominal discomfort."
-    },
     "621383": {
       "kind": "from_il",
       "date": "2026-09-13",
@@ -303,6 +289,20 @@
       "name_en": "Owen Caissie",
       "team": "Miami Marlins",
       "text": "Miami Marlins activated RF Owen Caissie from the 10-day injured list."
+    },
+    "575929": {
+      "kind": "from_il",
+      "date": "2026-09-13",
+      "name_en": "Willson Contreras",
+      "team": "Boston Red Sox",
+      "text": "Boston Red Sox activated 1B Willson Contreras from the 10-day injured list."
+    },
+    "680694": {
+      "kind": "to_il",
+      "date": "2026-09-13",
+      "name_en": "Kyle Bradish",
+      "team": "Baltimore Orioles",
+      "text": "Baltimore Orioles placed RHP Kyle Bradish on the 15-day injured list. Lower abdominal discomfort."
     },
     "680880": {
       "kind": "up",
@@ -325,47 +325,12 @@
       "team": "Athletics",
       "text": "Athletics recalled RHP Joey Estes from Las Vegas Aviators."
     },
-    "680723": {
-      "kind": "up",
-      "date": "2026-09-13",
-      "name_en": "Drew Rom",
-      "team": "Athletics",
-      "text": "Athletics recalled LHP Drew Rom from Las Vegas Aviators."
-    },
-    "682274": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Yaramil Hiraldo",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled RHP Yaramil Hiraldo from Norfolk Tides."
-    },
-    "699912": {
-      "kind": "up",
-      "date": "2026-09-13",
-      "name_en": "Jose Fernandez",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled DH Jose Fernandez from Reno Aces."
-    },
-    "689818": {
-      "kind": "up",
-      "date": "2026-09-13",
-      "name_en": "David Sandlin",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled RHP David Sandlin from Charlotte Knights."
-    },
     "805326": {
       "kind": "up",
       "date": "2026-09-28",
       "name_en": "Tyler Schweitzer",
       "team": "Chicago White Sox",
       "text": "Chicago White Sox recalled LHP Tyler Schweitzer from Charlotte Knights."
-    },
-    "814154": {
-      "kind": "up",
-      "date": "2026-09-13",
-      "name_en": "Scott Bandura",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants selected the contract of LF Scott Bandura from Sacramento River Cats."
     },
     "680916": {
       "kind": "up",
@@ -380,6 +345,41 @@
       "name_en": "Eddy Yean",
       "team": "Washington Nationals",
       "text": "Washington Nationals recalled RHP Eddy Yean from Rochester Red Wings."
+    },
+    "814154": {
+      "kind": "up",
+      "date": "2026-09-13",
+      "name_en": "Scott Bandura",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants selected the contract of LF Scott Bandura from Sacramento River Cats."
+    },
+    "682274": {
+      "kind": "up",
+      "date": "2026-09-28",
+      "name_en": "Yaramil Hiraldo",
+      "team": "Baltimore Orioles",
+      "text": "Baltimore Orioles recalled RHP Yaramil Hiraldo from Norfolk Tides."
+    },
+    "680723": {
+      "kind": "up",
+      "date": "2026-09-13",
+      "name_en": "Drew Rom",
+      "team": "Athletics",
+      "text": "Athletics recalled LHP Drew Rom from Las Vegas Aviators."
+    },
+    "689818": {
+      "kind": "up",
+      "date": "2026-09-13",
+      "name_en": "David Sandlin",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox recalled RHP David Sandlin from Charlotte Knights."
+    },
+    "699912": {
+      "kind": "up",
+      "date": "2026-09-13",
+      "name_en": "Jose Fernandez",
+      "team": "Arizona Diamondbacks",
+      "text": "Arizona Diamondbacks recalled DH Jose Fernandez from Reno Aces."
     },
     "669330": {
       "kind": "from_il",
