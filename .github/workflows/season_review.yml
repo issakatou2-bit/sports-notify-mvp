@@ -83,6 +83,8 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           PRIVACY: ${{ inputs.privacy }}
+          # sanity は --general を付けたときだけAIを呼ぶ（ここでは呼ばない）
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           # 公開時刻。日次の枠（17:00〜21:00）を避けて間を空ける。
           set -- 16:30 22:00 23:00
