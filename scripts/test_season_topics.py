@@ -72,6 +72,8 @@ _specs = {"season_team_121": {"japanese": [{"name": "千賀滉大"}]},
           "season_player_684007": {"jp": "今永昇太", "ps_ended": True},
           "season_team_112": {"japanese": [{"name": "今永昇太"}], "ps_ended": True},
           "season_player_673540": {"jp": "千賀滉大"}}
+check("リーグの部門1位は日本人選手の球団と同じ段",
+      na.season_order("season_league_103_hitting", {})[:2], (1, 1))
 check("PSで終わったばかり → 日本人選手 → その他",
       sorted(_specs, key=lambda k: na.season_order(k, _specs[k])),
       ["season_player_684007", "season_team_112", "season_player_673540",

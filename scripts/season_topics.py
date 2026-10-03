@@ -375,6 +375,75 @@ def statcast_phrase(x: dict) -> str:
     return f"{x['label']}の高さはリーグ上位{v}%"
 
 
+# ---------------------------------------------------------------- リーグ
+
+LEADER_CATS = {
+    "hitting": (("homeRuns", "本塁打", "{}本"), ("battingAverage", "打率", "{}"),
+                ("runsBattedIn", "打点", "{}打点"), ("stolenBases", "盗塁", "{}盗塁")),
+    "pitching": (("wins", "勝利", "{}勝"), ("earnedRunAverage", "防御率", "{}"),
+                 ("strikeouts", "奪三振", "{}奪三振"), ("saves", "セーブ", "{}セーブ")),
+}
+
+
+def league_topics(ps: dict, kana_table: dict, jp: dict) -> list:
+    """リーグごとの部門1位（レギュラーシーズン）。
+
+    **「タイトル」とは呼ばない。**MLBが表彰する打撃部門は首位打者などに
+    限られ、日本の「本塁打王」のような公式の称号は無い。言うのは
+    「部門1位」まで。同率1位は全員の名前を出す。
+    """
+    if ps.get("phase") not in ("settled", "postseason"):
+        return []
+    teams = ps.get("teams") or {}
+    out = []
+    for lid, lname in LEAGUE_JP.items():
+        for group, cats in LEADER_CATS.items():
+            d = _get("stats/leaders", season=SEASON, leagueId=lid, limit=5,
+                     gameTypes="R",
+                     leaderCategories=",".join(c for c, _, _ in cats))
+            items, names = [], []
+            for cat, label, fmt in cats:
+                blk = next((b for b in d.get("leagueLeaders") or []
+                            if b.get("leaderCategory") == cat
+                            and b.get("statGroup") == group), None)
+                firsts = [x for x in (blk or {}).get("leaders") or []
+                          if x.get("rank") == 1]
+                if not firsts:
+                    continue
+                who = []
+                for x in firsts:
+                    en = x["person"]["fullName"]
+                    name = jp.get(en) or kana(en, kana_table)
+                    if any(c.isascii() and c.isalpha() for c in name):
+                        who = []
+                        break                 # 読めない名前が混じる行は出さない
+                    club = (teams.get(str((x.get("team") or {}).get("id")))
+                            or {}).get("name", "")
+                    who.append(f"{name}（{club}）" if club else name)
+                if who:
+                    items.append((f"{label}1位", "・".join(who) + "　"
+                                  + fmt.format(firsts[0]["value"])))
+                    names += [w.split("（")[0] for w in who]
+            if len(items) < 3:
+                continue
+            kind = "打撃" if group == "hitting" else "投手"
+            jps = [n for n in names if n in jp.values()]
+            out.append({
+                "key": f"season_league_{lid}_{group}",
+                "label": f"{lname} {kind}部門の1位（{SEASON}年）",
+                "hook": f"{lname}　{kind}部門の1位",
+                "heading": f"{lname}　{kind}部門1位",
+                "intro": f"{SEASON}年レギュラーシーズン、{lname}の{kind}部門で"
+                         f"1位になった選手です。MLB公式の数字で見ます。",
+                "intro_as_is": True,
+                "title": (f"【MLB】{'・'.join(jps[:2]) + 'も' if jps else ''}"
+                          f"{lname} {kind}部門の1位｜{SEASON}年シーズンまとめ #Shorts"),
+                "items": items,
+                "ps_ended": False,
+            })
+    return out
+
+
 # ---------------------------------------------------------------- 全体
 
 def build(ps: dict, only: int = 0) -> list:
@@ -387,6 +456,11 @@ def build(ps: dict, only: int = 0) -> list:
         kana_table = {}
     jp = jp_roster()
     out = []
+    if not only:
+        try:
+            out += league_topics(ps, kana_table, jp)
+        except Exception as e:                              # noqa: BLE001
+            print(f"[warn] リーグの部門1位を作れません({e})", file=sys.stderr)
     for tid, ending in sorted(ended.items()):
         if only and tid != only:
             continue
