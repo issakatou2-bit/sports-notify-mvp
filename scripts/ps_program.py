@@ -204,7 +204,11 @@ def forecast(ctx, games, rows, now, target_day=None):
                      headline_colors=[chosen[lead_side+'_color'],None])
         text = title.split('｜')[0] + '。' if start == 0 else '残りの試合の日程です。'
         pages.append(segment(cover, text, [c['game_id'] for c in group], 3))
-    for index,c in enumerate(cards,1):
+    # **カードは日本人選手のいる試合から**（表紙の日程表は時刻順のまま）。
+    # 10/3 本人「明日の注目試合は特に、日本人選手や、日本人選手の所属する
+    # 球団に注目しましょう」。同じ組の中は時刻順。
+    ordered = sorted(cards, key=lambda c: (0 if c['jp_team'] else 1, c['when'], c['game_id']))
+    for index,c in enumerate(ordered,1):
         state = situation(c)
         rnd = ROUND[c['round']][0]
         note = (('前戦の結果次第で開催される試合' if c['conditional'] else '前戦は結果未確定') if state == 'pending_results' else
@@ -229,7 +233,7 @@ def forecast(ctx, games, rows, now, target_day=None):
                     headline_secondary_colors=[c['home_secondary'],c['away_secondary']],round_game=f'{short_round} 第{c["game_number"]}戦',
                     affiliations=['・'.join(c[s+'_players'])+' / '+c[s] for s in ('home','away') if c[s+'_players']])
         supplement=None
-        if index-1 == lead and state == 'opening' and not (c['home_pitcher'] or c['away_pitcher']):
+        if c is chosen and state == 'opening' and not (c['home_pitcher'] or c['away_pitcher']):
             raw=next(g for g in games if g['gamePk']==c['game_id'])
             supplement=focus.venue_focus(raw,games)
             if supplement:
@@ -239,14 +243,29 @@ def forecast(ctx, games, rows, now, target_day=None):
         record = ('' if state=='opening' else
                   ('確定済みの勝数は' if state=='pending_results' else 'ここまで')
                   + f'{c["home_wins"]}勝対{c["away_wins"]}勝。')
-        speech = (f'{c["home"]}対{c["away"]}は{rnd}第{c["game_number"]}戦。'
-                  f'{record}日本時間{spoken_clock(c["when"])}の予定です。')
+        # 球団名に日本人選手の名前を添えて言う（「大谷翔平・山本由伸の
+        # ドジャース」）。題で名前を見て来た人が、本編でも聞ける。
+        said = {s: ('・'.join(c[s+'_players'][:3]) + 'の' if c[s+'_players'] else '') + c[s]
+                for s in ('home','away')}
+        # 日本人選手のいる側を主語に（片側だけのとき）。時刻は午前・午後を付ける
+        # （夜中の試合を「2時」とだけ言うと、昼の2時にも聞こえる）。
+        jp_side = [s for s in ('home','away') if c[s+'_players']]
+        if len(jp_side) == 1:
+            me = jp_side[0]; other = 'away' if me == 'home' else 'home'
+            opening = f'{said[me]}は、{c[other]}との{rnd}第{c["game_number"]}戦。'
+        else:
+            opening = f'{said["home"]}対{said["away"]}は{rnd}第{c["game_number"]}戦。'
+        hour = int(c["when"].split(':')[0])
+        ampm = '午前' if hour < 12 else '午後'
+        clock = spoken_clock(f'{hour % 12 if hour >= 12 else hour}:{c["when"].split(":")[1]}')
+        speech = (f'{opening}'
+                  f'{record}日本時間{ampm}{clock}の予定です。')
         if state=='opening' and c['bye']:speech+='勝者は地区シリーズで'+c['bye']+'と対戦します。'
         elif state!='opening':speech+=note+'です。'
         speech+=pitcher_speech(c)
         if supplement:speech+='第3戦が必要になった場合も、同じ球場で行われる予定です。'
         pages.append(segment(card, speech, [c['game_id']]))
-    return dict(title=title, segments=pages, game_ids=[c['game_id'] for c in cards],
+    return dict(title=title, segments=pages, game_ids=[c['game_id'] for c in ordered],
                 phase='forecast', target_day=target,
                 social_summary=title.split('｜')[0] + f'。{date_label}のPS全{len(cards)}試合を日本時間でまとめました。')
 

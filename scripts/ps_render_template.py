@@ -9,6 +9,9 @@ from video_common import lift_color
 
 ROOT=Path(__file__).resolve().parents[1]
 LAYOUTS={'schedule':4,'facts':3,'bracket':2,'quote':1}
+# Shortsの題・チャンネル名（下の約18%）とボタン列（右の約13%）を避ける線。
+SAFE_BOTTOM=1574
+SAFE_RIGHT=940
 
 @lru_cache(maxsize=8)
 def _prepared_presenter(data,crop,max_size):
@@ -113,13 +116,17 @@ def render(card,presenters=None,style='stadium',layers=False):
             for row,line in enumerate(lines):put(100,610+row*85,line,56,width=805)
             put(100,1220,item['attribution'],28,role='utility',color=t['muted'])
     if len(card.get('affiliations',[]))>2:raise ValueError('Too many affiliation rows')
+    # 日本人選手は強調色で（10/3本人「日本人選手に注目」）。
     for i,value in enumerate(card.get('affiliations',[])):
-        put(72,1165+i*55,value,40,color=t['muted'])
+        put(72,1165+i*55,value,42,color=t['accent'])
     suffix=' / 日本時間' if card.get('production') else ' / 日本時間・デザイン確認用'
     put(72,1320,card['date']+suffix,28,role='utility',color=t['muted'])
-    put(350,1490,'用語メモ',26,width=320,role='utility',color=t['accent'])
-    put(350,1540,card.get('glossary',''),29,width=320,role='utility',color=t['muted'])
-    put(350,1625,'出典：'+card.get('source_label','説明欄'),26,width=320,role='utility',color=t['muted'])
+    # **下18%と右端はShortsの題・ボタンが重なる**（10/3、実画面で確認）。
+    # 注記と出典はその上に置き、用語メモは最初の画面（表紙）だけ。
+    if card.get('card_index') is None and card.get('glossary'):
+        put(300,1380,'用語メモ',26,width=420,role='utility',color=t['accent'])
+        put(300,1420,card.get('glossary',''),29,width=420,role='utility',color=t['muted'])
+    put(300,1510,'出典：'+card.get('source_label','説明欄'),26,width=420,role='utility',color=t['muted'])
     avatars=[]
     framing=THEME['presenter']
     config=[('left','zundamon/C-cheer/base-black-brow-candidate.png'),('right','metan/3-black/base.png')]
@@ -127,8 +134,9 @@ def render(card,presenters=None,style='stadium',layers=False):
         if presenters not in (side,'both'):continue
         data=(ROOT/'assets/portraits/collespo-20260923'/path).read_bytes()
         sprite=_prepared_presenter(data,tuple(framing['crop']),tuple(framing['max_size']))
-        x=framing['edge_px'] if side=='left' else im.width-framing['edge_px']-sprite.width
-        y=im.height-sprite.height;box=(x,y,x+sprite.width,y+sprite.height)
+        # 立ち絵もShortsの操作部品（下の題・右のボタン列）の外へ。
+        x=framing['edge_px'] if side=='left' else SAFE_RIGHT-sprite.width
+        y=SAFE_BOTTOM-sprite.height;box=(x,y,x+sprite.width,y+sprite.height)
         for row in trace:
             if row['role']=='important' and overlaps(box,row['box']):raise ValueError('Presenter covers content')
         im.alpha_composite(sprite,(x,y));avatars.append({'side':side,'box':box,'asset':path})
