@@ -277,6 +277,18 @@ def _mlb_games(us_date: str):
 _MLB_CACHE = {}
 
 
+def _no_japanese(us_date: str) -> bool:
+    """その日の成績の記録が「集計は成功し、出場0名」と言っているか。
+
+    集計に失敗した日（collection_state が no_appearances 以外）は
+    False（欠けとして数える）。黙って見逃さない。
+    """
+    d = load(f"data/recap_history/{us_date}.json") or {}
+    return (d.get("date") == us_date
+            and d.get("collection_state") == "no_appearances"
+            and not d.get("players") and not d.get("collection_errors"))
+
+
 def check_videos(day: str, only_past: bool = False) -> tuple:
     """
     その日の動画が投稿されたか。(行, 欠けている数, 見ない数, 記録済みID) を返す。
@@ -312,6 +324,13 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
             # 試合が無かった。**分からないとき（取得失敗）は欠けとして数える**
             # （黙って見逃すと、サッカーのように何週間も気付かない）。
             lines.append(f"| {at} | {label} | — | MLBの試合が無い日 |")
+            skipped += 1
+        elif kind == "morning" and _no_japanese(
+                (datetime.fromisoformat(day) - timedelta(days=1))
+                .strftime("%Y-%m-%d")):
+            # 試合はあったが、日本人選手が誰も出ていない（10/1米国：PSは
+            # フィリーズ対ブレーブスだけ）。成績の回は出るはずが無い。
+            lines.append(f"| {at} | {label} | — | 日本人選手の出場が無い日 |")
             skipped += 1
         elif optional:
             # 「試合の無い日は欠けてよい」と一律に見逃していたので、
