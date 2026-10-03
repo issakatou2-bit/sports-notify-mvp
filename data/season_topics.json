@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-03T06:27:22.631578+00:00",
+  "updated_at": "2026-10-03T09:09:51.864405+00:00",
   "source": "MLB Stats API（レギュラーシーズン）",
   "topics": [
     {
@@ -9,6 +9,7 @@
       "heading": "ア・リーグ　打撃部門1位",
       "intro": "2026年レギュラーシーズン、ア・リーグの打撃部門で1位になった選手です。MLB公式の数字で見ます。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ア・リーグ 打撃部門の1位｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -37,6 +38,7 @@
       "heading": "ア・リーグ　投手部門1位",
       "intro": "2026年レギュラーシーズン、ア・リーグの投手部門で1位になった選手です。MLB公式の数字で見ます。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ア・リーグ 投手部門の1位｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -65,6 +67,7 @@
       "heading": "ナ・リーグ　打撃部門1位",
       "intro": "2026年レギュラーシーズン、ナ・リーグの打撃部門で1位になった選手です。MLB公式の数字で見ます。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ナ・リーグ 打撃部門の1位｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -89,6 +92,7 @@
       "heading": "ナ・リーグ　投手部門1位",
       "intro": "2026年レギュラーシーズン、ナ・リーグの投手部門で1位になった選手です。MLB公式の数字で見ます。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ナ・リーグ 投手部門の1位｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -117,6 +121,7 @@
       "heading": "エンゼルス　2026年のまとめ",
       "intro": "エンゼルスの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】菊池雄星のエンゼルス｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -147,6 +152,7 @@
         }
       ],
       "team_id": 108,
+      "abbr": "LAA",
       "league_jp": "ア・リーグ",
       "ps_ended": false
     },
@@ -155,6 +161,7 @@
       "label": "菊池雄星の2026年シーズン",
       "hook": "1勝7敗　防御率4.92",
       "intro_as_is": true,
+      "style": "v2",
       "heading": "菊池雄星　2026年のまとめ",
       "intro": "エンゼルスの菊池雄星。2026年シーズンを、MLB公式の数字で振り返ります。",
       "title": "【MLB】菊池雄星｜2026年シーズンまとめ　エンゼルス #Shorts",
@@ -187,6 +194,7 @@
       "heading": "ダイヤモンドバックス　2026年のまとめ",
       "intro": "ダイヤモンドバックスの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ヌートバーのダイヤモンドバックス｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -209,6 +217,7 @@
         }
       ],
       "team_id": 109,
+      "abbr": "ARI",
       "league_jp": "ナ・リーグ",
       "ps_ended": false
     },
@@ -217,6 +226,7 @@
       "label": "ヌートバーの2026年シーズン",
       "hook": "打率.239　8本塁打",
       "intro_as_is": true,
+      "style": "v2",
       "heading": "ヌートバー　2026年のまとめ",
       "intro": "ダイヤモンドバックスのヌートバー。シーズン途中でカージナルスから移籍。2026年シーズンを、MLB公式の数字で振り返ります。",
       "title": "【MLB】ヌートバー｜2026年シーズンまとめ　ダイヤモンドバックス #Shorts",
@@ -245,6 +255,7 @@
       "heading": "オリオールズ　2026年のまとめ",
       "intro": "オリオールズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】オリオールズ｜2026年シーズンまとめ　79勝82敗 #Shorts",
       "items": [
         [
@@ -274,6 +285,7 @@
       ],
       "japanese": [],
       "team_id": 110,
+      "abbr": "BAL",
       "league_jp": "ア・リーグ",
       "ps_ended": false
     },
@@ -284,6 +296,7 @@
       "heading": "レッドソックス　2026年のまとめ",
       "intro": "レッドソックスの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】吉田正尚のレッドソックス｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -318,6 +331,7 @@
         }
       ],
       "team_id": 111,
+      "abbr": "BOS",
       "league_jp": "ア・リーグ",
       "ps_ended": true
     },
@@ -326,6 +340,7 @@
       "label": "吉田正尚の2026年シーズン",
       "hook": "打率.274　5本塁打",
       "intro_as_is": true,
+      "style": "v2",
       "heading": "吉田正尚　2026年のまとめ",
       "intro": "レッドソックスの吉田正尚。2026年シーズンを、MLB公式の数字で振り返ります。",
       "title": "【MLB】吉田正尚｜2026年シーズンまとめ　レッドソックス #Shorts",
@@ -354,6 +369,7 @@
       "heading": "カブス　2026年のまとめ",
       "intro": "カブスの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】鈴木誠也・今永昇太のカブス｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -392,6 +408,7 @@
         }
       ],
       "team_id": 112,
+      "abbr": "CHC",
       "league_jp": "ナ・リーグ",
       "ps_ended": true
     },
@@ -400,6 +417,7 @@
       "label": "鈴木誠也の2026年シーズン",
       "hook": "打率.270　26本塁打",
       "intro_as_is": true,
+      "style": "v2",
       "heading": "鈴木誠也　2026年のまとめ",
       "intro": "カブスの鈴木誠也。2026年シーズンを、MLB公式の数字で振り返ります。",
       "title": "【MLB】鈴木誠也｜2026年シーズンまとめ　カブス #Shorts",
@@ -430,6 +448,7 @@
       "label": "今永昇太の2026年シーズン",
       "hook": "11勝10敗　防御率3.77",
       "intro_as_is": true,
+      "style": "v2",
       "heading": "今永昇太　2026年のまとめ",
       "intro": "カブスの今永昇太。2026年シーズンを、MLB公式の数字で振り返ります。",
       "title": "【MLB】今永昇太｜2026年シーズンまとめ　カブス #Shorts",
@@ -462,6 +481,7 @@
       "heading": "レッズ　2026年のまとめ",
       "intro": "レッズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】レッズ｜2026年シーズンまとめ　75勝87敗 #Shorts",
       "items": [
         [
@@ -491,6 +511,7 @@
       ],
       "japanese": [],
       "team_id": 113,
+      "abbr": "CIN",
       "league_jp": "ナ・リーグ",
       "ps_ended": false
     },
@@ -501,6 +522,7 @@
       "heading": "ロッキーズ　2026年のまとめ",
       "intro": "ロッキーズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】菅野智之のロッキーズ｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -531,6 +553,7 @@
         }
       ],
       "team_id": 115,
+      "abbr": "COL",
       "league_jp": "ナ・リーグ",
       "ps_ended": false
     },
@@ -539,6 +562,7 @@
       "label": "菅野智之の2026年シーズン",
       "hook": "12勝12敗　防御率5.37",
       "intro_as_is": true,
+      "style": "v2",
       "heading": "菅野智之　2026年のまとめ",
       "intro": "ロッキーズの菅野智之。2026年シーズンを、MLB公式の数字で振り返ります。",
       "title": "【MLB】菅野智之｜2026年シーズンまとめ　ロッキーズ #Shorts",
@@ -575,6 +599,7 @@
       "heading": "タイガース　2026年のまとめ",
       "intro": "タイガースの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】タイガース｜2026年シーズンまとめ　76勝86敗 #Shorts",
       "items": [
         [
@@ -600,6 +625,7 @@
       ],
       "japanese": [],
       "team_id": 116,
+      "abbr": "DET",
       "league_jp": "ア・リーグ",
       "ps_ended": false
     },
@@ -610,6 +636,7 @@
       "heading": "アストロズ　2026年のまとめ",
       "intro": "アストロズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】今井達也のアストロズ｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -636,6 +663,7 @@
         }
       ],
       "team_id": 117,
+      "abbr": "HOU",
       "league_jp": "ア・リーグ",
       "ps_ended": true
     },
@@ -644,6 +672,7 @@
       "label": "今井達也の2026年シーズン",
       "hook": "6勝4敗　防御率4.93",
       "intro_as_is": true,
+      "style": "v2",
       "heading": "今井達也　2026年のまとめ",
       "intro": "アストロズの今井達也。2026年シーズンを、MLB公式の数字で振り返ります。",
       "title": "【MLB】今井達也｜2026年シーズンまとめ　アストロズ #Shorts",
@@ -672,6 +701,7 @@
       "heading": "ロイヤルズ　2026年のまとめ",
       "intro": "ロイヤルズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ロイヤルズ｜2026年シーズンまとめ　69勝93敗 #Shorts",
       "items": [
         [
@@ -693,6 +723,7 @@
       ],
       "japanese": [],
       "team_id": 118,
+      "abbr": "KC",
       "league_jp": "ア・リーグ",
       "ps_ended": false
     },
@@ -703,6 +734,7 @@
       "heading": "ナショナルズ　2026年のまとめ",
       "intro": "ナショナルズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ナショナルズ｜2026年シーズンまとめ　77勝85敗 #Shorts",
       "items": [
         [
@@ -724,6 +756,7 @@
       ],
       "japanese": [],
       "team_id": 120,
+      "abbr": "WSH",
       "league_jp": "ナ・リーグ",
       "ps_ended": false
     },
@@ -734,6 +767,7 @@
       "heading": "メッツ　2026年のまとめ",
       "intro": "メッツの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】千賀滉大のメッツ｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -768,6 +802,7 @@
         }
       ],
       "team_id": 121,
+      "abbr": "NYM",
       "league_jp": "ナ・リーグ",
       "ps_ended": false
     },
@@ -776,6 +811,7 @@
       "label": "千賀滉大の2026年シーズン",
       "hook": "0勝9敗　防御率7.34",
       "intro_as_is": true,
+      "style": "v2",
       "heading": "千賀滉大　2026年のまとめ",
       "intro": "メッツの千賀滉大。2026年シーズンを、MLB公式の数字で振り返ります。",
       "title": "【MLB】千賀滉大｜2026年シーズンまとめ　メッツ #Shorts",
@@ -812,6 +848,7 @@
       "heading": "アスレチックス　2026年のまとめ",
       "intro": "アスレチックスの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】アスレチックス｜2026年シーズンまとめ　64勝98敗 #Shorts",
       "items": [
         [
@@ -833,6 +870,7 @@
       ],
       "japanese": [],
       "team_id": 133,
+      "abbr": "ATH",
       "league_jp": "ア・リーグ",
       "ps_ended": false
     },
@@ -843,6 +881,7 @@
       "heading": "パイレーツ　2026年のまとめ",
       "intro": "パイレーツの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】パイレーツ｜2026年シーズンまとめ　82勝80敗 #Shorts",
       "items": [
         [
@@ -872,6 +911,7 @@
       ],
       "japanese": [],
       "team_id": 134,
+      "abbr": "PIT",
       "league_jp": "ナ・リーグ",
       "ps_ended": false
     },
@@ -882,6 +922,7 @@
       "heading": "マリナーズ　2026年のまとめ",
       "intro": "マリナーズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】マリナーズ｜2026年シーズンまとめ　76勝86敗 #Shorts",
       "items": [
         [
@@ -907,6 +948,7 @@
       ],
       "japanese": [],
       "team_id": 136,
+      "abbr": "SEA",
       "league_jp": "ア・リーグ",
       "ps_ended": false
     },
@@ -917,6 +959,7 @@
       "heading": "ジャイアンツ　2026年のまとめ",
       "intro": "ジャイアンツの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ジャイアンツ｜2026年シーズンまとめ　65勝97敗 #Shorts",
       "items": [
         [
@@ -946,6 +989,7 @@
       ],
       "japanese": [],
       "team_id": 137,
+      "abbr": "SF",
       "league_jp": "ナ・リーグ",
       "ps_ended": false
     },
@@ -956,6 +1000,7 @@
       "heading": "カージナルス　2026年のまとめ",
       "intro": "カージナルスの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ヌートバーのカージナルス｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -986,6 +1031,7 @@
         }
       ],
       "team_id": 138,
+      "abbr": "STL",
       "league_jp": "ナ・リーグ",
       "ps_ended": false
     },
@@ -996,6 +1042,7 @@
       "heading": "レンジャーズ　2026年のまとめ",
       "intro": "レンジャーズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】レンジャーズ｜2026年シーズンまとめ　80勝82敗 #Shorts",
       "items": [
         [
@@ -1017,6 +1064,7 @@
       ],
       "japanese": [],
       "team_id": 140,
+      "abbr": "TEX",
       "league_jp": "ア・リーグ",
       "ps_ended": false
     },
@@ -1027,6 +1075,7 @@
       "heading": "ブルージェイズ　2026年のまとめ",
       "intro": "ブルージェイズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】岡本和真のブルージェイズ｜2026年シーズンまとめ #Shorts",
       "items": [
         [
@@ -1057,6 +1106,7 @@
         }
       ],
       "team_id": 141,
+      "abbr": "TOR",
       "league_jp": "ア・リーグ",
       "ps_ended": false
     },
@@ -1065,6 +1115,7 @@
       "label": "岡本和真の2026年シーズン",
       "hook": "打率.232　33本塁打",
       "intro_as_is": true,
+      "style": "v2",
       "heading": "岡本和真　2026年のまとめ",
       "intro": "ブルージェイズの岡本和真。2026年シーズンを、MLB公式の数字で振り返ります。",
       "title": "【MLB】岡本和真｜2026年シーズンまとめ　ブルージェイズ #Shorts",
@@ -1097,6 +1148,7 @@
       "heading": "ツインズ　2026年のまとめ",
       "intro": "ツインズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】ツインズ｜2026年シーズンまとめ　77勝85敗 #Shorts",
       "items": [
         [
@@ -1126,6 +1178,7 @@
       ],
       "japanese": [],
       "team_id": 142,
+      "abbr": "MIN",
       "league_jp": "ア・リーグ",
       "ps_ended": false
     },
@@ -1136,6 +1189,7 @@
       "heading": "フィリーズ　2026年のまとめ",
       "intro": "フィリーズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】フィリーズ｜2026年シーズンまとめ　88勝74敗 #Shorts",
       "items": [
         [
@@ -1165,6 +1219,7 @@
       ],
       "japanese": [],
       "team_id": 143,
+      "abbr": "PHI",
       "league_jp": "ナ・リーグ",
       "ps_ended": true
     },
@@ -1175,6 +1230,7 @@
       "heading": "マーリンズ　2026年のまとめ",
       "intro": "マーリンズの2026年シーズンを、MLB公式の数字で振り返ります。",
       "intro_as_is": true,
+      "style": "v2",
       "title": "【MLB】マーリンズ｜2026年シーズンまとめ　80勝82敗 #Shorts",
       "items": [
         [
@@ -1200,6 +1256,7 @@
       ],
       "japanese": [],
       "team_id": 146,
+      "abbr": "MIA",
       "league_jp": "ナ・リーグ",
       "ps_ended": false
     }

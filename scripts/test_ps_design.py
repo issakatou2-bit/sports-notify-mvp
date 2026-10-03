@@ -80,4 +80,14 @@ check("勝数は下の行に重ねない（スコアボードにある）",
       [i["label"] for i in _prog["segments"][0]["meta"]["card"]["items"]
        if i["label"] in ("ホワイトソックス", "アストロズ")], [])
 
+section("G: シーズンまとめ・PSの話題の画面（review_render）")
+import review_render as rr  # noqa: E402
+from PIL import Image, ImageDraw  # noqa: E402
+_d = ImageDraw.Draw(Image.new("RGB", (10, 10)))
+_lines, _ = rr._wrap(_d, "32登板　11勝10敗　防御率3.77　174回と3分の1　174奪三振", 66, 868)
+check("数字の途中で折り返さない", all(not x.startswith((".", "7", "77")) for x in _lines), True)
+check("全角スペースで区切る", _lines[0].endswith(("登板", "敗")), True)
+_lines, _ = rr._wrap(_d, "ジェド・ホイヤーが今季を振り返る：「結果的に、チャンスを逃してしまった」", 52, 868, 9)
+check("行の頭に読点・コロンを置かない", any(x[:1] in rr.NO_HEAD for x in _lines), False)
+
 sys.exit(done())

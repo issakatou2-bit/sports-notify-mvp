@@ -1629,6 +1629,22 @@ def render_rivalry(p, item, index, total):
     return im
 
 
+def render_v2(p, kind, meta, spec, topic):
+    """新デザインの画面（review_render）。材料の style="v2" のときだけ。"""
+    import review_render as rr
+    root = pathlib.Path(__file__).resolve().parents[1]
+    tag = "PSの話題" if spec.get("story") else "シーズンまとめ"
+    if kind == "intro":
+        return rr.intro(p, spec, root, tag)
+    if kind == "list":
+        items = list_items(meta.get("topic", topic))
+        start = meta.get("start", 0)
+        return rr.list_page(p, spec, items, start, meta.get("count", 1),
+                            start // 2 + 1, (len(items) + 1) // 2, root, tag)
+    return rr.people(p, spec, spec.get(meta.get("group", "japanese")) or [],
+                     meta.get("heading", ""), root, tag)
+
+
 def render_outro(p):
     im, d = base(p)
     d.text((80, 640), "コレスポ", font=font(120), fill=ACCENT)
@@ -1730,7 +1746,12 @@ def main():
                     proc.stdin.write(still)
                     total += 1
                     continue
-                if kind == "intro":
+                v2 = LIST_TOPICS.get(meta.get("topic", args.topic)) or {}
+                if v2.get("style") == "v2" and kind in ("intro", "list", "people"):
+                    # シーズンまとめ・PSの話題は新デザインで（10/3 改善案G）。
+                    # 読み上げ・尺・項目は同じで、画面だけを差し替える。
+                    im = render_v2(pp, kind, meta, v2, args.topic)
+                elif kind == "intro":
                     im = render_intro(pp, label, hook_for(args.topic, label))
                 elif kind == "division":
                     code = DIVISION_ORDER[meta.get("division_index", 0)]
