@@ -1,68 +1,73 @@
 {
-  "generated_at": "2026-10-02T06:01:04.436391+00:00",
-  "date_jst": "2026-10-02",
-  "name": "Michael Harris II",
-  "player_id": "671739",
+  "generated_at": "2026-10-03T06:01:06.703489+00:00",
+  "date_jst": "2026-10-03",
+  "name": "Ozzie Albies",
+  "player_id": "645277",
   "team": "ブレーブス",
   "group": "hitting",
   "why": "2026-10-02のMLBで最も活躍",
-  "headline": "3打数1安打　1本塁打　3打点　1死球",
-  "score": 105,
+  "headline": "3打数1安打　1本塁打　2打点　1四球",
+  "score": 98,
   "bio": {
-    "name_en": "Michael Harris II",
-    "age": 25,
-    "birth_city": "DeKalb",
-    "birth_state": "GA",
-    "birth_country": "USA",
-    "birth_date": "2001-03-07",
-    "debut": "2022-05-28",
-    "draft_year": 2019,
-    "bats": "Left",
-    "throws": "Left",
-    "number": "23",
-    "position": "Outfielder",
-    "nickname": null,
-    "height": "5' 11\"",
-    "weight": 195
+    "name_en": "Ozzie Albies",
+    "age": 29,
+    "birth_city": "Willemstad",
+    "birth_state": null,
+    "birth_country": "Curacao",
+    "birth_date": "1997-01-07",
+    "debut": "2017-08-01",
+    "draft_year": null,
+    "bats": "Switch",
+    "throws": "Right",
+    "number": "1",
+    "position": "Second Base",
+    "nickname": "Bolly",
+    "height": "5' 7\"",
+    "weight": 165
   },
   "teams": [
     {
       "team": "ブレーブス",
-      "from": 2022,
+      "from": 2017,
       "to": 2026
     }
   ],
   "career": {
-    "games": 677,
-    "avg": ".278",
-    "hr": 99,
-    "rbi": 342,
-    "ops": ".771",
-    "sb": 82,
-    "hits": 713
+    "games": 1190,
+    "avg": ".262",
+    "hr": 179,
+    "rbi": 655,
+    "ops": ".762",
+    "sb": 102,
+    "hits": 1232
   },
   "this_season": {
-    "games": 155,
-    "avg": ".294",
-    "hr": 26,
-    "rbi": 87,
-    "ops": ".812",
-    "sb": 12,
-    "hits": 174
+    "games": 162,
+    "avg": ".237",
+    "hr": 22,
+    "rbi": 73,
+    "ops": ".685",
+    "sb": 4,
+    "hits": 146
   },
   "last_season": {
-    "games": 160,
-    "avg": ".249",
-    "hr": 20,
-    "rbi": 86,
-    "ops": ".677",
-    "sb": 20,
-    "hits": 152
+    "games": 157,
+    "avg": ".240",
+    "hr": 16,
+    "rbi": 74,
+    "ops": ".671",
+    "sb": 14,
+    "hits": 145
   },
   "recent": [
     {
+      "date": "2026-09-27",
+      "line": "2打数0安打",
+      "opponent": "Miami Marlins"
+    },
+    {
       "date": "2026-09-26",
-      "line": "5打数4安打 1打点",
+      "line": "4打数0安打",
       "opponent": "Miami Marlins"
     },
     {
@@ -72,40 +77,35 @@
     },
     {
       "date": "2026-09-24",
-      "line": "5打数3安打 1打点",
+      "line": "5打数1安打 1打点",
       "opponent": "Cincinnati Reds"
     },
     {
       "date": "2026-09-23",
-      "line": "4打数0安打",
-      "opponent": "Cincinnati Reds"
-    },
-    {
-      "date": "2026-09-22",
-      "line": "4打数2安打",
+      "line": "3打数1安打",
       "opponent": "Cincinnati Reds"
     }
   ],
   "awards": [
     {
-      "season": "2025",
-      "name": "NL Player of the Week"
+      "season": "2026",
+      "name": "NL All-Star"
     },
     {
       "season": "2023",
-      "name": "NL Player of the Week"
-    },
-    {
-      "season": "2022",
-      "name": "Jackie Robinson NL Rookie of the Year"
-    },
-    {
-      "season": "2022",
-      "name": "NL Rookie of the Month"
+      "name": "NL All-Star"
     },
     {
       "season": "2021",
-      "name": "MiLB.com Organization All-Star"
+      "name": "NL Silver Slugger"
+    },
+    {
+      "season": "2021",
+      "name": "World Series Championship"
+    },
+    {
+      "season": "2021",
+      "name": "NL All-Star"
     }
   ],
   "quotes": []

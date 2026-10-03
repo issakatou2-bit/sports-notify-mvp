@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02T06:02:01.560148+00:00",
+  "updated_at": "2026-10-03T06:02:02.872513+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,73 +13,81 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
-      "mentions": 13,
-      "tone": "好調",
-      "gist": "ブレーブスがフィリーズを破りドジャースとのNLDS進出決定"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 5,
-      "tone": "話題",
-      "gist": "ホワイトソックスが大学のような若い雰囲気でプレーオフへ"
-    },
-    {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 5,
+      "mentions": 8,
       "tone": "話題",
-      "gist": "ドジャースがブレーブスとのNLDSに向けて準備中"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 4,
-      "tone": "不振",
-      "gist": "フィリーズがワールドシリーズ出場を逃し敗退"
+      "gist": "Freddie Freeman走者一掃、大谷健康問題"
     },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
-      "mentions": 4,
-      "tone": "話題",
-      "gist": "アーロン・ジャッジが実験的血液治療を受けるなどヤンキースが課"
+      "mentions": 6,
+      "tone": "好調",
+      "gist": "ヤンキース快勝、視聴率高記録、Judge出場確定へ"
     },
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 2,
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 5,
       "tone": "話題",
-      "gist": "ガーディアンズがホワイトソックスとのALDS開始を待つ"
+      "gist": "Rays満員御礼予想、ファン結集へ"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "White Sox先発Smith、親子選手の会話"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 2,
+      "mentions": 4,
       "tone": "話題",
-      "gist": "パドレスとブリュワーズがNLDSで対戦予定"
+      "gist": "Woodruff意欲、アンダードッグ脱却へ"
+    },
+    {
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "Braves-Dodgers対戦、Olson-Freeman"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "Phillies敗退、ハーパーら高額契約負債"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
-      "mentions": 2,
+      "mentions": 3,
       "tone": "話題",
-      "gist": "パドレスとブリュワーズがNLDSで対戦予定"
+      "gist": "Padres恐竜論争、Brewers対戦へ"
     }
   ],
   "players": [
     {
-      "name": "村上宗隆",
+      "name": "大谷翔平",
+      "mentions": 2
+    },
+    {
+      "name": "山本由伸",
+      "mentions": 1
+    },
+    {
+      "name": "鈴木誠也",
       "mentions": 1
     }
   ]
