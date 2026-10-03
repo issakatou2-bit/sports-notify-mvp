@@ -135,13 +135,23 @@ jobs:
         run: |
           python scripts/mlb_transactions.py --days 21             --out data/transactions.json | tee -a "$GITHUB_STEP_SUMMARY"
 
+      # **作らない日は、後の手順を飛ばして終える。**10/3、試合の無い日に
+      # 「話せる数字が無いため、作りません」と正しく判断したのに、後の
+      # 検査が無い台本を探して赤くなった。
       - name: Write the dialogue
+        id: dialogue
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           mkdir -p build/lf
           python scripts/generate_dialogue.py --out build/lf/dialogue.json \
             --mode "${{ inputs.mode || 'numbers' }}"
+          if [ -f build/lf/dialogue.json ]; then
+            echo "made=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::きょうの長編は作りません（台本が無い日）"
+            echo "made=0" >> "$GITHUB_OUTPUT"
+          fi
 
       # 言ったことが、渡した材料と一致しているか。
       #
@@ -152,6 +162,7 @@ jobs:
       #
       # 新しくAPIは叩かない。台本の facts に渡した数字が入っている。
       - name: Verify the numbers against the material
+        if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/verify_numbers.py \
             --dialogue build/lf/dialogue.json --strict
@@ -167,6 +178,7 @@ jobs:
       # 見てからっていうのは手間すぎます」）。機械で決められるところは
       # 機械で止める。ここは辞書と突き合わせるだけで、判断は入れない。
       - name: Verify the wording
+        if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/verify_terms.py \
             --dialogue build/lf/dialogue.json --strict
@@ -174,6 +186,7 @@ jobs:
       # 台本にありえない数字が混ざっていないか。短編と同じ検査を通す。
       # 長編だからといって緩めない。
       - name: Sanity check the script
+        if: steps.dialogue.outputs.made == '1'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
@@ -182,12 +195,14 @@ jobs:
             --out data/sanity_longform.json
 
       - name: Synthesize both voices
+        if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/synthesize_narration.py \
             --narration build/lf/dialogue.json \
             --out-dir build/lf/audio
 
       - name: Build the video
+        if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/generate_longform.py \
             --dialogue build/lf/dialogue.json \
@@ -195,6 +210,7 @@ jobs:
             --out build/lf --require-audio
 
       - name: Thumbnail
+        if: steps.dialogue.outputs.made == '1'
         continue-on-error: true
         run: |
           TOPIC=$(python -c "import json;print(json.load(open('build/lf/dialogue.json',encoding='utf-8')).get('top',''))" || echo "")
@@ -215,7 +231,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload to YouTube
-        if: ${{ inputs.upload != 'false' }}
+        if: ${{ inputs.upload != 'false' && steps.dialogue.outputs.made == '1' }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
