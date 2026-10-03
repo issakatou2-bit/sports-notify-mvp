@@ -63,7 +63,30 @@ def render(card,presenters=None,style='stadium',layers=False):
         put(865,145,f'{index}/{total}',40,width=125,role='utility',color=t['accent'],latin=True)
     if card.get('round_game'):
         put(72,151,card['round_game'],36,width=620,role='utility',color=t['accent'])
-    for i,line in enumerate(card['headline'].split('\n')):
+    board=card.get('scoreboard')
+    if board:
+        # スコアボード（10/3 改善案B）。見出しの2行の代わりに、略称バッジ・
+        # 球団名・勝数・●○・日本人選手を1行ずつ。見出しの帯（210〜485）の中。
+        y=218
+        # 日本人選手のいる球団を上に（同じなら材料の順）。
+        for row in sorted(board['rows'],key=lambda r:0 if r.get('players') else 1):
+            c1=lift_color(row.get('color'),fallback=t['line'])
+            d.rounded_rectangle((72,y+6,212,y+82),radius=12,fill=row.get('color') or t['line'],
+                                outline=row.get('secondary') or c1,width=4)
+            abbr_w=round(d.textlength(row['abbr'],font=font(42,True)))
+            put(142-abbr_w//2,y+18,row['abbr'],42,width=130,role='brand',color='#ffffff',latin=True)
+            put(236,y,row['name'],76,width=520)
+            wins=str(row['wins'])
+            put(936-round(d.textlength(wins,font=font(92,True))),y-6,wins,92,width=140,latin=True)
+            for k in range(board['need']):
+                cx=936-(board['need']-1-k)*34-12
+                box=(cx-12,y+96,cx+12,y+120)
+                if k<row['wins']:d.ellipse(box,fill=c1)
+                else:d.ellipse(box,outline=t['muted'],width=3)
+            if row.get('players'):
+                put(240,y+86,'・'.join(row['players']),34,width=560,color=t['accent'])
+            y+=158 if row.get("players") else 140
+    for i,line in enumerate([] if board else card['headline'].split('\n')):
         if i>1:raise ValueError('Headline needs an editorial rewrite')
         marker=(card.get('headline_colors') or [None,None])[i]
         if marker:

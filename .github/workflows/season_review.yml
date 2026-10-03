@@ -8,6 +8,7 @@ name: シーズンまとめ（球団・日本人選手）
 # - **同じ型を一度に大量に出さない。**1日3本を時間をずらして予約公開。
 #   17:00〜21:00 は日次の枠が並ぶので避ける。
 # - 数字はMLB公式（レギュラーシーズン）。台詞はAIに書かせない。
+#   検算も機械の検査だけ（AIの読み直しは要らない。台詞は材料の写し）。
 
 on:
   workflow_run:
@@ -82,7 +83,6 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           PRIVACY: ${{ inputs.privacy }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           # 公開時刻。日次の枠（17:00〜21:00）を避けて間を空ける。
           set -- 16:30 22:00 23:00
@@ -93,7 +93,7 @@ jobs:
             echo "::group::$t ($AT)"
             python scripts/generate_asset_video.py \
               --topic "$t" --narration-out "build/narr_$t.json" &&
-            python scripts/sanity.py --general --strict \
+            python scripts/sanity.py --strict \
               --narration "build/narr_$t.json" &&
             python scripts/synthesize_narration.py \
               --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&

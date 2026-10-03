@@ -21,7 +21,7 @@ import ps_series as series
 import ps_focus as focus
 import video_common as vc
 import ps_motion_template as motion
-from notability_engine import MLB_TEAM_COLOR
+from notability_engine import MLB_TEAM_COLOR, MLB_TEAM_ABBR
 from ps_brand_components import TEAM_SECONDARY_COLORS
 from generate_narration import display_name, speech_name
 
@@ -127,6 +127,38 @@ def pitcher_speech(card):
     return ''.join(statements)
 
 
+def focus_plan(seg):
+    """読み上げの文ごとに、画面のどの行の話か（10/3 改善案C）。
+
+    文の中身で行を探す（「ガーディアンズの先発予定は…」→ その行）。
+    文字数の割合で時間を割り当てる。どの行にも当たらない文は None。
+    スコアボードのカード（PS予告）だけ。"""
+    card=seg['meta']['card']
+    if not card.get('scoreboard'):
+        return []
+    sentences=[x+'。' for x in seg['text'].split('。') if x.strip()]
+    total=sum(len(x) for x in sentences) or 1
+    plan,pos=[],0
+    for sent in sentences:
+        idx=None
+        for k,item in enumerate(card.get('items') or []):
+            head=str(item.get('label','')).split(' / ')[0]
+            if head.startswith('日本時間') and '日本時間' in sent:
+                idx=k
+            elif head and head+'の先発' in sent:
+                idx=k
+        plan.append((pos/total,(pos+len(sent))/total,idx))
+        pos+=len(sent)
+    return plan
+
+
+def focus_at(plan,fraction):
+    for lo,hi,idx in plan:
+        if lo<=fraction<hi:
+            return idx
+    return None
+
+
 def render_segment(seg,layers=False):
     side={2:'right',3:'left'}.get(seg['speaker'])
     if side is None:raise ValueError('画面素材のない話者です')
@@ -169,6 +201,7 @@ def forecast(ctx, games, rows, now, target_day=None):
             continue
         keyed = {t['id']: t for t in row['teams']}
         card = dict(game_id=g['gamePk'], round=g['gameType'], game_number=g['seriesGameNumber'],
+                    home_id=ids[0], away_id=ids[1],
                     home=keyed[ids[0]]['name'], away=keyed[ids[1]]['name'],
                     home_wins=keyed[ids[0]]['wins'], away_wins=keyed[ids[1]]['wins'],
                     when=start.strftime('%H:%M'), conditional=g['seriesGameNumber'] > row['need'],
@@ -203,6 +236,18 @@ def forecast(ctx, games, rows, now, target_day=None):
                      items=[dict(when=f'{date_label} {c["when"]}', home=c['home'], away=c['away'],home_color=c['home_color'],away_color=c['away_color'],home_secondary=c['home_secondary'],away_secondary=c['away_secondary']) for c in group],
                      headline_colors=[chosen[lead_side+'_color'],None])
         text = title.split('｜')[0] + '。' if start == 0 else '残りの試合の日程です。'
+        # 冒頭の一文（10/3 改善案D）: 題の読み直しではなく、いつ・誰の試合か。
+        if start == 0 and chosen[lead_side+'_players']:
+            hour=int(chosen['when'].split(':')[0]); minute=chosen['when'].split(':')[1]
+            ampm='午前' if hour<12 else '午後'
+            clock=spoken_clock(f"{hour % 12 if hour >= 12 else hour}:{minute}")
+            others=len(cards)-1
+            text=(f"{'・'.join(chosen[lead_side+'_players'][:3])}の{chosen[lead_side]}は、"
+                  f"日本時間{target_date.day}日の{ampm}{clock}から{ROUND[chosen['round']][0]}"
+                  f"第{chosen['game_number']}戦。"
+                  + (f"ほか{others}試合も、日本人選手のいる試合から見ていきます。" if others else ''))
+            headline=f"{chosen[lead_side+'_players'][0]}の{lead_name}\n明日{date_label} {round_label}"
+            cover['headline']=headline
         pages.append(segment(cover, text, [c['game_id'] for c in group], 3))
     # **カードは日本人選手のいる試合から**（表紙の日程表は時刻順のまま）。
     # 10/3 本人「明日の注目試合は特に、日本人選手や、日本人選手の所属する
@@ -225,13 +270,20 @@ def forecast(ctx, games, rows, now, target_day=None):
                 items=[first_item,advance,dict(label='シリーズの決着',value=f'{ROUND[c["round"]][1]//2+1}勝先取')]
             if c['bye']:note='勝者は'+c['bye']+'とDSへ'
         else:
-            items=[dict(label=c[s],value=f'{c[s+"_wins"]}勝',team_color=c[s+'_color']) for s in ('home','away')]+[first_item]
+            # 勝数は上のスコアボードに出す（10/3 改善案B）。下は時刻と先発。
+            items=[first_item]+[dict(label=c[s]+' / 先発予定',value=c[s+'_pitcher']['display'],value_size=60,team_color=c[s+'_color'],team_secondary=c[s+'_secondary']) for s in ('home','away') if c[s+'_pitcher']]
         short_round={'F':'WCS','D':'DS','L':'LCS','W':'WS'}[c['round']]
         card = dict(common(ctx, f'PS予告 / {short_round}第{c["game_number"]}戦', target), layout='facts',
                     headline=f'{c["home"]}\n対{c["away"]}', subhead=note,
                     items=items,card_index=index,card_total=len(cards),headline_colors=[c['home_color'],c['away_color']],
                     headline_secondary_colors=[c['home_secondary'],c['away_secondary']],round_game=f'{short_round} 第{c["game_number"]}戦',
-                    affiliations=['・'.join(c[s+'_players'])+' / '+c[s] for s in ('home','away') if c[s+'_players']])
+                    affiliations=[],
+                    # スコアボード（10/3 改善案B）: 略称バッジ・球団名・勝数・●○・
+                    # 日本人選手。ロゴは使わない（商標）。略称と球団色だけ。
+                    scoreboard=dict(need=ROUND[c['round']][1]//2+1, rows=[
+                        dict(abbr=MLB_TEAM_ABBR.get(str(c[s+'_id']),''), name=c[s],
+                             wins=c[s+'_wins'], color=c[s+'_color'], secondary=c[s+'_secondary'],
+                             players=c[s+'_players'][:3]) for s in ('home','away')]))
         supplement=None
         if c is chosen and state == 'opening' and not (c['home_pitcher'] or c['away_pitcher']):
             raw=next(g for g in games if g['gamePk']==c['game_id'])
@@ -450,8 +502,10 @@ def movie(program, audio_dir, out):
             if i == 0:
                 image.save(out / ('short.png' if program['kind'] == 'daily' else 'short_postseason.png'))
             prepared=motion.prepare(foreground,seg['meta']['card'])
+            plan=focus_plan(seg)
+            speech=float(audio[i]['duration']) or duration
             for n in range(round(duration * 30)):
-                frame=motion.frame(prepared,n/30)
+                frame=motion.frame(prepared,n/30,focus_at(plan,n/30/speech))
                 raw=vc.crossfade(previous_frame,frame,n,round(vc.FADE_SECONDS*30),(1080,1920))
                 proc.stdin.write(raw)
             previous_frame=raw
