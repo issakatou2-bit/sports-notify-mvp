@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>17:00成績 新デザイン手本</title>
+<!--
+  Cloud-01 A. 17:00「日本人選手の成績」の新デザインのHTML手本（確認用。本番の描画ではない）。
+  材料: data/recap_history/2026-09-29.json（米国9/29＝日本時間9/30）
+        data/postseason.json（ワイルドカードシリーズの組み合わせ）
+  色・安全域: scripts/ps-brand-theme.json（colors.stadium / important_area / presenter）
+             scripts/ps_render_template.py（SAFE_BOTTOM=1574, SAFE_RIGHT=940, 文字の大きさ）
+  外部の読み込みは無し。
+-->
+<style>
+  :root {
+    /* scripts/ps-brand-theme.json colors.stadium */
+    --bg: #102d2a;
+    --ink: #f7f2df;
+    --muted: #a9c5bb;
+    --accent: #ffd16c;
+    --line: #36544a;
+    --panel: #183b35;
+    /* 前回との差（scripts/generate_morning_short.py の UP / DOWN） */
+    --up: rgb(110, 205, 150);
+    --down: rgb(200, 120, 120);
+    /* 手本のページ自体の色 */
+    --page: #e1e3df;
+    --page-ink: #243329;
+    --page-muted: #5b6a63;
+    --s: 0.3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--page-ink);
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Noto Sans CJK JP", "Yu Gothic", "Meiryo", sans-serif;
+    line-height: 1.6;
+  }
+  main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 22px; margin: 8px 0 4px; }
+  .lead { margin: 0 0 12px; color: var(--page-muted); font-size: 14px; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 16px; }
+  .controls button {
+    font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 8px;
+    border: 1px solid #9aa79f; background: #fff; color: var(--page-ink); cursor: pointer;
+  }
+  .controls button[aria-pressed="true"] { background: var(--page-ink); color: #fff; border-color: var(--page-ink); }
+  .controls .sep { width: 1px; height: 24px; background: #b8c1bb; margin: 0 4px; }
+
+  .row { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+  .slot { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .slot-label { font-size: 13px; color: var(--page-muted); }
+  .frame {
+    width: calc(1080px * var(--s)); height: calc(1920px * var(--s));
+    overflow: hidden; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  }
+
+  /* 1080×1920 の実寸で描き、縮小して見せる */
+  .screen {
+    position: relative; width: 1080px; height: 1920px;
+    transform: scale(var(--s)); transform-origin: 0 0;
+    background: var(--bg); color: var(--ink); overflow: hidden;
+    line-height: 1.2;
+  }
+  .screen .t { position: absolute; white-space: nowrap; }
+  .bold { font-weight: 700; }
+  .muted { color: var(--muted); }
+  .accent { color: var(--accent); }
+  .num { font-family: "Helvetica Neue", Arial, sans-serif; font-weight: 700; }
+
+  /* 背景の飾り（ps_render_template.background と同じ考え方: 円弧とひし形の線） */
+  .deco { position: absolute; inset: 0; pointer-events: none; }
+
+  .divider { position: absolute; left: 72px; width: 864px; height: 2px; background: var(--line); }
+  .pill {
+    position: absolute; padding: 4px 18px; border-radius: 10px;
+    background: var(--accent); color: var(--bg); font-weight: 700; white-space: nowrap;
+  }
+  .tile { position: absolute; width: 270px; }
+  .tile .lab { font-size: 40px; color: var(--muted); }
+  .tile .val { font-size: 120px; color: var(--accent); line-height: 1.05; }
+  .panel { position: absolute; left: 72px; width: 864px; height: 240px; border-radius: 18px; background: var(--panel); }
+  .up { color: var(--up); }
+  .down { color: var(--down); }
+
+  /* 立ち絵の位置（画像は使わず枠だけ） */
+  .presenter {
+    position: absolute; left: 24px; top: 1364px; width: 220px; height: 210px;
+    border: 4px dashed var(--muted); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    color: var(--muted); font-size: 28px; line-height: 1.3;
+  }
+
+  /* 安全域の重ね表示（切り替えボタンで出し入れ） */
+  .safe { display: none; position: absolute; inset: 0; pointer-events: none; }
+  .show-safe .safe { display: block; }
+  .safe .zone {
+    position: absolute; background: rgba(230, 40, 70, .38);
+    color: #fff; font-size: 30px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    text-align: center; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,.6);
+  }
+  .safe .z-top { left: 0; top: 0; width: 1080px; height: 154px; }       /* 上 8% = 153.6px */
+  .safe .z-bottom { left: 0; top: 1574px; width: 1080px; height: 346px; }/* 下 18%（SAFE_BOTTOM=1574） */
+  .safe .z-right { left: 940px; top: 154px; width: 140px; height: 1420px; writing-mode: vertical-rl; text-orientation: upright; } /* 右 13%（SAFE_RIGHT=940） */
+  .safe .important {
+    position: absolute; left: 72px; top: 210px; width: 864px; height: 1070px;
+    border: 4px dashed rgba(120, 200, 255, .9);
+  }
+  .safe .important span {
+    position: absolute; right: 8px; bottom: 6px; font-size: 26px; color: rgba(160, 220, 255, 1);
+    text-shadow: 0 2px 4px rgba(0,0,0,.6);
+  }
+
+  /* 2枚目の選手切り替え */
+  .tabs { display: flex; gap: 6px; }
+  .tabs button {
+    font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 6px;
+    border: 1px solid #9aa79f; background: #fff; color: var(--page-ink); cursor: pointer;
+  }
+  .tabs button[aria-pressed="true"] { background: var(--page-ink); color: #fff; }
+
+  section.notes { max-width: 820px; margin: 28px auto 8px; font-size: 15px; }
+  section.notes h2 { font-size: 18px; margin: 24px 0 8px; border-bottom: 1px solid #b8c1bb; padding-bottom: 4px; }
+  section.notes table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  section.notes th, section.notes td { border: 1px solid #b8c1bb; padding: 6px 8px; vertical-align: top; text-align: left; }
+  section.notes th { background: #d3d8d2; }
+  section.notes code { font-size: 13px; background: #d3d8d2; padding: 1px 4px; border-radius: 4px; }
+  section.notes .note { color: var(--page-muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>17:00「日本人選手の成績」新デザインの手本</h1>
+  <p class="lead">日本時間 2026年9月30日（米国9/29）の材料で描いた確認用の3枚。1080×1920 を縮小して表示。デザイン確認用で、本番の画面ではありません。</p>
+
+  <div class="controls">
+    <button type="button" id="btn-safe" aria-pressed="false">安全域を重ねて表示</button>
+    <span class="sep"></span>
+    <button type="button" data-scale="0.25" aria-pressed="false">小</button>
+    <button type="button" data-scale="0.3" aria-pressed="true">中</button>
+    <button type="button" data-scale="0.45" aria-pressed="false">大</button>
+  </div>
+
+  <div class="row" id="screens">
+    <!-- ========== 1 表紙 ========== -->
+    <div class="slot">
+      <div class="slot-label">1 表紙</div>
+      <div class="frame"><div class="screen" id="cover"></div></div>
+    </div>
+
+    <!-- ========== 2 1人ずつ ========== -->
+    <div class="slot">
+      <div class="slot-label">2 1人ずつ（選手を切り替え）</div>
+      <div class="frame"><div class="screen" id="single"></div></div>
+      <div class="tabs" id="tabs"></div>
+    </div>
+
+    <!-- ========== 3 一覧 ========== -->
+    <div class="slot">
+      <div class="slot-label">3 一覧</div>
+      <div class="frame"><div class="screen" id="list"></div></div>
+    </div>
+  </div>
+
+  <section class="notes">
+    <h2>今の17:00の構成と、この3枚の対応</h2>
+    <p>今の17:00（<code>scripts/generate_morning_short.py</code> の <code>players</code> の回）は、読み上げの区切りごとに次の順で画面を出している（<code>build_narration</code> と <code>main</code> の描き分けから読んだもの）。</p>
+    <table>
+      <thead><tr><th>今の順番</th><th>今の画面（関数）</th><th>中身</th><th>この手本では</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>表紙 <code>render_intro</code> → <code>render_intro_players</code></td><td>日付、いちばんの選手の名前（最大132px）、成績の1行、名前のある記録の帯、スコア（100超は金色）、「ほか○○・○○」、見出し「日本人選手の成績」と「その日活躍した順に紹介します」、「出場 N人」</td><td><b>1 表紙</b>。名前を主役にする考え方はそのまま。シリーズ名・場面（先制打点）・前回との差を足した</td></tr>
+        <tr><td>2</td><td>一覧 <code>render_list</code>（1画面に3人、<code>PER_PAGE = 3</code>）</td><td>順位、名前（投手・打者で色分け）、スコアと「前回○ ▲○」「直近○試合 平均○」、成績の1行、「打者・球団名」、場面の言葉と注記</td><td><b>3 一覧</b>（全員を1行ずつ）と、<b>2 1人ずつ</b>（同じ中身を1人1画面に広げ、成績を項目ごとの数字に分けた）に分けた</td></tr>
+        <tr><td>3</td><td>7日間の合計 <code>render_week</code></td><td>その日の順位を7日間の合計の中に置く</td><td>この手本には入れていない（今のまま後ろに続ける想定）</td></tr>
+        <tr><td>4</td><td>節目 <code>render_reach</code></td><td>あと少しで届く記録</td><td>同上</td></tr>
+        <tr><td>5</td><td>現地の声 <code>render_praise</code></td><td>コメント欄から日本人選手への声（翻訳、3件まで）</td><td>同上</td></tr>
+        <tr><td>6</td><td>締め <code>render_outro</code></td><td>―</td><td>同上</td></tr>
+      </tbody>
+    </table>
+    <p class="note">今の17:00は色が <code>generate_morning_short.py</code> の独自の色（濃い紺の地・橙の強調）。この手本はPSの新しい見た目（<code>ps-brand-theme.json</code> の stadium）に合わせ、文字の置き方は <code>ps_render_template.py</code>（左端72px・重要な文字は 72〜936 × 210〜1280 の中・注記と出典は下18%の上）に合わせた。</p>
+
+    <h2>数字の出どころ</h2>
+    <ul>
+      <li>成績（打数・安打・本塁打・打点・四球・得点・投球回・自責・奪三振・被安打・与四球）、球団名、成績の1行、「先制打点」とその注記、前回の点数・直近の平均: <code>data/recap_history/2026-09-29.json</code> の値そのまま。</li>
+      <li>「1回に犠牲フライで先制」: 同じファイルの村上宗隆の <code>clutch_plays</code>（<code>event: Sac Fly</code>, <code>inning: 1</code>, <code>kind: 先制</code>）。</li>
+      <li>スコア（村上宗隆63・松井裕樹58・鈴木誠也55）と並び順: 材料の数字から <code>scripts/morning_recap.py</code> の <code>contribution</code> で計算した値（今の17:00が画面に出しているのと同じ計算。並べ方は <code>sort_players</code> と同じ高い順）。「前回との差」はスコアと材料の <code>prev_score</code> の差。</li>
+      <li>「ワイルドカードシリーズ」とア・リーグ／ナ・リーグ、対戦相手: <code>data/postseason.json</code> の <code>series</code>（ホワイトソックス対アストロズ、パドレス対カブス）。この日が第何戦かは材料で確かめていないので書いていない。</li>
+    </ul>
+
+    <h2>安全域の見方</h2>
+    <ul>
+      <li>「安全域を重ねて表示」を押すと、Shortsの操作部品と重なる範囲（上8%＝0〜154px、下18%＝1574px より下、右13%＝940px より右）が赤く、重要な文字を置く範囲（<code>important_area</code> 72〜936 × 210〜1280）が青い点線で重なる。</li>
+      <li>左下の点線の枠が立ち絵の位置（<code>ps_render_template.py</code> と同じ: 左から24px、下端を1574pxにそろえた 220×210 の枠）。画像は使っていない。</li>
+      <li>上8%の中に「コレスポ」「MLB / POSTSEASON」「1/3」を置いているのは今の <code>ps_render_template.py</code> と同じ扱い（看板・進み具合で、重要な文字ではない）。</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function () {
+  // data/recap_history/2026-09-29.json の players（必要な項目だけ写した）。
+  // score は scripts/morning_recap.py の contribution で計算した値。
+  var players = [
+    { name: "村上宗隆", team: "ホワイトソックス", league: "ア・リーグ", type: "batter",
+      ab: 3, hits: 1, hr: 0, rbi: 1, bb: 1, runs: 2,
+      headline: "3打数1安打　1打点　1四球",
+      clutch: "先制打点", clutchPlay: "1回に犠牲フライで先制",
+      clutchNote: "先制＝0対0から最初の1点を入れた一打",
+      score: 63, prev: 50, avg: 74, avgGames: 7 },
+    { name: "松井裕樹", team: "パドレス", league: "ナ・リーグ", type: "pitcher",
+      ip: "1.0", er: 0, so: 1, hits: 0, bb: 0,
+      headline: "1.0回　1奪三振　自責0",
+      score: 58, prev: 42, avg: 55, avgGames: 3 },
+    { name: "鈴木誠也", team: "カブス", league: "ナ・リーグ", type: "batter",
+      ab: 3, hits: 1, hr: 0, rbi: 0, bb: 1, runs: 0,
+      headline: "3打数1安打　1四球",
+      score: 55, prev: 101, avg: 72, avgGames: 7 }
+  ];
+  var DATE_JST = "9月30日";
+  var DATE_ISO = "2026-09-30";
+  var TOTAL = 3;
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  // 位置は 1080×1920 の実寸（ps_render_template.py の put と同じ座標系）
+  function t(x, y, size, text, cls, extra) {
+    return '<div class="t ' + (cls || '') + '" style="left:' + x + 'px;top:' + y + 'px;font-size:' + size + 'px;' + (extra || '') + '">' + text + '</div>';
+  }
+  function role(p) { return p.type === "pitcher" ? "投手" : "打者"; }
+  function diff(p) {
+    var d = p.score - p.prev;
+    var mark = d > 0 ? "▲" : (d < 0 ? "▼" : "±");
+    var cls = d > 0 ? "up" : (d < 0 ? "down" : "muted");
+    return { text: "前回" + p.prev + " " + mark + Math.abs(d), cls: cls };
+  }
+  function unit(p) { return p.type === "pitcher" ? "登板" : "試合"; }
+
+  function deco() {
+    // 円弧3本とひし形（ps_render_template.background と同じ位置・線の色）
+    var arcs = [340, 430, 520].map(function (r) {
+      return '<circle cx="680" cy="140" r="' + r + '" fill="none" stroke="#36544a" stroke-width="2" stroke-dasharray="' +
+        Math.round(2 * Math.PI * r * 145 / 360) + ' 99999" transform="rotate(10 680 140)"/>';
+    }).join("");
+    return '<svg class="deco" viewBox="0 0 1080 1920" width="1080" height="1920">' + arcs +
+      '<polygon points="540,1520 800,1750 540,1890 280,1750" fill="none" stroke="#36544a" stroke-width="2"/></svg>';
+  }
+  function chrome(index) {
+    return deco() +
+      t(72, 65, 44, "コレスポ", "bold") +
+      t(354, 90, 26, "MLB / POSTSEASON", "muted num", "font-weight:400") +
+      t(840, 100, 40, index + "/" + TOTAL, "accent num") +
+      t(72, 160, 36, "ワイルドカードシリーズ", "accent");
+  }
+  function footer(withGlossary) {
+    var h = t(72, 1320, 28, DATE_ISO + " / 日本時間・デザイン確認用", "muted");
+    if (withGlossary) {
+      h += t(300, 1380, 26, "用語メモ", "accent");
+      h += t(300, 1420, 29, "スコア＝投手と打者を同じ<br>物差しで測る独自の点数", "muted", "white-space:normal;width:420px");
+    }
+    h += t(300, 1510, 26, "出典：MLB公式（成績）", "muted");
+    h += '<div class="presenter">立ち絵の位置<br>（画像なし）</div>';
+    h += '<div class="safe">' +
+      '<div class="zone z-top">上8%　題・メニューと重なる</div>' +
+      '<div class="zone z-bottom">下18%　題・チャンネル名と重なる</div>' +
+      '<div class="zone z-right">右13%　ボタン列と重なる</div>' +
+      '<div class="important"><span>重要な文字の範囲</span></div>' +
+      '</div>';
+    return h;
+  }
+
+  // ---------- 1 表紙 ----------
+  function renderCover() {
+    var top = players[0];
+    var rest = players.slice(1).map(function (p) { return p.name; }).join("・");
+    var d = diff(top);
+    var h = chrome(1);
+    h += t(72, 230, 48, DATE_JST + "（日本時間）", "muted");
+    h += t(68, 296, 128, esc(top.name), "accent bold", "text-shadow:5px 6px 0 #000");
+    h += t(76, 456, 40, esc(top.team) + "・" + role(top), "muted");
+    h += t(72, 524, 60, esc(top.headline), "");
+    if (top.clutch) {
+      h += '<div class="pill" style="left:72px;top:612px;font-size:36px">' + esc(top.clutch) + '</div>';
+      h += t(270, 616, 36, esc(top.clutchPlay), "");
+      h += t(72, 684, 28, esc(top.clutchNote), "muted");
+    }
+    h += t(72, 750, 46, "スコア " + top.score, "muted");
+    h += t(310, 758, 36, d.text, d.cls);
+    h += t(72, 836, 44, "ほか " + esc(rest), "muted");
+    h += '<div class="divider" style="top:936px"></div>';
+    h += t(72, 966, 64, "日本人選手の成績", "bold");
+    h += t(72, 1056, 38, "その日活躍した順に紹介します", "muted");
+    h += t(72, 1136, 50, "出場 " + players.length + "人", "");
+    h += footer(true);
+    document.getElementById("cover").innerHTML = h;
+  }
+
+  // ---------- 2 1人ずつ ----------
+  function tiles(p) {
+    var items = p.type === "pitcher"
+      ? [["投球回", p.ip], ["自責", p.er], ["奪三振", p.so], ["被安打", p.hits], ["与四球", p.bb]]
+      : [["打数", p.ab], ["安打", p.hits], ["本塁打", p.hr], ["打点", p.rbi], ["四球", p.bb], ["得点", p.runs]];
+    return items.map(function (it, i) {
+      var x = 72 + (i % 3) * 297, y = 600 + Math.floor(i / 3) * 220;
+      return '<div class="tile" style="left:' + x + 'px;top:' + y + 'px">' +
+        '<div class="lab">' + it[0] + '</div><div class="val num">' + esc(it[1]) + '</div></div>';
+    }).join("");
+  }
+  function renderSingle(i) {
+    var p = players[i];
+    var d = diff(p);
+    var h = chrome(2);
+    h += t(72, 218, 80, (i + 1) + "位", "accent num");
+    h += t(222, 240, 36, "スコア " + p.score, "muted");
+    h += t(412, 240, 36, d.text, d.cls);
+    h += t(68, 318, 128, esc(p.name), "bold");
+    h += t(76, 478, 44, esc(p.team) + "・" + role(p) + "（" + esc(p.league) + "）", "muted");
+    h += '<div class="divider" style="top:570px"></div>';
+    h += tiles(p);
+    h += '<div class="divider" style="top:1040px"></div>';
+    if (p.clutch) {
+      h += '<div class="pill" style="left:72px;top:1064px;font-size:36px">' + esc(p.clutch) + '</div>';
+      h += t(270, 1068, 36, esc(p.clutchPlay), "");
+      h += t(72, 1136, 28, esc(p.clutchNote), "muted");
+    } else {
+      h += t(72, 1068, 40, esc(p.headline), "");
+    }
+    h += t(72, 1196, 32, "直近" + p.avgGames + unit(p) + " 平均" + p.avg, "muted");
+    h += footer(false);
+    document.getElementById("single").innerHTML = h;
+    Array.prototype.forEach.call(document.querySelectorAll("#tabs button"), function (b, j) {
+      b.setAttribute("aria-pressed", j === i ? "true" : "false");
+    });
+  }
+
+  // ---------- 3 一覧 ----------
+  function renderList() {
+    var h = chrome(3);
+    h += t(72, 222, 64, "出場した日本人選手", "accent bold");
+    h += t(72, 316, 36, DATE_JST + "（日本時間）・" + players.length + "人・スコアの高い順", "muted");
+    players.forEach(function (p, i) {
+      var y = 400 + i * 270;
+      var d = diff(p);
+      h += '<div class="panel" style="top:' + y + 'px"></div>';
+      h += t(100, y + 28, 64, String(i + 1), "accent num");
+      h += t(176, y + 24, 56, esc(p.name), "bold");
+      h += t(178, y + 100, 30, role(p) + "・" + esc(p.team), "muted");
+      h += t(176, y + 152, 40, esc(p.headline), "");
+      // 点数は右寄せ（右端 900px。安全域 940px の内側）
+      h += t(0, y + 22, 66, String(p.score), "accent num", "left:auto;right:" + (1080 - 860) + "px");
+      h += t(0, y + 52, 30, "点", "muted", "left:auto;right:" + (1080 - 900) + "px");
+      h += t(0, y + 104, 26, d.text, d.cls, "left:auto;right:" + (1080 - 900) + "px");
+    });
+    h += footer(false);
+    document.getElementById("list").innerHTML = h;
+  }
+
+  // ---------- 操作 ----------
+  var tabs = document.getElementById("tabs");
+  players.forEach(function (p, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = (i + 1) + "位 " + p.name;
+    b.addEventListener("click", function () { renderSingle(i); });
+    tabs.appendChild(b);
+  });
+
+  var safeBtn = document.getElementById("btn-safe");
+  safeBtn.addEventListener("click", function () {
+    var on = document.getElementById("screens").classList.toggle("show-safe");
+    safeBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    safeBtn.textContent = on ? "安全域を隠す" : "安全域を重ねて表示";
+  });
+
+  var scaleBtns = document.querySelectorAll("[data-scale]");
+  function setScale(s) {
+    // 画面の幅より大きくしない（スマホで横にはみ出さないように）
+    var max = (document.querySelector("main").clientWidth - 32) / 1080;
+    document.documentElement.style.setProperty("--s", Math.min(s, max));
+  }
+  Array.prototype.forEach.call(scaleBtns, function (b) {
+    b.addEventListener("click", function () {
+      Array.prototype.forEach.call(scaleBtns, function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      setScale(parseFloat(b.getAttribute("data-scale")));
+    });
+  });
+
+  renderCover();
+  renderSingle(0);
+  renderList();
+  setScale(0.3);
+})();
+</script>
+</body>
+</html>
