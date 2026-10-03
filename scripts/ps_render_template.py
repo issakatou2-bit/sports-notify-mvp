@@ -75,7 +75,7 @@ def render(card,presenters=None,style='stadium',layers=False):
                                 outline=row.get('secondary') or c1,width=4)
             abbr_w=round(d.textlength(row['abbr'],font=font(42,True)))
             put(142-abbr_w//2,y+18,row['abbr'],42,width=130,role='brand',color='#ffffff',latin=True)
-            put(236,y,row['name'],76,width=520)
+            put(236,y,row['name'],68,width=520)
             wins=str(row['wins'])
             put(936-round(d.textlength(wins,font=font(92,True))),y-6,wins,92,width=140,latin=True)
             for k in range(board['need']):
@@ -84,8 +84,8 @@ def render(card,presenters=None,style='stadium',layers=False):
                 if k<row['wins']:d.ellipse(box,fill=c1)
                 else:d.ellipse(box,outline=t['muted'],width=3)
             if row.get('players'):
-                put(240,y+86,'・'.join(row['players']),34,width=560,color=t['accent'])
-            y+=158 if row.get("players") else 140
+                put(240,y+82,'・'.join(row['players']),30,width=560,color=t['accent'])
+            y+=144 if row.get("players") else 130
     for i,line in enumerate([] if board else card['headline'].split('\n')):
         if i>1:raise ValueError('Headline needs an editorial rewrite')
         marker=(card.get('headline_colors') or [None,None])[i]

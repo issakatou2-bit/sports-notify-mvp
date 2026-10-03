@@ -50,4 +50,34 @@ cover = dict(_card, card_index=None, scoreboard=None, layout="schedule",
 _, m2 = rt.render(cover, presenters="left")
 check("表紙には用語メモ", "用語メモ" in [r["text"] for r in m2["text"]], True)
 
+section("PS情勢（20:00）: 日本人選手から・次の相手")
+def _t(i, n, w, pl): return {"id": i, "name": n, "wins": w, "players": pl}
+_rows = [
+    {"key": "F:111-147", "round": "F", "round_jp": "ワイルドカードシリーズ", "stage": 1, "need": 2,
+     "played": 2, "over": True, "winner": 147, "next": None,
+     "teams": [_t(147, "ヤンキース", 2, []), _t(111, "レッドソックス", 0, ["吉田正尚"])]},
+    {"key": "F:117-145", "round": "F", "round_jp": "ワイルドカードシリーズ", "stage": 1, "need": 2,
+     "played": 2, "over": True, "winner": 145, "next": None,
+     "teams": [_t(145, "ホワイトソックス", 2, ["村上宗隆"]), _t(117, "アストロズ", 0, [])]},
+    {"key": "D:114-145", "round": "D", "round_jp": "地区シリーズ", "stage": 2, "need": 3,
+     "played": 0, "over": False, "winner": None, "next": None,
+     "teams": [_t(114, "ガーディアンズ", 0, []), _t(145, "ホワイトソックス", 0, ["村上宗隆"])]}]
+_before = {"program_series": [dict(r, over=False, played=1, winner=None,
+                                   teams=[dict(t, wins=min(t["wins"], 1)) for t in r["teams"]])
+                              for r in _rows[:2]]}
+_prog = pp.situation_program({"date_jst": "2026-10-01", "source_url": "https://statsapi.mlb.com"},
+                             _rows, _before)
+check("題は勝ち残った日本人選手の側", _prog["title"].split("｜")[0], "村上宗隆のホワイトソックスがWCS突破")
+check("勝ち残った日本人選手のシリーズが先", _prog["segments"][0]["text"].startswith("村上宗隆"), True)
+check("読み上げは日本人選手の側から（敗れた側でも）",
+      any(x["text"].startswith("吉田正尚のレッドソックスは") for x in _prog["segments"]), True)
+check("敗退した日本人選手の回は、勝ち残った側の回より後",
+      [x["text"][:4] for x in _prog["segments"]][-1], "吉田正尚")
+check("勝ち上がった球団の次の相手",
+      [(i["label"], i["value"]) for i in _prog["segments"][0]["meta"]["card"]["items"]][1],
+      ("ホワイトソックスの次の相手", "地区シリーズでガーディアンズ"))
+check("勝数は下の行に重ねない（スコアボードにある）",
+      [i["label"] for i in _prog["segments"][0]["meta"]["card"]["items"]
+       if i["label"] in ("ホワイトソックス", "アストロズ")], [])
+
 sys.exit(done())

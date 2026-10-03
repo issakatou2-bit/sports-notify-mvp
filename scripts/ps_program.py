@@ -355,10 +355,18 @@ def situation_program(ctx, rows, before):
         selected = [r for r in selected if r['played']]
     if not selected:
         return None
+    # **日本人選手のいるシリーズから**（10/3 本人）。勝ち残っている側に
+    # 日本人選手がいるものを先に。同じなら材料の順。
+    def jp_rank(r):
+        alive=[t for t in r['teams'] if t.get('players') and (not r['over'] or t['id']==r.get('winner'))]
+        return 0 if alive else 1 if any(t.get('players') for t in r['teams']) else 2
+    selected = sorted(selected, key=jp_rank)
     pages = []
     for row in selected:
         teams = row['teams']
-        text = series.text(row)
+        # 日本人選手のいる球団の側から言う（「村上宗隆・西田陸浮のホワイト
+        # ソックスは2勝0敗で今井達也のアストロズを破り、地区シリーズへ」）。
+        text = series.jp_text(row) if any(t.get('players') for t in teams) else series.text(row)
         next_number = (row.get('next') or {}).get('game')
         live = bool((row.get('next') or {}).get('live'))
         next_label = (row.get('next') or {}).get('verified_label')
@@ -369,18 +377,45 @@ def situation_program(ctx, rows, before):
             text += f'。第{next_number}戦は進行中で、この試合の結果はまだ含めていません。'
         after = ('シリーズ終了' if row['over'] else f'第{next_number}戦進行中' if live else
                  f'次は第{next_number}戦' if next_number else '次戦日程確認中')
+        where = '決着' if row['over'] else f'第{next_number}戦進行中' if live else f'第{next_number}戦へ' if next_number else '日程確認中'
+        items = [dict(label='シリーズの現在地', value=where)]
+        # 勝ち上がった球団の次の相手（10/3 改善案F）。材料に次の回が組まれて
+        # いるときだけ。相手待ちなら言わない。
+        if row['over'] and row.get('winner'):
+            up = next((r for r in rows if r.get('stage') == row.get('stage', 0) + 1
+                       and row['winner'] in [t['id'] for t in r.get('teams', [])]
+                       and len(r.get('teams', [])) == 2), None)
+            if up:
+                opp = next(t for t in up['teams'] if t['id'] != row['winner'])
+                win = next(t for t in teams if t['id'] == row['winner'])
+                items.append(dict(label=win['name'] + 'の次の相手',
+                                  value=up['round_jp'] + 'で' + opp['name'], value_size=60))
+                nl = (up.get('next') or {}).get('verified_label')
+                if nl:
+                    items.append(dict(label='次の試合', value=nl, value_size=60))
+        if next_label and not row['over']:
+            items.append(dict(label='次の試合', value=next_label, value_size=60))
         card = dict(common(ctx, 'PS情勢'), layout='facts', headline=teams[0]['name'] + '\n対' + teams[1]['name'],
                     subhead=row['round_jp'] + ' / ' + after,
                     card_index=len(pages)+1,card_total=len(selected),headline_colors=[club_color(t['id']) for t in teams],
-                    items=[dict(label=t['name'], value=f'{t["wins"]}勝',team_color=club_color(t['id'])) for t in teams] +
-                          [dict(label='シリーズの現在地', value='決着' if row['over'] else f'第{next_number}戦進行中' if live else f'第{next_number}戦へ' if next_number else '日程確認中')])
+                    items=items,
+                    # 勝数・●○・日本人選手は上のスコアボードに（10/3 改善案B）。
+                    scoreboard=dict(need=row['need'], rows=[
+                        dict(abbr=MLB_TEAM_ABBR.get(str(t['id']),''), name=t['name'], wins=t['wins'],
+                             color=club_color(t['id']), secondary=TEAM_SECONDARY_COLORS.get(str(t['id'])),
+                             players=(t.get('players') or [])[:3]) for t in teams]))
         pages.append(segment(card, text, speaker=2 if len(pages) % 2 else 3))
     top = selected[0]
     rnd = ROUND[top['round']][0]
     a, b = top['teams']
     mine, other = (b,a) if b.get('players') and not a.get('players') else (a,b)
-    title = (a['name'] + ('が世界一' if top['round'] == 'W' else 'が' + rnd + '突破') if top['over'] else
-             mine['name'] + 'の' + rnd + f'は{mine["wins"]}勝{other["wins"]}敗')
+    who = (mine['players'][0] + 'の' if mine.get('players') else '') + mine['name']
+    if top['over'] and mine['id'] == top.get('winner'):
+        title = who + ('が世界一' if top['round'] == 'W' else 'が' + rnd + '突破')
+    elif top['over']:
+        title = who + ('はワールドシリーズで敗退' if top['round'] == 'W' else 'は' + rnd + 'で敗退')
+    else:
+        title = who + 'の' + rnd + f'は{mine["wins"]}勝{other["wins"]}敗'
     title += '｜PSシリーズの最新情勢'
     return dict(title=title, segments=pages, game_ids=[], phase='situation',
                 social_summary=pages[0]['text'] + '。各カードの勝敗と勝ち上がりをまとめました。')
