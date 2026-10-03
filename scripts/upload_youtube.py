@@ -397,6 +397,20 @@ def asset_meta_from_spec(spec: dict) -> dict:
     hook = spec.get("hook", "")
     where = spec.get("where", "")
     items = spec.get("items") or []
+    # シーズンまとめ（season_topics.py）は題を材料の側で決めている。
+    # 球場の言い方（「○○の本拠地」「（所在地）を」）は合わない。
+    if spec.get("title"):
+        lead = [spec.get("intro") or "", ""]
+        lead += [f"・{head}　{body}" for head, body in items]
+        lead += [f"・{j['name']}　{j['line']}"
+                 for j in (spec.get("japanese") or [])]
+        lead += ["", "数字はMLB公式（レギュラーシーズン）です。"]
+        who = (spec.get("jp") or "").strip()
+        names = [j["name"] for j in (spec.get("japanese") or [])]
+        return {"title": spec["title"], "lead": lead,
+                "tags": ["MLB", "メジャーリーグ", "野球", label,
+                         "シーズンまとめ", "コレスポ"]
+                        + ([who] if who else []) + names[:3]}
     lead = [f"{label}（{where}）を、MLB公式データの数字で見ていきます。", ""]
     lead += [f"・{head}　{body}" for head, body in items]
     # 日本人選手の本拠地なら、名前を題の先頭に置く。

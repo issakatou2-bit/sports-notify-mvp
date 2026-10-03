@@ -972,6 +972,11 @@ def _intro_text(topic: str, items: list) -> str:
     元の説明文の1文目に戻す。
     """
     spec = LIST_TOPICS[topic]
+    # 材料の側で前置きを書き切っているもの（シーズンまとめ）は、そのまま。
+    # 項目名を並べると「今季の成績、昨季、Statcastで見ると、…まとめて
+    # 見ていきます」と機械的に聞こえる。
+    if spec.get("intro_as_is"):
+        return spec["intro"]
     hook = (spec.get("hook") or "").strip()
     if hook and not hook.endswith(("？", "。", "！")):
         hook += "。"

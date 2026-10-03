@@ -1,0 +1,136 @@
+name: シーズンまとめ（球団・日本人選手）
+
+# シーズンを終えた球団と日本人選手のまとめを、1日3本まで。
+#
+# - 毎日、夕方の4本（PS材料の更新を含む）の後に動く。その日の材料から
+#   作り直すので、前の晩にポストシーズンで敗退した球団は翌日の先頭に入る
+#   （PSは日程が不規則。終わった球団から順に出せばよい）。
+# - **同じ型を一度に大量に出さない。**1日3本を時間をずらして予約公開。
+#   17:00〜21:00 は日次の枠が並ぶので避ける。
+# - 数字はMLB公式（レギュラーシーズン）。台詞はAIに書かせない。
+
+on:
+  workflow_run:
+    workflows: ["毎日 17:00-20:00　夕方の4本"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      count:
+        description: 'きょう出す上限（既に出したぶんを引く）'
+        default: '3'
+      privacy:
+        description: 公開設定
+        type: choice
+        options: [public, unlisted, private]
+        default: public
+
+permissions:
+  contents: write
+
+concurrency:
+  group: season-review
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+
+      - name: Build season review topics
+        run: python scripts/season_topics.py --out data/season_topics.json
+
+      - name: Pick today's topics
+        id: pick
+        run: |
+          T="$(python scripts/next_asset.py --season "${{ inputs.count || '3' }}")"
+          echo "topics=$T" >> "$GITHUB_OUTPUT"
+          echo "きょうのシーズンまとめ: ${T:-なし}" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Install video tools
+        if: steps.pick.outputs.topics != ''
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
+      - name: Start VOICEVOX engine
+        if: steps.pick.outputs.topics != ''
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Build and upload
+        if: steps.pick.outputs.topics != ''
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          PRIVACY: ${{ inputs.privacy }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # 公開時刻。日次の枠（17:00〜21:00）を避けて間を空ける。
+          set -- 16:30 22:00 23:00
+          set +e
+          FAILED=""
+          for t in ${{ steps.pick.outputs.topics }}; do
+            AT="$1"; shift || true
+            echo "::group::$t ($AT)"
+            python scripts/generate_asset_video.py \
+              --topic "$t" --narration-out "build/narr_$t.json" &&
+            python scripts/sanity.py --general --strict \
+              --narration "build/narr_$t.json" &&
+            python scripts/synthesize_narration.py \
+              --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&
+            python scripts/generate_asset_video.py \
+              --topic "$t" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
+            bash scripts/shorts_thumbnail.sh \
+              "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png" &&
+            python scripts/upload_youtube.py \
+              --video "build/asset_$t/collespo_asset_$t.mp4" \
+              --kind asset --asset-topic "$t" \
+              --thumbnail "build/asset_$t/short.png" \
+              --privacy "${PRIVACY:-public}" --publish-at "$AT"
+            if [ $? -ne 0 ]; then
+              echo "::warning::$t を出せませんでした"
+              FAILED="$FAILED $t"
+            fi
+            echo "::endgroup::"
+          done
+          set -e
+          [ -z "$FAILED" ] || echo "::warning title=未投稿::$FAILED"
+          mkdir -p build/asset
+          cp build/asset_*/*.mp4 build/asset/ 2>/dev/null || true
+
+      - name: Commit published record
+        if: always()
+        continue-on-error: true
+        run: |
+          bash scripts/commit_data.sh \
+            "season review: ${{ github.run_id }}" \
+            data/published_assets.json data/season_topics.json \
+            data/player_kana.json
+
+      - name: Keep the videos
+        if: always() && steps.pick.outputs.topics != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: season-review
+          path: build/asset/*.mp4
+          retention-days: 14
+          if-no-files-found: warn

@@ -27,6 +27,7 @@ SOURCES = (
     "data/team_topics.json",    # 球団 (team_topics.py)
     "data/rare_topics.json",    # 名前のある指標 (rare_topics.py)
     "data/legend_topics.json",  # 球団の殿堂入り選手 (legend_topics.py)
+    "data/season_topics.json",  # シーズンを終えた球団・選手のまとめ (season_topics.py)
 )
 
 _CACHE = None

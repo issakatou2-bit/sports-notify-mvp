@@ -67,7 +67,8 @@ def published(path: str) -> set:
     return set((d.get("assets") or {}).keys())
 
 
-def posted_today(path: str, today=None) -> bool:
+def posted_today(path: str, today=None, kinds=None, count=False,
+                 exclude=()):
     """きょう、もう1本出したか。
 
     **起動する入口が2つある。**cron-job.org（JST 22:00）と、
@@ -82,7 +83,14 @@ def posted_today(path: str, today=None) -> bool:
                 .get("assets") or {})
     except (json.JSONDecodeError, OSError):
         return False
-    for rec in rows.values():
+    hits = 0
+    for key, rec in rows.items():
+        # 種類を絞るとき（シーズンまとめの枠は、自分の本数だけ数える。
+        # 資産動画の枠はシーズンまとめを数えない）。
+        if kinds is not None and kind_of(key) not in kinds:
+            continue
+        if kind_of(key) in exclude:
+            continue
         stamp = (rec or {}).get("published_at")
         if not stamp:
             continue
@@ -91,8 +99,8 @@ def posted_today(path: str, today=None) -> bool:
         except ValueError:
             continue
         if when.astimezone(jst).date() == today:
-            return True
-    return False
+            hits += 1
+    return hits if count else hits > 0
 
 
 def kind_of(key: str) -> str:
@@ -127,6 +135,32 @@ def measured(published_path: str, analytics_path: str) -> dict:
     return {k: sum(g) / len(g) for k, g in got.items() if g}
 
 
+def season_order(key: str, spec: dict) -> tuple:
+    """シーズンまとめの順番。PSで終わったばかり → 日本人選手 → その他。"""
+    return (0 if spec.get("ps_ended") else 1,
+            0 if spec.get("jp") else 1 if spec.get("japanese") else 2, key)
+
+
+def pick_season(args) -> int:
+    """シーズンまとめを、その日の残りの本数まで選ぶ。
+
+    **同じ型を一度に大量に出さない。**1日の上限（--season）を決め、
+    その日に出したぶんを引く。資産動画の枠とは別に数える。
+    """
+    import generate_asset_video as gav
+    done = published(args.published)
+    left = max(0, args.season - posted_today(args.published,
+                                             kinds={"season"}, count=True))
+    todo = sorted((k for k, v in gav.LIST_TOPICS.items()
+                   if kind_of(k) == "season" and k not in done),
+                  key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
+    picked = todo[:left]
+    print(" ".join(picked))
+    print(f"[info] シーズンまとめ: 残り{len(todo)}本、きょう{len(picked)}本",
+          file=sys.stderr)
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--published", default="data/published_assets.json")
@@ -134,11 +168,15 @@ def main() -> int:
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--again", action="store_true",
                     help="きょう既に出していても、もう1本選ぶ")
+    ap.add_argument("--season", type=int, default=0,
+                    help="シーズンまとめをこの本数まで選ぶ（1日の上限）")
     args = ap.parse_args()
+    if args.season:
+        return pick_season(args)
 
     import generate_asset_video as gav
 
-    if not args.again and posted_today(args.published):
+    if not args.again and posted_today(args.published, exclude={"season"}):
         print("[info] きょうはもう1本出しています", file=sys.stderr)
         out = os.environ.get("GITHUB_OUTPUT")
         if out:
@@ -172,6 +210,11 @@ def main() -> int:
               % ("、".join(sorted(dead)), len(todo) - len(alive)),
               file=sys.stderr)
         todo = alive
+
+    # **シーズンまとめはここでは選ばない。**専用の枠（season_review.yml）が
+    # 1日の本数を決めて出す。両方が同じ時刻に動くので、ここでも選ぶと
+    # 同じ回を2度上げる。
+    todo = [k for k in todo if kind_of(k) != "season"]
 
     if args.report:
         print(f"トピック {len(gav.LIST_TOPICS)}件 / 投稿済み {len(done)}件 / "
