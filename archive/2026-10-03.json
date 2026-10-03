@@ -1,0 +1,343 @@
+{
+  "generated_at": "2026-10-03T09:53:49.085386+00:00",
+  "games": [
+    {
+      "game_id": "849829",
+      "league": "MLB",
+      "home_team_id": "114",
+      "away_team_id": "145",
+      "home_team_name": "ガーディアンズ",
+      "away_team_name": "ホワイトソックス",
+      "home_abbr": "CLE",
+      "away_abbr": "CWS",
+      "home_color": "#00385D",
+      "away_color": "#27251F",
+      "matchup": "ホワイトソックス vs ガーディアンズ",
+      "abbr_matchup": "CWS vs CLE",
+      "start_time_jst": "10/04 02:00",
+      "home_division": "ALC",
+      "away_division": "ALC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "村上宗隆"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 85,
+        "losses": 77,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 1.0,
+        "streak": 1,
+        "wins": 84,
+        "losses": 78,
+        "last_ten": "7勝3敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Parker Messick",
+        "name_en": "Parker Messick",
+        "player_id": "800048",
+        "era": "2.56",
+        "wins": 12,
+        "losses": 9,
+        "strikeouts": 193
+      },
+      "away_probable": {
+        "name": "Hagen Smith",
+        "name_en": "Hagen Smith",
+        "player_id": "696146",
+        "era": "1.29",
+        "wins": 3,
+        "losses": 3,
+        "strikeouts": 41
+      },
+      "venue_name": "Progressive Field",
+      "venue_jp": "プログレッシブ・フィールド",
+      "venue_note": "湖からの風の影響を受けやすく、季節によって球場の性格が変わる",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.47点で、MLB30球場中21位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 6,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ホワイトソックスには村上宗隆が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第1戦(0勝0敗のタイ)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": 1,
+        "games_in_series": 5,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "ai_summary": "ア・リーグ中地区のプレーオフ第1戦である本試合は、レギュラーシーズンで【85勝77敗の首位ガーディアンズ】と84勝78敗の2位ホワイトソックスが激突する。ガーディアンズは直近10試合で8勝2敗の好調を維持し、ホワイトソックスは7勝3敗で追う形だ。先発は防御率1.29のHagen Smithがホワイトソックスの先手必勝を狙う一方、ガーディアンズはparker Messickが防御率2.56で抑える。湖からの風の影響を受けるプログレッシブ・フィールドでの投げ合いがどう展開するかが見どころとなる。",
+      "notification_hook": "防御率1.29のHagen Smithが先発、ガーディアンズとの地区シリーズ第1戦。村上宗隆の活躍は。",
+      "availability_checked_at": "2026-10-03T09:52:41.112991+00:00"
+    },
+    {
+      "game_id": "849828",
+      "league": "MLB",
+      "home_team_id": "119",
+      "away_team_id": "144",
+      "home_team_name": "ドジャース",
+      "away_team_name": "ブレーブス",
+      "home_abbr": "LAD",
+      "away_abbr": "ATL",
+      "home_color": "#005A9C",
+      "away_color": "#CE1141",
+      "matchup": "ブレーブス vs ドジャース",
+      "abbr_matchup": "ATL vs LAD",
+      "start_time_jst": "10/04 05:00",
+      "home_division": "NLW",
+      "away_division": "NLE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "大谷翔平",
+        "佐々木朗希",
+        "山本由伸"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 3,
+        "wins": 100,
+        "losses": 62,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 94,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Tarik Skubal",
+        "name_en": "Tarik Skubal",
+        "player_id": "669373",
+        "era": "2.72",
+        "wins": 12,
+        "losses": 7,
+        "strikeouts": 186
+      },
+      "away_probable": null,
+      "venue_name": "UNIQLO Field at Dodger Stadium",
+      "venue_jp": "ドジャー・スタジアム",
+      "venue_note": "1962年開場、MLBで3番目に古い現役球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.58点で、MLB30球場中17位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 7,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ドジャースには大谷翔平・佐々木朗希が所属",
+          "weight": 2
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第1戦(0勝0敗のタイ)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": 1,
+        "games_in_series": 5,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "ai_summary": "ナ・リーグの両地区優勝チームによるポストシーズンの地区シリーズ第1戦。【100勝を挙げたドジャース】と94勝のブレーブスが、限られた試合数での勝敗を争う。ドジャースは大谷翔平・佐々木朗希を擁し、先発のTarik Skubalは防御率2.72で12勝を挙げている。ドジャー・スタジアムでの一戦だけに、球場の得点環境がどう試合を左右するかにも注目したい。",
+      "notification_hook": "Tarik Skubalの好投と大谷翔平の動きが鍵。ドジャースとブレーブスが地区シリーズ第1戦で激突",
+      "availability_checked_at": "2026-10-03T09:52:41.112991+00:00"
+    },
+    {
+      "game_id": "849835",
+      "league": "MLB",
+      "home_team_id": "139",
+      "away_team_id": "147",
+      "home_team_name": "レイズ",
+      "away_team_name": "ヤンキース",
+      "home_abbr": "TB",
+      "away_abbr": "NYY",
+      "home_color": "#092C5C",
+      "away_color": "#003087",
+      "matchup": "ヤンキース vs レイズ",
+      "abbr_matchup": "NYY vs TB",
+      "start_time_jst": "10/04 07:30",
+      "home_division": "ALE",
+      "away_division": "ALE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 98,
+        "losses": 64,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 4.5,
+        "streak": 1,
+        "wins": 93,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Drew Rasmussen",
+        "name_en": "Drew Rasmussen",
+        "player_id": "656876",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Gerrit Cole",
+        "name_en": "Gerrit Cole",
+        "player_id": "543037",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Tropicana Field",
+      "venue_jp": "トロピカーナ・フィールド",
+      "venue_note": "MLBで数少ないドーム球場。天候に左右されない",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.57点で、MLB30球場中18位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 5,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第1戦(0勝0敗のタイ)",
+          "weight": 5
+        }
+      ],
+      "log_notes": [],
+      "availability_checked_at": "2026-10-03T09:52:41.112991+00:00"
+    },
+    {
+      "game_id": "849830",
+      "league": "MLB",
+      "home_team_id": "158",
+      "away_team_id": "135",
+      "home_team_name": "ブリュワーズ",
+      "away_team_name": "パドレス",
+      "home_abbr": "MIL",
+      "away_abbr": "SD",
+      "home_color": "#12284B",
+      "away_color": "#2F241D",
+      "matchup": "パドレス vs ブリュワーズ",
+      "abbr_matchup": "SD vs MIL",
+      "start_time_jst": "10/04 09:30",
+      "home_division": "NLC",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "松井裕樹"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 5,
+        "wins": 103,
+        "losses": 59,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 9.0,
+        "streak": 2,
+        "wins": 91,
+        "losses": 71,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Jacob Misiorowski",
+        "name_en": "Jacob Misiorowski",
+        "player_id": "694819",
+        "era": "1.80",
+        "wins": 16,
+        "losses": 5,
+        "strikeouts": 252
+      },
+      "away_probable": {
+        "name": "Robbie Ray",
+        "name_en": "Robbie Ray",
+        "player_id": "592662",
+        "era": "3.59",
+        "wins": 13,
+        "losses": 8,
+        "strikeouts": 140
+      },
+      "venue_name": "American Family Field",
+      "venue_jp": "アメリカン・ファミリー・フィールド",
+      "venue_note": "開閉式屋根を持ち、天候に左右されにくい球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.99点で、MLB30球場中9位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 6,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第1戦(0勝0敗のタイ)",
+          "weight": 5
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ポストシーズンの地区シリーズ第1戦を迎える両チーム。ナ・リーグ中地区を制したブリュワーズと、西地区2位のパドレスが対戦する。先発は防御率1.80、16勝を挙げたブリュワーズのJacob Misiorowskiに対し、パドレスはRobbie Ray(防御率3.59、13勝)。【攻守にわたる投手陣の層の厚さ】が勝敗を分ける可能性が高く、開閉式屋根で天候に左右されにくいアメリカン・ファミリー・フィールドでの先発投手同士の投げ合いがどう展開するかが見どころになる。",
+      "notification_hook": "防御率1.80の左腕vs13勝投手、地区シリーズ第1戦の先発投手対決",
+      "availability_checked_at": "2026-10-03T09:52:41.112991+00:00"
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}
