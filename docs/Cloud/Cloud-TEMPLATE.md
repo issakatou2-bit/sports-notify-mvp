@@ -7,9 +7,9 @@
 - **読むファイル**（この順）: `docs/Cloud/README.md` → この指示書 → （1章の材料）
 - **返答は日本語。**PRの題・説明も日本語。
 - **元のブランチ: `main`**（このリポジトリで GitHub に常にあるのは main だけ）。
-- **自分の作業用ブランチ**を `cloud/NN-短い名前` で作り、そこで**新しいファイルだけ**を作る。最後に **main へのPR** を作って終わる（マージはしない）。
+- **自分の作業用ブランチ**を `cloud/NN-短い名前` で作り（セッションの側で名前が決められていればそれを使い、作業記録に書く）、そこで**新しいファイルだけ**を作る。最後に **main へのPR** を作って終わる（マージはしない）。
 - **書き換えてはいけないもの**: 既にあるファイルすべて。とくに `scripts/`・`.github/workflows/`・`data/`・`web/`・`assets/`・`CLAUDE.md`・`AGENTS.md`・`docs/Cloud/README.md`・`docs/Cloud/Cloud-*.md`（`docs/Cloud/作業記録.md` への追記だけは可）。
-- **クラウドでは使えないもの**: PCのアプリ（VOICEVOX・YouTube Studio・Windowsの書体）、GPU、Gitに入っていないフォルダ（PCの共有メモ `docs/HANDOFF.md`、`build/`）、秘密の鍵。YouTube・SNSへの投稿、ワークフローの実行はしない。外部への通信ができないときは、できなかったと書いて先へ進む。
+- **クラウドでは使えないもの**: PCのアプリ（VOICEVOX・YouTube Studio・Windowsの書体）、GPU、Gitに入っていないフォルダ（PCの共有メモ `docs/HANDOFF.md`、`build/`）、秘密の鍵。YouTube・SNSへの投稿、ワークフローの実行はしない。**外部のサイトには通信できない**（Web検索で題とURLが分かるだけ）。材料はGitにあるものを使う。
 - **公開リポジトリ。**秘密を書かない。
 - **拾い方**: 始める前に同じ `Cloud-NN` のPRが開いていないか確かめ、始めたら `docs/Cloud/作業記録.md` に「着手」を追記して下書きのPRを作る（`docs/Cloud/README.md` の「拾い方」）。
 

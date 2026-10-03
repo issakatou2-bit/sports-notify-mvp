@@ -95,5 +95,22 @@ jobs:
           fi
           args=()
           if [ "$MODE" = "publish" ]; then args+=(--publish); fi
+          DAILY=0
           python scripts/buffer_daily.py --source-run "$SOURCE_RUN" \
-            --kind "${{ inputs.kind || 'daily' }}" "${args[@]}"
+            --kind "${{ inputs.kind || 'daily' }}" "${args[@]}" || DAILY=$?
+
+          # 19:00の予告の後に、その時点で公開済みの夕方の枠（17:30コメント・18:00報道など）も投げる。
+          # 19:47のcronは10/1〜10/3に一度も起動せず、23:47の回も01〜02時にずれ込んで
+          # 夕方の枠がSNSに出るのが毎晩6〜8時間遅れていた。台帳で二重投入は防がれる。
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            python scripts/buffer_daily.py --list-due > /tmp/due.tsv || true
+            while IFS="$(printf '\t')" read -r KIND RUN; do
+              [ -n "$KIND" ] || continue
+              [ "$KIND" = "daily" ] && continue
+              echo "::group::$KIND （実行 $RUN）"
+              python scripts/buffer_daily.py --kind "$KIND" --source-run "$RUN" --publish \
+                || echo "::warning::$KIND を投げられませんでした（23:47の回で再挑戦）"
+              echo "::endgroup::"
+            done < /tmp/due.tsv
+          fi
+          exit $DAILY
