@@ -50,6 +50,14 @@ jobs:
       - name: Build season review topics
         run: python scripts/season_topics.py --out data/season_topics.json
 
+      # PSの話題（決着したシリーズで何が起きたか）。番記者の投稿は30時間で
+      # 消えるので、先に貯めておく（data/ps_quotes.json、10日ぶん）。
+      - name: Build PS story topics
+        continue-on-error: true
+        run: |
+          python scripts/ps_quotes.py data/ps_quotes.json
+          python scripts/ps_story.py --out data/ps_story_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Pick today's topics
         id: pick
         run: |
@@ -126,6 +134,7 @@ jobs:
           bash scripts/commit_data.sh \
             "season review: ${{ github.run_id }}" \
             data/published_assets.json data/season_topics.json \
+            data/ps_story_topics.json data/ps_quotes.json \
             data/player_kana.json
 
       - name: Keep the videos

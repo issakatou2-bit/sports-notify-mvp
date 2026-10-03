@@ -137,6 +137,9 @@ def measured(published_path: str, analytics_path: str) -> dict:
 
 def season_order(key: str, spec: dict) -> tuple:
     """シーズンまとめの順番。PSで終わったばかり → 日本人選手 → その他。"""
+    # PSの話題（ps_story）がいちばん先。決着の翌日が見られる時。
+    if spec.get("story"):
+        return (-1, 0, key)
     return (0 if spec.get("ps_ended") else 1,
             0 if spec.get("jp") else
             1 if spec.get("japanese") or key.startswith("season_league") else 2,

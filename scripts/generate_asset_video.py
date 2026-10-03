@@ -1079,7 +1079,7 @@ def _narration_list(topic: str) -> dict:
                 else x["name"] for x in jps]
         segments.append({
             "kind": "people",
-            "text": "今シーズンの成績は、" + "、".join(said) + "。",
+            "text": (spec.get("japanese_lead") or "今シーズンの成績は、") + "、".join(said) + "。",
             "meta": {"topic": topic, "group": "japanese",
                      "heading": "日本人選手"},
         })

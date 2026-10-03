@@ -404,7 +404,16 @@ def asset_meta_from_spec(spec: dict) -> dict:
         lead += [f"・{head}　{body}" for head, body in items]
         lead += [f"・{j['name']}　{j['line']}"
                  for j in (spec.get("japanese") or [])]
-        lead += ["", "数字はMLB公式（レギュラーシーズン）です。"]
+        src = spec.get("source") or {}
+        if spec.get("story"):
+            lead += ["", "数字はMLB公式の試合の成績表をシリーズで集計したものです。"]
+        else:
+            lead += ["", "数字はMLB公式（レギュラーシーズン）です。"]
+        # 引用は出典を必ず書く（記者・媒体・投稿）。訳はコレスポによるもの。
+        if src.get("author"):
+            lead += [f"引用: {src['author']}" + (f"（{src['outlet']}）" if src.get("outlet") else "")
+                     + "の投稿（日本語訳はコレスポ）", src.get("url") or "",
+                     f"原文: {src.get('text') or ''}"[:300]]
         who = (spec.get("jp") or "").strip()
         names = [j["name"] for j in (spec.get("japanese") or [])]
         return {"title": spec["title"], "lead": lead,
