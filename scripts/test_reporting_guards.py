@@ -13,6 +13,13 @@ import post_bluesky as bsky
 
 
 class ReportingGuards(unittest.TestCase):
+    def test_lead_and_win_record_are_different(self):
+        original = "Yet to trail this postseason, White Sox claim Game 1"
+        correct = "まだリードを許していないホワイトソックス"
+        self.assertEqual(lr.guard_translation(original, correct), correct)
+        self.assertIn("リードを許していない", lr.guard_translation(original, "無敗のホワイトソックス"))
+        self.assertEqual(lr.guard_translation("Unbeaten White Sox win", "無敗のホワイトソックス"), "無敗のホワイトソックス")
+
     def test_rbi_is_not_the_number_of_bases(self):
         for source, wrong, expected in [
             ("Shohei Ohtani's RBI double", '大谷翔平の2点二塁打', '大谷翔平の適時二塁打'),

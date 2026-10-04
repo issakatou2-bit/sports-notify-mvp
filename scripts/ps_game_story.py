@@ -278,7 +278,9 @@ def pick_headline(headlines, game, feed, words, table, jp):
             continue
         if not at or not end <= at <= end + timedelta(hours=FRESH_HOURS):
             continue
-        said = localize(h.get("jp") or "", words, table, jp)
+        # 収集時に加え、修正前に保存された訳にも同じ意味検査を適用する。
+        from local_reporters import guard_translation
+        said = localize(guard_translation(h.get("title") or "", h.get("jp") or ""), words, table, jp)
         if said and len(said) <= 80:
             return {"said": said, "text": h.get("title") or "", "url": h["url"], "at": at.isoformat()}
     return None

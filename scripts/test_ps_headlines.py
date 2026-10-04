@@ -30,6 +30,18 @@ class Headlines(unittest.TestCase):
         f = f or material()
         return ps.pick_headline([h or H], game or GAME, f, ps.team_words(f), KANA, JP)
 
+    def test_saved_not_trailing_headline_does_not_become_unbeaten(self):
+        original = "Yet to trail this postseason, White Sox march into Cleveland and claim ALDS Game 1"
+        h = dict(H, title=original, jp="ポストシーズン無敗のホワイトソックス、敵地で地区シリーズ先勝")
+        got = self.pick(h)
+        self.assertIn("まだリードを許していない", got["said"])
+        self.assertNotIn("無敗", got["said"])
+        self.assertEqual(got["text"], original)
+
+    def test_unresolved_not_trailing_translation_is_not_quoted(self):
+        h = dict(H, title="Yet to trail this postseason", jp="負けなしで勝利した")
+        self.assertIsNone(self.pick(h))
+
     def test_exact_completed_game_matches_rss_timestamp(self):
         self.assertEqual(self.pick()["url"], URL)
         t = ps.story(GAME, material(), KANA, JP, {}, [], [H])

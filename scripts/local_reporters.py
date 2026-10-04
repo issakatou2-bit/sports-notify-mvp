@@ -300,6 +300,13 @@ def _jp_name_hint() -> str:
 
 def guard_translation(source: str, translated: str) -> str:
     """Keep baseball shorthand from inventing a run count or challenge actor."""
+    # 勝敗と、試合中に相手のリードを許したかは別の記録（10/4の公式見出し）。
+    if re.search(r"\byet to trail this postseason\b", source, re.I):
+        translated = re.sub(r"(?:(?:ポストシーズン|PS)(?:で)?)?無敗の",
+                            "ポストシーズンでまだリードを許していない", translated)
+        if re.search(r"無敗|負け(?:ていない|なし|無し)|敗戦なし", translated):
+            print("[warning] MLB見出しのリード/勝敗の訳を確認できず、この引用を省略")
+            return ""
     hit = re.search(r"\bRBI\s+(double|triple)\b", source, re.I)
     counted = re.search(r"\b(?:one|two|three|four|\d+)[ -]+(?:run|RBI)\b", source, re.I)
     if hit and not counted:
