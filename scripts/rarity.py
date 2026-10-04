@@ -236,36 +236,63 @@ def fmt(value, how: str) -> str:
 
 
 def league(season: str, group: str, timeout: int = 45) -> list:
-    """リーグ全体。1回の呼び出しで400人ぶん返る。
+    """全選手を取得してから独自の最低打席・投球回で絞る。
 
     **移籍した選手は合計の行を使う。**球団ごとの行を足すと
     二重になる（9/8に「ルイス・ガルシア56本」を出した原因）。
     """
     try:
-        r = requests.get(
-            f"{API}/stats",
-            params={"stats": "season", "group": group, "season": season,
-                    "limit": 400, "sportId": 1},
-            headers=UA, timeout=timeout)
-        r.raise_for_status()
-        stats = r.json().get("stats") or []
+        # 既定は規定到達者。ALLを指定しないと「60回以上」と表示しながら
+        # 規定投球回到達者だけを並べ、母集団も順位も誤る。400件で打ち切らない。
+        splits, offset, previous = [], 0, None
+        for _ in range(20):
+            r = requests.get(f"{API}/stats", params={"stats": "season", "group": group,
+                "season": season, "limit": 2000, "offset": offset,
+                "sportId": 1, "playerPool": "ALL"}, headers=UA, timeout=timeout)
+            r.raise_for_status()
+            stats = r.json().get("stats") or []
+            if len(stats) != 1:
+                raise ValueError("全選手成績のブロックが欠けています")
+            page = stats[0].get("splits") or []
+            total = stats[0].get("totalSplits")
+            signature = json.dumps(page, sort_keys=True)
+            if previous == signature and page:
+                raise ValueError("同じページが再取得されました")
+            previous = signature
+            splits.extend(page)
+            offset += len(page)
+            if isinstance(total, int):
+                if offset >= total:
+                    break
+                if not page:
+                    raise ValueError("全選手成績が途中で欠けています")
+            elif len(page) < 2000:
+                break
+        else:
+            raise ValueError("全選手成績のページ数が上限を超えました")
     except Exception as e:                              # noqa: BLE001
         print(f"[warn] リーグ全体を取れません: {e}", file=sys.stderr)
         return []
+    by_player = {}
+    for sp in splits:
+        pid = str((sp.get("player") or {}).get("id") or "")
+        if pid:
+            by_player.setdefault(pid, []).append(sp)
     out = []
-    for st in stats:
-        for sp in mlb_splits.prefer_total(st.get("splits")):
-            s = sp.get("stat") or {}
-            if group == "hitting":
-                if _i(s.get("plateAppearances")) < MIN_PA:
-                    continue
-            elif _outs(s.get("inningsPitched")) < MIN_IP * 3:
+    for pid, rows in by_player.items():
+        selected = mlb_splits.prefer_total(rows)
+        if len(selected) != 1:
+            print(f"[warn] {pid} の通算行を一意に選べません", file=sys.stderr)
+            return []
+        sp = selected[0]
+        s = sp.get("stat") or {}
+        if group == "hitting":
+            if _i(s.get("plateAppearances")) < MIN_PA:
                 continue
-            out.append({
-                "player_id": str((sp.get("player") or {}).get("id") or ""),
-                "name": (sp.get("player") or {}).get("fullName") or "",
-                "stat": s,
-            })
+        elif _outs(s.get("inningsPitched")) < MIN_IP * 3:
+            continue
+        out.append({"player_id": pid,
+                    "name": (sp.get("player") or {}).get("fullName") or "", "stat": s})
     return out
 
 
@@ -534,6 +561,8 @@ def main() -> int:
         "season": args.season,
         "min_pa": MIN_PA,
         "min_ip": MIN_IP,
+        "player_pool": "ALL",
+        "pool_counts": {g: len(rows) for g, rows in rows_by_group.items()},
         "players": out,
     }
     dest = pathlib.Path(args.out)
