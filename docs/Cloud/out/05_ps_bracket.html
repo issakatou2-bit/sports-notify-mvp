@@ -103,7 +103,7 @@
         <tr><td>1 トーナメント最新版</td><td>
           <code>series</code> の8つ（<code>round</code> が F＝ワイルドカードシリーズ4つ、D＝地区シリーズ4つ）。各 <code>teams</code> の <code>name</code>・<code>wins</code>・<code>players</code>、<code>over</code>・<code>winner</code>。地区シリーズの「10月4日に第1戦」は <code>next.day</code>・<code>next.game</code>。<br>
           どの地区シリーズの勝者どうしがLCSで当たるかは、<code>teams</code> の <code>seed</code>（1番シード対4・5番の勝者、2番シード対3・6番の勝者）から組んだ。リーグ優勝決定シリーズ・ワールドシリーズは材料に <code>series</code> が無いので「未定」。<br>
-          略称と色は <code>notability_engine.MLB_TEAM_ABBR</code>・<code>MLB_TEAM_COLOR</code>。</td></tr>
+          略称と色は <code>notability_engine.MLB_TEAM_ABBR</code>・<code>MLB_TEAM_COLOR</code>。<br>ホワイトソックスの西田陸浮は、材料の <code>players</code> には入っているが、PSのロースター外なので出していない（本人の判断。main の「PSの日本人選手はベンチ入りしている選手だけ言う」と同じ）。</td></tr>
         <tr><td>2 初戦勝者の突破率</td><td>
           <b>数字はすべて仮</b>（<code>--%</code>・<code>○</code>）。突破率・母数・本拠地／敵地の割合・対象の期間は、PC側（Codex）の集計を入れる場所。棒の長さも決めていない（点線の枠だけ）。<br>
           下の「今年の地区シリーズ」の4つの組み合わせだけは材料どおり（<code>series</code> の D の <code>teams</code>）。第1戦の勝者は、材料の時点（10/3）でまだ試合が無いので「未定」。</td></tr>
@@ -132,7 +132,8 @@
     117: { name: "アストロズ", abbr: "HOU", color: "#002D62", seed: 3, players: ["今井達也"] },
     147: { name: "ヤンキース", abbr: "NYY", color: "#003087", seed: 4, players: [] },
     111: { name: "レッドソックス", abbr: "BOS", color: "#BD3039", seed: 5, players: ["吉田正尚"] },
-    145: { name: "ホワイトソックス", abbr: "CWS", color: "#27251F", seed: 6, players: ["村上宗隆", "西田陸浮"] },
+    // 西田陸浮はPSのロースター外なので出さない（10/5 本人「メンバー入りしたらまた言う」、main の 337738a と同じ扱い）
+    145: { name: "ホワイトソックス", abbr: "CWS", color: "#27251F", seed: 6, players: ["村上宗隆"] },
     158: { name: "ブリュワーズ", abbr: "MIL", color: "#12284B", seed: 1, players: [] },
     119: { name: "ドジャース", abbr: "LAD", color: "#005A9C", seed: 2, players: ["大谷翔平", "佐々木朗希", "山本由伸"] },
     144: { name: "ブレーブス", abbr: "ATL", color: "#CE1141", seed: 3, players: [] },
