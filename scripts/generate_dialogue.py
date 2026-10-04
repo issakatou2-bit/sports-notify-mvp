@@ -1701,6 +1701,11 @@ NUMBERS_PROMPT = CAST + """
   1人ずつ言う。締めのまとめでも同じ。
 - **数字を言葉で大きくしない。**WHIP 0.80 を「走者をほとんど出さない」
   のように、数字が言っていない程度の言葉に置き換えない。
+- **Savantの評価と値の大小を混ぜない。**打者の三振率が「高い方から1%・
+  Savant評価は下位」なら三振が多い側。「三振は少ない」「両方いい位置」
+  とは言わない。投手の奪三振率は多いほど良いので、投打を区別する。
+  被安打0・四球0だけから「走者なし」とは言わない。死球や失策もあり得る。
+  名前のある指標へ移るときは、既出の選手でも名前と指標値を先に言う。
 - **コレスポの点数を主題にしない。**
   点数は並べるための独自指標で、公式の記録ではない。
   「95点でした」を話の中心にしない。順番の理由として軽く触れる程度。
@@ -1979,11 +1984,8 @@ def main() -> int:
         payload["facts"] = nmat.checkable(m)
         # 用語の検査が「誰が投手か」を知るために要る。
         # 投手の回に「打率」と書いていないかを見る（被打率であるべき）。
-        payload["material"] = {
-            "players": [{"name": p["name"], "type": p["type"]}
-                        for p in m["players"]],
-            "daily_player_count": len(m["players"]),
-            "rare": m.get("rare") or []}
+        from longform_editorial import material as editorial_material
+        payload["material"] = editorial_material(m)
         from longform_editorial import check as editorial_check
         issues = editorial_check(payload)
         if issues:
