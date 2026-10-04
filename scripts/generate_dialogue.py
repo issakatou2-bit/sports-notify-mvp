@@ -114,6 +114,11 @@ except ImportError:
 # 長編が丸ごと止まるのを避けるため。
 MODEL = os.environ.get("COLLESPO_DIALOGUE_MODEL") or "claude-sonnet-5-5"
 FALLBACK_MODEL = "claude-sonnet-5"
+# 考える深さ。Sonnet 5.5 は既定が high。台本は1日1本の文章書きで、
+# 事実の誤りは後段の機械の検査が止める。**medium で質が保てるか見る**
+# （本人「Sonnet5.5なら中でもいい感じの出来そう」10/4）。
+# 落ちるようなら COLLESPO_DIALOGUE_EFFORT=high で戻せる。
+EFFORT = os.environ.get("COLLESPO_DIALOGUE_EFFORT") or "medium"
 
 
 def _create(client, **kw):
@@ -124,6 +129,7 @@ def _create(client, **kw):
     """
     import anthropic
     global MODEL
+    kw.setdefault("output_config", {"effort": EFFORT})
     try:
         resp = client.messages.create(model=MODEL, **kw)
     except (anthropic.NotFoundError, anthropic.BadRequestError) as e:
