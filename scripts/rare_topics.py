@@ -94,8 +94,8 @@ def build(rarity: dict) -> list:
             "hook": hook,
             "heading": "%s、今季の数字" % name,
             "intro": "%s の今季を、名前のある指標で見ます。"
-                     "順位はいずれも今季の規定到達者の中でのものです。"
-                     % name,
+                     "順位はMLB全体の、打者は%d打席以上、投手は%d回以上の選手が対象です。"
+                     % (name, min_pa, min_ip),
             "items": [_item(i, min_pa, min_ip) for i in items[:MAX_ITEMS]],
         })
     out.sort(key=lambda t: t["key"])

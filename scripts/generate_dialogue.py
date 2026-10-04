@@ -1849,12 +1849,23 @@ def main() -> int:
 
     client = anthropic.Anthropic(api_key=key)
     ask = prompt.format(facts=body, menu=panel_menu(ps))
+    if args.mode == "numbers":
+        ask += ("\n【公開前の必須条件】順位や比較に入る前に、主役の日本人選手名と"
+                "指標の数字を必ず先に言う。材料・データ・情報が無い、渡されていない、"
+                "分からない、何とも言えない等の制作上の都合は言わない。"
+                "答えられない問い自体を置かず、根拠がある話へ進む。"
+                "出場者0の日は、その日の成績紹介を名乗らない。"
+                "指標ランキングは材料の対象条件（MLB全体・300打席以上や60投球回以上）"
+                "をそのまま言い、規定到達者や各リーグ順位と言い換えない。")
     resp = client.messages.create(
         model=MODEL, max_tokens=16000,
         messages=[{"role": "user", "content": ask}],
     )
     token_log.record("dialogue", MODEL, resp)
     text = "".join(b.text for b in resp.content if b.type == "text")
+    raw = pathlib.Path(args.out).with_suffix(".model-1.txt")
+    raw.parent.mkdir(parents=True, exist_ok=True)
+    raw.write_text(text, encoding="utf-8")
 
     segs = parse(text, keys=set(ps))
     chars = sum(len(s["text"]) for s in segs)
@@ -1893,6 +1904,7 @@ def main() -> int:
         )
         token_log.record("dialogue", MODEL, more)
         text2 = "".join(b.text for b in more.content if b.type == "text")
+        pathlib.Path(args.out).with_suffix(".model-2.txt").write_text(text2, encoding="utf-8")
         segs2 = parse(text2, keys=set(ps))
         chars2 = sum(len(s["text"]) for s in segs2)
         if chars2 > chars and len(segs2) >= 8:
@@ -1960,7 +1972,7 @@ def main() -> int:
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     payload = {"kind": "dialogue", "segments": segs, "panels": ps}
-    payload.update(nmat.meta(m) if args.mode == "numbers"
+    payload.update(nmat.meta(m, segs) if args.mode == "numbers"
                    else _voices_meta(m))
     if args.mode == "numbers":
         # 照合の材料も、材料の作り方ごとに違う。
@@ -1969,7 +1981,16 @@ def main() -> int:
         # 投手の回に「打率」と書いていないかを見る（被打率であるべき）。
         payload["material"] = {
             "players": [{"name": p["name"], "type": p["type"]}
-                        for p in m["players"]]}
+                        for p in m["players"]],
+            "daily_player_count": len(m["players"]),
+            "rare": m.get("rare") or []}
+        from longform_editorial import check as editorial_check
+        issues = editorial_check(payload)
+        if issues:
+            for issue in issues:
+                print("::error::" + issue)
+            print("[error] 編集検査で停止。原文は保存済み。追加APIでの再生成はしません")
+            return 1
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                    encoding="utf-8")
     print(f"[info] 台本を出力しました -> {out}")

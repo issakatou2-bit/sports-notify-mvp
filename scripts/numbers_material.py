@@ -343,16 +343,20 @@ def load(root: str = "data", today: date = None) -> dict:
     # ただし更新が止まったまま年を越すと去年の数字になるので、
     # 他と同じ幅で切る（`updated_at` を見る）。
     rare = []
-    for name, row in (_fresh_read(base / "rarity.json", today)
-                      .get("players") or {}).items():
+    rarity_data = _fresh_read(base / "rarity.json", today)
+    for name, row in (rarity_data.get("players") or {}).items():
         for item in (row.get("items") or []):
             if (item.get("ties") or 1) > 1 or not item.get("label"):
                 continue
             above = item.get("above") or {}
+            leader = item.get("leader") or (above if item.get("at") == 2 else {})
+            below = item.get("below") or {}
             rare.append({"name": name, "stat": item["label"],
                          "value": item.get("shown") or "",
-                         "rank": "%s人中%s位" % (item.get("of"),
-                                                item.get("at")),
+                         "rank": "%s人中%s位" % (item.get("of"), item.get("at")),
+                         "scope": ("MLB全体・%s打席以上" % rarity_data.get("min_pa", 300)
+                                   if item.get("group") == "hitting" else
+                                   "MLB全体・%s投球回以上" % rarity_data.get("min_ip", 60)),
                          "note": item.get("note") or "",
                          "namesake": item.get("namesake") or "",
                          # 「1位は誰か」を聞かれたときに答えられるように。
@@ -360,7 +364,9 @@ def load(root: str = "data", today: date = None) -> dict:
                          # 分からない」と言う回になった（9/15）。
                          "above": ("%s %s" % (above.get("name") or "",
                                               above.get("shown") or "")
-                                   ).strip()})
+                                   ).strip(),
+                         "leader": leader,
+                         "below": below})
             break
     rare = rare[:MAX_RARE]
 
@@ -510,16 +516,22 @@ def facts(m: dict) -> str:
     if m["rare"]:
         out.append("")
         out.append("## 名前のある指標での位置")
-        out.append("※ 公式記録ではないが、今季の規定到達者の中での実際の順位。")
+        out.append("※ 指標の値は公式成績から計算。順位は下記の対象条件での順位。"
+                   "規定打席・規定投球回到達者の順位やア・ナ各リーグ順位とは呼ばない。")
         out.append("※ **「とは」の行は画面に出る。声では説明しない。**")
         out.append("  用語の意味を読み上げると、そこで話が止まる。")
         out.append("  気になる人は画面を止めて読める。声で話すのは")
         out.append("  **どれくらい珍しいか**のほう。")
         for r in m["rare"]:
-            out.append("- %s の%s %s（%s）"
-                       % (r["name"], r["stat"], r["value"], r["rank"]))
+            out.append("- %s の%s %s（%s・%s）"
+                       % (r["name"], r["stat"], r["value"],
+                          r.get("scope") or "対象条件未確認", r["rank"]))
             if r.get("above"):
                 out.append("  1つ上にいるのは %s" % r["above"])
+            for label, key in (("1位", "leader"), ("1つ下", "below")):
+                other = r.get(key) or {}
+                if other.get("name") and other.get("shown"):
+                    out.append("  %s: %s %s" % (label, other["name"], other["shown"]))
             if r.get("note"):
                 out.append("  %s とは（画面に出る・読まない）: %s"
                            % (r["stat"], r["note"]))
@@ -694,7 +706,7 @@ def checkable(m: dict) -> dict:
     return out
 
 
-def meta(m: dict) -> dict:
+def meta(m: dict, segments=None) -> dict:
     """台本に添える、題とサムネイルの材料。
 
     **長編の弱さは題だった**（8本で平均11再生、名前のある回だけが伸びた）。
@@ -710,9 +722,18 @@ def meta(m: dict) -> dict:
                                 top_rare["value"], top_rare["rank"]))
             if top_rare else
             ("%s %s" % (best.get("name", ""), best.get("line", ""))))
+    # 出場0の日の題を、実際に扱う記録かシリーズの話に合わせる。
+    if not names:
+        used = [r for r in m.get("rare") or [] if segments is None or
+                any(r["name"] in s.get("text", "") and r["stat"] in s.get("text", "")
+                    for s in segments)]
+        focus = next((r for r in used if "中1位" in r["rank"]), next(iter(used), None))
+        pick = ("%s %s %s（%s）" % (focus["name"], focus["stat"],
+                                   focus["value"], focus["rank"]) if focus else
+                m.get("race", {}).get("headline") or "ポストシーズンの最新情勢")
     return {"mode": "numbers",
             "top": "きょうのMLB、数字で",
-            "title": "",
+            "title": pick.strip() if not names else "",
             "jp": names,
             "jp_team": [],
             "jp_team_name": best.get("team", ""),

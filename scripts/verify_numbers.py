@@ -95,9 +95,11 @@ def load(path: str) -> dict:
 def check(d: dict) -> list:
     """食い違いの一覧。空なら問題なし。"""
     facts = d.get("facts") or {}
+    from longform_editorial import check as editorial_check
+    editorial = editorial_check(d)
     if not facts:
-        return []
-    bad = []
+        return editorial
+    bad = list(editorial)
     for seg in (d.get("segments") or []):
         text = (seg.get("text") or "").strip()
         if not text:
@@ -161,7 +163,7 @@ def main() -> int:
     bad = check(d)
 
     print("--- 言ったことと、渡した材料 ---")
-    if not facts:
+    if not facts and not bad:
         print("  材料が添えられていません（古い台本）。見ません")
         return 0
     if not bad:
