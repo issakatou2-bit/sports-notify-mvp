@@ -41,6 +41,7 @@
 使い方:
   python3 scripts/next_asset.py            # 次に出すトピック名だけを表示
   python3 scripts/next_asset.py --report   # 残りの本数も出す
+  python3 scripts/next_asset.py --check-daily-limit  # 材料取得前の日次上限確認
 """
 
 import argparse
@@ -106,6 +107,16 @@ def posted_today(path: str, today=None, kinds=None, count=False,
 def kind_of(key: str) -> str:
     """トピックの種類。キーの頭で決まる（team_ana → team）。"""
     return (key or "").split("_")[0] or "?"
+
+
+def daily_limit_reached(path: str, requested_topic="next", again=False) -> bool:
+    """自動選択の日次上限だけ先に見る。指定トピックの制作は止めない。
+
+    在庫判定は材料更新後に行う。ここで古い在庫を読んで見送らない。
+    force は投稿済みトピックの再制作用で、next の日次上限とは別。
+    """
+    return ((requested_topic or "next") == "next" and not again
+            and posted_today(path, exclude={"season"}))
 
 
 def measured(published_path: str, analytics_path: str) -> dict:
@@ -180,13 +191,26 @@ def main() -> int:
                     help="きょう既に出していても、もう1本選ぶ")
     ap.add_argument("--season", type=int, default=0,
                     help="シーズンまとめをこの本数まで選ぶ（1日の上限）")
+    ap.add_argument("--check-daily-limit", action="store_true",
+                    help="生成器を読み込まず、材料取得前に日次上限を確認する")
+    ap.add_argument("--requested-topic", default="next",
+                    help="事前判定する実行のトピック。next以外は制作へ進める")
     args = ap.parse_args()
+    if args.check_daily_limit:
+        skip = daily_limit_reached(args.published, args.requested_topic, args.again)
+        build = "false" if skip else "true"
+        out = os.environ.get("GITHUB_OUTPUT")
+        if out:
+            with open(out, "a", encoding="utf-8") as f:
+                f.write(f"build={build}\n")
+        print(f"build={build}")
+        if skip:
+            print("[info] きょうはもう1本出しています。材料取得を省略します", file=sys.stderr)
+        return 0
     if args.season:
         return pick_season(args)
 
-    import generate_asset_video as gav
-
-    if not args.again and posted_today(args.published, exclude={"season"}):
+    if daily_limit_reached(args.published, again=args.again):
         print("[info] きょうはもう1本出しています", file=sys.stderr)
         out = os.environ.get("GITHUB_OUTPUT")
         if out:
@@ -195,6 +219,8 @@ def main() -> int:
         if not args.report:
             print("")
         return 0
+
+    import generate_asset_video as gav
 
     done = published(args.published)
     todo = sorted(k for k in gav.LIST_TOPICS if k not in done)
