@@ -24,6 +24,9 @@ on:
         description: 'true にすると、逆に公開へ戻す'
         required: false
         default: 'false'
+      publish_at:
+        description: '確認済み非公開動画だけを予約（例2026-10-04T21:00:00+09:00、空なら従来動作）'
+        required: false
 
 jobs:
   hold:
@@ -41,8 +44,14 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          VIDEO_ID: ${{ inputs.video }}
+          WRITE: ${{ inputs.write }}
+          RELEASE: ${{ inputs.release }}
+          PUBLISH_AT: ${{ inputs.publish_at }}
         run: |
-          ARGS="--video ${{ inputs.video }}"
-          if [ "${{ inputs.write }}" = "true" ]; then ARGS="$ARGS --write"; fi
-          if [ "${{ inputs.release }}" = "true" ]; then ARGS="$ARGS --release"; fi
-          python scripts/hold_video.py $ARGS | tee "$GITHUB_STEP_SUMMARY"
+          set -euo pipefail
+          ARGS=(--video "$VIDEO_ID")
+          if [ "$WRITE" = "true" ]; then ARGS+=(--write); fi
+          if [ "$RELEASE" = "true" ]; then ARGS+=(--release); fi
+          if [ -n "$PUBLISH_AT" ]; then ARGS+=(--publish-at "$PUBLISH_AT"); fi
+          python scripts/hold_video.py "${ARGS[@]}" | tee "$GITHUB_STEP_SUMMARY"

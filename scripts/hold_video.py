@@ -22,6 +22,7 @@ import argparse
 import os
 import pathlib
 import sys
+from datetime import datetime, timezone
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -33,6 +34,22 @@ except ImportError:
     build = Credentials = None
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
+
+
+def target_status(current, release=False, publish_at=None):
+    """確認済み非公開動画だけを未来の明示日時へ予約する。"""
+    st = dict(current)
+    if publish_at:
+        if release or st.get("privacyStatus") != "private" or st.get("publishAt"):
+            raise ValueError("予約は未予約の非公開動画に限ります。releaseとは併用不可")
+        at = datetime.fromisoformat(publish_at.replace("Z", "+00:00"))
+        if not at.tzinfo or at <= datetime.now(timezone.utc):
+            raise ValueError("予約日時はタイムゾーン付きの未来時刻が必要です")
+        st["publishAt"] = at.astimezone(timezone.utc).isoformat()
+    else:
+        st["privacyStatus"] = "public" if release else "private"
+        st.pop("publishAt", None)
+    return st
 
 
 def client():
@@ -57,6 +74,7 @@ def main() -> int:
                     help="付けないと、いまの状態を見るだけ")
     ap.add_argument("--release", action="store_true",
                     help="非公開を解いて、いますぐ公開する")
+    ap.add_argument("--publish-at", help="確認済み非公開動画の予約日時（タイムゾーン付きISO日時）")
     args = ap.parse_args()
 
     yt = client()
@@ -74,11 +92,13 @@ def main() -> int:
     print(f"いま  : {st.get('privacyStatus')}"
           + (f" / 予約 {st.get('publishAt')}" if st.get("publishAt") else ""))
 
-    want = "public" if args.release else "private"
-    if st.get("privacyStatus") == want and not st.get("publishAt"):
+    desired = target_status(st, args.release, args.publish_at)
+    want = desired["privacyStatus"]
+    if desired == st:
         print(f"[info] すでに {want} です。何もしません")
         return 0
-    print(f"こう  : {want}" + ("" if args.release else "（予約は取り消し）"))
+    print(f"こう  : {want}" + (f" / 予約 {desired['publishAt']}" if args.publish_at else
+                              ("" if args.release else "（予約は取り消し）")))
     if not args.write:
         print()
         print("下読みだけです。実際に変えるには --write を付けてください")
@@ -87,11 +107,15 @@ def main() -> int:
     # status を丸ごと置き換える。いま入っているものを土台にして、
     # 予約(publishAt)だけを外す。ここで body を空から組み立てると、
     # 子ども向け表示などの設定まで消える。
-    st["privacyStatus"] = want
-    st.pop("publishAt", None)
     yt.videos().update(part="status",
-                       body={"id": args.video, "status": st}).execute()
-    print(f"[info] {args.video} を {want} にしました")
+                       body={"id": args.video, "status": desired}).execute()
+    saved = yt.videos().list(part="status", id=args.video).execute()["items"][0]["status"]
+    if saved.get("privacyStatus") != want or bool(saved.get("publishAt")) != bool(desired.get("publishAt")):
+        raise ValueError("保存後の公開設定が一致しません")
+    if desired.get("publishAt") and datetime.fromisoformat(saved["publishAt"].replace("Z", "+00:00")) != datetime.fromisoformat(desired["publishAt"]):
+        raise ValueError("保存後の予約日時が一致しません")
+    print(f"[info] {args.video} の保存後の設定を照合しました: {want}" +
+          (f" / 予約 {saved['publishAt']}" if saved.get("publishAt") else ""))
     return 0
 
 

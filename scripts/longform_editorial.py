@@ -1,5 +1,40 @@
 """公開前の編集検査。数字の照合とは分け、APIを追加しない。"""
 import re
+from decimal import Decimal, InvalidOperation
+
+
+def _distance_issues(text, row):
+    """明記した順位間の近さだけを、同じ指標の表示値で照合する。"""
+    if text.rstrip().endswith(("？", "?")):
+        return []
+    rank = re.search(r"中([0-9]+)位", row.get("rank", ""))
+    leader, below = row.get("leader") or {}, row.get("below") or {}
+    if not rank or not leader.get("shown") or not below.get("shown"):
+        return []
+    values = [row.get("value", ""), leader["shown"], below["shown"]]
+    if any(not re.fullmatch(r"[0-9]+(?:\.[0-9]+)?%?", str(v)) for v in values):
+        return []
+    if len({str(v).endswith("%") for v in values}) != 1:
+        return []
+    try:
+        own, first, lower = [Decimal(str(v).rstrip("%")) for v in values]
+    except InvalidOperation:
+        return []
+    distances = {1: abs(own-first), int(rank[1])+1: abs(own-lower)}
+    if int(rank[1]) == 1:
+        return []  # 首位本人と2位だけでは、二つの比較先を定義できない。
+    errors = []
+    for match in re.finditer(r"([0-9]+)位(?:寄り|に近い)", text):
+        at = int(match[1])
+        if at in distances and distances[at] >= max(distances.values()):
+            errors.append("比較先への近さが材料の差と一致しません")
+    for match in re.finditer(r"([0-9]+)位との差より[、\s]*([0-9]+)位との差(?:の方)?が(?:小さい|大きい)", text):
+        a, b = int(match[1]), int(match[2])
+        if a in distances and b in distances:
+            correct = distances[b] < distances[a] if match[0].endswith("小さい") else distances[b] > distances[a]
+            if not correct:
+                errors.append("順位間の差の大小が材料と一致しません")
+    return errors
 
 _PRODUCTION = re.compile(
     r"(?:材料|データ|情報).{0,12}(?:無い|ない|渡され|渡って|出ていない|出てない)|"
@@ -89,6 +124,9 @@ def check(dialogue):
             if _NO_RUNNERS.search(text):
                 bad.append(f"{i}行目: 被安打・四球だけで走者なしと断定しています")
         target = (panels.get(active) or {}).get("name") if str(active).startswith("rare") else None
+        for row in subjects:
+            if row.get("name") == target and not other_subject:
+                bad.extend(f"{i}行目: {issue}" for issue in _distance_issues(text, row))
         match = _RANK.search(text)
         before = text[:match.start()] if match else text
         if subjects and _QUALIFIED.search(text) and (
