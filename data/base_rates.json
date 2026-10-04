@@ -1,28 +1,28 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 338,
-    "home_wins": 185,
+    "games": 342,
+    "home_wins": 188,
     "draws": 0,
-    "away_wins": 153,
+    "away_wins": 154,
     "home_win_pct": 55,
-    "avg_total": 8.7,
-    "one_run": 93,
+    "avg_total": 8.6,
+    "one_run": 95,
     "one_run_pct": 28,
-    "shutouts": 41,
-    "shutout_pct": 12
+    "shutouts": 43,
+    "shutout_pct": 13
   },
   "same_division": {
-    "games": 116,
-    "home_wins": 59,
+    "games": 118,
+    "home_wins": 60,
     "draws": 0,
-    "away_wins": 57,
+    "away_wins": 58,
     "home_win_pct": 51,
-    "avg_total": 9.2,
-    "one_run": 31,
+    "avg_total": 9.1,
+    "one_run": 32,
     "one_run_pct": 27,
-    "shutouts": 13,
-    "shutout_pct": 11
+    "shutouts": 15,
+    "shutout_pct": 13
   },
   "venues": {
     "Tモバイル・パーク": {
@@ -33,16 +33,12 @@
       "games": 8,
       "avg_total": 11.1
     },
-    "アメリカン・ファミリー・フィールド": {
-      "games": 5,
-      "avg_total": 11.0
-    },
     "クアーズ・フィールド": {
       "games": 12,
       "avg_total": 10.2
     },
-    "プログレッシブ・フィールド": {
-      "games": 9,
+    "アメリカン・ファミリー・フィールド": {
+      "games": 6,
       "avg_total": 10.0
     },
     "ペトコ・パーク": {
@@ -65,9 +61,9 @@
       "games": 6,
       "avg_total": 9.5
     },
-    "トロピカーナ・フィールド": {
-      "games": 12,
-      "avg_total": 9.2
+    "プログレッシブ・フィールド": {
+      "games": 10,
+      "avg_total": 9.3
     },
     "フェンウェイ・パーク": {
       "games": 16,
@@ -81,8 +77,12 @@
       "games": 18,
       "avg_total": 9.0
     },
+    "トロピカーナ・フィールド": {
+      "games": 13,
+      "avg_total": 8.5
+    },
     "ドジャー・スタジアム": {
-      "games": 23,
+      "games": 24,
       "avg_total": 8.3
     },
     "オラクル・パーク": {

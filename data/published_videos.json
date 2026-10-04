@@ -1354,6 +1354,276 @@
         }
       ],
       "social_summary": "村上宗隆が所属するホワイトソックスの地区シリーズ初戦はガーディアンズ戦。10/04のPS全4試合を日本時間でまとめました。"
+    },
+    "2026-10-04": {
+      "video_id": "Cok9uSrfYAc",
+      "url": "https://youtu.be/Cok9uSrfYAc",
+      "title": "【10/4更新】松井裕樹が所属するパドレス対ブリュワーズの地区シリーズ第2戦｜10/5 PS全2試合 #Shorts",
+      "published_at": "2026-10-04T09:56:27.323492+00:00",
+      "publish_at": "2026-10-04T10:00:00Z",
+      "program_version": "ps-program-20260928-v2",
+      "program_edition": "5e978bc111047ba3948a7ffe2794cf77e8fa559fe914d6ad0cfb467cee6ff535",
+      "program_phase": "forecast",
+      "program_series": [
+        {
+          "key": "F:111-147",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 147,
+          "next": null,
+          "teams": [
+            {
+              "id": 147,
+              "name": "ヤンキース",
+              "wins": 2,
+              "players": []
+            },
+            {
+              "id": 111,
+              "name": "レッドソックス",
+              "wins": 0,
+              "players": [
+                "吉田正尚"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:117-145",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 145,
+          "next": null,
+          "teams": [
+            {
+              "id": 145,
+              "name": "ホワイトソックス",
+              "wins": 2,
+              "players": [
+                "村上宗隆",
+                "西田陸浮"
+              ]
+            },
+            {
+              "id": 117,
+              "name": "アストロズ",
+              "wins": 0,
+              "players": [
+                "今井達也"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:112-135",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 135,
+          "next": null,
+          "teams": [
+            {
+              "id": 135,
+              "name": "パドレス",
+              "wins": 2,
+              "players": [
+                "松井裕樹"
+              ]
+            },
+            {
+              "id": 112,
+              "name": "カブス",
+              "wins": 0,
+              "players": [
+                "今永昇太",
+                "鈴木誠也"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:143-144",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 3,
+          "over": true,
+          "winner": 144,
+          "next": null,
+          "teams": [
+            {
+              "id": 144,
+              "name": "ブレーブス",
+              "wins": 2,
+              "players": []
+            },
+            {
+              "id": 143,
+              "name": "フィリーズ",
+              "wins": 1,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:114-145",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 1,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月6日",
+            "game": 2,
+            "live": false,
+            "verified_label": "日本時間10月6日6時"
+          },
+          "teams": [
+            {
+              "id": 145,
+              "name": "ホワイトソックス",
+              "wins": 1,
+              "players": [
+                "村上宗隆",
+                "西田陸浮"
+              ]
+            },
+            {
+              "id": 114,
+              "name": "ガーディアンズ",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:139-147",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 1,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月6日",
+            "game": 2,
+            "live": false,
+            "verified_label": "日本時間10月6日9時"
+          },
+          "teams": [
+            {
+              "id": 139,
+              "name": "レイズ",
+              "wins": 1,
+              "players": []
+            },
+            {
+              "id": 147,
+              "name": "ヤンキース",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:119-144",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 1,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月5日",
+            "game": 2,
+            "live": false,
+            "verified_label": "日本時間10月5日9時"
+          },
+          "teams": [
+            {
+              "id": 119,
+              "name": "ドジャース",
+              "wins": 1,
+              "players": [
+                "大谷翔平",
+                "佐々木朗希",
+                "山本由伸"
+              ]
+            },
+            {
+              "id": 144,
+              "name": "ブレーブス",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:135-158",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 1,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月5日",
+            "game": 2,
+            "live": false,
+            "verified_label": "日本時間10月5日5時"
+          },
+          "teams": [
+            {
+              "id": 158,
+              "name": "ブリュワーズ",
+              "wins": 1,
+              "players": []
+            },
+            {
+              "id": 135,
+              "name": "パドレス",
+              "wins": 0,
+              "players": [
+                "松井裕樹"
+              ]
+            }
+          ]
+        }
+      ],
+      "social_summary": "松井裕樹が所属するパドレス対ブリュワーズの地区シリーズ第2戦。10/05のPS全2試合を日本時間でまとめました。"
     }
   },
   "morning": {
