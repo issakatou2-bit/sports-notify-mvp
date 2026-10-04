@@ -15,7 +15,7 @@ if os.name == 'nt':
 
 @unittest.skipUnless(BASH, 'bash is needed to exercise the runner shell')
 class BatchDelivery(unittest.TestCase):
-    def execute(self, mode, fail=''):
+    def execute(self, mode, fail='', event=''):
         workflow = (Path(__file__).resolve().parents[1] / '.github/workflows/buffer_daily.yml').read_text(encoding='utf-8')
         script = textwrap.dedent(workflow.rsplit('        run: |\n', 1)[1])
         script = script.replace("${{ inputs.kind || 'daily' }}", 'daily')
@@ -34,7 +34,8 @@ python() {
                                   input=fake + script, text=True, encoding='utf-8',
                                   capture_output=True, env={**os.environ, 'MODE': mode,
                                   'FAIL': fail, 'SOURCE_RUN': '123',
-                                  'TEST_DIR': directory.replace('\\', '/')})
+                                  'TEST_DIR': directory.replace('\\', '/'),
+                                  'GITHUB_EVENT_NAME': event})
 
     def test_failure_is_reported_after_remaining_kinds_are_attempted(self):
         result = self.execute('publish_due', 'first')
@@ -62,6 +63,25 @@ python() {
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('--source-run 123', result.stdout)
         self.assertNotIn('--publish', result.stdout)
+
+    def test_after_forecast_published_evening_kinds_follow(self):
+        # 19:00予告の配信（workflow_run）の後、公開済みの夕方の枠も投げる。
+        result = self.execute('publish', event='workflow_run')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('--source-run 123 --kind daily --publish', result.stdout)
+        self.assertIn('--kind morning --source-run 123 --publish', result.stdout)
+        self.assertIn('--kind morning_press --source-run 123 --publish', result.stdout)
+
+    def test_evening_kind_failure_after_forecast_is_only_a_warning(self):
+        result = self.execute('publish', 'first', event='workflow_run')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('--kind morning_press --source-run 123 --publish', result.stdout)
+        self.assertIn('::warning::', result.stdout)
+
+    def test_manual_publication_does_not_chase_other_kinds(self):
+        result = self.execute('publish', event='workflow_dispatch')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.count('CALL:'), 1)
 
 
 if __name__ == '__main__':

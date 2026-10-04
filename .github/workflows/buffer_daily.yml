@@ -102,7 +102,7 @@ jobs:
           # 19:00の予告の後に、その時点で公開済みの夕方の枠（17:30コメント・18:00報道など）も投げる。
           # 19:47のcronは10/1〜10/3に一度も起動せず、23:47の回も01〜02時にずれ込んで
           # 夕方の枠がSNSに出るのが毎晩6〜8時間遅れていた。台帳で二重投入は防がれる。
-          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+          if [ "${GITHUB_EVENT_NAME:-}" = "workflow_run" ]; then
             python scripts/buffer_daily.py --list-due > /tmp/due.tsv || true
             while IFS="$(printf '\t')" read -r KIND RUN; do
               [ -n "$KIND" ] || continue
