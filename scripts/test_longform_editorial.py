@@ -18,6 +18,28 @@ def dialogue(*lines):
 
 
 class EditorialTests(unittest.TestCase):
+    def distance_dialogue(self, text, value="0.87", first="0.80", below="0.91"):
+        d = dialogue(("rare1", "山本由伸のWHIPは%sで46人中2位。" % value), (None, text))
+        d["material"]["rare"][0].update(value=value, rank="46人中2位",
+            leader={"name": "首位", "shown": first}, below={"name": "次点", "shown": below})
+        return d
+
+    def test_oct4_nearer_rank_regression(self):
+        self.assertTrue(editorial.check(self.distance_dialogue("2位の中でも1位寄りの数字ね。")))
+        self.assertFalse(editorial.check(self.distance_dialogue("3位に近い数字です。")))
+
+    def test_distance_comparison_and_tie(self):
+        self.assertFalse(editorial.check(self.distance_dialogue("1位との差より、3位との差の方が小さい。")))
+        self.assertTrue(editorial.check(self.distance_dialogue("1位との差より3位との差が大きい。")))
+        self.assertTrue(editorial.check(self.distance_dialogue("1位寄りです。", "0.85", "0.80", "0.90")))
+        self.assertFalse(editorial.check(self.distance_dialogue("1位寄りです。", "0.81")))
+
+    def test_distance_question_other_player_and_metric_units(self):
+        self.assertFalse(editorial.check(self.distance_dialogue("1位に近いのだ？")))
+        self.assertFalse(any("近さ" in issue for issue in
+            editorial.check(self.distance_dialogue("村上宗隆は1位寄りです。"))))
+        self.assertFalse(editorial.check(self.distance_dialogue("1位寄りです。", below="91%")))
+
     def k_dialogue(self, kind, pct, *lines):
         d = dialogue(*[("jp1", line) for line in lines])
         d["panels"]["jp1"] = {"name": "対象選手"}

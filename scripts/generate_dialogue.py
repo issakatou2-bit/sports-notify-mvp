@@ -1706,6 +1706,8 @@ NUMBERS_PROMPT = CAST + """
   とは言わない。投手の奪三振率は多いほど良いので、投打を区別する。
   被安打0・四球0だけから「走者なし」とは言わない。死球や失策もあり得る。
   名前のある指標へ移るときは、既出の選手でも名前と指標値を先に言う。
+  「1位寄り」「3位に近い」などの近さは、同じ指標の表示値の差を実際に
+  計算してから言う。同じ順位でも上下への数値の差が等しいとは限らない。
 - **コレスポの点数を主題にしない。**
   点数は並べるための独自指標で、公式の記録ではない。
   「95点でした」を話の中心にしない。順番の理由として軽く触れる程度。
@@ -1812,6 +1814,16 @@ def parse(text: str, keys=()) -> list:
     return out
 
 
+def reviewed_segments(text, keys):
+    """確認済み原稿を黙って欠落させずに読み、通常の後段検査へ渡す。"""
+    lines = [line for line in text.splitlines() if line.strip()]
+    segs = parse(text, keys=set(keys))
+    tags = re.findall(r"[\[［]([A-Za-z0-9_]+)[\]］]", text)
+    if not lines or len(segs) != len(lines) or any(tag not in keys for tag in tags):
+        raise ValueError("確認済み原稿に読み取れない行・未知の画面指定があります")
+    return segs
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--buzz", default="data/mlb_buzz.json")
@@ -1823,7 +1835,10 @@ def main() -> int:
                     help="voices=公式コメント欄 / numbers=その日の数字")
     ap.add_argument("--data", default="data",
                     help="numbers のとき読む材料の場所")
+    ap.add_argument("--reviewed-text", help="全行確認済みnumbers原稿。再生成せず通常の検査を通す")
     args = ap.parse_args()
+    if args.reviewed_text and args.mode != "numbers":
+        ap.error("--reviewed-text は numbers 専用です")
 
     if args.mode == "numbers":
         import numbers_material as nmat
@@ -1845,79 +1860,84 @@ def main() -> int:
     print("\n--- 画面に出せる札 ---")
     print(panel_menu(ps))
 
-    key = os.environ.get("ANTHROPIC_API_KEY")
-    if not (key and anthropic is not None):
-        print("[info] ANTHROPIC_API_KEY未設定のため、台本は作りません")
-        return 0
-    if not token_log.allowed("dialogue"):
-        return 0
+    if args.reviewed_text:
+        text = pathlib.Path(args.reviewed_text).read_text(encoding="utf-8")
+        segs = reviewed_segments(text, ps)
+        print("[info] 全行確認済み原稿を使用。台本生成APIの呼び出しなし")
+    else:
+        key = os.environ.get("ANTHROPIC_API_KEY")
+        if not (key and anthropic is not None):
+            print("[info] ANTHROPIC_API_KEY未設定のため、台本は作りません")
+            return 0
+        if not token_log.allowed("dialogue"):
+            return 0
 
-    client = anthropic.Anthropic(api_key=key)
-    ask = prompt.format(facts=body, menu=panel_menu(ps))
-    if args.mode == "numbers":
-        ask += ("\n【公開前の必須条件】順位や比較に入る前に、主役の日本人選手名と"
-                "指標の数字を必ず先に言う。材料・データ・情報が無い、渡されていない、"
-                "分からない、何とも言えない等の制作上の都合は言わない。"
-                "答えられない問い自体を置かず、根拠がある話へ進む。"
-                "出場者0の日は、その日の成績紹介を名乗らない。"
-                "指標ランキングは材料の対象条件（MLB全体・300打席以上や60投球回以上）"
-                "をそのまま言い、規定到達者や各リーグ順位と言い換えない。")
-    resp = client.messages.create(
-        model=MODEL, max_tokens=16000,
-        messages=[{"role": "user", "content": ask}],
-    )
-    token_log.record("dialogue", MODEL, resp)
-    text = "".join(b.text for b in resp.content if b.type == "text")
-    raw = pathlib.Path(args.out).with_suffix(".model-1.txt")
-    raw.parent.mkdir(parents=True, exist_ok=True)
-    raw.write_text(text, encoding="utf-8")
-
-    segs = parse(text, keys=set(ps))
-    chars = sum(len(s["text"]) for s in segs)
-
-    # 短ければ、1度だけ書き足してもらう。
-    #
-    # 「1600〜1900字」と書いても939字で返ってきた。指示だけでは
-    # 長さは決まらない。ただし**足りないぶんを言葉で埋めさせない。**
-    # 使っていない材料を指して、そこを書けと言う。
-    # それでも足りなければ、短いまま出す。水増しよりましなので。
-    if chars < MIN_CHARS and token_log.allowed("dialogue"):
-        unused = [k for k in ps if k not in
-                  {s.get("panel") for s in segs if s.get("panel")}]
-        print(f"\n[info] {chars}字で短いので、書き足してもらいます"
-              f"（未使用の材料 {len(unused)}件）")
-        more = client.messages.create(
+        client = anthropic.Anthropic(api_key=key)
+        ask = prompt.format(facts=body, menu=panel_menu(ps))
+        if args.mode == "numbers":
+            ask += ("\n【公開前の必須条件】順位や比較に入る前に、主役の日本人選手名と"
+                    "指標の数字を必ず先に言う。材料・データ・情報が無い、渡されていない、"
+                    "分からない、何とも言えない等の制作上の都合は言わない。"
+                    "答えられない問い自体を置かず、根拠がある話へ進む。"
+                    "出場者0の日は、その日の成績紹介を名乗らない。"
+                    "指標ランキングは材料の対象条件（MLB全体・300打席以上や60投球回以上）"
+                    "をそのまま言い、規定到達者や各リーグ順位と言い換えない。")
+        resp = client.messages.create(
             model=MODEL, max_tokens=16000,
-            messages=[
-                {"role": "user", "content": ask},
-                {"role": "assistant", "content": text},
-                {"role": "user", "content": (
-                    f"いまの台本は{chars}字で、"
-                    f"{TARGET_CHARS}字に足りません。\n"
-                    "**同じ形式のまま、全部を書き直してください。**\n"
-                    "足すのは中身であって、言葉数ではありません。\n"
-                    + ("まだ触れていない材料があります: "
-                       + "、".join(unused) + "\n" if unused else "")
-                    + ("・数字は前の試合や他の選手と比べる\n"
-                       "・順位や差は、圏内なのか圏外なのかまで言う\n"
-                       if args.mode == "numbers" else
-                       "・コメントは返信まで読む\n"
-                       "・賛否が割れているところを、両方そのまま出す\n")
-                    + "・上に無い事実は、やはり一切足さない\n"
-                    "台本だけを出力してください。")},
-            ],
+            messages=[{"role": "user", "content": ask}],
         )
-        token_log.record("dialogue", MODEL, more)
-        text2 = "".join(b.text for b in more.content if b.type == "text")
-        pathlib.Path(args.out).with_suffix(".model-2.txt").write_text(text2, encoding="utf-8")
-        segs2 = parse(text2, keys=set(ps))
-        chars2 = sum(len(s["text"]) for s in segs2)
-        if chars2 > chars and len(segs2) >= 8:
-            print(f"[info] {chars}字 → {chars2}字")
-            segs, text = segs2, text2
-        else:
-            print(f"[info] 書き足しても{chars2}字だったので、"
-                  f"最初のものを使います")
+        token_log.record("dialogue", MODEL, resp)
+        text = "".join(b.text for b in resp.content if b.type == "text")
+        raw = pathlib.Path(args.out).with_suffix(".model-1.txt")
+        raw.parent.mkdir(parents=True, exist_ok=True)
+        raw.write_text(text, encoding="utf-8")
+
+        segs = parse(text, keys=set(ps))
+        chars = sum(len(s["text"]) for s in segs)
+
+        # 短ければ、1度だけ書き足してもらう。
+        #
+        # 「1600〜1900字」と書いても939字で返ってきた。指示だけでは
+        # 長さは決まらない。ただし**足りないぶんを言葉で埋めさせない。**
+        # 使っていない材料を指して、そこを書けと言う。
+        # それでも足りなければ、短いまま出す。水増しよりましなので。
+        if chars < MIN_CHARS and token_log.allowed("dialogue"):
+            unused = [k for k in ps if k not in
+                      {s.get("panel") for s in segs if s.get("panel")}]
+            print(f"\n[info] {chars}字で短いので、書き足してもらいます"
+                  f"（未使用の材料 {len(unused)}件）")
+            more = client.messages.create(
+                model=MODEL, max_tokens=16000,
+                messages=[
+                    {"role": "user", "content": ask},
+                    {"role": "assistant", "content": text},
+                    {"role": "user", "content": (
+                        f"いまの台本は{chars}字で、"
+                        f"{TARGET_CHARS}字に足りません。\n"
+                        "**同じ形式のまま、全部を書き直してください。**\n"
+                        "足すのは中身であって、言葉数ではありません。\n"
+                        + ("まだ触れていない材料があります: "
+                           + "、".join(unused) + "\n" if unused else "")
+                        + ("・数字は前の試合や他の選手と比べる\n"
+                           "・順位や差は、圏内なのか圏外なのかまで言う\n"
+                           if args.mode == "numbers" else
+                           "・コメントは返信まで読む\n"
+                           "・賛否が割れているところを、両方そのまま出す\n")
+                        + "・上に無い事実は、やはり一切足さない\n"
+                        "台本だけを出力してください。")},
+                ],
+            )
+            token_log.record("dialogue", MODEL, more)
+            text2 = "".join(b.text for b in more.content if b.type == "text")
+            pathlib.Path(args.out).with_suffix(".model-2.txt").write_text(text2, encoding="utf-8")
+            segs2 = parse(text2, keys=set(ps))
+            chars2 = sum(len(s["text"]) for s in segs2)
+            if chars2 > chars and len(segs2) >= 8:
+                print(f"[info] {chars}字 → {chars2}字")
+                segs, text = segs2, text2
+            else:
+                print(f"[info] 書き足しても{chars2}字だったので、"
+                      f"最初のものを使います")
     print("\n--- できた台本 ---")
     for s in segs:
         tag = "[%s]" % s["panel"] if s.get("panel") else ""

@@ -1,0 +1,58 @@
+"""原稿救済で生成APIや公開前検査を迂回しない。"""
+import contextlib
+import io
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+import generate_dialogue as gd
+import hold_video
+import numbers_material as nm
+
+
+class RecoveryTests(unittest.TestCase):
+    def test_reviewed_lines_never_silently_disappear(self):
+        for text in ("", "めたん：正しい行\n不明な形式", "めたん[unknown]：数字です"):
+            with self.subTest(text=text), self.assertRaises(ValueError):
+                gd.reviewed_segments(text, {"jp1"})
+        self.assertEqual(len(gd.reviewed_segments("めたん[jp1]：数字です", {"jp1"})), 1)
+
+    def test_reviewed_path_uses_material_and_editorial_gate_without_generation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            raw, out = Path(tmp)/"raw.txt", Path(tmp)/"out.json"
+            raw.write_text("\n".join(["ずんだもん：数字なのだ。", "めたん：数字です。"]*4), encoding="utf-8")
+            with contextlib.ExitStack() as stack:
+                stack.enter_context(patch("sys.argv", ["generate_dialogue", "--mode", "numbers",
+                    "--reviewed-text", str(raw), "--out", str(out)]))
+                stack.enter_context(contextlib.redirect_stdout(io.StringIO()))
+                stack.enter_context(patch.object(nm, "load", return_value={"players": [], "rare": []}))
+                for name, value in (("has_enough", True), ("outline", "test"), ("facts", "facts"),
+                                    ("panels", {}), ("checkable", {"対象": {"安打": 2}}),
+                                    ("meta", {"mode": "numbers", "title": "数字"})):
+                    stack.enter_context(patch.object(nm, name, return_value=value))
+                generation = stack.enter_context(patch.object(gd, "anthropic"))
+                gate = stack.enter_context(patch("longform_editorial.check", return_value=["矛盾"]))
+                self.assertEqual(gd.main(), 1)
+                self.assertFalse(out.exists())
+                generation.Anthropic.assert_not_called()
+                gate.assert_called_once()
+                self.assertEqual(gate.call_args[0][0]["facts"], {"対象": {"安打": 2}})
+
+    def test_schedule_requires_private_unscheduled_video_and_future_timezone(self):
+        st = {"privacyStatus": "private", "selfDeclaredMadeForKids": False}
+        target = hold_video.target_status(st, publish_at="2099-10-04T21:00:00+09:00")
+        self.assertEqual(target["publishAt"], "2099-10-04T12:00:00+00:00")
+        self.assertFalse(target["selfDeclaredMadeForKids"])
+        self.assertNotIn("publishAt", st)
+        for source, release, at in (({"privacyStatus": "public"}, False, "2099-10-04T21:00:00+09:00"),
+                                   (dict(st, publishAt="2099-01-01T00:00:00Z"), False, "2099-10-04T21:00:00+09:00"),
+                                   (st, True, "2099-10-04T21:00:00+09:00"),
+                                   (st, False, "2000-01-01T00:00:00Z"),
+                                   (st, False, "2099-10-04T21:00:00")):
+            with self.subTest(at=at, source=source), self.assertRaises(ValueError):
+                hold_video.target_status(source, release, at)
+
+
+if __name__ == "__main__":
+    unittest.main(argv=[__file__])

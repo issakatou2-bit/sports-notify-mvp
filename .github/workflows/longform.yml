@@ -47,6 +47,9 @@ on:
         description: '主題 (numbers=その日の数字 / voices=公式コメント欄)'
         required: false
         default: 'numbers'
+      reviewed_script:
+        description: '全行確認済みのnumbers原稿（空なら従来の生成、公開前に検査はすべて実行）'
+        required: false
   workflow_run:
     workflows: ["毎日 17:00-20:00　夕方の4本"]
     types: [completed]
@@ -142,10 +145,16 @@ jobs:
         id: dialogue
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          REVIEWED_SCRIPT: ${{ inputs.reviewed_script }}
         run: |
           mkdir -p build/lf
+          ARGS=()
+          if [ -n "$REVIEWED_SCRIPT" ]; then
+            printf '%s' "$REVIEWED_SCRIPT" > build/lf/dialogue.reviewed.txt
+            ARGS+=(--reviewed-text build/lf/dialogue.reviewed.txt)
+          fi
           python scripts/generate_dialogue.py --out build/lf/dialogue.json \
-            --mode "${{ inputs.mode || 'numbers' }}"
+            --mode "${{ inputs.mode || 'numbers' }}" "${ARGS[@]}"
           if [ -f build/lf/dialogue.json ]; then
             echo "made=1" >> "$GITHUB_OUTPUT"
           else
@@ -228,6 +237,7 @@ jobs:
             build/lf/collespo_longform.mp4
             build/lf/dialogue.json
             build/lf/dialogue.model-*.txt
+            build/lf/dialogue.reviewed.txt
             build/lf/thumb.png
           if-no-files-found: warn
 
