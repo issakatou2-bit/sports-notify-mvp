@@ -665,7 +665,7 @@ def panels(m: dict) -> dict:
                              "rows": srows,
                              "menu": "日本人選手の所属クラブの順位"}
 
-    out["topic"] = {"type": "topic", "topic": "きょうのMLB、数字で",
+    out["topic"] = {"type": "topic", "topic": "日本人選手の成績と指標",
                     "menu": "きょうの話（締めに使う）"}
     return out
 
@@ -732,7 +732,7 @@ def meta(m: dict, segments=None) -> dict:
                                    focus["value"], focus["rank"]) if focus else
                 m.get("race", {}).get("headline") or "ポストシーズンの最新情勢")
     return {"mode": "numbers",
-            "top": "きょうのMLB、数字で",
+            "top": "日本人選手の成績と指標",
             "title": pick.strip() if not names else "",
             "jp": names,
             "jp_team": [],
