@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-03T06:02:02.872513+00:00",
+  "updated_at": "2026-10-04T06:02:10.777470+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,82 +13,74 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 8,
-      "tone": "話題",
-      "gist": "Freddie Freeman走者一掃、大谷健康問題"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 6,
-      "tone": "好調",
-      "gist": "ヤンキース快勝、視聴率高記録、Judge出場確定へ"
-    },
-    {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 5,
-      "tone": "話題",
-      "gist": "Rays満員御礼予想、ファン結集へ"
-    },
-    {
       "team_id": "145",
       "name": "ホワイトソックス",
       "name_en": "Chicago White Sox",
-      "mentions": 4,
-      "tone": "話題",
-      "gist": "White Sox先発Smith、親子選手の会話"
+      "mentions": 6,
+      "tone": "好調",
+      "gist": "Murakami2本塁打でALDS第1戦先勝"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 4,
-      "tone": "話題",
-      "gist": "Woodruff意欲、アンダードッグ脱却へ"
+      "mentions": 6,
+      "tone": "好調",
+      "gist": "Contreras同点2ラン本塁打でNLDS第1戦勝利"
     },
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
-      "mentions": 4,
-      "tone": "話題",
-      "gist": "Braves-Dodgers対戦、Olson-Freeman"
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 6,
+      "tone": "好調",
+      "gist": "Rasmussen完全試合同然でヤンキース1点に抑え勝利"
     },
     {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 3,
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 4,
       "tone": "不振",
-      "gist": "Phillies敗退、ハーパーら高額契約負債"
+      "gist": "Rasmussen完全試合同然でヤンキース1点に抑え敗北"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "White SoxにシャットアウトされALDS第1戦敗北"
+    },
+    {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "ドジャース3本塁打でNLDS第1戦勝利"
+    },
+    {
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "Ty Franceの打球が屋根に当たる異例の珍プレー"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "Padres恐竜論争、Brewers対戦へ"
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "ブリュワーズに2対3で敗れNLDS第1戦落とす"
     }
   ],
   "players": [
     {
-      "name": "大谷翔平",
-      "mentions": 2
-    },
-    {
-      "name": "山本由伸",
-      "mentions": 1
-    },
-    {
-      "name": "鈴木誠也",
-      "mentions": 1
+      "name": "村上宗隆",
+      "mentions": 3
     }
   ]
 }

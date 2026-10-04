@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-10-03T06:01:50.432468+00:00",
+  "updated_at": "2026-10-04T06:02:00.005067+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "9GChxIB_Cek",
-      "title": "PHILLIES vs. BRAVES: Wild Card Full Game 3 Highlights (October 1) | 2026 MLB Season",
-      "published_at": "2026-10-02T03:28:43Z",
-      "views": 1029999,
-      "matchup": "PHILLIES vs. BRAVES",
-      "game_date": "2026-10-01",
+      "video_id": "IlwOElGgbw4",
+      "title": "BRAVES vs. DODGERS: NLDS Full Game 1 Highlights (October 3) | 2026 MLB | Shohei Ohtani",
+      "published_at": "2026-10-03T23:17:30Z",
+      "views": 1223308,
+      "matchup": "BRAVES vs. DODGERS",
+      "game_date": "2026-10-03",
       "result": {
-        "away_jp": "フィリーズ",
-        "home_jp": "ブレーブス",
-        "away_score": 2,
-        "home_score": 6,
+        "away_jp": "ブレーブス",
+        "home_jp": "ドジャース",
+        "away_score": 3,
+        "home_score": 5,
         "innings": [
           {
             "num": 1,
             "away": 0,
-            "home": 3
+            "home": 0
           },
           {
             "num": 2,
@@ -44,6 +44,173 @@
           {
             "num": 6,
             "away": 1,
+            "home": 3
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 2,
+            "home": null
+          }
+        ],
+        "away_hits": 4,
+        "away_errors": 0,
+        "home_hits": 8,
+        "home_errors": 0,
+        "star_name": "Tarik Skubal",
+        "star_line": "6.0回 7奪三振 自責1",
+        "star_team": "ドジャース",
+        "away_starter": {
+          "name": "Dylan Dodd",
+          "team": "ブレーブス",
+          "line": "3.0回 4奪三振 自責0"
+        },
+        "home_starter": {
+          "name": "Tarik Skubal",
+          "team": "ドジャース",
+          "line": "6.0回 7奪三振 自責1　勝利投手（通算1勝0敗）"
+        }
+      },
+      "topic_jp": "ブレーブス 対 ドジャース"
+    },
+    {
+      "video_id": "Sp98vsSa3-s",
+      "title": "YANKEES vs. RAYS: ALDS Full Game 1 Highlights (October 3) | 2026 MLB Season",
+      "published_at": "2026-10-04T01:29:32Z",
+      "views": 352174,
+      "matchup": "YANKEES vs. RAYS",
+      "game_date": "2026-10-03",
+      "result": {
+        "away_jp": "ヤンキース",
+        "home_jp": "レイズ",
+        "away_score": 0,
+        "home_score": 1,
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": null
+          }
+        ],
+        "away_hits": 1,
+        "away_errors": 0,
+        "home_hits": 5,
+        "home_errors": 0,
+        "star_name": "Drew Rasmussen",
+        "star_line": "8.0回 10奪三振 自責0",
+        "star_team": "レイズ",
+        "away_starter": {
+          "name": "Gerrit Cole",
+          "team": "ヤンキース",
+          "line": "5.0回 5奪三振 自責1　敗戦投手（通算0勝1敗）"
+        },
+        "home_starter": {
+          "name": "Drew Rasmussen",
+          "team": "レイズ",
+          "line": "8.0回 10奪三振 自責0　勝利投手（通算1勝0敗）"
+        }
+      },
+      "topic_jp": "ヤンキース 対 レイズ"
+    },
+    {
+      "video_id": "j5ojQYYStX0",
+      "title": "Sean Murphy puts the Braves on the board vs. the Dodgers! | MLB Highlights",
+      "published_at": "2026-10-03T21:50:26Z",
+      "views": 27076,
+      "matchup": "Sean Murphy puts the Braves on the board vs. the Dodgers! | MLB Highlights",
+      "game_date": "",
+      "topic_jp": "Sean Murphy puts the ブレーブス on the board 対 the ドジャース! | MLB Highlights"
+    },
+    {
+      "video_id": "CGqnaMVxyI8",
+      "title": "PADRES vs. BREWERS: Division Series Full Game Highlights (October 3) | 2026 MLB Season",
+      "published_at": "2026-10-04T04:35:08Z",
+      "views": 19065,
+      "matchup": "PADRES vs. BREWERS",
+      "game_date": "2026-10-03",
+      "result": {
+        "away_jp": "パドレス",
+        "home_jp": "ブリュワーズ",
+        "away_score": 2,
+        "home_score": 3,
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 2,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 2
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 0,
             "home": 0
           },
           {
@@ -53,7 +220,7 @@
           },
           {
             "num": 8,
-            "away": 1,
+            "away": 0,
             "home": 0
           },
           {
@@ -62,48 +229,114 @@
             "home": null
           }
         ],
-        "away_hits": 6,
-        "away_errors": 0,
-        "home_hits": 6,
+        "away_hits": 9,
+        "away_errors": 1,
+        "home_hits": 7,
         "home_errors": 0,
-        "star_name": "Michael Harris II",
-        "star_line": "3打数1安打 3打点 1本塁打",
-        "star_team": "ブレーブス",
+        "star_name": "Jackson Chourio",
+        "star_line": "4打数1安打 2打点 1本塁打",
+        "star_team": "ブリュワーズ",
         "away_starter": {
-          "name": "Aaron Nola",
-          "team": "フィリーズ",
-          "line": "1.2回 1奪三振 自責3　敗戦投手（通算0勝1敗）"
+          "name": "Robbie Ray",
+          "team": "パドレス",
+          "line": "2.2回 1奪三振 自責2"
         },
         "home_starter": {
-          "name": "Ray Kerr",
-          "team": "ブレーブス",
-          "line": "3.1回 2奪三振 自責0"
+          "name": "Jacob Misiorowski",
+          "team": "ブリュワーズ",
+          "line": "4.0回 6奪三振 自責2"
         }
       },
-      "topic_jp": "フィリーズ 対 ブレーブス"
+      "topic_jp": "パドレス 対 ブリュワーズ"
     },
     {
-      "video_id": "Gb-LLC4SNZg",
-      "title": "Braves take Wild Card Series in 3 games! PHILLIES vs. BRAVES: Full 2026 Wild Card Series Highlights",
-      "published_at": "2026-10-02T14:16:02Z",
-      "views": 36783,
-      "matchup": "Braves take Wild Card Series in 3 games! PHILLIES vs. BRAVES",
+      "video_id": "AB89FPzusQg",
+      "title": "The Padres strike first with two runs against Jacob Misiorowski! 😤 | MLB Highlights",
+      "published_at": "2026-10-04T01:35:07Z",
+      "views": 140047,
+      "matchup": "",
       "game_date": "",
-      "topic_jp": "ブレーブス take Wild Card Series in 3 games! フィリーズ 対 ブレーブス"
+      "topic_jp": "パドレスがヤコブ・ミシオロウスキーから2点先制した。"
     }
   ],
   "all": [
     {
-      "video_id": "9GChxIB_Cek",
-      "matchup": "PHILLIES vs. BRAVES",
-      "game_date": "2026-10-01",
-      "views": 1029999
+      "video_id": "IlwOElGgbw4",
+      "matchup": "BRAVES vs. DODGERS",
+      "game_date": "2026-10-03",
+      "views": 1223308
     },
     {
-      "video_id": "Gb-LLC4SNZg",
-      "matchup": "Braves take Wild Card Series in 3 games! PHILLIES vs. BRAVES",
+      "video_id": "Sp98vsSa3-s",
+      "matchup": "YANKEES vs. RAYS",
+      "game_date": "2026-10-03",
+      "views": 352174
+    },
+    {
+      "video_id": "j5ojQYYStX0",
+      "matchup": "Sean Murphy puts the Braves on the board vs. the Dodgers! | MLB Highlights",
       "game_date": "",
-      "views": 36783
+      "views": 27076
+    },
+    {
+      "video_id": "CGqnaMVxyI8",
+      "matchup": "PADRES vs. BREWERS",
+      "game_date": "2026-10-03",
+      "views": 19065
+    },
+    {
+      "video_id": "AB89FPzusQg",
+      "matchup": "",
+      "game_date": "",
+      "views": 140047
+    },
+    {
+      "video_id": "jInhxOlx5W4",
+      "matchup": "",
+      "game_date": "",
+      "views": 73520
+    },
+    {
+      "video_id": "SvBH5tWHFws",
+      "matchup": "",
+      "game_date": "",
+      "views": 62002
+    },
+    {
+      "video_id": "QLPzNbMcCck",
+      "matchup": "",
+      "game_date": "",
+      "views": 45368
+    },
+    {
+      "video_id": "s0zYdVYdWx4",
+      "matchup": "",
+      "game_date": "",
+      "views": 33696
+    },
+    {
+      "video_id": "7iHfHJO2egw",
+      "matchup": "",
+      "game_date": "",
+      "views": 27949
+    },
+    {
+      "video_id": "zTnqbE4sFjg",
+      "matchup": "",
+      "game_date": "",
+      "views": 18809
+    },
+    {
+      "video_id": "W8OIDFlYZ8Y",
+      "matchup": "",
+      "game_date": "",
+      "views": 18399
+    },
+    {
+      "video_id": "yXqYe4iGhRI",
+      "matchup": "",
+      "game_date": "",
+      "views": 8682
     }
   ]
 }
