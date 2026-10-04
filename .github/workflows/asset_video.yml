@@ -66,7 +66,29 @@ permissions:
   contents: write
 
 jobs:
+  # 夜の補完は、その日の1本が既にできていることが多い。
+  # その場合は全季の試合・順位表の取得や動画用環境の準備を始めない。
+  # 在庫はここでは調べず、制作する日に最新材料から選び直す。
+  daily_limit:
+    runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.limit.outputs.build }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check daily limit before fetching materials
+        id: limit
+        env:
+          REQUESTED_TOPIC: ${{ inputs.topic }}
+        run: python scripts/next_asset.py --check-daily-limit --requested-topic "$REQUESTED_TOPIC"
+
   asset:
+    needs: daily_limit
+    if: needs.daily_limit.outputs.build == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
