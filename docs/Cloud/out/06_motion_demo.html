@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>演出の動く見本</title>
+<!--
+  Cloud-06 B. 演出・アニメーションの動く見本（確認用で本番の描画ではない）。設計書は 06_motion_spec.md。
+  canvas に 1080×1920 で描き、設計書の「1コマずつ描く場合の書き方」と同じ式で動かしている。
+  材料: data/recap_history/2026-09-25.json（日本時間9/26）、data/postseason.json（10/3の版）
+  色: scripts/ps-brand-theme.json（colors.stadium）。外部の読み込みは無し。
+-->
+<style>
+  :root { --page: #e1e3df; --page-ink: #243329; --page-muted: #5b6a63; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--page-ink);
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Noto Sans CJK JP", "Yu Gothic", "Meiryo", sans-serif; line-height: 1.6; }
+  main { max-width: 980px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 22px; margin: 8px 0 4px; }
+  .lead { margin: 0 0 12px; color: var(--page-muted); font-size: 14px; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: center; }
+  canvas { width: min(360px, calc(100vw - 32px)); aspect-ratio: 9 / 16; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.25); background: #102d2a; }
+  .side { flex: 1 1 280px; max-width: 460px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+  button { font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 8px; border: 1px solid #9aa79f; background: #fff; color: var(--page-ink); cursor: pointer; }
+  button[aria-pressed="true"] { background: var(--page-ink); color: #fff; border-color: var(--page-ink); }
+  .now { font-size: 15px; padding: 10px 12px; background: #fff; border-radius: 8px; border: 1px solid #c3cbc5; margin-bottom: 12px; min-height: 66px; }
+  .now b { display: block; }
+  .bar { height: 6px; background: #c3cbc5; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--page-ink); }
+  ol { padding-left: 20px; font-size: 14px; margin: 0; }
+  ol li { margin: 2px 0; }
+  ol button { font-size: 13px; padding: 2px 8px; margin-left: 4px; }
+  .note { font-size: 13px; color: var(--page-muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>演出の動く見本（Cloud-06）</h1>
+  <p class="lead">設計書 <code>06_motion_spec.md</code> の動きを順に再生します（約26秒でくり返し）。数字は材料どおり。</p>
+  <div class="wrap">
+    <canvas id="cv" width="1080" height="1920"></canvas>
+    <div class="side">
+      <div class="controls">
+        <button type="button" id="play" aria-pressed="true">一時停止</button>
+        <button type="button" data-speed="0.5" aria-pressed="false">0.5倍</button>
+        <button type="button" data-speed="1" aria-pressed="true">1倍</button>
+        <button type="button" id="restart">最初から</button>
+        <button type="button" id="safe" aria-pressed="false">安全域を重ねる</button>
+      </div>
+      <div class="bar"><i id="prog"></i></div>
+      <div class="now" id="now"></div>
+      <ol id="list"></ol>
+      <p class="note">番号は設計書の「足す動き」の番号。「既存」は今ある動き（行の入場・重ね合わせ・背景の揺れ・名前の光）。</p>
+    </div>
+  </div>
+</main>
+<script>
+(function () {
+  var C = { bg: "#102d2a", ink: "#f7f2df", muted: "#a9c5bb", accent: "#ffd16c", line: "#36544a", panel: "#183b35", up: "rgb(110,205,150)", down: "rgb(200,120,120)" };
+  var FONT = '"Hiragino Sans","Noto Sans JP","Noto Sans CJK JP","Yu Gothic","Meiryo",sans-serif';
+  var NUMF = '"Helvetica Neue",Arial,sans-serif';
+  var cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+
+  // ---- 材料（data/recap_history/2026-09-25.json、スコアは contribution の値） ----
+  var PLAYERS = [
+    { name: "村上宗隆", team: "ホワイトソックス", role: "打者", line: "4打数3安打　2本塁打　3打点", score: 169, prev: 52, badge: "マルチ本塁打" },
+    { name: "ヌートバー", team: "ダイヤモンドバックス", role: "打者", line: "3打数1安打　1本塁打　1打点　2四球", score: 115, prev: 69 },
+    { name: "岡本和真", team: "ブルージェイズ", role: "打者", line: "3打数2安打　2二塁打　3打点　1四球", score: 111, prev: 77 },
+    { name: "佐々木朗希", team: "ドジャース", role: "投手", line: "1.0回　2奪三振　自責0　ホールド", score: 77, prev: 52 },
+    { name: "菅野智之", team: "ロッキーズ", role: "投手", line: "6.2回　5奪三振　防御率5.40　6被安打", score: 73, prev: 77 },
+    { name: "鈴木誠也", team: "カブス", role: "打者", line: "7打数2安打　2四球", score: 52, prev: 105 },
+    { name: "大谷翔平", team: "ドジャース", role: "打者", line: "4打数0安打", score: null, prev: 66 }
+  ];
+  // data/postseason.json の leagues.103（wildcards と chasing）
+  var STANDINGS = [
+    { abbr: "NYY", color: "#003087", name: "ヤンキース", w: 93, l: 68, gb: "+9.5" },
+    { abbr: "BOS", color: "#BD3039", name: "レッドソックス", w: 87, l: 75, gb: "+3.0" },
+    { abbr: "CWS", color: "#27251F", name: "ホワイトソックス", w: 84, l: 78, gb: "―", jp: "村上宗隆・西田陸浮", me: true },
+    { abbr: "TEX", color: "#003278", name: "レンジャーズ", w: 80, l: 82, gb: "4.0" },
+    { abbr: "BAL", color: "#DF4601", name: "オリオールズ", w: 79, l: 82, gb: "4.5" },
+    { abbr: "TOR", color: "#134A8E", name: "ブルージェイズ", w: 79, l: 83, gb: "5.0", jp: "岡本和真" }
+  ];
+  // data/postseason.json の series（ア・リーグ）
+  var BRACKET = [
+    { wc: [["NYY", "#003087", 2], ["BOS", "#BD3039", 0, "吉田正尚"]], ds: [["TB", "#092C5C", "レイズ", 0], ["NYY", "#003087", "ヤンキース", 0]] },
+    { wc: [["CWS", "#27251F", 2], ["HOU", "#002D62", 0, "今井達也"]], ds: [["CLE", "#00385D", "ガーディアンズ", 0], ["CWS", "#27251F", "ホワイトソックス", 0, "村上宗隆・西田陸浮"]] }
+  ];
+
+  // ---- 式（設計書と同じ） ----
+  function clamp(x) { return Math.max(0, Math.min(1, x)); }
+  function easeOut(p) { return 1 - Math.pow(1 - p, 3); }
+  function easeInOut(p) { return p * p * (3 - 2 * p); }
+  function easeOutBack(p) { return 1 + 2.2 * Math.pow(p - 1, 3) + 1.2 * Math.pow(p - 1, 2); }
+  function prog(t, start, dur) { return clamp((t - start) / dur); }
+  var DIM = 0.45, ENTRY = 1.2;
+
+  // ---- 描く道具 ----
+  function text(x, y, size, s, color, opt) {
+    opt = opt || {};
+    ctx.font = (opt.bold ? "700 " : "400 ") + size + "px " + (opt.num ? NUMF : FONT);
+    ctx.fillStyle = color; ctx.textBaseline = "top"; ctx.textAlign = opt.align || "left";
+    ctx.fillText(s, x, y);
+    return ctx.measureText(s).width;
+  }
+  function rrect(x, y, w, h, r, fill, stroke, lw) {
+    ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 2; ctx.stroke(); }
+  }
+  function badge(x, y, abbr, color) {
+    ctx.font = "700 40px " + NUMF; var w = ctx.measureText(abbr).width + 20;
+    rrect(x, y, w, 52, 10, color, "rgba(255,255,255,.55)", 2);
+    text(x + 10, y + 6, 40, abbr, "#fff", { bold: true, num: true });
+    return w;
+  }
+  function withAlpha(a, fn) { ctx.save(); ctx.globalAlpha *= a; fn(); ctx.restore(); }
+  function background(t) {
+    ctx.fillStyle = C.bg; ctx.fillRect(0, 0, 1080, 1920);
+    var drift = Math.round(9 * Math.sin(t / 6));   // 既存: 背景の揺れ
+    ctx.strokeStyle = C.line; ctx.lineWidth = 2;
+    [340, 430, 520].forEach(function (r) { ctx.beginPath(); ctx.arc(680 + drift, 140, r, 10 * Math.PI / 180, 155 * Math.PI / 180); ctx.stroke(); });
+    ctx.beginPath(); ctx.moveTo(540, 1520); ctx.lineTo(800, 1750); ctx.lineTo(540, 1890); ctx.lineTo(280, 1750); ctx.closePath(); ctx.stroke();
+  }
+  function chrome(page) {
+    text(72, 60, 44, "コレスポ", C.ink, { bold: true });
+    if (page) text(900, 64, 40, page, C.accent, { bold: true, num: true, align: "right" });
+  }
+  // 立ち絵の枠（画像は使わない）。react: {kind:'nod'|'wow', at}
+  function presenter(t, react) {
+    var dy = 0, s = 1;
+    if (react && react.kind === "nod") dy = 6 * Math.sin(Math.PI * prog(t, react.at, 0.36));
+    if (react && react.kind === "wow") s = 1 + 0.05 * Math.sin(Math.PI * prog(t, react.at, 0.3));
+    var w = 220 * s, h = 210 * s, cx = 134, bottom = 1574;
+    ctx.save(); ctx.setLineDash([12, 10]);
+    rrect(cx - w / 2, bottom - h + dy, w, h, 14, null, C.muted, 4); ctx.restore();
+    text(cx, bottom - h / 2 - 20 + dy, 32, "立ち絵", C.muted, { align: "center" });
+  }
+  // 入場（既存）: i 番目の行。左56pxから0.38秒、0.16秒ずつ
+  function entry(t, i, fn) {
+    var e = easeOut(prog(t, 0.16 * i, 0.38));
+    if (e <= 0) return;
+    ctx.save(); ctx.globalAlpha *= e; ctx.translate(-56 * (1 - e), 0); fn(); ctx.restore();
+  }
+  // 2 強調: 読む行の列 plan=[[開始秒, 行番号],...]。濃さを返す
+  function focusAlpha(t, plan, row) {
+    if (t < ENTRY || !plan.length) return 1;
+    var cur = null, prev = null, at = 0;
+    plan.forEach(function (p) { if (t >= p[0]) { prev = cur; cur = p[1]; at = p[0]; } });
+    if (cur === null) return 1;
+    var k = easeInOut(prog(t, at, 0.2));
+    var was = prev === null ? 1 : (row === prev ? 1 : DIM);
+    var will = row === cur ? 1 : DIM;
+    return was + (will - was) * k;
+  }
+  function focusBar(t, plan, row, x, y, h) {
+    if (t < ENTRY) return;
+    var cur = null, at = 0;
+    plan.forEach(function (p) { if (t >= p[0]) { cur = p[1]; at = p[0]; } });
+    if (cur !== row) return;
+    ctx.fillStyle = C.accent; ctx.fillRect(x, y, 8, h * easeInOut(prog(t, at, 0.2)));
+  }
+
+  // ---- 画面 ----
+  function cover(t) {
+    background(t); chrome("1/4");
+    var p = PLAYERS[0];
+    entry(t, 0, function () { text(72, 168, 40, "9月26日（日本時間）日本人選手の成績", C.muted); });
+    entry(t, 1, function () {
+      text(72, 250, 44, "1位", C.accent, { bold: true });
+      text(66, 308, 140, p.name, C.accent, { bold: true });
+      // 既存: 名前の光（100点超え、1回だけ）
+      var sweep = prog(t, 0.6, 0.5);
+      if (sweep > 0 && sweep < 1) {
+        ctx.save(); ctx.font = "700 140px " + FONT; var w = ctx.measureText(p.name).width;
+        ctx.beginPath(); ctx.rect(66, 308, w, 170); ctx.clip();
+        var cx = 66 - 80 + sweep * (w + 160), g = ctx.createLinearGradient(cx - 70, 0, cx + 70, 0);
+        g.addColorStop(0, "rgba(255,251,235,0)"); g.addColorStop(.5, "rgba(255,251,235,.55)"); g.addColorStop(1, "rgba(255,251,235,0)");
+        ctx.fillStyle = g; ctx.fillRect(66, 308, w, 170); ctx.restore();
+      }
+    });
+    entry(t, 2, function () { text(76, 484, 44, p.team + "・" + p.role, C.muted); });
+    entry(t, 3, function () { text(72, 550, 64, p.line, C.ink); });
+    entry(t, 4, function () {
+      ctx.font = "700 40px " + FONT; var w = ctx.measureText(p.badge).width + 36;
+      rrect(72, 650, w, 60, 10, C.accent); text(90, 656, 40, p.badge, C.bg, { bold: true });
+    });
+    // 8 驚き（スコア169は STANDOUT=130 以上）。記録の帯が入りきった時刻に
+    presenter(t, { kind: "wow", at: 0.16 * 4 + 0.38 });
+  }
+  function listPage(t, from, to, page, plan) {
+    background(t); chrome(page);
+    entry(t, 0, function () { text(72, 168, 40, "9月26日（日本時間）日本人選手の成績", C.muted); });
+    entry(t, 1, function () { text(72, 232, 56, "出場した日本人選手 " + (from + 1) + "〜" + to + "位", C.accent, { bold: true }); });
+    for (var i = from; i < to; i++) (function (i, j) {
+      var y = 330 + j * 250, p = PLAYERS[i], a = focusAlpha(t, plan, j);
+      entry(t, j + 2, function () {
+        withAlpha(a, function () {
+          rrect(72, y, 864, 228, 18, C.panel);
+          text(100, y + 24, 56, String(i + 1), C.accent, { bold: true, num: true });
+          text(176, y + 20, 52, p.name, C.ink, { bold: true });
+          text(178, y + 90, 36, p.role + "・" + p.team, C.muted);
+          text(176, y + 146, 40, p.line, C.ink);
+          if (p.score != null) {
+            // 1 カウントアップ（行の入場と同時、0.6秒）
+            var v = Math.round(p.score * easeOut(prog(t, 0.16 * (j + 2), 0.6)));
+            text(860, y + 20, 60, String(v), C.accent, { bold: true, num: true, align: "right" });
+            text(904, y + 44, 32, "点", C.muted, { align: "right" });
+            var d = p.score - p.prev;
+            text(904, y + 96, 32, "前回" + p.prev + " " + (d > 0 ? "▲" : "▼") + Math.abs(d), d > 0 ? C.up : C.down, { align: "right" });
+          }
+        });
+        focusBar(t, plan, j, 52, y + 20, 188);
+      });
+    })(i, i - from);
+    presenter(t, null);
+  }
+  function list1(t) { listPage(t, 0, 4, "2/4", [[1.2, 0], [2.1, 1], [3.0, 2], [3.8, 3]]); }
+  function list2(t) { listPage(t, 4, 7, "3/4", [[1.2, 0], [2.0, 1], [2.8, 2]]); }
+  function chapterCard(title, sub) {
+    return function (t) { /* 帯の上の文字だけ。帯は wipe が描く */
+      text(540, 860, 40, sub, C.bg, { align: "center" });
+      text(540, 920, 72, title, C.bg, { bold: true, align: "center" });
+    };
+  }
+  function bracket(t) {
+    background(t); chrome("4/4");
+    entry(t, 0, function () { text(72, 168, 56, "ア・リーグの勝ち上がり", C.ink, { bold: true }); });
+    entry(t, 1, function () { text(72, 238, 40, "10月3日時点・地区シリーズは10月4日に第1戦", C.muted); });
+    var plan = [[3.4, 1]];
+    BRACKET.forEach(function (b, k) {
+      var y = 360 + k * 420, a = focusAlpha(t, plan, k);
+      // 枠の入場（左の列から）
+      entry(t, 2 + k, function () {
+        withAlpha(a, function () {
+          rrect(72, y, 190, 200, 16, C.panel, C.line, 2);
+          b.wc.forEach(function (r, m) {
+            withAlpha(r[2] === 2 ? 1 : 0.45, function () {
+              badge(86, y + 16 + m * 92, r[0], r[1]);
+              text(246, y + 20 + m * 92, 44, String(r[2]), C.accent, { bold: true, num: true, align: "right" });
+              if (r[3]) text(92, y + 72 + m * 92, 32, r[3], C.muted);
+            });
+          });
+        });
+      });
+      entry(t, 3 + k, function () {
+        withAlpha(a, function () {
+          rrect(300, y, 600, 300, 16, C.panel, C.line, 2);
+          b.ds.forEach(function (r, m) {
+            var ry = y + 24 + m * 120, w = badge(320, ry, r[0], r[1]);
+            text(320 + w + 14, ry + 4, 40, r[2], C.ink);
+            text(880, ry + 2, 44, String(r[3]), C.accent, { bold: true, num: true, align: "right" });
+            // 日本人選手の名前は、線が伸びたあとに透明度だけで
+            if (r[4]) withAlpha(easeOut(prog(t, 2.6, 0.4)), function () { text(330, ry + 62, 32, r[4], C.accent); });
+          });
+        });
+        focusBar(t, plan, k, 280, y + 20, 260);
+      });
+      // 6 線が伸びる（WCSの勝者 → 地区シリーズの枠。終わったシリーズだけ）
+      var e = easeOut(prog(t, 1.2 + 0.35 * k, 0.35));
+      var x0 = 262, y0 = y + 42, x1 = 300, y1 = y + 50 + 120 * 1;
+      var pts = [[x0, y0], [281, y0], [281, y1], [x1, y1]];
+      drawPartial(pts, e, C.accent, 5);
+    });
+    // 地区シリーズ → LCS（未定）は点線のまま動かさない
+    ctx.save(); ctx.setLineDash([10, 10]); ctx.strokeStyle = C.muted; ctx.lineWidth = 4;
+    withAlpha(easeOut(prog(t, 1.0, 0.38)), function () {
+      // 2つの地区シリーズの枠の右端から、右の余白を通って LCS の枠へ
+      ctx.beginPath(); ctx.moveTo(900, 510); ctx.lineTo(924, 510); ctx.lineTo(924, 1250); ctx.lineTo(900, 1250); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(900, 930); ctx.lineTo(924, 930); ctx.stroke();
+      rrect(300, 1200, 600, 100, 16, C.panel, C.line, 2); text(330, 1226, 40, "リーグ優勝決定シリーズ　未定", C.muted);
+    });
+    ctx.restore();
+    presenter(t, null);
+  }
+  function drawPartial(pts, e, color, lw) {
+    var total = 0, seg = [];
+    for (var i = 1; i < pts.length; i++) { var L = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(L); total += L; }
+    var left = total * e; if (left <= 0) return;
+    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+    for (var j = 1; j < pts.length && left > 0; j++) {
+      var L2 = seg[j - 1], f = Math.min(1, left / L2);
+      ctx.lineTo(pts[j - 1][0] + (pts[j][0] - pts[j - 1][0]) * f, pts[j - 1][1] + (pts[j][1] - pts[j - 1][1]) * f);
+      left -= L2;
+    }
+    ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.stroke();
+  }
+  function compare(t) {
+    background(t); chrome("");
+    entry(t, 0, function () { text(72, 168, 40, "9月26日（日本時間）", C.muted); });
+    entry(t, 1, function () { text(72, 226, 56, "スコアの上位4人", C.ink, { bold: true }); });
+    var plan = [[1.6, 0]], max = 169;
+    PLAYERS.slice(0, 4).forEach(function (p, j) {
+      var y = 380 + j * 200, a = focusAlpha(t, plan, j);
+      withAlpha(a, function () {
+        withAlpha(easeOut(prog(t, 0.12 * j, 0.38)), function () { text(72, y, 44, p.name, C.ink, { bold: true }); });
+        // 4 棒が伸びる（0.12秒ずつ、0.6秒）＋ 1 カウントアップ
+        var e = easeOut(prog(t, 0.2 + 0.12 * j, 0.6));
+        rrect(72, y + 70, Math.max(1, 680 * p.score / max * e), 56, 10, j === 0 ? C.accent : C.muted);
+        text(936, y + 70, 48, String(Math.round(p.score * e)), C.accent, { bold: true, num: true, align: "right" });
+      });
+    });
+    presenter(t, null);
+  }
+  function standings(t) {
+    background(t); chrome("");
+    entry(t, 0, function () { text(72, 168, 40, "ア・リーグ　レギュラーシーズン最終", C.muted); });
+    entry(t, 1, function () { text(72, 226, 56, "ワイルドカードの順位", C.ink, { bold: true }); });
+    var lift = easeOutBack(prog(t, ENTRY, 0.3));
+    STANDINGS.forEach(function (r, j) {
+      var y = 360 + j * 150;
+      entry(t, j + 2, function () {
+        var dx = r.me ? 12 * lift : 0;
+        if (r.me) { // 7 自分の行が浮く（影と枠）
+          withAlpha(0.5 * clamp(lift), function () { rrect(72 + dx + 6, y + 6, 840, 130, 16, "rgba(0,0,0,.6)"); });
+        }
+        rrect(72 + dx, y, 840, 130, 16, C.panel, r.me ? C.accent : null, r.me ? 4 * clamp(lift) : 0);
+        var w = badge(92 + dx, y + 18, r.abbr, r.color);
+        text(92 + dx + w + 14, y + 22, 40, r.name, C.ink);
+        if (r.jp) text(92 + dx, y + 80, 32, r.jp, C.accent);
+        var e = easeOut(prog(t, 0.16 * (j + 2), 0.6)); // 1 カウントアップ（勝数）
+        text(800 + dx, y + 22, 44, Math.round(r.w * e) + "-" + r.l, C.ink, { num: true, align: "right" });
+        text(896 + dx, y + 26, 36, r.gb, C.muted, { num: true, align: "right" });
+      });
+    });
+    presenter(t, null);
+  }
+  function blank(t) { background(t); chrome(""); }
+
+  // ---- つなぎ ----
+  function crossfade(prevFn, prevT, nextFn) { // 既存: 0.28秒、((k+1)/n)^0.6
+    return function (t) {
+      var a = Math.pow(clamp(t / 0.28), 0.6);
+      prevFn(prevT); withAlpha(a, function () { nextFn(t); });
+    };
+  }
+  function push(prevFn, prevT, nextFn) { // 5 ページ送り 0.3秒
+    return function (t) {
+      var k = easeInOut(prog(t, 0, 0.3));
+      if (k >= 1) { nextFn(t); return; }
+      background(t);
+      ctx.save(); ctx.globalAlpha = 1 - k; ctx.translate(-120 * k, 0); prevFn(prevT); ctx.restore();
+      ctx.save(); ctx.globalAlpha = k; ctx.translate(120 * (1 - k), 0); nextFn(t); ctx.restore();
+    };
+  }
+  function wipe(prevFn, prevT, nextFn, label, hold) { // 3 章の見出しカード
+    return function (t) {
+      var x1 = 0, x2, inD = 0.45, outD = 0.3;
+      if (t < inD) x2 = 1080 * easeInOut(t / inD);
+      else if (t < inD + hold) x2 = 1080;
+      else { x2 = 1080; x1 = 1080 * easeInOut(prog(t, inD + hold, outD)); }
+      if (t < inD) prevFn(prevT); else nextFn(0);
+      ctx.fillStyle = C.accent; ctx.fillRect(x1, 0, x2 - x1, 1920);
+      var ta = t < inD + hold ? clamp((x2 - 540) / 300) : 1 - prog(t, inD + hold, 0.15);
+      ctx.save(); ctx.beginPath(); ctx.rect(x1, 0, x2 - x1, 1920); ctx.clip();
+      withAlpha(ta, function () { label(t); }); ctx.restore();
+    };
+  }
+
+  // ---- 台本（画面の並び） ----
+  var SEG = [
+    { d: 1.6, f: wipe(blank, 0, function (t) { cover(t - 999); }, chapterCard("日本人選手の成績", "9月26日（日本時間）"), 0.75), tag: "3 章の見出しカード（ワイプ）" },
+    { d: 3.0, f: cover, tag: "既存の入場＋名前の光／8 立ち絵の反応（驚き）" },
+    { d: 4.8, f: crossfade(cover, 3.0, list1), tag: "既存の重ね合わせ→ 1 カウントアップ／2 読み上げ中の行の強調" },
+    { d: 3.8, f: push(function (t) { list1(t); }, 4.8, list2), tag: "5 ページ送り（押し出し）→ 1／2" },
+    { d: 1.5, f: wipe(list2, 3.8, function (t) { bracket(t - 999); }, chapterCard("ポストシーズンの勝ち上がり", "10月3日時点"), 0.65), tag: "3 章の見出しカード（ワイプ）" },
+    { d: 4.6, f: bracket, tag: "6 勝ち上がり図の線が伸びる→ 2 強調（日本人選手のいる枠）" },
+    { d: 3.4, f: crossfade(bracket, 4.6, compare), tag: "4 比較の棒が伸びる＋ 1 カウントアップ" },
+    { d: 4.0, f: crossfade(compare, 3.4, standings), tag: "1 カウントアップ（勝数）→ 7 自分の行が浮く" }
+  ];
+  var TOTAL = SEG.reduce(function (a, s) { return a + s.d; }, 0);
+  var starts = []; SEG.reduce(function (a, s) { starts.push(a); return a + s.d; }, 0);
+
+  var list = document.getElementById("list");
+  SEG.forEach(function (s, i) {
+    var li = document.createElement("li");
+    li.textContent = s.tag;
+    var b = document.createElement("button"); b.type = "button"; b.textContent = "ここから";
+    b.addEventListener("click", function () { clock = starts[i]; if (!playing) draw(); });
+    li.appendChild(b); list.appendChild(li);
+  });
+
+  var clock = 0, speed = 1, playing = true, last = null, showSafe = false;
+  function draw() {
+    var t = clock % TOTAL, i = 0;
+    while (i < SEG.length - 1 && t >= starts[i] + SEG[i].d) i++;
+    ctx.save(); SEG[i].f(t - starts[i]); ctx.restore();
+    if (showSafe) {
+      ctx.fillStyle = "rgba(230,40,70,.38)";
+      ctx.fillRect(0, 0, 1080, 154); ctx.fillRect(0, 1574, 1080, 346); ctx.fillRect(940, 154, 140, 1420);
+    }
+    document.getElementById("now").innerHTML = "<b>" + (i + 1) + ". " + SEG[i].tag + "</b>" + (t).toFixed(1) + "秒 / " + TOTAL.toFixed(1) + "秒（" + speed + "倍）";
+    document.getElementById("prog").style.width = (t / TOTAL * 100) + "%";
+  }
+  function tick(ts) {
+    if (last !== null && playing) clock += (ts - last) / 1000 * speed;
+    last = ts; draw(); requestAnimationFrame(tick);
+  }
+  document.getElementById("play").addEventListener("click", function () {
+    playing = !playing; this.textContent = playing ? "一時停止" : "再生"; this.setAttribute("aria-pressed", playing ? "true" : "false");
+  });
+  document.getElementById("restart").addEventListener("click", function () { clock = 0; });
+  document.getElementById("safe").addEventListener("click", function () { showSafe = !showSafe; this.setAttribute("aria-pressed", showSafe ? "true" : "false"); });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-speed]"), function (b) {
+    b.addEventListener("click", function () {
+      speed = parseFloat(b.getAttribute("data-speed"));
+      Array.prototype.forEach.call(document.querySelectorAll("[data-speed]"), function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+    });
+  });
+  // テスト用（自動の確認で特定の時刻の絵を出す）
+  window.__seek = function (sec) { clock = sec; playing = false; draw(); };
+  window.__total = TOTAL;
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
