@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-03T09:10:06.447558+00:00",
+  "updated_at": "2026-10-04T06:11:35.602312+00:00",
   "source": "MLB Stats API（試合の成績表）・番記者の投稿",
   "topics": [
     {
@@ -33,13 +33,24 @@
         [
           "ヤンキースの主役",
           "ベン・ライス　9打数5安打　2本塁打　6打点"
+        ],
+        [
+          "レッドソックスの番記者の投稿から",
+          "見落とした方向け、週末の息抜きに：ペイトン・トールのことを知る20人に話を聞き、彼がなぜこんな人間なのかを10つの物語に。「俺たちはエンタメ業界にいる。彼は純粋にエンタメだ。」"
         ]
       ],
       "japanese": [],
       "japanese_lead": "このシリーズの日本人選手は、",
       "ps_ended": true,
       "story": true,
-      "source": null,
+      "source": {
+        "said": "見落とした方向け、週末の息抜きに：ペイトン・トールのことを知る20人に話を聞き、彼がなぜこんな人間なのかを10つの物語に。「俺たちはエンタメ業界にいる。彼は純粋にエンタメだ。」",
+        "author": "Jen McCaffrey",
+        "outlet": "The Athletic",
+        "text": "ICYMI and need a little levity this weekend: Talked to 20 people to gather 10 stories on what it's like to know Payton Tolle and why he is the way he is. “We’re in the entertainment business. And he’s purely entertaining.” www.nytimes.com/athletic/764...",
+        "url": "https://bsky.app/profile/jcmccaffrey.bsky.social/post/3mwxz5ieoxc2v",
+        "at": "2026-10-03T13:39:24.117Z"
+      },
       "series_key": "F:111-147"
     },
     {
