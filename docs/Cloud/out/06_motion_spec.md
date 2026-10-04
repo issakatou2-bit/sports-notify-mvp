@@ -139,5 +139,5 @@ paste(sprite.resize(scaled(s)), x=x_center - w * s / 2, y=bottom - h * s + dy)
 ## 見本で使った材料
 
 - 17:00の一覧・比較: `data/recap_history/2026-09-25.json`（日本時間9/26、村上宗隆が2本塁打の日）。スコアは `scripts/morning_recap.py` の `contribution` の値（Cloud-04 で計算して一致を確かめたもの）。
-- 勝ち上がり図: `data/postseason.json`（10/3の版）。
+- 勝ち上がり図: `data/postseason.json`（10/3の版）。ホワイトソックスの西田陸浮はPSのロースター外なので出していない（本人の判断。main の「PSの日本人選手はベンチ入りしている選手だけ言う」と同じ）。順位表はレギュラーシーズン最終の画面なので、所属どおり2人とも出している。
 - 順位表: 同じファイルの `leagues` の `103`（ア・リーグ）の `wildcards` と `chasing`（ヤンキース 93勝68敗 … ブルージェイズ 79勝83敗）。浮かせる行はホワイトソックス（村上宗隆・西田陸浮）。
