@@ -261,7 +261,9 @@ jobs:
       # 投稿の記録を残す。ここが無いと、上げたこと自体が
       # ランナーの中で消える。
       - name: Commit the record
-        if: ${{ inputs.upload != 'false' }}
+        # 検査で停止しても、既に発生したAPI使用量を失わない。
+        # 投稿しない制作でも費用は生じる。既存の投稿記録は変更された場合のみ保存。
+        if: always()
         continue-on-error: true
         run: |
           bash scripts/commit_data.sh \

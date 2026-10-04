@@ -28,6 +28,9 @@ on:
         description: '確認済み非公開動画だけを予約（例2026-10-04T21:00:00+09:00、空なら従来動作）'
         required: false
 
+permissions:
+  contents: write
+
 jobs:
   hold:
     runs-on: ubuntu-latest
@@ -55,3 +58,7 @@ jobs:
           if [ "$RELEASE" = "true" ]; then ARGS+=(--release); fi
           if [ -n "$PUBLISH_AT" ]; then ARGS+=(--publish-at "$PUBLISH_AT"); fi
           python scripts/hold_video.py "${ARGS[@]}" | tee "$GITHUB_STEP_SUMMARY"
+
+      - name: Record verified reservation
+        if: inputs.write == 'true' && inputs.publish_at != ''
+        run: bash scripts/commit_data.sh "verified reservation ${{ github.run_id }}" data/published_videos.json

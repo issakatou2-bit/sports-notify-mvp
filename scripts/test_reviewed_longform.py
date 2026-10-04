@@ -1,6 +1,7 @@
 """原稿救済で生成APIや公開前検査を迂回しない。"""
 import contextlib
 import io
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +13,21 @@ import numbers_material as nm
 
 
 class RecoveryTests(unittest.TestCase):
+    def test_reservation_record_preserves_other_entries_and_upload_timestamp(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp)/"published.json"
+            original = {"longform": {"today": {"video_id": "mine", "published_at": "upload-time"},
+                                     "yesterday": {"video_id": "other", "title": "keep"}}}
+            p.write_text(json.dumps(original), encoding="utf-8")
+            hold_video.record_schedule(p, "mine", {"publishAt": "2099-10-04T12:00:00Z"})
+            saved = json.loads(p.read_text(encoding="utf-8"))
+            self.assertEqual(saved["longform"]["today"]["published_at"], "upload-time")
+            self.assertEqual(saved["longform"]["today"]["publish_at"], "2099-10-04T12:00:00Z")
+            self.assertEqual(saved["longform"]["yesterday"], original["longform"]["yesterday"])
+            with self.assertRaises(ValueError):
+                hold_video.record_schedule(p, "missing", {"publishAt": "2099-10-04T12:00:00Z"})
+            self.assertEqual(json.loads(p.read_text(encoding="utf-8")), saved)
+
     def test_reviewed_lines_never_silently_disappear(self):
         for text in ("", "めたん：正しい行\n不明な形式", "めたん[unknown]：数字です"):
             with self.subTest(text=text), self.assertRaises(ValueError):
