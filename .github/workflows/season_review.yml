@@ -62,7 +62,9 @@ jobs:
       # ハイライトのコメントは夕方の4本が更新した data/local_voices.json から。
       - name: Build PS game topics
         continue-on-error: true
-        run: python scripts/ps_game_story.py --out data/ps_game_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          set -o pipefail
+          python scripts/ps_game_story.py --out data/ps_game_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Pick today's topics
         id: pick

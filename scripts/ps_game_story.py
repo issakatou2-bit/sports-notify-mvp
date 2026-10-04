@@ -37,6 +37,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 
 import ps_story  # noqa: E402
+import mlb_headlines  # noqa: E402
 
 API = "https://statsapi.mlb.com/api"
 OUT = "data/ps_game_topics.json"
@@ -247,7 +248,49 @@ def quoted(s: str) -> str:
 
 # ---------------------------------------------------------------- 話題
 
-def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: list) -> dict:
+def pick_headline(headlines, game, feed, words, table, jp):
+    """年・ラウンド・第何戦・勝者が一致する公式総括だけ。一般記事や予告は除外。"""
+    live = feed.get("liveData") or {}
+    teams = (feed.get("gameData") or {}).get("teams") or {}
+    score = (live.get("linescore") or {}).get("teams") or {}
+    if any(score.get(s, {}).get("runs") is None for s in ("away", "home")):
+        return None
+    away, home = [score[s]["runs"] for s in ("away", "home")]
+    if away == home:
+        return None
+    winner = teams.get("away" if away > home else "home") or {}
+    slug = re.sub(r"[^a-z]+", "-", (winner.get("teamName") or "").lower()).strip("-")
+    league = (winner.get("league") or {}).get("id")
+    if league not in (103, 104):
+        return None
+    prefix = "al" if league == 103 else "nl"
+    rnd = {"F": prefix + "wc", "D": prefix + "ds", "L": prefix + "cs", "W": "world-series"}.get(game.get("gameType"))
+    start = mlb_headlines.utc(game.get("gameDate"))
+    end = finished_at(feed)
+    num = (game.get("seriesStatus") or {}).get("gameNumber") or game.get("seriesGameNumber")
+    if not start or not end or not rnd or not slug or not num:
+        return None
+    season = str(game.get("season") or start.year)
+    expected = (slug, rnd, str(num), season)
+    for h in headlines:
+        at = mlb_headlines.utc(h.get("at"))
+        if h.get("source") != "MLB.com" or mlb_headlines.recap_identity(h.get("url")) != expected:
+            continue
+        if not at or not end <= at <= end + timedelta(hours=FRESH_HOURS):
+            continue
+        said = localize(h.get("jp") or "", words, table, jp)
+        if said and len(said) <= 80:
+            return {"said": said, "text": h.get("title") or "", "url": h["url"], "at": at.isoformat()}
+    return None
+
+
+def finished_at(feed):
+    times = [mlb_headlines.utc(p.get("about", {}).get("endTime"))
+             for p in (feed.get("liveData") or {}).get("plays", {}).get("allPlays", [])]
+    return max((t for t in times if t), default=None)
+
+
+def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: list, headlines=()) -> dict:
     import notability_engine as ne
     ls = feed["liveData"]["linescore"]["teams"]
     runs = {s: ls[s].get("runs") or 0 for s in ("away", "home")}
@@ -376,6 +419,10 @@ def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: l
         items.append((f"{name[jp_side]}の番記者の投稿から", quoted(q["said"])))
         source = q
 
+    headline = pick_headline(headlines, game, feed, words, table, jp)
+    if headline:
+        items.append(("MLB.comの見出しから", quoted(headline["said"])))
+
     # 題: 日本人選手の決勝打なら名前から。日本人選手が出ていれば末尾に名前。
     if ser.get("isOver") and wins is not None:
         result = f"{rnd}突破"
@@ -424,13 +471,14 @@ def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: l
         "game": True,
         "source": source,
         "voice": voice,
+        "headline": headline,
         "game_pk": game["gamePk"],
         "game_date": game.get("gameDate"),
         "jp_first": bool(japanese),
     }
 
 
-def build(games: list, feeds: dict, voices: dict, quotes: list) -> list:
+def build(games: list, feeds: dict, voices: dict, quotes: list, headlines=(), now=None) -> list:
     import notability_engine as ne
     jp = {p["name_en"]: p["name_jp"] for p in ne.JP_PLAYERS_MLB}
     try:
@@ -443,8 +491,13 @@ def build(games: list, feeds: dict, voices: dict, quotes: list) -> list:
         feed = feeds.get(g["gamePk"])
         if not feed:
             continue
+        if now is not None:
+            end = finished_at(feed)
+            if end is None or not timedelta(0) <= now - end <= timedelta(hours=FRESH_HOURS):
+                print(f"[warn] {g.get('gamePk')} 終了時刻が未確認・未来・30時間より前のため見送り", file=sys.stderr)
+                continue
         try:
-            t = story(g, feed, table, jp, voices, quotes)
+            t = story(g, feed, table, jp, voices, quotes, headlines)
         except Exception as e:                              # noqa: BLE001
             print(f"[warn] {g.get('gamePk')} を作れません({e})", file=sys.stderr)
             continue
@@ -459,19 +512,27 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--voices", default="data/local_voices.json")
     ap.add_argument("--quotes", default="data/ps_quotes.json")
+    ap.add_argument("--headlines", default="data/local_reporters.json")
     ap.add_argument("--out", default=OUT)
     args = ap.parse_args()
     now = datetime.now(timezone.utc)
     try:
         games = finished_games(now)
     except Exception as e:                                  # noqa: BLE001
-        print(f"[info] PSの日程を取れません({e})")
-        return 0
+        # continue-on-errorでも選択処理は進む。古いJSONを残すと前日の材料が選ばれる。
+        write_topics(args.out, now, [], "error", "schedule fetch failed")
+        print(f"[error] PSの日程を取れません({e})", file=sys.stderr)
+        return 1
     feeds = {}
+    failed = False
     for g in games:
         try:
             feeds[g["gamePk"]] = _get(f"/v1.1/game/{g['gamePk']}/feed/live")
+            end = finished_at(feeds[g["gamePk"]])
+            if end is None or end > now:
+                failed = True
         except Exception as e:                              # noqa: BLE001
+            failed = True
             print(f"[warn] {g['gamePk']} の試合経過を取れません({e})", file=sys.stderr)
     try:
         voices = json.loads(pathlib.Path(args.voices).read_text(encoding="utf-8"))
@@ -481,11 +542,14 @@ def main() -> int:
         quotes = json.loads(pathlib.Path(args.quotes).read_text(encoding="utf-8")).get("posts") or []
     except (OSError, json.JSONDecodeError):
         quotes = []
-    topics = build(games, feeds, voices, quotes)
-    pathlib.Path(args.out).write_text(json.dumps(
-        {"updated_at": now.isoformat(),
-         "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿",
-         "topics": topics}, ensure_ascii=False, indent=2), encoding="utf-8")
+    try:
+        headlines = json.loads(pathlib.Path(args.headlines).read_text(encoding="utf-8")).get("headlines") or []
+    except (OSError, json.JSONDecodeError):
+        headlines = []
+    headlines = [h for h in headlines if mlb_headlines.utc(h.get("at"))
+                 and mlb_headlines.utc(h.get("at")) <= now]
+    topics = build(games, feeds, voices, quotes, headlines, now=now)
+    write_topics(args.out, now, topics, "partial" if failed else "ok")
     print(f"[info] {len(topics)}件 -> {args.out}")
     for t in topics:
         print("  " + t["title"])
@@ -493,7 +557,18 @@ def main() -> int:
             print(f"     {a} | {b}")
         for j in t["japanese"]:
             print(f"     日本人選手 | {j['name']} {j['line']}")
-    return 0
+    return 1 if failed else 0
+
+
+def write_topics(path, now, topics, status, error=None):
+    target = pathlib.Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    d = {"updated_at": now.isoformat(), "status": status,
+         "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
+         "topics": topics}
+    if error:
+        d["error"] = error
+    target.write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

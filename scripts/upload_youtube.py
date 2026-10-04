@@ -420,6 +420,10 @@ def asset_meta_from_spec(spec: dict) -> dict:
         if voice.get("url"):
             lead += ["引用: MLB公式ハイライトのコメント欄（日本語訳はコレスポ）", voice["url"],
                      f"原文: {voice.get('text') or ''}"[:300]]
+        headline = spec.get("headline") or {}
+        if headline.get("url"):
+            lead += ["引用: MLB.comの試合総括の見出し（日本語訳はコレスポ）", headline["url"],
+                     f"原文: {headline.get('text') or ''}"[:300]]
         who = (spec.get("jp") or "").strip()
         names = [j["name"] for j in (spec.get("japanese") or [])]
         return {"title": spec["title"], "lead": lead,
