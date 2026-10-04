@@ -33,8 +33,9 @@ def check(dialogue):
                 introduced.add(row["name"])
         if match and subjects:
             needed = [r for r in subjects if r.get("name") == target or r.get("name") in text]
+            orphan = re.match(r"^(?:そうね[、。]?|でも[、。]?)?\s*(?:[0-9０-９]+|[一二三四五六七八九十]+)位", text)
             if (needed and any(r["name"] not in introduced for r in needed)) or (
-                    not needed and not introduced):
+                    not needed and orphan and not introduced):
                 bad.append(f"{i}行目: 順位より先に対象選手の名前と数字を紹介していません")
     if material.get("daily_player_count") == 0 and "成績" in (dialogue.get("title") or ""):
         bad.append("出場者0名の日の題に、その日の成績を使っています")

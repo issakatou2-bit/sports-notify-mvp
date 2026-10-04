@@ -34,6 +34,9 @@ class EditorialTests(unittest.TestCase):
     def test_number_without_name(self):
         self.assertTrue(editorial.check(dialogue(("rare1", "WHIPは0.87で2位なのだ。"))))
 
+    def test_other_ranking_subject_is_outside_rare_scope(self):
+        self.assertFalse(editorial.check(dialogue((None, "ガーディアンズは地区1位で終えたわ。"))))
+
     def test_production_excuses_without_numeric_facts(self):
         for text in ("材料が渡されていないから何とも言えない。", "データが無いわ。", "分からないのだ。"):
             self.assertTrue(verify_numbers.check(dialogue((None, text))))
