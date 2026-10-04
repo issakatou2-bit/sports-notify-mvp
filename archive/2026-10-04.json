@@ -1,0 +1,184 @@
+{
+  "generated_at": "2026-10-04T09:54:21.434594+00:00",
+  "games": [
+    {
+      "game_id": "849825",
+      "league": "MLB",
+      "home_team_id": "158",
+      "away_team_id": "135",
+      "home_team_name": "ブリュワーズ",
+      "away_team_name": "パドレス",
+      "home_abbr": "MIL",
+      "away_abbr": "SD",
+      "home_color": "#12284B",
+      "away_color": "#2F241D",
+      "matchup": "パドレス vs ブリュワーズ",
+      "abbr_matchup": "SD vs MIL",
+      "start_time_jst": "10/05 05:00",
+      "home_division": "NLC",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "松井裕樹"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 5,
+        "wins": 103,
+        "losses": 59,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 9.0,
+        "streak": 2,
+        "wins": 91,
+        "losses": 71,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Logan Henderson",
+        "name_en": "Logan Henderson",
+        "player_id": "701656",
+        "era": "2.47",
+        "wins": 11,
+        "losses": 3,
+        "strikeouts": 110
+      },
+      "away_probable": {
+        "name": "Michael King",
+        "name_en": "Michael King",
+        "player_id": "650633",
+        "era": "3.21",
+        "wins": 12,
+        "losses": 10,
+        "strikeouts": 159
+      },
+      "venue_name": "American Family Field",
+      "venue_jp": "アメリカン・ファミリー・フィールド",
+      "venue_note": "開閉式屋根を持ち、天候に左右されにくい球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.94点で、MLB30球場中10位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 6,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第2戦(ブリュワーズが1勝0敗でリード)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 5,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "ai_summary": "地区シリーズ第2戦でブリュワーズが【1勝0敗でリード】する中、パドレスが追い詰められた状況での一戦である。ブリュワーズは103勝59敗でナ・リーグ中地区を制覇した強豪で、先発のLogan Hendersonは防御率2.47と優秀な成績を残している。一方、パドレスはポストシーズン進出を決めているものの、松井裕樹を含むロスターで逆転を狙う必要がある。開閉式屋根を持つアメリカン・ファミリー・フィールドでの試合だけに、ブリュワーズ先発の質の高さがどこまでパドレスの打線を抑えるかに注目したい。",
+      "notification_hook": "Logan Hendersonの防御率2.47で臨むブリュワーズ、シリーズリード1勝0敗から逃げ切れるか",
+      "availability_checked_at": "2026-10-04T09:53:13.883981+00:00"
+    },
+    {
+      "game_id": "849823",
+      "league": "MLB",
+      "home_team_id": "119",
+      "away_team_id": "144",
+      "home_team_name": "ドジャース",
+      "away_team_name": "ブレーブス",
+      "home_abbr": "LAD",
+      "away_abbr": "ATL",
+      "home_color": "#005A9C",
+      "away_color": "#CE1141",
+      "matchup": "ブレーブス vs ドジャース",
+      "abbr_matchup": "ATL vs LAD",
+      "start_time_jst": "10/05 09:00",
+      "home_division": "NLW",
+      "away_division": "NLE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "大谷翔平",
+        "佐々木朗希",
+        "山本由伸"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 3,
+        "wins": 100,
+        "losses": 62,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 94,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Blake Snell",
+        "name_en": "Blake Snell",
+        "player_id": "605483",
+        "era": "1.90",
+        "wins": 4,
+        "losses": 1,
+        "strikeouts": 55
+      },
+      "away_probable": null,
+      "venue_name": "UNIQLO Field at Dodger Stadium",
+      "venue_jp": "ドジャー・スタジアム",
+      "venue_note": "1962年開場、MLBで3番目に古い現役球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.57点で、MLB30球場中17位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ドジャースには大谷翔平が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第2戦(ドジャースが1勝0敗でリード)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": null,
+        "games_in_series": null,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "ai_summary": "ナ・リーグ東地区の首位ブレーブスがナ・リーグ西地区の首位ドジャースと地区シリーズで対戦する一戦である。ドジャースは100勝62敗で西地区を9.0ゲーム差で独走し、既に第1戦を制してシリーズを1勝0敗でリードしている。ブレーブスは94勝68敗の東地区首位だが、直近10試合は5勝5敗と足踏み状態にある。先発のBlake Snellは今季防御率1.90と【MLBトップクラスの成績を残している】ため、投手戦がどう展開するかが見どころになる。",
+      "notification_hook": "Blake Snellの防御率1.90が光るドジャース先発。ポストシーズン第2戦、大谷翔平との一戦を見よう。",
+      "availability_checked_at": "2026-10-04T09:53:13.883981+00:00"
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}
