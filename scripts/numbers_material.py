@@ -198,6 +198,52 @@ def readings(row: dict) -> list:
     return out
 
 
+EVENT_SPEECH = {"single": "タイムリー", "double": "タイムリー二塁打",
+                "triple": "タイムリー三塁打", "sac_fly": "犠牲フライ",
+                "walk": "押し出し四球", "hit_by_pitch": "押し出し死球",
+                "field_out": "内野ゴロ", "force_out": "内野ゴロ",
+                "grounded_into_double_play": "併殺打", "fielders_choice": "野選",
+                "field_error": "失策"}
+
+
+def _play_speech(p: dict) -> str:
+    if p.get("event_type") == "home_run":
+        return {1: "ソロ本塁打", 2: "2点本塁打", 3: "3点本塁打", 4: "満塁本塁打"}.get(
+            p.get("rbi") or 1, "本塁打")
+    return EVENT_SPEECH.get(p.get("event_type"), "%d打点の一打" % (p.get("rbi") or 1))
+
+
+def scenes(row: dict) -> list:
+    """打点の場面（公式の試合経過から clutch.py が判定したもの）を、言える形に。
+
+    10/4、本人「村上の先制2ラン決勝HR、という素晴らしい内容」。長編の材料は
+    4打数2安打・1本塁打・2打点だけで、**それが先制で決勝点だったこと**が
+    渡っていなかった。
+    """
+    plays = row.get("clutch_plays") or []
+    out = []
+    win = next((p for p in plays if p.get("kind") == "決勝打"), None)
+    used_win = False
+    for p in plays:
+        kind = p.get("kind") or ""
+        if kind in ("決勝打", "2試合連続本塁打") or not p.get("inning"):
+            continue
+        where = "%d回%s" % (p["inning"], {"top": "表", "bottom": "裏"}.get(p.get("half"), ""))
+        word = kind.replace("本塁打", "")
+        what = _play_speech(p)
+        text = "%sに%s" % (where, (word + "の" + what) if word else what)
+        if win and win.get("inning") == p["inning"] and win.get("half") == p.get("half") \
+                and win.get("event_type") == p.get("event_type"):
+            text += "。これが決勝点（相手はこのあと同点にも追いつけなかった）"
+            used_win = True
+        out.append(text)
+    if win and not used_win and win.get("inning"):
+        where = "%d回%s" % (win["inning"], {"top": "表", "bottom": "裏"}.get(win.get("half"), ""))
+        out.append("%sの%sが決勝点（相手はこのあと同点にも追いつけなかった）"
+                   % (where, _play_speech(win)))
+    return out
+
+
 def is_pitcher(row: dict) -> bool:
     """投手か。**`type` は "pitcher" であって "P" ではない。**
 
@@ -308,6 +354,7 @@ def load(root: str = "data", today: date = None) -> dict:
             "player_id": str(row.get("player_id") or ""),
             "numbers": _numbers(row),
             "readings": readings(row),
+            "scenes": scenes(row),
             "_row": row,
         })
     # **今日以外の材料。**出番が短い選手（称賛の印も名前のある記録も
@@ -481,6 +528,10 @@ def facts(m: dict) -> str:
         if p.get("standout"):
             out.append("  ★きょうの主役。**はっきり称賛してよい内容。**"
                        "「素晴らしい投球だった」と書いてよい")
+        # 打点の場面。決勝点なら、その選手を紹介するときに言う。
+        for sc in p.get("scenes") or []:
+            out.append("  ・場面（MLB公式の試合経過）: %s。**決勝点・先制なら、"
+                       "この選手を紹介する最初のやりとりで言う**" % sc)
         # **その数字が普通か珍しいかを、ここで渡す。**
         # 渡さないと、当たり前のことを珍しがる台詞になる。
         for note in p.get("readings") or []:

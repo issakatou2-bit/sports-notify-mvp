@@ -112,8 +112,40 @@ def scan_game(pk: int, wanted: set, timeout: int = 30) -> list:
     """1試合を走査して、対象打者の「効いた打席」を返す。"""
     r = requests.get(f"{API}/game/{pk}/playByPlay", timeout=timeout)
     r.raise_for_status()
-    plays = r.json().get("allPlays", [])
+    return scan_plays(r.json().get("allPlays", []), wanted)
 
+
+def winning_play(plays: list):
+    """決勝点の打席（勝った側が、相手の最終得点を初めて上回ったプレー）。
+
+    なぜ要るか:
+      10/4、本人「村上の先制2ラン決勝HR」。逆転・勝ち越し・先制は
+      その打席の前後の点差で決まるが、**決勝かどうかは試合が終わるまで
+      分からない。**3対0の4回の2ランは「先制」としか判定されず、長編は
+      それが決勝点だったことに触れなかった。
+
+    引き分け・得点の無い試合は None。
+    """
+    if not plays:
+        return None
+    last = plays[-1].get("result", {})
+    fa, fh = last.get("awayScore"), last.get("homeScore")
+    if fa is None or fh is None or fa == fh:
+        return None
+    win_top = fa > fh                     # 勝ったのはビジター（表の攻撃）
+    lose_final = min(fa, fh)
+    for idx, p in enumerate(plays):
+        res, about = p.get("result", {}), p.get("about", {})
+        if (about.get("halfInning") == "top") != win_top:
+            continue
+        mine = res.get("awayScore" if win_top else "homeScore")
+        if mine is not None and mine > lose_final:
+            return idx
+    return None
+
+
+def scan_plays(plays: list, wanted: set) -> list:
+    """playByPlay の allPlays から、対象打者の「効いた打席」を返す。"""
     out = []
     prev_a = prev_h = 0
     last_hr = {}          # 打者ID -> 直前の打席が本塁打だったか
@@ -201,8 +233,27 @@ def scan_game(pk: int, wanted: set, timeout: int = 30) -> list:
                     "event_type": ev,
                     "rbi": rbi,
                     "inning": about.get("inning"),
+                    "half": about.get("halfInning"),
                 })
         prev_a, prev_h = a, h
+
+    # 決勝点。**点数（CLUTCH_POINTS）にも見出し（CLUTCH_ORDER）にも入れない。**
+    # 17:00の並び順と題は今のまま。長編の材料に「場面」として渡すだけ。
+    w = winning_play(plays)
+    if w is not None:
+        p = plays[w]
+        res, about = p.get("result", {}), p.get("about", {})
+        batter = ((p.get("matchup") or {}).get("batter") or {}).get("id")
+        if batter and str(batter) in wanted and (res.get("rbi") or 0) > 0:
+            out.append({
+                "player_id": str(batter),
+                "kind": "決勝打",
+                "event": res.get("event"),
+                "event_type": res.get("eventType"),
+                "rbi": res.get("rbi") or 0,
+                "inning": about.get("inning"),
+                "half": about.get("halfInning"),
+            })
     return out
 
 
