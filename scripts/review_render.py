@@ -85,8 +85,8 @@ def _badge(d, x, y, team_id, abbr):
 
 
 def _presenter(im, root, which="left"):
-    path = root / PORTRAITS / ("zundamon/C-cheer/base-black-brow-candidate.png" if which == "left"
-                               else "metan/3-black/base.png")
+    # 資産枠はずんだもん1人の原稿。配置の左右で話者を切り替えない。
+    path = root / PORTRAITS / "zundamon/C-cheer/base-black-brow-candidate.png"
     sp = Image.open(path).convert("RGBA").crop((130, 0, 930, 660))
     sp.thumbnail((240, 230))
     x = 24 if which == "left" else SAFE_RIGHT - sp.width
