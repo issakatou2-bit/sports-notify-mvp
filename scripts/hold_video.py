@@ -23,6 +23,7 @@ import json
 import os
 import pathlib
 import sys
+import time
 from datetime import datetime, timezone
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -41,16 +42,44 @@ def target_status(current, release=False, publish_at=None):
     """確認済み非公開動画だけを未来の明示日時へ予約する。"""
     st = dict(current)
     if publish_at:
-        if release or st.get("privacyStatus") != "private" or st.get("publishAt"):
-            raise ValueError("予約は未予約の非公開動画に限ります。releaseとは併用不可")
+        if release or st.get("privacyStatus") != "private":
+            raise ValueError("予約は非公開動画に限ります。releaseとは併用不可")
         at = datetime.fromisoformat(publish_at.replace("Z", "+00:00"))
         if not at.tzinfo or at <= datetime.now(timezone.utc):
             raise ValueError("予約日時はタイムゾーン付きの未来時刻が必要です")
+        if st.get("publishAt"):
+            if datetime.fromisoformat(st["publishAt"].replace("Z", "+00:00")) != at:
+                raise ValueError("既存の予約日時は変更しません")
+            return st
         st["publishAt"] = at.astimezone(timezone.utc).isoformat()
     else:
         st["privacyStatus"] = "public" if release else "private"
         st.pop("publishAt", None)
     return st
+
+
+def status_matches(saved, desired):
+    if saved.get("privacyStatus") != desired.get("privacyStatus"):
+        return False
+    if bool(saved.get("publishAt")) != bool(desired.get("publishAt")):
+        return False
+    return not desired.get("publishAt") or (
+        datetime.fromisoformat(saved["publishAt"].replace("Z", "+00:00")) ==
+        datetime.fromisoformat(desired["publishAt"].replace("Z", "+00:00")))
+
+
+def verify_status(yt, video_id, desired):
+    """保存は繰り返さず、読み取りだけを最大4回照合する。"""
+    saved = {}
+    for attempt in range(4):
+        if attempt:
+            time.sleep(2)
+        items = yt.videos().list(part="status", id=video_id).execute().get("items") or []
+        saved = (items[0].get("status") or {}) if items else {}
+        if status_matches(saved, desired):
+            return saved
+    raise ValueError("保存後の公開設定が一致しません: "
+                     f"privacyStatus={saved.get('privacyStatus')}, publishAt={saved.get('publishAt')}")
 
 
 def record_schedule(path, video_id, saved):
@@ -112,6 +141,10 @@ def main() -> int:
     desired = target_status(st, args.release, args.publish_at)
     want = desired["privacyStatus"]
     if desired == st:
+        if args.write and args.publish_at:
+            record_schedule("data/published_videos.json", args.video, st)
+            print(f"[info] 確認済み予約 {st['publishAt']} を台帳へ反映しました。YouTubeの再保存はありません")
+            return 0
         print(f"[info] すでに {want} です。何もしません")
         return 0
     print(f"こう  : {want}" + (f" / 予約 {desired['publishAt']}" if args.publish_at else
@@ -126,11 +159,7 @@ def main() -> int:
     # 子ども向け表示などの設定まで消える。
     yt.videos().update(part="status",
                        body={"id": args.video, "status": desired}).execute()
-    saved = yt.videos().list(part="status", id=args.video).execute()["items"][0]["status"]
-    if saved.get("privacyStatus") != want or bool(saved.get("publishAt")) != bool(desired.get("publishAt")):
-        raise ValueError("保存後の公開設定が一致しません")
-    if desired.get("publishAt") and datetime.fromisoformat(saved["publishAt"].replace("Z", "+00:00")) != datetime.fromisoformat(desired["publishAt"]):
-        raise ValueError("保存後の予約日時が一致しません")
+    saved = verify_status(yt, args.video, desired)
     if args.publish_at:
         record_schedule("data/published_videos.json", args.video, saved)
     print(f"[info] {args.video} の保存後の設定を照合しました: {want}" +
