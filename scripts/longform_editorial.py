@@ -6,6 +6,42 @@ _PRODUCTION = re.compile(
     r"(?:何とも|なんとも)言えない|分からない|わからない")
 _RANK = re.compile(r"(?:[0-9０-９]+|[一二三四五六七八九十]+)位")
 _QUALIFIED = re.compile(r"規定(?:打席|投球回)?(?:に)?(?:到達|達した|達して|を満た)")
+_FEW_K = re.compile(r"少ない|少なかった|低い|低かった|多く(?:は)?ない|多い(?:方)?ではない")
+_MANY_K = re.compile(r"多い(?!方ではない)|多かった|高い|高かった|少なく(?:は)?ない")
+_GOOD = re.compile(r"(?:両方|三振の方でも).{0,18}(?:いい|良い|良好)")
+_NO_RUNNERS = re.compile(r"(?:出した)?走者(?:も|が|は|を)?(?:四球も)?(?:一人も|1人も)?(?:無し|なし|無い|ない|ゼロ|0|出していない|出さなかった)")
+
+
+def _k_claims(text):
+    # 「評価が低い」と「三振率が低い」は別。評価の語だけを除く。
+    text = re.sub(r"(?:Savant(?:の)?)?評価(?:は|が|だと|では)?(?:低い|高い|下位|上位)", "", text)
+    # 二重否定を先に拾い、反対の表現への部分一致を避ける。
+    fewer = bool(_FEW_K.search(text))
+    more = bool(_MANY_K.search(_FEW_K.sub("", text)))
+    return fewer, more
+
+
+def _k_directions(text):
+    few, many = False, False
+    for clause in re.split(r"[。、]", text):
+        for match in re.finditer(r"(?:奪)?三振(?:率)?", clause):
+            # 他指標の「低い打率」などへ意味を流さない。
+            claim = clause[match.end():match.end()+18]
+            claim = re.split(r"打率|四球率|バレル率|OPS|WHIP|防御率", claim)[0]
+            lo, hi = _k_claims(claim)
+            few, many = few or lo, many or hi
+    return few, many
+
+
+def material(m):
+    """生成と再検査へ渡す根拠。モデルが書いた説明から根拠を逆算しない。"""
+    players = m.get("players") or []
+    return {"players": [{"name": p["name"], "type": p["type"]} for p in players],
+            "daily_player_count": len(players), "rare": m.get("rare") or [],
+            "percentiles": [{"name": players[0]["name"], "metric_key": t["metric_key"],
+                             "kind": t["statcast_kind"], "percentile": t["percentile"]}
+                            for t in m.get("trends", []) if players and "percentile" in t
+                            and "metric_key" in t and "statcast_kind" in t]}
 
 
 def check(dialogue):
@@ -15,12 +51,43 @@ def check(dialogue):
     subjects = material.get("rare") or []
     panels = dialogue.get("panels") or {}
     bad, introduced = [], set()
-    active = None
+    known_names = {r.get("name") for r in material.get("players", []) + subjects if r.get("name")}
+    active, recent_k = None, None
     for i, seg in enumerate(dialogue.get("segments") or [], 1):
         text = seg.get("text") or ""
         if _PRODUCTION.search(text):
             bad.append(f"{i}行目: 材料の不足・制作上の都合を台詞にしています")
+        if seg.get("panel") and seg["panel"] != active:
+            recent_k = None
         active = seg.get("panel") or active
+        owner = (panels.get(active) or {}).get("name")
+        other_subject = any(name in text and name != owner for name in known_names)
+        if other_subject or "別の選手" in text:
+            recent_k = None
+        k_sources = [r for r in material.get("percentiles", [])
+                     if r.get("metric_key") == "k_percent"
+                     and r.get("kind") in ("batter", "pitcher")
+                     and type(r.get("percentile")) in (int, float)
+                     and r.get("name")
+                     and (r["name"] in text or (r.get("name") == owner and not other_subject))]
+        for row in k_sources:
+            label = "奪三振率" if row["kind"] == "pitcher" else "三振率"
+            if label in text and not (row["kind"] == "batter" and "奪三振率" in text):
+                recent_k = row
+        daily = bool(re.search(r"今日|きょう|この日|当日", text)) and "今季" not in text
+        if recent_k and not daily and not text.rstrip().endswith(("？", "?")) and ("三振" in text or _GOOD.search(text)):
+            # 指標以外の打球などの評価を、三振の主張と混ぜない。
+            few, many = _k_directions(text)
+            pct, kind = recent_k["percentile"], recent_k["kind"]
+            if pct <= 10 or pct >= 90:
+                expected_many = (pct >= 90) if kind == "pitcher" else (pct <= 10)
+                if (few if expected_many else many) or (pct <= 10 and _GOOD.search(text)):
+                    bad.append(f"{i}行目: Savantの三振指標の評価と値の向きが逆です")
+        if str(active).startswith("jp") and any(
+                p.get("name") == owner and str(p.get("type", "")).startswith("p")
+                and p.get("no_baserunners") is not True for p in material.get("players", [])):
+            if _NO_RUNNERS.search(text):
+                bad.append(f"{i}行目: 被安打・四球だけで走者なしと断定しています")
         target = (panels.get(active) or {}).get("name") if str(active).startswith("rare") else None
         match = _RANK.search(text)
         before = text[:match.start()] if match else text

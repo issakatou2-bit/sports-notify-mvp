@@ -375,6 +375,7 @@ def from_percentiles(rows: list, name: str) -> list:
         # 原稿へ渡す材料にも投打・指標キーを残す（数値一致だけでは意味を検査できない）。
         out[-1]["metric_key"] = r["key"]
         out[-1]["statcast_kind"] = r["kind"]
+        out[-1]["percentile"] = r["percentile"]
     return out
 
 
