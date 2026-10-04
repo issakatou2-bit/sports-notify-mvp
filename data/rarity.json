@@ -1,8 +1,13 @@
 {
-  "updated_at": "2026-10-04T06:13:59.361233+00:00",
+  "updated_at": "2026-10-04T07:29:34.016320+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
+  "player_pool": "ALL",
+  "pool_counts": {
+    "hitting": 267,
+    "pitching": 276
+  },
   "players": {
     "山本由伸": {
       "player_id": "808967",
@@ -10,20 +15,20 @@
         {
           "value": 0.8702702702702703,
           "shown": "0.87",
-          "at": 2,
-          "of": 46,
+          "at": 4,
+          "of": 276,
           "ties": 1,
           "leader": {
             "name": "Jacob Misiorowski",
             "shown": "0.80"
           },
           "above": {
-            "name": "Jacob Misiorowski",
-            "shown": "0.80"
+            "name": "Logan Henderson",
+            "shown": "0.84"
           },
           "below": {
-            "name": "Drew Rasmussen",
-            "shown": "0.91"
+            "name": "Steven Okert",
+            "shown": "0.87"
           },
           "key": "whip",
           "label": "WHIP",
@@ -40,7 +45,7 @@
           "value": 0.5840867992766727,
           "shown": "58.4%",
           "at": 1,
-          "of": 135,
+          "of": 267,
           "ties": 1,
           "leader": {
             "name": "Munetaka Murakami",
@@ -48,8 +53,8 @@
           },
           "above": null,
           "below": {
-            "name": "Kyle Schwarber",
-            "shown": "52.8%"
+            "name": "Nick Kurtz",
+            "shown": "55.5%"
           },
           "key": "tto",
           "label": "アダム・ダン率",
@@ -61,20 +66,20 @@
         {
           "value": 0.35443037974683544,
           "shown": "35.4%",
-          "at": 2,
-          "of": 135,
+          "at": 3,
+          "of": 267,
           "ties": 1,
           "leader": {
-            "name": "Colson Montgomery",
-            "shown": "35.6%"
+            "name": "Owen Caissie",
+            "shown": "37.3%"
           },
           "above": {
             "name": "Colson Montgomery",
             "shown": "35.6%"
           },
           "below": {
-            "name": "Austin Riley",
-            "shown": "31.9%"
+            "name": "Eugenio Suárez",
+            "shown": "33.9%"
           },
           "key": "k_rate",
           "label": "三振率",
@@ -85,12 +90,12 @@
         {
           "value": 0.16636528028933092,
           "shown": "16.6%",
-          "at": 2,
-          "of": 135,
+          "at": 3,
+          "of": 267,
           "ties": 1,
           "leader": {
-            "name": "Mike Trout",
-            "shown": "16.9%"
+            "name": "Nick Kurtz",
+            "shown": "18.2%"
           },
           "above": {
             "name": "Mike Trout",
