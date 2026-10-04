@@ -180,8 +180,28 @@ def race(teams: list) -> dict:
     return out
 
 
+def active_keys(team_id) -> set | None:
+    """その球団のいまのベンチ入り（active roster）の名前。取れなければ None。
+
+    10/4、本人「西田はPSのロースターに入っていないなら、言及も消しましょう。
+    メンバー入りしたらまた言う」。roster_snapshot は所属（40人枠を含む）で、
+    ベンチ入りかどうかは分からない。予告で「村上・西田のホワイトソックス」と
+    言っていた。
+    """
+    try:
+        import mlb_availability
+        import textkey
+        _, got = mlb_availability.roster(team_id)
+    except Exception:                                # noqa: BLE001
+        return None
+    if got.get("unavailable"):
+        return None
+    return {textkey.key(r.get("name") or "") for r in got.get("players") or []}
+
+
 def japanese(data: dict, teams: list = None,
-             roster_path: str = "data/roster_snapshot.json") -> list:
+             roster_path: str = "data/roster_snapshot.json",
+             active=active_keys) -> list:
     """日本人選手のいる球団が、いまどこにいるか。
 
     なぜこの1枚を足すのか:
@@ -211,7 +231,18 @@ def japanese(data: dict, teams: list = None,
         r = by_name.get(textkey.key(p.get("name_en") or ""))
         if not r or not r.get("team_id"):
             continue
-        where.setdefault(str(r["team_id"]), []).append(p.get("name_jp"))
+        where.setdefault(str(r["team_id"]), []).append(
+            (p.get("name_jp"), textkey.key(p.get("name_en") or "")))
+    # **ベンチ入りしている選手だけ。**取れなかった球団は所属のまま
+    # （APIの一時的な失敗で日本人選手が全員消えるのを避ける）。
+    for tid, rows in list(where.items()):
+        keys = active(tid) if active else None
+        if keys is not None:
+            rows = [x for x in rows if x[1] in keys]
+        if rows:
+            where[tid] = [x[0] for x in rows]
+        else:
+            del where[tid]
 
     # 球団ID -> いまの立ち位置
     seat = {}
