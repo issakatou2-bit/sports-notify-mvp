@@ -294,7 +294,7 @@ def forecast(ctx, games, rows, now, target_day=None):
                 card['focus_evidence']=supplement
         record = ('' if state=='opening' else
                   ('確定済みの勝数は' if state=='pending_results' else 'ここまで')
-                  + f'{c["home_wins"]}勝対{c["away_wins"]}勝。')
+                  + f'{c["home"]}が{c["home_wins"]}勝、{c["away"]}が{c["away_wins"]}勝です。')
         # 球団名に日本人選手の名前を添えて言う（「大谷翔平・山本由伸の
         # ドジャース」）。題で名前を見て来た人が、本編でも聞ける。
         said = {s: ('・'.join(c[s+'_players'][:3]) + 'の' if c[s+'_players'] else '') + c[s]
