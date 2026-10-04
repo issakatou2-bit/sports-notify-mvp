@@ -293,6 +293,8 @@ def rank(rows: list, metric: dict, player_id: str) -> dict:
                     # 「◯位」と書いても、実際は「◯位タイ」で、
                     # 極端であることの証明にならない。
                     "ties": sum(1 for x, _, _ in vals if x == v),
+                    "leader": {"name": vals[0][2],
+                               "shown": fmt(vals[0][0], metric["fmt"])},
                     # すぐ上・すぐ下。「2位との差」を言うため。
                     "above": ({"name": vals[i - 2][2],
                                "shown": fmt(vals[i - 2][0], metric["fmt"])}

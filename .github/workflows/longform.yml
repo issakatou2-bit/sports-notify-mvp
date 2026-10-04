@@ -227,6 +227,7 @@ jobs:
           path: |
             build/lf/collespo_longform.mp4
             build/lf/dialogue.json
+            build/lf/dialogue.model-*.txt
             build/lf/thumb.png
           if-no-files-found: warn
 

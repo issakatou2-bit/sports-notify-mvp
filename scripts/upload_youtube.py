@@ -1305,7 +1305,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    jp_names: list | None = None,
                    jp_team: list | None = None,
                    jp_team_name: str = "",
-                   longform_mode: str = "voices") -> dict:
+                   longform_mode: str = "voices",
+                   longform_subject: str = "") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
@@ -1489,7 +1490,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                 title = (f"【MLB】{'・'.join(jp)}のきょう｜"
                          f"成績と{race} {date_label}")
             else:
-                title = f"【MLB】きょうの日本人選手と{race}｜{date_label}"
+                title = f"【MLB】{longform_subject or race + 'の最新情勢'}｜{date_label}"
         elif jp:
             who = "・".join(jp)
             title = (f"【海外の反応】{who}への現地の声｜"
@@ -1744,7 +1745,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         if longform_mode == "numbers":
             settled = _rw.is_settled(_postseason_data())
             lines = [
-                "その日の日本人選手の成績、"
+                ("その日の日本人選手の成績、" if jp_names else "")
                 + ("ポストシーズンのシリーズの勝敗、" if settled
                    else "進出争いの動き、")
                 + "名前のある指標での位置を、"
@@ -2068,6 +2069,7 @@ def main():
         # 28日間の実測で、名前が題にある動画は再生2.8倍・登録12人 vs 0人。
         jp_names, jp_team, jp_team_name = [], [], ""
         longform_mode = "voices"
+        longform_subject = ""
         if args.dialogue:
             try:
                 _d = json.loads(pathlib.Path(args.dialogue).read_text(
@@ -2080,6 +2082,7 @@ def main():
                 # 数字の回に「海外の反応」と書くと、コメント欄を
                 # 読んでいないのに読んだことになる。
                 longform_mode = _d.get("mode") or "voices"
+                longform_subject = _d.get("title") or ""
             except (OSError, json.JSONDecodeError) as e:
                 print(f"[info] 台本から日本人選手を読めません({e})")
         body = build_metadata(args.games, date_label, args.kind,
@@ -2088,7 +2091,8 @@ def main():
                               args.profile, args.topic,
                               jp_names=jp_names, jp_team=jp_team,
                               jp_team_name=jp_team_name,
-                              longform_mode=longform_mode)
+                              longform_mode=longform_mode,
+                              longform_subject=longform_subject)
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)
