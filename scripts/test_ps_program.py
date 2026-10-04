@@ -41,6 +41,30 @@ def fixture(day=28):
 
 
 class ProgramTests(unittest.TestCase):
+    def test_series_wins_name_teams_when_japanese_intro_changes_subject(self):
+        # A visiting Japanese player's team must not inherit the home team's
+        # leading win count in audio. The same rule applies to every PS round.
+        for kind, length in [('F', 3), ('D', 5), ('L', 7), ('W', 7)]:
+            for jp_teams in [('145',), ('117',), ('117', '145'), ()]:
+                for winner in ('home', 'away'):
+                    snap, ev, now = fixture(30)
+                    snap['japanese'] = [dict(team_id=i, players=['検証選手']) for i in jp_teams]
+                    games = [g for g in ev['schedule']['dates'][0]['games'] if g['gameType']=='F']
+                    ev['schedule']['dates'][0]['games'] = games
+                    for game in games:
+                        game['gameType'] = kind
+                        game['gamesInSeries'] = length
+                        if game['seriesGameNumber'] == 1:
+                            game['status']['abstractGameState'] = 'Final'
+                            game['teams'][winner]['isWinner'] = True
+                    program = p.prepare(snap, ev, 'forecast', now)
+                    detail = next(s for s in program['segments'][1:] if 1002 in s['meta']['game_ids'])
+                    rows = detail['meta']['card']['scoreboard']['rows']
+                    expected = '、'.join(f"{r['name']}が{r['wins']}勝" for r in rows) + 'です。'
+                    with self.subTest(round=kind, jp=jp_teams, winner=winner):
+                        self.assertIn(expected, detail['text'])
+                        self.assertNotRegex(detail['text'], r'ここまで\d+勝対\d+勝')
+
     def test_clinch_and_decider_narration_end_as_natural_sentences(self):
         for played in (1, 2):
             snap, ev, now = fixture(30)
