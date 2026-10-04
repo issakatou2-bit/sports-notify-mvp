@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSトーナメント画面見本</title>
+<!--
+  Cloud-05. PSのトーナメント最新版・初戦勝者の突破率・LCSの組み合わせの画面見本（確認用で本番の描画ではない）。
+  材料: data/postseason.json（2026-10-03 の版。series の teams・wins・round・over・winner・next、teams の seed・players）
+  球団の略称と色: notability_engine.MLB_TEAM_ABBR / MLB_TEAM_COLOR
+  色・安全域: scripts/ps-brand-theme.json（colors.stadium）・scripts/ps_render_template.py（SAFE_BOTTOM=1574, SAFE_RIGHT=940）
+  外部の読み込みは無し。
+-->
+<style>
+  :root {
+    --bg: #102d2a; --ink: #f7f2df; --muted: #a9c5bb; --accent: #ffd16c; --line: #36544a; --panel: #183b35;
+    --page: #e1e3df; --page-ink: #243329; --page-muted: #5b6a63; --s: 0.3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--page-ink);
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Noto Sans CJK JP", "Yu Gothic", "Meiryo", sans-serif;
+    line-height: 1.6;
+  }
+  main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 22px; margin: 8px 0 4px; }
+  .lead { margin: 0 0 12px; color: var(--page-muted); font-size: 14px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 16px; }
+  .controls button, .picks button {
+    font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 8px;
+    border: 1px solid #9aa79f; background: #fff; color: var(--page-ink); cursor: pointer;
+  }
+  .controls button[aria-pressed="true"], .picks button[aria-pressed="true"] { background: var(--page-ink); color: #fff; border-color: var(--page-ink); }
+  .controls .sep { width: 1px; height: 24px; background: #b8c1bb; margin: 0 4px; }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+  .slot { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .slot-label { font-size: 13px; color: var(--page-muted); }
+  .frame { width: calc(1080px * var(--s)); height: calc(1920px * var(--s)); overflow: hidden; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,.25); }
+  .screen {
+    position: relative; width: 1080px; height: 1920px; transform: scale(var(--s)); transform-origin: 0 0;
+    background: var(--bg); color: var(--ink); overflow: hidden; line-height: 1.2;
+  }
+  .screen .t { position: absolute; white-space: nowrap; }
+  .bold { font-weight: 700; }
+  .muted { color: var(--muted); }
+  .accent { color: var(--accent); }
+  .dim { opacity: .45; }
+  .num { font-family: "Helvetica Neue", Arial, sans-serif; font-weight: 700; }
+  .lines { position: absolute; inset: 0; pointer-events: none; }
+  .box { position: absolute; border-radius: 16px; background: var(--panel); border: 2px solid var(--line); }
+  .badge {
+    position: absolute; height: 52px; padding: 0 8px; border-radius: 10px; color: #fff; font-weight: 700;
+    font-family: "Helvetica Neue", Arial, sans-serif; font-size: 40px; line-height: 48px; border: 2px solid rgba(255,255,255,.55); white-space: nowrap;
+  }
+  .bar { position: absolute; height: 56px; border-radius: 10px; border: 3px dashed var(--muted); }
+  .presenter {
+    position: absolute; left: 24px; top: 1364px; width: 220px; height: 210px; border: 4px dashed var(--muted); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; text-align: center; color: var(--muted); font-size: 32px; line-height: 1.3;
+  }
+  .safe { display: none; position: absolute; inset: 0; pointer-events: none; }
+  .show-safe .safe { display: block; }
+  .safe .zone {
+    position: absolute; background: rgba(230, 40, 70, .38); color: #fff; font-size: 30px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,.6);
+  }
+  .safe .z-top { left: 0; top: 0; width: 1080px; height: 154px; }
+  .safe .z-bottom { left: 0; top: 1574px; width: 1080px; height: 346px; }
+  .safe .z-right { left: 940px; top: 154px; width: 140px; height: 1420px; writing-mode: vertical-rl; text-orientation: upright; }
+  .picks { max-width: 420px; font-size: 13px; color: var(--page-muted); text-align: center; }
+  .picks .grp { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 4px 0; }
+  .picks button { font-size: 12px; padding: 4px 8px; }
+  section.notes { max-width: 860px; margin: 28px auto 8px; font-size: 15px; }
+  section.notes h2 { font-size: 18px; margin: 24px 0 8px; border-bottom: 1px solid #b8c1bb; padding-bottom: 4px; }
+  section.notes table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  section.notes th, section.notes td { border: 1px solid #b8c1bb; padding: 6px 8px; vertical-align: top; text-align: left; }
+  section.notes th { background: #d3d8d2; }
+  section.notes code { font-size: 13px; background: #d3d8d2; padding: 1px 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>PSのトーナメント最新版・突破率・LCSの組み合わせ（画面見本）</h1>
+  <p class="lead"><code>data/postseason.json</code>（2026-10-03 の版）で描いた確認用の3枚。1080×1920 を縮小して表示。2枚目の数字は仮です。</p>
+  <div class="controls">
+    <button type="button" id="btn-safe" aria-pressed="false">安全域を重ねて表示</button>
+    <span class="sep"></span>
+    <button type="button" data-scale="0.25" aria-pressed="false">小</button>
+    <button type="button" data-scale="0.3" aria-pressed="true">中</button>
+    <button type="button" data-scale="0.45" aria-pressed="false">大</button>
+  </div>
+  <div class="row" id="screens">
+    <div class="slot"><div class="slot-label">1 トーナメント最新版</div><div class="frame"><div class="screen" id="s1"></div></div></div>
+    <div class="slot"><div class="slot-label">2 初戦勝者の突破率（数字は仮）</div><div class="frame"><div class="screen" id="s2"></div></div></div>
+    <div class="slot"><div class="slot-label">3 LCSの組み合わせ</div><div class="frame"><div class="screen" id="s3"></div></div>
+      <div class="picks" id="picks"></div></div>
+  </div>
+
+  <section class="notes">
+    <h2>使った材料と値</h2>
+    <table>
+      <thead><tr><th>画面</th><th>使ったもの</th></tr></thead>
+      <tbody>
+        <tr><td>1 トーナメント最新版</td><td>
+          <code>series</code> の8つ（<code>round</code> が F＝ワイルドカードシリーズ4つ、D＝地区シリーズ4つ）。各 <code>teams</code> の <code>name</code>・<code>wins</code>・<code>players</code>、<code>over</code>・<code>winner</code>。地区シリーズの「10月4日に第1戦」は <code>next.day</code>・<code>next.game</code>。<br>
+          どの地区シリーズの勝者どうしがLCSで当たるかは、<code>teams</code> の <code>seed</code>（1番シード対4・5番の勝者、2番シード対3・6番の勝者）から組んだ。リーグ優勝決定シリーズ・ワールドシリーズは材料に <code>series</code> が無いので「未定」。<br>
+          略称と色は <code>notability_engine.MLB_TEAM_ABBR</code>・<code>MLB_TEAM_COLOR</code>。</td></tr>
+        <tr><td>2 初戦勝者の突破率</td><td>
+          <b>数字はすべて仮</b>（<code>--%</code>・<code>○</code>）。突破率・母数・本拠地／敵地の割合・対象の期間は、PC側（Codex）の集計を入れる場所。棒の長さも決めていない（点線の枠だけ）。<br>
+          下の「今年の地区シリーズ」の4つの組み合わせだけは材料どおり（<code>series</code> の D の <code>teams</code>）。第1戦の勝者は、材料の時点（10/3）でまだ試合が無いので「未定」。</td></tr>
+        <tr><td>3 LCSの組み合わせ</td><td>
+          地区シリーズ4つの <code>teams</code>・<code>wins</code>・<code>over</code>・<code>winner</code> と <code>players</code>。<br>
+          材料の時点ではどの地区シリーズも0勝0敗で、「今リードしている球団」が無い。そのため初めの表示は「考えられる組み合わせ4通り」。画面の下のボタンで勝ち上がる球団を選ぶと、「〜なら」の1つの組み合わせの形になる（勝敗の数字は作っていない）。リードしている球団がいる版の材料なら、その球団を自動で選ぶ。<br>
+          日本人選手どうしの対戦になる組み合わせ（ナ・リーグのドジャース対パドレス）には一言添えた。</td></tr>
+      </tbody>
+    </table>
+
+    <h2>勝ち上がり図の線の動かし方（提案）</h2>
+    <ul>
+      <li>終わったシリーズの線から順に伸ばす: ワイルドカードシリーズの勝者 → 地区シリーズの枠（0.4秒ずつ）。負けた球団は線が伸びる前に薄くする。</li>
+      <li>次に、今戦っている地区シリーズの枠だけを明るくし、勝敗の数字を一度だけ数え上げる（0→現在の勝数）。終わっていない枠から先（LCS・WS）の線は点線のまま動かさない。</li>
+      <li>最後に日本人選手の名前を枠の中にふわっと出す（ア・リーグ → ナ・リーグの順）。線と名前を同時に動かさない（目が追い切れない。推測）。</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function () {
+  // data/postseason.json（2026-10-03）から写した。略称・色は notability_engine。
+  var TEAMS = {
+    139: { name: "レイズ", abbr: "TB", color: "#092C5C", seed: 1, players: [] },
+    114: { name: "ガーディアンズ", abbr: "CLE", color: "#00385D", seed: 2, players: [] },
+    117: { name: "アストロズ", abbr: "HOU", color: "#002D62", seed: 3, players: ["今井達也"] },
+    147: { name: "ヤンキース", abbr: "NYY", color: "#003087", seed: 4, players: [] },
+    111: { name: "レッドソックス", abbr: "BOS", color: "#BD3039", seed: 5, players: ["吉田正尚"] },
+    145: { name: "ホワイトソックス", abbr: "CWS", color: "#27251F", seed: 6, players: ["村上宗隆", "西田陸浮"] },
+    158: { name: "ブリュワーズ", abbr: "MIL", color: "#12284B", seed: 1, players: [] },
+    119: { name: "ドジャース", abbr: "LAD", color: "#005A9C", seed: 2, players: ["大谷翔平", "佐々木朗希", "山本由伸"] },
+    144: { name: "ブレーブス", abbr: "ATL", color: "#CE1141", seed: 3, players: [] },
+    135: { name: "パドレス", abbr: "SD", color: "#2F241D", seed: 4, players: ["松井裕樹"] },
+    112: { name: "カブス", abbr: "CHC", color: "#0E3386", seed: 5, players: ["今永昇太", "鈴木誠也"] },
+    143: { name: "フィリーズ", abbr: "PHI", color: "#E81828", seed: 6, players: [] }
+  };
+  // series（F＝ワイルドカードシリーズ、D＝地区シリーズ）。teams は [id, wins]。
+  var SERIES = {
+    "F:111-147": { round: "F", league: "AL", over: true, winner: 147, teams: [[147, 2], [111, 0]] },
+    "F:117-145": { round: "F", league: "AL", over: true, winner: 145, teams: [[145, 2], [117, 0]] },
+    "F:112-135": { round: "F", league: "NL", over: true, winner: 135, teams: [[135, 2], [112, 0]] },
+    "F:143-144": { round: "F", league: "NL", over: true, winner: 144, teams: [[144, 2], [143, 1]] },
+    "D:139-147": { round: "D", league: "AL", over: false, winner: null, next: "10月4日に第1戦", teams: [[139, 0], [147, 0]] },
+    "D:114-145": { round: "D", league: "AL", over: false, winner: null, next: "10月4日に第1戦", teams: [[114, 0], [145, 0]] },
+    "D:135-158": { round: "D", league: "NL", over: false, winner: null, next: "10月4日に第1戦", teams: [[158, 0], [135, 0]] },
+    "D:119-144": { round: "D", league: "NL", over: false, winner: null, next: "10月4日に第1戦", teams: [[119, 0], [144, 0]] }
+  };
+  // 山の組み方: 1番シードの地区シリーズ（相手は4・5番の勝者）と、2番シードの地区シリーズ（相手は3・6番の勝者）
+  var LEAGUES = [
+    { key: "AL", label: "ア・リーグ", ds: ["D:139-147", "D:114-145"], wc: ["F:111-147", "F:117-145"] },
+    { key: "NL", label: "ナ・リーグ", ds: ["D:135-158", "D:119-144"], wc: ["F:112-135", "F:143-144"] }
+  ];
+  var DATE = "10月3日時点";
+  var picks = { AL: {}, NL: {} };   // 3枚目で「勝ち上がれば」と選んだ球団
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function t(x, y, size, text, cls, extra) {
+    return '<div class="t ' + (cls || '') + '" style="left:' + x + 'px;top:' + y + 'px;font-size:' + size + 'px;' + (extra || '') + '">' + text + '</div>';
+  }
+  function tr(right, y, size, text, cls) { return t(0, y, size, text, cls, "left:auto;right:" + (1080 - right) + "px"); }
+  function badge(x, y, id, cls) {
+    var tm = TEAMS[id];
+    return '<div class="badge ' + (cls || '') + '" style="left:' + x + 'px;top:' + y + 'px;background:' + tm.color + '">' + tm.abbr + '</div>';
+  }
+  function badgeW(id) { return TEAMS[id].abbr.length * 31 + 20; }
+  function chrome(i) { return t(72, 60, 44, "コレスポ", "bold") + tr(900, 64, 40, i + "/3", "accent num"); }
+  function footer() {
+    return '<div class="presenter">立ち絵の<br>位置</div>' + t(268, 1452, 32, "出典：MLB公式の日程・結果", "muted") + t(268, 1500, 32, "デザイン確認用", "muted") +
+      '<div class="safe"><div class="zone z-top">上8%　題・メニューと重なる</div><div class="zone z-bottom">下18%　題・チャンネル名と重なる</div><div class="zone z-right">右13%　ボタン列と重なる</div></div>';
+  }
+  function splitNames(list, maxChars) { // 名前を「・」でつなぎ、1行 maxChars 字を超えたら折り返す
+    var lines = [], cur = "";
+    list.forEach(function (n) {
+      var next = cur ? cur + "・" + n : n;
+      if (next.length > maxChars && cur) { lines.push(cur); cur = n; } else cur = next;
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+
+  // ---------- 1 トーナメント最新版 ----------
+  function screen1() {
+    var h = chrome(1);
+    h += t(72, 168, 56, "ポストシーズンの勝ち上がり", "bold");
+    h += t(72, 238, 40, DATE + "・地区シリーズは10月4日に第1戦", "muted");
+    var lines = [];
+    // 列: WCS x72〜242 / 地区シリーズ x258〜770 / LCS x790〜936
+    var y = 304;
+    h += t(72, y, 32, "WCS", "muted") + t(258, y, 32, "地区シリーズ（先に3勝）", "muted") + t(790, y, 32, "LCS", "muted");
+    y += 46;
+    var lcsCenters = [];
+    LEAGUES.forEach(function (L) {
+      h += t(72, y, 44, L.label, "accent bold");
+      y += 58;
+      var dsCenters = [];
+      L.ds.forEach(function (key, k) {
+        var S = SERIES[key], wc = SERIES[L.wc[k]];
+        // 地区シリーズの枠
+        var rows = S.teams.map(function (pair) {
+          var tm = TEAMS[pair[0]];
+          return { id: pair[0], wins: pair[1], names: splitNames(tm.players, 15) };
+        });
+        var bh = 24 + rows.reduce(function (a, r) { return a + 60 + r.names.length * 42; }, 0) + 8;
+        h += '<div class="box" style="left:258px;top:' + y + 'px;width:512px;height:' + bh + 'px"></div>';
+        var ry = y + 18, winnerRowY = null;
+        rows.forEach(function (r) {
+          h += badge(272, ry, r.id);
+          h += t(272 + badgeW(r.id) + 10, ry + 4, 40, esc(TEAMS[r.id].name), "");
+          h += tr(758, ry + 2, 44, String(r.wins), "accent num");
+          if (r.id === wc.winner) winnerRowY = ry + 26;
+          ry += 60;
+          r.names.forEach(function (ln) { h += t(280, ry, 32, esc(ln), "accent"); ry += 42; });
+        });
+        // その山のワイルドカードシリーズ（左の列）
+        var wy = y + 6, wrows = wc.teams;
+        var wh = 16 + wrows.reduce(function (a, p) { return a + 58 + (p[0] === wc.winner ? 0 : TEAMS[p[0]].players.length * 40); }, 0);
+        h += '<div class="box" style="left:72px;top:' + wy + 'px;width:170px;height:' + wh + 'px"></div>';
+        var wry = wy + 10, wcOutY = null;
+        wrows.forEach(function (p) {
+          var lost = p[0] !== wc.winner;
+          h += badge(84, wry, p[0], lost ? "dim" : "");
+          h += tr(232, wry, 44, String(p[1]), "num " + (lost ? "dim" : "accent"));
+          if (!lost) wcOutY = wry + 26;
+          wry += 58;
+          if (lost) TEAMS[p[0]].players.forEach(function (n) { h += t(92, wry - 4, 32, esc(n), "muted dim"); wry += 40; });
+        });
+        lines.push([242, wcOutY, 258, winnerRowY]);
+        dsCenters.push(y + bh / 2);
+        y += Math.max(bh, wh + 6) + 14;
+      });
+      // LCS の枠（未定）
+      var cy = (dsCenters[0] + dsCenters[1]) / 2;
+      h += '<div class="box" style="left:790px;top:' + (cy - 56) + 'px;width:146px;height:112px"></div>';
+      h += t(822, cy - 24, 40, "未定", "muted");
+      lines.push([770, dsCenters[0], 790, cy, "elbow"]);
+      lines.push([770, dsCenters[1], 790, cy, "elbow"]);
+      lcsCenters.push(cy);
+      y += 6;
+    });
+    // ワールドシリーズ
+    var wsy = y;
+    h += '<div class="box" style="left:258px;top:' + wsy + 'px;width:678px;height:90px"></div>';
+    h += t(282, wsy + 22, 40, "ワールドシリーズ　未定", "muted");
+    lines.push([880, lcsCenters[0] + 56, 880, wsy, "dash"]);
+    lines.push([846, lcsCenters[1] + 56, 846, wsy, "dash"]);
+    var svg = '<svg class="lines" viewBox="0 0 1080 1920" width="1080" height="1920">';
+    lines.forEach(function (l) {
+      var dash = l[4] === "dash" ? ' stroke-dasharray="10 10"' : (l[4] === "elbow" ? ' stroke-dasharray="10 10"' : '');
+      var mx = (l[0] + l[2]) / 2;
+      svg += '<path d="M' + l[0] + ' ' + l[1] + ' H' + mx + ' V' + l[3] + ' H' + l[2] + '" fill="none" stroke="' + (dash ? '#a9c5bb' : '#ffd16c') + '" stroke-width="4"' + dash + '/>';
+    });
+    svg += '</svg>';
+    return svg + h + footer();
+  }
+
+  // ---------- 2 初戦勝者の突破率（仮） ----------
+  function screen2() {
+    var h = chrome(2);
+    h += t(72, 168, 56, "地区シリーズ", "bold");
+    h += t(72, 238, 56, "初戦に勝った球団の突破率", "bold");
+    h += t(72, 316, 40, "過去の地区シリーズ（○○年〜○○年）", "muted");
+    h += t(72, 400, 220, "--%", "accent num");
+    h += t(80, 680, 44, "○シリーズ中 ○シリーズが突破", "");
+    var by = 800;
+    [["本拠地で初戦に勝った", "○中○"], ["敵地で初戦に勝った", "○中○"]].forEach(function (b, i) {
+      var y = by + i * 150;
+      h += t(72, y, 40, b[0], "");
+      h += '<div class="bar" style="left:72px;top:' + (y + 56) + 'px;width:700px"></div>';
+      h += tr(936, y + 58, 48, "--%", "accent num");
+      h += tr(936, y, 32, b[1], "muted");
+    });
+    h += '<div style="position:absolute;left:72px;top:1110px;width:864px;height:2px;background:#36544a"></div>';
+    h += t(72, 1130, 40, "今年の地区シリーズ　第1戦の勝者", "accent");
+    var cards = [["D:139-147", 0], ["D:114-145", 1], ["D:135-158", 2], ["D:119-144", 3]];
+    cards.forEach(function (c, i) {
+      var S = SERIES[c[0]], x = i % 2 === 0 ? 72 : 510, y = 1196 + Math.floor(i / 2) * 84;
+      var a = S.teams[0][0], b = S.teams[1][0];
+      h += badge(x, y, a) + t(x + badgeW(a) + 8, y + 6, 32, "対", "muted") + badge(x + badgeW(a) + 48, y, b);
+      h += t(x + badgeW(a) + 48 + badgeW(b) + 14, y + 6, 32, "未定", "muted");
+    });
+    return h + footer();
+  }
+
+  // ---------- 3 LCSの組み合わせ ----------
+  function leaderOf(S) {
+    if (S.over) return S.winner;
+    var a = S.teams[0], b = S.teams[1];
+    return a[1] > b[1] ? a[0] : b[1] > a[1] ? b[0] : null;
+  }
+  function screen3() {
+    var h = chrome(3);
+    h += t(72, 168, 56, "リーグ優勝決定シリーズ", "bold");
+    h += t(72, 238, 56, "（LCS）の組み合わせ", "bold");
+    h += t(72, 316, 40, DATE + "・先に4勝でリーグ優勝", "muted");
+    var y = 400;
+    LEAGUES.forEach(function (L) {
+      var ds = L.ds.map(function (k) { return SERIES[k]; });
+      var chosen = ds.map(function (S, k) { return picks[L.key][k] || leaderOf(S); });
+      var boxTop = y;
+      h += t(72, y, 44, L.label, "accent bold");
+      y += 64;
+      if (chosen[0] && chosen[1]) {
+        var a = chosen[0], b = chosen[1];
+        h += t(72, y, 40, esc(TEAMS[a].name) + "と" + esc(TEAMS[b].name) + "が", "");
+        h += t(72, y + 52, 40, "勝ち上がれば", "");
+        y += 120;
+        h += badge(72, y, a) + t(72 + badgeW(a) + 14, y + 2, 48, esc(TEAMS[a].name), "bold");
+        y += 70;
+        h += t(90, y, 40, "対", "muted");
+        y += 56;
+        h += badge(72, y, b) + t(72 + badgeW(b) + 14, y + 2, 48, esc(TEAMS[b].name), "bold");
+        y += 76;
+        var pa = TEAMS[a].players, pb = TEAMS[b].players;
+        if (pa.length && pb.length) {
+          h += t(72, y, 40, "日本人選手どうしの対戦になる", "accent");
+          y += 54;
+          splitNames(pa.concat(["対"]).concat(pb), 24).forEach(function (ln) { h += t(72, y, 32, esc(ln).replace("・対・", " 対 "), "accent"); y += 42; });
+        } else if (pa.length || pb.length) {
+          h += t(72, y, 32, esc((pa.length ? pa : pb).join("・")) + "が出場", "accent");
+          y += 42;
+        }
+      } else {
+        h += t(72, y, 40, "どの地区シリーズも0勝0敗", "muted");
+        y += 56;
+        h += t(72, y, 40, "考えられる組み合わせは4通り", "");
+        y += 64;
+        ds[0].teams.forEach(function (p) {
+          ds[1].teams.forEach(function (q) {
+            var a = p[0], b = q[0];
+            h += badge(72, y, a) + t(72 + badgeW(a) + 8, y + 8, 32, "対", "muted") + badge(72 + badgeW(a) + 48, y, b);
+            var jp = TEAMS[a].players.length && TEAMS[b].players.length ? "日本人選手どうし" :
+              (TEAMS[a].players.length || TEAMS[b].players.length) ? (TEAMS[a].players.length ? TEAMS[a].players : TEAMS[b].players)[0] + (((TEAMS[a].players.length ? TEAMS[a].players : TEAMS[b].players).length > 1) ? "ほか" : "") + "が出場" : "";
+            if (jp) h += t(72 + badgeW(a) + 48 + badgeW(b) + 18, y + 8, 32, esc(jp), "accent");
+            y += 66;
+          });
+        });
+      }
+      y += 34;
+    });
+    return h + footer();
+  }
+
+  function renderPicks() {
+    var el = document.getElementById("picks");
+    var html = "勝ち上がる球団を選ぶと「〜なら」の形になります（勝敗の数字は作りません）";
+    LEAGUES.forEach(function (L) {
+      L.ds.forEach(function (key, k) {
+        var S = SERIES[key];
+        html += '<div class="grp">' + S.teams.map(function (p) {
+          var on = picks[L.key][k] === p[0];
+          return '<button type="button" data-l="' + L.key + '" data-k="' + k + '" data-id="' + p[0] + '" aria-pressed="' + on + '">' + TEAMS[p[0]].name + '</button>';
+        }).join("") + '</div>';
+      });
+    });
+    html += '<div class="grp"><button type="button" id="pick-clear">選ぶ前（材料どおり）に戻す</button></div>';
+    el.innerHTML = html;
+    Array.prototype.forEach.call(el.querySelectorAll("[data-id]"), function (b) {
+      b.addEventListener("click", function () {
+        var L = b.getAttribute("data-l"), k = +b.getAttribute("data-k"), id = +b.getAttribute("data-id");
+        picks[L][k] = picks[L][k] === id ? undefined : id;
+        draw();
+      });
+    });
+    document.getElementById("pick-clear").addEventListener("click", function () { picks = { AL: {}, NL: {} }; draw(); });
+  }
+  function draw() {
+    document.getElementById("s1").innerHTML = screen1();
+    document.getElementById("s2").innerHTML = screen2();
+    document.getElementById("s3").innerHTML = screen3();
+    renderPicks();
+  }
+
+  var safeBtn = document.getElementById("btn-safe");
+  safeBtn.addEventListener("click", function () {
+    var on = document.getElementById("screens").classList.toggle("show-safe");
+    safeBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    safeBtn.textContent = on ? "安全域を隠す" : "安全域を重ねて表示";
+  });
+  var scaleBtns = document.querySelectorAll("[data-scale]");
+  function setScale(s) {
+    var max = (document.querySelector("main").clientWidth - 32) / 1080;
+    document.documentElement.style.setProperty("--s", Math.min(s, max));
+  }
+  Array.prototype.forEach.call(scaleBtns, function (b) {
+    b.addEventListener("click", function () {
+      Array.prototype.forEach.call(scaleBtns, function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      setScale(parseFloat(b.getAttribute("data-scale")));
+    });
+  });
+  draw();
+  setScale(0.3);
+})();
+</script>
+</body>
+</html>
