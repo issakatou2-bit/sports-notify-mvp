@@ -19,6 +19,7 @@
 """
 
 import argparse
+import json
 import os
 import pathlib
 import sys
@@ -50,6 +51,22 @@ def target_status(current, release=False, publish_at=None):
         st["privacyStatus"] = "public" if release else "private"
         st.pop("publishAt", None)
     return st
+
+
+def record_schedule(path, video_id, saved):
+    """確認後の予約日時だけを同じ動画の台帳へ反映する。"""
+    path = pathlib.Path(path)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    matching = [entry for dates in data.values() if isinstance(dates, dict)
+                for entry in dates.values() if isinstance(entry, dict)
+                and entry.get("video_id") == video_id]
+    if not matching:
+        raise ValueError("予約動画が配信台帳にありません。YouTubeの設定と台帳を個別確認してください")
+    for entry in matching:
+        entry["publish_at"] = saved["publishAt"]
+    temp = path.with_suffix(path.suffix + ".tmp")
+    temp.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    temp.replace(path)
 
 
 def client():
@@ -114,6 +131,8 @@ def main() -> int:
         raise ValueError("保存後の公開設定が一致しません")
     if desired.get("publishAt") and datetime.fromisoformat(saved["publishAt"].replace("Z", "+00:00")) != datetime.fromisoformat(desired["publishAt"]):
         raise ValueError("保存後の予約日時が一致しません")
+    if args.publish_at:
+        record_schedule("data/published_videos.json", args.video, saved)
     print(f"[info] {args.video} の保存後の設定を照合しました: {want}" +
           (f" / 予約 {saved['publishAt']}" if saved.get("publishAt") else ""))
     return 0
