@@ -106,7 +106,37 @@ except ImportError:
 # 数日出して見比べる。落ちるようなら1行戻す。
 #
 #   COLLESPO_DIALOGUE_MODEL=claude-opus-5  で元に戻せる
-MODEL = os.environ.get("COLLESPO_DIALOGUE_MODEL") or "claude-sonnet-5"
+#
+# 2026-10-04: Sonnet 5 から Sonnet 5.5 へ（本人「Sonnetって今5.5出てる」）。
+# 単価は同じ（$2/$10）。呼び方（thinking・temperature・tool_choice を
+# 指定しない素の呼び出し）はそのまま通る。**呼べなかったときだけ**
+# Sonnet 5 で1度やり直す（FALLBACK_MODEL）。新しいモデル名で
+# 長編が丸ごと止まるのを避けるため。
+MODEL = os.environ.get("COLLESPO_DIALOGUE_MODEL") or "claude-sonnet-5-5"
+FALLBACK_MODEL = "claude-sonnet-5"
+
+
+def _create(client, **kw):
+    """台本の呼び出し。モデル名が通らなければ Sonnet 5 で1度だけ。
+
+    断られた（stop_reason == "refusal"）ときは中身が空なので、
+    理由を出して止める。黙って空の台本を検査へ回さない。
+    """
+    import anthropic
+    global MODEL
+    try:
+        resp = client.messages.create(model=MODEL, **kw)
+    except (anthropic.NotFoundError, anthropic.BadRequestError) as e:
+        if MODEL == FALLBACK_MODEL:
+            raise
+        print(f"::warning::{MODEL} を呼べません({e})。{FALLBACK_MODEL} でやり直します")
+        MODEL = FALLBACK_MODEL
+        resp = client.messages.create(model=MODEL, **kw)
+    if getattr(resp, "stop_reason", None) == "refusal":
+        det = getattr(resp, "stop_details", None)
+        cat = getattr(det, "category", None) if det else None
+        raise SystemExit(f"[error] 台本の生成を断られました（{cat}）")
+    return resp
 MLB_API = "https://statsapi.mlb.com/api/v1"
 
 # 話者ID(VOICEVOX)。
@@ -1882,8 +1912,8 @@ def main() -> int:
                     "出場者0の日は、その日の成績紹介を名乗らない。"
                     "指標ランキングは材料の対象条件（MLB全体・300打席以上や60投球回以上）"
                     "をそのまま言い、規定到達者や各リーグ順位と言い換えない。")
-        resp = client.messages.create(
-            model=MODEL, max_tokens=16000,
+        resp = _create(
+            client, max_tokens=16000,
             messages=[{"role": "user", "content": ask}],
         )
         token_log.record("dialogue", MODEL, resp)
@@ -1906,8 +1936,8 @@ def main() -> int:
                       {s.get("panel") for s in segs if s.get("panel")}]
             print(f"\n[info] {chars}字で短いので、書き足してもらいます"
                   f"（未使用の材料 {len(unused)}件）")
-            more = client.messages.create(
-                model=MODEL, max_tokens=16000,
+            more = _create(
+                client, max_tokens=16000,
                 messages=[
                     {"role": "user", "content": ask},
                     {"role": "assistant", "content": text},

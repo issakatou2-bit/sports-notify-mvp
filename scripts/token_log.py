@@ -47,6 +47,7 @@ PATH = "data/token_usage.json"
 PRICES = {
     "claude-opus-5": {"in": 5.00, "out": 25.00},
     "claude-sonnet-5": {"in": 2.00, "out": 10.00},
+    "claude-sonnet-5-5": {"in": 2.00, "out": 10.00},
     "claude-haiku-4-5": {"in": 1.00, "out": 5.00},
     "claude-haiku-4-5-20251001": {"in": 1.00, "out": 5.00},
 }
