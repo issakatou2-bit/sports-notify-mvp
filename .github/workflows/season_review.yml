@@ -18,7 +18,7 @@ on:
     inputs:
       count:
         description: 'きょう出す上限（既に出したぶんを引く）'
-        default: '3'
+        default: '4'
       privacy:
         description: 公開設定
         type: choice
@@ -58,10 +58,16 @@ jobs:
           python scripts/ps_quotes.py data/ps_quotes.json
           python scripts/ps_story.py --out data/ps_story_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
 
+      # PSの試合ごとの話題（その日に終わった試合で何が起きたか）。
+      # ハイライトのコメントは夕方の4本が更新した data/local_voices.json から。
+      - name: Build PS game topics
+        continue-on-error: true
+        run: python scripts/ps_game_story.py --out data/ps_game_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Pick today's topics
         id: pick
         run: |
-          T="$(python scripts/next_asset.py --season "${{ inputs.count || '3' }}")"
+          T="$(python scripts/next_asset.py --season "${{ inputs.count || '4' }}")"
           echo "topics=$T" >> "$GITHUB_OUTPUT"
           echo "きょうのシーズンまとめ: ${T:-なし}" | tee -a "$GITHUB_STEP_SUMMARY"
 
@@ -95,7 +101,8 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           # 公開時刻。日次の枠（17:00〜21:00）を避けて間を空ける。
-          set -- 16:30 22:00 23:00
+          # 4本目はPSの試合ごとの話題が4試合ある日のため（10/4〜）。
+          set -- 16:30 22:00 23:00 23:30
           set +e
           FAILED=""
           for t in ${{ steps.pick.outputs.topics }}; do
@@ -134,7 +141,7 @@ jobs:
           bash scripts/commit_data.sh \
             "season review: ${{ github.run_id }}" \
             data/published_assets.json data/season_topics.json \
-            data/ps_story_topics.json data/ps_quotes.json \
+            data/ps_story_topics.json data/ps_quotes.json data/ps_game_topics.json \
             data/player_kana.json
 
       - name: Keep the videos
