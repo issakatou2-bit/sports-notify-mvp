@@ -5,7 +5,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 import generate_dialogue as gd
 import hold_video
@@ -13,6 +13,36 @@ import numbers_material as nm
 
 
 class RecoveryTests(unittest.TestCase):
+    def test_readback_retries_reads_only_and_keeps_failure_visible(self):
+        yt = Mock()
+        old = {"privacyStatus": "private"}
+        desired = dict(old, publishAt="2099-10-04T12:00:00+00:00")
+        saved = dict(old, publishAt="2099-10-04T12:00:00Z")
+        execute = yt.videos.return_value.list.return_value.execute
+        execute.side_effect = [{"items": [{"status": old}]}, {"items": [{"status": saved}]}]
+        with patch.object(hold_video.time, "sleep"):
+            self.assertEqual(hold_video.verify_status(yt, "mine", desired), saved)
+        self.assertEqual(execute.call_count, 2)
+        yt.videos.return_value.update.assert_not_called()
+        execute.side_effect = None
+        execute.return_value = {"items": [{"status": old}]}
+        execute.reset_mock()
+        with patch.object(hold_video.time, "sleep"), self.assertRaisesRegex(ValueError, "publishAt=None"):
+            hold_video.verify_status(yt, "mine", desired)
+        self.assertEqual(execute.call_count, 4)
+
+    def test_same_reservation_recovers_record_without_updating_youtube(self):
+        st = {"privacyStatus": "private", "publishAt": "2099-10-04T12:00:00Z"}
+        yt = Mock()
+        yt.videos.return_value.list.return_value.execute.return_value = {
+            "items": [{"status": st, "snippet": {"title": "test"}}]}
+        with patch("sys.argv", ["hold_video", "--video", "mine", "--write", "--publish-at",
+                                "2099-10-04T21:00:00+09:00"]), patch.object(hold_video, "client", return_value=yt), \
+                patch.object(hold_video, "record_schedule") as record, contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(hold_video.main(), 0)
+        record.assert_called_once_with("data/published_videos.json", "mine", st)
+        yt.videos.return_value.update.assert_not_called()
+
     def test_reservation_record_preserves_other_entries_and_upload_timestamp(self):
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp)/"published.json"
