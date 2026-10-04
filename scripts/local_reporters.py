@@ -508,6 +508,13 @@ LEAGUE_QUERIES = (
 def collect_headlines(sleep: float = 0.4) -> list:
     """現地の見出しを引く。日本人選手の名前と、リーグ全体の話題。"""
     out, dropped = [], 0
+    # PS総括は最大4件。既存の翻訳上限内で使い、APIの呼出回数は増やさない。
+    # 本文は読まない。公式の元URLと日時を残し、試合への接続側で再照合する。
+    import mlb_headlines
+    try:
+        out.extend(mlb_headlines.fetch(limit=min(4, TOP_N // 2)))
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] MLB公式見出しの取得に失敗({e})", file=sys.stderr)
     for p in JP_PLAYERS_MLB:
         try:
             got = fetch_headlines(p["name_en"], limit=4)

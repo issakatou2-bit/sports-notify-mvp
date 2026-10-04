@@ -119,6 +119,18 @@ def intro(p, spec, root, kind_label):
     return im
 
 
+def page_source(items):
+    sources = []
+    for head, _ in items:
+        source = ("MLB.com見出し（訳：コレスポ）" if head == "MLB.comの見出しから" else
+                  "番記者の投稿" if "番記者" in head else
+                  "MLB公式コメント（訳：コレスポ）" if head == "ハイライトのコメント欄から" else
+                  "MLB公式（Stats API）")
+        if source not in sources:
+            sources.append(source)
+    return "出典：" + "・".join(sources)
+
+
 def list_page(p, spec, items, start, count, page, pages, root, kind_label):
     im = background(seconds=p * 3).convert("RGB")
     d = ImageDraw.Draw(im)
@@ -143,9 +155,10 @@ def list_page(p, spec, items, start, count, page, pages, root, kind_label):
             d.text((LEFT + dx, y + 56 + k * (size + 14)), line, font=font(size),
                    fill=T["accent"] if k == 0 else T["ink"])
         y += 60 + len(lines) * (size + 14) + 80
-    quoted = any("番記者" in h for h, _ in items[start:start + count])
-    d.text((300, SAFE_BOTTOM - 70), "出典：番記者の投稿（原文とリンクは説明欄）" if quoted
-           else "出典：MLB公式（Stats API）", font=font(26), fill=T["muted"])
+    source_lines, source_size = _lines(d, page_source(items[start:start + count]), 26, SAFE_RIGHT - 300, 2)
+    for k, line in enumerate(source_lines):
+        d.text((300, SAFE_BOTTOM - 86 + k * (source_size + 6)), line,
+               font=font(source_size), fill=T["muted"])
     _presenter(im, root, "right" if page % 2 == 0 else "left")
     return im
 
