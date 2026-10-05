@@ -1,123 +1,8 @@
 {
-  "updated_at": "2026-10-04T06:11:35.710941+00:00",
+  "updated_at": "2026-10-05T06:07:49.898635+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
-    {
-      "key": "season_game_849829",
-      "label": "地区シリーズ第1戦",
-      "hook": "村上宗隆の先制2ランでホワイトソックスが敵地で地区シリーズ先勝",
-      "heading": "ホワイトソックス 対 ガーディアンズ　地区シリーズ第1戦",
-      "intro": "地区シリーズ第1戦、村上宗隆の先制2ランで、ホワイトソックスが敵地でガーディアンズに3対0で勝ちました。",
-      "intro_as_is": true,
-      "style": "v2",
-      "team_id": 145,
-      "abbr": "CWS",
-      "title": "【MLB】村上宗隆の先制2ランでホワイトソックスが敵地で地区シリーズ先勝｜ガーディアンズに3対0 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ホワイトソックス 3対0 ガーディアンズ　敵地で勝利　シリーズはホワイトソックスの1勝0敗"
-        ],
-        [
-          "先制で決勝の一打",
-          "4回表　村上宗隆の2点本塁打（飛距離134メートル、打球の速さ時速181キロ）"
-        ],
-        [
-          "先発",
-          "ホワイトソックス スミス 2回と3分の2を無失点　ガーディアンズ メシック 4回と3分の1を2失点"
-        ],
-        [
-          "投手",
-          "ホワイトソックスは5人の継投で完封"
-        ],
-        [
-          "勝ち投手",
-          "ブライアン・ハドソン（3分の1回を無失点）"
-        ],
-        [
-          "MLB.comの見出しから",
-          "「ポストシーズン無敗のホワイトソックス、クリーブランドで地区シリーズ第1戦を奪取」"
-        ]
-      ],
-      "japanese": [
-        {
-          "name": "村上宗隆",
-          "line": "4打数2安打　1本塁打　2打点（ホワイトソックス）"
-        }
-      ],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": null,
-      "voice": null,
-      "headline": {
-        "said": "ポストシーズン無敗のホワイトソックス、クリーブランドで地区シリーズ第1戦を奪取",
-        "text": "Yet to trail this postseason, White Sox march into Cleveland and claim ALDS Game 1",
-        "url": "https://www.mlb.com/news/white-sox-win-alds-game-1-2026",
-        "at": "2026-10-03T22:22:00+00:00"
-      },
-      "game_pk": 849829,
-      "game_date": "2026-10-03T17:00:00Z",
-      "jp_first": true
-    },
-    {
-      "key": "season_game_849828",
-      "label": "地区シリーズ第1戦",
-      "hook": "ドジャースがブレーブスに5対3で地区シリーズ先勝",
-      "heading": "ブレーブス 対 ドジャース　地区シリーズ第1戦",
-      "intro": "地区シリーズ第1戦、ドジャースが本拠地でブレーブスに5対3で勝ちました。",
-      "intro_as_is": true,
-      "style": "v2",
-      "team_id": 119,
-      "abbr": "LAD",
-      "title": "【MLB】ドジャースがブレーブスに5対3で地区シリーズ先勝｜タッカーの決勝本塁打　大谷翔平 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ドジャース 5対3 ブレーブス　本拠地で勝利　シリーズはドジャースの1勝0敗"
-        ],
-        [
-          "決勝点",
-          "6回裏　カイル・タッカーの2点本塁打（飛距離124メートル、打球の速さ時速170キロ）"
-        ],
-        [
-          "本塁打",
-          "ドジャース3本（エルナンデス、タッカー、マンシー）　ブレーブス2本"
-        ],
-        [
-          "先発",
-          "ドジャース スクーバル 6回を1失点　ブレーブス ドッド 3回を無失点"
-        ],
-        [
-          "ハイライトのコメント欄から",
-          "「タナー・スコット のリリーフ登板を無事乗り切った」"
-        ]
-      ],
-      "japanese": [
-        {
-          "name": "大谷翔平",
-          "line": "4打数1安打（ドジャース）"
-        }
-      ],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": null,
-      "voice": {
-        "said": "タナー・スコット のリリーフ登板を無事乗り切った",
-        "text": "I survived a Tanner Scott bullpen appearance",
-        "url": "https://www.youtube.com/watch?v=IlwOElGgbw4",
-        "likes": 804,
-        "at": "2026-10-03T23:30:53Z"
-      },
-      "headline": null,
-      "game_pk": 849828,
-      "game_date": "2026-10-03T20:00:00Z",
-      "jp_first": true
-    },
     {
       "key": "season_game_849830",
       "label": "地区シリーズ第1戦",
@@ -151,8 +36,8 @@
           "勝ち D.L.ホール（1回を無失点）　セーブ トレバー・メギル"
         ],
         [
-          "MLB.comの見出しから",
-          "「コントレラスが好機を決める、クルーが地区シリーズ第1戦を制す」"
+          "ハイライトのコメント欄から",
+          "「最優秀選手賞：この屋根だ」"
         ]
       ],
       "japanese": [
@@ -166,15 +51,125 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
-      "headline": {
-        "said": "コントレラスが好機を決める、クルーが地区シリーズ第1戦を制す",
-        "text": "Contreras comes up clutch as Crew captures Game 1 win in NLDS",
-        "url": "https://www.mlb.com/news/brewers-win-nlds-game-1-2026",
-        "at": "2026-10-04T04:50:00+00:00"
+      "voice": {
+        "said": "最優秀選手賞：この屋根だ",
+        "text": "MVP: The Roof",
+        "url": "https://www.youtube.com/watch?v=CGqnaMVxyI8",
+        "likes": 1568,
+        "at": "2026-10-04T04:37:19Z"
       },
+      "headline": null,
       "game_pk": 849830,
       "game_date": "2026-10-04T00:30:00Z",
+      "jp_first": true
+    },
+    {
+      "key": "season_game_849825",
+      "label": "地区シリーズ第2戦",
+      "hook": "ブリュワーズがパドレスに4対3で地区シリーズ2勝0敗に",
+      "heading": "パドレス 対 ブリュワーズ　地区シリーズ第2戦",
+      "intro": "地区シリーズ第2戦、ブリュワーズが本拠地でパドレスに4対3で勝ちました。",
+      "intro_as_is": true,
+      "style": "v2",
+      "team_id": 158,
+      "abbr": "MIL",
+      "title": "【MLB】ブリュワーズがパドレスに4対3で地区シリーズ2勝0敗に｜チョーリオの決勝打　松井裕樹 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "ブリュワーズ 4対3 パドレス　本拠地で勝利　シリーズはブリュワーズの2勝0敗"
+        ],
+        [
+          "決勝点",
+          "9回裏　ジャクソン・チョーリオのタイムリー"
+        ],
+        [
+          "先発",
+          "ブリュワーズ ヘンダーソン 5回を2失点"
+        ],
+        [
+          "勝ち投手",
+          "トレバー・メギル（1回を無失点）"
+        ]
+      ],
+      "japanese": [
+        {
+          "name": "松井裕樹",
+          "line": "1回と3分の1　1失点　0奪三振（パドレス）"
+        }
+      ],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": null,
+      "game_pk": 849825,
+      "game_date": "2026-10-04T20:00:00Z",
+      "jp_first": true
+    },
+    {
+      "key": "season_game_849823",
+      "label": "地区シリーズ第2戦",
+      "hook": "ブレーブスがドジャースに3対2で地区シリーズ1勝1敗に",
+      "heading": "ブレーブス 対 ドジャース　地区シリーズ第2戦",
+      "intro": "地区シリーズ第2戦、ブレーブスが敵地でドジャースに3対2で勝ちました。",
+      "intro_as_is": true,
+      "style": "v2",
+      "team_id": 144,
+      "abbr": "ATL",
+      "title": "【MLB】ブレーブスがドジャースに3対2で地区シリーズ1勝1敗に｜ハリス2世の決勝打　大谷翔平・佐々木朗希 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "ブレーブス 3対2 ドジャース　敵地で勝利　シリーズはブレーブスの1勝1敗"
+        ],
+        [
+          "決勝点",
+          "7回表　マイケル・ハリス2世のタイムリー二塁打"
+        ],
+        [
+          "本塁打",
+          "ドジャース2本（フリーマン、マンシー）"
+        ],
+        [
+          "先発",
+          "ブレーブス カー 2回と3分の2を無失点　ドジャース スネル 3回と3分の2を1失点"
+        ],
+        [
+          "勝ち投手・セーブ",
+          "勝ち ディラン・リー（3分の2回を無失点）　セーブ ライセル・イグレシアス"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「ブレーブス、監督の完璧な采配でドジャースとシリーズを同点に 📊」"
+        ]
+      ],
+      "japanese": [
+        {
+          "name": "大谷翔平",
+          "line": "4打数1安打（ドジャース）"
+        },
+        {
+          "name": "佐々木朗希",
+          "line": "2回　無失点　1奪三振（ドジャース）"
+        }
+      ],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": {
+        "said": "ブレーブス、監督の完璧な采配でドジャースとシリーズを同点に 📊",
+        "text": "Braves follow manager's pitch-perfect plan to even series with Dodgers",
+        "url": "https://www.mlb.com/news/braves-win-nlds-game-2-2026",
+        "at": "2026-10-05T03:54:00+00:00"
+      },
+      "game_pk": 849823,
+      "game_date": "2026-10-05T00:00:00Z",
       "jp_first": true
     },
     {
@@ -208,10 +203,6 @@
         [
           "セーブ",
           "ブライアン・ベイカー"
-        ],
-        [
-          "MLB.comの見出しから",
-          "「エースの典型」ラスムッセン、8回まで無安打、レイズがヤンキースを1安打に抑える"
         ]
       ],
       "japanese": [],
@@ -221,12 +212,7 @@
       "game": true,
       "source": null,
       "voice": null,
-      "headline": {
-        "said": "「エースの典型」ラスムッセン、8回まで無安打、レイズがヤンキースを1安打に抑える",
-        "text": "Rasmussen -- the 'definition of ace' -- takes no-no into 8th as Rays 1-hit Yankees",
-        "url": "https://www.mlb.com/news/rays-win-alds-game-1-2026",
-        "at": "2026-10-04T03:28:00+00:00"
-      },
+      "headline": null,
       "game_pk": 849835,
       "game_date": "2026-10-03T22:30:00Z",
       "jp_first": false
