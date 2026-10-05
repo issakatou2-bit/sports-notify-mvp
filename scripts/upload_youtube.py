@@ -25,6 +25,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import post_common  # noqa: E402
+from longform_links import replace_longform_link  # noqa: E402
 import race_words as _rw  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
 
@@ -748,7 +749,7 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
       登録者14人の段階では関連にも出ない。
 
       いま人が来ているのはショートのほうなので、そこから繋ぐ。
-      同じ試合のコメント欄を扱っているので、話も繋がる。
+      同じ日の成績とポストシーズンを扱う長編へ案内する。
 
       短編を先に上げて、長編を後に上げる順なので、
       短編を作る時点では長編のURLがまだ無い。だから後から足す。
@@ -764,8 +765,6 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
     if not rec or not rec.get("video_id"):
         return f"{date_key} のコメント欄ショートが記録にありません"
     vid = rec["video_id"]
-    line = ("▼ この試合のコメント欄を、もっと詳しく読んでいます（3分）"
-            + chr(10) + f"https://youtu.be/{long_id}")
     try:
         got = yt.videos().list(part="snippet", id=vid).execute()
         items = got.get("items") or []
@@ -773,9 +772,10 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
             return f"{vid} が見つかりません"
         sn = items[0]["snippet"]
         desc = sn.get("description") or ""
-        if long_id in desc:
+        linked = replace_longform_link(desc, long_id)
+        if linked == desc:
             return "既に入っています"
-        sn["description"] = (line + chr(10) + chr(10) + desc)[:5000]
+        sn["description"] = linked
         yt.videos().update(part="snippet", body={
             "id": vid, "snippet": sn}).execute()
         return f"{vid} の説明欄に足しました"
