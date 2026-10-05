@@ -16,9 +16,17 @@ import tempfile
 
 
 GUARDED_TERMS = ('守護神', 'クローザー', 'ストッパー', '決定戦')
-SCOPE = 'hookの4表現とMLB PS試合の進出目的の齟齬。公式照合・全本文の意味検査ではない'
+SCOPE = 'hookの4表現とMLB PS試合の進出目的・現在の地区順位争いの齟齬。公式照合・全本文の意味検査ではない'
 PS_ROUNDS = {'F', 'D', 'L', 'W'}
 PS_ENTRY = re.compile(r'ポストシーズン(?:への|へ)?進出(?:をかけ|を賭け|を懸け|を決め|がかか)')
+# A playoff series has wins, not a live regular-season division race.
+# Keep explicit retrospective clauses and accurate series-lead statements.
+PS_DIVISION_RACE = re.compile(
+    r'(?:首位|[1-6一二三四五六]位)を(?:守る|維持して|キープ)'
+    r'|ゲーム差.{0,12}(?:迫|詰め|縮め|追)'
+    r'|(?:地区優勝|地区首位|地区の首位)(?:争い|を目指|を狙)')
+PS_HISTORY = re.compile(r'昨年|去年|前年|先週|先月|終了時|最終成績|だった|終えた|決めた')
+
 
 
 def postseason_rejections(game, field):
@@ -33,7 +41,10 @@ def postseason_rejections(game, field):
     bad = any(PS_ENTRY.search(c) and not re.search(r'昨年|去年|前年|先週|先月', c)
               and (field == 'notification_hook' or re.search(r'この|第[0-9０-９]+戦|明日', c))
               for c in clauses)
-    return ['PSの試合は既にPS進出済み。今の試合をPS進出のためとする表現は出さない'] if bad else []
+    rejected = ['PSの試合は既にPS進出済み。今の試合をPS進出のためとする表現は出さない'] if bad else []
+    if any(PS_DIVISION_RACE.search(c) and not PS_HISTORY.search(c) for c in clauses):
+        rejected.append('PS期間に終了済みの地区順位争いを現在進行形で説明しない')
+    return rejected
 
 
 def rejection_reasons(game):
