@@ -1,0 +1,185 @@
+{
+  "generated_at": "2026-10-05T09:53:54.908647+00:00",
+  "games": [
+    {
+      "game_id": "849834",
+      "league": "MLB",
+      "home_team_id": "114",
+      "away_team_id": "145",
+      "home_team_name": "ガーディアンズ",
+      "away_team_name": "ホワイトソックス",
+      "home_abbr": "CLE",
+      "away_abbr": "CWS",
+      "home_color": "#00385D",
+      "away_color": "#27251F",
+      "matchup": "ホワイトソックス vs ガーディアンズ",
+      "abbr_matchup": "CWS vs CLE",
+      "start_time_jst": "10/06 06:00",
+      "home_division": "ALC",
+      "away_division": "ALC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "村上宗隆"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 85,
+        "losses": 77,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 1.0,
+        "streak": 1,
+        "wins": 84,
+        "losses": 78,
+        "last_ten": "7勝3敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Gavin Williams",
+        "name_en": "Gavin Williams",
+        "player_id": "668909",
+        "era": "3.76",
+        "wins": 14,
+        "losses": 8,
+        "strikeouts": 248
+      },
+      "away_probable": {
+        "name": "Anthony Kay",
+        "name_en": "Anthony Kay",
+        "player_id": "641743",
+        "era": "4.44",
+        "wins": 10,
+        "losses": 9,
+        "strikeouts": 129
+      },
+      "venue_name": "Progressive Field",
+      "venue_jp": "プログレッシブ・フィールド",
+      "venue_note": "湖からの風の影響を受けやすく、季節によって球場の性格が変わる",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.4点で、MLB30球場中23位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 6,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ホワイトソックスには村上宗隆が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第2戦(ホワイトソックスが1勝0敗でリード)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 5,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [],
+      "ai_summary": "ガーディアンズはア・リーグ中地区で【1.0ゲーム差の首位】を守るチームで、直近10試合で8勝2敗と好調を続けている。一方のホワイトソックスは2位で1.0ゲーム差に迫り、直近10試合7勝3敗と足並みを揃えている。シリーズは両チームの投手力の差が見どころになる。ガーディアンズ先発のGavin Williamsは防御率3.76で248奪三振を挙げているのに対し、ホワイトソックス先発のAnthony Kayは防御率4.44。湖からの風の影響を受けやすいプログレッシブ・フィールドでの投げ合いがどう展開するかに注目したい。",
+      "notification_hook": "ガーディアンズ先発Williams(防御率3.76)vsホワイトソックス先発Kay(防御率4.44)、投手力で勝るガーディアンズは連勝か",
+      "availability_checked_at": "2026-10-05T09:52:44.233018+00:00"
+    },
+    {
+      "game_id": "849839",
+      "league": "MLB",
+      "home_team_id": "139",
+      "away_team_id": "147",
+      "home_team_name": "レイズ",
+      "away_team_name": "ヤンキース",
+      "home_abbr": "TB",
+      "away_abbr": "NYY",
+      "home_color": "#092C5C",
+      "away_color": "#003087",
+      "matchup": "ヤンキース vs レイズ",
+      "abbr_matchup": "NYY vs TB",
+      "start_time_jst": "10/06 09:00",
+      "home_division": "ALE",
+      "away_division": "ALE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 98,
+        "losses": 64,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 4.5,
+        "streak": 1,
+        "wins": 93,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Freddy Peralta",
+        "name_en": "Freddy Peralta",
+        "player_id": "642547",
+        "era": "4.42",
+        "wins": 10,
+        "losses": 11,
+        "strikeouts": 156
+      },
+      "away_probable": {
+        "name": "Cam Schlittler",
+        "name_en": "Cam Schlittler",
+        "player_id": "693645",
+        "era": "1.95",
+        "wins": 14,
+        "losses": 6,
+        "strikeouts": 239
+      },
+      "venue_name": "Tropicana Field",
+      "venue_jp": "トロピカーナ・フィールド",
+      "venue_note": "MLBで数少ないドーム球場。天候に左右されない",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.48点で、MLB30球場中20位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 5,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第2戦(レイズが1勝0敗でリード)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": null,
+        "games_in_series": null,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [
+        "Freddy Peraltaは直近6登板を自責1以下に抑えている"
+      ],
+      "ai_summary": "ポストシーズン地区シリーズで【レイズが1勝0敗でリード】している中での第2戦。レイズは【98勝64敗】でア・リーグ東地区首位を確保し、先発のFreddy Peraltaは直近6登板で自責1以下に抑えている。一方ヤンキースはシーズン成績で93勝68敗、同地区2位。ヤンキースの先発Cam Schlittlerは防御率1.95、14勝6敗と安定した成績を残しており、両先発投手の投げ合いがこのシリーズの行方を左右する可能性がある。ドーム球場のトロピカーナ・フィールドでの戦いだけに、天候に左右されない安定した投球ができるチームが有利になるかにも注目したい。",
+      "notification_hook": "防御率1.95の好投手Schlittlerが、連敗を許さないPeraltaに挑む地区シリーズ第2戦",
+      "availability_checked_at": "2026-10-05T09:52:44.233018+00:00"
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}
