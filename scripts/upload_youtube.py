@@ -1223,7 +1223,15 @@ def morning_who(players: list, n: int = 3) -> tuple:
 
     返り値: (先頭に出す名前, 残りがいるか, 名前のある人数)
     """
-    names = [p.get("name") for p in (players or []) if p.get("name")]
+    # **動画と同じ順（その日の貢献度の高い順）で。**材料のファイルの順
+    # （投手が先）のまま先頭3人を取っていて、本塁打の選手が題から
+    # 落ちた日が9月に10日あった（Cloud-02 の調べ）。
+    try:
+        import generate_morning_short as _g
+        players = _g.sort_players([p for p in (players or []) if p.get("name")])
+    except Exception:                                    # noqa: BLE001
+        players = list(players or [])
+    names = [p.get("name") for p in players if p.get("name")]
     shown = names[:n]
     return shown, len(names) > len(shown), len(names)
 

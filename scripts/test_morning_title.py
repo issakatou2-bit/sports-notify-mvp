@@ -67,8 +67,17 @@ has("並べているのでランキング", three["title"], "ランキング")
 
 section("5人の日")
 five = snippet(players(5))
-has("出しきれない人がいるなら「ほか」", five["title"], "村上宗隆 ほか")
-has("説明も同じ", five["description"].split("\n")[0], "村上宗隆ほか。")
+has("出しきれない人がいるなら「ほか」", five["title"], " ほか｜")
+has("説明も同じ", five["description"].split("\n")[0], "ほか。")
+
+section("題の名前は動画と同じ順（その日の貢献度の高い順）")
+# 9月は材料のファイルの順（投手が先）で先頭3人を取り、本塁打の選手が
+# 題から落ちた日が10日あった（Cloud-02）。
+quiet = {"name": "鈴木誠也", "type": "batter", "ab": 4, "hits": 0, "hr": 0,
+         "rbi": 0, "bb": 0, "so": 3, "runs": 0, "headline": "4打数0安打"}
+slugger = {"name": "村上宗隆", "type": "batter", "ab": 4, "hits": 3, "hr": 2,
+           "rbi": 5, "bb": 0, "so": 0, "runs": 2, "headline": "4打数3安打　2本塁打　5打点"}
+check("本塁打の選手が先頭", uy.morning_who([quiet, slugger])[0], ["村上宗隆", "鈴木誠也"])
 
 section("独自の点数を公式と書かない")
 for label, s in (("1人", one), ("5人", five)):
