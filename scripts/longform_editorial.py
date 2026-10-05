@@ -36,6 +36,9 @@ def _distance_issues(text, row):
                 errors.append("順位間の差の大小が材料と一致しません")
     return errors
 
+# 英字の人名（「Logan Henderson」）。音声はアルファベットを1文字ずつ読む。
+# 略語（WHIP・OPS）や1語の固有名（Savant）は対象にしない。
+_LATIN_NAME = re.compile(r"[A-Z][a-z]+(?:[ ・.-]+[A-Z][a-z]+)+")
 _PRODUCTION = re.compile(
     r"(?:材料|データ|情報).{0,12}(?:無い|ない|渡され|渡って|出ていない|出てない)|"
     r"(?:何とも|なんとも)言えない|分からない|わからない")
@@ -92,6 +95,9 @@ def check(dialogue):
         text = seg.get("text") or ""
         if _PRODUCTION.search(text):
             bad.append(f"{i}行目: 材料の不足・制作上の都合を台詞にしています")
+        latin = _LATIN_NAME.search(text)
+        if latin:
+            bad.append(f"{i}行目: 英字の選手名を台詞にしています（{latin.group(0)}）")
         if seg.get("panel") and seg["panel"] != active:
             recent_k = None
         active = seg.get("panel") or active

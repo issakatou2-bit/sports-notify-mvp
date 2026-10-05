@@ -114,6 +114,10 @@ def fetch_day_pitching(player_id: str, day: str, season: str):
             return {
                 "type": "pitcher", "ip": ip,
                 "er": int(_f(s.get("earnedRuns"))),
+                # 失点と死球。10/4の松井は失点1・自責0で、材料に自責しか
+                # 無かったため長編が「点にならなかった」と言った。
+                "r": int(_f(s.get("runs"))),
+                "hbp": int(_f(s.get("hitByPitch"))),
                 "hits": int(_f(s.get("hits"))),
                 "so": int(_f(s.get("strikeOuts"))),
                 "bb": int(_f(s.get("baseOnBalls"))),
@@ -142,6 +146,8 @@ def _row_from_split(split: dict, group: str):
         return {
             "type": "pitcher", "ip": ip,
             "er": int(_f(s.get("earnedRuns"))),
+            "r": int(_f(s.get("runs"))),
+            "hbp": int(_f(s.get("hitByPitch"))),
             "hits": int(_f(s.get("hits"))),
             "so": int(_f(s.get("strikeOuts"))),
             "bb": int(_f(s.get("baseOnBalls"))),

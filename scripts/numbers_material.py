@@ -31,6 +31,9 @@ from datetime import date
 HERE = pathlib.Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+# notability_engine はリポジトリ直下（選手名のカタカナ化で使う）
+if str(HERE.parent) not in sys.path:
+    sys.path.insert(0, str(HERE.parent))
 
 import morning_recap as mr  # noqa: E402
 import race_words as rw  # noqa: E402
@@ -177,6 +180,12 @@ def readings(row: dict) -> list:
             out.append("取ったアウト%d個すべてが三振" % got)
         elif got and so:
             out.append("アウト%d個のうち%d個が三振" % (got, so))
+        runs, er = row.get("r"), row.get("er") or 0
+        if runs and runs > er:
+            out.append("失点%dのうち自責は%d。自責の付かない失点で、点は入っている"
+                       "（「点にならなかった」「無失点」とは言わない）" % (runs, er))
+        if row.get("hbp"):
+            out.append("死球%d。安打と四球のほかにも走者を出している" % row["hbp"])
         if row.get("saves"):
             out.append("セーブがついた")
         if row.get("holds"):
@@ -244,6 +253,36 @@ def scenes(row: dict) -> list:
     return out
 
 
+def _kana(name: str) -> str:
+    """英字の選手名をカタカナに。引けなければ空（台詞に英字を渡さない）。
+
+    10/5の長編で「Logan Henderson」「Jacob Misiorowski」を英字のまま
+    渡し、台本もそのまま読んだ。音声はアルファベットを1文字ずつ読む。
+    """
+    if not name or not re.search(r"[A-Za-z]", name):
+        return name or ""
+    try:
+        import ps_story
+        import notability_engine as ne
+        jp = {p["name_en"]: p["name_jp"] for p in ne.JP_PLAYERS_MLB}
+        if not hasattr(_kana, "table"):
+            try:
+                _kana.table = json.loads(pathlib.Path("data/player_kana.json")
+                                         .read_text(encoding="utf-8")).get("names") or {}
+            except (OSError, ValueError):
+                _kana.table = {}
+        return ps_story.kana_of(name, _kana.table, jp)
+    except Exception:                                  # noqa: BLE001
+        return ""
+
+
+def _person(other: dict) -> dict:
+    out = dict(other or {})
+    if out.get("name"):
+        out["name"] = _kana(out["name"])
+    return out
+
+
 def is_pitcher(row: dict) -> bool:
     """投手か。**`type` は "pitcher" であって "P" ではない。**
 
@@ -269,6 +308,11 @@ def _line(row: dict) -> str:
                       ("so", "奪三振"), ("bb", "四球")):
         if row.get(key) is not None:
             bits.append("%s%s" % (unit, row[key]))
+    # 自責の付かない失点と死球。**無いことにしない。**
+    if row.get("r") and row.get("r") != row.get("er"):
+        bits.append("失点%s" % row["r"])
+    if row.get("hbp"):
+        bits.append("死球%s" % row["hbp"])
     for key, unit in (("saves", "セーブ"), ("holds", "ホールド")):
         if row.get(key):
             bits.append(unit)
@@ -292,7 +336,8 @@ def _numbers(row: dict) -> dict:
     out = {}
     if is_pitcher(row):
         for key, unit in (("ip", "回"), ("hits", "被安打"), ("er", "自責"),
-                          ("so", "奪三振"), ("bb", "四球"),
+                          ("so", "奪三振"), ("bb", "四球"), ("r", "失点"),
+                          ("hbp", "死球"),
                           ("saves", "セーブ"), ("holds", "ホールド")):
             if row.get(key) is not None:
                 out[unit] = row[key]
@@ -395,9 +440,9 @@ def load(root: str = "data", today: date = None) -> dict:
         for item in (row.get("items") or []):
             if (item.get("ties") or 1) > 1 or not item.get("label"):
                 continue
-            above = item.get("above") or {}
-            leader = item.get("leader") or (above if item.get("at") == 2 else {})
-            below = item.get("below") or {}
+            above = _person(item.get("above"))
+            leader = _person(item.get("leader") or (above if item.get("at") == 2 else {}))
+            below = _person(item.get("below"))
             rare.append({"name": name, "stat": item["label"],
                          "value": item.get("shown") or "",
                          "rank": "%s人中%s位" % (item.get("of"), item.get("at")),
@@ -583,6 +628,8 @@ def facts(m: dict) -> str:
                 other = r.get(key) or {}
                 if other.get("name") and other.get("shown"):
                     out.append("  %s: %s %s" % (label, other["name"], other["shown"]))
+                elif other.get("shown"):
+                    out.append("  %sの値: %s" % (label, other["shown"]))
             if r.get("note"):
                 out.append("  %s とは（画面に出る・読まない）: %s"
                            % (r["stat"], r["note"]))
