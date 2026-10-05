@@ -285,5 +285,30 @@ class PostseasonDivisionRaceGuard(unittest.TestCase):
             self.assertEqual(p.read_bytes(), fixed)
 
 
+class PostseasonStreakGuard(unittest.TestCase):
+    def game(self, text, field='notification_hook', **extra):
+        return dict(league='MLB', game_type='D', home_team_name='ガーディアンズ',
+                    away_team_name='ホワイトソックス',
+                    series_context={'home_wins_in_stretch':0, 'away_wins_in_stretch':1},
+                    **{field:text}, **extra)
+
+    def test_winless_team_cannot_extend_streak_in_either_field(self):
+        for field in ('notification_hook', 'ai_summary'):
+            for text in ('投手力で勝るガーディアンズは連勝か', 'ガーディアンズが連勝を狙う'):
+                self.assertTrue(guard.postseason_rejections(self.game(text,field),field))
+
+    def test_winner_history_and_player_streak_are_kept(self):
+        for text in ('ホワイトソックスは連勝か', '昨年ガーディアンズは連勝した。',
+                     'ガーディアンズ先発Williamsは連勝を狙う'):
+            self.assertFalse(guard.postseason_rejections(self.game(text),'notification_hook'))
+
+    def test_unknown_context_regular_season_and_soccer_are_not_guessed(self):
+        game=self.game('ガーディアンズは連勝か')
+        for field,value in (('series_context',{}),('game_type','R'),('league','soccer')):
+            with self.subTest(field=field):
+                candidate=dict(game,**{field:value})
+                self.assertFalse(guard.postseason_rejections(candidate,'notification_hook'))
+
+
 if __name__ == '__main__':
     unittest.main(argv=['test_game_hook_guard'])

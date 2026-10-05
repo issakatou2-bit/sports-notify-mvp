@@ -44,6 +44,18 @@ def postseason_rejections(game, field):
     rejected = ['PSの試合は既にPS進出済み。今の試合をPS進出のためとする表現は出さない'] if bad else []
     if any(PS_DIVISION_RACE.search(c) and not PS_HISTORY.search(c) for c in clauses):
         rejected.append('PS期間に終了済みの地区順位争いを現在進行形で説明しない')
+    # With no series wins, the named team cannot extend a winning streak.
+    # Do not infer recent form from regular-season standings or unknown context.
+    context = game.get('series_context')
+    if isinstance(context, dict):
+        for side in ('home', 'away'):
+            name = game.get(side + '_team_name')
+            wins = context.get(side + '_wins_in_stretch')
+            if not isinstance(name, str) or not name or wins != 0:
+                continue
+            pattern = re.compile(re.escape(name) + r'(?:は|が).{0,16}連勝')
+            if any(pattern.search(c) and not PS_HISTORY.search(c) for c in clauses):
+                rejected.append('シリーズ未勝利の球団に連勝を見込む説明は出せない')
     return rejected
 
 
