@@ -218,13 +218,26 @@ def select_record(run, records, now, kind=DEFAULT_KIND, late_edition=False):
     return day, record
 
 
-def latest_run(workflow: str, day: str):
-    """その日に成功した、その枠の実行。無ければ None。"""
-    try:
-        runs = github('/actions/workflows/' + workflow
-                      + '/runs?branch=main&status=success&per_page=10'
-                      )['workflow_runs']
-    except Exception:                                    # noqa: BLE001
+def latest_run(workflow: str, day: str, tries: int = 3):
+    """その日に成功した、その枠の実行。無ければ None。
+
+    **取れなかったことを黙らない。**10/5の19:00、17:00〜18:00の3枠が公開済みで
+    未送信だったのに「いま投げられる枠はありません」で終わった（同じ材料で
+    あとから計算すると4枠が出る）。一覧の取得の失敗を None と区別できず、
+    そのまま見送っていたと見ている。少し待って取り直し、だめなら理由を出す。
+    """
+    runs = None
+    for attempt in range(tries):
+        try:
+            runs = github('/actions/workflows/' + workflow
+                          + '/runs?branch=main&status=success&per_page=10'
+                          )['workflow_runs']
+            break
+        except Exception as e:                           # noqa: BLE001
+            print('[warn] %s の実行一覧を取れません（%d回目）: %s'
+                  % (workflow, attempt + 1, e), file=sys.stderr)
+            time.sleep(2 * (attempt + 1))
+    if runs is None:
         return None
     for run in runs:
         try:
@@ -274,6 +287,9 @@ def due(services, late_edition=False) -> list:
             run = runs[wf, day]
             if run:
                 out.append((kind, run['id']))
+            else:
+                print('[warn] %s %s は公開済み・未送信だが、元の実行が見つかりません'
+                      % (day, kind), file=sys.stderr)
     return out
 
 

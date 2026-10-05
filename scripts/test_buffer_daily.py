@@ -497,5 +497,26 @@ class SnapshotCaption(unittest.TestCase):
         self.assertNotIn('シリーズ', words['lead'])
 
 
+    def test_run_lookup_retries_and_reports_failure(self):
+        # 10/5 19:00、公開済み・未送信の3枠が「投げられる枠はありません」で見送られた。
+        # 一覧の取得の失敗を黙って None にしない（取り直し、だめなら理由を出す）。
+        day = '2026-10-05'
+        run = {'id': 7, 'created_at': '2026-10-05T06:00:46Z'}
+        calls = []
+
+        def flaky(path, *a, **k):
+            calls.append(path)
+            if len(calls) < 3:
+                raise OSError('temporary')
+            return {'workflow_runs': [run]}
+        with patch.object(daily, 'github', side_effect=flaky),                 patch.object(daily.time, 'sleep'):
+            self.assertEqual(daily.latest_run('morning_recap.yml', day), run)
+        self.assertEqual(len(calls), 3)
+        err = io.StringIO()
+        with patch.object(daily, 'github', side_effect=OSError('down')),                 patch.object(daily.time, 'sleep'), patch('sys.stderr', err):
+            self.assertIsNone(daily.latest_run('morning_recap.yml', day))
+        self.assertIn('実行一覧を取れません', err.getvalue())
+
+
 if __name__ == '__main__':
     unittest.main(argv=['test_buffer_daily'])
