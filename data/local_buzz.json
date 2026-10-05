@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-04T06:02:10.777470+00:00",
+  "updated_at": "2026-10-05T06:01:58.597458+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,74 +13,74 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 6,
-      "tone": "好調",
-      "gist": "Murakami2本塁打でALDS第1戦先勝"
-    },
-    {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 6,
+      "mentions": 9,
       "tone": "好調",
-      "gist": "Contreras同点2ラン本塁打でNLDS第1戦勝利"
+      "gist": "Jackson Chourio がサヨナラで2-0リードをつ"
     },
     {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 6,
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 8,
       "tone": "好調",
-      "gist": "Rasmussen完全試合同然でヤンキース1点に抑え勝利"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 4,
-      "tone": "不振",
-      "gist": "Rasmussen完全試合同然でヤンキース1点に抑え敗北"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "White SoxにシャットアウトされALDS第1戦敗北"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "ドジャース3本塁打でNLDS第1戦勝利"
-    },
-    {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "Ty Franceの打球が屋根に当たる異例の珍プレー"
+      "gist": "Michael Harris IIが活躍しドジャースと同点に"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
-      "mentions": 1,
+      "mentions": 6,
       "tone": "不振",
-      "gist": "ブリュワーズに2対3で敗れNLDS第1戦落とす"
+      "gist": "サヨナラ負けでNLDS苦境に立つ"
+    },
+    {
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "守備が堅く打線上位に強みあり"
+    },
+    {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 3,
+      "tone": "不振",
+      "gist": "先発の調子とリリーフ援護不足で敗北"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "Game 2へ向け積極的な走塁戦略を展開"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ホワイトソックスとのALDS Game 2"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "レイズとのALDS Game 2"
     }
   ],
   "players": [
     {
       "name": "村上宗隆",
-      "mentions": 3
+      "mentions": 1
     }
   ]
 }

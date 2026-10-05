@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-03T09:52:25.559561+00:00",
-  "date": "2026-10-03",
+  "updated_at": "2026-10-04T09:53:02.764480+00:00",
+  "date": "2026-10-04",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -132,28 +132,28 @@
       "league_jp": "ア・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 0,
+      "played": 1,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月4日",
-        "game": 1
+        "day": "10月6日",
+        "game": 2
       },
       "teams": [
+        {
+          "id": 145,
+          "name": "ホワイトソックス",
+          "wins": 1,
+          "players": [
+            "村上宗隆",
+            "西田陸浮"
+          ]
+        },
         {
           "id": 114,
           "name": "ガーディアンズ",
           "wins": 0,
           "players": []
-        },
-        {
-          "id": 145,
-          "name": "ホワイトソックス",
-          "wins": 0,
-          "players": [
-            "村上宗隆",
-            "西田陸浮"
-          ]
         }
       ]
     },
@@ -165,18 +165,18 @@
       "league_jp": "ア・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 0,
+      "played": 1,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月4日",
-        "game": 1
+        "day": "10月6日",
+        "game": 2
       },
       "teams": [
         {
           "id": 139,
           "name": "レイズ",
-          "wins": 0,
+          "wins": 1,
           "players": []
         },
         {
@@ -195,18 +195,18 @@
       "league_jp": "ナ・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 0,
+      "played": 1,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月4日",
-        "game": 1
+        "day": "10月5日",
+        "game": 2
       },
       "teams": [
         {
           "id": 119,
           "name": "ドジャース",
-          "wins": 0,
+          "wins": 1,
           "players": [
             "大谷翔平",
             "佐々木朗希",
@@ -229,14 +229,20 @@
       "league_jp": "ナ・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 0,
+      "played": 1,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月4日",
-        "game": 1
+        "day": "10月5日",
+        "game": 2
       },
       "teams": [
+        {
+          "id": 158,
+          "name": "ブリュワーズ",
+          "wins": 1,
+          "players": []
+        },
         {
           "id": 135,
           "name": "パドレス",
@@ -244,20 +250,43 @@
           "players": [
             "松井裕樹"
           ]
-        },
-        {
-          "id": 158,
-          "name": "ブリュワーズ",
-          "wins": 0,
-          "players": []
         }
       ]
     }
   ],
   "final_day": [],
-  "headline": "地区シリーズ ガーディアンズ対ホワイトソックス、10月4日に第1戦",
-  "changes": [],
-  "prev_date": "2026-10-02",
+  "headline": "村上宗隆・西田陸浮のホワイトソックスは地区シリーズでガーディアンズに1勝0敗",
+  "changes": [
+    {
+      "key": "D:114-145",
+      "kind": "game",
+      "text": "村上宗隆・西田陸浮のホワイトソックスは地区シリーズでガーディアンズに1勝0敗",
+      "jp": true,
+      "stage": 2
+    },
+    {
+      "key": "D:119-144",
+      "kind": "game",
+      "text": "大谷翔平・佐々木朗希・山本由伸のドジャースは地区シリーズでブレーブスに1勝0敗",
+      "jp": true,
+      "stage": 2
+    },
+    {
+      "key": "D:135-158",
+      "kind": "game",
+      "text": "松井裕樹のパドレスは地区シリーズでブリュワーズに0勝1敗",
+      "jp": true,
+      "stage": 2
+    },
+    {
+      "key": "D:139-147",
+      "kind": "game",
+      "text": "地区シリーズ レイズが1勝0敗でリード",
+      "jp": false,
+      "stage": 2
+    }
+  ],
+  "prev_date": "2026-10-03",
   "japanese": [
     {
       "team_id": 119,

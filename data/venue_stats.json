@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-10-04T13:01:55.084662+00:00",
+  "updated_at": "2026-10-05T06:01:45.789842+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-10-04",
-  "total_games": 2580,
+  "end": "2026-10-05",
+  "total_games": 2582,
   "min_games": 20,
   "venues": {
     "Sutter Health Park": {
@@ -69,17 +69,17 @@
       "rank": 9,
       "total": 30
     },
-    "American Family Field": {
-      "games": 83,
-      "runs": 742,
-      "avg_runs": 8.94,
-      "rank": 10,
-      "total": 30
-    },
     "Daikin Park": {
       "games": 85,
       "runs": 759,
       "avg_runs": 8.93,
+      "rank": 10,
+      "total": 30
+    },
+    "American Family Field": {
+      "games": 84,
+      "runs": 749,
+      "avg_runs": 8.92,
       "rank": 11,
       "total": 30
     },
@@ -118,23 +118,23 @@
       "rank": 16,
       "total": 30
     },
-    "UNIQLO Field at Dodger Stadium": {
-      "games": 84,
-      "runs": 720,
-      "avg_runs": 8.57,
-      "rank": 17,
-      "total": 30
-    },
     "Oriole Park at Camden Yards": {
       "games": 82,
       "runs": 700,
       "avg_runs": 8.54,
-      "rank": 18,
+      "rank": 17,
       "total": 30
     },
     "Oracle Park": {
       "games": 83,
       "runs": 708,
+      "avg_runs": 8.53,
+      "rank": 18,
+      "total": 30
+    },
+    "UNIQLO Field at Dodger Stadium": {
+      "games": 85,
+      "runs": 725,
       "avg_runs": 8.53,
       "rank": 19,
       "total": 30

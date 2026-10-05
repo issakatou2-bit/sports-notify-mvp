@@ -1,112 +1,116 @@
 {
-  "generated_at": "2026-10-04T06:01:07.204705+00:00",
-  "date_jst": "2026-10-04",
-  "name": "Drew Rasmussen",
-  "player_id": "656876",
-  "team": "レイズ",
-  "group": "pitching",
-  "why": "2026-10-04のMLBで最も活躍",
-  "headline": "8.0回　10奪三振　自責0　1被安打",
-  "score": 179,
+  "generated_at": "2026-10-05T06:01:04.164885+00:00",
+  "date_jst": "2026-10-05",
+  "name": "Freddie Freeman",
+  "player_id": "518692",
+  "team": "ドジャース",
+  "group": "hitting",
+  "why": "2026-10-05のMLBで最も活躍",
+  "headline": "4打数2安打　1本塁打　1打点",
+  "score": 97,
   "bio": {
-    "name_en": "Drew Rasmussen",
-    "age": 31,
-    "birth_city": "Puyallup",
-    "birth_state": "WA",
+    "name_en": "Freddie Freeman",
+    "age": 37,
+    "birth_city": "Villa Park",
+    "birth_state": "CA",
     "birth_country": "USA",
-    "birth_date": "1995-07-27",
-    "debut": "2020-08-19",
-    "draft_year": 2018,
-    "bats": "Right",
+    "birth_date": "1989-09-12",
+    "debut": "2010-09-01",
+    "draft_year": 2007,
+    "bats": "Left",
     "throws": "Right",
-    "number": "57",
-    "position": "Pitcher",
-    "nickname": null,
-    "height": "6' 1\"",
-    "weight": 240
+    "number": "5",
+    "position": "First Base",
+    "nickname": "Phillip",
+    "height": "6' 4\"",
+    "weight": 220
   },
   "teams": [
     {
-      "team": "ブリュワーズ",
-      "from": 2020,
+      "team": "ブレーブス",
+      "from": 2010,
       "to": 2021
     },
     {
-      "team": "レイズ",
-      "from": 2021,
+      "team": "ドジャース",
+      "from": 2022,
       "to": 2026
     }
   ],
   "career": {
-    "games": 160,
-    "wins": 46,
-    "losses": 22,
-    "era": "2.83",
-    "so": 602,
-    "ip": "632.2",
-    "whip": "1.02"
+    "games": 2332,
+    "avg": ".299",
+    "hr": 383,
+    "rbi": 1392,
+    "ops": ".889",
+    "sb": 111,
+    "hits": 2598
   },
   "this_season": {
-    "games": 30,
-    "wins": 16,
-    "losses": 5,
-    "era": "2.67",
-    "so": 174,
-    "ip": "172.0",
-    "whip": "0.91"
+    "games": 153,
+    "avg": ".288",
+    "hr": 16,
+    "rbi": 70,
+    "ops": ".792",
+    "sb": 7,
+    "hits": 167
   },
   "last_season": {
-    "games": 31,
-    "wins": 10,
-    "losses": 5,
-    "era": "2.76",
-    "so": 127,
-    "ip": "150.0",
-    "whip": "1.02"
+    "games": 147,
+    "avg": ".295",
+    "hr": 24,
+    "rbi": 90,
+    "ops": ".869",
+    "sb": 6,
+    "hits": 164
   },
   "recent": [
     {
+      "date": "2026-09-27",
+      "line": "3打数0安打",
+      "opponent": "San Francisco Giants"
+    },
+    {
+      "date": "2026-09-25",
+      "line": "4打数0安打",
+      "opponent": "San Francisco Giants"
+    },
+    {
+      "date": "2026-09-24",
+      "line": "4打数2安打",
+      "opponent": "San Diego Padres"
+    },
+    {
+      "date": "2026-09-23",
+      "line": "5打数0安打",
+      "opponent": "San Diego Padres"
+    },
+    {
       "date": "2026-09-22",
-      "line": "6.2回 自責1 11奪三振",
-      "opponent": "New York Yankees"
-    },
-    {
-      "date": "2026-09-17",
-      "line": "5.0回 自責0 3奪三振",
-      "opponent": "Athletics"
-    },
-    {
-      "date": "2026-09-11",
-      "line": "7.0回 自責1 4奪三振",
-      "opponent": "Houston Astros"
-    },
-    {
-      "date": "2026-09-05",
-      "line": "7.0回 自責1 7奪三振",
-      "opponent": "Texas Rangers"
-    },
-    {
-      "date": "2026-08-30",
-      "line": "6.0回 自責2 6奪三振",
+      "line": "4打数2安打 3打点",
       "opponent": "San Diego Padres"
     }
   ],
   "awards": [
     {
       "season": "2026",
-      "name": "AL All-Star"
-    },
-    {
-      "season": "2026",
-      "name": "AL Pitcher of the Month"
+      "name": "NL All-Star"
     },
     {
       "season": "2025",
-      "name": "AL All-Star"
+      "name": "World Series Championship"
     },
     {
-      "season": "2022",
-      "name": "AL Pitcher of the Month"
+      "season": "2025",
+      "name": "NL All-Star"
+    },
+    {
+      "season": "2025",
+      "name": "NL Player of the Week"
+    },
+    {
+      "season": "2024",
+      "name": "World Series Championship"
     }
   ],
   "quotes": []
