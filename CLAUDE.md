@@ -8,7 +8,13 @@
 
 共有メモ `docs/HANDOFF.md` は、共有コピー（`C:/Users/issak/Desktop/pwa-mvp/docs/HANDOFF.md`）にある1つだけです。枝（`build/wt-*`）や隔離cloneで作業するときもそちらを読み、そちらを更新してください。リポジトリは公開なので、共有メモはコミットしません（2026-09-23、枝側と二重になっていた版を統合）。
 
-## クラウドのセッションとの分担（2026-10-03）
+## 作業の分担（2026-10-05〜、本人の方針）
+
+- **クラウドのセッション（スマホのCode・claude.ai/code）は、現時点では使わない。**下の「クラウドのセッションとの分担」は止めてある（指示書 `docs/Cloud/Cloud-NN.md` は記録として残す）。
+- 作業は **PCのClaude（エマ）・GitHubのOpus作業一覧・GPT（Codex、ヒロ）** で分担する。使用量を食う重い作業は GitHub の Opus 作業一覧（別アカウントの非公開リポジトリ。表に足すと Opus 5.5〔高〕が毎時29分ごろ1つずつ作業し、PRで届く）へ。結果は数時間後なので、急ぎは入れない。Opus への指示書は `docs/Cloud/Opus-NN.md`。
+- 急ぎ・公開前の確認・本番への取り込みは PC の Claude。配信・点検・本番の実装はヒロ（共有メモ `docs/HANDOFF.md` の「ヒロへ」）。
+
+## クラウドのセッションとの分担（2026-10-03）（**10/5〜停止中**）
 
 - スマホの「Code」や claude.ai/code のクラウドのClaudeには、PCが要らない作業（文書・HTMLの手本・調べもの・コードの下書き）を指示書どおりにやってもらう。説明は `docs/Cloud/README.md`。
 - 指示書は `docs/Cloud/Cloud-NN.md`（ひな形 `Cloud-TEMPLATE.md`）。元のブランチは `main`。クラウドは `cloud/NN-*` のブランチで新しいファイルだけを作り、main へのPRで終える。記録は `docs/Cloud/作業記録.md`。
