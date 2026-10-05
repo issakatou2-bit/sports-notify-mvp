@@ -239,5 +239,51 @@ class PostseasonPurposeGuard(unittest.TestCase):
             with self.assertRaises(Exception): guard.sanitize_files(games,feed_path=feed)
             self.assertEqual(games.read_bytes(),before)
 
+class PostseasonDivisionRaceGuard(unittest.TestCase):
+    def test_live_division_race_is_rejected_in_all_rounds(self):
+        for round_code in ('F', 'D', 'L', 'W'):
+            for text in ('ガーディアンズは中地区で首位を守るチーム。',
+                         'ホワイトソックスは2位で1.0ゲーム差に迫り、好調だ。',
+                         'この試合で地区優勝を目指す。'):
+                for field in ('ai_summary', 'notification_hook'):
+                    with self.subTest(round_code=round_code, text=text, field=field):
+                        self.assertTrue(guard.postseason_rejections(
+                            {'league': 'MLB', 'game_type': round_code, field: text}, field))
+
+    def test_series_lead_final_standings_and_history_are_kept(self):
+        for text in ('ホワイトソックスが1勝0敗でリードする地区シリーズ第2戦。',
+                     'レギュラーシーズンは首位を守る戦いだった。',
+                     '昨年は1.0ゲーム差に迫った。',
+                     'レイズは最終成績で東地区首位。',
+                     'レギュラーシーズンで首位を守って地区優勝を決めた。'):
+            self.assertFalse(guard.postseason_rejections(
+                {'league': 'MLB', 'game_type': 'D', 'ai_summary': text}, 'ai_summary'))
+
+    def test_regular_season_and_soccer_are_not_reinterpreted(self):
+        for league, kind in [('MLB', 'R'), ('soccer', 'D'), ('MLB', None)]:
+            self.assertFalse(guard.postseason_rejections(
+                {'league': league, 'game_type': kind, 'ai_summary': '首位を守るチーム。'}, 'ai_summary'))
+
+    def test_only_invalid_summary_is_removed_and_second_run_is_noop(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp)/'games.json'
+            game = {'league': 'MLB', 'game_type': 'D', 'game_id': '849834',
+                    'start_time': '2026-10-06T06:00:00+09:00',
+                    'ai_summary': 'ガーディアンズは中地区で首位を守るチーム。',
+                    'reasons': [{'text': '地区シリーズ第2戦。CWSが1勝0敗。'}],
+                    'notification_hook': '地区シリーズ第2戦'}
+            valid = dict(game, game_id='849839', ai_summary='レイズが1勝0敗でリード。')
+            write_json(p, {'games': [game, valid]})
+            before = p.read_bytes()
+            result = guard.sanitize_files(p)
+            self.assertEqual(result['modified_games'], 1)
+            actual = json.loads(p.read_text(encoding='utf-8'))['games']
+            self.assertEqual(actual[0], {k:v for k,v in game.items() if k != 'ai_summary'})
+            self.assertEqual(actual[1], valid)
+            fixed = p.read_bytes()
+            self.assertEqual(guard.sanitize_files(p)['modified_games'], 0)
+            self.assertEqual(p.read_bytes(), fixed)
+
+
 if __name__ == '__main__':
     unittest.main(argv=['test_game_hook_guard'])
