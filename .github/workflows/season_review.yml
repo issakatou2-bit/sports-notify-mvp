@@ -66,6 +66,14 @@ jobs:
           set -o pipefail
           python scripts/ps_game_story.py --out data/ps_game_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
 
+      # 2勝0敗・0勝2敗になったシリーズ（日本人選手のいる球団）を、過去の同じ状況から。
+      # 次の試合が始まる前だけ。
+      - name: Build PS odds topics
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/ps_odds.py --out data/ps_odds_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Pick today's topics
         id: pick
         run: |
@@ -144,7 +152,7 @@ jobs:
             "season review: ${{ github.run_id }}" \
             data/published_assets.json data/season_topics.json \
             data/ps_story_topics.json data/ps_quotes.json data/ps_game_topics.json \
-            data/player_kana.json
+            data/ps_odds_topics.json data/player_kana.json
 
       - name: Keep the videos
         if: always() && steps.pick.outputs.topics != ''

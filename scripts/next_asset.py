@@ -154,6 +154,10 @@ def season_order(key: str, spec: dict) -> tuple:
     if spec.get("game"):
         # 同じ組の中は試合の早い順（キーの番号順だと10/4は村上の試合が2本目に回った）。
         return (-1, 0 if spec.get("jp_first") else 1, spec.get("game_date") or "", key)
+    # 0勝2敗・2勝0敗の過去の数（ps_odds）は、次の試合の前でないと意味が無い。
+    # 日本人選手の試合の話題の次、それ以外の試合の話題より先。
+    if spec.get("odds"):
+        return (-1, 1, "", key)
     if spec.get("story"):
         return (-1, 2, key)
     return (0 if spec.get("ps_ended") else 1,
