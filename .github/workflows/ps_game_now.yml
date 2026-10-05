@@ -1,0 +1,143 @@
+name: PS 試合の話題（試合のすぐ後に）
+
+# PSの試合の話題を、試合が終わってすぐ出す。
+#
+# - 10/5、本人「試合の話題を試合のすぐ後（お昼すぎ）に出す。可能ならそのほうがいい」。
+#   試合の話題（ps_game_story.py）は初日から970再生前後でいちばん強い型なのに、
+#   夕方のシーズンまとめの枠（16:30〜23:30）で、試合から半日以上たって出ていた。
+#   PSの試合は日本時間の朝〜昼に終わる。
+# - 起動は、毎朝10時の健康診断（cron-job.org から起動する）が終わったら。
+#   GitHub純正の schedule は遅れたり落ちたりする（19:47の配信は10/1〜3に一度も
+#   起動しなかった）ので、1回の起動の中で15時まで見張りを続ける
+#   （公開リポジトリは実行時間が無料）。試合が終わって45分たったら1本ずつ出す。
+# - 15時（UTC 06:00）で止める。残りは夕方のシーズンまとめの枠が拾う。
+#   本数はシーズンまとめの枠と同じ数え方（1日4本）で、昼に出したぶんは夕方から引かれる。
+# - 数字はMLB公式。台詞は材料の写し（AIに書かせない）。検査は機械だけ。
+# - ハイライトのコメント・番記者の投稿・MLB.comの見出しは、出す直前に取り直して
+#   記録にも残す（夕方の4本がいつもどおり取り直すので、上書きされても困らない）。
+
+on:
+  workflow_run:
+    workflows: ["毎朝 10:00　健康診断(前日分)"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      until_utc:
+        description: '見張りを止める時刻（UTC、HH:MM）。既定 06:00 = 日本時間15:00'
+        default: '06:00'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ps-game-now
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+
+      - name: Anything to watch today?
+        id: plan
+        run: |
+          python scripts/ps_game_story.py --out data/ps_game_topics.json > /dev/null 2>&1 || true
+          if python scripts/ps_game_now.py --watch; then
+            echo "go=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=0" >> "$GITHUB_OUTPUT"
+            echo "見張るPSの試合・出す話題がありません" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Install video tools
+        if: steps.plan.outputs.go == '1'
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
+      - name: Start VOICEVOX engine
+        if: steps.plan.outputs.go == '1'
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Watch and publish
+        if: steps.plan.outputs.go == '1'
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          UNTIL_UTC: ${{ inputs.until_utc || '06:00' }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set +e
+          END=$(date -u -d "$(date -u +%F) ${UNTIL_UTC}" +%s)
+          mkdir -p build/asset
+          : > build/failed.txt
+          # いま出せる話題（この起動で1度失敗したものは除く）。
+          pending() {
+            python scripts/ps_game_now.py --due --skip build/failed.txt
+          }
+          while [ "$(date -u +%s)" -lt "$END" ]; do
+            git pull --rebase --autostash --quiet || true
+            python scripts/ps_game_story.py --out data/ps_game_topics.json > /dev/null 2>&1
+            if [ -n "$(pending)" ]; then
+              # 出す直前に、コメント・番記者・見出しを取り直してから材料を作り直す。
+              python scripts/mlb_buzz.py --out data/mlb_buzz.json
+              python scripts/local_voices.py --out data/local_voices.json
+              python scripts/local_reporters.py --out data/local_reporters.json
+              python scripts/ps_quotes.py data/ps_quotes.json
+              python scripts/ps_game_story.py --out data/ps_game_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
+              for t in $(pending); do
+                echo "::group::$t"
+                python scripts/generate_asset_video.py                   --topic "$t" --narration-out "build/narr_$t.json" &&
+                python scripts/sanity.py --strict                   --narration "build/narr_$t.json" &&
+                python scripts/synthesize_narration.py                   --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&
+                python scripts/generate_asset_video.py                   --topic "$t" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
+                bash scripts/shorts_thumbnail.sh                   "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png" &&
+                python scripts/upload_youtube.py                   --video "build/asset_$t/collespo_asset_$t.mp4"                   --kind asset --asset-topic "$t"                   --thumbnail "build/asset_$t/short.png"                   --privacy public
+                if [ $? -eq 0 ]; then
+                  echo "公開: $t" | tee -a "$GITHUB_STEP_SUMMARY"
+                  cp "build/asset_$t/collespo_asset_$t.mp4" build/asset/ 2>/dev/null || true
+                else
+                  # 1度失敗した話題は、この起動の中では繰り返さない（検算の費用を重ねない）。
+                  echo "$t" >> build/failed.txt
+                  echo "::warning::$t を出せませんでした（夕方の枠でもう一度）"
+                fi
+                echo "::endgroup::"
+                bash scripts/commit_data.sh "ps game now: $RUN_ID" data/published_assets.json data/ps_game_topics.json data/ps_quotes.json data/mlb_buzz.json data/local_voices.json data/local_reporters.json
+              done
+            fi
+            python scripts/ps_game_now.py --watch || break
+            sleep 600
+          done
+          exit 0
+
+      - name: Keep the videos
+        if: always() && steps.plan.outputs.go == '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ps-game-now
+          path: build/asset/*.mp4
+          retention-days: 14
+          if-no-files-found: ignore

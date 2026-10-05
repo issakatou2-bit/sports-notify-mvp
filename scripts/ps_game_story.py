@@ -504,6 +504,10 @@ def build(games: list, feeds: dict, voices: dict, quotes: list, headlines=(), no
             print(f"[warn] {g.get('gamePk')} を作れません({e})", file=sys.stderr)
             continue
         if t:
+            # 試合が終わった時刻。昼の見張り（ps_game_now.py）が、終わってから
+            # 何分たったかで出す時を決める。
+            end = finished_at(feed)
+            t["finished_at"] = end.isoformat() if end else None
             out.append(t)
     # 日本人選手が出た試合を先に、その中では早く終わった試合から。
     out.sort(key=lambda t: (not t["jp_first"], t.get("game_date") or ""))
