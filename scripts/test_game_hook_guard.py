@@ -310,5 +310,36 @@ class PostseasonStreakGuard(unittest.TestCase):
                 self.assertFalse(guard.postseason_rejections(candidate,'notification_hook'))
 
 
+
+class PostseasonRecentFormGuard(unittest.TestCase):
+    def test_october_6_public_lad_summary_is_rejected(self):
+        text = '【100勝62敗で地区優勝のドジャース】は3連勝中、直近10試合で8勝2敗と勢いに乗っている。シリーズは1勝1敗。'
+        for field in ('ai_summary', 'notification_hook'):
+            game = {'league':'MLB', 'game_type':'D', field:text}
+            self.assertTrue(guard.postseason_rejections(game, field))
+
+    def test_each_round_bare_recent_wins_losses_need_period(self):
+        for kind in ('F','D','L','W'):
+            for text in ('ドジャースは3連勝中。','パドレスは2連敗中。','ブレーブスは直近10試合が5勝5敗。'):
+                self.assertTrue(guard.postseason_rejections({'league':'MLB','game_type':kind,'ai_summary':text}, 'ai_summary'))
+
+    def test_scoped_ps_history_and_cross_round_streak_are_kept(self):
+        for text in ('レギュラーシーズン終盤は3連勝中だった。',
+                     'レギュラーシーズンの直近10試合は8勝2敗。',
+                     'ホワイトソックスはポストシーズンで4連勝中。',
+                     'PSでは4連勝中、地区シリーズは2勝0敗。',
+                     '昨年は3連勝中だった。', 'シリーズは1勝1敗。'):
+            self.assertFalse(guard.postseason_rejections({'league':'MLB','game_type':'D','ai_summary':text}, 'ai_summary'))
+
+    def test_unrelated_clinch_clause_does_not_license_current_form(self):
+        self.assertTrue(guard.postseason_rejections({'league':'MLB','game_type':'D',
+            'ai_summary':'ドジャースは地区優勝を決めた強豪であり、3連勝中だ。'}, 'ai_summary'))
+
+    def test_soccer_regular_season_and_player_hits_are_unchanged(self):
+        for league, kind, text in [('soccer','D','3連勝中、直近10試合で8勝2敗。'),
+                                  ('MLB','R','3連勝中、直近10試合で8勝2敗。'),
+                                  ('MLB','D','村上は4試合連続安打中。')]:
+            self.assertFalse(guard.postseason_rejections({'league':league,'game_type':kind,'ai_summary':text}, 'ai_summary'))
+
 if __name__ == '__main__':
     unittest.main(argv=['test_game_hook_guard'])
