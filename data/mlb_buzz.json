@@ -1,250 +1,13 @@
 {
-  "updated_at": "2026-10-05T06:01:48.464315+00:00",
+  "updated_at": "2026-10-06T01:03:35.553929+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "CGqnaMVxyI8",
-      "title": "PADRES vs. BREWERS: NLDS Full Game 1 Highlights (October 3) | 2026 MLB Season",
-      "published_at": "2026-10-04T04:35:08Z",
-      "views": 1252420,
-      "matchup": "PADRES vs. BREWERS",
-      "game_date": "2026-10-03",
-      "result": {
-        "away_jp": "パドレス",
-        "home_jp": "ブリュワーズ",
-        "away_score": 2,
-        "home_score": 3,
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 2,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 2
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": null
-          }
-        ],
-        "away_hits": 9,
-        "away_errors": 1,
-        "home_hits": 7,
-        "home_errors": 0,
-        "star_name": "Jackson Chourio",
-        "star_line": "4打数1安打 2打点 1本塁打",
-        "star_team": "ブリュワーズ",
-        "away_starter": {
-          "name": "Robbie Ray",
-          "team": "パドレス",
-          "line": "2.2回 1奪三振 自責2"
-        },
-        "home_starter": {
-          "name": "Jacob Misiorowski",
-          "team": "ブリュワーズ",
-          "line": "4.0回 6奪三振 自責2"
-        }
-      },
-      "topic_jp": "パドレス 対 ブリュワーズ"
-    },
-    {
-      "video_id": "Sp98vsSa3-s",
-      "title": "YANKEES vs. RAYS: ALDS Full Game 1 Highlights (October 3) | 2026 MLB Season",
-      "published_at": "2026-10-04T01:29:32Z",
-      "views": 1187926,
-      "matchup": "YANKEES vs. RAYS",
-      "game_date": "2026-10-03",
-      "result": {
-        "away_jp": "ヤンキース",
-        "home_jp": "レイズ",
-        "away_score": 0,
-        "home_score": 1,
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": null
-          }
-        ],
-        "away_hits": 1,
-        "away_errors": 0,
-        "home_hits": 5,
-        "home_errors": 0,
-        "star_name": "Drew Rasmussen",
-        "star_line": "8.0回 10奪三振 自責0",
-        "star_team": "レイズ",
-        "away_starter": {
-          "name": "Gerrit Cole",
-          "team": "ヤンキース",
-          "line": "5.0回 5奪三振 自責1　敗戦投手（通算0勝1敗）"
-        },
-        "home_starter": {
-          "name": "Drew Rasmussen",
-          "team": "レイズ",
-          "line": "8.0回 10奪三振 自責0　勝利投手（通算1勝0敗）"
-        }
-      },
-      "topic_jp": "ヤンキース 対 レイズ"
-    },
-    {
-      "video_id": "X4-UPiCQ5s0",
-      "title": "PADRES vs. BREWERS: NLDS Full Game 2 Highlights (October 4) | 2026 MLB Season",
-      "published_at": "2026-10-05T00:06:47Z",
-      "views": 672284,
-      "matchup": "PADRES vs. BREWERS",
-      "game_date": "2026-10-04",
-      "result": {
-        "away_jp": "パドレス",
-        "home_jp": "ブリュワーズ",
-        "away_score": 3,
-        "home_score": 4,
-        "innings": [
-          {
-            "num": 1,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 1,
-            "home": 1
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 1,
-            "home": 1
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": 2
-          }
-        ],
-        "away_hits": 5,
-        "away_errors": 2,
-        "home_hits": 5,
-        "home_errors": 3,
-        "star_name": "Michael King",
-        "star_line": "5.0回 6奪三振 自責1",
-        "star_team": "パドレス",
-        "away_starter": {
-          "name": "Michael King",
-          "team": "パドレス",
-          "line": "5.0回 6奪三振 自責1"
-        },
-        "home_starter": {
-          "name": "Logan Henderson",
-          "team": "ブリュワーズ",
-          "line": "5.0回 4奪三振 自責1"
-        }
-      },
-      "topic_jp": "パドレス 対 ブリュワーズ"
-    },
-    {
       "video_id": "jBDL7ltkOz0",
       "title": "BRAVES vs. DODGERS: NLDS Full Game 2 Highlights (October 4) | 2026 MLB Season",
       "published_at": "2026-10-05T03:56:06Z",
-      "views": 49857,
+      "views": 1784383,
       "matchup": "BRAVES vs. DODGERS",
       "game_date": "2026-10-04",
       "result": {
@@ -320,99 +83,266 @@
       "topic_jp": "ブレーブス 対 ドジャース"
     },
     {
-      "video_id": "AB89FPzusQg",
-      "title": "The Padres strike first with two runs against Jacob Misiorowski! 😤 | MLB Highlights",
-      "published_at": "2026-10-04T01:35:07Z",
-      "views": 208952,
+      "video_id": "X4-UPiCQ5s0",
+      "title": "PADRES vs. BREWERS: NLDS Full Game 2 Highlights (October 4) | 2026 MLB Season",
+      "published_at": "2026-10-05T00:06:47Z",
+      "views": 1223607,
+      "matchup": "PADRES vs. BREWERS",
+      "game_date": "2026-10-04",
+      "result": {
+        "away_jp": "パドレス",
+        "home_jp": "ブリュワーズ",
+        "away_score": 3,
+        "home_score": 4,
+        "innings": [
+          {
+            "num": 1,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 1,
+            "home": 1
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 1,
+            "home": 1
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": 2
+          }
+        ],
+        "away_hits": 5,
+        "away_errors": 2,
+        "home_hits": 5,
+        "home_errors": 3,
+        "star_name": "Michael King",
+        "star_line": "5.0回 6奪三振 自責1",
+        "star_team": "パドレス",
+        "away_starter": {
+          "name": "Michael King",
+          "team": "パドレス",
+          "line": "5.0回 6奪三振 自責1"
+        },
+        "home_starter": {
+          "name": "Logan Henderson",
+          "team": "ブリュワーズ",
+          "line": "5.0回 4奪三振 自責1"
+        }
+      },
+      "topic_jp": "パドレス 対 ブリュワーズ"
+    },
+    {
+      "video_id": "LtEYf0hF3i8",
+      "title": "WHITE SOX vs. GUARDIANS: ALDS Full Game 2 Highlights (October 5) | 2026 MLB Postseason",
+      "published_at": "2026-10-06T00:38:18Z",
+      "views": 11315,
+      "matchup": "WHITE SOX vs. GUARDIANS",
+      "game_date": "2026-10-05",
+      "result": {
+        "away_jp": "ホワイトソックス",
+        "home_jp": "ガーディアンズ",
+        "away_score": 4,
+        "home_score": 3,
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 2
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 3,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": 0
+          }
+        ],
+        "away_hits": 6,
+        "away_errors": 1,
+        "home_hits": 4,
+        "home_errors": 1,
+        "star_name": "Gavin Williams",
+        "star_line": "5.0回 11奪三振 自責2",
+        "star_team": "ガーディアンズ",
+        "away_starter": {
+          "name": "Anthony Kay",
+          "team": "ホワイトソックス",
+          "line": "0.1回 0奪三振 自責1"
+        },
+        "home_starter": {
+          "name": "Gavin Williams",
+          "team": "ガーディアンズ",
+          "line": "5.0回 11奪三振 自責2"
+        }
+      },
+      "topic_jp": "ホワイトソックス 対 ガーディアンズ"
+    },
+    {
+      "video_id": "-mVYHLeJxF0",
+      "title": "FULL INNING: Edwin Díaz pitches a scoreless inning in his Dodgers Postseason debut! 🎺 MLB Highlights",
+      "published_at": "2026-10-05T02:18:41Z",
+      "views": 241498,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "パドレスがヤコブ・ミシオロフスキーから2点を先制した。"
+      "topic_jp": "FULL INNING: Edwin Díaz pitches a scoreless inning in his Dodgers Postseason debut! 🎺 MLB Highlights"
+    },
+    {
+      "video_id": "i5krLq0HWYw",
+      "title": "FULL INNING: Braves load the bases vs. Blake Snell and the Los Angeles Dodgers! 👀 | MLB Highlights",
+      "published_at": "2026-10-05T00:27:23Z",
+      "views": 236672,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "ブレーブスがブレイク・スネルとドジャーズ戦で満塁にする。"
     }
   ],
   "all": [
     {
-      "video_id": "CGqnaMVxyI8",
-      "matchup": "PADRES vs. BREWERS",
-      "game_date": "2026-10-03",
-      "views": 1252420
-    },
-    {
-      "video_id": "Sp98vsSa3-s",
-      "matchup": "YANKEES vs. RAYS",
-      "game_date": "2026-10-03",
-      "views": 1187926
+      "video_id": "jBDL7ltkOz0",
+      "matchup": "BRAVES vs. DODGERS",
+      "game_date": "2026-10-04",
+      "views": 1784383
     },
     {
       "video_id": "X4-UPiCQ5s0",
       "matchup": "PADRES vs. BREWERS",
       "game_date": "2026-10-04",
-      "views": 672284
+      "views": 1223607
     },
     {
-      "video_id": "jBDL7ltkOz0",
-      "matchup": "BRAVES vs. DODGERS",
-      "game_date": "2026-10-04",
-      "views": 49857
-    },
-    {
-      "video_id": "AB89FPzusQg",
-      "matchup": "",
-      "game_date": "",
-      "views": 208952
-    },
-    {
-      "video_id": "i5krLq0HWYw",
-      "matchup": "",
-      "game_date": "",
-      "views": 197433
+      "video_id": "LtEYf0hF3i8",
+      "matchup": "WHITE SOX vs. GUARDIANS",
+      "game_date": "2026-10-05",
+      "views": 11315
     },
     {
       "video_id": "-mVYHLeJxF0",
       "matchup": "",
       "game_date": "",
-      "views": 145781
+      "views": 241498
+    },
+    {
+      "video_id": "i5krLq0HWYw",
+      "matchup": "",
+      "game_date": "",
+      "views": 236672
     },
     {
       "video_id": "fRvbxLhAM7A",
       "matchup": "",
       "game_date": "",
-      "views": 130817
+      "views": 155220
     },
     {
       "video_id": "Zmm1gMZlcYw",
       "matchup": "",
       "game_date": "",
-      "views": 47358
+      "views": 96614
     },
     {
-      "video_id": "7iHfHJO2egw",
+      "video_id": "IB3k8ILJKys",
       "matchup": "",
       "game_date": "",
-      "views": 40430
+      "views": 87782
     },
     {
-      "video_id": "yXqYe4iGhRI",
+      "video_id": "x-P-K2itFuA",
       "matchup": "",
       "game_date": "",
-      "views": 35646
-    },
-    {
-      "video_id": "UeyzAjk01aU",
-      "matchup": "",
-      "game_date": "",
-      "views": 30019
+      "views": 43350
     },
     {
       "video_id": "HeuviOG5264",
       "matchup": "",
       "game_date": "",
-      "views": 4807
+      "views": 38728
+    },
+    {
+      "video_id": "rE4m_uL9G6Q",
+      "matchup": "",
+      "game_date": "",
+      "views": 19648
     },
     {
       "video_id": "C6bxUxskPCM",
       "matchup": "",
       "game_date": "",
-      "views": 3316
+      "views": 18924
+    },
+    {
+      "video_id": "FWq-0wCToSQ",
+      "matchup": "",
+      "game_date": "",
+      "views": 14465
+    },
+    {
+      "video_id": "BrHLx6PrGfE",
+      "matchup": "",
+      "game_date": "",
+      "views": 3653
     }
   ]
 }
