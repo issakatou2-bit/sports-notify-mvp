@@ -300,7 +300,198 @@ def everyday():
     return loop_finish(mix, nbar * bar, wet=0.18, sec=1.6, sub_cut=-8), "日常",         "104 BPM・ハ長調。マリンバ（VSCOの録音）が旋律を奏で、後半は鉄琴が重なる。弦のピチカートの軽い和音、低いピチカート、シェイカーと小さな手拍子。C→Am→F→G。軽くてあっさり。"
 
 
-ALL = ["everyday", "nighter", "scoreboard", "dugout", "comeback"]
+# ------------------------------------------------------------------ おしゃれ・ライト（10/7）
+# 本人「かわいすぎる。YouTubeで聞くフリーBGMみたいな、おしゃれでライトで、邪魔をしない感じ」。
+# 共通: 7th・9th の和音（エレピ）で色を出し、旋律は短い合いの手だけ。鈴・口笛・鉄琴は使わない。
+
+def _st(x):
+    """(2, n) のステレオを (n, 2) に。"""
+    return x.T if x.ndim == 2 and x.shape[0] == 2 else x
+
+
+def mute_guitar(notes, dur, v=0.6, seed=0):
+    """カッティングのギター（はじく計算・短く止める）。"""
+    n = int((dur + 0.05) * SR)
+    out = np.zeros(n)
+    r = np.random.default_rng(seed)
+    for k, m in enumerate(notes):
+        f = 440 * 2 ** ((m - 69) / 12)
+        L = max(int(SR / f), 2)
+        buf = r.uniform(-1, 1, L)
+        y = np.zeros(n)
+        for i in range(n):
+            y[i] = buf[i % L]
+            buf[i % L] = 0.5 * (buf[i % L] + buf[(i + 1) % L]) * 0.985
+        d = int(k * 0.004 * SR)
+        out[d:] += y[:n - d]
+    env = np.exp(-np.arange(n) / (0.045 * SR))
+    out = sosfilt(butter(2, [250, 3500], "bandpass", fs=SR, output="sos"), out * env)
+    return out / (np.max(np.abs(out)) + 1e-9) * v
+
+
+def ep_chord(notes, dur, v=0.5):
+    return sum(bgm.rhodes(m, dur, v) for m in notes) / len(notes)
+
+
+def chillhouse():
+    """チルハウス：エレピの裏打ちと、ふくらむ下地、やわらかい四つ打ち。"""
+    bpm, nbar = 118, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 4) * SR)
+    mix = np.zeros((n, 2))
+    # B♭maj9 → Am7 → Gm9 → C9sus4（ヘ長調）
+    prog = [(46, [57, 60, 62, 65]), (45, [55, 60, 64, 67]), (43, [57, 58, 62, 65]), (48, [58, 62, 65, 67])]
+    for bi in range(nbar):
+        root, ch = prog[bi % 4]
+        t0 = bi * bar
+        gs.put(mix, pad(ch, bar), t0, 0.12)
+        for st in (0.5, 1.5, 2.5, 3.0, 3.5):
+            gs.put(mix, ep_chord(ch, b * 0.35, .55), t0 + st * b, 0.30, -0.2 if st % 1 else 0.2)
+        if bi % 2 == 1 and bi >= 4:                               # 2小節に1度、短い合いの手
+            for k, m in enumerate((ch[-1] + 5, ch[-1] + 7, ch[-1] + 3)):
+                gs.put(mix, _st(bgm.synth_arp(m, b * 0.4, .6, bi * 3 + k)), t0 + (2 + k * 0.5) * b, 0.10)
+    mix *= gs.pump(n, b, depth=0.35)
+    ev = []
+    for bi in range(nbar):
+        root = prog[bi % 4][0]
+        for st, d in ((0, 0.75), (1.5, 0.4), (2, 0.75), (3.5, 0.4)):
+            ev.append((int((bi * bar + st * b) * SR), int(d * b * SR), root, 0.5, 0, 0))
+    bass = sosfilt(butter(2, 700, "lowpass", fs=SR, output="sos"), Bass(SR).render(ev, n))
+    gs.put(mix, bass, 0, 0.26)
+    for bi in range(nbar):
+        t0 = bi * bar
+        for q in range(4):
+            if bi >= 2:
+                gs.put(mix, ml.kick(0.22) * 0.6, t0 + q * b, 0.22)
+            gs.put(mix, ml.hat(False, 0.5), t0 + q * b + b / 2, 0.06, 0.3)
+        if bi >= 4:
+            for q in (1, 3):
+                gs.put(mix, ml.clap(), t0 + q * b, 0.07)
+    return loop_finish(mix, nbar * bar, wet=0.2, sec=1.8, sub_cut=-8), "チルハウス", \
+        "118 BPM・ヘ長調。エレピの7th・9thの和音を裏打ちで刻み、下地がキックに合わせてふわっと沈む。やわらかい四つ打ち。合いの手は2小節に1度だけ。おしゃれ系フリーBGMの定番の方向。"
+
+
+def jazzhop():
+    """ジャズホップ：エレピの和音、ゆるく跳ねるドラム、少しのレコードの音。"""
+    bpm, nbar = 86, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 4) * SR)
+    mix = np.zeros((n, 2))
+    sw = b / 2 * 0.6
+    # E♭maj9 → Dm7 → Gm9 → C13（変ロ長調）
+    prog = [(39, [55, 58, 62, 65]), (38, [57, 60, 62, 65]), (43, [57, 58, 62, 65]), (36, [58, 62, 64, 69])]
+    for bi in range(nbar):
+        root, ch = prog[bi % 4]
+        t0 = bi * bar
+        gs.put(mix, ep_chord(ch, b * 1.8, .5), t0, 0.42, -0.15)
+        gs.put(mix, ep_chord(ch[1:], b * 0.6, .4), t0 + 2 * b + sw, 0.28, 0.15)
+        if bi % 4 == 3:                                           # 4小節ごとの短いフレーズ
+            for k, m in enumerate((ch[-1] + 2, ch[-1], ch[-2] + 2)):
+                gs.put(mix, bgm.rhodes(m + 12, b * 0.4, .45), t0 + 3 * b + k * sw * 0.8, 0.18, 0.3)
+    ev = []
+    for bi in range(nbar):
+        root = prog[bi % 4][0]
+        for st, d, off in ((0, 1.4, 0), (1.5 + 0.1, 0.4, 0), (2.5 + 0.1, 0.9, 7)):
+            ev.append((int((bi * bar + st * b) * SR), int(d * b * SR), root + off, 0.5, 0, 0))
+    bass = sosfilt(butter(2, 650, "lowpass", fs=SR, output="sos"), Bass(SR).render(ev, n))
+    gs.put(mix, bass, 0, 0.3)
+    for bi in range(nbar):
+        t0 = bi * bar
+        for st in (0, 1.5 + 0.1, 2.5):
+            gs.put(mix, ml.kick(0.25) * 0.6, t0 + st * b, 0.25)
+        for st in (1, 3):
+            s_ = sosfilt(butter(2, 3200, "lowpass", fs=SR, output="sos"), ml.snare())
+            gs.put(mix, s_, t0 + st * b, 0.13)
+        for q in range(4):
+            gs.put(mix, ml.hat(False, 0.5), t0 + q * b, 0.045, 0.25)
+            gs.put(mix, ml.hat(False, 0.35), t0 + q * b + sw, 0.03, 0.25)
+    cr = np.zeros(n)
+    idx = rng.integers(0, n, int(n / SR * 4))
+    cr[idx] = rng.standard_normal(len(idx)) * 0.5
+    cr = sosfilt(butter(2, [1500, 7000], "bandpass", fs=SR, output="sos"), cr)
+    mix += gs.stereo(cr, 0) * 0.08
+    return loop_finish(mix, nbar * bar, wet=0.22, sec=2.0, sub_cut=-8), "ジャズホップ", \
+        "86 BPM・変ロ長調。エレピのジャズっぽい和音（E♭maj9→Dm7→Gm9→C13）、ゆるく跳ねるドラム、丸いベース、ほんの少しのレコードの音。落ち着いた話の回に。"
+
+
+def funklight():
+    """ファンクライト：ギターのカッティングと、はずむベース。軽いシティポップ寄り。"""
+    bpm, nbar = 108, 16
+    b = 60 / bpm
+    bar = 4 * b
+    s16 = b / 4
+    n = int((nbar * bar + 4) * SR)
+    mix = np.zeros((n, 2))
+    # Dmaj9 → Bm11 → Em9 → A13（ニ長調）
+    prog = [(38, [57, 61, 64, 66], [66, 69, 73]), (35, [57, 62, 64, 69], [64, 69, 74]),
+            (40, [55, 59, 62, 66], [62, 66, 71]), (45, [55, 61, 66, 67], [61, 66, 67])]
+    cut = [2, 6, 7, 10, 14]
+    for bi in range(nbar):
+        root, ch, top = prog[bi % 4]
+        t0 = bi * bar
+        gs.put(mix, ep_chord(ch, b * 3.6, .35), t0, 0.22, -0.3)
+        for k, st in enumerate(cut):
+            gs.put(mix, mute_guitar([m - 12 for m in top], s16 * 0.9, .7, bi * 16 + k), t0 + st * s16, 0.16, 0.35)
+    ev = []
+    pat = [(0, 0), (3, 12), (6, 0), (8, 0), (10, 12), (11, 0), (14, 7)]
+    for bi in range(nbar):
+        root = prog[bi % 4][0]
+        for st, off in pat:
+            ev.append((int((bi * bar + st * s16) * SR), int(s16 * 1.6 * SR), root + off, 0.6, 0, 0))
+    bass = sosfilt(butter(2, 1100, "lowpass", fs=SR, output="sos"), Bass(SR).render(ev, n))
+    gs.put(mix, bass, 0, 0.3)
+    for bi in range(nbar):
+        t0 = bi * bar
+        for st in (0, 1.75, 2.5):
+            gs.put(mix, ml.kick(0.22) * 0.6, t0 + st * b, 0.22)
+        for st in (1, 3):
+            gs.put(mix, ml.clap(), t0 + st * b, 0.1)
+        for q in range(16):
+            gs.put(mix, ml.hat(False, 0.5 if q % 2 else 0.3), t0 + q * s16, 0.03, 0.3)
+    return loop_finish(mix, nbar * bar, wet=0.16, sec=1.5, sub_cut=-8), "ファンクライト", \
+        "108 BPM・ニ長調。きれいな音のギターのカッティング（16分の裏）、はずむベース、エレピの和音、手拍子。軽いシティポップ寄りで、スポーツの話題に勢いが出る。"
+
+
+def futurepop():
+    """フューチャーポップ：沈む和音のシンセと、軽いスネア。明るく今っぽい。"""
+    bpm, nbar = 100, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 4) * SR)
+    mix = np.zeros((n, 2))
+    # Fmaj7 → G6 → Em7 → Am9（ハ長調）
+    prog = [(41, [57, 60, 64, 65]), (43, [59, 62, 64, 67]), (40, [55, 59, 62, 64]), (45, [55, 59, 60, 64])]
+    for bi in range(nbar):
+        root, ch = prog[bi % 4]
+        t0 = bi * bar
+        for st in (0, 0.75, 1.5, 2.5, 3.25):
+            gs.put(mix, _st(bgm.supersaw(ch, b * 0.5, .8, bi * 8 + int(st * 4))), t0 + st * b, 0.7)
+        if bi >= 8 and bi % 2 == 0:
+            for k, m in enumerate((ch[-1] + 12, ch[-2] + 12, ch[-1] + 10)):
+                gs.put(mix, bgm.pluck(m - 12, .5, bi * 3 + k), t0 + (1 + k * 0.5) * b, 0.08, 0.3 - 0.3 * k)
+    mix *= gs.pump(n, b, depth=0.6)
+    t = np.arange(n) / SR
+    sub = np.zeros(n)
+    for bi in range(nbar):
+        root = prog[bi % 4][0]
+        a, z = int(bi * bar * SR), int((bi + 1) * bar * SR)
+        sub[a:z] = np.sin(2 * np.pi * 440 * 2 ** ((root - 69) / 12) * t[a:z])
+    gs.put(mix, sub * gs.pump(n, b, depth=0.8)[:, 0], 0, 0.12)
+    for bi in range(nbar):
+        t0 = bi * bar
+        for q in range(4):
+            gs.put(mix, ml.kick(0.2) * 0.6, t0 + q * b, 0.2)
+            gs.put(mix, ml.hat(False, 0.45), t0 + q * b + b / 2, 0.05, 0.3)
+        for q in (1, 3):
+            gs.put(mix, ml.snare(), t0 + q * b, 0.1)
+            gs.put(mix, ml.clap(), t0 + q * b, 0.06)
+    return loop_finish(mix, nbar * bar, wet=0.2, sec=1.6, sub_cut=-8), "フューチャーポップ", \
+        "100 BPM・ハ長調。キックに合わせて沈むシンセの和音（Fmaj7→G6→Em7→Am9）、軽いスネアと手拍子、後半だけ短いはじく音の合いの手。明るく今っぽい。"
+
+
+ALL = ["chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
 
 
 def main():
