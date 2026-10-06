@@ -1658,9 +1658,10 @@ def render_v3(t, kind, meta, spec, topic):
 
 
 BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"
-# 既定のBGM。10/6夜 本人「日常もちょっと違う。YouTubeのBGMに使われても違和感ない、ライトな感じ」
-# → 本人が選ぶまでは BGM なし（効果音だけ）。選んだら名前を入れる（assets/bgm/<名前>.mp3）。
-DEFAULT_BGM = ""
+# 既定のBGM（assets/bgm/<名前>.mp3。空ならBGMなし）。
+# 10/6夜 本人: めたん版の試作（「日常」入り）を「一旦これを完成としていい」。
+# ただし曲は「もっとライトで、YouTubeのBGMに使われても違和感ない感じ」が理想 → 候補を作り中。
+DEFAULT_BGM = "everyday"
 
 
 def add_sound(audio_path, segs, durations, spec, topic, out_dir):
