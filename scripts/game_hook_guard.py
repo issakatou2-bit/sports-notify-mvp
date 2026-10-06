@@ -16,7 +16,7 @@ import tempfile
 
 
 GUARDED_TERMS = ('守護神', 'クローザー', 'ストッパー', '決定戦')
-SCOPE = 'hookの4表現とMLB PS試合の進出目的・現在の地区順位争いの齟齬。公式照合・全本文の意味検査ではない'
+SCOPE = 'hookの4表現とMLB PS試合の進出目的・現在の地区順位争い・期間不明の直近成績の齟齬。公式照合・全本文の意味検査ではない'
 PS_ROUNDS = {'F', 'D', 'L', 'W'}
 PS_ENTRY = re.compile(r'ポストシーズン(?:への|へ)?進出(?:をかけ|を賭け|を懸け|を決め|がかか)')
 # A playoff series has wins, not a live regular-season division race.
@@ -25,6 +25,11 @@ PS_DIVISION_RACE = re.compile(
     r'(?:首位|[1-6一二三四五六]位)を(?:守る|維持して|キープ)'
     r'|ゲーム差.{0,12}(?:迫|詰め|縮め|追)'
     r'|(?:地区優勝|地区首位|地区の首位)(?:争い|を目指|を狙)')
+# Standings recent form ends with the regular season. Require a named period
+# before reusing it during playoffs; this does not calculate a PS winning streak.
+PS_RECENT_FORM = re.compile(r'[0-9０-９]+連(?:勝|敗)中|直近[0-9０-９]+試合(?:は|が|で)')
+PS_FORM_PERIOD = re.compile(r'レギュラーシーズン|シーズン(?:の)?(?:終盤|終了|最後)|ポストシーズン(?:で|では|の)|PS(?:で|では|の)|(?:WCS|DS|LCS|WS|ワイルドカードシリーズ|地区シリーズ|リーグ優勝決定シリーズ|ワールドシリーズ)(?:で|では|の)')
+PS_FORM_PAST = re.compile(r'昨年|去年|前年|先週|先月|だった|終えた')
 PS_HISTORY = re.compile(r'昨年|去年|前年|先週|先月|終了時|最終成績|だった|終えた|決めた')
 
 
@@ -44,6 +49,9 @@ def postseason_rejections(game, field):
     rejected = ['PSの試合は既にPS進出済み。今の試合をPS進出のためとする表現は出さない'] if bad else []
     if any(PS_DIVISION_RACE.search(c) and not PS_HISTORY.search(c) for c in clauses):
         rejected.append('PS期間に終了済みの地区順位争いを現在進行形で説明しない')
+    if any(PS_RECENT_FORM.search(c) and not PS_FORM_PERIOD.search(c)
+           and not PS_FORM_PAST.search(c) for c in clauses):
+        rejected.append('PS期間の連勝/直近成績は対象期間を明記。順位表の最終値を現在の勢いにしない')
     # With no series wins, the named team cannot extend a winning streak.
     # Do not infer recent form from regular-season standings or unknown context.
     context = game.get('series_context')
