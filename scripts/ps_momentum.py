@@ -112,6 +112,57 @@ def history_line(records: list):
     return None
 
 
+def clinches(schedule: dict, tid: int) -> list:
+    """その年のシリーズで、その球団が突破を決めた試合 [(日付, シリーズ名, 本拠地か)]。
+
+    シリーズは (gameType, seriesDescription) でまとめる。勝者の無い行（延期・引き分け）は数えない。
+    まだ終わっていない試合のあるシリーズは数えない。
+    """
+    groups = {}
+    for g in team_games(schedule, tid):
+        groups.setdefault((g.get("gameType"), g.get("seriesDescription") or ""), []).append(g)
+    out = []
+    for (_, desc), games in groups.items():
+        if any((g.get("status") or {}).get("abstractGameState") != "Final" for g in games):
+            continue
+        done = finals(games)
+        if not done:
+            continue
+        me = lambda g: "away" if g["teams"]["away"]["team"]["id"] == tid else "home"  # noqa: E731
+        wins = sum(1 for g in done if g["teams"][me(g)].get("isWinner"))
+        if wins * 2 <= len(done) or not done[-1]["teams"][me(done[-1])].get("isWinner"):
+            continue
+        out.append(((done[-1].get("gameDate") or "")[:10], desc, me(done[-1]) == "home"))
+    return out
+
+
+def last_home_clinch(tid: int, season: int, get=None, first: int = 1903):
+    """本拠地でシリーズ突破を最後に決めた (年, シリーズ名)。見つからなければ None（言わない）。"""
+    get = get or _get
+    for y in range(season, first - 1, -1):
+        sched = get("/v1/schedule", sportId=1, season=y, gameType=",".join(PS_TYPES), teamId=tid)
+        home = [c for c in clinches(sched, tid) if c[2]]
+        if home:
+            return y, max(home)[1]
+    return None
+
+
+SERIES_JP = {"World Series": "ワールドシリーズ優勝"}
+
+
+def home_clinch_line(found, season: int):
+    """「勝てば」の一言。20年以上空いているときだけ（それより近いなら珍しくない）。"""
+    if not found or season - found[0] < 20:
+        return None
+    y, desc = found
+    name = SERIES_JP.get(desc)
+    if not name:
+        name = ("リーグ優勝決定シリーズ" if "Championship" in desc else
+                "地区シリーズ" if "Division" in desc else
+                "ワイルドカードシリーズ" if "Wild Card" in desc else "ポストシーズン")
+    return f"本拠地でのシリーズ突破は、{y}年の{name}以来{season - y}年ぶり"
+
+
 def jp_lines(boxes: list, tid: int, jp: dict) -> list:
     """日本人選手のこのポストシーズンの通算（試合の成績表を足す）。出場した選手だけ。"""
     tot = {}
@@ -157,7 +208,8 @@ def jp_lines(boxes: list, tid: int, jp: dict) -> list:
 
 
 def story(team: dict, series: dict, games: list, boxes: list, last_feed: dict, records: list,
-          now: datetime, voices: dict, quotes: list, table: dict, jp: dict, current: str = "") -> dict:
+          now: datetime, voices: dict, quotes: list, table: dict, jp: dict, current: str = "",
+          home_clinch=None) -> dict:
     tid = team["id"]
     s = streak(games, tid)
     if s["streak"] < MIN_STREAK or not team.get("players"):
@@ -204,6 +256,10 @@ def story(team: dict, series: dict, games: list, boxes: list, last_feed: dict, r
     items.append(("次の試合", f"日本時間{ps_odds.jst_label(nxt['gameDate'])}　"
                              f"{'本拠地' if home else '敵地'}で{series.get('round_jp') or ''}"
                              f"第{nxt.get('seriesGameNumber') or (s['wins'] + s['losses'] + 1)}戦{clinch}"))
+    season = int((nxt.get("gameDate") or "0000")[:4])
+    rare = home_clinch_line(home_clinch, season) if clinch and home else None
+    if rare:
+        items.append(("勝てば", rare))
     # 声（最後の試合の後のもの）
     after = (s["games"][-1].get("gameDate") or "")[:19]
     words = gs.team_words(last_feed) if last_feed else {}
@@ -219,7 +275,8 @@ def story(team: dict, series: dict, games: list, boxes: list, last_feed: dict, r
             source = q
     import notability_engine as ne
     head = f"{jpn}の{name}がポストシーズン{n}連勝"
-    title = f"【MLB】{head}｜{where} #Shorts"
+    hook2 = f"勝てば本拠地で{season - home_clinch[0]}年ぶりの突破" if rare else where
+    title = f"【MLB】{head}｜{hook2} #Shorts"
     intro = f"{jpn}の{name}は、このポストシーズン{n}連勝。" + (
         f"{n}試合すべて敵地での勝利です。" if road == n else f"そのうち{road}勝は敵地です。")
     key = "season_momentum_" + re.sub(r"[^0-9A-Za-z]", "_", series.get("key") or str(tid)) + f"_{tid}"
@@ -230,6 +287,7 @@ def story(team: dict, series: dict, games: list, boxes: list, last_feed: dict, r
         "title": title, "items": items, "japanese": [], "ps_ended": True, "story": True,
         "momentum": True, "source": source, "voice": voice, "series_key": series.get("key"),
         "next_game": nxt["gameDate"], "streak": n, "road": road,
+        "home_clinch": list(home_clinch) if rare else None,
     }
 
 
@@ -280,7 +338,17 @@ def main() -> int:
                 me = next((t for rec in cur.get("records") or [] for t in rec.get("teamRecords") or []
                            if t["team"]["id"] == team["id"]), None)
                 current = f"{me['wins']}勝{me['losses']}敗" if me else ""
-                t = story(team, row, games, boxes, last_feed, records, now, voices, quotes, table, jp, current)
+                # 次が本拠地で勝てば突破の試合のときだけ、過去の本拠地での突破を遡る（年に1回ずつ呼ぶ）
+                nxt = next((g for g in games if (g.get("status") or {}).get("abstractGameState") != "Final"), None)
+                need = row.get("need") or 0
+                mine = next((x["wins"] for x in row.get("teams") or [] if x["id"] == team["id"]), 0)
+                found = None
+                if nxt and need and mine == need - 1 and nxt["teams"]["home"]["team"]["id"] == team["id"]:
+                    old = next((x for x in previous.values() if x.get("team_id") == team["id"]
+                                and x.get("home_clinch")), None)
+                    found = tuple(old["home_clinch"]) if old else last_home_clinch(team["id"], season)
+                t = story(team, row, games, boxes, last_feed, records, now, voices, quotes, table, jp, current,
+                          found)
                 if t:
                     old = previous.get(t["key"]) or {}
                     # 声は取れた日のものを残す（翌日にはハイライトの一覧から外れていることがある）

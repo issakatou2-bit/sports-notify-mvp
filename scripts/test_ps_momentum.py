@@ -95,5 +95,44 @@ class Story(unittest.TestCase):
         self.assertFalse(next_asset.started({}))
 
 
+class HomeClinch(unittest.TestCase):
+    """10/6 MLB.com「本拠地での突破は120年ぶり？」。公式の試合結果で、本拠地で決めた最後のシリーズを遡る。"""
+    def test_clinch_is_the_last_game_of_a_won_series(self):
+        ws = {"dates": [{"games": [
+            {**game(1, "1906-10-13T19:00:00Z", CWS, 112, (8, 6), "W"), "seriesDescription": "World Series"},
+            {**game(2, "1906-10-14T19:00:00Z", 112, CWS, (3, 8), "W"), "seriesDescription": "World Series"}]}]}
+        self.assertEqual(pm.clinches(ws, CWS), [("1906-10-14", "World Series", True)])
+        self.assertEqual(pm.clinches(ws, 112), [])                        # 負けた側は無し
+
+    def test_unfinished_series_is_not_a_clinch(self):
+        self.assertEqual(pm.clinches({"dates": [{"games": GAMES[2:]}]}, CWS), [])
+
+    def test_search_goes_back_until_a_home_clinch(self):
+        road = {"dates": [{"games": [{**g, "seriesDescription": "Wild Card"} for g in GAMES[:2]]}]}
+        home = {"dates": [{"games": [
+            {**game(1, "1906-10-14T19:00:00Z", 112, CWS, (3, 8), "W"), "seriesDescription": "World Series"}]}]}
+        calls = []
+
+        def get(path, **p):
+            calls.append(p["season"])
+            return home if p["season"] == 1906 else road if p["season"] == 2026 else {}
+        self.assertEqual(pm.last_home_clinch(CWS, 2026, get), (1906, "World Series"))
+        self.assertEqual(calls[0], 2026)
+
+    def test_line_only_when_long_ago(self):
+        self.assertEqual(pm.home_clinch_line((1906, "World Series"), 2026),
+                         "本拠地でのシリーズ突破は、1906年のワールドシリーズ優勝以来120年ぶり")
+        self.assertIsNone(pm.home_clinch_line((2015, "AL Division Series"), 2026))
+        self.assertIsNone(pm.home_clinch_line(None, 2026))
+
+    def test_title_uses_it(self):
+        boxes = []
+        t = pm.story(TEAM, SERIES, GAMES, boxes, {}, RECORDS, NOW, {}, [], {}, {}, "84勝78敗",
+                     (1906, "World Series"))
+        self.assertEqual(t["title"],
+                         "【MLB】村上宗隆のホワイトソックスがポストシーズン4連勝｜勝てば本拠地で120年ぶりの突破 #Shorts")
+        self.assertEqual(dict(t["items"])["勝てば"], "本拠地でのシリーズ突破は、1906年のワールドシリーズ優勝以来120年ぶり")
+
+
 if __name__ == "__main__":
     unittest.main(argv=["test_ps_momentum"])
