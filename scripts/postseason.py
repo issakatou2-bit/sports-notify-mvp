@@ -115,7 +115,11 @@ def fetch(season: str) -> list:
                 "wc_gb": _num(t.get("wildCardGamesBack")),
                 "wc_elim": _num(t.get("wildCardEliminationNumber")),
                 "clinched": bool(t.get("clinched")),
-                "div_champ": bool(t.get("divisionChamp")),
+                # **公式の divisionChamp だけでは信じない。**2026年は地区2位・
+                # 6ゲーム差のフィリーズ（ワイルドカード、clinchIndicator "w"）に
+                # True が付いていた（Opusの作業28で発見）。地区1位のときだけ。
+                "div_champ": bool(t.get("divisionChamp"))
+                              and _num(t.get("divisionRank")) == 1,
                 "wc_clinched": bool(t.get("wildCardClinched")),
                 "run_diff": t.get("runDifferential"),
                 "streak": (t.get("streak") or {}).get("streakCode"),
