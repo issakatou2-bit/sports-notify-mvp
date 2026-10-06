@@ -306,7 +306,7 @@ def intro(t, spec, kind_label):
 #   中: 2つ目以降のかたまり。数字（単位まで）だけ金色。
 #   小: かっこの中の補足。くすんだ色。
 SIZE_L, SIZE_M, SIZE_S = 66, 46, 34
-NUM_RE = re.compile(r"\d[\d,.]*(?:対\d+)?(?:本塁打|奪三振|打数|安打|打点|試合|勝|敗|本|点|年|回|戦|位|人|%|割|秒|分)?")
+NUM_RE = re.compile(r"\d[\d,.]*(?:対\d+)?(?:本塁打|奪三振|打数|安打|打点|試合|連勝|連敗|勝|敗|本|点|年|回|戦|位|人|%|割|秒|分)?")
 NO_HEAD = "、。，．）」』・ー％%"
 
 
@@ -350,10 +350,22 @@ def _atoms(runs):
 def rich_lines(runs, width, second_rgb):
     sizes = {"L": SIZE_L, "M": SIZE_M, "S": SIZE_S}
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    atoms = list(_atoms(runs))
+    widths = [probe.textlength(a[0], font=font(sizes[a[1]])) for a in atoms]
     lines, cur, x = [], [], 0
-    for text, size, gold in _atoms(runs):
+    for k, (text, size, gold) in enumerate(atoms):
         f = font(sizes[size])
-        w = probe.textlength(text, font=f)
+        w = widths[k]
+        if text == "　" and cur:
+            # 次のかたまり（次の全角スペースまで）が今の行に入らず、次の行には入るなら、ここで改行
+            j = k + 1
+            while j < len(atoms) and atoms[j][0] != "　":
+                j += 1
+            seg = sum(widths[k + 1:j])
+            if x + w + seg > width and seg <= width:
+                lines.append(cur)
+                cur, x = [], 0
+                continue
         if cur and x + w > width and text not in NO_HEAD and text.strip("　 "):
             lines.append(cur)
             cur, x = [], 0

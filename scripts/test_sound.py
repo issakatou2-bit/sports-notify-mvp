@@ -85,5 +85,25 @@ class Drawing(unittest.TestCase):
             self.assertLessEqual(r3._lum(base), 0.16, tid)
 
 
+class Wrapping(unittest.TestCase):
+    """10/6 試作で「今／季は84勝78敗」と語の途中で折り返した。"""
+    def text_lines(self, body, width=796):
+        return ["".join(t for _, t, _, _, _ in ln) for ln in r3.rich_lines(r3._runs(body), width, (196, 206, 212))]
+
+    def test_phrase_after_space_moves_whole(self):
+        lines = self.text_lines("2023年から3年続けて100敗以上（2024年は41勝121敗）　今季は84勝78敗")
+        self.assertIn("今季は84勝78敗", lines)
+
+    def test_number_and_unit_stay_together(self):
+        for ln in self.text_lines("6対3・7対3・3対0・4対3　得点20・失点9", 500):
+            self.assertFalse(ln.endswith("対"), ln)
+
+    def test_sizes(self):
+        runs = r3._runs("4勝0敗　4連勝　4試合すべて敵地（アストロズで2勝）")
+        self.assertEqual(runs[0], ("4勝0敗", "L", True))
+        self.assertIn(("（アストロズで2勝）", "S", False), runs)
+        self.assertIn(("4連勝", "M", True), runs)
+
+
 if __name__ == "__main__":
     unittest.main(argv=["test_sound"])
