@@ -1,0 +1,195 @@
+{
+  "generated_at": "2026-10-06T09:53:53.202038+00:00",
+  "games": [
+    {
+      "game_id": "849819",
+      "league": "MLB",
+      "home_team_id": "144",
+      "away_team_id": "119",
+      "home_team_name": "ブレーブス",
+      "away_team_name": "ドジャース",
+      "home_abbr": "ATL",
+      "away_abbr": "LAD",
+      "home_color": "#CE1141",
+      "away_color": "#005A9C",
+      "matchup": "ドジャース vs ブレーブス",
+      "abbr_matchup": "LAD vs ATL",
+      "start_time_jst": "10/07 07:00",
+      "home_division": "NLE",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [
+        {
+          "name": "山本由伸",
+          "context": "先発予定"
+        }
+      ],
+      "jp_players": [
+        "山本由伸",
+        "大谷翔平",
+        "佐々木朗希"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 94,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 3,
+        "wins": 100,
+        "losses": 62,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Chris Sale",
+        "name_en": "Chris Sale",
+        "player_id": "519242",
+        "era": "2.16",
+        "wins": 14,
+        "losses": 9,
+        "strikeouts": 200
+      },
+      "away_probable": {
+        "name": "山本由伸",
+        "name_en": "Yoshinobu Yamamoto",
+        "player_id": "808967",
+        "era": "2.53",
+        "wins": 14,
+        "losses": 9,
+        "strikeouts": 182
+      },
+      "venue_name": "Truist Park",
+      "venue_jp": "トゥルーイスト・パーク",
+      "venue_note": "2017年開場。球場の外に商業施設が一体で作られた、比較的新しい形の球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.65点で、MLB30球場中16位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 11,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "JP",
+          "text": "山本由伸が先発予定",
+          "weight": 6
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第3戦(1勝1敗のタイ)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": 3,
+        "games_in_series": 5,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [],
+      "ai_summary": "ナ・リーグの両地区優勝を決めた強豪が激突するポストシーズンである。【100勝62敗で地区優勝のドジャース】は3連勝中、直近10試合で8勝2敗と勢いに乗っており、一方ブレーブスは直近10試合が5勝5敗と足踏み状態にある。シリーズは1勝1敗の同点であり、この第3戦が分岐点となる。先発は山本由伸と、防御率2.16のChris Saleによる両エースの投げ合いが展開される中で、比較的新しい球場での得点の出やすさがどう影響するかに注目したい。",
+      "notification_hook": "山本由伸 vs エース対決、シリーズを分ける第3戦",
+      "availability_checked_at": "2026-10-06T09:52:44.981079+00:00"
+    },
+    {
+      "game_id": "849826",
+      "league": "MLB",
+      "home_team_id": "135",
+      "away_team_id": "158",
+      "home_team_name": "パドレス",
+      "away_team_name": "ブリュワーズ",
+      "home_abbr": "SD",
+      "away_abbr": "MIL",
+      "home_color": "#2F241D",
+      "away_color": "#12284B",
+      "matchup": "ブリュワーズ vs パドレス",
+      "abbr_matchup": "MIL vs SD",
+      "start_time_jst": "10/07 10:30",
+      "home_division": "NLW",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "松井裕樹"
+      ],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 9.0,
+        "streak": 2,
+        "wins": 91,
+        "losses": 71,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 5,
+        "wins": 103,
+        "losses": 59,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Nick Pivetta",
+        "name_en": "Nick Pivetta",
+        "player_id": "601713",
+        "era": "2.86",
+        "wins": 3,
+        "losses": 2,
+        "strikeouts": 42
+      },
+      "away_probable": {
+        "name": "Dustin May",
+        "name_en": "Dustin May",
+        "player_id": "669160",
+        "era": "4.70",
+        "wins": 7,
+        "losses": 9,
+        "strikeouts": 144
+      },
+      "venue_name": "Petco Park",
+      "venue_jp": "ペトコ・パーク",
+      "venue_note": "広い外野と海沿いの気候により、投手有利とされる球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.01点で、MLB30球場中28位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第3戦(ブリュワーズが2勝0敗で王手、パドレスは負ければ敗退)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": null,
+        "games_in_series": null,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 2
+      },
+      "log_notes": [],
+      "availability_checked_at": "2026-10-06T09:52:44.981079+00:00"
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}
