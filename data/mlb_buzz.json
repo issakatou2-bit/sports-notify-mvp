@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-06T01:03:35.553929+00:00",
+  "updated_at": "2026-10-06T04:07:11.171253+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
@@ -7,7 +7,7 @@
       "video_id": "jBDL7ltkOz0",
       "title": "BRAVES vs. DODGERS: NLDS Full Game 2 Highlights (October 4) | 2026 MLB Season",
       "published_at": "2026-10-05T03:56:06Z",
-      "views": 1784383,
+      "views": 1883222,
       "matchup": "BRAVES vs. DODGERS",
       "game_date": "2026-10-04",
       "result": {
@@ -83,89 +83,10 @@
       "topic_jp": "ブレーブス 対 ドジャース"
     },
     {
-      "video_id": "X4-UPiCQ5s0",
-      "title": "PADRES vs. BREWERS: NLDS Full Game 2 Highlights (October 4) | 2026 MLB Season",
-      "published_at": "2026-10-05T00:06:47Z",
-      "views": 1223607,
-      "matchup": "PADRES vs. BREWERS",
-      "game_date": "2026-10-04",
-      "result": {
-        "away_jp": "パドレス",
-        "home_jp": "ブリュワーズ",
-        "away_score": 3,
-        "home_score": 4,
-        "innings": [
-          {
-            "num": 1,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 1,
-            "home": 1
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 1,
-            "home": 1
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": 2
-          }
-        ],
-        "away_hits": 5,
-        "away_errors": 2,
-        "home_hits": 5,
-        "home_errors": 3,
-        "star_name": "Michael King",
-        "star_line": "5.0回 6奪三振 自責1",
-        "star_team": "パドレス",
-        "away_starter": {
-          "name": "Michael King",
-          "team": "パドレス",
-          "line": "5.0回 6奪三振 自責1"
-        },
-        "home_starter": {
-          "name": "Logan Henderson",
-          "team": "ブリュワーズ",
-          "line": "5.0回 4奪三振 自責1"
-        }
-      },
-      "topic_jp": "パドレス 対 ブリュワーズ"
-    },
-    {
       "video_id": "LtEYf0hF3i8",
-      "title": "WHITE SOX vs. GUARDIANS: ALDS Full Game 2 Highlights (October 5) | 2026 MLB Postseason",
+      "title": "WHITE SOX vs. GUARDIANS: ALDS Full Game 2 Highlights (October 5) | 2026 MLB Postseason | 村上 宗隆",
       "published_at": "2026-10-06T00:38:18Z",
-      "views": 11315,
+      "views": 361970,
       "matchup": "WHITE SOX vs. GUARDIANS",
       "game_date": "2026-10-05",
       "result": {
@@ -241,22 +162,101 @@
       "topic_jp": "ホワイトソックス 対 ガーディアンズ"
     },
     {
-      "video_id": "-mVYHLeJxF0",
-      "title": "FULL INNING: Edwin Díaz pitches a scoreless inning in his Dodgers Postseason debut! 🎺 MLB Highlights",
-      "published_at": "2026-10-05T02:18:41Z",
-      "views": 241498,
-      "matchup": "",
-      "game_date": "",
-      "topic_jp": "FULL INNING: Edwin Díaz pitches a scoreless inning in his Dodgers Postseason debut! 🎺 MLB Highlights"
+      "video_id": "NM3Rh7tgqE0",
+      "title": "YANKEES vs. RAYS: ALDS Full Game 2 Highlights (October 5) | 2026 MLB Postseason",
+      "published_at": "2026-10-06T03:43:26Z",
+      "views": 11064,
+      "matchup": "YANKEES vs. RAYS",
+      "game_date": "2026-10-05",
+      "result": {
+        "away_jp": "ヤンキース",
+        "home_jp": "レイズ",
+        "away_score": 2,
+        "home_score": 5,
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 4
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": null
+          }
+        ],
+        "away_hits": 4,
+        "away_errors": 4,
+        "home_hits": 8,
+        "home_errors": 0,
+        "star_name": "Ben Rice",
+        "star_line": "3打数2安打 2打点 2本塁打",
+        "star_team": "ヤンキース",
+        "away_starter": {
+          "name": "Cam Schlittler",
+          "team": "ヤンキース",
+          "line": "4.1回 2奪三振 自責2　敗戦投手（通算1勝1敗）"
+        },
+        "home_starter": {
+          "name": "Freddy Peralta",
+          "team": "レイズ",
+          "line": "4.2回 3奪三振 自責1"
+        }
+      },
+      "topic_jp": "ヤンキース 対 レイズ"
     },
     {
-      "video_id": "i5krLq0HWYw",
-      "title": "FULL INNING: Braves load the bases vs. Blake Snell and the Los Angeles Dodgers! 👀 | MLB Highlights",
-      "published_at": "2026-10-05T00:27:23Z",
-      "views": 236672,
+      "video_id": "YjgdxA7-pR8",
+      "title": "White Sox complete come-from-behind victory to take 2-0 ALDS lead vs. Guardians 😮 | MLB Highlights",
+      "published_at": "2026-10-06T01:41:52Z",
+      "views": 7070,
+      "matchup": "White Sox complete come-from-behind victory to take 2-0 ALDS lead vs. Guardians 😮 | MLB Highlights",
+      "game_date": "",
+      "topic_jp": "ホワイトソックス complete come-from-behind victory to take 2-0 ALDS lead 対 ガーディアンズ 😮 | MLB Highlights"
+    },
+    {
+      "video_id": "rE4m_uL9G6Q",
+      "title": "FULL RALLY: White Sox take lead vs. Guardians in 2026 ALDS Game 2! (Full Inning) | MLB Highlights",
+      "published_at": "2026-10-05T23:23:09Z",
+      "views": 192070,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "ブレーブスがブレイク・スネルとドジャーズ戦で満塁にする。"
+      "topic_jp": "ホワイトソックスがガーディアンズ戦の2026年ALDSゲーム2で逆転勝ち越した。"
     }
   ],
   "all": [
@@ -264,85 +264,85 @@
       "video_id": "jBDL7ltkOz0",
       "matchup": "BRAVES vs. DODGERS",
       "game_date": "2026-10-04",
-      "views": 1784383
-    },
-    {
-      "video_id": "X4-UPiCQ5s0",
-      "matchup": "PADRES vs. BREWERS",
-      "game_date": "2026-10-04",
-      "views": 1223607
+      "views": 1883222
     },
     {
       "video_id": "LtEYf0hF3i8",
       "matchup": "WHITE SOX vs. GUARDIANS",
       "game_date": "2026-10-05",
-      "views": 11315
+      "views": 361970
     },
     {
-      "video_id": "-mVYHLeJxF0",
-      "matchup": "",
-      "game_date": "",
-      "views": 241498
+      "video_id": "NM3Rh7tgqE0",
+      "matchup": "YANKEES vs. RAYS",
+      "game_date": "2026-10-05",
+      "views": 11064
     },
     {
-      "video_id": "i5krLq0HWYw",
-      "matchup": "",
+      "video_id": "YjgdxA7-pR8",
+      "matchup": "White Sox complete come-from-behind victory to take 2-0 ALDS lead vs. Guardians 😮 | MLB Highlights",
       "game_date": "",
-      "views": 236672
-    },
-    {
-      "video_id": "fRvbxLhAM7A",
-      "matchup": "",
-      "game_date": "",
-      "views": 155220
-    },
-    {
-      "video_id": "Zmm1gMZlcYw",
-      "matchup": "",
-      "game_date": "",
-      "views": 96614
-    },
-    {
-      "video_id": "IB3k8ILJKys",
-      "matchup": "",
-      "game_date": "",
-      "views": 87782
-    },
-    {
-      "video_id": "x-P-K2itFuA",
-      "matchup": "",
-      "game_date": "",
-      "views": 43350
-    },
-    {
-      "video_id": "HeuviOG5264",
-      "matchup": "",
-      "game_date": "",
-      "views": 38728
+      "views": 7070
     },
     {
       "video_id": "rE4m_uL9G6Q",
       "matchup": "",
       "game_date": "",
-      "views": 19648
+      "views": 192070
     },
     {
-      "video_id": "C6bxUxskPCM",
+      "video_id": "IB3k8ILJKys",
       "matchup": "",
       "game_date": "",
-      "views": 18924
+      "views": 162438
     },
     {
-      "video_id": "FWq-0wCToSQ",
+      "video_id": "x-P-K2itFuA",
       "matchup": "",
       "game_date": "",
-      "views": 14465
+      "views": 157205
+    },
+    {
+      "video_id": "Zmm1gMZlcYw",
+      "matchup": "",
+      "game_date": "",
+      "views": 96778
+    },
+    {
+      "video_id": "HeuviOG5264",
+      "matchup": "",
+      "game_date": "",
+      "views": 39684
     },
     {
       "video_id": "BrHLx6PrGfE",
       "matchup": "",
       "game_date": "",
-      "views": 3653
+      "views": 23679
+    },
+    {
+      "video_id": "C6bxUxskPCM",
+      "matchup": "",
+      "game_date": "",
+      "views": 19308
+    },
+    {
+      "video_id": "pyE-EuiST6k",
+      "matchup": "",
+      "game_date": "",
+      "views": 17460
+    },
+    {
+      "video_id": "FWq-0wCToSQ",
+      "matchup": "",
+      "game_date": "",
+      "views": 15446
+    },
+    {
+      "video_id": "Q0ZktTIHgYI",
+      "matchup": "",
+      "game_date": "",
+      "views": 5537
     }
   ]
 }

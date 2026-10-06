@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-06T01:04:36.170695+00:00",
+  "updated_at": "2026-10-06T04:08:50.782446+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -85,10 +85,6 @@
         [
           "ハイライトのコメント欄から",
           "「レイ・カー、セブンイレブンの店員からポストシーズンスターへ。本当のシンデレラストーリーだ」"
-        ],
-        [
-          "MLB.comの見出しから",
-          "「2. ブレーブスが監督の完璧な采配でドジャースとのシリーズを同点に 📍」"
         ]
       ],
       "japanese": [
@@ -113,12 +109,7 @@
         "likes": 685,
         "at": "2026-10-05T05:02:48Z"
       },
-      "headline": {
-        "said": "2. ブレーブスが監督の完璧な采配でドジャースとのシリーズを同点に 📍",
-        "text": "Braves follow manager's pitch-perfect plan to even series with Dodgers",
-        "url": "https://www.mlb.com/news/braves-win-nlds-game-2-2026",
-        "at": "2026-10-05T06:10:00+00:00"
-      },
+      "headline": null,
       "game_pk": 849823,
       "game_date": "2026-10-05T00:00:00Z",
       "jp_first": true,
@@ -150,7 +141,7 @@
         ],
         [
           "MLB.comの見出しから",
-          "「1. 勝負強い打撃と抜群のリリーフ陣がホワイトソックスをリーグ優勝決定シリーズ進出寸前に 🔥」"
+          "「120年ぶりの本拠地でのプレーオフ優勝決定？ホワイトソックスがあと一歩 ⚾」"
         ]
       ],
       "japanese": [
@@ -166,15 +157,70 @@
       "source": null,
       "voice": null,
       "headline": {
-        "said": "1. 勝負強い打撃と抜群のリリーフ陣がホワイトソックスをリーグ優勝決定シリーズ進出寸前に 🔥",
-        "text": "Clutch hitting, brilliant relief in Game 2 have White Sox on cusp of ALCS",
+        "said": "120年ぶりの本拠地でのプレーオフ優勝決定？ホワイトソックスがあと一歩 ⚾",
+        "text": "First home playoff clincher in 120 years? White Sox on cusp of making it happen",
         "url": "https://www.mlb.com/news/white-sox-win-alds-game-2-2026",
-        "at": "2026-10-06T00:19:44+00:00"
+        "at": "2026-10-06T01:55:00+00:00"
       },
       "game_pk": 849834,
       "game_date": "2026-10-05T21:00:00Z",
       "jp_first": true,
       "finished_at": "2026-10-06T00:11:11.149000+00:00"
+    },
+    {
+      "key": "season_game_849839",
+      "label": "地区シリーズ第2戦",
+      "hook": "レイズがヤンキースに5対2で地区シリーズ2勝0敗に",
+      "heading": "ヤンキース 対 レイズ　地区シリーズ第2戦",
+      "intro": "地区シリーズ第2戦、レイズが本拠地でヤンキースに5対2で勝ちました。",
+      "intro_as_is": true,
+      "style": "v2",
+      "team_id": 139,
+      "abbr": "TB",
+      "title": "【MLB】レイズがヤンキースに5対2で地区シリーズ2勝0敗に｜シンプソンの決勝打 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "レイズ 5対2 ヤンキース　本拠地で勝利　シリーズはレイズの2勝0敗"
+        ],
+        [
+          "決勝点",
+          "5回裏　チャンドラー・シンプソンの野選"
+        ],
+        [
+          "本塁打",
+          "ヤンキース2本（ライス、ライス）"
+        ],
+        [
+          "先発",
+          "レイズ ペラルタ 4回と3分の2を1失点　ヤンキース シュリトラー 4回と3分の1を4失点"
+        ],
+        [
+          "勝ち投手・セーブ",
+          "勝ち キャム・ブーザー（3分の1回を無失点）　セーブ ブライアン・ベイカー"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「執拗なレイズがシュリットラーを苦しめる、5回4点で地区シリーズ優勝まであと1勝 🔥」"
+        ]
+      ],
+      "japanese": [],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": {
+        "said": "執拗なレイズがシュリットラーを苦しめる、5回4点で地区シリーズ優勝まであと1勝 🔥",
+        "text": "Relentless Rays give Schlittler fits in 4-run 5th, move 1 win from ALCS",
+        "url": "https://www.mlb.com/news/rays-win-alds-game-2-2026",
+        "at": "2026-10-06T03:28:00+00:00"
+      },
+      "game_pk": 849839,
+      "game_date": "2026-10-06T00:00:00Z",
+      "jp_first": false,
+      "finished_at": "2026-10-06T03:13:02.082000+00:00"
     }
   ]
 }
