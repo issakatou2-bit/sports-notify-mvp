@@ -165,6 +165,36 @@ def _is_pitcher(person: dict) -> bool:
 
 # ---------------------------------------------------------------- 球団
 
+# 打席がこれより少なければ投手として扱う（代打・投手の打席だけの選手）
+PITCHER_MAX_PA = 30
+
+
+def jp_lines(hit_all: list, pit_all: list, jp: dict) -> list:
+    """球団の回の日本人選手の1行。投手か打者かは、打席の数で決める。
+
+    **打撃の一覧には投手も入っている。**10/6、メッツの回で千賀滉大（投手）に
+    「31試合 打率.000」と打者の成績が出ていた（打撃の一覧を先に見ていたため）。
+    打席がほとんど無い選手は投球の成績、両方に出る選手（大谷）は打撃と投球の両方。
+    """
+    japanese = []
+    hit_by = {x["player"]["fullName"]: x for x in hit_all}
+    pit_by = {x["player"]["fullName"]: x for x in pit_all}
+    for full in dict.fromkeys([x["player"]["fullName"] for x in hit_all + pit_all]):
+        jn = jp.get(full)
+        if not jn or any(j["name"] == jn for j in japanese):
+            continue
+        h, p = hit_by.get(full), pit_by.get(full)
+        pa = int((h or {}).get("stat", {}).get("plateAppearances") or 0)
+        if p and (not h or pa < PITCHER_MAX_PA):
+            line = pitching_line(p["stat"])
+        else:
+            line = batting_line(h["stat"])
+            if p and float(p["stat"].get("inningsPitched") or 0) > 0:
+                line += "　／　" + pitching_line(p["stat"])
+        japanese.append({"name": jn, "line": line})
+    return japanese
+
+
 def team_topic(tid: int, info: dict, ending: str, kana_table: dict,
                jp: dict) -> dict:
     name = info["name"]
@@ -191,14 +221,7 @@ def team_topic(tid: int, info: dict, ending: str, kana_table: dict,
         row = top(pool, k)
         if row and who(row):
             items.append((head, f"{who(row)}　" + fmt.format(row["stat"][k])))
-    japanese = []
-    for x in hit_all + pit_all:
-        jn = jp.get(x["player"]["fullName"])
-        if not jn or any(j["name"] == jn for j in japanese):
-            continue
-        is_p = x in pit_all
-        japanese.append({"name": jn, "line": pitching_line(x["stat"]) if is_p
-                         else batting_line(x["stat"])})
+    japanese = jp_lines(hit_all, pit_all, jp)
     names = "・".join(j["name"] for j in japanese[:2])
     return {
         "key": f"season_team_{tid}",
@@ -363,7 +386,11 @@ def statcast_phrase(x: dict) -> str:
 
     値が小さいほど良い項目（三振率・与四球率など）は、Savantの順位を
     そのまま言うと「三振率はリーグ下位1%」が三振の少なさに聞こえる。
-    「三振率の高さはリーグ上位1%」と、値の大きさで言う。
+    値の大きさで言い、Savantの評価も添える（長編の材料と同じ言い方）。
+
+    10/6、「被期待wOBAの高さはリーグ上位1%」が良い数字に聞こえると
+    指摘された（菅野・今井・千賀）。「上位」は良し悪しに聞こえるので使わず、
+    「高い方から1%（Savantの評価は下位）」と言う。
     """
     import savant
     v = x["percentile"]
@@ -374,8 +401,8 @@ def statcast_phrase(x: dict) -> str:
     if v <= 0:
         return f"{x['label']}はリーグで最も高い"
     if x["high"]:
-        return f"{x['label']}の低さはリーグ上位{100 - v}%"
-    return f"{x['label']}の高さはリーグ上位{v}%"
+        return f"{x['label']}はリーグで低い方から{100 - v}%（Savantの評価は上位）"
+    return f"{x['label']}はリーグで高い方から{v}%（Savantの評価は下位）"
 
 
 # ---------------------------------------------------------------- リーグ

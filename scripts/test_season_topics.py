@@ -47,11 +47,11 @@ check("投球回のちょうど", st.innings("180.0"), "180回")
 _x = {"key": "k_percent", "kind": "batter", "label": "三振率",
       "percentile": 1, "high": False, "side": ""}
 check("三振の多い打者は「三振率の高さ」で言う", st.statcast_phrase(_x),
-      "三振率の高さはリーグ上位1%")
+      "三振率はリーグで高い方から1%（Savantの評価は下位）")
 _x = {"key": "bb_percent", "kind": "pitcher", "label": "与四球率",
       "percentile": 95, "high": True, "side": ""}
 check("与四球の少ない投手は「与四球率の低さ」", st.statcast_phrase(_x),
-      "与四球率の低さはリーグ上位5%")
+      "与四球率はリーグで低い方から5%（Savantの評価は上位）")
 _x = {"key": "brl_percent", "kind": "batter", "label": "バレル率",
       "percentile": 96, "high": True, "side": "リーグ上位4%"}
 check("値が大きいほど良い項目はそのまま", st.statcast_phrase(_x), "バレル率はリーグ上位4%")
@@ -78,5 +78,13 @@ check("PSで終わったばかり → 日本人選手 → その他",
       sorted(_specs, key=lambda k: na.season_order(k, _specs[k])),
       ["season_player_684007", "season_team_112", "season_player_673540",
        "season_team_121", "season_team_110"])
+
+# 球団の回の日本人選手: 打撃の一覧に入っている投手は、投球の成績で（10/6 千賀）
+_senga_h = {"player": {"fullName": "Kodai Senga"}, "stat": {"gamesPlayed": 31, "plateAppearances": 0,
+            "avg": ".000", "homeRuns": 0, "rbi": 0, "ops": ".000"}}
+_senga_p = {"player": {"fullName": "Kodai Senga"}, "stat": {"gamesPlayed": 31, "wins": 0, "losses": 9,
+            "era": "7.34", "inningsPitched": "61.1", "strikeOuts": 75, "saves": 8}}
+_lines = st.jp_lines([_senga_h], [_senga_p], {"Kodai Senga": "千賀滉大"})
+check("打席のない投手は投球の成績", "防御率" in _lines[0]["line"] and "打率" not in _lines[0]["line"], True)
 
 sys.exit(done())
