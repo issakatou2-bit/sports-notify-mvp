@@ -117,9 +117,10 @@ def fetch(season: str) -> list:
                 "clinched": bool(t.get("clinched")),
                 # **公式の divisionChamp だけでは信じない。**2026年は地区2位・
                 # 6ゲーム差のフィリーズ（ワイルドカード、clinchIndicator "w"）に
-                # True が付いていた（Opusの作業28で発見）。地区1位のときだけ。
+                # True が付いていた（Opusの作業28で発見）。地区順位が分かっていて
+                # 1位でないときは付けない（順位が無いときは公式の印のまま）。
                 "div_champ": bool(t.get("divisionChamp"))
-                              and _num(t.get("divisionRank")) == 1,
+                              and _num(t.get("divisionRank")) in (None, 1),
                 "wc_clinched": bool(t.get("wildCardClinched")),
                 "run_diff": t.get("runDifferential"),
                 "streak": (t.get("streak") or {}).get("streakCode"),
