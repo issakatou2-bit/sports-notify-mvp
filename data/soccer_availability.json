@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-05T10:01:09.659003+00:00",
+  "updated_at": "2026-10-06T10:00:59.881639+00:00",
   "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
   "players": {
     "遠藤航": {
@@ -45,6 +45,39 @@
       "news": "",
       "out": false,
       "reason": ""
+    },
+    "坂元達裕": {
+      "name_en": "Tatsuhiro Sakamoto",
+      "club_jp": "コベントリー",
+      "minutes": 31,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": null,
+      "news": "",
+      "out": false,
+      "reason": ""
+    },
+    "前田大然": {
+      "name_en": "Daizen Maeda",
+      "club_jp": "イプスウィッチ",
+      "minutes": 259,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": null,
+      "news": "",
+      "out": false,
+      "reason": ""
+    },
+    "守田英正": {
+      "name_en": "Hidemasa Morita",
+      "club_jp": "ハル・シティ",
+      "minutes": 45,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": 0,
+      "news": "Calf injury - Expected back 11 Oct",
+      "out": true,
+      "reason": "Calf injury - Expected back 11 Oct"
     },
     "冨安健洋": {
       "name_en": "Takehiro Tomiyasu",
