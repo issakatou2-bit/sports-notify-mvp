@@ -74,6 +74,13 @@ jobs:
           set -o pipefail
           python scripts/ps_odds.py --out data/ps_odds_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
 
+      # 日本人選手のいる球団の連勝（3連勝以上）と敵地での勝ち。次の試合の前だけ。
+      - name: Build PS momentum topics
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python scripts/ps_momentum.py --out data/ps_momentum_topics.json | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Pick today's topics
         id: pick
         run: |
@@ -152,7 +159,7 @@ jobs:
             "season review: ${{ github.run_id }}" \
             data/published_assets.json data/season_topics.json \
             data/ps_story_topics.json data/ps_quotes.json data/ps_game_topics.json \
-            data/ps_odds_topics.json data/player_kana.json
+            data/ps_odds_topics.json data/ps_momentum_topics.json data/player_kana.json
 
       - name: Keep the videos
         if: always() && steps.pick.outputs.topics != ''

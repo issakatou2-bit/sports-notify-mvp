@@ -155,8 +155,8 @@ def season_order(key: str, spec: dict) -> tuple:
         # 同じ組の中は試合の早い順（キーの番号順だと10/4は村上の試合が2本目に回った）。
         return (-1, 0 if spec.get("jp_first") else 1, spec.get("game_date") or "", key)
     # 0勝2敗・2勝0敗の過去の数（ps_odds）は、次の試合の前でないと意味が無い。
-    # 日本人選手の試合の話題の次、それ以外の試合の話題より先。
-    if spec.get("odds"):
+    # 日本人選手の試合の話題の次、それ以外の試合の話題より先。連勝の流れ（ps_momentum）も同じ。
+    if spec.get("odds") or spec.get("momentum"):
         return (-1, 1, "", key)
     if spec.get("story"):
         return (-1, 2, key)
@@ -164,6 +164,18 @@ def season_order(key: str, spec: dict) -> tuple:
             0 if spec.get("jp") else
             1 if spec.get("japanese") or key.startswith("season_league") else 2,
             key)
+
+
+def started(spec: dict, now=None) -> bool:
+    """「次の試合の前」だけの話題（2勝0敗の過去・連勝の流れ）で、その試合がもう始まった。"""
+    from datetime import datetime, timezone
+    at = spec.get("next_game")
+    if not at:
+        return False
+    try:
+        return datetime.fromisoformat(at.replace("Z", "+00:00")) <= (now or datetime.now(timezone.utc))
+    except ValueError:
+        return False
 
 
 def pick_season(args) -> int:
@@ -177,7 +189,7 @@ def pick_season(args) -> int:
     left = max(0, args.season - posted_today(args.published,
                                              kinds={"season"}, count=True))
     todo = sorted((k for k, v in gav.LIST_TOPICS.items()
-                   if kind_of(k) == "season" and k not in done),
+                   if kind_of(k) == "season" and k not in done and not started(v)),
                   key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
     picked = todo[:left]
     print(" ".join(picked))
