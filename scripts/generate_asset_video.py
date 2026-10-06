@@ -1658,12 +1658,15 @@ def render_v3(t, kind, meta, spec, topic):
 
 
 BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"
+# 既定のBGM。10/6夜 本人「日常もちょっと違う。YouTubeのBGMに使われても違和感ない、ライトな感じ」
+# → 本人が選ぶまでは BGM なし（効果音だけ）。選んだら名前を入れる（assets/bgm/<名前>.mp3）。
+DEFAULT_BGM = ""
 
 
 def add_sound(audio_path, segs, durations, spec, topic, out_dir):
     """新デザインの回に、BGM と画面の動きに合わせた効果音を重ねる。
 
-    BGM は材料の bgm（無ければ環境変数 COLLESPO_BGM、それも無ければ everyday「日常」）。
+    BGM は材料の bgm（無ければ環境変数 COLLESPO_BGM、それも無ければ DEFAULT_BGM。空ならBGMなし）。
     ファイルが無い・重ねるのに失敗したときは、読み上げだけで続ける（動画は止めない）。
     """
     import review_render_v3 as r3
@@ -1675,8 +1678,8 @@ def add_sound(audio_path, segs, durations, spec, topic, out_dir):
         for at, k, v, db in r3.cues(kind, spec, items, meta.get("start", 0), meta.get("count", 1)):
             cues.append((t0 + at, k, v, db))
         t0 += dur
-    name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or "everyday"
-    bgm = BGM_DIR / f"{name}.mp3"
+    name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or DEFAULT_BGM
+    bgm = BGM_DIR / f"{name}.mp3" if name else BGM_DIR / ".none"
     try:
         out = sound_mix.mix_file(audio_path, out_dir / "narration_mixed.wav",
                                  bgm if bgm.exists() else None, cues)
