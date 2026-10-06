@@ -139,10 +139,27 @@ LATIN = re.compile(r"[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+)*")
 
 
 def speakable(text: str, table: dict, jp: dict) -> str:
-    """訳文の英字の名前をカタカナに。できない名前が残れば空（使わない）。"""
+    """訳文の英字の名前をカタカナに。できない名前が残れば空（使わない）。
+
+    **1語だけの英字は、辞書（選手名の表・日本人選手）にあるときだけ変える。**
+    10/6、ファンのコメント「60 yrs a Sox fan」の「Sox」を人名として引きに行き、
+    「ボストン・レッドソックス」と読み替えた（ホワイトソックスの試合の声）。
+    1語は球団の愛称・地名・普通の単語のことが多く、人名の検索に向かない。
+    日本人選手は姓だけでも分かる（Murakami → 村上宗隆）。
+    """
+    surnames = {}
+    for en, ja in jp.items():
+        last = en.split()[-1]
+        surnames[last] = None if last in surnames else ja   # 同じ姓が2人なら使わない
+
     def sub(m):
-        k = kana_of(m.group(0), table, jp)
-        return k or m.group(0)
+        word = m.group(0)
+        if " " not in word.strip():
+            if word in table and table[word]:
+                return table[word]
+            return surnames.get(word) or word
+        k = kana_of(word, table, jp)
+        return k or word
     out = LATIN.sub(sub, text or "")
     return "" if re.search(r"[A-Za-z]{2,}", out) else out
 

@@ -141,5 +141,27 @@ class GameStory(unittest.TestCase):
         self.assertIs(rows[0], b)
 
 
+class Localize(unittest.TestCase):
+    """10/6、ホワイトソックスの試合のコメント「60 yrs a Sox fan」が「ボストン・レッドソックス」に化けた。"""
+    FEED = {"gameData": {"teams": {
+        "away": {"id": 145, "name": "Chicago White Sox", "teamName": "White Sox", "locationName": "Chicago"},
+        "home": {"id": 114, "name": "Cleveland Guardians", "teamName": "Guardians", "locationName": "Cleveland"}}}}
+
+    def test_nickname_last_word_is_the_team_in_this_game(self):
+        words = g.team_words(self.FEED)
+        self.assertEqual(g.localize("60年間 Sox ファンをやってきた。", words, {}, JP),
+                         "60年間 ホワイトソックス ファンをやってきた。")
+
+    def test_unknown_single_word_is_not_looked_up(self):
+        words = g.team_words(self.FEED)
+        self.assertEqual(g.localize("Roof が主役だ", words, {}, JP), "")
+
+    def test_japanese_surname_alone(self):
+        self.assertEqual(g.localize("Murakami がすごい", {}, {}, JP), "村上宗隆 がすごい")
+
+    def test_headline_number_is_dropped(self):
+        self.assertEqual(g.localize("1. 執拗なレイズが5回に4点", {}, {}, JP), "執拗なレイズが5回に4点")
+
+
 if __name__ == "__main__":
     unittest.main(argv=["test_ps_game_story"])

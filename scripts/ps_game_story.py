@@ -191,12 +191,27 @@ def team_words(feed: dict) -> dict:
                   t.get("franchiseName"), t.get("locationName"), t.get("shortName")):
             if w:
                 out[w] = jp
+    # 愛称の最後の1語（White Sox → Sox、Blue Jays → Jays）。試合の2球団で重ならないときだけ。
+    # 10/6、「Sox fan」をホワイトソックスと読めず、人名の検索で別の球団に化けた。
+    lasts = {}
+    for side in ("away", "home"):
+        t = feed["gameData"]["teams"][side]
+        jp = ne.MLB_TEAM_NAME_JP.get(str(t["id"]), "")
+        name = t.get("teamName") or ""
+        if jp and " " in name:
+            last = name.split()[-1]
+            lasts[last] = None if last in lasts else jp
+    for last, jp in lasts.items():
+        if jp and last not in out:
+            out[last] = jp
     return out
 
 
 def localize(text: str, words: dict, table: dict, jp: dict) -> str:
     for w in sorted(words, key=len, reverse=True):
         text = re.sub(r"(?<![A-Za-z])" + re.escape(w) + r"(?![A-Za-z])", words[w], text)
+    # 見出しの訳に付いた番号（「1. 執拗なレイズが…」）は落とす
+    text = re.sub(r"^\s*\d+\.\s*", "", text or "")
     return ps_story.speakable(text, table, jp)
 
 
