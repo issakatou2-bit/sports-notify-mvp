@@ -242,7 +242,65 @@ def comeback():
         "96 BPM・ニ短調。チェロの刻み（VSCOの録音）が続き、5小節目からバイオリンの和音がふくらむ。4小節ごとに低い一撃。Dm→B♭→F→C。後半ほど厚くなる。"
 
 
-ALL = ["nighter", "scoreboard", "dugout", "comeback"]
+# ------------------------------------------------------------------ 5
+# 旋律（16小節、拍で書く）: (小節, 拍, 長さ, MIDI)。既存の曲の写しではない。
+_A = [(0, 0, 1, 76), (0, 1.5, .5, 79), (0, 2, 1, 84), (0, 3, 1, 79),
+      (1, 0, 1.5, 81), (1, 1.5, .5, 79), (1, 2, 1, 76), (1, 3, 1, 72),
+      (2, 0, 1, 77), (2, 1, .5, 81), (2, 1.5, 1.5, 84), (2, 3, 1, 81),
+      (3, 0, 1, 79), (3, 1, 1, 74), (3, 2, 2, 71)]
+_A2_END = [(3, 0, .5, 79), (3, .5, .5, 81), (3, 1, 1, 83), (3, 2, 2, 86)]
+_B = [(0, 0, .5, 79), (0, .5, .5, 76), (0, 1, 1, 79), (0, 2, 1, 84), (0, 3, 1, 88),
+      (1, 0, 1, 86), (1, 1, 1, 84), (1, 2, 2, 81),
+      (2, 0, .5, 84), (2, .5, .5, 81), (2, 1, 1, 77), (2, 2, 1, 81), (2, 3, 1, 84),
+      (3, 0, 1, 83), (3, 1, 1, 79), (3, 2, 2, 74)]
+_B2_END = [(3, 0, 1, 79), (3, 1, 1, 77), (3, 2, 1, 74), (3, 3, 1, 71)]
+
+
+def everyday():
+    """日常：軽い音（マリンバと鉄琴）が旋律を奏でる、明るくあっさりした曲。"""
+    bpm, nbar = 104, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 4) * SR)
+    mix = np.zeros((n, 2))
+    marimba = gs.Sampler(VS / "Percussion/Marimba", keymap=lambda s: (
+        gs.nn(gs.re.search(r"_([A-G]#?\d)_", s).group(1)), 1) if gs.re.search(r"_([A-G]#?\d)_", s) else None)
+    glock = gs.Sampler(VS / "Percussion/Glock", keymap=lambda s: (
+        gs.nn(gs.re.search(r"_([A-G]#?\d)\.wav", s).group(1)), 1) if gs.re.search(r"_([A-G]#?\d)\.wav", s) else None)
+    pizz = gs.Sampler(VS / "Strings/Violin Section/Pizz", pattern=r"_([A-G]#?b?\d)_v(\d)")
+    cello = gs.Sampler(VS / "Strings/Cello Section/pizzT", pattern=r"_([A-G]#?b?\d)_v(\d)")
+    shake = [gs._load(f, SR) for f in sorted((VS / "Percussion").glob("Tamb1-Shake*.wav"))]
+    # C → Am → F → G（4小節で一回り）
+    prog = [(36, [60, 64, 67]), (33, [57, 60, 64]), (29, [57, 60, 65]), (31, [59, 62, 67])]
+    melody = []
+    for start, part, end in ((0, _A, None), (4, _A, _A2_END), (8, _B, None), (12, _B, _B2_END)):
+        body = [x for x in part if not (end and x[0] == 3)] + (end or [])
+        melody += [(start + bi, beat, d, m) for bi, beat, d, m in body]
+    for bi, beat, d, m in melody:
+        t0 = bi * bar + beat * b
+        gs.put(mix, marimba.note(m - 12, d * b * 0.95, .7, rel=0.4), t0, 0.5, -0.15)
+        if bi >= 8 and beat == 0:
+            gs.put(mix, glock.note(m, b, .5), t0, 0.12, 0.4)       # サビだけ鉄琴を重ねる
+    for bi in range(nbar):
+        root, ch = prog[bi % 4]
+        t0 = bi * bar
+        for beat in (1, 3):                                         # 2拍目と4拍目に軽い和音
+            for j, m in enumerate(ch):
+                gs.put(mix, pizz.note(m, b * 0.4, .45, rel=0.2, k=j + beat), t0 + beat * b + j * 0.008,
+                       0.16, -0.35 + 0.35 * j)
+        for beat in (0, 2):
+            gs.put(mix, cello.note(root + 12, b * 0.6, .55, rel=0.3, k=beat), t0 + beat * b, 0.32, 0)
+        if bi >= 2:
+            for q in range(8):
+                gs.put(mix, shake[q % len(shake)][:int(0.18 * SR)], t0 + q * b / 2, 0.05 if q % 2 else 0.035, 0.3)
+            for beat in (0, 2):
+                gs.put(mix, ml.kick(0.2) * 0.5, t0 + beat * b, 0.18)
+            for beat in (1, 3):
+                gs.put(mix, ml.clap(), t0 + beat * b, 0.06)
+    return loop_finish(mix, nbar * bar, wet=0.18, sec=1.6, sub_cut=-8), "日常",         "104 BPM・ハ長調。マリンバ（VSCOの録音）が旋律を奏で、後半は鉄琴が重なる。弦のピチカートの軽い和音、低いピチカート、シェイカーと小さな手拍子。C→Am→F→G。軽くてあっさり。"
+
+
+ALL = ["everyday", "nighter", "scoreboard", "dugout", "comeback"]
 
 
 def main():

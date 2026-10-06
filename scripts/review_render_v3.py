@@ -12,6 +12,7 @@
 時刻はすべて「その画面が出てからの秒」t。p（0〜1）は使わない。
 """
 import functools
+import re
 import math
 import pathlib
 import sys
@@ -149,7 +150,7 @@ def _ticker_strip(text):
     return im, w
 
 
-def ticker(im, t, text, y=1424):
+def ticker(im, t, text, y=1486):
     if not text:
         return
     strip, w = _ticker_strip(text)
@@ -158,19 +159,29 @@ def ticker(im, t, text, y=1424):
 
 
 @functools.lru_cache(maxsize=4)
-def _portrait():
-    path = ROOT / PORTRAITS / "zundamon/C-cheer/base-black-brow-candidate.png"
-    sp = Image.open(path).convert("RGBA").crop((130, 0, 930, 660))
+def _portrait(who="metan"):
+    # 10/6 本人「ずんだもんより、めたんをメインで使っていきたい。自信作だから」。
+    # 新デザインの回は四国めたん（声も四国めたん。generate_asset_video が話者を合わせる）。
+    path = ROOT / PORTRAITS / ("metan/3-black/base.png" if who == "metan"
+                               else "zundamon/C-cheer/base-black-brow-candidate.png")
+    sp = Image.open(path).convert("RGBA").crop((150, 0, 910, 680))
     sp.thumbnail((250, 240))
     return sp
 
 
-def presenter(im, t, which="right"):
-    sp = _portrait()
+def source(d, text, color):
+    """出典。立ち絵（右下）にかからない幅で、2行まで。"""
+    lines, size = _lines(d, text, 24, SAFE_RIGHT - LEFT - 280, 2)
+    for i, line in enumerate(lines):
+        d.text((LEFT, 1478 - (len(lines) - i) * (size + 6)), line, font=font(size), fill=color)
+
+
+def presenter(im, t, which="right", who="metan"):
+    sp = _portrait(who)
     bob = round(6 * math.sin(t * 2 * math.pi / 2.4))
     x = SAFE_RIGHT - sp.width if which == "right" else 24
-    # テロップの上に乗せる（札や項目と重ならない高さ）
-    im.paste(sp, (x, 1512 - sp.height + bob), sp)
+    # テロップ（1486〜1574）の上に立つ。テロップの文字を隠さない
+    im.paste(sp, (x, 1480 - sp.height + bob), sp)
 
 
 def _paste_card(im, card, x, y, k):
@@ -242,12 +253,12 @@ def intro(t, spec, kind_label):
     d.text((x, y + 38), lines[0] if lines else "", font=font(size), fill=INK, anchor="lm")
     big = str(v3.get("big") or "")
     if big:
-        end = _reel(d, im, LEFT - 8, 380, big, t)
+        end = _reel(d, im, LEFT - 8, 350, big, t)
         unit = v3.get("unit") or ""
-        d.text((end + 16, 556), unit, font=font(128), fill=INK)
+        d.text((end + 16, 526), unit, font=font(128), fill=INK)
         if v3.get("sub"):
-            d.text((end + 20, 712), v3["sub"], font=font(40), fill=second)
-        y = 812
+            d.text((end + 20, 682), v3["sub"], font=font(40), fill=second)
+        y = 772
     else:
         hook = spec.get("hook") or spec.get("label", "")
         lines, size = _lines(d, hook, 96, SAFE_RIGHT - LEFT, 4)
@@ -284,15 +295,97 @@ def intro(t, spec, kind_label):
                     ox, oy = cx + cw - 64, cy + 112
                     d.ellipse((ox - r, oy - r, ox + r, oy + r), outline=GOLD, width=max(2, round(8 * min(1, kr))))
     ticker(im, t, v3.get("ticker"))
-    d.text((LEFT, 1540), page_source(spec.get("items") or []), font=font(24), fill=second)
+    source(d, page_source(spec.get("items") or []), second)
     presenter(im, t)
     return im
 
 
 # ------------------------------------------------------------------ 項目の画面
+# 文字の大中小（10/6 本人「注目個所に色、重要度で文字サイズに差を」）。
+#   大: 項目の1つ目のかたまり（全角スペースまで）。いちばん言いたいこと。金色。
+#   中: 2つ目以降のかたまり。数字（単位まで）だけ金色。
+#   小: かっこの中の補足。くすんだ色。
+SIZE_L, SIZE_M, SIZE_S = 66, 46, 34
+NUM_RE = re.compile(r"\d[\d,.]*(?:対\d+)?(?:本塁打|奪三振|打数|安打|打点|試合|勝|敗|本|点|年|回|戦|位|人|%|割|秒|分)?")
+NO_HEAD = "、。，．）」』・ー％%"
+
+
+def _runs(body):
+    """本文を (文字列, 大中小, 金色か) の並びに。読み上げと同じ文字だけを使う（足さない）。"""
+    out = []
+    for i, seg in enumerate(str(body).split("　")):
+        if not seg:
+            continue
+        if i:
+            out.append(("　", "M", False))
+        for part in re.split(r"(（[^）]*）)", seg):
+            if not part:
+                continue
+            if part.startswith("（"):
+                out.append((part, "S", False))
+            elif i == 0:
+                out.append((part, "L", True))
+            else:
+                pos = 0
+                for m in NUM_RE.finditer(part):
+                    if m.start() > pos:
+                        out.append((part[pos:m.start()], "M", False))
+                    out.append((m.group(0), "M", True))
+                    pos = m.end()
+                if pos < len(part):
+                    out.append((part[pos:], "M", False))
+    return out
+
+
+def _atoms(runs):
+    """折り返してよい単位。数字＋単位はひとかたまり。"""
+    for text, size, gold in runs:
+        if gold and size == "M":
+            yield text, size, gold
+            continue
+        for m in re.finditer(r"\d[\d,.]*(?:対\d+)?[^\d\s　（）・、]?|.", text):
+            yield m.group(0), size, gold
+
+
+def rich_lines(runs, width, second_rgb):
+    sizes = {"L": SIZE_L, "M": SIZE_M, "S": SIZE_S}
+    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    lines, cur, x = [], [], 0
+    for text, size, gold in _atoms(runs):
+        f = font(sizes[size])
+        w = probe.textlength(text, font=f)
+        if cur and x + w > width and text not in NO_HEAD and text.strip("　 "):
+            lines.append(cur)
+            cur, x = [], 0
+        if not cur and not text.strip("　 "):
+            continue                                       # 行頭の空白は捨てる
+        color = GOLD if gold else (_mix(second_rgb, INK, 0.3) if size == "S" else INK)
+        cur.append((x, text, f, color, sizes[size]))
+        x += w
+    if cur:
+        lines.append(cur)
+    return lines
+
+
 @functools.lru_cache(maxsize=64)
 def _item_card(head, body, w, base_rgb, second_rgb):
     quote = "番記者" in head or str(body).startswith("「")
+    if not quote:
+        lines = rich_lines(_runs(body), w - 72, second_rgb)
+        heights = [max(it[4] for it in ln) + 16 for ln in lines]
+        h = 84 + sum(heights) + 30
+        card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        d = ImageDraw.Draw(card)
+        d.rounded_rectangle((0, 0, w - 1, h - 1), radius=24, fill=_mix(base_rgb, (255, 255, 255), 0.1) + (255,),
+                            outline=_mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)
+        d.text((36, 30), head, font=font(32), fill=second_rgb)
+        y = 84
+        for ln, lh in zip(lines, heights):
+            base_y = y + lh - 16
+            for x, text, f, color, _ in ln:
+                d.text((36 + x, base_y), text, font=f, fill=color, anchor="ls")
+            y += lh
+        return card
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
     lines, size = _lines(probe, body, 52 if quote else 64, w - 72, 8 if quote else 4)
     h = 40 + 50 + len(lines) * (size + 14) + 36
@@ -331,8 +424,8 @@ def list_page(t, spec, items, start, count, page, pages, kind_label):
         _paste_card(im, card, LEFT, y, back_out((t - T_CARD0 - i * T_CARD_GAP) / SLIDE))
         y += card.height + 28
     ticker(im, t, v3.get("ticker"))
-    d.text((LEFT, 1540), page_source(items[start:start + count]), font=font(24), fill=second)
-    presenter(im, t, "right" if page % 2 else "left")
+    source(d, page_source(items[start:start + count]), second)
+    presenter(im, t)
     return im
 
 

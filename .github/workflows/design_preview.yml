@@ -10,8 +10,8 @@ on:
       bgm:
         description: BGM
         type: choice
-        options: [scoreboard, nighter, dugout, comeback]
-        default: scoreboard
+        options: [everyday, scoreboard, nighter, dugout, comeback]
+        default: everyday
 
 permissions:
   contents: read

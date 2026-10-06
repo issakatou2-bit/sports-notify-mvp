@@ -1663,7 +1663,7 @@ BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"
 def add_sound(audio_path, segs, durations, spec, topic, out_dir):
     """新デザインの回に、BGM と画面の動きに合わせた効果音を重ねる。
 
-    BGM は材料の bgm（無ければ環境変数 COLLESPO_BGM、それも無ければ scoreboard）。
+    BGM は材料の bgm（無ければ環境変数 COLLESPO_BGM、それも無ければ everyday「日常」）。
     ファイルが無い・重ねるのに失敗したときは、読み上げだけで続ける（動画は止めない）。
     """
     import review_render_v3 as r3
@@ -1675,7 +1675,7 @@ def add_sound(audio_path, segs, durations, spec, topic, out_dir):
         for at, k, v, db in r3.cues(kind, spec, items, meta.get("start", 0), meta.get("count", 1)):
             cues.append((t0 + at, k, v, db))
         t0 += dur
-    name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or "scoreboard"
+    name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or "everyday"
     bgm = BGM_DIR / f"{name}.mp3"
     try:
         out = sound_mix.mix_file(audio_path, out_dir / "narration_mixed.wav",
@@ -1687,6 +1687,10 @@ def add_sound(audio_path, segs, durations, spec, topic, out_dir):
         return audio_path
 
 
+METAN = 2   # VOICEVOX 四国めたん（ノーマル）
+VOICE_CREDIT = "音声: VOICEVOX:ずんだもん"
+
+
 def render_outro(p):
     im, d = base(p)
     d.text((80, 640), "コレスポ", font=font(120), fill=ACCENT)
@@ -1695,7 +1699,7 @@ def render_outro(p):
         d.text((80, 910), "毎日19時 更新", font=font(46), fill=DIM)
     # VOICEVOXの利用規約で、動画内または説明欄へのクレジット表記が
     # 求められているため、アウトロに必ず表示する
-    d.text((80, 1150), "音声: VOICEVOX:ずんだもん", font=font(40), fill=DIM)
+    d.text((80, 1150), VOICE_CREDIT, font=font(40), fill=DIM)
     d.text((80, 1220), "データ: MLB Stats API", font=font(40), fill=DIM)
     return im
 
@@ -1720,6 +1724,12 @@ def main():
     args = parser.parse_args()
 
     narration = build_narration(args.topic)
+    global VOICE_CREDIT
+    if (LIST_TOPICS.get(args.topic) or {}).get("style") == "v3":
+        # 新デザインの回は四国めたんが話す（10/6 本人「めたんをメインで」）。立ち絵も四国めたん。
+        for s in narration["segments"]:
+            s.setdefault("speaker", METAN)
+        VOICE_CREDIT = "音声: VOICEVOX:四国めたん"
 
     if args.narration_out:
         p = pathlib.Path(args.narration_out)
