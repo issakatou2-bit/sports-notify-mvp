@@ -3,9 +3,12 @@
 # requests:  MLB Stats API / football-data.org / OneSignal / VOICEVOX への通信
 # pillow:    動画フレームの描画
 # google-api-python-client, google-auth: YouTubeへの動画アップロード
+# numpy, scipy: 効果音の合成とBGMの重ね合わせ（sfx.py・sound_mix.py）
 anthropic
 atproto
 requests
 pillow
 google-api-python-client
 google-auth
+numpy
+scipy

@@ -1645,6 +1645,48 @@ def render_v2(p, kind, meta, spec, topic):
                      meta.get("heading", ""), root, tag)
 
 
+def render_v3(t, kind, meta, spec, topic):
+    """新デザイン「電光掲示板」（review_render_v3）。材料の style="v3" のときだけ。"""
+    import review_render_v3 as r3
+    tag = "PSの話題" if spec.get("story") else "シーズンまとめ"
+    if kind == "intro":
+        return r3.intro(t, spec, tag)
+    items = list_items(meta.get("topic", topic))
+    start = meta.get("start", 0)
+    return r3.list_page(t, spec, items, start, meta.get("count", 1),
+                        start // 2 + 1, (len(items) + 1) // 2, tag)
+
+
+BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"
+
+
+def add_sound(audio_path, segs, durations, spec, topic, out_dir):
+    """新デザインの回に、BGM と画面の動きに合わせた効果音を重ねる。
+
+    BGM は材料の bgm（無ければ環境変数 COLLESPO_BGM、それも無ければ scoreboard）。
+    ファイルが無い・重ねるのに失敗したときは、読み上げだけで続ける（動画は止めない）。
+    """
+    import review_render_v3 as r3
+    import sound_mix
+    cues, t0 = [], 0.0
+    for seg, dur in zip(segs, durations):
+        kind, meta = seg.get("kind"), seg.get("meta") or {}
+        items = list_items(meta.get("topic", topic)) if kind == "list" else ()
+        for at, k, v, db in r3.cues(kind, spec, items, meta.get("start", 0), meta.get("count", 1)):
+            cues.append((t0 + at, k, v, db))
+        t0 += dur
+    name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or "scoreboard"
+    bgm = BGM_DIR / f"{name}.mp3"
+    try:
+        out = sound_mix.mix_file(audio_path, out_dir / "narration_mixed.wav",
+                                 bgm if bgm.exists() else None, cues)
+        print(f"[info] BGM {name if bgm.exists() else 'なし'}・効果音{len(cues)}個を重ねました")
+        return out
+    except Exception as e:                                  # noqa: BLE001
+        print(f"[warn] BGM・効果音を重ねられません（読み上げだけで続けます）: {e}")
+        return audio_path
+
+
 def render_outro(p):
     im, d = base(p)
     d.text((80, 640), "コレスポ", font=font(120), fill=ACCENT)
@@ -1708,6 +1750,9 @@ def main():
 
     durations = plan_durations(segs)
     audio_path = build_narration_track(segs, durations, out_dir)
+    spec_main = LIST_TOPICS.get(args.topic) or {}
+    if audio_path and spec_main.get("style") == "v3":
+        audio_path = add_sound(audio_path, segs, durations, spec_main, args.topic, out_dir)
 
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24",
@@ -1742,12 +1787,18 @@ def main():
                 # 地図は最後まで動く。他の画面は途中で絵が止まるので
                 # 描き直さずに使い回すが、ここでそれをやると寄るのが
                 # 止まってしまう。
+                v2 = LIST_TOPICS.get(meta.get("topic", args.topic)) or {}
+                v3 = v2.get("style") == "v3" and kind in ("intro", "list")
+                if v3:
+                    # 新デザイン（電光掲示板）は背景が動き続けるので、使い回さない
+                    proc.stdin.write(render_v3(k / FPS, kind, meta, v2, args.topic).tobytes())
+                    total += 1
+                    continue
                 if kind != "map" and settled and still is not None:
                     proc.stdin.write(still)
                     total += 1
                     continue
-                v2 = LIST_TOPICS.get(meta.get("topic", args.topic)) or {}
-                if v2.get("style") == "v2" and kind in ("intro", "list", "people"):
+                if v2.get("style") in ("v2", "v3") and kind in ("intro", "list", "people"):
                     # シーズンまとめ・PSの話題は新デザインで（10/3 改善案G）。
                     # 読み上げ・尺・項目は同じで、画面だけを差し替える。
                     im = render_v2(pp, kind, meta, v2, args.topic)

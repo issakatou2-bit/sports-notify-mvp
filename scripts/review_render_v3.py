@@ -1,0 +1,361 @@
+"""ショートの新デザイン「電光掲示板」（10/6 本人が案Aを選んだ。モックは Design の canvas）。
+
+いまの v2（review_render）との違い:
+  - 背景が動く: 球団色の地に、2色目のピンストライプが流れ、照明の光が横切る。
+  - 表紙: 大きな数字がスロットのように回って止まる。試合の札が1枚ずつ飛び込み、○が付く。
+  - 下に次の試合などのテロップが流れ続ける（全画面で同じ位置）。
+  - 項目の画面: 項目が札になって右から飛び込む（少し行き過ぎて戻る）。
+
+材料・読み上げ・尺は v2 と同じ。画面だけを差し替える（style="v3"）。
+効果音の時刻は cues() が、この描画と同じ時刻表から返す（動きと音がずれない）。
+
+時刻はすべて「その画面が出てからの秒」t。p（0〜1）は使わない。
+"""
+import functools
+import math
+import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+
+from PIL import Image, ImageDraw, ImageFilter, ImageFont  # noqa: E402
+
+from ps_brand_components import TEAM_SECONDARY_COLORS, font  # noqa: E402
+from ps_render_template import SAFE_BOTTOM, SAFE_RIGHT  # noqa: E402
+from review_render import page_source, _lines, PORTRAITS  # noqa: E402
+
+W, H = 1080, 1920
+LEFT = 72
+INK = (247, 242, 223)
+GOLD = (255, 209, 108)
+DARK_INK = (27, 26, 23)
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+NUM_FONT = ROOT / "assets/fonts/Oswald[wght].ttf"
+
+# 時刻表（秒）。描画と効果音の両方がここを見る。
+T_WHO = 0.0          # 球団の行が上がってくる
+T_ROLL = (0.35, 1.6)  # 数字が回り始める・止まる
+T_TAG = 0.5          # 「4試合すべて敵地」の帯
+T_CHIP0, T_CHIP_GAP = 1.0, 0.3   # 札の1枚目と間隔
+T_RING_AFTER = 0.55  # 札が着いてから○が付くまで
+T_CARD0, T_CARD_GAP = 0.15, 0.35  # 項目の札
+SLIDE = 0.45         # 飛び込みにかかる秒
+
+
+def _hex(c):
+    c = c.lstrip("#")
+    return tuple(int(c[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def _mix(a, b, k):
+    return tuple(round(a[i] * (1 - k) + b[i] * k) for i in range(3))
+
+
+def _lum(c):
+    return (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255
+
+
+def colors(team_id):
+    """地の色（暗くして文字を読めるように）・2色目・札の色。"""
+    import notability_engine as ne
+    base = _hex(ne.MLB_TEAM_COLOR.get(str(team_id)) or "#183b35")
+    while _lum(base) > 0.16:
+        base = _mix(base, (0, 0, 0), 0.25)
+    second = _hex(TEAM_SECONDARY_COLORS.get(str(team_id)) or "#c4ced4")
+    if _lum(second) < 0.35:
+        second = _mix(second, (255, 255, 255), 0.55)
+    panel = _mix(base, (255, 255, 255), 0.09)
+    return base, second, panel
+
+
+@functools.lru_cache(maxsize=64)
+def num_font(size, weight="Bold"):
+    try:
+        f = ImageFont.truetype(str(NUM_FONT), size)
+        f.set_variation_by_name(weight)
+        return f
+    except (OSError, ValueError):
+        return font(size, True)
+
+
+def ease_out(x):
+    x = max(0.0, min(1.0, x))
+    return 1 - (1 - x) ** 3
+
+
+def back_out(x, s=1.6):
+    """少し行き過ぎて戻る。"""
+    x = max(0.0, min(1.0, x))
+    x -= 1
+    return 1 + x * x * ((s + 1) * x + s)
+
+
+# ------------------------------------------------------------------ 背景
+@functools.lru_cache(maxsize=4)
+def _beam():
+    im = Image.new("L", (360, 2600), 0)
+    d = ImageDraw.Draw(im)
+    d.rectangle((110, 0, 250, 2600), fill=34)
+    im = im.filter(ImageFilter.GaussianBlur(40)).rotate(-18, expand=True, resample=Image.BICUBIC)
+    return Image.new("RGB", im.size, (255, 255, 255)), im
+
+
+def background(t, team_id):
+    base, second, _ = colors(team_id)
+    im = Image.new("RGB", (W, H), base)
+    d = ImageDraw.Draw(im)
+    line = _mix(base, second, 0.10)
+    off = (t * 16) % 96
+    x = -96 + off
+    while x < W:
+        d.rectangle((round(x) + 92, 0, round(x) + 96, H), fill=line)
+        x += 96
+    # 照明の光（9秒で1回横切る）
+    ph = (t % 9.0) / 9.0
+    if ph < 0.5:
+        white, beam = _beam()
+        bx = round(-900 + ph / 0.5 * 2200)
+        im.paste(white, (bx, -300), beam)
+    d.rectangle((0, 0, W, 16), fill=second)
+    return im
+
+
+# ------------------------------------------------------------------ 部品
+def _header(d, label, page=None, second=(196, 206, 212)):
+    d.text((LEFT, 168), "コレスポ", font=font(44), fill=GOLD)
+    d.text((LEFT + 210, 180), label, font=font(28), fill=second)
+    if page:
+        d.text((SAFE_RIGHT, 172), page, font=num_font(40), fill=GOLD, anchor="ra")
+
+
+def _badge(d, x, y, abbr, base, second):
+    w = max(150, round(d.textlength(abbr, font=num_font(44))) + 56)
+    d.rounded_rectangle((x, y, x + w, y + 76), radius=16, fill=_mix(base, (0, 0, 0), 0.3),
+                        outline=second, width=6)
+    d.text((x + w / 2, y + 38), abbr, font=num_font(44), fill=INK, anchor="mm")
+    return w
+
+
+@functools.lru_cache(maxsize=16)
+def _ticker_strip(text):
+    f = font(40)
+    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    w = round(probe.textlength(text, font=f)) + 112
+    im = Image.new("RGB", (w * 2, 88), GOLD)
+    d = ImageDraw.Draw(im)
+    for k in range(2):
+        d.text((k * w + 56, 44), text, font=f, fill=DARK_INK, anchor="lm")
+    return im, w
+
+
+def ticker(im, t, text, y=1424):
+    if not text:
+        return
+    strip, w = _ticker_strip(text)
+    off = round(t * 80) % w
+    im.paste(strip.crop((off, 0, off + W, 88)), (0, y))
+
+
+@functools.lru_cache(maxsize=4)
+def _portrait():
+    path = ROOT / PORTRAITS / "zundamon/C-cheer/base-black-brow-candidate.png"
+    sp = Image.open(path).convert("RGBA").crop((130, 0, 930, 660))
+    sp.thumbnail((250, 240))
+    return sp
+
+
+def presenter(im, t, which="right"):
+    sp = _portrait()
+    bob = round(6 * math.sin(t * 2 * math.pi / 2.4))
+    x = SAFE_RIGHT - sp.width if which == "right" else 24
+    # テロップの上に乗せる（札や項目と重ならない高さ）
+    im.paste(sp, (x, 1512 - sp.height + bob), sp)
+
+
+def _paste_card(im, card, x, y, k):
+    """札を、飛び込みの進み具合 k（0〜1、行き過ぎあり）で置く。"""
+    if k <= 0:
+        return
+    dx = round(140 * (1 - k))
+    alpha = card.split()[3].point(lambda a: round(a * min(1.0, k * 1.6)))
+    im.paste(card, (x + dx, y), alpha)
+
+
+# ------------------------------------------------------------------ 表紙
+@functools.lru_cache(maxsize=32)
+def _chip(label, score, w, base_rgb, second_rgb):
+    card = Image.new("RGBA", (w, 168), (0, 0, 0, 0))
+    d = ImageDraw.Draw(card)
+    d.rounded_rectangle((0, 0, w - 1, 167), radius=20, fill=_mix(base_rgb, (255, 255, 255), 0.1) + (255,),
+                        outline=_mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)
+    size = 28
+    while size > 18 and d.textlength(label, font=font(size)) > w - 48:
+        size -= 1
+    d.text((24, 22), label, font=font(size), fill=second_rgb)
+    d.text((24, 66), score, font=num_font(80), fill=INK)
+    return card
+
+
+def _reel(d, im, x, y, value, t, size=400):
+    """数字がスロットのように回って止まる。value は数字の文字列（数字以外はそのまま）。"""
+    f = num_font(size)
+    a, b = T_ROLL
+    k = ease_out((t - a) / (b - a))
+    cx = x
+    h = round(size * 1.0)
+    for ch in value:
+        cw = round(d.textlength(ch, font=f))
+        if ch.isdigit():
+            target = int(ch)
+            pos = k * target                      # 0 → target
+            lay = Image.new("RGBA", (cw + 8, h), (0, 0, 0, 0))
+            ld = ImageDraw.Draw(lay)
+            base = math.floor(pos)
+            frac = pos - base
+            for j in (base, base + 1):
+                if 0 <= j <= 9:
+                    ld.text((4, round((j - pos) * h) - round(size * 0.12)), str(j), font=f, fill=GOLD)
+            im.paste(lay, (cx - 4, y), lay)
+            del frac
+        else:
+            d.text((cx, y - round(size * 0.12)), ch, font=f, fill=GOLD)
+        cx += cw
+    return cx
+
+
+def intro(t, spec, kind_label):
+    v3 = spec.get("v3") or {}
+    tid = spec.get("team_id")
+    base, second, _ = colors(tid)
+    im = background(t, tid)
+    d = ImageDraw.Draw(im)
+    _header(d, kind_label, second=second)
+    # 球団の行
+    k = ease_out((t - T_WHO) / 0.5)
+    y = 260 + round(48 * (1 - k))
+    x = LEFT
+    if spec.get("abbr"):
+        x += _badge(d, LEFT, y, spec["abbr"], base, second) + 24
+    who = v3.get("who") or spec.get("label", "")
+    lines, size = _lines(d, who, 44, SAFE_RIGHT - x, 1)
+    d.text((x, y + 38), lines[0] if lines else "", font=font(size), fill=INK, anchor="lm")
+    big = str(v3.get("big") or "")
+    if big:
+        end = _reel(d, im, LEFT - 8, 380, big, t)
+        unit = v3.get("unit") or ""
+        d.text((end + 16, 556), unit, font=font(128), fill=INK)
+        if v3.get("sub"):
+            d.text((end + 20, 712), v3["sub"], font=font(40), fill=second)
+        y = 812
+    else:
+        hook = spec.get("hook") or spec.get("label", "")
+        lines, size = _lines(d, hook, 96, SAFE_RIGHT - LEFT, 4)
+        e = ease_out(t / 0.6)
+        for i, line in enumerate(lines):
+            d.text((LEFT - round(56 * (1 - e)), 400 + i * (size + 20)), line, font=font(size),
+                   fill=GOLD if i == 0 else INK)
+        y = 400 + len(lines) * (size + 20) + 40
+    tag = v3.get("tag")
+    if tag:
+        k = ease_out((t - T_TAG) / 0.4)
+        if k > 0:
+            f = font(48)
+            w = round(d.textlength(tag, font=f)) + 56
+            reveal = round(w * k)
+            d.rectangle((LEFT, y, LEFT + reveal, y + 84), fill=GOLD)
+            lay = Image.new("RGBA", (w, 84), (0, 0, 0, 0))
+            ImageDraw.Draw(lay).text((28, 42), tag, font=f, fill=DARK_INK, anchor="lm")
+            im.paste(lay.crop((0, 0, reveal, 84)), (LEFT, y), lay.crop((0, 0, reveal, 84)))
+        y += 116
+    chips = v3.get("chips") or []
+    if chips:
+        cw = (SAFE_RIGHT - LEFT - 24) // 2
+        for i, c in enumerate(chips[:4]):
+            cx = LEFT + (i % 2) * (cw + 24)
+            cy = y + (i // 2) * 192
+            t0 = T_CHIP0 + i * T_CHIP_GAP
+            card = _chip(c.get("label", ""), c.get("score", ""), cw, base, second)
+            _paste_card(im, card, cx, cy, back_out((t - t0) / SLIDE))
+            if c.get("win"):
+                kr = back_out((t - t0 - SLIDE - T_RING_AFTER) / 0.25, 2.4)
+                if kr > 0:
+                    r = round(30 * kr)
+                    ox, oy = cx + cw - 64, cy + 112
+                    d.ellipse((ox - r, oy - r, ox + r, oy + r), outline=GOLD, width=max(2, round(8 * min(1, kr))))
+    ticker(im, t, v3.get("ticker"))
+    d.text((LEFT, 1540), page_source(spec.get("items") or []), font=font(24), fill=second)
+    presenter(im, t)
+    return im
+
+
+# ------------------------------------------------------------------ 項目の画面
+@functools.lru_cache(maxsize=64)
+def _item_card(head, body, w, base_rgb, second_rgb):
+    quote = "番記者" in head or str(body).startswith("「")
+    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    lines, size = _lines(probe, body, 52 if quote else 64, w - 72, 8 if quote else 4)
+    h = 40 + 50 + len(lines) * (size + 14) + 36
+    card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(card)
+    fill = (247, 242, 223, 255) if quote else _mix(base_rgb, (255, 255, 255), 0.1) + (255,)
+    d.rounded_rectangle((0, 0, w - 1, h - 1), radius=24, fill=fill,
+                        outline=None if quote else _mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)
+    d.text((36, 30), head, font=font(32), fill=(93, 90, 99) if quote else second_rgb)
+    for i, line in enumerate(lines):
+        color = DARK_INK if quote else (GOLD if i == 0 else INK)
+        d.text((36, 84 + i * (size + 14)), line, font=font(size), fill=color)
+    return card
+
+
+def list_page(t, spec, items, start, count, page, pages, kind_label):
+    v3 = spec.get("v3") or {}
+    tid = spec.get("team_id")
+    base, second, _ = colors(tid)
+    im = background(t, tid)
+    d = ImageDraw.Draw(im)
+    _header(d, kind_label, f"{page}/{pages}", second)
+    heading = spec.get("heading") or spec.get("label", "")
+    hl, hs = _lines(d, heading, 52, SAFE_RIGHT - LEFT, 2)
+    for i, line in enumerate(hl):
+        d.text((LEFT, 250 + i * (hs + 10)), line, font=font(hs), fill=INK)
+    # 進み具合の線
+    d.rectangle((LEFT, 236, SAFE_RIGHT, 240), fill=_mix(base, (255, 255, 255), 0.15))
+    d.rectangle((LEFT, 236, LEFT + round((SAFE_RIGHT - LEFT) * page / max(pages, 1)), 240), fill=GOLD)
+    y = 250 + len(hl) * (hs + 10) + 44
+    w = SAFE_RIGHT - LEFT
+    for i, (head, body) in enumerate(items[start:start + count]):
+        card = _item_card(head, body, w, base, second)
+        if y + card.height > 1400:
+            break
+        _paste_card(im, card, LEFT, y, back_out((t - T_CARD0 - i * T_CARD_GAP) / SLIDE))
+        y += card.height + 28
+    ticker(im, t, v3.get("ticker"))
+    d.text((LEFT, 1540), page_source(items[start:start + count]), font=font(24), fill=second)
+    presenter(im, t, "right" if page % 2 else "left")
+    return im
+
+
+# ------------------------------------------------------------------ 効果音の時刻
+def cues(kind, spec, items=(), start=0, count=0):
+    """その画面の効果音 [(秒, 種類, 案, 追加の音量dB)]。描画と同じ時刻表から。"""
+    v3 = spec.get("v3") or {}
+    out = []
+    if kind == "intro":
+        out.append((T_WHO, "swish", "a", -4))
+        if v3.get("big"):
+            out.append((T_ROLL[0], "roll", "a", -2))
+            out.append((T_ROLL[1] - 0.04, "stop", "a", 0))
+        if v3.get("tag"):
+            out.append((T_TAG, "marker", "a", -3))
+        for i, c in enumerate((v3.get("chips") or [])[:4]):
+            t0 = T_CHIP0 + i * T_CHIP_GAP
+            out.append((t0, "swish", "b", -3))
+            if c.get("win"):
+                out.append((t0 + SLIDE + T_RING_AFTER, "pop", "a", -2))
+    elif kind == "list":
+        out.append((0.0, "transition", "b", -6))
+        for i, (head, body) in enumerate(list(items)[start:start + count]):
+            quote = "番記者" in head or str(body).startswith("「")
+            out.append((T_CARD0 + i * T_CARD_GAP, "notify" if quote else "swish", "a", -3))
+    return out

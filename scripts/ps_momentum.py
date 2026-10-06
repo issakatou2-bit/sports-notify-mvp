@@ -279,11 +279,25 @@ def story(team: dict, series: dict, games: list, boxes: list, last_feed: dict, r
     title = f"【MLB】{head}｜{hook2} #Shorts"
     intro = f"{jpn}の{name}は、このポストシーズン{n}連勝。" + (
         f"{n}試合すべて敵地での勝利です。" if road == n else f"そのうち{road}勝は敵地です。")
+    # 新デザイン（電光掲示板、review_render_v3）の表紙に置くもの。読み上げには使わない。
+    short = {"F": "WCS", "D": "地区S", "L": "リーグ優勝決定S", "W": "WS"}
+    chips = []
+    for g in streak_games:
+        me = "away" if g["teams"]["away"]["team"]["id"] == tid else "home"
+        opp = g["teams"]["home" if me == "away" else "away"]["team"]
+        num = g.get("seriesGameNumber")
+        chips.append({"label": f"{short.get(g.get('gameType'), '')}{f'第{num}戦' if num else ''}　"
+                               f"{'敵地' if me == 'away' else '本拠地'}{ps_odds.team_jp(opp['id'], opp.get('name', ''))}",
+                      "score": score_line(g, tid).replace("対", "-"), "win": True})
+    next_line = dict(items)["次の試合"]
+    v3 = {"who": f"{jpn}の{name}", "big": str(n), "unit": "連勝", "sub": f"ポストシーズン {rec}",
+          "tag": where, "chips": chips[-4:],
+          "ticker": "次の試合　" + (next_line.replace("　勝てば突破", "") + f"　{hook2}" if rare else next_line)}
     key = "season_momentum_" + re.sub(r"[^0-9A-Za-z]", "_", series.get("key") or str(tid)) + f"_{tid}"
     return {
         "key": key, "label": f"{name}の{n}連勝", "hook": head,
         "heading": f"{name}　ポストシーズン{rec}", "intro": intro, "intro_as_is": True,
-        "style": "v2", "team_id": tid, "abbr": ne.MLB_TEAM_ABBR.get(str(tid), ""),
+        "style": "v3", "v3": v3, "team_id": tid, "abbr": ne.MLB_TEAM_ABBR.get(str(tid), ""),
         "title": title, "items": items, "japanese": [], "ps_ended": True, "story": True,
         "momentum": True, "source": source, "voice": voice, "series_key": series.get("key"),
         "next_game": nxt["gameDate"], "streak": n, "road": road,
