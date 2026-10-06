@@ -1,55 +1,8 @@
 {
-  "updated_at": "2026-10-06T04:08:50.782446+00:00",
+  "updated_at": "2026-10-06T06:11:40.875665+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
-    {
-      "key": "season_game_849825",
-      "label": "地区シリーズ第2戦",
-      "hook": "ブリュワーズがパドレスに4対3で地区シリーズ2勝0敗に",
-      "heading": "パドレス 対 ブリュワーズ　地区シリーズ第2戦",
-      "intro": "地区シリーズ第2戦、ブリュワーズが本拠地でパドレスに4対3で勝ちました。",
-      "intro_as_is": true,
-      "style": "v2",
-      "team_id": 158,
-      "abbr": "MIL",
-      "title": "【MLB】ブリュワーズがパドレスに4対3で地区シリーズ2勝0敗に｜チョーリオの決勝打　松井裕樹 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ブリュワーズ 4対3 パドレス　本拠地で勝利　シリーズはブリュワーズの2勝0敗"
-        ],
-        [
-          "決勝点",
-          "9回裏　ジャクソン・チョーリオのタイムリー"
-        ],
-        [
-          "先発",
-          "ブリュワーズ ヘンダーソン 5回を2失点"
-        ],
-        [
-          "勝ち投手",
-          "トレバー・メギル（1回を無失点）"
-        ]
-      ],
-      "japanese": [
-        {
-          "name": "松井裕樹",
-          "line": "1回と3分の1　1失点　0奪三振（パドレス）"
-        }
-      ],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": null,
-      "voice": null,
-      "headline": null,
-      "game_pk": 849825,
-      "game_date": "2026-10-04T20:00:00Z",
-      "jp_first": true,
-      "finished_at": "2026-10-04T23:22:52.959000+00:00"
-    },
     {
       "key": "season_game_849823",
       "label": "地区シリーズ第2戦",
@@ -81,10 +34,6 @@
         [
           "勝ち投手・セーブ",
           "勝ち ディラン・リー（3分の2回を無失点）　セーブ ライセル・イグレシアス"
-        ],
-        [
-          "ハイライトのコメント欄から",
-          "「レイ・カー、セブンイレブンの店員からポストシーズンスターへ。本当のシンデレラストーリーだ」"
         ]
       ],
       "japanese": [
@@ -102,13 +51,7 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": {
-        "said": "レイ・カー、セブンイレブンの店員からポストシーズンスターへ。本当のシンデレラストーリーだ",
-        "text": "Ray Kerr, from a 7-Eleven worker to postseason star. A true underdog story",
-        "url": "https://www.youtube.com/watch?v=jBDL7ltkOz0",
-        "likes": 685,
-        "at": "2026-10-05T05:02:48Z"
-      },
+      "voice": null,
       "headline": null,
       "game_pk": 849823,
       "game_date": "2026-10-05T00:00:00Z",
@@ -140,8 +83,12 @@
           "ホワイトソックス ケイ 3分の1回を2失点　ガーディアンズ ウィリアムズ 5回を2失点"
         ],
         [
+          "ハイライトのコメント欄から",
+          "「60年間 ボストン・レッドソックス ファンをやってきた。こんな日が見られるまで生きてられて本当に嬉しい。信じてきた甲斐があった。」"
+        ],
+        [
           "MLB.comの見出しから",
-          "「120年ぶりの本拠地でのプレーオフ優勝決定？ホワイトソックスがあと一歩 ⚾」"
+          "「120年ぶりのホーム・プレーオフ制覇？ホワイトソックスはその一歩手前 ⚾」"
         ]
       ],
       "japanese": [
@@ -155,9 +102,15 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
+      "voice": {
+        "said": "60年間 ボストン・レッドソックス ファンをやってきた。こんな日が見られるまで生きてられて本当に嬉しい。信じてきた甲斐があった。",
+        "text": "60 yrs a Sox fan. Glad that Im still around and able to see this. My faith has been restored.",
+        "url": "https://www.youtube.com/watch?v=LtEYf0hF3i8",
+        "likes": 377,
+        "at": "2026-10-06T01:06:43Z"
+      },
       "headline": {
-        "said": "120年ぶりの本拠地でのプレーオフ優勝決定？ホワイトソックスがあと一歩 ⚾",
+        "said": "120年ぶりのホーム・プレーオフ制覇？ホワイトソックスはその一歩手前 ⚾",
         "text": "First home playoff clincher in 120 years? White Sox on cusp of making it happen",
         "url": "https://www.mlb.com/news/white-sox-win-alds-game-2-2026",
         "at": "2026-10-06T01:55:00+00:00"
@@ -201,7 +154,7 @@
         ],
         [
           "MLB.comの見出しから",
-          "「執拗なレイズがシュリットラーを苦しめる、5回4点で地区シリーズ優勝まであと1勝 🔥」"
+          "「1. 執拗なレイズがシュリットラーを苦しめ、5回に4点、リーグ優勝決定シリーズ進出まで1勝 🔥」"
         ]
       ],
       "japanese": [],
@@ -212,7 +165,7 @@
       "source": null,
       "voice": null,
       "headline": {
-        "said": "執拗なレイズがシュリットラーを苦しめる、5回4点で地区シリーズ優勝まであと1勝 🔥",
+        "said": "1. 執拗なレイズがシュリットラーを苦しめ、5回に4点、リーグ優勝決定シリーズ進出まで1勝 🔥",
         "text": "Relentless Rays give Schlittler fits in 4-run 5th, move 1 win from ALCS",
         "url": "https://www.mlb.com/news/rays-win-alds-game-2-2026",
         "at": "2026-10-06T03:28:00+00:00"
