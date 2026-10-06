@@ -1729,12 +1729,15 @@ JP_PLAYERS_SOCCER = [
      "team_jp": "トッテナム", "league": "PL", "match": "tottenham"},
     {"name_en": "Ao Tanaka", "name_jp": "田中碧", "kana": "タナカ・アオ", "team_en": "Leeds United",
      "team_jp": "リーズ", "league": "PL", "match": "leeds"},
+    # 坂元達裕・前田大然・守田英正のクラブ（コベントリー・イプスウィッチ・ハル・シティ）は
+    # 2026-27はプレミアリーグにいる（10/5の順位表で確認）。名簿が2部のままだったため、
+    # プレミアの順位争い・出場状況・週末の回から3人が抜けていた（Opusの作業15で発見）。
     {"name_en": "Tatsuhiro Sakamoto", "name_jp": "坂元達裕", "kana": "サカモト・タツヒロ", "team_en": "Coventry City",
-     "team_jp": "コベントリー", "league": "ELC", "match": "coventry"},
+     "team_jp": "コベントリー", "league": "PL", "match": "coventry"},
     {"name_en": "Daizen Maeda", "name_jp": "前田大然", "kana": "マエダ・ダイゼン", "team_en": "Ipswich Town",
-     "team_jp": "イプスウィッチ", "league": "ELC", "match": "ipswich"},
+     "team_jp": "イプスウィッチ", "league": "PL", "match": "ipswich"},
     {"name_en": "Hidemasa Morita", "name_jp": "守田英正", "kana": "モリタ・ヒデマサ", "team_en": "Hull City",
-     "team_jp": "ハル・シティ", "league": "ELC", "match": "hullcity"},
+     "team_jp": "ハル・シティ", "league": "PL", "match": "hullcity"},
 
     # --- ラ・リーガ(スペイン) ---
     {"name_en": "Takefusa Kubo", "name_jp": "久保建英", "kana": "クボ・タケフサ", "team_en": "Real Sociedad",
