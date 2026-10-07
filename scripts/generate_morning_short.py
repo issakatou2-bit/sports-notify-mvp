@@ -4118,6 +4118,46 @@ def build_player_video(args):
     return 0
 
 
+def bignumber_scenes(data, narration, mode):
+    """案Bは明示指定した成績枠だけ。照合失敗時は元の画面と声を保つ。"""
+    design = os.environ.get("COLLESPO_PLAYERS_DESIGN") or data.get("players_design", "")
+    if mode != "players" or design != "bignumber":
+        return []
+    import bignumber_render as bn
+    try:
+        scenes = bn.scenes_from_morning(data, narration)
+        problems = bn.check_scenes(scenes, narration)
+        if not scenes:
+            problems.append("場面がありません")
+    except Exception as e:  # noqa: BLE001
+        scenes, problems = [], [str(e)]
+    if problems:
+        print("[warn] 数字ドーンを使わず旧デザインを維持: " + " / ".join(problems))
+        return []
+    for seg in narration["segments"]:
+        seg["speaker"] = 2
+        seg.setdefault("meta", {})["who"] = METAN
+    for scene in scenes:
+        scene["who"] = "metan"
+    return scenes
+
+
+def bignumber_sound(audio, plan, out_dir):
+    import bignumber_render as bn
+    import sound_mix
+    name = os.environ.get("COLLESPO_BGM", "everyday")
+    bgm = pathlib.Path(__file__).resolve().parents[1] / "assets/bgm" / f"{name}.mp3"
+    try:
+        cues = bn.plan_cues(plan)
+        out = sound_mix.mix_file(audio, out_dir / "narration_mixed.wav",
+                                 bgm if bgm.is_file() else None, cues)
+        print(f"[info] 数字ドーン: BGM {name if bgm.is_file() else 'なし'}・効果音{len(cues)}個")
+        return out
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] 数字ドーンの音を重ねられません（声だけで続けます）: {e}")
+        return audio
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--recap", default="data/morning_recap.json")
@@ -4269,6 +4309,7 @@ def main():
               f"{talk.get('titles_count', 0)}件の見出しから")
 
     narration = build_narration(data, args.mode)
+    bn_scenes = bignumber_scenes(data, narration, args.mode)
     kinds = [s["kind"] for s in narration["segments"]]
     print(f"[info] mode={args.mode} / 画面 {len(kinds)}枚: {kinds}")
     # 材料が1つも無い日は作らない。
@@ -4359,6 +4400,15 @@ def main():
 
     durations = plan_durations(segs)
     audio_path = build_narration_track(segs, durations, out_dir)
+    bn_plan = []
+    if bn_scenes:
+        import bignumber_render as bn
+        bn_plan = bn.timeline(bn_scenes, durations)
+        if audio_path:
+            # 古いずんだもん音声の使い回しによる、めたん立ち絵との不一致を止める。
+            if any(s.get("speaker") != 2 for s in segs):
+                raise ValueError("数字ドーンの音声を四国めたん（話者2）で作り直してください")
+            audio_path = bignumber_sound(audio_path, bn_plan, out_dir)
 
     # 音声が作れなかった場合、これまでは無音のまま書き出して投稿していた。
     # 無音の動画が出るくらいなら、その日は出さない方がよい。
@@ -4386,6 +4436,7 @@ def main():
     total = 0
     # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
     last_frame = None
+    bn_time = 0.0
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
             set_step(seg_i, len(segs))
@@ -4399,6 +4450,10 @@ def main():
             # 最初の画面は前が無いので混ぜない
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
+                if bn_plan:
+                    proc.stdin.write(bn.frame(bn_time + k / FPS, bn_plan).tobytes())
+                    total += 1
+                    continue
                 pp, settled = video_common.anim_step(k, n)
                 if settled and still is not None:
                     proc.stdin.write(cached)
@@ -4508,6 +4563,7 @@ def main():
                     still = cached
                 total += 1
             last_frame = cached
+            bn_time += dur
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:
         if proc.stdin:

@@ -1,0 +1,43 @@
+name: 道具　成績の数字ドーン試作（投稿しない）
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      COLLESPO_PLAYERS_DESIGN: bignumber
+      COLLESPO_BGM: everyday
+      ANTHROPIC_API_KEY: ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r scripts/requirements.txt
+      - run: bash scripts/install_video_tools.sh
+        timeout-minutes: 16
+      - name: Start VOICEVOX
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Build voiced preview
+        run: |
+          python scripts/preview_bignumber.py --narration-out build/preview-narration.json
+          python scripts/sanity.py --strict --narration build/preview-narration.json
+          python scripts/synthesize_narration.py --narration build/preview-narration.json --out-dir build/preview-audio
+          python scripts/preview_bignumber.py --audio-dir build/preview-audio
+      - uses: actions/upload-artifact@v4
+        with:
+          name: morning-design-preview
+          retention-days: 3
+          path: |
+            build/preview/*.mp4
+            build/preview-narration.json
+            build/preview-audio/manifest.json
