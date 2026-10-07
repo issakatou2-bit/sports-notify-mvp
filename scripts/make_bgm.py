@@ -1177,7 +1177,133 @@ def fx_more():
         "（音がこもって雑音が上がり、13小節目で一気に開く）、15小節目の最後でざらつく音、最後はテープが止まる。"
 
 
-ALL = ["fx_snap", "fx_rim", "fx_wood", "fx_piano", "fx_more", "trap808_fx", "trap808_filter", "trap808_lofi", "trap808_drill", "trap808_hyper", "club808", "trap_808_long", "modern_setsuna", "modern_jazz", "backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
+# ------------------------------------------------------------------ 演出もり 第2版・スライド808（10/7深夜2）
+# 本人「演出もり（ピアノ入り）いい。でもピアノが単調。もっと凝って、3連符も。終わる前のビーは蛇足。
+# テープが止まる終わり方はショートの終わりに合わせたい。ハイハット左右揺れいい。スライド808も」。
+# テープストップは曲に入れず、sound_mix が動画の最後に合わせてかける（TAPESTOP_BGM）。
+
+def _hats_sway(mix, t0, b, bi, bar, g=0.14):
+    """16分のハイハットを、2小節で1往復するように左右へ揺らす（広がりすぎない幅）。"""
+    s16 = b / 4
+    for q in range(16):
+        if q in (4, 12):
+            continue
+        tt = t0 + q * s16
+        pan = 0.45 * np.sin(2 * np.pi * tt / (2 * bar))
+        if bi % 2 == 1 and q >= 12:
+            for r in range(2):
+                gs.put(mix, ml.hat(False, 0.45), tt + r * s16 / 2, g * 0.8, pan)
+            continue
+        gs.put(mix, ml.hat(False, 0.55 if q % 2 == 0 else 0.33), tt, g, pan)
+
+
+def _piano_rich(mix, pno, nbar, bar, b, skip=()):
+    """凝ったピアノ: 9th の和音、3連符の分散和音、4小節目の下りの3連の連なり、強さの揺らし。"""
+    # Cmaj9 → Am9 → Fmaj9 → G6/9（転回して声部をなめらかに）
+    ch = {0: [64, 67, 71, 74], 1: [64, 67, 69, 72], 2: [64, 65, 69, 72], 3: [62, 64, 67, 71]}
+    bass = {0: 48, 1: 45, 2: 41, 3: 43}
+    rng_ = np.random.default_rng(9)
+
+    def hit(m, t, d, v, g, pan=0.0):
+        gs.put(mix, pno.note(m, d, v * rng_.uniform(0.85, 1.05), rel=0.25), t, g, pan)
+
+    for bi in range(nbar):
+        if bi in skip:
+            continue
+        c = ch[bi % 4]
+        t0 = bi * bar
+        kind = bi % 4
+        # 1拍目: 低い根音＋和音（少しずらして弾く）
+        hit(bass[kind], t0, b * 1.4, .45, 0.5, -0.2)
+        for j, m in enumerate(c):
+            hit(m, t0 + j * 0.01, b * 1.1, .4, 0.55, -0.15 + 0.1 * j)
+        if kind in (0, 2):
+            # 2拍目: 3連符の分散和音（上へ）
+            for k, m in enumerate((c[0], c[1], c[2])):
+                hit(m + 12, t0 + (1 + k / 3) * b, b / 3, .38, 0.42, 0.25)
+            # 3拍目の裏: 和音の刻み、4拍目: 1音
+            for j, m in enumerate(c[1:]):
+                hit(m, t0 + 2.5 * b + j * 0.008, b * 0.45, .35, 0.45, 0.1)
+            hit(c[-1] + 12, t0 + 3.5 * b, b * 0.4, .32, 0.35, 0.3)
+        elif kind == 1:
+            # 裏拍の刻み（はねる）＋3拍目から3連符で下へ
+            for st in (0.5, 1.5):
+                for j, m in enumerate(c[1:]):
+                    hit(m, t0 + st * b + j * 0.008, b * 0.35, .33, 0.42, 0.1)
+            for k, m in enumerate((c[-1] + 12, c[2] + 12, c[1] + 12)):
+                hit(m, t0 + (2 + k / 3) * b, b / 3, .36, 0.42, 0.25)
+            hit(c[0] + 12, t0 + 3 * b, b * 0.9, .34, 0.4, 0.2)
+        else:
+            # 4小節目: 2拍ぶんの3連の連なり（6音で下る）で次の頭へつなぐ
+            run = [c[-1] + 12, c[-2] + 12, c[-3] + 12, c[-1], c[-2], c[-3]]
+            for k, m in enumerate(run):
+                hit(m, t0 + (2 + k / 3) * b, b / 3, .38 - 0.02 * k, 0.45, 0.3 - 0.1 * (k % 3))
+
+
+def _fx2_core(line, piano=True, glide=0.09, decay=1.3, extra=True):
+    bpm, nbar = 96, 16
+    b = 60 / bpm
+    bar = 4 * b
+    s16 = b / 4
+    n = int((nbar * bar + 3) * SR)
+    mix = np.zeros((n, 2))
+    notes, times = [], []
+    for bi in range(nbar):
+        t0 = bi * bar
+        drop = extra and bi == 11
+        if not drop:
+            _hats_sway(mix, t0, b, bi, bar)
+            for q in (1, 3):
+                gs.put(mix, _snap(), t0 + q * b, 0.40)
+        for st, m in line[bi % len(line)]:
+            notes.append(m)
+            times.append(t0 + st * b)
+            if not drop:
+                gs.put(mix, ml.kick(0.18) * 0.6, t0 + st * b, 0.12)
+        if extra and bi % 4 == 3 and not drop:
+            k, tt = 0, t0 + 3 * b
+            while tt < t0 + bar - 0.01:
+                gs.put(mix, ml.hat(False, 0.3 + 0.05 * k), tt, 0.13, 0.45 * np.sin(2 * np.pi * tt / (2 * bar)))
+                tt += s16 / (1 + k * 0.25)
+                k += 1
+    bass = ml.k808(notes, times, n, decay=decay, drive=2.4, glide=glide)
+    bass = sosfilt(butter(2, 45, "highpass", fs=SR, output="sos"), bass)
+    gs.put(mix, bass, 0, 0.16)
+    if piano:
+        pno = gs.Sampler(VS / "Keys/Upright Piano", keymap=lambda s: (
+            21 + 2 * int(gs.re.search(r"_(\d{3})\.wav", s).group(1)), int(gs.re.search(r"dyn(\d)", s).group(1)))
+            if gs.re.search(r"_(\d{3})\.wav", s) else None)
+        _piano_rich(mix, pno, nbar, bar, b, skip={11} if extra else ())
+    _stutter(mix, 7 * bar + 3 * b, s16, times=4)
+    gs.put(mix, _riser(2 * bar - 0.05, 1), 6 * bar, 0.10)
+    if extra:
+        a, z = int(11 * bar * SR), int(12 * bar * SR)
+        for c in range(2):
+            mix[a:z, c] = sosfilt(butter(2, 500, "lowpass", fs=SR, output="sos"), mix[a:z, c])
+        gs.put(mix, _riser(bar - 0.05, 7), 11 * bar, 0.12)
+    return dry_finish(mix, nbar * bar, sub_cut=-3)
+
+
+def fx_more2():
+    return _fx2_core(LINE_CAF), "808・演出もり 第2版（ピアノ入り）", \
+        "ピアノを凝らせた: 9th の和音、2拍目の3連符の分散和音、裏拍の刻み、4小節目は3連の6音で下って次へつなぐ。"\
+        "ハイハットは2小節で1往復、左右に揺れる。終わる前の「ビー」（ざらつく音）は外した。"\
+        "テープが止まる終わり方は、曲には入れず、動画の最後に合わせてかける。"
+
+
+LINE_SLIDE = {0: [(0, 36), (0.75, 48), (1.5, 43), (2.5, 36), (3.25, 38)],
+              1: [(0, 33), (0.75, 45), (1.75, 40), (2.5, 33), (3.5, 36)],
+              2: [(0, 29), (0.75, 41), (1.5, 36), (2.5, 29), (3.25, 31)],
+              3: [(0, 31), (0.75, 43), (1.5, 38), (2.25, 43), (3, 31), (3.5, 35)]}
+
+
+def slide808():
+    return _fx2_core(LINE_SLIDE, piano=False, glide=0.16, decay=1.1), "スライド808", \
+        "808 の低音が、オクターブ上へ・下へとなめらかにすべりながら旋律をつくる（1小節に5〜6音）。"\
+        "ハイハットは左右に揺れる、2・4拍は指パッチン。ピアノなしで低音を聞ける版。テープストップは動画の最後に合わせる。"
+
+
+ALL = ["fx_more2", "slide808", "fx_snap", "fx_rim", "fx_wood", "fx_piano", "fx_more", "trap808_fx", "trap808_filter", "trap808_lofi", "trap808_drill", "trap808_hyper", "club808", "trap_808_long", "modern_setsuna", "modern_jazz", "backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
 
 
 def main():

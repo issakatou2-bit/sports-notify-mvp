@@ -10,6 +10,8 @@
 使い方:
   mixed = sound_mix.mix(voice, bgm=bgm_loop, cues=[(秒, "swish", "a", 音量), ...])
 """
+import pathlib
+
 import numpy as np
 
 import sfx
@@ -53,11 +55,29 @@ def duck_gain(voice: np.ndarray, duck_db: float = -6.0) -> np.ndarray:
     return 10 ** (duck_db * env / 20)
 
 
-def mix(voice: np.ndarray, bgm: np.ndarray = None, cues=(), bgm_db: float = -20.0, duck_db: float = -6.0,
-        sfx_db: float = -9.0, fade: float = 1.2) -> np.ndarray:
+# BGM の大きさ（声の平均からの差）。10/7深夜 本人「声と重ねた版、BGM小さすぎない？」で
+# -20dB（声の間は -6dB）から上げた。
+BGM_DB, DUCK_DB = -15.0, -5.0
+# 曲の終わり方。テープが止まるように終わる曲は、動画の最後に合わせて止める（ループの途中で止めない）。
+# 10/7深夜 本人「最後のテープが切れるみたいな終わり方、ショートの終わりに合わせたい」。
+TAPESTOP_BGM = {"fx_more2", "slide808"}
+
+
+def tape_stop(seg: np.ndarray) -> np.ndarray:
+    """テープが止まるように、速さと音程が下がっていく（ステレオ）。"""
+    n = len(seg)
+    speed = np.linspace(1.0, 0.0, n) ** 0.7
+    pos = np.clip(np.cumsum(speed), 0, n - 1)
+    out = np.stack([np.interp(pos, np.arange(n), seg[:, c]) for c in range(2)], axis=1)
+    return out * np.linspace(1, 0.15, n)[:, None]
+
+
+def mix(voice: np.ndarray, bgm: np.ndarray = None, cues=(), bgm_db: float = BGM_DB, duck_db: float = DUCK_DB,
+        sfx_db: float = -9.0, fade: float = 1.2, ending: str = "fade", end_sec: float = 0.9) -> np.ndarray:
     """voice（モノラル）に BGM（モノラル/ステレオ）と効果音を重ね、ステレオで返す。
 
     bgm_db・sfx_db は声の平均の大きさからの差。cues は (秒, 種類, 案, 追加の音量dB)。
+    ending="tapestop" なら、BGM の最後の end_sec 秒をテープが止まるように終える（動画の終わりに合う）。
     """
     n = len(voice)
     ref = _rms(voice)
@@ -68,8 +88,12 @@ def mix(voice: np.ndarray, bgm: np.ndarray = None, cues=(), bgm_db: float = -20.
         b = b / _rms(b) * ref * 10 ** (bgm_db / 20)
         g = duck_gain(voice, duck_db)
         f = np.ones(n)
-        k = min(n // 2, int(fade * SR))
-        f[-k:] = np.linspace(1, 0, k)
+        if ending == "tapestop":
+            k = min(n // 2, int(end_sec * SR))
+            b[-k:] = tape_stop(b[-k:])
+        else:
+            k = min(n // 2, int(fade * SR))
+            f[-k:] = np.linspace(1, 0, k)
         out += b * (g * f)[:, None]
     if cues:
         t = np.zeros(n)
@@ -106,6 +130,8 @@ def _decode(path):
 
 
 def mix_file(narration_wav, out_wav, bgm_path=None, cues=(), **kw):
+    if bgm_path and pathlib.Path(bgm_path).stem in TAPESTOP_BGM:
+        kw.setdefault("ending", "tapestop")
     """読み上げの wav に BGM と効果音を重ねて out_wav（44100Hz・ステレオ）に書く。"""
     import wave
     voice = _read_wav(narration_wav)
