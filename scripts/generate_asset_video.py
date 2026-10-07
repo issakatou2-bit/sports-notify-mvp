@@ -1669,7 +1669,7 @@ BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"
 # 既定のBGM（assets/bgm/<名前>.mp3。空ならBGMなし）。
 # 10/6夜 本人: めたん版の試作（「日常」入り）を「一旦これを完成としていい」。
 # ただし曲は「もっとライトで、YouTubeのBGMに使われても違和感ない感じ」が理想 → 候補を作り中。
-DEFAULT_BGM = "everyday"
+DEFAULT_BGM = None   # sound_mix.DEFAULT_BGM を使う（全部の枠で同じ曲）
 
 
 def add_sound(audio_path, segs, durations, spec, topic, out_dir):
@@ -1687,7 +1687,8 @@ def add_sound(audio_path, segs, durations, spec, topic, out_dir):
         for at, k, v, db in r3.cues(kind, spec, items, meta.get("start", 0), meta.get("count", 1)):
             cues.append((t0 + at, k, v, db))
         t0 += dur
-    name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or DEFAULT_BGM
+    import sound_mix as _sm
+    name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or DEFAULT_BGM or _sm.DEFAULT_BGM
     bgm = BGM_DIR / f"{name}.mp3" if name else BGM_DIR / ".none"
     try:
         out = sound_mix.mix_file(audio_path, out_dir / "narration_mixed.wav",

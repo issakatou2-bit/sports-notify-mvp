@@ -1197,6 +1197,10 @@ def _hats_sway(mix, t0, b, bi, bar, g=0.14):
         gs.put(mix, ml.hat(False, 0.55 if q % 2 == 0 else 0.33), tt, g, pan)
 
 
+# 10/7深夜 本人「ピアノもうちょっとだけ主張していい」→ 約 +3dB
+PIANO_GAIN = 1.4
+
+
 def _piano_rich(mix, pno, nbar, bar, b, skip=()):
     """凝ったピアノ: 9th の和音、3連符の分散和音、4小節目の下りの3連の連なり、強さの揺らし。"""
     # Cmaj9 → Am9 → Fmaj9 → G6/9（転回して声部をなめらかに）
@@ -1205,7 +1209,7 @@ def _piano_rich(mix, pno, nbar, bar, b, skip=()):
     rng_ = np.random.default_rng(9)
 
     def hit(m, t, d, v, g, pan=0.0):
-        gs.put(mix, pno.note(m, d, v * rng_.uniform(0.85, 1.05), rel=0.25), t, g, pan)
+        gs.put(mix, pno.note(m, d, v * rng_.uniform(0.85, 1.05), rel=0.25), t, g * PIANO_GAIN, pan)
 
     for bi in range(nbar):
         if bi in skip:
@@ -1303,7 +1307,32 @@ def slide808():
         "ハイハットは左右に揺れる、2・4拍は指パッチン。ピアノなしで低音を聞ける版。テープストップは動画の最後に合わせる。"
 
 
-ALL = ["fx_more2", "slide808", "fx_snap", "fx_rim", "fx_wood", "fx_piano", "fx_more", "trap808_fx", "trap808_filter", "trap808_lofi", "trap808_drill", "trap808_hyper", "club808", "trap_808_long", "modern_setsuna", "modern_jazz", "backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
+
+def fx_more2_end():
+    """終わりの和音: ペダルを踏んだピアノの Cmaj9 が余韻を残して消える（約3.5秒）。
+    10/7深夜 本人「フニャッと切れるんじゃなくて、ペダル踏んで終わるやつ。きれいにフェードアウト」。
+    sound_mix が動画の最後に置く（<名前>_end.mp3）。"""
+    n = int(3.6 * SR)
+    mix = np.zeros((n, 2))
+    pno = gs.Sampler(VS / "Keys/Upright Piano", keymap=lambda s: (
+        21 + 2 * int(gs.re.search(r"_(\d{3})\.wav", s).group(1)), int(gs.re.search(r"dyn(\d)", s).group(1)))
+        if gs.re.search(r"_(\d{3})\.wav", s) else None)
+    gs.put(mix, pno.note(36, 3.2, .5, rel=0.3), 0.0, 0.55, -0.2)
+    gs.put(mix, pno.note(48, 3.2, .45, rel=0.3), 0.0, 0.45, -0.15)
+    for j, m in enumerate((64, 67, 71, 74, 79)):                # 下から少しずつずらして弾く
+        gs.put(mix, pno.note(m, 3.2 - j * 0.02, .42, rel=0.3, k=j), j * 0.035, 0.55, -0.1 + 0.08 * j)
+    t = np.arange(n) / SR
+    env = np.where(t < 1.0, 1.0, np.exp(-(t - 1.0) / 0.9))      # ペダルを離さず、ゆっくり消える
+    mix *= env[:, None]
+    mix[-int(0.05 * SR):] *= np.linspace(1, 0, int(0.05 * SR))[:, None]
+    x = mix / (np.sqrt((mix[:int(1.0 * SR)] ** 2).mean()) + 1e-9) * 10 ** (-14 / 20)
+    pk = np.max(np.abs(x))
+    if pk > 0.9:
+        x = x / pk * 0.9
+    return x, "808・演出もり 第2版の終わり", "ペダルを踏んだピアノの Cmaj9 が余韻を残して消える（動画の最後に置く）"
+
+
+ALL = ["fx_more2", "fx_more2_end", "slide808", "fx_snap", "fx_rim", "fx_wood", "fx_piano", "fx_more", "trap808_fx", "trap808_filter", "trap808_lofi", "trap808_drill", "trap808_hyper", "club808", "trap_808_long", "modern_setsuna", "modern_jazz", "backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
 
 
 def main():

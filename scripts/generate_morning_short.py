@@ -4145,8 +4145,8 @@ def bignumber_scenes(data, narration, mode):
 def bignumber_sound(audio, plan, out_dir):
     import bignumber_render as bn
     import sound_mix
-    name = os.environ.get("COLLESPO_BGM", "everyday")
-    bgm = pathlib.Path(__file__).resolve().parents[1] / "assets/bgm" / f"{name}.mp3"
+    bgm = sound_mix.bgm_path()
+    name = bgm.stem
     try:
         cues = bn.plan_cues(plan)
         out = sound_mix.mix_file(audio, out_dir / "narration_mixed.wav",

@@ -18,7 +18,7 @@ jobs:
       COLLESPO_COMMENTS_DESIGN: comments
       COLLESPO_PRESS_DESIGN: v3
       PREVIEW_MODE: ${{ inputs.mode || 'players' }}
-      COLLESPO_BGM: everyday
+      COLLESPO_BGM: fx_more2
       ANTHROPIC_API_KEY: ''
     steps:
       - uses: actions/checkout@v4

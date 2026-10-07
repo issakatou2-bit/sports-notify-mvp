@@ -60,7 +60,17 @@ def duck_gain(voice: np.ndarray, duck_db: float = -6.0) -> np.ndarray:
 BGM_DB, DUCK_DB = -15.0, -5.0
 # 曲の終わり方。テープが止まるように終わる曲は、動画の最後に合わせて止める（ループの途中で止めない）。
 # 10/7深夜 本人「最後のテープが切れるみたいな終わり方、ショートの終わりに合わせたい」。
-TAPESTOP_BGM = {"fx_more2", "slide808"}
+TAPESTOP_BGM = {"slide808"}
+# 既定のBGM（assets/bgm/<名前>.mp3）。全部の枠がここを見る（COLLESPO_BGM で上書き）。
+# 10/7深夜 本人「808・演出もり 第2版（ピアノ入り）これいいね。…ペダル踏んで終わるやつでいこう」。
+DEFAULT_BGM = "fx_more2"
+BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"
+
+
+def bgm_path(name: str = None) -> pathlib.Path:
+    """使う曲のファイル。名前を渡さなければ COLLESPO_BGM、それも無ければ DEFAULT_BGM。"""
+    import os
+    return BGM_DIR / f"{name or os.environ.get('COLLESPO_BGM') or DEFAULT_BGM}.mp3"
 
 
 def tape_stop(seg: np.ndarray) -> np.ndarray:
@@ -73,7 +83,8 @@ def tape_stop(seg: np.ndarray) -> np.ndarray:
 
 
 def mix(voice: np.ndarray, bgm: np.ndarray = None, cues=(), bgm_db: float = BGM_DB, duck_db: float = DUCK_DB,
-        sfx_db: float = -9.0, fade: float = 1.2, ending: str = "fade", end_sec: float = 0.9) -> np.ndarray:
+        sfx_db: float = -9.0, fade: float = 1.2, ending: str = "fade", end_sec: float = 0.9,
+        bgm_end: np.ndarray = None) -> np.ndarray:
     """voice（モノラル）に BGM（モノラル/ステレオ）と効果音を重ね、ステレオで返す。
 
     bgm_db・sfx_db は声の平均の大きさからの差。cues は (秒, 種類, 案, 追加の音量dB)。
@@ -88,7 +99,19 @@ def mix(voice: np.ndarray, bgm: np.ndarray = None, cues=(), bgm_db: float = BGM_
         b = b / _rms(b) * ref * 10 ** (bgm_db / 20)
         g = duck_gain(voice, duck_db)
         f = np.ones(n)
-        if ending == "tapestop":
+        if bgm_end is not None:
+            # 終わりの和音（ペダルで余韻）を動画の最後に置き、その手前でループを0.8秒で消す
+            e = bgm_end if bgm_end.ndim == 2 else np.stack([bgm_end, bgm_end], axis=1)
+            e = e[:n // 2]
+            scale = ref * 10 ** (bgm_db / 20) / (_rms(bgm) + 1e-9)
+            a = n - len(e)
+            x = int(0.8 * SR)
+            f[a:] = 0.0
+            f[max(0, a - x):a] = np.linspace(1, 0, min(x, a))
+            tail = np.zeros_like(b)
+            tail[a:] = e * scale
+            out += tail * g[:, None]
+        elif ending == "tapestop":
             k = min(n // 2, int(end_sec * SR))
             b[-k:] = tape_stop(b[-k:])
         else:
@@ -132,6 +155,9 @@ def _decode(path):
 def mix_file(narration_wav, out_wav, bgm_path=None, cues=(), **kw):
     if bgm_path and pathlib.Path(bgm_path).stem in TAPESTOP_BGM:
         kw.setdefault("ending", "tapestop")
+    end = pathlib.Path(str(bgm_path)).with_name(pathlib.Path(str(bgm_path)).stem + "_end.mp3") if bgm_path else None
+    if end is not None and end.exists():
+        kw.setdefault("bgm_end", _decode(end))
     """読み上げの wav に BGM と効果音を重ねて out_wav（44100Hz・ステレオ）に書く。"""
     import wave
     voice = _read_wav(narration_wav)

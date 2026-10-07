@@ -63,7 +63,7 @@ class DailyV3(unittest.TestCase):
         with patch.object(sound_mix, "mix_file", return_value="mixed") as mix:
             self.assertEqual(d.mix("voice.wav", segs, [5, 6], design, Path("build")), "mixed")
         self.assertEqual([c[0] for c in mix.call_args.kwargs["cues"]], [0.0, 5.0])
-        self.assertEqual(mix.call_args.kwargs["bgm_path"].name, "everyday.mp3")
+        self.assertEqual(mix.call_args.kwargs["bgm_path"].name, sound_mix.DEFAULT_BGM + ".mp3")
 
 
 if __name__ == "__main__":

@@ -19,8 +19,8 @@ on:
       bgm:
         description: BGM
         type: choice
-        options: [everyday, scoreboard, nighter, dugout, comeback]
-        default: everyday
+        options: [fx_more2, everyday, scoreboard, nighter, dugout, comeback]
+        default: fx_more2
 
 permissions:
   contents: read

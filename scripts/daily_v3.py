@@ -65,7 +65,7 @@ def mix(audio, segments, durations, design, out_dir):
                  else [(0.0, "transition", "a", -6)])
         cues.extend((start + at, kind, variant, db) for at, kind, variant, db in local)
         start += dur
-    bgm = Path(__file__).resolve().parents[1] / "assets/bgm" / f"{os.environ.get('COLLESPO_BGM', 'everyday')}.mp3"
+    bgm = sound_mix.bgm_path()
     if not bgm.exists():
         raise ValueError("案DのBGMがありません")
     print(f"[info] 案D: BGM {bgm.stem}・効果音{len(cues)}個")

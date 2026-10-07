@@ -557,7 +557,7 @@ def movie(program, audio_dir, out):
             cues.extend((start+at,kind,variant,db) for at,kind,variant,db in unified.cues(seg['meta']['card'],focus_card,cover=index==0,duration=duration)
                         if at < duration)
             start+=duration
-        bgm=Path(__file__).resolve().parents[1]/'assets/bgm'/f"{os.environ.get('COLLESPO_BGM','everyday')}.mp3"
+        bgm=sound_mix.bgm_path()
         if not bgm.exists():raise ValueError('v3のPSのBGMがありません')
         track=sound_mix.mix_file(track,out/'narration_mixed.wav',bgm_path=bgm,cues=cues)
         check.update(bgm=bgm.stem,sfx_count=len(cues))
