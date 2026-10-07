@@ -1,51 +1,8 @@
 {
-  "updated_at": "2026-10-07T05:48:38.474050+00:00",
+  "updated_at": "2026-10-07T06:14:04.636787+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
-    {
-      "key": "season_game_849834",
-      "label": "地区シリーズ第2戦",
-      "hook": "ホワイトソックスがガーディアンズに4対3で地区シリーズ2勝0敗に",
-      "heading": "ホワイトソックス 対 ガーディアンズ　地区シリーズ第2戦",
-      "intro": "地区シリーズ第2戦、ホワイトソックスが敵地でガーディアンズに4対3で勝ちました。",
-      "intro_as_is": true,
-      "style": "v2",
-      "team_id": 145,
-      "abbr": "CWS",
-      "title": "【MLB】ホワイトソックスがガーディアンズに4対3で地区シリーズ2勝0敗に｜マイドロスの決勝打　村上宗隆 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ホワイトソックス 4対3 ガーディアンズ　敵地で勝利　シリーズはホワイトソックスの2勝0敗"
-        ],
-        [
-          "決勝点",
-          "6回表　チェイス・マイドロスのタイムリー"
-        ],
-        [
-          "先発",
-          "ホワイトソックス ケイ 3分の1回を2失点　ガーディアンズ ウィリアムズ 5回を2失点"
-        ]
-      ],
-      "japanese": [
-        {
-          "name": "村上宗隆",
-          "line": "4打数1安打　1打点（ホワイトソックス）"
-        }
-      ],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": null,
-      "voice": null,
-      "headline": null,
-      "game_pk": 849834,
-      "game_date": "2026-10-05T21:00:00Z",
-      "jp_first": true,
-      "finished_at": "2026-10-06T00:11:11.149000+00:00"
-    },
     {
       "key": "season_game_849819",
       "label": "地区シリーズ第3戦",
@@ -77,6 +34,10 @@
         [
           "セーブ",
           "エドウィン・ディアス"
+        ],
+        [
+          "ハイライトのコメント欄から",
+          "「試合に絶対負けられないという場面で投げさせたいのは山本由伸。それくらい恐ろしい投手だ」"
         ]
       ],
       "japanese": [
@@ -94,7 +55,13 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
+      "voice": {
+        "said": "試合に絶対負けられないという場面で投げさせたいのは山本由伸。それくらい恐ろしい投手だ",
+        "text": "Yamamoto is the pitcher you want to send out when you cannot lose the game no matter what. an absolute lethal weapon.",
+        "url": "https://www.youtube.com/watch?v=gPEXU8g2Fo0",
+        "likes": 932,
+        "at": "2026-10-07T01:39:44Z"
+      },
       "headline": null,
       "game_pk": 849819,
       "game_date": "2026-10-06T22:00:00Z",
@@ -135,7 +102,7 @@
         ],
         [
           "MLB.comの見出しから",
-          "「パドレスが必死に戦い、シーズン継続を勝ち取る」"
+          "「パドレスが粘り強く戦い、シーズンを生き延ばす」"
         ]
       ],
       "japanese": [
@@ -151,7 +118,7 @@
       "source": null,
       "voice": null,
       "headline": {
-        "said": "パドレスが必死に戦い、シーズン継続を勝ち取る",
+        "said": "パドレスが粘り強く戦い、シーズンを生き延ばす",
         "text": "Padres fight, claw, do just enough to save their season",
         "url": "https://www.mlb.com/news/padres-win-nlds-game-3-2026",
         "at": "2026-10-07T05:31:00+00:00"
@@ -195,7 +162,7 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「'24年のワールドシリーズからのドジャースの偵察レポートが当たってるわ😅」"
+          "「ヤンキース の守備、試合開始5分前に駐車場で会ったばっかりの9人みたいだった。どの球も冒険になっちゃう」"
         ]
       ],
       "japanese": [],
@@ -205,11 +172,11 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "'24年のワールドシリーズからのドジャースの偵察レポートが当たってるわ😅",
-        "text": "Scouting report from Dodgers still holding true from '24 world series😅",
+        "said": "ヤンキース の守備、試合開始5分前に駐車場で会ったばっかりの9人みたいだった。どの球も冒険になっちゃう",
+        "text": "The Yankees defense looked like nine guys who met in the parking lot five minutes before first pitch. Every ball in play turned into an adventure.",
         "url": "https://www.youtube.com/watch?v=NM3Rh7tgqE0",
-        "likes": 1052,
-        "at": "2026-10-06T03:46:54Z"
+        "likes": 808,
+        "at": "2026-10-06T04:10:41Z"
       },
       "headline": null,
       "game_pk": 849839,
