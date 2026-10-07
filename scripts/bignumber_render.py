@@ -173,6 +173,12 @@ def pick_big(text, kind="batter"):
         for m in re.finditer(r"(?<![\d.])(\d+)" + re.escape(unit), text):
             if float(m.group(1)) > 0 and float(m.group(1)) >= least:
                 return m.group(1), unit
+    # 三振の無い救援投手は投球回（「1回3分の1」）。10/8 試作で、松井（1回3分の1・ホールド）の
+    # 大きな数字が順位の「1位」になり、順位表の「1位 … 1位」と重なっていた。
+    if kind == "pitcher":
+        m = re.search(r"(?<![\d.])(?<!分の)(\d+)回(3分の[12])?", text)
+        if m and int(m.group(1)) > 0:
+            return m.group(1), "回" + (m.group(2) or "")
     return "", ""
 
 

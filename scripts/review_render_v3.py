@@ -777,14 +777,16 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
 
 @functools.lru_cache(maxsize=16)
 def _outro_row(at, name, w):
-    card = Image.new("RGBA", (w, 70), (0, 0, 0, 0))
+    # v4 は札の下端が上がるので、番組表が7行でも登録の札が収まるよう行を少し低く（ヒロの提案）
+    h = 60 if LOOK == "v4" else 70
+    card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(card)
-    d.rounded_rectangle((0, 0, w - 1, 69), radius=18, fill=(255, 255, 255, 26), outline=(255, 255, 255, 60), width=2)
-    _text(d,(28, 35), at, font=num_font(44), fill=GOLD, anchor="lm")
+    d.rounded_rectangle((0, 0, w - 1, h - 1), radius=18, fill=(255, 255, 255, 26), outline=(255, 255, 255, 60), width=2)
+    _text(d,(28, h // 2), at, font=num_font(44 if h == 70 else 40), fill=GOLD, anchor="lm")
     size = 40
     while size > 28 and ImageDraw.Draw(Image.new("RGB", (8, 8))).textlength(name, font=font(size)) > w - 190:
         size -= 2
-    _text(d,(170, 35), name, font=font(size), fill=INK, anchor="lm")
+    _text(d,(170, h // 2), name, font=font(size), fill=INK, anchor="lm")
     return card
 
 
