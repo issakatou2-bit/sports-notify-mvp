@@ -1,6 +1,12 @@
 name: 道具　成績の数字ドーン試作（投稿しない）
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '固定材料で確かめる日次枠（投稿しない）'
+        type: choice
+        options: [players, voices]
+        default: players
 permissions:
   contents: read
 jobs:
@@ -9,6 +15,8 @@ jobs:
     timeout-minutes: 30
     env:
       COLLESPO_PLAYERS_DESIGN: bignumber
+      COLLESPO_COMMENTS_DESIGN: comments
+      PREVIEW_MODE: ${{ inputs.mode || 'players' }}
       COLLESPO_BGM: everyday
       ANTHROPIC_API_KEY: ''
     steps:
@@ -29,10 +37,15 @@ jobs:
           exit 1
       - name: Build voiced preview
         run: |
-          python scripts/preview_bignumber.py --narration-out build/preview-narration.json
+          if [ "$PREVIEW_MODE" = players ]; then
+            builder=(python scripts/preview_bignumber.py)
+          else
+            builder=(python scripts/preview_daily_v3.py --mode "$PREVIEW_MODE")
+          fi
+          "${builder[@]}" --narration-out build/preview-narration.json
           python scripts/sanity.py --strict --narration build/preview-narration.json
           python scripts/synthesize_narration.py --narration build/preview-narration.json --out-dir build/preview-audio
-          python scripts/preview_bignumber.py --audio-dir build/preview-audio
+          "${builder[@]}" --audio-dir build/preview-audio
       - uses: actions/upload-artifact@v4
         with:
           name: morning-design-preview

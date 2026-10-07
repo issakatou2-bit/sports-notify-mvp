@@ -4310,6 +4310,8 @@ def main():
 
     narration = build_narration(data, args.mode)
     bn_scenes = bignumber_scenes(data, narration, args.mode)
+    import daily_v3
+    daily_design = daily_v3.prepare(data, narration, args.mode)
     kinds = [s["kind"] for s in narration["segments"]]
     print(f"[info] mode={args.mode} / 画面 {len(kinds)}枚: {kinds}")
     # 材料が1つも無い日は作らない。
@@ -4400,6 +4402,9 @@ def main():
 
     durations = plan_durations(segs)
     audio_path = build_narration_track(segs, durations, out_dir)
+    if daily_design and audio_path:
+        daily_v3.validate_audio(segs, narration)
+        audio_path = daily_v3.mix(audio_path, segs, durations, daily_design, out_dir)
     bn_plan = []
     if bn_scenes:
         import bignumber_render as bn
@@ -4450,6 +4455,12 @@ def main():
             # 最初の画面は前が無いので混ぜない
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
+                if daily_design:
+                    im = daily_v3.frame(k / FPS, narration["segments"][seg_i], daily_design, dur)
+                    cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
+                    proc.stdin.write(cached)
+                    total += 1
+                    continue
                 if bn_plan:
                     proc.stdin.write(bn.frame(bn_time + k / FPS, bn_plan).tobytes())
                     total += 1
