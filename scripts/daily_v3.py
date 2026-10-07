@@ -36,16 +36,14 @@ def frame(t, seg, design, duration):
     if seg["kind"] in {"voices", "thread"}:
         return cr.voices_screen(t, seg, vd, duration)
     if seg["kind"] == "intro":
-        i = (seg.get("meta") or {}).get("used_voice")
+        import review_render_v3 as r3
         rows = vd.get("voices") or []
-        if type(i) is int and 0 <= i < len(rows):
-            v = rows[i]
-            bubbles = [{"said": v["ja"], "who": cr.who_of(v), "mark": cr.pick_mark(v["ja"])}]
-        else:
-            bubbles = [{"said": seg["text"], "who": "概要", "fact": True}]
-        return cr.comments(t, bubbles, None, cr.strip_for_voices(vd),
-                           source_lines=cr._voices_source(vd))
-    return cr.comments(t, [{"said": seg["text"], "who": "コレスポ", "fact": True}],
+        index = (seg.get('meta') or {}).get('used_voice')
+        chosen = rows[index] if type(index) is int and 0 <= index < len(rows) else {}
+        match = cr.jp_matchup(chosen.get('matchup',''))
+        result = chosen.get('result') or chosen.get('score') or ''
+        return r3.intro(t, {"hook": match or seg["text"], "v3": {"who": vd.get("source", ""), "tag": str(result), "ticker": cr.strip_for_voices(vd), "source": '　'.join(cr._voices_source(vd))}}, "現地のコメント")
+    return cr.unified_comments(t, [{"said": seg["text"], "who": "コレスポ", "fact": True}],
                        None, "", title="コレスポ", live="",
                        source_lines=("音声：VOICEVOX:四国めたん",))
 

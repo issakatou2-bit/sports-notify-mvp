@@ -549,11 +549,12 @@ def movie(program, audio_dir, out):
     v3=program['segments'][0]['meta']['card'].get('visual_style')=='v3'
     if v3:
         import sound_mix
+        import ps_unified_v3 as unified
+        focus_card=unified.lead_card(program)
         cues=[];start=0.0
-        for seg,duration in zip(program['segments'],durations):
-            _,_,fg=render_segment(seg,layers=True)
-            prepared=motion.prepare(fg,seg['meta']['card'])
-            cues.extend((start+at,kind,variant,db) for at,kind,variant,db in motion.cues(prepared,duration))
+        for index,(seg,duration) in enumerate(zip(program['segments'],durations)):
+            cues.extend((start+at,kind,variant,db) for at,kind,variant,db in unified.cues(seg['meta']['card'],focus_card,cover=index==0,duration=duration)
+                        if at < duration)
             start+=duration
         bgm=Path(__file__).resolve().parents[1]/'assets/bgm'/f"{os.environ.get('COLLESPO_BGM','everyday')}.mp3"
         if not bgm.exists():raise ValueError('v3のPSのBGMがありません')
@@ -569,6 +570,8 @@ def movie(program, audio_dir, out):
     with subprocess.Popen(cmd, stdin=subprocess.PIPE) as proc:
         for i, (seg, duration) in enumerate(zip(program['segments'], durations)):
             image, _, foreground = render_segment(seg,layers=True)
+            if v3:
+                image=unified.frame(min(3,duration/4),seg['meta']['card'],focus_card,cover=i==0,duration=duration)
             image.save(out / f'ps_{i:02d}.png')
             if i == 0:
                 image.save(out / ('short.png' if program['kind'] == 'daily' else 'short_postseason.png'))
@@ -576,9 +579,9 @@ def movie(program, audio_dir, out):
             plan=focus_plan(seg)
             speech=float(audio[i]['duration']) or duration
             for n in range(round(duration * 30)):
-                frame=motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
+                frame=(unified.frame(n/30,seg['meta']['card'],focus_card,cover=i==0,duration=duration) if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
                                    style=seg['meta']['card'].get('visual_style','stadium'),
-                                   team_id=background_team(seg['meta']['card']))
+                                   team_id=background_team(seg['meta']['card'])))
                 raw=vc.crossfade(previous_frame,frame,n,round(vc.FADE_SECONDS*30),(1080,1920))
                 proc.stdin.write(raw)
             previous_frame=raw

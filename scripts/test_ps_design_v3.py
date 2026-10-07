@@ -37,7 +37,10 @@ class DesignTests(unittest.TestCase):
                 card=copy.deepcopy(new['meta']['card']);card.pop('visual_style')
                 self.assertEqual(card,old['meta']['card'])
                 _,om=p.render_segment(old);_,nm=p.render_segment(new)
-                self.assertEqual(om['text'],nm['text'])
+                import ps_unified_v3 as unified
+                self.assertEqual([(x['text']) for x in nm['text']], [h+'　'+b for h,b in unified.rows(old['meta']['card'])])
+                self.assertEqual(nm['card'],new['meta']['card'])
+                self.assertEqual(nm['material_gate']['text'],om['text'])
                 self.assertEqual(nm['presenters'][0]['side'],'right')
             self.assertEqual(p.metadata(modern)['snippet']['description'].count('VOICEVOX:'),1)
             p.check_program(modern)
@@ -74,16 +77,15 @@ class DesignTests(unittest.TestCase):
     def test_motion_and_sound_follow_existing_rows(self):
         with mock.patch.dict(os.environ,{'COLLESPO_PS_DESIGN':'v3'}):modern=self.make()
         seg=modern['segments'][1];card=seg['meta']['card']
-        _,_,fg=p.render_segment(seg,layers=True);prepared=p.motion.prepare(fg,card)
-        team=p.background_team(card)
-        first=p.motion.frame(prepared,.1,style='v3',team_id=team)
-        settled=p.motion.frame(prepared,2,style='v3',team_id=team)
-        later=p.motion.frame(prepared,6,style='v3',team_id=team)
+        import ps_unified_v3 as unified
+        first=unified.frame(.1,card)
+        settled=unified.frame(2,card)
+        later=unified.frame(6,card)
         self.assertNotEqual(first.tobytes(),settled.tobytes())
         self.assertNotEqual(settled.tobytes(),later.tobytes())
-        self.assertEqual([c[0] for c in p.motion.cues(prepared,3)],[piece[2] for piece in prepared[1]])
-        self.assertTrue(all(c[0]<.3 for c in p.motion.cues(prepared,.3)))
-        self.assertEqual(team,145)
+        from v3_slot_render import cues
+        self.assertEqual(unified.cues(card),cues(unified.rows(card)))
+        self.assertEqual(p.background_team(card),145)
 
     def test_wrong_speaker_audio_rejected_before_encoding(self):
         with mock.patch.dict(os.environ,{'COLLESPO_PS_DESIGN':'v3'}):modern=self.make()

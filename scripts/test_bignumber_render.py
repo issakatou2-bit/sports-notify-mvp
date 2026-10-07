@@ -286,32 +286,23 @@ class Cues(unittest.TestCase):
             self.assertIn(variant, ("a", "b"))
             self.assertGreaterEqual(at, 0)
 
-    def test_roll_matches_timetable(self):
-        spec = {"big": "3", "unit": "安打", "head": "x", "sub": "4打数3安打", "team_id": 119}
-        c = bn.cues(spec)
-        self.assertIn((0.0, "transition", "b", -6), c)
-        self.assertIn((bn.T_ROLL[0], "roll", "a", -2), c)
-        self.assertIn((bn.T_ROLL[1] - 0.04, "stop", "a", 0), c)
+    def test_hero_uses_the_shared_timetable(self):
+        spec = {'big':'3','unit':'安打','sub':'4打数3安打'}
+        self.assertEqual(bn.cues(spec), bn.r3.cues('intro', bn.unified_spec(spec)))
 
-    def test_count_and_stamp(self):
-        c = bn.cues({"big": "12", "unit": "奪三振", "team_id": 119})
-        self.assertIn((bn.T_COUNT[0], "roll", "b", -4), c)
-        self.assertIn((bn.T_COUNT[1] - 0.04, "impact", "a", -2), c)
-        c = bn.cues({"layout": "plain", "big": "1", "unit": "位", "anim": "stamp", "team_id": 119})
-        self.assertIn((bn.T_STAMP, "impact", "b", -2), c)
+    def test_count_and_stamp_use_the_shared_reel(self):
+        for anim in ('count','stamp','roll'):
+            spec={'big':'3','unit':'安打','anim':anim}
+            self.assertEqual(bn.cues(spec), bn.r3.cues('intro', bn.unified_spec(spec)))
 
-    def test_one_pop_per_drawn_chip(self):
-        spec = {"big": "2", "unit": "本塁打", "sub": "4打数3安打　2本塁打　3打点",
-                "chips": ["マルチ本塁打", "同点打点"], "team_id": 145}
-        L = bn.layout_of(spec)
-        pops = [c for c in bn.cues(spec) if c[1] == "pop"]
-        self.assertEqual([p[0] for p in pops], [c["appear"] for c in L["chips"]])
-        self.assertEqual(len(pops), 2)
+    def test_chips_follow_shared_entry(self):
+        spec={'big':'3','unit':'安打','chips':['検査A','検査B']}
+        self.assertEqual(bn.cues(spec), bn.r3.cues('intro', bn.unified_spec(spec)))
 
     def test_cards_swish(self):
-        spec = {"layout": "cards", "head": "ほか", "cards": [{"title": "a", "body": "b"}, {"title": "c", "body": "d"}]}
-        sw = [c[0] for c in bn.cues(spec) if c[1] == "swish"]
-        self.assertEqual(sw, [bn.T_CARD0, bn.T_CARD0 + bn.T_CARD_GAP])
+        spec={'cards':[{'title':'甲','body':'3安打'},{'title':'乙','body':'2安打'}]}
+        rows=[(c['title'],c['body']) for c in spec['cards']]
+        self.assertEqual(bn.cues(spec), bn.r3.cues('list', bn.unified_spec(spec), rows, 0, 2))
 
     def test_no_cue_after_scene_fades(self):
         spec = {"big": "3", "unit": "安打", "chips": ["マルチ安打"], "team_id": 119, "dur": 1.0}

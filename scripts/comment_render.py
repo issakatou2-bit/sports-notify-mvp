@@ -701,6 +701,16 @@ def comments(t, voices, team_id, strip_text, title=TITLE, live=LIVE_COMMENTS,
     return im
 
 
+def unified_comments(t, voices, team_id, strip_text, title=TITLE, live=LIVE_COMMENTS,
+                     source_lines=(), page=None, backdrop=None):
+    import v3_slot_render as common
+    voices = list(voices or [])
+    rows = [(v.get('who',''), '「'+v.get('said','')+'」' if not v.get('fact') else v.get('said','')) for v in voices]
+    spec = {'team_id': team_id, 'heading': live, 'page': page, 'v3': {'ticker': strip_text}}
+    return common.frame(t, spec, rows, title, '　'.join(source_lines), start_times(voices),
+                        [v.get('reply', False) for v in voices])
+
+
 def texts(voices, strip_text, title=TITLE, live=LIVE_COMMENTS,
           source_lines=("引用：MLB公式ハイライトのコメント欄（訳：コレスポ）",), page=None):
     """comments が描く文字のすべて（検査用。材料に無い数字を描いていないかを見る）。"""
@@ -725,6 +735,17 @@ def cues(voices):
         if mark_span(v.get("said"), v.get("mark")):
             out.append((at + MARK_AFTER, "marker", "a", -4))
     return sorted(out, key=lambda c: c[0])
+
+
+def unified_cues(voices):
+    """効果音 [(秒, 種類, 案, 追加の音量dB)]。描画と同じ start_times と時刻表から。
+
+    吹き出しが出る → notify（返信は b）。事実の吹き出し → pop。マーカーが引かれ始める → marker。"""
+    import v3_slot_render as common
+    voices = list(voices or [])
+    rows = [(v.get('who',''), ('「'+v.get('said','')+'」') if not v.get('fact') else v.get('said','')) for v in voices]
+    return common.cues(rows, start_times(voices))
+
 
 
 def timed(voices, spoken, dur, lead=0.4, min_gap=0.8):
@@ -816,7 +837,7 @@ def list_page(t, spec, items, start, count, page, pages, kind_label):
     page_items = list(items)[start:start + count]
     if not uses_comments(page_items):
         return r3.list_page(t, spec, items, start, count, page, pages, kind_label)
-    return comments(t, voices_from_items(page_items, spec), spec.get("team_id"), _strip_of(spec),
+    return unified_comments(t, voices_from_items(page_items, spec), spec.get("team_id"), _strip_of(spec),
                     title=kind_label, live=_live_of(page_items),
                     source_lines=_page_source(spec, page_items), page=f"{page}/{pages}")
 
@@ -826,7 +847,7 @@ def list_cues(spec, items, start=0, count=0):
     page_items = list(items)[start:start + count]
     if not uses_comments(page_items):
         return r3.cues("list", spec, items, start, count)
-    return [(0.0, "transition", "b", -6)] + cues(voices_from_items(page_items, spec))
+    return unified_cues(voices_from_items(page_items, spec))
 
 
 # ------------------------------------------------------------------ (b) 17:30「現地のファンは何と言ったか」
@@ -905,7 +926,7 @@ def voices_screen(t, seg, voices_data, dur=None, team_id=None):
     voices = voices_for_segment(seg, voices_data)
     if dur:
         voices = timed(voices, seg.get("text") or "", dur)
-    return comments(t, voices, team_id, strip_for_voices(voices_data, seg),
+    return unified_comments(t, voices, team_id, strip_for_voices(voices_data, seg),
                     source_lines=_voices_source(voices_data))
 
 
@@ -913,7 +934,7 @@ def voices_cues(seg, voices_data, dur=None):
     voices = voices_for_segment(seg, voices_data)
     if dur:
         voices = timed(voices, seg.get("text") or "", dur)
-    return cues(voices)
+    return unified_cues(voices)
 
 
 # ------------------------------------------------------------------ 見本

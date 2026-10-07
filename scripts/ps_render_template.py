@@ -49,6 +49,13 @@ def background(style='stadium',seconds=0,team_id=None):
     return im
 
 def render(card,presenters=None,style='stadium',layers=False):
+    if style=='v3':
+        import ps_unified_v3
+        # 従来の材料・文字幅ゲートも通す。旧配置は表示せず、検査結果として明記する。
+        _, gate=render(card,presenters='none',style='stadium')
+        result=ps_unified_v3.render(card, presenters or 'right', layers)
+        result[1]['material_gate']=gate
+        return result
     if presenters is None:presenters=THEME['presenter']['default']
     if presenters not in ('none','left','right','both'):raise ValueError('Unsupported presenter placement')
     t=TOKENS['stadium' if style=='v3' else style];im=Image.new('RGBA',(1080,1920),(0,0,0,0));d=ImageDraw.Draw(im);trace=[]

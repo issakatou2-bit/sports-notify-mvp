@@ -144,9 +144,10 @@ def _ticker_strip(text):
     f = font(40)
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
     w = round(probe.textlength(text, font=f)) + 112
-    im = Image.new("RGB", (w * 2, 88), GOLD)
+    repeats = (W+w-1)//w+2
+    im = Image.new("RGB", (w * repeats, 88), GOLD)
     d = ImageDraw.Draw(im)
-    for k in range(2):
+    for k in range(repeats):
         d.text((k * w + 56, 44), text, font=f, fill=DARK_INK, anchor="lm")
     return im, w
 
@@ -205,7 +206,12 @@ def _chip(label, score, w, base_rgb, second_rgb):
     while size > 18 and d.textlength(label, font=font(size)) > w - 48:
         size -= 1
     d.text((24, 22), label, font=font(size), fill=second_rgb)
-    d.text((24, 66), score, font=num_font(80), fill=INK)
+    if re.fullmatch(r'[0-9.+:\-]+', str(score)):
+        d.text((24, 66), score, font=num_font(80), fill=INK)
+    else:
+        score_lines, score_size = _lines(d, str(score), 42, w-48, 2)
+        for i, line in enumerate(score_lines):
+            d.text((24, 66+i*(score_size+8)), line, font=font(score_size), fill=INK)
     return card
 
 
@@ -242,7 +248,7 @@ def intro(t, spec, kind_label):
     base, second, _ = colors(tid)
     im = background(t, tid)
     d = ImageDraw.Draw(im)
-    _header(d, kind_label, second=second)
+    _header(d, kind_label, spec.get('page'), second=second)
     # 球団の行
     k = ease_out((t - T_WHO) / 0.5)
     y = 260 + round(48 * (1 - k))
@@ -254,8 +260,11 @@ def intro(t, spec, kind_label):
     d.text((x, y + 38), lines[0] if lines else "", font=font(size), fill=INK, anchor="lm")
     big = str(v3.get("big") or "")
     if big:
-        end = _reel(d, im, LEFT - 8, 350, big, t)
         unit = v3.get("unit") or ""
+        number_size = 400
+        while number_size > 120 and d.textlength(big, font=num_font(number_size)) + d.textlength(unit, font=font(128)) + 32 > SAFE_RIGHT-LEFT:
+            number_size -= 8
+        end = _reel(d, im, LEFT - 8, 350, big, t, size=number_size)
         d.text((end + 16, 526), unit, font=font(128), fill=INK)
         if v3.get("sub"):
             d.text((end + 20, 682), v3["sub"], font=font(40), fill=second)
@@ -272,14 +281,19 @@ def intro(t, spec, kind_label):
     if tag:
         k = ease_out((t - T_TAG) / 0.4)
         if k > 0:
-            f = font(48)
-            w = round(d.textlength(tag, font=f)) + 56
+            tag_lines, tag_size = _lines(d, tag, 48, SAFE_RIGHT-LEFT-56, 2)
+            f = font(tag_size)
+            w = min(SAFE_RIGHT-LEFT, round(max(d.textlength(line, font=f) for line in tag_lines)) + 56)
+            height = max(84, len(tag_lines)*(tag_size+10)+24)
             reveal = round(w * k)
-            d.rectangle((LEFT, y, LEFT + reveal, y + 84), fill=GOLD)
-            lay = Image.new("RGBA", (w, 84), (0, 0, 0, 0))
-            ImageDraw.Draw(lay).text((28, 42), tag, font=f, fill=DARK_INK, anchor="lm")
-            im.paste(lay.crop((0, 0, reveal, 84)), (LEFT, y), lay.crop((0, 0, reveal, 84)))
-        y += 116
+            d.rectangle((LEFT, y, LEFT + reveal, y + height), fill=GOLD)
+            lay = Image.new("RGBA", (w, height), (0, 0, 0, 0))
+            for i, line in enumerate(tag_lines):
+                ImageDraw.Draw(lay).text((28, 12+i*(tag_size+10)), line, font=f, fill=DARK_INK)
+            im.paste(lay.crop((0, 0, reveal, height)), (LEFT, y), lay.crop((0, 0, reveal, height)))
+        else:
+            height = 84
+        y += height+32
     chips = v3.get("chips") or []
     if chips:
         cw = (SAFE_RIGHT - LEFT - 24) // 2
@@ -296,7 +310,7 @@ def intro(t, spec, kind_label):
                     ox, oy = cx + cw - 64, cy + 112
                     d.ellipse((ox - r, oy - r, ox + r, oy + r), outline=GOLD, width=max(2, round(8 * min(1, kr))))
     ticker(im, t, v3.get("ticker"))
-    source(d, page_source(spec.get("items") or []), second)
+    source(d, v3.get('source') or page_source(spec.get("items") or []), second)
     presenter(im, t)
     return im
 
@@ -382,7 +396,7 @@ def rich_lines(runs, width, second_rgb):
 
 
 @functools.lru_cache(maxsize=64)
-def _item_card(head, body, w, base_rgb, second_rgb):
+def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_above=False, quote_height=None):
     quote = "番記者" in head or str(body).startswith("「")
     if not quote:
         lines = rich_lines(_runs(body), w - 72, second_rgb)
@@ -401,14 +415,23 @@ def _item_card(head, body, w, base_rgb, second_rgb):
             y += lh
         return card
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
-    lines, size = _lines(probe, body, 52 if quote else 64, w - 72, 8 if quote else 4)
+    lines, size = _lines(probe, body, quote_size if quote else 64, w - 72, 8 if quote else 4)
+    if quote_height:
+        size = quote_size
+        while True:
+            lines, _ = _lines(probe, body, size, w-72, max(8, len(body)))
+            if 126+len(lines)*(size+14) <= quote_height:
+                break
+            size -= 2
+            if size < 24:
+                raise ValueError('引用全文が共通札の安全域に収まりません')
     h = 40 + 50 + len(lines) * (size + 14) + 36
     card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(card)
     fill = (247, 242, 223, 255) if quote else _mix(base_rgb, (255, 255, 255), 0.1) + (255,)
-    d.rounded_rectangle((0, 0, w - 1, h - 1), radius=24, fill=fill,
+    d.rounded_rectangle((0, 70 if attribution_above else 0, w - 1, h - 1), radius=24, fill=fill,
                         outline=None if quote else _mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)
-    d.text((36, 30), head, font=font(32), fill=(93, 90, 99) if quote else second_rgb)
+    d.text((36, 30), head, font=font(26 if attribution_above else 32), fill=second_rgb if attribution_above else (93, 90, 99) if quote else second_rgb)
     for i, line in enumerate(lines):
         color = DARK_INK if quote else (GOLD if i == 0 else INK)
         d.text((36, 84 + i * (size + 14)), line, font=font(size), fill=color)

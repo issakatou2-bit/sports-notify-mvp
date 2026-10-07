@@ -692,56 +692,49 @@ def scene(t, scene_spec, team_id=None):
     """
     spec = dict(scene_spec)
     if team_id is not None:
-        spec["team_id"] = team_id
-    tid = spec.get("team_id")
-    base, second, _ = r3.colors(tid)
-    tg = float(spec.get("t0") or 0.0) + t
-    im = background(tg, tid)
-    L = layout_of(spec)
-    dur = spec.get("dur")
-    k_in = ease_out(t / T_FADE_IN)
-    k_out = clamp((t - (dur - T_OUT)) / T_OUT) if dur else 0.0
-    if k_in < 1 or k_out > 0:
-        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        _draw_content(layer, t, L, dur)
-        scale = FADE_SCALE - (FADE_SCALE - 1.0) * k_in
-        if scale > 1.0005:
-            big = layer.resize((round(W * scale), round(H * scale)), Image.BILINEAR)
-            ox, oy = (big.width - W) // 2, (big.height - H) // 2
-            layer = big.crop((ox, oy, ox + W, oy + H))
-        alpha = k_in * (1 - k_out)
-        if alpha < 1:
-            layer.putalpha(layer.getchannel("A").point([round(a * alpha) for a in range(256)]))
-        im.paste(layer, (0, 0), layer)
-    else:
-        _draw_content(im, t, L, dur)
-    _chrome(im, tg, t, spec, base, second)
+        spec['team_id'] = team_id
+    import v3_slot_render as common
+    view = unified_spec(spec)
+    rows = [(c.get('title',''), c.get('body','')) for c in spec.get('cards', [])]
+    if (spec.get('rank') or 0) > 1 or not spec.get('big') or rows:
+        ranked_head = (f"{spec['rank']}位　" if spec.get('rank') else '')+spec.get('head','')
+        rows = rows or [(ranked_head, spec.get('sub',''))]
+        rows += [('', str(x)) for x in spec.get('notes', [])]
+        return common.frame(t, view, rows, spec.get('label') or '日本人選手の成績', spec.get('source') or SOURCE)
+    im = r3.intro(t, view, spec.get('label') or '日本人選手の成績')
+    r3.source(ImageDraw.Draw(im), spec.get('source') or SOURCE, r3.colors(spec.get('team_id'))[1])
     return im
+
+
+def unified_spec(spec):
+    from notability_engine import MLB_TEAM_ABBR
+    tid = spec.get('team_id')
+    rank = spec.get('rank')
+    extra = list(spec.get('notes') or []) + list(spec.get('chips') or [])
+    return {'team_id': tid, 'abbr': MLB_TEAM_ABBR.get(str(tid), ''),
+            'heading': '　'.join(str(spec.get(k) or '') for k in ('head', 'head2')).strip(),
+            'v3': {'who': '　'.join(str(spec.get(k) or '') for k in ('head', 'head2')).strip(),
+                   'big': str(spec.get('big') or ''), 'unit': str(spec.get('unit') or ''),
+                   'sub': f'勝利貢献 第{rank}位' if rank else spec.get('pre') or spec.get('tag',''),
+                   'tag': spec.get('sub') or spec.get('head2',''),
+                   'chips': [{'label': str(x), 'score': ''} for x in extra[:4]],
+                   'ticker': '　'.join(str(x) for x in extra)}}
+
 
 
 # ------------------------------------------------------------------ 効果音の時刻
 def cues(scene_spec):
     """その場面の効果音 [(秒, 種類, 案, 追加の音量dB)]。描画と同じ時刻表・同じ配置から。"""
-    L = layout_of(scene_spec)
-    out = [(0.0, "transition", "b", -6)]                 # 色の塊が入る・横切る
-    if L["num"]:
-        a = L["num"]["anim"]
-        if a == "roll":
-            out.append((T_ROLL[0], "roll", "a", -2))
-            out.append((T_ROLL[1] - 0.04, "stop", "a", 0))
-        elif a == "count":
-            out.append((T_COUNT[0], "roll", "b", -4))
-            out.append((T_COUNT[1] - 0.04, "impact", "a", -2))
-        elif a == "stamp":
-            out.append((T_STAMP, "impact", "b", -2))
-    for c in L["chips"]:
-        out.append((c["appear"], "pop", "a", -7))
-    for c in L["cards"]:
-        out.append((c["appear"], "swish", "a", -3))
-    dur = scene_spec.get("dur")
-    if dur:
-        out = [c for c in out if c[0] < dur - T_OUT]
-    return out
+    if (scene_spec.get('rank') or 0) > 1 or not scene_spec.get('big') or scene_spec.get('cards'):
+        rows = [(c.get('title',''), c.get('body','')) for c in scene_spec.get('cards', [])]
+        rows = rows or [(scene_spec.get('head',''), scene_spec.get('sub',''))]
+        rows += [('', str(x)) for x in scene_spec.get('notes', [])]
+        out = r3.cues('list', unified_spec(scene_spec), rows, 0, len(rows))
+    else:
+        out = r3.cues('intro', unified_spec(scene_spec))
+    dur = scene_spec.get('dur')
+    return [c for c in out if not dur or c[0] < dur - T_OUT]
+
 
 
 def texts(scene_spec):
@@ -856,7 +849,7 @@ def _player_scene(p, say, tag="", rank=None):
     notes = [p["clutch_note"]] if p.get("clutch_note") else []
     sc = {"layout": "block", "big": big, "unit": unit, "tag": tag, "head": p.get("name", ""),
           "head2": p.get("team_jp", ""), "sub": head, "notes": notes, "chips": chips,
-          "team_id": p.get("team_id"), "say": say}
+          "team_id": p.get("team_id"), "rank": rank, "say": say}
     if not big and rank is not None:
         sc.update(layout="plain", big=str(rank), unit="位", anim="stamp",
                   tag="勝利貢献順位", ranking_name=p.get("name", ""))
