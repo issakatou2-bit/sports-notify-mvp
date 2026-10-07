@@ -442,6 +442,28 @@ def list_page(t, spec, items, start, count, page, pages, kind_label):
 
 
 # ------------------------------------------------------------------ 効果音の時刻
+def people(t, spec, rows, heading, kind_label):
+    """読み上げと同じ最大3人を表示。v3は声・立ち絵とも四国めたん。"""
+    base, second, _ = colors(spec.get("team_id"))
+    im = background(t, spec.get("team_id"))
+    d = ImageDraw.Draw(im)
+    _header(d, kind_label, "", second)
+    d.text((LEFT, 250), heading, font=font(64), fill=INK)
+    d.text((LEFT, 340), spec.get("label", ""), font=font(32), fill=second)
+    y = 430
+    for i, row in enumerate(rows[:3]):
+        card = _item_card(row.get("name", ""), row.get("line", row.get("why", "")),
+                          SAFE_RIGHT - LEFT, base, second)
+        if y + card.height > 1400:
+            raise ValueError("日本人選手の成績が安全域に収まりません")
+        _paste_card(im, card, LEFT, y, back_out((t - T_CARD0 - i * T_CARD_GAP) / SLIDE))
+        y += card.height + 28
+    ticker(im, t, (spec.get("v3") or {}).get("ticker"))
+    source(d, "出典: MLB公式（Stats API）", second)
+    presenter(im, t)
+    return im
+
+
 def cues(kind, spec, items=(), start=0, count=0):
     """その画面の効果音 [(秒, 種類, 案, 追加の音量dB)]。描画と同じ時刻表から。"""
     v3 = spec.get("v3") or {}
