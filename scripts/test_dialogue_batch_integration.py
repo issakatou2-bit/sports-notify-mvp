@@ -40,7 +40,9 @@ class Integration(unittest.TestCase):
             self.assertEqual(tl.cost(model, 1000, 2000, batch=True), tl.cost(model, 1000, 2000) / 2)
 
     def test_record_count_and_price(self):
-        with tempfile.TemporaryDirectory(dir=pathlib.Path(__file__).resolve().parents[1] / "build") as d:
+        build = pathlib.Path(__file__).resolve().parents[1] / "build"
+        build.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=build) as d:
             path = pathlib.Path(d) / "usage.json"
             resp = types.SimpleNamespace(usage=types.SimpleNamespace(input_tokens=1000, output_tokens=2000))
             tl.record("dialogue", gd.MODEL, resp, path=str(path), batch=True)

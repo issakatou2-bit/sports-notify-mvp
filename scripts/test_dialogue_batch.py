@@ -11,7 +11,6 @@
 動かし方（リポジトリの一番上で）:
   PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -p no:cacheprovider collespo/batch/test_dialogue_batch.py
 """
-import contextlib
 import copy
 import io
 import json
@@ -536,5 +535,6 @@ def test_real_sdk_request_shape_with_mock_http(tmp_path):
 
 
 if __name__ == "__main__":
+    (HERE.parent / "build").mkdir(parents=True, exist_ok=True)
     raise SystemExit(pytest.main([__file__, "-q", "--tb=short", "--basetemp",
                                  str(HERE.parent / "build/batch-test-20261007")]))
