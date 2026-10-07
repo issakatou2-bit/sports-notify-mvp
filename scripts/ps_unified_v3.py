@@ -13,9 +13,45 @@ def starter_name(value):
 
 
 def ticker_text(card):
-    return '　'.join(' '.join(str(x).split()) for x in
-                    (card['date'],card.get('subhead'),
-                     card.get('glossary') if card.get('card_index') is None else '') if x)
+    return program_ticker({'segments':[{'meta':{'card':card}}]})
+
+
+def program_ticker(program):
+    """検証済みの日程/次戦から一本の開始予定文。原稿やカードは変更しない。"""
+    records = set()
+    cards = [s['meta']['card'] for s in program['segments']]
+    for card in cards:
+        date = str(card['date'])[:10]
+        board = (card.get('scoreboard') or {}).get('rows',[])
+        pair = '対'.join(r['name'] for r in board)
+        for row in card.get('items',[]):
+            if card.get('layout') == 'schedule':
+                body = row['when']; matchup = row['home']+'対'+row['away']
+            elif card.get('layout') == 'facts' and ('開始' in row['label'] or '次の試合' in row['label']):
+                body = str(row['value']); matchup = pair
+            else:
+                continue
+            if not matchup:
+                continue
+            day = date
+            md = re.search(r'(\d{1,2})月(\d{1,2})日|(\d{1,2})/(\d{1,2})',body)
+            if md:
+                month,number = (md[1],md[2]) if md[1] else (md[3],md[4])
+                day = f'{date[:4]}-{int(month):02d}-{int(number):02d}'
+            clock = re.search(r'(\d{1,2}):(\d{2})|(\d{1,2})時(?:(\d{1,2})分)?',body)
+            if clock:
+                hour,minute = (clock[1],clock[2]) if clock[1] else (clock[3],clock[4] or '0')
+                records.add((day,int(hour),int(minute),matchup))
+    if not records:
+        date = cards[0]['date']
+        return f'日本時間{int(date[5:7])}月{int(date[8:10])}日　'+ ' '.join(str(cards[0].get('headline','PS')).split())
+    parts=[]; previous=None
+    for day,hour,minute,pair in sorted(records):
+        if day != previous:
+            parts.append(f'日本時間{int(day[5:7])}月{int(day[8:10])}日')
+            previous=day
+        parts.append(f'{hour}時'+(f'{minute}分' if minute else '')+' '+pair)
+    return '　'.join(parts)
 
 
 def rows(card):
@@ -28,7 +64,9 @@ def rows(card):
         elif card['layout'] == 'facts':
             head, body = row['label'], str(row['value'])
             if '先発' in head:
-                body = starter_name(body) or '先発予定'
+                body = starter_name(body)
+                if not body:
+                    continue
             result.append((head, body))
         elif card['layout'] == 'bracket':
             result.append((row['home']+' 対 '+row['away'], row['when']+'　'+row['next']))
@@ -48,7 +86,7 @@ def lead_card(program):
     return next((c for c in candidates if any(r['name'] in cover['headline'] for r in c['scoreboard']['rows'])), candidates[0] if candidates else cover)
 
 
-def spec(card, focus=None):
+def spec(card, focus=None, ticker_line=None):
     from ps_render_template import background_team
     chosen = focus or card
     board = chosen.get('scoreboard') or {}
@@ -66,11 +104,11 @@ def spec(card, focus=None):
             'hook': chosen['headline'].replace('\n','　'),
             'v3': {'who': chosen['headline'].replace('\n','　'), 'big': clock, 'unit': unit,
                    'tag': chosen.get('subhead',''), 'chips': chips,
-                   'ticker': ticker_text(card)}}
+                   'ticker': ticker_line if ticker_line is not None else ticker_text(card), 'ticker_once': True}}
 
 
-def frame(t, card, focus=None, cover=False, duration=20):
-    view = spec(card, focus)
+def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
+    view = spec(card, focus, ticker_line)
     if card.get('card_index') is None or (cover and t < min(4, duration/3)):
         im = r3.intro(t, view, card.get('label','PS'))
         r3.source(r3.ImageDraw.Draw(im), '出典：'+card.get('source_label','説明欄'), r3.colors(view['team_id'])[1])
@@ -78,6 +116,14 @@ def frame(t, card, focus=None, cover=False, duration=20):
     if cover:
         t -= min(4, duration/3)
     return common.frame(t, view, rows(card), card.get('label','PS'), '出典：'+card.get('source_label','説明欄'))
+
+
+def transition(previous, image, index, fade_frames, elapsed, ticker_line):
+    """画面を混ぜ終わった後に帯を一度だけ描く。帯の時刻は番組全体で連続。"""
+    from video_common import crossfade
+    result = r3.Image.frombytes('RGB',(1080,1920),crossfade(previous,image,index,fade_frames,(1080,1920)))
+    r3.ticker(result,elapsed,ticker_line,once=True)
+    return result.tobytes()
 
 
 def cues(card, focus=None, cover=False, duration=20):

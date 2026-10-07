@@ -52,7 +52,8 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None):
     for card, y, at in zip(cards, positions, ats):
         r3._paste_card(layer, card, r3.LEFT, round(y-top-offset), r3.back_out((t-at)/r3.SLIDE))
     im.paste(layer, (0,top), layer)
-    r3.ticker(im, t, (spec.get("v3") or {}).get("ticker"))
+    v3 = spec.get('v3') or {}
+    r3.ticker(im, t, v3.get('ticker'), once=v3.get('ticker_once',False))
     r3.source(d, source_text, second)
     r3.presenter(im,t)
     return im

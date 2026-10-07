@@ -177,8 +177,25 @@ def _ticker_strip(text):
     return im, w
 
 
-def ticker(im, t, text, y=1486):
+@functools.lru_cache(maxsize=16)
+def _single_ticker(text):
+    f = font(40)
+    probe = ImageDraw.Draw(Image.new('RGB',(8,8)))
+    box = probe.textbbox((0,44),text,font=f,anchor='lm')
+    strip = Image.new('RGB',(box[2]-box[0]+112,88),GOLD)
+    ImageDraw.Draw(strip).text((56-box[0],44),text,font=f,fill=DARK_INK,anchor='lm')
+    return strip
+
+
+def ticker(im, t, text, y=1486, once=False):
     if not text:
+        return
+    if once:
+        strip = _single_ticker(text)
+        band = Image.new('RGB',(W,88),GOLD)
+        x = W-((W+round(t*80)) % (W+strip.width))
+        band.paste(strip,(x,0))
+        im.paste(band,(0,y))
         return
     strip, w = _ticker_strip(text)
     off = round(t * 80) % w
@@ -334,7 +351,7 @@ def intro(t, spec, kind_label):
                     r = round(30 * kr)
                     ox, oy = cx + cw - 64, cy + 112
                     d.ellipse((ox - r, oy - r, ox + r, oy + r), outline=GOLD, width=max(2, round(8 * min(1, kr))))
-    ticker(im, t, v3.get("ticker"))
+    ticker(im, t, v3.get("ticker"), once=v3.get('ticker_once',False))
     source(d, v3.get('source') or page_source(spec.get("items") or []), second)
     presenter(im, t)
     return im

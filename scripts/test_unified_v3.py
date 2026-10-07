@@ -50,10 +50,61 @@ class Unified(unittest.TestCase):
                        {'label':'相手チーム先発予定','value':'Unknown Pitcher Zzzz'}]}
         before=copy.deepcopy(card)
         self.assertNotIn('\n',ps.ticker_text(card))
-        self.assertEqual(ps.ticker_text(card).count('2026-10-07'),1)
+        self.assertEqual(ps.ticker_text(card).count('日本時間10月7日'),1)
         self.assertFalse(any(c.isascii() and c.isalpha() for c in ps.rows(card)[0][1]))
-        self.assertEqual(ps.rows(card)[1],('相手チーム先発予定','先発予定'))
+        self.assertEqual(len(ps.rows(card)),1)
         self.assertEqual(card,before)
+
+    def test_ps_ticker_is_drawn_once_even_at_loop_boundary(self):
+        from PIL import Image, ImageDraw
+        line='日本時間10月8日　5時 ホワイトソックス対ガーディアンズ　7時 ドジャース対ブレーブス'
+        r3._single_ticker.cache_clear()
+        original=ImageDraw.ImageDraw.text
+        texts=[]
+        def record(draw,xy,text,*args,**kwargs):
+            texts.append(text)
+            return original(draw,xy,text,*args,**kwargs)
+        with patch.object(ImageDraw.ImageDraw,'text',record):
+            strip=r3._single_ticker(line)
+            cycle=(r3.W+strip.width)/80
+            for t in (0,3,cycle-.01,cycle,cycle+.01):
+                r3.ticker(Image.new('RGB',(1080,1920)),t,line,once=True)
+        self.assertEqual(texts,[line])
+
+    def test_ps_timetable_and_hidden_starter_keep_material(self):
+        import json
+        from datetime import datetime
+        import ps_program as program
+        saved=json.loads((bn.ROOT/'scripts/fixtures/ps-design/2026-10-07.json').read_text(encoding='utf-8'))
+        data=program.prepare(saved['snapshot'],saved['evidence'],'forecast',datetime.fromisoformat(saved['evidence']['retrieved_at']),saved['ledger'])
+        before=copy.deepcopy(data)
+        line=ps.program_ticker(data)
+        self.assertEqual(line.count('日本時間10月8日'),1)
+        self.assertIn('5時 ホワイトソックス対ガーディアンズ',line)
+        self.assertIn('7時 ブレーブス対ドジャース',line)
+        for seg in data['segments']:
+            card=seg['meta']['card']
+            with patch.object(r3,'ticker',wraps=r3.ticker) as ticker:
+                ps.frame(3,card,ticker_line=line)
+                ticker.assert_called_once()
+                self.assertEqual(ticker.call_args.args[2],line)
+                self.assertTrue(ticker.call_args.kwargs['once'])
+            self.assertTrue(all(b!='先発予定' for h,b in ps.rows(card)))
+        self.assertEqual(data,before)
+
+    def test_ps_transition_replaces_the_blended_band(self):
+        from PIL import Image
+        previous=Image.new('RGB',(1080,1920),'red').tobytes()
+        current=Image.new('RGB',(1080,1920),'blue')
+        line='日本時間10月8日　5時 ホワイトソックス対ガーディアンズ'
+        with patch.object(r3,'ticker',wraps=r3.ticker) as ticker:
+            raw=ps.transition(previous,current,2,6,20.1,line)
+            ticker.assert_called_once()
+            self.assertEqual(ticker.call_args.args[1],20.1)
+        expected=Image.new('RGB',(1080,1920))
+        r3.ticker(expected,20.1,line,once=True)
+        actual=Image.frombytes('RGB',(1080,1920),raw)
+        self.assertEqual(actual.crop((0,1486,1080,1574)).tobytes(),expected.crop((0,1486,1080,1574)).tobytes())
 
     def test_chip_long_label_uses_a_font_that_fits(self):
         from PIL import ImageDraw

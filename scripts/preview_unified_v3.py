@@ -36,7 +36,12 @@ def sheet(frames, labels, path):
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--out',type=Path,default=Path('build/unified-previews'))
+    ap.add_argument('--only-ps',action='store_true')
     args=ap.parse_args();args.out.mkdir(parents=True,exist_ok=True)
+    if args.only_ps:
+        ps_preview(args.out)
+        print('PS確認画像のみ更新: '+str(args.out/'design-v3-ps.png'))
+        return
     bn._no_network()
     data=read('scripts/fixtures/bignumber/morning_recap.json')
     data['players']=g.sort_players(data.get('players') or [])
@@ -63,17 +68,26 @@ def main():
         sheet([daily_v3.frame(t,s,design,20) for t,s in zip(times,segments)],
               [mode+' '+s['kind']+f' {t}秒' for t,s in zip(times,segments)],args.out/f'design-v3-{mode}.png')
         report[mode]={'segments':len(nar['segments']),'text_unchanged':True}
-    saved=read('scripts/fixtures/ps-design/2026-10-07.json');frames=[];labels=[]
+    report.update(ps_preview(args.out))
+    (args.out/'design-v3-confirmation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+    print('4枠の確認画像と照合結果を保存: '+str(args.out))
+
+
+def ps_preview(out):
+    saved=read('scripts/fixtures/ps-design/2026-10-07.json');frames=[];labels=[];report={}
     for slot in ('forecast','situation'):
         with patch.dict(os.environ,{'COLLESPO_PS_DESIGN':'v3'}):
             program=ps.prepare(saved['snapshot'],saved['evidence'],slot,datetime.fromisoformat(saved['evidence']['retrieved_at']),saved['ledger'])
-        ps.check_program(program);lead=unified.lead_card(program)
+        ps.check_program(program);lead=unified.lead_card(program);line=unified.program_ticker(program)
         for seg,t in [(program['segments'][0],3),(program['segments'][1],.8),(program['segments'][1],3)]:
-            frames.append(unified.frame(t,seg['meta']['card'],lead,cover=seg is program['segments'][0]));labels.append(slot+f' {t}秒')
-        report[slot]={'segments':len(program['segments']),'edition_key':program['edition_key']}
-    sheet(frames,labels,args.out/'design-v3-ps.png')
-    (args.out/'design-v3-confirmation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
-    print('4枠の確認画像と照合結果を保存: '+str(args.out))
+            frames.append(unified.frame(t,seg['meta']['card'],lead,cover=seg is program['segments'][0],ticker_line=line));labels.append(slot+f' {t}秒')
+        previous=unified.frame(20,program['segments'][0]['meta']['card'],lead,ticker_line=line).tobytes()
+        current=unified.frame(.1,program['segments'][1]['meta']['card'],lead,ticker_line='')
+        frames.append(Image.frombytes('RGB',(1080,1920),unified.transition(previous,current,2,6,20.1,line)))
+        labels.append(slot+' 切替0.1秒')
+        report[slot]={'segments':len(program['segments']),'edition_key':program['edition_key'],'ticker':line}
+    sheet(frames,labels,out/'design-v3-ps.png')
+    return report
 
 
 if __name__=='__main__':main()

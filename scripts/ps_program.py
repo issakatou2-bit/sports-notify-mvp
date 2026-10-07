@@ -551,6 +551,7 @@ def movie(program, audio_dir, out):
         import sound_mix
         import ps_unified_v3 as unified
         focus_card=unified.lead_card(program)
+        ticker_line=unified.program_ticker(program)
         cues=[];start=0.0
         for index,(seg,duration) in enumerate(zip(program['segments'],durations)):
             cues.extend((start+at,kind,variant,db) for at,kind,variant,db in unified.cues(seg['meta']['card'],focus_card,cover=index==0,duration=duration)
@@ -567,11 +568,12 @@ def movie(program, audio_dir, out):
            '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k',
            '-shortest', '-movflags', '+faststart', str(path)]
     previous_frame=None
+    program_frame=0
     with subprocess.Popen(cmd, stdin=subprocess.PIPE) as proc:
         for i, (seg, duration) in enumerate(zip(program['segments'], durations)):
             image, _, foreground = render_segment(seg,layers=True)
             if v3:
-                image=unified.frame(min(3,duration/4),seg['meta']['card'],focus_card,cover=i==0,duration=duration)
+                image=unified.frame(min(3,duration/4),seg['meta']['card'],focus_card,cover=i==0,duration=duration,ticker_line=ticker_line)
             image.save(out / f'ps_{i:02d}.png')
             if i == 0:
                 image.save(out / ('short.png' if program['kind'] == 'daily' else 'short_postseason.png'))
@@ -579,10 +581,12 @@ def movie(program, audio_dir, out):
             plan=focus_plan(seg)
             speech=float(audio[i]['duration']) or duration
             for n in range(round(duration * 30)):
-                frame=(unified.frame(n/30,seg['meta']['card'],focus_card,cover=i==0,duration=duration) if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
+                frame=(unified.frame(n/30,seg['meta']['card'],focus_card,cover=i==0,duration=duration,ticker_line='') if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
                                    style=seg['meta']['card'].get('visual_style','stadium'),
                                    team_id=background_team(seg['meta']['card'])))
-                raw=vc.crossfade(previous_frame,frame,n,round(vc.FADE_SECONDS*30),(1080,1920))
+                raw=(unified.transition(previous_frame,frame,n,round(vc.FADE_SECONDS*30),program_frame/30,ticker_line) if v3
+                     else vc.crossfade(previous_frame,frame,n,round(vc.FADE_SECONDS*30),(1080,1920)))
+                program_frame+=1
                 proc.stdin.write(raw)
             previous_frame=raw
         proc.stdin.close()
