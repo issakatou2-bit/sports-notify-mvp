@@ -535,6 +535,34 @@ def translate(client, items: list) -> list:
     return [x for x in out if x]
 
 
+def _words(text: str) -> list:
+    import re
+    return re.findall(r"[a-z0-9']+|[^\sa-z0-9']", (text or "").lower())
+
+
+def near_duplicate(a: str, b: str, ratio: float = 0.78) -> bool:
+    """言い換えただけの同じコメント（別の人が書き写したもの）か。
+    10/8 試作で「駐車場で会ったばかりの9人」が2人分（高評価808・607）並んでいた。"""
+    import difflib
+    wa, wb = _words(a), _words(b)
+    # 短い文は言い回しが似やすい（「大谷は最高」と「大谷は最高ではない」）。10語以上だけ比べる
+    if min(len(wa), len(wb)) < 10:
+        return a.strip().lower() == b.strip().lower()
+    return difflib.SequenceMatcher(None, wa, wb).ratio() >= ratio
+
+
+def drop_near_duplicates(items: list, key: str = "title") -> list:
+    """先にあるもの（取った順。動画ごとに高評価の多い順）を残し、言い換えの重複を落とす。"""
+    kept = []
+    for it in items:
+        text = it.get(key) or it.get("ja") or ""
+        if any(near_duplicate(text, k.get(key) or k.get("ja") or "") for k in kept):
+            print(f"[info] 言い換えの重複を落としました: {text[:50]}")
+            continue
+        kept.append(it)
+    return kept
+
+
 def build(limit: int = MAX_VOICES) -> dict:
     # 公式ハイライトのコメントを先に見る。試合を見た人が書いた言葉が
     # 集まる場所で、r/baseball の見出しより「反応」に近い。
@@ -552,6 +580,8 @@ def build(limit: int = MAX_VOICES) -> dict:
     # 日本人選手が出た試合のコメントは、別に名指しで取りに行く。
     # いちばん見られた1本にたまたま入っているのを待たない。
     jp_items = fetch_jp_comments()
+    items = drop_near_duplicates(items)
+    jp_items = drop_near_duplicates(jp_items or [])
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key or anthropic is None:
@@ -641,6 +671,9 @@ def load(path: str = "data/local_voices.json", max_age_hours: int = 30) -> dict:
         print(f"[info] 現地の声は{updated.astimezone(jst).date()}のものです。"
               "今日の分が取れていないので使いません")
         return {}
+    # 前に取った材料にも同じ決まりを当てる
+    if isinstance(data.get("voices"), list):
+        data["voices"] = drop_near_duplicates(data["voices"])
     return data
 
 

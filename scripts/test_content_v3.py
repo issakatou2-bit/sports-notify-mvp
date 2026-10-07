@@ -150,4 +150,12 @@ class Content(unittest.TestCase):
                                                 {'who':'Baltimore Banner / Andy Kostka'}),'Baltimore Bannerの記者。')
         self.assertEqual(content_v3.source_lead('コメント欄から。',{'who':'高評価1,054件のコメント'}),'')
 
+    def test_reworded_copy_of_a_comment_is_dropped(self):
+        import local_voices as lv
+        rows=[{'title':'The Yankees defense looked like nine guys who met in the parking lot five minutes before first pitch. Every ball in play turned into an adventure.'},
+              {'title':"The Yankees' defense resembles nine guys who met in the parking lot five minutes before the first pitch. Every ball in play becomes an adventure"},
+              {'title':'Ohtani is the best player ever'},{'title':'Ohtani is not the best player this year'}]
+        self.assertEqual([r['title'] for r in lv.drop_near_duplicates(rows)],
+                         [rows[0]['title'],rows[2]['title'],rows[3]['title']])
+
 if __name__=='__main__':unittest.main(argv=[__file__])
