@@ -1058,7 +1058,126 @@ def club808():
         "140 BPM。「ドッ・ドッ・ドドド」とはずむキック、2・4拍の手拍子、8分のハイハット、短い808。旋律なし・残響なし。"
 
 
-ALL = ["trap808_fx", "trap808_filter", "trap808_lofi", "trap808_drill", "trap808_hyper", "club808", "trap_808_long", "modern_setsuna", "modern_jazz", "backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
+# ------------------------------------------------------------------ 808・演出つきの発展（10/7夜4）
+# 本人「808・演出つき良さげ。でもケツドラムみたいなパーン（2・4拍の手拍子）を差し替えたい。
+# ハイハットと低音はいい感じ。ピアノのある版も。もっとエフェクトや技法も」。
+
+def _snap(v=1.0):
+    """指パッチン。"""
+    return bgm.snap(3, v)
+
+
+def _rim(v=1.0):
+    """リムショット（ふちを打つ乾いた音）。"""
+    n = int(0.12 * SR)
+    t = np.arange(n) / SR
+    tone = np.sin(2 * np.pi * 420 * t) * np.exp(-t / 0.012)
+    click = sosfilt(butter(2, [1500, 6000], "bandpass", fs=SR, output="sos"),
+                    np.random.default_rng(5).standard_normal(n)) * np.exp(-t / 0.006)
+    return (tone * 0.8 + click * 0.6) * v
+
+
+def _wood(v=1.0):
+    """ウッドブロック（コッ）。"""
+    n = int(0.15 * SR)
+    t = np.arange(n) / SR
+    return (np.sin(2 * np.pi * 900 * t) + 0.4 * np.sin(2 * np.pi * 2350 * t)) * np.exp(-t / 0.03) * v
+
+
+BACKBEAT = {"snap": (_snap, 0.40), "rim": (_rim, 0.32), "wood": (_wood, 0.22)}
+
+
+def _fx_core(back="snap", piano=False, extra=False):
+    """長い808・ハイハットは『808・演出つき』のまま。2・4拍の音を差し替え、ピアノや演出を足す。"""
+    bpm, nbar = 96, 16
+    b = 60 / bpm
+    bar = 4 * b
+    s16 = b / 4
+    n = int((nbar * bar + 3) * SR)
+    mix = np.zeros((n, 2))
+    fn, g = BACKBEAT[back]
+    notes, times = [], []
+    for bi in range(nbar):
+        t0 = bi * bar
+        drop = extra and bi == 11                               # 12小節目はドラムを抜く（ブレイク）
+        if not drop:
+            _hat16(mix, t0, b, bi, g=0.14)
+            for q in (1, 3):
+                gs.put(mix, fn(), t0 + q * b, g)
+        for st, m in LINE_CAF[bi % 4]:
+            notes.append(m)
+            times.append(t0 + st * b)
+            if not drop:
+                gs.put(mix, ml.kick(0.18) * 0.6, t0 + st * b, 0.12)
+        if extra and bi % 4 == 3 and not drop:                  # 4小節ごとに、だんだん速くなるハイハットの詰め
+            k, tt = 0, t0 + 3 * b
+            while tt < t0 + bar - 0.01:
+                gs.put(mix, ml.hat(False, 0.3 + 0.05 * k), tt, 0.13, 0.1)
+                tt += s16 / (1 + k * 0.25)
+                k += 1
+    bass = ml.k808(notes, times, n, decay=1.3, drive=2.4, glide=0.09)
+    bass = sosfilt(butter(2, 45, "highpass", fs=SR, output="sos"), bass)
+    gs.put(mix, bass, 0, 0.16)
+    if piano:
+        pno = gs.Sampler(VS / "Keys/Upright Piano", keymap=lambda s: (
+            21 + 2 * int(gs.re.search(r"_(\d{3})\.wav", s).group(1)), int(gs.re.search(r"dyn(\d)", s).group(1)))
+            if gs.re.search(r"_(\d{3})\.wav", s) else None)
+        chords = {0: [60, 64, 67, 71], 1: [57, 60, 64, 67], 2: [57, 60, 65, 69], 3: [59, 62, 67, 71]}  # Cmaj7 Am7 Fmaj7 G
+        for bi in range(nbar):
+            if extra and bi == 11:
+                continue
+            ch = chords[bi % 4]
+            t0 = bi * bar
+            for st, d in ((0, 1.2), (2.5, 0.8)):
+                for j, m in enumerate(ch):
+                    gs.put(mix, pno.note(m, b * d, .4, rel=0.3, k=j), t0 + st * b + j * 0.012, 0.7, -0.2 + 0.13 * j)
+            if bi % 2 == 1:                                     # 2小節に1度、短い3音
+                for k, m in enumerate((ch[-1] + 12, ch[-2] + 12, ch[-1] + 12)):
+                    gs.put(mix, pno.note(m, b * 0.4, .35), t0 + (3 + k * 0.33) * b, 0.45, 0.25)
+    # 区切りの演出（『808・演出つき』と同じ）
+    _stutter(mix, 7 * bar + 3 * b, s16, times=4)
+    gs.put(mix, _riser(2 * bar - 0.05, 1), 6 * bar, 0.10)
+    if extra:
+        # ブレイク（12小節目）の間、低音だけをこもらせて、13小節目で一気に開く
+        a, z = int(11 * bar * SR), int(12 * bar * SR)
+        for c in range(2):
+            mix[a:z, c] = sosfilt(butter(2, 500, "lowpass", fs=SR, output="sos"), mix[a:z, c])
+        gs.put(mix, _riser(bar - 0.05, 7), 11 * bar, 0.12)
+        # 15小節目の最後の拍だけ、ざらついた音（ビットを落とす）
+        a, z = int((14 * bar + 3 * b) * SR), int(15 * bar * SR)
+        mix[a:z] = _crush(mix[a:z], bits=6, down=4)
+    a, z = int((15 * bar + 2 * b) * SR), int(16 * bar * SR)
+    mix[a:z] = _tape_stop(mix[a:z])
+    return dry_finish(mix, nbar * bar, sub_cut=-3)
+
+
+def fx_snap():
+    return _fx_core("snap"), "808・演出（指パッチン）", \
+        "『808・演出つき』の2・4拍の手拍子を、指パッチンに差し替えた。ハイハットと長い808はそのまま。"
+
+
+def fx_rim():
+    return _fx_core("rim"), "808・演出（リム）", \
+        "2・4拍を、乾いたリムショット（ふちを打つ音）に差し替えた。"
+
+
+def fx_wood():
+    return _fx_core("wood"), "808・演出（ウッドブロック）", \
+        "2・4拍を、コッという軽いウッドブロックに差し替えた。"
+
+
+def fx_piano():
+    return _fx_core("snap", piano=True), "808・演出（ピアノ入り）", \
+        "指パッチン版に、ピアノの和音（Cmaj7→Am7→Fmaj7→G）と、2小節に1度の短い3音を足した。"
+
+
+def fx_more():
+    return _fx_core("snap", piano=True, extra=True), "808・演出もり（ピアノ入り）", \
+        "ピアノ入りに、演出を足した: 4小節ごとにだんだん速くなるハイハットの詰め、12小節目でドラムを抜くブレイク"\
+        "（音がこもって雑音が上がり、13小節目で一気に開く）、15小節目の最後でざらつく音、最後はテープが止まる。"
+
+
+ALL = ["fx_snap", "fx_rim", "fx_wood", "fx_piano", "fx_more", "trap808_fx", "trap808_filter", "trap808_lofi", "trap808_drill", "trap808_hyper", "club808", "trap_808_long", "modern_setsuna", "modern_jazz", "backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
 
 
 def main():
