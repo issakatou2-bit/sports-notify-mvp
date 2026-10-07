@@ -18,6 +18,9 @@ def main():
     args = ap.parse_args()
     material = "scripts/fixtures/comment/" + ("local_reporters-preview.json" if args.mode == "press" else "local_voices-preview.json")
     d = json.loads(Path(material).read_text(encoding="utf-8"))
+    if args.mode == "voices":
+        import local_voices  # 本番の load と同じ決まり（言い換えの重複を落とす）を通す
+        d["voices"] = local_voices.drop_near_duplicates(d.get("voices") or [])
     edition = date.fromisoformat(d["updated_at"][:10])
     argv = ["generate_morning_short", "--mode", args.mode, "--recap", "scripts/fixtures/bignumber/empty.json",
             "--voices", material if args.mode == "voices" else "scripts/fixtures/bignumber/empty.json",
