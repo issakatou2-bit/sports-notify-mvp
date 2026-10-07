@@ -261,7 +261,7 @@ def story(row: dict, games: list, tot: dict, kana_table: dict, jp: dict,
         "intro": f"{row.get('round_jp') or rnd}、{win['name']}が{win['wins']}勝{lose['wins']}敗で{lose['name']}を破りました。"
                  f"{lose['name']}に何が起きたのか、公式の数字で見ます。",
         "intro_as_is": True,
-        "style": "v2",
+        "style": "v3",
         "team_id": lose["id"],
         "abbr": __import__("notability_engine").MLB_TEAM_ABBR.get(str(lose["id"]), ""),
         "title": (f"【MLB】{head}｜{tail}"

@@ -61,8 +61,9 @@ def colors(team_id):
     """地の色（暗くして文字を読めるように）・2色目・札の色。"""
     import notability_engine as ne
     base = _hex(ne.MLB_TEAM_COLOR.get(str(team_id)) or "#183b35")
-    while _lum(base) > 0.16:
-        base = _mix(base, (0, 0, 0), 0.25)
+    # 明るさだけでなく、色の強さ（赤など）も抑える。地が派手だと文字が読みにくい
+    while _lum(base) > 0.16 or max(base) > 120:
+        base = _mix(base, (0, 0, 0), 0.2)
     second = _hex(TEAM_SECONDARY_COLORS.get(str(team_id)) or "#c4ced4")
     if _lum(second) < 0.35:
         second = _mix(second, (255, 255, 255), 0.55)

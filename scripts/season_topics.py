@@ -231,7 +231,7 @@ def team_topic(tid: int, info: dict, ending: str, kana_table: dict,
         "heading": f"{name}　{SEASON}年のまとめ",
         "intro": f"{name}の{SEASON}年シーズンを、MLB公式の数字で振り返ります。",
         "intro_as_is": True,
-        "style": "v2",
+        "style": "v3",
         "title": (f"【MLB】{names}の{name}｜{SEASON}年シーズンまとめ #Shorts"
                   if names else
                   f"【MLB】{name}｜{SEASON}年シーズンまとめ　{info['w']}勝"
@@ -369,7 +369,7 @@ def player_topic(name_en: str, name_jp: str, team_name: str, ending: str,
                  f"防御率{season.get('era')}" if pitcher else
                  f"打率{season.get('avg')}　{season.get('homeRuns')}本塁打"),
         "intro_as_is": True,
-        "style": "v2",
+        "style": "v3",
         "heading": f"{name_jp}　{SEASON}年のまとめ",
         "intro": f"{team_name}の{name_jp}。{moved}{SEASON}年シーズンを、"
                  f"MLB公式の数字で振り返ります。",
@@ -466,7 +466,7 @@ def league_topics(ps: dict, kana_table: dict, jp: dict) -> list:
                 "intro": f"{SEASON}年レギュラーシーズン、{lname}の{kind}部門で"
                          f"1位になった選手です。MLB公式の数字で見ます。",
                 "intro_as_is": True,
-        "style": "v2",
+        "style": "v3",
                 "title": (f"【MLB】{'・'.join(jps[:2]) + 'も' if jps else ''}"
                           f"{lname} {kind}部門の1位｜{SEASON}年シーズンまとめ #Shorts"),
                 "items": items,

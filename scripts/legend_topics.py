@@ -27,6 +27,10 @@
 import argparse
 import json
 import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+from notability_engine import MLB_TEAM_ABBR  # noqa: E402
 
 MIN_PLAYERS = 1     # 1人でも出す。その1人の通算成績で1本ぶんになる
 MAX_PLAYERS = 4     # 画面に並ぶ上限（generate_asset_video の描画に合わせる）
@@ -63,6 +67,11 @@ def build(legends: dict) -> list:
             "intro": "%s でプレーし、アメリカ野球殿堂に選ばれた選手を、"
                      "通算成績で見ます。" % name,
             "items": items,
+            # 新デザイン（電光掲示板、10/7〜）。球団色と略称で描く
+            "style": "v3",
+            "kind_label": "殿堂入り",
+            "team_id": int(team_id),
+            "abbr": MLB_TEAM_ABBR.get(str(team_id), ""),
         })
     out.sort(key=lambda t: t["key"])
     return out

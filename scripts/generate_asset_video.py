@@ -1648,7 +1648,7 @@ def render_v2(p, kind, meta, spec, topic):
 def render_v3(t, kind, meta, spec, topic):
     """新デザイン「電光掲示板」（review_render_v3）。材料の style="v3" のときだけ。"""
     import review_render_v3 as r3
-    tag = "PSの話題" if spec.get("story") else "シーズンまとめ"
+    tag = spec.get("kind_label") or ("PSの話題" if spec.get("story") else "シーズンまとめ")
     if kind == "intro":
         return r3.intro(t, spec, tag)
     if kind == "people":
