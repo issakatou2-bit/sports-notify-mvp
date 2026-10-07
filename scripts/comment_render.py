@@ -164,8 +164,7 @@ def clamp(x):
     return max(0.0, min(1.0, x))
 
 
-def ease_out(x):
-    return r3.ease_out(x)
+ease_out = r3.ease_out
 
 
 def _mix(a, b, k):
