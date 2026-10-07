@@ -19,6 +19,7 @@ permissions:
 env:
   # v2 / hold / legacy. Old producer is retained; failed v2 never falls back.
   PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}
+  COLLESPO_PS_DESIGN: ${{ vars.COLLESPO_PS_DESIGN || 'legacy' }}
 
 # deploy_site.yml と同じグループにしておく。両方が同時にPagesへ出すと、
 # 後から終わった方が相手の成果物で上書きしてしまう。
