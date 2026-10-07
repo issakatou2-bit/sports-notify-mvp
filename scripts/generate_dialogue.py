@@ -143,6 +143,42 @@ def _create(client, **kw):
         cat = getattr(det, "category", None) if det else None
         raise SystemExit(f"[error] 台本の生成を断られました（{cat}）")
     return resp
+
+
+# 2026-10-07: 台本の呼び出しを Message Batches API（料金が半分）で出す。
+#
+# 長編は 15:10 ごろに作り始め、21:00 に予約公開。Batch はたいてい1時間以内、
+# 最長24時間で返る。**締め切り（COLLESPO_BATCH_DEADLINE、既定 17:30）までに
+# 返らなければ取り消して、いままでどおり _create で作る。**
+# プロンプト・モデル・effort・後ろの検査は変えない（同じ params を載せるだけ）。
+#
+#   COLLESPO_DIALOGUE_BATCH=off   で、いままでの呼び方に戻せる
+#   手で動かした回（workflow_dispatch）と手元のPCでは、待たずに今すぐ作る
+#   （既定の auto のとき。COLLESPO_DIALOGUE_BATCH=on ならどこでも Batch）
+#
+# 費用は token_log.record(..., batch=True) で半額として残す。
+# 中身は scripts/dialogue_batch.py（説明もそこに）。
+def _ask(client, stage, **kw):
+    """台本の呼び出し1回。Batch か、だめならいまの _create。費用もここで残す。"""
+    import dialogue_batch
+    return dialogue_batch.run(
+        client, stage, kw, model=MODEL, effort=EFFORT,
+        direct=lambda: _create(client, **kw),
+        record=lambda r, batch: token_log.record("dialogue", MODEL, r,
+                                                 batch=batch),
+        after_submit=(_commit_batch_state
+                      if os.environ.get("COLLESPO_BATCH_COMMIT") == "1"
+                      else None))
+
+
+def _commit_batch_state(path):
+    """出した直後に状態ファイルを押す。ジョブをやり直したとき、
+    同じ依頼を二重に出さずに続きから待てるように。"""
+    import subprocess
+    subprocess.run(["bash", str(HERE / "commit_data.sh"),
+                    "台本の Batch を出した", str(path)], check=False)
+
+
 MLB_API = "https://statsapi.mlb.com/api/v1"
 
 # 話者ID(VOICEVOX)。
@@ -1895,11 +1931,10 @@ def main() -> int:
 
         client = anthropic.Anthropic(api_key=key)
         ask = prompt.format(facts=body, menu=panel_menu(ps))
-        resp = _create(
-            client, max_tokens=16000,
+        resp = _ask(
+            client, "draft", max_tokens=16000,
             messages=[{"role": "user", "content": ask}],
         )
-        token_log.record("dialogue", MODEL, resp)
         text = "".join(b.text for b in resp.content if b.type == "text")
         raw = pathlib.Path(args.out).with_suffix(".model-1.txt")
         raw.parent.mkdir(parents=True, exist_ok=True)
@@ -1919,8 +1954,8 @@ def main() -> int:
                       {s.get("panel") for s in segs if s.get("panel")}]
             print(f"\n[info] {chars}字で短いので、書き足してもらいます"
                   f"（未使用の材料 {len(unused)}件）")
-            more = _create(
-                client, max_tokens=16000,
+            more = _ask(
+                client, "more", max_tokens=16000,
                 messages=[
                     {"role": "user", "content": ask},
                     {"role": "assistant", "content": text},
@@ -1940,7 +1975,6 @@ def main() -> int:
                         "台本だけを出力してください。")},
                 ],
             )
-            token_log.record("dialogue", MODEL, more)
             text2 = "".join(b.text for b in more.content if b.type == "text")
             pathlib.Path(args.out).with_suffix(".model-2.txt").write_text(text2, encoding="utf-8")
             segs2 = parse(text2, keys=set(ps))

@@ -65,6 +65,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # 15:10開始から17:30のBatch締切＋制作・検査の時間を確保。
+    timeout-minutes: 180
     # 前の枠が落ちた日は、材料が揃っていない可能性がある。
     # ただし長編は材料を取り直すので、落ちていても作れることはある。
     # 「成功したときだけ」にしておく。取りこぼしは watchdog が拾う。
@@ -146,6 +148,9 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           REVIEWED_SCRIPT: ${{ inputs.reviewed_script }}
+          COLLESPO_DIALOGUE_BATCH: ${{ vars.COLLESPO_DIALOGUE_BATCH || 'auto' }}
+          COLLESPO_BATCH_DEADLINE: '17:30'
+          COLLESPO_BATCH_COMMIT: '1'
         run: |
           mkdir -p build/lf
           ARGS=()
@@ -268,7 +273,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "longform: ${{ github.run_id }}" \
-            data/published_videos.json data/token_usage.json data/transactions.json
+            data/published_videos.json data/token_usage.json data/transactions.json data/dialogue_batch.json
 
       - name: Say what happened
         if: always()
