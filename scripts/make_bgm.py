@@ -491,7 +491,164 @@ def futurepop():
         "100 BPM・ハ長調。キックに合わせて沈むシンセの和音（Fmaj7→G6→Em7→Am9）、軽いスネアと手拍子、後半だけ短いはじく音の合いの手。明るく今っぽい。"
 
 
-ALL = ["chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
+# ------------------------------------------------------------------ 乾いた・軽い（10/7夕）
+# 本人「質は下げないで、でも音の響きが広すぎる。もっと軽くていい。エコーなし。
+#   電子音か、メロディなしの伴奏だけ。ハイハットのトラップ（ﾁﾁﾁﾁﾀﾁﾁﾁﾁﾁﾁﾁﾀﾁﾁﾁ）のドラムだけも」。
+# 共通: 残響なし・左右の広がりは小さく・音数を減らす。
+
+def dry_finish(mix, loop_len, sub_cut=-6):
+    """残響をかけずに仕上げる（継ぎ目は尻尾を頭に重ねるだけ）。"""
+    x = mix.copy()
+    for c in range(2):
+        x[:, c] = sosfilt(butter(2, 30, "highpass", fs=SR, output="sos"), x[:, c])
+    x = gs.shelf(x, 70, sub_cut, "low")
+    x = voice_room(x, 0.25)
+    mid = x.mean(axis=1, keepdims=True)
+    x = mid + (x - mid) * 0.6                               # 左右の広がりを狭く
+    L = int(loop_len * SR)
+    out = x[:L].copy()
+    tail = x[L:]
+    out[:len(tail)] += tail[:L]
+    out = out / (np.sqrt((out ** 2).mean()) + 1e-9) * 10 ** (-14 / 20)
+    pk = np.max(np.abs(out))
+    if pk > 0.9:
+        out = np.tanh(out / pk * 1.4) / np.tanh(1.4) * 0.9
+    return out
+
+
+def _hat16(mix, t0, b, bars_i, roll=True, vel=(0.55, 0.35), g=0.16):
+    """16分のハイハット。2小節に1度、最後の拍を32分で詰める（チキチキ）。"""
+    s16 = b / 4
+    for q in range(16):
+        if roll and bars_i % 2 == 1 and q >= 12:
+            for r in range(2):
+                gs.put(mix, ml.hat(False, 0.45), t0 + (q + r * 0.5) * s16, g * 0.8, 0.1)
+            continue
+        if q in (4, 12):
+            continue                                           # 「タ」の所はハイハットを抜く
+        gs.put(mix, ml.hat(False, vel[0] if q % 2 == 0 else vel[1]), t0 + q * s16, g, 0.1)
+
+
+def trap_hats():
+    """ﾁﾁﾁﾁﾀﾁﾁﾁﾁﾁﾁﾁﾀﾁﾁﾁ：ハイハットと手拍子と軽いキックだけ。音程のある楽器なし。"""
+    bpm, nbar = 96, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 2) * SR)
+    mix = np.zeros((n, 2))
+    for bi in range(nbar):
+        t0 = bi * bar
+        _hat16(mix, t0, b, bi)
+        for q in (1, 3):                                       # 「タ」＝2拍目と4拍目
+            gs.put(mix, ml.clap(), t0 + q * b, 0.22)
+        for st in (0, 2.5 if bi % 2 == 0 else 2.25):
+            gs.put(mix, ml.kick(0.25) * 0.7, t0 + st * b, 0.2)
+    return dry_finish(mix, nbar * bar), "トラップ・ハイハット", \
+        "96 BPM。ﾁﾁﾁﾁﾀﾁﾁﾁﾁﾁﾁﾁﾀﾁﾁﾁ の注文どおり、16分のハイハットに2拍目・4拍目の手拍子、軽いキックだけ。2小節に1度、最後の拍を細かく詰める。音程のある楽器なし・残響なし。"
+
+
+def trap_808():
+    """トラップ・ハイハットに、808の低音（すべる）を足す。旋律なし。"""
+    bpm, nbar = 96, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 2) * SR)
+    mix = np.zeros((n, 2))
+    roots = [36, 33, 29, 31]                                   # C → A → F → G（長調の流れ）
+    notes, times = [], []
+    for bi in range(nbar):
+        t0 = bi * bar
+        _hat16(mix, t0, b, bi)
+        for q in (1, 3):
+            gs.put(mix, ml.clap(), t0 + q * b, 0.2)
+        r = roots[bi % 4]
+        for st, off in ((0, 0), (1.75, 0), (2.5, 7 if bi % 2 else 0)):
+            notes.append(r + 12 + off)
+            times.append(t0 + st * b)
+            gs.put(mix, ml.kick(0.2) * 0.6, t0 + st * b, 0.18)
+    bass = ml.k808(notes, times, n, decay=0.45, drive=1.6, glide=0.05)
+    bass = sosfilt(butter(2, 70, "highpass", fs=SR, output="sos"), bass)
+    gs.put(mix, bass, 0, 0.10)
+    return dry_finish(mix, nbar * bar, sub_cut=-4), "トラップ808", \
+        "96 BPM。トラップ・ハイハットに、すべる808の低音（C→A→F→G）を足した。旋律なし・残響なし。"
+
+
+def _pulse(note, dur, v=0.5, width=0.25):
+    """やわらかい矩形波（電子音）。"""
+    n = int((dur + 0.02) * SR)
+    t = np.arange(n) / SR
+    f = 440 * 2 ** ((note - 69) / 12)
+    x = np.where((f * t) % 1 < width, 1.0, -1.0)
+    x = sosfilt(butter(2, 2600, "lowpass", fs=SR, output="sos"), x)
+    env = np.minimum(t / 0.004, 1) * np.exp(-t / max(dur * 0.6, 0.05))
+    return x * env * v
+
+
+def dry_electro():
+    """ドライ・エレクトロ：短い電子音の和音と、ぽこぽこした低音、乾いたドラム。"""
+    bpm, nbar = 112, 16
+    b = 60 / bpm
+    bar = 4 * b
+    s16 = b / 4
+    n = int((nbar * bar + 2) * SR)
+    mix = np.zeros((n, 2))
+    # C → Am → F → G（ハ長調）、和音は短く切る
+    prog = [(36, [60, 64, 67]), (33, [57, 60, 64]), (29, [57, 60, 65]), (31, [59, 62, 67])]
+    stab = [2, 6, 10, 11, 14]
+    for bi in range(nbar):
+        root, ch = prog[bi % 4]
+        t0 = bi * bar
+        for st in stab:
+            for m in ch:
+                gs.put(mix, _pulse(m, s16 * 0.8, .35), t0 + st * s16, 0.12)
+        for st, off in ((0, 0), (3, 12), (8, 0), (11, 12), (14, 7)):
+            gs.put(mix, _pulse(root + 12 + off, s16 * 1.2, .6, 0.5), t0 + st * s16, 0.22)
+        if bi >= 8 and bi % 2 == 1:                            # 後半だけ、2小節に1度の短い電子音
+            for k, m in enumerate((ch[-1] + 12, ch[-2] + 12, ch[-1] + 12, ch[0] + 12)):
+                gs.put(mix, _pulse(m, s16 * 0.9, .4, 0.125), t0 + (8 + k * 2) * s16, 0.08)
+        for q in range(4):
+            gs.put(mix, ml.kick(0.2) * 0.6, t0 + q * b, 0.22)
+            gs.put(mix, ml.hat(False, 0.5), t0 + q * b + b / 2, 0.12)
+        for q in (1, 3):
+            gs.put(mix, ml.clap(), t0 + q * b, 0.12)
+    return dry_finish(mix, nbar * bar), "ドライ・エレクトロ", \
+        "112 BPM・ハ長調。短く切った電子音（矩形波）の和音の刻み、ぽこぽこ跳ねる低音、乾いたドラム。後半だけ2小節に1度、短い電子音の合いの手。残響なし。"
+
+
+def dry_backing():
+    """伴奏だけ：エレピの和音の刻みとベースと軽いドラム。旋律なし・残響なし。"""
+    bpm, nbar = 104, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 2) * SR)
+    mix = np.zeros((n, 2))
+    # Fmaj7 → Em7 → Dm7 → Cmaj7（ハ長調、下がっていく）
+    prog = [(41, [57, 60, 64]), (40, [55, 59, 62]), (38, [53, 57, 60]), (36, [55, 59, 64])]
+    for bi in range(nbar):
+        root, ch = prog[bi % 4]
+        t0 = bi * bar
+        for st in (0.5, 1.5, 2.5, 3.5):
+            gs.put(mix, ep_chord(ch, b * 0.3, .5), t0 + st * b, 0.32)
+    ev = []
+    for bi in range(nbar):
+        root = prog[bi % 4][0]
+        for st, d in ((0, 0.9), (1.5, 0.4), (2, 0.9), (3.5, 0.4)):
+            ev.append((int((bi * bar + st * b) * SR), int(d * b * SR), root, 0.55, 0, 0))
+    bass = sosfilt(butter(2, 800, "lowpass", fs=SR, output="sos"), Bass(SR).render(ev, n))
+    gs.put(mix, bass, 0, 0.3)
+    for bi in range(nbar):
+        t0 = bi * bar
+        for st in (0, 2.5):
+            gs.put(mix, ml.kick(0.22) * 0.6, t0 + st * b, 0.24)
+        for q in (1, 3):
+            gs.put(mix, ml.clap(), t0 + q * b, 0.09)
+        for q in range(8):
+            gs.put(mix, ml.hat(False, 0.45 if q % 2 == 0 else 0.3), t0 + q * b / 2, 0.08)
+    return dry_finish(mix, nbar * bar), "伴奏だけ", \
+        "104 BPM・ハ長調。エレピの和音の裏打ち（Fmaj7→Em7→Dm7→Cmaj7）、ベース、軽いドラムだけ。旋律なし・残響なし。"
+
+
+ALL = ["trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
 
 
 def main():
