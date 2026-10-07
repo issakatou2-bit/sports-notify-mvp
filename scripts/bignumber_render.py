@@ -138,7 +138,7 @@ WATERMARK_XY = (-80, 600)
 # 大きな数字に選ぶもの（材料の行の中の「数字＋単位」）。上から見て、最小値以上の最初のもの。
 # 二桁奪三振は morning_recap の名前のある記録と同じ線（10）。それより少ない日は投球回。
 PICK = {
-    "batter": (("本塁打", 1), ("打点", 1), ("安打", 1), ("四球", 1), ("死球", 1), ("安打", 0)),
+    "batter": (("本塁打", 1), ("打点", 1), ("安打", 1), ("四球", 1), ("死球", 1)),
     "pitcher": (("奪三振", 10), ("回", 0)),
 }
 # カウントアップしない単位（数えると意味が変わる。motion.DENY_UNITS と同じ考え方）
@@ -171,7 +171,7 @@ def pick_big(text, kind="batter"):
     rules = PICK.get(kind) or (PICK["batter"] + PICK["pitcher"])
     for unit, least in rules:
         for m in re.finditer(r"(?<![\d.])(\d+(?:\.\d+)?)" + re.escape(unit), text):
-            if float(m.group(1)) >= least:
+            if float(m.group(1)) > 0 and float(m.group(1)) >= least:
                 return m.group(1), unit
     return "", ""
 
@@ -846,7 +846,7 @@ def _mr():
 WHO = {"四国めたん": "metan", "ずんだもん": "zundamon"}
 
 
-def _player_scene(p, say, tag=""):
+def _player_scene(p, say, tag="", rank=None):
     """1人の成績の場面。大きな数字は成績の行（headline）から切り出す。"""
     head = str(p.get("headline") or "")
     big, unit = pick_big(head, p.get("type"))
@@ -857,7 +857,10 @@ def _player_scene(p, say, tag=""):
     sc = {"layout": "block", "big": big, "unit": unit, "tag": tag, "head": p.get("name", ""),
           "head2": p.get("team_jp", ""), "sub": head, "notes": notes, "chips": chips,
           "team_id": p.get("team_id"), "say": say}
-    if not big:
+    if not big and rank is not None:
+        sc.update(layout="plain", big=str(rank), unit="位", anim="stamp",
+                  tag="勝利貢献順位", ranking_name=p.get("name", ""))
+    elif not big:
         sc.update(layout="cards", big="", unit="", sub="",
                   cards=[{"title": p.get("team_jp", ""), "body": head}])
     return sc
@@ -882,7 +885,7 @@ def _intro_scenes(seg, players, day):
         rare = gms.rare_lines(top, limit=2) if (mr.quiet_day(players) or len(players) <= 2) else []
         for line in rare:
             say += "%s。" % line
-        sc = _player_scene(top, say)
+        sc = _player_scene(top, say, rank=1)
         if walked:
             m = re.search(r"(\d+)度出塁", walked)
             if m:
@@ -917,13 +920,13 @@ def _list_scenes(seg, players, top_name):
             say = (f"{rank}位、{p['name']}、{gms.yomi_stats(p['headline'])}。"
                    + (f"{'に'.join(named)}。" if named else "")
                    + (f"{p['clutch_label']}。" if p.get("clutch_label") else ""))
-            out.append(_player_scene(p, say, tag=f"{rank}位"))
+            out.append(_player_scene(p, say, tag=f"{rank}位", rank=rank))
         else:
             skipped.append((rank, p))
     if not out and chunk:
         p = chunk[0]
         out.append(_player_scene(p, f"{start + 1}位、{p['name']}、{gms.yomi_stats(p['headline'])}。",
-                                 tag=f"{start + 1}位"))
+                                 tag=f"{start + 1}位", rank=start + 1))
         skipped = [x for x in skipped if x[1] is not p]
     if skipped:
         said = [gms._surname_only(p.get("name", "")) for _, p in skipped if p.get("name")]
@@ -1059,7 +1062,7 @@ def _attach_bookend(scenes, text):
     scenes[-1]["say"] = scenes[-1]["say"] + text[at + len(joined):]
 
 
-def check_scenes(scenes, narration):
+def check_scenes(scenes, narration, data=None):
     """場面と読み上げが1対1に対応しているか。問題の一覧（空なら良し）。
 
     - 1つの画面の場面の say をつなぐと、その画面の読み上げと同じ
@@ -1074,6 +1077,15 @@ def check_scenes(scenes, narration):
             out.append(f"{i + 1}枚目（{seg.get('kind')}）: 場面と読み上げがずれています")
     for s in scenes:
         if s.get("big"):
+            if float(s["big"]) == 0:
+                out.append("大きな数字に0を選んでいます")
+            if s.get("ranking_name"):
+                players = gms.sort_players((data or {}).get("players") or [])
+                rank = next((i + 1 for i, p in enumerate(players)
+                             if p.get("name") == s["ranking_name"]), None)
+                if (s["big"], s.get("unit"), s.get("tag")) != (str(rank), "位", "勝利貢献順位"):
+                    out.append("大きな順位が当日の勝利貢献順と合いません")
+                continue
             said = gms.yomi_stats(f"{s.get('pre') or ''}{s['big']}{s.get('unit') or ''}")
             if said not in s.get("say", ""):
                 out.append(f"「{s['big']}{s.get('unit') or ''}」が読み上げ（{s.get('say')}）にありません")
@@ -1111,7 +1123,7 @@ def main(argv=None):
                                            "players")
     finally:
         os.chdir(here)
-    problems = check_scenes(scenes, narration)
+    problems = check_scenes(scenes, narration, data=data)
     plan = timeline(scenes, estimate_durations(narration))
     for i, s in enumerate(plan):
         im = scene(min(args.at, s["dur"] - T_OUT - 0.05), s)

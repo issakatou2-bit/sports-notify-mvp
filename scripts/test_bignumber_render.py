@@ -79,8 +79,11 @@ class PickBig(unittest.TestCase):
         self.assertEqual(bn.pick_big("4打数1安打", "batter"), ("1", "安打"))
         self.assertEqual(bn.pick_big("7打数2安打　2四球", "batter"), ("2", "安打"))
 
-    def test_no_hit_is_zero_not_invented(self):
-        self.assertEqual(bn.pick_big("4打数0安打", "batter"), ("0", "安打"))
+    def test_zero_is_not_the_featured_number(self):
+        self.assertEqual(bn.pick_big("4打数0安打", "batter"), ("", ""))
+        self.assertEqual(bn.pick_big("4打数0安打　2四球", "batter"), ("2", "四球"))
+        self.assertEqual(bn.pick_big("0.0回　0奪三振", "pitcher"), ("", ""))
+        self.assertEqual(bn.pick_big("0.1回　0奪三振", "pitcher"), ("0.1", "回"))
 
     def test_pitcher(self):
         self.assertEqual(bn.pick_big("1.1回　0奪三振　自責0　1被安打　ホールド", "pitcher"), ("1.1", "回"))
@@ -90,6 +93,25 @@ class PickBig(unittest.TestCase):
     def test_hits_allowed_is_not_hits(self):
         # 投手の「被安打」を打者の「安打」と取り違えない
         self.assertEqual(bn.pick_big("1被安打", "batter"), ("", ""))
+
+    def test_nonzero_alternative_and_rank_keep_the_zero_stat(self):
+        p = {"name": "検査選手", "headline": "4打数0安打", "type": "batter"}
+        sc = bn._player_scene(p, "4打数0安打。", rank=1)
+        sc["segment"] = 0
+        nar = {"segments": [{"text": sc["say"]}]}
+        self.assertEqual((sc["big"], sc["unit"], sc["tag"]), ("1", "位", "勝利貢献順位"))
+        self.assertIn("0安打", sc["sub"])
+        self.assertEqual(bn.check_scenes([sc], nar, {"players": [p]}), [])
+        self.assertNotEqual(bn.check_scenes([sc], nar), [])
+        sc["big"] = "2"
+        self.assertNotEqual(bn.check_scenes([sc], nar, {"players": [p]}), [])
+        p["headline"] += "　2四球"
+        sc = bn._player_scene(p, "4打数0安打、2四球。", rank=1)
+        self.assertEqual((sc["big"], sc["unit"]), ("2", "四球"))
+
+    def test_validation_rejects_featured_zero(self):
+        nar = {"segments": [{"text": "0安打。"}]}
+        self.assertTrue(bn.check_scenes([{"segment": 0, "big": "0", "unit": "安打", "say": "0安打。"}], nar))
 
     def test_big_is_in_the_line(self):
         for line in ("4打数3安打　2本塁打　3打点", "1.1回　0奪三振　自責0", "3打数1安打　1四球"):
@@ -147,9 +169,9 @@ class Morning(unittest.TestCase):
         self.assertGreaterEqual(len(self.built), 3)
 
     def test_one_to_one_with_narration(self):
-        for name, (_, _, narration, scenes) in self.built.items():
+        for name, (data, _, narration, scenes) in self.built.items():
             with self.subTest(name):
-                self.assertEqual(bn.check_scenes(scenes, narration), [])
+                self.assertEqual(bn.check_scenes(scenes, narration, data=data), [])
                 segs = sorted({s["segment"] for s in scenes})
                 self.assertEqual(segs, list(range(len(narration["segments"]))))   # どの画面にも場面がある
                 # 場面の順番は読み上げの順番
