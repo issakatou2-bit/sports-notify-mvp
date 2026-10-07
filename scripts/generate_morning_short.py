@@ -4126,7 +4126,7 @@ def bignumber_scenes(data, narration, mode):
     import bignumber_render as bn
     try:
         scenes = bn.scenes_from_morning(data, narration)
-        problems = bn.check_scenes(scenes, narration)
+        problems = bn.check_scenes(scenes, narration, data=data)
         if not scenes:
             problems.append("場面がありません")
     except Exception as e:  # noqa: BLE001
