@@ -166,7 +166,8 @@ def render_segment(seg,layers=False):
     return render(card,presenters=side,style=card.get('visual_style','stadium'),layers=layers)
 
 
-def forecast(ctx, games, rows, now, target_day=None):
+def forecast(ctx, games, rows, now, target_day=None, modern=None):
+    modern = os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3' if modern is None else modern
     target = target_day or (now.astimezone(JST).date() + timedelta(days=1)).isoformat()
     target_date = datetime.fromisoformat(target).date()
     # An unknown US start can fall on either this Japanese date or the previous
@@ -250,6 +251,12 @@ def forecast(ctx, games, rows, now, target_day=None):
             headline=f"{chosen[lead_side+'_players'][0]}の{lead_name}\n明日{date_label} {round_label}"
             cover['headline']=headline
         pages.append(segment(cover, text, [c['game_id'] for c in group], 3))
+        if modern:
+            cover['headline']='明日の全試合の一覧'
+            for item,c in zip(cover['items'],group):
+                item.update(home_wins=c['home_wins'],away_wins=c['away_wins'])
+            pages[-1]['text']=f'日本時間{target_date.month}月{target_date.day}日の全試合です。'+''.join(
+                f'{spoken_clock(c["when"])}、{c["home"]}対{c["away"]}。{c["home"]}{c["home_wins"]}勝、{c["away"]}{c["away_wins"]}勝。' for c in group)
     # **カードは日本人選手のいる試合から**（表紙の日程表は時刻順のまま）。
     # 10/3 本人「明日の注目試合は特に、日本人選手や、日本人選手の所属する
     # 球団に注目しましょう」。同じ組の中は時刻順。
@@ -352,7 +359,9 @@ def situation_program(ctx, rows, before):
         if prior and {t['id']: t['wins'] for t in row['teams']} != {t['id']: t['wins'] for t in prior['teams']}:
             changed.add(row['key'])  # Same game count does not hide a corrected winner.
     selected = [r for r in rows if len(r.get('teams', [])) == 2 and r['key'] in changed]
-    if not before:
+    if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
+        selected=[r for r in rows if len(r.get('teams',[]))==2 and (not r['over'] or r['key'] in changed)]
+    if not before and os.getenv('COLLESPO_PS_DESIGN','legacy')!='v3':
         selected = [r for r in selected if r['played']]
     if not selected:
         return None
@@ -465,6 +474,13 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
     program['segments'][0]['text'] = 'コレスポ。' + program['segments'][0]['text']
     program['segments'][-1]['text'] += 'コレスポ。'
     edition = content_key(program)
+    if slot=='forecast' and before and os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
+        old_program=forecast(ctx,games,rows,now,modern=False)
+        if old_program:
+            old_program['segments'][0]['text']='コレスポ。'+old_program['segments'][0]['text']
+            old_program['segments'][-1]['text']+='コレスポ。'
+            if before.get('program_edition')==content_key(old_program):
+                return None
     if before.get('program_edition') == edition:
         return None
     program.update(version=VERSION, kind=kind, date_jst=ctx['date_jst'], source_url=ctx['source_url'],
@@ -517,6 +533,9 @@ def check_program(program):
     manifests = []
     for s in program['segments']:
         _, manifest = render_segment(s)
+        if styles=={'v3'}:
+            import ps_unified_v3 as unified
+            manifest['safe_pages']=unified.check_layout(s['meta']['card'])
         manifest['speaker']=s['speaker']
         manifests.append(manifest)
     return dict(version=VERSION, edition_key=program['edition_key'], material_sha256=program['material_sha256'],
@@ -581,7 +600,12 @@ def movie(program, audio_dir, out):
             plan=focus_plan(seg)
             speech=float(audio[i]['duration']) or duration
             for n in range(round(duration * 30)):
-                frame=(unified.frame(n/30,seg['meta']['card'],focus_card,cover=i==0,duration=duration,ticker_line='') if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
+                display_card=seg['meta']['card']
+                display_time=n/30
+                if v3 and i==len(program['segments'])-1 and n/30>=max(0,speech-.6) and callable(getattr(unified.r3,'outro',None)):
+                    display_card=dict(display_card,outro=True)
+                    display_time-=max(0,speech-.6)
+                frame=(unified.frame(display_time,display_card,focus_card,cover=i==0,duration=duration,ticker_line='') if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
                                    style=seg['meta']['card'].get('visual_style','stadium'),
                                    team_id=background_team(seg['meta']['card'])))
                 raw=(unified.transition(previous_frame,frame,n,round(vc.FADE_SECONDS*30),program_frame/30,ticker_line) if v3

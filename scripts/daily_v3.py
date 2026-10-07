@@ -28,6 +28,11 @@ def prepare(data, narration, mode):
 
 
 def frame(t, seg, design, duration):
+    if seg['kind']=='outro':
+        import v3_slot_render as common
+        closing=common.outro(t,{'heading':'コレスポ','v3':{},'text':seg['text']},'現地の報道' if design['mode']=='press' else '現地のコメント')
+        if closing is not None:
+            return closing
     if design["mode"] == "press":
         import press_v3
         return press_v3.frame(t, seg, design["reporters"], duration)
@@ -36,14 +41,15 @@ def frame(t, seg, design, duration):
     if seg["kind"] in {"voices", "thread"}:
         return cr.voices_screen(t, seg, vd, duration)
     if seg["kind"] == "intro":
-        import review_render_v3 as r3
-        from v3_slot_render import screen_text
         rows = vd.get("voices") or []
         index = (seg.get('meta') or {}).get('used_voice')
         chosen = rows[index] if type(index) is int and 0 <= index < len(rows) else {}
         match = cr.jp_matchup(chosen.get('matchup',''))
-        result = chosen.get('result') or chosen.get('score') or ''
-        return r3.intro(t, {"hook": screen_text(match or seg["text"]), "v3": {"who": screen_text(vd.get("source", "")), "tag": screen_text(result), "ticker": screen_text(cr.strip_for_voices(vd)), "source": screen_text('　'.join(cr._voices_source(vd)))}}, "現地のコメント")
+        voices=cr.voices_for_segment(seg,vd)
+        if not voices:
+            voices=[{'said':seg['text'],'who':'概要','fact':True}]
+        return cr.unified_comments(t,cr.reading_times(voices,seg['text'],duration),None,cr.strip_for_voices(vd),
+                                   live=match or '現地のファンの声',source_lines=cr._voices_source(vd))
     return cr.unified_comments(t, [{"said": seg["text"], "who": "コレスポ", "fact": True}],
                        None, "", title="コレスポ", live="",
                        source_lines=("音声：VOICEVOX:四国めたん",))
@@ -56,11 +62,12 @@ def mix(audio, segments, durations, design, out_dir):
         raise ValueError("案Dの音声を四国めたん（話者2）で作り直してください")
     cues, start = [], 0.0
     for seg, dur in zip(segments, durations):
+        speech = float(seg.get('duration') or dur)
         if design["mode"] == "press":
             import press_v3
-            local = press_v3.cues(seg, design["reporters"], dur)
+            local = press_v3.cues(seg, design["reporters"], speech)
         else:
-            local = (cr.voices_cues(seg, design["voices"], dur)
+            local = (cr.voices_cues(seg, design["voices"], speech)
                  if seg["kind"] in {"voices", "thread"}
                  else [(0.0, "transition", "a", -6)])
         cues.extend((start + at, kind, variant, db) for at, kind, variant, db in local)

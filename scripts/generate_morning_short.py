@@ -1343,7 +1343,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 if rb:
                     parts.append(f"{rb}。")
         segments.append({"kind": "thread", "text": "".join(parts),
-                         "meta": {"index": ti}})
+                         "meta": {"index": ti, "parent_read": bool(led)}})
 
     # 現地の声。ここだけは数字ではなく、翻訳を通した誰かの感想なので、
     # 読み上げでも「翻訳したもの」であることを先に断る。
@@ -1355,7 +1355,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         src = (data.get("voices") or {}).get("source", "")
         if want_local or want_press:
             parts = [f"ここからは現地の声です。{src}の投稿を"
-                     "翻訳したもので、コレスポの見解ではありません。"]
+                     "翻訳したものです。"]
         else:
             parts = ["コメント欄から。翻訳したものです。"]
         # どれだけ支持された言葉なのかを添える。同じ感想でも、
@@ -1421,8 +1421,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     reporters = ((data.get("reporters") or {}).get("posts") or []) \
         if want_press else []
     if reporters:
-        parts = ["現地の番記者の投稿です。翻訳したもので、"
-                 "コレスポの見解ではありません。"]
+        parts = ["現地の番記者の投稿です。翻訳したものです。"]
         # 文として終わるところまで取れた投稿だけを使う。
         # 途中で切って句点を足すと、意味の無い一文になる。
         usable = []
@@ -1454,7 +1453,12 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         "meta": {},
     })
     # 成績の回は、2人が交代で読む。
+    if mode in ('voices','press'):
+        import content_v3
+        segments=content_v3.quotes(segments,data,mode)
     if mode == "players":
+        import content_v3
+        segments = content_v3.players(segments,players,day)
         assign_pair(segments)
     elif mode == "postseason":
         # 進出争いも2人が出る回なので、同じ印を付ける。
@@ -3990,7 +3994,7 @@ def plan_durations(segs):
     その日によって変わるものがあり(スコアボードの回数など)、
     表の固定値では、短い日は無音が伸び、長い日は追いつかない。
     """
-    return [max(float(s.get("min_duration")
+    return [max(float(.5 if (s.get('meta') or {}).get('quote_rows') else s.get("min_duration")
                       or MIN_DURATION.get(s.get("kind") or "list", 5.0)),
                 float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
             for s in segs]
@@ -4456,7 +4460,8 @@ def main():
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
                 if daily_design:
-                    im = daily_v3.frame(k / FPS, narration["segments"][seg_i], daily_design, dur)
+                    speech = float(seg.get('duration') or dur)
+                    im = daily_v3.frame(k / FPS, narration["segments"][seg_i], daily_design, speech)
                     cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
                     proc.stdin.write(cached)
                     total += 1

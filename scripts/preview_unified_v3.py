@@ -45,26 +45,27 @@ def main():
     bn._no_network()
     data=read('scripts/fixtures/bignumber/morning_recap.json')
     data['players']=g.sort_players(data.get('players') or [])
-    with patch.object(g,'week_line',return_value=('',[])):
+    with patch.object(g,'week_line',return_value=('',[])),patch.dict(os.environ,{'COLLESPO_PLAYERS_DESIGN':'bignumber'}):
         nar=g.build_narration(data,'players')
     scenes=bn.scenes_from_morning(data,nar)
     errors=bn.check_scenes(scenes,nar,data)
     if errors:raise ValueError(errors)
-    chosen=[scenes[0],scenes[1],next((s for s in scenes if s.get('rank',0)>1 or any('位' in c.get('title','') for c in s.get('cards',[]))),scenes[-1])]
-    sheet([bn.scene(3,s) for s in chosen],['成績 表紙','人数','2位以下'],args.out/'design-v3-players.png')
+    chosen=scenes[:4]
+    sheet([bn.scene(3,s) for s in chosen],['成績 表紙','順位表','1位 詳細','2位以下'],args.out/'design-v3-players.png')
     report={'players': {'segments':len(nar['segments']),'checks':errors}}
     for mode, filename in [('voices','local_voices-preview.json'),('press','local_reporters-preview.json')]:
         material=read('scripts/fixtures/comment/'+filename)
         data={'players':[],mode if mode=='voices' else 'reporters':material,'date_jst':material['updated_at'][:10]}
-        nar=g.build_narration(data,mode);before=copy.deepcopy(nar)
         with patch.dict(os.environ,{'COLLESPO_COMMENTS_DESIGN':'comments','COLLESPO_PRESS_DESIGN':'v3'}):
+            nar=g.build_narration(data,mode);before=copy.deepcopy(nar)
             design=daily_v3.prepare(data,nar,mode)
         if [s['text'] for s in before['segments']] != [s['text'] for s in nar['segments']]:raise ValueError('台本変更')
         if mode=='voices':
-            thread=next(s for s in nar['segments'] if s['kind']=='thread')
-            segments=[nar['segments'][0],thread,thread];times=[3,3,15]
+            threads=[s for s in nar['segments'] if s['kind']=='thread' and any(v.get('read') and not v.get('fact') for v in s['meta'].get('quote_rows',[]))]
+            segments=[nar['segments'][0],threads[0],threads[-1]];times=[3,3,3]
         else:
-            segments=[nar['segments'][0],next(s for s in nar['segments'] if s['kind']=='headlines'),next(s for s in nar['segments'] if s['kind']=='reporters')];times=[3,7,15]
+            quotes=[s for s in nar['segments'] if any(v.get('read') and not v.get('fact') for v in s['meta'].get('quote_rows',[]))]
+            segments=[quotes[0],next(s for s in quotes if s['kind']=='headlines'),next(s for s in reversed(quotes) if s['kind']=='reporters')];times=[3,3,3]
         sheet([daily_v3.frame(t,s,design,20) for t,s in zip(times,segments)],
               [mode+' '+s['kind']+f' {t}秒' for t,s in zip(times,segments)],args.out/f'design-v3-{mode}.png')
         report[mode]={'segments':len(nar['segments']),'text_unchanged':True}
@@ -86,6 +87,11 @@ def ps_preview(out):
         frames.append(Image.frombytes('RGB',(1080,1920),unified.transition(previous,current,2,6,20.1,line)))
         labels.append(slot+' 切替0.1秒')
         report[slot]={'segments':len(program['segments']),'edition_key':program['edition_key'],'ticker':line}
+        if slot=='situation':
+            for seg in program['segments'][2:]:
+                frames.append(unified.frame(3,seg['meta']['card'],lead,ticker_line=line))
+                labels.append('情勢 '+seg['meta']['card']['headline'].replace('\n',''))
+            report[slot]['series_included']=[s['meta']['card']['headline'].replace('\n','') for s in program['segments']]
     sheet(frames,labels,out/'design-v3-ps.png')
     return report
 

@@ -29,6 +29,13 @@ def selected(seg, reporters):
 
 
 def bubbles(seg, reporters):
+    if 'quote_rows' in (seg.get('meta') or {}):
+        rows=seg['meta']['quote_rows']
+        allowed={body for _,body in selected({'kind':'reporters'},reporters)}
+        allowed.update(h.get('jp') or h.get('title','') for h in reporters.get('headlines',[]))
+        if any(not v.get('fact') and v['said'] not in allowed for v in rows):
+            raise ValueError('引用区間の報道が原材料にありません')
+        return rows
     result = []
     for row, body in selected(seg, reporters):
         if body not in seg["text"]:
@@ -54,18 +61,14 @@ def team_id(seg, reporters):
 
 
 def frame(t, seg, reporters, duration):
-    if seg["kind"] == "intro":
-        return r3.intro(t, {"v3": {"who": "現地の報道", "big": str(len(reporters.get("headlines") or [])),
-                                   "unit": "見出し", "tag": selected(seg, reporters)[0][1] if selected(seg, reporters) else seg["text"],
-                                   "source": '引用：'+ '・'.join(dict.fromkeys(row.get('source') or row.get('outlet') or '現地メディア' for row,_ in selected(seg,reporters)))+'（訳：コレスポ）'}}, "現地の報道")
-    rows = cr.timed(bubbles(seg, reporters), seg["text"], duration)
+    rows = cr.reading_times(bubbles(seg, reporters), seg["text"], duration)
     end = seg["kind"] == "outro"
     return cr.unified_comments(t, rows, team_id(seg, reporters), "", title="コレスポ" if end else "現地の報道",
                        live="" if end else "報道からの引用", backdrop=r3.background,
-                       source_lines=("音声：VOICEVOX:四国めたん",) if end else ("引用：各札の報道元（訳：コレスポ）",))
+                       source_lines=("音声：VOICEVOX:四国めたん",) if end else ("引用：各札の報道元（訳：コレスポ）","コレスポの見解ではありません"))
 
 
 def cues(seg, reporters, duration):
     if seg["kind"] == "intro":
         return r3.cues("intro", {"v3": {"big": str(len(reporters.get("headlines") or [])), "tag": seg["text"]}})
-    return cr.unified_cues(cr.timed(bubbles(seg, reporters), seg["text"], duration))
+    return cr.unified_cues(cr.reading_times(bubbles(seg, reporters), seg["text"], duration))

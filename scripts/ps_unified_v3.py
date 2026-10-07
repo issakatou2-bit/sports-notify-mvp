@@ -97,7 +97,7 @@ def spec(card, focus=None, ticker_line=None):
         if hour:
             clock = hour[1]+':'+hour[2] if hour[2] else hour[1]
             unit = '' if hour[2] else '時'
-    chips = [{'label': r['name'], 'score': str(r['wins'])+'勝', 'win': bool(r['wins'])} for r in board.get('rows', [])]
+    chips = [{'label': r['name'], 'score': str(r['wins'])+'勝'} for r in board.get('rows', [])]
     chips += [{'label': h, 'score': b} for h,b in rows(chosen) if '先発' in h][:2]
     return {'team_id': background_team(chosen), 'heading': card['headline'].replace('\n','　'),
             'page': f"{card['card_index']}/{card['card_total']}" if card.get('card_index') else None,
@@ -109,13 +109,33 @@ def spec(card, focus=None, ticker_line=None):
 
 def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
     view = spec(card, focus, ticker_line)
-    if card.get('card_index') is None or (cover and t < min(4, duration/3)):
+    if card.get('outro'):
+        view['text']='コレスポ。'
+        closing=common.outro(t,view,'コレスポ')
+        if closing is not None:
+            return closing
+    if card['layout']=='schedule':
+        return common.schedule(t,view,card['items'],'PS予告','出典：'+card.get('source_label','MLB公式日程'))
+    if card.get('card_index') is None and not card.get('outro'):
         im = r3.intro(t, view, card.get('label','PS'))
         r3.source(r3.ImageDraw.Draw(im), '出典：'+card.get('source_label','説明欄'), r3.colors(view['team_id'])[1])
         return im
-    if cover:
-        t -= min(4, duration/3)
-    return common.frame(t, view, rows(card), card.get('label','PS'), '出典：'+card.get('source_label','説明欄'))
+    page_rows=rows(card)
+    pages=common.paginate(view,page_rows)
+    return common.frame(t, view, page_rows, card.get('label','PS'), '出典：'+card.get('source_label','説明欄'),
+                        page_seconds=duration/max(1,len(pages)))
+
+
+def check_layout(card):
+    view=spec(card)
+    if card['layout']=='schedule':
+        if len(card['items'])>4:
+            raise ValueError('明日の全試合一覧が4試合を超えています')
+        return {'pages':1,'top':340,'bottom':340+len(card['items'])*180,'ticker_top':1486}
+    content=rows(card)
+    if common.check_pages(view,content):
+        raise ValueError('PSの札が見出し下/テロップ上の安全域を超えています')
+    return {'pages':len(common.paginate(view,content)),'boxes':[cell['box'] for p in common.paginate(view,content) for cell in p]}
 
 
 def transition(previous, image, index, fade_frames, elapsed, ticker_line):

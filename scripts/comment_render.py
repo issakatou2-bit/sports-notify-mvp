@@ -707,8 +707,8 @@ def unified_comments(t, voices, team_id, strip_text, title=TITLE, live=LIVE_COMM
     voices = list(voices or [])
     rows = [(common.screen_text(v.get('who','')), common.screen_text('「'+v.get('said','')+'」' if not v.get('fact') else v.get('said',''))) for v in voices]
     spec = {'team_id': team_id, 'heading': common.screen_text(live), 'page': page, 'v3': {'ticker': common.screen_text(strip_text)}}
-    return common.frame(t, spec, rows, common.screen_text(title), common.screen_text('　'.join(source_lines)), start_times(voices),
-                        [v.get('reply', False) for v in voices])
+    return common.frame(t, spec, rows, common.screen_text(title), common.screen_text('\n'.join(source_lines)), start_times(voices),
+                        [v.get('reply', False) for v in voices], ends=[v.get('end',v.get('at',0)+4) for v in voices])
 
 
 def texts(voices, strip_text, title=TITLE, live=LIVE_COMMENTS,
@@ -742,7 +742,7 @@ def unified_cues(voices):
 
     吹き出しが出る → notify（返信は b）。事実の吹き出し → pop。マーカーが引かれ始める → marker。"""
     import v3_slot_render as common
-    voices = list(voices or [])
+    voices = [v for v in voices or [] if v.get('read') is not False]
     rows = [(v.get('who',''), ('「'+v.get('said','')+'」') if not v.get('fact') else v.get('said','')) for v in voices]
     return common.cues(rows, start_times(voices))
 
@@ -864,8 +864,20 @@ def voices_for_segment(seg, voices_data):
     thread: 1件のコメントと、それへの返信（reply_ja の先頭3件。読み上げと同じ）。"""
     kind, meta = seg.get("kind"), seg.get("meta") or {}
     vs = (voices_data or {}).get("voices") or []
+    if 'quote_rows' in meta:
+        allowed={v.get('ja','') for v in vs}
+        allowed.update(r.get('ja','') for v in vs for r in v.get('reply_ja',[]))
+        for row in meta['quote_rows']:
+            if not row.get('fact') and row.get('said') not in allowed:
+                raise ValueError('引用区間のコメントが原材料にありません')
+        return list(meta['quote_rows'])
     out = []
-    if kind == "voices":
+    if kind == 'intro':
+        i=meta.get('used_voice')
+        if type(i) is int and 0<=i<len(vs):
+            v=vs[i]
+            out.append({'said':v.get('ja',''),'who':who_of(v)})
+    elif kind == "voices":
         picked = meta.get("picked")
         if picked is not None and any(type(i) is not int or not 0 <= i < len(vs) for i in picked):
             raise ValueError("コメント番号が材料と合いません")
@@ -885,7 +897,8 @@ def voices_for_segment(seg, voices_data):
         likes, replies = v.get("likes") or 0, v.get("replies") or 0
         who = "・".join(x for x in ((f"高評価{likes:,}件" if likes else ""),
                                      (f"返信{replies}件" if replies else "")) if x) or "コメント"
-        out.append({"said": said, "who": who, "mark": pick_mark(said, v.get("jp_players") or ())})
+        if not meta.get('parent_read'):
+            out.append({"said": said, "who": who, "mark": pick_mark(said, v.get("jp_players") or ())})
         for r in (v.get("reply_ja") or [])[:3]:
             rs = str(r.get("ja") or "").strip()
             if rs:
@@ -917,15 +930,35 @@ def strip_for_voices(voices_data, seg=None):
 
 
 def _voices_source(voices_data):
-    src = (voices_data or {}).get("source") or "MLB公式ハイライトのコメント"
-    return (f"引用：{src}（訳：コレスポ）",)
+    return ('引用：MLBコメント（訳：コレスポ）','コレスポの見解ではありません')
+
+
+def reading_times(voices,spoken,duration):
+    """原稿の引用位置を表示区間へ写す。未読の札は出さない。"""
+    out=[];cursor=0;scale=duration/max(1,len(spoken))
+    for voice in voices:
+        if voice.get('read') is False:
+            out.append(dict(voice,at=0,end=0));continue
+        if voice.get('clip'):
+            if voice['said'].strip().rstrip('。！!、.') not in spoken:
+                raise ValueError('引用区間と読み上げが一致しません')
+            out.append(dict(voice,at=0,end=duration));continue
+        body=str(voice.get('said','')).strip().rstrip('。！!、.')
+        key=body[:12]
+        at=spoken.find(key,cursor)
+        if not key or at<0:
+            raise ValueError('画面の引用が読み上げ順にありません: '+key)
+        finish=min(len(spoken),at+len(body))
+        out.append(dict(voice,at=at*scale,end=finish*scale))
+        cursor=finish
+    return out
 
 
 def voices_screen(t, seg, voices_data, dur=None, team_id=None):
     """17:30 の voices / thread の画面を D で。dur（その画面の秒）があれば、読み上げに合わせて出す。"""
     voices = voices_for_segment(seg, voices_data)
     if dur:
-        voices = timed(voices, seg.get("text") or "", dur)
+        voices = reading_times(voices, seg.get("text") or "", dur)
     return unified_comments(t, voices, team_id, strip_for_voices(voices_data, seg),
                     source_lines=_voices_source(voices_data))
 
@@ -933,7 +966,7 @@ def voices_screen(t, seg, voices_data, dur=None, team_id=None):
 def voices_cues(seg, voices_data, dur=None):
     voices = voices_for_segment(seg, voices_data)
     if dur:
-        voices = timed(voices, seg.get("text") or "", dur)
+        voices = reading_times(voices, seg.get("text") or "", dur)
     return unified_cues(voices)
 
 
