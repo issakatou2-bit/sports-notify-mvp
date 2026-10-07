@@ -87,7 +87,107 @@ def stat(im,x,y,value,unit,size=96,color=None,width=280,unit_size=30):
 
 def team_badge(im,x,y,abbr,tid=None,width=110):
     base,second,_=r3.colors(tid)
-    return tag(im,x,y,abbr,base,second,28,width)
+    return club_tag(im,x,y,abbr,base,second,width)
+
+
+def contrast(a,b):
+    def luminance(rgb):
+        values=[c/255 for c in rgb]
+        values=[c/12.92 if c<=.04045 else ((c+.055)/1.055)**2.4 for c in values]
+        return sum(c*w for c,w in zip(values,(.2126,.7152,.0722)))
+    bright,dark=sorted((luminance(a),luminance(b)),reverse=True)
+    return (bright+.05)/(dark+.05)
+
+
+def badge_ink(base):
+    return max((r3.INK,r3.DARK_INK),key=lambda ink:contrast(base,ink))
+
+
+def club_tag(im,x,y,abbr,base,second,width=110):
+    ink=badge_ink(base)
+    w=tag(im,x,y,abbr,base,ink,28,width)
+    # 色は帯/枠へ残し、略称の字には明暗のコントラストを使う。
+    ImageDraw.Draw(im).rounded_rectangle((x,y,x+w,y+54),radius=22,outline=second,width=2)
+    im.info.setdefault('v4_badges',[]).append({'abbr':abbr,'base':base,'ink':ink})
+    return w
+
+
+def stat_values(headline):
+    units='回(?:3分の[12])?|打数|本塁打|二塁打|三塁打|安打|打点|四球|奪三振|自責|被安打|失点|得点|盗塁|防御率'
+    number=r'\d+(?:\.\d+)?'
+    return [(m[1],m[2]) if m[1] else (m[4],m[3]) for m in
+            re.finditer(r'(?<![\d.])('+number+r')('+units+r')|('+units+r')('+number+r')(?![\d.])',str(headline))]
+
+
+def stat_cards(im,values,y,height=148):
+    if not values:return
+    gap=14;columns=min(5,len(values));w=(R-L-48-gap*(columns-1))//columns
+    for i,(number,unit) in enumerate(values[:5]):
+        x=L+24+i*(w+gap)
+        panel(im,(x,y,x+w,y+height))
+        text(im,x+16,y+14,number,76,r3.GOLD,width=w-32,number=True)
+        text(im,x+16,y+height-46,unit,28,width=w-32)
+
+
+def cover(t,spec):
+    im=canvas(t,spec.get('label') or '日本人選手の成績')
+    roster=spec['roster'];text(im,L,264,'出場した日本人選手',48,width=R-L)
+    stat(im,L+30,348,len(roster),'人',208,width=R-L-60,unit_size=68)
+    pages=max(1,(len(roster)+7)//8)
+    page=min(pages-1,int(max(0,t)/max(.1,spec.get('dur',8)/pages)))
+    for i,row in enumerate(roster[page*8:page*8+8]):
+        w=(R-L-18)//2;x=L+(i%2)*(w+18);y=610+(i//2)*128
+        panel(im,(x,y,x+w,y+112))
+        text(im,x+18,y+18,row['name'],36,width=w-36)
+        team_badge(im,x+18,y+58,row['abbr'],row.get('team_id'),100)
+    im.info['v4_roster']={'names':[r['name'] for r in roster],'page':page,'pages':pages}
+    return finish(im,t,spec.get('ticker',''),spec.get('source') or '出典：MLB公式（Stats API）')
+
+
+def player_detail(t,spec,player):
+    """1人用のv4。主数字が無い日は成績の札だけで表示する。"""
+    im=canvas(t,spec.get('label') or '日本人選手の成績')
+    panel(im,(L,258,R,1138))
+    text(im,L+26,282,f'勝利貢献 第{player["rank"]}位',34,r3.GOLD,width=R-L-52)
+    text(im,L+26,342,player['name'],60,width=R-L-52)
+    x=L+26
+    if player['abbr']:x+=team_badge(im,x,424,player['abbr'],player.get('team_id'))+20
+    text(im,x,434,player.get('team_jp',''),34,width=R-x-24)
+    big=player.get('big','');unit=player.get('unit','')
+    if big:
+        stat(im,L+34,508,big,unit,172,width=R-L-80,unit_size=54)
+    y=730 if big else 528
+    values=stat_values(player.get('headline',''))
+    pages=max(1,(len(values)+4)//5)
+    page=min(pages-1,int(max(0,t)/max(.1,spec.get('dur',8)/pages)))
+    stat_cards(im,values[page*5:page*5+5],y)
+    notes='\n'.join(str(s) for s in player.get('notes',[]) if s)
+    if not values:
+        # 整数以外の成績や結果だけの日も、元の行を省略しない。
+        notes='\n'.join(s for s in (player.get('headline',''),notes) if s)
+    if notes:
+        body=lines(notes,34,R-L-96);top=y+174;bottom=1120
+        capacity=max(1,(bottom-top-48)//46)
+        note_pages=[body[i:i+capacity] for i in range(0,len(body),capacity)]
+        at=min(len(note_pages)-1,int(max(0,t)/max(.1,spec.get('dur',8)/len(note_pages))))
+        current=note_pages[at];h=48+len(current)*46
+        panel(im,(L+24,top,R-24,top+h))
+        for i,line in enumerate(current):text(im,L+48,top+24+i*46,line,34,width=R-L-96)
+        im.info['v4_annotation']={'lines':body,'page':at,'pages':len(note_pages)}
+    im.info['v4_player']={'name':player['name'],'rank':player['rank'],'big':big,'unit':unit,
+                          'stats':values,'page':page,'pages':pages}
+    return finish(im,t,spec.get('ticker',''),spec.get('source') or '出典：MLB公式（Stats API）')
+
+
+def others(t,spec):
+    players=spec['other_players'];duration=max(.1,spec.get('dur',8));spoken=spec.get('say','')
+    # 元の「ほか、スガノ、スズキ。」を保ち、次の名前を読む位置で切り替える。
+    positions=[0]+[spoken.find(p['spoken_name']) for p in players[1:]]
+    index=0
+    for i,pos in enumerate(positions):
+        at=pos/max(1,len(spoken))*duration if pos>=0 else i/len(players)*duration
+        if t>=at:index=i
+    return player_detail(t,spec,players[index])
 
 
 def ranking(t,spec,rows,source):
@@ -265,7 +365,7 @@ def team_row(im,box,row,need):
     second=ImageColor.getrgb(second) if isinstance(second,str) else second
     base=ImageColor.getrgb(base) if isinstance(base,str) else base
     d.rectangle((x+2,y+18,x+10,bottom-18),fill=second)
-    tag(im,x+28,y+22,row['abbr'],base,second,28,width=110)
+    club_tag(im,x+28,y+22,row['abbr'],base,second,width=110)
     text(im,x+156,y+30,row['name'],48,width=right-x-310)
     wins(im,x+32,y+98,row['wins'],need)
     stat(im,right-174,y+70,row['wins'],'勝',100,width=150)
@@ -311,7 +411,7 @@ def situation(t,card,view):
             base=ImageColor.getrgb(row.get('color') or '#102833')
             second=ImageColor.getrgb(row.get('secondary') or '#C4CED4')
             ImageDraw.Draw(im).rectangle((L+6,yy,L+12,yy+54),fill=second)
-            tag(im,L+20,yy,row['abbr'],base,second,size=28,width=100)
+            club_tag(im,L+20,yy,row['abbr'],base,second,width=100)
             text(im,L+132,yy+4,row['name'],32,width=245)
             # 全シリーズでも勝数の目を必ず説明する。
             d=ImageDraw.Draw(im)

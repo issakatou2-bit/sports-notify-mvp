@@ -38,6 +38,15 @@ def daily_cases():
     scenes=bn.scenes_from_morning(data,nar)
     cases.append(dict(name='players',exclude='morning',segments=nar['segments'],multi=True,
                       frames=[lambda t,s=s:bn.scene(t,s) for s in scenes],quotes=[]))
+    if r3.LOOK=='v4':
+        data=read('scripts/fixtures/bignumber/recap_history/2026-09-25.json')
+        data['players']=g.sort_players(data['players'])
+        with patch.dict(os.environ,ENV),patch.object(g,'week_line',return_value=('',[])):
+            nar=g.build_narration(data,'players')
+        scenes=bn.scenes_from_morning(data,nar)
+        if bn.check_scenes(scenes,nar,data):raise ValueError('7人の成績の読み上げ照合が失敗')
+        cases.append(dict(name='players-seven',exclude='morning',segments=nar['segments'],multi=True,
+                          frames=[lambda t,s=s:bn.scene(t,dict(s,dur=20)) for s in scenes],quotes=[]))
     for mode,filename in [('voices','local_voices-preview.json'),('press','local_reporters-preview.json')]:
         material=read('scripts/fixtures/comment/'+filename)
         data={'players':[],mode if mode=='voices' else 'reporters':material,'date_jst':material['updated_at'][:10]}
@@ -272,6 +281,50 @@ class V3Rules(unittest.TestCase):
                     image=draw(3)
                     self.assertTrue(any(e['role']=='caption' for e in image.info['v3_layout']))
                     self.assertFalse(rules.check_layout(image))
+
+    def test_v4_club_badges_choose_the_greater_contrast_for_all_clubs(self):
+        if r3.LOOK!='v4':return
+        import short_v4_cards as v4
+        import notability_engine as ne
+        from PIL import ImageColor
+        self.assertEqual(len(ne.MLB_TEAM_ABBR),30)
+        for tid,abbr in ne.MLB_TEAM_ABBR.items():
+            # 成績の暗めの札と、PSの球団色そのものの札の両方。
+            for base in (r3.colors(tid)[0],ImageColor.getrgb(ne.MLB_TEAM_COLOR[tid])):
+                with self.subTest(team=abbr,base=base):
+                    im=v4.canvas(0,'球団札の検査')
+                    v4.club_tag(im,r3.LEFT,350,abbr,base,r3.colors(tid)[1])
+                    mark=im.info['v4_badges'][0]
+                    candidates=[v4.contrast(base,color) for color in (r3.INK,r3.DARK_INK)]
+                    self.assertAlmostEqual(v4.contrast(base,mark['ink']),max(candidates))
+                    self.assertGreaterEqual(v4.contrast(base,mark['ink']),3)
+                    self.assertFalse(rules.check_layout(im))
+
+    def test_v4_cover_and_remaining_players_keep_the_material_and_audio(self):
+        if r3.LOOK!='v4':return
+        data=read('scripts/fixtures/bignumber/recap_history/2026-09-25.json')
+        roster=g.sort_players(data['players'])
+        with patch.dict(os.environ,ENV),patch.object(g,'week_line',return_value=('',[])):
+            nar=g.build_narration(dict(data,players=roster),'players')
+        scenes=bn.scenes_from_morning(data,nar)
+        self.assertFalse(bn.check_scenes(scenes,nar,data))
+        cover=bn.scene(3,scenes[0])
+        self.assertEqual(cover.info['v4_roster']['names'],[p['name'] for p in roster])
+        drawn=[e['text'] for e in cover.info['v3_layout']]
+        self.assertIn(str(len(roster)),drawn)
+        for p in roster:self.assertIn(p['name'],drawn)
+        lower=[s for s in scenes if s.get('player') and (s.get('rank') or 0)>1]
+        for scene in lower:
+            image=bn.scene(3,scene)
+            self.assertEqual(image.info['v4_player']['name'],scene['player']['name'])
+            self.assertEqual((image.info['v4_player']['big'],image.info['v4_player']['unit']),
+                             bn.pick_big(scene['player']['headline'],next(p['type'] for p in roster if p['name']==scene['player']['name'])))
+            if scene['player']['notes']:
+                self.assertEqual(''.join(image.info['v4_annotation']['lines']),''.join(scene['player']['notes']))
+        other=next(s for s in scenes if s.get('other_players'))
+        first=bn.scene(0,dict(other,dur=20));last=bn.scene(19,dict(other,dur=20))
+        self.assertEqual(first.info['v4_player']['name'],other['other_players'][0]['name'])
+        self.assertEqual(last.info['v4_player']['name'],other['other_players'][-1]['name'])
 
 if __name__=='__main__':
     if '--look-child' in sys.argv:
