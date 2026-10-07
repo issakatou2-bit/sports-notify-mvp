@@ -1814,6 +1814,9 @@ def main():
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
             still = None
+            import review_render_v3 as _r3
+            _r3.set_program_clock(total / FPS)
+            _r3.set_caption("" if kind == "outro" else seg.get("text", ""), dur, sum(durations))
             for k in range(n):
                 pp, settled = video_common.anim_step(k, n)
                 if kind == "map":

@@ -176,4 +176,15 @@ class V3Rules(unittest.TestCase):
         for path in ('scripts/generate_morning_short.py','scripts/generate_asset_video.py'):
             self.assertIn('set_program_clock(total / FPS)',(ROOT/path).read_text(encoding='utf-8'),path)
 
+    def test_caption_follows_the_sentence_being_read(self):
+        """字幕（v4）は読み上げている文。文字数の割合で今の文を選ぶ。"""
+        text='1位は村上宗隆。4打数3安打、2本塁打、3打点です。'
+        self.assertEqual(r3.current_sentence(0.5,text,10),'1位は村上宗隆。')
+        self.assertEqual(r3.current_sentence(9.5,text,10),'4打数3安打、2本塁打、3打点です。')
+        from PIL import Image, ImageDraw
+        d=ImageDraw.Draw(Image.new('RGB',(8,8)))
+        rows=r3._caption_lines(d,'4打数3安打、2本塁打、3打点です。きょうは7人が出場しました。',42,560)
+        self.assertTrue(all(row[0][0] not in '、。' for row in rows[1:]))
+        self.assertIn(('3',True),[part for row in rows for part in row])
+
 if __name__=='__main__':unittest.main(argv=[__file__])

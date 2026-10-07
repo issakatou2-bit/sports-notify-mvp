@@ -2,6 +2,11 @@ name: PS新構成の音声付き確認（投稿しない）
 on:
   workflow_dispatch:
     inputs:
+      look:
+        description: 'ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）'
+        type: choice
+        options: [v3, v4]
+        default: v3
       design:
         description: '外観（v3は10/7の保存公式材料で2枠を再生）'
         type: choice
@@ -15,6 +20,10 @@ on:
       - '.github/workflows/ps_program_preview.yml'
 permissions:
   contents: read
+# ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
+env:
+  COLLESPO_SHORT_LOOK: ${{ inputs.look || 'v3' }}
+
 jobs:
   preview:
     runs-on: ubuntu-latest

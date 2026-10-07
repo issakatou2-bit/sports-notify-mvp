@@ -4461,6 +4461,13 @@ def main():
             still = None
             # 最初の画面は前が無いので混ぜない
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
+            if daily_design or bn_plan:
+                import review_render_v3 as r3
+                r3.set_program_clock(total / FPS)
+                # 字幕（v4）: その画面で読む文。締めは画面に文が出ているので出さない
+                r3.set_caption("" if kind == "outro" else
+                               (narration["segments"][seg_i].get("text") if seg_i < len(narration["segments"]) else ""),
+                               float(seg.get("duration") or dur), sum(durations))
             for k in range(n):
                 if daily_design or bn_plan:
                     import review_render_v3 as r3

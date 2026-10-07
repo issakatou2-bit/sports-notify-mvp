@@ -17,6 +17,7 @@ permissions:
   id-token: write
 
 env:
+  COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
   # v2 / hold / legacy. Old producer is retained; failed v2 never falls back.
   PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}
   COLLESPO_PS_DESIGN: ${{ vars.COLLESPO_PS_DESIGN || 'legacy' }}

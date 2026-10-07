@@ -7,6 +7,11 @@ name: 道具　新デザインの試作動画（投稿しない）
 on:
   workflow_dispatch:
     inputs:
+      look:
+        description: 'ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）'
+        type: choice
+        options: [v3, v4]
+        default: v3
       topic_type:
         description: 話題の種類
         type: choice
@@ -24,6 +29,10 @@ on:
 
 permissions:
   contents: read
+
+# ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
+env:
+  COLLESPO_SHORT_LOOK: ${{ inputs.look || 'v3' }}
 
 jobs:
   preview:

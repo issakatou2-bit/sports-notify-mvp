@@ -32,6 +32,10 @@ concurrency:
   group: season-review
   cancel-in-progress: false
 
+# ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
+env:
+  COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
+
 jobs:
   review:
     runs-on: ubuntu-latest

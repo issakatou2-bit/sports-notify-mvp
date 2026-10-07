@@ -4,6 +4,7 @@
 name: 毎日 17:00-20:00　夕方の4本
 
 env:
+  COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
   PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}
   COLLESPO_PS_DESIGN: ${{ vars.COLLESPO_PS_DESIGN || 'legacy' }}
   # エマの試作確認後に bignumber を指定。未指定/legacy なら現行のまま。

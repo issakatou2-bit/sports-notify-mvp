@@ -65,6 +65,10 @@ on:
 permissions:
   contents: write
 
+# ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
+env:
+  COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
+
 jobs:
   # 夜の補完は、その日の1本が既にできていることが多い。
   # その場合は全季の試合・順位表の取得や動画用環境の準備を始めない。
