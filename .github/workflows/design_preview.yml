@@ -76,6 +76,8 @@ jobs:
         if: steps.topic.outputs.key != ''
         env:
           COLLESPO_BGM: ${{ inputs.bgm }}
+          # 数値検査だけ。AIの検算は呼ばず、秘密も渡さない。
+          ANTHROPIC_API_KEY: ''
         run: |
           T="${{ steps.topic.outputs.key }}"
           python scripts/generate_asset_video.py --topic "$T" --narration-out "build/narr_$T.json"
