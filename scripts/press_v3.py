@@ -1,4 +1,7 @@
 """既存の報道原稿と同じ見出し・記者の言葉を、出典つきの引用札へ。"""
+import sys
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import comment_render as cr
 import review_render_v3 as r3
 
