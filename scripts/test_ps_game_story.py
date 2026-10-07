@@ -106,6 +106,35 @@ class GameStory(unittest.TestCase):
         self.assertEqual(items["決勝点"], "9回表　コルソン・モンゴメリーのタイムリー")
         self.assertNotIn("先制で決勝の一打", items)
 
+    def test_error_is_not_credited_to_batter_or_called_decisive_hit(self):
+        for batter in ("Munetaka Murakami", "Colson Montgomery"):
+            with self.subTest(batter=batter):
+                f = feed(1, 0)
+                f["liveData"]["plays"] = {"allPlays": [
+                    play("top", 6, "Field Error", 0, 1, 0, batter)], "scoringPlays": [0]}
+                t = self.build(f=f)
+                self.assertIn("の打球で相手の失策", dict(t["items"])["決勝点"])
+                self.assertNotIn("の失策", dict(t["items"])["決勝点"].split("打球で")[0])
+                self.assertNotIn("先制で決勝の一打", dict(t["items"]))
+                self.assertNotIn("決勝打", t["title"])
+                self.assertNotIn("先制打", t["title"])
+                self.assertNotIn("先制打", t["intro"])
+
+    def test_non_hit_decisive_plays_keep_the_actual_event(self):
+        for event in ("Walk", "Hit By Pitch", "Sac Fly", "Groundout", "Wild Pitch", "Passed Ball"):
+            with self.subTest(event=event):
+                f = feed(1, 0)
+                f["liveData"]["plays"] = {"allPlays": [
+                    play("top", 6, event, 1, 1, 0, "Munetaka Murakami")], "scoringPlays": [0]}
+                t = self.build(f=f)
+                self.assertIn(g.EVENT_JP[event], dict(t["items"])["決勝点"])
+                self.assertNotIn("先制で決勝の一打", dict(t["items"]))
+                self.assertNotIn("先制打", t["title"])
+                self.assertNotIn("決勝打", t["title"])
+                if event in ("Wild Pitch", "Passed Ball"):
+                    self.assertIn("相手の", dict(t["items"])["決勝点"])
+                    self.assertNotIn("村上宗隆の", dict(t["items"])["決勝点"])
+
     def test_voice_is_from_this_game_after_first_pitch_and_localized(self):
         voices = {"voices": [
             {"matchup": "WHITE SOX vs. GUARDIANS", "at": "2026-10-03T20:10:00Z", "likes": 50,
