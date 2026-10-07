@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-05T09:52:31.500261+00:00",
-  "date": "2026-10-05",
+  "updated_at": "2026-10-06T09:52:30.901610+00:00",
+  "date": "2026-10-06",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -131,18 +131,18 @@
       "league_jp": "ア・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 1,
+      "played": 2,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月6日",
-        "game": 2
+        "day": "10月8日",
+        "game": 3
       },
       "teams": [
         {
           "id": 145,
           "name": "ホワイトソックス",
-          "wins": 1,
+          "wins": 2,
           "players": [
             "村上宗隆"
           ]
@@ -163,18 +163,18 @@
       "league_jp": "ア・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 1,
+      "played": 2,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月6日",
-        "game": 2
+        "day": "10月8日",
+        "game": 3
       },
       "teams": [
         {
           "id": 139,
           "name": "レイズ",
-          "wins": 1,
+          "wins": 2,
           "players": []
         },
         {
@@ -253,24 +253,24 @@
     }
   ],
   "final_day": [],
-  "headline": "大谷翔平・佐々木朗希・山本由伸のドジャースは地区シリーズでブレーブスに1勝1敗",
+  "headline": "村上宗隆のホワイトソックスは地区シリーズでガーディアンズに2勝0敗、突破に王手",
   "changes": [
     {
-      "key": "D:119-144",
+      "key": "D:114-145",
       "kind": "game",
-      "text": "大谷翔平・佐々木朗希・山本由伸のドジャースは地区シリーズでブレーブスに1勝1敗",
+      "text": "村上宗隆のホワイトソックスは地区シリーズでガーディアンズに2勝0敗、突破に王手",
       "jp": true,
       "stage": 2
     },
     {
-      "key": "D:135-158",
+      "key": "D:139-147",
       "kind": "game",
-      "text": "松井裕樹のパドレスは地区シリーズでブリュワーズに0勝2敗、負ければ敗退",
-      "jp": true,
+      "text": "地区シリーズ レイズが2勝0敗とし、突破に王手",
+      "jp": false,
       "stage": 2
     }
   ],
-  "prev_date": "2026-10-04",
+  "prev_date": "2026-10-05",
   "japanese": [
     {
       "team_id": 119,
@@ -1784,7 +1784,7 @@
           "wc_gb": null,
           "wc_elim": null,
           "clinched": true,
-          "div_champ": true,
+          "div_champ": false,
           "wc_clinched": false,
           "run_diff": 15,
           "streak": "W1"
@@ -1947,7 +1947,7 @@
             "wc_gb": null,
             "wc_elim": null,
             "clinched": true,
-            "div_champ": true,
+            "div_champ": false,
             "wc_clinched": false,
             "run_diff": 15,
             "streak": "W1"
@@ -2040,7 +2040,7 @@
           "wc_gb": null,
           "wc_elim": null,
           "clinched": true,
-          "div_champ": true,
+          "div_champ": false,
           "wc_clinched": false,
           "run_diff": 15,
           "streak": "W1"

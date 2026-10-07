@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-06T06:02:25.425653+00:00",
+  "updated_at": "2026-10-07T06:04:11.021334+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,81 +13,81 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 14,
-      "tone": "好調",
-      "gist": "ホワイトソックスが2-0リードで120年ぶりの自力優勝目前"
-    },
-    {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 12,
-      "tone": "好調",
-      "gist": "レイズが2-0リードでヤンキースを圧倒し優勝まであと1勝"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 6,
-      "tone": "不振",
-      "gist": "ヤンキースが初回の守備の乱れでレイズに敗北"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "ガーディアンズが得点できず逆転されて窮地に"
-    },
-    {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ドジャース対ブレーブスのNLDS第3戦について"
-    },
-    {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ブリュワーズのピッチング情報とクーリオについて"
+      "mentions": 9,
+      "tone": "好調",
+      "gist": "Freeman・Hernández含む打線好調でNLCS進出"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
-      "mentions": 2,
+      "mentions": 9,
       "tone": "話題",
-      "gist": "パドレスが0-2からの逆転を目指す"
+      "gist": "0-2から粘るパドレス、Game4へ"
     },
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 5,
+      "tone": "不振",
+      "gist": "Sale酷使の影響でブレーブス苦戦中"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "ブリュワーズがパドレスに勝利し進出へ前進"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ガーディアンズ、Game3で火力発揮が課題"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "White SoxのリーダーシップがALDS鍵に"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "Yankees、ALDS逆転への5つの希望"
+    },
+    {
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アストロズは低予算で上位球団に勝利した"
+      "gist": "オリオールズがマスコットをレイオフ"
     }
   ],
   "players": [
     {
-      "name": "村上宗隆",
-      "mentions": 2
+      "name": "山本由伸",
+      "mentions": 8
     },
     {
       "name": "大谷翔平",
       "mentions": 1
     },
     {
-      "name": "山本由伸",
+      "name": "村上宗隆",
       "mentions": 1
     }
   ]
