@@ -15,7 +15,8 @@ def check_layout(image):
         return ['描画位置の記録がありません']
     for e in entries:
         x,y,right,bottom=e['box']
-        top,end={'header':(160,r3.CONTENT_TOP),'source':(1240,1486),'ticker':(1486,1574)}.get(e['role'],(r3.CONTENT_TOP,r3.CONTENT_BOTTOM))
+        top,end={'header':(160,r3.CONTENT_TOP),'source':(r3.SOURCE_BOTTOM-80,r3.SOURCE_BOTTOM+8),'ticker':(1486,1574),
+                  'caption':(r3.CAPTION_TOP-30,r3.CAPTION_BOTTOM)}.get(e['role'],(r3.CONTENT_TOP,r3.CONTENT_BOTTOM))
         # 字の張り出し（Linux の Noto で「A」が1px左へ出る等）は許す。はみ出しの検査なので数px は問題にしない。
         if not (r3.LEFT-SLACK<=x<=right<=r3.SAFE_RIGHT+SLACK and top-SLACK<=y<=bottom<=end+SLACK):
             errors.append(e)

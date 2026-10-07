@@ -2,6 +2,11 @@ name: 道具　成績の数字ドーン試作（投稿しない）
 on:
   workflow_dispatch:
     inputs:
+      look:
+        description: 'ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）'
+        type: choice
+        options: [v3, v4]
+        default: v3
       mode:
         description: '固定材料で確かめる日次枠（投稿しない）'
         type: choice
@@ -9,6 +14,10 @@ on:
         default: players
 permissions:
   contents: read
+# ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
+env:
+  COLLESPO_SHORT_LOOK: ${{ inputs.look || 'v3' }}
+
 jobs:
   preview:
     runs-on: ubuntu-latest

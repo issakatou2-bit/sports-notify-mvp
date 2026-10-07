@@ -42,7 +42,17 @@ T_CHIP0, T_CHIP_GAP = 1.0, 0.3   # 札の1枚目と間隔
 T_RING_AFTER = 0.55  # 札が着いてから○が付くまで
 T_CARD0, T_CARD_GAP = 0.15, 0.35  # 項目の札
 SLIDE = 0.45         # 飛び込みにかかる秒
-CONTENT_TOP, CONTENT_BOTTOM = 236, 1216
+# ショートの見た目 v4（10/8 本人「長編のデザインは良い。ショートは物足りない・代わり映えしない」）。
+# 長編の良さ（読んでいる文の字幕・大きめの立ち絵・進み具合の線）を縦に持ってくる。
+# 切り替えは COLLESPO_SHORT_LOOK=v4（リポジトリ変数）。試作を本人に見せてから。
+import os  # noqa: E402
+LOOK = os.environ.get("COLLESPO_SHORT_LOOK", "v3")
+CONTENT_TOP = 236
+# v4 は札の下に出典（2行）と字幕の箱を置くので、札の下端を上げる
+CONTENT_BOTTOM = 1150 if LOOK == "v4" else 1216
+CAPTION_TOP, CAPTION_RIGHT, CAPTION_BOTTOM = 1248, 668, 1472
+SOURCE_BOTTOM = 1218 if LOOK == "v4" else 1478
+METAN_PINK = (238, 140, 186)
 
 
 def record_box(im, role, box, text=''):
@@ -258,18 +268,135 @@ def _portrait(who="metan"):
 
 
 def source(d, text, color):
-    """出典。立ち絵（右下）にかからない幅で、2行まで。"""
+    """出典。立ち絵（右下）にかからない幅で、2行まで。v4 は字幕の箱の上。"""
     lines, size = _lines(d, text, 24, SAFE_RIGHT - LEFT - 280, 2)
     for i, line in enumerate(lines):
-        _text(d,(LEFT, 1478 - (len(lines) - i) * (size + 6)), line, font=font(size), fill=color, role="source")
+        _text(d,(LEFT, SOURCE_BOTTOM - (len(lines) - i) * (size + 6)), line, font=font(size), fill=color, role="source")
+
+
+@functools.lru_cache(maxsize=2)
+def _portrait_v4(who="metan"):
+    path = ROOT / PORTRAITS / ("metan/3-black/base.png" if who == "metan"
+                               else "zundamon/C-cheer/base-black-brow-candidate.png")
+    sp = Image.open(path).convert("RGBA").crop((120, 0, 940, 900))
+    sp.thumbnail((330, 330))
+    return sp
+
+
+# ------------------------------------------------------------------ 字幕（v4）
+# 動画を書く側が画面の頭で set_caption(読み上げの文, その画面の秒, 番組の秒) を呼ぶ。
+# 時刻は番組の時計（set_program_clock）から測る。画面ごとの t の数え方が部品で違っても揃う。
+_CAPTION = {"text": "", "start": 0.0, "duration": 0.0, "total": 0.0}
+
+
+def set_caption(text, duration, total=None):
+    _CAPTION.update(text=str(text or ""), duration=float(duration or 0),
+                    start=_PROGRAM_CLOCK[0] or 0.0, total=float(total or _CAPTION["total"] or 0))
+
+
+def sentences(text):
+    return [s for s in re.findall(r"[^。！？!?]+[。！？!?]?", str(text or "")) if s.strip()]
+
+
+def current_sentence(elapsed, text, duration):
+    """読み上げの速さは文字数にほぼ比例するので、文字数で区切って今の文を選ぶ。"""
+    parts = sentences(text)
+    if not parts:
+        return ""
+    total = sum(len(p) for p in parts)
+    at = max(0.0, elapsed) / max(0.1, duration) * total
+    run = 0
+    for p in parts:
+        run += len(p)
+        if at < run:
+            return p
+    return parts[-1]
+
+
+def caption(im, t):
+    if LOOK != "v4" or not _CAPTION["text"]:
+        return
+    clock = _PROGRAM_CLOCK[0]
+    elapsed = (clock - _CAPTION["start"]) if clock is not None else t
+    line = current_sentence(elapsed, _CAPTION["text"], _CAPTION["duration"])
+    if not line:
+        return
+    box = (LEFT - 8, CAPTION_TOP, CAPTION_RIGHT, CAPTION_BOTTOM)
+    layer = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    ld = ImageDraw.Draw(layer)
+    ld.rounded_rectangle(box, radius=22, fill=(11, 20, 32, 232))
+    ld.rectangle((box[0], box[1] + 18, box[0] + 10, box[3] - 18), fill=METAN_PINK)
+    base = im.convert("RGBA")
+    base.alpha_composite(layer)
+    im.paste(base.convert("RGB"))
+    d = ImageDraw.Draw(im)
+    f = font(24)
+    w = d.textlength("四国めたん", font=f) + 32
+    d.rounded_rectangle((box[0] + 24, box[1] - 22, box[0] + 24 + w, box[1] + 22), radius=8, fill=METAN_PINK)
+    d.text((box[0] + 24 + w / 2, box[1]), "四国めたん", font=f, fill=DARK_INK, anchor="mm")
+    # 数字は金色（項目の札と同じ書き分け）。3行まで、入らなければ字を小さく
+    for size in (42, 38, 34):
+        rows = _caption_lines(d, line, size, box[2] - box[0] - 64)
+        if len(rows) <= 3:
+            break
+    y = box[1] + 44
+    for row in rows[:3]:
+        x = box[0] + 36
+        for part, is_num in row:
+            fnt = num_font(round(size * 1.18)) if is_num else font(size)
+            d.text((x, y + size), part, font=fnt, fill=GOLD if is_num else INK, anchor="ls")
+            x += d.textlength(part, font=fnt)
+        y += round(size * 1.45)
+    record_box(im, "caption", box, line)
+
+
+@functools.lru_cache(maxsize=4096)
+def _has_glyph(ch):
+    f = font(42)
+    mask, missing = f.getmask(ch), f.getmask("\U0010ffff")
+    return (mask.size, bytes(mask)) != (missing.size, bytes(missing))
+
+
+def _caption_lines(d, text, size, width):
+    """数字の続き（3対2・4打数 など）を途中で切らずに折り返す。行頭に句読点を置かない。"""
+    # 英語の語（Dodgers など）も途中で切らない。書体に無い字（絵文字など）は出さない
+    text = "".join(ch for ch in str(text) if ch.isspace() or _has_glyph(ch))
+    tokens = re.findall(r"\d[\d.,:]*|[A-Za-z][A-Za-z'.\-]*|[^\d]", text)
+    rows, cur, cur_w = [], [], 0.0
+    for tok in tokens:
+        is_num = tok[0].isdigit()
+        fnt = num_font(round(size * 1.18)) if is_num else font(size)
+        w = d.textlength(tok, font=fnt)
+        if cur and cur_w + w > width and tok not in "、。！？」）":
+            rows.append(cur)
+            cur, cur_w = [], 0.0
+        if cur and cur[-1][1] == is_num and not is_num:
+            cur[-1] = (cur[-1][0] + tok, False)
+        else:
+            cur.append((tok, is_num))
+        cur_w += w
+    if cur:
+        rows.append(cur)
+    return rows
+
+
+def progress(d):
+    """見出しの下の、進み具合の線（v4）。"""
+    if LOOK != "v4" or not _CAPTION["total"] or _PROGRAM_CLOCK[0] is None:
+        return
+    k = max(0.0, min(1.0, _PROGRAM_CLOCK[0] / _CAPTION["total"]))
+    d.rectangle((LEFT, 222, SAFE_RIGHT, 226), fill=_mix(DARK_INK, (196, 206, 212), 0.35))
+    d.rectangle((LEFT, 222, LEFT + round((SAFE_RIGHT - LEFT) * k), 226), fill=GOLD)
 
 
 def presenter(im, t, which="right", who="metan"):
-    sp = _portrait(who)
+    sp = _portrait_v4(who) if LOOK == "v4" else _portrait(who)
     bob = round(6 * math.sin(t * 2 * math.pi / 2.4))
-    x = SAFE_RIGHT - sp.width if which == "right" else 24
+    x = SAFE_RIGHT - sp.width + (24 if LOOK == "v4" else 0) if which == "right" else 24
     # テロップ（1486〜1574）の上に立つ。テロップの文字を隠さない
     im.paste(sp, (x, 1480 - sp.height + bob), sp)
+    caption(im, t)
+    progress(ImageDraw.Draw(im))
 
 
 def _paste_card(im, card, x, y, k):

@@ -608,9 +608,14 @@ def movie(program, audio_dir, out):
             prepared=motion.prepare(foreground,seg['meta']['card'])
             plan=focus_plan(seg)
             speech=float(audio[i]['duration']) or duration
+            if v3:
+                unified.r3.set_program_clock(program_frame/30)
+                unified.r3.set_caption('' if seg['meta']['card'].get('outro') else seg.get('text',''),speech,sum(durations))
             for n in range(round(duration * 30)):
                 display_card=seg['meta']['card']
                 display_time=n/30
+                if v3:
+                    unified.r3.set_program_clock(program_frame/30)
                 frame=(unified.frame(display_time,display_card,focus_card,cover=i==0,duration=duration,ticker_line='') if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
                                    style=seg['meta']['card'].get('visual_style','stadium'),
                                    team_id=background_team(seg['meta']['card'])))

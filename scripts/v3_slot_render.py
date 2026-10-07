@@ -39,7 +39,7 @@ def heading(spec):
 def paginate(spec,rows,replies=None):
     """札の実寸で分割。大きすぎる引用も全文を次のページへ分ける。"""
     base,second,_=r3.colors(spec.get('team_id'))
-    _,_,top=heading(spec);bottom=1216;width=r3.SAFE_RIGHT-r3.LEFT
+    _,_,top=heading(spec);bottom=r3.CONTENT_BOTTOM;width=r3.SAFE_RIGHT-r3.LEFT
     pages=[[]];y=top
     def parts(head,body,reply):
         try:
@@ -72,7 +72,7 @@ def paginate(spec,rows,replies=None):
 def check_pages(spec,rows,replies=None):
     _,_,top=heading(spec)
     return [box for page in paginate(spec,rows,replies) for cell in page
-            if not (r3.LEFT<= (box:=cell['box'])[0]<box[2]<=r3.SAFE_RIGHT and top<=box[1]<box[3]<=1216)]
+            if not (r3.LEFT<= (box:=cell['box'])[0]<box[2]<=r3.SAFE_RIGHT and top<=box[1]<box[3]<=r3.CONTENT_BOTTOM)]
 
 
 def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=None, page_seconds=4):
@@ -96,7 +96,7 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
     lines,size,top=heading(spec)
     for i, line in enumerate(lines):
         r3._text(d,(r3.LEFT, 250+i*(size+10)), line, font=r3.font(size), fill=r3.INK)
-    layer=Image.new('RGBA',(r3.SAFE_RIGHT-r3.LEFT,1216-top),(0,0,0,0))
+    layer=Image.new('RGBA',(r3.SAFE_RIGHT-r3.LEFT,r3.CONTENT_BOTTOM-top),(0,0,0,0))
     for j,cell in enumerate(pages[selected]):
         i=cell['row'];a,b=cell['fraction'];card=cell['card']
         if times is not None:
