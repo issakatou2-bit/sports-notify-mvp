@@ -5,7 +5,7 @@ on:
       mode:
         description: '固定材料で確かめる日次枠（投稿しない）'
         type: choice
-        options: [players, voices]
+        options: [players, voices, press]
         default: players
 permissions:
   contents: read
@@ -16,6 +16,7 @@ jobs:
     env:
       COLLESPO_PLAYERS_DESIGN: bignumber
       COLLESPO_COMMENTS_DESIGN: comments
+      COLLESPO_PRESS_DESIGN: v3
       PREVIEW_MODE: ${{ inputs.mode || 'players' }}
       COLLESPO_BGM: everyday
       ANTHROPIC_API_KEY: ''
