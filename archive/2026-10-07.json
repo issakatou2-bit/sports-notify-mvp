@@ -1,0 +1,349 @@
+{
+  "generated_at": "2026-10-07T09:54:04.104932+00:00",
+  "games": [
+    {
+      "game_id": "849833",
+      "league": "MLB",
+      "home_team_id": "145",
+      "away_team_id": "114",
+      "home_team_name": "ホワイトソックス",
+      "away_team_name": "ガーディアンズ",
+      "home_abbr": "CWS",
+      "away_abbr": "CLE",
+      "home_color": "#27251F",
+      "away_color": "#00385D",
+      "matchup": "ガーディアンズ vs ホワイトソックス",
+      "abbr_matchup": "CLE vs CWS",
+      "start_time_jst": "10/08 05:00",
+      "home_division": "ALC",
+      "away_division": "ALC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "村上宗隆"
+      ],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 1.0,
+        "streak": 1,
+        "wins": 84,
+        "losses": 78,
+        "last_ten": "7勝3敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 85,
+        "losses": 77,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Sean Newcomb",
+        "name_en": "Sean Newcomb",
+        "player_id": "656794",
+        "era": "3.09",
+        "wins": 2,
+        "losses": 5,
+        "strikeouts": 84
+      },
+      "away_probable": {
+        "name": "Daniel Espino",
+        "name_en": "Daniel Espino",
+        "player_id": "682982",
+        "era": "4.11",
+        "wins": 0,
+        "losses": 0,
+        "strikeouts": 25
+      },
+      "venue_name": "Rate Field",
+      "venue_jp": "レート・フィールド",
+      "venue_note": "ホワイトソックスの本拠地。旧称ギャランティード・レート・フィールド",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.98点で、MLB30球場中9位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ホワイトソックスには村上宗隆が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第3戦(ホワイトソックスが2勝0敗で王手、ガーディアンズは負ければ敗退)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": 3,
+        "games_in_series": 5,
+        "home_wins_in_stretch": 2,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "notification_hook": "王手をかけられたホワイトソックス、村上宗隆とNewcombの好投でシリーズ奪還なるか",
+      "availability_checked_at": "2026-10-07T09:52:52.946971+00:00"
+    },
+    {
+      "game_id": "849822",
+      "league": "MLB",
+      "home_team_id": "144",
+      "away_team_id": "119",
+      "home_team_name": "ブレーブス",
+      "away_team_name": "ドジャース",
+      "home_abbr": "ATL",
+      "away_abbr": "LAD",
+      "home_color": "#CE1141",
+      "away_color": "#005A9C",
+      "matchup": "ドジャース vs ブレーブス",
+      "abbr_matchup": "LAD vs ATL",
+      "start_time_jst": "10/08 07:00",
+      "home_division": "NLE",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "大谷翔平",
+        "佐々木朗希",
+        "山本由伸"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 94,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 3,
+        "wins": 100,
+        "losses": 62,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Tyler Mahle",
+        "name_en": "Tyler Mahle",
+        "player_id": "641816",
+        "era": "3.99",
+        "wins": 7,
+        "losses": 10,
+        "strikeouts": 137
+      },
+      "away_probable": {
+        "name": "Tyler Glasnow",
+        "name_en": "Tyler Glasnow",
+        "player_id": "607192",
+        "era": "3.53",
+        "wins": 5,
+        "losses": 2,
+        "strikeouts": 98
+      },
+      "venue_name": "Truist Park",
+      "venue_jp": "トゥルーイスト・パーク",
+      "venue_note": "2017年開場。球場の外に商業施設が一体で作られた、比較的新しい形の球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.59点で、MLB30球場中16位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 7,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ドジャースには大谷翔平・佐々木朗希・山本由伸が所属",
+          "weight": 2
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第4戦(ドジャースが2勝1敗で王手、ブレーブスは負ければ敗退)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": 4,
+        "games_in_series": 5,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 2
+      },
+      "log_notes": [],
+      "ai_summary": "ドジャースがナ・リーグ西地区で100勝62敗の成績を挙げて地区優勝を決めており、【地区シリーズで王手をかけている】状況下での一戦になる。一方、ブレーブスは94勝68敗でナ・リーグ東地区の優勝チームであり、この試合に敗れるとシリーズが終了する。ドジャース先発のTyler Glasnowは防御率3.53で5勝2敗、ブレーブス先発のTyler Mahleは防御率3.99で7勝10敗と、両先発の成績に差がある投げ合いがどうなるかに注目したい。",
+      "notification_hook": "王手のドジャースvs敗退危機のブレーブス。Glasnowの防御率3.53の投球が決め手になるか。",
+      "availability_checked_at": "2026-10-07T09:52:52.946971+00:00"
+    },
+    {
+      "game_id": "849838",
+      "league": "MLB",
+      "home_team_id": "147",
+      "away_team_id": "139",
+      "home_team_name": "ヤンキース",
+      "away_team_name": "レイズ",
+      "home_abbr": "NYY",
+      "away_abbr": "TB",
+      "home_color": "#003087",
+      "away_color": "#092C5C",
+      "matchup": "レイズ vs ヤンキース",
+      "abbr_matchup": "TB vs NYY",
+      "start_time_jst": "10/08 09:00",
+      "home_division": "ALE",
+      "away_division": "ALE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 4.5,
+        "streak": 1,
+        "wins": 93,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 98,
+        "losses": 64,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Max Fried",
+        "name_en": "Max Fried",
+        "player_id": "608331",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Nick Martinez",
+        "name_en": "Nick Martinez",
+        "player_id": "607259",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Yankee Stadium",
+      "venue_jp": "ヤンキー・スタジアム",
+      "venue_note": "右翼が浅く、左打者の本塁打が出やすい形状",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.83点で、MLB30球場中13位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 5,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第3戦(レイズが2勝0敗で王手、ヤンキースは負ければ敗退)",
+          "weight": 5
+        }
+      ],
+      "log_notes": [],
+      "availability_checked_at": "2026-10-07T09:52:52.946971+00:00"
+    },
+    {
+      "game_id": "849827",
+      "league": "MLB",
+      "home_team_id": "135",
+      "away_team_id": "158",
+      "home_team_name": "パドレス",
+      "away_team_name": "ブリュワーズ",
+      "home_abbr": "SD",
+      "away_abbr": "MIL",
+      "home_color": "#2F241D",
+      "away_color": "#12284B",
+      "matchup": "ブリュワーズ vs パドレス",
+      "abbr_matchup": "MIL vs SD",
+      "start_time_jst": "10/08 11:00",
+      "home_division": "NLW",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "松井裕樹"
+      ],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 9.0,
+        "streak": 2,
+        "wins": 91,
+        "losses": 71,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 5,
+        "wins": 103,
+        "losses": 59,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Walker Buehler",
+        "name_en": "Walker Buehler",
+        "player_id": "621111",
+        "era": "4.63",
+        "wins": 9,
+        "losses": 6,
+        "strikeouts": 131
+      },
+      "away_probable": null,
+      "venue_name": "Petco Park",
+      "venue_jp": "ペトコ・パーク",
+      "venue_note": "広い外野と海沿いの気候により、投手有利とされる球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.0点で、MLB30球場中29位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第4戦(ブリュワーズが2勝1敗で王手、パドレスは負ければ敗退)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": 3,
+        "games_in_series": 5,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 2
+      },
+      "highlight_title": "Brewers vs. Padres NLDS Game 3 Shorts Recap",
+      "highlight_video_id": "SzbX3qKBjpo",
+      "log_notes": [],
+      "notification_hook": "王手をかけたブリュワーズ、パドレスの敗退懸ける第4戦",
+      "availability_checked_at": "2026-10-07T09:52:52.946971+00:00"
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}
