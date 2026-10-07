@@ -26,10 +26,12 @@ class PressV3(unittest.TestCase):
         self.assertEqual(nar, old)
 
     def test_all_screens_quote_the_exact_selected_body(self):
+        import review_render_v3 as r3
         data, nar = self.data(); words = [s["text"] for s in nar["segments"]]
         with patch.dict(os.environ, {"COLLESPO_PRESS_DESIGN": "v3"}):
             design = d.prepare(data, nar, "press")
-        self.assertEqual([s["text"] for s in nar["segments"]], words)
+        self.assertEqual([s["text"] for s in nar["segments"][:-1]], words[:-1])
+        self.assertEqual(nar['segments'][-1]['text'],r3.OUTRO_TEXT)
         for seg in nar["segments"]:
             self.assertEqual(seg["speaker"], 2)
             self.assertEqual(d.frame(3, seg, design, 18).size, (1080, 1920))

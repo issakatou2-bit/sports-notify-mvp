@@ -1465,6 +1465,9 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 読み手の交代はしない（順位表を読む12行が全部台詞になると、
         # かえって遅くなる。1枚目だけ掛け合いにしてある）。
         bookend(segments)
+    if mode in ('players','voices','press'):
+        import content_v3
+        segments=content_v3.closing(segments,mode)
     return {"label": day, "segments": segments}
 
 

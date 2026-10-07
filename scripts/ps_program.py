@@ -472,7 +472,16 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
     if program is None:
         return None
     program['segments'][0]['text'] = 'コレスポ。' + program['segments'][0]['text']
-    program['segments'][-1]['text'] += 'コレスポ。'
+    if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
+        import review_render_v3 as r3
+        first=program['segments'][0]['meta']['card']
+        card=dict(layout='facts',date=first['date'],sport='MLB',label='コレスポ',headline='コレスポ',items=[],
+                  source_url=ctx['source_url'],source_label='MLB公式',outro=True,lineup_kind='daily' if slot=='forecast' else 'postseason')
+        ending=segment(card,r3.OUTRO_TEXT)
+        ending['kind']='outro'
+        program['segments'].append(ending)
+    else:
+        program['segments'][-1]['text'] += 'コレスポ。'
     edition = content_key(program)
     if slot=='forecast' and before and os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
         old_program=forecast(ctx,games,rows,now,modern=False)
@@ -602,9 +611,6 @@ def movie(program, audio_dir, out):
             for n in range(round(duration * 30)):
                 display_card=seg['meta']['card']
                 display_time=n/30
-                if v3 and i==len(program['segments'])-1 and n/30>=max(0,speech-.6) and callable(getattr(unified.r3,'outro',None)):
-                    display_card=dict(display_card,outro=True)
-                    display_time-=max(0,speech-.6)
                 frame=(unified.frame(display_time,display_card,focus_card,cover=i==0,duration=duration,ticker_line='') if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
                                    style=seg['meta']['card'].get('visual_style','stadium'),
                                    team_id=background_team(seg['meta']['card'])))

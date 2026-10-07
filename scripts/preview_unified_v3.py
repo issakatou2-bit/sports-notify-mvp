@@ -24,12 +24,14 @@ def read(name):
     return json.loads((ROOT/name).read_text(encoding='utf-8'))
 
 
-def sheet(frames, labels, path):
-    out=Image.new('RGB',(540*len(frames),1000),'#101820')
+def sheet(frames, labels, path,columns=None):
+    columns=columns or len(frames)
+    out=Image.new('RGB',(540*columns,1000*((len(frames)+columns-1)//columns)),'#101820')
     d=ImageDraw.Draw(out)
     for i,(image,label) in enumerate(zip(frames,labels)):
-        out.paste(image.resize((540,960)),(i*540,40))
-        d.text((i*540+16,7),label,font=r3.font(22),fill='white')
+        x=(i%columns)*540;y=(i//columns)*1000
+        out.paste(image.resize((540,960)),(x,y+40))
+        d.text((x+16,y+7),label,font=r3.font(22),fill='white')
     out.save(path)
 
 
@@ -50,8 +52,8 @@ def main():
     scenes=bn.scenes_from_morning(data,nar)
     errors=bn.check_scenes(scenes,nar,data)
     if errors:raise ValueError(errors)
-    chosen=scenes[:4]
-    sheet([bn.scene(3,s) for s in chosen],['成績 表紙','順位表','1位 詳細','2位以下'],args.out/'design-v3-players.png')
+    chosen=scenes[:4]+[scenes[-1]]
+    sheet([bn.scene(3,s) for s in chosen],['成績 表紙','順位表','1位 詳細','2位以下','共通の締め'],args.out/'design-v3-players.png')
     report={'players': {'segments':len(nar['segments']),'checks':errors}}
     for mode, filename in [('voices','local_voices-preview.json'),('press','local_reporters-preview.json')]:
         material=read('scripts/fixtures/comment/'+filename)
@@ -66,6 +68,7 @@ def main():
         else:
             quotes=[s for s in nar['segments'] if any(v.get('read') and not v.get('fact') for v in s['meta'].get('quote_rows',[]))]
             segments=[quotes[0],next(s for s in quotes if s['kind']=='headlines'),next(s for s in reversed(quotes) if s['kind']=='reporters')];times=[3,3,3]
+        segments.append(nar['segments'][-1]);times.append(3)
         sheet([daily_v3.frame(t,s,design,20) for t,s in zip(times,segments)],
               [mode+' '+s['kind']+f' {t}秒' for t,s in zip(times,segments)],args.out/f'design-v3-{mode}.png')
         report[mode]={'segments':len(nar['segments']),'text_unchanged':True}
@@ -80,19 +83,14 @@ def ps_preview(out):
         with patch.dict(os.environ,{'COLLESPO_PS_DESIGN':'v3'}):
             program=ps.prepare(saved['snapshot'],saved['evidence'],slot,datetime.fromisoformat(saved['evidence']['retrieved_at']),saved['ledger'])
         ps.check_program(program);lead=unified.lead_card(program);line=unified.program_ticker(program)
-        for seg,t in [(program['segments'][0],3),(program['segments'][1],.8),(program['segments'][1],3)]:
+        selected=([(program['segments'][0],3),(program['segments'][1],3),(program['segments'][1],19),(program['segments'][-1],3)]
+                  if slot=='forecast' else [(s,3) for s in program['segments']])
+        for seg,t in selected:
             frames.append(unified.frame(t,seg['meta']['card'],lead,cover=seg is program['segments'][0],ticker_line=line));labels.append(slot+f' {t}秒')
-        previous=unified.frame(20,program['segments'][0]['meta']['card'],lead,ticker_line=line).tobytes()
-        current=unified.frame(.1,program['segments'][1]['meta']['card'],lead,ticker_line='')
-        frames.append(Image.frombytes('RGB',(1080,1920),unified.transition(previous,current,2,6,20.1,line)))
-        labels.append(slot+' 切替0.1秒')
         report[slot]={'segments':len(program['segments']),'edition_key':program['edition_key'],'ticker':line}
         if slot=='situation':
-            for seg in program['segments'][2:]:
-                frames.append(unified.frame(3,seg['meta']['card'],lead,ticker_line=line))
-                labels.append('情勢 '+seg['meta']['card']['headline'].replace('\n',''))
-            report[slot]['series_included']=[s['meta']['card']['headline'].replace('\n','') for s in program['segments']]
-    sheet(frames,labels,out/'design-v3-ps.png')
+            report[slot]['series_included']=[s['meta']['card']['headline'].replace('\n','') for s in program['segments'] if s['kind']!='outro']
+    sheet(frames,labels,out/'design-v3-ps.png',columns=4)
     return report
 
 

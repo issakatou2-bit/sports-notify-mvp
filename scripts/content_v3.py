@@ -6,6 +6,21 @@ import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 
 
+def closing(segments,mode):
+    choices={'players':('COLLESPO_PLAYERS_DESIGN','bignumber','morning'),
+             'voices':('COLLESPO_COMMENTS_DESIGN','comments','morning_voices'),
+             'press':('COLLESPO_PRESS_DESIGN','v3','morning_press')}
+    choice=choices.get(mode)
+    if choice and os.getenv(choice[0],'legacy')==choice[1]:
+        import review_render_v3 as r3
+        for seg in segments:
+            if seg['kind']=='outro':
+                seg['text']=r3.OUTRO_TEXT
+                seg['meta']=dict(seg.get('meta') or {},lineup_kind=choice[2])
+                seg['speaker']=2
+    return segments
+
+
 def players(segments, roster, day):
     if os.getenv('COLLESPO_PLAYERS_DESIGN','legacy') != 'bignumber' or not roster:
         return segments

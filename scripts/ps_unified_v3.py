@@ -87,7 +87,6 @@ def lead_card(program):
 
 
 def spec(card, focus=None, ticker_line=None):
-    from ps_render_template import background_team
     chosen = focus or card
     board = chosen.get('scoreboard') or {}
     clock = next((m.group() for _, body in rows(chosen) if (m := re.search(r'\d{1,2}:\d{2}', body))), '')
@@ -99,7 +98,7 @@ def spec(card, focus=None, ticker_line=None):
             unit = '' if hour[2] else '時'
     chips = [{'label': r['name'], 'score': str(r['wins'])+'勝'} for r in board.get('rows', [])]
     chips += [{'label': h, 'score': b} for h,b in rows(chosen) if '先発' in h][:2]
-    return {'team_id': background_team(chosen), 'heading': card['headline'].replace('\n','　'),
+    return {'team_id': None, 'heading': card['headline'].replace('\n','　'),
             'page': f"{card['card_index']}/{card['card_total']}" if card.get('card_index') else None,
             'hook': chosen['headline'].replace('\n','　'),
             'v3': {'who': chosen['headline'].replace('\n','　'), 'big': clock, 'unit': unit,
@@ -110,8 +109,8 @@ def spec(card, focus=None, ticker_line=None):
 def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
     view = spec(card, focus, ticker_line)
     if card.get('outro'):
-        view['text']='コレスポ。'
-        closing=common.outro(t,view,'コレスポ')
+        view['text']=r3.OUTRO_TEXT
+        closing=common.outro(t,view,card.get('lineup_kind','daily'))
         if closing is not None:
             return closing
     if card['layout']=='schedule':
@@ -127,6 +126,8 @@ def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
 
 
 def check_layout(card):
+    if card.get('outro'):
+        return {'pages':1,'outro':True}
     view=spec(card)
     if card['layout']=='schedule':
         if len(card['items'])>4:
@@ -142,11 +143,14 @@ def transition(previous, image, index, fade_frames, elapsed, ticker_line):
     """画面を混ぜ終わった後に帯を一度だけ描く。帯の時刻は番組全体で連続。"""
     from video_common import crossfade
     result = r3.Image.frombytes('RGB',(1080,1920),crossfade(previous,image,index,fade_frames,(1080,1920)))
-    r3.ticker(result,elapsed,ticker_line,once=True)
+    if not image.info.get('v3_outro'):
+        r3.ticker(result,elapsed,ticker_line,once=True)
     return result.tobytes()
 
 
 def cues(card, focus=None, cover=False, duration=20):
+    if card.get('outro'):
+        return r3.outro_cues(card.get('lineup_kind','daily'))
     if card.get('card_index') is None:
         return r3.cues('intro', spec(card, focus))
     result=common.cues(rows(card))

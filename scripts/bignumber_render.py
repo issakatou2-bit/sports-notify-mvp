@@ -697,7 +697,7 @@ def scene(t, scene_spec, team_id=None):
     view = unified_spec(spec)
     if spec.get('kind') == 'outro':
         view['text']=spec.get('say','コレスポ。')
-        closing=common.outro(t,view,'日本人選手の成績')
+        closing=common.outro(t,view,'morning')
         if closing is not None:
             return closing
     if spec.get('ranking'):
@@ -730,6 +730,8 @@ def unified_spec(spec):
 
 # ------------------------------------------------------------------ 効果音の時刻
 def cues(scene_spec):
+    if scene_spec.get('kind')=='outro':
+        return r3.outro_cues('morning')
     """その場面の効果音 [(秒, 種類, 案, 追加の音量dB)]。描画と同じ時刻表・同じ配置から。"""
     if (scene_spec.get('rank') or 0) > 1 or not scene_spec.get('big') or scene_spec.get('cards'):
         rows = [(c.get('title',''), c.get('body','')) for c in scene_spec.get('cards', [])]

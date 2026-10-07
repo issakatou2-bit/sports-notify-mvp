@@ -63,7 +63,7 @@ def team_id(seg, reporters):
 def frame(t, seg, reporters, duration):
     rows = cr.reading_times(bubbles(seg, reporters), seg["text"], duration)
     end = seg["kind"] == "outro"
-    return cr.unified_comments(t, rows, team_id(seg, reporters), "", title="コレスポ" if end else "現地の報道",
+    return cr.unified_comments(t, rows, None, "", title="コレスポ" if end else "現地の報道",
                        live="" if end else "報道からの引用", backdrop=r3.background,
                        source_lines=("音声：VOICEVOX:四国めたん",) if end else ("引用：各札の報道元（訳：コレスポ）","コレスポの見解ではありません"))
 

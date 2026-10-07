@@ -60,7 +60,9 @@ class Timing(unittest.TestCase):
         kinds = [k for _, k, _, _ in c]
         self.assertIn("roll", kinds)
         self.assertIn("stop", kinds)
-        self.assertEqual(kinds.count("pop"), 2)                      # 勝った札ごとに○
+        self.assertEqual(kinds.count("pop"), 0)                      # 説明の無い○を描かない
+        explained={**SPEC,'v3':{**SPEC['v3'],'chips':[dict(c,win_explanation='勝利') for c in SPEC['v3']['chips']]}}
+        self.assertEqual(sum(k=='pop' for _,k,_,_ in r3.cues('intro',explained)),2)
         stop = next(t for t, k, _, _ in c if k == "stop")
         self.assertAlmostEqual(stop, r3.T_ROLL[1] - 0.04)
 

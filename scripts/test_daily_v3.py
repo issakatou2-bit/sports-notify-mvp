@@ -25,11 +25,13 @@ class DailyV3(unittest.TestCase):
             self.assertIsNone(d.prepare(data, nar, "press"))
         self.assertEqual(nar, before)
 
-    def test_full_program_metan_without_changing_the_words(self):
+    def test_full_program_metan_preserves_body_and_uses_shared_closing(self):
+        import review_render_v3 as r3
         data, nar = self.data(); words = [s["text"] for s in nar["segments"]]
         with patch.dict(os.environ, {"COLLESPO_COMMENTS_DESIGN": "comments"}):
             design = d.prepare(data, nar, "voices")
-        self.assertEqual([s["text"] for s in nar["segments"]], words)
+        self.assertEqual([s["text"] for s in nar["segments"][:-1]], words[:-1])
+        self.assertEqual(nar['segments'][-1]['text'],r3.OUTRO_TEXT)
         for seg in nar["segments"]:
             self.assertEqual((seg["speaker"], seg["meta"]["who"]), (2, "四国めたん"))
             im = d.frame(3.0, seg, design, 14.0)
@@ -58,11 +60,12 @@ class DailyV3(unittest.TestCase):
 
     def test_existing_sound_mixer_and_offsets(self):
         import sound_mix
+        import review_render_v3 as r3
         design = {"mode": "voices", "voices": {}}
         segs = [{"kind": "intro", "speaker": 2}, {"kind": "outro", "speaker": 2}]
         with patch.object(sound_mix, "mix_file", return_value="mixed") as mix:
             self.assertEqual(d.mix("voice.wav", segs, [5, 6], design, Path("build")), "mixed")
-        self.assertEqual([c[0] for c in mix.call_args.kwargs["cues"]], [0.0, 5.0])
+        self.assertEqual([c[0] for c in mix.call_args.kwargs["cues"]], [0.0]+[5+at for at,_,_,_ in r3.outro_cues('morning_voices')])
         self.assertEqual(mix.call_args.kwargs["bgm_path"].name, sound_mix.DEFAULT_BGM + ".mp3")
 
 

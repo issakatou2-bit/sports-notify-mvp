@@ -24,13 +24,17 @@ def prepare(data, narration, mode):
     for seg in narration["segments"]:
         seg["speaker"] = 2
         seg.setdefault("meta", {})["who"] = "四国めたん"
+        if seg['kind']=='outro':
+            import review_render_v3 as r3
+            seg['text']=r3.OUTRO_TEXT
+            seg['meta']['lineup_kind']='morning_press' if press_on else 'morning_voices'
     return {"mode": mode, "voices": vd, "reporters": data.get("reporters") or {}}
 
 
 def frame(t, seg, design, duration):
     if seg['kind']=='outro':
         import v3_slot_render as common
-        closing=common.outro(t,{'heading':'コレスポ','v3':{},'text':seg['text']},'現地の報道' if design['mode']=='press' else '現地のコメント')
+        closing=common.outro(t,{'heading':'コレスポ','v3':{},'text':seg['text']},'morning_press' if design['mode']=='press' else 'morning_voices')
         if closing is not None:
             return closing
     if design["mode"] == "press":
@@ -63,7 +67,10 @@ def mix(audio, segments, durations, design, out_dir):
     cues, start = [], 0.0
     for seg, dur in zip(segments, durations):
         speech = float(seg.get('duration') or dur)
-        if design["mode"] == "press":
+        if seg['kind']=='outro':
+            import review_render_v3 as r3
+            local=r3.outro_cues('morning_press' if design['mode']=='press' else 'morning_voices')
+        elif design["mode"] == "press":
             import press_v3
             local = press_v3.cues(seg, design["reporters"], speech)
         else:

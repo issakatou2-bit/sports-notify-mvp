@@ -25,9 +25,9 @@ def item(head, body, width, base, second, reply=False, height=900):
                          quote_height=height if str(body).startswith('「') else None)
 
 
-def outro(t,spec,label):
+def outro(t,spec,exclude,credit='音声: VOICEVOX:四国めたん　データ: MLB Stats API'):
     renderer=getattr(r3,'outro',None)
-    return renderer(t,spec,label) if callable(renderer) else None
+    return renderer(t,spec,exclude,credit) if callable(renderer) else None
 
 
 def heading(spec):
@@ -95,7 +95,7 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
     r3._header(d,label,f'{selected+1}/{len(pages)}' if len(pages)>1 else spec.get('page'),second)
     lines,size,top=heading(spec)
     for i, line in enumerate(lines):
-        d.text((r3.LEFT, 250+i*(size+10)), line, font=r3.font(size), fill=r3.INK)
+        r3._text(d,(r3.LEFT, 250+i*(size+10)), line, font=r3.font(size), fill=r3.INK)
     layer=Image.new('RGBA',(r3.SAFE_RIGHT-r3.LEFT,1216-top),(0,0,0,0))
     for j,cell in enumerate(pages[selected]):
         i=cell['row'];a,b=cell['fraction'];card=cell['card']
@@ -105,12 +105,18 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
             if t<at:
                 continue
             if t>=finished:
+                original=card
                 card=ImageEnhance.Brightness(card).enhance(.72)
+                card.info.update(original.info)
             progress=1
         else:
             progress=r3.back_out((t-selected*page_seconds-r3.T_CARD0-j*r3.T_CARD_GAP)/r3.SLIDE)
         r3._paste_card(layer,card,0,cell['box'][1]-top,progress)
     im.paste(layer,(r3.LEFT,top),layer)
+    for entry in layer.info.get('v3_layout',[]):
+        a,b,c,e=entry['box']
+        r3.record_box(im,entry['role'],(a+r3.LEFT,b+top,c+r3.LEFT,e+top),entry['text'])
+    im.info['v3_card_contents']=layer.info.get('v3_card_contents',[])
     v3 = spec.get('v3') or {}
     r3.ticker(im, t, v3.get('ticker'), once=v3.get('ticker_once',False))
     r3.source(d, source_text, second)
@@ -122,17 +128,18 @@ def ranking(t,spec,rows,source_text):
     im=r3.background(t,spec.get('team_id'));d=ImageDraw.Draw(im)
     base,second,_=r3.colors(spec.get('team_id'))
     r3._header(d,'日本人選手の成績',None,second)
-    d.text((r3.LEFT,250),'きょうの勝利貢献順位',font=r3.font(48),fill=r3.INK)
+    r3._text(d,(r3.LEFT,250),'きょうの勝利貢献順位',font=r3.font(48),fill=r3.INK)
     for i,row in enumerate(rows[:5]):
         y=350+i*150
+        r3.record_box(im,'card',(r3.LEFT,y,r3.SAFE_RIGHT,y+128))
         d.rounded_rectangle((r3.LEFT,y,r3.SAFE_RIGHT,y+128),radius=20,fill=base,outline=second,width=2)
-        d.text((r3.LEFT+20,y+38),str(row['rank']),font=r3.num_font(48),fill=r3.GOLD)
-        d.text((r3.LEFT+82,y+40),row['name'],font=r3.font(36),fill=r3.INK)
+        r3._text(d,(r3.LEFT+20,y+38),str(row['rank']),font=r3.num_font(48),fill=r3.GOLD)
+        r3._text(d,(r3.LEFT+82,y+40),row['name'],font=r3.font(36),fill=r3.INK)
         team_base,team_second,_=r3.colors(row.get('team_id'))
         r3._badge(d,r3.LEFT+355,y+26,row['abbr'],team_base,team_second)
         lines,size=r3._lines(d,row['score'],40,290,2)
         for j,line in enumerate(lines):
-            d.text((r3.LEFT+530,y+20+j*(size+6)),line,font=r3.font(size),fill=r3.GOLD)
+            r3._text(d,(r3.LEFT+530,y+20+j*(size+6)),line,font=r3.font(size),fill=r3.GOLD)
     r3.ticker(im,t,(spec.get('v3') or {}).get('ticker'))
     r3.source(d,source_text,second);r3.presenter(im,t)
     return im
@@ -144,19 +151,20 @@ def schedule(t,spec,rows,label,source_text):
     im=r3.background(t,None);d=ImageDraw.Draw(im)
     base,second,_=r3.colors(None)
     r3._header(d,label,None,second)
-    d.text((r3.LEFT,250),'明日の全試合の一覧',font=r3.font(48),fill=r3.INK)
+    r3._text(d,(r3.LEFT,250),'明日の全試合の一覧',font=r3.font(48),fill=r3.INK)
     for i,row in enumerate(rows):
         y=340+i*180
+        r3.record_box(im,'card',(r3.LEFT,y,r3.SAFE_RIGHT,y+156))
         d.rounded_rectangle((r3.LEFT,y,r3.SAFE_RIGHT,y+156),radius=20,fill=base,outline=second,width=2)
         clock=row['when'].split()[-1]
-        d.text((r3.LEFT+24,y+24),clock,font=r3.num_font(48),fill=r3.GOLD)
+        r3._text(d,(r3.LEFT+24,y+24),clock,font=r3.num_font(48),fill=r3.GOLD)
         pair=row['home']+'対'+row['away']
         lines,size=r3._lines(d,pair,38,620,1)
-        d.text((r3.LEFT+210,y+24),lines[0],font=r3.font(size),fill=r3.INK)
+        r3._text(d,(r3.LEFT+210,y+24),lines[0],font=r3.font(size),fill=r3.INK)
         score=(f'{row["home"]} {row["home_wins"]}勝　{row["away"]} {row["away_wins"]}勝'
                if 'home_wins' in row and 'away_wins' in row else 'シリーズ勝敗は確認中')
         lines,size=r3._lines(d,score,32,820,1)
-        d.text((r3.LEFT+24,y+92),lines[0],font=r3.font(size),fill=second)
+        r3._text(d,(r3.LEFT+24,y+92),lines[0],font=r3.font(size),fill=second)
     v3=spec.get('v3') or {}
     r3.ticker(im,t,v3.get('ticker'),once=v3.get('ticker_once',False))
     r3.source(d,source_text,second);r3.presenter(im,t)

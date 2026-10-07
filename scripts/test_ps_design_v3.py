@@ -34,7 +34,7 @@ class DesignTests(unittest.TestCase):
             self.assertEqual(original['game_ids'],modern['game_ids'])
             for old,new in zip(original['segments'],modern['segments']):
                 if new['meta']['card']['layout']!='schedule':
-                    self.assertEqual(old['text'],new['text'])
+                    self.assertEqual(old['text'].removesuffix('コレスポ。'),new['text'])
                 self.assertEqual(new['speaker'],2)
                 card=copy.deepcopy(new['meta']['card']);card.pop('visual_style')
                 if card['layout']!='schedule':

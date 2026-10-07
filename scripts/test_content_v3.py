@@ -75,7 +75,8 @@ class Content(unittest.TestCase):
             with patch.dict(os.environ,{'COLLESPO_COMMENTS_DESIGN':'comments','COLLESPO_PRESS_DESIGN':'v3'}):
                 after=g.build_narration(data,mode)
                 daily_v3.prepare(data,after,mode)
-            self.assertEqual(''.join(s['text'] for s in before['segments']),''.join(s['text'] for s in after['segments']))
+            self.assertEqual(''.join(s['text'] for s in before['segments'] if s['kind']!='outro'),''.join(s['text'] for s in after['segments'] if s['kind']!='outro'))
+            self.assertEqual(after['segments'][-1]['text'],r3.OUTRO_TEXT)
             read_quotes=[]
             for seg in after['segments']:
                 rows=seg.get('meta',{}).get('quote_rows',[])
@@ -111,18 +112,19 @@ class Content(unittest.TestCase):
         with patch.dict(os.environ,{'COLLESPO_PS_DESIGN':'v3'}):
             program=ps.prepare(saved['snapshot'],saved['evidence'],'situation',stamp,saved['ledger'])
         active=[r for r in program['series'] if not r['over'] and len(r['teams'])==2]
-        displayed=[set(r['name'] for r in s['meta']['card']['scoreboard']['rows']) for s in program['segments']]
+        displayed=[set(r['name'] for r in s['meta']['card']['scoreboard']['rows']) for s in program['segments'] if s['meta']['card'].get('scoreboard')]
         self.assertEqual({r['league_jp'] for r in active},{'ア・リーグ','ナ・リーグ'})
         self.assertTrue(all(set(t['name'] for t in row['teams']) in displayed for row in active))
         ps.check_program(program)
 
     def test_shared_outro_adapter_and_fallback(self):
         spec={'heading':'コレスポ'}
-        self.assertIsNone(common.outro(1,spec,'コレスポ'))
+        with patch.object(r3,'outro',None):
+            self.assertIsNone(common.outro(1,spec,'morning'))
         sentinel=object()
         with patch.object(r3,'outro',return_value=sentinel,create=True) as end:
             self.assertIs(common.outro(1,spec,'コレスポ'),sentinel)
-            end.assert_called_once_with(1,spec,'コレスポ')
+            end.assert_called_once_with(1,spec,'コレスポ','音声: VOICEVOX:四国めたん　データ: MLB Stats API')
             narration={'kind':'outro','text':'コレスポ。'}
             self.assertIs(daily_v3.frame(1,narration,{'mode':'voices'},5),sentinel)
             self.assertIs(bn.scene(1,{'kind':'outro','head':'コレスポ'}),sentinel)
