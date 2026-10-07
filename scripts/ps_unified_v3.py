@@ -115,6 +115,13 @@ def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
             return closing
     if card['layout']=='schedule':
         return common.schedule(t,view,card['items'],'PS予告','出典：'+card.get('source_label','MLB公式日程'))
+    if r3.LOOK == 'v4':
+        from short_v4_cards import focus as draw_focus, situation
+        if card.get('label')=='PS情勢' and card.get('scoreboard'):
+            return situation(t,card,spec(card,card,ticker_line))
+        chosen=(focus or card) if card.get('card_index') is None else card
+        if chosen.get('scoreboard') and (card.get('card_index') is None or t<min(8,duration*.5)):
+            return draw_focus(t,chosen,spec(chosen,chosen,ticker_line))
     if card.get('card_index') is None and not card.get('outro'):
         im = r3.intro(t, view, card.get('label','PS'))
         r3.source(r3.ImageDraw.Draw(im), '出典：'+card.get('source_label','説明欄'), r3.colors(view['team_id'])[1])

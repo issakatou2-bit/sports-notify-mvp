@@ -502,6 +502,13 @@ def apply_design(program):
     choice=os.environ.get('COLLESPO_PS_DESIGN','legacy')
     if choice not in {'legacy','v3'}:raise ValueError('COLLESPO_PS_DESIGNの設定が不明です')
     if choice=='v3':
+        import review_render_v3 as r3
+        if r3.LOOK == 'v4':
+            # 表示専用の一覧。台本とedition_keyを作った後なので配信判定は変えない。
+            cards=[s['meta']['card'] for s in program['segments']
+                   if s['meta']['card'].get('label')=='PS情勢' and s['meta']['card'].get('scoreboard')]
+            overview=[{k:copy.deepcopy(c[k]) for k in ('scoreboard','items','subhead')} for c in cards]
+            for card in cards:card['v4_series']=overview
         for seg in program['segments']:
             seg['meta'].setdefault('legacy_speaker',seg['speaker'])
             seg['speaker']=2
@@ -514,12 +521,18 @@ def content_key(program):
         seg['meta']['card'].pop('date', None)
         # 外観と新しい声は編集内容ではない。旧版の台帳キーと完全一致させる。
         seg['meta']['card'].pop('visual_style',None)
+        seg['meta']['card'].pop('v4_series',None)
         if 'legacy_speaker' in seg['meta']:
             seg['speaker']=seg['meta'].pop('legacy_speaker')
     return hashlib.sha256(json.dumps(payload,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
 
 
 def check_program(program):
+    cards=[s['meta']['card'] for s in program['segments']
+           if s['meta']['card'].get('label')=='PS情勢' and s['meta']['card'].get('scoreboard')]
+    overview=[{k:copy.deepcopy(c[k]) for k in ('scoreboard','items','subhead')} for c in cards]
+    if any(c.get('v4_series',overview)!=overview for c in cards):
+        raise ValueError('v4情勢一覧が検証済みの全シリーズと一致しません')
     styles={s['meta']['card'].get('visual_style','stadium') for s in program['segments']}
     if styles not in ({'stadium'},{'v3'}):raise ValueError('PSデザインが混在または不明です')
     for seg in program['segments']:

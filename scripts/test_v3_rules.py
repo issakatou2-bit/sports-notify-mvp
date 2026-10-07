@@ -3,6 +3,7 @@ import copy
 from datetime import datetime
 import json
 import os
+import subprocess
 from pathlib import Path
 import sys
 import unittest
@@ -115,9 +116,18 @@ class V3Rules(unittest.TestCase):
 
     def test_marks_require_an_explanation(self):
         for case in self.cases:
-            with self.subTest(slot=case['name']),patch.object(r3.ImageDraw.ImageDraw,'ellipse') as ellipse:
-                for draw in case['frames']:draw(3)
-                ellipse.assert_not_called()
+            with self.subTest(slot=case['name']):
+                if r3.LOOK=='v4' and case['name'] in ('forecast','situation'):
+                    for draw in case['frames']:
+                        image=draw(3)
+                        for mark in image.info.get('v4_marks',[]):
+                            self.assertEqual(mark['explanation'],f'{mark["need"]}勝で決着')
+                            self.assertTrue(0<=mark['wins']<=mark['need'])
+                            self.assertTrue(any(mark['explanation'] in e['text'] for e in image.info['v3_layout']))
+                else:
+                    with patch.object(r3.ImageDraw.ImageDraw,'ellipse') as ellipse:
+                        for draw in case['frames']:draw(3)
+                        ellipse.assert_not_called()
             if case.get('spec'):
                 self.assertFalse(rules.check_marks(case['spec']))
         spec={'v3':{'chips':[{'label':'ドジャース','score':'2勝','win':True}]}}
@@ -191,4 +201,87 @@ class V3Rules(unittest.TestCase):
         self.assertNotIn('😅',flat)
         self.assertTrue(any('Dodgers' in part for row in rows for part,_ in row))
 
-if __name__=='__main__':unittest.main(argv=[__file__])
+    def test_v4_slot_cards_and_material_metadata(self):
+        if r3.LOOK!='v4':return
+        import short_v4_cards as v4
+        from PIL import Image
+        row={'said':'幅で折って全文を残す引用です。'*40,'tone':'批判','likes':808,'replies':30,'at':0,'end':20}
+        pages,size=v4.quote_pages(row)
+        self.assertEqual(size,54)
+        self.assertEqual(''.join(line for page in pages for line in page),row['said'])
+        self.assertGreater(len(pages),1)
+        for t in (0,7,14,19):
+            self.assertFalse(rules.check_layout(v4.quotes(t,[row],'現地の声','','','出典：固定材料')))
+        count=0
+        for index,page in enumerate(pages):
+            length=sum(map(len,page))
+            at=(count+length/2)/len(row['said'])*row['end']
+            self.assertEqual(v4.quotes(at,[row],'現地の声','','','').info['v4_quote']['page'],index)
+            count+=length
+        self.assertEqual([s for s,_ in v4.metadata(row)],['批判','高評価 808','返信 30'])
+        self.assertEqual(v4.metadata({'said':'属性なし'}),[])
+        with self.assertRaises(ValueError):v4.wins(Image.new('RGB',(1080,1920)),100,400,4,3)
+
+        voices=read('scripts/fixtures/comment/local_voices-preview.json')
+        import comment_render as cr
+        parent=voices['voices'][0]
+        seg={'kind':'intro','meta':{'used_voice':0}}
+        shown=cr.voices_for_segment(seg,voices)[0]
+        for key in ('tone','likes','replies'):self.assertEqual(shown[key],parent[key])
+        saved=read('scripts/fixtures/ps-design/2026-10-07.json')
+        with patch.dict(os.environ,ENV):
+            program=ps.prepare(saved['snapshot'],saved['evidence'],'situation',datetime.fromisoformat(saved['evidence']['retrieved_at']),saved['ledger'])
+        card=program['segments'][0]['meta']['card']
+        self.assertEqual(len(card['v4_series']),4)
+        image=unified.frame(3,card)
+        numbers=['-'.join(str(r['wins']) for r in c['scoreboard']['rows']) for c in card['v4_series']]
+        self.assertTrue(all(n in [e['text'] for e in image.info['v3_layout']] for n in numbers))
+        corrupted=copy.deepcopy(program)
+        corrupted['segments'][0]['meta']['card']['v4_series'][0]['scoreboard']['rows'][0]['wins']=99
+        with self.assertRaisesRegex(ValueError,'全シリーズ'):ps.check_program(corrupted)
+
+    def test_v4_reading_and_past_quote_brightness(self):
+        if r3.LOOK!='v4':return
+        import short_v4_cards as v4
+        rows=[{'said':'読み終えた親の引用です。','read':False,'at':0,'end':0},
+              {'said':'今読む返信です。','reply':True,'at':0,'end':20}]
+        image=v4.quotes(3,rows,'現地の声','','','')
+        self.assertTrue(image.info['v4_quote']['active'])
+        self.assertFalse(rules.check_layout(image))
+        self.assertTrue(any(e['text']=='読み終えた親の引用です。' for e in image.info['v3_layout']))
+
+    def test_v4_five_player_rows_and_integer_stat_cards(self):
+        if r3.LOOK!='v4':return
+        import short_v4_cards as v4
+        rows=[dict(rank=i,name='検査用選手'+str(i),abbr='LAD',team_id=119,score='12本塁打') for i in range(1,6)]
+        self.assertFalse(rules.check_layout(common.ranking(3,{},rows,'')))
+        # 固定の検査材料。小数の回を主数字に選ばず、整数の成績だけ。
+        spec=dict(rank=1,roster_count=5,head='検査用選手',head2='ドジャース',player_team_id=119,
+                  big='2',unit='本塁打',sub='4打数3安打 2本塁打 3打点 1四球',kind='hero')
+        image=v4.hero(3,spec)
+        self.assertFalse(rules.check_layout(image))
+        shown=[e['text'] for e in image.info['v3_layout']]
+        for label in ('打数','安打','本塁打','打点','四球'):self.assertIn(label,shown)
+
+    def test_v4_caption_in_reserved_area(self):
+        if r3.LOOK!='v4':return
+        with patch.dict(r3._CAPTION,dict(text='1位は村上宗隆。2本塁打、3打点です。',start=0,duration=20,total=120)):
+            for case in self.cases:
+                # 本体の締めの検査は別の検査で行い、字幕も省かず位置を確かめる。
+                for draw in case['frames'][:-1]:
+                    image=draw(3)
+                    self.assertTrue(any(e['role']=='caption' for e in image.info['v3_layout']))
+                    self.assertFalse(rules.check_layout(image))
+
+if __name__=='__main__':
+    if '--look-child' in sys.argv:
+        unittest.main(argv=[__file__])
+    else:
+        # LOOK は import 時に決まる。別プロセスで両方を毎回検査する。
+        failed=0
+        for look in ('v3','v4'):
+            env=dict(os.environ,COLLESPO_SHORT_LOOK=look)
+            result=subprocess.run([sys.executable,'-X','utf8',__file__,'--look-child'],env=env,cwd=ROOT)
+            print('test_v3_rules '+look+': '+('OK' if result.returncode==0 else 'NG'),flush=True)
+            failed+=bool(result.returncode)
+        sys.exit(bool(failed))

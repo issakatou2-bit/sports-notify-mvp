@@ -702,6 +702,9 @@ def scene(t, scene_spec, team_id=None):
             return closing
     if spec.get('ranking'):
         return common.ranking(t,view,spec['ranking'],spec.get('source') or SOURCE)
+    if r3.LOOK == 'v4' and spec.get('big') and (spec.get('rank') or 0) == 1:
+        from short_v4_cards import hero
+        return hero(t,spec)
     rows = [(c.get('title',''), c.get('body','')) for c in spec.get('cards', [])]
     if (spec.get('rank') or 0) > 1 or not spec.get('big') or rows:
         ranked_head = (f"{spec['rank']}位　" if spec.get('rank') else '')+spec.get('head','')
@@ -1046,6 +1049,9 @@ def scenes_from_morning(data, narration=None):
         _attach_bookend(got, seg.get("text", ""))
         who = WHO.get((seg.get("meta") or {}).get("who"), "metan")
         for sc in got:
+            if r3.LOOK == 'v4':
+                player=next((p for p in players if p.get('name')==sc.get('head')),None)
+                sc.update(roster_count=len(players),player_team_id=player.get('team_id') if player else None)
             sc.setdefault("team_id", top.get("team_id"))
             if sc.get("team_id") is None:
                 sc["team_id"] = top.get("team_id")
