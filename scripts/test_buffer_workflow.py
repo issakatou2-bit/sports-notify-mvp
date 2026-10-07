@@ -4,8 +4,8 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
-import textwrap
 import unittest
+import yaml
 
 BASH = shutil.which('bash')
 if os.name == 'nt':
@@ -17,7 +17,8 @@ if os.name == 'nt':
 class BatchDelivery(unittest.TestCase):
     def execute(self, mode, fail='', event=''):
         workflow = (Path(__file__).resolve().parents[1] / '.github/workflows/buffer_daily.yml').read_text(encoding='utf-8')
-        script = textwrap.dedent(workflow.rsplit('        run: |\n', 1)[1])
+        script = next(s['run'] for s in yaml.safe_load(workflow)['jobs']['deliver']['steps']
+                      if s.get('name') == 'Validate or distribute the daily video')
         script = script.replace("${{ inputs.kind || 'daily' }}", 'daily')
         script = script.replace('/tmp/due.tsv', '"$TEST_DIR/due.tsv"')
         fake = '''

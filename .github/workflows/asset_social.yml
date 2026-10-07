@@ -1,0 +1,55 @@
+name: 公開済みv3の話題をSNSへ
+on:
+  workflow_run:
+    workflows: ['シーズンまとめ（球団・日本人選手）', 'PS 試合の話題（試合のすぐ後に）']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      source_run:
+        description: 同日の成功したmain制作実行ID
+        required: true
+        type: string
+      mode:
+        description: 検証のみ または確認後の公開
+        type: choice
+        options: [validate, publish]
+        default: validate
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: buffer-daily-delivery
+  cancel-in-progress: false
+jobs:
+  deliver:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (vars.V3_SNS_ENABLED == 'true' && github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Validate source and hand over once per topic and service
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNELS: ${{ vars.BUFFER_CHANNELS }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          V3_SNS_ENABLED: ${{ vars.V3_SNS_ENABLED }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
+          MODE: ${{ github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
+        run: |
+          args=()
+          if [ "$MODE" = publish ]; then args+=(--publish); fi
+          python scripts/asset_sns.py --source-run "$SOURCE_RUN" "${args[@]}"

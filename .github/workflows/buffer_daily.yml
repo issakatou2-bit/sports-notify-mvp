@@ -114,3 +114,18 @@ jobs:
             done < /tmp/due.tsv
           fi
           exit $DAILY
+      - name: Backfill only reviewed v3 assets after publication
+        if: >-
+          always() && vars.V3_SNS_ENABLED == 'true' &&
+          (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.mode == 'publish_due')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNELS: ${{ vars.BUFFER_CHANNELS }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          V3_SNS_ENABLED: ${{ vars.V3_SNS_ENABLED }}
+        run: |
+          pip install requests
+          python scripts/asset_sns.py --publish
