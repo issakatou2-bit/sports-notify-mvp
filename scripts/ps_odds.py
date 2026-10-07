@@ -17,6 +17,9 @@
 10/5、ヒロの集計（124シリーズ・2勝0敗70・突破63）と、この数え方で一致を確かめた。
 
 出力: data/ps_odds_topics.json（generated_topics 経由で、シーズンまとめの枠）
+
+画面: 新デザイン「電光掲示板」（review_render_v3、style="v3"）。表紙の材料（v3）は
+ps_v3_cover.odds_v3 が、この話題の項目・題から作る（例: 「63」「/70」）。作れなければ v2 のまま。
 """
 
 import argparse
@@ -30,6 +33,8 @@ from datetime import datetime, timedelta, timezone
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
+
+import ps_v3_cover  # noqa: E402
 
 API = "https://statsapi.mlb.com/api/v1"
 OUT = "data/ps_odds_topics.json"
@@ -134,6 +139,12 @@ def next_game(series_games: list, now: datetime):
 
 
 def story(row: dict, summary: dict, games_now: list, now: datetime, first: int, last: int) -> dict:
+    """シリーズ1つの話題（新デザインの表紙 v3 つき）。2勝0敗・0勝2敗でなければ空。"""
+    t = _story(row, summary, games_now, now, first, last)
+    return ps_v3_cover.apply(t) if t else t
+
+
+def _story(row: dict, summary: dict, games_now: list, now: datetime, first: int, last: int) -> dict:
     """シリーズ1つの話題。2勝0敗・0勝2敗でなければ空。"""
     if row.get("over") or row.get("played") != 2 or len(row.get("teams") or []) != 2:
         return {}

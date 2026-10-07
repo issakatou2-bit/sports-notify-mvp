@@ -1651,6 +1651,9 @@ def render_v3(t, kind, meta, spec, topic):
     tag = "PSの話題" if spec.get("story") else "シーズンまとめ"
     if kind == "intro":
         return r3.intro(t, spec, tag)
+    if kind == "people":
+        return r3.people(t, spec, spec.get(meta.get("group", "japanese")) or [],
+                         meta.get("heading", "日本人選手"), tag)
     items = list_items(meta.get("topic", topic))
     start = meta.get("start", 0)
     return r3.list_page(t, spec, items, start, meta.get("count", 1),
@@ -1802,7 +1805,7 @@ def main():
                 # 描き直さずに使い回すが、ここでそれをやると寄るのが
                 # 止まってしまう。
                 v2 = LIST_TOPICS.get(meta.get("topic", args.topic)) or {}
-                v3 = v2.get("style") == "v3" and kind in ("intro", "list")
+                v3 = v2.get("style") == "v3" and kind in ("intro", "list", "people")
                 if v3:
                     # 新デザイン（電光掲示板）は背景が動き続けるので、使い回さない
                     proc.stdin.write(render_v3(k / FPS, kind, meta, v2, args.topic).tobytes())
