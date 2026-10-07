@@ -1,5 +1,5 @@
 """Data-bound channel templates. Draft renderer, with no upload capability."""
-import argparse, json, copy, math
+import argparse, json, copy, math, sys
 from functools import lru_cache
 from io import BytesIO
 from pathlib import Path
@@ -8,6 +8,7 @@ from ps_brand_components import TOKENS, THEME, text, font
 from video_common import lift_color
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
 LAYOUTS={'schedule':4,'facts':3,'bracket':2,'quote':1}
 # Shortsの題・チャンネル名（下の約18%）とボタン列（右の約13%）を避ける線。
 SAFE_BOTTOM=1574
@@ -37,7 +38,10 @@ def paginate(card):
 def overlaps(a,b):
     return a[0]<b[2] and a[2]>b[0] and a[1]<b[3] and a[3]>b[1]
 
-def background(style='stadium',seconds=0):
+def background(style='stadium',seconds=0,team_id=None):
+    if style=='v3':
+        import review_render_v3 as r3
+        return r3.background(seconds,team_id)
     t=TOKENS[style];im=Image.new('RGB',(1080,1920),t['bg']);d=ImageDraw.Draw(im)
     drift=round(9*math.sin(seconds/6))
     for r in (340,430,520):d.arc((680-r+drift,140-r,680+r+drift,140+r),10,155,fill=t['line'],width=2)
@@ -47,7 +51,7 @@ def background(style='stadium',seconds=0):
 def render(card,presenters=None,style='stadium',layers=False):
     if presenters is None:presenters=THEME['presenter']['default']
     if presenters not in ('none','left','right','both'):raise ValueError('Unsupported presenter placement')
-    t=TOKENS[style];im=Image.new('RGBA',(1080,1920),(0,0,0,0));d=ImageDraw.Draw(im);trace=[]
+    t=TOKENS['stadium' if style=='v3' else style];im=Image.new('RGBA',(1080,1920),(0,0,0,0));d=ImageDraw.Draw(im);trace=[]
     def put(x,y,value,size=48,width=864,role='important',color=None,latin=False):
         box=text(d,(x,y),str(value),size,color or t['ink'],width=width,latin=latin,minimum=40 if role=='important' else 24)
         trace.append({'text':str(value),'box':list(box),'role':role})
@@ -155,17 +159,30 @@ def render(card,presenters=None,style='stadium',layers=False):
     config=[('left','zundamon/C-cheer/base-black-brow-candidate.png'),('right','metan/3-black/base.png')]
     for side,path in config:
         if presenters not in (side,'both'):continue
-        data=(ROOT/'assets/portraits/collespo-20260923'/path).read_bytes()
-        sprite=_prepared_presenter(data,tuple(framing['crop']),tuple(framing['max_size']))
+        if style=='v3':
+            import review_render_v3 as r3
+            if side!='right':raise ValueError('v3のPSは四国めたん（右下）です')
+            sprite=r3._portrait('metan')
+        else:
+            data=(ROOT/'assets/portraits/collespo-20260923'/path).read_bytes()
+            sprite=_prepared_presenter(data,tuple(framing['crop']),tuple(framing['max_size']))
         # 立ち絵もShortsの操作部品（下の題・右のボタン列）の外へ。
         x=framing['edge_px'] if side=='left' else SAFE_RIGHT-sprite.width
         y=SAFE_BOTTOM-sprite.height;box=(x,y,x+sprite.width,y+sprite.height)
         for row in trace:
             if row['role']=='important' and overlaps(box,row['box']):raise ValueError('Presenter covers content')
         im.alpha_composite(sprite,(x,y));avatars.append({'side':side,'box':box,'asset':path})
-    result=background(style);result.paste(im,(0,0),im)
+    result=background(style,team_id=background_team(card));result.paste(im,(0,0),im)
     manifest={'theme_version':THEME['version'],'card':card,'text':trace,'presenters':avatars,'public':False}
     return (result,manifest,im) if layers else (result,manifest)
+
+def background_team(card):
+    """球団名が確定している札だけ球団色へ。表紙・複数カードは中立色。"""
+    from notability_engine import MLB_TEAM_NAME_JP
+    rows=(card.get('scoreboard') or {}).get('rows') or []
+    if not rows:return None
+    row=next((r for r in rows if r.get('players')),rows[0])
+    return next((int(tid) for tid,name in MLB_TEAM_NAME_JP.items() if name==row['name']),None)
 
 def ps_cards(snapshot):
     ctx=snapshot['editorial']

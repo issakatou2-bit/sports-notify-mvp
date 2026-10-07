@@ -14,7 +14,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-from ps_render_template import render
+from ps_render_template import render, background_team
 from ps_daily_titles import ROUND, forecast_title, situation
 import ps_editorial as pe
 import ps_series as series
@@ -162,7 +162,8 @@ def focus_at(plan,fraction):
 def render_segment(seg,layers=False):
     side={2:'right',3:'left'}.get(seg['speaker'])
     if side is None:raise ValueError('画面素材のない話者です')
-    return render(seg['meta']['card'],presenters=side,layers=layers)
+    card=seg['meta']['card']
+    return render(card,presenters=side,style=card.get('visual_style','stadium'),layers=layers)
 
 
 def forecast(ctx, games, rows, now, target_day=None):
@@ -469,17 +470,38 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
     program.update(version=VERSION, kind=kind, date_jst=ctx['date_jst'], source_url=ctx['source_url'],
                    retrieved_at=evidence['retrieved_at'], edition_key=edition, series=rows,
                    material_sha256=hashlib.sha256(json.dumps(evidence['schedule'], sort_keys=True).encode()).hexdigest())
+    apply_design(program)
     return program
+
+def apply_design(program):
+    choice=os.environ.get('COLLESPO_PS_DESIGN','legacy')
+    if choice not in {'legacy','v3'}:raise ValueError('COLLESPO_PS_DESIGNの設定が不明です')
+    if choice=='v3':
+        for seg in program['segments']:
+            seg['meta'].setdefault('legacy_speaker',seg['speaker'])
+            seg['speaker']=2
+            seg['meta']['card']['visual_style']='v3'
 
 
 def content_key(program):
     payload = copy.deepcopy({k: program[k] for k in ('phase','segments','game_ids','title','social_summary')})
     for seg in payload['segments']:
         seg['meta']['card'].pop('date', None)
+        # 外観と新しい声は編集内容ではない。旧版の台帳キーと完全一致させる。
+        seg['meta']['card'].pop('visual_style',None)
+        if 'legacy_speaker' in seg['meta']:
+            seg['speaker']=seg['meta'].pop('legacy_speaker')
     return hashlib.sha256(json.dumps(payload,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
 
 
 def check_program(program):
+    styles={s['meta']['card'].get('visual_style','stadium') for s in program['segments']}
+    if styles not in ({'stadium'},{'v3'}):raise ValueError('PSデザインが混在または不明です')
+    for seg in program['segments']:
+        if styles=={'v3'} and (seg['speaker']!=2 or seg['meta'].get('legacy_speaker') not in (2,3)):
+            raise ValueError('v3のPSの声と画面が四国めたんではありません')
+        if styles=={'stadium'} and 'legacy_speaker' in seg['meta']:
+            raise ValueError('旧PSデザインに新しい声の設定が混在しています')
     if content_key(program) != program['edition_key']:
         raise ValueError('検証後の台本・画面・題が変更されています')
     expected_day = program.get('target_day', program['date_jst'])
@@ -516,6 +538,7 @@ def movie(program, audio_dir, out):
         raise ValueError('台本と音声の件数が不一致')
     for a, b in zip(audio, program['segments']):
         if (a.get('text') != b['text'] or a.get('meta') != b['meta'] or
+                a.get('speaker') != b['speaker'] or a.get('kind') != b['kind'] or
                 not a.get('file') or not Path(a['file']).exists() or not a.get('duration')):
             raise ValueError('台本と音声の不一致または音声欠落')
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
@@ -523,6 +546,19 @@ def movie(program, audio_dir, out):
     track = vc.build_narration_track(audio, durations, out)
     if not track:
         raise ValueError('音声を結合できません')
+    v3=program['segments'][0]['meta']['card'].get('visual_style')=='v3'
+    if v3:
+        import sound_mix
+        cues=[];start=0.0
+        for seg,duration in zip(program['segments'],durations):
+            _,_,fg=render_segment(seg,layers=True)
+            prepared=motion.prepare(fg,seg['meta']['card'])
+            cues.extend((start+at,kind,variant,db) for at,kind,variant,db in motion.cues(prepared,duration))
+            start+=duration
+        bgm=Path(__file__).resolve().parents[1]/'assets/bgm'/f"{os.environ.get('COLLESPO_BGM','everyday')}.mp3"
+        if not bgm.exists():raise ValueError('v3のPSのBGMがありません')
+        track=sound_mix.mix_file(track,out/'narration_mixed.wav',bgm_path=bgm,cues=cues)
+        check.update(bgm=bgm.stem,sfx_count=len(cues))
     name = 'collespo_short.mp4' if program['kind'] == 'daily' else 'collespo_morning_postseason.mp4'
     path = out / name
     cmd = ['ffmpeg', '-y', '-nostats', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24',
@@ -540,7 +576,9 @@ def movie(program, audio_dir, out):
             plan=focus_plan(seg)
             speech=float(audio[i]['duration']) or duration
             for n in range(round(duration * 30)):
-                frame=motion.frame(prepared,n/30,focus_at(plan,n/30/speech))
+                frame=motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
+                                   style=seg['meta']['card'].get('visual_style','stadium'),
+                                   team_id=background_team(seg['meta']['card']))
                 raw=vc.crossfade(previous_frame,frame,n,round(vc.FADE_SECONDS*30),(1080,1920))
                 proc.stdin.write(raw)
             previous_frame=raw
@@ -561,7 +599,8 @@ def metadata(program):
             '時刻は日本時間。未終了の結果・選手の出場は断定していません。',
             'WCSは2勝、DSは3勝、LCSとWSは4勝で決着。',
             '資料時点：' + program['retrieved_at'], '出典：' + program['source_url'],
-            'コレスポ：https://collespo.com/', 'VOICEVOX:ずんだもん / VOICEVOX:四国めたん',
+            'コレスポ：https://collespo.com/',
+            'VOICEVOX:四国めたん' if program['segments'][0]['meta']['card'].get('visual_style')=='v3' else 'VOICEVOX:ずんだもん / VOICEVOX:四国めたん',
             '#MLB #ポストシーズン #Shorts']
     return dict(snippet=dict(title=title, description='\n'.join(body), tags=['MLB', 'ポストシーズン', 'Shorts'],
                             categoryId='17', defaultLanguage='ja', defaultAudioLanguage='ja'))

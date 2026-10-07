@@ -27,10 +27,10 @@ def prepare(foreground,card):
     return fixed,pieces
 
 
-def frame(prepared,seconds,focus=None):
+def frame(prepared,seconds,focus=None,style='stadium',team_id=None):
     """focus は読み上げ中の行（items の何番目か）。None なら全行そのまま。"""
     fixed,pieces=prepared
-    im=background(seconds=seconds);im.paste(fixed,(0,0),fixed)
+    im=background(style=style,seconds=seconds,team_id=team_id);im.paste(fixed,(0,0),fixed)
     lit = focus is not None and seconds >= ENTRY_SECONDS
     for j,(lo,piece,delay,dim) in enumerate(pieces):
         p=max(0,min(1,(seconds-delay)/0.38))
@@ -46,3 +46,7 @@ def frame(prepared,seconds,focus=None):
         if p<1:alpha=alpha.point([round(v*e) for v in range(256)])
         im.paste(piece,(-round(56*(1-e)),lo),alpha)
     return im
+
+def cues(prepared,duration):
+    """実際の札の入場時刻と同じ時刻表。時間内のものだけを鳴らす。"""
+    return [(delay,'swish','a',-10) for _,_,delay,_ in prepared[1] if delay<duration]

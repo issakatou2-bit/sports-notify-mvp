@@ -1,6 +1,12 @@
 name: PS新構成の音声付き確認（投稿しない）
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      design:
+        description: '外観（v3は10/7の保存公式材料で2枠を再生）'
+        type: choice
+        options: [v3, legacy]
+        default: v3
   push:
     branches: [codex/ps-template-rollout-20260928]
     paths:
@@ -15,6 +21,7 @@ jobs:
     timeout-minutes: 18
     env:
       PS_PROGRAM_LAYOUT: v2
+      COLLESPO_PS_DESIGN: ${{ inputs.design == 'v3' && 'v3' || 'legacy' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -34,6 +41,7 @@ jobs:
           done
           exit 1
       - name: Prepare and voice the current situation program
+        if: inputs.design != 'v3'
         run: |
           python scripts/ps_voice_gate.py
           python scripts/ps_program.py --slot situation --fresh \
@@ -44,6 +52,7 @@ jobs:
             python scripts/ps_program.py --program build/ps_program_situation.json --audio-dir build/ps_situation_audio --out build/ps_situation_preview
           fi
       - name: Rehearse all four forecast cards with visibly dated saved fixtures
+        if: inputs.design != 'v3'
         run: |
           # Tomorrow's program is a rehearsal, never an upload path.
           python scripts/ps_program_rehearsal.py --out build/ps_forecast_narration.json
@@ -51,6 +60,15 @@ jobs:
             python scripts/synthesize_narration.py --narration build/ps_forecast_narration.json --out-dir build/ps_forecast_audio
             python scripts/ps_program.py --program build/ps_program_forecast.json --audio-dir build/ps_forecast_audio --out build/ps_forecast_preview
           fi
+      - name: Rehearse both v3 programs with saved official material
+        if: inputs.design == 'v3'
+        run: |
+          python scripts/ps_voice_gate.py
+          python scripts/preview_ps_v3.py
+          for slot in forecast situation; do
+            python scripts/synthesize_narration.py --narration "build/ps-design/$slot-narration.json" --out-dir "build/ps-design/$slot-audio"
+            python scripts/ps_program.py --program "build/ps-design/$slot-program.json" --audio-dir "build/ps-design/$slot-audio" --out "build/ps-design/$slot-preview"
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -61,3 +79,4 @@ jobs:
             build/ps_*narration.json
             build/ps_editorial_source.json
             build/ps_voice_check.json
+            build/ps-design/
