@@ -876,7 +876,189 @@ def modern_jazz():
         "84 BPM・ハ長調。Dm9→G13→Cmaj9→A7(♭13) のエレピ、跳ねる16分のハイハット（強弱つき）、リム、丸いベース、4小節ごとの短い合いの手。ネオソウル寄り。残響なし。"
 
 
-ALL = ["trap_808_long", "modern_setsuna", "modern_jazz", "backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
+# ------------------------------------------------------------------ 長い808の発展形（10/7夜3）
+# 本人「トラップ長い808いい。もっと凝ったり効果をつけたり。方向をいくつか。別でBPMの速いのも」。
+# どれも残響なし。効果は「曲の区切り」にだけ置き、声の邪魔をしない。
+
+def _riser(sec, seed=0):
+    """白い雑音が上がっていく（区切りの前の「シューッ」）。"""
+    n = int(sec * SR)
+    t = np.arange(n) / SR
+    x = bgm.tvf(np.random.default_rng(seed).standard_normal(n), 400 * 30 ** (t / sec), q=2.0, kind="bp")
+    return x * (t / sec) ** 2 * 0.5
+
+
+def _tape_stop(seg):
+    """テープが止まるように、音程と速さが下がっていく（区切りの最後に）。"""
+    n = len(seg)
+    speed = np.linspace(1.0, 0.0, n) ** 0.7
+    pos = np.cumsum(speed)
+    pos = np.clip(pos, 0, n - 1)
+    out = np.stack([np.interp(pos, np.arange(n), seg[:, c]) for c in range(2)], axis=1)
+    return out * np.linspace(1, 0.2, n)[:, None]
+
+
+def _stutter(mix, t_from, slice_sec, times=4):
+    """区切りの直前を、短く刻んで繰り返す（ダダダダ）。"""
+    a = int(t_from * SR)
+    L = int(slice_sec * SR)
+    piece = mix[a:a + L].copy()
+    for k in range(times):
+        s = a + k * L
+        mix[s:s + L] = piece[:len(mix[s:s + L])] * (0.9 ** k)
+
+
+def _crush(x, bits=8, down=3):
+    """ビットを落とし、サンプルを間引く（ローファイ）。"""
+    q = 2 ** (bits - 1)
+    y = np.round(x * q) / q
+    y = np.repeat(y[::down], down, axis=0)[:len(x)]
+    return y
+
+
+def _trap_core(bpm, nbar, line, hat_mode="16", snare_beats=(1, 3), kick_g=0.12, b808=0.16,
+               decay=1.3, glide=0.09, drive=2.4, hat_g=0.14):
+    """長い808＋ハイハット＋手拍子の土台。line は小節（4つ周期）ごとの [(拍, MIDI)]。"""
+    b = 60 / bpm
+    bar = 4 * b
+    s16 = b / 4
+    n = int((nbar * bar + 3) * SR)
+    mix = np.zeros((n, 2))
+    notes, times = [], []
+    for bi in range(nbar):
+        t0 = bi * bar
+        if hat_mode == "16":
+            _hat16(mix, t0, b, bi, g=hat_g)
+        elif hat_mode == "trip":                                 # ドリル: 3連が混ざる
+            for beat in range(4):
+                if beat % 2 == 1:
+                    for r in range(3):
+                        gs.put(mix, ml.hat(False, 0.45), t0 + (beat + r / 3) * b, hat_g, 0.1)
+                else:
+                    for r in range(4):
+                        gs.put(mix, ml.hat(False, 0.5 if r % 2 == 0 else 0.3), t0 + (beat + r / 4) * b, hat_g, 0.1)
+        elif hat_mode == "8":                                    # 速い曲は8分で軽く
+            for q in range(8):
+                gs.put(mix, ml.hat(False, 0.5 if q % 2 == 0 else 0.32), t0 + q * b / 2, hat_g, 0.1)
+            if bi % 2 == 1:
+                for r in range(4):
+                    gs.put(mix, ml.hat(False, 0.4), t0 + (3.5 + r / 8) * b, hat_g * 0.8, 0.1)
+        for q in snare_beats:
+            gs.put(mix, ml.clap(), t0 + q * b, 0.18)
+        for st, m in line[bi % len(line)]:
+            notes.append(m)
+            times.append(t0 + st * b)
+            gs.put(mix, ml.kick(0.18) * 0.6, t0 + st * b, kick_g)
+    bass = ml.k808(notes, times, n, decay=decay, drive=drive, glide=glide)
+    bass = sosfilt(butter(2, 45, "highpass", fs=SR, output="sos"), bass)
+    gs.put(mix, bass, 0, b808)
+    return mix, n, b, bar, s16
+
+
+LINE_CAF = {0: [(0, 36), (1.75, 36), (2.5, 43)], 1: [(0, 33), (1.5, 45), (2.5, 40)],
+            2: [(0, 29), (1.75, 29), (2.5, 41)], 3: [(0, 31), (1.5, 38), (2.75, 43), (3.5, 31)]}
+
+
+def trap808_fx():
+    """王道トラップの演出: 8小節目で刻み、9小節目の前にシューッ、最後はテープが止まる。"""
+    nbar = 16
+    mix, n, b, bar, s16 = _trap_core(96, nbar, LINE_CAF)
+    _stutter(mix, 7 * bar + 3 * b, s16, times=4)                 # 8小節目の最後の拍を刻む
+    gs.put(mix, _riser(2 * bar - 0.05, 1), 6 * bar, 0.10)        # 9小節目の前にシューッ
+    a, z = int((15 * bar + 2 * b) * SR), int(16 * bar * SR)
+    mix[a:z] = _tape_stop(mix[a:z])                              # 最後の2拍でテープが止まる
+    return dry_finish(mix, nbar * bar, sub_cut=-3), "808・演出つき", \
+        "96 BPM。長い808とハイハットの土台に、8小節目の最後を「ダダダダ」と刻み、9小節目の前に雑音がシューッと上がり、最後の2拍でテープが止まるように音程が下がる。旋律なし・残響なし。"
+
+
+def trap808_filter():
+    """フィルター: 曲全体がこもった所から8小節かけて開き、また閉じる。ときどき小さなはじく音。"""
+    nbar = 16
+    mix, n, b, bar, s16 = _trap_core(96, nbar, LINE_CAF)
+    for bi in range(nbar):
+        if bi % 4 == 2:
+            for k, m in enumerate((72, 76, 79, 76)):
+                gs.put(mix, bgm.pluck(m, .45, bi * 4 + k), (bi * bar) + (2 + k * 0.5) * b, 0.06, 0.3 - 0.2 * k)
+    t = np.arange(n) / SR
+    L = nbar * bar
+    ph = (t % L) / L
+    fc = 600 * (12000 / 600) ** np.where(ph < 0.5, ph * 2, (1 - ph) * 2)   # 600Hz → 12kHz → 600Hz
+    out = np.stack([bgm.tvf(mix[:, c], fc, q=0.9) for c in range(2)], axis=1)
+    return dry_finish(out, L, sub_cut=-3), "808・フィルター", \
+        "96 BPM。長い808とハイハットの土台全体に、こもった音から8小節かけて開いてまた閉じるフィルター。3小節目ごとに小さなはじく音が4つ。残響なし。"
+
+
+def trap808_lofi():
+    """ローファイ: 少しざらついた音（ビットを落とす）、レコードの音、ゆっくり。"""
+    nbar = 16
+    line = {0: [(0, 38), (2.5, 45)], 1: [(0, 35), (2.5, 42)], 2: [(0, 31), (1.75, 31), (2.5, 38)], 3: [(0, 33), (2.5, 40), (3.5, 33)]}
+    mix, n, b, bar, s16 = _trap_core(84, nbar, line, b808=0.13, decay=1.5)
+    for bi in range(nbar):
+        if bi % 2 == 0:
+            ch = ([62, 66, 69, 73], [59, 62, 66, 69], [55, 59, 62, 66], [57, 61, 64, 67])[(bi // 2) % 4]
+            gs.put(mix, _ep_rich(ch, b * 0.5, .5), bi * bar + 0.5 * b, 0.16, -0.1)
+    mix = _crush(mix, bits=9, down=2)
+    cr = np.zeros(n)
+    idx = rng.integers(0, n, int(n / SR * 5))
+    cr[idx] = rng.standard_normal(len(idx)) * 0.5
+    mix += gs.stereo(sosfilt(butter(2, [1500, 7000], "bandpass", fs=SR, output="sos"), cr), 0) * 0.06
+    mix = sosfilt(butter(2, 9000, "lowpass", fs=SR, output="sos"), mix, axis=0)
+    return dry_finish(mix, nbar * bar, sub_cut=-3), "808・ローファイ", \
+        "84 BPM・ニ長調。長い808に、ざらついた音（ビットを落とす）とレコードのぱちぱち。2小節に1度だけエレピの和音が短く入る。残響なし。"
+
+
+def trap808_drill():
+    """ドリル: 3連の混ざるハイハット、よくすべる808、少し遅れた手拍子。速め。"""
+    nbar = 16
+    line = {0: [(0, 36), (1.5, 43), (2.75, 48)], 1: [(0, 33), (1.5, 40), (2.5, 45), (3.25, 43)],
+            2: [(0, 29), (1.5, 36), (2.75, 41)], 3: [(0, 31), (1.5, 38), (2.5, 43), (3.5, 38)]}
+    mix, n, b, bar, s16 = _trap_core(142, nbar, line, hat_mode="trip", snare_beats=(1.5, 3.5),
+                                     decay=0.9, glide=0.12, b808=0.15)
+    gs.put(mix, _riser(bar - 0.05, 3), 7 * bar, 0.08)
+    return dry_finish(mix, nbar * bar, sub_cut=-3), "808・ドリル（速い）", \
+        "142 BPM。3連の混ざるハイハット、よくすべる808、少し遅れて入る手拍子。8小節目の終わりに雑音が上がる。旋律なし・残響なし。"
+
+
+def trap808_hyper():
+    """速い: 150 BPM、8分のハイハットと細かい詰め、跳ねる808。"""
+    nbar = 16
+    line = {0: [(0, 36), (0.75, 36), (2, 43), (3, 36)], 1: [(0, 33), (1, 45), (2, 40), (3.5, 33)],
+            2: [(0, 29), (0.75, 29), (2, 41), (3, 29)], 3: [(0, 31), (1, 38), (2, 43), (3, 38), (3.5, 31)]}
+    mix, n, b, bar, s16 = _trap_core(150, nbar, line, hat_mode="8", decay=0.5, glide=0.05, b808=0.15, kick_g=0.14)
+    a, z = int((15 * bar + 3 * b) * SR), int(16 * bar * SR)
+    mix[a:z] = _tape_stop(mix[a:z])
+    return dry_finish(mix, nbar * bar, sub_cut=-3), "808・ハイパー（速い）", \
+        "150 BPM。8分のハイハットと2小節ごとの細かい詰め、短く跳ねる808、2・4拍の手拍子。最後の1拍でテープが止まる。旋律なし・残響なし。"
+
+
+def club808():
+    """クラブ風（速い）: 140 BPM、はずむキックの並び（ドッ・ドッ・ドドド）と808。"""
+    bpm, nbar = 140, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 3) * SR)
+    mix = np.zeros((n, 2))
+    notes, times = [], []
+    roots = [36, 33, 29, 31]
+    for bi in range(nbar):
+        t0 = bi * bar
+        for st in (0, 1, 2, 2.75, 3.5):                          # はずむキック
+            gs.put(mix, ml.kick(0.2) * 0.6, t0 + st * b, 0.2)
+        for q in (1, 3):
+            gs.put(mix, ml.clap(), t0 + q * b, 0.16)
+        for q in range(8):
+            gs.put(mix, ml.hat(False, 0.45 if q % 2 else 0.3), t0 + q * b / 2, 0.11, 0.1)
+        for st, off in ((0, 0), (2, 7), (2.75, 12)):
+            notes.append(roots[bi % 4] + off)
+            times.append(t0 + st * b)
+    bass = ml.k808(notes, times, n, decay=0.45, drive=2.0, glide=0.06)
+    bass = sosfilt(butter(2, 45, "highpass", fs=SR, output="sos"), bass)
+    gs.put(mix, bass, 0, 0.13)
+    return dry_finish(mix, nbar * bar, sub_cut=-3), "808・クラブ（速い）", \
+        "140 BPM。「ドッ・ドッ・ドドド」とはずむキック、2・4拍の手拍子、8分のハイハット、短い808。旋律なし・残響なし。"
+
+
+ALL = ["trap808_fx", "trap808_filter", "trap808_lofi", "trap808_drill", "trap808_hyper", "club808", "trap_808_long", "modern_setsuna", "modern_jazz", "backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
 
 
 def main():
