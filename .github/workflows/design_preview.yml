@@ -2,11 +2,20 @@ name: 道具　新デザインの試作動画（投稿しない）
 
 # 新デザイン（電光掲示板・review_render_v3）と BGM・効果音を、声つきで確かめる。
 # YouTube には上げない。できた動画は実行ページの成果物（3日）から見る。
-# 材料はその場で作る（連勝の話題 ps_momentum。出せる話題が無い日は何もしない）。
+# 材料はその場で作る。過去材料は確認用に明示指定したときだけ使う。
 
 on:
   workflow_dispatch:
     inputs:
+      topic_type:
+        description: 話題の種類
+        type: choice
+        options: [momentum, game, odds]
+        default: momentum
+      snapshot:
+        description: 保存済み材料で試作（当日の情報として投稿しない）
+        type: boolean
+        default: false
       bgm:
         description: BGM
         type: choice
@@ -31,11 +40,22 @@ jobs:
 
       - name: Build topic
         id: topic
+        env:
+          PREVIEW_TOPIC_TYPE: ${{ inputs.topic_type || 'momentum' }}
+          PREVIEW_SNAPSHOT: ${{ inputs.snapshot }}
         run: |
-          python scripts/ps_momentum.py --out data/ps_momentum_topics.json
-          T="$(python -c "import json;t=json.load(open('data/ps_momentum_topics.json',encoding='utf-8'))['topics'];print(t[0]['key'] if t else '')")"
+          case "$PREVIEW_TOPIC_TYPE" in
+            momentum) SCRIPT=ps_momentum; FILE=data/ps_momentum_topics.json ;;
+            game) SCRIPT=ps_game_story; FILE=data/ps_game_topics.json ;;
+            odds) SCRIPT=ps_odds; FILE=data/ps_odds_topics.json ;;
+            *) exit 1 ;;
+          esac
+          if [ "$PREVIEW_SNAPSHOT" != true ]; then
+            python "scripts/$SCRIPT.py" --out "$FILE"
+          fi
+          T="$(python scripts/prepare_design_preview.py --material "$FILE")"
           echo "key=$T" >> "$GITHUB_OUTPUT"
-          echo "試作する話題: ${T:-なし}" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "試作する話題: ${T:-なし} / 保存済み材料: $PREVIEW_SNAPSHOT" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Install video tools
         if: steps.topic.outputs.key != ''
@@ -56,13 +76,12 @@ jobs:
         if: steps.topic.outputs.key != ''
         env:
           COLLESPO_BGM: ${{ inputs.bgm }}
-          # sanity は --general を付けたときだけAIを呼ぶ（ここでは呼ばない）
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           T="${{ steps.topic.outputs.key }}"
           python scripts/generate_asset_video.py --topic "$T" --narration-out "build/narr_$T.json"
           python scripts/sanity.py --strict --narration "build/narr_$T.json"
           python scripts/synthesize_narration.py --narration "build/narr_$T.json" --out-dir "build/audio_$T"
+          python scripts/prepare_design_preview.py --manifest "build/audio_$T/manifest.json"
           python scripts/generate_asset_video.py --topic "$T" --audio-dir "build/audio_$T" --out build/preview
 
       - name: Save preview
@@ -71,4 +90,7 @@ jobs:
         with:
           name: design-preview
           retention-days: 3
-          path: build/preview/*.mp4
+          path: |
+            build/preview/*.mp4
+            build/narr_*.json
+            build/audio_*/manifest.json

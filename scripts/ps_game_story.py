@@ -23,6 +23,10 @@
 
 出力: data/ps_game_topics.json（generated_topics 経由で、PSの話題と同じ
 描画・題・説明。シーズンまとめの枠で先に出す）
+
+画面: 新デザイン「電光掲示板」（review_render_v3、style="v3"）。表紙の材料（v3）は
+ps_v3_cover.game_v3 が、この話題の項目・題から作る（材料に無い数字・言葉は足さない）。
+次の試合は data/postseason.json から（つじつまが合うときだけ）。作れなければ v2 のまま。
 """
 
 import argparse
@@ -38,6 +42,7 @@ sys.path.insert(0, str(HERE.parent))
 
 import ps_story  # noqa: E402
 import mlb_headlines  # noqa: E402
+import ps_v3_cover  # noqa: E402
 
 API = "https://statsapi.mlb.com/api"
 OUT = "data/ps_game_topics.json"
@@ -495,7 +500,8 @@ def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: l
     }
 
 
-def build(games: list, feeds: dict, voices: dict, quotes: list, headlines=(), now=None) -> list:
+def build(games: list, feeds: dict, voices: dict, quotes: list, headlines=(), now=None,
+          series_rows=()) -> list:
     import notability_engine as ne
     jp = {p["name_en"]: p["name_jp"] for p in ne.JP_PLAYERS_MLB}
     try:
@@ -523,7 +529,8 @@ def build(games: list, feeds: dict, voices: dict, quotes: list, headlines=(), no
             # 何分たったかで出す時を決める。
             end = finished_at(feed)
             t["finished_at"] = end.isoformat() if end else None
-            out.append(t)
+            # 新デザインの表紙（v3）。作れない・材料と合わないときは v2 のまま
+            out.append(ps_v3_cover.apply(t, series_rows))
     # 日本人選手が出た試合を先に、その中では早く終わった試合から。
     out.sort(key=lambda t: (not t["jp_first"], t.get("game_date") or ""))
     return out
@@ -534,6 +541,7 @@ def main() -> int:
     ap.add_argument("--voices", default="data/local_voices.json")
     ap.add_argument("--quotes", default="data/ps_quotes.json")
     ap.add_argument("--headlines", default="data/local_reporters.json")
+    ap.add_argument("--postseason", default="data/postseason.json")
     ap.add_argument("--out", default=OUT)
     args = ap.parse_args()
     now = datetime.now(timezone.utc)
@@ -569,7 +577,11 @@ def main() -> int:
         headlines = []
     headlines = [h for h in headlines if mlb_headlines.utc(h.get("at"))
                  and mlb_headlines.utc(h.get("at")) <= now]
-    topics = build(games, feeds, voices, quotes, headlines, now=now)
+    try:
+        series_rows = json.loads(pathlib.Path(args.postseason).read_text(encoding="utf-8")).get("series") or []
+    except (OSError, json.JSONDecodeError):
+        series_rows = []
+    topics = build(games, feeds, voices, quotes, headlines, now=now, series_rows=series_rows)
     write_topics(args.out, now, topics, "partial" if failed else "ok")
     print(f"[info] {len(topics)}件 -> {args.out}")
     for t in topics:
