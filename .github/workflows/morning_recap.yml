@@ -7,6 +7,7 @@ env:
   PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}
   # エマの試作確認後に bignumber を指定。未指定/legacy なら現行のまま。
   COLLESPO_PLAYERS_DESIGN: ${{ vars.COLLESPO_PLAYERS_DESIGN || 'legacy' }}
+  COLLESPO_COMMENTS_DESIGN: ${{ vars.COLLESPO_COMMENTS_DESIGN || 'legacy' }}
 
 # 「その日の日本人選手の成績」を配信する。
 # 19時の予告(これから起きること)に対して、こちらは結果(終わったこと)。
