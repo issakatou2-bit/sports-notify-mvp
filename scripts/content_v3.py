@@ -1,5 +1,6 @@
 """本人確認用の新しい編集順。公開設定を変更しない。"""
 import os
+import re
 from pathlib import Path
 import sys
 
@@ -52,6 +53,20 @@ def players(segments, roster, day):
     return [cover,table,hero]+remaining
 
 
+def source_lead(gap,row):
+    """引用の直前の「ESPN。」「Baltimore Bannerの記者。」のような出どころの一言。
+    10/8 試作で、これだけの画面（概要「ESPN。」）が出ていた。次の引用と同じ画面で読む。"""
+    who=str(row.get('who') or '')
+    sentences=re.findall(r'[^。！!]*[。！!]|[^。！!]+$',gap)
+    lead=''
+    for sentence in reversed(sentences):
+        name=re.sub(r'(の記者|の見出し|から)?[。！!、\s]*$','',sentence.strip())
+        if not name or name not in who:
+            break
+        lead=sentence+lead
+    return lead
+
+
 def quotes(segments,data,mode):
     enabled=(mode=='voices' and os.getenv('COLLESPO_COMMENTS_DESIGN')=='comments') or (mode=='press' and os.getenv('COLLESPO_PRESS_DESIGN')=='v3')
     if not enabled:
@@ -82,11 +97,13 @@ def quotes(segments,data,mode):
             start=seg['text'].find(body,cursor)
             if start<0:
                 raise ValueError('引用を原稿内に見つけられません')
-            add(seg['text'][cursor:start])
+            gap=seg['text'][cursor:start]
+            lead=source_lead(gap,row)
+            add(gap[:len(gap)-len(lead)])
             end=start+len(body)
             while end<len(seg['text']) and seg['text'][end] in '。！!、.':
                 end+=1
-            add(seg['text'][start:end],row)
+            add(lead+seg['text'][start:end],row)
             history.append(row);cursor=end
         add(seg['text'][cursor:])
     if ''.join(s['text'] for s in result)!=''.join(s['text'] for s in segments):

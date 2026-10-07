@@ -143,4 +143,11 @@ class Content(unittest.TestCase):
         self.assertEqual(first.getpixel(p),later.getpixel(q))
 
 
+    def test_source_name_is_read_with_its_quote(self):
+        import content_v3
+        self.assertEqual(content_v3.source_lead('現地の見出しです。ESPN。',{'who':'ESPN'}),'ESPN。')
+        self.assertEqual(content_v3.source_lead('翻訳したものです。Baltimore Bannerの記者。',
+                                                {'who':'Baltimore Banner / Andy Kostka'}),'Baltimore Bannerの記者。')
+        self.assertEqual(content_v3.source_lead('コメント欄から。',{'who':'高評価1,054件のコメント'}),'')
+
 if __name__=='__main__':unittest.main(argv=[__file__])
