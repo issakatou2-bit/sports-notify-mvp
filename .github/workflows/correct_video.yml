@@ -1,0 +1,106 @@
+name: 訂正　誤りのあった動画を直して差し替える
+
+# 公開済みの動画の画面・読み上げに誤りが見つかったとき（説明欄だけでは消せないとき）。
+# YouTube は公開後にファイルを差し替えられないので、当時の材料を直して本番と同じ道具で作り直し、
+# 新しい動画を出して古い動画を非公開に戻す（消さない）。直し方は data/corrections/<名前>.json。
+# 説明は scripts/correct_video.py。
+#   mode=render  … 作って成果物に置くだけ（確認用）
+#   mode=publish … 作る → 新しい動画を公開 → 説明欄に訂正の一文 → 古い動画を非公開 → 台帳を更新
+
+on:
+  workflow_dispatch:
+    inputs:
+      fix:
+        description: data/corrections/<名前>.json の名前
+        required: true
+        type: string
+      mode:
+        type: choice
+        options: [render, publish]
+        default: render
+
+permissions:
+  contents: write
+
+concurrency:
+  group: correct-video
+  cancel-in-progress: false
+
+jobs:
+  correct:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      PYTHONUNBUFFERED: '1'
+      FIX: ${{ inputs.fix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r scripts/requirements.txt
+      - name: Install video tools
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX engine
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: 直した材料で作り直す
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -e
+          eval "$(python scripts/correct_video.py show --fix "$FIX")"
+          echo "TOPIC=$TOPIC" >> "$GITHUB_ENV"
+          echo "OLD_VIDEO=$OLD_VIDEO" >> "$GITHUB_ENV"
+          python scripts/correct_video.py prepare --fix "$FIX" | tee -a "$GITHUB_STEP_SUMMARY"
+          python scripts/generate_asset_video.py --topic "$TOPIC" --narration-out build/corr/narr.json
+          python scripts/sanity.py --strict --narration build/corr/narr.json
+          python scripts/synthesize_narration.py --narration build/corr/narr.json --out-dir build/corr/audio
+          python scripts/generate_asset_video.py --topic "$TOPIC" --audio-dir build/corr/audio --out build/corr/out
+          bash scripts/shorts_thumbnail.sh "build/corr/out/collespo_asset_$TOPIC.mp4" build/corr/out/short.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corrected-video
+          retention-days: 14
+          path: |
+            build/corr/out/*.mp4
+            build/corr/out/short.png
+            build/corr/narr.json
+      - name: 新しい動画を公開し、古い動画を非公開に戻す
+        if: inputs.mode == 'publish'
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          set -e
+          # 題・説明は直した材料から作る（材料のファイルは保存しない。台帳だけを保存する）
+          python scripts/upload_youtube.py --video "build/corr/out/collespo_asset_$TOPIC.mp4" \
+            --kind asset --asset-topic "$TOPIC" --thumbnail build/corr/out/short.png \
+            --privacy public --force
+          NEW=$(python -c "import json,os;print(json.load(open('data/published_assets.json'))['assets'][os.environ['TOPIC']]['video_id'])")
+          if [ -z "$NEW" ] || [ "$NEW" = "$OLD_VIDEO" ]; then echo "::error::新しい動画のIDが取れません"; exit 1; fi
+          python scripts/correct_video.py note --fix "$FIX" --video "$NEW"
+          python scripts/hold_video.py --video "$OLD_VIDEO" --write
+          echo "差し替え: $OLD_VIDEO → https://youtu.be/$NEW（古い動画は非公開、消していません）" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 台帳を保存
+        if: inputs.mode == 'publish'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/published_assets.json
+          git commit -m "correct video: $FIX" || exit 0
+          for i in 1 2 3; do
+            git pull --rebase --autostash --quiet && git push && exit 0
+            sleep 5
+          done
+          exit 1
