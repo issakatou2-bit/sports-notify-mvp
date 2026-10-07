@@ -1,5 +1,5 @@
 """Data-bound channel templates. Draft renderer, with no upload capability."""
-import argparse, json, copy, math
+import argparse, json, copy, math, sys
 from functools import lru_cache
 from io import BytesIO
 from pathlib import Path
@@ -8,6 +8,7 @@ from ps_brand_components import TOKENS, THEME, text, font
 from video_common import lift_color
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
 LAYOUTS={'schedule':4,'facts':3,'bracket':2,'quote':1}
 # Shortsの題・チャンネル名（下の約18%）とボタン列（右の約13%）を避ける線。
 SAFE_BOTTOM=1574
