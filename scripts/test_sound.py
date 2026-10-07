@@ -104,6 +104,10 @@ class Wrapping(unittest.TestCase):
         self.assertIn(("（アストロズで2勝）", "S", False), runs)
         self.assertIn(("4連勝", "M", True), runs)
 
+    def test_katakana_word_stays_together(self):
+        for ln in self.text_lines("ドジャース 3対1 ブレーブス　敵地で勝利", 560):
+            self.assertFalse(ln.endswith("ブレーブ"), ln)
+
 
 if __name__ == "__main__":
     unittest.main(argv=["test_sound"])

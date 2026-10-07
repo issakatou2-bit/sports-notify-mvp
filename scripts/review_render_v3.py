@@ -343,7 +343,8 @@ def _atoms(runs):
         if gold and size == "M":
             yield text, size, gold
             continue
-        for m in re.finditer(r"\d[\d,.]*(?:対\d+)?[^\d\s　（）・、]?|.", text):
+        # カタカナの語（「ブレーブス」「エンリケ・エルナンデス」）も途中で折り返さない
+        for m in re.finditer(r"\d[\d,.]*(?:対\d+)?[^\d\s　（）・、]?|[ァ-ヴ][ァ-ヴー・]*[ァ-ヴー]|.", text):
             yield m.group(0), size, gold
 
 
@@ -455,7 +456,7 @@ def people(t, spec, rows, heading, kind_label):
         card = _item_card(row.get("name", ""), row.get("line", row.get("why", "")),
                           SAFE_RIGHT - LEFT, base, second)
         if y + card.height > 1400:
-            raise ValueError("日本人選手の成績が安全域に収まりません")
+            break                                              # 収まらない分は描かない（動画は止めない）
         _paste_card(im, card, LEFT, y, back_out((t - T_CARD0 - i * T_CARD_GAP) / SLIDE))
         y += card.height + 28
     ticker(im, t, (spec.get("v3") or {}).get("ticker"))
