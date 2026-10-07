@@ -1,63 +1,8 @@
 {
-  "updated_at": "2026-10-06T06:11:40.875665+00:00",
+  "updated_at": "2026-10-07T01:55:16.121322+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
-    {
-      "key": "season_game_849823",
-      "label": "地区シリーズ第2戦",
-      "hook": "ブレーブスがドジャースに3対2で地区シリーズ1勝1敗に",
-      "heading": "ブレーブス 対 ドジャース　地区シリーズ第2戦",
-      "intro": "地区シリーズ第2戦、ブレーブスが敵地でドジャースに3対2で勝ちました。",
-      "intro_as_is": true,
-      "style": "v2",
-      "team_id": 144,
-      "abbr": "ATL",
-      "title": "【MLB】ブレーブスがドジャースに3対2で地区シリーズ1勝1敗に｜ハリス2世の決勝打　大谷翔平・佐々木朗希 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ブレーブス 3対2 ドジャース　敵地で勝利　シリーズはブレーブスの1勝1敗"
-        ],
-        [
-          "決勝点",
-          "7回表　マイケル・ハリス2世のタイムリー二塁打"
-        ],
-        [
-          "本塁打",
-          "ドジャース2本（フリーマン、マンシー）"
-        ],
-        [
-          "先発",
-          "ブレーブス カー 2回と3分の2を無失点　ドジャース スネル 3回と3分の2を1失点"
-        ],
-        [
-          "勝ち投手・セーブ",
-          "勝ち ディラン・リー（3分の2回を無失点）　セーブ ライセル・イグレシアス"
-        ]
-      ],
-      "japanese": [
-        {
-          "name": "大谷翔平",
-          "line": "4打数1安打（ドジャース）"
-        },
-        {
-          "name": "佐々木朗希",
-          "line": "2回　無失点　1奪三振（ドジャース）"
-        }
-      ],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": null,
-      "voice": null,
-      "headline": null,
-      "game_pk": 849823,
-      "game_date": "2026-10-05T00:00:00Z",
-      "jp_first": true,
-      "finished_at": "2026-10-05T03:21:22.612000+00:00"
-    },
     {
       "key": "season_game_849834",
       "label": "地区シリーズ第2戦",
@@ -81,14 +26,6 @@
         [
           "先発",
           "ホワイトソックス ケイ 3分の1回を2失点　ガーディアンズ ウィリアムズ 5回を2失点"
-        ],
-        [
-          "ハイライトのコメント欄から",
-          "「60年間 ボストン・レッドソックス ファンをやってきた。こんな日が見られるまで生きてられて本当に嬉しい。信じてきた甲斐があった。」"
-        ],
-        [
-          "MLB.comの見出しから",
-          "「120年ぶりのホーム・プレーオフ制覇？ホワイトソックスはその一歩手前 ⚾」"
         ]
       ],
       "japanese": [
@@ -102,23 +39,67 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": {
-        "said": "60年間 ボストン・レッドソックス ファンをやってきた。こんな日が見られるまで生きてられて本当に嬉しい。信じてきた甲斐があった。",
-        "text": "60 yrs a Sox fan. Glad that Im still around and able to see this. My faith has been restored.",
-        "url": "https://www.youtube.com/watch?v=LtEYf0hF3i8",
-        "likes": 377,
-        "at": "2026-10-06T01:06:43Z"
-      },
-      "headline": {
-        "said": "120年ぶりのホーム・プレーオフ制覇？ホワイトソックスはその一歩手前 ⚾",
-        "text": "First home playoff clincher in 120 years? White Sox on cusp of making it happen",
-        "url": "https://www.mlb.com/news/white-sox-win-alds-game-2-2026",
-        "at": "2026-10-06T01:55:00+00:00"
-      },
+      "voice": null,
+      "headline": null,
       "game_pk": 849834,
       "game_date": "2026-10-05T21:00:00Z",
       "jp_first": true,
       "finished_at": "2026-10-06T00:11:11.149000+00:00"
+    },
+    {
+      "key": "season_game_849819",
+      "label": "地区シリーズ第3戦",
+      "hook": "ドジャースがブレーブスに3対1で地区シリーズ2勝1敗に",
+      "heading": "ドジャース 対 ブレーブス　地区シリーズ第3戦",
+      "intro": "地区シリーズ第3戦、ドジャースが敵地でブレーブスに3対1で勝ちました。",
+      "intro_as_is": true,
+      "style": "v2",
+      "team_id": 119,
+      "abbr": "LAD",
+      "title": "【MLB】ドジャースがブレーブスに3対1で地区シリーズ2勝1敗に｜エルナンデスの先制本塁打　大谷翔平・山本由伸 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "ドジャース 3対1 ブレーブス　敵地で勝利　シリーズはドジャースの2勝1敗"
+        ],
+        [
+          "先制で決勝の一打",
+          "4回表　エンリケ・エルナンデスの2点本塁打（飛距離124メートル、打球の速さ時速172キロ）"
+        ],
+        [
+          "本塁打",
+          "ドジャース2本（エルナンデス、フリーマン）"
+        ],
+        [
+          "先発",
+          "ドジャース 山本由伸 7回を1失点　ブレーブス セール 5回を3失点"
+        ],
+        [
+          "セーブ",
+          "エドウィン・ディアス"
+        ]
+      ],
+      "japanese": [
+        {
+          "name": "大谷翔平",
+          "line": "2打数0安打　1四球（ドジャース）"
+        },
+        {
+          "name": "山本由伸",
+          "line": "7回　1失点　10奪三振（ドジャース）"
+        }
+      ],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": null,
+      "game_pk": 849819,
+      "game_date": "2026-10-06T22:00:00Z",
+      "jp_first": true,
+      "finished_at": "2026-10-07T01:07:41.247000+00:00"
     },
     {
       "key": "season_game_849839",
@@ -153,8 +134,8 @@
           "勝ち キャム・ブーザー（3分の1回を無失点）　セーブ ブライアン・ベイカー"
         ],
         [
-          "MLB.comの見出しから",
-          "「1. 執拗なレイズがシュリットラーを苦しめ、5回に4点、リーグ優勝決定シリーズ進出まで1勝 🔥」"
+          "ハイライトのコメント欄から",
+          "「'24ワールドシリーズからのスカウティングレポートが今でも当てはまってる😅」"
         ]
       ],
       "japanese": [],
@@ -163,13 +144,14 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
-      "headline": {
-        "said": "1. 執拗なレイズがシュリットラーを苦しめ、5回に4点、リーグ優勝決定シリーズ進出まで1勝 🔥",
-        "text": "Relentless Rays give Schlittler fits in 4-run 5th, move 1 win from ALCS",
-        "url": "https://www.mlb.com/news/rays-win-alds-game-2-2026",
-        "at": "2026-10-06T03:28:00+00:00"
+      "voice": {
+        "said": "'24ワールドシリーズからのスカウティングレポートが今でも当てはまってる😅",
+        "text": "Scouting report from Dodgers still holding true from '24 world series😅",
+        "url": "https://www.youtube.com/watch?v=NM3Rh7tgqE0",
+        "likes": 1032,
+        "at": "2026-10-06T03:46:54Z"
       },
+      "headline": null,
       "game_pk": 849839,
       "game_date": "2026-10-06T00:00:00Z",
       "jp_first": false,
