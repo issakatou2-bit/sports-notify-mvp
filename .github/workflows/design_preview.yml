@@ -1,49 +1,25 @@
-name: 道具　新デザインの試作動画（投稿しない）
-
-# 新デザイン（電光掲示板・review_render_v3）と BGM・効果音を、声つきで確かめる。
-# YouTube には上げない。できた動画は実行ページの成果物（3日）から見る。
-# 材料はその場で作る（連勝の話題 ps_momentum。出せる話題が無い日は何もしない）。
-
+name: 道具　成績の数字ドーン試作（投稿しない）
 on:
-  workflow_dispatch:
-    inputs:
-      bgm:
-        description: BGM
-        type: choice
-        options: [everyday, scoreboard, nighter, dugout, comeback]
-        default: everyday
-
+  workflow_dispatch: {}
 permissions:
   contents: read
-
 jobs:
   preview:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      COLLESPO_PLAYERS_DESIGN: bignumber
+      COLLESPO_BGM: everyday
+      ANTHROPIC_API_KEY: ''
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install -r scripts/requirements.txt
-
-      - name: Build topic
-        id: topic
-        run: |
-          python scripts/ps_momentum.py --out data/ps_momentum_topics.json
-          T="$(python -c "import json;t=json.load(open('data/ps_momentum_topics.json',encoding='utf-8'))['topics'];print(t[0]['key'] if t else '')")"
-          echo "key=$T" >> "$GITHUB_OUTPUT"
-          echo "試作する話題: ${T:-なし}" | tee -a "$GITHUB_STEP_SUMMARY"
-
-      - name: Install video tools
-        if: steps.topic.outputs.key != ''
+      - run: pip install -r scripts/requirements.txt
+      - run: bash scripts/install_video_tools.sh
         timeout-minutes: 16
-        run: bash scripts/install_video_tools.sh
-
-      - name: Start VOICEVOX engine
-        if: steps.topic.outputs.key != ''
+      - name: Start VOICEVOX
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
           for i in $(seq 1 30); do
@@ -51,24 +27,17 @@ jobs:
             sleep 2
           done
           exit 1
-
       - name: Build voiced preview
-        if: steps.topic.outputs.key != ''
-        env:
-          COLLESPO_BGM: ${{ inputs.bgm }}
-          # sanity は --general を付けたときだけAIを呼ぶ（ここでは呼ばない）
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          T="${{ steps.topic.outputs.key }}"
-          python scripts/generate_asset_video.py --topic "$T" --narration-out "build/narr_$T.json"
-          python scripts/sanity.py --strict --narration "build/narr_$T.json"
-          python scripts/synthesize_narration.py --narration "build/narr_$T.json" --out-dir "build/audio_$T"
-          python scripts/generate_asset_video.py --topic "$T" --audio-dir "build/audio_$T" --out build/preview
-
-      - name: Save preview
-        if: steps.topic.outputs.key != ''
-        uses: actions/upload-artifact@v4
+          python scripts/preview_bignumber.py --narration-out build/preview-narration.json
+          python scripts/sanity.py --strict --narration build/preview-narration.json
+          python scripts/synthesize_narration.py --narration build/preview-narration.json --out-dir build/preview-audio
+          python scripts/preview_bignumber.py --audio-dir build/preview-audio
+      - uses: actions/upload-artifact@v4
         with:
-          name: design-preview
+          name: morning-design-preview
           retention-days: 3
-          path: build/preview/*.mp4
+          path: |
+            build/preview/*.mp4
+            build/preview-narration.json
+            build/preview-audio/manifest.json
