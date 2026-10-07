@@ -37,12 +37,13 @@ def frame(t, seg, design, duration):
         return cr.voices_screen(t, seg, vd, duration)
     if seg["kind"] == "intro":
         import review_render_v3 as r3
+        from v3_slot_render import screen_text
         rows = vd.get("voices") or []
         index = (seg.get('meta') or {}).get('used_voice')
         chosen = rows[index] if type(index) is int and 0 <= index < len(rows) else {}
         match = cr.jp_matchup(chosen.get('matchup',''))
         result = chosen.get('result') or chosen.get('score') or ''
-        return r3.intro(t, {"hook": match or seg["text"], "v3": {"who": vd.get("source", ""), "tag": str(result), "ticker": cr.strip_for_voices(vd), "source": '　'.join(cr._voices_source(vd))}}, "現地のコメント")
+        return r3.intro(t, {"hook": screen_text(match or seg["text"]), "v3": {"who": screen_text(vd.get("source", "")), "tag": screen_text(result), "ticker": screen_text(cr.strip_for_voices(vd)), "source": screen_text('　'.join(cr._voices_source(vd)))}}, "現地のコメント")
     return cr.unified_comments(t, [{"said": seg["text"], "who": "コレスポ", "fact": True}],
                        None, "", title="コレスポ", live="",
                        source_lines=("音声：VOICEVOX:四国めたん",))

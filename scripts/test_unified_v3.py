@@ -14,6 +14,74 @@ import v3_slot_render as common
 
 
 class Unified(unittest.TestCase):
+    def test_integer_stats_rank_and_nonempty_chips(self):
+        players = [{'name':'松井裕樹','type':'pitcher','headline':'1.1回　0奪三振'},
+                   {'name':'佐々木朗希','type':'pitcher','headline':'2.0回　3奪三振'},
+                   {'name':'大谷翔平','type':'batter','headline':'4打数2安打'}]
+        self.assertEqual(bn.pick_big('1.5奪三振','pitcher'), ('',''))
+        self.assertEqual(bn._player_scene(players[0],'元の原稿',rank=1)['big'], '1')
+        scenes=bn._intro_scenes({},players,'10月7日')
+        chips=bn.unified_spec(scenes[-1])['v3']['chips']
+        self.assertEqual([c['score'] for c in chips], ['勝利貢献 1位','3奪三振','2安打'])
+        self.assertEqual(bn.unified_spec(scenes[0])['v3']['chips'], [])
+
+    def test_comment_missing_glyph_is_screen_only(self):
+        import comment_render as cr
+        voices=[{'who':'ファン','said':'大谷の安打🔥\U0010ffff！','at':.1}]
+        before=copy.deepcopy(voices)
+        with patch.object(common,'frame',return_value=None) as frame:
+            cr.unified_comments(3,voices,None,'応援🔥')
+            body=frame.call_args.args[2][0][1]
+            self.assertEqual(body,'「大谷の安打！」')
+            self.assertEqual(frame.call_args.args[1]['v3']['ticker'],'応援')
+        self.assertEqual(voices,before)
+
+    def test_quote_wrap_uses_the_actual_font_and_preserves_text(self):
+        from PIL import Image, ImageDraw
+        d=ImageDraw.Draw(Image.new('RGB',(8,8)))
+        text='「オリオールズのビジネスオペレーションについて報道した。'+ '長い引用を全文掲載する。'*10+'」'
+        lines,size=r3._lines(d,text,52,792,100)
+        self.assertEqual(''.join(lines),text)
+        self.assertTrue(all(d.textbbox((0,0),line,font=r3.font(size))[2]<=792 for line in lines))
+
+    def test_ps_single_line_ticker_and_starter_reading(self):
+        card={'layout':'facts','date':'2026-10-07','glossary':'WCS 2勝\nDS 3勝',
+              'items':[{'label':'ドジャース先発予定','value':'Shohei Ohtani'},
+                       {'label':'相手チーム先発予定','value':'Unknown Pitcher Zzzz'}]}
+        before=copy.deepcopy(card)
+        self.assertNotIn('\n',ps.ticker_text(card))
+        self.assertEqual(ps.ticker_text(card).count('2026-10-07'),1)
+        self.assertFalse(any(c.isascii() and c.isalpha() for c in ps.rows(card)[0][1]))
+        self.assertEqual(ps.rows(card)[1],('相手チーム先発予定','先発予定'))
+        self.assertEqual(card,before)
+
+    def test_chip_long_label_uses_a_font_that_fits(self):
+        from PIL import ImageDraw
+        label='ホワイトソックス / 先発予定'
+        original=ImageDraw.ImageDraw.text
+        drawn=[]
+        def record(draw,xy,text,*args,**kwargs):
+            if text == label:
+                drawn.append(draw.textbbox((0,0),text,font=kwargs['font'])[2])
+            return original(draw,xy,text,*args,**kwargs)
+        with patch.object(ImageDraw.ImageDraw,'text',record):
+            r3._chip(label,'先発予定',320,(20,20,20),(200,200,200))
+        self.assertTrue(drawn)
+        self.assertLessEqual(drawn[0],320-48)
+
+    def test_player_ticker_is_one_ranked_sentence_and_speech_is_unchanged(self):
+        import json
+        import generate_morning_short as g
+        data=json.loads((bn.ROOT/'scripts/fixtures/bignumber/morning_recap.json').read_text(encoding='utf-8'))
+        data['players']=g.sort_players(data['players'])
+        with patch.object(g,'week_line',return_value=('',[])):
+            nar=g.build_narration(data,'players')
+        before=copy.deepcopy(nar)
+        scenes=bn.scenes_from_morning(data,nar)
+        self.assertTrue(all(s['ticker']=='きょうの日本人選手　1位 松井裕樹　2位 佐々木朗希　3位 大谷翔平' for s in scenes))
+        self.assertFalse(bn.check_scenes(scenes,nar,data))
+        self.assertEqual(nar,before)
+
     def test_player_reuses_intro_and_does_not_mutate_material(self):
         spec={'big':'3','unit':'安打','head':'大谷翔平','head2':'ドジャース','sub':'4打数3安打','rank':1,'team_id':119}
         original=copy.deepcopy(spec)

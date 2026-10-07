@@ -4,6 +4,20 @@ from PIL import Image, ImageDraw
 import review_render_v3 as r3
 
 
+@functools.lru_cache(maxsize=4096)
+def _supported(ch):
+    f = r3.font(52)
+    mask = f.getmask(ch)
+    missing = f.getmask('\U0010ffff')
+    return (mask.size, bytes(mask)) != (missing.size, bytes(missing))
+
+
+def screen_text(text):
+    """画面専用。未収録グリフと絵文字の制御文字を原稿の写しから外す。"""
+    return ''.join(ch for ch in str(text) if ch not in '\u200d\ufe0e\ufe0f'
+                   and not 0x1f3fb <= ord(ch) <= 0x1f3ff and _supported(ch))
+
+
 @functools.lru_cache(maxsize=128)
 def item(head, body, width, base, second, reply=False):
     return r3._item_card(head, body, width, base, second, quote_size=38 if reply else 52,

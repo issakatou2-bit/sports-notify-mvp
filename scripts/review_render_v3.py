@@ -24,7 +24,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont  # noqa: E402
 
 from ps_brand_components import TEAM_SECONDARY_COLORS, font  # noqa: E402
 from ps_render_template import SAFE_BOTTOM, SAFE_RIGHT  # noqa: E402
-from review_render import page_source, _lines, PORTRAITS  # noqa: E402
+from review_render import page_source, PORTRAITS, _tokens  # noqa: E402
 
 W, H = 1080, 1920
 LEFT = 72
@@ -42,6 +42,31 @@ T_CHIP0, T_CHIP_GAP = 1.0, 0.3   # 札の1枚目と間隔
 T_RING_AFTER = 0.55  # 札が着いてから○が付くまで
 T_CARD0, T_CARD_GAP = 0.15, 0.35  # 項目の札
 SLIDE = 0.45         # 飛び込みにかかる秒
+
+
+def _lines(d, text, size, width, max_lines=4):
+    """描画と同じ書体で札の幅を計測する。長い語も幅以内で折る。"""
+    while True:
+        f = font(size)
+        lines, line = [], ''
+        for part in str(text).split('\n'):
+            for token in _tokens(part):
+                if d.textbbox((0,0),line+token,font=f)[2] <= width:
+                    line += token
+                    continue
+                if line:
+                    lines.append(line.rstrip()); line = ''
+                for ch in token:
+                    if line and d.textbbox((0,0),line+ch,font=f)[2] > width:
+                        lines.append(line.rstrip()); line = ''
+                    line += ch
+            if line:
+                lines.append(line.rstrip()); line = ''
+        if line:
+            lines.append(line.rstrip())
+        if len(lines) <= max_lines or size <= 24:
+            return lines[:max_lines], size
+        size -= 2
 
 
 def _hex(c):
@@ -203,7 +228,7 @@ def _chip(label, score, w, base_rgb, second_rgb):
     d.rounded_rectangle((0, 0, w - 1, 167), radius=20, fill=_mix(base_rgb, (255, 255, 255), 0.1) + (255,),
                         outline=_mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)
     size = 28
-    while size > 18 and d.textlength(label, font=font(size)) > w - 48:
+    while size > 8 and d.textbbox((0, 0), label, font=font(size))[2] > w - 48:
         size -= 1
     d.text((24, 22), label, font=font(size), fill=second_rgb)
     if re.fullmatch(r'[0-9.+:\-]+', str(score)):

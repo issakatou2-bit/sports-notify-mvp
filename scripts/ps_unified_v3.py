@@ -4,6 +4,20 @@ import review_render_v3 as r3
 import v3_slot_render as common
 
 
+def starter_name(value):
+    from generate_narration import speech_name
+    if value in ('確認中','未定','先発予定'):
+        return ''
+    name = speech_name(str(value))
+    return name if name and not re.search(r'[A-Za-zÀ-ž]', name) else ''
+
+
+def ticker_text(card):
+    return '　'.join(' '.join(str(x).split()) for x in
+                    (card['date'],card.get('subhead'),
+                     card.get('glossary') if card.get('card_index') is None else '') if x)
+
+
 def rows(card):
     result = []
     for row in (card.get('scoreboard') or {}).get('rows', []):
@@ -12,7 +26,10 @@ def rows(card):
         if card['layout'] == 'schedule':
             result.append((row['home']+' 対 '+row['away'], row['when']))
         elif card['layout'] == 'facts':
-            result.append((row['label'], str(row['value'])))
+            head, body = row['label'], str(row['value'])
+            if '先発' in head:
+                body = starter_name(body) or '先発予定'
+            result.append((head, body))
         elif card['layout'] == 'bracket':
             result.append((row['home']+' 対 '+row['away'], row['when']+'　'+row['next']))
         else:
@@ -49,8 +66,7 @@ def spec(card, focus=None):
             'hook': chosen['headline'].replace('\n','　'),
             'v3': {'who': chosen['headline'].replace('\n','　'), 'big': clock, 'unit': unit,
                    'tag': chosen.get('subhead',''), 'chips': chips,
-                   'ticker': '　'.join(x for x in (card['date'],card.get('subhead'),
-                                      card.get('glossary') if card.get('card_index') is None else '') if x)}}
+                   'ticker': ticker_text(card)}}
 
 
 def frame(t, card, focus=None, cover=False, duration=20):

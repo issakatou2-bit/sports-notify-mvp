@@ -705,9 +705,9 @@ def unified_comments(t, voices, team_id, strip_text, title=TITLE, live=LIVE_COMM
                      source_lines=(), page=None, backdrop=None):
     import v3_slot_render as common
     voices = list(voices or [])
-    rows = [(v.get('who',''), '「'+v.get('said','')+'」' if not v.get('fact') else v.get('said','')) for v in voices]
-    spec = {'team_id': team_id, 'heading': live, 'page': page, 'v3': {'ticker': strip_text}}
-    return common.frame(t, spec, rows, title, '　'.join(source_lines), start_times(voices),
+    rows = [(common.screen_text(v.get('who','')), common.screen_text('「'+v.get('said','')+'」' if not v.get('fact') else v.get('said',''))) for v in voices]
+    spec = {'team_id': team_id, 'heading': common.screen_text(live), 'page': page, 'v3': {'ticker': common.screen_text(strip_text)}}
+    return common.frame(t, spec, rows, common.screen_text(title), common.screen_text('　'.join(source_lines)), start_times(voices),
                         [v.get('reply', False) for v in voices])
 
 

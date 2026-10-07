@@ -81,13 +81,13 @@ class PickBig(unittest.TestCase):
 
     def test_zero_is_not_the_featured_number(self):
         self.assertEqual(bn.pick_big("4打数0安打", "batter"), ("", ""))
-        self.assertEqual(bn.pick_big("4打数0安打　2四球", "batter"), ("2", "四球"))
+        self.assertEqual(bn.pick_big("4打数0安打　2四球", "batter"), ("", ""))
         self.assertEqual(bn.pick_big("0.0回　0奪三振", "pitcher"), ("", ""))
-        self.assertEqual(bn.pick_big("0.1回　0奪三振", "pitcher"), ("0.1", "回"))
+        self.assertEqual(bn.pick_big("0.1回　0奪三振", "pitcher"), ("", ""))
 
     def test_pitcher(self):
-        self.assertEqual(bn.pick_big("1.1回　0奪三振　自責0　1被安打　ホールド", "pitcher"), ("1.1", "回"))
-        self.assertEqual(bn.pick_big("6.2回　5奪三振　防御率5.40　6被安打", "pitcher"), ("6.2", "回"))
+        self.assertEqual(bn.pick_big("1.1回　0奪三振　自責0　1被安打　ホールド", "pitcher"), ("", ""))
+        self.assertEqual(bn.pick_big("6.2回　5奪三振　防御率5.40　6被安打", "pitcher"), ("5", "奪三振"))
         self.assertEqual(bn.pick_big("7.0回　11奪三振　自責1", "pitcher"), ("11", "奪三振"))
 
     def test_hits_allowed_is_not_hits(self):
@@ -107,7 +107,7 @@ class PickBig(unittest.TestCase):
         self.assertNotEqual(bn.check_scenes([sc], nar, {"players": [p]}), [])
         p["headline"] += "　2四球"
         sc = bn._player_scene(p, "4打数0安打、2四球。", rank=1)
-        self.assertEqual((sc["big"], sc["unit"]), ("2", "四球"))
+        self.assertEqual((sc["big"], sc["unit"]), ("1", "位"))
 
     def test_validation_rejects_featured_zero(self):
         nar = {"segments": [{"text": "0安打。"}]}
@@ -332,7 +332,7 @@ class OtherSegments(unittest.TestCase):
         nar = self.week_narration()
         scenes = bn.scenes_from_morning({"players": []}, nar)
         self.assertEqual(bn.check_scenes(scenes, nar), [])
-        self.assertEqual([(s["big"], s["unit"]) for s in scenes], [("2", "本塁打"), ("3.1", "回")])
+        self.assertEqual([(s["big"], s["unit"]) for s in scenes], [("2", "本塁打"), ("4", "奪三振")])
 
     def test_reach(self):
         rows = [{"name": "大谷翔平", "text": "今季50本塁打まで あと2", "gap": 2, "big": "2", "prefix": "あと",
