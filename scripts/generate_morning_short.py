@@ -4462,10 +4462,15 @@ def main():
             # 最初の画面は前が無いので混ぜない
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
+                if daily_design or bn_plan:
+                    import review_render_v3 as r3
+                    r3.set_program_clock(total / FPS)
                 if daily_design:
                     speech = float(seg.get('duration') or dur)
                     im = daily_v3.frame(k / FPS, narration["segments"][seg_i], daily_design, speech)
                     cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
+                    if k < fade:
+                        cached = r3.redraw_ticker(cached, (W, H))
                     proc.stdin.write(cached)
                     total += 1
                     continue
@@ -4585,6 +4590,8 @@ def main():
             bn_time += dur
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:
+        import review_render_v3 as _r3
+        _r3.set_program_clock(None)
         if proc.stdin:
             proc.stdin.close()
         proc.wait()

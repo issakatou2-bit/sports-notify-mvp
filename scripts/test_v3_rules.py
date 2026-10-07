@@ -160,4 +160,20 @@ class V3Rules(unittest.TestCase):
         self.assertTrue(rules.check_speech(spec,spec['items']))
 
 
+    def test_ticker_runs_on_one_program_clock(self):
+        """帯は番組全体で1本の時計。画面の頭（画面内の t=0）でも、番組の時刻の位置にある。"""
+        from PIL import Image
+        def band(local, clock):
+            im=Image.new('RGB',(1080,1920))
+            r3.set_program_clock(clock)
+            try:
+                r3.ticker(im,local,'きょうの日本人選手　1位 村上宗隆　2位 ヌートバー')
+            finally:
+                r3.set_program_clock(None)
+            return im.crop((0,1486,1080,1574)).tobytes()
+        self.assertEqual(band(0.0,12.5),band(7.0,12.5))
+        self.assertNotEqual(band(0.0,12.5),band(0.0,0.0))
+        for path in ('scripts/generate_morning_short.py','scripts/generate_asset_video.py'):
+            self.assertIn('set_program_clock(total / FPS)',(ROOT/path).read_text(encoding='utf-8'),path)
+
 if __name__=='__main__':unittest.main(argv=[__file__])
