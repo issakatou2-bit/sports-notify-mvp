@@ -1826,7 +1826,9 @@ def main():
                 v2 = LIST_TOPICS.get(meta.get("topic", args.topic)) or {}
                 v3 = v2.get("style") == "v3" and kind in ("intro", "list", "people", "outro")
                 if v3:
-                    # 新デザイン（電光掲示板）は背景が動き続けるので、使い回さない
+                    # 新デザイン（電光掲示板）は背景が動き続けるので、使い回さない。帯は番組の時計で流す
+                    import review_render_v3 as _r3
+                    _r3.set_program_clock(total / FPS)
                     proc.stdin.write(render_v3(k / FPS, kind, meta, v2, args.topic).tobytes())
                     total += 1
                     continue
@@ -1883,6 +1885,8 @@ def main():
                 total += 1
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:
+        import review_render_v3 as _r3
+        _r3.set_program_clock(None)
         if proc.stdin:
             proc.stdin.close()
         proc.wait()

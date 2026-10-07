@@ -207,9 +207,33 @@ def _single_ticker(text):
     return strip
 
 
+# 帯は番組全体で1本の時計で流す（画面が変わるたびに頭へ戻らない）。
+# 10/8 試作で、17:00〜18:00 の帯が画面ごとに「きょうの日本人選手」へ戻っていた。
+# 動画を書く側が毎コマ set_program_clock(番組の頭からの秒) を呼ぶ。呼ばなければ画面内の t を使う。
+_PROGRAM_CLOCK = [None]
+LAST_TICKER = [None]
+
+
+def set_program_clock(seconds):
+    _PROGRAM_CLOCK[0] = seconds
+
+
+def redraw_ticker(raw, size=(1080, 1920)):
+    """切り替わりで2枚を混ぜた後に、帯だけを描き直す（帯が二重に見えないように）。"""
+    last = LAST_TICKER[0]
+    if not last or _PROGRAM_CLOCK[0] is None:
+        return raw
+    im = Image.frombytes("RGB", size, raw)
+    ticker(im, _PROGRAM_CLOCK[0], last[0], y=last[1], once=last[2])
+    return im.tobytes()
+
+
 def ticker(im, t, text, y=1486, once=False):
     if not text:
         return
+    if _PROGRAM_CLOCK[0] is not None:
+        t = _PROGRAM_CLOCK[0]
+    LAST_TICKER[0] = (text, y, once)
     if once:
         strip = _single_ticker(text)
         band = Image.new('RGB',(W,88),GOLD)
