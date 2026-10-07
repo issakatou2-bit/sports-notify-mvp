@@ -49,6 +49,8 @@ import token_log  # noqa: E402
 # 翻訳が終わったあとに落ちるので、API呼び出しごと無駄になる。
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
+from team_names import team_names_jp  # noqa: E402
+
 try:
     import anthropic
 except ImportError:
@@ -505,7 +507,7 @@ def translate(client, items: list) -> list:
 
     def clean(pair):
         tone, ja = pair
-        return {"ja": ja,
+        return {"ja": team_names_jp(ja),
                 "tone": tone if tone in ("称賛", "批判", "中立") else "中立"}
 
     # 途中で切れた日は、最後に拾えた1行だけを落とす。
