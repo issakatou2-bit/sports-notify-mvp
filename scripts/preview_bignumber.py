@@ -27,7 +27,9 @@ def main():
             "--audio-dir", args.audio_dir, "--require-audio", "--out", "build/preview"]
     if args.narration_out:
         argv += ["--narration-out", args.narration_out]
-    with patch.object(recap_freshness, "current_day", return_value=edition), patch.object(sys, "argv", argv):
+    # 現在の履歴から「ここ7日」を混ぜない。週次場面は専用の固定検査で確認する。
+    with patch.object(recap_freshness, "current_day", return_value=edition), \
+         patch.object(gms, "week_line", return_value=("", [])), patch.object(sys, "argv", argv):
         return gms.main()
 
 

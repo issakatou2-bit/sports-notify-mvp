@@ -995,7 +995,7 @@ def _outro_scenes(seg):
     rows = post_common.lineup(gms.MODE_KIND.get("players", ""))
     return [{"layout": "cards", "head": "コレスポ", "head2": "毎日、更新中",
              "cards": [{"title": name, "body": what} for _, name, what, _ in rows],
-             "source": "音声: VOICEVOX:ずんだもん / 四国めたん　データ: MLB Stats API",
+             "source": "音声: VOICEVOX:四国めたん　データ: MLB Stats API",
              "say": seg.get("text", "")}]
 
 
