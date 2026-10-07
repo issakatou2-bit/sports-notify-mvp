@@ -52,7 +52,8 @@ class Spotlight(unittest.TestCase):
         self.assertEqual(t["title"], "【MLB】山本由伸が7回1失点10奪三振｜最速157.6キロ・空振り2 #Shorts")
         items = dict(t["items"])
         self.assertEqual(items["この試合の投球"], "7回　4安打　1失点　10奪三振　1四球（98球）")
-        self.assertEqual(items["試合"], "ドジャース 3対1 ブレーブス　地区シリーズ第3戦　山本由伸が勝ち投手")
+        self.assertEqual(items["試合"], "ドジャース 3対1 ブレーブス　地区シリーズ第3戦　山本由伸に勝ち")
+        self.assertEqual(t["speech"]["試合"], "試合はドジャースが3対1で勝って、山本由伸に勝ちが付きました。")
         self.assertEqual(items["次の試合"], "日本時間10月8日7時　地区シリーズ第4戦")
         self.assertEqual(t["style"], "v3")
         self.assertTrue(t["spotlight"])
@@ -61,6 +62,18 @@ class Spotlight(unittest.TestCase):
         feed = {"liveData": {**FEED["liveData"], "plays": {"allPlays": [
             {"matchup": {"pitcher": {"id": 1}}, "result": {}, "playEvents": [pitch("Eephus", "Ball")]}]}}}
         self.assertEqual(sp.story(GAME, BOX, feed, 1, "山本由伸"), {})
+
+
+class Context(unittest.TestCase):
+    def test_context_line(self):
+        show, say = sp.context_line(10, {"ps_prev_max": 9, "season_max": 10})
+        self.assertEqual(show, "ポストシーズンで自己最多（これまで9個）　今季のレギュラーシーズンの最多（10個）に並ぶ")
+        self.assertIn("自己最多", say)
+        self.assertIsNone(sp.context_line(5, {"ps_prev_max": 9, "season_max": 10}))
+
+    def test_counts_speech(self):
+        self.assertEqual(sp._counts_speech([("フォーシーム", 4), ("スプリット", 4), ("カーブ", 2)]),
+                         "フォーシームとスプリットが4つずつ、カーブが2つ")
 
 
 if __name__ == "__main__":

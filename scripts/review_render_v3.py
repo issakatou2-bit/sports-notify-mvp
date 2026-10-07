@@ -535,6 +535,8 @@ def cues(kind, spec, items=(), start=0, count=0):
     """その画面の効果音 [(秒, 種類, 案, 追加の音量dB)]。描画と同じ時刻表から。"""
     v3 = spec.get("v3") or {}
     out = []
+    if kind == "outro":
+        return outro_cues(spec.get("lineup_kind", ""))
     if kind == "intro":
         out.append((T_WHO, "swish", "a", -4))
         if v3.get("big"):
@@ -552,4 +554,66 @@ def cues(kind, spec, items=(), start=0, count=0):
         for i, (head, body) in enumerate(list(items)[start:start + count]):
             quote = "番記者" in head or str(body).startswith("「")
             out.append((T_CARD0 + i * T_CARD_GAP, "notify" if quote else "swish", "a", -3))
+    return out
+
+
+# ------------------------------------------------------------------ 共通の締め
+# 10/7 本人「最後のコレスポの紹介、ちょっと雑すぎ。もっと突き詰めて各ショートの最後に付けられる？」。
+# どの枠の最後にも付ける。毎日の番組表（post_common.lineup、時刻つき）を時刻の順に並べ、
+# いま見ている枠は外す。地はコレスポの色（球団色にしない）。
+OUTRO_TEXT = ("コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。"
+              "チャンネル登録して、また見に来てくださいね。")
+T_OUTRO_ROW0, T_OUTRO_GAP = 0.6, 0.18
+
+
+def outro_rows(exclude=""):
+    import post_common as pc
+    rows = sorted(pc.lineup(exclude), key=lambda r: r[3])
+    return [(at, name) for _, name, _, at in rows][:7]
+
+
+def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　データ: MLB Stats API"):
+    im = background(t, None)
+    d = ImageDraw.Draw(im)
+    k = ease_out(t / 0.5)
+    d.text((LEFT - round(40 * (1 - k)), 250), "コレスポ", font=font(150), fill=GOLD)
+    d.text((LEFT, 440), "毎日のMLBを数字と現地の声で", font=font(42), fill=INK)
+    y = 540
+    d.text((LEFT, y), "毎日のお届け", font=font(30), fill=(196, 206, 212))
+    y += 56
+    w = SAFE_RIGHT - LEFT
+    for i, (at, name) in enumerate(outro_rows(exclude)):
+        row = _outro_row(at, name, w)
+        _paste_card(im, row, LEFT, y, back_out((t - T_OUTRO_ROW0 - i * T_OUTRO_GAP) / SLIDE))
+        y += row.height + 14
+    kb = ease_out((t - 1.8) / 0.4)
+    if kb > 0:
+        f = font(44)
+        text = "チャンネル登録で毎日届きます"
+        bw = round(d.textlength(text, font=f)) + 56
+        d.rectangle((LEFT, y + 20, LEFT + round(bw * kb), y + 100), fill=GOLD)
+        lay = Image.new("RGBA", (bw, 80), (0, 0, 0, 0))
+        ImageDraw.Draw(lay).text((28, 40), text, font=f, fill=DARK_INK, anchor="lm")
+        cut = lay.crop((0, 0, round(bw * kb), 80))
+        im.paste(cut, (LEFT, y + 20), cut)
+    source(d, credit, (196, 206, 212))
+    presenter(im, t)
+    return im
+
+
+@functools.lru_cache(maxsize=16)
+def _outro_row(at, name, w):
+    card = Image.new("RGBA", (w, 82), (0, 0, 0, 0))
+    d = ImageDraw.Draw(card)
+    d.rounded_rectangle((0, 0, w - 1, 81), radius=18, fill=(255, 255, 255, 26), outline=(255, 255, 255, 60), width=2)
+    d.text((28, 41), at, font=num_font(44), fill=GOLD, anchor="lm")
+    d.text((170, 41), name, font=font(40), fill=INK, anchor="lm")
+    return card
+
+
+def outro_cues(exclude=""):
+    out = [(0.0, "transition", "b", -6)]
+    for i, _ in enumerate(outro_rows(exclude)):
+        out.append((T_OUTRO_ROW0 + i * T_OUTRO_GAP, "swish", "b", -8))
+    out.append((1.8, "marker", "a", -4))
     return out

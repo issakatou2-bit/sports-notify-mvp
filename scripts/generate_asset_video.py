@@ -1057,7 +1057,9 @@ def _narration_list(topic: str) -> dict:
         chunk = items[i:i + 2]
         segments.append({
             "kind": "list",
-            "text": "".join(f"{t.replace('｜', '、')}。{b}。" for t, b in chunk),
+            # 材料に話し言葉（speech）があれば、それを読む（数字は画面と同じもの）
+            "text": "".join((spec.get("speech") or {}).get(t) or f"{t.replace('｜', '、')}。{b}。"
+                            for t, b in chunk),
             "meta": {"topic": topic, "start": i, "count": len(chunk)},
         })
     # 数字のあとに、人を出す。
@@ -1651,6 +1653,9 @@ def render_v3(t, kind, meta, spec, topic):
     tag = spec.get("kind_label") or ("PSの話題" if spec.get("story") else "シーズンまとめ")
     if kind == "intro":
         return r3.intro(t, spec, tag)
+    if kind == "outro":
+        # 共通の締め（毎日の番組表・チャンネル登録・音声の表記）
+        return r3.outro(t, spec, spec.get("lineup_kind", ""), VOICE_CREDIT + "　データ: MLB Stats API")
     if kind == "people":
         return r3.people(t, spec, spec.get(meta.get("group", "japanese")) or [],
                          meta.get("heading", "日本人選手"), tag)
@@ -1736,6 +1741,9 @@ def main():
         # 新デザインの回は四国めたんが話す（10/6 本人「めたんをメインで」）。立ち絵も四国めたん。
         for s in narration["segments"]:
             s.setdefault("speaker", METAN)
+            if s.get("kind") == "outro":
+                import review_render_v3 as r3
+                s["text"] = r3.OUTRO_TEXT
         VOICE_CREDIT = "音声: VOICEVOX:四国めたん"
 
     if args.narration_out:
@@ -1805,7 +1813,7 @@ def main():
                 # 描き直さずに使い回すが、ここでそれをやると寄るのが
                 # 止まってしまう。
                 v2 = LIST_TOPICS.get(meta.get("topic", args.topic)) or {}
-                v3 = v2.get("style") == "v3" and kind in ("intro", "list", "people")
+                v3 = v2.get("style") == "v3" and kind in ("intro", "list", "people", "outro")
                 if v3:
                     # 新デザイン（電光掲示板）は背景が動き続けるので、使い回さない
                     proc.stdin.write(render_v3(k / FPS, kind, meta, v2, args.topic).tobytes())
