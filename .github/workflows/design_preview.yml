@@ -10,7 +10,7 @@ on:
       topic_type:
         description: 話題の種類
         type: choice
-        options: [momentum, game, odds]
+        options: [momentum, game, odds, spotlight]
         default: momentum
       snapshot:
         description: 保存済み材料で試作（当日の情報として投稿しない）
@@ -48,6 +48,7 @@ jobs:
             momentum) SCRIPT=ps_momentum; FILE=data/ps_momentum_topics.json ;;
             game) SCRIPT=ps_game_story; FILE=data/ps_game_topics.json ;;
             odds) SCRIPT=ps_odds; FILE=data/ps_odds_topics.json ;;
+            spotlight) SCRIPT=ps_spotlight; FILE=data/ps_spotlight_topics.json ;;
             *) exit 1 ;;
           esac
           if [ "$PREVIEW_SNAPSHOT" != true ]; then

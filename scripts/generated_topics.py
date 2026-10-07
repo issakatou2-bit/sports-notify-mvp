@@ -32,6 +32,7 @@ SOURCES = (
     "data/ps_game_topics.json",   # PSの話題：その日に終わった試合で何が起きたか (ps_game_story.py)
     "data/ps_odds_topics.json",   # PSの話題：2勝0敗・0勝2敗を過去の同じ状況から (ps_odds.py)
     "data/ps_momentum_topics.json",  # PSの話題：連勝・敵地での勝ちの流れ (ps_momentum.py)
+    "data/ps_spotlight_topics.json",  # PSの話題：日本人投手の圧巻の投球 (ps_spotlight.py)
 )
 
 _CACHE = None

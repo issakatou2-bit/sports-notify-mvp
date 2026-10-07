@@ -151,7 +151,7 @@ def season_order(key: str, spec: dict) -> tuple:
     # PSの話題（ps_story）がいちばん先。決着の翌日が見られる時。
     # 試合ごとの話題（ps_game_story）は日本人選手が出た試合から。鮮度が
     # 30時間しかないので、シリーズの総括より先に出す。
-    if spec.get("game"):
+    if spec.get("game") or spec.get("spotlight"):
         # 同じ組の中は試合の早い順（キーの番号順だと10/4は村上の試合が2本目に回った）。
         return (-1, 0 if spec.get("jp_first") else 1, spec.get("game_date") or "", key)
     # 0勝2敗・2勝0敗の過去の数（ps_odds）は、次の試合の前でないと意味が無い。

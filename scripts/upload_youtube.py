@@ -410,7 +410,7 @@ def asset_meta_from_spec(spec: dict) -> dict:
             lead += ["", "過去の数は、MLB公式の試合結果（1995年から昨季までの地区シリーズ）を集計したものです。予想ではありません。"]
         elif spec.get("momentum"):
             lead += ["", "数字はMLB公式の試合の成績表と順位表（レギュラーシーズン）です。"]
-        elif spec.get("game"):
+        elif spec.get("game") or spec.get("spotlight"):
             lead += ["", "数字はMLB公式の試合経過・成績表・計測（Statcast）です。"]
         elif spec.get("story"):
             lead += ["", "数字はMLB公式の試合の成績表をシリーズで集計したものです。"]
