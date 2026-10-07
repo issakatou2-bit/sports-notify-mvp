@@ -58,6 +58,11 @@ MAX_PLAYERS = 4      # 全員並べると点呼になる。上位だけ
 # いる日の44点と、最高が50点の日の44点では、意味がまるで違う。
 RELATIVE_FLOOR = 0.45
 MAX_RARE = 2
+# 名前のある指標（シーズン通算）を、同じ選手・同じ指標で何日あけて出すか。
+# 10/7 本人「村上のアダム・ダン率、今日触れるのは脈絡がない。毎日触れてない？
+# まるで今日の数字かのように言ってる」。毎日材料に入れていたので、7日に1度に。
+RARE_REPEAT_DAYS = 7
+RARE_SEEN = "longform_rare_seen.json"
 MAX_TRENDS = 3      # 主役1人ぶんの切り口。多いと読み切れない
 MAX_CHANGES = 4      # 進出争いで動いたこと
 MAX_SOCCER = 1       # 1本1大会。長編でも大会は1つに絞る
@@ -436,9 +441,17 @@ def load(root: str = "data", today: date = None) -> dict:
     # 他と同じ幅で切る（`updated_at` を見る）。
     rare = []
     rarity_data = _fresh_read(base / "rarity.json", today)
+    seen = (_read(base / RARE_SEEN) or {}).get("seen") or {}
+
+    def _recent(name, label):
+        day = _day(seen.get("%s|%s" % (name, label)))
+        return day is not None and 0 <= (today - day).days < RARE_REPEAT_DAYS
+
     for name, row in (rarity_data.get("players") or {}).items():
         for item in (row.get("items") or []):
             if (item.get("ties") or 1) > 1 or not item.get("label"):
+                continue
+            if _recent(name, item["label"]):
                 continue
             above = _person(item.get("above"))
             leader = _person(item.get("leader") or (above if item.get("at") == 2 else {}))
@@ -460,7 +473,10 @@ def load(root: str = "data", today: date = None) -> dict:
                          "leader": leader,
                          "below": below})
             break
-    rare = rare[:MAX_RARE]
+    # その日に出場した選手の指標だけ（出ていない選手の通算の数字は脈絡がない。
+    # 10/7 試合の無かった村上のアダム・ダン率を、その日の話の流れで言っていた）
+    played = {pl.get("name") for pl in players}
+    rare = [r for r in rare if r["name"] in played][:MAX_RARE]
 
     # 主役の1人だけ、切り口ごとの成績を足す。
     #
@@ -611,7 +627,10 @@ def facts(m: dict) -> str:
 
     if m["rare"]:
         out.append("")
-        out.append("## 名前のある指標での位置")
+        out.append("## 名前のある指標での位置（今季通算）")
+        out.append("※ **今季通算の数字。その日の試合の数字ではない。**"
+                   "「今季通算で」と言ってから話す。その日の成績から続けて、"
+                   "今日の数字のように言わない。")
         out.append("※ 指標の値は公式成績から計算。順位は下記の対象条件での順位。"
                    "規定打席・規定投球回到達者の順位やア・ナ各リーグ順位とは呼ばない。")
         out.append("※ **「とは」の行は画面に出る。声では説明しない。**")
@@ -854,7 +873,29 @@ def outline(m: dict) -> str:
     return "・".join(bits)
 
 
+def mark_rare_seen(dialogue_path, root: str = "data", today: date = None) -> list:
+    """長編で実際に札を出した指標を、出した日として残す（7日あけるため）。"""
+    base = pathlib.Path(root)
+    today = today or rf.current_day()
+    m = load(root, today)
+    dia = json.loads(pathlib.Path(dialogue_path).read_text(encoding="utf-8"))
+    keys = {s.get("panel") for s in dia.get("segments") or [] if str(s.get("panel") or "").startswith("rare")}
+    used = [m["rare"][int(k[4:]) - 1] for k in sorted(keys) if k[4:].isdigit() and int(k[4:]) <= len(m["rare"])]
+    path = base / RARE_SEEN
+    data = _read(path) or {}
+    seen = data.get("seen") or {}
+    for r in used:
+        seen["%s|%s" % (r["name"], r["stat"])] = today.isoformat()
+    # 古い記録は落とす
+    seen = {k: v for k, v in seen.items() if (_day(v) and (today - _day(v)).days < 60)}
+    path.write_text(json.dumps({"seen": seen}, ensure_ascii=False, indent=2), encoding="utf-8")
+    return ["%s %s" % (r["name"], r["stat"]) for r in used]
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 2 and sys.argv[1] == "--mark-rare-seen":
+        print("指標を記録:", mark_rare_seen(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "data"))
+        raise SystemExit(0)
     material = load(sys.argv[1] if len(sys.argv) > 1 else "data")
     print(outline(material))
     print()

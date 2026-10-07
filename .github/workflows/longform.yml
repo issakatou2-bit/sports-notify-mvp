@@ -262,6 +262,8 @@ jobs:
             --privacy "${{ inputs.privacy || 'public' }}" \
             ${{ inputs.force == 'true' && '--force' || '' }} \
             --publish-at "${{ github.event_name == 'workflow_run' && '21:00' || inputs.publish_at }}"
+          # 札を出した「名前のある指標」を記録（同じ選手・同じ指標は7日あける）
+          python scripts/numbers_material.py --mark-rare-seen build/lf/dialogue.json || true
 
       # 投稿の記録を残す。ここが無いと、上げたこと自体が
       # ランナーの中で消える。
@@ -273,7 +275,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "longform: ${{ github.run_id }}" \
-            data/published_videos.json data/token_usage.json data/transactions.json data/dialogue_batch.json
+            data/published_videos.json data/token_usage.json data/transactions.json data/dialogue_batch.json data/longform_rare_seen.json
 
       - name: Say what happened
         if: always()
