@@ -150,6 +150,7 @@ jobs:
           [ -z "$FAILED" ] || echo "::warning title=未投稿::$FAILED"
           mkdir -p build/asset
           cp build/asset_*/*.mp4 build/asset/ 2>/dev/null || true
+          python scripts/asset_sns.py --receipt-dir build/asset
 
       - name: Commit published record
         if: always()
@@ -166,6 +167,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: season-review
-          path: build/asset/*.mp4
+          path: |
+            build/asset/*.mp4
+            build/asset/*.sns.json
           retention-days: 14
           if-no-files-found: warn

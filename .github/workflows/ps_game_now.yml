@@ -131,6 +131,7 @@ jobs:
             python scripts/ps_game_now.py --watch || break
             sleep 600
           done
+          python scripts/asset_sns.py --receipt-dir build/asset
           exit 0
 
       - name: Keep the videos
@@ -138,6 +139,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ps-game-now
-          path: build/asset/*.mp4
+          path: |
+            build/asset/*.mp4
+            build/asset/*.sns.json
           retention-days: 14
           if-no-files-found: ignore
