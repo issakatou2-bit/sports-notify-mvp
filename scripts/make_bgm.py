@@ -732,7 +732,151 @@ def backing_bright():
         "116 BPM・ニ長調。D→A/C#→Bm7→G→Em7→A7sus。ベースが下がっていき、最後に前へ戻る。はねる刻み。"
 
 
-ALL = ["backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
+# ------------------------------------------------------------------ 今っぽく（10/7夜2）
+# 本人「ドゥンってやつ、最近の曲でわざと伸ばして音程つけるやつ」＝音程のある長い808。
+# 「伴奏・切なめ、ジャズを、もっと現代っぽく、質を上げて」。
+# 質の上げ方: 和音を9th・11th・13thまで重ねる、強さと時間を少しずつ揺らす（人の手の感じ）、
+# ゴーストノート（ごく小さい音）、ハイハットの3連の詰め、808の低音、軽いテープのひずみ。残響なし。
+
+_HR = np.random.default_rng(42)
+
+
+def _hum(t, ms=6):
+    """時間を少し揺らす（±ms）。"""
+    return max(0.0, t + _HR.uniform(-ms, ms) / 1000)
+
+
+def _tape(x, drive=1.2):
+    """軽いテープのひずみ（角を丸める）。"""
+    pk = np.max(np.abs(x)) + 1e-9
+    return np.tanh(drive * x / pk) / np.tanh(drive) * pk
+
+
+def _modern_drums(mix, t0, b, bi, trap=True):
+    """今っぽいドラム: 16分のハイハット（強弱つき・ときどき3連の詰め）、2・4拍のリムとスナップ、ゴースト。"""
+    s16 = b / 4
+    for q in range(16):
+        if trap and bi % 4 == 3 and q in (14, 15):
+            for r in range(3):                                   # 3連で詰める
+                gs.put(mix, ml.hat(False, 0.4), _hum(t0 + (14 + r * 2 / 3) * s16, 3), 0.1, 0.1)
+            break
+        vel = (0.5, 0.25, 0.38, 0.25)[q % 4] * _HR.uniform(0.85, 1.1)
+        gs.put(mix, ml.hat(False, vel), _hum(t0 + q * s16, 4), 0.14, 0.1)
+    for q in (1, 3):
+        gs.put(mix, ml.clap(), _hum(t0 + q * b, 3), 0.12)
+        s_ = sosfilt(butter(2, [700, 5000], "bandpass", fs=SR, output="sos"), ml.snare())
+        gs.put(mix, s_, _hum(t0 + q * b, 3), 0.08)
+    for gq in (7, 13):                                           # ゴーストノート
+        s_ = sosfilt(butter(2, 3000, "lowpass", fs=SR, output="sos"), ml.snare())
+        gs.put(mix, s_, _hum(t0 + gq * s16, 5), 0.025)
+
+
+def _ep_rich(notes, dur, v=0.5):
+    """エレピの和音（1音ずつ強さを揺らし、ほんの少しずらして弾く）。"""
+    n = int((dur + 0.6) * SR)
+    out = np.zeros(n)
+    for k, m in enumerate(notes):
+        s = bgm.rhodes(m, dur, v * _HR.uniform(0.8, 1.0))
+        d = int(k * 0.006 * SR)
+        out[d:d + len(s)] += s[:n - d]
+    return out / len(notes)
+
+
+def trap_808_long():
+    """音程のある長い808（ドゥーン）が低音の旋律をなぞる。上はハイハットと手拍子だけ。"""
+    bpm, nbar = 96, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 3) * SR)
+    mix = np.zeros((n, 2))
+    # 808 の線（C → A → F → G、ときどきオクターブ上へすべる）。(拍, MIDI)
+    line = {0: [(0, 36), (1.75, 36), (2.5, 43)], 1: [(0, 33), (1.5, 45), (2.5, 40)],
+            2: [(0, 29), (1.75, 29), (2.5, 41)], 3: [(0, 31), (1.5, 38), (2.75, 43), (3.5, 31)]}
+    notes, times = [], []
+    for bi in range(nbar):
+        t0 = bi * bar
+        _hat16(mix, t0, b, bi, g=0.14)
+        for q in (1, 3):
+            gs.put(mix, ml.clap(), t0 + q * b, 0.18)
+        for st, m in line[bi % 4]:
+            notes.append(m)
+            times.append(t0 + st * b)
+            gs.put(mix, ml.kick(0.18) * 0.6, t0 + st * b, 0.12)
+    bass = ml.k808(notes, times, n, decay=1.3, drive=2.4, glide=0.09)
+    bass = sosfilt(butter(2, 45, "highpass", fs=SR, output="sos"), bass)
+    gs.put(mix, bass, 0, 0.16)
+    return dry_finish(mix, nbar * bar, sub_cut=-3), "トラップ・長い808", \
+        "96 BPM。音程のある長い808（ドゥーン）が C→A→F→G の低音をなぞり、ときどきオクターブ上へすべる。上はハイハットと手拍子だけ。旋律なし・残響なし。"
+
+
+def modern_setsuna():
+    """切なめを今っぽく: 9th・11thの和音、808の低音、強弱のついたハイハット。"""
+    bpm, nbar = 88, 16
+    b = 60 / bpm
+    bar = 4 * b
+    n = int((nbar * bar + 3) * SR)
+    mix = np.zeros((n, 2))
+    # Fmaj9 → G13 → Em9 → Am11（ハ長調）
+    prog = [(41, [57, 60, 64, 67]), (43, [53, 59, 64, 69]), (40, [55, 59, 62, 66]), (45, [55, 60, 62, 67])]
+    notes, times = [], []
+    for bi in range(nbar):
+        root, ch = prog[bi % 4]
+        t0 = bi * bar
+        for st, d in ((0, 1.2), (1.75, 0.5), (2.5, 0.9), (3.5, 0.4)):
+            gs.put(mix, _ep_rich(ch, b * d, .55), _hum(t0 + st * b), 0.34, -0.1)
+        if bi >= 4:
+            _modern_drums(mix, t0, b, bi)
+        for st in (0, 2.5) if bi % 2 == 0 else (0, 1.75, 2.75):
+            notes.append(root - 12 + 12)
+            times.append(t0 + st * b)
+            gs.put(mix, ml.kick(0.18) * 0.5, t0 + st * b, 0.14)
+    bass = ml.k808(notes, times, n, decay=0.7, drive=1.8, glide=0.05)
+    bass = sosfilt(butter(2, 40, "highpass", fs=SR, output="sos"), bass)
+    gs.put(mix, bass, 0, 0.1)
+    mix = _tape(mix, 1.15)
+    return dry_finish(mix, nbar * bar, sub_cut=-4), "切なめ・今っぽく", \
+        "88 BPM・ハ長調。Fmaj9→G13→Em9→Am11 のエレピ（1音ずつ強さを揺らす）、808の低音、強弱のついた16分のハイハットと3連の詰め、ゴーストノート、軽いテープのひずみ。残響なし。"
+
+
+def modern_jazz():
+    """ジャズを今っぽく（ネオソウル寄り）: 跳ねる16分、リム、丸い低音、豊かな和音。"""
+    bpm, nbar = 84, 16
+    b = 60 / bpm
+    bar = 4 * b
+    s16 = b / 4
+    sw = 0.17                                                    # 16分の跳ね（裏を遅らせる割合）
+    n = int((nbar * bar + 3) * SR)
+    mix = np.zeros((n, 2))
+    # Dm9 → G13 → Cmaj9 → A7(♭13)（ハ長調）
+    prog = [(38, [53, 57, 60, 64]), (43, [53, 59, 64, 69]), (36, [52, 55, 59, 62]), (33, [55, 61, 65, 67])]
+    ev = []
+    for bi in range(nbar):
+        root, ch = prog[bi % 4]
+        t0 = bi * bar
+        for st, d in ((0, 1.4), (1.5 + sw / 2, 0.4), (2.75, 0.9)):
+            gs.put(mix, _ep_rich(ch, b * d, .5), _hum(t0 + st * b), 0.36, -0.1)
+        if bi % 4 == 3:                                          # 4小節ごとの短い合いの手（高い所で2音）
+            for k, m in enumerate((ch[-1] + 12, ch[-2] + 12)):
+                gs.put(mix, bgm.rhodes(m, b * 0.3, .35), _hum(t0 + (3 + k * 0.5) * b), 0.12, 0.25)
+        for q in range(16):
+            tq = t0 + (q + (sw if q % 2 else 0)) * s16
+            vel = (0.45, 0.22, 0.32, 0.22)[q % 4] * _HR.uniform(0.85, 1.1)
+            gs.put(mix, ml.hat(False, vel), _hum(tq, 4), 0.12, 0.1)
+        for q in (1, 3):
+            rim = sosfilt(butter(2, [900, 6000], "bandpass", fs=SR, output="sos"), ml.snare()[:int(0.08 * SR)])
+            gs.put(mix, rim, _hum(t0 + q * b, 3), 0.16)
+        for st in (0, 1.75 + sw / 4, 2.5):
+            gs.put(mix, ml.kick(0.2) * 0.55, _hum(t0 + st * b, 3), 0.2)
+        for st, d, off in ((0, 1.3, 0), (1.75, 0.5, 0), (2.5, 0.6, 7), (3.25, 0.5, 12)):
+            ev.append((int((t0 + st * b) * SR), int(d * b * SR), root + off, 0.55, 0, 0))
+    bass = sosfilt(butter(2, 600, "lowpass", fs=SR, output="sos"), Bass(SR).render(ev, n))
+    gs.put(mix, bass, 0, 0.3)
+    mix = _tape(mix, 1.15)
+    return dry_finish(mix, nbar * bar, sub_cut=-5), "ジャズ・今っぽく", \
+        "84 BPM・ハ長調。Dm9→G13→Cmaj9→A7(♭13) のエレピ、跳ねる16分のハイハット（強弱つき）、リム、丸いベース、4小節ごとの短い合いの手。ネオソウル寄り。残響なし。"
+
+
+ALL = ["trap_808_long", "modern_setsuna", "modern_jazz", "backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
 
 
 def main():
