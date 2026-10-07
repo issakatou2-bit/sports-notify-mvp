@@ -654,7 +654,7 @@ def presenter(im, t):
 
 # ------------------------------------------------------------------ 画面
 def comments(t, voices, team_id, strip_text, title=TITLE, live=LIVE_COMMENTS,
-             source_lines=("引用：MLB公式ハイライトのコメント欄（訳：コレスポ）",), page=None):
+             source_lines=("引用：MLB公式ハイライトのコメント欄（訳：コレスポ）",), page=None, backdrop=None):
     """コメント欄ライブの t 秒目の絵（1080×1920、RGB）。
 
     voices: [{"said": 訳文, "who": 短い説明, "mark": マーカーの語（said の部分文字列。無ければ引かない）}]
@@ -663,7 +663,7 @@ def comments(t, voices, team_id, strip_text, title=TITLE, live=LIVE_COMMENTS,
     strip_text: 上を流れる事実の帯の文（材料の文そのまま）。"""
     voices = list(voices or [])
     base, second, _ = r3.colors(team_id)
-    im = background(t, team_id)
+    im = (backdrop or background)(t, team_id)
     d = ImageDraw.Draw(im)
     header(d, t, title, live, second, page)
     strip(im, t, strip_text, second)

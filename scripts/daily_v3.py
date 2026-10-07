@@ -4,24 +4,33 @@ from pathlib import Path
 
 
 def prepare(data, narration, mode):
-    if mode != "voices" or os.environ.get("COLLESPO_COMMENTS_DESIGN", "legacy") != "comments":
+    comments_on = mode == "voices" and os.environ.get("COLLESPO_COMMENTS_DESIGN", "legacy") == "comments"
+    press_on = mode == "press" and os.environ.get("COLLESPO_PRESS_DESIGN", "legacy") == "v3"
+    if not comments_on and not press_on:
         return None
     import comment_render as cr
     vd = data.get("voices") or {}
     for seg in narration["segments"]:
         kind = seg["kind"]
-        if kind not in {"intro", "voices", "thread", "outro"}:
+        supported = {"intro", "headlines", "reporters", "outro"} if press_on else {"intro", "voices", "thread", "outro"}
+        if kind not in supported:
             raise ValueError(f"案Dの未対応画面: {kind}")
         if kind in {"voices", "thread"} and not cr.voices_for_segment(seg, vd):
             raise ValueError("読み上げるコメントが画面の材料にありません")
+        if press_on:
+            import press_v3
+            press_v3.bubbles(seg, data.get("reporters") or {})
     # 検査後に全場面の表示・声・表記をそろえる。旧声を使い回さない。
     for seg in narration["segments"]:
         seg["speaker"] = 2
         seg.setdefault("meta", {})["who"] = "四国めたん"
-    return {"mode": mode, "voices": vd}
+    return {"mode": mode, "voices": vd, "reporters": data.get("reporters") or {}}
 
 
 def frame(t, seg, design, duration):
+    if design["mode"] == "press":
+        import press_v3
+        return press_v3.frame(t, seg, design["reporters"], duration)
     import comment_render as cr
     vd = design["voices"]
     if seg["kind"] in {"voices", "thread"}:
@@ -48,7 +57,11 @@ def mix(audio, segments, durations, design, out_dir):
         raise ValueError("案Dの音声を四国めたん（話者2）で作り直してください")
     cues, start = [], 0.0
     for seg, dur in zip(segments, durations):
-        local = (cr.voices_cues(seg, design["voices"], dur)
+        if design["mode"] == "press":
+            import press_v3
+            local = press_v3.cues(seg, design["reporters"], dur)
+        else:
+            local = (cr.voices_cues(seg, design["voices"], dur)
                  if seg["kind"] in {"voices", "thread"}
                  else [(0.0, "transition", "a", -6)])
         cues.extend((start + at, kind, variant, db) for at, kind, variant, db in local)
