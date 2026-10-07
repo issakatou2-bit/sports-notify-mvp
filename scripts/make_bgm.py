@@ -648,7 +648,91 @@ def dry_backing():
         "104 BPM・ハ長調。エレピの和音の裏打ち（Fmaj7→Em7→Dm7→Cmaj7）、ベース、軽いドラムだけ。旋律なし・残響なし。"
 
 
-ALL = ["trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
+# ------------------------------------------------------------------ 伴奏だけ・和音の流れの違い（10/7夜）
+# 本人「伴奏だけが良さげ。コード進行のバリエーションがいくつか欲しい」。
+# 音の作り（エレピ・ベース・軽いドラム・残響なし）は「伴奏だけ」と同じで、和音の流れと刻み方だけ変える。
+# どれもよく使われる一般的な流れ。特定の曲の和音の並びは写さない。
+
+RHYTHMS = {
+    "ura": [(0.5, 0.3), (1.5, 0.3), (2.5, 0.3), (3.5, 0.3)],              # 裏打ち
+    "sync": [(0, 0.4), (0.75, 0.25), (1.5, 0.4), (2.5, 0.3), (3.25, 0.5)],  # はねる刻み
+    "long": [(0, 1.6), (2, 0.4), (2.75, 1.0)],                             # 長め・ゆったり
+}
+
+
+def _backing(bpm, prog, rhythm, bass_pat=((0, 0.9), (1.5, 0.4), (2, 0.9), (3.5, 0.4))):
+    b = 60 / bpm
+    bar = 4 * b
+    nbar = 16
+    n = int((nbar * bar + 2) * SR)
+    mix = np.zeros((n, 2))
+    chords = [prog[(bi * len(prog)) // nbar % len(prog)] if len(prog) > 4 else prog[bi % len(prog)]
+              for bi in range(nbar)]
+    for bi, (root, ch) in enumerate(chords):
+        t0 = bi * bar
+        for st, d in RHYTHMS[rhythm]:
+            gs.put(mix, ep_chord(ch, b * d, .5), t0 + st * b, 0.32)
+    ev = []
+    for bi, (root, ch) in enumerate(chords):
+        for st, d in bass_pat:
+            ev.append((int((bi * bar + st * b) * SR), int(d * b * SR), root, 0.55, 0, 0))
+    bass = sosfilt(butter(2, 800, "lowpass", fs=SR, output="sos"), Bass(SR).render(ev, n))
+    gs.put(mix, bass, 0, 0.3)
+    for bi in range(nbar):
+        t0 = bi * bar
+        for st in (0, 2.5):
+            gs.put(mix, ml.kick(0.22) * 0.6, t0 + st * b, 0.24)
+        for q in (1, 3):
+            gs.put(mix, ml.clap(), t0 + q * b, 0.09)
+        for q in range(8):
+            gs.put(mix, ml.hat(False, 0.45 if q % 2 == 0 else 0.3), t0 + q * b / 2, 0.08)
+    return dry_finish(mix, nbar * bar)
+
+
+def backing_pop():
+    """C → G/B → Am7 → Fmaj7：いちばん素直で明るい流れ。"""
+    prog = [(36, [55, 60, 64]), (35, [55, 59, 62]), (33, [55, 60, 64]), (29, [57, 60, 64])]
+    return _backing(108, prog, "ura"), "伴奏・王道", \
+        "108 BPM・ハ長調。C→G/B→Am7→Fmaj7。いちばん素直で明るい流れ。裏打ち。"
+
+
+def backing_jpop():
+    """Fmaj7 → G7 → Em7 → Am7：日本のポップスでよく使われる、少し切なさのある流れ。"""
+    prog = [(41, [57, 60, 64]), (43, [55, 59, 65]), (40, [55, 59, 62]), (45, [55, 60, 64])]
+    return _backing(104, prog, "sync"), "伴奏・切なめ", \
+        "104 BPM・ハ長調。Fmaj7→G7→Em7→Am7。少し切なさのある、日本のポップスでよく使われる流れ。はねる刻み。"
+
+
+def backing_jazz():
+    """Dm9 → G13 → Cmaj9 → A7：ジャズっぽい ii-V-I。"""
+    prog = [(38, [57, 60, 64, 65]), (43, [53, 59, 64]), (36, [55, 59, 62, 64]), (33, [55, 61, 64])]
+    return _backing(96, prog, "long"), "伴奏・ジャズ", \
+        "96 BPM・ハ長調。Dm9→G13→Cmaj9→A7。ジャズでよく使う ii-V-I の流れ。長めにゆったり。"
+
+
+def backing_vamp():
+    """Fmaj7 ⇄ G6 の2つだけ：いちばん主張しない。"""
+    prog = [(41, [57, 60, 64]), (43, [59, 62, 64])]
+    return _backing(110, prog, "sync"), "伴奏・2つの和音", \
+        "110 BPM・ハ長調。Fmaj7とG6を行き来するだけ。いちばん主張しない、ずっと流しても飽きにくい形。"
+
+
+def backing_sixties():
+    """C6 → Am7 → Dm7 → G7sus：昔のポップスのような、ほのぼのした一回り。"""
+    prog = [(36, [57, 60, 64]), (33, [55, 60, 64]), (38, [57, 60, 65]), (43, [57, 60, 65])]
+    return _backing(112, prog, "ura"), "伴奏・ほのぼの", \
+        "112 BPM・ハ長調。C6→Am7→Dm7→G7sus。昔のポップスのような一回り。裏打ち。"
+
+
+def backing_bright():
+    """D → A/C# → Bm7 → G → Em7 → A7sus（6つ、長め）：明るく前に進む。"""
+    prog = [(38, [57, 62, 66]), (37, [57, 61, 64]), (35, [57, 62, 66]), (43, [55, 59, 62]),
+            (40, [55, 59, 62]), (45, [57, 62, 64])]
+    return _backing(116, prog, "sync"), "伴奏・前向き", \
+        "116 BPM・ニ長調。D→A/C#→Bm7→G→Em7→A7sus。ベースが下がっていき、最後に前へ戻る。はねる刻み。"
+
+
+ALL = ["backing_pop", "backing_jpop", "backing_jazz", "backing_vamp", "backing_sixties", "backing_bright", "trap_hats", "trap_808", "dry_electro", "dry_backing", "chillhouse", "jazzhop", "funklight", "futurepop", "everyday", "nighter", "scoreboard", "dugout", "comeback"]
 
 
 def main():
