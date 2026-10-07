@@ -54,12 +54,18 @@ def team_id(seg, reporters):
 
 
 def frame(t, seg, reporters, duration):
+    if seg["kind"] == "intro":
+        return r3.intro(t, {"v3": {"who": "現地の報道", "big": str(len(reporters.get("headlines") or [])),
+                                   "unit": "見出し", "tag": selected(seg, reporters)[0][1] if selected(seg, reporters) else seg["text"],
+                                   "source": '引用：'+ '・'.join(dict.fromkeys(row.get('source') or row.get('outlet') or '現地メディア' for row,_ in selected(seg,reporters)))+'（訳：コレスポ）'}}, "現地の報道")
     rows = cr.timed(bubbles(seg, reporters), seg["text"], duration)
     end = seg["kind"] == "outro"
-    return cr.comments(t, rows, team_id(seg, reporters), "", title="コレスポ" if end else "現地の報道",
+    return cr.unified_comments(t, rows, team_id(seg, reporters), "", title="コレスポ" if end else "現地の報道",
                        live="" if end else "報道からの引用", backdrop=r3.background,
                        source_lines=("音声：VOICEVOX:四国めたん",) if end else ("引用：各札の報道元（訳：コレスポ）",))
 
 
 def cues(seg, reporters, duration):
-    return cr.cues(cr.timed(bubbles(seg, reporters), seg["text"], duration))
+    if seg["kind"] == "intro":
+        return r3.cues("intro", {"v3": {"big": str(len(reporters.get("headlines") or [])), "tag": seg["text"]}})
+    return cr.unified_cues(cr.timed(bubbles(seg, reporters), seg["text"], duration))

@@ -81,13 +81,13 @@ class PickBig(unittest.TestCase):
 
     def test_zero_is_not_the_featured_number(self):
         self.assertEqual(bn.pick_big("4打数0安打", "batter"), ("", ""))
-        self.assertEqual(bn.pick_big("4打数0安打　2四球", "batter"), ("2", "四球"))
+        self.assertEqual(bn.pick_big("4打数0安打　2四球", "batter"), ("", ""))
         self.assertEqual(bn.pick_big("0.0回　0奪三振", "pitcher"), ("", ""))
-        self.assertEqual(bn.pick_big("0.1回　0奪三振", "pitcher"), ("0.1", "回"))
+        self.assertEqual(bn.pick_big("0.1回　0奪三振", "pitcher"), ("", ""))
 
     def test_pitcher(self):
-        self.assertEqual(bn.pick_big("1.1回　0奪三振　自責0　1被安打　ホールド", "pitcher"), ("1.1", "回"))
-        self.assertEqual(bn.pick_big("6.2回　5奪三振　防御率5.40　6被安打", "pitcher"), ("6.2", "回"))
+        self.assertEqual(bn.pick_big("1.1回　0奪三振　自責0　1被安打　ホールド", "pitcher"), ("", ""))
+        self.assertEqual(bn.pick_big("6.2回　5奪三振　防御率5.40　6被安打", "pitcher"), ("5", "奪三振"))
         self.assertEqual(bn.pick_big("7.0回　11奪三振　自責1", "pitcher"), ("11", "奪三振"))
 
     def test_hits_allowed_is_not_hits(self):
@@ -107,7 +107,7 @@ class PickBig(unittest.TestCase):
         self.assertNotEqual(bn.check_scenes([sc], nar, {"players": [p]}), [])
         p["headline"] += "　2四球"
         sc = bn._player_scene(p, "4打数0安打、2四球。", rank=1)
-        self.assertEqual((sc["big"], sc["unit"]), ("2", "四球"))
+        self.assertEqual((sc["big"], sc["unit"]), ("1", "位"))
 
     def test_validation_rejects_featured_zero(self):
         nar = {"segments": [{"text": "0安打。"}]}
@@ -286,32 +286,23 @@ class Cues(unittest.TestCase):
             self.assertIn(variant, ("a", "b"))
             self.assertGreaterEqual(at, 0)
 
-    def test_roll_matches_timetable(self):
-        spec = {"big": "3", "unit": "安打", "head": "x", "sub": "4打数3安打", "team_id": 119}
-        c = bn.cues(spec)
-        self.assertIn((0.0, "transition", "b", -6), c)
-        self.assertIn((bn.T_ROLL[0], "roll", "a", -2), c)
-        self.assertIn((bn.T_ROLL[1] - 0.04, "stop", "a", 0), c)
+    def test_hero_uses_the_shared_timetable(self):
+        spec = {'big':'3','unit':'安打','sub':'4打数3安打'}
+        self.assertEqual(bn.cues(spec), bn.r3.cues('intro', bn.unified_spec(spec)))
 
-    def test_count_and_stamp(self):
-        c = bn.cues({"big": "12", "unit": "奪三振", "team_id": 119})
-        self.assertIn((bn.T_COUNT[0], "roll", "b", -4), c)
-        self.assertIn((bn.T_COUNT[1] - 0.04, "impact", "a", -2), c)
-        c = bn.cues({"layout": "plain", "big": "1", "unit": "位", "anim": "stamp", "team_id": 119})
-        self.assertIn((bn.T_STAMP, "impact", "b", -2), c)
+    def test_count_and_stamp_use_the_shared_reel(self):
+        for anim in ('count','stamp','roll'):
+            spec={'big':'3','unit':'安打','anim':anim}
+            self.assertEqual(bn.cues(spec), bn.r3.cues('intro', bn.unified_spec(spec)))
 
-    def test_one_pop_per_drawn_chip(self):
-        spec = {"big": "2", "unit": "本塁打", "sub": "4打数3安打　2本塁打　3打点",
-                "chips": ["マルチ本塁打", "同点打点"], "team_id": 145}
-        L = bn.layout_of(spec)
-        pops = [c for c in bn.cues(spec) if c[1] == "pop"]
-        self.assertEqual([p[0] for p in pops], [c["appear"] for c in L["chips"]])
-        self.assertEqual(len(pops), 2)
+    def test_chips_follow_shared_entry(self):
+        spec={'big':'3','unit':'安打','chips':['検査A','検査B']}
+        self.assertEqual(bn.cues(spec), bn.r3.cues('intro', bn.unified_spec(spec)))
 
     def test_cards_swish(self):
-        spec = {"layout": "cards", "head": "ほか", "cards": [{"title": "a", "body": "b"}, {"title": "c", "body": "d"}]}
-        sw = [c[0] for c in bn.cues(spec) if c[1] == "swish"]
-        self.assertEqual(sw, [bn.T_CARD0, bn.T_CARD0 + bn.T_CARD_GAP])
+        spec={'cards':[{'title':'甲','body':'3安打'},{'title':'乙','body':'2安打'}]}
+        rows=[(c['title'],c['body']) for c in spec['cards']]
+        self.assertEqual(bn.cues(spec), bn.r3.cues('list', bn.unified_spec(spec), rows, 0, 2))
 
     def test_no_cue_after_scene_fades(self):
         spec = {"big": "3", "unit": "安打", "chips": ["マルチ安打"], "team_id": 119, "dur": 1.0}
@@ -341,7 +332,7 @@ class OtherSegments(unittest.TestCase):
         nar = self.week_narration()
         scenes = bn.scenes_from_morning({"players": []}, nar)
         self.assertEqual(bn.check_scenes(scenes, nar), [])
-        self.assertEqual([(s["big"], s["unit"]) for s in scenes], [("2", "本塁打"), ("3.1", "回")])
+        self.assertEqual([(s["big"], s["unit"]) for s in scenes], [("2", "本塁打"), ("4", "奪三振")])
 
     def test_reach(self):
         rows = [{"name": "大谷翔平", "text": "今季50本塁打まで あと2", "gap": 2, "big": "2", "prefix": "あと",

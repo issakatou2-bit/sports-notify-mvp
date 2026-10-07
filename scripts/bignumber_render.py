@@ -136,10 +136,10 @@ WATERMARK_SIZE, WATERMARK_ALPHA = 760, 0x24 / 255   # Oswald 380px・線 2px・�
 WATERMARK_XY = (-80, 600)
 
 # 大きな数字に選ぶもの（材料の行の中の「数字＋単位」）。上から見て、最小値以上の最初のもの。
-# 二桁奪三振は morning_recap の名前のある記録と同じ線（10）。それより少ない日は投球回。
+# 投手は正の奪三振数。投球回や小数は選ばず、無い日は勝利貢献順位。
 PICK = {
-    "batter": (("本塁打", 1), ("打点", 1), ("安打", 1), ("四球", 1), ("死球", 1)),
-    "pitcher": (("奪三振", 10), ("回", 0)),
+    "batter": (("本塁打", 1), ("打点", 1), ("安打", 1)),
+    "pitcher": (("奪三振", 1),),
 }
 # カウントアップしない単位（数えると意味が変わる。motion.DENY_UNITS と同じ考え方）
 NO_COUNT_UNITS = ("位", "年", "月", "日", "時", "分", "秒", "戦", "号", "番", "歳", "回")
@@ -166,11 +166,11 @@ def _rgb(c):
 # ------------------------------------------------------------------ 大きな数字を選ぶ
 def pick_big(text, kind="batter"):
     """材料の行（例「4打数3安打　2本塁打　3打点」）から、大きく出す (数字, 単位) を選ぶ。
-    数字は行の中の文字をそのまま返す（「1.1回」なら "1.1"）。無ければ ("", "")。"""
+    正の整数だけを選ぶ。投球回の小数表記は大きな数字に使わない。"""
     text = str(text or "")
     rules = PICK.get(kind) or (PICK["batter"] + PICK["pitcher"])
     for unit, least in rules:
-        for m in re.finditer(r"(?<![\d.])(\d+(?:\.\d+)?)" + re.escape(unit), text):
+        for m in re.finditer(r"(?<![\d.])(\d+)" + re.escape(unit), text):
             if float(m.group(1)) > 0 and float(m.group(1)) >= least:
                 return m.group(1), unit
     return "", ""
@@ -692,56 +692,48 @@ def scene(t, scene_spec, team_id=None):
     """
     spec = dict(scene_spec)
     if team_id is not None:
-        spec["team_id"] = team_id
-    tid = spec.get("team_id")
-    base, second, _ = r3.colors(tid)
-    tg = float(spec.get("t0") or 0.0) + t
-    im = background(tg, tid)
-    L = layout_of(spec)
-    dur = spec.get("dur")
-    k_in = ease_out(t / T_FADE_IN)
-    k_out = clamp((t - (dur - T_OUT)) / T_OUT) if dur else 0.0
-    if k_in < 1 or k_out > 0:
-        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        _draw_content(layer, t, L, dur)
-        scale = FADE_SCALE - (FADE_SCALE - 1.0) * k_in
-        if scale > 1.0005:
-            big = layer.resize((round(W * scale), round(H * scale)), Image.BILINEAR)
-            ox, oy = (big.width - W) // 2, (big.height - H) // 2
-            layer = big.crop((ox, oy, ox + W, oy + H))
-        alpha = k_in * (1 - k_out)
-        if alpha < 1:
-            layer.putalpha(layer.getchannel("A").point([round(a * alpha) for a in range(256)]))
-        im.paste(layer, (0, 0), layer)
-    else:
-        _draw_content(im, t, L, dur)
-    _chrome(im, tg, t, spec, base, second)
+        spec['team_id'] = team_id
+    import v3_slot_render as common
+    view = unified_spec(spec)
+    rows = [(c.get('title',''), c.get('body','')) for c in spec.get('cards', [])]
+    if (spec.get('rank') or 0) > 1 or not spec.get('big') or rows:
+        ranked_head = (f"{spec['rank']}位　" if spec.get('rank') else '')+spec.get('head','')
+        rows = rows or [(ranked_head, spec.get('sub',''))]
+        rows += [('', str(x)) for x in spec.get('notes', [])]
+        return common.frame(t, view, rows, spec.get('label') or '日本人選手の成績', spec.get('source') or SOURCE)
+    im = r3.intro(t, view, spec.get('label') or '日本人選手の成績')
+    r3.source(ImageDraw.Draw(im), spec.get('source') or SOURCE, r3.colors(spec.get('team_id'))[1])
     return im
+
+
+def unified_spec(spec):
+    from notability_engine import MLB_TEAM_ABBR
+    tid = spec.get('team_id')
+    rank = spec.get('rank')
+    return {'team_id': tid, 'abbr': MLB_TEAM_ABBR.get(str(tid), ''),
+            'heading': '　'.join(str(spec.get(k) or '') for k in ('head', 'head2')).strip(),
+            'v3': {'who': '　'.join(str(spec.get(k) or '') for k in ('head', 'head2')).strip(),
+                   'big': str(spec.get('big') or ''), 'unit': str(spec.get('unit') or ''),
+                   'sub': f'勝利貢献 第{rank}位' if rank else spec.get('pre') or spec.get('tag',''),
+                   'tag': spec.get('sub') or spec.get('head2',''),
+                   'chips': spec.get('player_chips', []),
+                   'ticker': spec.get('ticker', '')}}
+
 
 
 # ------------------------------------------------------------------ 効果音の時刻
 def cues(scene_spec):
     """その場面の効果音 [(秒, 種類, 案, 追加の音量dB)]。描画と同じ時刻表・同じ配置から。"""
-    L = layout_of(scene_spec)
-    out = [(0.0, "transition", "b", -6)]                 # 色の塊が入る・横切る
-    if L["num"]:
-        a = L["num"]["anim"]
-        if a == "roll":
-            out.append((T_ROLL[0], "roll", "a", -2))
-            out.append((T_ROLL[1] - 0.04, "stop", "a", 0))
-        elif a == "count":
-            out.append((T_COUNT[0], "roll", "b", -4))
-            out.append((T_COUNT[1] - 0.04, "impact", "a", -2))
-        elif a == "stamp":
-            out.append((T_STAMP, "impact", "b", -2))
-    for c in L["chips"]:
-        out.append((c["appear"], "pop", "a", -7))
-    for c in L["cards"]:
-        out.append((c["appear"], "swish", "a", -3))
-    dur = scene_spec.get("dur")
-    if dur:
-        out = [c for c in out if c[0] < dur - T_OUT]
-    return out
+    if (scene_spec.get('rank') or 0) > 1 or not scene_spec.get('big') or scene_spec.get('cards'):
+        rows = [(c.get('title',''), c.get('body','')) for c in scene_spec.get('cards', [])]
+        rows = rows or [(scene_spec.get('head',''), scene_spec.get('sub',''))]
+        rows += [('', str(x)) for x in scene_spec.get('notes', [])]
+        out = r3.cues('list', unified_spec(scene_spec), rows, 0, len(rows))
+    else:
+        out = r3.cues('intro', unified_spec(scene_spec))
+    dur = scene_spec.get('dur')
+    return [c for c in out if not dur or c[0] < dur - T_OUT]
+
 
 
 def texts(scene_spec):
@@ -856,7 +848,7 @@ def _player_scene(p, say, tag="", rank=None):
     notes = [p["clutch_note"]] if p.get("clutch_note") else []
     sc = {"layout": "block", "big": big, "unit": unit, "tag": tag, "head": p.get("name", ""),
           "head2": p.get("team_jp", ""), "sub": head, "notes": notes, "chips": chips,
-          "team_id": p.get("team_id"), "say": say}
+          "team_id": p.get("team_id"), "rank": rank, "say": say}
     if not big and rank is not None:
         sc.update(layout="plain", big=str(rank), unit="位", anim="stamp",
                   tag="勝利貢献順位", ranking_name=p.get("name", ""))
@@ -886,15 +878,12 @@ def _intro_scenes(seg, players, day):
         for line in rare:
             say += "%s。" % line
         sc = _player_scene(top, say, rank=1)
-        if walked:
-            m = re.search(r"(\d+)度出塁", walked)
-            if m:
-                sc.update(layout="block", big=m.group(1), unit="度出塁")
         sc["notes"] = [x for x in [shot] + list(rare) if x] + sc["notes"]
         out.append(sc)
     head = gms.INTRO_HEADINGS["players"][0]
     out.append({"layout": "plain", "big": str(len(players)), "unit": "人", "head": day,
                 "sub": head, "chips": [p.get("name", "") for p in players],
+                "player_chips": [{'label': p.get('name',''), 'score': ''.join(pick_big(p.get('headline'), p.get('type'))) or f'勝利貢献 {i}位'} for i,p in enumerate(players,1)],
                 "team_id": top.get("team_id"),
                 "say": f"{day}、日本人選手{len(players)}人の成績です。"})
     return out
@@ -1043,7 +1032,8 @@ def scenes_from_morning(data, narration=None):
             sc.setdefault("team_id", top.get("team_id"))
             if sc.get("team_id") is None:
                 sc["team_id"] = top.get("team_id")
-            sc.update(segment=i, kind=kind, label=label, who=who)
+            sc.update(segment=i, kind=kind, label=label, who=who,
+                      ticker='きょうの日本人選手　'+'　'.join(f'{j}位 {p.get("name", "")}' for j,p in enumerate(players,1)))
         out += got
     return out
 
