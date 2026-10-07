@@ -141,6 +141,11 @@ def play_text(p: dict, who: str) -> str:
     r = p["result"]
     if r.get("event") == "Home Run":
         return f"{who}の{hr_name(r.get('rbi') or 1)}"
+    # 打席の打者は守備側の失策・暴投・捕逸の主体ではない。
+    if r.get("event") == "Field Error":
+        return f"{who}の打球で相手の失策"
+    if r.get("event") in ("Wild Pitch", "Passed Ball"):
+        return f"相手の{EVENT_JP[r['event']]}で得点"
     what = EVENT_JP.get(r.get("event"))
     return f"{who}の{what}" if what else f"{who}の打席で得点"
 
@@ -370,8 +375,11 @@ def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: l
                 m = measure_text(measure(dp))
                 if m:
                     body += f"（{m}）"
-            items.append(("先制で決勝の一打" if first else "決勝点", body))
-            hero = (who, dp, first)
+            # 決勝点になるプレーでも、失策や四球などを「決勝打」にしない。
+            is_hit = dp["result"].get("event") in ("Single", "Double", "Triple", "Home Run")
+            items.append(("先制で決勝の一打" if first and is_hit else "決勝点", body))
+            if is_hit:
+                hero = (who, dp, first)
 
     # 本塁打（球団ごと）
     hrs = {"away": [], "home": []}
