@@ -581,14 +581,14 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
     y = 540
     d.text((LEFT, y), "毎日のお届け", font=font(30), fill=(196, 206, 212))
     y += 56
-    w = SAFE_RIGHT - LEFT
+    w = SAFE_RIGHT - LEFT - 250                                 # 右下の立ち絵にかからない幅
     for i, (at, name) in enumerate(outro_rows(exclude)):
         row = _outro_row(at, name, w)
         _paste_card(im, row, LEFT, y, back_out((t - T_OUTRO_ROW0 - i * T_OUTRO_GAP) / SLIDE))
         y += row.height + 14
     kb = ease_out((t - 1.8) / 0.4)
     if kb > 0:
-        f = font(44)
+        f = font(38)
         text = "チャンネル登録で毎日届きます"
         bw = round(d.textlength(text, font=f)) + 56
         d.rectangle((LEFT, y + 20, LEFT + round(bw * kb), y + 100), fill=GOLD)
@@ -607,7 +607,10 @@ def _outro_row(at, name, w):
     d = ImageDraw.Draw(card)
     d.rounded_rectangle((0, 0, w - 1, 81), radius=18, fill=(255, 255, 255, 26), outline=(255, 255, 255, 60), width=2)
     d.text((28, 41), at, font=num_font(44), fill=GOLD, anchor="lm")
-    d.text((170, 41), name, font=font(40), fill=INK, anchor="lm")
+    size = 40
+    while size > 28 and ImageDraw.Draw(Image.new("RGB", (8, 8))).textlength(name, font=font(size)) > w - 190:
+        size -= 2
+    d.text((170, 41), name, font=font(size), fill=INK, anchor="lm")
     return card
 
 
