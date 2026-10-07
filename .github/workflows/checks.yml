@@ -41,10 +41,15 @@ jobs:
           pip install pyflakes pyyaml pillow pytest 'cryptography>=46,<50'
 
       - name: Install Japanese fonts for diagram checks
-        timeout-minutes: 6
+        # 10/7〜8 に apt-get update が120秒を超えて2回落ちた（検査の中身は通っていた）。
+        # 入っている一覧のままでまず入れ、だめなときだけ一覧を取り直す（3回まで）。
+        timeout-minutes: 12
         run: |
-          sudo timeout 120 apt-get update -qq -o Acquire::Retries=2
-          sudo timeout 180 apt-get install -y -qq fonts-noto-cjk
+          for i in 1 2 3; do
+            sudo timeout 180 apt-get install -y -qq --no-install-recommends fonts-noto-cjk && exit 0
+            sudo timeout 150 apt-get update -qq -o Acquire::Retries=2 || true
+          done
+          exit 1
 
       - name: Run checks
         run: python scripts/run_checks.py
