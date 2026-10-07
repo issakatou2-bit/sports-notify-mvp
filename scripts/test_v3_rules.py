@@ -186,5 +186,9 @@ class V3Rules(unittest.TestCase):
         rows=r3._caption_lines(d,'4打数3安打、2本塁打、3打点です。きょうは7人が出場しました。',42,560)
         self.assertTrue(all(row[0][0] not in '、。' for row in rows[1:]))
         self.assertIn(('3',True),[part for row in rows for part in row])
+        rows=r3._caption_lines(d,'24年のワールドシリーズからDodgersのスカウティングレポートがそのまま活きてる😅',42,300)
+        flat=''.join(part for row in rows for part,_ in row)
+        self.assertNotIn('😅',flat)
+        self.assertTrue(any('Dodgers' in part for row in rows for part,_ in row))
 
 if __name__=='__main__':unittest.main(argv=[__file__])

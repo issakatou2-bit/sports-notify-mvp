@@ -350,9 +350,18 @@ def caption(im, t):
     record_box(im, "caption", box, line)
 
 
+@functools.lru_cache(maxsize=4096)
+def _has_glyph(ch):
+    f = font(42)
+    mask, missing = f.getmask(ch), f.getmask("\U0010ffff")
+    return (mask.size, bytes(mask)) != (missing.size, bytes(missing))
+
+
 def _caption_lines(d, text, size, width):
     """数字の続き（3対2・4打数 など）を途中で切らずに折り返す。行頭に句読点を置かない。"""
-    tokens = re.findall(r"\d[\d.,:]*|[^\d]", text)
+    # 英語の語（Dodgers など）も途中で切らない。書体に無い字（絵文字など）は出さない
+    text = "".join(ch for ch in str(text) if ch.isspace() or _has_glyph(ch))
+    tokens = re.findall(r"\d[\d.,:]*|[A-Za-z][A-Za-z'.\-]*|[^\d]", text)
     rows, cur, cur_w = [], [], 0.0
     for tok in tokens:
         is_num = tok[0].isdigit()
