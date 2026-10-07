@@ -173,6 +173,12 @@ def pick_big(text, kind="batter"):
         for m in re.finditer(r"(?<![\d.])(\d+)" + re.escape(unit), text):
             if float(m.group(1)) > 0 and float(m.group(1)) >= least:
                 return m.group(1), unit
+    # 三振の無い救援投手は投球回（「1回3分の1」）。10/8 試作で、松井（1回3分の1・ホールド）の
+    # 大きな数字が順位の「1位」になり、順位表の「1位 … 1位」と重なっていた。
+    if kind == "pitcher":
+        m = re.search(r"(?<![\d.])(?<!分の)(\d+)回(3分の[12])?", text)
+        if m and int(m.group(1)) > 0:
+            return m.group(1), "回" + (m.group(2) or "")
     return "", ""
 
 
@@ -702,6 +708,17 @@ def scene(t, scene_spec, team_id=None):
             return closing
     if spec.get('ranking'):
         return common.ranking(t,view,spec['ranking'],spec.get('source') or SOURCE)
+    if r3.LOOK == 'v4':
+        import short_v4_cards as v4
+        if spec.get('kind')=='cover' and spec.get('roster'):
+            return v4.cover(t,spec)
+        if spec.get('other_players'):
+            return v4.others(t,spec)
+        if spec.get('player') and (spec.get('rank') or 0)>1:
+            return v4.player_detail(t,spec,spec['player'])
+    if r3.LOOK == 'v4' and spec.get('big') and (spec.get('rank') or 0) == 1:
+        from short_v4_cards import hero
+        return hero(t,spec)
     rows = [(c.get('title',''), c.get('body','')) for c in spec.get('cards', [])]
     if (spec.get('rank') or 0) > 1 or not spec.get('big') or rows:
         ranked_head = (f"{spec['rank']}位　" if spec.get('rank') else '')+spec.get('head','')
@@ -933,7 +950,19 @@ def _list_scenes(seg, players, top_name):
                     "cards": [{"title": f"{rank}位　{p.get('name', '')}（{p.get('team_jp', '')}）",
                                "body": p.get("headline", "")} for rank, p in skipped],
                     "say": say})
+        if r3.LOOK=='v4':
+            out[-1]['other_players']=[dict(v4_player(p,rank),spoken_name=gms._surname_only(p.get('name','')))
+                                     for rank,p in skipped]
     return out
+
+
+def v4_player(player,rank):
+    from notability_engine import MLB_TEAM_ABBR
+    big,unit=pick_big(player.get('headline',''),player.get('type'))
+    return dict(name=player.get('name',''),rank=rank,team_id=player.get('team_id'),
+                abbr=MLB_TEAM_ABBR.get(str(player.get('team_id')),''),team_jp=player.get('team_jp',''),
+                headline=player.get('headline',''),big=big,unit=unit,
+                notes=[player['clutch_note']] if player.get('clutch_note') else [])
 
 
 def _week_scenes(seg, players, days=7):
@@ -1046,6 +1075,13 @@ def scenes_from_morning(data, narration=None):
         _attach_bookend(got, seg.get("text", ""))
         who = WHO.get((seg.get("meta") or {}).get("who"), "metan")
         for sc in got:
+            if r3.LOOK == 'v4':
+                player=next((p for p in players if p.get('name')==sc.get('head')),None)
+                sc.update(roster_count=len(players),player_team_id=player.get('team_id') if player else None)
+                if player:
+                    rank=next(j for j,p in enumerate(players,1) if p is player)
+                    sc['player']=v4_player(player,rank)
+                if kind=='cover':sc['roster']=[v4_player(p,j) for j,p in enumerate(players,1)]
             sc.setdefault("team_id", top.get("team_id"))
             if sc.get("team_id") is None:
                 sc["team_id"] = top.get("team_id")

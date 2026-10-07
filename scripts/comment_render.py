@@ -705,6 +705,10 @@ def unified_comments(t, voices, team_id, strip_text, title=TITLE, live=LIVE_COMM
                      source_lines=(), page=None, backdrop=None):
     import v3_slot_render as common
     voices = list(voices or [])
+    if r3.LOOK == 'v4':
+        from short_v4_cards import quotes
+        return quotes(t,voices,common.screen_text(title),common.screen_text(live),
+                      common.screen_text(strip_text),common.screen_text('\n'.join(source_lines)))
     rows = [(common.screen_text(v.get('who','')), common.screen_text('「'+v.get('said','')+'」' if not v.get('fact') else v.get('said',''))) for v in voices]
     spec = {'team_id': team_id, 'heading': common.screen_text(live), 'page': page, 'v3': {'ticker': common.screen_text(strip_text)}}
     return common.frame(t, spec, rows, common.screen_text(title), common.screen_text('\n'.join(source_lines)), start_times(voices),
@@ -857,6 +861,14 @@ def who_of(v):
     return f"高評価{likes:,}件のコメント" if likes else "コメント"
 
 
+def material_tags(voices,voices_data):
+    if r3.LOOK!='v4':return voices
+    sources=list((voices_data or {}).get('voices') or [])
+    sources += [r for v in list(sources) for r in v.get('reply_ja',[])]
+    return [dict(v,**{k:source[k] for k in ('tone','likes','replies') if k in source})
+            for v in voices for source in [next((s for s in sources if s.get('ja')==v.get('said')), {})]]
+
+
 def voices_for_segment(seg, voices_data):
     """generate_morning_short の画面（kind が voices / thread）を吹き出しの並びに。
 
@@ -870,7 +882,7 @@ def voices_for_segment(seg, voices_data):
         for row in meta['quote_rows']:
             if not row.get('fact') and row.get('said') not in allowed:
                 raise ValueError('引用区間のコメントが原材料にありません')
-        return list(meta['quote_rows'])
+        return material_tags(list(meta['quote_rows']),voices_data)
     out = []
     if kind == 'intro':
         i=meta.get('used_voice')
@@ -903,7 +915,7 @@ def voices_for_segment(seg, voices_data):
             rs = str(r.get("ja") or "").strip()
             if rs:
                 out.append({"said": rs, "who": "返信", "mark": pick_mark(rs), "reply": True})
-    return out
+    return material_tags(out,voices_data)
 
 
 def jp_matchup(matchup):

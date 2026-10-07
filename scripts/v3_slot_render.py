@@ -125,6 +125,9 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
 
 
 def ranking(t,spec,rows,source_text):
+    if r3.LOOK == 'v4':
+        from short_v4_cards import ranking as draw
+        return draw(t,spec,rows,source_text)
     im=r3.background(t,spec.get('team_id'));d=ImageDraw.Draw(im)
     base,second,_=r3.colors(spec.get('team_id'))
     r3._header(d,'日本人選手の成績',None,second)
@@ -146,6 +149,9 @@ def ranking(t,spec,rows,source_text):
 
 
 def schedule(t,spec,rows,label,source_text):
+    if r3.LOOK == 'v4':
+        from short_v4_cards import schedule as draw
+        return draw(t,spec,rows,label,source_text)
     if len(rows)>4:
         raise ValueError('PS全試合一覧は4行までです')
     im=r3.background(t,None);d=ImageDraw.Draw(im)

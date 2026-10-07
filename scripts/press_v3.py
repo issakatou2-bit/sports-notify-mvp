@@ -62,6 +62,14 @@ def team_id(seg, reporters):
 
 def frame(t, seg, reporters, duration):
     rows = cr.reading_times(bubbles(seg, reporters), seg["text"], duration)
+    if r3.LOOK == 'v4':
+        sources=selected({'kind':'reporters'},reporters)+[(h,h.get('jp') or h.get('title','')) for h in reporters.get('headlines',[])]
+        rows=[dict(v,**{k:source[k] for k in ('outlet','author','source','tone','likes','replies')
+                       if k in source and source[k] is not None and source[k]!=''})
+              for v in rows for source in [next((s for s,body in sources if body==v.get('said')), {})]]
+        for row in rows:
+            if row.get('source') and not row.get('outlet'):
+                row['outlet']=row['source']
     end = seg["kind"] == "outro"
     return cr.unified_comments(t, rows, None, "", title="コレスポ" if end else "現地の報道",
                        live="" if end else "報道からの引用", backdrop=r3.background,

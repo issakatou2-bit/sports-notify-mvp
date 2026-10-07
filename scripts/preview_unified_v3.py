@@ -35,17 +35,28 @@ def sheet(frames, labels, path,columns=None):
     out.save(path)
 
 
+def sample(draw,text,t,duration=20):
+    # 動画と同じ字幕・番組時計を、保存材料の確認画像にも渡す。
+    if r3.LOOK!='v4':return draw(t)
+    r3.set_program_clock(0)
+    r3.set_caption(text,duration,120)
+    r3.set_program_clock(t)
+    try:return draw(t)
+    finally:r3.set_program_clock(None)
+
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--out',type=Path,default=Path('build/unified-previews'))
     ap.add_argument('--only-ps',action='store_true')
+    ap.add_argument('--players-material',default='scripts/fixtures/bignumber/morning_recap.json')
     args=ap.parse_args();args.out.mkdir(parents=True,exist_ok=True)
     if args.only_ps:
         ps_preview(args.out)
         print('PS確認画像のみ更新: '+str(args.out/'design-v3-ps.png'))
         return
     bn._no_network()
-    data=read('scripts/fixtures/bignumber/morning_recap.json')
+    data=read(args.players_material)
     data['players']=g.sort_players(data.get('players') or [])
     with patch.object(g,'week_line',return_value=('',[])),patch.dict(os.environ,{'COLLESPO_PLAYERS_DESIGN':'bignumber'}):
         nar=g.build_narration(data,'players')
@@ -53,8 +64,20 @@ def main():
     errors=bn.check_scenes(scenes,nar,data)
     if errors:raise ValueError(errors)
     chosen=scenes[:4]+[scenes[-1]]
-    sheet([bn.scene(3,s) for s in chosen],['成績 表紙','順位表','1位 詳細','2位以下','共通の締め'],args.out/'design-v3-players.png')
+    samples=[(s,3) for s in chosen];labels=['成績 表紙','順位表','1位 詳細','2位以下','共通の締め']
+    if r3.LOOK=='v4':
+        samples=[(s,3) for s in scenes[:3]];labels=['成績 表紙','順位表','1位 詳細']
+        lower=next((s for s in scenes if (s.get('rank') or 0)>1 and s.get('player')),None)
+        no_big=next((s for s in scenes if s.get('player') and not s['player'].get('big')),None)
+        other=next((s for s in scenes if s.get('other_players')),None)
+        if lower:samples.append((lower,3));labels.append('2位以下 成績と注釈')
+        if no_big:samples.append((no_big,3));labels.append('主数字なし 成績の札')
+        if other:
+            samples.extend([(other,0),(other,19)]);labels.extend(['ほか 前の選手','ほか 次の選手'])
+        samples.append((scenes[-1],3));labels.append('共通の締め')
+    sheet([sample(lambda t,s=s:bn.scene(t,dict(s,dur=20)),s['say'],t) for s,t in samples],labels,args.out/'design-v3-players.png',columns=4 if r3.LOOK=='v4' else None)
     report={'players': {'segments':len(nar['segments']),'checks':errors}}
+    report['players']['material']=args.players_material
     for mode, filename in [('voices','local_voices-preview.json'),('press','local_reporters-preview.json')]:
         material=read('scripts/fixtures/comment/'+filename)
         data={'players':[],mode if mode=='voices' else 'reporters':material,'date_jst':material['updated_at'][:10]}
@@ -69,7 +92,7 @@ def main():
             quotes=[s for s in nar['segments'] if any(v.get('read') and not v.get('fact') for v in s['meta'].get('quote_rows',[]))]
             segments=[quotes[0],next(s for s in quotes if s['kind']=='headlines'),next(s for s in reversed(quotes) if s['kind']=='reporters')];times=[3,3,3]
         segments.append(nar['segments'][-1]);times.append(3)
-        sheet([daily_v3.frame(t,s,design,20) for t,s in zip(times,segments)],
+        sheet([sample(lambda t,s=s:daily_v3.frame(t,s,design,20),s['text'],t) for t,s in zip(times,segments)],
               [mode+' '+s['kind']+f' {t}秒' for t,s in zip(times,segments)],args.out/f'design-v3-{mode}.png')
         report[mode]={'segments':len(nar['segments']),'text_unchanged':True}
     report.update(ps_preview(args.out))
@@ -84,9 +107,10 @@ def ps_preview(out):
             program=ps.prepare(saved['snapshot'],saved['evidence'],slot,datetime.fromisoformat(saved['evidence']['retrieved_at']),saved['ledger'])
         ps.check_program(program);lead=unified.lead_card(program);line=unified.program_ticker(program)
         selected=([(program['segments'][0],3),(program['segments'][1],3),(program['segments'][1],19),(program['segments'][-1],3)]
-                  if slot=='forecast' else [(s,3) for s in program['segments']])
+                  if slot=='forecast' else [(s,3) for s in
+                      ([program['segments'][0],program['segments'][-2],program['segments'][-1]] if r3.LOOK=='v4' else program['segments'])])
         for seg,t in selected:
-            frames.append(unified.frame(t,seg['meta']['card'],lead,cover=seg is program['segments'][0],ticker_line=line));labels.append(slot+f' {t}秒')
+            frames.append(sample(lambda t:unified.frame(t,seg['meta']['card'],lead,cover=seg is program['segments'][0],ticker_line=line),seg['text'],t));labels.append(slot+f' {t}秒')
         report[slot]={'segments':len(program['segments']),'edition_key':program['edition_key'],'ticker':line}
         if slot=='situation':
             report[slot]['series_included']=[s['meta']['card']['headline'].replace('\n','') for s in program['segments'] if s['kind']!='outro']
