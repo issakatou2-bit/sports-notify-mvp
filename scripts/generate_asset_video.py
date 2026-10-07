@@ -629,7 +629,17 @@ def rivalry_items() -> list:
 
 def build_narration(topic: str) -> dict:
     if topic in LIST_TOPICS:
-        return _narration_list(topic)
+        narration=_narration_list(topic)
+        if LIST_TOPICS[topic].get('style')=='v3':
+            import review_render_v3 as r3
+            import v3_rules
+            errors=v3_rules.check_speech(LIST_TOPICS[topic],list_items(topic))
+            if errors:
+                raise ValueError('話し言葉の数字が画面の材料と一致しません: '+str(errors))
+            for seg in narration['segments']:
+                if seg['kind']=='outro':
+                    seg['text']=r3.OUTRO_TEXT
+        return narration
     if topic == "mlb_venue":
         return _narration_venue()
     if topic == "mlb_rivalry":
@@ -1892,4 +1902,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -42,6 +42,26 @@ T_CHIP0, T_CHIP_GAP = 1.0, 0.3   # 札の1枚目と間隔
 T_RING_AFTER = 0.55  # 札が着いてから○が付くまで
 T_CARD0, T_CARD_GAP = 0.15, 0.35  # 項目の札
 SLIDE = 0.45         # 飛び込みにかかる秒
+CONTENT_TOP, CONTENT_BOTTOM = 236, 1216
+
+
+def record_box(im, role, box, text=''):
+    im.info.setdefault('v3_layout',[]).append({'role':role,'box':list(box),'text':str(text)})
+
+
+def _text(d, xy, text, **kwargs):
+    role=kwargs.pop("role","text")
+    d.text(xy,text,**kwargs)
+    box=d.textbbox(xy,text,**{k:v for k,v in kwargs.items() if k in ('font','anchor','stroke_width','spacing','align')})
+    record_box(d._image,role,box,text)
+
+
+def design_team(spec):
+    teams={str(t.get('team_id',t.get('id'))) if isinstance(t,dict) else str(t) for t in spec.get('teams',[])}
+    teams.update(str(p['team_id']) for p in spec.get('japanese',[]) if p.get('team_id') is not None)
+    if spec.get('series_key'):
+        teams.update(spec['series_key'].split(':')[-1].split('-'))
+    return None if spec.get('multi_team') or spec.get('game') or len(teams)>1 else spec.get('team_id')
 
 
 def _lines(d, text, size, width, max_lines=4):
@@ -150,17 +170,17 @@ def background(t, team_id):
 
 # ------------------------------------------------------------------ 部品
 def _header(d, label, page=None, second=(196, 206, 212)):
-    d.text((LEFT, 168), "コレスポ", font=font(44), fill=GOLD)
-    d.text((LEFT + 210, 180), label, font=font(28), fill=second)
+    _text(d,(LEFT, 168), "コレスポ", font=font(44), fill=GOLD, role="header")
+    _text(d,(LEFT + 210, 180), label, font=font(28), fill=second, role="header")
     if page:
-        d.text((SAFE_RIGHT, 172), page, font=num_font(40), fill=GOLD, anchor="ra")
+        _text(d,(SAFE_RIGHT, 172), page, font=num_font(40), fill=GOLD, anchor="ra", role="header")
 
 
 def _badge(d, x, y, abbr, base, second):
     w = max(150, round(d.textlength(abbr, font=num_font(44))) + 56)
     d.rounded_rectangle((x, y, x + w, y + 76), radius=16, fill=_mix(base, (0, 0, 0), 0.3),
                         outline=second, width=6)
-    d.text((x + w / 2, y + 38), abbr, font=num_font(44), fill=INK, anchor="mm")
+    _text(d,(x + w / 2, y + 38), abbr, font=num_font(44), fill=INK, anchor="mm")
     return w
 
 
@@ -173,7 +193,7 @@ def _ticker_strip(text):
     im = Image.new("RGB", (w * repeats, 88), GOLD)
     d = ImageDraw.Draw(im)
     for k in range(repeats):
-        d.text((k * w + 56, 44), text, font=f, fill=DARK_INK, anchor="lm")
+        _text(d,(k * w + 56, 44), text, font=f, fill=DARK_INK, anchor="lm")
     return im, w
 
 
@@ -217,7 +237,7 @@ def source(d, text, color):
     """出典。立ち絵（右下）にかからない幅で、2行まで。"""
     lines, size = _lines(d, text, 24, SAFE_RIGHT - LEFT - 280, 2)
     for i, line in enumerate(lines):
-        d.text((LEFT, 1478 - (len(lines) - i) * (size + 6)), line, font=font(size), fill=color)
+        _text(d,(LEFT, 1478 - (len(lines) - i) * (size + 6)), line, font=font(size), fill=color, role="source")
 
 
 def presenter(im, t, which="right", who="metan"):
@@ -234,7 +254,23 @@ def _paste_card(im, card, x, y, k):
         return
     dx = round(140 * (1 - k))
     alpha = card.split()[3].point(lambda a: round(a * min(1.0, k * 1.6)))
-    im.paste(card, (x + dx, y), alpha)
+    # 入場中も見出し・左右・テロップの予約領域へ出さない。
+    if im.size==(W,H):
+        left=max(LEFT,x+dx);top=max(CONTENT_TOP,y)
+        right=min(SAFE_RIGHT,x+dx+card.width);bottom=min(CONTENT_BOTTOM,y+card.height)
+    else:
+        left=max(0,x+dx);top=max(0,y);right=min(im.width,x+dx+card.width);bottom=min(im.height,y+card.height)
+    if left>=right or top>=bottom:
+        return
+    area=(left-x-dx,top-y,right-x-dx,bottom-y)
+    im.paste(card.crop(area),(left,top),alpha.crop(area))
+    record_box(im,'card',(left,top,right,bottom))
+    im.info.setdefault('v3_card_contents',[]).append({'size':list(card.size),'text':card.info.get('v3_layout',[])})
+    for entry in card.info.get('v3_layout',[]):
+        a,b,c,e=entry['box']
+        box=(max(left,x+dx+a),max(top,y+b),min(right,x+dx+c),min(bottom,y+e))
+        if box[0]<box[2] and box[1]<box[3]:
+            record_box(im,entry['role'],box,entry['text'])
 
 
 # ------------------------------------------------------------------ 表紙
@@ -247,13 +283,13 @@ def _chip(label, score, w, base_rgb, second_rgb):
     size = 28
     while size > 8 and d.textbbox((0, 0), label, font=font(size))[2] > w - 48:
         size -= 1
-    d.text((24, 22), label, font=font(size), fill=second_rgb)
+    _text(d,(24, 22), label, font=font(size), fill=second_rgb)
     if re.fullmatch(r'[0-9.+:\-]+', str(score)):
-        d.text((24, 66), score, font=num_font(80), fill=INK)
+        _text(d,(24, 66), score, font=num_font(80), fill=INK)
     else:
         score_lines, score_size = _lines(d, str(score), 42, w-48, 2)
         for i, line in enumerate(score_lines):
-            d.text((24, 66+i*(score_size+8)), line, font=font(score_size), fill=INK)
+            _text(d,(24, 66+i*(score_size+8)), line, font=font(score_size), fill=INK)
     return card
 
 
@@ -279,14 +315,14 @@ def _reel(d, im, x, y, value, t, size=400):
             im.paste(lay, (cx - 4, y), lay)
             del frac
         else:
-            d.text((cx, y - round(size * 0.12)), ch, font=f, fill=GOLD)
+            _text(d,(cx, y - round(size * 0.12)), ch, font=f, fill=GOLD)
         cx += cw
     return cx
 
 
 def intro(t, spec, kind_label):
     v3 = spec.get("v3") or {}
-    tid = spec.get("team_id")
+    tid = design_team(spec)
     base, second, _ = colors(tid)
     im = background(t, tid)
     d = ImageDraw.Draw(im)
@@ -299,24 +335,25 @@ def intro(t, spec, kind_label):
         x += _badge(d, LEFT, y, spec["abbr"], base, second) + 24
     who = v3.get("who") or spec.get("label", "")
     lines, size = _lines(d, who, 44, SAFE_RIGHT - x, 1)
-    d.text((x, y + 38), lines[0] if lines else "", font=font(size), fill=INK, anchor="lm")
+    _text(d,(x, y + 38), lines[0] if lines else "", font=font(size), fill=INK, anchor="lm")
     big = str(v3.get("big") or "")
     if big:
         unit = v3.get("unit") or ""
         number_size = 400
         while number_size > 120 and d.textlength(big, font=num_font(number_size)) + d.textlength(unit, font=font(128)) + 32 > SAFE_RIGHT-LEFT:
             number_size -= 8
-        end = _reel(d, im, LEFT - 8, 350, big, t, size=number_size)
-        d.text((end + 16, 526), unit, font=font(128), fill=INK)
+        end = _reel(d, im, LEFT, 350, big, t, size=number_size)
+        record_box(im,'number',(LEFT,350,end,350+number_size),big)
+        _text(d,(end + 16, 526), unit, font=font(128), fill=INK)
         if v3.get("sub"):
-            d.text((end + 20, 682), v3["sub"], font=font(40), fill=second)
+            _text(d,(end + 20, 682), v3["sub"], font=font(40), fill=second)
         y = 772
     else:
         hook = spec.get("hook") or spec.get("label", "")
-        lines, size = _lines(d, hook, 96, SAFE_RIGHT - LEFT, 4)
+        lines, size = _lines(d, hook, 96, SAFE_RIGHT - LEFT, 2)
         e = ease_out(t / 0.6)
         for i, line in enumerate(lines):
-            d.text((LEFT - round(56 * (1 - e)), 400 + i * (size + 20)), line, font=font(size),
+            _text(d,(LEFT, 400 + i * (size + 20)), line, font=font(size),
                    fill=GOLD if i == 0 else INK)
         y = 400 + len(lines) * (size + 20) + 40
     tag = v3.get("tag")
@@ -333,19 +370,31 @@ def intro(t, spec, kind_label):
             for i, line in enumerate(tag_lines):
                 ImageDraw.Draw(lay).text((28, 12+i*(tag_size+10)), line, font=f, fill=DARK_INK)
             im.paste(lay.crop((0, 0, reveal, height)), (LEFT, y), lay.crop((0, 0, reveal, height)))
+            record_box(im,'card',(LEFT,y,LEFT+w,y+height))
+            for i,line in enumerate(tag_lines):
+                record_box(im,'text',d.textbbox((LEFT+28,y+12+i*(tag_size+10)),line,font=f),line)
         else:
             height = 84
         y += height+32
     chips = v3.get("chips") or []
     if chips:
         cw = (SAFE_RIGHT - LEFT - 24) // 2
+        ch=min(168,max(1,(CONTENT_BOTTOM-y-24)//((min(4,len(chips))+1)//2)))
         for i, c in enumerate(chips[:4]):
             cx = LEFT + (i % 2) * (cw + 24)
-            cy = y + (i // 2) * 192
+            cy = y + (i // 2) * (ch+24)
             t0 = T_CHIP0 + i * T_CHIP_GAP
-            card = _chip(c.get("label", ""), c.get("score", ""), cw, base, second)
+            label=str(c.get('label',''))
+            if c.get('win') and c.get('win_explanation'):
+                label+=f'（○＝{c["win_explanation"]}）'
+            card = _chip(label, c.get("score", ""), cw, base, second)
+            if ch<card.height:
+                factor=ch/card.height
+                old=card.info.get('v3_layout',[])
+                card=card.resize((cw,ch))
+                card.info['v3_layout']=[dict(e,box=[e['box'][0],e['box'][1]*factor,e['box'][2],e['box'][3]*factor]) for e in old]
             _paste_card(im, card, cx, cy, back_out((t - t0) / SLIDE))
-            if c.get("win"):
+            if c.get("win") and c.get('win_explanation'):
                 kr = back_out((t - t0 - SLIDE - T_RING_AFTER) / 0.25, 2.4)
                 if kr > 0:
                     r = round(30 * kr)
@@ -424,9 +473,15 @@ def rich_lines(runs, width, second_rgb):
                 lines.append(cur)
                 cur, x = [], 0
                 continue
-        if cur and x + w > width and text not in NO_HEAD and text.strip("　 "):
-            lines.append(cur)
-            cur, x = [], 0
+        if cur and x + w > width and text.strip("　 "):
+            if text in NO_HEAD and len(cur)>1:
+                last=cur.pop()
+                lines.append(cur)
+                cur=[(0,*last[1:])]
+                x=probe.textlength(last[1],font=last[2])
+            else:
+                lines.append(cur)
+                cur, x = [], 0
         if not cur and not text.strip("　 "):
             continue                                       # 行頭の空白は捨てる
         color = GOLD if gold else (_mix(second_rgb, INK, 0.3) if size == "S" else INK)
@@ -448,12 +503,13 @@ def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_a
         d = ImageDraw.Draw(card)
         d.rounded_rectangle((0, 0, w - 1, h - 1), radius=24, fill=_mix(base_rgb, (255, 255, 255), 0.1) + (255,),
                             outline=_mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)
-        d.text((36, 30), head, font=font(32), fill=second_rgb)
+        label,label_size=_lines(d,head,32,w-72,1)
+        _text(d,(36, 30),label[0] if label else '',font=font(label_size),fill=second_rgb)
         y = 84
         for ln, lh in zip(lines, heights):
             base_y = y + lh - 16
             for x, text, f, color, _ in ln:
-                d.text((36 + x, base_y), text, font=f, fill=color, anchor="ls")
+                _text(d,(36 + x, base_y), text, font=f, fill=color, anchor="ls")
             y += lh
         return card
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
@@ -473,62 +529,26 @@ def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_a
     fill = (247, 242, 223, 255) if quote else _mix(base_rgb, (255, 255, 255), 0.1) + (255,)
     d.rounded_rectangle((0, 70 if attribution_above else 0, w - 1, h - 1), radius=24, fill=fill,
                         outline=None if quote else _mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)
-    d.text((36, 30), head, font=font(26 if attribution_above else 32), fill=second_rgb if attribution_above else (93, 90, 99) if quote else second_rgb)
+    _text(d,(36, 30), head, font=font(26 if attribution_above else 32), fill=second_rgb if attribution_above else (93, 90, 99) if quote else second_rgb)
     for i, line in enumerate(lines):
         color = DARK_INK if quote else (GOLD if i == 0 else INK)
-        d.text((36, 84 + i * (size + 14)), line, font=font(size), fill=color)
+        _text(d,(36, 84 + i * (size + 14)), line, font=font(size), fill=color)
     return card
 
 
 def list_page(t, spec, items, start, count, page, pages, kind_label):
-    v3 = spec.get("v3") or {}
-    tid = spec.get("team_id")
-    base, second, _ = colors(tid)
-    im = background(t, tid)
-    d = ImageDraw.Draw(im)
-    _header(d, kind_label, f"{page}/{pages}", second)
-    heading = spec.get("heading") or spec.get("label", "")
-    hl, hs = _lines(d, heading, 52, SAFE_RIGHT - LEFT, 2)
-    for i, line in enumerate(hl):
-        d.text((LEFT, 250 + i * (hs + 10)), line, font=font(hs), fill=INK)
-    # 進み具合の線
-    d.rectangle((LEFT, 236, SAFE_RIGHT, 240), fill=_mix(base, (255, 255, 255), 0.15))
-    d.rectangle((LEFT, 236, LEFT + round((SAFE_RIGHT - LEFT) * page / max(pages, 1)), 240), fill=GOLD)
-    y = 250 + len(hl) * (hs + 10) + 44
-    w = SAFE_RIGHT - LEFT
-    for i, (head, body) in enumerate(items[start:start + count]):
-        card = _item_card(head, body, w, base, second)
-        if y + card.height > 1400:
-            break
-        _paste_card(im, card, LEFT, y, back_out((t - T_CARD0 - i * T_CARD_GAP) / SLIDE))
-        y += card.height + 28
-    ticker(im, t, v3.get("ticker"))
-    source(d, page_source(items[start:start + count]), second)
-    presenter(im, t)
-    return im
+    import v3_slot_render as common
+    view=dict(spec,team_id=design_team(spec),page=f'{page}/{pages}')
+    selected=list(items)[start:start+count]
+    return common.frame(t,view,selected,kind_label,page_source(selected))
 
 
 # ------------------------------------------------------------------ 効果音の時刻
 def people(t, spec, rows, heading, kind_label):
-    """読み上げと同じ最大3人を表示。v3は声・立ち絵とも四国めたん。"""
-    base, second, _ = colors(spec.get("team_id"))
-    im = background(t, spec.get("team_id"))
-    d = ImageDraw.Draw(im)
-    _header(d, kind_label, "", second)
-    d.text((LEFT, 250), heading, font=font(64), fill=INK)
-    d.text((LEFT, 340), spec.get("label", ""), font=font(32), fill=second)
-    y = 430
-    for i, row in enumerate(rows[:3]):
-        card = _item_card(row.get("name", ""), row.get("line", row.get("why", "")),
-                          SAFE_RIGHT - LEFT, base, second)
-        if y + card.height > 1400:
-            break                                              # 収まらない分は描かない（動画は止めない）
-        _paste_card(im, card, LEFT, y, back_out((t - T_CARD0 - i * T_CARD_GAP) / SLIDE))
-        y += card.height + 28
-    ticker(im, t, (spec.get("v3") or {}).get("ticker"))
-    source(d, "出典: MLB公式（Stats API）", second)
-    presenter(im, t)
-    return im
+    import v3_slot_render as common
+    view=dict(spec,team_id=design_team(spec),heading=heading)
+    items=[(r.get('name',''),r.get('line',r.get('why',''))) for r in rows[:3]]
+    return common.frame(t,view,items,kind_label,'出典: MLB公式（Stats API）')
 
 
 def cues(kind, spec, items=(), start=0, count=0):
@@ -547,7 +567,7 @@ def cues(kind, spec, items=(), start=0, count=0):
         for i, c in enumerate((v3.get("chips") or [])[:4]):
             t0 = T_CHIP0 + i * T_CHIP_GAP
             out.append((t0, "swish", "b", -3))
-            if c.get("win"):
+            if c.get("win") and c.get('win_explanation'):
                 out.append((t0 + SLIDE + T_RING_AFTER, "pop", "a", -2))
     elif kind == "list":
         out.append((0.0, "transition", "b", -6))
@@ -574,18 +594,19 @@ def outro_rows(exclude=""):
 
 def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　データ: MLB Stats API"):
     im = background(t, None)
+    im.info['v3_outro']=True
     d = ImageDraw.Draw(im)
     k = ease_out(t / 0.5)
-    d.text((LEFT - round(40 * (1 - k)), 250), "コレスポ", font=font(150), fill=GOLD)
-    d.text((LEFT, 440), "毎日のMLBを数字と現地の声で", font=font(42), fill=INK)
-    y = 540
-    d.text((LEFT, y), "毎日のお届け", font=font(30), fill=(196, 206, 212))
-    y += 56
+    _text(d,(LEFT, 250), "コレスポ", font=font(150), fill=GOLD)
+    _text(d,(LEFT, 440), "毎日のMLBを数字と現地の声で", font=font(42), fill=INK)
+    y = 520
+    _text(d,(LEFT, y), "毎日のお届け", font=font(30), fill=(196, 206, 212))
+    y += 44
     w = SAFE_RIGHT - LEFT - 250                                 # 右下の立ち絵にかからない幅
     for i, (at, name) in enumerate(outro_rows(exclude)):
         row = _outro_row(at, name, w)
         _paste_card(im, row, LEFT, y, back_out((t - T_OUTRO_ROW0 - i * T_OUTRO_GAP) / SLIDE))
-        y += row.height + 14
+        y += row.height + 8
     kb = ease_out((t - 1.8) / 0.4)
     if kb > 0:
         f = font(38)
@@ -596,6 +617,8 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
         ImageDraw.Draw(lay).text((28, 40), text, font=f, fill=DARK_INK, anchor="lm")
         cut = lay.crop((0, 0, round(bw * kb), 80))
         im.paste(cut, (LEFT, y + 20), cut)
+        record_box(im,'card',(LEFT,y+20,LEFT+bw,y+100))
+        record_box(im,'text',d.textbbox((LEFT+28,y+60),text,font=f,anchor='lm'),text)
     source(d, credit, (196, 206, 212))
     presenter(im, t)
     return im
@@ -603,14 +626,14 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
 
 @functools.lru_cache(maxsize=16)
 def _outro_row(at, name, w):
-    card = Image.new("RGBA", (w, 82), (0, 0, 0, 0))
+    card = Image.new("RGBA", (w, 70), (0, 0, 0, 0))
     d = ImageDraw.Draw(card)
-    d.rounded_rectangle((0, 0, w - 1, 81), radius=18, fill=(255, 255, 255, 26), outline=(255, 255, 255, 60), width=2)
-    d.text((28, 41), at, font=num_font(44), fill=GOLD, anchor="lm")
+    d.rounded_rectangle((0, 0, w - 1, 69), radius=18, fill=(255, 255, 255, 26), outline=(255, 255, 255, 60), width=2)
+    _text(d,(28, 35), at, font=num_font(44), fill=GOLD, anchor="lm")
     size = 40
     while size > 28 and ImageDraw.Draw(Image.new("RGB", (8, 8))).textlength(name, font=font(size)) > w - 190:
         size -= 2
-    d.text((170, 41), name, font=font(size), fill=INK, anchor="lm")
+    _text(d,(170, 35), name, font=font(size), fill=INK, anchor="lm")
     return card
 
 

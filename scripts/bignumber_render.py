@@ -695,6 +695,13 @@ def scene(t, scene_spec, team_id=None):
         spec['team_id'] = team_id
     import v3_slot_render as common
     view = unified_spec(spec)
+    if spec.get('kind') == 'outro':
+        view['text']=spec.get('say','コレスポ。')
+        closing=common.outro(t,view,'morning')
+        if closing is not None:
+            return closing
+    if spec.get('ranking'):
+        return common.ranking(t,view,spec['ranking'],spec.get('source') or SOURCE)
     rows = [(c.get('title',''), c.get('body','')) for c in spec.get('cards', [])]
     if (spec.get('rank') or 0) > 1 or not spec.get('big') or rows:
         ranked_head = (f"{spec['rank']}位　" if spec.get('rank') else '')+spec.get('head','')
@@ -723,6 +730,8 @@ def unified_spec(spec):
 
 # ------------------------------------------------------------------ 効果音の時刻
 def cues(scene_spec):
+    if scene_spec.get('kind')=='outro':
+        return r3.outro_cues('morning')
     """その場面の効果音 [(秒, 種類, 案, 追加の音量dB)]。描画と同じ時刻表・同じ配置から。"""
     if (scene_spec.get('rank') or 0) > 1 or not scene_spec.get('big') or scene_spec.get('cards'):
         rows = [(c.get('title',''), c.get('body','')) for c in scene_spec.get('cards', [])]
@@ -1011,7 +1020,15 @@ def scenes_from_morning(data, narration=None):
     out = []
     for i, seg in enumerate(narration.get("segments") or []):
         kind = seg.get("kind")
-        if kind == "intro":
+        if kind == 'cover':
+            got=[{'layout':'cards','head':day,'sub':'日本人選手の成績','cards':[{'title':'きょうの成績','body':f'{len(players)}人の日本人選手'}],'say':seg['text']}]
+        elif kind == 'ranking':
+            got=[{'layout':'cards','head':'きょうの勝利貢献順位','ranking':seg['meta']['ranking'],
+                  'cards':[{'title':f'{r["rank"]}位 {r["name"]} {r["abbr"]}','body':r['score']} for r in seg['meta']['ranking']], 'say':seg['text']}]
+        elif kind == 'hero':
+            got=_intro_scenes(seg,players,day)[:1]
+            got[0]['say']=seg['text']
+        elif kind == "intro":
             got = _intro_scenes(seg, players, day)
         elif kind == "list":
             got = _list_scenes(seg, players, top.get("name", ""))
@@ -1032,6 +1049,8 @@ def scenes_from_morning(data, narration=None):
             sc.setdefault("team_id", top.get("team_id"))
             if sc.get("team_id") is None:
                 sc["team_id"] = top.get("team_id")
+            if len({p.get('team_id') for p in players}) > 1:
+                sc['team_id']=None
             sc.update(segment=i, kind=kind, label=label, who=who,
                       ticker='きょうの日本人選手　'+'　'.join(f'{j}位 {p.get("name", "")}' for j,p in enumerate(players,1)))
         out += got
