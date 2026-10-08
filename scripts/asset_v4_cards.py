@@ -60,6 +60,16 @@ def score(t,spec,label,page=0):
     winner='away' if board['away']['total']>board['home']['total'] else 'home'
     c.panel(im,(L,344,R,850))
     x0=L+132;cell=(R-x0-90-20)/len(chosen);total_x=R-84
+    d=ImageDraw.Draw(im);grid=(79,92,108)
+    d.rectangle((L+3,360,R-3,438),fill=(32,47,61))
+    for n,side in enumerate(('away','home')):
+        fill=(44,48,48) if side==winner else ((19,32,44) if n%2==0 else (25,39,51))
+        d.rectangle((L+3,439+n*182,R-3,620+n*182),fill=fill)
+    for i in range(len(chosen)+1):
+        x=x0-10+i*cell;d.line((x,360,x,802),fill=grid,width=1)
+    for y in (438,620,802):d.line((L+3,y,R-3,y),fill=grid,width=1)
+    d.line((total_x-12,360,total_x-12,802),fill=r3.GOLD,width=3)
+    im.info['v4_score_grid']={'columns':len(chosen)+1,'rows':2,'winner':winner}
     for i,row in enumerate(chosen):
         c.text(im,x0+i*cell,386,row['num'],30,r3.GOLD,number=True,width=cell-3)
     c.text(im,total_x,386,'計',30,width=66)

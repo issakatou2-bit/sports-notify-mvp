@@ -61,8 +61,14 @@ def daily_cases():
             program=ps.prepare(saved['snapshot'],saved['evidence'],slot,datetime.fromisoformat(saved['evidence']['retrieved_at']),saved['ledger'])
         ps.check_program(program)
         cards=[s['meta']['card'] for s in program['segments']]
+        frames=[lambda t,c=c:unified.frame(t,c) for c in cards]
+        if r3.LOOK=='v4':
+            # 動画と同じ番組全体の帯。1カードだけの帯では他球団の札を検査できない。
+            lead=unified.lead_card(program);line=unified.program_ticker(program)
+            frames=[lambda t,c=c,lead=lead,line=line,cover=i==0:unified.frame(t,c,lead,cover=cover,ticker_line=line)
+                    for i,c in enumerate(cards)]
         cases.append(dict(name=slot,exclude='daily' if slot=='forecast' else 'postseason',segments=program['segments'],multi=True,
-                          frames=[lambda t,c=c:unified.frame(t,c) for c in cards],quotes=[v['quote'] for c in cards for v in c.get('items',[]) if 'quote' in v]))
+                          frames=frames,quotes=[v['quote'] for c in cards for v in c.get('items',[]) if 'quote' in v]))
     return cases
 
 
@@ -410,6 +416,82 @@ class V3Rules(unittest.TestCase):
                     self.assertAlmostEqual(v4.contrast(base,mark['ink']),max(candidates))
                     self.assertGreaterEqual(v4.contrast(base,mark['ink']),3)
                     self.assertFalse(rules.check_layout(im))
+
+    def test_v4_named_clubs_always_have_colored_badges(self):
+        if r3.LOOK!='v4':return
+        for case in self.cases:
+            for index,draw in enumerate(case['frames'][:-1]):
+                for t in (3,11,19):
+                    with self.subTest(slot=case['name'],screen=index,time=t):
+                        im=draw(t)
+                        self.assertFalse(rules.check_team_badges(im))
+                        self.assertFalse(rules.check_layout(im))
+        import short_v4_cards as c
+        bad=c.canvas(0,'検査');c.text(bad,100,400,'ドジャース',48)
+        self.assertTrue(rules.check_team_badges(bad))
+        c.ensure_team_badges(bad)
+        self.assertFalse(rules.check_team_badges(bad))
+        # 共通の字幕/帯を変えず、名前がそこだけにあっても本文の空きへ球団札を添える。
+        mixed=c.canvas(0,'字幕と帯の検査')
+        mixed.info['v4_ticker_text']='明日はヤンキース対レイズ'
+        r3.record_box(mixed,'caption',(80,1300,400,1350),'ドジャース')
+        self.assertEqual(len(rules.check_team_badges(mixed)),3)
+        c.ensure_team_badges(mixed)
+        self.assertFalse(rules.check_team_badges(mixed))
+        self.assertFalse(rules.check_layout(mixed))
+
+    def test_v4_club_players_are_named_once_in_speech_and_screen(self):
+        if r3.LOOK!='v4':return
+        from content_v4 import ClubMentions
+        team=dict(name='ドジャース',players=['大谷翔平','佐々木朗希','山本由伸'])
+        full='大谷翔平・佐々木朗希・山本由伸のドジャース'
+        tracker=ClubMentions([team])
+        self.assertEqual(tracker.text(full+'。'+full),full+'。ドジャース')
+        self.assertEqual(tracker.text('山本由伸のドジャース'),'ドジャース')
+        self.assertTrue(rules.check_club_mentions([{'text':full},{'text':full}],[team]))
+        saved=read('scripts/fixtures/ps-design/2026-10-07.json')
+        with patch.dict(os.environ,ENV):
+            p=ps.prepare(saved['snapshot'],saved['evidence'],'forecast',datetime.fromisoformat(saved['evidence']['retrieved_at']),saved['ledger'])
+        teams=[t for row in p['series'] for t in row['teams']]
+        self.assertFalse(rules.check_club_mentions(p['segments'],teams))
+        self.assertIn('明日の全試合です。',p['segments'][0]['text'])
+        self.assertEqual(p['segments'][0]['meta']['card']['headline'],'明日の全試合')
+        displayed=[dict(text=phrase) for s in p['segments'] for phrase in s['meta']['card'].get('v4_club_mentions',{}).values()]
+        self.assertFalse(rules.check_club_mentions(displayed,teams))
+        # 資産の画面も、フレームを逆順に呼んで状態が変わらない派生材料。
+        from content_v4 import affiliations,asset_display
+        spec=dict(v3={'who':full},items=[('結果',full+'が3対1で勝った。'),('次戦',full+'の第4戦。')],
+                  speech={'結果':full+'が3対1で勝ちました。'})
+        self.assertEqual(affiliations([full]),[team])
+        painted=asset_display(spec,full)
+        self.assertEqual(painted['items'][0][1],'ドジャースが3対1で勝った。')
+        self.assertEqual(painted['speech']['結果'],'ドジャースが3対1で勝ちました。')
+        self.assertEqual(asset_display(spec,full),painted)
+        self.assertEqual(spec['items'][0][1],full+'が3対1で勝った。')
+
+    def test_v4_overviews_stay_in_subtitles_and_thread_is_one_segment(self):
+        if r3.LOOK!='v4':return
+        for case in self.cases:
+            if case['name'] not in ('voices','press'):continue
+            for seg in case['segments'][:-1]:
+                rows=seg['meta'].get('quote_rows',[])
+                self.assertTrue(rows)
+                self.assertTrue(all(not row.get('fact') for row in rows))
+            if case['name']=='voices':
+                group=next(s for s in case['segments'] if any(v.get('reply') for v in s['meta'].get('quote_rows',[])))
+                self.assertFalse(group['meta']['quote_rows'][0].get('reply'))
+                self.assertIn('返信が35件',group['text'])
+                image=case['frames'][case['segments'].index(group)](19)
+                self.assertTrue(any(e['text']=='↳ 返信' for e in image.info['v3_layout']))
+                self.assertEqual(image.info['v4_quote_group']['overview_cards'],0)
+
+    def test_v4_scoreboard_has_grid_and_material_winner(self):
+        if r3.LOOK!='v4':return
+        import asset_v4_cards as c
+        spec=read('scripts/fixtures/v3-rules/game-v4.json')['topics'][0]
+        im=c.score(3,spec,'試合の話題')
+        self.assertEqual(im.info['v4_score_grid'],dict(columns=10,rows=2,winner='home'))
+        self.assertFalse(rules.check_layout(im))
 
     def test_v4_cover_and_remaining_players_keep_the_material_and_audio(self):
         if r3.LOOK!='v4':return

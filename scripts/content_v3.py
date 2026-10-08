@@ -108,4 +108,8 @@ def quotes(segments,data,mode):
         add(seg['text'][cursor:])
     if ''.join(s['text'] for s in result)!=''.join(s['text'] for s in segments):
         raise ValueError('引用の区間分割で原稿が変わりました')
+    import review_render_v3 as r3
+    if r3.LOOK == 'v4':
+        from content_v4 import quote_groups
+        return quote_groups(result)
     return result

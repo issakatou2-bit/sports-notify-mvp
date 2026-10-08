@@ -2,10 +2,45 @@
 from collections import Counter
 import re
 import unicodedata
+from pathlib import Path
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import review_render_v3 as r3
 
 
 SLACK = 3
+
+
+def team_mentions(image):
+    """同じ画面の球団名。帯は入力全文を保守的に照合し、締めだけを除く。"""
+    import notability_engine as ne
+    from team_names import team_names_jp
+    if image.info.get('v3_outro'):return []
+    result=[]
+    entries=list(image.info.get('v3_layout',[]))
+    if image.info.get('v4_ticker_text'):
+        entries.append(dict(role='ticker',text=image.info['v4_ticker_text'],box=[r3.LEFT,330,r3.LEFT,330]))
+    for e in entries:
+        if e['role']=='card':continue
+        value=team_names_jp(e.get('text',''))
+        for tid,name in ne.MLB_TEAM_NAME_JP.items():
+            if name in value:
+                result.append((tid,e))
+    return result
+
+
+def check_team_badges(image):
+    if r3.LOOK!='v4':return []
+    import notability_engine as ne
+    badges={b['abbr'] for b in image.info.get('v4_badges',[])}
+    return [{'team':ne.MLB_TEAM_NAME_JP[tid],'text':e['text']} for tid,e in team_mentions(image)
+            if ne.MLB_TEAM_ABBR[tid] not in badges]
+
+
+def check_club_mentions(segments,teams):
+    from content_v4 import ClubMentions
+    tracker=ClubMentions(teams)
+    return [s['text'] for s in segments if tracker.text(s['text'])!=s['text']]
 
 
 def content_group(image):
