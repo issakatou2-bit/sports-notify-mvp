@@ -87,6 +87,8 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
           set -e
+          # 同じシリーズの次の試合が終わっていたら止める（古い途中経過を新しい動画にしない）
+          python scripts/correct_video.py check --fix "$FIX"
           # 題・説明は直した材料から作る（材料のファイルは保存しない。台帳だけを保存する）
           python scripts/upload_youtube.py --video "build/corr/out/collespo_asset_$TOPIC.mp4" \
             --kind asset --asset-topic "$TOPIC" --thumbnail build/corr/out/short.png \

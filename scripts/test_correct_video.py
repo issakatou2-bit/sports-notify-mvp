@@ -27,5 +27,22 @@ class Correct(unittest.TestCase):
                 self.assertNotEqual(e["from"], e["to"], path.name)
 
 
+class Fresh(unittest.TestCase):
+    def test_finds_a_finished_later_game_in_the_same_series(self):
+        def fetch(url):
+            if "gamePk=" in url:
+                return {"dates": [{"games": [{"gamePk": 3, "gameType": "D", "officialDate": "2026-10-06",
+                                              "gameDate": "2026-10-07T01:30:00Z",
+                                              "teams": {"home": {"team": {"id": 135}}, "away": {"team": {"id": 158}}}}]}]}
+            return {"dates": [{"games": [
+                {"gamePk": 3, "gameDate": "2026-10-07T01:30:00Z", "status": {"abstractGameState": "Final"},
+                 "teams": {"home": {"team": {"id": 135}}, "away": {"team": {"id": 158}}}},
+                {"gamePk": 4, "gameDate": "2026-10-08T02:00:00Z", "status": {"abstractGameState": "Final"},
+                 "teams": {"home": {"team": {"id": 135}}, "away": {"team": {"id": 158}}}},
+                {"gamePk": 9, "gameDate": "2026-10-08T05:00:00Z", "status": {"abstractGameState": "Final"},
+                 "teams": {"home": {"team": {"id": 135}}, "away": {"team": {"id": 119}}}}]}]}
+        self.assertEqual(cv.later_games(3, fetch), [4])
+
+
 if __name__ == "__main__":
     unittest.main(argv=[__file__])
