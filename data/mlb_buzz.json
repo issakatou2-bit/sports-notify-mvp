@@ -1,92 +1,13 @@
 {
-  "updated_at": "2026-10-08T03:58:47.060590+00:00",
+  "updated_at": "2026-10-08T06:01:58.804374+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "mmrHD8KXtLs",
-      "title": "BREWERS vs. PADRES: NLDS Full Game 3 Highlights (October 6) | 2026 MLB Postseason",
-      "published_at": "2026-10-07T05:28:47Z",
-      "views": 1393702,
-      "matchup": "BREWERS vs. PADRES",
-      "game_date": "2026-10-06",
-      "result": {
-        "away_jp": "ブリュワーズ",
-        "home_jp": "パドレス",
-        "away_score": 3,
-        "home_score": 4,
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 2
-          },
-          {
-            "num": 4,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 1,
-            "home": 1
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 7,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": null
-          }
-        ],
-        "away_hits": 11,
-        "away_errors": 1,
-        "home_hits": 6,
-        "home_errors": 0,
-        "star_name": "William Contreras",
-        "star_line": "4打数3安打 1打点 1本塁打",
-        "star_team": "ブリュワーズ",
-        "away_starter": {
-          "name": "Dustin May",
-          "team": "ブリュワーズ",
-          "line": "3.0回 3奪三振 自責2"
-        },
-        "home_starter": {
-          "name": "Nick Pivetta",
-          "team": "パドレス",
-          "line": "4.1回 4奪三振 自責2"
-        }
-      },
-      "topic_jp": "ブリュワーズ 対 パドレス"
-    },
-    {
       "video_id": "cv8qfCAzrmM",
       "title": "DODGERS vs. BRAVES: Division Series Full Game 4 Highlights (October 7) | 2026 MLB Postseason",
       "published_at": "2026-10-08T01:38:40Z",
-      "views": 242654,
+      "views": 717129,
       "matchup": "DODGERS vs. BRAVES",
       "game_date": "2026-10-07",
       "result": {
@@ -165,7 +86,7 @@
       "video_id": "pgYSFd7YWx4",
       "title": "GUARDIANS vs. WHITE SOX: ALDS Full Game 3 Highlights (October 7) | 2026 MLB Postseason",
       "published_at": "2026-10-08T00:09:38Z",
-      "views": 198827,
+      "views": 344104,
       "matchup": "GUARDIANS vs. WHITE SOX",
       "game_date": "2026-10-07",
       "result": {
@@ -244,7 +165,7 @@
       "video_id": "fqIDeNUWL2U",
       "title": "RAYS vs. YANKEES: ALDS Series Full Game 3 Highlights (October 7) | 2026 MLB Postseason",
       "published_at": "2026-10-08T03:43:57Z",
-      "views": 17745,
+      "views": 141217,
       "matchup": "RAYS vs. YANKEES",
       "game_date": "2026-10-07",
       "result": {
@@ -320,10 +241,89 @@
       "topic_jp": "レイズ 対 ヤンキース"
     },
     {
+      "video_id": "edfhFJfJVdE",
+      "title": "BREWERS vs. PADRES: NLDS Full Game 4 Highlights (October 7) | 2026 MLB Postseason",
+      "published_at": "2026-10-08T05:39:05Z",
+      "views": 27502,
+      "matchup": "BREWERS vs. PADRES",
+      "game_date": "2026-10-07",
+      "result": {
+        "away_jp": "ブリュワーズ",
+        "home_jp": "パドレス",
+        "away_score": 3,
+        "home_score": 1,
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 1,
+            "home": 1
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": 0
+          }
+        ],
+        "away_hits": 10,
+        "away_errors": 1,
+        "home_hits": 3,
+        "home_errors": 0,
+        "star_name": "Robert Gasser",
+        "star_line": "4.0回 3奪三振 自責1",
+        "star_team": "ブリュワーズ",
+        "away_starter": {
+          "name": "Robert Gasser",
+          "team": "ブリュワーズ",
+          "line": "4.0回 3奪三振 自責1"
+        },
+        "home_starter": {
+          "name": "Walker Buehler",
+          "team": "パドレス",
+          "line": "3.0回 0奪三振 自責1"
+        }
+      },
+      "topic_jp": "ブリュワーズ 対 パドレス"
+    },
+    {
       "video_id": "LuzwCTudGhQ",
       "title": "FULL INNING: Dodgers load the bases and TAKE THE LEAD vs. the Braves in NLDS Game 4 | MLB Highlights",
       "published_at": "2026-10-08T00:29:39Z",
-      "views": 213238,
+      "views": 348682,
       "matchup": "",
       "game_date": "",
       "topic_jp": "ドジャースがNLDS第4戦でブレーブスを相手に満塁から逆転リード。"
@@ -331,94 +331,100 @@
   ],
   "all": [
     {
-      "video_id": "mmrHD8KXtLs",
-      "matchup": "BREWERS vs. PADRES",
-      "game_date": "2026-10-06",
-      "views": 1393702
-    },
-    {
       "video_id": "cv8qfCAzrmM",
       "matchup": "DODGERS vs. BRAVES",
       "game_date": "2026-10-07",
-      "views": 242654
+      "views": 717129
     },
     {
       "video_id": "pgYSFd7YWx4",
       "matchup": "GUARDIANS vs. WHITE SOX",
       "game_date": "2026-10-07",
-      "views": 198827
+      "views": 344104
     },
     {
       "video_id": "fqIDeNUWL2U",
       "matchup": "RAYS vs. YANKEES",
       "game_date": "2026-10-07",
-      "views": 17745
+      "views": 141217
+    },
+    {
+      "video_id": "edfhFJfJVdE",
+      "matchup": "BREWERS vs. PADRES",
+      "game_date": "2026-10-07",
+      "views": 27502
     },
     {
       "video_id": "LuzwCTudGhQ",
       "matchup": "",
       "game_date": "",
-      "views": 213238
-    },
-    {
-      "video_id": "zD4Xpn9Phds",
-      "matchup": "",
-      "game_date": "",
-      "views": 122011
+      "views": 348682
     },
     {
       "video_id": "hMLCLQjAe-w",
       "matchup": "",
       "game_date": "",
-      "views": 71312
+      "views": 148363
+    },
+    {
+      "video_id": "zD4Xpn9Phds",
+      "matchup": "",
+      "game_date": "",
+      "views": 131883
     },
     {
       "video_id": "ZBuDS0SKKv4",
       "matchup": "",
       "game_date": "",
-      "views": 55091
+      "views": 92108
     },
     {
       "video_id": "ClwJyavZKzY",
       "matchup": "",
       "game_date": "",
-      "views": 38802
-    },
-    {
-      "video_id": "tRWV4tfz1Zo",
-      "matchup": "",
-      "game_date": "",
-      "views": 28364
-    },
-    {
-      "video_id": "0P3uDXe2aNo",
-      "matchup": "",
-      "game_date": "",
-      "views": 18481
+      "views": 41903
     },
     {
       "video_id": "JkHc4pgi2fo",
       "matchup": "",
       "game_date": "",
-      "views": 14349
+      "views": 39851
+    },
+    {
+      "video_id": "tRWV4tfz1Zo",
+      "matchup": "",
+      "game_date": "",
+      "views": 35043
     },
     {
       "video_id": "-75bhR6rrck",
       "matchup": "",
       "game_date": "",
-      "views": 8227
+      "views": 24973
+    },
+    {
+      "video_id": "0P3uDXe2aNo",
+      "matchup": "",
+      "game_date": "",
+      "views": 20393
     },
     {
       "video_id": "lkjp4v9Ku18",
       "matchup": "",
       "game_date": "",
-      "views": 4763
+      "views": 14982
+    },
+    {
+      "video_id": "BRokT-IZh4s",
+      "matchup": "",
+      "game_date": "",
+      "views": 9290
     },
     {
       "video_id": "2LzZXgRbfJU",
       "matchup": "",
       "game_date": "",
-      "views": 618
+      "views": 4539
     }
   ]
 }
