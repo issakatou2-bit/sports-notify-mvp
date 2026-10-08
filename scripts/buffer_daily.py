@@ -777,6 +777,22 @@ def main():
         except Exception as exc:
             print(service, 'Delivery did not complete:', type(exc).__name__, str(exc)[:300])
             failed = True
+    # 夕方の枠は Bluesky にも出す（YouTube へのリンクの投稿。動画カードつき）。
+    # 10/8 本人「各チャネル、出せる数は出せる限り出したい」。19:00 の日次は daily_notify が出しているので除く。
+    # 同じ投稿を二度作らない仕組み（asset_sns.bsky_once）をそのまま使う。
+    if args.kind != 'daily' and os.environ.get('BLUESKY_APP_PASSWORD'):
+        try:
+            import asset_sns
+            words = KIND_WORDS.get(args.kind, {})
+            bpost = asset_sns.bsky_record(caption('twitter', day, record, args.kind), record['title'],
+                                          record['video_id'], datetime.now(timezone.utc),
+                                          description='コレスポの' + (words.get('long') or 'ショート') + 'です。')
+            receipt = asset_sns.bsky_once(ledger, day + ':' + args.kind + ':bluesky', bpost,
+                                          {'source_run': args.source_run, 'youtube_id': record['video_id']})
+            print('bluesky', json.dumps(receipt, ensure_ascii=False))
+        except Exception as exc:                         # noqa: BLE001
+            # Bluesky が落ちても、ほかの媒体の結果は変えない
+            print('bluesky', 'Delivery did not complete:', type(exc).__name__, str(exc)[:300])
     # Give platforms time to process the uploaded video. This is a runner, not an interactive wait.
     for _ in range(12):
         pending = False

@@ -178,6 +178,27 @@ def started(spec: dict, now=None) -> bool:
         return False
 
 
+def superseded(spec: dict) -> bool:
+    """試合の話題で、同じシリーズの次の試合がもう始まっている・終わっているもの。
+
+    10/8 本人「その日に出すってことは、その日の試合のことを言ってると思って見に来るはず」。
+    パドレスの第3戦（1勝2敗に）の回が、第4戦の最中に出て、その日に敗退した。
+    次の試合が始まったら、前の試合の回は出さない。確かめられないときも出さない（あとで選び直せる）。
+    """
+    pk = spec.get("game_pk") if spec.get("game") else None
+    if not pk:
+        return False
+    try:
+        import series_check
+        later = series_check.later_games(pk)
+    except Exception as e:                                # noqa: BLE001
+        print(f"[warn] {pk} の次の試合を確かめられないので、きょうは出しません: {e}", file=sys.stderr)
+        return True
+    if later:
+        print(f"[info] {pk} は同じシリーズの次の試合（{later}）が始まっているので出しません", file=sys.stderr)
+    return bool(later)
+
+
 def pick_season(args) -> int:
     """シーズンまとめを、その日の残りの本数まで選ぶ。
 
@@ -191,7 +212,12 @@ def pick_season(args) -> int:
     todo = sorted((k for k, v in gav.LIST_TOPICS.items()
                    if kind_of(k) == "season" and k not in done and not started(v)),
                   key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
-    picked = todo[:left]
+    picked = []
+    for k in todo:
+        if len(picked) >= left:
+            break
+        if not superseded(gav.LIST_TOPICS[k]):
+            picked.append(k)
     print(" ".join(picked))
     print(f"[info] シーズンまとめ: 残り{len(todo)}本、きょう{len(picked)}本",
           file=sys.stderr)

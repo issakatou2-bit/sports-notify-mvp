@@ -44,5 +44,18 @@ class Fresh(unittest.TestCase):
         self.assertEqual(cv.later_games(3, fetch), [4])
 
 
+class Superseded(unittest.TestCase):
+    def test_game_topic_is_skipped_after_the_next_game_starts(self):
+        import next_asset
+        from unittest import mock
+        with mock.patch("series_check.later_games", return_value=[4]):
+            self.assertTrue(next_asset.superseded({"game": True, "game_pk": 3}))
+        with mock.patch("series_check.later_games", return_value=[]):
+            self.assertFalse(next_asset.superseded({"game": True, "game_pk": 3}))
+        with mock.patch("series_check.later_games", side_effect=OSError("down")):
+            self.assertTrue(next_asset.superseded({"game": True, "game_pk": 3}))
+        self.assertFalse(next_asset.superseded({"key": "legend_141"}))
+
+
 if __name__ == "__main__":
     unittest.main(argv=[__file__])

@@ -58,6 +58,8 @@ jobs:
           BUFFER_CHANNELS: ${{ vars.BUFFER_CHANNELS }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
           MODE: ${{ github.event_name == 'schedule' && 'publish_due' || github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
           PYTHONUNBUFFERED: '1'
         run: |
