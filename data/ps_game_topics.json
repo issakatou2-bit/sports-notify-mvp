@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-08T03:59:45.110356+00:00",
+  "updated_at": "2026-10-08T06:11:15.909311+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -37,7 +37,7 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「ブレーブスがレギュラーシーズンでドジャースを圧倒した!!!プレーオフの山本由伸:負けるなんてあり得ない。😂」"
+          "「ブレーブスがレギュラーシーズンで ドジャース を圧倒した!!!プレーオフの 山本由伸：負けるなんて許されない。😂」"
         ]
       ],
       "japanese": [
@@ -56,21 +56,88 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "ブレーブスがレギュラーシーズンでドジャースを圧倒した!!!プレーオフの山本由伸:負けるなんてあり得ない。😂",
+        "said": "ブレーブスがレギュラーシーズンで ドジャース を圧倒した!!!プレーオフの 山本由伸：負けるなんて許されない。😂",
         "text": "The Braves dominated the Dodgers in the regular season!!! Playoff Yamamoto: losing is not an option. 😂",
         "url": "https://www.youtube.com/watch?v=cv8qfCAzrmM",
-        "likes": 200,
+        "likes": 240,
         "at": "2026-10-08T01:39:56Z"
       },
       "headline": null,
       "game_pk": 849819,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 4,
+              "away": 3,
+              "home": 0
+            },
+            {
+              "num": 5,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 6,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": 0
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 119,
+            "name": "ドジャース",
+            "abbr": "LAD",
+            "total": 3
+          },
+          "home": {
+            "id": 144,
+            "name": "ブレーブス",
+            "abbr": "ATL",
+            "total": 1
+          }
+        },
+        "decisive": {
+          "inning": "4回表",
+          "subject": "エンリケ・エルナンデス",
+          "action": "2点本塁打",
+          "detail": "飛距離124メートル、打球の速さ時速172キロ",
+          "event": "Home Run"
+        }
+      },
       "game_date": "2026-10-06T22:00:00Z",
       "jp_first": true,
       "finished_at": "2026-10-07T01:07:41.247000+00:00",
-      "next_game_jp": {
-        "day": "10月8日",
-        "game": 4
-      },
       "v3": {
         "who": "ドジャース　地区シリーズ第3戦",
         "big": "3-1",
@@ -88,7 +155,7 @@
             "score": "2"
           }
         ],
-        "ticker": "次の試合　日本時間10月8日　地区シリーズ第4戦　　日本人選手　大谷翔平 2打数0安打　1四球（ドジャース）　山本由伸 7回　1失点　10奪三振（ドジャース）"
+        "ticker": "日本人選手　大谷翔平 2打数0安打　1四球（ドジャース）　山本由伸 7回　1失点　10奪三振（ドジャース）"
       }
     },
     {
@@ -122,10 +189,6 @@
         [
           "勝ち投手",
           "松井裕樹（1回を無失点）"
-        ],
-        [
-          "ハイライトのコメント欄から",
-          "「松井裕樹の好投!!!⚾👏🔥」"
         ]
       ],
       "japanese": [
@@ -139,22 +202,83 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": {
-        "said": "松井裕樹の好投!!!⚾👏🔥",
-        "text": "Nice pitching by Yuki Matsui! ⚾👏🔥",
-        "url": "https://www.youtube.com/watch?v=mmrHD8KXtLs",
-        "likes": 18,
-        "at": "2026-10-07T08:25:16Z"
-      },
+      "voice": null,
       "headline": null,
       "game_pk": 849826,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 0,
+              "home": 2
+            },
+            {
+              "num": 4,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 5,
+              "away": 1,
+              "home": 1
+            },
+            {
+              "num": 6,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 7,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": null
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "abbr": "MIL",
+            "total": 3
+          },
+          "home": {
+            "id": 135,
+            "name": "パドレス",
+            "abbr": "SD",
+            "total": 4
+          }
+        },
+        "decisive": {
+          "inning": "6回裏",
+          "subject": "相手の送球失策",
+          "action": "決勝点",
+          "detail": "",
+          "event": "Field Error"
+        }
+      },
       "game_date": "2026-10-07T01:30:00Z",
       "jp_first": true,
       "finished_at": "2026-10-07T05:01:34.508000+00:00",
-      "next_game_jp": {
-        "day": "10月8日",
-        "game": 4
-      },
       "v3": {
         "who": "パドレス　地区シリーズ第3戦",
         "big": "4-3",
@@ -176,7 +300,7 @@
             "score": "1"
           }
         ],
-        "ticker": "次の試合　日本時間10月8日　地区シリーズ第4戦　　日本人選手　松井裕樹 1回　無失点　1奪三振（パドレス）"
+        "ticker": "日本人選手　松井裕樹 1回　無失点　1奪三振（パドレス）"
       }
     },
     {
@@ -222,9 +346,84 @@
       "voice": null,
       "headline": null,
       "game_pk": 849833,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 4,
+              "home": 0
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 5,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 2,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 2,
+              "home": 0
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 114,
+            "name": "ガーディアンズ",
+            "abbr": "CLE",
+            "total": 9
+          },
+          "home": {
+            "id": 145,
+            "name": "ホワイトソックス",
+            "abbr": "CWS",
+            "total": 3
+          }
+        },
+        "decisive": {
+          "inning": "3回表",
+          "subject": "ジョー・アデル",
+          "action": "タイムリー三塁打",
+          "detail": "",
+          "event": "Triple"
+        }
+      },
       "game_date": "2026-10-07T20:00:00Z",
       "jp_first": true,
       "finished_at": "2026-10-07T23:25:04.077000+00:00",
+      "next_game_jp": {
+        "day": "10月9日",
+        "game": 4
+      },
       "v3": {
         "who": "ガーディアンズ　地区シリーズ第3戦",
         "big": "9-3",
@@ -238,7 +437,7 @@
             "win": false
           }
         ],
-        "ticker": "日本人選手　村上宗隆 4打数0安打（ホワイトソックス）"
+        "ticker": "次の試合　日本時間10月9日　地区シリーズ第4戦　　日本人選手　村上宗隆 4打数0安打（ホワイトソックス）"
       }
     },
     {
@@ -275,7 +474,7 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「ブレーブスがレギュラーシーズンでドジャースを圧倒した!!!プレーオフの山本由伸:負けるなんてあり得ない。😂」"
+          "「今日は野球の神様が大谷に味方した、最初の得点で大きなラッキーをつかんだ。彼にはそれが必要だったんだ。」"
         ]
       ],
       "japanese": [
@@ -290,14 +489,85 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "ブレーブスがレギュラーシーズンでドジャースを圧倒した!!!プレーオフの山本由伸:負けるなんてあり得ない。😂",
-        "text": "The Braves dominated the Dodgers in the regular season!!! Playoff Yamamoto: losing is not an option. 😂",
+        "said": "今日は野球の神様が大谷に味方した、最初の得点で大きなラッキーをつかんだ。彼にはそれが必要だったんだ。",
+        "text": "The sports gods smiled on Ohtani today, caught a huge break with that first run. He needed that one.",
         "url": "https://www.youtube.com/watch?v=cv8qfCAzrmM",
-        "likes": 200,
-        "at": "2026-10-08T01:39:56Z"
+        "likes": 30,
+        "at": "2026-10-08T03:09:19Z"
       },
       "headline": null,
       "game_pk": 849822,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 2,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 5,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 7,
+              "away": 2,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 1,
+              "home": 0
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 119,
+            "name": "ドジャース",
+            "abbr": "LAD",
+            "total": 4
+          },
+          "home": {
+            "id": 144,
+            "name": "ブレーブス",
+            "abbr": "ATL",
+            "total": 1
+          }
+        },
+        "decisive": {
+          "inning": "7回表",
+          "subject": "アンディ・パヘス",
+          "action": "タイムリー",
+          "detail": "",
+          "event": "Single"
+        }
+      },
       "game_date": "2026-10-07T22:00:00Z",
       "jp_first": true,
       "finished_at": "2026-10-08T01:03:37.577000+00:00",
@@ -319,6 +589,147 @@
           }
         ],
         "ticker": "日本人選手　大谷翔平 3打数0安打　1四球（ドジャース）"
+      }
+    },
+    {
+      "key": "season_game_849827",
+      "label": "地区シリーズ第4戦",
+      "hook": "ブリュワーズがパドレスに3対1で地区シリーズ突破",
+      "heading": "ブリュワーズ 対 パドレス　地区シリーズ第4戦",
+      "intro": "地区シリーズ第4戦、ブリュワーズが敵地でパドレスに3対1で勝ちました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "team_id": 158,
+      "abbr": "MIL",
+      "title": "【MLB】ブリュワーズがパドレスに3対1で地区シリーズ突破｜チョーリオの決勝打　松井裕樹 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "ブリュワーズ 3対1 パドレス　敵地で勝利　ブリュワーズが3勝1敗で地区シリーズ突破"
+        ],
+        [
+          "決勝点",
+          "5回表　ジャクソン・チョーリオのタイムリー"
+        ],
+        [
+          "本塁打",
+          "パドレス1本（ジュニア）"
+        ],
+        [
+          "先発",
+          "ブリュワーズ ガッサー 4回を1失点　パドレス ビューラー 3回を1失点"
+        ],
+        [
+          "勝ち投手・セーブ",
+          "勝ち アーロン・アシュビー（3回を無失点）　セーブ トレバー・メギル"
+        ]
+      ],
+      "japanese": [
+        {
+          "name": "松井裕樹",
+          "line": "3分の1回　無失点　0奪三振（パドレス）"
+        }
+      ],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": null,
+      "game_pk": 849827,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 1,
+              "home": 1
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 5,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": 0
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "abbr": "MIL",
+            "total": 3
+          },
+          "home": {
+            "id": 135,
+            "name": "パドレス",
+            "abbr": "SD",
+            "total": 1
+          }
+        },
+        "decisive": {
+          "inning": "5回表",
+          "subject": "ジャクソン・チョーリオ",
+          "action": "タイムリー",
+          "detail": "",
+          "event": "Single"
+        }
+      },
+      "game_date": "2026-10-08T02:00:00Z",
+      "jp_first": true,
+      "finished_at": "2026-10-08T05:08:11.379000+00:00",
+      "v3": {
+        "who": "ブリュワーズ　地区シリーズ第4戦",
+        "big": "3-1",
+        "unit": "",
+        "sub": "敵地で勝利",
+        "tag": "決勝点 チョーリオのタイムリー",
+        "chips": [
+          {
+            "label": "地区シリーズ突破　ブリュワーズ",
+            "score": "3-1",
+            "win": true
+          },
+          {
+            "label": "本塁打　パドレス（ジュニア）",
+            "score": "1"
+          }
+        ],
+        "ticker": "日本人選手　松井裕樹 3分の1回　無失点　0奪三振（パドレス）"
       }
     },
     {
@@ -363,6 +774,77 @@
       "voice": null,
       "headline": null,
       "game_pk": 849838,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 1,
+              "home": 1
+            },
+            {
+              "num": 4,
+              "away": 1,
+              "home": 1
+            },
+            {
+              "num": 5,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 2,
+              "home": 1
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": 0
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 139,
+            "name": "レイズ",
+            "abbr": "TB",
+            "total": 4
+          },
+          "home": {
+            "id": 147,
+            "name": "ヤンキース",
+            "abbr": "NYY",
+            "total": 3
+          }
+        },
+        "decisive": {
+          "inning": "6回表",
+          "subject": "ビクトル・メサ・ジュニア",
+          "action": "2点本塁打",
+          "detail": "飛距離122メートル、打球の速さ時速173キロ",
+          "event": "Home Run"
+        }
+      },
       "game_date": "2026-10-08T00:00:00Z",
       "jp_first": false,
       "finished_at": "2026-10-08T03:13:12.879000+00:00",
