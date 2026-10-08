@@ -12,16 +12,14 @@ SLACK = 3
 
 
 def team_mentions(image):
-    """同じ画面の球団名。帯は入力全文を保守的に照合し、締めだけを除く。"""
+    """本文の球団名。帯・出典・字幕・締めは対象外。"""
     import notability_engine as ne
     from team_names import team_names_jp
     if image.info.get('v3_outro'):return []
     result=[]
     entries=list(image.info.get('v3_layout',[]))
-    if image.info.get('v4_ticker_text'):
-        entries.append(dict(role='ticker',text=image.info['v4_ticker_text'],box=[r3.LEFT,330,r3.LEFT,330]))
     for e in entries:
-        if e['role']=='card':continue
+        if e['role'] in ('card','ticker','source','caption'):continue
         value=team_names_jp(e.get('text',''))
         for tid,name in ne.MLB_TEAM_NAME_JP.items():
             if name in value:
@@ -32,9 +30,15 @@ def team_mentions(image):
 def check_team_badges(image):
     if r3.LOOK!='v4':return []
     import notability_engine as ne
-    badges={b['abbr'] for b in image.info.get('v4_badges',[])}
-    return [{'team':ne.MLB_TEAM_NAME_JP[tid],'text':e['text']} for tid,e in team_mentions(image)
-            if ne.MLB_TEAM_ABBR[tid] not in badges]
+    errors=[]
+    for tid,e in team_mentions(image):
+        x,y,right,bottom=e['box'];height=bottom-y
+        candidates=[b for b in image.info.get('v4_badges',[]) if b.get('inline') and
+                    0<=x-b['box'][2]<=24 and abs(b['box'][1]-y)<=3 and
+                    abs((b['box'][3]-b['box'][1])-height)<=3]
+        if (e.get('team_id')!=str(tid) or not any(b.get('team_id')==str(tid) and b.get('abbr')==ne.MLB_TEAM_ABBR[tid] for b in candidates)):
+            errors.append({'team':ne.MLB_TEAM_NAME_JP[tid],'text':e['text'],'box':e['box']})
+    return errors
 
 
 def check_club_mentions(segments,teams):

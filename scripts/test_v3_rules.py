@@ -387,7 +387,9 @@ class V3Rules(unittest.TestCase):
         image=v4.hero(3,spec)
         self.assertFalse(rules.check_layout(image))
         shown=[e['text'] for e in image.info['v3_layout']]
-        for label in ('打数','安打','本塁打','打点','四球'):self.assertIn(label,shown)
+        for label in ('打数','安打','打点','四球'):self.assertIn(label,shown)
+        self.assertEqual(shown.count('本塁打'),1)
+        self.assertNotIn(('2','本塁打'),image.info['v4_stat_tiles'])
 
     def test_v4_caption_in_reserved_area(self):
         if r3.LOOK!='v4':return
@@ -427,18 +429,57 @@ class V3Rules(unittest.TestCase):
                         self.assertFalse(rules.check_team_badges(im))
                         self.assertFalse(rules.check_layout(im))
         import short_v4_cards as c
-        bad=c.canvas(0,'検査');c.text(bad,100,400,'ドジャース',48)
+        from PIL import ImageDraw
+        bad=c.canvas(0,'検査')
+        r3._text(ImageDraw.Draw(bad),(100,400),'ドジャース',font=r3.font(48),fill=r3.INK)
         self.assertTrue(rules.check_team_badges(bad))
         c.ensure_team_badges(bad)
         self.assertFalse(rules.check_team_badges(bad))
-        # 共通の字幕/帯を変えず、名前がそこだけにあっても本文の空きへ球団札を添える。
+        good=c.canvas(0,'検査');c.text(good,100,400,'ドジャース',48,team_id=119)
+        self.assertFalse(rules.check_team_badges(good))
+        for change in ('team','abbr','gap','line','height'):
+            broken=good.copy();broken.info=copy.deepcopy(good.info)
+            badge=broken.info['v4_badges'][0]
+            if change=='team':badge['team_id']='145'
+            if change=='abbr':badge['abbr']='CWS'
+            if change=='gap':badge['box'][0]-=40;badge['box'][2]-=40
+            if change=='line':badge['box'][1]-=60;badge['box'][3]-=60
+            if change=='height':badge['box'][3]+=30
+            self.assertTrue(rules.check_team_badges(broken),change)
+        with self.assertRaises(ValueError):c.text(c.canvas(0,'検査'),100,400,'ガーディアンズ',48,team_id=145)
+        # 共通の字幕・帯・出典から本文の札を作らない。
         mixed=c.canvas(0,'字幕と帯の検査')
         mixed.info['v4_ticker_text']='明日はヤンキース対レイズ'
         r3.record_box(mixed,'caption',(80,1300,400,1350),'ドジャース')
-        self.assertEqual(len(rules.check_team_badges(mixed)),3)
+        r3.record_box(mixed,'source',(80,1190,400,1220),'ガーディアンズ')
+        self.assertFalse(rules.check_team_badges(mixed))
         c.ensure_team_badges(mixed)
         self.assertFalse(rules.check_team_badges(mixed))
         self.assertFalse(rules.check_layout(mixed))
+
+    def test_v4_main_stat_not_repeated_and_decisive_inside_panel(self):
+        if r3.LOOK!='v4':return
+        import asset_v4_cards as cards
+        import short_v4_cards as c
+        specs=read('scripts/fixtures/v3-rules/game-v4.json')['topics']
+        spec=specs[1];body=dict(spec['items'])['勝ち投手']
+        im=cards.item(3,spec,'試合の話題','勝ち投手',body)
+        self.assertNotIn(im.info['v4_big_stat'],im.info['v4_stat_tiles'])
+        shown=[e['text'] for e in im.info['v3_layout'] if e['role']=='text']
+        self.assertIn('フォスター・グリフィン',shown)
+        self.assertFalse(any('2回と3分の2を1失点' in t for t in shown))
+        self.assertEqual({b['team_id'] for b in im.info['v4_badges'] if b.get('inline')},{'114'})
+        for spec in specs:
+            for head,body in spec['items']:
+                im=cards.item(3,spec,'試合の話題',head,body)
+                if im.info.get('v4_big_stat'):
+                    self.assertNotIn(im.info['v4_big_stat'],im.info['v4_stat_tiles'])
+        self.assertEqual(c.without_big([('1.1','回'),('2','奪三振')],('1','回3分の1')),[('2','奪三振')])
+        decisive=cards.item(3,specs[1],'試合の話題','決勝点',dict(specs[1]['items'])['決勝点'])
+        panel=next(e['box'] for e in decisive.info['v3_layout'] if e['role']=='card')
+        for e in decisive.info['v3_layout']:
+            if e['role']=='text' and e['text'] in ('ジョー・アデル','タイムリー三塁打'):
+                x,y,r,b=e['box'];self.assertTrue(panel[0]<=x<r<=panel[2] and panel[1]<=y<b<=panel[3])
 
     def test_v4_club_players_are_named_once_in_speech_and_screen(self):
         if r3.LOOK!='v4':return
