@@ -71,6 +71,42 @@ def bsky_record(text, title, video_id, now):
                 'uri': url, 'title': title, 'description': 'コレスポのPSの話題です。'}}}
 
 
+
+# Diagnostics must never expose response messages, credentials or request URLs.
+BLUESKY_ERROR_CODES = frozenset({
+    'InvalidRecord', 'InvalidRequest', 'AuthenticationRequired', 'ExpiredToken',
+    'InvalidToken', 'RateLimitExceeded', 'AccountTakedown', 'RepoNotFound',
+    'RecordNotFound', 'InvalidSwap', 'InternalServerError', 'UpstreamFailure',
+    'Forbidden',
+})
+
+
+class BlueskyHTTPFailure(RuntimeError):
+    """Only a fixed stage, numeric status and allowlisted protocol error."""
+
+
+def bsky_http_ok(response, stage):
+    if stage not in ('createSession', 'getRecord', 'putRecord'):
+        raise ValueError('Unknown Bluesky request stage')
+    try:
+        response.raise_for_status()
+    except requests.HTTPError:
+        status = response.status_code
+        status = status if type(status) is int and 100 <= status <= 599 else 'unknown'
+        try:
+            payload = response.json()
+        except ValueError:
+            payload = {}
+        code = payload.get('error') if isinstance(payload, dict) else None
+        code = code if isinstance(code, str) and code in BLUESKY_ERROR_CODES else 'unknown'
+        raise BlueskyHTTPFailure(
+            f'stage={stage} status={status} error={code}') from None
+
+
+def bsky_failure_summary(exc):
+    return str(exc) if isinstance(exc, BlueskyHTTPFailure) else type(exc).__name__
+
+
 def bsky_once(ledger, key, record, metadata, http=requests):
     """予約・確定rkey・新規のみのCAS。応答不明でも別の投稿を作らない。"""
     old = ledger.data['deliveries'].get(key)
@@ -83,7 +119,7 @@ def bsky_once(ledger, key, record, metadata, http=requests):
     endpoint = 'https://bsky.social/xrpc/'
     auth = http.post(endpoint + 'com.atproto.server.createSession',
                      json={'identifier': handle, 'password': password}, timeout=30)
-    auth.raise_for_status()
+    bsky_http_ok(auth, 'createSession')
     session = auth.json()
     if session.get('handle') != handle:
         raise RuntimeError('Unexpected Bluesky account')
@@ -100,7 +136,7 @@ def bsky_once(ledger, key, record, metadata, http=requests):
         ledger.set(key, receipt)
         return receipt
     if existing.status_code != 400 or existing.json().get('error') != 'RecordNotFound':
-        existing.raise_for_status()
+        bsky_http_ok(existing, 'getRecord')
         raise RuntimeError('Cannot establish absence of Bluesky post')
     if old:
         raise RuntimeError('Uncertain Bluesky reservation needs inspection; no automatic resend')
@@ -109,7 +145,7 @@ def bsky_once(ledger, key, record, metadata, http=requests):
     result = http.post(endpoint + 'com.atproto.repo.putRecord',
                        json=dict(query, record=record, validate=True, swapRecord=None),
                        headers=headers, timeout=30)
-    result.raise_for_status()
+    bsky_http_ok(result, 'putRecord')
     response = result.json()
     receipt = dict(metadata, state='sent', uri=response['uri'], rkey=rkey)
     ledger.set(key, receipt)
@@ -212,7 +248,7 @@ def distribute(run, rows, publish=False):
             try:
                 bsky_once(ledger, keys['bluesky'], bpost, metadata)
             except Exception as exc:
-                print('[error] bluesky: ' + type(exc).__name__)
+                print('[error] bluesky: ' + bsky_failure_summary(exc))
                 failed.append(topic + ':bluesky')
         except Exception as exc:
             print('[error] ' + topic + ': ' + type(exc).__name__ + ' ' + str(exc)[:120])

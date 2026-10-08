@@ -167,6 +167,38 @@ class AssetSNS(unittest.TestCase):
                 sns.bsky_once(ledger, 'key', sns.bsky_record('x', 'x', REC['video_id'], NOW), {}, http)
         self.assertEqual(http.post.call_count, 1)
 
+    def test_http_diagnostics_keep_stage_and_status_without_private_messages(self):
+        for stage in ('createSession', 'getRecord', 'putRecord'):
+            bad = response(400, dict(error='InvalidRecord', message='SECRET_TOKEN https://private.example'))
+            with self.assertRaises(sns.BlueskyHTTPFailure) as failure:
+                sns.bsky_http_ok(bad, stage)
+            self.assertEqual(sns.bsky_failure_summary(failure.exception),
+                             f'stage={stage} status=400 error=InvalidRecord')
+            self.assertNotIn('SECRET_TOKEN', str(failure.exception))
+
+    def test_unknown_error_and_malformed_bodies_are_redacted(self):
+        for body in [dict(error='SECRET_TOKEN'), dict(error=['SECRET_TOKEN']), ['SECRET_TOKEN']]:
+            with self.assertRaises(sns.BlueskyHTTPFailure) as failure:
+                sns.bsky_http_ok(response(429, body), 'putRecord')
+            self.assertEqual(str(failure.exception), 'stage=putRecord status=429 error=unknown')
+        bad = response(503, {})
+        bad.json.side_effect = ValueError('SECRET_TOKEN')
+        with self.assertRaises(sns.BlueskyHTTPFailure) as failure:
+            sns.bsky_http_ok(bad, 'getRecord')
+        self.assertEqual(str(failure.exception), 'stage=getRecord status=503 error=unknown')
+        self.assertEqual(sns.bsky_failure_summary(RuntimeError('SECRET_TOKEN')), 'RuntimeError')
+
+    def test_failed_put_keeps_reservation_and_does_not_resend(self):
+        ledger, http = Ledger(), self.http()
+        http.post.side_effect = [response(200, dict(handle='collespo.bsky.social', did='did:plc:mock', accessJwt='fake')),
+                                 response(400, dict(error='InvalidRecord', message='SECRET_TOKEN'))]
+        with patch.dict(os.environ, {'BLUESKY_HANDLE': 'collespo.bsky.social', 'BLUESKY_APP_PASSWORD': 'mock'}):
+            with self.assertRaises(sns.BlueskyHTTPFailure) as failure:
+                sns.bsky_once(ledger, 'key', sns.bsky_record('x', 'x', REC['video_id'], NOW), {}, http)
+        self.assertEqual(str(failure.exception), 'stage=putRecord status=400 error=InvalidRecord')
+        self.assertEqual(ledger.data['deliveries']['key']['state'], 'reserved')
+        self.assertEqual(http.post.call_count, 2)
+
     def test_sent_receipt_skips_even_login(self):
         ledger, http = Ledger(), self.http()
         ledger.set('key', dict(state='sent'))
