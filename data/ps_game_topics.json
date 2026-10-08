@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-08T01:05:15.362599+00:00",
+  "updated_at": "2026-10-08T01:57:18.351205+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -37,7 +37,7 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「山本は、絶対に負けられない試合で出すべきピッチャー。完全な必殺兵器だ。」"
+          "「山本は絶対に負けられない試合で先発させたいピッチャーだ。本当に恐ろしい武器だよ。」"
         ]
       ],
       "japanese": [
@@ -56,10 +56,10 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "山本は、絶対に負けられない試合で出すべきピッチャー。完全な必殺兵器だ。",
+        "said": "山本は絶対に負けられない試合で先発させたいピッチャーだ。本当に恐ろしい武器だよ。",
         "text": "Yamamoto is the pitcher you want to send out when you cannot lose the game no matter what. an absolute lethal weapon.",
         "url": "https://www.youtube.com/watch?v=gPEXU8g2Fo0",
-        "likes": 1572,
+        "likes": 1575,
         "at": "2026-10-07T01:39:44Z"
       },
       "headline": null,
@@ -122,6 +122,10 @@
         [
           "勝ち投手",
           "松井裕樹（1回を無失点）"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「キングの全力リリーフでパドレスが粘り、第4戦へ 🔥」"
         ]
       ],
       "japanese": [
@@ -136,7 +140,12 @@
       "game": true,
       "source": null,
       "voice": null,
-      "headline": null,
+      "headline": {
+        "said": "キングの全力リリーフでパドレスが粘り、第4戦へ 🔥",
+        "text": "Led by King's all-in relief effort, Padres fight and force Game 4",
+        "url": "https://www.mlb.com/news/padres-win-nlds-game-3-2026",
+        "at": "2026-10-07T07:41:00+00:00"
+      },
       "game_pk": 849826,
       "game_date": "2026-10-07T01:30:00Z",
       "jp_first": true,

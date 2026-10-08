@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-08T01:04:15.485363+00:00",
+  "updated_at": "2026-10-08T01:56:19.122554+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
@@ -7,7 +7,7 @@
       "video_id": "gPEXU8g2Fo0",
       "title": "DODGERS vs. BRAVES: NLDS Full Game 3 Highlights (October 6) | 2026 MLB Postseason 山本 由伸",
       "published_at": "2026-10-07T01:36:00Z",
-      "views": 2348222,
+      "views": 2365115,
       "matchup": "DODGERS vs. BRAVES",
       "game_date": "2026-10-06",
       "result": {
@@ -86,7 +86,7 @@
       "video_id": "mmrHD8KXtLs",
       "title": "BREWERS vs. PADRES: NLDS Full Game 3 Highlights (October 6) | 2026 MLB Postseason",
       "published_at": "2026-10-07T05:28:47Z",
-      "views": 1320760,
+      "views": 1344509,
       "matchup": "BREWERS vs. PADRES",
       "game_date": "2026-10-06",
       "result": {
@@ -165,7 +165,7 @@
       "video_id": "pgYSFd7YWx4",
       "title": "GUARDIANS vs. WHITE SOX: ALDS Full Game 3 Highlights (October 7) | 2026 MLB Postseason",
       "published_at": "2026-10-08T00:09:38Z",
-      "views": 43242,
+      "views": 72506,
       "matchup": "GUARDIANS vs. WHITE SOX",
       "game_date": "2026-10-07",
       "result": {
@@ -241,22 +241,92 @@
       "topic_jp": "ガーディアンズ 対 ホワイトソックス"
     },
     {
-      "video_id": "zD4Xpn9Phds",
-      "title": "JO ADELL'S TRIPLE CLEARS THE BASES to give the Guardians THE LEAD! | MLB Highlights (Full Inning)",
-      "published_at": "2026-10-07T21:15:23Z",
-      "views": 65454,
-      "matchup": "",
-      "game_date": "",
-      "topic_jp": "ジョ・アデルの三塁打でガーディアンズがリードを奪う。"
+      "video_id": "cv8qfCAzrmM",
+      "title": "DODGERS vs. BRAVES: Division Series Full Game 4 Highlights (October 7) | 2026 MLB Postseason",
+      "published_at": "2026-10-08T01:38:40Z",
+      "views": 46217,
+      "matchup": "DODGERS vs. BRAVES",
+      "game_date": "2026-10-07",
+      "result": {
+        "away_jp": "ドジャース",
+        "home_jp": "ブレーブス",
+        "away_score": 4,
+        "home_score": 1,
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 2,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 2,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 1,
+            "home": 0
+          }
+        ],
+        "away_hits": 5,
+        "away_errors": 0,
+        "home_hits": 3,
+        "home_errors": 2,
+        "star_name": "Tyler Mahle",
+        "star_line": "6.1回 4奪三振 自責1",
+        "star_team": "ブレーブス",
+        "away_starter": {
+          "name": "Tyler Glasnow",
+          "team": "ドジャース",
+          "line": "4.2回 5奪三振 自責1"
+        },
+        "home_starter": {
+          "name": "Tyler Mahle",
+          "team": "ブレーブス",
+          "line": "6.1回 4奪三振 自責1　敗戦投手（通算0勝1敗）"
+        }
+      },
+      "topic_jp": "ドジャース 対 ブレーブス"
     },
     {
-      "video_id": "IqZaTdeQfzs",
-      "title": "William Contreras HAMMERS a solo home run for the Brewers! 💥 | MLB Postseason Highlights",
-      "published_at": "2026-10-07T02:50:49Z",
-      "views": 57972,
+      "video_id": "LuzwCTudGhQ",
+      "title": "FULL INNING: Dodgers load the bases and TAKE THE LEAD vs. the Braves in NLDS Game 4 | MLB Highlights",
+      "published_at": "2026-10-08T00:29:39Z",
+      "views": 89351,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "ウィリアム・コントレラスがミルウォーキー・ブルワーズのソロホームランを打った。"
+      "topic_jp": "ドジャースがブレーブス戦でベースを満塁にして、リードを奪った。"
     }
   ],
   "all": [
@@ -264,67 +334,73 @@
       "video_id": "gPEXU8g2Fo0",
       "matchup": "DODGERS vs. BRAVES",
       "game_date": "2026-10-06",
-      "views": 2348222
+      "views": 2365115
     },
     {
       "video_id": "mmrHD8KXtLs",
       "matchup": "BREWERS vs. PADRES",
       "game_date": "2026-10-06",
-      "views": 1320760
+      "views": 1344509
     },
     {
       "video_id": "pgYSFd7YWx4",
       "matchup": "GUARDIANS vs. WHITE SOX",
       "game_date": "2026-10-07",
-      "views": 43242
+      "views": 72506
     },
     {
-      "video_id": "zD4Xpn9Phds",
-      "matchup": "",
-      "game_date": "",
-      "views": 65454
-    },
-    {
-      "video_id": "IqZaTdeQfzs",
-      "matchup": "",
-      "game_date": "",
-      "views": 57972
-    },
-    {
-      "video_id": "8kHi1Zh_x20",
-      "matchup": "",
-      "game_date": "",
-      "views": 46396
+      "video_id": "cv8qfCAzrmM",
+      "matchup": "DODGERS vs. BRAVES",
+      "game_date": "2026-10-07",
+      "views": 46217
     },
     {
       "video_id": "LuzwCTudGhQ",
       "matchup": "",
       "game_date": "",
-      "views": 31121
+      "views": 89351
+    },
+    {
+      "video_id": "zD4Xpn9Phds",
+      "matchup": "",
+      "game_date": "",
+      "views": 86110
+    },
+    {
+      "video_id": "IqZaTdeQfzs",
+      "matchup": "",
+      "game_date": "",
+      "views": 58090
     },
     {
       "video_id": "ClwJyavZKzY",
       "matchup": "",
       "game_date": "",
-      "views": 23593
+      "views": 31992
     },
     {
-      "video_id": "0P3uDXe2aNo",
+      "video_id": "hMLCLQjAe-w",
       "matchup": "",
       "game_date": "",
-      "views": 8246
-    },
-    {
-      "video_id": "tRWV4tfz1Zo",
-      "matchup": "",
-      "game_date": "",
-      "views": 6452
+      "views": 27323
     },
     {
       "video_id": "ZBuDS0SKKv4",
       "matchup": "",
       "game_date": "",
-      "views": 260
+      "views": 27007
+    },
+    {
+      "video_id": "0P3uDXe2aNo",
+      "matchup": "",
+      "game_date": "",
+      "views": 11865
+    },
+    {
+      "video_id": "tRWV4tfz1Zo",
+      "matchup": "",
+      "game_date": "",
+      "views": 10282
     }
   ]
 }
