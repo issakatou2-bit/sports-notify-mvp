@@ -1,0 +1,99 @@
+{
+  "generated_at": "2026-10-08T09:53:56.839550+00:00",
+  "games": [
+    {
+      "game_id": "849832",
+      "league": "MLB",
+      "home_team_id": "145",
+      "away_team_id": "114",
+      "home_team_name": "ホワイトソックス",
+      "away_team_name": "ガーディアンズ",
+      "home_abbr": "CWS",
+      "away_abbr": "CLE",
+      "home_color": "#27251F",
+      "away_color": "#00385D",
+      "matchup": "ガーディアンズ vs ホワイトソックス",
+      "abbr_matchup": "CLE vs CWS",
+      "start_time_jst": "10/09 09:00",
+      "home_division": "ALC",
+      "away_division": "ALC",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "村上宗隆"
+      ],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 1.0,
+        "streak": 1,
+        "wins": 84,
+        "losses": 78,
+        "last_ten": "7勝3敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 85,
+        "losses": 77,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Hagen Smith",
+        "name_en": "Hagen Smith",
+        "player_id": "696146",
+        "era": "1.29",
+        "wins": 3,
+        "losses": 3,
+        "strikeouts": 41
+      },
+      "away_probable": {
+        "name": "Parker Messick",
+        "name_en": "Parker Messick",
+        "player_id": "800048",
+        "era": "2.56",
+        "wins": 12,
+        "losses": 9,
+        "strikeouts": 193
+      },
+      "venue_name": "Rate Field",
+      "venue_jp": "レート・フィールド",
+      "venue_note": "ホワイトソックスの本拠地。旧称ギャランティード・レート・フィールド",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は9.01点で、MLB30球場中9位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "D",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ホワイトソックスには村上宗隆が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "地区シリーズ 第4戦(ホワイトソックスが2勝1敗で王手、ガーディアンズは負ければ敗退)",
+          "weight": 5
+        }
+      ],
+      "series_context": {
+        "series_game_number": null,
+        "games_in_series": null,
+        "home_wins_in_stretch": 2,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [],
+      "notification_hook": "Messick193奪三振vs防御率1.29のSmith、地区シリーズ王手をかけた投手戦に注目",
+      "availability_checked_at": "2026-10-08T09:52:46.887957+00:00"
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}
