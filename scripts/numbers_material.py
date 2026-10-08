@@ -731,6 +731,8 @@ def panels(m: dict) -> dict:
                              # 用語の意味は**画面にだけ**出す。声で
                              # 説明すると、そこで話が止まる。
                              "note": r.get("note") or "",
+                             # 順位の対象の条件（画面の札にだけ出す）
+                             "scope": r.get("scope") or "",
                              "menu": "%sの%s" % (r["name"], r["stat"])}
 
     if rw.is_settled(m["race"]):

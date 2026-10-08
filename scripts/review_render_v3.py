@@ -298,9 +298,23 @@ def sentences(text):
     return [s for s in re.findall(r"[^。！？!?]+[。！？!?]?", str(text or "")) if s.strip()]
 
 
+CAPTION_CHUNK = 38   # 字幕の箱に3行で入る字数の目安。短い文はまとめて出す
+
+
+def caption_chunks(text, limit=CAPTION_CHUNK):
+    """短い文はまとめて1つの字幕にする（10/8 本人「細かく刻み過ぎ」。1文ずつだと切り替えが多い）。"""
+    out = []
+    for s in sentences(text):
+        if out and len(out[-1]) + len(s) <= limit:
+            out[-1] += s
+        else:
+            out.append(s)
+    return out
+
+
 def current_sentence(elapsed, text, duration):
-    """読み上げの速さは文字数にほぼ比例するので、文字数で区切って今の文を選ぶ。"""
-    parts = sentences(text)
+    """読み上げの速さは文字数にほぼ比例するので、文字数で区切って今の字幕を選ぶ。"""
+    parts = caption_chunks(text)
     if not parts:
         return ""
     total = sum(len(p) for p in parts)
