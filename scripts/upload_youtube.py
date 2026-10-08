@@ -2127,12 +2127,7 @@ def main():
 
     try:
         youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)
-        media = MediaFileUpload(str(video_path), chunksize=-1, resumable=True,
-                                mimetype="video/mp4")
-        request = youtube.videos().insert(
-            part="snippet,status", body=body, media_body=media
-        )
-        response = request.execute()
+        response = insert_with_retry(youtube, body, video_path)
         vid = response.get("id")
         print(f"[info] アップロードしました: https://youtu.be/{vid}")
         print(f"[info] タイトル: {body['snippet']['title']}")
@@ -2180,6 +2175,31 @@ def main():
         # アップロードに失敗しても、通知やサイト更新は既に済んでいるので
         # ワークフロー全体を落とさない
         print(f"[warn] アップロードに失敗しました: {e}", file=sys.stderr)
+
+
+# 一時的な失敗は、少し待ってやり直す（3回まで）。
+# 10/8、20:00 の PS の回が「410 Gone」（アップロードの受け口が切れた）で1回だけ落ち、
+# 同じ実行の失敗扱いで長編（後続）まで止まった。410 と 5xx は送り直せば通ることが多い。
+# 受け口が切れた・サーバー側の失敗のときは動画は作られていないので、二重にはならない。
+RETRY_STATUS = {410, 500, 502, 503, 504}
+
+
+def insert_with_retry(youtube, body, video_path, waits=(15, 45)):
+    import time
+    from googleapiclient.errors import HttpError
+    for attempt in range(len(waits) + 1):
+        media = MediaFileUpload(str(video_path), chunksize=-1, resumable=True,
+                                mimetype="video/mp4")
+        try:
+            return youtube.videos().insert(
+                part="snippet,status", body=body, media_body=media).execute()
+        except HttpError as e:
+            status = getattr(getattr(e, "resp", None), "status", None)
+            if int(status or 0) not in RETRY_STATUS or attempt == len(waits):
+                raise
+            print(f"[warn] アップロードが一時的に失敗しました（{status}）。"
+                  f"{waits[attempt]}秒後にやり直します（{attempt + 2}回目）", file=sys.stderr)
+            time.sleep(waits[attempt])
 
 
 if __name__ == "__main__":
