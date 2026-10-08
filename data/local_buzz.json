@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-08T06:02:09.726946+00:00",
+  "updated_at": "2026-10-08T06:14:47.749586+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,20 +13,20 @@
   "titles_count": 51,
   "teams": [
     {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 8,
+      "tone": "不振",
+      "gist": "ヤンキースはレイズにスウィープされ敗退"
+    },
+    {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
       "mentions": 8,
       "tone": "好調",
-      "gist": "Andy Pagesがいるドジャースが3年連続NLCS進出"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 7,
-      "tone": "不振",
-      "gist": "ヤンキースがレイズにスウィープされて敗退"
+      "gist": "ドジャースが3年連続でNLCSに進出"
     },
     {
       "team_id": "139",
@@ -42,7 +42,7 @@
       "name_en": "Atlanta Braves",
       "mentions": 6,
       "tone": "不振",
-      "gist": "ブレーブスが投手層の不足で敗退"
+      "gist": "ブレーブスが投手層の薄さで敗退"
     },
     {
       "team_id": "145",
@@ -50,7 +50,7 @@
       "name_en": "Chicago White Sox",
       "mentions": 5,
       "tone": "話題",
-      "gist": "ホワイトソックスのALDS第4戦が120年ぶりの盛り上がり"
+      "gist": "ホワイトソックスとガーディアンズのALDSが注目"
     },
     {
       "team_id": "135",
@@ -58,23 +58,23 @@
       "name_en": "San Diego Padres",
       "mentions": 4,
       "tone": "不振",
-      "gist": "パドレスがワールドシリーズ出場から敗退"
+      "gist": "パドレスがワールドシリーズ争いから敗退"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 4,
+      "tone": "好調",
+      "gist": "ブリュワーズがパドレスを破りNLCS進出"
     },
     {
       "team_id": "114",
       "name": "ガーディアンズ",
       "name_en": "Cleveland Guardians",
       "mentions": 3,
-      "tone": "好調",
-      "gist": "ガーディアンズがJ-RamらでWhite Sox相手に粘る"
-    },
-    {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "ブリュワーズがパドレスを破りドジャーズとのNLCS再戦へ"
+      "tone": "話題",
+      "gist": "ガーディアンズがJ-Ramの活躍で粘る"
     }
   ],
   "players": []

@@ -1,131 +1,111 @@
 {
-  "generated_at": "2026-10-08T06:01:13.781531+00:00",
+  "generated_at": "2026-10-08T06:13:20.842964+00:00",
   "date_jst": "2026-10-08",
-  "name": "Tyler Mahle",
-  "player_id": "641816",
-  "team": "ブレーブス",
-  "group": "pitching",
+  "name": "José Ramírez",
+  "player_id": "608070",
+  "team": "ガーディアンズ",
+  "group": "hitting",
   "why": "2026-10-08のMLBで最も活躍",
-  "headline": "6.1回　4奪三振　防御率1.42　3被安打",
-  "score": 100,
+  "headline": "4打数2安打　1三塁打　1二塁打　2打点　1四球　1盗塁",
+  "score": 99,
   "bio": {
-    "name_en": "Tyler Mahle",
-    "age": 32,
-    "birth_city": "Newport Beach",
-    "birth_state": "CA",
-    "birth_country": "USA",
-    "birth_date": "1994-09-29",
-    "debut": "2017-08-27",
-    "draft_year": 2013,
-    "bats": "Right",
+    "name_en": "José Ramírez",
+    "age": 34,
+    "birth_city": "Bani",
+    "birth_state": null,
+    "birth_country": "Dominican Republic",
+    "birth_date": "1992-09-17",
+    "debut": "2013-09-01",
+    "draft_year": null,
+    "bats": "Switch",
     "throws": "Right",
-    "number": "54",
-    "position": "Pitcher",
-    "nickname": "Mal",
-    "height": "6' 3\"",
-    "weight": 212
+    "number": "11",
+    "position": "Third Base",
+    "nickname": "Enriquito",
+    "height": "5' 8\"",
+    "weight": 190
   },
   "teams": [
     {
-      "team": "レッズ",
-      "from": 2017,
-      "to": 2022
-    },
-    {
-      "team": "ツインズ",
-      "from": 2022,
-      "to": 2023
-    },
-    {
-      "team": "レンジャーズ",
-      "from": 2024,
-      "to": 2025
-    },
-    {
-      "team": "ジャイアンツ",
-      "from": 2026,
-      "to": 2026
-    },
-    {
-      "team": "ブレーブス",
-      "from": 2026,
+      "team": "ガーディアンズ",
+      "from": 2013,
       "to": 2026
     }
   ],
   "career": {
-    "games": 169,
-    "wins": 46,
-    "losses": 56,
-    "era": "4.05",
-    "so": 890,
-    "ip": "884.0",
-    "whip": "1.28"
+    "games": 1734,
+    "avg": ".276",
+    "hr": 297,
+    "rbi": 1002,
+    "ops": ".845",
+    "sb": 324,
+    "hits": 1779
   },
   "this_season": {
-    "games": 27,
-    "wins": 7,
-    "losses": 10,
-    "era": "3.99",
-    "so": 137,
-    "ip": "149.0",
-    "whip": "1.23"
+    "games": 125,
+    "avg": ".235",
+    "hr": 12,
+    "rbi": 53,
+    "ops": ".688",
+    "sb": 37,
+    "hits": 111
   },
   "last_season": {
-    "games": 16,
-    "wins": 6,
-    "losses": 4,
-    "era": "2.18",
-    "so": 66,
-    "ip": "86.2",
-    "whip": "1.13"
+    "games": 158,
+    "avg": ".283",
+    "hr": 30,
+    "rbi": 85,
+    "ops": ".863",
+    "sb": 44,
+    "hits": 168
   },
   "recent": [
     {
+      "date": "2026-09-26",
+      "line": "5打数0安打",
+      "opponent": "Kansas City Royals"
+    },
+    {
+      "date": "2026-09-25",
+      "line": "4打数1安打 2打点",
+      "opponent": "Kansas City Royals"
+    },
+    {
       "date": "2026-09-24",
-      "line": "5.0回 自責5 4奪三振",
-      "opponent": "Cincinnati Reds"
+      "line": "4打数2安打",
+      "opponent": "Boston Red Sox"
     },
     {
-      "date": "2026-09-18",
-      "line": "6.0回 自責1 6奪三振",
-      "opponent": "Houston Astros"
+      "date": "2026-09-23",
+      "line": "3打数0安打",
+      "opponent": "Boston Red Sox"
     },
     {
-      "date": "2026-09-12",
-      "line": "7.0回 自責1 3奪三振",
-      "opponent": "Philadelphia Phillies"
-    },
-    {
-      "date": "2026-09-06",
-      "line": "6.0回 自責0 3奪三振",
-      "opponent": "Philadelphia Phillies"
-    },
-    {
-      "date": "2026-08-30",
-      "line": "6.2回 自責1 9奪三振",
-      "opponent": "Colorado Rockies"
+      "date": "2026-09-22",
+      "line": "5打数1安打",
+      "opponent": "Boston Red Sox"
     }
   ],
   "awards": [
     {
-      "season": "2017",
-      "name": "MiLB.com Organization All-Star"
+      "season": "2026",
+      "name": "AL Player of the Week"
     },
     {
-      "season": "2017",
-      "name": "Baseball America Minor League All-Star"
+      "season": "2025",
+      "name": "AL Silver Slugger"
     },
     {
-      "season": "2017",
-      "name": "Baseball America Double-A All-Star"
+      "season": "2025",
+      "name": "AL All-Star"
     },
     {
-      "season": "2017",
-      "name": "SOU Mid-Season All-Star"
+      "season": "2025",
+      "name": "AL Player of the Week"
     },
     {
-      "season": "2017",
-      "name": "SOU Player of the Month"
+      "season": "2024",
+      "name": "AL Silver Slugger"
     }
   ],
   "quotes": []
