@@ -312,6 +312,16 @@ class V3Rules(unittest.TestCase):
         for path in ('scripts/generate_morning_short.py','scripts/generate_asset_video.py'):
             self.assertIn('set_program_clock(total / FPS)',(ROOT/path).read_text(encoding='utf-8'),path)
 
+    def test_metan_face_follows_the_line(self):
+        self.assertEqual(r3.face_for('ポストシーズンで自己最多です。', 1.0, 4), 'surprise')
+        self.assertEqual(r3.face_for('パドレスは敗退しました。', 1.0, 4), 'jitome')
+        self.assertEqual(r3.face_for('ドジャースが勝ちました。', 1.0, 4), 'smile')
+        faces = {r3.face_for('先発はグラスノーです。', k / 30, 4) for k in range(60)}
+        self.assertEqual(faces, {'base', 'talk'})            # ふつうの文は口を動かす
+        self.assertEqual(r3.face_for('先発はグラスノーです。', 3.9, 4), 'base')   # 読み終わったら閉じる
+        for face in ('base', 'talk', 'smile', 'surprise', 'jitome', 'pose-smile'):
+            self.assertTrue((r3.ROOT / r3.PORTRAITS / 'metan/3-black' / f'{face}.png').exists(), face)
+
     def test_caption_follows_the_sentence_being_read(self):
         """字幕（v4）は読み上げている文。文字数の割合で今の文を選ぶ。"""
         text='1位は村上宗隆。4打数3安打、2本塁打、3打点です。'

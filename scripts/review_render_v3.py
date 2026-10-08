@@ -274,13 +274,37 @@ def source(d, text, color):
         _text(d,(LEFT, SOURCE_BOTTOM - (len(lines) - i) * (size + 6)), line, font=font(size), fill=color, role="source")
 
 
-@functools.lru_cache(maxsize=2)
-def _portrait_v4(who="metan"):
-    path = ROOT / PORTRAITS / ("metan/3-black/base.png" if who == "metan"
-                               else "zundamon/C-cheer/base-black-brow-candidate.png")
+@functools.lru_cache(maxsize=16)
+def _portrait_v4(who="metan", face="base"):
+    if who == "metan":
+        path = ROOT / PORTRAITS / "metan/3-black" / f"{face}.png"
+        if not path.exists():
+            path = ROOT / PORTRAITS / "metan/3-black/base.png"
+    else:
+        path = ROOT / PORTRAITS / "zundamon/C-cheer/base-black-brow-candidate.png"
     sp = Image.open(path).convert("RGBA").crop((120, 0, 940, 900))
     sp.thumbnail((330, 330))
     return sp
+
+
+# 表情（v4）。10/8 本人「めたんの表情とかポーズ差分ほしい」。差分はすでにある
+# （metan/3-black: talk・smile・surprise・jitome・pose・pose-smile。base と同じ位置に描いてある）。
+# 読んでいる文の言葉で表情を選び、ふつうの文では話している間だけ口を動かす（base と talk を交互に）。
+FACE_WORDS = (
+    ("surprise", ("自己最多", "初めて", "初の", "記録", "！", "!")),
+    ("jitome", ("敗退", "負け", "敗れ", "失策", "無安打", "0安打", "黒星")),
+    ("smile", ("勝ち", "勝って", "勝利", "突破", "王手", "優勝", "本塁打", "完封", "セーブ")),
+    ("pose-smile", ("きょうの", "今日の", "こちら", "まとめ", "一覧", "全試合")),
+)
+MOUTH_RATE = 7.0      # 1秒に口を開け閉めする回数の目安（音に合わせた口パクではない）
+
+
+def face_for(line, elapsed, duration):
+    mood = next((m for m, words in FACE_WORDS if any(w in str(line) for w in words)), "base")
+    speaking = elapsed < max(0.3, duration - 0.35)
+    if mood == "base" and speaking and int(elapsed * MOUTH_RATE) % 2 == 1:
+        return "talk"
+    return mood
 
 
 # ------------------------------------------------------------------ 字幕（v4）
@@ -404,7 +428,14 @@ def progress(d):
 
 
 def presenter(im, t, which="right", who="metan"):
-    sp = _portrait_v4(who) if LOOK == "v4" else _portrait(who)
+    if LOOK == "v4":
+        clock = _PROGRAM_CLOCK[0]
+        elapsed = (clock - _CAPTION["start"]) if clock is not None else t
+        line = current_sentence(elapsed, _CAPTION["text"], _CAPTION["duration"]) if _CAPTION["text"] else ""
+        face = face_for(line, elapsed, _CAPTION["duration"]) if line else "smile"
+        sp = _portrait_v4(who, face if who == "metan" else "base")
+    else:
+        sp = _portrait(who)
     bob = round(6 * math.sin(t * 2 * math.pi / 2.4))
     x = SAFE_RIGHT - sp.width + (24 if LOOK == "v4" else 0) if which == "right" else 24
     # テロップ（1486〜1574）の上に立つ。テロップの文字を隠さない
