@@ -317,6 +317,40 @@ def finished_at(feed):
     return max((t for t in times if t), default=None)
 
 
+def inning_score(feed: dict) -> dict | None:
+    """公式linescoreをそのまま材料へ。欠落・合計不一致を0で埋めない。"""
+    import notability_engine as ne
+    ls = (feed.get('liveData') or {}).get('linescore') or {}
+    innings = ls.get('innings') or []
+    if not innings or [i.get('num') for i in innings] != list(range(1, len(innings)+1)):
+        return None
+    out = {'innings': [], 'source': 'MLB Stats API / liveData.linescore'}
+    for i in innings:
+        row = {'num': i['num']}
+        for side in ('away', 'home'):
+            value = (i.get(side) or {}).get('runs')
+            # ホームが勝って9回裏を打たない場合だけ欠落を許す。
+            if value is None and not (side == 'home' and i is innings[-1]):
+                return None
+            if value is not None and (type(value) is not int or value < 0):
+                return None
+            row[side] = value
+        out['innings'].append(row)
+    teams = (feed.get('gameData') or {}).get('teams') or {}
+    for side in ('away', 'home'):
+        total = (ls.get('teams') or {}).get(side, {}).get('runs')
+        if type(total) is not int or total != sum(i[side] or 0 for i in out['innings']):
+            return None
+        tid = (teams.get(side) or {}).get('id')
+        name = ne.MLB_TEAM_NAME_JP.get(str(tid))
+        if not name:
+            return None
+        out[side] = {'id': tid, 'name': name, 'abbr': ne.MLB_TEAM_ABBR.get(str(tid), ''), 'total': total}
+    if out['innings'][-1]['home'] is None and out['home']['total'] <= out['away']['total']:
+        return None
+    return out
+
+
 def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: list, headlines=()) -> dict:
     import notability_engine as ne
     ls = feed["liveData"]["linescore"]["teams"]
@@ -366,6 +400,7 @@ def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: l
 
     # 決勝点
     hero = None
+    decisive_card = None
     dp, first = decisive(feed, win_side, L)
     if dp:
         who = who_of(dp["matchup"]["batter"])
@@ -378,6 +413,19 @@ def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: l
             # 決勝点になるプレーでも、失策や四球などを「決勝打」にしない。
             is_hit = dp["result"].get("event") in ("Single", "Double", "Triple", "Home Run")
             items.append(("先制で決勝の一打" if first and is_hit else "決勝点", body))
+            event = dp['result'].get('event')
+            description = dp['result'].get('description', '').lower()
+            if event == 'Field Error':
+                subject = '相手の送球失策' if 'throwing error' in description else '相手の失策'
+                action = '決勝点'
+            elif event in ('Wild Pitch', 'Passed Ball'):
+                subject, action = ('相手の暴投' if event == 'Wild Pitch' else '相手の捕逸'), '決勝点'
+            else:
+                subject = who
+                action = hr_name(dp['result'].get('rbi') or 1) if event == 'Home Run' else EVENT_JP.get(event, event)
+            decisive_card = {'inning': inning_text(dp), 'subject': subject, 'action': action,
+                             'detail': measure_text(measure(dp)) if event == 'Home Run' else '',
+                             'event': event}
             if is_hit:
                 hero = (who, dp, first)
 
@@ -503,6 +551,7 @@ def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: l
         "voice": voice,
         "headline": headline,
         "game_pk": game["gamePk"],
+        "game_v4": {"score": inning_score(feed), "decisive": decisive_card},
         "game_date": game.get("gameDate"),
         "jp_first": bool(japanese),
     }

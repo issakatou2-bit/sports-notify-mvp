@@ -68,7 +68,8 @@ def daily_cases():
 
 def asset_cases():
     cases=[]
-    for spec in read('scripts/fixtures/v3-rules/assets.json')['topics']:
+    materials=read('scripts/fixtures/v3-rules/assets.json')['topics']+read('scripts/fixtures/v3-rules/game-v4.json')['topics']
+    for spec in materials:
         key=spec['key'];spec=copy.deepcopy(spec)
         with patch.dict(asset.LIST_TOPICS,{key:spec}):
             nar=asset.build_narration(key)
@@ -113,6 +114,34 @@ class V3Rules(unittest.TestCase):
         bad=r3.background(0,None)
         r3.record_box(bad,'text',(0,300,1000,1300),'はみ出し')
         self.assertTrue(rules.check_layout(bad))
+
+    def test_v4_cards_do_not_leave_200px_of_unused_space(self):
+        if r3.LOOK!='v4':return
+        targets=[case for case in self.cases if not case.get('spec') or case['spec'].get('game') or case['spec'].get('spotlight')]
+        for case in targets:
+            for index,draw in enumerate(case['frames']):
+                for t in (3,7,11,19):
+                    with self.subTest(slot=case['name'],screen=index,time=t):
+                        self.assertFalse(rules.check_spacing(draw(t)))
+        import asset_v4_cards as cards
+        spec=read('scripts/fixtures/v3-rules/game-v4.json')['topics'][-1]
+        for head in ('ほかの試合と比べると','試合','次の試合'):
+            body=dict(spec['items'])[head]
+            im=cards.item(3,spec,'山本の投球',head,body)
+            self.assertEqual(im.info['asset_v4']['font_size'],54)
+            self.assertFalse(rules.check_spacing(im))
+            if head=='次の試合':self.assertEqual(im.info['asset_v4']['number_size'],104)
+        # 枠だけを下まで延ばしても、内部が空なら失敗させる。
+        bad=r3.background(0,None)
+        r3.record_box(bad,'card',(72,350,940,1134))
+        r3.record_box(bad,'text',(100,380,800,434),'空きすぎる札')
+        self.assertTrue(rules.check_spacing(bad))
+        # 外札を縮めた後、元の右辺/下辺の線が余白に残らない。
+        import short_v4_cards as c
+        compact=c.canvas(3,'検査')
+        c.panel(compact,(72,340,940,1138));c.text(compact,100,378,'短い札',54)
+        c.balance_content(compact,3)
+        self.assertEqual(compact.getpixel((940,1100)),r3.background(3,None).getpixel((940,1100)))
 
     def test_all_pages_keep_complete_cards_and_text(self):
         rows=[('長い引用','「'+'全文を残して安全域でページを分ける。'*18+'」')]+[(f'DS 第{i}戦','2勝　大谷翔平・佐々木朗希・山本由伸') for i in range(1,6)]
@@ -177,6 +206,88 @@ class V3Rules(unittest.TestCase):
         spec=copy.deepcopy(next(c['spec'] for c in self.cases if c.get('spec',{}).get('spotlight')))
         spec['speech']['この試合の投球']='99奪三振でした。'
         self.assertTrue(rules.check_speech(spec,spec['items']))
+
+    def test_asset_v4_all_items_pages_and_players_fit_and_keep_material(self):
+        if r3.LOOK!='v4':return
+        import asset_v4_cards as cards
+        for spec in read('scripts/fixtures/v3-rules/game-v4.json')['topics']:
+            for i,(head,body) in enumerate(spec['items']):
+                total=cards.item_pages(spec,head,body)
+                for page in range(total):
+                    with self.subTest(topic=spec['key'],item=i,page=page):
+                        im=cards.item(3,spec,'試合の話題',head,body,page)
+                        self.assertFalse(rules.check_layout(im))
+                        self.assertEqual(im.info['asset_v4'].get('pages',1),total)
+                        if im.info['asset_v4']['kind']=='quote':
+                            self.assertEqual(im.info['asset_v4']['said'],body.strip('「」'))
+            for index,row in enumerate(spec.get('japanese') or []):
+                duration=20
+                weights=[len(r['name']+'が'+r['line']+'、') for r in spec['japanese'][:3]]
+                at=duration*(sum(weights[:index])+weights[index]*.5)/sum(weights)
+                im=cards.people(at,spec,spec['japanese'],'日本人選手','試合の話題')
+                self.assertFalse(rules.check_layout(im))
+                self.assertEqual(im.info['asset_v4']['name'],row['name'])
+        pairs=cards.stat_pairs('4回と3分の1を2失点')
+        self.assertEqual(pairs,[('4','回3分の1'),('2','失点')])
+        self.assertEqual(cards.stat_pairs('3分の1回を無失点'),[('1/3','回')])
+
+    def test_asset_v4_order_follows_the_unchanged_spoken_items(self):
+        if r3.LOOK!='v4':return
+        import asset_v4_cards as cards
+        spec=read('scripts/fixtures/v3-rules/game-v4.json')['topics'][0]
+        for start in range(0,len(spec['items']),2):
+            selected=spec['items'][start:start+2]
+            weights=[len(f'{h}。{b}。') for h,b in selected]
+            with patch.dict(r3._CAPTION,{'duration':20}):
+                for j,w in enumerate(weights):
+                    t=20*(sum(weights[:j])+w*.5)/sum(weights)
+                    im=r3.list_page(t,spec,spec['items'],start,len(selected),1,1,'試合の話題')
+                    self.assertEqual(im.info['asset_v4']['item'],start+j)
+
+    def test_linescore_keeps_unknown_bottom_and_rejects_missing_or_wrong_totals(self):
+        import ps_game_story as story
+        feed=read('scripts/fixtures/v3-rules/linescore-849826.json')
+        board=story.inning_score(feed)
+        self.assertEqual(board['innings'][-1]['home'],None)
+        self.assertEqual(board['home']['total'],4)
+        self.assertEqual(board['away']['total'],3)
+        for side in ('away','home'):
+            self.assertEqual(sum(i[side] or 0 for i in board['innings']),board[side]['total'])
+        bad=copy.deepcopy(feed);bad['liveData']['linescore']['teams']['home']['runs']=5
+        self.assertIsNone(story.inning_score(bad))
+        bad=copy.deepcopy(feed);bad['liveData']['linescore']['innings'][1]['away']={}
+        self.assertIsNone(story.inning_score(bad))
+        bad=copy.deepcopy(feed);bad['liveData']['linescore']['innings']=[]
+        self.assertIsNone(story.inning_score(bad))
+        if r3.LOOK=='v4':
+            import asset_v4_cards as cards
+            spec=read('scripts/fixtures/v3-rules/game-v4.json')['topics'][0]
+            spec['game_v4']['score']=None
+            im=cards.item(3,spec,'試合の話題',*spec['items'][0])
+            self.assertEqual(im.info['asset_v4']['kind'],'text')
+            self.assertFalse(rules.check_layout(im))
+            # 延長戦でも各回を消さず、2画面へ送る（数は固定検査材料）。
+            extra=copy.deepcopy(spec)
+            extra['game_v4']['score']=copy.deepcopy(board)
+            extra['game_v4']['score']['innings'] += [{'num':i,'away':0,'home':0} for i in (10,11,12)]
+            for page in range(2):
+                im=cards.score(3,extra,'試合の話題',page)
+                self.assertFalse(rules.check_layout(im))
+                self.assertEqual(im.info['asset_v4']['pages'],2)
+
+    def test_error_card_has_opponent_as_subject(self):
+        import asset_v4_cards as cards
+        self.assertEqual(cards.decisive({},'6回裏　打者の打球で相手の送球失策')['subject'],'相手の送球失策')
+        self.assertEqual(cards.decisive({},'6回裏　打者の打球で相手の失策')['subject'],'相手の失策')
+        import test_ps_game_story as fixed
+        import ps_game_story as story
+        f=fixed.feed(1,0)
+        play=fixed.play('bottom',6,'Field Error',0,0,1,'Munetaka Murakami')
+        play['result']['description']='Reaches on a throwing error.'
+        f['liveData']['plays']={'allPlays':[play],'scoringPlays':[0]}
+        f['liveData']['linescore']['teams']={'away':{'runs':0},'home':{'runs':1}}
+        spec=story.story(fixed.GAME,f,fixed.KANA,fixed.JP,{},[])
+        self.assertEqual(spec['game_v4']['decisive']['subject'],'相手の送球失策')
 
 
     def test_ticker_runs_on_one_program_clock(self):

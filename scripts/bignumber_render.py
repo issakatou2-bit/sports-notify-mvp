@@ -724,7 +724,11 @@ def scene(t, scene_spec, team_id=None):
         ranked_head = (f"{spec['rank']}位　" if spec.get('rank') else '')+spec.get('head','')
         rows = rows or [(ranked_head, spec.get('sub',''))]
         rows += [('', str(x)) for x in spec.get('notes', [])]
-        return common.frame(t, view, rows, spec.get('label') or '日本人選手の成績', spec.get('source') or SOURCE)
+        im=common.frame(t, view, rows, spec.get('label') or '日本人選手の成績', spec.get('source') or SOURCE)
+        if r3.LOOK=='v4':
+            from short_v4_cards import balance_content
+            balance_content(im,t)
+        return im
     im = r3.intro(t, view, spec.get('label') or '日本人選手の成績')
     r3.source(ImageDraw.Draw(im), spec.get('source') or SOURCE, r3.colors(spec.get('team_id'))[1])
     return im
