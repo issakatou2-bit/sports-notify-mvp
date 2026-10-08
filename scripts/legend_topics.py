@@ -36,6 +36,24 @@ MIN_PLAYERS = 1     # 1人でも出す。その1人の通算成績で1本ぶん�
 MAX_PLAYERS = 4     # 画面に並ぶ上限（generate_asset_video の描画に合わせる）
 
 
+
+# The MLB award season for these four players is the December election year.
+# The Hall identifies them as Class of 2022. Do not shift unrelated years.
+# https://baseballhall.org/news/six-candidates-elected-to-hall-of-fame-as-part-of-class-of-2022
+DECEMBER_2021_CLASS_2022 = frozenset({
+    "Jim Kaat", "Tony Oliva", "Gil Hodges", "Minnie Minoso",
+})
+
+
+def hof_label(player: dict) -> str:
+    year = player.get("hof_year")
+    if not year:
+        return ""
+    if str(year) == "2021" and player.get("name") in DECEMBER_2021_CLASS_2022:
+        return "2021年に選出、2022年に殿堂入り式典"
+    return "%s年に殿堂入り" % year
+
+
 def build(legends: dict) -> list:
     """{"topics": [...]} に入れる中身。材料が無ければ空。"""
     out = []
@@ -52,8 +70,9 @@ def build(legends: dict) -> list:
         items = []
         for p in players[:MAX_PLAYERS]:
             bits = []
-            if p.get("hof_year"):
-                bits.append("%s年に殿堂入り" % p["hof_year"])
+            year_label = hof_label(p)
+            if year_label:
+                bits.append(year_label)
             if p.get("line"):
                 bits.append(p["line"])
             items.append([p["name"], "。".join(bits)])
