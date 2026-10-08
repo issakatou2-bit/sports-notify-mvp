@@ -1,5 +1,6 @@
 """試合の話題・投手の話題のv4札。共通の字幕・帯・締めには触れない。"""
 import re
+from PIL import ImageDraw
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
@@ -113,12 +114,17 @@ def mixed_lines(value,size=54,number_size=None,width=R-L-48):
     """本文48〜56px、数字はOswald。実寸で折り、文を省かない。"""
     number_size=number_size or size
     result=[];row=[];w=0
-    for token in re.findall(r'\d+(?:\.\d+)?|[^\d]',common.screen_text(value)):
+    # カタカナの語・英語の語・漢字の続き（2字まで）は途中で切らない。行頭に句読点・小さい字を置かない
+    for token in re.findall(r'\d+(?:\.\d+)?|[ァ-ヴー・]+|[A-Za-z][A-Za-z.\-]*|[一-龥]{1,2}|[^\d]',common.screen_text(value)):
         numeric=bool(re.fullmatch(r'\d+(?:\.\d+)?',token))
         font=r3.num_font(number_size) if numeric else r3.font(size)
         tw=font.getlength(token)
         if token=='\n' or (row and w+tw>width):
-            result.append(row);row=[];w=0
+            carry=[]
+            # 行頭に句読点・閉じ括弧・小さい字を置かない: 前の1つを一緒に次の行へ送る
+            if token!='\n' and token[0] in '、。）」ゃゅょっャュョッー' and len(row)>1:
+                carry=[row.pop()]
+            result.append(row);row=carry;w=sum((r3.num_font(number_size) if n else r3.font(size)).getlength(t) for t,n in carry)
             if token=='\n':continue
         row.append((token,numeric));w+=tw
     if row:result.append(row)
@@ -142,11 +148,14 @@ def text_screen(t,spec,label,head,body,page=0):
     c.panel(im,(L,top,R,top+height))
     for i,row in enumerate(rows):
         x=L+24;y=top+28+i*lh
+        # 1字ずつ上端で揃えると「ー」が上へ浮く（10/8 試作「ポストシ¯ズン」）。行の下の線で揃える
+        base=y+number_size
+        d=ImageDraw.Draw(im)
         for token,numeric in row:
             size=number_size if numeric else 54
-            c.text(im,x,y+(number_size-54 if not numeric else 0),token,size,
-                   r3.GOLD if numeric else r3.INK,number=numeric)
-            x+=(r3.num_font(size) if numeric else r3.font(size)).getlength(token)
+            f=r3.num_font(size) if numeric else r3.font(size)
+            r3._text(d,(x,base),token,font=f,fill=r3.GOLD if numeric else r3.INK,anchor='ls')
+            x+=f.getlength(token)
     im.info['asset_v4']={'kind':'text','head':head,'body':body,'page':page,'pages':len(pages),
                         'font_size':54,'number_font':'Oswald','number_size':number_size}
     return finish(im,t,spec)
