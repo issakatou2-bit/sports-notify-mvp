@@ -43,7 +43,7 @@ def frames(spec):
             r3.set_program_clock(clock+t)
             with patch.dict(asset.LIST_TOPICS,{key:spec}):
                 im=asset.render_v3(t,kind,meta,spec,key)
-            errors=rules.check_layout(im)
+            errors=rules.check_layout(im)+rules.check_spacing(im)
             if errors:raise ValueError(f'{key}/{si}/{index}: {errors}')
             label=f'{si+1}.{index+1} '+(im.info.get('asset_v4',{}).get('head') or im.info.get('asset_v4',{}).get('name') or kind)
             images.append(im);labels.append(label)

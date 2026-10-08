@@ -115,6 +115,34 @@ class V3Rules(unittest.TestCase):
         r3.record_box(bad,'text',(0,300,1000,1300),'はみ出し')
         self.assertTrue(rules.check_layout(bad))
 
+    def test_v4_cards_do_not_leave_200px_of_unused_space(self):
+        if r3.LOOK!='v4':return
+        targets=[case for case in self.cases if not case.get('spec') or case['spec'].get('game') or case['spec'].get('spotlight')]
+        for case in targets:
+            for index,draw in enumerate(case['frames']):
+                for t in (3,7,11,19):
+                    with self.subTest(slot=case['name'],screen=index,time=t):
+                        self.assertFalse(rules.check_spacing(draw(t)))
+        import asset_v4_cards as cards
+        spec=read('scripts/fixtures/v3-rules/game-v4.json')['topics'][-1]
+        for head in ('ほかの試合と比べると','試合','次の試合'):
+            body=dict(spec['items'])[head]
+            im=cards.item(3,spec,'山本の投球',head,body)
+            self.assertEqual(im.info['asset_v4']['font_size'],54)
+            self.assertFalse(rules.check_spacing(im))
+            if head=='次の試合':self.assertEqual(im.info['asset_v4']['number_size'],104)
+        # 枠だけを下まで延ばしても、内部が空なら失敗させる。
+        bad=r3.background(0,None)
+        r3.record_box(bad,'card',(72,350,940,1134))
+        r3.record_box(bad,'text',(100,380,800,434),'空きすぎる札')
+        self.assertTrue(rules.check_spacing(bad))
+        # 外札を縮めた後、元の右辺/下辺の線が余白に残らない。
+        import short_v4_cards as c
+        compact=c.canvas(3,'検査')
+        c.panel(compact,(72,340,940,1138));c.text(compact,100,378,'短い札',54)
+        c.balance_content(compact,3)
+        self.assertEqual(compact.getpixel((940,1100)),r3.background(3,None).getpixel((940,1100)))
+
     def test_all_pages_keep_complete_cards_and_text(self):
         rows=[('長い引用','「'+'全文を残して安全域でページを分ける。'*18+'」')]+[(f'DS 第{i}戦','2勝　大谷翔平・佐々木朗希・山本由伸') for i in range(1,6)]
         spec={'heading':'全画面の検査'};pages=common.paginate(spec,rows)
@@ -236,7 +264,7 @@ class V3Rules(unittest.TestCase):
             spec=read('scripts/fixtures/v3-rules/game-v4.json')['topics'][0]
             spec['game_v4']['score']=None
             im=cards.item(3,spec,'試合の話題',*spec['items'][0])
-            self.assertEqual(im.info['asset_v4']['kind'],'stats')
+            self.assertEqual(im.info['asset_v4']['kind'],'text')
             self.assertFalse(rules.check_layout(im))
             # 延長戦でも各回を消さず、2画面へ送る（数は固定検査材料）。
             extra=copy.deepcopy(spec)

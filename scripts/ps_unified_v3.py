@@ -128,8 +128,12 @@ def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
         return im
     page_rows=rows(card)
     pages=common.paginate(view,page_rows)
-    return common.frame(t, view, page_rows, card.get('label','PS'), '出典：'+card.get('source_label','説明欄'),
-                        page_seconds=duration/max(1,len(pages)))
+    im=common.frame(t, view, page_rows, card.get('label','PS'), '出典：'+card.get('source_label','説明欄'),
+                    page_seconds=duration/max(1,len(pages)))
+    if r3.LOOK=='v4':
+        from short_v4_cards import balance_content
+        balance_content(im,t)
+    return im
 
 
 def check_layout(card):

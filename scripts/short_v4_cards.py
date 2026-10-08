@@ -68,9 +68,56 @@ def canvas(t, label):
 
 
 def finish(im,t,ticker='',source='',once=False):
+    if r3.LOOK=='v4':balance_content(im,t)
     r3.ticker(im,t,ticker,once=once)
     r3.source(ImageDraw.Draw(im),source,r3.colors(None)[1])
     r3.presenter(im,t)
+    return im
+
+
+def balance_content(im,t):
+    """中身を描いた後、札内の余白を詰め、短い内容は安全域の中央へ。共通の帯等は触らない。"""
+    import v3_rules as rules
+    entries=im.info.get('v3_layout',[])
+    blank=None
+    def backdrop():
+        nonlocal blank
+        if blank is None:blank=r3.background(t,None)
+        return blank
+    # 大きな外札の下だけが空いている場合も、外枠の高さで検査を逃がさない。
+    for card in [e for e in entries if e['role']=='card']:
+        x,y,right,bottom=card['box']
+        if bottom-y<200:continue
+        children=[e for e in entries if e is not card and e['role'] not in ('header','source','caption','ticker')
+                  and x<=e['box'][0] and y<=e['box'][1] and e['box'][2]<=right and e['box'][3]<=bottom]
+        end=max((e['box'][3] for e in children),default=y)
+        if bottom-end<200:continue
+        new_bottom=round(end+28)
+        if new_bottom<=y:continue
+        # Pillowの矩形描画は右/下端を含む。cropの除外端を1px広げ、旧枠線も消す。
+        box=(round(x),round(y),round(right)+1,round(bottom)+1);saved=im.crop(box)
+        im.paste(backdrop().crop(box),box[:2])
+        ImageDraw.Draw(im).rounded_rectangle((x,y,right,new_bottom),radius=22,
+                                             fill=r3.colors(None)[0],outline=r3.colors(None)[1],width=2)
+        # 中身と上辺/左右辺は原画を保ち、下辺だけを新しい位置にする。
+        height=max(0,new_bottom-round(y)-22)
+        im.paste(saved.crop((0,0,saved.width,height)),(round(x),round(y)))
+        card['box']=[x,y,right,new_bottom]
+    moving,outer=rules.content_group(im)
+    if not moving:return im
+    top=min(e['box'][1] for e in moving);bottom=max(e['box'][3] for e in moving)
+    if r3.CONTENT_BOTTOM-bottom<200:return im
+    shift=round((320+r3.CONTENT_BOTTOM-top-bottom)/2)
+    if len(outer)>1 and r3.CONTENT_BOTTOM-(bottom+shift)>=200:
+        shift=round(r3.CONTENT_BOTTOM-180-bottom)
+    shift=max(0,min(shift,round(r3.CONTENT_BOTTOM-bottom)))
+    if not shift:return im
+    x=max(0,int(min(e['box'][0] for e in moving))-3);right=min(im.width,int(max(e['box'][2] for e in moving))+4)
+    box=(x,int(top),right,int(bottom)+1);saved=im.crop(box)
+    im.paste(backdrop().crop(box),box[:2]);im.paste(saved,(x,box[1]+shift))
+    for e in moving:
+        a,b,c,d=e['box'];e['box']=[a,b+shift,c,d+shift]
+    im.info['v4_content_shift']=shift
     return im
 
 

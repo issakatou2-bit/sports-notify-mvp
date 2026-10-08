@@ -109,7 +109,51 @@ def person_rows(body):
     return [p.strip('　 ') for p in parts if p.strip('　 ')]
 
 
+def mixed_lines(value,size=54,number_size=None,width=R-L-48):
+    """本文48〜56px、数字はOswald。実寸で折り、文を省かない。"""
+    number_size=number_size or size
+    result=[];row=[];w=0
+    for token in re.findall(r'\d+(?:\.\d+)?|[^\d]',common.screen_text(value)):
+        numeric=bool(re.fullmatch(r'\d+(?:\.\d+)?',token))
+        font=r3.num_font(number_size) if numeric else r3.font(size)
+        tw=font.getlength(token)
+        if token=='\n' or (row and w+tw>width):
+            result.append(row);row=[];w=0
+            if token=='\n':continue
+        row.append((token,numeric));w+=tw
+    if row:result.append(row)
+    return result or [[]]
+
+
+def text_pages(head,body):
+    number_size=104 if head=='次の試合' else 54
+    wrapped=mixed_lines(body,54,number_size)
+    line_height=number_size+18
+    capacity=max(1,(r3.CONTENT_BOTTOM-348-56)//line_height)
+    return [wrapped[i:i+capacity] for i in range(0,len(wrapped),capacity)],number_size,line_height
+
+
+def text_screen(t,spec,label,head,body,page=0):
+    im=c.canvas(t,label);c.text(im,L,262,head,44,width=R-L)
+    pages,number_size,lh=text_pages(head,body);rows=pages[min(page,len(pages)-1)]
+    height=56+len(rows)*lh
+    # 安全域の中央に、内容に合う高さの札を置く。
+    top=round((348+r3.CONTENT_BOTTOM-height)/2)
+    c.panel(im,(L,top,R,top+height))
+    for i,row in enumerate(rows):
+        x=L+24;y=top+28+i*lh
+        for token,numeric in row:
+            size=number_size if numeric else 54
+            c.text(im,x,y+(number_size-54 if not numeric else 0),token,size,
+                   r3.GOLD if numeric else r3.INK,number=numeric)
+            x+=(r3.num_font(size) if numeric else r3.font(size)).getlength(token)
+    im.info['asset_v4']={'kind':'text','head':head,'body':body,'page':page,'pages':len(pages),
+                        'font_size':54,'number_font':'Oswald','number_size':number_size}
+    return finish(im,t,spec)
+
+
 def stat_screen(t,spec,label,head,body,page=0):
+    if not stat_pairs(body):return text_screen(t,spec,label,head,body,page)
     im=c.canvas(t,label);c.text(im,L,262,head,44,width=R-L)
     parts=person_rows(body) if head=='先発' else body.split('　') if head=='本塁打' else [body]
     if len(parts)>1:
@@ -149,6 +193,7 @@ def item_pages(spec,head,body):
         return (len(spec['game_v4']['score']['innings'])+8)//9
     if body.startswith('「') or '見出しから' in head or '投稿から' in head:
         return len(c.quote_pages({'said':body.strip('「」')})[0])
+    if not stat_pairs(body):return len(text_pages(head,body)[0])
     return max(1,(len(stat_pairs(body))+9)//10)
 
 
