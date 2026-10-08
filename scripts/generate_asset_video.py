@@ -639,6 +639,10 @@ def build_narration(topic: str) -> dict:
             for seg in narration['segments']:
                 if seg['kind']=='outro':
                     seg['text']=r3.OUTRO_TEXT
+            if r3.LOOK=='v4':
+                from content_v4 import ClubMentions, affiliations
+                tracker=ClubMentions(affiliations(s['text'] for s in narration['segments']))
+                for seg in narration['segments']:seg['text']=tracker.text(seg['text'])
         return narration
     if topic == "mlb_venue":
         return _narration_venue()
@@ -1660,19 +1664,29 @@ def render_v2(p, kind, meta, spec, topic):
 def render_v3(t, kind, meta, spec, topic):
     """新デザイン「電光掲示板」（review_render_v3）。材料の style="v3" のときだけ。"""
     import review_render_v3 as r3
+    def decorate(im):
+        if r3.LOOK=='v4':
+            from short_v4_cards import ensure_team_badges
+            im.info['v4_ticker_text']=(spec.get('v3') or {}).get('ticker','')
+            ensure_team_badges(im)
+        return im
+    if r3.LOOK=='v4':
+        from content_v4 import asset_display
+        material_items=list_items(meta.get('topic',topic))
+        spec=asset_display(dict(spec,items=material_items),_intro_text(topic,material_items))
     tag = spec.get("kind_label") or ("PSの話題" if spec.get("story") else "シーズンまとめ")
     if kind == "intro":
-        return r3.intro(t, spec, tag)
+        return decorate(r3.intro(t, spec, tag))
     if kind == "outro":
         # 共通の締め（毎日の番組表・チャンネル登録・音声の表記）
         return r3.outro(t, spec, spec.get("lineup_kind", ""), VOICE_CREDIT + "　データ: MLB Stats API")
     if kind == "people":
-        return r3.people(t, spec, spec.get(meta.get("group", "japanese")) or [],
-                         meta.get("heading", "日本人選手"), tag)
-    items = list_items(meta.get("topic", topic))
+        return decorate(r3.people(t, spec, spec.get(meta.get("group", "japanese")) or [],
+                         meta.get("heading", "日本人選手"), tag))
+    items = list(spec.get('items') or []) if r3.LOOK=='v4' else list_items(meta.get("topic", topic))
     start = meta.get("start", 0)
-    return r3.list_page(t, spec, items, start, meta.get("count", 1),
-                        start // 2 + 1, (len(items) + 1) // 2, tag)
+    return decorate(r3.list_page(t, spec, items, start, meta.get("count", 1),
+                        start // 2 + 1, (len(items) + 1) // 2, tag))
 
 
 BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"

@@ -31,7 +31,6 @@ def intro(t, spec, label):
     im = c.canvas(t, label)
     v = spec.get('v3') or {}
     c.text(im, L, 262, v.get('who') or spec.get('label', ''), 44, width=R-L)
-    if spec.get('abbr'):c.team_badge(im,L,330,spec['abbr'],spec.get('team_id'))
     big = str(v.get('big') or '')
     if big:
         c.stat(im,L,430,big,v.get('unit',''),size=300,width=R-L,unit_size=64)
@@ -60,16 +59,25 @@ def score(t,spec,label,page=0):
     winner='away' if board['away']['total']>board['home']['total'] else 'home'
     c.panel(im,(L,344,R,850))
     x0=L+132;cell=(R-x0-90-20)/len(chosen);total_x=R-84
+    d=ImageDraw.Draw(im);grid=(79,92,108)
+    d.rectangle((L+3,360,R-3,438),fill=(32,47,61))
+    for n,side in enumerate(('away','home')):
+        fill=(44,48,48) if side==winner else ((19,32,44) if n%2==0 else (25,39,51))
+        d.rectangle((L+3,439+n*182,R-3,620+n*182),fill=fill)
+    for i in range(len(chosen)+1):
+        x=x0-10+i*cell;d.line((x,360,x,802),fill=grid,width=1)
+    for y in (438,620,802):d.line((L+3,y,R-3,y),fill=grid,width=1)
+    d.line((total_x-12,360,total_x-12,802),fill=r3.GOLD,width=3)
+    im.info['v4_score_grid']={'columns':len(chosen)+1,'rows':2,'winner':winner}
     for i,row in enumerate(chosen):
         c.text(im,x0+i*cell,386,row['num'],30,r3.GOLD,number=True,width=cell-3)
     c.text(im,total_x,386,'計',30,width=66)
     for n,side in enumerate(('away','home')):
         row=board[side];y=464+n*182;col=r3.GOLD if side==winner else r3.INK
-        c.team_badge(im,L+20,y,row['abbr'],row['id'],100)
         for i,inn in enumerate(chosen):
             c.text(im,x0+i*cell,y+10,'—' if inn[side] is None else inn[side],46,col,number=inn[side] is not None,width=cell-3)
         c.text(im,total_x,y-4,row['total'],76,col,number=True,width=66)
-        c.text(im,L+24,y+76,row['name'],32,col,width=R-L-48)
+        c.text(im,L+24,y+76,row['name'],32,col,width=R-L-48,team_id=row['id'])
     c.tag(im,L,886,board[winner]['name']+'の勝ち',r3.GOLD,r3.DARK_INK,34,width=R-L)
     result=dict(spec.get('items') or []).get('試合の結果','')
     series=result.split('　')[-1]
@@ -119,6 +127,9 @@ def mixed_lines(value,size=54,number_size=None,width=R-L-48):
         numeric=bool(re.fullmatch(r'\d+(?:\.\d+)?',token))
         font=r3.num_font(number_size) if numeric else r3.font(size)
         tw=font.getlength(token)
+        import notability_engine as ne
+        named=next((tid for tid,name in ne.MLB_TEAM_NAME_JP.items() if token==name),None)
+        if named:tw+=c.inline_badge_width(named,size)+12
         if token=='\n' or (row and w+tw>width):
             carry=[]
             # 行頭に句読点・閉じ括弧・小さい字を置かない: 前の1つを一緒に次の行へ送る
@@ -154,8 +165,11 @@ def text_screen(t,spec,label,head,body,page=0):
         for token,numeric in row:
             size=number_size if numeric else 54
             f=r3.num_font(size) if numeric else r3.font(size)
-            r3._text(d,(x,base),token,font=f,fill=r3.GOLD if numeric else r3.INK,anchor='ls')
+            c.text(im,x,base+f.getbbox(token,anchor='ls')[1],token,size,r3.GOLD if numeric else r3.INK,number=numeric)
             x+=f.getlength(token)
+            import notability_engine as ne
+            tid=next((tid for tid,name in ne.MLB_TEAM_NAME_JP.items() if token==name),None)
+            if tid:x+=c.inline_badge_width(tid,size)+12
     im.info['asset_v4']={'kind':'text','head':head,'body':body,'page':page,'pages':len(pages),
                         'font_size':54,'number_font':'Oswald','number_size':number_size}
     return finish(im,t,spec)
@@ -172,8 +186,7 @@ def stat_screen(t,spec,label,head,body,page=0):
             import notability_engine as ne
             team=next(((tid,name) for tid,name in ne.MLB_TEAM_NAME_JP.items() if title.startswith(name)),None)
             if team:
-                c.team_badge(im,L+24,y+26,ne.MLB_TEAM_ABBR.get(team[0],''),int(team[0]))
-                c.text(im,L+144,y+30,title,36,width=R-L-168)
+                c.text(im,L+24,y+30,title,36,width=R-L-48,team_id=team[0])
             else:c.text(im,L+24,y+26,title,40,width=R-L-48)
             pairs=stat_pairs(part)
             if pairs:c.stat_cards(im,pairs,y+128,height=156)
@@ -187,11 +200,20 @@ def stat_screen(t,spec,label,head,body,page=0):
         pairs=stat_pairs(body);values=[pairs[i:i+10] for i in range(0,len(pairs),10)] or [[]]
         pages=len(values);selected=values[min(page,pages-1)]
         # 名前や説明を消さず、材料の行も残す。
-        y=block(im,body,382,40)
+        title=body.split('（')[0].strip() if head=='勝ち投手' else head
+        y=block(im,title,382,40)
+        if head=='勝ち投手' and spec.get('team_id'):
+            import notability_engine as ne
+            c.text(im,L+24,444,ne.MLB_TEAM_NAME_JP[str(spec['team_id'])],34,width=R-L-48,team_id=spec['team_id'])
+            y=492
         if selected:
             # 主要な整数を大きく、全成績を1枚ずつ。6個以上も安全域の2段へ。
             hero=next(((n,u) for unit in ('奪三振','安打','本塁打','打点','回','キロ') for n,u in selected if u==unit),selected[0])
-            if y<=556:c.stat(im,L+24,574,*hero,size=174,width=R-L-48,unit_size=44)
+            if y<=556:
+                c.stat(im,L+24,574,*hero,size=174,width=R-L-48,unit_size=44)
+                selected=c.without_big(selected,hero)
+            im.info['v4_stat_tiles']=selected
+            im.info['v4_big_stat']=hero
             for k in range(0,len(selected),5):c.stat_cards(im,selected[k:k+5],810+(k//5)*164,height=148)
     im.info['asset_v4']={'kind':'stats','head':head,'body':body,'stats':stat_pairs(body),'page':page,'pages':pages}
     return finish(im,t,spec)
@@ -212,7 +234,8 @@ def item(t,spec,label,head,body,page=0):
         if image is not None:return image
     if head in ('決勝点','先制で決勝の一打'):
         v=decisive(spec,body);im=c.canvas(t,label);c.text(im,L,262,head,44,width=R-L)
-        c.tag(im,L,350,v['inning'],size=34)
+        c.panel(im,(L,344,R,1134))
+        c.tag(im,L+24,370,v['inning'],size=34)
         y=block(im,v['subject'],464,64,r3.GOLD)
         y=block(im,v['action'],y+44,68)
         if v.get('detail'):block(im,v['detail'],y+58,32)
@@ -267,9 +290,12 @@ def people(t,spec,rows,heading,label):
     team=next(((tid,name) for tid,name in ne.MLB_TEAM_NAME_JP.items() if name in line),None)
     im=c.canvas(t,label);c.text(im,L,262,heading,40,width=R-L)
     c.panel(im,(L,340,R,1134));c.text(im,L+24,378,row.get('name',''),64,width=R-L-48)
-    if team:c.team_badge(im,L+24,470,ne.MLB_TEAM_ABBR.get(team[0],''),int(team[0]))
+    if team:c.text(im,L+24,470,team[1],34,width=R-L-48,team_id=team[0])
     if big:c.stat(im,L+24,550,*big,size=236,width=R-L-48,unit_size=54)
     else:block(im,line,560,46)
-    if pairs:c.stat_cards(im,pairs,930,height=170)
+    tiles=c.without_big(pairs,big)
+    if tiles:c.stat_cards(im,tiles,930,height=170)
+    im.info['v4_stat_tiles']=tiles
+    im.info['v4_big_stat']=big
     im.info['asset_v4']={'kind':'people','name':row.get('name',''),'big':big,'stats':pairs,'row':i}
     return finish(im,t,spec,'出典: MLB公式（Stats API）')

@@ -125,13 +125,19 @@ def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
     if card.get('card_index') is None and not card.get('outro'):
         im = r3.intro(t, view, card.get('label','PS'))
         r3.source(r3.ImageDraw.Draw(im), '出典：'+card.get('source_label','説明欄'), r3.colors(view['team_id'])[1])
+        if r3.LOOK=='v4':
+            from short_v4_cards import balance_content, ensure_team_badges
+            im.info['v4_ticker_text']=view['v3'].get('ticker','')
+            ensure_team_badges(im);balance_content(im,t)
         return im
     page_rows=rows(card)
     pages=common.paginate(view,page_rows)
     im=common.frame(t, view, page_rows, card.get('label','PS'), '出典：'+card.get('source_label','説明欄'),
                     page_seconds=duration/max(1,len(pages)))
     if r3.LOOK=='v4':
-        from short_v4_cards import balance_content
+        from short_v4_cards import balance_content, ensure_team_badges
+        im.info['v4_ticker_text']=view['v3'].get('ticker','')
+        ensure_team_badges(im)
         balance_content(im,t)
     return im
 

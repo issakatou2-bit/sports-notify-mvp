@@ -11,17 +11,58 @@ L, R = r3.LEFT, r3.SAFE_RIGHT
 TONE_COLORS = {'称賛': (40, 108, 80), '批判': (163, 56, 62), '中立': (75, 83, 98)}
 
 
-def text(im, x, y, value, size=40, color=None, width=None, number=False):
+def text(im, x, y, value, size=40, color=None, width=None, number=False, team_id=None):
     """文字の実際の上端を指定し、同じ実寸を安全域検査へ記録する。"""
     value = str(value)
+    from team_names import team_names_jp
+    import notability_engine as ne
+    value=team_names_jp(value) if not number else value
+    names={name:str(tid) for tid,name in ne.MLB_TEAM_NAME_JP.items()}
+    pattern='('+ '|'.join(re.escape(n) for n in sorted(names,key=len,reverse=True))+')'
+    runs=re.split(pattern,value) if not number else [value]
+    if team_id is not None and any(names[v]!=str(team_id) for v in runs if v in names):
+        raise ValueError('材料のteam_idと球団名が一致しません')
     font = r3.num_font if number else r3.font
-    while width and font(size).getlength(value) > width and size > 18:
+    def advance(s):
+        return font(s).getlength(value)+sum(inline_badge_width(names[v],s)+12 for v in runs if v in names)
+    while width and advance(size) > width and size > 18:
         size -= 2
-    if width and font(size).getlength(value) > width:
+    if width and advance(size) > width:
         raise ValueError('v4の文字が札の幅に入りません: '+value)
     f = font(size)
     dy = f.getbbox(value)[1]
-    r3._text(ImageDraw.Draw(im), (x, y-dy), value, font=f, fill=color or r3.INK)
+    for run in runs:
+        if not run:continue
+        if run in names:
+            tid=str(team_id) if team_id is not None else names[run]
+            height=f.getbbox(run)[3]-f.getbbox(run)[1]
+            inline_badge(im,x,y+f.getbbox(run)[1]-dy,tid,size,height)
+            x+=inline_badge_width(tid,size)+12
+        r3._text(ImageDraw.Draw(im),(x,y-dy),run,font=f,fill=color or r3.INK)
+        entry=im.info['v3_layout'][-1]
+        entry.update(v4_font=size,v4_color=color or r3.INK)
+        if run in names:entry['team_id']=tid
+        x+=f.getlength(run)
+
+
+def inline_badge_width(tid,size):
+    import notability_engine as ne
+    return round(r3.font(max(14,round(size*.55))).getlength(ne.MLB_TEAM_ABBR[str(tid)]))+16
+
+
+def inline_badge(im,x,y,tid,size,height):
+    """球団名の文字と同じ高さ、同じ行。材料のIDと結び付けて記録する。"""
+    import notability_engine as ne
+    from PIL import ImageColor
+    tid=str(tid);base=ImageColor.getrgb(ne.MLB_TEAM_COLOR[tid])
+    second=ImageColor.getrgb(r3.TEAM_SECONDARY_COLORS.get(tid,'#C4CED4'))
+    width=inline_badge_width(tid,size);box=[x,y,x+width,y+height]
+    d=ImageDraw.Draw(im);d.rounded_rectangle(box,radius=6,fill=base,outline=second,width=2)
+    r3.record_box(im,'team_badge',box)
+    f=r3.font(max(14,round(size*.55)));abbr=ne.MLB_TEAM_ABBR[tid]
+    dy=f.getbbox(abbr)[1];h=f.getbbox(abbr)[3]-dy
+    r3._text(d,(x+8,y+(height-h)/2-dy),abbr,font=f,fill=badge_ink(base))
+    im.info.setdefault('v4_badges',[]).append(dict(team_id=tid,abbr=abbr,base=base,ink=badge_ink(base),box=box,inline=True))
 
 
 def lines(value, size, width):
@@ -45,8 +86,11 @@ def lines(value, size, width):
 def panel(im, box, fill=None, outline=None):
     if not (L <= box[0] < box[2] <= R and r3.CONTENT_TOP <= box[1] < box[3] <= r3.CONTENT_BOTTOM):
         raise ValueError('v4の札が安全域外です: '+str(box))
-    ImageDraw.Draw(im).rounded_rectangle(box, radius=22, fill=fill or r3.colors(None)[0],
-                                        outline=outline or r3.colors(None)[1], width=2)
+    d=ImageDraw.Draw(im);x,y,right,bottom=box
+    d.rounded_rectangle(box,radius=22,fill=(5,12,20))
+    d.rounded_rectangle((x,y,right-2,bottom-4),radius=22,fill=fill or r3.colors(None)[0],
+                        outline=outline or r3.colors(None)[1],width=2)
+    d.line((x+22,y+7,min(right-22,x+100),y+7),fill=outline or r3.GOLD,width=3)
     r3.record_box(im, 'card', box)
 
 
@@ -68,10 +112,13 @@ def canvas(t, label):
 
 
 def finish(im,t,ticker='',source='',once=False):
-    if r3.LOOK=='v4':balance_content(im,t)
     r3.ticker(im,t,ticker,once=once)
     r3.source(ImageDraw.Draw(im),source,r3.colors(None)[1])
     r3.presenter(im,t)
+    if r3.LOOK=='v4':
+        im.info['v4_ticker_text']=ticker
+        ensure_team_badges(im)
+        balance_content(im,t)
     return im
 
 
@@ -117,6 +164,9 @@ def balance_content(im,t):
     im.paste(backdrop().crop(box),box[:2]);im.paste(saved,(x,box[1]+shift))
     for e in moving:
         a,b,c,d=e['box'];e['box']=[a,b+shift,c,d+shift]
+    for badge in im.info.get('v4_badges',[]):
+        a,b,c,d=badge['box']
+        if top<=b and d<=bottom:badge['box']=[a,b+shift,c,d+shift]
     im.info['v4_content_shift']=shift
     return im
 
@@ -133,8 +183,49 @@ def stat(im,x,y,value,unit,size=96,color=None,width=280,unit_size=30):
 
 
 def team_badge(im,x,y,abbr,tid=None,width=110):
-    base,second,_=r3.colors(tid)
+    import notability_engine as ne
+    from PIL import ImageColor
+    base=ImageColor.getrgb(ne.MLB_TEAM_COLOR.get(str(tid),'#102833'))
+    second=ImageColor.getrgb(r3.TEAM_SECONDARY_COLORS.get(str(tid),'#C4CED4'))
     return club_tag(im,x,y,abbr,base,second,width)
+
+
+def mini_badge(im,x,y,tid):
+    import notability_engine as ne
+    from PIL import ImageColor
+    abbr=ne.MLB_TEAM_ABBR[str(tid)]
+    base=ImageColor.getrgb(ne.MLB_TEAM_COLOR[str(tid)])
+    second=ImageColor.getrgb(r3.TEAM_SECONDARY_COLORS.get(str(tid),'#C4CED4'));ink=badge_ink(base)
+    box=[x,y,x+70,y+38]
+    panel(im,box,base,second);text(im,x+10,y+8,abbr,20,ink,width=50)
+    im.info.setdefault('v4_badges',[]).append(dict(abbr=abbr,base=base,ink=ink,box=box))
+
+
+def ensure_team_badges(im):
+    """旧札の本文行だけをインライン化。帯や空きから所属を推測しない。"""
+    import v3_rules as rules
+    if r3.LOOK!='v4' or im.info.get('v3_outro'):return im
+    entries=im.info.get('v3_layout',[])
+    targets=[]
+    for tid,entry in rules.team_mentions(im):
+        if 'team_id' not in entry and not any(entry is old for old in targets):targets.append(entry)
+    for entry in targets:
+        x,y,right,bottom=entry['box'];value=entry['text']
+        containers=[e['box'] for e in entries if e['role']=='card' and e['box'][0]<=x and e['box'][1]<=y and right<=e['box'][2] and bottom<=e['box'][3]]
+        edge=min((b[2]-12 for b in containers),default=R)
+        neighbors=[e['box'][0]-12 for e in entries if e is not entry and e['role']=='text' and e['box'][0]>right and abs(e['box'][1]-y)<8]
+        if neighbors:edge=min(edge,min(neighbors))
+        # 元の行の書体サイズと色を実画素から保つ。札の幅はこの行の中で予約する。
+        size=entry.get('v4_font') or min(range(18,85),key=lambda n:abs((r3.font(n).getbbox(value)[3]-r3.font(n).getbbox(value)[1])-(bottom-y)))
+        bg=im.getpixel((max(0,int(x)-2),max(0,int(y)-2)))
+        from collections import Counter
+        crop=im.crop((int(x),int(y),int(right)+1,int(bottom)+1))
+        pixels=Counter(crop.get_flattened_data() if hasattr(crop,'get_flattened_data') else crop.getdata())
+        color=entry.get('v4_color') or next((rgb for rgb,count in pixels.most_common() if sum(abs(a-b) for a,b in zip(rgb,bg))>100),r3.INK)
+        ImageDraw.Draw(im).rectangle((x,y,right,bottom),fill=bg)
+        entries.remove(entry)
+        text(im,x,y,value,size,color,width=max(40,edge-x))
+    return im
 
 
 def contrast(a,b):
@@ -155,7 +246,7 @@ def club_tag(im,x,y,abbr,base,second,width=110):
     w=tag(im,x,y,abbr,base,ink,28,width)
     # 色は帯/枠へ残し、略称の字には明暗のコントラストを使う。
     ImageDraw.Draw(im).rounded_rectangle((x,y,x+w,y+54),radius=22,outline=second,width=2)
-    im.info.setdefault('v4_badges',[]).append({'abbr':abbr,'base':base,'ink':ink})
+    im.info.setdefault('v4_badges',[]).append({'abbr':abbr,'base':base,'ink':ink,'box':[x,y,x+w,y+54]})
     return w
 
 
@@ -166,6 +257,21 @@ def stat_values(headline):
             re.finditer(r'(?<![\d.])('+number+r')('+units+r')|('+units+r')('+number+r')(?![\d.])',str(headline))]
 
 
+def without_big(values,big):
+    """主数字と同じ成績を小札に繰り返さない。投球回の表記揺れも照合。"""
+    def key(pair):
+        from fractions import Fraction
+        n,u=map(str,pair)
+        if u.startswith('回3分の'):
+            return (Fraction(n)+Fraction(int(u[-1]),3),'回')
+        if u=='回' and re.fullmatch(r'\d+\.[12]',n):
+            whole,part=n.split('.')
+            return (Fraction(whole)+Fraction(int(part),3),'回')
+        return (Fraction(n),u)
+    if not big or not big[0]:return values
+    return [p for p in values if key(p)!=key(big)]
+
+
 def stat_cards(im,values,y,height=148):
     if not values:return
     gap=14;columns=min(5,len(values));w=(R-L-48-gap*(columns-1))//columns
@@ -173,20 +279,31 @@ def stat_cards(im,values,y,height=148):
         x=L+24+i*(w+gap)
         panel(im,(x,y,x+w,y+height))
         text(im,x+16,y+14,number,76,r3.GOLD,width=w-32,number=True)
+        ImageDraw.Draw(im).line((x+16,y+height-60,x+w-16,y+height-60),fill=r3.GOLD,width=1)
         text(im,x+16,y+height-46,unit,28,width=w-32)
 
 
 def cover(t,spec):
     im=canvas(t,spec.get('label') or '日本人選手の成績')
-    roster=spec['roster'];text(im,L,264,'出場した日本人選手',48,width=R-L)
-    stat(im,L+30,348,len(roster),'人',208,width=R-L-60,unit_size=68)
-    pages=max(1,(len(roster)+7)//8)
+    roster=spec['roster'];text(im,L,264,'出場した日本人選手',48,width=R-L-180)
+    stat(im,R-164,258,len(roster),'人',122,width=164,unit_size=40)
+    pages=max(1,(len(roster)+6)//7)
     page=min(pages-1,int(max(0,t)/max(.1,spec.get('dur',8)/pages)))
-    for i,row in enumerate(roster[page*8:page*8+8]):
-        w=(R-L-18)//2;x=L+(i%2)*(w+18);y=610+(i//2)*128
-        panel(im,(x,y,x+w,y+112))
-        text(im,x+18,y+18,row['name'],36,width=w-36)
-        team_badge(im,x+18,y+58,row['abbr'],row.get('team_id'),100)
+    for i,row in enumerate(roster[page*7:page*7+7]):
+        large=i<3;rank=row['rank'];w=R-L if large else (R-L-18)//2
+        x=L if large else L+((i-3)%2)*(w+18)
+        y=410+i*126 if large else 800+((i-3)//2)*158
+        h=114 if large else 142
+        panel(im,(x,y,x+w,y+h),outline=r3.GOLD if rank==1 else None)
+        primary,secondary,_=r3.colors(row.get('team_id'))
+        ImageDraw.Draw(im).rounded_rectangle((x+3,y+18,x+11,y+h-18),radius=4,fill=secondary)
+        text(im,x+24,y+18,rank,60 if large else 38,r3.GOLD,number=True,width=60)
+        bx=x+92 if large else x+72
+        team_badge(im,bx,y+20,row['abbr'],row.get('team_id'),90)
+        text(im,bx+102,y+22,row['name'],46 if large else 34,width=w-(bx-x)-124)
+        if row.get('big'):
+            stat(im,x+w-240 if large else x+24,y+65 if large else y+82,
+                 row['big'],row.get('unit',''),54 if large else 42,width=216,unit_size=24)
     im.info['v4_roster']={'names':[r['name'] for r in roster],'page':page,'pages':pages}
     return finish(im,t,spec.get('ticker',''),spec.get('source') or '出典：MLB公式（Stats API）')
 
@@ -198,18 +315,17 @@ def player_detail(t,spec,player):
     text(im,L+26,282,f'勝利貢献 第{player["rank"]}位',34,r3.GOLD,width=R-L-52)
     text(im,L+26,342,player['name'],60,width=R-L-52)
     x=L+26
-    if player['abbr']:x+=team_badge(im,x,424,player['abbr'],player.get('team_id'))+20
-    text(im,x,434,player.get('team_jp',''),34,width=R-x-24)
+    text(im,x,434,player.get('team_jp',''),34,width=R-x-24,team_id=player.get('team_id'))
     big=player.get('big','');unit=player.get('unit','')
     if big:
         stat(im,L+34,508,big,unit,172,width=R-L-80,unit_size=54)
     y=730 if big else 528
-    values=stat_values(player.get('headline',''))
+    values=without_big(stat_values(player.get('headline','')),(big,unit) if big else None)
     pages=max(1,(len(values)+4)//5)
     page=min(pages-1,int(max(0,t)/max(.1,spec.get('dur',8)/pages)))
     stat_cards(im,values[page*5:page*5+5],y)
     notes='\n'.join(str(s) for s in player.get('notes',[]) if s)
-    if not values:
+    if not values and not big:
         # 整数以外の成績や結果だけの日も、元の行を省略しない。
         notes='\n'.join(s for s in (player.get('headline',''),notes) if s)
     if notes:
@@ -268,8 +384,7 @@ def hero(t,spec):
     tid=spec.get('player_team_id')
     abbr=MLB_TEAM_ABBR.get(str(tid),'')
     x=L+28
-    if abbr:x+=team_badge(im,x,433,abbr,tid)+22
-    text(im,x,446,spec.get('head2',''),34,width=R-x-24)
+    text(im,x,446,spec.get('head2',''),34,width=R-x-24,team_id=tid)
     stat(im,L+40,522,spec.get('big',''),spec.get('unit',''),258,width=R-L-100,unit_size=70)
     if rank and count:
         tag(im,L+300,745,f'{count}人の中で{rank}位',r3.GOLD,r3.DARK_INK,32,width=R-L-328)
@@ -286,12 +401,15 @@ def hero(t,spec):
     units='打数|安打|本塁打|打点|奪三振|自責|被安打|四球'
     values=[(m[1],m[2]) if m[1] else (m[4],m[3])
             for m in re.finditer(r'(?<![\d.])(\d+)('+units+r')|('+units+r')(\d+)(?![\d.])',spec.get('sub',''))]
+    values=without_big(values,(spec.get('big'),spec.get('unit')))
+    im.info['v4_stat_tiles']=values
     if values:
         gap=14;columns=min(5,len(values));w=(R-L-56-gap*(columns-1))//columns
         for i,(number,unit) in enumerate(values[:5]):
             x=L+28+i*(w+gap)
             panel(im,(x,944,x+w,1106))
             text(im,x+18,959,number,80,r3.GOLD,width=w-36,number=True)
+            ImageDraw.Draw(im).line((x+18,1042,x+w-18,1042),fill=r3.GOLD,width=1)
             text(im,x+18,1054,unit,28,width=w-36)
     return finish(im,t,spec.get('ticker',''),spec.get('source') or '出典：MLB公式（Stats API）')
 
@@ -321,25 +439,30 @@ def quote_pages(row,top=374):
 
 def quotes(t,voices,label,live,ticker,source):
     import v3_slot_render as common
+    voices=[v for v in voices if not v.get('fact')]
     visible=[v for v in voices if t>=v.get('at',0)]
     active=next((v for v in reversed(visible) if v.get('read') is not False and t<v.get('end',4)),None)
-    row=active or (visible[-1] if visible else None)
+    row=active or (visible[-1] if visible else (voices[0] if voices else None))
     im=canvas(t,label)
     text(im,L,264,common.screen_text(live),36,width=R-L)
     if not row:return finish(im,t,ticker,source)
     top=374
     # 読み終えた親の引用が収まるときは、返信の上に暗くして残す。
-    parent=next((v for v in reversed(visible[:-1]) if not v.get('fact')),None) if row.get('reply') else None
+    parent=next((v for v in voices if not v.get('reply')),None) if row.get('reply') else None
     if parent:
-        wrapped=lines(common.screen_text(parent.get('said','')),54,R-L-88)
-        parent_h=96+len(wrapped)*68
+        wrapped=lines(common.screen_text(parent.get('said','')),38,R-L-88)
+        parent_h=110+len(wrapped)*52
         if parent_h+300 <= r3.CONTENT_BOTTOM-top:
             panel(im,(L,top,R,top+parent_h),CREAM)
             text(im,L+24,top+12,'“',64,(163,125,54))
-            for i,line in enumerate(wrapped):text(im,L+44,top+58+i*68,line,54,r3.DARK_INK,width=R-L-88)
+            for i,line in enumerate(wrapped):text(im,L+44,top+58+i*52,line,38,r3.DARK_INK,width=R-L-88)
+            parent_chips=metadata(parent)
+            x=L+28
+            for value,color in parent_chips:
+                x+=tag(im,x,top+parent_h-54,common.screen_text(value),color,size=22,width=(R-L-72)//max(1,len(parent_chips)))+12
             region=ImageEnhance.Brightness(im.crop((L,top,R,top+parent_h))).enhance(.72)
             im.paste(region,(L,top))
-            top+=parent_h+62
+            top+=parent_h+54
     pages,size=quote_pages(row,top)
     elapsed=max(0,t-row.get('at',0));dur=max(.1,row.get('end',4)-row.get('at',0))
     lengths=[sum(len(line) for line in page) for page in pages]
@@ -372,18 +495,24 @@ def quotes(t,voices,label,live,ticker,source):
         region=im.crop((L,top,R,top+h));region=ImageEnhance.Brightness(region).enhance(.72)
         im.paste(region,(L,top))
     im.info['v4_quote']={'said':row.get('said',''),'page':page,'pages':len(pages),'active':active is not None}
+    im.info['v4_quote_group']={'parent':parent.get('said') if parent else row.get('said') if row else '',
+                             'said':[v.get('said') for v in voices],'overview_cards':0}
     return finish(im,t,ticker,source)
 
 
 def schedule(t,spec,rows,label,source):
     if len(rows)>4:raise ValueError('全試合の一覧は4行までです')
-    im=canvas(t,label);text(im,L,260,'明日の全試合の一覧',48,width=R-L)
+    im=canvas(t,label);text(im,L,260,'明日の全試合',48,width=R-L)
+    text(im,L,314,'時刻は日本時間',24,width=R-L)
     for i,row in enumerate(rows):
         y=348+i*194
         panel(im,(L,y,R,y+174))
         clock=row['when'].split()[-1]
         text(im,L+22,y+20,clock,76,r3.GOLD,width=185,number=True)
-        text(im,L+230,y+28,row['home']+'対'+row['away'],40,width=R-L-258)
+        import notability_engine as ne
+        for j,side in enumerate(('home','away')):
+            name=row[side];tid=str(row.get(side+'_id') or next((tid for tid,n in ne.MLB_TEAM_NAME_JP.items() if n==name),''))
+            text(im,L+230,y+18+j*52,name,32,width=R-L-260,team_id=tid or None)
         score=(f'{row["home"]} {row["home_wins"]}勝　{row["away"]} {row["away_wins"]}勝'
                if 'home_wins' in row and 'away_wins' in row else 'シリーズ勝敗は確認中')
         text(im,L+24,y+116,score,30,width=R-L-48)
@@ -412,8 +541,7 @@ def team_row(im,box,row,need):
     second=ImageColor.getrgb(second) if isinstance(second,str) else second
     base=ImageColor.getrgb(base) if isinstance(base,str) else base
     d.rectangle((x+2,y+18,x+10,bottom-18),fill=second)
-    club_tag(im,x+28,y+22,row['abbr'],base,second,width=110)
-    text(im,x+156,y+30,row['name'],48,width=right-x-310)
+    text(im,x+28,y+30,row['name'],48,width=right-x-200,team_id=row.get('team_id'))
     wins(im,x+32,y+98,row['wins'],need)
     stat(im,right-174,y+70,row['wins'],'勝',100,width=150)
 
@@ -435,7 +563,11 @@ def focus(t,card,view):
         y=936
         for row in player_rows:
             text(im,L+24,y,row['name']+'の日本人選手',28,width=R-L-48);y+=44
-            text(im,L+24,y,'・'.join(row['players']),40,width=R-L-48);y+=60
+            phrase=(card.get('v4_club_mentions') or {}).get(row['name'])
+            if phrase==row['name']:
+                text(im,L+24,y,'注目球団',32,r3.GOLD,width=R-L-48)
+            else:text(im,L+24,y,'・'.join(row['players']),40,width=R-L-48)
+            y+=60
     return finish(im,t,v.get('ticker',''),'出典：'+card.get('source_label','MLB公式日程'),True)
 
 
@@ -458,8 +590,7 @@ def situation(t,card,view):
             base=ImageColor.getrgb(row.get('color') or '#102833')
             second=ImageColor.getrgb(row.get('secondary') or '#C4CED4')
             ImageDraw.Draw(im).rectangle((L+6,yy,L+12,yy+54),fill=second)
-            club_tag(im,L+20,yy,row['abbr'],base,second,width=100)
-            text(im,L+132,yy+4,row['name'],32,width=245)
+            text(im,L+20,yy+4,row['name'],32,width=365,team_id=row.get('team_id'))
             # 全シリーズでも勝数の目を必ず説明する。
             d=ImageDraw.Draw(im)
             for k in range(need):

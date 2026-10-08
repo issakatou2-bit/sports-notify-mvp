@@ -726,11 +726,17 @@ def scene(t, scene_spec, team_id=None):
         rows += [('', str(x)) for x in spec.get('notes', [])]
         im=common.frame(t, view, rows, spec.get('label') or '日本人選手の成績', spec.get('source') or SOURCE)
         if r3.LOOK=='v4':
-            from short_v4_cards import balance_content
+            from short_v4_cards import balance_content, ensure_team_badges
+            im.info['v4_ticker_text']=(view.get('v3') or {}).get('ticker','')
+            ensure_team_badges(im)
             balance_content(im,t)
         return im
     im = r3.intro(t, view, spec.get('label') or '日本人選手の成績')
     r3.source(ImageDraw.Draw(im), spec.get('source') or SOURCE, r3.colors(spec.get('team_id'))[1])
+    if r3.LOOK=='v4':
+        from short_v4_cards import balance_content, ensure_team_badges
+        im.info['v4_ticker_text']=(view.get('v3') or {}).get('ticker','')
+        ensure_team_badges(im);balance_content(im,t)
     return im
 
 

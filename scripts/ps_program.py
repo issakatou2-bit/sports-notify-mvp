@@ -257,6 +257,12 @@ def forecast(ctx, games, rows, now, target_day=None, modern=None):
                 item.update(home_wins=c['home_wins'],away_wins=c['away_wins'])
             pages[-1]['text']=f'日本時間{target_date.month}月{target_date.day}日の全試合です。'+''.join(
                 f'{spoken_clock(c["when"])}、{c["home"]}対{c["away"]}。{c["home"]}{c["home_wins"]}勝、{c["away"]}{c["away_wins"]}勝。' for c in group)
+            import review_render_v3 as r3
+            if r3.LOOK=='v4':
+                cover['headline']='明日の全試合'
+                cover['subhead']='時刻は日本時間 / '+target
+                for item,c in zip(cover['items'],group):item.update(home_id=c['home_id'],away_id=c['away_id'])
+                pages[-1]['text']=('明日の全試合です。' if start==0 else '残りの試合です。')+pages[-1]['text'].split('全試合です。',1)[1]
     # **カードは日本人選手のいる試合から**（表紙の日程表は時刻順のまま）。
     # 10/3 本人「明日の注目試合は特に、日本人選手や、日本人選手の所属する
     # 球団に注目しましょう」。同じ組の中は時刻順。
@@ -471,6 +477,21 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
         program = None
     if program is None:
         return None
+    if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
+        import review_render_v3 as r3
+        if r3.LOOK=='v4':
+            from content_v4 import ClubMentions
+            mentions=ClubMentions([t for row in rows for t in row.get('teams',[])])
+            displayed=ClubMentions([t for row in rows for t in row.get('teams',[])])
+            for seg in program['segments']:
+                seg['text']=mentions.text(seg['text'])
+                card=seg['meta']['card']
+                for key in ('headline','subhead'):
+                    if key in card:card[key]=displayed.text(card[key])
+                for row in (card.get('scoreboard') or {}).get('rows',[]):
+                    if row.get('players'):
+                        phrase='・'.join(row['players'])+'の'+row['name']
+                        card.setdefault('v4_club_mentions',{})[row['name']]=displayed.text(phrase)
     program['segments'][0]['text'] = 'コレスポ。' + program['segments'][0]['text']
     if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
         import review_render_v3 as r3
