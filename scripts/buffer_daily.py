@@ -198,7 +198,12 @@ def select_record(run, records, now, kind=DEFAULT_KIND, late_edition=False):
     key, _, _, wf = source_of(kind)
     if run.get('head_branch') != 'main' or run.get('path') != '.github/workflows/' + wf:
         raise ValueError('Source must be ' + wf)
-    if run.get('conclusion') != 'success' or run.get('event') not in ('workflow_dispatch', 'schedule', 'workflow_run'):
+    # 夕方の4本は1回の実行で4枠を作る。1枠（10/8 は 20:00 の PS がアップロードで失敗）が
+    # 落ちると実行全体が failure になり、出来ていた 17:00〜18:00 の3本まで SNS に出なかった。
+    # 夕方の枠は、その枠の動画が「この実行で作られた」ことを下で確かめたうえで、failure の実行も使う。
+    # 19:00 の日次（daily）は1本だけの実行なので、従来どおり成功した実行だけ。
+    allowed = ('success',) if kind == 'daily' else ('success', 'failure')
+    if run.get('conclusion') not in allowed or run.get('event') not in ('workflow_dispatch', 'schedule', 'workflow_run'):
         raise ValueError('Source workflow did not finish successfully')
     if run.get('repository', {}).get('full_name') != REPO:
         raise ValueError('Unexpected source repository')
@@ -216,6 +221,41 @@ def select_record(run, records, now, kind=DEFAULT_KIND, late_edition=False):
     if instant(record.get('publish_at') or record['published_at']) > now:
         raise ValueError('YouTube publication is still in the future')
     return day, record
+
+
+def run_for_record(runs, day, record, kind=DEFAULT_KIND):
+    """その日の実行のうち、この枠の動画を作った実行（記録の時刻が実行の間にあるもの）。
+
+    最後に成功した実行だけを見ると、後から別の枠だけを作り直した実行を拾い、
+    先の実行で作った枠を「この実行の動画ではない」として出せなくなる（10/8）。
+    """
+    allowed = ('success',) if kind == 'daily' else ('success', 'failure')
+    try:
+        at = instant(record['published_at'])
+    except Exception:                                    # noqa: BLE001
+        return None
+    for run in runs:
+        try:
+            if instant(run['created_at']).astimezone(JST).date().isoformat() != day:
+                continue
+            if run.get('conclusion') in allowed and instant(run['created_at']) <= at <= instant(run['updated_at']):
+                return run
+        except Exception:                                # noqa: BLE001
+            continue
+    return None
+
+
+def day_runs(workflow: str, tries: int = 3):
+    """終わった実行の一覧（成功・失敗とも）。取れなければ None。"""
+    for attempt in range(tries):
+        try:
+            return github('/actions/workflows/' + workflow
+                          + '/runs?branch=main&status=completed&per_page=20')['workflow_runs']
+        except Exception as e:                           # noqa: BLE001
+            print('[warn] %s の実行一覧を取れません（%d回目）: %s'
+                  % (workflow, attempt + 1, e), file=sys.stderr)
+            time.sleep(2 * (attempt + 1))
+    return None
 
 
 def latest_run(workflow: str, day: str, tries: int = 3):
@@ -282,9 +322,9 @@ def due(services, late_edition=False) -> list:
             if all(ledger.data['deliveries'].get(day + ':' + kind + ':' + s)
                    for s in services):
                 continue             # sent/処理中とも二重投入しない
-            if (wf, day) not in runs:
-                runs[wf, day] = latest_run(wf, day)
-            run = runs[wf, day]
+            if wf not in runs:
+                runs[wf] = day_runs(wf)
+            run = run_for_record(runs[wf] or [], day, rec, kind)
             if run:
                 out.append((kind, run['id']))
             else:

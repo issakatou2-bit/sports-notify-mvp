@@ -31,6 +31,21 @@ class BufferTests(unittest.TestCase):
             daily.select_record(self.run,{'daily':{'2026-09-11':{'video_id':'bad'}}},self.now)
         self.assertNotIsInstance(bad.exception,daily.MissingVideoRecord)
 
+    def test_evening_slot_from_partly_failed_run_but_daily_stays_strict(self):
+        # 10/8: 夕方の実行は 20:00 だけ失敗、17:00〜18:00 は出来ていた。夕方の枠は使える。日次は成功だけ。
+        run = {**self.run, 'conclusion': 'failure', 'path': '.github/workflows/morning_recap.yml'}
+        records = {'morning': {'2026-09-11': self.record}}
+        self.assertEqual(daily.select_record(run, records, self.now, 'morning')[0], '2026-09-11')
+        with self.assertRaises(ValueError):
+            daily.select_record({**self.run, 'conclusion': 'failure'}, self.records, self.now)
+
+    def test_picks_the_run_that_made_the_slot(self):
+        early = {'id': 1, 'conclusion': 'failure', 'created_at': '2026-09-11T06:00:00Z', 'updated_at': '2026-09-11T06:10:00Z'}
+        late = {'id': 2, 'conclusion': 'success', 'created_at': '2026-09-11T06:15:00Z', 'updated_at': '2026-09-11T06:20:00Z'}
+        rec = {'published_at': '2026-09-11T06:05:00Z'}
+        self.assertEqual(daily.run_for_record([late, early], '2026-09-11', rec, 'morning')['id'], 1)
+        self.assertIsNone(daily.run_for_record([late, early], '2026-09-11', rec, 'daily'))
+
     def test_reconcile_skips_buffer_when_every_delivery_is_confirmed(self):
         ledger = self.ledger()
         ledger.data['deliveries'] = {'2026-09-11:daily:twitter': {'state': 'sent'}}
@@ -97,7 +112,8 @@ class BufferTests(unittest.TestCase):
         now = datetime(2026,9,11,16,31,tzinfo=timezone.utc)
         run = {**self.run, 'path': '.github/workflows/morning_recap.yml'}
         records = {'morning': {'2026-09-11': self.record}}
-        for change in ({'conclusion':'failure'},{'head_branch':'feature'},
+        # 夕方の枠は failure の実行も使える（その枠の動画がこの実行で作られていれば）。取り消し等は使わない
+        for change in ({'conclusion':'cancelled'},{'head_branch':'feature'},
                        {'repository':{'full_name':'other/repo'}},
                        {'created_at':'2026-09-10T09:00:00Z'}):
             with self.subTest(change=change), self.assertRaises(ValueError):
@@ -116,7 +132,7 @@ class BufferTests(unittest.TestCase):
         entries = {'2026-09-11:morning:twitter':{'state':'sent'},
                    '2026-09-11:morning:instagram':{'state':'sending'}}
         with patch.object(daily,'datetime',Clock), patch.object(daily.Path,'read_text',return_value=json.dumps(records)), \
-             patch.object(daily,'Ledger') as ledger, patch.object(daily,'latest_run',return_value={'id':99}) as runs:
+             patch.object(daily,'Ledger') as ledger, patch.object(daily,'day_runs',return_value=[{'id':99,'conclusion':'success','created_at':'2026-09-11T00:00:00Z','updated_at':'2026-09-11T23:00:00Z'}]) as runs:
             ledger.return_value.data={'deliveries':entries}
             self.assertEqual(daily.due(('twitter','instagram')), [])
             ledger.return_value.data={'deliveries':{}}
