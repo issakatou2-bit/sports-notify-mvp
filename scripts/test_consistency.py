@@ -573,7 +573,10 @@ print("\n--- 同じ日の5本の書き出し ---")
 import upload_youtube as _uy  # noqa: E402
 
 _heads = {}
-for _mode in ("players", "player", "voices", "local", "press"):
+# 実際に出している枠だけを比べる（morning_recap.yml の既定 players postseason voices press のうち題を作る3つ）。
+# 10/8、出していない "player"（選手1人の回）の題がその日の材料で「山本由伸｜…」になり、
+# 17:30 の題と同じ書き出しだとして検査が落ちた。出さない題どうしの重なりは見ない。
+for _mode in ("players", "voices", "press"):
     _t = _uy.build_metadata("notable_games.json", "8月21日",
                             kind="morning", morning_mode=_mode
                             )["snippet"]["title"]

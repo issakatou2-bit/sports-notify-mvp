@@ -62,6 +62,10 @@ on:
 permissions:
   contents: write
 
+# 長編の見た目（v3 = 新デザイン「電光掲示板」、本人の確認後に変数で切り替える）
+env:
+  COLLESPO_LONGFORM_STYLE: ${{ vars.COLLESPO_LONGFORM_STYLE || 'legacy' }}
+
 jobs:
   build:
     runs-on: ubuntu-latest

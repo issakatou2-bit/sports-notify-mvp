@@ -41,6 +41,7 @@
 
 import argparse
 import json
+import os
 import pathlib
 import re
 import subprocess
@@ -882,9 +883,14 @@ def main() -> int:
 
     # 画面の割りつけは、音を繋いだ**あと**でやる。
     # 長い台詞は画面を分けるので、音の区間数と画面の数が変わる。
+    # 新デザイン「電光掲示板」（10/8 本人「長編のデザイン感は良い」）。COLLESPO_LONGFORM_STYLE=v3 のときだけ。
+    # 描画は longform_render_v3（Opus-18 の下書き＋エマの直し）。尺は変えない。
+    v3 = os.environ.get("COLLESPO_LONGFORM_STYLE") == "v3"
+    if v3:
+        import longform_render_v3 as lr3
     pages = []
     for s, dur in zip(segs, durations):
-        for pg in paginate([s]):
+        for pg in (lr3.paginate([s]) if v3 else paginate([s])):
             pages.append((pg, dur * pg["_share"]))
     split = len(pages) - len(segs)
     print(f"[info] {len(segs)}台詞 / {total:.0f}秒"
@@ -892,6 +898,12 @@ def main() -> int:
 
     shown = sum(1 for pg, _ in pages if pg.get("panel"))
     print(f"[info] 中央の札: {len(cards)}枚のうち {shown}回指定あり")
+
+    chapters = dia.get("chapters")
+    if v3 and audio_path:
+        audio_path = lr3.add_sound(audio_path, pages, cards, out_dir, topic=topic, chapters=chapters)
+        rows = lr3.timeline(pages, cards, FPS)
+        video_total = sum(r["frames"] for r in rows) / FPS or 1.0
 
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24",
@@ -934,6 +946,16 @@ def main() -> int:
             stage = None                # 止まったあとの下地
             last_frame = None
             for k in range(n):
+                if v3:
+                    # 新デザインは背景が動き続けるので、下地を使い回さない
+                    r, tk = rows[i], k / FPS
+                    im = lr3.render_line(tk, seg, args.portrait_dir, topic, r["panel"], None, score,
+                                         chapters=chapters, progress=(r["start"] + tk) / video_total,
+                                         panel_t=r["panel_since"] + tk, chapter_t=r["chapter_since"] + tk,
+                                         dur=dur)
+                    last_frame = video_common.crossfade(last, im, k, fade, (W, H))
+                    proc.stdin.write(last_frame)
+                    continue
                 p, settled = video_common.anim_step(k, n)
                 if settled and stage is not None:
                     im = stage.copy()
