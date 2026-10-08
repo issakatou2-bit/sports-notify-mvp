@@ -571,6 +571,11 @@ def _panel_stat(layer, d, p, pt, ctx):
                       width=max(1, round(6 * min(1, s))))
         y = by + 20 + 24
     note = str(p.get("note") or "")
+    scope = str(p.get("scope") or "")
+    if scope:
+        # 順位の対象の条件（「MLB全体・60投球回以上」）。数字の重みが伝わるように
+        _chip(d, CARD_PAD, y, "対象：" + scope, 24, fill=_alpha(DIM, 60), ink=INK, pad=(16, 6))
+        y += 24 + 12 + 14
     if note:
         f = font(24)
         for ln in wrap(d, note, f, INNER_W)[:2]:
@@ -592,17 +597,25 @@ def _gradient(w, h):
     return im
 
 
+def views_text(views):
+    """再生回数を読みやすく（10/8 本人「全部おすすめで」→ 丸める）。1万回以上は「125.2万」＋「回再生」。"""
+    try:
+        n = int(views or 0)
+    except (TypeError, ValueError):
+        return str(views or ""), "回再生"
+    if n >= 10000:
+        s = f"{n / 10000:.1f}".rstrip("0").rstrip(".")
+        return s, "万回再生"
+    return f"{n:,}", "回再生"
+
+
 def _panel_views(layer, d, p, pt, ctx):
     y = 84
     f = font(34)
     for ln in wrap(d, str(p.get("title", "")), f, INNER_W)[:2]:
         d.text((CARD_PAD, y), ln, font=f, fill=INK)
         y += 50
-    try:
-        v = f"{int(p.get('views') or 0):,}"
-    except (TypeError, ValueError):
-        v = str(p.get("views") or "")
-    unit = "回再生"
+    v, unit = views_text(p.get("views"))
     size = 180
     while size > 96 and mixed_width(d, v, size, 0) + _textlen(d, unit, font(48)) + 24 > INNER_W:
         size -= 8

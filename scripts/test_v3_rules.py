@@ -315,8 +315,11 @@ class V3Rules(unittest.TestCase):
     def test_caption_follows_the_sentence_being_read(self):
         """字幕（v4）は読み上げている文。文字数の割合で今の文を選ぶ。"""
         text='1位は村上宗隆。4打数3安打、2本塁打、3打点です。'
-        self.assertEqual(r3.current_sentence(0.5,text,10),'1位は村上宗隆。')
-        self.assertEqual(r3.current_sentence(9.5,text,10),'4打数3安打、2本塁打、3打点です。')
+        # 短い文はまとめて1つの字幕（3行に入る字数まで）
+        self.assertEqual(r3.current_sentence(0.5,text,10),text)
+        long='1位は村上宗隆です。4打数3安打、2本塁打、3打点の大活躍でした。チームも勝って地区シリーズ突破に王手です。'
+        self.assertEqual(r3.current_sentence(0.2,long,10),'1位は村上宗隆です。4打数3安打、2本塁打、3打点の大活躍でした。')
+        self.assertEqual(r3.current_sentence(9.8,long,10),'チームも勝って地区シリーズ突破に王手です。')
         from PIL import Image, ImageDraw
         d=ImageDraw.Draw(Image.new('RGB',(8,8)))
         rows=r3._caption_lines(d,'4打数3安打、2本塁打、3打点です。きょうは7人が出場しました。',42,560)

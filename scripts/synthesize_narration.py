@@ -74,9 +74,11 @@ SPEED_SCALE = 1.5
 #
 # 後ろは完全に0にはしない。次の画面と音が地続きになって、
 # 区切りが聞き取れなくなるため。
-PRE_PHONEME = 0.0
-POST_PHONEME = 0.05
-PAUSE_SCALE = 0.85
+# 10/8 本人「セリフ間が近くて違和感」→ 聞き比べで「C2・D2（間を長く）よさそう」。
+# 文の前後と句読点の間を広げる（尺は少し延びる）。
+PRE_PHONEME = 0.1
+POST_PHONEME = 0.25
+PAUSE_SCALE = 1.25
 
 # 話者ごとの調整。
 #
@@ -87,8 +89,12 @@ PAUSE_SCALE = 0.85
 #   追いかけるのがきつい。0.9倍の1.35に落とす。
 #   pitchScale はVOICEVOXの音の高さで、-0.15〜0.15あたりが実用域。
 #   0.03は「言われれば分かる」程度の上げ幅。
+# 10/8 本人「めたんの抑揚、応用解説のを参考に。自然な声色と喋り方に」→ 聞き比べ C2（速さ1.3・抑揚1.3）と
+# D2（1.35・1.4）が良い → 間をとって 速さ1.32・抑揚1.35・高さ0。抑揚（intonationScale）は既定1.0だと棒読みに聞こえる。
+# ずんだもんも同じ考えで抑揚を上げ、速さは応用解説のショート（1.4）に寄せる。
 SPEAKER_TUNE = {
-    2: {"speedScale": round(SPEED_SCALE * 0.9, 3), "pitchScale": 0.03},
+    2: {"speedScale": 1.32, "pitchScale": 0.0, "intonationScale": 1.35},
+    3: {"speedScale": 1.4, "intonationScale": 1.35},
 }
 
 
