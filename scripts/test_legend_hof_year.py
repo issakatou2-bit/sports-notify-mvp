@@ -1,4 +1,5 @@
 """Election year and induction ceremony are distinct; only verified cases change."""
+import sys
 import unittest
 import legend_topics as legends
 
@@ -29,4 +30,4 @@ class HallYear(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(argv=[sys.argv[0]])
