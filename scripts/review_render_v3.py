@@ -472,6 +472,10 @@ def _reel(d, im, x, y, value, t, size=400):
 
 
 def intro(t, spec, kind_label):
+    if LOOK == 'v4':
+        import asset_v4_cards as cards
+        if cards.enabled(spec):
+            return cards.intro(t, spec, kind_label)
     v3 = spec.get("v3") or {}
     tid = design_team(spec)
     base, second, _ = colors(tid)
@@ -688,6 +692,10 @@ def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_a
 
 
 def list_page(t, spec, items, start, count, page, pages, kind_label):
+    if LOOK == 'v4':
+        import asset_v4_cards as cards
+        if cards.enabled(spec):
+            return cards.list_page(t, spec, items, start, count, page, pages, kind_label)
     import v3_slot_render as common
     view=dict(spec,team_id=design_team(spec),page=f'{page}/{pages}')
     selected=list(items)[start:start+count]
@@ -696,6 +704,10 @@ def list_page(t, spec, items, start, count, page, pages, kind_label):
 
 # ------------------------------------------------------------------ 効果音の時刻
 def people(t, spec, rows, heading, kind_label):
+    if LOOK == 'v4':
+        import asset_v4_cards as cards
+        if cards.enabled(spec) and rows:
+            return cards.people(t, spec, rows, heading, kind_label)
     import v3_slot_render as common
     view=dict(spec,team_id=design_team(spec),heading=heading)
     items=[(r.get('name',''),r.get('line',r.get('why',''))) for r in rows[:3]]
