@@ -56,7 +56,7 @@ def register(topic, artifact, run):
     return kind, filename
 
 
-def bsky_record(text, title, video_id, now):
+def bsky_record(text, title, video_id, now, description='コレスポのPSの話題です。'):
     if len(text) > 300:
         raise ValueError('Bluesky caption is longer than 300 characters')
     url = 'https://www.youtube.com/watch?v=' + video_id
@@ -68,7 +68,7 @@ def bsky_record(text, title, video_id, now):
     return {'$type': 'app.bsky.feed.post', 'text': text, 'facets': facets,
             'createdAt': now.isoformat().replace('+00:00', 'Z'),
             'embed': {'$type': 'app.bsky.embed.external', 'external': {
-                'uri': url, 'title': title, 'description': 'コレスポのPSの話題です。'}}}
+                'uri': url, 'title': title, 'description': description}}}
 
 
 def bsky_once(ledger, key, record, metadata, http=requests):

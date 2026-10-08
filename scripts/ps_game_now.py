@@ -65,9 +65,11 @@ def due(topics: list, published: set, now: datetime, left: int) -> list:
         end = _utc(t.get("finished_at"))
         if end is None or now - end < timedelta(minutes=DELAY_MINUTES):
             continue
-        ready.append((not t.get("jp_first"), end, key))
-    ready.sort()
-    return [k for _, _, k in ready][:left]
+        ready.append((not t.get("jp_first"), end, key, t))
+    ready.sort(key=lambda r: r[:3])
+    # 同じシリーズの次の試合が始まっていたら、前の試合の回は出さない（next_asset.superseded と同じ決まり）
+    import next_asset
+    return [k for _, _, k, t in ready if not next_asset.superseded(t)][:left]
 
 
 def waiting(topics: list, published: set, now: datetime) -> bool:
