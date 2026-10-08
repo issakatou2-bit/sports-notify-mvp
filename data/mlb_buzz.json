@@ -1,92 +1,13 @@
 {
-  "updated_at": "2026-10-07T06:04:00.256493+00:00",
+  "updated_at": "2026-10-08T01:04:15.485363+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "NM3Rh7tgqE0",
-      "title": "YANKEES vs. RAYS: ALDS Full Game 2 Highlights (October 5) | 2026 MLB Postseason",
-      "published_at": "2026-10-06T03:43:26Z",
-      "views": 1560006,
-      "matchup": "YANKEES vs. RAYS",
-      "game_date": "2026-10-05",
-      "result": {
-        "away_jp": "ヤンキース",
-        "home_jp": "レイズ",
-        "away_score": 2,
-        "home_score": 5,
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 4
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": null
-          }
-        ],
-        "away_hits": 4,
-        "away_errors": 4,
-        "home_hits": 8,
-        "home_errors": 0,
-        "star_name": "Ben Rice",
-        "star_line": "3打数2安打 2打点 2本塁打",
-        "star_team": "ヤンキース",
-        "away_starter": {
-          "name": "Cam Schlittler",
-          "team": "ヤンキース",
-          "line": "4.1回 2奪三振 自責2　敗戦投手（通算1勝1敗）"
-        },
-        "home_starter": {
-          "name": "Freddy Peralta",
-          "team": "レイズ",
-          "line": "4.2回 3奪三振 自責1"
-        }
-      },
-      "topic_jp": "ヤンキース 対 レイズ"
-    },
-    {
       "video_id": "gPEXU8g2Fo0",
       "title": "DODGERS vs. BRAVES: NLDS Full Game 3 Highlights (October 6) | 2026 MLB Postseason 山本 由伸",
       "published_at": "2026-10-07T01:36:00Z",
-      "views": 839373,
+      "views": 2348222,
       "matchup": "DODGERS vs. BRAVES",
       "game_date": "2026-10-06",
       "result": {
@@ -165,7 +86,7 @@
       "video_id": "mmrHD8KXtLs",
       "title": "BREWERS vs. PADRES: NLDS Full Game 3 Highlights (October 6) | 2026 MLB Postseason",
       "published_at": "2026-10-07T05:28:47Z",
-      "views": 13400,
+      "views": 1320760,
       "matchup": "BREWERS vs. PADRES",
       "game_date": "2026-10-06",
       "result": {
@@ -241,72 +162,169 @@
       "topic_jp": "ブリュワーズ 対 パドレス"
     },
     {
-      "video_id": "8kHi1Zh_x20",
-      "title": "Freddie Freeman homers in back-to-back games for the Dodgers in the NLDS! 👀 | MLB Highlights",
-      "published_at": "2026-10-07T00:27:18Z",
-      "views": 40878,
-      "matchup": "",
-      "game_date": "",
-      "topic_jp": "フレディ・フリーマンがドジャースのNLDS で連続試合本塁打を放つ。"
+      "video_id": "pgYSFd7YWx4",
+      "title": "GUARDIANS vs. WHITE SOX: ALDS Full Game 3 Highlights (October 7) | 2026 MLB Postseason",
+      "published_at": "2026-10-08T00:09:38Z",
+      "views": 43242,
+      "matchup": "GUARDIANS vs. WHITE SOX",
+      "game_date": "2026-10-07",
+      "result": {
+        "away_jp": "ガーディアンズ",
+        "home_jp": "ホワイトソックス",
+        "away_score": 9,
+        "home_score": 3,
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 4,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 5,
+            "away": 1,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 1
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 2,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 2,
+            "home": 0
+          }
+        ],
+        "away_hits": 11,
+        "away_errors": 0,
+        "home_hits": 6,
+        "home_errors": 0,
+        "star_name": "Jo Adell",
+        "star_line": "4打数2安打 3打点",
+        "star_team": "ガーディアンズ",
+        "away_starter": {
+          "name": "Daniel Espino",
+          "team": "ガーディアンズ",
+          "line": "0.2回 2奪三振 自責1"
+        },
+        "home_starter": {
+          "name": "Sean Newcomb",
+          "team": "ホワイトソックス",
+          "line": "2.0回 1奪三振 自責0"
+        }
+      },
+      "topic_jp": "ガーディアンズ 対 ホワイトソックス"
     },
     {
-      "video_id": "Q0ZktTIHgYI",
-      "title": "Ben Rice crushes TWO HOME RUNS for the Yankees in ALDS Game 2! ✌️🤯 | MLB Highlights",
-      "published_at": "2026-10-06T03:10:47Z",
-      "views": 27382,
+      "video_id": "zD4Xpn9Phds",
+      "title": "JO ADELL'S TRIPLE CLEARS THE BASES to give the Guardians THE LEAD! | MLB Highlights (Full Inning)",
+      "published_at": "2026-10-07T21:15:23Z",
+      "views": 65454,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "ベン・ライスがヤンキースのALDS第2戦で2本塁打を放つ。"
+      "topic_jp": "ジョ・アデルの三塁打でガーディアンズがリードを奪う。"
+    },
+    {
+      "video_id": "IqZaTdeQfzs",
+      "title": "William Contreras HAMMERS a solo home run for the Brewers! 💥 | MLB Postseason Highlights",
+      "published_at": "2026-10-07T02:50:49Z",
+      "views": 57972,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "ウィリアム・コントレラスがミルウォーキー・ブルワーズのソロホームランを打った。"
     }
   ],
   "all": [
     {
-      "video_id": "NM3Rh7tgqE0",
-      "matchup": "YANKEES vs. RAYS",
-      "game_date": "2026-10-05",
-      "views": 1560006
-    },
-    {
       "video_id": "gPEXU8g2Fo0",
       "matchup": "DODGERS vs. BRAVES",
       "game_date": "2026-10-06",
-      "views": 839373
+      "views": 2348222
     },
     {
       "video_id": "mmrHD8KXtLs",
       "matchup": "BREWERS vs. PADRES",
       "game_date": "2026-10-06",
-      "views": 13400
+      "views": 1320760
     },
     {
-      "video_id": "8kHi1Zh_x20",
-      "matchup": "",
-      "game_date": "",
-      "views": 40878
+      "video_id": "pgYSFd7YWx4",
+      "matchup": "GUARDIANS vs. WHITE SOX",
+      "game_date": "2026-10-07",
+      "views": 43242
     },
     {
-      "video_id": "Q0ZktTIHgYI",
+      "video_id": "zD4Xpn9Phds",
       "matchup": "",
       "game_date": "",
-      "views": 27382
+      "views": 65454
     },
     {
       "video_id": "IqZaTdeQfzs",
       "matchup": "",
       "game_date": "",
-      "views": 27353
+      "views": 57972
     },
     {
-      "video_id": "J6tDQrdv_To",
+      "video_id": "8kHi1Zh_x20",
       "matchup": "",
       "game_date": "",
-      "views": 15811
+      "views": 46396
     },
     {
-      "video_id": "1VdrggZdz7A",
+      "video_id": "LuzwCTudGhQ",
       "matchup": "",
       "game_date": "",
-      "views": 15677
+      "views": 31121
+    },
+    {
+      "video_id": "ClwJyavZKzY",
+      "matchup": "",
+      "game_date": "",
+      "views": 23593
+    },
+    {
+      "video_id": "0P3uDXe2aNo",
+      "matchup": "",
+      "game_date": "",
+      "views": 8246
+    },
+    {
+      "video_id": "tRWV4tfz1Zo",
+      "matchup": "",
+      "game_date": "",
+      "views": 6452
+    },
+    {
+      "video_id": "ZBuDS0SKKv4",
+      "matchup": "",
+      "game_date": "",
+      "views": 260
     }
   ]
 }
