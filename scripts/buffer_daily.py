@@ -646,7 +646,7 @@ def reconcile():
     """Refresh saved deliveries without creating media or posts, even after midnight."""
     ledger = Ledger()
     pending_services = {key.rsplit(':', 1)[-1] for key, entry in ledger.data['deliveries'].items()
-                        if entry.get('state') != 'sent'}
+                        if entry.get('state') not in ('sent', 'gave_up')}
     posts_by_channel = {service: recent_posts(channel) for service, channel in CHANNELS.items()
                        if service in pending_services}
     if not posts_by_channel:
@@ -655,7 +655,7 @@ def reconcile():
     unresolved, settling = [], []
     for key, entry in list(ledger.data['deliveries'].items()):
         service = key.rsplit(':', 1)[-1]
-        if entry.get('state') == 'sent' or service not in posts_by_channel:
+        if entry.get('state') in ('sent', 'gave_up') or service not in posts_by_channel:
             continue
         post = next((p for p in posts_by_channel[service]
                      if p['id'] == entry.get('post_id') or p['text'] == entry.get('text')), None)
@@ -666,6 +666,12 @@ def reconcile():
         row = ledger.data['deliveries'][key]
         print(key, row.get('state'), row.get('external_link'))
         if row.get('state') == 'sent':
+            continue
+        # Buffer が error と返して2日たったものは、もう出ない。毎回の実行を赤くし続けると、
+        # 新しい失敗が見えなくなる（10/7 の Instagram 1件で 10/8〜10/10 の実行がすべて赤だった）。
+        if row.get('state') == 'error' and key[:10] < (datetime.now(timezone.utc) - timedelta(days=2)).date().isoformat():
+            ledger.set(key, {**row, 'state': 'gave_up', 'checked_at': datetime.now(timezone.utc).isoformat()})
+            print('::warning::Buffer が失敗のまま2日たったので打ち切ります: ' + key)
             continue
         (settling if still_settling(row) else unresolved).append(key)
     if settling:

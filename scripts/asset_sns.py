@@ -71,6 +71,17 @@ def bsky_record(text, title, video_id, now, description='コレスポのPSの話
                 'uri': url, 'title': title, 'description': description}}}
 
 
+S32 = '234567abcdefghijklmnopqrstuvwxyz'
+
+
+def tid(now, key):
+    """Bluesky の TID（13字）。上位はマイクロ秒の時刻、下位10ビットはキーから。"""
+    micros = int(now.timestamp() * 1_000_000)
+    clock = int(hashlib.sha256(key.encode()).hexdigest(), 16) & 0x3FF
+    n = (micros << 10) | clock
+    return ''.join(S32[(n >> (5 * i)) & 31] for i in range(12, -1, -1))
+
+
 def bsky_once(ledger, key, record, metadata, http=requests):
     """予約・確定rkey・新規のみのCAS。応答不明でも別の投稿を作らない。"""
     old = ledger.data['deliveries'].get(key)
@@ -87,7 +98,12 @@ def bsky_once(ledger, key, record, metadata, http=requests):
     session = auth.json()
     if session.get('handle') != handle:
         raise RuntimeError('Unexpected Bluesky account')
-    rkey = 'collespo-' + hashlib.sha256(key.encode()).hexdigest()[:32]
+    # app.bsky.feed.post の rkey は TID（時刻から作る13字）でなければ 400 になる。
+    # 10/9〜10/10 の夕方の枠は 'collespo-…' の rkey で毎回 400 だった。予約に残した rkey を使い回し、
+    # 無ければ今の時刻とキーから作る（同じ予約の再挑戦で別の投稿を作らない）。
+    prev = str((old or {}).get('rkey') or '')
+    broken = prev.startswith('collespo-')      # 400 で必ず失敗していた予約（投稿は作られていない）
+    rkey = prev if prev and not broken else tid(datetime.now(timezone.utc), key)
     query = {'repo': session['did'], 'collection': 'app.bsky.feed.post', 'rkey': rkey}
     headers = {'Authorization': 'Bearer ' + session['accessJwt']}
     existing = http.get(endpoint + 'com.atproto.repo.getRecord', params=query,
@@ -102,7 +118,7 @@ def bsky_once(ledger, key, record, metadata, http=requests):
     if existing.status_code != 400 or existing.json().get('error') != 'RecordNotFound':
         existing.raise_for_status()
         raise RuntimeError('Cannot establish absence of Bluesky post')
-    if old:
+    if old and not broken:
         raise RuntimeError('Uncertain Bluesky reservation needs inspection; no automatic resend')
     ledger.set(key, dict(metadata, state='reserved', rkey=rkey, text=record['text'],
                          reserved_at=datetime.now(timezone.utc).isoformat()))
@@ -111,7 +127,8 @@ def bsky_once(ledger, key, record, metadata, http=requests):
     result = http.post(endpoint + 'com.atproto.repo.createRecord',
                        json=dict(query, record=record, validate=True),
                        headers=headers, timeout=30)
-    result.raise_for_status()
+    if result.status_code >= 400:
+        raise RuntimeError(f'Bluesky createRecord {result.status_code}: {result.text[:300]}')
     response = result.json()
     receipt = dict(metadata, state='sent', uri=response['uri'], rkey=rkey)
     ledger.set(key, receipt)
