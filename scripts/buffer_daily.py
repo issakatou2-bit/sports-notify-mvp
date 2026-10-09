@@ -452,7 +452,7 @@ KIND_WORDS = {
     'daily': {'short': '明日のMLB', 'long': '明日の注目試合',
               'lead': '先発と見どころを、試合の前に確かめられます',
               'cut': '｜明日の注目試合', 'sport': 'mlb'},
-    'morning': {'short': 'きょうの日本人選手', 'long': '日本人選手の成績',
+    'morning': {'short': '今日の日本人選手', 'long': '日本人選手の成績',
                 'lead': '誰がどれだけ動いたかが、成績の順に並びます',
                 'cut': '｜', 'sport': 'mlb'},
     'morning_press': {'short': '現地の報道', 'long': '現地の報道',

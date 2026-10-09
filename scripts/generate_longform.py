@@ -578,7 +578,7 @@ _TITLES = {"score": "回ごとの得点",
            "stat": "確かめた数字（MLB公式）",
            "star": "目立った選手",
            "group": "そろっている顔ぶれ（MLB公式）",
-           "topic": "きょうの話"}
+           "topic": "今日の話"}
 
 
 def render_panel(d, panel, topic):

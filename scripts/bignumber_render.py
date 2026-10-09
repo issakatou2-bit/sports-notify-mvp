@@ -1074,9 +1074,9 @@ def scenes_from_morning(data, narration=None):
     for i, seg in enumerate(narration.get("segments") or []):
         kind = seg.get("kind")
         if kind == 'cover':
-            got=[{'layout':'cards','head':day,'sub':'日本人選手の成績','cards':[{'title':'きょうの成績','body':f'{len(players)}人の日本人選手'}],'say':seg['text']}]
+            got=[{'layout':'cards','head':day,'sub':'日本人選手の成績','cards':[{'title':'今日の成績','body':f'{len(players)}人の日本人選手'}],'say':seg['text']}]
         elif kind == 'ranking':
-            got=[{'layout':'cards','head':'きょうの勝利貢献順位','ranking':seg['meta']['ranking'],
+            got=[{'layout':'cards','head':'今日の勝利貢献順位','ranking':seg['meta']['ranking'],
                   'cards':[{'title':f'{r["rank"]}位 {r["name"]} {r["abbr"]}','body':r['score']} for r in seg['meta']['ranking']], 'say':seg['text']}]
         elif kind == 'hero':
             got=_intro_scenes(seg,players,day)[:1]
@@ -1119,7 +1119,7 @@ def scenes_from_morning(data, narration=None):
             if len({p.get('team_id') for p in players}) > 1:
                 sc['team_id']=None
             sc.update(segment=i, kind=kind, label=label, who=who,
-                      ticker='きょうの日本人選手　'+'　'.join(f'{j}位 {p.get("name", "")}' for j,p in enumerate(players,1)))
+                      ticker='今日の日本人選手　'+'　'.join(f'{j}位 {p.get("name", "")}' for j,p in enumerate(players,1)))
         out += got
     return out
 

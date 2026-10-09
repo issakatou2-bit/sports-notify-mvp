@@ -35,15 +35,15 @@ def players(segments, roster, day):
         ranking.append({'rank':rank,'name':p['name'],'abbr':ne.MLB_TEAM_ABBR.get(str(p.get('team_id')),''),
                         'score':score,'team_id':p.get('team_id')})
     cover={'kind':'cover','text':f'{day}、日本人選手{len(roster)}人の成績です。','meta':{'count':len(roster)}}
-    table={'kind':'ranking','text':'きょうの勝利貢献順位です。'+''.join(f'{r["rank"]}位、{r["name"]}。{g.yomi_stats(r["score"])}。' for r in ranking),
+    table={'kind':'ranking','text':'今日の勝利貢献順位です。'+''.join(f'{r["rank"]}位、{r["name"]}。{g.yomi_stats(r["score"])}。' for r in ranking),
            'meta':{'ranking':ranking}}
     old=segments[0]['text']
     tail=f'{day}、日本人選手{len(roster)}人の成績です。'
     hero=dict(segments[0],kind='hero',text=old.removesuffix(tail))
     if bn.r3.LOOK == 'v4':
         # 順位表では同じ成績を再読しない。全員は表紙・表・ほかの札に残す。
-        cover['text']=f'きょう出場した日本人選手は{len(roster)}人です。'
-        table['text']='きょうの勝利貢献順位です。'
+        cover['text']=f'今日出場した日本人選手は{len(roster)}人です。'
+        table['text']='今日の勝利貢献順位です。'
         hero['text']=f"1位、{roster[0]['name']}、{g.yomi_stats(roster[0]['headline'])}。"
         remaining=[]
         for start in range(1,min(3,len(roster))):

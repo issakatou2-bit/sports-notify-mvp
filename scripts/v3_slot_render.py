@@ -131,7 +131,7 @@ def ranking(t,spec,rows,source_text):
     im=r3.background(t,spec.get('team_id'));d=ImageDraw.Draw(im)
     base,second,_=r3.colors(spec.get('team_id'))
     r3._header(d,'日本人選手の成績',None,second)
-    r3._text(d,(r3.LEFT,250),'きょうの勝利貢献順位',font=r3.font(48),fill=r3.INK)
+    r3._text(d,(r3.LEFT,250),'今日の勝利貢献順位',font=r3.font(48),fill=r3.INK)
     for i,row in enumerate(rows[:5]):
         y=350+i*150
         r3.record_box(im,'card',(r3.LEFT,y,r3.SAFE_RIGHT,y+128))

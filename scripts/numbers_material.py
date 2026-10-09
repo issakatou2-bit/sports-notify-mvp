@@ -581,7 +581,7 @@ def _soccer_line(j: dict) -> str:
 
 def facts(m: dict) -> str:
     """モデルに渡す事実。ここに無いことは書かせない。"""
-    out = ["## きょうの日本人選手（点数の高い順）",
+    out = ["## 今日の日本人選手（点数の高い順）",
            "※ 点数はコレスポの独自指標。活躍の大きさを並べるためのもので、",
            "  公式の記録ではない。**点数そのものを主題にしない。**"]
     if not m["players"]:
@@ -593,7 +593,7 @@ def facts(m: dict) -> str:
             row += " ／ " + "・".join(p["badges_speech"])
         out.append(row)
         if p.get("standout"):
-            out.append("  ★きょうの主役。**はっきり称賛してよい内容。**"
+            out.append("  ★今日の主役。**はっきり称賛してよい内容。**"
                        "「素晴らしい投球だった」と書いてよい")
         # 打点の場面。決勝点なら、その選手を紹介するときに言う。
         for sc in p.get("scenes") or []:
@@ -618,7 +618,7 @@ def facts(m: dict) -> str:
         out.append("")
         out.append("## %s の、切り口ごとの成績" % m["players"][0]["name"])
         out.append("※ ここは**その日の成績ではなく今季の傾向。**")
-        out.append("  「きょう」と混ぜない。確からしさが low のものは")
+        out.append("  「今日」と混ぜない。確からしさが low のものは")
         out.append("  傾向として語らず、起きたことをそのまま置く。")
         out.append("※ **確率から理由を決めつけない。**")
         out.append("  「偶然でこうなる確率0%だから狙われている」は書かない。")
@@ -725,7 +725,7 @@ def panels(m: dict) -> dict:
             line = (line + " " + "・".join(p["badges"])).strip()
         out["jp%d" % i] = {"type": "star", "name": p["name"],
                            "team": p["team"], "line": line,
-                           "menu": "%sのきょうの成績" % p["name"]}
+                           "menu": "%sの今日の成績" % p["name"]}
     for i, s in enumerate(m["shots"][:2], 1):
         out["shot%d" % i] = {"type": "star", "name": s["name"],
                              "team": "本塁打の打球", "line": s["text"],
@@ -791,7 +791,7 @@ def panels(m: dict) -> dict:
                              "menu": "日本人選手の所属クラブの順位"}
 
     out["topic"] = {"type": "topic", "topic": "日本人選手の成績と指標",
-                    "menu": "きょうの話（締めに使う）"}
+                    "menu": "今日の話（締めに使う）"}
     return out
 
 

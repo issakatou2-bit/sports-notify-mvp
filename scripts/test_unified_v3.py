@@ -129,7 +129,7 @@ class Unified(unittest.TestCase):
             nar=g.build_narration(data,'players')
         before=copy.deepcopy(nar)
         scenes=bn.scenes_from_morning(data,nar)
-        self.assertTrue(all(s['ticker']=='きょうの日本人選手　1位 松井裕樹　2位 佐々木朗希　3位 大谷翔平' for s in scenes))
+        self.assertTrue(all(s['ticker']=='今日の日本人選手　1位 松井裕樹　2位 佐々木朗希　3位 大谷翔平' for s in scenes))
         self.assertFalse(bn.check_scenes(scenes,nar,data))
         self.assertEqual(nar,before)
 
