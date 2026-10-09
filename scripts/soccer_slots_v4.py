@@ -143,6 +143,9 @@ def week_program(data):
 def package(mode,data,segs,names,head,clubs=None):
     day=(data.get('date_jst') or data.get('date') or data.get('generated_at','')[:10])
     source=data.get('source') or ('football-data.org / プレミアリーグ公式' if mode=='week' else 'football-data.org')
+    try:
+        _d=__import__('datetime').date.fromisoformat(day[:10]);day=f"{_d.month}月{_d.day}日（{'月火水木金土日'[_d.weekday()]}）"
+    except ValueError:pass   # 帯は「9月19日（土）」の形（2026-09-18 のような書き方を画面に出さない）
     shared=dict(label={'preview':'欧州サッカー　予告','race':'欧州サッカー　順位争い','week':'欧州サッカー　日本人選手の週末'}[mode],source='音声: VOICEVOX:四国めたん　出典: '+source,ticker=day+'　'+head)
     for seg in segs:seg['meta'].update(shared)
     if segs:segs.append(segment('outro',r3.OUTRO_TEXT,shared))

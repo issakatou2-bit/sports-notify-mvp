@@ -72,7 +72,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
+      # サッカーの3枠は専用の変数で切り替える（本人が試作を見てから COLLESPO_SOCCER_LOOK=v4。10/10 エマ）
+      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
