@@ -60,6 +60,22 @@ def reserved_width(duo=False):
     return sum(widths) - 30 * (len(widths) - 1) + 20
 
 
+def redraw(im, layer):
+    """place_busts が記録した立ち絵を描き直す（札の演出で消えた分を戻す）。"""
+    for r in layer or ():
+        art = bust(r["who"], r["face"], r["height"], r["dim"])
+        if art is not None:
+            art = art.crop((0, 0, art.width, min(art.height, r["cut"])))
+            im.paste(art, tuple(r["at"]), art)
+    return im
+
+
+def portrait_strip():
+    """立ち絵が出うる右下の範囲（画面の切り替え中も、ここは次の画面のまま保つ）。"""
+    return (r3.SAFE_RIGHT - reserved_width(True) - 10, BUST_BOTTOM - BUST_ACTIVE // 2 - 12,
+            r3.SAFE_RIGHT + 40, BUBBLE[3] + 12)
+
+
 def zunda_face(line):
     if "？" in line or "?" in line:
         return "question"
@@ -81,18 +97,24 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
         if mood == "talk":
             mood = "base"
         face = ("talk" if (mouth and mood == "base") else mood) if active else "base"
-        arts.append((who, active, bust(who, face, BUST_ACTIVE if active else BUST_IDLE, not active)))
+        arts.append((who, active, bust(who, face, BUST_ACTIVE if active else BUST_IDLE, not active), face))
     x = r3.SAFE_RIGHT + 4
-    records = []
-    for who, active, art in reversed(arts):
+    # 吹き出しの無い画面（締め）は、吹き出しの場所まで下げて、上の札・ボタンにかけない
+    bottom = BUST_BOTTOM if line and not r3._CAPTION.get("hide_caption") else BUBBLE[3]
+    records, layer = [], []
+    for who, active, art, face in reversed(arts):
         if art is None:
             continue
         x -= art.width - (30 if len(arts) > 1 else 0)
         bob = round(4 * math.sin(elapsed * math.pi * 2 / 1.2)) if active and speaking else 0
-        y = BUST_BOTTOM - art.height + bob
+        y = bottom - art.height + bob
         im.paste(art, (x, y), art)
         records.append(dict(who=who, active=active, box=[x, y, x + art.width, y + art.height]))
+        # 吹き出しの枠に重なる下の端は描き直さない（吹き出しが上に来るように）
+        cut = art.height if bottom != BUST_BOTTOM else max(1, BUBBLE[1] - y)
+        layer.append(dict(who=who, face=face, height=BUST_ACTIVE if active else BUST_IDLE, dim=not active, at=[x, y], cut=cut))
     im.info["duo_portraits"] = records
+    im.info["duo_layer"] = layer      # 札の演出（video_common.short_effects）のあとに描き直す
     return records
 
 
