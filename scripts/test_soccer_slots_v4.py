@@ -164,4 +164,9 @@ if __name__=='__main__':
         for look in ('v3','v4'):
             proc=subprocess.run([sys.executable,'-X','utf8',__file__,'--child'],env=dict(os.environ,COLLESPO_SHORT_LOOK=look),capture_output=True,text=True,encoding='utf-8',errors='replace')
             print(look,proc.stderr.strip()[-5000:]);failures+=bool(proc.returncode)
+            if proc.returncode:
+                # run_checks は最後の行しか見せないので、落ちた検査と理由を NG の行に入れる
+                lines=proc.stderr.splitlines()
+                bad=[l for l in lines if l.startswith(('FAIL:','ERROR:'))]+[l for l in lines if 'Error' in l and not l.startswith(' ')][-3:]
+                print('NG',look,' / '.join(bad)[:900])
         print('ok soccer slots v3 pixels/v4 rules' if not failures else 'NG soccer slots');raise SystemExit(bool(failures))
