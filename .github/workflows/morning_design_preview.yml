@@ -12,11 +12,17 @@ on:
         type: choice
         options: [players, voices, press]
         default: players
+      duo:
+        description: '問いだけの掛け合い（v4・コメント・偶数日のみ）'
+        type: choice
+        options: ['off', 'game,voices']
+        default: 'off'
 permissions:
   contents: read
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
   COLLESPO_SHORT_LOOK: ${{ inputs.look || 'v3' }}
+  COLLESPO_DUO: ${{ inputs.duo || 'off' }}
 
 jobs:
   preview:

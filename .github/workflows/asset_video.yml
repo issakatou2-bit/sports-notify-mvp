@@ -68,6 +68,7 @@ permissions:
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
   COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
+  COLLESPO_DUO: ${{ vars.COLLESPO_DUO || 'off' }}
 
 jobs:
   # 夜の補完は、その日の1本が既にできていることが多い。

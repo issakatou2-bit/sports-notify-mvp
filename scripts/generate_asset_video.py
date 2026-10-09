@@ -645,6 +645,10 @@ def build_narration(topic: str) -> dict:
                 for seg in narration['segments']:seg['text']=tracker.text(seg['text'])
             import next_line
             narration['segments']=next_line.insert(narration['segments'],LIST_TOPICS[topic].get('next_line'))
+            import duo
+            if LIST_TOPICS[topic].get('game') and duo.enabled('game'):
+                narration['segments']=duo.game(narration['segments'],LIST_TOPICS[topic],list_items(topic))
+                narration['duration_budget']={'limit':45,'grace':0}
         return narration
     if topic == "mlb_venue":
         return _narration_venue()
@@ -1674,6 +1678,9 @@ def render_v3(t, kind, meta, spec, topic):
             from short_v4_cards import ensure_team_badges
             im.info['v4_ticker_text']=(spec.get('v3') or {}).get('ticker','')
             ensure_team_badges(im)
+            state=im.info.get('asset_v4',{})
+            im=video_common.short_effects(im,state.get('animation_time',t),quote=state.get('kind')=='quote',
+                                          score=kind=='intro' and bool(spec.get('game')))
         return im
     if r3.LOOK=='v4':
         from content_v4 import asset_display
@@ -1686,7 +1693,9 @@ def render_v3(t, kind, meta, spec, topic):
         # 共通の締め（毎日の番組表・チャンネル登録・音声の表記）
         return r3.outro(t, spec, spec.get("lineup_kind", ""), VOICE_CREDIT + "　データ: MLB Stats API")
     if kind == "people":
-        return decorate(r3.people(t, spec, spec.get(meta.get("group", "japanese")) or [],
+        rows=spec.get(meta.get('group','japanese')) or []
+        if meta.get('duo') and 'row' in meta:rows=rows[meta['row']:meta['row']+1]
+        return decorate(r3.people(t, spec, rows,
                          meta.get("heading", "日本人選手"), tag))
     items = list(spec.get('items') or []) if r3.LOOK=='v4' else list_items(meta.get("topic", topic))
     start = meta.get("start", 0)
@@ -1710,11 +1719,15 @@ def add_sound(audio_path, segs, durations, spec, topic, out_dir):
     import review_render_v3 as r3
     import sound_mix
     cues, t0 = [], 0.0
+    previous_screen=None
     for seg, dur in zip(segs, durations):
         kind, meta = seg.get("kind"), seg.get("meta") or {}
         items = list_items(meta.get("topic", topic)) if kind == "list" else ()
-        for at, k, v, db in r3.cues(kind, spec, items, meta.get("start", 0), meta.get("count", 1)):
+        same=meta.get('duo') and meta.get('screen')==previous_screen
+        local=() if same else r3.cues(kind,spec,items,meta.get('start',0),meta.get('count',1))
+        for at, k, v, db in local:
             cues.append((t0 + at, k, v, db))
+        previous_screen=meta.get('screen')
         t0 += dur
     import sound_mix as _sm
     name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or DEFAULT_BGM or _sm.DEFAULT_BGM
@@ -1787,7 +1800,8 @@ def main():
             if s.get("kind") == "outro":
                 import review_render_v3 as r3
                 s["text"] = r3.OUTRO_TEXT
-        VOICE_CREDIT = "音声: VOICEVOX:四国めたん"
+        import duo
+        VOICE_CREDIT = duo.credit(narration['segments'])
 
     if args.narration_out:
         p = pathlib.Path(args.narration_out)
@@ -1816,7 +1830,16 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / f"collespo_asset_{args.topic}.mp4"
 
-    durations = plan_durations(segs)
+    import duo
+    is_duo=any((s.get('meta') or {}).get('duo') for s in narration['segments'])
+    durations = duo.durations(segs) if is_duo else plan_durations(segs)
+    if is_duo:
+        if len(segs)!=len(narration['segments']) or any(
+            (a.get('text'),a.get('speaker'),a.get('kind'))!=(b.get('text'),b.get('speaker'),b.get('kind'))
+            for a,b in zip(segs,narration['segments'])):
+            raise ValueError('掛け合い音声が保存原稿と一致しません。両話者の音声を作り直してください')
+        errors=duo.check(segs,durations)
+        if errors:raise ValueError('掛け合いの実音声: '+str(errors))
     audio_path = build_narration_track(segs, durations, out_dir)
     spec_main = LIST_TOPICS.get(args.topic) or {}
     if audio_path and spec_main.get("style") == "v3":
@@ -1840,15 +1863,25 @@ def main():
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
                             stdout=subprocess.DEVNULL, stderr=err_file)
     total = 0
+    previous_frame=None
+    previous_screen=None
+    scene_elapsed=0.0
+    visual_key=None
+    wipe_frame=0
+    wipe_previous=None
     try:
-        for seg, dur in zip(segs, durations):
+        for seg_index,(seg, dur) in enumerate(zip(segs, durations)):
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
             still = None
             import review_render_v3 as _r3
             _r3.set_program_clock(total / FPS)
-            _r3.set_caption("" if kind == "outro" else seg.get("text", ""), dur, sum(durations))
+            _r3.set_caption(seg.get('text','') if meta.get('duo') or kind!='outro' else '',dur,sum(durations),
+                            speaker=seg.get('speaker',2),duo=meta.get('duo',False),hide_caption=kind=='outro')
+            screen=meta.get('screen',seg_index)
+            changed=screen!=previous_screen
+            if changed:scene_elapsed=0.0
             for k in range(n):
                 pp, settled = video_common.anim_step(k, n)
                 if kind == "map":
@@ -1864,7 +1897,15 @@ def main():
                     # 新デザイン（電光掲示板）は背景が動き続けるので、使い回さない。帯は番組の時計で流す
                     import review_render_v3 as _r3
                     _r3.set_program_clock(total / FPS)
-                    proc.stdin.write(render_v3(k / FPS, kind, meta, v2, args.topic).tobytes())
+                    image=render_v3(scene_elapsed+k/FPS,kind,meta,v2,args.topic)
+                    card=image.info.get('asset_v4') or {}
+                    key=(screen,card.get('kind'),card.get('head'),card.get('name'),card.get('page'),card.get('row'))
+                    if key!=visual_key:
+                        visual_key=key;wipe_frame=0;wipe_previous=previous_frame
+                    raw=video_common.short_transition(wipe_previous,image,wipe_frame,FPS,True) if _r3.LOOK=='v4' else image.tobytes()
+                    wipe_frame+=1
+                    proc.stdin.write(raw)
+                    previous_frame=raw
                     total += 1
                     continue
                 if kind != "map" and settled and still is not None:
@@ -1918,6 +1959,8 @@ def main():
                 if settled:
                     still = cached
                 total += 1
+            previous_screen=screen
+            scene_elapsed+=dur
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:
         import review_render_v3 as _r3

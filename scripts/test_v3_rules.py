@@ -91,6 +91,117 @@ def asset_cases():
 
 
 class V3Rules(unittest.TestCase):
+    def test_duo_questions_only_and_opt_in_even_days(self):
+        import duo
+        with patch.dict(os.environ,{'COLLESPO_DUO':'off'}):
+            self.assertFalse(duo.enabled('game'))
+        with patch.dict(os.environ,{'COLLESPO_DUO':'game,voices'}):
+            self.assertEqual(duo.enabled('game'),r3.LOOK=='v4')
+            self.assertFalse(duo.enabled('voices','2026-10-09'))
+            self.assertEqual(duo.enabled('voices','2026-10-08'),r3.LOOK=='v4')
+            self.assertEqual(duo.enabled('voices','2026-10-07T16:00:00Z'),r3.LOOK=='v4')
+            for spec in read('scripts/fixtures/v3-rules/game-v4.json')['topics']:
+                if not spec.get('game'):continue
+                with patch.dict(asset.LIST_TOPICS,{spec['key']:spec}):
+                    nar=asset.build_narration(spec['key'])
+                if r3.LOOK=='v3':
+                    self.assertFalse(any(s.get('speaker')==3 for s in nar['segments']))
+                    continue
+                self.assertFalse(duo.check(nar['segments']))
+                self.assertEqual(nar['segments'][-1]['text'],r3.OUTRO_TEXT)
+                self.assertEqual(nar['duration_budget'],{'limit':45,'grace':0})
+                for seg in nar['segments']:
+                    if seg.get('speaker')==3:
+                        self.assertTrue(duo.zunda_ok(seg['text']))
+                    elif seg['kind']=='list':
+                        self.assertFalse(seg['text'].startswith(seg['meta']['head']+'。'))
+                self.assertTrue(duo.check(nar['segments'],[46]+[0]*(len(nar['segments'])-1)))
+            if r3.LOOK=='v4':
+                material=read('scripts/fixtures/comment/local_voices-preview.json')
+                data={'players':[],'voices':material,'date_jst':'2026-10-08'}
+                with patch.dict(os.environ,ENV):nar=g.build_narration(data,'voices')
+                self.assertFalse(duo.check(nar['segments']))
+                with patch.dict(os.environ,ENV):design=daily_v3.prepare(data,nar,'voices')
+                self.assertEqual(sum(s['speaker']==3 for s in nar['segments']),3)
+                daily_v3.validate_audio(nar['segments'],nar)
+                with patch('sound_mix.mix_file',return_value=Path('duo-mix.wav')):
+                    self.assertEqual(daily_v3.mix(None,nar['segments'],[3]*len(nar['segments']),design,ROOT/'build'),Path('duo-mix.wav'))
+                for seg in nar['segments']:
+                    with patch.dict(r3._CAPTION,dict(text='' if seg['kind']=='outro' else seg['text'],
+                                   duration=8,start=0,total=40,duo=True,speaker=seg['speaker'])):
+                        image=daily_v3.frame(2,seg,design,8)
+                        self.assertFalse(rules.check_layout(image))
+
+    def test_duo_geometry_mouth_and_caption(self):
+        if r3.LOOK!='v4':return
+        import duo_presenter as dp
+        from PIL import Image
+        boxes=dp.geometry()
+        self.assertEqual(boxes['metan'][2],r3.SAFE_RIGHT)
+        self.assertLess(boxes['caption'][2],boxes['zundamon'][0])
+        self.assertGreater(boxes['caption'][2],560) # mock's caption width
+        for speaker in (2,3):
+            for at in (.1,.2,.45,1):
+                with patch.object(r3,'_PROGRAM_CLOCK',[None]),patch.dict(r3._CAPTION,
+                    dict(text='決めたのは、だれなのだ？' if speaker==3 else '松井裕樹が1回を無失点に抑えました。',
+                         duration=4,start=0,total=40,duo=True,speaker=speaker)):
+                    image=Image.new('RGB',(1080,1920))
+                    dp.presenter(image,at)
+                    self.assertFalse(rules.check_layout(image))
+                    self.assertEqual(image.info['duo_caption']['font_size'],48)
+                    self.assertLessEqual(image.info['duo_caption']['rows'],3)
+                    self.assertEqual(sum(r['active'] for r in image.info['duo_portraits']),1)
+                    active=next(r for r in image.info['duo_portraits'] if r['active'])
+                    self.assertEqual(active['who'],'zundamon' if speaker==3 else 'metan')
+                    for row in image.info['duo_portraits']:
+                        self.assertLessEqual(row['box'][2],r3.SAFE_RIGHT)
+                        self.assertLessEqual(row['box'][3],1480)
+
+    def test_shared_short_wipe_effects_and_numeric_centering(self):
+        from PIL import Image
+        import video_common as vc
+        previous=Image.new('RGB',(1080,1920),'#010203').tobytes()
+        nxt=Image.new('RGB',(1080,1920),'#202122')
+        self.assertEqual(vc.SHORT_WIPE_SECONDS,.5)
+        self.assertEqual(vc.short_transition(previous,nxt,15,30,True),nxt.tobytes())
+        self.assertEqual(vc.short_transition(previous,nxt,2,30,False),
+                         vc.crossfade(previous,nxt,2,round(.28*30),nxt.size))
+        if r3.LOOK!='v4':
+            self.assertIs(vc.short_effects(nxt,.2,True,True),nxt)
+            return
+        raw=vc.short_transition(previous,nxt,2,30,True)
+        wipe=Image.frombytes('RGB',nxt.size,raw)
+        self.assertEqual(wipe.getpixel((80,1300)),nxt.getpixel((80,1300)))
+        self.assertNotEqual(raw,nxt.tobytes())
+        import short_v4_cards as c
+        image=c.canvas(0,'数字の検査');c.stat(image,c.L,450,'1','本塁打',width=c.R-c.L,size=150)
+        numbers=[e for e in image.info['v3_layout'] if e.get('v4_font') and e['text']=='1']
+        self.assertGreaterEqual(numbers[0]['v4_font'],200)
+        self.assertAlmostEqual((numbers[0]['box'][0]+numbers[0]['box'][2])/2,(c.L+c.R)/2,delta=3)
+        image=c.canvas(0,'数字の検査');c.stat_cards(image,[('2','本塁打'),('4','打点')],600,196)
+        for tile in image.info['v4_number_tiles']:
+            entry=next(e for e in image.info['v3_layout'] if e['text']==tile['number'])
+            self.assertAlmostEqual((entry['box'][0]+entry['box'][2])/2,tile['center'],delta=3)
+            self.assertGreaterEqual(entry['v4_font'],140)
+            self.assertGreaterEqual(entry['box'][1],tile['box'][1])
+            self.assertLess(entry['box'][3],tile['box'][3]-40)
+        self.assertFalse(rules.check_layout(image))
+
+        # Quote window, one sweep, and score-only punch never alter the shared subtitle band.
+        import short_v4_cards as cards
+        source=cards.canvas(0,'演出の検査')
+        cards.panel(source,(r3.LEFT,340,r3.SAFE_RIGHT,900))
+        cards.text(source,r3.LEFT+40,500,'引用の本文',54)
+        for t in (.1,.25,.8,1.4):
+            effect=vc.short_effects(source,t,quote=True)
+            self.assertEqual(effect.crop((0,r3.CONTENT_BOTTOM,1080,1920)).tobytes(),
+                             source.crop((0,r3.CONTENT_BOTTOM,1080,1920)).tobytes())
+        self.assertNotEqual(vc.short_effects(source,.2,quote=True).tobytes(),source.tobytes())
+        self.assertEqual(vc.short_effects(source,1.4,quote=True).tobytes(),source.tobytes())
+        punch=vc.short_effects(source,.2,score=True)
+        self.assertEqual(punch.crop((0,0,1080,400)).tobytes(),source.crop((0,0,1080,400)).tobytes())
+        self.assertEqual(punch.crop((0,730,1080,1920)).tobytes(),source.crop((0,730,1080,1920)).tobytes())
+
     def test_next_information_is_material_bound_and_safe_before_shared_outro(self):
         import next_line as nl
         # 固定の公式日程の未開催行だけを使う。取得時刻/検査の実行日は使わない。

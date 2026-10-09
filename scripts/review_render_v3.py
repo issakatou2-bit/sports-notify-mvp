@@ -313,9 +313,10 @@ def face_for(line, elapsed, duration):
 _CAPTION = {"text": "", "start": 0.0, "duration": 0.0, "total": 0.0}
 
 
-def set_caption(text, duration, total=None):
+def set_caption(text, duration, total=None, speaker=2, duo=False, hide_caption=False):
     _CAPTION.update(text=str(text or ""), duration=float(duration or 0),
-                    start=_PROGRAM_CLOCK[0] or 0.0, total=float(total or _CAPTION["total"] or 0))
+                    start=_PROGRAM_CLOCK[0] or 0.0, total=float(total or _CAPTION["total"] or 0),
+                    speaker=speaker, duo=bool(duo and LOOK=='v4'),hide_caption=hide_caption)
 
 
 def sentences(text):
@@ -428,6 +429,9 @@ def progress(d):
 
 
 def presenter(im, t, which="right", who="metan"):
+    if LOOK=='v4' and _CAPTION.get('duo'):
+        import duo_presenter
+        return duo_presenter.presenter(im,t)
     if LOOK == "v4":
         clock = _PROGRAM_CLOCK[0]
         elapsed = (clock - _CAPTION["start"]) if clock is not None else t

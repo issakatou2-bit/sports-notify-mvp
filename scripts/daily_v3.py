@@ -22,8 +22,9 @@ def prepare(data, narration, mode):
             press_v3.bubbles(seg, data.get("reporters") or {})
     # 検査後に全場面の表示・声・表記をそろえる。旧声を使い回さない。
     for seg in narration["segments"]:
-        seg["speaker"] = 2
-        seg.setdefault("meta", {})["who"] = "四国めたん"
+        if not (seg.get('meta') or {}).get('duo'):
+            seg["speaker"] = 2
+            seg.setdefault("meta", {})["who"] = "四国めたん"
         if seg['kind']=='outro':
             import review_render_v3 as r3
             seg['text']=r3.OUTRO_TEXT
@@ -32,7 +33,12 @@ def prepare(data, narration, mode):
 
 
 def frame(t, seg, design, duration):
+    import review_render_v3 as r3
+    if (seg.get('meta') or {}).get('duo_ask'):
+        seg=dict(seg,text=seg['meta']['answer_text'])
     if seg['kind']=='outro':
+        if (seg.get('meta') or {}).get('duo'):
+            return r3.outro(t,{},'morning_voices','音声: VOICEVOX:四国めたん・ずんだもん')
         import v3_slot_render as common
         closing=common.outro(t,{'heading':'コレスポ','v3':{},'text':seg['text']},'morning_press' if design['mode']=='press' else 'morning_voices')
         if closing is not None:
@@ -43,7 +49,7 @@ def frame(t, seg, design, duration):
     import comment_render as cr
     vd = design["voices"]
     if seg["kind"] in {"voices", "thread"}:
-        return cr.voices_screen(t, seg, vd, duration)
+        return cr.voices_screen(t,seg,vd,duration)
     if seg["kind"] == "intro":
         rows = vd.get("voices") or []
         index = (seg.get('meta') or {}).get('used_voice')
@@ -62,11 +68,14 @@ def frame(t, seg, design, duration):
 def mix(audio, segments, durations, design, out_dir):
     import comment_render as cr
     import sound_mix
-    if any(s.get("speaker") != 2 for s in segments):
+    if any(s.get('speaker') not in ((2,3) if (s.get('meta') or {}).get('duo') else (2,)) for s in segments):
         raise ValueError("案Dの音声を四国めたん（話者2）で作り直してください")
     cues, start = [], 0.0
+    previous_screen=None
     for seg, dur in zip(segments, durations):
         speech = float(seg.get('duration') or dur)
+        spoken_seg=(dict(seg,text=seg['meta']['answer_text'])
+                    if (seg.get('meta') or {}).get('duo_ask') else seg)
         if seg['kind']=='outro':
             import review_render_v3 as r3
             local=r3.outro_cues('morning_press' if design['mode']=='press' else 'morning_voices')
@@ -74,10 +83,13 @@ def mix(audio, segments, durations, design, out_dir):
             import press_v3
             local = press_v3.cues(seg, design["reporters"], speech)
         else:
-            local = (cr.voices_cues(seg, design["voices"], speech)
+            local = (cr.voices_cues(spoken_seg, design["voices"], speech)
                  if seg["kind"] in {"voices", "thread"}
                  else [(0.0, "transition", "a", -6)])
-        cues.extend((start + at, kind, variant, db) for at, kind, variant, db in local)
+        if not ((seg.get('meta') or {}).get('duo') and
+                seg['meta'].get('screen')==previous_screen):
+            cues.extend((start + at, kind, variant, db) for at, kind, variant, db in local)
+        previous_screen=(seg.get('meta') or {}).get('screen')
         start += dur
     bgm = sound_mix.bgm_path()
     if not bgm.exists():
@@ -91,5 +103,5 @@ def validate_audio(segments, narration):
     if len(segments) != len(expected):
         raise ValueError("新デザインの音声区間数が原稿と合いません")
     for actual, wanted in zip(segments, expected):
-        if (actual.get("kind"), actual.get("text"), actual.get("speaker")) != (wanted["kind"], wanted["text"], 2):
+        if (actual.get("kind"), actual.get("text"), actual.get("speaker")) != (wanted["kind"], wanted["text"], wanted.get('speaker',2)):
             raise ValueError("新デザインの音声・話者が原稿と合いません")

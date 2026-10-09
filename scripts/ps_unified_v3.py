@@ -167,8 +167,10 @@ def check_layout(card):
 
 def transition(previous, image, index, fade_frames, elapsed, ticker_line):
     """画面を混ぜ終わった後に帯を一度だけ描く。帯の時刻は番組全体で連続。"""
-    from video_common import crossfade
-    result = r3.Image.frombytes('RGB',(1080,1920),crossfade(previous,image,index,fade_frames,(1080,1920)))
+    from video_common import crossfade, short_transition
+    raw=(short_transition(previous,image,index,30,True) if r3.LOOK=='v4' else
+         crossfade(previous,image,index,fade_frames,(1080,1920)))
+    result = r3.Image.frombytes('RGB',(1080,1920),raw)
     if not image.info.get('v3_outro'):
         r3.ticker(result,elapsed,ticker_line,once=True)
     return result.tobytes()
