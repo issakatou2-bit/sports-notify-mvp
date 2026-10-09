@@ -46,6 +46,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install delivery dependencies
+        run: python -m pip install requests
       - name: Verify duplicate prevention and source validation
         run: python scripts/test_buffer_daily.py
       - name: Install media inspection tool
@@ -129,5 +131,4 @@ jobs:
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
           V3_SNS_ENABLED: ${{ vars.V3_SNS_ENABLED }}
         run: |
-          pip install requests
           python scripts/asset_sns.py --publish
