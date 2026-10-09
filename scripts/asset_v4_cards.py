@@ -189,11 +189,11 @@ def stat_screen(t,spec,label,head,body,page=0):
                 c.text(im,L+24,y+30,title,36,width=R-L-48,team_id=team[0])
             else:c.text(im,L+24,y+26,title,40,width=R-L-48)
             pairs=stat_pairs(part)
-            if pairs:c.stat_cards(im,pairs,y+128,height=156)
+            if pairs:c.stat_cards(im,pairs,y+102,height=196)
             else:block(im,part,y+110,38)
             if head=='本塁打':
                 names=re.search(r'（(.+)）',part)
-                if names:c.text(im,L+24,y+294,names[1],24,width=R-L-48)
+                if names:c.text(im,L+24,y+304,names[1],22,width=R-L-48)
         pages=1
     else:
         c.panel(im,(L,348,R,1134))
@@ -210,7 +210,7 @@ def stat_screen(t,spec,label,head,body,page=0):
             # 主要な整数を大きく、全成績を1枚ずつ。6個以上も安全域の2段へ。
             hero=next(((n,u) for unit in ('奪三振','安打','本塁打','打点','回','キロ') for n,u in selected if u==unit),selected[0])
             if y<=556:
-                c.stat(im,L+24,574,*hero,size=174,width=R-L-48,unit_size=44)
+                c.stat(im,L+24,552,*hero,size=236,width=R-L-48,unit_size=44)
                 selected=c.without_big(selected,hero)
             im.info['v4_stat_tiles']=selected
             im.info['v4_big_stat']=hero
@@ -249,7 +249,7 @@ def item(t,spec,label,head,body,page=0):
         pages,_=c.quote_pages(row);lengths=[sum(map(len,p)) for p in pages]
         qt=(sum(lengths[:page])+lengths[min(page,len(pages)-1)]*.5)/max(1,sum(lengths))
         row.update(at=t-qt,end=t-qt+1)
-        im=c.quotes(t,[row],label,head,(spec.get('v3') or {}).get('ticker',''),r3.page_source([(head,body)]))
+        im=c.quotes(t,[row],label,head,(spec.get('v3') or {}).get('ticker',''),r3.page_source([(head,body)]),animate=False)
         im.info['asset_v4']={'kind':'quote','head':head,'said':row['said'],'page':page,'pages':len(pages)}
         return im
     return stat_screen(t,spec,label,head,body,page)
@@ -272,7 +272,10 @@ def list_page(t,spec,items,start,count,page,pages,label):
     i,fraction=timing(t,weights);head,body=selected[i]
     total=item_pages(spec,head,body);p=min(total-1,int(fraction*total))
     im=item(t,spec,label,head,body,p)
-    im.info['asset_v4'].update(item=start+i,fraction=fraction)
+    duration=r3._CAPTION.get('duration') or 20
+    elapsed=(fraction*total-p)*duration*weights[i]/sum(weights)/total
+    if count==1:elapsed=t  # a duo question+answer shares one running scene clock
+    im.info['asset_v4'].update(item=start+i,fraction=fraction,animation_time=elapsed)
     return im
 
 

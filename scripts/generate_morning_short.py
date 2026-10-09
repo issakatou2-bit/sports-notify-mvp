@@ -1472,6 +1472,12 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         import next_line
         segments=next_line.insert(segments,data.get('next_line'))
     result={"label": day, "segments": segments}
+    if mode=='voices' and os.environ.get('COLLESPO_COMMENTS_DESIGN','legacy')=='comments':
+        import duo
+        voice_day=data.get('date_jst') or (data.get('voices') or {}).get('updated_at')
+        if duo.enabled('voices',voice_day):
+            result['segments']=duo.voices(segments)
+            result['duration_budget']={'limit':45,'grace':0}
     if mode=='players':
         limit,grace=post_common.duration_budget('morning')
         result['duration_budget']={'limit':limit,'grace':grace}
@@ -4004,6 +4010,9 @@ def plan_durations(segs):
     その日によって変わるものがあり(スコアボードの回数など)、
     表の固定値では、短い日は無音が伸び、長い日は追いつかない。
     """
+    if any((s.get('meta') or {}).get('duo') for s in segs):
+        import duo
+        return duo.durations(segs)
     return [max(float(.5 if (s.get('meta') or {}).get('quote_rows') else s.get("min_duration")
                       or MIN_DURATION.get(s.get("kind") or "list", 5.0)),
                 float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
@@ -4440,6 +4449,10 @@ def main():
         if sum(durations)>limit+grace:
             raise ValueError(f'17:00の尺が予算{limit}+{grace}秒を超えています: {sum(durations):.2f}秒。声の設定を変えず原稿を短くしてください')
     audio_path = build_narration_track(segs, durations, out_dir)
+    if any((s.get('meta') or {}).get('duo') for s in narration['segments']):
+        import duo
+        errors=duo.check(segs,durations)
+        if errors:raise ValueError('掛け合いの実音声: '+str(errors))
     if daily_design and audio_path:
         daily_v3.validate_audio(segs, narration)
         audio_path = daily_v3.mix(audio_path, segs, durations, daily_design, out_dir)
@@ -4480,6 +4493,7 @@ def main():
     # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
     last_frame = None
     bn_time = 0.0
+    duo_scene_elapsed=0.0
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
             set_step(seg_i, len(segs))
@@ -4496,9 +4510,14 @@ def main():
                 import review_render_v3 as r3
                 r3.set_program_clock(total / FPS)
                 # 字幕（v4）: その画面で読む文。締めは画面に文が出ているので出さない
-                r3.set_caption("" if kind == "outro" else
-                               (narration["segments"][seg_i].get("text") if seg_i < len(narration["segments"]) else ""),
-                               float(seg.get("duration") or dur), sum(durations))
+                same=(seg_i>0 and meta.get('duo') and meta.get('screen')==
+                      (segs[seg_i-1].get('meta') or {}).get('screen'))
+                if not same:duo_scene_elapsed=0.0
+                r3.set_caption((narration['segments'][seg_i].get('text') or '')
+                               if meta.get('duo') or kind!='outro' else '',
+                               float(seg.get("duration") or dur), sum(durations),
+                               speaker=seg.get('speaker',2),duo=meta.get('duo',False),hide_caption=kind=='outro')
+                r3._CAPTION['scene_elapsed']=duo_scene_elapsed
             for k in range(n):
                 if daily_design or bn_plan:
                     import review_render_v3 as r3
@@ -4506,14 +4525,18 @@ def main():
                 if daily_design:
                     speech = float(seg.get('duration') or dur)
                     im = daily_v3.frame(k / FPS, narration["segments"][seg_i], daily_design, speech)
-                    cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
+                    same=(seg_i>0 and meta.get('duo') and meta.get('screen')==
+                          (segs[seg_i-1].get('meta') or {}).get('screen'))
+                    cached = video_common.short_transition(None if same else last_frame,im,k,FPS,r3.LOOK=='v4')
                     if k < fade:
                         cached = r3.redraw_ticker(cached, (W, H))
                     proc.stdin.write(cached)
                     total += 1
                     continue
                 if bn_plan:
-                    proc.stdin.write(bn.frame(bn_time + k / FPS, bn_plan).tobytes())
+                    image=bn.frame(bn_time+k/FPS,bn_plan)
+                    cached=video_common.short_transition(last_frame,image,k,FPS,True) if r3.LOOK=='v4' else image.tobytes()
+                    proc.stdin.write(cached)
                     total += 1
                     continue
                 pp, settled = video_common.anim_step(k, n)
@@ -4626,6 +4649,7 @@ def main():
                 total += 1
             last_frame = cached
             bn_time += dur
+            duo_scene_elapsed+=dur
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:
         import review_render_v3 as _r3

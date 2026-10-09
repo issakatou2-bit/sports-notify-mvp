@@ -119,6 +119,10 @@ def finish(im,t,ticker='',source='',once=False):
         im.info['v4_ticker_text']=ticker
         ensure_team_badges(im)
         balance_content(im,t)
+        if not im.info.get('asset_v4') and not im.info.get('skip_short_effects'):
+            import video_common
+            elapsed=t+(r3._CAPTION.get('scene_elapsed',0) if r3._CAPTION.get('duo') else 0)
+            im=video_common.short_effects(im,elapsed,quote=bool(im.info.get('v4_quote')))
     return im
 
 
@@ -177,6 +181,15 @@ def stat(im,x,y,value,unit,size=96,color=None,width=280,unit_size=30):
     uw=r3.font(unit_size).getlength(unit)
     room=max(30,width-uw-14)
     while r3.num_font(size).getlength(value)>room and size>30:size-=2
+    # Wide hero areas use a centered number+unit group, never a small left tile.
+    if width>=500:
+        size=max(size,200)
+        while r3.num_font(size).getlength(value)+uw+14>width and size>200:size-=2
+        number_width=r3.num_font(size).getlength(value)
+        unit_room=(width-number_width)/2-14
+        while uw>unit_room and unit_size>20:
+            unit_size-=2;uw=r3.font(unit_size).getlength(unit)
+        x+=(width-number_width)/2
     text(im,x,y,value,size,color,number=True)
     end=x+r3.num_font(size).getlength(value)+12
     text(im,end,y+max(0,size*.65-unit_size),unit,unit_size,color,width=uw+1)
@@ -278,9 +291,19 @@ def stat_cards(im,values,y,height=148):
     for i,(number,unit) in enumerate(values[:5]):
         x=L+24+i*(w+gap)
         panel(im,(x,y,x+w,y+height))
-        text(im,x+16,y+14,number,76,r3.GOLD,width=w-32,number=True)
+        size=min(152,round(height*.78))
+        while r3.num_font(size).getlength(str(number))>w-24 and size>60:size-=2
+        f=r3.num_font(size)
+        nx=x+(w-f.getlength(str(number)))/2
+        ny=y+12
+        text(im,nx,ny,number,size,r3.GOLD,number=True)
         ImageDraw.Draw(im).line((x+16,y+height-60,x+w-16,y+height-60),fill=r3.GOLD,width=1)
-        text(im,x+16,y+height-46,unit,28,width=w-32)
+        unit_size=28
+        while r3.font(unit_size).getlength(str(unit))>w-20 and unit_size>18:unit_size-=2
+        ux=x+(w-r3.font(unit_size).getlength(str(unit)))/2
+        text(im,ux,y+height-46,unit,unit_size,width=w-20)
+        im.info.setdefault('v4_number_tiles',[]).append(dict(number=str(number),unit=unit,
+                            box=[x,y,x+w,y+height],font_size=size,center=x+w/2))
 
 
 def cover(t,spec):
@@ -453,13 +476,14 @@ def quote_pages(row,top=374):
     return [wrapped[i:i+capacity] for i in range(0,len(wrapped),capacity)],size
 
 
-def quotes(t,voices,label,live,ticker,source):
+def quotes(t,voices,label,live,ticker,source,animate=True):
     import v3_slot_render as common
     voices=[v for v in voices if not v.get('fact')]
     visible=[v for v in voices if t>=v.get('at',0)]
     active=next((v for v in reversed(visible) if v.get('read') is not False and t<v.get('end',4)),None)
     row=active or (visible[-1] if visible else (voices[0] if voices else None))
     im=canvas(t,label)
+    if not animate:im.info['skip_short_effects']=True
     text(im,L,264,common.screen_text(live),36,width=R-L)
     if not row:return finish(im,t,ticker,source)
     top=374

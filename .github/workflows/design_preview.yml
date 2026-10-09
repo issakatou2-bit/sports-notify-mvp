@@ -17,6 +17,11 @@ on:
         type: choice
         options: [momentum, game, odds, spotlight]
         default: momentum
+      duo:
+        description: '問いだけの掛け合い（v4の試合の話題のみ）'
+        type: choice
+        options: ['off', game]
+        default: 'off'
       snapshot:
         description: 保存済み材料で試作（当日の情報として投稿しない）
         type: boolean
@@ -33,6 +38,7 @@ permissions:
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
   COLLESPO_SHORT_LOOK: ${{ inputs.look || 'v3' }}
+  COLLESPO_DUO: ${{ inputs.duo || 'off' }}
 
 jobs:
   preview:
