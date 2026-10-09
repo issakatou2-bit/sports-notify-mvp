@@ -1,0 +1,120 @@
+name: 手動　欧州サッカーの日本人選手の結果
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 終了した日本時間の日（空なら前日）
+        type: string
+        required: false
+        default: ''
+      publish:
+        description: 確認後に予約投稿する
+        type: boolean
+        required: true
+        default: false
+      publish_at:
+        description: 予約する日本時間 HH:MM（公開する場合は未来の時刻）
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+concurrency:
+  group: soccer-results
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      COLLESPO_SHORT_LOOK: v4
+      COLLESPO_DUO: 'off'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg pyyaml
+      - name: Fetch results
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          RESULT_DAY: ${{ inputs.date }}
+        run: |
+          args=()
+          if [ -n "$RESULT_DAY" ]; then args=(--date "$RESULT_DAY"); fi
+          python scripts/soccer_results.py "${args[@]}" --out data/soccer_results.json
+      - name: Stop when no Japanese player appeared
+        id: gate
+        run: |
+          COUNT=$(python -c "import json; d=json.load(open('data/soccer_results.json',encoding='utf-8')); print(sum(p['status']!='none' for p in d['players']))")
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -eq 0 ]; then echo "::notice::日本人選手の出場なし。動画を作りません"; fi
+      - name: Inspect material and drawing
+        if: steps.gate.outputs.count != '0'
+        run: python scripts/test_soccer_results.py --material data/soccer_results.json
+      - name: Install video tools
+        if: steps.gate.outputs.count != '0'
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX
+        if: steps.gate.outputs.count != '0'
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version > /dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:50021/version
+      - name: Create narration
+        if: steps.gate.outputs.count != '0'
+        run: python scripts/soccer_results_render.py --data data/soccer_results.json --narration-out build/soccer_results/narration.json
+      - name: Synthesize narration
+        if: steps.gate.outputs.count != '0'
+        run: python scripts/synthesize_narration.py --narration build/soccer_results/narration.json --out-dir build/soccer_results/audio
+      - name: Render and measure 40 seconds
+        if: steps.gate.outputs.count != '0'
+        run: python scripts/soccer_results_render.py --data data/soccer_results.json --audio-dir build/soccer_results/audio --out build/soccer_results
+      - name: Vertical thumbnail
+        if: steps.gate.outputs.count != '0'
+        run: bash scripts/shorts_thumbnail.sh build/soccer_results/collespo_soccer_results.mp4 build/soccer_results/short.png
+      - name: Require a future reservation
+        if: inputs.publish && steps.gate.outputs.count != '0'
+        env:
+          PUBLISH_AT: ${{ inputs.publish_at }}
+        run: |
+          python -c "import os,sys; sys.path.insert(0,'scripts'); import upload_youtube as u; assert os.environ['PUBLISH_AT'] and u.resolve_publish_at(os.environ['PUBLISH_AT']), '未来の予約時刻を指定してください'"
+      - name: Upload to YouTube
+        if: inputs.publish && steps.gate.outputs.count != '0'
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          PUBLISH_AT: ${{ inputs.publish_at }}
+        run: |
+          RESULT_KEY=$(python -c "import json; print(json.load(open('data/soccer_results.json',encoding='utf-8'))['date_jst'])")
+          python scripts/upload_youtube.py --video build/soccer_results/collespo_soccer_results.mp4 \
+            --kind soccer_results --sport soccer --games data/soccer_results.json \
+            --video-date "$RESULT_KEY" \
+            --narration build/soccer_results/narration.json --thumbnail build/soccer_results/short.png \
+            --privacy public --publish-at "$PUBLISH_AT"
+      - name: Commit record
+        if: always()
+        run: |
+          bash scripts/commit_data.sh "soccer results: ${{ github.run_id }}" \
+            data/soccer_results.json data/published_videos.json data/token_usage.json
+      - name: Save video and verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-results
+          path: |
+            build/soccer_results/
+            data/soccer_results.json
+          if-no-files-found: ignore
+      - name: Confirm reservation
+        if: inputs.publish && steps.gate.outputs.count != '0'
+        run: python scripts/verify_published.py --kind soccer_results
