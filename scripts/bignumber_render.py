@@ -716,6 +716,9 @@ def scene(t, scene_spec, team_id=None):
             return v4.others(t,spec)
         if spec.get('player') and (spec.get('rank') or 0)>1:
             return v4.player_detail(t,spec,spec['player'])
+        if spec.get('week_player'):
+            # ここ7日も v4 の札で（10/9、球団色の黒い地の古い画面のままだった）
+            return v4.player_detail(t,dict(spec,team_id=None),spec['week_player'])
     if r3.LOOK == 'v4' and spec.get('big') and (spec.get('rank') or 0) == 1:
         from short_v4_cards import hero
         return hero(t,spec)
@@ -997,6 +1000,12 @@ def _week_scenes(seg, players, days=7):
                     "chips": [r["trend"]] if r.get("trend") else [],
                     "cards": [] if big else [{"title": r.get("name", ""), "body": r.get("line", "")}],
                     "team_id": team.get(r.get("name")), "say": say})
+        if r3.LOOK == 'v4':
+            p = next((x for x in players if x.get("name") == r.get("name")), {})
+            out[-1]["week_player"] = dict(name=r.get("name", ""), rank=None, tag=f"ここ{days}日の成績",
+                                          team_id=p.get("team_id"), team_jp=p.get("team_jp", ""),
+                                          headline=r.get("line", ""), big=big, unit=unit,
+                                          notes=[(r["late"] + ("で、" + r["trend"] + "ところ" if r.get("trend") else "")) if r.get("late") else (r.get("trend") or "")] if (r.get("late") or r.get("trend")) else [])
     return out
 
 
