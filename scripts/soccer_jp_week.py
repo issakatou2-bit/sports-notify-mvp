@@ -339,6 +339,11 @@ def due(data: dict, state: dict, record: dict) -> tuple:
     return True, f"{key}までの週末（{len(data['rows'])}行）"
 
 
+def v4_program(data):
+    import soccer_slots_v4
+    return soccer_slots_v4.week_program(data) if soccer_slots_v4.enabled() else None
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/soccer_jp_week.json")

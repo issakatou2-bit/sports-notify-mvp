@@ -964,6 +964,9 @@ def main():
     args = parser.parse_args()
 
     data = _load(args.games, {})
+    import soccer_slots_v4
+    if soccer_slots_v4.enabled() and data.get('games') and all(_is_soccer_league(g.get('league')) for g in data['games']):
+        return soccer_slots_v4.run_compat('preview', args.games, narration_out=args.out)
     games = [g for g in mlb_availability.prepare(data.get("games", []))
              if g.get("is_notable")][:MAX_GAMES]
 

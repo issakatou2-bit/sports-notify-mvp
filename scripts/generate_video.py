@@ -951,6 +951,10 @@ def main():
     DATA_SOURCE = DATA_SOURCES[args.sport]
 
     games_data = json.loads(pathlib.Path(args.games).read_text(encoding="utf-8"))
+    if args.sport == 'soccer':
+        import soccer_slots_v4
+        if soccer_slots_v4.enabled():
+            return soccer_slots_v4.run_compat('preview', args.games, audio_dir=args.audio_dir, out=args.out)
     games = [g for g in games_data.get("games", []) if g.get("is_notable")]
     if not games:
         print("[info] 注目試合が無いため、動画は作りません")

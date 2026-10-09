@@ -71,6 +71,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

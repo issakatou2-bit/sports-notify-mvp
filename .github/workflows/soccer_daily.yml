@@ -39,6 +39,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
     # 起動の合図にするだけで、材料には依存しない。
     #
     # 以前は日次の成功を条件にしていたが、8/16に日次が通知の失敗で落ちた回、
