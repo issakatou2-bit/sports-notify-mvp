@@ -1,0 +1,2261 @@
+{
+ "checked": "2026-10-09",
+ "about": "5大リーグ 2026-27 の全クラブ（data/soccer_preview.json の順位表のクラブ）の主色・2色目。出典は各クラブの sources。推測で埋めていない。空（null）は見つからなかったもの（README の一覧）。",
+ "leagues": {
+  "PL": {
+   "name_jp": "プレミアリーグ",
+   "clubs": [
+    {
+     "team_en": "Manchester City FC",
+     "name_jp": "マンチェスター・シティ",
+     "name_jp_source": "材料の表記",
+     "abbr": "MCI",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#66CCFF",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.mancity.com/",
+     "sources": [
+      {
+       "url": "https://www.mancity.com/",
+       "kind": "公式サイトのCSS",
+       "what": "HTTP 403（Redirecting...）、theme-color/manifest/ブランド名付きCSS変数なし"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Manchester City: primaryColor=#66CCFF"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Manchester City: secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": "公式サイトが自動取得を403で拒否。公式由来の値を確認できず"
+    },
+    {
+     "team_en": "Arsenal FC",
+     "name_jp": "アーセナル",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "ARS",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#E30613",
+     "secondary": "#BEAC88",
+     "official_site": "https://www.arsenal.com/",
+     "sources": [
+      {
+       "url": "https://www.arsenal.com/_next/static/css/7cb2de947b97fb94.css",
+       "kind": "公式サイトのCSS",
+       "what": "--arsenal-red:#e30613"
+      },
+      {
+       "url": "https://www.arsenal.com/_next/static/css/7cb2de947b97fb94.css",
+       "kind": "公式サイトのCSS",
+       "what": "--arsenal-gold:#beac88"
+      }
+     ],
+     "note": "ほかに --arsenal-red-web:#c3001e（Web用の赤）もある。secondary は名前付きの金色を採用"
+    },
+    {
+     "team_en": "Brighton & Hove Albion FC",
+     "name_jp": "ブライトン",
+     "name_jp_source": "材料の表記",
+     "abbr": "BRI",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#004899",
+     "secondary": null,
+     "official_site": "https://www.brightonandhovealbion.com/",
+     "sources": [
+      {
+       "url": "https://www.brightonandhovealbion.com/home",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#004899"
+      },
+      {
+       "url": "https://www.brightonandhovealbion.com/home",
+       "kind": "公式サイトのCSS",
+       "what": "--theme-primary-accent-color:#004899"
+      }
+     ],
+     "note": "secondary にあたる名前の変数なし（--theme-primary-highlight-color:#1affba はUIの強調色）"
+    },
+    {
+     "team_en": "Brentford FC",
+     "name_jp": "ブレントフォード",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "BRE",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#C61D23",
+     "secondary": "#370019",
+     "official_site": "https://www.brentfordfc.com/",
+     "sources": [
+      {
+       "url": "https://www.brentfordfc.com/_next/static/css/8d934f0bd4ab6af8.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-1:#c61d23"
+      },
+      {
+       "url": "https://www.brentfordfc.com/_next/static/css/8d934f0bd4ab6af8.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-2:#370019"
+      }
+     ],
+     "note": "secondary は --p-color-primary-2（--p-color-secondary-1:#ff1c24 は primary と同系の赤なので不採用）"
+    },
+    {
+     "team_en": "Leeds United FC",
+     "name_jp": "リーズ",
+     "name_jp_source": "材料の表記",
+     "abbr": "LEE",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#FFD600",
+     "secondary": "#213A8F",
+     "official_site": "https://www.leedsunited.com/",
+     "sources": [
+      {
+       "url": "https://www.leedsunited.com/_next/static/css/1f06f463d6a9a5b3.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-1:#ffd600"
+      },
+      {
+       "url": "https://www.leedsunited.com/_next/static/css/1f06f463d6a9a5b3.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-2:#213a8f"
+      }
+     ],
+     "note": "Webサイトのテーマ色（伝統の白いユニフォーム色ではない）"
+    },
+    {
+     "team_en": "Liverpool FC",
+     "name_jp": "リバプール",
+     "name_jp_source": "材料の表記",
+     "abbr": "LIV",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#E31B23",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.liverpoolfc.com/",
+     "sources": [
+      {
+       "url": "https://stadion-edge.liverpoolfc.com/_next/static/css/ea1f88ffdc036a5c.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-1:#e31b23"
+      },
+      {
+       "url": "https://stadion-edge.liverpoolfc.com/_next/static/css/ea1f88ffdc036a5c.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-2:#fff"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Everton FC",
+     "name_jp": "エバートン",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "EVE",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#00019E",
+     "secondary": "#0F1115",
+     "official_site": "https://www.evertonfc.com/",
+     "sources": [
+      {
+       "url": "https://www.evertonfc.com/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --primary-500:0 1 158"
+      },
+      {
+       "url": "https://www.evertonfc.com/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --secondary-500:15 17 21"
+      }
+     ],
+     "note": "Webサイト共通基盤のテーマ変数（RGB値を16進に変換）"
+    },
+    {
+     "team_en": "Hull City AFC",
+     "name_jp": "ハル・シティ",
+     "name_jp_source": "材料の表記",
+     "abbr": "HUL",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#FFAA00",
+     "secondary": "#151515",
+     "official_site": "https://www.wearehullcity.co.uk/",
+     "sources": [
+      {
+       "url": "https://www.wearehullcity.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --primary-500:255 170 0"
+      },
+      {
+       "url": "https://www.wearehullcity.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --secondary-500:21 21 21"
+      }
+     ],
+     "note": "Webサイト共通基盤のテーマ変数（RGB値を16進に変換）"
+    },
+    {
+     "team_en": "Newcastle United FC",
+     "name_jp": "ニューカッスル",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "NEW",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#0A54FF",
+     "secondary": "#131F2D",
+     "official_site": "https://www.newcastleunited.com/en",
+     "sources": [
+      {
+       "url": "https://www.newcastleunited.com/_next/static/css/dd831aef0a169768.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-1:#0a54ff"
+      },
+      {
+       "url": "https://www.newcastleunited.com/_next/static/css/dd831aef0a169768.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-2:#131f2d"
+      }
+     ],
+     "note": "注意：Webサイトの画面用の色（青）。白黒のユニフォーム色ではない。nufc.co.uk は newcastleunited.com へ転送"
+    },
+    {
+     "team_en": "Chelsea FC",
+     "name_jp": "チェルシー",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "CHE",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#0033A0",
+     "secondary": null,
+     "official_site": "https://www.chelseafc.com/en",
+     "sources": [
+      {
+       "url": "https://www.chelseafc.com/en",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#0033a0"
+      },
+      {
+       "url": "https://www.chelseafc.com/site.webmanifest",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color=#0033a0, background_color=#0033a0"
+      }
+     ],
+     "note": "secondary と名前の付いた変数なし（main.css に --gold:#b49664 などはあるがブランドの副色とは書かれていない）"
+    },
+    {
+     "team_en": "Ipswich Town FC",
+     "name_jp": "イプスウィッチ",
+     "name_jp_source": "材料の表記",
+     "abbr": "IPS",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://www.itfc.co.uk/",
+     "sources": [
+      {
+       "url": "https://www.itfc.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "theme-color/manifest/名前付きブランド変数なし（#0333a0 が多用されるが名前なし）"
+      }
+     ],
+     "note": "公式サイトに、ブランド色と名前の付いた値が見つからず"
+    },
+    {
+     "team_en": "Manchester United FC",
+     "name_jp": "マンチェスター・ユナイテッド",
+     "name_jp_source": "材料の表記",
+     "abbr": "MUN",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#DB1D24",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.manutd.com/",
+     "sources": [
+      {
+       "url": "https://www.manutd.com/_next/static/css/df377433c954d65b.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-1:#db1d24"
+      },
+      {
+       "url": "https://www.manutd.com/_next/static/css/df377433c954d65b.css",
+       "kind": "公式サイトのCSS",
+       "what": "--p-color-primary-2:#fff"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Nottingham Forest FC",
+     "name_jp": "ノッティンガム・フォレスト",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "NOT",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#CC0000",
+     "secondary": "#FFCC33",
+     "official_site": "https://www.nottinghamforest.co.uk/",
+     "sources": [
+      {
+       "url": "https://www.nottinghamforest.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --primary-500:204 0 0"
+      },
+      {
+       "url": "https://www.nottinghamforest.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --secondary-500:255 204 51"
+      }
+     ],
+     "note": "Webサイト共通基盤のテーマ変数（RGB値を16進に変換）"
+    },
+    {
+     "team_en": "Sunderland AFC",
+     "name_jp": "サンダーランド",
+     "name_jp_source": "材料の表記",
+     "abbr": "SUN",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#DC0714",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.safc.com/",
+     "sources": [
+      {
+       "url": "https://www.safc.com/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --primary-500:220 7 20"
+      },
+      {
+       "url": "https://www.safc.com/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --secondary-500:255 255 255"
+      }
+     ],
+     "note": "Webサイト共通基盤のテーマ変数（RGB値を16進に変換）"
+    },
+    {
+     "team_en": "Crystal Palace FC",
+     "name_jp": "クリスタル・パレス",
+     "name_jp_source": "材料の表記",
+     "abbr": "CRY",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#0055A5",
+     "secondary": "#EE2E24",
+     "official_site": "https://www.cpfc.co.uk/",
+     "sources": [
+      {
+       "url": "https://www.cpfc.co.uk/_next/static/chunks/0gpdopa_08l_z.css",
+       "kind": "公式サイトのCSS",
+       "what": "--color-brand-primary-500:#0055a5"
+      },
+      {
+       "url": "https://www.cpfc.co.uk/_next/static/chunks/0gpdopa_08l_z.css",
+       "kind": "公式サイトのCSS",
+       "what": "--color-brand-secondary-500:#ee2e24"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Aston Villa FC",
+     "name_jp": "アストン・ビラ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "AVL",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#480024",
+     "secondary": "#94BEE5",
+     "official_site": "https://www.avfc.co.uk/",
+     "sources": [
+      {
+       "url": "https://www.avfc.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --primary-500:72 0 36"
+      },
+      {
+       "url": "https://www.avfc.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --secondary-500:148 190 229"
+      }
+     ],
+     "note": "Webサイト共通基盤のテーマ変数（RGB値を16進に変換）"
+    },
+    {
+     "team_en": "AFC Bournemouth",
+     "name_jp": "ボーンマス",
+     "name_jp_source": "材料の表記",
+     "abbr": "BOU",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#EA0029",
+     "secondary": "#000000",
+     "official_site": "https://www.afcb.co.uk/",
+     "sources": [
+      {
+       "url": "https://www.afcb.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --primary-500:234 0 41"
+      },
+      {
+       "url": "https://www.afcb.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --secondary-500:0 0 0"
+      }
+     ],
+     "note": "Webサイト共通基盤のテーマ変数（RGB値を16進に変換）"
+    },
+    {
+     "team_en": "Coventry City FC",
+     "name_jp": "コベントリー",
+     "name_jp_source": "材料の表記",
+     "abbr": "COV",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#299ADC",
+     "secondary": "#001489",
+     "official_site": "https://www.ccfc.co.uk/",
+     "sources": [
+      {
+       "url": "https://www.ccfc.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --primary-600:41 154 220（--accent に使用）"
+      },
+      {
+       "url": "https://www.ccfc.co.uk/",
+       "kind": "公式サイトのCSS",
+       "what": "inline CSS --secondary-500:0 20 137"
+      }
+     ],
+     "note": "--primary-500 だけ 240 152 194（ピンク）で段階の並びから外れているため、--accent に使われる --primary-600 を採用"
+    },
+    {
+     "team_en": "Fulham FC",
+     "name_jp": "フラム",
+     "name_jp_source": "材料の表記",
+     "abbr": "FUL",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://www.fulhamfc.com/",
+     "sources": [
+      {
+       "url": "https://www.fulhamfc.com/",
+       "kind": "公式サイトのCSS",
+       "what": "theme-color/manifest/名前付きブランド変数なし（.button--primary-light{background-color:#da322f} はボタン用）"
+      }
+     ],
+     "note": "公式サイトに、ブランド色と名前の付いた値が見つからず"
+    },
+    {
+     "team_en": "Tottenham Hotspur FC",
+     "name_jp": "トッテナム",
+     "name_jp_source": "材料の表記",
+     "abbr": "TOT",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#000A3C",
+     "secondary": null,
+     "official_site": "https://www.tottenhamhotspur.com/",
+     "sources": [
+      {
+       "url": "https://www.tottenhamhotspur.com/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#000a3c"
+      },
+      {
+       "url": "https://www.tottenhamhotspur.com/resources/ver/v2.1.9/assets/thfc/site.webmanifest",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color=#000a3c, background_color=#000a3c"
+      }
+     ],
+     "note": "secondary は CSS の --secondary-secondary が場面ごとに #333b63/#e6e6f0/#262626 と変わり1つに決められない"
+    }
+   ]
+  },
+  "PD": {
+   "name_jp": "ラ・リーガ",
+   "clubs": [
+    {
+     "team_en": "FC Barcelona",
+     "name_jp": "バルセロナ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "BAR",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#1241FD",
+     "secondary": "#FFC000",
+     "official_site": "https://www.fcbarcelona.com/",
+     "sources": [
+      {
+       "url": "https://www.fcbarcelona.com/resources/v3.12.0-9239/styles/screen.min.css",
+       "kind": "公式サイトのCSS",
+       "what": "--primary-primary:#1241fd / --secondary-secondary:#ffc000"
+      }
+     ],
+     "note": "サイトのデザイン用の色。meta theme-color と manifest は #FFFFFF（白）で使っていない"
+    },
+    {
+     "team_en": "Club Atlético de Madrid",
+     "name_jp": "アトレティコ・マドリード",
+     "name_jp_source": "材料の表記",
+     "abbr": "ATM",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#FF0000",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.atleticodemadrid.com/",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Atlético de Madrid: primaryColor=#FF0000"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Atlético de Madrid: secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": "公式サイトが 403 で取得できず（www・en・manifest の3回）"
+    },
+    {
+     "team_en": "Real Betis Balompié",
+     "name_jp": "レアル・ベティス",
+     "name_jp_source": "材料の表記",
+     "abbr": "BET",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#009655",
+     "secondary": "#329B5C",
+     "official_site": "https://www.realbetisbalompie.es/",
+     "sources": [
+      {
+       "url": "https://www.realbetisbalompie.es/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#009655"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Real Betis: secondaryColor=#329b5c"
+      }
+     ],
+     "note": "2つ目の色は名前つきの CSS 変数が見つからず null"
+    },
+    {
+     "team_en": "Real Madrid CF",
+     "name_jp": "レアル・マドリード",
+     "name_jp_source": "材料の表記",
+     "abbr": "RMA",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#3E31FA",
+     "secondary": "#8760F6",
+     "official_site": "https://www.realmadrid.com/",
+     "sources": [
+      {
+       "url": "https://www.realmadrid.com/manifest.webmanifest",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color=#3E31FA"
+      },
+      {
+       "url": "https://www.realmadrid.com/",
+       "kind": "公式サイトのCSS",
+       "what": "--rm-color-primary-default:#3E31FA / --rm-color-secondary-default:#8760F6"
+      }
+     ],
+     "note": "サイトの画面用の色（青紫系）。meta theme-color は #ffffff"
+    },
+    {
+     "team_en": "Sevilla FC",
+     "name_jp": "セビージャ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "SEV",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#D10000",
+     "secondary": null,
+     "official_site": "https://sevillafc.es/",
+     "sources": [
+      {
+       "url": "https://sevillafc.es/_next/static/css/4579b87a3e81539f.css",
+       "kind": "公式サイトのCSS",
+       "what": "--brand-500:#D10000（--brand-400:#FF0000 もあり）"
+      }
+     ],
+     "note": "brand の段階色のうち中央の 500 を採用。2つ目の色は見つからず null"
+    },
+    {
+     "team_en": "Deportivo Alavés",
+     "name_jp": "アラベス",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "DEP",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#05163A",
+     "secondary": "#0032A0",
+     "official_site": "https://deportivoalaves.com/es/",
+     "sources": [
+      {
+       "url": "https://deportivoalaves.com/es/",
+       "kind": "公式サイトのCSS",
+       "what": "--color-primary:#05163A / --color-secondary:#0032A0"
+      },
+      {
+       "url": "https://deportivoalaves.com/es/styles.633ffcca5db72e44.css",
+       "kind": "公式サイトのCSS",
+       "what": "同じ値"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "RC Deportivo La Coruña",
+     "name_jp": "デポルティボ",
+     "name_jp_source": "材料の表記",
+     "abbr": "DCO",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#0831B6",
+     "secondary": "#E6E7E8",
+     "official_site": "https://www.rcdeportivo.es/es",
+     "sources": [
+      {
+       "url": "https://www.rcdeportivo.es/site.webmanifest",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color=#0831b6"
+      },
+      {
+       "url": "https://www.rcdeportivo.es/assets/layout-B-Nt_Uwa.css",
+       "kind": "公式サイトのCSS",
+       "what": "--color-white-depor:#e6e7e8（ほかに --color-navy-depor:#000d33, --color-red-depor:#b2344f, --color-green-depor:#148e82）"
+      }
+     ],
+     "note": "2つ目は club 名つき変数 --color-white-depor を採用"
+    },
+    {
+     "team_en": "Real Sociedad de Fútbol",
+     "name_jp": "レアル・ソシエダ",
+     "name_jp_source": "材料の表記",
+     "abbr": "RSO",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#0058B1",
+     "secondary": "#0000FF",
+     "official_site": "https://www.realsociedad.eus/",
+     "sources": [
+      {
+       "url": "https://www.realsociedad.eus/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#0058b1"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Real Sociedad: secondaryColor=#0000FF"
+      }
+     ],
+     "note": "2つ目の色は名前つきの CSS 変数が見つからず null"
+    },
+    {
+     "team_en": "Villarreal CF",
+     "name_jp": "ビジャレアル",
+     "name_jp_source": "材料の表記",
+     "abbr": "VIL",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#FFE715",
+     "secondary": "#003C6C",
+     "official_site": "https://villarrealcf.es/es/",
+     "sources": [
+      {
+       "url": "https://villarrealcf.es/_next/static/chunks/667183c5f120a0ed.css",
+       "kind": "公式サイトのCSS",
+       "what": "--villarreal-yellow:#ffe715 / --primary:#003c6c"
+      }
+     ],
+     "note": "サイトの --primary は紺 #003c6c。クラブ名つきの黄色を1つ目にした"
+    },
+    {
+     "team_en": "Athletic Club",
+     "name_jp": "アスレティック・ビルバオ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "ATH",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://www.athletic-club.eus/",
+     "sources": [],
+     "note": "公式サイトが 403 で取得できず（/・/en・manifest の3回）"
+    },
+    {
+     "team_en": "Getafe CF",
+     "name_jp": "ヘタフェ",
+     "name_jp_source": "材料の表記",
+     "abbr": "GET",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#00369E",
+     "secondary": "#003CAB",
+     "official_site": "https://www.getafecf.com/",
+     "sources": [
+      {
+       "url": "https://www.getafecf.com/",
+       "kind": "公式サイトのCSS",
+       "what": "--color-primary-60:#00369E / --color-secondary-60:#003cab"
+      }
+     ],
+     "note": "2色とも青系"
+    },
+    {
+     "team_en": "Rayo Vallecano de Madrid",
+     "name_jp": "ラージョ・バジェカーノ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "RAY",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#E21921",
+     "secondary": null,
+     "official_site": "https://www.rayovallecano.es/",
+     "sources": [
+      {
+       "url": "https://www.rayovallecano.es/",
+       "kind": "公式サイトのCSS",
+       "what": "--color-primary-60:#E21921（secondary・accent も同じ値）"
+      }
+     ],
+     "note": "secondary も同じ赤なので null"
+    },
+    {
+     "team_en": "CA Osasuna",
+     "name_jp": "オサスナ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "OSA",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#D60F26",
+     "secondary": "#00004D",
+     "official_site": "https://www.osasuna.es/",
+     "sources": [
+      {
+       "url": "https://www.osasuna.es/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#D60F26"
+      },
+      {
+       "url": "https://www.osasuna.es/site.webmanifest",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color=#D60F26"
+      },
+      {
+       "url": "https://www.osasuna.es/assets/front-css.css?v=1791314684",
+       "kind": "公式サイトのCSS",
+       "what": "--Osasuna-Rojo-Rojo:#d60f26 / --Osasuna-Azul-Azul:#00004d（--Osasuna-Dorado-Dorado:#c9a845 もあり）"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "RC Celta de Vigo",
+     "name_jp": "セルタ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "CEL",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#6CACE4",
+     "secondary": "#0A2339",
+     "official_site": "https://www.rccelta.es/",
+     "sources": [
+      {
+       "url": "https://rccelta.es/app/themes/rccelta/dist/images/site.webmanifest",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color=#6CACE4"
+      },
+      {
+       "url": "https://www.rccelta.es/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#0A2339"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "RCD Espanyol de Barcelona",
+     "name_jp": "エスパニョール",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "ESP",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://www.rcdespanyol.com/",
+     "sources": [],
+     "note": "theme-color・manifest・brand 名つき CSS 変数なし（CSS は .blue などの一般名だけなので不採用）"
+    },
+    {
+     "team_en": "Real Racing Club de Santander",
+     "name_jp": "ラシン・サンタンデール",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "REA",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#0E3F27",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.realracingclub.es/",
+     "sources": [
+      {
+       "url": "https://www.realracingclub.es/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#0E3F27"
+      },
+      {
+       "url": "https://www.realracingclub.es/site.webmanifest",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color=#0E3F27"
+      },
+      {
+       "url": "https://www.realracingclub.es/assets/front-css.css?v=1791452804",
+       "kind": "公式サイトのCSS",
+       "what": "--Racing-Dark:#0e3f27 / --Racing-White:#FFF（--Racing-Gold:#b69d76 もあり）"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Levante UD",
+     "name_jp": "レバンテ",
+     "name_jp_source": "材料の表記",
+     "abbr": "LEV",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#0D183D",
+     "secondary": null,
+     "official_site": "https://www.levanteud.com/",
+     "sources": [
+      {
+       "url": "https://www.levanteud.com/",
+       "kind": "公式サイトのCSS",
+       "what": "--color-primary-60:#0D183D（secondary・accent も同じ値）"
+      }
+     ],
+     "note": "secondary も同じ紺なので null"
+    },
+    {
+     "team_en": "Elche CF",
+     "name_jp": "エルチェ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "ELC",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#006633",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.elchecf.es/",
+     "sources": [
+      {
+       "url": "https://www.elchecf.es/",
+       "kind": "公式サイトのCSS",
+       "what": "--color-primary-60:#006633 / --color-secondary-60:#ffffff"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Valencia CF",
+     "name_jp": "バレンシア",
+     "name_jp_source": "材料の表記",
+     "abbr": "VAL",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#FF671F",
+     "secondary": "#000000",
+     "official_site": "https://www.valenciacf.com/",
+     "sources": [
+      {
+       "url": "https://www.valenciacf.com/assets/front-css.css?v=1789732342",
+       "kind": "公式サイトのCSS",
+       "what": "--vcf-orange-vcf-orange:#ff671f / --vcf-black-vcf-black:#000（--vcf-white-vcf-white:#fff もあり）"
+      },
+      {
+       "url": "https://www.valenciacf.com/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#161616（参考）"
+      }
+     ],
+     "note": "クラブ名つき変数のうち、色のついたオレンジを1つ目、黒を2つ目にした"
+    },
+    {
+     "team_en": "Málaga CF",
+     "name_jp": "マラガ",
+     "name_jp_source": "材料の表記",
+     "abbr": "MAL",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#0033A0",
+     "secondary": "#3A8DDE",
+     "official_site": "https://www.malagacf.com/",
+     "sources": [
+      {
+       "url": "https://www.malagacf.com/",
+       "kind": "公式サイトのCSS",
+       "what": "--color-primary-60:#0033A0 / --color-secondary-60:#3a8dde"
+      }
+     ],
+     "note": "最初の curl は 403、ブラウザの UA を全部書くと取得できた"
+    }
+   ]
+  },
+  "SA": {
+   "name_jp": "セリエA",
+   "clubs": [
+    {
+     "team_en": "AS Roma",
+     "name_jp": "ローマ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "ROM",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#990A2C",
+     "secondary": "#FBBA00",
+     "official_site": "https://www.asroma.com/en",
+     "sources": [
+      {
+       "url": "https://assets.asroma.com/prod/PageHeader.8a72e30cc153d492aacd.css",
+       "kind": "公式サイトのCSS",
+       "what": ":root --asr-red:#990a2c / --asr-yellow:#fbba00 (asr=AS Roma prefix)"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "FC Internazionale Milano",
+     "name_jp": "インテル",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "INT",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#011EA0",
+     "secondary": "#FFDC3C",
+     "official_site": "https://www.inter.it/it",
+     "sources": [
+      {
+       "url": "https://www.inter.it/it",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#011ea0ff"
+      },
+      {
+       "url": "https://www.inter.it/favicon/manifest.json",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color=#011ea0ff, background_color=#000"
+      },
+      {
+       "url": "https://www.inter.it/it",
+       "kind": "公式サイトのCSS",
+       "what": "--chakra-colors-brand-blue:#011ea0ff / --chakra-colors-brand-yellow:#ffdc3cff"
+      }
+     ],
+     "note": "secondary は CSS の brand-yellow（ユニフォームの黒ではない）"
+    },
+    {
+     "team_en": "SS Lazio",
+     "name_jp": "ラツィオ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "LAZ",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#0089F2",
+     "secondary": "#021332",
+     "official_site": "https://www.sslazio.it/it",
+     "sources": [
+      {
+       "url": "https://sslazio.it/_next/static/css/c8982e7ee30c1d9f.css",
+       "kind": "公式サイトのCSS",
+       "what": "--primary-500:#0089f2 / --secondary-500:#021332"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Cagliari Calcio",
+     "name_jp": "カリアリ",
+     "name_jp_source": "材料の表記",
+     "abbr": "CAG",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#A52838",
+     "secondary": "#002B49",
+     "official_site": "https://cagliaricalcio.com/",
+     "sources": [
+      {
+       "url": "https://cagliaricalcio.com/wp-content/themes/cagliari-theme/dist/css/bundle.css?ver=7.1.3",
+       "kind": "公式サイトのCSS",
+       "what": "--color-red-cagliari:#A52838 / --color-blue-cagliari:#002b49"
+      }
+     ],
+     "note": "どちらを primary にするかは CSS に書かれていない（赤を primary とした）"
+    },
+    {
+     "team_en": "AC Milan",
+     "name_jp": "ACミラン",
+     "name_jp_source": "材料の表記",
+     "abbr": "MIL",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#E0071B",
+     "secondary": "#FF0000",
+     "official_site": "https://www.acmilan.com/it",
+     "sources": [
+      {
+       "url": "https://acmilan.com/_next/static/chunks/063s_j04izbei.css?dpl=dpl_FPcWNuxnMHSwqrcjwqJSiZs1PTj3",
+       "kind": "公式サイトのCSS",
+       "what": "--color-primary:#e0071b（--color-secondary は 600:#a29161 / 700:#937636 の濃淡だけで基本値なし）"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Milan: secondaryColor=#ff0000"
+      }
+     ],
+     "note": "secondary: 基本の --color-secondary が無く濃淡違いだけなので null"
+    },
+    {
+     "team_en": "Frosinone Calcio",
+     "name_jp": "フロジノーネ",
+     "name_jp_source": "材料の表記",
+     "abbr": "FRO",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#F7DD00",
+     "secondary": "#00458F",
+     "official_site": "https://www.frosinonecalcio.com/",
+     "sources": [
+      {
+       "url": "https://www.frosinonecalcio.com/wp-content/uploads/elementor/css/post-31409.css?ver=1791512009",
+       "kind": "公式サイトのCSS",
+       "what": "--e-global-color-primary:#F7DD00 / --e-global-color-secondary:#00458F"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Juventus FC",
+     "name_jp": "ユベントス",
+     "name_jp_source": "材料の表記",
+     "abbr": "JUV",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#000000",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.juventus.com/it",
+     "sources": [
+      {
+       "url": "https://www.juventus.com/it",
+       "kind": "公式サイトのCSS",
+       "what": "theme-color/manifest/ブランド名の CSS 変数なし（base.css 等も確認）"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Juventus: primaryColor=#000000"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Juventus: secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": "公式サイトに theme-color・manifest・ブランド色の CSS 変数が見つからない"
+    },
+    {
+     "team_en": "Como 1907",
+     "name_jp": "コモ",
+     "name_jp_source": "材料の表記",
+     "abbr": "COM",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#E04413",
+     "secondary": "#FFFFFF",
+     "official_site": "https://comofootball.com/",
+     "sources": [
+      {
+       "url": "https://comofootball.com/",
+       "kind": "公式サイトのCSS",
+       "what": "インライン :root --color-primary:#e04413"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Como: secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": "サイトの UI の primary（オレンジ）。クラブの紋章の色とは違う可能性あり。secondary の名前の変数なし"
+    },
+    {
+     "team_en": "SSC Napoli",
+     "name_jp": "ナポリ",
+     "name_jp_source": "材料の表記",
+     "abbr": "NAP",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#129BC4",
+     "secondary": "#FAFAFA",
+     "official_site": "https://sscnapoli.it/",
+     "sources": [
+      {
+       "url": "https://sscnapoli.it/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=black（hex でない）"
+      },
+      {
+       "url": "https://sscnapoli.it/wp-content/themes/Nebula-child/style.css?ver=1.0.1136",
+       "kind": "公式サイトのCSS",
+       "what": "ブランド色の変数なし"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Napoli: primaryColor=#129bc4"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Napoli: secondaryColor=#fafafa"
+      }
+     ],
+     "note": "theme-color が 'black' だけでクラブ色ではない。ブランド色の CSS 変数なし"
+    },
+    {
+     "team_en": "US Sassuolo Calcio",
+     "name_jp": "サッスオーロ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "SAS",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://www.sassuolocalcio.it/",
+     "sources": [
+      {
+       "url": "https://www.sassuolocalcio.it/wp-content/uploads/elementor/css/post-8.css?ver=1791368523",
+       "kind": "公式サイトのCSS",
+       "what": "--e-global-color-primary/secondary はどちらも #FF0000（仮の値）。--e-global-color-el_c_1_color:#018734 はあるが brand/primary の名前ではない"
+      }
+     ],
+     "note": "primary/secondary の名前の値が仮の #FF0000 で、ブランド色とはいえない"
+    },
+    {
+     "team_en": "Atalanta BC",
+     "name_jp": "アタランタ",
+     "name_jp_source": "材料の表記",
+     "abbr": "ATA",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#1C72E3",
+     "secondary": "#000000",
+     "official_site": "https://www.atalanta.it/",
+     "sources": [
+      {
+       "url": "https://www.atalanta.it/assets/favicon/site.webmanifest?v=2026-05-logo-refresh",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color/background_color=#ffffff"
+      },
+      {
+       "url": "https://atalanta.it/_next/static/css/88c76588555d1618.css",
+       "kind": "公式サイトのCSS",
+       "what": "ブランド色の変数なし（.shadow-primary #0D68B1 のみ）"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Atalanta: primaryColor=#1c72e3"
+      },
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ・アン公式のデータ（他リーグのクラブも載っている）",
+       "what": "Atalanta: secondaryColor=#000000"
+      }
+     ],
+     "note": "manifest は白だけ。ブランド色とはっきり名付けた値なし"
+    },
+    {
+     "team_en": "US Lecce",
+     "name_jp": "レッチェ",
+     "name_jp_source": "材料の表記",
+     "abbr": "LEC",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://uslecce.it/",
+     "sources": [
+      {
+       "url": "https://uslecce.it/wp-content/themes/uslecce/css/app.css",
+       "kind": "公式サイトのCSS",
+       "what": "ブランド色の変数なし（WordPress 既定値のみ）"
+      }
+     ],
+     "note": "theme-color・manifest・ブランド色の CSS 変数なし"
+    },
+    {
+     "team_en": "Udinese Calcio",
+     "name_jp": "ウディネーゼ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "UDI",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://www.udinese.it/",
+     "sources": [
+      {
+       "url": "https://udinese.cdn.xpl.io/xsr-bundle/20260408144103/app/css/m09.min.css",
+       "kind": "公式サイトのCSS",
+       "what": "ブランド色の変数なし"
+      }
+     ],
+     "note": "theme-color・manifest・ブランド色の CSS 変数なし"
+    },
+    {
+     "team_en": "Torino FC",
+     "name_jp": "トリノ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "TOR",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#691B25",
+     "secondary": null,
+     "official_site": "https://www.torinofc.it/",
+     "sources": [
+      {
+       "url": "https://www.torinofc.it/",
+       "kind": "公式サイトのCSS",
+       "what": "インライン --pack-granata: #691B25（granata=クラブ色の名前）"
+      }
+     ],
+     "note": "primary は「granata（クラブ色）」と名付けた変数。secondary は見つからない"
+    },
+    {
+     "team_en": "Parma Calcio 1913",
+     "name_jp": "パルマ",
+     "name_jp_source": "材料の表記",
+     "abbr": "PAR",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#29356D",
+     "secondary": null,
+     "official_site": "https://www.parmacalcio1913.com/",
+     "sources": [
+      {
+       "url": "https://www.parmacalcio1913.com/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#29356d"
+      },
+      {
+       "url": "https://www.parmacalcio1913.com/site.webmanifest",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color=#29356d, background_color=#29356d"
+      }
+     ],
+     "note": "secondary は見つからない"
+    },
+    {
+     "team_en": "AC Monza",
+     "name_jp": "モンツァ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "MON",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#E10032",
+     "secondary": "#C81932",
+     "official_site": "https://www.acmonza.com/",
+     "sources": [
+      {
+       "url": "https://www.acmonza.com/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#e10032"
+      },
+      {
+       "url": "https://www.acmonza.com/",
+       "kind": "公式サイトのCSS",
+       "what": "--main-color: #e10032 / --secondary-color: #c81932"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "ACF Fiorentina",
+     "name_jp": "フィオレンティーナ",
+     "name_jp_source": "材料の表記",
+     "abbr": "ACF",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://www.acffiorentina.com/",
+     "sources": [
+      {
+       "url": "https://www.acffiorentina.com/",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#ffffff（白）"
+      }
+     ],
+     "note": "theme-color が白だけでクラブ色ではない"
+    },
+    {
+     "team_en": "Bologna FC 1909",
+     "name_jp": "ボローニャ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "BOL",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://www.bolognafc.it/",
+     "sources": [
+      {
+       "url": "https://www.bolognafc.it/wp-content/themes/bolognafc/css/styles.css?ver=29",
+       "kind": "公式サイトのCSS",
+       "what": "--primary:#007bff / --secondary:#6c757d は Bootstrap の既定値"
+      },
+      {
+       "url": "https://www.bolognafc.it/manifest.json",
+       "kind": "公式サイトのmanifest",
+       "what": "theme_color なし"
+      }
+     ],
+     "note": "primary/secondary は Bootstrap の既定値でクラブ色ではない"
+    },
+    {
+     "team_en": "Genoa CFC",
+     "name_jp": "ジェノア",
+     "name_jp_source": "材料の表記",
+     "abbr": "GEN",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#001E32",
+     "secondary": "#AE1919",
+     "official_site": "https://genoacfc.it/",
+     "sources": [
+      {
+       "url": "https://genoacfc.it/wp-content/themes/genoa/assets/dist/main.css?ver=1.0.0",
+       "kind": "公式サイトのCSS",
+       "what": ".bg-blue-primary / .is-genoa background:#001e32 ; .btn-primary background-color:#ae1919"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Venezia FC",
+     "name_jp": "ベネツィア",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "VEN",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": null,
+     "secondary": null,
+     "official_site": "https://veneziafc.it/",
+     "sources": [
+      {
+       "url": "https://veneziafc.it/",
+       "kind": "公式サイトのCSS",
+       "what": "インライン :root --orange:hsl(32,100%,50%) / --green:hsl(144,100%,19%)（色の名前だけ、brand/primary の名前ではない）"
+      }
+     ],
+     "note": "brand/primary と名付けた値なし（--orange・--green はある）"
+    }
+   ]
+  },
+  "BL1": {
+   "name_jp": "ブンデスリーガ",
+   "clubs": [
+    {
+     "team_en": "Borussia Dortmund",
+     "name_jp": "ドルトムント",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "BVB",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#FFD900",
+     "secondary": "#000000",
+     "official_site": "https://www.bvb.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "Borussia Dortmund: gradientStartColor=#FFD900, textColor=#000000"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/borussia-dortmund",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#FFD900, textColor=#000000）"
+      },
+      {
+       "url": "https://www.bvb.de/etc.clientlibs/bvbweb/clientlibs/clientlib-site.lc-213dcbe0af5ccb8804d77dc0b486f015-lc.min.css",
+       "kind": "公式サイトのCSS",
+       "what": "--color-yellow-400:#ffd900（リーグの値と一致）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "FC Bayern München",
+     "name_jp": "バイエルン",
+     "name_jp_source": "材料の表記",
+     "abbr": "FCB",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#ED0037",
+     "secondary": "#FFFFFF",
+     "official_site": "https://fcbayern.com/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "FC Bayern München: gradientStartColor=#ED0037, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/fc-bayern-muenchen",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#ED0037, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "fcbayern.com は403で開けなかった（元は見られていない）。値はリーグ公式サイトのみ。"
+    },
+    {
+     "team_en": "SC Freiburg",
+     "name_jp": "フライブルク",
+     "name_jp_source": "材料の表記",
+     "abbr": "SCF",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#E4002B",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.scfreiburg.com/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "Sport-Club Freiburg: gradientStartColor=#E4002B, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/sport-club-freiburg",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#E4002B, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "FC Augsburg",
+     "name_jp": "アウクスブルク",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "AUG",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#00462D",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.fcaugsburg.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "FC Augsburg: gradientStartColor=#00462D, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/fc-augsburg",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#00462D, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "Bayer 04 Leverkusen",
+     "name_jp": "レバークーゼン",
+     "name_jp_source": "材料の表記",
+     "abbr": "B04",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#FF0000",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.bayer04.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "Bayer 04 Leverkusen: gradientStartColor=#FF0000, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/bayer-04-leverkusen",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#FF0000, textColor=#FFFFFF）"
+      },
+      {
+       "url": "https://cdn-werkself-prod.bayer04.de/styles-4SIC2SQH.css",
+       "kind": "公式サイトのCSS",
+       "what": "--bs-primary: #ff0000（リーグの値と一致）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "1. FSV Mainz 05",
+     "name_jp": "マインツ",
+     "name_jp_source": "材料の表記",
+     "abbr": "FSV",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#E30613",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.mainz05.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "1. FSV Mainz 05: gradientStartColor=#E30613, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/1-fsv-mainz-05",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#E30613, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "SV 07 Elversberg",
+     "name_jp": "エルバースベルク",
+     "name_jp_source": "材料の表記",
+     "abbr": "ELV",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#D2BE8C",
+     "secondary": "#000000",
+     "official_site": "https://www.sv07elversberg.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "SV Elversberg: gradientStartColor=#D2BE8C, textColor=#000000"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/sv-elversberg",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#D2BE8C, textColor=#000000）"
+      },
+      {
+       "url": "https://sv07elversberg.de/",
+       "kind": "公式サイトのCSS",
+       "what": "--wp--preset--color--primary:#c8b885 / --wp--preset--color--secondary:#141414（参考。リーグの値 #D2BE8C/#000000 と少し違う）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "SV Werder Bremen",
+     "name_jp": "ブレーメン",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "WER",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#008149",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.werder.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "SV Werder Bremen: gradientStartColor=#008149, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/sv-werder-bremen",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#008149, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "werder.de は429（アクセス制限）。theme-color #000 のみで色の根拠にならず。値はリーグ公式サイトのみ。"
+    },
+    {
+     "team_en": "RB Leipzig",
+     "name_jp": "ライプツィヒ",
+     "name_jp_source": "材料の表記",
+     "abbr": "RBL",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#FFFFFF",
+     "secondary": "#000000",
+     "official_site": "https://rbleipzig.com/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "RB Leipzig: gradientStartColor=#FFFFFF, textColor=#000000"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/rb-leipzig",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#FFFFFF, textColor=#000000）"
+      }
+     ],
+     "note": "リーグ公式の色はタイルの地が白(#FFFFFF)・文字が黒。クラブの赤はリーグのデータに無く、公式サイトにもtheme-color等が無かったので入れていない。"
+    },
+    {
+     "team_en": "Eintracht Frankfurt",
+     "name_jp": "フランクフルト",
+     "name_jp_source": "材料の表記",
+     "abbr": "EIN",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#000000",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.eintracht.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "Eintracht Frankfurt: gradientStartColor=#000000, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/eintracht-frankfurt",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#000000, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "FC Schalke 04",
+     "name_jp": "シャルケ",
+     "name_jp_source": "材料の表記",
+     "abbr": "SCH",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#004B9C",
+     "secondary": "#FFFFFF",
+     "official_site": "https://schalke04.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "FC Schalke 04: gradientStartColor=#004B9C, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/fc-schalke-04",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#004B9C, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "SC Paderborn 07",
+     "name_jp": "パーダーボルン",
+     "name_jp_source": "材料の表記",
+     "abbr": "PAD",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#006DB3",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.scp07.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "SC Paderborn 07: gradientStartColor=#006DB3, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/sc-paderborn-07",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#006DB3, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "1. FC Köln",
+     "name_jp": "ケルン",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "KOL",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#FF0000",
+     "secondary": "#FFFFFF",
+     "official_site": "https://fc.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "1. FC Köln: gradientStartColor=#FF0000, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/1-fc-koeln",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#FF0000, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "TSG 1899 Hoffenheim",
+     "name_jp": "ホッフェンハイム",
+     "name_jp_source": "材料の表記",
+     "abbr": "TSG",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#0A4BAF",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.tsg-hoffenheim.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "TSG Hoffenheim: gradientStartColor=#0A4BAF, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/tsg-hoffenheim",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#0A4BAF, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "VfB Stuttgart",
+     "name_jp": "シュツットガルト",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "VFB",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#FFFFFF",
+     "secondary": "#000000",
+     "official_site": "https://www.vfb.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "VfB Stuttgart: gradientStartColor=#FFFFFF, textColor=#000000"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/vfb-stuttgart",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#FFFFFF, textColor=#000000）"
+      }
+     ],
+     "note": "リーグ公式の色はタイルの地が白(#FFFFFF)・文字が黒。クラブの赤はリーグのデータに無く、vfb.de にもtheme-color等が無かった。"
+    },
+    {
+     "team_en": "Hamburger SV",
+     "name_jp": "ハンブルガーSV",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "HAM",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#005AAA",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.hsv.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "Hamburger SV: gradientStartColor=#005AAA, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/hamburger-sv",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#005AAA, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "hsv.de は時間切れで開けなかった（元は見られていない）。値はリーグ公式サイトのみ。"
+    },
+    {
+     "team_en": "1. FC Union Berlin",
+     "name_jp": "ウニオン・ベルリン",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "UNI",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#E30613",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.fc-union-berlin.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "1. FC Union Berlin: gradientStartColor=#E30613, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/1-fc-union-berlin",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#E30613, textColor=#FFFFFF）"
+      },
+      {
+       "url": "https://www.fc-union-berlin.de/de",
+       "kind": "公式サイトのtheme-color",
+       "what": "meta theme-color=#e30613（リーグの値と一致）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    },
+    {
+     "team_en": "Borussia Mönchengladbach",
+     "name_jp": "ボルシアMG",
+     "name_jp_source": "材料の表記",
+     "abbr": "BOR",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#000000",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.borussia.de/",
+     "sources": [
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs",
+       "kind": "リーグ公式サイト",
+       "what": "Borussia Mönchengladbach: gradientStartColor=#000000, textColor=#FFFFFF"
+      },
+      {
+       "url": "https://www.bundesliga.com/de/bundesliga/clubs/borussia-moenchengladbach",
+       "kind": "リーグ公式サイト",
+       "what": "クラブページでも同じ色（color/gradientStartColor=#000000, textColor=#FFFFFF）"
+      }
+     ],
+     "note": "secondary はリーグがタイルの文字色として決めた色（白/黒）。"
+    }
+   ]
+  },
+  "FL1": {
+   "name_jp": "リーグ・アン",
+   "clubs": [
+    {
+     "team_en": "AS Monaco FC",
+     "name_jp": "モナコ",
+     "name_jp_source": "材料の表記",
+     "abbr": "ASM",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#D70032",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.asmonaco.com/fr/",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_9（name=AS Monaco）: primaryColor=#D70032, secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Olympique Lyonnais",
+     "name_jp": "リヨン",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "OL",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#0F23AA",
+     "secondary": "#E5202E",
+     "official_site": "https://www.olweb.fr",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_159（name=Olympique Lyonnais）: primaryColor=#0F23AA, secondaryColor=#E5202E"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Paris FC",
+     "name_jp": "パリFC",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "PFC",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#0A0E2D",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.parisfootballclub.com",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_90（name=Paris FC）: primaryColor=#0A0E2D, secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Lille OSC",
+     "name_jp": "リール",
+     "name_jp_source": "材料の表記",
+     "abbr": "LIL",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#E41B13",
+     "secondary": "#211E5F",
+     "official_site": "https://www.losc.fr",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_158（name=LOSC Lille）: primaryColor=#E41B13, secondaryColor=#211E5F"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Stade Rennais FC 1901",
+     "name_jp": "レンヌ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "REN",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#DA261B",
+     "secondary": "#000000",
+     "official_site": "https://www.staderennais.com",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_14（name=Stade Rennais FC）: primaryColor=#DA261B, secondaryColor=#000000"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Paris Saint-Germain FC",
+     "name_jp": "パリ・サンジェルマン",
+     "name_jp_source": "材料の表記",
+     "abbr": "PSG",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#004070",
+     "secondary": "#E30613",
+     "official_site": "https://www.psg.fr",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_13（name=Paris Saint-Germain）: primaryColor=#004070, secondaryColor=#E30613"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Angers SCO",
+     "name_jp": "アンジェ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "SCO",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#000000",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.angers-sco.fr",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_37（name=Angers SCO）: primaryColor=#000000, secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "RC Strasbourg Alsace",
+     "name_jp": "ストラスブール",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "STR",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#009EE2",
+     "secondary": "#DB2F34",
+     "official_site": "http://www.rcstrasbourgalsace.fr/",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_15（name=RC Strasbourg Alsace）: primaryColor=#009EE2, secondaryColor=#DB2F34"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Le Mans FC",
+     "name_jp": "ル・マン",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "LEM",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#FF0000",
+     "secondary": "#FFCC33",
+     "official_site": "https://www.lemansfc.fr/",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_26（name=Le Mans FC）: primaryColor=#FF0000, secondaryColor=#FFCC33"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "AJ Auxerre",
+     "name_jp": "オセール",
+     "name_jp_source": "材料の表記",
+     "abbr": "AJA",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#2B2B2D",
+     "secondary": "#073BA0",
+     "official_site": "https://www.aja.fr",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_2（name=AJ Auxerre）: primaryColor=#2b2b2d, secondaryColor=#073ba0"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Stade Brestois 29",
+     "name_jp": "ブレスト",
+     "name_jp_source": "材料の表記",
+     "abbr": "BRE",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#D10A11",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.sb29.com",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_44（name=Stade Brestois 29）: primaryColor=#D10A11, secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "FC Lorient",
+     "name_jp": "ロリアン",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "FCL",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#EB740E",
+     "secondary": "#2C2723",
+     "official_site": "https://www.fclweb.fr",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_7（name=FC Lorient）: primaryColor=#EB740E, secondaryColor=#2C2723"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Toulouse FC",
+     "name_jp": "トゥールーズ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "TFC",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#2A1C6D",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.tfc.info",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_16（name=Toulouse FC）: primaryColor=#2a1c6d, secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "OGC Nice",
+     "name_jp": "ニース",
+     "name_jp_source": "材料の表記",
+     "abbr": "NIC",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#2C2A29",
+     "secondary": "#DA2128",
+     "official_site": "https://www.ogcnice.com",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_30（name=OGC Nice）: primaryColor=#2C2A29, secondaryColor=#DA2128"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Racing Club de Lens",
+     "name_jp": "ランス",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "RAC",
+     "abbr_source": "仮（名前の頭の文字から作った）",
+     "primary": "#FFD500",
+     "secondary": "#C51315",
+     "official_site": "https://www.rclens.fr",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_6（name=RC Lens）: primaryColor=#FFD500, secondaryColor=#C51315"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "ES Troyes AC",
+     "name_jp": "トロワ",
+     "name_jp_source": "コレスポで付けた（表示用）",
+     "abbr": "TRO",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#006CB5",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.estac.fr",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_33（name=Estac Troyes）: primaryColor=#006CB5, secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Olympique de Marseille",
+     "name_jp": "マルセイユ",
+     "name_jp_source": "材料の表記",
+     "abbr": "OM",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#0B4A89",
+     "secondary": "#FFFFFF",
+     "official_site": "https://www.om.net",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_1（name=Olympique de Marseille）: primaryColor=#0B4A89, secondaryColor=#FFFFFF"
+      }
+     ],
+     "note": ""
+    },
+    {
+     "team_en": "Le Havre AC",
+     "name_jp": "ル・アーブル",
+     "name_jp_source": "材料の表記",
+     "abbr": "HAC",
+     "abbr_source": "リーグ・アン公式のデータ（acronym）",
+     "primary": "#79BDE8",
+     "secondary": "#183360",
+     "official_site": "https://www.hac-foot.com",
+     "sources": [
+      {
+       "url": "https://ma-api.ligue1.fr/championship-clubs",
+       "kind": "リーグ公式サイト",
+       "what": "ligue1.com が読み込む LFP 公式 API の l1_championship_club_2026_5（name=Havre Athletic Club）: primaryColor=#79BDE8, secondaryColor=#183360"
+      }
+     ],
+     "note": ""
+    }
+   ]
+  }
+ },
+ "missing": [
+  {
+   "league": "PL",
+   "team_en": "Brighton & Hove Albion FC",
+   "name_jp": "ブライトン",
+   "missing": [
+    "secondary"
+   ],
+   "note": "secondary にあたる名前の変数なし（--theme-primary-highlight-color:#1affba はUIの強調色）"
+  },
+  {
+   "league": "PL",
+   "team_en": "Chelsea FC",
+   "name_jp": "チェルシー",
+   "missing": [
+    "secondary"
+   ],
+   "note": "secondary と名前の付いた変数なし（main.css に --gold:#b49664 などはあるがブランドの副色とは書かれていない）"
+  },
+  {
+   "league": "PL",
+   "team_en": "Ipswich Town FC",
+   "name_jp": "イプスウィッチ",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "公式サイトに、ブランド色と名前の付いた値が見つからず"
+  },
+  {
+   "league": "PL",
+   "team_en": "Fulham FC",
+   "name_jp": "フラム",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "公式サイトに、ブランド色と名前の付いた値が見つからず"
+  },
+  {
+   "league": "PL",
+   "team_en": "Tottenham Hotspur FC",
+   "name_jp": "トッテナム",
+   "missing": [
+    "secondary"
+   ],
+   "note": "secondary は CSS の --secondary-secondary が場面ごとに #333b63/#e6e6f0/#262626 と変わり1つに決められない"
+  },
+  {
+   "league": "PD",
+   "team_en": "Sevilla FC",
+   "name_jp": "セビージャ",
+   "missing": [
+    "secondary"
+   ],
+   "note": "brand の段階色のうち中央の 500 を採用。2つ目の色は見つからず null"
+  },
+  {
+   "league": "PD",
+   "team_en": "Athletic Club",
+   "name_jp": "アスレティック・ビルバオ",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "公式サイトが 403 で取得できず（/・/en・manifest の3回）"
+  },
+  {
+   "league": "PD",
+   "team_en": "Rayo Vallecano de Madrid",
+   "name_jp": "ラージョ・バジェカーノ",
+   "missing": [
+    "secondary"
+   ],
+   "note": "secondary も同じ赤なので null"
+  },
+  {
+   "league": "PD",
+   "team_en": "RCD Espanyol de Barcelona",
+   "name_jp": "エスパニョール",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "theme-color・manifest・brand 名つき CSS 変数なし（CSS は .blue などの一般名だけなので不採用）"
+  },
+  {
+   "league": "PD",
+   "team_en": "Levante UD",
+   "name_jp": "レバンテ",
+   "missing": [
+    "secondary"
+   ],
+   "note": "secondary も同じ紺なので null"
+  },
+  {
+   "league": "SA",
+   "team_en": "US Sassuolo Calcio",
+   "name_jp": "サッスオーロ",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "primary/secondary の名前の値が仮の #FF0000 で、ブランド色とはいえない"
+  },
+  {
+   "league": "SA",
+   "team_en": "US Lecce",
+   "name_jp": "レッチェ",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "theme-color・manifest・ブランド色の CSS 変数なし"
+  },
+  {
+   "league": "SA",
+   "team_en": "Udinese Calcio",
+   "name_jp": "ウディネーゼ",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "theme-color・manifest・ブランド色の CSS 変数なし"
+  },
+  {
+   "league": "SA",
+   "team_en": "Torino FC",
+   "name_jp": "トリノ",
+   "missing": [
+    "secondary"
+   ],
+   "note": "primary は「granata（クラブ色）」と名付けた変数。secondary は見つからない"
+  },
+  {
+   "league": "SA",
+   "team_en": "Parma Calcio 1913",
+   "name_jp": "パルマ",
+   "missing": [
+    "secondary"
+   ],
+   "note": "secondary は見つからない"
+  },
+  {
+   "league": "SA",
+   "team_en": "ACF Fiorentina",
+   "name_jp": "フィオレンティーナ",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "theme-color が白だけでクラブ色ではない"
+  },
+  {
+   "league": "SA",
+   "team_en": "Bologna FC 1909",
+   "name_jp": "ボローニャ",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "primary/secondary は Bootstrap の既定値でクラブ色ではない"
+  },
+  {
+   "league": "SA",
+   "team_en": "Venezia FC",
+   "name_jp": "ベネツィア",
+   "missing": [
+    "primary",
+    "secondary"
+   ],
+   "note": "brand/primary と名付けた値なし（--orange・--green はある）"
+  }
+ ]
+}

@@ -813,13 +813,14 @@ def outro_rows(exclude=""):
     return [(at, name) for _, name, _, at in rows][:7]
 
 
-def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　データ: MLB Stats API"):
+def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　データ: MLB Stats API",
+          tagline="毎日のMLBを数字と現地の声で"):
     im = background(t, None)
     im.info['v3_outro']=True
     d = ImageDraw.Draw(im)
     k = ease_out(t / 0.5)
     _text(d,(LEFT, 250), "コレスポ", font=font(150), fill=GOLD)
-    _text(d,(LEFT, 440), "毎日のMLBを数字と現地の声で", font=font(42), fill=INK)
+    _text(d,(LEFT, 440), tagline, font=font(42), fill=INK)
     y = 520
     _text(d,(LEFT, y), "毎日のお届け", font=font(30), fill=(196, 206, 212))
     y += 44
