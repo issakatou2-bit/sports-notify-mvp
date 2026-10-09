@@ -49,6 +49,7 @@ class SeasonBoundary(unittest.TestCase):
         self.assertIn('組み合わせ確定', text['title'])
         self.assertNotIn('進出争い', str(text))
         self.assertNotIn('きょう動いた', str(text))
+        self.assertNotIn('今日動いた', str(text))
         self.assertEqual(policy.apply(self.snapshot, c)['changes'], [])
 
     def test_qualification_does_not_prove_bracket(self):

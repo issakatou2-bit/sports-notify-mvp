@@ -556,7 +556,7 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
     # 「ヌートバー 3打数0安打 2四球」を「現地のコメント（翻訳）」として
     # 載せていた（9/28に表紙を見て気づいた）。題とも食い違う。
     numbers = mode == "numbers"
-    lines.append(("きょうの数字" if numbers else "海外の反応", 156, ACCENT))
+    lines.append(("今日の数字" if numbers else "海外の反応", 156, ACCENT))
 
     y = 168
     for text, size, color in lines:
@@ -582,7 +582,7 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
                         stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
             y += ps + 8
         vc.pop_text(d, (70, y + 6),
-                    "きょうの成績" if numbers else "現地のコメント（翻訳）",
+                    "今日の成績" if numbers else "現地のコメント（翻訳）",
                     font(26), DIM, stroke=(8, 10, 15), stroke_w=4)
     else:
         vc.pop_text(d, (70, y + 8),

@@ -166,6 +166,7 @@ class EditorialTests(unittest.TestCase):
         title = body["snippet"]["title"]
         self.assertIn("村上宗隆", title)
         self.assertNotIn("きょうの日本人", title)
+        self.assertNotIn("今日の日本人", title)
         self.assertNotIn("その日の日本人選手の成績", body["snippet"]["description"])
 
     def test_title_does_not_advertise_unused_record(self):

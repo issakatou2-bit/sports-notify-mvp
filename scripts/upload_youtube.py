@@ -1503,7 +1503,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             race = ("ポストシーズン" if _rw.is_settled(_postseason_data())
                     else "進出争い")
             if jp:
-                title = (f"【MLB】{'・'.join(jp)}のきょう｜"
+                title = (f"【MLB】{'・'.join(jp)}の今日｜"
                          f"成績と{race} {date_label}")
             else:
                 title = f"【MLB】{longform_subject or race + 'の最新情勢'}｜{date_label}"
@@ -1656,10 +1656,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  if ps.get("phase") == "postseason" else
                  ["MLBのポストシーズン進出争いを、毎日その日の数字で。", ""])
         if ch:
-            lines.append("きょう動いたところ:")
+            lines.append("今日動いたところ:")
             lines += ["・" + c["text"] for c in ch[:5]]
         else:
-            lines.append("きょうは順位に動きがありませんでした。")
+            lines.append("今日は順位に動きがありませんでした。")
         if _rw.is_settled(ps):
             # **確定したあとは、マジックも「今日終わったら」も無い。**
             lines += ["",

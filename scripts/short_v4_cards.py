@@ -393,7 +393,7 @@ def others(t,spec):
 
 def ranking(t,spec,rows,source):
     im=canvas(t,'日本人選手の成績')
-    text(im,L,260,'きょうの勝利貢献順位',48,width=R-L)
+    text(im,L,260,'今日の勝利貢献順位',48,width=R-L)
     for i,row in enumerate(rows[:5]):
         y=346+i*160;first=i==0
         panel(im,(L,y,R,y+146),CREAM if first else None)
@@ -416,7 +416,7 @@ def hero(t,spec):
     im=canvas(t,spec.get('label') or '日本人選手の成績')
     panel(im,(L,258,R,1142))
     rank=spec.get('rank');count=spec.get('roster_count')
-    text(im,L+28,284,f'勝利貢献 第{rank}位' if rank else 'きょうの成績',38,r3.GOLD,width=R-L-56)
+    text(im,L+28,284,f'勝利貢献 第{rank}位' if rank else '今日の成績',38,r3.GOLD,width=R-L-56)
     text(im,L+28,350,spec.get('head',''),66,width=R-L-56)
     from notability_engine import MLB_TEAM_ABBR
     tid=spec.get('player_team_id')
