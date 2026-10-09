@@ -3003,7 +3003,11 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
             venue_text += f"- {game['venue_runs_note']}\n"
 
     return (
-        f"以下は「{game['matchup']}」({game['league']})という試合についてのデータです。\n\n"
+        f"以下は「{game['matchup']}」({game['league']})という試合についてのデータです。\n"
+        # 10/9 夜の点検: 「リヨン vs ランス」（ホームはランス）を「リヨンがランスを迎える」と
+        # 逆に書いた。表記の並びからホームを推させず、はっきり渡す。
+        f"ホーム（本拠地）は{game['home_team_name']}、アウェー（訪問側）は{game['away_team_name']}。"
+        f"「迎える」「本拠地で」はホームの{game['home_team_name']}にだけ使うこと。\n\n"
         f"【チームの状況】\n{home_context}\n{away_context}\n"
         f"{pitcher_text}"
         f"{log_text}"
@@ -3307,6 +3311,14 @@ def _clean_hook(hook_part: str) -> str:
     return hook
 
 
+def host_reversed(text: str, game: dict) -> list:
+    """アウェーのチームがホームのチームを「迎える」と書いていたら、その語を返す（10/9 夜の点検）。"""
+    home, away = game.get("home_team_name") or "", game.get("away_team_name") or ""
+    if home and away and re.search(re.escape(away) + r"[^。]{0,40}?" + re.escape(home) + r"を迎え", text or ""):
+        return [f"{away}が{home}を迎える（ホームは{home}）"]
+    return []
+
+
 def enhance_games_with_ai(
     output: dict, standings: dict, api_key: str, count: int = 3
 ) -> None:
@@ -3352,6 +3364,7 @@ def enhance_games_with_ai(
         # 頼むだけでなく、出力を見て弾く。1回の書き直しで直らなければ
         # AIの文は捨てて、ルールベースの理由文だけで出す。
         bad = forbidden_wording(ai_text, is_soccer_league(game.get("league")))
+        bad = bad + host_reversed(ai_text, game)
         if bad and not truncated:
             print(f"[info] 書き直し: {game['matchup']} に "
                   f"{'・'.join(bad)} が入っていました")
@@ -3364,7 +3377,8 @@ def enhance_games_with_ai(
                 "結果を言い当てない形で書くこと。")
             ai_text, c2, in_tok, out_tok, truncated = _call_ai(retry, api_key)
             total_cost += c2
-            if forbidden_wording(ai_text, is_soccer_league(game.get("league"))):
+            if (forbidden_wording(ai_text, is_soccer_league(game.get("league")))
+                    or host_reversed(ai_text, game)):
                 print(f"[warn] {game['matchup']}: 書き直しでも直らないため、"
                       "AIの文は使いません")
                 continue
