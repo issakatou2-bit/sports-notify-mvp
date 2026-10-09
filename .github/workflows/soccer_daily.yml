@@ -118,13 +118,16 @@ jobs:
           import json
           try:
               d = json.load(open('data/soccer_games.json', encoding='utf-8'))
-              print(len([g for g in d.get('games', []) if g.get('is_notable')]))
+              # 10/10 本人OK: 予告は日本人選手のいる試合がある日だけ（28日で、題に日本人選手の
+              # 名前が無い予告は伸びていない。サッカーは翌朝の結果の回を主力にする）
+              print(len([g for g in d.get('games', []) if g.get('is_notable')
+                         and (g.get('home_has_jp') or g.get('away_has_jp'))]))
           except Exception:
               print(0)
           ")
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           if [ "$COUNT" -eq 0 ]; then
-            echo "::notice::この日は対象の試合がないため、動画は作りません"
+            echo "::notice::この日は日本人選手のいる注目試合がないため、動画は作りません"
           else
             echo "注目試合 ${COUNT}件"
           fi
