@@ -554,6 +554,9 @@ def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: l
         "game_v4": {"score": inning_score(feed), "decisive": decisive_card},
         "game_date": game.get("gameDate"),
         "jp_first": bool(japanese),
+        "next_team_id": next((teams[s]['id'] for s in (win_side,lose_side)
+                              if any(p.get('person',{}).get('fullName') in jp
+                                     for p in box[s].get('players',{}).values())),teams[win_side]['id']),
     }
 
 

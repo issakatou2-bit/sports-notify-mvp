@@ -163,7 +163,13 @@ def audio_duration(path: pathlib.Path) -> float:
         )
         return float(r.stdout.strip())
     except Exception:
-        return 0.0
+        # 保存したVOICEVOXのWAVは標準ライブラリでも実測できる。
+        import wave
+        try:
+            with wave.open(str(path),'rb') as audio:
+                return audio.getnframes()/audio.getframerate()
+        except (OSError,wave.Error):
+            return 0.0
 
 
 def main():
@@ -226,6 +232,7 @@ def main():
                 # 1つでもずれたら、札が全部落ちる。
                 "panel": seg.get("panel"),
                 "meta": seg.get("meta", {}),
+                "min_duration": seg.get("min_duration"),
             })
             who = (seg.get("meta") or {}).get("who") or ""
             print(f"[info] seg_{i:03d}: {dur:.1f}秒 / {seg.get('kind')}"

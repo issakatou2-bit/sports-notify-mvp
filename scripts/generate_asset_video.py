@@ -643,6 +643,8 @@ def build_narration(topic: str) -> dict:
                 from content_v4 import ClubMentions, affiliations
                 tracker=ClubMentions(affiliations(s['text'] for s in narration['segments']))
                 for seg in narration['segments']:seg['text']=tracker.text(seg['text'])
+            import next_line
+            narration['segments']=next_line.insert(narration['segments'],LIST_TOPICS[topic].get('next_line'))
         return narration
     if topic == "mlb_venue":
         return _narration_venue()
@@ -1664,6 +1666,9 @@ def render_v2(p, kind, meta, spec, topic):
 def render_v3(t, kind, meta, spec, topic):
     """新デザイン「電光掲示板」（review_render_v3）。材料の style="v3" のときだけ。"""
     import review_render_v3 as r3
+    if kind=='next_line':
+        import next_line
+        return next_line.frame(t,meta['next_line'])
     def decorate(im):
         if r3.LOOK=='v4':
             from short_v4_cards import ensure_team_badges
@@ -1758,9 +1763,22 @@ def main():
                         help="指定すると原稿だけ書き出して終了する")
     parser.add_argument("--audio-dir", default="build/asset_audio")
     parser.add_argument("--out", default="build/asset")
+    parser.add_argument('--narration',help='録音に使った保存原稿')
+    parser.add_argument('--publish-at',help='次情報を数える公開予約のJST時刻またはISO日時')
+    parser.add_argument('--next-schedule',help='保存した公式日程（試作用）')
     args = parser.parse_args()
 
-    narration = build_narration(args.topic)
+    if args.narration:
+        narration=json.loads(pathlib.Path(args.narration).read_text(encoding='utf-8'))
+    else:
+        spec=LIST_TOPICS.get(args.topic) or {}
+        if args.narration_out and spec.get('game') and spec.get('style')=='v3':
+            import next_line
+            from datetime import datetime
+            now=datetime.now(next_line.JST)
+            at=next_line.publication_time(now.date().isoformat(),args.publish_at,now) if args.publish_at else now
+            spec['next_line']=next_line.acquire('asset',at,spec.get('next_team_id') or spec.get('team_id'),args.next_schedule)
+        narration = build_narration(args.topic)
     global VOICE_CREDIT
     if (LIST_TOPICS.get(args.topic) or {}).get("style") == "v3":
         # 新デザインの回は四国めたんが話す（10/6 本人「めたんをメインで」）。立ち絵も四国めたん。
@@ -1841,7 +1859,7 @@ def main():
                 # 描き直さずに使い回すが、ここでそれをやると寄るのが
                 # 止まってしまう。
                 v2 = LIST_TOPICS.get(meta.get("topic", args.topic)) or {}
-                v3 = v2.get("style") == "v3" and kind in ("intro", "list", "people", "outro")
+                v3 = v2.get("style") == "v3" and kind in ("intro", "list", "people", "next_line", "outro")
                 if v3:
                     # 新デザイン（電光掲示板）は背景が動き続けるので、使い回さない。帯は番組の時計で流す
                     import review_render_v3 as _r3

@@ -16,6 +16,8 @@ def main():
     ap.add_argument("--material", default="scripts/fixtures/bignumber/recap_history/2026-09-25.json")
     ap.add_argument("--narration-out")
     ap.add_argument("--audio-dir", default="build/preview-audio")
+    ap.add_argument('--narration',help='声つき試作の録音に使った保存原稿')
+    ap.add_argument('--next-schedule',help='次情報用の保存した公式日程')
     args = ap.parse_args()
     data = json.loads(pathlib.Path(args.material).read_text(encoding="utf-8"))
     edition = date.fromisoformat(data["date_jst"])
@@ -27,6 +29,9 @@ def main():
             "--audio-dir", args.audio_dir, "--require-audio", "--out", "build/preview"]
     if args.narration_out:
         argv += ["--narration-out", args.narration_out]
+    if args.narration:argv += ['--narration',args.narration]
+    if args.next_schedule:
+        argv += ['--next-schedule',args.next_schedule,'--publish-at',data['date_jst']+'T17:00:00+09:00']
     # 現在の履歴から「ここ7日」を混ぜない。週次場面は専用の固定検査で確認する。
     with patch.object(recap_freshness, "current_day", return_value=edition), \
          patch.object(gms, "week_line", return_value=("", [])), patch.object(sys, "argv", argv):

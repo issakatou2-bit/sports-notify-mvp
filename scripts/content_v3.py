@@ -40,6 +40,23 @@ def players(segments, roster, day):
     old=segments[0]['text']
     tail=f'{day}、日本人選手{len(roster)}人の成績です。'
     hero=dict(segments[0],kind='hero',text=old.removesuffix(tail))
+    if bn.r3.LOOK == 'v4':
+        # 順位表では同じ成績を再読しない。全員は表紙・表・ほかの札に残す。
+        cover['text']=f'きょう出場した日本人選手は{len(roster)}人です。'
+        table['text']='きょうの勝利貢献順位です。'
+        hero['text']=f"1位、{roster[0]['name']}、{g.yomi_stats(roster[0]['headline'])}。"
+        remaining=[]
+        for start in range(1,min(3,len(roster))):
+            p=roster[start]
+            remaining.append({'kind':'list','text':f"{start+1}位、{p['name']}、{g.yomi_stats(p['headline'])}。",
+                              'meta':{'start':start,'count':1,'compact_player':True}})
+        if len(roster)>3:
+            remaining.append({'kind':'others','text':'ほか、'+'、'.join(g._surname_only(p['name']) for p in roster[3:])+'。',
+                              'meta':{'start':3,'count':len(roster)-3}})
+        remaining += [s for s in segments[1:] if s['kind']!='list']
+        result=[cover,table,hero]+remaining
+        for s in result:s['min_duration']=.5
+        return result
     remaining=[]
     for seg in segments[1:]:
         if seg['kind']=='list':

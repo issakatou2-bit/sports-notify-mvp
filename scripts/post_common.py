@@ -470,7 +470,12 @@ MAX_SECONDS = 55.0
 BUDGET_GRACE = 6.0
 
 
-def fit_budget(segs, durations, drop_order, limit=MAX_SECONDS):
+def duration_budget(kind):
+    """17:00だけ40秒を目標、5秒の余裕。他の枠の予算は従来どおり。"""
+    return (40.0, 5.0) if kind == 'morning' else (MAX_SECONDS, BUDGET_GRACE)
+
+
+def fit_budget(segs, durations, drop_order, limit=MAX_SECONDS, grace=BUDGET_GRACE):
     """予算に収まるまで、優先度の低い画面を落とす。
 
     落とすのは画面ごと。1画面の中の読み上げを途中で切ると、
@@ -483,7 +488,7 @@ def fit_budget(segs, durations, drop_order, limit=MAX_SECONDS):
     total = sum(durations)
     dropped = []
     for kind in drop_order:
-        if total <= limit + BUDGET_GRACE:
+        if total <= limit + grace:
             break
         for i in list(keep):
             if (segs[i].get("kind") or "") == kind:

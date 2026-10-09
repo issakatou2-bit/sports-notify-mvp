@@ -117,7 +117,7 @@ jobs:
                 python scripts/generate_asset_video.py                   --topic "$t" --narration-out "build/narr_$t.json" &&
                 python scripts/sanity.py --strict                   --narration "build/narr_$t.json" &&
                 python scripts/synthesize_narration.py                   --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&
-                python scripts/generate_asset_video.py                   --topic "$t" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
+                python scripts/generate_asset_video.py                   --topic "$t" --narration "build/narr_$t.json" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
                 bash scripts/shorts_thumbnail.sh                   "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png" &&
                 python scripts/upload_youtube.py                   --video "build/asset_$t/collespo_asset_$t.mp4"                   --kind asset --asset-topic "$t"                   --thumbnail "build/asset_$t/short.png"                   --privacy public
                 if [ $? -eq 0 ]; then

@@ -367,6 +367,7 @@ jobs:
 
             python scripts/generate_ps_preview.py \
               --recap data/morning_recap.json --mode "$mode" \
+              --narration "build/mr_narration_${mode}.json" \
               --audio-dir "build/mr_audio_${mode}" --out build/morning \
               --require-audio
             if [ $? -ne 0 ]; then

@@ -344,6 +344,21 @@ def player_detail(t,spec,player):
 
 def others(t,spec):
     players=spec['other_players'];duration=max(.1,spec.get('dur',8));spoken=spec.get('say','')
+    if spec.get('kind')=='others':
+        im=canvas(t,spec.get('label') or '日本人選手の成績')
+        text(im,L,260,'ほかの日本人選手',48,width=R-L)
+        count=len(players);height=min(150,(r3.CONTENT_BOTTOM-352)//max(1,count)-12)
+        for i,p in enumerate(players):
+            y=342+i*(height+12)
+            panel(im,(L,y,R,y+height))
+            mini_badge(im,L+20,y+20,p.get('team_id'))
+            text(im,L+130,y+24,p['name'],36,width=380)
+            big=p.get('big');unit=p.get('unit') or ''
+            if big:
+                text(im,R-220,y+20,big,60,r3.GOLD,number=True,width=120)
+                text(im,R-110,y+48,unit,24,width=85)
+        im.info['v4_others']=[p['name'] for p in players]
+        return finish(im,t,spec.get('ticker',''),'出典：MLB Stats API',once=True)
     # 元の「ほか、スガノ、スズキ。」を保ち、次の名前を読む位置で切り替える。
     positions=[0]+[spoken.find(p['spoken_name']) for p in players[1:]]
     index=0
