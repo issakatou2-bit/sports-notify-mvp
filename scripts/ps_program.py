@@ -160,6 +160,13 @@ def focus_at(plan,fraction):
 
 
 def render_segment(seg,layers=False):
+    if seg['meta']['card'].get('next_line'):
+        import next_line
+        import v3_rules
+        image=next_line.frame(3,seg['meta']['card']['next_line'])
+        errors=v3_rules.check_layout(image)
+        if errors:raise ValueError('次情報の札が安全域外です: '+str(errors))
+        return image,{'layout':'next_line','safe':True}
     side={2:'right',3:'left'}.get(seg['speaker'])
     if side is None:raise ValueError('画面素材のない話者です')
     card=seg['meta']['card']
@@ -500,6 +507,14 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
                   source_url=ctx['source_url'],source_label='MLB公式',outro=True,lineup_kind='daily' if slot=='forecast' else 'postseason')
         ending=segment(card,r3.OUTRO_TEXT)
         ending['kind']='outro'
+        import next_line
+        at=next_line.publication_time(now.astimezone(JST).date().isoformat(),'19:00' if slot=='forecast' else '20:00',now)
+        line=next_line.choose(evidence['schedule'],'daily' if slot=='forecast' else 'postseason',at)
+        if line:
+            upcoming=dict(card,outro=False,headline='次の試合',next_line=line,
+                          items=[dict(label='次の試合',value=line['screen'])])
+            part=segment(upcoming,line['say']);part['kind']='next_line'
+            program['segments'].append(part)
         program['segments'].append(ending)
     else:
         program['segments'][-1]['text'] += 'コレスポ。'

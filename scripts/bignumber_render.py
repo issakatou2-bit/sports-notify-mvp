@@ -697,6 +697,9 @@ def scene(t, scene_spec, team_id=None):
     team_id を渡すと scene_spec の team_id より優先する。
     """
     spec = dict(scene_spec)
+    if spec.get('next_line'):
+        import next_line
+        return next_line.frame(t,spec['next_line'])
     if team_id is not None:
         spec['team_id'] = team_id
     import v3_slot_render as common
@@ -934,6 +937,8 @@ def _list_scenes(seg, players, top_name):
     meta = seg.get("meta") or {}
     start = int(meta.get("start", 0))
     chunk = players[start:start + int(meta.get("count", 1))]
+    if meta.get('compact_player'):
+        return [_player_scene(chunk[0],seg['text'],tag=f'{start+1}位',rank=start+1)]
     out, skipped = [], []
     for j, p in enumerate(chunk):
         rank = start + j + 1
@@ -1080,6 +1085,13 @@ def scenes_from_morning(data, narration=None):
             got = _intro_scenes(seg, players, day)
         elif kind == "list":
             got = _list_scenes(seg, players, top.get("name", ""))
+        elif kind == 'others':
+            start=seg['meta']['start']; chunk=players[start:]
+            got=[{'layout':'cards','head':'ほかの日本人選手','say':seg['text'],
+                  'cards':[{'title':p['name'],'body':p.get('headline','')} for p in chunk],
+                  'other_players':[dict(v4_player(p,j),spoken_name=gms._surname_only(p['name'])) for j,p in enumerate(chunk,start+1)]}]
+        elif kind == 'next_line':
+            got=[{'layout':'cards','head':'次の試合','say':seg['text'],'next_line':seg['meta']['next_line']}]
         elif kind == "week":
             got = _week_scenes(seg, players)
         elif kind == "reach":

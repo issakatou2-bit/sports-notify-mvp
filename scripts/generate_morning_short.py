@@ -1468,7 +1468,14 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     if mode in ('players','voices','press'):
         import content_v3
         segments=content_v3.closing(segments,mode)
-    return {"label": day, "segments": segments}
+    if mode in ('players','postseason'):
+        import next_line
+        segments=next_line.insert(segments,data.get('next_line'))
+    result={"label": day, "segments": segments}
+    if mode=='players':
+        limit,grace=post_common.duration_budget('morning')
+        result['duration_budget']={'limit':limit,'grace':grace}
+    return result
 
 
 def assign_pair(segments: list) -> None:
@@ -4190,6 +4197,9 @@ def main():
                              "voices=ハイライトのコメント欄 / "
                              "player=今日の1人 / all=全部")
     parser.add_argument("--narration-out", default=None)
+    parser.add_argument('--narration',help='録音に使った保存原稿。描画時も同じ次情報を使う')
+    parser.add_argument('--next-schedule',help='次情報用の保存した公式日程（試作用）')
+    parser.add_argument('--publish-at',help='次情報を数える公開予約のJST時刻またはISO日時')
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--require-audio", action="store_true",
                         help="音声が作れなければ動画を作らずに終わる")
@@ -4315,7 +4325,15 @@ def main():
         print(f"[info] 現地の話題: {len(talk['teams'])}チーム / "
               f"{talk.get('titles_count', 0)}件の見出しから")
 
-    narration = build_narration(data, args.mode)
+    if args.narration:
+        narration=json.loads(pathlib.Path(args.narration).read_text(encoding='utf-8'))
+    else:
+        if args.narration_out and args.mode in ('players','postseason'):
+            import next_line
+            clock=args.publish_at or ('17:00' if args.mode=='players' else '20:00')
+            at=next_line.publication_time(recap_day(data),clock)
+            data['next_line']=next_line.acquire(MODE_KIND.get(args.mode,''),at,players[0].get('team_id') if players else None,args.next_schedule)
+        narration = build_narration(data, args.mode)
     bn_scenes = bignumber_scenes(data, narration, args.mode)
     import daily_v3
     daily_design = daily_v3.prepare(data, narration, args.mode)
@@ -4408,6 +4426,19 @@ def main():
                             else "collespo_morning.mp4")
 
     durations = plan_durations(segs)
+    if args.mode=='players':
+        import post_common
+        limit,grace=post_common.duration_budget('morning')
+        keep,dropped=fit_budget(segs,durations,('week','reach','praise'),limit,grace)
+        if dropped:
+            segs=[segs[i] for i in keep];durations=[durations[i] for i in keep]
+            narration=dict(narration,segments=[narration['segments'][i] for i in keep])
+            bn_scenes=bignumber_scenes(data,narration,args.mode)
+            (out_dir/'final_narration.json').write_text(json.dumps(narration,ensure_ascii=False),encoding='utf-8')
+            if args.narration:
+                pathlib.Path(args.narration).write_text(json.dumps(narration,ensure_ascii=False),encoding='utf-8')
+        if sum(durations)>limit+grace:
+            raise ValueError(f'17:00の尺が予算{limit}+{grace}秒を超えています: {sum(durations):.2f}秒。声の設定を変えず原稿を短くしてください')
     audio_path = build_narration_track(segs, durations, out_dir)
     if daily_design and audio_path:
         daily_v3.validate_audio(segs, narration)

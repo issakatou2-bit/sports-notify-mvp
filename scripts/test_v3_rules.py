@@ -91,6 +91,42 @@ def asset_cases():
 
 
 class V3Rules(unittest.TestCase):
+    def test_next_information_is_material_bound_and_safe_before_shared_outro(self):
+        import next_line as nl
+        # 固定の公式日程の未開催行だけを使う。取得時刻/検査の実行日は使わない。
+        schedule=read('scripts/fixtures/next-line/ps_20261009.json')
+        at=datetime.fromisoformat('2026-10-09T17:00:00+09:00')
+        for kind,team in [('morning',145),('asset',119),('daily',None),('postseason',None)]:
+            line=nl.choose(schedule,kind,at,team)
+            self.assertIsNotNone(line)
+            segments=nl.insert([{'kind':'intro','text':'試合の結果','meta':{}},
+                                {'kind':'outro','text':r3.OUTRO_TEXT,'meta':{}}],line)
+            self.assertEqual([s['kind'] for s in segments],['intro','next_line','outro'])
+            self.assertEqual(segments[-1]['text'],r3.OUTRO_TEXT)
+            self.assertEqual(segments[-2]['text'],line['say'])
+            self.assertEqual(nl.insert(segments,line),segments)
+            for t in (.1,3,10):
+                image=nl.frame(t,line)
+                self.assertFalse(rules.check_layout(image))
+                if r3.LOOK=='v4':
+                    self.assertFalse(rules.check_team_badges(image))
+        self.assertIsNone(nl.choose(schedule,'daily',datetime.fromisoformat('2026-11-15T19:00:00+09:00')))
+
+    def test_v4_players_top_three_and_single_others_page(self):
+        if r3.LOOK!='v4':return
+        data=read('scripts/fixtures/bignumber/recap_history/2026-09-25.json')
+        roster=g.sort_players(data['players']);data['players']=roster
+        with patch.dict(os.environ,ENV),patch.object(g,'week_line',return_value=('',[])):
+            nar=g.build_narration(data,'players')
+        scenes=bn.scenes_from_morning(data,nar)
+        self.assertFalse(bn.check_scenes(scenes,nar,data))
+        self.assertEqual(len([s for s in nar['segments'] if s['kind']=='list']),2)
+        others=[s for s in scenes if s['kind']=='others']
+        self.assertEqual(len(others),1)
+        self.assertEqual(others[0]['say'],'ほか、'+'、'.join(g._surname_only(p['name']) for p in roster[3:])+'。')
+        self.assertEqual(nar['duration_budget'],{'limit':40,'grace':5})
+        for t in (.1,3,19):self.assertEqual(bn.scene(t,others[0]).info['v4_others'],[p['name'] for p in roster[3:]])
+
     @classmethod
     def setUpClass(cls):
         cls.cases=daily_cases()+asset_cases()
@@ -570,8 +606,12 @@ class V3Rules(unittest.TestCase):
                 self.assertEqual(''.join(image.info['v4_annotation']['lines']),''.join(scene['player']['notes']))
         other=next(s for s in scenes if s.get('other_players'))
         first=bn.scene(0,dict(other,dur=20));last=bn.scene(19,dict(other,dur=20))
-        self.assertEqual(first.info['v4_player']['name'],other['other_players'][0]['name'])
-        self.assertEqual(last.info['v4_player']['name'],other['other_players'][-1]['name'])
+        if other['kind']=='others':
+            self.assertEqual(first.info['v4_others'],[p['name'] for p in other['other_players']])
+            self.assertEqual(last.info['v4_others'],first.info['v4_others'])
+        else:
+            self.assertEqual(first.info['v4_player']['name'],other['other_players'][0]['name'])
+            self.assertEqual(last.info['v4_player']['name'],other['other_players'][-1]['name'])
 
 if __name__=='__main__':
     if '--look-child' in sys.argv:

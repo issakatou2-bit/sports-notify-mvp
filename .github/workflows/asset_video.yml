@@ -215,7 +215,7 @@ jobs:
             echo "::group::$t"
 
             python scripts/generate_asset_video.py \
-              --topic "$t" --narration-out "build/narr_$t.json"
+              --topic "$t" --publish-at '18:30' --narration-out "build/narr_$t.json"
             if [ $? -ne 0 ]; then
               echo "::warning::$t の原稿生成に失敗しました"
               FAILED="$FAILED $t(原稿)"
@@ -228,7 +228,7 @@ jobs:
               --out-dir "build/audio_$t"
 
             python scripts/generate_asset_video.py \
-              --topic "$t" --audio-dir "build/audio_$t" --out "build/asset_$t"
+              --topic "$t" --narration "build/narr_$t.json" --audio-dir "build/audio_$t" --out "build/asset_$t"
             if [ $? -ne 0 ]; then
               echo "::warning::$t の動画生成に失敗しました"
               FAILED="$FAILED $t(動画)"

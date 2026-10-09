@@ -1,0 +1,1349 @@
+{
+ "dates": [
+  {
+   "date": "2026-10-03",
+   "games": [
+    {
+     "gamePk": 849829,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-03T17:00:00Z",
+     "officialDate": "2026-10-03",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 1,
+     "seriesDescription": "AL Division Series",
+     "ifNecessary": "N",
+     "description": "ALDS 'B' Game 1",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox"
+       },
+       "score": 3,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 696146,
+        "fullName": "Hagen Smith"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 114,
+        "name": "Cleveland Guardians"
+       },
+       "score": 0,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 800048,
+        "fullName": "Parker Messick"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 1,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 1,
+      "losses": 0,
+      "description": "AL Division Series",
+      "shortDescription": "ALDS Game 1",
+      "result": "CWS leads 1-0",
+      "abbreviation": "ALDS",
+      "winningTeam": {
+       "id": 145,
+       "name": "Chicago White Sox"
+      },
+      "losingTeam": {
+       "id": 114,
+       "name": "Cleveland Guardians"
+      }
+     },
+     "venue": {
+      "name": "Progressive Field"
+     }
+    },
+    {
+     "gamePk": 849828,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-03T20:00:00Z",
+     "officialDate": "2026-10-03",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 1,
+     "seriesDescription": "NL Division Series",
+     "ifNecessary": "N",
+     "description": "NLDS 'B' Game 1",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 144,
+        "name": "Atlanta Braves"
+       },
+       "score": 3,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 689266,
+        "fullName": "Dylan Dodd"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers"
+       },
+       "score": 5,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 669373,
+        "fullName": "Tarik Skubal"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 1,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 1,
+      "losses": 0,
+      "description": "NL Division Series",
+      "shortDescription": "NLDS Game 1",
+      "result": "LAD leads 1-0",
+      "abbreviation": "NLDS",
+      "winningTeam": {
+       "id": 119,
+       "name": "Los Angeles Dodgers"
+      },
+      "losingTeam": {
+       "id": 144,
+       "name": "Atlanta Braves"
+      }
+     },
+     "venue": {
+      "name": "UNIQLO Field at Dodger Stadium"
+     }
+    },
+    {
+     "gamePk": 849835,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-03T22:30:00Z",
+     "officialDate": "2026-10-03",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 1,
+     "seriesDescription": "AL Division Series",
+     "ifNecessary": "N",
+     "description": "ALDS 'A' Game 1",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees"
+       },
+       "score": 0,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 543037,
+        "fullName": "Gerrit Cole"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays"
+       },
+       "score": 1,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 656876,
+        "fullName": "Drew Rasmussen"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 1,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 1,
+      "losses": 0,
+      "description": "AL Division Series",
+      "shortDescription": "ALDS Game 1",
+      "result": "TB leads 1-0",
+      "abbreviation": "ALDS",
+      "winningTeam": {
+       "id": 139,
+       "name": "Tampa Bay Rays"
+      },
+      "losingTeam": {
+       "id": 147,
+       "name": "New York Yankees"
+      }
+     },
+     "venue": {
+      "name": "Tropicana Field"
+     }
+    },
+    {
+     "gamePk": 849830,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-04T00:30:00Z",
+     "officialDate": "2026-10-03",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 1,
+     "seriesDescription": "NL Division Series",
+     "ifNecessary": "N",
+     "description": "NLDS 'A' Game 1",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 135,
+        "name": "San Diego Padres"
+       },
+       "score": 2,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 592662,
+        "fullName": "Robbie Ray"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers"
+       },
+       "score": 3,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 694819,
+        "fullName": "Jacob Misiorowski"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 1,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 1,
+      "losses": 0,
+      "description": "NL Division Series",
+      "shortDescription": "NLDS Game 1",
+      "result": "MIL leads 1-0",
+      "abbreviation": "NLDS",
+      "winningTeam": {
+       "id": 158,
+       "name": "Milwaukee Brewers"
+      },
+      "losingTeam": {
+       "id": 135,
+       "name": "San Diego Padres"
+      }
+     },
+     "venue": {
+      "name": "American Family Field"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-04",
+   "games": [
+    {
+     "gamePk": 849825,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-04T20:00:00Z",
+     "officialDate": "2026-10-04",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 2,
+     "seriesDescription": "NL Division Series",
+     "ifNecessary": "N",
+     "description": "NLDS 'A' Game 2",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 135,
+        "name": "San Diego Padres"
+       },
+       "score": 3,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 650633,
+        "fullName": "Michael King"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers"
+       },
+       "score": 4,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 701656,
+        "fullName": "Logan Henderson"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 2,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 2,
+      "losses": 0,
+      "description": "NL Division Series",
+      "shortDescription": "NLDS Game 2",
+      "result": "MIL leads 2-0",
+      "abbreviation": "NLDS",
+      "winningTeam": {
+       "id": 158,
+       "name": "Milwaukee Brewers"
+      },
+      "losingTeam": {
+       "id": 135,
+       "name": "San Diego Padres"
+      }
+     },
+     "venue": {
+      "name": "American Family Field"
+     }
+    },
+    {
+     "gamePk": 849823,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-05T00:00:00Z",
+     "officialDate": "2026-10-04",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 2,
+     "seriesDescription": "NL Division Series",
+     "ifNecessary": "N",
+     "description": "NLDS 'B' Game 2",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 144,
+        "name": "Atlanta Braves"
+       },
+       "score": 3,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 678061,
+        "fullName": "Ray Kerr"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers"
+       },
+       "score": 2,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 605483,
+        "fullName": "Blake Snell"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 2,
+      "totalGames": 5,
+      "isTied": true,
+      "isOver": false,
+      "wins": 1,
+      "losses": 1,
+      "description": "NL Division Series",
+      "shortDescription": "NLDS Game 2",
+      "result": "Series tied 1-1",
+      "abbreviation": "NLDS"
+     },
+     "venue": {
+      "name": "UNIQLO Field at Dodger Stadium"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-05",
+   "games": [
+    {
+     "gamePk": 849834,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-05T21:00:00Z",
+     "officialDate": "2026-10-05",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 2,
+     "seriesDescription": "AL Division Series",
+     "ifNecessary": "N",
+     "description": "ALDS 'B' Game 2",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox"
+       },
+       "score": 4,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 641743,
+        "fullName": "Anthony Kay"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 114,
+        "name": "Cleveland Guardians"
+       },
+       "score": 3,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 668909,
+        "fullName": "Gavin Williams"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 2,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 2,
+      "losses": 0,
+      "description": "AL Division Series",
+      "shortDescription": "ALDS Game 2",
+      "result": "CWS leads 2-0",
+      "abbreviation": "ALDS",
+      "winningTeam": {
+       "id": 145,
+       "name": "Chicago White Sox"
+      },
+      "losingTeam": {
+       "id": 114,
+       "name": "Cleveland Guardians"
+      }
+     },
+     "venue": {
+      "name": "Progressive Field"
+     }
+    },
+    {
+     "gamePk": 849839,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-06T00:00:00Z",
+     "officialDate": "2026-10-05",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 2,
+     "seriesDescription": "AL Division Series",
+     "ifNecessary": "N",
+     "description": "ALDS 'A' Game 2",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees"
+       },
+       "score": 2,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 693645,
+        "fullName": "Cam Schlittler"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays"
+       },
+       "score": 5,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 642547,
+        "fullName": "Freddy Peralta"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 2,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 2,
+      "losses": 0,
+      "description": "AL Division Series",
+      "shortDescription": "ALDS Game 2",
+      "result": "TB leads 2-0",
+      "abbreviation": "ALDS",
+      "winningTeam": {
+       "id": 139,
+       "name": "Tampa Bay Rays"
+      },
+      "losingTeam": {
+       "id": 147,
+       "name": "New York Yankees"
+      }
+     },
+     "venue": {
+      "name": "Tropicana Field"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-06",
+   "games": [
+    {
+     "gamePk": 849819,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-06T22:00:00Z",
+     "officialDate": "2026-10-06",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 3,
+     "seriesDescription": "NL Division Series",
+     "ifNecessary": "N",
+     "description": "NLDS 'B' Game 3",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers"
+       },
+       "score": 3,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 808967,
+        "fullName": "Yoshinobu Yamamoto"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 144,
+        "name": "Atlanta Braves"
+       },
+       "score": 1,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 519242,
+        "fullName": "Chris Sale"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 3,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 2,
+      "losses": 1,
+      "description": "NL Division Series",
+      "shortDescription": "NLDS Game 3",
+      "result": "LAD leads 2-1",
+      "abbreviation": "NLDS",
+      "winningTeam": {
+       "id": 119,
+       "name": "Los Angeles Dodgers"
+      },
+      "losingTeam": {
+       "id": 144,
+       "name": "Atlanta Braves"
+      }
+     },
+     "venue": {
+      "name": "Truist Park"
+     }
+    },
+    {
+     "gamePk": 849826,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-07T01:30:00Z",
+     "officialDate": "2026-10-06",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 3,
+     "seriesDescription": "NL Division Series",
+     "ifNecessary": "N",
+     "description": "NLDS 'A' Game 3",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers"
+       },
+       "score": 3,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 669160,
+        "fullName": "Dustin May"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 135,
+        "name": "San Diego Padres"
+       },
+       "score": 4,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 601713,
+        "fullName": "Nick Pivetta"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 3,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 2,
+      "losses": 1,
+      "description": "NL Division Series",
+      "shortDescription": "NLDS Game 3",
+      "result": "MIL leads 2-1",
+      "abbreviation": "NLDS",
+      "winningTeam": {
+       "id": 158,
+       "name": "Milwaukee Brewers"
+      },
+      "losingTeam": {
+       "id": 135,
+       "name": "San Diego Padres"
+      }
+     },
+     "venue": {
+      "name": "Petco Park"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-07",
+   "games": [
+    {
+     "gamePk": 849833,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-07T20:00:00Z",
+     "officialDate": "2026-10-07",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 3,
+     "seriesDescription": "AL Division Series",
+     "ifNecessary": "N",
+     "description": "ALDS 'B' Game 3",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 114,
+        "name": "Cleveland Guardians"
+       },
+       "score": 9,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 682982,
+        "fullName": "Daniel Espino"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox"
+       },
+       "score": 3,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 656794,
+        "fullName": "Sean Newcomb"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 3,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": false,
+      "wins": 2,
+      "losses": 1,
+      "description": "AL Division Series",
+      "shortDescription": "ALDS Game 3",
+      "result": "CWS leads 2-1",
+      "abbreviation": "ALDS",
+      "winningTeam": {
+       "id": 145,
+       "name": "Chicago White Sox"
+      },
+      "losingTeam": {
+       "id": 114,
+       "name": "Cleveland Guardians"
+      }
+     },
+     "venue": {
+      "name": "Rate Field"
+     }
+    },
+    {
+     "gamePk": 849822,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-07T22:00:00Z",
+     "officialDate": "2026-10-07",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 4,
+     "seriesDescription": "NL Division Series",
+     "ifNecessary": "N",
+     "description": "NLDS 'B' Game 4",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers"
+       },
+       "score": 4,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 607192,
+        "fullName": "Tyler Glasnow"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 144,
+        "name": "Atlanta Braves"
+       },
+       "score": 1,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 641816,
+        "fullName": "Tyler Mahle"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 4,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": true,
+      "wins": 3,
+      "losses": 1,
+      "description": "NL Division Series",
+      "shortDescription": "NLDS Game 4",
+      "result": "LAD wins 3-1",
+      "abbreviation": "NLDS",
+      "winningTeam": {
+       "id": 119,
+       "name": "Los Angeles Dodgers"
+      },
+      "losingTeam": {
+       "id": 144,
+       "name": "Atlanta Braves"
+      }
+     },
+     "venue": {
+      "name": "Truist Park"
+     }
+    },
+    {
+     "gamePk": 849838,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-08T00:00:00Z",
+     "officialDate": "2026-10-07",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 3,
+     "seriesDescription": "AL Division Series",
+     "ifNecessary": "N",
+     "description": "ALDS 'A' Game 3",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays"
+       },
+       "score": 4,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 607259,
+        "fullName": "Nick Martinez"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees"
+       },
+       "score": 3,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 608331,
+        "fullName": "Max Fried"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 3,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": true,
+      "wins": 3,
+      "losses": 0,
+      "description": "AL Division Series",
+      "shortDescription": "ALDS Game 3",
+      "result": "TB wins 3-0",
+      "abbreviation": "ALDS",
+      "winningTeam": {
+       "id": 139,
+       "name": "Tampa Bay Rays"
+      },
+      "losingTeam": {
+       "id": 147,
+       "name": "New York Yankees"
+      }
+     },
+     "venue": {
+      "name": "Yankee Stadium"
+     }
+    },
+    {
+     "gamePk": 849827,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-08T02:00:00Z",
+     "officialDate": "2026-10-07",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 4,
+     "seriesDescription": "NL Division Series",
+     "ifNecessary": "N",
+     "description": "NLDS 'A' Game 4 ",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers"
+       },
+       "score": 3,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 688107,
+        "fullName": "Robert Gasser"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 135,
+        "name": "San Diego Padres"
+       },
+       "score": 1,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 621111,
+        "fullName": "Walker Buehler"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 4,
+      "totalGames": 5,
+      "isTied": false,
+      "isOver": true,
+      "wins": 3,
+      "losses": 1,
+      "description": "NL Division Series",
+      "shortDescription": "NLDS Game 4",
+      "result": "MIL wins 3-1",
+      "abbreviation": "NLDS",
+      "winningTeam": {
+       "id": 158,
+       "name": "Milwaukee Brewers"
+      },
+      "losingTeam": {
+       "id": 135,
+       "name": "San Diego Padres"
+      }
+     },
+     "venue": {
+      "name": "Petco Park"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-08",
+   "games": [
+    {
+     "gamePk": 849832,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-09T00:00:00Z",
+     "officialDate": "2026-10-08",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 4,
+     "seriesDescription": "AL Division Series",
+     "ifNecessary": "N",
+     "description": "ALDS 'B' Game 4",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Game Over",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 114,
+        "name": "Cleveland Guardians"
+       },
+       "score": 9,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 800048,
+        "fullName": "Parker Messick"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox"
+       },
+       "score": 5,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 696146,
+        "fullName": "Hagen Smith"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 4,
+      "totalGames": 5,
+      "isTied": true,
+      "isOver": false,
+      "wins": 2,
+      "losses": 2,
+      "description": "AL Division Series",
+      "shortDescription": "ALDS Game 4",
+      "result": "Series tied 2-2",
+      "abbreviation": "ALDS"
+     },
+     "venue": {
+      "name": "Rate Field"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "games": [
+    {
+     "gamePk": 849831,
+     "gameType": "D",
+     "season": "2026",
+     "gameDate": "2026-10-11T00:00:00Z",
+     "officialDate": "2026-10-10",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 5,
+     "seriesGameNumber": 5,
+     "seriesDescription": "AL Division Series",
+     "ifNecessary": "N",
+     "description": "ALDS 'B' Game 5",
+     "status": {
+      "abstractGameState": "Preview",
+      "detailedState": "Scheduled",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 145,
+        "name": "Chicago White Sox"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 114,
+        "name": "Cleveland Guardians"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 5,
+      "totalGames": 5,
+      "isTied": true,
+      "isOver": false,
+      "wins": 2,
+      "losses": 2,
+      "description": "AL Division Series",
+      "shortDescription": "ALDS Game 5",
+      "result": "Series tied 2-2",
+      "abbreviation": "ALDS"
+     },
+     "venue": {
+      "name": "Progressive Field"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-11",
+   "games": [
+    {
+     "gamePk": 849809,
+     "gameType": "L",
+     "season": "2026",
+     "gameDate": "2026-10-12T00:00:00Z",
+     "officialDate": "2026-10-11",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 1,
+     "seriesDescription": "NL Championship Series",
+     "ifNecessary": "N",
+     "description": "NLCS Game 1",
+     "status": {
+      "abstractGameState": "Preview",
+      "detailedState": "Scheduled",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 1,
+      "totalGames": 7,
+      "isTied": true,
+      "isOver": false,
+      "wins": 0,
+      "losses": 0,
+      "description": "NL Championship Series",
+      "shortDescription": "NLCS Game 1",
+      "abbreviation": "NLCS"
+     },
+     "venue": {
+      "name": "American Family Field"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "games": [
+    {
+     "gamePk": 849812,
+     "gameType": "L",
+     "season": "2026",
+     "gameDate": "2026-10-12T21:00:00Z",
+     "officialDate": "2026-10-12",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 2,
+     "seriesDescription": "NL Championship Series",
+     "ifNecessary": "N",
+     "description": "NLCS Game 2",
+     "status": {
+      "abstractGameState": "Preview",
+      "detailedState": "Scheduled",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 2,
+      "totalGames": 7,
+      "isTied": true,
+      "isOver": false,
+      "wins": 0,
+      "losses": 0,
+      "description": "NL Championship Series",
+      "shortDescription": "NLCS Game 2",
+      "abbreviation": "NLCS"
+     },
+     "venue": {
+      "name": "American Family Field"
+     }
+    },
+    {
+     "gamePk": 849820,
+     "gameType": "L",
+     "season": "2026",
+     "gameDate": "2026-10-13T00:00:00Z",
+     "officialDate": "2026-10-12",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 1,
+     "seriesDescription": "AL Championship Series",
+     "ifNecessary": "N",
+     "description": "ALCS Game 1",
+     "status": {
+      "abstractGameState": "Preview",
+      "detailedState": "Scheduled",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 5521,
+        "name": "CLE/CWS"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 1,
+      "totalGames": 7,
+      "isTied": true,
+      "isOver": false,
+      "wins": 0,
+      "losses": 0,
+      "description": "AL Championship Series",
+      "shortDescription": "ALCS Game 1",
+      "result": "CLE/CWS plays TB",
+      "abbreviation": "ALCS"
+     },
+     "venue": {
+      "name": "Tropicana Field"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-13",
+   "games": [
+    {
+     "gamePk": 849813,
+     "gameType": "L",
+     "season": "2026",
+     "gameDate": "2026-10-14T00:00:00Z",
+     "officialDate": "2026-10-13",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 2,
+     "seriesDescription": "AL Championship Series",
+     "ifNecessary": "N",
+     "description": "ALCS Game 2",
+     "status": {
+      "abstractGameState": "Preview",
+      "detailedState": "Scheduled",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 5521,
+        "name": "CLE/CWS"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 139,
+        "name": "Tampa Bay Rays"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 2,
+      "totalGames": 7,
+      "isTied": true,
+      "isOver": false,
+      "wins": 0,
+      "losses": 0,
+      "description": "AL Championship Series",
+      "shortDescription": "ALCS Game 2",
+      "result": "CLE/CWS plays TB",
+      "abbreviation": "ALCS"
+     },
+     "venue": {
+      "name": "Tropicana Field"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-14",
+   "games": [
+    {
+     "gamePk": 849811,
+     "gameType": "L",
+     "season": "2026",
+     "gameDate": "2026-10-15T00:00:00Z",
+     "officialDate": "2026-10-14",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 7,
+     "seriesGameNumber": 3,
+     "seriesDescription": "NL Championship Series",
+     "ifNecessary": "N",
+     "description": "NLCS Game 3",
+     "status": {
+      "abstractGameState": "Preview",
+      "detailedState": "Scheduled",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 158,
+        "name": "Milwaukee Brewers"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 119,
+        "name": "Los Angeles Dodgers"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 3,
+      "totalGames": 7,
+      "isTied": true,
+      "isOver": false,
+      "wins": 0,
+      "losses": 0,
+      "description": "NL Championship Series",
+      "shortDescription": "NLCS Game 3",
+      "abbreviation": "NLCS"
+     },
+     "venue": {
+      "name": "UNIQLO Field at Dodger Stadium"
+     }
+    }
+   ]
+  }
+ ],
+ "_source": "statsapi.mlb.com schedule?hydrate=probablePitcher,seriesStatus gameType=F,D,L,W 2026-10-03〜2026-10-14。2026-10-09 12:55（日本時間）に取得。使う欄だけ残した（値は書き換えていない）"
+}

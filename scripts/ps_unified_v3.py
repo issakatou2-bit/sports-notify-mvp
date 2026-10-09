@@ -107,6 +107,9 @@ def spec(card, focus=None, ticker_line=None):
 
 
 def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
+    if card.get('next_line'):
+        import next_line
+        return next_line.frame(t,card['next_line'])
     view = spec(card, focus, ticker_line)
     if card.get('outro'):
         view['text']=r3.OUTRO_TEXT
@@ -143,6 +146,12 @@ def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
 
 
 def check_layout(card):
+    if card.get('next_line'):
+        import next_line
+        import v3_rules
+        if v3_rules.check_layout(next_line.frame(3,card['next_line'])):
+            raise ValueError('次情報の札が安全域外です')
+        return {'pages':1,'next_line':True}
     if card.get('outro'):
         return {'pages':1,'outro':True}
     view=spec(card)
