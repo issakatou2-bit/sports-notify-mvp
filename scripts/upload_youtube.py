@@ -1620,6 +1620,19 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         title = (f"{SPORTS.get(sport, SPORTS['mlb'])['badge']}"
                  f"{date_label}の注目試合 #Shorts")
     title = title.replace("  ", " ").strip()
+    # 選手ごとのシリーズ（作業153・本人 10/9「今日」に）: 題の頭を「【MLB】〇〇の今日｜…」にそろえ、
+    # 説明欄の2行目にその選手の回の一覧を置く。リポジトリ変数 SERIES_TITLE=1 のときだけ。
+    series_main = []
+    if os.environ.get("SERIES_TITLE") == "1":
+        try:
+            import series as _series
+            rk = record_kind(kind, morning_mode, sport)
+            series_main = _series.main_players(title, rk, _series.load_roster())
+            if series_main:
+                title = _series.series_title(title, series_main, rk)
+        except Exception as e:                      # noqa: BLE001  題が作れないなら元の題で出す
+            print(f"[warn] シリーズの題を作れません（元の題のまま）: {e}")
+            series_main = []
     title = title[:100]  # YouTubeのタイトル上限
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
@@ -1901,6 +1914,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                 if ht.present(name, editorial_text) and name not in tags:
                     tags.append(name)
 
+    if series_main:
+        try:
+            import series as _series
+            head = _series.description_head(series_main, _series.load_store(), _series.load_slugs())
+            if head:
+                lines = lines[:1] + head[:-1] + lines[1:]
+        except Exception as e:                      # noqa: BLE001
+            print(f"[warn] シリーズの一覧の行を足せません: {e}")
     return {
         "snippet": {
             "title": title,
