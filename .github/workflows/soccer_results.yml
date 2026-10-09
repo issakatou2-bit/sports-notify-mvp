@@ -54,12 +54,13 @@ jobs:
           COUNT=$(python -c "import json; d=json.load(open('data/soccer_results.json',encoding='utf-8')); print(sum(p['status']!='none' for p in d['players']))")
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           if [ "$COUNT" -eq 0 ]; then echo "::notice::日本人選手の出場なし。動画を作りません"; fi
-      - name: Inspect material and drawing
-        if: steps.gate.outputs.count != '0'
-        run: python scripts/test_soccer_results.py --material data/soccer_results.json
       - name: Install video tools
         if: steps.gate.outputs.count != '0'
         run: bash scripts/install_video_tools.sh
+      # 画面の検査は日本語の書体が要るので、道具（書体）を入れたあと（10/10 初回の実行で書体なしで落ちた）
+      - name: Inspect material and drawing
+        if: steps.gate.outputs.count != '0'
+        run: python scripts/test_soccer_results.py --material data/soccer_results.json
       - name: Start VOICEVOX
         if: steps.gate.outputs.count != '0'
         run: |
