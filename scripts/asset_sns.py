@@ -106,8 +106,10 @@ def bsky_once(ledger, key, record, metadata, http=requests):
         raise RuntimeError('Uncertain Bluesky reservation needs inspection; no automatic resend')
     ledger.set(key, dict(metadata, state='reserved', rkey=rkey, text=record['text'],
                          reserved_at=datetime.now(timezone.utc).isoformat()))
-    result = http.post(endpoint + 'com.atproto.repo.putRecord',
-                       json=dict(query, record=record, validate=True, swapRecord=None),
+    # 新規だけを作る（同じ rkey があれば失敗する）。putRecord に swapRecord=null を送ると
+    # 10/9 に HTTPError で2件とも落ちていたので、作る専用の createRecord にする。
+    result = http.post(endpoint + 'com.atproto.repo.createRecord',
+                       json=dict(query, record=record, validate=True),
                        headers=headers, timeout=30)
     result.raise_for_status()
     response = result.json()
@@ -212,7 +214,10 @@ def distribute(run, rows, publish=False):
             try:
                 bsky_once(ledger, keys['bluesky'], bpost, metadata)
             except Exception as exc:
-                print('[error] bluesky: ' + type(exc).__name__)
+                # 応答の中身も出す（10/9 は種類だけで原因が分からなかった。鍵は含まれない）
+                resp = getattr(exc, 'response', None)
+                detail = (' %s %s' % (resp.status_code, resp.text[:200])) if resp is not None else ''
+                print('[error] bluesky: ' + type(exc).__name__ + detail)
                 failed.append(topic + ':bluesky')
         except Exception as exc:
             print('[error] ' + topic + ': ' + type(exc).__name__ + ' ' + str(exc)[:120])

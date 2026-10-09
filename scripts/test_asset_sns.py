@@ -145,8 +145,9 @@ class AssetSNS(unittest.TestCase):
         with patch.dict(os.environ, {'BLUESKY_HANDLE': 'collespo.bsky.social', 'BLUESKY_APP_PASSWORD': 'mock'}):
             sns.bsky_once(ledger, 'day:topic:bluesky', post, {}, http)
         data = http.post.call_args.kwargs['json']
-        self.assertIn('swapRecord', data)
-        self.assertIsNone(data['swapRecord'])
+        # 新規だけを作る createRecord（同じ rkey があれば失敗＝二重に作らない）
+        self.assertTrue(http.post.call_args.args[0].endswith('com.atproto.repo.createRecord'))
+        self.assertNotIn('swapRecord', data)
         self.assertTrue(data['validate'])
         self.assertEqual(ledger.data['deliveries']['day:topic:bluesky']['state'], 'sent')
 
