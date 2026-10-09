@@ -340,6 +340,31 @@ def _f(v, default=0.0):
         return default
 
 
+def series_facts(g: dict, ss: dict, res: dict) -> dict:
+    """シリーズの中のこの試合。勝敗は試合のあと（seriesStatus）と、この試合を引いた試合の前。"""
+    desc = ss.get("description") or ""
+    name = next((jp for en, jp in (("Wild Card", "ワイルドカードシリーズ"), ("Division", "地区シリーズ"),
+                                    ("Championship", "リーグ優勝決定シリーズ"), ("World Series", "ワールドシリーズ"))
+                 if en in desc), desc)
+    num, total = int(ss.get("gameNumber") or 0), int(ss.get("totalGames") or 0)
+    win_jp = res["home_jp"] if res["home_score"] > res["away_score"] else res["away_jp"]
+    lose_jp = res["away_jp"] if win_jp == res["home_jp"] else res["home_jp"]
+    after = ss.get("result") or ""
+    out = {"name": name, "game_number": num, "games_in_series": total,
+           "after": after, "is_over": bool(ss.get("isOver")),
+           "winner_today": win_jp}
+    w, l = int(ss.get("wins") or 0), int(ss.get("losses") or 0)
+    if ss.get("isTied"):
+        # 試合のあと同点 → 試合の前は今日の勝者が1つ少なかった
+        out["after_jp"] = f"{w}勝{l}敗の五分"
+        out["before_jp"] = f"{lose_jp}の{w}勝{w - 1}敗"
+    else:
+        out["after_jp"] = f"{w}勝{l}敗（{after}）"
+    if not out["is_over"] and total:
+        out["next"] = f"第{num + 1}戦" + ("で決着する" if ss.get("isTied") and num + 1 == total else "")
+    return out
+
+
 def fetch_result(date: str, teams: list) -> dict:
     """
     その日のその対戦の結果と、最も目立った選手を取る。
@@ -352,7 +377,8 @@ def fetch_result(date: str, teams: list) -> dict:
         return {}
     try:
         sch = requests.get(f"{MLB_API}/schedule",
-                           params={"sportId": 1, "date": date}, timeout=25)
+                           params={"sportId": 1, "date": date,
+                                   "hydrate": "seriesStatus"}, timeout=25)
         sch.raise_for_status()
         games = [g for d in sch.json().get("dates", [])
                  for g in d.get("games", [])]
@@ -373,6 +399,12 @@ def fetch_result(date: str, teams: list) -> dict:
             "away_jp": jp_team(an), "home_jp": jp_team(hn),
             "away_score": away["score"], "home_score": home["score"],
         }
+        # ポストシーズンは「第何戦か・試合の前と後の勝敗・決着したか」を別に持つ。
+        # 10/9 の長編が、第4戦（試合後2勝2敗）を決着の試合として語った。
+        # 材料に無いと、モデルは勝敗の数から「決着戦」を推してしまう。
+        ss = g.get("seriesStatus") or {}
+        if g.get("gameType") in ("F", "D", "L", "W") and ss.get("gameNumber"):
+            res["series"] = series_facts(g, ss, res)
         # イニングごとの点。スコアボードを描くのに要る。
         # 最終スコアだけだと「7対6だった」しか言えないが、
         # 回ごとの並びがあれば、どこで動いた試合なのかが一目で分かる。

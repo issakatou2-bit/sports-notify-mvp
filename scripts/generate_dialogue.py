@@ -1079,6 +1079,22 @@ def situation(m: dict) -> dict:
             out["flow"] += ("。" if out["flow"] else "") +                 f"{len(inn)}回まで延長" + (f"、最後の回に{got}点入った"
                                           if got else "")
 
+    # ポストシーズンのシリーズの中の位置。**この試合が決着の試合だったかを取り違えない。**
+    # 10/9 の長編が第4戦（試合後2勝2敗）を「2勝2敗の決着戦」と語った。
+    se = res.get("series") or {}
+    if se.get("game_number"):
+        line = f"この試合は{se.get('name') or 'シリーズ'}の第{se['game_number']}戦"
+        if se.get("before_jp"):
+            line += f"。試合の前は{se['before_jp']}"
+        line += f"。この試合のあと{se.get('after_jp') or se.get('after')}"
+        if se.get("is_over"):
+            line += "。この試合でシリーズが決着した"
+        else:
+            line += "。シリーズはまだ決着していない（この試合を決着戦・最終戦と呼ばない）"
+            if se.get("next"):
+                line += f"。次の{se['next']}"
+        out["notes"].append(line)
+
     # 守備と安打。大敗の日はここに理由が出ていることが多い。
     for side, key in (("away_jp", "away"), ("home_jp", "home")):
         e = res.get(key + "_errors")

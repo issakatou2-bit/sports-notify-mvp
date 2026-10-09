@@ -449,8 +449,12 @@ def translate(client, items: list) -> list:
         flat.append((n, -1, it["title"]))
         for j, rt in enumerate(it.get("reply_texts") or []):
             flat.append((n, j, rt))
-    numbered = "\n".join(f"{n + 1}. {txt}"
-                         for n, (_, _, txt) in enumerate(flat))
+    # 返信には、どの書き込みへの返信かを添える。10/9 に「ヤンキースの選手さん」と訳した
+    # 一言は、返信を読めば観客の妨害（ファン）の話だと分かった。番号だけ並べると文脈が切れる。
+    head = {n: i + 1 for i, (n, j, _) in enumerate(flat) if j < 0}
+    numbered = "\n".join(
+        f"{i + 1}. " + (f"（{head[n]}への返信）" if j >= 0 else "") + txt
+        for i, (n, j, txt) in enumerate(flat))
     # 訳と同時に、その一言が肯定寄りか否定寄りかも付けてもらう。
     # 別々に呼ぶと回数が倍になるうえ、訳文と判定が違う読み方で付く。
     prompt = (
@@ -474,6 +478,13 @@ def translate(client, items: list) -> list:
         "  **意味の取れない直訳を作らない。**実際に出た失敗:\n"
         "    Rocchio October → ×「ロッチオクトーバー」\n"
         "  何のことか分からない語は、訳さずに英語のまま置く\n"
+        "- **人を指す語は、選手・ファン（観客）・監督を取り違えない。**\n"
+        "  a Yankee / Yankees fan / that fan / the guy in the stands は、"
+        "選手と書かれていなければファン・観客のこと。（Nへの返信）の行は、"
+        "その書き込みと合わせて読み、誰の話かを決める。"
+        "決められなければ「ヤンキースの人」のようにぼかす\n"
+        "  実際に出た失敗: 観客の妨害でレイズが得をした話の Yankee"
+        " →×「ヤンキースの選手さん」\n"
         "- 感想や補足は加えない。書かれていないことを足さない\n"
         "- 前置きや説明は不要"
     )
@@ -507,6 +518,7 @@ def translate(client, items: list) -> list:
 
     def clean(pair):
         tone, ja = pair
+        ja = re.sub(r"^[（(]\d+への返信[）)]\s*", "", ja)   # 渡した目印を訳に残さない
         return {"ja": team_names_jp(ja),
                 "tone": tone if tone in ("称賛", "批判", "中立") else "中立"}
 
