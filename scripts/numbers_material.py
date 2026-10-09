@@ -209,6 +209,12 @@ def readings(row: dict) -> list:
         out.append("安打%d本がすべて本塁打" % hits)
     if ab and not hits and (nums.get("四球") or nums.get("死球")):
         out.append("安打は無いが出塁はしている")
+    # 得点（ホームを踏んだ数）は成績の行に入っていない。10/8 の長編で、大谷は0安打でも
+    # 失策で生還して1得点していたのに「どちらも点には結びついていない」と言った。
+    runs = row.get("runs") or 0
+    if runs:
+        out.append("得点%d（本人がホームを踏んだ。%s「点に結びつかなかった」とは言わない）"
+                   % (runs, "安打は無くても、" if not hits else ""))
     return out
 
 
