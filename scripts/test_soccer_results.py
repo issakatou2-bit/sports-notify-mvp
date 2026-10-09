@@ -158,7 +158,11 @@ class SoccerResults(unittest.TestCase):
         data=fixed('2026-09-20');base=data['players'][0]
         data['players']=[dict(base,name=f'検査選手{n}') for n in range(21)]
         segments=render.narration(data)['segments'];rows=[s for s in segments if s['kind']=='roster']
-        self.assertEqual(sum(s['meta']['count'] for s in rows),21)
+        # 一覧は出場した選手を7人まで1画面に。残りは「ほかN人」、出場なしは名前の1行（10/10 エマ）
+        self.assertEqual(len(rows),1)
+        played=sum(p['status']!='none' for p in data['players'])
+        self.assertEqual(rows[0]['meta']['count']+rows[0]['meta']['more'],played)
+        self.assertEqual(played+len(rows[0]['meta']['absent']),21)
         clubs=render.resolve_clubs(data)
         for seg in rows:
             r3.set_caption('',12,30);im=render.frame(1.4,seg,data,clubs)

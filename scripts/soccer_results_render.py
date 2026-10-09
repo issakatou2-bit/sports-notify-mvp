@@ -38,6 +38,20 @@ def resolve_clubs(data):
     return clubs
 
 
+def spoken_minute(minute):
+    """「90+5」→「後半のアディショナルタイム」。ふつうの分は「79分」。"""
+    base,_,extra=str(minute).partition('+')
+    if extra:return ('前半' if int(base)<=45 else '後半')+'のアディショナルタイム'
+    return f'{base}分'
+
+
+def roster_pages(data):
+    """一覧は出場した選手だけ（得点・アシストの多い順。7人まで）。出場なしは名前を1行に。"""
+    played=[p for p in data['players'] if p['status']!='none']
+    absent=[p['name'] for p in data['players'] if p['status']=='none']
+    return [dict(start=0,count=min(len(played),ROWS_PER_PAGE),more=max(0,len(played)-ROWS_PER_PAGE),absent=absent)]
+
+
 def narration(data):
     if not data.get('can_make'):return {'label':data['date_jst'],'segments':[],'duration_budget':{'limit':40,'grace':0}}
     lead=next(p for p in data['players'] if p['status']!='none')
@@ -49,15 +63,16 @@ def narration(data):
     for page in range(pages):
         goals=[g for side in ('home','away') for g in by_side[side][page*4:page*4+4]]
         jp_goals=[g for g in goals if g['japanese_goal']]
-        result_text=''.join(f"{g['scorer']}は{g['minute'].replace('+','分追加')}分にゴール。" for g in jp_goals)
+        result_text=''.join(f"{g['scorer']}は{spoken_minute(g['minute'])}にゴール。" for g in jp_goals)
         if not result_text:result_text='得点経過は画面のとおりです。' if game['goals_complete'] else '確認できた得点経過です。'
         segments.append({'kind':'result','text':result_text,'speaker':2,'meta':{'event_id':game['id'],'goals':goals,'page':page+1}})
-    for start in range(0,len(data['players']),ROWS_PER_PAGE):
-        rows=data['players'][start:start+ROWS_PER_PAGE]
-        said=[p for p in rows if p['status']!='none' and p['name']!=lead['name']][:2]
-        text=''.join(p['name']+('が'+str(p['goals'])+'得点' if p.get('goals') else 'が'+str(p['assists'])+'アシスト' if p.get('assists') else 'は'+results.STATUS[p['status']])+'。' for p in said)
-        text+=('出場なしは一覧のとおりです。' if any(p['status']=='none' for p in rows) else '出場選手の結果です。')
-        segments.append({'kind':'roster','text':text,'speaker':2,'meta':{'start':start,'count':len(rows),'page':start//ROWS_PER_PAGE+1}})
+    for meta in roster_pages(data):
+        rows=[p for p in data['players'] if p['status']!='none'][:meta['count']]
+        said=[p for p in rows if p['name']!=lead['name'] and (p.get('goals') or p.get('assists'))][:2]
+        text=''.join(p['name']+('が'+str(p['goals'])+'得点' if p.get('goals') else 'が'+str(p['assists'])+'アシスト')+'。' for p in said)
+        if not said:text+=f"日本人選手は{len(rows)+meta['more']}人が出場しました。"
+        # 出場なしの選手は画面の1行だけ。読み上げで名前を出さない（クラブの結果を本人のことと読ませない）
+        segments.append({'kind':'roster','text':text,'speaker':2,'meta':dict(meta,page=1)})
     segments.append({'kind':'outro','text':r3.OUTRO_TEXT,'speaker':2,'meta':{}})
     return {'label':data['date_jst'],'segments':segments,'duration_budget':{'limit':40,'grace':0}}
 
@@ -95,20 +110,28 @@ def timeline(t,game,clubs,spec,goals):
     d.line((half,mid-20,half,mid+20),fill=r3.GOLD,width=3)
     cards.plain(im,left,mid+30,'前半',24,width=80);cards.plain(im,half+12,mid+30,'後半',24,width=80)
     groups={side:[g for g in goals if g['side']==side] for side in ('home','away')}
+    width=220
     for side,rows in groups.items():
-        for index,g in enumerate(rows):
+        placed=[]
+        for g in sorted(rows,key=lambda g:int(g['minute'].split('+')[0])):
             minute=int(g['minute'].split('+')[0]);x=left+(right-left)*min(minute,90)/90
-            # Fixed nonoverlapping label lanes; connector retains the exact event time.
-            width=(right-left-20)/2;lx=left+(index%2)*(width+20)
-            y=(572+(index//2)*90) if side=='home' else (918+(index//2)*90)
+            lx=min(max(x-width/2,left-30),right+30-width)
+            # 近い時間の得点は段をずらす（重ならないところまで外へ）
+            lane=0
+            while any(abs(px-lx)<width+10 and pl==lane for px,pl in placed):lane+=1
+            placed.append((lx,lane))
+            y=(mid-150-lane*96) if side=='home' else (mid+70+lane*96)
             color=r3.GOLD if g['japanese_goal'] or g['japanese_assists'] else r3.INK
-            d.line((x,mid,lx+width/2,y+(75 if side=='home' else 0)),fill=color,width=2)
+            d.line((x,mid,x,y+82 if side=='home' else y-6),fill=color,width=2)
             d.ellipse((x-7,mid-7,x+7,mid+7),fill=color)
             label=g['minute']+'分'+('　OG' if g['own_goal'] else '')
             cards.plain(im,lx,y,label,32,color,width=width,number=False)
-            scorer=g['scorer']
-            if g['japanese_assists']:scorer+=' / '+ '・'.join(g['japanese_assists'])+' A'
-            cards.plain(im,lx,y+40,scorer,26,color,width=width)
+            if g['japanese_goal']:
+                cards.plain(im,lx,y+40,g['scorer'],26,color,width=width)
+            elif g['japanese_assists']:
+                cards.plain(im,lx,y+40,'・'.join(g['japanese_assists'])+' A',26,color,width=width)
+            else:
+                cards.club_name(im,lx,y+40,clubs[game[side]['name_jp']],26,color,width=width)
     if not goals:
         cards.plain(im,left,650,'得点なし' if game['goals_complete'] else '得点経過は未取得',36,width=right-left)
     cards.plain(im,cards.L+28,1090,'OG＝オウンゴール　A＝アシスト' if any(g['own_goal'] or g['japanese_assists'] for g in goals) else '金色＝日本人選手の得点・アシスト',22,width=cards.R-cards.L-56)
@@ -118,16 +141,18 @@ def timeline(t,game,clubs,spec,goals):
 
 def roster_screen(t,data,meta,clubs,spec):
     im=cards.canvas(t,clubs,spec['label'])
-    cards.plain(im,cards.L,258,'日本人選手の結果',48,width=cards.R-cards.L)
-    cards.plain(im,cards.L,310,'A＝アシスト',22,width=cards.R-cards.L)
-    rows=data['players'][meta['start']:meta['start']+meta['count']]
+    rows=[p for p in data['players'] if p['status']!='none'][:meta['count']]
+    foot=bool(meta.get('absent') or meta.get('more'))
+    v4.panel(im,(cards.L,258,cards.R,258+108+len(rows)*100+(52 if foot else 0)))
+    cards.plain(im,cards.L+22,276,'日本人選手の結果',44,width=cards.R-cards.L-44)
+    cards.plain(im,cards.L+22,330,'A＝アシスト',22,width=cards.R-cards.L-44)
     for i,p in enumerate(rows):
-        y=340+i*110
-        v4.panel(im,(cards.L,y,cards.R,y+98))
-        cards.plain(im,cards.L+22,y+12,p['name'],36,width=310)
-        cards.club_name(im,cards.L+22,y+59,clubs[p['club']],24,r3.colors(None)[1],width=310)
+        y=362+i*100
+        v4.panel(im,(cards.L+14,y,cards.R-14,y+90))
+        cards.plain(im,cards.L+36,y+12,p['name'],36,width=310)
+        cards.club_name(im,cards.L+36,y+54,clubs[p['club']],24,r3.colors(None)[1],width=310)
         # Reserve right-hand portrait space on the low rows as well as source/caption.
-        cards.plain(im,cards.L+336,y+61,results.STATUS[p['status']],26,(255,170,160) if p['status']=='none' else r3.INK,width=200)
+        cards.plain(im,cards.L+336,y+56,results.STATUS[p['status']],26,(255,170,160) if p['status']=='none' else r3.INK,width=200)
         if p['status']=='none':continue
         x=cards.L+336
         for key,unit in (('goals','得点'),('assists','A')):
@@ -135,6 +160,11 @@ def roster_screen(t,data,meta,clubs,spec):
             v4.text(im,x,y+5,p[key],50,r3.GOLD,width=70,number=True)
             cards.plain(im,x+66,y+21,unit,24,width=74)
             x+=154
+    if foot:
+        y=362+len(rows)*100+8;parts=[]
+        if meta.get('more'):parts.append(f"ほか{meta['more']}人が出場")
+        if meta.get('absent'):parts.append('出場なし：'+'・'.join(meta['absent'][:4])+('ほか' if len(meta['absent'])>4 else ''))
+        cards.plain(im,cards.L+22,y,'　'.join(parts),24,(196,206,212),width=cards.R-cards.L-44)
     im.info['soccer_roster']=rows
     return cards.finish(im,t,spec)
 
@@ -142,7 +172,7 @@ def roster_screen(t,data,meta,clubs,spec):
 def frame(t,seg,data,clubs=None):
     if r3.LOOK!='v4':raise ValueError('サッカー結果の新設枠はv4専用')
     clubs=clubs or resolve_clubs(data);spec=program_spec(data);kind=seg['kind'];meta=seg['meta']
-    if kind=='outro':return r3.outro(t,{},'soccer_results',CREDIT)
+    if kind=='outro':return r3.outro(t,{},'soccer_results',CREDIT,tagline='欧州の日本人選手とMLBを、毎日数字で')
     if kind=='roster':return roster_screen(t,data,meta,clubs,spec)
     game=next(g for g in data['games'] if g['id']==meta['event_id'])
     if kind=='intro':return cover(t,data,game,clubs,spec)
@@ -159,6 +189,8 @@ def numeric_material(data):
     for p in data['players']:
         for key in ('goals','assists','yellow_cards','red_cards'):
             if p.get(key) is not None:values.add(str(p[key]))
+    # 一覧の「ほかN人」「N人が出場」は材料の名簿を数えた数
+    for meta in roster_pages(data):values.update({str(meta['more']),str(meta['count']+meta['more'])})
     # Date is explicitly supplied material, not a guessed match day.
     values.update(re.findall(r'\d+',data['date_jst']))
     return values
