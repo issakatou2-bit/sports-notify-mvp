@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-09T01:04:42.807395+00:00",
+  "updated_at": "2026-10-09T04:37:54.274226+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -171,10 +171,6 @@
         [
           "勝ち投手・セーブ",
           "勝ち エドガルド・エンリケス（1回と3分の2を無失点）　セーブ エドウィン・ディアス"
-        ],
-        [
-          "ハイライトのコメント欄から",
-          "「スポーツの神は大谷翔平に微笑みかけた。あの初回の得点は本当にラッキーだった。彼にはそれが必要だった」"
         ]
       ],
       "japanese": [
@@ -188,13 +184,7 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": {
-        "said": "スポーツの神は大谷翔平に微笑みかけた。あの初回の得点は本当にラッキーだった。彼にはそれが必要だった",
-        "text": "The sports gods smiled on Ohtani today; he got a huge break with that first run. He needed that one",
-        "url": "https://www.youtube.com/watch?v=cv8qfCAzrmM",
-        "likes": 503,
-        "at": "2026-10-08T14:33:56Z"
-      },
+      "voice": null,
       "headline": null,
       "game_pk": 849822,
       "game_v4": {
@@ -433,6 +423,137 @@
       }
     },
     {
+      "key": "season_game_849832",
+      "label": "地区シリーズ第4戦",
+      "hook": "ガーディアンズがホワイトソックスに9対5で地区シリーズ2勝2敗に",
+      "heading": "ガーディアンズ 対 ホワイトソックス　地区シリーズ第4戦",
+      "intro": "地区シリーズ第4戦、ガーディアンズが敵地でホワイトソックスに9対5で勝ちました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "team_id": 114,
+      "abbr": "CLE",
+      "title": "【MLB】ガーディアンズがホワイトソックスに9対5で地区シリーズ2勝2敗に｜村上宗隆 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "ガーディアンズ 9対5 ホワイトソックス　敵地で勝利　シリーズはガーディアンズの2勝2敗"
+        ],
+        [
+          "本塁打",
+          "ガーディアンズ2本　ホワイトソックス1本"
+        ],
+        [
+          "先発",
+          "ガーディアンズ メシック 2回と3分の1を2失点　ホワイトソックス スミス 3分の2回を無失点"
+        ]
+      ],
+      "japanese": [
+        {
+          "name": "村上宗隆",
+          "line": "3打数1安打　1打点　2四球（ホワイトソックス）"
+        }
+      ],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": null,
+      "game_pk": 849832,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 0,
+              "home": 2
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 5,
+              "away": 3,
+              "home": 2
+            },
+            {
+              "num": 6,
+              "away": 6,
+              "home": 0
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": 1
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 114,
+            "name": "ガーディアンズ",
+            "abbr": "CLE",
+            "total": 9
+          },
+          "home": {
+            "id": 145,
+            "name": "ホワイトソックス",
+            "abbr": "CWS",
+            "total": 5
+          }
+        },
+        "decisive": null
+      },
+      "game_date": "2026-10-09T00:00:00Z",
+      "jp_first": true,
+      "finished_at": "2026-10-09T03:47:59.125000+00:00",
+      "v3": {
+        "who": "ガーディアンズ　地区シリーズ第4戦",
+        "big": "9-5",
+        "unit": "",
+        "sub": "敵地で勝利",
+        "tag": "地区シリーズ2勝2敗",
+        "chips": [
+          {
+            "label": "地区シリーズ　ガーディアンズ",
+            "score": "2-2",
+            "win": false
+          },
+          {
+            "label": "本塁打　ガーディアンズ",
+            "score": "2"
+          },
+          {
+            "label": "本塁打　ホワイトソックス",
+            "score": "1"
+          }
+        ],
+        "ticker": "日本人選手　村上宗隆 3打数1安打　1打点　2四球（ホワイトソックス）"
+      }
+    },
+    {
       "key": "season_game_849838",
       "label": "地区シリーズ第3戦",
       "hook": "レイズがヤンキースに4対3で地区シリーズ突破",
@@ -463,6 +584,10 @@
         [
           "勝ち投手・セーブ",
           "勝ち イアン・シーモア（1回と3分の1を無失点）　セーブ ブライアン・ベイカー"
+        ],
+        [
+          "ハイライトのコメント欄から",
+          "「ヤンキースのシーズン、終わったーーーーバイバーイ!!!」"
         ]
       ],
       "japanese": [],
@@ -471,7 +596,13 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
+      "voice": {
+        "said": "ヤンキースのシーズン、終わったーーーーバイバーイ!!!",
+        "text": "The Yankees season THERE IT GOOOOOOOOOEEEEESSS SEE YA!!!",
+        "url": "https://www.youtube.com/watch?v=fqIDeNUWL2U",
+        "likes": 1131,
+        "at": "2026-10-08T03:47:40Z"
+      },
       "headline": null,
       "game_pk": 849838,
       "game_v4": {
