@@ -326,6 +326,10 @@ def short_transition(prev_bytes, im, k, fps=30, v4=False):
     # Stable shared chrome: no ghosted subtitles, ticker dates or double portraits.
     out.paste(im.crop((0,0,im.width,r3.CONTENT_TOP)),(0,0))
     out.paste(im.crop((0,r3.CONTENT_BOTTOM,im.width,im.height)),(0,r3.CONTENT_BOTTOM))
+    if 'duo_portraits' in im.info:
+        # 立ち絵は CONTENT_BOTTOM より上にもかかる。前の画面の立ち絵が上半分だけ残らないように
+        import characters
+        box=characters.portrait_strip();out.paste(im.crop(box),box[:2])
     return out.tobytes()
 
 
@@ -336,6 +340,12 @@ def short_effects(im,t,quote=False,score=False):
     info=im.info.copy();box=(r3.LEFT,r3.CONTENT_TOP,r3.SAFE_RIGHT,r3.CONTENT_BOTTOM)
     out=im.copy();content=im.crop(box)
     if quote and t<.4:
+        if info.get('duo_layer'):
+            # 立ち絵は札の外。札といっしょに縮めないよう背景で消してから切り出し、最後に描き直す
+            clean=im.copy();bg_full=r3.background(t,None)
+            for rec in info.get('duo_portraits',[]):
+                b=tuple(rec['box']);clean.paste(bg_full.crop(b),b[:2])
+            content=clean.crop(box)
         p=max(0,min(1,t/.4));w=max(2,round(content.width*(1-(1-min(1,p/.4))**3)))
         h=max(2,round(content.height*(1-(1-max(0,(p-.4)/.6))**3)))
         bg=r3.background(t,None).crop(box);out.paste(bg,box[:2])
@@ -359,6 +369,9 @@ def short_effects(im,t,quote=False,score=False):
             if entry['role']=='card':cd.rectangle(entry['box'],fill=255)
         mask=ImageChops.multiply(mask,clip)
         out=Image.composite(Image.new('RGB',im.size,(255,246,220)),out,mask)
+    if info.get('duo_layer'):
+        import characters
+        characters.redraw(out,info['duo_layer'])
     out.info.update(info)
     out.info['v4_effects_applied']=True
     return out

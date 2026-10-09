@@ -74,7 +74,7 @@ def design_team(spec):
     return None if spec.get('multi_team') or spec.get('game') or len(teams)>1 else spec.get('team_id')
 
 
-def _lines(d, text, size, width, max_lines=4):
+def _lines(d, text, size, width, max_lines=4, floor=24):
     """描画と同じ書体で札の幅を計測する。長い語も幅以内で折る。"""
     while True:
         f = font(size)
@@ -94,7 +94,7 @@ def _lines(d, text, size, width, max_lines=4):
                 lines.append(line.rstrip()); line = ''
         if line:
             lines.append(line.rstrip())
-        if len(lines) <= max_lines or size <= 24:
+        if len(lines) <= max_lines or size <= floor:
             return lines[:max_lines], size
         size -= 2
 
@@ -268,8 +268,16 @@ def _portrait(who="metan"):
 
 
 def source(d, text, color):
-    """出典。立ち絵（右下）にかからない幅で、2行まで。v4 は字幕の箱の上。"""
-    lines, size = _lines(d, text, 24, SAFE_RIGHT - LEFT - 280, 2)
+    """出典。立ち絵（右下）にかからない幅で、2行まで（v4 は3行まで）。v4 は字幕の箱の上。"""
+    # v4 は右に上半身が立つので、その手前まで（掛け合いは2人分）。入らなければ字を20まで小さく
+    if LOOK == "v4":
+        import characters
+        width = SAFE_RIGHT - LEFT - characters.reserved_width(_CAPTION.get("duo"))
+        lines, size = _lines(d, text, 24, width, 2, 20)
+        if len("".join("".join(lines).split())) < len("".join(str(text).split())):
+            lines, size = _lines(d, text, 20, width, 3, 20)   # 2行に入らないときだけ、20の字で3行
+    else:
+        lines, size = _lines(d, text, 24, SAFE_RIGHT - LEFT - 280, 2)
     for i, line in enumerate(lines):
         _text(d,(LEFT, SOURCE_BOTTOM - (len(lines) - i) * (size + 6)), line, font=font(size), fill=color, role="source")
 
@@ -429,9 +437,10 @@ def progress(d):
 
 
 def presenter(im, t, which="right", who="metan"):
-    if LOOK=='v4' and _CAPTION.get('duo'):
-        import duo_presenter
-        return duo_presenter.presenter(im,t)
+    if LOOK == "v4":
+        # 10/9 本人: デフォルトの立ち絵（坂本アヒルさん）・横いっぱいの吹き出し（案1）。characters.py に1か所
+        import characters
+        return characters.presenter(im, t, ("zundamon", "metan") if _CAPTION.get("duo") else ("metan",))
     if LOOK == "v4":
         clock = _PROGRAM_CLOCK[0]
         elapsed = (clock - _CAPTION["start"]) if clock is not None else t
