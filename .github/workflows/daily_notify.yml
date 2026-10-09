@@ -17,6 +17,8 @@ permissions:
   id-token: write
 
 env:
+  # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
+  SERIES_TITLE: ${{ vars.SERIES_TITLE }}
   COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
   # v2 / hold / legacy. Old producer is retained; failed v2 never falls back.
   PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}

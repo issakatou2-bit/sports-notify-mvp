@@ -4,6 +4,8 @@
 name: 毎日 17:00-20:00　夕方の4本
 
 env:
+  # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
+  SERIES_TITLE: ${{ vars.SERIES_TITLE }}
   COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
   COLLESPO_DUO: ${{ vars.COLLESPO_DUO || 'off' }}
   PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}

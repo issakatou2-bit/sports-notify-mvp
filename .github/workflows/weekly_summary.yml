@@ -35,6 +35,10 @@ on:
 permissions:
   contents: write
 
+env:
+  # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
+  SERIES_TITLE: ${{ vars.SERIES_TITLE }}
+
 jobs:
   # 日曜かどうかだけを見る。JSTで判定する(UTCだと日曜の朝までが土曜になる)。
   gate:
