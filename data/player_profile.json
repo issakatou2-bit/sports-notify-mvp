@@ -1,111 +1,116 @@
 {
-  "generated_at": "2026-10-08T06:30:22.926742+00:00",
-  "date_jst": "2026-10-08",
-  "name": "Fernando Tatis Jr.",
-  "player_id": "665487",
-  "team": "パドレス",
+  "generated_at": "2026-10-09T06:01:07.558337+00:00",
+  "date_jst": "2026-10-09",
+  "name": "Miguel Vargas",
+  "player_id": "678246",
+  "team": "ホワイトソックス",
   "group": "hitting",
-  "why": "2026-10-08のMLBで最も活躍",
-  "headline": "3打数1安打　1本塁打　1打点　1四球",
-  "score": 95,
+  "why": "2026-10-09のMLBで最も活躍",
+  "headline": "2打数1安打　1本塁打　1打点　3四球　1盗塁",
+  "score": 111,
   "bio": {
-    "name_en": "Fernando Tatis Jr.",
-    "age": 27,
-    "birth_city": "San Pedro De Macoris",
+    "name_en": "Miguel Vargas",
+    "age": 26,
+    "birth_city": "Havana",
     "birth_state": null,
-    "birth_country": "Dominican Republic",
-    "birth_date": "1999-01-02",
-    "debut": "2019-03-28",
+    "birth_country": "Cuba",
+    "birth_date": "1999-11-17",
+    "debut": "2022-08-03",
     "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "23",
-    "position": "Outfielder",
-    "nickname": "El Niño",
-    "height": "6' 3\"",
-    "weight": 217
+    "number": "20",
+    "position": "Third Base",
+    "nickname": null,
+    "height": "6' 2\"",
+    "weight": 225
   },
   "teams": [
     {
-      "team": "パドレス",
-      "from": 2019,
+      "team": "ドジャース",
+      "from": 2022,
+      "to": 2024
+    },
+    {
+      "team": "ホワイトソックス",
+      "from": 2024,
       "to": 2026
     }
   ],
   "career": {
-    "games": 830,
-    "avg": ".279",
-    "hr": 177,
-    "rbi": 476,
-    "ops": ".860",
-    "sb": 162,
-    "hits": 901
+    "games": 468,
+    "avg": ".221",
+    "hr": 62,
+    "rbi": 209,
+    "ops": ".720",
+    "sb": 35,
+    "hits": 354
   },
   "this_season": {
     "games": 159,
-    "avg": ".289",
-    "hr": 25,
-    "rbi": 83,
-    "ops": ".828",
-    "sb": 38,
-    "hits": 181
+    "avg": ".250",
+    "hr": 33,
+    "rbi": 93,
+    "ops": ".837",
+    "sb": 22,
+    "hits": 147
   },
   "last_season": {
-    "games": 155,
-    "avg": ".268",
-    "hr": 25,
-    "rbi": 71,
-    "ops": ".814",
-    "sb": 32,
-    "hits": 159
+    "games": 138,
+    "avg": ".234",
+    "hr": 16,
+    "rbi": 60,
+    "ops": ".717",
+    "sb": 6,
+    "hits": 118
   },
   "recent": [
     {
       "date": "2026-09-26",
-      "line": "4打数0安打 1打点",
-      "opponent": "Arizona Diamondbacks"
+      "line": "2打数0安打",
+      "opponent": "Colorado Rockies"
     },
     {
       "date": "2026-09-25",
-      "line": "3打数2安打",
-      "opponent": "Arizona Diamondbacks"
+      "line": "3打数0安打 1打点",
+      "opponent": "Colorado Rockies"
     },
     {
       "date": "2026-09-24",
-      "line": "3打数2安打 1打点",
-      "opponent": "Los Angeles Dodgers"
+      "line": "5打数2安打 2打点",
+      "opponent": "Kansas City Royals"
     },
     {
       "date": "2026-09-23",
-      "line": "5打数3安打",
-      "opponent": "Los Angeles Dodgers"
+      "line": "4打数1安打 1打点",
+      "opponent": "Kansas City Royals"
     },
     {
       "date": "2026-09-22",
-      "line": "4打数1安打",
-      "opponent": "Los Angeles Dodgers"
+      "line": "4打数1安打 1打点",
+      "opponent": "Kansas City Royals"
     }
   ],
   "awards": [
     {
       "season": "2026",
-      "name": "NL Player of the Week"
+      "name": "AL Player of the Week"
+    },
+    {
+      "season": "2026",
+      "name": "AL All-Star"
     },
     {
       "season": "2025",
-      "name": "Padres MVP"
+      "name": "AL Player of the Week"
     },
     {
-      "season": "2025",
-      "name": "Rawlings NL Gold Glove"
+      "season": "2022",
+      "name": "MiLB.com Organization All-Star"
     },
     {
-      "season": "2025",
-      "name": "NL All-Star"
-    },
-    {
-      "season": "2025",
-      "name": "NL Player of the Week"
+      "season": "2022",
+      "name": "Baseball America Triple-A All-Star"
     }
   ],
   "quotes": []

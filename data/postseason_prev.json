@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-07T09:52:34.009274+00:00",
-  "date": "2026-10-07",
+  "updated_at": "2026-10-08T09:52:39.217749+00:00",
+  "date": "2026-10-08",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -131,12 +131,12 @@
       "league_jp": "ア・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 2,
+      "played": 3,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月8日",
-        "game": 3
+        "day": "10月9日",
+        "game": 4
       },
       "teams": [
         {
@@ -150,7 +150,7 @@
         {
           "id": 114,
           "name": "ガーディアンズ",
-          "wins": 0,
+          "wins": 1,
           "players": []
         }
       ]
@@ -163,18 +163,15 @@
       "league_jp": "ア・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 2,
-      "over": false,
-      "winner": null,
-      "next": {
-        "day": "10月8日",
-        "game": 3
-      },
+      "played": 3,
+      "over": true,
+      "winner": 139,
+      "next": null,
       "teams": [
         {
           "id": 139,
           "name": "レイズ",
-          "wins": 2,
+          "wins": 3,
           "players": []
         },
         {
@@ -193,18 +190,15 @@
       "league_jp": "ナ・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 3,
-      "over": false,
-      "winner": null,
-      "next": {
-        "day": "10月8日",
-        "game": 4
-      },
+      "played": 4,
+      "over": true,
+      "winner": 119,
+      "next": null,
       "teams": [
         {
           "id": 119,
           "name": "ドジャース",
-          "wins": 2,
+          "wins": 3,
           "players": [
             "大谷翔平",
             "佐々木朗希",
@@ -227,18 +221,15 @@
       "league_jp": "ナ・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 3,
-      "over": false,
-      "winner": null,
-      "next": {
-        "day": "10月8日",
-        "game": 4
-      },
+      "played": 4,
+      "over": true,
+      "winner": 158,
+      "next": null,
       "teams": [
         {
           "id": 158,
           "name": "ブリュワーズ",
-          "wins": 2,
+          "wins": 3,
           "players": []
         },
         {
@@ -250,27 +241,114 @@
           ]
         }
       ]
+    },
+    {
+      "key": "L:139-wait",
+      "round": "L",
+      "round_jp": "リーグ優勝決定シリーズ",
+      "stage": 3,
+      "waiting": true,
+      "league_jp": "ア・リーグ",
+      "best_of": 7,
+      "need": 4,
+      "played": 0,
+      "over": false,
+      "winner": null,
+      "next": {
+        "day": "10月13日",
+        "game": 1
+      },
+      "teams": [
+        {
+          "id": 139,
+          "name": "レイズ",
+          "wins": 0,
+          "players": []
+        }
+      ]
+    },
+    {
+      "key": "L:119-158",
+      "round": "L",
+      "round_jp": "リーグ優勝決定シリーズ",
+      "stage": 3,
+      "league_jp": "ナ・リーグ",
+      "best_of": 7,
+      "need": 4,
+      "played": 0,
+      "over": false,
+      "winner": null,
+      "next": {
+        "day": "10月12日",
+        "game": 1
+      },
+      "teams": [
+        {
+          "id": 119,
+          "name": "ドジャース",
+          "wins": 0,
+          "players": [
+            "大谷翔平",
+            "佐々木朗希",
+            "山本由伸"
+          ]
+        },
+        {
+          "id": 158,
+          "name": "ブリュワーズ",
+          "wins": 0,
+          "players": []
+        }
+      ]
     }
   ],
   "final_day": [],
-  "headline": "大谷翔平・佐々木朗希・山本由伸のドジャースは地区シリーズでブレーブスに2勝1敗、突破に王手",
+  "headline": "大谷翔平・佐々木朗希・山本由伸のドジャースは3勝1敗でブレーブスを破り、リーグ優勝決定シリーズへ",
   "changes": [
     {
       "key": "D:119-144",
-      "kind": "game",
-      "text": "大谷翔平・佐々木朗希・山本由伸のドジャースは地区シリーズでブレーブスに2勝1敗、突破に王手",
+      "kind": "advance",
+      "text": "大谷翔平・佐々木朗希・山本由伸のドジャースは3勝1敗でブレーブスを破り、リーグ優勝決定シリーズへ",
       "jp": true,
       "stage": 2
     },
     {
       "key": "D:135-158",
-      "kind": "game",
-      "text": "松井裕樹のパドレスは地区シリーズでブリュワーズに1勝2敗、負ければ敗退",
+      "kind": "advance",
+      "text": "松井裕樹のパドレスは地区シリーズでブリュワーズに1勝3敗で敗れ、敗退",
       "jp": true,
       "stage": 2
+    },
+    {
+      "key": "D:139-147",
+      "kind": "advance",
+      "text": "レイズが3勝0敗でヤンキースを破り、リーグ優勝決定シリーズへ",
+      "jp": false,
+      "stage": 2
+    },
+    {
+      "key": "D:114-145",
+      "kind": "game",
+      "text": "村上宗隆のホワイトソックスは地区シリーズでガーディアンズに2勝1敗、突破に王手",
+      "jp": true,
+      "stage": 2
+    },
+    {
+      "key": "L:119-158",
+      "kind": "start",
+      "text": "大谷翔平・佐々木朗希・山本由伸のドジャースはリーグ優勝決定シリーズでブリュワーズと対戦。10月12日に第1戦",
+      "jp": true,
+      "stage": 3
+    },
+    {
+      "key": "L:139-wait",
+      "kind": "start",
+      "text": "リーグ優勝決定シリーズ レイズは相手待ち、10月13日に第1戦",
+      "jp": false,
+      "stage": 3
     }
   ],
-  "prev_date": "2026-10-06",
+  "prev_date": "2026-10-07",
   "japanese": [
     {
       "team_id": 119,
