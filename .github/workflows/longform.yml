@@ -64,6 +64,8 @@ permissions:
 
 # 長編の見た目（v3 = 新デザイン「電光掲示板」、本人の確認後に変数で切り替える）
 env:
+  # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
+  SERIES_TITLE: ${{ vars.SERIES_TITLE }}
   COLLESPO_LONGFORM_STYLE: ${{ vars.COLLESPO_LONGFORM_STYLE || 'legacy' }}
 
 jobs:
