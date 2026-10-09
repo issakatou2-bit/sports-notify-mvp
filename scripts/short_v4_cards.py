@@ -312,7 +312,7 @@ def player_detail(t,spec,player):
     """1人用のv4。主数字が無い日は成績の札だけで表示する。"""
     im=canvas(t,spec.get('label') or '日本人選手の成績')
     panel(im,(L,258,R,1138))
-    text(im,L+26,282,f'勝利貢献 第{player["rank"]}位',34,r3.GOLD,width=R-L-52)
+    text(im,L+26,282,player.get('tag') or f'勝利貢献 第{player["rank"]}位',34,r3.GOLD,width=R-L-52)
     text(im,L+26,342,player['name'],60,width=R-L-52)
     x=L+26
     text(im,x,434,player.get('team_jp',''),34,width=R-x-24,team_id=player.get('team_id'))
@@ -386,7 +386,8 @@ def hero(t,spec):
     x=L+28
     text(im,x,446,spec.get('head2',''),34,width=R-x-24,team_id=tid)
     stat(im,L+40,522,spec.get('big',''),spec.get('unit',''),258,width=R-L-100,unit_size=70)
-    if rank and count:
+    # 出場が1人の日は「1人の中で1位」・1位〜1位の目盛りを出さない（10/9 の本番で出ていた）
+    if rank and count and count>1:
         tag(im,L+300,745,f'{count}人の中で{rank}位',r3.GOLD,r3.DARK_INK,32,width=R-L-328)
         d=ImageDraw.Draw(im);start=L+48;end=R-48;y=840
         d.line((start,y,end,y),fill=r3.colors(None)[1],width=5)
