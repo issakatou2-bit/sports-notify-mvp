@@ -35,6 +35,12 @@ class PitcherLine(unittest.TestCase):
         self.assertIn("死球1", nm._line(SASAKI))
         self.assertTrue(any(r.startswith("死球1") for r in nm.readings(SASAKI)))
 
+    def test_batter_runs_without_hits_are_not_called_scoreless(self):
+        # 10/8 長編: 大谷は0安打でも失策で生還して1得点
+        ohtani = {"name": "大谷翔平", "type": "batter", "headline": "3打数0安打　1四球　1盗塁", "runs": 1}
+        self.assertTrue(any(r.startswith("得点1") and "点に結びつかなかった" in r for r in nm.readings(ohtani)))
+        self.assertFalse(any(r.startswith("得点") for r in nm.readings(dict(ohtani, runs=0))))
+
 
 class NeighbourNames(unittest.TestCase):
     def setUp(self):
