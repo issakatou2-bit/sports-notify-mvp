@@ -131,12 +131,9 @@ SUB_SIZES = ((40, 58), (36, 52), (32, 46), (30, 44))   # (文字の大きさ, �
 CREDIT_Y = 1058
 CREDIT = "音声: VOICEVOX ずんだもん / 四国めたん"
 
-# 立ち絵。素材（1024×1536）の透明な余白を落としてから縮める。
-PORTRAIT_DIR = ROOT / "assets/portraits/collespo-20260923"
-PORTRAIT_FILES = {
-    "四国めたん": "metan/3-black/base.png",
-    "ずんだもん": "zundamon/C-cheer/base-black-brow-candidate.png",
-}
+# 立ち絵。10/9 本人「デフォルトのずんだもんとめたんに差し替え。今後の動画全部」→ characters.py の
+# 坂本アヒルさんの立ち絵（部品から組み立てる）。透明な余白を落としてから縮める。
+WHO_KEY = {"四国めたん": "metan", "ずんだもん": "zundamon"}
 # 名前: (高さ, 横の中心, 上端)。足元は画面の外へ出す。めたんを大きく、手前に。
 PORTRAIT_PLACE = {
     "ずんだもん": (760, 1400, 470),
@@ -896,10 +893,10 @@ def paste_card(im, kind, panel, pt, base_rgb):
 @functools.lru_cache(maxsize=8)
 def standing(who, dim=False):
     """立ち絵（余白を落として縮めたもの）。dim=True は話していない方（暗く・色を薄く）。"""
-    path = PORTRAIT_DIR / PORTRAIT_FILES[who]
-    art = Image.open(path).convert("RGBA")
-    art = art.crop(art.getbbox())
+    import characters
     h = PORTRAIT_PLACE[who][0]
+    art = characters.figure(WHO_KEY[who], "base", h * 2)
+    art = art.crop(art.getbbox())
     art = art.resize((max(1, round(art.width * h / art.height)), h), Image.LANCZOS)
     if dim:
         rgb = art.convert("RGB")
