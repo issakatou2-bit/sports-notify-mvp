@@ -1,5 +1,6 @@
 """Shared branding and typography. Importing this never renders or posts."""
 import json
+import os
 from pathlib import Path
 from PIL import ImageFont
 
@@ -17,7 +18,9 @@ TEAM_SECONDARY_COLORS={
     '143':'#284898','144':'#13274F','145':'#C4CED4','146':'#EF3340',
     '147':'#FFFFFF','158':'#FFC52F'}
 FONT_CANDIDATES={
-    'jp':['C:/Windows/Fonts/meiryob.ttc','/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc'],
+    # apt が使えない日は install_video_tools.sh が ~/.fonts に置く（COLLESPO_FONT にも入る）
+    'jp':['C:/Windows/Fonts/meiryob.ttc','/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc',
+          os.environ.get('COLLESPO_FONT') or '-',os.path.expanduser('~/.fonts/NotoSansJP.ttf')],
     'latin':['C:/Windows/Fonts/bahnschrift.ttf','/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'],
     'serif':['C:/Windows/Fonts/georgiab.ttf','/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf']}
 _cache={}
