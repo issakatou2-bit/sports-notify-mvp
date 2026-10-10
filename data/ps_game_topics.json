@@ -1,149 +1,8 @@
 {
-  "updated_at": "2026-10-09T09:18:44.136218+00:00",
+  "updated_at": "2026-10-10T06:10:42.837349+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
-    {
-      "key": "season_game_849827",
-      "label": "地区シリーズ第4戦",
-      "hook": "ブリュワーズがパドレスに3対1で地区シリーズ突破",
-      "heading": "ブリュワーズ 対 パドレス　地区シリーズ第4戦",
-      "intro": "地区シリーズ第4戦、ブリュワーズが敵地でパドレスに3対1で勝ちました。",
-      "intro_as_is": true,
-      "style": "v3",
-      "team_id": 158,
-      "abbr": "MIL",
-      "title": "【MLB】ブリュワーズがパドレスに3対1で地区シリーズ突破｜チョーリオの決勝打　松井裕樹 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ブリュワーズ 3対1 パドレス　敵地で勝利　ブリュワーズが3勝1敗で地区シリーズ突破"
-        ],
-        [
-          "決勝点",
-          "5回表　ジャクソン・チョーリオのタイムリー"
-        ],
-        [
-          "本塁打",
-          "パドレス1本（ジュニア）"
-        ],
-        [
-          "先発",
-          "ブリュワーズ ガッサー 4回を1失点　パドレス ビューラー 3回を1失点"
-        ],
-        [
-          "勝ち投手・セーブ",
-          "勝ち アーロン・アシュビー（3回を無失点）　セーブ トレバー・メギル"
-        ]
-      ],
-      "japanese": [
-        {
-          "name": "松井裕樹",
-          "line": "3分の1回　無失点　0奪三振（パドレス）"
-        }
-      ],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": null,
-      "voice": null,
-      "headline": null,
-      "game_pk": 849827,
-      "game_v4": {
-        "score": {
-          "innings": [
-            {
-              "num": 1,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 2,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 3,
-              "away": 1,
-              "home": 1
-            },
-            {
-              "num": 4,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 5,
-              "away": 1,
-              "home": 0
-            },
-            {
-              "num": 6,
-              "away": 1,
-              "home": 0
-            },
-            {
-              "num": 7,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 8,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 9,
-              "away": 0,
-              "home": 0
-            }
-          ],
-          "source": "MLB Stats API / liveData.linescore",
-          "away": {
-            "id": 158,
-            "name": "ブリュワーズ",
-            "abbr": "MIL",
-            "total": 3
-          },
-          "home": {
-            "id": 135,
-            "name": "パドレス",
-            "abbr": "SD",
-            "total": 1
-          }
-        },
-        "decisive": {
-          "inning": "5回表",
-          "subject": "ジャクソン・チョーリオ",
-          "action": "タイムリー",
-          "detail": "",
-          "event": "Single"
-        }
-      },
-      "game_date": "2026-10-08T02:00:00Z",
-      "jp_first": true,
-      "finished_at": "2026-10-08T05:08:11.379000+00:00",
-      "v3": {
-        "who": "ブリュワーズ　地区シリーズ第4戦",
-        "big": "3-1",
-        "unit": "",
-        "sub": "敵地で勝利",
-        "tag": "決勝点 チョーリオのタイムリー",
-        "chips": [
-          {
-            "label": "地区シリーズ突破　ブリュワーズ",
-            "score": "3-1",
-            "win": true
-          },
-          {
-            "label": "本塁打　パドレス（ジュニア）",
-            "score": "1"
-          }
-        ],
-        "ticker": "日本人選手　松井裕樹 3分の1回　無失点　0奪三振（パドレス）"
-      }
-    },
     {
       "key": "season_game_849832",
       "label": "地区シリーズ第4戦",
@@ -169,8 +28,8 @@
           "ガーディアンズ メシック 2回と3分の1を2失点　ホワイトソックス スミス 3分の2回を無失点"
         ],
         [
-          "MLB.comの見出しから",
-          "「ガーディアンズ、6回に6点を奪い地区シリーズ第5戦へ 🏟️」"
+          "ハイライトのコメント欄から",
+          "「この試合は、どちらがより壊滅的に自滅したかの勝負だったな。ゲーム5は どちらかのチームにとって地獄になる。勝者はレイズの獲物になる。」"
         ]
       ],
       "japanese": [
@@ -184,13 +43,14 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
-      "headline": {
-        "said": "ガーディアンズ、6回に6点を奪い地区シリーズ第5戦へ 🏟️",
-        "text": "Guards ride 6-run 6th to set  up winner-take-all ALDS Game 5",
-        "url": "https://www.mlb.com/news/guardians-win-alds-game-4-2026",
-        "at": "2026-10-09T04:15:00+00:00"
+      "voice": {
+        "said": "この試合は、どちらがより壊滅的に自滅したかの勝負だったな。ゲーム5は どちらかのチームにとって地獄になる。勝者はレイズの獲物になる。",
+        "text": "This was a game of who didn't just implode, but who imploded the worst. Game 5 is going to be a brutal for one of these teams. The winner becomes Rays food.",
+        "url": "https://www.youtube.com/watch?v=xWEDmKwdZvg",
+        "likes": 317,
+        "at": "2026-10-09T04:24:27Z"
       },
+      "headline": null,
       "game_pk": 849832,
       "game_v4": {
         "score": {
@@ -259,6 +119,7 @@
       },
       "game_date": "2026-10-09T00:00:00Z",
       "jp_first": true,
+      "next_team_id": 145,
       "finished_at": "2026-10-09T03:47:59.125000+00:00",
       "next_game_jp": {
         "day": "10月11日",
