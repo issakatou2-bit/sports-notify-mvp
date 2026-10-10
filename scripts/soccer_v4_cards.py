@@ -17,6 +17,7 @@ MLB のショート v4（`collespo/src/scripts/short_v4_cards.py`・`review_rend
 使う前に環境変数 COLLESPO_SHORT_LOOK=v4 にしておく（MLB と同じ切り替え）。
 """
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -27,7 +28,7 @@ for p in (SRC, SRC / 'scripts'):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from PIL import ImageColor, ImageDraw  # noqa: E402
+from PIL import Image, ImageColor, ImageDraw  # noqa: E402
 import review_render_v3 as r3  # noqa: E402
 import short_v4_cards as v4  # noqa: E402
 
@@ -62,24 +63,54 @@ def club_colors(club):
     return base, second
 
 
-def badge_width(club, size):
-    return round(r3.font(max(14, round(size * .55))).getlength(club['abbr'])) + 16
+# 札の形。10/10 本人「C改かA改ですね、いい感じ」「この小ささだとこの辺が限界」。
+# C＝斜めカット（平行四辺形、右端に2色目の斜めの帯）。A＝縦じま（左に2色目の斜めのしま3本）。
+BADGE_STYLE = os.environ.get('COLLESPO_SOCCER_BADGE', 'C')
+
+
+def _skew(height):
+    return max(4, round(height * .28))
+
+
+def badge_width(club, size, height=None):
+    text = round(r3.font(max(14, round(size * .55))).getlength(club['abbr']))
+    sk = _skew(height or size)
+    return text + 16 + sk * 2 + (14 if BADGE_STYLE == 'C' else 22)
 
 
 def club_badge(im, x, y, club, size, height):
     """クラブ名の文字と同じ高さ・同じ行の札。検査のため club_id と一緒に記録する。"""
     base, second = club_colors(club)
-    w = badge_width(club, size)
+    w = badge_width(club, size, height)
     box = [x, y, x + w, y + height]
-    d = ImageDraw.Draw(im)
-    d.rounded_rectangle(box, radius=6, fill=base, outline=second, width=2)
-    r3.record_box(im, 'team_badge', box)
+    sk = _skew(height)
+    lay = Image.new('RGBA', (w, height), (0, 0, 0, 0))
+    mask = Image.new('L', (w, height), 0)
+    ImageDraw.Draw(mask).polygon([(sk, 0), (w, 0), (w - sk, height), (0, height)], fill=255)
+    body = Image.new('RGBA', (w, height), base + (255,))
+    bd = ImageDraw.Draw(body)
+    for yy in range(height):                       # 上を少し明るく（光の当たり）
+        k = .18 * (1 - yy / max(1, height))
+        bd.line((0, yy, w, yy), fill=tuple(min(255, int(v + (255 - v) * k)) for v in base) + (255,))
     f = r3.font(max(14, round(size * .55)))
     dy = f.getbbox(club['abbr'])[1]
     h = f.getbbox(club['abbr'])[3] - dy
     ink = v4.badge_ink(base)
+    if BADGE_STYLE == 'A':
+        for n in range(3):                         # 左に斜めのしま3本
+            sx = sk + 6 + n * 7
+            bd.polygon([(sx, 0), (sx + 4, 0), (sx + 4 - sk, height), (sx - sk, height)], fill=second + (255,))
+        tx = sk + 30
+    else:
+        band = 12                                  # 右端に2色目の斜めの帯（字にかからない）
+        bd.polygon([(w - band - sk, 0), (w, 0), (w - sk, height), (w - band - sk * 2, height)], fill=second + (255,))
+        tx = sk + 8
+    lay.paste(body, (0, 0), mask)
+    im.paste(lay, (round(x), round(y)), lay)
+    r3.record_box(im, 'team_badge', box)
+    d = ImageDraw.Draw(im)
     # 略称の字は札の一部（「M05」「B04」の数字を、材料に無い数字として数えない）
-    r3._text(d, (x + 8, y + (height - h) / 2 - dy), club['abbr'], font=f, fill=ink, role='badge')
+    r3._text(d, (x + tx, y + (height - h) / 2 - dy), club['abbr'], font=f, fill=ink, role='badge')
     im.info.setdefault('v4_badges', []).append(
         dict(club_id=club['team_en'], abbr=club['abbr'], base=base, ink=ink, box=box, inline=True))
     return w
@@ -144,10 +175,19 @@ def chips(im, y, values, x=L + 24, right=R - 24, height=148):
 
 # ------------------------------------------------------------------ 画面
 def cover(t, spec, clubs):
-    """表紙。spec: kicker・name・club・big・unit・context・chips・ticker・source。"""
+    """表紙。spec: kicker・name・club・big・unit・context・chips・ticker・source。
+    club_first=True（順位争い）: クラブを主役に大きく、選手は「〇〇の所属クラブ」、数字の上に何の差か（big_label）。"""
     im = canvas(t, clubs, spec.get('label', LABEL))
     v4.panel(im, (L, 258, R, 1120))
     plain(im, L + 28, 284, spec['kicker'], 36, r3.GOLD, width=R - L - 56)
+    if spec.get('club_first'):
+        # 10/10 本人「上田綺世が大きくてリールが小さいと、1勝点差が何を指してるのか足りない」
+        club_name(im, L + 28, 352, clubs[spec['club']], 72, width=R - L - 56)
+        plain(im, L + 30, 452, spec['name'] + 'の所属クラブ', 34, r3.colors(None)[1], width=R - L - 60)
+        plain(im, L + 40, 540, spec['big_label'], 46, r3.GOLD, width=R - L - 80)
+        v4.stat(im, L + 40, 610, spec['big'], spec.get('unit', ''), 250, width=R - L - 100, unit_size=70)
+        chips(im, 930, spec.get('chips', []), height=150)
+        return finish(im, t, spec)
     plain(im, L + 28, 344, spec['name'], 76, width=R - L - 56)
     club_name(im, L + 28, 458, clubs[spec['club']], 40, width=R - L - 56)
     if spec.get('big'):

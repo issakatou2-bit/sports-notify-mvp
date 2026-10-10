@@ -87,7 +87,7 @@ def race_program(data):
     clubs=clubs_for(names);segs=[]
     if got:
         who,near,label=got
-        segs.append(segment('cover',f"{who['name']}の{who['club_jp']}は、{near['text']}。",dict(kicker=label+'　順位争い',name=who['name'],club=who['club_jp'],big=str(near['diff']),unit='勝点差',context=near['text'],chips=[(who['position'],'位'),(who['points'],'勝点')])))
+        segs.append(segment('cover',f"{who['name']}の{who['club_jp']}は、{near['text']}。",dict(kicker=label+'　順位争い',name=who['name'],club=who['club_jp'],big=str(near['diff']),unit='勝点',big_label=near['text'].rsplit('勝点',1)[0].rstrip('。、')+('　あと' if 'まで' in near['text'] else ''),club_first=True,context=near['text'],chips=[(who['position'],'位'),(who['points'],'勝点')])))
     for comp in picked:
         highlights=[p['club_jp'] for p in comp.get('jp',[])]
         for line in comp.get('lines',[])[:3]:
