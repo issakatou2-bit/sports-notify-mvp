@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T06:14:40.443006+00:00",
+  "generated_at": "2026-10-10T06:12:58.841859+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -1292,6 +1292,17 @@
         },
         {
           "position": 11,
+          "team": "RCD Espanyol de Barcelona",
+          "played": 8,
+          "won": 2,
+          "draw": 2,
+          "lost": 4,
+          "points": 8,
+          "gf": 11,
+          "ga": 11
+        },
+        {
+          "position": 12,
           "team": "Getafe CF",
           "played": 7,
           "won": 2,
@@ -1302,7 +1313,7 @@
           "ga": 7
         },
         {
-          "position": 12,
+          "position": 13,
           "team": "Rayo Vallecano de Madrid",
           "played": 7,
           "won": 2,
@@ -1313,7 +1324,7 @@
           "ga": 16
         },
         {
-          "position": 13,
+          "position": 14,
           "team": "CA Osasuna",
           "played": 7,
           "won": 2,
@@ -1324,7 +1335,7 @@
           "ga": 13
         },
         {
-          "position": 14,
+          "position": 15,
           "team": "RC Celta de Vigo",
           "played": 7,
           "won": 1,
@@ -1333,17 +1344,6 @@
           "points": 7,
           "gf": 8,
           "ga": 6
-        },
-        {
-          "position": 15,
-          "team": "RCD Espanyol de Barcelona",
-          "played": 7,
-          "won": 2,
-          "draw": 1,
-          "lost": 4,
-          "points": 7,
-          "gf": 10,
-          "ga": 10
         },
         {
           "position": 16,
@@ -1380,6 +1380,17 @@
         },
         {
           "position": 19,
+          "team": "Málaga CF",
+          "played": 8,
+          "won": 0,
+          "draw": 4,
+          "lost": 4,
+          "points": 4,
+          "gf": 4,
+          "ga": 13
+        },
+        {
+          "position": 19,
           "team": "Valencia CF",
           "played": 7,
           "won": 1,
@@ -1388,17 +1399,6 @@
           "points": 4,
           "gf": 4,
           "ga": 13
-        },
-        {
-          "position": 20,
-          "team": "Málaga CF",
-          "played": 7,
-          "won": 0,
-          "draw": 3,
-          "lost": 4,
-          "points": 3,
-          "gf": 3,
-          "ga": 12
         }
       ],
       "last_season": [
@@ -2839,13 +2839,13 @@
         {
           "position": 1,
           "team": "Borussia Dortmund",
-          "played": 4,
+          "played": 5,
           "won": 4,
-          "draw": 0,
+          "draw": 1,
           "lost": 0,
-          "points": 12,
-          "gf": 9,
-          "ga": 2
+          "points": 13,
+          "gf": 11,
+          "ga": 4
         },
         {
           "position": 2,
@@ -2871,6 +2871,17 @@
         },
         {
           "position": 4,
+          "team": "SV Werder Bremen",
+          "played": 5,
+          "won": 2,
+          "draw": 2,
+          "lost": 1,
+          "points": 8,
+          "gf": 10,
+          "ga": 10
+        },
+        {
+          "position": 5,
           "team": "FC Augsburg",
           "played": 4,
           "won": 2,
@@ -2881,7 +2892,7 @@
           "ga": 6
         },
         {
-          "position": 5,
+          "position": 6,
           "team": "Bayer 04 Leverkusen",
           "played": 4,
           "won": 2,
@@ -2892,7 +2903,7 @@
           "ga": 5
         },
         {
-          "position": 6,
+          "position": 7,
           "team": "1. FSV Mainz 05",
           "played": 4,
           "won": 2,
@@ -2903,7 +2914,7 @@
           "ga": 6
         },
         {
-          "position": 7,
+          "position": 8,
           "team": "SV 07 Elversberg",
           "played": 4,
           "won": 2,
@@ -2912,17 +2923,6 @@
           "points": 7,
           "gf": 8,
           "ga": 7
-        },
-        {
-          "position": 8,
-          "team": "SV Werder Bremen",
-          "played": 4,
-          "won": 2,
-          "draw": 1,
-          "lost": 1,
-          "points": 7,
-          "gf": 8,
-          "ga": 8
         },
         {
           "position": 9,
@@ -3621,13 +3621,13 @@
         {
           "position": 2,
           "team": "Olympique Lyonnais",
-          "played": 5,
+          "played": 6,
           "won": 3,
           "draw": 2,
-          "lost": 0,
+          "lost": 1,
           "points": 11,
-          "gf": 10,
-          "ga": 2
+          "gf": 11,
+          "ga": 4
         },
         {
           "position": 3,
@@ -3675,6 +3675,17 @@
         },
         {
           "position": 7,
+          "team": "Racing Club de Lens",
+          "played": 6,
+          "won": 2,
+          "draw": 1,
+          "lost": 3,
+          "points": 7,
+          "gf": 11,
+          "ga": 10
+        },
+        {
+          "position": 8,
           "team": "Angers SCO",
           "played": 5,
           "won": 2,
@@ -3685,7 +3696,7 @@
           "ga": 5
         },
         {
-          "position": 8,
+          "position": 9,
           "team": "RC Strasbourg Alsace",
           "played": 5,
           "won": 2,
@@ -3696,7 +3707,7 @@
           "ga": 10
         },
         {
-          "position": 9,
+          "position": 10,
           "team": "Le Mans FC",
           "played": 5,
           "won": 1,
@@ -3707,7 +3718,7 @@
           "ga": 9
         },
         {
-          "position": 10,
+          "position": 11,
           "team": "AJ Auxerre",
           "played": 5,
           "won": 2,
@@ -3718,7 +3729,7 @@
           "ga": 12
         },
         {
-          "position": 11,
+          "position": 12,
           "team": "Stade Brestois 29",
           "played": 5,
           "won": 1,
@@ -3729,7 +3740,7 @@
           "ga": 8
         },
         {
-          "position": 12,
+          "position": 13,
           "team": "FC Lorient",
           "played": 5,
           "won": 1,
@@ -3740,7 +3751,7 @@
           "ga": 6
         },
         {
-          "position": 13,
+          "position": 14,
           "team": "Toulouse FC",
           "played": 5,
           "won": 1,
@@ -3751,7 +3762,7 @@
           "ga": 9
         },
         {
-          "position": 14,
+          "position": 15,
           "team": "OGC Nice",
           "played": 5,
           "won": 1,
@@ -3760,17 +3771,6 @@
           "points": 5,
           "gf": 3,
           "ga": 6
-        },
-        {
-          "position": 15,
-          "team": "Racing Club de Lens",
-          "played": 5,
-          "won": 1,
-          "draw": 1,
-          "lost": 3,
-          "points": 4,
-          "gf": 9,
-          "ga": 9
         },
         {
           "position": 16,
