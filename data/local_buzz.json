@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-09T06:02:19.506216+00:00",
+  "updated_at": "2026-10-10T06:02:07.673235+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,77 +13,81 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 11,
-      "tone": "好調",
-      "gist": "ガーディアンズがホワイトソックスを9-5で下し決勝進出"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 9,
-      "tone": "不振",
-      "gist": "ホワイトソックスがガーディアンズに敗れ決勝に敗退"
-    },
-    {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 7,
-      "tone": "好調",
-      "gist": "ドジャースがNLCS進出、ブリュワーズとの対戦へ"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 4,
-      "tone": "不振",
-      "gist": "ヤンキースがレイズにスウィープされ敗退"
+      "mentions": 8,
+      "tone": "話題",
+      "gist": "ドジャース優勝確率54%、Kyle Tucker契約金が話題"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 4,
-      "tone": "好調",
-      "gist": "ブリュワーズがドジャースとのNLCS進出決定"
+      "mentions": 8,
+      "tone": "話題",
+      "gist": "ブリュワーズ、NLCS準備、投手陣が充実"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 5,
+      "tone": "話題",
+      "gist": "ガーディアンズ、Jose Ramirez活躍、プレーオフ進出"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 5,
+      "tone": "話題",
+      "gist": "ホワイトソックス、Game5先発Burke決定"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
       "mentions": 4,
-      "tone": "好調",
-      "gist": "レイズがヤンキースをスウィープしALCS進出"
+      "tone": "話題",
+      "gist": "レイズ、ALCS準備、クローザー好調継続"
     },
     {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "パドレスがブリュワーズに敗れNLDS敗退"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
       "mentions": 2,
       "tone": "話題",
-      "gist": "カズマオカモト選手がオマカセ予定をスキップ"
+      "gist": "David Ortiz獲得秘話、Whitlock骨折投球"
+    },
+    {
+      "team_id": "146",
+      "name": "マーリンズ",
+      "name_en": "Miami Marlins",
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "マーリンズ、解説者ら複数人と契約終了"
+    },
+    {
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "ダイヤモンドバックス、来季給与削減予定"
     }
   ],
   "players": [
+    {
+      "name": "山本由伸",
+      "mentions": 2
+    },
     {
       "name": "村上宗隆",
       "mentions": 2
     },
     {
-      "name": "岡本和真",
+      "name": "大谷翔平",
       "mentions": 1
     }
   ]

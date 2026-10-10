@@ -1,171 +1,13 @@
 {
-  "updated_at": "2026-10-09T06:02:08.382322+00:00",
+  "updated_at": "2026-10-10T06:01:56.855327+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "fqIDeNUWL2U",
-      "title": "RAYS vs. YANKEES: ALDS Series Full Game 3 Highlights (October 7) | 2026 MLB Postseason",
-      "published_at": "2026-10-08T03:43:57Z",
-      "views": 1410996,
-      "matchup": "RAYS vs. YANKEES",
-      "game_date": "2026-10-07",
-      "result": {
-        "away_jp": "レイズ",
-        "home_jp": "ヤンキース",
-        "away_score": 4,
-        "home_score": 3,
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 1,
-            "home": 1
-          },
-          {
-            "num": 4,
-            "away": 1,
-            "home": 1
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 2,
-            "home": 1
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": 0
-          }
-        ],
-        "away_hits": 7,
-        "away_errors": 1,
-        "home_hits": 7,
-        "home_errors": 0,
-        "star_name": "Victor Mesa Jr.",
-        "star_line": "4打数1安打 2打点 1本塁打",
-        "star_team": "レイズ",
-        "away_starter": {
-          "name": "Nick Martinez",
-          "team": "レイズ",
-          "line": "3.2回 3奪三振 自責2"
-        },
-        "home_starter": {
-          "name": "Max Fried",
-          "team": "ヤンキース",
-          "line": "5.2回 7奪三振 自責4　敗戦投手（通算1勝1敗）"
-        }
-      },
-      "topic_jp": "レイズ 対 ヤンキース"
-    },
-    {
-      "video_id": "edfhFJfJVdE",
-      "title": "BREWERS vs. PADRES: NLDS Full Game 4 Highlights (October 7) | 2026 MLB Postseason",
-      "published_at": "2026-10-08T05:39:05Z",
-      "views": 1174490,
-      "matchup": "BREWERS vs. PADRES",
-      "game_date": "2026-10-07",
-      "result": {
-        "away_jp": "ブリュワーズ",
-        "home_jp": "パドレス",
-        "away_score": 3,
-        "home_score": 1,
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 1,
-            "home": 1
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": 0
-          }
-        ],
-        "away_hits": 10,
-        "away_errors": 1,
-        "home_hits": 3,
-        "home_errors": 0,
-        "star_name": "Robert Gasser",
-        "star_line": "4.0回 3奪三振 自責1",
-        "star_team": "ブリュワーズ",
-        "away_starter": {
-          "name": "Robert Gasser",
-          "team": "ブリュワーズ",
-          "line": "4.0回 3奪三振 自責1"
-        },
-        "home_starter": {
-          "name": "Walker Buehler",
-          "team": "パドレス",
-          "line": "3.0回 0奪三振 自責1"
-        }
-      },
-      "topic_jp": "ブリュワーズ 対 パドレス"
-    },
-    {
       "video_id": "xWEDmKwdZvg",
-      "title": "GUARDIANS vs. WHITE SOX: ALDS Full Game 4 Highlights (October 8) | 2026 MLB Postseason",
+      "title": "GUARDIANS vs. WHITE SOX: ALDS Full Game 4 Highlights (October 8) | 2026 MLB Postseason 村上 宗隆",
       "published_at": "2026-10-09T04:20:50Z",
-      "views": 78443,
+      "views": 981600,
       "matchup": "GUARDIANS vs. WHITE SOX",
       "game_date": "2026-10-08",
       "result": {
@@ -173,6 +15,17 @@
         "home_jp": "ホワイトソックス",
         "away_score": 9,
         "home_score": 5,
+        "series": {
+          "name": "地区シリーズ",
+          "game_number": 4,
+          "games_in_series": 5,
+          "after": "Series tied 2-2",
+          "is_over": false,
+          "winner_today": "ガーディアンズ",
+          "after_jp": "2勝2敗の五分",
+          "before_jp": "ホワイトソックスの2勝1敗",
+          "next": "第5戦で決着する"
+        },
         "innings": [
           {
             "num": 1,
@@ -241,126 +94,102 @@
       "topic_jp": "ガーディアンズ 対 ホワイトソックス"
     },
     {
-      "video_id": "-Vxs0cmpJ7A",
-      "title": "Dodgers take NLDS in 4 games! BRAVES vs. DODGERS: Full 2026 NLDS Highlights",
-      "published_at": "2026-10-08T14:00:06Z",
-      "views": 26065,
-      "matchup": "Dodgers take NLDS in 4 games! BRAVES vs. DODGERS",
-      "game_date": "",
-      "topic_jp": "ドジャース take NLDS in 4 games! ブレーブス 対 ドジャース"
-    },
-    {
-      "video_id": "BRokT-IZh4s",
-      "title": "The Brewers are headed to the NLCS after taking down the Padres! | MLB Highlights (Final 3 Outs)",
-      "published_at": "2026-10-08T05:31:54Z",
-      "views": 144098,
+      "video_id": "1LcN0eNBGKQ",
+      "title": "6 RUNS in the 6th INNING! EVERY PITCH of the Guardians’ INCREDIBLE Game 4 RALLY! | MLB Highlights",
+      "published_at": "2026-10-09T02:51:57Z",
+      "views": 160032,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "ブリュワーズがパドレスを破り、ナショナルリーグチャンピオンシップシリーズへ進出。"
+      "topic_jp": "ガーディアンズが6回裏に6点を奪う劇的な逆転劇を演じた。"
+    },
+    {
+      "video_id": "gmIXvdcPdeI",
+      "title": "FULL INNING: Despite a ruckus Chicago crowd, the Guardians LOAD THE BASES! 👀 | MLB Highlights",
+      "published_at": "2026-10-09T00:33:38Z",
+      "views": 146769,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "シカゴの騒然とした観客の中、ガーディアンズが満塁にした。"
+    },
+    {
+      "video_id": "5NmtewQmreA",
+      "title": "FULL INNING: White Sox take the lead back from the Guardians! | MLB 2026 ALDS Game 4 Highlights",
+      "published_at": "2026-10-09T02:17:29Z",
+      "views": 141457,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "ホワイトソックスがガーディアンズから先制点を奪い返した。"
+    },
+    {
+      "video_id": "-P98PKvDZhY",
+      "title": "JOSÉ RAMÍREZ GO-AHEAD HOMER FOR THE GUARDIANS! 👑 | MLB 2026 ALDS Game 4 Highlights",
+      "published_at": "2026-10-09T01:49:39Z",
+      "views": 140595,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "ホセ・ラミレスがガーディアンズの勝ち越しホームランを放つ。"
     }
   ],
   "all": [
     {
-      "video_id": "fqIDeNUWL2U",
-      "matchup": "RAYS vs. YANKEES",
-      "game_date": "2026-10-07",
-      "views": 1410996
-    },
-    {
-      "video_id": "edfhFJfJVdE",
-      "matchup": "BREWERS vs. PADRES",
-      "game_date": "2026-10-07",
-      "views": 1174490
-    },
-    {
       "video_id": "xWEDmKwdZvg",
       "matchup": "GUARDIANS vs. WHITE SOX",
       "game_date": "2026-10-08",
-      "views": 78443
-    },
-    {
-      "video_id": "-Vxs0cmpJ7A",
-      "matchup": "Dodgers take NLDS in 4 games! BRAVES vs. DODGERS",
-      "game_date": "",
-      "views": 26065
-    },
-    {
-      "video_id": "BRokT-IZh4s",
-      "matchup": "",
-      "game_date": "",
-      "views": 144098
-    },
-    {
-      "video_id": "gmIXvdcPdeI",
-      "matchup": "",
-      "game_date": "",
-      "views": 132881
-    },
-    {
-      "video_id": "5NmtewQmreA",
-      "matchup": "",
-      "game_date": "",
-      "views": 110456
+      "views": 981600
     },
     {
       "video_id": "1LcN0eNBGKQ",
       "matchup": "",
       "game_date": "",
-      "views": 105261
+      "views": 160032
     },
     {
-      "video_id": "OizPlIGRcTM",
+      "video_id": "gmIXvdcPdeI",
       "matchup": "",
       "game_date": "",
-      "views": 82731
+      "views": 146769
+    },
+    {
+      "video_id": "5NmtewQmreA",
+      "matchup": "",
+      "game_date": "",
+      "views": 141457
     },
     {
       "video_id": "-P98PKvDZhY",
       "matchup": "",
       "game_date": "",
-      "views": 80380
+      "views": 140595
+    },
+    {
+      "video_id": "OizPlIGRcTM",
+      "matchup": "",
+      "game_date": "",
+      "views": 93793
     },
     {
       "video_id": "9yWUIMlHsOE",
       "matchup": "",
       "game_date": "",
-      "views": 67848
-    },
-    {
-      "video_id": "lkjp4v9Ku18",
-      "matchup": "",
-      "game_date": "",
-      "views": 54719
-    },
-    {
-      "video_id": "cdKFc71QI04",
-      "matchup": "",
-      "game_date": "",
-      "views": 21723
-    },
-    {
-      "video_id": "tMfktFXAuQo",
-      "matchup": "",
-      "game_date": "",
-      "views": 21589
-    },
-    {
-      "video_id": "KNxebJEBzSo",
-      "matchup": "",
-      "game_date": "",
-      "views": 19818
-    },
-    {
-      "video_id": "U2Cl-0WHJNE",
-      "matchup": "",
-      "game_date": "",
-      "views": 14549
+      "views": 90870
     },
     {
       "video_id": "P7smFAfJlwA",
       "matchup": "",
       "game_date": "",
-      "views": 8076
+      "views": 73908
+    },
+    {
+      "video_id": "KNxebJEBzSo",
+      "matchup": "",
+      "game_date": "",
+      "views": 29345
+    },
+    {
+      "video_id": "QpQESPUes80",
+      "matchup": "",
+      "game_date": "",
+      "views": 18360
     }
   ]
 }

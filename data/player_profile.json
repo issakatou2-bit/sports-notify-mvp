@@ -1,108 +1,104 @@
 {
-  "generated_at": "2026-10-09T06:01:07.558337+00:00",
-  "date_jst": "2026-10-09",
-  "name": "Miguel Vargas",
-  "player_id": "678246",
-  "team": "ホワイトソックス",
+  "generated_at": "2026-10-10T06:01:01.960694+00:00",
+  "date_jst": "2026-10-10",
+  "name": "Patrick Bailey",
+  "player_id": "672275",
+  "team": "ガーディアンズ",
   "group": "hitting",
   "why": "2026-10-09のMLBで最も活躍",
-  "headline": "2打数1安打　1本塁打　1打点　3四球　1盗塁",
-  "score": 111,
+  "headline": "3打数2安打　1本塁打　2打点",
+  "score": 110,
   "bio": {
-    "name_en": "Miguel Vargas",
-    "age": 26,
-    "birth_city": "Havana",
-    "birth_state": null,
-    "birth_country": "Cuba",
-    "birth_date": "1999-11-17",
-    "debut": "2022-08-03",
-    "draft_year": null,
-    "bats": "Right",
+    "name_en": "Patrick Bailey",
+    "age": 27,
+    "birth_city": "Greensboro",
+    "birth_state": "NC",
+    "birth_country": "USA",
+    "birth_date": "1999-05-29",
+    "debut": "2023-05-19",
+    "draft_year": 2020,
+    "bats": "Switch",
     "throws": "Right",
-    "number": "20",
-    "position": "Third Base",
+    "number": "16",
+    "position": "Catcher",
     "nickname": null,
-    "height": "6' 2\"",
-    "weight": 225
+    "height": "6' 0\"",
+    "weight": 223
   },
   "teams": [
     {
-      "team": "ドジャース",
-      "from": 2022,
-      "to": 2024
+      "team": "ジャイアンツ",
+      "from": 2023,
+      "to": 2026
     },
     {
-      "team": "ホワイトソックス",
-      "from": 2024,
+      "team": "ガーディアンズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 468,
-    "avg": ".221",
-    "hr": 62,
-    "rbi": 209,
-    "ops": ".720",
-    "sb": 35,
-    "hits": 354
+    "games": 465,
+    "avg": ".225",
+    "hr": 31,
+    "rbi": 186,
+    "ops": ".622",
+    "sb": 9,
+    "hits": 325
   },
   "this_season": {
-    "games": 159,
-    "avg": ".250",
-    "hr": 33,
-    "rbi": 93,
-    "ops": ".837",
-    "sb": 22,
-    "hits": 147
+    "games": 112,
+    "avg": ".206",
+    "hr": 10,
+    "rbi": 37,
+    "ops": ".607",
+    "sb": 3,
+    "hits": 64
   },
   "last_season": {
-    "games": 138,
-    "avg": ".234",
-    "hr": 16,
-    "rbi": 60,
-    "ops": ".717",
-    "sb": 6,
-    "hits": 118
+    "games": 135,
+    "avg": ".222",
+    "hr": 6,
+    "rbi": 55,
+    "ops": ".602",
+    "sb": 1,
+    "hits": 91
   },
   "recent": [
     {
-      "date": "2026-09-26",
+      "date": "2026-09-27",
       "line": "2打数0安打",
-      "opponent": "Colorado Rockies"
+      "opponent": "Kansas City Royals"
+    },
+    {
+      "date": "2026-09-26",
+      "line": "5打数2安打 2本塁打 3打点",
+      "opponent": "Kansas City Royals"
     },
     {
       "date": "2026-09-25",
-      "line": "3打数0安打 1打点",
-      "opponent": "Colorado Rockies"
+      "line": "0打数0安打",
+      "opponent": "Kansas City Royals"
     },
     {
       "date": "2026-09-24",
-      "line": "5打数2安打 2打点",
-      "opponent": "Kansas City Royals"
+      "line": "3打数0安打",
+      "opponent": "Boston Red Sox"
     },
     {
       "date": "2026-09-23",
-      "line": "4打数1安打 1打点",
-      "opponent": "Kansas City Royals"
-    },
-    {
-      "date": "2026-09-22",
-      "line": "4打数1安打 1打点",
-      "opponent": "Kansas City Royals"
+      "line": "3打数1安打",
+      "opponent": "Boston Red Sox"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "AL Player of the Week"
-    },
-    {
-      "season": "2026",
-      "name": "AL All-Star"
-    },
-    {
       "season": "2025",
-      "name": "AL Player of the Week"
+      "name": "Rawlings NL Gold Glove"
+    },
+    {
+      "season": "2024",
+      "name": "Rawlings NL Gold Glove"
     },
     {
       "season": "2022",
@@ -110,7 +106,11 @@
     },
     {
       "season": "2022",
-      "name": "Baseball America Triple-A All-Star"
+      "name": "Rawlings MiLB Gold Glove"
+    },
+    {
+      "season": "2022",
+      "name": "NWL Post-Season All-Star"
     }
   ],
   "quotes": []
