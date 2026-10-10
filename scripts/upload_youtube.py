@@ -603,7 +603,7 @@ def build_asset_metadata(topic: str) -> dict:
     ]
     return {
         "snippet": {
-            "title": meta["title"][:100],
+            "title": __import__("press_names").press_title(meta["title"])[:100],
             "description": "\n".join(lines)[:5000],
             "tags": meta["tags"][:15],
             "categoryId": CATEGORY_SPORTS,
@@ -1642,6 +1642,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         except Exception as e:                      # noqa: BLE001  題が作れないなら元の題で出す
             print(f"[warn] シリーズの題を作れません（元の題のまま）: {e}")
             series_main = []
+    # 選手名と球団名を新聞の書き方に（「村上宗隆のホワイトソックス」→「村上ホワイトソックス」。10/10 本人）
+    import press_names
+    title = press_names.press_title(title)
     title = title[:100]  # YouTubeのタイトル上限
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、

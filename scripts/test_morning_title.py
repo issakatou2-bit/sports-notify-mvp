@@ -56,7 +56,7 @@ section("1人の日")
 one = snippet(players(1))
 hasnt("題に「ほか」を付けない", one["title"], "ほか")
 hasnt("題に「ランキング」と書かない", one["title"], "ランキング")
-has("題に球団名", one["title"], "ブルージェイズ 岡本和真")
+has("題に球団名（新聞の書き方「球団＋名字」、10/10 本人）", one["title"], "ブルージェイズ岡本")
 has("題にきょうの成績", one["title"], "4打数1安打")
 hasnt("説明にも「ほか」を付けない", one["description"].split("\n")[0], "ほか")
 
