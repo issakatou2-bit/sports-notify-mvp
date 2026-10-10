@@ -78,7 +78,8 @@ def club_badge(im, x, y, club, size, height):
     dy = f.getbbox(club['abbr'])[1]
     h = f.getbbox(club['abbr'])[3] - dy
     ink = v4.badge_ink(base)
-    r3._text(d, (x + 8, y + (height - h) / 2 - dy), club['abbr'], font=f, fill=ink)
+    # 略称の字は札の一部（「M05」「B04」の数字を、材料に無い数字として数えない）
+    r3._text(d, (x + 8, y + (height - h) / 2 - dy), club['abbr'], font=f, fill=ink, role='badge')
     im.info.setdefault('v4_badges', []).append(
         dict(club_id=club['team_en'], abbr=club['abbr'], base=base, ink=ink, box=box, inline=True))
     return w
