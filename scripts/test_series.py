@@ -104,3 +104,21 @@ def test_upload_metadata_uses_series_only_when_switched_on(monkeypatch):
     if s.main_players(off["title"], "longform", s.load_roster()) == ["村上宗隆"]:
         assert on["title"].startswith("【MLB】村上宗隆の今日｜"), on["title"]
         assert "村上宗隆の" in on["description"].splitlines()[1]
+
+
+def test_press_names_in_titles():
+    """題の選手名・球団名を新聞の書き方に（10/10 本人）。2人以上の並びと、名簿に無い名前は触らない。"""
+    import press_names as pn
+    assert pn.press_title("【10/9更新】村上宗隆のホワイトソックスの地区シリーズは2勝2敗｜PSシリーズの最新情勢 #Shorts") == \
+        "【10/9更新】村上ホワイトソックスの地区シリーズは2勝2敗｜PSシリーズの最新情勢 #Shorts"
+    assert pn.press_title("【10/6更新】大谷翔平が所属するドジャース対ブレーブスの地区シリーズ第3戦｜10/7") == \
+        "【10/6更新】大谷ドジャース対ブレーブスの地区シリーズ第3戦｜10/7"
+    assert pn.press_title("【MLB】ホワイトソックス 村上宗隆、3打数1安打｜10月9日の日本人選手") == \
+        "【MLB】ホワイトソックス村上、3打数1安打｜10月9日の日本人選手"
+    two = "【MLB】大谷翔平・山本由伸のドジャースが先勝"
+    assert pn.press_title(two) == two
+    assert pn.press_title("【MLB】松井裕樹・鈴木誠也・村上宗隆｜9月30日 日本人選手") == "【MLB】松井裕樹・鈴木誠也・村上宗隆｜9月30日 日本人選手"
+    long = "【MLB】村上宗隆のホワイトソックス" + "あ" * 90
+    assert "Wソックス" in pn.press_title(long)
+    # シリーズの頭（〇〇の今日）は触らない
+    assert pn.press_title("【MLB】村上宗隆の今日｜ホワイトソックスの地区シリーズは2勝2敗").startswith("【MLB】村上宗隆の今日｜")
