@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-09T10:01:29.485537+00:00",
+  "updated_at": "2026-10-10T10:01:31.749442+00:00",
   "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
   "players": {
     "遠藤航": {
@@ -74,10 +74,10 @@
       "minutes": 45,
       "goals": 0,
       "assists": 0,
-      "chance_next": 0,
-      "news": "Calf injury - Expected back 11 Oct",
-      "out": true,
-      "reason": "Calf injury - Expected back 11 Oct"
+      "chance_next": 100,
+      "news": "",
+      "out": false,
+      "reason": ""
     },
     "冨安健洋": {
       "name_en": "Takehiro Tomiyasu",
@@ -85,10 +85,10 @@
       "minutes": 189,
       "goals": 0,
       "assists": 0,
-      "chance_next": 75,
-      "news": "Calf injury - 75% chance of playing",
-      "out": false,
-      "reason": ""
+      "chance_next": 0,
+      "news": "Calf injury - Expected back 18 Oct",
+      "out": true,
+      "reason": "Calf injury - Expected back 18 Oct"
     }
   }
 }
