@@ -1,0 +1,119 @@
+name: 手動　欧州サッカーの現地ファンの反応
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 見本を確認後に予約投稿する
+        type: boolean
+        required: true
+        default: false
+      publish_at:
+        description: 予約する日本時間 HH:MM（公開する場合は未来の時刻）
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+concurrency:
+  group: soccer-voices
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      COLLESPO_SHORT_LOOK: v4
+      COLLESPO_DUO: 'off'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pyyaml
+      - name: Fetch official highlights and named comments
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/soccer_buzz.py --out data/soccer_buzz.json
+          python scripts/soccer_voices.py --buzz data/soccer_buzz.json --out data/soccer_voices.json
+      - name: Candidate gate
+        id: candidate
+        run: |
+          READY=$(python -c "import json; print(str(json.load(open('data/soccer_voices.json',encoding='utf-8'))['can_make']).lower())")
+          echo "ready=$READY" >> "$GITHUB_OUTPUT"
+      # 書体を先に。字体の実寸とクラブの札を検査する。
+      - name: Install video tools and fonts
+        if: steps.candidate.outputs.ready == 'true'
+        run: bash scripts/install_video_tools.sh
+      - name: Prepare fitted narration and material
+        if: steps.candidate.outputs.ready == 'true'
+        run: python scripts/soccer_voices_render.py --data data/soccer_voices.json --narration-out build/soccer_voices/narration.json
+      - name: Stop unless three reviewed named quotes fit
+        id: gate
+        run: |
+          READY=$(python -c "import json; print(str(json.load(open('data/soccer_voices.json',encoding='utf-8'))['can_make']).lower())")
+          echo "ready=$READY" >> "$GITHUB_OUTPUT"
+          if [ "$READY" != true ]; then echo '::notice::名前つき・批判なし・照合済みの引用が3件未満。作りません'; fi
+      - name: Inspect material and drawing
+        if: steps.gate.outputs.ready == 'true'
+        run: python scripts/test_soccer_voices.py --material data/soccer_voices.json
+      - name: Start VOICEVOX
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version > /dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:50021/version
+      - name: Synthesize narration
+        if: steps.gate.outputs.ready == 'true'
+        run: python scripts/synthesize_narration.py --narration build/soccer_voices/narration.json --out-dir build/soccer_voices/audio
+      - name: Render and measure 40 seconds
+        if: steps.gate.outputs.ready == 'true'
+        run: python scripts/soccer_voices_render.py --data data/soccer_voices.json --audio-dir build/soccer_voices/audio --out build/soccer_voices
+      - name: Vertical thumbnail
+        if: steps.gate.outputs.ready == 'true'
+        run: bash scripts/shorts_thumbnail.sh build/soccer_voices/collespo_soccer_voices.mp4 build/soccer_voices/short.png
+      - name: Reject fictional material and require a future reservation
+        if: inputs.publish && steps.gate.outputs.ready == 'true'
+        env:
+          PUBLISH_AT: ${{ inputs.publish_at }}
+        run: |
+          python -c "import json,os,sys; sys.path.insert(0,'scripts'); import soccer_voices as s,upload_youtube as u; s.validate_data(json.load(open('data/soccer_voices.json',encoding='utf-8')),publish=True); assert os.environ['PUBLISH_AT'] and u.resolve_publish_at(os.environ['PUBLISH_AT']), '未来の予約時刻を指定してください'"
+      - name: Upload to YouTube
+        if: inputs.publish && steps.gate.outputs.ready == 'true'
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          PUBLISH_AT: ${{ inputs.publish_at }}
+        run: |
+          DAY=$(python -c "import json; print(json.load(open('data/soccer_voices.json',encoding='utf-8'))['date_jst'])")
+          python scripts/upload_youtube.py --video build/soccer_voices/collespo_soccer_voices.mp4 \
+            --kind soccer_voices --sport soccer --games data/soccer_voices.json --video-date "$DAY" \
+            --narration build/soccer_voices/narration.json --thumbnail build/soccer_voices/short.png \
+            --privacy public --publish-at "$PUBLISH_AT"
+      - name: Commit record
+        if: always()
+        run: |
+          bash scripts/commit_data.sh "soccer voices: ${{ github.run_id }}" \
+            data/soccer_buzz.json data/soccer_voices.json data/published_videos.json data/token_usage.json
+      - name: Save video and verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-voices
+          path: |
+            build/soccer_voices/
+            data/soccer_voices.json
+          if-no-files-found: ignore
+      - name: Confirm reservation
+        if: inputs.publish && steps.gate.outputs.ready == 'true'
+        run: python scripts/verify_published.py --kind soccer_voices

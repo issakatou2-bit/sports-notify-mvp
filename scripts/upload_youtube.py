@@ -687,7 +687,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_week", "soccer_results")
+               "soccer_race", "soccer_week", "soccer_results", "soccer_voices")
 
 
 def published_video(kind: str, date_key: str,
@@ -1531,6 +1531,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                      f"MLB公式コメント欄を読み解く {date_label}")
         else:
             title = f"【海外の反応】MLB公式コメント欄を読み解く｜{date_label}"
+    elif kind == "soccer_voices":
+        import soccer_voices
+        _voices_material = _json_or_empty(games_path)
+        soccer_voices.validate_data(_voices_material, publish=True)
+        title = _voices_material['title']
     elif kind == "soccer_results":
         import soccer_results
         title = soccer_results.title(_json_or_empty(games_path))
@@ -1820,6 +1825,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     elif kind == "soccer_results":
         import soccer_results
         lines = soccer_results.description_lines(_json_or_empty(games_path))
+    elif kind == "soccer_voices":
+        import soccer_voices
+        lines = soccer_voices.description_lines(_json_or_empty(games_path))
     elif kind == "soccer_week":
         import soccer_jp_week as _sjw
         wk = _json_or_empty("data/soccer_jp_week.json")
@@ -1851,7 +1859,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 長編の説明文に「明日の注目試合」が並んでいて、中身と合わなかった。
     # 試合の一覧は「明日の注目試合」のためのもの。
     # 長編にも進出争いにも関係が無い（中身と食い違う）。
-    _no_games = kind in ("longform", "weekly", "morning", "soccer_results")
+    _no_games = kind in ("longform", "weekly", "morning", "soccer_results", "soccer_voices")
     for i, g in enumerate([] if _no_games else games, 1):
         lines.append(
             f"{i}. {g.get('start_time_jst')} "
@@ -1864,7 +1872,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     editorial_text = title + "\n" + "\n".join(lines)
     # 順位争いは必ずサッカー。**渡し忘れると #MLB が付く。**
     # 区分から分かることを、呼ぶ側の引数に頼らない。
-    if kind in ("soccer_race", "soccer_week", "soccer_results"):
+    if kind in ("soccer_race", "soccer_week", "soccer_results", "soccer_voices"):
         sport = "soccer"
     public_hashtags = ht.select(editorial_text, 'youtube', sport=sport,
                                 shorts=kind not in LANDSCAPE_KINDS)
@@ -1885,9 +1893,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         "",
         "―――",
         ("音声: VOICEVOX:ずんだもん / VOICEVOX:四国めたん"
-         if kind == "longform" else "音声: VOICEVOX:四国めたん" if kind == "soccer_results" or (os.environ.get('COLLESPO_SHORT_LOOK') == 'v4' and _soccer_mode and _soccer_v4.get('soccer_v4_mode') == _soccer_mode) else "音声: VOICEVOX:ずんだもん"),
+         if kind == "longform" else "音声: VOICEVOX:四国めたん" if kind in ("soccer_results", "soccer_voices") or (os.environ.get('COLLESPO_SHORT_LOOK') == 'v4' and _soccer_mode and _soccer_v4.get('soccer_v4_mode') == _soccer_mode) else "音声: VOICEVOX:ずんだもん"),
         # 出典は競技で変わる。サッカーの動画にMLBのAPI名が出ていては嘘になる。
-        "出典: ESPN・football-data.org（取得時にスコア照合）" if kind == "soccer_results" else SPORTS.get(sport, SPORTS["mlb"])["source"],
+        _voices_material['screen_source'] if kind == "soccer_voices" else "出典: ESPN・football-data.org（取得時にスコア照合）" if kind == "soccer_results" else SPORTS.get(sport, SPORTS["mlb"])["source"],
     ]
 
     # その回の主役を先に入れる。
@@ -1961,7 +1969,7 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
                                  "morning", "longform", "soccer_race",
-                                 "soccer_week", "soccer_results"],
+                                 "soccer_week", "soccer_results", "soccer_voices"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "

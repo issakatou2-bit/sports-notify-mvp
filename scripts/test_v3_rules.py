@@ -91,6 +91,16 @@ def asset_cases():
 
 
 class V3Rules(unittest.TestCase):
+    def test_soccer_voices_material_and_v4_original_translation_club_badges(self):
+        import soccer_voices as soccer
+        import soccer_voices_render as drawing
+        import test_soccer_voices as checks
+        data=drawing.prepare(soccer.sample_input(ROOT/'scripts/fixtures/soccer-voices/fictional.json'))
+        soccer.validate_data(data)
+        self.assertTrue(data['sample_fictional'])
+        self.assertFalse(rules.check_quotes([v['ja'] for v in data['voices']]))
+        if r3.LOOK=='v4':checks.check_material(data)
+
     def test_duo_questions_only_and_opt_in_even_days(self):
         import duo
         with patch.dict(os.environ,{'COLLESPO_DUO':'off'}):

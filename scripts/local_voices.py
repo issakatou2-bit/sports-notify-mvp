@@ -436,7 +436,7 @@ def fetch_titles() -> list:
     return out
 
 
-def translate(client, items: list) -> list:
+def translate(client, items: list, *, sport: str = "mlb") -> list:
     """
     見出しをまとめて日本語にする。1件ずつ呼ぶとAPI呼び出しが増えるので、
     1回のやり取りで全件を訳させる。
@@ -488,6 +488,11 @@ def translate(client, items: list) -> list:
         "- 感想や補足は加えない。書かれていないことを足さない\n"
         "- 前置きや説明は不要"
     )
+    if sport == "soccer":
+        prompt = prompt.replace("アメリカの野球ファン", "欧州のサッカーファン")
+        prompt += ("\n- サッカーの公式ハイライトのコメント。選手・ファン・監督を取り違えず、"
+                   "返信は親のコメントを含めて解釈する。特定できない人の役割・名前は足さない。"
+                   "原文にない得点・アシスト・時刻・数字・出来事を足さない。")
     if not token_log.allowed("voices"):
         return []
     resp = client.messages.create(
@@ -509,11 +514,12 @@ def translate(client, items: list) -> list:
         line = line.strip()
         m = re.match(r"(\d+)\s*[|｜]\s*(\S+?)\s*[|｜]\s*(.+)", line)
         if m:
-            translated[int(m.group(1))] = (m.group(2), m.group(3).strip())
+            if sport != "soccer" or m.group(2) in ("称賛", "批判", "中立"):
+                translated[int(m.group(1))] = (m.group(2), m.group(3).strip())
             continue
         # 調子を付け忘れた行も拾う。訳文だけでも動画には使える。
         m = re.match(r"(\d+)[.、]\s*(.+)", line)
-        if m:
+        if m and sport != "soccer":
             translated[int(m.group(1))] = ("中立", m.group(2).strip())
 
     def clean(pair):

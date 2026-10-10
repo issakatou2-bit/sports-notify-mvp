@@ -1,0 +1,587 @@
+{
+ "note": "作業183。名簿 notability_engine.JP_PLAYERS_SOCCER から tools/build_names.py で作る。アクセントは照らすときに外す（Dōan → Doan）。",
+ "players": [
+  {
+   "name_jp": "遠藤航",
+   "name_en": "Wataru Endo",
+   "surname": "Endo",
+   "team_en": "Liverpool",
+   "league": "PL",
+   "variants": [
+    "Wataru Endo",
+    "Endo",
+    "遠藤航",
+    "遠藤"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "三笘薫",
+   "name_en": "Kaoru Mitoma",
+   "surname": "Mitoma",
+   "team_en": "Brighton",
+   "league": "PL",
+   "variants": [
+    "Kaoru Mitoma",
+    "Mitoma",
+    "三笘薫",
+    "三笘",
+    "Kaoru"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "鎌田大地",
+   "name_en": "Daichi Kamada",
+   "surname": "Kamada",
+   "team_en": "Crystal Palace",
+   "league": "PL",
+   "variants": [
+    "Daichi Kamada",
+    "Kamada",
+    "鎌田大地",
+    "鎌田"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "高井幸大",
+   "name_en": "Kota Takai",
+   "surname": "Takai",
+   "team_en": "Tottenham",
+   "league": "PL",
+   "variants": [
+    "Kota Takai",
+    "Takai",
+    "高井幸大",
+    "高井"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "田中碧",
+   "name_en": "Ao Tanaka",
+   "surname": "Tanaka",
+   "team_en": "Leeds United",
+   "league": "PL",
+   "variants": [
+    "Ao Tanaka",
+    "Tanaka",
+    "田中碧",
+    "田中"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "坂元達裕",
+   "name_en": "Tatsuhiro Sakamoto",
+   "surname": "Sakamoto",
+   "team_en": "Coventry City",
+   "league": "PL",
+   "variants": [
+    "Tatsuhiro Sakamoto",
+    "Sakamoto",
+    "坂元達裕",
+    "坂元"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "前田大然",
+   "name_en": "Daizen Maeda",
+   "surname": "Maeda",
+   "team_en": "Ipswich Town",
+   "league": "PL",
+   "variants": [
+    "Daizen Maeda",
+    "Maeda",
+    "前田大然",
+    "前田"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "守田英正",
+   "name_en": "Hidemasa Morita",
+   "surname": "Morita",
+   "team_en": "Hull City",
+   "league": "PL",
+   "variants": [
+    "Hidemasa Morita",
+    "Morita",
+    "守田英正",
+    "守田"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "久保建英",
+   "name_en": "Takefusa Kubo",
+   "surname": "Kubo",
+   "team_en": "Real Sociedad",
+   "league": "PD",
+   "variants": [
+    "Takefusa Kubo",
+    "Kubo",
+    "久保建英",
+    "久保",
+    "Take Kubo",
+    "Takefusa"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "佐藤龍之介",
+   "name_en": "Ryunosuke Sato",
+   "surname": "Sato",
+   "team_en": "Valencia",
+   "league": "PD",
+   "variants": [
+    "Ryunosuke Sato",
+    "Sato",
+    "佐藤龍之介",
+    "佐藤"
+   ],
+   "common_word": true
+  },
+  {
+   "name_jp": "伊藤洋輝",
+   "name_en": "Hiroki Ito",
+   "surname": "Ito",
+   "team_en": "Bayern Munich",
+   "league": "BL1",
+   "variants": [
+    "Hiroki Ito",
+    "Ito",
+    "伊藤洋輝",
+    "伊藤"
+   ],
+   "common_word": true
+  },
+  {
+   "name_jp": "町田浩樹",
+   "name_en": "Koki Machida",
+   "surname": "Machida",
+   "team_en": "Hoffenheim",
+   "league": "BL1",
+   "variants": [
+    "Koki Machida",
+    "Machida",
+    "町田浩樹",
+    "町田"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "鈴木唯人",
+   "name_en": "Yuito Suzuki",
+   "surname": "Suzuki",
+   "team_en": "Freiburg",
+   "league": "BL1",
+   "variants": [
+    "Yuito Suzuki",
+    "Suzuki",
+    "鈴木唯人",
+    "鈴木"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "堂安律",
+   "name_en": "Ritsu Doan",
+   "surname": "Doan",
+   "team_en": "Eintracht Frankfurt",
+   "league": "BL1",
+   "variants": [
+    "Ritsu Doan",
+    "Doan",
+    "堂安律",
+    "堂安",
+    "Ritsu"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "佐野海舟",
+   "name_en": "Kaishu Sano",
+   "surname": "Sano",
+   "team_en": "Mainz",
+   "league": "BL1",
+   "variants": [
+    "Kaishu Sano",
+    "Sano",
+    "佐野海舟",
+    "佐野"
+   ],
+   "common_word": true
+  },
+  {
+   "name_jp": "川﨑颯太",
+   "name_en": "Sota Kawasaki",
+   "surname": "Kawasaki",
+   "team_en": "Mainz",
+   "league": "BL1",
+   "variants": [
+    "Sota Kawasaki",
+    "Kawasaki",
+    "川﨑颯太",
+    "川﨑"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "町野修斗",
+   "name_en": "Shuto Machino",
+   "surname": "Machino",
+   "team_en": "Borussia Monchengladbach",
+   "league": "BL1",
+   "variants": [
+    "Shuto Machino",
+    "Machino",
+    "町野修斗",
+    "町野"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "宇野禅斗",
+   "name_en": "Zento Uno",
+   "surname": "Uno",
+   "team_en": "Borussia Monchengladbach",
+   "league": "BL1",
+   "variants": [
+    "Zento Uno",
+    "Uno",
+    "宇野禅斗",
+    "宇野"
+   ],
+   "common_word": true
+  },
+  {
+   "name_jp": "橋岡大樹",
+   "name_en": "Daiki Hashioka",
+   "surname": "Hashioka",
+   "team_en": "Borussia Monchengladbach",
+   "league": "BL1",
+   "variants": [
+    "Daiki Hashioka",
+    "Hashioka",
+    "橋岡大樹",
+    "橋岡"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "田中聡",
+   "name_en": "Satoshi Tanaka",
+   "surname": "Tanaka",
+   "team_en": "Schalke",
+   "league": "BL2",
+   "variants": [
+    "Satoshi Tanaka",
+    "Tanaka",
+    "田中聡",
+    "田中"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "鈴木ザイオン",
+   "name_en": "Zion Suzuki",
+   "surname": "Suzuki",
+   "team_en": "Parma",
+   "league": "SA",
+   "variants": [
+    "Zion Suzuki",
+    "Suzuki",
+    "鈴木ザイオン",
+    "鈴木",
+    "Zion"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "南野拓実",
+   "name_en": "Takumi Minamino",
+   "surname": "Minamino",
+   "team_en": "Monaco",
+   "league": "FL1",
+   "variants": [
+    "Takumi Minamino",
+    "Minamino",
+    "南野拓実",
+    "南野",
+    "Taki"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "瀬古歩夢",
+   "name_en": "Ayumu Seko",
+   "surname": "Seko",
+   "team_en": "Le Havre",
+   "league": "FL1",
+   "variants": [
+    "Ayumu Seko",
+    "Seko",
+    "瀬古歩夢",
+    "瀬古"
+   ],
+   "common_word": true
+  },
+  {
+   "name_jp": "中村草太",
+   "name_en": "Sota Nakamura",
+   "surname": "Nakamura",
+   "team_en": "Le Havre",
+   "league": "FL1",
+   "variants": [
+    "Sota Nakamura",
+    "Nakamura",
+    "中村草太",
+    "中村"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "水多海斗",
+   "name_en": "Kaito Mizuta",
+   "surname": "Mizuta",
+   "team_en": "Le Havre",
+   "league": "FL1",
+   "variants": [
+    "Kaito Mizuta",
+    "Mizuta",
+    "水多海斗",
+    "水多"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "冨安健洋",
+   "name_en": "Takehiro Tomiyasu",
+   "surname": "Tomiyasu",
+   "team_en": "Crystal Palace",
+   "league": "PL",
+   "variants": [
+    "Takehiro Tomiyasu",
+    "Tomiyasu",
+    "冨安健洋",
+    "冨安",
+    "Tomi",
+    "Tommy"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "板倉滉",
+   "name_en": "Ko Itakura",
+   "surname": "Itakura",
+   "team_en": "Borussia Monchengladbach",
+   "league": "BL1",
+   "variants": [
+    "Ko Itakura",
+    "Itakura",
+    "板倉滉",
+    "板倉"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "上田綺世",
+   "name_en": "Ayase Ueda",
+   "surname": "Ueda",
+   "team_en": "Lille",
+   "league": "FL1",
+   "variants": [
+    "Ayase Ueda",
+    "Ueda",
+    "上田綺世",
+    "上田"
+   ],
+   "common_word": true
+  },
+  {
+   "name_jp": "後藤啓介",
+   "name_en": "Keisuke Goto",
+   "surname": "Goto",
+   "team_en": "Freiburg",
+   "league": "BL1",
+   "variants": [
+    "Keisuke Goto",
+    "Goto",
+    "後藤啓介",
+    "後藤"
+   ],
+   "common_word": true
+  },
+  {
+   "name_jp": "山本理仁",
+   "name_en": "Rihito Yamamoto",
+   "surname": "Yamamoto",
+   "team_en": "Freiburg",
+   "league": "BL1",
+   "variants": [
+    "Rihito Yamamoto",
+    "Yamamoto",
+    "山本理仁",
+    "山本"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "小杉啓太",
+   "name_en": "Keita Kosugi",
+   "surname": "Kosugi",
+   "team_en": "Eintracht Frankfurt",
+   "league": "BL1",
+   "variants": [
+    "Keita Kosugi",
+    "Kosugi",
+    "小杉啓太",
+    "小杉"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "菅原由勢",
+   "name_en": "Yukinari Sugawara",
+   "surname": "Sugawara",
+   "team_en": "Cagliari",
+   "league": "SA",
+   "variants": [
+    "Yukinari Sugawara",
+    "Sugawara",
+    "菅原由勢",
+    "菅原"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "旗手怜央",
+   "name_en": "Reo Hatate",
+   "surname": "Hatate",
+   "team_en": "Burnley",
+   "league": "ELC",
+   "variants": [
+    "Reo Hatate",
+    "Hatate",
+    "旗手怜央",
+    "旗手"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "松木玖生",
+   "name_en": "Kuryu Matsuki",
+   "surname": "Matsuki",
+   "team_en": "Southampton",
+   "league": "ELC",
+   "variants": [
+    "Kuryu Matsuki",
+    "Matsuki",
+    "松木玖生",
+    "松木"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "斉藤光毅",
+   "name_en": "Koki Saito",
+   "surname": "Saito",
+   "team_en": "Queens Park Rangers",
+   "league": "ELC",
+   "variants": [
+    "Koki Saito",
+    "Saito",
+    "斉藤光毅",
+    "斉藤"
+   ],
+   "common_word": true
+  },
+  {
+   "name_jp": "森下龍矢",
+   "name_en": "Ryoya Morishita",
+   "surname": "Morishita",
+   "team_en": "Blackburn Rovers",
+   "league": "ELC",
+   "variants": [
+    "Ryoya Morishita",
+    "Morishita",
+    "森下龍矢",
+    "森下"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "大橋祐紀",
+   "name_en": "Yuki Ohashi",
+   "surname": "Ohashi",
+   "team_en": "Blackburn Rovers",
+   "league": "ELC",
+   "variants": [
+    "Yuki Ohashi",
+    "Ohashi",
+    "大橋祐紀",
+    "大橋"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "伊藤敦樹",
+   "name_en": "Atsuki Ito",
+   "surname": "Ito",
+   "team_en": "Bolton Wanderers",
+   "league": "ELC",
+   "variants": [
+    "Atsuki Ito",
+    "Ito",
+    "伊藤敦樹",
+    "伊藤"
+   ],
+   "common_word": true
+  },
+  {
+   "name_jp": "藤本寛也",
+   "name_en": "Kanya Fujimoto",
+   "surname": "Fujimoto",
+   "team_en": "Birmingham City",
+   "league": "ELC",
+   "variants": [
+    "Kanya Fujimoto",
+    "Fujimoto",
+    "藤本寛也",
+    "藤本"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "岩田智輝",
+   "name_en": "Tomoki Iwata",
+   "surname": "Iwata",
+   "team_en": "Birmingham City",
+   "league": "ELC",
+   "variants": [
+    "Tomoki Iwata",
+    "Iwata",
+    "岩田智輝",
+    "岩田"
+   ],
+   "common_word": false
+  },
+  {
+   "name_jp": "平川怜",
+   "name_en": "Yu Hirakawa",
+   "surname": "Hirakawa",
+   "team_en": "Bristol City",
+   "league": "ELC",
+   "variants": [
+    "Yu Hirakawa",
+    "Hirakawa",
+    "平川怜",
+    "平川"
+   ],
+   "common_word": false
+  }
+ ]
+}
