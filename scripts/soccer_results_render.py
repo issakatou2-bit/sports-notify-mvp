@@ -79,7 +79,7 @@ def narration(data):
 
 def program_spec(data):
     day=results.date.fromisoformat(data['date_jst'])
-    return {'source':CREDIT,'ticker':f"日本時間{day.month}月{day.day}日終了　欧州の日本人選手の結果",'label':'欧州サッカー　結果'}
+    return {'source':CREDIT,'ticker':f"日本時間{day.month}月{day.day}日の夜〜翌朝の試合　欧州の日本人選手の結果",'label':'欧州サッカー　結果'}
 
 
 def cover(t,data,game,clubs,spec):

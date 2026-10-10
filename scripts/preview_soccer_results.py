@@ -11,7 +11,7 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--scoreboards',type=Path,default=ROOT/'scripts/fixtures/soccer-results/scoreboards.json')
     ap.add_argument('--summaries',type=Path,default=ROOT/'scripts/fixtures/soccer-results/summaries.json')
-    ap.add_argument('--date',default='2026-09-21')
+    ap.add_argument('--date',default='2026-09-20')
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer-results-preview')
     args=ap.parse_args();args.out.mkdir(parents=True,exist_ok=True)
     os.environ['COLLESPO_SHORT_LOOK']='v4'
