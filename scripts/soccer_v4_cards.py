@@ -91,8 +91,10 @@ def club_name(im, x, y, club, size=40, color=None, suffix='', width=None):
     while width and badge_width(club, size) + 12 + r3.font(size).getlength(value) > width and size > 18:
         size -= 2
     f = r3.font(size)
-    dy = f.getbbox(name)[1]
-    height = f.getbbox(name)[3] - dy
+    # 札の高さは、記録する文字の箱（名前＋続きの文）と同じ字列で測る。Linux の Noto では
+    # 「CL」「1」などで上下の出が名前と違い、札と文字の高さが 3px 以上ずれて検査で止まった（10/10）。
+    dy = f.getbbox(value)[1]
+    height = f.getbbox(value)[3] - dy
     w = club_badge(im, x, y, club, size, height)
     x += w + 12
     r3._text(ImageDraw.Draw(im), (x, y - dy), value, font=f, fill=color or r3.INK)

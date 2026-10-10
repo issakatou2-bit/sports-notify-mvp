@@ -23,6 +23,12 @@ FIX=ROOT/'scripts/fixtures/soccer-slots'
 def load(mode):return json.loads((FIX/(mode+'.json')).read_text(encoding='utf-8'))
 
 
+def source_hash(module,node):
+    """関数の本文の字（改行をそろえる）。ast.dump は Python の版で変わる（手元 3.14・CI 3.11）ので使わない。"""
+    text=Path(module.__file__).read_text(encoding='utf-8').replace('\r\n','\n')
+    return hashlib.sha256(ast.get_source_segment(text,node).encode('utf-8')).hexdigest()
+
+
 class Slots(unittest.TestCase):
     def test_v3_frames_identical_to_base(self):
         if slots.enabled():return
@@ -39,7 +45,7 @@ class Slots(unittest.TestCase):
             for node in ast.parse(Path(module.__file__).read_text(encoding='utf-8')).body:
                 key=module.__name__+'.'+node.name if isinstance(node,ast.FunctionDef) else ''
                 if key in sources:
-                    self.assertEqual(hashlib.sha256(ast.dump(node,include_attributes=False).encode('utf-8')).hexdigest(),sources[key],key)
+                    self.assertEqual(source_hash(module,node),sources[key],key)
         # 基点との画素比較を記録したWindows環境で実行。Linuxは書体が違うためソース不変を検査。
         if sys.platform!='win32':return
         for module,name,args in calls:self.assertEqual(hashlib.sha256(getattr(module,name)(*args).tobytes()).hexdigest(),expected[name],name)
