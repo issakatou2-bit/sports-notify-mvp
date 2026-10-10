@@ -1624,6 +1624,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     else:
         title = (f"{SPORTS.get(sport, SPORTS['mlb'])['badge']}"
                  f"{date_label}の注目試合 #Shorts")
+    _soccer_v4 = _json_or_empty(narration_path) if narration_path else {}
+    _soccer_mode = 'preview' if kind == 'daily' and sport == 'soccer' else 'race' if kind == 'soccer_race' else 'week' if kind == 'soccer_week' else None
+    if os.environ.get('COLLESPO_SHORT_LOOK') == 'v4' and _soccer_mode and _soccer_v4.get('soccer_v4_mode') == _soccer_mode:
+        title = _soccer_v4['title']
     title = title.replace("  ", " ").strip()
     # 選手ごとのシリーズ（作業153・本人 10/9「今日」に）: 題の頭を「【MLB】〇〇の今日｜…」にそろえ、
     # 説明欄の2行目にその選手の回の一覧を置く。リポジトリ変数 SERIES_TITLE=1 のときだけ。
@@ -1878,7 +1882,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         "",
         "―――",
         ("音声: VOICEVOX:ずんだもん / VOICEVOX:四国めたん"
-         if kind == "longform" else "音声: VOICEVOX:四国めたん" if kind == "soccer_results" else "音声: VOICEVOX:ずんだもん"),
+         if kind == "longform" else "音声: VOICEVOX:四国めたん" if kind == "soccer_results" or (os.environ.get('COLLESPO_SHORT_LOOK') == 'v4' and _soccer_mode and _soccer_v4.get('soccer_v4_mode') == _soccer_mode) else "音声: VOICEVOX:ずんだもん"),
         # 出典は競技で変わる。サッカーの動画にMLBのAPI名が出ていては嘘になる。
         "出典: ESPN・football-data.org（取得時にスコア照合）" if kind == "soccer_results" else SPORTS.get(sport, SPORTS["mlb"])["source"],
     ]

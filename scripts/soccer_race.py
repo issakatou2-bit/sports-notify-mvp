@@ -634,6 +634,11 @@ def summary(data: dict) -> str:
     return "\n".join(lines)
 
 
+def v4_program(data):
+    import soccer_slots_v4
+    return soccer_slots_v4.race_program(data) if soccer_slots_v4.enabled() else None
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--preview", default="data/soccer_preview.json")

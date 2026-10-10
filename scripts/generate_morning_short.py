@@ -4214,6 +4214,13 @@ def main():
                         help="音声が作れなければ動画を作らずに終わる")
     parser.add_argument("--out", default="build/morning")
     args = parser.parse_args()
+    if args.mode in ('soccer_race','soccer_week'):
+        import soccer_slots_v4
+        if soccer_slots_v4.enabled():
+            return soccer_slots_v4.run_compat('race' if args.mode=='soccer_race' else 'week',
+                args.race if args.mode=='soccer_race' else args.week,
+                narration_out=args.narration_out, audio_dir=args.audio_dir, out=args.out,
+                narration_path=args.narration)
     if args.narration_out:
         pathlib.Path(args.narration_out).unlink(missing_ok=True)
 

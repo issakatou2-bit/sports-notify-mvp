@@ -1,0 +1,57 @@
+{
+  "generated_at": "2026-09-18T09:00:00Z",
+  "source": "ESPN（保存試合の開催日時）",
+  "games": [
+    {
+      "game_id": "PL-0",
+      "league": "プレミアリーグ",
+      "home_team_name": "トッテナム",
+      "away_team_name": "アストン・ヴィラ",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "jp_by_side": {
+        "home": [
+          "高井幸大"
+        ],
+        "away": []
+      },
+      "is_notable": true,
+      "start_time_utc": "2026-09-19T11:30Z",
+      "start_time_jst": "09/19 20:30"
+    },
+    {
+      "game_id": "PL-1",
+      "league": "プレミアリーグ",
+      "home_team_name": "ブライトン",
+      "away_team_name": "アーセナル",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "jp_by_side": {
+        "home": [
+          "三笘薫"
+        ],
+        "away": []
+      },
+      "is_notable": true,
+      "start_time_utc": "2026-09-19T14:00Z",
+      "start_time_jst": "09/19 23:00"
+    },
+    {
+      "game_id": "PL-2",
+      "league": "プレミアリーグ",
+      "home_team_name": "エバートン",
+      "away_team_name": "イプスウィッチ",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "前田大然"
+        ]
+      },
+      "is_notable": true,
+      "start_time_utc": "2026-09-19T14:00Z",
+      "start_time_jst": "09/19 23:00"
+    }
+  ]
+}

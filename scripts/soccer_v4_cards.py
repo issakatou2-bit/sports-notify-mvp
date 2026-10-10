@@ -91,8 +91,10 @@ def club_name(im, x, y, club, size=40, color=None, suffix='', width=None):
     while width and badge_width(club, size) + 12 + r3.font(size).getlength(value) > width and size > 18:
         size -= 2
     f = r3.font(size)
-    dy = f.getbbox(name)[1]
-    height = f.getbbox(name)[3] - dy
+    # 札の高さは、記録する文字の箱（名前＋続きの文）と同じ字列で測る。Linux の Noto では
+    # 「CL」「1」などで上下の出が名前と違い、札と文字の高さが 3px 以上ずれて検査で止まった（10/10）。
+    dy = f.getbbox(value)[1]
+    height = f.getbbox(value)[3] - dy
     w = club_badge(im, x, y, club, size, height)
     x += w + 12
     r3._text(ImageDraw.Draw(im), (x, y - dy), value, font=f, fill=color or r3.INK)
@@ -232,9 +234,10 @@ def standings(t, spec, clubs):
             y += 30
         row = rows[p]
         club = clubs[row['team']]
-        focus = row['team'] == spec.get('focus')
+        focus = row['team'] == spec.get('focus') or row['team'] in spec.get('highlights', [])
         if focus:
             d.rounded_rectangle((L, y - 6, R, y + row_h - 10), radius=12, fill=(70, 62, 30))
+            r3.record_box(im, 'card', (L, y - 6, R, y + row_h - 10))
         v4.text(im, L + 14, y + 4, p, size + 6, r3.GOLD, number=True, width=60)
         club_name(im, L + 84, y + 8, club, size, width=R - L - 350)
         v4.text(im, R - 236, y + 4, row['played'], size + 6, r3.INK, number=True, width=60)
@@ -247,7 +250,8 @@ def standings(t, spec, clubs):
             d.line((L, y - 6, R, y - 6), fill=color, width=5)
             w = r3.font(22).getlength(label) + 24
             d.rounded_rectangle((R - w, y - 4, R, y + 28), radius=8, fill=color)
-            r3._text(d, (R - w + 12, y - 2), label, font=r3.font(22), fill=r3.DARK_INK)
+            r3.record_box(im, 'card', (L, y - 6, R, y + 28))
+            plain(im, R - w + 12, y - 2, label, 22, r3.DARK_INK, width=w - 20)
             y += 38
         prev = p
     if spec.get('gap'):
@@ -272,9 +276,19 @@ def preview(t, spec, clubs):
         club_name(im, L + 28, y, club, 48, width=R - L - 260)
         if rank:
             v4.stat(im, R - 200, y - 18, rank, '位', 76, width=160, unit_size=30)
-        for i, name in enumerate((spec.get('jp') or {}).get(side, [])):
-            plain(im, L + 60, y + 70 + i * 50, '日本人選手　' + name, 32, r3.colors(None)[1], width=R - L - 120)
-        y += 70 + 50 * max(1, len((spec.get('jp') or {}).get(side, []))) + 40
+        plain(im, L + 28, y + 66, 'ホーム' if side == 'home' else 'アウェー', 24, r3.GOLD, width=120)
+        names = '・'.join((spec.get('jp') or {}).get(side, []))
+        if names:
+            size = 30
+            body = v4.lines(names, size, R - L - 206)
+            while len(body) > 2 and size > 18:
+                size -= 2
+                body = v4.lines(names, size, R - L - 206)
+            if len(body) > 2:
+                raise ValueError('日本人選手の名前が安全域を超える')
+            for i, name in enumerate(body):
+                plain(im, L + 160, y + 66 + i * 40, name, size, r3.colors(None)[1], width=R - L - 206)
+        y += 210
         if side == 'home':
             plain(im, L + 28, y - 34, '対', 34, r3.GOLD, width=60)
             y += 20

@@ -312,6 +312,11 @@ def build(api_key: str) -> dict:
     }
 
 
+def v4_program(data):
+    import soccer_slots_v4
+    return soccer_slots_v4.preview_program(data) if soccer_slots_v4.enabled() else None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/soccer_preview.json")

@@ -39,6 +39,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # サッカーの3枠は専用の変数で切り替える（本人が試作を見てから COLLESPO_SOCCER_LOOK=v4。10/10 エマ）
+      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
     # 起動の合図にするだけで、材料には依存しない。
     #
     # 以前は日次の成功を条件にしていたが、8/16に日次が通知の失敗で落ちた回、
