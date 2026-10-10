@@ -118,6 +118,13 @@ def football_check(game,matches):
     return 'matched' if score==game['score'] else 'mismatch'
 
 
+def in_window(ended,target):
+    """その日の夜の試合＝日本時間の target 8時〜翌朝8時に終わった試合（10/10 本人「8時には出揃う？」）。
+    土曜の夜の試合は日曜の朝4〜6時に終わるので、暦の日で切ると1日遅れる。"""
+    start=datetime(target.year,target.month,target.day,8,tzinfo=JST)
+    return start<=ended.astimezone(JST)<start+timedelta(days=1)
+
+
 def build(boards,summaries,target_date,football=None,roster=None):
     target=date.fromisoformat(str(target_date));football=football or {};games=[];rejected=[];seen=set()
     roster=ne.JP_PLAYERS_SOCCER if roster is None else roster
@@ -142,7 +149,7 @@ def build(boards,summaries,target_date,football=None,roster=None):
                 summary=saved.get('summary',saved)
                 ended=completion_time(comp,summary)
                 if not ended:raise ValueError('終了実時刻なし')
-                if utc(ended).astimezone(JST).date()!=target:continue
+                if not in_window(utc(ended),target):continue
                 header=(summary.get('header') or {}).get('competitions') or []
                 if len(header)!=1 or str(header[0].get('id'))!=id:raise ValueError('summaryの試合ID不一致')
                 if utc(header[0]['date'])!=utc(event['date']):raise ValueError('summaryの開始時刻不一致')
@@ -207,7 +214,7 @@ def validate_data(data):
     day=date.fromisoformat(data['date_jst'])
     flattened=[]
     for game in data['games']:
-        if utc(game['finished_utc']).astimezone(JST).date()!=day:raise ValueError('終了日が対象日と違う')
+        if not in_window(utc(game['finished_utc']),day):raise ValueError('終了時刻が対象の夜（8時〜翌8時）の外')
         if game['home']['id']==game['away']['id']:raise ValueError('対戦クラブが同じ')
         if any(type(v) is not int or v<0 for v in game['score'].values()):raise ValueError('スコアが不正')
         if game['goals_complete']!=all(sum(g['side']==s for g in game['goals'])==game['score'][s] for s in ('home','away')):raise ValueError('得点経過の完全性が不一致')
@@ -239,7 +246,7 @@ def title(data):
 
 
 def description_lines(data):
-    lines=[f"{data['date_jst']}（日本時間）に終わった欧州5大リーグの試合から、日本人選手本人の結果です。"]
+    lines=[f"{data['date_jst']}の夜〜翌朝（日本時間）に終わった欧州5大リーグの試合から、日本人選手本人の結果です。"]
     lines += [f"・{p['name']}（{p['club']}）{STATUS[p['status']]}"+ ''.join(f" / {p[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト'),('yellow_cards','警告'),('red_cards','退場')) if p.get(k) is not None) for p in data['players']]
     lines += ['', '出典: '+SOURCE+'。終了時刻・出場区分・個人成績・得点経過はESPN。football-data.orgのスコアを取得できた試合は照合し、不一致は除外します。',
               '出場なしは一覧のみ。クラブの勝敗を選手本人の活躍とは扱っていません。']
@@ -260,7 +267,7 @@ def main():
     else:
         boards={};summaries={}
         for code,slug in LEAGUES.items():
-            for day in (target-timedelta(days=1),target):
+            for day in (target-timedelta(days=1),target,target+timedelta(days=1)):
                 key=code+'_'+day.strftime('%Y%m%d')
                 boards[key]=fetch_json(f'{ESPN}/{slug}/scoreboard?dates={day:%Y%m%d}')
                 for event in boards[key].get('events',[]):

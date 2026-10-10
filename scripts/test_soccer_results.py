@@ -26,7 +26,8 @@ def fixture():
             json.loads((FIXTURE/'summaries.json').read_text(encoding='utf-8')))
 
 
-def fixed(day='2026-09-21'):
+# 10/10: 対象日は「その日の8時〜翌朝8時に終わった試合」。保存材料の9/20夜（ニース対リール等）は 2026-09-20。
+def fixed(day='2026-09-20'):
     boards,summaries=fixture();return sr.build(boards,summaries,day)
 
 
@@ -46,7 +47,7 @@ def inspect(data):
 
 class SoccerResults(unittest.TestCase):
     def test_native_personal_results(self):
-        players={p['name']:p for day in ('2026-09-19','2026-09-20','2026-09-21') for p in fixed(day)['players']}
+        players={p['name']:p for day in ('2026-09-18','2026-09-19','2026-09-20') for p in fixed(day)['players']}
         for name,status in (('町野修斗','substitute'),('鈴木唯人','starter'),('上田綺世','starter')):
             self.assertEqual((players[name]['goals'],players[name]['status']),(1,status))
         for name in ('佐野海舟','堂安律','中村草太'):self.assertEqual(players[name]['assists'],1)
@@ -57,14 +58,17 @@ class SoccerResults(unittest.TestCase):
 
     def test_final_jst_date_not_kickoff(self):
         boards,summaries=fixture()
+        # ニース対リールは日本時間 9/21 2時台に終わった → 「9/20の夜（8時〜翌8時）」の回に入る
         game=next(g for g in fixed()['games'] if g['id']=='401876452')
         self.assertEqual(sr.utc(game['finished_utc']).astimezone(sr.JST).date().isoformat(),'2026-09-21')
-        self.assertNotIn(game['id'],[g['id'] for g in sr.build(boards,summaries,'2026-09-20')['games']])
-        # The September 19 14:00 UTC fixture finishes after JST midnight on September 20.
-        self.assertIn('401878778',[g['id'] for g in fixed('2026-09-20')['games']])
-        self.assertNotIn('401878778',[g['id'] for g in fixed('2026-09-19')['games']])
+        self.assertNotIn(game['id'],[g['id'] for g in sr.build(boards,summaries,'2026-09-21')['games']])
+        # 9/19 15:55 UTC（日本時間 9/20 0:55）に終わった試合は 9/19 の夜の回
+        self.assertIn('401878778',[g['id'] for g in fixed('2026-09-19')['games']])
+        self.assertNotIn('401878778',[g['id'] for g in fixed('2026-09-18')['games']])
+        self.assertTrue(sr.in_window(sr.utc('2026-09-19T22:59:59Z'),sr.date(2026,9,19)))      # 翌朝8時の直前までは入る
+        self.assertFalse(sr.in_window(sr.utc('2026-09-19T23:00:00Z'),sr.date(2026,9,19)))     # 8時ちょうどは次の回
         summaries['401876452']['summary']['keyEvents']=[]
-        changed=sr.build(boards,summaries,'2026-09-21')
+        changed=sr.build(boards,summaries,'2026-09-20')
         self.assertNotIn('401876452',[g['id'] for g in changed['games']])
         self.assertTrue(any(x['reason']=='終了実時刻なし' for x in changed['rejected']))
 
@@ -82,12 +86,12 @@ class SoccerResults(unittest.TestCase):
         fd={'FL1':[{'status':'FINISHED','utcDate':g['start_utc'],'homeTeam':{'name':'OGC Nice'},'awayTeam':{'name':'Lille OSC'},'score':{'fullTime':g['score']}}]}
         self.assertEqual(sr.football_check(g,fd),'matched')
         fd['FL1'][0]['score']['fullTime']={'home':0,'away':9}
-        changed=sr.build(boards,summaries,'2026-09-21',fd)
+        changed=sr.build(boards,summaries,'2026-09-20',fd)
         self.assertNotIn(g['id'],[x['id'] for x in changed['games']])
         self.assertTrue(any('football-data' in x['reason'] for x in changed['rejected']))
         self.assertEqual(sr.football_check(g,{}),'unavailable')
         summaries[g['id']]['summary']['header']['competitions'][0]['competitors'][0]['score']='99'
-        self.assertNotIn(g['id'],[x['id'] for x in sr.build(boards,summaries,'2026-09-21')['games']])
+        self.assertNotIn(g['id'],[x['id'] for x in sr.build(boards,summaries,'2026-09-20')['games']])
 
     def test_rank_and_no_appearance_gate(self):
         base={'name':'選手','goals':0,'assists':0,'status':'starter'}
@@ -113,7 +117,7 @@ class SoccerResults(unittest.TestCase):
         with self.assertRaises(ValueError):sr.player_result(player,rows,'home','event')
 
     def test_normalized_material_cannot_change_player_numbers(self):
-        for day in ('2026-09-19','2026-09-20','2026-09-21'):sr.validate_data(fixed(day))
+        for day in ('2026-09-18','2026-09-19','2026-09-20'):sr.validate_data(fixed(day))
         data=fixed();data['players'][0]['goals']=999
         with self.assertRaises(ValueError):sr.validate_data(data)
         data=fixed();bench=next(p for g in data['games'] for p in g['players'] if p['status']=='none');bench['goals']=1
@@ -134,7 +138,7 @@ class SoccerResults(unittest.TestCase):
         other_rows=[{'athlete':{'id':'other'+str(i),'fullName':f'Other Player{i}'},'starter':True,'subbedIn':False,'stats':[]} for i in range(11)]
         summary={'header':{'competitions':[deepcopy(c)]},'rosters':[{'team':{'id':athlete['team']['id']},'roster':rows},{'team':{'id':other_id},'roster':other_rows}],
                  'keyEvents':[{'type':{'id':'83'},'period':{'number':2},'wallclock':end.isoformat()}]}
-        data=sr.build({'PL_fixture':{'events':[event]}},{event['id']:summary},end.astimezone(sr.JST).date().isoformat(),roster=[selected])
+        data=sr.build({'PL_fixture':{'events':[event]}},{event['id']:summary},(end.astimezone(sr.JST)-timedelta(hours=8)).date().isoformat(),roster=[selected])
         g=next(x for x in data['games'][0]['goals'] if x['own_goal'])
         self.assertEqual(g['side'],'home');self.assertFalse(g['japanese_goal'])
         self.assertEqual(data['players'][0]['goals'],0)
@@ -143,7 +147,7 @@ class SoccerResults(unittest.TestCase):
         if r3.LOOK!='v4':
             with self.assertRaises(ValueError):render.frame(1,render.narration(fixed())['segments'][0],fixed())
             return
-        for day in ('2026-09-19','2026-09-20','2026-09-21'):inspect(fixed(day))
+        for day in ('2026-09-19','2026-09-20'):inspect(fixed(day))
         data=fixed();clubs=render.resolve_clubs(data);seg=render.narration(data)['segments'][0]
         r3.set_program_clock(0);r3.set_caption('',10,30)
         image=render.frame(1.4,seg,data,clubs)
@@ -155,7 +159,7 @@ class SoccerResults(unittest.TestCase):
 
     def test_pagination_preserves_all_players_and_goals(self):
         if r3.LOOK!='v4':return
-        data=fixed('2026-09-20');base=data['players'][0]
+        data=fixed('2026-09-19');base=data['players'][0]
         data['players']=[dict(base,name=f'検査選手{n}') for n in range(21)]
         segments=render.narration(data)['segments'];rows=[s for s in segments if s['kind']=='roster']
         # 一覧は出場した選手を7人まで1画面に。残りは「ほかN人」、出場なしは名前の1行（10/10 エマ）
