@@ -123,8 +123,11 @@ jobs:
               d = json.load(open('data/soccer_games.json', encoding='utf-8'))
               # 10/10 本人OK: 予告は日本人選手のいる試合がある日だけ（28日で、題に日本人選手の
               # 名前が無い予告は伸びていない。サッカーは翌朝の結果の回を主力にする）
+              # サッカーは home_has_jp / away_has_jp が立たない（MLBの名簿の印だけを見ている）。
+              # 日本人選手の理由（JP・jp_team）でも数える。10/10 はこれで6試合あっても0件になっていた。
               print(len([g for g in d.get('games', []) if g.get('is_notable')
-                         and (g.get('home_has_jp') or g.get('away_has_jp'))]))
+                         and (g.get('home_has_jp') or g.get('away_has_jp')
+                              or any(r.get('tag') in ('JP', 'jp_team') for r in g.get('reasons') or []))]))
           except Exception:
               print(0)
           ")

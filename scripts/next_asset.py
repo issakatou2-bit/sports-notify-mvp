@@ -159,11 +159,41 @@ def season_order(key: str, spec: dict) -> tuple:
     if spec.get("odds") or spec.get("momentum"):
         return (-1, 1, "", key)
     if spec.get("story"):
-        return (-1, 2, key)
+        # 決着の新しい順（鍵の順だと地区シリーズ D がWCS F より先に並ぶ）。
+        return (-1, 2, -_ended_ts(spec), key)
     return (0 if spec.get("ps_ended") else 1,
             0 if spec.get("jp") else
             1 if spec.get("japanese") or key.startswith("season_league") else 2,
             key)
+
+
+# シリーズの話題（ps_story）は、決着からこの時間を過ぎたら出さない。
+# 10/8 本人「その日に出すってことは、その日の試合のことを言ってると思って見に来るはず」。
+STORY_FRESH_HOURS = 36
+
+
+def _ended_ts(spec: dict) -> float:
+    """シリーズの決着の時刻（UNIX秒）。読めなければ0。"""
+    from datetime import datetime
+    try:
+        return datetime.fromisoformat((spec.get("ended_at") or "").replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return 0.0
+
+
+def stale_story(spec: dict, now=None) -> bool:
+    """シリーズの話題で、決着から STORY_FRESH_HOURS を過ぎたもの。決着の時刻が無いものも出さない。"""
+    from datetime import datetime, timedelta, timezone
+    if not spec.get("story"):
+        return False
+    at = spec.get("ended_at")
+    if not at:
+        return True
+    try:
+        ended = datetime.fromisoformat(at.replace("Z", "+00:00"))
+    except ValueError:
+        return True
+    return (now or datetime.now(timezone.utc)) - ended > timedelta(hours=STORY_FRESH_HOURS)
 
 
 def started(spec: dict, now=None) -> bool:
@@ -210,7 +240,8 @@ def pick_season(args) -> int:
     left = max(0, args.season - posted_today(args.published,
                                              kinds={"season"}, count=True))
     todo = sorted((k for k, v in gav.LIST_TOPICS.items()
-                   if kind_of(k) == "season" and k not in done and not started(v)),
+                   if kind_of(k) == "season" and k not in done and not started(v)
+                   and not stale_story(v)),
                   key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
     picked = []
     for k in todo:

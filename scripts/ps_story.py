@@ -322,6 +322,10 @@ def build(ps: dict, quotes: list) -> list:
             print(f"[warn] {row.get('key')} を作れません({e})", file=sys.stderr)
             continue
         if t:
+            # 決着した時刻。これが古い話題は出さない（next_asset.STORY_FRESH_HOURS）。
+            # 10/10、10/3に決着したWCS（ブレーブスの突破）が、ブレーブスの地区シリーズ敗退の
+            # 翌日に出た。鍵の順（D < F）で後回しになり、期限が無いので残っていた。
+            t["ended_at"] = games[-1].get("gameDate") or ""
             out.append(t)
     return out
 
