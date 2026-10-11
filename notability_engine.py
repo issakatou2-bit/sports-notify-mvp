@@ -2757,7 +2757,7 @@ def fetch_pitcher_season_stats(player_id: str, season: str) -> dict:
     return {}
 
 
-def _team_context_line(team_id: str, team_name: str, standings: dict) -> str:
+def _team_context_line(team_id: str, team_name: str, standings: dict, *, include_recent: bool = True) -> str:
     """AIに渡すための、1チーム分の順位表コンテキストを組み立てる"""
     s = standings.get(team_id)
     if not s:
@@ -2784,10 +2784,11 @@ def _team_context_line(team_id: str, team_name: str, standings: dict) -> str:
     else:
         rank_part = f"{div_name}の{s.division_rank}位(同地区首位との差{s.games_back}ゲーム)"
 
-    parts = f"{team_name}: {record}、{rank_part}、{streak}"
-    if s.last_ten:
+    parts = (f"{team_name}: {record}、{rank_part}、{streak}" if include_recent else
+             f"{team_name}: レギュラーシーズン最終成績 {record}、{rank_part}")
+    if include_recent and s.last_ten:
         parts += f"、直近10試合は{s.last_ten}"
-    status = standing_status(s)
+    status = standing_status(s) if include_recent else ""
     if status:
         parts += f"、{status}"
     return parts
@@ -2864,8 +2865,10 @@ def _soccer_context_line(team_id: str, team_name: str, standings: dict) -> str:
 
 
 def _build_ai_prompt(game: dict, standings: dict) -> str:
-    line = (_soccer_context_line if is_soccer_league(game.get("league"))
-            else _team_context_line)
+    soccer = is_soccer_league(game.get("league"))
+    ps_game = (not soccer) and (game.get("game_type") or "R") != "R"
+    line = (_soccer_context_line if soccer else
+            lambda tid, name, table: _team_context_line(tid, name, table, include_recent=not ps_game))
     home_context = line(
         game["home_team_id"], game["home_team_name"], standings
     )
@@ -2874,7 +2877,6 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
     )
 
     structural_notes = []
-    soccer = is_soccer_league(game.get("league"))
     if soccer:
         # サッカーには地区が無い。MLB用の地区の話をそのまま通すと、
         # 「同地区内で対峙する」という存在しない構図が書かれる。
@@ -2885,17 +2887,16 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         structural_notes.append(
             "順位の差は勝ち点で表す。「ゲーム差」は野球の言い方なので"
             "使わないこと")
-    # **ポストシーズンの試合。**下に渡す勝敗・地区順位・連勝・直近10試合は
-    # レギュラーシーズンのもので、もう動かない。そのまま渡すと
-    # 「4連勝中の勢いで」「首位攻防」とレギュラーシーズンの話を書く。
+    # **ポストシーズンの試合。**RSの連勝/直近10試合/進出状態は入力しない。
+    # RSの勝敗・地区順位は最終成績と明示。数字を渡して禁止するだけでは
+    # 「4連勝中の勢いで」とRSの話を書くので、入力側で除く。
     # 同地区同士もPSでは当たる（ヤンキース対レッドソックス）が、もう
     # 地区順位を争ってはいないので、同地区の注記も付けない。
-    ps_game = (not soccer) and (game.get("game_type") or "R") != "R"
     if ps_game:
         structural_notes.append(
             f"この試合はポストシーズン（{POSTSEASON_NAME.get(game.get('game_type'), 'ポストシーズン')}）。"
-            "下の勝敗・地区順位・連勝・直近10試合はレギュラーシーズンの"
-            "最終成績で、ポストシーズンの勝敗ではない。**連勝・マジック・"
+            "下の勝敗・地区順位はレギュラーシーズンの"
+            "最終成績で、ポストシーズンの勝敗ではない。RSの連勝・直近10試合は渡していない。**連勝・マジック・"
             "地区の順位争い・首位攻防の話は書かないこと。**シリーズの勝敗は"
             "理由の欄にあるとおりで、それ以外の勝敗を作らないこと")
     home_div = (MLB_DIVISIONS.get(game["home_team_id"])
