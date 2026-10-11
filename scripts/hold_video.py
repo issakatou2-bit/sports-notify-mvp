@@ -19,7 +19,6 @@
 """
 
 import argparse
-import json
 import os
 import pathlib
 import sys
@@ -83,19 +82,20 @@ def verify_status(yt, video_id, desired):
 
 
 def record_schedule(path, video_id, saved):
-    """確認後の予約日時だけを同じ動画の台帳へ反映する。"""
-    path = pathlib.Path(path)
-    data = json.loads(path.read_text(encoding="utf-8"))
-    matching = [entry for dates in data.values() if isinstance(dates, dict)
-                for entry in dates.values() if isinstance(entry, dict)
-                and entry.get("video_id") == video_id]
-    if not matching:
+    """確認後の予約日時と公開状態を同じ動画の台帳へ反映する。"""
+    import video_visibility
+    if not video_visibility.record_status(path,video_id,saved):
         raise ValueError("予約動画が配信台帳にありません。YouTubeの設定と台帳を個別確認してください")
-    for entry in matching:
-        entry["publish_at"] = saved["publishAt"]
-    temp = path.with_suffix(path.suffix + ".tmp")
-    temp.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-    temp.replace(path)
+
+
+def sync_record(video_id, saved):
+    """保存後/既に一致のread結果を台帳へ。未登録を成功と呼ばない。"""
+    import video_visibility
+    count=video_visibility.record_status('data/published_videos.json',video_id,saved)
+    if count:
+        print(f'[info] 確認済み公開設定を同じ動画の台帳{count}件へ反映しました')
+    else:
+        print('[warn] この動画は台帳に未登録です。一覧/導線の実在は別途確認してください')
 
 
 def client():
@@ -141,9 +141,12 @@ def main() -> int:
     desired = target_status(st, args.release, args.publish_at)
     want = desired["privacyStatus"]
     if desired == st:
-        if args.write and args.publish_at:
-            record_schedule("data/published_videos.json", args.video, st)
-            print(f"[info] 確認済み予約 {st['publishAt']} を台帳へ反映しました。YouTubeの再保存はありません")
+        if args.write:
+            if args.publish_at:
+                record_schedule('data/published_videos.json',args.video,st)
+            else:
+                sync_record(args.video,st)
+            print('[info] YouTubeの再保存はありません')
             return 0
         print(f"[info] すでに {want} です。何もしません")
         return 0
@@ -161,7 +164,9 @@ def main() -> int:
                        body={"id": args.video, "status": desired}).execute()
     saved = verify_status(yt, args.video, desired)
     if args.publish_at:
-        record_schedule("data/published_videos.json", args.video, saved)
+        record_schedule('data/published_videos.json',args.video,saved)
+    else:
+        sync_record(args.video,saved)
     print(f"[info] {args.video} の保存後の設定を照合しました: {want}" +
           (f" / 予約 {saved['publishAt']}" if saved.get("publishAt") else ""))
     return 0
