@@ -1,28 +1,28 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 353,
-    "home_wins": 191,
+    "games": 354,
+    "home_wins": 192,
     "draws": 0,
     "away_wins": 162,
     "home_win_pct": 54,
     "avg_total": 8.6,
     "one_run": 100,
     "one_run_pct": 28,
-    "shutouts": 43,
+    "shutouts": 44,
     "shutout_pct": 12
   },
   "same_division": {
-    "games": 123,
-    "home_wins": 61,
+    "games": 124,
+    "home_wins": 62,
     "draws": 0,
     "away_wins": 62,
     "home_win_pct": 50,
-    "avg_total": 9.1,
+    "avg_total": 9.0,
     "one_run": 34,
-    "one_run_pct": 28,
-    "shutouts": 15,
-    "shutout_pct": 12
+    "one_run_pct": 27,
+    "shutouts": 16,
+    "shutout_pct": 13
   },
   "venues": {
     "Tモバイル・パーク": {
@@ -65,10 +65,6 @@
       "games": 16,
       "avg_total": 9.1
     },
-    "プログレッシブ・フィールド": {
-      "games": 11,
-      "avg_total": 9.1
-    },
     "グローブライフ・フィールド": {
       "games": 10,
       "avg_total": 9.1
@@ -76,6 +72,10 @@
     "ヤンキー・スタジアム": {
       "games": 19,
       "avg_total": 8.9
+    },
+    "プログレッシブ・フィールド": {
+      "games": 12,
+      "avg_total": 8.5
     },
     "トロピカーナ・フィールド": {
       "games": 14,
