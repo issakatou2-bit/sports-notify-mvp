@@ -3160,7 +3160,12 @@ def _call_ai(prompt: str, api_key: str, max_tokens: int = 700):
         import anthropic
 
         client = anthropic.Anthropic(api_key=api_key)
-        message = client.messages.create(
+        import sys as _sys
+        scripts_dir = str(pathlib.Path(__file__).resolve().parent / "scripts")
+        if scripts_dir not in _sys.path:
+            _sys.path.insert(0, scripts_dir)
+        import backstage_guard
+        message = backstage_guard.create(client, label='notability_engine', category='notability',
             model="claude-haiku-4-5-20251001",
             max_tokens=max_tokens,  # 暴走時の被害を抑えるための上限
             messages=[{"role": "user", "content": prompt}],

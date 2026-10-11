@@ -161,14 +161,26 @@ def _create(client, **kw):
 def _ask(client, stage, **kw):
     """台本の呼び出し1回。Batch か、だめならいまの _create。費用もここで残す。"""
     import dialogue_batch
-    return dialogue_batch.run(
-        client, stage, kw, model=MODEL, effort=EFFORT,
-        direct=lambda: _create(client, **kw),
-        record=lambda r, batch: token_log.record("dialogue", MODEL, r,
-                                                 batch=batch),
-        after_submit=(_commit_batch_state
-                      if os.environ.get("COLLESPO_BATCH_COMMIT") == "1"
-                      else None))
+    import backstage_guard
+    kw = backstage_guard.with_instruction(kw)
+
+    def first():
+        return dialogue_batch.run(
+            client, stage, kw, model=MODEL, effort=EFFORT,
+            direct=lambda: _create(client, **kw),
+            record=lambda r, batch: token_log.record("dialogue", MODEL, r, batch=batch),
+            after_submit=(_commit_batch_state
+                          if os.environ.get("COLLESPO_BATCH_COMMIT") == "1"
+                          else None))
+
+    def retry():
+        resp = _create(client, **kw)
+        token_log.record("dialogue", MODEL, resp)
+        return resp
+
+    return backstage_guard.guard_response(first, retry, label='dialogue:'+stage,
+                                           mode='lines',
+                                           allowed=lambda: token_log.allowed('dialogue'))
 
 
 def _commit_batch_state(path):

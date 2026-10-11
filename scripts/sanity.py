@@ -405,7 +405,8 @@ def general(paths, api_key):
 
     try:
         import anthropic
-        resp = anthropic.Anthropic(api_key=api_key).messages.create(
+        import backstage_guard
+        resp = backstage_guard.create(anthropic.Anthropic(api_key=api_key), label='sanity', category='sanity',
             model=MODEL, max_tokens=900,
             messages=[{"role": "user",
                        "content": _prompt() + "\n".join(chunks)[:6000]}])
