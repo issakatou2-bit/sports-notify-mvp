@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "instruction": "視聴者に制作の事情を説明しない。書けない話題は省き、確認できた内容だけを書く。材料・データ・渡された事実の不足や生成の都合を台詞にしない。",
+  "patterns": [
+    {
+      "id": "missing_material",
+      "regex": "材料(?:の中)?に(?:は)?(?:記載(?:が)?|載って|含まれて|書かれて)?(?:い)?(?:ない|無い|ありません|無く|なく)"
+    },
+    {
+      "id": "missing_data",
+      "regex": "データ(?:の中)?に(?:は)?(?:記載(?:が)?|載って|含まれて|書かれて)?(?:い)?(?:ない|無い|ありません|無く|なく)"
+    },
+    {
+      "id": "missing_info",
+      "regex": "情報(?:が|は)(?:ない|無い|ありません|不足)(?:ので|から|ため|につき)"
+    },
+    {
+      "id": "supplied_facts",
+      "regex": "(?:渡された|渡した|与えられた|提供された)(?:材料|事実|データ|情報)"
+    },
+    {
+      "id": "not_in_source",
+      "regex": "(?:材料|データ|資料|原文|提供情報)(?:に|には)(?:記載|記述|明記|書かれて|載って|含まれて)(?:が)?(?:い)?(?:ない|無い|ありません|いません)"
+    },
+    {
+      "id": "missing_material_subject",
+      "regex": "材料(?:が|は)(?:ない|無い|ありません|不足)"
+    },
+    {
+      "id": "generation_context",
+      "regex": "(?:プロンプト|入力データ|生成AI|言語モデル)(?:に|には|の都合|の制約)"
+    },
+    {
+      "id": "english_source",
+      "regex": "(?:not (?:in|included in|provided in)|missing from) (?:the )?(?:provided |supplied |input )?(?:material|data|facts|source)|(?:provided|supplied) facts"
+    },
+    {
+      "id": "missing_data_subject",
+      "regex": "(?:データ|資料)(?:が|は)(?:ない|無い|ありません|不足)"
+    },
+    {
+      "id": "material_not_received",
+      "regex": "(?:材料|データ|情報)(?:が|は)(?:渡されて|渡って|出て)(?:いない|ない)"
+    },
+    {
+      "id": "unanswered_numbers",
+      "scope": "numbers",
+      "regex": "(?:何とも|なんとも)言えない|分からない|わからない"
+    }
+  ]
+}

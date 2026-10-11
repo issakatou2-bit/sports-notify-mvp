@@ -39,9 +39,6 @@ def _distance_issues(text, row):
 # 英字の人名（「Logan Henderson」）。音声はアルファベットを1文字ずつ読む。
 # 略語（WHIP・OPS）や1語の固有名（Savant）は対象にしない。
 _LATIN_NAME = re.compile(r"[A-Z][a-z]+(?:[ ・.-]+[A-Z][a-z]+)+")
-_PRODUCTION = re.compile(
-    r"(?:材料|データ|情報).{0,12}(?:無い|ない|渡され|渡って|出ていない|出てない)|"
-    r"(?:何とも|なんとも)言えない|分からない|わからない")
 _RANK = re.compile(r"(?:[0-9０-９]+|[一二三四五六七八九十]+)位")
 _QUALIFIED = re.compile(r"規定(?:打席|投球回)?(?:に)?(?:到達|達した|達して|を満た)")
 _FEW_K = re.compile(r"少ない|少なかった|低い|低かった|多く(?:は)?ない|多い(?:方)?ではない")
@@ -83,6 +80,7 @@ def material(m):
 
 
 def check(dialogue):
+    import backstage_guard
     if dialogue.get("mode") != "numbers":
         return []
     material = dialogue.get("material") or {}
@@ -93,7 +91,7 @@ def check(dialogue):
     active, recent_k = None, None
     for i, seg in enumerate(dialogue.get("segments") or [], 1):
         text = seg.get("text") or ""
-        if _PRODUCTION.search(text):
+        if backstage_guard.violations(text, scope="numbers"):
             bad.append(f"{i}行目: 材料の不足・制作上の都合を台詞にしています")
         latin = _LATIN_NAME.search(text)
         if latin:

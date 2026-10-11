@@ -635,7 +635,8 @@ def topic_jp(video: dict) -> str:
         client = anthropic.Anthropic(api_key=key)
         if not token_log.allowed("topic"):
             return raw
-        resp = client.messages.create(
+        import backstage_guard
+        resp = backstage_guard.create(client, label='mlb_buzz.py', category='topic', mode='whole',
             model=TOPIC_MODEL, max_tokens=200,
             messages=[{"role": "user", "content":
                        "次はMLB公式のハイライト動画の題です。"

@@ -495,7 +495,8 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
                    "原文にない得点・アシスト・時刻・数字・出来事を足さない。")
     if not token_log.allowed("voices"):
         return []
-    resp = client.messages.create(
+    import backstage_guard
+    resp = backstage_guard.create(client, label='local_voices.py', category='voices', mode='lines',
         # 4件の本文と、それぞれの返信3件まで。最大16行を訳す。
         # 元が220字まで許してあるので、日本語にすると1行200字近くなる
         # ことがあり、2500では足りない日が出る。上限を上げても

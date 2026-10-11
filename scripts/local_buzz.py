@@ -213,7 +213,8 @@ def summarize_teams(ranked: list, titles: list, api_key: str) -> list:
     )
     try:
         client = anthropic.Anthropic(api_key=api_key)
-        msg = client.messages.create(
+        import backstage_guard
+        msg = backstage_guard.create(client, label='local_buzz.py', category='buzz', mode='lines',
             model="claude-haiku-4-5-20251001",
             max_tokens=800,
             messages=[{"role": "user", "content": prompt}],

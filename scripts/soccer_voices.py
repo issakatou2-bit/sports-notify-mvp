@@ -191,7 +191,8 @@ def review_translations(client, items, players):
               'noncritical,no_abuse,faithful,actors,namesの厳密なboolean。'
               '\nこの試合の日本人選手: '+json.dumps([p['name_jp'] for p in players],ensure_ascii=False)
               +'\n'+json.dumps(records,ensure_ascii=False))
-    resp = client.messages.create(model=lv.MODEL,max_tokens=2500,messages=[{'role':'user','content':prompt}])
+    import backstage_guard
+    resp = backstage_guard.create(client, label='soccer_voices.py', category='voices', mode='whole', model=lv.MODEL,max_tokens=2500,messages=[{'role':'user','content':prompt}])
     token_log.record('voices',lv.MODEL,resp)
     if resp.stop_reason == 'max_tokens': return []
     try:

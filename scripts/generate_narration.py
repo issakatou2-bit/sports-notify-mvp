@@ -939,7 +939,8 @@ def narrate_game(client, game: dict, index: int, total: int) -> str:
         "- 記号(【】・「」等)や箇条書きは使わず、そのまま読める文章だけを書く\n"
         "- 前置きや説明は不要。原稿本文のみを出力する"
     )
-    resp = client.messages.create(
+    import backstage_guard
+    resp = backstage_guard.create(client, label='generate_narration.py', category='narration', mode='whole',
         model=MODEL,
         max_tokens=300,
         messages=[{"role": "user", "content": prompt}],

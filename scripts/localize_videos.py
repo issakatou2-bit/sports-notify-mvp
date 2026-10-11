@@ -112,7 +112,8 @@ def translate(ai, title: str, description: str) -> tuple:
         "- #Shorts は残す\n"
         "- URLはそのまま残す"
     )
-    resp = ai.messages.create(model=MODEL, max_tokens=1600,
+    import backstage_guard
+    resp = backstage_guard.create(ai, label='localize_videos.py', category='localize', mode='whole', model=MODEL, max_tokens=1600,
                               messages=[{"role": "user", "content": prompt}])
     token_log.record("localize", MODEL, resp)
     if resp.stop_reason == "max_tokens":

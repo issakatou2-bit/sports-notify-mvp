@@ -128,7 +128,8 @@ def narrate(client, date_str: str, g: dict, index: int, total: int) -> str:
         "- 記号や箇条書きは使わず、そのまま読める文章だけを出力する\n"
         "- 前置きや説明は不要。原稿本文のみ"
     )
-    resp = client.messages.create(
+    import backstage_guard
+    resp = backstage_guard.create(client, label='generate_weekly_narration.py', category='weekly', mode='whole',
         model=MODEL, max_tokens=700,
         messages=[{"role": "user", "content": prompt}],
     )
