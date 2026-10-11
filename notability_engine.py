@@ -3006,8 +3006,8 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         f"以下は「{game['matchup']}」({game['league']})という試合についてのデータです。\n"
         # 10/9 夜の点検: 「リヨン vs ランス」（ホームはランス）を「リヨンがランスを迎える」と
         # 逆に書いた。表記の並びからホームを推させず、はっきり渡す。
-        f"ホーム（本拠地）は{game['home_team_name']}、アウェー（訪問側）は{game['away_team_name']}。"
-        f"「迎える」「本拠地で」はホームの{game['home_team_name']}にだけ使うこと。\n\n"
+        + soccer_venue_instruction(game)
+        +
         f"【チームの状況】\n{home_context}\n{away_context}\n"
         f"{pitcher_text}"
         f"{log_text}"
@@ -3317,11 +3317,22 @@ def _clean_hook(hook_part: str) -> str:
 
 
 def host_reversed(text: str, game: dict) -> list:
-    """アウェーのチームがホームのチームを「迎える」と書いていたら、その語を返す（10/9 夜の点検）。"""
-    home, away = game.get("home_team_name") or "", game.get("away_team_name") or ""
-    if home and away and re.search(re.escape(away) + r"[^。]{0,40}?" + re.escape(home) + r"を迎え", text or ""):
-        return [f"{away}が{home}を迎える（ホームは{home}）"]
-    return []
+    """既存の再生成/除外経路へ、共通の会場表現の検査を接続。"""
+    import sys as _sys
+    scripts_dir = str(pathlib.Path(__file__).resolve().parent / "scripts")
+    if scripts_dir not in _sys.path:
+        _sys.path.insert(0, scripts_dir)
+    import soccer_venue
+    return soccer_venue.check(text, game)
+
+
+def soccer_venue_instruction(game: dict) -> str:
+    import sys as _sys
+    scripts_dir = str(pathlib.Path(__file__).resolve().parent / "scripts")
+    if scripts_dir not in _sys.path:
+        _sys.path.insert(0, scripts_dir)
+    import soccer_venue
+    return soccer_venue.instruction(game)
 
 
 def enhance_games_with_ai(

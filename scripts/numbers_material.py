@@ -358,6 +358,8 @@ def _numbers(row: dict) -> dict:
         out[unit] = int(value)
     if row.get("hits") is not None:
         out.setdefault("安打", row["hits"])
+    if row.get("runs") is not None:
+        out["得点"] = row["runs"]
     return out
 
 

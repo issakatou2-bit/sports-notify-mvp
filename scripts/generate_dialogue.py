@@ -1189,6 +1189,9 @@ def facts(m: dict, extra: list) -> str:
     if res.get("away_jp"):
         lines.append(f"結果: {res['away_jp']} {res.get('away_score')} "
                      f"- {res.get('home_score')} {res['home_jp']}")
+        for player in res.get('batting_facts') or []:
+            if player.get('runs') is not None:
+                lines.append(f"この試合の得点: {player['name']} {player['runs']}得点。安打数とは別の値。")
         # 対戦している2球団自身の、いまの勝敗と地区順位。
         # コメントが「Cincinnatiはあそこよりマシ」のように自チームの
         # 強さを主張していたら、その主張を数字で受けられるようにする。
@@ -2088,6 +2091,14 @@ def main() -> int:
                 print("::error::" + issue)
             print("[error] 編集検査で停止。原文は保存済み。追加APIでの再生成はしません")
             return 1
+    import game_fact_guard
+    payload['game_material'] = game_fact_guard.material(m, args.mode)
+    game_issues = game_fact_guard.check(payload)
+    if game_issues:
+        for issue in game_issues:
+            print('::error::'+issue)
+        print('[error] 試合の材料との照合で停止。追加APIでの再生成はしません')
+        return 1
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                    encoding="utf-8")
     print(f"[info] 台本を出力しました -> {out}")

@@ -96,7 +96,8 @@ def check(d: dict) -> list:
     """食い違いの一覧。空なら問題なし。"""
     facts = d.get("facts") or {}
     from longform_editorial import check as editorial_check
-    editorial = editorial_check(d)
+    from game_fact_guard import check as game_check
+    editorial = editorial_check(d) + game_check(d)
     if not facts:
         return editorial
     bad = list(editorial)
