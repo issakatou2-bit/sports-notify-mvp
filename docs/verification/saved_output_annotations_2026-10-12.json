@@ -1,0 +1,30 @@
+{
+  "2b357c246833ca9a778f:venue": {
+    "status": "false_positive",
+    "rationale": "同じ保存レコードではナポリがhome。ナポリ本拠地で対戦するアウェーのフロジノーネという正しい文。所在地の持ち主を主語と取り違えていた。"
+  },
+  "911add07e31aef356a19:game_facts": {
+    "status": "false_positive",
+    "rationale": "保存台本34行目のLAD/MILリーグ優勝決定シリーズ第1戦を、CLE/CWS地区シリーズ第4戦へ誤接続。同日の保存公式scheduleにもNLCS初戦が2026-10-12 JST。句点の後も別シリーズの話題が続いている。"
+  },
+  "388eef7a2edbbc21120f:game_facts": {
+    "status": "true_error",
+    "rationale": "村上の先制があった地区シリーズ第4戦の試合前はCWS2勝1敗。2勝2敗は終了後。同試合849832の保存schedule/team leagueRecord/seriesStatusで確認。"
+  },
+  "7280b7485c2f112a0224:game_facts": {
+    "status": "true_error",
+    "rationale": "2勝2敗の決着戦で先制したと第4戦を語っている。保存公式849832は第4戦・開始前CWS2勝1敗。8行目とは別の誤った保存文として1件。"
+  },
+  "c84b48e0451863369e21:game_facts": {
+    "status": "true_error",
+    "rationale": "大谷0安打を根拠に点に結び付いていないと断言。保存公式box849822で大谷のruns=1。原台本にはrunsがなかったため保存公式値を監査用に補充。"
+  },
+  "60c09cec60c11c0846e3:comment_actor": {
+    "status": "true_error",
+    "rationale": "原文the Yankee、返信escorted out/shower of jeersは退場させられた観客の文脈。ヤンキースの選手さんは根拠のない役割追加。10-09夜点検の実字幕誤りと同じ保存原文/訳。"
+  },
+  "058b89ad0d4e8027f959:venue": {
+    "status": "true_error",
+    "rationale": "同じ保存レコードでHull Cityがhome、Aston Villaがaway。アウェーのヴィラがハルを迎えるという逆転。登録材料との内部矛盾の判定で、試合自体や日本人の所属は今回外部照合していない。"
+  }
+}

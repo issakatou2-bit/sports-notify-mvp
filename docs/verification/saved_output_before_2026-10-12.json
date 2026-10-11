@@ -1,0 +1,488 @@
+{
+  "since": "2026-09-13",
+  "until": "2026-10-12",
+  "scope": "tracked snapshot + origin/main history (window)",
+  "coverage": {
+    "file_versions": 1834,
+    "texts": 3253,
+    "recent_texts": 2568,
+    "read_errors": [
+      {
+        "file": "data/transactions.json",
+        "blob": "15036a953ad9f33f2a83834ea7a00c3c4bdf0b40",
+        "error": "Expecting property name enclosed in double quotes: line 2 column 1 (char 2)"
+      }
+    ],
+    "game_evidence_texts": 71,
+    "venue_evidence_texts": 178,
+    "comment_original_texts": 1322
+  },
+  "counts": {
+    "venue": {
+      "false_positive": 1,
+      "true_error": 1
+    },
+    "game_facts": {
+      "true_error": 3,
+      "false_positive": 1
+    },
+    "comment_actor": {
+      "true_error": 1
+    }
+  },
+  "findings": [
+    {
+      "path": "/games/18/notification_hook",
+      "date": "2026-10-10",
+      "text": "首位と3勝ち点差のフロジノーネがナポリ本拠地で対戦、上位争い揺さぶるか",
+      "field": "notification_hook",
+      "evidence": null,
+      "game": {
+        "home_team_name": "ナポリ",
+        "away_team_name": "フロジノーネ",
+        "neutral_site": null,
+        "neutralSite": null
+      },
+      "original": "",
+      "context": "\n",
+      "game_review": null,
+      "id": "2b357c246833ca9a778f",
+      "sources": [
+        {
+          "file": "archive/2026-10-10.json",
+          "blob": "working",
+          "path": "/games/18/notification_hook",
+          "date": "2026-10-10",
+          "revisions": [
+            "night-merged-20261012"
+          ]
+        },
+        {
+          "file": "archive/2026-10-10.json",
+          "blob": "b16cc9cffc14f6a0b33fb5875ffb5cad4b052355",
+          "path": "/games/18/notification_hook",
+          "date": "2026-10-10",
+          "revisions": [
+            "5b4ce720d453203bc4d3dca81dadfb445379f9fb"
+          ]
+        },
+        {
+          "file": "data/soccer_games.json",
+          "blob": "16482a8dbd4322b72f2247790de131c7f0d3d52b",
+          "path": "/games/1/notification_hook",
+          "date": "2026-10-10",
+          "revisions": [
+            "c5c21c6c67a3dd05a5bd03fc468a99cca758513a"
+          ]
+        },
+        {
+          "file": "archive/2026-10-10.json",
+          "blob": "7259afec3b0883faef3f608c54f2c5554a25e60f",
+          "path": "/games/18/notification_hook",
+          "date": "2026-10-10",
+          "revisions": [
+            "9f957c04eed17b8cf7221b6dbb4a20b2a96b165a"
+          ]
+        }
+      ],
+      "guard": "venue",
+      "reasons": [
+        "アウェーのフロジノーネをホームとして表現"
+      ],
+      "finding_id": "2b357c246833ca9a778f:venue",
+      "status": "false_positive",
+      "rationale": "同じ保存レコードではナポリがhome。ナポリ本拠地で対戦するアウェーのフロジノーネという正しい文。所在地の持ち主を主語と取り違えていた。"
+    },
+    {
+      "path": "/segments/7/text",
+      "date": "2026-10-09",
+      "text": "ええ。先制点を選球で取ったのは、素晴らしかったと思うわよ。シリーズが2勝2敗の試合だもの、最初に1点入る意味は大きいわ。",
+      "field": "text",
+      "evidence": {
+        "players": [
+          {
+            "name": "村上宗隆",
+            "name_en": "Munetaka Murakami",
+            "type": "batter",
+            "aliases": [
+              "村上"
+            ],
+            "runs": 0,
+            "hits": 1,
+            "rbi": 1
+          }
+        ],
+        "series": {
+          "name": "地区シリーズ",
+          "game_number": 4,
+          "games_in_series": 5,
+          "after": "Series tied 2-2",
+          "is_over": false,
+          "winner_today": "ガーディアンズ",
+          "after_jp": "2勝2敗の五分",
+          "before_jp": "ホワイトソックス2勝1敗、ガーディアンズ1勝2敗",
+          "next": "第5戦で決着する",
+          "next_game_number": 5,
+          "after_by_team": {
+            "ホワイトソックス": {
+              "wins": 2,
+              "losses": 2
+            },
+            "ガーディアンズ": {
+              "wins": 2,
+              "losses": 2
+            }
+          },
+          "before_by_team": {
+            "ホワイトソックス": {
+              "wins": 2,
+              "losses": 1
+            },
+            "ガーディアンズ": {
+              "wins": 1,
+              "losses": 2
+            }
+          },
+          "is_decider": false
+        },
+        "teams": [
+          "ホワイトソックス",
+          "ガーディアンズ"
+        ]
+      },
+      "game": null,
+      "original": "",
+      "context": "\n",
+      "game_review": {
+        "errors": [
+          "8行目: 2勝2敗はbeforeのシリーズ勝敗と不一致"
+        ],
+        "warnings": [],
+        "omit": []
+      },
+      "id": "388eef7a2edbbc21120f",
+      "sources": [
+        {
+          "file": "build/channel-audit-20261009/artifact-37892224139-longform/dialogue.json",
+          "blob": "e4b4595f564ae9456e1a1c921e17c9f7141cb7785ae2287be2980cc219f533c7",
+          "path": "/segments/7/text",
+          "date": "2026-10-09",
+          "revisions": [
+            "supplement"
+          ]
+        }
+      ],
+      "guard": "game_facts",
+      "reasons": [
+        "8行目: 2勝2敗はbeforeのシリーズ勝敗と不一致"
+      ],
+      "finding_id": "388eef7a2edbbc21120f:game_facts",
+      "status": "true_error",
+      "rationale": "村上の先制があった地区シリーズ第4戦の試合前はCWS2勝1敗。2勝2敗は終了後。同試合849832の保存schedule/team leagueRecord/seriesStatusで確認。"
+    },
+    {
+      "path": "/voices/3/ja",
+      "date": "2026-10-08",
+      "text": "レイズを勝たせてくれたヤンキースの選手さん、お疲れさん！👍👍👍👍",
+      "field": "ja",
+      "evidence": null,
+      "game": null,
+      "original": "Congrats on the Yankee who helped the Rays win! 👍👍👍👍",
+      "context": "\nSore loser\nHe was escorted out in a shower of jeers 😂\nHow did he help the rays win? It wasn’t going out. At best it’s a triple and the next guy struck out",
+      "game_review": null,
+      "id": "60c09cec60c11c0846e3",
+      "sources": [
+        {
+          "file": "data/local_voices.json",
+          "blob": "3f326bc8aa3adf384513d44abbee31529d0ccd45",
+          "path": "/voices/3/ja",
+          "date": "2026-10-08",
+          "revisions": [
+            "5d55b86fbc0d04b2ccb13380f7b138e2d39f3ae8"
+          ]
+        },
+        {
+          "file": "build/channel-audit-20261009/local_voices.json",
+          "blob": "3b0c8450e39bdf9a1b8b83eafd8c82324bfb664a2f4384c31c8c7db525fe0b03",
+          "path": "/voices/3/ja",
+          "date": "2026-10-08",
+          "revisions": [
+            "supplement"
+          ]
+        }
+      ],
+      "guard": "comment_actor",
+      "reasons": [
+        "Yankeeの役割を原文にない選手としています"
+      ],
+      "finding_id": "60c09cec60c11c0846e3:comment_actor",
+      "status": "true_error",
+      "rationale": "原文the Yankee、返信escorted out/shower of jeersは退場させられた観客の文脈。ヤンキースの選手さんは根拠のない役割追加。10-09夜点検の実字幕誤りと同じ保存原文/訳。"
+    },
+    {
+      "path": "/segments/30/text",
+      "date": "2026-10-09",
+      "text": "2勝2敗で、負けたら終わりなのだ。その試合で先に点を取ったのだ。",
+      "field": "text",
+      "evidence": {
+        "players": [
+          {
+            "name": "村上宗隆",
+            "name_en": "Munetaka Murakami",
+            "type": "batter",
+            "aliases": [
+              "村上"
+            ],
+            "runs": 0,
+            "hits": 1,
+            "rbi": 1
+          }
+        ],
+        "series": {
+          "name": "地区シリーズ",
+          "game_number": 4,
+          "games_in_series": 5,
+          "after": "Series tied 2-2",
+          "is_over": false,
+          "winner_today": "ガーディアンズ",
+          "after_jp": "2勝2敗の五分",
+          "before_jp": "ホワイトソックス2勝1敗、ガーディアンズ1勝2敗",
+          "next": "第5戦で決着する",
+          "next_game_number": 5,
+          "after_by_team": {
+            "ホワイトソックス": {
+              "wins": 2,
+              "losses": 2
+            },
+            "ガーディアンズ": {
+              "wins": 2,
+              "losses": 2
+            }
+          },
+          "before_by_team": {
+            "ホワイトソックス": {
+              "wins": 2,
+              "losses": 1
+            },
+            "ガーディアンズ": {
+              "wins": 1,
+              "losses": 2
+            }
+          },
+          "is_decider": false
+        },
+        "teams": [
+          "ホワイトソックス",
+          "ガーディアンズ"
+        ]
+      },
+      "game": null,
+      "original": "",
+      "context": "\n",
+      "game_review": {
+        "errors": [
+          "31行目: 直前のシリーズ勝敗を試合前のプレーへ接続しています",
+          "31行目: 2勝2敗はbeforeのシリーズ勝敗と不一致",
+          "31行目: 第4戦を決着戦として語っています"
+        ],
+        "warnings": [],
+        "omit": []
+      },
+      "id": "7280b7485c2f112a0224",
+      "sources": [
+        {
+          "file": "build/channel-audit-20261009/artifact-37892224139-longform/dialogue.json",
+          "blob": "e4b4595f564ae9456e1a1c921e17c9f7141cb7785ae2287be2980cc219f533c7",
+          "path": "/segments/30/text",
+          "date": "2026-10-09",
+          "revisions": [
+            "supplement"
+          ]
+        }
+      ],
+      "guard": "game_facts",
+      "reasons": [
+        "31行目: 直前のシリーズ勝敗を試合前のプレーへ接続しています",
+        "31行目: 2勝2敗はbeforeのシリーズ勝敗と不一致",
+        "31行目: 第4戦を決着戦として語っています"
+      ],
+      "finding_id": "7280b7485c2f112a0224:game_facts",
+      "status": "true_error",
+      "rationale": "2勝2敗の決着戦で先制したと第4戦を語っている。保存公式849832は第4戦・開始前CWS2勝1敗。8行目とは別の誤った保存文として1件。"
+    },
+    {
+      "path": "/segments/33/text",
+      "date": "2026-10-09",
+      "text": "大谷翔平、佐々木朗希、山本由伸のドジャースは、リーグ優勝決定シリーズでブリュワーズと対戦するわ。10月12日に第1戦よ。",
+      "field": "text",
+      "evidence": {
+        "players": [
+          {
+            "name": "村上宗隆",
+            "name_en": "Munetaka Murakami",
+            "type": "batter",
+            "aliases": [
+              "村上"
+            ],
+            "runs": 0,
+            "hits": 1,
+            "rbi": 1
+          }
+        ],
+        "series": {
+          "name": "地区シリーズ",
+          "game_number": 4,
+          "games_in_series": 5,
+          "after": "Series tied 2-2",
+          "is_over": false,
+          "winner_today": "ガーディアンズ",
+          "after_jp": "2勝2敗の五分",
+          "before_jp": "ホワイトソックス2勝1敗、ガーディアンズ1勝2敗",
+          "next": "第5戦で決着する",
+          "next_game_number": 5,
+          "after_by_team": {
+            "ホワイトソックス": {
+              "wins": 2,
+              "losses": 2
+            },
+            "ガーディアンズ": {
+              "wins": 2,
+              "losses": 2
+            }
+          },
+          "before_by_team": {
+            "ホワイトソックス": {
+              "wins": 2,
+              "losses": 1
+            },
+            "ガーディアンズ": {
+              "wins": 1,
+              "losses": 2
+            }
+          },
+          "is_decider": false
+        },
+        "teams": [
+          "ホワイトソックス",
+          "ガーディアンズ"
+        ]
+      },
+      "game": null,
+      "original": "",
+      "context": "\n",
+      "game_review": {
+        "errors": [
+          "34行目: 第1戦が試合の材料（第4戦）と不一致"
+        ],
+        "warnings": [
+          "34行目: 別の期間/シリーズの文は当該試合と照合しません"
+        ],
+        "omit": []
+      },
+      "id": "911add07e31aef356a19",
+      "sources": [
+        {
+          "file": "build/channel-audit-20261009/artifact-37892224139-longform/dialogue.json",
+          "blob": "e4b4595f564ae9456e1a1c921e17c9f7141cb7785ae2287be2980cc219f533c7",
+          "path": "/segments/33/text",
+          "date": "2026-10-09",
+          "revisions": [
+            "supplement"
+          ]
+        }
+      ],
+      "guard": "game_facts",
+      "reasons": [
+        "34行目: 第1戦が試合の材料（第4戦）と不一致"
+      ],
+      "finding_id": "911add07e31aef356a19:game_facts",
+      "status": "false_positive",
+      "rationale": "保存台本34行目のLAD/MILリーグ優勝決定シリーズ第1戦を、CLE/CWS地区シリーズ第4戦へ誤接続。同日の保存公式scheduleにもNLCS初戦が2026-10-12 JST。句点の後も別シリーズの話題が続いている。"
+    },
+    {
+      "path": "/segments/13/text",
+      "date": "2026-10-08",
+      "text": "そうね。ただ、どちらも点には結びついていないわ。大谷は盗塁まで行ったけれど、きょうの成績は0安打だものね。",
+      "field": "text",
+      "evidence": {
+        "players": [
+          {
+            "name": "大谷翔平",
+            "name_en": "Shohei Ohtani",
+            "type": "batter",
+            "aliases": [
+              "大谷"
+            ],
+            "runs": 1,
+            "hits": 0,
+            "rbi": 0
+          }
+        ]
+      },
+      "game": null,
+      "original": "",
+      "context": "\n",
+      "game_review": {
+        "errors": [
+          "14行目: 大谷翔平を無得点としていますが、この試合の得点は1"
+        ],
+        "warnings": [],
+        "omit": []
+      },
+      "id": "c84b48e0451863369e21",
+      "sources": [
+        {
+          "file": "build/channel-audit-20261008/longform/dialogue.json",
+          "blob": "63728cb8752fc5a00c858371a734c0ef7e0f2af2b861d902d2132dbba421a0f8",
+          "path": "/segments/13/text",
+          "date": "2026-10-08",
+          "revisions": [
+            "supplement"
+          ]
+        }
+      ],
+      "guard": "game_facts",
+      "reasons": [
+        "14行目: 大谷翔平を無得点としていますが、この試合の得点は1"
+      ],
+      "finding_id": "c84b48e0451863369e21:game_facts",
+      "status": "true_error",
+      "rationale": "大谷0安打を根拠に点に結び付いていないと断言。保存公式box849822で大谷のruns=1。原台本にはrunsがなかったため保存公式値を監査用に補充。"
+    },
+    {
+      "path": "/games/16/ai_summary",
+      "date": "2026-09-05",
+      "text": "シーズン開幕直後のプレミアリーグで、昨季4位の実績を持つアストン・ヴィラがハル・シティを迎える一戦である。両チームは今後のリーグ戦を通じ、38試合の総当たり戦で最終的な成績を競う中での重要な序盤戦になる。ハル・シティには【日本代表の守田英正】が所属しており、イングランド最高峰のリーグで日本人選手がどのようなパフォーマンスを見せるかが見どころとなる。",
+      "field": "ai_summary",
+      "evidence": null,
+      "game": {
+        "home_team_name": "ハル・シティ",
+        "away_team_name": "アストン・ヴィラ",
+        "neutral_site": null,
+        "neutralSite": null
+      },
+      "original": "",
+      "context": "\n",
+      "game_review": null,
+      "id": "058b89ad0d4e8027f959",
+      "sources": [
+        {
+          "file": "archive/2026-09-05.json",
+          "blob": "working",
+          "path": "/games/16/ai_summary",
+          "date": "2026-09-05",
+          "revisions": [
+            "night-merged-20261012"
+          ]
+        }
+      ],
+      "guard": "venue",
+      "reasons": [
+        "アウェーのアストン・ヴィラをホームとして表現"
+      ],
+      "finding_id": "058b89ad0d4e8027f959:venue",
+      "status": "true_error",
+      "rationale": "同じ保存レコードでHull Cityがhome、Aston Villaがaway。アウェーのヴィラがハルを迎えるという逆転。登録材料との内部矛盾の判定で、試合自体や日本人の所属は今回外部照合していない。"
+    }
+  ]
+}

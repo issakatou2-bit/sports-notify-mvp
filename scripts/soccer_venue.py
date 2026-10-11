@@ -66,8 +66,15 @@ def check(text, game):
         # 相手が直前の主語になっている「ランスが敵地リヨンに…」も止める。
         home_claim = (re.search(r'ホームで|本拠地で',sentence)
                       or re.search(home+r'(?:を|と)[^。]{0,12}迎え(?!られ)',sentence))
-        if home_claim and re.search(away+r'(?:が|は|のホームで|の本拠地で|、ホームで|、本拠地で)[^。]{0,60}?(?:迎え(?!られ)|ホームで|本拠地で)', sentence):
-            errors.append(f"アウェーの{sides['away']}をホームとして表現")
+        if home_claim:
+            for claim in re.finditer(away+r'(?:が|は|のホームで|の本拠地で|、ホームで|、本拠地で)'
+                                     r'(?P<between>[^。]{0,60}?)(?P<venue>迎え(?!られ)|ホームで|本拠地で)', sentence):
+                # 「フロジノーネがナポリ本拠地で対戦」は訪問側の正しい説明。
+                # 主語だけでホームを割り当てず、明記された所在地の持ち主を見る。
+                at_home = (claim['venue'] != '迎え'
+                           and re.search(home+r'(?:の)?$', claim['between']))
+                if not at_home:
+                    errors.append(f"アウェーの{sides['away']}をホームとして表現")
         if re.search(home+r'(?:が|は|、)[^。]{0,60}?(?:敵地(?:で|へ|に)|訪れ)', sentence):
             errors.append(f"ホームの{sides['home']}を敵地側として表現")
         if re.search(r'(?:ホーム|本拠地)(?:の|で戦う|で対戦する)'+away, sentence):

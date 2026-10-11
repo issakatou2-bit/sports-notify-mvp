@@ -44,10 +44,17 @@ def review(dialogue):
         text = unicodedata.normalize('NFKC', seg.get('text') or '')
         # 季節/別試合の数字を、この試合の値と突き合わせない。
         current = []
+        other_series_context = False
         for sentence in text.split('。'):
             other_round = any(n in sentence and n not in series.get('name','')
                               for n in ('ワイルドカード','地区シリーズ','リーグ優勝決定','ワールドシリーズ'))
-            if other_round or re.search(r'今季|通算|昨季|昨年|前回|前の試合', sentence):
+            if other_round:
+                other_series_context = True
+            elif series.get('name') and series['name'] in sentence:
+                other_series_context = False
+            # 「LADはリーグ優勝決定シリーズへ。10月12日に第1戦」は同じ話題。
+            # 句点で割った後半を、別カードの地区シリーズ第4戦と比べない。
+            if other_series_context or re.search(r'今季|通算|昨季|昨年|前回|前の試合', sentence):
                 warnings.append(f'{i}行目: 別の期間/シリーズの文は当該試合と照合しません')
             else:
                 current.append(sentence)
