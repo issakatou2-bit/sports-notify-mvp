@@ -70,6 +70,14 @@ class Runtime(unittest.TestCase):
         self.assertEqual([s['text'] for s in clean['segments']],['大谷翔平は0安打です。'])
         self.assertFalse(facts.check(clean))
 
+    def test_removed_backstage_line_does_not_stop_verified_replacement(self):
+        d=fixtures.dialogue('渡された事実によると大谷は2得点です。',players=[PLAYERS[0]])
+        clean,errors=facts.prepare(d,log=lambda _:None)
+        self.assertFalse(errors)
+        self.assertTrue(clean['fact_review']['errors'])  # 不採用になった初稿の理由は残す
+        self.assertFalse(clean['fact_review']['remaining_errors'])
+        self.assertEqual([s['text'] for s in clean['segments']],['大谷翔平は0安打です。','大谷翔平は1得点です。'])
+
     def test_not_knowing_pitch_type_is_not_a_production_excuse(self):
         import longform_editorial
         d=fixtures.dialogue('打者には球種が分からないというコメントです。',players=PLAYERS)

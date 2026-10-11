@@ -192,5 +192,7 @@ def prepare(dialogue, log=print):
                 result['segments']=intro+safe+outro
                 log('::warning::断定行の除外後は取得済みの試合の値だけで続行します')
     result['fact_review'] = inspected
-    # 除外前に判明した矛盾は、他の理由で行を外しても成功に変えない。
-    return result, inspected['errors']
+    # 除外済みの文を理由に回全体を失わず、実際に出す原稿を再照合する。
+    remaining=review(result)['errors']
+    result['fact_review']['remaining_errors']=remaining
+    return result, remaining
