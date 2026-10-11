@@ -1,474 +1,392 @@
 {
-  "date": "2026-10-08",
-  "date_jst": "2026-10-09",
-  "updated_at": "2026-10-09T06:01:07.256630+00:00",
-  "scored": 38,
+  "date": "2026-10-10",
+  "date_jst": "2026-10-11",
+  "updated_at": "2026-10-11T06:01:09.662217+00:00",
+  "scored": 26,
   "players": [
-    {
-      "name": "Miguel Vargas",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "score": 111,
-      "headline": "2打数1安打　1本塁打　1打点　3四球　1盗塁",
-      "is_japanese": false,
-      "stats": {
-        "ab": 2,
-        "pa": 5,
-        "hits": 1,
-        "hr": 1,
-        "tb": 4,
-        "rbi": 1,
-        "bb": 3,
-        "so": 0,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 1
-      }
-    },
-    {
-      "name": "Patrick Bailey",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "score": 110,
-      "headline": "3打数2安打　1本塁打　2打点",
-      "is_japanese": false,
-      "stats": {
-        "ab": 3,
-        "pa": 3,
-        "hits": 2,
-        "hr": 1,
-        "tb": 5,
-        "rbi": 2,
-        "bb": 0,
-        "so": 0,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 0
-      }
-    },
-    {
-      "name": "José Ramírez",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "score": 110,
-      "headline": "5打数2安打　1本塁打　3打点",
-      "is_japanese": false,
-      "stats": {
-        "ab": 5,
-        "pa": 5,
-        "hits": 2,
-        "hr": 1,
-        "tb": 5,
-        "rbi": 3,
-        "bb": 0,
-        "so": 0,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 0
-      }
-    },
-    {
-      "name": "Sam Antonacci",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "score": 70,
-      "headline": "2打数1安打　2打点　1死球",
-      "is_japanese": false,
-      "stats": {
-        "ab": 2,
-        "pa": 4,
-        "hits": 1,
-        "hr": 0,
-        "tb": 1,
-        "rbi": 2,
-        "bb": 0,
-        "so": 0,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 1,
-        "sb": 0
-      }
-    },
-    {
-      "name": "Munetaka Murakami",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "score": 66,
-      "headline": "3打数1安打　1打点　2四球　1盗塁",
-      "is_japanese": true,
-      "stats": {
-        "ab": 3,
-        "pa": 5,
-        "hits": 1,
-        "hr": 0,
-        "tb": 1,
-        "rbi": 1,
-        "bb": 2,
-        "so": 1,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 1
-      }
-    },
-    {
-      "name": "Nathaniel Lowe",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "score": 65,
-      "headline": "4打数2安打　1四球",
-      "is_japanese": false,
-      "stats": {
-        "ab": 4,
-        "pa": 5,
-        "hits": 2,
-        "hr": 0,
-        "tb": 2,
-        "rbi": 0,
-        "bb": 1,
-        "so": 0,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 0
-      }
-    },
-    {
-      "name": "Shawn Armstrong",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "score": 63,
-      "headline": "1.2回　2奪三振　自責0",
-      "is_japanese": false,
-      "stats": {
-        "ip": "1.2",
-        "er": 0,
-        "hits": 0,
-        "so": 2,
-        "bb": 0,
-        "gs": 0,
-        "saves": 0,
-        "save_opp": 0,
-        "blown": 0,
-        "holds": 0
-      }
-    },
-    {
-      "name": "Jo Adell",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "score": 61,
-      "headline": "4打数1安打　2打点　1四球",
-      "is_japanese": false,
-      "stats": {
-        "ab": 4,
-        "pa": 5,
-        "hits": 1,
-        "hr": 0,
-        "tb": 1,
-        "rbi": 2,
-        "bb": 1,
-        "so": 1,
-        "doubles": 0,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 0
-      }
-    }
-  ],
-  "pitchers": [
-    {
-      "name": "Shawn Armstrong",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "score": 63,
-      "headline": "1.2回　2奪三振　自責0",
-      "is_japanese": false,
-      "stats": {
-        "ip": "1.2",
-        "er": 0,
-        "hits": 0,
-        "so": 2,
-        "bb": 0,
-        "gs": 0,
-        "saves": 0,
-        "save_opp": 0,
-        "blown": 0,
-        "holds": 0
-      }
-    },
-    {
-      "name": "Bryan Hudson",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "score": 60,
-      "headline": "1.2回　0奪三振　自責0",
-      "is_japanese": false,
-      "stats": {
-        "ip": "1.2",
-        "er": 0,
-        "hits": 0,
-        "so": 0,
-        "bb": 0,
-        "gs": 0,
-        "saves": 0,
-        "save_opp": 0,
-        "blown": 0,
-        "holds": 0
-      }
-    },
-    {
-      "name": "Tyler Davis",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "score": 58,
-      "headline": "2.0回　1奪三振　自責0　1被安打",
-      "is_japanese": false,
-      "stats": {
-        "ip": "2.0",
-        "er": 0,
-        "hits": 1,
-        "so": 1,
-        "bb": 1,
-        "gs": 0,
-        "saves": 0,
-        "save_opp": 0,
-        "blown": 0,
-        "holds": 0
-      }
-    }
-  ],
-  "everyone": [
-    {
-      "name": "Miguel Vargas",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "2打数1安打　1本塁打　1打点　3四球　1盗塁"
-    },
-    {
-      "name": "Patrick Bailey",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "3打数2安打　1本塁打　2打点"
-    },
-    {
-      "name": "José Ramírez",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "5打数2安打　1本塁打　3打点"
-    },
-    {
-      "name": "Sam Antonacci",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "2打数1安打　2打点　1死球"
-    },
-    {
-      "name": "Munetaka Murakami",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "3打数1安打　1打点　2四球　1盗塁"
-    },
-    {
-      "name": "Nathaniel Lowe",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "4打数2安打　1四球"
-    },
-    {
-      "name": "Shawn Armstrong",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "1.2回　2奪三振　自責0"
-    },
-    {
-      "name": "Jo Adell",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "4打数1安打　2打点　1四球"
-    },
-    {
-      "name": "Steven Kwan",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "3打数1安打　2四球"
-    },
-    {
-      "name": "Bryan Hudson",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "1.2回　0奪三振　自責0"
-    },
-    {
-      "name": "Travis Bazzana",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "4打数1安打　1二塁打　1打点"
-    },
-    {
-      "name": "Chase DeLauter",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "4打数1安打　1打点　1四球"
-    },
-    {
-      "name": "Chase Meidroth",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "4打数1安打　1二塁打　1四球"
-    },
-    {
-      "name": "Tyler Davis",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "2.0回　1奪三振　自責0　1被安打"
-    },
-    {
-      "name": "Colson Montgomery",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "4打数2安打"
-    },
-    {
-      "name": "Hunter Gaddis",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "1.1回　1奪三振　自責0　1被安打"
-    },
-    {
-      "name": "Tommy Pham",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "0打数0安打　1四球"
-    },
-    {
-      "name": "Brayan Rocchio",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "2打数0安打　2四球"
-    },
-    {
-      "name": "Erik Sabrowski",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0　1被安打"
-    },
     {
       "name": "Gavin Williams",
       "team": "ガーディアンズ",
       "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0　1被安打"
+      "score": 133,
+      "headline": "5.2回　12奪三振　自責0　1被安打",
+      "is_japanese": false,
+      "stats": {
+        "ip": "5.2",
+        "er": 0,
+        "hits": 1,
+        "so": 12,
+        "bb": 2,
+        "gs": 1,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
     },
     {
-      "name": "Brenton Doyle",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "3打数1安打　1打点"
-    },
-    {
-      "name": "Angel Genao",
+      "name": "José Ramírez",
       "team": "ガーディアンズ",
       "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Austin Hedges",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Tristan Peters",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "3打数1安打"
-    },
-    {
-      "name": "Angel Martínez",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "3打数0安打　1死球　1盗塁"
-    },
-    {
-      "name": "Petey Halpin",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Andrew Benintendi",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Tanner Bibee",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "0.1回　1奪三振　防御率54.00　ホールド"
-    },
-    {
-      "name": "Randal Grichuk",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Kyle Teel",
-      "team": "ホワイトソックス",
-      "type": "batter",
-      "line": "4打数0安打　1四球"
-    },
-    {
-      "name": "Erick Fedde",
-      "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "3.2回　1奪三振　防御率4.91　3被安打"
+      "score": 98,
+      "headline": "3打数1安打　1本塁打　2打点　1四球",
+      "is_japanese": false,
+      "stats": {
+        "ab": 3,
+        "pa": 4,
+        "hits": 1,
+        "hr": 1,
+        "tb": 4,
+        "rbi": 2,
+        "bb": 1,
+        "so": 1,
+        "doubles": 0,
+        "triples": 0,
+        "hbp": 0,
+        "sb": 0
+      }
     },
     {
       "name": "Cade Smith",
       "team": "ガーディアンズ",
       "type": "pitcher",
-      "line": "1.0回　1奪三振　防御率9.00　2被安打"
+      "score": 95,
+      "headline": "1.2回　4奪三振　自責0　セーブ",
+      "is_japanese": false,
+      "stats": {
+        "ip": "1.2",
+        "er": 0,
+        "hits": 0,
+        "so": 4,
+        "bb": 0,
+        "gs": 0,
+        "saves": 1,
+        "save_opp": 1,
+        "blown": 0,
+        "holds": 0
+      }
     },
     {
-      "name": "Parker Messick",
+      "name": "Petey Halpin",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "score": 76,
+      "headline": "3打数2安打　2二塁打",
+      "is_japanese": false,
+      "stats": {
+        "ab": 3,
+        "pa": 3,
+        "hits": 2,
+        "hr": 0,
+        "tb": 4,
+        "rbi": 0,
+        "bb": 0,
+        "so": 0,
+        "doubles": 2,
+        "triples": 0,
+        "hbp": 0,
+        "sb": 0
+      }
+    },
+    {
+      "name": "Hunter Gaddis",
       "team": "ガーディアンズ",
       "type": "pitcher",
-      "line": "2.1回　5奪三振　防御率7.71　2被安打"
+      "score": 75,
+      "headline": "1.1回　4奪三振　自責0　2被安打　ホールド",
+      "is_japanese": false,
+      "stats": {
+        "ip": "1.1",
+        "er": 0,
+        "hits": 2,
+        "so": 4,
+        "bb": 0,
+        "gs": 0,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 1
+      }
     },
     {
-      "name": "Hagen Smith",
+      "name": "Sean Burke",
       "team": "ホワイトソックス",
       "type": "pitcher",
-      "line": "0.2回　0奪三振　自責0"
+      "score": 66,
+      "headline": "5.0回　4奪三振　防御率3.60　4被安打",
+      "is_japanese": false,
+      "stats": {
+        "ip": "5.0",
+        "er": 2,
+        "hits": 4,
+        "so": 4,
+        "bb": 0,
+        "gs": 1,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
     },
     {
-      "name": "Braden Montgomery",
+      "name": "Sean Newcomb",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "score": 60,
+      "headline": "2.0回　3奪三振　自責0　2被安打",
+      "is_japanese": false,
+      "stats": {
+        "ip": "2.0",
+        "er": 0,
+        "hits": 2,
+        "so": 3,
+        "bb": 0,
+        "gs": 0,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
+    },
+    {
+      "name": "Erik Sabrowski",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "score": 59,
+      "headline": "0.1回　1奪三振　自責0　ホールド",
+      "is_japanese": false,
+      "stats": {
+        "ip": "0.1",
+        "er": 0,
+        "hits": 0,
+        "so": 1,
+        "bb": 0,
+        "gs": 0,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 1
+      }
+    }
+  ],
+  "pitchers": [
+    {
+      "name": "Gavin Williams",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "score": 133,
+      "headline": "5.2回　12奪三振　自責0　1被安打",
+      "is_japanese": false,
+      "stats": {
+        "ip": "5.2",
+        "er": 0,
+        "hits": 1,
+        "so": 12,
+        "bb": 2,
+        "gs": 1,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
+    },
+    {
+      "name": "Cade Smith",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "score": 95,
+      "headline": "1.2回　4奪三振　自責0　セーブ",
+      "is_japanese": false,
+      "stats": {
+        "ip": "1.2",
+        "er": 0,
+        "hits": 0,
+        "so": 4,
+        "bb": 0,
+        "gs": 0,
+        "saves": 1,
+        "save_opp": 1,
+        "blown": 0,
+        "holds": 0
+      }
+    },
+    {
+      "name": "Hunter Gaddis",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "score": 75,
+      "headline": "1.1回　4奪三振　自責0　2被安打　ホールド",
+      "is_japanese": false,
+      "stats": {
+        "ip": "1.1",
+        "er": 0,
+        "hits": 2,
+        "so": 4,
+        "bb": 0,
+        "gs": 0,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 1
+      }
+    }
+  ],
+  "everyone": [
+    {
+      "name": "Gavin Williams",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "5.2回　12奪三振　自責0　1被安打"
+    },
+    {
+      "name": "José Ramírez",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "3打数1安打　1本塁打　2打点　1四球"
+    },
+    {
+      "name": "Cade Smith",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "1.2回　4奪三振　自責0　セーブ"
+    },
+    {
+      "name": "Petey Halpin",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "3打数2安打　2二塁打"
+    },
+    {
+      "name": "Hunter Gaddis",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "1.1回　4奪三振　自責0　2被安打　ホールド"
+    },
+    {
+      "name": "Sean Burke",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "5.0回　4奪三振　防御率3.60　4被安打"
+    },
+    {
+      "name": "Sean Newcomb",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "2.0回　3奪三振　自責0　2被安打"
+    },
+    {
+      "name": "Erik Sabrowski",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "0.1回　1奪三振　自責0　ホールド"
+    },
+    {
+      "name": "Tristan Peters",
       "team": "ホワイトソックス",
       "type": "batter",
-      "line": "5打数0安打"
+      "line": "3打数1安打　1四球"
     },
     {
-      "name": "Tim Herrin",
+      "name": "Grant Taylor",
+      "team": "ホワイトソックス",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　自責0"
+    },
+    {
+      "name": "Steven Kwan",
       "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "0.1回　0奪三振　自責0　1被安打　セーブ失敗"
+      "type": "batter",
+      "line": "3打数1安打　1四球"
     },
     {
-      "name": "Jordan Hicks",
+      "name": "Sam Antonacci",
       "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "0.2回　1奪三振　防御率13.50　1被安打　セーブ失敗"
+      "type": "batter",
+      "line": "4打数1安打"
     },
     {
-      "name": "Anthony Kay",
+      "name": "Chase DeLauter",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Randal Grichuk",
       "team": "ホワイトソックス",
-      "type": "pitcher",
-      "line": "0.1回　0奪三振　防御率54.00　1被安打　セーブ失敗"
+      "type": "batter",
+      "line": "1打数0安打"
+    },
+    {
+      "name": "Jo Adell",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Colson Montgomery",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "2打数0安打　1死球"
+    },
+    {
+      "name": "Miguel Vargas",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "3打数0安打　1四球"
+    },
+    {
+      "name": "Nathaniel Lowe",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Patrick Bailey",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Kyle Teel",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "4打数1安打"
+    },
+    {
+      "name": "Brenton Doyle",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "2打数0安打"
+    },
+    {
+      "name": "Travis Bazzana",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Brayan Rocchio",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Chase Meidroth",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Munetaka Murakami",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Andrew Benintendi",
+      "team": "ホワイトソックス",
+      "type": "batter",
+      "line": "4打数0安打"
     }
   ]
 }

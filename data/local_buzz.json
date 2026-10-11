@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-10T06:02:07.673235+00:00",
+  "updated_at": "2026-10-11T06:02:05.876673+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,12 +13,20 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 8,
-      "tone": "話題",
-      "gist": "ドジャース優勝確率54%、Kyle Tucker契約金が話題"
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 12,
+      "tone": "好調",
+      "gist": "ガーディアンズが0-2から逆転しALCS進出"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 10,
+      "tone": "不振",
+      "gist": "ホワイトソックスがAILDS敗退し21奪三振記録"
     },
     {
       "team_id": "158",
@@ -26,23 +34,15 @@
       "name_en": "Milwaukee Brewers",
       "mentions": 8,
       "tone": "話題",
-      "gist": "ブリュワーズ、NLCS準備、投手陣が充実"
+      "gist": "ブリュワーズとドジャースのNLCS再戦へ"
     },
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 5,
-      "tone": "話題",
-      "gist": "ガーディアンズ、Jose Ramirez活躍、プレーオフ進出"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 5,
-      "tone": "話題",
-      "gist": "ホワイトソックス、Game5先発Burke決定"
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 7,
+      "tone": "好調",
+      "gist": "ドジャースが連覇を目指しNLCS準備進行"
     },
     {
       "team_id": "139",
@@ -50,44 +50,16 @@
       "name_en": "Tampa Bay Rays",
       "mentions": 4,
       "tone": "話題",
-      "gist": "レイズ、ALCS準備、クローザー好調継続"
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "David Ortiz獲得秘話、Whitlock骨折投球"
-    },
-    {
-      "team_id": "146",
-      "name": "マーリンズ",
-      "name_en": "Miami Marlins",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "マーリンズ、解説者ら複数人と契約終了"
-    },
-    {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "ダイヤモンドバックス、来季給与削減予定"
+      "gist": "レイズがALCSでガーディアンズと対戦へ"
     }
   ],
   "players": [
     {
-      "name": "山本由伸",
-      "mentions": 2
-    },
-    {
-      "name": "村上宗隆",
-      "mentions": 2
-    },
-    {
       "name": "大谷翔平",
+      "mentions": 1
+    },
+    {
+      "name": "山本由伸",
       "mentions": 1
     }
   ]
