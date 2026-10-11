@@ -10,6 +10,8 @@ import subprocess
 
 from PIL import ImageDraw
 import soccer_results as results
+import soccer_look
+soccer_look.activate()
 import soccer_v4_cards as cards
 import review_render_v3 as r3
 import short_v4_cards as v4
@@ -170,6 +172,9 @@ def roster_screen(t,data,meta,clubs,spec):
 
 
 def frame(t,seg,data,clubs=None):
+    if soccer_look.v5():
+        import soccer_v5_program as v5
+        return v5.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data),CREDIT)
     if r3.LOOK!='v4':raise ValueError('サッカー結果の新設枠はv4専用')
     clubs=clubs or resolve_clubs(data);spec=program_spec(data);kind=seg['kind'];meta=seg['meta']
     if kind=='outro':return r3.outro(t,{},'soccer_results',CREDIT,tagline='欧州の日本人選手とMLBを、毎日数字で')
@@ -197,6 +202,13 @@ def numeric_material(data):
 
 
 def validate_frame(im,data,clubs):
+    if soccer_look.v5():
+        import soccer_v5_cards as v5
+        problems=v5.check_frame(im,clubs)
+        if not im.info.get('v3_outro'):
+            extra=set(cards.drawn_numbers(im))-numeric_material(data)
+            if extra:problems.append({'numbers_missing_from_material':sorted(extra)})
+        return problems
     problems=rules.check_layout(im)+cards.check_club_badges(im,clubs)+rules.check_spacing(im)
     if not im.info.get('v3_outro'):
         extra=set(cards.drawn_numbers(im))-numeric_material(data)
@@ -230,6 +242,9 @@ def ensure_ffmpeg(out):
 def render_video(data,narr,audio,out):
     results.validate_data(data)
     times=durations(narr['segments'],audio);out.mkdir(parents=True,exist_ok=True);ensure_ffmpeg(out)
+    if soccer_look.v5():
+        times=[max(length,1.45+.25*(len(seg['meta'].get('goals',[]))-1)) if seg['kind']=='result' else length
+               for seg,length in zip(narr['segments'],times)]
     # Ceil to complete frames; the resulting actual movie remains inside the strict budget.
     times=[math.ceil(t*FPS)/FPS for t in times]
     if sum(times)>40:raise ValueError('フレームの丸め後に40秒を超える')
@@ -251,7 +266,7 @@ def render_video(data,narr,audio,out):
                 im.save(out/f'{i+1:02d}.png');images.append(im);layouts.append(im.info)
                 for k in range(round(duration*FPS)):
                     r3.set_program_clock(clock+k/FPS);im=frame(k/FPS,seg,data,clubs)
-                    raw=vc.short_transition(previous,im,k,FPS,True);proc.stdin.write(raw)
+                    raw=soccer_look.transition(previous,im,k,FPS);proc.stdin.write(raw)
                 previous=im.tobytes();clock+=duration
         finally:
             proc.stdin.close();code=proc.wait();r3.set_program_clock(None)
