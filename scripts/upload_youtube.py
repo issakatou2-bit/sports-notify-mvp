@@ -1750,6 +1750,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  "いずれも翻訳したもので、コレスポの見解ではありません。",
                  "ファンのコメント欄と、数字で見る「現地での注目度」は"
                  "別の動画で出しています。"]
+        from article_sources import references
+        lines += references(_json_or_empty(narration_path))
     elif kind == "morning" and morning_mode == "local":
         lines = [f"{date_label}のメジャーリーグについて、"
                  "現地でどれだけ注目されたかをまとめました。", "",

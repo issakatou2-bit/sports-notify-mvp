@@ -1,17 +1,13 @@
-# ヒロの隔離作業 ㉚
+# ヒロの隔離作業 ㉙追加2
 
 ## 作業前
-- origin/main bbf0073から独立clone。㉘の4件は9b57203 / fd6a875 / c41ef43 / 4caae82。順に取り込み、両方の変更を保持する。
-- 共有HANDOFFの作業前/失敗の型/最新記録と共通の使用量方針を確認。共有コピー・㉗・公開・変数を編集しない。
+- origin/main bbf0073から独立clone。BACKLOGの現地報道の記事出典リンクを確認。mainのRSS読取りはURLを保存せず、概要欄にもRSS出典経路がない。
 
 ## 作業中
 - なし。
 
-## 次
-- ㉚: 保存文3,253（直近30日2,568）へ検査。本物5/誤検出2→修正後0。道具/判定/出所はNIGHT_MERGED_2026-10-12.mdとdocs/verification/。旧台本2本の同試合公式材料は監査用補充、未保存の出力は未検査。
-- ㉚追加: playlist-sync-20261012 7caa1e3（107試験ファイル）/podcast-history-20261012 cda4b07（108試験ファイル）も全NG0・最後「===== すべて通過 =====」。独立枝で、まとめ枝には未取込。
-- 手元: 追加7件/既存の事実14件とrun_checks全113試験ファイル・NG0「===== すべて通過 =====」。build/verification/run_checks-corpus.log。旧PRのCI緑はClaude申告。今回追いコミットのCI/新生成/公開は未確認。
-- 統合と単独/全体検査を完了。4件のコード/資料を保持し、欠測/楽屋表現の行除外と取得値への代替、球種不明・別期間・新監督の誤検出を補強。詳細 NIGHT_MERGED_2026-10-12.md。
-- 手元: 追加13件、除外後の台詞の再照合を含む最終run_checks全112試験ファイル・NG0「===== すべて通過 =====」。ログ build/verification/run_checks-final.log。CI/新実API生成/実公開は未検証。
-- 追加2枝も完了: early-metrics-20261012 18cc2bc（欠測/公開後の時間）、article-sources-20261012 a19b2c4（採用記事の出典）。各run_checks全108ファイル・NG0。独立枝で、まとめ枝には未取込。
-- 次はClaudeの取込/CI/実生成確認。共有コピー・㉗・push/PR/公開/変数の変更なし。
+## 完了 2026-10-12 ヒロ
+- 枝 hiro/article-sources-20261012。RSSの同じitemのURLを保存し、原稿で使った見出しのmetadataから報道枠の概要欄へ。詳細 ARTICLE_SOURCES_2026-10-12.md。
+- 手元: 追加6件、最終run_checks「===== すべて通過 =====」。ログ build/verification/run_checks.log。CI/実RSS新出力/転送先/公開物は未検証。
+- 次: Claudeの取込/CI、実RSS→概要欄の確認。URLのない昔の原稿へ出典を推測で追加しない。
+- 共有コピー・㉗・まとめ枝・push/PR/公開/送信/変数は変更なし。
