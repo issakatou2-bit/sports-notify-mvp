@@ -540,6 +540,17 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
         note(f"[warn] 訳が{len(flat)}行のうち{last - 1}行で切れました。"
              f"切れた行だけ落として続けます")
 
+    # 10/9の観客→選手の誤訳を、指示だけで終わらせず原文と返信で照合。
+    import comment_actors
+    for n, (i, j, original) in enumerate(flat, 1):
+        if n not in translated:
+            continue
+        context = items[i]['title']+' '+ ' '.join(items[i].get('reply_texts') or [])
+        issues = comment_actors.check(original, translated[n][1], context)
+        if issues:
+            translated.pop(n)
+            note(f"[warn] 訳の{n}行目を除外: {'、'.join(issues)}")
+
     out = [None] * len(items)
     for n, (i, j, _) in enumerate(flat, 1):
         got = translated.get(n)

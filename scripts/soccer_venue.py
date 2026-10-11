@@ -1,0 +1,70 @@
+"""ホームは構造データで一回だけ決定。提示順・matchup・文章から推測しない。"""
+import functools
+import json
+import pathlib
+import re
+
+
+@functools.lru_cache(maxsize=1)
+def alias_groups():
+    root = pathlib.Path(__file__).resolve().parent.parent / 'data'
+    groups = json.loads((root/'soccer_venue_aliases.json').read_text(encoding='utf-8'))['clubs']
+    colors = json.loads((root/'club_colors.json').read_text(encoding='utf-8'))
+    for league in colors['leagues'].values():
+        for club in league['clubs']:
+            groups.append([club[k] for k in ('team_en', 'name_jp', 'abbr') if club.get(k)])
+    return groups
+
+
+def aliases(name):
+    names = {name} if name else set()
+    # 既存クラブ表の正式名・日本語名・略称を同じ集合へ。順序はホームを決めない。
+    changed = True
+    while changed:
+        changed = False
+        for group in alias_groups():
+            if any(x.casefold() in {n.casefold() for n in names} for x in group):
+                before = len(names)
+                names.update(group)
+                changed = changed or len(names) != before
+    return names
+
+
+def roles(game):
+    return {'home': game.get('home_team_name') or '',
+            'away': game.get('away_team_name') or '',
+            'neutral': bool(game.get('neutral_site') or game.get('neutralSite'))}
+
+
+def instruction(game):
+    sides = roles(game)
+    if not sides['home'] or not sides['away']:
+        return 'ホーム/アウェーは不明。迎える・訪れる・本拠地・敵地と書かないこと。\n\n'
+    if sides['neutral']:
+        return f"登録上のホームは{sides['home']}、アウェーは{sides['away']}。中立地なので本拠地・敵地・迎えると書かないこと。\n\n"
+    return (f"ホーム（本拠地）は{sides['home']}、アウェー（訪問側）は{sides['away']}。"
+            f"迎える・本拠地は{sides['home']}、敵地・訪れるは{sides['away']}にだけ使うこと。\n\n")
+
+
+def check(text, game):
+    sides = roles(game)
+    if not sides['home'] or not sides['away']:
+        return ['会場不明なのに会場表現を使用'] if re.search(r'迎え|本拠地|敵地|訪れ', text or '') else []
+    if sides['neutral']:
+        return ['中立地なのに本拠地/敵地と表現'] if re.search(r'迎え|本拠地|敵地', text or '') else []
+    def named(name):
+        # OLなどが別の英単語の一部に一致しない。
+        return r'(?<![A-Za-z])(?:'+'|'.join(re.escape(n) for n in sorted(aliases(name), key=len, reverse=True))+r')(?![A-Za-z])'
+    home, away = named(sides['home']), named(sides['away'])
+    errors = []
+    for sentence in re.split(r'[。\n]', text or ''):
+        # 相手が直前の主語になっている「ランスが敵地リヨンに…」も止める。
+        if re.search(away+r'(?:が|は|のホームで|の本拠地で|、ホームで|、本拠地で)[^。]{0,60}?(?:迎え(?!られ)|ホームで|本拠地で)', sentence):
+            errors.append(f"アウェーの{sides['away']}をホームとして表現")
+        if re.search(home+r'(?:が|は|、)[^。]{0,60}?(?:敵地(?:で|へ|に)|訪れ)', sentence):
+            errors.append(f"ホームの{sides['home']}を敵地側として表現")
+        if re.search(r'(?:ホーム|本拠地)(?:の|で戦う|で対戦する)'+away, sentence):
+            errors.append('アウェーを本拠地側と表現')
+        if re.search(r'敵地(?:の)?'+home+r'(?:が|は)', sentence):
+            errors.append('ホームを敵地側と表現')
+    return list(dict.fromkeys(errors))
