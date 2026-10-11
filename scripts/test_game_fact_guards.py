@@ -37,13 +37,17 @@ class GameFacts(unittest.TestCase):
         self.assertEqual(players[0]['name'], '大谷翔平')
         self.assertIn('大谷', players[0]['aliases'])
         bad = dialogue('大谷は0安打です。', FIX['bad_lines'][2], players=players)
-        self.assertTrue(gg.check(bad))
+        clean, errors=gg.prepare(bad,log=lambda _:None)
+        self.assertFalse(errors)  # 指示語だけの疑いで回全体を止めない
+        self.assertEqual(len(clean['segments']),1)  # 無得点の断定行は残さない
         self.assertFalse(gg.check(dialogue('大谷は0安打ですが1得点です。', players=players)))
         self.assertTrue(gg.check(dialogue('大谷は2得点です。', players=players)))
 
     def test_unknown_runs_is_not_zero_and_pitcher_is_separate(self):
         p={'name':'大谷翔平','type':'batter','runs':None}
-        self.assertTrue(gg.check(dialogue('大谷翔平は無得点です。', players=[p])))
+        unknown=dialogue('大谷翔平は無得点です。', players=[p])
+        self.assertFalse(gg.check(unknown))  # 欠測は既知の矛盾として回全体を止めない
+        self.assertEqual(gg.review(unknown)['omit'],[1])
         self.assertFalse(gg.check(dialogue('大谷翔平は無得点です。', players=[dict(p,runs=0)])))
         self.assertFalse(gg.check(dialogue('山本由伸は無失点です。', players=[{'name':'山本由伸','type':'pitcher','r':1}])))
 

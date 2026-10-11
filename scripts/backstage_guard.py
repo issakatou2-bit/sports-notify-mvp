@@ -37,7 +37,7 @@ def with_instruction(kw):
     return kw
 
 
-def _filtered(resp, mode, label, *, already_recorded=False):
+def _filtered(resp, mode, label, *, already_recorded=False, diagnostics=None):
     text = response_text(resp)
     if mode == 'lines':
         # 管理された行形式のみ。JSONや一続きの原稿を行ごとに削らない。
@@ -45,6 +45,8 @@ def _filtered(resp, mode, label, *, already_recorded=False):
         for i, line in enumerate(text.splitlines(), 1):
             bad = violations(line)
             if bad:
+                if diagnostics is not None:
+                    diagnostics['filtered'] = True
                 print(f'[warn] {label}: 楽屋の言葉の行を除外 {i}行目 ({",".join(bad)})', file=sys.stderr)
             else:
                 kept.append(line)
@@ -63,7 +65,7 @@ def _filtered(resp, mode, label, *, already_recorded=False):
     raise BackstageError(f'{label}: 楽屋の言葉を含む原稿は使用しません')
 
 
-def guard_response(first, retry, *, label, mode='whole', rejected=None, allowed=None):
+def guard_response(first, retry, *, label, mode='whole', rejected=None, allowed=None, diagnostics=None):
     """初回応答・訂正1回。費用記録済みのBatchにも同じ検査を掛ける。"""
     resp = first()
     bad = violations(response_text(resp))
@@ -73,13 +75,13 @@ def guard_response(first, retry, *, label, mode='whole', rejected=None, allowed=
         rejected(resp)
     print(f'[warn] {label}: 楽屋の言葉を検出 ({",".join(bad)})。1回作り直し', file=sys.stderr)
     if allowed is not None and not allowed():
-        return _filtered(resp, mode, label, already_recorded=rejected is not None)
+        return _filtered(resp, mode, label, already_recorded=rejected is not None, diagnostics=diagnostics)
     # 再生成が通信エラーなら既存の呼び出し側の失敗経路へ。初回の危険な文へ戻さない。
     resp = retry()
     if not violations(response_text(resp)):
         return resp
     try:
-        return _filtered(resp, mode, label)
+        return _filtered(resp, mode, label, diagnostics=diagnostics)
     except BackstageError:
         if rejected:
             rejected(resp)

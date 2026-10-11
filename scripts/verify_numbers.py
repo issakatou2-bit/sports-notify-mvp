@@ -155,13 +155,23 @@ def main() -> int:
     ap.add_argument("--dialogue", required=True)
     ap.add_argument("--strict", action="store_true",
                     help="食い違いがあれば異常終了する")
+    ap.add_argument('--omit-unsupported', action='store_true',
+                    help='未取得の得点/シリーズ勝敗を断定した行だけ除外して保存する')
     args = ap.parse_args()
 
     d = load(args.dialogue)
     if not d:
         return 0                     # 読めない日は判定しない
+    import game_fact_guard
+    original = d
+    prepared, confirmed = game_fact_guard.prepare(d)
+    if args.omit_unsupported:
+        d = prepared
     facts = d.get("facts") or {}
-    bad = check(d)
+    bad = list(dict.fromkeys(check(d) + confirmed))
+    if args.omit_unsupported and not bad and d['segments'] != original.get('segments'):
+        pathlib.Path(args.dialogue).write_text(json.dumps(d,ensure_ascii=False,indent=2),encoding='utf-8')
+        print('[info] 未取得の値の断定行だけ除外して保存しました')
 
     print("--- 言ったことと、渡した材料 ---")
     if not facts and not bad:

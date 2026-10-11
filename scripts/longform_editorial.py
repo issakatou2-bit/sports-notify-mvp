@@ -91,7 +91,7 @@ def check(dialogue):
     active, recent_k = None, None
     for i, seg in enumerate(dialogue.get("segments") or [], 1):
         text = seg.get("text") or ""
-        if backstage_guard.violations(text, scope="numbers"):
+        if backstage_guard.violations(text):
             bad.append(f"{i}行目: 材料の不足・制作上の都合を台詞にしています")
         latin = _LATIN_NAME.search(text)
         if latin:

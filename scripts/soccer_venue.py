@@ -48,10 +48,15 @@ def instruction(game):
 
 def check(text, game):
     sides = roles(game)
+    # 新監督/新シーズンを迎えることは会場の主張ではない。
+    club_names = {n for group in alias_groups() for n in group}
+    club_pattern = r'(?<![A-Za-z])(?:'+'|'.join(re.escape(n) for n in sorted(club_names,key=len,reverse=True))+r')(?![A-Za-z])'
+    venue_claim = bool(re.search(r'本拠地|敵地|ホーム(?:で|に|の|へ)',text or '')
+                       or re.search(club_pattern+r'を(?:ホームに)?迎え(?!られ)',text or ''))
     if not sides['home'] or not sides['away']:
-        return ['会場不明なのに会場表現を使用'] if re.search(r'迎え|本拠地|敵地|訪れ', text or '') else []
+        return ['会場不明なのに会場表現を使用'] if venue_claim else []
     if sides['neutral']:
-        return ['中立地なのに本拠地/敵地と表現'] if re.search(r'迎え|本拠地|敵地', text or '') else []
+        return ['中立地なのに本拠地/敵地と表現'] if venue_claim else []
     def named(name):
         # OLなどが別の英単語の一部に一致しない。
         return r'(?<![A-Za-z])(?:'+'|'.join(re.escape(n) for n in sorted(aliases(name), key=len, reverse=True))+r')(?![A-Za-z])'
@@ -59,7 +64,9 @@ def check(text, game):
     errors = []
     for sentence in re.split(r'[。\n]', text or ''):
         # 相手が直前の主語になっている「ランスが敵地リヨンに…」も止める。
-        if re.search(away+r'(?:が|は|のホームで|の本拠地で|、ホームで|、本拠地で)[^。]{0,60}?(?:迎え(?!られ)|ホームで|本拠地で)', sentence):
+        home_claim = (re.search(r'ホームで|本拠地で',sentence)
+                      or re.search(home+r'(?:を|と)[^。]{0,12}迎え(?!られ)',sentence))
+        if home_claim and re.search(away+r'(?:が|は|のホームで|の本拠地で|、ホームで|、本拠地で)[^。]{0,60}?(?:迎え(?!られ)|ホームで|本拠地で)', sentence):
             errors.append(f"アウェーの{sides['away']}をホームとして表現")
         if re.search(home+r'(?:が|は|、)[^。]{0,60}?(?:敵地(?:で|へ|に)|訪れ)', sentence):
             errors.append(f"ホームの{sides['home']}を敵地側として表現")
