@@ -115,26 +115,12 @@ jobs:
 
       # 開幕前やオフの日は試合が無い。無い日に空の動画を出すより、
       # 何も出さない方がよい。ここで打ち切る。
-      - name: Stop when there are no fixtures
+      - name: Fetch supported cups and European fixtures
+        run: python scripts/soccer_extra_fixtures.py | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Select fixtures by material score
         id: gate
-        run: |
-          COUNT=$(python -c "
-          import json
-          try:
-              d = json.load(open('data/soccer_games.json', encoding='utf-8'))
-              # 10/10 本人OK: 予告は日本人選手のいる試合がある日だけ（28日で、題に日本人選手の
-              # 名前が無い予告は伸びていない。サッカーは翌朝の結果の回を主力にする）
-              print(len([g for g in d.get('games', []) if g.get('is_notable')
-                         and (g.get('home_has_jp') or g.get('away_has_jp'))]))
-          except Exception:
-              print(0)
-          ")
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
-          if [ "$COUNT" -eq 0 ]; then
-            echo "::notice::この日は日本人選手のいる注目試合がないため、動画は作りません"
-          else
-            echo "注目試合 ${COUNT}件"
-          fi
+        run: python scripts/soccer_selection.py --github-output "$GITHUB_OUTPUT" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Install video tools
         if: steps.gate.outputs.count != '0'
@@ -170,6 +156,7 @@ jobs:
       # 種類の壊れ方を、ここで止める。数字の幅は記録より広く取って
       # あるので、引っかかったらまず組み立てを疑う。
       - name: Sanity check
+        if: steps.gate.outputs.count != '0'
         id: sanity
         # ここで落ちても回は続ける。止めるのは公開だけ。
         # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
@@ -207,12 +194,14 @@ jobs:
       # ショート用に、動画の1枚目(1080x1920)を切り出す。
       # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
       - name: Vertical thumbnail
+        if: steps.gate.outputs.count != '0'
         run: |
           bash scripts/shorts_thumbnail.sh build/soccer/collespo_short.mp4 build/soccer/short.png
 
       # 20:00に出す。この回は20:10前後に終わるので、間に合わなければ
       # そのまま即時公開に倒れる(予約が過去になるとAPIが弾くため)。
       - name: Upload to YouTube
+        id: upload
         if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
@@ -232,6 +221,10 @@ jobs:
       # SNSは競技ごとに別の投稿にする。MLBは19時に「明日の注目試合」、
       # こちらは20時に「今夜の注目試合」で、1つにまとめると
       # どちらかの言い方が必ず嘘になる。
+      - name: Save the actually published preview
+        if: steps.gate.outputs.count != '0' && steps.upload.outcome == 'success'
+        run: python scripts/soccer_preview_history.py
+
       - name: Post to Bluesky
         if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
         continue-on-error: true
@@ -275,7 +268,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "soccer daily: ${{ github.run_id }}" \
-            data/published_videos.json data/published_tiktok.json data/soccer_games.json data/token_usage.json data/soccer_availability.json
+            data/published_videos.json data/published_tiktok.json data/soccer_games.json data/token_usage.json data/soccer_availability.json data/soccer_preview_history.json
 
       - name: Save video as artifact
         if: always()

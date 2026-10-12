@@ -58,6 +58,7 @@ def expectation(game):
         raw=row.get('name') or row.get('name_en')
         if not isinstance(raw,str):continue
         canonical=readings.player_data().get('reading_aliases',{}).get(raw,raw)
+        if canonical in (game.get('preview_out_names') or []):continue
         if not canonical or not readings.player_reading(canonical):
             print('[omit] 期待選手の表示/読みが未登録: '+str(raw))
             continue
@@ -90,7 +91,7 @@ def attach_season_stats(data,availability=None):
     return data
 
 
-def decide(game):
+def decide(game,limit=2):
     reasons=[]
     pair={club_id(game.get(s+'_team_name')) for s in ('home','away')}
     if None not in pair:
@@ -132,7 +133,7 @@ def decide(game):
                 reasons.append(dict(kind='h2h',text=f'昨季対戦 今回のホーム側が{scores[side]}対{scores[other]}',source=previous))
     # 補足がどれも同じ勝点差だけになる場合を避ける。取れた試合固有の要素を先に。
     order={'derby':0,'title':1,'cl':1,'relegation':1,'form':2,'h2h':3,'leader':4,'rank':4,'points':5}
-    reasons=sorted(reasons,key=lambda r:order[r['kind']])[:2]
+    reasons=sorted(reasons,key=lambda r:order[r['kind']])[:limit]
     return dict(reasons=reasons,player=expectation(game))
 
 
