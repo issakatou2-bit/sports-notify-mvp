@@ -73,12 +73,13 @@ jobs:
     runs-on: ubuntu-latest
     # 15:10開始から17:30のBatch締切＋制作・検査の時間を確保。
     timeout-minutes: 180
-    # 前の枠が落ちた日は、材料が揃っていない可能性がある。
-    # ただし長編は材料を取り直すので、落ちていても作れることはある。
-    # 「成功したときだけ」にしておく。取りこぼしは watchdog が拾う。
+    # 独立した長編の検査で判断する。短編1本の失敗を連鎖させない。
+    # 取り消し・他の枝・外部のコピーからの完了通知では起動しない。
     if: >-
       github.event_name != 'workflow_run'
-      || github.event.workflow_run.conclusion == 'success'
+      || (github.event.workflow_run.conclusion != 'cancelled'
+          && github.event.workflow_run.head_branch == 'main'
+          && github.event.workflow_run.head_repository.full_name == github.repository)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

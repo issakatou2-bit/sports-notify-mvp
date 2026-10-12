@@ -130,7 +130,8 @@ def main() -> int:
     # 取れない日は何もしないのが正しく、健康診断ごと赤にする理由はない。
     # ただし黙ると気づけないので、理由は必ず残す。
     try:
-        entries = feed_entries()
+        import os
+        entries = uploads_entries() if os.environ.get('YOUTUBE_API_KEY') else feed_entries()
     except Exception as e:                           # noqa: BLE001
         print(f"[warn] チャンネルのRSSを取れません（{e}）。")
         # 9/19から毎日404なので、鍵があればアップロード一覧で取り直す

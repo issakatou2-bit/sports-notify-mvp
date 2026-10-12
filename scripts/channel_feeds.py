@@ -161,8 +161,8 @@ def load_sources(path: str) -> list:
 
 
 def fetch_uploads(api_key: str, channel_id: str,
-                  hours: int = LOOKBACK_HOURS) -> list:
-    """RSSが取れないときの取り直し。アップロード一覧を API で引く。
+                  hours: int = LOOKBACK_HOURS, *, strict: bool = False) -> list:
+    """アップロード一覧をData APIで引く。strictでは取得失敗を例外で区別。
 
     **9/19から毎日、GitHubの実行環境だけRSSが404を返している**
     （同じURLが手元からは200）。5〜6チャンネルすべてが落ち、材料が
@@ -174,14 +174,29 @@ def fetch_uploads(api_key: str, channel_id: str,
     if not channel_id.startswith("UC"):
         return []
     try:
-        r = requests.get(f"{YOUTUBE_API}/playlistItems", params={
-            "part": "snippet,contentDetails", "maxResults": 25,
-            "playlistId": "UU" + channel_id[2:], "key": api_key},
-            timeout=20)
-        r.raise_for_status()
-        got = r.json().get("items") or []
+        params = {'part': 'snippet,contentDetails', 'maxResults': 50 if strict else 25,
+                  'playlistId': 'UU' + channel_id[2:], 'key': api_key}
+        got = []
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+        for _ in range(20 if strict else 1):
+            r = requests.get(f'{YOUTUBE_API}/playlistItems', params=params, timeout=20)
+            r.raise_for_status()
+            page = r.json()
+            items = page.get('items') or []
+            got.extend(items)
+            # 健康診断は日付で見る。先頭25本に対象日が無い場合も読む。
+            stamps = [(item.get('contentDetails') or {}).get('videoPublishedAt') for item in items]
+            reached = any(stamp and datetime.fromisoformat(stamp.replace('Z', '+00:00')) < cutoff
+                          for stamp in stamps)
+            if not strict or not page.get('nextPageToken') or reached:
+                break
+            params['pageToken'] = page['nextPageToken']
+        else:
+            raise RuntimeError('対象日の一覧を最後まで確認できません')
     except Exception as e:  # noqa: BLE001
-        print(f"[warn] {channel_id} のアップロード一覧も取れませんでした: {e}",
+        if strict:
+            raise RuntimeError('アップロード一覧を取得できません') from e
+        print(f"[warn] {channel_id} のアップロード一覧を取れませんでした: {type(e).__name__}",
               file=sys.stderr)
         return []
     cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
@@ -208,12 +223,13 @@ def fetch_uploads(api_key: str, channel_id: str,
 def fetch_feed(channel_id: str, hours: int = LOOKBACK_HOURS,
                api_key: str = "") -> list:
     """
-    そのチャンネルの直近の投稿。RSSなので枠を消費しない。
+    そのチャンネルの直近の投稿。鍵があればData APIで取得する。
 
-    APIの search を使うと1回100ユニットかかるが、ここは0。
-    足すチャンネルを増やしても費用が増えない。
-    RSSが取れないときだけ、鍵があれば1ユニットで取り直す。
+    RSSの404が続くので、鍵があるときは1ユニットのアップロード一覧を使う。
+    鍵のない環境ではRSSを読み、取得不可は空で返す。
     """
+    if api_key:
+        return fetch_uploads(api_key, channel_id, hours)
     url = FEED.format(channel_id)
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "collespo/1.0"})

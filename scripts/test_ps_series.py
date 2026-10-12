@@ -220,7 +220,8 @@ check("タイの日は対戦カードを主語に",
 section("健康診断は、MLBの試合が無い日を欠けと数えない")
 import healthcheck as hc  # noqa: E402
 _load, _games = hc.load, hc._mlb_games
-hc.load = lambda path: {}                 # 何も出ていない日
+hc.load = lambda path: ({'games': [], 'generated_at': '2026-10-03T10:00:00+00:00'}
+                        if path == 'data/soccer_games.json' else {})  # 当日の取得成功・試合なし
 hc._mlb_games = lambda d: 0               # 試合が無い
 _l, _miss, _skip, _ = hc.check_videos("2026-10-03")
 check("試合が無ければ欠けは0", _miss, 0)

@@ -24,6 +24,7 @@ import json
 import pathlib
 import re
 import sys
+import tempfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
@@ -125,16 +126,24 @@ def main() -> int:
               "時点" in title)
 
     print("\n--- コメント欄 ---")
-    vmeta = uy.build_metadata("notable_games.json", "8月20日", "morning",
-                              morning_mode="voices")["snippet"]
-    top = uy.buzz_top("data/mlb_buzz.json") or {}
-    if top.get("matchup_jp"):
-        # タイトルの対戦カードが、材料の試合と同じか
-        card = top["matchup_jp"].split(" vs ")
+    # 日々の材料に英語だけの動画名が入ると、正しい除外を不一致と
+    # 誤判定していた。日本語の対戦と英語除外を固定資料で分けて検査する。
+    with tempfile.TemporaryDirectory() as folder:
+        buzz = pathlib.Path(folder) / 'buzz.json'
+        buzz.write_text(json.dumps({'videos': [{'result': {
+            'away_jp': 'ホワイトソックス', 'home_jp': 'ガーディアンズ'}}]}, ensure_ascii=False), encoding='utf-8')
+        vmeta = uy.build_metadata('notable_games.json', '8月20日', 'morning',
+                                 morning_mode='voices', buzz_path=str(buzz))['snippet']
+        card = ['ホワイトソックス', 'ガーディアンズ']
         check("タイトルの対戦が、扱った試合と同じ",
               all(c in vmeta["title"] for c in card))
         check("タグにも同じ球団",
               all(c in vmeta["tags"] for c in card))
+        english = 'Shohei Ohtani vs. Jacob Misiorowski! (Both plate appearances in 2026 NLCS Game 1) | MLB Highlights'
+        buzz.write_text(json.dumps({'videos': [{'matchup': english}]}), encoding='utf-8')
+        vmeta = uy.build_metadata('notable_games.json', '8月20日', 'morning',
+                                 morning_mode='voices', buzz_path=str(buzz))['snippet']
+        check('翻訳未確認の英語動画名は題へ出さない', english not in vmeta['title'])
 
     print("\n--- 明日の注目試合 ---")
     dmeta = uy.build_metadata("notable_games.json", "8月20日",
