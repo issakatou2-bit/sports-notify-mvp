@@ -1,4 +1,5 @@
 """名簿/材料にある固有名の辞書欠測と、VOICEVOXの実queryの読み違いを止める。"""
+import copy
 import csv
 import functools
 import json
@@ -59,7 +60,7 @@ def shared_readings():
 @functools.lru_cache(maxsize=4096)
 def pattern(name):
     if re.search(r'[一-龯ぁ-んァ-ヶ]',name) and not re.search(r'[A-Za-z]',name):
-        return re.compile(r'\s*'.join(r'[・\s]*' if c=='・' else re.escape(c) for c in name))
+        return re.compile(r'[・\s]*'.join(r'[・\s]*' if c=='・' else re.escape(c) for c in name))
     return re.compile(r'(?<![A-Za-z0-9])'+re.escape(name)+r'(?![A-Za-z0-9])',re.I)
 
 
@@ -160,7 +161,65 @@ def normalized_kana(value):
     return out
 
 
-def validate_query(original, query):
+def japanese_readings():
+    """フルネームだけ。短名・外国人・監督は氏名結合の対象にしない。"""
+    import notability_engine as ne
+    names=set(player_data()['japanese_players'])
+    names.update(p['name_jp'] for key in ('JP_PLAYERS_MLB','JP_PLAYERS_SOCCER')
+                 for p in getattr(ne,key,[]))
+    return {normalized_kana(player_readings().get(name,'')) for name in names}
+
+
+def name_phrase_spans(original, query):
+    """読み照合後、氏名がまたぐqueryの句番号を返す。長音表記も同一視。"""
+    phrases=query.get('accent_phrases',[])
+    raw='';owners=[]
+    for index,phrase in enumerate(phrases):
+        raw+=''.join(m['text'] for m in phrase.get('moras',[]))
+        owners.extend([index]*(len(normalized_kana(raw))-len(owners)))
+    actual=normalized_kana(raw);used={};out=[];full=japanese_readings()
+    for row in assert_known(original):
+        kana=normalized_kana(row['reading'])
+        if row['kind']!='player' or not kana or kana not in full:continue
+        start=actual.find(kana,used.get(kana,0))
+        if start<0:raise NameReadingError('氏名のquery位置が不明: '+row['name'])
+        end=start+len(kana);used[kana]=end
+        out.append(dict(name=row['name'],first=owners[start],last=owners[end-1]))
+    return out
+
+
+def prepare_query(original, query, speaker, url):
+    """日本人氏名内の境界だけ結合。変更した句のみVOICEVOXで高低/長さを再計算。"""
+    import requests
+    # 修正で読み違いを隠さない。ここでは既存の読み検査だけ先に行う。
+    validate_query(original,query,check_phrases=False)
+    spans=name_phrase_spans(original,query)
+    joins={i for s in spans for i in range(s['first'],s['last'])}
+    if not joins:return query
+    result=copy.deepcopy(query);phrases=result['accent_phrases'];merged=[];changed=[]
+    index=0
+    while index<len(phrases):
+        phrase=phrases[index];last=index
+        while last in joins:
+            last+=1
+            phrase['moras'].extend(phrases[last]['moras'])
+            phrase['pause_mora']=phrases[last].get('pause_mora')
+            phrase['is_interrogative']=phrases[last].get('is_interrogative',False)
+        if last>index:changed.append(len(merged))
+        merged.append(phrase);index=last+1
+    response=requests.post(url.rstrip('/')+'/mora_data',params={'speaker':speaker},
+                           json=[merged[i] for i in changed],timeout=30)
+    response.raise_for_status();recomputed=response.json()
+    if len(recomputed)!=len(changed):raise NameReadingError('氏名の句の再計算に失敗')
+    for i,phrase in zip(changed,recomputed):merged[i]=phrase
+    result['accent_phrases']=merged
+    # kanaは元queryの区切り文字を含むため補正後の証拠として使わない。
+    result['kana']=''
+    validate_query(original,result)
+    return result
+
+
+def validate_query(original, query, check_phrases=True):
     actual=''.join(m['text'] for phrase in query.get('accent_phrases',[]) for m in phrase.get('moras',[]))
     actual=normalized_kana(actual);expected={};details=[]
     for row in assert_known(original):
@@ -169,4 +228,8 @@ def validate_query(original, query):
     for kana,count in expected.items():
         if actual.count(kana)<count:
             raise NameReadingError('VOICEVOX queryの読み不一致: '+kana+' / 実際 '+actual)
-    return dict(status='PASS',names=details,actual_kana=actual)
+    spans=name_phrase_spans(original,query) if check_phrases else []
+    for span in spans:
+        if span['first']!=span['last']:
+            raise NameReadingError('VOICEVOX queryの氏名が複数句/内部の間: '+span['name'])
+    return dict(status='PASS',names=details,actual_kana=actual,name_phrases=spans)
