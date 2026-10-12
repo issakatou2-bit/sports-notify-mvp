@@ -13,6 +13,7 @@ import soccer_look
 soccer_look.activate()
 import review_render_v3 as r3
 import soccer_v4_cards as original
+import club_display_names
 
 L,R=72,940
 TOP,BOTTOM=236,1150
@@ -82,7 +83,7 @@ def colors(club):
     # mainのv2表（data/club_colors.json）を読んだ値を使う。明るいグラデーションを加えない。
     base=ImageColor.getrgb(club['primary']) if club.get('primary') else (70,78,78)
     second=ImageColor.getrgb(club['secondary']) if club.get('secondary') else (184,194,188)
-    woven=mix(base,(255,255,255) if sum(base)<600 else (0,0,0),.055)
+    woven=mix(base,(255,255,255) if sum(base)<600 else (0,0,0),.18)
     requested=ImageColor.getrgb(club['ink']) if club.get('ink') else CHALK
     choices=(requested,(0,0,0),(255,255,255))
     ink=max(choices,key=lambda c:min(contrast(c,base),contrast(c,woven)))
@@ -141,9 +142,11 @@ def scarf(im,box,club,variant='A',label=True,fringe=False,inline=False):
     base,second,ink,outline,woven=colors(club)
     layer=Image.new('RGB',(w,h),base);d=ImageDraw.Draw(layer)
     if variant=='A':
-        for sx in range(0,w,6):d.rectangle((sx,0,sx+1,h),fill=woven)
+        period=max(8,round(h*.3))
+        for sx in range(0,w,period):d.rectangle((sx,0,sx+max(2,round(period*.35)),h),fill=woven)
         # 織り目は主色の小さな濃淡のみ。略称の下に2色目の帯を通さない。
-        for yy in range(3,h,6):d.line((0,yy,w,yy),fill=mix(base,woven,.45),width=1)
+        if h>=60:
+            for yy in range(3,h,8):d.line((0,yy,w,yy),fill=mix(base,woven,.08),width=1)
     sk=round(h*SLANT);band=max(4,round(h*.36))
     d.polygon([(sk+3,0),(sk+3+band,0),(3+band,h),(3,h)],fill=second)
     d.polygon([(w-4,0),(w,0),(w-sk,h),(w-sk-4,h)],fill=second)
@@ -170,10 +173,14 @@ def scarf(im,box,club,variant='A',label=True,fringe=False,inline=False):
 
 
 def club_name(im,x,y,club,size=36,color=CHALK,suffix='',width=None,display_name=None):
-    value=(display_name or club.get('name_jp') or club['team_en'])+suffix
+    value=(display_name or club_display_names.display(club))+suffix
     while True:
         runs,length,b=measure(value,size);h=b[3]-b[1];w=tag_width(club,h)
         if width is None or w+12+length<=width:break
+        short=club_display_names.display(club,short=True)+suffix
+        if not display_name and value!=short:
+            value=short
+            continue
         if size<=18:raise ValueError('クラブ名が幅に入りません（描画停止）: '+value)
         size-=1
     # 札と字の実寸・上端・高さを同じ値から算出する。
@@ -352,7 +359,8 @@ def preview(t,spec,clubs):
     stat(im,(L,392,R,654),spec['time'],'キックオフ',CHALK)
     y=716
     for side in ('home','away'):
-        panel(im,(L,y,R,y+174))
+        club=clubs[spec[side]]
+        panel(im,(L,y,R,y+174),fill=mix(PITCH,colors(club)[0],.28))
         club_name(im,L+42,y+20,clubs[spec[side]],46,width=R-L-200)
         rank=(spec.get('ranks') or {}).get(side)
         if rank:text(im,R-138,y+26,str(rank)+'位',32,MUTED,width=98)

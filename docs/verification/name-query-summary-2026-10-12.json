@@ -1,0 +1,12 @@
+{
+  "counts": {
+    "player": 61,
+    "club": 103,
+    "manager": 42
+  },
+  "failed": 0,
+  "engine": "http://127.0.0.1:50021",
+  "ueda_before": "ウエダ'/アヤギヌ'ヨデ_ス",
+  "ueda_after": "ウエダ'、アヤ'セデ_ス",
+  "full_response": "build/codex/tmp/soccer-v5-previews2/name-query-checks.json"
+}

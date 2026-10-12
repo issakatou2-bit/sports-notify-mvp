@@ -8,6 +8,56 @@ L,R=c.L,c.R
 TAGLINE='欧州の日本人選手とMLBを、毎日数字で'
 
 
+def add_player_scene(narr,data):
+    """v5のみ、同試合の個人2指標とチーム結果を一画面でつなぐ。"""
+    import copy
+    result=copy.deepcopy(narr)
+    if not result.get('segments'):return result
+    person=next((p for p in data['players'] if p['status']!='none'),None)
+    if not person:return result
+    game=next(g for g in data['games'] if g['id']==person['event_id'])
+    parts=[f"{person['name']}は{person[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト')) if person.get(k) is not None]
+    text='。'.join(parts)+'。'
+    side=person['side'];other='away' if side=='home' else 'home'
+    if all(game['score'].get(s) is not None for s in ('home','away')):
+        text+=f"{person['club']}の試合は、{game['score'][side]}対{game['score'][other]}でした。"
+    seg=dict(kind='intro',text=text,speaker=2,meta=dict(event_id=game['id'],player_detail=person['name'],enhancement='score'))
+    result['segments'].insert(1,seg)
+    return result
+
+
+def player_result_frame(t,person,game,clubs,spec,enhancement='score'):
+    im=c.canvas(t,clubs,spec.get('label','日本人選手の成績'))
+    c.heading(im,'日本人選手の成績')
+    c.text(im,L+20,338,person['name'],68,width=R-L-40,weight=900)
+    c.club_name(im,L+20,444,clubs[person['club']],36,width=R-L-40)
+    for index,(key,unit) in enumerate((('goals','得点'),('assists','アシスト'))):
+        left=L+index*((R-L+24)//2);right=left+(R-L-24)//2
+        if person.get(key) is not None:c.stat(im,(left,520,right,806),person[key],unit)
+    c.panel(im,(L,858,R,1120))
+    if enhancement=='score':
+        c.text(im,L+72,882,'チームの試合結果',30,c.LIME,width=R-L-144)
+        value=f"{game['score']['home']} - {game['score']['away']}"
+        c.text(im,L+324,936,value,92,c.CHALK,number=True,width=320)
+        for side,x in [('home',L+52),('away',L+468)]:
+            c.club_name(im,x,1062,clubs[game[side]['name_jp']],25,width=340)
+    elif enhancement=='appearance':
+        import soccer_results as results
+        c.text(im,L+72,882,'出場とカード',30,c.LIME,width=R-L-144)
+        c.text(im,L+72,936,results.STATUS[person['status']],52,width=R-L-144)
+        for i,(key,label) in enumerate((('yellow_cards','警告'),('red_cards','退場'))):
+            if person.get(key) is not None:c.text(im,L+72+i*350,1060,f'{label} {person[key]}',32,width=300)
+    elif enhancement=='plays':
+        c.text(im,L+72,882,'得点・アシストの場面',30,c.LIME,width=R-L-144)
+        plays=[g for g in game['goals'] if (g.get('japanese_goal') and g['scorer']==person['name']) or person['name'] in g.get('japanese_assists',[])]
+        for i,goal in enumerate(plays[:2]):
+            c.text(im,L+72,948+i*68,goal['minute']+'分　'+('得点' if goal['scorer']==person['name'] else 'アシスト'),44,width=R-L-144)
+        if not plays:c.text(im,L+72,958,'該当する場面なし' if game['goals_complete'] else '時間不明',38,c.MUTED,width=R-L-144)
+    else:raise ValueError('不明な成績案: '+enhancement)
+    im.info['v5_player_detail']=dict(person=person,game_id=game['id'],enhancement=enhancement)
+    return c.finish(im,t,spec)
+
+
 def results_frame(t,seg,data,clubs,spec,credit):
     import soccer_results as results
     if seg['kind']=='outro':return c.outro(t,spec,'soccer_results',credit,TAGLINE)
@@ -23,6 +73,9 @@ def results_frame(t,seg,data,clubs,spec,credit):
         im.info['soccer_roster']=rows
         return im
     game=next(g for g in data['games'] if g['id']==seg['meta']['event_id'])
+    if seg['meta'].get('player_detail'):
+        person=next(p for p in data['players'] if p['name']==seg['meta']['player_detail'])
+        return player_result_frame(t,person,game,clubs,spec,seg['meta'].get('enhancement','score'))
     if seg['kind']=='intro':
         lead=next(p for p in data['players'] if p['status']!='none')
         value=lead['goals'] if lead.get('goals') else lead['assists'] if lead.get('assists') else None

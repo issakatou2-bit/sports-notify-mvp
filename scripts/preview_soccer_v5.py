@@ -41,6 +41,8 @@ def badge_sheet(out,variant):
 
 def audio_for(narr,out):
     import synthesize_narration as sn
+    import name_reading_guard as readings
+    readings.validate_dialogue(narr)
     directory=out/'audio';directory.mkdir(exist_ok=True)
     old_path=directory/'manifest.json'
     old=json.loads(old_path.read_text(encoding='utf-8')).get('segments',[]) if old_path.exists() else []
@@ -48,10 +50,62 @@ def audio_for(narr,out):
     for i,seg in enumerate(narr['segments']):
         file=directory/f'{i:02d}.wav'
         reuse=i<len(old) and file.is_file() and (seg['text'],seg['speaker'])==(old[i].get('text'),old[i].get('speaker'))
+        checked_path=file.with_suffix('.reading.json')
+        if reuse:
+            try:
+                saved=json.loads(checked_path.read_text(encoding='utf-8'))
+                reuse=saved['spoken']==sn.apply_readings(seg['text'])
+                readings.validate_query(seg['text'],saved['query'])
+            except (OSError,ValueError,KeyError):reuse=False
         if not reuse and not sn.synth_one(seg['text'],seg['speaker'],file):raise ValueError('実音声を合成できません')
         audio.append(dict(seg,file=str(file.resolve()),duration=sn.audio_duration(file)))
     save_json(old_path,dict(segments=audio))
     return audio
+
+
+def detailed_badge_comparison(out):
+    from PIL import Image
+    import soccer_v5_cards as c
+    clubs=c.original.load_clubs()
+    names=['Real Madrid CF','Aston Villa FC','Manchester City FC','Paris Saint-Germain FC']
+    rows=[clubs[n] for n in names if n in clubs]
+    if len(rows)<4:rows=list({r['team_en']:r for r in clubs.values()}.values())[:4]
+    sheet=Image.new('RGB',(1080,160+len(rows)*220),c.PITCH)
+    c.text(sheet,40,26,'札A / B　左は実寸35px　右は2倍（同じ画素）',30,width=990)
+    measurements=[]
+    for index,club in enumerate(rows):
+        y=100+index*220;c.text(sheet,40,y,c.club_display_names.display(club),26,width=990)
+        images=[]
+        for variant in ('A','B'):
+            im=Image.new('RGB',(150,45),c.PITCH);c.scarf(im,(8,5,142,40),club,variant=variant)
+            images.append(im)
+        for j,im in enumerate(images):
+            sheet.paste(im,(40+j*200,y+60))
+            sheet.paste(im.resize((300,90),Image.Resampling.NEAREST),(460+j*300,y+50))
+        different=sum(p!=q for p,q in zip(images[0].get_flattened_data(),images[1].get_flattened_data()))
+        measurements.append(dict(club=club['team_en'],different_pixels=different,native_height=35))
+    sheet.save(out/'club-tags-native-and-2x.png');save_json(out/'club-tags-native-and-2x.json',measurements)
+
+
+def saved_preview_material():
+    import notability_engine as ne
+    import club_display_names as names
+    data=json.loads((ROOT/'data/soccer_games.json').read_text(encoding='utf-8'))
+    selected=[];leagues=set()
+    for game in data['games']:
+        # 保存材料は日本人フラグを持たない。既存名簿から所属だけを補う。
+        # 出場・先発・今の所属を新しく確認した材料としては扱わない。
+        people={side:[p['name_jp'] for p in ne.jp_players_for_club(
+            (names.lookup(game[side+'_team_name']) or {}).get('id',game[side+'_team_name']))]
+            for side in ('home','away')}
+        if any(people.values()) and game['league'] not in leagues:
+            selected.append(dict(game,is_notable=True,home_has_jp=bool(people['home']),
+                                 away_has_jp=bool(people['away']),jp_by_side=people))
+            leagues.add(game['league'])
+        if len(selected)==3:break
+    if len(selected)<3:raise ValueError('異なるリーグの実カード3件を保存材料から選べません')
+    return dict(data,games=selected,source='ESPN/football-data.org（main保存分・所属は既存名簿）',
+                preview_provenance='保存された実カード/日時＋既存名簿による表示試作。新しい出場確認/公開は行わない。')
 
 
 def main():
@@ -70,13 +124,15 @@ def main():
     from preview_unified_v3 import sheet
     render.ensure_ffmpeg(out)
     a,b=(badge_sheet(out,v) for v in ('A','B'))
+    detailed_badge_comparison(out)
     compare=__import__('PIL.Image',fromlist=['Image']).new('RGB',(2160,1920),c.PITCH)
     compare.paste(a,(0,0));compare.paste(b,(1080,0));compare.save(out/'05_club_tags_AB.png')
     reports=[];collection=[];labels=[]
     for mode in ('preview','race','week','results','voices'):
         directory=out/mode;directory.mkdir(exist_ok=True)
         if mode in ('preview','race','week'):
-            data=json.loads((ROOT/'scripts/fixtures/soccer-slots'/f'{mode}.json').read_text(encoding='utf-8'))
+            data=(saved_preview_material() if mode=='preview' else
+                  json.loads((ROOT/'scripts/fixtures/soccer-slots'/f'{mode}.json').read_text(encoding='utf-8')))
             plan=slots.program(mode,data);narr=plan['narration']
             draw=lambda t,seg:slots.frame(t,seg,plan)
             check=lambda im:slots.check_frame(im,plan)
@@ -84,7 +140,19 @@ def main():
         elif mode=='results':
             data=results.build(json.loads((ROOT/'scripts/fixtures/soccer-results/scoreboards.json').read_text(encoding='utf-8')),
                 json.loads((ROOT/'scripts/fixtures/soccer-results/summaries.json').read_text(encoding='utf-8')),'2026-09-20')
-            narr=render.narration(data);clubs=render.resolve_clubs(data)
+            from soccer_v5_program import add_player_scene,player_result_frame
+            narr=add_player_scene(render.narration(data),data);clubs=render.resolve_clubs(data)
+            detail=next(s for s in narr['segments'] if s['meta'].get('player_detail'))
+            person=next(p for p in data['players'] if p['name']==detail['meta']['player_detail'])
+            game=next(g for g in data['games'] if g['id']==person['event_id'])
+            proposal_dir=out/'player-stat-options';proposal_dir.mkdir(exist_ok=True)
+            spec=render.program_spec(data)
+            for i,kind in enumerate(('score','appearance','plays'),1):
+                im=player_result_frame(3,person,game,clubs,spec,kind)
+                errors=c.check_frame(im,clubs)
+                if errors:raise ValueError('成績案の配置: '+str(errors))
+                im.save(proposal_dir/f'option-{i}-{kind}.png')
+            save_json(proposal_dir/'source.json',dict(player=person,game=game,video_choice='score'))
             draw=lambda t,seg:render.frame(t,seg,data,clubs)
             check=lambda im:render.validate_frame(im,data,clubs)
             movie=lambda audio:render.render_video(data,narr,audio,directory)
