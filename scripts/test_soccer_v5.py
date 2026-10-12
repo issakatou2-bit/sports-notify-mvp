@@ -50,11 +50,31 @@ def validate_native():
 
 
 class V5(unittest.TestCase):
+    def test_saved_race_and_fixed_eight_avoid_presenter(self):
+        import soccer_slots_v4 as slots
+        import review_render_v3 as r3
+        import soccer_v5_cards as cards
+        for path in (ROOT/'data/soccer_race.json', FIX/'race.json'):
+            plan=slots.program('race',read(path))
+            for original in plan['narration']['segments']:
+                for fixed in (False,True):
+                    seg=copy.deepcopy(original)
+                    if fixed and seg['kind']=='standings':
+                        for row in seg['meta']['rows']:row['points']=8
+                    for t in (0,1.4,18):
+                        r3.set_program_clock(0)
+                        r3.set_caption(seg['text'],20,100,speaker=2,hide_caption=seg['kind']=='outro')
+                        r3.set_program_clock(t)
+                        im=slots.frame(t,seg,plan)
+                        errors=cards.check_frame(im,plan['clubs']) if fixed else slots.check_frame(im,plan)
+                        self.assertEqual(errors,[])
+        r3.set_caption('',0,0);r3.set_program_clock(None)
+
     def test_preview_cli_handles_native_video_reports(self):
         import preview_soccer_v5 as preview
         with tempfile.TemporaryDirectory() as directory:
             report=dict(mode='native-mode',seconds=20,screens=4)
-            with patch.object(sys,'argv',['preview_soccer_v5','--out',directory]),patch.object(preview,'audio_for',return_value=[]),patch('soccer_results_render.ensure_ffmpeg'),patch('soccer_results_render.render_video',return_value=report),patch('soccer_slots_v4.render_video',return_value=report):
+            with patch.object(sys,'argv',['preview_soccer_v5','--out',directory]),patch.object(preview,'saved_preview_material',return_value=read(FIX/'preview.json')),patch.object(preview,'audio_for',return_value=[]),patch('soccer_results_render.ensure_ffmpeg'),patch('soccer_results_render.render_video',return_value=report),patch('soccer_slots_v4.render_video',return_value=report):
                 self.assertEqual(preview.main(),0)
             data=read(Path(directory)/'confirmation.json')
             self.assertEqual([p['mode'] for p in data['previews']],['preview','race','week','results','voices'])

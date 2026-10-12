@@ -241,10 +241,11 @@ def thumbnail(context, path):
 
 
 def main():
-    parser = argparse.ArgumentParser(add_help=False)
+    parser = argparse.ArgumentParser(add_help=False, allow_abbrev=False)
     parser.add_argument('--postseason', default='data/postseason.json')
     parser.add_argument('--mode', default='postseason')
     parser.add_argument('--narration-out')
+    parser.add_argument('--narration')
     parser.add_argument('--audio-dir', default='build/mr_audio_postseason')
     parser.add_argument('--out', default='build/morning')
     parser.add_argument('--require-audio', action='store_true')

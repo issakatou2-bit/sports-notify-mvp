@@ -39,6 +39,9 @@ def check(document):
                 errors.append(f'行{index}: {row["name"]}のシリーズ勝敗が材料と不一致')
         line = card.get('next_line') or (segment.get('meta') or {}).get('next_line') or {}
         facts = line.get('facts') or {}
+        spoken_game = re.search(r'第(\d+)戦', text)
+        if facts.get('game') and spoken_game and int(spoken_game[1]) != int(facts['game']):
+            errors.append(f'行{index}: 次の試合番号が材料と不一致')
         when, published = facts.get('jst'), line.get('publication_at')
         if when and published:
             try:
