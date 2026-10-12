@@ -1,0 +1,12 @@
+{
+  "task": "soccer-results-schedule",
+  "base_main": "2f86ba3f",
+  "local_checks_passed": true,
+  "test_files": 123,
+  "log": "build/run_checks-resume-final.log",
+  "log_sha256": "35db76656c1da0cb0954c0a1cf6283d9b2a84ad67221234b61f073fa2fa756e0",
+  "pytest_disable_plugin_autoload": true,
+  "ci_verified": false,
+  "live_new_competition_fetch_verified": false,
+  "published_verified": false
+}
