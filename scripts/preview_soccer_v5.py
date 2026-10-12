@@ -90,9 +90,11 @@ def detailed_badge_comparison(out):
 def saved_preview_material():
     import notability_engine as ne
     import club_display_names as names
+    import soccer_match_interest as interest
     data=json.loads((ROOT/'data/soccer_games.json').read_text(encoding='utf-8'))
+    data=interest.attach_season_stats(data)
     selected=[];leagues=set()
-    for game in data['games']:
+    for game in sorted(data['games'],key=lambda g:not bool(interest.expectation(g))):
         # 保存材料は日本人フラグを持たない。既存名簿から所属だけを補う。
         # 出場・先発・今の所属を新しく確認した材料としては扱わない。
         people={side:[p['name_jp'] for p in ne.jp_players_for_club(
@@ -104,7 +106,7 @@ def saved_preview_material():
             leagues.add(game['league'])
         if len(selected)==3:break
     if len(selected)<3:raise ValueError('異なるリーグの実カード3件を保存材料から選べません')
-    return dict(data,games=selected,source='ESPN/football-data.org（main保存分・所属は既存名簿）',
+    return dict(data,games=selected,source='ESPN・football-data.org',
                 preview_provenance='保存された実カード/日時＋既存名簿による表示試作。新しい出場確認/公開は行わない。')
 
 
@@ -112,6 +114,7 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer-v5-previews')
     ap.add_argument('--screens-only',action='store_true')
+    ap.add_argument('--compare-badges',action='store_true',help='以前のA/B比較も明示的に作る（既定は選んだ札だけ）')
     args=ap.parse_args();out=args.out.resolve();out.mkdir(parents=True,exist_ok=True)
     os.environ['COLLESPO_SOCCER_LOOK']='v5';os.environ['COLLESPO_SHORT_LOOK']='v4';os.environ['COLLESPO_DUO']='off'
     import soccer_v5_cards as c
@@ -123,10 +126,12 @@ def main():
     import review_render_v3 as r3
     from preview_unified_v3 import sheet
     render.ensure_ffmpeg(out)
-    a,b=(badge_sheet(out,v) for v in ('A','B'))
-    detailed_badge_comparison(out)
-    compare=__import__('PIL.Image',fromlist=['Image']).new('RGB',(2160,1920),c.PITCH)
-    compare.paste(a,(0,0));compare.paste(b,(1080,0));compare.save(out/'05_club_tags_AB.png')
+    badge_sheet(out,os.environ.get('COLLESPO_SOCCER_BADGE','B'))
+    if args.compare_badges:
+        a,b=(badge_sheet(out,v) for v in ('A','B'))
+        detailed_badge_comparison(out)
+        compare=__import__('PIL.Image',fromlist=['Image']).new('RGB',(2160,1920),c.PITCH)
+        compare.paste(a,(0,0));compare.paste(b,(1080,0));compare.save(out/'05_club_tags_AB.png')
     reports=[];collection=[];labels=[]
     for mode in ('preview','race','week','results','voices'):
         directory=out/mode;directory.mkdir(exist_ok=True)
@@ -140,19 +145,8 @@ def main():
         elif mode=='results':
             data=results.build(json.loads((ROOT/'scripts/fixtures/soccer-results/scoreboards.json').read_text(encoding='utf-8')),
                 json.loads((ROOT/'scripts/fixtures/soccer-results/summaries.json').read_text(encoding='utf-8')),'2026-09-20')
-            from soccer_v5_program import add_player_scene,player_result_frame
+            from soccer_v5_program import add_player_scene
             narr=add_player_scene(render.narration(data),data);clubs=render.resolve_clubs(data)
-            detail=next(s for s in narr['segments'] if s['meta'].get('player_detail'))
-            person=next(p for p in data['players'] if p['name']==detail['meta']['player_detail'])
-            game=next(g for g in data['games'] if g['id']==person['event_id'])
-            proposal_dir=out/'player-stat-options';proposal_dir.mkdir(exist_ok=True)
-            spec=render.program_spec(data)
-            for i,kind in enumerate(('score','appearance','plays'),1):
-                im=player_result_frame(3,person,game,clubs,spec,kind)
-                errors=c.check_frame(im,clubs)
-                if errors:raise ValueError('成績案の配置: '+str(errors))
-                im.save(proposal_dir/f'option-{i}-{kind}.png')
-            save_json(proposal_dir/'source.json',dict(player=person,game=game,video_choice='score'))
             draw=lambda t,seg:render.frame(t,seg,data,clubs)
             check=lambda im:render.validate_frame(im,data,clubs)
             movie=lambda audio:render.render_video(data,narr,audio,directory)

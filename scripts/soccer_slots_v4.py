@@ -162,7 +162,14 @@ def program(mode,data):
     import soccer_preview
     import soccer_race
     import soccer_jp_week
-    return {'preview':soccer_preview.v4_program,'race':soccer_race.v4_program,'week':soccer_jp_week.v4_program}[mode](data)
+    if mode=='preview' and soccer_look.v5():
+        import soccer_match_interest
+        data=soccer_match_interest.attach_season_stats(data)
+    plan={'preview':soccer_preview.v4_program,'race':soccer_race.v4_program,'week':soccer_jp_week.v4_program}[mode](data)
+    if mode=='preview' and soccer_look.v5():
+        import soccer_match_interest
+        plan=soccer_match_interest.enrich_plan(plan)
+    return plan
 
 
 def frame(t,seg,plan):

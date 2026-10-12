@@ -4,6 +4,7 @@
 """
 from functools import lru_cache
 import math
+import os
 from pathlib import Path
 import re
 
@@ -137,7 +138,9 @@ def tag_width(club,height):
     return math.ceil(max(f.getlength(club['abbr']),b[2]-b[0])+height*SLANT+height*.82+22)
 
 
-def scarf(im,box,club,variant='A',label=True,fringe=False,inline=False):
+def scarf(im,box,club,variant=None,label=True,fringe=False,inline=False):
+    variant=variant or os.environ.get('COLLESPO_SOCCER_BADGE','B')
+    if variant not in ('A','B'):raise ValueError('札の案はAかBだけです')
     x,y,right,bottom=map(round,box);w,h=right-x,bottom-y
     base,second,ink,outline,woven=colors(club)
     layer=Image.new('RGB',(w,h),base);d=ImageDraw.Draw(layer)
@@ -356,18 +359,34 @@ def cover(t,spec,clubs):
 def preview(t,spec,clubs):
     im=canvas(t,clubs,spec.get('label','欧州サッカー　予告'))
     heading(im,spec['league']+'　'+spec['date'],'キックオフは日本時間')
-    stat(im,(L,392,R,654),spec['time'],'キックオフ',CHALK)
-    y=716
+    interest=spec.get('interest') or {};details=bool(interest.get('reasons') or interest.get('player'))
+    if details:
+        panel(im,(L,350,R,520))
+        text(im,L+276,364,spec['time'],106,CHALK,width=360,number=True)
+        text(im,L+38,486,'キックオフ',24,MUTED,width=240)
+    else:stat(im,(L,392,R,654),spec['time'],'キックオフ',CHALK)
+    y=548 if details else 716
     for side in ('home','away'):
         club=clubs[spec[side]]
-        panel(im,(L,y,R,y+174),fill=mix(PITCH,colors(club)[0],.28))
-        club_name(im,L+42,y+20,clubs[spec[side]],46,width=R-L-200)
+        panel(im,(L,y,R,y+(134 if details else 174)),fill=mix(PITCH,colors(club)[0],.28))
+        club_name(im,L+42,y+18,clubs[spec[side]],40 if details else 46,width=R-L-200)
         rank=(spec.get('ranks') or {}).get(side)
         if rank:text(im,R-138,y+26,str(rank)+'位',32,MUTED,width=98)
-        text(im,L+36,y+100,'ホーム' if side=='home' else 'アウェー',24,MUTED,width=120)
+        offset=82 if details else 100
+        text(im,L+36,y+offset,'ホーム' if side=='home' else 'アウェー',24,MUTED,width=120)
         names='・'.join((spec.get('jp') or {}).get(side,[]))
-        if names:text(im,L+176,y+100,names,30,LIME,width=R-L-224)
-        y+=206
+        if names:text(im,L+176,y+offset,names,26 if details else 30,LIME,width=R-L-224)
+        y+=158 if details else 206
+    if details:
+        panel(im,(L,882,R,1120))
+        if interest.get('reasons'):text(im,L+46,894,'注目理由',22,MUTED,width=300,role='interest')
+        for i,row in enumerate(interest.get('reasons',[])):
+            text(im,L+46,926+i*35,row['text'],28,LIME,width=R-L-96,role='interest')
+        player=interest.get('player')
+        if player:
+            import soccer_match_interest
+            text(im,L+46,1008,'期待選手 '+player['name'],30,width=R-L-220,role='interest')
+            text(im,L+46,1056,soccer_match_interest.stats_label(player)+' '+soccer_match_interest.player_numbers(player),28,width=R-L-230,role='interest')
     return finish(im,t,spec)
 
 

@@ -1,0 +1,86 @@
+{
+  "base": "8ca0138a",
+  "tests": 120,
+  "legacy_pixels": 21,
+  "v4_pixels": 71,
+  "checks_last_line": "===== すべて通過 =====",
+  "videos": [
+    {
+      "mode": "preview",
+      "decode": "PASS",
+      "query": "PASS",
+      "audio_segments": 5,
+      "minimum_rms": 1509.89,
+      "bytes": 1642743
+    },
+    {
+      "mode": "race",
+      "decode": "PASS",
+      "query": "PASS",
+      "audio_segments": 4,
+      "minimum_rms": 1546.03,
+      "bytes": 941875
+    },
+    {
+      "mode": "results",
+      "decode": "PASS",
+      "query": "PASS",
+      "audio_segments": 5,
+      "minimum_rms": 1546.03,
+      "bytes": 1184697
+    }
+  ],
+  "previews": [
+    {
+      "material_sha256": "3600f4c998ad4351247adf924315d5f77d31f3c9ce1120d95c06018836e47253",
+      "sample_fictional": false,
+      "publication": "not performed",
+      "mode": "preview",
+      "seconds": 33.87,
+      "title": "【欧州サッカー】鎌田大地のクリスタルパレスがノッティンガムFと対戦 #Shorts",
+      "screens": 5,
+      "layout_badges_numbers": "PASS"
+    },
+    {
+      "material_sha256": "07fd62a666a3458295bb570bcd1b7643a850c5d13534314ce1290c8eef354ccc",
+      "sample_fictional": false,
+      "publication": "not performed",
+      "mode": "race",
+      "seconds": 18.7,
+      "title": "【欧州サッカー】上田綺世のリール、CL圏内まで勝点1｜リーグ・アン 順位争い #Shorts",
+      "screens": 4,
+      "layout_badges_numbers": "PASS"
+    },
+    {
+      "material_sha256": "1b1d96cf0332a125c9beed52d6a1028e661f577c97e0b7e937af0b878f87fba2",
+      "sample_fictional": false,
+      "publication": "not performed",
+      "mode": "week",
+      "screens": 8
+    },
+    {
+      "material_sha256": "d8189fb2aed9c9dd6fd6778eca1921cc1779fd9e615a5152aaf8918786f36e34",
+      "sample_fictional": false,
+      "publication": "not performed",
+      "date_jst": "2026-09-20",
+      "title": "【欧州サッカー】上田綺世がゴール｜ニース 2-1 リール ほか 日本人選手の結果 #Shorts",
+      "video_seconds": 22.8,
+      "voice_seconds": 21.973333333333333,
+      "video": "C:\\Users\\issak\\Desktop\\pwa-mvp\\build\\codex\\tmp\\soccer-v5-previews3\\results\\collespo_soccer_results.mp4",
+      "layout_club_badges_numbers": "PASS",
+      "voice_settings": "既存設定不変",
+      "mode": "results",
+      "screens": 5
+    },
+    {
+      "material_sha256": "acdc25112d16a30e20be44ea1903dc046c6e844fc1786c0f0aba201ca03ed7dc",
+      "sample_fictional": true,
+      "publication": "not performed",
+      "mode": "voices",
+      "screens": 6
+    }
+  ],
+  "badge_default": "B",
+  "club_table": "本人採用・fc350e2eから不変",
+  "publication": false
+}

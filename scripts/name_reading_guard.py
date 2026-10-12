@@ -68,6 +68,7 @@ def entries():
     live=[p for key in ('JP_PLAYERS_SOCCER','JP_PLAYERS_MLB') for p in getattr(ne,key,[])]
     known=set(player_data()['japanese_players'])|{p['name_jp'] for p in live}
     out={name:('player',player_readings().get(name,'')) for name in known}
+    out.update({name:('player',reading) for name,reading in player_readings().items()})
     out.update({name:('player',reading) for name,reading in player_data().get('short_readings',{}).items()})
     out.update({p['name_en']:('player',player_readings().get(p['name_jp'],'')) for p in live if p.get('name_en')})
     out.update({alias:('player',player_readings().get(name,''))
@@ -106,7 +107,7 @@ def assert_known(text, entities=()):
         name=match[1]
         if name not in generic and name not in team_names and not clubs.lookup(name) and not manager_reading(name):
             raise NameReadingError('監督名の読み辞書が未登録: '+name)
-    generic_players={'日本人','日本代表','代表','若手','新人','新','前','現','元','同','各','両','全','他','主力','所属','一部','当該','注目','現地','海外','登録','欠場','出場','先発','救援','中継','中継ぎ','左腕','右腕','二刀流','歴代','支配下','育成','契約','控え','対戦相手','外国人','内野','外野','現役','親子','両先発','実力派','野球','伝説的','位置','中核','複数','日本人複数','好調','主軸','月間最優秀','先発両','最速','奪三振','人気','構成','著名'}
+    generic_players={'日本人','日本代表','代表','若手','新人','新','前','現','元','同','各','両','全','他','主力','所属','一部','当該','注目','期待','現地','海外','登録','欠場','出場','先発','救援','中継','中継ぎ','左腕','右腕','二刀流','歴代','支配下','育成','契約','控え','対戦相手','外国人','内野','外野','現役','親子','両先発','実力派','野球','伝説的','位置','中核','複数','日本人複数','好調','主軸','月間最優秀','先発両','最速','奪三振','人気','構成','著名'}
     for match in re.finditer(r'(?<![一-龯﨑々])([一-龯﨑々]{2,6})(?:選手|投手)',text or ''):
         name=match[1]
         if name not in generic_players and not player_reading(name):
@@ -120,6 +121,7 @@ def dialogue_entities(dialogue):
         meta=seg.get('meta') or {}
         if seg.get('kind') in ('jp_player','cover'):out.append(('player',meta.get('name')))
         if meta.get('player_detail'):out.append(('player',meta['player_detail']))
+        if meta.get('expectation_name'):out.append(('player',meta['expectation_name']))
         for key in ('club','home','away','manager','coach'):
             if isinstance(meta.get(key),str):out.append(('manager' if key in ('manager','coach') else 'club',meta[key]))
         for key in ('jp','jp_players','absent'):

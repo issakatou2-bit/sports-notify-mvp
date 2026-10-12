@@ -5,7 +5,7 @@
     "scripts/characters.py": "cf4af9b4d6924eaa3283f9e3cb4d914c711ab6965e70b5aa9f1d2f2d8092ea33",
     "scripts/video_common.py": "c17c9168576dd22f6a7e69c0abb611c9072c71bf7f5b6c0c85e8ae291af791a0",
     "scripts/generate_video.py": "177b85300a36a97fd86d5dbc3b8bf0368471a47cca422e1dfe18b23a32b91ca6",
-    "scripts/generate_morning_short.py": "89373f2136837472901346ba4dbe3a7ffa1878d347d29b2aeb0dc5e45d72f275"
+    "scripts/generate_morning_short.py": "c168c8c804e6e6ee5a9b6a841131c51c669e1d6b1aae4b7941603f49b40d6f3e"
   },
   "functions": {
     "scripts/review_render_v3.py": {
@@ -89,5 +89,10 @@
       "voice_screen": "a27592628308bb0cd1c509fc76ee35213cdc2fd089a956cb0b72f83d9ddef331",
       "material_numbers": "9f9f44dde571e0ec8c503abbc7a9fc6e48c9fffa207bd24c3e1060c602fbe30c"
     }
+  },
+  "main_refresh": {
+    "base": "8ca0138a470be27e8a234faf12491b6ed7eb4cbc",
+    "reason": "mainの#135 article-sourcesの説明文出典処理を保持。画素基準92コマは変更なし。",
+    "previous_source_hash": "89373f2136837472901346ba4dbe3a7ffa1878d347d29b2aeb0dc5e45d72f275"
   }
 }
