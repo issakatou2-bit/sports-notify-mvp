@@ -166,7 +166,8 @@ def render_segment(seg,layers=False):
         image=next_line.frame(3,seg['meta']['card']['next_line'])
         errors=v3_rules.check_layout(image)
         if errors:raise ValueError('次情報の札が安全域外です: '+str(errors))
-        return image,{'layout':'next_line','safe':True}
+        manifest={'layout':'next_line','safe':True}
+        return (image,manifest,image.convert('RGBA')) if layers else (image,manifest)
     side={2:'right',3:'left'}.get(seg['speaker'])
     if side is None:raise ValueError('画面素材のない話者です')
     card=seg['meta']['card']

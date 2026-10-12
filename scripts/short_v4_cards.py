@@ -57,12 +57,29 @@ def inline_badge(im,x,y,tid,size,height):
     tid=str(tid);base=ImageColor.getrgb(ne.MLB_TEAM_COLOR[tid])
     second=ImageColor.getrgb(r3.TEAM_SECONDARY_COLORS.get(tid,'#C4CED4'))
     width=inline_badge_width(tid,size);box=[x,y,x+width,y+height]
+    if pinstripe_enabled():
+        return pinstripe_badge(im,x,y,tid,width,height,inline=True)
     d=ImageDraw.Draw(im);d.rounded_rectangle(box,radius=6,fill=base,outline=second,width=2)
     r3.record_box(im,'team_badge',box)
     f=r3.font(max(14,round(size*.55)));abbr=ne.MLB_TEAM_ABBR[tid]
     dy=f.getbbox(abbr)[1];h=f.getbbox(abbr)[3]-dy
     r3._text(d,(x+8,y+(height-h)/2-dy),abbr,font=f,fill=badge_ink(base))
     im.info.setdefault('v4_badges',[]).append(dict(team_id=tid,abbr=abbr,base=base,ink=badge_ink(base),box=box,inline=True))
+
+
+def pinstripe_enabled():
+    from mlb_pinstripe_badge import enabled
+    return r3.LOOK=='v4' and enabled()
+
+
+def pinstripe_badge(im,x,y,tid,width,height,inline=False):
+    from mlb_pinstripe_badge import render
+    stamp=render(tid,width,height)
+    im.paste(stamp,(round(x),round(y)),stamp)
+    box=[x,y,x+stamp.width,y+stamp.height]
+    r3.record_box(im,'team_badge',box)
+    im.info.setdefault('v4_badges',[]).append(dict(stamp.info['badge'],box=box,inline=inline))
+    return stamp.width
 
 
 def lines(value, size, width):
@@ -200,6 +217,9 @@ def team_badge(im,x,y,abbr,tid=None,width=110):
     from PIL import ImageColor
     base=ImageColor.getrgb(ne.MLB_TEAM_COLOR.get(str(tid),'#102833'))
     second=ImageColor.getrgb(r3.TEAM_SECONDARY_COLORS.get(str(tid),'#C4CED4'))
+    if pinstripe_enabled() and str(tid) in ne.MLB_TEAM_ABBR:
+        if abbr!=ne.MLB_TEAM_ABBR[str(tid)]:raise ValueError('球団IDと略称が不一致')
+        return pinstripe_badge(im,x,y,tid,width,54)
     return club_tag(im,x,y,abbr,base,second,width)
 
 
@@ -209,6 +229,7 @@ def mini_badge(im,x,y,tid):
     abbr=ne.MLB_TEAM_ABBR[str(tid)]
     base=ImageColor.getrgb(ne.MLB_TEAM_COLOR[str(tid)])
     second=ImageColor.getrgb(r3.TEAM_SECONDARY_COLORS.get(str(tid),'#C4CED4'));ink=badge_ink(base)
+    if pinstripe_enabled():return pinstripe_badge(im,x,y,tid,70,38)
     box=[x,y,x+70,y+38]
     panel(im,box,base,second);text(im,x+10,y+8,abbr,20,ink,width=50)
     im.info.setdefault('v4_badges',[]).append(dict(abbr=abbr,base=base,ink=ink,box=box))

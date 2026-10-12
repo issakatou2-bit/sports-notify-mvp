@@ -22,6 +22,7 @@ permissions:
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
   COLLESPO_SHORT_LOOK: ${{ inputs.look || 'v3' }}
+  COLLESPO_MLB_BADGE: ${{ vars.COLLESPO_MLB_BADGE || '' }}
   COLLESPO_DUO: ${{ inputs.duo || 'off' }}
 
 jobs:
