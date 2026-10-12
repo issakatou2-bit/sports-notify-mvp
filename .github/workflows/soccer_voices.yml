@@ -25,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       COLLESPO_SHORT_LOOK: v4
+      COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v4' }}
       COLLESPO_DUO: 'off'
     steps:
       - uses: actions/checkout@v4

@@ -30,6 +30,7 @@ import subprocess
 import sys
 
 import requests
+import name_reading_guard
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 try:
@@ -114,6 +115,8 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
     正しく読めないことがあり(「朗希」「滉大」など)、画面の表記は
     正しいのに音だけ違う、という状態になるため。
     """
+    original = text
+    name_reading_guard.assert_known(original)
     text = apply_readings(text)
     try:
         q = requests.post(
@@ -123,6 +126,9 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
         )
         q.raise_for_status()
         query = q.json()
+        checked = name_reading_guard.validate_query(original, query)
+        out_path.with_suffix('.reading.json').write_text(
+            json.dumps(dict(original=original,spoken=text,check=checked,query=query),ensure_ascii=False,indent=2),encoding='utf-8')
         query["speedScale"] = SPEED_SCALE
 
         # 応答に無いキーを送るとエンジンが422を返すことがある。
@@ -148,6 +154,9 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
         s.raise_for_status()
         out_path.write_bytes(s.content)
         return True
+    except name_reading_guard.NameReadingError:
+        # 読み違い/辞書欠測を「無音で続行」へ落とさない。
+        raise
     except Exception as e:
         print(f"[warn] 音声合成に失敗しました: {e}", file=sys.stderr)
         return False
@@ -193,6 +202,7 @@ def main():
     if not segments:
         print("[info] セグメントが空のためスキップします")
         return
+    name_reading_guard.validate_dialogue(data)
 
     out_dir = pathlib.Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)

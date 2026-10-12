@@ -8,6 +8,8 @@ import shutil
 import subprocess
 
 from PIL import ImageDraw
+import soccer_look
+soccer_look.activate()
 import review_render_v3 as r3
 import short_v4_cards as v4
 import soccer_v4_cards as cards
@@ -94,6 +96,9 @@ def pair_layout(voice,clubs,reply=False):
 
 
 def quote_fits(v,clubs):
+    if soccer_look.v5():
+        import soccer_v5_program as v5
+        return v5.quote_fits(v,clubs)
     try:
         total=pair_layout(v,clubs)['height']+sum(pair_layout(r,clubs,True)['height']+16 for r in v.get('reply_ja',[]))
         return total <= r3.CONTENT_BOTTOM-342
@@ -157,6 +162,9 @@ def voice_screen(t,data,voice,clubs,duration):
 
 
 def frame(t,seg,data,clubs=None,duration=20):
+    if soccer_look.v5():
+        import soccer_v5_program as v5
+        return v5.voices_frame(t,seg,data,clubs or clubs_for(data),duration,spec(data))
     if r3.LOOK!='v4':raise ValueError('新設のサッカー現地の声はv4専用')
     clubs=clubs or clubs_for(data)
     if seg['kind']=='outro':
@@ -179,6 +187,15 @@ def material_numbers(data):
 
 
 def check_frame(im,data,clubs):
+    if soccer_look.v5():
+        import soccer_v5_cards as v5
+        errors=v5.check_frame(im,clubs)
+        if not im.info.get('v3_outro'):
+            extra=set(cards.drawn_numbers(im))-material_numbers(data)
+            if extra:errors.append({'numbers_missing_from_material':sorted(extra)})
+        if data.get('sample_fictional') and not any('架空' in e.get('text','') for e in im.info.get('v3_layout',[])):
+            errors.append({'fictional_label_missing':True})
+        return errors
     errors=rules.check_layout(im)+cards.check_club_badges(im,clubs)
     # Shared outro rows slide in; evaluate its final spacing after the entrance, without changing it.
     if not im.info.get('v3_outro') or im.info.get('soccer_outro_elapsed',0)>=3:
@@ -232,7 +249,7 @@ def render_video(data,narr,audio,out):
                 im.save(out/f'{i+1:02d}.png');images.append(im);layouts.append(im.info)
                 for k in range(round(duration*FPS)):
                     r3.set_program_clock(clock+k/FPS);im=frame(k/FPS,seg,data,clubs,duration)
-                    proc.stdin.write(vc.short_transition(previous,im,k,FPS,True))
+                    proc.stdin.write(soccer_look.transition(previous,im,k,FPS))
                 previous=im.tobytes();clock+=duration
         finally:
             proc.stdin.close();code=proc.wait();r3.set_program_clock(None)

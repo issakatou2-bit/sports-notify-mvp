@@ -1449,27 +1449,8 @@ JP_PLAYERS_MLB = [
 #
 # 姓と名の間に読点を入れているのは、続けて読ませると
 # アクセントがつながって一語のように聞こえるため。
-JP_PLAYER_READINGS = {
-    "大谷翔平": "オオタニ、ショウヘイ",
-    "ダルビッシュ有": "ダルビッシュ、ユウ",
-    "佐々木朗希": "ササキ、ロウキ",
-    "山本由伸": "ヤマモト、ヨシノブ",
-    "菅野智之": "スガノ、トモユキ",
-    "菊池雄星": "キクチ、ユウセイ",
-    "今永昇太": "イマナガ、ショウタ",
-    "鈴木誠也": "スズキ、セイヤ",
-    "千賀滉大": "センガ、コウダイ",
-    "松井裕樹": "マツイ、ユウキ",
-    "吉田正尚": "ヨシダ、マサタカ",
-    "岡本和真": "オカモト、カズマ",
-    "村上宗隆": "ムラカミ、ムネタカ",
-    "小笠原慎之介": "オガサワラ、シンノスケ",
-    "今井達也": "イマイ、タツヤ",
-    "ヌートバー": "ヌートバー",
-    # 「陸浮」は確実に誤読する。名簿をカナから漢字に直したので、
-    # ここも同時に入れる（片方だけ直すと読み上げが崩れる）。
-    "西田陸浮": "ニシダ、リクウ",
-}
+from scripts.name_reading_guard import player_readings as _player_readings
+JP_PLAYER_READINGS = _player_readings()
 
 
 # 外国人選手の姓の読み。
@@ -1578,6 +1559,8 @@ def apply_readings(text: str) -> str:
     """
     if not text:
         return text
+    from scripts.name_reading_guard import apply as apply_name_readings
+    text = apply_name_readings(text)
     for kanji in sorted(JP_PLAYER_READINGS, key=len, reverse=True):
         text = text.replace(kanji, JP_PLAYER_READINGS[kanji])
     # Only speech changes: preserve WCS/WS in cards, captions, titles and ledgers.
@@ -2080,15 +2063,20 @@ def club_name_jp(name: str) -> str:
     まず名簿(日本人選手のクラブ)を見るのは、そちらが実際に配信へ
     出る表記だから。両方に載っているクラブで表記が割れないようにする。
     """
+    from scripts import club_display_names as display_names
+    import os
+    legacy = os.environ.get('COLLESPO_SOCCER_LOOK') != 'v5' and os.environ.get('COLLESPO_SHORT_LOOK') != 'v5'
+    if not legacy and display_names.lookup(name):
+        return display_names.display(name, legacy=legacy)
     norm = normalize_club(name)
     if not norm:
         return name
     for p in JP_PLAYERS_SOCCER:
         if p["match"] in norm:
-            return p["team_jp"]
+            return p["team_jp"] if legacy else display_names.display(p["team_jp"])
     for key in _SOCCER_CLUB_KEYS:
         if key in norm:
-            return SOCCER_CLUB_NAME_JP[key]
+            return SOCCER_CLUB_NAME_JP[key] if legacy else display_names.display(SOCCER_CLUB_NAME_JP[key])
     return name
 
 
