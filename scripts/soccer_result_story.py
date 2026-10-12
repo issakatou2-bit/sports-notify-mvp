@@ -74,13 +74,14 @@ def frame(t,seg,data,clubs):
     plain=c.text if render.soccer_look.v5() else c.plain
     if seg['kind']=='followup':
         g=next(g for g in data['games'] if g['id']==seg['meta']['event_id'])
+        row=next(r for r in data['preview_followup']['games'] if r['event_id']==g['id']);answer=row.get('answer')
         plain(im,c.L,270,'昨夜の注目試合の結果',48,width=c.R-c.L)
         for i,side in enumerate(('home','away')):
-            y=380+i*180;c.panel(im,(c.L,y,c.R,y+148))
+            y=380+i*180 if answer else 600+i*300
+            c.panel(im,(c.L,y,c.R,y+148))
             plain(im,c.L+24,y+8,'ホーム' if side=='home' else 'アウェー',22,width=560)
             c.club_name(im,c.L+24,y+62,clubs[g[side]['name_jp']],38,width=650)
             plain(im,c.R-150,y+20,g['score'][side],100,width=120,number=True)
-        row=next(r for r in data['preview_followup']['games'] if r['event_id']==g['id']);answer=row.get('answer')
         if answer:
             c.panel(im,(c.L,840,c.R,1070))
             plain(im,c.L+22,860,'期待選手 '+answer['name'],36,width=c.R-c.L-44)
