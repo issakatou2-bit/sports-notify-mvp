@@ -497,6 +497,27 @@ def quote_pages(row,top=374):
     return [wrapped[i:i+capacity] for i in range(0,len(wrapped),capacity)],size
 
 
+
+def live_line(im,value):
+    """引用の上の小さな行（元の動画の題など）。
+
+    10/12、YouTube の英語の動画題が幅に入らず、17:30 の回が丸ごと作られなかった。
+    この行は補足なので、訳されていない英語の題や、縮めても入らない題は出さずに、
+    動画は作る。出さなかった理由は記録に残す。
+    """
+    value=(value or '').strip()
+    if not value:return False
+    if not re.search(r'[ぁ-んァ-ヶ一-龠]',value):
+        print(f'[info] 引用の上の行を省きました（日本語の無い題）: {value[:60]}')
+        return False
+    try:
+        text(im,L,264,value,36,width=R-L)
+    except ValueError as e:
+        if '幅に入りません' not in str(e):raise
+        print(f'[info] 引用の上の行を省きました（幅に入らない）: {value[:60]}')
+        return False
+    return True
+
 def quotes(t,voices,label,live,ticker,source,animate=True):
     import v3_slot_render as common
     voices=[v for v in voices if not v.get('fact')]
@@ -505,7 +526,7 @@ def quotes(t,voices,label,live,ticker,source,animate=True):
     row=active or (visible[-1] if visible else (voices[0] if voices else None))
     im=canvas(t,label)
     if not animate:im.info['skip_short_effects']=True
-    text(im,L,264,common.screen_text(live),36,width=R-L)
+    live_line(im,common.screen_text(live))
     if not row:return finish(im,t,ticker,source)
     top=374
     # 読み終えた親の引用が収まるときは、返信の上に暗くして残す。
