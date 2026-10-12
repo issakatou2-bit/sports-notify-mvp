@@ -1,0 +1,937 @@
+{
+  "summary": {
+    "file_versions": 1823,
+    "texts": 3167,
+    "recent_texts": 2482,
+    "read_errors": [
+      {
+        "file": "data/transactions.json",
+        "blob": "15036a953ad9f33f2a83834ea7a00c3c4bdf0b40",
+        "error": "Expecting property name enclosed in double quotes: line 2 column 1 (char 2)"
+      }
+    ]
+  },
+  "errors": [
+    {
+      "reason": "監督名の読み辞書が未登録: エンゼルス",
+      "text": "ジョン・モゼリアクがクルト・スズキのエンゼルス監督復帰を支持したことについて詳報。また、マイク・トラウトがLFに移る模様。",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "7f41a1db36dd7e1136af5dcb829bdc1a4e977143",
+          "path": "/posts/0/jp",
+          "date": "2026-09-29",
+          "revisions": [
+            "8f2fffac936c773a885b1297e4c5fdf8ca06fd58"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 親子",
+      "text": "White Sox先発Smith、親子選手の会話",
+      "sources": [
+        {
+          "file": "data/local_buzz.json",
+          "blob": "8070eeda2d2892deff7edb554cacb8961fca9d48",
+          "path": "/teams/3/gist",
+          "date": "2026-10-03",
+          "revisions": [
+            "74b07443aae715c74fb4b3f517b8c3110c855529"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: ドジャース",
+      "text": "ドジャース監督がポストシーズンへ向けた大谷翔平の体調を明かす",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "3f56afdb7b3dfd1dd56585c53881f21fb82b9f02",
+          "path": "/headlines/2/jp",
+          "date": "2026-09-30",
+          "revisions": [
+            "504ebb343757e3862ae64d37349f7a96e2f8e331"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: ドジャース",
+      "text": "ドジャース監督、ポストシーズン控え大谷翔平の故障者情報を懸念",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "4c03b62157161cd03ccc29c25d1152622bc02c22",
+          "path": "/headlines/2/jp",
+          "date": "2026-09-18",
+          "revisions": [
+            "797fa1706a2f94bbf535d55ecc2ae01670deef15"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: 再度",
+      "text": "フィリーズのフロント部門は今オフシーズン最初の問題に直面している: ドン・マテリーと再度監督契約するのか、それとも別のアプローチか",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "f5864df6453b0f09e17150a46713349568b50764",
+          "path": "/posts/4/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "e21b82eda5459526c667f084ce7091b9e4fc76ad"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 両先発",
+      "text": "ポストシーズン(ワイルドカードシリーズ)の第1戦を迎える両チームは、レギュラーシーズンで【ともにポストシーズン進出を決めている】立場だ。パドレスは防御率3.21、12勝を挙げたMichael Kingを先発に据え、カブスはMatthew Boyd(防御率3.91、10勝)で対抗する。投手有利とされるペトコ・パークでの一戦となるだけに、両先発投手の投げ合いと、得点が生まれやすいかどうかに注目したい。",
+      "sources": [
+        {
+          "file": "archive/2026-09-29.json",
+          "blob": "3ea03d4a57921785a9902ba9357384b264508ad6",
+          "path": "/games/3/ai_summary",
+          "date": "2026-09-29",
+          "revisions": [
+            "e631b9ca71b171d7e58de814284baa05eae910a5"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: パット・マーフィー",
+      "text": "今夜のブルワーズ戦でジェイコブ・ミシオロフスキーはリリーフで登板可能か？パット・マーフィー監督は「あり得る」と答えた。「ただそうだからというわけではない。状況を見極めて判断する必要がある。ただ、投手陣は調子がいい」",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "f5864df6453b0f09e17150a46713349568b50764",
+          "path": "/posts/6/jp",
+          "date": "2026-10-08",
+          "revisions": [
+            "e21b82eda5459526c667f084ce7091b9e4fc76ad"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 実力派",
+      "text": "ガーディアンズはア・リーグ中地区で【地区優勝マジック6】の立場にあり、現在5連勝中と勢いがある。一方のレッドソックスはポストシーズン圏内にいるものの2連敗中で、直近10試合で4勝6敗と足踏みしている。Parker Messick(防御率2.57、12勝9敗)とPayton Tolle(防御率3.02、9勝6敗)という実力派投手による対戦となり、フェンウェイ・パークの左翼に立ちはだかる高さ11メートルのグリーンモンスターが、打球の行方をどう変えるかに注目したい。",
+      "sources": [
+        {
+          "file": "archive/2026-09-22.json",
+          "blob": "working",
+          "path": "/games/5/ai_summary",
+          "date": "2026-09-22",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "archive/2026-09-22.json",
+          "blob": "fc6e060863c343d7ced19f32df723ba6b41073f5",
+          "path": "/games/5/ai_summary",
+          "date": "2026-09-22",
+          "revisions": [
+            "ca30427273de966d2c1cd52d84819bfa3b401fa0"
+          ]
+        },
+        {
+          "file": "archive/2026-09-22.json",
+          "blob": "933996af3be96bb6889dd1014b8345f8d4d34b7b",
+          "path": "/games/5/ai_summary",
+          "date": "2026-09-22",
+          "revisions": [
+            "179f30a34ff947581a961cf1a298bb9425d8a76c"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: ドジャース",
+      "text": "ドジャース監督、地区シリーズ前に大谷翔平への大胆な宣言",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "1c85ca90e541ba6537987133d3c969be2086605c",
+          "path": "/headlines/1/jp",
+          "date": "2026-10-01",
+          "revisions": [
+            "243c27487ea6e9b26650824ddde26112b244679a"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 野球",
+      "text": "「20億6000万ウォンの給与を放棄」：日本の大スター・ダルビッシュ有も巨額寄付！野球選手か慈善家か？",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "bfcbe8164bbef6d0f804c0a82cf413cee9430987",
+          "path": "/headlines/4/jp",
+          "date": "2026-09-22",
+          "revisions": [
+            "15f51f23a5b131813133b39b0ae82f92b11102a8"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 伝説的",
+      "text": "伝説的選手だ。",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "working",
+          "path": "/posts/5/jp",
+          "date": "2026-10-11",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "data/local_reporters.json",
+          "blob": "766b806d23d6d751a1626beab4ceb2eaceecb9c3",
+          "path": "/posts/5/jp",
+          "date": "2026-10-11",
+          "revisions": [
+            "3ea7ded744952dfa2f80026b710185412dfaf002"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 位置",
+      "text": "ロペルフィド、今井達也、Logan VanWeyはアストロズのワイルドカードシリーズロスターに選ばれた。投手12名、位置選手14名を選出。",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "69cfc6b6347bdfb76000927a570eafa6a6313597",
+          "path": "/posts/1/jp",
+          "date": "2026-09-30",
+          "revisions": [
+            "3960243115a83852c24fd74c0a43e66b05737c9a"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 中核",
+      "text": "ツインズは構築したい若き中核選手がいるが、他の選手はどうする？残留・放出予想の詳細分析 ⚾",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "d0e63b216d4e601737ed52aba968177d495ca3f2",
+          "path": "/posts/6/jp",
+          "date": "2026-10-06",
+          "revisions": [
+            "744f47a04ffcad5cf2dc8ac04f434dd2140fb8c0"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 複数",
+      "text": "レッドソックス複数選手が負傷で戦力ダウン",
+      "sources": [
+        {
+          "file": "data/local_buzz.json",
+          "blob": "cc3d46f095f3a98fe00f40e4c44cc8d8da938afe",
+          "path": "/teams/4/gist",
+          "date": "2026-09-18",
+          "revisions": [
+            "797fa1706a2f94bbf535d55ecc2ae01670deef15"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 日本人複数",
+      "text": "堂安律vs鈴木唯人、日本人複数選手が激突するフランクフルト戦",
+      "sources": [
+        {
+          "file": "archive/2026-09-19.json",
+          "blob": "working",
+          "path": "/games/4/notification_hook",
+          "date": "2026-09-19",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "archive/2026-09-19.json",
+          "blob": "612beffba32d2786ec1b2dc163d944b0bed37883",
+          "path": "/games/4/notification_hook",
+          "date": "2026-09-19",
+          "revisions": [
+            "ca30427273de966d2c1cd52d84819bfa3b401fa0"
+          ]
+        },
+        {
+          "file": "archive/2026-09-19.json",
+          "blob": "eacfc5a65705f1a83c14cf4a759344037171fae4",
+          "path": "/games/4/notification_hook",
+          "date": "2026-09-19",
+          "revisions": [
+            "61679bffa06f7f8662319bf9607a2e88a81485e8"
+          ]
+        },
+        {
+          "file": "data/soccer_games.json",
+          "blob": "d3ec72bbfb25c6e0ee59c3d4c6506da8dc8dcbeb",
+          "path": "/games/0/notification_hook",
+          "date": "2026-09-19",
+          "revisions": [
+            "ccdd61b573984b8c0aff1ee5670e87c30ed5ae8b"
+          ]
+        },
+        {
+          "file": "archive/2026-09-19.json",
+          "blob": "253272d88bf469b2968b9e01246e27ec3c4cd7c9",
+          "path": "/games/4/notification_hook",
+          "date": "2026-09-19",
+          "revisions": [
+            "a7af95d9bc5c934762bd4747b8927e90153a5a16"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 複数",
+      "text": "悪天候の影響と複数選手のケガ",
+      "sources": [
+        {
+          "file": "data/local_buzz.json",
+          "blob": "5760425b66e99c30238ff8063ce29976b02134c6",
+          "path": "/teams/5/gist",
+          "date": "2026-09-22",
+          "revisions": [
+            "15f51f23a5b131813133b39b0ae82f92b11102a8"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 好調",
+      "text": "Sean Burkeの11勝とHunter Brownの好調投手戦。ワイルドカード第2戦の鍵は？",
+      "sources": [
+        {
+          "file": "archive/2026-09-30.json",
+          "blob": "working",
+          "path": "/games/1/notification_hook",
+          "date": "2026-09-30",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "archive/2026-09-30.json",
+          "blob": "0122024ba4e55de2755110cf5397cb5aa8850c8b",
+          "path": "/games/1/notification_hook",
+          "date": "2026-09-30",
+          "revisions": [
+            "7940d4fa8918cc8b8672bda447c932ab6e8985a0"
+          ]
+        },
+        {
+          "file": "archive/2026-09-30.json",
+          "blob": "06e5bf7c715a018d3a29145351c44b10bdd710de",
+          "path": "/games/1/notification_hook",
+          "date": "2026-09-30",
+          "revisions": [
+            "f28ab6e586dd573f38db404915c0e77fc8f53100"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 主軸",
+      "text": "ナ・リーグ西地区で【97勝61敗のドジャースが地区優勝を決める】一方、88勝70敗で2位のパドレスはワイルドカード争いを続けている同地区対決である。近年の西地区を二分してきた両チームの伝統の好カードであり、直近10試合でパドレスが8勝2敗と好調を保つ中での対戦となる。先発はドジャースがTyler Glasnow（防御率3.46、5勝1敗）、パドレスはNick Pivetta（防御率3.30、3勝2敗）と、ともに今季の主軸投手が揃う。MLBで3番目に古い現役球場となるドジャー・スタジアムでの投手戦がどのような形で決着するかに注目したい。",
+      "sources": [
+        {
+          "file": "archive/2026-09-24.json",
+          "blob": "working",
+          "path": "/games/11/ai_summary",
+          "date": "2026-09-24",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "archive/2026-09-24.json",
+          "blob": "0c9211a42aae03196a76bb1e2d395e4dcc76b08e",
+          "path": "/games/11/ai_summary",
+          "date": "2026-09-24",
+          "revisions": [
+            "b4d26cffc170bfed6552286470d26bcdb5c279e8"
+          ]
+        },
+        {
+          "file": "archive/2026-09-24.json",
+          "blob": "d83d9e27414859be96cc587f21fb4bda22bca497",
+          "path": "/games/11/ai_summary",
+          "date": "2026-09-24",
+          "revisions": [
+            "037c5c3b71744039d3f7bbdb291d75b0f69d8baa"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 月間最優秀",
+      "text": "直近10試合で.385に15安打、その前の1ヶ月で.304に28安打だ。お前が間違ってるよ。月間最優秀選手候補だが、お前Cleveland贔屓の野郎だろ",
+      "sources": [
+        {
+          "file": "data/local_voices.json",
+          "blob": "5939e323a396975d41a230f7fb0ea4f1eee3c163",
+          "path": "/voices/3/reply_ja/1/ja",
+          "date": "2026-09-19",
+          "revisions": [
+            "e41a22bc39beda3f633d6aa98d7581006e11547d"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: ドジャース",
+      "text": "ドジャース監督、佐々木朗希がポストシーズンでセーブを担当する可能性を認める 🔥",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "69cfc6b6347bdfb76000927a570eafa6a6313597",
+          "path": "/headlines/5/jp",
+          "date": "2026-09-30",
+          "revisions": [
+            "3960243115a83852c24fd74c0a43e66b05737c9a"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 先発両",
+      "text": "【ワイルドカード1勝1敗の同点】で迎えるレッドソックス対ヤンキースの第2戦。MLBで最も長く続くライバル関係の両チームが、ポストシーズン最初の関門で激突する。ヤンキースはMax Friedが防御率2.80で安定した投球を見せ、レッドソックスはSonny Gray(18勝5敗)の今季の好成績を頼みにする投手戦の様相だ。右翼が浅く、左打者の本塁打が出やすいヤンキー・スタジアムでの一戦だけに、先発両投手がどこまでこの球場の特性を抑え込めるかに注目したい。",
+      "sources": [
+        {
+          "file": "archive/2026-09-30.json",
+          "blob": "working",
+          "path": "/games/2/ai_summary",
+          "date": "2026-09-30",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "archive/2026-09-30.json",
+          "blob": "0122024ba4e55de2755110cf5397cb5aa8850c8b",
+          "path": "/games/2/ai_summary",
+          "date": "2026-09-30",
+          "revisions": [
+            "7940d4fa8918cc8b8672bda447c932ab6e8985a0"
+          ]
+        },
+        {
+          "file": "archive/2026-09-30.json",
+          "blob": "06e5bf7c715a018d3a29145351c44b10bdd710de",
+          "path": "/games/2/ai_summary",
+          "date": "2026-09-30",
+          "revisions": [
+            "f28ab6e586dd573f38db404915c0e77fc8f53100"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 最速",
+      "text": "レイズが大リーグ最速投手ホプキンスを昇格",
+      "sources": [
+        {
+          "file": "data/local_buzz.json",
+          "blob": "0a9f1ba09e735c2e2783eb3eba2c0c9056795990",
+          "path": "/teams/3/gist",
+          "date": "2026-09-13",
+          "revisions": [
+            "cf0c0443af07399bfaeb02036fa83c6ae273d247"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: パット・マーフィー",
+      "text": "パット・マーフィー監督：\"ギャップを狙え、サル。ちぇっ、メリル。\"史上最高のインタビューの瞬間 🎤",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "d0e63b216d4e601737ed52aba968177d495ca3f2",
+          "path": "/posts/2/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "744f47a04ffcad5cf2dc8ac04f434dd2140fb8c0"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: パット・マーフィー",
+      "text": "ブルワーズのジェイコブ・ミシオロウスキーは今夜ブルペンで投げられるか？パット・マーフィー監督は「可能性はある。ただし『とりあえず』ではなく、賢く判断して状況を見極める必要がある。ただ、うちの投手陣の調子は悪くないと思う」",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "ee3d5eb2da75659f20b84d785c9d661b01724607",
+          "path": "/posts/7/jp",
+          "date": "2026-10-08",
+          "revisions": [
+            "386fb76061beb6149865429d47ffa923d4650185"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 両先発",
+      "text": "ポストシーズン地区シリーズで【レイズが1勝0敗でリード】している中での第2戦。レイズは【98勝64敗】でア・リーグ東地区首位を確保し、先発のFreddy Peraltaは直近6登板で自責1以下に抑えている。一方ヤンキースはシーズン成績で93勝68敗、同地区2位。ヤンキースの先発Cam Schlittlerは防御率1.95、14勝6敗と安定した成績を残しており、両先発投手の投げ合いがこのシリーズの行方を左右する可能性がある。ドーム球場のトロピカーナ・フィールドでの戦いだけに、天候に左右されない安定した投球ができるチームが有利になるかにも注目したい。",
+      "sources": [
+        {
+          "file": "archive/2026-10-05.json",
+          "blob": "working",
+          "path": "/games/1/ai_summary",
+          "date": "2026-10-05",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "archive/2026-10-05.json",
+          "blob": "704c6fe3ed6ab20ffa13c6488b12a13db2adaa8b",
+          "path": "/games/1/ai_summary",
+          "date": "2026-10-05",
+          "revisions": [
+            "3bc6a150d37b44929bd23b04c946c0e1c74d1808"
+          ]
+        },
+        {
+          "file": "archive/2026-10-05.json",
+          "blob": "7d9670fcd3df4e03810b9fa2557d14cf90129256",
+          "path": "/games/1/ai_summary",
+          "date": "2026-10-05",
+          "revisions": [
+            "e7e78a3ecc337fbd22b504ba3e45ff938d2ee9c6"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: パット・マーフィー",
+      "text": "パット・マーフィー監督「ギャップを狙え、サル。ちぇっ、メリル」 史上最高のインゲーム・インタビュー🎙️",
+      "sources": [
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "working",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "e3071f14c53fcd28d864caba73a791641ba34746",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "47c0c19c2fb16f712fe552a6328c95af976e08f3"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "64aa76a64e65827a7d73c1bf0eabb4ff1e60f412",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "c2842c4d4548f9332a9295174c75604f91213751"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "b8fae8f52a3112d30eb627b9e4e10db6b3e3758a",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "0f90be5defe288d567275b7790a81c23e5ace29e"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "2aba00e746290a36fe516b97eab388779b04001d",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "2ecaa376771d9ced5a69c91ef9d887d1955259d6"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "cc88b64029adc555d7c28233245b6ddcde7feec0",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "ce0d3aa37dcf495af127978bed4989682715e795"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "47f64de99ecc451dfae72c0860f7a25bb7457960",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "39f5928c7531d2aab2c36670cfd250f1ad006628"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "3353191b7aac6b055772fa611672d178cb5c207f",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "e1da311bdfc4c64f90e2543f7d295ed954d1a88b"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "6457bef4ceb9a4b4739857bd860d0c9854e49974",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "911489e5142b5e398c53fb0f6be4f7228cac8dda"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "df27d90b59a9eceb1b0eddb50258958d03809771",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "72f86fff36104f44f4c5fae33a298a64359f47b7"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "278f87468ec92a7840175095a3b16de83a10d27d",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "673fd59fa215e106b31e161224a07ac18d93c5de"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "d71320572fe053620fa99145e9b2514e6f1c48a8",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "e21b82eda5459526c667f084ce7091b9e4fc76ad"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "74233bc377ae66507dba11c51c5c22b574314af1",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "d559ab36f95c1b6070efdb8bf7f09a411b38196f"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "f5ec58ba15e0118ccec979f1fc987e6bdc0de446",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "3e6117705c268c7aaaff283013291e0e429efc41"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "3804d6b27ea6d66d5cff9f39eb997703cb70dcdb",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "0253b5b0a7742e4d971d15f358baa94ae3cf2d47"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "6d5388046c26dd09acbb5260cf1854ae62d3eb66",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "49f8fa8f9604503eac009f3667621fc2222c20da"
+          ]
+        },
+        {
+          "file": "data/local_reporters.json",
+          "blob": "67b2930af8128f6b95e5e1f2a202590d75d8a831",
+          "path": "/posts/3/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "b0ddf3f17f378f4c3afd14e2287b8b17ef556c7f"
+          ]
+        },
+        {
+          "file": "data/ps_quotes.json",
+          "blob": "41a3e50cf89d23f647bbf1fed6dd0920068275a7",
+          "path": "/posts/36/jp",
+          "date": "2026-10-07",
+          "revisions": [
+            "b0ddf3f17f378f4c3afd14e2287b8b17ef556c7f"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 奪三振",
+      "text": "ザック=ウィーラーが初回に三者連続奪三振。MLB史上96人目の通算2,000奪三振投手。",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "6ab41d72759c55f67b02719fcbe4824aad748fef",
+          "path": "/posts/4/jp",
+          "date": "2026-09-23",
+          "revisions": [
+            "80f791610dfa7f2b1f837b1680a04900afde9308"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: ドジャース",
+      "text": "ドジャース監督がポストシーズンに向けた大谷翔平の健康状態を明かす 📋",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "69cfc6b6347bdfb76000927a570eafa6a6313597",
+          "path": "/headlines/2/jp",
+          "date": "2026-09-30",
+          "revisions": [
+            "3960243115a83852c24fd74c0a43e66b05737c9a"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "監督名の読み辞書が未登録: 代目",
+      "text": "ニュース：レッドソックスがチャド=トレイシーを49代目監督に指名。",
+      "sources": [
+        {
+          "file": "data/local_reporters.json",
+          "blob": "6ab41d72759c55f67b02719fcbe4824aad748fef",
+          "path": "/posts/5/jp",
+          "date": "2026-09-23",
+          "revisions": [
+            "80f791610dfa7f2b1f837b1680a04900afde9308"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 両先発",
+      "text": "カブスはナ・リーグ中地区で【首位との差5.5ゲーム】を追う2位の立場にあり、シーズン終盤の勝利が貴重になる局面にある。一方、ダイヤモンドバックスはナ・リーグ西地区で10.5ゲーム差の3位と地区優勝への道は遠いが、ワイルドカード(複数地区の上位チーム争い)での可能性を模索する段階である。先発は防御率2.61で13勝をあげるEdardo Rodriguezがダイヤモンドバックスを担当し、防御率4.15のMatthew Boydを擁するカブスとの投げ合いになる。屋根を閉じると打球が伸びにくくなるというチェイス・フィールドの特性が、両先発投手の投球がどう機能するかに影響を与えるか注目したい。",
+      "sources": [
+        {
+          "file": "archive/2026-08-26.json",
+          "blob": "working",
+          "path": "/games/2/ai_summary",
+          "date": "2026-08-26",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 両先発",
+      "text": "ア・リーグ西地区首位のアストロズと、ナ・リーグ東地区で同地区首位との差が大きく開いているメッツの対戦である。アストロズは2位に1.0ゲーム差で首位を守る立場にあり、直近10試合は4勝6敗とやや調子を落としている。一方メッツは67勝67敗のアストロズに対し60勝74敗と、戦績で下回る。両先発投手は防御率でほぼ同等の成績を残しており、Christian Scottの111奪三振とHunter Brownの76奪三振での投げ合いがどう展開するか、またシティ・フィールドでの得点環境がこの試合にどう影響するかに注目したい。",
+      "sources": [
+        {
+          "file": "archive/2026-08-28.json",
+          "blob": "working",
+          "path": "/games/9/ai_summary",
+          "date": "2026-08-28",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 両先発",
+      "text": "両チームともシーズンを通じて苦しい状況にあり、パイレーツは地区4位でリーグ優勝争いから遠く、エンゼルスに至っては53勝88敗の低迷が続いている。そうした中、パイレーツは2連勝中で直近10試合で7勝3敗と調子を上げており、対するエンゼルスは3連敗で直近10試合が1勝9敗と落ち込んでいる。先発陣では、パイレーツのBraxton Ashcraftが防御率3.59で14勝を挙げる安定した投球を見せるのに対し、エンゼルスの菊池雄星は防御率5.65で0勝5敗と苦戦している。PNCパークはMLB全体でも得点が出やすい球場として知られるだけに、両先発投手の投げ合いがどのような展開をもたらすかに注目したい。",
+      "sources": [
+        {
+          "file": "archive/2026-09-05.json",
+          "blob": "working",
+          "path": "/games/26/ai_summary",
+          "date": "2026-09-05",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 両先発",
+      "text": "各地区で【首位を走るドジャースとブレーブス】による東西の強豪同士の対戦である。ドジャースは80勝52敗で西地区を9.5ゲーム差で独走し、直近10試合で7勝3敗と好調を維持している。一方ブレーブスは77勝55敗で東地区首位だが、直近10試合は4勝6敗と足踏み気味だ。注目は両先発投手の対比にある。ドジャース先発の佐々木朗希は114奪三振を記録する投手が、防御率6.23のAJ Smith-Shawverとどう投げ合うかが見どころとなる。",
+      "sources": [
+        {
+          "file": "archive/2026-08-26.json",
+          "blob": "working",
+          "path": "/games/12/ai_summary",
+          "date": "2026-08-26",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 大谷",
+      "text": "今日比べたのはチームの1イニング。大谷選手が実際に打った2安打の再現ではないのだね。",
+      "sources": [
+        {
+          "file": "content/pilot_series/baseball-two-hits.json",
+          "blob": "working",
+          "path": "/segments/20/text",
+          "date": "",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "content/pilot_series/baseball-two-hits.json",
+          "blob": "f11f602eb54318876acc7d7bd4dbc7b1d78d4c1e",
+          "path": "/segments/20/text",
+          "date": "",
+          "revisions": [
+            "9cf55e4c10d49c3bc6e6ef8ac52c42b5052571a5"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 人気",
+      "text": "ブルージェイズとカージナルスは共に地区順位が下位で、首位との差が13ゲーム以上離れた厳しい立場にある中での対戦となる。本シリーズ第2戦は、両チームの現在の勢いが対照的であり、ブルージェイズが2連勝中で流れに乗る中、カージナルスが2連敗で巻き返しを図る重要な一戦である。また、日本の人気選手である岡本和真とヌートバーが所属する両チームが対峙することで、日本国内での関心も高まっている。",
+      "sources": [
+        {
+          "file": "archive/2026-08-01.json",
+          "blob": "working",
+          "path": "/games/2/ai_summary",
+          "date": "2026-08-01",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 好調",
+      "text": "同地区の順位争いで、【3位と5位の直接対決】となるこの一戦は、シリーズ初戦として両チームの今後を左右する重要な試合である。レッドソックスは防御率2.78の好調投手Sonny Grayを先発に予定し、直近10試合で8勝2敗と好調を維持。一方、ブルージェイズはJameson Taillonを投入するが、今季の成績は5.96の防御率と課題が多い。地元ロジャーズ・センターでの先発投手の投げ合いが、この試合の勝負を決める可能性が高い。",
+      "sources": [
+        {
+          "file": "archive/2026-08-10.json",
+          "blob": "working",
+          "path": "/games/0/ai_summary",
+          "date": "2026-08-10",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 大谷",
+      "text": "写真は2024年の大谷選手よ。ここから比べる図は、写真の試合とは別に作った例ね。",
+      "sources": [
+        {
+          "file": "content/pilot_series/baseball-two-hits.json",
+          "blob": "working",
+          "path": "/segments/2/text",
+          "date": "",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        },
+        {
+          "file": "content/pilot_series/baseball-two-hits.json",
+          "blob": "f11f602eb54318876acc7d7bd4dbc7b1d78d4c1e",
+          "path": "/segments/2/text",
+          "date": "",
+          "revisions": [
+            "9cf55e4c10d49c3bc6e6ef8ac52c42b5052571a5"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 構成",
+      "text": "レアル・マドリードとレアル・ベティスが対戦する。昨シーズンのラ・リーガでレアル・マドリードは上位の成績を収め、ベティスは中位に位置していた。【昨季5位と9位の対戦】となる本試合は、スペイン国内最高峰のリーグで異なる立場にある両チームが、新シーズン開幕から間もない時期にどのような戦いを見せるかが焦点となる。両チームの構成選手がどのようなパフォーマンスを発揮するのかに注目したい。",
+      "sources": [
+        {
+          "file": "archive/2026-09-04.json",
+          "blob": "working",
+          "path": "/games/5/ai_summary",
+          "date": "2026-09-04",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 著名",
+      "text": "ドジャースは69勝40敗で地区首位を走る今季の優勝候補であり、大谷翔平、佐々木朗希、山本由伸といった日本を代表する選手たちを擁する強力なチームである。一方、57勝51敗のレッドソックスは地区3位と後塵を拝しているものの、吉田正尚という日本の主力打者を抱えており、両チームに日本発の著名選手が揃った対戦となる。地区優勝を狙うドジャースと、シーズン後半の巻き返しを目指すレッドソックスの衝突であり、両チームの日本人選手がどのような活躍を見せるかが注目される。",
+      "sources": [
+        {
+          "file": "archive/2026-07-31.json",
+          "blob": "working",
+          "path": "/games/1/ai_summary",
+          "date": "2026-07-31",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 好調",
+      "text": "7連敗ナショナルズ vs 菊池雄星。防御率3.12の好調投手と対峙する局面に注目。",
+      "sources": [
+        {
+          "file": "archive/2026-09-11.json",
+          "blob": "working",
+          "path": "/games/6/notification_hook",
+          "date": "2026-09-11",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    },
+    {
+      "reason": "日本人選手名の読み辞書が未登録: 両先発",
+      "text": "アストロズはア・リーグ西地区で2位に2.5ゲーム差をつけて首位を走る強力なチームであり、現在6連勝中と勢いに乗っているのに対し、ブルージェイズは同じア・リーグ東地区で5位と厳しい状況に置かれており、両チームは異なる地区の対戦ながら対照的な立場での一戦となる。加えてこの試合では、アストロズ先発のクリスチャン・ハビエルと、ブルージェイズ先発のシェーン・ビーバーという両先発投手の投げ合いが焦点になるほか、左翼が浅く開閉式屋根を持つダイキン・パークという特性を活かした本塁打が出るかどうかにも注目が集まる。",
+      "sources": [
+        {
+          "file": "archive/2026-08-03.json",
+          "blob": "working",
+          "path": "/games/1/ai_summary",
+          "date": "2026-08-04",
+          "revisions": [
+            "soccer-v5-20261011"
+          ]
+        }
+      ]
+    }
+  ]
+}
