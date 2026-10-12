@@ -578,6 +578,9 @@ jobs:
             build/ps_program_situation*.json
             build/ps_editorial_source.json
             build/morning/ps_program_gate.json
+            build/morning/ps_program_upload_skip.json
+            data/sanity_*.json
+            build/mr_narration_*.json
           retention-days: 7
           if-no-files-found: ignore
 

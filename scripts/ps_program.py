@@ -698,6 +698,28 @@ def metadata(program):
 
 
 def upload(program, argv):
+    # 制作を見送った回は投稿器を呼ばない。今回の停止理由も残す。
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--video')
+    options, _ = parser.parse_known_args(argv)
+    video = Path(options.video) if options.video else None
+    if video is not None and not video.is_file():
+        reason = '動画がないため投稿を見送り（原稿検査・素材不足・制作失敗）'
+        mode = 'postseason' if program['kind'] == 'morning_postseason' else 'daily'
+        report = Path(f'data/sanity_{mode}.json')
+        if report.exists():
+            try:
+                sanity = read(report)
+            except (OSError, json.JSONDecodeError):
+                sanity = {}
+            stopped = (sanity.get('impossible') or []) + (sanity.get('contradictions') or [])
+            if stopped and sanity.get('date_jst') == program['date_jst']:
+                reason = '原稿検査で見送り: ' + ' / '.join(stopped)
+        write(video.parent / 'ps_program_upload_skip.json',
+              dict(status='skipped', reason=reason, kind=program['kind'],
+                   date_jst=program['date_jst'], edition_key=program.get('edition_key'), video=str(video)))
+        print('[info] ' + reason)
+        return
     check_program(program)
     if program.get('rehearsal'):
         raise ValueError('再現用の仮時計で作った動画を公開しません')
@@ -716,9 +738,14 @@ def upload(program, argv):
         values = inspect.signature(original).bind_partial(*args, **kwargs).arguments
         kind = uploader.record_kind(values.get('kind', 'daily'), values.get('morning_mode', 'players'), values.get('sport', 'mlb'))
         return expected if kind == program['kind'] else original(*args, **kwargs)
+    original_argv = sys.argv
     uploader.build_metadata = program_metadata
     sys.argv = ['upload_youtube.py', *argv]
-    uploader.main()
+    try:
+        uploader.main()
+    finally:
+        uploader.build_metadata = original
+        sys.argv = original_argv
     ledger = read(uploader.VIDEOS_PATH)
     row = ledger.get(program['kind'], {}).get(program['date_jst'], {})
     if not row.get('video_id') or row.get('title') != expected['snippet']['title']:
