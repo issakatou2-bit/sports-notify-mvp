@@ -1,5 +1,7 @@
 # 固有名の読みの確認 2026-10-12
 
+同日後続の本人指定で、日本人氏名は姓名をつなげて1句で読む。現在の規則・原因・補正の検査は [NAME_PHRASE_2026-10-12.md](NAME_PHRASE_2026-10-12.md)。以下の読み表も区切りなしへ更新。
+
 既存の `names` 420件は英語→表示の対応表で、実際の読みではなかった。新しい `readings` が音声用の正解。以前のMLB17人の読みを移し、既存サッカー名簿41人の読みと鈴木彩艶/川崎颯太の表記別名を追加した。大谷選手という短い呼び方は `short_readings` に分け、翔平まで補って読まない。
 
 本人指摘の上田綺世は **うえだ あやせ**。JFAも同じ読み。既存エンジンへ漢字のまま渡すとウエダアヤギヌヨ、辞書を通すとウエダアヤセになった。生の応答を試作フォルダの name-query-checks.json に保存。
@@ -8,49 +10,49 @@
 
 読みに使った資料のみを示す。資料の所属先と現所属が同じという意味ではない。所属の名簿は今回更新していない。
 
-| 選手 | 音声へ渡す読み（姓名の間に区切り） | 確認資料 |
+| 選手 | 音声へ渡す読み（姓名をつなぐ） | 確認資料 |
 |---|---|---|
-| 遠藤航 | エンドウ、ワタル | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 三笘薫 | ミトマ、カオル | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
-| 鎌田大地 | カマダ、ダイチ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 高井幸大 | タカイ、コウタ | [協会/クラブ等](https://www.frontale.co.jp/info/2021/0827_1.html) |
-| 田中碧 | タナカ、アオ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 坂元達裕 | サカモト、タツヒロ | [協会/クラブ等](https://www.cerezo.jp/team/players/archive/tatsuhiro_sakamoto-2/) |
-| 前田大然 | マエダ、ダイゼン | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 守田英正 | モリタ、ヒデマサ | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
-| 久保建英 | クボ、タケフサ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 佐藤龍之介 | サトウ、リュウノスケ | [協会/クラブ等](https://www.jfa.jp/news/00034019/) |
-| 伊藤洋輝 | イトウ、ヒロキ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 町田浩樹 | マチダ、コウキ | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
-| 鈴木唯人 | スズキ、ユイト | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 堂安律 | ドウアン、リツ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 佐野海舟 | サノ、カイシュウ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 川﨑颯太 | カワサキ、ソウタ | [協会/クラブ等](https://www.jfa.jp/news/00025317/) |
-| 町野修斗 | マチノ、シュウト | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 宇野禅斗 | ウノ、ゼント | [協会/クラブ等](https://www.s-pulse.co.jp/news/detail/54927) |
-| 橋岡大樹 | ハシオカ、ダイキ | [協会/クラブ等](https://www.jfa.jp/national_team/news/00013467/) |
-| 田中聡 | タナカ、サトシ | [協会/クラブ等](https://www.jfa.jp/national_team/u22_2023/news/00031850/) |
-| 鈴木ザイオン | スズキ、ザイオン | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 南野拓実 | ミナミノ、タクミ | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
-| 瀬古歩夢 | セコ、アユム | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 中村草太 | ナカムラ、ソウタ | [協会/クラブ等](https://www.meiji.ac.jp/koho/press/2024/mkmht000001x9obx.html) |
-| 水多海斗 | ミズタ、カイト | [協会/クラブ等](https://web.gekisaka.jp/player/?47740-47740-eup=) |
-| 冨安健洋 | トミヤス、タケヒロ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 板倉滉 | イタクラ、コウ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 上田綺世 | ウエダ、アヤセ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 後藤啓介 | ゴトウ、ケイスケ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 山本理仁 | ヤマモト、リヒト | [協会/クラブ等](https://www.jfa.jp/news/00025317/) |
-| 小杉啓太 | コスギ、ケイタ | [協会/クラブ等](https://www.bellmare.co.jp/335017) |
-| 菅原由勢 | スガワラ、ユキナリ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
-| 旗手怜央 | ハタテ、レオ | [協会/クラブ等](https://www.jfa.jp/attachment/5a1fa27a-b334-47d4-9af6-3209d3093d95/20171130_u20_member.pdf) |
-| 松木玖生 | マツキ、クリュウ | [協会/クラブ等](https://jfa.jp/news/00030461/) |
-| 斉藤光毅 | サイトウ、コウキ | [協会/クラブ等](https://www.jfa.jp/news/00025317/) |
-| 森下龍矢 | モリシタ、リョウヤ | [協会/クラブ等](https://www.joc.or.jp/games/univ/2019_summer/pdf/meibo.pdf) |
-| 大橋祐紀 | オオハシ、ユウキ | [協会/クラブ等](https://www.bellmare.co.jp/195037) |
-| 伊藤敦樹 | イトウ、アツキ | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
-| 藤本寛也 | フジモト、カンヤ | [協会/クラブ等](https://www.verdy.co.jp/news/15235) |
-| 岩田智輝 | イワタ、トモキ | [協会/クラブ等](https://www.jfa.jp/attachment/5a1fa27a-b334-47d4-9af6-3209d3093d95/20171130_u20_member.pdf) |
-| 平川怜 | ヒラカワ、レイ | [協会/クラブ等](https://www.verdy.co.jp/news/13698) |
+| 遠藤航 | エンドウワタル | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 三笘薫 | ミトマカオル | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
+| 鎌田大地 | カマダダイチ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 高井幸大 | タカイコウタ | [協会/クラブ等](https://www.frontale.co.jp/info/2021/0827_1.html) |
+| 田中碧 | タナカアオ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 坂元達裕 | サカモトタツヒロ | [協会/クラブ等](https://www.cerezo.jp/team/players/archive/tatsuhiro_sakamoto-2/) |
+| 前田大然 | マエダダイゼン | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 守田英正 | モリタヒデマサ | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
+| 久保建英 | クボタケフサ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 佐藤龍之介 | サトウリュウノスケ | [協会/クラブ等](https://www.jfa.jp/news/00034019/) |
+| 伊藤洋輝 | イトウヒロキ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 町田浩樹 | マチダコウキ | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
+| 鈴木唯人 | スズキユイト | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 堂安律 | ドウアンリツ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 佐野海舟 | サノカイシュウ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 川﨑颯太 | カワサキソウタ | [協会/クラブ等](https://www.jfa.jp/news/00025317/) |
+| 町野修斗 | マチノシュウト | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 宇野禅斗 | ウノゼント | [協会/クラブ等](https://www.s-pulse.co.jp/news/detail/54927) |
+| 橋岡大樹 | ハシオカダイキ | [協会/クラブ等](https://www.jfa.jp/national_team/news/00013467/) |
+| 田中聡 | タナカサトシ | [協会/クラブ等](https://www.jfa.jp/national_team/u22_2023/news/00031850/) |
+| 鈴木ザイオン | スズキザイオン | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 南野拓実 | ミナミノタクミ | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
+| 瀬古歩夢 | セコアユム | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 中村草太 | ナカムラソウタ | [協会/クラブ等](https://www.meiji.ac.jp/koho/press/2024/mkmht000001x9obx.html) |
+| 水多海斗 | ミズタカイト | [協会/クラブ等](https://web.gekisaka.jp/player/?47740-47740-eup=) |
+| 冨安健洋 | トミヤスタケヒロ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 板倉滉 | イタクラコウ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 上田綺世 | ウエダアヤセ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 後藤啓介 | ゴトウケイスケ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 山本理仁 | ヤマモトリヒト | [協会/クラブ等](https://www.jfa.jp/news/00025317/) |
+| 小杉啓太 | コスギケイタ | [協会/クラブ等](https://www.bellmare.co.jp/335017) |
+| 菅原由勢 | スガワラユキナリ | [協会/クラブ等](https://www.jfa.jp/samuraiblue/news/00036338/) |
+| 旗手怜央 | ハタテレオ | [協会/クラブ等](https://www.jfa.jp/attachment/5a1fa27a-b334-47d4-9af6-3209d3093d95/20171130_u20_member.pdf) |
+| 松木玖生 | マツキクリュウ | [協会/クラブ等](https://jfa.jp/news/00030461/) |
+| 斉藤光毅 | サイトウコウキ | [協会/クラブ等](https://www.jfa.jp/news/00025317/) |
+| 森下龍矢 | モリシタリョウヤ | [協会/クラブ等](https://www.joc.or.jp/games/univ/2019_summer/pdf/meibo.pdf) |
+| 大橋祐紀 | オオハシユウキ | [協会/クラブ等](https://www.bellmare.co.jp/195037) |
+| 伊藤敦樹 | イトウアツキ | [協会/クラブ等](https://www.jfa.jp/news/00033188/) |
+| 藤本寛也 | フジモトカンヤ | [協会/クラブ等](https://www.verdy.co.jp/news/15235) |
+| 岩田智輝 | イワタトモキ | [協会/クラブ等](https://www.jfa.jp/attachment/5a1fa27a-b334-47d4-9af6-3209d3093d95/20171130_u20_member.pdf) |
+| 平川怜 | ヒラカワレイ | [協会/クラブ等](https://www.verdy.co.jp/news/13698) |
 
 ## 共通辞書
 

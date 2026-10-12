@@ -31,7 +31,7 @@ class Readings(unittest.TestCase):
 
     def test_ueda_space_and_english_alias(self):
         for text in ('上田綺世です。','上田 綺世です。','Ayase Uedaです。'):
-            self.assertIn('ウエダ、アヤセ',ne.apply_readings(text))
+            self.assertIn('ウエダアヤセ',ne.apply_readings(text))
             guard.assert_known(text,[('player',text[:-3])])
 
     def test_omitted_existing_reading_stops(self):
