@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-10-11T06:15:28.006362+00:00",
+  "updated_at": "2026-10-12T06:01:32.453668+00:00",
   "season": "2026",
   "start": "2026-03-15",
-  "end": "2026-10-11",
-  "total_games": 2592,
+  "end": "2026-10-12",
+  "total_games": 2593,
   "min_games": 20,
   "venues": {
     "Sutter Health Park": {
@@ -76,17 +76,17 @@
       "rank": 10,
       "total": 30
     },
-    "American Family Field": {
-      "games": 84,
-      "runs": 749,
-      "avg_runs": 8.92,
-      "rank": 11,
-      "total": 30
-    },
     "Chase Field": {
       "games": 81,
       "runs": 719,
       "avg_runs": 8.88,
+      "rank": 11,
+      "total": 30
+    },
+    "American Family Field": {
+      "games": 85,
+      "runs": 752,
+      "avg_runs": 8.85,
       "rank": 12,
       "total": 30
     },
