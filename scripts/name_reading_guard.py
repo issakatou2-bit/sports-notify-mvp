@@ -195,7 +195,11 @@ def prepare_query(original, query, speaker, url):
     validate_query(original,query,check_phrases=False)
     spans=name_phrase_spans(original,query)
     joins={i for s in spans for i in range(s['first'],s['last'])}
-    if not joins:return query
+    import name_accent_guard
+    if not joins:
+        result=name_accent_guard.prepare(original,query,speaker,url)
+        validate_query(original,result)
+        return result
     result=copy.deepcopy(query);phrases=result['accent_phrases'];merged=[];changed=[]
     index=0
     while index<len(phrases):
@@ -215,6 +219,7 @@ def prepare_query(original, query, speaker, url):
     result['accent_phrases']=merged
     # kanaは元queryの区切り文字を含むため補正後の証拠として使わない。
     result['kana']=''
+    result=name_accent_guard.prepare(original,result,speaker,url)
     validate_query(original,result)
     return result
 
@@ -232,4 +237,7 @@ def validate_query(original, query, check_phrases=True):
     for span in spans:
         if span['first']!=span['last']:
             raise NameReadingError('VOICEVOX queryの氏名が複数句/内部の間: '+span['name'])
-    return dict(status='PASS',names=details,actual_kana=actual,name_phrases=spans)
+    import name_accent_guard
+    accent_checks=name_accent_guard.inspect(original,query) if check_phrases else []
+    return dict(status='PASS',names=details,actual_kana=actual,name_phrases=spans,
+                name_accents=accent_checks,unverified_accents=[r['name'] for r in accent_checks if r['status']=='UNVERIFIED'])

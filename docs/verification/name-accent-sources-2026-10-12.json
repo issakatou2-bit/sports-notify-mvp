@@ -1,0 +1,27 @@
+[
+  {
+    "path": "C:\\Users\\issak\\Desktop\\apsc-video\\scripts\\voicevox_dict.py",
+    "sha256": "7e5a8303444b14bb3f05e3591ade59606b3b19312752095ef3458d9a019d9b77",
+    "functions": [
+      "mora_count",
+      "pattern_to_accent"
+    ]
+  },
+  {
+    "path": "C:\\Users\\issak\\Desktop\\apsc-video\\scripts\\accent_analysis.py",
+    "sha256": "147589fc07e75d274b6ad8303fd9cdaa8780b58427d9c173c26e4637abd4d8e4",
+    "functions": [
+      "katakana",
+      "moras",
+      "pattern"
+    ]
+  },
+  {
+    "path": "C:\\Users\\issak\\Desktop\\apsc-video\\scripts\\check_accent.py",
+    "sha256": "4e2ebe5d9f0b0eca292e12e80eae0eaed955792e67cf555ac36523a0ffd1973e",
+    "functions": [
+      "phrase_pattern",
+      "flatten"
+    ]
+  }
+]
