@@ -107,11 +107,18 @@ jobs:
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/review_board.py
+          DAY: ${{ inputs.date }}
+        run: |
+          if [ -n "$DAY" ]; then
+            python scripts/review_board.py --date "$DAY"
+          else
+            python scripts/review_board.py
+          fi
 
       - name: Check
         env:
           DAY: ${{ inputs.date }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           if [ -n "$DAY" ]; then
             python scripts/healthcheck.py --date "$DAY"

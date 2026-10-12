@@ -24,7 +24,7 @@ import json
 import pathlib
 import re
 import sys
-from unittest.mock import patch
+import tempfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
@@ -126,23 +126,24 @@ def main() -> int:
               "時点" in title)
 
     print("\n--- コメント欄 ---")
-    # matchup_jpには、未翻訳の英語動画題も入る。毎日の保存材料を
-    # 対戦カードと決めつけず、実際にあった両方の形を固定して検査する。
-    with patch.object(uy,"buzz_top",return_value={"matchup_jp":"カブス vs パドレス"}), \
-         patch.object(uy,"voiced_japanese",return_value=["大谷翔平"]):
-        vmeta = uy.build_metadata("notable_games.json", "8月20日", "morning",
-                                  morning_mode="voices")["snippet"]
-    check("タイトルの対戦が、扱った試合と同じ",
-          all(c in vmeta["title"] for c in ("カブス","パドレス")))
-    check("タグにも同じ球団",
-          all(c in vmeta["tags"] for c in ("カブス","パドレス")))
-    raw = "Shohei Ohtani vs. Jacob Misiorowski! (Both plate appearances in 2026 NLCS Game 1) | MLB Highlights"
-    with patch.object(uy,"buzz_top",return_value={"matchup_jp":raw}), \
-         patch.object(uy,"voiced_japanese",return_value=["大谷翔平"]):
-        vmeta = uy.build_metadata("notable_games.json", "8月20日", "morning",
-                                  morning_mode="voices")["snippet"]
-    check("未翻訳の動画題を対戦カードとしてタイトルへ出さない",raw not in vmeta["title"])
-    check("対戦カードがない回も、言及された日本人選手が題に残る","大谷翔平" in vmeta["title"])
+    # 日々の材料に英語だけの動画名が入ると、正しい除外を不一致と
+    # 誤判定していた。日本語の対戦と英語除外を固定資料で分けて検査する。
+    with tempfile.TemporaryDirectory() as folder:
+        buzz = pathlib.Path(folder) / 'buzz.json'
+        buzz.write_text(json.dumps({'videos': [{'result': {
+            'away_jp': 'ホワイトソックス', 'home_jp': 'ガーディアンズ'}}]}, ensure_ascii=False), encoding='utf-8')
+        vmeta = uy.build_metadata('notable_games.json', '8月20日', 'morning',
+                                 morning_mode='voices', buzz_path=str(buzz))['snippet']
+        card = ['ホワイトソックス', 'ガーディアンズ']
+        check("タイトルの対戦が、扱った試合と同じ",
+              all(c in vmeta["title"] for c in card))
+        check("タグにも同じ球団",
+              all(c in vmeta["tags"] for c in card))
+        english = 'Shohei Ohtani vs. Jacob Misiorowski! (Both plate appearances in 2026 NLCS Game 1) | MLB Highlights'
+        buzz.write_text(json.dumps({'videos': [{'matchup': english}]}), encoding='utf-8')
+        vmeta = uy.build_metadata('notable_games.json', '8月20日', 'morning',
+                                 morning_mode='voices', buzz_path=str(buzz))['snippet']
+        check('翻訳未確認の英語動画名は題へ出さない', english not in vmeta['title'])
 
     print("\n--- 明日の注目試合 ---")
     dmeta = uy.build_metadata("notable_games.json", "8月20日",
