@@ -34,6 +34,20 @@ def announced(data,expect=True):
 
 
 class Tests(unittest.TestCase):
+    def test_el_preview_without_japanese_players_uses_competition_registry(self):
+        boards,summaries,data=fixed();preview=announced(data,expect=False)
+        moved={key.replace('FL1_', 'EL_'):value for key,value in boards.items()}
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);(root/'data').mkdir()
+            (root/'data/soccer_competitions.json').write_text(json.dumps({'competitions':[{'code':'EL','name':'ヨーロッパリーグ'}]}),encoding='utf8')
+            with patch.object(results,'ROOT',root):
+                built=results.build(moved,summaries,'2026-09-20',roster=[],preview=preview)
+        results.validate_data(built)
+        self.assertTrue(built['can_make']);self.assertEqual(built['players'],[])
+        self.assertEqual(built['games'][0]['league'],'EL')
+        from test_soccer_results import inspect
+        inspect(built)
+
     def test_cl_results_are_not_dropped_by_five_league_filter(self):
         boards,summaries,data=fixed();preview=announced(data)
         moved={key.replace('FL1_', 'CL_'):value for key,value in boards.items()}
