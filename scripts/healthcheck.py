@@ -193,9 +193,23 @@ def published_ids(day: str):
       ある限り、同じ形の誤報はまた起きる。誤報を出す見張りは、
       見張りが無いより悪い。実物を見に行く。
 
-      RSSなので鍵も枠も要らない。取れなければ -1 を返して、
-      記録だけの判断に戻る(取得できないことを異常とは言わない)。
+      鍵があるときはData API、なければRSS。取れなければNoneを返して、
+      記録だけの判断に戻る(取得できないことを公開0本とは言わない)。
     """
+    # RSSの404が続いているため、鍵があるときはData APIを一次経路にする。
+    # 取得失敗を空一覧（公開0本）へ変換しない。
+    key = os.environ.get('YOUTUBE_API_KEY')
+    if key:
+        import channel_feeds
+        try:
+            age = (datetime.now(JST).date() - datetime.fromisoformat(day).date()).days
+            rows = channel_feeds.fetch_uploads(key, CHANNEL_ID, hours=24 * max(2, age + 2), strict=True)
+            return {row['video_id'] for row in rows
+                    if datetime.fromisoformat(row['published_at'].replace('Z', '+00:00'))
+                    .astimezone(JST).date().isoformat() == day}
+        except Exception:
+            print('[info] Data APIの公開一覧を確認できません。台帳で判断します')
+            return None
     import re
     import time
     import urllib.request
@@ -323,27 +337,37 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
         ) == 0:
             # 試合が無かった。**分からないとき（取得失敗）は欠けとして数える**
             # （黙って見逃すと、サッカーのように何週間も気付かない）。
-            lines.append(f"| {at} | {label} | — | MLBの試合が無い日 |")
+            lines.append(f"| {at} | {label} | 見送り | MLBの試合が無い日 |")
             skipped += 1
         elif kind == "morning" and _no_japanese(
                 (datetime.fromisoformat(day) - timedelta(days=1))
                 .strftime("%Y-%m-%d")):
             # 試合はあったが、日本人選手が誰も出ていない（10/1米国：PSは
             # フィリーズ対ブレーブスだけ）。成績の回は出るはずが無い。
-            lines.append(f"| {at} | {label} | — | 日本人選手の出場が無い日 |")
+            lines.append(f"| {at} | {label} | 見送り | 日本人選手の出場が無い日 |")
             skipped += 1
         elif optional:
             # 「試合の無い日は欠けてよい」と一律に見逃していたので、
             # サッカーが1本も出ていないことに何週間も気付かなかった。
             # 開催があったかどうかは手元のデータで分かる。
-            fixtures = len(((load("data/soccer_games.json") or {})
-                            .get("games")) or [])
-            if fixtures:
+            soccer = load('data/soccer_games.json') or {}
+            stamp = soccer.get('generated_at') or soccer.get('updated_at') or ''
+            try:
+                material_day = datetime.fromisoformat(stamp.replace('Z', '+00:00')).astimezone(JST).date().isoformat()
+            except ValueError:
+                material_day = None
+            games = soccer.get('games')
+            eligible = [g for g in (games or []) if g.get('is_notable')
+                        and (g.get('home_has_jp') or g.get('away_has_jp'))]
+            # 10/10本人OKの制作条件と一致。同じ日の取得成功が必要。
+            if material_day != day or not isinstance(games, list):
                 missing += 1
-                lines.append(f"| {at} | {label} | **出ていない** | "
-                             f"{fixtures}試合あった日 |")
+                lines.append(f"| {at} | {label} | **要確認** | 当日の試合材料を確認できません |")
+            elif eligible:
+                missing += 1
+                lines.append(f"| {at} | {label} | **出ていない** | {len(eligible)}件の日本人注目試合 |")
             else:
-                lines.append(f"| {at} | {label} | — | 試合が無い日 |")
+                lines.append(f"| {at} | {label} | 見送り | 日本人選手のいる注目試合が無い日 |")
                 skipped += 1
         else:
             missing += 1
@@ -364,9 +388,14 @@ def _today_jst(iso: str) -> bool:
     return t.astimezone(JST).date() == datetime.now(JST).date()
 
 
-def check_data() -> tuple:
+def check_data(day=None) -> tuple:
     lines, stale = [], 0
+    target = day or datetime.now(JST).date().isoformat()
+    no_games = _mlb_games((datetime.fromisoformat(target) - timedelta(days=1)).date().isoformat()) == 0
     for path, label in DATA_FILES:
+        if no_games:
+            lines.append(f'| {label} | 見送り | 対象日のMLBの試合が無い日 |')
+            continue
         d = load(path)
         if d is None:
             stale += 1
@@ -592,7 +621,7 @@ def main() -> int:
         missing = 0
     # 当日の途中では、材料が古いのは当たり前(夕方の回がまだ走っていない)。
     # 動画が出たかどうかだけを見る。
-    data_lines, stale = check_data()
+    data_lines, stale = check_data(day)
     if args.today:
         # 当日の途中では、材料が古いのは当たり前(夕方の回がまだ走っていない)
         stale = 0

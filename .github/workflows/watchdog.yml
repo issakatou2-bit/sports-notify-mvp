@@ -57,8 +57,13 @@ jobs:
 
       # 公開時刻が過ぎた枠だけを見る。これから出るものを欠けと言われても
       # 毎回赤くなるだけで、何も伝えていないことになる。
+      - name: Install publication reader
+        run: pip install requests
+
       - name: Check what should already be out
         id: check
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python scripts/healthcheck.py --today
 
       # 欠けていたら、自分で回し直す。

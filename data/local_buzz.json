@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-11T06:02:05.876673+00:00",
+  "updated_at": "2026-10-12T06:01:43.577966+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,50 +13,42 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 12,
-      "tone": "好調",
-      "gist": "ガーディアンズが0-2から逆転しALCS進出"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 10,
-      "tone": "不振",
-      "gist": "ホワイトソックスがAILDS敗退し21奪三振記録"
-    },
-    {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 8,
+      "mentions": 18,
+      "tone": "好調",
+      "gist": "ブリュワーズがNLCS第1戦でドジャースに2-1で勝利"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 11,
       "tone": "話題",
-      "gist": "ブリュワーズとドジャースのNLCS再戦へ"
+      "gist": "ガーディアンズがALCSでレイズと対戦、ラミレスが主導"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 7,
-      "tone": "好調",
-      "gist": "ドジャースが連覇を目指しNLCS準備進行"
+      "mentions": 9,
+      "tone": "不振",
+      "gist": "ドジャースがNLCS第1戦でブリュワーズに1-2で敗北"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 4,
+      "mentions": 8,
       "tone": "話題",
-      "gist": "レイズがALCSでガーディアンズと対戦へ"
+      "gist": "レイズがALCSでガーディアンズと対戦予定"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 1
+      "mentions": 2
     },
     {
       "name": "山本由伸",

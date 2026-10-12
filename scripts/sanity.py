@@ -19,7 +19,8 @@
       「今季初登板の投手が今季15勝」のような、個々の値は正しくても
       並べると噛み合わない文。ここは機械では書ききれない。
 
-  二段目は投稿を止めない。止めるのは一段目だけ。
+  二段目の指摘だけでは投稿を止めない。材料との機械照合で
+  矛盾が確認された場合は、一段目と同様に止める。
   言語模型の違和感は当たることもあれば外れることもあるので、
   それで止めると、正しい日に出せなくなる。
   代わりに実行ページに出して、人が見る。
@@ -364,6 +365,9 @@ PROMPT = """今日は {today}、{season}年シーズンの最中です。
   シーズンでは移籍済みで、原稿のほうが正しいものでした）
 
 文体の好みや構成の提案は要りません。事実の齟齬だけ。
+地区シリーズの2勝3敗での敗退は正しい結果です。
+「A対B」と「B対A」は同じ対戦です。表記順だけを重大な誤りにしないでください。
+相対日付は上記の日本時間の今日を基準に読み、絶対日付と同じなら矛盾ではありません。
 問題がなければ空の配列を返してください。
 JSONだけを返してください。形式:
 [{"severity":"high|low","where":"該当箇所の引用","why":"何がおかしいか"}]
@@ -449,11 +453,20 @@ def main():
         for b in warnings:
             print("  ?", b)
 
-    odd = []
+    import sanity_material
+    documents = []
+    for path in args.narration:
+        try:
+            documents.append(json.loads(pathlib.Path(path).read_text(encoding='utf-8')))
+        except (OSError, json.JSONDecodeError):
+            continue
+    odd, contradictions = sanity_material.assess([], documents)
+    for error in contradictions:
+        print('  NG 材料照合:', error)
     if args.general:
         key = os.environ.get("ANTHROPIC_API_KEY", "")
         if key:
-            odd = general(args.narration, key)
+            odd, contradictions = sanity_material.assess(general(args.narration, key), documents)
             print("\n--- 読んで引っかかるところ ---")
             for o in odd:
                 print("  [%s] %s — %s" % (o.get("severity", "?"),
@@ -466,22 +479,25 @@ def main():
 
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"impossible": impossible, "odd": odd,
+    out.write_text(json.dumps({"impossible": impossible, "odd": odd, "contradictions": contradictions,
+                               "date_jst": next((d.get('date_jst') for d in documents if d.get('date_jst')), None),
                                "warnings": warnings},
                               ensure_ascii=False, indent=2), encoding="utf-8")
 
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
-    if summary and (impossible or odd):
+    if summary and (impossible or contradictions or odd):
         with open(summary, "a", encoding="utf-8") as f:
             f.write("\n## 常識の確認\n\n")
             for b in impossible:
                 f.write("- **ありえない数字** %s\n" % b)
+            for b in contradictions:
+                f.write('- **材料と矛盾** %s\n' % b)
             for o in odd:
                 f.write("- %s 「%s」 — %s\n"
-                        % ("**要確認**" if o.get("severity") == "high" else "参考",
+                        % ("**材料と矛盾**" if o.get("confirmed") else "参考（未確定）",
                            o.get("where", ""), o.get("why", "")))
 
-    return 1 if (impossible and args.strict) else 0
+    return 1 if ((impossible or contradictions) and args.strict) else 0
 
 
 if __name__ == "__main__":

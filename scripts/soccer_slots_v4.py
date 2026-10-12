@@ -11,6 +11,8 @@ import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 
 import notability_engine as ne
+import soccer_look
+soccer_look.activate()
 import review_render_v3 as r3
 import soccer_v4_cards as cards
 import video_common as vc
@@ -160,11 +162,22 @@ def program(mode,data):
     import soccer_preview
     import soccer_race
     import soccer_jp_week
-    return {'preview':soccer_preview.v4_program,'race':soccer_race.v4_program,'week':soccer_jp_week.v4_program}[mode](data)
+    if mode=='preview' and soccer_look.v5():
+        import soccer_match_interest
+        data=soccer_match_interest.attach_season_stats(data)
+    plan={'preview':soccer_preview.v4_program,'race':soccer_race.v4_program,'week':soccer_jp_week.v4_program}[mode](data)
+    if mode=='preview' and soccer_look.v5():
+        import soccer_match_interest
+        plan=soccer_match_interest.enrich_plan(plan)
+    return plan
 
 
 def frame(t,seg,plan):
     if not enabled():raise ValueError('v3の描画は既存の入口を使う')
+    if soccer_look.v5():
+        import soccer_v5_cards as v5
+        if seg['kind']=='outro':return v5.outro(t,seg['meta'],exclude='daily_soccer' if plan['mode']=='preview' else 'soccer_'+plan['mode'],credit=seg['meta']['source'],tagline=TAGLINE)
+        return getattr(v5,seg['kind'])(t,seg['meta'],plan['clubs'])
     if seg['kind']=='outro':return r3.outro(t,seg['meta'],exclude='daily_soccer' if plan['mode']=='preview' else 'soccer_'+plan['mode'],credit=seg['meta']['source'],tagline=TAGLINE)
     return getattr(cards,seg['kind'])(t,seg['meta'],plan['clubs'])
 
@@ -186,6 +199,13 @@ def material_numbers(plan):
 
 
 def check_frame(image,plan):
+    if soccer_look.v5():
+        import soccer_v5_cards as v5
+        errors=v5.check_frame(image,plan['clubs'])
+        if not image.info.get('v3_outro'):
+            extra=set(cards.drawn_numbers(image))-material_numbers(plan)
+            if extra:errors.append(dict(numbers_missing_from_material=sorted(extra)))
+        return errors
     errors=rules.check_layout(image)+rules.check_spacing(image)+cards.check_club_badges(image,plan['clubs'])
     if not image.info.get('v3_outro'):
         extra=set(cards.drawn_numbers(image))-material_numbers(plan)
@@ -230,7 +250,7 @@ def render_video(plan,audio,out):
                 im.save(out/f'{i+1:02d}.png');images.append(im)
                 for k in range(round(duration*30)):
                     r3.set_program_clock(clock+k/30);im=frame(k/30,seg,plan)
-                    proc.stdin.write(vc.short_transition(previous,im,k,30,True))
+                    proc.stdin.write(soccer_look.transition(previous,im,k,30))
                 previous=im.tobytes();clock+=duration
         finally:proc.stdin.close();code=proc.wait();r3.set_program_clock(None)
     if code:raise ValueError('動画生成失敗。ffmpeg.logを確認')

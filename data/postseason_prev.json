@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-10T09:52:46.056119+00:00",
-  "date": "2026-10-10",
+  "updated_at": "2026-10-11T09:52:44.088772+00:00",
+  "date": "2026-10-11",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -131,18 +131,15 @@
       "league_jp": "ア・リーグ",
       "best_of": 5,
       "need": 3,
-      "played": 4,
-      "over": false,
-      "winner": null,
-      "next": {
-        "day": "10月11日",
-        "game": 5
-      },
+      "played": 5,
+      "over": true,
+      "winner": 114,
+      "next": null,
       "teams": [
         {
           "id": 114,
           "name": "ガーディアンズ",
-          "wins": 2,
+          "wins": 3,
           "players": []
         },
         {
@@ -243,11 +240,10 @@
       ]
     },
     {
-      "key": "L:139-wait",
+      "key": "L:114-139",
       "round": "L",
       "round_jp": "リーグ優勝決定シリーズ",
       "stage": 3,
-      "waiting": true,
       "league_jp": "ア・リーグ",
       "best_of": 7,
       "need": 4,
@@ -259,6 +255,12 @@
         "game": 1
       },
       "teams": [
+        {
+          "id": 114,
+          "name": "ガーディアンズ",
+          "wins": 0,
+          "players": []
+        },
         {
           "id": 139,
           "name": "レイズ",
@@ -303,9 +305,24 @@
     }
   ],
   "final_day": [],
-  "headline": "リーグ優勝決定シリーズ ドジャース対ブリュワーズ、10月12日に第1戦",
-  "changes": [],
-  "prev_date": "2026-10-09",
+  "headline": "村上宗隆のホワイトソックスは地区シリーズでガーディアンズに2勝3敗で敗れ、敗退",
+  "changes": [
+    {
+      "key": "D:114-145",
+      "kind": "advance",
+      "text": "村上宗隆のホワイトソックスは地区シリーズでガーディアンズに2勝3敗で敗れ、敗退",
+      "jp": true,
+      "stage": 2
+    },
+    {
+      "key": "L:114-139",
+      "kind": "start",
+      "text": "リーグ優勝決定シリーズ ガーディアンズ対レイズ、10月13日に第1戦",
+      "jp": false,
+      "stage": 3
+    }
+  ],
+  "prev_date": "2026-10-10",
   "japanese": [
     {
       "team_id": 119,
