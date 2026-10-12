@@ -1,0 +1,9 @@
+{
+  "threshold": 30, "max_games": 3, "publish_jst": "19:30",
+  "kickoff_margin_minutes": 45, "window_hours": 24,
+  "competition": {"league": 10, "CL": 25, "EL": 20, "UECL": 15, "cup": 12},
+  "knockout_bonus": {"CL": 20, "EL": 15, "UECL": 15, "cup": 12},
+  "weights": {"derby": 25, "title": 20, "cl": 15, "relegation": 15, "rank": 10, "leader": 10, "points_close": 5, "form": 10, "h2h": 5, "expectation": 10, "marquee_each": 10, "japanese_club": 15, "japanese_available": 10},
+  "marquee_clubs": ["Liverpool FC", "Manchester City FC", "Arsenal FC", "Manchester United FC", "Chelsea FC", "Tottenham Hotspur FC", "Real Madrid CF", "FC Barcelona", "Club Atlético de Madrid", "FC Bayern München", "Borussia Dortmund", "Juventus FC", "AC Milan", "FC Internazionale Milano", "Paris Saint-Germain FC"],
+  "notes": "クラブの大きさは編集上の固定基準。所属15点と公式の出場見込み10点を区別。順位不明に加点しない。"
+}

@@ -351,23 +351,16 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
             # サッカーが1本も出ていないことに何週間も気付かなかった。
             # 開催があったかどうかは手元のデータで分かる。
             soccer = load('data/soccer_games.json') or {}
-            stamp = soccer.get('generated_at') or soccer.get('updated_at') or ''
-            try:
-                material_day = datetime.fromisoformat(stamp.replace('Z', '+00:00')).astimezone(JST).date().isoformat()
-            except ValueError:
-                material_day = None
-            games = soccer.get('games')
-            eligible = [g for g in (games or []) if g.get('is_notable')
-                        and (g.get('home_has_jp') or g.get('away_has_jp'))]
-            # 10/10本人OKの制作条件と一致。同じ日の取得成功が必要。
-            if material_day != day or not isinstance(games, list):
+            import soccer_preview_assessment
+            state,count,reason=soccer_preview_assessment.assessment(soccer,day)
+            if state=='unknown':
                 missing += 1
-                lines.append(f"| {at} | {label} | **要確認** | 当日の試合材料を確認できません |")
-            elif eligible:
+                lines.append(f"| {at} | {label} | **要確認** | {reason} |")
+            elif state=='required':
                 missing += 1
-                lines.append(f"| {at} | {label} | **出ていない** | {len(eligible)}件の日本人注目試合 |")
+                lines.append(f"| {at} | {label} | **出ていない** | 注目試合{count}件 |")
             else:
-                lines.append(f"| {at} | {label} | 見送り | 日本人選手のいる注目試合が無い日 |")
+                lines.append(f"| {at} | {label} | 見送り | {reason} |")
                 skipped += 1
         else:
             missing += 1

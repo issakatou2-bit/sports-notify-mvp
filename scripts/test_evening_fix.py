@@ -79,16 +79,17 @@ class EveningFixTests(unittest.TestCase):
                 os.chdir(previous)
 
     def _soccer_check(self, games, stamp='2026-10-11T09:54:03+00:00'):
+        games=[dict(g,game_id=str(i)) for i,g in enumerate(games)] if isinstance(games,list) else games
         def load(path):
-            return {'games': games, 'generated_at': stamp} if path == 'data/soccer_games.json' else {}
+            return {'games': games, 'generated_at': stamp, 'preview_selection':dict(day='2026-10-11', count=len(games or []), selected_ids=[str(i) for i in range(len(games or []))], reason='注目度がしきい値以上の試合なし')} if path == 'data/soccer_games.json' else {}
         with patch.object(hc, 'load', side_effect=load), patch.object(hc, 'EXPECTED_DAILY', []):
             return hc.check_videos('2026-10-11')
 
-    def test_soccer_non_japanese_fixtures_are_intentional_skip(self):
+    def test_soccer_non_japanese_selected_fixtures_are_required(self):
         lines, missing, skipped, _ = self._soccer_check([{'is_notable': True, 'home_has_jp': False}]*17)
-        self.assertEqual((missing, skipped), (0, 1))
-        self.assertIn('見送り', ' '.join(lines))
-        self.assertIn('日本人', ' '.join(lines))
+        self.assertEqual((missing, skipped), (1, 0))
+        self.assertIn('出ていない', ' '.join(lines))
+        self.assertIn('注目試合', ' '.join(lines))
 
     def test_soccer_eligible_game_missing_is_still_failure(self):
         _, missing, skipped, _ = self._soccer_check([{'is_notable': True, 'away_has_jp': True}])

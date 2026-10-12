@@ -703,7 +703,11 @@ def is_soccer_league(league) -> bool:
     if _SOCCER_LEAGUE_KEYS is None:
         _SOCCER_LEAGUE_KEYS = (set(SOCCER_COMPETITIONS)
                                | set(SOCCER_COMPETITIONS.values()))
-    return bool(league) and league in _SOCCER_LEAGUE_KEYS
+    if not league:return False
+    if league in _SOCCER_LEAGUE_KEYS:return True
+    from pathlib import Path
+    data=json.loads((Path(__file__).resolve().parent/'data/soccer_competitions.json').read_text(encoding='utf8'))
+    return any(league in (c['code'],c['name']) for c in data['competitions'])
 
 
 def is_soccer(game: Game) -> bool:

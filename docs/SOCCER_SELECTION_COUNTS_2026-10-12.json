@@ -1,0 +1,4232 @@
+[
+  {
+    "commit": "268035a344637fe29d7ad501a97d261c978d827d",
+    "material_sha256": "29bf5d904a86bab5331504f4994acc2f368e10f249fd32ecf9feced8ca93dd99",
+    "fixtures": 14,
+    "day": "2026-09-13",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [
+      "560580"
+    ],
+    "count": 1,
+    "reason": "",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "560580",
+        "home": "マンチェスター・ユナイテッド",
+        "away": "マンチェスター・シティ",
+        "rating": {
+          "score": 55,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "derby",
+              "points": 25,
+              "evidence": {
+                "kind": "derby",
+                "text": "マンチェスターダービー",
+                "source": "https://www.mancity.com/news/mens/how-many-manchester-derbies-have-there-been-63799799"
+              }
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Manchester United FC"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Manchester City FC"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "derby",
+                "text": "マンチェスターダービー",
+                "source": "https://www.mancity.com/news/mens/how-many-manchester-derbies-have-there-been-63799799"
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": true
+      },
+      {
+        "id": "565800",
+        "home": "エルバースベルク",
+        "away": "バイエルン",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "FC Bayern München"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559685",
+        "home": "リール",
+        "away": "トロワ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564674",
+        "home": "レアル・ソシエダ",
+        "away": "アトレティコ・マドリード",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Club Atlético de Madrid"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564672",
+        "home": "セルタ",
+        "away": "マラガ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560578",
+        "home": "コベントリー",
+        "away": "ブライトン",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559686",
+        "home": "ル・マン",
+        "away": "ランス",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564675",
+        "home": "レバンテ",
+        "away": "バルセロナ",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "FC Barcelona"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558599",
+        "home": "ナポリ",
+        "away": "ボローニャ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558608",
+        "home": "サッスオーロ",
+        "away": "ユベントス",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Juventus FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559691",
+        "home": "ブレスト",
+        "away": "パリ・サンジェルマン",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Paris Saint-Germain FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558605",
+        "home": "レッチェ",
+        "away": "モンツァ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565799",
+        "home": "ライプツィヒ",
+        "away": "ハンブルク",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564668",
+        "home": "ヘタフェ",
+        "away": "デポルティボ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "4d56968c1987921f263d3fac519ea0965d574792",
+    "material_sha256": "145286da653981ffc485e99a85774f0727d7d8539787afa3512d951be94398f0",
+    "fixtures": 5,
+    "day": "2026-09-14",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "注目度がしきい値以上の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "564671",
+        "home": "ビジャレアル",
+        "away": "レアル・ベティス",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558601",
+        "home": "インテル",
+        "away": "ウディネーゼ",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "FC Internazionale Milano"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558602",
+        "home": "コモ",
+        "away": "パルマ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560579",
+        "home": "リーズ",
+        "away": "ニューカッスル",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558603",
+        "home": "トリノ",
+        "away": "ローマ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "8890caac7e9c522a1012b8979fc85f7df21083dd",
+    "material_sha256": "0266ee56192b9bf286572a9e4613f78ef989898124263c33da36694f499b075d",
+    "fixtures": 3,
+    "day": "2026-09-15",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "注目度がしきい値以上の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "564680",
+        "home": "アラベス",
+        "away": "バレンシア",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差9",
+                "gap": 9.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564681",
+        "home": "エルチェ",
+        "away": "レアル・マドリード",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Real Madrid CF"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差10",
+                "gap": 10.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564678",
+        "home": "ラージョ・バジェカーノ",
+        "away": "エスパニョール",
+        "rating": {
+          "score": 15,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "dae7a2b94c497ec275bb01b90db7c600ea21987f",
+    "material_sha256": "9360c658ed779230810052819b63bb625d40c705be405889ddcc63b6d2f57861",
+    "fixtures": 4,
+    "day": "2026-09-16",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [
+      "564687"
+    ],
+    "count": 1,
+    "reason": "",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "564687",
+        "home": "バルセロナ",
+        "away": "ラシン・サンタンデール",
+        "rating": {
+          "score": 30,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "leader",
+              "points": 10,
+              "evidence": {
+                "kind": "leader",
+                "text": "首位チームと10位の対戦",
+                "ranks": [
+                  1,
+                  10
+                ]
+              }
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "FC Barcelona"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "leader",
+                "text": "首位チームと10位の対戦",
+                "ranks": [
+                  1,
+                  10
+                ]
+              },
+              {
+                "kind": "points",
+                "text": "勝点差8",
+                "gap": 8.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": true
+      },
+      {
+        "id": "564679",
+        "home": "デポルティボ",
+        "away": "セビージャ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  7,
+                  6
+                ],
+                "rank_difference": 1
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  7,
+                  6
+                ],
+                "rank_difference": 1
+              },
+              {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564684",
+        "home": "アトレティコ・マドリード",
+        "away": "オサスナ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Club Atlético de Madrid"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564685",
+        "home": "レバンテ",
+        "away": "アスレティック・ビルバオ",
+        "rating": {
+          "score": 15,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "4c094869d52a5523853d5c558836a4e7d8bd7f69",
+    "material_sha256": "ef1c6863f5e674080c57e8aa3ff1213661842e0ac7659d4a3e92e5c243602342",
+    "fixtures": 2,
+    "day": "2026-09-17",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "注目度がしきい値以上の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "564683",
+        "home": "マラガ",
+        "away": "ビジャレアル",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  18,
+                  19
+                ],
+                "rank_difference": 1
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  18,
+                  19
+                ],
+                "rank_difference": 1
+              },
+              {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564686",
+        "home": "レアル・ベティス",
+        "away": "ヘタフェ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差7",
+                "gap": 7.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "1315915742b9c58e0b7faa28625b15b8629a2f8a",
+    "material_sha256": "08b0c4e5bdbf031d3d87e7870f3e340f02257d50e184666ec4ae13b216146027",
+    "fixtures": 5,
+    "day": "2026-09-18",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "注目度がしきい値以上の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "565804",
+        "home": "バイエルン",
+        "away": "ウニオン・ベルリン",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "FC Bayern München"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559682",
+        "home": "モナコ",
+        "away": "ランス",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560591",
+        "home": "ブレントフォード",
+        "away": "チェルシー",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Chelsea FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558596",
+        "home": "モンツァ",
+        "away": "サッスオーロ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564692",
+        "home": "エスパニョール",
+        "away": "エルチェ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差5",
+                "gap": 5.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "ccdd61b573984b8c0aff1ee5670e87c30ed5ae8b",
+    "material_sha256": "628a312f7c9d9639a96981e691a4859f6a7009e589df99ac403906601eccdf05",
+    "fixtures": 23,
+    "day": "2026-09-19",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [
+      "564690"
+    ],
+    "count": 1,
+    "reason": "",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "564690",
+        "home": "セビージャ",
+        "away": "バルセロナ",
+        "rating": {
+          "score": 30,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "leader",
+              "points": 10,
+              "evidence": {
+                "kind": "leader",
+                "text": "首位チームと5位の対戦",
+                "ranks": [
+                  5,
+                  1
+                ]
+              }
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "FC Barcelona"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "leader",
+                "text": "首位チームと5位の対戦",
+                "ranks": [
+                  5,
+                  1
+                ]
+              },
+              {
+                "kind": "points",
+                "text": "勝点差5",
+                "gap": 5.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": true
+      },
+      {
+        "id": "565811",
+        "home": "フランクフルト",
+        "away": "フライブルク",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565809",
+        "home": "ボルシアMG",
+        "away": "マインツ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558593",
+        "home": "ローマ",
+        "away": "インテル",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "FC Internazionale Milano"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565806",
+        "home": "シュツットガルト",
+        "away": "ドルトムント",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Borussia Dortmund"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560586",
+        "home": "ブライトン",
+        "away": "アーセナル",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Arsenal FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559683",
+        "home": "リヨン",
+        "away": "レンヌ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560587",
+        "home": "トッテナム",
+        "away": "アストン・ヴィラ",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Tottenham Hotspur FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564694",
+        "home": "セルタ",
+        "away": "ラシン・サンタンデール",
+        "rating": {
+          "score": 15,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559680",
+        "home": "トゥールーズ",
+        "away": "ル・アーブル",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558589",
+        "home": "ウディネーゼ",
+        "away": "カリアリ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560584",
+        "home": "エバートン",
+        "away": "イプスウィッチ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560588",
+        "home": "ニューカッスル",
+        "away": "ハル・シティ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564691",
+        "home": "アスレティック・ビルバオ",
+        "away": "アラベス",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  8,
+                  6
+                ],
+                "rank_difference": 2
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  8,
+                  6
+                ],
+                "rank_difference": 2
+              },
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560589",
+        "home": "ノッティンガム・フォレスト",
+        "away": "コベントリー",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564693",
+        "home": "オサスナ",
+        "away": "ラージョ・バジェカーノ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  13,
+                  11
+                ],
+                "rank_difference": 2
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差0",
+                "gap": 0.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  13,
+                  11
+                ],
+                "rank_difference": 2
+              },
+              {
+                "kind": "points",
+                "text": "勝点差0",
+                "gap": 0.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558598",
+        "home": "ボローニャ",
+        "away": "トリノ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565808",
+        "home": "ハンブルク",
+        "away": "ケルン",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565810",
+        "home": "ブレーメン",
+        "away": "アウクスブルク",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559679",
+        "home": "パリFC",
+        "away": "ストラスブール",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558594",
+        "home": "ベネチア",
+        "away": "ラツィオ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559677",
+        "home": "ル・マン",
+        "away": "ロリアン",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559681",
+        "home": "アンジェ",
+        "away": "トロワ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "ba88ab9d12a377bd3ad6a827be923a37e0f204ba",
+    "material_sha256": "db00e50c9996be638c999e7ffc6801ae13b3f8adf6a6b2b61eeb20dd63ff1559",
+    "fixtures": 20,
+    "day": "2026-09-20",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [
+      "564688"
+    ],
+    "count": 1,
+    "reason": "",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "564688",
+        "home": "アトレティコ・マドリード",
+        "away": "レアル・マドリード",
+        "rating": {
+          "score": 45,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  4,
+                  2
+                ],
+                "rank_difference": 2
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Club Atlético de Madrid"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Real Madrid CF"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  4,
+                  2
+                ],
+                "rank_difference": 2
+              },
+              {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": true
+      },
+      {
+        "id": "560582",
+        "home": "ボーンマス",
+        "away": "リバプール",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Liverpool FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559675",
+        "home": "マルセイユ",
+        "away": "パリ・サンジェルマン",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Paris Saint-Germain FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560585",
+        "home": "リーズ",
+        "away": "クリスタル・パレス",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565807",
+        "home": "レバークーゼン",
+        "away": "ライプツィヒ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564695",
+        "home": "デポルティボ",
+        "away": "レアル・ベティス",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差6",
+                "gap": 6.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565803",
+        "home": "パーダーボルン",
+        "away": "ホッフェンハイム",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564689",
+        "home": "バレンシア",
+        "away": "レアル・ソシエダ",
+        "rating": {
+          "score": 15,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560590",
+        "home": "マンチェスター・シティ",
+        "away": "サンダーランド",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Manchester City FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558592",
+        "home": "フロジノーネ",
+        "away": "コモ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558595",
+        "home": "ユベントス",
+        "away": "アタランタ",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Juventus FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558590",
+        "home": "パルマ",
+        "away": "ジェノア",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559678",
+        "home": "ニース",
+        "away": "リール",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560583",
+        "home": "フラム",
+        "away": "マンチェスター・ユナイテッド",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Manchester United FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565805",
+        "home": "シャルケ",
+        "away": "エルバースベルク",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558597",
+        "home": "ACミラン",
+        "away": "レッチェ",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "AC Milan"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558591",
+        "home": "フィオレンティーナ",
+        "away": "ナポリ",
+        "rating": null,
+        "selected": false
+      },
+      {
+        "id": "564697",
+        "home": "ヘタフェ",
+        "away": "マラガ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  17,
+                  20
+                ],
+                "rank_difference": 3
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  17,
+                  20
+                ],
+                "rank_difference": 3
+              },
+              {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559676",
+        "home": "オセール",
+        "away": "ブレスト",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564696",
+        "home": "ビジャレアル",
+        "away": "レバンテ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  15,
+                  16
+                ],
+                "rank_difference": 1
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差0",
+                "gap": 0.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  15,
+                  16
+                ],
+                "rank_difference": 1
+              },
+              {
+                "kind": "points",
+                "text": "勝点差0",
+                "gap": 0.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "985f8226b17eb9604b5ee8981122062b30b87e6d",
+    "material_sha256": "2ee1e7f0060cfced468940032f0e57dc206113e9a360259a2cf0f4774cc0dfd0",
+    "fixtures": 0,
+    "day": "2026-09-21",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "9b0fe11df763f6ea70266b63912199b38ead142c",
+    "material_sha256": "cdc38e00816498624cbc89e6d1ff2ced7cd74bcf84ab97baf29c47ce5db539a1",
+    "fixtures": 0,
+    "day": "2026-09-22",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "91b47aab116a18e08b58c874f547cf85fb151be4",
+    "material_sha256": "70a7266131daeac3c7b5dc08aae8756a2938ee6dd78c086d8c0eca9e34a4b38c",
+    "fixtures": 0,
+    "day": "2026-09-23",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "1bcd0f42effb8b767d3b19a2d840279555b7c201",
+    "material_sha256": "2718f04475b0644ce0f35af3af88e309018d318e5c44326a3a06be86e1077979",
+    "fixtures": 0,
+    "day": "2026-09-24",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "7d9b0d70218e24176982b88d281ec2cf346074ed",
+    "material_sha256": "348cdc4cbcca8ed762ab54297d6cfd1bbc5318246eedbf37def2ff39f9073136",
+    "fixtures": 0,
+    "day": "2026-09-25",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "f23c3ab72100d2c0c15b283b0f706f8b668f31fc",
+    "material_sha256": "e0bc539179e89367a5cda0b8a5e6799668f2fb51aa6211b615ac5b0e40030f7a",
+    "fixtures": 0,
+    "day": "2026-09-26",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "2c6fa12fc0f4bf216979a615e6c4a9a3d221aee9",
+    "material_sha256": "79e0f3ac8d960d76312c303e8a68037d6aef94d9af118af12471039ea1800f83",
+    "fixtures": 0,
+    "day": "2026-09-27",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "1d1c3df12c74c340ea96c3a12af2a30456c9cf0e",
+    "material_sha256": "d2b9a7b4db444b6e857db0a130133e186d4d55cf5b520c51f62fc44c2db399dd",
+    "fixtures": 0,
+    "day": "2026-09-28",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "6775a1889fc729488adcf1ac08b67e06ae4f5e8f",
+    "material_sha256": "c7034f0599eb3ed430f7d7c905be1ac2d7784fb331852248f283f1edc9976ed5",
+    "fixtures": 0,
+    "day": "2026-09-29",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "67a0d1880fec510617543279ab8c2284fc74e7f8",
+    "material_sha256": "4da866c0edd2ed6649618fbc85e02e924fcaeccc91f7e588e9d3f3de6a478532",
+    "fixtures": 0,
+    "day": "2026-09-30",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "3ea682a97709b1ce71b2e1e37f15ec46f26bacad",
+    "material_sha256": "2f338ae783a534297dc0ce58c515670d5036ad482446ddcca8a44efab64bfdcc",
+    "fixtures": 0,
+    "day": "2026-10-01",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "d78b0f63d9245e7910d6ce826fc82a6976dde4de",
+    "material_sha256": "8d95867699942eadc5ae80b28c7c838a1326331bb9174dce456b2cf61a012a05",
+    "fixtures": 0,
+    "day": "2026-10-02",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "7269616a531579536c010fda4d90a55143eda83b",
+    "material_sha256": "7df4dcfb1006e83f436cf37c4dfb275f381a214292fede126d268c08c83a3683",
+    "fixtures": 0,
+    "day": "2026-10-03",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "c0d8881f19a2d383f0012a53aa415ecaf0fa474f",
+    "material_sha256": "9fd5fddfff5aed974f5e9e4ebd412e94e399d25c41267c8afd3941e3f16e6777",
+    "fixtures": 0,
+    "day": "2026-10-04",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "b3ee472b52e5842bb3b89afb0657d4b8ab518a2e",
+    "material_sha256": "3ba5e0103e8cdbb1f12b65c0a87c328149c3a5f283c6a131f1d07b70fc22a3ff",
+    "fixtures": 0,
+    "day": "2026-10-05",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "63294c205f15952a4571e42a3896bcb467111b65",
+    "material_sha256": "fc5a294b57f0bd37a9d654157af955888dde69824ca6d04209166cb6af21bf78",
+    "fixtures": 0,
+    "day": "2026-10-06",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "bdb6b7d39ac9ba66089b5d9ff8c9f0f674c0d7b9",
+    "material_sha256": "7e2e93836c9fc837b6854f414af00f92ec374f1d2d78ab2b7577b91383f3e077",
+    "fixtures": 0,
+    "day": "2026-10-07",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "455a280ad51b7cc548478a51899d6171d0a03e63",
+    "material_sha256": "8b2ac7262b70b78223ad3fa2a496e2f4f6cf3d3499a945404d8666a4dee65667",
+    "fixtures": 0,
+    "day": "2026-10-08",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": []
+  },
+  {
+    "commit": "c41a20bf5c4d0bc648b769cb89ca7fdbb330f70a",
+    "material_sha256": "cf1a43ce95b12cd20739ebb1c27b26f82693f2540b6e6e489db7b61adb5ecf30",
+    "fixtures": 3,
+    "day": "2026-10-09",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "注目度がしきい値以上の試合なし",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "559669",
+        "home": "ランス",
+        "away": "リヨン",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差7",
+                "gap": 7.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565820",
+        "home": "ドルトムント",
+        "away": "ブレーメン",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Borussia Dortmund"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564706",
+        "home": "マラガ",
+        "away": "エスパニョール",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差4",
+                "gap": 4.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "c5c21c6c67a3dd05a5bd03fc468a99cca758513a",
+    "material_sha256": "d07904a6539cc88ce078f0bf3123de4cf835ef3153c5f0ce6644d9105e7b6a87",
+    "fixtures": 24,
+    "day": "2026-10-10",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [
+      "560593",
+      "560600",
+      "564700"
+    ],
+    "count": 3,
+    "reason": "",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "560593",
+        "home": "アーセナル",
+        "away": "リーズ",
+        "rating": {
+          "score": 35,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  2,
+                  5
+                ],
+                "rank_difference": 3
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Arsenal FC"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  2,
+                  5
+                ],
+                "rank_difference": 3
+              },
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": true
+      },
+      {
+        "id": "560600",
+        "home": "マンチェスター・ユナイテッド",
+        "away": "トッテナム",
+        "rating": {
+          "score": 35,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Manchester United FC"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Tottenham Hotspur FC"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": true
+      },
+      {
+        "id": "564700",
+        "home": "バルセロナ",
+        "away": "ヘタフェ",
+        "rating": {
+          "score": 30,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "leader",
+              "points": 10,
+              "evidence": {
+                "kind": "leader",
+                "text": "首位チームと12位の対戦",
+                "ranks": [
+                  1,
+                  12
+                ]
+              }
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "FC Barcelona"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "leader",
+                "text": "首位チームと12位の対戦",
+                "ranks": [
+                  1,
+                  12
+                ]
+              },
+              {
+                "kind": "points",
+                "text": "勝点差13",
+                "gap": 13.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": true
+      },
+      {
+        "id": "558586",
+        "home": "ナポリ",
+        "away": "フロジノーネ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  9,
+                  6
+                ],
+                "rank_difference": 3
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  9,
+                  6
+                ],
+                "rank_difference": 3
+              },
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564702",
+        "home": "レアル・マドリード",
+        "away": "ビジャレアル",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Real Madrid CF"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差7",
+                "gap": 7.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565812",
+        "home": "マインツ",
+        "away": "レバークーゼン",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565819",
+        "home": "アウクスブルク",
+        "away": "バイエルン",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "FC Bayern München"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559674",
+        "home": "リール",
+        "away": "ル・アーブル",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差8",
+                "gap": 8.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565815",
+        "home": "ライプツィヒ",
+        "away": "フランクフルト",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559672",
+        "home": "パリ・サンジェルマン",
+        "away": "ル・マン",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Paris Saint-Germain FC"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565813",
+        "home": "パーダーボルン",
+        "away": "シュツットガルト",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560592",
+        "home": "サンダーランド",
+        "away": "ブライトン",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差6",
+                "gap": 6.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560595",
+        "home": "チェルシー",
+        "away": "ボーンマス",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Chelsea FC"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差4",
+                "gap": 4.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564699",
+        "home": "アラベス",
+        "away": "アトレティコ・マドリード",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Club Atlético de Madrid"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差5",
+                "gap": 5.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558582",
+        "home": "インテル",
+        "away": "パルマ",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "FC Internazionale Milano"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差9",
+                "gap": 9.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559673",
+        "home": "モナコ",
+        "away": "トゥールーズ",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            },
+            {
+              "key": "leader",
+              "points": 10,
+              "evidence": {
+                "kind": "leader",
+                "text": "首位チームと14位の対戦",
+                "ranks": [
+                  1,
+                  14
+                ]
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "leader",
+                "text": "首位チームと14位の対戦",
+                "ranks": [
+                  1,
+                  14
+                ]
+              },
+              {
+                "kind": "points",
+                "text": "勝点差8",
+                "gap": 8.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565818",
+        "home": "ホッフェンハイム",
+        "away": "ハンブルク",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560599",
+        "home": "イプスウィッチ",
+        "away": "フラム",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差4",
+                "gap": 4.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560601",
+        "home": "アストン・ヴィラ",
+        "away": "ブレントフォード",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差5",
+                "gap": 5.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564698",
+        "home": "ラージョ・バジェカーノ",
+        "away": "アスレティック・ビルバオ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  13,
+                  10
+                ],
+                "rank_difference": 3
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差0",
+                "gap": 0.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  13,
+                  10
+                ],
+                "rank_difference": 3
+              },
+              {
+                "kind": "points",
+                "text": "勝点差0",
+                "gap": 0.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558588",
+        "home": "ジェノア",
+        "away": "フィオレンティーナ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  19,
+                  17
+                ],
+                "rank_difference": 2
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  19,
+                  17
+                ],
+                "rank_difference": 2
+              },
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565817",
+        "home": "ウニオン・ベルリン",
+        "away": "エルバースベルク",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559666",
+        "home": "ブレスト",
+        "away": "アンジェ",
+        "rating": {
+          "score": 15,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559668",
+        "home": "ロリアン",
+        "away": "パリFC",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差6",
+                "gap": 6.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  },
+  {
+    "commit": "afc09177e7b00f732b9d73a8c5ef4f76ef836400",
+    "material_sha256": "b9582e1d31d24d92d3d70352d11abfb877f6ab4c04adc5997f395abe79f67065",
+    "fixtures": 17,
+    "day": "2026-10-11",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [
+      "560598",
+      "558584"
+    ],
+    "count": 2,
+    "reason": "",
+    "rejected": [],
+    "source_errors": [],
+    "games": [
+      {
+        "id": "560598",
+        "home": "リバプール",
+        "away": "マンチェスター・シティ",
+        "rating": {
+          "score": 40,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "leader",
+              "points": 10,
+              "evidence": {
+                "kind": "leader",
+                "text": "首位チームと7位の対戦",
+                "ranks": [
+                  7,
+                  1
+                ]
+              }
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Liverpool FC"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Manchester City FC"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "leader",
+                "text": "首位チームと7位の対戦",
+                "ranks": [
+                  7,
+                  1
+                ]
+              },
+              {
+                "kind": "points",
+                "text": "勝点差6",
+                "gap": 6.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": true
+      },
+      {
+        "id": "558584",
+        "home": "カリアリ",
+        "away": "ユベントス",
+        "rating": {
+          "score": 35,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  4,
+                  7
+                ],
+                "rank_difference": 3
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Juventus FC"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  4,
+                  7
+                ],
+                "rank_difference": 3
+              },
+              {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": true
+      },
+      {
+        "id": "558585",
+        "home": "コモ",
+        "away": "ローマ",
+        "rating": null,
+        "selected": false
+      },
+      {
+        "id": "565816",
+        "home": "フライブルク",
+        "away": "シャルケ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560596",
+        "home": "クリスタル・パレス",
+        "away": "ノッティンガム・フォレスト",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  15,
+                  13
+                ],
+                "rank_difference": 2
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  15,
+                  13
+                ],
+                "rank_difference": 2
+              },
+              {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "565814",
+        "home": "ケルン",
+        "away": "ボルシアMG",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ブンデスリーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564707",
+        "home": "レアル・ソシエダ",
+        "away": "デポルティボ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  8,
+                  7
+                ],
+                "rank_difference": 1
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差0",
+                "gap": 0.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  8,
+                  7
+                ],
+                "rank_difference": 1
+              },
+              {
+                "kind": "points",
+                "text": "勝点差0",
+                "gap": 0.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559671",
+        "home": "トロワ",
+        "away": "マルセイユ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  16,
+                  17
+                ],
+                "rank_difference": 1
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差1の直接対決",
+                "ranks": [
+                  16,
+                  17
+                ],
+                "rank_difference": 1
+              },
+              {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "560594",
+        "home": "ハル・シティ",
+        "away": "エバートン",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "プレミアリーグ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  10,
+                  8
+                ],
+                "rank_difference": 2
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差2の直接対決",
+                "ranks": [
+                  10,
+                  8
+                ],
+                "rank_difference": 2
+              },
+              {
+                "kind": "points",
+                "text": "勝点差1",
+                "gap": 1.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558580",
+        "home": "サッスオーロ",
+        "away": "ACミラン",
+        "rating": {
+          "score": 20,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "AC Milan"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差4",
+                "gap": 4.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564705",
+        "home": "ラシン・サンタンデール",
+        "away": "バレンシア",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  16,
+                  19
+                ],
+                "rank_difference": 3
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  16,
+                  19
+                ],
+                "rank_difference": 3
+              },
+              {
+                "kind": "points",
+                "text": "勝点差3",
+                "gap": 3.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564703",
+        "home": "エルチェ",
+        "away": "セルタ",
+        "rating": {
+          "score": 25,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            },
+            {
+              "key": "rank",
+              "points": 10,
+              "evidence": {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  18,
+                  15
+                ],
+                "rank_difference": 3
+              }
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "rank",
+                "text": "順位差3の直接対決",
+                "ranks": [
+                  18,
+                  15
+                ],
+                "rank_difference": 3
+              },
+              {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558581",
+        "home": "レッチェ",
+        "away": "ボローニャ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差4",
+                "gap": 4.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "558583",
+        "home": "ラツィオ",
+        "away": "モンツァ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "セリエA"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差9",
+                "gap": 9.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559670",
+        "home": "ニース",
+        "away": "ストラスブール",
+        "rating": {
+          "score": 15,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            },
+            {
+              "key": "points_close",
+              "points": 5,
+              "evidence": {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差2",
+                "gap": 2.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "559667",
+        "home": "レンヌ",
+        "away": "オセール",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "リーグ・アン"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差4",
+                "gap": 4.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      },
+      {
+        "id": "564701",
+        "home": "レアル・ベティス",
+        "away": "オサスナ",
+        "rating": {
+          "score": 10,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 10,
+              "evidence": "ラ・リーガ"
+            }
+          ],
+          "interest": {
+            "reasons": [
+              {
+                "kind": "points",
+                "text": "勝点差8",
+                "gap": 8.0
+              }
+            ],
+            "player": null
+          },
+          "japanese": false
+        },
+        "selected": false
+      }
+    ]
+  }
+]

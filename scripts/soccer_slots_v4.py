@@ -165,6 +165,9 @@ def program(mode,data):
     if mode=='preview' and soccer_look.v5():
         import soccer_match_interest
         data=soccer_match_interest.attach_season_stats(data)
+    if mode=='preview' and data.get('preview_selection'):
+        import soccer_selected_preview
+        return soccer_selected_preview.program(data)
     plan={'preview':soccer_preview.v4_program,'race':soccer_race.v4_program,'week':soccer_jp_week.v4_program}[mode](data)
     if mode=='preview' and soccer_look.v5():
         import soccer_match_interest
