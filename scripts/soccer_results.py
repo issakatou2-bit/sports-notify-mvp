@@ -119,10 +119,10 @@ def football_check(game,matches):
 
 
 def in_window(ended,target):
-    """その日の夜の試合＝日本時間の target 8時〜翌朝8時に終わった試合（10/10 本人「8時には出揃う？」）。
-    土曜の夜の試合は日曜の朝4〜6時に終わるので、暦の日で切ると1日遅れる。"""
-    start=datetime(target.year,target.month,target.day,8,tzinfo=JST)
-    return start<=ended.astimezone(JST)<start+timedelta(days=1)
+    """対象の夜: 当日7:15以上〜翌朝7:15未満（設定は共通表）。"""
+    from soccer_results_clock import window
+    start,end=window(target)
+    return start<=ended.astimezone(JST)<end
 
 
 def build(boards,summaries,target_date,football=None,roster=None):
@@ -214,7 +214,7 @@ def validate_data(data):
     day=date.fromisoformat(data['date_jst'])
     flattened=[]
     for game in data['games']:
-        if not in_window(utc(game['finished_utc']),day):raise ValueError('終了時刻が対象の夜（8時〜翌8時）の外')
+        if not in_window(utc(game['finished_utc']),day):raise ValueError('終了時刻が対象の夜（締め時刻から翌日の締め時刻）の外')
         if game['home']['id']==game['away']['id']:raise ValueError('対戦クラブが同じ')
         if any(type(v) is not int or v<0 for v in game['score'].values()):raise ValueError('スコアが不正')
         if game['goals_complete']!=all(sum(g['side']==s for g in game['goals'])==game['score'][s] for s in ('home','away')):raise ValueError('得点経過の完全性が不一致')
@@ -255,7 +255,7 @@ def description_lines(data):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--date',default=(datetime.now(JST).date()-timedelta(days=1)).isoformat(),help='終了した日本時間の日')
+    ap.add_argument('--date',default=__import__('soccer_results_clock').target_day().isoformat(),help='終了した日本時間の日')
     ap.add_argument('--scoreboards',type=Path)
     ap.add_argument('--summaries',type=Path)
     ap.add_argument('--football',type=Path)

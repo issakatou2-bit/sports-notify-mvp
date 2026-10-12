@@ -65,8 +65,8 @@ class SoccerResults(unittest.TestCase):
         # 9/19 15:55 UTC（日本時間 9/20 0:55）に終わった試合は 9/19 の夜の回
         self.assertIn('401878778',[g['id'] for g in fixed('2026-09-19')['games']])
         self.assertNotIn('401878778',[g['id'] for g in fixed('2026-09-18')['games']])
-        self.assertTrue(sr.in_window(sr.utc('2026-09-19T22:59:59Z'),sr.date(2026,9,19)))      # 翌朝8時の直前までは入る
-        self.assertFalse(sr.in_window(sr.utc('2026-09-19T23:00:00Z'),sr.date(2026,9,19)))     # 8時ちょうどは次の回
+        self.assertTrue(sr.in_window(sr.utc('2026-09-19T22:14:59Z'),sr.date(2026,9,19)))      # 翌朝8時の直前までは入る
+        self.assertFalse(sr.in_window(sr.utc('2026-09-19T22:15:00Z'),sr.date(2026,9,19)))     # 8時ちょうどは次の回
         summaries['401876452']['summary']['keyEvents']=[]
         changed=sr.build(boards,summaries,'2026-09-20')
         self.assertNotIn('401876452',[g['id'] for g in changed['games']])
@@ -196,7 +196,7 @@ class SoccerResults(unittest.TestCase):
         import yaml
         wf=yaml.safe_load((ROOT/'.github/workflows/soccer_results.yml').read_text(encoding='utf-8'))
         trigger=wf.get('on',wf.get(True))
-        self.assertEqual(list(trigger),['workflow_dispatch'])
+        self.assertEqual(set(trigger),{'workflow_dispatch','schedule'})
         self.assertIs(trigger['workflow_dispatch']['inputs']['publish']['default'],False)
         for step in wf['jobs']['build']['steps']:
             if 'Upload to' in step.get('name','') or 'Confirm reservation'==step.get('name'):self.assertIn('inputs.publish',step['if'])

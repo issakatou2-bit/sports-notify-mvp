@@ -1,6 +1,8 @@
-name: 手動　欧州サッカーの日本人選手の結果
+name: 毎朝 8:00　欧州サッカーの結果
 
 on:
+  schedule:
+    - cron: '20 22 * * *'  # JST 7:20。締め7:15、公開8:00（共通表と検査で照合）
   workflow_dispatch:
     inputs:
       date:
@@ -27,6 +29,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name == 'workflow_dispatch' || vars.SOCCER_RESULTS_PUBLISH == 'true'
     runs-on: ubuntu-latest
     env:
       COLLESPO_SHORT_LOOK: v4
@@ -83,19 +86,23 @@ jobs:
         if: steps.gate.outputs.count != '0'
         run: bash scripts/shorts_thumbnail.sh build/soccer_results/collespo_soccer_results.mp4 build/soccer_results/short.png
       - name: Require a future reservation
-        if: inputs.publish && steps.gate.outputs.count != '0'
+        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish) && steps.gate.outputs.count != '0'
         env:
           PUBLISH_AT: ${{ inputs.publish_at }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
+          if [ "$EVENT_NAME" = schedule ]; then PUBLISH_AT=$(python scripts/soccer_results_clock.py); export PUBLISH_AT; fi
           python -c "import os,sys; sys.path.insert(0,'scripts'); import upload_youtube as u; assert os.environ['PUBLISH_AT'] and u.resolve_publish_at(os.environ['PUBLISH_AT']), '未来の予約時刻を指定してください'"
       - name: Upload to YouTube
-        if: inputs.publish && steps.gate.outputs.count != '0'
+        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish) && steps.gate.outputs.count != '0'
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           PUBLISH_AT: ${{ inputs.publish_at }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
+          if [ "$EVENT_NAME" = schedule ]; then PUBLISH_AT=$(python scripts/soccer_results_clock.py); export PUBLISH_AT; fi
           RESULT_KEY=$(python -c "import json; print(json.load(open('data/soccer_results.json',encoding='utf-8'))['date_jst'])")
           python scripts/upload_youtube.py --video build/soccer_results/collespo_soccer_results.mp4 \
             --kind soccer_results --sport soccer --games data/soccer_results.json \
@@ -117,5 +124,5 @@ jobs:
             data/soccer_results.json
           if-no-files-found: ignore
       - name: Confirm reservation
-        if: inputs.publish && steps.gate.outputs.count != '0'
+        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish) && steps.gate.outputs.count != '0'
         run: python scripts/verify_published.py --kind soccer_results
