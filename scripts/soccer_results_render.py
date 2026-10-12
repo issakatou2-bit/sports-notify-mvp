@@ -299,7 +299,7 @@ def main():
     ap.add_argument('--audio-dir',type=Path)
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer_results')
     args=ap.parse_args();data=json.loads(args.data.read_text(encoding='utf-8'));narr=__import__('soccer_result_story').narration(data)
-    if soccer_look.v5():
+    if soccer_look.v5() and not data.get('preview_followup'):
         from soccer_v5_program import add_player_scene
         narr=add_player_scene(narr,data)
     results.validate_data(data)

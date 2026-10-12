@@ -32,7 +32,11 @@ def fixed(day='2026-09-20'):
 
 
 def inspect(data):
-    narr=render.narration(data);clubs=render.resolve_clubs(data)
+    if data.get('preview_followup'):
+        import soccer_result_story as story
+        narr=story.narration(data);clubs=story.clubs_for(data)
+    else:
+        narr=render.narration(data);clubs=render.resolve_clubs(data)
     for seg in narr['segments']:
         times=(3.0,) if seg['kind']=='outro' else (0,.3,.8,1.4)
         for t in times:

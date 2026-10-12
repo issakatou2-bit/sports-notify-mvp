@@ -61,6 +61,7 @@ def numeric_material(data):
         if row.get('next_game'):
             at=results.utc(row['next_game']['start_utc']).astimezone(results.JST)
             values.update(str(n) for n in (at.month,at.day,at.hour,at.minute))
+            values.update((f'{at.hour:02d}',f'{at.minute:02d}'))
     return values
 
 
@@ -90,16 +91,19 @@ def frame(t,seg,data,clubs):
     elif seg['kind']=='followup-change':
         plain(im,c.L,270,'順位の動き',48,width=c.R-c.L)
         for i,row in enumerate(seg['meta']['rows']):
-            y=380+i*190;c.panel(im,(c.L,y,c.R,y+158))
-            plain(im,c.L+24,y+16,row['club'],36,width=800)
-            plain(im,c.L+24,y+78,f"{row['before']}位 → {row['after']}位",48,width=800)
+            single=len(seg['meta']['rows'])==1
+            y=500 if single else 400+i*330
+            c.panel(im,(c.L,y,c.R,y+(500 if single else 306)))
+            c.club_name(im,c.L+72,y+(110 if single else 40),clubs[row['club']],44,width=720)
+            plain(im,c.L+72,y+(260 if single else 160),f"{row['before']}位 → {row['after']}位",80,width=720)
     else:
         row=seg['meta']['row'];at=results.utc(row['start_utc']).astimezone(results.JST)
         plain(im,c.L,270,'次の試合',48,width=c.R-c.L)
-        plain(im,c.L+24,390,f'{at.month}月{at.day}日 {at.hour:02d}:{at.minute:02d}',54,width=840)
-        c.club_name(im,c.L+24,540,clubs[names.display(row['home'])],38,width=840)
-        plain(im,c.L+24,620,'対',36,width=840)
-        c.club_name(im,c.L+24,700,clubs[names.display(row['away'])],38,width=840)
+        c.panel(im,(c.L,400,c.R,1090))
+        plain(im,c.L+72,480,f'{at.month}月{at.day}日 {at.hour:02d}:{at.minute:02d}',54,width=744)
+        c.club_name(im,c.L+72,700,clubs[names.display(row['home'])],44,width=744)
+        plain(im,c.L+72,820,'対',36,width=744)
+        c.club_name(im,c.L+72,940,clubs[names.display(row['away'])],44,width=744)
     im.info['soccer_followup']=seg['meta']
     return c.finish(im,t,spec)
 

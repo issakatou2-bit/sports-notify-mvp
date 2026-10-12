@@ -34,6 +34,26 @@ def announced(data,expect=True):
 
 
 class Tests(unittest.TestCase):
+    def test_cl_results_are_not_dropped_by_five_league_filter(self):
+        boards,summaries,data=fixed();preview=announced(data)
+        moved={key.replace('FL1_', 'CL_'):value for key,value in boards.items()}
+        built=results.build(moved,summaries,'2026-09-20',preview=preview)
+        results.validate_data(built)
+        self.assertEqual(next(g for g in built['games'] if g['id']=='401876452')['league'],'CL')
+        self.assertTrue(built['preview_followup']['games'])
+
+    def test_v5_cli_preserves_all_followup_games_before_player_section(self):
+        _,_,data=fixed();data=followup.attach(data,announced(data))
+        with tempfile.TemporaryDirectory() as folder:
+            source=Path(folder)/'data.json';source.write_text(json.dumps(data),encoding='utf8')
+            output=Path(folder)/'narration.json'
+            with patch.object(sys,'argv',['render','--data',str(source),'--narration-out',str(output)]):
+                render.main()
+            narr=json.loads(output.read_text(encoding='utf8'))
+        self.assertEqual(narr,story.narration(data))
+        from test_soccer_results import inspect
+        inspect(data)
+
     def test_measured_budget_keeps_results_and_drops_last_supplement(self):
         kinds=['followup','roster','followup-change','followup-next','outro']
         narr=dict(segments=[dict(kind=k,text='fixture',speaker=2,meta={}) for k in kinds])
@@ -88,6 +108,8 @@ class Tests(unittest.TestCase):
         before={club:dict(common,rank=5,as_of='2026-09-20T10:00:00Z')};after={club:dict(common,rank=3,as_of='2026-09-21T01:00:00Z')}
         next_game=dict(home=g['away']['name_en'],away=g['home']['name_en'],start_utc='2026-09-28T19:00:00Z',source='fixture-future')
         changed=followup.attach(data,preview,standings_before=before,standings_after=after,next_games=[next_game]);results.validate_data(changed)
+        from test_soccer_results import inspect
+        inspect(changed)
         kinds=[s['kind'] for s in story.narration(changed)['segments']]
         self.assertLess(kinds.index('roster'),kinds.index('followup-change'));self.assertLess(kinds.index('followup-change'),kinds.index('followup-next'))
         after[club]['season']=2025

@@ -134,7 +134,7 @@ def build(boards,summaries,target_date,football=None,roster=None,preview=None):
     extras={}
     for key,board in boards.items():
         code=key.split('_')[0]
-        if code not in LEAGUES:continue
+        if code not in league_names:continue
         for event in board.get('events',[]):
             id=str(event['id'])
             if id in seen:continue
