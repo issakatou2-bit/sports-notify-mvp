@@ -435,21 +435,27 @@ def fetch_headlines(query: str, limit: int = 8) -> list:
     url = NEWS_RSS.format(q=urllib.parse.quote(f"{query} when:1d"))
     r = requests.get(url, headers=UA, timeout=20)
     r.raise_for_status()
-    items = re.findall(r"<item>(.*?)</item>", r.text, re.S)
+    return parse_headlines(r.text,query,limit)
+
+
+def parse_headlines(text, query, limit=8):
+    import xml.etree.ElementTree as ET
+    from article_sources import safe_url
+    items = [node for node in ET.fromstring(text).iter() if node.tag.rsplit('}',1)[-1]=='item']
+    def value(item, key):
+        return next((node.text or '' for node in item if node.tag.rsplit('}',1)[-1]==key),'')
     out = []
     for it in items[:limit]:
-        t = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", it, re.S)
-        d = re.search(r"<pubDate>(.*?)</pubDate>", it, re.S)
-        s = re.search(r"<source[^>]*>(.*?)</source>", it, re.S)
-        if not t:
+        title = value(it,'title').strip()
+        if not title:
             continue
-        title = t.group(1).strip()
         # Google ニュースの見出しは "本文 - 媒体名" の形
-        source = s.group(1).strip() if s else ""
+        source = value(it,'source').strip()
         if source and title.endswith(f"- {source}"):
             title = title[: -len(source) - 2].strip()
         out.append({"query": query, "title": title,
-                    "source": source, "at": d.group(1) if d else ""})
+                    "source": source, "at": value(it,'pubDate'),
+                    "url": safe_url(value(it,'link'))})
     return out
 
 
