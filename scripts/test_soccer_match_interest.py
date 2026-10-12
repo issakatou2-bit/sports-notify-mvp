@@ -111,5 +111,18 @@ class Interest(unittest.TestCase):
             im=Image.new('RGB',(200,60));cards.scarf(im,(5,5,195,45),club)
             self.assertEqual(im.info['v5_contrasts'][0]['variant'],'A')
 
+    def test_same_clubs_different_day_bind_to_their_own_game(self):
+        first=copy.deepcopy(self.cases[2]);second=copy.deepcopy(first)
+        second.update(game_id='next-day',start_time_utc='2026-10-13T14:00:00Z')
+        for p in second['season_players']:p['as_of']='2026-10-12T10:00:00Z'
+        second['season_players'][0]['assists']=4
+        plan=slots.program('preview',dict(generated_at='2026-10-11T09:00:00Z',games=[first,second]))
+        segments=[s for s in plan['narration']['segments'] if s['kind']=='preview']
+        self.assertEqual([s['meta']['interest']['player']['assists'] for s in segments],[3,4])
+        self.assertEqual([s['meta']['game_id'] for s in segments],[first['game_id'],'next-day'])
+        duplicate=copy.deepcopy(first);duplicate['game_id']='duplicate'
+        plan=slots.program('preview',dict(generated_at='2026-10-11T09:00:00Z',games=[first,duplicate]))
+        self.assertTrue(all('interest' not in s['meta'] for s in plan['narration']['segments'] if s['kind']=='preview'))
+
 
 if __name__=='__main__':unittest.main(argv=[sys.argv[0]])

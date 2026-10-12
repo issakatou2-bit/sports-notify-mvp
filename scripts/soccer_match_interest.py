@@ -144,13 +144,26 @@ def stats_label(player):
     return '今季FPL集計' if player.get('source')=='https://fantasy.premierleague.com/api/bootstrap-static/' else '今季'
 
 
+def same_slot(game,meta,generated):
+    if any(game.get(key+'_team_name')!=meta.get(key) for key in ('home','away')):return False
+    if game.get('league')!=meta.get('league'):return False
+    import soccer_slots_v4
+    try:at=soccer_slots_v4.kickoff(game,generated)
+    except (ValueError,KeyError,TypeError):return False
+    day=f'{at.month}月{at.day}日（{"月火水木金土日"[at.weekday()]}）'
+    return meta.get('date')==day and meta.get('time')==at.strftime('%H:%M')
+
+
 def enrich_plan(plan):
     plan=copy.deepcopy(plan);facts={}
     games={str(g['game_id']):g for g in plan['data'].get('games',[])}
     for seg in plan['narration']['segments']:
         if seg['kind']!='preview':continue
-        meta=seg['meta'];game=next((g for g in games.values() if g['home_team_name']==meta['home'] and g['away_team_name']==meta['away']),None)
-        if not game:continue
+        meta=seg['meta'];matches=[g for g in games.values() if same_slot(g,meta,plan['data']['generated_at'])]
+        if len(matches)!=1:
+            print('[omit] 注目理由: 試合と材料の日時を一意に照合できません')
+            continue
+        game=matches[0];meta['game_id']=str(game['game_id'])
         interest=decide(game);meta['interest']=interest;facts[str(game['game_id'])]=interest
         if interest['reasons']:seg['text']+='。'.join(r['text'] for r in interest['reasons'])+'。'
         player=interest['player']

@@ -59,7 +59,7 @@
       "screens": 8
     },
     {
-      "material_sha256": "d8189fb2aed9c9dd6fd6778eca1921cc1779fd9e615a5152aaf8918786f36e34",
+      "material_sha256": "84c1a68e09e7a79f0123c49a0142c2733b1f1d7d297fd138358fe1ac8638c3c9",
       "sample_fictional": false,
       "publication": "not performed",
       "date_jst": "2026-09-20",
@@ -73,7 +73,7 @@
       "screens": 5
     },
     {
-      "material_sha256": "acdc25112d16a30e20be44ea1903dc046c6e844fc1786c0f0aba201ca03ed7dc",
+      "material_sha256": "cae3fa1c8c9c550f5c445a7ce190c788b3ad480b4fae24973333688fb6a50e5b",
       "sample_fictional": true,
       "publication": "not performed",
       "mode": "voices",
@@ -82,5 +82,8 @@
   ],
   "badge_default": "B",
   "club_table": "本人採用・fc350e2eから不変",
-  "publication": false
+  "publication": false,
+  "interest_tests": 12,
+  "match_binding": "home/away/league/local date/time, unique candidate required",
+  "checks_log": "build/run_checks-v5-finish-bound.log"
 }
