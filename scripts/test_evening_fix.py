@@ -20,6 +20,31 @@ FIXTURE = json.loads((ROOT / 'scripts/fixtures/fact-guards/evening_20261011.json
 
 
 class EveningFixTests(unittest.TestCase):
+    def test_today_high_is_advisory_and_game_mismatch_is_confirmed(self):
+        document = json.loads((ROOT / 'scripts/fixtures/fact-guards/evening_20261012.json').read_text(encoding='utf-8'))
+        reviewed, errors = sanity_material.assess(document['llm_issues'], [document])
+        self.assertEqual(len(reviewed), 3)
+        self.assertEqual(errors, [])
+        self.assertFalse(any(i['confirmed'] for i in reviewed))
+        document['segments'][2]['text'] = document['segments'][2]['text'].replace('第2戦', '第3戦')
+        self.assertIn('試合番号', ' '.join(sanity_material.check(document)))
+
+    def test_ps_render_narration_argument_does_not_rewrite_script(self):
+        import generate_ps_preview as entry
+        with patch.object(sys, 'argv', ['generate_ps_preview.py', '--mode', 'postseason', '--narration', 'saved.json', '--audio-dir', 'audio']), \
+             patch.object(entry.Path, 'exists', return_value=False), \
+             patch.object(ps_program, 'desired', return_value=True), \
+             patch.object(ps_program, 'layout', return_value='v2'), \
+             patch.object(ps_program, 'read', return_value={'saved': True}), \
+             patch.object(ps_program, 'movie') as movie, \
+             patch.object(ps_program, 'prepare', side_effect=AssertionError('原稿を再生成しない')):
+            entry.main()
+        movie.assert_called_once_with({'saved': True}, 'audio', 'build/morning')
+
+    def test_workflow_checks_movie_before_reporting_upload(self):
+        workflow = (ROOT / '.github/workflows/morning_recap.yml').read_text(encoding='utf-8')
+        self.assertLess(workflow.index('if [ ! -s "$VIDEO" ]'), workflow.index('echo "$mode: 投稿しました'))
+
     def test_saved_high_false_positives_do_not_stop(self):
         reviewed, errors = sanity_material.assess(FIXTURE['llm_issues'], [FIXTURE])
         self.assertEqual(errors, [])

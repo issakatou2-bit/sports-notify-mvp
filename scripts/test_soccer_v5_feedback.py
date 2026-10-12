@@ -27,9 +27,9 @@ class Feedback(unittest.TestCase):
         self.addCleanup(r3.set_caption,'',0,0);self.addCleanup(r3.set_program_clock,None)
 
     def test_real_match_cards_remain_distinct(self):
-        data=preview.saved_preview_material();plan=slots.program('preview',data)
+        source=json.loads((ROOT/'scripts/fixtures/soccer-interest/saved-preview-20261011.json').read_text(encoding='utf8'))
+        data=copy.deepcopy(source);plan=slots.program('preview',data)
         self.assertEqual(len({g['league'] for g in data['games']}),3)
-        source=json.loads((ROOT/'data/soccer_games.json').read_text(encoding='utf8'))
         for game in data['games']:
             original=next(g for g in source['games'] if g['game_id']==game['game_id'])
             for key in ('game_id','home_team_name','away_team_name','start_time_jst','league'):

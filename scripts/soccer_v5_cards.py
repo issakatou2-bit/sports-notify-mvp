@@ -422,6 +422,8 @@ def jp_player(t,spec,clubs):
 
 
 def standings(t,spec,clubs):
+    import characters
+    table_right=R-characters.reserved_width()
     im=canvas(t,clubs,spec.get('label','欧州サッカー　順位争い'));heading(im,spec['title'])
     rows={r['position']:r for r in spec['rows']};shown=[p for a,b in spec['shown'] for p in range(a,b+1) if p in rows]
     labels=dict(spec.get('lines',[]));line_count=sum(p in labels for p in shown)
@@ -429,25 +431,25 @@ def standings(t,spec,clubs):
     step=min(104,available//max(1,len(shown)))
     if step<43:raise ValueError('順位表は次の画面が必要です')
     top=1115-len(shown)*step-line_count*42-(100 if spec.get('gap') else 0)
-    text(im,R-225,top-42,'試合',24,MUTED,width=64);text(im,R-112,top-42,'勝点',24,MUTED,width=80)
+    text(im,table_right-225,top-42,'試合',24,MUTED,width=64);text(im,table_right-112,top-42,'勝点',24,MUTED,width=80)
     y=top
     for p in shown:
         row=rows[p];highlight=row['team']==spec.get('focus') or row['team'] in spec.get('highlights',[])
         panel(im,(L,y,R,y+step-8),mix(BOARD,LIME,.1) if highlight else BOARD)
         size=min(38,max(22,step-22))
         text(im,L+22,y+9,p,size+8,CHALK,number=True,width=60)
-        club_name(im,L+88,y+12,clubs[row['team']],size,LIME if highlight else CHALK,width=R-L-348)
-        text(im,R-230,y+9,row['played'],size+8,MUTED,width=65,number=True)
-        text(im,R-110,y+9,row['points'],size+8,LIME if highlight else CHALK,width=80,number=True)
+        club_name(im,L+88,y+12,clubs[row['team']],size,LIME if highlight else CHALK,width=table_right-L-348)
+        text(im,table_right-230,y+9,row['played'],size+8,MUTED,width=65,number=True)
+        text(im,table_right-110,y+9,row['points'],size+8,LIME if highlight else CHALK,width=80,number=True)
         y+=step
         if p in labels:
             label=labels[p];kind=original._line_kind(label);color=LINE_COLORS.get(kind,MUTED)
             label='残留ライン　この下は降格圏' if kind=='残留' else label+'の線' if kind in ('CL','EL') and '線' not in label else label
             ImageDraw.Draw(im).line((L,y-4,R,y-4),fill=color,width=3)
-            text(im,L+22,y+4,label,24,color,width=R-L-44);y+=42
+            text(im,L+22,y+4,label,24,color,width=table_right-L-44);y+=42
     if spec.get('gap'):
         panel(im,(L,y+18,R,y+92),mix(BOARD,LIME,.12))
-        club_name(im,L+26,y+36,clubs[spec['focus']],30,LIME,suffix=spec['gap'],width=R-L-52)
+        club_name(im,L+26,y+36,clubs[spec['focus']],30,LIME,suffix=spec['gap'],width=table_right-L-52)
     im.info['soccer_standings']=dict(shown=shown,lines=labels)
     return finish(im,t,spec)
 

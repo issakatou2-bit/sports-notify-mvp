@@ -476,6 +476,11 @@ jobs:
                 echo "::endgroup::"; continue
               fi
             fi
+            if [ ! -s "$VIDEO" ]; then
+              echo "::warning::$mode: 動画がないため投稿を見送りました"
+              if [ "$mode" = "postseason" ]; then CLAIM_FAILED=1; fi
+              echo "::endgroup::"; continue
+            fi
             if python scripts/generate_ps_preview.py --upload \
               --video "$VIDEO" --kind morning --morning-mode "$mode" \
               --recap data/morning_recap.json \

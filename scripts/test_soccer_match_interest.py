@@ -90,8 +90,8 @@ class Interest(unittest.TestCase):
         readings.validate_dialogue(plan['narration'])
 
     def test_actual_saved_fpl_source_and_cold_data_are_distinguished(self):
-        import preview_soccer_v5
-        data=preview_soccer_v5.saved_preview_material();plan=slots.program('preview',data)
+        data=json.loads((ROOT/'scripts/fixtures/soccer-interest/saved-preview-20261011.json').read_text(encoding='utf8'))
+        plan=slots.program('preview',data)
         stars=[s for s in plan['narration']['segments'] if s['meta'].get('expectation_name')]
         self.assertEqual(len(stars),1)
         self.assertEqual(stars[0]['meta']['expectation_name'],'鎌田大地')
