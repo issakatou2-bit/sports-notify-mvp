@@ -21,10 +21,11 @@ def main():
         for name,reading in names.items():
             original=name+'です。';spoken=guard.apply(original)
             response=requests.post(args.url+'/audio_query',params=dict(text=spoken,speaker=2),timeout=30)
-            response.raise_for_status();query=response.json()
+            response.raise_for_status();raw_query=response.json()
+            query=guard.prepare_query(original,raw_query,2,args.url)
             try:check=guard.validate_query(original,query)
             except guard.NameReadingError as e:check=dict(status='FAIL',reason=str(e))
-            records.append(dict(kind=kind,name=name,reading=reading,spoken=spoken,check=check,query=query))
+            records.append(dict(kind=kind,name=name,reading=reading,spoken=spoken,check=check,raw_query=raw_query,query=query))
         print(kind,len(names),flush=True)
     before=requests.post(args.url+'/audio_query',params=dict(text='上田綺世です。',speaker=2),timeout=30)
     before.raise_for_status()

@@ -125,7 +125,7 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
             timeout=30,
         )
         q.raise_for_status()
-        query = q.json()
+        query = name_reading_guard.prepare_query(original, q.json(), speaker, VOICEVOX_URL)
         checked = name_reading_guard.validate_query(original, query)
         out_path.with_suffix('.reading.json').write_text(
             json.dumps(dict(original=original,spoken=text,check=checked,query=query),ensure_ascii=False,indent=2),encoding='utf-8')
