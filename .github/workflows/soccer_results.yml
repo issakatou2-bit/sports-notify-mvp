@@ -49,6 +49,7 @@ jobs:
           RESULT_DAY: ${{ inputs.date }}
         run: |
           args=()
+          if [ "$GITHUB_EVENT_NAME" = schedule ]; then args+=(--scheduled); fi
           if [ -n "$RESULT_DAY" ]; then args=(--date "$RESULT_DAY"); fi
           python scripts/soccer_results.py "${args[@]}" --out data/soccer_results.json
       - name: Stop when no Japanese player appeared

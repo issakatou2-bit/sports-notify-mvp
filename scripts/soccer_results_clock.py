@@ -10,8 +10,9 @@ def window(target):
     start=datetime(target.year,target.month,target.day,hour,minute,tzinfo=JST)
     return start,start+timedelta(days=1)
 
-def target_day(now=None):
+def target_day(now=None,scheduled=False):
     now=(now or datetime.now(JST)).astimezone(JST)
+    if not scheduled:return (now-timedelta(days=1)).date()
     start,_=window(now.date())
     return (now-timedelta(days=1 if now>=start else 2)).date()
 

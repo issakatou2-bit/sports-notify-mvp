@@ -12,8 +12,9 @@ class ClockTests(unittest.TestCase):
         self.assertFalse(results.in_window(datetime(2026,10,26,7,15,tzinfo=clock.JST),day))
         self.assertFalse(results.in_window(datetime(2026,10,25,7,14,59,tzinfo=clock.JST),day))
     def test_latest_closed_night_and_year_end(self):
-        self.assertEqual(clock.target_day(datetime(2027,1,1,7,14,tzinfo=clock.JST)),date(2026,12,30))
-        self.assertEqual(clock.target_day(datetime(2027,1,1,7,20,tzinfo=clock.JST)),date(2026,12,31))
+        self.assertEqual(clock.target_day(datetime(2027,1,1,7,14,tzinfo=clock.JST),scheduled=True),date(2026,12,30))
+        self.assertEqual(clock.target_day(datetime(2027,1,1,7,20,tzinfo=clock.JST),scheduled=True),date(2026,12,31))
+        self.assertEqual(clock.target_day(datetime(2027,1,1,7,14,tzinfo=clock.JST)),date(2026,12,31))
     def test_cron_and_publication_conditions(self):
         import yaml
         wf=yaml.safe_load((Path(__file__).resolve().parents[1]/'.github/workflows/soccer_results.yml').read_text(encoding='utf8'))

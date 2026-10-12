@@ -255,12 +255,15 @@ def description_lines(data):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--date',default=__import__('soccer_results_clock').target_day().isoformat(),help='終了した日本時間の日')
+    ap.add_argument('--date',help='終了した日本時間の日（手動で空なら前日）')
+    ap.add_argument('--scheduled',action='store_true',help='定時用: 最後に締めた夜を使う')
     ap.add_argument('--scoreboards',type=Path)
     ap.add_argument('--summaries',type=Path)
     ap.add_argument('--football',type=Path)
     ap.add_argument('--out',type=Path,default=ROOT/'data/soccer_results.json')
-    args=ap.parse_args();target=date.fromisoformat(args.date)
+    args=ap.parse_args()
+    args.date=args.date or __import__('soccer_results_clock').target_day(scheduled=args.scheduled).isoformat()
+    target=date.fromisoformat(args.date)
     if bool(args.scoreboards)!=bool(args.summaries):ap.error('保存scoreboardsとsummariesは両方指定')
     if args.scoreboards:
         boards=json.loads(args.scoreboards.read_text(encoding='utf-8'));summaries=json.loads(args.summaries.read_text(encoding='utf-8'))
