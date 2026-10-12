@@ -49,12 +49,12 @@ jobs:
           args=()
           if [ -n "$RESULT_DAY" ]; then args=(--date "$RESULT_DAY"); fi
           python scripts/soccer_results.py "${args[@]}" --out data/soccer_results.json
-      - name: Stop when no Japanese player appeared
+      - name: Stop when neither preview results nor player results exist
         id: gate
         run: |
-          COUNT=$(python -c "import json; d=json.load(open('data/soccer_results.json',encoding='utf-8')); print(sum(p['status']!='none' for p in d['players']))")
+          COUNT=$(python -c "import json; d=json.load(open('data/soccer_results.json',encoding='utf-8')); print(int(d['can_make']))")
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
-          if [ "$COUNT" -eq 0 ]; then echo "::notice::日本人選手の出場なし。動画を作りません"; fi
+          if [ "$COUNT" -eq 0 ]; then echo "::notice::終了した注目試合/日本人選手の結果がありません。動画を作りません"; fi
       - name: Install video tools
         if: steps.gate.outputs.count != '0'
         run: bash scripts/install_video_tools.sh
@@ -77,6 +77,9 @@ jobs:
       - name: Synthesize narration
         if: steps.gate.outputs.count != '0'
         run: python scripts/synthesize_narration.py --narration build/soccer_results/narration.json --out-dir build/soccer_results/audio
+      - name: Fit the story to measured audio
+        if: steps.gate.outputs.count != '0'
+        run: python scripts/soccer_result_story.py --narration build/soccer_results/narration.json --audio-dir build/soccer_results/audio
       - name: Render and measure 40 seconds
         if: steps.gate.outputs.count != '0'
         run: python scripts/soccer_results_render.py --data data/soccer_results.json --audio-dir build/soccer_results/audio --out build/soccer_results

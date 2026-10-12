@@ -125,9 +125,13 @@ def in_window(ended,target):
     return start<=ended.astimezone(JST)<start+timedelta(days=1)
 
 
-def build(boards,summaries,target_date,football=None,roster=None):
+def build(boards,summaries,target_date,football=None,roster=None,preview=None):
     target=date.fromisoformat(str(target_date));football=football or {};games=[];rejected=[];seen=set()
+    registry=ROOT/'data/soccer_competitions.json'
+    league_names=dict(ne.SOCCER_COMPETITIONS,**LEAGUE_NAMES)
+    if registry.exists():league_names.update({c['code']:c['name'] for c in json.loads(registry.read_text(encoding='utf8'))['competitions']})
     roster=ne.JP_PLAYERS_SOCCER if roster is None else roster
+    extras={}
     for key,board in boards.items():
         code=key.split('_')[0]
         if code not in LEAGUES:continue
@@ -158,7 +162,7 @@ def build(boards,summaries,target_date,football=None,roster=None):
                 if None in score.values():raise ValueError('スコア不明')
                 check_sides={c['homeAway']:c for c in header[0].get('competitors',[])}
                 if any(str(check_sides.get(s,{}).get('id'))!=str(sides[s]['id']) or integer(check_sides.get(s,{}).get('score'))!=score[s] for s in score):raise ValueError('ESPN内のクラブ/スコア不一致')
-                game={'id':id,'league':code,'league_jp':LEAGUE_NAMES[code],'start_utc':event['date'],'finished_utc':ended,
+                game={'id':id,'league':code,'league_jp':league_names[code],'start_utc':event['date'],'finished_utc':ended,
                       'date_jst':target.isoformat(),'score':score,'players':[], 'goals':[], 'unresolved':[]}
                 for side in ('home','away'):
                     team=sides[side]['team']
@@ -176,7 +180,17 @@ def build(boards,summaries,target_date,football=None,roster=None):
                                               if resolve_player(rows,p['name_en']) is None)
                 matched={p['name'] for p in game['players']}
                 game['unresolved']=[name for name in game['unresolved'] if name not in matched]
-                if not game['players']:raise ValueError('日本人選手を当日の登録名簿で照合できず')
+                import soccer_result_followup as followup
+                announced=followup.match(preview,game['home']['name_en'],game['away']['name_en'],game['start_utc'])
+                if not game['players'] and not announced:raise ValueError('日本人選手を当日の登録名簿で照合できず')
+                expected=(announced or {}).get('expectation') or {}
+                if expected.get('name_en') and not any(p['name']==expected.get('name') for p in game['players']):
+                    for side in ('home','away'):
+                        group=next(g for g in summary['rosters'] if str(g['team']['id'])==game[side]['id'])
+                        if resolve_player(group['roster'],expected['name_en']) is not None:
+                            person=dict(name_en=expected['name_en'],name_jp=expected['name'],team_jp=game[side]['name_jp'])
+                            try:extras.setdefault(id,[]).append(player_result(person,group['roster'],side,id))
+                            except ValueError:print('[omit] 期待選手の出場/成績を照合できません:',expected['name'],id)
                 people={p['athlete_id']:p for p in game['players'] if p['athlete_id']}
                 side_by_id={game[s]['id']:s for s in ('home','away')}
                 for detail in comp.get('details',[]):
@@ -199,8 +213,13 @@ def build(boards,summaries,target_date,football=None,roster=None):
                 games.append(game)
             except (ValueError,KeyError,TypeError) as e:rejected.append({'event_id':id,'reason':str(e)})
     players=sorted([p for game in games for p in game['players']],key=rank_key)
-    return {'schema_version':1,'date_jst':target.isoformat(),'generated_at':datetime.now(timezone.utc).isoformat(),
+    data={'schema_version':1,'date_jst':target.isoformat(),'generated_at':datetime.now(timezone.utc).isoformat(),
             'source':SOURCE,'games':games,'players':players,'can_make':any(p['status']!='none' for p in players),'rejected':rejected}
+    if preview:
+        import soccer_result_followup
+        data['preview_expectation_results']=extras
+        data=soccer_result_followup.attach(data,preview,extras)
+    return data
 
 
 def action(player):
@@ -234,11 +253,19 @@ def validate_data(data):
             if g['japanese_goal']!=bool(jp and not g['own_goal']):raise ValueError('日本人の得点表示が不正')
             if jp and not g['own_goal'] and jp['side']!=g['side']:raise ValueError('得点先と選手のクラブが不一致')
     if sorted(flattened,key=rank_key)!=data['players']:raise ValueError('一覧の順位/数字が試合の材料と違う')
-    if bool(data['can_make'])!=any(p['status']!='none' for p in flattened):raise ValueError('出場ゼロの生成条件が不正')
+    import soccer_result_followup
+    soccer_result_followup.validate(data)
+    expected=any(p['status']!='none' for p in flattened) or bool((data.get('preview_followup') or {}).get('games'))
+    if bool(data['can_make'])!=expected:raise ValueError('出場ゼロの生成条件が不正')
 
 
 def title(data):
     if not data.get('can_make'):return ''
+    if data.get('preview_followup'):
+        import club_display_names as names
+        row=data['preview_followup']['games'][0];g=next(g for g in data['games'] if g['id']==row['event_id'])
+        answer=row.get('answer');suffix='｜'+answer['name']+action(answer) if answer else ''
+        return f"【欧州サッカー】昨夜の注目試合 {names.display(g['home']['name_en'],short=True)} {g['score']['home']}-{g['score']['away']} {names.display(g['away']['name_en'],short=True)}{suffix} #Shorts"
     lead=next(p for p in data['players'] if p['status']!='none');game=next(g for g in data['games'] if g['id']==lead['event_id'])
     score=f"{game['home']['name_jp']} {game['score']['home']}-{game['score']['away']} {game['away']['name_jp']}"
     others=' ほか' if len(data['games'])>1 else ''
@@ -261,12 +288,16 @@ def main():
     ap.add_argument('--football',type=Path)
     ap.add_argument('--out',type=Path,default=ROOT/'data/soccer_results.json')
     args=ap.parse_args();target=date.fromisoformat(args.date)
+    import soccer_result_followup
+    preview=soccer_result_followup.load_preview(args.date)
     if bool(args.scoreboards)!=bool(args.summaries):ap.error('保存scoreboardsとsummariesは両方指定')
     if args.scoreboards:
         boards=json.loads(args.scoreboards.read_text(encoding='utf-8'));summaries=json.loads(args.summaries.read_text(encoding='utf-8'))
     else:
         boards={};summaries={}
-        for code,slug in LEAGUES.items():
+        registry=ROOT/'data/soccer_competitions.json'
+        leagues={c['code']:c['espn'] for c in json.loads(registry.read_text(encoding='utf8'))['competitions']} if registry.exists() else LEAGUES
+        for code,slug in leagues.items():
             for day in (target-timedelta(days=1),target,target+timedelta(days=1)):
                 key=code+'_'+day.strftime('%Y%m%d')
                 boards[key]=fetch_json(f'{ESPN}/{slug}/scoreboard?dates={day:%Y%m%d}')
@@ -280,7 +311,11 @@ def main():
     if not args.scoreboards and os.environ.get('FOOTBALL_DATA_API_KEY'):
         import soccer_jp_week
         football=soccer_jp_week.fetch_matches(os.environ['FOOTBALL_DATA_API_KEY'],target+timedelta(days=1))
-    data=build(boards,summaries,target.isoformat(),football)
+    data=build(boards,summaries,target.isoformat(),football,preview=preview)
+    if preview:
+        import soccer_result_context
+        before,after,next_games=soccer_result_context.after_context(data,preview)
+        data=soccer_result_followup.attach(data,preview,data.get('preview_expectation_results'),before,after,next_games)
     validate_data(data)
     args.out.parent.mkdir(parents=True,exist_ok=True)
     args.out.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

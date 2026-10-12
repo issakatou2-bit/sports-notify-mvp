@@ -789,7 +789,7 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
 
 def record_video(kind: str, date_key: str, video_id: str,
                  title: str, path: str = VIDEOS_PATH,
-                 publish_at: str | None = None) -> None:
+                 publish_at: str | None = None, preview_binding: dict | None = None) -> None:
     """
     その日の動画のIDを残す。
 
@@ -816,6 +816,8 @@ def record_video(kind: str, date_key: str, video_id: str,
     # その間リンクを踏んだ人が見られない動画に当たる。
     if publish_at:
         entry["publish_at"] = publish_at
+    if preview_binding is not None:
+        entry['preview_binding']=preview_binding
     data.setdefault(kind, {})[date_key] = entry
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -2209,8 +2211,15 @@ def main():
             # ここで組み立て直すと、片方だけ直したときにすれ違う。
             key, rec_kind = date_key, record_kind(
                 args.kind, args.morning_mode, args.sport)
+            preview_binding=None
+            if rec_kind=='daily_soccer':
+                import soccer_preview_history
+                try:
+                    preview_binding=soccer_preview_history.binding(_json_or_empty(args.games),_json_or_empty(args.narration))
+                except (OSError,ValueError,TypeError):
+                    print('[omit] 予告の材料/原稿hashを記録できません')
             record_video(rec_kind, key, vid, body["snippet"]["title"],
-                         publish_at=publish_at)
+                         publish_at=publish_at,preview_binding=preview_binding)
             # 長編を上げたら、同じ日のコメント欄ショートから繋ぐ。
             # ショートにはフィードがあるが、長編には無い。
             # 人が来ているほうから、来ていないほうへ道を作る。

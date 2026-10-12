@@ -172,6 +172,9 @@ def roster_screen(t,data,meta,clubs,spec):
 
 
 def frame(t,seg,data,clubs=None):
+    if seg['kind'].startswith('followup'):
+        import soccer_result_story
+        return soccer_result_story.frame(t,seg,data,clubs or resolve_clubs(data))
     if soccer_look.v5():
         import soccer_v5_program as v5
         return v5.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data),CREDIT)
@@ -206,12 +209,14 @@ def validate_frame(im,data,clubs):
         import soccer_v5_cards as v5
         problems=v5.check_frame(im,clubs)
         if not im.info.get('v3_outro'):
-            extra=set(cards.drawn_numbers(im))-numeric_material(data)
+            import soccer_result_story
+            extra=set(cards.drawn_numbers(im))-(numeric_material(data)|soccer_result_story.numeric_material(data))
             if extra:problems.append({'numbers_missing_from_material':sorted(extra)})
         return problems
     problems=rules.check_layout(im)+cards.check_club_badges(im,clubs)+rules.check_spacing(im)
     if not im.info.get('v3_outro'):
-        extra=set(cards.drawn_numbers(im))-numeric_material(data)
+        import soccer_result_story
+        extra=set(cards.drawn_numbers(im))-(numeric_material(data)|soccer_result_story.numeric_material(data))
         if extra:problems.append({'numbers_missing_from_material':sorted(extra)})
     return problems
 
@@ -250,7 +255,7 @@ def render_video(data,narr,audio,out):
     if sum(times)>40:raise ValueError('フレームの丸め後に40秒を超える')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('声つきの動画だけを作る枠です')
-    video=out/'collespo_soccer_results.mp4';clubs=resolve_clubs(data);images=[];layouts=[];previous=None;clock=0
+    video=out/'collespo_soccer_results.mp4';clubs=__import__('soccer_result_story').clubs_for(data) if data.get('preview_followup') else resolve_clubs(data);images=[];layouts=[];previous=None;clock=0
     command=['ffmpeg','-y','-f','rawvideo','-vcodec','rawvideo','-pix_fmt','rgb24','-s','1080x1920','-r',str(FPS),'-i','-',
              '-i',str(track),'-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-c:a','aac','-b:a','160k',
              '-t',str(sum(times)),'-movflags','+faststart',str(video)]
@@ -293,7 +298,7 @@ def main():
     ap.add_argument('--narration-out',type=Path)
     ap.add_argument('--audio-dir',type=Path)
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer_results')
-    args=ap.parse_args();data=json.loads(args.data.read_text(encoding='utf-8'));narr=narration(data)
+    args=ap.parse_args();data=json.loads(args.data.read_text(encoding='utf-8'));narr=__import__('soccer_result_story').narration(data)
     if soccer_look.v5():
         from soccer_v5_program import add_player_scene
         narr=add_player_scene(narr,data)
@@ -303,6 +308,8 @@ def main():
         args.narration_out.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     if not narr['segments']:print('出場した日本人選手がいないため作りません');return
     if args.audio_dir:
+        saved=args.out/'narration.json'
+        if data.get('preview_followup') and saved.exists():narr=json.loads(saved.read_text(encoding='utf8'))
         audio=json.loads((args.audio_dir/'manifest.json').read_text(encoding='utf-8'))['segments']
         render_video(data,narr,audio,args.out)
 
