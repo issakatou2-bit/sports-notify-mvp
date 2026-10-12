@@ -1,4 +1,4 @@
-"""mainの96画面の既定画素、全枠の名前左の札、30球団の最小寸法を検査。"""
+"""固定材料と変更前の描画による既定画素比較、全枠・30球団の札を検査。"""
 import hashlib
 from datetime import datetime
 import json
@@ -12,7 +12,26 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1];sys.path[:0]=[str(ROOT/'scripts'),str(ROOT)]
 
 
+def legacy_cards():
+    """mainの変更前ソースを凍結。現在の描画から期待値を作らない。"""
+    fixture=ROOT/'scripts/fixtures/mlb-pinstripe'
+    origin=json.loads((fixture/'legacy-source.json').read_text(encoding='utf8'))
+    source=(fixture/origin['fixture']).read_bytes().replace(b'\r\n',b'\n')
+    assert hashlib.sha256(source).hexdigest()==origin['sha256'],'legacy source changed'
+    namespace={'__file__':str(ROOT/origin['path']),'__name__':'legacy_short_v4_cards'}
+    exec(compile(source,namespace['__file__'],'exec'),namespace)
+    return {k:v for k,v in namespace.items() if not k.startswith('__')}
+
+
 def child():
+    # CI/Windowsともリポジトリ内の同じフォントを使用。個人のフォントに依存しない。
+    import ps_brand_components as brand
+    if '--system-fonts' not in sys.argv:
+        brand.FONT_CANDIDATES={
+            'jp':[str(ROOT/'assets/fonts/soccer-v5/NotoSansJP-VF.ttf')],
+            'latin':[str(ROOT/'assets/fonts/Oswald[wght].ttf')],
+            'serif':[str(ROOT/'assets/fonts/Oswald[wght].ttf')]}
+        brand._cache.clear()
     import mlb_pinstripe_badge as stripe
     import notability_engine as ne
     import short_v4_cards as cards
@@ -22,13 +41,21 @@ def child():
     from PIL import Image
     baseline=json.loads((ROOT/'scripts/fixtures/mlb-pinstripe/default-pixels.json').read_text(encoding='utf8'))
     cases=fixtures.daily_cases()+fixtures.asset_cases()
-    saved={(r['case'],r['frame']):r['sha256'] for r in baseline['records']}
+    # 保存済みWindows画素hashは環境差を含む。固定のcase/frame一覧だけ利用する。
+    saved={(r['case'],r['frame']) for r in baseline['records']}
+    legacy=legacy_cards()
     os.environ.pop('COLLESPO_MLB_BADGE',None);count=0;baseline_errors={}
+    visited=set()
     for case in cases:
         for i,draw in enumerate(case['frames']):
-            im=draw(3);assert hashlib.sha256(im.tobytes()).hexdigest()==saved[(case['name'],i)],(case['name'],i)
+            key=(case['name'],i);visited.add(key)
+            with patch.dict(cards.__dict__,legacy):
+                expected=draw(3)
+            im=draw(3)
+            assert im.mode==expected.mode and im.size==expected.size and im.tobytes()==expected.tobytes(),key
             baseline_errors[(case['name'],i)]=rules.check_layout(im)+rules.check_spacing(im)+rules.check_team_badges(im)
             count+=1
+    assert visited==saved,(visited-saved,saved-visited)
     os.environ['COLLESPO_MLB_BADGE']='pinstripe';stamps=0;slots=set()
     for case in cases:
         for i,draw in enumerate(case['frames']):
