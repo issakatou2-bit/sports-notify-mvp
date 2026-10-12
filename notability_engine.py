@@ -2757,7 +2757,7 @@ def fetch_pitcher_season_stats(player_id: str, season: str) -> dict:
     return {}
 
 
-def _team_context_line(team_id: str, team_name: str, standings: dict) -> str:
+def _team_context_line(team_id: str, team_name: str, standings: dict, *, include_recent: bool = True) -> str:
     """AIに渡すための、1チーム分の順位表コンテキストを組み立てる"""
     s = standings.get(team_id)
     if not s:
@@ -2784,10 +2784,11 @@ def _team_context_line(team_id: str, team_name: str, standings: dict) -> str:
     else:
         rank_part = f"{div_name}の{s.division_rank}位(同地区首位との差{s.games_back}ゲーム)"
 
-    parts = f"{team_name}: {record}、{rank_part}、{streak}"
-    if s.last_ten:
+    parts = (f"{team_name}: {record}、{rank_part}、{streak}" if include_recent else
+             f"{team_name}: レギュラーシーズン最終成績 {record}、{rank_part}")
+    if include_recent and s.last_ten:
         parts += f"、直近10試合は{s.last_ten}"
-    status = standing_status(s)
+    status = standing_status(s) if include_recent else ""
     if status:
         parts += f"、{status}"
     return parts
@@ -2864,8 +2865,10 @@ def _soccer_context_line(team_id: str, team_name: str, standings: dict) -> str:
 
 
 def _build_ai_prompt(game: dict, standings: dict) -> str:
-    line = (_soccer_context_line if is_soccer_league(game.get("league"))
-            else _team_context_line)
+    soccer = is_soccer_league(game.get("league"))
+    ps_game = (not soccer) and (game.get("game_type") or "R") != "R"
+    line = (_soccer_context_line if soccer else
+            lambda tid, name, table: _team_context_line(tid, name, table, include_recent=not ps_game))
     home_context = line(
         game["home_team_id"], game["home_team_name"], standings
     )
@@ -2874,7 +2877,6 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
     )
 
     structural_notes = []
-    soccer = is_soccer_league(game.get("league"))
     if soccer:
         # サッカーには地区が無い。MLB用の地区の話をそのまま通すと、
         # 「同地区内で対峙する」という存在しない構図が書かれる。
@@ -2885,17 +2887,16 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         structural_notes.append(
             "順位の差は勝ち点で表す。「ゲーム差」は野球の言い方なので"
             "使わないこと")
-    # **ポストシーズンの試合。**下に渡す勝敗・地区順位・連勝・直近10試合は
-    # レギュラーシーズンのもので、もう動かない。そのまま渡すと
-    # 「4連勝中の勢いで」「首位攻防」とレギュラーシーズンの話を書く。
+    # **ポストシーズンの試合。**RSの連勝/直近10試合/進出状態は入力しない。
+    # RSの勝敗・地区順位は最終成績と明示。数字を渡して禁止するだけでは
+    # 「4連勝中の勢いで」とRSの話を書くので、入力側で除く。
     # 同地区同士もPSでは当たる（ヤンキース対レッドソックス）が、もう
     # 地区順位を争ってはいないので、同地区の注記も付けない。
-    ps_game = (not soccer) and (game.get("game_type") or "R") != "R"
     if ps_game:
         structural_notes.append(
             f"この試合はポストシーズン（{POSTSEASON_NAME.get(game.get('game_type'), 'ポストシーズン')}）。"
-            "下の勝敗・地区順位・連勝・直近10試合はレギュラーシーズンの"
-            "最終成績で、ポストシーズンの勝敗ではない。**連勝・マジック・"
+            "下の勝敗・地区順位はレギュラーシーズンの"
+            "最終成績で、ポストシーズンの勝敗ではない。RSの連勝・直近10試合は渡していない。**連勝・マジック・"
             "地区の順位争い・首位攻防の話は書かないこと。**シリーズの勝敗は"
             "理由の欄にあるとおりで、それ以外の勝敗を作らないこと")
     home_div = (MLB_DIVISIONS.get(game["home_team_id"])
@@ -3006,8 +3007,8 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
         f"以下は「{game['matchup']}」({game['league']})という試合についてのデータです。\n"
         # 10/9 夜の点検: 「リヨン vs ランス」（ホームはランス）を「リヨンがランスを迎える」と
         # 逆に書いた。表記の並びからホームを推させず、はっきり渡す。
-        f"ホーム（本拠地）は{game['home_team_name']}、アウェー（訪問側）は{game['away_team_name']}。"
-        f"「迎える」「本拠地で」はホームの{game['home_team_name']}にだけ使うこと。\n\n"
+        + soccer_venue_instruction(game)
+        +
         f"【チームの状況】\n{home_context}\n{away_context}\n"
         f"{pitcher_text}"
         f"{log_text}"
@@ -3160,7 +3161,12 @@ def _call_ai(prompt: str, api_key: str, max_tokens: int = 700):
         import anthropic
 
         client = anthropic.Anthropic(api_key=api_key)
-        message = client.messages.create(
+        import sys as _sys
+        scripts_dir = str(pathlib.Path(__file__).resolve().parent / "scripts")
+        if scripts_dir not in _sys.path:
+            _sys.path.insert(0, scripts_dir)
+        import backstage_guard
+        message = backstage_guard.create(client, label='notability_engine', category='notability',
             model="claude-haiku-4-5-20251001",
             max_tokens=max_tokens,  # 暴走時の被害を抑えるための上限
             messages=[{"role": "user", "content": prompt}],
@@ -3312,11 +3318,22 @@ def _clean_hook(hook_part: str) -> str:
 
 
 def host_reversed(text: str, game: dict) -> list:
-    """アウェーのチームがホームのチームを「迎える」と書いていたら、その語を返す（10/9 夜の点検）。"""
-    home, away = game.get("home_team_name") or "", game.get("away_team_name") or ""
-    if home and away and re.search(re.escape(away) + r"[^。]{0,40}?" + re.escape(home) + r"を迎え", text or ""):
-        return [f"{away}が{home}を迎える（ホームは{home}）"]
-    return []
+    """既存の再生成/除外経路へ、共通の会場表現の検査を接続。"""
+    import sys as _sys
+    scripts_dir = str(pathlib.Path(__file__).resolve().parent / "scripts")
+    if scripts_dir not in _sys.path:
+        _sys.path.insert(0, scripts_dir)
+    import soccer_venue
+    return soccer_venue.check(text, game)
+
+
+def soccer_venue_instruction(game: dict) -> str:
+    import sys as _sys
+    scripts_dir = str(pathlib.Path(__file__).resolve().parent / "scripts")
+    if scripts_dir not in _sys.path:
+        _sys.path.insert(0, scripts_dir)
+    import soccer_venue
+    return soccer_venue.instruction(game)
 
 
 def enhance_games_with_ai(

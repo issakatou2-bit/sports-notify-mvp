@@ -495,7 +495,8 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
                    "原文にない得点・アシスト・時刻・数字・出来事を足さない。")
     if not token_log.allowed("voices"):
         return []
-    resp = client.messages.create(
+    import backstage_guard
+    resp = backstage_guard.create(client, label='local_voices.py', category='voices', mode='lines',
         # 4件の本文と、それぞれの返信3件まで。最大16行を訳す。
         # 元が220字まで許してあるので、日本語にすると1行200字近くなる
         # ことがあり、2500では足りない日が出る。上限を上げても
@@ -539,6 +540,17 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
         translated.pop(last, None)
         note(f"[warn] 訳が{len(flat)}行のうち{last - 1}行で切れました。"
              f"切れた行だけ落として続けます")
+
+    # 10/9の観客→選手の誤訳を、指示だけで終わらせず原文と返信で照合。
+    import comment_actors
+    for n, (i, j, original) in enumerate(flat, 1):
+        if n not in translated:
+            continue
+        context = items[i]['title']+' '+ ' '.join(items[i].get('reply_texts') or [])
+        issues = comment_actors.check(original, translated[n][1], context)
+        if issues:
+            translated.pop(n)
+            note(f"[warn] 訳の{n}行目を除外: {'、'.join(issues)}")
 
     out = [None] * len(items)
     for n, (i, j, _) in enumerate(flat, 1):

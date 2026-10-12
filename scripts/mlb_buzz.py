@@ -340,6 +340,26 @@ def _f(v, default=0.0):
         return default
 
 
+def batting_facts(box: dict) -> list:
+    """boxの得点を保存。未取得と0を区別し、日本人は材料の氏名を使う。"""
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+    from notability_engine import JP_PLAYERS_MLB
+    from press_names import SURNAME
+    names = {p['name_en']:p['name_jp'] for p in JP_PLAYERS_MLB}
+    out = []
+    for side in ('home','away'):
+        for row in (box.get('teams',{}).get(side,{}).get('players') or {}).values():
+            stats = row.get('stats',{}).get('batting') or {}
+            name = (row.get('person') or {}).get('fullName')
+            if not stats or not name:
+                continue
+            shown = names.get(name, name)
+            out.append({'name':shown, 'name_en':name, 'type':'batter',
+                        'aliases':[SURNAME[shown]] if shown in SURNAME else [],
+                        'runs':stats.get('runs'), 'hits':stats.get('hits'), 'rbi':stats.get('rbi')})
+    return out
+
+
 def series_facts(g: dict, ss: dict, res: dict) -> dict:
     """シリーズの中のこの試合。勝敗は試合のあと（seriesStatus）と、この試合を引いた試合の前。"""
     desc = ss.get("description") or ""
@@ -362,6 +382,32 @@ def series_facts(g: dict, ss: dict, res: dict) -> dict:
         out["after_jp"] = f"{w}勝{l}敗（{after}）"
     if not out["is_over"] and total:
         out["next"] = f"第{num + 1}戦" + ("で決着する" if ss.get("isTied") and num + 1 == total else "")
+        out["next_game_number"] = num + 1
+    # 数値の時点を台詞検査へ残す。winningTeamはシリーズのリード側で、今日の勝者とは別。
+    sides = g.get("teams") or {}
+    leader = (ss.get("winningTeam") or {}).get("id")
+    team_ids = {(sides.get(side, {}).get('team') or {}).get('id') for side in ('home','away')}
+    by_team = {}
+    if w + l == num and num > 0:
+        for side in ("home", "away"):
+            team_id = (sides.get(side, {}).get("team") or {}).get("id")
+            if ss.get("isTied") and w == l:
+                wins = w
+            elif leader is not None and leader in team_ids and team_id is not None:
+                wins = w if leader == team_id else l
+            else:
+                by_team = {}
+                break
+            by_team[res[side+"_jp"]] = {"wins": wins, "losses": num-wins}
+    if len(by_team) == 2:
+        before = {name: {"wins": r["wins"]-(name == win_jp),
+                         "losses": r["losses"]-(name != win_jp)}
+                  for name, r in by_team.items()}
+        if all(v >= 0 for r in before.values() for v in r.values()):
+            out.update(after_by_team=by_team, before_by_team=before,
+                       before_jp="、".join(f"{n}{r['wins']}勝{r['losses']}敗" for n,r in before.items()))
+            out["is_decider"] = (all(r['wins'] == total//2 for r in before.values())
+                                  if total > 0 else None)
     return out
 
 
@@ -430,6 +476,7 @@ def fetch_result(date: str, teams: list) -> dict:
                               timeout=25)
             bx.raise_for_status()
             data = bx.json()
+            res["batting_facts"] = batting_facts(data)
             # どちらのチームの選手かを一緒に持つ。
             #
             # 名前と成績だけを渡していたため、対話の台本を書かせたとき
@@ -635,7 +682,8 @@ def topic_jp(video: dict) -> str:
         client = anthropic.Anthropic(api_key=key)
         if not token_log.allowed("topic"):
             return raw
-        resp = client.messages.create(
+        import backstage_guard
+        resp = backstage_guard.create(client, label='mlb_buzz.py', category='topic', mode='whole',
             model=TOPIC_MODEL, max_tokens=200,
             messages=[{"role": "user", "content":
                        "次はMLB公式のハイライト動画の題です。"

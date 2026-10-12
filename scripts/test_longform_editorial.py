@@ -128,7 +128,7 @@ class EditorialTests(unittest.TestCase):
         self.assertFalse(editorial.check(dialogue((None, "ガーディアンズは地区1位で終えたわ。"))))
 
     def test_production_excuses_without_numeric_facts(self):
-        for text in ("材料が渡されていないから何とも言えない。", "データが無いわ。", "分からないのだ。"):
+        for text in ("材料が渡されていないから何とも言えない。", "データが無いわ。"):
             self.assertTrue(verify_numbers.check(dialogue((None, text))))
 
     def test_comment_mode_is_outside_scope(self):

@@ -370,7 +370,8 @@ def translate(posts: list, api_key: str) -> list:
         client = anthropic.Anthropic(api_key=api_key)
         if not token_log.allowed("reporters"):
             return posts
-        msg = client.messages.create(
+        import backstage_guard
+        msg = backstage_guard.create(client, label='local_reporters.py', category='reporters', mode='lines',
             model="claude-haiku-4-5-20251001",
             max_tokens=1200,
             messages=[{"role": "user", "content": prompt}],

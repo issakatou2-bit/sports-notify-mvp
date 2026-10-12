@@ -198,19 +198,11 @@ def is_scheduled(entry: dict) -> bool:
 
     予約投稿は公開時刻まで非公開のままなので、それを知らずに並べると
     リンクを踏んだ人が見られない動画に当たる。埋め込まない方がよい。
-    読めない値は、伏せるより出す方に倒す(記録が壊れていても既存の
-    動画が消えないように)。
+    読めない値は予約時刻を判断できない。一覧への採用は別途
+    video_visibility.exclusion_reasonで不正な予約記録を除外する。
     """
-    at = entry.get("publish_at")
-    if not at:
-        return False
-    from datetime import datetime, timezone
-    try:
-        when = datetime.strptime(at, "%Y-%m-%dT%H:%M:%SZ").replace(
-            tzinfo=timezone.utc)
-    except ValueError:
-        return False
-    return when > datetime.now(timezone.utc)
+    import video_visibility
+    return video_visibility.is_scheduled(entry)
 
 
 HEAD_TMPL = """<!DOCTYPE html>
@@ -467,11 +459,15 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     # 相互に行き来できない状態だったので、ここで繋ぐ。
     # アーカイブページは検索から入ってくる本命なので、効き目が大きい。
     videos = load_published_videos()
+    import video_visibility
     day_videos = []
     for kind, label in DAY_VIDEO_KINDS:
         v = (videos.get(kind) or {}).get(archive_date)
-        if v and v.get("video_id") and not is_scheduled(v):
+        why=video_visibility.exclusion_reason(v)
+        if why is None:
             day_videos.append((_day_label(kind, label, v), v))
+        elif v:
+            print(f'[info] {archive_date}/{kind}: 過去ページの動画を除外 ({why})')
 
     head = HEAD_TMPL.format(
         title=html.escape(f"{jp_date}の注目試合" +

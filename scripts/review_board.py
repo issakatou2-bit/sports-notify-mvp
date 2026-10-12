@@ -189,7 +189,8 @@ def ask(client, label: str, stance: str, material: str) -> str:
         + "- 他の立場が言いそうなことは書かない。自分の立場に絞る" + chr(10)
         + "- 箇条書き。前置きは不要"
     )
-    resp = client.messages.create(
+    import backstage_guard
+    resp = backstage_guard.create(client, label='review_board.py', category='review_board', mode='lines',
         model=MODEL, max_tokens=500,
         messages=[{"role": "user", "content": prompt}],
     )

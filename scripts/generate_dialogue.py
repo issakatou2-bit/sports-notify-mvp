@@ -158,17 +158,82 @@ def _create(client, **kw):
 #
 # 費用は token_log.record(..., batch=True) で半額として残す。
 # 中身は scripts/dialogue_batch.py（説明もそこに）。
-def _ask(client, stage, **kw):
+def _ask(client, stage, *, guard_audit=None, **kw):
     """台本の呼び出し1回。Batch か、だめならいまの _create。費用もここで残す。"""
     import dialogue_batch
-    return dialogue_batch.run(
-        client, stage, kw, model=MODEL, effort=EFFORT,
-        direct=lambda: _create(client, **kw),
-        record=lambda r, batch: token_log.record("dialogue", MODEL, r,
-                                                 batch=batch),
-        after_submit=(_commit_batch_state
-                      if os.environ.get("COLLESPO_BATCH_COMMIT") == "1"
-                      else None))
+    import backstage_guard
+    kw = backstage_guard.with_instruction(kw)
+
+    def first():
+        return dialogue_batch.run(
+            client, stage, kw, model=MODEL, effort=EFFORT,
+            direct=lambda: _create(client, **kw),
+            record=lambda r, batch: token_log.record("dialogue", MODEL, r, batch=batch),
+            after_submit=(_commit_batch_state
+                          if os.environ.get("COLLESPO_BATCH_COMMIT") == "1"
+                          else None))
+
+    def retry():
+        resp = _create(client, **kw)
+        token_log.record("dialogue", MODEL, resp)
+        return resp
+
+    return backstage_guard.guard_response(first, retry, label='dialogue:'+stage,
+                                           mode='lines',
+                                           allowed=lambda: token_log.allowed('dialogue'),
+                                           diagnostics=guard_audit)
+
+
+def verified_fallback(m, mode, ps):
+    """制作語で原稿を使えない場合も、取得済みの値/訳だけで短く作る。"""
+    import backstage_guard
+    lines = []
+    def add(text, panel=None):
+        if text and not backstage_guard.violations(text):
+            tag = f'[{panel}]' if panel in ps else ''
+            lines.append(f'めたん{tag}：{text}')
+    if mode == 'numbers':
+        import numbers_material as nmat
+        for p in m.get('players') or []:
+            name = p.get('name')
+            row = p.get('_row') or p
+            if row.get('type') == 'two_way':
+                row = row.get('batting') or {}
+            panel = next((key for key,value in ps.items() if value.get('name') == name),None)
+            for unit,value in nmat._numbers(row).items():
+                if not name or value is None:
+                    continue
+                shown = str(value)+unit
+                if unit == '回' and re.fullmatch(r'\d+\.[12]',str(value)):
+                    whole,part = str(value).split('.')
+                    shown = f'{whole}回3分の{part}'
+                add(f'{name}は{shown}です。',panel)
+    else:
+        result = (m.get('top') or {}).get('result') or {}
+        if all(result.get(k) is not None for k in ('home_score','away_score','home_jp','away_jp')):
+            add(f"{result['home_jp']}対{result['away_jp']}は{result['home_score']}対{result['away_score']}でした。",'score')
+        import comment_actors
+        for voice in m.get('voices') or []:
+            if not comment_actors.check(voice.get('title'),voice.get('ja')):
+                add(voice.get('ja'))
+            for reply in voice.get('reply_ja') or []:
+                if not comment_actors.check(reply.get('original'),reply.get('ja'),voice.get('title')):
+                    add(reply.get('ja'))
+    return '\n'.join(lines)
+
+
+def _ask_or_fallback(client, stage, m, mode, ps, audit, **kw):
+    import backstage_guard
+    try:
+        return _ask(client,stage,guard_audit=audit,**kw)
+    except backstage_guard.BackstageError:
+        # 訂正にも制作語が残っただけで日次動画を丸ごと失わない。
+        # 危険な初稿には戻らず、モデルが書いていない取得値へ戻す。
+        from types import SimpleNamespace
+        audit['fallback'] = True
+        text = verified_fallback(m,mode,ps)
+        print('::warning::楽屋表現の原稿を不採用。取得済みの値/訳だけの短い原稿へ戻します')
+        return SimpleNamespace(content=[SimpleNamespace(type='text',text=text)])
 
 
 def _commit_batch_state(path):
@@ -1177,6 +1242,9 @@ def facts(m: dict, extra: list) -> str:
     if res.get("away_jp"):
         lines.append(f"結果: {res['away_jp']} {res.get('away_score')} "
                      f"- {res.get('home_score')} {res['home_jp']}")
+        for player in res.get('batting_facts') or []:
+            if player.get('runs') is not None:
+                lines.append(f"この試合の得点: {player['name']} {player['runs']}得点。安打数とは別の値。")
         # 対戦している2球団自身の、いまの勝敗と地区順位。
         # コメントが「Cincinnatiはあそこよりマシ」のように自チームの
         # 強さを主張していたら、その主張を数字で受けられるようにする。
@@ -1933,6 +2001,7 @@ def main() -> int:
     print("\n--- 画面に出せる札 ---")
     print(panel_menu(ps))
 
+    guard_audit = {}
     if args.reviewed_text:
         text = pathlib.Path(args.reviewed_text).read_text(encoding="utf-8")
         segs = reviewed_segments(text, ps)
@@ -1947,8 +2016,8 @@ def main() -> int:
 
         client = anthropic.Anthropic(api_key=key)
         ask = prompt.format(facts=body, menu=panel_menu(ps))
-        resp = _ask(
-            client, "draft", max_tokens=16000,
+        resp = _ask_or_fallback(
+            client, "draft", m, args.mode, ps, guard_audit, max_tokens=16000,
             messages=[{"role": "user", "content": ask}],
         )
         text = "".join(b.text for b in resp.content if b.type == "text")
@@ -1965,13 +2034,13 @@ def main() -> int:
         # 長さは決まらない。ただし**足りないぶんを言葉で埋めさせない。**
         # 使っていない材料を指して、そこを書けと言う。
         # それでも足りなければ、短いまま出す。水増しよりましなので。
-        if chars < MIN_CHARS and token_log.allowed("dialogue"):
+        if chars < MIN_CHARS and not guard_audit and token_log.allowed("dialogue"):
             unused = [k for k in ps if k not in
                       {s.get("panel") for s in segs if s.get("panel")}]
             print(f"\n[info] {chars}字で短いので、書き足してもらいます"
                   f"（未使用の材料 {len(unused)}件）")
-            more = _ask(
-                client, "more", max_tokens=16000,
+            more = _ask_or_fallback(
+                client, "more", m, args.mode, ps, guard_audit, max_tokens=16000,
                 messages=[
                     {"role": "user", "content": ask},
                     {"role": "assistant", "content": text},
@@ -2029,9 +2098,12 @@ def main() -> int:
     if chars < MIN_CHARS:
         print(f"::warning::台本が{chars}字しかありません(目安{TARGET_CHARS}字)")
 
-    if len(segs) < 8:
+    if len(segs) < 8 and not guard_audit:
         print("[warn] 行が少なすぎます。台本として使いません")
         return 1
+    if not segs:
+        print('::warning::取得済みの読み上げ内容がありません。古い原稿は使いません')
+        return 0
     if args.print_only:
         return 0
 
@@ -2062,6 +2134,9 @@ def main() -> int:
     payload = {"kind": "dialogue", "segments": segs, "panels": ps}
     payload.update(nmat.meta(m, segs) if args.mode == "numbers"
                    else _voices_meta(m))
+    import game_fact_guard
+    payload['game_material'] = game_fact_guard.material(m, args.mode)
+    payload, game_issues = game_fact_guard.prepare(payload)
     if args.mode == "numbers":
         # 照合の材料も、材料の作り方ごとに違う。
         payload["facts"] = nmat.checkable(m)
@@ -2076,6 +2151,11 @@ def main() -> int:
                 print("::error::" + issue)
             print("[error] 編集検査で停止。原文は保存済み。追加APIでの再生成はしません")
             return 1
+    if game_issues:
+        for issue in game_issues:
+            print('::error::'+issue)
+        print('[error] 試合の材料との照合で停止。追加APIでの再生成はしません')
+        return 1
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                    encoding="utf-8")
     print(f"[info] 台本を出力しました -> {out}")
