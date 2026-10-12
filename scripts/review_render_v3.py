@@ -47,6 +47,9 @@ SLIDE = 0.45         # 飛び込みにかかる秒
 # 切り替えは COLLESPO_SHORT_LOOK=v4（リポジトリ変数）。試作を本人に見せてから。
 import os  # noqa: E402
 LOOK = os.environ.get("COLLESPO_SHORT_LOOK", "v3")
+# サッカーv5も共通のcharacters/安全域はv4を使う。既存のv3/v4の値は変えない。
+if os.environ.get('COLLESPO_SOCCER_LOOK') == 'v5' or LOOK == 'v5':
+    LOOK = 'v4'
 CONTENT_TOP = 236
 # v4 は札の下に出典（2行）と字幕の箱を置くので、札の下端を上げる
 CONTENT_BOTTOM = 1150 if LOOK == "v4" else 1216

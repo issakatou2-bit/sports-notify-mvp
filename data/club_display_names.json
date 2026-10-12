@@ -1,0 +1,1769 @@
+{
+  "version": 1,
+  "checked_on": "2026-10-12",
+  "policy": "表示案/短名/読みは本表。legacyは旧ルックの画素回帰用。所属・順位は本表で決めない。",
+  "clubs": [
+    {
+      "id": "Manchester City FC",
+      "league": "PL",
+      "current": "マンチェスター・シティ",
+      "display": "マンチェスターC",
+      "short": "マンC",
+      "reading": "マンチェスターシティ",
+      "legacy": "マンチェスター・シティ",
+      "aliases": [
+        "マンチェスター・シティ",
+        "MCI",
+        "Manchester City",
+        "Manchester City FC",
+        "manchestercity"
+      ],
+      "reason": "新聞の短縮表記を基準にC/Uを区別。狭い欄だけさらに短くする。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Arsenal FC",
+      "league": "PL",
+      "current": "アーセナル",
+      "display": "アーセナル",
+      "short": "アーセナル",
+      "reading": "アーセナル",
+      "legacy": "アーセナル",
+      "aliases": [
+        "アーセナル",
+        "ARS",
+        "Arsenal",
+        "Arsenal FC",
+        "arsenal"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Brighton & Hove Albion FC",
+      "league": "PL",
+      "current": "ブライトン",
+      "display": "ブライトン",
+      "short": "ブライトン",
+      "reading": "ブライトン",
+      "legacy": "ブライトン",
+      "aliases": [
+        "ブライトン",
+        "BHA",
+        "Brighton & Hove Albion",
+        "Brighton & Hove Albion FC",
+        "brighton"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Brentford FC",
+      "league": "PL",
+      "current": "ブレントフォード",
+      "display": "ブレントフォード",
+      "short": "ブレントフォード",
+      "reading": "ブレントフォード",
+      "legacy": "ブレントフォード",
+      "aliases": [
+        "ブレントフォード",
+        "BRE",
+        "Brentford",
+        "Brentford FC",
+        "brentford"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Leeds United FC",
+      "league": "PL",
+      "current": "リーズ",
+      "display": "リーズ",
+      "short": "リーズ",
+      "reading": "リーズ",
+      "legacy": "リーズ",
+      "aliases": [
+        "リーズ",
+        "LEE",
+        "Leeds United",
+        "Leeds United FC",
+        "leeds"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Liverpool FC",
+      "league": "PL",
+      "current": "リバプール",
+      "display": "リバプール",
+      "short": "リバプール",
+      "reading": "リバプール",
+      "legacy": "リバプール",
+      "aliases": [
+        "リバプール",
+        "LIV",
+        "Liverpool",
+        "Liverpool FC",
+        "liverpool"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Everton FC",
+      "league": "PL",
+      "current": "エバートン",
+      "display": "エバートン",
+      "short": "エバートン",
+      "reading": "エバートン",
+      "legacy": "エバートン",
+      "aliases": [
+        "エバートン",
+        "EVE",
+        "Everton",
+        "Everton FC",
+        "everton"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Hull City AFC",
+      "league": "PL",
+      "current": "ハル・シティ",
+      "display": "ハル・シティ",
+      "short": "ハル",
+      "reading": "ハルシティ",
+      "legacy": "ハル・シティ",
+      "aliases": [
+        "ハル・シティ",
+        "HUL",
+        "Hull City AFC",
+        "Hull City"
+      ],
+      "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Newcastle United FC",
+      "league": "PL",
+      "current": "ニューカッスル",
+      "display": "ニューカッスル",
+      "short": "ニューカッスル",
+      "reading": "ニューカッスル",
+      "legacy": "ニューカッスル",
+      "aliases": [
+        "ニューカッスル",
+        "NEW",
+        "Newcastle United",
+        "Newcastle United FC",
+        "newcastle"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Chelsea FC",
+      "league": "PL",
+      "current": "チェルシー",
+      "display": "チェルシー",
+      "short": "チェルシー",
+      "reading": "チェルシー",
+      "legacy": "チェルシー",
+      "aliases": [
+        "チェルシー",
+        "CHE",
+        "Chelsea",
+        "Chelsea FC",
+        "chelsea"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Ipswich Town FC",
+      "league": "PL",
+      "current": "イプスウィッチ",
+      "display": "イプスウィッチ",
+      "short": "イプスウィッチ",
+      "reading": "イプスウィッチ",
+      "legacy": "イプスウィッチ",
+      "aliases": [
+        "イプスウィッチ",
+        "IPS",
+        "Ipswich Town",
+        "Ipswich Town FC"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Manchester United FC",
+      "league": "PL",
+      "current": "マンチェスター・ユナイテッド",
+      "display": "マンチェスターU",
+      "short": "マンU",
+      "reading": "マンチェスターユナイテッド",
+      "legacy": "マンチェスター・ユナイテッド",
+      "aliases": [
+        "マンチェスター・ユナイテッド",
+        "MUN",
+        "Manchester United",
+        "Manchester United FC",
+        "manchesterunited"
+      ],
+      "reason": "新聞の短縮表記を基準にC/Uを区別。狭い欄だけさらに短くする。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Nottingham Forest FC",
+      "league": "PL",
+      "current": "ノッティンガム・フォレスト",
+      "display": "ノッティンガムF",
+      "short": "ノッティンガムF",
+      "reading": "ノッティンガムフォレスト",
+      "legacy": "ノッティンガム・フォレスト",
+      "aliases": [
+        "ノッティンガム・フォレスト",
+        "NFO",
+        "Nottingham Forest",
+        "Nottingham Forest FC",
+        "nottingham"
+      ],
+      "reason": "新聞のF略記を採用。音声はフォレストまで読む。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Sunderland AFC",
+      "league": "PL",
+      "current": "サンダーランド",
+      "display": "サンダーランド",
+      "short": "サンダーランド",
+      "reading": "サンダーランド",
+      "legacy": "サンダーランド",
+      "aliases": [
+        "サンダーランド",
+        "SUN",
+        "Sunderland AFC",
+        "Sunderland",
+        "sunderland"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Crystal Palace FC",
+      "league": "PL",
+      "current": "クリスタル・パレス",
+      "display": "クリスタルパレス",
+      "short": "パレス",
+      "reading": "クリスタルパレス",
+      "legacy": "クリスタル・パレス",
+      "aliases": [
+        "クリスタル・パレス",
+        "CRY",
+        "Crystal Palace",
+        "Crystal Palace FC",
+        "crystalpalace"
+      ],
+      "reason": "冠詞と名を続ける新聞表記を採用。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Aston Villa FC",
+      "league": "PL",
+      "current": "アストン・ビラ",
+      "display": "アストンヴィラ",
+      "short": "アストンヴィラ",
+      "reading": "アストンヴィラ",
+      "legacy": "アストン・ヴィラ",
+      "aliases": [
+        "アストン・ビラ",
+        "アストン・ヴィラ",
+        "AVL",
+        "Aston Villa",
+        "Aston Villa FC",
+        "astonvilla"
+      ],
+      "reason": "本人指定「アストンヴィラ」を優先。ビラ/ヴィラの揺れも別名で吸収。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/",
+      "spoken": "あすとんゔぃら"
+    },
+    {
+      "id": "AFC Bournemouth",
+      "league": "PL",
+      "current": "ボーンマス",
+      "display": "ボーンマス",
+      "short": "ボーンマス",
+      "reading": "ボーンマス",
+      "legacy": "ボーンマス",
+      "aliases": [
+        "ボーンマス",
+        "BOU",
+        "AFC Bournemouth",
+        "bournemouth"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Coventry City FC",
+      "league": "PL",
+      "current": "コベントリー",
+      "display": "コベントリー",
+      "short": "コベントリー",
+      "reading": "コベントリー",
+      "legacy": "コベントリー",
+      "aliases": [
+        "コベントリー",
+        "COV",
+        "Coventry City",
+        "Coventry City FC"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Fulham FC",
+      "league": "PL",
+      "current": "フラム",
+      "display": "フラム",
+      "short": "フラム",
+      "reading": "フラム",
+      "legacy": "フラム",
+      "aliases": [
+        "フラム",
+        "FUL",
+        "Fulham",
+        "Fulham FC",
+        "fulham"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "Tottenham Hotspur FC",
+      "league": "PL",
+      "current": "トッテナム",
+      "display": "トッテナム",
+      "short": "トッテナム",
+      "reading": "トッテナム",
+      "legacy": "トッテナム",
+      "aliases": [
+        "トッテナム",
+        "TOT",
+        "Tottenham Hotspur",
+        "Tottenham Hotspur FC",
+        "tottenham"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
+    },
+    {
+      "id": "FC Barcelona",
+      "league": "PD",
+      "current": "バルセロナ",
+      "display": "バルセロナ",
+      "short": "バルセロナ",
+      "reading": "バルセロナ",
+      "legacy": "バルセロナ",
+      "aliases": [
+        "バルセロナ",
+        "BAR",
+        "FC Barcelona",
+        "fcbarcelona"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Club Atlético de Madrid",
+      "league": "PD",
+      "current": "アトレティコ・マドリード",
+      "display": "アトレティコ・マドリード",
+      "short": "アトレティコ",
+      "reading": "アトレティコマドリード",
+      "legacy": "アトレティコ・マドリード",
+      "aliases": [
+        "アトレティコ・マドリード",
+        "ATM",
+        "Club Atlético de Madrid",
+        "atletico"
+      ],
+      "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Real Betis Balompié",
+      "league": "PD",
+      "current": "レアル・ベティス",
+      "display": "ベティス",
+      "short": "ベティス",
+      "reading": "ベティス",
+      "legacy": "レアル・ベティス",
+      "aliases": [
+        "レアル・ベティス",
+        "BET",
+        "Real Betis Balompié",
+        "betis"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Real Madrid CF",
+      "league": "PD",
+      "current": "レアル・マドリード",
+      "display": "レアル・マドリード",
+      "short": "Rマドリード",
+      "reading": "レアルマドリード",
+      "legacy": "レアル・マドリード",
+      "aliases": [
+        "レアル・マドリード",
+        "RMA",
+        "Real Madrid CF",
+        "realmadrid"
+      ],
+      "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Sevilla FC",
+      "league": "PD",
+      "current": "セビージャ",
+      "display": "セビージャ",
+      "short": "セビージャ",
+      "reading": "セビージャ",
+      "legacy": "セビージャ",
+      "aliases": [
+        "セビージャ",
+        "SEV",
+        "Sevilla",
+        "Sevilla FC",
+        "sevilla"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Deportivo Alavés",
+      "league": "PD",
+      "current": "アラベス",
+      "display": "アラベス",
+      "short": "アラベス",
+      "reading": "アラベス",
+      "legacy": "アラベス",
+      "aliases": [
+        "アラベス",
+        "ALA",
+        "Deportivo Alavés",
+        "alaves"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "RC Deportivo La Coruña",
+      "league": "PD",
+      "current": "デポルティボ",
+      "display": "デポルティボ",
+      "short": "デポルティボ",
+      "reading": "デポルティボ",
+      "legacy": "デポルティボ",
+      "aliases": [
+        "デポルティボ",
+        "DEP",
+        "RC Deportivo La Coruña",
+        "deportivolacoruna"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Real Sociedad de Fútbol",
+      "league": "PD",
+      "current": "レアル・ソシエダ",
+      "display": "レアル・ソシエダ",
+      "short": "ソシエダ",
+      "reading": "レアルソシエダ",
+      "legacy": "レアル・ソシエダ",
+      "aliases": [
+        "レアル・ソシエダ",
+        "RSO",
+        "Real Sociedad de Fútbol",
+        "sociedad"
+      ],
+      "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Villarreal CF",
+      "league": "PD",
+      "current": "ビジャレアル",
+      "display": "ビジャレアル",
+      "short": "ビジャレアル",
+      "reading": "ビジャレアル",
+      "legacy": "ビジャレアル",
+      "aliases": [
+        "ビジャレアル",
+        "VIL",
+        "Villarreal CF",
+        "villarreal"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Athletic Club",
+      "league": "PD",
+      "current": "アスレティック・ビルバオ",
+      "display": "アスレティック・ビルバオ",
+      "short": "ビルバオ",
+      "reading": "アスレティックビルバオ",
+      "legacy": "アスレティック・ビルバオ",
+      "aliases": [
+        "アスレティック・ビルバオ",
+        "ATH",
+        "Athletic Club",
+        "athletic"
+      ],
+      "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Getafe CF",
+      "league": "PD",
+      "current": "ヘタフェ",
+      "display": "ヘタフェ",
+      "short": "ヘタフェ",
+      "reading": "ヘタフェ",
+      "legacy": "ヘタフェ",
+      "aliases": [
+        "ヘタフェ",
+        "GET",
+        "Getafe CF",
+        "getafe"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Rayo Vallecano de Madrid",
+      "league": "PD",
+      "current": "ラージョ・バジェカーノ",
+      "display": "ラージョ・バジェカーノ",
+      "short": "ラージョ",
+      "reading": "ラージョバジェカーノ",
+      "legacy": "ラージョ・バジェカーノ",
+      "aliases": [
+        "ラージョ・バジェカーノ",
+        "RAY",
+        "Rayo Vallecano de Madrid",
+        "rayo"
+      ],
+      "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "CA Osasuna",
+      "league": "PD",
+      "current": "オサスナ",
+      "display": "オサスナ",
+      "short": "オサスナ",
+      "reading": "オサスナ",
+      "legacy": "オサスナ",
+      "aliases": [
+        "オサスナ",
+        "OSA",
+        "CA Osasuna",
+        "osasuna"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "RC Celta de Vigo",
+      "league": "PD",
+      "current": "セルタ",
+      "display": "セルタ",
+      "short": "セルタ",
+      "reading": "セルタ",
+      "legacy": "セルタ",
+      "aliases": [
+        "セルタ",
+        "CEL",
+        "RC Celta de Vigo",
+        "celta"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "RCD Espanyol de Barcelona",
+      "league": "PD",
+      "current": "エスパニョール",
+      "display": "エスパニョール",
+      "short": "エスパニョール",
+      "reading": "エスパニョール",
+      "legacy": "エスパニョール",
+      "aliases": [
+        "エスパニョール",
+        "ESP",
+        "RCD Espanyol de Barcelona",
+        "espanyol"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Real Racing Club de Santander",
+      "league": "PD",
+      "current": "ラシン・サンタンデール",
+      "display": "ラシン・サンタンデール",
+      "short": "ラシン",
+      "reading": "ラシンサンタンデール",
+      "legacy": "ラシン・サンタンデール",
+      "aliases": [
+        "ラシン・サンタンデール",
+        "RAC",
+        "Real Racing Club de Santander",
+        "racingclubdesantander"
+      ],
+      "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Levante UD",
+      "league": "PD",
+      "current": "レバンテ",
+      "display": "レバンテ",
+      "short": "レバンテ",
+      "reading": "レバンテ",
+      "legacy": "レバンテ",
+      "aliases": [
+        "レバンテ",
+        "LEV",
+        "Levante UD",
+        "levante"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Elche CF",
+      "league": "PD",
+      "current": "エルチェ",
+      "display": "エルチェ",
+      "short": "エルチェ",
+      "reading": "エルチェ",
+      "legacy": "エルチェ",
+      "aliases": [
+        "エルチェ",
+        "ELC",
+        "Elche CF",
+        "elche"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Valencia CF",
+      "league": "PD",
+      "current": "バレンシア",
+      "display": "バレンシア",
+      "short": "バレンシア",
+      "reading": "バレンシア",
+      "legacy": "バレンシア",
+      "aliases": [
+        "バレンシア",
+        "VAL",
+        "Valencia CF",
+        "valencia"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "Málaga CF",
+      "league": "PD",
+      "current": "マラガ",
+      "display": "マラガ",
+      "short": "マラガ",
+      "reading": "マラガ",
+      "legacy": "マラガ",
+      "aliases": [
+        "マラガ",
+        "MGA",
+        "Málaga CF",
+        "malaga"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
+    },
+    {
+      "id": "AS Roma",
+      "league": "SA",
+      "current": "ローマ",
+      "display": "ローマ",
+      "short": "ローマ",
+      "reading": "ローマ",
+      "legacy": "ローマ",
+      "aliases": [
+        "ローマ",
+        "ROM",
+        "AS Roma",
+        "roma"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "FC Internazionale Milano",
+      "league": "SA",
+      "current": "インテル",
+      "display": "インテル",
+      "short": "インテル",
+      "reading": "インテル",
+      "legacy": "インテル",
+      "aliases": [
+        "インテル",
+        "INT",
+        "FC Internazionale Milano",
+        "internazionale"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "SS Lazio",
+      "league": "SA",
+      "current": "ラツィオ",
+      "display": "ラツィオ",
+      "short": "ラツィオ",
+      "reading": "ラツィオ",
+      "legacy": "ラツィオ",
+      "aliases": [
+        "ラツィオ",
+        "LAZ",
+        "SS Lazio",
+        "lazio"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Cagliari Calcio",
+      "league": "SA",
+      "current": "カリアリ",
+      "display": "カリアリ",
+      "short": "カリアリ",
+      "reading": "カリアリ",
+      "legacy": "カリアリ",
+      "aliases": [
+        "カリアリ",
+        "CAG",
+        "Cagliari Calcio",
+        "cagliari"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "AC Milan",
+      "league": "SA",
+      "current": "ACミラン",
+      "display": "ACミラン",
+      "short": "ミラン",
+      "reading": "エーシーミラン",
+      "legacy": "ACミラン",
+      "aliases": [
+        "ACミラン",
+        "MIL",
+        "AC Milan",
+        "acmilan"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Frosinone Calcio",
+      "league": "SA",
+      "current": "フロジノーネ",
+      "display": "フロジノーネ",
+      "short": "フロジノーネ",
+      "reading": "フロジノーネ",
+      "legacy": "フロジノーネ",
+      "aliases": [
+        "フロジノーネ",
+        "FRO",
+        "Frosinone Calcio",
+        "frosinone"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Juventus FC",
+      "league": "SA",
+      "current": "ユベントス",
+      "display": "ユベントス",
+      "short": "ユベントス",
+      "reading": "ユベントス",
+      "legacy": "ユベントス",
+      "aliases": [
+        "ユベントス",
+        "JUV",
+        "Juventus",
+        "Juventus FC",
+        "juventus"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Como 1907",
+      "league": "SA",
+      "current": "コモ",
+      "display": "コモ",
+      "short": "コモ",
+      "reading": "コモ",
+      "legacy": "コモ",
+      "aliases": [
+        "コモ",
+        "COM",
+        "Como 1907",
+        "como"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "SSC Napoli",
+      "league": "SA",
+      "current": "ナポリ",
+      "display": "ナポリ",
+      "short": "ナポリ",
+      "reading": "ナポリ",
+      "legacy": "ナポリ",
+      "aliases": [
+        "ナポリ",
+        "NAP",
+        "SSC Napoli",
+        "napoli"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "US Sassuolo Calcio",
+      "league": "SA",
+      "current": "サッスオーロ",
+      "display": "サッスオーロ",
+      "short": "サッスオーロ",
+      "reading": "サッスオーロ",
+      "legacy": "サッスオーロ",
+      "aliases": [
+        "サッスオーロ",
+        "SAS",
+        "US Sassuolo Calcio",
+        "sassuolo"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Atalanta BC",
+      "league": "SA",
+      "current": "アタランタ",
+      "display": "アタランタ",
+      "short": "アタランタ",
+      "reading": "アタランタ",
+      "legacy": "アタランタ",
+      "aliases": [
+        "アタランタ",
+        "ATA",
+        "Atalanta BC",
+        "atalanta"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "US Lecce",
+      "league": "SA",
+      "current": "レッチェ",
+      "display": "レッチェ",
+      "short": "レッチェ",
+      "reading": "レッチェ",
+      "legacy": "レッチェ",
+      "aliases": [
+        "レッチェ",
+        "LEC",
+        "US Lecce",
+        "lecce"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Udinese Calcio",
+      "league": "SA",
+      "current": "ウディネーゼ",
+      "display": "ウディネーゼ",
+      "short": "ウディネーゼ",
+      "reading": "ウディネーゼ",
+      "legacy": "ウディネーゼ",
+      "aliases": [
+        "ウディネーゼ",
+        "UDI",
+        "Udinese Calcio",
+        "udinese"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Torino FC",
+      "league": "SA",
+      "current": "トリノ",
+      "display": "トリノ",
+      "short": "トリノ",
+      "reading": "トリノ",
+      "legacy": "トリノ",
+      "aliases": [
+        "トリノ",
+        "TOR",
+        "Torino",
+        "Torino FC",
+        "torino"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Parma Calcio 1913",
+      "league": "SA",
+      "current": "パルマ",
+      "display": "パルマ",
+      "short": "パルマ",
+      "reading": "パルマ",
+      "legacy": "パルマ",
+      "aliases": [
+        "パルマ",
+        "PAR",
+        "Parma Calcio 1913",
+        "parma"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "AC Monza",
+      "league": "SA",
+      "current": "モンツァ",
+      "display": "モンツァ",
+      "short": "モンツァ",
+      "reading": "モンツァ",
+      "legacy": "モンツァ",
+      "aliases": [
+        "モンツァ",
+        "MON",
+        "AC Monza",
+        "monza"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "ACF Fiorentina",
+      "league": "SA",
+      "current": "フィオレンティーナ",
+      "display": "フィオレンティーナ",
+      "short": "フィオレンティーナ",
+      "reading": "フィオレンティーナ",
+      "legacy": "フィオレンティーナ",
+      "aliases": [
+        "フィオレンティーナ",
+        "FIO",
+        "ACF Fiorentina",
+        "fiorentina"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Bologna FC 1909",
+      "league": "SA",
+      "current": "ボローニャ",
+      "display": "ボローニャ",
+      "short": "ボローニャ",
+      "reading": "ボローニャ",
+      "legacy": "ボローニャ",
+      "aliases": [
+        "ボローニャ",
+        "BOL",
+        "Bologna FC 1909",
+        "bologna"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Genoa CFC",
+      "league": "SA",
+      "current": "ジェノア",
+      "display": "ジェノア",
+      "short": "ジェノア",
+      "reading": "ジェノア",
+      "legacy": "ジェノア",
+      "aliases": [
+        "ジェノア",
+        "GEN",
+        "Genoa CFC",
+        "genoa"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Venezia FC",
+      "league": "SA",
+      "current": "ベネツィア",
+      "display": "ベネツィア",
+      "short": "ベネツィア",
+      "reading": "ベネツィア",
+      "legacy": "ベネチア",
+      "aliases": [
+        "ベネツィア",
+        "ベネチア",
+        "VEN",
+        "Venezia",
+        "Venezia FC",
+        "venezia"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/italy/data/standings/"
+    },
+    {
+      "id": "Borussia Dortmund",
+      "league": "BL1",
+      "current": "ドルトムント",
+      "display": "ドルトムント",
+      "short": "ドルトムント",
+      "reading": "ドルトムント",
+      "legacy": "ドルトムント",
+      "aliases": [
+        "ドルトムント",
+        "BVB",
+        "Borussia Dortmund",
+        "dortmund"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "FC Bayern München",
+      "league": "BL1",
+      "current": "バイエルン",
+      "display": "バイエルン",
+      "short": "バイエルン",
+      "reading": "バイエルン",
+      "legacy": "バイエルン",
+      "aliases": [
+        "バイエルン",
+        "FCB",
+        "FC Bayern München",
+        "bayern"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "SC Freiburg",
+      "league": "BL1",
+      "current": "フライブルク",
+      "display": "フライブルク",
+      "short": "フライブルク",
+      "reading": "フライブルク",
+      "legacy": "フライブルク",
+      "aliases": [
+        "フライブルク",
+        "SCF",
+        "SC Freiburg",
+        "freiburg"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "FC Augsburg",
+      "league": "BL1",
+      "current": "アウクスブルク",
+      "display": "アウクスブルク",
+      "short": "アウクスブルク",
+      "reading": "アウクスブルク",
+      "legacy": "アウクスブルク",
+      "aliases": [
+        "アウクスブルク",
+        "FCA",
+        "FC Augsburg",
+        "augsburg"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "Bayer 04 Leverkusen",
+      "league": "BL1",
+      "current": "レバークーゼン",
+      "display": "レバークーゼン",
+      "short": "レバークーゼン",
+      "reading": "レバークーゼン",
+      "legacy": "レバークーゼン",
+      "aliases": [
+        "レバークーゼン",
+        "B04",
+        "Bayer 04 Leverkusen",
+        "leverkusen"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "1. FSV Mainz 05",
+      "league": "BL1",
+      "current": "マインツ",
+      "display": "マインツ",
+      "short": "マインツ",
+      "reading": "マインツ",
+      "legacy": "マインツ",
+      "aliases": [
+        "マインツ",
+        "M05",
+        "1. FSV Mainz 05",
+        "mainz"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "SV 07 Elversberg",
+      "league": "BL1",
+      "current": "エルバースベルク",
+      "display": "エルフェアスベルク",
+      "short": "エルフェアスベルク",
+      "reading": "エルフェアスベルク",
+      "legacy": "エルバースベルク",
+      "aliases": [
+        "エルバースベルク",
+        "ELV",
+        "SV 07 Elversberg",
+        "elversberg"
+      ],
+      "reason": "現在のスポーツ紙・配信の表記を採用。旧表記も別名として認識。",
+      "source": "https://www.nikkansports.com/soccer/world/news/202505270000273.html"
+    },
+    {
+      "id": "SV Werder Bremen",
+      "league": "BL1",
+      "current": "ブレーメン",
+      "display": "ブレーメン",
+      "short": "ブレーメン",
+      "reading": "ブレーメン",
+      "legacy": "ブレーメン",
+      "aliases": [
+        "ブレーメン",
+        "SVW",
+        "SV Werder Bremen",
+        "werder"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "RB Leipzig",
+      "league": "BL1",
+      "current": "ライプツィヒ",
+      "display": "ライプツィヒ",
+      "short": "ライプツィヒ",
+      "reading": "ライプツィヒ",
+      "legacy": "ライプツィヒ",
+      "aliases": [
+        "ライプツィヒ",
+        "RBL",
+        "RB Leipzig",
+        "leipzig"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "Eintracht Frankfurt",
+      "league": "BL1",
+      "current": "フランクフルト",
+      "display": "フランクフルト",
+      "short": "フランクフルト",
+      "reading": "フランクフルト",
+      "legacy": "フランクフルト",
+      "aliases": [
+        "フランクフルト",
+        "SGE",
+        "Eintracht Frankfurt",
+        "eintrachtfrankfurt"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "FC Schalke 04",
+      "league": "BL1",
+      "current": "シャルケ",
+      "display": "シャルケ",
+      "short": "シャルケ",
+      "reading": "シャルケ",
+      "legacy": "シャルケ",
+      "aliases": [
+        "シャルケ",
+        "S04",
+        "FC Schalke 04",
+        "schalke"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "SC Paderborn 07",
+      "league": "BL1",
+      "current": "パーダーボルン",
+      "display": "パーダーボルン",
+      "short": "パーダーボルン",
+      "reading": "パーダーボルン",
+      "legacy": "パーダーボルン",
+      "aliases": [
+        "パーダーボルン",
+        "SCP",
+        "SC Paderborn 07",
+        "paderborn"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "1. FC Köln",
+      "league": "BL1",
+      "current": "ケルン",
+      "display": "ケルン",
+      "short": "ケルン",
+      "reading": "ケルン",
+      "legacy": "ケルン",
+      "aliases": [
+        "ケルン",
+        "KOE",
+        "1. FC Köln",
+        "koln"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "TSG 1899 Hoffenheim",
+      "league": "BL1",
+      "current": "ホッフェンハイム",
+      "display": "ホッフェンハイム",
+      "short": "ホッフェンハイム",
+      "reading": "ホッフェンハイム",
+      "legacy": "ホッフェンハイム",
+      "aliases": [
+        "ホッフェンハイム",
+        "TSG",
+        "TSG 1899 Hoffenheim",
+        "hoffenheim"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "VfB Stuttgart",
+      "league": "BL1",
+      "current": "シュツットガルト",
+      "display": "シュツットガルト",
+      "short": "シュツットガルト",
+      "reading": "シュツットガルト",
+      "legacy": "シュツットガルト",
+      "aliases": [
+        "シュツットガルト",
+        "VFB",
+        "VfB Stuttgart",
+        "stuttgart"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "Hamburger SV",
+      "league": "BL1",
+      "current": "ハンブルガーSV",
+      "display": "ハンブルガーSV",
+      "short": "ハンブルク",
+      "reading": "ハンブルガーエスブイ",
+      "legacy": "ハンブルク",
+      "aliases": [
+        "ハンブルガーSV",
+        "ハンブルク",
+        "HSV",
+        "Hamburger SV",
+        "hamburger"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "1. FC Union Berlin",
+      "league": "BL1",
+      "current": "ウニオン・ベルリン",
+      "display": "ウニオン・ベルリン",
+      "short": "ウニオン",
+      "reading": "ウニオンベルリン",
+      "legacy": "ウニオン・ベルリン",
+      "aliases": [
+        "ウニオン・ベルリン",
+        "FCU",
+        "1. FC Union Berlin",
+        "unionberlin"
+      ],
+      "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "Borussia Mönchengladbach",
+      "league": "BL1",
+      "current": "ボルシアMG",
+      "display": "ボルシアMG",
+      "short": "ボルシアMG",
+      "reading": "ボルシアメンヒェングラートバッハ",
+      "legacy": "ボルシアMG",
+      "aliases": [
+        "ボルシアMG",
+        "BMG",
+        "Borussia Mönchengladbach",
+        "monchengladbach"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
+    },
+    {
+      "id": "AS Monaco FC",
+      "league": "FL1",
+      "current": "モナコ",
+      "display": "モナコ",
+      "short": "モナコ",
+      "reading": "モナコ",
+      "legacy": "モナコ",
+      "aliases": [
+        "モナコ",
+        "ASM",
+        "AS Monaco",
+        "AS Monaco FC",
+        "monaco"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Olympique Lyonnais",
+      "league": "FL1",
+      "current": "リヨン",
+      "display": "リヨン",
+      "short": "リヨン",
+      "reading": "リヨン",
+      "legacy": "リヨン",
+      "aliases": [
+        "リヨン",
+        "OL",
+        "Olympique Lyonnais",
+        "lyonnais"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Paris FC",
+      "league": "FL1",
+      "current": "パリFC",
+      "display": "パリFC",
+      "short": "パリFC",
+      "reading": "パリエフシー",
+      "legacy": "パリFC",
+      "aliases": [
+        "パリFC",
+        "PFC",
+        "Paris",
+        "Paris FC",
+        "parisfc"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Lille OSC",
+      "league": "FL1",
+      "current": "リール",
+      "display": "リール",
+      "short": "リール",
+      "reading": "リール",
+      "legacy": "リール",
+      "aliases": [
+        "リール",
+        "LIL",
+        "Lille OSC",
+        "lille"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Stade Rennais FC 1901",
+      "league": "FL1",
+      "current": "レンヌ",
+      "display": "レンヌ",
+      "short": "レンヌ",
+      "reading": "レンヌ",
+      "legacy": "レンヌ",
+      "aliases": [
+        "レンヌ",
+        "REN",
+        "Stade Rennais FC 1901",
+        "rennais"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Paris Saint-Germain FC",
+      "league": "FL1",
+      "current": "パリ・サンジェルマン",
+      "display": "パリ・サンジェルマン",
+      "short": "PSG",
+      "reading": "パリサンジェルマン",
+      "legacy": "パリ・サンジェルマン",
+      "aliases": [
+        "パリ・サンジェルマン",
+        "PSG",
+        "Paris Saint-Germain",
+        "Paris Saint-Germain FC",
+        "saintgermain"
+      ],
+      "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Angers SCO",
+      "league": "FL1",
+      "current": "アンジェ",
+      "display": "アンジェ",
+      "short": "アンジェ",
+      "reading": "アンジェ",
+      "legacy": "アンジェ",
+      "aliases": [
+        "アンジェ",
+        "SCO",
+        "Angers SCO",
+        "angers"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "RC Strasbourg Alsace",
+      "league": "FL1",
+      "current": "ストラスブール",
+      "display": "ストラスブール",
+      "short": "ストラスブール",
+      "reading": "ストラスブール",
+      "legacy": "ストラスブール",
+      "aliases": [
+        "ストラスブール",
+        "STR",
+        "RC Strasbourg Alsace",
+        "strasbourg"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Le Mans FC",
+      "league": "FL1",
+      "current": "ル・マン",
+      "display": "ルマン",
+      "short": "ルマン",
+      "reading": "ルマン",
+      "legacy": "ル・マン",
+      "aliases": [
+        "ル・マン",
+        "LEM",
+        "Le Mans",
+        "Le Mans FC",
+        "lemans"
+      ],
+      "reason": "冠詞と名を続ける新聞表記を採用。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "AJ Auxerre",
+      "league": "FL1",
+      "current": "オセール",
+      "display": "オセール",
+      "short": "オセール",
+      "reading": "オセール",
+      "legacy": "オセール",
+      "aliases": [
+        "オセール",
+        "AJA",
+        "AJ Auxerre",
+        "auxerre"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Stade Brestois 29",
+      "league": "FL1",
+      "current": "ブレスト",
+      "display": "ブレスト",
+      "short": "ブレスト",
+      "reading": "ブレスト",
+      "legacy": "ブレスト",
+      "aliases": [
+        "ブレスト",
+        "BRE",
+        "Stade Brestois 29",
+        "brestois"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "FC Lorient",
+      "league": "FL1",
+      "current": "ロリアン",
+      "display": "ロリアン",
+      "short": "ロリアン",
+      "reading": "ロリアン",
+      "legacy": "ロリアン",
+      "aliases": [
+        "ロリアン",
+        "FCL",
+        "FC Lorient",
+        "lorient"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Toulouse FC",
+      "league": "FL1",
+      "current": "トゥールーズ",
+      "display": "トゥールーズ",
+      "short": "トゥールーズ",
+      "reading": "トゥールーズ",
+      "legacy": "トゥールーズ",
+      "aliases": [
+        "トゥールーズ",
+        "TFC",
+        "Toulouse",
+        "Toulouse FC",
+        "toulouse"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "OGC Nice",
+      "league": "FL1",
+      "current": "ニース",
+      "display": "ニース",
+      "short": "ニース",
+      "reading": "ニース",
+      "legacy": "ニース",
+      "aliases": [
+        "ニース",
+        "NIC",
+        "OGC Nice",
+        "nice"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Racing Club de Lens",
+      "league": "FL1",
+      "current": "ランス",
+      "display": "ランス",
+      "short": "ランス",
+      "reading": "ランス",
+      "legacy": "ランス",
+      "aliases": [
+        "ランス",
+        "RCL",
+        "Racing Club de Lens",
+        "lens"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "ES Troyes AC",
+      "league": "FL1",
+      "current": "トロワ",
+      "display": "トロワ",
+      "short": "トロワ",
+      "reading": "トロワ",
+      "legacy": "トロワ",
+      "aliases": [
+        "トロワ",
+        "TRO",
+        "ES Troyes AC",
+        "troyes"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Olympique de Marseille",
+      "league": "FL1",
+      "current": "マルセイユ",
+      "display": "マルセイユ",
+      "short": "マルセイユ",
+      "reading": "マルセイユ",
+      "legacy": "マルセイユ",
+      "aliases": [
+        "マルセイユ",
+        "OM",
+        "Olympique de Marseille",
+        "marseille"
+      ],
+      "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    },
+    {
+      "id": "Le Havre AC",
+      "league": "FL1",
+      "current": "ル・アーブル",
+      "display": "ルアーブル",
+      "short": "ルアーブル",
+      "reading": "ルアーブル",
+      "legacy": "ル・アーブル",
+      "aliases": [
+        "ル・アーブル",
+        "HAC",
+        "Le Havre AC",
+        "havre"
+      ],
+      "reason": "冠詞と名を続ける新聞表記を採用。",
+      "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
+    }
+  ],
+  "extra_clubs": [
+    {
+      "id": "バーンリー",
+      "league": "ELC",
+      "current": "バーンリー",
+      "display": "バーンリー",
+      "short": "バーンリー",
+      "reading": "バーンリー",
+      "legacy": "バーンリー",
+      "aliases": [
+        "Burnley",
+        "burnley"
+      ],
+      "reason": "96クラブ外の既存日本人選手の所属先。既存呼称を読みへ。",
+      "source": "既存JP_PLAYERS_SOCCERのクラブ名（現所属の新規認定ではない）"
+    },
+    {
+      "id": "サウサンプトン",
+      "league": "ELC",
+      "current": "サウサンプトン",
+      "display": "サウサンプトン",
+      "short": "サウサンプトン",
+      "reading": "サウサンプトン",
+      "legacy": "サウサンプトン",
+      "aliases": [
+        "Southampton"
+      ],
+      "reason": "96クラブ外の既存日本人選手の所属先。既存呼称を読みへ。",
+      "source": "既存JP_PLAYERS_SOCCERのクラブ名（現所属の新規認定ではない）"
+    },
+    {
+      "id": "QPR",
+      "league": "ELC",
+      "current": "QPR",
+      "display": "QPR",
+      "short": "QPR",
+      "reading": "QPR",
+      "legacy": "QPR",
+      "aliases": [
+        "Queens Park Rangers"
+      ],
+      "reason": "96クラブ外の既存日本人選手の所属先。既存呼称を読みへ。",
+      "source": "既存JP_PLAYERS_SOCCERのクラブ名（現所属の新規認定ではない）"
+    },
+    {
+      "id": "ブラックバーン",
+      "league": "ELC",
+      "current": "ブラックバーン",
+      "display": "ブラックバーン",
+      "short": "ブラックバーン",
+      "reading": "ブラックバーン",
+      "legacy": "ブラックバーン",
+      "aliases": [
+        "Blackburn Rovers"
+      ],
+      "reason": "96クラブ外の既存日本人選手の所属先。既存呼称を読みへ。",
+      "source": "既存JP_PLAYERS_SOCCERのクラブ名（現所属の新規認定ではない）"
+    },
+    {
+      "id": "ボルトン",
+      "league": "ELC",
+      "current": "ボルトン",
+      "display": "ボルトン",
+      "short": "ボルトン",
+      "reading": "ボルトン",
+      "legacy": "ボルトン",
+      "aliases": [
+        "Bolton Wanderers"
+      ],
+      "reason": "96クラブ外の既存日本人選手の所属先。既存呼称を読みへ。",
+      "source": "既存JP_PLAYERS_SOCCERのクラブ名（現所属の新規認定ではない）"
+    },
+    {
+      "id": "バーミンガム",
+      "league": "ELC",
+      "current": "バーミンガム",
+      "display": "バーミンガム",
+      "short": "バーミンガム",
+      "reading": "バーミンガム",
+      "legacy": "バーミンガム",
+      "aliases": [
+        "Birmingham City"
+      ],
+      "reason": "96クラブ外の既存日本人選手の所属先。既存呼称を読みへ。",
+      "source": "既存JP_PLAYERS_SOCCERのクラブ名（現所属の新規認定ではない）"
+    },
+    {
+      "id": "ブリストル・シティ",
+      "league": "ELC",
+      "current": "ブリストル・シティ",
+      "display": "ブリストル・シティ",
+      "short": "ブリストル・シティ",
+      "reading": "ブリストルシティ",
+      "legacy": "ブリストル・シティ",
+      "aliases": [
+        "Bristol City"
+      ],
+      "reason": "96クラブ外の既存日本人選手の所属先。既存呼称を読みへ。",
+      "source": "既存JP_PLAYERS_SOCCERのクラブ名（現所属の新規認定ではない）"
+    }
+  ]
+}

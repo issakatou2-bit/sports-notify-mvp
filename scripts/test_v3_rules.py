@@ -734,6 +734,12 @@ class V3Rules(unittest.TestCase):
             self.assertEqual(first.info['v4_player']['name'],other['other_players'][0]['name'])
             self.assertEqual(last.info['v4_player']['name'],other['other_players'][-1]['name'])
 
+    def test_soccer_v5_all_five_slots_safe_in_separate_process(self):
+        if r3.LOOK!='v4':return
+        env=dict(os.environ,COLLESPO_SOCCER_LOOK='v5',COLLESPO_SHORT_LOOK='v4',COLLESPO_DUO='off')
+        proc=subprocess.run([sys.executable,'-X','utf8',str(ROOT/'scripts/test_soccer_v5.py'),'--native-only'],env=env,cwd=ROOT,capture_output=True,text=True,encoding='utf-8')
+        self.assertEqual(proc.returncode,0,proc.stderr[-4000:])
+
 if __name__=='__main__':
     if '--look-child' in sys.argv:
         unittest.main(argv=[__file__])

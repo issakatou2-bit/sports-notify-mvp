@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-12T04:07:27.338760+00:00",
+  "updated_at": "2026-10-12T06:08:26.551214+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -166,10 +166,6 @@
         [
           "勝ち投手・セーブ",
           "勝ち D.L.ホール（3分の2回を無失点）　セーブ トレバー・メギル"
-        ],
-        [
-          "MLB.comの見出しから",
-          "「ブルワーズがディフェンディングチャンピオンとのリーグ優勝決定シリーズ再戦で第1戦を制す」"
         ]
       ],
       "japanese": [
@@ -184,12 +180,7 @@
       "game": true,
       "source": null,
       "voice": null,
-      "headline": {
-        "said": "ブルワーズがディフェンディングチャンピオンとのリーグ優勝決定シリーズ再戦で第1戦を制す",
-        "text": "Brewers take Game 1 in NLCS rematch against defending champs",
-        "url": "https://www.mlb.com/news/brewers-win-nlcs-game-1-2026",
-        "at": "2026-10-12T03:27:00+00:00"
-      },
+      "headline": null,
       "game_pk": 849809,
       "game_v4": {
         "score": {
@@ -260,6 +251,10 @@
       "jp_first": true,
       "next_team_id": 119,
       "finished_at": "2026-10-12T03:11:55.549000+00:00",
+      "next_game_jp": {
+        "day": "10月13日",
+        "game": 2
+      },
       "v3": {
         "who": "ブリュワーズ　リーグ優勝決定シリーズ第1戦",
         "big": "2-1",
@@ -277,7 +272,7 @@
             "score": "1"
           }
         ],
-        "ticker": "日本人選手　大谷翔平 3打数1安打　1四球（ドジャース）"
+        "ticker": "次の試合　日本時間10月13日　リーグ優勝決定シリーズ第2戦　　日本人選手　大谷翔平 3打数1安打　1四球（ドジャース）"
       }
     }
   ]

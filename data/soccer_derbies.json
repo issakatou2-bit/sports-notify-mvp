@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "policy": "記載したクラブIDの組だけ。未登録の組を同じ街/名前から推測しない。",
+  "pairs": [
+    {"name": "マンチェスターダービー", "clubs": ["Manchester City FC", "Manchester United FC"], "source": "https://www.mancity.com/news/mens/how-many-manchester-derbies-have-there-been-63799799"},
+    {"name": "ノースロンドンダービー", "clubs": ["Arsenal FC", "Tottenham Hotspur FC"], "source": "https://www.arsenal.com/sites/default/files/documents/Tottenham%20Hotspur%20digital%20edition_0.pdf"},
+    {"name": "マージーサイドダービー", "clubs": ["Liverpool FC", "Everton FC"], "source": "https://www.liverpoolfc.com/news/everton-1-2-liverpool-watch-merseyside-derby-highlights-and-full-match"}
+  ]
+}
