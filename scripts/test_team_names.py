@@ -49,7 +49,7 @@ class TeamNames(unittest.TestCase):
 
     def test_reporters_preserves_existing_guards_and_names(self):
         response = SimpleNamespace(stop_reason="end_turn", content=[SimpleNamespace(
-            text="1. Dodgersの大谷翔平の2点二塁打。Aaron Judgeも出場")])
+            type="text", text="1. Dodgersの大谷翔平の2点二塁打。Aaron Judgeも出場")])
         client = SimpleNamespace(messages=SimpleNamespace(create=lambda **kwargs: response))
         source = "Dodgers' Shohei Ohtani's RBI double. Aaron Judge plays."
         with patch.dict(sys.modules, {"anthropic": SimpleNamespace(Anthropic=lambda **kwargs: client)}), \

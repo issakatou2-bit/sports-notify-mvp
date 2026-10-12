@@ -346,7 +346,7 @@ jobs:
             # 新しくAPIは叩かない。原稿の facts を読むだけ。
             # この枠は登録者の8割が来ているので、いちばん守りたい。
             if ! python scripts/verify_numbers.py \
-                --dialogue "build/mr_narration_${mode}.json" --strict; then
+                --dialogue "build/mr_narration_${mode}.json" --strict --omit-unsupported; then
               echo "::warning::$mode の数字が材料と違うため出しません"
               echo "::endgroup::"; continue
             fi

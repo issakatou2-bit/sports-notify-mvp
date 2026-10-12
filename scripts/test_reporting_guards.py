@@ -37,7 +37,7 @@ class ReportingGuards(unittest.TestCase):
         self.assertEqual(lr.guard_translation('Marte challenges the call', translated), translated)
 
     def test_api_translation_goes_through_guard(self):
-        msg = SimpleNamespace(stop_reason='end_turn', content=[SimpleNamespace(text='1. 大谷翔平の2点二塁打')])
+        msg = SimpleNamespace(stop_reason='end_turn', content=[SimpleNamespace(type="text", text='1. 大谷翔平の2点二塁打')])
         client = SimpleNamespace(messages=SimpleNamespace(create=lambda **kwargs: msg))
         with patch.dict(sys.modules, {'anthropic':SimpleNamespace(Anthropic=lambda **kwargs:client)}), \
              patch.object(lr.token_log, 'allowed', return_value=True), patch.object(lr.token_log, 'record'):

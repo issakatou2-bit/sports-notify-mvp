@@ -185,7 +185,7 @@ jobs:
         if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/verify_numbers.py \
-            --dialogue build/lf/dialogue.json --strict
+            --dialogue build/lf/dialogue.json --strict --omit-unsupported
 
       # 用語を勝手に作っていないか。**ここで落ちたら公開しない。**
       #

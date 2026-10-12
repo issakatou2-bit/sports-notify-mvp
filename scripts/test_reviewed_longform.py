@@ -49,13 +49,13 @@ class RecoveryTests(unittest.TestCase):
             original = {"longform": {"today": {"video_id": "mine", "published_at": "upload-time"},
                                      "yesterday": {"video_id": "other", "title": "keep"}}}
             p.write_text(json.dumps(original), encoding="utf-8")
-            hold_video.record_schedule(p, "mine", {"publishAt": "2099-10-04T12:00:00Z"})
+            hold_video.record_schedule(p, "mine", {"privacyStatus": "private", "publishAt": "2099-10-04T12:00:00Z"})
             saved = json.loads(p.read_text(encoding="utf-8"))
             self.assertEqual(saved["longform"]["today"]["published_at"], "upload-time")
             self.assertEqual(saved["longform"]["today"]["publish_at"], "2099-10-04T12:00:00Z")
             self.assertEqual(saved["longform"]["yesterday"], original["longform"]["yesterday"])
             with self.assertRaises(ValueError):
-                hold_video.record_schedule(p, "missing", {"publishAt": "2099-10-04T12:00:00Z"})
+                hold_video.record_schedule(p, "missing", {"privacyStatus": "private", "publishAt": "2099-10-04T12:00:00Z"})
             self.assertEqual(json.loads(p.read_text(encoding="utf-8")), saved)
 
     def test_reviewed_lines_never_silently_disappear(self):

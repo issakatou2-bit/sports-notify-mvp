@@ -9,6 +9,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+import backstage_guard
 import dialogue_batch as db
 import generate_dialogue as gd
 import token_log as tl
@@ -29,11 +30,12 @@ class Integration(unittest.TestCase):
         with patch.object(db, "run") as run, patch.object(gd, "_create", return_value=expected) as create:
             gd._ask(client, "draft", **kw)
             args = run.call_args
-            self.assertEqual(args.args, (client, "draft", kw))
+            guarded = backstage_guard.with_instruction(kw)
+            self.assertEqual(args.args, (client, "draft", guarded))
             self.assertEqual(args.kwargs["model"], gd.MODEL)
             self.assertEqual(args.kwargs["effort"], gd.EFFORT)
             self.assertIs(args.kwargs["direct"](), expected)
-            create.assert_called_once_with(client, **kw)
+            create.assert_called_once_with(client, **guarded)
 
     def test_batch_cost_uses_same_price_table(self):
         for model in tl.PRICES:
