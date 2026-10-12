@@ -916,7 +916,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             "meta": {"date": day_iso, "count": len(players), "local": True,
                      "mode": mode,
                      # 冒頭で読んだ見出しは、本編でもう一度読まない
-                     "used_headline": lead_idx},
+                     "used_headline": lead_idx,
+                     "source_headlines": [hd[lead_idx]] if lead_idx is not None else []},
         }]
     elif mode == "postseason":
         # ポストシーズン進出争いの回。
@@ -1413,7 +1414,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 3件目は読まれるのに画面に無い、という状態だった。
         # どちらが本当なのか、見ている側には確かめようがない。
         segments.append({"kind": "headlines", "text": "".join(parts),
-                         "meta": {"picked": picked}})
+                         "meta": {"picked": picked,
+                                  "source_headlines": [heads[i] for i in picked]}})
 
     # 現地の番記者が書いたこと。ファンの声との違いは、
     # 実名で、その球団を毎日追っている人の言葉だという点。
