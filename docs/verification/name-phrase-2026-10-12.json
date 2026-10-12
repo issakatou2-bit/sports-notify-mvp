@@ -1,0 +1,74 @@
+{
+  "base": "e4140012",
+  "date": "2026-10-12",
+  "engine": "VOICEVOX 0.25.2",
+  "registered_queries": 207,
+  "failed": 0,
+  "corrected_calls": 43,
+  "contextual_queries": 124,
+  "names": [
+    {
+      "name": "大谷翔平",
+      "check": {
+        "status": "PASS",
+        "names": [
+          {
+            "name": "大谷翔平",
+            "kind": "player",
+            "expected": "オオタニショオヘエ"
+          }
+        ],
+        "actual_kana": "オオタニショオヘエデス",
+        "name_phrases": [
+          {
+            "name": "大谷翔平",
+            "first": 0,
+            "last": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "鎌田大地",
+      "check": {
+        "status": "PASS",
+        "names": [
+          {
+            "name": "鎌田大地",
+            "kind": "player",
+            "expected": "カマダダイチ"
+          }
+        ],
+        "actual_kana": "カマダダイチデス",
+        "name_phrases": [
+          {
+            "name": "鎌田大地",
+            "first": 0,
+            "last": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "上田綺世",
+      "check": {
+        "status": "PASS",
+        "names": [
+          {
+            "name": "上田綺世",
+            "kind": "player",
+            "expected": "ウエダアヤセ"
+          }
+        ],
+        "actual_kana": "ウエダアヤセデス",
+        "name_phrases": [
+          {
+            "name": "上田綺世",
+            "first": 0,
+            "last": 0
+          }
+        ]
+      }
+    }
+  ]
+}
