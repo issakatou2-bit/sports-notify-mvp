@@ -4,7 +4,7 @@
 - origin/main bbf0073から独立clone。BACKLOGの現地報道の記事出典リンクを確認。mainのRSS読取りはURLを保存せず、概要欄にもRSS出典経路がない。
 
 ## 作業中
-- なし。
+- ヒロ㉛: main b2fc8eaへ載せ直し、両方の変更を保持してrun_checks。枝名/push/公開/変数/共有コピーは変更しない。
 
 ## 完了 2026-10-12 ヒロ
 - 枝 hiro/article-sources-20261012。RSSの同じitemのURLを保存し、原稿で使った見出しのmetadataから報道枠の概要欄へ。詳細 ARTICLE_SOURCES_2026-10-12.md。
