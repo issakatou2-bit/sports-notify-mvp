@@ -24,7 +24,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import post_common  # noqa: E402
-from playlist_classification import kind_for_video, recorded_kinds  # noqa: E402
+from playlist_classification import kind_for_video, recorded_kinds, sync_entries  # noqa: E402
 
 try:
     from google.oauth2.credentials import Credentials
@@ -317,14 +317,13 @@ def main() -> int:
             added = 0
             # 古い順に入れる。再生リストは追加順に並ぶので、
             # 上から順に見ていくと時系列になる形にしておく。
-            for kind in PLAYLISTS:
-                for day in sorted(videos.get(kind, {})):
-                    vid = videos[kind][day].get("video_id")
-                    if vid and args.dry_run:
-                        print(f"  追加予定: {kind} {day} -> {vid}")
-                    elif vid and add_video(yt, store, kind, vid):
-                        added += 1
-                        print(f"  {kind} {day} -> {vid}")
+            for entry in sync_entries(videos, PLAYLISTS):
+                kind, day, vid = entry['kind'], entry['day'], entry['video_id']
+                if args.dry_run:
+                    print(f"  追加予定: {kind} {day} -> {vid}")
+                elif add_video(yt, store, kind, vid):
+                    added += 1
+                    print(f"  {kind} {day} -> {vid}")
             print(f"[info] {added}本を追加しました")
         else:
             print("[info] --sync か --add を指定してください")

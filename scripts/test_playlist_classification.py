@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import MagicMock, patch
 
-from playlist_classification import classify, kind_for_video, recorded_kinds
+from playlist_classification import classify, kind_for_video, recorded_kinds, sync_entries
 
 # Google SDKの有無や認証情報に依存せず、公開操作の境界を検査する。
 sdk = {name: MagicMock() for name in (
@@ -70,6 +70,36 @@ class PlaylistClassificationTests(unittest.TestCase):
 
 
 class PlaylistOperationTests(unittest.TestCase):
+    def test_sync_includes_actual_alias_keys_once_in_date_order(self):
+        records={'morning_postseason':{'2026-10-10':{'video_id':'ps'}},
+                 'postseason':{'2026-10-10':{'video_id':'ps'}},
+                 'verdict':{'2026-10-09':{'video_id':'review'}},
+                 'daily':{'2026-10-11':{'video_id':'daily'}},
+                 'unknown':{'2026-10-08':{'video_id':'unknown'}}}
+        self.assertEqual(sync_entries(records,{'postseason','weekly','daily'}),[
+            {'day':'2026-10-09','kind':'weekly','video_id':'review'},
+            {'day':'2026-10-10','kind':'postseason','video_id':'ps'},
+            {'day':'2026-10-11','kind':'daily','video_id':'daily'}])
+        records['daily']['2026-10-12']={'video_id':'ps'}
+        self.assertNotIn('ps',[x['video_id'] for x in sync_entries(records,{'postseason','weekly','daily'})])
+
+    def test_sync_cli_routes_aliases_to_existing_playlists(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path=pathlib.Path(tmp)/'videos.json'
+            path.write_text(json.dumps({'morning_postseason':{'d':{'video_id':'ps'}},
+                                        'verdict':{'e':{'video_id':'review'}}}))
+            yt,store=MagicMock(),{}
+            with patch.object(sys,'argv',['playlists.py','--sync']), \
+                    patch.object(playlist_cli,'VIDEOS_PATH',str(path)), \
+                    patch.object(playlist_cli,'client',return_value=yt), \
+                    patch.object(playlist_cli,'load_store',return_value=store), \
+                    patch.object(playlist_cli,'add_video',return_value=True) as add, \
+                    patch.object(playlist_cli,'save_store') as save, \
+                    contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(playlist_cli.main(),0)
+            self.assertEqual([c.args[2:] for c in add.call_args_list],[('postseason','ps'),('weekly','review')])
+            save.assert_called_once_with(store)
+
     def test_dry_run_never_adds_or_saves_for_any_mode(self):
         with tempfile.TemporaryDirectory() as tmp:
             record = pathlib.Path(tmp) / "videos.json"
