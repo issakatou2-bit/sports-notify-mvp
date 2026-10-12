@@ -64,8 +64,9 @@ def check_syntax() -> int:
 
 def check_pyflakes() -> int:
     step("未定義名など")
-    targets = [str(p) for p in sorted(ROOT.glob("scripts/*.py"))]
-    targets.append(str(ROOT / "notability_engine.py"))
+    # cwd=ROOTなので相対パスで渡す。深いWindows cloneのargv長制限を避ける。
+    targets = [str(p.relative_to(ROOT)) for p in sorted(ROOT.glob("scripts/*.py"))]
+    targets.append("notability_engine.py")
     r = run([sys.executable, "-m", "pyflakes"] + targets)
     if "No module named" in (r.stderr or ""):
         print("[info] pyflakes が無いため飛ばします "
