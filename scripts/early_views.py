@@ -89,7 +89,11 @@ def collect(days: int) -> list:
         date = (v.get("published_at") or "")[:10]
         if date >= cutoff:
             out.append((date, "asset", v["video_id"], topic))
-    return sorted(out)
+    # 同じIDをlongformと確認済み別名等で二重に数えない。
+    unique={}
+    for row in sorted(out,reverse=True):
+        unique.setdefault(row[2],row)
+    return sorted(unique.values())
 
 
 def iso_seconds(text: str) -> int:
@@ -99,6 +103,33 @@ def iso_seconds(text: str) -> int:
         return 0
     h, mi, se = (int(x) if x else 0 for x in m.groups())
     return h * 3600 + mi * 60 + se
+
+
+def count(value):
+    """欠測/不正値と、確認できた0を区別する。"""
+    if isinstance(value,bool) or not re.fullmatch(r'\d+',str(value or '') if value != 0 else '0'):
+        return None
+    return int(value)
+
+
+def timestamp(value):
+    try:
+        when=dt.datetime.fromisoformat(value.replace('Z','+00:00'))
+        return when if when.tzinfo else None
+    except (AttributeError,TypeError,ValueError):
+        return None
+
+
+def known_views(value):
+    return value.get('privacy') == 'public' and count(value.get('views')) is not None
+
+
+def views_for(ids, got):
+    return [count(got[v]['views']) for v in ids if known_views(got.get(v) or {})]
+
+
+def median_text(values):
+    return f'{statistics.median(values):.0f}' if values else '未取得'
 
 
 def stats_for(ids: list) -> dict:
@@ -113,31 +144,39 @@ def stats_for(ids: list) -> dict:
     変更もある。だからこそ、尺を毎日そばに置いて見えるようにする。
     part を1つ足すだけで、割り当ての消費は変わらない。
     """
-    out = {}
+    out = {vid:{'views':None,'likes':None,'seconds':None,'published_at':None,
+                'privacy':None,'availability':'not_returned'} for vid in ids}
     for i in range(0, len(ids), 50):
         try:
-            res = get("videos", part="statistics,contentDetails",
+            res = get("videos", part="statistics,contentDetails,snippet,status",
                       id=",".join(ids[i:i + 50]), maxResults=50)
         except Exception as e:                       # noqa: BLE001
             print("[warn] 取れません: %s" % str(e)[:120])
+            for vid in ids[i:i+50]:out[vid]['availability']='fetch_failed'
             continue
         for it in res.get("items", []):
             st = it.get("statistics") or {}
             cd = it.get("contentDetails") or {}
             out[it["id"]] = {
-                "views": int(st.get("viewCount") or 0),
-                "likes": int(st.get("likeCount") or 0),
-                "seconds": iso_seconds(cd.get("duration") or ""),
+                "views": count(st.get("viewCount")),
+                "likes": count(st.get("likeCount")),
+                "seconds": iso_seconds(cd['duration']) if cd.get('duration') else None,
+                "published_at": (it.get('snippet') or {}).get('publishedAt'),
+                "privacy": (it.get('status') or {}).get('privacyStatus'),
+                "observed_at": dt.datetime.now(dt.timezone.utc).isoformat(),
             }
+            value=out[it['id']]
+            value['availability']=(value['privacy'] if value['privacy'] and value['privacy'] != 'public'
+                                   else 'state_unknown' if not value['privacy']
+                                   else 'views_missing' if value['views'] is None else 'ok')
     return out
 
 
-def _same_age(store, rows, got, today):
-    """前の回と、公開からの経過日数を揃えて中央値を比べる。
+def _same_age(store, rows, got, now):
+    """同じ枠・実公開後の経過時間帯（1時間幅）の中央値を比べる。
 
-    前の回そのものではなく「そのとき何日目だったか」で揃える。
-    暦の日で比べると、当日の夜と翌朝を突き合わせることになる。
-    実際そこで20倍の差が出るので、揃えないと比べたことにならない。
+    台帳の素材日を公開日とみなさない。公開時刻/状態が欠測の旧記録は
+    時刻を推測せず比較から外す。1時間内の差や題材差は残る。
     """
     runs = (store or {}).get("runs") or {}
     if not runs:
@@ -150,25 +189,27 @@ def _same_age(store, rows, got, today):
             dt.timezone(dt.timedelta(hours=9)))
     except ValueError:
         return {}
-    label, was_day = w.strftime("%m/%d %H:%M"), w.date()
+    label = w.strftime("%m/%d %H:%M")
 
     def by_age(videos, base):
         out = collections.defaultdict(list)
         for v in videos:
             try:
-                age = (base - dt.date.fromisoformat(v["date"])).days
+                published=timestamp(v.get('published_at'))
+                if not published or not known_views(v):
+                    continue
+                measured=timestamp(v.get('observed_at')) or base
+                age=int((measured-published).total_seconds()//3600)
             except (ValueError, KeyError, TypeError):
                 continue
-            out[age].append(v.get("views", 0))
+            if 0 <= age < 72:
+                out[(v.get('kind'),age)].append(count(v['views']))
         return out
 
-    now_by = by_age([{"date": d, "views": got.get(v, {}).get("views", 0)}
-                     for d, _, v, _ in rows], today)
-    was_by = by_age(last.get("videos") or [], was_day)
+    now_by = by_age([{'kind':k,**got.get(v,{})} for _,k,v,_ in rows], now)
+    was_by = by_age(last.get("videos") or [], timestamp(last.get('observed_at')) or w)
     out = {}
     for age in sorted(set(now_by) & set(was_by)):
-        if age > 3:
-            continue      # 4日目以降はもう動かない
         out[age] = (statistics.median(now_by[age]),
                     statistics.median(was_by[age]), label)
     return out
@@ -189,19 +230,21 @@ def main() -> int:
         print("直近%d日に出した動画がありません" % args.days)
         return 0
     got = stats_for([r[2] for r in rows])
-    today = dt.date.today()
+    now = dt.datetime.now(dt.timezone.utc)
+    skipped=collections.Counter(got.get(v,{}).get('availability','not_returned') for _,_,v,_ in rows
+                                if not known_views(got.get(v) or {}))
+    if skipped:print('[info] 集計から除外（0としない）: '+json.dumps(dict(skipped),ensure_ascii=False))
 
     print("=== 日ごと ===")
     by_date = collections.defaultdict(list)
     for date, kind, vid, title in rows:
-        by_date[date].append((kind, vid, title))
+        value=got.get(vid,{})
+        at=timestamp(value.get('published_at')) if value.get('privacy') == 'public' else None
+        public_day=at.astimezone(dt.timezone(dt.timedelta(hours=9))).date().isoformat() if at else '公開状態/時刻未確認'
+        by_date[public_day].append((kind, vid, title))
     for date in sorted(by_date):
-        vs = [got.get(v, {}).get("views", 0) for _, v, _ in by_date[date]]
-        age = (today - dt.date.fromisoformat(date)).days
-        print("  %s (%d日前) %2d本  合計%6d  中央%5.0f  10回未満%d本"
-              % (date, age, len(vs), sum(vs),
-                 statistics.median(vs) if vs else 0,
-                 sum(1 for v in vs if v < BARELY)))
+        vs = views_for([v for _,v,_ in by_date[date]],got)
+        print(f"  {date} 取得{len(vs)}/{len(by_date[date])}本 合計{sum(vs) if vs else '未取得'} 中央{median_text(vs)} 10回未満{sum(v < BARELY for v in vs)}本")
 
     # 尺と再生を並べる。
     #
@@ -213,7 +256,7 @@ def main() -> int:
     for date in sorted(by_date):
         for kind, vid, title in by_date[date]:
             g = got.get(vid, {})
-            if not g.get("seconds"):
+            if not g.get("seconds") or not known_views(g):
                 continue
             print("  %s %-18s %3d秒  %6d再生"
                   % (date, KIND_LABEL.get(kind, kind)[:18],
@@ -222,7 +265,8 @@ def main() -> int:
     print("\n=== 枠ごと(直近%d日) ===" % args.days)
     by_kind = collections.defaultdict(list)
     for date, kind, vid, title in rows:
-        by_kind[kind].append(got.get(vid, {}).get("views", 0))
+        if known_views(got.get(vid) or {}):
+            by_kind[kind].append(got[vid]['views'])
     for kind, vs in sorted(by_kind.items(),
                            key=lambda kv: -statistics.median(kv[1] or [0])):
         print("  %-18s %2d本  中央%6.0f  最大%6d  最小%5d"
@@ -235,30 +279,31 @@ def main() -> int:
     # 同じ7本を、測った時刻が違うだけで20倍違って見える。
     # 「今日は初動が悪い」かどうかは、前の回の同じ経過日数と
     # 突き合わせないと言えない。
-    prev = _same_age(load(args.out), rows, got, today)
+    prev = _same_age(load(args.out), rows, got, now)
     if prev:
-        print("\n=== 前の回と、同じ経過日数どうしで ===")
-        for age, (now_med, was_med, when) in sorted(prev.items()):
+        print("\n=== 前の回と、同じ枠・公開後経過時間帯(1時間幅)で ===")
+        for (kind,age), (now_med, was_med, when) in sorted(prev.items()):
             mark = "→" if now_med == was_med else (
                 "↑" if now_med > was_med else "↓")
-            print("  公開から%d日: 中央 %6.0f  (%s は %6.0f) %s"
-                  % (age, now_med, when, was_med, mark))
+            print("  %s 公開後%d〜%d時間: 中央 %6.0f  (%s は %6.0f) %s"
+                  % (KIND_LABEL.get(kind,kind),age,age+1,now_med,when,was_med,mark))
 
     print("\n=== 再生10回未満の動画（表示・配信不足とは限らない） ===")
-    barely = [(d, k, t, got.get(v, {}).get("views", 0))
+    barely = [(d, k, t, got[v]['views'])
               for d, k, v, t in rows
-              if got.get(v, {}).get("views", 0) < BARELY]
+              if known_views(got.get(v) or {}) and got[v]['views'] < BARELY]
     if barely:
         for d, k, t, n in sorted(barely)[:12]:
             print("  %s %2d回  %-16s %s" % (d, n, KIND_LABEL.get(k, k),
                                             t[:44]))
-        print("  計 %d本 / %d本" % (len(barely), len(rows)))
+        print("  計 %d本 / 公開・取得済み%d本" % (len(barely), sum(known_views(got.get(v) or {}) for _,_,v,_ in rows)))
     else:
-        print("  なし")
+        print("  取得できた公開動画では該当なし（未取得/非公開は判定しません）")
 
     stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H%M")
     store = load(args.out)
     store.setdefault("runs", {})[stamp] = {
+        'observed_at': now.isoformat(),
         "videos": [{"date": d, "kind": k, "id": v, "title": t,
                     **got.get(v, {})} for d, k, v, t in rows]
     }
@@ -273,16 +318,12 @@ def main() -> int:
             f.write("\n## 初動(直近%d日)\n\n" % args.days)
             f.write("維持率はAnalyticsが要るので出せない。"
                     "ここで見るのは再生数の初動。表示・配信不足の判定はできない。\n\n")
-            f.write("|日|経過|本数|合計再生|中央値|10回未満|\n")
-            f.write("|---|--:|--:|--:|--:|--:|\n")
+            f.write("日付は取得した公開時刻の日本時間。欠測/非公開は0と集計しない。\n\n")
+            f.write("|公開日|取得/候補|合計再生|中央値|10回未満|\n")
+            f.write("|---|--:|--:|--:|--:|\n")
             for date in sorted(by_date, reverse=True):
-                vs = [got.get(v, {}).get("views", 0)
-                      for _, v, _ in by_date[date]]
-                age = (today - dt.date.fromisoformat(date)).days
-                f.write("|%s|%d日|%d|%d|%.0f|%d|\n"
-                        % (date, age, len(vs), sum(vs),
-                           statistics.median(vs) if vs else 0,
-                           sum(1 for v in vs if v < BARELY)))
+                vs=views_for([v for _,v,_ in by_date[date]],got)
+                f.write(f"|{date}|{len(vs)}/{len(by_date[date])}|{sum(vs) if vs else '未取得'}|{median_text(vs)}|{sum(v < BARELY for v in vs)}|\n")
             f.write("\n|枠|本数|中央値|最大|最小|\n|---|--:|--:|--:|--:|\n")
             for kind, vs in sorted(by_kind.items(),
                                    key=lambda kv: -statistics.median(kv[1])):
