@@ -1,0 +1,55 @@
+name: サッカー試合直後の速報（既定は非公開）
+on:
+  schedule:
+    - cron: '7 * * * *'  # 粗い入口24回。試合終盤だけ各回50分以内・5分間隔。
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: soccer-now
+  cancel-in-progress: false
+jobs:
+  watch:
+    if: vars.COLLESPO_SOCCER_NOW == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      COLLESPO_SOCCER_NOW: ${{ vars.COLLESPO_SOCCER_NOW || 'off' }}
+      SOCCER_NOW_PUBLISH: ${{ vars.SOCCER_NOW_PUBLISH || 'false' }}
+      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg
+      - name: Check for relevant matches before starting video tools
+        id: plan
+        run: python scripts/soccer_now.py --plan | tail -1 >> "$GITHUB_OUTPUT"
+      - name: Start VOICEVOX
+        if: steps.plan.outputs.go == '1'
+        run: |
+          docker run -d --rm -p 50021:50021 voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Watch only match windows
+        if: steps.plan.outputs.go == '1'
+        run: python scripts/soccer_now.py --watch --out build/soccer-now
+      - name: Keep review material
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-now-${{ github.run_id }}
+          path: build/soccer-now/
+          retention-days: 7
