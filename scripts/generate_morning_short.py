@@ -4174,6 +4174,8 @@ def bignumber_sound(audio, plan, out_dir):
     name = bgm.stem
     try:
         cues = bn.plan_cues(plan)
+        import fan_events
+        cues += fan_events.event_cues()
         out = sound_mix.mix_file(audio, out_dir / "narration_mixed.wav",
                                  bgm if bgm.is_file() else None, cues)
         print(f"[info] 数字ドーン: BGM {name if bgm.is_file() else 'なし'}・効果音{len(cues)}個")
@@ -4462,6 +4464,8 @@ def main():
         import duo
         errors=duo.check(segs,durations)
         if errors:raise ValueError('掛け合いの実音声: '+str(errors))
+    import fan_events
+    fan_events.prepare(data, segs, durations, out_dir)
     if daily_design and audio_path:
         daily_v3.validate_audio(segs, narration)
         audio_path = daily_v3.mix(audio_path, segs, durations, daily_design, out_dir)
