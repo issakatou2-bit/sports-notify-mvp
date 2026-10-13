@@ -1,0 +1,12 @@
+{
+  "task": "series-title-samples",
+  "base_main": "2f86ba3f",
+  "local_checks_passed": true,
+  "test_files": 123,
+  "log": "build/run_checks-resume-final.log",
+  "log_sha256": "762e45de7b084dbf3736baa8bbebdc96955528b26e0638c702a48620f1db429b",
+  "pytest_disable_plugin_autoload": true,
+  "ci_verified": false,
+  "live_new_competition_fetch_verified": false,
+  "published_verified": false
+}
