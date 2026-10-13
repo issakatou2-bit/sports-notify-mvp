@@ -154,6 +154,9 @@ def fan_names():
     except Exception:
         pass
     try:
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
         import notability_engine as ne
         names.update(p["name_jp"] for p in ne.JP_PLAYERS_MLB if p.get("name_jp"))
     except Exception:
