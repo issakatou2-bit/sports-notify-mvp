@@ -2869,6 +2869,10 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
     )
 
     structural_notes = []
+    if game.get('league') in {'CL', 'チャンピオンズリーグ', 'UEFA Champions League'}:
+        structural_notes.append(
+            '現行CLは出場資格を得た36クラブのリーグフェーズ。各クラブは8つの異なる相手と対戦（ホーム4・アウェー4）。'
+            'グループ内総当たりではなく、欧州1部の全クラブが参加する大会でもない')
     if soccer:
         # サッカーには地区が無い。MLB用の地区の話をそのまま通すと、
         # 「同地区内で対峙する」という存在しない構図が書かれる。
@@ -3328,6 +3332,23 @@ def soccer_venue_instruction(game: dict) -> str:
     return soccer_venue.instruction(game)
 
 
+def soccer_format_issues(text: str, game: dict) -> list:
+    """Only check today's CL preview; explicit old-format comparisons remain valid."""
+    if game.get('league') not in {'CL', 'チャンピオンズリーグ', 'UEFA Champions League'}:
+        return []
+    bad = []
+    for sentence in re.split(r'[。!！\n]', text or ''):
+        if re.search(r'旧|従来|以前|202[0-3]', sentence):
+            continue
+        if (re.search(r'グループ(?:ステージ|リーグ)|総当たり', sentence) and
+                not re.search(r'(?:グループ(?:ステージ|リーグ)|総当たり)(?:戦)?では(?:なく|ない|ありません)', sentence)):
+            bad.append('現行CLはグループ内総当たりではなく36クラブのリーグフェーズ')
+        if (re.search(r'(?:欧州|ヨーロッパ).{0,15}(?:1|１|一)部リーグ(?:全体|すべて|全て).{0,12}参加', sentence) and
+                not re.search(r'参加.{0,12}(?:ではない|ではなく|しない|わけではない)', sentence)):
+            bad.append('CLには出場資格を得たクラブが参加し、欧州1部の全クラブ参加ではない')
+    return list(dict.fromkeys(bad))
+
+
 def enhance_games_with_ai(
     output: dict, standings: dict, api_key: str, count: int = 3
 ) -> None:
@@ -3373,7 +3394,7 @@ def enhance_games_with_ai(
         # 頼むだけでなく、出力を見て弾く。1回の書き直しで直らなければ
         # AIの文は捨てて、ルールベースの理由文だけで出す。
         bad = forbidden_wording(ai_text, is_soccer_league(game.get("league")))
-        bad = bad + host_reversed(ai_text, game)
+        bad = bad + host_reversed(ai_text, game) + soccer_format_issues(ai_text, game)
         if bad and not truncated:
             print(f"[info] 書き直し: {game['matchup']} に "
                   f"{'・'.join(bad)} が入っていました")
@@ -3387,9 +3408,11 @@ def enhance_games_with_ai(
             ai_text, c2, in_tok, out_tok, truncated = _call_ai(retry, api_key)
             total_cost += c2
             if (forbidden_wording(ai_text, is_soccer_league(game.get("league")))
-                    or host_reversed(ai_text, game)):
+                    or host_reversed(ai_text, game) or soccer_format_issues(ai_text, game)):
                 print(f"[warn] {game['matchup']}: 書き直しでも直らないため、"
                       "AIの文は使いません")
+                game.pop("ai_summary", None)
+                game.pop("notification_hook", None)
                 continue
 
         # 途中で切れた出力は、文としても事実としても壊れている可能性がある。

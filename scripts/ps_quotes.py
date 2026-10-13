@@ -15,8 +15,34 @@ KEEP_DAYS = 10
 
 
 def merge(store: list, posts: list, now: datetime) -> list:
-    seen = {x.get("uri") for x in store}
-    out = list(store) + [p for p in posts if p.get("uri") and p["uri"] not in seen]
+    from local_reporters import guard_translation
+    out = []
+    indexes = {}
+    for row in store:
+        item = dict(row)
+        if item.get('jp'):
+            item['jp'] = guard_translation(item.get('text') or '', item['jp'])
+        if item.get('uri'):
+            indexes[item['uri']] = len(out)
+        out.append(item)
+    for row in posts:
+        uri = row.get('uri')
+        if not uri:
+            continue
+        item = dict(row)
+        if item.get('jp'):
+            item['jp'] = guard_translation(item.get('text') or '', item['jp'])
+        if uri not in indexes:
+            indexes[uri] = len(out)
+            out.append(item)
+            continue
+        index = indexes[uri]
+        old = out[index]
+        # A new valid translation of the same source can repair the history.
+        # Missing/bad translations and a different source must not replace it.
+        same_source = ' '.join((old.get('text') or '').split()) == ' '.join((item.get('text') or '').split())
+        if same_source and item.get('jp'):
+            out[index] = {**old, **item}
     cut = (now - timedelta(days=KEEP_DAYS)).isoformat()
     return [x for x in out if (x.get("at") or "") >= cut[:19]]
 
