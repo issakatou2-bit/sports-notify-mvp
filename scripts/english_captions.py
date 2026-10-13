@@ -96,6 +96,11 @@ def budget_reason(state, video, env=None, now=None):
         return 'already_attempted'
     if len(attempts) >= cap:
         return 'daily_limit'
+    if not (env.get('YOUTUBE_SHARED_QUOTA_URL') or env.get('YOUTUBE_SHARED_QUOTA_SNAPSHOT')):
+        # 共有の残りを知る窓口が無いときは、1日の上限本数（既定1本＝400ユニット、1日1万の4%）の
+        # 範囲でだけ付ける。窓口が無いだけで毎回見送ると、オンにしても1本も付かない（10/14 本人の確認）。
+        # 枠切れの 403 は投稿の失敗として記録され、次の日まで付けない。
+        return ''
     try:
         snap = quota_snapshot(env)
         seen = datetime.fromisoformat(snap['observed_at'].replace('Z', '+00:00'))
