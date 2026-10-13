@@ -7,9 +7,8 @@
   const requested = new URLSearchParams(location.search).get('from');
   const source = sources.has(requested) ? requested : 'direct';
   const id = 'CS-' + (globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`).slice(0, 18);
-  const subject = `【画像制作の相談】${id}`;
   const updateMail = () => {
-    send.href = `mailto:issakatou2@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(draft.value)}`;
+    send.href = 'contact.html';
   };
   form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -33,7 +32,7 @@
     const status = document.getElementById('copy-status');
     try {
       await navigator.clipboard.writeText(draft.value);
-      status.textContent = 'コピーしました。メール本文に貼り付けて送信してください。';
+      status.textContent = 'コピーしました。問い合わせ先で貼り付けて送信してください。';
     } catch {
       draft.focus(); draft.select();
       status.textContent = '自動コピーできませんでした。選択された相談文を手動でコピーしてください。';

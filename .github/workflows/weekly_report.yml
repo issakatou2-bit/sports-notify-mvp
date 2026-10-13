@@ -4,7 +4,7 @@ on:
     - cron: '0 1 * * 1' # 月曜10:00 JST
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: weekly-report
   cancel-in-progress: false
@@ -26,11 +26,8 @@ jobs:
           END=$(TZ=Asia/Tokyo date -d 'yesterday' +%F)
           python scripts/weekly_report.py --data data --end "$END" --out "docs/weekly/$DAY.md"
       - name: レポートを保存
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- docs/weekly
-          if ! git diff --cached --quiet; then
-            git commit -m "型ごとの週次レポート $(TZ=Asia/Tokyo date +%F)"
-            git push
-          fi
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-report-${{ github.run_id }}
+          path: docs/weekly/*.md
+          retention-days: 30
