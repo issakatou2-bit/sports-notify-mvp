@@ -182,6 +182,44 @@
           "batch": 2
         }
       }
+    },
+    "2026-10-13": {
+      "calls": 14,
+      "in": 18841,
+      "out": 7262,
+      "usd": 0.10966,
+      "by": {
+        "topic": {
+          "calls": 1,
+          "in": 210,
+          "out": 26
+        },
+        "buzz": {
+          "calls": 1,
+          "in": 1768,
+          "out": 202
+        },
+        "voices": {
+          "calls": 2,
+          "in": 2180,
+          "out": 875
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 2529,
+          "out": 776
+        },
+        "sanity": {
+          "calls": 4,
+          "in": 6916,
+          "out": 2276
+        },
+        "localize": {
+          "calls": 4,
+          "in": 5238,
+          "out": 3107
+        }
+      }
     }
   }
 }

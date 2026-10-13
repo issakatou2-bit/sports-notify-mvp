@@ -31,6 +31,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # 見本づくりの試験は「変更前のコード」を git show で取り出して画素を比べる。
+          # 最新の1コミットだけだと取り出せずに落ちる（10/13 #151〜#153）。履歴を全部取る。
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
