@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-12T06:01:33.907236+00:00",
+  "updated_at": "2026-10-13T01:13:44.042532+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
@@ -7,319 +7,16 @@
       "video_id": "kT_Frzloic8",
       "title": "Shohei Ohtani vs. Jacob Misiorowski! (Both plate appearances in 2026 NLCS Game 1) | MLB Highlights",
       "published_at": "2026-10-12T02:46:12Z",
-      "views": 65132,
+      "views": 97921,
       "matchup": "Shohei Ohtani vs. Jacob Misiorowski! (Both plate appearances in 2026 NLCS Game 1) | MLB Highlights",
       "game_date": "",
       "topic_jp": "Shohei Ohtani 対 Jacob Misiorowski! (Both plate appearances in 2026 NLCS Game 1) | MLB Highlights"
     },
     {
-      "video_id": "en6tJ9LoZ0c",
-      "title": "WHITE SOX vs. GUARDIANS: ALDS Full Game 5 Highlights (October 10) | 2026 MLB Postseason",
-      "published_at": "2026-10-11T03:22:09Z",
-      "views": 1177241,
-      "matchup": "WHITE SOX vs. GUARDIANS",
-      "game_date": "2026-10-10",
-      "result": {
-        "away_jp": "ホワイトソックス",
-        "home_jp": "ガーディアンズ",
-        "away_score": 0,
-        "home_score": 2,
-        "series": {
-          "name": "地区シリーズ",
-          "game_number": 5,
-          "games_in_series": 5,
-          "after": "CLE wins 3-2",
-          "is_over": true,
-          "winner_today": "ガーディアンズ",
-          "after_jp": "3勝2敗（CLE wins 3-2）",
-          "after_by_team": {
-            "ガーディアンズ": {
-              "wins": 3,
-              "losses": 2
-            },
-            "ホワイトソックス": {
-              "wins": 2,
-              "losses": 3
-            }
-          },
-          "before_by_team": {
-            "ガーディアンズ": {
-              "wins": 2,
-              "losses": 2
-            },
-            "ホワイトソックス": {
-              "wins": 2,
-              "losses": 2
-            }
-          },
-          "before_jp": "ガーディアンズ2勝2敗、ホワイトソックス2勝2敗",
-          "is_decider": true
-        },
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 2
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": null
-          }
-        ],
-        "away_hits": 3,
-        "away_errors": 1,
-        "home_hits": 6,
-        "home_errors": 0,
-        "batting_facts": [
-          {
-            "name": "Angel Genao",
-            "name_en": "Angel Genao",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Chase DeLauter",
-            "name_en": "Chase DeLauter",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Nathaniel Lowe",
-            "name_en": "Nathaniel Lowe",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Travis Bazzana",
-            "name_en": "Travis Bazzana",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Patrick Bailey",
-            "name_en": "Patrick Bailey",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Brayan Rocchio",
-            "name_en": "Brayan Rocchio",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Petey Halpin",
-            "name_en": "Petey Halpin",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 2,
-            "rbi": 0
-          },
-          {
-            "name": "Jo Adell",
-            "name_en": "Jo Adell",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "José Ramírez",
-            "name_en": "José Ramírez",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 1,
-            "rbi": 2
-          },
-          {
-            "name": "Steven Kwan",
-            "name_en": "Steven Kwan",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Tristan Peters",
-            "name_en": "Tristan Peters",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Randal Grichuk",
-            "name_en": "Randal Grichuk",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "村上宗隆",
-            "name_en": "Munetaka Murakami",
-            "type": "batter",
-            "aliases": [
-              "村上"
-            ],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Kyle Teel",
-            "name_en": "Kyle Teel",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Chase Meidroth",
-            "name_en": "Chase Meidroth",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Colson Montgomery",
-            "name_en": "Colson Montgomery",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Andrew Benintendi",
-            "name_en": "Andrew Benintendi",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Brenton Doyle",
-            "name_en": "Brenton Doyle",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Sam Antonacci",
-            "name_en": "Sam Antonacci",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Miguel Vargas",
-            "name_en": "Miguel Vargas",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          }
-        ],
-        "star_name": "Gavin Williams",
-        "star_line": "5.2回 12奪三振 自責0",
-        "star_team": "ガーディアンズ",
-        "away_starter": {
-          "name": "Sean Burke",
-          "team": "ホワイトソックス",
-          "line": "5.0回 4奪三振 自責2　敗戦投手（通算1勝1敗）"
-        },
-        "home_starter": {
-          "name": "Gavin Williams",
-          "team": "ガーディアンズ",
-          "line": "5.2回 12奪三振 自責0　勝利投手（通算1勝0敗）"
-        }
-      },
-      "topic_jp": "ホワイトソックス 対 ガーディアンズ"
-    },
-    {
-      "video_id": "r4JL1sFMq9c",
-      "title": "The Brewers take the lead and then load the bases vs. Tarik Skubal 😳 | MLB Highlights (Full Inning)",
-      "published_at": "2026-10-12T02:12:13Z",
-      "views": 262157,
-      "matchup": "The Brewers take the lead and then load the bases vs. Tarik Skubal 😳 | MLB Highlights (Full Inning)",
-      "game_date": "",
-      "topic_jp": "The ブリュワーズ take the lead and then load the bases 対 Tarik Skubal 😳 | MLB Highlights (Full Inning)"
-    },
-    {
       "video_id": "4j6Lb7_5C0E",
       "title": "DODGERS vs. BREWERS: NLCS Full Game 1 Highlights (October 11) | 2026 MLB Postseason",
       "published_at": "2026-10-12T03:58:37Z",
-      "views": 210736,
+      "views": 2108608,
       "matchup": "DODGERS vs. BREWERS",
       "game_date": "2026-10-11",
       "result": {
@@ -612,13 +309,31 @@
       "topic_jp": "ドジャース 対 ブリュワーズ"
     },
     {
-      "video_id": "hHQhlYnMhzY",
-      "title": "Jacob Misiorowski records the first out of the 2026 NLCS! | MLB Highlights (Dodgers vs. Brewers)",
-      "published_at": "2026-10-12T00:20:59Z",
-      "views": 47792,
-      "matchup": "Jacob Misiorowski records the first out of the 2026 NLCS! | MLB Highlights (Dodgers vs. Brewers)",
+      "video_id": "r4JL1sFMq9c",
+      "title": "The Brewers take the lead and then load the bases vs. Tarik Skubal 😳 | MLB Highlights (Full Inning)",
+      "published_at": "2026-10-12T02:12:13Z",
+      "views": 317124,
+      "matchup": "The Brewers take the lead and then load the bases vs. Tarik Skubal 😳 | MLB Highlights (Full Inning)",
       "game_date": "",
-      "topic_jp": "Jacob Misiorowski records the first out of the 2026 NLCS! | MLB Highlights (ドジャース 対 ブリュワーズ)"
+      "topic_jp": "The ブリュワーズ take the lead and then load the bases 対 Tarik Skubal 😳 | MLB Highlights (Full Inning)"
+    },
+    {
+      "video_id": "6lZiFw8Orc4",
+      "title": "Rays strike first for an early 2026 ALCS lead vs. Guardians! | MLB Highlights (Entire 1st Inning)",
+      "published_at": "2026-10-13T00:46:39Z",
+      "views": 11795,
+      "matchup": "Rays strike first for an early 2026 ALCS lead vs. Guardians! | MLB Highlights (Entire 1st Inning)",
+      "game_date": "",
+      "topic_jp": "レイズ strike first for an early 2026 ALCS lead 対 ガーディアンズ! | MLB Highlights (Entire 1st Inning)"
+    },
+    {
+      "video_id": "VpjUN2Vim9w",
+      "title": "FULL 2nd INNING: Andy Pages puts the Dodgers ahead vs. Brewers & Jacob Misiorowski | MLB Highlights",
+      "published_at": "2026-10-12T00:59:29Z",
+      "views": 505382,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "アンディ・ペイジがドジャースをブルワーズに対して先制させた。"
     }
   ],
   "all": [
@@ -626,91 +341,109 @@
       "video_id": "kT_Frzloic8",
       "matchup": "Shohei Ohtani vs. Jacob Misiorowski! (Both plate appearances in 2026 NLCS Game 1) | MLB Highlights",
       "game_date": "",
-      "views": 65132
-    },
-    {
-      "video_id": "en6tJ9LoZ0c",
-      "matchup": "WHITE SOX vs. GUARDIANS",
-      "game_date": "2026-10-10",
-      "views": 1177241
-    },
-    {
-      "video_id": "r4JL1sFMq9c",
-      "matchup": "The Brewers take the lead and then load the bases vs. Tarik Skubal 😳 | MLB Highlights (Full Inning)",
-      "game_date": "",
-      "views": 262157
+      "views": 97921
     },
     {
       "video_id": "4j6Lb7_5C0E",
       "matchup": "DODGERS vs. BREWERS",
       "game_date": "2026-10-11",
-      "views": 210736
+      "views": 2108608
     },
     {
-      "video_id": "hHQhlYnMhzY",
-      "matchup": "Jacob Misiorowski records the first out of the 2026 NLCS! | MLB Highlights (Dodgers vs. Brewers)",
+      "video_id": "r4JL1sFMq9c",
+      "matchup": "The Brewers take the lead and then load the bases vs. Tarik Skubal 😳 | MLB Highlights (Full Inning)",
       "game_date": "",
-      "views": 47792
+      "views": 317124
     },
     {
-      "video_id": "UFjI6bkmLU4",
-      "matchup": "Freddie Freeman collects the first hit of the 2026 NLCS! | MLB Highlights (Dodgers vs. Brewers)",
+      "video_id": "6lZiFw8Orc4",
+      "matchup": "Rays strike first for an early 2026 ALCS lead vs. Guardians! | MLB Highlights (Entire 1st Inning)",
       "game_date": "",
-      "views": 32085
-    },
-    {
-      "video_id": "aefyltAJK6k",
-      "matchup": "Jacob Misiorowski’s first strikeout of the 2026 NLCS! ⛽️ | MLB Highlights (Dodgers vs. Brewers)",
-      "game_date": "",
-      "views": 19362
-    },
-    {
-      "video_id": "DKVhuEkiLns",
-      "matchup": "Tarik Skubal strikes out the 1st batter he faces in the NLCS! | MLB Highlights (Dodgers vs. Brewers)",
-      "game_date": "",
-      "views": 11972
+      "views": 11795
     },
     {
       "video_id": "VpjUN2Vim9w",
       "matchup": "",
       "game_date": "",
-      "views": 443094
-    },
-    {
-      "video_id": "1aLVX904xQs",
-      "matchup": "",
-      "game_date": "",
-      "views": 253976
-    },
-    {
-      "video_id": "UqbbZY5Q_Ms",
-      "matchup": "",
-      "game_date": "",
-      "views": 120187
-    },
-    {
-      "video_id": "FWE18XxtczE",
-      "matchup": "",
-      "game_date": "",
-      "views": 88513
-    },
-    {
-      "video_id": "RuSqs8EyLdc",
-      "matchup": "",
-      "game_date": "",
-      "views": 82222
+      "views": 505382
     },
     {
       "video_id": "NGPaiZClY5k",
       "matchup": "",
       "game_date": "",
-      "views": 80871
+      "views": 223199
+    },
+    {
+      "video_id": "UqbbZY5Q_Ms",
+      "matchup": "",
+      "game_date": "",
+      "views": 163746
+    },
+    {
+      "video_id": "2d-7cy5ygpo",
+      "matchup": "",
+      "game_date": "",
+      "views": 139298
+    },
+    {
+      "video_id": "CKw4uSyPx4o",
+      "matchup": "",
+      "game_date": "",
+      "views": 132066
+    },
+    {
+      "video_id": "FWE18XxtczE",
+      "matchup": "",
+      "game_date": "",
+      "views": 109889
+    },
+    {
+      "video_id": "RuSqs8EyLdc",
+      "matchup": "",
+      "game_date": "",
+      "views": 102285
+    },
+    {
+      "video_id": "iPGtCt9dS5A",
+      "matchup": "",
+      "game_date": "",
+      "views": 73367
     },
     {
       "video_id": "ICcU-9V1zP4",
       "matchup": "",
       "game_date": "",
-      "views": 41523
+      "views": 48167
+    },
+    {
+      "video_id": "W1MwqDkS7rc",
+      "matchup": "",
+      "game_date": "",
+      "views": 42967
+    },
+    {
+      "video_id": "9b7FNQgrG4k",
+      "matchup": "",
+      "game_date": "",
+      "views": 23030
+    },
+    {
+      "video_id": "exDTLagS9FE",
+      "matchup": "",
+      "game_date": "",
+      "views": 22966
+    },
+    {
+      "video_id": "fZNO4vw9_Es",
+      "matchup": "",
+      "game_date": "",
+      "views": 22656
+    },
+    {
+      "video_id": "vCiLD9CPUiM",
+      "matchup": "",
+      "game_date": "",
+      "views": 6383
     }
   ]
 }

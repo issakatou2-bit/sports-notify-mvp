@@ -1,144 +1,8 @@
 {
-  "updated_at": "2026-10-12T06:08:26.551214+00:00",
+  "updated_at": "2026-10-13T01:14:36.970638+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
-    {
-      "key": "season_game_849831",
-      "label": "地区シリーズ第5戦",
-      "hook": "ガーディアンズがホワイトソックスに2対0で地区シリーズ突破",
-      "heading": "ホワイトソックス 対 ガーディアンズ　地区シリーズ第5戦",
-      "intro": "地区シリーズ第5戦、ガーディアンズが本拠地でホワイトソックスに2対0で勝ちました。",
-      "intro_as_is": true,
-      "style": "v3",
-      "team_id": 114,
-      "abbr": "CLE",
-      "title": "【MLB】ガーディアンズがホワイトソックスに2対0で地区シリーズ突破｜村上宗隆 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ガーディアンズ 2対0 ホワイトソックス　本拠地で勝利　ガーディアンズが3勝2敗で地区シリーズ突破"
-        ],
-        [
-          "本塁打",
-          "ガーディアンズ1本"
-        ],
-        [
-          "先発",
-          "ガーディアンズ ウィリアムズ 5回と3分の2を無失点"
-        ],
-        [
-          "投手",
-          "ガーディアンズは4人の継投で完封"
-        ],
-        [
-          "セーブ",
-          "ケイド・スミス"
-        ]
-      ],
-      "japanese": [
-        {
-          "name": "村上宗隆",
-          "line": "4打数0安打（ホワイトソックス）"
-        }
-      ],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": null,
-      "voice": null,
-      "headline": null,
-      "game_pk": 849831,
-      "game_v4": {
-        "score": {
-          "innings": [
-            {
-              "num": 1,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 2,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 3,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 4,
-              "away": 0,
-              "home": 2
-            },
-            {
-              "num": 5,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 6,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 7,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 8,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 9,
-              "away": 0,
-              "home": null
-            }
-          ],
-          "source": "MLB Stats API / liveData.linescore",
-          "away": {
-            "id": 145,
-            "name": "ホワイトソックス",
-            "abbr": "CWS",
-            "total": 0
-          },
-          "home": {
-            "id": 114,
-            "name": "ガーディアンズ",
-            "abbr": "CLE",
-            "total": 2
-          }
-        },
-        "decisive": null
-      },
-      "game_date": "2026-10-11T00:00:00Z",
-      "jp_first": true,
-      "next_team_id": 145,
-      "finished_at": "2026-10-11T02:44:49.459000+00:00",
-      "v3": {
-        "who": "ガーディアンズ　地区シリーズ第5戦",
-        "big": "2-0",
-        "unit": "",
-        "sub": "本拠地で勝利",
-        "tag": "地区シリーズ突破",
-        "chips": [
-          {
-            "label": "地区シリーズ突破　ガーディアンズ",
-            "score": "3-2",
-            "win": true
-          },
-          {
-            "label": "本塁打　ガーディアンズ",
-            "score": "1"
-          }
-        ],
-        "ticker": "日本人選手　村上宗隆 4打数0安打（ホワイトソックス）"
-      }
-    },
     {
       "key": "season_game_849809",
       "label": "リーグ優勝決定シリーズ第1戦",
@@ -166,6 +30,10 @@
         [
           "勝ち投手・セーブ",
           "勝ち D.L.ホール（3分の2回を無失点）　セーブ トレバー・メギル"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「ブルワーズが前年チャンピオンとのリーグ優勝決定シリーズリマッチで第1戦を制する」"
         ]
       ],
       "japanese": [
@@ -180,7 +48,12 @@
       "game": true,
       "source": null,
       "voice": null,
-      "headline": null,
+      "headline": {
+        "said": "ブルワーズが前年チャンピオンとのリーグ優勝決定シリーズリマッチで第1戦を制する",
+        "text": "Brewers take Game 1 in NLCS rematch against defending champs",
+        "url": "https://www.mlb.com/news/brewers-win-nlcs-game-1-2026",
+        "at": "2026-10-12T06:04:00+00:00"
+      },
       "game_pk": 849809,
       "game_v4": {
         "score": {
@@ -273,6 +146,165 @@
           }
         ],
         "ticker": "次の試合　日本時間10月13日　リーグ優勝決定シリーズ第2戦　　日本人選手　大谷翔平 3打数1安打　1四球（ドジャース）"
+      }
+    },
+    {
+      "key": "season_game_849812",
+      "label": "リーグ優勝決定シリーズ第2戦",
+      "hook": "ブリュワーズがドジャースに7対4でリーグ優勝決定シリーズ2勝0敗に",
+      "heading": "ドジャース 対 ブリュワーズ　リーグ優勝決定シリーズ第2戦",
+      "intro": "リーグ優勝決定シリーズ第2戦、ブリュワーズが本拠地でドジャースに7対4で勝ちました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "team_id": 158,
+      "abbr": "MIL",
+      "title": "【MLB】ブリュワーズがドジャースに7対4でリーグ優勝決定シリーズ2勝0敗に｜コントレラスの決勝打　大谷翔平・佐々木朗希 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "ブリュワーズ 7対4 ドジャース　本拠地で勝利　シリーズはブリュワーズの2勝0敗"
+        ],
+        [
+          "決勝点",
+          "6回裏　ウィリアム・コントレラスのタイムリー"
+        ],
+        [
+          "本塁打",
+          "ブリュワーズ1本（コントレラス）"
+        ],
+        [
+          "先発",
+          "ブリュワーズ ヘンダーソン 4回を4失点　ドジャース 山本由伸 2回と3分の2を3失点"
+        ],
+        [
+          "勝ち投手・セーブ",
+          "勝ち ジョジョ・ロメロ（1回を無失点）　セーブ アーロン・アシュビー"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「ブルワーズが第2戦で3度のビハインドを逆転、リーグ優勝決定シリーズで優位を広げる」"
+        ]
+      ],
+      "japanese": [
+        {
+          "name": "大谷翔平",
+          "line": "4打数0安打（ドジャース）"
+        },
+        {
+          "name": "佐々木朗希",
+          "line": "1回　無失点　1奪三振（ドジャース）"
+        },
+        {
+          "name": "山本由伸",
+          "line": "2回と3分の2　3失点　1奪三振（ドジャース）"
+        }
+      ],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": {
+        "said": "ブルワーズが第2戦で3度のビハインドを逆転、リーグ優勝決定シリーズで優位を広げる",
+        "text": "Crew overcomes 3 deficits in seesaw Game 2, tightens grip on NLCS",
+        "url": "https://www.mlb.com/news/brewers-win-nlcs-game-2-2026",
+        "at": "2026-10-13T00:53:00+00:00"
+      },
+      "game_pk": 849812,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 1,
+              "home": 1
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 1,
+              "home": 2
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 5,
+              "away": 2,
+              "home": 1
+            },
+            {
+              "num": 6,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 2
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": null
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 119,
+            "name": "ドジャース",
+            "abbr": "LAD",
+            "total": 4
+          },
+          "home": {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "abbr": "MIL",
+            "total": 7
+          }
+        },
+        "decisive": {
+          "inning": "6回裏",
+          "subject": "ウィリアム・コントレラス",
+          "action": "タイムリー",
+          "detail": "",
+          "event": "Single"
+        }
+      },
+      "game_date": "2026-10-12T21:00:00Z",
+      "jp_first": true,
+      "next_team_id": 119,
+      "finished_at": "2026-10-13T00:26:00.415000+00:00",
+      "v3": {
+        "who": "ブリュワーズ　リーグ優勝決定シリーズ第2戦",
+        "big": "7-4",
+        "unit": "",
+        "sub": "本拠地で勝利",
+        "tag": "決勝点 コントレラスのタイムリー",
+        "chips": [
+          {
+            "label": "リーグ優勝決定シリーズ　ブリュワーズ",
+            "score": "2-0",
+            "win": true
+          },
+          {
+            "label": "本塁打　ブリュワーズ",
+            "score": "1"
+          }
+        ],
+        "ticker": "日本人選手　大谷翔平 4打数0安打（ドジャース）　佐々木朗希 1回　無失点　1奪三振（ドジャース）　山本由伸 2回と3分の2　3失点　1奪三振（ドジャース）"
       }
     }
   ]
