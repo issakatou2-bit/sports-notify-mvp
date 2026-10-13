@@ -61,7 +61,9 @@ class CaptionsTest(unittest.TestCase):
         self.assertEqual(caption_names.required('大谷翔平とドジャース'), {'大谷翔平':'Shohei Ohtani','ドジャース':'Los Angeles Dodgers'})
 
     def test_budget_unknown_stale_future_date_and_units(self):
-        self.assertEqual(en.budget_reason(self.state,'v',{},NOW),'quota_unknown')
+        # 窓口が無いときは1日の上限本数の範囲で付ける（10/14）。窓口があって読めないときは見送る。
+        self.assertEqual(en.budget_reason(self.state,'v',{},NOW),'')
+        self.assertEqual(en.budget_reason(self.state,'v',{'YOUTUBE_SHARED_QUOTA_SNAPSHOT':'{}'},NOW),'quota_unknown')
         self.assertEqual(en.budget_reason(self.state,'v',environment(1449),NOW),'quota_insufficient')
         self.assertEqual(en.budget_reason(self.state,'v',environment(1450),NOW),'')
         for offset in (-301,1):
@@ -111,7 +113,7 @@ class CaptionsTest(unittest.TestCase):
             args=self.args(td)
             with patch.dict(os.environ,{'COLLESPO_EN_CAPTIONS':'off'},clear=True): en.main(args)
             self.assertFalse(pathlib.Path(args.state).exists())
-            with patch.dict(os.environ,{'COLLESPO_EN_CAPTIONS':'on'},clear=True): en.main(args)
+            with patch.dict(os.environ,{'COLLESPO_EN_CAPTIONS':'on','YOUTUBE_SHARED_QUOTA_SNAPSHOT':'{}'},clear=True): en.main(args)
             self.assertEqual(en.load_state(args.state)['events'][-1]['status'],'quota_unknown')
             client.assert_not_called()
 
