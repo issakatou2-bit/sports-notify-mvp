@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-10-12T10:02:30.577649+00:00",
-  "date_jst": "2026-10-12",
-  "source_at": "2026-10-12T06:11:22.366501+00:00",
+  "updated_at": "2026-10-13T10:03:42.610848+00:00",
+  "date_jst": "2026-10-13",
+  "source_at": "2026-10-13T06:18:29.874505+00:00",
   "competitions": [
     {
       "code": "PL",
-      "round": 5,
-      "round_complete": false,
+      "round": 6,
+      "round_complete": true,
       "name_jp": "プレミアリーグ",
       "played": 6,
       "clubs": 20,
@@ -195,17 +195,34 @@
           ]
         },
         {
-          "name": "高井幸大",
-          "club_jp": "トッテナム",
-          "position": 18,
-          "points": 3,
-          "out": false,
-          "out_note": "",
-          "lines": []
-        },
-        {
           "name": "坂元達裕",
           "club_jp": "コベントリー",
+          "position": 14,
+          "points": 6,
+          "out": false,
+          "out_note": "",
+          "lines": [
+            {
+              "line": 4,
+              "position": 14,
+              "side": "outside",
+              "diff": 4,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点4"
+            },
+            {
+              "line": 5,
+              "position": 14,
+              "side": "outside",
+              "diff": 4,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点4"
+            }
+          ]
+        },
+        {
+          "name": "高井幸大",
+          "club_jp": "トッテナム",
           "position": 19,
           "points": 3,
           "out": false,
@@ -355,9 +372,9 @@
               "line": 5,
               "position": 6,
               "side": "outside",
-              "diff": 0,
+              "diff": 1,
               "label": "EL圏内",
-              "text": "EL圏内と勝点で並んでいる"
+              "text": "EL圏内まで勝点1"
             },
             {
               "line": 4,
@@ -410,10 +427,10 @@
               "position": 5,
               "team": "セビージャ",
               "team_en": "Sevilla FC",
-              "played": 7,
-              "points": 13,
-              "gf": 10,
-              "ga": 9,
+              "played": 8,
+              "points": 14,
+              "gf": 13,
+              "ga": 12,
               "jp": []
             },
             {
@@ -429,7 +446,7 @@
               ]
             }
           ],
-          "diff": 5,
+          "diff": 4,
           "moved": {
             "line": 4,
             "in": [],
@@ -457,10 +474,10 @@
               "position": 5,
               "team": "セビージャ",
               "team_en": "Sevilla FC",
-              "played": 7,
-              "points": 13,
-              "gf": 10,
-              "ga": 9,
+              "played": 8,
+              "points": 14,
+              "gf": 13,
+              "ga": 12,
               "jp": []
             }
           ],
@@ -488,7 +505,7 @@
               "jp": []
             }
           ],
-          "diff": 0,
+          "diff": 1,
           "moved": {
             "line": 5,
             "in": [],
@@ -502,8 +519,8 @@
     },
     {
       "code": "SA",
-      "round": 5,
-      "round_complete": false,
+      "round": 6,
+      "round_complete": true,
       "name_jp": "セリエA",
       "played": 6,
       "clubs": 20,
@@ -1244,7 +1261,7 @@
     }
   ],
   "picked": [
-    "FL1"
+    "PL"
   ],
   "moved_count": 0,
   "have_before": true
