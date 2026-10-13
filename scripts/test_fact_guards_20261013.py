@@ -108,6 +108,7 @@ class CompetitionTests(unittest.TestCase):
         self.assertTrue(soccer_venue.check('アーセナルが敵地リールを迎える。', game))
         self.assertEqual(soccer_venue.check('アーセナルがホームでリールを迎える。', game), [])
         self.assertEqual(soccer_venue.check('リールが敵地アーセナルに乗り込む。', game), [])
+        self.assertEqual(soccer_venue.check('アーセナルが敵地のリールを迎える。', game), [])
     def test_both_teams_cannot_meet_at_an_away_venue(self):
         import soccer_venue
         self.assertTrue(soccer_venue.check('両強豪が敵地で激突する。', CL))
