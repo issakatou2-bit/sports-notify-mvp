@@ -2,6 +2,78 @@
   "generated_at": "2026-10-13T09:54:03.299684+00:00",
   "games": [
     {
+      "game_id": "575345",
+      "league": "チャンピオンズリーグ",
+      "home_team_id": "CL-78",
+      "away_team_id": "CL-66",
+      "home_team_name": "アトレティコ・マドリード",
+      "away_team_name": "マンチェスター・ユナイテッド",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "マンチェスター・ユナイテッド vs アトレティコ・マドリード",
+      "abbr_matchup": null,
+      "start_time_jst": "10/14 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": null,
+      "away_standing": null,
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "アトレティコ・マドリード と マンチェスター・ユナイテッド の対戦",
+          "weight": 3
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "チャンピオンズリーグの舞台で、【アトレティコ・マドリードがマンチェスター・ユナイテッドを迎える】一戦となる。ヨーロッパの頂点を目指す両強豪が敵地で激突する試合であり、シーズン序盤の重要な勝ち点を巡る戦いが繰り広げられることになる。開幕直後のため順位表はまだ意味を持つ段階ではないが、グループステージの総当たり戦を勝ち抜くには、こうした一つひとつのマッチアップが重要な意味を持つ。迎える側の気迫がどう表現されるか、訪れる側がどう対抗するかに注目したい。",
+      "notification_hook": "欧州最高峰の舞台、マドリードでの激突。両強豪の初戦が始まる。",
+      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 45,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 25,
+            "evidence": "チャンピオンズリーグ"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Club Atlético de Madrid"
+          },
+          {
+            "key": "marquee_away",
+            "points": 10,
+            "evidence": "Manchester United FC"
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
       "game_id": "575346",
       "league": "チャンピオンズリーグ",
       "home_team_id": "CL-57",
@@ -53,7 +125,30 @@
       ],
       "log_notes": [],
       "ai_summary": "チャンピオンズリーグは欧州の1部リーグ全体が参加する大会であり、昨季のリーグフェーズで1位に輝いたアーセナルが敵地リールを迎える一戦は、新シーズンにおける両チームの力関係を測る重要な指標となる。【昨季CLリーグフェーズ1位のアーセナル】がどのような戦いぶりを見せるかが焦点となる一方で、日本代表の上田綺世を擁するリールがどう対抗するかも見どころである。",
-      "notification_hook": "昨季CL1位アーセナル、敵地リールとの開幕戦で上田綺世と対決。"
+      "notification_hook": "昨季CL1位アーセナル、敵地リールとの開幕戦で上田綺世と対決。",
+      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 35,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 25,
+            "evidence": "チャンピオンズリーグ"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Arsenal FC"
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": false
+      }
     },
     {
       "game_id": "575347",
@@ -87,7 +182,7 @@
       "away_has_jp": false,
       "score": 4,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
       "reasons": [
         {
           "tag": "jp_team",
@@ -107,51 +202,9 @@
       ],
       "log_notes": [],
       "ai_summary": "チャンピオンズリーグは欧州の強豪クラブが一堂に会する大会であり、各チームにとって重要な戦いが続く。バイエルンは昨季のチャンピオンズリーグで【リーグフェーズ2位】という成績を収めた強豪で、敵地バイキングでの試合に臨む。同時に、バイエルンに所属する伊藤洋輝の活躍も注視される。開幕直後の段階だが、欧州の頂点を目指す両チームの対戦がどのような展開になるかに注目したい。",
-      "notification_hook": "伊藤洋輝在籍のバイエルン、昨季CL2位の実力を敵地で見せるか"
-    },
-    {
-      "game_id": "575345",
-      "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-78",
-      "away_team_id": "CL-66",
-      "home_team_name": "アトレティコ・マドリード",
-      "away_team_name": "マンチェスター・ユナイテッド",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "マンチェスター・ユナイテッド vs アトレティコ・マドリード",
-      "abbr_matchup": null,
-      "start_time_jst": "10/14 04:00",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": null,
-      "away_standing": null,
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 3,
-      "game_type": "R",
-      "is_notable": true,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "アトレティコ・マドリード と マンチェスター・ユナイテッド の対戦",
-          "weight": 3
-        }
-      ],
-      "log_notes": [],
-      "ai_summary": "チャンピオンズリーグの舞台で、【アトレティコ・マドリードがマンチェスター・ユナイテッドを迎える】一戦となる。ヨーロッパの頂点を目指す両強豪が敵地で激突する試合であり、シーズン序盤の重要な勝ち点を巡る戦いが繰り広げられることになる。開幕直後のため順位表はまだ意味を持つ段階ではないが、グループステージの総当たり戦を勝ち抜くには、こうした一つひとつのマッチアップが重要な意味を持つ。迎える側の気迫がどう表現されるか、訪れる側がどう対抗するかに注目したい。",
-      "notification_hook": "欧州最高峰の舞台、マドリードでの激突。両強豪の初戦が始まる。"
+      "notification_hook": "伊藤洋輝在籍のバイエルン、昨季CL2位の実力を敵地で見せるか",
+      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "season_players": []
     },
     {
       "game_id": "575343",
@@ -197,7 +250,9 @@
           "text": "インテル（昨季CLリーグフェーズ10位）とクラブ・ブルージュ（昨季CLリーグフェーズ19位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "season_players": []
     },
     {
       "game_id": "575344",
@@ -243,7 +298,9 @@
           "text": "ガラタサライ（昨季CLリーグフェーズ20位）とバルセロナ（昨季CLリーグフェーズ5位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "season_players": []
     },
     {
       "game_id": "575341",
@@ -278,7 +335,9 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "start_time_utc": "2026-10-14T01:45:00+09:00",
+      "season_players": []
     },
     {
       "game_id": "575342",
@@ -313,7 +372,9 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "start_time_utc": "2026-10-14T01:45:00+09:00",
+      "season_players": []
     },
     {
       "game_id": "575348",
@@ -348,7 +409,9 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "season_players": []
     },
     {
       "game_id": "575349",
@@ -389,12 +452,243 @@
           "text": "ビジャレアル（昨季CLリーグフェーズ35位）とナポリ（昨季CLリーグフェーズ30位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 25,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 25,
+            "evidence": "チャンピオンズリーグ"
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": false
+      }
     }
   ],
   "ai_status": {
     "targets": 3,
     "succeeded": 3,
     "cost_usd": 0.01158
+  },
+  "source_errors": [
+    {
+      "competition": "PL",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "PD",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "BL1",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "SA",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "FL1",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "CL",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "EL",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "UECL",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "FAC",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "EFL",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "CDR",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "DFB",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "CI",
+      "reason": "HTTPError"
+    },
+    {
+      "competition": "CDF",
+      "reason": "HTTPError"
+    }
+  ],
+  "fixture_coverage": [
+    {
+      "competition": "PL",
+      "status": "failed"
+    },
+    {
+      "competition": "PD",
+      "status": "failed"
+    },
+    {
+      "competition": "BL1",
+      "status": "failed"
+    },
+    {
+      "competition": "SA",
+      "status": "failed"
+    },
+    {
+      "competition": "FL1",
+      "status": "failed"
+    },
+    {
+      "competition": "CL",
+      "status": "failed"
+    },
+    {
+      "competition": "EL",
+      "status": "failed"
+    },
+    {
+      "competition": "UECL",
+      "status": "failed"
+    },
+    {
+      "competition": "FAC",
+      "status": "failed"
+    },
+    {
+      "competition": "EFL",
+      "status": "failed"
+    },
+    {
+      "competition": "CDR",
+      "status": "failed"
+    },
+    {
+      "competition": "DFB",
+      "status": "failed"
+    },
+    {
+      "competition": "CI",
+      "status": "failed"
+    },
+    {
+      "competition": "CDF",
+      "status": "failed"
+    }
+  ],
+  "source": "football-data.org",
+  "preview_selection": {
+    "day": "2026-10-13",
+    "threshold": 30,
+    "max_games": 3,
+    "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+    "selected_ids": [
+      "575345",
+      "575346"
+    ],
+    "count": 2,
+    "reason": "",
+    "rejected": [
+      {
+        "id": "575347",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "575343",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "575344",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "575341",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "575342",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "575348",
+        "reason": "クラブの表示名/読みが未登録"
+      }
+    ],
+    "source_errors": [
+      {
+        "competition": "PL",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "PD",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "BL1",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "SA",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "FL1",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "CL",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "EL",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "UECL",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "FAC",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "EFL",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "CDR",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "DFB",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "CI",
+        "reason": "HTTPError"
+      },
+      {
+        "competition": "CDF",
+        "reason": "HTTPError"
+      }
+    ]
   }
 }
