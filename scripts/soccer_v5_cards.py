@@ -335,6 +335,22 @@ def chips(im,y,values,height=126):
     return y+height
 
 
+def sentence(im,x,y,value,size,color,width,clubs,role='text',max_lines=1):
+    """引用と同じ分割・札部品で、見出しと理由を収める。"""
+    from soccer_v5_program import quote_lines, _quote_rows
+    value=screen_text(value)
+    for fitted in range(size,17,-1):
+        try:rows=quote_lines(value,fitted,width,clubs)
+        except ValueError:continue
+        if len(rows)<=max_lines:break
+    else:raise ValueError('札つきの文が幅に入りません: '+value)
+    before=len(im.info.get('v3_layout',[]))
+    _quote_rows(im,x,y,rows,fitted,color)
+    if role!='text':
+        for row in im.info['v3_layout'][before:]:
+            if row['role']=='text':row['role']=role
+
+
 def cover(t,spec,clubs):
     im=canvas(t,clubs,spec.get('label','欧州サッカー'))
     heading(im,spec['kicker'])
@@ -348,8 +364,8 @@ def cover(t,spec,clubs):
         club_name(im,L+20,450,clubs[spec['club']],36,width=R-L-40)
         stat(im,(L,538,R,930),spec.get('big') or '—',spec.get('unit',''),CHALK if spec.get('unit')=='日本時間' else LIME)
         if spec.get('context') and not spec.get('chips'):
-            panel(im,(L,986,R,1070))
-            text(im,L+36,1008,spec['context'],28,MUTED,width=R-L-72)
+            panel(im,(L,986,R,1120))
+            sentence(im,L+36,1008,spec['context'],28,MUTED,R-L-260,clubs,max_lines=2)
     chips(im,982,spec.get('chips',[]))
     # 数字以外の補足がない表紙は主札を下へ中央配置し、空きは透かしで埋めない。
     if not spec.get('chips'):im.info['v5_allow_centered']=True
@@ -381,7 +397,7 @@ def preview(t,spec,clubs):
         panel(im,(L,882,R,1120))
         if interest.get('reasons'):text(im,L+46,894,'注目理由',22,MUTED,width=300,role='interest')
         for i,row in enumerate(interest.get('reasons',[])):
-            text(im,L+46,926+i*35,row['text'],28,LIME,width=R-L-96,role='interest')
+            sentence(im,L+46,926+i*35,row['text'],28,LIME,R-L-96,clubs,role='interest')
         player=interest.get('player')
         if player:
             import soccer_match_interest

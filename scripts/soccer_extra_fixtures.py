@@ -43,7 +43,7 @@ def parse(board,competition):
 
 
 def supplement(data,boards):
-    data=dict(data,games=list(data['games']),source_errors=list(data.get('source_errors',[])),fixture_coverage=[])
+    data=dict(data,games=list(data['games']),source_errors=[e for e in data.get('source_errors',[]) if e.get('competition') not in boards],fixture_coverage=[])
     seen={}
     def key(g):
         return (selection.competition(g)['code'] if selection.competition(g) else g.get('league'),
@@ -56,12 +56,13 @@ def supplement(data,boards):
         code=competition['code']
         if code not in boards:continue
         if isinstance(boards[code],Exception):
-            data['source_errors'].append(dict(competition=code,reason=type(boards[code]).__name__))
-            data['fixture_coverage'].append(dict(competition=code,status='failed'));continue
+            data['source_errors'].append(dict(competition=code,reason=error_reason(boards[code])))
+            data['fixture_coverage'].append(dict(competition=code,status='failed',reason=error_reason(boards[code])));continue
         try:games=parse(boards[code],competition)
         except (ValueError,KeyError,TypeError) as error:
-            data['source_errors'].append(dict(competition=code,reason=str(error)));continue
-        data['fixture_coverage'].append(dict(competition=code,status='success',events=len(boards[code]['events'])))
+            data['source_errors'].append(dict(competition=code,reason=str(error)))
+            data['fixture_coverage'].append(dict(competition=code,status='failed',reason=str(error)));continue
+        data['fixture_coverage'].append(dict(competition=code,status='success' if boards[code]['events'] else 'no_games',events=len(boards[code]['events']),label='取得成功' if boards[code]['events'] else '試合なし'))
         for g in games:
             old=seen.get(key(g))
             if old:
@@ -70,6 +71,22 @@ def supplement(data,boards):
                     if name in g:old[name]=g[name]
             else:data['games'].append(g);seen[key(g)]=g
     return data
+
+
+def error_reason(error):
+    code=getattr(error,'code',None)
+    return type(error).__name__+(f' HTTP {code}' if code is not None else '')+' '+str(getattr(error,'reason',error))
+
+
+def fetch_board(competition,day):
+    # 範囲指定で全大会が失敗したため、既存の結果取得と同じ単日指定にする。
+    events={}
+    for at in (day,day+timedelta(days=1)):
+        url=f"{API}/{competition['espn']}/scoreboard?dates={at:%Y%m%d}&limit=100"
+        board=results.fetch_json(url)
+        if not isinstance(board.get('events'),list):raise ValueError('ESPN events配列なし')
+        for event in board['events']:events[str(event['id'])]=event
+    return dict(events=list(events.values()))
 
 
 def main():
@@ -81,7 +98,7 @@ def main():
         # EL/カンファレンスを先に確認。翌日の夜のカードを混ぜないよう選定側でも時刻を照合。
         competitions=sorted(selection.competitions(),key=lambda c:c['code'] not in ('EL','UECL'))
         for c in competitions:
-            try:boards[c['code']]=results.fetch_json(f"{API}/{c['espn']}/scoreboard?dates={day:%Y%m%d}-{day+timedelta(days=1):%Y%m%d}&limit=100")
+            try:boards[c['code']]=fetch_board(c,day)
             except Exception as error:boards[c['code']]=error
     data=supplement(data,boards);args.games.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     print(json.dumps(dict(coverage=data['fixture_coverage'],errors=data['source_errors']),ensure_ascii=False))
