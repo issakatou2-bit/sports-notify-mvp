@@ -101,7 +101,7 @@ class Tests(unittest.TestCase):
         root = pathlib.Path(__file__).resolve().parent.parent
         found = []
         for path in [root/'notability_engine.py', *sorted((root/'scripts').glob('*.py'))]:
-            if path.name.startswith('test_') or path.name in ('backstage_guard.py', 'dialogue_batch.py'):
+            if path.name.startswith('test_') or path.name in ('backstage_guard.py', 'dialogue_batch.py', 'llm_smoke.py'):  # llm_smoke は API の設定の試しだけで、出力を公開に使わない
                 continue
             tree = ast.parse(path.read_text(encoding='utf-8-sig'))
             for node in ast.walk(tree):

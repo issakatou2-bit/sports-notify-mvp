@@ -41,7 +41,8 @@ try:
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("narration")
 
 # 1試合あたりの目標文字数。VOICEVOXの読み上げ速度(speedScale=1.3)では
 # おおよそ 6文字/秒 × 1.3 ≒ 7.8文字/秒 なので、220文字で約28秒になる。
@@ -130,7 +131,7 @@ def narrate(client, date_str: str, g: dict, index: int, total: int) -> str:
     )
     import backstage_guard
     resp = backstage_guard.create(client, label='generate_weekly_narration.py', category='weekly', mode='whole',
-        model=MODEL, max_tokens=700,
+        **llm_models.params("narration", 700),
         messages=[{"role": "user", "content": prompt}],
     )
     token_log.record("weekly", MODEL, resp)

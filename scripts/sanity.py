@@ -40,7 +40,8 @@ import sys
 
 import token_log  # noqa: E402
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("review")
 
 # 数字の前に別の数字やカンマが無いこと。
 #
@@ -411,7 +412,7 @@ def general(paths, api_key):
         import anthropic
         import backstage_guard
         resp = backstage_guard.create(anthropic.Anthropic(api_key=api_key), label='sanity', category='sanity',
-            model=MODEL, max_tokens=900,
+            **llm_models.params("review", 900),
             messages=[{"role": "user",
                        "content": _prompt() + "\n".join(chunks)[:6000]}])
         token_log.record("sanity", MODEL, resp)

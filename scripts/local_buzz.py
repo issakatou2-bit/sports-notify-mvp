@@ -214,12 +214,12 @@ def summarize_teams(ranked: list, titles: list, api_key: str) -> list:
     try:
         client = anthropic.Anthropic(api_key=api_key)
         import backstage_guard
+        import llm_models
         msg = backstage_guard.create(client, label='local_buzz.py', category='buzz', mode='lines',
-            model="claude-haiku-4-5-20251001",
-            max_tokens=800,
+            **llm_models.params("translate", 800),
             messages=[{"role": "user", "content": prompt}],
         )
-        token_log.record("buzz", "claude-haiku-4-5-20251001", msg)
+        token_log.record("buzz", llm_models.model("translate"), msg)
         text = "".join(b.text for b in msg.content if b.type == "text")
     except Exception as e:  # noqa: BLE001
         print(f"[warn] 論調をまとめられませんでした: {e}", file=sys.stderr)
