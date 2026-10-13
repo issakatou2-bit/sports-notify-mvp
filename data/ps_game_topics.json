@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-13T01:14:36.970638+00:00",
+  "updated_at": "2026-10-13T04:00:32.738587+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -32,8 +32,8 @@
           "勝ち D.L.ホール（3分の2回を無失点）　セーブ トレバー・メギル"
         ],
         [
-          "MLB.comの見出しから",
-          "「ブルワーズが前年チャンピオンとのリーグ優勝決定シリーズリマッチで第1戦を制する」"
+          "ハイライトのコメント欄から",
+          "「日本人が全員ドジャースファンってわけじゃないよ。俺はブリュワーズ大好き!」"
         ]
       ],
       "japanese": [
@@ -47,13 +47,14 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
-      "headline": {
-        "said": "ブルワーズが前年チャンピオンとのリーグ優勝決定シリーズリマッチで第1戦を制する",
-        "text": "Brewers take Game 1 in NLCS rematch against defending champs",
-        "url": "https://www.mlb.com/news/brewers-win-nlcs-game-1-2026",
-        "at": "2026-10-12T06:04:00+00:00"
+      "voice": {
+        "said": "日本人が全員ドジャースファンってわけじゃないよ。俺はブリュワーズ大好き!",
+        "text": "Not all Japanese people are Dodgers fans. I love brewers!",
+        "url": "https://www.youtube.com/watch?v=RuiDL7ihiEI",
+        "likes": 584,
+        "at": "2026-10-13T01:43:19Z"
       },
+      "headline": null,
       "game_pk": 849809,
       "game_v4": {
         "score": {
@@ -181,8 +182,8 @@
           "勝ち ジョジョ・ロメロ（1回を無失点）　セーブ アーロン・アシュビー"
         ],
         [
-          "MLB.comの見出しから",
-          "「ブルワーズが第2戦で3度のビハインドを逆転、リーグ優勝決定シリーズで優位を広げる」"
+          "ハイライトのコメント欄から",
+          "「うちの連中が山本にあんなことをやってのけたなんて信じられない。前代未聞だし、最高すぎる」"
         ]
       ],
       "japanese": [
@@ -204,13 +205,14 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
-      "headline": {
-        "said": "ブルワーズが第2戦で3度のビハインドを逆転、リーグ優勝決定シリーズで優位を広げる",
-        "text": "Crew overcomes 3 deficits in seesaw Game 2, tightens grip on NLCS",
-        "url": "https://www.mlb.com/news/brewers-win-nlcs-game-2-2026",
-        "at": "2026-10-13T00:53:00+00:00"
+      "voice": {
+        "said": "うちの連中が山本にあんなことをやってのけたなんて信じられない。前代未聞だし、最高すぎる",
+        "text": "I absolutely cannot believe our guys just did that to Yamamoto. Absolutely unprecedented and I am loving it.",
+        "url": "https://www.youtube.com/watch?v=RuiDL7ihiEI",
+        "likes": 104,
+        "at": "2026-10-13T02:16:13Z"
       },
+      "headline": null,
       "game_pk": 849812,
       "game_v4": {
         "score": {
@@ -305,6 +307,158 @@
           }
         ],
         "ticker": "日本人選手　大谷翔平 4打数0安打（ドジャース）　佐々木朗希 1回　無失点　1奪三振（ドジャース）　山本由伸 2回と3分の2　3失点　1奪三振（ドジャース）"
+      }
+    },
+    {
+      "key": "season_game_849820",
+      "label": "リーグ優勝決定シリーズ第1戦",
+      "hook": "ガーディアンズがレイズに7対3でリーグ優勝決定シリーズ先勝",
+      "heading": "ガーディアンズ 対 レイズ　リーグ優勝決定シリーズ第1戦",
+      "intro": "リーグ優勝決定シリーズ第1戦、ガーディアンズが敵地でレイズに7対3で勝ちました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "team_id": 114,
+      "abbr": "CLE",
+      "title": "【MLB】ガーディアンズがレイズに7対3でリーグ優勝決定シリーズ先勝｜ロウの決勝打 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "ガーディアンズ 7対3 レイズ　敵地で勝利　シリーズはガーディアンズの1勝0敗"
+        ],
+        [
+          "決勝点",
+          "8回表　ナサニエル・ロウのタイムリー"
+        ],
+        [
+          "本塁打",
+          "ガーディアンズ2本　レイズ1本（マリンズ）"
+        ],
+        [
+          "先発",
+          "ガーディアンズ グリフィン 4回を2失点　レイズ ラスムッセン 6回を2失点"
+        ],
+        [
+          "勝ち投手",
+          "ハンター・ギャディス（1回を無失点）"
+        ],
+        [
+          "ガーディアンズの番記者の投稿から",
+          "「試合終了:ガーディアンズ7、レイズ3 。0-2の劣勢から打線が目を覚まし、第1戦を制した。」"
+        ]
+      ],
+      "japanese": [],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": {
+        "said": "試合終了:ガーディアンズ7、レイズ3 。0-2の劣勢から打線が目を覚まし、第1戦を制した。",
+        "author": "Tim Stebbins",
+        "outlet": "MLB.com",
+        "text": "Final: Guardians 7, Rays 3 Cleveland's offense came to life to erase a 2-0 deficit and take Game 1.",
+        "url": "https://bsky.app/profile/timstebbins.bsky.social/post/3mxq2fmkruc2m",
+        "at": "2026-10-13T03:05:44.414Z"
+      },
+      "voice": null,
+      "headline": null,
+      "game_pk": 849820,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 2
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 5,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 7,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 2,
+              "home": 1
+            },
+            {
+              "num": 9,
+              "away": 3,
+              "home": 0
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 114,
+            "name": "ガーディアンズ",
+            "abbr": "CLE",
+            "total": 7
+          },
+          "home": {
+            "id": 139,
+            "name": "レイズ",
+            "abbr": "TB",
+            "total": 3
+          }
+        },
+        "decisive": {
+          "inning": "8回表",
+          "subject": "ナサニエル・ロウ",
+          "action": "タイムリー",
+          "detail": "",
+          "event": "Single"
+        }
+      },
+      "game_date": "2026-10-13T00:00:00Z",
+      "jp_first": false,
+      "next_team_id": 114,
+      "finished_at": "2026-10-13T03:05:36.954000+00:00",
+      "v3": {
+        "who": "ガーディアンズ　リーグ優勝決定シリーズ第1戦",
+        "big": "7-3",
+        "unit": "",
+        "sub": "敵地で勝利",
+        "tag": "決勝点 8回表 ロウのタイムリー",
+        "chips": [
+          {
+            "label": "リーグ優勝決定シリーズ　ガーディアンズ",
+            "score": "1-0",
+            "win": true
+          },
+          {
+            "label": "本塁打　ガーディアンズ",
+            "score": "2"
+          },
+          {
+            "label": "本塁打　レイズ（マリンズ）",
+            "score": "1"
+          }
+        ],
+        "ticker": "ガーディアンズ 7対3 レイズ　敵地で勝利　シリーズはガーディアンズの1勝0敗"
       }
     }
   ]
