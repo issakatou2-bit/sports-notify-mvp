@@ -1,5 +1,7 @@
 """Protect the meaning of standings, missing data and failed refreshes."""
 import copy
+import re
+import html
 from datetime import datetime, timezone
 from pathlib import Path
 import sys
@@ -79,6 +81,28 @@ class StandingsTests(unittest.TestCase):
         self.assertIn('1球団は更新日時未取得', text)
         self.assertIn('リアルタイム順位ではありません', text)
         self.assertEqual(text.count('<table class="std-table">'), 8)
+
+    def test_search_title_description_and_update_date(self):
+        # 固定材料・固定時刻。実API・フォント・過去commitは使わない。
+        data=fixture()
+        before=copy.deepcopy(data)
+        for now,date in ((datetime(2026,10,13,14,30,tzinfo=timezone.utc),'2026/10/13 23:30'),
+                         (datetime(2026,10,13,16,30,tzinfo=timezone.utc),'2026/10/14 01:30')):
+            text=page.render_page(data,2026,now)
+            title=html.unescape(re.search(r'<title>(.*?)</title>',text).group(1))
+            desc=html.unescape(re.search(r'<meta name="description" content="(.*?)"',text).group(1))
+            self.assertLessEqual(len(title),60)
+            self.assertGreaterEqual(len(title),25)
+            self.assertLessEqual(len(desc),120)
+            self.assertGreaterEqual(len(desc),70)
+            for word in ('2026','MLB','順位表','最新','ア・リーグ','ナ・リーグ','地区別','ワイルドカード'):
+                self.assertIn(word,title)
+            self.assertIn(date,desc)
+            self.assertIn('日本時間',desc)
+            self.assertIn('<h1>2026 MLB 順位表（最新）</h1>',text)
+            self.assertIn('ページ更新：<time',text)
+            self.assertIn(date+' 日本時間</time>',text)
+        self.assertEqual(data,before)
 
     def test_failed_fetch_does_not_destroy_existing_output(self):
         with tempfile.TemporaryDirectory() as tmp:
