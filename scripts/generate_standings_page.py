@@ -198,20 +198,22 @@ def source_dates(data: dict) -> str:
 
 def render_page(data: dict, season: int, now: datetime) -> str:
     validate_data(data, season)
-    desc = (f"MLB {season}の地区順位とワイルドカード争い。全30球団の勝敗・ゲーム差・"
-            "残り試合の目安を、数字の読み方とあわせて確認できます。")
+    updated = now.astimezone(JST).strftime("%Y/%m/%d %H:%M")
+    desc = (f"{season}年MLB（メジャーリーグ）の最新順位表。ア・リーグとナ・リーグの"
+            "地区別順位・ワイルドカード順位、全30球団の勝敗・勝率・ゲーム差を一覧で確認。"
+            f"{updated}（日本時間）更新。MLB公式データを掲載。")
     head = ga.HEAD_TMPL.format(
-        title=f"MLB順位表 {season}｜ワイルドカード争い・残り試合 | コレスポ",
+        title=f"{season} MLB 順位表（最新）｜ア・リーグ ナ・リーグ 地区別・ワイルドカード",
         description=html.escape(desc), canonical=f"{ga.SITE_URL}standings.html", root="./",
         style=ga.STYLE + STYLE_EXTRA,
         extra_head='<script src="/site-theme.js"></script><link rel="stylesheet" href="/site-theme.css">'
                    '<link rel="icon" href="/favicon.ico" sizes="any">',
     )
-    body = [head, '<main><header class="std-hero"><p class="std-kicker">観戦前に、いまの位置を。</p>',
-            f'<h1>MLB順位表 {season}<br>ポストシーズンへの距離</h1>',
-            '<p>地区首位との差と、ワイルドカードの位置を確認。'
-            '次の観戦前に、応援する球団の現在地をつかめます。</p>',
-            f'<p class="std-note">取得：<time datetime="{now.astimezone(JST).isoformat()}">{now.astimezone(JST):%Y/%m/%d %H:%M} 日本時間</time><br>'
+    body = [head, '<main><header class="std-hero"><p class="std-kicker">MLB公式データで現在の順位を確認</p>',
+            f'<h1>{season} MLB 順位表（最新）</h1>',
+            '<p>ア・リーグとナ・リーグの地区別順位・ワイルドカード順位を掲載。'
+            '全30球団の勝敗・勝率・ゲーム差がすぐ分かります。</p>',
+            f'<p class="std-note">ページ更新：<time datetime="{now.astimezone(JST).isoformat()}">{now.astimezone(JST):%Y/%m/%d %H:%M} 日本時間</time><br>'
             f'{source_dates(data)}<br>試合中のリアルタイム順位ではありません。球団ごとに更新時刻が異なります。</p></header>',
             '<nav class="std-nav" aria-label="順位表の目次"><a href="#wildcard">ワイルドカード争い</a>'
             '<a href="#divisions">6地区の順位</a><a href="#reading">数字の読み方</a></nav>',
