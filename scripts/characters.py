@@ -177,6 +177,10 @@ def fan_mood(line):
     """(表情, 効果, 理由) か None。COLLESPO_EXPR=fan のときだけ。日本人選手の名前が無い台詞は None。"""
     if EXPR != "fan" or not line:
         return None
+    import fan_events
+    fact = fan_events.mood()
+    if fact:
+        return fact
     text = str(line)
     who = next((n for n in fan_names() if n in text), None)
     if not who:
@@ -232,8 +236,9 @@ def bubble(im, speaker, text):
     d.rounded_rectangle((x0 + 28, y0 - 24, x0 + 28 + w, y0 + 24), radius=24, fill=color)
     d.text((x0 + 28 + w / 2, y0), NAMES[speaker], font=f, fill=(255, 255, 255), anchor="mm")
     room = y1 - y0 - 44
+    import fan_events
     for size in (48, 44, 40, 36, 33):
-        rows = r3._caption_lines(d, text, size, x1 - x0 - 80)
+        rows = r3._caption_lines(d, text, size, x1 - x0 - (120 if fan_events.enabled() else 80))
         lh = round(size * 1.36)
         if len(rows) <= 3 and len(rows) * lh <= room:
             break
@@ -242,8 +247,11 @@ def bubble(im, speaker, text):
         x = x0 + 40
         for part, isnum in row:
             fnt = r3.num_font(round(size * 1.15)) if isnum else r3.font(size)
-            d.text((x, y + size), part, font=fnt, fill=(196, 132, 16) if isnum else (30, 30, 34), anchor="ls")
-            x += d.textlength(part, font=fnt)
+            focus = isnum and fan_events.number_focus(part)
+            drawn = r3.num_font(round(size * 1.15 * 1.06)) if focus else fnt
+            d.text((x, y + size), part, font=drawn, fill=(155, 79, 8) if focus else (196, 132, 16) if isnum else (30, 30, 34), anchor="ls")
+            reserve = r3.num_font(round(size * 1.15 * 1.06)) if isnum and fan_events.enabled() else fnt
+            x += d.textlength(part, font=reserve)
         y += lh
     im.paste(base.convert(im.mode))
     r3.record_box(im, "caption", (x0, y0, x1, y1), text)

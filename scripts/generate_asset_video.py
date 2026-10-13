@@ -1730,6 +1730,8 @@ def add_sound(audio_path, segs, durations, spec, topic, out_dir):
         previous_screen=meta.get('screen')
         t0 += dur
     import sound_mix as _sm
+    import fan_events
+    cues += fan_events.event_cues()
     name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or DEFAULT_BGM or _sm.DEFAULT_BGM
     bgm = BGM_DIR / f"{name}.mp3" if name else BGM_DIR / ".none"
     try:
@@ -1841,6 +1843,8 @@ def main():
         errors=duo.check(segs,durations)
         if errors:raise ValueError('掛け合いの実音声: '+str(errors))
     audio_path = build_narration_track(segs, durations, out_dir)
+    import fan_events
+    fan_events.prepare({'items':list_items(args.topic)}, segs, durations, out_dir)
     spec_main = LIST_TOPICS.get(args.topic) or {}
     if audio_path and spec_main.get("style") == "v3":
         audio_path = add_sound(audio_path, segs, durations, spec_main, args.topic, out_dir)
