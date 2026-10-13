@@ -396,6 +396,8 @@ def short_effects(im,t,quote=False,score=False):
 # 4つとも少しずつ違っていて、統合は別途(短編を測っている最中に
 # 4か所を同時に触らない)。ここは長編のための正本。
 def build_narration_track(segs, durations, out_dir):
+    import lipsync
+    lipsync.prepare(segs, durations, out_dir)
     if not any(s.get("file") for s in segs):
         return None
     params = None

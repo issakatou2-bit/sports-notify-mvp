@@ -30,6 +30,8 @@ FACE_PARTS = {
 }
 for _k, _v in FACE_PARTS.items():
     vc.FACES.setdefault("v4_" + _k, _v)
+    for _level, _mouth in enumerate(('閉', '開', '大')):
+        vc.FACES.setdefault(f'v4_{_k}:mouth{_level}', (_v[0], _v[1], _mouth))
 
 # 配置（案1）。吹き出しは横いっぱい、2人の上半身は吹き出しの右上に立つ。
 BUBBLE = (r3.LEFT, 1262, r3.SAFE_RIGHT, 1468)
@@ -91,6 +93,11 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
     """右下に上半身を並べる（cast の順に左から）。話す方を大きく明るく、口と表情を動かす。"""
     speaking = bool(line) and elapsed < max(0.1, duration - 0.25)
     mouth = speaking and int(elapsed * r3.MOUTH_RATE) % 2 == 1
+    import lipsync
+    voice_mode = lipsync.enabled()
+    clock = r3._PROGRAM_CLOCK[0]
+    level = lipsync.at(clock if clock is not None else elapsed,
+                       3 if speaker == 'zundamon' else 2) if voice_mode else None
     arts = []
     for who in cast:
         active = who == speaker
@@ -101,6 +108,8 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
         if mood == "talk":
             mood = "base"
         face = ("talk" if (mouth and mood == "base") else mood) if active else "base"
+        if voice_mode:
+            face = f'{mood if active else "base"}:mouth{level if active else 0}'
         arts.append((who, active, bust(who, face, BUST_ACTIVE if active else BUST_IDLE, not active), face))
     x = r3.SAFE_RIGHT + 4
     # 吹き出しの無い画面（締め）は、吹き出しの場所まで下げて、上の札・ボタンにかけない

@@ -24,6 +24,7 @@ VOICEVOXについて:
 """
 
 import argparse
+import os
 import json
 import pathlib
 import subprocess
@@ -153,6 +154,11 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
         )
         s.raise_for_status()
         out_path.write_bytes(s.content)
+        if os.environ.get('COLLESPO_LIPSYNC') == 'voice':
+            import hashlib
+            out_path.with_suffix('.lipsync.json').write_text(json.dumps(
+                dict(query=query, wav_sha256=hashlib.sha256(s.content).hexdigest()),
+                ensure_ascii=False, indent=2), encoding='utf-8')
         return True
     except name_reading_guard.NameReadingError:
         # 読み違い/辞書欠測を「無音で続行」へ落とさない。
