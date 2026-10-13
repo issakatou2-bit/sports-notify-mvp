@@ -30,7 +30,7 @@ class Badges(unittest.TestCase):
         frozen=json.loads((ROOT/'scripts/fixtures/mlb-badge/protected-source.json').read_text(encoding='utf8'))
         for name,expected in frozen.items():
             text=(ROOT/name).read_text(encoding='utf8').replace('\r\n','\n')
-            self.assertEqual(hashlib.sha256(text.encode()).hexdigest(),expected,name)
+            self.assertEqual(hashlib.sha256(text.encode()).hexdigest(),expected,name+"（意図した直しなら python scripts/update_protected_hashes.py --write）")
             for n in ast.walk(ast.parse(text)):
                 if isinstance(n,ast.Import):self.assertFalse(any(a.name=='preview_mlb_badges' for a in n.names))
                 if isinstance(n,ast.ImportFrom):self.assertNotEqual(n.module,'preview_mlb_badges')
