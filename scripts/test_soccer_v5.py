@@ -169,7 +169,7 @@ class V5(unittest.TestCase):
         frozen=read(FIX/'v5-protected-source.json')
         for path,want in frozen['files'].items():
             value=(ROOT/path).read_text(encoding='utf-8').replace('\r\n','\n')
-            self.assertEqual(hashlib.sha256(value.encode()).hexdigest(),want,path)
+            self.assertEqual(hashlib.sha256(value.encode()).hexdigest(),want,path+"（意図した直しなら python scripts/update_protected_hashes.py --write）")
         for path,functions in frozen['functions'].items():
             value=(ROOT/path).read_text(encoding='utf-8').replace('\r\n','\n')
             nodes={n.name:n for n in ast.parse(value).body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
