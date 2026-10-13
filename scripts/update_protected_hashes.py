@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """見本づくりで「本番のコードを変えていない」ことを見張る指紋（scripts/fixtures/**/*protected-source*.json）を確かめる・更新する。
 
-10/13、意図した本番の直し（#145 short_v4_cards・#147 characters）のたびに、この指紋の試験が CI で赤になり、
-手で値を書き換えていた（同じ形が2回）。手で直さず、この道具で更新する。
+10/13、意図した本番の直し（#145 short_v4_cards・#147 characters・#155 generate_morning_short）のたびに、
+この指紋の試験が CI で赤になり、手で値を書き換えていた。手で直さず、この道具で更新する。
 
   python scripts/update_protected_hashes.py          # ずれている所を表示（終了コード1）
   python scripts/update_protected_hashes.py --write  # いまの中身（Git に入る改行 LF の形）で書き直す
 
-指紋は CI と同じく、改行を LF にした中身の sha256。意図しない変更でないかは、更新の前に差分を見て確かめること。
+記録の形は2つ。平らな {ファイル: 指紋}（mlb-badge）と、{"files": {ファイル: 指紋}, "functions": {ファイル: {関数: 指紋}}}
+（soccer-slots/v5）。ファイルは改行を LF にした中身の sha256、関数は ast.get_source_segment の sha256（test_soccer_v5 と同じ）。
+意図しない変更でないかは、更新の前に差分を見て確かめること。
 """
 import ast
 import hashlib
@@ -23,30 +25,42 @@ def digest(path):
     return hashlib.sha256(data).hexdigest()
 
 
+def function_digest(path, name):
+    value = (ROOT / path).read_text(encoding="utf-8").replace("\r\n", "\n")
+    nodes = {n.name: n for n in ast.parse(value).body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+    if name not in nodes:
+        return None
+    return hashlib.sha256(ast.get_source_segment(value, nodes[name]).encode()).hexdigest()
+
+
+def entries(table):
+    """(表示名, ファイル, 今の値, 書き戻し先の辞書, キー, 計算) を並べる。"""
+    if "files" in table or "functions" in table:
+        for path, want in (table.get("files") or {}).items():
+            yield path, path, want, table["files"], path, (lambda p=path: digest(p))
+        for path, funcs in (table.get("functions") or {}).items():
+            for name, want in funcs.items():
+                yield f"{path}:{name}", path, want, funcs, name, (lambda p=path, n=name: function_digest(p, n))
+    else:
+        for path, want in table.items():
+            yield path, path, want, table, path, (lambda p=path: digest(p))
+
+
 def main(argv):
     write = "--write" in argv
     stale = 0
     for fixture in sorted((ROOT / "scripts" / "fixtures").glob("**/*protected-source*.json")):
         table = json.loads(fixture.read_text(encoding="utf-8"))
         changed = False
-        entries = [(table,path,want,digest(path)) for path,want in table.items()
-                   if isinstance(want,str) and len(want)==64 and (ROOT/path).is_file()]
-        for path,want in table.get('files',{}).items():
-            entries.append((table['files'],path,want,digest(path)))
-        for path,functions in table.get('functions',{}).items():
-            value=(ROOT/path).read_text(encoding='utf-8').replace('\r\n','\n')
-            nodes={n.name:n for n in ast.parse(value).body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
-            for name,want in functions.items():
-                source=ast.get_source_segment(value,nodes[name])
-                entries.append((functions,name,want,hashlib.sha256(source.encode()).hexdigest()))
-        for container,path,want,have in entries:
-            if not isinstance(want, str) or len(want) != 64:
+        for label, path, want, holder, key, compute in list(entries(table)):
+            if not isinstance(want, str) or len(want) != 64 or not (ROOT / path).exists():
                 continue
-            if have != want:
+            have = compute()
+            if have and have != want:
                 stale += 1
-                print(f"{'更新' if write else 'ずれ'} {fixture.relative_to(ROOT)}: {path}")
+                print(f"{'更新' if write else 'ずれ'} {fixture.relative_to(ROOT)}: {label}")
                 if write:
-                    container[path] = have
+                    holder[key] = have
                     changed = True
         if changed:
             fixture.write_text(json.dumps(table, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")

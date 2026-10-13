@@ -120,9 +120,13 @@ def voices_snippet():
         games.write_text(json.dumps({"games": []}), encoding="utf-8")
         buzz = pathlib.Path(tmp) / "buzz.json"
         buzz.write_text(json.dumps(BUZZ), encoding="utf-8")
-        return uy.build_metadata(str(games), "9月22日", kind="morning",
-                                 morning_mode="voices",
-                                 buzz_path=str(buzz))["snippet"]
+        # 説明文の末尾の「同じ枠の前の回」は本物の投稿の記録を読むので、試験では空にする
+        # （10/13、その日の本番の題が記録に入って、この試験が落ちた）。
+        from unittest import mock
+        with mock.patch.object(uy, "related_lines", lambda *a, **k: []):
+            return uy.build_metadata(str(games), "9月22日", kind="morning",
+                                     morning_mode="voices",
+                                     buzz_path=str(buzz))["snippet"]
 
 
 section("コメント紹介の説明と題")
@@ -134,6 +138,7 @@ has("元動画を示す", v["description"], "https://youtu.be/YKfsJ5LKk_8")
 has("再生回数がいつの値か書く", v["description"], "147,184回（9月22日15時時点）")
 hasnt("集めた範囲の1位を「現地で最も」と言わない", v["description"],
       "現地で最も見られた")
+hasnt("題でも「現地で最も」と言わない", v["title"], "現地で最も")
 has("題の日付も更新日だと分かる", v["title"], "9月22日更新")
 
 sys.exit(done())
