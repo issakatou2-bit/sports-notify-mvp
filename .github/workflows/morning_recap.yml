@@ -11,6 +11,7 @@ env:
   COLLESPO_DUO: ${{ vars.COLLESPO_DUO || 'off' }}
   COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
   COLLESPO_MLB_FORECAST: ${{ vars.COLLESPO_MLB_FORECAST || '' }}
+  COLLESPO_LIPSYNC: ${{ vars.COLLESPO_LIPSYNC || '' }}
   PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}
   COLLESPO_PS_DESIGN: ${{ vars.COLLESPO_PS_DESIGN || 'legacy' }}
   # エマの試作確認後に bignumber を指定。未指定/legacy なら現行のまま。

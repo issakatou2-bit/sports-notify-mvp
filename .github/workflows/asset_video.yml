@@ -73,6 +73,7 @@ env:
   COLLESPO_MLB_BADGE: ${{ vars.COLLESPO_MLB_BADGE || '' }}
   COLLESPO_DUO: ${{ vars.COLLESPO_DUO || 'off' }}
   COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
+  COLLESPO_LIPSYNC: ${{ vars.COLLESPO_LIPSYNC || '' }}
 
 jobs:
   # 夜の補完は、その日の1本が既にできていることが多い。
