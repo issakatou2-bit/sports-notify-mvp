@@ -35,6 +35,7 @@ jobs:
       COLLESPO_SHORT_LOOK: v4
       COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v4' }}
       COLLESPO_DUO: 'off'
+      COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
