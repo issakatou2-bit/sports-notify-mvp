@@ -31,7 +31,7 @@ env:
 # 後から終わった方が相手の成果物で上書きしてしまう。
 # cancel-in-progress: false なので、日次実行が途中で止められることはない。
 concurrency:
-  group: pages
+  group: ${{ vars.COLLESPO_EN_CAPTIONS == 'on' && 'collespo-en-captions' || 'pages' }}
   cancel-in-progress: false
 
 jobs:
@@ -510,6 +510,24 @@ jobs:
         run: |
           python scripts/captions.py             --narration public/narration.json             --audio-dir build/audio --kind daily
 
+      - name: Add English captions
+        if: steps.sanity.outcome == 'success' && vars.COLLESPO_EN_CAPTIONS == 'on'
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          COLLESPO_EN_CAPTIONS: ${{ vars.COLLESPO_EN_CAPTIONS }}
+          COLLESPO_EN_CAPTIONS_DAILY_MAX: ${{ vars.COLLESPO_EN_CAPTIONS_DAILY_MAX || '1' }}
+          COLLESPO_EN_CAPTIONS_RESERVE: ${{ vars.COLLESPO_EN_CAPTIONS_RESERVE || '1000' }}
+          YOUTUBE_SHARED_QUOTA_URL: ${{ vars.YOUTUBE_SHARED_QUOTA_URL }}
+          YOUTUBE_SHARED_QUOTA_TOKEN: ${{ secrets.YOUTUBE_SHARED_QUOTA_TOKEN }}
+          YOUTUBE_SHARED_QUOTA_SNAPSHOT: ${{ vars.YOUTUBE_SHARED_QUOTA_SNAPSHOT }}
+          COLLESPO_LLM_TRANSLATE: ${{ vars.COLLESPO_LLM_TRANSLATE }}
+        run: |
+          python scripts/captions.py             --narration public/narration.json             --audio-dir build/audio --kind daily --language en
+
       # 同じ動画をTikTokへも出す。タイトルはYouTube側の記録から借りるので、
       # 先にUpload to YouTubeが終わっている必要がある。
       #
@@ -570,7 +588,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "video record: ${{ github.run_id }}" \
-            data/published_videos.json data/bluesky_delivery.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json data/token_usage.json data/mlb_forecast_history.json
+            data/published_videos.json data/bluesky_delivery.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json data/token_usage.json data/mlb_forecast_history.json data/en_caption_state.json
 
       - name: Save video as artifact
         if: always()
