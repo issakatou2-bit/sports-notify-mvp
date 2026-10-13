@@ -36,6 +36,10 @@ def function_digest(path, name):
 def entries(table):
     """(表示名, ファイル, 今の値, 書き戻し先の辞書, キー, 計算) を並べる。"""
     if "files" in table or "functions" in table:
+        # 2段の形でも、上の段に平らな {ファイル: 指紋} が混ざっていれば一緒に見る
+        for path, want in table.items():
+            if path not in ("files", "functions") and isinstance(want, str):
+                yield path, path, want, table, path, (lambda p=path: digest(p))
         for path, want in (table.get("files") or {}).items():
             yield path, path, want, table["files"], path, (lambda p=path: digest(p))
         for path, funcs in (table.get("functions") or {}).items():
