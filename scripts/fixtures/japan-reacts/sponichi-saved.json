@@ -1,0 +1,86 @@
+{
+  "sport": "MLB",
+  "player_en": "Shohei Ohtani",
+  "title": "How Sponichi covered Shohei Ohtani pitching",
+  "date": "2026-05-14",
+  "saved_preview": true,
+  "translation_provenance": "Codex manual translation of a verified real source for offline preview; live path uses #160 translate and independent review",
+  "sources": [
+    {
+      "kind": "headline",
+      "source": "スポニチ",
+      "original": "防御率は「まだ気にする段階ではない」",
+      "url": "https://www.sponichi.co.jp/baseball/news/2026/05/14/articles/20260514s00001007251000c.html",
+      "at": "2026-05-14T15:26:00+09:00",
+      "fetched_at": "2026-10-13",
+      "note": "見出しの短い抜粋。本文・画像・動画は保存しない。"
+    }
+  ],
+  "segments": [
+    {
+      "kind": "intro",
+      "text": "大谷翔平の好投を、日本のスポーツ紙はどう伝えたか。",
+      "caption_en": "How did a Japanese sports paper cover Shohei Ohtani's strong start?",
+      "speaker": 2,
+      "meta": {},
+      "review": {
+        "faithful": true,
+        "actors": true,
+        "no_abuse": true,
+        "sha256": "99508814f806b0c844749d967736814ce0e107c8c503a580e67316e7bb450729"
+      }
+    },
+    {
+      "kind": "facts",
+      "text": "スポニチによると、大谷は7回無失点、8奪三振で今季3勝目を挙げました。",
+      "caption_en": "According to Sponichi, Ohtani threw 7 scoreless innings with 8 strikeouts for his 3rd win of the season.",
+      "speaker": 2,
+      "meta": {},
+      "review": {
+        "faithful": true,
+        "actors": true,
+        "no_abuse": true,
+        "sha256": "3a93e7126379a0e7a96de4ecb485cdcdb31d8308e2f419344c5dd4f855829f0d"
+      }
+    },
+    {
+      "kind": "headline",
+      "text": "見出しに置いたのは、防御率はまだ気にする段階ではない、という大谷本人の言葉です。",
+      "caption_en": "The headline highlighted Ohtani's own words: It is not yet time to worry about ERA.",
+      "speaker": 2,
+      "meta": {},
+      "review": {
+        "faithful": true,
+        "actors": true,
+        "no_abuse": true,
+        "sha256": "39f4f625cb9e00f367675872b9f21f4e3ddd18817d40ceee373dff8332111011"
+      }
+    },
+    {
+      "kind": "analysis",
+      "text": "記録の数字だけでなく、好投した本人の受け止め方を伝えた見出しです。",
+      "caption_en": "The headline focused on the pitcher's perspective after a strong start, beyond just the numbers.",
+      "speaker": 2,
+      "meta": {},
+      "review": {
+        "faithful": true,
+        "actors": true,
+        "no_abuse": true,
+        "sha256": "95550172d34a3b488a89d24094de1115e91a5ce25ec025fa873f9dab98ecb68b"
+      }
+    },
+    {
+      "kind": "closing",
+      "text": "これは選んだ記事の英訳で、日本の全員の意見ではありません。",
+      "caption_en": "This is a translated selection, not the opinion of everyone in Japan.",
+      "speaker": 2,
+      "meta": {},
+      "review": {
+        "faithful": true,
+        "actors": true,
+        "no_abuse": true,
+        "sha256": "45a435f578de368027a0736e864c625006164fc42af99d03763a312465672a05"
+      }
+    }
+  ]
+}

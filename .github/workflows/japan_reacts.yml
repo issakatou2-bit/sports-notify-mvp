@@ -1,0 +1,58 @@
+name: 日本語の反応を英語字幕で紹介（制作のみ）
+on:
+  workflow_dispatch:
+    inputs:
+      saved_preview:
+        description: 保存した本物のスポニチ記事で試作する
+        type: boolean
+        default: true
+      sport:
+        type: choice
+        options: [MLB, PL]
+        default: MLB
+      player:
+        type: string
+        default: 大谷翔平
+permissions:
+  contents: read
+jobs:
+  preview:
+    if: vars.COLLESPO_JAPAN_REACTS == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      COLLESPO_JAPAN_REACTS: ${{ vars.COLLESPO_JAPAN_REACTS || 'off' }}
+      JAPAN_REACTS_PUBLISH: ${{ vars.JAPAN_REACTS_PUBLISH || 'false' }}
+      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg
+      - name: Start VOICEVOX
+        run: |
+          docker run -d --rm -p 50021:50021 voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Japanese voice and English subtitles
+        env:
+          SAVED_PREVIEW: ${{ inputs.saved_preview }}
+          SPORT: ${{ inputs.sport }}
+          PLAYER: ${{ inputs.player }}
+        run: |
+          args=(--sport "$SPORT" --player "$PLAYER")
+          if [ "$SAVED_PREVIEW" = true ]; then args=(--saved scripts/fixtures/japan-reacts/sponichi-saved.json); fi
+          python scripts/japan_reacts.py "${args[@]}" --out build/japan-reacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: japan-reacts-preview
+          path: build/japan-reacts/
+          retention-days: 7
