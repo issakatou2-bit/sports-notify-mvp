@@ -713,6 +713,8 @@ def scene(t, scene_spec, team_id=None):
         return common.ranking(t,view,spec['ranking'],spec.get('source') or SOURCE)
     if r3.LOOK == 'v4':
         import short_v4_cards as v4
+        if spec.get('forecast_result'):
+            return v4.player_detail(t,spec,spec['forecast_result'])
         if spec.get('kind')=='cover' and spec.get('roster'):
             return v4.cover(t,spec)
         if spec.get('other_players'):
@@ -1073,7 +1075,20 @@ def scenes_from_morning(data, narration=None):
     out = []
     for i, seg in enumerate(narration.get("segments") or []):
         kind = seg.get("kind")
-        if kind == 'cover':
+        if kind == 'forecast_check':
+            f=seg['meta']['forecast'];actual=seg['meta']['actual']
+            unit='奪三振' if f['field']=='so' else '安打'
+            expected=f'期待 {f["threshold"]}{unit}以上'
+            outcome='期待に届いた' if seg['meta']['met'] else '期待には届かず'
+            player=next((p for p in players if str(p.get('player_id'))==f['player_id']),{})
+            got=[{'layout':'block','head':'昨夜の注目数字の結果','sub':f['name'],'say':seg['text'],
+                  'big':str(actual),'unit':unit,'chips':[expected,outcome], 'player_chips':[expected,outcome],
+                  'forecast_result':dict(name=f['name'],rank=None,tag='昨夜の注目数字の結果',big=str(actual),unit=unit,
+                      headline=f'{actual}{unit}',notes=[expected,outcome,f['basis']],
+                      team_id=player.get('team_id'),team_jp=player.get('team_jp','')),
+                  'source':f'出典：MLB公式（{f["period"]["start"]}〜{f["period"]["end"]}・{len(f["samples"])}件）',
+                  'notes':[f['basis']]}]
+        elif kind == 'cover':
             got=[{'layout':'cards','head':day,'sub':'日本人選手の成績','cards':[{'title':'今日の成績','body':f'{len(players)}人の日本人選手'}],'say':seg['text']}]
         elif kind == 'ranking':
             got=[{'layout':'cards','head':'今日の勝利貢献順位','ranking':seg['meta']['ranking'],

@@ -220,6 +220,7 @@ def fetch_context(player_id: str, groups: list, season: str, day: str) -> dict:
     """
     per_date: dict = {}
     team = None
+    game_ids=set()
     for group in groups:
         log = fetch_game_log(player_id, group, season)
         if not log:
@@ -229,20 +230,25 @@ def fetch_context(player_id: str, groups: list, season: str, day: str) -> dict:
         team = team or (log[-1].get("team") or {}).get("id")
         for s in log:
             d = s.get("date") or ""
+            if d==day and (s.get('game') or {}).get('gamePk'):
+                game_ids.add(str(s['game']['gamePk']))
             if not d or d >= day:
                 continue
             row = _row_from_split(s, group)
             if row:
                 per_date[d] = per_date.get(d, 0) + contribution(row)
 
+    import mlb_forecast
+    extra={'game_ids':sorted(game_ids)} if mlb_forecast.enabled() else {}
     if not per_date:
-        return {"team": team} if team else {}
+        return dict({'team':team} if team else {},**extra)
 
     scored = sorted(per_date.items())
     n = RECENT_GAMES_PITCHER if "pitching" in groups else RECENT_GAMES_BATTER
     recent = scored[-n:]
     return {
         "team": team,
+        **extra,
         "prev_score": scored[-1][1],
         "prev_date": scored[-1][0],
         "avg_score": round(sum(v for _, v in recent) / len(recent)),
@@ -474,6 +480,8 @@ def build(day: str = None, season: str = None) -> dict:
         for k in ("prev_score", "prev_date", "avg_score", "avg_games"):
             if ctx.get(k) is not None:
                 r[k] = ctx[k]
+        if 'game_ids' in ctx:
+            r['game_ids']=ctx['game_ids']
 
     # 打点が「どういう場面で入ったか」を足す。
     # 同じ3ランでも逆転と大差では試合への効き方が違うのに、
