@@ -92,6 +92,8 @@ def mix(audio, segments, durations, design, out_dir):
         previous_screen=(seg.get('meta') or {}).get('screen')
         start += dur
     bgm = sound_mix.bgm_path()
+    import fan_events
+    cues += fan_events.event_cues()
     if not bgm.exists():
         raise ValueError("案DのBGMがありません")
     print(f"[info] 案D: BGM {bgm.stem}・効果音{len(cues)}個")

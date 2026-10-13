@@ -622,6 +622,8 @@ def movie(program, audio_dir, out):
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
     durations = [max(3.0, float(a['duration']) + vc.SEGMENT_TAIL) for a in audio]
     track = vc.build_narration_track(audio, durations, out)
+    import fan_events
+    fan_events.prepare(program, audio, durations, out, fps=30)
     if not track:
         raise ValueError('音声を結合できません')
     v3=program['segments'][0]['meta']['card'].get('visual_style')=='v3'
@@ -636,6 +638,7 @@ def movie(program, audio_dir, out):
                         if at < duration)
             start+=duration
         bgm=sound_mix.bgm_path()
+        cues += fan_events.event_cues()
         if not bgm.exists():raise ValueError('v3のPSのBGMがありません')
         track=sound_mix.mix_file(track,out/'narration_mixed.wav',bgm_path=bgm,cues=cues)
         check.update(bgm=bgm.stem,sfx_count=len(cues))
