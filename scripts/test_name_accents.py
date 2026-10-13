@@ -19,8 +19,42 @@ class Accents(unittest.TestCase):
     def test_dictionary_confirmed_and_unverified_are_separate(self):
         rows=accents.entries();self.assertEqual(len(rows),60)
         confirmed=[r for r in rows if r['pattern']]
-        self.assertEqual([(r['name'],r['pattern']) for r in confirmed],[('鎌田大地','LHHHHH')])
-        self.assertEqual(len([r for r in rows if r['status']=='UNVERIFIED']),59)
+        self.assertEqual({r['name'] for r in confirmed},set(['ダルビッシュ有', 'ヌートバー', '上田綺世', '中村草太', '久保建英', '今井達也', '今永昇太', '伊藤敦樹', '伊藤洋輝', '佐々木朗希', '佐藤龍之介', '佐野海舟', '冨安健洋', '前田大然', '千賀滉大'])|{'鎌田大地'})
+        for row in confirmed:
+            self.assertEqual(row['pattern'],'L'+'H'*(common.mora_count(row['reading'])-1))
+            self.assertEqual(row['source'],'コレスポ 加藤さん10/12' if row['name']=='鎌田大地' else 'コレスポ 加藤さん10/13')
+        self.assertEqual(len([r for r in rows if r['status']=='UNVERIFIED']),44)
+
+    def test_all_confirmed_names_corrected_in_sentences_for_both_speakers(self):
+        for row in accents.entries():
+            if not row['pattern']:
+                continue
+            for speaker in (2,3):
+                for suffix in ('ガ','デス'):
+                    with self.subTest(name=row['name'],speaker=speaker,suffix=suffix):
+                        reading=row['reading']+suffix
+                        q=dict(accent_phrases=[phrase(reading,1)])
+                        original=copy.deepcopy(q)
+                        reply=Mock();reply.json.return_value=[phrase(reading,common.mora_count(reading))]
+                        with patch('requests.post',return_value=reply):
+                            result=guard.prepare_query(row['name']+('が' if suffix=='ガ' else 'です。'),q,speaker,'http://engine')
+                        self.assertEqual(q,original)
+                        self.assertEqual(accents.inspect(row['name'],result)[0]['status'],'PASS')
+
+    def test_pending_comparison_contains_both_voices_and_every_choice(self):
+        import preview_name_accents_pending as preview
+        rows=[]
+        for index,row in enumerate(accents.entries(),1):
+            if row['status']=='UNVERIFIED':
+                rows.append(dict(row,id=index,candidate_pattern='L'+'H'*(common.mora_count(row['reading'])-1),voices=[
+                    dict(speaker=s,actual='unknown',current_file=f'{index}-{s}-current.wav',candidate_file=f'{index}-{s}-flat.wav') for s in (2,3)]))
+        text=preview.render(rows)
+        self.assertEqual(text.count('<audio '),176)
+        self.assertEqual(text.count('type="radio"'),132)
+        self.assertIn('未確認44呼称',text)
+        self.assertIn('localStorage.setItem',text)
+        self.assertIn('unselected',text)
+        self.assertIn('name-accent-picks2.json',text)
 
     def test_shared_functions_handle_moras_and_flat_accent(self):
         self.assertEqual(common.mora_count('オオタニショウヘイ'),8)
@@ -52,10 +86,10 @@ class Accents(unittest.TestCase):
         self.assertEqual(result['accent_phrases'][1]['accent'],7)
 
     def test_unknown_names_not_replaced_or_passed_as_confirmed(self):
-        q=dict(accent_phrases=[phrase('ウエダアヤセデス',1)])
-        with patch('requests.post') as post:self.assertIs(guard.prepare_query('上田綺世です。',q,2,'http://engine'),q)
+        q=dict(accent_phrases=[phrase('ミトマカオルデス',1)])
+        with patch('requests.post') as post:self.assertIs(guard.prepare_query('三笘薫です。',q,2,'http://engine'),q)
         post.assert_not_called()
-        checked=guard.validate_query('上田綺世です。',q)
+        checked=guard.validate_query('三笘薫です。',q)
         self.assertEqual(checked['name_accents'][0]['status'],'UNVERIFIED')
 
     def test_english_alias_and_repeated_name_corrected(self):
