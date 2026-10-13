@@ -44,7 +44,8 @@ try:
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("localize")
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 STORE = "data/localized.json"
 
@@ -113,7 +114,7 @@ def translate(ai, title: str, description: str) -> tuple:
         "- URLはそのまま残す"
     )
     import backstage_guard
-    resp = backstage_guard.create(ai, label='localize_videos.py', category='localize', mode='whole', model=MODEL, max_tokens=1600,
+    resp = backstage_guard.create(ai, label='localize_videos.py', category='localize', mode='whole', **llm_models.params('localize', 1600),
                               messages=[{"role": "user", "content": prompt}])
     token_log.record("localize", MODEL, resp)
     if resp.stop_reason == "max_tokens":

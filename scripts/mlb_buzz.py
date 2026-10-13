@@ -53,7 +53,8 @@ OFFICIAL_CHANNEL_TITLE = "MLB"
 
 # ハイライトのタイトルは "Angels vs. Dodgers Game Highlights (8/9/26) | MLB Highlights"
 # のような形をしている。対戦カード部分だけを取り出す。
-TOPIC_MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+TOPIC_MODEL = llm_models.model("topic")
 
 MATCHUP_RE = re.compile(r"^(.+?)\s+Game Highlights", re.I)
 
@@ -684,7 +685,7 @@ def topic_jp(video: dict) -> str:
             return raw
         import backstage_guard
         resp = backstage_guard.create(client, label='mlb_buzz.py', category='topic', mode='whole',
-            model=TOPIC_MODEL, max_tokens=200,
+            **llm_models.params("topic", 200),
             messages=[{"role": "user", "content":
                        "次はMLB公式のハイライト動画の題です。"
                        "何が起きたかを日本語のひと言(30字以内)にしてください。"

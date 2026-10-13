@@ -60,7 +60,8 @@ try:
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("narration")
 # ショート動画(60秒以内)に収まる範囲で、情報量も確保する。
 # 1試合75文字前後 × 3試合 + 前後 で、1.3倍速で40秒前後になる。
 MAX_GAMES = 3
@@ -941,8 +942,7 @@ def narrate_game(client, game: dict, index: int, total: int) -> str:
     )
     import backstage_guard
     resp = backstage_guard.create(client, label='generate_narration.py', category='narration', mode='whole',
-        model=MODEL,
-        max_tokens=300,
+        **llm_models.params("narration", 300),
         messages=[{"role": "user", "content": prompt}],
     )
     token_log.record("narration", MODEL, resp)

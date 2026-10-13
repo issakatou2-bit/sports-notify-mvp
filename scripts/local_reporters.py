@@ -371,16 +371,16 @@ def translate(posts: list, api_key: str) -> list:
         if not token_log.allowed("reporters"):
             return posts
         import backstage_guard
+        import llm_models
         msg = backstage_guard.create(client, label='local_reporters.py', category='reporters', mode='lines',
-            model="claude-haiku-4-5-20251001",
-            max_tokens=1200,
+            **llm_models.params("translate", 1200),
             messages=[{"role": "user", "content": prompt}],
         )
-        token_log.record("reporters", "claude-haiku-4-5-20251001", msg)
+        token_log.record("reporters", llm_models.model("translate"), msg)
         if msg.stop_reason == "max_tokens":
             print("[warn] 翻訳が途中で切れたため使いません", file=sys.stderr)
             return posts
-        body = msg.content[0].text
+        body = "".join(b.text for b in msg.content if b.type == "text")
     except Exception as e:  # noqa: BLE001
         print(f"[warn] 翻訳に失敗しました: {e}", file=sys.stderr)
         return posts

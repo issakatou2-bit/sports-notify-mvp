@@ -54,7 +54,8 @@ try:
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("board")
 JST = timezone(timedelta(hours=9))
 
 # 見る人たち。
@@ -193,7 +194,7 @@ def ask(client, label: str, stance: str, material: str) -> str:
     )
     import backstage_guard
     resp = backstage_guard.create(client, label='review_board.py', category='review_board', mode='lines',
-        model=MODEL, max_tokens=500,
+        **llm_models.params("board", 500),
         messages=[{"role": "user", "content": prompt}],
     )
     token_log.record(f"review:{label}", MODEL, resp)

@@ -56,7 +56,8 @@ try:
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("translate")
 UA = {"User-Agent": "collespo/1.0 (+https://collespo.com)"}
 SOURCE = ("r/baseball", "https://www.reddit.com/r/baseball/.rss")
 
@@ -503,7 +504,7 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
         # 出力した分しか課金されないので、増やして困らない。
         # 4件の本文と、それぞれの返信3件まで。日本人選手の枠は
         # 別のやり取りにしてあるので、ここが混み合うことはない。
-        model=MODEL, max_tokens=6000,
+        **llm_models.params("translate", 6000),
         messages=[{"role": "user", "content": prompt}],
     )
     token_log.record("voices", MODEL, resp)
