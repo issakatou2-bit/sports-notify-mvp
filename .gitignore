@@ -24,3 +24,16 @@ data/sanity*.json
 !四国めたん立ち絵素材*.zip
 MLB煙雨レム/
 collespo-demo/
+
+# 非公開の運営メモ（手元は保持。試験材料は scripts/fixtures へ）
+/docs/*20??-??-??*
+/docs/Cloud/
+/docs/verification/
+/docs/audit-evidence/
+/docs/weekly/
+/docs/HANDOFF.md
+/docs/BACKLOG.md
+/docs/DECISIONS.md
+/docs/PLAN.md
+/docs/REVENUE_OPERATIONS.md
+!/docs/PUBLIC_CLEANUP_2026-10-14.md

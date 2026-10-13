@@ -12,7 +12,7 @@ import game_fact_guard as gg
 import soccer_venue as venue
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SAVED = json.loads((ROOT/'docs/verification/saved_dialogues_2026-10-12.json').read_text(encoding='utf-8'))
+SAVED = json.loads((ROOT/'scripts/fixtures/saved-output/dialogues.json').read_text(encoding='utf-8'))
 
 
 class SavedAudit(unittest.TestCase):
