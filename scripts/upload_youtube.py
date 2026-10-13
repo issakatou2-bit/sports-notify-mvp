@@ -2212,6 +2212,10 @@ def main():
             key, rec_kind = date_key, record_kind(
                 args.kind, args.morning_mode, args.sport)
             preview_binding=None
+            if rec_kind=='daily':
+                import mlb_forecast
+                if mlb_forecast.enabled():
+                    preview_binding=mlb_forecast.binding(_json_or_empty(args.narration))
             if rec_kind=='daily_soccer':
                 import soccer_preview_history
                 try:

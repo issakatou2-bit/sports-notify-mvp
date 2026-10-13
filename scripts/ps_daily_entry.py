@@ -39,6 +39,8 @@ def main():
                 ledger = ps.read('data/published_videos.json')
                 program = ps.prepare(snapshot, evidence, 'forecast', now, ledger)
             if program:
+                import mlb_forecast
+                program=mlb_forecast.decorate_program(program,evidence,now.isoformat(),ps.content_key)
                 ps.check_program(program)
                 ps.write(PROGRAM, program); ps.write(out, ps.script(program))
                 ps.write(STATUS, dict(state='v2', edition=program['edition_key']))

@@ -1483,6 +1483,13 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     if mode=='players':
         limit,grace=post_common.duration_budget('morning')
         result['duration_budget']={'limit':limit,'grace':grace}
+        import mlb_forecast
+        followup=mlb_forecast.answer(data)
+        if followup:
+            if result['segments']:
+                result['segments'][0]['text']=result['segments'][0]['text'].removeprefix('コレスポ。')
+            result['segments'].insert(0,followup)
+            bookend(result['segments'])
     return result
 
 
@@ -4555,7 +4562,13 @@ def main():
                     continue
                 if kind == "outro":
                     set_spoken("")
-                if kind == "intro":
+                if kind == 'forecast_check':
+                    import bignumber_render as bn
+                    f=meta['forecast'];unit='奪三振' if f['field']=='so' else '安打'
+                    im=bn.scene(k/FPS,{'layout':'cards','head':'昨夜の注目数字の結果',
+                        'label':narration.get('label',''),'cards':[{'title':f['name'],'body':f'期待 {f["threshold"]}{unit}以上 → 結果 {meta["actual"]}{unit}'}],
+                        'say':seg['text']})
+                elif kind == "intro":
                     im = render_intro(pp, meta, top,
                                      {"buzz": buzz,
                                       "voices": voices_data,

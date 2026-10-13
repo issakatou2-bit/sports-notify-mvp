@@ -21,6 +21,7 @@ env:
   SERIES_TITLE: ${{ vars.SERIES_TITLE }}
   COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
   COLLESPO_MLB_BADGE: ${{ vars.COLLESPO_MLB_BADGE || '' }}
+  COLLESPO_MLB_FORECAST: ${{ vars.COLLESPO_MLB_FORECAST || '' }}
   # v2 / hold / legacy. Old producer is retained; failed v2 never falls back.
   PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}
   COLLESPO_PS_DESIGN: ${{ vars.COLLESPO_PS_DESIGN || 'legacy' }}
@@ -414,6 +415,10 @@ jobs:
             --thumbnail build/video/short.png \
             --privacy public --publish-at "19:00"
 
+      - name: Save published MLB expectation
+        if: steps.sanity.outcome == 'success' && vars.COLLESPO_MLB_FORECAST == 'check'
+        run: python scripts/mlb_forecast.py --narration public/narration.json
+
       # 19時まで待って、通知とSNSを出す。
       #
       # このブロックは以前いちばん前にあった。通知を最速で届けるためだが、
@@ -558,7 +563,7 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "video record: ${{ github.run_id }}" \
-            data/published_videos.json data/bluesky_delivery.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json data/token_usage.json
+            data/published_videos.json data/bluesky_delivery.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json data/token_usage.json data/mlb_forecast_history.json
 
       - name: Save video as artifact
         if: always()

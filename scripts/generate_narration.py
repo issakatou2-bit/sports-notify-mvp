@@ -1033,6 +1033,7 @@ def main():
     #   画面側(generate_video.py)は notable_games.json をそのまま読むので、
     #   ここで並べ替えるだけだと読み上げと画面が別の試合を指す。
     #   元の位置を覚えて meta で渡す。
+    forecast_games=list(games)
     order = list(range(len(games)))
     at = hook.get("at")
     if isinstance(at, int) and 0 < at < len(games):
@@ -1160,10 +1161,13 @@ def main():
         "meta": {},
     })
 
+    import mlb_forecast
+    value=mlb_forecast.decorate({'date_label':date_label,'segments':segments},
+        forecast_games, data.get('generated_at') or __import__('datetime').datetime.now(mlb_forecast.JST).isoformat())
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", encoding="utf-8") as f:
-        json.dump({"date_label": date_label, "segments": segments}, f, ensure_ascii=False)
+        json.dump(value, f, ensure_ascii=False)
 
     total_chars = sum(len(s["text"]) for s in segments)
     print(f"[info] ナレーション原稿を生成しました({len(segments)}セグメント、"

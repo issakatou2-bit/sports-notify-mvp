@@ -606,7 +606,8 @@ def script(program):
     target=program.get('target_day',program['date_jst'])
     return dict(title=program['title'], date_jst=target,
                 date_label=datetime.fromisoformat(target).strftime('%m/%d'), segments=program['segments'],
-                source_url=program['source_url'], ps_program=program)
+                source_url=program['source_url'], ps_program=program,
+                **({'mlb_forecast':program['mlb_forecast']} if program.get('mlb_forecast') else {}))
 
 
 def movie(program, audio_dir, out):
