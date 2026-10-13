@@ -36,7 +36,8 @@ class NamePhrases(unittest.TestCase):
                               phrase('ショーヘー',pause),phrase('ウエダ'),phrase('アヤセデス')])
         before=copy.deepcopy(q)
         reply=Mock()
-        reply.json.return_value=[phrase('オータニショーヘー',pause),phrase('ウエダアヤセデス')]
+        ueda=phrase('ウエダアヤセデス');ueda['accent']=len(ueda['moras'])
+        reply.json.return_value=[phrase('オータニショーヘー',pause),ueda]
         with patch('requests.post',return_value=reply) as post:
             result=guard.prepare_query('今日、大谷翔平、上田綺世です。',q,3,'http://engine')
         self.assertEqual(q,before)
@@ -53,6 +54,7 @@ class NamePhrases(unittest.TestCase):
 
     def test_valid_phrase_does_not_call_engine(self):
         q=dict(accent_phrases=[phrase('ウエダアヤセデス',dict(text='。'))])
+        q['accent_phrases'][0]['accent']=len(q['accent_phrases'][0]['moras'])
         with patch('requests.post') as post:
             self.assertIs(guard.prepare_query('上田綺世です。',q,2,'http://engine'),q)
         post.assert_not_called()

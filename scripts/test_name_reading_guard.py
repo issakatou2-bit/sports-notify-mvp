@@ -15,7 +15,9 @@ import notability_engine as ne
 
 
 def query(kana):
-    return {'accent_phrases':[{'moras':[{'text':c} for c in kana]}]}
+    import voice_accent_common as common
+    moras=[{'text':c} for c in common.moras(kana)]
+    return {'accent_phrases':[{'moras':moras,'accent':len(moras)}]}
 
 
 class Readings(unittest.TestCase):
