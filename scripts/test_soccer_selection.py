@@ -1,4 +1,8 @@
 import os
+import copy
+import json
+from datetime import date
+from urllib.error import HTTPError
 from pathlib import Path
 import sys
 import unittest
@@ -83,6 +87,56 @@ class Tests(unittest.TestCase):
         self.assertEqual(data['games'][0]['phase'],'knockout');self.assertTrue(ne.is_soccer_league(comp['name']))
         self.assertEqual(len(extra.supplement(data,{'EL':{'events':[event]}})['games']),1)
         self.assertTrue(extra.supplement(material([]),{'EL':ValueError('bad')})['source_errors'])
+
+    def test_single_day_fetch_deduplicates_and_never_masks_partial_failure(self):
+        comp=next(c for c in select.competitions() if c['code']=='PL')
+        event={'id':'42'}
+        with patch.object(extra.results,'fetch_json',return_value={'events':[event]}) as fetch:
+            self.assertEqual(extra.fetch_board(comp,date(2026,10,13)),{'events':[event]})
+            self.assertEqual([c.args[0].split('dates=')[1] for c in fetch.call_args_list],['20261013&limit=100','20261014&limit=100'])
+        error=HTTPError('https://example.invalid',400,'Bad Request',None,None)
+        with patch.object(extra.results,'fetch_json',side_effect=[{'events':[]},error]):
+            with self.assertRaises(HTTPError):extra.fetch_board(comp,date(2026,10,13))
+        failed=extra.supplement(material([]),{'PL':error})
+        self.assertEqual(failed['fixture_coverage'][0]['status'],'failed')
+        self.assertIn('HTTP 400',failed['source_errors'][0]['reason'])
+        empty=extra.supplement(material([]),{'PL':{'events':[]}})
+        self.assertEqual(empty['fixture_coverage'][0]['status'],'no_games')
+        self.assertEqual(empty['fixture_coverage'][0]['label'],'試合なし')
+        self.assertFalse(empty['source_errors'])
+        stale=dict(material([]),source_errors=[{'competition':'PL','reason':'old'},{'competition':'EL','reason':'keep'}])
+        refreshed=extra.supplement(stale,{'PL':{'events':[]}})
+        self.assertEqual(refreshed['source_errors'],[{'competition':'EL','reason':'keep'}])
+        malformed=extra.supplement(material([]),{'PL':{}})
+        self.assertEqual(malformed['fixture_coverage'][0]['status'],'failed')
+
+    def test_source_text_survives_windows_encoding(self):
+        for name in ('soccer_v5_cards.py','soccer_extra_fixtures.py','test_soccer_selection.py'):
+            source=(select.ROOT/'scripts'/name).read_text(encoding='utf8')
+            self.assertNotIn('?'*3,source,name)
+            self.assertNotIn('\ufffd',source,name)
+
+    def test_tonight_selected_two_games_render_every_screen_and_clubs_in_reasons(self):
+        import soccer_v5_cards as cards
+        import review_render_v3 as r3
+        source=json.loads((select.ROOT/'scripts/fixtures/soccer-interest/saved-preview-20261013.json').read_text(encoding='utf8'))
+        data=select.select(source,availability={})
+        self.assertEqual(data['preview_selection']['selected_ids'],['575345','575346'])
+        plan=slots.program('preview',data)
+        self.addCleanup(r3.set_caption,'',0,0);self.addCleanup(r3.set_program_clock,None)
+        for seg in plan['narration']['segments']:
+            for t in (0,.35,1.5,3):
+                r3.set_caption(seg['text'],12,40,speaker=2,hide_caption=seg['kind']=='outro')
+                r3.set_program_clock(t)
+                im=slots.frame(t,seg,plan)
+                self.assertFalse(slots.check_frame(im,plan))
+        seg=copy.deepcopy(plan['narration']['segments'][1])
+        seg['meta']['interest']['reasons']=[{'text':'アトレティコ・マドリードの注目試合'}]
+        im=slots.frame(3,seg,plan)
+        self.assertFalse(slots.check_frame(im,plan))
+        self.assertTrue(any(b['inline'] and b['club_id']==plan['clubs']['アトレティコ・マドリード']['team_en'] for b in im.info['v4_badges']))
+        with self.assertRaisesRegex(ValueError,'クラブ名は札'):
+            cards.text(im,100,100,'アトレティコ・マドリードの注目試合')
 
     def test_health_uses_same_selection_and_skip_is_excluded(self):
         for rows,want in (([game()],(1,0)),([],(0,1)),([game(home='Unknown FC')],(1,0))):
