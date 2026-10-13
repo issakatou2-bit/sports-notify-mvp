@@ -36,7 +36,7 @@ jobs:
   build_and_notify:
     runs-on: ubuntu-latest
     outputs:
-      standings_ready: ${{ steps.standings.outcome == 'success' && steps.archive.outcome == 'success' }}
+      standings_ready: ${{ steps.standings.outcome == 'success' && steps.archive.outcome == 'success' && steps.site_analytics.outcome == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -345,8 +345,14 @@ jobs:
             python scripts/refresh_podcast_metadata.py --feed public/podcast/feed.xml
           fi
 
+      - name: Configure cookie-free site analytics
+        id: site_analytics
+        if: steps.archive.outcome == 'success'
+        continue-on-error: true
+        run: python scripts/site_analytics.py --site public
+
       - name: Upload Pages artifact
-        if: steps.standings.outcome == 'success' && steps.archive.outcome == 'success'
+        if: steps.standings.outcome == 'success' && steps.archive.outcome == 'success' && steps.site_analytics.outcome == 'success'
         # サイトが1日古くなるより、動画が出ない方が痛い。
         # 動画の生成はこれらより後ろに並んでいる。
         continue-on-error: true
