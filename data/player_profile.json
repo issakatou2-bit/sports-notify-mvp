@@ -1,31 +1,36 @@
 {
-  "generated_at": "2026-10-12T06:00:56.428562+00:00",
-  "date_jst": "2026-10-12",
-  "name": "Brice Turang",
-  "player_id": "668930",
+  "generated_at": "2026-10-13T06:01:04.423485+00:00",
+  "date_jst": "2026-10-13",
+  "name": "William Contreras",
+  "player_id": "661388",
   "team": "ブリュワーズ",
   "group": "hitting",
-  "why": "2026-10-12のMLBで最も活躍",
-  "headline": "2打数1安打　1本塁打　1打点　1四球",
-  "score": 98,
+  "why": "2026-10-13のMLBで最も活躍",
+  "headline": "4打数3安打　1本塁打　3打点　1四球",
+  "score": 133,
   "bio": {
-    "name_en": "Brice Turang",
-    "age": 26,
-    "birth_city": "Corona",
-    "birth_state": "CA",
-    "birth_country": "USA",
-    "birth_date": "1999-11-21",
-    "debut": "2023-03-30",
-    "draft_year": 2018,
-    "bats": "Left",
+    "name_en": "William Contreras",
+    "age": 28,
+    "birth_city": "Puerto Cabello",
+    "birth_state": null,
+    "birth_country": "Venezuela",
+    "birth_date": "1997-12-24",
+    "debut": "2020-07-24",
+    "draft_year": null,
+    "bats": "Right",
     "throws": "Right",
-    "number": "2",
-    "position": "Second Base",
+    "number": "24",
+    "position": "Catcher",
     "nickname": null,
-    "height": "6' 0\"",
-    "weight": 190
+    "height": "5' 10\"",
+    "weight": 217
   },
   "teams": [
+    {
+      "team": "ブレーブス",
+      "from": 2020,
+      "to": 2022
+    },
     {
       "team": "ブリュワーズ",
       "from": 2023,
@@ -33,79 +38,79 @@
     }
   ],
   "career": {
-    "games": 599,
-    "avg": ".260",
-    "hr": 52,
-    "rbi": 272,
-    "ops": ".727",
-    "sb": 119,
-    "hits": 554
+    "games": 746,
+    "avg": ".272",
+    "hr": 103,
+    "rbi": 409,
+    "ops": ".796",
+    "sb": 24,
+    "hits": 755
   },
   "this_season": {
-    "games": 151,
-    "avg": ".268",
-    "hr": 21,
-    "rbi": 100,
-    "ops": ".816",
-    "sb": 19,
-    "hits": 156
+    "games": 147,
+    "avg": ".270",
+    "hr": 18,
+    "rbi": 94,
+    "ops": ".758",
+    "sb": 1,
+    "hits": 153
   },
   "last_season": {
-    "games": 156,
-    "avg": ".288",
-    "hr": 18,
-    "rbi": 81,
-    "ops": ".794",
-    "sb": 24,
-    "hits": 168
+    "games": 150,
+    "avg": ".260",
+    "hr": 17,
+    "rbi": 76,
+    "ops": ".754",
+    "sb": 6,
+    "hits": 147
   },
   "recent": [
     {
-      "date": "2026-09-27",
-      "line": "4打数1安打 1打点",
-      "opponent": "St. Louis Cardinals"
-    },
-    {
       "date": "2026-09-26",
-      "line": "3打数1安打 1本塁打 2打点",
+      "line": "3打数1安打",
       "opponent": "St. Louis Cardinals"
     },
     {
       "date": "2026-09-25",
-      "line": "5打数3安打 3打点",
+      "line": "5打数1安打 1打点",
       "opponent": "St. Louis Cardinals"
     },
     {
       "date": "2026-09-24",
-      "line": "5打数1安打",
+      "line": "2打数0安打",
       "opponent": "Philadelphia Phillies"
     },
     {
       "date": "2026-09-23",
-      "line": "4打数2安打 1本塁打 1打点",
+      "line": "4打数1安打 2打点",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-22",
+      "line": "3打数1安打 3打点",
       "opponent": "Philadelphia Phillies"
     }
   ],
   "awards": [
     {
-      "season": "2025",
-      "name": "Brewers MVP"
+      "season": "2026",
+      "name": "NL All-Star"
     },
     {
       "season": "2025",
-      "name": "NL Player of the Month"
+      "name": "NL Player of the Week"
     },
     {
       "season": "2024",
-      "name": "Rawlings NL Gold Glove"
+      "name": "NL Silver Slugger"
     },
     {
-      "season": "2022",
-      "name": "MiLB.com Organization All-Star"
+      "season": "2024",
+      "name": "Brewers MVP"
     },
     {
-      "season": "2019",
-      "name": "MID Mid-Season All-Star"
+      "season": "2024",
+      "name": "NL All-Star"
     }
   ],
   "quotes": []
