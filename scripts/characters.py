@@ -8,6 +8,7 @@
 """
 import functools
 import math
+import os
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 
@@ -94,6 +95,9 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
     for who in cast:
         active = who == speaker
         mood = zunda_face(line) if who == "zundamon" else r3.face_for(line, elapsed, duration)
+        fan = fan_mood(line) if active else None
+        if fan:
+            mood = fan[0]
         if mood == "talk":
             mood = "base"
         face = ("talk" if (mouth and mood == "base") else mood) if active else "base"
@@ -113,10 +117,95 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
         # 吹き出しの枠に重なる下の端は描き直さない（吹き出しが上に来るように）
         cut = art.height if bottom != BUST_BOTTOM else max(1, BUBBLE[1] - y)
         layer.append(dict(who=who, face=face, height=BUST_ACTIVE if active else BUST_IDLE, dim=not active, at=[x, y], cut=cut))
+    active_box = next((r["box"] for r in records if r["active"]), None)
+    fan = fan_mood(line)
+    if fan and active_box:
+        fan_effect(im, fan[1], active_box, elapsed)
+        im.info["fan_expr"] = dict(face=fan[0], effect=fan[1], reason=fan[2], line=line)
     im.info["duo_portraits"] = records
     im.info["duo_layer"] = layer      # 札の演出（video_common.short_effects）のあとに描き直す
     return records
 
+
+
+# ------------------------------------------------------------------ 日本人選手寄りの表情（COLLESPO_EXPR=fan）
+# 本人 10/12「通常は普通でいい。日本人選手寄りの表情変化が欲しい。山本の先発の時はキラキラしたり」。
+# 日本人選手の名前が出る台詞だけに感情を乗せる（ほかの話題は今までどおり）。理由はその台詞の中の言葉。
+# 目や顔の絵は描き換えない（10/9 本人 NG）。キラキラ・汗は顔の外に重ねる効果としてコードで描く。
+# ジト目は使わない（10/8 本人 NG）。jitome は困り眉の組み合わせ。
+EXPR = os.environ.get("COLLESPO_EXPR", "")
+FAN_RULES = (  # 上から順に見る。(表情, 効果, 言葉)
+    ("surprise", "burst", ("自己最多", "初めて", "初の", "新記録", "記録を")),
+    ("pose-smile", "sparkle", ("本塁打", "ホームラン", "勝ち投手", "完封", "好投", "無失点", "適時打", "決勝打",
+                               "白星", "セーブ", "ゴール", "得点を", "アシスト", "マルチ安打", "猛打賞")),
+    ("jitome", "sweat", ("無安打", "0安打", "敗戦投手", "黒星", "降板", "失点", "敗れ", "敗退", "出場なし")),
+    ("smile", "sparkle", ("先発", "登板予定", "出場予定", "スタメン", "期待")),
+)
+
+
+@functools.lru_cache(maxsize=1)
+def fan_names():
+    """日本人選手の呼び方（フルネームと新聞の名字）。名簿は notability_engine と press_names の1か所から。"""
+    names = set()
+    try:
+        import press_names
+        for full, short in press_names.SURNAME.items():
+            names.update((full, short))
+    except Exception:
+        pass
+    try:
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+        import notability_engine as ne
+        names.update(p["name_jp"] for p in ne.JP_PLAYERS_MLB if p.get("name_jp"))
+    except Exception:
+        pass
+    return tuple(sorted((n for n in names if len(n) >= 2), key=len, reverse=True))
+
+
+def fan_mood(line):
+    """(表情, 効果, 理由) か None。COLLESPO_EXPR=fan のときだけ。日本人選手の名前が無い台詞は None。"""
+    if EXPR != "fan" or not line:
+        return None
+    text = str(line)
+    who = next((n for n in fan_names() if n in text), None)
+    if not who:
+        return None
+    for face, effect, words in FAN_RULES:
+        hit = next((w for w in words if w in text), None)
+        if hit:
+            return face, effect, f"{who}・{hit}"
+    return None
+
+
+def _star(draw, cx, cy, r, fill):
+    k = r * 0.28
+    draw.polygon([(cx, cy - r), (cx + k, cy - k), (cx + r, cy), (cx + k, cy + k),
+                  (cx, cy + r), (cx - k, cy + k), (cx - r, cy), (cx - k, cy - k)], fill=fill)
+
+
+def fan_effect(im, effect, box, elapsed):
+    """立ち絵の頭のまわりに、小さな効果を重ねる（顔そのものは描き換えない）。"""
+    x0, y0, x1, _ = box
+    w = x1 - x0
+    layer = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    if effect in ("sparkle", "burst"):
+        spots = ((0.10, 0.10, 26), (0.86, 0.06, 20), (0.95, 0.30, 14), (0.02, 0.34, 16))
+        if effect == "burst":
+            spots += ((0.50, -0.02, 30), (0.70, 0.18, 18), (0.26, 0.20, 18))
+        for i, (fx, fy, r) in enumerate(spots):
+            pulse = 0.55 + 0.45 * math.sin(elapsed * math.pi * 2 / 0.9 + i * 1.7)
+            a = int(255 * max(0.0, pulse))
+            _star(d, x0 + fx * w, y0 + fy * w, r * (0.8 + 0.3 * pulse), (255, 236, 150, a))
+            _star(d, x0 + fx * w, y0 + fy * w, r * 0.45, (255, 255, 255, a))
+    elif effect == "sweat":
+        cx, cy = x0 + 0.86 * w, y0 + 0.16 * w + 6 * math.sin(elapsed * math.pi * 2 / 1.4)
+        d.ellipse((cx - 11, cy, cx + 11, cy + 24), fill=(140, 200, 255, 230))
+        d.polygon([(cx - 10, cy + 8), (cx + 10, cy + 8), (cx, cy - 16)], fill=(140, 200, 255, 230))
+        d.ellipse((cx - 4, cy + 8, cx + 2, cy + 15), fill=(255, 255, 255, 220))
+    im.alpha_composite(layer) if im.mode == "RGBA" else im.paste(layer, (0, 0), layer)
 
 def bubble(im, speaker, text):
     """横いっぱいの吹き出し（白地・話者の色の枠・名前の札）。数字は濃い金色。3行まで、入らなければ字を小さく。"""
