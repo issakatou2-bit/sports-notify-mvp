@@ -172,6 +172,9 @@ jobs:
       - name: Preserve published corrections
         run: python scripts/apply_content_corrections.py --site public
 
+      - name: Configure cookie-free site analytics
+        run: python scripts/site_analytics.py --site public
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
