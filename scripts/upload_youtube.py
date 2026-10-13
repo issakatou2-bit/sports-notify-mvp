@@ -1397,7 +1397,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 日付は「更新した日」。付けないと試合の日に読める
         # （9/22の回の試合は米国9/20、日本9/21だった）。
         tail = (f"｜返信{n}件ついたコメント {date_label}更新 #Shorts" if n else
-                f"｜{date_label}更新 最も見られたハイライトのコメント欄 #Shorts")
+                f"｜{date_label}更新 MLB公式ハイライトのコメント欄 #Shorts")
         # コメントで名前が挙がった日本人選手がいれば、先頭へ。
         # 所属しているだけの日は出さない(voiced_japanese の説明を参照)。
         who = "・".join(voiced_japanese()[:2])
@@ -1408,7 +1408,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         elif card:
             title = f"【MLB】{card} 現地のファンは何と言ったか{tail}"
         else:
-            title = f"【MLB】現地で最も見られた試合のコメント欄{tail}"
+            # 試合名が取れない日の予備。「現地で最も見られた」は集めた範囲の1位を言い過ぎる
+            # （説明文の決まりと同じ。10/13 にこの予備の題で出て、説明文の検査が落ちた）。
+            title = f"【MLB】MLB公式ハイライト 現地のファンは何と言ったか{tail}"
     elif kind == "morning" and morning_mode == "press":
         # 言葉の回。数字の回(local)と主題を分けてあるので、
         # タイトルでも「誰が何と言ったか」を前に出す。

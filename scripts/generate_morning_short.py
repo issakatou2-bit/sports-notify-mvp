@@ -1153,7 +1153,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         teased = False
         segments = [{
             "kind": "intro",
-            "text": f"{lead}現地で最も見られた試合のコメント欄です。",
+            "text": f"{lead}MLB公式ハイライトで再生がいちばん多かった試合のコメント欄です。",
             "meta": {"date": day_iso, "count": len(players), "local": True,
                      "mode": mode,
                      # 冒頭で読んだコメントは、本編でもう一度読まない
@@ -1166,7 +1166,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         buzz = data.get("buzz") or []
         head = ""
         if buzz:
-            head = f"現地で最も見られたのは{yomi_stats(buzz_label(buzz[0]))}。"
+            head = f"公式ハイライトで再生がいちばん多かったのは{yomi_stats(buzz_label(buzz[0]))}。"
         segments = [{
             "kind": "intro",
             "text": f"{head}{day}、現地での注目度をまとめました。",
@@ -1281,7 +1281,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     buzz = (data.get("buzz") or []) if want_local else []
     if buzz:
         top = buzz[0]
-        parts = ["現地で最も見られた試合です。",
+        parts = ["公式ハイライトで再生がいちばん多かった試合です。",
                  f"MLB公式のハイライトで、{yomi_stats(buzz_label(top))}が"
                  f"{_yomi_views(top['views'])}再生でした。"]
         # 誰が目立った試合なのかまで言う。数字だけだと、
@@ -3514,7 +3514,7 @@ def render_buzz(p, buzz, picks=None):
     """
     im, d = base(p)
     d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
-    d.text((70, 200), "現地で最も見られた試合", font=font(60), fill=ACCENT)
+    d.text((70, 200), "再生が最も多かった試合", font=font(60), fill=ACCENT)
     d.text((74, 282), "MLB公式ハイライトの再生回数", font=font(32), fill=DIM)
 
     picks = picks or []
