@@ -99,11 +99,11 @@ class HubTests(unittest.TestCase):
             result=reddit.collect([], 'Shohei Ohtani', NOW.isoformat(),now=NOW,get=lambda *a,**k:self.fail('通信した'))
             hub=build([row(text)],reddit=result);self.assertEqual(result['state'],'off');self.assertTrue(h.active(hub,now=NOW))
         result=reddit.collect([], 'Shohei Ohtani', NOW.isoformat(),now=NOW,get=lambda *a,**k:self.fail('通信した'))
-        self.assertEqual(result['state'],'approval_required')
+        self.assertEqual(result['state'],'rss_only')
         def fail(*a,**k):raise ConnectionError('offline')
         with patch.dict(os.environ,{'REDDIT_OAUTH_TOKEN':'test-placeholder'}):
             result=reddit.collect(['https://www.reddit.com/r/baseball/comments/test/game'], 'Shohei Ohtani', NOW.isoformat(),now=NOW,get=fail,approved=True)
-        self.assertEqual(result['state'],'failed');self.assertTrue(h.active(build([row(text)],reddit=result),now=NOW))
+        self.assertEqual(result['state'],'rss_only');self.assertTrue(h.active(build([row(text)],reddit=result),now=NOW))
 
     def test_reddit_small_high_score_and_no_author(self):
         payload=[{},dict(data=dict(children=[dict(kind='t1',data=dict(body='Ohtani should bounce back',author='hidden',score=i,created_utc=NOW.timestamp())) for i in range(10)]))]

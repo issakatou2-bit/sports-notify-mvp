@@ -535,6 +535,10 @@ def test_real_sdk_request_shape_with_mock_http(tmp_path):
 
 
 if __name__ == "__main__":
+    import tempfile
+
     (HERE.parent / "build").mkdir(parents=True, exist_ok=True)
-    raise SystemExit(pytest.main([__file__, "-q", "--tb=short", "--basetemp",
-                                 str(HERE.parent / "build/batch-test-20261007")]))
+    with tempfile.TemporaryDirectory(prefix="batch-test-", dir=HERE.parent / "build") as scratch:
+        result = pytest.main([__file__, "-q", "--tb=short", "-p", "no:cacheprovider",
+                              "--basetemp", str(pathlib.Path(scratch) / "pytest")])
+    raise SystemExit(result)

@@ -206,16 +206,21 @@ def official_stats(material):
 
 
 def fan_rows(material, reddit=False):
-    if reddit and os.environ.get('COLLESPO_REDDIT') == 'off': return []
+    if reddit and os.environ.get('COLLESPO_REDDIT') != 'on': return []
     out = []
     for row in material.get('voices') or []:
         text = row.get('ja') or row.get('original') or row.get('title') or ''
-        if not text or len(text) > 100 or not row.get('url') or '@' in text: continue
-        for p in PLAYERS:
-            if not story.player_match(row, p): continue
+        if not text or len(text) > (140 if reddit else 100) or not row.get('url') or '@' in text: continue
+        targets=[p for p in PLAYERS if story.player_match(row,p)]
+        if reddit and not targets:
+            u=urlsplit(row.get('url') or '')
+            if u.scheme=='https' and u.hostname in ('reddit.com','www.reddit.com') and '/comments/' in u.path:
+                targets=[dict(name_en='reddit:'+row['url'],name_jp='Redditの試合スレッド',sport=row.get('sport','MLB'))]
+        for p in targets:
             item = base(row, material, 'fan', p, 'fan')
             original = row.get('original') or row.get('title') or text
             item.update(original=original, translated=row.get('ja'), display_text=text,
+                        subject_type='thread' if p['name_en'].startswith('reddit:') else 'player',
                         language='ja' if re.search(r'[ぁ-んァ-ン一-龯]', original) else 'other',
                         source='Redditの試合スレッド' if reddit else row.get('source') or '公式ハイライトのコメント',
                         platform='reddit' if reddit else 'youtube', translation_note=FAN_NOTE)
@@ -370,7 +375,7 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__)
     for name in ('reporters','buzz','voices'):
         ap.add_argument('--'+name,default='data/local_'+('reporters' if name=='reporters' else 'buzz' if name=='buzz' else 'voices')+'.json')
-    ap.add_argument('--official'); ap.add_argument('--reddit'); ap.add_argument('--history')
+    ap.add_argument('--official'); ap.add_argument('--reddit',default='data/reddit_voices.json'); ap.add_argument('--history')
     ap.add_argument('--as-of'); ap.add_argument('--out',default='data/topic_hub.json')
     args=ap.parse_args()
     if not enabled(): print('話題の集め所は既定オフです'); return

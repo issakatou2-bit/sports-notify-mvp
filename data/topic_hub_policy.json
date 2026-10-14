@@ -3,14 +3,59 @@
   "official_accounts": [],
   "note": "集め所は既存保存出力を読む。公開ページであることは自動取得や再配布の許可を意味しない。未確認の経路をライブ取得しない。",
   "channels": {
-    "mlb_stats": {"input": "保存boxscore/schedule/transactions", "live": "separate_permission_review", "terms": "https://www.mlb.com/official-information/terms-of-use", "docs": "https://docs.statsapi.mlb.com/"},
-    "official_news": {"input": "保存した球団press-release。通常の記事は報道", "live": "separate_permission_review", "terms": "https://www.mlb.com/official-information/terms-of-use"},
-    "bluesky": {"input": "local_reportersの確認済み記者名簿。公式アカウントは個別確認後", "live": "existing_api_only_rate_limited", "terms": "https://bsky.social/about/support/tos", "docs": "https://bsky.network/docs/advanced-guides/rate-limits/"},
-    "newspapers": {"input": "既存のRSS見出し・URL。本文/コメントの新規取得なし", "live": "publisher_permission_review", "terms": "https://policies.google.com/terms", "note": "GoogleのRSSが取得できても掲載元の再利用許可を保証しない。媒体個別条件未確認はライブ対象へ足さない。"},
-    "football_data": {"input": "現行取得元の保存出力", "live": "existing_api_contract_only", "terms": "https://www.football-data.org/client/register", "docs": "https://www.football-data.org/documentation/faq", "note": "契約プラン・回数制限・出典表示を守る。第三者提供元をリーグの公式発表とは呼ばない。"},
-    "espn_soccer": {"input": "現行取得元の保存出力。リーグ公式扱いにしない", "live": "separate_permission_review", "terms": "https://support.espn.com/hc/en-us/sections/360007128391-LEGAL"},
-    "youtube": {"input": "local_voicesの公式ハイライトコメント", "live": "existing_data_api_only", "terms": "https://developers.google.com/youtube/terms/developer-policies", "note": "APIのみ。スクレイピングなし。APIデータは30日以内に更新/削除、削除要求を尊重する。短い匿名引用のみ。"},
-    "reddit": {"input": "保存した少数コメント。ユーザー名を保持しない", "live": "approval_required", "terms": "https://support.reddithelp.com/hc/en-us/articles/42728983564564-Responsible-Builder-Policy", "api_terms": "https://redditinc.com/policies/data-api-terms", "note": "API事前承認が必要。申し込まない方針のため今回追加するライブ取得は動かさない。COLLESPO_REDDIT=offで保存コメントも停止。"},
-    "forbidden": {"input": [], "live": "forbidden", "note": "Yahooコメント・5ch・Xの非公式大量取得。禁止/制限をRSSや別URLで回避しない。"}
+    "mlb_stats": {
+      "input": "保存boxscore/schedule/transactions",
+      "live": "separate_permission_review",
+      "terms": "https://www.mlb.com/official-information/terms-of-use",
+      "docs": "https://docs.statsapi.mlb.com/"
+    },
+    "official_news": {
+      "input": "保存した球団press-release。通常の記事は報道",
+      "live": "separate_permission_review",
+      "terms": "https://www.mlb.com/official-information/terms-of-use"
+    },
+    "bluesky": {
+      "input": "local_reportersの確認済み記者名簿。公式アカウントは個別確認後",
+      "live": "existing_api_only_rate_limited",
+      "terms": "https://bsky.social/about/support/tos",
+      "docs": "https://bsky.network/docs/advanced-guides/rate-limits/"
+    },
+    "newspapers": {
+      "input": "既存のRSS見出し・URL。本文/コメントの新規取得なし",
+      "live": "publisher_permission_review",
+      "terms": "https://policies.google.com/terms",
+      "note": "GoogleのRSSが取得できても掲載元の再利用許可を保証しない。媒体個別条件未確認はライブ対象へ足さない。"
+    },
+    "football_data": {
+      "input": "現行取得元の保存出力",
+      "live": "existing_api_contract_only",
+      "terms": "https://www.football-data.org/client/register",
+      "docs": "https://www.football-data.org/documentation/faq",
+      "note": "契約プラン・回数制限・出典表示を守る。第三者提供元をリーグの公式発表とは呼ばない。"
+    },
+    "espn_soccer": {
+      "input": "現行取得元の保存出力。リーグ公式扱いにしない",
+      "live": "separate_permission_review",
+      "terms": "https://support.espn.com/hc/en-us/sections/360007128391-LEGAL"
+    },
+    "youtube": {
+      "input": "local_voicesの公式ハイライトコメント",
+      "live": "existing_data_api_only",
+      "terms": "https://developers.google.com/youtube/terms/developer-policies",
+      "note": "APIのみ。スクレイピングなし。APIデータは30日以内に更新/削除、削除要求を尊重する。短い匿名引用のみ。"
+    },
+    "reddit": {
+      "input": "保存した少数コメント。ユーザー名を保持しない",
+      "live": "public_rss_opt_in",
+      "terms": "https://support.reddithelp.com/hc/en-us/articles/42728983564564-Responsible-Builder-Policy",
+      "api_terms": "https://redditinc.com/policies/data-api-terms",
+      "note": "本人10/14の明示判断に従い公開RSSだけをCOLLESPO_REDDIT=onで取得。未収益化・広告収入なしは本人申告。収益化開始時に商用の決まりを見直す。APIの許可条件とRSSの利用判断を同一視しない。1時間3回まで・10秒間隔・試合前2時間〜開始後6時間・429で日本時間の当日停止。",
+      "rss_only": true
+    },
+    "forbidden": {
+      "input": [],
+      "live": "forbidden",
+      "note": "Yahooコメント・5ch・Xの非公式大量取得。禁止/制限をRSSや別URLで回避しない。"
+    }
   }
 }
