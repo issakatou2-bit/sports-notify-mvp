@@ -133,7 +133,7 @@ class StoryTests(unittest.TestCase):
         r.r3.set_program_clock(1)
         for each in narr['segments']:
             im = r.frame(1, each, narr); r.verify_frame(im)
-        self.assertEqual(im.info['fan_expr']['face'], 'jitome')
+        self.assertEqual(im.info['fan_expr']['face'], 'sad')
         self.assertTrue(all(Path(p).is_relative_to(s.ROOT/'assets/fonts') and Path(p).is_file()
                             for p in r.brand.FONT_CANDIDATES['jp']))
         r.fan_events.TRACK.clear(); r.r3.set_program_clock(None)

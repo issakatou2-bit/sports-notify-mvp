@@ -24,9 +24,9 @@ class FanTest(unittest.TestCase):
             p=dict(name='山本由伸',type='pitcher',hits=0,ip='7.0',er=1,wins=1,losses=0,so=10)
             self.assertEqual(f.decision('山本由伸は無安打だった。',dict(players=[p]))['face'],'pose-smile')
             p.update(wins=0,losses=1)
-            self.assertEqual(f.decision('山本由伸が好投した。',dict(players=[p]))['face'],'jitome')
+            self.assertEqual(f.decision('山本由伸が好投した。',dict(players=[p]))['face'],'sad')
             p=dict(name='大谷翔平',type='batter',ab=4,hits=0,hr=0)
-            self.assertEqual(f.decision('大谷は勝ちました。',dict(players=[p]))['face'],'jitome')
+            self.assertEqual(f.decision('大谷は勝ちました。',dict(players=[p]))['face'],'sad')
 
     def test_fallback_and_cue_and_number_window(self):
         with tempfile.TemporaryDirectory() as td, patch.dict(os.environ,COLLESPO_EXPR='fan'):

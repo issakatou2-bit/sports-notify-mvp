@@ -17,7 +17,7 @@ RULES = {'window_games': 5, 'min_games': 3, 'min_ab': 12,
          'avg_gap': .120, 'hitless_games': 3, 'multi_hit_games': 3,
          'min_pitching_outs': 27, 'era_gap': 2.0,
          'max_material_hours': 48, 'max_story_seconds': 60,
-         'down': {'closing': '早く調子を取り戻してほしいですね。', 'face': 'jitome', 'effect': 'sweat'},
+         'down': {'closing': '早く調子を取り戻してほしいですね。', 'face': 'sad', 'effect': None},
          'up': {'closing': 'この調子が続くか注目です。', 'face': 'pose-smile', 'effect': 'sparkle'},
          'neutral': {'closing': '引き続き応援していきたいですね。', 'face': 'base', 'effect': 'none'}}
 
