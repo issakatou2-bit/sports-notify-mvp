@@ -54,6 +54,12 @@ jobs:
           if [ "$GITHUB_EVENT_NAME" = schedule ]; then args+=(--scheduled); fi
           if [ -n "$RESULT_DAY" ]; then args=(--date "$RESULT_DAY"); fi
           python scripts/soccer_results.py "${args[@]}" --out data/soccer_results.json
+      - name: Optional TheSportsDB score second opinion
+        if: vars.COLLESPO_THESPORTSDB_CHECK == 'on'
+        continue-on-error: true
+        env:
+          COLLESPO_THESPORTSDB_CHECK: ${{ vars.COLLESPO_THESPORTSDB_CHECK }}
+        run: python scripts/thesportsdb_check.py
       - name: Stop when neither preview results nor player results exist
         id: gate
         run: |
