@@ -273,7 +273,10 @@ def _presenter(im,t):
     elapsed=clock-ctx['start'] if clock is not None else t
     line=r3.current_sentence(elapsed,ctx['text'],ctx['duration']) if ctx['text'] else ''
     characters.place_busts(im,'metan',line,elapsed,ctx['duration'] or 1,('metan',))
-    if line and not ctx.get('hide_caption'):
+    styled = os.environ.get('COLLESPO_BUBBLE') in ('slant','glass')
+    if line and not ctx.get('hide_caption') and styled:
+        characters.bubble(im,'metan',line)
+    if line and not ctx.get('hide_caption') and not styled:
         box=characters.BUBBLE
         ImageDraw.Draw(im).polygon(para(box),fill=CHALK)
         x,y,right,bottom=box

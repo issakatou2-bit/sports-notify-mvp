@@ -225,6 +225,9 @@ def bubble(im, speaker, text):
     """横いっぱいの吹き出し（白地・話者の色の枠・名前の札）。数字は濃い金色。3行まで、入らなければ字を小さく。"""
     if not text:
         return
+    if os.environ.get("COLLESPO_BUBBLE") in ("slant", "glass"):
+        import bubble_styles
+        return bubble_styles.draw(im, speaker, text)
     x0, y0, x1, y1 = BUBBLE
     color = COLORS[speaker]
     base = im.convert("RGBA")
