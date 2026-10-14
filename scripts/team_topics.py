@@ -32,6 +32,7 @@ import sys
 from datetime import datetime, timezone
 
 import requests
+from japanese_team_names import team_names
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import (  # noqa: E402
@@ -334,7 +335,7 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
     jps = japanese_on(tid)
     if jps:
         items.insert(0, ("日本人選手",
-                         "・".join(x["name"] for x in jps[:3]) + "が所属"))
+                         team_names([x["name"] for x in jps], jp)))
     hook = ""
     if year and all_years:
         yr = sorted(all_years).index(int(year)) + 1
@@ -383,7 +384,7 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
     # 題は「【MLB】{label}｜{hook}」の形なので、ここに入れば題に載る。
     # 28日の実測で、題に名前があるものは平均435回、無いものは164回。
     if jps:
-        hook = "・".join(x["name"] for x in jps[:3]) + "が所属　" + hook
+        hook = team_names([x["name"] for x in jps], jp) + "　" + hook
 
     # 地図に打つための座標。同地区の4球団ぶんも一緒に持たせる。
     # 画面側でAPIを叩き直さずに済む。

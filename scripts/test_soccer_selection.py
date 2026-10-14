@@ -44,9 +44,10 @@ class Tests(unittest.TestCase):
 
     def test_maximum_and_score_order_knockout_requires_evidence(self):
         rows=[game(str(i)) for i in range(4)]
+        for i,row in enumerate(rows):row['start_time_utc']=f'2026-10-12T14:0{i}:00Z'
         rows[-1].update(competition_code='CL',league='チャンピオンズリーグ',phase='knockout',phase_source='Quarterfinals')
         data=select.select(material(rows),availability={})
-        self.assertEqual(data['preview_selection']['selected_ids'],['3','0','1'])
+        self.assertEqual(data['preview_selection']['selected_ids'],['3','0','1','2'])
         weak=game(code='EL',home='Torino FC',away='US Lecce');weak['phase']='knockout'
         self.assertEqual(select.score(weak)['score'],20)
         weak['phase_source']='Round of 16';self.assertEqual(select.score(weak)['score'],35)

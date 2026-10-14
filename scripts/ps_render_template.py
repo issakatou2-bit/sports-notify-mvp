@@ -1,6 +1,7 @@
 """Data-bound channel templates. Draft renderer, with no upload capability."""
 import argparse, json, copy, math, sys
 from functools import lru_cache
+from japanese_team_names import team_names
 from io import BytesIO
 from pathlib import Path
 from PIL import Image, ImageDraw
@@ -96,7 +97,7 @@ def render(card,presenters=None,style='stadium',layers=False):
                 if k<row['wins']:d.ellipse(box,fill=c1)
                 else:d.ellipse(box,outline=t['muted'],width=3)
             if row.get('players'):
-                put(240,y+82,'・'.join(row['players']),30,width=560,color=t['accent'])
+                put(240,y+82,team_names(row['players']),30,width=560,color=t['accent'])
             y+=144 if row.get("players") else 130
     for i,line in enumerate([] if board else card['headline'].split('\n')):
         if i>1:raise ValueError('Headline needs an editorial rewrite')

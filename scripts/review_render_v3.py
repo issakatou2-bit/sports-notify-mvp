@@ -811,7 +811,7 @@ def cues(kind, spec, items=(), start=0, count=0):
     if kind == "outro":
         return outro_cues(spec.get("lineup_kind", ""))
     if kind == "intro":
-        out.append((T_WHO, "swish", "a", -4))
+        out.append((0.0, "transition", "b", -10))
         if v3.get("big"):
             out.append((T_ROLL[0], "roll", "a", -2))
             out.append((T_ROLL[1] - 0.04, "stop", "a", 0))
@@ -819,14 +819,14 @@ def cues(kind, spec, items=(), start=0, count=0):
             out.append((T_TAG, "marker", "a", -3))
         for i, c in enumerate((v3.get("chips") or [])[:4]):
             t0 = T_CHIP0 + i * T_CHIP_GAP
-            out.append((t0, "swish", "b", -3))
             if c.get("win") and c.get('win_explanation'):
                 out.append((t0 + SLIDE + T_RING_AFTER, "pop", "a", -2))
     elif kind == "list":
-        out.append((0.0, "transition", "b", -6))
+        out.append((0.0, "transition", "b", -10))
         for i, (head, body) in enumerate(list(items)[start:start + count]):
             quote = "番記者" in head or str(body).startswith("「")
-            out.append((T_CARD0 + i * T_CARD_GAP, "notify" if quote else "swish", "a", -3))
+            if quote:
+                out.append((T_CARD0 + i * T_CARD_GAP, "notify", "a", -3))
     return out
 
 
@@ -894,8 +894,6 @@ def _outro_row(at, name, w):
 
 
 def outro_cues(exclude=""):
-    out = [(0.0, "transition", "b", -6)]
-    for i, _ in enumerate(outro_rows(exclude)):
-        out.append((T_OUTRO_ROW0 + i * T_OUTRO_GAP, "swish", "b", -8))
+    out = [(0.0, "transition", "b", -10)]
     out.append((1.8, "marker", "a", -4))
     return out

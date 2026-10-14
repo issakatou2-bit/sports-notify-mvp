@@ -1,5 +1,6 @@
 """検証済みPSカードを、共通表紙・項目札へ写す。元カードは変更しない。"""
 import re
+from japanese_team_names import team_names
 import review_render_v3 as r3
 import v3_slot_render as common
 
@@ -57,7 +58,11 @@ def program_ticker(program):
 def rows(card):
     result = []
     for row in (card.get('scoreboard') or {}).get('rows', []):
-        result.append((row['abbr']+'　'+row['name'], str(row['wins'])+'勝　'+'・'.join(row.get('players') or [])))
+        players=row.get('players') or []
+        if len(players)>=2:
+            result.append((row['abbr']+'　'+team_names(players,row['name']), str(row['wins'])+'勝'))
+        else:
+            result.append((row['abbr']+'　'+row['name'], str(row['wins'])+'勝　'+team_names(players)))
     for row in card.get('items', []):
         if card['layout'] == 'schedule':
             result.append((row['home']+' 対 '+row['away'], row['when']))
@@ -183,7 +188,7 @@ def cues(card, focus=None, cover=False, duration=20):
         return r3.cues('intro', spec(card, focus))
     result=common.cues(rows(card))
     if cover:
-        result=r3.cues('intro', spec(card,focus))+[(at+min(4,duration/3),kind,var,db) for at,kind,var,db in result]
+        result=r3.cues('intro', spec(card,focus))+[(at+min(4,duration/3),kind,var,db) for at,kind,var,db in result if kind!='transition']
     return result
 
 
