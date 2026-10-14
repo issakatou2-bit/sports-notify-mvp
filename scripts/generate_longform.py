@@ -355,17 +355,24 @@ def layout_talk(d, text: str):
     初版は lines[:5] で黙って切っていて、長い台詞は
     読み上げだけが続いて画面が止まって見えた。
     """
+    import caption_breaks
     avail_w = COL_X1 - COL_X0 - TALK_PAD * 2
     avail_h = TALK_Y1 - TALK_Y0 - TALK_PAD * 2
     for size in TALK_SIZES:
-        lines = wrap(d, text, font(size), avail_w)
+        try:
+            lines = caption_breaks.wrap(text,lambda s:video_common.text_width(d,s,font(size)),avail_w) if caption_breaks.enabled() else wrap(d,text,font(size),avail_w)
+        except ValueError:continue
         per = max(1, avail_h // (size + TALK_LEAD))
         if len(lines) <= per:
             return size, [lines]
     # いちばん小さくしても入らない。画面を分ける。
     size = TALK_SIZES[-1]
-    lines = wrap(d, text, font(size), avail_w)
+    lines = caption_breaks.wrap(text,lambda s:video_common.text_width(d,s,font(size)),avail_w) if caption_breaks.enabled() else wrap(d,text,font(size),avail_w)
     per = max(1, avail_h // (size + TALK_LEAD))
+    if caption_breaks.enabled():
+        measure=lambda s:video_common.text_width(d,s,font(size))
+        values=caption_breaks.pages(text,fits=lambda s:len(caption_breaks.wrap(s,measure,avail_w))<=per)
+        return size,[caption_breaks.wrap(s,measure,avail_w) for s in values]
     return size, [lines[i:i + per] for i in range(0, len(lines), per)]
 
 

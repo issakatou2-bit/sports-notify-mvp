@@ -54,6 +54,8 @@ def split_text(text: str) -> list:
     読点と句点で区切る。読み上げの息継ぎと同じ場所で切れるので、
     音と字幕のかたまりが揃う。
     """
+    import caption_breaks
+    if caption_breaks.enabled():return caption_breaks.pages(text,LINE_CHARS*2)
     out, cur = [], ""
     for ch in text:
         cur += ch
@@ -70,6 +72,8 @@ def split_text(text: str) -> list:
 
 def wrap_line(text: str) -> str:
     """長い1文を2行に折る。1行に詰めると画面からはみ出す。"""
+    import caption_breaks
+    if caption_breaks.enabled():return '\n'.join(caption_breaks.wrap(text,len,LINE_CHARS))
     if len(text) <= LINE_CHARS:
         return text
     mid = len(text) // 2

@@ -16,8 +16,10 @@ import review_render_v3 as r3
 import video_common as vc
 
 PORTRAIT_DIR = str(r3.ROOT / "assets/portraits")
-NAMES = {"metan": "四国めたん", "zundamon": "ずんだもん"}
-COLORS = {"metan": (236, 120, 178), "zundamon": (118, 190, 84)}
+NAMES = {"metan": "四国めたん", "zundamon": "ずんだもん", "kiritan": "東北きりたん"}
+COLORS = {"metan": (236, 120, 178), "zundamon": (118, 190, 84), "kiritan": (166, 68, 70)}
+SPEAKERS = {2: "metan", 3: "zundamon", 108: "kiritan"}
+PORTRAIT_CAST = ("metan", "zundamon")  # Names/colors also include voices without a puppet.
 # v4 の表情の名前 → 部品の組み合わせ（眉, 目, 口）
 FACE_PARTS = {
     "base": ("基本", "開", "閉"),
@@ -238,14 +240,22 @@ def bubble(im, speaker, text):
     d.rounded_rectangle((x0, y0, x1, y1), radius=28, fill=(250, 247, 238), outline=color, width=6)
     f = r3.font(28); w = d.textlength(NAMES[speaker], font=f) + 40
     d.rounded_rectangle((x0 + 28, y0 - 24, x0 + 28 + w, y0 + 24), radius=24, fill=color)
-    d.text((x0 + 28 + w / 2, y0), NAMES[speaker], font=f, fill=(255, 255, 255), anchor="mm")
+    name_ink=(255,255,255)
+    if __import__('caption_breaks').enabled():
+        import bubble_styles
+        name_ink=max((bubble_styles.WHITE,bubble_styles.SHADOW),key=lambda ink:float(bubble_styles.contrast(ink,color)))
+        im.info['name_tag']=dict(speaker=speaker,color=list(color),ink=list(name_ink),contrast=float(bubble_styles.contrast(name_ink,color)))
+    d.text((x0 + 28 + w / 2, y0), NAMES[speaker], font=f, fill=name_ink, anchor="mm")
     room = y1 - y0 - 44
     import fan_events
+    rows = []
     for size in (48, 44, 40, 36, 33):
-        rows = r3._caption_lines(d, text, size, x1 - x0 - (120 if fan_events.enabled() else 80))
+        try:rows = r3._caption_lines(d, text, size, x1 - x0 - (120 if fan_events.enabled() else 80))
+        except ValueError:continue
         lh = round(size * 1.36)
         if len(rows) <= 3 and len(rows) * lh <= room:
             break
+    if __import__('caption_breaks').enabled() and (not rows or len(rows)>3):raise ValueError('吹き出しを文節でページ分割してください')
     y = y0 + 30 + (room - min(3, len(rows)) * lh) // 2
     for row in rows[:3]:
         x = x0 + 40
@@ -269,7 +279,7 @@ def presenter(im, t, cast=("metan",)):
     clock = r3._PROGRAM_CLOCK[0]
     elapsed = (clock - ctx["start"]) if clock is not None else t
     line = r3.current_sentence(elapsed, ctx["text"], ctx["duration"]) if ctx["text"] else ""
-    speaker = "zundamon" if ctx.get("speaker") == 3 else "metan"
+    speaker = SPEAKERS.get(ctx.get("speaker"), "metan") if __import__('caption_breaks').enabled() else "zundamon" if ctx.get("speaker") == 3 else "metan"
     if speaker not in cast:
         cast = tuple(cast) + (speaker,)
     place_busts(im, speaker, line, elapsed, ctx["duration"] or 1, cast)

@@ -339,6 +339,8 @@ CAPTION_CHUNK = 38   # 字幕の箱に3行で入る字数の目安。短い文�
 
 def caption_chunks(text, limit=CAPTION_CHUNK):
     """短い文はまとめて1つの字幕にする（10/8 本人「細かく刻み過ぎ」。1文ずつだと切り替えが多い）。"""
+    import caption_breaks
+    if caption_breaks.enabled():return caption_breaks.pages(str(text or ''),limit)
     out = []
     for s in sentences(text):
         if out and len(out[-1]) + len(s) <= limit:
@@ -381,14 +383,25 @@ def caption(im, t):
     im.paste(base.convert("RGB"))
     d = ImageDraw.Draw(im)
     f = font(24)
-    w = d.textlength("四国めたん", font=f) + 32
-    d.rounded_rectangle((box[0] + 24, box[1] - 22, box[0] + 24 + w, box[1] + 22), radius=8, fill=METAN_PINK)
-    d.text((box[0] + 24 + w / 2, box[1]), "四国めたん", font=f, fill=DARK_INK, anchor="mm")
+    name,color,ink="四国めたん",METAN_PINK,DARK_INK
+    import caption_breaks
+    if caption_breaks.enabled():
+        import characters
+        import bubble_styles
+        who=characters.SPEAKERS.get(_CAPTION.get('speaker'),'metan')
+        name,color=characters.NAMES[who],characters.COLORS[who]
+        ink=max((bubble_styles.WHITE,bubble_styles.SHADOW),key=lambda rgb:float(bubble_styles.contrast(rgb,color)))
+    w = d.textlength(name, font=f) + 32
+    d.rounded_rectangle((box[0] + 24, box[1] - 22, box[0] + 24 + w, box[1] + 22), radius=8, fill=color)
+    d.text((box[0] + 24 + w / 2, box[1]), name, font=f, fill=ink, anchor="mm")
     # 数字は金色（項目の札と同じ書き分け）。3行まで、入らなければ字を小さく
+    rows = []
     for size in (42, 38, 34):
-        rows = _caption_lines(d, line, size, box[2] - box[0] - 64)
+        try:rows = _caption_lines(d, line, size, box[2] - box[0] - 64)
+        except ValueError:continue
         if len(rows) <= 3:
             break
+    if caption_breaks.enabled() and (not rows or len(rows)>3):raise ValueError('字幕を文節でページ分割してください')
     y = box[1] + 44
     for row in rows[:3]:
         x = box[0] + 36
@@ -411,6 +424,11 @@ def _caption_lines(d, text, size, width):
     """数字の続き（3対2・4打数 など）を途中で切らずに折り返す。行頭に句読点を置かない。"""
     # 英語の語（Dodgers など）も途中で切らない。書体に無い字（絵文字など）は出さない
     text = "".join(ch for ch in str(text) if ch.isspace() or _has_glyph(ch))
+    import caption_breaks
+    if caption_breaks.enabled():
+        def measure(value):
+            return sum(d.textlength(part,font=num_font(round(size*1.18)) if numeric else font(size)) for part,numeric in caption_breaks.runs(value))
+        return [caption_breaks.runs(row) for row in caption_breaks.wrap(text,measure,width)]
     tokens = re.findall(r"\d[\d.,:]*|[A-Za-z][A-Za-z'.\-]*|[^\d]", text)
     rows, cur, cur_w = [], [], 0.0
     for tok in tokens:
