@@ -1,150 +1,8 @@
 {
-  "updated_at": "2026-10-13T06:15:56.836361+00:00",
+  "updated_at": "2026-10-14T03:45:45.951902+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
-    {
-      "key": "season_game_849809",
-      "label": "リーグ優勝決定シリーズ第1戦",
-      "hook": "ブリュワーズがドジャースに2対1でリーグ優勝決定シリーズ先勝",
-      "heading": "ドジャース 対 ブリュワーズ　リーグ優勝決定シリーズ第1戦",
-      "intro": "リーグ優勝決定シリーズ第1戦、ブリュワーズが本拠地でドジャースに2対1で勝ちました。",
-      "intro_as_is": true,
-      "style": "v3",
-      "team_id": 158,
-      "abbr": "MIL",
-      "title": "【MLB】ブリュワーズがドジャースに2対1でリーグ優勝決定シリーズ先勝｜大谷翔平 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ブリュワーズ 2対1 ドジャース　本拠地で勝利　シリーズはブリュワーズの1勝0敗"
-        ],
-        [
-          "本塁打",
-          "ブリュワーズ1本（トゥラング）"
-        ],
-        [
-          "先発",
-          "ブリュワーズ ミジオロウスキー 4回と3分の1を1失点　ドジャース スクーバル 5回を2失点"
-        ],
-        [
-          "勝ち投手・セーブ",
-          "勝ち D.L.ホール（3分の2回を無失点）　セーブ トレバー・メギル"
-        ],
-        [
-          "ハイライトのコメント欄から",
-          "「日本人がみんなドジャースファンってわけじゃないぞ。俺はブリュワーズ大好きだ!」"
-        ]
-      ],
-      "japanese": [
-        {
-          "name": "大谷翔平",
-          "line": "3打数1安打　1四球（ドジャース）"
-        }
-      ],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": null,
-      "voice": {
-        "said": "日本人がみんなドジャースファンってわけじゃないぞ。俺はブリュワーズ大好きだ!",
-        "text": "Not all Japanese people are Dodgers fans. I love brewers!",
-        "url": "https://www.youtube.com/watch?v=RuiDL7ihiEI",
-        "likes": 936,
-        "at": "2026-10-13T01:43:19Z"
-      },
-      "headline": null,
-      "game_pk": 849809,
-      "game_v4": {
-        "score": {
-          "innings": [
-            {
-              "num": 1,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 2,
-              "away": 1,
-              "home": 0
-            },
-            {
-              "num": 3,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 4,
-              "away": 0,
-              "home": 1
-            },
-            {
-              "num": 5,
-              "away": 0,
-              "home": 1
-            },
-            {
-              "num": 6,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 7,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 8,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 9,
-              "away": 0,
-              "home": null
-            }
-          ],
-          "source": "MLB Stats API / liveData.linescore",
-          "away": {
-            "id": 119,
-            "name": "ドジャース",
-            "abbr": "LAD",
-            "total": 1
-          },
-          "home": {
-            "id": 158,
-            "name": "ブリュワーズ",
-            "abbr": "MIL",
-            "total": 2
-          }
-        },
-        "decisive": null
-      },
-      "game_date": "2026-10-12T00:00:00Z",
-      "jp_first": true,
-      "next_team_id": 119,
-      "finished_at": "2026-10-12T03:11:55.549000+00:00",
-      "v3": {
-        "who": "ブリュワーズ　リーグ優勝決定シリーズ第1戦",
-        "big": "2-1",
-        "unit": "",
-        "sub": "本拠地で勝利",
-        "tag": "リーグ優勝決定シリーズ先勝",
-        "chips": [
-          {
-            "label": "リーグ優勝決定シリーズ　ブリュワーズ",
-            "score": "1-0",
-            "win": true
-          },
-          {
-            "label": "本塁打　ブリュワーズ",
-            "score": "1"
-          }
-        ],
-        "ticker": "日本人選手　大谷翔平 3打数1安打　1四球（ドジャース）"
-      }
-    },
     {
       "key": "season_game_849812",
       "label": "リーグ優勝決定シリーズ第2戦",
@@ -179,7 +37,11 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「うちの連中が山本にあんなことをやってのけたなんて信じられない。前代未聞だし、最高にたまらない」"
+          "「ドジャースは0勝2敗で、もうスクーバルも山本も使っちゃった。このブルワーズ、強いぞ」"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「容赦ないブルワーズがホームできっちり勝利、王者を追い詰める」"
         ]
       ],
       "japanese": [
@@ -202,13 +64,18 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "うちの連中が山本にあんなことをやってのけたなんて信じられない。前代未聞だし、最高にたまらない",
-        "text": "I absolutely cannot believe our guys just did that to Yamamoto. Absolutely unprecedented and I am loving it.",
+        "said": "ドジャースは0勝2敗で、もうスクーバルも山本も使っちゃった。このブルワーズ、強いぞ",
+        "text": "Dodgers are down 0-2 and they've already used Skubal and Yamamoto. These Brewers are good",
         "url": "https://www.youtube.com/watch?v=RuiDL7ihiEI",
-        "likes": 166,
-        "at": "2026-10-13T02:16:13Z"
+        "likes": 576,
+        "at": "2026-10-13T02:47:39Z"
       },
-      "headline": null,
+      "headline": {
+        "said": "容赦ないブルワーズがホームできっちり勝利、王者を追い詰める",
+        "text": "Relentless Brewers take care of business at home, put champs on the ropes",
+        "url": "https://www.mlb.com/news/brewers-win-nlcs-game-2-2026",
+        "at": "2026-10-13T03:37:00+00:00"
+      },
       "game_pk": 849812,
       "game_v4": {
         "score": {
@@ -463,6 +330,135 @@
           }
         ],
         "ticker": "次の試合　日本時間10月14日　リーグ優勝決定シリーズ第2戦"
+      }
+    },
+    {
+      "key": "season_game_849813",
+      "label": "リーグ優勝決定シリーズ第2戦",
+      "hook": "レイズがガーディアンズに3対1でリーグ優勝決定シリーズ1勝1敗に",
+      "heading": "ガーディアンズ 対 レイズ　リーグ優勝決定シリーズ第2戦",
+      "intro": "リーグ優勝決定シリーズ第2戦、レイズが本拠地でガーディアンズに3対1で勝ちました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "team_id": 139,
+      "abbr": "TB",
+      "title": "【MLB】レイズがガーディアンズに3対1でリーグ優勝決定シリーズ1勝1敗に｜ヒックスの決勝打 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "レイズ 3対1 ガーディアンズ　本拠地で勝利　シリーズはレイズの1勝1敗"
+        ],
+        [
+          "決勝点",
+          "4回裏　リアム・ヒックスのタイムリー"
+        ],
+        [
+          "先発",
+          "レイズ ペラルタ 6回を無失点　ガーディアンズ メシック 5回を3失点"
+        ],
+        [
+          "セーブ",
+          "ブライアン・ベイカー"
+        ]
+      ],
+      "japanese": [],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": null,
+      "game_pk": 849813,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 3
+            },
+            {
+              "num": 5,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 7,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": null
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 114,
+            "name": "ガーディアンズ",
+            "abbr": "CLE",
+            "total": 1
+          },
+          "home": {
+            "id": 139,
+            "name": "レイズ",
+            "abbr": "TB",
+            "total": 3
+          }
+        },
+        "decisive": {
+          "inning": "4回裏",
+          "subject": "リアム・ヒックス",
+          "action": "タイムリー",
+          "detail": "",
+          "event": "Single"
+        }
+      },
+      "game_date": "2026-10-14T00:00:00Z",
+      "jp_first": false,
+      "next_team_id": 139,
+      "finished_at": "2026-10-14T02:51:01.268000+00:00",
+      "v3": {
+        "who": "レイズ　リーグ優勝決定シリーズ第2戦",
+        "big": "3-1",
+        "unit": "",
+        "sub": "本拠地で勝利",
+        "tag": "決勝点 4回裏 ヒックスのタイムリー",
+        "chips": [
+          {
+            "label": "リーグ優勝決定シリーズ　レイズ",
+            "score": "1-1",
+            "win": false
+          }
+        ],
+        "ticker": "レイズ 3対1 ガーディアンズ　本拠地で勝利　シリーズはレイズの1勝1敗"
       }
     }
   ]
