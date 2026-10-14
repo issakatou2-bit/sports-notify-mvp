@@ -124,12 +124,39 @@ def _readability(base, runs, glass=False, box=None):
     return base, min(scores, default=21), scrim
 
 
-def draw(im, speaker, text, *, style=None, variant=None, seconds=None):
+def selected():
+    return os.environ.get('COLLESPO_BUBBLE') in ('slant', 'glass')
+
+
+def longform_box(legacy=False):
+    if legacy:
+        import generate_longform as lf
+        return (lf.COL_X0-8, lf.TALK_Y0+12, lf.COL_X1+8, lf.TALK_Y1-12)
+    import longform_render_v3 as lf
+    return (lf.SUB_X0, lf.SUB_Y0+10, lf.SUB_X1+8, lf.SUB_Y1-10)
+
+
+def page_lines(text, box, size=36):
+    """Measured phrase pages shared by landscape pagination and drawing."""
+    import caption_breaks as cb
+    d=ImageDraw.Draw(Image.new('RGB',(1,1)))
+    width=box[2]-box[0]-146
+    per=min(3,max(1,(box[3]-box[1]-54)//round(size*1.36)))
+    def fits(value):
+        try:return len(r3._caption_lines(d,value,size,width))<=per
+        except ValueError:return False
+    pages=cb.pages(text,fits=fits) or ['']
+    lines=[[''.join(p for p,_ in row) for row in r3._caption_lines(d,page,size,width)] for page in pages]
+    if cb.violations(text,pages):raise ValueError('長編の文節ページが不正です')
+    return lines
+
+
+def draw(im, speaker, text, *, style=None, variant=None, seconds=None, box=None):
     import characters as c
     style = style or os.environ['COLLESPO_BUBBLE']
     variant = variant or (os.environ.get('COLLESPO_SLANT_VARIANT','cream') if style=='slant' else 'glass')
     if style=='slant' and variant not in ('cream','dark','band','glass'):variant='cream'
-    box = geometry();x0,y0,x1,y1 = box
+    box = box or geometry();x0,y0,x1,y1 = box
     if seconds is None:seconds = r3._PROGRAM_CLOCK[0] or 0
     color = c.COLORS[speaker]
     base = im.convert('RGBA')
@@ -200,3 +227,33 @@ def draw(im, speaker, text, *, style=None, variant=None, seconds=None):
     im.info['duo_caption'] = dict(box=list(box),speaker=speaker,font_size=size,rows=rows)
     im.info['bubble_style'] = dict(style=style,variant=variant,background=pattern if style=='glass' or variant=='glass' else None,
                                   contrast=ratio,name_contrast=name_ratio,name_ground=list(color),scrim=scrim,full_text=True,seconds=seconds,lines=lines,break_check='PASS')
+
+
+def narration_frame(im, seg, seconds, duration):
+    """Opt-in captions for older narrated slots without a reserved subtitle area.
+
+    Preserve the complete existing information frame above a new caption area.
+    The disabled path returns the same image, without copying or resampling.
+    """
+    if not selected():return im
+    w,h=im.size
+    landscape=w>h
+    content_h=round(h*(.72 if landscape else .62))
+    out=Image.new(im.mode,im.size,(15,30,26))
+    resized=im.copy()
+    resized.thumbnail((w,content_h),Image.Resampling.LANCZOS)
+    content_x=(w-resized.width)//2
+    out.paste(resized,(content_x,0))
+    box=(round(w*.035),round(h*.78),round(w*.965),round(h*.95)) if landscape else tuple(round(v*(w/1080 if i%2==0 else h/1920)) for i,v in enumerate(geometry()))
+    text=str(seg.get('text') or '')
+    pages=[''.join(rows) for rows in page_lines(text,box)]
+    weights=[max(1,len(page)) for page in pages]
+    at=max(0,seconds)/max(.1,duration)*sum(weights);end=0;line=pages[-1]
+    for page,weight in zip(pages,weights):
+        end+=weight
+        if at<end:line=page;break
+    if line:
+        import characters
+        draw(out,characters.SPEAKERS.get(seg.get('speaker'),'metan'),line,box=box,seconds=seconds)
+    out.info['narrated_content_box']=[content_x,0,content_x+resized.width,resized.height]
+    return out

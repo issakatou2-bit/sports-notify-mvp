@@ -4002,6 +4002,322 @@
         }
       ],
       "social_summary": "レイズ対ガーディアンズのリーグ優勝決定シリーズ第2戦。10/14のPS全1試合を日本時間でまとめました。"
+    },
+    "2026-10-14": {
+      "video_id": "3JTBaNavYbI",
+      "url": "https://youtu.be/3JTBaNavYbI",
+      "title": "【10/14更新】大谷翔平が所属するドジャース対ブリュワーズのリーグ優勝決定シリーズ第3戦｜10/15 PS全1試合 #Shorts",
+      "published_at": "2026-10-14T09:59:01.125412+00:00",
+      "publish_at": "2026-10-14T10:00:00Z",
+      "program_version": "ps-program-20260928-v2",
+      "program_edition": "8d04f2dbe42434b591bb0f525956b9c84bd086d802fb6b1529fe278abf022e87",
+      "program_phase": "forecast",
+      "program_series": [
+        {
+          "key": "F:111-147",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 147,
+          "next": null,
+          "teams": [
+            {
+              "id": 147,
+              "name": "ヤンキース",
+              "wins": 2,
+              "players": []
+            },
+            {
+              "id": 111,
+              "name": "レッドソックス",
+              "wins": 0,
+              "players": [
+                "吉田正尚"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:117-145",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 145,
+          "next": null,
+          "teams": [
+            {
+              "id": 145,
+              "name": "ホワイトソックス",
+              "wins": 2,
+              "players": [
+                "村上宗隆"
+              ]
+            },
+            {
+              "id": 117,
+              "name": "アストロズ",
+              "wins": 0,
+              "players": [
+                "今井達也"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:112-135",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 135,
+          "next": null,
+          "teams": [
+            {
+              "id": 135,
+              "name": "パドレス",
+              "wins": 2,
+              "players": [
+                "松井裕樹"
+              ]
+            },
+            {
+              "id": 112,
+              "name": "カブス",
+              "wins": 0,
+              "players": [
+                "今永昇太",
+                "鈴木誠也"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:143-144",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 3,
+          "over": true,
+          "winner": 144,
+          "next": null,
+          "teams": [
+            {
+              "id": 144,
+              "name": "ブレーブス",
+              "wins": 2,
+              "players": []
+            },
+            {
+              "id": 143,
+              "name": "フィリーズ",
+              "wins": 1,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:114-145",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 5,
+          "over": true,
+          "winner": 114,
+          "next": null,
+          "teams": [
+            {
+              "id": 114,
+              "name": "ガーディアンズ",
+              "wins": 3,
+              "players": []
+            },
+            {
+              "id": 145,
+              "name": "ホワイトソックス",
+              "wins": 2,
+              "players": [
+                "村上宗隆"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "D:139-147",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 3,
+          "over": true,
+          "winner": 139,
+          "next": null,
+          "teams": [
+            {
+              "id": 139,
+              "name": "レイズ",
+              "wins": 3,
+              "players": []
+            },
+            {
+              "id": 147,
+              "name": "ヤンキース",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:119-144",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 4,
+          "over": true,
+          "winner": 119,
+          "next": null,
+          "teams": [
+            {
+              "id": 119,
+              "name": "ドジャース",
+              "wins": 3,
+              "players": [
+                "大谷翔平",
+                "佐々木朗希",
+                "山本由伸"
+              ]
+            },
+            {
+              "id": 144,
+              "name": "ブレーブス",
+              "wins": 1,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:135-158",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 4,
+          "over": true,
+          "winner": 158,
+          "next": null,
+          "teams": [
+            {
+              "id": 158,
+              "name": "ブリュワーズ",
+              "wins": 3,
+              "players": []
+            },
+            {
+              "id": 135,
+              "name": "パドレス",
+              "wins": 1,
+              "players": [
+                "松井裕樹"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "L:114-139",
+          "round": "L",
+          "round_jp": "リーグ優勝決定シリーズ",
+          "stage": 3,
+          "league_jp": "ア・リーグ",
+          "best_of": 7,
+          "need": 4,
+          "played": 2,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月16日",
+            "game": 3,
+            "live": false,
+            "verified_label": "日本時間10月16日7時"
+          },
+          "teams": [
+            {
+              "id": 114,
+              "name": "ガーディアンズ",
+              "wins": 1,
+              "players": []
+            },
+            {
+              "id": 139,
+              "name": "レイズ",
+              "wins": 1,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "L:119-158",
+          "round": "L",
+          "round_jp": "リーグ優勝決定シリーズ",
+          "stage": 3,
+          "league_jp": "ナ・リーグ",
+          "best_of": 7,
+          "need": 4,
+          "played": 2,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月15日",
+            "game": 3,
+            "live": false,
+            "verified_label": "日本時間10月15日9時"
+          },
+          "teams": [
+            {
+              "id": 158,
+              "name": "ブリュワーズ",
+              "wins": 2,
+              "players": []
+            },
+            {
+              "id": 119,
+              "name": "ドジャース",
+              "wins": 0,
+              "players": [
+                "大谷翔平",
+                "佐々木朗希",
+                "山本由伸"
+              ]
+            }
+          ]
+        }
+      ],
+      "social_summary": "大谷翔平が所属するドジャース対ブリュワーズのリーグ優勝決定シリーズ第3戦。10/15のPS全1試合を日本時間でまとめました。"
     }
   },
   "morning": {
@@ -5132,6 +5448,17 @@
       "title": "【欧州サッカー】昨季2位ランスが低迷、首位と2差のリヨンが追撃｜今夜の注目試合｜ランス vs リヨン ほか #Shorts",
       "published_at": "2026-10-09T10:03:58.691589+00:00",
       "publish_at": "2026-10-09T10:30:00Z"
+    },
+    "2026-10-14": {
+      "video_id": "vnMBOjZ1o0Q",
+      "url": "https://youtu.be/vnMBOjZ1o0Q",
+      "title": "【欧州サッカー】今夜の注目試合｜マンチェスター・シティ vs パリ・サンジェルマン ほか #Shorts",
+      "published_at": "2026-10-14T10:03:39.791852+00:00",
+      "publish_at": "2026-10-14T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "ffd080e0426217eef30debc92b9f92b11baa44e02068a803c828a5b9e59d436e",
+        "narration_sha256": "25f5ec445897b30f76dbda1932767d38ac1135b8526c03cf3f70d8a55c845339"
+      }
     }
   },
   "weekly": {
@@ -9561,6 +9888,13 @@
       "title": "田中碧のリーズ、CL圏内まで勝点1｜プレミアリーグ 順位争い【欧州サッカー】#Shorts",
       "published_at": "2026-10-13T10:05:40.828115+00:00",
       "publish_at": "2026-10-13T11:30:00Z"
+    },
+    "2026-10-14": {
+      "video_id": "H1VbsickNdc",
+      "url": "https://youtu.be/H1VbsickNdc",
+      "title": "菅原由勢のカリアリ、CL圏内。落ちるまで勝点1｜セリエA 順位争い【欧州サッカー】#Shorts",
+      "published_at": "2026-10-14T10:06:28.594872+00:00",
+      "publish_at": "2026-10-14T11:30:00Z"
     }
   }
 }

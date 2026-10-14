@@ -228,10 +228,10 @@
       }
     },
     "2026-10-14": {
-      "calls": 20,
-      "in": 31916,
-      "out": 12565,
-      "usd": 0.16132,
+      "calls": 25,
+      "in": 38141,
+      "out": 15179,
+      "usd": 0.19991,
       "by": {
         "topic": {
           "calls": 3,
@@ -254,20 +254,25 @@
           "out": 223
         },
         "sanity": {
-          "calls": 4,
-          "in": 7939,
-          "out": 2976
+          "calls": 6,
+          "in": 11095,
+          "out": 3811
         },
         "localize": {
-          "calls": 3,
-          "in": 3884,
-          "out": 2234
+          "calls": 5,
+          "in": 6280,
+          "out": 3595
         },
         "dialogue": {
           "calls": 2,
           "in": 8817,
           "out": 3466,
           "batch": 2
+        },
+        "translate": {
+          "calls": 1,
+          "in": 673,
+          "out": 418
         }
       }
     }

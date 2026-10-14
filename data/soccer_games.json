@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-10-13T09:54:03.299684+00:00",
+  "generated_at": "2026-10-14T09:54:02.064822+00:00",
   "games": [
     {
-      "game_id": "575345",
+      "game_id": "575353",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-78",
-      "away_team_id": "CL-66",
-      "home_team_name": "アトレティコ・マドリード",
-      "away_team_name": "マンチェスター・ユナイテッド",
+      "home_team_id": "CL-65",
+      "away_team_id": "CL-524",
+      "home_team_name": "マンチェスター・シティ",
+      "away_team_name": "パリ・サンジェルマン",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "マンチェスター・ユナイテッド vs アトレティコ・マドリード",
+      "matchup": "パリ・サンジェルマン vs マンチェスター・シティ",
       "abbr_matchup": null,
-      "start_time_jst": "10/14 04:00",
+      "start_time_jst": "10/15 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -37,14 +37,25 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "アトレティコ・マドリード と マンチェスター・ユナイテッド の対戦",
+          "text": "マンチェスター・シティ と パリ・サンジェルマン の対戦",
           "weight": 3
+        },
+        {
+          "tag": "quality",
+          "text": "マンチェスター・シティ（昨季CLリーグフェーズ8位）とパリ・サンジェルマン（昨季CLリーグフェーズ11位）の対戦",
+          "weight": 0
         }
       ],
       "log_notes": [],
-      "ai_summary": "チャンピオンズリーグの舞台で、【アトレティコ・マドリードがマンチェスター・ユナイテッドを迎える】一戦となる。ヨーロッパの頂点を目指す両強豪が敵地で激突する試合であり、シーズン序盤の重要な勝ち点を巡る戦いが繰り広げられることになる。開幕直後のため順位表はまだ意味を持つ段階ではないが、グループステージの総当たり戦を勝ち抜くには、こうした一つひとつのマッチアップが重要な意味を持つ。迎える側の気迫がどう表現されるか、訪れる側がどう対抗するかに注目したい。",
-      "notification_hook": "欧州最高峰の舞台、マドリードでの激突。両強豪の初戦が始まる。",
-      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "ai_summary": "チャンピオンズリーグのリーグフェーズが開幕する中、昨季の同大会で【8位と11位】という成績を収めたマンチェスター・シティとパリ・サンジェルマンが対戦する。両強豪の実力が現シーズンでどのように表れるかが、リーグフェーズ全体の勢力図を占う上で重要になる。攻撃と守備のバランス、セットプレーへの対応など、両チームの戦術がどう機能するかに注目したい。",
+      "notification_hook": "昨季CLで8位と11位の強豪が激突。両チームの開幕戦での出来が問われる。",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401915407",
+      "competition_code": "CL",
+      "start_time_utc": "2026-10-15T04:00:00+09:00",
       "season_players": [],
       "preview_out_names": [],
       "preview_rating": {
@@ -58,12 +69,12 @@
           {
             "key": "marquee_home",
             "points": 10,
-            "evidence": "Club Atlético de Madrid"
+            "evidence": "Manchester City FC"
           },
           {
             "key": "marquee_away",
             "points": 10,
-            "evidence": "Manchester United FC"
+            "evidence": "Paris Saint-Germain FC"
           }
         ],
         "interest": {
@@ -74,19 +85,19 @@
       }
     },
     {
-      "game_id": "575346",
+      "game_id": "575352",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-57",
-      "away_team_id": "CL-521",
-      "home_team_name": "アーセナル",
-      "away_team_name": "リール",
+      "home_team_id": "CL-100",
+      "away_team_id": "CL-86",
+      "home_team_name": "ローマ",
+      "away_team_name": "レアル・マドリード",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "リール vs アーセナル",
+      "matchup": "レアル・マドリード vs ローマ",
       "abbr_matchup": null,
-      "start_time_jst": "10/14 04:00",
+      "start_time_jst": "10/15 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -103,30 +114,26 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 4,
+      "score": 1,
       "game_type": "R",
       "is_notable": true,
       "reasons": [
         {
-          "tag": "jp_team",
-          "text": "リールには上田綺世が所属",
-          "weight": 1
-        },
-        {
           "tag": "quality",
-          "text": "アーセナル の試合",
+          "text": "レアル・マドリード の試合",
           "weight": 1
-        },
-        {
-          "tag": "quality",
-          "text": "アーセナル（昨季CLリーグフェーズ1位）",
-          "weight": 2
         }
       ],
       "log_notes": [],
-      "ai_summary": "チャンピオンズリーグは欧州の1部リーグ全体が参加する大会であり、昨季のリーグフェーズで1位に輝いたアーセナルが敵地リールを迎える一戦は、新シーズンにおける両チームの力関係を測る重要な指標となる。【昨季CLリーグフェーズ1位のアーセナル】がどのような戦いぶりを見せるかが焦点となる一方で、日本代表の上田綺世を擁するリールがどう対抗するかも見どころである。",
-      "notification_hook": "昨季CL1位アーセナル、敵地リールとの開幕戦で上田綺世と対決。",
-      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "ai_summary": "チャンピオンズリーグは欧州の1部リーグ上位チームが集う大会であり、シーズン開幕直後となる本大会では、各チームの新シーズンでの実力を測る重要な一戦となる。本拠地ローマを迎える敵地訪問のレアル・マドリードは、【ヨーロッパの伝統的な強豪】として毎年この舞台で結果を求められるチームである。開幕間もない段階で両者がぶつかる本試合では、新加入選手や選手層の充実ぶり、そしてチーム全体の準備状況がどの程度整っているかに注目したい。",
+      "notification_hook": "開幕直後、ローマの本拠地に乗り込むレアル・マドリード。新シーズンの調整具合はいかに。",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401915414",
+      "competition_code": "CL",
+      "start_time_utc": "2026-10-15T04:00:00+09:00",
       "season_players": [],
       "preview_out_names": [],
       "preview_rating": {
@@ -138,9 +145,9 @@
             "evidence": "チャンピオンズリーグ"
           },
           {
-            "key": "marquee_home",
+            "key": "marquee_away",
             "points": 10,
-            "evidence": "Arsenal FC"
+            "evidence": "Real Madrid CF"
           }
         ],
         "interest": {
@@ -151,19 +158,19 @@
       }
     },
     {
-      "game_id": "575347",
+      "game_id": "575350",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-5720",
-      "away_team_id": "CL-5",
-      "home_team_name": "バイキング",
-      "away_team_name": "バイエルン",
+      "home_team_id": "CL-2016",
+      "away_team_id": "CL-64",
+      "home_team_name": "LASK Linz",
+      "away_team_name": "リバプール",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "バイエルン vs バイキング",
+      "matchup": "リバプール vs LASK Linz",
       "abbr_matchup": null,
-      "start_time_jst": "10/14 04:00",
+      "start_time_jst": "10/15 01:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -186,40 +193,58 @@
       "reasons": [
         {
           "tag": "jp_team",
-          "text": "バイエルンには伊藤洋輝が所属",
+          "text": "リバプールには遠藤航が所属",
           "weight": 1
         },
         {
           "tag": "quality",
-          "text": "バイエルン の試合",
+          "text": "リバプール の試合",
           "weight": 1
         },
         {
           "tag": "quality",
-          "text": "バイエルン（昨季CLリーグフェーズ2位）",
+          "text": "リバプール（昨季CLリーグフェーズ3位）",
           "weight": 2
         }
       ],
       "log_notes": [],
-      "ai_summary": "チャンピオンズリーグは欧州の強豪クラブが一堂に会する大会であり、各チームにとって重要な戦いが続く。バイエルンは昨季のチャンピオンズリーグで【リーグフェーズ2位】という成績を収めた強豪で、敵地バイキングでの試合に臨む。同時に、バイエルンに所属する伊藤洋輝の活躍も注視される。開幕直後の段階だが、欧州の頂点を目指す両チームの対戦がどのような展開になるかに注目したい。",
-      "notification_hook": "伊藤洋輝在籍のバイエルン、昨季CL2位の実力を敵地で見せるか",
-      "start_time_utc": "2026-10-14T04:00:00+09:00",
-      "season_players": []
+      "ai_summary": "チャンピオンズリーグの新シーズンが始まり、【昨季リーグフェーズ3位のリバプール】が敵地でLASK Linzに挑む一戦となる。ヨーロッパ最高峰の大会は1部リーグの全チームが総当たり戦で勝ち点を争う形式のため、開幕直後のこの段階でも各チームにとって重要な勝ち点獲得の機会である。リバプールには日本代表の遠藤航が所属しており、欧州の強豪チームの試合内容を通じて彼のプレーがどのレベルで機能するかに注目したい。",
+      "notification_hook": "リバプール敵地へ、遠藤航がCLの舞台で何を見せるか。",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401915415",
+      "competition_code": "CL",
+      "start_time_utc": "2026-10-15T01:45:00+09:00",
+      "season_players": [
+        {
+          "name": "遠藤航",
+          "club": "リバプール",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 0,
+          "out": false,
+          "as_of": "2026-10-14T10:01:35.444960+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
     },
     {
-      "game_id": "575343",
+      "game_id": "575354",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-108",
-      "away_team_id": "CL-851",
-      "home_team_name": "インテル",
-      "away_team_name": "クラブ・ブルージュ",
+      "home_team_id": "CL-5721",
+      "away_team_id": "CL-4",
+      "home_team_name": "ボドー／グリムト",
+      "away_team_name": "ドルトムント",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "クラブ・ブルージュ vs インテル",
+      "matchup": "ドルトムント vs ボドー／グリムト",
       "abbr_matchup": null,
-      "start_time_jst": "10/14 04:00",
+      "start_time_jst": "10/15 04:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -242,32 +267,32 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "インテル の試合",
+          "text": "ドルトムント の試合",
           "weight": 1
         },
         {
           "tag": "quality",
-          "text": "インテル（昨季CLリーグフェーズ10位）とクラブ・ブルージュ（昨季CLリーグフェーズ19位）の対戦",
+          "text": "ボドー／グリムト（昨季CLリーグフェーズ23位）とドルトムント（昨季CLリーグフェーズ17位）の対戦",
           "weight": 0
         }
       ],
-      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "start_time_utc": "2026-10-15T04:00:00+09:00",
       "season_players": []
     },
     {
-      "game_id": "575344",
+      "game_id": "575351",
       "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-610",
-      "away_team_id": "CL-81",
-      "home_team_name": "ガラタサライ",
-      "away_team_name": "バルセロナ",
+      "home_team_id": "CL-675",
+      "away_team_id": "CL-7397",
+      "home_team_name": "フェイエノールト",
+      "away_team_name": "コモ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "バルセロナ vs ガラタサライ",
+      "matchup": "コモ vs フェイエノールト",
       "abbr_matchup": null,
-      "start_time_jst": "10/14 04:00",
+      "start_time_jst": "10/15 01:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -284,411 +309,1464 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 1,
+      "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": [
+      "reasons": [],
+      "start_time_utc": "2026-10-15T01:45:00+09:00",
+      "season_players": []
+    },
+    {
+      "game_id": "575355",
+      "league": "チャンピオンズリーグ",
+      "home_team_id": "CL-58",
+      "away_team_id": "CL-613",
+      "home_team_name": "アストン・ヴィラ",
+      "away_team_name": "Fenerbahçe SK",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "Fenerbahçe SK vs アストン・ヴィラ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/15 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": null,
+      "away_standing": null,
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [],
+      "start_time_utc": "2026-10-15T04:00:00+09:00",
+      "season_players": []
+    },
+    {
+      "game_id": "575356",
+      "league": "チャンピオンズリーグ",
+      "home_team_id": "CL-90",
+      "away_team_id": "CL-503",
+      "home_team_name": "レアル・ベティス",
+      "away_team_name": "ポルト",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ポルト vs レアル・ベティス",
+      "abbr_matchup": null,
+      "start_time_jst": "10/15 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": null,
+      "away_standing": null,
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [],
+      "start_time_utc": "2026-10-15T04:00:00+09:00",
+      "season_players": []
+    },
+    {
+      "game_id": "575357",
+      "league": "チャンピオンズリーグ",
+      "home_team_id": "CL-1887",
+      "away_team_id": "CL-1899",
+      "home_team_name": "シャフタール",
+      "away_team_name": "PAE AEK",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "PAE AEK vs シャフタール",
+      "abbr_matchup": null,
+      "start_time_jst": "10/15 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": null,
+      "away_standing": null,
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [],
+      "start_time_utc": "2026-10-15T04:00:00+09:00",
+      "season_players": []
+    },
+    {
+      "game_id": "575358",
+      "league": "チャンピオンズリーグ",
+      "home_team_id": "CL-7509",
+      "away_team_id": "CL-10",
+      "home_team_name": "スロバン・ブラチスラバ",
+      "away_team_name": "シュツットガルト",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "シュツットガルト vs スロバン・ブラチスラバ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/15 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": null,
+      "away_standing": null,
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [],
+      "start_time_utc": "2026-10-15T04:00:00+09:00",
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915416",
+      "espn_event_id": "401915416",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-10-14T16:45:00+00:00",
+      "start_time_jst": "10/15 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Feyenoord Rotterdam",
+      "home_team_id": "espn-142",
+      "away_team_name": "Como 1907",
+      "away_team_id": "espn-2572",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915409",
+      "espn_event_id": "401915409",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-10-14T19:00:00+00:00",
+      "start_time_jst": "10/15 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Aston Villa FC",
+      "home_team_id": "espn-362",
+      "away_team_name": "Fenerbahce",
+      "away_team_id": "espn-436",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915393",
+      "espn_event_id": "401915393",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-10-14T19:00:00+00:00",
+      "start_time_jst": "10/15 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Bodo/Glimt",
+      "home_team_id": "espn-2980",
+      "away_team_name": "Borussia Dortmund",
+      "away_team_id": "espn-124",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915408",
+      "espn_event_id": "401915408",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-10-14T19:00:00+00:00",
+      "start_time_jst": "10/15 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Real Betis",
+      "home_team_id": "espn-244",
+      "away_team_name": "FC Porto",
+      "away_team_id": "espn-437",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915406",
+      "espn_event_id": "401915406",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-10-14T19:00:00+00:00",
+      "start_time_jst": "10/15 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Shakhtar Donetsk",
+      "home_team_id": "espn-493",
+      "away_team_name": "AEK Athens",
+      "away_team_id": "espn-887",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915405",
+      "espn_event_id": "401915405",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-10-14T19:00:00+00:00",
+      "start_time_jst": "10/15 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Slovan Bratislava",
+      "home_team_id": "espn-521",
+      "away_team_name": "VfB Stuttgart",
+      "away_team_id": "espn-134",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915573",
+      "espn_event_id": "401915573",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "AZ Alkmaar",
+      "home_team_id": "espn-140",
+      "away_team_name": "Hapoel Be'er",
+      "away_team_id": "espn-13083",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915576",
+      "espn_event_id": "401915576",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Lech Poznan",
+      "home_team_id": "espn-2990",
+      "away_team_name": "Bayer Leverkusen",
+      "away_team_id": "espn-131",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915566",
+      "espn_event_id": "401915566",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Lyon",
+      "home_team_id": "espn-167",
+      "away_team_name": "Crystal Palace FC",
+      "away_team_id": "espn-384",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "鎌田大地",
+          "冨安健洋"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
         {
-          "tag": "quality",
-          "text": "バルセロナ の試合",
-          "weight": 1
+          "name": "鎌田大地",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 1,
+          "assists": 3,
+          "minutes": 530,
+          "out": false,
+          "as_of": "2026-10-14T10:01:35.444960+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         },
         {
-          "tag": "quality",
-          "text": "ガラタサライ（昨季CLリーグフェーズ20位）とバルセロナ（昨季CLリーグフェーズ5位）の対戦",
-          "weight": 0
+          "name": "冨安健洋",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 189,
+          "out": true,
+          "as_of": "2026-10-14T10:01:35.444960+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
+      ]
+    },
+    {
+      "game_id": "espn-401915577",
+      "espn_event_id": "401915577",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
       ],
-      "start_time_utc": "2026-10-14T04:00:00+09:00",
+      "home_team_name": "NK Celje",
+      "home_team_id": "espn-3362",
+      "away_team_name": "Omonia Nicosia",
+      "away_team_id": "espn-617",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
       "season_players": []
     },
     {
-      "game_id": "575341",
-      "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-546",
-      "away_team_id": "CL-498",
-      "home_team_name": "ランス",
-      "away_team_name": "スポルティング",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "スポルティング vs ランス",
-      "abbr_matchup": null,
-      "start_time_jst": "10/14 01:45",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
+      "game_id": "espn-401915568",
+      "espn_event_id": "401915568",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
       "home_standing": null,
       "away_standing": null,
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": [],
-      "start_time_utc": "2026-10-14T01:45:00+09:00",
-      "season_players": []
-    },
-    {
-      "game_id": "575342",
-      "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-10233",
-      "away_team_id": "CL-930",
-      "home_team_name": "Sabah FK",
-      "away_team_name": "スラビア・プラハ",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "スラビア・プラハ vs Sabah FK",
-      "abbr_matchup": null,
-      "start_time_jst": "10/14 01:45",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": null,
-      "away_standing": null,
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": [],
-      "start_time_utc": "2026-10-14T01:45:00+09:00",
-      "season_players": []
-    },
-    {
-      "game_id": "575348",
-      "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-721",
-      "away_team_id": "CL-674",
-      "home_team_name": "ライプツィヒ",
-      "away_team_name": "PSV",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "PSV vs ライプツィヒ",
-      "abbr_matchup": null,
-      "start_time_jst": "10/14 04:00",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": null,
-      "away_standing": null,
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": [],
-      "start_time_utc": "2026-10-14T04:00:00+09:00",
-      "season_players": []
-    },
-    {
-      "game_id": "575349",
-      "league": "チャンピオンズリーグ",
-      "home_team_id": "CL-94",
-      "away_team_id": "CL-113",
-      "home_team_name": "ビジャレアル",
-      "away_team_name": "ナポリ",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "ナポリ vs ビジャレアル",
-      "abbr_matchup": null,
-      "start_time_jst": "10/14 04:00",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": null,
-      "away_standing": null,
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": [
-        {
-          "tag": "quality",
-          "text": "ビジャレアル（昨季CLリーグフェーズ35位）とナポリ（昨季CLリーグフェーズ30位）の対戦",
-          "weight": 0
-        }
+      "fixture_sources": [
+        "ESPN"
       ],
-      "start_time_utc": "2026-10-14T04:00:00+09:00",
-      "season_players": [],
-      "preview_out_names": [],
-      "preview_rating": {
-        "score": 25,
-        "factors": [
-          {
-            "key": "competition",
-            "points": 25,
-            "evidence": "チャンピオンズリーグ"
-          }
+      "home_team_name": "RB Salzburg",
+      "home_team_id": "espn-2790",
+      "away_team_name": "AC Milan",
+      "away_team_id": "espn-103",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915567",
+      "espn_event_id": "401915567",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Sparta Prague",
+      "home_team_id": "espn-433",
+      "away_team_name": "Lillestrom",
+      "away_team_id": "espn-987",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "上田綺世"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915575",
+      "espn_event_id": "401915575",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Torreense",
+      "home_team_id": "espn-21615",
+      "away_team_name": "Sunderland AFC",
+      "away_team_id": "espn-366",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915574",
+      "espn_event_id": "401915574",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Union St.-Gilloise",
+      "home_team_id": "espn-5807",
+      "away_team_name": "Real Sociedad",
+      "away_team_id": "espn-89",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "久保建英"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915571",
+      "espn_event_id": "401915571",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "AFC Bournemouth",
+      "home_team_id": "espn-349",
+      "away_team_name": "SK Sturm Graz",
+      "away_team_id": "espn-3746",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915562",
+      "espn_event_id": "401915562",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Benfica",
+      "home_team_id": "espn-1929",
+      "away_team_name": "Celtic",
+      "away_team_id": "espn-256",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915560",
+      "espn_event_id": "401915560",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Celta Vigo",
+      "home_team_id": "espn-85",
+      "away_team_name": "Juventus FC",
+      "away_team_id": "espn-111",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915549",
+      "espn_event_id": "401915549",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Dinamo Zagreb",
+      "home_team_id": "espn-597",
+      "away_team_name": "Anderlecht",
+      "away_team_id": "espn-441",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915564",
+      "espn_event_id": "401915564",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Ferencvaros",
+      "home_team_id": "espn-622",
+      "away_team_name": "Viktoria Plzen",
+      "away_team_id": "espn-11706",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915561",
+      "espn_event_id": "401915561",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Jagiellonia Bialystok",
+      "home_team_id": "espn-11505",
+      "away_team_name": "Ararat-Armenia",
+      "away_team_id": "espn-20024",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915550",
+      "espn_event_id": "401915550",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Olympique de Marseille",
+      "home_team_id": "espn-176",
+      "away_team_name": "Olympiacos",
+      "away_team_id": "espn-435",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915565",
+      "espn_event_id": "401915565",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "NEC Nijmegen",
+      "home_team_id": "espn-147",
+      "away_team_name": "Levski Sofia",
+      "away_team_id": "espn-490",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915572",
+      "espn_event_id": "401915572",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Stade Rennais",
+      "home_team_id": "espn-169",
+      "away_team_name": "OFI Crete",
+      "away_team_id": "espn-1010",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915563",
+      "espn_event_id": "401915563",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "TSG Hoffenheim",
+      "home_team_id": "espn-7911",
+      "away_team_name": "Besiktas",
+      "away_team_id": "espn-1895",
+      "jp_by_side": {
+        "home": [
+          "町田浩樹"
         ],
-        "interest": {
-          "reasons": [],
-          "player": null
-        },
-        "japanese": false
-      }
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915855",
+      "espn_event_id": "401915855",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CSKA Sofia",
+      "home_team_id": "espn-10834",
+      "away_team_name": "AS Monaco FC",
+      "away_team_id": "espn-174",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "南野拓実"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915854",
+      "espn_event_id": "401915854",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CSU Craiova",
+      "home_team_id": "espn-8089",
+      "away_team_name": "Getafe CF",
+      "away_team_id": "espn-2922",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915859",
+      "espn_event_id": "401915859",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Egnatia",
+      "home_team_id": "espn-21943",
+      "away_team_name": "FC Midtjylland",
+      "away_team_id": "espn-572",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915748",
+      "espn_event_id": "401915748",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Lugano",
+      "home_team_id": "espn-7672",
+      "away_team_name": "Red Star Belgrade",
+      "away_team_id": "espn-2290",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915861",
+      "espn_event_id": "401915861",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Hajduk Split",
+      "home_team_id": "espn-489",
+      "away_team_name": "Ajax Amsterdam",
+      "away_team_id": "espn-139",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915860",
+      "espn_event_id": "401915860",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "KAA Gent",
+      "home_team_id": "espn-3611",
+      "away_team_name": "AGF",
+      "away_team_id": "espn-7853",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915858",
+      "espn_event_id": "401915858",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "KuPS Kuopio",
+      "home_team_id": "espn-8169",
+      "away_team_name": "Trabzonspor",
+      "away_team_id": "espn-997",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915857",
+      "espn_event_id": "401915857",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Mjällby AIF",
+      "home_team_id": "espn-20301",
+      "away_team_name": "Inter D'Escaldes",
+      "away_team_id": "espn-20703",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915856",
+      "espn_event_id": "401915856",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Panathinaikos",
+      "home_team_id": "espn-443",
+      "away_team_name": "Borac Banja Luka",
+      "away_team_id": "espn-20710",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915747",
+      "espn_event_id": "401915747",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T16:45:00+00:00",
+      "start_time_jst": "10/16 01:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Riga FC",
+      "home_team_id": "espn-19246",
+      "away_team_name": "Kairat Almaty",
+      "away_team_id": "espn-2528",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915746",
+      "espn_event_id": "401915746",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Atalanta BC",
+      "home_team_id": "espn-105",
+      "away_team_name": "Pafos",
+      "away_team_id": "espn-22281",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915853",
+      "espn_event_id": "401915853",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Brighton & Hove Albion FC",
+      "home_team_id": "espn-331",
+      "away_team_name": "Kauno Zalgiris",
+      "away_team_id": "espn-20028",
+      "jp_by_side": {
+        "home": [
+          "三笘薫"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": [
+        {
+          "name": "三笘薫",
+          "club": "ブライトン",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 0,
+          "out": true,
+          "as_of": "2026-10-14T10:01:35.444960+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401915852",
+      "espn_event_id": "401915852",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "F.C. København",
+      "home_team_id": "espn-909",
+      "away_team_name": "Braga",
+      "away_team_id": "espn-2994",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915851",
+      "espn_event_id": "401915851",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Twente",
+      "home_team_id": "espn-152",
+      "away_team_name": "FC Thun",
+      "away_team_id": "espn-3024",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915850",
+      "espn_event_id": "401915850",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Heart of Midlothian",
+      "home_team_id": "espn-262",
+      "away_team_name": "FC Nordsjælland",
+      "away_team_id": "espn-3101",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915848",
+      "espn_event_id": "401915848",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SC Freiburg",
+      "home_team_id": "espn-126",
+      "away_team_name": "Jablonec",
+      "away_team_id": "espn-7922",
+      "jp_by_side": {
+        "home": [
+          "鈴木唯人",
+          "後藤啓介",
+          "山本理仁"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915849",
+      "espn_event_id": "401915849",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Sint-Truidense",
+      "home_team_id": "espn-936",
+      "away_team_name": "Iberia 1999",
+      "away_team_id": "espn-20025",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915847",
+      "espn_event_id": "401915847",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-15T19:00:00+00:00",
+      "start_time_jst": "10/16 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SK Brann",
+      "home_team_id": "espn-620",
+      "away_team_name": "Lincoln Red Imps",
+      "away_team_id": "espn-17856",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
     }
   ],
   "ai_status": {
     "targets": 3,
     "succeeded": 3,
-    "cost_usd": 0.01158
+    "cost_usd": 0.01598
   },
-  "source_errors": [
-    {
-      "competition": "PL",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "PD",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "BL1",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "SA",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "FL1",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "CL",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "EL",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "UECL",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "FAC",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "EFL",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "CDR",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "DFB",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "CI",
-      "reason": "HTTPError"
-    },
-    {
-      "competition": "CDF",
-      "reason": "HTTPError"
-    }
-  ],
+  "source_errors": [],
   "fixture_coverage": [
     {
       "competition": "PL",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "PD",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "BL1",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "SA",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "FL1",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "CL",
-      "status": "failed"
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
     },
     {
       "competition": "EL",
-      "status": "failed"
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
     },
     {
       "competition": "UECL",
-      "status": "failed"
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
     },
     {
       "competition": "FAC",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "EFL",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "CDR",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "DFB",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "CI",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     },
     {
       "competition": "CDF",
-      "status": "failed"
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
     }
   ],
-  "source": "football-data.org",
+  "source": "ESPN・football-data.org",
   "preview_selection": {
-    "day": "2026-10-13",
+    "day": "2026-10-14",
     "threshold": 30,
     "max_games": 3,
     "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
     "selected_ids": [
-      "575345",
-      "575346"
+      "575353",
+      "575352"
     ],
     "count": 2,
     "reason": "",
     "rejected": [
       {
-        "id": "575347",
+        "id": "575350",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "575343",
+        "id": "575354",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "575344",
+        "id": "575351",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "575341",
+        "id": "575355",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "575342",
+        "id": "575356",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "575348",
+        "id": "575357",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "575358",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401915416",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401915409",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401915393",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401915408",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401915406",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401915405",
         "reason": "クラブの表示名/読みが未登録"
       }
     ],
-    "source_errors": [
-      {
-        "competition": "PL",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "PD",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "BL1",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "SA",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "FL1",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "CL",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "EL",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "UECL",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "FAC",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "EFL",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "CDR",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "DFB",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "CI",
-        "reason": "HTTPError"
-      },
-      {
-        "competition": "CDF",
-        "reason": "HTTPError"
-      }
-    ]
+    "source_errors": []
   }
 }

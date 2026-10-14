@@ -8,6 +8,7 @@ concurrency:
   cancel-in-progress: false
 env:
   COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
 
 jobs:
   repair:

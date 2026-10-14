@@ -356,6 +356,9 @@ def layout_talk(d, text: str):
     読み上げだけが続いて画面が止まって見えた。
     """
     import caption_breaks
+    import bubble_styles
+    if bubble_styles.selected():
+        return 36,bubble_styles.page_lines(text,bubble_styles.longform_box(legacy=True))
     avail_w = COL_X1 - COL_X0 - TALK_PAD * 2
     avail_h = TALK_Y1 - TALK_Y0 - TALK_PAD * 2
     for size in TALK_SIZES:
@@ -694,6 +697,11 @@ def render_intro(p, topic="", day=""):
     return im
 
 
+def r3_time():
+    import review_render_v3 as r3
+    return r3._PROGRAM_CLOCK[0] or 0
+
+
 def render_stage(p, seg, portrait_dir="", topic="", panel=None,
                  score=None):
     """立ち絵以外の全部。下地・札・台詞・名前。
@@ -724,52 +732,62 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None,
         d.text((x - d.textlength(s["name"], font=f) / 2, cy + r + 24),
                s["name"], font=f, fill=col if talking else DIM)
 
-    # 台詞。置ける場所は決まっている。中身をそこへ収める。
-    size = seg.get("_size")
-    lines = seg.get("_lines")
-    if lines is None:
-        size, pages = layout_talk(d, seg.get("text", ""))
-        lines = pages[0]
-
-    # 箱の高さは**毎回同じ**にする。
-    #
-    # 中身に合わせて縮めていたので、1行の台詞のときだけ箱が小さくなって
-    # 札との間に穴が空いた。札と同じで、ここも「台詞が出る場所」。
-    # 場所が動くと、そう見えない。
-    # 代わりに、行が少ない日は上下の真ん中へ寄せる。
-    y0 = TALK_Y0
-    d.rounded_rectangle([COL_X0, y0, COL_X1, TALK_Y1], 24, fill=SURF)
-    # 喋っている側の縁に色の帯。吹き出しの尻尾の代わり。
-    left = who["side"] == "left"
-    if left:
-        d.rounded_rectangle([COL_X0, y0, COL_X0 + 10, TALK_Y1], 5,
-                            fill=who["color"])
+    import bubble_styles
+    if bubble_styles.selected():
+        import characters
+        key=characters.SPEAKERS.get(seg.get('speaker'),'metan')
+        lines=seg.get('_lines')
+        text=''.join(lines) if lines is not None else seg.get('text','')
+        if text:bubble_styles.draw(im,key,text,seconds=r3_time(),box=bubble_styles.longform_box(legacy=True))
+        from PIL import ImageDraw
+        d=ImageDraw.Draw(im)
     else:
-        d.rounded_rectangle([COL_X1 - 10, y0, COL_X1, TALK_Y1], 5,
-                            fill=who["color"])
+        # 台詞。置ける場所は決まっている。中身をそこへ収める。
+        size = seg.get("_size")
+        lines = seg.get("_lines")
+        if lines is None:
+            size, pages = layout_talk(d, seg.get("text", ""))
+            lines = pages[0]
 
-    # 名前の札。箱の上端に、喋っている側から出す。
-    #
-    # 文字が札の中で上に寄っていた。anchor="lm"（左・上下中央）で
-    # 置くと、書体が変わっても真ん中のまま。座標の足し算で合わせると
-    # フォントを替えたときにずれる。
-    nm, fn = who["name"], font(32)
-    nw = d.textlength(nm, font=fn) + 48
-    nx = COL_X0 + 24 if left else COL_X1 - 24 - nw
-    ny0, ny1 = y0 - NAME_H + 8, y0 + 12
-    d.rounded_rectangle([nx, ny0, nx + nw, ny1], 13, fill=who["color"])
-    d.text((nx + 24, (ny0 + ny1) / 2), nm, font=fn, fill=(16, 22, 18),
-           anchor="lm")
+        # 箱の高さは**毎回同じ**にする。
+        #
+        # 中身に合わせて縮めていたので、1行の台詞のときだけ箱が小さくなって
+        # 札との間に穴が空いた。札と同じで、ここも「台詞が出る場所」。
+        # 場所が動くと、そう見えない。
+        # 代わりに、行が少ない日は上下の真ん中へ寄せる。
+        y0 = TALK_Y0
+        d.rounded_rectangle([COL_X0, y0, COL_X1, TALK_Y1], 24, fill=SURF)
+        # 喋っている側の縁に色の帯。吹き出しの尻尾の代わり。
+        left = who["side"] == "left"
+        if left:
+            d.rounded_rectangle([COL_X0, y0, COL_X0 + 10, TALK_Y1], 5,
+                                fill=who["color"])
+        else:
+            d.rounded_rectangle([COL_X1 - 10, y0, COL_X1, TALK_Y1], 5,
+                                fill=who["color"])
 
-    # 1行ずつ出す。ANIM_END までに出し切る。
-    shown = len(lines) if p >= ANIM_END else max(
-        1, int(len(lines) * (p / ANIM_END)))
-    # 上下の真ん中から書き出す。
-    block = len(lines) * (size + TALK_LEAD) - TALK_LEAD
-    yy = y0 + max(TALK_PAD, ((TALK_Y1 - TALK_Y0) - block) // 2)
-    for ln in lines[:shown]:
-        d.text((COL_X0 + TALK_PAD, yy), ln, font=font(size), fill=TEXT)
-        yy += size + TALK_LEAD
+        # 名前の札。箱の上端に、喋っている側から出す。
+        #
+        # 文字が札の中で上に寄っていた。anchor="lm"（左・上下中央）で
+        # 置くと、書体が変わっても真ん中のまま。座標の足し算で合わせると
+        # フォントを替えたときにずれる。
+        nm, fn = who["name"], font(32)
+        nw = d.textlength(nm, font=fn) + 48
+        nx = COL_X0 + 24 if left else COL_X1 - 24 - nw
+        ny0, ny1 = y0 - NAME_H + 8, y0 + 12
+        d.rounded_rectangle([nx, ny0, nx + nw, ny1], 13, fill=who["color"])
+        d.text((nx + 24, (ny0 + ny1) / 2), nm, font=fn, fill=(16, 22, 18),
+               anchor="lm")
+
+        # 1行ずつ出す。ANIM_END までに出し切る。
+        shown = len(lines) if p >= ANIM_END else max(
+            1, int(len(lines) * (p / ANIM_END)))
+        # 上下の真ん中から書き出す。
+        block = len(lines) * (size + TALK_LEAD) - TALK_LEAD
+        yy = y0 + max(TALK_PAD, ((TALK_Y1 - TALK_Y0) - block) // 2)
+        for ln in lines[:shown]:
+            d.text((COL_X0 + TALK_PAD, yy), ln, font=font(size), fill=TEXT)
+            yy += size + TALK_LEAD
 
     # 音声の表記。立ち絵が画面の下端まで来ているので、
     # 左右の隅ではなく中央の列の下に置く(重ならない唯一の場所)。
@@ -964,7 +982,9 @@ def main() -> int:
                     proc.stdin.write(last_frame)
                     continue
                 p, settled = video_common.anim_step(k, n)
-                if settled and stage is not None:
+                if __import__('bubble_styles').selected():
+                    __import__('review_render_v3').set_program_clock((frame0+k)/FPS)
+                if settled and stage is not None and not __import__('bubble_styles').selected():
                     im = stage.copy()
                 elif is_intro:
                     im = render_intro(p, topic, day_label)

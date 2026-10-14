@@ -698,6 +698,7 @@ def comments(t, voices, team_id, strip_text, title=TITLE, live=LIVE_COMMENTS,
     im.paste(layer, (0, AREA_TOP), layer)
     source(d, source_lines, second)
     presenter(im, t)
+    if __import__('bubble_styles').selected():r3.caption(im,t)
     return im
 
 

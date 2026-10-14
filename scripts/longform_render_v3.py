@@ -940,6 +940,11 @@ def subtitle_text(seg):
 
 def layout_subtitle(d, text):
     """(大きさ, 行の高さ, 行)。字幕の札に収まるいちばん大きい文字で。"""
+    import bubble_styles
+    if bubble_styles.selected():
+        pages=bubble_styles.page_lines(text,bubble_styles.longform_box())
+        if len(pages)!=1:raise ValueError('長編を文節でページ分割してください')
+        return 36,49,pages[0]
     width = SUB_X1 - SUB_X0 - SUB_BAR - SUB_PAD_X * 2
     room = SUB_Y1 - SUB_Y0 - SUB_PAD_TOP - SUB_PAD_BOTTOM
     import caption_breaks
@@ -966,6 +971,15 @@ def paginate(segs):
     幅も高さも違うので、新デザインのときはこちらで分ける。音は分けない（1つの読み上げのまま）。
     尺は文字数で按分する（いまの長編と同じ）。戻り値の形も同じ（_size・_lines・_share）。
     """
+    import bubble_styles
+    if bubble_styles.selected():
+        out=[]
+        for seg in segs:
+            pages=bubble_styles.page_lines(str(seg.get('text') or ''),bubble_styles.longform_box())
+            weights=[max(1,sum(map(len,lines))) for lines in pages]
+            for lines,weight in zip(pages,weights):
+                out.append({**seg,'_size':36,'_lines':lines,'_share':weight/sum(weights)})
+        return out
     import caption_breaks
     d = ImageDraw.Draw(Image.new("RGB", (8, 8)))
     width = SUB_X1 - SUB_X0 - SUB_BAR - SUB_PAD_X * 2
@@ -1006,6 +1020,13 @@ def type_seconds(text, dur=None):
 
 
 def subtitle(im, d, t, seg, who, dur=None):
+    import bubble_styles
+    if bubble_styles.selected():
+        import characters
+        key=next((key for key,name in characters.NAMES.items() if name==who['name']),'metan')
+        text=subtitle_text(seg)
+        if text:bubble_styles.draw(im,key,text,seconds=t,box=bubble_styles.longform_box())
+        return
     text = subtitle_text(seg)
     if not text:
         return
