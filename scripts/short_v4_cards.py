@@ -635,6 +635,7 @@ def team_row(im,box,row,need):
 
 
 def focus(t,card,view):
+    from japanese_team_names import team_names
     im=canvas(t,card.get('label','PS予告'))
     text(im,L,256,card.get('round_game') or card.get('subhead',''),40,width=R-L)
     v=view['v3'];clock=v.get('big','')
@@ -654,7 +655,7 @@ def focus(t,card,view):
             phrase=(card.get('v4_club_mentions') or {}).get(row['name'])
             if phrase==row['name']:
                 text(im,L+24,y,'注目球団',32,r3.GOLD,width=R-L-48)
-            else:text(im,L+24,y,'・'.join(row['players']),40,width=R-L-48)
+            else:text(im,L+24,y,team_names(row['players'],row['name']) if len(row['players'])>=2 else team_names(row['players']),40,width=R-L-48)
             y+=60
     return finish(im,t,v.get('ticker',''),'出典：'+card.get('source_label','MLB公式日程'),True)
 

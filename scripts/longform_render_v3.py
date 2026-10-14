@@ -1136,7 +1136,7 @@ def render_line(t, seg, portrait_dir="", topic="", panel=None, state=None, score
 # ---------------------------------------------------------------------------
 def _panel_events(kind, panel):
     """札が出てからの秒で、[(秒, 種類, 案, 追加の音量dB)]。"""
-    out = [(T_CARD, "notify" if kind == "quote" else "swish", "a", -3)]
+    out = [(T_CARD, "notify", "a", -3)] if kind == "quote" else []
     if kind == "stat":
         if panel.get("value"):
             out.append((T_ROLL[0], "roll", "a", -2))
@@ -1154,9 +1154,6 @@ def _panel_events(kind, panel):
             out.append((T_ROLL[1] - 0.04, "stop", "a", 0))
         if isinstance(a, int) and isinstance(h, int) and a != h:
             out.append((T_WIN, "pop", "a", -2))
-    elif kind == "group":
-        for i, _ in enumerate((panel.get("rows") or [])[:4]):
-            out.append((T_ROW0 + i * T_ROW_GAP, "swish", "b", -5))
     elif kind == "star":
         n = len(_tokens(panel.get("line", "")))
         for i in range(min(n, 8)):
@@ -1175,8 +1172,8 @@ def cues(seg, panel=None, topic="", *, panel_since=0.0, chapter_start=False, cha
     chapter_start: この画面で章が変わったか（章の札が明るくなるときに切り替えの音）。
     """
     out = []
-    if chapter_start and chapter_index(seg or {}, chapters) is not None:
-        out.append((0.0, "transition", "b", -6))
+    if panel_since == 0 or (chapter_start and chapter_index(seg or {}, chapters) is not None):
+        out.append((0.0, "transition", "b", -10))
     kind, panel_ = panel_kind(panel, topic)
     for at, k, v, db in _panel_events(kind, panel_):
         rel = at - panel_since

@@ -221,5 +221,7 @@ def schedule(t,spec,rows,label,source_text):
 def cues(rows, times=None):
     result = r3.cues("list", {}, rows, 0, len(rows))
     if times is not None:
-        result = [result[0]] + [(at, *cue[1:]) for at, cue in zip(times, result[1:])]
+        # notifyだけ残るので、削除された通常行の時刻を詰めて割り当てない。
+        timing = {r3.T_CARD0 + i * r3.T_CARD_GAP: at for i, at in enumerate(times)}
+        result = [result[0]] + [(timing.get(cue[0], cue[0]), *cue[1:]) for cue in result[1:]]
     return result

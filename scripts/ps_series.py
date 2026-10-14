@@ -18,6 +18,7 @@
 """
 
 import json
+from japanese_team_names import team_names
 import pathlib
 import sys
 import urllib.request
@@ -290,18 +291,18 @@ def jp_text(s: dict) -> str:
     mine = next((x for x in t if x["players"]), None)
     day = (s.get("next") or {}).get("day") or ""
     if s.get("waiting") and mine is not None:
-        who = f"{'・'.join(mine['players'])}の{mine['name']}"
+        who = team_names(mine['players'], mine['name'])
         head = (f"{who}はワイルドカードシリーズを免除され、{s['round_jp']}から"
                 if s["stage"] == 2 else f"{who}は{s['round_jp']}で相手を待つ")
         return head + (f"。{day}に第1戦" if day else "")
     if mine is None or len(t) < 2:
         return ""
     opp = t[1] if mine is t[0] else t[0]
-    who = f"{'・'.join(mine['players'])}の{mine['name']}"
+    who = team_names(mine['players'], mine['name'])
     # **相手にも日本人選手がいれば、その名前も言う。**言わないと
     # 「アストロズ対ホワイトソックス」で村上宗隆が消える。
     if opp["players"]:
-        opp = dict(opp, name=f"{'・'.join(opp['players'])}の{opp['name']}")
+        opp = dict(opp, name=team_names(opp['players'], opp['name']))
     rec = f"{mine['wins']}勝{opp['wins']}敗"
     if s["over"]:
         if s["winner"] == mine["id"]:

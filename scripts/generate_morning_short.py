@@ -16,6 +16,7 @@ MLBは日本の朝に終わるので、起きた直後に結果を1本で確認�
 """
 
 import argparse
+from japanese_team_names import team_names
 import functools
 import json
 import os
@@ -968,7 +969,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             say = (f"日本人選手のいる{len(jps)}球団のうち、"
                    f"{len(ins)}球団が進出圏内です。")
             if ins:
-                say += (f"{'・'.join(top['players'])}の{top['team']}が"
+                say += (f"{team_names(top['players'], top['team'])}が"
                         f"{top['league_jp']}第{top['seed']}シード。")
                 m = top.get("magic")
                 if isinstance(m, int):
@@ -2164,7 +2165,7 @@ def ps_open(ps: dict) -> tuple:
         for x in jp:
             team = x.get("team") or ""
             if team and team in text:
-                names = "・".join(x.get("players") or [])
+                names = team_names(x.get("players") or [])
                 ask = (f"{names}のところが動いたのだ？" if names
                        else f"{team}が動いたのだ？")
                 ans = text + "。"
@@ -2864,7 +2865,7 @@ def render_ps_japanese(p, jp: list):
                fill=TEXT if seeded else DIM)
         # 選手の名前。ここが**この画面を見る理由**なので、
         # 球団名の次に大きく、色を付けて置く。
-        d.text((x0 + 34, y + 74), "・".join(x.get("players") or []),
+        d.text((x0 + 34, y + 74), team_names(x.get("players") or []),
                font=font(38), fill=JP)
         d.text((x0 + 34, y + 110), "%s　%d勝%d敗" % (
             x.get("league_jp", ""), x.get("w") or 0, x.get("l") or 0),
@@ -2894,7 +2895,7 @@ def render_ps_japanese(p, jp: list):
     # 2行の日にこの1行が帯に潜る。帯の上端から測る。
     if rest and p > 0.32 and y + 44 < spoken_top(d):
         s = "ほか " + "、".join(
-            "%s（%s）" % (x.get("team"), "・".join(x.get("players") or []))
+            "%s（%s）" % (x.get("team"), team_names(x.get("players") or []))
             for x in rest[:2])
         d.text((80, y + 14), s, font=font(26), fill=DIM)
     return im
@@ -3003,7 +3004,7 @@ def render_ps_series(p, data: dict, keys: list, head: str, league: str = ""):
             d.text((x0 + 48, ry), t["name"], font=font(46),
                    fill=DIM if lost else TEXT)
             if t["players"]:
-                d.text((x0 + 48, ry + 52), "・".join(t["players"]),
+                d.text((x0 + 48, ry + 52), team_names(t["players"]),
                        font=font(24), fill=JP)
             if s["played"] == 0:
                 continue      # 始まる前は数字を出さない（スコアに見える）

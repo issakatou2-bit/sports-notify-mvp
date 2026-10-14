@@ -40,7 +40,7 @@ box = manifest["presenters"][0]["box"]
 check("立ち絵が下の題・右のボタン列に重ならない",
       box[3] <= rt.SAFE_BOTTOM and box[2] <= rt.SAFE_RIGHT, True)
 said = [r["text"] for r in manifest["text"]]
-check("スコアボードに日本人選手の名前", "村上宗隆・西田陸浮" in said, True)
+check("スコアボードに日本人選手の名字", "村上、西田" in said, True)
 check("略称バッジ", "CWS" in said and "CLE" in said, True)
 check("用語メモは表紙だけ（カードには出さない）", "用語メモ" in said, False)
 check("出典は出す", any(t.startswith("出典：") for t in said), True)

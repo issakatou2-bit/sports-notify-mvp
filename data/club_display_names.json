@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checked_on": "2026-10-12",
+  "checked_on": "2026-10-14",
   "policy": "表示案/短名/読みは本表。legacyは旧ルックの画素回帰用。所属・順位は本表で決めない。",
   "clubs": [
     {
@@ -407,7 +407,8 @@
         "レアル・ベティス",
         "BET",
         "Real Betis Balompié",
-        "betis"
+        "betis",
+        "Real Betis"
       ],
       "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
       "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
@@ -493,7 +494,8 @@
         "レアル・ソシエダ",
         "RSO",
         "Real Sociedad de Fútbol",
-        "sociedad"
+        "sociedad",
+        "Real Sociedad"
       ],
       "reason": "長い正式形は中黒を保持。狭い欄の短縮名を別に指定。",
       "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
@@ -595,7 +597,9 @@
         "セルタ",
         "CEL",
         "RC Celta de Vigo",
-        "celta"
+        "celta",
+        "Celta Vigo",
+        "Celta"
       ],
       "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
       "source": "https://www.nikkansports.com/soccer/world/spain/data/standings/"
@@ -1126,7 +1130,8 @@
         "レバークーゼン",
         "B04",
         "Bayer 04 Leverkusen",
-        "leverkusen"
+        "leverkusen",
+        "Bayer Leverkusen"
       ],
       "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
       "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
@@ -1279,7 +1284,8 @@
         "ホッフェンハイム",
         "TSG",
         "TSG 1899 Hoffenheim",
-        "hoffenheim"
+        "hoffenheim",
+        "TSG Hoffenheim"
       ],
       "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
       "source": "https://www.nikkansports.com/soccer/world/germany/data/standings/"
@@ -1383,7 +1389,8 @@
         "リヨン",
         "OL",
         "Olympique Lyonnais",
-        "lyonnais"
+        "lyonnais",
+        "Lyon"
       ],
       "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
       "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
@@ -1435,7 +1442,8 @@
         "レンヌ",
         "REN",
         "Stade Rennais FC 1901",
-        "rennais"
+        "rennais",
+        "Stade Rennais"
       ],
       "reason": "一般的な短い呼称を維持。中黒を機械的に足さない。",
       "source": "https://www.nikkansports.com/soccer/world/france/data/standings/"
@@ -1764,6 +1772,1042 @@
       ],
       "reason": "96クラブ外の既存日本人選手の所属先。既存呼称を読みへ。",
       "source": "既存JP_PLAYERS_SOCCERのクラブ名（現所属の新規認定ではない）"
+    },
+    {
+      "id": "PAE AEK",
+      "league": "Europe",
+      "current": "AEKアテネ",
+      "display": "AEKアテネ",
+      "short": "AEKアテネ",
+      "reading": "エーイーケーアテネ",
+      "legacy": "AEKアテネ",
+      "aliases": [
+        "AEK Athens",
+        "AEK Athens FC",
+        "AEK"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "FK Bodø/Glimt",
+      "league": "Europe",
+      "current": "ボドー／グリムト",
+      "display": "ボドー／グリムト",
+      "short": "ボドー／グリムト",
+      "reading": "ボドーグリムト",
+      "legacy": "ボドー／グリムト",
+      "aliases": [
+        "Bodo/Glimt",
+        "Bodø/Glimt",
+        "FK Bodo/Glimt"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "Club Brugge KV",
+      "league": "Europe",
+      "current": "クラブ・ブルッヘ",
+      "display": "クラブ・ブルッヘ",
+      "short": "クラブ・ブルッヘ",
+      "reading": "クラブブルッヘ",
+      "legacy": "クラブ・ブルッヘ",
+      "aliases": [
+        "Club Brugge",
+        "Club Brugge FC"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "Fenerbahçe SK",
+      "league": "Europe",
+      "current": "フェネルバフチェ",
+      "display": "フェネルバフチェ",
+      "short": "フェネルバフチェ",
+      "reading": "フェネルバフチェ",
+      "legacy": "フェネルバフチェ",
+      "aliases": [
+        "Fenerbahce",
+        "Fenerbahçe",
+        "Fenerbahce SK"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "Feyenoord Rotterdam",
+      "league": "Europe",
+      "current": "フェイエノールト",
+      "display": "フェイエノールト",
+      "short": "フェイエノールト",
+      "reading": "フェイエノールト",
+      "legacy": "フェイエノールト",
+      "aliases": [
+        "Feyenoord",
+        "Feyenoord Rotterdam"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "Galatasaray SK",
+      "league": "Europe",
+      "current": "ガラタサライ",
+      "display": "ガラタサライ",
+      "short": "ガラタサライ",
+      "reading": "ガラタサライ",
+      "legacy": "ガラタサライ",
+      "aliases": [
+        "Galatasaray"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "LASK Linz",
+      "league": "Europe",
+      "current": "LASKリンツ",
+      "display": "LASKリンツ",
+      "short": "LASKリンツ",
+      "reading": "ラスクリンツ",
+      "legacy": "LASKリンツ",
+      "aliases": [
+        "LASK",
+        "LASK Linz",
+        "リンツ"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "FC Porto",
+      "league": "Europe",
+      "current": "ポルト",
+      "display": "ポルト",
+      "short": "ポルト",
+      "reading": "ポルト",
+      "legacy": "ポルト",
+      "aliases": [
+        "Porto"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "PSV",
+      "league": "Europe",
+      "current": "PSV",
+      "display": "PSV",
+      "short": "PSV",
+      "reading": "ピーエスブイ",
+      "legacy": "PSV",
+      "aliases": [
+        "PSV Eindhoven"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "ŠK Slovan Bratislava",
+      "league": "Europe",
+      "current": "スロバン・ブラチスラバ",
+      "display": "スロバン・ブラチスラバ",
+      "short": "スロバン・ブラチスラバ",
+      "reading": "スロバンブラチスラバ",
+      "legacy": "スロバン・ブラチスラバ",
+      "aliases": [
+        "Slovan Bratislava",
+        "SK Slovan Bratislava"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "Sabah FK",
+      "league": "Europe",
+      "current": "サバフ",
+      "display": "サバフ",
+      "short": "サバフ",
+      "reading": "サバフ",
+      "legacy": "サバフ",
+      "aliases": [
+        "Sabah",
+        "Sabah FC"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "FK Shakhtar Donetsk",
+      "league": "Europe",
+      "current": "シャフタール",
+      "display": "シャフタール",
+      "short": "シャフタール",
+      "reading": "シャフタール",
+      "legacy": "シャフタール",
+      "aliases": [
+        "Shakhtar",
+        "Shakhtar Donetsk",
+        "シャフタール・ドネツク"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "SK Slavia Praha",
+      "league": "Europe",
+      "current": "スラビア・プラハ",
+      "display": "スラビア・プラハ",
+      "short": "スラビア・プラハ",
+      "reading": "スラビアプラハ",
+      "legacy": "スラビア・プラハ",
+      "aliases": [
+        "Slavia Praha",
+        "Slavia Prague"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "Sporting Clube de Portugal",
+      "league": "Europe",
+      "current": "スポルティング",
+      "display": "スポルティング",
+      "short": "スポルティング",
+      "reading": "スポルティング",
+      "legacy": "スポルティング",
+      "aliases": [
+        "Sporting CP",
+        "Sporting Lisbon",
+        "スポルティングCP"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "Viking FK",
+      "league": "Europe",
+      "current": "バイキング",
+      "display": "バイキング",
+      "short": "バイキング",
+      "reading": "バイキング",
+      "legacy": "バイキング",
+      "aliases": [
+        "Viking"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefachampionsleague/clubs/"
+    },
+    {
+      "id": "RSC Anderlecht",
+      "league": "Europe",
+      "current": "アンデルレヒト",
+      "display": "アンデルレヒト",
+      "short": "アンデルレヒト",
+      "reading": "アンデルレヒト",
+      "legacy": "アンデルレヒト",
+      "aliases": [
+        "Anderlecht"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "FC Ararat-Armenia",
+      "league": "Europe",
+      "current": "アララト・アルメニア",
+      "display": "アララト・アルメニア",
+      "short": "アララト・アルメニア",
+      "reading": "アララトアルメニア",
+      "legacy": "アララト・アルメニア",
+      "aliases": [
+        "Ararat-Armenia"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "AZ Alkmaar",
+      "league": "Europe",
+      "current": "AZ",
+      "display": "AZ",
+      "short": "AZ",
+      "reading": "エーゼット",
+      "legacy": "AZ",
+      "aliases": [
+        "AZ Alkmaar"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "SL Benfica",
+      "league": "Europe",
+      "current": "ベンフィカ",
+      "display": "ベンフィカ",
+      "short": "ベンフィカ",
+      "reading": "ベンフィカ",
+      "legacy": "ベンフィカ",
+      "aliases": [
+        "Benfica"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "Beşiktaş JK",
+      "league": "Europe",
+      "current": "ベシクタシュ",
+      "display": "ベシクタシュ",
+      "short": "ベシクタシュ",
+      "reading": "ベシクタシュ",
+      "legacy": "ベシクタシュ",
+      "aliases": [
+        "Besiktas",
+        "Beşiktaş"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "NK Celje",
+      "league": "Europe",
+      "current": "ツェリェ",
+      "display": "ツェリェ",
+      "short": "ツェリェ",
+      "reading": "ツェリェ",
+      "legacy": "ツェリェ",
+      "aliases": [
+        "Celje"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "Ferencvárosi TC",
+      "league": "Europe",
+      "current": "フェレンツバーロシュ",
+      "display": "フェレンツバーロシュ",
+      "short": "フェレンツバーロシュ",
+      "reading": "フェレンツバーロシュ",
+      "legacy": "フェレンツバーロシュ",
+      "aliases": [
+        "Ferencvaros",
+        "Ferencváros"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "GNK Dinamo Zagreb",
+      "league": "Europe",
+      "current": "ディナモ・ザグレブ",
+      "display": "ディナモ・ザグレブ",
+      "short": "ディナモ・ザグレブ",
+      "reading": "ディナモザグレブ",
+      "legacy": "ディナモ・ザグレブ",
+      "aliases": [
+        "Dinamo Zagreb",
+        "GNK Dinamo"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "Hapoel Be'er Sheva FC",
+      "league": "Europe",
+      "current": "ハポエル・ベエルシェバ",
+      "display": "ハポエル・ベエルシェバ",
+      "short": "ハポエル・ベエルシェバ",
+      "reading": "ハポエルベエルシェバ",
+      "legacy": "ハポエル・ベエルシェバ",
+      "aliases": [
+        "Hapoel Be'er",
+        "Hapoel Beer Sheva",
+        "H. Beer-Sheva"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "Jagiellonia Białystok",
+      "league": "Europe",
+      "current": "ヤギエロニア",
+      "display": "ヤギエロニア",
+      "short": "ヤギエロニア",
+      "reading": "ヤギエロニア",
+      "legacy": "ヤギエロニア",
+      "aliases": [
+        "Jagiellonia",
+        "Jagiellonia Bialystok"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "KKS Lech Poznań",
+      "league": "Europe",
+      "current": "レフ・ポズナン",
+      "display": "レフ・ポズナン",
+      "short": "レフ・ポズナン",
+      "reading": "レフポズナン",
+      "legacy": "レフ・ポズナン",
+      "aliases": [
+        "Lech Poznan",
+        "Lech Poznań"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "PFC Levski Sofia",
+      "league": "Europe",
+      "current": "レフスキ・ソフィア",
+      "display": "レフスキ・ソフィア",
+      "short": "レフスキ・ソフィア",
+      "reading": "レフスキソフィア",
+      "legacy": "レフスキ・ソフィア",
+      "aliases": [
+        "Levski Sofia"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "Lillestrøm SK",
+      "league": "Europe",
+      "current": "リールストロム",
+      "display": "リールストロム",
+      "short": "リールストロム",
+      "reading": "リールストロム",
+      "legacy": "リールストロム",
+      "aliases": [
+        "Lillestrom",
+        "Lillestrøm"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "NEC Nijmegen",
+      "league": "Europe",
+      "current": "NEC",
+      "display": "NEC",
+      "short": "NEC",
+      "reading": "エヌイーシー",
+      "legacy": "NEC",
+      "aliases": [
+        "N.E.C.",
+        "NEC",
+        "N.E.C. Nijmegen"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "OFI Crete FC",
+      "league": "Europe",
+      "current": "OFIクレタ",
+      "display": "OFIクレタ",
+      "short": "OFIクレタ",
+      "reading": "オーエフアイクレタ",
+      "legacy": "OFIクレタ",
+      "aliases": [
+        "OFI Crete"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "Olympiacos FC",
+      "league": "Europe",
+      "current": "オリンピアコス",
+      "display": "オリンピアコス",
+      "short": "オリンピアコス",
+      "reading": "オリンピアコス",
+      "legacy": "オリンピアコス",
+      "aliases": [
+        "Olympiacos",
+        "Olympiakos"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "AC Omonia Nicosia",
+      "league": "Europe",
+      "current": "オモニア",
+      "display": "オモニア",
+      "short": "オモニア",
+      "reading": "オモニア",
+      "legacy": "オモニア",
+      "aliases": [
+        "Omonia Nicosia",
+        "Omonia"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "FC Red Bull Salzburg",
+      "league": "Europe",
+      "current": "ザルツブルク",
+      "display": "ザルツブルク",
+      "short": "ザルツブルク",
+      "reading": "ザルツブルク",
+      "legacy": "ザルツブルク",
+      "aliases": [
+        "RB Salzburg",
+        "Salzburg",
+        "レッドブル・ザルツブルク"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "AC Sparta Praha",
+      "league": "Europe",
+      "current": "スパルタ・プラハ",
+      "display": "スパルタ・プラハ",
+      "short": "スパルタ・プラハ",
+      "reading": "スパルタプラハ",
+      "legacy": "スパルタ・プラハ",
+      "aliases": [
+        "Sparta Prague",
+        "Sparta Praha"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "SK Sturm Graz",
+      "league": "Europe",
+      "current": "シュトゥルム・グラーツ",
+      "display": "シュトゥルム・グラーツ",
+      "short": "シュトゥルム・グラーツ",
+      "reading": "シュトゥルムグラーツ",
+      "legacy": "シュトゥルム・グラーツ",
+      "aliases": [
+        "Sturm Graz"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "SC União Torreense",
+      "league": "Europe",
+      "current": "トレンセ",
+      "display": "トレンセ",
+      "short": "トレンセ",
+      "reading": "トレンセ",
+      "legacy": "トレンセ",
+      "aliases": [
+        "Torreense"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "Royale Union Saint-Gilloise",
+      "league": "Europe",
+      "current": "ユニオンSG",
+      "display": "ユニオンSG",
+      "short": "ユニオンSG",
+      "reading": "ユニオンエスジー",
+      "legacy": "ユニオンSG",
+      "aliases": [
+        "Union St.-Gilloise",
+        "Union SG",
+        "Union Saint-Gilloise",
+        "サンジロワーズ",
+        "ユニオン・サンジロワーズ"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "FC Viktoria Plzeň",
+      "league": "Europe",
+      "current": "ビクトリア・プルゼニ",
+      "display": "ビクトリア・プルゼニ",
+      "short": "ビクトリア・プルゼニ",
+      "reading": "ビクトリアプルゼニ",
+      "legacy": "ビクトリア・プルゼニ",
+      "aliases": [
+        "Viktoria Plzen",
+        "Viktoria Plzeň"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "AGF Aarhus",
+      "league": "Europe",
+      "current": "オーフス",
+      "display": "オーフス",
+      "short": "オーフス",
+      "reading": "オーフス",
+      "legacy": "オーフス",
+      "aliases": [
+        "AGF",
+        "Aarhus"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "AFC Ajax",
+      "league": "Europe",
+      "current": "アヤックス",
+      "display": "アヤックス",
+      "short": "アヤックス",
+      "reading": "アヤックス",
+      "legacy": "アヤックス",
+      "aliases": [
+        "Ajax Amsterdam",
+        "Ajax"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FK Borac Banja Luka",
+      "league": "Europe",
+      "current": "ボラツ・バニャルカ",
+      "display": "ボラツ・バニャルカ",
+      "short": "ボラツ・バニャルカ",
+      "reading": "ボラツバニャルカ",
+      "legacy": "ボラツ・バニャルカ",
+      "aliases": [
+        "Borac Banja Luka",
+        "Borac"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "SC Braga",
+      "league": "Europe",
+      "current": "ブラガ",
+      "display": "ブラガ",
+      "short": "ブラガ",
+      "reading": "ブラガ",
+      "legacy": "ブラガ",
+      "aliases": [
+        "Braga"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "SK Brann",
+      "league": "Europe",
+      "current": "ブラン",
+      "display": "ブラン",
+      "short": "ブラン",
+      "reading": "ブラン",
+      "legacy": "ブラン",
+      "aliases": [
+        "Brann"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FC København",
+      "league": "Europe",
+      "current": "コペンハーゲン",
+      "display": "コペンハーゲン",
+      "short": "コペンハーゲン",
+      "reading": "コペンハーゲン",
+      "legacy": "コペンハーゲン",
+      "aliases": [
+        "F.C. København",
+        "Copenhagen",
+        "FC Copenhagen",
+        "コペンハーゲン"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FK Crvena Zvezda",
+      "league": "Europe",
+      "current": "ツルベナ・ズベズダ",
+      "display": "ツルベナ・ズベズダ",
+      "short": "ツルベナ・ズベズダ",
+      "reading": "ツルベナズベズダ",
+      "legacy": "ツルベナ・ズベズダ",
+      "aliases": [
+        "Red Star Belgrade",
+        "Crvena Zvezda"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "PFC CSKA Sofia",
+      "league": "Europe",
+      "current": "CSKAソフィア",
+      "display": "CSKAソフィア",
+      "short": "CSKAソフィア",
+      "reading": "チェスカソフィア",
+      "legacy": "CSKAソフィア",
+      "aliases": [
+        "CSKA Sofia"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "KF Egnatia",
+      "league": "Europe",
+      "current": "エグナティア",
+      "display": "エグナティア",
+      "short": "エグナティア",
+      "reading": "エグナティア",
+      "legacy": "エグナティア",
+      "aliases": [
+        "Egnatia"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "KAA Gent",
+      "league": "Europe",
+      "current": "ヘント",
+      "display": "ヘント",
+      "short": "ヘント",
+      "reading": "ヘント",
+      "legacy": "ヘント",
+      "aliases": [
+        "Gent"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "HNK Hajduk Split",
+      "league": "Europe",
+      "current": "ハイドゥク・スプリト",
+      "display": "ハイドゥク・スプリト",
+      "short": "ハイドゥク・スプリト",
+      "reading": "ハイドゥクスプリト",
+      "legacy": "ハイドゥク・スプリト",
+      "aliases": [
+        "Hajduk Split"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Heart of Midlothian FC",
+      "league": "Europe",
+      "current": "ハーツ",
+      "display": "ハーツ",
+      "short": "ハーツ",
+      "reading": "ハーツ",
+      "legacy": "ハーツ",
+      "aliases": [
+        "Heart of Midlothian",
+        "Hearts"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FC Iberia 1999",
+      "league": "Europe",
+      "current": "イベリア・トビリシ",
+      "display": "イベリア・トビリシ",
+      "short": "イベリア・トビリシ",
+      "reading": "イベリアトビリシ",
+      "legacy": "イベリア・トビリシ",
+      "aliases": [
+        "Iberia 1999",
+        "Iberia Tbilisi"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Inter Club d'Escaldes",
+      "league": "Europe",
+      "current": "インテル・エスカルデス",
+      "display": "インテル・エスカルデス",
+      "short": "インテル・エスカルデス",
+      "reading": "インテルエスカルデス",
+      "legacy": "インテル・エスカルデス",
+      "aliases": [
+        "Inter D'Escaldes",
+        "Inter Escaldes"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FK Jablonec",
+      "league": "Europe",
+      "current": "ヤブロネツ",
+      "display": "ヤブロネツ",
+      "short": "ヤブロネツ",
+      "reading": "ヤブロネツ",
+      "legacy": "ヤブロネツ",
+      "aliases": [
+        "Jablonec"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FC Kairat Almaty",
+      "league": "Europe",
+      "current": "カイラト・アルマトイ",
+      "display": "カイラト・アルマトイ",
+      "short": "カイラト・アルマトイ",
+      "reading": "カイラトアルマトイ",
+      "legacy": "カイラト・アルマトイ",
+      "aliases": [
+        "Kairat Almaty"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FK Kauno Žalgiris",
+      "league": "Europe",
+      "current": "カウノ・ジャルギリス",
+      "display": "カウノ・ジャルギリス",
+      "short": "カウノ・ジャルギリス",
+      "reading": "カウノジャルギリス",
+      "legacy": "カウノ・ジャルギリス",
+      "aliases": [
+        "Kauno Zalgiris",
+        "Kauno Žalgiris"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "KuPS Kuopio",
+      "league": "Europe",
+      "current": "クオピオン",
+      "display": "クオピオン",
+      "short": "クオピオン",
+      "reading": "クオピオン",
+      "legacy": "クオピオン",
+      "aliases": [
+        "KuPS",
+        "KuPS Kuopio"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Lincoln Red Imps FC",
+      "league": "Europe",
+      "current": "リンカーン・レッド・インプス",
+      "display": "リンカーン・レッド・インプス",
+      "short": "リンカーン・レッド・インプス",
+      "reading": "リンカーンレッドインプス",
+      "legacy": "リンカーン・レッド・インプス",
+      "aliases": [
+        "Lincoln Red Imps",
+        "L. Red Imps"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FC Lugano",
+      "league": "Europe",
+      "current": "ルガーノ",
+      "display": "ルガーノ",
+      "short": "ルガーノ",
+      "reading": "ルガーノ",
+      "legacy": "ルガーノ",
+      "aliases": [
+        "Lugano"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FC Midtjylland",
+      "league": "Europe",
+      "current": "ミッティラン",
+      "display": "ミッティラン",
+      "short": "ミッティラン",
+      "reading": "ミッティラン",
+      "legacy": "ミッティラン",
+      "aliases": [
+        "Midtjylland"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Mjällby AIF",
+      "league": "Europe",
+      "current": "ミャルビー",
+      "display": "ミャルビー",
+      "short": "ミャルビー",
+      "reading": "ミャルビー",
+      "legacy": "ミャルビー",
+      "aliases": [
+        "Mjällby",
+        "Mjallby AIF"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FC Nordsjælland",
+      "league": "Europe",
+      "current": "ノアシェラン",
+      "display": "ノアシェラン",
+      "short": "ノアシェラン",
+      "reading": "ノアシェラン",
+      "legacy": "ノアシェラン",
+      "aliases": [
+        "Nordsjælland",
+        "FC Nordsjaelland"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Pafos FC",
+      "league": "Europe",
+      "current": "パフォス",
+      "display": "パフォス",
+      "short": "パフォス",
+      "reading": "パフォス",
+      "legacy": "パフォス",
+      "aliases": [
+        "Pafos"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Panathinaikos FC",
+      "league": "Europe",
+      "current": "パナシナイコス",
+      "display": "パナシナイコス",
+      "short": "パナシナイコス",
+      "reading": "パナシナイコス",
+      "legacy": "パナシナイコス",
+      "aliases": [
+        "Panathinaikos"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Riga FC",
+      "league": "Europe",
+      "current": "リガ",
+      "display": "リガ",
+      "short": "リガ",
+      "reading": "リガ",
+      "legacy": "リガ",
+      "aliases": [
+        "Riga"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Sint-Truidense VV",
+      "league": "Europe",
+      "current": "シント・トロイデン",
+      "display": "シント・トロイデン",
+      "short": "シント・トロイデン",
+      "reading": "シントトロイデン",
+      "legacy": "シント・トロイデン",
+      "aliases": [
+        "Sint-Truidense",
+        "Sint Truiden",
+        "STVV"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FC Thun",
+      "league": "Europe",
+      "current": "トゥーン",
+      "display": "トゥーン",
+      "short": "トゥーン",
+      "reading": "トゥーン",
+      "legacy": "トゥーン",
+      "aliases": [
+        "Thun"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Trabzonspor",
+      "league": "Europe",
+      "current": "トラブゾンスポル",
+      "display": "トラブゾンスポル",
+      "short": "トラブゾンスポル",
+      "reading": "トラブゾンスポル",
+      "legacy": "トラブゾンスポル",
+      "aliases": [
+        "Trabzonspor"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "FC Twente",
+      "league": "Europe",
+      "current": "トゥウェンテ",
+      "display": "トゥウェンテ",
+      "short": "トゥウェンテ",
+      "reading": "トゥウェンテ",
+      "legacy": "トゥウェンテ",
+      "aliases": [
+        "Twente"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "CS Universitatea Craiova",
+      "league": "Europe",
+      "current": "ウニベルシタテア・クラヨバ",
+      "display": "ウニベルシタテア・クラヨバ",
+      "short": "ウニベルシタテア・クラヨバ",
+      "reading": "ウニベルシタテアクラヨバ",
+      "legacy": "ウニベルシタテア・クラヨバ",
+      "aliases": [
+        "CSU Craiova",
+        "Univ. Craiova",
+        "Universitatea Craiova"
+      ],
+      "reason": "2026/27欧州大会リーグフェーズ全クラブを登録。APIの別名を保持。",
+      "source": "https://www.uefa.com/uefaconferenceleague/clubs/"
+    },
+    {
+      "id": "Celtic FC",
+      "league": "Europe",
+      "current": "セルティック",
+      "display": "セルティック",
+      "short": "セルティック",
+      "reading": "セルティック",
+      "legacy": "セルティック",
+      "aliases": [
+        "Celtic"
+      ],
+      "reason": "ELリーグフェーズ参加クラブ。",
+      "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
     }
   ]
 }

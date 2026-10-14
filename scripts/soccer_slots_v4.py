@@ -228,19 +228,21 @@ def durations(segments,audio):
         if not path.is_file():raise ValueError('実音声がありません')
         actual=sn.audio_duration(path)
         if actual<=0 or abs(actual-float(voice.get('duration') or 0))>.05:raise ValueError('音声の尺が実測と違う')
-        times.append(max(actual,3.0 if seg['kind']=='jp_roster' else 2.6 if seg['kind']=='outro' else 2.0))
-    if sum(times)>40:raise ValueError(f'40秒を超えます: {sum(times):.3f}。声の設定は変えず原稿を短くしてください')
+        times.append(max(actual,10.0 if seg['kind']=='preview' and seg['meta'].get('preview_duration_limit') else 3.0 if seg['kind']=='jp_roster' else 2.6 if seg['kind']=='outro' else 2.0))
+    limit=55 if any(s['meta'].get('preview_duration_limit') for s in segments) else 40
+    if sum(times)>limit:raise ValueError(f'{limit}秒を超えます: {sum(times):.3f}。声の設定は変えず原稿を短くしてください')
     return times
 
 
 def render_video(plan,audio,out):
     __import__('slant_by_episode').set_episode('soccer_'+plan['mode'])
     narr=plan['narration'];times=durations(narr['segments'],audio)
+    limit=narr['duration_budget']['limit']
     if motion.enabled():
         motion.measured(audio)
         times=[max(t,float(row['duration'])+vc.SEGMENT_TAIL) for t,row in zip(times,audio)]
     times=[math.ceil(t*30)/30 for t in times]
-    if sum(times)>40:raise ValueError('丸め後40秒を超える')
+    if sum(times)>limit:raise ValueError(f'丸め後{limit}秒を超える')
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     if not shutil.which('ffmpeg'):raise ValueError('FFmpegがありません。install_video_tools.shまたは保存材料のpreviewを使ってください')
     track=vc.build_narration_track(audio,times,out)
@@ -269,7 +271,7 @@ def render_video(plan,audio,out):
     m=re.search(r'Duration: (\d+):(\d+):([\d.]+)',probe.stderr)
     if not m:raise ValueError('動画の実測尺なし')
     seconds=int(m[1])*3600+int(m[2])*60+float(m[3])
-    if seconds>40:raise ValueError('実動画40秒超過')
+    if seconds>limit:raise ValueError(f'実動画{limit}秒超過')
     report=dict(mode=plan['mode'],seconds=seconds,title=narr['title'],screens=len(images),layout_badges_numbers='PASS',publication='not performed')
     (out/'verification.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(report,ensure_ascii=False));return report

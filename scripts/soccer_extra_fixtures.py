@@ -62,7 +62,9 @@ def supplement(data,boards):
         except (ValueError,KeyError,TypeError) as error:
             data['source_errors'].append(dict(competition=code,reason=str(error)))
             data['fixture_coverage'].append(dict(competition=code,status='failed',reason=str(error)));continue
-        data['fixture_coverage'].append(dict(competition=code,status='success' if boards[code]['events'] else 'no_games',events=len(boards[code]['events']),label='取得成功' if boards[code]['events'] else '試合なし'))
+        errors=boards[code].get('source_errors',[])
+        data['source_errors'].extend(dict(competition=code,**e) for e in errors)
+        data['fixture_coverage'].append(dict(competition=code,status='partial' if errors else 'success' if boards[code]['events'] else 'no_games',events=len(boards[code]['events']),label='一部取得失敗' if errors else '取得成功' if boards[code]['events'] else '試合なし'))
         for g in games:
             old=seen.get(key(g))
             if old:
@@ -78,15 +80,19 @@ def error_reason(error):
     return type(error).__name__+(f' HTTP {code}' if code is not None else '')+' '+str(getattr(error,'reason',error))
 
 
-def fetch_board(competition,day):
+def fetch_board(competition,day,days=2):
     # 範囲指定で全大会が失敗したため、既存の結果取得と同じ単日指定にする。
-    events={}
-    for at in (day,day+timedelta(days=1)):
+    events={};errors=[]
+    for at in (day+timedelta(days=i) for i in range(days)):
         url=f"{API}/{competition['espn']}/scoreboard?dates={at:%Y%m%d}&limit=100"
-        board=results.fetch_json(url)
-        if not isinstance(board.get('events'),list):raise ValueError('ESPN events配列なし')
+        try:
+            board=results.fetch_json(url)
+            if not isinstance(board.get('events'),list):raise ValueError('ESPN events配列なし')
+        except Exception as error:
+            if days<=2:raise
+            errors.append(dict(day=at.isoformat(),reason=error_reason(error)));continue
         for event in board['events']:events[str(event['id'])]=event
-    return dict(events=list(events.values()))
+    return dict(events=list(events.values()),**({'source_errors':errors} if errors else {}))
 
 
 def main():
@@ -98,7 +104,8 @@ def main():
         # EL/カンファレンスを先に確認。翌日の夜のカードを混ぜないよう選定側でも時刻を照合。
         competitions=sorted(selection.competitions(),key=lambda c:c['code'] not in ('EL','UECL'))
         for c in competitions:
-            try:boards[c['code']]=fetch_board(c,day)
+            # UTC単日8日分でJSTの今後7日を覆い、選定前の辞書検査へ渡す。
+            try:boards[c['code']]=fetch_board(c,day,days=8)
             except Exception as error:boards[c['code']]=error
     data=supplement(data,boards);args.games.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     print(json.dumps(dict(coverage=data['fixture_coverage'],errors=data['source_errors']),ensure_ascii=False))

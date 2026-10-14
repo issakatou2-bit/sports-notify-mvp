@@ -27,6 +27,7 @@ AIを使う箇所:
 """
 
 import argparse
+from japanese_team_names import team_names
 import datetime
 import functools
 import json
@@ -597,7 +598,7 @@ def pick_hook(games: list, availability=None) -> dict:
     for at, g in enumerate(games):
         names = [n for n in (g.get("jp_players") or []) if n]
         if names:
-            return {"big": "・".join(names[:3]), "sub": "", "at": at}
+            return {"big": team_names(names), "sub": "", "at": at}
 
     # 13. サッカーは、大会名を最後の手がかりにする。
     #     クラブ名だけのタイトルだと、どのリーグの話か分からない。
