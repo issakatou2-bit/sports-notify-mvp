@@ -29,8 +29,8 @@ class ShortPolish(unittest.TestCase):
                     row=clubs.lookup(name)
                     self.assertIsNotNone(row)
                     self.assertTrue(row['display']);self.assertTrue(row['reading'])
-        self.assertEqual(clubs.display('Aston Villa FC'),'アストン・ヴィラ')
-        self.assertEqual(clubs.display('Manchester City FC'),'マンチェスター・シティ')
+        self.assertEqual(clubs.display('Aston Villa FC'),'アストンヴィラ')
+        self.assertEqual(clubs.display('Manchester City FC'),'マンチェスターC')
 
     def test_october_14_selects_four_distinct_cards_without_changing_input(self):
         source=self.material();before=copy.deepcopy(source)

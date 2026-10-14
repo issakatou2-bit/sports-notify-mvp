@@ -7,7 +7,7 @@
       "id": "Manchester City FC",
       "league": "PL",
       "current": "マンチェスター・シティ",
-      "display": "マンチェスター・シティ",
+      "display": "マンチェスターC",
       "short": "マンC",
       "reading": "マンチェスターシティ",
       "legacy": "マンチェスター・シティ",
@@ -18,7 +18,7 @@
         "Manchester City FC",
         "manchestercity"
       ],
-      "reason": "2026-10-14本人指定の表示名。狭い欄は既存shortを使用。",
+      "reason": "新聞の短縮表記を基準にC/Uを区別。狭い欄だけさらに短くする。",
       "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
     },
     {
@@ -203,7 +203,7 @@
       "id": "Manchester United FC",
       "league": "PL",
       "current": "マンチェスター・ユナイテッド",
-      "display": "マンチェスター・ユナイテッド",
+      "display": "マンチェスターU",
       "short": "マンU",
       "reading": "マンチェスターユナイテッド",
       "legacy": "マンチェスター・ユナイテッド",
@@ -214,7 +214,7 @@
         "Manchester United FC",
         "manchesterunited"
       ],
-      "reason": "2026-10-14本人指定の表示名。狭い欄は既存shortを使用。",
+      "reason": "新聞の短縮表記を基準にC/Uを区別。狭い欄だけさらに短くする。",
       "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/"
     },
     {
@@ -275,7 +275,7 @@
       "id": "Aston Villa FC",
       "league": "PL",
       "current": "アストン・ビラ",
-      "display": "アストン・ヴィラ",
+      "display": "アストンヴィラ",
       "short": "アストンヴィラ",
       "reading": "アストンヴィラ",
       "legacy": "アストン・ヴィラ",
@@ -287,7 +287,7 @@
         "Aston Villa FC",
         "astonvilla"
       ],
-      "reason": "2026-10-14本人指定の表示名。狭い欄は既存shortを使用。",
+      "reason": "本人指定「アストンヴィラ」を優先。ビラ/ヴィラの揺れも別名で吸収。",
       "source": "https://www.nikkansports.com/soccer/world/premier/data/standings/",
       "spoken": "あすとんゔぃら"
     },

@@ -392,6 +392,7 @@ def main():
     parser.add_argument("--audio-dir", default="build/weekly_audio")
     parser.add_argument("--out", default="build/weekly")
     args = parser.parse_args()
+    __import__('slant_by_episode').set_episode('weekly')
 
     archive_dir = pathlib.Path(args.archive_dir)
     if not archive_dir.exists():

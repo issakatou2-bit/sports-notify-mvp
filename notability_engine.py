@@ -1900,7 +1900,7 @@ def jp_players_for_club(name: str, league: str | None = None) -> list:
 SOCCER_CLUB_NAME_JP = {
     # --- プレミアリーグ ---
     "arsenal": "アーセナル",
-    "astonvilla": "アストン・ヴィラ",
+    "astonvilla": "アストンヴィラ",   # 表示名（data/club_display_names.json）に合わせる（Opus-32）
     "bournemouth": "ボーンマス",
     "brentford": "ブレントフォード",
     "brighton": "ブライトン",
@@ -2061,6 +2061,16 @@ SOCCER_CLUB_NAME_JP = {
 _SOCCER_CLUB_KEYS = sorted(SOCCER_CLUB_NAME_JP, key=len, reverse=True)
 
 
+def club_display_name(name: str) -> str:
+    from scripts import club_display_names
+    return club_display_names.display(name)
+
+
+def club_display_text(text: str) -> str:
+    from scripts import club_display_names
+    return club_display_names.display_text(text)
+
+
 def club_name_jp(name: str) -> str:
     """
     APIが返したクラブ名を日本語表記にする。一覧に無ければ元の文字列。
@@ -2078,7 +2088,7 @@ def club_name_jp(name: str) -> str:
         return name
     for p in JP_PLAYERS_SOCCER:
         if p["match"] in norm:
-            return p["team_jp"] if legacy else display_names.display(p["team_jp"])
+            return club_display_text(p["team_jp"]) if "astonvilla" in norm else p["team_jp"] if legacy else display_names.display(p["team_jp"])
     for key in _SOCCER_CLUB_KEYS:
         if key in norm:
             return SOCCER_CLUB_NAME_JP[key] if legacy else display_names.display(SOCCER_CLUB_NAME_JP[key])

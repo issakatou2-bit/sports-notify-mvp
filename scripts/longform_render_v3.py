@@ -1025,7 +1025,7 @@ def subtitle(im, d, t, seg, who, dur=None):
         import characters
         key=next((key for key,name in characters.NAMES.items() if name==who['name']),'metan')
         text=subtitle_text(seg)
-        if text:bubble_styles.draw(im,key,text,seconds=t,box=bubble_styles.longform_box())
+        if text:bubble_styles.draw(im,key,text,seconds=t,box=bubble_styles.longform_box(),episode='longform')
         return
     text = subtitle_text(seg)
     if not text:

@@ -224,6 +224,7 @@ def prepare(data):
 
 
 def render_video(data,narr,audio,out):
+    __import__('slant_by_episode').set_episode('soccer_voices')
     sv.validate_data(data)
     if narr!=sv.narration(data):raise ValueError('原稿と採用した材料が一致しません')
     times=slots.durations(narr['segments'],audio)

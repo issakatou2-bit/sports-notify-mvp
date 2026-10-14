@@ -13,13 +13,11 @@ import os
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
+import calm_motion as calm
 
 ROOT = Path(__file__).resolve().parents[1]
 # One tuning table, shared by every slot. No per-slot speed overrides.
-SETTINGS = dict(overview=.8, stagger=.06, entrance=.22, rise=8,
-                zoom_seconds=.35, zoom=1.20, zoom_dense=1.05, dim=.16, pulse_seconds=.48,
-                pulse=.035, light=.18, transition=.35, drift=3,
-                background_speed=.18, drift_speed=(.14,.11), scale=2)
+SETTINGS = calm.TUNING
 VIEW = (72, 236, 940, 1140)
 SPEECH = {}  # exact text -> measured waveform duration, scoped by writer
 HIGHLIGHTS = []
@@ -152,61 +150,42 @@ def list_frame(im, t, rows, heading, cues=(), duration=8, entrance=True, soccer=
     payload=tuple((str(r['key']),str(r['title']),str(r.get('body') or ''),str(r.get('metric') or '')) for r in rows)
     base,tiles,boxes,texts=_list_tiles(payload,heading,soccer)
     s=SETTINGS['scale'];canvas=background(base,t)
-    current=next((c for c in cues if c.start<=t<c.end+SETTINGS['zoom_seconds']),None)
-    amount=0.;active=None
-    if current:
-        active=next(i for i,r in enumerate(rows) if str(r['key'])==current.key)
-        amount=ease((t-current.start)/SETTINGS['zoom_seconds'])* (1-ease((t-current.end)/SETTINGS['zoom_seconds']))
+    timeline=[(max(c.start,SETTINGS['overview']),c.end,
+               next(i for i,r in enumerate(rows) if str(r['key'])==c.key)) for c in cues]
+    weights=calm.weights(timeline,t,len(rows))
+    active=next((i for i,v in enumerate(weights) if v>0),None)
+    transformed=[]
+    w=VIEW[2]-VIEW[0];h=VIEW[3]-VIEW[1]
     for i,((tile,num_box),box) in enumerate(zip(tiles,boxes)):
         at=i*SETTINGS['stagger'] if entrance else -SETTINGS['pulse_seconds']
         progress=ease((t-at)/SETTINGS['entrance']) if entrance else 1
-        # Never fully hide a row: all facts can be read from the first frame.
-        row=pulse(tile,num_box,t-at)
-        brightness=(.86+.14*progress)*(1-SETTINGS['dim']*amount if active is not None and active!=i else 1)
+        row=pulse(tile,num_box,t-at).convert('RGBA')
+        row,gw,gh=calm.styled(row,weights[i],max(weights,default=0))
+        brightness=.86+.14*progress
         if brightness<1:row=ImageEnhance.Brightness(row).enhance(brightness)
         dy=round(SETTINGS['rise']*(1-progress)*s)
-        canvas.paste(row,(round(box[0]*s),round(box[1]*s)+dy))
-    w=VIEW[2]-VIEW[0];h=VIEW[3]-VIEW[1]
-    text_top=min(e['box'][1] for e in texts);text_bottom=max(e['box'][3] for e in texts)
-    maximum=min(SETTINGS['zoom'] if len(rows)<=3 else SETTINGS['zoom_dense'],(h-70)/(text_bottom-text_top+1))
-    zoom=1+(max(1,maximum)-1)*amount
-    cw=w/zoom;ch=h/zoom;cx=w/2;cy=h/2
-    if active is not None:
-        b=boxes[active];cy=cy*(1-amount)+(b[1]+b[3])/2*amount
-    cx=max(cw/2,min(w-cw/2,cx))
-    # Keep every row readable, including the dimmed context and fixed heading.
-    lower=max(ch/2,text_bottom-h/zoom+ch/2)
-    upper=min(h-ch/2,text_top+ch/2-70/zoom)
-    for portrait in im.info.get('duo_portraits',[]):
-        p=portrait['box'];max_left=(w-w/max(1,maximum))/2
-        # Decide once for the entire zoom envelope. Testing only the current
-        # scale can introduce a camera jump when a glyph crosses a portrait.
-        wide=[e for e in texts if max(e['box'][2]+VIEW[0],(e['box'][2]-max_left)*maximum+VIEW[0])>p[0]
-              and min(e['box'][0]+VIEW[0],(e['box'][0]-max_left)*maximum+VIEW[0])<p[2]]
-        if wide:
-            lower=max(lower,max(e['box'][3] for e in wide)-(p[1]-VIEW[1]-12)/zoom+ch/2)
-    if lower>upper:raise ValueError('全行が読める画角を作れません')
-    cy=max(lower,min(upper,cy))
-    crop=(cx-cw/2,cy-ch/2,cx+cw/2,cy+ch/2)
-    piece=canvas.resize((w,h),Image.Resampling.LANCZOS,tuple(v*s for v in crop))
-    # Heading belongs to chrome, outside the moving list layer.
+        x=round(box[0]*s)-gw//2;y=round(box[1]*s)-gh//2+dy
+        canvas.paste(row,(x,y),row)
+        scale=row.width/tile.width
+        for entry in (e for e in texts if e['key']==str(rows[i]['key'])):
+            b=entry['box']
+            new=tuple(((v-box[j%2])*scale+(x if j%2==0 else y)/s)+VIEW[j%2] for j,v in enumerate(b))
+            if new[0]<VIEW[0]-1 or new[1]<VIEW[1]+68 or new[2]>VIEW[2]+1 or new[3]>VIEW[3]+1:
+                raise ValueError('一覧の文字が安全域から出ています: '+entry['text'])
+            for portrait in im.info.get('duo_portraits',[]):
+                p=portrait['box']
+                if max(new[0],p[0])<min(new[2],p[2]) and max(new[1],p[1])<min(new[3],p[3]):
+                    raise ValueError('一覧の文字が立ち絵に重なります: '+entry['text'])
+            transformed.append(dict(entry,box=new))
+    piece=canvas.resize((w,h),Image.Resampling.LANCZOS)
     head=base.crop((0,0,w*s,68*s))
     ImageDraw.Draw(head).text((24*s,12*s),heading,font=font(36*s),fill=(242,243,228))
     piece.paste(head.resize((w,68),Image.Resampling.LANCZOS),(0,0))
     out=im.copy();out.paste(piece,VIEW[:2]);out.info.update(im.info)
-    transformed=[]
-    for entry in texts:
-        b=entry['box'];new=tuple((v-crop[i%2])*zoom+VIEW[i%2] for i,v in enumerate(b))
-        if new[0]<VIEW[0]-1 or new[1]<VIEW[1]+68 or new[2]>VIEW[2]+1 or new[3]>VIEW[3]+1:
-            raise ValueError('一覧の文字が安全域から出ています: '+entry['text'])
-        for portrait in im.info.get('duo_portraits',[]):
-            p=portrait['box']
-            if max(new[0],p[0])<min(new[2],p[2]) and max(new[1],p[1])<min(new[3],p[3]):
-                raise ValueError('一覧の文字が立ち絵に重なります: '+entry['text'])
-        transformed.append(dict(entry,box=new))
-    out.info['motion']=dict(active=current.key if current and amount>0 else None,zoom=zoom,
-                            crop=crop,view=VIEW,source_size=canvas.size,texts=transformed,
-                            cues=[vars(c) for c in cues],overview=not bool(amount),time=t)
+    out.info['motion']=dict(active=str(rows[active]['key']) if active is not None else None,zoom=1.,
+                            row_scale=1+(SETTINGS['focus_scale']-1)*max(weights,default=0),
+                            weights=weights,crop=(0,0,w,h),view=VIEW,source_size=canvas.size,texts=transformed,
+                            cues=[vars(c) for c in cues],overview=active is None,time=t)
     if im.info.get('duo_layer'):
         import characters
         characters.redraw(out,im.info['duo_layer'])

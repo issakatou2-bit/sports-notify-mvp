@@ -235,6 +235,7 @@ def durations(segments,audio):
 
 
 def render_video(plan,audio,out):
+    __import__('slant_by_episode').set_episode('soccer_'+plan['mode'])
     narr=plan['narration'];times=durations(narr['segments'],audio)
     limit=narr['duration_budget']['limit']
     if motion.enabled():

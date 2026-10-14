@@ -151,10 +151,12 @@ def page_lines(text, box, size=36):
     return lines
 
 
-def draw(im, speaker, text, *, style=None, variant=None, seconds=None, box=None):
+def draw(im, speaker, text, *, style=None, variant=None, seconds=None, box=None, episode=None):
     import characters as c
     style = style or os.environ['COLLESPO_BUBBLE']
-    variant = variant or (os.environ.get('COLLESPO_SLANT_VARIANT','cream') if style=='slant' else 'glass')
+    import slant_by_episode
+    variant = variant or (slant_by_episode.slant_variant(episode) if style=='slant' else 'glass')
+    variant = {'a':'dark','b':'band','c':'glass'}.get(variant,variant)
     if style=='slant' and variant not in ('cream','dark','band','glass'):variant='cream'
     box = box or geometry();x0,y0,x1,y1 = box
     if seconds is None:seconds = r3._PROGRAM_CLOCK[0] or 0

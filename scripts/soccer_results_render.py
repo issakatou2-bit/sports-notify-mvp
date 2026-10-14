@@ -245,6 +245,7 @@ def ensure_ffmpeg(out):
 
 
 def render_video(data,narr,audio,out):
+    __import__('slant_by_episode').set_episode('soccer_results')
     results.validate_data(data)
     times=durations(narr['segments'],audio);out.mkdir(parents=True,exist_ok=True);ensure_ffmpeg(out)
     if soccer_look.v5():

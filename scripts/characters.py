@@ -122,7 +122,8 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
         if art is None:
             continue
         x -= art.width - (30 if len(arts) > 1 else 0)
-        bob = round(4 * math.sin(elapsed * math.pi * 2 / 1.2)) if active and speaking else 0
+        import calm_motion
+        bob = round(4 * calm_motion.value('presenter_bob',1) * math.sin(elapsed * math.pi * 2 / (1.2 * calm_motion.value('presenter_period',1)))) if active and speaking else 0
         y = bottom - art.height + bob
         im.paste(art, (x, y), art)
         records.append(dict(who=who, active=active, box=[x, y, x + art.width, y + art.height]))
