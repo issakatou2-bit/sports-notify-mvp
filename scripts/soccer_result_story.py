@@ -68,6 +68,9 @@ def numeric_material(data):
 def frame(t,seg,data,clubs):
     import soccer_results_render as render
     c=render.cards
+    if __import__('bubble_styles').selected() and not hasattr(c,'panel'):
+        from types import SimpleNamespace
+        c=SimpleNamespace(**vars(c),panel=render.v4.panel)
     if render.soccer_look.v5():
         import soccer_v5_cards as c
     spec=render.program_spec(data);im=c.canvas(t,clubs,spec['label'])

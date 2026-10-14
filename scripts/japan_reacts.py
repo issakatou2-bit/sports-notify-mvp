@@ -208,6 +208,7 @@ def frame(data,t,seg):
     # English visual attribution, Japanese VOICEVOX character and speaking movement.
     source=source.replace('スポニチ','Sponichi').replace('スポーツ報知','Sports Hochi').replace('サンスポ','Sanspo')
     im=cards.finish(im,t,dict(source=source,ticker='Selected reactions, not everyone’s opinion. Japanese voice / English subtitles.'))
+    if __import__('bubble_styles').selected():return im
     x0,y0,_,_=characters.BUBBLE; d=ImageDraw.Draw(im); f=r3.font(28)
     label='Metan / Japanese voice'; width=d.textlength(label,font=f)+40
     d.rounded_rectangle((x0+28,y0-24,x0+28+width,y0+24),radius=24,fill=characters.COLORS['metan'])

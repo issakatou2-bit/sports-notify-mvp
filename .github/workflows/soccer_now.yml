@@ -8,6 +8,12 @@ permissions:
 concurrency:
   group: soccer-now
   cancel-in-progress: false
+env:
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+
 jobs:
   watch:
     if: vars.COLLESPO_SOCCER_NOW == 'on'
