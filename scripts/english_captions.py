@@ -152,10 +152,29 @@ def translate(cues, ai):
         if any(name not in english for name in caption_names.required(original).values()):
             raise ValueError('translation_names')
         # Arabic numerals must survive; Japanese written numbers are handled by translation.
-        if re.findall(r'\d+(?:[.,]\d+)?', original) != re.findall(r'\d+(?:[.,]\d+)?', english):
+        if not numbers_survive(original, english):
             raise ValueError('translation_numbers')
     return [(start, end, text.strip()) for (start, end, _), text in zip(cues, result)]
 
+
+
+_MONTHS = ('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august',
+           'september', 'october', 'november', 'december', 'jan', 'feb', 'mar', 'apr', 'jun', 'jul', 'aug',
+           'sep', 'sept', 'oct', 'nov', 'dec')
+
+
+def numbers_survive(original, english):
+    """訳で数字が落ちていないか。並び順は問わない（英語は「3打数1安打」を「1-for-3」と逆に書く、10/14）。
+    「10月」のような月は、英語で月の名前（October）になっていればよい。"""
+    from collections import Counter
+    pattern = r'\d+(?:[.,]\d+)?'
+    want = Counter(re.findall(pattern, original))
+    have = Counter(re.findall(pattern, english))
+    low = english.lower()
+    for month in re.findall(r'(\d{1,2})月', original):
+        if want[month] > have[month] and 1 <= int(month) <= 12 and re.search(r'\b(' + '|'.join(_MONTHS) + r')\b', low):
+            want[month] -= 1
+    return +want == +have
 
 def find_video(args):
     if args.kind == 'daily':
