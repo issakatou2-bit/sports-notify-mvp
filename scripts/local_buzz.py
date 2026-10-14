@@ -250,6 +250,8 @@ def build() -> dict:
     all_titles = []       # 選手の言及数を数える対象(球団別板も含む)
     sources = []
     for i, (name, url) in enumerate(FEEDS):
+        if os.environ.get('COLLESPO_REDDIT') == 'off' and 'reddit.com/' in url:
+            print('[info] Redditは停止スイッチで見送ります'); continue
         if i:
             time.sleep(3)   # 続けて叩くと429になるので間を空ける
         titles = fetch_titles(name, url)
