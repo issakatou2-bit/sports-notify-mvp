@@ -72,6 +72,18 @@ def caption(im,t):
     if not ctx['text'] or ctx.get('hide_caption'):return
     clock=r3._PROGRAM_CLOCK[0]
     elapsed=clock-ctx['start'] if clock is not None else t
+    import bubble_styles
+    if bubble_styles.selected():
+        import characters
+        b=geometry()['caption'];box=(b[0],b[1]+8,b[2],b[3]-8)
+        values=bubble_styles.page_lines(ctx['text'],box)
+        texts=[''.join(rows) for rows in values];weights=list(map(len,texts))
+        at=max(0,elapsed)/max(.1,ctx['duration'])*sum(weights);end=0;line=texts[-1]
+        for value,weight in zip(texts,weights):
+            end+=weight
+            if at<end:line=value;break
+        if line:bubble_styles.draw(im,characters.SPEAKERS.get(ctx.get('speaker'),'metan'),line,box=box,seconds=clock if clock is not None else t)
+        return
     # Split at glyphs into measured <=3-line pages; never silently slice long text.
     size=48;box=geometry()['caption'];width=box[2]-box[0]-56
     d=ImageDraw.Draw(im)

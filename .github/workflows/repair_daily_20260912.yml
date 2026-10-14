@@ -6,6 +6,9 @@ permissions:
 concurrency:
   group: buffer-daily-delivery
   cancel-in-progress: false
+env:
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+
 jobs:
   repair:
     if: github.ref == 'refs/heads/main'

@@ -1076,7 +1076,7 @@ def main():
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
                 p_, settled = video_common.anim_step(k, n)
-                if settled and still is not None:
+                if settled and still is not None and not __import__('bubble_styles').selected():
                     # 動きが止まった区間は描き直さず、直前のフレームを使い回す
                     proc.stdin.write(still)
                     frame_no += 1
@@ -1100,6 +1100,7 @@ def main():
                     im = render_news(p_, seg.get("text", ""))
                 else:
                     im = render_outro(p_)
+                im=__import__('bubble_styles').narration_frame(im,seg,k/FPS,dur)
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
                 # 動きが終わった最初の1枚。これを残りに使い回す。

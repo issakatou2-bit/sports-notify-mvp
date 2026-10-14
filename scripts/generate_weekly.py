@@ -502,7 +502,7 @@ def main():
             still = None
             for k in range(n):
                 pp, settled = video_common.anim_step(k, n)
-                if settled and still is not None:
+                if settled and still is not None and not __import__('bubble_styles').selected():
                     # 動きが止まった区間は描き直さず、直前のフレームを使い回す
                     proc.stdin.write(still)
                     total += 1
@@ -524,6 +524,7 @@ def main():
                     im = render_news(pp, news_items)
                 else:
                     im = render_outro(pp)
+                im=__import__('bubble_styles').narration_frame(im,seg,k/FPS,dur)
                 cached = im.tobytes()
                 proc.stdin.write(cached)
                 # 動きが終わった最初の1枚。これを残りに使い回す。

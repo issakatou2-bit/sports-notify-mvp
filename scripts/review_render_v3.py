@@ -366,6 +366,15 @@ def current_sentence(elapsed, text, duration):
 
 
 def caption(im, t):
+    import bubble_styles
+    if bubble_styles.selected():
+        if not _CAPTION['text'] or _CAPTION.get('hide_caption'):return
+        import characters
+        clock=_PROGRAM_CLOCK[0]
+        elapsed=clock-_CAPTION['start'] if clock is not None else t
+        line=current_sentence(elapsed,_CAPTION['text'],_CAPTION['duration'])
+        if line:bubble_styles.draw(im,characters.SPEAKERS.get(_CAPTION.get('speaker'),'metan'),line,seconds=clock if clock is not None else t)
+        return
     if LOOK != "v4" or not _CAPTION["text"]:
         return
     clock = _PROGRAM_CLOCK[0]
