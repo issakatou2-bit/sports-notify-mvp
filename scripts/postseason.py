@@ -35,6 +35,7 @@
 
 import argparse
 import json
+from japanese_team_names import team_names
 import pathlib
 import sys
 import urllib.request
@@ -519,7 +520,7 @@ def main() -> int:
         for x in jp[:6]:
             tag = f"第{x['seed']}シード" if x["seed"] else x["route"]
             print("    %-8s %-12s %s" % (tag, x["team"],
-                                         "・".join(x["players"])))
+                                         team_names(x["players"])))
     if changes:
         print("[info] 昨日からの変化 %d件" % len(changes))
         for c in changes[:6]:

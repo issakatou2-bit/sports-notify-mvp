@@ -25,6 +25,7 @@ ps_v3_cover.odds_v3 が、この話題の項目・題から作る（例: 「63�
 import argparse
 import collections
 import json
+from japanese_team_names import team_names
 import pathlib
 import re
 import sys
@@ -166,7 +167,7 @@ def _story(row: dict, summary: dict, games_now: list, now: datetime, first: int,
     s = summary
     # 主役は日本人選手のいる側（両方にいれば0勝2敗の側）
     subject = trail if trail.get("players") else lead
-    jp = "・".join(subject["players"][:2])
+    jp = team_names(subject["players"])
     items = [("いまのシリーズ",
               f"{lead['name']} 2勝0敗 {trail['name']}　第{nxt.get('seriesGameNumber') or 3}戦は"
               f"日本時間{jst_label(nxt['gameDate'])}　{home}の本拠地")]

@@ -4,6 +4,7 @@ No paid model calls and no new periodic workflow. A failed v2 never publishes
 the old race program. Canonical uploader and ledger remain authoritative.
 """
 import argparse
+from japanese_team_names import team_names
 import copy
 from datetime import datetime, timedelta, timezone
 import hashlib
@@ -252,7 +253,7 @@ def forecast(ctx, games, rows, now, target_day=None, modern=None):
             ampm='午前' if hour<12 else '午後'
             clock=spoken_clock(f"{hour % 12 if hour >= 12 else hour}:{minute}")
             others=len(cards)-1
-            text=(f"{'・'.join(chosen[lead_side+'_players'][:3])}の{chosen[lead_side]}は、"
+            text=(f"{team_names(chosen[lead_side+'_players'], chosen[lead_side])}は、"
                   f"日本時間{target_date.day}日の{ampm}{clock}から{ROUND[chosen['round']][0]}"
                   f"第{chosen['game_number']}戦。"
                   + (f"ほか{others}試合も、日本人選手のいる試合から見ていきます。" if others else ''))
@@ -319,7 +320,7 @@ def forecast(ctx, games, rows, now, target_day=None, modern=None):
                   + f'{c["home"]}が{c["home_wins"]}勝、{c["away"]}が{c["away_wins"]}勝です。')
         # 球団名に日本人選手の名前を添えて言う（「大谷翔平・山本由伸の
         # ドジャース」）。題で名前を見て来た人が、本編でも聞ける。
-        said = {s: ('・'.join(c[s+'_players'][:3]) + 'の' if c[s+'_players'] else '') + c[s]
+        said = {s: team_names(c[s+'_players'], c[s])
                 for s in ('home','away')}
         # 日本人選手のいる側を主語に（片側だけのとき）。時刻は午前・午後を付ける
         # （夜中の試合を「2時」とだけ言うと、昼の2時にも聞こえる）。
@@ -498,7 +499,7 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
                     if key in card:card[key]=displayed.text(card[key])
                 for row in (card.get('scoreboard') or {}).get('rows',[]):
                     if row.get('players'):
-                        phrase='・'.join(row['players'])+'の'+row['name']
+                        phrase=team_names(row['players'], row['name'])
                         card.setdefault('v4_club_mentions',{})[row['name']]=displayed.text(phrase)
     program['segments'][0]['text'] = 'コレスポ。' + program['segments'][0]['text']
     if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':

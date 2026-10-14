@@ -18,7 +18,12 @@ def legacy_cards():
     origin=json.loads((fixture/'legacy-source.json').read_text(encoding='utf8'))
     source=(fixture/origin['fixture']).read_bytes().replace(b'\r\n',b'\n')
     assert hashlib.sha256(source).hexdigest()==origin['sha256'],'legacy source changed'
+    # 名字の変更は本人指定。旧ソースの図形比較にも同じ文字だけを渡す。
+    # 保存した基点・指紋は変えず、札の位置/色/形の比較を維持する。
+    source=source.decode('utf8').replace("'・'.join(row['players'])", "team_names(row['players'],row['name']) if len(row['players'])>=2 else team_names(row['players'])")
+    from japanese_team_names import team_names
     namespace={'__file__':str(ROOT/origin['path']),'__name__':'legacy_short_v4_cards'}
+    namespace['team_names']=team_names
     exec(compile(source,namespace['__file__'],'exec'),namespace)
     return {k:v for k,v in namespace.items() if not k.startswith('__')}
 

@@ -242,11 +242,12 @@ def rule_japanese_player(game: Game, jp_team_map: dict) -> list[Reason]:
                 if not playing:
                     continue          # 誰も直近で出ていないなら理由にしない
                 names = playing
-            names_str = "・".join(names)
+            from scripts.japanese_team_names import team_names
+            names_str = team_names(names)
             reasons.append(
                 Reason(
                     tag="jp_team",
-                    text=f"{team_name}には{names_str}が所属",
+                    text=team_names(names, team_name) if len(names) >= 2 else f"{team_name}には{names_str}が所属",
                     weight=jp_roster_weight(len(names)),
                 )
             )

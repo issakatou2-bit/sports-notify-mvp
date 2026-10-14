@@ -88,12 +88,12 @@ check("決着", ps.text(swept),
 cubs = by(now, CHC)
 check("日本人選手の側から。負けているなら負けている数字で",
       ps.jp_text(cubs),
-      "今永昇太・鈴木誠也のカブスは地区シリーズでブリュワーズに0勝2敗、負ければ敗退")
+      "今永、鈴木のカブスは地区シリーズでブリュワーズに0勝2敗、負ければ敗退")
 has("勝っている日本人選手の球団は王手", ps.jp_text(dodgers), "2勝0敗、突破に王手")
 lost = by(ps.build(DAY2[3:5] + [game(13, "D", MIL, CHC, MIL, 3)], NAMES, JP),
           CHC)
 check("敗退", ps.jp_text(lost),
-      "今永昇太・鈴木誠也のカブスは地区シリーズでブリュワーズに0勝3敗で敗れ、敗退")
+      "今永、鈴木のカブスは地区シリーズでブリュワーズに0勝3敗で敗れ、敗退")
 ws = ps.build([game(21, "W", LAD, 141, LAD, 1, of=7)], NAMES, JP)[0]
 check("ワールドシリーズはリーグを付けない", ws["league_jp"], "")
 
@@ -102,7 +102,7 @@ moved = ps.changes(now, ps.build(DAY1, NAMES, JP))
 check("2つ動いた", len(moved), 2)
 check("日本人選手のいるシリーズはその球団の側から",
       [c["text"] for c in moved if "カブス" in c["text"]][0].startswith(
-          "今永昇太・鈴木誠也のカブス"), True)
+          "今永、鈴木のカブス"), True)
 check("動いていなければ何も出さない", ps.changes(now, now), [])
 check("初めて見るシリーズは開幕", ps.changes(now, [])[0]["kind"], "start")
 check("決着は先頭", ps.changes(ps.build(SWEEP, NAMES, JP), now)[0]["kind"],
@@ -168,7 +168,7 @@ hasnt("「勝者」を球団として言わない", names_all, "Winner")
 dw = next(s for s in held if s.get("waiting") and s["teams"][0]["id"] == LAD)
 check("免除の球団は相手待ちとして残す", dw["round"], "D")
 check("相手待ちの言い方", ps.jp_text(dw),
-      "大谷翔平・山本由伸のドジャースはワイルドカードシリーズを免除され、"
+      "大谷、山本のドジャースはワイルドカードシリーズを免除され、"
       "地区シリーズから。10月4日に第1戦")
 cp = next(s for s in held if not s.get("waiting"))
 check("日本の日付は米国の日付の翌日（仮の時刻からは出さない）",

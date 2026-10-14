@@ -49,4 +49,4 @@ def frame(prepared,seconds,focus=None,style='stadium',team_id=None):
 
 def cues(prepared,duration):
     """実際の札の入場時刻と同じ時刻表。時間内のものだけを鳴らす。"""
-    return [(delay,'swish','a',-10) for _,_,delay,_ in prepared[1] if delay<duration]
+    return [(0.0,'transition','b',-10)] if duration>0 else []

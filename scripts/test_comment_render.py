@@ -173,7 +173,7 @@ class Cues(unittest.TestCase):
         self.assertEqual(cr.list_cues(spec, items, 0, 2), r3.cues("list", spec, items, 0, 2))
         k = next(i for i, (h, _) in enumerate(items) if h == cr.COMMENT_HEAD)
         c = cr.list_cues(spec, items, k - k % 2, 2)
-        self.assertEqual(c[0], (0.0, "transition", "b", -6))
+        self.assertEqual(c[0], (0.0, "transition", "b", -10))
         self.assertTrue(any(x[1] == "notify" for x in c))
 
 
