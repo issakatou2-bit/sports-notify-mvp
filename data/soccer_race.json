@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-10-13T10:03:42.610848+00:00",
-  "date_jst": "2026-10-13",
-  "source_at": "2026-10-13T06:18:29.874505+00:00",
+  "updated_at": "2026-10-14T10:04:41.570323+00:00",
+  "date_jst": "2026-10-14",
+  "source_at": "2026-10-14T06:18:59.776135+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -1251,9 +1251,9 @@
     {
       "code": "CL",
       "round": 1,
-      "round_complete": true,
+      "round_complete": false,
       "name_jp": "チャンピオンズリーグ",
-      "played": 1,
+      "played": 2,
       "clubs": 36,
       "ready": false,
       "jp": [],
@@ -1261,7 +1261,7 @@
     }
   ],
   "picked": [
-    "PL"
+    "SA"
   ],
   "moved_count": 0,
   "have_before": true
