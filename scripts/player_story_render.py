@@ -37,6 +37,22 @@ HEADINGS = {'numbers': '本人の数字', 'intro': '現地報道', 'report': '�
 
 
 def frame(t, seg, narr):
+    if narr.get('program')!='reddit_reaction':return _frame(t,seg,narr)
+    previous=os.environ.get('COLLESPO_BUBBLE')
+    style=previous or 'glass'
+    if style not in ('glass','slant'):raise ValueError('この回の吹き出しはglassかslantです')
+    os.environ['COLLESPO_BUBBLE']=style
+    try:
+        im=_frame(t,seg,narr)
+        if seg['kind'] in ('fan','fan_reply') and im.info.get('duo_caption',{}).get('rows',0)>2:
+            raise ValueError('コメントの字幕が2行を超えます。別のコメントを選んでください')
+        return im
+    finally:
+        if previous is None:os.environ.pop('COLLESPO_BUBBLE',None)
+        else:os.environ['COLLESPO_BUBBLE']=previous
+
+
+def _frame(t, seg, narr):
     im = r3.background(t, narr['player'].get('team_id'))
     r3._header(ImageDraw.Draw(im), narr.get('program_label') or '選手のいまの流れ')
     cards.panel(im, (72, 270, r3.SAFE_RIGHT, 1140))
@@ -50,6 +66,13 @@ def frame(t, seg, narr):
         cards.text(im, 104, y, line, size, width=740)
         y += size+20
     meta = seg['meta']; report = meta.get('report') or {}
+    if narr.get('program')=='reddit_reaction':
+        if meta.get('parent_translation'):
+            cards.text(im,100,710,'返信元：'+meta['parent_translation'],30,width=740)
+        metrics=[]
+        if meta.get('likes') is not None:metrics.append(f"高評価 {meta['likes']:,}")
+        if meta.get('replies') is not None:metrics.append(f"返信 {meta['replies']:,}件")
+        if metrics:cards.text(im,100,850,'　'.join(metrics),48,r3.GOLD,width=740)
     credit = report.get('author') or meta['source']
     if report.get('author'):
         credit += ' / '+meta['source']
