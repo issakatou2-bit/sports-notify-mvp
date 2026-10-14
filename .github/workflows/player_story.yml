@@ -19,6 +19,7 @@ jobs:
       PLAYER_STORY_PUBLISH: ${{ vars.PLAYER_STORY_PUBLISH || 'false' }}
       COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
       COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
       COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
       COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}

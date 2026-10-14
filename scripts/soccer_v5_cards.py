@@ -2,6 +2,7 @@
 
 既存v4の関数・書体・色は変更しない。幅と字の実際の箱を測り、入らなければ停止する。
 """
+import motion
 from functools import lru_cache
 import math
 import os
@@ -217,7 +218,7 @@ def _background(tints=()):
 
 
 def canvas(t,clubs,label='欧州サッカー',tints=()):
-    im=_background(tuple(tints)).copy()
+    im=motion.background(_background(tuple(tints)).copy(),t)
     im.info=dict(soccer_v5=True,v3_layout=[],soccer_club_names=tuple(sorted({n for n,c in clubs.items() if n in (c.get('name_jp'),c['team_en']) and len(n)>=2},key=len,reverse=True)),v5_elapsed=t)
     d=ImageDraw.Draw(im)
     d.polygon(para((L,168,L+12,206)),fill=LIME)
@@ -409,6 +410,7 @@ def preview(t,spec,clubs):
     return finish(im,t,spec)
 
 
+@motion.slot('jp_roster')
 def jp_roster(t,spec,clubs):
     im=canvas(t,clubs,spec.get('label','欧州サッカー'))
     heading(im,spec['title'])
@@ -440,6 +442,7 @@ def jp_player(t,spec,clubs):
     return finish(im,t,spec)
 
 
+@motion.slot('standings')
 def standings(t,spec,clubs):
     import characters
     table_right=R-characters.reserved_width()

@@ -1,4 +1,5 @@
 """ショートv4専用の札。材料・台本・共通の背景/字幕/時計は変更しない。"""
+import motion
 import re
 from pathlib import Path
 import sys
@@ -327,6 +328,7 @@ def stat_cards(im,values,y,height=148):
                             box=[x,y,x+w,y+height],font_size=size,center=x+w/2))
 
 
+@motion.slot('roster')
 def cover(t,spec):
     im=canvas(t,spec.get('label') or '日本人選手の成績')
     roster=spec['roster'];text(im,L,264,'出場した日本人選手',48,width=R-L-180)
@@ -386,6 +388,7 @@ def player_detail(t,spec,player):
     return finish(im,t,spec.get('ticker',''),spec.get('source') or '出典：MLB公式（Stats API）')
 
 
+@motion.slot('others')
 def others(t,spec):
     players=spec['other_players'];duration=max(.1,spec.get('dur',8));spoken=spec.get('say','')
     if spec.get('kind')=='others':
@@ -412,6 +415,7 @@ def others(t,spec):
     return player_detail(t,spec,players[index])
 
 
+@motion.slot('ranking')
 def ranking(t,spec,rows,source):
     im=canvas(t,'日本人選手の成績')
     text(im,L,260,'今日の勝利貢献順位',48,width=R-L)
@@ -518,6 +522,7 @@ def live_line(im,value):
         return False
     return True
 
+@motion.slot('quotes')
 def quotes(t,voices,label,live,ticker,source,animate=True):
     import v3_slot_render as common
     voices=[v for v in voices if not v.get('fact')]
@@ -582,6 +587,7 @@ def quotes(t,voices,label,live,ticker,source,animate=True):
     return finish(im,t,ticker,source)
 
 
+@motion.slot('schedule')
 def schedule(t,spec,rows,label,source):
     if len(rows)>4:raise ValueError('全試合の一覧は4行までです')
     im=canvas(t,label);text(im,L,260,'明日の全試合',48,width=R-L)

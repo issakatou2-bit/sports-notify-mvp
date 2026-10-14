@@ -85,6 +85,9 @@ def _runs(d, text, box, style, light=False, band=False):
             ink = GOLD if light and isnum else WHITE if light else (155,79,8) if isnum else (30,30,34)
             runs.append((x, y+size, part, drawn, ink))
             reserve = r3.num_font(round(size*1.15*1.06)) if isnum and fan_events.enabled() else f
+            if isnum:
+                import motion
+                reserve=motion.reserve_font(reserve)
             x += d.textlength(part, font=reserve)
         y += lh
     return runs, size, len(rows)
@@ -217,7 +220,8 @@ def draw(im, speaker, text, *, style=None, variant=None, seconds=None, box=None)
         d.text((x0+30+w/2,y0),c.NAMES[speaker],font=f,fill=name_ink,anchor='mm')
     for x,y,value,f,ink in runs:
         if light: d.text((x+2,y+2),value,font=f,fill=SHADOW,anchor='ls')
-        d.text((x,y),value,font=f,fill=ink,anchor='ls')
+        import motion
+        motion.draw_number(d,(x,y),value,f,ink)
     im.paste(base.convert(im.mode))
     r3.record_box(im,'caption',box,text)
     im.info['duo_caption'] = dict(box=list(box),speaker=speaker,font_size=size,rows=rows)

@@ -1,4 +1,5 @@
 """選手の話題の回。既存v4の背景・札・字幕・下隅キャラ・音声結合を再利用。"""
+import motion
 import argparse
 from datetime import timedelta, timezone
 import json
@@ -36,6 +37,7 @@ HEADINGS = {'numbers': '本人の数字', 'intro': '現地報道', 'report': '�
             'fan': '匿名のファンの感想', 'closing': 'コレスポからの応援'}
 
 
+@motion.slot('reddit')
 def frame(t, seg, narr):
     if narr.get('program')!='reddit_reaction':return _frame(t,seg,narr)
     previous=os.environ.get('COLLESPO_BUBBLE')
@@ -108,6 +110,9 @@ def render(narr, audio, out):
         if actual <= 0 or abs(actual-float(row.get('duration') or 0)) > .05:
             raise ValueError('音声の実測尺が不一致です')
         times.append(math.ceil(max(2.5, actual)*24)/24)
+    if motion.enabled():
+        motion.measured(audio)
+        times = [math.ceil(max(t, float(row['duration']) + vc.SEGMENT_TAIL)*24)/24 for t, row in zip(times, audio)]
     if sum(times) > story.RULES['max_story_seconds']:
         raise ValueError('60秒を超えています。原稿を短くしてください')
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
@@ -130,7 +135,7 @@ def render(narr, audio, out):
     cmd = [ffmpeg, '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', '24',
            '-i', '-', '-i', str(track), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23',
            '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-t', str(sum(times)), '-movflags', '+faststart', str(video)]
-    images = []; clock = 0.
+    images = []; clock = 0.; previous=None
     with (out/'ffmpeg.log').open('w', encoding='utf-8') as log:
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=log)
         try:
@@ -142,8 +147,10 @@ def render(narr, audio, out):
                 im.save(out/f'{i+1:02d}.png'); images.append(im.copy())
                 for k in range(round(seconds*24)):
                     r3.set_program_clock(clock+k/24)
-                    proc.stdin.write(frame(k/24, seg, narr).convert('RGB').tobytes())
-                clock += seconds
+                    image=frame(k/24, seg, narr).convert('RGB')
+                    raw=motion.transition(previous, image, k, 24) if motion.enabled() else image.tobytes()
+                    proc.stdin.write(raw)
+                previous=image.tobytes();clock += seconds
         finally:
             proc.stdin.close(); code = proc.wait(); r3.set_program_clock(None)
             fan_events.TRACK.clear()

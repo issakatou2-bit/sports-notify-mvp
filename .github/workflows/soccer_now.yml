@@ -9,6 +9,7 @@ concurrency:
   group: soccer-now
   cancel-in-progress: false
 env:
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
   COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
   COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
   COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}

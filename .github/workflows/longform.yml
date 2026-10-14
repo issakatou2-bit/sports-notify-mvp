@@ -64,6 +64,7 @@ permissions:
 
 # 長編の見た目（v3 = 新デザイン「電光掲示板」、本人の確認後に変数で切り替える）
 env:
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
   COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
   COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
   COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}

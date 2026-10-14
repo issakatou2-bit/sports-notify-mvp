@@ -162,6 +162,8 @@ def _beam():
 
 
 def background(t, team_id):
+    import motion
+    if motion.enabled():t *= motion.SETTINGS['background_speed']
     base, second, _ = colors(team_id)
     im = Image.new("RGB", (W, H), base)
     d = ImageDraw.Draw(im)
@@ -178,7 +180,7 @@ def background(t, team_id):
         bx = round(-900 + ph / 0.5 * 2200)
         im.paste(white, (bx, -300), beam)
     d.rectangle((0, 0, W, 16), fill=second)
-    return im
+    return motion.background(im,t)
 
 
 # ------------------------------------------------------------------ 部品

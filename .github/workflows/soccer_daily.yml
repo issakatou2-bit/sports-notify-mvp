@@ -42,6 +42,7 @@ jobs:
     env:
       # サッカーの3枠は専用の変数で切り替える（本人が試作を見てから COLLESPO_SOCCER_LOOK=v4。10/10 エマ）
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
       COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
       COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
       COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}

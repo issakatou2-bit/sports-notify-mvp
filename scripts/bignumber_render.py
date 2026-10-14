@@ -29,6 +29,7 @@
 
   python bignumber_render.py --material src/data/morning_recap.json --out build/bn   # 見本の PNG（作業場所は collespo/）
 """
+import motion
 import argparse
 import functools
 import json
@@ -684,6 +685,7 @@ def _chrome(im, tg, t, spec, base, second):
         im.paste(sp, (PRESENTER_X, SAFE_BOTTOM - 4 - sp.height - bob), sp)
 
 
+@motion.slot('mlb')
 def scene(t, scene_spec, team_id=None):
     """1場面の t 秒目の絵（1080×1920、RGB）。
 
@@ -1136,6 +1138,13 @@ def scenes_from_morning(data, narration=None):
             sc.update(segment=i, kind=kind, label=label, who=who,
                       ticker='今日の日本人選手　'+'　'.join(f'{j}位 {p.get("name", "")}' for j,p in enumerate(players,1)))
         out += got
+    if motion.enabled():
+        ranking = next((s['meta']['ranking'] for s in narration['segments'] if s['kind']=='ranking'), [])
+        details={p['name']:p.get('headline','') for p in players}
+        rows = [dict(key=str(r['rank']),title=f"{r['rank']}位 {r['name']}",body=r['abbr']+'　'+details.get(r['name'],''),metric=r['score'],anchor=r['name']) for r in ranking]
+        for sc in out:
+            if sc['kind'] in ('cover','ranking','hero','list'):
+                sc['motion_rows'] = rows
     return out
 
 

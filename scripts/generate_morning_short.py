@@ -4483,6 +4483,8 @@ def main():
     bn_plan = []
     if bn_scenes:
         import bignumber_render as bn
+        import motion
+        if motion.enabled():motion.measured(segs)
         bn_plan = bn.timeline(bn_scenes, durations)
         if audio_path:
             # 古いずんだもん音声の使い回しによる、めたん立ち絵との不一致を止める。

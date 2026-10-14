@@ -14,6 +14,9 @@ def activate():
 
 
 def transition(previous, image, frame, fps=30):
+    import motion
+    moved = motion.transition(previous, image, frame, fps)
+    if moved is not None:return moved
     if v5():
         from soccer_v5_cards import scarf_transition
         return scarf_transition(previous, image, frame / fps)
