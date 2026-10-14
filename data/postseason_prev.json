@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-12T09:52:42.438607+00:00",
-  "date": "2026-10-12",
+  "updated_at": "2026-10-13T09:52:45.039621+00:00",
+  "date": "2026-10-13",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -247,18 +247,18 @@
       "league_jp": "ア・リーグ",
       "best_of": 7,
       "need": 4,
-      "played": 0,
+      "played": 1,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月13日",
-        "game": 1
+        "day": "10月14日",
+        "game": 2
       },
       "teams": [
         {
           "id": 114,
           "name": "ガーディアンズ",
-          "wins": 0,
+          "wins": 1,
           "players": []
         },
         {
@@ -277,18 +277,18 @@
       "league_jp": "ナ・リーグ",
       "best_of": 7,
       "need": 4,
-      "played": 1,
+      "played": 2,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月13日",
-        "game": 2
+        "day": "10月15日",
+        "game": 3
       },
       "teams": [
         {
           "id": 158,
           "name": "ブリュワーズ",
-          "wins": 1,
+          "wins": 2,
           "players": []
         },
         {
@@ -305,17 +305,24 @@
     }
   ],
   "final_day": [],
-  "headline": "大谷翔平・佐々木朗希・山本由伸のドジャースはリーグ優勝決定シリーズでブリュワーズに0勝1敗",
+  "headline": "大谷翔平・佐々木朗希・山本由伸のドジャースはリーグ優勝決定シリーズでブリュワーズに0勝2敗",
   "changes": [
     {
       "key": "L:119-158",
       "kind": "game",
-      "text": "大谷翔平・佐々木朗希・山本由伸のドジャースはリーグ優勝決定シリーズでブリュワーズに0勝1敗",
+      "text": "大谷翔平・佐々木朗希・山本由伸のドジャースはリーグ優勝決定シリーズでブリュワーズに0勝2敗",
       "jp": true,
+      "stage": 3
+    },
+    {
+      "key": "L:114-139",
+      "kind": "game",
+      "text": "リーグ優勝決定シリーズ ガーディアンズが1勝0敗でリード",
+      "jp": false,
       "stage": 3
     }
   ],
-  "prev_date": "2026-10-11",
+  "prev_date": "2026-10-12",
   "japanese": [
     {
       "team_id": 119,
