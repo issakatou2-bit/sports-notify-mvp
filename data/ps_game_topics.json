@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-14T03:45:45.951902+00:00",
+  "updated_at": "2026-10-14T06:16:20.572919+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -36,12 +36,8 @@
           "勝ち ジョジョ・ロメロ（1回を無失点）　セーブ アーロン・アシュビー"
         ],
         [
-          "ハイライトのコメント欄から",
-          "「ドジャースは0勝2敗で、もうスクーバルも山本も使っちゃった。このブルワーズ、強いぞ」"
-        ],
-        [
           "MLB.comの見出しから",
-          "「容赦ないブルワーズがホームできっちり勝利、王者を追い詰める」"
+          "「容赦なきブルワーズ、本拠地できっちり勝ち切り王者を崖っぷちに追い込む」"
         ]
       ],
       "japanese": [
@@ -63,15 +59,9 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": {
-        "said": "ドジャースは0勝2敗で、もうスクーバルも山本も使っちゃった。このブルワーズ、強いぞ",
-        "text": "Dodgers are down 0-2 and they've already used Skubal and Yamamoto. These Brewers are good",
-        "url": "https://www.youtube.com/watch?v=RuiDL7ihiEI",
-        "likes": 576,
-        "at": "2026-10-13T02:47:39Z"
-      },
+      "voice": null,
       "headline": {
-        "said": "容赦ないブルワーズがホームできっちり勝利、王者を追い詰める",
+        "said": "容赦なきブルワーズ、本拠地できっちり勝ち切り王者を崖っぷちに追い込む",
         "text": "Relentless Brewers take care of business at home, put champs on the ropes",
         "url": "https://www.mlb.com/news/brewers-win-nlcs-game-2-2026",
         "at": "2026-10-13T03:37:00+00:00"
@@ -209,6 +199,10 @@
           "ハンター・ギャディス（1回を無失点）"
         ],
         [
+          "ハイライトのコメント欄から",
+          "「レイズファン、このガーディアンズが思ってた以上にヤバいチームだったって今ごろ気づいたらしい」"
+        ],
+        [
           "ガーディアンズの番記者の投稿から",
           "「試合終了:ガーディアンズ7、レイズ3 。0-2の劣勢から打線が目を覚まし、第1戦を制した。」"
         ]
@@ -226,7 +220,13 @@
         "url": "https://bsky.app/profile/timstebbins.bsky.social/post/3mxq2fmkruc2m",
         "at": "2026-10-13T03:05:44.414Z"
       },
-      "voice": null,
+      "voice": {
+        "said": "レイズファン、このガーディアンズが思ってた以上にヤバいチームだったって今ごろ気づいたらしい",
+        "text": "Rays fans just found out that this Guardians team is way more dangerous than they initially thought",
+        "url": "https://www.youtube.com/watch?v=0pu09EKlmms",
+        "likes": 660,
+        "at": "2026-10-13T03:48:36Z"
+      },
       "headline": null,
       "game_pk": 849820,
       "game_v4": {
@@ -304,10 +304,6 @@
       "jp_first": false,
       "next_team_id": 114,
       "finished_at": "2026-10-13T03:05:36.954000+00:00",
-      "next_game_jp": {
-        "day": "10月14日",
-        "game": 2
-      },
       "v3": {
         "who": "ガーディアンズ　リーグ優勝決定シリーズ第1戦",
         "big": "7-3",
@@ -329,7 +325,7 @@
             "score": "1"
           }
         ],
-        "ticker": "次の試合　日本時間10月14日　リーグ優勝決定シリーズ第2戦"
+        "ticker": "ガーディアンズ 7対3 レイズ　敵地で勝利　シリーズはガーディアンズの1勝0敗"
       }
     },
     {
@@ -445,6 +441,10 @@
       "jp_first": false,
       "next_team_id": 139,
       "finished_at": "2026-10-14T02:51:01.268000+00:00",
+      "next_game_jp": {
+        "day": "10月16日",
+        "game": 3
+      },
       "v3": {
         "who": "レイズ　リーグ優勝決定シリーズ第2戦",
         "big": "3-1",
@@ -458,7 +458,7 @@
             "win": false
           }
         ],
-        "ticker": "レイズ 3対1 ガーディアンズ　本拠地で勝利　シリーズはレイズの1勝1敗"
+        "ticker": "次の試合　日本時間10月16日　リーグ優勝決定シリーズ第3戦"
       }
     }
   ]
