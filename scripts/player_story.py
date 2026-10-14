@@ -66,6 +66,10 @@ def player_match(row, p):
 
 
 def reports_for(material, buzz, p, as_of):
+    import topic_hub
+    if topic_hub.enabled():
+        hub = material.get('_topic_hub') or topic_hub.build(material, buzz, {}, as_of=as_of)
+        return topic_hub.player_reports(hub, p, as_of)
     rows = list(material.get('posts') or []) + list(material.get('headlines') or [])
     # local_buzz の件数や球団gistは報道の証拠にならない。URL/媒体/時刻付きの見出しのみ。
     rows += list(buzz.get('headlines') or [])
@@ -207,7 +211,7 @@ def build(recap, reporters, buzz, voices, stats, as_of):
             add('intro', p['name_jp']+'の現地報道です。', '保存した現地報道')
     for i, report in enumerate(reports):
         when = stamp(report['at']).astimezone(timezone(timedelta(hours=9)))
-        label = 'その後の報道によると、' if i else '報道によると、'
+        label = '' if report.get('hub_event') else 'その後の報道によると、' if i else '報道によると、'
         add('report', label+report['claim'], report['source'], report=report,
             display_time=f'{when.month}/{when.day} {when:%H:%M} JST')
     # 一般の投稿者名を一切出さない。病気・心理・予測や根拠のない理由も取り込まない。
@@ -306,6 +310,11 @@ def validate(narr, publish=False):
         if seg['kind'] != 'report':
             continue
         report = seg['meta']['report']
+        if report.get('hub_event'):
+            import topic_hub
+            if report['claim'] != topic_hub.phrase(report['hub_event']) or seg['text'] != report['claim']:
+                raise ValueError('集め所の確かさと言い方が一致しません')
+            continue
         rule = next(r for r in REPORT_RULES if r[0] == report['kind'])
         template = rule[2]
         original_match = re.search(rule[1], report['original'], re.I)
@@ -325,6 +334,7 @@ def main():
     ap.add_argument('--buzz', default='data/local_buzz.json')
     ap.add_argument('--voices', default='data/local_voices.json')
     ap.add_argument('--stats', help='保存した直近試合と今季水準')
+    ap.add_argument('--topic-hub', default='data/topic_hub.json')
     ap.add_argument('--fetch-stats', action='store_true')
     ap.add_argument('--as-of', help='保存材料の評価時点（タイムゾーン付きISO）')
     ap.add_argument('--out', default='build/player_story/narration.json')
@@ -335,7 +345,13 @@ def main():
     as_of = stamp(args.as_of) if args.as_of else datetime.now(timezone.utc)
     recap = read(args.recap)
     stats = read(args.stats) if args.stats else fetch_stats(recap, as_of) if args.fetch_stats else {}
-    narr = build(recap, read(args.reporters), read(args.buzz), read(args.voices), stats, as_of)
+    reporters = read(args.reporters)
+    import topic_hub
+    if topic_hub.enabled():
+        hub = topic_hub.load(args.topic_hub)
+        if not hub: hub = topic_hub.build(reporters, read(args.buzz), read(args.voices), as_of=as_of)
+        reporters = dict(reporters, _topic_hub=hub)
+    narr = build(recap, reporters, read(args.buzz), read(args.voices), stats, as_of)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(narr, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(dict(can_make=narr['can_make'], direction=narr.get('direction')), ensure_ascii=False))
