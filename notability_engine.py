@@ -3343,7 +3343,7 @@ def soccer_format_issues(text: str, game: dict) -> list:
         if (re.search(r'グループ(?:ステージ|リーグ)|総当たり', sentence) and
                 not re.search(r'(?:グループ(?:ステージ|リーグ)|総当たり)(?:戦)?では(?:なく|ない|ありません)', sentence)):
             bad.append('現行CLはグループ内総当たりではなく36クラブのリーグフェーズ')
-        if (re.search(r'(?:欧州|ヨーロッパ).{0,15}(?:1|１|一)部リーグ(?:全体|すべて|全て).{0,12}参加', sentence) and
+        if (re.search(r'(?:欧州|ヨーロッパ).{0,15}(?:1|１|一)部リーグ(?:の)?(?:全体|すべて|全て|全チーム|全クラブ).{0,18}(?:参加|参戦|出場|総当たり)', sentence) and
                 not re.search(r'参加.{0,12}(?:ではない|ではなく|しない|わけではない)', sentence)):
             bad.append('CLには出場資格を得たクラブが参加し、欧州1部の全クラブ参加ではない')
     return list(dict.fromkeys(bad))

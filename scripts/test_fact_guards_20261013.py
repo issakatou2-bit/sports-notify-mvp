@@ -115,6 +115,16 @@ class CompetitionTests(unittest.TestCase):
         self.assertEqual(soccer_venue.check('両チームの敵地での成績を比較する。', CL), [])
     def test_all_first_division_clubs_is_wrong(self):
         self.assertTrue(ne.soccer_format_issues('チャンピオンズリーグは欧州の1部リーグ全体が参加する大会である。', CL))
+    def test_saved_oct14_all_teams_wording(self):
+        for text in [
+            'ヨーロッパ最高峰の大会は1部リーグの全チームが総当たり戦で勝ち点を争う形式である。',
+            'チャンピオンズリーグは欧州の1部リーグの全チームが参加する大会である。',
+        ]:
+            with self.subTest(text=text):
+                issues = ne.soccer_format_issues(text, CL)
+                self.assertTrue(any('全クラブ参加' in x for x in issues))
+        self.assertEqual(ne.soccer_format_issues('欧州の1部リーグの全チームが参加するわけではない。', CL), [])
+        self.assertEqual(ne.soccer_format_issues('欧州の1部リーグ上位チームから出場資格を得た36クラブが参加する。', CL), [])
     def test_actual_format_and_explicit_negations_are_not_false_errors(self):
         for text in [GOOD, 'グループステージではなくリーグフェーズである。', '欧州の1部リーグ全体が参加する大会ではない。']:
             self.assertEqual(ne.soccer_format_issues(text, CL), [])
