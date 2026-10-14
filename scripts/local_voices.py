@@ -212,9 +212,15 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
             # 短すぎるものは訳しても中身が無い。長すぎるものは読み上げに載らない。
             if not (12 <= len(text) <= 220):
                 continue
+            reply_items = (item.get("replies") or {}).get("comments") or []
+            if os.environ.get('COLLESPO_REDDIT') == 'on':
+                # この回だけ、訳す前に取得済み返信の高評価順へ。追加取得はしない。
+                reply_items = sorted(reply_items, key=lambda rc:
+                    (rc.get('snippet') or {}).get('likeCount') if isinstance(
+                        (rc.get('snippet') or {}).get('likeCount'), int) else -1, reverse=True)
             replies = [
                 (rc.get("snippet") or {}).get("textOriginal", "").strip()
-                for rc in ((item.get("replies") or {}).get("comments") or [])
+                for rc in reply_items
             ]
             out.append({
                 # コメントの投稿時刻。動画の公開からどれだけ経って
@@ -225,10 +231,19 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
                 "title": " ".join(text.split()),
                 "url": f"https://www.youtube.com/watch?v={vid}",
                 "likes": int(c.get("likeCount") or 0),
+                "like_count": c.get("likeCount"),
+                "reply_count": (item.get("snippet") or {}).get("totalReplyCount"),
                 "replies": int((item.get("snippet") or {})
                                .get("totalReplyCount") or 0),
                 "reply_texts": [" ".join(x.split())
                                 for x in replies if 4 <= len(x) <= 200][:3],
+                # 評価数のない旧保存材料を0と見なさず、取得した範囲の順位だけに使う。
+                "reply_details": [
+                    {"original": " ".join(s.get("textOriginal", "").split()),
+                     "like_count": s.get("likeCount"), "at": s.get("publishedAt")}
+                    for rc in reply_items
+                    for s in [rc.get("snippet") or {}]
+                ],
                 "author": c.get("authorDisplayName", ""),
                 "source": "MLB公式ハイライトのコメント",
                 "matchup": v.get("matchup") or v.get("title", "")[:40],
