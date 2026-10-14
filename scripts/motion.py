@@ -131,6 +131,7 @@ def _list_tiles(payload, heading, soccer):
 
 
 def pulse(tile, box, elapsed):
+    if not SETTINGS['pulse'] and not SETTINGS['light']:return tile
     if box is None or not 0 <= elapsed <= SETTINGS['pulse_seconds']:return tile
     s=SETTINGS['scale'];x0,y0,x1,y1=[round(v*s) for v in box]
     area=tile.crop((x0,y0,x1,y1));phase=elapsed/SETTINGS['pulse_seconds']
@@ -166,10 +167,13 @@ def list_frame(im, t, rows, heading, cues=(), duration=8, entrance=True, soccer=
         dy=round(SETTINGS['rise']*(1-progress)*s)
         x=round(box[0]*s)-gw//2;y=round(box[1]*s)-gh//2+dy
         canvas.paste(row,(x,y),row)
-        scale=row.width/tile.width
+        scale=1+(SETTINGS['focus_scale']-1)*weights[i]
+        # styledの固定余白は拡大率に含めない。検査の文字座標も小数の変換と一致させる。
+        px=(row.width-tile.width*scale)/2
+        py=(row.height-tile.height*scale)/2
         for entry in (e for e in texts if e['key']==str(rows[i]['key'])):
             b=entry['box']
-            new=tuple(((v-box[j%2])*scale+(x if j%2==0 else y)/s)+VIEW[j%2] for j,v in enumerate(b))
+            new=tuple((v-box[j%2])*scale+((x+px) if j%2==0 else (y+py))/s+VIEW[j%2] for j,v in enumerate(b))
             if new[0]<VIEW[0]-1 or new[1]<VIEW[1]+68 or new[2]>VIEW[2]+1 or new[3]>VIEW[3]+1:
                 raise ValueError('一覧の文字が安全域から出ています: '+entry['text'])
             for portrait in im.info.get('duo_portraits',[]):

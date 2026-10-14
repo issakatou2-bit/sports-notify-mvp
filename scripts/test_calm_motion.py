@@ -66,9 +66,9 @@ class WeightTest(unittest.TestCase):
                 self.assertLessEqual(max(abs(a - b) for a, b in zip(w, prev)), 0.45)   # 1コマで半分以上は跳ばない
             prev = w
 
-    def test_switch_takes_about_quarter_second(self):
+    def test_switch_has_time_to_settle(self):
         fade = calm.TUNING['focus_fade']
-        self.assertTrue(0.2 <= fade <= 0.3)
+        self.assertTrue(0.8 <= fade <= 1.0)
         self.assertEqual(calm.weights(self.timeline, 3.0, 2), [0.0, 0.0])
         self.assertAlmostEqual(calm.weights(self.timeline, 3.0 + fade / 2, 2)[1], 1.0)
         self.assertAlmostEqual(calm.weights(self.timeline, 3.0 - fade / 2, 2)[0], 1.0)
@@ -91,6 +91,30 @@ class WeightTest(unittest.TestCase):
         self.assertLessEqual(t['slide_distance'], 0.6)
         self.assertLessEqual(t['overshoot'], 0.6)
         self.assertLessEqual(t['background_speed'], 0.2)
+
+    def test_fractional_scale_keeps_center_and_fixed_sampling_grid(self):
+        from PIL import Image, ImageDraw
+        import numpy as np
+        card = Image.new('RGBA', (201, 101))
+        ImageDraw.Draw(card).rectangle((20, 20, 180, 80), fill='white')
+        sizes = set()
+        for own in (.01, .05, .1, .25, .5, .75, 1):
+            out, dw, dh = calm.styled(card, own, 0)
+            sizes.add(out.size)
+            alpha = np.asarray(out.getchannel('A'), dtype=float)
+            yy, xx = np.indices(alpha.shape)
+            # 画素の中心を比較。丸めた寸法の奇偶で中心が0.5pxずれない。
+            self.assertAlmostEqual(float((xx*alpha).sum()/alpha.sum())-dw/2, 100, delta=.04)
+            self.assertAlmostEqual(float((yy*alpha).sum()/alpha.sum())-dh/2, 50, delta=.04)
+        self.assertEqual(len(sizes), 1)
+
+    def test_no_overshoot_and_smoother_stop(self):
+        values = [calm._smooth(i/100) for i in range(101)]
+        self.assertEqual(values, sorted(values))
+        self.assertEqual((values[0], values[-1]), (0, 1))
+        self.assertLess(values[1]-values[0], .00002)
+        self.assertEqual(calm.TUNING['overshoot'], 0)
+        self.assertEqual(calm.TUNING['presenter_bob'], 0)
 
 
 @unittest.skipUnless(has_font(), '日本語の書体が無い')

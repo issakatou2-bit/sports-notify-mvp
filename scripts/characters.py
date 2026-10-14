@@ -16,8 +16,8 @@ import review_render_v3 as r3
 import video_common as vc
 
 PORTRAIT_DIR = str(r3.ROOT / "assets/portraits")
-NAMES = {"metan": "四国めたん", "zundamon": "ずんだもん", "kiritan": "東北きりたん"}
-COLORS = {"metan": (236, 120, 178), "zundamon": (118, 190, 84), "kiritan": (166, 68, 70)}
+NAMES = {"metan": "四国めたん", "zundamon": "ずんだもん", "kiritan": "東北きりたん", "ui": "雨衣"}
+COLORS = {"metan": (236, 120, 178), "zundamon": (118, 190, 84), "kiritan": (166, 68, 70), "ui": (100, 140, 183)}
 SPEAKERS = {2: "metan", 3: "zundamon", 108: "kiritan"}
 PORTRAIT_CAST = ("metan", "zundamon")  # Names/colors also include voices without a puppet.
 # v4 の表情の名前 → 部品の組み合わせ（眉, 目, 口）
@@ -49,6 +49,9 @@ def figure(who, face="base", height=1000):
 
 @functools.lru_cache(maxsize=64)
 def bust(who, face, height, dim=False):
+    if who == 'ui':
+        import solo_host
+        return solo_host.portrait(face, height)
     art = vc.face(NAMES[who], height, "v4_" + face, PORTRAIT_DIR)
     if art is None:
         return None
@@ -283,6 +286,8 @@ def presenter(im, t, cast=("metan",)):
     elapsed = (clock - ctx["start"]) if clock is not None else t
     line = r3.current_sentence(elapsed, ctx["text"], ctx["duration"]) if ctx["text"] else ""
     speaker = SPEAKERS.get(ctx.get("speaker"), "metan") if __import__('caption_breaks').enabled() else "zundamon" if ctx.get("speaker") == 3 else "metan"
+    import solo_host
+    speaker, cast = solo_host.presentation(speaker, cast)
     if speaker not in cast:
         cast = tuple(cast) + (speaker,)
     place_busts(im, speaker, line, elapsed, ctx["duration"] or 1, cast)

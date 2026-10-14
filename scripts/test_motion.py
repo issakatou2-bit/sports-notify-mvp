@@ -160,7 +160,7 @@ class Motion(unittest.TestCase):
         m.HIGHLIGHTS[:]=fan_events.TRACK
         try:
             r3.set_program_clock(.24)
-            self.assertGreater(m.number_font(face,'3').size,face.size)
+            self.assertIs(m.number_font(face,'3'),face)  # 静かな動きでは数字を弾ませない
             self.assertIs(m.number_font(face,'2'),face)
             r3.set_program_clock(2)
             self.assertIs(m.number_font(face,'3'),face)

@@ -853,6 +853,9 @@ def outro_rows(exclude=""):
 
 def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　データ: MLB Stats API",
           tagline="毎日のMLBを数字と現地の声で"):
+    import solo_host
+    if LOOK == 'v4' and solo_host.selected() == 'ui':
+        credit = credit.replace('VOICEVOX:四国めたん', solo_host.UI_CREDIT)
     im = background(t, None)
     im.info['v3_outro']=True
     d = ImageDraw.Draw(im)

@@ -700,7 +700,8 @@ def metadata(program):
             'コレスポ：https://collespo.com/',
             'VOICEVOX:四国めたん' if program['segments'][0]['meta']['card'].get('visual_style')=='v3' else 'VOICEVOX:ずんだもん / VOICEVOX:四国めたん',
             '#MLB #ポストシーズン #Shorts']
-    return dict(snippet=dict(title=title, description='\n'.join(body), tags=['MLB', 'ポストシーズン', 'Shorts'],
+    import solo_host
+    return dict(snippet=dict(title=title, description=solo_host.credit('\n'.join(body),program['segments']), tags=['MLB', 'ポストシーズン', 'Shorts'],
                             categoryId='17', defaultLanguage='ja', defaultAudioLanguage='ja'))
 
 

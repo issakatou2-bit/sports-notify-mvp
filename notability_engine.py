@@ -1564,6 +1564,8 @@ def apply_readings(text: str) -> str:
     """
     if not text:
         return text
+    from scripts.number_readings import apply as apply_number_readings
+    text = apply_number_readings(text)
     from scripts.name_reading_guard import apply as apply_name_readings
     text = apply_name_readings(text)
     for kanji in sorted(JP_PLAYER_READINGS, key=len, reverse=True):

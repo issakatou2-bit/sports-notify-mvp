@@ -131,7 +131,7 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
         if focus:
             own=focus[i] if i<len(focus) else 0.0
             others=max([w for k,w in enumerate(focus) if k!=i] or [0.0])
-            card,gw,gh=calm.styled(card,own,others)
+            card,gw,gh=calm.styled(card,own,others,anchor='right')
             # その場で大きくする: 右端はそのまま、上下は真ん中から。画面全体は動かさない。
             x=pad-gw;y=max(0,min(layer.height-card.height,y-gh//2))
             if own>0:
