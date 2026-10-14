@@ -155,6 +155,14 @@ class CaptionsTest(unittest.TestCase):
         self.assertIn('--asset-topic "$t" --record data/published_assets.json',ps)
         self.assertNotIn('--out data/local_reporters.json data/en_caption',ps)
 
+class NumbersSurviveTest(unittest.TestCase):
+    """10/14：19時の回で、正しい訳が数字の並び順と「10月→October」で落ちた。"""
+    def test_order_and_months(self):
+        self.assertTrue(en.numbers_survive('大谷は3打数1安打', 'Ohtani went 1-for-3'))
+        self.assertTrue(en.numbers_survive('10月15日の試合', 'the October 15 game'))
+        self.assertFalse(en.numbers_survive('3打数1安打', 'went 1-for-4'))
+        self.assertFalse(en.numbers_survive('2本塁打', 'hit a home run'))
+
 
 if __name__ == '__main__':
     result=unittest.main(argv=[sys.argv[0]],exit=False).result
