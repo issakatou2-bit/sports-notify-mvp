@@ -687,7 +687,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_week", "soccer_results", "soccer_voices")
+               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "player_story")
 
 
 def published_video(kind: str, date_key: str,
@@ -1326,6 +1326,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    longform_mode: str = "voices",
                    longform_subject: str = "") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
+    if kind == 'player_story':
+        import player_story
+        narr = _json_or_empty(narration_path)
+        player_story.validate(narr)
+        return {'snippet': {'title': narr['title'], 'description': narr['description'],
+                            'tags': ['MLB', narr['player']['name_jp'], 'コレスポ'],
+                            'categoryId': CATEGORY_SPORTS, 'defaultLanguage': 'ja',
+                            'defaultAudioLanguage': 'ja'}}
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
         games = [g for g in data.get("games", []) if g.get("is_notable")][:3]
@@ -1975,7 +1983,7 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
                                  "morning", "longform", "soccer_race",
-                                 "soccer_week", "soccer_results", "soccer_voices"],
+                                 "soccer_week", "soccer_results", "soccer_voices", "player_story"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "
@@ -2018,6 +2026,12 @@ def main():
                         help="JSTの公開時刻 HH:MM。指定すると予約投稿になる。"
                              "過ぎている場合はそのまま公開する")
     args = parser.parse_args()
+    if args.kind == 'player_story':
+        if os.environ.get('COLLESPO_PLAYER_STORY') != 'on' or os.environ.get('PLAYER_STORY_PUBLISH') != 'true':
+            print('[info] 選手の話題の回の生成・公開スイッチは既定オフです')
+            return
+        import player_story
+        player_story.validate(_json_or_empty(args.narration), publish=True)
 
     video_path = pathlib.Path(args.video)
     if not video_path.exists():
