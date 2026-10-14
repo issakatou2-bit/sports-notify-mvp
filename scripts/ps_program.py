@@ -611,6 +611,7 @@ def script(program):
 
 
 def movie(program, audio_dir, out):
+    __import__('slant_by_episode').set_episode('ps_situation' if program.get('mode')=='situation' else 'ps_preview')
     check = check_program(program)
     audio = read(Path(audio_dir) / 'manifest.json')['segments']
     if len(audio) != len(program['segments']):

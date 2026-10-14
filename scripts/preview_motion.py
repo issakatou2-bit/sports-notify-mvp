@@ -20,9 +20,10 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__)
     for name in ('reddit','mlb','soccer','out'):ap.add_argument('--'+name,type=Path,required=True)
     ap.add_argument('--fps',type=int,default=24)
+    ap.add_argument('--bubble',choices=('slant','glass'),default='glass')
     ap.add_argument('--slots',nargs='+',choices=('reddit','mlb-1700','soccer'),default=['reddit','mlb-1700','soccer'])
     a=ap.parse_args()
-    os.environ.update(COLLESPO_MOTION='on',COLLESPO_SHORT_LOOK='v4',COLLESPO_SOCCER_LOOK='v5',COLLESPO_EXPR='',COLLESPO_BUBBLE='glass')
+    os.environ.update(COLLESPO_MOTION='on',COLLESPO_SHORT_LOOK='v4',COLLESPO_SOCCER_LOOK='v5',COLLESPO_EXPR='',COLLESPO_BUBBLE=a.bubble)
     import motion
     import player_story_render as reddit
     import bignumber_render as bn
@@ -44,6 +45,7 @@ def main():
     ffmpeg=str(ffmpeg.resolve());os.environ['PATH']=str(bindir.resolve())+os.pathsep+os.environ.get('PATH','')
     # Fail before an expensive encode if any saved script/voice/material drifted.
     for label,source in (('reddit',a.reddit),('mlb-1700',a.mlb),('soccer',a.soccer)):
+        if label not in a.slots:continue
         saved=read(source/'narration.json');voices=read(source/'audio/manifest.json')['segments']
         if len(saved['segments'])!=len(voices) or any(any(s[k]!=v[k] for k in ('kind','text','speaker','meta')) for s,v in zip(saved['segments'],voices)):
             raise ValueError('試作前の音声・原稿照合失敗: '+label)
@@ -51,6 +53,7 @@ def main():
             raise ValueError('試作前の保存材料・現在の原稿照合失敗: soccer')
     for label,source in (('reddit',a.reddit),('mlb-1700',a.mlb),('soccer',a.soccer)):
         if label not in a.slots:continue
+        __import__('slant_by_episode').set_episode({'reddit':'reddit_reaction','mlb-1700':'morning_players','soccer':'soccer_preview'}[label])
         narr=read(source/'narration.json');audio=read(source/'audio/manifest.json')['segments']
         if len(audio)!=len(narr['segments']):raise ValueError('保存音声の区間数不一致')
         hashes=[]
@@ -111,13 +114,13 @@ def main():
         pcm=subprocess.run([ffmpeg,'-v','error','-i',str(video),'-map','0:a:0','-f','s16le','-'],capture_output=True)
         if pcm.returncode or not any(pcm.stdout):raise ValueError('音声がありません')
         report=dict(slot=label,seconds=sum(times),fps=a.fps,frames=count,focused=sorted(focused),overview_frames=overview,
-                    full_decode='PASS',audible_track='PASS',subtitle_voice_row='PASS',safe_area='PASS',audio_hashes=hashes,samples=receipts)
+                    bubble=a.bubble,full_decode='PASS',audible_track='PASS',subtitle_voice_row='PASS',safe_area='PASS',audio_hashes=hashes,samples=receipts)
         (folder/'verification.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
         reports=[r for r in reports if r['slot']!=label]
         reports.append({k:v for k,v in report.items() if k not in ('samples','audio_hashes')})
         print(json.dumps(reports[-1],ensure_ascii=False),flush=True)
     (a.out/'confirmation.json').write_text(json.dumps(reports,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
-    html='<html lang="ja"><meta charset="utf-8"><title>動きの共通部品</title><style>body{background:#162a30;color:white;font:16px sans-serif}video{width:320px}article{display:inline-block;margin:12px;vertical-align:top}img{width:95%}</style><h1>一覧から読み上げ中の項目へ寄る</h1><p>保存材料と保存音声の非公開試作。動きはCOLLESPO_MOTION=onでのみ有効。</p>'
+    html='<html lang="ja"><meta charset="utf-8"><title>静かな動きの試作</title><style>body{background:#162a30;color:white;font:16px sans-serif}video{width:320px}article{display:inline-block;margin:12px;vertical-align:top}img{width:95%}</style><h1>読み上げ中の札を強調する</h1><p>保存材料と保存音声の非公開試作。動きはCOLLESPO_MOTION=onでのみ有効。</p>'
     for report in reports:
         name=report['slot'];html+=f'<article><h2>{name}</h2><video controls preload="metadata" src="{name}/preview.mp4"></video><p>{report["seconds"]:.2f}秒 / 3項目の同期・全尺復号・声あり</p></article>'
     html+='<p><a href="confirmation.json">検査記録</a></p>'

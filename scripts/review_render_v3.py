@@ -25,6 +25,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont  # noqa: E402
 from ps_brand_components import TEAM_SECONDARY_COLORS, font  # noqa: E402
 from ps_render_template import SAFE_BOTTOM, SAFE_RIGHT  # noqa: E402
 from review_render import page_source, PORTRAITS, _tokens  # noqa: E402
+import calm_motion  # noqa: E402  COLLESPO_MOTION=on のときだけ動きを控えめに（Opus-32）
 
 W, H = 1080, 1920
 LEFT = 72
@@ -145,7 +146,8 @@ def ease_out(x):
 
 
 def back_out(x, s=1.6):
-    """少し行き過ぎて戻る。"""
+    """少し行き過ぎて戻る。COLLESPO_MOTION=on では行き過ぎを小さく（弾みは1回だけ）。"""
+    s = s * calm_motion.value('overshoot', 1.0)
     x = max(0.0, min(1.0, x))
     x -= 1
     return 1 + x * x * ((s + 1) * x + s)
@@ -246,6 +248,9 @@ def redraw_ticker(raw, size=(1080, 1920)):
 def ticker(im, t, text, y=1486, once=False):
     if not text:
         return
+    # クラブ名は表示名の表（notability_engine.club_display_text）を通す。古い書き方を帯に出さない
+    import notability_engine as ne
+    text = ne.club_display_text(text)
     if _PROGRAM_CLOCK[0] is not None:
         t = _PROGRAM_CLOCK[0]
     LAST_TICKER[0] = (text, y, once)
@@ -481,7 +486,8 @@ def presenter(im, t, which="right", who="metan"):
         sp = _portrait_v4(who, face if who == "metan" else "base")
     else:
         sp = _portrait(who)
-    bob = round(6 * math.sin(t * 2 * math.pi / 2.4))
+    bob = round(6 * calm_motion.value('presenter_bob', 1.0)
+                * math.sin(t * 2 * math.pi / (2.4 * calm_motion.value('presenter_period', 1.0))))
     x = SAFE_RIGHT - sp.width + (24 if LOOK == "v4" else 0) if which == "right" else 24
     # テロップ（1486〜1574）の上に立つ。テロップの文字を隠さない
     im.paste(sp, (x, 1480 - sp.height + bob), sp)
@@ -493,7 +499,7 @@ def _paste_card(im, card, x, y, k):
     """札を、飛び込みの進み具合 k（0〜1、行き過ぎあり）で置く。"""
     if k <= 0:
         return
-    dx = round(140 * (1 - k))
+    dx = round(140 * calm_motion.value('slide_distance', 1.0) * (1 - k))
     alpha = card.split()[3].point(lambda a: round(a * min(1.0, k * 1.6)))
     # 入場中も見出し・左右・テロップの予約領域へ出さない。
     if im.size==(W,H):
@@ -781,7 +787,7 @@ def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_a
     return card
 
 
-def list_page(t, spec, items, start, count, page, pages, kind_label):
+def list_page(t, spec, items, start, count, page, pages, kind_label, focus=None):
     if LOOK == 'v4':
         import asset_v4_cards as cards
         if cards.enabled(spec):
@@ -789,11 +795,11 @@ def list_page(t, spec, items, start, count, page, pages, kind_label):
     import v3_slot_render as common
     view=dict(spec,team_id=design_team(spec),page=f'{page}/{pages}')
     selected=list(items)[start:start+count]
-    return common.frame(t,view,selected,kind_label,page_source(selected))
+    return common.frame(t,view,selected,kind_label,page_source(selected),focus=focus)
 
 
 # ------------------------------------------------------------------ 効果音の時刻
-def people(t, spec, rows, heading, kind_label):
+def people(t, spec, rows, heading, kind_label, focus=None):
     if LOOK == 'v4':
         import asset_v4_cards as cards
         if cards.enabled(spec) and rows:
@@ -801,7 +807,7 @@ def people(t, spec, rows, heading, kind_label):
     import v3_slot_render as common
     view=dict(spec,team_id=design_team(spec),heading=heading)
     items=[(r.get('name',''),r.get('line',r.get('why',''))) for r in rows[:3]]
-    return common.frame(t,view,items,kind_label,'出典: MLB公式（Stats API）')
+    return common.frame(t,view,items,kind_label,'出典: MLB公式（Stats API）',focus=focus)
 
 
 def cues(kind, spec, items=(), start=0, count=0):

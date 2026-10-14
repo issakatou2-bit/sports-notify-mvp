@@ -603,7 +603,7 @@ def build_asset_metadata(topic: str) -> dict:
     ]
     return {
         "snippet": {
-            "title": __import__("press_names").press_title(meta["title"])[:100],
+            "title": club_display_title(__import__("press_names").press_title(meta["title"]))[:100],
             "description": "\n".join(lines)[:5000],
             "tags": meta["tags"][:15],
             "categoryId": CATEGORY_SPORTS,
@@ -1311,6 +1311,18 @@ def _soccer_race_lines() -> list:
     return out
 
 
+def club_display_title(title: str) -> str:
+    """題のクラブの古い書き方（「マンチェスター・シティ」など）を表示名に（Opus-33、10/14）。
+
+    表は notability_engine の1か所（data/club_display_names.json、帯・説明欄と同じ。Opus-32 の
+    club_display_text）。その関数がまだ無い版では、題をそのまま返す（ここで別の表は持たない）。
+    """
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+    import notability_engine as ne
+    fix = getattr(ne, "club_display_text", None)
+    return fix(title) if fix else title
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
@@ -1662,6 +1674,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 選手名と球団名を新聞の書き方に（「村上宗隆のホワイトソックス」→「村上ホワイトソックス」。10/10 本人）
     import press_names
     title = press_names.press_title(title)
+    title = club_display_title(title)
     title = title[:100]  # YouTubeのタイトル上限
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
@@ -1976,6 +1989,13 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     }
 
 
+def club_display_description(text: str) -> str:
+    """説明欄のクラブの古い書き方（「アストン・ヴィラ」など）を表示名に。表は notability_engine の1か所。"""
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+    import notability_engine as ne
+    return ne.club_display_text(text)[:5000]
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
@@ -2173,6 +2193,9 @@ def main():
                               jp_team_name=jp_team_name,
                               longform_mode=longform_mode,
                               longform_subject=longform_subject)
+    # 説明欄のクラブ名は表示名の表（帯と同じ1か所）を通す。古い書き方を残さない（Opus-32）。
+    # 題は Opus-33 で同じ関数を通す。
+    body["snippet"]["description"] = club_display_description(body["snippet"]["description"])
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)

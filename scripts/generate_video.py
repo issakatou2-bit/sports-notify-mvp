@@ -947,6 +947,7 @@ def main():
                         help="音声が作れなければ動画を作らずに終わる")
     parser.add_argument("--out", default="build/video")
     args = parser.parse_args()
+    __import__('slant_by_episode').set_episode('daily',sport=args.sport)
     global DATA_SOURCE
     DATA_SOURCE = DATA_SOURCES[args.sport]
 

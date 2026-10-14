@@ -171,6 +171,7 @@ def wanted_asset_title(topic: str) -> str:
 
 def apply(yt, video_id: str, title: str, dry: bool) -> bool:
     """題だけ差し替える。説明もタグも触らない。"""
+    title = uy.club_display_title(title)
     try:
         res = yt.videos().list(part="snippet", id=video_id).execute()
     except HttpError as e:

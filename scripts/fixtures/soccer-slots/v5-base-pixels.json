@@ -26,18 +26,18 @@
       "legacy/6/render_race_line/1.4": "babf29f78b902fa1f47b247c68b52be309388c5574982351bf6a9b88364c8d7b"
     },
     "v4": {
-      "preview/0/cover/0.0": "94f741ec6b36cb6d6222f347205f2fe8c0062cd163b7a999724a500eae98d035",
-      "preview/0/cover/0.8": "d71933b976740e20ef8b4ffa4ff82b2811ad390c8410001e9bdaf08055394f2f",
-      "preview/0/cover/1.4": "534d2915a24cfc0736bf3c71c8550ac71b0691c21cb904dd26da9e74a4e9550b",
-      "preview/1/preview/0.0": "92dae0af7976e14deba2aa8b72aca052f6da2b302fd11cd95a01655ee4b139e1",
-      "preview/1/preview/0.8": "222fff40fb31a479050bb03ce4921499a447d2e7eda00120a695cb6b9ab7e631",
-      "preview/1/preview/1.4": "0aea30a9f8cfe3b758883ed7c49aad40dba6d5cb7efa6a42078cbebf66095185",
-      "preview/2/preview/0.0": "56729c1c9727c44d59abc9eedadc3a2327970ed076d0e4252e2ffb2594d33d34",
-      "preview/2/preview/0.8": "92d08b1a803213458151036244ac07744b823568d66b9f075fc889cad47aa4a1",
-      "preview/2/preview/1.4": "e06aa843d3a407d95927a781e5a2f9a4c6fb235fa06d72dcfdb9b380367b08c7",
-      "preview/3/preview/0.0": "ab1e425a31dc90fc0edd8403268c412b78994cbf914160ff985870d80c0a7541",
-      "preview/3/preview/0.8": "8928cb834cf3b5f25eae466b1b25f59cf60d23a9f48e7d7830389c8b2a46855d",
-      "preview/3/preview/1.4": "9a556658d6531ae30d8ab89c0721f2b91625e097bb837e73b45adf0f47ae2f25",
+      "preview/0/cover/0.0": "6aa0fd3854f8342015af60b997623a34a278bc4c5f0d080c8f2fad40fedb3cbd",
+      "preview/0/cover/0.8": "b7135dcb433f61b8c7603a4b5dc9a2a332a838a49426e4171ac53573f1893c18",
+      "preview/0/cover/1.4": "f2b0d42da311ef59758d9f6e9ecae0cb5469a18bb616938220eca9fe999138dc",
+      "preview/1/preview/0.0": "3865a1da0573d29bfed510df81441dde1b0d15f4a694c29e9cbeb4fca68dcf9e",
+      "preview/1/preview/0.8": "0809781c63b5b292c80714a86b054a5aa5acca19656e35d8cf98d93cac040b5a",
+      "preview/1/preview/1.4": "9dbdc22f7200293ccc5fb65104f8481f7d80bfaa18ed4868508690901920b118",
+      "preview/2/preview/0.0": "c6ba7377c38ec84c1d7f00287819f8084ba2014f36c9b5285a702c46edc5f72b",
+      "preview/2/preview/0.8": "ba2e969cb6501e09aa09e7d4aac08c840e549a4caef6a0e1808cbb874068e378",
+      "preview/2/preview/1.4": "2fcb61a52f18b4e4afa2d1273360f140da7d2efceab4be3f330f09ba95ec6cc4",
+      "preview/3/preview/0.0": "d5b2d2ed23d4825fbbe52ecd3198e348fd7b98b5b2ff23b9cc1993aad0e20c99",
+      "preview/3/preview/0.8": "f8468a5bf81db44b2b14437cd1d49887f0ddf93dafe56d1954666cd0114836f7",
+      "preview/3/preview/1.4": "e3b30daf69d38c822e0cdcc1885514d5e548602e8a8c9130590a5493ecb3201c",
       "preview/4/outro/3.0": "9882201ab2016522d97db37783116eee601a846381dad33bbc7917b467699008",
       "race/0/cover/0.0": "7848b9d8ede54b9a75f51990491ca09bc505366b920345d0f674bbbbeafe95b5",
       "race/0/cover/0.8": "2a30fbfa020ed364e3982995e197984d1c316610a199cbea02f4ff71c3edc62b",
@@ -98,5 +98,6 @@
       "week/6/jp_player/1.4": "bd08f9d876856676c2c4403f1d8a9860c8fb45bd5f0454fe751d836e4b7c8389",
       "week/7/outro/3.0": "5a7dfff6287e7df57c10de22c6640f4686a353943660c7c0a00f0e75c2a34129"
     }
-  }
+  },
+  "club_display_update": "2026-10-14: main基点のティッカーにも既存表の表示名だけを適用し71画面一致。予告12画面の指紋を更新。"
 }

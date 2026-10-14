@@ -4225,6 +4225,7 @@ def main():
                         help="音声が作れなければ動画を作らずに終わる")
     parser.add_argument("--out", default="build/morning")
     args = parser.parse_args()
+    __import__('slant_by_episode').set_episode('morning',args.mode)
     if args.mode in ('soccer_race','soccer_week'):
         import soccer_slots_v4
         if soccer_slots_v4.enabled():

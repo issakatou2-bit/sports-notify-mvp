@@ -2,10 +2,10 @@
   "base": "bbf0073",
   "files": {
     "scripts/soccer_v4_cards.py": "ec1f26eae58e30791c85472966dcdce80882e18eb154f2e505083e26509673b3",
-    "scripts/characters.py": "b882006240287466d8061afaa488f5a404feb715d67ac4fbae9de20621eadd05",
+    "scripts/characters.py": "935dd174369e986f53497d37b31db22c7d5b2dd0f95f4f76d97bc4967a17cdec",
     "scripts/video_common.py": "2494dac27d9ed86ba6a60717a6b231d2d1651057873cfc57430fe95c83e08c75",
-    "scripts/generate_video.py": "4c22578ce209d695cdc1a7d58ec44a006dc71908bf4176f81b0ba85c2648fd40",
-    "scripts/generate_morning_short.py": "33436964343ad4caeffbd07ffd0ecc2306db236486f9d4209091f86237f41563"
+    "scripts/generate_video.py": "30685d1087c5cbeb84c405f12da3b8925715907567a640b04815012cbdfb7804",
+    "scripts/generate_morning_short.py": "25c1f44b51bd1c630e7699f39148eece6e007d2e956ea816b98d40003d4e93b7"
   },
   "functions": {
     "scripts/review_render_v3.py": {
@@ -19,7 +19,7 @@
       "colors": "0ae3cfc52f5044d6b4535e2b4e5b7da1127e57e71192bc9b7daba5cd584fe9ff",
       "num_font": "fbf9d5148663778e16cacbfe503c3dbb30f3674a21626395aea422dbc605063a",
       "ease_out": "62d53a906cc7af1a890fb5737eba9d95e7b60bfcf826180bb68b251bd4b6a9c5",
-      "back_out": "bb8c8a45e93327065ad228e80ea7a5f10241fd237e9a7ac16d9cc94b66148f75",
+      "back_out": "58801c2f59b1e8d5cb3d1a4eeb589cba9f55fbefdfdda7287a347261d2064bdc",
       "_beam": "68a66d723710ca70e457cd18875aa5591a1ad5391fe9b1524e65f120e619d789",
       "background": "c8871b209fc3c65b4b7041eb6db1ca81d7a22c9c852ecba1c17867174e947a6e",
       "_header": "9081beaea2e1c9cbcf3ff6b79c219f03eedc5901e6c15af80228a04266325d6e",
@@ -28,7 +28,7 @@
       "_single_ticker": "f79670f6132914488763d3c42d2d01667a00f54c0b250a4d9b75d9de7e72d716",
       "set_program_clock": "46a50388f535315b49d1cba0998b8125d8b825d51a04b9407cf7a20d210167f7",
       "redraw_ticker": "5d38d96ff8b0fdb25c74bce1a8c6ac807c9de79d661c21eb77248971e2e2ecbe",
-      "ticker": "98856e4fe60c2175bf9035a711a51c312fbb6a323000120869e9cd4e096885fa",
+      "ticker": "e34bfd0f3328e970345cc3702b9b67ac282b74c223131c27e56e6e5d958ed2f5",
       "_portrait": "330850ae8fabdd509ca383bf452c807c0c6e5159fcafdaf3029863ae441a9bf3",
       "source": "69c72de06acbe062019784a4539c7bc3ca18f5f549aaa203d52f40daa0e8d33e",
       "_portrait_v4": "7bdcb27666e458562c35e7f3dd88605aa1936116aafeae54a26ab94a1e9b8944",
@@ -41,8 +41,8 @@
       "_has_glyph": "5023c5ffa5997582874b7c6eda712b65a05b9c0ae862990f04ee1e7a807ae353",
       "_caption_lines": "fd55d4161aaac1ad967997658265d136180887262652f0ce88171f4c0002822f",
       "progress": "8ad6f2c2acd930e391190bb6e5e608f616f47690f08b97a17ab3e3e6094c3384",
-      "presenter": "884c8c723c27efe3a95d51669cf632efc1689b02bdd5db05fbf606f06e7bb211",
-      "_paste_card": "884b444cd8a31c60f6a9b4e2f11cbc8b07494e3a37753b8065f70c297c05707e",
+      "presenter": "566fa8cf09f8cdfc71f1cf1deb9a57234f0a84dc8271d0ceceb1315e9a40c86e",
+      "_paste_card": "ba8158a54beca8eb42053468ef573261e9e658f6621ce24131964080c9b60cb3",
       "_chip": "a7c1bc0e7ba85dffc0096fa667b98af9749a1a63d72a558ee56600b4e6a153ef",
       "_reel": "de2cdd76e31a5166a4a65157fac8be509fa337b611f740132299142dd636cd4a",
       "intro": "e7a5ab09717716620f34871f5939ffa166777d746ad0fc6b771e8383c8e045d1",
@@ -50,8 +50,8 @@
       "_atoms": "7845e37dca05ed2dac5064a3fe9d072764a9275ef5baa40d24d90e00c36aa1e5",
       "rich_lines": "2b81a7a9f67e83a7f7caebd0c3c633a7ac7cda344330b62c42656952ef2b12fd",
       "_item_card": "4d87634cfffa48c82f70580eb0012bee277571b53fef46531c8bfaed9edf9232",
-      "list_page": "84b61540d90b59cb09808fe1dc52cc26a5e0573b9f1253315c3f367817d08fe3",
-      "people": "29281d9e8f386aad6ac4f297db27d3c5588ba1232a4747b5fe7a569247944949",
+      "list_page": "097267169b38cd97da8a0277a27811d8ac1e9d31b0a07c6e82db5ba9665eb9aa",
+      "people": "73acd47cf0fe7c71ec583ac522f19c7d8a46516a730c2ffaf682e38cd70075b4",
       "cues": "2ea101d5f9087ccdec69fe56e05e64902d845b4ecf02b772ceed0d043f56f73a",
       "outro_rows": "13de847d52479ff746fdb6cf65b60055d668b79d18d29fd54c0b9611fa8ad15a",
       "outro": "974a4a4b70a9a3b2d0f36cb21ed880a4fb08a4a9a91edfa2760185ac2601a651",

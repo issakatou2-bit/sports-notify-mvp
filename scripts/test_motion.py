@@ -52,6 +52,10 @@ class Motion(unittest.TestCase):
             frame=m.list_frame(im,k/30,ROWS,'一覧',cues,7)
             info=frame.info['motion']
             self.assertEqual(info['source_size'],(1736,1808))
+            self.assertEqual(info['zoom'],1.)
+            self.assertEqual(info['crop'],(0,0,868,904))
+            self.assertLessEqual(info['row_scale'],1.04)
+            self.assertLessEqual(sum(v>0 for v in info['weights']),1)
             if info['active'] is not None:seen.add(info['active'])
             self.assertEqual(frame.crop((0,1200,1080,1920)).tobytes(),im.crop((0,1200,1080,1920)).tobytes())
             max_speed=max(max_speed,abs(info['zoom']-last)*30);last=info['zoom']
@@ -213,7 +217,7 @@ class Motion(unittest.TestCase):
                (plan['narration']['segments'][1]['text'],lambda t:slots.frame(t,plan['narration']['segments'][1],plan)),
                ('今日の勝利貢献順位です。',lambda t:bn.scene(t,dict(kind='ranking',ranking=rank,dur=4)))]
         for style in ('','slant','glass'):
-            with patch.dict(os.environ,{'COLLESPO_MOTION':'','COLLESPO_BUBBLE':style}):
+            with patch.dict(os.environ,{'COLLESPO_MOTION':'','COLLESPO_BUBBLE':style,'COLLESPO_SLANT_VARIANT':'cream'}):
                 for text,draw in cases:
                     for t in (0,.35,.8,1.5):
                         r3.set_program_clock(0);r3.set_caption(text,4,30);r3.set_program_clock(t)

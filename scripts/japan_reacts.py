@@ -240,6 +240,7 @@ def write_subtitles(data,out):
 
 
 def save(data,out):
+    __import__('slant_by_episode').set_episode('japan_reacts')
     validate(data)
     import short_saved_render as render
     render.setup(); out=Path(out); out.mkdir(parents=True,exist_ok=True)

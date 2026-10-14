@@ -738,7 +738,7 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None,
         key=characters.SPEAKERS.get(seg.get('speaker'),'metan')
         lines=seg.get('_lines')
         text=''.join(lines) if lines is not None else seg.get('text','')
-        if text:bubble_styles.draw(im,key,text,seconds=r3_time(),box=bubble_styles.longform_box(legacy=True))
+        if text:bubble_styles.draw(im,key,text,seconds=r3_time(),box=bubble_styles.longform_box(legacy=True),episode='longform')
         from PIL import ImageDraw
         d=ImageDraw.Draw(im)
     else:
@@ -824,6 +824,7 @@ def main() -> int:
                     help="立ち絵の置き場。無ければ丸と名前で代用する")
     ap.add_argument("--require-audio", action="store_true")
     args = ap.parse_args()
+    __import__('slant_by_episode').set_episode('longform')
 
     try:
         dia = json.loads(

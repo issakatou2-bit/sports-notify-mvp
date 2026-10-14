@@ -1036,6 +1036,11 @@ def _intro_text(topic: str, items: list) -> str:
     return min(candidates, key=_spoken_len)
 
 
+def _list_item_speech(spec: dict, head: str, body: str) -> str:
+    """一覧の1項目の読み上げ。原稿と、読み上げている札を決める所（calm_motion）が同じものを見る。"""
+    return (spec.get("speech") or {}).get(head) or f"{head.replace('｜', '、')}。{body}。"
+
+
 def _narration_list(topic: str) -> dict:
     """LIST_TOPICS のデータから原稿を組む。1画面に2項目ずつ。"""
     spec = LIST_TOPICS[topic]
@@ -1078,8 +1083,7 @@ def _narration_list(topic: str) -> dict:
         segments.append({
             "kind": "list",
             # 材料に話し言葉（speech）があれば、それを読む（数字は画面と同じもの）
-            "text": "".join((spec.get("speech") or {}).get(t) or f"{t.replace('｜', '、')}。{b}。"
-                            for t, b in chunk),
+            "text": "".join(_list_item_speech(spec, t, b) for t, b in chunk),
             "meta": {"topic": topic, "start": i, "count": len(chunk)},
         })
     # 数字のあとに、人を出す。
@@ -1667,9 +1671,37 @@ def render_v2(p, kind, meta, spec, topic):
                      meta.get("heading", ""), root, tag)
 
 
-def render_v3(t, kind, meta, spec, topic):
+def _v3_focus(t, kind, meta, spec, topic, seg, dur):
+    """COLLESPO_MOTION=on のときだけ: いま読み上げている札（行ごとの上がり具合）。決められなければ None。
+
+    画面全体は動かさず、読み上げている札だけを少し大きく・明るくする（Opus-32）。
+    区切りは原稿を作ったのと同じ関数（_list_item_speech）の字数で決める。合わなければ見出しの位置で。"""
+    import calm_motion
+    import review_render_v3 as r3
+    if not calm_motion.enabled() or not seg or kind not in ("list", "people"):
+        return None
+    text = seg.get("text") or ""
+    speech = float(seg.get("duration") or 0) or dur
+    if kind == "list":
+        name = meta.get("topic", topic)
+        material = LIST_TOPICS.get(name) or spec
+        start, count = meta.get("start", 0), meta.get("count", 1)
+        chunk = list_items(name)[start:start + count]
+        parts = [_list_item_speech(material, h, b) for h, b in chunk]
+        markers = [h.replace("｜", "、") for h, _ in chunk]
+    else:
+        rows = (spec.get(meta.get("group", "japanese")) or [])[:3]
+        if meta.get('duo') and 'row' in meta:rows=rows[meta['row']:meta['row']+1]
+        parts, markers = None, [r.get("name", "") for r in rows]
+    # 札が出そろう（最後の札が入りきる）までは上げない
+    settle = r3.T_CARD0 + (len(markers) - 1) * r3.T_CARD_GAP + r3.SLIDE
+    return calm_motion.focus_for(t, text, speech, len(markers), parts=parts, markers=markers, settle=settle)
+
+
+def render_v3(t, kind, meta, spec, topic, seg=None, dur=None):
     """新デザイン「電光掲示板」（review_render_v3）。材料の style="v3" のときだけ。"""
     import review_render_v3 as r3
+    focus = _v3_focus(t, kind, meta, spec, topic, seg, dur)
     if kind=='next_line':
         import next_line
         return next_line.frame(t,meta['next_line'])
@@ -1696,11 +1728,11 @@ def render_v3(t, kind, meta, spec, topic):
         rows=spec.get(meta.get('group','japanese')) or []
         if meta.get('duo') and 'row' in meta:rows=rows[meta['row']:meta['row']+1]
         return decorate(r3.people(t, spec, rows,
-                         meta.get("heading", "日本人選手"), tag))
+                         meta.get("heading", "日本人選手"), tag, focus=focus))
     items = list(spec.get('items') or []) if r3.LOOK=='v4' else list_items(meta.get("topic", topic))
     start = meta.get("start", 0)
     return decorate(r3.list_page(t, spec, items, start, meta.get("count", 1),
-                        start // 2 + 1, (len(items) + 1) // 2, tag))
+                        start // 2 + 1, (len(items) + 1) // 2, tag, focus=focus))
 
 
 BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"
@@ -1782,6 +1814,7 @@ def main():
     parser.add_argument('--publish-at',help='次情報を数える公開予約のJST時刻またはISO日時')
     parser.add_argument('--next-schedule',help='保存した公式日程（試作用）')
     args = parser.parse_args()
+    __import__('slant_by_episode').set_episode('asset')
 
     if args.narration:
         narration=json.loads(pathlib.Path(args.narration).read_text(encoding='utf-8'))
@@ -1901,7 +1934,7 @@ def main():
                     # 新デザイン（電光掲示板）は背景が動き続けるので、使い回さない。帯は番組の時計で流す
                     import review_render_v3 as _r3
                     _r3.set_program_clock(total / FPS)
-                    image=render_v3(scene_elapsed+k/FPS,kind,meta,v2,args.topic)
+                    image=render_v3(scene_elapsed+k/FPS,kind,meta,v2,args.topic,seg=seg,dur=dur)
                     card=image.info.get('asset_v4') or {}
                     key=(screen,card.get('kind'),card.get('head'),card.get('name'),card.get('page'),card.get('row'))
                     if key!=visual_key:

@@ -46,6 +46,25 @@ def display(value, *, short=False, legacy=False):
     return (value.get('name_jp') or value.get('team_en')) if isinstance(value,dict) else value
 
 
+@functools.lru_cache(maxsize=1)
+def text_pairs():
+    pairs={}
+    for row in rows():
+        for alias in [row['current'],row['legacy'],row['display'],row['id'],*row.get('aliases',[])]:
+            # 短い英略称・普通名詞を文中で置換しない。
+            if re.search(r'[一-龯ぁ-んァ-ヶ]',alias) or alias==row['id']:
+                resolved=lookup(alias)
+                if resolved and resolved['id']==row['id']:pairs[alias]=row['display']
+    return pairs
+
+
+def display_text(text):
+    pairs=text_pairs()
+    if not pairs:return str(text or '')
+    pattern='|'.join(re.escape(key) for key in sorted(pairs,key=len,reverse=True))
+    return re.sub(pattern,lambda m:pairs[m.group()],str(text or ''))
+
+
 def readings():
     result={}
     for row in rows():

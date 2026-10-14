@@ -90,6 +90,7 @@ def _frame(t, seg, narr):
 
 
 def render(narr, audio, out):
+    __import__('slant_by_episode').set_episode(narr.get('program') or 'player_story')
     if not narr.get('can_make'):
         return None
     if narr.get('program')=='reddit_reaction':
