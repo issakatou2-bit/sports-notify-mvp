@@ -34,9 +34,9 @@ def rows(data):
         for value in data:yield from rows(value)
 
 
-def decision(line, material):
+def decision(line, material, *, motion_only=False):
     import characters
-    if not enabled():return None
+    if not enabled() and not motion_only:return None
     for p in rows(material):
         name = str(p.get('name') or p.get('name_jp') or '')
         if not name or not any(n in name for n in characters.fan_names()):continue
@@ -84,6 +84,8 @@ def decision(line, material):
 
 def prepare(material, segments, durations, out_dir, fps=FPS):
     TRACK.clear()
+    import motion
+    if motion.enabled():motion.prepare_highlights(material,segments,durations)
     if not enabled():return
     start = 0.
     for seg,duration in zip(segments,durations):

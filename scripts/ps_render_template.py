@@ -46,7 +46,8 @@ def background(style='stadium',seconds=0,team_id=None):
     drift=round(9*math.sin(seconds/6))
     for r in (340,430,520):d.arc((680-r+drift,140-r,680+r+drift,140+r),10,155,fill=t['line'],width=2)
     d.polygon([(540,1520),(800,1750),(540,1890),(280,1750)],outline=t['line'],width=2)
-    return im
+    import motion
+    return motion.background(im,seconds)
 
 def render(card,presenters=None,style='stadium',layers=False):
     if style=='v3':

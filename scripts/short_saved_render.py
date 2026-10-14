@@ -37,6 +37,7 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
     import soccer_results_render as rr
     import synthesize_narration as sn
     import video_common as vc
+    import motion
     import v3_rules as rules
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
     (out/'narration.json').write_text(json.dumps(narr, ensure_ascii=False, indent=2), encoding='utf8')
@@ -51,6 +52,7 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
                 raise ValueError('VOICEVOXの合成失敗（無音へ置換しません）')
             audio.append(dict(seg, file=str(file.resolve()), duration=sn.audio_duration(file)))
     times = rr.durations(narr['segments'], audio) if voiced else [max(3.5, len(s['text'].split())/2.5) for s in narr['segments']]
+    if motion.enabled():motion.measured(audio)
     times=[max(duration,len(seg['caption_en'].split())/3) if seg.get('caption_en') else duration for seg,duration in zip(narr['segments'],times)]
     times = [math.ceil(t*30)/30 for t in times]
     if sum(times) > 40: raise ValueError('40秒を超えるため原稿を短くしてください')
@@ -59,7 +61,7 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
     cmd = ['ffmpeg', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', '30', '-i', '-']
     if track: cmd += ['-i', str(track), '-c:a', 'aac']
     cmd += ['-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-t', str(sum(times)), '-movflags', '+faststart', str(out/filename)]
-    images = []; clock = 0
+    images = []; clock = 0; previous_frame=None
     with (out/'ffmpeg.log').open('w', encoding='utf8') as log:
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=log)
         try:
@@ -72,7 +74,10 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
                 im.save(out/f'{i+1:02d}.png'); images.append(im)
                 for k in range(round(duration*30)):
                     r3.set_program_clock(clock+k/30)
-                    proc.stdin.write(frame(k/30, seg).tobytes())
+                    image=frame(k/30,seg)
+                    raw=motion.transition(previous_frame,image,k,30) if motion.enabled() else image.tobytes()
+                    proc.stdin.write(raw)
+                previous_frame=image.tobytes()
                 clock += duration
         finally:
             proc.stdin.close(); code = proc.wait(); r3.set_program_clock(None)

@@ -333,6 +333,8 @@ def _beam():
 
 
 def background(t, tid):
+    import motion
+    if motion.enabled():t *= motion.SETTINGS['background_speed']
     base, second, _ = colors(tid)
     im = Image.new("RGB", (W, H), base)
     d = ImageDraw.Draw(im)
@@ -352,7 +354,7 @@ def background(t, tid):
         bx = round(-700 + k * (W + 900))
         im.paste(white, (bx, -280), mask)
     d.rectangle((0, 0, W, TOP_BAND), fill=second)
-    return im
+    return motion.background(im,t)
 
 
 # ---------------------------------------------------------------------------

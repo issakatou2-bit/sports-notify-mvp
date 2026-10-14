@@ -1,4 +1,5 @@
 """既存の欧州予告・順位争い・週末を、同じ材料からv4に描く。"""
+import motion
 from datetime import datetime, timedelta, timezone
 import json
 import math
@@ -175,6 +176,7 @@ def program(mode,data):
     return plan
 
 
+@motion.slot('soccer')
 def frame(t,seg,plan):
     if not enabled():raise ValueError('v3の描画は既存の入口を使う')
     if soccer_look.v5():
@@ -233,6 +235,9 @@ def durations(segments,audio):
 
 def render_video(plan,audio,out):
     narr=plan['narration'];times=durations(narr['segments'],audio)
+    if motion.enabled():
+        motion.measured(audio)
+        times=[max(t,float(row['duration'])+vc.SEGMENT_TAIL) for t,row in zip(times,audio)]
     times=[math.ceil(t*30)/30 for t in times]
     if sum(times)>40:raise ValueError('丸め後40秒を超える')
     out=Path(out);out.mkdir(parents=True,exist_ok=True)

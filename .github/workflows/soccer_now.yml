@@ -8,6 +8,9 @@ permissions:
 concurrency:
   group: soccer-now
   cancel-in-progress: false
+env:
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+
 jobs:
   watch:
     if: vars.COLLESPO_SOCCER_NOW == 'on'

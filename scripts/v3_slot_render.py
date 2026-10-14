@@ -1,4 +1,5 @@
 """枠ごとの材料を、連勝回の既存部品で描く。台本と尺は扱わない。"""
+import motion
 import functools
 from PIL import Image, ImageDraw, ImageEnhance
 import review_render_v3 as r3
@@ -75,6 +76,7 @@ def check_pages(spec,rows,replies=None):
             if not (r3.LEFT<= (box:=cell['box'])[0]<box[2]<=r3.SAFE_RIGHT and top<=box[1]<box[3]<=r3.CONTENT_BOTTOM)]
 
 
+@motion.slot('items')
 def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=None, page_seconds=4):
     """高さを超えたら次ページへ。引用は読む札を明るくする。"""
     base, second, _ = r3.colors(spec.get("team_id"))
@@ -124,6 +126,7 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
     return im
 
 
+@motion.slot('ranking')
 def ranking(t,spec,rows,source_text):
     if r3.LOOK == 'v4':
         from short_v4_cards import ranking as draw
@@ -148,6 +151,7 @@ def ranking(t,spec,rows,source_text):
     return im
 
 
+@motion.slot('schedule')
 def schedule(t,spec,rows,label,source_text):
     if r3.LOOK == 'v4':
         from short_v4_cards import schedule as draw

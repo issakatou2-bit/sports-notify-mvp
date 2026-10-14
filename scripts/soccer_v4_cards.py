@@ -16,6 +16,7 @@ MLB のショート v4（`collespo/src/scripts/short_v4_cards.py`・`review_rend
 
 使う前に環境変数 COLLESPO_SHORT_LOOK=v4 にしておく（MLB と同じ切り替え）。
 """
+import motion
 import json
 import os
 import re
@@ -198,6 +199,7 @@ def cover(t, spec, clubs):
     return finish(im, t, spec)
 
 
+@motion.slot('jp_roster')
 def jp_roster(t, spec, clubs):
     """日本人選手の一覧。rows: name・club・values（[(数字, 単位)]）・note。全員を1画面に。"""
     im = canvas(t, clubs, spec.get('label', LABEL))
@@ -249,6 +251,7 @@ def _line_kind(label):
     return None
 
 
+@motion.slot('standings')
 def standings(t, spec, clubs):
     """順位表。rows: position・team・played・points（材料の表のまま）。
     shown: 見せる順位の範囲 [(1,6),(14,18)]。lines: [(この順位の下に線, 名前)]。

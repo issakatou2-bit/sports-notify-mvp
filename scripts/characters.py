@@ -263,8 +263,10 @@ def bubble(im, speaker, text):
             fnt = r3.num_font(round(size * 1.15)) if isnum else r3.font(size)
             focus = isnum and fan_events.number_focus(part)
             drawn = r3.num_font(round(size * 1.15 * 1.06)) if focus else fnt
-            d.text((x, y + size), part, font=drawn, fill=(155, 79, 8) if focus else (196, 132, 16) if isnum else (30, 30, 34), anchor="ls")
+            import motion
+            motion.draw_number(d,(x,y+size),part,drawn,(155,79,8) if focus else (196,132,16) if isnum else (30,30,34))
             reserve = r3.num_font(round(size * 1.15 * 1.06)) if isnum and fan_events.enabled() else fnt
+            if isnum:reserve=motion.reserve_font(reserve)
             x += d.textlength(part, font=reserve)
         y += lh
     im.paste(base.convert(im.mode))

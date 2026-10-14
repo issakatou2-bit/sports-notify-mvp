@@ -15,6 +15,9 @@ on:
         default: 大谷翔平
 permissions:
   contents: read
+env:
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+
 jobs:
   preview:
     if: vars.COLLESPO_JAPAN_REACTS == 'on'
