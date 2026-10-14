@@ -38,10 +38,10 @@ HEADINGS = {'numbers': '本人の数字', 'intro': '現地報道', 'report': '�
 
 def frame(t, seg, narr):
     im = r3.background(t, narr['player'].get('team_id'))
-    r3._header(ImageDraw.Draw(im), '選手のいまの流れ')
+    r3._header(ImageDraw.Draw(im), narr.get('program_label') or '選手のいまの流れ')
     cards.panel(im, (72, 270, r3.SAFE_RIGHT, 1140))
     cards.text(im, 100, 305, narr['player']['name_jp'], 72, r3.GOLD, width=760)
-    cards.text(im, 100, 410, HEADINGS[seg['kind']], 38, width=760)
+    cards.text(im, 100, 410, seg['meta'].get('heading') or HEADINGS[seg['kind']], 38, width=760)
     y = 500
     lines, size = r3._lines(ImageDraw.Draw(im), seg['text'], 54, 740, 6, floor=40)
     if ''.join(lines).replace(' ', '') != seg['text'].replace(' ', '').replace('\n', ''):
@@ -60,14 +60,17 @@ def frame(t, seg, narr):
     for text in (credit, at):
         cards.text(im, 100, 990 if text == credit else 1060, text, 30, r3.GOLD, width=740)
     r3.presenter(im, t)
-    r3.ticker(im, t, '音声：VOICEVOX 四国めたん　'+narr['label']+'　選手の話題')
+    r3.ticker(im, t, '音声：VOICEVOX 四国めたん　'+narr['label']+'　'+(narr.get('program_label') or '選手の話題'))
     return im
 
 
 def render(narr, audio, out):
     if not narr.get('can_make'):
         return None
-    story.validate(narr)
+    if narr.get('program')=='reddit_reaction':
+        import reddit_reaction
+        reddit_reaction.validate(narr)
+    else: story.validate(narr)
     from synthesize_narration import audio_duration
     if len(audio) != len(narr['segments']):
         raise ValueError('音声の数が原稿と違います')

@@ -535,13 +535,10 @@ def test_real_sdk_request_shape_with_mock_http(tmp_path):
 
 
 if __name__ == "__main__":
-    # A fixed old folder can belong to another Windows sandbox token. Never
-    # depend on or clean it; give pytest a fresh directory owned by this run.
     import tempfile
-    build = HERE.parent / "build"
-    build.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='batch-test-',dir=build) as temporary:
-        assert pathlib.Path(temporary).resolve().is_relative_to(build.resolve())
-        result = pytest.main([__file__, "-q", "--tb=short", "-p", "no:cacheprovider", "--basetemp",
-                              str(pathlib.Path(temporary)/'cases')])
+
+    (HERE.parent / "build").mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="batch-test-", dir=HERE.parent / "build") as scratch:
+        result = pytest.main([__file__, "-q", "--tb=short", "-p", "no:cacheprovider",
+                              "--basetemp", str(pathlib.Path(scratch) / "pytest")])
     raise SystemExit(result)

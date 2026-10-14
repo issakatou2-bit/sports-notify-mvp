@@ -1,115 +1,120 @@
 {
-  "generated_at": "2026-10-13T06:01:04.423485+00:00",
-  "date_jst": "2026-10-13",
-  "name": "William Contreras",
-  "player_id": "661388",
-  "team": "ブリュワーズ",
-  "group": "hitting",
-  "why": "2026-10-13のMLBで最も活躍",
-  "headline": "4打数3安打　1本塁打　3打点　1四球",
-  "score": 133,
+  "generated_at": "2026-10-14T06:01:05.780103+00:00",
+  "date_jst": "2026-10-14",
+  "name": "Freddy Peralta",
+  "player_id": "642547",
+  "team": "レイズ",
+  "group": "pitching",
+  "why": "2026-10-14のMLBで最も活躍",
+  "headline": "6.0回　6奪三振　自責0　4被安打",
+  "score": 112,
   "bio": {
-    "name_en": "William Contreras",
-    "age": 28,
-    "birth_city": "Puerto Cabello",
+    "name_en": "Freddy Peralta",
+    "age": 30,
+    "birth_city": "Moca",
     "birth_state": null,
-    "birth_country": "Venezuela",
-    "birth_date": "1997-12-24",
-    "debut": "2020-07-24",
+    "birth_country": "Dominican Republic",
+    "birth_date": "1996-06-04",
+    "debut": "2018-05-13",
     "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "24",
-    "position": "Catcher",
-    "nickname": null,
-    "height": "5' 10\"",
-    "weight": 217
+    "number": "51",
+    "position": "Pitcher",
+    "nickname": "Kacike",
+    "height": "6' 0\"",
+    "weight": 198
   },
   "teams": [
     {
-      "team": "ブレーブス",
-      "from": 2020,
-      "to": 2022
+      "team": "ブリュワーズ",
+      "from": 2018,
+      "to": 2025
     },
     {
-      "team": "ブリュワーズ",
-      "from": 2023,
+      "team": "メッツ",
+      "from": 2026,
+      "to": 2026
+    },
+    {
+      "team": "レイズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 746,
-    "avg": ".272",
-    "hr": 103,
-    "rbi": 409,
-    "ops": ".796",
-    "sb": 24,
-    "hits": 755
+    "games": 243,
+    "wins": 80,
+    "losses": 53,
+    "era": "3.71",
+    "so": 1309,
+    "ip": "1100.0",
+    "whip": "1.16"
   },
   "this_season": {
-    "games": 147,
-    "avg": ".270",
-    "hr": 18,
-    "rbi": 94,
-    "ops": ".758",
-    "sb": 1,
-    "hits": 153
+    "games": 32,
+    "wins": 10,
+    "losses": 11,
+    "era": "4.42",
+    "so": 156,
+    "ip": "169.0",
+    "whip": "1.33"
   },
   "last_season": {
-    "games": 150,
-    "avg": ".260",
-    "hr": 17,
-    "rbi": 76,
-    "ops": ".754",
-    "sb": 6,
-    "hits": 147
+    "games": 33,
+    "wins": 17,
+    "losses": 6,
+    "era": "2.70",
+    "so": 204,
+    "ip": "176.2",
+    "whip": "1.08"
   },
   "recent": [
     {
-      "date": "2026-09-26",
-      "line": "3打数1安打",
-      "opponent": "St. Louis Cardinals"
-    },
-    {
       "date": "2026-09-25",
-      "line": "5打数1安打 1打点",
-      "opponent": "St. Louis Cardinals"
-    },
-    {
-      "date": "2026-09-24",
-      "line": "2打数0安打",
+      "line": "5.1回 自責0 4奪三振",
       "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-23",
-      "line": "4打数1安打 2打点",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-19",
+      "line": "5.2回 自責1 6奪三振",
+      "opponent": "Boston Red Sox"
     },
     {
-      "date": "2026-09-22",
-      "line": "3打数1安打 3打点",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-13",
+      "line": "5.0回 自責0 4奪三振",
+      "opponent": "Houston Astros"
+    },
+    {
+      "date": "2026-09-08",
+      "line": "6.0回 自責1 2奪三振",
+      "opponent": "Atlanta Braves"
+    },
+    {
+      "date": "2026-09-01",
+      "line": "6.0回 自責1 7奪三振",
+      "opponent": "New York Mets"
     }
   ],
   "awards": [
     {
       "season": "2026",
-      "name": "NL All-Star"
+      "name": "AL Pitcher of the Month"
     },
     {
       "season": "2025",
-      "name": "NL Player of the Week"
+      "name": "NL Pitcher of the Month"
     },
     {
-      "season": "2024",
-      "name": "NL Silver Slugger"
+      "season": "2025",
+      "name": "NL All-Star"
     },
     {
-      "season": "2024",
-      "name": "Brewers MVP"
+      "season": "2023",
+      "name": "NL Pitcher of the Month"
     },
     {
-      "season": "2024",
+      "season": "2021",
       "name": "NL All-Star"
     }
   ],

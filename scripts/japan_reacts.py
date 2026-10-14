@@ -128,6 +128,10 @@ def collect_posts(config,player):
 
 
 def collect(config,player):
+    import topic_hub
+    if topic_hub.enabled():
+        hub=topic_hub.load('data/topic_hub.json')
+        return topic_hub.reaction_material(hub,player['name_en']), [r['reason'] for r in hub.get('rejected') or []]
     youtube,reasons=collect_youtube(config,player['sport'],player)
     rows=list(youtube)
     for label,func in [('headlines',collect_headlines),('reporters',collect_posts)]:
@@ -144,6 +148,13 @@ def validate(data):
         if not checked(dict(original=s['text'],english=s['caption_en'],review=s['review'])): raise ValueError('原稿/英語字幕の照合が不一致')
         if s['speaker'] != 2: raise ValueError('今回の試作は四国めたんのみ')
     for source in data['sources']:
+        if source['kind']=='reddit':
+            import topic_hub
+            if (not topic_hub.enabled() or source.get('hub_event',{}).get('certainty')!='fan'
+                    or topic_hub.FAN_NOTE not in source.get('original','') or source.get('author')
+                    or not source.get('url','').startswith(('https://www.reddit.com/r/','https://reddit.com/r/'))):
+                raise ValueError('Redditは集め所の匿名のファンの声としてのみ使う')
+            continue
         if source['kind'] not in ('youtube','headline','reporter'): raise ValueError('禁止取得元')
         if not source.get('url','').startswith('https://'): raise ValueError('出典リンクなし')
         if source['kind']=='reporter' and source.get('role') not in ('reporter','official'): raise ValueError('一般の人のSNS投稿は禁止')

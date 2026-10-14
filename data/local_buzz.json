@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-13T06:01:59.495887+00:00",
+  "updated_at": "2026-10-14T06:01:57.304507+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,78 +13,78 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 12,
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 17,
       "tone": "好調",
-      "gist": "ガーディアンズ、ALCS初戦7-3先勝"
+      "gist": "ペラルタ好投でレイズがALCSを1勝1敗に"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 11,
+      "mentions": 8,
       "tone": "好調",
-      "gist": "ブルペン5回完全でNLCS2連勝"
+      "gist": "ブリュワーズがWS目前、ドジャースを圧倒"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 6,
+      "tone": "不振",
+      "gist": "ペラルタに6回0封され1勝1敗に"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 7,
+      "mentions": 4,
       "tone": "不振",
-      "gist": "ブルワーズに敗れ0勝2敗、打線不振"
+      "gist": "NLCSで劣勢、スネルの奮起に期待"
     },
     {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 6,
-      "tone": "不振",
-      "gist": "ガーディアンズに3-7、ALCS初戦落とす"
-    },
-    {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
+      "team_id": "120",
+      "name": "ナショナルズ",
+      "name_en": "Washington Nationals",
       "mentions": 1,
       "tone": "話題",
-      "gist": "Francisca、秋季リーグ週間表彰"
+      "gist": "FTCがスポーツ賭博業界の調査を開始"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ガーディアンズが1戦でALDS総得点並ぶ"
+      "gist": "慶大の廣池が97マイルでNPB経由せずMLB志望"
     },
     {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
       "mentions": 1,
       "tone": "話題",
-      "gist": "2027年の先発ローテ編成を展望"
+      "gist": "マリナーズが監督候補にエスパーダを検討"
     },
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "オフの最大の疑問5点を整理"
+      "gist": "慶大の廣池が97マイルでNPB経由せずMLB志望"
     }
   ],
   "players": [
     {
-      "name": "山本由伸",
+      "name": "大谷翔平",
       "mentions": 5
     },
     {
-      "name": "大谷翔平",
-      "mentions": 4
+      "name": "山本由伸",
+      "mentions": 1
     }
   ]
 }

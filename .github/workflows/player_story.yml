@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       COLLESPO_PLAYER_STORY: ${{ vars.COLLESPO_PLAYER_STORY || 'off' }}
+      COLLESPO_TOPIC_HUB: ${{ vars.COLLESPO_TOPIC_HUB || 'off' }}
+      COLLESPO_REDDIT: ${{ vars.COLLESPO_REDDIT || '' }}
       PLAYER_STORY_PUBLISH: ${{ vars.PLAYER_STORY_PUBLISH || 'false' }}
       COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
@@ -30,6 +32,9 @@ jobs:
         run: |
           pip install -r scripts/requirements.txt
           pip install imageio_ffmpeg
+      - name: Build shared topics when enabled
+        if: vars.COLLESPO_TOPIC_HUB == 'on'
+        run: python scripts/topic_hub.py --out data/topic_hub.json
       - name: Select a story from saved reports and official numbers
         run: python scripts/player_story.py --fetch-stats --out build/player_story/narration.json
       - name: Stop without numeric flow or player reporting
@@ -64,7 +69,7 @@ jobs:
           DAY=$(python -c "import json; print(json.load(open('build/player_story/narration.json',encoding='utf8'))['label'])")
           python scripts/upload_youtube.py --kind player_story --video build/player_story/collespo_player_story.mp4 --games build/player_story/narration.json --narration build/player_story/narration.json --video-date "$DAY" --privacy public
           bash scripts/commit_data.sh "player story: ${{ github.run_id }}" \
-            data/published_videos.json data/local_reporters.json data/local_buzz.json data/local_voices.json
+            data/published_videos.json data/local_reporters.json data/local_buzz.json data/local_voices.json data/topic_hub.json
       - name: Save preview
         if: always()
         uses: actions/upload-artifact@v4

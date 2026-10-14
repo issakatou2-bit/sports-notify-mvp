@@ -4301,6 +4301,10 @@ def main():
         except (json.JSONDecodeError, OSError):
             reporters_data = {}
     data["reporters"] = reporters_data
+    import topic_hub
+    if args.mode == 'press' and topic_hub.enabled():
+        reporters_data = topic_hub.reporter_material(topic_hub.load('data/topic_hub.json'))
+        data['reporters'] = reporters_data
 
     # ポストシーズン進出争い。9月と10月だけ材料がある。
     # 取れていなければ、その枠を作らないだけ。
