@@ -64,7 +64,7 @@ class LipsyncTest(unittest.TestCase):
                     old.place_busts(a,'metan',line,t,4)
                     c.place_busts(b,'metan',line,t,4)
                     self.assertEqual(a.tobytes(),b.tobytes())
-        for who in c.NAMES:
+        for who in c.PORTRAIT_CAST:
             parts=c.vc._parts(c.NAMES[who], c.PORTRAIT_DIR)
             self.assertTrue(all(k in parts['口'] for k in ('閉','開','大')))
         self.assertEqual(c.vc.FACES['v4_surprise:mouth0'][:2], c.FACE_PARTS['surprise'][:2])
