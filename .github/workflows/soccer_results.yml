@@ -32,6 +32,8 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || vars.SOCCER_RESULTS_PUBLISH == 'true'
     runs-on: ubuntu-latest
     env:
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
       COLLESPO_SHORT_LOOK: v4
       COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v4' }}
       COLLESPO_DUO: 'off'

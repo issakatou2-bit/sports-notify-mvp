@@ -18,6 +18,8 @@ jobs:
       COLLESPO_REDDIT: ${{ vars.COLLESPO_REDDIT || '' }}
       PLAYER_STORY_PUBLISH: ${{ vars.PLAYER_STORY_PUBLISH || 'false' }}
       COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
       COLLESPO_SHORT_LOOK: v4
     steps:
       - uses: actions/checkout@v4
