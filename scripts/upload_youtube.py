@@ -25,6 +25,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import post_common  # noqa: E402
+import solo_host
 from longform_links import replace_longform_link  # noqa: E402
 import race_words as _rw  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
@@ -601,6 +602,13 @@ def build_asset_metadata(topic: str) -> dict:
         "―――",
         "音声: VOICEVOX:ずんだもん / 四国めたん",
     ]
+    if solo_host.selected() == 'ui':
+        import generate_asset_video as asset_video
+        if (asset_video.LIST_TOPICS.get(topic) or {}).get('style') == 'v3':
+            segments = asset_video.build_narration(topic)['segments']
+            for segment in segments:
+                segment.setdefault('speaker', 2)
+            lines = solo_host.credit('\n'.join(lines), segments).splitlines()
     return {
         "snippet": {
             "title": club_display_title(__import__("press_names").press_title(meta["title"]))[:100],
@@ -1975,7 +1983,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     return {
         "snippet": {
             "title": title,
-            "description": "\n".join(lines)[:5000],
+            "description": solo_host.credit("\n".join(lines), _json_or_empty(narration_path).get('segments', []))[:5000],
             # 上限は500文字。15本に絞っていたが、主役の名前を前に置くように
             # したので、そのぶん後ろの一般語が押し出されていた。
             "tags": _fit_tags(tags),

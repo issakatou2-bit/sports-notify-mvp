@@ -4,28 +4,30 @@ COLLESPO_MOTION=on のときだけ効く。それ以外では、どの関数を�
 
 - 画面全体のカメラの寄りは使わない。画面は動かさない。
 - いま読み上げている項目（札）だけを、その場で少し大きく・明るくし、ほかの札は少しだけ暗くする。
-  切り替えは0.25秒（前の札を戻してから、次の札を上げる。2枚が同時に上がらない）。
-- ほかの動き（札が横から入る・数字の札の弾み・背景・立ち絵の揺れ）は、今の半分ほどに下げる。
+  切り替えは0.90秒（前の札を戻してから、次の札を上げる。2枚が同時に上がらない）。
+- 数字の弾みと立ち絵の揺れを止め、拡大は小数座標の逆変換で描く。
 - 速さと量は下の TUNING の1か所で変える。
 """
 import os
+import math
 
 TUNING = {
     # --- 読み上げている札 ---
     'focus_scale': 1.04,       # 大きくする割合（1.03〜1.05）
-    'focus_bright': 1.08,      # 明るくする割合
-    'rest_dim': 0.80,          # ほかの札の明るさ（1.0 で変えない）
-    'focus_fade': 0.25,        # 切り替えにかける秒（前の札を戻す半分＋次の札を上げる半分）
+    'focus_bright': 1.035,     # 白飛びと点滅感を抑える
+    'rest_dim': 0.94,          # 背景の札も読み続けられる明るさ
+    'focus_fade': 0.90,        # 戻す0.45秒＋上げる0.45秒。両端で静止する
     # --- ほかの動き（今の値に対する割合。0.5 で半分） ---
     'slide_distance': 0.5,     # 札が横から入る距離（今 140px）
-    'overshoot': 0.5,          # 行き過ぎて戻る量（弾みは1回だけ。今の back_out の s に掛ける）
+    'overshoot': 0.0,          # 行き過ぎ・弾みなし
     'background_speed': 0.1,   # 背景の線と光の速さ（ほとんど止まって見える）
-    'presenter_bob': 0.5,      # 立ち絵の上下の揺れの幅
+    'presenter_bob': 0.0,      # 発話ごとに始まる上下の揺れを止める
     'presenter_period': 2.0,   # 立ち絵の揺れの周期（2倍＝回数が半分）
     # #175の共通部品もこの表を読む。カメラの寄りは使わない。
     'overview': .8, 'stagger': .06, 'entrance': .22, 'rise': 4,
-    'pulse_seconds': .48, 'pulse': .0175, 'light': .09,
+    'pulse_seconds': .48, 'pulse': 0.0, 'light': 0.0,
     'transition': .35, 'drift': 1.5, 'drift_speed': (.14, .11), 'scale': 2,
+    'fps': 30,
 }
 
 
@@ -107,7 +109,7 @@ def to_seconds(plan, speech_seconds, settle=0.0):
 
 def _smooth(x):
     x = max(0.0, min(1.0, x))
-    return x * x * (3 - 2 * x)
+    return x * x * x * (x * (6 * x - 15) + 10)
 
 
 def weights(timeline, t, rows):
@@ -150,7 +152,7 @@ def _brightness(card, k):
     return out
 
 
-def styled(card, own, others):
+def styled(card, own, others, anchor='center'):
     """札を、自分の上がり具合 own・ほかの札の上がり具合 others で描き直す。
 
     返すのは (札, 大きくなった幅, 大きくなった高さ)。own=others=0 なら元の札そのもの。"""
@@ -160,16 +162,23 @@ def styled(card, own, others):
     dim = 1 - (1 - TUNING['rest_dim']) * max(0.0, others - own)
     out = _brightness(card, bright * dim)
     scale = 1 + (TUNING['focus_scale'] - 1) * own
-    if scale <= 1.0005:
+    if scale == 1:
         return out, 0, 0
     from PIL import Image
     w, h = card.size
-    nw, nh = round(w * scale), round(h * scale)
+    # 出力枠の寸法を固定し、逆変換の小数座標で拡大する。
+    # 毎フレームのroundと//2による1pxの寸法・中心の段差を作らない。
+    nw = w + 2 * math.ceil(w * (TUNING['focus_scale'] - 1) / 2)
+    nh = h + 2 * math.ceil(h * (TUNING['focus_scale'] - 1) / 2)
+    dx = nw - w * scale if anchor == 'right' else (nw - w * scale) / 2
+    dy = (nh - h * scale) / 2
     layout = out.info.get('v3_layout', [])
-    big = out.resize((nw, nh), Image.LANCZOS)
+    big = out.transform((nw, nh), Image.Transform.AFFINE,
+                        (1 / scale, 0, -dx / scale, 0, 1 / scale, -dy / scale),
+                        Image.Resampling.BICUBIC)
     big.info.update(out.info)
-    big.info['v3_layout'] = [dict(e, box=[e['box'][0] * nw / w, e['box'][1] * nh / h,
-                                          e['box'][2] * nw / w, e['box'][3] * nh / h]) for e in layout]
+    big.info['v3_layout'] = [dict(e, box=[e['box'][0] * scale + dx, e['box'][1] * scale + dy,
+                                       e['box'][2] * scale + dx, e['box'][3] * scale + dy]) for e in layout]
     return big, nw - w, nh - h
 
 

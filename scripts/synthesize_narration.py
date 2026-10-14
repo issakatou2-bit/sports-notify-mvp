@@ -212,8 +212,10 @@ def main():
 
     out_dir = pathlib.Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    import solo_host
+    host = solo_host.for_segments(segments, args.speaker)
 
-    if not engine_available():
+    if host != 'ui' and not engine_available():
         print(f"[warn] VOICEVOX ENGINE({VOICEVOX_URL})に接続できませんでした。"
               "音声なしで進めます(動画は無音になります)。")
         manifest = [{"index": i, "file": None, "duration": 0.0,
@@ -233,7 +235,8 @@ def main():
             # 指定が無い段は、これまで通り --speaker のまま。
             speaker = seg.get("speaker")
             speaker = int(speaker) if isinstance(speaker, (int, str))                 and str(speaker).isdigit() else args.speaker
-            ok = synth_one(seg.get("text", ""), speaker, path)
+            ok = (solo_host.synthesize(seg.get("text", ""), path) if host == 'ui'
+                  else synth_one(seg.get("text", ""), speaker, path))
             dur = audio_duration(path) if ok else 0.0
             manifest.append({
                 "index": i,
@@ -250,6 +253,8 @@ def main():
                 "meta": seg.get("meta", {}),
                 "min_duration": seg.get("min_duration"),
             })
+            if host == 'ui':
+                manifest[-1].update(voice_host='ui', voice_engine='voisona', voice_name='ui_ja_JP')
             who = (seg.get("meta") or {}).get("who") or ""
             print(f"[info] seg_{i:03d}: {dur:.1f}秒 / {seg.get('kind')}"
                   + (f" / {who}(話者{speaker})" if who else ""))

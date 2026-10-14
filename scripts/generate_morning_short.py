@@ -67,7 +67,8 @@ import morning_recap
 from race_words import clinch_label, is_settled, ps_label, race_is_over
 
 W, H = 1080, 1920
-FPS = 24
+import calm_motion
+FPS = calm_motion.value('fps', 24)
 ANIM_END = 0.45
 # 読み終わってから次の画面へ移るまでの間。
 #

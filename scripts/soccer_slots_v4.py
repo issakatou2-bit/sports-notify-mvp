@@ -150,6 +150,9 @@ def package(mode,data,segs,names,head,clubs=None):
         _d=__import__('datetime').date.fromisoformat(day[:10]);day=f"{_d.month}月{_d.day}日（{'月火水木金土日'[_d.weekday()]}）"
     except ValueError:pass   # 帯は「9月19日（土）」の形（2026-09-18 のような書き方を画面に出さない）
     shared=dict(label={'preview':'欧州サッカー　予告','race':'欧州サッカー　順位争い','week':'欧州サッカー　日本人選手の週末'}[mode],source='音声: VOICEVOX:四国めたん　出典: '+source,ticker=day+'　'+head)
+    import solo_host
+    if solo_host.for_segments(segs) == 'ui':
+        shared['source'] = solo_host.UI_CREDIT+'　出典: '+source
     for seg in segs:seg['meta'].update(shared)
     if segs:segs.append(segment('outro',r3.OUTRO_TEXT,shared))
     narration=dict(label=day,title='【欧州サッカー】'+head+' #Shorts' if head else '',soccer_v4_mode=mode,segments=segs,duration_budget=dict(limit=40,grace=0))

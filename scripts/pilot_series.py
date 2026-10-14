@@ -162,6 +162,8 @@ def synthesize(data, out, base="http://127.0.0.1:50021"):
     for i, segment in enumerate(data["segments"]):
         voice = segment_voice(data, segment)
         speech = segment.get("speech", segment["text"])
+        from number_readings import apply as apply_number_readings
+        speech = apply_number_readings(speech)
         query = json.loads(voice_request(base, "/audio_query", {"text": speech, "speaker": voice["speaker"]}))
         query.update(speedScale=voice["speed"], pitchScale=voice.get("pitch", 0), intonationScale=1.05,
                      prePhonemeLength=.06, postPhonemeLength=.15, outputStereo=False)
