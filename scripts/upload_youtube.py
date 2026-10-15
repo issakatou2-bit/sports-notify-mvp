@@ -2054,6 +2054,8 @@ def main():
                         help="JSTの公開時刻 HH:MM。指定すると予約投稿になる。"
                              "過ぎている場合はそのまま公開する")
     args = parser.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
     if args.kind == 'player_story':
         if os.environ.get('COLLESPO_PLAYER_STORY') != 'on' or os.environ.get('PLAYER_STORY_PUBLISH') != 'true':
             print('[info] 選手の話題の回の生成・公開スイッチは既定オフです')
