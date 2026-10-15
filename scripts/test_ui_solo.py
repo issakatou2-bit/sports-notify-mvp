@@ -32,6 +32,20 @@ EXAMPLES = (
 
 
 class UiSoloTest(unittest.TestCase):
+    def test_outro_delivery_is_polite_only_for_ui(self):
+        from review_render_v3 import OUTRO_TEXT
+        source = dict(segments=[dict(speaker=2, kind='outro', text=OUTRO_TEXT)])
+        for host in ('ui', 'metan', ''):
+            with self.subTest(host=host), patch.dict(os.environ, COLLESPO_SOLO_HOST=host):
+                result = tone.narration(source)
+                if host == 'ui':
+                    text = result['segments'][0]['text']
+                    self.assertIn('明日の試合の見どころをお届けしています', text)
+                    self.assertEqual(tone.narration(result), result)
+                else:
+                    self.assertIs(result, source)
+                self.assertEqual(source['segments'][0]['text'], OUTRO_TEXT)
+
     def test_tone_preserves_facts_quotes_and_is_idempotent(self):
         for before, after in EXAMPLES:
             self.assertEqual(tone.text(before), after)
