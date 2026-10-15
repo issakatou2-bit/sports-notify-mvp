@@ -1492,7 +1492,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 result['segments'][0]['text']=result['segments'][0]['text'].removeprefix('コレスポ。')
             result['segments'].insert(0,followup)
             bookend(result['segments'])
-    return result
+    import ui_tone
+    return ui_tone.narration(result)
 
 
 def assign_pair(segments: list) -> None:

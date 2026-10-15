@@ -2,7 +2,6 @@
 
 speaker=2は既存の進行役キーとして保ち、実際の声はmanifestのvoice_host/nameに記録する。
 """
-import json
 import os
 from pathlib import Path
 import time
@@ -54,25 +53,8 @@ def credit(description, segments):
 
 def portrait(face, height):
     """既存の部品を重ねるだけ。COLLESPO_UI_PORTRAIT_DIRは非公開の素材置き場。"""
-    from PIL import Image
-    import characters
-    directory = os.getenv('COLLESPO_UI_PORTRAIT_DIR')
-    if not directory:
-        raise ValueError('雨衣の既存立ち絵を COLLESPO_UI_PORTRAIT_DIR で指定してください')
-    folder = Path(directory)
-    spec = json.loads((folder/'parts.json').read_text(encoding='utf8'))
-    mood, _, mouth = face.partition(':mouth')
-    brow, eye, lips = characters.FACE_PARTS.get(mood, characters.FACE_PARTS['base'])
-    if mouth:
-        lips = ('閉', '開', '大')[max(0, min(2, int(mouth)))]
-    art = Image.new('RGBA', tuple(spec['size']))
-    for name in ('体', '右腕_基本', '左腕_基本', '眉_'+brow, '目_'+eye, '口_'+lips):
-        with Image.open(folder/(name+'.png')) as part:
-            art = Image.alpha_composite(art, part.convert('RGBA'))
-    art = art.crop(tuple(spec['crop']))
-    # 既存の胸上枠と同じ高さ。全身や大きな人物表示へ変えない。
-    art = art.crop((0, 0, art.width, round(art.height * .62)))
-    return art.resize((round(art.width * (height/2) / art.height), height//2), Image.Resampling.LANCZOS)
+    import ui_puppet
+    return ui_puppet.portrait(face, height)
 
 
 def synthesize(text, destination):

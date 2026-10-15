@@ -21,13 +21,14 @@ def main():
     ap.add_argument('--portrait-dir', type=Path, required=True)
     ap.add_argument('--out', type=Path, required=True)
     ap.add_argument('--audio-dir', type=Path)
+    ap.add_argument('--timing-source', type=Path, help='無音試作の尺だけを参照する元の保存回')
     ap.add_argument('--silent', action='store_true')
     ap.add_argument('--frames-only', action='store_true', help='全場面の配置を先に静止画で確認する')
     args = ap.parse_args()
     if args.silent == bool(args.audio_dir):
         ap.error('--silent または --audio-dir のどちらか一方を指定してください')
     os.environ.update(COLLESPO_MOTION='on', COLLESPO_BUBBLE='slant', COLLESPO_SHORT_LOOK='v4',
-                      COLLESPO_SOLO_HOST='ui', COLLESPO_EXPR='', COLLESPO_UI_PORTRAIT_DIR=str(args.portrait_dir.resolve()))
+                      COLLESPO_SOLO_HOST='ui', COLLESPO_EXPR='fan', COLLESPO_LIPSYNC='voice', COLLESPO_UI_PORTRAIT_DIR=str(args.portrait_dir.resolve()))
     import bignumber_render as bn
     import characters
     import imageio_ffmpeg
@@ -48,11 +49,19 @@ def main():
     narration = read(args.source/'narration.json')
     if solo_host.for_segments(narration['segments']) != 'ui':
         raise ValueError('保存原稿がめたんソロではありません')
-    audio_dir = args.audio_dir or args.source/'audio'
+    import ui_tone
+    if ui_tone.narration(narration) != narration:
+        raise ValueError('prepare_ui_solo.py で雨衣の口調にした原稿を指定してください')
+    if args.silent and not args.timing_source:
+        ap.error('--silent には --timing-source（元の保存回）も指定してください')
+    timing_narration = read(args.timing_source/'narration.json') if args.silent else narration
+    if args.silent and ui_tone.narration(timing_narration) != narration:
+        raise ValueError('無音試作の原稿が、尺の参照元を雨衣口調にした原稿と違います')
+    audio_dir = args.audio_dir if not args.silent else args.timing_source/'audio'
     audio = read(audio_dir/'manifest.json')['segments']
     if len(audio) != len(narration['segments']):
         raise ValueError('原稿と音声の区間数が違います')
-    for seg, voice in zip(narration['segments'], audio):
+    for seg, voice in zip(timing_narration['segments'], audio):
         if any(seg.get(k) != voice.get(k) for k in ('text', 'speaker', 'meta', 'kind')):
             raise ValueError('原稿と音声の文・話者・札が違います')
         voice['file'] = str((audio_dir/Path(voice['file']).name).resolve())
@@ -71,7 +80,7 @@ def main():
     original_source = r3.source
     def preview_bust(who, face, height, dim=False):
         if args.silent and who == 'ui':
-            face = face.split(':mouth')[0]+':mouth0'
+            face = __import__('re').sub(r':mouth[^:]+', ':mouth0', face)
         return original_bust(who, face, height, dim)
     def preview_source(draw, text, *args, **kwargs):
         if args_silent and solo_host.UI_CREDIT in text:
@@ -119,7 +128,8 @@ def main():
                             raise ValueError('雨衣の立ち絵がありません')
                         if seg['kind'] != 'outro' and im.info.get('duo_caption', {}).get('speaker') != 'ui':
                             raise ValueError('吹き出しの話者が雨衣ではありません')
-                        receipts.append(dict(segment=i, portraits=portraits, caption=im.info.get('duo_caption')))
+                        receipts.append(dict(segment=i, portraits=portraits, caption=im.info.get('duo_caption'),
+                                             puppet=im.info.get('duo_layer'), fan=im.info.get('fan_expr')))
                     process.stdin.write(motion.transition(previous, im, k, fps)); count += 1
                 previous = im.tobytes(); clock += duration
         finally:
@@ -129,7 +139,7 @@ def main():
     subprocess.run([ffmpeg, '-v', 'error', '-i', str(video), '-f', 'null', '-'], check=True)
     report = dict(video=str(video), fps=fps, frames=count, seconds=clock, full_decode='PASS',
                   audio=not args.silent, credit=solo_host.UI_CREDIT, samples=receipts,
-                  note='雨衣の声は認証不足で未生成。保存めたん音声の尺だけを参照。' if args.silent else '雨衣の実音声')
+                  note='本人がVoiSonaで声を生成する前の無音試作。元の保存音声は尺だけを参照。' if args.silent else '雨衣の実音声')
     (args.out/'verification.json').write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n', encoding='utf8')
     print(json.dumps({k:v for k,v in report.items() if k != 'samples'}, ensure_ascii=False))
 

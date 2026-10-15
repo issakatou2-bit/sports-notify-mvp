@@ -534,7 +534,13 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
                    retrieved_at=evidence['retrieved_at'], edition_key=edition, series=rows,
                    material_sha256=hashlib.sha256(json.dumps(evidence['schedule'], sort_keys=True).encode()).hexdigest())
     apply_design(program)
-    return program
+    import ui_tone
+    adapted = ui_tone.narration(program)
+    if adapted != program:
+        adapted['edition_key'] = content_key(adapted)
+        if before.get('program_edition') == adapted['edition_key']:
+            return None
+    return adapted
 
 def apply_design(program):
     choice=os.environ.get('COLLESPO_PS_DESIGN','legacy')
