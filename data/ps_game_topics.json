@@ -1,57 +1,53 @@
 {
-  "updated_at": "2026-10-14T06:16:20.572919+00:00",
+  "updated_at": "2026-10-15T04:05:09.200353+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
     {
-      "key": "season_game_849812",
-      "label": "リーグ優勝決定シリーズ第2戦",
-      "hook": "ブリュワーズがドジャースに7対4でリーグ優勝決定シリーズ2勝0敗に",
-      "heading": "ドジャース 対 ブリュワーズ　リーグ優勝決定シリーズ第2戦",
-      "intro": "リーグ優勝決定シリーズ第2戦、ブリュワーズが本拠地でドジャースに7対4で勝ちました。",
+      "key": "season_game_849811",
+      "label": "リーグ優勝決定シリーズ第3戦",
+      "hook": "ブリュワーズがドジャースに6対2でリーグ優勝決定シリーズ3勝0敗に",
+      "heading": "ブリュワーズ 対 ドジャース　リーグ優勝決定シリーズ第3戦",
+      "intro": "リーグ優勝決定シリーズ第3戦、ブリュワーズが敵地でドジャースに6対2で勝ちました。",
       "intro_as_is": true,
       "style": "v3",
       "team_id": 158,
       "abbr": "MIL",
-      "title": "【MLB】ブリュワーズがドジャースに7対4でリーグ優勝決定シリーズ2勝0敗に｜コントレラスの決勝打　大谷翔平・佐々木朗希 #Shorts",
+      "title": "【MLB】ブリュワーズがドジャースに6対2でリーグ優勝決定シリーズ3勝0敗に｜バウアーズの決勝本塁打　大谷翔平・佐々木朗希 #Shorts",
       "items": [
         [
           "試合の結果",
-          "ブリュワーズ 7対4 ドジャース　本拠地で勝利　シリーズはブリュワーズの2勝0敗"
+          "ブリュワーズ 6対2 ドジャース　敵地で勝利　シリーズはブリュワーズの3勝0敗"
         ],
         [
           "決勝点",
-          "6回裏　ウィリアム・コントレラスのタイムリー"
+          "7回表　ジェイク・バウアーズの2点本塁打（飛距離126メートル、打球の速さ時速176キロ）"
         ],
         [
           "本塁打",
-          "ブリュワーズ1本（コントレラス）"
+          "ブリュワーズ3本（チョーリオ、バウアーズ、ミッチェル）"
         ],
         [
           "先発",
-          "ブリュワーズ ヘンダーソン 4回を4失点　ドジャース 山本由伸 2回と3分の2を3失点"
+          "ブリュワーズ ガッサー 5回を無失点　ドジャース スネル 6回を4失点"
         ],
         [
           "勝ち投手・セーブ",
-          "勝ち ジョジョ・ロメロ（1回を無失点）　セーブ アーロン・アシュビー"
+          "勝ち D.L.ホール（2回と3分の1を無失点）　セーブ トレバー・メギル"
         ],
         [
           "MLB.comの見出しから",
-          "「容赦なきブルワーズ、本拠地できっちり勝ち切り王者を崖っぷちに追い込む」"
+          "「勝負強い本塁打でブルワーズ、44年ぶりのワールドシリーズ進出まであと1勝」"
         ]
       ],
       "japanese": [
         {
           "name": "大谷翔平",
-          "line": "4打数0安打（ドジャース）"
+          "line": "2打数1安打　1四球（ドジャース）"
         },
         {
           "name": "佐々木朗希",
-          "line": "1回　無失点　1奪三振（ドジャース）"
-        },
-        {
-          "name": "山本由伸",
-          "line": "2回と3分の2　3失点　1奪三振（ドジャース）"
+          "line": "3分の1回　1失点　0奪三振（ドジャース）"
         }
       ],
       "japanese_lead": "この試合の日本人選手は、",
@@ -61,19 +57,19 @@
       "source": null,
       "voice": null,
       "headline": {
-        "said": "容赦なきブルワーズ、本拠地できっちり勝ち切り王者を崖っぷちに追い込む",
-        "text": "Relentless Brewers take care of business at home, put champs on the ropes",
-        "url": "https://www.mlb.com/news/brewers-win-nlcs-game-2-2026",
-        "at": "2026-10-13T03:37:00+00:00"
+        "said": "勝負強い本塁打でブルワーズ、44年ぶりのワールドシリーズ進出まであと1勝",
+        "text": "Clutch homers have Brewers 1 win away from 1st World Series appearance in 44 years",
+        "url": "https://www.mlb.com/news/brewers-win-nlcs-game-3-2026",
+        "at": "2026-10-15T03:35:00+00:00"
       },
-      "game_pk": 849812,
+      "game_pk": 849811,
       "game_v4": {
         "score": {
           "innings": [
             {
               "num": 1,
               "away": 1,
-              "home": 1
+              "home": 0
             },
             {
               "num": 2,
@@ -82,8 +78,8 @@
             },
             {
               "num": 3,
-              "away": 1,
-              "home": 2
+              "away": 0,
+              "home": 0
             },
             {
               "num": 4,
@@ -92,240 +88,74 @@
             },
             {
               "num": 5,
-              "away": 2,
-              "home": 1
-            },
-            {
-              "num": 6,
-              "away": 0,
-              "home": 1
-            },
-            {
-              "num": 7,
               "away": 0,
               "home": 0
             },
             {
-              "num": 8,
+              "num": 6,
               "away": 0,
               "home": 2
             },
             {
+              "num": 7,
+              "away": 3,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 1,
+              "home": 0
+            },
+            {
               "num": 9,
-              "away": 0,
-              "home": null
+              "away": 1,
+              "home": 0
             }
           ],
           "source": "MLB Stats API / liveData.linescore",
           "away": {
-            "id": 119,
-            "name": "ドジャース",
-            "abbr": "LAD",
-            "total": 4
-          },
-          "home": {
             "id": 158,
             "name": "ブリュワーズ",
             "abbr": "MIL",
-            "total": 7
+            "total": 6
+          },
+          "home": {
+            "id": 119,
+            "name": "ドジャース",
+            "abbr": "LAD",
+            "total": 2
           }
         },
         "decisive": {
-          "inning": "6回裏",
-          "subject": "ウィリアム・コントレラス",
-          "action": "タイムリー",
-          "detail": "",
-          "event": "Single"
+          "inning": "7回表",
+          "subject": "ジェイク・バウアーズ",
+          "action": "2点本塁打",
+          "detail": "飛距離126メートル、打球の速さ時速176キロ",
+          "event": "Home Run"
         }
       },
-      "game_date": "2026-10-12T21:00:00Z",
+      "game_date": "2026-10-15T00:00:00Z",
       "jp_first": true,
       "next_team_id": 119,
-      "finished_at": "2026-10-13T00:26:00.415000+00:00",
-      "next_game_jp": {
-        "day": "10月15日",
-        "game": 3
-      },
+      "finished_at": "2026-10-15T03:11:16.421000+00:00",
       "v3": {
-        "who": "ブリュワーズ　リーグ優勝決定シリーズ第2戦",
-        "big": "7-4",
+        "who": "ブリュワーズ　リーグ優勝決定シリーズ第3戦",
+        "big": "6-2",
         "unit": "",
-        "sub": "本拠地で勝利",
-        "tag": "決勝点 コントレラスのタイムリー",
+        "sub": "敵地で勝利",
+        "tag": "決勝点 バウアーズの2点本塁打",
         "chips": [
           {
             "label": "リーグ優勝決定シリーズ　ブリュワーズ",
-            "score": "2-0",
+            "score": "3-0",
             "win": true
           },
           {
             "label": "本塁打　ブリュワーズ",
-            "score": "1"
+            "score": "3"
           }
         ],
-        "ticker": "次の試合　日本時間10月15日　リーグ優勝決定シリーズ第3戦　　日本人選手　大谷翔平 4打数0安打（ドジャース）　佐々木朗希 1回　無失点　1奪三振（ドジャース）　山本由伸 2回と3分の2　3失点　1奪三振（ドジャース）"
-      }
-    },
-    {
-      "key": "season_game_849820",
-      "label": "リーグ優勝決定シリーズ第1戦",
-      "hook": "ガーディアンズがレイズに7対3でリーグ優勝決定シリーズ先勝",
-      "heading": "ガーディアンズ 対 レイズ　リーグ優勝決定シリーズ第1戦",
-      "intro": "リーグ優勝決定シリーズ第1戦、ガーディアンズが敵地でレイズに7対3で勝ちました。",
-      "intro_as_is": true,
-      "style": "v3",
-      "team_id": 114,
-      "abbr": "CLE",
-      "title": "【MLB】ガーディアンズがレイズに7対3でリーグ優勝決定シリーズ先勝｜ロウの決勝打 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ガーディアンズ 7対3 レイズ　敵地で勝利　シリーズはガーディアンズの1勝0敗"
-        ],
-        [
-          "決勝点",
-          "8回表　ナサニエル・ロウのタイムリー"
-        ],
-        [
-          "本塁打",
-          "ガーディアンズ2本　レイズ1本（マリンズ）"
-        ],
-        [
-          "先発",
-          "ガーディアンズ グリフィン 4回を2失点　レイズ ラスムッセン 6回を2失点"
-        ],
-        [
-          "勝ち投手",
-          "ハンター・ギャディス（1回を無失点）"
-        ],
-        [
-          "ハイライトのコメント欄から",
-          "「レイズファン、このガーディアンズが思ってた以上にヤバいチームだったって今ごろ気づいたらしい」"
-        ],
-        [
-          "ガーディアンズの番記者の投稿から",
-          "「試合終了:ガーディアンズ7、レイズ3 。0-2の劣勢から打線が目を覚まし、第1戦を制した。」"
-        ]
-      ],
-      "japanese": [],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": {
-        "said": "試合終了:ガーディアンズ7、レイズ3 。0-2の劣勢から打線が目を覚まし、第1戦を制した。",
-        "author": "Tim Stebbins",
-        "outlet": "MLB.com",
-        "text": "Final: Guardians 7, Rays 3 Cleveland's offense came to life to erase a 2-0 deficit and take Game 1.",
-        "url": "https://bsky.app/profile/timstebbins.bsky.social/post/3mxq2fmkruc2m",
-        "at": "2026-10-13T03:05:44.414Z"
-      },
-      "voice": {
-        "said": "レイズファン、このガーディアンズが思ってた以上にヤバいチームだったって今ごろ気づいたらしい",
-        "text": "Rays fans just found out that this Guardians team is way more dangerous than they initially thought",
-        "url": "https://www.youtube.com/watch?v=0pu09EKlmms",
-        "likes": 660,
-        "at": "2026-10-13T03:48:36Z"
-      },
-      "headline": null,
-      "game_pk": 849820,
-      "game_v4": {
-        "score": {
-          "innings": [
-            {
-              "num": 1,
-              "away": 0,
-              "home": 2
-            },
-            {
-              "num": 2,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 3,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 4,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 5,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 6,
-              "away": 1,
-              "home": 0
-            },
-            {
-              "num": 7,
-              "away": 1,
-              "home": 0
-            },
-            {
-              "num": 8,
-              "away": 2,
-              "home": 1
-            },
-            {
-              "num": 9,
-              "away": 3,
-              "home": 0
-            }
-          ],
-          "source": "MLB Stats API / liveData.linescore",
-          "away": {
-            "id": 114,
-            "name": "ガーディアンズ",
-            "abbr": "CLE",
-            "total": 7
-          },
-          "home": {
-            "id": 139,
-            "name": "レイズ",
-            "abbr": "TB",
-            "total": 3
-          }
-        },
-        "decisive": {
-          "inning": "8回表",
-          "subject": "ナサニエル・ロウ",
-          "action": "タイムリー",
-          "detail": "",
-          "event": "Single"
-        }
-      },
-      "game_date": "2026-10-13T00:00:00Z",
-      "jp_first": false,
-      "next_team_id": 114,
-      "finished_at": "2026-10-13T03:05:36.954000+00:00",
-      "v3": {
-        "who": "ガーディアンズ　リーグ優勝決定シリーズ第1戦",
-        "big": "7-3",
-        "unit": "",
-        "sub": "敵地で勝利",
-        "tag": "決勝点 8回表 ロウのタイムリー",
-        "chips": [
-          {
-            "label": "リーグ優勝決定シリーズ　ガーディアンズ",
-            "score": "1-0",
-            "win": true
-          },
-          {
-            "label": "本塁打　ガーディアンズ",
-            "score": "2"
-          },
-          {
-            "label": "本塁打　レイズ（マリンズ）",
-            "score": "1"
-          }
-        ],
-        "ticker": "ガーディアンズ 7対3 レイズ　敵地で勝利　シリーズはガーディアンズの1勝0敗"
+        "ticker": "日本人選手　大谷翔平 2打数1安打　1四球（ドジャース）　佐々木朗希 3分の1回　1失点　0奪三振（ドジャース）"
       }
     },
     {
@@ -355,6 +185,10 @@
         [
           "セーブ",
           "ブライアン・ベイカー"
+        ],
+        [
+          "ハイライトのコメント欄から",
+          "「9:40のところ、ホセはあのボールが人工芝で跳ねるのか土で跳ねるのか見極められなかったのが分かる。見た目以上に難しいプレーだよ」"
         ]
       ],
       "japanese": [],
@@ -363,7 +197,13 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
+      "voice": {
+        "said": "9:40のところ、ホセはあのボールが人工芝で跳ねるのか土で跳ねるのか見極められなかったのが分かる。見た目以上に難しいプレーだよ",
+        "text": "At 9:40 you can see that José couldn’t tell if that ball was going to bounce on the turf or the dirt. Such a deceptively tough play to make",
+        "url": "https://www.youtube.com/watch?v=XQSGs9VWueA",
+        "likes": 144,
+        "at": "2026-10-14T03:41:12Z"
+      },
       "headline": null,
       "game_pk": 849813,
       "game_v4": {
