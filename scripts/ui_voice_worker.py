@@ -11,6 +11,7 @@ import subprocess
 import sys
 
 import ui_voice_queue as q
+import ui_voice_parts as parts_crypto
 
 DEFAULT_APSC = 'C:/Users/issak/Desktop/apsc-video'
 
@@ -62,7 +63,7 @@ def transcode(source, destination):
 
 
 def portrait_payload(folder):
-    """公式部品を描画に必要な範囲だけ同梱。リモート指定のパスは受け付けない。"""
+    """暗号化前のローカル部品。平文のままキューへ渡さない。"""
     from PIL import Image
     folder = folder.resolve()
     parts = json.loads((folder/'parts.json').read_text(encoding='utf8'))
@@ -116,6 +117,10 @@ def apsc_synthesizer(apsc):
 def process(queue, cache, synthesize, portraits, limit=10):
     """生成済み区間を保持し、返送に失敗しても同じ声を作り直さない。"""
     import wave
+    secret = parts_crypto.key()
+    # 合成より前に鍵・暗号依存・ローカル部品を確認する。
+    parts_crypto.cipher(secret)
+    parts_crypto.pack(portraits)
     cache = Path(cache).resolve()
     cache.mkdir(parents=True, exist_ok=True)
     identity = cache/'identity.txt'
@@ -143,7 +148,7 @@ def process(queue, cache, synthesize, portraits, limit=10):
             continue
         folder = cache/key
         folder.mkdir(exist_ok=True)
-        bundle = dict(portraits)
+        bundle = {}
         chunks = []
         for i, seg in enumerate(order['narration']['segments']):
             if q.now() >= q.stamp(order['deadline']):
@@ -182,8 +187,11 @@ def process(queue, cache, synthesize, portraits, limit=10):
                 if (saved.get('status') != 'working' or saved.get('worker') != worker
                         or q.now() >= q.stamp(saved['deadline'])):
                     return False
+                ref = parts_crypto.publish(files, portraits, secret)
+                result['parts_ref'] = ref
+                bundle['result.json'] = q.encoded(result)
                 files.update({'payload/'+key+'/'+name: blob for name, blob in bundle.items()})
-                saved['status'] = 'ready'
+                saved.update(status='ready', parts_ref=ref)
                 return True
             if queue.update(deliver):
                 completed += 1

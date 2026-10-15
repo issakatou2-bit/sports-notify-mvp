@@ -1,5 +1,6 @@
 """固定原稿・合成した単音・作り物の立ち絵だけ。VoiSonaとネットワークは呼ばない。"""
 import argparse
+import base64
 import copy
 from datetime import datetime, timedelta, timezone
 import io
@@ -21,6 +22,7 @@ from PIL import Image
 import ui_voice_queue as q
 import ui_voice_stock as stock
 import ui_voice_worker as worker
+import ui_voice_parts as parts_crypto
 
 AT = datetime(2026, 10, 15, 9, tzinfo=timezone.utc)
 SCRIPT = dict(segments=[dict(kind='intro', text='固定の成績です。', speaker=2, meta={})])
@@ -86,7 +88,8 @@ class QueueTest(unittest.TestCase):
         self.queue = MemoryQueue()
         self.clock = patch.object(q, 'now', return_value=AT)
         self.clock.start()
-        self.env = patch.dict(os.environ, COLLESPO_SOLO_HOST='ui', COLLESPO_UI_VOICE_WAIT_MINUTES='15')
+        self.env = patch.dict(os.environ, COLLESPO_SOLO_HOST='ui', COLLESPO_UI_VOICE_WAIT_MINUTES='15',
+                              COLLESPO_UI_PARTS_KEY=base64.b64encode(bytes(range(32))).decode('ascii'))
         self.env.start()
 
     def tearDown(self):
@@ -315,6 +318,144 @@ class QueueTest(unittest.TestCase):
         bundle['seg_000.flac'] = b'broken'
         with self.assertRaisesRegex(q.QueueError, '指紋'):
             stock.install(saved, bundle, self.folder/'audio', SCRIPT)
+
+    def test_public_payload_is_encrypted_shared_and_changes_only_with_parts_or_key(self):
+        first = self.order()
+        images = portraits()
+        worker.process(self.queue, self.folder/'cache', tone, images)
+        ref = self.queue.state[first['id']]['parts_ref']
+        encrypted = self.queue.files[ref]
+        second = self.order(episode='second')
+        worker.process(self.queue, self.folder/'cache', tone, images)
+        self.assertEqual(ref, self.queue.state[second['id']]['parts_ref'])
+        self.assertEqual(encrypted, self.queue.files[ref])
+        for name, blob in self.queue.files.items():
+            q.validate_file(name, blob)
+            self.assertFalse(blob.startswith(b'\x89PNG'), name)
+            self.assertFalse(name.endswith(('.png', '/parts.json')), name)
+            self.assertNotIn(images['p000.png'], blob)
+            self.assertNotIn(images['parts.json'], blob)
+        self.assertEqual(parts_crypto.decrypt(ref, encrypted), images)
+        changed = dict(images)
+        changed['parts.json'] = q.encoded(dict(json.loads(images['parts.json']), revision=2))
+        third = self.order(episode='changed')
+        worker.process(self.queue, self.folder/'cache', tone, changed)
+        ref2 = self.queue.state[third['id']]['parts_ref']
+        self.assertNotEqual(ref, ref2)
+        self.queue.state[first['id']]['status'] = self.queue.state[second['id']]['status'] = 'used'
+        compact = q.compact(self.queue.state, self.queue.files)
+        self.assertNotIn(ref, compact)
+        self.queue.state[third['id']]['status'] = 'used'
+        compact = q.compact(self.queue.state, compact)
+        self.assertIn(ref2, compact)  # 消費後も最新の一組を次の回に再利用。
+        with patch.dict(os.environ, COLLESPO_UI_PARTS_KEY=base64.b64encode(b'x'*32).decode('ascii')):
+            fourth = self.order(episode='rotated')
+            worker.process(self.queue, self.folder/'cache', tone, changed)
+            self.assertNotEqual(ref2, self.queue.state[fourth['id']]['parts_ref'])
+
+    def test_wrong_key_tampering_and_plaintext_are_rejected(self):
+        order = self.order()
+        worker.process(self.queue, self.folder/'cache', tone, portraits())
+        ref = self.queue.state[order['id']]['parts_ref']
+        blob = self.queue.files[ref]
+        with patch.dict(os.environ, COLLESPO_UI_PARTS_KEY=base64.b64encode(b'x'*32).decode('ascii')):
+            with self.assertRaises(q.QueueError):
+                parts_crypto.decrypt(ref, blob)
+            saved, bundle = stock.take(self.queue, order['id'])
+            with self.assertRaises(q.QueueError):
+                stock.install(saved, bundle, self.folder/'wrong', SCRIPT)
+            self.assertFalse((self.folder/'wrong/portrait').exists())
+        with self.assertRaises(q.QueueError):
+            parts_crypto.decrypt(ref, blob[:-1]+bytes([blob[-1] ^ 1]))
+        for name, data in [('payload/'+order['id']+'/p000.png', portraits()['p000.png']),
+                           ('payload/'+order['id']+'/parts.json', portraits()['parts.json']),
+                           (ref, portraits()['p000.png'])]:
+            with self.assertRaises(q.QueueError):
+                q.validate_file(name, data)
+
+    def test_missing_or_invalid_key_falls_back_before_connecting_or_synthesizing(self):
+        path = self.folder/'script.json'
+        path.write_bytes(q.encoded(SCRIPT))
+        for key in ('', 'invalid', base64.b64encode(b'short').decode('ascii')):
+            with patch.dict(os.environ, COLLESPO_UI_PARTS_KEY=key), \
+                 patch.object(q, 'GitQueue') as remote, patch.object(stock.time, 'sleep') as wait:
+                self.assertIsNone(stock.fulfill(copy.deepcopy(SCRIPT), path, self.folder/'no-key'))
+                remote.assert_not_called(); wait.assert_not_called()
+                with patch(__name__+'.tone') as synth:
+                    with self.assertRaises(q.QueueError):
+                        worker.process(self.queue, self.folder/'cache', synth, portraits())
+                    synth.assert_not_called()
+        import synthesize_narration as sn
+        audio = self.folder/'missing-key-audio'
+        with patch.dict(os.environ, COLLESPO_UI_PARTS_KEY=''), patch.object(q, 'GitQueue') as remote, \
+             patch.object(sn, 'engine_available', return_value=True), \
+             patch.object(sn, 'synth_one', side_effect=lambda text, speaker, out: (tone(text, out) or True)) as synth, \
+             patch.object(sys, 'argv', ['synthesize', '--narration', str(path), '--out-dir', str(audio)]):
+            sn.main()
+            remote.assert_not_called()
+            self.assertEqual(synth.call_args.args[1], 2)
+        manifest = json.loads((audio/'manifest.json').read_text(encoding='utf8'))
+        self.assertEqual(manifest['voice_resolution']['host'], 'metan')
+
+    def test_launcher_updates_clean_main_before_worker_and_stops_on_failure(self):
+        shell = shutil.which('powershell') or shutil.which('pwsh')
+        if not shell:
+            self.skipTest('PowerShell is not installed')
+        scripts = self.folder/'launcher/scripts'
+        scripts.mkdir(parents=True)
+        source = (q.ROOT/'scripts/run_ui_voice_worker.ps1').read_text(encoding='utf-8-sig')
+        # テストでは実ユーザーの変数を絶対に読まない。Git/Pythonも固定の関数。
+        source = source.replace("[Environment]::GetEnvironmentVariable('COLLESPO_UI_PARTS_KEY', 'User')", "'fixture-only'")
+        source = source.replace("[Environment]::GetEnvironmentVariable('COLLESPO_APSC_ROOT', 'User')", "''")
+        source = source.replace("Write-Output 'Worker update failed. Check clean main, origin and Git connection.'",
+                                'Write-Output $_.Exception.Message')
+        launcher = scripts/'run.ps1'
+        launcher.write_text(source, encoding='utf-8-sig')
+        fixture = scripts/'fixture.ps1'
+        fixture.write_text(r'''
+$ErrorActionPreference = 'Stop'
+$log = Join-Path $PSScriptRoot 'calls.txt'
+function global:git {
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$GitArgs)
+    Add-Content -LiteralPath $log -Value ($GitArgs -join ' ')
+    $global:LASTEXITCODE = 0
+    switch ($GitArgs[2]) {
+        'branch' { if ($env:COLLESPO_LAUNCHER_TEST_CASE -eq 'branch') { 'other' } else { 'main' } }
+        'remote' { if ($env:COLLESPO_LAUNCHER_TEST_CASE -eq 'origin') { 'other' } else { 'https://github.com/issakatou2-bit/sports-notify-mvp.git' } }
+        'status' { if ($env:COLLESPO_LAUNCHER_TEST_CASE -eq 'dirty') { ' M scripts/changed.py' } }
+        'pull' { Write-Error 'fixture fetch progress'; if ($env:COLLESPO_LAUNCHER_TEST_CASE -eq 'pull') { $global:LASTEXITCODE = 1 } }
+        default { throw 'Unexpected Git operation' }
+    }
+}
+function global:FixturePython {
+    param([string]$Script)
+    Add-Content -LiteralPath $log -Value ('worker '+$Script)
+    if ($env:COLLESPO_UI_PARTS_KEY -ne 'fixture-only') { throw 'key' }
+    Write-Error 'fixture worker warning'
+    $global:LASTEXITCODE = 0
+}
+& (Join-Path $PSScriptRoot 'run.ps1') -Python FixturePython
+exit $LASTEXITCODE
+''', encoding='utf-8-sig')
+        for case in ('ok', 'branch', 'origin', 'dirty', 'pull'):
+            with self.subTest(case=case):
+                log = scripts/'calls.txt'
+                log.unlink(missing_ok=True)
+                result = subprocess.run([shell, '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'RemoteSigned', '-File', str(fixture)],
+                                        env=dict(os.environ, COLLESPO_LAUNCHER_TEST_CASE=case),
+                                        capture_output=True, timeout=30)
+                self.assertTrue(log.is_file(), result.stdout+result.stderr)
+                calls = log.read_text(encoding='utf8').splitlines()
+                if case == 'ok':
+                    self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
+                    self.assertIn('pull --ff-only origin main', calls[-2])
+                    self.assertTrue(calls[-1].startswith('worker '))
+                    self.assertIn('ui_voice_worker.py', calls[-1])
+                else:
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertFalse(any(c.startswith('worker ') for c in calls))
+                    if case != 'pull':
+                        self.assertFalse(any('pull --ff-only' in c for c in calls))
         self.assertFalse((self.folder/'audio/manifest.json').exists())
 
     def test_default_never_contacts_queue_and_preserves_synthesis_bytes(self):
@@ -382,6 +523,16 @@ class QueueTest(unittest.TestCase):
         _, rows, _ = qa.read()
         self.assertEqual(set(rows), {one['id'], two['id']})
         q.terminal(qa, one['id'], 'expired')
+        worker.process(qa, self.folder/'git-cache', tone, portraits())
+        _, rows, files = qa.read()
+        ref = rows[two['id']]['parts_ref']
+        self.assertEqual(parts_crypto.decrypt(ref, files[ref]), portraits())
+        self.assertFalse(any(blob.startswith(b'\x89PNG') for blob in files.values()))
+        with self.assertRaises(q.QueueError):
+            qa.update(lambda state, blobs: blobs.update({'payload/'+two['id']+'/p000.png': portraits()['p000.png']}))
+        self.assertIsNotNone(stock.take(qa, two['id']))
+        _, _, files = qa.read()
+        self.assertEqual(set(files), {'parts/current.json', ref})
         self.assertEqual(git('--git-dir', remote, 'rev-list', '--count', 'ui-voice-queue'), '1')
 
 

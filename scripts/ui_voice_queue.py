@@ -16,6 +16,8 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 BRANCH = 'ui-voice-queue'
 MAX_BYTES = 90 * 1024 * 1024
+PARTS_MAGIC = b'COLLESPO-UI-PARTS-AES256GCM-v1\0'
+PARTS_REF = r'parts/[a-f0-9]{64}\.aesgcm'
 UI_CREDIT = 'VoiSona Talk 雨衣 / ©Ui Shigure / ©INCOLORE'
 
 
@@ -86,6 +88,35 @@ def make_order(narration, episode, minutes=15, stock=False, at=None):
     return result
 
 
+def validate_file(path, blob):
+    """公開treeの許可形式。平文の公式PNG/parts.jsonは読書きとも拒否。"""
+    if blob.startswith(b'\x89PNG'):
+        raise QueueError('公開キューに平文の画像は保存できません')
+    if re.fullmatch(PARTS_REF, path):
+        if not blob.startswith(PARTS_MAGIC) or len(blob) < len(PARTS_MAGIC)+28:
+            raise QueueError('立ち絵は暗号化が必要です')
+    elif path == 'parts/current.json':
+        if not re.fullmatch(PARTS_REF, json.loads(blob).get('ref', '')):
+            raise QueueError('共用部品の参照が不正です')
+    elif not re.fullmatch(r'payload/[a-f0-9]{64}/(seg_[0-9]{3}\.flac|result\.json)', path):
+        raise QueueError('音声専用枝に未知のファイルがあります')
+
+
+def compact(state, files):
+    # 最新の1組は次の注文にも再利用。旧版はready在庫の参照がある間だけ保持。
+    refs = {o['parts_ref'] for o in state.values() if o.get('status') == 'ready' and o.get('parts_ref')}
+    current = files.get('parts/current.json')
+    if current:
+        refs.add(json.loads(current)['ref'])
+    result = {}
+    for path, blob in files.items():
+        validate_file(path, blob)
+        if (path == 'parts/current.json' or path in refs or
+                (path.startswith('payload/') and state.get(path.split('/')[1], {}).get('status') == 'ready')):
+            result[path] = blob
+    return result
+
+
 class GitQueue:
     """毎回親なしcommitをlease付きpush。競合時は再読・再適用し、他注文を残す。"""
     def __init__(self, root=ROOT, remote='origin'):
@@ -118,9 +149,10 @@ class GitQueue:
             total += int(size)
             if len(tree) > 2000 or total > MAX_BYTES or mode != '100644' or kind != 'blob':
                 raise QueueError('音声専用枝の容量・形式が不正です')
-            if path != 'queue.json' and not re.fullmatch(r'payload/[a-f0-9]{64}/[a-zA-Z0-9_.-]+', path):
-                raise QueueError('音声専用枝に未知のファイルがあります')
-            files[path] = self.git('cat-file', 'blob', sha).stdout
+            blob = self.git('cat-file', 'blob', sha).stdout
+            if path != 'queue.json':
+                validate_file(path, blob)
+            files[path] = blob
         state = json.loads(files.pop('queue.json', b'{}'))
         if not isinstance(state, dict) or len(state) > 200:
             raise QueueError('音声注文が多すぎます')
@@ -139,8 +171,7 @@ class GitQueue:
             for key, order in list(state.items()):
                 if stamp(order['deadline']) < now()-timedelta(days=7):
                     del state[key]
-            files = {k: v for k, v in files.items() if k.split('/')[1] in state
-                     and state[k.split('/')[1]]['status'] == 'ready'}
+            files = compact(state, files)
             if before == (encoded(state), files):
                 return result
             if len(state) > 200 or sum(map(len, files.values()))+len(encoded(state)) > MAX_BYTES:

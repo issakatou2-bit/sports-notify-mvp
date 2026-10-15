@@ -13,6 +13,7 @@ import tempfile
 import time
 
 import ui_voice_queue as q
+import ui_voice_parts as parts_crypto
 
 POLICY = (
     ('資産動画（球団・歴史・殿堂など）', '採用。v3のめたんソロ、次の試合に依存しないもの'),
@@ -65,6 +66,10 @@ def take(queue, key):
             return None
         prefix = 'payload/'+key+'/'
         bundle = {name[len(prefix):]: blob for name, blob in files.items() if name.startswith(prefix)}
+        ref = order.get('parts_ref', '')
+        if not re.fullmatch(parts_crypto.REF, ref) or ref not in files:
+            raise q.QueueError('雨衣の共用部品がありません')
+        bundle[ref] = files[ref]
         order['status'] = 'used'
         return copy.deepcopy(order), bundle
     return queue.update(change)
@@ -81,15 +86,19 @@ def install(order, bundle, out, narration):
             or result.get('voice_name') != 'ui_ja_JP'
             or len(result.get('chunks', [])) != len(narration['segments'])):
         raise q.QueueError('返された声と注文が一致しません')
+    ref = result.get('parts_ref', '')
+    if ref != order.get('parts_ref'):
+        raise q.QueueError('雨衣の部品参照が違います')
+    portraits = parts_crypto.decrypt(ref, bundle[ref])
     portrait_dir = out/'portrait'
     portrait_dir.mkdir(parents=True, exist_ok=True)
-    for name, blob in bundle.items():
+    for name, blob in portraits.items():
         if re.fullmatch(r'p[0-9]{3}\.png', name):
             path = portrait_dir/name
             path.write_bytes(blob)
             with Image.open(path) as im:
                 im.verify()
-    parts = json.loads(bundle['parts.json'])
+    parts = json.loads(portraits['parts.json'])
     names = [parts['体']]+[v for k in ('右腕', '左腕', '眉', '目', '口') for v in parts[k].values()]
     if not all(re.fullmatch(r'p[0-9]{3}\.png', n) and (portrait_dir/n).is_file() for n in names):
         raise q.QueueError('雨衣の立ち絵部品が不足しています')
@@ -118,12 +127,13 @@ def install(order, bundle, out, narration):
 
 def fulfill(narration, npath, out, queue=None):
     """在庫対象は待たず在庫だけ、それ以外は既定15分待つ。失敗はその回のめたんへ。"""
-    queue = queue or q.GitQueue()
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
-    context = asset_context(narration)
     resolution = None
     try:
+        parts_crypto.key()
+        queue = queue or q.GitQueue()
+        context = asset_context(narration)
         if context:
             _, state, _ = queue.read()
             for order in sorted(state.values(), key=lambda r: r['created']):
@@ -181,6 +191,7 @@ def prioritize(topics):
     if os.getenv('COLLESPO_SOLO_HOST') != 'ui':
         return topics
     try:
+        parts_crypto.key()
         queue = q.GitQueue()
         _, state, _ = queue.read()
         ready = {}
@@ -210,6 +221,11 @@ def rebuild(topic):
 def prepare(count):
     import generate_asset_video as assets
     import next_asset
+    try:
+        parts_crypto.key()
+    except q.QueueError:
+        print('[warn] 雨衣の部品鍵がないため在庫注文を作りません')
+        return
     queue = q.GitQueue()
     _, state, _ = queue.read()
     done = next_asset.published(str(q.ROOT/'data/published_assets.json'))
