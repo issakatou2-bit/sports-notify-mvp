@@ -52,12 +52,17 @@ def early_series_errors(dialogue, evidence):
     rows = evidence.get('early_series') or []
     for i, seg in enumerate(dialogue.get('segments') or [], 1):
         for sentence in (seg.get('text') or '').split('。'):
-            if (re.search(r'明日|次(?:の|は|戦)|これから|ではな|じゃな|でな', sentence)
+            if (re.search(r'明日|次(?:の|は|戦)|これから|昨年|昨季|去年|前年|前回|以前|過去|ではな|じゃな|でな', sentence)
                     or sentence.rstrip().endswith(('?', '？'))):
                 continue
             if not re.search(r'負け(?:たら|れば)(?:終わり|敗退)(?:の|となる|になる)?(?:試合|一戦)で', sentence):
                 continue
+            if not re.search(r'した|打った|投げた|記録した|出ていた|だった', sentence):
+                continue  # 未来への期待や未完の一文を過去の実績と決めつけない。
             for series in rows:
+                if any(n in sentence and n not in (series.get('name') or '')
+                       for n in ('ワイルドカード', '地区シリーズ', 'リーグ優勝決定', 'ワールドシリーズ')):
+                    continue
                 if any(name in sentence for name in series['names']):
                     bad.append(f'{i}行目: 終了した試合を敗退決定戦としていますが、'
                                f'{series["name"]}は{series["played"]}試合終了・決着は最短{series["need"]}試合です')
