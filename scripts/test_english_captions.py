@@ -1,5 +1,6 @@
 """API・実素材・フォント・古いGit履歴に依存しない英語字幕の検査。"""
 import json
+import io
 import os
 import pathlib
 import sys
@@ -16,6 +17,31 @@ import caption_names
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 FIX = json.loads((ROOT/'scripts/fixtures/captions/aligned.json').read_text(encoding='utf-8'))
 NOW = datetime(2026, 10, 14, 10, tzinfo=timezone.utc)
+
+# run 38663406702 / AaivcUiJ6qg / 0f6ab7b2:data/ps_game_topics.json。
+# intro・items・japaneseの原文（字幕本文の材料）。英訳は再現用の固定例で、当日の応答ではない。
+PS_GAME_EXAMPLES = (
+    ('リーグ優勝決定シリーズ第3戦、ブリュワーズが敵地でドジャースに6対2で勝ちました。',
+     'In Game 3 of the NLCS, the Milwaukee Brewers beat the Los Angeles Dodgers 6-2 on the road.'),
+    ('ブリュワーズ 6対2 ドジャース　敵地で勝利　シリーズはブリュワーズの3勝0敗',
+     'The Milwaukee Brewers beat the Los Angeles Dodgers 6-2 on the road for a 3-0 series lead.'),
+    ('7回表　ジェイク・バウアーズの2点本塁打（飛距離126メートル、打球の速さ時速176キロ）',
+     'In the top of the seventh, Jake Bauers hit a two-run homer (126 meters, 176 km/h).'),
+    ('ブリュワーズ3本（チョーリオ、バウアーズ、ミッチェル）',
+     'Three homers for the Milwaukee Brewers (Jackson Chourio, Jake Bauers, Garrett Mitchell).'),
+    ('ブリュワーズ ガッサー 5回を無失点　ドジャース スネル 6回を4失点',
+     'Robert Gasser of the Milwaukee Brewers pitched five scoreless innings; '
+     'Blake Snell of the Los Angeles Dodgers allowed four runs in six innings.'),
+    ('勝ち D.L.ホール（2回と3分の1を無失点）　セーブ トレバー・メギル',
+     'Win: DL Hall (two and one third scoreless innings). Save: Trevor Megill.'),
+    ('「勝負強い本塁打でブルワーズ、44年ぶりのワールドシリーズ進出まであと1勝」',
+     '"Clutch homers leave the Brewers one win away from their first World Series appearance '
+     'in forty-four years."'),
+    ('大谷翔平が2打数1安打　1四球（ドジャース）',
+     'Shohei Ohtani went one-for-two with one walk (Los Angeles Dodgers).'),
+    ('佐々木朗希が3分の1回　1失点　0奪三振（ドジャース）',
+     'Roki Sasaki: one third of an inning, one run allowed, zero strikeouts (Los Angeles Dodgers).'),
+)
 
 
 def environment(remaining=10000, observed=None, quota_day='2026-10-14'):
@@ -162,6 +188,71 @@ class NumbersSurviveTest(unittest.TestCase):
         self.assertTrue(en.numbers_survive('10月15日の試合', 'the October 15 game'))
         self.assertFalse(en.numbers_survive('3打数1安打', 'went 1-for-4'))
         self.assertFalse(en.numbers_survive('2本塁打', 'hit a home run'))
+
+    def test_ps_game_script_with_spelled_out_numbers(self):
+        for original, english in PS_GAME_EXAMPLES:
+            with self.subTest(original=original):
+                self.assertTrue(en.numbers_survive(original, english),
+                                en.number_mismatches(original, english))
+        # 実例に含まれる本物の変化は、他の数字が残っていても通さない。
+        for index, before, after in ((0, '6-2', '6-3'), (1, '3-0', '3-1'),
+                                     (2, 'two-run', 'three-run'), (2, '126', '125'),
+                                     (6, 'forty-four', 'forty-three'),
+                                     (5, 'one third', 'one fourth'), (8, 'zero', 'two')):
+            original, english = PS_GAME_EXAMPLES[index]
+            with self.subTest(index=index, change=after):
+                self.assertFalse(en.numbers_survive(original, english.replace(before, after)))
+
+    def test_ps_game_examples_pass_the_translation_contract(self):
+        cues = [(i, i + 1, original) for i, (original, _) in enumerate(PS_GAME_EXAMPLES)]
+        texts = [english for _, english in PS_GAME_EXAMPLES]
+        with patch.object(en.backstage_guard, 'create', return_value=response(json.dumps(texts))), \
+             patch.object(en.token_log, 'allowed', return_value=True), patch.object(en.token_log, 'record'):
+            self.assertEqual(en.translate(cues, Mock()),
+                             [(i, i + 1, text) for i, text in enumerate(texts)])
+
+    def test_score_series_game_inning_and_runs_variants(self):
+        examples = (
+            ('6対2', '6-2'), ('6対2', 'six to two'),
+            ('3勝0敗', 'a 3-0 series lead'), ('3勝0敗', 'a three-zero series lead'),
+            ('第3戦', 'Game 3'), ('第3戦', 'the third game'),
+            ('第3戦', 'the 3rd game'), ('1回', 'the first inning'),
+            ('2点', 'two runs'), ('2点本塁打', 'a two-run homer'),
+            ('2回と3分の1', '2 1/3 innings'), ('3分の1回', 'one-third of an inning'),
+            ('2回と3分の1', 'two and a third innings'), ('3分の2回', 'two-thirds of an inning'),
+            ('1四球', 'a walk'), ('0奪三振', 'no strikeouts'),
+            ('5回を無失点', 'five innings with zero runs allowed'),
+            ('21得点', 'twenty-one runs'), ('22回', 'the twenty-second inning'),
+            ('126メートル', 'one hundred and twenty-six meters'),
+            ('44年ぶりの進出まであと1勝', 'one win away from the 1st appearance in 44 years'),
+            ('２点', 'TWO runs'),
+        )
+        for original, english in examples:
+            with self.subTest(original=original, english=english):
+                self.assertTrue(en.numbers_survive(original, english))
+
+    def test_changed_missing_extra_and_repeated_numbers_fail(self):
+        for original, english in (
+            ('6対2', '6-3'), ('3勝0敗', 'a 3-1 series lead'),
+            ('第3戦', 'Game 4'), ('1回', 'the second inning'),
+            ('2点', 'three runs'), ('2点', 'runs'),
+            ('2点', 'two runs in the first inning'), ('2安打2打点', 'two hits'),
+            ('2四球', 'a walk'), ('1奪三振', 'no strikeouts'),
+            ('5回を無失点', 'five innings with one run allowed'),
+            ('打率0.250', 'batting .300'), ('10月15日', 'September 15'),
+        ):
+            with self.subTest(original=original, english=english):
+                self.assertFalse(en.numbers_survive(original, english))
+
+    def test_translation_logs_only_unmatched_numbers(self):
+        with patch.object(en.backstage_guard, 'create', return_value=response('["6-3"]')), \
+             patch.object(en.token_log, 'allowed', return_value=True), \
+             patch.object(en.token_log, 'record'), patch('sys.stdout', new_callable=io.StringIO) as log:
+            with self.assertRaisesRegex(ValueError, '^translation_numbers$'):
+                en.translate([(0, 1, '試合は6対2でした。')], Mock())
+        self.assertEqual(log.getvalue(),
+                         "[warn] 英語字幕: translation_numbers Japanese=['2'] English=['3']\n")
+        self.assertEqual(en.number_mismatches('2安打2打点', 'two hits'), (['2'], []))
 
 
 if __name__ == '__main__':

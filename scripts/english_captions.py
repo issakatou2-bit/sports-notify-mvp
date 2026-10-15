@@ -4,6 +4,8 @@ import math
 import os
 import pathlib
 import re
+import unicodedata
+from collections import Counter
 from urllib.parse import urlsplit
 from datetime import datetime, timedelta, timezone
 
@@ -151,30 +153,92 @@ def translate(cues, ai):
             raise ValueError('translation_invalid')
         if any(name not in english for name in caption_names.required(original).values()):
             raise ValueError('translation_names')
-        # Arabic numerals must survive; Japanese written numbers are handled by translation.
-        if not numbers_survive(original, english):
+        missing, extra = number_mismatches(original, english)
+        if missing or extra:
+            # 原稿やモデルの応答を出さず、照合で余った数字だけを残す。
+            print(f'[warn] 英語字幕: translation_numbers Japanese={missing} English={extra}')
             raise ValueError('translation_numbers')
     return [(start, end, text.strip()) for (start, end, _), text in zip(cues, result)]
 
 
 
-_MONTHS = ('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august',
-           'september', 'october', 'november', 'december', 'jan', 'feb', 'mar', 'apr', 'jun', 'jul', 'aug',
-           'sep', 'sept', 'oct', 'nov', 'dec')
+_MONTHS = {
+    name: str(number)
+    for number, names in enumerate(('january jan', 'february feb', 'march mar', 'april apr',
+                                   'may', 'june jun', 'july jul', 'august aug',
+                                   'september sep sept', 'october oct', 'november nov',
+                                   'december dec'), 1)
+    for name in names.split()
+}
+_CARDINALS = ('zero one two three four five six seven eight nine ten eleven twelve thirteen '
+              'fourteen fifteen sixteen seventeen eighteen nineteen').split()
+_ORDINALS = ('zeroth first second third fourth fifth sixth seventh eighth ninth tenth eleventh '
+             'twelfth thirteenth fourteenth fifteenth sixteenth seventeenth eighteenth nineteenth').split()
+_TENS = 'twenty thirty forty fifty sixty seventy eighty ninety'.split()
+_TENTHS = 'twentieth thirtieth fortieth fiftieth sixtieth seventieth eightieth ninetieth'.split()
+_WORD_VALUES = {word: n for words in (_CARDINALS, _ORDINALS) for n, word in enumerate(words)}
+_WORD_VALUES.update({word: n * 10 for words in (_TENS, _TENTHS)
+                     for n, word in enumerate(words, 2)})
+_UNIT_WORDS = '|'.join(_CARDINALS[1:10] + _ORDINALS[1:10])
+_UNDER_HUNDRED = ('(?:' + '|'.join(_TENS) + r')(?:[\s-]+(?:' + _UNIT_WORDS + '))?'
+                  + '|' + '|'.join(_WORD_VALUES))
+_WORD_NUMBERS = re.compile(r'\b(?:'
+    + '(?:' + '|'.join(_CARDINALS[1:10]) + r')[\s-]+hundred(?:[\s-]+(?:and[\s-]+)?(?:'
+    + _UNDER_HUNDRED + '))?|' + _UNDER_HUNDRED + r')\b', re.IGNORECASE)
+_COUNT_NOUN = r'(?:home runs?|runs?|hits?|walks?|strikeouts?|wins?|loss(?:es)?|outs?|homers?|innings?)'
+_FRACTION_WORD = r'(?:third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)'
 
 
-def numbers_survive(original, english):
-    """訳で数字が落ちていないか。並び順は問わない（英語は「3打数1安打」を「1-for-3」と逆に書く、10/14）。
-    「10月」のような月は、英語で月の名前（October）になっていればよい。"""
-    from collections import Counter
+def _word_number(match):
+    words = re.split(r'[\s-]+', match.group().lower())
+    if 'hundred' in words:
+        return str(_WORD_VALUES[words[0]] * 100
+                   + sum(_WORD_VALUES[w] for w in words[2:] if w != 'and'))
+    return str(sum(_WORD_VALUES[w] for w in words))
+
+
+def number_mismatches(original, english):
+    """数の表記と語順をそろえ、日本語側・英語側に余る数字だけを返す。
+
+    序数（first / 3rd）・点数（two-run / 6-2）・分数（one third / 1/3）も
+    数字として数える。同じ数字の出現回数も一致させ、増減・脱落を見逃さない。
+    """
+    original = unicodedata.normalize('NFKC', original)
+    english = unicodedata.normalize('NFKC', english).lower()
+    # 「44年ぶり」は "first ... in 44 years" とも訳す。ここでのfirstは
+    # 日本語に独立した1がなくても同じ意味（年数自体は通常どおり照合する）。
+    first_in_years = len(re.findall(r'\b(?:first|1st)\b[^.!?]{0,120}\b(?:in|for)\b'
+                                   r'[^.!?]{0,40}\byears\b', english))
+    # a walk / no strikeouts / two and a third も数を表す。通常の冠詞や
+    # 無失点→scorelessで数字を増やさないよう、明示された数の不足だけを補う。
+    implicit = {
+        '1': len(re.findall(r'\b(?:a|an)\s+(?:(?:earned|unearned)\s+)?(?:'
+                            + _COUNT_NOUN + '|' + _FRACTION_WORD + r')\b', english)),
+        '0': len(re.findall(r'\bno\s+(?:earned\s+)?' + _COUNT_NOUN
+                            + r'\b|\bscoreless\b', english)),
+    }
+    english = re.sub(r'\b(one|two|three|four|five|six|seven|eight|nine|\d+)[\s-]+('
+                     + _FRACTION_WORD + r')s\b', r'\1 \2', english)
+    if re.search(r'\d{1,2}月', original):
+        english = re.sub(r'\b(?:' + '|'.join(_MONTHS) + r')\b',
+                         lambda m: _MONTHS[m.group()], english)
+    english = _WORD_NUMBERS.sub(_word_number, english)
     pattern = r'\d+(?:[.,]\d+)?'
     want = Counter(re.findall(pattern, original))
     have = Counter(re.findall(pattern, english))
-    low = english.lower()
-    for month in re.findall(r'(\d{1,2})月', original):
-        if want[month] > have[month] and 1 <= int(month) <= 12 and re.search(r'\b(' + '|'.join(_MONTHS) + r')\b', low):
-            want[month] -= 1
-    return +want == +have
+    # 無失点・無安打のようなゼロも、英訳が明示的にzeroと書いた分だけ照合する。
+    want['0'] += min(max(0, have['0'] - want['0']),
+                     len(re.findall(r'無(?:失点|安打|四球|得点|本塁打)', original)))
+    want['1'] += min(max(0, have['1'] - want['1']), first_in_years,
+                     len(re.findall(r'\d+年ぶり', original)))
+    for number, count in implicit.items():
+        have[number] += min(max(0, want[number] - have[number]), count)
+    return sorted((want - have).elements()), sorted((have - want).elements())
+
+
+def numbers_survive(original, english):
+    """英語の数字・数詞・序数を、日本語の数字と出現回数まで照合する。"""
+    return not any(number_mismatches(original, english))
 
 def find_video(args):
     if args.kind == 'daily':
