@@ -204,6 +204,10 @@ def main():
 
     with open(npath, "r", encoding="utf-8") as f:
         data = json.load(f)
+    import ui_tone
+    adapted = ui_tone.narration(data, args.speaker)
+    if adapted != data:
+        raise ValueError('雨衣の口調にした原稿を先に保存してください（prepare_ui_solo.py）')
     segments = data.get("segments", [])
     if not segments:
         print("[info] セグメントが空のためスキップします")

@@ -76,6 +76,12 @@ def redraw(im, layer):
         if art is not None:
             art = art.crop((0, 0, art.width, min(art.height, r["cut"])))
             im.paste(art, tuple(r["at"]), art)
+    # 動く札を重ねた後にも、雨衣の頭の記号を最前面へ戻す。
+    for r in layer or ():
+        if r['who'] == 'ui' and r.get('effect'):
+            import ui_puppet
+            x, y = r['at']; art = bust(r['who'], r['face'], r['height'], r['dim'])
+            fan_effect(im, r['effect'], ui_puppet.head_box([x,y,x+art.width,y+art.height]), r['elapsed'])
     return im
 
 
@@ -105,10 +111,17 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
     level = lipsync.at(clock if clock is not None else elapsed,
                        3 if speaker == 'zundamon' else 2) if voice_mode else None
     arts = []
+    ui_fan = None
     for who in cast:
         active = who == speaker
         mood = zunda_face(line) if who == "zundamon" else r3.face_for(line, elapsed, duration)
         fan = fan_mood(line) if active else None
+        if who == 'ui' and active and EXPR == 'fan' and not fan and 'ホールド' in line:
+            name = next((n for n in fan_names() if n in line), None)
+            if name:
+                fan = ('pose-smile', 'sparkle', name+'・ホールド')
+        if who == 'ui' and fan and fan[0] == 'sad' and not fan[1]:
+            fan = (fan[0], 'sad', fan[2])
         if fan:
             mood = fan[0]
         if mood == "talk":
@@ -116,6 +129,11 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
         face = ("talk" if (mouth and mood == "base") else mood) if active else "base"
         if voice_mode:
             face = f'{mood if active else "base"}:mouth{level if active else 0}'
+        if who == 'ui':
+            ui_fan = fan
+            import ui_puppet
+            face = ui_puppet.state(mood, line, elapsed, clock if clock is not None else elapsed,
+                                   duration, level, fan)
         arts.append((who, active, bust(who, face, BUST_ACTIVE if active else BUST_IDLE, not active), face))
     x = r3.SAFE_RIGHT + 4
     # 吹き出しの無い画面（締め）は、吹き出しの場所まで下げて、上の札・ボタンにかけない
@@ -127,15 +145,21 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
         x -= art.width - (30 if len(arts) > 1 else 0)
         import calm_motion
         bob = round(4 * calm_motion.value('presenter_bob',1) * math.sin(elapsed * math.pi * 2 / (1.2 * calm_motion.value('presenter_period',1)))) if active and speaking else 0
-        y = bottom - art.height + bob
+        y = bottom - art.height + (0 if who == 'ui' else bob)
         im.paste(art, (x, y), art)
         records.append(dict(who=who, active=active, box=[x, y, x + art.width, y + art.height]))
         # 吹き出しの枠に重なる下の端は描き直さない（吹き出しが上に来るように）
         cut = art.height if bottom != BUST_BOTTOM else max(1, BUBBLE[1] - y)
         layer.append(dict(who=who, face=face, height=BUST_ACTIVE if active else BUST_IDLE, dim=not active, at=[x, y], cut=cut))
     active_box = next((r["box"] for r in records if r["active"]), None)
-    fan = fan_mood(line)
+    fan = ui_fan if speaker == 'ui' else fan_mood(line)
     if fan and active_box:
+        if speaker == 'ui':
+            for record in layer:
+                if record['who'] == 'ui':
+                    record.update(effect=fan[1], elapsed=elapsed)
+            import ui_puppet
+            active_box = ui_puppet.head_box(active_box)
         fan_effect(im, fan[1], active_box, elapsed)
         im.info["fan_expr"] = dict(face=fan[0], effect=fan[1], reason=fan[2], line=line)
     im.info["duo_portraits"] = records
@@ -225,6 +249,12 @@ def fan_effect(im, effect, box, elapsed):
         d.ellipse((cx - 11, cy, cx + 11, cy + 24), fill=(140, 200, 255, 230))
         d.polygon([(cx - 10, cy + 8), (cx + 10, cy + 8), (cx, cy - 16)], fill=(140, 200, 255, 230))
         d.ellipse((cx - 4, cy + 8, cx + 2, cy + 15), fill=(255, 255, 255, 220))
+    elif effect == 'sad':
+        # 雨衣のみ。顔は描き換えず、頭の横に小さな沈んだ線を重ねる。
+        for i in range(3):
+            x = x0 + w*(.87+.045*i)
+            y = y0 + w*(.20+.025*i)
+            d.line((x,y,x,y+w*.06), fill=(153,185,214,200), width=3)
     im.alpha_composite(layer) if im.mode == "RGBA" else im.paste(layer, (0, 0), layer)
 
 def bubble(im, speaker, text):
