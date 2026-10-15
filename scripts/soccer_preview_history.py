@@ -46,7 +46,12 @@ def snapshot(data,narration,published):
                          home=game['home_team_name'],away=game['away_team_name'],start_utc=slots.kickoff(game,data['generated_at']).isoformat(),
                          reasons=copy.deepcopy(facts.get('reasons',[])),expectation=player,spoken=seg['text'],
                          standings={s:dict(game.get(s+'_standing') or {},as_of=data['generated_at'],competition=code,season=game.get('season')) for s in ('home','away')}))
-    if selected is not None and [r['game_id'] for r in rows]!=selected:raise ValueError('公開予告と選定順が一致しません')
+    if selected is not None and [r['game_id'] for r in rows]!=selected:
+        adjustment=narration.get('preview_length_adjustment') or {}
+        kept=[r['game_id'] for r in rows]
+        if not (kept and adjustment.get('original_ids')==selected and
+                adjustment.get('kept_ids')==kept and kept==selected[:len(kept)]):
+            raise ValueError('公開予告と選定順が一致しません')
     if not rows:raise ValueError('予告原稿に試合の区間がありません')
     return dict(day=day,video_id=entry['video_id'],title=entry.get('title'),published_at=entry.get('published_at'),binding=actual,games=rows)
 

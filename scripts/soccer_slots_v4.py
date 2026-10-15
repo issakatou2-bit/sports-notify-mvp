@@ -223,7 +223,7 @@ def check_frame(image,plan):
     return errors
 
 
-def durations(segments,audio):
+def durations(segments,audio,check_limit=True):
     import synthesize_narration as sn
     if len(segments)!=len(audio):raise ValueError('音声の区間数が原稿と違う')
     times=[]
@@ -235,18 +235,95 @@ def durations(segments,audio):
         if actual<=0 or abs(actual-float(voice.get('duration') or 0))>.05:raise ValueError('音声の尺が実測と違う')
         times.append(max(actual,10.0 if seg['kind']=='preview' and seg['meta'].get('preview_duration_limit') else 3.0 if seg['kind']=='jp_roster' else 2.6 if seg['kind']=='outro' else 2.0))
     limit=55 if any(s['meta'].get('preview_duration_limit') for s in segments) else 40
-    if sum(times)>limit:raise ValueError(f'{limit}秒を超えます: {sum(times):.3f}。声の設定は変えず原稿を短くしてください')
+    if check_limit and sum(times)>limit:raise ValueError(f'{limit}秒を超えます: {sum(times):.3f}。声の設定は変えず原稿を短くしてください')
     return times
+
+
+def video_times(segments,audio):
+    """音声後の間と30fpsの切り上げまで含めて予算を判定する。"""
+    times=durations(segments,audio,check_limit=False)
+    if motion.enabled():
+        times=[max(t,float(row['duration'])+vc.SEGMENT_TAIL) for t,row in zip(times,audio)]
+    return [math.ceil(t*30)/30 for t in times]
+
+
+def fit_preview(plan,audio):
+    """補足→4試合目→3試合目の順に短縮し、実測してから描画へ渡す。"""
+    import synthesize_narration as sn
+    import solo_host
+    segments=plan['narration']['segments']
+    if not any(s['meta'].get('preview_duration_limit') for s in segments):return
+    limit=plan['narration']['duration_budget']['limit']
+    original_ids=[s['meta'].get('game_id') for s in segments if s['kind']=='preview']
+    def fits():return sum(video_times(segments,audio))<=limit
+    if fits():return
+
+    def rewrite(index,text):
+        seg=segments[index];row=audio[index]
+        # 元音声は保持。音声を切ったり速度を上げたりせず、同じ話者で再合成する。
+        path=Path(row['file']).with_name(Path(row['file']).stem+'_short.wav')
+        host=solo_host.for_segments([seg],seg['speaker'])
+        ok=(solo_host.synthesize(text,path) if host=='ui' else sn.synth_one(text,seg['speaker'],path))
+        if not ok:raise ValueError('短縮原稿の音声合成に失敗しました')
+        actual=sn.audio_duration(path)
+        if actual<=0:raise ValueError('短縮音声の実測尺がありません')
+        seg['text']=text
+        row.update(text=text,file=str(path),duration=actual)
+        print(f"[shorten] 試合{seg['meta'].get('game_id','')}: 補足を削除、音声{actual:.3f}秒")
+
+    # 対戦・時刻の最初の文を必ず残し、補足を文単位で後ろから落とす。
+    for index in reversed(range(len(segments))):
+        if segments[index]['kind']!='preview':continue
+        sentences=re.findall(r'[^。！？]+[。！？]?',segments[index]['text'])
+        # 履歴に期待選手を残すなら、その氏名と成績の文も読み上げに残す。
+        required=1
+        if (segments[index]['meta'].get('interest') or {}).get('player'):
+            for i,sentence in enumerate(sentences):
+                if sentence.startswith('期待選手は'):required=min(len(sentences),i+2)
+        while len(sentences)>required:
+            sentences.pop();rewrite(index,''.join(sentences))
+            if fits():return
+            # 1試合10秒の表示下限まで縮んだら、それ以上削っても全尺は減らない。
+            if video_times([segments[index]],[audio[index]])[0]<=10:break
+    for count in (4,3):
+        indices=[i for i,s in enumerate(segments) if s['kind']=='preview']
+        if len(indices)>=count:
+            index=indices[-1];ident=segments[index]['meta'].get('game_id','')
+            del segments[index];del audio[index]
+            plan['narration']['preview_length_adjustment']=dict(
+                original_ids=original_ids,kept_ids=[s['meta'].get('game_id') for s in segments if s['kind']=='preview'])
+            print(f'[shorten] {count}試合目を除外: {ident}')
+            if fits():return
+    # 異常に長い声でも長さだけを理由に全体を落とさない。最後の1試合は残す。
+    indices=[i for i,s in enumerate(segments) if s['kind']=='preview']
+    if len(indices)>1:
+        index=indices[-1];del segments[index];del audio[index]
+        plan['narration']['preview_length_adjustment']=dict(
+            original_ids=original_ids,kept_ids=[s['meta'].get('game_id') for s in segments if s['kind']=='preview'])
+        print('[shorten] 緊急短縮: 先頭の1試合を残す')
+        if fits():return
+    for kind in ('outro','cover'):
+        for index in reversed(range(len(segments))):
+            if segments[index]['kind']==kind:
+                del segments[index];del audio[index]
+                print(f'[shorten] 緊急短縮: {kind}を除外')
+        if fits():return
+    # 対戦名が極端に長い場合は画面に残し、音声は短い導入にする。
+    index=next(i for i,s in enumerate(segments) if s['kind']=='preview')
+    rewrite(index,'注目の一戦です。')
+    meta=segments[index]['meta']
+    if meta.get('interest'):
+        meta['interest']['player']=None
+        meta.pop('expectation_name',None)
+        audio[index]['meta']=json.loads(json.dumps(meta))
 
 
 def render_video(plan,audio,out):
     __import__('slant_by_episode').set_episode('soccer_'+plan['mode'])
-    narr=plan['narration'];times=durations(narr['segments'],audio)
+    narr=plan['narration'];times=video_times(narr['segments'],audio)
     limit=narr['duration_budget']['limit']
     if motion.enabled():
         motion.measured(audio)
-        times=[max(t,float(row['duration'])+vc.SEGMENT_TAIL) for t,row in zip(times,audio)]
-    times=[math.ceil(t*30)/30 for t in times]
     if sum(times)>limit:raise ValueError(f'丸め後{limit}秒を超える')
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     if not shutil.which('ffmpeg'):raise ValueError('FFmpegがありません。install_video_tools.shまたは保存材料のpreviewを使ってください')
@@ -295,7 +372,18 @@ def run_compat(mode,path,narration_out=None,audio_dir=None,out=None,narration_pa
     if narration_path:
         supplied=json.loads(Path(narration_path).read_text(encoding='utf-8'))
         if supplied!=narr:raise ValueError('原稿が現在の材料と違う')
-    audio=json.loads((Path(audio_dir)/'manifest.json').read_text(encoding='utf-8'))['segments']
+    manifest_path=Path(audio_dir)/'manifest.json'
+    manifest=json.loads(manifest_path.read_text(encoding='utf-8'));audio=manifest['segments']
+    original=json.loads(json.dumps(narr))
+    fit_preview(plan,audio)
+    if narr!=original:
+        manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+        # 日次の後続処理（表紙・説明欄）も実際に読んだ原稿を使う。
+        saved=Path(narration_path) if narration_path else Path(audio_dir).parent/'soccer_narration.json'
+        if saved.is_file() and json.loads(saved.read_text(encoding='utf-8'))==original:
+            saved.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+        target=Path(out)/'narration.json';target.parent.mkdir(parents=True,exist_ok=True)
+        target.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     render_video(plan,audio,out)
     host_split.bind_video(Path(out)/FILENAMES[mode], audio_dir)
     return 0

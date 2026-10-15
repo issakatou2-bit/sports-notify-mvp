@@ -6,8 +6,108 @@ import tempfile
 import unittest
 from unittest.mock import patch
 import zipfile
+from contextlib import ExitStack
 
 import buffer_daily as daily
+
+
+class RecentPostsRecovery(unittest.TestCase):
+    def page(self, posts=(), more=False, cursor=None):
+        return {'posts': {'edges': [{'node': p} for p in posts],
+                          'pageInfo': {'hasNextPage': more, 'endCursor': cursor}}}
+
+    def ledger(self, rows):
+        ledger = daily.Ledger.__new__(daily.Ledger)
+        ledger.data = {'version': 1, 'deliveries': rows}
+        ledger.set = lambda key, value: ledger.data['deliveries'].__setitem__(key, value)
+        return ledger
+
+    def test_page_is_retried_once_without_repeating_previous_page(self):
+        first = dict(id='p1', text='first', status='sent')
+        second = dict(id='p2', text='second', status='sending')
+        with patch.object(daily, 'graphql', side_effect=[self.page([first], True, 'cursor'),
+                         RuntimeError('private-token'), self.page([second])]) as api, \
+             patch.object(daily.time, 'sleep'), patch('sys.stdout', new_callable=io.StringIO) as log:
+            self.assertEqual(daily.recent_posts('x'), [first, second])
+        self.assertEqual(api.call_count, 3)
+        self.assertEqual(api.call_args_list[1], api.call_args_list[2])
+        self.assertNotIn('private-token', log.getvalue())
+
+    def test_double_failure_warns_and_never_creates_a_post(self):
+        ledger = self.ledger({})
+        with patch.object(daily, 'graphql', side_effect=RuntimeError('private-token')) as api, \
+             patch.object(daily.time, 'sleep'), patch('sys.stdout', new_callable=io.StringIO) as log:
+            with self.assertRaises(daily.RecentPostsUnavailable):
+                daily.submit_once(ledger, 'key', dict(channelId='x', text='today'), {})
+        self.assertEqual(api.call_count, 2)
+        self.assertTrue(all('mutation' not in c.args[0] for c in api.call_args_list))
+        self.assertEqual(ledger.data['deliveries'], {})
+        self.assertIn('::warning::', log.getvalue()); self.assertNotIn('private-token', log.getvalue())
+
+    def test_refresh_preserves_sent_and_continues_other_channels(self):
+        prefix = '2026-10-15:daily:'
+        sent = dict(state='sent', post_id='x1', external_link='https://x.com/receipt')
+        ledger = self.ledger({prefix+'twitter': dict(sent),
+                              prefix+'instagram': dict(state='sending', post_id='i1'),
+                              prefix+'tiktok': dict(state='sending', post_id='t1')})
+        def query(channel):
+            if channel == daily.CHANNELS['instagram']:
+                raise daily.RecentPostsUnavailable()
+            self.assertEqual(channel, daily.CHANNELS['tiktok'])
+            return [dict(id='t1', text='today', status='sent', externalLink='https://tiktok.com/receipt')]
+        with patch.object(daily, 'recent_posts', side_effect=query), patch.object(daily.time, 'sleep'):
+            unavailable = daily.refresh_deliveries(ledger, '2026-10-15', 'daily', daily.CHANNELS)
+        self.assertEqual(unavailable, {'instagram'})
+        self.assertEqual(ledger.data['deliveries'][prefix+'twitter'], sent)
+        self.assertEqual(ledger.data['deliveries'][prefix+'instagram']['state'], 'sending')
+        self.assertEqual(ledger.data['deliveries'][prefix+'tiktok']['state'], 'sent')
+
+    def test_reconcile_double_failure_keeps_durable_records(self):
+        entry = dict(state='sending', post_id='i1')
+        ledger = self.ledger({'2026-10-15:daily:instagram': dict(entry)})
+        with patch.object(daily, 'Ledger', return_value=ledger), \
+             patch.object(daily, 'graphql', side_effect=RuntimeError('private-token')) as api, \
+             patch.object(daily.time, 'sleep'), patch('sys.stdout', new_callable=io.StringIO):
+            daily.reconcile()
+        self.assertEqual(api.call_count, 2)
+        self.assertEqual(ledger.data['deliveries']['2026-10-15:daily:instagram'], entry)
+
+    def test_main_keeps_success_after_confirmation_outage(self):
+        day = '2026-10-15'; record = dict(video_id='abc12345678', title='title')
+        ledger = self.ledger({day+':daily:twitter': dict(state='sent', post_id='x1'),
+                              day+':daily:instagram': dict(state='sending', post_id='i1')})
+        available = [dict(id=daily.CHANNELS[s], service=s, name='collespo_jp')
+                     for s in ('twitter', 'instagram')]
+        def graphql(query, *args):
+            if 'channels(input' in query:
+                return dict(channels=available)
+            raise RuntimeError('private-token')
+        def github(path, *args, **kwargs):
+            if path.endswith('/artifacts'):
+                return dict(artifacts=[dict(name=daily.SOURCES['daily'][1], expired=False, size_in_bytes=10, id=1)])
+            return dict(id=1)
+        with tempfile.TemporaryDirectory() as directory, ExitStack() as stack:
+            summary = Path(directory) / 'summary.md'
+            for name, kwargs in {
+                'Ledger': dict(return_value=ledger), 'github': dict(side_effect=github),
+                'select_record': dict(return_value=(day, record)),
+                'verify_youtube': dict(return_value=dict(title='title')),
+                'extract_video': dict(return_value='digest'), 'verify_media': dict(return_value=51),
+                'host_video': dict(return_value='https://example.test/video'),
+                'submit_once': dict(return_value=dict(id='existing')),
+                'graphql': dict(side_effect=graphql),
+            }.items():
+                stack.enter_context(patch.object(daily, name, **kwargs))
+            stack.enter_context(patch.object(daily.time, 'sleep'))
+            stack.enter_context(patch.object(daily.os, 'environ',
+                {'BUFFER_CHANNELS': 'twitter,instagram', 'GITHUB_STEP_SUMMARY': str(summary)}))
+            stack.enter_context(patch('sys.argv', ['buffer_daily.py', '--source-run', '1', '--publish']))
+            stack.enter_context(patch.object(Path, 'read_text', return_value='{}'))
+            output = stack.enter_context(patch('sys.stdout', new_callable=io.StringIO))
+            daily.main()  # 照合障害だけではSystemExitにならない。
+            self.assertNotIn('private-token', output.getvalue())
+        self.assertEqual(ledger.data['deliveries'][day+':daily:twitter']['state'], 'sent')
+        self.assertEqual(ledger.data['deliveries'][day+':daily:instagram']['state'], 'sending')
 
 
 class BufferTests(unittest.TestCase):
