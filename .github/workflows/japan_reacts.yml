@@ -27,11 +27,11 @@ env:
 
 jobs:
   preview:
-    if: vars.COLLESPO_JAPAN_REACTS == 'on'
+    if: github.event_name == 'workflow_dispatch' || vars.COLLESPO_JAPAN_REACTS == 'on'
     runs-on: ubuntu-latest
     timeout-minutes: ${{ vars.COLLESPO_HOST_SPLIT == 'half' && 45 || 20 }}
     env:
-      COLLESPO_JAPAN_REACTS: ${{ vars.COLLESPO_JAPAN_REACTS || 'off' }}
+      COLLESPO_JAPAN_REACTS: ${{ github.event_name == 'workflow_dispatch' && 'on' || vars.COLLESPO_JAPAN_REACTS || 'off' }}
       COLLESPO_TOPIC_HUB: ${{ vars.COLLESPO_TOPIC_HUB || 'off' }}
       COLLESPO_REDDIT: ${{ vars.COLLESPO_REDDIT || '' }}
       JAPAN_REACTS_PUBLISH: ${{ vars.JAPAN_REACTS_PUBLISH || 'false' }}
