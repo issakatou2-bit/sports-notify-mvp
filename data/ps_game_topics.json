@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-15T04:05:09.200353+00:00",
+  "updated_at": "2026-10-15T06:16:34.087713+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -37,7 +37,7 @@
         ],
         [
           "MLB.comの見出しから",
-          "「勝負強い本塁打でブルワーズ、44年ぶりのワールドシリーズ進出まであと1勝」"
+          "「劇的な本塁打でブリュワーズがワールドシリーズ進出まであと1勝、44年ぶり」"
         ]
       ],
       "japanese": [
@@ -57,7 +57,7 @@
       "source": null,
       "voice": null,
       "headline": {
-        "said": "勝負強い本塁打でブルワーズ、44年ぶりのワールドシリーズ進出まであと1勝",
+        "said": "劇的な本塁打でブリュワーズがワールドシリーズ進出まであと1勝、44年ぶり",
         "text": "Clutch homers have Brewers 1 win away from 1st World Series appearance in 44 years",
         "url": "https://www.mlb.com/news/brewers-win-nlcs-game-3-2026",
         "at": "2026-10-15T03:35:00+00:00"
@@ -138,6 +138,10 @@
       "jp_first": true,
       "next_team_id": 119,
       "finished_at": "2026-10-15T03:11:16.421000+00:00",
+      "next_game_jp": {
+        "day": "10月16日",
+        "game": 4
+      },
       "v3": {
         "who": "ブリュワーズ　リーグ優勝決定シリーズ第3戦",
         "big": "6-2",
@@ -155,7 +159,7 @@
             "score": "3"
           }
         ],
-        "ticker": "日本人選手　大谷翔平 2打数1安打　1四球（ドジャース）　佐々木朗希 3分の1回　1失点　0奪三振（ドジャース）"
+        "ticker": "次の試合　日本時間10月16日　リーグ優勝決定シリーズ第4戦　　日本人選手　大谷翔平 2打数1安打　1四球（ドジャース）　佐々木朗希 3分の1回　1失点　0奪三振（ドジャース）"
       }
     },
     {
@@ -188,7 +192,7 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「9:40のところ、ホセはあのボールが人工芝で跳ねるのか土で跳ねるのか見極められなかったのが分かる。見た目以上に難しいプレーだよ」"
+          "「9:40のとこ、ホセが球が芝に落ちるのか土に落ちるのか見極められてないのが分かる。ほんと見た目以上に難しいプレーだよ」"
         ]
       ],
       "japanese": [],
@@ -198,10 +202,10 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "9:40のところ、ホセはあのボールが人工芝で跳ねるのか土で跳ねるのか見極められなかったのが分かる。見た目以上に難しいプレーだよ",
+        "said": "9:40のとこ、ホセが球が芝に落ちるのか土に落ちるのか見極められてないのが分かる。ほんと見た目以上に難しいプレーだよ",
         "text": "At 9:40 you can see that José couldn’t tell if that ball was going to bounce on the turf or the dirt. Such a deceptively tough play to make",
         "url": "https://www.youtube.com/watch?v=XQSGs9VWueA",
-        "likes": 144,
+        "likes": 145,
         "at": "2026-10-14T03:41:12Z"
       },
       "headline": null,
