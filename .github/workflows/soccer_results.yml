@@ -11,10 +11,16 @@ on:
         required: false
         default: ''
       publish:
-        description: 確認後に予約投稿する
+        description: YouTubeへ上げる（公開設定はprivacyで選ぶ）
         type: boolean
         required: true
         default: false
+      privacy:
+        description: 公開設定（privateは非公開試験・予約公開なし）
+        type: choice
+        required: true
+        default: public
+        options: [public, private]
       publish_at:
         description: 予約する日本時間 HH:MM（公開する場合は未来の時刻）
         type: string
@@ -108,7 +114,7 @@ jobs:
         if: steps.gate.outputs.count != '0'
         run: bash scripts/shorts_thumbnail.sh build/soccer_results/collespo_soccer_results.mp4 build/soccer_results/short.png
       - name: Require a future reservation
-        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish) && steps.gate.outputs.count != '0'
+        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0'
         env:
           PUBLISH_AT: ${{ inputs.publish_at }}
           EVENT_NAME: ${{ github.event_name }}
@@ -123,14 +129,17 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           PUBLISH_AT: ${{ inputs.publish_at }}
           EVENT_NAME: ${{ github.event_name }}
+          PRIVACY: ${{ github.event_name == 'workflow_dispatch' && inputs.privacy || 'public' }}
         run: |
           if [ "$EVENT_NAME" = schedule ]; then PUBLISH_AT=$(python scripts/soccer_results_clock.py); export PUBLISH_AT; fi
+          args=(--privacy "$PRIVACY")
+          if [ "$PRIVACY" != private ]; then args+=(--publish-at "$PUBLISH_AT"); fi
           RESULT_KEY=$(python -c "import json; print(json.load(open('data/soccer_results.json',encoding='utf-8'))['date_jst'])")
-          python scripts/upload_youtube.py --video build/soccer_results/collespo_soccer_results.mp4 \
+          python scripts/soccer_results_upload.py --video build/soccer_results/collespo_soccer_results.mp4 \
             --kind soccer_results --sport soccer --games data/soccer_results.json \
             --video-date "$RESULT_KEY" \
             --narration build/soccer_results/narration.json --thumbnail build/soccer_results/short.png \
-            --privacy public --publish-at "$PUBLISH_AT"
+            "${args[@]}"
       - name: Commit record
         if: always()
         run: |
@@ -147,5 +156,5 @@ jobs:
             !build/**/portrait/**
           if-no-files-found: ignore
       - name: Confirm reservation
-        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish) && steps.gate.outputs.count != '0'
+        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0'
         run: python scripts/verify_published.py --kind soccer_results

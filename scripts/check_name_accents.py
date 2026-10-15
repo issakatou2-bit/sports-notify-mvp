@@ -32,11 +32,13 @@ def main():
         texts=[(seg['text'],int(seg.get('speaker',3))) for seg in narration['segments'] if seg.get('text')]
     records=[audit(t,s,args.url) for t,s in texts]
     pending=[r for r in table if r['status']=='UNVERIFIED']
-    result=dict(registered_names=len(table),confirmed_names=len(table)-len(pending),unverified_names=pending,
+    confirmed=sum(r['status']=='CONFIRMED' for r in table)
+    defaults=sum(r['status']=='DEFAULT_ACCEPTED' for r in table)
+    result=dict(registered_names=len(table),confirmed_names=confirmed,default_accepted_names=defaults,unverified_names=pending,
                 queries=len(records),failed=0,records=records)
     args.out.parent.mkdir(parents=True,exist_ok=True)
     args.out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
-    print(f'{len(table)} names / {len(table)-len(pending)} confirmed / {len(pending)} unverified / {len(records)} queries / failures 0')
+    print(f'{len(table)} names / {confirmed} confirmed / {defaults} default accepted / {len(pending)} unverified / {len(records)} queries / failures 0')
 
 
 if __name__=='__main__':main()
