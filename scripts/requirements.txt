@@ -13,3 +13,4 @@ google-auth
 numpy
 scipy
 pytest
+cryptography>=46,<50
