@@ -16,11 +16,23 @@ def material(m, mode):
         for p in m.get('players', []):
             row=p.get('_row') or p
             stats=(row.get('batting') or {}) if row.get('type') == 'two_way' else row
+            stats = p.get('game_facts') or stats
             name=p.get('name') or row.get('name')
             out.append(dict({k:stats.get(k) for k in ('runs','hits','rbi')},name=name,
                             type='batter' if row.get('type') == 'two_way' else row.get('type'),
                             aliases=[SURNAME[name]] if name in SURNAME else []))
-        return {'players': out}
+        early = []
+        race = m.get('race') or {}
+        if race.get('date') and race.get('date') == m.get('date'):
+            for s in race.get('series') or []:
+                played, need = s.get('played'), s.get('need')
+                if (not s.get('over') and type(played) is int and type(need) is int
+                        and 0 < played < need and len(s.get('teams') or []) == 2):
+                    early.append({'name': s.get('round_jp'), 'played': played, 'need': need,
+                                  'names': [n for team in s['teams']
+                                            for n in [team.get('name'), *(team.get('players') or []),
+                                                      *(SURNAME.get(p) for p in team.get('players') or [])] if n]})
+        return {'players': out, 'early_series': early}
     result = m.get('top', {}).get('result') or {}
     return {'players': result.get('batting_facts') or [], 'series': result.get('series') or {},
             'teams': [result.get('home_jp'), result.get('away_jp')]}
@@ -30,6 +42,28 @@ def _aliases(row):
     return [n for n in [row.get('name'), row.get('name_en'), *(row.get('aliases') or [])] if n]
 
 
+def early_series_errors(dialogue, evidence):
+    """最短の決着試合数未満なら、既に終えた試合は敗退決定戦ではない。
+
+    同日材料の明示されたシリーズだけ。将来の条件、否定、疑問は止めない。
+    球団/人物の名前が書かれた一文だけ照合し、話題の主語を推測しない。
+    """
+    bad = []
+    rows = evidence.get('early_series') or []
+    for i, seg in enumerate(dialogue.get('segments') or [], 1):
+        for sentence in (seg.get('text') or '').split('。'):
+            if (re.search(r'明日|次(?:の|は|戦)|これから|ではな|じゃな|でな', sentence)
+                    or sentence.rstrip().endswith(('?', '？'))):
+                continue
+            if not re.search(r'負け(?:たら|れば)(?:終わり|敗退)(?:の|となる|になる)?(?:試合|一戦)で', sentence):
+                continue
+            for series in rows:
+                if any(name in sentence for name in series['names']):
+                    bad.append(f'{i}行目: 終了した試合を敗退決定戦としていますが、'
+                               f'{series["name"]}は{series["played"]}試合終了・決着は最短{series["need"]}試合です')
+    return list(dict.fromkeys(bad))
+
+
 def review(dialogue):
     evidence = dialogue.get('game_material') or {}
     # numbersの旧保存台本もrunsが存在する場合だけ参照する。未知を0にしない。
@@ -37,7 +71,7 @@ def review(dialogue):
         evidence = dialogue.get('material') or {}
     players = [p for p in evidence.get('players', []) if p.get('type') in ('batter','two-way','two_way')]
     series = evidence.get('series') or {}
-    bad, warnings, omit, recent, active = [], [], set(), [], None
+    bad, warnings, omit, recent, active = early_series_errors(dialogue, evidence), [], set(), [], None
     panels = dialogue.get('panels') or {}
     timeline, pending_pairs = '', []
     for i, seg in enumerate(dialogue.get('segments') or [], 1):
