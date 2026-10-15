@@ -253,6 +253,8 @@ def main():
     parser.add_argument('--morning-mode', default='players')
     parser.add_argument('--thumbnail-out')
     args, _ = parser.parse_known_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
     if not args.upload and not args.thumbnail_out and args.mode != 'postseason':
         raise SystemExit(subprocess.call([sys.executable, str(Path(__file__).with_name('generate_morning_short.py')), *sys.argv[1:]]))
     if args.upload and args.morning_mode != 'postseason':

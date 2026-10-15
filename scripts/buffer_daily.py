@@ -598,9 +598,14 @@ def caption(service, day, record, kind=DEFAULT_KIND):
         raise ValueError('X caption exceeds 280 weighted characters')
     summary = '\n'.join(details)
     tags = ht.select(summary, service, sport=w['sport'])
+    import ui_voice_queue
+    voice = 'VOICEVOX:ずんだもん / VOICEVOX:四国めたん'
+    if any(line.strip().removeprefix('音声: ') == ui_voice_queue.UI_CREDIT
+           for line in record.get('description', '').splitlines()):
+        voice = ui_voice_queue.UI_CREDIT
     return (f'{stamp}更新｜{w["long"]}\n{summary}\n\n' + w['lead'] + '。\n'
             '動画・記事はこちら：collespo.com\nYouTube：' + youtube +
-            '\n\n音声：VOICEVOX:ずんだもん / VOICEVOX:四国めたん\n' + ht.display(tags))
+            '\n\n音声：' + voice + '\n' + ht.display(tags))
 
 
 def x_weight(text):

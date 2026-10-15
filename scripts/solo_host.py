@@ -7,9 +7,9 @@ from pathlib import Path
 import time
 import uuid
 import wave
+from ui_voice_queue import UI_CREDIT
 
 ROOT = Path(__file__).resolve().parents[1]
-UI_CREDIT = 'VoiSona Talk 雨衣 / ©Ui Shigure / ©INCOLORE'
 
 
 def selected():

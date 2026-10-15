@@ -782,6 +782,8 @@ def main():
     p.add_argument('--upload', action='store_true')
     p.add_argument('--check', action='store_true')
     args, rest = p.parse_known_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
     if args.check:
         program = read(args.program)
         write(Path(args.program).with_suffix('.claims.json'), check_program(program)); return

@@ -34,6 +34,9 @@ concurrency:
 
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
+  COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
   # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
   SERIES_TITLE: ${{ vars.SERIES_TITLE }}
   COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
@@ -151,7 +154,7 @@ jobs:
             python scripts/synthesize_narration.py \
               --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&
             python scripts/generate_asset_video.py \
-              --topic "$t" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
+              --topic "$t" --narration "build/narr_$t.json" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
             bash scripts/shorts_thumbnail.sh \
               "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png" &&
             python scripts/upload_youtube.py \

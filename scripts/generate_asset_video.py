@@ -1814,6 +1814,8 @@ def main():
     parser.add_argument('--publish-at',help='次情報を数える公開予約のJST時刻またはISO日時')
     parser.add_argument('--next-schedule',help='保存した公式日程（試作用）')
     args = parser.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
     __import__('slant_by_episode').set_episode('asset')
 
     if args.narration:
@@ -1832,11 +1834,18 @@ def main():
         # 新デザインの回は四国めたんが話す（10/6 本人「めたんをメインで」）。立ち絵も四国めたん。
         for s in narration["segments"]:
             s.setdefault("speaker", METAN)
-            if s.get("kind") == "outro":
+            if s.get("kind") == "outro" and 'voice_resolution' not in narration:
                 import review_render_v3 as r3
                 s["text"] = r3.OUTRO_TEXT
         import duo
         VOICE_CREDIT = duo.credit(narration['segments'])
+
+    import solo_host
+    if solo_host.for_segments(narration['segments']) == 'ui':
+        import ui_tone
+        narration = ui_tone.narration(narration)
+        narration['ui_stock_topic'] = args.topic
+        VOICE_CREDIT = solo_host.UI_CREDIT
 
     if args.narration_out:
         p = pathlib.Path(args.narration_out)

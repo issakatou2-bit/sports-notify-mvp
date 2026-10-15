@@ -69,8 +69,13 @@ class SoloHostTest(unittest.TestCase):
             folder = Path(folder)
             (folder/'narration.json').write_text(json.dumps({'segments': [dict(speaker=2, text='成績です。', meta={})]}), encoding='utf8')
             args = ['synthesize_narration', '--narration', str(folder/'narration.json'), '--out-dir', str(folder)]
-            with patch.object(sys, 'argv', args), patch.object(host, 'synthesize', return_value=True) as synth, \
-                 patch.object(sn, 'audio_duration', return_value=2), patch.object(sn, 'engine_available') as vv:
+            import ui_voice_stock
+            def receive(data, npath, out):
+                (out/'manifest.json').write_text(json.dumps({'segments': [dict(data['segments'][0],
+                    voice_host='ui', voice_name='ui_ja_JP')]}), encoding='utf8')
+                return dict(host='ui')
+            with patch.object(sys, 'argv', args), patch.object(ui_voice_stock, 'fulfill', side_effect=receive) as synth, \
+                 patch.object(sn, 'engine_available') as vv:
                 sn.main()
                 synth.assert_called_once()
                 vv.assert_not_called()

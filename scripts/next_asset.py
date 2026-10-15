@@ -212,6 +212,8 @@ def pick_season(args) -> int:
     todo = sorted((k for k, v in gav.LIST_TOPICS.items()
                    if kind_of(k) == "season" and k not in done and not started(v)),
                   key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
+    import ui_voice_stock
+    todo = ui_voice_stock.prioritize(todo)
     picked = []
     for k in todo:
         if len(picked) >= left:
@@ -293,6 +295,8 @@ def main() -> int:
     # 1日の本数を決めて出す。両方が同じ時刻に動くので、ここでも選ぶと
     # 同じ回を2度上げる。
     todo = [k for k in todo if kind_of(k) != "season"]
+    import ui_voice_stock
+    todo = ui_voice_stock.prioritize(todo)
 
     if args.report:
         print(f"トピック {len(gav.LIST_TOPICS)}件 / 投稿済み {len(done)}件 / "

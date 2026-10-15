@@ -207,7 +207,8 @@ def main():
     import ui_tone
     adapted = ui_tone.narration(data, args.speaker)
     if adapted != data:
-        raise ValueError('雨衣の口調にした原稿を先に保存してください（prepare_ui_solo.py）')
+        data = adapted
+        npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
     segments = data.get("segments", [])
     if not segments:
         print("[info] セグメントが空のためスキップします")
@@ -218,6 +219,21 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
     import solo_host
     host = solo_host.for_segments(segments, args.speaker)
+    resolution = None
+    if host == 'ui':
+        import ui_voice_stock
+        resolution = ui_voice_stock.fulfill(data, npath, out_dir)
+        if resolution:
+            print('[info] 雨衣の注文音声を受け取りました')
+            return
+        # この回の保存原稿と音声にだけ実際の話者を記録。親の環境や他の回を変えない。
+        host = 'metan'
+        resolution = dict(host='metan', reason='ui_unavailable')
+        data['voice_resolution'] = resolution
+        for seg in segments:
+            if (seg.get('meta') or {}).get('who') == '雨衣':
+                seg['meta']['who'] = '四国めたん'
+        npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
 
     if host != 'ui' and not engine_available():
         print(f"[warn] VOICEVOX ENGINE({VOICEVOX_URL})に接続できませんでした。"
@@ -264,7 +280,10 @@ def main():
                   + (f" / {who}(話者{speaker})" if who else ""))
 
     with open(out_dir / "manifest.json", "w", encoding="utf-8") as f:
-        json.dump({"segments": manifest}, f, ensure_ascii=False)
+        payload = {"segments": manifest}
+        if resolution:
+            payload['voice_resolution'] = resolution
+        json.dump(payload, f, ensure_ascii=False)
 
     total = sum(m["duration"] for m in manifest)
     print(f"[info] 音声合成が完了しました(合計{total:.1f}秒)")
