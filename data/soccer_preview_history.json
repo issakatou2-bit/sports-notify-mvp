@@ -58,5 +58,122 @@
         }
       }
     ]
+  },
+  "2026-10-15": {
+    "day": "2026-10-15",
+    "video_id": "v9liJ18zQVQ",
+    "title": "【欧州サッカー】今夜の注目試合｜リヨン vs クリスタルパレス ほか #Shorts",
+    "published_at": "2026-10-15T13:28:58.281964+00:00",
+    "binding": {
+      "material_sha256": "1bb061b6bc068273c7e257216005ba7f2eec15b81d6d11b5722a48e05d3a8f92",
+      "narration_sha256": "837354bffdb90c7d73f1f530b6eee59401e9114b84a473b08291bd846fd1867f"
+    },
+    "games": [
+      {
+        "game_id": "espn-401915566",
+        "espn_event_id": "401915566",
+        "league": "ヨーロッパリーグ",
+        "competition_code": "EL",
+        "home": "Olympique Lyonnais",
+        "away": "Crystal Palace FC",
+        "start_utc": "2026-10-16T01:45:00+09:00",
+        "reasons": [],
+        "expectation": {
+          "name": "鎌田大地",
+          "club": "クリスタル・パレス",
+          "goals": 1,
+          "assists": 3,
+          "japanese": true,
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+          "as_of": "2026-10-15T10:01:58.005593+00:00",
+          "name_en": "Daichi Kamada"
+        },
+        "spoken": "日本時間1時45分、リヨン対クリスタルパレス。期待選手は鎌田大地。今季FPL集計で1得点 3アシストです。注目はヨーロッパリーグでの、この両チームの対戦です。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-15T09:53:56.805003+00:00",
+            "competition": "EL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-15T09:53:56.805003+00:00",
+            "competition": "EL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "espn-401915567",
+        "espn_event_id": "401915567",
+        "league": "ヨーロッパリーグ",
+        "competition_code": "EL",
+        "home": "AC Sparta Praha",
+        "away": "Lillestrøm SK",
+        "start_utc": "2026-10-16T01:45:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間1時45分、スパルタ・プラハ対リールストロム。注目はヨーロッパリーグでの、この両チームの対戦です。上田綺世の所属クラブの一戦。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-15T09:53:56.805003+00:00",
+            "competition": "EL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-15T09:53:56.805003+00:00",
+            "competition": "EL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "espn-401915574",
+        "espn_event_id": "401915574",
+        "league": "ヨーロッパリーグ",
+        "competition_code": "EL",
+        "home": "Royale Union Saint-Gilloise",
+        "away": "Real Sociedad de Fútbol",
+        "start_utc": "2026-10-16T01:45:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間1時45分、ユニオンSG対レアル・ソシエダ。注目はヨーロッパリーグでの、この両チームの対戦です。久保建英の所属クラブの一戦。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-15T09:53:56.805003+00:00",
+            "competition": "EL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-15T09:53:56.805003+00:00",
+            "competition": "EL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "espn-401915563",
+        "espn_event_id": "401915563",
+        "league": "ヨーロッパリーグ",
+        "competition_code": "EL",
+        "home": "TSG 1899 Hoffenheim",
+        "away": "Beşiktaş JK",
+        "start_utc": "2026-10-16T04:00:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間4時、ホッフェンハイム対ベシクタシュ。注目はヨーロッパリーグでの、この両チームの対戦です。町田浩樹の所属クラブの一戦。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-15T09:53:56.805003+00:00",
+            "competition": "EL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-15T09:53:56.805003+00:00",
+            "competition": "EL",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }
