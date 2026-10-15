@@ -204,6 +204,10 @@ def main():
 
     with open(npath, "r", encoding="utf-8") as f:
         data = json.load(f)
+    import host_split
+    if host_split.enabled():
+        os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+        data = host_split.prepare(data, default=args.speaker)
     import ui_tone
     adapted = ui_tone.narration(data, args.speaker)
     if adapted != data:
@@ -219,7 +223,9 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
     import solo_host
     host = solo_host.for_segments(segments, args.speaker)
-    resolution = None
+    resolution = (dict(host='metan', reason=(data.get('voice_resolution') or {}).get('reason',
+                       'host_split' if host_split.enabled() else 'host_split_disabled'))
+                  if data.get('host_assignment') else None)
     if host == 'ui':
         import ui_voice_stock
         resolution = ui_voice_stock.fulfill(data, npath, out_dir)
@@ -230,6 +236,7 @@ def main():
         host = 'metan'
         resolution = dict(host='metan', reason='ui_unavailable')
         data['voice_resolution'] = resolution
+        host_split.resolve_credits(data, 'metan')
         for seg in segments:
             if (seg.get('meta') or {}).get('who') == '雨衣':
                 seg['meta']['who'] = '四国めたん'
@@ -279,8 +286,15 @@ def main():
             print(f"[info] seg_{i:03d}: {dur:.1f}秒 / {seg.get('kind')}"
                   + (f" / {who}(話者{speaker})" if who else ""))
 
+    if data.get('host_assignment'):
+        resolution['audio_available'] = bool(manifest) and all(m.get('file') and m.get('duration', 0) > 0 for m in manifest)
+        data['voice_resolution'] = resolution
+        npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
     with open(out_dir / "manifest.json", "w", encoding="utf-8") as f:
         payload = {"segments": manifest}
+        host_split.carry(data, payload)
+        if data.get('host_assignment'):
+            payload['narration_path'] = str(npath.resolve())
         if resolution:
             payload['voice_resolution'] = resolution
         json.dump(payload, f, ensure_ascii=False)

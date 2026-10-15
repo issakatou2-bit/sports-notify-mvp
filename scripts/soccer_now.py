@@ -181,7 +181,10 @@ def save(data, out):
     (out/'metadata.json').write_text(json.dumps(metadata(data),ensure_ascii=False,indent=2),encoding='utf8')
     # Drop whole comment pairs to fit measured speech; never cut or accelerate quotes.
     while True:
-        try: return render.render(narration(data), lambda t,s:frame(data,t,s), out, voiced=True)
+        try:
+            import host_split
+            narr = host_split.adapt(narration(data), 'soccer_now')
+            return render.render(narr, lambda t,s:frame(data,t,s), out, voiced=True)
         except ValueError as error:
             if '40秒' not in str(error) or not data['voices']: raise
             data['voices'].pop()
@@ -248,10 +251,13 @@ def publish(data, out, ledger):
     if not timedelta(0)<=datetime.now(timezone.utc)-results.utc(data['games'][0]['finished_utc'])<=MAX_AGE: raise ValueError('公開直前の鮮度を超過')
     ident = data['games'][0]['id']
     if ident in ledger: return
+    import host_split
+    tracking = host_split.publication(Path(out)/'preview.mp4')
     path = ROOT/'data/soccer_now_receipts.json'
     def checkpoint():
         path.write_text(json.dumps(ledger,ensure_ascii=False,indent=2),encoding='utf8')
-        subprocess.run(['bash','scripts/commit_data.sh','soccer now receipt',str(path.relative_to(ROOT))],cwd=ROOT,check=True)
+        extra = ['data/published_videos.json'] if tracking else []
+        subprocess.run(['bash','scripts/commit_data.sh','soccer now receipt',str(path.relative_to(ROOT)),*extra],cwd=ROOT,check=True)
         # commit_data.sh has legacy exit-0 error paths. Confirm the remote receipt,
         # so a failed checkpoint cannot be mistaken for duplicate protection.
         subprocess.run(['git','fetch','origin','main'],cwd=ROOT,check=True,capture_output=True)
@@ -264,9 +270,14 @@ def publish(data, out, ledger):
     from googleapiclient.http import MediaFileUpload
     creds = Credentials(None, refresh_token=os.environ['YOUTUBE_REFRESH_TOKEN'],token_uri='https://oauth2.googleapis.com/token',client_id=os.environ['YOUTUBE_CLIENT_ID'],client_secret=os.environ['YOUTUBE_CLIENT_SECRET'])
     meta = metadata(data)
+    meta['description'] = host_split.credit(meta['description'])
     body = {'snippet':dict(title=meta['title'],description=meta['description'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'), 'status':dict(privacyStatus='public',selfDeclaredMadeForKids=False)}
     response = api_build('youtube','v3',credentials=creds,cache_discovery=False).videos().insert(part='snippet,status',body=body,media_body=MediaFileUpload(str(Path(out)/'preview.mp4'),resumable=True)).execute()
     if not response.get('id'): raise ValueError('投稿結果のIDなし。pendingを手動照合')
+    if tracking:
+        from upload_youtube import record_video
+        record_video('soccer_now', host_split.today()+':'+str(ident), response['id'], meta['title'],
+                     host_tracking=tracking)
     ledger[ident].update(status='uploaded',video_id=response['id']); checkpoint()
 
 

@@ -238,11 +238,13 @@ def build(recap, reporters, buzz, voices, stats, as_of):
         sources += [f"不調への言及: {r.get('outlet') or r.get('source')} / {r['at']}\n{r.get('url') or r.get('uri')}\n原文: {r.get('text') or r.get('title')}"
                     for r in mood_rows if player_match(r, p) and fresh(r.get('at'), as_of)
                     and re.search(r'\b(?:struggles|struggling|slump)\b', r.get('text') or r.get('title') or '', re.I)]
-    return dict(can_make=True, label=as_of.date().isoformat(), player=p,
+    result = dict(can_make=True, label=as_of.date().isoformat(), player=p,
                 direction=direction, flow=flow, reports=reports, segments=segments,
                 title=p['name_jp']+'のいまの流れ #Shorts',
                 description='数字と現地報道を出典・時点付きで紹介します。\n'+'\n'.join(sources),
                 duration_budget=dict(limit=RULES['max_story_seconds'], grace=0))
+    import host_split
+    return host_split.adapt(result, 'player_story')
 
 
 def fetch_stats(recap, as_of):

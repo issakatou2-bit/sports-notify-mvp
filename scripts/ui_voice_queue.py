@@ -209,8 +209,16 @@ def terminal(queue, key, status):
 
 def configure(args):
     """回ごとの実声を別プロセスの描画・説明・サムネイルに渡す。既定時は何もしない。"""
-    if os.getenv('COLLESPO_SOLO_HOST') != 'ui':
+    import host_split
+    split = host_split.enabled()
+    saved_video = getattr(args, 'video', None)
+    bound_video = saved_video and host_split.video_receipt(saved_video).is_file()
+    if os.getenv('COLLESPO_SOLO_HOST') != 'ui' and not split and not bound_video:
         return
+    if split:
+        os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+        if getattr(args, 'narration_out', None):
+            return
     candidates = []
     audio = getattr(args, 'audio_dir', None)
     if audio and not getattr(args, 'upload', False) and not getattr(args, 'narration_out', None):
@@ -226,7 +234,16 @@ def configure(args):
                 video = value.split('=', 1)[1]
                 break
     if video:
-        candidates.append(Path(video).parent/'voice-resolution.json')
+        if split or host_split.video_receipt(video).is_file():
+            bound = host_split.video_receipt(video)
+            if not bound.is_file() or not Path(video).is_file():
+                return
+            receipt = host_split.read(bound)
+            if receipt.get('video_sha256') != hashlib.sha256(Path(video).read_bytes()).hexdigest():
+                return
+            candidates.append(bound)
+        else:
+            candidates.append(Path(video).parent/'voice-resolution.json')
     for name in ('narration', 'program', 'games'):
         value = getattr(args, name, None)
         if value:
@@ -243,6 +260,10 @@ def configure(args):
             continue
         resolution = data.get('voice_resolution')
         if not resolution:
+            assignment = data.get('host_assignment')
+            if split and host_split.valid(assignment):
+                os.environ['COLLESPO_SOLO_HOST'] = assignment['planned_host']
+                return
             continue
         host = resolution['host']
         if host not in ('ui', 'metan'):
@@ -253,7 +274,8 @@ def configure(args):
         out = getattr(args, 'out', None)
         if out and not Path(out).suffix:
             Path(out).mkdir(parents=True, exist_ok=True)
-            (Path(out)/'voice-resolution.json').write_bytes(encoded(dict(voice_resolution=resolution)))
+            receipt = host_split.carry(data, dict(voice_resolution=resolution))
+            (Path(out)/'voice-resolution.json').write_bytes(encoded(receipt))
         return
 
 

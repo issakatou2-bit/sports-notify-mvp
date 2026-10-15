@@ -121,7 +121,9 @@ def install(order, bundle, out, narration):
         manifest.append(dict(seg, index=i, file=str(wav), duration=duration,
                              voice_host='ui', voice_engine='voisona', voice_name='ui_ja_JP'))
     resolution = dict(host='ui', order=order['id'], portrait_dir=str(portrait_dir.resolve()))
-    (out/'manifest.json').write_bytes(q.encoded(dict(segments=manifest, voice_resolution=resolution)))
+    import host_split
+    payload = host_split.carry(narration, dict(segments=manifest, voice_resolution=resolution))
+    (out/'manifest.json').write_bytes(q.encoded(payload))
     return resolution
 
 
@@ -178,6 +180,11 @@ def fulfill(narration, npath, out, queue=None):
                 return None
         narration['voice_resolution'] = resolution
         Path(npath).write_bytes(q.encoded(narration))
+        if narration.get('host_assignment'):
+            manifest = out/'manifest.json'
+            saved = json.loads(manifest.read_text(encoding='utf8'))
+            saved['narration_path'] = str(Path(npath).resolve())
+            manifest.write_bytes(q.encoded(saved))
         return resolution
     except Exception:
         # 外部キュー・メディアの検査失敗を含め、この回のVOICEVOXに必ず戻す。
@@ -188,7 +195,8 @@ def fulfill(narration, npath, out, queue=None):
 
 def prioritize(topics):
     """既存の候補・日次上限・種類制限を保ち、その中の在庫を古い順にする。"""
-    if os.getenv('COLLESPO_SOLO_HOST') != 'ui':
+    # 比較中は在庫の有無で題材や公開順を変えない。
+    if os.getenv('COLLESPO_HOST_SPLIT') == 'half' or os.getenv('COLLESPO_SOLO_HOST') != 'ui':
         return topics
     try:
         parts_crypto.key()
@@ -214,7 +222,8 @@ def rebuild(topic):
     with tempfile.TemporaryDirectory(dir=q.ROOT/'build') as folder:
         path = Path(folder)/'narration.json'
         subprocess.run([sys.executable, str(q.ROOT/'scripts/generate_asset_video.py'), '--topic', topic,
-                        '--narration-out', str(path)], cwd=q.ROOT, check=True, capture_output=True)
+                        '--narration-out', str(path)], cwd=q.ROOT, check=True, capture_output=True,
+                       env=dict(os.environ, COLLESPO_HOST_SPLIT='', COLLESPO_SOLO_HOST='ui'))
         return json.loads(path.read_text(encoding='utf8'))
 
 
@@ -263,9 +272,10 @@ def main():
             if eligible(topic, spec):
                 print(f'候補 {topic}: {spec.get("label", topic)}')
         return
-    if os.getenv('COLLESPO_SOLO_HOST') != 'ui':
+    if os.getenv('COLLESPO_SOLO_HOST') != 'ui' and os.getenv('COLLESPO_HOST_SPLIT') != 'half':
         print('雨衣が未選択のため注文しません')
         return
+    os.environ['COLLESPO_SOLO_HOST'] = 'ui'
     if not 1 <= args.count <= 10:
         p.error('--count は1〜10です')
     (q.ROOT/'build').mkdir(exist_ok=True)

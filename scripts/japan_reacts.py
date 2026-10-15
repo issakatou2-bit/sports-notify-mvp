@@ -247,6 +247,8 @@ def save(data,out):
     (out/'material.json').write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf8')
     (out/'metadata.json').write_text(json.dumps(metadata(data),ensure_ascii=False,indent=2),encoding='utf8')
     narr=dict(label='JAPAN REACTS',segments=data['segments'],duration_budget={'limit':40,'grace':0})
+    import host_split
+    narr = host_split.prepare(narr, 'japan_reacts')  # 照合済みの引用・英訳は書き換えない。
     receipt=render.render(narr,lambda t,s:frame(data,t,s),out,voiced=True,reuse_audio=data['saved_preview'])
     write_subtitles(data,out)
     return receipt

@@ -8,6 +8,11 @@ permissions:
 concurrency:
   group: player-story
   cancel-in-progress: false
+env:
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+
 jobs:
   build:
     if: vars.COLLESPO_PLAYER_STORY == 'on'
@@ -76,5 +81,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: player-story-preview
-          path: build/player_story/
+          path: |
+            build/player_story/
+            !build/**/portrait/**
           if-no-files-found: ignore

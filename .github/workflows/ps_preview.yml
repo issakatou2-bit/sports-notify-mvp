@@ -8,6 +8,7 @@ permissions:
 
 env:
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
   COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
@@ -60,3 +61,4 @@ jobs:
             build/ps_rendered_claims.json
             build/ps_editorial_source.json
             data/postseason.json
+            !build/**/portrait/**

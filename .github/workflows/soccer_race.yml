@@ -68,6 +68,11 @@ concurrency:
   group: soccer-race
   cancel-in-progress: false
 
+env:
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -293,6 +298,7 @@ jobs:
           path: |
             build/race/collespo_morning_soccer_race.mp4
             build/race_narration.json
+            !build/**/portrait/**
           if-no-files-found: warn
 
       # 前日ぶんの順位表と、作った材料を残す。

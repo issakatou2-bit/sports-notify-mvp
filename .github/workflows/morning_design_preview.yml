@@ -22,6 +22,7 @@ permissions:
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
   COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
@@ -79,3 +80,4 @@ jobs:
             build/preview/*.mp4
             build/preview-narration.json
             build/preview-audio/manifest.json
+            !build/**/portrait/**

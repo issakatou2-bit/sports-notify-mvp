@@ -81,7 +81,8 @@ def narration(data):
 
 def program_spec(data):
     day=results.date.fromisoformat(data['date_jst'])
-    return {'source':CREDIT,'ticker':f"日本時間{day.month}月{day.day}日の夜〜翌朝の試合　欧州の日本人選手の結果",'label':'欧州サッカー　結果'}
+    import host_split
+    return {'source':host_split.credit(CREDIT),'ticker':f"日本時間{day.month}月{day.day}日の夜〜翌朝の試合　欧州の日本人選手の結果",'label':'欧州サッカー　結果'}
 
 
 def cover(t,data,game,clubs,spec):
@@ -177,7 +178,7 @@ def frame(t,seg,data,clubs=None):
         return soccer_result_story.frame(t,seg,data,clubs or resolve_clubs(data))
     if soccer_look.v5():
         import soccer_v5_program as v5
-        return v5.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data),CREDIT)
+        return v5.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data),__import__('host_split').credit(CREDIT))
     if r3.LOOK!='v4':raise ValueError('サッカー結果の新設枠はv4専用')
     clubs=clubs or resolve_clubs(data);spec=program_spec(data);kind=seg['kind'];meta=seg['meta']
     if kind=='outro':return r3.outro(t,{},'soccer_results',CREDIT,tagline='欧州の日本人選手とMLBを、毎日数字で')
@@ -303,6 +304,11 @@ def main():
     if soccer_look.v5() and not data.get('preview_followup'):
         from soccer_v5_program import add_player_scene
         narr=add_player_scene(narr,data)
+    import host_split
+    narr = host_split.adapt(narr, 'soccer_results')
+    if args.audio_dir:
+        narr = host_split.use_audio(narr, args.audio_dir)
+        host_split.render_audio(args.audio_dir, args.out)
     results.validate_data(data)
     if args.narration_out:
         args.narration_out.parent.mkdir(parents=True,exist_ok=True)
@@ -313,6 +319,7 @@ def main():
         if data.get('preview_followup') and saved.exists():narr=json.loads(saved.read_text(encoding='utf8'))
         audio=json.loads((args.audio_dir/'manifest.json').read_text(encoding='utf-8'))['segments']
         render_video(data,narr,audio,args.out)
+        host_split.bind_video(args.out/'collespo_soccer_results.mp4', args.audio_dir)
 
 
 if __name__=='__main__':main()

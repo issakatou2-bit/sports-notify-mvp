@@ -121,10 +121,15 @@ def main():
     narr=program(hub.load(args.material),json.loads(Path(args.translations).read_text(encoding='utf8')),hub.load(args.context),
                  hub.load(args.youtube) if args.youtube else None,
                  json.loads(Path(args.youtube_translations).read_text(encoding='utf8')) if args.youtube_translations else None);validate(narr)
+    import host_split
+    narr = host_split.adapt(narr, 'reddit_reaction')
     if args.narration_out:
         p=Path(args.narration_out);p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf8');return
     import player_story_render
+    narr = host_split.use_audio(narr, args.audio_dir)
+    host_split.render_audio(args.audio_dir, args.out)
     player_story_render.render(narr,hub.load(Path(args.audio_dir)/'manifest.json')['segments'],args.out)
+    host_split.bind_video(Path(args.out)/'collespo_player_story.mp4', args.audio_dir)
 
 
 if __name__=='__main__':main()

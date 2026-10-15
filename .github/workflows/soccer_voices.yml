@@ -20,6 +20,11 @@ concurrency:
   group: soccer-voices
   cancel-in-progress: false
 
+env:
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -119,6 +124,7 @@ jobs:
           path: |
             build/soccer_voices/
             data/soccer_voices.json
+            !build/**/portrait/**
           if-no-files-found: ignore
       - name: Confirm reservation
         if: inputs.publish && steps.gate.outputs.ready == 'true'
