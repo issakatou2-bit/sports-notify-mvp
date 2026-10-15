@@ -49,7 +49,16 @@ def missing_clubs(data, now):
             row = clubs.lookup(name)
             if not row or not row.get('display') or not row.get('reading'):
                 found.setdefault(name or '(名称なし)', set()).add(str(game.get('game_id')))
-    return [dict(club=name, game_ids=sorted(ids)) for name, ids in sorted(found.items())]
+    return [dict(club=name, game_ids=sorted(ids), candidates=clubs.candidates(name))
+            for name, ids in sorted(found.items())]
+
+
+def registration_warning(row):
+    message='::warning::今後7日の未登録クラブ: '+row['club']+' / 試合 '+', '.join(row['game_ids'])
+    suggestions=row.get('candidates') or []
+    if suggestions:
+        message+=' / 候補：'+', '.join(c['display']+' ('+c['id']+')' for c in suggestions)
+    return message
 
 
 def score(game,availability=None,cfg=None):
@@ -153,7 +162,7 @@ def main():
     check = selected['club_registration_check']
     print(json.dumps(dict(club_registration_check=check), ensure_ascii=False))
     for row in check['missing']:
-        print('::warning::今後7日の未登録クラブ: '+row['club']+' / 試合 '+', '.join(row['game_ids']))
+        print(registration_warning(row))
     if args.github_output:
         with args.github_output.open('a',encoding='utf8') as f:f.write(f"count={decision['count']}\n")
 if __name__=='__main__':main()
