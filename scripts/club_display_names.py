@@ -40,6 +40,29 @@ def lookup(value):
     return index().get(normalize(value))
 
 
+def candidate_keys(value):
+    """候補表示専用。クラブ接辞の省略を登録済み判定へは持ち込まない。"""
+    value=unicodedata.normalize('NFKD',value or '').casefold()
+    value=''.join(c for c in value if not unicodedata.combining(c))
+    tokens=re.findall(r'[^\W_]+',value)
+    prefixes={'fc','sv','cf','afc','sc','ac','as','ss','rc','rcd','cd','ca',
+              'fk','sk','bk','pfc','gnk','kks','tsg','vfb','vfl','ud','us','club'}
+    stripped=''.join(t for t in tokens if t not in prefixes and not t.isdecimal())
+    return {key for key in (normalize(value),stripped) if key}
+
+
+def candidates(value, *, limit=5):
+    """正規化一致/包含の近い登録行を返す。勝手に同一クラブとは判定しない。"""
+    keys=candidate_keys(value);found=[]
+    for row in rows():
+        names=[row['id'],row['current'],row['display'],row['short'],row['legacy'],*row.get('aliases',[])]
+        other={key for name in names for key in candidate_keys(name)}
+        scores=[(0 if a==b else 1,abs(len(a)-len(b))) for a in keys for b in other
+                if a==b or (min(len(a),len(b))>=4 and (a in b or b in a))]
+        if scores:found.append((min(scores),row['id'],row['display']))
+    return [dict(id=ident,display=label) for _,ident,label in sorted(found)[:limit]]
+
+
 def display(value, *, short=False, legacy=False):
     row=lookup(value)
     if row:return row['legacy'] if legacy else row['short'] if short else row['display']
