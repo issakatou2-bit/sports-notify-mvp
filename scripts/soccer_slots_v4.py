@@ -158,6 +158,8 @@ def package(mode,data,segs,names,head,clubs=None):
     narration=dict(label=day,title='【欧州サッカー】'+head+' #Shorts' if head else '',soccer_v4_mode=mode,segments=segs,duration_budget=dict(limit=40,grace=0))
     # 札の配列をJSONの型にそろえ、保存原稿・音声manifestとも同じ値で照合する。
     narration=json.loads(json.dumps(narration,ensure_ascii=False))
+    import host_split
+    narration = host_split.adapt(narration, 'daily_soccer' if mode == 'preview' else 'soccer_'+mode)
     return dict(mode=mode,data=data,clubs=clubs or clubs_for(names),narration=narration,shared=shared)
 
 
@@ -362,6 +364,11 @@ def run_compat(mode,path,narration_out=None,audio_dir=None,out=None,narration_pa
     if not narr['segments']:print('この日は対象の材料がないため作りません');return
     if narration_out:
         target=Path(narration_out);target.parent.mkdir(parents=True,exist_ok=True);target.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');return
+    import host_split
+    if host_split.enabled():
+        narr = host_split.use_audio(narr, audio_dir)
+        plan['narration'] = narr
+        host_split.render_audio(audio_dir, out, narration_path)
     if narration_path:
         supplied=json.loads(Path(narration_path).read_text(encoding='utf-8'))
         if supplied!=narr:raise ValueError('原稿が現在の材料と違う')
@@ -378,4 +385,5 @@ def run_compat(mode,path,narration_out=None,audio_dir=None,out=None,narration_pa
         target=Path(out)/'narration.json';target.parent.mkdir(parents=True,exist_ok=True)
         target.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     render_video(plan,audio,out)
+    host_split.bind_video(Path(out)/FILENAMES[mode], audio_dir)
     return 0

@@ -27,6 +27,11 @@ concurrency:
   group: soccer-results
   cancel-in-progress: false
 
+env:
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+
 jobs:
   build:
     if: github.event_name == 'workflow_dispatch' || vars.SOCCER_RESULTS_PUBLISH == 'true'
@@ -139,6 +144,7 @@ jobs:
           path: |
             build/soccer_results/
             data/soccer_results.json
+            !build/**/portrait/**
           if-no-files-found: ignore
       - name: Confirm reservation
         if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish) && steps.gate.outputs.count != '0'

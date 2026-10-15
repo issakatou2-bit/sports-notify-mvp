@@ -534,6 +534,8 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
                    retrieved_at=evidence['retrieved_at'], edition_key=edition, series=rows,
                    material_sha256=hashlib.sha256(json.dumps(evidence['schedule'], sort_keys=True).encode()).hexdigest())
     apply_design(program)
+    import host_split
+    program = host_split.prepare(program, kind)
     import ui_tone
     adapted = ui_tone.narration(program)
     if adapted != program:
@@ -611,13 +613,19 @@ def check_program(program):
 
 def script(program):
     target=program.get('target_day',program['date_jst'])
-    return dict(title=program['title'], date_jst=target,
+    import host_split
+    return host_split.carry(program, dict(title=program['title'], date_jst=target,
                 date_label=datetime.fromisoformat(target).strftime('%m/%d'), segments=program['segments'],
                 source_url=program['source_url'], ps_program=program,
-                **({'mlb_forecast':program['mlb_forecast']} if program.get('mlb_forecast') else {}))
+                **({'mlb_forecast':program['mlb_forecast']} if program.get('mlb_forecast') else {})))
 
 
 def movie(program, audio_dir, out):
+    import host_split
+    if host_split.enabled():
+        saved = host_split.use_audio(script(program), audio_dir)
+        program = dict(program, segments=saved['segments'])
+        host_split.render_audio(audio_dir, out)
     __import__('slant_by_episode').set_episode('ps_situation' if program.get('mode')=='situation' else 'ps_preview')
     check = check_program(program)
     audio = read(Path(audio_dir) / 'manifest.json')['segments']
@@ -692,6 +700,7 @@ def movie(program, audio_dir, out):
     check.update(video=str(path), expected_segments=len(audio), durations=durations,
                  motion='sequential-left-entry / subtle-background-drift / shared-crossfade')
     write(out / 'ps_program_gate.json', check)
+    host_split.bind_video(path, audio_dir)
 
 
 def metadata(program):

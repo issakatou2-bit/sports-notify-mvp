@@ -797,7 +797,8 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
 
 def record_video(kind: str, date_key: str, video_id: str,
                  title: str, path: str = VIDEOS_PATH,
-                 publish_at: str | None = None, preview_binding: dict | None = None) -> None:
+                 publish_at: str | None = None, preview_binding: dict | None = None,
+                 host_tracking: dict | None = None, privacy: str | None = None) -> None:
     """
     その日の動画のIDを残す。
 
@@ -826,6 +827,9 @@ def record_video(kind: str, date_key: str, video_id: str,
         entry["publish_at"] = publish_at
     if preview_binding is not None:
         entry['preview_binding']=preview_binding
+    if host_tracking:
+        entry.update(host_tracking)
+        entry['privacy'] = privacy or 'public'
     data.setdefault(kind, {})[date_key] = entry
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -1350,7 +1354,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         import player_story
         narr = _json_or_empty(narration_path)
         player_story.validate(narr)
-        return {'snippet': {'title': narr['title'], 'description': narr['description'],
+        return {'snippet': {'title': narr['title'], 'description': __import__('host_split').credit(narr['description']),
                             'tags': ['MLB', narr['player']['name_jp'], 'コレスポ'],
                             'categoryId': CATEGORY_SPORTS, 'defaultLanguage': 'ja',
                             'defaultAudioLanguage': 'ja'}}
@@ -2252,6 +2256,11 @@ def main():
 
         if args.kind == "asset" and vid:
             record_published(args.asset_topic or "mlb_abbr", vid, args.privacy)
+            import host_split
+            tracking = host_split.publication(args.video, args.narration)
+            if tracking:
+                record_video('asset', args.asset_topic or 'mlb_abbr', vid, body['snippet']['title'],
+                             publish_at=publish_at, host_tracking=tracking, privacy=args.privacy)
         elif vid:
             # 日付ものは、アーカイブページから辿れるよう日付で記録する。
             # キーはUTC日付にする。archive/YYYY-MM-DD.json と同じ決め方なので、
@@ -2272,7 +2281,8 @@ def main():
                 except (OSError,ValueError,TypeError):
                     print('[omit] 予告の材料/原稿hashを記録できません')
             record_video(rec_kind, key, vid, body["snippet"]["title"],
-                         publish_at=publish_at,preview_binding=preview_binding)
+                         publish_at=publish_at,preview_binding=preview_binding,
+                         host_tracking=__import__('host_split').publication(args.video, args.narration), privacy=args.privacy)
             # 長編を上げたら、同じ日のコメント欄ショートから繋ぐ。
             # ショートにはフィードがあるが、長編には無い。
             # 人が来ているほうから、来ていないほうへ道を作る。

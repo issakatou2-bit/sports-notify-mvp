@@ -4374,6 +4374,13 @@ def main():
     bn_scenes = bignumber_scenes(data, narration, args.mode)
     import daily_v3
     daily_design = daily_v3.prepare(data, narration, args.mode)
+    import host_split
+    split_kind = 'morning' if args.mode == 'players' else ('morning_'+args.mode)
+    if split_kind in host_split.KINDS:
+        narration = host_split.adapt(narration, split_kind)
+        if not args.narration_out:
+            narration = host_split.use_audio(narration, args.audio_dir)
+            host_split.render_audio(args.audio_dir, args.out)
     kinds = [s["kind"] for s in narration["segments"]]
     print(f"[info] mode={args.mode} / 画面 {len(kinds)}枚: {kinds}")
     # 材料が1つも無い日は作らない。
@@ -4704,6 +4711,7 @@ def main():
         sys.exit(1)
 
     secs = total / FPS
+    host_split.bind_video(video_path, args.audio_dir)
     print(f"[info] 夕方のショートを生成しました: {video_path} "
           f"({video_path.stat().st_size / 1024 / 1024:.1f}MB, {secs:.0f}秒)")
 

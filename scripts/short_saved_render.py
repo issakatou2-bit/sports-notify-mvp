@@ -41,10 +41,24 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
     import v3_rules as rules
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
     (out/'narration.json').write_text(json.dumps(narr, ensure_ascii=False, indent=2), encoding='utf8')
+    import host_split
+    split_audio = voiced and host_split.enabled() and bool(narr.get('host_assignment'))
+    saved_manifest = {}
+    if split_audio:
+        import sys
+        subprocess.run([sys.executable, str(ROOT/'scripts/synthesize_narration.py'), '--narration',
+                        str(out/'narration.json'), '--out-dir', str(out/'audio')], check=True)
+        saved_manifest = host_split.read(out/'audio/manifest.json')
+        narr = host_split.read(out/'narration.json')
+        host_split.render_audio(out/'audio', out)
+        metadata = host_split.read(out/'metadata.json')
+        if metadata.get('description'):
+            metadata['description'] = host_split.credit(metadata['description'])
+            (out/'metadata.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding='utf8')
     previous_path=out/'audio/manifest.json'
     previous=json.loads(previous_path.read_text(encoding='utf8')).get('segments',[]) if reuse_audio and previous_path.exists() else []
-    audio = []
-    for i, seg in enumerate(narr['segments']):
+    audio = saved_manifest.get('segments', [])
+    for i, seg in enumerate([] if split_audio else narr['segments']):
         if voiced:
             file = out/f'audio/{i:02d}.wav'; file.parent.mkdir(exist_ok=True)
             reuse=(i<len(previous) and file.exists() and previous[i].get('text')==seg['text'] and previous[i].get('speaker')==seg['speaker'])
@@ -84,7 +98,8 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
     if code: raise ValueError('動画生成失敗: ffmpeg.log')
     manifest = [dict(a,index=i,duration=duration,speech_duration=a['duration']) for i,(a,duration) in enumerate(zip(audio,times))]
     (out/'audio/manifest.json').parent.mkdir(exist_ok=True)
-    (out/'audio/manifest.json').write_text(json.dumps({'segments':manifest},ensure_ascii=False,indent=2),encoding='utf8')
+    payload = dict(saved_manifest, segments=manifest) if split_audio else {'segments':manifest}
+    (out/'audio/manifest.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf8')
     from preview_unified_v3 import sheet
     sheet(images, [s['kind'] for s in narr['segments']], out/'all-screens.png', columns=3)
     probe = subprocess.run(['ffmpeg','-hide_banner','-i',str(out/filename)],capture_output=True,text=True,encoding='utf8',errors='replace')
@@ -97,6 +112,7 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
     if decode.returncode or decode.stderr: raise ValueError('実動画の読み出しに失敗')
     receipt = dict(video_seconds=actual, voice_seconds=sum(a['duration'] for a in audio),
                    screens=len(images), layout='PASS', font='bundled NotoSansJP', published=False,
-                   voice='VOICEVOX:四国めたん' if voiced else 'none / English captions')
+                   voice=host_split.credit('VOICEVOX:四国めたん') if voiced else 'none / English captions')
     (out/'verification.json').write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding='utf8')
+    host_split.bind_video(out/filename, out/'audio')
     return receipt

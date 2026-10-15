@@ -1840,6 +1840,10 @@ def main():
         import duo
         VOICE_CREDIT = duo.credit(narration['segments'])
 
+    import host_split
+    if not args.narration_out:
+        narration = host_split.use_audio(narration, args.audio_dir)
+    narration = host_split.prepare(narration, host_split.asset_kind(args.topic))
     import solo_host
     if solo_host.for_segments(narration['segments']) == 'ui':
         import ui_tone
@@ -2024,6 +2028,7 @@ def main():
 
     secs = total / FPS
     size_mb = video_path.stat().st_size / 1024 / 1024
+    host_split.bind_video(video_path, args.audio_dir)
     print(f"[info] 資産動画を生成しました: {video_path} "
           f"({size_mb:.1f}MB, {secs:.0f}秒)")
 
