@@ -1,0 +1,283 @@
+{
+  "updated_at": "2026-10-15T10:04:20.460408+00:00",
+  "date": "2026-10-15",
+  "window_days": 4,
+  "headline": "鎌田大地が1得点、クリスタル・パレスは勝ち",
+  "rows": [
+    {
+      "name": "鎌田大地・冨安健洋",
+      "club": "クリスタル・パレス",
+      "league": "PL",
+      "league_jp": "プレミアリーグ",
+      "opp": "ノッティンガムF",
+      "home": true,
+      "gf": 3,
+      "ga": 1,
+      "result": "勝ち",
+      "day": "10月11日",
+      "utc": "2026-10-11T13:00:00Z",
+      "matchday": 6,
+      "out": false,
+      "stats": {
+        "minutes": 89,
+        "goals": 1,
+        "assists": 0
+      },
+      "players": [
+        {
+          "name": "鎌田大地",
+          "stats": {
+            "minutes": 89,
+            "goals": 1,
+            "assists": 0
+          },
+          "out": false
+        },
+        {
+          "name": "冨安健洋",
+          "stats": {
+            "minutes": 0,
+            "goals": 0,
+            "assists": 0
+          },
+          "out": true
+        }
+      ]
+    },
+    {
+      "name": "坂元達裕",
+      "club": "コベントリー",
+      "league": "PL",
+      "league_jp": "プレミアリーグ",
+      "opp": "ニューカッスル",
+      "home": true,
+      "gf": 4,
+      "ga": 1,
+      "result": "勝ち",
+      "day": "10月13日",
+      "utc": "2026-10-12T19:00:00Z",
+      "matchday": 6,
+      "out": false,
+      "stats": {
+        "minutes": 29,
+        "goals": 0,
+        "assists": 0
+      },
+      "players": [
+        {
+          "name": "坂元達裕",
+          "stats": {
+            "minutes": 29,
+            "goals": 0,
+            "assists": 0
+          },
+          "out": false
+        }
+      ]
+    },
+    {
+      "name": "久保建英",
+      "club": "レアル・ソシエダ",
+      "league": "PD",
+      "league_jp": "ラ・リーガ",
+      "opp": "デポルティボ",
+      "home": true,
+      "gf": 3,
+      "ga": 2,
+      "result": "勝ち",
+      "day": "10月11日",
+      "utc": "2026-10-11T14:15:00Z",
+      "matchday": 8,
+      "out": false,
+      "stats": null,
+      "players": [
+        {
+          "name": "久保建英",
+          "stats": null,
+          "out": false
+        }
+      ]
+    },
+    {
+      "name": "鈴木唯人・後藤啓介・山本理仁",
+      "club": "フライブルク",
+      "league": "BL1",
+      "league_jp": "ブンデスリーガ",
+      "opp": "シャルケ",
+      "home": true,
+      "gf": 2,
+      "ga": 1,
+      "result": "勝ち",
+      "day": "10月12日",
+      "utc": "2026-10-11T15:30:00Z",
+      "matchday": 5,
+      "out": false,
+      "stats": null,
+      "players": [
+        {
+          "name": "鈴木唯人",
+          "stats": null,
+          "out": false
+        },
+        {
+          "name": "後藤啓介",
+          "stats": null,
+          "out": false
+        },
+        {
+          "name": "山本理仁",
+          "stats": null,
+          "out": false
+        }
+      ]
+    },
+    {
+      "name": "守田英正",
+      "club": "ハル・シティ",
+      "league": "PL",
+      "league_jp": "プレミアリーグ",
+      "opp": "エバートン",
+      "home": true,
+      "gf": 2,
+      "ga": 2,
+      "result": "引き分け",
+      "day": "10月11日",
+      "utc": "2026-10-11T13:00:00Z",
+      "matchday": 6,
+      "out": false,
+      "stats": {
+        "minutes": 15,
+        "goals": 0,
+        "assists": 0
+      },
+      "players": [
+        {
+          "name": "守田英正",
+          "stats": {
+            "minutes": 15,
+            "goals": 0,
+            "assists": 0
+          },
+          "out": false
+        }
+      ]
+    },
+    {
+      "name": "佐藤龍之介",
+      "club": "バレンシア",
+      "league": "PD",
+      "league_jp": "ラ・リーガ",
+      "opp": "ラシン・サンタンデール",
+      "home": false,
+      "gf": 2,
+      "ga": 2,
+      "result": "引き分け",
+      "day": "10月12日",
+      "utc": "2026-10-11T19:00:00Z",
+      "matchday": 8,
+      "out": false,
+      "stats": null,
+      "players": [
+        {
+          "name": "佐藤龍之介",
+          "stats": null,
+          "out": false
+        }
+      ]
+    },
+    {
+      "name": "菅原由勢",
+      "club": "カリアリ",
+      "league": "SA",
+      "league_jp": "セリエA",
+      "opp": "ユベントス",
+      "home": true,
+      "gf": 1,
+      "ga": 1,
+      "result": "引き分け",
+      "day": "10月12日",
+      "utc": "2026-10-11T18:45:00Z",
+      "matchday": 6,
+      "out": false,
+      "stats": null,
+      "players": [
+        {
+          "name": "菅原由勢",
+          "stats": null,
+          "out": false
+        }
+      ]
+    },
+    {
+      "name": "遠藤航",
+      "club": "リバプール",
+      "league": "PL",
+      "league_jp": "プレミアリーグ",
+      "opp": "マンチェスターC",
+      "home": true,
+      "gf": 0,
+      "ga": 3,
+      "result": "負け",
+      "day": "10月12日",
+      "utc": "2026-10-11T15:30:00Z",
+      "matchday": 6,
+      "out": false,
+      "stats": {
+        "minutes": 0,
+        "goals": 0,
+        "assists": 0
+      },
+      "players": [
+        {
+          "name": "遠藤航",
+          "stats": {
+            "minutes": 0,
+            "goals": 0,
+            "assists": 0
+          },
+          "out": false
+        }
+      ]
+    },
+    {
+      "name": "町野修斗・宇野禅斗・橋岡大樹・板倉滉",
+      "club": "ボルシアMG",
+      "league": "BL1",
+      "league_jp": "ブンデスリーガ",
+      "opp": "ケルン",
+      "home": false,
+      "gf": 1,
+      "ga": 2,
+      "result": "負け",
+      "day": "10月11日",
+      "utc": "2026-10-11T13:30:00Z",
+      "matchday": 5,
+      "out": false,
+      "stats": null,
+      "players": [
+        {
+          "name": "町野修斗",
+          "stats": null,
+          "out": false
+        },
+        {
+          "name": "宇野禅斗",
+          "stats": null,
+          "out": false
+        },
+        {
+          "name": "橋岡大樹",
+          "stats": null,
+          "out": false
+        },
+        {
+          "name": "板倉滉",
+          "stats": null,
+          "out": false
+        }
+      ]
+    }
+  ],
+  "key": "2026-10-13",
+  "today_matches": 0
+}
