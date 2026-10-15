@@ -277,30 +277,40 @@
       }
     },
     "2026-10-15": {
-      "calls": 7,
-      "in": 5514,
-      "out": 2326,
-      "usd": 0.03241,
+      "calls": 20,
+      "in": 20876,
+      "out": 6926,
+      "usd": 0.1072,
       "by": {
         "topic": {
-          "calls": 3,
-          "in": 625,
-          "out": 73
+          "calls": 6,
+          "in": 1250,
+          "out": 151
         },
         "voices": {
-          "calls": 1,
-          "in": 1353,
-          "out": 762
+          "calls": 3,
+          "in": 3582,
+          "out": 1680
         },
         "reporters": {
-          "calls": 2,
-          "in": 2649,
-          "out": 883
+          "calls": 4,
+          "in": 5259,
+          "out": 1677
         },
         "translate": {
           "calls": 1,
           "in": 887,
           "out": 608
+        },
+        "buzz": {
+          "calls": 1,
+          "in": 1460,
+          "out": 193
+        },
+        "sanity": {
+          "calls": 5,
+          "in": 8438,
+          "out": 2617
         }
       }
     }

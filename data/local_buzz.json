@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-14T06:01:57.304507+00:00",
+  "updated_at": "2026-10-15T06:02:08.702164+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,77 +13,65 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 17,
-      "tone": "好調",
-      "gist": "ペラルタ好投でレイズがALCSを1勝1敗に"
-    },
-    {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 8,
+      "mentions": 14,
       "tone": "好調",
-      "gist": "ブリュワーズがWS目前、ドジャースを圧倒"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 6,
-      "tone": "不振",
-      "gist": "ペラルタに6回0封され1勝1敗に"
+      "gist": "ブリュワーズが6-2、NLCS3連勝でWS王手"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 4,
+      "mentions": 9,
       "tone": "不振",
-      "gist": "NLCSで劣勢、スネルの奮起に期待"
+      "gist": "ドジャース0-3、ブリュワーズに6-2敗戦"
     },
     {
-      "team_id": "120",
-      "name": "ナショナルズ",
-      "name_en": "Washington Nationals",
-      "mentions": 1,
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 3,
       "tone": "話題",
-      "gist": "FTCがスポーツ賭博業界の調査を開始"
+      "gist": "ALCS第3戦前、ホセがクリーブランドの星と紹介"
     },
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 1,
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 2,
       "tone": "話題",
-      "gist": "慶大の廣池が97マイルでNPB経由せずMLB志望"
+      "gist": "ALCS第3戦FAQ、ロースター編成の舞台裏"
     },
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
       "mentions": 1,
       "tone": "話題",
-      "gist": "マリナーズが監督候補にエスパーダを検討"
+      "gist": "フィリーズがマティングリー監督と2年契約で再登板"
     },
     {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "アストロズがホー・エスパダ監督と決別"
+    },
+    {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
       "mentions": 1,
       "tone": "話題",
-      "gist": "慶大の廣池が97マイルでNPB経由せずMLB志望"
+      "gist": "バートマン事件から23周年"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 5
-    },
-    {
-      "name": "山本由伸",
       "mentions": 1
     }
   ]
