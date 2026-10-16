@@ -20,6 +20,28 @@ def response(text): return NS(content=[NS(type='text',text=text)],stop_reason='e
 class Tests(unittest.TestCase):
     def setUp(self): self.data=jr.read(jr.ROOT/'scripts/fixtures/japan-reacts/sponichi-saved.json')
 
+    def test_oct16_logged_headlines_are_accepted_through_both_guards(self):
+        rows=jr.read(jr.ROOT/'scripts/fixtures/japan-reacts/numbers-20261016.json')
+        for i,row in enumerate(rows):
+            with self.subTest(original=row['original']):
+                client=NS(messages=Mock())
+                client.messages.create.side_effect=[response(json.dumps([row['english']])),response('{"faithful":true,"actors":true,"no_abuse":true}')]
+                source=dict(kind='headline',source='サンスポ',url='https://www.sanspo.com/article/fixture',original=row['original'])
+                report=jr.material_report([source])
+                with patch.object(jr.english_captions.token_log,'allowed',return_value=True),patch.object(jr.english_captions.token_log,'record'),patch('sys.stdout',new_callable=io.StringIO):
+                    data=jr.from_rows(dict(sport='MLB' if i<4 else 'PL',name_en='Shohei Ohtani' if i<4 else 'Daichi Kamada'),[source],client,report=report)
+                self.assertEqual((report['accepted'],report['rejected']),(1,0),report)
+                self.assertEqual(data['segments'][0]['caption_en'],row['english'])
+                jr.validate(data)
+
+    def test_headline_word_limit_does_not_relax_other_sources(self):
+        original='投球を高く評価した。'
+        for kind,count,want in [('headline',60,''),('headline',61,'format'),('youtube',41,'format'),('reporter',41,'format')]:
+            english=' '.join(['Pitching']*count)
+            item=dict(kind=kind,original=original,english=english)
+            item['review']=dict(faithful=True,actors=True,no_abuse=True,sha256=jr.digest(item))
+            with self.subTest(kind=kind,words=count):self.assertEqual(jr.check_reason(item),want)
+
     def test_real_saved_source_and_credit(self):
         jr.validate(self.data)
         meta=jr.metadata(self.data)

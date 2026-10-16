@@ -29,8 +29,9 @@ def check_reason(item):
     original,english = item['original'],item['english']
     if not original.strip() or not english.strip(): return 'empty'
     if guard.violations(original) or guard.violations(english): return 'backstage'
+    max_words=60 if item.get('kind')=='headline' else 40
     if (not re.search(r'[ぁ-んァ-ン一-龯]',original) or not 3<=len(original)<=140
-            or not 1<=len(english.split())<=40 or re.search(r'[ぁ-んァ-ン一-龯]',english)): return 'format'
+            or not 1<=len(english.split())<=max_words or re.search(r'[ぁ-んァ-ン一-龯]',english)): return 'format'
     if voices.is_abusive(original) or voices.is_abusive(english): return 'abuse'
     if any(name not in english for name in english_captions.caption_names.required(original).values()): return 'names'
     if any(english_captions.number_mismatches(original,english)): return 'numbers'
@@ -201,7 +202,8 @@ def validate(data):
     if data['sport'] not in ('MLB','PL'): raise ValueError('対象はMLBとプレミアのみ')
     if not data['segments'] or len(data['segments'])>6: raise ValueError('区間数が不正')
     for s in data['segments']:
-        if not checked(dict(original=s['text'],english=s['caption_en'],review=s['review'])): raise ValueError('原稿/英語字幕の照合が不一致')
+        if not checked(dict(original=s['text'],english=s['caption_en'],review=s['review'],
+                            kind=(s.get('meta') or {}).get('source_kind',s['kind']))): raise ValueError('原稿/英語字幕の照合が不一致')
         if s['speaker'] != 2: raise ValueError('今回の試作は四国めたんのみ')
     for source in data['sources']:
         if source['kind']=='reddit':
@@ -277,7 +279,7 @@ def from_rows(player,rows,client,*,report=None):
                 totals['reasons'][reason]=totals['reasons'].get(reason,0)+1
             continue
         report['accepted']+=1; counts['accepted']+=1
-        segments.append(dict(kind='voice',text=text,caption_en=attributed['english'],speaker=2,meta={},review=attributed['review']))
+        segments.append(dict(kind='voice',text=text,caption_en=attributed['english'],speaker=2,meta={'source_kind':kind},review=attributed['review']))
         sources.append(row)
     log_report(report)
     if not segments: return None

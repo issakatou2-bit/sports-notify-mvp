@@ -141,6 +141,7 @@ def translate(cues, ai):
               'Preserve every count, ordinal and calendar day explicitly, preferably with digits: '
               'In baseball headlines, 1号 means the first home run (not merely a solo homer), '
               '1安打 means one hit and 1回 means the first inning. 第1戦 means Game 1. '
+              '一発 means one homer/a homer; 1番 as a batting-order position means leadoff/top of the order. '
               '21日 means the 21st: never replace a calendar day with a month, weekday or relative date, '
               'and never infer a month absent from the source. Do not shorten away numeric details. '
               'Use the full official spellings in this canonical name table wherever those names occur. '
@@ -213,14 +214,34 @@ def _word_number(match):
     return str(sum(_WORD_VALUES[w] for w in words))
 
 
+def _japanese_number_text(text):
+    # 人名（一平・十亀）や熟語（一方・統一・二刀流）の文字を数にしない。
+    digits={word:str(n) for n,word in enumerate('〇一二三四五六七八九')}
+    def convert(match):
+        word=match.group()
+        if word.count('十')>1:return word
+        if '十' in word:
+            tens,ones=word.split('十')
+            if len(tens)>1 or len(ones)>1:return word
+            return str(int(digits.get(tens,'1'))*10+int(digits.get(ones,'0')))
+        return ''.join(digits[c] for c in word)
+    numeral=r'[〇一二三四五六七八九十]+'
+    units=r'(?:打席|打数|打点|安打|本塁打|四球|奪三振|盗塁|得点|失点|アシスト|連勝|連敗|連発|試合|発|本|点|戦|回|人|番|勝|敗|塁|死|日|月|年|分|秒|度|号|対)'
+    return re.sub(r'(?<![〇零一二三四五六七八九十百千万億\d])'+numeral+r'(?='+units+r')'
+                  + r'|(?<![一-龯\w])'+numeral+r'(?![一-龯\w])',convert,text)
+
+
 def number_mismatches(original, english):
     """数の表記と語順をそろえ、日本語側・英語側に余る数字だけを返す。
 
     序数（first / 3rd）・点数（two-run / 6-2）・分数（one third / 1/3）も
     数字として数える。同じ数字の出現回数も一致させ、増減・脱落を見逃さない。
     """
-    original = unicodedata.normalize('NFKC', original)
+    original = _japanese_number_text(unicodedata.normalize('NFKC', original))
     english = unicodedata.normalize('NFKC', english).lower()
+    # 打順だけの同義語。first inningや単なるtopには足さない。
+    if re.search(r'(?<!\d)1番',original):
+        english = re.sub(r'\blead[ -]?off\b|\btop of (?:the )?(?:batting )?order\b', '1', english)
     if re.search(r'初|(?<!\d)1(?:回|戦)',original):
         # opening inning / series opener も「初回」「第1戦」と同じ1。
         english = re.sub(r'\bopening(?=\s+(?:inning|game|pitch|round|day)\b)', 'first', english)
@@ -229,8 +250,8 @@ def number_mismatches(original, english):
     matched_firsts = min(japanese_firsts, len(re.findall(r'\b(?:first|1st)\b', english)))
     # 「44年ぶり」は "first ... in 44 years" とも訳す。ここでのfirstは
     # 日本語に独立した1がなくても同じ意味（年数自体は通常どおり照合する）。
-    first_in_years = len(re.findall(r'\b(?:first|1st)\b[^.!?]{0,120}\b(?:in|for)\b'
-                                   r'[^.!?]{0,40}\byears\b', english))
+    first_after_gap = len(re.findall(r'\b(?:first|1st)\b[^.!?;]{0,120}?\b(?:in|for)\s+'
+                                    r'(?:\d+|'+_UNDER_HUNDRED+r')\s+(?:years?|days?|games?|matches?|plate appearances?)\b', english))
     # a goal / a hitは1。ただし分数の単位（of an inning）は別の1ではない。
     counted_articles = len(re.findall(r'\b(?:a|an)\s+(?:(?:earned|unearned)\s+)?'
                                      + _COUNT_NOUN + r'\b', english))
@@ -264,8 +285,14 @@ def number_mismatches(original, english):
     # 無失点・無安打のようなゼロも、英訳が明示的にzeroと書いた分だけ照合する。
     want['0'] += min(max(0, have['0'] - want['0']),
                      len(re.findall(r'無(?:失点|安打|四球|得点|本塁打)', original)))
-    want['1'] += min(max(0, have['1'] - want['1']), first_in_years,
-                     len(re.findall(r'\d+年ぶり', original)))
+    # 「64日ぶり」「26試合ぶり」もfirst ... inと同義。数字自体は通常照合。
+    want['1'] += min(max(0, have['1'] - want['1']), first_after_gap,
+                     len(re.findall(r'\d+(?:年|日|試合|戦|打席)ぶり', original)))
+    # 「開幕2連勝」のfirst 2 matchesは、独立した第1戦の追加ではない。
+    opening_wins=re.findall(r'開幕(\d+)連勝',original)
+    for count in opening_wins:
+        if re.search(r'\b1\s+'+re.escape(count)+r'\b(?:\s+[a-z]+){0,3}\s+(?:games?|matches?)\b',english):
+            want['1'] += min(max(0,have['1']-want['1']),1)
     for number, count in implicit.items():
         have[number] += min(max(0, want[number] - have[number]), count)
     return tuple(sorted('1' if n == 'first' else n for n in difference.elements())
