@@ -168,7 +168,9 @@ def translate(cues, ai):
                 or re.search(r'[\u3040-\u30ff\u3400-\u9fff]', english)
                 or backstage_guard.violations(english)):
             raise TranslationRejected('translation_invalid',original,english)
-        if any(name not in english for name in caption_names.required(original).values()):
+        missing_names, extra_names = caption_names.mismatches(original, english)
+        if missing_names or extra_names:
+            print(f'[warn] 英語字幕: translation_names Japanese={missing_names} English={extra_names}')
             raise TranslationRejected('translation_names',original,english)
         missing, extra = number_mismatches(original, english)
         if missing or extra:

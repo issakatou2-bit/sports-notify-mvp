@@ -62,3 +62,14 @@ jobs:
       - name: Record verified reservation
         if: inputs.write == 'true' && inputs.publish_at != ''
         run: bash scripts/commit_data.sh "verified reservation ${{ github.run_id }}" data/published_videos.json
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
