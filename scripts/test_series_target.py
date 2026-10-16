@@ -1,10 +1,12 @@
 """同じ日付の前戦と対象試合、ホーム入れ替わりを公式固定例で確認。"""
 import copy
 import json
+import sys
 from pathlib import Path
 import unittest
 from unittest.mock import patch, Mock
-import notability_engine as ne
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import notability_engine as ne  # noqa: E402
 FIX=json.loads((Path(__file__).parent/'fixtures/site-series-20261015.json').read_text(encoding='utf-8'))
 class TargetSeries(unittest.TestCase):
     def get(self, data, target='849810'):
