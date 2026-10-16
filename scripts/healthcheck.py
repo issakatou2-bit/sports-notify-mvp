@@ -590,35 +590,30 @@ def main() -> int:
     video_lines, missing, skipped, seen = check_videos(
         day, only_past=args.today)
 
-    # 記録が欠けていても、実際に公開されていれば異常ではない。
-    # 記録の押し合いで記録だけが失われることがあり、そのとき
-    # 見張りが「出ていない」と嘘をつく。実物と突き合わせる。
-    #
-    # **本数では比べない。**9/7、17:00の成績が出ていないのに
-    # 「問題なし」で終わった。その時刻までに出るはずの3枠に対して
-    # チャンネルに3本あったので、数だけ合っていた。中身は
-    # 20:00の枠(予約公開ぶん)で、成績はどこにも無かった。
-    #
-    # 見るのは「記録に無いのに、実際にはある動画」。それが欠けと
-    # 同じ数だけあるなら、記録の側だけが失われたと言える。
+    # 公開IDだけでは欠けた枠との対応は分からない。
+    # 10/16はコメント回が制作失敗なのに、別の資産動画3本で欠けが
+    # 0件になった。未登録の公開物は別に知らせ、種類を照合するまで
+    # 欠けた枠を解消しない（再投稿はこの診断から行わない）。
     ids = published_ids(day)
     actual = -1 if ids is None else len(ids)
     # 出るはずの無かった枠は引く。サッカーが無い日に7本を期待すると、
     # 6本出ていても足りないことになる。
     expect = len(video_lines) - skipped
     extra = (ids - seen) if ids is not None else set()
-    if missing and len(extra) >= missing:
+    if extra:
         video_lines.append(f"| — | 実際の公開 | 記録に無い動画が"
                            f"{len(extra)}本ありました | "
-                           "記録が欠けているだけです |")
-        missing = 0
+                           "種類は未照合です。欠けた枠との対応を確認してください |")
+        if missing:
+            video_lines = [line.replace("**出ていない**", "**記録なし・公開未確認**")
+                           for line in video_lines]
     # 当日の途中では、材料が古いのは当たり前(夕方の回がまだ走っていない)。
     # 動画が出たかどうかだけを見る。
     data_lines, stale = check_data(day)
     if args.today:
         # 当日の途中では、材料が古いのは当たり前(夕方の回がまだ走っていない)
         stale = 0
-    elif (actual >= expect > 0) or (actual < 0 and expect > 0 and not missing):
+    elif not missing and expect > 0 and (actual >= expect or actual < 0):
         # 動画が出ているなら、材料は揃っていたということ。
         # 古く見えるのは記録が押し合いで残らなかったからで、
         # 取れていなかったわけではない。結果の方を信じる。
