@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-15T06:16:34.087713+00:00",
+  "updated_at": "2026-10-16T01:04:38.967701+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -36,8 +36,12 @@
           "勝ち D.L.ホール（2回と3分の1を無失点）　セーブ トレバー・メギル"
         ],
         [
+          "ハイライトのコメント欄から",
+          "「ブルワーズ、いじめられっ子からいじめっ子になったな。間違いなく野球界最強のチームだ」"
+        ],
+        [
           "MLB.comの見出しから",
-          "「劇的な本塁打でブリュワーズがワールドシリーズ進出まであと1勝、44年ぶり」"
+          "「ブルワーズの10月の勢いは止まらず、44年ぶりのワールドシリーズ進出まであと一歩」"
         ]
       ],
       "japanese": [
@@ -55,12 +59,18 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
+      "voice": {
+        "said": "ブルワーズ、いじめられっ子からいじめっ子になったな。間違いなく野球界最強のチームだ",
+        "text": "The Brewers went from the bullied to the bully. They’re by far the best team in baseball",
+        "url": "https://www.youtube.com/watch?v=l58yZ7LbKdo",
+        "likes": 2394,
+        "at": "2026-10-15T03:43:04Z"
+      },
       "headline": {
-        "said": "劇的な本塁打でブリュワーズがワールドシリーズ進出まであと1勝、44年ぶり",
-        "text": "Clutch homers have Brewers 1 win away from 1st World Series appearance in 44 years",
+        "said": "ブルワーズの10月の勢いは止まらず、44年ぶりのワールドシリーズ進出まであと一歩",
+        "text": "Brewers keep October magic rolling, on cusp of 1st World Series in 44 years",
         "url": "https://www.mlb.com/news/brewers-win-nlcs-game-3-2026",
-        "at": "2026-10-15T03:35:00+00:00"
+        "at": "2026-10-15T06:23:00+00:00"
       },
       "game_pk": 849811,
       "game_v4": {
@@ -163,36 +173,36 @@
       }
     },
     {
-      "key": "season_game_849813",
-      "label": "リーグ優勝決定シリーズ第2戦",
-      "hook": "レイズがガーディアンズに3対1でリーグ優勝決定シリーズ1勝1敗に",
-      "heading": "ガーディアンズ 対 レイズ　リーグ優勝決定シリーズ第2戦",
-      "intro": "リーグ優勝決定シリーズ第2戦、レイズが本拠地でガーディアンズに3対1で勝ちました。",
+      "key": "season_game_849818",
+      "label": "リーグ優勝決定シリーズ第3戦",
+      "hook": "ガーディアンズがレイズに3対2でリーグ優勝決定シリーズ2勝1敗に",
+      "heading": "レイズ 対 ガーディアンズ　リーグ優勝決定シリーズ第3戦",
+      "intro": "リーグ優勝決定シリーズ第3戦、ガーディアンズが本拠地でレイズに3対2で勝ちました。",
       "intro_as_is": true,
       "style": "v3",
-      "team_id": 139,
-      "abbr": "TB",
-      "title": "【MLB】レイズがガーディアンズに3対1でリーグ優勝決定シリーズ1勝1敗に｜ヒックスの決勝打 #Shorts",
+      "team_id": 114,
+      "abbr": "CLE",
+      "title": "【MLB】ガーディアンズがレイズに3対2でリーグ優勝決定シリーズ2勝1敗に #Shorts",
       "items": [
         [
           "試合の結果",
-          "レイズ 3対1 ガーディアンズ　本拠地で勝利　シリーズはレイズの1勝1敗"
+          "ガーディアンズ 3対2 レイズ　本拠地で勝利　シリーズはガーディアンズの2勝1敗"
         ],
         [
-          "決勝点",
-          "4回裏　リアム・ヒックスのタイムリー"
+          "本塁打",
+          "ガーディアンズ1本"
         ],
         [
           "先発",
-          "レイズ ペラルタ 6回を無失点　ガーディアンズ メシック 5回を3失点"
+          "ガーディアンズ ウィリアムズ 5回を2失点　レイズ ジャックス 4回を3失点"
         ],
         [
           "セーブ",
-          "ブライアン・ベイカー"
+          "ケイド・スミス"
         ],
         [
-          "ハイライトのコメント欄から",
-          "「9:40のとこ、ホセが球が芝に落ちるのか土に落ちるのか見極められてないのが分かる。ほんと見た目以上に難しいプレーだよ」"
+          "ガーディアンズの番記者の投稿から",
+          "「ピーティー・ハルピンが打った瞬間、バットをほぼ真上に放り投げた。2ランで3-2、クリーブランドが勝ち越し。」"
         ]
       ],
       "japanese": [],
@@ -200,16 +210,17 @@
       "ps_ended": true,
       "story": true,
       "game": true,
-      "source": null,
-      "voice": {
-        "said": "9:40のとこ、ホセが球が芝に落ちるのか土に落ちるのか見極められてないのが分かる。ほんと見た目以上に難しいプレーだよ",
-        "text": "At 9:40 you can see that José couldn’t tell if that ball was going to bounce on the turf or the dirt. Such a deceptively tough play to make",
-        "url": "https://www.youtube.com/watch?v=XQSGs9VWueA",
-        "likes": 145,
-        "at": "2026-10-14T03:41:12Z"
+      "source": {
+        "said": "ピーティー・ハルピンが打った瞬間、バットをほぼ真上に放り投げた。2ランで3-2、クリーブランドが勝ち越し。",
+        "author": "Tim Stebbins",
+        "outlet": "MLB.com",
+        "text": "Petey Halpin just launched a baseball and chucked his bat basically as high into the air. 2-run shot. 3-2 Cleveland.",
+        "url": "https://bsky.app/profile/timstebbins.bsky.social/post/3mxwp5pyscs2z",
+        "at": "2026-10-15T18:33:06.592Z"
       },
+      "voice": null,
       "headline": null,
-      "game_pk": 849813,
+      "game_pk": 849818,
       "game_v4": {
         "score": {
           "innings": [
@@ -221,7 +232,7 @@
             {
               "num": 2,
               "away": 0,
-              "home": 0
+              "home": 1
             },
             {
               "num": 3,
@@ -230,13 +241,13 @@
             },
             {
               "num": 4,
-              "away": 0,
-              "home": 3
+              "away": 2,
+              "home": 0
             },
             {
               "num": 5,
               "away": 0,
-              "home": 0
+              "home": 2
             },
             {
               "num": 6,
@@ -245,7 +256,7 @@
             },
             {
               "num": 7,
-              "away": 1,
+              "away": 0,
               "home": 0
             },
             {
@@ -261,48 +272,42 @@
           ],
           "source": "MLB Stats API / liveData.linescore",
           "away": {
-            "id": 114,
-            "name": "ガーディアンズ",
-            "abbr": "CLE",
-            "total": 1
-          },
-          "home": {
             "id": 139,
             "name": "レイズ",
             "abbr": "TB",
+            "total": 2
+          },
+          "home": {
+            "id": 114,
+            "name": "ガーディアンズ",
+            "abbr": "CLE",
             "total": 3
           }
         },
-        "decisive": {
-          "inning": "4回裏",
-          "subject": "リアム・ヒックス",
-          "action": "タイムリー",
-          "detail": "",
-          "event": "Single"
-        }
+        "decisive": null
       },
-      "game_date": "2026-10-14T00:00:00Z",
+      "game_date": "2026-10-15T17:00:00Z",
       "jp_first": false,
-      "next_team_id": 139,
-      "finished_at": "2026-10-14T02:51:01.268000+00:00",
-      "next_game_jp": {
-        "day": "10月16日",
-        "game": 3
-      },
+      "next_team_id": 114,
+      "finished_at": "2026-10-15T19:39:04.112000+00:00",
       "v3": {
-        "who": "レイズ　リーグ優勝決定シリーズ第2戦",
-        "big": "3-1",
+        "who": "ガーディアンズ　リーグ優勝決定シリーズ第3戦",
+        "big": "3-2",
         "unit": "",
         "sub": "本拠地で勝利",
-        "tag": "決勝点 4回裏 ヒックスのタイムリー",
+        "tag": "リーグ優勝決定シリーズ2勝1敗",
         "chips": [
           {
-            "label": "リーグ優勝決定シリーズ　レイズ",
-            "score": "1-1",
-            "win": false
+            "label": "リーグ優勝決定シリーズ　ガーディアンズ",
+            "score": "2-1",
+            "win": true
+          },
+          {
+            "label": "本塁打　ガーディアンズ",
+            "score": "1"
           }
         ],
-        "ticker": "次の試合　日本時間10月16日　リーグ優勝決定シリーズ第3戦"
+        "ticker": "ガーディアンズ 3対2 レイズ　本拠地で勝利　シリーズはガーディアンズの2勝1敗"
       }
     }
   ]
