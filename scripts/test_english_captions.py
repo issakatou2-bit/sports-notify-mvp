@@ -244,6 +244,37 @@ class NumbersSurviveTest(unittest.TestCase):
             with self.subTest(original=original, english=english):
                 self.assertFalse(en.numbers_survive(original, english))
 
+    def test_japanese_first_and_counted_articles(self):
+        examples = (
+            ('初ゴール', 'his first goal'), ('初めて得点した', 'scored for the first time'),
+            ('最初の安打', 'the first hit'), ('史上初の快挙', 'a first in history'),
+            ('1点を決めた', 'scored a goal'), ('1本打った', 'hit a homer'),
+            ('1本塁打', 'a home run'), ('1安打', 'a hit'), ('1安打', 'one hit'),
+            ('1回を投げた', 'pitched an inning'),
+            ('初出場で1安打', 'a hit in his first appearance'),
+            ('初めて1点を決めた', 'scored a goal for the first time'),
+        )
+        for original,english in examples:
+            with self.subTest(original=original,english=english):
+                self.assertEqual(en.number_mismatches(original,english),([],[]))
+        cues=[(i,i+1,ja) for i,(ja,_) in enumerate(examples)]
+        with patch.object(en.backstage_guard,'create',return_value=response(json.dumps([text for _,text in examples]))), \
+             patch.object(en.token_log,'allowed',return_value=True), patch.object(en.token_log,'record'):
+            self.assertEqual(len(en.translate(cues,Mock())),len(examples))
+
+    def test_first_and_article_do_not_hide_changed_counts(self):
+        for original,english in (
+            ('初ゴール','his second goal'), ('初めて得点した','scored'),
+            ('最初の安打','a hit'), ('2点を決めた','scored a goal'),
+            ('2本塁打','a homer'), ('2安打','one hit'),
+            ('1安打','a great performance'), ('1安打','an amazing performance'),
+            ('1点','a goalkeeper'), ('1安打1四球','a hit'),
+            ('初出場で2安打','a hit in his first appearance'),
+            ('1点','a goal in his first game'),
+        ):
+            with self.subTest(original=original,english=english):
+                self.assertTrue(any(en.number_mismatches(original,english)))
+
     def test_translation_logs_only_unmatched_numbers(self):
         with patch.object(en.backstage_guard, 'create', return_value=response('["6-3"]')), \
              patch.object(en.token_log, 'allowed', return_value=True), \
