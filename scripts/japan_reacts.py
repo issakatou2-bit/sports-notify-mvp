@@ -1,5 +1,6 @@
 """MLB/プレミアの日本語の声・見出しを日本語音声＋英語字幕で紹介。投稿なし。"""
 import argparse
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
@@ -24,14 +25,23 @@ def digest(item):
     return hashlib.sha256((item['original']+'\n'+item['english']).encode('utf8')).hexdigest()
 
 
-def checked(item):
+def check_reason(item):
     original,english = item['original'],item['english']
+    if not original.strip() or not english.strip(): return 'empty'
+    if guard.violations(original) or guard.violations(english): return 'backstage'
     if (not re.search(r'[ぁ-んァ-ン一-龯]',original) or not 3<=len(original)<=140
-            or not 1<=len(english.split())<=40 or re.search(r'[ぁ-んァ-ン一-龯]',english)
-            or voices.is_abusive(original) or voices.is_abusive(english) or guard.violations(english)
-            or voices.numbers(original)!=voices.numbers(english)): return False
+            or not 1<=len(english.split())<=40 or re.search(r'[ぁ-んァ-ン一-龯]',english)): return 'format'
+    if voices.is_abusive(original) or voices.is_abusive(english): return 'abuse'
+    if any(name not in english for name in english_captions.caption_names.required(original).values()): return 'names'
+    if any(english_captions.number_mismatches(original,english)): return 'numbers'
     r=item.get('review',{})
-    return all(r.get(k) is True for k in ('faithful','actors','no_abuse')) and r.get('sha256')==digest(item)
+    for key,reason in (('actors','names'),('no_abuse','abuse'),('faithful','meaning')):
+        if r.get(key) is not True: return reason
+    return '' if r.get('sha256')==digest(item) else 'review_digest'
+
+
+def checked(item):
+    return not check_reason(item)
 
 
 def translate(client,item):
@@ -48,7 +58,8 @@ def translate(client,item):
     token_log.record('japan_reacts',llm_models.model('review'),response)
     if response.stop_reason!='end_turn': raise ValueError('意味照合が途中')
     candidate['review']=dict(json.loads(guard.response_text(response)),sha256=digest(candidate))
-    if not checked(candidate): raise ValueError('訳の意味/話者/数字が不一致')
+    reason=check_reason(candidate)
+    if reason: raise ValueError('material_'+reason)
     return candidate
 
 
@@ -166,16 +177,62 @@ def approved_segment(kind,text,caption,speaker=2):
                 review=dict(faithful=True,actors=True,no_abuse=True,sha256=digest(item)))
 
 
-def from_rows(player,rows,client):
+SOURCE_KINDS = ('youtube','headline','reporter','reddit')
+REASONS = dict(numbers='数字',names='名前',backstage='楽屋の言葉',empty='空',
+               format='形式',abuse='攻撃的表現',meaning='意味',review_digest='照合記録',
+               budget='予算',truncated='途中終了',count='訳の件数',invalid='訳の形式',other='その他')
+
+
+def failure_reason(error):
+    # モデル応答や例外本文はログへ流さず、固定の分類だけを使う。
+    code=str(error)
+    if code.startswith(('material_','translation_')):
+        reason=code.split('_',1)[1]
+        if reason in REASONS: return reason
+    return {'backstage_source':'backstage','意味照合の予算なし':'budget',
+            '意味照合が途中':'truncated'}.get(code,'other')
+
+
+def material_report(rows):
+    counts=Counter(row.get('kind') if row.get('kind') in SOURCE_KINDS else 'other' for row in rows)
+    return dict(collected=len(rows),accepted=0,rejected=0,reasons={},
+                sources={kind:dict(collected=count,accepted=0,rejected=0,reasons={}) for kind,count in sorted(counts.items())})
+
+
+def log_report(report):
+    print(f"[info] 逆翻訳: 集めた={report['collected']} 採用={report['accepted']} 落とした={report['rejected']}")
+    for kind,counts in report['sources'].items():
+        reasons=', '.join(f'{REASONS[reason]}={count}' for reason,count in sorted(counts['reasons'].items())) or 'なし'
+        print(f"[info] 出典の種類={kind} 集めた={counts['collected']} 採用={counts['accepted']} 落とした={counts['rejected']} 理由: {reasons}")
+    for issue,count in sorted(report.get('collection_reasons',{}).items()):
+        print(f'[info] 収集の理由={issue} 件数={count}')
+    if not report['accepted']:
+        reasons=', '.join(f'{REASONS[reason]}={count}' for reason,count in sorted(report['reasons'].items())) or '収集0件'
+        print(f'[info] 材料なし（理由の内訳: {reasons}）')
+
+
+def from_rows(player,rows,client,*,report=None):
+    report=material_report(rows) if report is None else report
     segments=[]; sources=[]
     for row in rows:
+        kind=row.get('kind') if row.get('kind') in SOURCE_KINDS else 'other'
+        counts=report['sources'][kind]
         text=f"{row['source']}では、{row['original']}。"
         # Attribution itself is translated by the same guarded role; never leave Japanese in the English screen.
-        try: attributed=translate(client,dict(row,original=text))
-        except ValueError: continue
+        try:
+            if not row['original'].strip(): raise ValueError('material_empty')
+            attributed=translate(client,dict(row,original=text))
+        except ValueError as error:
+            reason=failure_reason(error)
+            for totals in (report,counts):
+                totals['rejected']+=1
+                totals['reasons'][reason]=totals['reasons'].get(reason,0)+1
+            continue
+        report['accepted']+=1; counts['accepted']+=1
         segments.append(dict(kind='voice',text=text,caption_en=attributed['english'],speaker=2,meta={},review=attributed['review']))
         sources.append(row)
-    if not segments: raise ValueError('照合済みの材料なし')
+    log_report(report)
+    if not segments: return None
     ending=approved_segment('closing','これは選んだ日本語の反応の英訳で、全員の意見ではありません。','These are translated selections from Japanese-language reactions, not everyone’s opinion.')
     segments.append(ending)
     return dict(sport=player['sport'],player_en=player['name_en'],title='Japanese reactions to '+player['name_en'],
@@ -267,13 +324,29 @@ def main():
         roster=ne.JP_PLAYERS_MLB if args.sport=='MLB' else [p for p in ne.JP_PLAYERS_SOCCER if p['league']=='PL']
         player=next((dict(p,sport=args.sport) for p in roster if p['name_jp']==args.player),None)
         if not player: raise ValueError('MLB/プレミアの日本人選手ではありません')
-        rows,reasons=collect(read(args.sources),player)
+        config=read(args.sources)
+        rows,reasons=collect(config,player)
         args.out.mkdir(parents=True,exist_ok=True)
-        (args.out/'fetch-report.json').write_text(json.dumps(dict(count=len(rows),reasons=reasons),ensure_ascii=False,indent=2),encoding='utf8')
-        if not rows: raise ValueError('実材料を取得できません: '+', '.join(reasons))
+        report=material_report(rows)
+        # 例外本文・集め所の却下理由には本文が混ざりうるため固定分類へ。
+        report['collection_issues']=len(reasons)
+        issues=Counter()
+        for reason in reasons:
+            kind=('youtube' if 'YouTube' in reason or any(c['name']+':' in reason for c in config['youtube'])
+                  else 'headline' if reason.startswith('headlines:')
+                  else 'reporter' if reason.startswith(('reporters:','記者/公式Bluesky')) else 'other')
+            category=('未設定' if '未設定' in reason else '名簿未登録' if '未登録' in reason else '取得不可または対象外')
+            issues[kind+':'+category]+=1
+        report['collection_reasons']=dict(issues)
+        if not rows:
+            log_report(report)
+            (args.out/'fetch-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
+            return
         if not os.environ.get('ANTHROPIC_API_KEY'): raise ValueError('英語字幕の翻訳APIキー未設定')
         import anthropic
-        data=from_rows(player,rows,anthropic.Anthropic())
+        data=from_rows(player,rows,anthropic.Anthropic(),report=report)
+        (args.out/'fetch-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
+        if data is None: return
     print(save(data,args.out))
 
 

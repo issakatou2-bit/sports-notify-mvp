@@ -147,6 +147,10 @@ def translate(cues, ai):
     if not isinstance(result, list) or len(result) != len(cues):
         raise ValueError('translation_count')
     for original, english in zip(source, result):
+        if isinstance(english, str) and not english.strip():
+            raise ValueError('translation_empty')
+        if isinstance(english, str) and backstage_guard.violations(english):
+            raise ValueError('translation_backstage')
         if (not isinstance(english, str) or not english.strip() or len(english) > 1000
                 or re.search(r'[\u3040-\u30ff\u3400-\u9fff]', english)
                 or backstage_guard.violations(english)):
@@ -185,7 +189,7 @@ _UNDER_HUNDRED = ('(?:' + '|'.join(_TENS) + r')(?:[\s-]+(?:' + _UNIT_WORDS + '))
 _WORD_NUMBERS = re.compile(r'\b(?:'
     + '(?:' + '|'.join(_CARDINALS[1:10]) + r')[\s-]+hundred(?:[\s-]+(?:and[\s-]+)?(?:'
     + _UNDER_HUNDRED + '))?|' + _UNDER_HUNDRED + r')\b', re.IGNORECASE)
-_COUNT_NOUN = r'(?:home runs?|runs?|hits?|walks?|strikeouts?|wins?|loss(?:es)?|outs?|homers?|innings?)'
+_COUNT_NOUN = r'(?:home runs?|runs?|hits?|walks?|strikeouts?|wins?|loss(?:es)?|outs?|homers?|innings?|goals?)'
 _FRACTION_WORD = r'(?:third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)'
 
 
@@ -205,15 +209,19 @@ def number_mismatches(original, english):
     """
     original = unicodedata.normalize('NFKC', original)
     english = unicodedata.normalize('NFKC', english).lower()
+    japanese_firsts = len(re.findall(r'初めて|最初|(?<![当最])初(?![期心級旬頭夏秋冬春])', original))
+    matched_firsts = min(japanese_firsts, len(re.findall(r'\b(?:first|1st)\b', english)))
     # 「44年ぶり」は "first ... in 44 years" とも訳す。ここでのfirstは
     # 日本語に独立した1がなくても同じ意味（年数自体は通常どおり照合する）。
     first_in_years = len(re.findall(r'\b(?:first|1st)\b[^.!?]{0,120}\b(?:in|for)\b'
                                    r'[^.!?]{0,40}\byears\b', english))
-    # a walk / no strikeouts / two and a third も数を表す。通常の冠詞や
-    # 無失点→scorelessで数字を増やさないよう、明示された数の不足だけを補う。
+    # a goal / a hitは1。ただし分数の単位（of an inning）は別の1ではない。
+    counted_articles = len(re.findall(r'\b(?:a|an)\s+(?:(?:earned|unearned)\s+)?'
+                                     + _COUNT_NOUN + r'\b', english))
+    counted_articles -= len(re.findall(r'\b(?:' + _FRACTION_WORD + r's?|\d+/\d+)\s+of\s+an\s+inning\b', english))
+    # a third の分子とno/scorelessの0は、明示された数の不足だけを補う。
     implicit = {
-        '1': len(re.findall(r'\b(?:a|an)\s+(?:(?:earned|unearned)\s+)?(?:'
-                            + _COUNT_NOUN + '|' + _FRACTION_WORD + r')\b', english)),
+        '1': len(re.findall(r'\ba\s+' + _FRACTION_WORD + r'\b', english)),
         '0': len(re.findall(r'\bno\s+(?:earned\s+)?' + _COUNT_NOUN
                             + r'\b|\bscoreless\b', english)),
     }
@@ -226,6 +234,10 @@ def number_mismatches(original, english):
     pattern = r'\d+(?:[.,]\d+)?'
     want = Counter(re.findall(pattern, original))
     have = Counter(re.findall(pattern, english))
+    # 「最初」をa hitの冠詞で埋めないよう、対応するfirstは先に取り出す。
+    want['first'] = japanese_firsts
+    have['first'] = matched_firsts
+    have['1'] += counted_articles - matched_firsts
     # 無失点・無安打のようなゼロも、英訳が明示的にzeroと書いた分だけ照合する。
     want['0'] += min(max(0, have['0'] - want['0']),
                      len(re.findall(r'無(?:失点|安打|四球|得点|本塁打)', original)))
@@ -233,7 +245,8 @@ def number_mismatches(original, english):
                      len(re.findall(r'\d+年ぶり', original)))
     for number, count in implicit.items():
         have[number] += min(max(0, want[number] - have[number]), count)
-    return sorted((want - have).elements()), sorted((have - want).elements())
+    return tuple(sorted('1' if n == 'first' else n for n in difference.elements())
+                 for difference in (want - have, have - want))
 
 
 def numbers_survive(original, english):
@@ -320,7 +333,8 @@ def main(args):
     except Exception as exc:
         # Never dump OAuth/HTTP objects or model responses into public records.
         known = {'backstage_source', 'translation_budget', 'translation_truncated', 'translation_count',
-                 'translation_invalid', 'translation_names', 'translation_numbers'}
+                 'translation_invalid', 'translation_names', 'translation_numbers',
+                 'translation_empty', 'translation_backstage'}
         status = str(exc) if isinstance(exc, ValueError) and str(exc) in known else 'failed_' + type(exc).__name__
         if getattr(getattr(exc, 'resp', None), 'status', None) == 403:
             status = 'forbidden_check_scope_or_quota'

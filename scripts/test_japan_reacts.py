@@ -1,5 +1,10 @@
 """本物の保存見出し、日本語音声/英語字幕、禁止取得元、#160の訳を通信なしで検査。"""
 import copy
+import io
+import json
+import os
+from pathlib import Path
+import tempfile
 from types import SimpleNamespace as NS
 import unittest
 from unittest.mock import Mock, patch
@@ -69,6 +74,63 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(jp),len(self.data['segments']))
         self.assertEqual([(a,b) for a,b,_ in jp],[(a,b) for a,b,_ in en])
         self.assertEqual(en[-1][1],30)
+
+    def test_checked_uses_shared_numbers_after_review(self):
+        for ja,en in (('初めて1点を決めた。','Scored a goal for the first time.'),
+                      ('最初の本塁打を打った。','Hit his first homer.'),
+                      ('1安打を放った。','Recorded one hit.')):
+            item=jr.approved_segment('voice',ja,en)
+            self.assertTrue(jr.checked(dict(original=ja,english=en,review=item['review'])))
+        item=jr.approved_segment('voice','2点を決めた。','Scored a goal.')
+        self.assertEqual(jr.check_reason(dict(original=item['text'],english=item['caption_en'],review=item['review'])),'numbers')
+
+    def test_rejection_counts_and_log_privacy(self):
+        rows=[dict(kind=kind,source='PRIVATE SOURCE',original='非公開の材料です。')
+              for kind in ('headline','headline','youtube','reporter','headline','headline')]
+        rows[-1]['original']=' '
+        report=jr.material_report(rows)
+        errors=[ValueError('translation_numbers'),ValueError('translation_names'),
+                ValueError('translation_backstage'),ValueError('PRIVATE ERROR BODY'),
+                ValueError('translation_empty')]
+        with patch.object(jr,'translate',side_effect=errors), patch('sys.stdout',new_callable=io.StringIO) as log:
+            self.assertIsNone(jr.from_rows(dict(sport='MLB',name_en='Shohei Ohtani'),rows,Mock(),report=report))
+        self.assertEqual((report['collected'],report['accepted'],report['rejected']),(6,0,6))
+        self.assertEqual(report['reasons'],dict(numbers=1,names=1,backstage=1,other=1,empty=2))
+        self.assertEqual(report['sources']['headline']['rejected'],4)
+        self.assertIn('材料なし（理由の内訳:',log.getvalue())
+        for secret in ('PRIVATE','非公開の材料'):
+            self.assertNotIn(secret,log.getvalue()+json.dumps(report,ensure_ascii=False))
+
+    def test_main_no_material_exits_without_video(self):
+        for rows in ([],[dict(kind='headline',source='PRIVATE',original='非公開の材料です。')]):
+            with self.subTest(collected=len(rows)), tempfile.TemporaryDirectory() as td, \
+                 patch.dict(os.environ,dict(COLLESPO_JAPAN_REACTS='on',ANTHROPIC_API_KEY='test')), \
+                 patch('sys.argv',['japan_reacts','--out',td]), \
+                 patch.object(jr,'collect',return_value=(rows,['headlines: PRIVATE BODY'])), \
+                 patch.object(jr,'translate',side_effect=ValueError('translation_numbers')), \
+                 patch.object(jr,'save') as save, patch('sys.stdout',new_callable=io.StringIO) as log:
+                self.assertIsNone(jr.main())
+                save.assert_not_called()
+                report=json.loads((Path(td)/'fetch-report.json').read_text(encoding='utf8'))
+                self.assertEqual(report['accepted'],0)
+                self.assertEqual(report['rejected'],len(rows))
+                self.assertIn('材料なし',log.getvalue())
+                self.assertNotIn('PRIVATE',log.getvalue()+json.dumps(report))
+                self.assertFalse((Path(td)/'preview.mp4').exists())
+
+    def test_mixed_rows_keep_accepted_material(self):
+        row=dict(kind='headline',source='スポニチ',original='初めて1点を決めた。',url='https://example.org/source')
+        text=f"{row['source']}では、{row['original']}。"
+        caption='According to Sponichi, he scored a goal for the first time.'
+        approved=jr.approved_segment('voice',text,caption)
+        translated=dict(english=caption,review=approved['review'])
+        report=jr.material_report([row,row])
+        with patch.object(jr,'translate',side_effect=[ValueError('translation_names'),translated]), \
+             patch('sys.stdout',new_callable=io.StringIO):
+            data=jr.from_rows(dict(sport='MLB',name_en='Shohei Ohtani'),[row,row],Mock(),report=report)
+        self.assertEqual((report['accepted'],report['rejected']),(1,1))
+        self.assertEqual(len(data['sources']),1)
+        jr.validate(data)
 
 
 if __name__=='__main__': unittest.main(argv=['test_japan_reacts'])
