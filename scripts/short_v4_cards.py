@@ -12,6 +12,10 @@ L, R = r3.LEFT, r3.SAFE_RIGHT
 TONE_COLORS = {'称賛': (40, 108, 80), '批判': (163, 56, 62), '中立': (75, 83, 98)}
 
 
+SHORT_ROUNDS = (('リーグ優勝決定シリーズ', '優勝決定S'), ('ワイルドカードシリーズ', 'WCシリーズ'),
+                ('ワールドシリーズ', 'WS'), ('地区シリーズ', '地区S'))
+
+
 def text(im, x, y, value, size=40, color=None, width=None, number=False, team_id=None):
     """文字の実際の上端を指定し、同じ実寸を安全域検査へ記録する。"""
     value = str(value)
@@ -26,8 +30,20 @@ def text(im, x, y, value, size=40, color=None, width=None, number=False, team_id
     font = r3.num_font if number else r3.font
     def advance(s):
         return font(s).getlength(value)+sum(inline_badge_width(names[v],s)+12 for v in runs if v in names)
+    start_size = size
     while width and advance(size) > width and size > 18:
         size -= 2
+    if width and advance(size) > width and not number:
+        # 止める前に、長いシリーズ名を短い呼び方にして収め直す（10/16 「リーグ優勝決定シリーズ　ガーディアンズ」で試合の回が出なかった）。
+        shorter = value
+        for long_name, short_name in SHORT_ROUNDS:
+            shorter = shorter.replace(long_name, short_name)
+        if shorter != value:
+            value = shorter
+            runs = re.split(pattern, value)
+            size = start_size
+            while advance(size) > width and size > 18:
+                size -= 2
     if width and advance(size) > width:
         raise ValueError('v4の文字が札の幅に入りません: '+value)
     f = font(size)
