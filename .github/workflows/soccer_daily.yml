@@ -274,7 +274,6 @@ jobs:
 
       - name: Commit record
         if: always()
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh \
             "soccer daily: ${{ github.run_id }}" \
@@ -295,3 +294,14 @@ jobs:
       - name: Confirm the video went out
         if: always() && steps.gate.outputs.count != '0'
         run: python scripts/verify_published.py --kind daily_soccer
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error

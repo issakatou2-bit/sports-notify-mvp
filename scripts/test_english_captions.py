@@ -86,6 +86,44 @@ class CaptionsTest(unittest.TestCase):
         self.assertEqual(guard.call_args.kwargs['mode'],'whole')
         self.assertEqual(caption_names.required('大谷翔平とドジャース'), {'大谷翔平':'Shohei Ohtani','ドジャース':'Los Angeles Dodgers'})
 
+    def test_oct16_game_titles_allow_team_and_kana_surname_forms(self):
+        # run38862920384の題。英訳は当日の未保存応答ではなく正しい対応の固定例。
+        pairs = [
+            ('【MLB】ブリュワーズがドジャースに6対4でリーグ優勝決定シリーズ突破｜ミッチェルの決勝本塁打　大谷翔平 #Shorts',
+             '[MLB] Brewers beat Dodgers 6-4 to advance from the NLCS | Mitchell hits the winning homer; Shohei Ohtani #Shorts'),
+            ('【MLB】ガーディアンズがレイズに3対2でリーグ優勝決定シリーズ2勝1敗に #Shorts',
+             '[MLB] Guardians beat Rays 3-2 to take a 2-1 lead in the ALCS #Shorts'),
+            ('ギャレット・ミッチェルと大谷翔平', 'Garrett Mitchell and Shohei Ohtani'),
+            ('ミッチェルとブリュワーズ', 'Garrett Mitchell and Milwaukee Brewers'),
+            ('大谷翔平とドジャース', 'SHOHEI OHTANI and Dodgers'),
+        ]
+        with patch.object(en.backstage_guard,'create',return_value=response(json.dumps([t for _,t in pairs]))), \
+             patch.object(en.token_log,'allowed',return_value=True), patch.object(en.token_log,'record'):
+            got = en.translate([(i,i+1,ja) for i,(ja,_) in enumerate(pairs)],Mock())
+        self.assertEqual([text for _,_,text in got],[text for _,text in pairs])
+
+    def test_wrong_names_and_missing_full_names_still_fail_with_name_only_logs(self):
+        for original, english, missing, extra in [
+            ('大谷翔平が活躍した試合', 'Aaron Judge shines in the game', '大谷翔平', 'Aaron Judge'),
+            ('ブリュワーズが勝利', 'Dodgers win', 'ブリュワーズ', 'Dodgers'),
+            ('ミッチェルの本塁打', 'Mitchellson homers', 'ミッチェル', ''),
+            ('ギャレット・ミッチェルの本塁打', 'Mitchell homers', 'ギャレット・ミッチェル', ''),
+            ('大谷翔平が活躍した試合', 'Ohtani shines in the game', '大谷翔平', 'Ohtani'),
+        ]:
+            with self.subTest(original=original), \
+                 patch.object(en.backstage_guard,'create',return_value=response(json.dumps([english]))), \
+                 patch.object(en.token_log,'allowed',return_value=True), patch.object(en.token_log,'record'), \
+                 patch('sys.stdout',new_callable=io.StringIO) as log:
+                with self.assertRaisesRegex(ValueError,'^translation_names$'):
+                    en.translate([(0,1,original)],Mock())
+                self.assertIn('translation_names Japanese=',log.getvalue())
+                self.assertIn(missing,log.getvalue())
+                self.assertIn('English=',log.getvalue())
+                if extra:
+                    self.assertIn(extra,log.getvalue())
+                self.assertNotIn(original,log.getvalue())
+                self.assertNotIn(english,log.getvalue())
+
     def test_budget_unknown_stale_future_date_and_units(self):
         # 窓口が無いときは1日の上限本数の範囲で付ける（10/14）。窓口があって読めないときは見送る。
         self.assertEqual(en.budget_reason(self.state,'v',{},NOW),'')

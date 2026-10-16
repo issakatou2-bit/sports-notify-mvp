@@ -129,6 +129,16 @@ jobs:
       # 取った数字を残す。1日ぶんだけでは比べようがない。
       - name: Commit the numbers
         if: always()
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh             "analytics: ${{ github.run_id }}"             data/analytics.json data/published_videos.json data/early_views.json
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error

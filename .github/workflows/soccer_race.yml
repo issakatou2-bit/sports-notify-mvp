@@ -311,7 +311,6 @@ jobs:
       # 差分は出ないが、**渡し忘れと区別が付かない**ので並べておく。
       - name: Commit the material
         if: always()
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh \
             "soccer race: ${{ github.run_id }}" \
@@ -353,3 +352,14 @@ jobs:
           PY
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error

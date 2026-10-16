@@ -228,7 +228,6 @@ jobs:
       # 残しておけば2本目は弾かれる。健康診断も週次を確認できるようになる。
       - name: Commit video record
         if: always()
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh \
             "weekly record: ${{ github.run_id }}" \
@@ -252,3 +251,14 @@ jobs:
             build/verdict/collespo_verdict.mp4
           retention-days: 7
           if-no-files-found: ignore
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
