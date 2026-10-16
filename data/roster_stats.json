@@ -1,325 +1,13 @@
 {
-  "updated_at": "2026-10-15T06:01:12.306773+00:00",
+  "updated_at": "2026-10-16T06:01:11.322581+00:00",
   "season": "2026",
   "teams": [
-    "レイズ",
-    "ガーディアンズ",
     "ドジャース",
-    "ブリュワーズ"
+    "ブリュワーズ",
+    "ガーディアンズ",
+    "レイズ"
   ],
   "players": [
-    {
-      "name": "Ben Williamson",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.238　3本塁打　26打点"
-    },
-    {
-      "name": "Brody Hopkins",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 0勝0敗　防御率5.06　7奪三振"
-    },
-    {
-      "name": "Bryan Baker",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 4勝2敗　防御率1.44　63奪三振"
-    },
-    {
-      "name": "Cam Booser",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 1勝0敗　防御率1.98　45奪三振"
-    },
-    {
-      "name": "Cedric Mullins",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.205　15本塁打　48打点"
-    },
-    {
-      "name": "Chandler Simpson",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.306　0本塁打　38打点"
-    },
-    {
-      "name": "Cole Sulser",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 1勝0敗　防御率4.31　56奪三振"
-    },
-    {
-      "name": "Drew Rasmussen",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 16勝5敗　防御率2.67　174奪三振"
-    },
-    {
-      "name": "Freddy Peralta",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 10勝11敗　防御率4.42　156奪三振"
-    },
-    {
-      "name": "Griffin Jax",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 8勝10敗　防御率3.53　116奪三振"
-    },
-    {
-      "name": "Ian Seymour",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 9勝7敗　防御率4.21　158奪三振"
-    },
-    {
-      "name": "Jonathan Aranda",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.274　22本塁打　92打点"
-    },
-    {
-      "name": "Jonny DeLuca",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.266　11本塁打　50打点"
-    },
-    {
-      "name": "Jorge Mateo",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.203　5本塁打　18打点"
-    },
-    {
-      "name": "Junior Caminero",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.276　42本塁打　101打点"
-    },
-    {
-      "name": "Kevin Kelly",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 6勝4敗　防御率2.44　63奪三振"
-    },
-    {
-      "name": "Liam Hicks",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.284　18本塁打　82打点"
-    },
-    {
-      "name": "Nick Fortes",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.258　6本塁打　35打点"
-    },
-    {
-      "name": "Nick Martinez",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 15勝6敗　防御率3.10　109奪三振"
-    },
-    {
-      "name": "Richie Palacios",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.235　10本塁打　57打点"
-    },
-    {
-      "name": "Ryan Vilade",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.245　11本塁打　43打点"
-    },
-    {
-      "name": "Steven Matz",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 6勝6敗　防御率5.49　61奪三振"
-    },
-    {
-      "name": "Taylor Walls",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.222　2本塁打　36打点"
-    },
-    {
-      "name": "Tyler Wells",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 5勝2敗　防御率2.38　72奪三振"
-    },
-    {
-      "name": "Victor Mesa Jr.",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.260　14本塁打　34打点"
-    },
-    {
-      "name": "Yandy Díaz",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.293　22本塁打　85打点"
-    },
-    {
-      "name": "Angel Genao",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.213　2本塁打　6打点"
-    },
-    {
-      "name": "Angel Martínez",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.254　18本塁打　62打点"
-    },
-    {
-      "name": "Austin Hedges",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.247　6本塁打　25打点"
-    },
-    {
-      "name": "Brayan Rocchio",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.253　15本塁打　73打点"
-    },
-    {
-      "name": "Cade Smith",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 6勝1敗　防御率1.95　107奪三振"
-    },
-    {
-      "name": "Chase DeLauter",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.287　16本塁打　67打点"
-    },
-    {
-      "name": "Daniel Espino",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 0勝0敗　防御率4.11　25奪三振"
-    },
-    {
-      "name": "David Fry",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.201　8本塁打　20打点"
-    },
-    {
-      "name": "Erik Sabrowski",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 5勝2敗　防御率2.61　76奪三振"
-    },
-    {
-      "name": "Foster Griffin",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 15勝6敗　防御率3.60　158奪三振"
-    },
-    {
-      "name": "Gavin Williams",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 14勝8敗　防御率3.76　248奪三振"
-    },
-    {
-      "name": "Hunter Gaddis",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 6勝3敗　防御率2.98　57奪三振"
-    },
-    {
-      "name": "Jo Adell",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.240　23本塁打　94打点"
-    },
-    {
-      "name": "Joey Cantillo",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 11勝9敗　防御率3.62　171奪三振"
-    },
-    {
-      "name": "José Ramírez",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.235　12本塁打　53打点"
-    },
-    {
-      "name": "Matt Festa",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 2勝3敗　防御率3.78　69奪三振"
-    },
-    {
-      "name": "Nathaniel Lowe",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.252　17本塁打　64打点"
-    },
-    {
-      "name": "Parker Messick",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 12勝9敗　防御率2.56　193奪三振"
-    },
-    {
-      "name": "Patrick Bailey",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.206　10本塁打　37打点"
-    },
-    {
-      "name": "Petey Halpin",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.225　4本塁打　14打点"
-    },
-    {
-      "name": "Shawn Armstrong",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 2勝1敗　防御率4.58　34奪三振"
-    },
-    {
-      "name": "Slade Cecconi",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 5勝7敗　防御率4.91　99奪三振"
-    },
-    {
-      "name": "Steven Kwan",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.282　3本塁打　32打点"
-    },
-    {
-      "name": "Tanner Bibee",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 7勝15敗　防御率4.36　148奪三振"
-    },
-    {
-      "name": "Tim Herrin",
-      "team": "ガーディアンズ",
-      "type": "pitcher",
-      "line": "今季 3勝4敗　防御率3.02　54奪三振"
-    },
-    {
-      "name": "Travis Bazzana",
-      "team": "ガーディアンズ",
-      "type": "batter",
-      "line": "今季 打率.245　15本塁打　57打点"
-    },
     {
       "name": "Alex Vesia",
       "team": "ドジャース",
@@ -631,6 +319,318 @@
       "team": "ブリュワーズ",
       "type": "batter",
       "line": "今季 打率.270　18本塁打　94打点"
+    },
+    {
+      "name": "Angel Genao",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.213　2本塁打　6打点"
+    },
+    {
+      "name": "Angel Martínez",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.254　18本塁打　62打点"
+    },
+    {
+      "name": "Austin Hedges",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.247　6本塁打　25打点"
+    },
+    {
+      "name": "Brayan Rocchio",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.253　15本塁打　73打点"
+    },
+    {
+      "name": "Cade Smith",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 6勝1敗　防御率1.95　107奪三振"
+    },
+    {
+      "name": "Chase DeLauter",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.287　16本塁打　67打点"
+    },
+    {
+      "name": "Daniel Espino",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 0勝0敗　防御率4.11　25奪三振"
+    },
+    {
+      "name": "David Fry",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.201　8本塁打　20打点"
+    },
+    {
+      "name": "Erik Sabrowski",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 5勝2敗　防御率2.61　76奪三振"
+    },
+    {
+      "name": "Foster Griffin",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 15勝6敗　防御率3.60　158奪三振"
+    },
+    {
+      "name": "Gavin Williams",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 14勝8敗　防御率3.76　248奪三振"
+    },
+    {
+      "name": "Hunter Gaddis",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 6勝3敗　防御率2.98　57奪三振"
+    },
+    {
+      "name": "Jo Adell",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.240　23本塁打　94打点"
+    },
+    {
+      "name": "Joey Cantillo",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 11勝9敗　防御率3.62　171奪三振"
+    },
+    {
+      "name": "José Ramírez",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.235　12本塁打　53打点"
+    },
+    {
+      "name": "Matt Festa",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 2勝3敗　防御率3.78　69奪三振"
+    },
+    {
+      "name": "Nathaniel Lowe",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.252　17本塁打　64打点"
+    },
+    {
+      "name": "Parker Messick",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 12勝9敗　防御率2.56　193奪三振"
+    },
+    {
+      "name": "Patrick Bailey",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.206　10本塁打　37打点"
+    },
+    {
+      "name": "Petey Halpin",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.225　4本塁打　14打点"
+    },
+    {
+      "name": "Shawn Armstrong",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 2勝1敗　防御率4.58　34奪三振"
+    },
+    {
+      "name": "Slade Cecconi",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 5勝7敗　防御率4.91　99奪三振"
+    },
+    {
+      "name": "Steven Kwan",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.282　3本塁打　32打点"
+    },
+    {
+      "name": "Tanner Bibee",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 7勝15敗　防御率4.36　148奪三振"
+    },
+    {
+      "name": "Tim Herrin",
+      "team": "ガーディアンズ",
+      "type": "pitcher",
+      "line": "今季 3勝4敗　防御率3.02　54奪三振"
+    },
+    {
+      "name": "Travis Bazzana",
+      "team": "ガーディアンズ",
+      "type": "batter",
+      "line": "今季 打率.245　15本塁打　57打点"
+    },
+    {
+      "name": "Ben Williamson",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.238　3本塁打　26打点"
+    },
+    {
+      "name": "Brody Hopkins",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 0勝0敗　防御率5.06　7奪三振"
+    },
+    {
+      "name": "Bryan Baker",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 4勝2敗　防御率1.44　63奪三振"
+    },
+    {
+      "name": "Cam Booser",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 1勝0敗　防御率1.98　45奪三振"
+    },
+    {
+      "name": "Cedric Mullins",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.205　15本塁打　48打点"
+    },
+    {
+      "name": "Chandler Simpson",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.306　0本塁打　38打点"
+    },
+    {
+      "name": "Cole Sulser",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 1勝0敗　防御率4.31　56奪三振"
+    },
+    {
+      "name": "Drew Rasmussen",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 16勝5敗　防御率2.67　174奪三振"
+    },
+    {
+      "name": "Freddy Peralta",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 10勝11敗　防御率4.42　156奪三振"
+    },
+    {
+      "name": "Griffin Jax",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 8勝10敗　防御率3.53　116奪三振"
+    },
+    {
+      "name": "Ian Seymour",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 9勝7敗　防御率4.21　158奪三振"
+    },
+    {
+      "name": "Jonathan Aranda",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.274　22本塁打　92打点"
+    },
+    {
+      "name": "Jonny DeLuca",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.266　11本塁打　50打点"
+    },
+    {
+      "name": "Jorge Mateo",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.203　5本塁打　18打点"
+    },
+    {
+      "name": "Junior Caminero",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.276　42本塁打　101打点"
+    },
+    {
+      "name": "Kevin Kelly",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 6勝4敗　防御率2.44　63奪三振"
+    },
+    {
+      "name": "Liam Hicks",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.284　18本塁打　82打点"
+    },
+    {
+      "name": "Nick Fortes",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.258　6本塁打　35打点"
+    },
+    {
+      "name": "Nick Martinez",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 15勝6敗　防御率3.10　109奪三振"
+    },
+    {
+      "name": "Richie Palacios",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.235　10本塁打　57打点"
+    },
+    {
+      "name": "Ryan Vilade",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.245　11本塁打　43打点"
+    },
+    {
+      "name": "Steven Matz",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 6勝6敗　防御率5.49　61奪三振"
+    },
+    {
+      "name": "Taylor Walls",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.222　2本塁打　36打点"
+    },
+    {
+      "name": "Tyler Wells",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "今季 5勝2敗　防御率2.38　72奪三振"
+    },
+    {
+      "name": "Victor Mesa Jr.",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.260　14本塁打　34打点"
+    },
+    {
+      "name": "Yandy Díaz",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "今季 打率.293　22本塁打　85打点"
     }
   ],
   "league": [
@@ -8018,6 +8018,11 @@
       "name": "Patrick Wisdom",
       "team": "マリナーズ",
       "id": 621550
+    },
+    {
+      "name": "Brett Wisely",
+      "team": "ブレーブス",
+      "id": 689172
     },
     {
       "name": "Bobby Witt Jr.",

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-15T06:02:08.702164+00:00",
+  "updated_at": "2026-10-16T06:01:59.359478+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -18,60 +18,56 @@
       "name_en": "Milwaukee Brewers",
       "mentions": 14,
       "tone": "好調",
-      "gist": "ブリュワーズが6-2、NLCS3連勝でWS王手"
+      "gist": "ブリュワーズ、1982年以来WS進出"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 9,
+      "mentions": 8,
       "tone": "不振",
-      "gist": "ドジャース0-3、ブリュワーズに6-2敗戦"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ALCS第3戦前、ホセがクリーブランドの星と紹介"
+      "gist": "ドジャース、NLCS4連敗で3連覇ならず"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ALCS第3戦FAQ、ロースター編成の舞台裏"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "フィリーズがマティングリー監督と2年契約で再登板"
-    },
-    {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 1,
+      "mentions": 3,
       "tone": "不振",
-      "gist": "アストロズがホー・エスパダ監督と決別"
+      "gist": "レイズ、第3戦13三振3安打で敗戦"
     },
     {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "ガーディアンズ、意外な本塁打でALCS挽回"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
       "mentions": 1,
       "tone": "話題",
-      "gist": "バートマン事件から23周年"
+      "gist": "パドレス有望株がFLで118.2mph弾"
+    },
+    {
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "テキサス・カリフォルニア勢なしWSは2016年以来"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
+      "mentions": 5
+    },
+    {
+      "name": "山本由伸",
       "mentions": 1
     }
   ]
