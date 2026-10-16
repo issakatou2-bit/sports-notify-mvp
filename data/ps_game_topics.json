@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-16T03:58:21.822898+00:00",
+  "updated_at": "2026-10-16T06:27:40.570001+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -34,10 +34,6 @@
         [
           "勝ち投手・セーブ",
           "勝ち D.L.ホール（2回と3分の1を無失点）　セーブ トレバー・メギル"
-        ],
-        [
-          "ハイライトのコメント欄から",
-          "「ブルワーズ、いじめられっ子からいじめっ子になったな。間違いなく今の球界で断トツ最強」"
         ]
       ],
       "japanese": [
@@ -55,13 +51,7 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": {
-        "said": "ブルワーズ、いじめられっ子からいじめっ子になったな。間違いなく今の球界で断トツ最強",
-        "text": "The Brewers went from the bullied to the bully. They’re by far the best team in baseball",
-        "url": "https://www.youtube.com/watch?v=l58yZ7LbKdo",
-        "likes": 2419,
-        "at": "2026-10-15T03:43:04Z"
-      },
+      "voice": null,
       "headline": null,
       "game_pk": 849811,
       "game_v4": {
@@ -139,10 +129,6 @@
       "jp_first": true,
       "next_team_id": 119,
       "finished_at": "2026-10-15T03:11:16.421000+00:00",
-      "next_game_jp": {
-        "day": "10月16日",
-        "game": 4
-      },
       "v3": {
         "who": "ブリュワーズ　リーグ優勝決定シリーズ第3戦",
         "big": "6-2",
@@ -160,7 +146,7 @@
             "score": "3"
           }
         ],
-        "ticker": "次の試合　日本時間10月16日　リーグ優勝決定シリーズ第4戦　　日本人選手　大谷翔平 2打数1安打　1四球（ドジャース）　佐々木朗希 3分の1回　1失点　0奪三振（ドジャース）"
+        "ticker": "日本人選手　大谷翔平 2打数1安打　1四球（ドジャース）　佐々木朗希 3分の1回　1失点　0奪三振（ドジャース）"
       }
     },
     {
@@ -338,6 +324,10 @@
           "ケイド・スミス"
         ],
         [
+          "ハイライトのコメント欄から",
+          "「15:33のとこ最高。あのファン、ボールを取りにいこうとしないんだよね。カメラに手を振りながらクワンに捕らせてる、お見事です!」"
+        ],
+        [
           "ガーディアンズの番記者の投稿から",
           "「ピーティー・ハルピンが打った瞬間、バットをほぼ真上に放り投げた。2ランで3-2、クリーブランドが勝ち越し。」"
         ]
@@ -355,7 +345,13 @@
         "url": "https://bsky.app/profile/timstebbins.bsky.social/post/3mxwp5pyscs2z",
         "at": "2026-10-15T18:33:06.592Z"
       },
-      "voice": null,
+      "voice": {
+        "said": "15:33のとこ最高。あのファン、ボールを取りにいこうとしないんだよね。カメラに手を振りながらクワンに捕らせてる、お見事です!",
+        "text": "15:33 I love how that fan doesn't try to get the ball. She lets Kwan catch it as she waves in the camera, well done Miss!",
+        "url": "https://www.youtube.com/watch?v=FI5hnCF0CBY",
+        "likes": 623,
+        "at": "2026-10-15T20:45:01Z"
+      },
       "headline": null,
       "game_pk": 849818,
       "game_v4": {
@@ -427,6 +423,10 @@
       "jp_first": false,
       "next_team_id": 114,
       "finished_at": "2026-10-15T19:39:04.112000+00:00",
+      "next_game_jp": {
+        "day": "10月17日",
+        "game": 4
+      },
       "v3": {
         "who": "ガーディアンズ　リーグ優勝決定シリーズ第3戦",
         "big": "3-2",
@@ -444,7 +444,7 @@
             "score": "1"
           }
         ],
-        "ticker": "ガーディアンズ 3対2 レイズ　本拠地で勝利　シリーズはガーディアンズの2勝1敗"
+        "ticker": "次の試合　日本時間10月17日　リーグ優勝決定シリーズ第4戦"
       }
     }
   ]

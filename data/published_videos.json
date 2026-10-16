@@ -10614,5 +10614,47 @@
       "published_at": "2026-10-15T10:06:03.449172+00:00",
       "publish_at": "2026-10-15T10:30:00Z"
     }
+  },
+  "asset": {
+    "season_story_L_119_158": {
+      "video_id": "QYAEPt9xIog",
+      "url": "https://youtu.be/QYAEPt9xIog",
+      "title": "【MLB】ブリュワーズ、バウアーズが4安打1本塁打｜ドジャースに4勝0敗でリーグ優勝決定シリーズ突破　大谷翔平・佐々木朗希 #Shorts",
+      "published_at": "2026-10-16T06:42:52.256694+00:00",
+      "publish_at": "2026-10-16T14:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-16",
+        "kind": "asset:season_story",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 4
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_player_660271": {
+      "video_id": "oUnzHmg2RZQ",
+      "url": "https://youtu.be/oUnzHmg2RZQ",
+      "title": "【MLB】大谷翔平｜2026年シーズンまとめ　ドジャース #Shorts",
+      "published_at": "2026-10-16T06:48:44.327552+00:00",
+      "publish_at": "2026-10-16T14:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-16",
+        "kind": "asset:season_player",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    }
   }
 }
