@@ -124,6 +124,13 @@ def budget_reason(state, video, env=None, now=None):
     return ''
 
 
+class TranslationRejected(ValueError):
+    """診断用の応答は属性に保持。通常ログ・例外文字列には本文を含めない。"""
+    def __init__(self, code, original, english):
+        super().__init__(code)
+        self.original, self.english = original, english
+
+
 def translate(cues, ai):
     source = [text for _, _, text in cues]
     if any(backstage_guard.violations(text) for text in source):
@@ -131,6 +138,11 @@ def translate(cues, ai):
     prompt = ('Translate each Japanese caption to English. Return ONLY a JSON array of strings, '
               'one per input cue in exactly the same order. Do not merge or split cues. '
               'Keep facts, numbers, speakers, and quotation attribution; add no claims or explanations. '
+              'Preserve every count, ordinal and calendar day explicitly, preferably with digits: '
+              'In baseball headlines, 1号 means the first home run (not merely a solo homer), '
+              '1安打 means one hit and 1回 means the first inning. 第1戦 means Game 1. '
+              '21日 means the 21st: never replace a calendar day with a month, weekday or relative date, '
+              'and never infer a month absent from the source. Do not shorten away numeric details. '
               'Use the full official spellings in this canonical name table wherever those names occur. '
               'Other player names must use MLB official English spellings. No markdown.\n'
               + json.dumps({ja: name for text in source for ja, name in caption_names.required(text).items()}, ensure_ascii=False) + '\nINPUT:\n'
@@ -148,20 +160,20 @@ def translate(cues, ai):
         raise ValueError('translation_count')
     for original, english in zip(source, result):
         if isinstance(english, str) and not english.strip():
-            raise ValueError('translation_empty')
+            raise TranslationRejected('translation_empty',original,english)
         if isinstance(english, str) and backstage_guard.violations(english):
-            raise ValueError('translation_backstage')
+            raise TranslationRejected('translation_backstage',original,english)
         if (not isinstance(english, str) or not english.strip() or len(english) > 1000
                 or re.search(r'[\u3040-\u30ff\u3400-\u9fff]', english)
                 or backstage_guard.violations(english)):
-            raise ValueError('translation_invalid')
+            raise TranslationRejected('translation_invalid',original,english)
         if any(name not in english for name in caption_names.required(original).values()):
-            raise ValueError('translation_names')
+            raise TranslationRejected('translation_names',original,english)
         missing, extra = number_mismatches(original, english)
         if missing or extra:
             # 原稿やモデルの応答を出さず、照合で余った数字だけを残す。
             print(f'[warn] 英語字幕: translation_numbers Japanese={missing} English={extra}')
-            raise ValueError('translation_numbers')
+            raise TranslationRejected('translation_numbers',original,english)
     return [(start, end, text.strip()) for (start, end, _), text in zip(cues, result)]
 
 
@@ -189,7 +201,7 @@ _UNDER_HUNDRED = ('(?:' + '|'.join(_TENS) + r')(?:[\s-]+(?:' + _UNIT_WORDS + '))
 _WORD_NUMBERS = re.compile(r'\b(?:'
     + '(?:' + '|'.join(_CARDINALS[1:10]) + r')[\s-]+hundred(?:[\s-]+(?:and[\s-]+)?(?:'
     + _UNDER_HUNDRED + '))?|' + _UNDER_HUNDRED + r')\b', re.IGNORECASE)
-_COUNT_NOUN = r'(?:home runs?|runs?|hits?|walks?|strikeouts?|wins?|loss(?:es)?|outs?|homers?|innings?|goals?)'
+_COUNT_NOUN = r'(?:home runs?|runs?|hits?|singles?|walks?|strikeouts?|wins?|loss(?:es)?|outs?|homers?|innings?|goals?)'
 _FRACTION_WORD = r'(?:third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)'
 
 
@@ -209,6 +221,10 @@ def number_mismatches(original, english):
     """
     original = unicodedata.normalize('NFKC', original)
     english = unicodedata.normalize('NFKC', english).lower()
+    if re.search(r'初|(?<!\d)1(?:回|戦)',original):
+        # opening inning / series opener も「初回」「第1戦」と同じ1。
+        english = re.sub(r'\bopening(?=\s+(?:inning|game|pitch|round|day)\b)', 'first', english)
+        english = re.sub(r'\bopener\b', 'first game', english)
     japanese_firsts = len(re.findall(r'初めて|最初|(?<![当最])初(?![期心級旬頭夏秋冬春])', original))
     matched_firsts = min(japanese_firsts, len(re.findall(r'\b(?:first|1st)\b', english)))
     # 「44年ぶり」は "first ... in 44 years" とも訳す。ここでのfirstは
@@ -227,9 +243,16 @@ def number_mismatches(original, english):
     }
     english = re.sub(r'\b(one|two|three|four|five|six|seven|eight|nine|\d+)[\s-]+('
                      + _FRACTION_WORD + r')s\b', r'\1 \2', english)
-    if re.search(r'\d{1,2}月', original):
+    if re.search(r'\d{1,2}[月日]', original):
+        def month_number(match):
+            word=match.group()
+            if (word in ('may','march') and not re.search(r'\d{1,2}月',original)
+                    and not re.match(r'\s+\d',english[match.end():])
+                    and not re.search(r'\b(?:in|of|on)\s*$',english[:match.start()])):
+                return word  # 助動詞may・動詞marchを月として足さない。
+            return _MONTHS[word]
         english = re.sub(r'\b(?:' + '|'.join(_MONTHS) + r')\b',
-                         lambda m: _MONTHS[m.group()], english)
+                         month_number, english)
     english = _WORD_NUMBERS.sub(_word_number, english)
     pattern = r'\d+(?:[.,]\d+)?'
     want = Counter(re.findall(pattern, original))

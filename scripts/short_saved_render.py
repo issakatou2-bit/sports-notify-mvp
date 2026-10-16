@@ -70,9 +70,9 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
     times=[max(duration,len(seg['caption_en'].split())/3) if seg.get('caption_en') else duration for seg,duration in zip(narr['segments'],times)]
     times = [math.ceil(t*30)/30 for t in times]
     if sum(times) > 40: raise ValueError('40秒を超えるため原稿を短くしてください')
-    rr.ensure_ffmpeg(out)
+    ffmpeg = rr.ensure_ffmpeg(out)
     track = vc.build_narration_track(audio, times, out) if voiced else None
-    cmd = ['ffmpeg', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', '30', '-i', '-']
+    cmd = [ffmpeg, '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', '30', '-i', '-']
     if track: cmd += ['-i', str(track), '-c:a', 'aac']
     cmd += ['-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-t', str(sum(times)), '-movflags', '+faststart', str(out/filename)]
     images = []; clock = 0; previous_frame=None
@@ -102,13 +102,13 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
     (out/'audio/manifest.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf8')
     from preview_unified_v3 import sheet
     sheet(images, [s['kind'] for s in narr['segments']], out/'all-screens.png', columns=3)
-    probe = subprocess.run(['ffmpeg','-hide_banner','-i',str(out/filename)],capture_output=True,text=True,encoding='utf8',errors='replace')
+    probe = subprocess.run([ffmpeg,'-hide_banner','-i',str(out/filename)],capture_output=True,text=True,encoding='utf8',errors='replace')
     match = re.search(r'Duration: (\d+):(\d+):([\d.]+)',probe.stderr)
     if not match: raise ValueError('実動画の尺を取得できません')
     actual = int(match[1])*3600+int(match[2])*60+float(match[3])
     if actual>40 or abs(actual-sum(times))>.1: raise ValueError('実動画の尺が計画と異なります')
     if voiced and not re.search(r'Stream .*Audio:',probe.stderr): raise ValueError('実動画に音声がありません')
-    decode = subprocess.run(['ffmpeg','-v','error','-i',str(out/filename),'-f','null','-'],capture_output=True)
+    decode = subprocess.run([ffmpeg,'-v','error','-i',str(out/filename),'-f','null','-'],capture_output=True)
     if decode.returncode or decode.stderr: raise ValueError('実動画の読み出しに失敗')
     receipt = dict(video_seconds=actual, voice_seconds=sum(a['duration'] for a in audio),
                    screens=len(images), layout='PASS', font='bundled NotoSansJP', published=False,

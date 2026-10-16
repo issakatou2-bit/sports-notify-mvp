@@ -5,6 +5,8 @@ import json
 import os
 from pathlib import Path
 import tempfile
+from datetime import datetime, timezone
+import urllib.parse
 from types import SimpleNamespace as NS
 import unittest
 from unittest.mock import Mock, patch
@@ -131,6 +133,80 @@ class Tests(unittest.TestCase):
         self.assertEqual((report['accepted'],report['rejected']),(1,1))
         self.assertEqual(len(data['sources']),1)
         jr.validate(data)
+
+    def test_public_headline_diagnostics_exclude_comments(self):
+        original='大谷翔平は21日に1号'
+        english='Shohei Ohtani goes deep in September'
+        for kind in ('headline','youtube','reporter','reddit'):
+            item=dict(kind=kind,source='スポニチ',url='https://www.sponichi.co.jp/baseball/news/example.html',
+                      original='スポニチでは、'+original+'。',headline_original=original)
+            with self.subTest(kind=kind),patch.object(jr.guard,'create',return_value=response(json.dumps([english]))), \
+                 patch('token_log.allowed',return_value=True),patch('token_log.record'), \
+                 patch('sys.stdout',new_callable=io.StringIO) as log:
+                with self.assertRaisesRegex(ValueError,'^translation_numbers$') as error:
+                    jr.translate(Mock(),item)
+            self.assertNotIn(original,str(error.exception))
+            if kind=='headline':
+                detail=json.loads(next(line.split(': ',1)[1] for line in log.getvalue().splitlines() if '公開見出し' in line))
+                self.assertEqual((detail['original'],detail['english']),(original,english))
+                self.assertEqual((detail['missing'],detail['extra']),(['1','21'],['9']))
+            else:
+                self.assertNotIn(original,log.getvalue())
+                self.assertNotIn(english,log.getvalue())
+        for url in ('https://evil.example/a','https://www.sponichi.co.jp.evil.example/a','https://[broken'):
+            self.assertFalse(jr.public_headline(dict(item,kind='headline',url=url)))
+
+    def test_headlines_use_verified_media_without_sns_registry(self):
+        import xml.etree.ElementTree as ET
+        feed=ET.Element('rss');channel=ET.SubElement(feed,'channel')
+        inputs=[('Full-Count',f'大谷翔平の投球への評価{i}') for i in range(7)]
+        inputs += [inputs[0],('サッカーキング','大谷翔平の話題'),('個人ブログ','大谷翔平の話題'),
+                   ('Yahooコメント','大谷翔平の話題'),('5ch','大谷翔平の話題')]
+        for i,(source,title) in enumerate(inputs):
+            row=ET.SubElement(channel,'item')
+            for key,value in dict(title=title+' - '+source,source=source,
+                                  link=f'https://news.google.com/rss/articles/item{i}',pubDate='Fri, 16 Oct 2026 00:00:00 GMT').items():
+                ET.SubElement(row,key).text=value
+        config=jr.read(jr.ROOT/'data/japan_reacts_sources.json')
+        with patch('requests.get',return_value=NS(text=ET.tostring(feed,encoding='unicode'),raise_for_status=Mock())) as get:
+            rows=jr.collect_headlines(config,dict(sport='MLB',name_jp='大谷翔平',name_en='Shohei Ohtani'))
+        self.assertEqual(len(rows),7)
+        self.assertTrue(all(row['source']=='Full-Count' for row in rows))
+        query=urllib.parse.parse_qs(urllib.parse.urlsplit(get.call_args.args[0]).query)['q'][0]
+        self.assertEqual(query,'大谷翔平 when:2d')
+        self.assertEqual(config['reporters'],[])
+        with patch('topic_hub.enabled',return_value=False),patch.object(jr,'collect_youtube',return_value=([],[])), \
+             patch.object(jr,'collect_posts',return_value=[]),patch.object(jr,'collect_headlines',return_value=rows):
+            collected,reasons=jr.collect(config,dict(sport='MLB',name_en='Shohei Ohtani'))
+        self.assertEqual(len(collected),7)
+        self.assertTrue(any('未登録' in reason for reason in reasons))
+
+    def test_candidate_pool_survives_three_rejections_and_caps_work(self):
+        row=dict(kind='headline',source='スポニチ',original='投球を高く評価した。',url='https://www.sponichi.co.jp/example')
+        rows=[dict(row) for _ in range(7)];report=jr.material_report(rows)
+        text='スポニチでは、投球を高く評価した。。';english='According to Sponichi, the pitching was highly praised.'
+        approved=jr.approved_segment('voice',text,english)
+        translated=dict(english=english,review=approved['review'])
+        with patch.object(jr,'translate',side_effect=[ValueError('translation_numbers')]*3+[translated]*3) as translate, \
+             patch('sys.stdout',new_callable=io.StringIO):
+            data=jr.from_rows(dict(sport='MLB',name_en='Shohei Ohtani'),rows,Mock(),report=report)
+        self.assertEqual((report['collected'],report['accepted'],report['rejected'],report['unreviewed']),(7,3,3,1))
+        self.assertEqual(translate.call_count,6)
+        self.assertEqual(len(data['sources']),3)
+        jr.validate(data)
+
+    def test_youtube_one_blocked_video_does_not_discard_the_channel(self):
+        now=datetime.now(timezone.utc).isoformat()
+        channel=dict(name='SPOTV NOW',handle='official',channel_id='official',sport='MLB')
+        info=dict(items=[dict(id='official',contentDetails=dict(relatedPlaylists=dict(uploads='playlist')))])
+        playlist=dict(items=[dict(snippet=dict(title='MLB ハイライト',publishedAt=now,resourceId=dict(videoId=v))) for v in ('blocked','good')])
+        row=dict(kind='youtube',original='大谷翔平の投球が素晴らしい。')
+        get=Mock(side_effect=[info,playlist])
+        with patch.dict(os.environ,dict(YOUTUBE_API_KEY='test')), \
+             patch.object(jr,'fetch_comments',side_effect=[ValueError('comments disabled'),[row]]) as fetch:
+            rows,reasons=jr.collect_youtube(dict(youtube=[channel]),'MLB',dict(name_jp='大谷翔平'),get=get)
+        self.assertEqual(rows,[row]);self.assertEqual(len(reasons),1)
+        self.assertEqual(fetch.call_count,2)
 
 
 if __name__=='__main__': unittest.main(argv=['test_japan_reacts'])
