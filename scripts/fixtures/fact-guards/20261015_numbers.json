@@ -1,0 +1,40 @@
+{
+  "source": "https://statsapi.mlb.com/api/v1.1/game/849811/feed/live",
+  "date": "2026-10-15",
+  "official_game": 849811,
+  "players": [
+    {
+      "name": "大谷翔平",
+      "type": "batter",
+      "team": "ドジャース",
+      "game_facts": {
+        "runs": 0,
+        "hits": 1,
+        "rbi": 0
+      }
+    }
+  ],
+  "race": {
+    "date": "2026-10-15",
+    "series": [
+      {
+        "round_jp": "リーグ優勝決定シリーズ",
+        "played": 3,
+        "need": 4,
+        "over": false,
+        "teams": [
+          {
+            "name": "ドジャース",
+            "players": [
+              "大谷翔平"
+            ]
+          },
+          {
+            "name": "ブリュワーズ",
+            "players": []
+          }
+        ]
+      }
+    ]
+  }
+}
