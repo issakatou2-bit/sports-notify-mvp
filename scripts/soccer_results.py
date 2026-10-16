@@ -261,20 +261,21 @@ def validate_data(data):
 
 def title(data):
     if not data.get('can_make'):return ''
+    import club_display_names as names
     if data.get('preview_followup'):
-        import club_display_names as names
         row=data['preview_followup']['games'][0];g=next(g for g in data['games'] if g['id']==row['event_id'])
         answer=row.get('answer');suffix='｜'+answer['name']+action(answer) if answer else ''
-        return f"【欧州サッカー】昨夜の注目試合 {names.display(g['home']['name_en'],short=True)} {g['score']['home']}-{g['score']['away']} {names.display(g['away']['name_en'],short=True)}{suffix} #Shorts"
+        return names.youtube_title(f"【欧州サッカー】昨夜の注目試合 {names.display(g['home']['name_en'])} {g['score']['home']}-{g['score']['away']} {names.display(g['away']['name_en'])}{suffix} #Shorts")
     lead=next(p for p in data['players'] if p['status']!='none');game=next(g for g in data['games'] if g['id']==lead['event_id'])
-    score=f"{game['home']['name_jp']} {game['score']['home']}-{game['score']['away']} {game['away']['name_jp']}"
+    score=f"{names.display(game['home']['name_en'])} {game['score']['home']}-{game['score']['away']} {names.display(game['away']['name_en'])}"
     others=' ほか' if len(data['games'])>1 else ''
-    return f"【欧州サッカー】{lead['name']}{action(lead)}｜{score}{others} 日本人選手の結果 #Shorts"
+    return names.youtube_title(f"【欧州サッカー】{lead['name']}{action(lead)}｜{score}{others} 日本人選手の結果 #Shorts")
 
 
 def description_lines(data):
+    import club_display_names as names
     lines=[f"{data['date_jst']}の夜〜翌朝（日本時間）に終わった欧州5大リーグの試合から、日本人選手本人の結果です。"]
-    lines += [f"・{p['name']}（{p['club']}）{STATUS[p['status']]}"+ ''.join(f" / {p[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト'),('yellow_cards','警告'),('red_cards','退場')) if p.get(k) is not None) for p in data['players']]
+    lines += [f"・{p['name']}（{names.display(p['club'])}）{STATUS[p['status']]}"+ ''.join(f" / {p[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト'),('yellow_cards','警告'),('red_cards','退場')) if p.get(k) is not None) for p in data['players']]
     lines += ['', '出典: '+SOURCE+'。終了時刻・出場区分・個人成績・得点経過はESPN。football-data.orgのスコアを取得できた試合は照合し、不一致は除外します。',
               '出場なしは一覧のみ。クラブの勝敗を選手本人の活躍とは扱っていません。']
     return lines

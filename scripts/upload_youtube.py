@@ -1687,7 +1687,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     import press_names
     title = press_names.press_title(title)
     title = club_display_title(title)
-    title = title[:100]  # YouTubeのタイトル上限
+    if sport == 'soccer' or kind in ('soccer_race', 'soccer_week', 'soccer_results', 'soccer_voices'):
+        import club_display_names
+        title = club_display_names.youtube_title(title)
+    else:
+        title = title[:100]  # YouTubeのタイトル上限
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
@@ -2004,8 +2008,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
 def club_display_description(text: str) -> str:
     """説明欄のクラブの古い書き方（「アストン・ヴィラ」など）を表示名に。表は notability_engine の1か所。"""
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
-    import notability_engine as ne
-    return ne.club_display_text(text)[:5000]
+    import club_display_names
+    return club_display_names.display_text(text, include_short=True)[:5000]
 
 
 def main():
