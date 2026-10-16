@@ -285,6 +285,51 @@ class NumbersSurviveTest(unittest.TestCase):
                          "[warn] 英語字幕: translation_numbers Japanese=['2'] English=['3']\n")
         self.assertEqual(en.number_mismatches('2安打2打点', 'two hits'), (['2'], []))
 
+    def test_synthetic_headline_number_forms(self):
+        # 10/16の応答は未保存。見出し特有の同義表現と脱落を固定材料で区別する。
+        examples=(
+            ('大谷翔平1号','Shohei Ohtani hits his first homer'),
+            ('大谷翔平1安打','Shohei Ohtani records a single'),
+            ('大谷翔平1安打','Shohei Ohtani records one hit'),
+            ('21日に第1戦','Game 1 on the twenty-first'),
+            ('第1戦の1回','The first inning of Game 1'),
+            ('初回に1安打','A hit in the opening inning'),
+            ('第1戦に1安打','A single in the series opener'),
+            ('1回に1号','His first home run in the first inning'),
+            ('初回に1安打、21日に第1戦','A single in the opening inning; Game 1 on the 21st'),
+            ('21日に出場する可能性','He may play on the 21st'),
+        )
+        for original,english in examples:
+            with self.subTest(original=original,english=english):
+                self.assertEqual(en.number_mismatches(original,english),([],[]))
+        with patch.object(en.backstage_guard,'create',return_value=response(json.dumps([t for _,t in examples]))), \
+             patch.object(en.token_log,'allowed',return_value=True),patch.object(en.token_log,'record'):
+            en.translate([(i,i+1,original) for i,(original,_) in enumerate(examples)],Mock())
+
+    def test_headline_omissions_and_changed_numbers_still_fail(self):
+        for original,english in (
+            ('大谷翔平1号','Shohei Ohtani hits his second homer'),
+            ('大谷翔平1号','Shohei Ohtani goes deep'),
+            ('大谷翔平1安打','Shohei Ohtani records two hits'),
+            ('大谷翔平2安打','Shohei Ohtani records a single'),
+            ('21日に第1戦','Game 1 on the 9th'),
+            ('第1戦の1回','The first inning of Game 2'),
+            ('1回に1安打','A hit in the second inning'),
+            ('初回に1安打','A single in the second inning'),
+            ('21日に1号','A homer in September'),
+        ):
+            with self.subTest(original=original,english=english):
+                self.assertTrue(any(en.number_mismatches(original,english)))
+        self.assertEqual(en.number_mismatches('大谷翔平は21日に1号','Shohei Ohtani goes deep in September'),(['1','21'],['9']))
+
+    def test_translation_instruction_preserves_headline_details(self):
+        with patch.object(en.backstage_guard,'create',return_value=response('["Game 1 on the 21st"]')) as create, \
+             patch.object(en.token_log,'allowed',return_value=True),patch.object(en.token_log,'record'):
+            en.translate([(0,1,'21日に第1戦')],Mock())
+        prompt=create.call_args.kwargs['messages'][0]['content']
+        for text in ('1号','1安打','第1戦','1回','21日','never infer a month'):
+            self.assertIn(text,prompt)
+
 
 if __name__ == '__main__':
     result=unittest.main(argv=[sys.argv[0]],exit=False).result

@@ -238,11 +238,17 @@ def durations(segments,audio):
 
 
 def ensure_ffmpeg(out):
-    if shutil.which('ffmpeg'):return
+    installed=shutil.which('ffmpeg')
+    if installed:return installed
     import imageio_ffmpeg
-    directory=out/'bin';directory.mkdir(exist_ok=True)
-    shutil.copyfile(imageio_ffmpeg.get_ffmpeg_exe(),directory/('ffmpeg.exe' if os.name=='nt' else 'ffmpeg'))
+    import stat
+    directory=(Path(out)/'bin').resolve();directory.mkdir(parents=True,exist_ok=True)
+    executable=directory/('ffmpeg.exe' if os.name=='nt' else 'ffmpeg')
+    # Linuxでcopyfileすると実行権限が消える。共通の音声結合もPATHから使う。
+    shutil.copy2(imageio_ffmpeg.get_ffmpeg_exe(),executable)
+    if os.name!='nt':executable.chmod(executable.stat().st_mode|stat.S_IXUSR|stat.S_IXGRP|stat.S_IXOTH)
     os.environ['PATH']=str(directory)+os.pathsep+os.environ.get('PATH','')
+    return str(executable)
 
 
 def render_video(data,narr,audio,out):
