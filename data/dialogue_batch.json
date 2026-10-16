@@ -1,16 +1,27 @@
 {
   "date": "2026-10-16",
-  "submits": 1,
+  "submits": 2,
   "stages": {
     "draft": {
       "key": "a0ee64780f695c1ce80e138b53d4fa6b123cfa239e4f3f107a3350f407e69933",
       "n": 1,
       "custom_id": "dlg-draft-a0ee64780f695c1c-1",
       "batch_id": "msgbatch_01DtcqRUxwKiDPTht4wnZpds",
+      "status": "used",
+      "tries": 1,
+      "recorded": true,
+      "submitted_at": "2026-10-16T15:27:58+09:00",
+      "model": "claude-sonnet-5-5"
+    },
+    "more": {
+      "key": "9f3ae00313b9b805a8b9b091595ee8d43d8535b4c87528813cb62828cff8e623",
+      "n": 1,
+      "custom_id": "dlg-more-9f3ae00313b9b805-1",
+      "batch_id": "msgbatch_01KYqXnUcPNHWQGYL8XTqGYk",
       "status": "submitted",
       "tries": 1,
       "recorded": false,
-      "submitted_at": "2026-10-16T15:27:58+09:00",
+      "submitted_at": "2026-10-16T15:30:24+09:00",
       "model": "claude-sonnet-5-5"
     }
   }
