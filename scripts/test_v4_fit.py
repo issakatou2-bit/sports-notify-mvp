@@ -42,4 +42,4 @@ class FitTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[sys.argv[0]])
