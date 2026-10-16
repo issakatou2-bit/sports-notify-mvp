@@ -824,6 +824,8 @@ def main() -> int:
                     help="立ち絵の置き場。無ければ丸と名前で代用する")
     ap.add_argument("--require-audio", action="store_true")
     args = ap.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
     __import__('slant_by_episode').set_episode('longform')
 
     try:

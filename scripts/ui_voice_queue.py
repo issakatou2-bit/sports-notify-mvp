@@ -1,6 +1,7 @@
 """音声専用枝のスナップショット。注文はデータだけ。コードを取得・実行しない。"""
 import argparse
 import copy
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 import hashlib
 import importlib
@@ -207,20 +208,50 @@ def terminal(queue, key, status):
     queue.update(change)
 
 
+def ensure_portrait(resolution, directory):
+    ui_voice_parts = importlib.import_module('ui_voice_parts')
+    try:
+        return ui_voice_parts.validate(resolution.get('portrait_dir') or '')
+    except Exception:
+        return ui_voice_parts.receive(directory, ref=resolution.get('parts_ref'))
+
+
+@contextmanager
+def preview_portraits():
+    """音声の注文より前の原稿検査にも共用部品を供給する。"""
+    host = os.environ.get('COLLESPO_SOLO_HOST')
+    try:
+        if host == 'ui':
+            try:
+                directory = ensure_portrait(dict(portrait_dir=os.getenv('COLLESPO_UI_PORTRAIT_DIR')),
+                                            ROOT/'build/ui_portrait_preview/portrait')
+                os.environ['COLLESPO_UI_PORTRAIT_DIR'] = directory
+            except QueueError:
+                # まだ声を使っていない原稿検査。予定は維持し、実話者は合成時に確定。
+                os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+        yield
+    finally:
+        if host is None:
+            os.environ.pop('COLLESPO_SOLO_HOST', None)
+        else:
+            os.environ['COLLESPO_SOLO_HOST'] = host
+
+
 def configure(args):
     """回ごとの実声を別プロセスの描画・説明・サムネイルに渡す。既定時は何もしない。"""
     import host_split
     split = host_split.enabled()
     saved_video = getattr(args, 'video', None)
     bound_video = saved_video and host_split.video_receipt(saved_video).is_file()
-    if os.getenv('COLLESPO_SOLO_HOST') != 'ui' and not split and not bound_video:
+    audio = getattr(args, 'audio_dir', None)
+    bound_audio = audio and (Path(audio)/'manifest.json').is_file()
+    if os.getenv('COLLESPO_SOLO_HOST') != 'ui' and not split and not bound_video and not bound_audio:
         return
     if split:
         os.environ['COLLESPO_SOLO_HOST'] = 'metan'
         if getattr(args, 'narration_out', None):
             return
     candidates = []
-    audio = getattr(args, 'audio_dir', None)
     if audio and not getattr(args, 'upload', False) and not getattr(args, 'narration_out', None):
         candidates.append(Path(audio)/'manifest.json')
     video = getattr(args, 'video', None)
@@ -268,8 +299,27 @@ def configure(args):
         host = resolution['host']
         if host not in ('ui', 'metan'):
             raise QueueError('実声の記録が不正です')
+        if host == 'ui' and audio and path == Path(audio)/'manifest.json':
+            try:
+                resolution['portrait_dir'] = ensure_portrait(resolution, Path(audio)/'portrait')
+            except QueueError:
+                # 描画前に部品が失われた場合も全音声をめたんで作り直す。
+                source = Path(data.get('narration_path') or Path(audio)/'narration-fallback.json')
+                narration = host_split.read(source) or host_split.carry(data, dict(segments=[
+                    {k: v for k, v in seg.items() if k not in ('file', 'duration', 'voice_host', 'voice_engine', 'voice_name', 'index')}
+                    for seg in data.get('segments', [])]))
+                if not narration.get('segments'):
+                    raise QueueError('めたんで再生成する原稿がありません')
+                narration['voice_resolution'] = dict(host='metan', reason='ui_portrait_unavailable')
+                source.write_bytes(encoded(narration))
+                synthesize_narration = importlib.import_module('synthesize_narration')
+                synthesize_narration.main(['--narration', str(source), '--out-dir', str(audio)])
+                data = host_split.read(path)
+                resolution = data['voice_resolution']
+                host = resolution['host']
+                print('[warn] 予定=雨衣・実際=めたん・理由=立ち絵なし（全音声を再生成）')
         os.environ['COLLESPO_SOLO_HOST'] = host
-        if host == 'ui':
+        if host == 'ui' and resolution.get('portrait_dir'):
             os.environ['COLLESPO_UI_PORTRAIT_DIR'] = str(Path(resolution['portrait_dir']).resolve())
         out = getattr(args, 'out', None)
         if out and not Path(out).suffix:

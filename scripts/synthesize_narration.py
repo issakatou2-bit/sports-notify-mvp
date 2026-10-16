@@ -187,12 +187,12 @@ def audio_duration(path: pathlib.Path) -> float:
             return 0.0
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--narration", default="public/narration.json")
     parser.add_argument("--out-dir", default="build/audio")
     parser.add_argument("--speaker", type=int, default=DEFAULT_SPEAKER)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     npath = pathlib.Path(args.narration)
     if not npath.exists():
@@ -205,6 +205,9 @@ def main():
     with open(npath, "r", encoding="utf-8") as f:
         data = json.load(f)
     import host_split
+    saved_resolution = data.get('voice_resolution') or {}
+    if saved_resolution.get('host') == 'metan':
+        os.environ['COLLESPO_SOLO_HOST'] = 'metan'
     if host_split.enabled():
         os.environ['COLLESPO_SOLO_HOST'] = 'metan'
         data = host_split.prepare(data, default=args.speaker)
@@ -226,6 +229,8 @@ def main():
     resolution = (dict(host='metan', reason=(data.get('voice_resolution') or {}).get('reason',
                        'host_split' if host_split.enabled() else 'host_split_disabled'))
                   if data.get('host_assignment') else None)
+    if host == 'metan' and saved_resolution.get('host') == 'metan':
+        resolution = dict(saved_resolution)
     if host == 'ui':
         import ui_voice_stock
         resolution = ui_voice_stock.fulfill(data, npath, out_dir)
@@ -234,8 +239,17 @@ def main():
             return
         # この回の保存原稿と音声にだけ実際の話者を記録。親の環境や他の回を変えない。
         host = 'metan'
-        resolution = dict(host='metan', reason='ui_unavailable')
+        resolution = dict(host='metan', reason=(data.get('voice_resolution') or {}).get('reason', 'ui_unavailable'))
         data['voice_resolution'] = resolution
+        os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+        host_split.resolve_credits(data, 'metan')
+        for seg in segments:
+            if (seg.get('meta') or {}).get('who') == '雨衣':
+                seg['meta']['who'] = '四国めたん'
+        npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
+
+    # 途中まで受け取った雨衣の声を残さず、全区間をVOICEVOXで作る。
+    if host == 'metan' and resolution and resolution.get('reason') == 'ui_portrait_unavailable':
         host_split.resolve_credits(data, 'metan')
         for seg in segments:
             if (seg.get('meta') or {}).get('who') == '雨衣':

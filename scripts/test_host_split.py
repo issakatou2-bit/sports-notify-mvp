@@ -188,6 +188,9 @@ class HostSplitTest(unittest.TestCase):
         self.assertEqual(hs.publication(self.folder/'fixed.mp4',path)['actual_host'],'metan')
 
     def test_shared_output_folder_never_overwrites_another_videos_host(self):
+        from test_ui_voice_queue import portraits
+        for name, blob in portraits().items():
+            (self.folder/name).write_bytes(blob)
         out = self.folder/'shared'
         out.mkdir()
         for host in hs.HOSTS:
