@@ -34,7 +34,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "575342",
@@ -69,7 +74,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "575346",
@@ -123,7 +133,12 @@
       ],
       "log_notes": [],
       "ai_summary": "チャンピオンズリーグは欧州の1部リーグ全体が参加する大会であり、昨季のリーグフェーズで1位に輝いたアーセナルが敵地リールを迎える一戦は、新シーズンにおける両チームの力関係を測る重要な指標となる。【昨季CLリーグフェーズ1位のアーセナル】がどのような戦いぶりを見せるかが焦点となる一方で、日本代表の上田綺世を擁するリールがどう対抗するかも見どころである。",
-      "notification_hook": "昨季CL1位アーセナル、敵地リールとの開幕戦で上田綺世と対決。"
+      "notification_hook": "昨季CL1位アーセナル、敵地リールとの開幕戦で上田綺世と対決。",
+      "final_score": {
+        "home": 3,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "575347",

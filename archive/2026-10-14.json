@@ -407,7 +407,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 3,
+        "winner": "away"
+      }
     },
     {
       "game_id": "849811",
