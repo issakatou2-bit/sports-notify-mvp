@@ -330,6 +330,47 @@ class NumbersSurviveTest(unittest.TestCase):
         for text in ('1号','1安打','第1戦','1回','21日','never infer a month'):
             self.assertIn(text,prompt)
 
+    def test_oct16_logged_headlines_pass_production_translation(self):
+        rows=json.loads((ROOT/'scripts/fixtures/japan-reacts/numbers-20261016.json').read_text(encoding='utf8'))
+        for row in rows:
+            with self.subTest(original=row['original']):
+                self.assertEqual(en.number_mismatches(row['original'],row['english']),([],[]))
+        with patch.object(en.backstage_guard,'create',return_value=response(json.dumps([r['english'] for r in rows]))), \
+             patch.object(en.token_log,'allowed',return_value=True),patch.object(en.token_log,'record'):
+            translated=en.translate([(i,i+1,r['original']) for i,r in enumerate(rows)],Mock())
+        self.assertEqual([text for _,_,text in translated],[r['english'] for r in rows])
+
+    def test_kanji_counts_homers_and_batting_order(self):
+        for original,english in [('一発','one homer'),('一発','a homer'),('一発','a home run'),
+                           ('1番打者','leadoff hitter'),('1番・大谷翔平','Shohei Ohtani at the top of the order'),
+                           ('「一番」で初出場','His first appearance batting lead-off'),
+                           ('二安打と一打点','two hits and one RBI'),('十二本目','12th homer'),
+                           ('三打数一安打','1-for-3'),('二死二塁','two outs, runner on second'),
+                           ('三失点五奪三振','three runs allowed and five strikeouts'),
+                           ('一〜十','one to ten'),('一平の投球','Ippei pitches'),
+                           ('十亀が登板','Togame pitches')]:
+            with self.subTest(original=original,english=english):
+                self.assertEqual(en.number_mismatches(original,english),([],[]))
+        for number,kanji in enumerate('一二三四五六七八九十',1):
+            self.assertEqual(en.number_mismatches(kanji+'安打',str(number)+' hits'),([],[]))
+
+    def test_oct16_changes_and_omissions_still_fail(self):
+        rows=json.loads((ROOT/'scripts/fixtures/japan-reacts/numbers-20261016.json').read_text(encoding='utf8'))
+        for index,before,after in [(0,'58','57'),(0,'116','115'),(0,'64','63'),
+                                   (1,'leadoff','second'),(2,'3-run','2-run'),(2,'26','25'),
+                                   (2,'12th','11th'),(3,'leadoff','second'),(4,'2 assists','3 assists'),
+                                   (4,'2nd','3rd'),(4,'first 2','first 3')]:
+            with self.subTest(index=index,change=after):
+                row=rows[index]
+                self.assertTrue(any(en.number_mismatches(row['original'],row['english'].replace(before,after))))
+        for original,english in [('一発','two homers'),('二発','a homer'),('1番打者','hitter'),
+                           ('二番打者','leadoff hitter'),('初の1番','leadoff hitter'),
+                           ('1番打者','leadoff hitter in the first inning'),
+                           ('26試合ぶり','first in 25 games'),('開幕2連敗','won their first 2 matches'),
+                           ('一安打と一打点','one hit'),('十安打','9 hits')]:
+            with self.subTest(original=original,english=english):
+                self.assertTrue(any(en.number_mismatches(original,english)))
+
 
 if __name__ == '__main__':
     result=unittest.main(argv=[sys.argv[0]],exit=False).result
