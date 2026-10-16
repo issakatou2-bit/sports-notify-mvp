@@ -141,13 +141,15 @@ def narration(data):
 
 
 def metadata(data):
+    import club_display_names as names
     g = data['games'][0]; p = next(p for p in data['players'] if p['status'] != 'none')
     lines = [f"試合終了 {g['finished_utc']}。出典: ESPN", SCORE_FORMULA]
     lines += [f"順位: {r['source']}" for r in g['rank_changes']]
     if data['voices']:
         lines += ['YouTube公式ハイライトのコメントの翻訳。選んだ声であり現地全体の総意ではありません。', data['video_url']]
         for v in data['voices']: lines += ['原文: '+v['title'], '訳: '+v['ja'], v.get('url','')]
-    return dict(title=('【保存材料の試作】' if data.get('sample_fictional') else '')+p['name']+results.action(p)+'｜'+g['home']['name_jp']+'対'+g['away']['name_jp'], description='\n'.join(lines)+'\n音声: VOICEVOX:四国めたん', language='ja')
+    title=('【保存材料の試作】' if data.get('sample_fictional') else '')+p['name']+results.action(p)+'｜'+names.display(g['home']['name_en'])+'対'+names.display(g['away']['name_en'])
+    return dict(title=names.youtube_title(title), description=names.display_text('\n'.join(lines), include_short=True)+'\n音声: VOICEVOX:四国めたん', language='ja')
 
 
 def frame(data, t, seg):

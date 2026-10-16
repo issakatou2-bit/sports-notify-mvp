@@ -70,22 +70,36 @@ def display(value, *, short=False, legacy=False):
 
 
 @functools.lru_cache(maxsize=1)
-def text_pairs():
+def text_pairs(include_short=False):
     pairs={}
     for row in rows():
-        for alias in [row['current'],row['legacy'],row['display'],row['id'],*row.get('aliases',[])]:
+        for alias in [row['current'],row['legacy'],row['display'],row['id'],*row.get('aliases',[]),*([row['short']] if include_short else [])]:
             # 短い英略称・普通名詞を文中で置換しない。
-            if re.search(r'[一-龯ぁ-んァ-ヶ]',alias) or alias==row['id']:
+            if re.search(r'[一-龯ぁ-んァ-ヶ]',alias) or alias==row['id'] or (include_short and alias==row['short']):
                 resolved=lookup(alias)
                 if resolved and resolved['id']==row['id']:pairs[alias]=row['display']
     return pairs
 
 
-def display_text(text):
-    pairs=text_pairs()
+def display_text(text, *, include_short=False):
+    pairs=text_pairs(include_short)
     if not pairs:return str(text or '')
     pattern='|'.join(re.escape(key) for key in sorted(pairs,key=len,reverse=True))
     return re.sub(pattern,lambda m:pairs[m.group()],str(text or ''))
+
+
+def youtube_title(text):
+    """表示名を保ち、100字を超えた場合だけ末尾の補足を区切りごと落とす。"""
+    title=display_text(text, include_short=True)
+    if len(title)<=100:return title
+    # 対戦カードを含む補足も途中で切らず、クラブ名が欠けないようにする。
+    while '｜' in title:
+        title=title.rsplit('｜',1)[0].rstrip()
+        if len(title)<=100:return title
+    title=re.sub(r'\s+#Shorts$', '', title)
+    if len(title)>100:
+        raise ValueError('題の本文が100字を超えています。クラブ名を保って題を見直してください')
+    return title
 
 
 def readings():
