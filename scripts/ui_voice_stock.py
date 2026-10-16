@@ -68,7 +68,7 @@ def take(queue, key):
         bundle = {name[len(prefix):]: blob for name, blob in files.items() if name.startswith(prefix)}
         ref = order.get('parts_ref', '')
         if not re.fullmatch(parts_crypto.REF, ref) or ref not in files:
-            raise q.QueueError('雨衣の共用部品がありません')
+            raise parts_crypto.PortraitUnavailable('雨衣の共用部品がありません')
         bundle[ref] = files[ref]
         order['status'] = 'used'
         return copy.deepcopy(order), bundle
@@ -77,7 +77,6 @@ def take(queue, key):
 
 def install(order, bundle, out, narration):
     """返送データの指紋・話者・順番・実音声を検査し、FLACをWAVに戻す。"""
-    from PIL import Image
     import wave
     out = Path(out)
     result = json.loads(bundle['result.json'])
@@ -89,20 +88,8 @@ def install(order, bundle, out, narration):
     ref = result.get('parts_ref', '')
     if ref != order.get('parts_ref'):
         raise q.QueueError('雨衣の部品参照が違います')
-    portraits = parts_crypto.decrypt(ref, bundle[ref])
     portrait_dir = out/'portrait'
-    portrait_dir.mkdir(parents=True, exist_ok=True)
-    for name, blob in portraits.items():
-        if re.fullmatch(r'p[0-9]{3}\.png', name):
-            path = portrait_dir/name
-            path.write_bytes(blob)
-            with Image.open(path) as im:
-                im.verify()
-    parts = json.loads(portraits['parts.json'])
-    names = [parts['体']]+[v for k in ('右腕', '左腕', '眉', '目', '口') for v in parts[k].values()]
-    if not all(re.fullmatch(r'p[0-9]{3}\.png', n) and (portrait_dir/n).is_file() for n in names):
-        raise q.QueueError('雨衣の立ち絵部品が不足しています')
-    (portrait_dir/'parts.json').write_bytes(q.encoded(parts))
+    parts_crypto.install(ref, bundle.get(ref, b''), portrait_dir)
     manifest = []
     for i, (chunk, seg) in enumerate(zip(result['chunks'], narration['segments'])):
         name = f'seg_{i:03d}.flac'
@@ -120,7 +107,8 @@ def install(order, bundle, out, narration):
             raise q.QueueError('返された音声の長さが不正です')
         manifest.append(dict(seg, index=i, file=str(wav), duration=duration,
                              voice_host='ui', voice_engine='voisona', voice_name='ui_ja_JP'))
-    resolution = dict(host='ui', order=order['id'], portrait_dir=str(portrait_dir.resolve()))
+    resolution = dict(host='ui', order=order['id'], portrait_dir=str(portrait_dir.resolve()), parts_ref=ref)
+    os.environ['COLLESPO_UI_PORTRAIT_DIR'] = resolution['portrait_dir']
     import host_split
     payload = host_split.carry(narration, dict(segments=manifest, voice_resolution=resolution))
     (out/'manifest.json').write_bytes(q.encoded(payload))
@@ -133,7 +121,10 @@ def fulfill(narration, npath, out, queue=None):
     out.mkdir(parents=True, exist_ok=True)
     resolution = None
     try:
-        parts_crypto.key()
+        try:
+            parts_crypto.key()
+        except q.QueueError:
+            raise parts_crypto.PortraitUnavailable('雨衣の部品鍵がありません') from None
         queue = queue or q.GitQueue()
         context = asset_context(narration)
         if context:
@@ -180,12 +171,15 @@ def fulfill(narration, npath, out, queue=None):
                 return None
         narration['voice_resolution'] = resolution
         Path(npath).write_bytes(q.encoded(narration))
-        if narration.get('host_assignment'):
-            manifest = out/'manifest.json'
-            saved = json.loads(manifest.read_text(encoding='utf8'))
-            saved['narration_path'] = str(Path(npath).resolve())
-            manifest.write_bytes(q.encoded(saved))
+        manifest = out/'manifest.json'
+        saved = json.loads(manifest.read_text(encoding='utf8'))
+        saved['narration_path'] = str(Path(npath).resolve())
+        manifest.write_bytes(q.encoded(saved))
         return resolution
+    except parts_crypto.PortraitUnavailable:
+        narration['voice_resolution'] = dict(host='metan', reason='ui_portrait_unavailable')
+        print('[warn] 予定=雨衣・実際=めたん・理由=立ち絵なし')
+        return None
     except Exception:
         # 外部キュー・メディアの検査失敗を含め、この回のVOICEVOXに必ず戻す。
         # 固有名詞の検査は呼出元がこの処理より前に実行している。

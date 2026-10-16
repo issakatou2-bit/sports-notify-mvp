@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import ui_voice_queue
 
 from ps_render_template import render, background_team
 from ps_daily_titles import ROUND, forecast_title, situation
@@ -573,6 +574,7 @@ def content_key(program):
     return hashlib.sha256(json.dumps(payload,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
 
 
+@ui_voice_queue.preview_portraits()
 def check_program(program):
     cards=[s['meta']['card'] for s in program['segments']
            if s['meta']['card'].get('label')=='PS情勢' and s['meta']['card'].get('scoreboard')]
@@ -623,8 +625,11 @@ def script(program):
 def movie(program, audio_dir, out):
     import host_split
     if host_split.enabled():
+        if content_key(program) != program['edition_key']:
+            raise ValueError('検証後の台本・画面・題が変更されています')
         saved = host_split.use_audio(script(program), audio_dir)
         program = dict(program, segments=saved['segments'])
+        program['edition_key'] = content_key(program)
         host_split.render_audio(audio_dir, out)
     __import__('slant_by_episode').set_episode('ps_situation' if program.get('mode')=='situation' else 'ps_preview')
     check = check_program(program)

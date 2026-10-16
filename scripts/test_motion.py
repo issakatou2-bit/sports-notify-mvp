@@ -16,6 +16,34 @@ ROWS=[dict(key=str(i),title=n,body='確認用の固定材料',metric=f'{i+1}安�
 
 
 class Motion(unittest.TestCase):
+    def test_long_comment_is_excerpted_without_changing_quote_or_voice_anchor(self):
+        import copy
+        from short_v4_cards import quotes
+        for text in ('いやマジで、ガーディアンズがどれだけ強いか分かった。'+
+                     'このチームの粘り強さと守備は最後まで見逃せない。'*18,
+                     '切れ目のない長いコメント'*55):
+            voices = [dict(said=text,who='匿名のファン',at=1,end=3),
+                      dict(said='最後まで楽しみです。',who='別のファン',at=3,end=5),
+                      dict(said='次の試合にも期待します。',who='ファン',at=5,end=7)]
+            original=copy.deepcopy(voices)
+            rows,heading,cues,duration,entrance,soccer=m.adapt('quotes',1,(voices,'ファンのコメント'),{})
+            for t in (0.,1.4,3.6,6.):
+                im=m.list_frame(Image.new('RGB',(1080,1920)),t,rows,heading,cues,8)
+                displayed=''.join(v['text'] for v in im.info['motion']['texts'] if v['key']=='0')
+                self.assertIn('…',displayed)
+                self.assertLess(len(displayed),len(text))
+                self.assertTrue(all(v['size']>=28 for v in im.info['motion']['texts']))
+            # 実際のコメント画面の入口も最後まで描画する。
+            quotes(1.4,voices,'コメント','固定の試合','固定の帯','固定出典')
+            self.assertEqual(voices,original)
+            self.assertEqual(rows[0]['anchor'],text)
+        self.assertEqual(m.excerpt('一文です。続きの長い説明',lambda s:len(s)<=12),'一文です。…')
+
+    def test_fact_rows_still_refuse_silent_truncation(self):
+        rows=[dict(key='0',title='成績の情報'*100),dict(key='1',title='次の成績')]
+        with self.assertRaisesRegex(ValueError,'読める大きさ'):
+            m.list_frame(Image.new('RGB',(1080,1920)),1,rows,'成績')
+
     def setUp(self):
         self.env=patch.dict(os.environ,{'COLLESPO_MOTION':'on','COLLESPO_SHORT_LOOK':'v4','COLLESPO_SOCCER_LOOK':'v5','COLLESPO_EXPR':'','COLLESPO_BUBBLE':'glass'})
         self.env.start();m.SPEECH.clear()

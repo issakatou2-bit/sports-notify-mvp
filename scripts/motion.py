@@ -10,6 +10,7 @@ from functools import lru_cache, wraps
 import inspect
 import math
 import os
+import re
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
@@ -77,8 +78,28 @@ def wrap(text, size, width):
     return caption_breaks.wrap(str(text), f.getlength, width)
 
 
+def excerpt(text, fits):
+    """一覧の引用だけを省略。収まる文末、読点、文字境界の順で選ぶ。"""
+    low, high = 0, len(text)
+    while low < high:
+        middle = (low+high+1)//2
+        if fits(text[:middle].rstrip()+'…'):
+            low = middle
+        else:
+            high = middle-1
+    if not low:
+        return '…'
+    prefix = text[:low].rstrip()
+    for marks in (r'[。！？!?]', r'[、，,；;]'):
+        endings = [m for m in re.finditer(marks, prefix) if m.end() >= min(12, low//2)]
+        if endings:
+            prefix = prefix[:endings[-1].end()]
+            break
+    return prefix.rstrip()+'…'
+
+
 @lru_cache(maxsize=32)
-def _list_tiles(payload, heading, soccer):
+def _list_tiles(payload, heading, soccer, quote_keys=()):
     scale = SETTINGS['scale']; w = VIEW[2]-VIEW[0]; h = VIEW[3]-VIEW[1]
     ink = (242, 243, 228); accent = (192, 224, 93) if soccer else (242, 207, 135)
     bg = (23, 53, 43) if soccer else (28, 41, 51)
@@ -97,6 +118,8 @@ def _list_tiles(payload, heading, soccer):
         draw = ImageDraw.Draw(tile)
         draw.rounded_rectangle((0, 0, tile.width-1, tile.height-1), radius=16*scale,
                                fill=(40, 63, 62) if soccer else (43, 57, 69), outline=accent, width=2*scale)
+        original_title = title
+        suffix = '　'.join(v for v in (body,metric) if v)
         compact=len(payload)>3;dense=len(payload)>=6
         if dense:
             title='　'.join(v for v in (title,body,metric) if v);body='';metric=''
@@ -111,7 +134,23 @@ def _list_tiles(payload, heading, soccer):
             if required <= box[3]-box[1]:break
             size -= 2
         if size<28 or required>box[3]-box[1]:
-            raise ValueError('一覧の文字が読める大きさで収まりません: '+title)
+            if key not in quote_keys:
+                raise ValueError('一覧の文字が読める大きさで収まりません: '+title)
+            size = 28
+            def fits(value):
+                lines = wrap(value, size*scale, tile.width-48*scale)
+                body_count = len(wrap(body, 28*scale, tile.width-48*scale)) if body else 0
+                height = ((12+len(lines)*size+max(0,len(lines)-1)*6) if dense else
+                          (16 if compact else 32)+len(lines)*(size+8)+body_count*34+(40 if metric else 0))
+                return height <= box[3]-box[1]
+            if dense and suffix:
+                title = excerpt(original_title, lambda value: fits(value+'　'+suffix))+'　'+suffix
+            else:
+                title = excerpt(title, fits)
+            if not fits(title):
+                raise ValueError('引用以外の一覧情報が枠に収まりません: '+body)
+            title_lines = wrap(title, size*scale, tile.width-48*scale)
+            body_lines = wrap(body, 28*scale, tile.width-48*scale) if body else []
         y = 6 if compact else 14
         for value, lines, sz, color in ((title,title_lines,size,ink), (body,body_lines,max(28,size-8),ink)):
             for line in lines:
@@ -149,7 +188,8 @@ def list_frame(im, t, rows, heading, cues=(), duration=8, entrance=True, soccer=
     if not enabled() or len(rows)<2:return im
     validate_cues(rows,cues,duration)
     payload=tuple((str(r['key']),str(r['title']),str(r.get('body') or ''),str(r.get('metric') or '')) for r in rows)
-    base,tiles,boxes,texts=_list_tiles(payload,heading,soccer)
+    quote_keys=tuple(str(r['key']) for r in rows if r.get('quote'))
+    base,tiles,boxes,texts=_list_tiles(payload,heading,soccer,quote_keys)
     s=SETTINGS['scale'];canvas=background(base,t)
     timeline=[(max(c.start,SETTINGS['overview']),c.end,
                next(i for i,r in enumerate(rows) if str(r['key'])==c.key)) for c in cues]
@@ -356,7 +396,7 @@ def adapt(kind,t,args,kwargs):
                 posted=datetime.fromisoformat(at.replace('Z','+00:00')).astimezone(timezone(timedelta(hours=9)))
                 at=f'{posted.month}/{posted.day}'
             source=m['source']+('　'+at if at else '')
-            rows.append(dict(key=str(i),title=m['translation'],body=source,metric='　'.join(metric),anchor=s['text']))
+            rows.append(dict(key=str(i),title=m['translation'],body=source,metric='　'.join(metric),anchor=s['text'],quote=True))
         heading='匿名のファンの感想';entrance=seg['kind']=='intro'
         found=[r for r in rows if r['anchor']==seg['text']]
         cues=[c for r in found if (c:=cue_for(r,seg['text'],duration))]
@@ -380,7 +420,7 @@ def adapt(kind,t,args,kwargs):
         voices=args[0];heading=args[1]
         for i,v in enumerate(voices):
             if v.get('fact'):continue
-            rows.append(dict(key=str(i),title=v.get('said',''),body=v.get('who') or '匿名のファン',anchor=v.get('said','')))
+            rows.append(dict(key=str(i),title=v.get('said',''),body=v.get('who') or '匿名のファン',anchor=v.get('said',''),quote=True))
             if v.get('read') is not False and v.get('end',0)>v.get('at',0):
                 start=max(SETTINGS['overview'],v.get('at',0));end=min(duration,v['end'])
                 if end>start:cues.append(Cue(str(i),start,end,v['said']))
