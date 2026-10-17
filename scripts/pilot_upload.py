@@ -219,7 +219,9 @@ def upload(out, yt=None):
             raise RuntimeError("前回の投稿が照合できません。追加投稿しません")
         # 通信が途切れたときも、次回が盲目的に2本目を作らないための記録。
         record(key, {"status": "pending", "run_id": os.environ.get("GITHUB_RUN_ID", "local")})
-        request = yt.videos().insert(part="snippet,status", body=body, notifySubscribers=False,
+        import localize_videos
+        body = localize_videos.prepare_upload(body)
+        request = yt.videos().insert(part=localize_videos.upload_parts(body), body=body, notifySubscribers=False,
                                      media_body=MediaFileUpload(str(video), mimetype="video/mp4", chunksize=8 * 1024 * 1024, resumable=True))
         response = None
         while response is None:

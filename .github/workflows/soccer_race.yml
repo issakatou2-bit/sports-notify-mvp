@@ -245,6 +245,7 @@ jobs:
            inputs.upload == 'true')
         continue-on-error: true
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -316,7 +317,7 @@ jobs:
             "soccer race: ${{ github.run_id }}" \
             data/soccer_race.json data/soccer_preview.json \
             data/soccer_preview_prev.json data/soccer_race_state.json \
-            data/published_videos.json \
+            data/published_videos.json data/token_usage.json \
             data/morning_recap.json data/player_profile.json
 
       - name: Say what happened
