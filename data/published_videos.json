@@ -5596,6 +5596,26 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-17": {
+      "video_id": "HCRHGAUGSik",
+      "url": "https://youtu.be/HCRHGAUGSik",
+      "title": "【MLB】現地はこう報じた「大谷翔平、2026年のベストシーン」｜10月17日 番記者の投稿と現地の見出し #Shorts",
+      "published_at": "2026-10-17T06:36:57.802405+00:00",
+      "publish_at": "2026-10-17T09:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-17",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 5
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
@@ -6374,6 +6394,26 @@
       "title": "【MLB】ガーディアンズ vs レイズ 現地のファンは何と言ったか｜返信29件ついたコメント 10月15日更新 #Shorts",
       "published_at": "2026-10-15T06:10:52.850231+00:00",
       "publish_at": "2026-10-15T08:30:00Z"
+    },
+    "2026-10-17": {
+      "video_id": "uASx-MBIqr4",
+      "url": "https://youtu.be/uASx-MBIqr4",
+      "title": "【MLB】ブリュワーズ vs ドジャース 現地のファンは何と言ったか｜返信165件ついたコメント 10月17日更新 #Shorts",
+      "published_at": "2026-10-17T06:26:34.625640+00:00",
+      "publish_at": "2026-10-17T08:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-17",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "verdict": {

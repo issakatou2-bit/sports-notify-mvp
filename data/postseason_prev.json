@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-15T09:52:36.439475+00:00",
-  "date": "2026-10-15",
+  "updated_at": "2026-10-16T09:52:41.974433+00:00",
+  "date": "2026-10-16",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -247,18 +247,18 @@
       "league_jp": "ア・リーグ",
       "best_of": 7,
       "need": 4,
-      "played": 2,
+      "played": 3,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月16日",
-        "game": 3
+        "day": "10月17日",
+        "game": 4
       },
       "teams": [
         {
           "id": 114,
           "name": "ガーディアンズ",
-          "wins": 1,
+          "wins": 2,
           "players": []
         },
         {
@@ -277,18 +277,15 @@
       "league_jp": "ナ・リーグ",
       "best_of": 7,
       "need": 4,
-      "played": 3,
-      "over": false,
-      "winner": null,
-      "next": {
-        "day": "10月16日",
-        "game": 4
-      },
+      "played": 4,
+      "over": true,
+      "winner": 158,
+      "next": null,
       "teams": [
         {
           "id": 158,
           "name": "ブリュワーズ",
-          "wins": 3,
+          "wins": 4,
           "players": []
         },
         {
@@ -302,20 +299,59 @@
           ]
         }
       ]
+    },
+    {
+      "key": "W:158-wait",
+      "round": "W",
+      "round_jp": "ワールドシリーズ",
+      "stage": 4,
+      "waiting": true,
+      "league_jp": "",
+      "best_of": 7,
+      "need": 4,
+      "played": 0,
+      "over": false,
+      "winner": null,
+      "next": {
+        "day": "10月24日",
+        "game": 1
+      },
+      "teams": [
+        {
+          "id": 158,
+          "name": "ブリュワーズ",
+          "wins": 0,
+          "players": []
+        }
+      ]
     }
   ],
   "final_day": [],
-  "headline": "大谷、山本、佐々木のドジャースはリーグ優勝決定シリーズでブリュワーズに0勝3敗、負ければ敗退",
+  "headline": "大谷、山本、佐々木のドジャースはリーグ優勝決定シリーズでブリュワーズに0勝4敗で敗れ、敗退",
   "changes": [
     {
       "key": "L:119-158",
-      "kind": "game",
-      "text": "大谷、山本、佐々木のドジャースはリーグ優勝決定シリーズでブリュワーズに0勝3敗、負ければ敗退",
+      "kind": "advance",
+      "text": "大谷、山本、佐々木のドジャースはリーグ優勝決定シリーズでブリュワーズに0勝4敗で敗れ、敗退",
       "jp": true,
       "stage": 3
+    },
+    {
+      "key": "L:114-139",
+      "kind": "game",
+      "text": "リーグ優勝決定シリーズ ガーディアンズが2勝1敗でリード",
+      "jp": false,
+      "stage": 3
+    },
+    {
+      "key": "W:158-wait",
+      "kind": "start",
+      "text": "ワールドシリーズ ブリュワーズは相手待ち、10月24日に第1戦",
+      "jp": false,
+      "stage": 4
     }
   ],
-  "prev_date": "2026-10-14",
+  "prev_date": "2026-10-15",
   "japanese": [
     {
       "team_id": 119,
