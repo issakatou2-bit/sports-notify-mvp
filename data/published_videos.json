@@ -10720,6 +10720,86 @@
       "privacy": "public",
       "actual_host": "ui",
       "note": "ps_game_now 38862920384 の記録の保存がぶつかって消えたので手で足した"
+    },
+    "season_player_808963": {
+      "video_id": "LHztdQNYoZs",
+      "url": "https://youtu.be/LHztdQNYoZs",
+      "title": "【MLB】佐々木朗希｜2026年シーズンまとめ　ドジャース #Shorts",
+      "published_at": "2026-10-17T06:42:37.029706+00:00",
+      "publish_at": "2026-10-17T07:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-17",
+        "kind": "asset:season_player",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 5
+      },
+      "planned_host": "ui",
+      "actual_host": "metan",
+      "host_fallback_reason": "ui_unavailable",
+      "privacy": "public"
+    },
+    "season_player_808967": {
+      "video_id": "bImzF8TYDck",
+      "url": "https://youtu.be/bImzF8TYDck",
+      "title": "【MLB】山本由伸｜2026年シーズンまとめ　ドジャース #Shorts",
+      "published_at": "2026-10-17T06:46:26.855932+00:00",
+      "publish_at": "2026-10-17T13:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-17",
+        "kind": "asset:season_player",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 5
+      },
+      "planned_host": "ui",
+      "actual_host": "metan",
+      "host_fallback_reason": "ui_unavailable",
+      "privacy": "public"
+    },
+    "season_team_119": {
+      "video_id": "h394lQ-a7hs",
+      "url": "https://youtu.be/h394lQ-a7hs",
+      "title": "【MLB】大谷翔平・山本由伸のドジャース｜2026年シーズンまとめ #Shorts",
+      "published_at": "2026-10-17T06:51:46.042406+00:00",
+      "publish_at": "2026-10-17T14:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-17",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_team_144": {
+      "video_id": "muKOwUuZVx4",
+      "url": "https://youtu.be/muKOwUuZVx4",
+      "title": "【MLB】ブレーブス｜2026年シーズンまとめ　94勝68敗 #Shorts",
+      "published_at": "2026-10-17T06:54:48.530366+00:00",
+      "publish_at": "2026-10-17T14:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-17",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   }
 }
