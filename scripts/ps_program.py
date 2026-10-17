@@ -72,14 +72,20 @@ def validate_source(snapshot, evidence, now):
     if not timedelta(0) <= age <= timedelta(hours=2):
         raise ValueError('PS日程が古いか未来の取得時刻です')
     ctx = pe.editorial(snapshot, evidence['schedule'], now, evidence['source_url'])
-    games = [g for d in evidence['schedule'].get('dates', []) for g in d.get('games', [])]
-    for game in games:
+    games = []
+    for game in (g for d in evidence['schedule'].get('dates', []) for g in d.get('games', [])):
         if game.get('gameType') not in ROUND:
             raise ValueError('PS専用資料に対象外の試合が混入')
         if game.get('status', {}).get('abstractGameState') == 'Final':
-            winners = [game['teams'][s].get('isWinner') for s in ('home', 'away')]
+            winners = [(game.get('teams', {}).get(s) or {}).get('isWinner') for s in ('home', 'away')]
             if any(w is not None and type(w) is not bool for w in winners) or sum(w is True for w in winners) != 1:
-                raise ValueError('終了試合の勝者が一意に確認できません')
+                reason = ('isWinnerが真偽値ではありません' if any(
+                    w is not None and type(w) is not bool for w in winners)
+                    else 'isWinner=Trueが1球団ではありません')
+                print(f'[warn] 勝者を決められず外した試合：game_pk={game.get("gamePk", "不明")}・理由={reason}',
+                      file=sys.stderr)
+                continue
+        games.append(game)
     return ctx, games
 
 
