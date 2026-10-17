@@ -2308,13 +2308,15 @@ RETRY_STATUS = {410, 500, 502, 503, 504}
 
 def insert_with_retry(youtube, body, video_path, waits=(15, 45)):
     import time
+    import localize_videos
     from googleapiclient.errors import HttpError
+    body = localize_videos.prepare_upload(body)
     for attempt in range(len(waits) + 1):
         media = MediaFileUpload(str(video_path), chunksize=-1, resumable=True,
                                 mimetype="video/mp4")
         try:
             return youtube.videos().insert(
-                part="snippet,status", body=body, media_body=media).execute()
+                part=localize_videos.upload_parts(body), body=body, media_body=media).execute()
         except HttpError as e:
             status = getattr(getattr(e, "resp", None), "status", None)
             if int(status or 0) not in RETRY_STATUS or attempt == len(waits):

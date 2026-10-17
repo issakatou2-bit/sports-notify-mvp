@@ -133,6 +133,7 @@ jobs:
           (github.event_name != 'workflow_dispatch' ||
            inputs.upload == 'true')
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -184,7 +185,7 @@ jobs:
           bash scripts/commit_data.sh \
             "soccer week: ${{ github.run_id }}" \
             data/soccer_jp_week.json data/soccer_week_state.json \
-            data/published_videos.json data/morning_recap.json data/player_profile.json
+            data/published_videos.json data/morning_recap.json data/player_profile.json data/token_usage.json
 
       - name: Say what happened
         if: always()

@@ -198,6 +198,7 @@ jobs:
       # 途中で失敗しても残りを試し、最後に結果をまとめて出す。
       - name: Build and upload topics
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -293,7 +294,7 @@ jobs:
           bash scripts/commit_data.sh \
             "published assets: ${{ github.run_id }}" \
             data/published_assets.json data/published_videos.json data/venue_topics.json data/team_topics.json data/venue_stats.json data/soccer_preview.json \
-            data/rarity.json data/rare_topics.json data/legend_topics.json
+            data/rarity.json data/rare_topics.json data/legend_topics.json data/token_usage.json
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
       - name: Save videos as artifact

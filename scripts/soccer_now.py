@@ -274,7 +274,9 @@ def publish(data, out, ledger):
     meta = metadata(data)
     meta['description'] = host_split.credit(meta['description'])
     body = {'snippet':dict(title=meta['title'],description=meta['description'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'), 'status':dict(privacyStatus='public',selfDeclaredMadeForKids=False)}
-    response = api_build('youtube','v3',credentials=creds,cache_discovery=False).videos().insert(part='snippet,status',body=body,media_body=MediaFileUpload(str(Path(out)/'preview.mp4'),resumable=True)).execute()
+    import localize_videos
+    body = localize_videos.prepare_upload(body)
+    response = api_build('youtube','v3',credentials=creds,cache_discovery=False).videos().insert(part=localize_videos.upload_parts(body),body=body,media_body=MediaFileUpload(str(Path(out)/'preview.mp4'),resumable=True)).execute()
     if not response.get('id'): raise ValueError('投稿結果のIDなし。pendingを手動照合')
     if tracking:
         from upload_youtube import record_video

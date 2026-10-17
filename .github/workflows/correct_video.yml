@@ -93,6 +93,7 @@ jobs:
         if: inputs.mode == 'publish'
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -112,7 +113,7 @@ jobs:
       - name: 台帳を保存
         if: inputs.mode == 'publish'
         run: |
-          bash scripts/commit_data.sh "correct video: $FIX" data/published_assets.json data/published_videos.json
+          bash scripts/commit_data.sh "correct video: $FIX" data/published_assets.json data/published_videos.json data/token_usage.json
 
       - name: Keep unsaved data records
         if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
