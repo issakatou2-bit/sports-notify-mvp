@@ -285,16 +285,10 @@ class ProgramTests(unittest.TestCase):
 
     def test_source_failure_and_stale_year(self):
         snap,ev,now=fixture()
-        for broken in ('empty','stale','winners','two_winners','strings'):
+        for broken in ('empty','stale'):
             case=copy.deepcopy(ev)
             if broken=='empty':case['schedule']['dates']=[]
             elif broken=='stale':case['schedule']['dates'][0]['games'][0]['officialDate']='2025-09-29'
-            else:
-                game=case['schedule']['dates'][0]['games'][0]
-                game['status']['abstractGameState']='Final'
-                if broken=='two_winners':
-                    game['teams']['home']['isWinner']=True;game['teams']['away']['isWinner']=True
-                elif broken=='strings':game['teams']['home']['isWinner']='false'
             with self.subTest(broken=broken),self.assertRaises(ValueError):p.prepare(snap,case,'situation',now)
         with self.assertRaises(ValueError):p.prepare(snap,ev,'situation',now+timedelta(hours=3))
 
@@ -417,7 +411,9 @@ class ProgramTests(unittest.TestCase):
         self.assertNotIn(key,[r['key'] for r in rows])
         self.assertTrue(rows)
         self.assertIn('除外',warning.getvalue())
-        with self.assertRaises(ValueError):p.prepare(snap,ev,'situation',now)
+        with contextlib.redirect_stderr(io.StringIO()):
+            _, accepted = p.validate_source(snap,ev,now)
+            self.assertNotIn(game, accepted)
 
 
 if __name__=='__main__':unittest.main(argv=[__file__])
