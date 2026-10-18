@@ -10800,6 +10800,25 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_game_849816": {
+      "video_id": "TCoMDZVRXRY",
+      "url": "https://youtu.be/TCoMDZVRXRY",
+      "title": "【MLB】レイズがガーディアンズに7対3でリーグ優勝決定シリーズ2勝2敗に｜アランダの決勝打 #Shorts",
+      "published_at": "2026-10-18T04:13:55.914971+00:00",
+      "host_assignment": {
+        "day": "2026-10-18",
+        "kind": "asset:season_game",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 6
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   }
 }

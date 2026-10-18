@@ -1,375 +1,102 @@
 {
-  "updated_at": "2026-10-17T06:01:50.289250+00:00",
+  "updated_at": "2026-10-18T04:04:06.747811+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "ZVjnWhgxzjM",
-      "title": "BREWERS vs. DODGERS: NLCS Full Game 4 Highlights (October 15) | 2026 MLB Postseason",
-      "published_at": "2026-10-16T03:39:06Z",
-      "views": 2971291,
-      "matchup": "BREWERS vs. DODGERS",
-      "game_date": "2026-10-15",
-      "result": {
-        "away_jp": "ブリュワーズ",
-        "home_jp": "ドジャース",
-        "away_score": 6,
-        "home_score": 4,
-        "series": {
-          "name": "リーグ優勝決定シリーズ",
-          "game_number": 4,
-          "games_in_series": 7,
-          "after": "MIL wins 4-0",
-          "is_over": true,
-          "winner_today": "ブリュワーズ",
-          "after_jp": "4勝0敗（MIL wins 4-0）",
-          "after_by_team": {
-            "ドジャース": {
-              "wins": 0,
-              "losses": 4
-            },
-            "ブリュワーズ": {
-              "wins": 4,
-              "losses": 0
-            }
-          },
-          "before_by_team": {
-            "ドジャース": {
-              "wins": 0,
-              "losses": 3
-            },
-            "ブリュワーズ": {
-              "wins": 3,
-              "losses": 0
-            }
-          },
-          "before_jp": "ドジャース0勝3敗、ブリュワーズ3勝0敗",
-          "is_decider": false
-        },
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 4
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 2,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 2,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 1,
-            "home": 0
-          }
-        ],
-        "away_hits": 5,
-        "away_errors": 1,
-        "home_hits": 8,
-        "home_errors": 0,
-        "batting_facts": [
-          {
-            "name": "Will Smith",
-            "name_en": "Will Smith",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Kyle Tucker",
-            "name_en": "Kyle Tucker",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 2,
-            "rbi": 0
-          },
-          {
-            "name": "Enrique Hernández",
-            "name_en": "Enrique Hernández",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Max Muncy",
-            "name_en": "Max Muncy",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Freddie Freeman",
-            "name_en": "Freddie Freeman",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Tommy Edman",
-            "name_en": "Tommy Edman",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "大谷翔平",
-            "name_en": "Shohei Ohtani",
-            "type": "batter",
-            "aliases": [
-              "大谷"
-            ],
-            "runs": 1,
-            "hits": 1,
-            "rbi": 3
-          },
-          {
-            "name": "Teoscar Hernández",
-            "name_en": "Teoscar Hernández",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Andy Pages",
-            "name_en": "Andy Pages",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 2,
-            "rbi": 1
-          },
-          {
-            "name": "Mookie Betts",
-            "name_en": "Mookie Betts",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Miguel Rojas",
-            "name_en": "Miguel Rojas",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Cooper Pratt",
-            "name_en": "Cooper Pratt",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Jackson Chourio",
-            "name_en": "Jackson Chourio",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Christian Yelich",
-            "name_en": "Christian Yelich",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Jake Bauers",
-            "name_en": "Jake Bauers",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 3
-          },
-          {
-            "name": "Sal Frelick",
-            "name_en": "Sal Frelick",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Garrett Mitchell",
-            "name_en": "Garrett Mitchell",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 1,
-            "rbi": 1
-          },
-          {
-            "name": "David Hamilton",
-            "name_en": "David Hamilton",
-            "type": "batter",
-            "aliases": [],
-            "runs": 2,
-            "hits": 2,
-            "rbi": 2
-          },
-          {
-            "name": "William Contreras",
-            "name_en": "William Contreras",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Brice Turang",
-            "name_en": "Brice Turang",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 0,
-            "rbi": 0
-          }
-        ],
-        "star_name": "David Hamilton",
-        "star_line": "4打数2安打 2打点 1本塁打",
-        "star_team": "ブリュワーズ",
-        "away_starter": {
-          "name": "Shane Drohan",
-          "team": "ブリュワーズ",
-          "line": "1.0回 1奪三振 自責1"
-        },
-        "home_starter": {
-          "name": "Tyler Glasnow",
-          "team": "ドジャース",
-          "line": "4.1回 6奪三振 自責4"
-        }
-      },
-      "topic_jp": "ブリュワーズ 対 ドジャース"
-    },
-    {
       "video_id": "uG1mRyXzyg8",
       "title": "THE FINAL OUT! All calls of the Brewers' 2026 NLCS sweep vs. the Dodgers! | MLB Highlights",
       "published_at": "2026-10-17T00:30:04Z",
-      "views": 53269,
+      "views": 96589,
       "matchup": "THE FINAL OUT! All calls of the Brewers' 2026 NLCS sweep vs. the Dodgers! | MLB Highlights",
       "game_date": "",
       "topic_jp": "THE FINAL OUT! All calls of the ブリュワーズ' 2026 NLCS sweep 対 the ドジャース! | MLB Highlights"
     },
     {
-      "video_id": "TkJ6nxTauH8",
-      "title": "FULL INNING: Shohei Ohtani's 3-run HR highlights a 4-run inning for the Dodgers! 💪 | MLB Highlights",
-      "published_at": "2026-10-16T01:17:50Z",
-      "views": 695507,
+      "video_id": "6KpXHce5OQA",
+      "title": "TWO-OUT MAGIC! Yandy Díaz, Jonathan Aranda & the Rays tie ALCS Game 4 🪄 MLB Highlights (Full Inning)",
+      "published_at": "2026-10-18T00:55:22Z",
+      "views": 57230,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "大谷翔平の3ランホームランで、ドジャースが一挙4点を奪う"
+      "topic_jp": "ツーアウトからの魔法！ディアス、アランダ、レイズがALCS第4戦で同点に追いつく"
     },
     {
-      "video_id": "IraBOJkjPec",
-      "title": "Jake Bauers puts together ANOTHER huge at-bat to plate two runs for the Brewers! 🔥 | MLB Highlights",
-      "published_at": "2026-10-16T01:27:03Z",
-      "views": 159999,
+      "video_id": "sqrjCRyCNbc",
+      "title": "FULL 1st INNING: Hits by Steven Kwan & Chase DeLauter put the Guardians ahead early | MLB Highlights",
+      "published_at": "2026-10-18T00:32:04Z",
+      "views": 53910,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "ジェイク・バウアーズが再び好打を放ち、ブルワーズに2点をもたらす"
+      "topic_jp": "ガーディアンズ、初回にクワンとデラウターのヒットで先制"
     },
     {
-      "video_id": "VPKDm0XmVFE",
-      "title": "Tyler Glasnow strikes out 6 of the first 9 batters he faces in NLCS Game 4! 👊 | MLB Highlights",
-      "published_at": "2026-10-16T02:02:42Z",
-      "views": 73547,
+      "video_id": "FT3ZV36koCk",
+      "title": "Junior Caminero gives the Rays an ALCS lead and his reaction is ELECTRIC! ⚡️ MLB Highlights",
+      "published_at": "2026-10-18T01:59:56Z",
+      "views": 26381,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "タイラー・グラスナウ、NLCS第4戦で最初の9人中6人から三振を奪う"
+      "topic_jp": "ジュニア・カミネロ、レイズにALCS先制点　劇的な反応に注目"
+    },
+    {
+      "video_id": "ci_Ec3fCVkU",
+      "title": "3-RUN INNING! The Rays extend their lead during Game 4 of the ALCS! | MLB Highlights (Full Inning)",
+      "published_at": "2026-10-18T02:30:17Z",
+      "views": 25621,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "レイズがALCS第4戦で3点を挙げ、リードを広げた。"
     }
   ],
   "all": [
     {
-      "video_id": "ZVjnWhgxzjM",
-      "matchup": "BREWERS vs. DODGERS",
-      "game_date": "2026-10-15",
-      "views": 2971291
-    },
-    {
       "video_id": "uG1mRyXzyg8",
       "matchup": "THE FINAL OUT! All calls of the Brewers' 2026 NLCS sweep vs. the Dodgers! | MLB Highlights",
       "game_date": "",
-      "views": 53269
+      "views": 96589
     },
     {
-      "video_id": "TkJ6nxTauH8",
+      "video_id": "6KpXHce5OQA",
       "matchup": "",
       "game_date": "",
-      "views": 695507
+      "views": 57230
     },
     {
-      "video_id": "IraBOJkjPec",
+      "video_id": "sqrjCRyCNbc",
       "matchup": "",
       "game_date": "",
-      "views": 159999
+      "views": 53910
     },
     {
-      "video_id": "VPKDm0XmVFE",
+      "video_id": "FT3ZV36koCk",
       "matchup": "",
       "game_date": "",
-      "views": 73547
+      "views": 26381
     },
     {
-      "video_id": "H3QKPBsPyzA",
+      "video_id": "ci_Ec3fCVkU",
       "matchup": "",
       "game_date": "",
-      "views": 45454
+      "views": 25621
+    },
+    {
+      "video_id": "Eq4m5jmgFV4",
+      "matchup": "",
+      "game_date": "",
+      "views": 7316
+    },
+    {
+      "video_id": "1-1dYzV7OAM",
+      "matchup": "",
+      "game_date": "",
+      "views": 5947
+    },
+    {
+      "video_id": "ZsDQFqid9tY",
+      "matchup": "",
+      "game_date": "",
+      "views": 4745
     }
   ]
 }
