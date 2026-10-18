@@ -107,7 +107,7 @@ jobs:
       - name: Fit the story to measured audio
         if: steps.gate.outputs.count != '0'
         run: python scripts/soccer_result_story.py --narration build/soccer_results/narration.json --audio-dir build/soccer_results/audio
-      - name: Render and measure 40 seconds
+      - name: Render and measure 60 seconds
         if: steps.gate.outputs.count != '0'
         run: python scripts/soccer_results_render.py --data data/soccer_results.json --audio-dir build/soccer_results/audio --out build/soccer_results
       - name: Vertical thumbnail

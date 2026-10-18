@@ -331,10 +331,13 @@ def face_for(line, elapsed, duration):
 _CAPTION = {"text": "", "start": 0.0, "duration": 0.0, "total": 0.0}
 
 
-def set_caption(text, duration, total=None, speaker=2, duo=False, hide_caption=False):
+def set_caption(text, duration, total=None, speaker=2, duo=False, hide_caption=False, caption_units=None):
+    if caption_units is not None and ''.join(caption_units) != str(text or ''):
+        raise ValueError('吹き出しのまとまりと原稿が一致しません')
     _CAPTION.update(text=str(text or ""), duration=float(duration or 0),
                     start=_PROGRAM_CLOCK[0] or 0.0, total=float(total or _CAPTION["total"] or 0),
-                    speaker=speaker, duo=bool(duo and LOOK=='v4'),hide_caption=hide_caption)
+                    speaker=speaker, duo=bool(duo and LOOK=='v4'),hide_caption=hide_caption,
+                    caption_units=caption_units)
 
 
 def sentences(text):
@@ -359,7 +362,7 @@ def caption_chunks(text, limit=CAPTION_CHUNK):
 
 def current_sentence(elapsed, text, duration):
     """読み上げの速さは文字数にほぼ比例するので、文字数で区切って今の字幕を選ぶ。"""
-    parts = caption_chunks(text)
+    parts = (_CAPTION.get('caption_units') if text == _CAPTION['text'] else None) or caption_chunks(text)
     if not parts:
         return ""
     total = sum(len(p) for p in parts)

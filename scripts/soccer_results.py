@@ -1,4 +1,4 @@
-"""前日JSTに終了した欧州5大リーグの日本人選手本人の結果。"""
+"""対象の夜に終了した欧州サッカーの注目試合と日本人選手本人の結果。"""
 import argparse
 from datetime import date, datetime, timedelta, timezone
 import json
@@ -18,7 +18,7 @@ LEAGUE_NAMES={'PL':'プレミアリーグ','PD':'ラ・リーガ','BL1':'ブン�
 ESPN='https://site.api.espn.com/apis/site/v2/sports/soccer'
 SOURCE='ESPN・football-data.org'
 STATUS={'starter':'先発','substitute':'途中出場','none':'出場なし'}
-LIMIT=40.0
+LIMIT=60.0
 
 
 def utc(text):
@@ -85,6 +85,7 @@ def player_result(player,rows,side,event_id):
     if stats.get('appearances')==0 and result['status']!='none':raise ValueError('出場区分と出場数が不一致')
     for dest,key in (('goals','totalGoals'),('assists','goalAssists'),('yellow_cards','yellowCards'),('red_cards','redCards')):
         result[dest]=stats.get(key)
+    if stats.get('minutesPlayed') is not None:result['minutes']=stats['minutesPlayed']
     if result['status']=='none' and (result['goals'] or result['assists']):raise ValueError('出場なしに得点/アシスト')
     result['subbed_out']=bool(row.get('subbedOut'))
     result['appearance_evidence']='ESPN starter/subbedIn'
@@ -128,8 +129,11 @@ def in_window(ended,target):
 def build(boards,summaries,target_date,football=None,roster=None,preview=None):
     target=date.fromisoformat(str(target_date));football=football or {};games=[];rejected=[];seen=set()
     registry=ROOT/'data/soccer_competitions.json'
-    league_names=dict(ne.SOCCER_COMPETITIONS,**LEAGUE_NAMES)
-    if registry.exists():league_names.update({c['code']:c['name'] for c in json.loads(registry.read_text(encoding='utf8'))['competitions']})
+    league_names=dict(ne.SOCCER_COMPETITIONS,**LEAGUE_NAMES);league_slugs=dict(LEAGUES)
+    if registry.exists():
+        competitions=json.loads(registry.read_text(encoding='utf8'))['competitions']
+        league_names.update({c['code']:c['name'] for c in competitions})
+        league_slugs.update({c['code']:c.get('espn',c['code']) for c in competitions})
     roster=ne.JP_PLAYERS_SOCCER if roster is None else roster
     extras={}
     for key,board in boards.items():
@@ -164,6 +168,14 @@ def build(boards,summaries,target_date,football=None,roster=None,preview=None):
                 if any(str(check_sides.get(s,{}).get('id'))!=str(sides[s]['id']) or integer(check_sides.get(s,{}).get('score'))!=score[s] for s in score):raise ValueError('ESPN内のクラブ/スコア不一致')
                 game={'id':id,'league':code,'league_jp':league_names[code],'start_utc':event['date'],'finished_utc':ended,
                       'date_jst':target.isoformat(),'score':score,'players':[], 'goals':[], 'unresolved':[]}
+                # 節は当該試合の明示値だけ。日付・過去の節から推測しない。
+                week=event.get('week') or comp.get('week') or {}
+                if integer(week.get('number')):
+                    game['matchday']=integer(week['number'])
+                    game['matchday_source']=ESPN+'/'+league_slugs.get(code,code)+'/scoreboard'
+                stage=(comp.get('type') or {}).get('text')
+                if stage in ('League Phase','League Stage'):
+                    game['stage']='LEAGUE_PHASE'
                 for side in ('home','away'):
                     team=sides[side]['team']
                     game[side]={'id':str(team['id']),'name_en':team['displayName'],'name_jp':ne.club_name_jp(team['displayName']),
@@ -240,6 +252,7 @@ def validate_data(data):
         for p in game['players']:
             if p['event_id']!=game['id'] or p['side'] not in ('home','away') or p['club']!=game[p['side']]['name_jp']:raise ValueError('選手の試合/クラブが不一致')
             if p['status'] not in STATUS:raise ValueError('出場区分が不明')
+            if p.get('minutes') is not None and (type(p['minutes']) is not int or p['minutes']<0):raise ValueError('出場時間が不正')
             if p['status']=='none' and (p.get('goals') or p.get('assists')):raise ValueError('出場なしを活躍にしない')
             for key in ('goals','assists','yellow_cards','red_cards'):
                 if p[key] is not None and (type(p[key]) is not int or p[key]<0):raise ValueError('個人成績が不正')
@@ -274,8 +287,8 @@ def title(data):
 
 def description_lines(data):
     import club_display_names as names
-    lines=[f"{data['date_jst']}の夜〜翌朝（日本時間）に終わった欧州5大リーグの試合から、日本人選手本人の結果です。"]
-    lines += [f"・{p['name']}（{names.display(p['club'])}）{STATUS[p['status']]}"+ ''.join(f" / {p[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト'),('yellow_cards','警告'),('red_cards','退場')) if p.get(k) is not None) for p in data['players']]
+    lines=[f"{data['date_jst']}の夜〜翌朝（日本時間）に終わった欧州サッカーの試合から、日本人選手本人の結果です。"]
+    lines += [f"・{p['name']}（{names.display(p['club'])}）{STATUS[p['status']]}"+ ''.join(f" / {p[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト'),('yellow_cards','警告'),('red_cards','退場')) if p.get(k)) for p in data['players']]
     lines += ['', '出典: '+SOURCE+'。終了時刻・出場区分・個人成績・得点経過はESPN。football-data.orgのスコアを取得できた試合は照合し、不一致は除外します。',
               '出場なしは一覧のみ。クラブの勝敗を選手本人の活躍とは扱っていません。']
     return lines

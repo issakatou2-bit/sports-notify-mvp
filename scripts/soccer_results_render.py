@@ -55,7 +55,7 @@ def roster_pages(data):
 
 
 def narration(data):
-    if not data.get('can_make'):return {'label':data['date_jst'],'segments':[],'duration_budget':{'limit':40,'grace':0}}
+    if not data.get('can_make'):return {'label':data['date_jst'],'segments':[],'duration_budget':{'limit':results.LIMIT,'grace':0}}
     lead=next(p for p in data['players'] if p['status']!='none')
     game=next(g for g in data['games'] if g['id']==lead['event_id'])
     intro=f"{lead['name']}{results.action(lead)}。{game['home']['name_jp']}対{game['away']['name_jp']}は、{game['score']['home']}対{game['score']['away']}。"
@@ -76,7 +76,7 @@ def narration(data):
         # 出場なしの選手は画面の1行だけ。読み上げで名前を出さない（クラブの結果を本人のことと読ませない）
         segments.append({'kind':'roster','text':text,'speaker':2,'meta':dict(meta,page=1)})
     segments.append({'kind':'outro','text':r3.OUTRO_TEXT,'speaker':2,'meta':{}})
-    return {'label':data['date_jst'],'segments':segments,'duration_budget':{'limit':40,'grace':0}}
+    return {'label':data['date_jst'],'segments':segments,'duration_budget':{'limit':results.LIMIT,'grace':0}}
 
 
 def program_spec(data):
@@ -159,7 +159,7 @@ def roster_screen(t,data,meta,clubs,spec):
         if p['status']=='none':continue
         x=cards.L+336
         for key,unit in (('goals','得点'),('assists','A')):
-            if p.get(key) is None:continue
+            if not p.get(key):continue
             v4.text(im,x,y+5,p[key],50,r3.GOLD,width=70,number=True)
             cards.plain(im,x+66,y+21,unit,24,width=74)
             x+=154
@@ -194,9 +194,10 @@ def numeric_material(data):
     values=set()
     for g in data['games']:
         values.update(str(v) for v in g['score'].values())
+        if g.get('matchday'):values.add(str(g['matchday']))
         for event in g['goals']:values.update(re.findall(r'\d+',event['minute']))
     for p in data['players']:
-        for key in ('goals','assists','yellow_cards','red_cards'):
+        for key in ('goals','assists','yellow_cards','red_cards','minutes'):
             if p.get(key) is not None:values.add(str(p[key]))
     # 一覧の「ほかN人」「N人が出場」は材料の名簿を数えた数
     for meta in roster_pages(data):values.update({str(meta['more']),str(meta['count']+meta['more'])})
@@ -233,7 +234,7 @@ def durations(segments,audio):
         actual=sn.audio_duration(path)
         if actual<=0 or abs(actual-float(voice.get('duration') or 0))>.05:raise ValueError('音声の尺が実測と違う')
         times.append(max(actual,3.0 if seg['kind']=='roster' else 2.6 if seg['kind']=='outro' else 2.0))
-    if sum(times)>results.LIMIT:raise ValueError(f'40秒を超えます: {sum(times):.3f}。声の設定は変えず原稿を短くしてください')
+    if sum(times)>results.LIMIT:raise ValueError(f'60秒を超えます: {sum(times):.3f}。声の設定は変えず原稿を短くしてください')
     return times
 
 
@@ -254,13 +255,14 @@ def ensure_ffmpeg(out):
 def render_video(data,narr,audio,out):
     __import__('slant_by_episode').set_episode('soccer_results')
     results.validate_data(data)
+    __import__('solo_host').validate_audio(audio)
     times=durations(narr['segments'],audio);out.mkdir(parents=True,exist_ok=True);ensure_ffmpeg(out)
     if soccer_look.v5():
         times=[max(length,1.45+.25*(len(seg['meta'].get('goals',[]))-1)) if seg['kind']=='result' else length
                for seg,length in zip(narr['segments'],times)]
     # Ceil to complete frames; the resulting actual movie remains inside the strict budget.
     times=[math.ceil(t*FPS)/FPS for t in times]
-    if sum(times)>40:raise ValueError('フレームの丸め後に40秒を超える')
+    if sum(times)>results.LIMIT:raise ValueError('フレームの丸め後に60秒を超える')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('声つきの動画だけを作る枠です')
     video=out/'collespo_soccer_results.mp4';clubs=__import__('soccer_result_story').clubs_for(data) if data.get('preview_followup') else resolve_clubs(data);images=[];layouts=[];previous=None;clock=0
@@ -271,7 +273,7 @@ def render_video(data,narr,audio,out):
         proc=subprocess.Popen(command,stdin=subprocess.PIPE,stderr=log)
         try:
             for i,(seg,duration) in enumerate(zip(narr['segments'],times)):
-                r3.set_program_clock(clock);r3.set_caption(seg['text'],duration,sum(times),speaker=2,duo=False,hide_caption=seg['kind']=='outro')
+                r3.set_program_clock(clock);r3.set_caption(seg['text'],duration,sum(times),speaker=seg['speaker'],duo=False,hide_caption=seg['kind']=='outro',caption_units=seg.get('caption_units'))
                 snap=min(3,duration*.6) if seg['kind']=='outro' else min(1.4,duration*.6)
                 r3.set_program_clock(clock+snap);im=frame(snap,seg,data,clubs)
                 errors=validate_frame(im,data,clubs)
@@ -290,7 +292,7 @@ def render_video(data,narr,audio,out):
     match=re.search(r'Duration: (\d+):(\d+):([\d.]+)',probe.stderr)
     if not match:raise ValueError('実動画の尺が読めません')
     seconds=int(match[1])*3600+int(match[2])*60+float(match[3])
-    if seconds>40:raise ValueError('実動画が40秒を超える')
+    if seconds>results.LIMIT:raise ValueError('実動画が60秒を超える')
     verification={'date_jst':data['date_jst'],'title':results.title(data),'video_seconds':seconds,
                   'voice_seconds':sum(float(s['duration']) for s in audio),'video':str(video),
                   'layout_club_badges_numbers':'PASS','frames':layouts,'voice_settings':'既存設定不変',
@@ -307,14 +309,15 @@ def main():
     ap.add_argument('--audio-dir',type=Path)
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer_results')
     args=ap.parse_args();data=json.loads(args.data.read_text(encoding='utf-8'));narr=__import__('soccer_result_story').narration(data)
-    if soccer_look.v5() and not data.get('preview_followup'):
+    if soccer_look.v5() and not any(s['kind']=='followup' for s in narr['segments']):
         from soccer_v5_program import add_player_scene
         narr=add_player_scene(narr,data)
     import host_split
     narr = host_split.adapt(narr, 'soccer_results')
     if args.audio_dir:
-        narr = host_split.use_audio(narr, args.audio_dir)
+        # 立ち絵欠落で全音声が代役になった場合も、確定後の原稿を読む。
         host_split.render_audio(args.audio_dir, args.out)
+        narr = host_split.use_audio(narr, args.audio_dir)
     results.validate_data(data)
     if args.narration_out:
         args.narration_out.parent.mkdir(parents=True,exist_ok=True)
@@ -322,7 +325,7 @@ def main():
     if not narr['segments']:print('出場した日本人選手がいないため作りません');return
     if args.audio_dir:
         saved=args.out/'narration.json'
-        if data.get('preview_followup') and saved.exists():narr=json.loads(saved.read_text(encoding='utf8'))
+        if saved.exists():narr=json.loads(saved.read_text(encoding='utf8'))
         audio=json.loads((args.audio_dir/'manifest.json').read_text(encoding='utf-8'))['segments']
         render_video(data,narr,audio,args.out)
         host_split.bind_video(args.out/'collespo_soccer_results.mp4', args.audio_dir)

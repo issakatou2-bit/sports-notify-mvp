@@ -404,6 +404,11 @@ class QueueTest(unittest.TestCase):
         scripts = self.folder/'launcher/scripts'
         scripts.mkdir(parents=True)
         source = (q.ROOT/'scripts/run_ui_voice_worker.ps1').read_text(encoding='utf-8-sig')
+        # 実運用中の係と排他名を共用すると、起動を省いて試験が不定期に失敗する。
+        # 試験ごとの専用名にし、実運用の係には触れない。
+        mutex = r"'Local\CollespoUiVoiceWorker'"
+        self.assertEqual(source.count(mutex), 1)
+        source = source.replace(mutex, rf"'Local\CollespoUiVoiceWorker-Test-{self.folder.name}'")
         # テストでは実ユーザーの変数を絶対に読まない。Git/Pythonも固定の関数。
         source = source.replace("[Environment]::GetEnvironmentVariable('COLLESPO_UI_PARTS_KEY', 'User')", "'fixture-only'")
         source = source.replace("[Environment]::GetEnvironmentVariable('COLLESPO_APSC_ROOT', 'User')", "''")
