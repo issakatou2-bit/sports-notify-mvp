@@ -175,5 +175,70 @@
         }
       }
     ]
+  },
+  "2026-10-18": {
+    "day": "2026-10-18",
+    "video_id": "T_daXQFCjY8",
+    "title": "【欧州サッカー】今夜の注目試合｜レアル・マドリード vs セビージャ ほか #Shorts",
+    "published_at": "2026-10-18T10:12:50.552416+00:00",
+    "binding": {
+      "material_sha256": "eb5f3a2402c7ceafb839a1190bb9edfaa1f897050346ddb153d58e68db5829be",
+      "narration_sha256": "e78a0ac48ff0edd9ecae1d2ae913695b40687192431f8d30d6dfc29a6c08be59"
+    },
+    "games": [
+      {
+        "game_id": "564709",
+        "espn_event_id": "401882839",
+        "league": "ラ・リーガ",
+        "competition_code": "PD",
+        "home": "レアル・マドリード",
+        "away": "セビージャ",
+        "start_utc": "2026-10-19T04:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "rank",
+            "rank_difference": 1,
+            "ranks": [
+              4,
+              5
+            ],
+            "text": "順位差1の直接対決"
+          },
+          {
+            "gap": 4.0,
+            "kind": "points",
+            "text": "勝点差4"
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間4時、レアル・マドリード対セビージャ。順位差1の直接対決。勝点差4。昨季ラ・リーガでホーム側は2位、アウェー側は15位。見どころは、この順位差が今回どう表れるかです。",
+        "standings": {
+          "home": {
+            "rank": 4,
+            "games_back": 3.0,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 9.0,
+            "as_of": "2026-10-18T09:53:53.997245+00:00",
+            "competition": "PD",
+            "season": null
+          },
+          "away": {
+            "rank": 5,
+            "games_back": 4.3,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 13.0,
+            "as_of": "2026-10-18T09:53:53.997245+00:00",
+            "competition": "PD",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }

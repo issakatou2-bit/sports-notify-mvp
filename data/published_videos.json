@@ -6219,6 +6219,30 @@
         "material_sha256": "1bb061b6bc068273c7e257216005ba7f2eec15b81d6d11b5722a48e05d3a8f92",
         "narration_sha256": "837354bffdb90c7d73f1f530b6eee59401e9114b84a473b08291bd846fd1867f"
       }
+    },
+    "2026-10-18": {
+      "video_id": "T_daXQFCjY8",
+      "url": "https://youtu.be/T_daXQFCjY8",
+      "title": "【欧州サッカー】今夜の注目試合｜レアル・マドリード vs セビージャ ほか #Shorts",
+      "published_at": "2026-10-18T10:12:50.552416+00:00",
+      "publish_at": "2026-10-18T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "eb5f3a2402c7ceafb839a1190bb9edfaa1f897050346ddb153d58e68db5829be",
+        "narration_sha256": "e78a0ac48ff0edd9ecae1d2ae913695b40687192431f8d30d6dfc29a6c08be59"
+      },
+      "host_assignment": {
+        "day": "2026-10-18",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 40,
+        "weekday": 6
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
