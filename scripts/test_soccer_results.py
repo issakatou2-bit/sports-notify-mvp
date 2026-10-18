@@ -182,7 +182,7 @@ class SoccerResults(unittest.TestCase):
         for s in pages:
             r3.set_caption('',12,30);self.assertFalse(__import__('v3_rules').check_layout(render.frame(1.4,s,data,clubs)))
 
-    def test_audio_manifest_and_strict_40_seconds(self):
+    def test_audio_manifest_and_strict_60_seconds(self):
         segments=render.narration(fixed())['segments']
         with tempfile.TemporaryDirectory() as directory:
             p=Path(directory)/'voice.wav'
@@ -192,9 +192,9 @@ class SoccerResults(unittest.TestCase):
             self.assertLess(sum(render.durations(segments,audio)),40)
             audio[0]['text']='違う原稿'
             with self.assertRaises(ValueError):render.durations(segments,audio)
-            audio=[dict(s,file=str(p),duration=11) for s in segments]
-            with patch('synthesize_narration.audio_duration',return_value=11):
-                with self.assertRaisesRegex(ValueError,'40秒'):render.durations(segments,audio)
+            audio=[dict(s,file=str(p),duration=61) for s in segments]
+            with patch('synthesize_narration.audio_duration',return_value=61):
+                with self.assertRaisesRegex(ValueError,'60秒'):render.durations(segments,audio)
 
     def test_manual_workflow_default_closed_and_upload_metadata(self):
         import yaml
