@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-17T06:02:01.350464+00:00",
+  "updated_at": "2026-10-18T06:02:10.141528+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,78 +13,74 @@
   "titles_count": 51,
   "teams": [
     {
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 13,
+      "tone": "好調",
+      "gist": "レイズがGame4勝利、ALCSを2勝2敗に"
+    },
+    {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 21,
+      "mentions": 12,
       "tone": "好調",
-      "gist": "ブリュワーズがドジャースに4連勝、WS進出"
+      "gist": "ブリュワーズがNLCS4連勝でWS進出"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 10,
+      "mentions": 5,
       "tone": "不振",
-      "gist": "ドジャース、ブリュワーズに4連敗で3連覇ならず"
+      "gist": "ドジャース、ブリュワーズに敗れ3連覇ならず"
     },
     {
       "team_id": "114",
       "name": "ガーディアンズ",
       "name_en": "Cleveland Guardians",
-      "mentions": 5,
-      "tone": "話題",
-      "gist": "ALCS第4戦が雨で順延、土曜夜に開催"
+      "mentions": 4,
+      "tone": "不振",
+      "gist": "ガーディアンズ、レイズに3-7で敗戦"
     },
     {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 5,
-      "tone": "話題",
-      "gist": "ALCS第4戦が雨で順延、マルティネス先発維持"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ジャッジの発言にヤンキース幹部が不満との報道"
+      "gist": "ロイヤルズのAL西地区優勝数がマリナーズ超え"
     },
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "プロファー、2度目の禁止薬物処分後に音信不通"
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ロイヤルズのAL西地区優勝数がマリナーズ超え"
     },
     {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ルーベンスタイン氏、MLBオーナーは大儲けと発言"
+      "gist": "'26ホワイトソックスのプレーオフ讃歌"
     },
     {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "ウォルコット、秋季リーグで打撃修正が結実"
+      "tone": "話題",
+      "gist": "ロッキーズ、ブライアント抜きで編成を進める"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 1
-    },
-    {
-      "name": "山本由伸",
-      "mentions": 1
+      "mentions": 2
     }
   ]
 }

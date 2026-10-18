@@ -1,91 +1,88 @@
 {
-  "generated_at": "2026-10-17T06:01:04.209058+00:00",
-  "date_jst": "2026-10-17",
-  "name": "Petey Halpin",
-  "player_id": "690984",
+  "generated_at": "2026-10-18T06:01:08.535270+00:00",
+  "date_jst": "2026-10-18",
+  "name": "Travis Bazzana",
+  "player_id": "683953",
   "team": "ガーディアンズ",
   "group": "hitting",
-  "why": "2026-10-16のMLBで最も活躍",
-  "headline": "3打数1安打　1本塁打　2打点",
-  "score": 93,
+  "why": "2026-10-18のMLBで最も活躍",
+  "headline": "3打数2安打　1本塁打　1打点　1四球",
+  "score": 105,
   "bio": {
-    "name_en": "Petey Halpin",
+    "name_en": "Travis Bazzana",
     "age": 24,
-    "birth_city": "San Mateo",
-    "birth_state": "CA",
-    "birth_country": "USA",
-    "birth_date": "2002-05-26",
-    "debut": "2025-09-20",
-    "draft_year": 2020,
+    "birth_city": "Hornsby",
+    "birth_state": "NSW",
+    "birth_country": "Australia",
+    "birth_date": "2002-08-28",
+    "debut": "2026-04-28",
+    "draft_year": 2024,
     "bats": "Left",
     "throws": "Right",
-    "number": "0",
-    "position": "Outfielder",
+    "number": "37",
+    "position": "Second Base",
     "nickname": null,
     "height": "5' 11\"",
-    "weight": 200
+    "weight": 199
   },
   "teams": [
     {
       "team": "ガーディアンズ",
-      "from": 2025,
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 89,
-    "avg": ".228",
-    "hr": 4,
-    "rbi": 14,
-    "ops": ".604",
-    "sb": 10,
-    "hits": 42
+    "games": 124,
+    "avg": ".245",
+    "hr": 15,
+    "rbi": 57,
+    "ops": ".743",
+    "sb": 19,
+    "hits": 110
   },
   "this_season": {
-    "games": 83,
-    "avg": ".225",
-    "hr": 4,
-    "rbi": 14,
-    "ops": ".594",
-    "sb": 10,
-    "hits": 40
+    "games": 124,
+    "avg": ".245",
+    "hr": 15,
+    "rbi": 57,
+    "ops": ".743",
+    "sb": 19,
+    "hits": 110
   },
-  "last_season": {
-    "games": 6,
-    "avg": ".333",
-    "hr": 0,
-    "rbi": 0,
-    "ops": ".833",
-    "sb": 0,
-    "hits": 2
-  },
+  "last_season": {},
   "recent": [
     {
       "date": "2026-09-27",
-      "line": "4打数1安打",
+      "line": "4打数0安打",
       "opponent": "Kansas City Royals"
     },
     {
       "date": "2026-09-26",
-      "line": "0打数0安打",
+      "line": "4打数3安打",
       "opponent": "Kansas City Royals"
     },
     {
       "date": "2026-09-25",
-      "line": "0打数0安打 1打点",
+      "line": "5打数1安打",
       "opponent": "Kansas City Royals"
     },
     {
-      "date": "2026-09-23",
-      "line": "3打数1安打",
+      "date": "2026-09-24",
+      "line": "3打数0安打",
       "opponent": "Boston Red Sox"
     },
     {
-      "date": "2026-09-22",
-      "line": "1打数1安打",
+      "date": "2026-09-23",
+      "line": "2打数0安打",
       "opponent": "Boston Red Sox"
     }
   ],
-  "awards": [],
+  "awards": [
+    {
+      "season": "2026",
+      "name": "AL All-Star"
+    }
+  ],
   "quotes": []
 }
