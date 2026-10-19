@@ -12068,6 +12068,66 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_league_103_hitting": {
+      "video_id": "r7Yt5yndfWE",
+      "url": "https://youtu.be/r7Yt5yndfWE",
+      "title": "【MLB】ア・リーグ 打撃部門の1位｜2026年シーズンまとめ #Shorts",
+      "published_at": "2026-10-19T06:44:43.107065+00:00",
+      "publish_at": "2026-10-19T07:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-19",
+        "kind": "asset:season_league",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 0
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_league_103_pitching": {
+      "video_id": "UW5pbvQ7zbg",
+      "url": "https://youtu.be/UW5pbvQ7zbg",
+      "title": "【MLB】ア・リーグ 投手部門の1位｜2026年シーズンまとめ #Shorts",
+      "published_at": "2026-10-19T06:48:25.474229+00:00",
+      "publish_at": "2026-10-19T13:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-19",
+        "kind": "asset:season_league",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 0
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_league_104_hitting": {
+      "video_id": "nPX10OMwAAU",
+      "url": "https://youtu.be/nPX10OMwAAU",
+      "title": "【MLB】ナ・リーグ 打撃部門の1位｜2026年シーズンまとめ #Shorts",
+      "published_at": "2026-10-19T06:51:56.215470+00:00",
+      "publish_at": "2026-10-19T14:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-19",
+        "kind": "asset:season_league",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 0
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   }
 }

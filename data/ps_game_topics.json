@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-19T01:05:21.893358+00:00",
+  "updated_at": "2026-10-19T06:39:59.488399+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -33,7 +33,7 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「なあ、このうっとうしい野球の動画で俺の広告を邪魔するのやめてくんない?」"
+          "「ちょっと、広告の途中にこのうざい野球の映像を割り込ませるのやめてくれない?」"
         ]
       ],
       "japanese": [],
@@ -43,10 +43,10 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "なあ、このうっとうしい野球の動画で俺の広告を邪魔するのやめてくんない?",
+        "said": "ちょっと、広告の途中にこのうざい野球の映像を割り込ませるのやめてくれない?",
         "text": "Guys, could you please stop interrupting my ads with these annoying baseball clips?",
         "url": "https://www.youtube.com/watch?v=NXWY4QeCc4Q",
-        "likes": 445,
+        "likes": 460,
         "at": "2026-10-18T05:56:33Z"
       },
       "headline": null,
@@ -180,7 +180,7 @@
         ],
         [
           "MLB.comの見出しから",
-          "「ラスムセンの好投で勢いを取り戻したレイズ、ワールドシリーズ王手で本拠地へ」"
+          "「自信満々のレイズがクリーブランドを黙らせ、ワールドシリーズ王手で本拠地へ」"
         ]
       ],
       "japanese": [],
@@ -191,10 +191,10 @@
       "source": null,
       "voice": null,
       "headline": {
-        "said": "ラスムセンの好投で勢いを取り戻したレイズ、ワールドシリーズ王手で本拠地へ",
-        "text": "Behind Rasmussen gem, rejuvenated Rays return home 1 win from World Series",
+        "said": "自信満々のレイズがクリーブランドを黙らせ、ワールドシリーズ王手で本拠地へ",
+        "text": "Confident Rays quiet Cleveland, return home one win from World Series",
         "url": "https://www.mlb.com/news/rays-win-alcs-game-5-2026",
-        "at": "2026-10-19T00:22:00+00:00"
+        "at": "2026-10-19T01:34:00+00:00"
       },
       "game_pk": 849817,
       "game_v4": {
