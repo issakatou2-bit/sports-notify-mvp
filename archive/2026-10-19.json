@@ -1,0 +1,339 @@
+{
+  "generated_at": "2026-10-19T09:53:52.870660+00:00",
+  "games": [
+    {
+      "game_id": "558576",
+      "league": "セリエA",
+      "home_team_id": "SA-5911",
+      "away_team_id": "SA-104",
+      "home_team_name": "モンツァ",
+      "away_team_name": "カリアリ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "カリアリ vs モンツァ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/20 01:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 15,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "away_standing": {
+        "rank": 7,
+        "games_back": 2.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 6.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "カリアリには菅原由勢が所属",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "セリエAの開幕6試合を終え、リーグ全体で見たときに両チームの立場が大きく異なる一戦となる。敵地を訪れるカリアリは【リーグ7位で首位との勝ち点差6】という上位グループに位置しているのに対し、本拠地に迎えるモンツァはリーグ15位と下位に沈んでいる。両チームのこの成績の差は、攻撃の質や守備の安定性などシステム全体の構築度合いが異なることを意味している。シーズン序盤の現段階での順位差を踏まえ、日本代表の菅原由勢が所属するカリアリがどのようなパフォーマンスを見せるかに注目したい。",
+      "notification_hook": "菅原由勢のカリアリが、下位のモンツァ敵地でリーグ7位の地力を見せられるか。"
+    },
+    {
+      "game_id": "558578",
+      "league": "セリエA",
+      "home_team_id": "SA-112",
+      "away_team_id": "SA-586",
+      "home_team_name": "パルマ",
+      "away_team_name": "トリノ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "トリノ vs パルマ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/20 03:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 16,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "away_standing": {
+        "rank": 13,
+        "games_back": 4.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 12.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パルマには鈴木ザイオンが所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "パルマ（昨季セリエA12位）とトリノ（昨季セリエA13位）の対戦",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "game_id": "560606",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-73",
+      "away_team_id": "PL-1076",
+      "home_team_name": "トッテナム",
+      "away_team_name": "コベントリー",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "コベントリー vs トッテナム",
+      "abbr_matchup": null,
+      "start_time_jst": "10/20 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 20,
+        "games_back": 6.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 18.0
+      },
+      "away_standing": {
+        "rank": 16,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "トッテナムには高井幸大が所属",
+          "weight": 1
+        },
+        {
+          "tag": "jp_team",
+          "text": "コベントリーには坂元達裕が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "トッテナム の試合",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "プレミアリーグ6試合を消化した段階で、トッテナムはリーグ20位と下位に沈んでおり、首位との勝ち点差は18に達している。一方、訪問するコベントリーはリーグ16位で首位との差は15となっており、両チームともシーズン序盤から【苦しい立場にある】。本拠地トッテナムが迎える今節は、低迷する両チームが勝利を求めて激突する試合となる。高井幸大と坂元達裕という日本人選手の活躍がどのように展開するかに注目したい。",
+      "notification_hook": "下位争いのトッテナムと コベントリー、高井幸大と坂元達裕が対峙"
+    },
+    {
+      "game_id": "564717",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-82",
+      "away_team_id": "PD-87",
+      "home_team_name": "ヘタフェ",
+      "away_team_name": "ラージョ・バジェカーノ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ラージョ・バジェカーノ vs ヘタフェ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/20 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 15,
+        "games_back": 6.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 19.0
+      },
+      "away_standing": {
+        "rank": 14,
+        "games_back": 6.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 19.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ヘタフェ（昨季ラ・リーガ7位）とラージョ・バジェカーノ（昨季ラ・リーガ8位）の対戦",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "昨季ラ・リーガ7位のヘタフェが本拠地に昨季8位のラージョ・バジェカーノを迎える一戦である。現在ヘタフェはリーグ15位、ラージョ・バジェカーノは14位と、両チームとも【首位との勝ち点差19】という厳しい状況にあり、シーズン序盤での貴重な勝ち点争いとなる。ヘタフェが敵地のラージョ・バジェカーノにどのような守備戦術で対抗するのか、また攻撃面でこの試合をどう進めるかに注目したい。",
+      "notification_hook": "昨季7位と8位の対戦。首位から19差の両チームの貴重な勝ち点争い"
+    },
+    {
+      "game_id": "849815",
+      "league": "MLB",
+      "home_team_id": "139",
+      "away_team_id": "114",
+      "home_team_name": "レイズ",
+      "away_team_name": "ガーディアンズ",
+      "home_abbr": "TB",
+      "away_abbr": "CLE",
+      "home_color": "#092C5C",
+      "away_color": "#00385D",
+      "matchup": "ガーディアンズ vs レイズ",
+      "abbr_matchup": "CLE vs TB",
+      "start_time_jst": "10/20 09:08",
+      "home_division": "ALE",
+      "away_division": "ALC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 98,
+        "losses": 64,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 85,
+        "losses": 77,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Freddy Peralta",
+        "name_en": "Freddy Peralta",
+        "player_id": "642547",
+        "era": "4.42",
+        "wins": 10,
+        "losses": 11,
+        "strikeouts": 156
+      },
+      "away_probable": null,
+      "venue_name": "Tropicana Field",
+      "venue_jp": "トロピカーナ・フィールド",
+      "venue_note": "MLBで数少ないドーム球場。天候に左右されない",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.43点で、MLB30球場中21位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "L",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "リーグ優勝決定シリーズ 第6戦(レイズが3勝2敗で王手、ガーディアンズは負ければ敗退)",
+          "weight": 6
+        }
+      ],
+      "series_context": {
+        "series_game_number": null,
+        "games_in_series": null,
+        "home_wins_in_stretch": 2,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [
+        "Freddy Peraltaは直近6登板を自責1以下に抑えている"
+      ],
+      "ai_summary": "レイズはレギュラーシーズンでア・リーグ東地区の【2位に4.5ゲーム差をつけて首位】を走り、ガーディアンズは中地区で1.0ゲーム差の首位に立つ強豪チーム同士の対戦となる。リーグ優勝決定シリーズで【レイズが王手をかけた第6戦】であり、ガーディアンズは敗北が即敗退を意味する一戦に臨む。先発するレイズのFreddy Peraltaは直近6登板で自責1以下の好調を維持しており、ドーム球場での投げ合いがどう展開するかに注目したい。",
+      "notification_hook": "敗ければ敗退のガーディアンズが好調Freddy Peraltaに挑む、リーグ優勝決定シリーズ第6戦。",
+      "availability_checked_at": "2026-10-19T09:52:45.471445+00:00"
+    }
+  ],
+  "ai_status": {
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.0116
+  }
+}
