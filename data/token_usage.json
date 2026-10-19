@@ -449,6 +449,39 @@
           "out": 2555
         }
       }
+    },
+    "2026-10-19": {
+      "calls": 7,
+      "in": 6494,
+      "out": 2614,
+      "usd": 0.03772,
+      "by": {
+        "topic": {
+          "calls": 2,
+          "in": 428,
+          "out": 63
+        },
+        "voices": {
+          "calls": 1,
+          "in": 1308,
+          "out": 584
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 2693,
+          "out": 926
+        },
+        "localize": {
+          "calls": 1,
+          "in": 1235,
+          "out": 679
+        },
+        "translate": {
+          "calls": 1,
+          "in": 830,
+          "out": 362
+        }
+      }
     }
   }
 }

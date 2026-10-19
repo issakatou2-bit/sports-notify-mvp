@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-18T04:04:57.792446+00:00",
-  "status": "partial",
+  "updated_at": "2026-10-19T01:05:21.893358+00:00",
+  "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
     {
@@ -32,8 +32,8 @@
           "レイズ マルティネス 5回と3分の1を1失点　ガーディアンズ アームストロング 1回を無失点"
         ],
         [
-          "MLB.comの見出しから",
-          "「レイズ、第4戦でガーディアンズに競り勝ちリーグ優勝決定シリーズを2勝2敗のタイに」"
+          "ハイライトのコメント欄から",
+          "「なあ、このうっとうしい野球の動画で俺の広告を邪魔するのやめてくんない?」"
         ]
       ],
       "japanese": [],
@@ -42,13 +42,14 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
-      "headline": {
-        "said": "レイズ、第4戦でガーディアンズに競り勝ちリーグ優勝決定シリーズを2勝2敗のタイに",
-        "text": "Rays slip past Guards in Game 4 to knot up ALCS",
-        "url": "https://www.mlb.com/news/rays-win-alcs-game-4-2026",
-        "at": "2026-10-18T03:28:00+00:00"
+      "voice": {
+        "said": "なあ、このうっとうしい野球の動画で俺の広告を邪魔するのやめてくんない?",
+        "text": "Guys, could you please stop interrupting my ads with these annoying baseball clips?",
+        "url": "https://www.youtube.com/watch?v=NXWY4QeCc4Q",
+        "likes": 445,
+        "at": "2026-10-18T05:56:33Z"
       },
+      "headline": null,
       "game_pk": 849816,
       "game_v4": {
         "score": {
@@ -147,6 +148,144 @@
           }
         ],
         "ticker": "レイズ 7対3 ガーディアンズ　敵地で勝利　シリーズはレイズの2勝2敗"
+      }
+    },
+    {
+      "key": "season_game_849817",
+      "label": "リーグ優勝決定シリーズ第5戦",
+      "hook": "レイズがガーディアンズに3対1でリーグ優勝決定シリーズ3勝2敗に",
+      "heading": "レイズ 対 ガーディアンズ　リーグ優勝決定シリーズ第5戦",
+      "intro": "リーグ優勝決定シリーズ第5戦、レイズが敵地でガーディアンズに3対1で勝ちました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "team_id": 139,
+      "abbr": "TB",
+      "title": "【MLB】レイズがガーディアンズに3対1でリーグ優勝決定シリーズ3勝2敗に｜アランダの決勝打 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "レイズ 3対1 ガーディアンズ　敵地で勝利　シリーズはレイズの3勝2敗"
+        ],
+        [
+          "決勝点",
+          "2回表　ジョナサン・アランダのタイムリー"
+        ],
+        [
+          "先発",
+          "レイズ ラスムッセン 7回を1失点　ガーディアンズ メシック 2回を2失点"
+        ],
+        [
+          "セーブ",
+          "ブライアン・ベイカー"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「ラスムセンの好投で勢いを取り戻したレイズ、ワールドシリーズ王手で本拠地へ」"
+        ]
+      ],
+      "japanese": [],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": {
+        "said": "ラスムセンの好投で勢いを取り戻したレイズ、ワールドシリーズ王手で本拠地へ",
+        "text": "Behind Rasmussen gem, rejuvenated Rays return home 1 win from World Series",
+        "url": "https://www.mlb.com/news/rays-win-alcs-game-5-2026",
+        "at": "2026-10-19T00:22:00+00:00"
+      },
+      "game_pk": 849817,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 2,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 5,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": 0
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 139,
+            "name": "レイズ",
+            "abbr": "TB",
+            "total": 3
+          },
+          "home": {
+            "id": 114,
+            "name": "ガーディアンズ",
+            "abbr": "CLE",
+            "total": 1
+          }
+        },
+        "decisive": {
+          "inning": "2回表",
+          "subject": "ジョナサン・アランダ",
+          "action": "タイムリー",
+          "detail": "",
+          "event": "Single"
+        }
+      },
+      "game_date": "2026-10-18T21:08:00Z",
+      "jp_first": false,
+      "next_team_id": 139,
+      "finished_at": "2026-10-18T23:58:15.301000+00:00",
+      "v3": {
+        "who": "レイズ　リーグ優勝決定シリーズ第5戦",
+        "big": "3-1",
+        "unit": "",
+        "sub": "敵地で勝利",
+        "tag": "決勝点 2回表 アランダのタイムリー",
+        "chips": [
+          {
+            "label": "リーグ優勝決定シリーズ　レイズ",
+            "score": "3-2",
+            "win": true
+          }
+        ],
+        "ticker": "レイズ 3対1 ガーディアンズ　敵地で勝利　シリーズはレイズの3勝2敗"
       }
     }
   ]
