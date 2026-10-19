@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-18T06:02:10.141528+00:00",
+  "updated_at": "2026-10-19T06:02:10.883184+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -16,49 +16,25 @@
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 13,
+      "mentions": 15,
       "tone": "好調",
-      "gist": "レイズがGame4勝利、ALCSを2勝2敗に"
+      "gist": "レイズ、ALCS第5戦に3-1勝利で3勝2敗"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 12,
+      "mentions": 6,
       "tone": "好調",
-      "gist": "ブリュワーズがNLCS4連勝でWS進出"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 5,
-      "tone": "不振",
-      "gist": "ドジャース、ブリュワーズに敗れ3連覇ならず"
+      "gist": "ブリュワーズ、22年ぶりWS進出に歓喜"
     },
     {
       "team_id": "114",
       "name": "ガーディアンズ",
       "name_en": "Cleveland Guardians",
-      "mentions": 4,
+      "mentions": 5,
       "tone": "不振",
-      "gist": "ガーディアンズ、レイズに3-7で敗戦"
-    },
-    {
-      "team_id": "118",
-      "name": "ロイヤルズ",
-      "name_en": "Kansas City Royals",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ロイヤルズのAL西地区優勝数がマリナーズ超え"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ロイヤルズのAL西地区優勝数がマリナーズ超え"
+      "gist": "ガーディアンズ、第5戦敗れ崖っぷち"
     },
     {
       "team_id": "145",
@@ -66,21 +42,49 @@
       "name_en": "Chicago White Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "'26ホワイトソックスのプレーオフ讃歌"
+      "gist": "ホワイトソックス、'26年のPO進出を称える"
     },
     {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ロッキーズ、ブライアント抜きで編成を進める"
+      "gist": "アリゾナ秋季リーグ第2週の好成績者"
+    },
+    {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ドジャース、オフにスクーバル獲得を検討か"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "2年前のノエルの打球とTBS中継を回顧"
+    },
+    {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "カブスのPCA、MVP級の活躍を語る"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 2
+      "mentions": 1
+    },
+    {
+      "name": "ダルビッシュ有",
+      "mentions": 1
     }
   ]
 }
