@@ -1,27 +1,16 @@
 {
-  "date": "2026-10-16",
-  "submits": 2,
+  "date": "2026-10-20",
+  "submits": 1,
   "stages": {
     "draft": {
-      "key": "a0ee64780f695c1ce80e138b53d4fa6b123cfa239e4f3f107a3350f407e69933",
+      "key": "b6823eeb43930b9bcf6f8a0799d1aee6a97d4269f74a93cb3e4ffa22a4140166",
       "n": 1,
-      "custom_id": "dlg-draft-a0ee64780f695c1c-1",
-      "batch_id": "msgbatch_01DtcqRUxwKiDPTht4wnZpds",
-      "status": "used",
+      "custom_id": "dlg-draft-b6823eeb43930b9b-1",
+      "batch_id": "msgbatch_01CJfgnJQQ54R2EqKardmJDG",
+      "status": "submitted",
       "tries": 1,
-      "recorded": true,
-      "submitted_at": "2026-10-16T15:27:58+09:00",
-      "model": "claude-sonnet-5-5"
-    },
-    "more": {
-      "key": "9f3ae00313b9b805a8b9b091595ee8d43d8535b4c87528813cb62828cff8e623",
-      "n": 1,
-      "custom_id": "dlg-more-9f3ae00313b9b805-1",
-      "batch_id": "msgbatch_01KYqXnUcPNHWQGYL8XTqGYk",
-      "status": "used",
-      "tries": 1,
-      "recorded": true,
-      "submitted_at": "2026-10-16T15:30:24+09:00",
+      "recorded": false,
+      "submitted_at": "2026-10-20T15:47:21+09:00",
       "model": "claude-sonnet-5-5"
     }
   }
