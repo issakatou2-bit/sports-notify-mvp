@@ -2,6 +2,7 @@ import io
 import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -472,6 +473,105 @@ class ReleaseIsolation(unittest.TestCase):
             upload.assert_not_called()
 
 
+class Response:
+    def __init__(self, payload=b'{}'):
+        self.payload = payload
+
+    def read(self, size=-1):
+        return self.payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+class Opener:
+    def __init__(self, outcomes):
+        self.outcomes = list(outcomes)
+        self.urls = []
+        self.calls = 0
+
+    def open(self, request, timeout=None):
+        self.urls.append(request.full_url)
+        self.calls += 1
+        outcome = self.outcomes.pop(0)
+        if isinstance(outcome, Exception):
+            raise outcome
+        return outcome
+
+
+def http_error(code):
+    return daily.urllib.error.HTTPError(
+        'https://example.test', code, str(code), {}, None)
+
+
+class GitHubTransientFailures(unittest.TestCase):
+    def run_github(self, outcomes):
+        opener = Opener(outcomes)
+        sleeps = []
+        with patch.object(daily.urllib.request, 'build_opener',
+                          return_value=opener), \
+                patch.object(daily.time, 'sleep', side_effect=sleeps.append), \
+                patch.dict(daily.os.environ, {'GH_TOKEN': 'dummy'}):
+            try:
+                result = daily.github('/x')
+            except Exception as exc:
+                return opener, sleeps, exc
+        return opener, sleeps, result
+
+    def test_500_is_retried_then_succeeds(self):
+        opener, sleeps, result = self.run_github(
+            [http_error(500), Response(b'{"ok": true}')])
+        self.assertEqual(result, {'ok': True})
+        self.assertEqual(opener.calls, 2)
+        self.assertEqual(sleeps, [2])
+
+    def test_404_is_not_retried(self):
+        opener, sleeps, error = self.run_github([http_error(404)])
+        self.assertIsInstance(error, daily.urllib.error.HTTPError)
+        self.assertEqual(error.code, 404)
+        self.assertEqual(opener.calls, 1)
+        self.assertEqual(sleeps, [])
+
+    def test_four_500s_give_up_after_the_third_delay(self):
+        opener, sleeps, error = self.run_github([http_error(500)] * 4)
+        self.assertIsInstance(error, daily.urllib.error.HTTPError)
+        self.assertEqual(error.code, 500)
+        self.assertEqual(opener.calls, 4)
+        self.assertEqual(sleeps, [2, 5, 10])
+
+    def test_connection_error_is_retried_too(self):
+        opener, sleeps, result = self.run_github(
+            [daily.urllib.error.URLError('down'), Response(b'{"ok": true}')])
+        self.assertEqual(result, {'ok': True})
+        self.assertEqual(opener.calls, 2)
+        self.assertEqual(sleeps, [2])
+
+    def test_post_500_then_422_reads_the_existing_tag(self):
+        release = {'assets': [{'name': 'collespo-morning-2026-09-19.mp4',
+                               'digest': 'sha256:media',
+                               'browser_download_url': 'https://example.test/video'}]}
+        opener = Opener([http_error(404), http_error(500), http_error(422),
+                         Response(json.dumps(release).encode())])
+        sleeps = []
+        run = {'head_sha': 'old-source-sha',
+               'html_url': 'https://example.test/run/1'}
+        with patch.object(daily.urllib.request, 'build_opener',
+                          return_value=opener), \
+                patch.object(daily.time, 'sleep', side_effect=sleeps.append), \
+                patch.dict(daily.os.environ, {'GH_TOKEN': 'dummy'}):
+            url = daily.host_video(run, '2026-09-19', None, 'media', 'morning')
+        self.assertEqual(url, 'https://example.test/video')
+        self.assertEqual(opener.calls, 4)
+        self.assertEqual(sleeps, [2])
+        posts = [u for u in opener.urls if u.endswith('/releases')]
+        self.assertEqual(len(posts), 2)
+        self.assertTrue(opener.urls[-1].endswith(
+            '/releases/tags/social-morning-2026-09-19'))
+
+
 class EachKindSpeaksForItself(unittest.TestCase):
     """枠ごとに、1行目でその回が何なのかを言い切るか。
 
@@ -635,4 +735,4 @@ class SnapshotCaption(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main(argv=['test_buffer_daily'])
+    unittest.main(argv=[sys.argv[0]])
