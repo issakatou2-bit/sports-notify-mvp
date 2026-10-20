@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import re
+import time
 from urllib.parse import urlparse, parse_qs
 
 # Keep aligned with buffer_daily.py; never discover destinations from the token.
@@ -62,44 +63,82 @@ def video_links(text):
     return ids
 
 
-def fetch_posts(query_fn, channel, max_pages=20):
+def read_failure(exc):
+    """A safe reason line: no response body, headers, token or post text."""
+    detail = getattr(exc, 'detail', None)
+    if callable(detail):
+        try:
+            return detail()
+        except Exception:                                # noqa: BLE001
+            pass
+    # Unknown errors may embed credentials in their message; only show the type.
+    return '段階=送信 種類=' + type(exc).__name__
+
+
+def fetch_posts(query_fn, channel, max_pages=20, retries=2, retry_delay=1):
     """Scan all queued/sent pages, then filter on sentAt locally.
 
     createdAt/startDate is not sentAt: an old reservation may publish today.
     A bounded scan that does not finish is explicitly incomplete, not clean.
+
+    The query mirrors buffer_daily.recent_posts (same filter, sort, page size
+    and cursor handling). Buffer occasionally fails a request, so retry once,
+    as recent_posts does. Failures raise Incomplete with a credential-free
+    reason: stage, HTTP status, GraphQL messages (redacted, 200 chars) and
+    top-level response key names.
     """
     posts, cursor, seen = [], None, set()
+    retries = max(1, retries)
     for _ in range(max_pages):
         after = ', after: ' + json.dumps(cursor) if cursor else ''
-        query = ('{ posts(first: 100' + after + ', input:{organizationId:' +
-                 json.dumps(ORG) + ',filter:{channelIds:[' + json.dumps(channel) +
-                 ']},'
-                 'sort:[{field:createdAt,direction:desc}]}) {'
+        query = ('{ posts(first: 100' + after + ', input: { organizationId: ' +
+                 json.dumps(ORG) + ', filter: {channelIds:[' + json.dumps(channel) +
+                 ']}, sort:[{field:createdAt,direction:desc}]}) {'
                  'edges {node {id channelId text status dueAt sentAt}} '
-                 'pageInfo {hasNextPage endCursor}}}')
+                 'pageInfo {hasNextPage endCursor} } }')
+        for attempt in range(retries):
+            try:
+                data = query_fn(query)
+                break
+            except Exception as exc:                     # noqa: BLE001
+                if attempt + 1 < retries:
+                    time.sleep(retry_delay)
+                    continue
+                raise Incomplete('Buffer read unavailable or malformed (' +
+                                 read_failure(exc) + ')') from None
         try:
-            result = query_fn(query)['posts']
+            result = data['posts']
             nodes = [edge['node'] for edge in result['edges']]
             page = result['pageInfo']
+        except Exception:
+            keys = (','.join(sorted(str(k) for k in data)[:10])
+                    if isinstance(data, dict) else type(data).__name__)
+            raise Incomplete('Buffer read unavailable or malformed '
+                             '(段階=項目の取り出し 応答の項目=' +
+                             (keys[:100] or 'なし') + ')') from None
+        try:
             if type(page['hasNextPage']) is not bool:
-                raise ValueError()
+                raise ValueError('hasNextPage')
             for node in nodes:
-                if node.get('channelId', channel) != channel:
-                    raise ValueError()
+                # The channel filter scopes nodes; recent_posts does not require
+                # channelId, and it may be absent. A different value is an error.
+                if node.get('channelId') and node['channelId'] != channel:
+                    raise ValueError('channelId')
                 if not all(isinstance(node.get(k), str) and node[k]
-                           for k in ('id', 'text', 'status')):
-                    raise ValueError()
-            # The channel filter scopes nodes; recent_posts does not require channelId.
+                           for k in ('id', 'status')):
+                    raise ValueError('id/status')
+                # text is checked in audit() only for statuses we inspect: an
+                # unfiltered page also contains drafts whose text may be empty.
             posts.extend(dict(node, channelId=channel) for node in nodes)
             if not page['hasNextPage']:
                 return posts
             cursor = page['endCursor']
             if not isinstance(cursor, str) or not cursor or cursor in seen:
-                raise ValueError()
+                raise ValueError('endCursor')
             seen.add(cursor)
-        except Exception:
-            # Do not leak response text, headers, token or exception messages.
-            raise Incomplete('Buffer read unavailable or malformed') from None
+        except ValueError as exc:
+            raise Incomplete('Buffer read unavailable or malformed '
+                             '(段階=項目の取り出し 項目=' + str(exc) + ')') from None
     raise Incomplete('Buffer pagination limit reached')
 
 
