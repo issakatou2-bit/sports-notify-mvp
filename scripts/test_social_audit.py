@@ -136,8 +136,10 @@ class AuditTests(unittest.TestCase):
         with self.assertRaises(a.Incomplete): a.fetch_posts(query,a.CHANNELS['twitter'])
     def test_error_redaction(self):
         def query(q): raise RuntimeError('SECRET_TOKEN')
-        with self.assertRaises(a.Incomplete) as caught: a.fetch_posts(query,a.CHANNELS['twitter'])
+        with self.assertRaises(a.Incomplete) as caught:
+            a.fetch_posts(query,a.CHANNELS['twitter'],retry_delay=0)
         self.assertNotIn('SECRET_TOKEN',str(caught.exception))
+        self.assertIn('段階=送信',str(caught.exception))
     def test_cli_three_core_exit_codes_no_network(self):
         with tempfile.TemporaryDirectory() as temp, patch('urllib.request.urlopen',side_effect=AssertionError('network')):
             root=Path(temp)
@@ -162,5 +164,87 @@ class AuditTests(unittest.TestCase):
                     self.assertIn(service + ': 読めた投稿 0件', output.getvalue())
             (root/'posts').write_text('{}')
             with contextlib.redirect_stdout(io.StringIO()): self.assertEqual(a.main(args),2)
+
+class ReadDiagnosticsTests(unittest.TestCase):
+    """Failures must say where they stopped without leaking secrets."""
+
+    class Response:
+        def __init__(self, body, status=200):
+            self.body = body.encode() if isinstance(body, str) else body
+            self.status = status
+        def read(self): return self.body
+        def __enter__(self): return self
+        def __exit__(self, *exc): return False
+
+    def read(self, body, token='secret-token', status=200, **kwargs):
+        import buffer_api
+        with patch.dict('os.environ', {'BUFFER_API_KEY': token}), \
+             patch('urllib.request.urlopen', return_value=self.Response(body, status)):
+            return a.fetch_posts(buffer_api.graphql, a.CHANNELS['twitter'],
+                                 retries=1, **kwargs)
+
+    def test_graphql_errors_are_recorded_and_token_hidden(self):
+        token = 'supersecrettoken'
+        body = json.dumps({'errors': [{'message': 'Invalid API key ' + token}],
+                           'data': None})
+        with self.assertRaises(a.Incomplete) as caught:
+            self.read(body, token=token)
+        text = str(caught.exception)
+        self.assertIn('HTTP=200', text)
+        self.assertIn('errors=Invalid API key [redacted]', text)
+        self.assertIn('応答の項目=data,errors', text)
+        self.assertIn('段階=項目の取り出し', text)
+        self.assertNotIn(token, text)
+
+    def test_http_status_is_recorded(self):
+        import urllib.error
+        error = urllib.error.HTTPError('https://api.buffer.com', 401, 'Unauthorized', {}, None)
+        with patch.dict('os.environ', {'BUFFER_API_KEY': 'secret-token'}), \
+             patch('urllib.request.urlopen', side_effect=error):
+            with self.assertRaises(a.Incomplete) as caught:
+                import buffer_api
+                a.fetch_posts(buffer_api.graphql, a.CHANNELS['twitter'],
+                              retries=1, retry_delay=0)
+        self.assertIn('段階=送信 HTTP=401', str(caught.exception))
+
+    def test_non_json_response_is_recorded(self):
+        with self.assertRaises(a.Incomplete) as caught:
+            self.read('<html>gateway error</html>')
+        text = str(caught.exception)
+        self.assertIn('段階=JSONの読み込み', text)
+        self.assertIn('HTTP=200', text)
+
+    def test_missing_posts_key_names_response_fields(self):
+        with self.assertRaises(a.Incomplete) as caught:
+            self.read(json.dumps({'data': {}}))
+        self.assertIn('段階=項目の取り出し', str(caught.exception))
+        self.assertIn('応答の項目=なし', str(caught.exception))
+
+    def test_draft_without_text_does_not_break_read(self):
+        def query(q):
+            return {'posts': {'edges': [{'node': {
+                'id': 'draft-1', 'channelId': a.CHANNELS['twitter'],
+                'status': 'draft', 'text': '', 'dueAt': None, 'sentAt': None}}],
+                'pageInfo': {'hasNextPage': False, 'endCursor': None}}}
+        rows = a.fetch_posts(query, a.CHANNELS['twitter'], retries=1)
+        self.assertEqual(rows[0]['status'], 'draft')
+
+    def test_transient_failure_is_retried_once(self):
+        calls = []
+        good = {'posts': {'edges': [{'node': deepcopy(self.post_node())}],
+                          'pageInfo': {'hasNextPage': False, 'endCursor': None}}}
+        def query(q):
+            calls.append(q)
+            if len(calls) == 1:
+                raise RuntimeError('temporary')
+            return good
+        self.assertEqual(len(a.fetch_posts(query, a.CHANNELS['twitter'],
+                                           retry_delay=0)), 1)
+        self.assertEqual(len(calls), 2)
+
+    def post_node(self):
+        return {'id': 'p1', 'channelId': a.CHANNELS['twitter'], 'status': 'sent',
+                'text': TEXT, 'sentAt': '2026-10-17T08:00:00Z', 'dueAt': None}
+
 
 if __name__ == '__main__': unittest.main(argv=[sys.argv[0]])
