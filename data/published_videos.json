@@ -12906,6 +12906,66 @@
       "actual_host": "ui",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_league_104_pitching": {
+      "video_id": "4DMS6qKPFiQ",
+      "url": "https://youtu.be/4DMS6qKPFiQ",
+      "title": "【MLB】ナ・リーグ 投手部門の1位｜2026年シーズンまとめ #Shorts",
+      "published_at": "2026-10-20T06:52:30.032610+00:00",
+      "publish_at": "2026-10-20T07:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-20",
+        "kind": "asset:season_league",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 1
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_team_108": {
+      "video_id": "w1KvvfC13W8",
+      "url": "https://youtu.be/w1KvvfC13W8",
+      "title": "【MLB】菊池エンゼルス｜2026年シーズンまとめ #Shorts",
+      "published_at": "2026-10-20T06:58:46.310133+00:00",
+      "publish_at": "2026-10-20T13:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-20",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 1
+      },
+      "planned_host": "ui",
+      "actual_host": "metan",
+      "host_fallback_reason": "ui_unavailable",
+      "privacy": "public"
+    },
+    "season_team_109": {
+      "video_id": "kjCwVKXgQz8",
+      "url": "https://youtu.be/kjCwVKXgQz8",
+      "title": "【MLB】ヌートバーダイヤモンドバックス｜2026年シーズンまとめ #Shorts",
+      "published_at": "2026-10-20T07:03:34.023280+00:00",
+      "publish_at": "2026-10-20T14:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-20",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 1
+      },
+      "planned_host": "ui",
+      "actual_host": "metan",
+      "host_fallback_reason": "ui_unavailable",
+      "privacy": "public"
     }
   }
 }
