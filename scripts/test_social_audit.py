@@ -17,7 +17,7 @@ def fixture():
     posts['twitter'] = [dict(id='test-post', channelId=a.CHANNELS['twitter'],
         status='sent', text=TEXT, sentAt='2026-10-17T08:00:00Z', dueAt=None)]
     ledger = {'deliveries': {'2026-10-17:daily:twitter':
-        {'post_id':'test-post', 'text':TEXT, 'youtube_id':'abcdefghijk', 'state':'sent'}}}
+        {'post_id':'test-post', 'text':TEXT, 'youtube_id':'abcdefghijk', 'state':'sent', 'checked_at':'2026-10-17T08:00:00Z'}}}
     return posts, ledger, {'daily':{'2026-10-17':{'video_id':'abcdefghijk'}}}
 
 class AuditTests(unittest.TestCase):
@@ -33,7 +33,7 @@ class AuditTests(unittest.TestCase):
         self.assertIn('台帳にない投稿・予約',self.run_audit()['findings'][0]['reasons'])
     def test_old_sent_excluded(self):
         self.post()['sentAt']='2026-10-10T11:59:59Z'
-        self.assertEqual(self.run_audit()['checked'],0)
+        with self.assertRaises(a.Incomplete): self.run_audit()
     def test_boundary_and_old_creation_recent_publication(self):
         self.post().update(sentAt='2026-10-10T12:00:00Z',createdAt='2025-01-01T00:00:00Z')
         self.assertEqual(self.run_audit()['checked'],1)
@@ -51,6 +51,7 @@ class AuditTests(unittest.TestCase):
         with self.assertRaises(a.Incomplete): self.run_audit()
     def test_ledger_service_isolation(self):
         self.ledger['deliveries']={'date:daily:tiktok':next(iter(self.ledger['deliveries'].values()))}
+        self.ledger['deliveries']['date:daily:tiktok']['checked_at'] = '2026-10-01T00:00:00Z'
         self.assertTrue(self.run_audit()['findings'])
     def test_unowned_video(self):
         self.post()['text']=TEXT.replace('abcdefghijk','xxxxxxxxxxx')
@@ -81,8 +82,52 @@ class AuditTests(unittest.TestCase):
             return {'posts':{'edges':[{'node':deepcopy(self.post())}],
                 'pageInfo':{'hasNextPage':len(calls)==1,'endCursor':'cursor1'}}}
         self.assertEqual(len(a.fetch_posts(query,a.CHANNELS['twitter'])),2)
-        self.assertIn('after:"cursor1"',calls[1])
-        self.assertTrue(all(q.startswith('query {') and 'mutation' not in q for q in calls))
+        self.assertIn('after: "cursor1"',calls[1])
+        self.assertTrue(all(q.startswith('{ posts(') and 'mutation' not in q for q in calls))
+    def test_same_query_as_daily_and_response_counts(self):
+        import buffer_daily
+        calls = []
+        def query(q):
+            calls.append(q)
+            node = deepcopy(self.post())
+            del node['channelId']  # recent_posts relies on the channel filter.
+            node['externalLink'] = 'https://example.invalid/post'
+            return {'posts': {'edges': [{'node': node}],
+                    'pageInfo': {'hasNextPage': len(calls) % 2 == 1,
+                                 'endCursor': 'cursor1'}}}
+        with patch.object(buffer_daily, 'graphql', side_effect=query):
+            expected = buffer_daily.recent_posts(a.CHANNELS['twitter'])
+        actual = a.fetch_posts(query, a.CHANNELS['twitter'])
+        self.assertEqual(len(expected), len(actual))
+        for daily, audit in zip(calls[:2], calls[2:]):
+            # Compare all arguments, including filter, sort and page cursor.
+            self.assertEqual(''.join(daily.split('edges')[0].split()),
+                             ''.join(audit.split('edges')[0].split()))
+            self.assertNotIn('status:', audit)
+            self.assertIn('dueAt sentAt', audit)
+        self.posts['twitter'] = actual
+        self.assertEqual(self.run_audit()['checked'], 1)  # identical IDs deduplicated
+
+    def test_empty_recent_service_even_when_another_service_reads(self):
+        self.ledger['deliveries']['2026-10-17:daily:instagram'] = {
+            'state': 'sent', 'checked_at': NOW.isoformat()}
+        with self.assertRaisesRegex(a.Incomplete, 'instagram'):
+            self.run_audit()
+
+    def test_ledger_sent_window(self):
+        entry = {'state': 'sent', 'checked_at': '2026-10-10T12:00:00Z'}
+        self.assertTrue(a.recent_delivery(entry, NOW))
+        entry['checked_at'] = '2026-10-10T11:59:59Z'
+        self.assertFalse(a.recent_delivery(entry, NOW))
+        self.assertTrue(a.recent_delivery({'state': 'sent', 'reserved_at': NOW.isoformat()}, NOW))
+        with self.assertRaises(a.Incomplete):
+            a.recent_delivery({'state': 'sent'}, NOW)
+
+    def test_non_target_status_from_unfiltered_query(self):
+        for status in ['draft', 'error', 'failed', 'rejected', 'not_sent']:
+            self.posts['tiktok'] = [dict(self.post(), channelId=a.CHANNELS['tiktok'], status=status)]
+            self.assertEqual(self.run_audit()['checked'], 1)
+
     def test_page_limit(self):
         def query(q): return {'posts':{'edges':[],'pageInfo':{'hasNextPage':True,'endCursor':'next'}}}
         with self.assertRaises(a.Incomplete): a.fetch_posts(query,a.CHANNELS['twitter'],max_pages=1)
@@ -106,6 +151,15 @@ class AuditTests(unittest.TestCase):
                 if variant=='unknown': posts['twitter'][0].update(id='unknown',status='scheduled',dueAt=NOW.isoformat())
                 (root/'posts').write_text(json.dumps(posts))
                 with contextlib.redirect_stdout(io.StringIO()): self.assertEqual(a.main(args),expected)
+            for ledger in [self.ledger, {'deliveries': {}}]:
+                (root/'ledger').write_text(json.dumps(ledger))
+                (root/'posts').write_text(json.dumps({s: [] for s in a.CHANNELS}))
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output): self.assertEqual(a.main(args), 2)
+                self.assertIn('読めなかった', output.getvalue())
+                self.assertNotIn('異常なし', output.getvalue())
+                for service in a.CHANNELS:
+                    self.assertIn(service + ': 読めた投稿 0件', output.getvalue())
             (root/'posts').write_text('{}')
             with contextlib.redirect_stdout(io.StringIO()): self.assertEqual(a.main(args),2)
 
