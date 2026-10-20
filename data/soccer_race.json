@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-10-19T10:04:23.037935+00:00",
-  "date_jst": "2026-10-19",
-  "source_at": "2026-10-19T06:42:17.151379+00:00",
+  "updated_at": "2026-10-20T10:04:36.894965+00:00",
+  "date_jst": "2026-10-20",
+  "source_at": "2026-10-20T06:49:25.045020+00:00",
   "competitions": [
     {
       "code": "PL",
-      "round": 6,
-      "round_complete": false,
+      "round": 7,
+      "round_complete": true,
       "name_jp": "プレミアリーグ",
       "played": 7,
       "clubs": 20,
@@ -174,7 +174,7 @@
           "position": 14,
           "points": 7,
           "out": true,
-          "out_note": "Calf injury - Expected back 18 Oct",
+          "out_note": "Calf injury - Expected back 25 Oct",
           "lines": [
             {
               "line": 5,
@@ -195,8 +195,8 @@
           ]
         },
         {
-          "name": "坂元達裕",
-          "club_jp": "コベントリー",
+          "name": "高井幸大",
+          "club_jp": "トッテナム",
           "position": 16,
           "points": 6,
           "out": false,
@@ -213,13 +213,22 @@
           ]
         },
         {
-          "name": "高井幸大",
-          "club_jp": "トッテナム",
-          "position": 20,
-          "points": 3,
+          "name": "坂元達裕",
+          "club_jp": "コベントリー",
+          "position": 17,
+          "points": 6,
           "out": false,
           "out_note": "",
-          "lines": []
+          "lines": [
+            {
+              "line": 5,
+              "position": 17,
+              "side": "outside",
+              "diff": 6,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点6"
+            }
+          ]
         }
       ],
       "lines": [
@@ -517,8 +526,8 @@
     },
     {
       "code": "SA",
-      "round": 6,
-      "round_complete": false,
+      "round": 7,
+      "round_complete": true,
       "name_jp": "セリエA",
       "played": 7,
       "clubs": 20,
@@ -553,7 +562,7 @@
         {
           "name": "鈴木ザイオン",
           "club_jp": "パルマ",
-          "position": 16,
+          "position": 19,
           "points": 4,
           "out": false,
           "out_note": "",
@@ -656,10 +665,10 @@
               "position": 7,
               "team": "カリアリ",
               "team_en": "Cagliari Calcio",
-              "played": 6,
+              "played": 7,
               "points": 13,
               "gf": 6,
-              "ga": 3,
+              "ga": 7,
               "jp": [
                 "菅原由勢"
               ]
@@ -1274,7 +1283,7 @@
     }
   ],
   "picked": [
-    "FL1"
+    "PL"
   ],
   "moved_count": 0,
   "have_before": true
