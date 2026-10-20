@@ -35,6 +35,11 @@ CHANNELS = {'twitter': '6aa114c5cd8b9c702c36144a',
 ORG = '6aa11108acee3b0c72033754'
 MAX_BYTES = 80 * 1024 * 1024
 
+# GitHub が一時的に不調なだけの応答。404・401・403・422 などは
+# やり直しても変わらないので、すぐ呼び出し元へ返す。
+RETRY_STATUSES = (500, 502, 503, 504)
+RETRY_DELAYS = (2, 5, 10)
+
 # A post Buffer is still processing is not a post that failed.
 #
 # TikTok's video ingest routinely outruns the six minutes this runner waits,
@@ -93,8 +98,18 @@ def github(path, method='GET', body=None, raw=False):
         headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
                  'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json',
                  'User-Agent': 'Collespo/1.0'})
-    with urllib.request.build_opener(SafeRedirect).open(req, timeout=60) as response:
-        content = response.read(MAX_BYTES + 1)
+    for attempt in range(len(RETRY_DELAYS) + 1):
+        try:
+            with urllib.request.build_opener(SafeRedirect).open(req, timeout=60) as response:
+                content = response.read(MAX_BYTES + 1)
+            break
+        except urllib.error.HTTPError as exc:
+            if exc.code not in RETRY_STATUSES or attempt >= len(RETRY_DELAYS):
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if attempt >= len(RETRY_DELAYS):
+                raise
+        time.sleep(RETRY_DELAYS[attempt])
     if len(content) > MAX_BYTES:
         raise ValueError('GitHub response exceeds allowed size')
     return content if raw else json.loads(content) if content else {}
@@ -408,15 +423,22 @@ def host_video(run, day, path, digest, kind=DEFAULT_KIND):
     except urllib.error.HTTPError as exc:
         if exc.code != 404:
             raise
-        release = github('/releases', 'POST', {
-            # This release hosts media, not source code. Older source commits
-            # can require workflows:write to tag when workflows changed since.
-            # Use the maintained branch, keeping media provenance below and in
-            # the delivery ledger; never broaden the publishing token's scope.
-            'tag_name': tag, 'target_commitish': 'main',
-            'name': day + ' ' + words(kind)['long'] + '・配信用動画',
-            'body': 'コレスポの自動生成動画。YouTubeでの公開を確認後、SNS配信に利用します。\n元の実行: ' + run['html_url'] + '\n動画生成元SHA: ' + run['head_sha'] + '\n動画SHA256: ' + digest,
-            'make_latest': 'false'})
+        try:
+            release = github('/releases', 'POST', {
+                # This release hosts media, not source code. Older source commits
+                # can require workflows:write to tag when workflows changed since.
+                # Use the maintained branch, keeping media provenance below and in
+                # the delivery ledger; never broaden the publishing token's scope.
+                'tag_name': tag, 'target_commitish': 'main',
+                'name': day + ' ' + words(kind)['long'] + '・配信用動画',
+                'body': 'コレスポの自動生成動画。YouTubeでの公開を確認後、SNS配信に利用します。\n元の実行: ' + run['html_url'] + '\n動画生成元SHA: ' + run['head_sha'] + '\n動画SHA256: ' + digest,
+                'make_latest': 'false'})
+        except urllib.error.HTTPError as exc:
+            # A 500 may have hidden a release that GitHub did create. The
+            # retry then reports 422 already_exists; use the existing one.
+            if exc.code != 422:
+                raise
+            release = github('/releases/tags/' + tag)
     name = 'collespo-' + kind + '-' + day + '.mp4'
     asset = next((a for a in release['assets'] if a['name'] == name), None)
     if asset:
