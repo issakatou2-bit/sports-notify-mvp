@@ -24,7 +24,42 @@ class AuditTests(unittest.TestCase):
     def setUp(self): self.posts, self.ledger, self.videos = fixture()
     def run_audit(self): return a.audit(self.posts,self.ledger,self.videos,NOW)
     def post(self): return self.posts['twitter'][0]
-    def test_healthy(self): self.assertEqual(self.run_audit(),{'checked':1,'findings':[]})
+    def set_service(self, service, text, post_id=None, ledger_text=None,
+                    youtube_id='abcdefghijk'):
+        pid = post_id or service + '-post'
+        self.posts[service] = [dict(id=pid, channelId=a.CHANNELS[service],
+            status='sent', text=text, sentAt='2026-10-17T08:00:00Z', dueAt=None)]
+        self.ledger['deliveries']['2026-10-17:daily:' + service] = {
+            'post_id': pid, 'text': ledger_text if ledger_text is not None else text,
+            'youtube_id': youtube_id, 'state': 'sent',
+            'checked_at': '2026-10-17T08:00:00Z'}
+        return self.posts[service][0]
+    def test_healthy(self): self.assertEqual(self.run_audit(),{'checked':1,'findings':[],'handled':0})
+    def test_instagram_linkless_caption_is_valid(self):
+        self.set_service('instagram',
+            '10/17更新｜ファンのコメント欄\n現地のファンの声をそのまま訳しました。\n#MLB')
+        self.assertEqual(self.run_audit()['findings'], [])
+    def test_tiktok_line_breaks_and_missing_link_are_valid(self):
+        self.set_service('tiktok',
+            '10/17更新｜PSの話題 試合とシリーズの状況を公式の数字で紹介します。 #MLB',
+            ledger_text='10/17更新｜PSの話題\n試合とシリーズの状況を公式の数字で紹介します。\n#MLB')
+        self.assertEqual(self.run_audit()['findings'], [])
+    def test_apsc_caption_stays_flagged(self):
+        self.set_service('instagram',
+            '【応用情報 セキュリティ】APSC\n解説はYouTubeで https://www.youtube.com/channel/x',
+            post_id='apsc-ig')
+        self.assertIn('コレスポ本文の形式外', self.run_audit()['findings'][0]['reasons'])
+    def test_known_handled_is_removed_and_counted(self):
+        self.post()['text'] += '\n【応用情報】APSC'
+        result = a.audit(self.posts, self.ledger, self.videos, NOW,
+                         known={'test-post'})
+        self.assertEqual(result['findings'], [])
+        self.assertEqual(result['handled'], 1)
+    def test_unledgered_collespo_caption_remains(self):
+        self.posts['instagram'] = [dict(id='new-ig', channelId=a.CHANNELS['instagram'],
+            status='scheduled', dueAt='2026-12-01T00:00:00Z',
+            text='10/19更新｜PSの話題\n試合とシリーズの状況を公式の数字で紹介します。 #MLB')]
+        self.assertIn('台帳にない投稿・予約', self.run_audit()['findings'][0]['reasons'])
     def test_apsc_even_registered(self):
         self.post()['text'] += '\n【応用情報】APSC'
         self.assertIn('コレスポ本文の形式外',self.run_audit()['findings'][0]['reasons'])
@@ -145,8 +180,10 @@ class AuditTests(unittest.TestCase):
             root=Path(temp)
             for name,data in [('ledger',self.ledger),('published',self.videos)]:
                 (root/name).write_text(json.dumps(data))
+            (root/'known').write_text(json.dumps({'handled': {}}))
             args=['--ledger',str(root/'ledger'),'--published',str(root/'published'),
-                  '--fixture',str(root/'posts'),'--now',NOW.isoformat()]
+                  '--fixture',str(root/'posts'),'--now',NOW.isoformat(),
+                  '--known',str(root/'known')]
             for variant,expected in [('healthy',0),('foreign',1),('unknown',1)]:
                 posts=deepcopy(self.posts)
                 if variant=='foreign': posts['twitter'][0]['text']='【応用情報】APSC'
@@ -164,6 +201,24 @@ class AuditTests(unittest.TestCase):
                     self.assertIn(service + ': 読めた投稿 0件', output.getvalue())
             (root/'posts').write_text('{}')
             with contextlib.redirect_stdout(io.StringIO()): self.assertEqual(a.main(args),2)
+
+    def test_cli_known_handled_prints_count(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for name, data in [('ledger', self.ledger), ('published', self.videos)]:
+                (root/name).write_text(json.dumps(data), encoding='utf-8')
+            (root/'known').write_text(json.dumps(
+                {'handled': {'test-post': 'APSC 対応済み'}}), encoding='utf-8')
+            posts = deepcopy(self.posts)
+            posts['twitter'][0]['text'] += '\n【応用情報】APSC'
+            (root/'posts').write_text(json.dumps(posts), encoding='utf-8')
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                self.assertEqual(a.main(['--ledger',str(root/'ledger'),
+                    '--published',str(root/'published'),'--fixture',
+                    str(root/'posts'),'--now',NOW.isoformat(),
+                    '--known',str(root/'known')]), 0)
+            self.assertIn('対応済み 1件', output.getvalue())
 
 class ReadDiagnosticsTests(unittest.TestCase):
     """Failures must say where they stopped without leaking secrets."""
