@@ -19,7 +19,10 @@ ACTIVE = {'scheduled', 'sending', 'needs_approval'}
 SPORT = re.compile(r'MLB|欧州サッカー|#(?:野球|サッカー|大谷翔平|山本由伸)|'
                    r'明日の注目試合|日本人選手|現地の報道|現地の反応|ファンのコメント欄|'
                    r'ポストシーズン|PS試合予告|PSカード|PS対戦表|PS進出|今夜の注目カード|進出争い')
-FOREIGN = re.compile(r'【(?:応用情報|基本情報|ITパスポート)|APSC|雨衣とみる|インシデントノート')
+FOREIGN = re.compile(r'【(?:応用情報|基本情報|ITパスポート)|APSC|雨衣とみる|インシデントノート|'
+                     r'めたん先生のIT試験ゼミ')
+STAMP = re.compile(r'^\d{1,2}/\d{1,2}更新｜')
+DEFAULT_KNOWN = Path(__file__).resolve().parent.parent / 'data' / 'social_audit_known.json'
 
 
 class Incomplete(ValueError):
@@ -61,6 +64,45 @@ def video_links(text):
             elif url.path.startswith('/shorts/'):
                 ids.add(url.path.split('/')[2])
     return ids
+
+
+def normalized(text):
+    """Compare the way Buffer delivers text: line breaks become spaces.
+
+    TikTok in particular drops newlines; Instagram/X keep them. Whitespace is
+    therefore not evidence of an edit.
+    """
+    return re.sub(r'\s+', '', text or '')
+
+
+def same_text(post_text, ledger_text):
+    """Ledger text is authoritative; a service may shorten the posted text."""
+    post, ledger = normalized(post_text), normalized(ledger_text)
+    return bool(post and ledger and (ledger.startswith(post) or post.startswith(ledger)))
+
+
+def collespo_form(service, text):
+    """X needs the site link; Instagram/TikTok are captions without it."""
+    if service != 'twitter':
+        return bool(STAMP.match(text))
+    brand = any(urlparse(raw.rstrip('。、)')).hostname == 'collespo.com'
+                for raw in re.findall(r'https?://[^\s<>]+', text))
+    return brand or bool(re.search(r'(?:^|\s)collespo\.com(?:/[^\s]*)?(?=\s|$)', text))
+
+
+def load_known(path):
+    """Handled post IDs. A missing file means nothing has been handled yet."""
+    try:
+        data = json.loads(Path(path).read_text(encoding='utf-8'))
+    except FileNotFoundError:
+        return set()
+    except Exception:
+        raise Incomplete('known list unreadable') from None
+    handled = data.get('handled') if isinstance(data, dict) else None
+    if not isinstance(handled, dict):
+        raise Incomplete('known list malformed')
+    return {key for key, memo in handled.items()
+            if isinstance(key, str) and key and isinstance(memo, str)}
 
 
 def read_failure(exc):
@@ -153,12 +195,13 @@ def recent_delivery(entry, now):
     return now - timedelta(days=7) <= instant(stamp) <= now
 
 
-def audit(posts_by_service, ledger, records, now):
+def audit(posts_by_service, ledger, records, now, known=None):
     if set(posts_by_service) != set(CHANNELS):
         raise Incomplete('all three channels are required')
     deliveries = ledger.get('deliveries')
     if not isinstance(deliveries, dict):
         raise Incomplete('delivery ledger missing')
+    known = set(known or ())
     owned = published_ids(records)
     if not owned:
         raise Incomplete('published video registry empty')
@@ -202,18 +245,27 @@ def audit(posts_by_service, ledger, records, now):
             reasons = []
             if not matching:
                 reasons.append('台帳にない投稿・予約')
-            elif any(entry.get('text') and entry['text'] != text for entry in matching):
+            elif any(entry.get('text') and not same_text(text, entry['text'])
+                     for entry in matching):
                 reasons.append('台帳の本文と不一致')
             vids = video_links(text)
-            if not vids or not vids <= owned:
-                reasons.append('登録済みコレスポ動画のリンクを確認できない')
             expected = {entry['youtube_id'] for entry in matching if entry.get('youtube_id')}
-            if expected and not expected <= vids:
-                reasons.append('台帳の動画IDと不一致')
-            brand = any(urlparse(raw.rstrip('。、)')).hostname == 'collespo.com'
-                        for raw in re.findall(r'https?://[^\s<>]+', text))
-            brand = brand or bool(re.search(r'(?:^|\s)collespo\.com(?:/[^\s]*)?(?=\s|$)', text))
-            if not brand or not SPORT.search(text) or FOREIGN.search(text):
+            if service == 'twitter':
+                # X posts always carry the link, so its absence is suspicious.
+                if not vids or not vids <= owned:
+                    reasons.append('登録済みコレスポ動画のリンクを確認できない')
+                if expected and not expected <= vids:
+                    reasons.append('台帳の動画IDと不一致')
+            else:
+                # Instagram/TikTok captions often omit the link by design.
+                # The ledger's youtube_id is the durable evidence.
+                if expected and not expected <= owned:
+                    reasons.append('登録済みコレスポ動画のリンクを確認できない')
+                elif vids and not vids <= owned:
+                    reasons.append('登録済みコレスポ動画のリンクを確認できない')
+                elif expected and vids and not expected <= vids:
+                    reasons.append('台帳の動画IDと不一致')
+            if not collespo_form(service, text) or not SPORT.search(text) or FOREIGN.search(text):
                 reasons.append('コレスポ本文の形式外')
             if reasons:
                 # JSON lines and escaped controls prevent GitHub command injection.
@@ -224,7 +276,10 @@ def audit(posts_by_service, ledger, records, now):
             raise Incomplete(service + ': 台帳に直近7日の送信があるのに対象投稿を読めなかった')
     if not checked:
         raise Incomplete('確認0件: 対象投稿を読めなかった')
-    return {'checked': checked, 'findings': findings}
+    handled = [row for row in findings if row['post_id'] in known]
+    return {'checked': checked,
+            'findings': [row for row in findings if row['post_id'] not in known],
+            'handled': len(handled)}
 
 
 def main(argv=None):
@@ -235,6 +290,8 @@ def main(argv=None):
     mode.add_argument('--fixture', type=Path)
     mode.add_argument('--live', action='store_true')
     parser.add_argument('--now', help='fixture only, ISO timestamp with timezone')
+    parser.add_argument('--known', type=Path,
+                        help='handled post IDs (default: data/social_audit_known.json)')
     args = parser.parse_args(argv)
     try:
         if args.live and args.now:
@@ -242,6 +299,12 @@ def main(argv=None):
         now = instant(args.now) if args.now else datetime.now(timezone.utc)
         ledger = json.loads(args.ledger.read_text(encoding='utf-8'))
         records = json.loads(args.published.read_text(encoding='utf-8'))
+        # Asset videos (season recaps) are registered separately from daily videos.
+        asset_registry = args.published.with_name('published_assets.json')
+        if asset_registry.is_file() and asset_registry.resolve() != args.published.resolve():
+            records = {'videos': records,
+                       'assets': json.loads(asset_registry.read_text(encoding='utf-8'))}
+        known = load_known(args.known or DEFAULT_KNOWN)
         if args.fixture:
             posts = json.loads(args.fixture.read_text(encoding='utf-8'))
         else:
@@ -251,9 +314,11 @@ def main(argv=None):
         for service in CHANNELS:
             rows = posts.get(service) if isinstance(posts, dict) else None
             print(service + ': 読めた投稿 ' + (str(len(rows)) if isinstance(rows, list) else '不明') + '件')
-        result = audit(posts, ledger, records, now)
+        result = audit(posts, ledger, records, now, known)
         for row in result['findings']:
             print(json.dumps(row, ensure_ascii=False))
+        if result['handled']:
+            print('対応済み ' + str(result['handled']) + '件')
         print(('要確認' if result['findings'] else '異常なし') + ': ' + str(result['checked']) + '件を確認')
         return 1 if result['findings'] else 0
     except Incomplete as exc:
