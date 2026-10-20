@@ -70,10 +70,10 @@ def fetch_posts(query_fn, channel, max_pages=20):
     """
     posts, cursor, seen = [], None, set()
     for _ in range(max_pages):
-        after = ', after:' + json.dumps(cursor) if cursor else ''
-        query = ('query { posts(first:100' + after + ', input:{organizationId:' +
+        after = ', after: ' + json.dumps(cursor) if cursor else ''
+        query = ('{ posts(first: 100' + after + ', input:{organizationId:' +
                  json.dumps(ORG) + ',filter:{channelIds:[' + json.dumps(channel) +
-                 '],status:[scheduled,sending,needs_approval,sent]},'
+                 ']},'
                  'sort:[{field:createdAt,direction:desc}]}) {'
                  'edges {node {id channelId text status dueAt sentAt}} '
                  'pageInfo {hasNextPage endCursor}}}')
@@ -84,12 +84,13 @@ def fetch_posts(query_fn, channel, max_pages=20):
             if type(page['hasNextPage']) is not bool:
                 raise ValueError()
             for node in nodes:
-                if node.get('channelId') != channel:
+                if node.get('channelId', channel) != channel:
                     raise ValueError()
                 if not all(isinstance(node.get(k), str) and node[k]
                            for k in ('id', 'text', 'status')):
                     raise ValueError()
-            posts.extend(nodes)
+            # The channel filter scopes nodes; recent_posts does not require channelId.
+            posts.extend(dict(node, channelId=channel) for node in nodes)
             if not page['hasNextPage']:
                 return posts
             cursor = page['endCursor']
@@ -100,6 +101,17 @@ def fetch_posts(query_fn, channel, max_pages=20):
             # Do not leak response text, headers, token or exception messages.
             raise Incomplete('Buffer read unavailable or malformed') from None
     raise Incomplete('Buffer pagination limit reached')
+
+
+def recent_delivery(entry, now):
+    """Ledger records the sent observation in checked_at, not sentAt."""
+    if entry.get('state') != 'sent':
+        return False
+    stamp = entry.get('checked_at') or entry.get('reserved_at')
+    if not stamp:
+        # A sent row with no usable time cannot establish an empty audit either.
+        raise Incomplete('sent delivery timestamp missing')
+    return now - timedelta(days=7) <= instant(stamp) <= now
 
 
 def audit(posts_by_service, ledger, records, now):
@@ -117,6 +129,7 @@ def audit(posts_by_service, ledger, records, now):
             raise Incomplete('posts must be a list')
         entries = [entry for key, entry in deliveries.items()
                    if key.rsplit(':', 1)[-1] == service and isinstance(entry, dict)]
+        service_checked = 0
         for post in posts:
             if post.get('channelId') != CHANNELS[service]:
                 raise Incomplete('unexpected channel')
@@ -131,6 +144,8 @@ def audit(posts_by_service, ledger, records, now):
                 when = instant(post.get('dueAt')) if post.get('dueAt') else None
                 if status == 'scheduled' and when is None:
                     raise Incomplete('scheduled timestamp missing')
+            elif status in {'draft', 'error', 'failed', 'rejected', 'not_sent'}:
+                continue  # Unfiltered recent_posts also returns non-target posts.
             else:
                 raise Incomplete('unexpected post status')
             pid, text = post.get('id'), post.get('text')
@@ -143,6 +158,7 @@ def audit(posts_by_service, ledger, records, now):
                 continue
             seen[key] = post
             checked += 1
+            service_checked += 1
             matching = [entry for entry in entries if entry.get('post_id') == pid]
             reasons = []
             if not matching:
@@ -165,6 +181,10 @@ def audit(posts_by_service, ledger, records, now):
                 findings.append({'service': service, 'status': status,
                                  'at': when.isoformat() if when else '未設定',
                                  'post_id': pid, 'text_head': text[:100], 'reasons': reasons})
+        if not service_checked and any(recent_delivery(entry, now) for entry in entries):
+            raise Incomplete(service + ': 台帳に直近7日の送信があるのに対象投稿を読めなかった')
+    if not checked:
+        raise Incomplete('確認0件: 対象投稿を読めなかった')
     return {'checked': checked, 'findings': findings}
 
 
@@ -189,11 +209,17 @@ def main(argv=None):
             from buffer_api import graphql
             posts = {service: fetch_posts(graphql, channel)
                      for service, channel in CHANNELS.items()}
+        for service in CHANNELS:
+            rows = posts.get(service) if isinstance(posts, dict) else None
+            print(service + ': 読めた投稿 ' + (str(len(rows)) if isinstance(rows, list) else '不明') + '件')
         result = audit(posts, ledger, records, now)
         for row in result['findings']:
             print(json.dumps(row, ensure_ascii=False))
         print(('要確認' if result['findings'] else '異常なし') + ': ' + str(result['checked']) + '件を確認')
         return 1 if result['findings'] else 0
+    except Incomplete as exc:
+        print('監査未完了（読めなかった）: ' + str(exc))
+        return 2
     except Exception:
         print('監査未完了: 入力または取得を確認してください（詳細応答・秘密は非表示）')
         return 2
