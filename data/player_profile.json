@@ -1,94 +1,89 @@
 {
-  "generated_at": "2026-10-19T06:01:05.525232+00:00",
-  "date_jst": "2026-10-19",
-  "name": "Drew Rasmussen",
-  "player_id": "656876",
+  "generated_at": "2026-10-20T06:01:09.180772+00:00",
+  "date_jst": "2026-10-20",
+  "name": "Junior Caminero",
+  "player_id": "691406",
   "team": "レイズ",
-  "group": "pitching",
-  "why": "2026-10-19のMLBで最も活躍",
-  "headline": "7.0回　6奪三振　防御率1.29　4被安打",
+  "group": "hitting",
+  "why": "2026-10-20のMLBで最も活躍",
+  "headline": "3打数2安打　1本塁打　2打点　1四球",
   "score": 115,
   "bio": {
-    "name_en": "Drew Rasmussen",
-    "age": 31,
-    "birth_city": "Puyallup",
-    "birth_state": "WA",
-    "birth_country": "USA",
-    "birth_date": "1995-07-27",
-    "debut": "2020-08-19",
-    "draft_year": 2018,
+    "name_en": "Junior Caminero",
+    "age": 23,
+    "birth_city": "Santo Domingo",
+    "birth_state": null,
+    "birth_country": "Dominican Republic",
+    "birth_date": "2003-07-05",
+    "debut": "2023-09-23",
+    "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "57",
-    "position": "Pitcher",
+    "number": "13",
+    "position": "Third Base",
     "nickname": null,
     "height": "6' 1\"",
-    "weight": 240
+    "weight": 220
   },
   "teams": [
     {
-      "team": "ブリュワーズ",
-      "from": 2020,
-      "to": 2021
-    },
-    {
       "team": "レイズ",
-      "from": 2021,
+      "from": 2023,
       "to": 2026
     }
   ],
   "career": {
-    "games": 160,
-    "wins": 46,
-    "losses": 22,
-    "era": "2.83",
-    "so": 602,
-    "ip": "632.2",
-    "whip": "1.02"
+    "games": 366,
+    "avg": ".267",
+    "hr": 94,
+    "rbi": 236,
+    "ops": ".844",
+    "sb": 12,
+    "hits": 378
   },
   "this_season": {
-    "games": 30,
-    "wins": 16,
-    "losses": 5,
-    "era": "2.67",
-    "so": 174,
-    "ip": "172.0",
-    "whip": "0.91"
+    "games": 162,
+    "avg": ".276",
+    "hr": 42,
+    "rbi": 101,
+    "ops": ".884",
+    "sb": 3,
+    "hits": 170
   },
   "last_season": {
-    "games": 31,
-    "wins": 10,
-    "losses": 5,
-    "era": "2.76",
-    "so": 127,
-    "ip": "150.0",
-    "whip": "1.02"
+    "games": 154,
+    "avg": ".264",
+    "hr": 45,
+    "rbi": 110,
+    "ops": ".846",
+    "sb": 7,
+    "hits": 159
   },
   "recent": [
     {
-      "date": "2026-09-22",
-      "line": "6.2回 自責1 11奪三振",
+      "date": "2026-09-27",
+      "line": "2打数0安打",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-26",
+      "line": "3打数2安打 1本塁打 2打点",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-25",
+      "line": "4打数1安打",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-24",
+      "line": "5打数2安打 2打点",
       "opponent": "New York Yankees"
     },
     {
-      "date": "2026-09-17",
-      "line": "5.0回 自責0 3奪三振",
-      "opponent": "Athletics"
-    },
-    {
-      "date": "2026-09-11",
-      "line": "7.0回 自責1 4奪三振",
-      "opponent": "Houston Astros"
-    },
-    {
-      "date": "2026-09-05",
-      "line": "7.0回 自責1 7奪三振",
-      "opponent": "Texas Rangers"
-    },
-    {
-      "date": "2026-08-30",
-      "line": "6.0回 自責2 6奪三振",
-      "opponent": "San Diego Padres"
+      "date": "2026-09-23",
+      "line": "2打数0安打",
+      "opponent": "New York Yankees"
     }
   ],
   "awards": [
@@ -98,16 +93,26 @@
     },
     {
       "season": "2026",
-      "name": "AL Pitcher of the Month"
+      "name": "AL Player of the Month"
+    },
+    {
+      "season": "2026",
+      "name": "AL Player of the Week"
     },
     {
       "season": "2025",
       "name": "AL All-Star"
     },
     {
-      "season": "2022",
-      "name": "AL Pitcher of the Month"
+      "season": "2025",
+      "name": "AL Player of the Week"
     }
   ],
-  "quotes": []
+  "quotes": [
+    {
+      "who": "MLB Pipelineの記者",
+      "text": "StatcastによるJunior Camineroのホームイン到達までの時間は38.66秒。Statcast時代(2015年以降)のポストシーズン本塁打で最長のトロットです。",
+      "kind": "reporter"
+    }
+  ]
 }

@@ -494,35 +494,45 @@
       }
     },
     "2026-10-20": {
-      "calls": 7,
-      "in": 6191,
-      "out": 2486,
-      "usd": 0.0359,
+      "calls": 19,
+      "in": 20798,
+      "out": 8751,
+      "usd": 0.12633,
       "by": {
         "topic": {
-          "calls": 2,
-          "in": 426,
-          "out": 57
+          "calls": 4,
+          "in": 885,
+          "out": 116
         },
         "voices": {
-          "calls": 1,
-          "in": 1280,
-          "out": 687
+          "calls": 2,
+          "in": 2560,
+          "out": 1352
         },
         "reporters": {
-          "calls": 2,
-          "in": 2526,
-          "out": 783
+          "calls": 4,
+          "in": 5107,
+          "out": 1734
         },
         "localize": {
-          "calls": 1,
-          "in": 1145,
-          "out": 615
+          "calls": 4,
+          "in": 4961,
+          "out": 2806
         },
         "translate": {
           "calls": 1,
           "in": 814,
           "out": 344
+        },
+        "buzz": {
+          "calls": 1,
+          "in": 1308,
+          "out": 179
+        },
+        "sanity": {
+          "calls": 3,
+          "in": 5163,
+          "out": 2220
         }
       }
     }
