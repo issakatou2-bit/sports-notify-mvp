@@ -521,6 +521,18 @@ def _paste_card(im, card, x, y, k):
         box=(max(left,x+dx+a),max(top,y+b),min(right,x+dx+c),min(bottom,y+e))
         if box[0]<box[2] and box[1]<box[3]:
             record_box(im,entry['role'],box,entry['text'])
+            saved=im.info['v3_layout'][-1]
+            for key in ('team_id','v4_font','v4_color'):
+                if key in entry:
+                    saved[key]=entry[key]
+    # 札の中で描いた球団の小札も、画面の座標へ移して残す。
+    for badge in card.info.get('v4_badges',[]):
+        a,b,c,e=badge['box']
+        box=(max(left,x+dx+a),max(top,y+b),min(right,x+dx+c),min(bottom,y+e))
+        if box[0]<box[2] and box[1]<box[3]:
+            moved=dict(badge)
+            moved['box']=list(box)
+            im.info.setdefault('v4_badges',[]).append(moved)
 
 
 # ------------------------------------------------------------------ 表紙
@@ -661,10 +673,7 @@ def intro(t, spec, kind_label):
 
 
 # ------------------------------------------------------------------ 項目の画面
-# 文字の大中小（10/6 本人「注目個所に色、重要度で文字サイズに差を」）。
-#   大: 項目の1つ目のかたまり（全角スペースまで）。いちばん言いたいこと。金色。
-#   中: 2つ目以降のかたまり。数字（単位まで）だけ金色。
-#   小: かっこの中の補足。くすんだ色。
+# 重要度の区分と色。カード本文では項目内のサイズを統一して使う。
 SIZE_L, SIZE_M, SIZE_S = 66, 46, 34
 NUM_RE = re.compile(r"\d[\d,.]*(?:対\d+)?(?:本塁打|奪三振|打数|安打|打点|試合|連勝|連敗|勝|敗|本|点|年|回|戦|位|人|%|割|秒|分)?")
 NO_HEAD = "、。，．）」』・ー％%"
@@ -708,50 +717,172 @@ def _atoms(runs):
             yield m.group(0), size, gold
 
 
-def rich_lines(runs, width, second_rgb):
-    sizes = {"L": SIZE_L, "M": SIZE_M, "S": SIZE_S}
+OPEN_HEAD = "（「『【〈《"
+CLOSE_HEAD = "）」』】〉》"
+SMALL_HEAD = "ゃゅょっャュョッ"   # 小さい仮名は行頭に置かない
+
+
+@functools.lru_cache(maxsize=128)
+def _team_badge_id(text):
+    """本文の1かたまりが球団名そのものなら、そのID。"""
+    import notability_engine as ne
+    for tid, name in ne.MLB_TEAM_NAME_JP.items():
+        if text == name:
+            return str(tid)
+    return None
+
+
+def _badge_width(tid, size):
+    import short_v4_cards as cards
+    return cards.inline_badge_width(tid, size)
+
+
+def _piece_width(probe, text, size, badges):
+    w = probe.textlength(text, font=font(size))
+    if badges:
+        tid = _team_badge_id(text)
+        if tid:
+            w += _badge_width(tid, size) + 12
+    return w
+
+
+def _kinsoku_units(atoms):
+    """折り返してよい単位。開き括弧は次へ、閉じ括弧・句読点は前へくっつける。"""
+    units = []
+    for atom in atoms:
+        text = atom[0]
+        if units and units[-1] and units[-1][-1][0] and units[-1][-1][0][-1] in OPEN_HEAD \
+                and text != "　":
+            units[-1].append(atom)
+            continue
+        if text == "　":
+            units.append([atom])
+            continue
+        if text and (text[0] in CLOSE_HEAD or text[0] in NO_HEAD or text[0] in SMALL_HEAD):
+            if units and units[-1][0][0] != "　":
+                units[-1].append(atom)
+            else:
+                units.append([atom])
+            continue
+        units.append([atom])
+    return units
+
+
+def rich_lines(runs, width, second_rgb, size=None, badges=None):
+    """本文を折る。size を渡すと項目全体を同じ大きさにそろえる。
+
+    禁則: 開き括弧は行末に残さず、閉じ括弧・句読点・小さい仮名は行頭に置かない。
+    全角スペースは区切りとして優先して折る。"""
+    if badges is None:
+        badges = LOOK == "v4"
+    default_sizes = {"L": SIZE_L, "M": SIZE_M, "S": SIZE_S}
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+
+    def atom_size(size_class):
+        return size or default_sizes[size_class]
+
     atoms = list(_atoms(runs))
-    widths = [probe.textlength(a[0], font=font(sizes[a[1]])) for a in atoms]
-    lines, cur, x = [], [], 0
-    for k, (text, size, gold) in enumerate(atoms):
-        f = font(sizes[size])
-        w = widths[k]
-        if text == "　" and cur:
-            # 次のかたまり（次の全角スペースまで）が今の行に入らず、次の行には入るなら、ここで改行
-            j = k + 1
-            while j < len(atoms) and atoms[j][0] != "　":
+    units = _kinsoku_units(atoms)
+    # 「（…）」「「…」」は、幅に入るなら一続きにして途中で折らない。
+    merged = []
+    i = 0
+    while i < len(units):
+        first = units[i][0][0]
+        if first and first[0] in OPEN_HEAD:
+            j, total, closed = i, 0, False
+            while j < len(units):
+                if len(units[j]) == 1 and units[j][0][0] == "　":
+                    break
+                total += sum(_piece_width(probe, t, atom_size(s), badges) for t, s, _ in units[j])
+                if any(atom[0] and atom[0][-1] in CLOSE_HEAD for atom in units[j]):
+                    closed = True
+                    break
                 j += 1
-            seg = sum(widths[k + 1:j])
-            if x + w + seg > width and seg <= width:
+            if closed and total <= width:
+                merged.append([atom for unit in units[i:j + 1] for atom in unit])
+                i = j + 1
+                continue
+        merged.append(units[i])
+        i += 1
+    units = merged
+    # 幅に入らないかたまりだけ、文字へ分ける（長いカタカナ語・数字の連なり）。
+    split_units = []
+    for unit in units:
+        space = len(unit) == 1 and unit[0][0] == "　"
+        total = sum(_piece_width(probe, t, atom_size(s), badges) for t, s, _ in unit)
+        if not space and total > width:
+            pieces = []
+            for atom in unit:
+                # 札と球団名は離さない。入らない場合は項目全体のサイズで調整する。
+                if badges and _team_badge_id(atom[0]):
+                    pieces.append(atom)
+                else:
+                    pieces.extend((ch, atom[1], atom[2]) for ch in atom[0])
+            split_units.extend(_kinsoku_units(pieces))
+        else:
+            split_units.append(unit)
+    units = split_units
+
+    lines, cur, x = [], [], 0
+    for i, unit in enumerate(units):
+        space = len(unit) == 1 and unit[0][0] == "　"
+        uw = sum(_piece_width(probe, t, atom_size(s), badges) for t, s, _ in unit)
+        if space:
+            if not cur:
+                continue                                   # 行頭の空白は捨てる
+            # 次の区切りまでを1つのかたまりと見て、入らないならここで折る（優先）。
+            j, seg = i + 1, 0
+            while j < len(units) and not (len(units[j]) == 1 and units[j][0][0] == "　"):
+                seg += sum(_piece_width(probe, t, atom_size(s), badges) for t, s, _ in units[j])
+                j += 1
+            if x + uw + seg > width:
                 lines.append(cur)
                 cur, x = [], 0
                 continue
-        if cur and x + w > width and text.strip("　 "):
-            if text in NO_HEAD and len(cur)>1:
-                last=cur.pop()
-                lines.append(cur)
-                cur=[(0,*last[1:])]
-                x=probe.textlength(last[1],font=last[2])
-            else:
-                lines.append(cur)
-                cur, x = [], 0
-        if not cur and not text.strip("　 "):
-            continue                                       # 行頭の空白は捨てる
-        color = GOLD if gold else (_mix(second_rgb, INK, 0.3) if size == "S" else INK)
-        cur.append((x, text, f, color, sizes[size]))
-        x += w
+        if cur and x + uw > width:
+            lines.append(cur)
+            cur, x = [], 0
+        for text, size_class, gold in unit:
+            s = atom_size(size_class)
+            w = _piece_width(probe, text, s, badges)
+            color = GOLD if gold else (_mix(second_rgb, INK, 0.3) if size_class == "S" else INK)
+            cur.append((x, text, font(s), color, s))
+            x += w
     if cur:
         lines.append(cur)
     return lines
 
 
-@functools.lru_cache(maxsize=64)
 def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_above=False, quote_height=None):
+    return _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
+                             attribution_above, quote_height, LOOK,
+                             os.environ.get('COLLESPO_MLB_BADGE', ''))
+
+
+@functools.lru_cache(maxsize=64)
+def _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
+                      attribution_above, quote_height, look, badge_style):
+    # 見た目・札の種類もキーに含め、切り替え前の札を使い回さない。
     quote = "番記者" in head or str(body).startswith("「")
     if not quote:
-        lines = rich_lines(_runs(body), w - 72, second_rgb)
-        heights = [max(it[4] for it in ln) + 16 for ln in lines]
+        runs = _runs(body)
+        limit = quote_height or (CONTENT_BOTTOM - CONTENT_TOP)
+        # まず行を増やし、それでも入らないときだけ一段ずつ小さくする。
+        # 1つの項目の中で文字の大きさは混ぜない。
+        lines = heights = None
+        probe = ImageDraw.Draw(Image.new('RGB', (8, 8)))
+        for candidate in (SIZE_M, SIZE_M - 4, SIZE_M - 8, SIZE_M - 12, SIZE_M - 16, 26):
+            wrapped = rich_lines(runs, w - 72, second_rgb, size=candidate)
+            lh = candidate + 16
+            total = 84 + lh * max(1, len(wrapped)) + 30
+            fits_width = all(x + _piece_width(probe, text, drawn, LOOK == 'v4') <= w - 72
+                             for line in wrapped for x, text, _, _, drawn in line)
+            if total <= limit and fits_width:
+                lines, heights = wrapped, [lh] * len(wrapped)
+                break
+        if lines is None:
+            # 呼び出し元のpaginateが本文を次のカードへ分ける。
+            raise ValueError('本文が札の安全域に収まりません')
         h = 84 + sum(heights) + 30
         card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(card)
@@ -759,24 +890,36 @@ def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_a
                             outline=_mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)
         label,label_size=_lines(d,head,32,w-72,1)
         _text(d,(36, 30),label[0] if label else '',font=font(label_size),fill=second_rgb)
+        badges = LOOK == "v4"
         y = 84
         for ln, lh in zip(lines, heights):
             base_y = y + lh - 16
-            for x, text, f, color, _ in ln:
-                _text(d,(36 + x, base_y), text, font=f, fill=color, anchor="ls")
+            for x, text, f, color, drawn in ln:
+                left = 36 + x
+                tid = _team_badge_id(text) if badges else None
+                if tid:
+                    import short_v4_cards as cards
+                    bbox = f.getbbox(text, anchor="ls")
+                    cards.inline_badge(card, left, base_y + bbox[1], tid, drawn,
+                                       bbox[3] - bbox[1])
+                    left += cards.inline_badge_width(tid, drawn) + 12
+                _text(d,(left, base_y), text, font=f, fill=color, anchor="ls")
+                entry = card.info['v3_layout'][-1]
+                entry['v4_font'] = drawn
+                entry['v4_color'] = color
+                if tid:
+                    entry['team_id'] = tid
             y += lh
         return card
-    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
-    lines, size = _lines(probe, body, quote_size if quote else 64, w - 72, 8 if quote else 4)
-    if quote_height:
-        size = quote_size
-        while True:
-            lines, _ = _lines(probe, body, size, w-72, max(8, len(body)))
-            if 126+len(lines)*(size+14) <= quote_height:
-                break
-            size -= 2
-            if size < 24:
-                raise ValueError('引用全文が共通札の安全域に収まりません')
+    # 引用も同じ禁則を使い、行数の上限によって本文を切り捨てない。
+    limit = quote_height or (CONTENT_BOTTOM - CONTENT_TOP)
+    for size in range(quote_size, 23, -2):
+        wrapped = rich_lines(_runs(body), w - 72, second_rgb, size=size, badges=False)
+        lines = [''.join(text for _, text, _, _, _ in line) for line in wrapped]
+        if 126 + len(lines) * (size + 14) <= limit:
+            break
+    else:
+        raise ValueError('引用全文が共通札の安全域に収まりません')
     h = 40 + 50 + len(lines) * (size + 14) + 36
     card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(card)
@@ -788,6 +931,10 @@ def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_a
         color = DARK_INK if quote else (GOLD if i == 0 else INK)
         _text(d,(36, 84 + i * (size + 14)), line, font=font(size), fill=color)
     return card
+
+
+_item_card.cache_clear = _cached_item_card.cache_clear
+_item_card.cache_info = _cached_item_card.cache_info
 
 
 def list_page(t, spec, items, start, count, page, pages, kind_label, focus=None):
