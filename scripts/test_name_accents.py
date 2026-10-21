@@ -18,13 +18,13 @@ def phrase(reading,accent,pause=None):
 
 class Accents(unittest.TestCase):
     def test_dictionary_confirmed_and_unverified_are_separate(self):
-        rows=accents.entries();self.assertEqual(len(rows),60)
+        rows=accents.entries();self.assertEqual(len(rows),61)
         confirmed=[r for r in rows if r['status']=='CONFIRMED']
         self.assertEqual({r['name'] for r in confirmed},set(['ダルビッシュ有', 'ヌートバー', '上田綺世', '中村草太', '久保建英', '今井達也', '今永昇太', '伊藤敦樹', '伊藤洋輝', '佐々木朗希', '佐藤龍之介', '佐野海舟', '冨安健洋', '前田大然', '千賀滉大'])|{'鎌田大地'})
         for row in confirmed:
             self.assertEqual(row['pattern'],'L'+'H'*(common.mora_count(row['reading'])-1))
             self.assertEqual(row['source'],'コレスポ 加藤さん10/12' if row['name']=='鎌田大地' else 'コレスポ 加藤さん10/13')
-        self.assertEqual(len([r for r in rows if r['status']=='UNVERIFIED']),41)
+        self.assertEqual(len([r for r in rows if r['status']=='UNVERIFIED']),42)
 
     def test_accepted_defaults_match_saved_queries_without_human_confirmation(self):
         defaults={r['name']:r for r in accents.entries() if r['status']=='DEFAULT_ACCEPTED'}
