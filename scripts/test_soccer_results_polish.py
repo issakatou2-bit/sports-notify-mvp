@@ -44,9 +44,14 @@ class ResultsPolish(unittest.TestCase):
         self.assertNotIn('第2節',text);self.assertNotIn('連発',text)
         for detail in details:
             game=next(g for g in data['games'] if g['id']==detail['meta']['event_id'])
-            shown=''.join(detail['meta']['details'])
+            shown=''.join((line.get('club') or '')+line['text'] for line in detail['meta']['details'])
             for goal in game['goals']:
-                self.assertIn(goal['scorer'],shown);self.assertIn(goal['minute'].split('+')[0],shown)
+                self.assertIn(goal['minute'].split('+')[0],shown)
+                if goal['japanese_goal']:self.assertIn(goal['scorer'],shown)
+                else:
+                    # 辞書に無い得点者は英字のまま出さず、得点したクラブ名にする。
+                    self.assertNotIn(goal['scorer'],shown)
+                    self.assertIn(game[goal['side']]['name_jp'],shown)
 
     def test_player_stats_stay_in_one_caption_even_over_normal_page_limit(self):
         player=dict(name='検査用のとても長い日本人選手の氏名です',status='substitute',minutes=35,goals=1,assists=2)

@@ -93,15 +93,28 @@ def frame(t,seg,data,clubs):
             plain(im,c.L,270,facts.competition(g),38,width=c.R-c.L)
             details=seg['meta']['details'][1:]
             # 保存材料にある得点者と時刻をすべて表示する。密度に合わせて字と行を調整。
+            # 辞書に無い得点はクラブ名の札を先に描き、その続きに時刻と得点を置く。
             size=44
             while True:
-                wrapped=[line for value in details for line in render.v4.lines(value,size,c.R-c.L-70)]
-                if len(wrapped)*(size+14)<=720:break
+                body=[]
+                for line in details:
+                    # クラブ名つきの行は club_name が幅に合わせる。文だけの行は折り返す。
+                    body.append((line,[] if line.get('club') else render.v4.lines(line['text'],size,c.R-c.L-70)))
+                rows=sum(max(1,len(texts)) for _,texts in body)
+                if rows*(size+14)<=720:break
                 if size<=22:raise ValueError('得点経過が1画面に入りません')
                 size-=1
-            height=60+len(wrapped)*(size+14);top=round((320+render.r3.CONTENT_BOTTOM-height)/2)
+            height=60+rows*(size+14);top=round((320+render.r3.CONTENT_BOTTOM-height)/2)
             c.panel(im,(c.L,top,c.R,top+height))
-            for i,line in enumerate(wrapped):plain(im,c.L+30,top+30+i*(size+14),line,size,width=c.R-c.L-70)
+            y=top+30
+            for line,texts in body:
+                if line.get('club'):
+                    c.club_name(im,c.L+30,y,clubs[line['club']],size,suffix='　'+line['text'],width=c.R-c.L-70)
+                    y+=size+14
+                else:
+                    for text in texts:
+                        plain(im,c.L+30,y,text,size,width=c.R-c.L-70)
+                        y+=size+14
             im.info['soccer_followup']=seg['meta']
             return c.finish(im,t,spec)
         plain(im,c.L,270,'昨夜の注目試合の結果',48,width=c.R-c.L)
