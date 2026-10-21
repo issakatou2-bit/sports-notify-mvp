@@ -35,8 +35,10 @@ def line_text(line):
     return "".join(text for _, text, _, _, _ in line)
 
 
-def overlap(a, b):
-    return a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
+def overlap(a, b, tol=1.0):
+    # 1px 未満の重なりは字体の違い（CI の字形のはみ出し 0.4px）として見ない。目では分からない。
+    return (a[0] < b[2] - tol and b[0] < a[2] - tol
+            and a[1] < b[3] - tol and b[1] < a[3] - tol)
 
 
 def render(topic, start=0, count=2, look="v4"):
