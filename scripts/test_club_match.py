@@ -52,6 +52,8 @@ CASES = [
     ("SC Freiburg", ["鈴木唯人", "後藤啓介", "山本理仁"]),
     ("Eintracht Frankfurt", ["堂安律", "小杉啓太"]),
     ("1. FSV Mainz 05", ["佐野海舟", "川﨑颯太"]),
+    ("PSV", ["佐野航大"]),
+    ("PSV Eindhoven", ["佐野航大"]),
     ("Borussia Mönchengladbach",
      ["町野修斗", "宇野禅斗", "橋岡大樹", "板倉滉"]),
     ("FC Schalke 04", ["田中聡"]),
