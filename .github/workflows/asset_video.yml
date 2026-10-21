@@ -269,16 +269,19 @@ jobs:
             # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
             bash scripts/shorts_thumbnail.sh "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png"
 
+            # 非公開の試作には公開予約を付けない（10/21 private で作った回に 18:30 の予約が付いていた）。
+            PUB=(--publish-at "18:30")
+            if [ "${PRIVACY:-public}" = private ]; then PUB=(); fi
             python scripts/upload_youtube.py \
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
               --thumbnail "build/asset_$t/short.png" \
               --privacy "${PRIVACY:-public}" $FORCE \
-              --publish-at "18:30"
+              "${PUB[@]}"
             if [ $? -eq 0 ]; then
               echo "$t: 完了"
             else
-              echo "::warning::$t の投稿に失敗しました(APIの割り当て超過の可能性)"
+              echo "::warning::$t の投稿に失敗しました（理由は上の記録の Traceback を見る）"
               FAILED="$FAILED $t(投稿)"
             fi
             echo "::endgroup::"
