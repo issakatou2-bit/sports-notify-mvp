@@ -53,7 +53,7 @@ jobs:
           PUBLISH_AT: ${{ inputs.publish_at }}
         run: |
           set -euo pipefail
-          ARGS=(--video "$VIDEO_ID")
+          ARGS=("--video=$VIDEO_ID")  # 「-」で始まる動画IDを引数と取り違えない
           if [ "$WRITE" = "true" ]; then ARGS+=(--write); fi
           if [ "$RELEASE" = "true" ]; then ARGS+=(--release); fi
           if [ -n "$PUBLISH_AT" ]; then ARGS+=(--publish-at "$PUBLISH_AT"); fi
