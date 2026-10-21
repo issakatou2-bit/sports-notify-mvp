@@ -16,4 +16,13 @@ def target_day(now=None,scheduled=False):
     start,_=window(now.date())
     return (now-timedelta(days=1 if now>=start else 2)).date()
 
-if __name__=='__main__':print(CONFIG['publish_jst'])
+def publish_spec(now=None):
+    # GitHubのscheduleは2時間以上遅れることがある（10/21は7:20の予定が9:39）。
+    # 公開時刻が過ぎていたら、上げ終わる少し後に予約して止まらないようにする。
+    now=(now or datetime.now(JST)).astimezone(JST)
+    hour,minute=map(int,CONFIG['publish_jst'].split(':'))
+    planned=datetime(now.year,now.month,now.day,hour,minute,tzinfo=JST)
+    if now<planned-timedelta(minutes=5):return CONFIG['publish_jst']
+    return (now+timedelta(minutes=15)).strftime('%H:%M')
+
+if __name__=='__main__':print(publish_spec())
