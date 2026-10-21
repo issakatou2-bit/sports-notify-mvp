@@ -26,4 +26,8 @@ class ClockTests(unittest.TestCase):
             if step.get('name') in ('Upload to YouTube','Require a future reservation','Confirm reservation'):
                 self.assertIn("vars.SOCCER_RESULTS_PUBLISH == 'true'",step['if'])
                 self.assertIn('inputs.publish',step['if'])
+    def test_late_schedule_still_reserves_future(self):
+        self.assertEqual(clock.publish_spec(datetime(2026,10,21,7,25,tzinfo=clock.JST)),clock.CONFIG['publish_jst'])
+        self.assertEqual(clock.publish_spec(datetime(2026,10,21,9,43,tzinfo=clock.JST)),'09:58')
+        self.assertEqual(clock.publish_spec(datetime(2026,10,21,7,58,tzinfo=clock.JST)),'08:13')
 if __name__=='__main__':unittest.main(argv=[sys.argv[0]])
