@@ -240,5 +240,124 @@
         }
       }
     ]
+  },
+  "2026-10-21": {
+    "day": "2026-10-21",
+    "video_id": "3XOnyWk-gI0",
+    "title": "【欧州サッカー】今夜の注目試合｜バイエルン vs アーセナル ほか #Shorts",
+    "published_at": "2026-10-21T10:14:05.171711+00:00",
+    "binding": {
+      "material_sha256": "c558aa950932d5ee49f3801869c00f46088e0ea78ba0ce8b3a327bb8150f0e4e",
+      "narration_sha256": "b68b8342accc6ca57afd4ea55fe0660bd51760ffebb7fc50d408cc04d62b3acd"
+    },
+    "games": [
+      {
+        "game_id": "575372",
+        "espn_event_id": "401915312",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "バイエルン",
+        "away": "アーセナル",
+        "start_utc": "2026-10-22T04:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "previous_season",
+            "text": "バイエルンは昨季CLリーグフェーズ2位",
+            "evidence": "reasons.quality"
+          },
+          {
+            "kind": "previous_season",
+            "text": "アーセナルは昨季CLリーグフェーズ1位",
+            "evidence": "reasons.quality"
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間4時、バイエルン対アーセナル。昨季CLリーグフェーズでホーム側は2位、アウェー側は1位。見どころは、この順位差が今回どう表れるかです。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-21T09:53:51.869932+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-21T09:53:51.869932+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575368",
+        "espn_event_id": "401915395",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "コモ",
+        "away": "マンチェスター・ユナイテッド",
+        "start_utc": "2026-10-22T01:45:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間1時45分、コモ対マンチェスターU。注目はチャンピオンズリーグでの、この両チームの対戦です。見どころはコモのホームで、マンチェスターUがどう戦うかです。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-21T09:53:51.869932+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-21T09:53:51.869932+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575370",
+        "espn_event_id": "401915313",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "レアル・マドリード",
+        "away": "ライプツィヒ",
+        "start_utc": "2026-10-22T04:00:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間4時、レアル・マドリード対ライプツィヒ。注目はチャンピオンズリーグでの、この両チームの対戦です。見どころはレアル・マドリードのホームで、ライプツィヒがどう戦うかです。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-21T09:53:51.869932+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-21T09:53:51.869932+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575371",
+        "espn_event_id": "401915390",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "インテル",
+        "away": "シャフタール",
+        "start_utc": "2026-10-22T04:00:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間4時、インテル対シャフタール。注目はチャンピオンズリーグでの、この両チームの対戦です。見どころはインテルのホームで、シャフタールがどう戦うかです。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-21T09:53:51.869932+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-21T09:53:51.869932+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }

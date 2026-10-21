@@ -6631,6 +6631,30 @@
       "actual_host": "ui",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-21": {
+      "video_id": "3XOnyWk-gI0",
+      "url": "https://youtu.be/3XOnyWk-gI0",
+      "title": "【欧州サッカー】今夜の注目試合｜バイエルン vs アーセナル ほか #Shorts",
+      "published_at": "2026-10-21T10:14:05.171711+00:00",
+      "publish_at": "2026-10-21T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "c558aa950932d5ee49f3801869c00f46088e0ea78ba0ce8b3a327bb8150f0e4e",
+        "narration_sha256": "b68b8342accc6ca57afd4ea55fe0660bd51760ffebb7fc50d408cc04d62b3acd"
+      },
+      "host_assignment": {
+        "day": "2026-10-21",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
