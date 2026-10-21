@@ -84,6 +84,9 @@ class SoccerResults(unittest.TestCase):
         self.assertIsNone(sr.resolve_player(rows,'Shuto Suzuki'))
         self.assertIsNone(sr.resolve_player(rows+[deepcopy(rows[0])],'Zion Suzuki'))
         self.assertEqual(sr.resolve_player([{'athlete':{'id':'3','lastName':'Maeda','fullName':'D. Maeda'}}],'Daizen Maeda')['athlete']['id'],'3')
+        kodai=[{'athlete':{'id':'341715','lastName':'Sano','fullName':'Kodai Sano'}}]
+        self.assertIsNone(sr.resolve_player(kodai,'Kaishu Sano'))
+        self.assertEqual(sr.resolve_player(kodai,'Kodai Sano')['athlete']['id'],'341715')
 
     def test_score_crosscheck_and_espn_disagreement(self):
         boards,summaries=fixture();data=fixed();g=next(g for g in data['games'] if g['id']=='401876452')
