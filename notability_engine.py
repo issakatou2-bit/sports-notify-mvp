@@ -1750,6 +1750,12 @@ JP_PLAYERS_SOCCER = [
      "team_jp": "マインツ", "league": "BL1", "match": "mainz"},
     {"name_en": "Sota Kawasaki", "name_jp": "川﨑颯太", "kana": "カワサキ・ソウタ", "team_en": "Mainz",
      "team_jp": "マインツ", "league": "BL1", "match": "mainz"},
+    # 2026年10月21日追加。CLのポルト0-1PSVで出場した佐野航大を、一覧にいる
+    # 兄の佐野海舟(マインツ)と取り違えた事故を受けて。PSV公式の移籍記事:
+    # https://www.psv.nl/media/artikel/transfer-psv-neemt-kodai-sano-over-van-nec
+    # 漢字・読み: https://www.jfa.jp/samuraiblue/member/sano_kodai.html （佐野 航大 SANO Kodai）
+    {"name_en": "Kodai Sano", "name_jp": "佐野航大", "kana": "サノ・コウダイ", "team_en": "PSV Eindhoven",
+     "team_jp": "PSV", "league": "DED", "match": "psv"},
     # "borussia" はドルトムントとぶつかるので地名側を使う
     {"name_en": "Shuto Machino", "name_jp": "町野修斗", "kana": "マチノ・シュウト",
      "team_en": "Borussia Monchengladbach", "team_jp": "ボルシアMG",
