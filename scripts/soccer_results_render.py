@@ -10,6 +10,7 @@ import subprocess
 
 from PIL import ImageDraw
 import soccer_results as results
+import soccer_result_facts as facts
 import soccer_look
 soccer_look.activate()
 import soccer_v4_cards as cards
@@ -65,7 +66,7 @@ def narration(data):
     for page in range(pages):
         goals=[g for side in ('home','away') for g in by_side[side][page*4:page*4+4]]
         jp_goals=[g for g in goals if g['japanese_goal']]
-        result_text=''.join(f"{g['scorer']}は{spoken_minute(g['minute'])}にゴール。" for g in jp_goals)
+        result_text=''.join(f"{facts.goal_name(g,game)}は{spoken_minute(g['minute'])}にゴール。" for g in jp_goals)
         if not result_text:result_text='得点経過は画面のとおりです。' if game['goals_complete'] else '確認できた得点経過です。'
         segments.append({'kind':'result','text':result_text,'speaker':2,'meta':{'event_id':game['id'],'goals':goals,'page':page+1}})
     for meta in roster_pages(data):
@@ -129,10 +130,10 @@ def timeline(t,game,clubs,spec,goals):
             d.ellipse((x-7,mid-7,x+7,mid+7),fill=color)
             label=g['minute']+'分'+('　OG' if g['own_goal'] else '')
             cards.plain(im,lx,y,label,32,color,width=width,number=False)
-            if g['japanese_goal']:
-                cards.plain(im,lx,y+40,g['scorer'],26,color,width=width)
-            elif g['japanese_assists']:
-                cards.plain(im,lx,y+40,'・'.join(g['japanese_assists'])+' A',26,color,width=width)
+            if facts.named_scorer(g):
+                cards.plain(im,lx,y+40,facts.scorer_name(g),26,color,width=width)
+            elif facts.assist_names(g):
+                cards.plain(im,lx,y+40,'・'.join(facts.assist_names(g))+' A',26,color,width=width)
             else:
                 cards.club_name(im,lx,y+40,clubs[game[side]['name_jp']],26,color,width=width)
     if not goals:
