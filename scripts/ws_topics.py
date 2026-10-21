@@ -374,7 +374,7 @@ def title_history_topic(season: int, pair: tuple, history: list, names: dict,
         "story": True,
         "ws": True,
         "ps_ended": False,
-        "source": "MLB Stats API",
+        "ws": True,
         "season": season,
     }
 
@@ -496,7 +496,7 @@ def schedule_topic(season: int, games: list, names: dict,
         "story": True,
         "ws": True,
         "ps_ended": False,
-        "source": "MLB Stats API",
+        "ws": True,
         "season": season,
     }
 

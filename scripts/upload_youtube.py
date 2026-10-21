@@ -407,7 +407,11 @@ def asset_meta_from_spec(spec: dict) -> dict:
         lead += [f"・{j['name']}　{j['line']}"
                  for j in (spec.get("japanese") or [])]
         src = spec.get("source") or {}
-        if spec.get("odds"):
+        if not isinstance(src, dict):
+            src = {}  # 出典が文字だけの話題（記者の引用ではない）
+        if spec.get("ws"):
+            lead += ["", "数字はMLB公式の過去のワールドシリーズの結果と、今季の順位表・日程です。"]
+        elif spec.get("odds"):
             lead += ["", "過去の数は、MLB公式の試合結果（1995年から昨季までの地区シリーズ）を集計したものです。予想ではありません。"]
         elif spec.get("momentum"):
             lead += ["", "数字はMLB公式の試合の成績表と順位表（レギュラーシーズン）です。"]
