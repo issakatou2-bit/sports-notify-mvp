@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-20T06:02:10.185422+00:00",
+  "updated_at": "2026-10-21T06:01:58.526910+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -13,36 +13,36 @@
   "titles_count": 51,
   "teams": [
     {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 13,
-      "tone": "好調",
-      "gist": "レイズがガーディアンズに勝ちWS進出"
-    },
-    {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 6,
+      "mentions": 16,
       "tone": "好調",
-      "gist": "ブリュワーズが22年越しにWS進出"
+      "gist": "ペラルタとブリュワーズがWS進出"
+    },
+    {
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 14,
+      "tone": "好調",
+      "gist": "ペラルタMVPでレイズがWS進出"
     },
     {
       "team_id": "114",
       "name": "ガーディアンズ",
       "name_en": "Cleveland Guardians",
-      "mentions": 3,
+      "mentions": 4,
       "tone": "不振",
-      "gist": "ガーディアンズがALCSで敗退"
+      "gist": "レイズにALCS敗退、オフが焦点"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ブーン監督が2027年も続投"
+      "gist": "ペラルタのメッツ時代は失敗"
     },
     {
       "team_id": "141",
@@ -50,7 +50,15 @@
       "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "カークが親友アランダの応援に来場"
+      "gist": "昨年スプリンガー弾でWS進出"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ドンブロウスキー、外野補強を模索"
     },
     {
       "team_id": "109",
@@ -58,29 +66,16 @@
       "name_en": "Arizona Diamondbacks",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アリゾナ秋季リーグ2週目の好成績者"
+      "gist": "アリゾナ秋季リーグの有望株"
     },
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "大谷の2026年は故障続き"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ペラルタがメッツ退団後レイズで復調"
+      "gist": "ブリュワーズ初年度はシアトル"
     }
   ],
-  "players": [
-    {
-      "name": "大谷翔平",
-      "mentions": 1
-    }
-  ]
+  "players": []
 }

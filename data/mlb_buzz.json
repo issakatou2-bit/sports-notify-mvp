@@ -1,334 +1,13 @@
 {
-  "updated_at": "2026-10-20T06:01:59.082331+00:00",
+  "updated_at": "2026-10-21T06:01:48.079807+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "A3x9CAYUapM",
-      "title": "RAYS vs. GUARDIANS: ALCS Full Game 5 Highlights (October 18) | 2026 MLB Postseason",
-      "published_at": "2026-10-19T00:41:59Z",
-      "views": 1496712,
-      "matchup": "RAYS vs. GUARDIANS",
-      "game_date": "2026-10-18",
-      "result": {
-        "away_jp": "レイズ",
-        "home_jp": "ガーディアンズ",
-        "away_score": 3,
-        "home_score": 1,
-        "series": {
-          "name": "リーグ優勝決定シリーズ",
-          "game_number": 5,
-          "games_in_series": 7,
-          "after": "TB leads 3-2",
-          "is_over": false,
-          "winner_today": "レイズ",
-          "after_jp": "3勝2敗（TB leads 3-2）",
-          "next": "第6戦",
-          "next_game_number": 6,
-          "after_by_team": {
-            "ガーディアンズ": {
-              "wins": 2,
-              "losses": 3
-            },
-            "レイズ": {
-              "wins": 3,
-              "losses": 2
-            }
-          },
-          "before_by_team": {
-            "ガーディアンズ": {
-              "wins": 2,
-              "losses": 2
-            },
-            "レイズ": {
-              "wins": 2,
-              "losses": 2
-            }
-          },
-          "before_jp": "ガーディアンズ2勝2敗、レイズ2勝2敗",
-          "is_decider": false
-        },
-        "innings": [
-          {
-            "num": 1,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 2,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 0,
-            "home": 0
-          }
-        ],
-        "away_hits": 12,
-        "away_errors": 0,
-        "home_hits": 5,
-        "home_errors": 0,
-        "batting_facts": [
-          {
-            "name": "Chase DeLauter",
-            "name_en": "Chase DeLauter",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 1
-          },
-          {
-            "name": "Nathaniel Lowe",
-            "name_en": "Nathaniel Lowe",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Travis Bazzana",
-            "name_en": "Travis Bazzana",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Patrick Bailey",
-            "name_en": "Patrick Bailey",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Brayan Rocchio",
-            "name_en": "Brayan Rocchio",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Petey Halpin",
-            "name_en": "Petey Halpin",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Jo Adell",
-            "name_en": "Jo Adell",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "José Ramírez",
-            "name_en": "José Ramírez",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Steven Kwan",
-            "name_en": "Steven Kwan",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 2,
-            "rbi": 0
-          },
-          {
-            "name": "Angel Martínez",
-            "name_en": "Angel Martínez",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Taylor Walls",
-            "name_en": "Taylor Walls",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Richie Palacios",
-            "name_en": "Richie Palacios",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Jorge Mateo",
-            "name_en": "Jorge Mateo",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Ryan Vilade",
-            "name_en": "Ryan Vilade",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Chandler Simpson",
-            "name_en": "Chandler Simpson",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 2,
-            "rbi": 0
-          },
-          {
-            "name": "Jonny DeLuca",
-            "name_en": "Jonny DeLuca",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 1
-          },
-          {
-            "name": "Liam Hicks",
-            "name_en": "Liam Hicks",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 2,
-            "rbi": 1
-          },
-          {
-            "name": "Jonathan Aranda",
-            "name_en": "Jonathan Aranda",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 2,
-            "rbi": 1
-          },
-          {
-            "name": "Yandy Díaz",
-            "name_en": "Yandy Díaz",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 3,
-            "rbi": 0
-          },
-          {
-            "name": "Ben Williamson",
-            "name_en": "Ben Williamson",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Victor Mesa Jr.",
-            "name_en": "Victor Mesa Jr.",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Junior Caminero",
-            "name_en": "Junior Caminero",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Cedric Mullins",
-            "name_en": "Cedric Mullins",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          }
-        ],
-        "star_name": "Drew Rasmussen",
-        "star_line": "7.0回 6奪三振 自責1",
-        "star_team": "レイズ",
-        "away_starter": {
-          "name": "Drew Rasmussen",
-          "team": "レイズ",
-          "line": "7.0回 6奪三振 自責1　勝利投手（通算2勝0敗）"
-        },
-        "home_starter": {
-          "name": "Parker Messick",
-          "team": "ガーディアンズ",
-          "line": "2.0回 3奪三振 自責2　敗戦投手（通算0勝3敗）"
-        }
-      },
-      "topic_jp": "レイズ 対 ガーディアンズ"
-    },
-    {
       "video_id": "7-cD-1Wa5t0",
       "title": "GUARDIANS vs. RAYS: ALCS Full Game 6 Highlights (October 19) | 2026 MLB Postseason",
       "published_at": "2026-10-20T03:45:09Z",
-      "views": 172612,
+      "views": 1781848,
       "matchup": "GUARDIANS vs. RAYS",
       "game_date": "2026-10-19",
       "result": {
@@ -638,7 +317,7 @@
       "video_id": "7BD7dEV52-s",
       "title": "Guardians BRING THE TYING RUN to the plate vs. the Rays! 😳 | MLB Highlights (Full Inning)",
       "published_at": "2026-10-20T03:10:55Z",
-      "views": 46949,
+      "views": 78171,
       "matchup": "Guardians BRING THE TYING RUN to the plate vs. the Rays! 😳 | MLB Highlights (Full Inning)",
       "game_date": "",
       "topic_jp": "ガーディアンズ BRING THE TYING RUN to the plate 対 the レイズ! 😳 | MLB Highlights (Full Inning)"
@@ -647,99 +326,102 @@
       "video_id": "jLWXMf_ML1o",
       "title": "FULL INNING: Rays grab early lead in a potential Game 6 ALCS clincher 👀 | MLB Highlights",
       "published_at": "2026-10-20T01:27:34Z",
-      "views": 267204,
+      "views": 313614,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "レイズが先制、ALCS第6戦での決着を見据えた展開"
+      "topic_jp": "レイズが初回に先制、ALCS第6戦で決着の可能性"
     },
     {
       "video_id": "h60gtkCBMBc",
       "title": "JUNIOR CAMINERO HOMERS OFF THE POLE & HAS AN EPIC REACTION! ⚡️⚡️⚡️⚡️ MLB Highlights (ALCS Game 6)",
       "published_at": "2026-10-20T02:27:17Z",
-      "views": 80152,
+      "views": 140021,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "カミネロ、ポールに本塁打！ALCS第6戦で劇的な一打"
+      "topic_jp": "カミネロ、ポールに直撃の本塁打、劇的な反応！"
+    },
+    {
+      "video_id": "lA56nVIlqBs",
+      "title": "FINAL OUT: The Rays are headed to the World Series for the first time since 2020! | MLB Highlights",
+      "published_at": "2026-10-20T03:08:54Z",
+      "views": 106771,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "FINAL OUT: The Rays are headed to the World Series for the first time since 2020!"
     }
   ],
   "all": [
     {
-      "video_id": "A3x9CAYUapM",
-      "matchup": "RAYS vs. GUARDIANS",
-      "game_date": "2026-10-18",
-      "views": 1496712
-    },
-    {
       "video_id": "7-cD-1Wa5t0",
       "matchup": "GUARDIANS vs. RAYS",
       "game_date": "2026-10-19",
-      "views": 172612
+      "views": 1781848
     },
     {
       "video_id": "7BD7dEV52-s",
       "matchup": "Guardians BRING THE TYING RUN to the plate vs. the Rays! 😳 | MLB Highlights (Full Inning)",
       "game_date": "",
-      "views": 46949
+      "views": 78171
     },
     {
       "video_id": "jLWXMf_ML1o",
       "matchup": "",
       "game_date": "",
-      "views": 267204
+      "views": 313614
     },
     {
       "video_id": "h60gtkCBMBc",
       "matchup": "",
       "game_date": "",
-      "views": 80152
-    },
-    {
-      "video_id": "E_NFpshxZgI",
-      "matchup": "",
-      "game_date": "",
-      "views": 56050
-    },
-    {
-      "video_id": "AjdgrqaSKHQ",
-      "matchup": "",
-      "game_date": "",
-      "views": 53012
-    },
-    {
-      "video_id": "pjMNEQ37ASA",
-      "matchup": "",
-      "game_date": "",
-      "views": 32173
+      "views": 140021
     },
     {
       "video_id": "lA56nVIlqBs",
       "matchup": "",
       "game_date": "",
-      "views": 31019
+      "views": 106771
     },
     {
       "video_id": "UKEKdOZadoQ",
       "matchup": "",
       "game_date": "",
-      "views": 28341
+      "views": 78566
     },
     {
-      "video_id": "CKcffbduT4E",
+      "video_id": "pjMNEQ37ASA",
       "matchup": "",
       "game_date": "",
-      "views": 2936
-    },
-    {
-      "video_id": "V3oGq8t0h3o",
-      "matchup": "",
-      "game_date": "",
-      "views": 2029
+      "views": 61516
     },
     {
       "video_id": "L2lNZLA7oA8",
       "matchup": "",
       "game_date": "",
-      "views": 842
+      "views": 28983
+    },
+    {
+      "video_id": "CKcffbduT4E",
+      "matchup": "",
+      "game_date": "",
+      "views": 22043
+    },
+    {
+      "video_id": "wTvu2mlUNx0",
+      "matchup": "",
+      "game_date": "",
+      "views": 17769
+    },
+    {
+      "video_id": "THlRoUiK4v0",
+      "matchup": "",
+      "game_date": "",
+      "views": 13369
+    },
+    {
+      "video_id": "V3oGq8t0h3o",
+      "matchup": "",
+      "game_date": "",
+      "views": 13368
     }
   ]
 }

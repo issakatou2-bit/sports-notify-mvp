@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-19T09:52:38.673094+00:00",
-  "date": "2026-10-19",
+  "updated_at": "2026-10-20T09:52:40.239447+00:00",
+  "date": "2026-10-20",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -271,11 +271,10 @@
       ]
     },
     {
-      "key": "W:158-wait",
+      "key": "W:139-158",
       "round": "W",
       "round_jp": "ワールドシリーズ",
       "stage": 4,
-      "waiting": true,
       "league_jp": "",
       "best_of": 7,
       "need": 4,
@@ -288,6 +287,12 @@
       },
       "teams": [
         {
+          "id": 139,
+          "name": "レイズ",
+          "wins": 0,
+          "players": []
+        },
+        {
           "id": 158,
           "name": "ブリュワーズ",
           "wins": 0,
@@ -297,9 +302,17 @@
     }
   ],
   "final_day": [],
-  "headline": "ワールドシリーズ ブリュワーズは相手待ち、10月24日に第1戦",
-  "changes": [],
-  "prev_date": "2026-10-18",
+  "headline": "ワールドシリーズ レイズ対ブリュワーズ、10月24日に第1戦",
+  "changes": [
+    {
+      "key": "W:139-158",
+      "kind": "start",
+      "text": "ワールドシリーズ レイズ対ブリュワーズ、10月24日に第1戦",
+      "jp": false,
+      "stage": 4
+    }
+  ],
+  "prev_date": "2026-10-19",
   "japanese": [
     {
       "team_id": 119,

@@ -1,88 +1,93 @@
 {
-  "generated_at": "2026-10-20T06:01:09.180772+00:00",
-  "date_jst": "2026-10-20",
-  "name": "Junior Caminero",
-  "player_id": "691406",
+  "generated_at": "2026-10-21T06:01:07.457981+00:00",
+  "date_jst": "2026-10-21",
+  "name": "Yandy Díaz",
+  "player_id": "650490",
   "team": "レイズ",
   "group": "hitting",
   "why": "2026-10-20のMLBで最も活躍",
-  "headline": "3打数2安打　1本塁打　2打点　1四球",
-  "score": 115,
+  "headline": "4打数1安打　1本塁打　2打点　1死球",
+  "score": 98,
   "bio": {
-    "name_en": "Junior Caminero",
-    "age": 23,
-    "birth_city": "Santo Domingo",
+    "name_en": "Yandy Díaz",
+    "age": 35,
+    "birth_city": "Sagua la Grande",
     "birth_state": null,
-    "birth_country": "Dominican Republic",
-    "birth_date": "2003-07-05",
-    "debut": "2023-09-23",
+    "birth_country": "Cuba",
+    "birth_date": "1991-08-08",
+    "debut": "2017-04-03",
     "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "13",
-    "position": "Third Base",
-    "nickname": null,
-    "height": "6' 1\"",
-    "weight": 220
+    "number": "2",
+    "position": "Designated Hitter",
+    "nickname": "Aranita Diaz",
+    "height": "6' 0\"",
+    "weight": 235
   },
   "teams": [
     {
+      "team": "ガーディアンズ",
+      "from": 2017,
+      "to": 2018
+    },
+    {
       "team": "レイズ",
-      "from": 2023,
+      "from": 2019,
       "to": 2026
     }
   ],
   "career": {
-    "games": 366,
-    "avg": ".267",
-    "hr": 94,
-    "rbi": 236,
-    "ops": ".844",
-    "sb": 12,
-    "hits": 378
+    "games": 1058,
+    "avg": ".291",
+    "hr": 122,
+    "rbi": 509,
+    "ops": ".812",
+    "sb": 14,
+    "hits": 1137
   },
   "this_season": {
-    "games": 162,
-    "avg": ".276",
-    "hr": 42,
-    "rbi": 101,
-    "ops": ".884",
+    "games": 154,
+    "avg": ".293",
+    "hr": 22,
+    "rbi": 85,
+    "ops": ".805",
     "sb": 3,
-    "hits": 170
+    "hits": 180
   },
   "last_season": {
-    "games": 154,
-    "avg": ".264",
-    "hr": 45,
-    "rbi": 110,
-    "ops": ".846",
-    "sb": 7,
-    "hits": 159
+    "games": 150,
+    "avg": ".300",
+    "hr": 25,
+    "rbi": 83,
+    "ops": ".848",
+    "sb": 3,
+    "hits": 175
   },
   "recent": [
     {
-      "date": "2026-09-27",
-      "line": "2打数0安打",
-      "opponent": "Philadelphia Phillies"
-    },
-    {
       "date": "2026-09-26",
-      "line": "3打数2安打 1本塁打 2打点",
+      "line": "4打数3安打",
       "opponent": "Philadelphia Phillies"
     },
     {
       "date": "2026-09-25",
-      "line": "4打数1安打",
+      "line": "4打数0安打",
       "opponent": "Philadelphia Phillies"
     },
     {
       "date": "2026-09-24",
-      "line": "5打数2安打 2打点",
+      "line": "4打数2安打",
       "opponent": "New York Yankees"
     },
     {
-      "date": "2026-09-23",
-      "line": "2打数0安打",
+      "date": "2026-09-22",
+      "line": "5打数2安打 4打点",
+      "opponent": "New York Yankees"
+    },
+    {
+      "date": "2026-09-22",
+      "line": "4打数0安打",
       "opponent": "New York Yankees"
     }
   ],
@@ -92,27 +97,21 @@
       "name": "AL All-Star"
     },
     {
-      "season": "2026",
-      "name": "AL Player of the Month"
-    },
-    {
-      "season": "2026",
+      "season": "2025",
       "name": "AL Player of the Week"
     },
     {
-      "season": "2025",
+      "season": "2023",
+      "name": "AL Silver Slugger"
+    },
+    {
+      "season": "2023",
       "name": "AL All-Star"
     },
     {
-      "season": "2025",
-      "name": "AL Player of the Week"
+      "season": "2017",
+      "name": "INT Post-Season All-Star"
     }
   ],
-  "quotes": [
-    {
-      "who": "MLB Pipelineの記者",
-      "text": "StatcastによるJunior Camineroのホームイン到達までの時間は38.66秒。Statcast時代(2015年以降)のポストシーズン本塁打で最長のトロットです。",
-      "kind": "reporter"
-    }
-  ]
+  "quotes": []
 }
