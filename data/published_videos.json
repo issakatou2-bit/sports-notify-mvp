@@ -12993,6 +12993,26 @@
       "actual_host": "metan",
       "host_fallback_reason": "ui_unavailable",
       "privacy": "public"
+    },
+    "ws_title_history": {
+      "video_id": "4bZAY2JNlEQ",
+      "url": "https://youtu.be/4bZAY2JNlEQ",
+      "title": "【MLB】どっちが勝っても初優勝｜レイズ対ブリュワーズ #Shorts",
+      "published_at": "2026-10-21T04:24:59.377365+00:00",
+      "publish_at": "2026-10-21T09:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-21",
+        "kind": "asset:ws",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 2
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "private"
     }
   },
   "soccer_results": {
