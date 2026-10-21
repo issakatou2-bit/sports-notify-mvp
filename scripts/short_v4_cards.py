@@ -29,7 +29,7 @@ def text(im, x, y, value, size=40, color=None, width=None, number=False, team_id
         raise ValueError('材料のteam_idと球団名が一致しません')
     font = r3.num_font if number else r3.font
     def advance(s):
-        return font(s).getlength(value)+sum(inline_badge_width(names[v],s)+12 for v in runs if v in names)
+        return font(s).getlength(value)+sum(BADGE_LEAD+inline_badge_width(names[v],s)+12 for v in runs if v in names)
     start_size = size
     while width and advance(size) > width and size > 18:
         size -= 2
@@ -53,6 +53,7 @@ def text(im, x, y, value, size=40, color=None, width=None, number=False, team_id
         if run in names:
             tid=str(team_id) if team_id is not None else names[run]
             height=f.getbbox(run)[3]-f.getbbox(run)[1]
+            x+=BADGE_LEAD  # 前の文字の字形のはみ出しと重ねない（CI の字体で 0.4px 重なった）
             inline_badge(im,x,y+f.getbbox(run)[1]-dy,tid,size,height)
             x+=inline_badge_width(tid,size)+12
         r3._text(ImageDraw.Draw(im),(x,y-dy),run,font=f,fill=color or r3.INK)
@@ -61,6 +62,8 @@ def text(im, x, y, value, size=40, color=None, width=None, number=False, team_id
         if run in names:entry['team_id']=tid
         x+=f.getlength(run)
 
+
+BADGE_LEAD=6
 
 def inline_badge_width(tid,size):
     import notability_engine as ne
