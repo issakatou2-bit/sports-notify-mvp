@@ -737,12 +737,16 @@ def _badge_width(tid, size):
     return cards.inline_badge_width(tid, size)
 
 
+BADGE_LEAD = 6
+
+
 def _piece_width(probe, text, size, badges):
     w = probe.textlength(text, font=font(size))
     if badges:
         tid = _team_badge_id(text)
         if tid:
-            w += _badge_width(tid, size) + 12
+            # 前の文字との間にも少し空ける（字形のはみ出しは環境で違い、CI の字体で 0.4px 重なった）。
+            w += BADGE_LEAD + _badge_width(tid, size) + 12
     return w
 
 
@@ -899,6 +903,7 @@ def _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
                 tid = _team_badge_id(text) if badges else None
                 if tid:
                     import short_v4_cards as cards
+                    left += BADGE_LEAD
                     bbox = f.getbbox(text, anchor="ls")
                     cards.inline_badge(card, left, base_y + bbox[1], tid, drawn,
                                        bbox[3] - bbox[1])
