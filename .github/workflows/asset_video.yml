@@ -152,6 +152,12 @@ jobs:
         continue-on-error: true
         run: python scripts/venue_stats.py --out data/venue_stats.json
 
+      # ワールドシリーズの球団史・日程。日程が無い季節は空の topics を書いて
+      # 正常終了するので、年じゅうこの段を置いておける。
+      - name: Build World Series topics
+        continue-on-error: true
+        run: python scripts/ws_topics.py --out data/ws_topics.json
+
       # サッカーの開幕日程・昨季順位。soccer_opening と soccer_last_season が
       # これを読む。取れなければその2トピックだけが作られず、他は通る。
       # 開幕日程も昨季順位もAPIから取るので、こちらで書き起こす部分は無い。
@@ -294,7 +300,7 @@ jobs:
           bash scripts/commit_data.sh \
             "published assets: ${{ github.run_id }}" \
             data/published_assets.json data/published_videos.json data/venue_topics.json data/team_topics.json data/venue_stats.json data/soccer_preview.json \
-            data/rarity.json data/rare_topics.json data/legend_topics.json data/token_usage.json
+            data/rarity.json data/rare_topics.json data/legend_topics.json data/ws_topics.json data/token_usage.json
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
       - name: Save videos as artifact
