@@ -3150,6 +3150,13 @@ FORBIDDEN_SOCCER_WORDS = ["ゲーム差", "地区", "完封", "先発投手",
                           "球場", "本塁打", "打率", "防御率"]
 
 
+# 大会の形式（総当たり・参加チームなど）は材料に無く、AIが言い切ると誤りになる。
+# 10/21「CLは1部リーグの全チームによる総当たり戦」と書いた（正しくは36クラブが
+# 各8チームと対戦。UEFA規程17条）。形式の説明そのものを書かせない。
+FORMAT_CLAIM = re.compile(r"総当たり|全(?:チーム|クラブ)(?:が|と)(?:参加|対戦|戦)"
+                          r"|1部リーグの全|ホーム・?アンド・?アウェー方式|リーグフェーズは")
+
+
 def forbidden_wording(text: str, soccer: bool = False) -> list:
     """その文に含まれる、使ってはいけない語を返す。"""
     if not text:
@@ -3157,7 +3164,10 @@ def forbidden_wording(text: str, soccer: bool = False) -> list:
     words = list(FORBIDDEN_WORDING)
     if soccer:
         words += FORBIDDEN_SOCCER_WORDS
-    return [w for w in words if w in text]
+    found = [w for w in words if w in text]
+    if soccer:
+        found += sorted(set(m.group(0) for m in FORMAT_CLAIM.finditer(text)))
+    return found
 
 
 def _call_ai(prompt: str, api_key: str, max_tokens: int = 700):
