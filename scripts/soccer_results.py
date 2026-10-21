@@ -53,7 +53,11 @@ def resolve_player(rows,name_en):
         full=(athlete.get('fullName') or athlete.get('displayName') or '').split()
         last=athlete.get('lastName') or (full[-1] if full else '')
         given=next((x for x in full if ne.normalize_club(x)!=ne.normalize_club(last)),'')
-        if ne.normalize_club(last)==surname and given.lower().startswith(initial):matches.append(row)
+        # 名が頭文字だけ（D. Maeda）のときだけ頭文字で照合する。名が全部あるなら全部で比べる
+        # （10/21 PSV の Kodai Sano を Kaishu Sano＝佐野海舟と取り違えた。兄弟で頭文字が同じ）。
+        g=given.rstrip('.').lower()
+        same=(g==initial) if len(g)<=1 else ne.normalize_club(given)==ne.normalize_club(parts[0])
+        if ne.normalize_club(last)==surname and same:matches.append(row)
     return matches[0] if len(matches)==1 else None
 
 
