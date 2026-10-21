@@ -393,6 +393,36 @@ def jst_label(iso: str, tbd: bool = False) -> str:
     return text + (f"{t.minute}分" if t.minute else "")
 
 
+def group_dates(games) -> str:
+    """続く試合の日本時間を1つに。「10月24日（土）・25日（日）9時」「10月27日（火）〜29日（木）9時」。"""
+    times = []
+    for g in games:
+        tbd = bool((g.get("status") or {}).get("startTimeTBD"))
+        iso = g.get("gameDate")
+        try:
+            t = None if tbd or not iso else datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(JST)
+        except ValueError:
+            t = None
+        times.append(t)
+    if not times or all(t is None for t in times):
+        return "未定"
+    if any(t is None for t in times):
+        return "・".join("未定" if t is None else f"{t.month}月{t.day}日（{WEEKDAYS[t.weekday()]}）"
+                        for t in times)
+    def day(t, prev):
+        head = f"{t.day}日" if prev is not None and prev.month == t.month else f"{t.month}月{t.day}日"
+        return f"{head}（{WEEKDAYS[t.weekday()]}）"
+    hours = {(t.hour, t.minute) for t in times}
+    if len(times) >= 3:
+        text = day(times[0], None) + "〜" + day(times[-1], times[0])
+    else:
+        text = "・".join(day(t, times[i - 1] if i else None) for i, t in enumerate(times))
+    if len(hours) == 1:
+        h, m = hours.pop()
+        return text + f"{h}時" + (f"{m}分" if m else "")
+    return text
+
+
 def home_order(games: list) -> list:
     """[(試合番号, 本拠地の球団id)]。APIのホーム側をそのまま使う。"""
     return [((g.get("seriesGameNumber") or i + 1),
@@ -453,14 +483,23 @@ def schedule_topic(season: int, games: list, names: dict,
     order = home_order(games)
     first_label = jst_label(first.get("gameDate"),
                             bool((first.get("status") or {}).get("startTimeTBD")))
-    items = []
+    # 同じ本拠地が続く試合はまとめて1行に（10/21 全7試合を1つずつ読むと85秒で長かった）。
+    groups = []
     for (number, tid), g in zip(order, games):
-        tbd = bool((g.get("status") or {}).get("startTimeTBD"))
-        label = jst_label(g.get("gameDate"), tbd)
-        items.append((f"第{number}戦", f"{label}　{names.get(tid, '')}の本拠地"))
-    items.append(("本拠地の並び", pattern_text(order, names)))
+        if groups and groups[-1][1] == tid:
+            groups[-1][0].append((number, g))
+        else:
+            groups.append([[(number, g)], tid])
+    items = []
+    for members, tid in groups:
+        nums = [n for n, _ in members]
+        label = group_dates([g for _, g in members])
+        maybe = [n for n in nums if n >= 5]
+        note = ("（必要な場合）" if maybe == nums else
+                f"（第{_game_numbers(maybe)}戦は必要な場合）" if maybe else "")
+        items.append((f"第{_game_numbers(nums)}戦",
+                      f"{label}　{names.get(tid, '')}の本拠地{note}"))
     items.append(("優勝まで", "先に4勝した球団がワールドシリーズ優勝　最大7試合"))
-    items.append(("第5戦以降", "どちらも4勝に届いていない場合だけ開催"))
     if records:
         reason = _home_reason(home, away, records, names)
         if reason:

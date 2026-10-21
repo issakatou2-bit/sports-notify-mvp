@@ -184,10 +184,10 @@ class ScheduleTopic(unittest.TestCase):
                          [MIL, MIL, TB, TB, TB, MIL, MIL])
         t = wt.schedule_topic(2026, SCHEDULE, NAMES, RECORDS)
         items = dict(t["items"])
-        self.assertEqual(items["第1戦"], "10月24日（土）9時　ブリュワーズの本拠地")
-        self.assertEqual(items["第3戦"], "10月27日（火）9時　レイズの本拠地")
-        self.assertEqual(items["第6戦"], "10月31日（土）9時　ブリュワーズの本拠地")
-        self.assertEqual(items["本拠地の並び"],
+        self.assertEqual(items["第1・2戦"], "10月24日（土）・25日（日）9時　ブリュワーズの本拠地")
+        self.assertEqual(items["第3〜5戦"], "10月27日（火）〜29日（木）9時　レイズの本拠地（第5戦は必要な場合）")
+        self.assertEqual(items["第6・7戦"], "10月31日（土）・11月1日（日）9時　ブリュワーズの本拠地（必要な場合）")
+        self.assertEqual(wt.pattern_text(wt.home_order(SCHEDULE), NAMES),
                          "2-3-2　第1・2・6・7戦がブリュワーズ、第3〜5戦がレイズ")
         self.assertIn("4勝", items["優勝まで"])
         self.assertIn("第1戦はブリュワーズの本拠地", t["hook"])
@@ -202,7 +202,7 @@ class ScheduleTopic(unittest.TestCase):
     def test_undecided_date_is_written_as_undecided(self):
         games = [schedule_game(1, "", TB, MIL, tbd=True)] + SCHEDULE[1:]
         t = wt.schedule_topic(2026, games, NAMES)
-        self.assertTrue(dict(t["items"])["第1戦"].startswith("未定"))
+        self.assertTrue(dict(t["items"])["第1・2戦"].startswith("未定"))
 
 
 class Build(unittest.TestCase):
