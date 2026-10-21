@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-20T06:46:49.439466+00:00",
+  "updated_at": "2026-10-21T06:36:30.384968+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -30,6 +30,10 @@
         [
           "先発",
           "レイズ ペラルタ 5回と3分の1を1失点　ガーディアンズ アームストロング 1回を1失点"
+        ],
+        [
+          "ハイライトのコメント欄から",
+          "「豆知識：ワールドシリーズで両チームとも優勝経験なしって、1980年以来初めてだぞ!!! 🎉」"
         ]
       ],
       "japanese": [],
@@ -38,7 +42,13 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
+      "voice": {
+        "said": "豆知識：ワールドシリーズで両チームとも優勝経験なしって、1980年以来初めてだぞ!!! 🎉",
+        "text": "Fun Fact: This is the first time since 1980 both teams in the World Series never won before!!! 🎉",
+        "url": "https://www.youtube.com/watch?v=7-cD-1Wa5t0",
+        "likes": 1355,
+        "at": "2026-10-20T03:47:51Z"
+      },
       "headline": null,
       "game_pk": 849815,
       "game_v4": {
