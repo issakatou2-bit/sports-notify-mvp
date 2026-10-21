@@ -12994,5 +12994,27 @@
       "host_fallback_reason": "ui_unavailable",
       "privacy": "public"
     }
+  },
+  "soccer_results": {
+    "2026-10-20": {
+      "video_id": "-1WicwElsrA",
+      "url": "https://youtu.be/-1WicwElsrA",
+      "title": "【欧州サッカー】佐野海舟が先発｜ポルト 0-1 PSV 日本人選手の結果 #Shorts",
+      "published_at": "2026-10-21T01:18:11.316540+00:00",
+      "publish_at": "2026-10-21T01:45:00Z",
+      "host_assignment": {
+        "day": "2026-10-21",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    }
   }
 }
