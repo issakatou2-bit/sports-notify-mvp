@@ -66,9 +66,9 @@ class Accents(unittest.TestCase):
                 rows.append(dict(row,id=index,candidate_pattern='L'+'H'*(common.mora_count(row['reading'])-1),voices=[
                     dict(speaker=s,actual='unknown',current_file=f'{index}-{s}-current.wav',candidate_file=f'{index}-{s}-flat.wav') for s in (2,3)]))
         text=preview.render(rows)
-        self.assertEqual(text.count('<audio '),164)
-        self.assertEqual(text.count('type="radio"'),123)
-        self.assertIn('未確認41呼称',text)
+        self.assertEqual(text.count('<audio '),168)
+        self.assertEqual(text.count('type="radio"'),126)
+        self.assertIn('未確認42呼称',text)
         self.assertIn('localStorage.setItem',text)
         self.assertIn('unselected',text)
         self.assertIn('name-accent-picks2.json',text)
