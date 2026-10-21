@@ -20,11 +20,15 @@ def screen_text(text):
                    and not 0x1f3fb <= ord(ch) <= 0x1f3ff and (ch.isspace() or _supported(ch)))
 
 
-@functools.lru_cache(maxsize=128)
 def item(head, body, width, base, second, reply=False, height=900):
     return r3._item_card(head, body, width, base, second, quote_size=38 if reply else 52,
                          attribution_above=str(body).startswith('「'),
-                         quote_height=height if str(body).startswith('「') else None)
+                         quote_height=height)
+
+
+# カード本体の見た目を含むキャッシュへ一本化。
+item.cache_clear = r3._item_card.cache_clear
+item.cache_info = r3._item_card.cache_info
 
 
 def outro(t,spec,exclude,credit='音声: VOICEVOX:四国めたん　データ: MLB Stats API'):
@@ -153,6 +157,15 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
     for entry in layer.info.get('v3_layout',[]):
         a,b,c,e=entry['box']
         r3.record_box(im,entry['role'],(a+r3.LEFT-pad,b+top,c+r3.LEFT-pad,e+top),entry['text'])
+        saved=im.info['v3_layout'][-1]
+        for key in ('team_id','v4_font','v4_color'):
+            if key in entry:
+                saved[key]=entry[key]
+    for badge in layer.info.get('v4_badges',[]):
+        a,b,c,e=badge['box']
+        moved=dict(badge)
+        moved['box']=[a+r3.LEFT-pad,b+top,c+r3.LEFT-pad,e+top]
+        im.info.setdefault('v4_badges',[]).append(moved)
     if focus:
         im.info['v3_focus']=focus_info
     im.info['v3_card_contents']=layer.info.get('v3_card_contents',[])
