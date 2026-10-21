@@ -295,6 +295,8 @@ def main() -> int:
     # 1日の本数を決めて出す。両方が同じ時刻に動くので、ここでも選ぶと
     # 同じ回を2度上げる。
     todo = [k for k in todo if kind_of(k) != "season"]
+    # ワールドシリーズの話題（ws_）は本人が試作を見てから手で出す（10/21）。
+    todo = [k for k in todo if kind_of(k) != "ws"]
     import ui_voice_stock
     todo = ui_voice_stock.prioritize(todo)
 
