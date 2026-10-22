@@ -87,6 +87,25 @@ def screen_texts(image):
 
 
 class SoccerResultNames(unittest.TestCase):
+    def test_match_flash_own_goal_is_not_credited_as_a_normal_goal(self):
+        boards=json.loads((ROOT/'scripts/fixtures/soccer-results/scoreboards.json').read_text(encoding='utf8'))
+        summaries=json.loads((ROOT/'scripts/fixtures/soccer-results/summaries.json').read_text(encoding='utf8'))
+        built,errors=now.build(boards,summaries,now.results.utc('2026-09-20T17:15:00Z'))
+        self.assertFalse(errors)
+        data=built[0];goal=data['games'][0]['winner_goal']
+        goal.update(own_goal=True,japanese_goal=False)
+        for scorer,known in [('Unknown Player',False),('鎌田大地',True)]:
+            with self.subTest(scorer=scorer):
+                goal['scorer']=scorer
+                text=next(s['text'] for s in now.narration(data)['segments'] if s['kind']=='context')
+                self.assertIn('オウンゴール',text)
+                self.assertNotIn(scorer+'が得点',text)
+                if known:
+                    self.assertIn(scorer+'のオウンゴール',text)
+                else:
+                    self.assertNotIn(scorer,text)
+                    self.assertIn(facts.club_of(goal,data['games'][0])+'にオウンゴール',text)
+
     def test_only_confirmed_dictionary_names_are_used(self):
         goal=dict(minute='57',scorer='未確認カタカナ',side='away',own_goal=False,japanese_goal=False)
         game=dict(away=dict(name_jp='PSV'))
