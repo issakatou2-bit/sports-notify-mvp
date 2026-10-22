@@ -22,6 +22,14 @@ def check(document):
     import verify_numbers
     import game_fact_guard
     errors = verify_numbers.check(document) + game_fact_guard.check(document)
+    from article_freshness import fresh_articles
+    if document.get('date_jst'):
+        sources = [h for segment in document.get('segments') or []
+                   for h in (segment.get('meta') or {}).get('source_headlines') or []]
+        current = fresh_articles(sources, document['date_jst'])
+        for row in sources:
+            if not fresh_articles([row], document['date_jst'], corroborating=current):
+                errors.append('記事の公開日が古いか確認できない: ' + (row.get('title') or row.get('url') or '出典不明'))
     program = document.get('ps_program') or {}
     for index, segment in enumerate(document.get('segments') or [], 1):
         text = segment.get('text') or ''

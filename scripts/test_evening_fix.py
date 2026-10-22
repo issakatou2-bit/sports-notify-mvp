@@ -20,7 +20,7 @@ FIXTURE = json.loads((ROOT / 'scripts/fixtures/fact-guards/evening_20261011.json
 
 
 class EveningFixTests(unittest.TestCase):
-    def test_today_high_is_advisory_and_game_mismatch_is_confirmed(self):
+    def test_today_high_is_unconfirmed_and_game_mismatch_is_confirmed(self):
         document = json.loads((ROOT / 'scripts/fixtures/fact-guards/evening_20261012.json').read_text(encoding='utf-8'))
         reviewed, errors = sanity_material.assess(document['llm_issues'], [document])
         self.assertEqual(len(reviewed), 3)
@@ -45,7 +45,7 @@ class EveningFixTests(unittest.TestCase):
         workflow = (ROOT / '.github/workflows/morning_recap.yml').read_text(encoding='utf-8')
         self.assertLess(workflow.index('if [ ! -s "$VIDEO" ]'), workflow.index('echo "$mode: 投稿しました'))
 
-    def test_saved_high_false_positives_do_not_stop(self):
+    def test_saved_high_false_positives_remain_unconfirmed(self):
         reviewed, errors = sanity_material.assess(FIXTURE['llm_issues'], [FIXTURE])
         self.assertEqual(errors, [])
         self.assertEqual([item['confirmed'] for item in reviewed], [False, False])
@@ -63,10 +63,10 @@ class EveningFixTests(unittest.TestCase):
             document['segments'][index]['text'] = document['segments'][index]['text'].replace(old, new)
             self.assertIn('日本時間', ' '.join(sanity_material.check(document)))
 
-    def test_strict_cli_llm_only_continues_but_material_mismatch_stops(self):
+    def test_strict_cli_high_stops_even_without_confirmed_material_mismatch(self):
         with tempfile.TemporaryDirectory() as folder:
             narration, result = Path(folder) / 'narration.json', Path(folder) / 'sanity.json'
-            for mismatched, expected in [(False, 0), (True, 1)]:
+            for mismatched, expected in [(False, 1), (True, 1)]:
                 document = copy.deepcopy(FIXTURE)
                 if mismatched:
                     document['segments'][0]['text'] = document['segments'][0]['text'].replace('2勝3敗', '3勝2敗')
@@ -79,6 +79,7 @@ class EveningFixTests(unittest.TestCase):
                     self.assertEqual(sanity.main(), expected)
                 report = json.loads(result.read_text(encoding='utf-8'))
                 self.assertEqual(bool(report['contradictions']), mismatched)
+                self.assertTrue(report['blocking_issues'])
 
     def test_no_movie_skips_before_upload_and_records_reason(self):
         with tempfile.TemporaryDirectory() as folder:

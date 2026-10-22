@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ワールドシリーズの話題（ws_topics.py）。APIは使わず、小さな作り物で確かめる。"""
 import json
+import copy
 import pathlib
 import sys
 import unittest
@@ -221,7 +222,7 @@ class Build(unittest.TestCase):
     def test_pair_comes_from_the_postseason_schedule(self):
         def fake(path, **params):
             if path == "/schedule":
-                if int(params.get("season") or 0) == 2026:
+                if int(params.get("season") or 0) == 2026 and params.get("gameType") == "W":
                     return {"dates": [{"games": SCHEDULE}]}
                 return {"dates": []}
             if path == "/teams":
@@ -234,9 +235,161 @@ class Build(unittest.TestCase):
             return {"teams": [{"id": tid, "firstYearOfPlay": str(FIRST.get(tid, 1900))}]}
         topics = wt.build_topics(2026, get=fake, cache_path=None)
         self.assertEqual([t["key"] for t in topics],
-                         ["ws_title_history", "ws_schedule"])
+                         ["ws_title_history", "ws_schedule", "ws_season_matchup"])
         self.assertIn("ブリュワーズ", topics[0]["title"])
         self.assertIn("第1戦はブリュワーズの本拠地", topics[1]["hook"])
+
+
+def batting(pa=5, ab=4, hits=2, hr=1, rbi=2, sf=0):
+    return dict(plateAppearances=pa, atBats=ab, hits=hits, homeRuns=hr, rbi=rbi, sacFlies=sf)
+
+
+def person(pid, name, bat=None, pitch=None):
+    return dict(person=dict(id=pid, fullName=name), stats=dict(batting=bat or {}, pitching=pitch or {}))
+
+
+def ps_fixture():
+    games, boxes = [], {}
+    for i, kind in enumerate(("F", "D", "L", "W")):
+        g = game(i + 1, f"2026-10-{10 + i:02d}T00:00:00Z", TB, MIL, TB)
+        g["gameType"] = kind
+        games.append(g)
+        teams = {}
+        for side, tid in (("away", TB), ("home", MIL)):
+            pitch = dict(inningsPitched=("1.2", "3.1", "0.0", "0.0")[i],
+                         earnedRuns=1 if i < 2 else 0, strikeOuts=3 if i == 0 else 4 if i == 1 else 0)
+            players = {
+                "one": person(tid * 100, "Shohei Ohtani", batting()),
+                "two": person(tid * 100 + 1, "Aaron Judge", batting(hits=1, rbi=1)),
+                "small": person(tid * 100 + 2, "Small Sample", batting(pa=1, ab=1, hits=1, hr=0, rbi=0) if i == 0 else None),
+                "pitcher": person(tid * 100 + 3, "Yoshinobu Yamamoto", pitch=pitch),
+                "short": person(tid * 100 + 4, "Short Pitcher", pitch=dict(inningsPitched="0.1", earnedRuns=0, strikeOuts=1)),
+            }
+            teams[side] = dict(team=dict(id=tid), players=players)
+        boxes[g["gamePk"]] = dict(teams=teams)
+    return games, boxes
+
+
+class PlayerTopics(unittest.TestCase):
+    def fixture_get(self, path, **params):
+        games, boxes = ps_fixture()
+        if path == "/schedule":
+            if params.get("gameType") == wt.PS_TYPES:
+                live = copy.deepcopy(games[0])
+                live["gamePk"] = 500
+                live["status"]["abstractGameState"] = "Live"
+                regular = copy.deepcopy(games[0])
+                regular["gamePk"], regular["gameType"] = 501, "R"
+                return dict(dates=[dict(games=list(reversed(games)) + [games[0], live, regular])])
+            if params.get("gameType") == "R":
+                a = game(600, "2026-04-01T00:00:00Z", TB, MIL, TB)
+                a["gameType"] = "R"
+                a["teams"]["away"]["score"], a["teams"]["home"]["score"] = 4, 2
+                b = copy.deepcopy(a)
+                b["gamePk"] = 601
+                b["teams"]["away"]["score"], b["teams"]["home"]["score"] = 1, 3
+                return dict(dates=[dict(games=[a, b, a])])
+            return dict(dates=[dict(games=SCHEDULE)])
+        if path.endswith("/boxscore"):
+            return boxes[int(path.split("/")[2])]
+        if path.endswith("/roster"):
+            return dict(roster=[dict(person=dict(id=999, fullName="Yuki Matsui"))])
+        return {}
+
+    def build(self, **kw):
+        players, counts = wt.postseason_players(2026, (TB, MIL), self.fixture_get)
+        return wt.player_topics(2026, (TB, MIL), NAMES, players, counts, **kw)
+
+    def test_final_games_are_unique_and_regular_live_are_excluded(self):
+        players, counts = wt.postseason_players(2026, (TB, MIL), self.fixture_get)
+        self.assertEqual(counts, {TB: 4, MIL: 4})
+        ohtani = next(p for p in players if p["team"] == TB and p["name"] == "Shohei Ohtani")
+        self.assertEqual((ohtani["pa"], ohtani["hr"], ohtani["rbi"]), (20, 4, 8))
+
+    def test_outs_rates_and_pa_threshold(self):
+        self.assertEqual(wt.innings_outs("5.2"), 17)
+        self.assertEqual(wt.innings_outs("0.1"), 1)
+        with self.assertRaises(ValueError):
+            wt.innings_outs("5.3")
+        self.assertEqual(wt.rate_text(1, 0, 2), "—")
+        self.assertEqual(wt.rate_text(1, 8, 3), ".125")
+        topics = {t["key"]: t for t in self.build()}
+        avg = json.dumps(topics["ws_ps_average"], ensure_ascii=False)
+        self.assertIn(".500", avg)
+        self.assertIn("20打席", avg)
+        self.assertNotIn("Small Sample", avg)
+        era = json.dumps(topics["ws_ps_era"], ensure_ascii=False)
+        self.assertIn("防御率3.60", era)
+        self.assertIn("5回", era)
+        self.assertNotIn("Short Pitcher", era)
+        strikeouts = json.dumps(topics["ws_ps_strikeouts"], ensure_ascii=False)
+        self.assertIn("7奪三振", strikeouts)
+
+    def test_ties_at_top_boundary_are_all_kept(self):
+        topics = {t["key"]: t for t in self.build(top=1)}
+        self.assertEqual(len(topics["ws_ps_home_runs"]["items"]), 4)
+        self.assertEqual(len(topics["ws_ps_rbi"]["items"]), 2)
+
+    def test_minima_are_configurable_and_no_qualifiers_is_explicit(self):
+        topics = {t["key"]: t for t in self.build(min_pa=100, min_outs=100)}
+        self.assertEqual([b for _, b in topics["ws_ps_average"]["items"]], ["対象選手なし"] * 2)
+        self.assertEqual([b for _, b in topics["ws_ps_era"]["items"]], ["対象選手なし"] * 2)
+
+    def test_streaks_use_player_appearances_and_correct_walk_sf_rules(self):
+        hit = dict(hits=1, hr=1, ab=4, sf=0)
+        miss = dict(hits=0, hr=0, ab=4, sf=0)
+        walk = dict(hits=0, hr=0, ab=0, sf=0)
+        fly = dict(hits=0, hr=0, ab=0, sf=1)
+        self.assertEqual(wt.current_streak([hit, hit, walk], "hits"), 2)
+        self.assertEqual(wt.current_streak([hit, hit, walk], "hr"), 0)
+        self.assertEqual(wt.current_streak([hit, hit, fly], "hits"), 0)
+        self.assertEqual(wt.current_streak([hit, hit, miss, hit], "hits"), 1)
+        topics = {t["key"]: t for t in self.build()}
+        self.assertIn("4試合連続安打", json.dumps(topics["ws_ps_hits_streak"], ensure_ascii=False))
+        self.assertIn("4試合連続本塁打", json.dumps(topics["ws_ps_hr_streak"], ensure_ascii=False))
+
+    def test_head_to_head_includes_only_unique_regular_final_games(self):
+        t = wt.head_to_head_topic(2026, (TB, MIL), NAMES, self.fixture_get)
+        self.assertEqual([b for _, b in t["items"]], ["1勝1敗", "1勝1敗"])
+        self.assertIn("2試合", t["intro"])
+
+    def test_japanese_two_way_and_no_appearance_and_absence(self):
+        players, _ = wt.postseason_players(2026, (TB, MIL), self.fixture_get)
+        t = wt.japanese_topic(2026, (TB, MIL), NAMES, players, self.fixture_get)
+        text = json.dumps(t, ensure_ascii=False)
+        self.assertIn("大谷翔平", text)
+        self.assertIn("山本由伸", text)
+        self.assertIn("松井裕樹", text)
+        self.assertIn("打席・登板なし", text)
+        both = players[0]
+        both.update(pitching_games=1, outs=1, so=1, er=0)
+        t = wt.japanese_topic(2026, (TB, MIL), NAMES, [both], lambda *a, **k: dict(roster=[]))
+        self.assertIn("20打席", t["items"][0][1])
+        self.assertIn("1登板", t["items"][0][1])
+        self.assertIsNone(wt.japanese_topic(2026, (TB, MIL), NAMES, [], lambda *a, **k: dict(roster=[])))
+
+    def test_missing_boxscore_fails_instead_of_partial_leaderboard(self):
+        def get(path, **params):
+            if path == "/game/2/boxscore":
+                return {}
+            return self.fixture_get(path, **params)
+        with self.assertRaises(KeyError):
+            wt.postseason_players(2026, (TB, MIL), get)
+        with patch.object(wt, "load_history", return_value=[]):
+            topics = wt.build_topics(2026, get=get, cache_path=None)
+        self.assertEqual([t["key"] for t in topics], ["ws_schedule", "ws_season_matchup"])
+
+    def test_topic_contract_and_build_wiring(self):
+        with patch.object(wt, "load_history", return_value=[]):
+            topics = wt.build_topics(2026, get=self.fixture_get, cache_path=None)
+        keys = [t["key"] for t in topics]
+        self.assertIn("ws_japanese_players", keys)
+        self.assertIn("ws_ps_average", keys)
+        for t in topics:
+            self.assertTrue(t["ws"])
+            self.assertTrue(t["key"].startswith("ws_"))
+            for field in ("hook", "heading", "intro", "items", "title"):
+                self.assertTrue(t[field])
 
 
 if __name__ == "__main__":

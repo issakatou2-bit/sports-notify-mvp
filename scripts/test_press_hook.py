@@ -1,6 +1,4 @@
 import copy
-import json
-from pathlib import Path
 import sys
 import unittest
 from unittest.mock import patch
@@ -8,19 +6,18 @@ from unittest.mock import patch
 import generate_morning_short as g
 import hook_ab
 import press_hook
+from hook_ab_test_support import DAY, HookFixtureTestCase, press_data
 
 
-class PressHookTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.data=json.loads(Path('data/morning_recap.json').read_text(encoding='utf-8'))
-        cls.data['reporters']=json.loads(Path('data/local_reporters.json').read_text(encoding='utf-8'))
-        with patch.dict('os.environ',{'COLLESPO_PRESS_DESIGN':'legacy'}):
-            cls.a=g.build_narration(cls.data,'press')
-        cls.b=hook_ab.prepare(cls.a,'morning_press','2026-10-23',preview='B')
-
+class PressHookTest(HookFixtureTestCase):
     def setUp(self):
+        super().setUp()
+        self.data=press_data()
+        self.a=g.build_narration(self.data,'press')
+        self.b=hook_ab.prepare(self.a,'morning_press',DAY,preview='B')
+        self.assertEqual(self.b['hook_ab']['ab_variant'],'B')
         g.set_spoken('')
+        self.addCleanup(g.set_spoken,'')
 
     def frame(self,t,meta=None):
         return g.render_intro(min(1,t),meta or self.b['segments'][0]['meta'],[],
@@ -71,7 +68,8 @@ class PressHookTest(unittest.TestCase):
                 self.assertEqual(self.frame(t,disabled['segments'][0]['meta']).tobytes(),expected)
 
     def test_caption_does_not_leave_first_digit_of_next_sentence(self):
-        segment=next(s for s in self.a['segments'] if s['kind']=='reporters')
+        # 90字目が次文の「1」になる境界を、日々変わる投稿から切り離す。
+        segment={'text':'あ'*(g.SPOKEN_MAX-2)+'。1年前の今日。'}
         original=segment['text']
         self.assertTrue(original[:g.SPOKEN_MAX].endswith('。1'))
         caption=press_hook.caption_prefix(original,g.SPOKEN_MAX)

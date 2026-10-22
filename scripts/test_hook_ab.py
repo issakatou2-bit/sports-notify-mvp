@@ -8,17 +8,22 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import hook_ab as h
+from hook_ab_test_support import HookFixtureTestCase, press_data, season_spec
 
 
-class HookABTest(unittest.TestCase):
+class HookABTest(HookFixtureTestCase):
     def test_assignment_off_and_date_blocks(self):
         with patch.dict('os.environ', {}, clear=True):
             for kind in h.KINDS:
                 self.assertEqual(h.assignment(kind, '2026-10-23')['ab_variant'], 'A')
         import host_split
+        expected = {
+            'morning_press': ['A', 'B', 'B', 'A', 'A', 'B', 'B'],
+            'asset:season_player': ['B', 'B', 'A', 'A', 'B', 'B', 'A'],
+        }
         for kind in h.KINDS:
             days = [h.assignment(kind, f'2026-10-{d}', True)['ab_variant'] for d in range(23, 30)]
-            self.assertEqual(days, [h.assignment(kind, f'2026-10-{d}', True)['ab_variant'] for d in range(23, 30)])
+            self.assertEqual(days, expected[kind])
             self.assertEqual(days[:4].count('A'), 2)
             self.assertEqual(days[:4].count('B'), 2)
             # 既存司会の交互割付とA/Bが同じ並びにならない。
@@ -30,13 +35,54 @@ class HookABTest(unittest.TestCase):
         self.assertEqual(h.assignment(h.KINDS[0], '2026-10-22', True)['ab_variant'], 'A')
         self.assertEqual(h.publication_day('2026-10-22T16:00:00Z'), '2026-10-23')
 
+    def test_environment_switch_controls_real_assignment(self):
+        import generate_morning_short as g
+        source = g.build_narration(press_data(), 'press')
+        for setting in ('', 'off', 'ON', 'on'):
+            for day, variant in (('2026-10-22', 'A'), ('2026-10-23', 'A'), ('2026-10-24', 'B')):
+                with self.subTest(setting=setting, day=day), patch.dict('os.environ', {'COLLESPO_HOOK_AB': setting}):
+                    result = h.prepare(source, 'morning_press', day)
+                    expected = variant if setting == 'on' else 'A'
+                    self.assertEqual(result['hook_ab']['ab_variant'], expected)
+                    self.assertEqual(result['hook_ab']['ab_enabled'], setting == 'on' and day >= '2026-10-23')
+                    if expected == 'A':
+                        self.assertEqual(result['segments'], source['segments'])
+                    else:
+                        self.assertTrue(result['segments'][0]['meta']['press_hook'])
+        self.assertNotIn('hook_ab', source)
+
+    def test_default_publication_day_uses_frozen_jst_clock(self):
+        import generate_morning_short as g
+        day = self.now.astimezone(h.JST).date().isoformat()
+        self.assertEqual(h.publication_day(), day)
+        self.assertEqual(h.publication_day('18:00'), day)
+        source = g.build_narration(press_data(), 'press')
+        with patch.dict('os.environ', {'COLLESPO_HOOK_AB': 'on'}):
+            result = h.prepare(source, 'morning_press')
+        plan = result['hook_ab']
+        for key, value in h.assignment('morning_press', day, True).items():
+            self.assertEqual(plan[key], value)
+
+    def test_unrelated_material_keeps_a_in_legacy_and_modern(self):
+        import generate_morning_short as g
+        import review_render_v3 as r3
+        for design, look in (('legacy', 'v3'), ('v3', 'v3'), ('v3', 'v4')):
+            with self.subTest(design=design, look=look), patch.dict('os.environ', {'COLLESPO_PRESS_DESIGN': design}), patch.object(r3, 'LOOK', look):
+                data = press_data()
+                data['reporters']['headlines'][2]['jp'] = '大谷翔平のユニフォームが高額で落札された'
+                data['reporters']['posts'] = []
+                source = g.build_narration(data, 'press')
+                result = h.prepare(source, 'morning_press', '2026-10-24', preview='B')
+                self.assertEqual(result['hook_ab']['ab_variant'], 'A')
+                self.assertFalse(result['hook_ab']['ab_content_eligible'])
+                self.assertIn('ab_fallback_reason', result['hook_ab'])
+                self.assertEqual(result['segments'], source['segments'])
+
     def test_press_preserves_all_quotes_and_factual_validation(self):
         import daily_v3
         import generate_morning_short as g
         import review_render_v3 as r3
-        reporters = json.loads(Path('data/local_reporters.json').read_text(encoding='utf-8'))
-        data = json.loads(Path('data/morning_recap.json').read_text(encoding='utf-8'))
-        data['reporters'] = reporters
+        data = press_data()
         for look in ('v3', 'v4'):
             with self.subTest(look=look), patch.dict('os.environ', {'COLLESPO_PRESS_DESIGN':'v3'}), patch.object(r3, 'LOOK', look):
                 a = g.build_narration(data, 'press')
@@ -47,6 +93,10 @@ class HookABTest(unittest.TestCase):
                 self.assertCountEqual([(s['kind'], s['meta']) for s in a['segments']],
                     [(s['kind'], {k:v for k,v in s['meta'].items() if k!='press_hook'}) for s in b['segments']])
                 self.assertTrue(b['segments'][0]['meta']['press_hook'])
+                self.assertEqual(b['segments'][1]['kind'], 'headlines')
+                self.assertTrue(any('大谷翔平' in row['said'] and '感謝' in row['said']
+                                    for row in b['segments'][1]['meta']['quote_rows']
+                                    if not row.get('fact') and row.get('read', True)))
                 self.assertNotIn('press_hook',a['segments'][0]['meta'])
                 self.assertEqual(a['segments'][-1], b['segments'][-1])
                 # 既存の独立した原材料照合をA/B双方に実行。
@@ -61,8 +111,9 @@ class HookABTest(unittest.TestCase):
         import generate_asset_video as g
         import review_render_v3 as r3
         import v3_rules
-        topic = next(k for k in g.LIST_TOPICS if k.startswith('season_player_'))
-        spec = copy.deepcopy(g.LIST_TOPICS[topic])
+        topic = 'season_player_test'
+        spec = season_spec()
+        self.enterContext(patch.object(g, 'LIST_TOPICS', {topic: copy.deepcopy(spec)}))
         a = g.build_narration(topic)
         b = h.prepare(a, 'asset:season_player', '2026-10-23', spec, preview='B')
         self.assertEqual(b['hook_ab']['ab_variant'], 'B')
@@ -95,14 +146,14 @@ class HookABTest(unittest.TestCase):
 
     def test_legacy_quotes_remain_complete_and_in_sync(self):
         import generate_morning_short as g
-        data=json.loads(Path('data/morning_recap.json').read_text(encoding='utf-8'))
-        data['reporters']=json.loads(Path('data/local_reporters.json').read_text(encoding='utf-8'))
+        data=press_data()
         with patch.dict('os.environ', {'COLLESPO_PRESS_DESIGN':'legacy'}):
             a=g.build_narration(data,'press')
         b=h.prepare(a,'morning_press','2026-10-23',preview='B')
         self.assertEqual(b['hook_ab']['ab_variant'],'B')
         original=next(s for s in a['segments'] if s['kind']=='headlines')
         changed=b['segments'][1]
+        self.assertEqual(changed['meta']['picked'],[2,1])
         self.assertCountEqual(original['meta']['picked'],changed['meta']['picked'])
         self.assertCountEqual(original['meta']['source_headlines'],changed['meta']['source_headlines'])
         self.assertEqual(a['segments'][-1],b['segments'][-1])

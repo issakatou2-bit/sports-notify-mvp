@@ -78,13 +78,14 @@ def fetch_recent_highlights(api_key: str, hours: int = 30,
     # 投稿一覧のプレイリストIDは、チャンネルIDの2文字目をUに変えたもの。
     # channels.list を1回叩いても取れるが、この対応は公開仕様。
     uploads = "UU" + cid[2:]
-    after = datetime.now(timezone.utc) - timedelta(hours=hours)
+    now = datetime.now(timezone.utc)
+    after = now - timedelta(hours=min(hours, 48))
 
     items = []
     try:
         resp = requests.get(
             f"{YOUTUBE_API}/playlistItems",
-            params={"key": api_key, "part": "snippet",
+            params={"key": api_key, "part": "snippet,contentDetails",
                     "playlistId": uploads, "maxResults": 50},
             timeout=20)
         resp.raise_for_status()
@@ -95,14 +96,15 @@ def fetch_recent_highlights(api_key: str, hours: int = 30,
     for it in resp.json().get("items", []):
         sn = it.get("snippet") or {}
         vid = (sn.get("resourceId") or {}).get("videoId")
-        pub = sn.get("publishedAt", "")
+        # snippet.publishedAtはプレイリストへ追加された日時で、元動画の公開日ではない。
+        pub = (it.get('contentDetails') or {}).get('videoPublishedAt') or ''
         if not vid or not pub:
             continue
         try:
             when = datetime.fromisoformat(pub.replace("Z", "+00:00"))
         except ValueError:
             continue
-        if when < after:
+        if not when.tzinfo or not after <= when <= now:
             continue
         # 公式は試合以外(特集・記者会見)も出す。ランキングに混ぜない。
         if "Highlights" not in sn.get("title", ""):
@@ -790,7 +792,8 @@ def load(path: str = "data/mlb_buzz.json", max_age_hours: int = 30) -> list:
     if age > max_age_hours:
         print(f"[info] 注目度データが古いため使いません({age:.0f}時間前)")
         return []
-    return data.get("videos") or []
+    from article_freshness import fresh_articles
+    return fresh_articles(data.get("videos") or [])
 
 
 def main():
