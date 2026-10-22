@@ -19,7 +19,7 @@ import ui_voice_stock as stock
 import ui_voice_worker as worker
 from test_host_split import day_for
 import test_ui_voice_queue as fixtures
-from test_ui_voice_queue import AT, MemoryQueue, SCRIPT, portraits, tone
+from test_ui_voice_queue import AT, MemoryQueue, SCRIPT, portraits, stock_sleep, tone
 
 
 class PortraitFallback(unittest.TestCase):
@@ -59,11 +59,12 @@ class PortraitFallback(unittest.TestCase):
             if failure == 'missing':
                 del queue.files[ref]
             elif failure == 'corrupt':
-                queue.files[ref] = queue.files[ref][:-1]+b'!'
+                # 末尾が元から'!'でも必ず壊れるよう、1ビット反転する。
+                queue.files[ref] = queue.files[ref][:-1]+bytes([queue.files[ref][-1] ^ 1])
 
         with patch.object(q, 'GitQueue', return_value=queue), \
              patch.object(stock, 'asset_context', return_value=None), \
-             patch.object(stock.time, 'sleep', side_effect=deliver), \
+             stock_sleep(deliver), \
              patch.object(sn, 'engine_available', return_value=True), \
              patch.object(sn, 'synth_one', side_effect=lambda text, speaker, out: (tone(text, out) or True)) as vv:
             sn.main(['--narration', str(path), '--out-dir', str(audio)])
