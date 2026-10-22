@@ -1,10 +1,12 @@
 """資産動画の実際の予約引数を、アップロードせず公開設定ごとに検査する。"""
 import os
+import json
 from pathlib import Path
 import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 import yaml
 
@@ -12,6 +14,20 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssetPrivacy(unittest.TestCase):
+    def test_ab_record_without_host_tracking_preserves_site_visibility(self):
+        import upload_youtube as upload
+        import video_visibility
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'published.json'
+            for privacy in ('public', 'private', 'unlisted'):
+                with self.subTest(privacy=privacy):
+                    upload.record_video('asset', 'season_player_fixture', 'fixture-id', '試験',
+                                        path=str(path), privacy=privacy,
+                                        experiment={'ab_enabled': False, 'ab_variant': 'A'})
+                    row = json.loads(path.read_text(encoding='utf-8'))['asset']['season_player_fixture']
+                    self.assertEqual(row['privacy'], privacy)
+                    self.assertEqual(video_visibility.is_public(row), privacy == 'public')
+
     def test_schedule_arguments_follow_requested_privacy(self):
         bash = shutil.which('bash')
         self.assertIsNotNone(bash, '本番の予約引数の検査にはbashが必要')
