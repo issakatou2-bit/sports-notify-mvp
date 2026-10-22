@@ -641,7 +641,7 @@ def load_published(path: str = PUBLISHED_PATH) -> dict:
 
 
 def record_published(topic: str, video_id: str, privacy: str,
-                     path: str = PUBLISHED_PATH) -> None:
+                     path: str = PUBLISHED_PATH, experiment: dict | None = None) -> None:
     """
     投稿できたトピックを控える。
 
@@ -665,6 +665,8 @@ def record_published(topic: str, video_id: str, privacy: str,
         "privacy": privacy,
         "published_at": datetime.now(timezone.utc).isoformat(),
     }
+    if experiment:
+        assets[topic].update(experiment)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps({"assets": assets}, ensure_ascii=False, indent=2),
                  encoding="utf-8")
@@ -802,7 +804,8 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
 def record_video(kind: str, date_key: str, video_id: str,
                  title: str, path: str = VIDEOS_PATH,
                  publish_at: str | None = None, preview_binding: dict | None = None,
-                 host_tracking: dict | None = None, privacy: str | None = None) -> None:
+                 host_tracking: dict | None = None, privacy: str | None = None,
+                 experiment: dict | None = None) -> None:
     """
     その日の動画のIDを残す。
 
@@ -831,6 +834,8 @@ def record_video(kind: str, date_key: str, video_id: str,
         entry["publish_at"] = publish_at
     if preview_binding is not None:
         entry['preview_binding']=preview_binding
+    if experiment:
+        entry.update(experiment)
     if host_tracking:
         entry.update(host_tracking)
         entry['privacy'] = privacy or 'public'
@@ -2221,6 +2226,8 @@ def main():
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)
+    import hook_ab
+    experiment = hook_ab.publication(args.video, publish_at)
     body["status"] = {
         "privacyStatus": "private" if publish_at else args.privacy,
         "selfDeclaredMadeForKids": False,
@@ -2263,12 +2270,12 @@ def main():
             print(f"[info] サムネイル画像が無いためスキップします: {thumb}")
 
         if args.kind == "asset" and vid:
-            record_published(args.asset_topic or "mlb_abbr", vid, args.privacy)
+            record_published(args.asset_topic or "mlb_abbr", vid, args.privacy, experiment=experiment)
             import host_split
             tracking = host_split.publication(args.video, args.narration)
-            if tracking:
+            if tracking or experiment:
                 record_video('asset', args.asset_topic or 'mlb_abbr', vid, body['snippet']['title'],
-                             publish_at=publish_at, host_tracking=tracking, privacy=args.privacy)
+                             publish_at=publish_at, host_tracking=tracking, privacy=args.privacy, experiment=experiment)
         elif vid:
             # 日付ものは、アーカイブページから辿れるよう日付で記録する。
             # キーはUTC日付にする。archive/YYYY-MM-DD.json と同じ決め方なので、
@@ -2290,7 +2297,8 @@ def main():
                     print('[omit] 予告の材料/原稿hashを記録できません')
             record_video(rec_kind, key, vid, body["snippet"]["title"],
                          publish_at=publish_at,preview_binding=preview_binding,
-                         host_tracking=__import__('host_split').publication(args.video, args.narration), privacy=args.privacy)
+                         host_tracking=__import__('host_split').publication(args.video, args.narration), privacy=args.privacy,
+                         experiment=experiment)
             # 長編を上げたら、同じ日のコメント欄ショートから繋ぐ。
             # ショートにはフィードがあるが、長編には無い。
             # 人が来ているほうから、来ていないほうへ道を作る。

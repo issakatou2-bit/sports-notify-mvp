@@ -4371,6 +4371,9 @@ def main():
             at=next_line.publication_time(recap_day(data),clock)
             data['next_line']=next_line.acquire(MODE_KIND.get(args.mode,''),at,players[0].get('team_id') if players else None,args.next_schedule)
         narration = build_narration(data, args.mode)
+        if args.mode == 'press':
+            import hook_ab
+            narration = hook_ab.prepare(narration, 'morning_press', hook_ab.publication_day(args.publish_at))
     bn_scenes = bignumber_scenes(data, narration, args.mode)
     import daily_v3
     daily_design = daily_v3.prepare(data, narration, args.mode)
@@ -4533,6 +4536,8 @@ def main():
     last_frame = None
     bn_time = 0.0
     duo_scene_elapsed=0.0
+    import hook_ab
+    hook_scenes = hook_ab.SceneRecorder()
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
             set_step(seg_i, len(segs))
@@ -4564,6 +4569,8 @@ def main():
                 if daily_design:
                     speech = float(seg.get('duration') or dur)
                     im = daily_v3.frame(k / FPS, narration["segments"][seg_i], daily_design, speech)
+                    if narration.get('hook_ab'):
+                        hook_scenes.observe(im, total, FPS, meta.get('screen', seg_i))
                     same=(seg_i>0 and meta.get('duo') and meta.get('screen')==
                           (segs[seg_i-1].get('meta') or {}).get('screen'))
                     cached = video_common.short_transition(None if same else last_frame,im,k,FPS,r3.LOOK=='v4')
@@ -4712,6 +4719,8 @@ def main():
 
     secs = total / FPS
     host_split.bind_video(video_path, args.audio_dir)
+    import hook_ab
+    hook_ab.bind_video(video_path, narration, segs, durations, FPS, hook_scenes.starts)
     print(f"[info] 夕方のショートを生成しました: {video_path} "
           f"({video_path.stat().st_size / 1024 / 1024:.1f}MB, {secs:.0f}秒)")
 
