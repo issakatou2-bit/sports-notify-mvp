@@ -13,13 +13,23 @@ from unittest.mock import patch
 import next_asset as na
 
 
+NOW = datetime(2026, 10, 22, 23, 59, 59, tzinfo=timezone(timedelta(hours=9)))
+
+
+class FrozenClock(datetime):
+    @classmethod
+    def now(cls, tz=None):
+        return NOW.astimezone(tz) if tz else NOW.replace(tzinfo=None)
+
+
 class DailyLimitTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.ledger = Path(self.tmp.name) / "published.json"
         self.output = Path(self.tmp.name) / "output"
-        self.now = datetime.now(timezone(timedelta(hours=9)))
+        self.now = NOW
+        self.enterContext(patch('datetime.datetime', FrozenClock))
         self.write({})
 
     def write(self, assets):
