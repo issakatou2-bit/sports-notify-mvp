@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-10-21T10:15:05.260791+00:00",
-  "date_jst": "2026-10-21",
-  "source_at": "2026-10-21T04:12:10.118323+00:00",
+  "updated_at": "2026-10-22T10:04:31.534486+00:00",
+  "date_jst": "2026-10-22",
+  "source_at": "2026-10-22T07:03:43.798369+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -174,7 +174,7 @@
           "position": 14,
           "points": 7,
           "out": true,
-          "out_note": "Calf injury - Expected back 25 Oct",
+          "out_note": "Calf injury - Expected back 8 Nov",
           "lines": [
             {
               "line": 5,
@@ -360,7 +360,7 @@
     },
     {
       "code": "PD",
-      "round": 7,
+      "round": 8,
       "round_complete": false,
       "name_jp": "ラ・リーガ",
       "played": 9,
@@ -1272,8 +1272,8 @@
     },
     {
       "code": "CL",
-      "round": 2,
-      "round_complete": false,
+      "round": 3,
+      "round_complete": true,
       "name_jp": "チャンピオンズリーグ",
       "played": 3,
       "clubs": 36,
@@ -1286,44 +1286,44 @@
           "inside": [
             {
               "position": 7,
-              "team": "スポルティング",
-              "team_en": "Sporting Clube de Portugal",
-              "played": 2,
-              "points": 6,
-              "gf": 5,
-              "ga": 1,
+              "team": "アーセナル",
+              "team_en": "Arsenal FC",
+              "played": 3,
+              "points": 7,
+              "gf": 6,
+              "ga": 2,
               "jp": []
             },
             {
               "position": 8,
-              "team": "アーセナル",
-              "team_en": "Arsenal FC",
-              "played": 2,
+              "team": "バルセロナ",
+              "team_en": "FC Barcelona",
+              "played": 3,
               "points": 6,
-              "gf": 4,
-              "ga": 0,
+              "gf": 11,
+              "ga": 6,
               "jp": []
             }
           ],
           "outside": [
             {
               "position": 9,
-              "team": "レアル・マドリード",
-              "team_en": "Real Madrid CF",
-              "played": 2,
+              "team": "コモ",
+              "team_en": "Como 1907",
+              "played": 3,
               "points": 6,
-              "gf": 6,
-              "ga": 4,
+              "gf": 10,
+              "ga": 5,
               "jp": []
             },
             {
               "position": 10,
-              "team": "ベティス",
-              "team_en": "Real Betis Balompié",
-              "played": 2,
+              "team": "マンチェスターC",
+              "team_en": "Manchester City FC",
+              "played": 3,
               "points": 6,
-              "gf": 6,
-              "ga": 4,
+              "gf": 9,
+              "ga": 5,
               "jp": []
             }
           ],
@@ -1341,22 +1341,22 @@
           "inside": [
             {
               "position": 23,
-              "team": "ライプツィヒ",
-              "team_en": "RB Leipzig",
-              "played": 2,
+              "team": "ガラタサライ",
+              "team_en": "Galatasaray SK",
+              "played": 3,
               "points": 3,
-              "gf": 2,
-              "ga": 4,
+              "gf": 6,
+              "ga": 9,
               "jp": []
             },
             {
               "position": 24,
-              "team": "フェイエノールト",
-              "team_en": "Feyenoord Rotterdam",
-              "played": 2,
+              "team": "LASKリンツ",
+              "team_en": "LASK Linz",
+              "played": 3,
               "points": 3,
-              "gf": 4,
-              "ga": 7,
+              "gf": 6,
+              "ga": 9,
               "jp": []
             }
           ],
@@ -1373,12 +1373,12 @@
             },
             {
               "position": 26,
-              "team": "ボドー／グリムト",
-              "team_en": "FK Bodø/Glimt",
+              "team": "フェイエノールト",
+              "team_en": "Feyenoord Rotterdam",
               "played": 3,
               "points": 3,
               "gf": 4,
-              "ga": 9,
+              "ga": 8,
               "jp": []
             }
           ],
@@ -1394,7 +1394,7 @@
     }
   ],
   "picked": [
-    "SA"
+    "PD"
   ],
   "moved_count": 0,
   "have_before": true
