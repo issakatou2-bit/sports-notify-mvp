@@ -1,0 +1,27 @@
+{
+  "fixture_note": "長編の固定試験専用。架空の投手と指標。",
+  "morning_recap.json": {
+    "date": "2026-10-21",
+    "date_jst": "2026-10-22",
+    "players": [
+      {
+        "name": "試験投手",
+        "team_jp": "試験球団",
+        "type": "pitcher",
+        "ip": "7.0",
+        "hits": 3,
+        "er": 0,
+        "so": 10,
+        "bb": 1
+      }
+    ]
+  },
+  "rarity.json": {
+    "date_jst": "2026-10-22",
+    "players": {
+      "試験投手": {
+        "items": [{"label": "試験指標", "ties": 2}]
+      }
+    }
+  }
+}
