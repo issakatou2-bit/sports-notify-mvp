@@ -49,11 +49,12 @@ def _press(segments):
     subjects = _subjects(lead)
     # 選手名だけ一致する別ニュース（例：敗退と競売）を混ぜない。
     themes = [w for w in ('敗退', '進出', '優勝', '記録', '最高', '最多', '移籍', '感謝', '負傷', '復帰') if w in lead]
+    # 表示履歴(read=False)は、その区間で説明する引用ではない。
     target = next((i for i, seg in enumerate(segments[1:-1], 1)
                    if any(subjects & _subjects(r.get('said', ''))
                           and any(w in r.get('said', '') for w in themes)
                           for r in (seg.get('meta') or {}).get('quote_rows', [])
-                          if not r.get('fact'))), None)
+                          if not r.get('fact') and r.get('read', True))), None)
     if target is None:
         return '同じ主役・論点の説明がないためAを維持'
     # 本文の引用も出典もそのまま。日付は画面/公開記録に残す。
