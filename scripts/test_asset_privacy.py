@@ -6,28 +6,40 @@ import shutil
 import subprocess
 import sys
 import unittest
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssetPrivacy(unittest.TestCase):
     def test_schedule_arguments_follow_requested_privacy(self):
-        workflow = (ROOT / '.github/workflows/asset_video.yml').read_text(encoding='utf-8')
-        block = re.search(r'^ +PUB=.*\n +if \[.*PRIVACY.*\n', workflow, re.M)
-        self.assertIsNotNone(block)
         bash = shutil.which('bash')
         self.assertIsNotNone(bash, '本番の予約引数の検査にはbashが必要')
-        for privacy in ('public', 'private', 'unlisted', ''):
-            with self.subTest(privacy=privacy):
-                # 実際の2行だけを実行。送信処理や鍵を渡さない。
-                script = block[0] + '\nprintf "<%s>\\n" "${PUB[@]}"'
-                result = subprocess.run([bash, '--noprofile', '--norc', '-c', script],
-                                        env={'PATH': os.defpath, 'PRIVACY': privacy,
-                                             **({'SYSTEMROOT': os.environ['SYSTEMROOT']}
-                                                if 'SYSTEMROOT' in os.environ else {})},
-                                        capture_output=True, text=True, check=True)
-                expected = '<--publish-at>\n<18:30>\n' if privacy in ('public', '') else '<>\n'
-                self.assertEqual(result.stdout, expected)
+        for name in ('asset_video', 'season_review'):
+            workflow = yaml.safe_load((ROOT / f'.github/workflows/{name}.yml').read_text(encoding='utf-8'))
+            body = next(step['run'] for job in workflow['jobs'].values() for step in job['steps']
+                        if 'python scripts/upload_youtube.py' in step.get('run', ''))
+            self.assertIn('source scripts/asset_publish_args.sh', body)
+            binding = re.search(r'asset_publication_args [^\n]*', body)
+            upload = re.search(r'(?m)^[ \t]*python scripts/upload_youtube\.py(?:[^\n]*\\\n)*[^\n]*', body)
+            self.assertIsNotNone(binding)
+            self.assertIsNotNone(upload)
+            for privacy in ('public', 'private', 'unlisted', ''):
+                with self.subTest(workflow=name, privacy=privacy):
+                    # 本番の引数組立と呼出行を使い、pythonだけを表示用関数にする。
+                    script = ('source scripts/asset_publish_args.sh\n'
+                              'python() { printf "%s\\n" "$@"; }\n' + binding[0] + '\n' + upload[0])
+                    result = subprocess.run([bash, '--noprofile', '--norc', '-c', script], cwd=ROOT,
+                                            env={'PATH': os.defpath, 'PRIVACY': privacy, 'AT': '18:30',
+                                                 't': 'fixture', 'FORCE': '',
+                                                 **({'SYSTEMROOT': os.environ['SYSTEMROOT']}
+                                                    if 'SYSTEMROOT' in os.environ else {})},
+                                            capture_output=True, text=True, check=True)
+                    argv = result.stdout.splitlines()
+                    self.assertEqual('--publish-at' in argv, privacy in ('public', ''))
+                    self.assertEqual(argv[argv.index('--privacy') + 1], privacy or 'public')
+                    if '--publish-at' in argv:
+                        self.assertEqual(argv[argv.index('--publish-at') + 1], '18:30')
 
 
 if __name__ == '__main__':
