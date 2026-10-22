@@ -45,18 +45,20 @@ def completion_time(comp,summary):
 
 
 def resolve_player(rows,name_en):
-    """姓と名の頭を両方照合し、1人に決まる場合だけ使う。"""
-    parts=name_en.split();surname=ne.normalize_club(parts[-1]);initial=parts[0][0].lower()
+    """姓と名を照合し、短縮名も本人名簿で1人に決まる場合だけ使う。"""
+    from soccer_player_identity import same_given_name
+    parts=(name_en or '').split()
+    if len(parts)<2:return None
+    surname=ne.normalize_club(parts[-1])
     matches=[]
     for row in rows:
         athlete=row.get('athlete') or {}
         full=(athlete.get('fullName') or athlete.get('displayName') or '').split()
         last=athlete.get('lastName') or (full[-1] if full else '')
-        given=next((x for x in full if ne.normalize_club(x)!=ne.normalize_club(last)),'')
+        given=athlete.get('firstName') or next((x for x in full if ne.normalize_club(x)!=ne.normalize_club(last)),'')
         # 名が頭文字だけ（D. Maeda）のときだけ頭文字で照合する。名が全部あるなら全部で比べる
         # （10/21 PSV の Kodai Sano を Kaishu Sano＝佐野海舟と取り違えた。兄弟で頭文字が同じ）。
-        g=given.rstrip('.').lower()
-        same=(g==initial) if len(g)<=1 else ne.normalize_club(given)==ne.normalize_club(parts[0])
+        same=same_given_name(given,name_en)
         if ne.normalize_club(last)==surname and same:matches.append(row)
     return matches[0] if len(matches)==1 else None
 

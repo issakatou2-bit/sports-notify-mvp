@@ -218,7 +218,7 @@ class PlayerIdentity(unittest.TestCase):
         self.assertIsNone(week.resolve([self.row('Kodai')], 'Kaishu Sano'))
         self.assertIsNone(week.resolve([self.row('Kaishun')], 'Kaishu Sano'))
         self.assertEqual(week.resolve([self.row('Kaishu')], 'Kaishu Sano'), 1)
-        self.assertEqual(week.resolve([self.row('K.')], 'Kaishu Sano'), 1)
+        self.assertIsNone(week.resolve([self.row('K.')], 'Kaishu Sano'))
         self.assertIsNone(week.resolve([self.row('')], 'Kaishu Sano'))
         self.assertIsNone(week.resolve([self.row('K.'), dict(self.row('Kodai'), id=2)], 'K. Sano'))
         self.assertIsNone(week.resolve([], ''))

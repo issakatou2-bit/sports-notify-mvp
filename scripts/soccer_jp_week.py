@@ -81,13 +81,9 @@ def resolve(elements: list, name_en: str):
              if sur and sur in ((e.get("web_name") or "").strip(),
                                 (e.get("second_name") or "").strip())]
     if first:
-        def same_given(element):
-            given = (element.get('first_name') or '').casefold().rstrip('.')
-            if not given:
-                return False
-            return given == first or (min(len(given), len(first)) == 1 and given[0] == first[0])
+        from soccer_player_identity import same_given_name
         cands = [e for e in cands
-                 if same_given(e)]
+                 if same_given_name(e.get('first_name'), name_en)]
     return cands[0].get("id") if len(cands) == 1 else None
 
 
