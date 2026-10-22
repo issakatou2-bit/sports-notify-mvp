@@ -290,7 +290,8 @@ def headline(rows: list) -> str:
     win = [r for r in rows if r["result"] == "勝ち" and not sat_out(r)]
     if win:
         return f"{win[0]['name']}の{win[0]['club']}が勝利"
-    return f"欧州の日本人選手{len(rows)}人の週末" if rows else ""
+    people = sum(len(r.get('players') or [r]) for r in rows)
+    return f"欧州の日本人選手{people}人の週末" if rows else ""
 
 
 def finished(matches: dict) -> dict:

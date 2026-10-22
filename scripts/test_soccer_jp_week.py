@@ -91,6 +91,12 @@ check("出ていないと分かっている選手は見出しにしない",
                   if x["name"] != "鎌田大地"]),
       "久保建英のレアル・ソシエダが勝利")
 check("誰もいない日は空", w.headline([]), "")
+check("同じクラブにまとめた後も人数を数える", w.headline([
+    {"result": "負け", "players": [{"name": "試験選手A"}, {"name": "試験選手B"}]},
+    {"result": "引き分け", "players": [{"name": "試験選手C"}]}]),
+      "欧州の日本人選手3人の週末")
+check("旧形式の行も人数を数える", w.headline([{"name": "試験選手", "result": "負け"}]),
+      "欧州の日本人選手1人の週末")
 
 section("直近の1試合だけ")
 two = {"PD": MATCHES["PD"] + [m("PD", "Real Sociedad de Fútbol", "Getafe CF",
