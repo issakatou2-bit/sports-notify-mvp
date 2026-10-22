@@ -13960,6 +13960,27 @@
       "actual_host": "metan",
       "host_fallback_reason": "ui_unavailable",
       "privacy": "public"
+    },
+    "ws_schedule": {
+      "video_id": "nvqLtsVPSEA",
+      "url": "https://youtu.be/nvqLtsVPSEA",
+      "title": "【MLB】ワールドシリーズ｜第1戦はブリュワーズの本拠地 #Shorts",
+      "published_at": "2026-10-22T07:12:02.081458+00:00",
+      "host_assignment": {
+        "day": "2026-10-22",
+        "kind": "asset:ws",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 3
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "private",
+      "held": false,
+      "publish_at": "2026-10-23T09:00:00Z"
     }
   },
   "soccer_results": {
