@@ -1,116 +1,105 @@
 {
-  "generated_at": "2026-10-21T06:01:07.457981+00:00",
-  "date_jst": "2026-10-21",
-  "name": "Yandy Díaz",
-  "player_id": "650490",
+  "generated_at": "2026-10-22T06:01:11.450193+00:00",
+  "date_jst": "2026-10-22",
+  "name": "Richie Palacios",
+  "player_id": "680700",
   "team": "レイズ",
   "group": "hitting",
   "why": "2026-10-20のMLBで最も活躍",
-  "headline": "4打数1安打　1本塁打　2打点　1死球",
-  "score": 98,
+  "headline": "4打数2安打　1二塁打　2打点",
+  "score": 79,
   "bio": {
-    "name_en": "Yandy Díaz",
-    "age": 35,
-    "birth_city": "Sagua la Grande",
-    "birth_state": null,
-    "birth_country": "Cuba",
-    "birth_date": "1991-08-08",
-    "debut": "2017-04-03",
-    "draft_year": null,
-    "bats": "Right",
+    "name_en": "Richie Palacios",
+    "age": 29,
+    "birth_city": "Brooklyn",
+    "birth_state": "NY",
+    "birth_country": "USA",
+    "birth_date": "1997-05-16",
+    "debut": "2022-04-25",
+    "draft_year": 2018,
+    "bats": "Left",
     "throws": "Right",
-    "number": "2",
-    "position": "Designated Hitter",
-    "nickname": "Aranita Diaz",
-    "height": "6' 0\"",
-    "weight": 235
+    "number": "1",
+    "position": "Second Base",
+    "nickname": null,
+    "height": "5' 8\"",
+    "weight": 185
   },
   "teams": [
     {
       "team": "ガーディアンズ",
-      "from": 2017,
-      "to": 2018
+      "from": 2022,
+      "to": 2022
+    },
+    {
+      "team": "カージナルス",
+      "from": 2023,
+      "to": 2023
     },
     {
       "team": "レイズ",
-      "from": 2019,
+      "from": 2024,
       "to": 2026
     }
   ],
   "career": {
-    "games": 1058,
-    "avg": ".291",
-    "hr": 122,
-    "rbi": 509,
-    "ops": ".812",
-    "sb": 14,
-    "hits": 1137
+    "games": 319,
+    "avg": ".238",
+    "hr": 22,
+    "rbi": 107,
+    "ops": ".695",
+    "sb": 44,
+    "hits": 204
   },
   "this_season": {
-    "games": 154,
-    "avg": ".293",
-    "hr": 22,
-    "rbi": 85,
-    "ops": ".805",
-    "sb": 3,
-    "hits": 180
+    "games": 124,
+    "avg": ".235",
+    "hr": 10,
+    "rbi": 57,
+    "ops": ".704",
+    "sb": 17,
+    "hits": 81
   },
   "last_season": {
-    "games": 150,
-    "avg": ".300",
-    "hr": 25,
-    "rbi": 83,
+    "games": 17,
+    "avg": ".333",
+    "hr": 1,
+    "rbi": 3,
     "ops": ".848",
-    "sb": 3,
-    "hits": 175
+    "sb": 4,
+    "hits": 14
   },
   "recent": [
     {
-      "date": "2026-09-26",
-      "line": "4打数3安打",
+      "date": "2026-09-27",
+      "line": "4打数0安打",
       "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-25",
-      "line": "4打数0安打",
+      "date": "2026-09-26",
+      "line": "4打数2安打 4打点",
       "opponent": "Philadelphia Phillies"
     },
     {
       "date": "2026-09-24",
-      "line": "4打数2安打",
+      "line": "1打数1安打",
+      "opponent": "New York Yankees"
+    },
+    {
+      "date": "2026-09-23",
+      "line": "4打数1安打",
       "opponent": "New York Yankees"
     },
     {
       "date": "2026-09-22",
-      "line": "5打数2安打 4打点",
-      "opponent": "New York Yankees"
-    },
-    {
-      "date": "2026-09-22",
-      "line": "4打数0安打",
+      "line": "3打数0安打",
       "opponent": "New York Yankees"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "AL All-Star"
-    },
-    {
-      "season": "2025",
-      "name": "AL Player of the Week"
-    },
-    {
-      "season": "2023",
-      "name": "AL Silver Slugger"
-    },
-    {
-      "season": "2023",
-      "name": "AL All-Star"
-    },
-    {
-      "season": "2017",
-      "name": "INT Post-Season All-Star"
+      "season": "2021",
+      "name": "MiLB.com Organization All-Star"
     }
   ],
   "quotes": []
