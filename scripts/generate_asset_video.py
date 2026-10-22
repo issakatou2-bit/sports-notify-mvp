@@ -1829,6 +1829,10 @@ def main():
             at=next_line.publication_time(now.date().isoformat(),args.publish_at,now) if args.publish_at else now
             spec['next_line']=next_line.acquire('asset',at,spec.get('next_team_id') or spec.get('team_id'),args.next_schedule)
         narration = build_narration(args.topic)
+        import hook_ab
+        import host_split
+        narration = hook_ab.prepare(narration, host_split.asset_kind(args.topic),
+                                    hook_ab.publication_day(args.publish_at), LIST_TOPICS.get(args.topic))
     global VOICE_CREDIT
     if (LIST_TOPICS.get(args.topic) or {}).get("style") == "v3":
         # 新デザインの回は四国めたんが話す（10/6 本人「めたんをメインで」）。立ち絵も四国めたん。
@@ -1919,6 +1923,8 @@ def main():
     visual_key=None
     wipe_frame=0
     wipe_previous=None
+    import hook_ab
+    hook_scenes = hook_ab.SceneRecorder()
     try:
         for seg_index,(seg, dur) in enumerate(zip(segs, durations)):
             n = int(dur * FPS)
@@ -1948,6 +1954,8 @@ def main():
                     import review_render_v3 as _r3
                     _r3.set_program_clock(total / FPS)
                     image=render_v3(scene_elapsed+k/FPS,kind,meta,v2,args.topic,seg=seg,dur=dur)
+                    if narration.get('hook_ab'):
+                        hook_scenes.observe(image, total, FPS, screen)
                     card=image.info.get('asset_v4') or {}
                     key=(screen,card.get('kind'),card.get('head'),card.get('name'),card.get('page'),card.get('row'))
                     if key!=visual_key:
@@ -2029,6 +2037,8 @@ def main():
     secs = total / FPS
     size_mb = video_path.stat().st_size / 1024 / 1024
     host_split.bind_video(video_path, args.audio_dir)
+    import hook_ab
+    hook_ab.bind_video(video_path, narration, segs, durations, FPS, hook_scenes.starts)
     print(f"[info] 資産動画を生成しました: {video_path} "
           f"({size_mb:.1f}MB, {secs:.0f}秒)")
 
