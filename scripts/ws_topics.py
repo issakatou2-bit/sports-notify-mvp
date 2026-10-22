@@ -83,8 +83,15 @@ def venue_jp(name_en: str) -> str:
 # ---------------------------------------------------------------- API
 
 def games_of(schedule: dict) -> list:
-    return [g for day in (schedule or {}).get("dates") or []
-            for g in day.get("games") or []]
+    # dates=[] は試合なし。dates欠落は取得した日程として扱えない。
+    if not isinstance(schedule, dict) or not isinstance(schedule.get('dates'), list):
+        raise ValueError('日程の一覧が欠測')
+    games = []
+    for day in schedule['dates']:
+        if not isinstance(day, dict) or not isinstance(day.get('games'), list):
+            raise ValueError('日付ごとの試合一覧が欠測')
+        games.extend(day['games'])
+    return games
 
 
 def ws_games(season: int, get=_get) -> list:
@@ -601,6 +608,8 @@ def postseason_players(season: int, pair: tuple, get=_get) -> tuple:
             team = box["teams"][side]
             if team["team"]["id"] != tid:
                 raise ValueError("boxscoreの球団が不一致")
+            if not isinstance(team.get('players'), dict) or not team['players']:
+                raise ValueError('確定試合の選手成績一覧が欠測')
             counts[tid] += 1
             for p in team["players"].values():
                 person, stats = p["person"], p.get("stats") or {}
