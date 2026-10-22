@@ -131,6 +131,8 @@ def prepare(narration, kind, day=None, spec=None, preview=None):
                 plan.update(ab_assigned_variant='B', ab_variant='A', ab_fallback_reason=reason)
             else:
                 result['segments'] = segments
+                if kind=='morning_press':
+                    result['segments'][0].setdefault('meta',{})['press_hook']=True
     result['hook_ab'] = plan
     return result
 
@@ -147,7 +149,7 @@ class SceneRecorder:
 
     def observe(self, image, frame, fps, screen):
         info = image.info
-        card = info.get('asset_v4') or info.get('v4_quote') or {}
+        card = info.get('press_hook') or info.get('asset_v4') or info.get('v4_quote') or {}
         key = (screen, tuple(str(card.get(k, '')) for k in
                             ('kind', 'head', 'body', 'name', 'row', 'item', 'page', 'said')))
         if key != self.previous:

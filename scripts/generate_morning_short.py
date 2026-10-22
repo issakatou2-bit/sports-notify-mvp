@@ -469,7 +469,8 @@ def spoken_lines(d) -> list:
         return []
     text = _SPOKEN
     if len(text) > SPOKEN_MAX:
-        text = text[:SPOKEN_MAX].rstrip("、。") + "…"
+        from press_hook import caption_prefix
+        text = caption_prefix(text, SPOKEN_MAX)
     return wrap(d, text, font(34), W - 200)[:3]
 
 
@@ -1839,7 +1840,7 @@ def render_intro_players(p, meta, top, extra=None):
     return im
 
 
-def render_intro(p, meta, top, extra=None):
+def render_intro(p, meta, top, extra=None, elapsed=0):
     """
     1枚目。ショートのサムネはこの絵そのものなので、ここで見る理由を出す。
 
@@ -1851,6 +1852,9 @@ def render_intro(p, meta, top, extra=None):
     暗い背景に灰色の字を並べても、一覧に並んだ小さなサムネでは読めない。
     """
     mode = meta.get("mode") or ("local" if meta.get("local") else "players")
+    if mode=='press' and meta.get('press_hook'):
+        from press_hook import frame
+        return frame(elapsed,p,meta,(extra or {}).get('reporters') or {})
     if mode == "players":
         return render_intro_players(p, meta, top, extra)
     im, d = base(p)
@@ -4586,6 +4590,8 @@ def main():
                     total += 1
                     continue
                 pp, settled = video_common.anim_step(k, n)
+                if kind=='intro' and meta.get('press_hook'):
+                    settled=False  # 3秒の引用札切替を静止画キャッシュで止めない。
                 if settled and still is not None:
                     proc.stdin.write(cached)
                     total += 1
@@ -4603,7 +4609,7 @@ def main():
                                      {"buzz": buzz,
                                       "voices": voices_data,
                                       "reporters": reporters_data,
-                                      "players": players})
+                                      "players": players},elapsed=k/FPS)
                 elif kind == "list":
                     im = render_list(pp, players, meta.get("start", 0),
                                      meta.get("count", 1))
@@ -4693,6 +4699,8 @@ def main():
                     draw_peek(im, ImageDraw.Draw(im), who,
                               expr={who: mine, other: yours},
                               names=False, edge=250)
+                if narration.get('hook_ab') and meta.get('press_hook'):
+                    hook_scenes.observe(im,total,FPS,meta.get('screen',seg_i))
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
