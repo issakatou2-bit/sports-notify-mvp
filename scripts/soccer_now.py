@@ -13,6 +13,7 @@ import soccer_voices as voices
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_AGE = timedelta(minutes=60)
+GOAL_MAX_AGE = timedelta(hours=3)
 WATCH_LIMIT = 50*60
 SCORE_FORMULA = '得点×2＋アシスト×1。公式採点ではなく攻撃関与の独自指標。守備・勝敗の因果は評価しない。'
 
@@ -75,7 +76,7 @@ def enrich(game, summary, standings=None):
     return game
 
 
-def build(boards, summaries, now, receipts=None, standings=None):
+def build(boards, summaries, now, receipts=None, standings=None, *, max_age=MAX_AGE):
     """保存/本番が同じ経路。終了の時刻・本人の出場・鮮度を照合。"""
     out = []; rejected = []; receipts = receipts or {}
     for key, board in boards.items():
@@ -86,7 +87,7 @@ def build(boards, summaries, now, receipts=None, standings=None):
             if summary is None: continue
             summary = summary.get('summary', summary)
             end = results.completion_time(event['competitions'][0], summary)
-            if not end or not timedelta(0) <= now-results.utc(end) <= MAX_AGE: continue
+            if not end or not timedelta(0) <= now-results.utc(end) <= max_age: continue
             # Results window starts at 07:15 JST, not calendar midnight.
             local = results.utc(end).astimezone(results.JST)
             day = local.date() - timedelta(days=int((local.hour, local.minute) < (7, 15)))
@@ -251,41 +252,58 @@ def live_voices(data):
     return data
 
 
-def publish(data, out, ledger):
-    if os.environ.get('COLLESPO_SOCCER_NOW') != 'on' or os.environ.get('SOCCER_NOW_PUBLISH','false') != 'true': raise ValueError('公開変数が無効')
+def checkpoint_receipt(path, key, entry, extra=()):
+    """投稿前の記録を保存し、保存先の main に同じ記録があることまで照合する。"""
+    path = Path(path)
+    subprocess.run(['bash','scripts/commit_data.sh','soccer publication receipt',str(path.relative_to(ROOT)),*extra],cwd=ROOT,check=True)
+    subprocess.run(['git','fetch','origin','main'],cwd=ROOT,check=True,capture_output=True)
+    saved = subprocess.run(['git','show','origin/main:'+path.relative_to(ROOT).as_posix()],cwd=ROOT,check=True,capture_output=True,text=True,encoding='utf8')
+    if json.loads(saved.stdout).get(key) != entry:
+        raise ValueError('本番台帳に記録できないため投稿停止')
+
+
+def publish(data, out, ledger, *, goal_short=False):
+    enabled = (os.environ.get('COLLESPO_SOCCER_GOAL_SHORT') == 'on' if goal_short else
+               os.environ.get('COLLESPO_SOCCER_NOW') == 'on' and os.environ.get('SOCCER_NOW_PUBLISH','false') == 'true')
+    if not enabled: raise ValueError('公開変数が無効')
     if data.get('sample_fictional'): raise ValueError('試作は公開不可')
     results.validate_data(data)
-    if not timedelta(0)<=datetime.now(timezone.utc)-results.utc(data['games'][0]['finished_utc'])<=MAX_AGE: raise ValueError('公開直前の鮮度を超過')
+    if goal_short and (len(data['games']) != 1 or not any(p['status'] != 'none' and (p.get('goals') or p.get('assists')) for p in data['players'])):
+        raise ValueError('得点・アシストのある1試合が必要')
+    age = GOAL_MAX_AGE if goal_short else MAX_AGE
+    if not timedelta(0)<=datetime.now(timezone.utc)-results.utc(data['games'][0]['finished_utc'])<=age: raise ValueError('公開直前の鮮度を超過')
     ident = data['games'][0]['id']
     if ident in ledger: return
     import host_split
-    tracking = host_split.publication(Path(out)/'preview.mp4')
-    path = ROOT/'data/soccer_now_receipts.json'
+    kind = 'soccer_goal_short' if goal_short else 'soccer_now'
+    video = Path(out)/('collespo_soccer_results.mp4' if goal_short else 'preview.mp4')
+    tracking = host_split.publication(video)
+    path = ROOT/f'data/{kind}_receipts.json'
     def checkpoint():
         path.write_text(json.dumps(ledger,ensure_ascii=False,indent=2),encoding='utf8')
         extra = ['data/published_videos.json'] if tracking else []
-        subprocess.run(['bash','scripts/commit_data.sh','soccer now receipt',str(path.relative_to(ROOT)),*extra],cwd=ROOT,check=True)
-        # commit_data.sh has legacy exit-0 error paths. Confirm the remote receipt,
-        # so a failed checkpoint cannot be mistaken for duplicate protection.
-        subprocess.run(['git','fetch','origin','main'],cwd=ROOT,check=True,capture_output=True)
-        saved = subprocess.run(['git','show','origin/main:data/soccer_now_receipts.json'],cwd=ROOT,check=True,capture_output=True,text=True,encoding='utf8')
-        if json.loads(saved.stdout).get(ident) != ledger[ident]: raise ValueError('本番台帳に記録できないため投稿停止')
+        checkpoint_receipt(path, ident, ledger[ident], extra)
     ledger[ident] = {'status':'pending','at':datetime.now(timezone.utc).isoformat()}; checkpoint()
     # Pending remains on uncertain response. Never retry an upload automatically.
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build as api_build
     from googleapiclient.http import MediaFileUpload
     creds = Credentials(None, refresh_token=os.environ['YOUTUBE_REFRESH_TOKEN'],token_uri='https://oauth2.googleapis.com/token',client_id=os.environ['YOUTUBE_CLIENT_ID'],client_secret=os.environ['YOUTUBE_CLIENT_SECRET'])
-    meta = metadata(data)
+    meta = metadata(data) if not goal_short else None
+    if goal_short:
+        lines = results.description_lines(data)
+        ended = results.utc(data['games'][0]['finished_utc']).astimezone(results.JST)
+        lines[0] = f"日本時間{ended:%Y年%m月%d日 %H:%M}に終了した試合の、日本人選手の得点・アシスト速報です。"
+        meta = dict(title=results.title(data), description='\n'.join(lines))
     meta['description'] = host_split.credit(meta['description'])
     body = {'snippet':dict(title=meta['title'],description=meta['description'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'), 'status':dict(privacyStatus='public',selfDeclaredMadeForKids=False)}
     import localize_videos
     body = localize_videos.prepare_upload(body)
-    response = api_build('youtube','v3',credentials=creds,cache_discovery=False).videos().insert(part=localize_videos.upload_parts(body),body=body,media_body=MediaFileUpload(str(Path(out)/'preview.mp4'),resumable=True)).execute()
+    response = api_build('youtube','v3',credentials=creds,cache_discovery=False).videos().insert(part=localize_videos.upload_parts(body),body=body,media_body=MediaFileUpload(str(video),resumable=True)).execute()
     if not response.get('id'): raise ValueError('投稿結果のIDなし。pendingを手動照合')
     if tracking:
         from upload_youtube import record_video
-        record_video('soccer_now', host_split.today()+':'+str(ident), response['id'], meta['title'],
+        record_video(kind, host_split.today()+':'+str(ident), response['id'], meta['title'],
                      host_tracking=tracking)
     ledger[ident].update(status='uploaded',video_id=response['id']); checkpoint()
 
