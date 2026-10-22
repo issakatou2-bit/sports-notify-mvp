@@ -109,6 +109,20 @@ check("スコアの無い試合は数えない",
                         None, None)]}, {},
               players_for=lambda t: ROSTER.get(t, [])), [])
 
+section("同じ節に複数試合あるときの本人の数字")
+double = {'PL': [m('PL', 'Crystal Palace FC', 'Chelsea FC', 1, 0,
+                   utc='2026-09-18T19:00:00Z'),
+                 m('PL', 'Crystal Palace FC', 'Everton FC', 0, 0,
+                   utc='2026-09-20T19:00:00Z')]}
+double_rows = w.build(double, {('鎌田大地', 5): {'minutes': 180, 'goals': 1, 'assists': 0}},
+                      players_for=lambda t: ROSTER.get(t, []), club_jp=lambda n: JP.get(n, n))
+check("最新の試合結果は残す", (double_rows[0]['gf'], double_rows[0]['ga']), (0, 0))
+check("節合計を最新1試合の得点にしない", double_rows[0]['players'][0]['stats'], None)
+hasnt("得点なしの試合に1得点と読まない", w.spoken(double_rows[0]), '1得点')
+duplicated = w.build({'PL': [double['PL'][0], double['PL'][0]]}, FPL,
+                     players_for=lambda t: ROSTER.get(t, []), club_jp=lambda n: JP.get(n, n))
+check("同じ試合の重複行は複数試合と数えない", duplicated[0]['players'][0]['stats'], FPL[('鎌田大地', 5)])
+
 section("同じ姓の選手がいたら引かない")
 els = [{"id": 1, "web_name": "Tanaka", "second_name": "Tanaka",
         "first_name": "Ao"},

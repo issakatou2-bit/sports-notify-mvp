@@ -151,6 +151,18 @@ def build(matches: dict, fpl: dict = None, out_now: set = None,
     out_now = out_now or set()
     players_for = players_for or ne.jp_players_for_club
     club_jp = club_jp or ne.club_name_jp
+    # FPL/event は節全体の合計。同じクラブがその節に複数試合あると、
+    # 直近1試合の本人の成績として結び付けられない。
+    pl_games = {}
+    for match in matches.get('PL') or []:
+        ft = (match.get('score') or {}).get('fullTime') or {}
+        if ft.get('home') is None or ft.get('away') is None:
+            continue
+        teams = tuple((match.get(side) or {}).get('name') or ''
+                      for side in ('homeTeam', 'awayTeam'))
+        ident = match.get('id') or (match.get('utcDate'), teams)
+        for team in teams:
+            pl_games.setdefault((team, match.get('matchday')), set()).add(ident)
     rows = {}
     for code, ms in matches.items():
         for m in sorted(ms, key=lambda x: x.get("utcDate") or ""):
@@ -180,7 +192,7 @@ def build(matches: dict, fpl: dict = None, out_now: set = None,
                         "out": p["name_jp"] in out_now,
                         "stats": None,
                     }
-                    if code == "PL":
+                    if code == "PL" and len(pl_games.get((team, m.get('matchday')), ())) == 1:
                         row["stats"] = fpl.get(
                             (p["name_jp"], m.get("matchday")))
                     old = rows.get(p["name_jp"])
