@@ -34,6 +34,9 @@ def prepare(data, narration, mode):
 
 def frame(t, seg, design, duration):
     import review_render_v3 as r3
+    if design['mode']=='press' and seg['kind']=='intro' and seg.get('meta',{}).get('press_hook'):
+        from press_hook import frame as hook_frame
+        return hook_frame(t,min(1,t),seg['meta'],design['reporters'],modern=True)
     if (seg.get('meta') or {}).get('duo_ask'):
         seg=dict(seg,text=seg['meta']['answer_text'])
     if seg['kind']=='outro':

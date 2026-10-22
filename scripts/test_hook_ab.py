@@ -44,7 +44,10 @@ class HookABTest(unittest.TestCase):
                 self.assertEqual(b['hook_ab']['ab_variant'], 'B')
                 self.assertNotIn('現地の報道です', b['segments'][0]['text'])
                 self.assertEqual(a['label'], b['label'])
-                self.assertCountEqual([(s['kind'], s['meta']) for s in a['segments']], [(s['kind'], s['meta']) for s in b['segments']])
+                self.assertCountEqual([(s['kind'], s['meta']) for s in a['segments']],
+                    [(s['kind'], {k:v for k,v in s['meta'].items() if k!='press_hook'}) for s in b['segments']])
+                self.assertTrue(b['segments'][0]['meta']['press_hook'])
+                self.assertNotIn('press_hook',a['segments'][0]['meta'])
                 self.assertEqual(a['segments'][-1], b['segments'][-1])
                 # 既存の独立した原材料照合をA/B双方に実行。
                 for n in (a,b):
@@ -52,7 +55,7 @@ class HookABTest(unittest.TestCase):
                     with patch('press_v3.frame', return_value='same-renderer') as render:
                         for seg in n['segments'][:-1]:
                             daily_v3.frame(0, seg, design, 5)
-                        self.assertEqual(render.call_count, len(n['segments'])-1)
+                        self.assertEqual(render.call_count, len(n['segments'])-(2 if n is b else 1))
 
     def test_season_same_render_calls_title_and_numbers(self):
         import generate_asset_video as g
