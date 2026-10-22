@@ -270,9 +270,9 @@ jobs:
             # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
             bash scripts/shorts_thumbnail.sh "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png"
 
-            # 非公開の試作には公開予約を付けない（10/21 private で作った回に 18:30 の予約が付いていた）。
-            PUB=(--publish-at "18:30")
-            if [ "${PRIVACY:-public}" = private ]; then PUB=(); fi
+            # 公開を選んだ回だけ予約する。限定公開・非公開の指定を保つ。
+            PUB=()
+            if [ "${PRIVACY:-public}" = public ]; then PUB=(--publish-at "18:30"); fi
             python scripts/upload_youtube.py \
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
