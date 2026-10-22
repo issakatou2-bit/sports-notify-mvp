@@ -13880,6 +13880,86 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_team_110": {
+      "video_id": "NyKvO78_s0s",
+      "url": "https://youtu.be/NyKvO78_s0s",
+      "title": "【MLB】オリオールズ｜2026年シーズンまとめ　79勝82敗 #Shorts",
+      "published_at": "2026-10-22T06:41:02.580421+00:00",
+      "publish_at": "2026-10-22T07:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-22",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 3
+      },
+      "planned_host": "ui",
+      "actual_host": "metan",
+      "host_fallback_reason": "ui_unavailable",
+      "privacy": "public"
+    },
+    "season_team_113": {
+      "video_id": "ggK2mq4gvtY",
+      "url": "https://youtu.be/ggK2mq4gvtY",
+      "title": "【MLB】レッズ｜2026年シーズンまとめ　75勝87敗 #Shorts",
+      "published_at": "2026-10-22T06:45:26.555015+00:00",
+      "publish_at": "2026-10-22T13:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-22",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 3
+      },
+      "planned_host": "ui",
+      "actual_host": "metan",
+      "host_fallback_reason": "ui_unavailable",
+      "privacy": "public"
+    },
+    "season_team_116": {
+      "video_id": "RegoJCkIY7w",
+      "url": "https://youtu.be/RegoJCkIY7w",
+      "title": "【MLB】タイガース｜2026年シーズンまとめ　76勝86敗 #Shorts",
+      "published_at": "2026-10-22T06:49:48.367277+00:00",
+      "publish_at": "2026-10-22T14:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-22",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 3
+      },
+      "planned_host": "ui",
+      "actual_host": "metan",
+      "host_fallback_reason": "ui_unavailable",
+      "privacy": "public"
+    },
+    "season_team_118": {
+      "video_id": "Yjxu2NxjP2c",
+      "url": "https://youtu.be/Yjxu2NxjP2c",
+      "title": "【MLB】ロイヤルズ｜2026年シーズンまとめ　69勝93敗 #Shorts",
+      "published_at": "2026-10-22T06:53:10.975813+00:00",
+      "publish_at": "2026-10-22T14:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-22",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 3
+      },
+      "planned_host": "ui",
+      "actual_host": "metan",
+      "host_fallback_reason": "ui_unavailable",
+      "privacy": "public"
     }
   },
   "soccer_results": {
