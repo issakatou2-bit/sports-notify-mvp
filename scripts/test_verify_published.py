@@ -25,6 +25,22 @@ from checks_report import check, section, done  # noqa: E402
 
 HERE = pathlib.Path(__file__).resolve().parent
 JST = timezone(timedelta(hours=9))
+NOW = datetime(2026, 10, 22, 0, 30, tzinfo=JST)
+
+# 本番のmainと引数処理を子プロセスで使い、時計だけを試験用に固定する。
+FIXED_ENTRY = '''
+import sys
+from datetime import datetime
+sys.path.insert(0, sys.argv.pop(1))
+now = datetime.fromisoformat(sys.argv.pop(1))
+class Clock(datetime):
+    @classmethod
+    def now(cls, tz=None):
+        return now.astimezone(tz) if tz else now.replace(tzinfo=None)
+import verify_published as vp
+vp.datetime = Clock
+raise SystemExit(vp.main())
+'''
 
 
 def run(record: dict, kind: str = "daily", allow_missing=False) -> int:
@@ -33,7 +49,7 @@ def run(record: dict, kind: str = "daily", allow_missing=False) -> int:
                                      encoding="utf-8") as f:
         json.dump(record, f, ensure_ascii=False)
         path = f.name
-    cmd = [sys.executable, str(HERE / "verify_published.py"),
+    cmd = [sys.executable, '-c', FIXED_ENTRY, str(HERE), NOW.isoformat(),
            "--kind", kind, "--record", path]
     if allow_missing:
         cmd.append("--allow-missing")
@@ -45,7 +61,7 @@ def run(record: dict, kind: str = "daily", allow_missing=False) -> int:
 
 def rec(day_offset: int, hours_ago: float, kind: str = "daily") -> dict:
     """その日の記録を1件だけ持つ台帳を作る。"""
-    now = datetime.now(JST)
+    now = NOW
     day = (now + timedelta(days=day_offset)).strftime("%Y-%m-%d")
     at = (now - timedelta(hours=hours_ago)).astimezone(timezone.utc)
     return {kind: {day: {"video_id": "abc123", "title": "検査",
@@ -72,14 +88,14 @@ check("前日の朝に出したもの（20時間前）は赤", run(rec(-1, 20.0)
 
 section("壊れた記録でも落ちない")
 check("時刻が読めない",
-      run({"daily": {(datetime.now(JST) - timedelta(days=1))
+      run({"daily": {(NOW - timedelta(days=1))
                      .strftime("%Y-%m-%d"):
                      {"video_id": "x", "published_at": "こわれている"}}}), 1)
 check("時刻が無い",
-      run({"daily": {(datetime.now(JST) - timedelta(days=1))
+      run({"daily": {(NOW - timedelta(days=1))
                      .strftime("%Y-%m-%d"): {"video_id": "x"}}}), 1)
 check("動画IDが無い",
-      run({"daily": {datetime.now(JST).strftime("%Y-%m-%d"):
+      run({"daily": {NOW.strftime("%Y-%m-%d"):
                      {"title": "IDなし"}}}), 1)
 
 section("幅は定数で持つ")
