@@ -118,10 +118,11 @@ def fpl_stats(matchdays: set, roster: list = None) -> dict:
             continue
         for name, pid in ids.items():
             st = live.get(pid) if pid else None
-            if st is not None:
-                out[(name, md)] = {"minutes": st.get("minutes") or 0,
-                                   "goals": st.get("goals_scored") or 0,
-                                   "assists": st.get("assists") or 0}
+            if isinstance(st, dict) and all(st.get(key) is not None
+                                           for key in ('minutes', 'goals_scored', 'assists')):
+                out[(name, md)] = {"minutes": st['minutes'],
+                                   "goals": st['goals_scored'],
+                                   "assists": st['assists']}
     return out
 
 
