@@ -27,7 +27,7 @@ import os
 import pathlib
 import sys
 import urllib.request
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -71,17 +71,15 @@ def resolve(elements: list, name_en: str):
     """名簿の選手を、プレミア公式の選手IDに。**決まらなければ None。**
 
     姓だけで引くと、同じ姓の選手がいたときに別人の成績を言う。
-    姓で1人に絞れなければ名でも照合し、それでも決まらなければ
-    引かない（本人のことを言わないだけで、クラブの結果は出る）。
+    候補の人数にかかわらず姓と名の全体を照合する（10/21の取り違え対策）。
     """
     sur = _surname(name_en)
     first = (name_en or "").split()[0] if name_en else ""
     cands = [e for e in elements
              if sur and sur in ((e.get("web_name") or "").strip(),
                                 (e.get("second_name") or "").strip())]
-    if len(cands) > 1:
-        cands = [e for e in cands
-                 if first and (e.get("first_name") or "").startswith(first)]
+    cands = [e for e in cands
+             if first and (e.get("first_name") or "").strip().casefold() == first.casefold()]
     return cands[0].get("id") if len(cands) == 1 else None
 
 
@@ -320,13 +318,39 @@ def week_key(rows: list) -> str:
     return max((d for d in days if d), default="")
 
 
-def due(data: dict, state: dict, record: dict) -> tuple:
-    """19:30に週末の回を出すか。(出す, 理由)。
+def weekend_matches(matches: dict, today: date) -> dict:
+    """月曜朝にそろった、金曜0時〜月曜朝の終了試合（日本時間）。"""
+    monday = today - timedelta(days=today.weekday())
+    first = (monday - timedelta(days=3)).isoformat()
+    last = monday.isoformat()
+    return {code: [m for m in ms if m.get('status') == 'FINISHED'
+                   and first <= _jst_date(m.get('utcDate')) <= last]
+            for code, ms in matches.items()}
 
-    出すのは、5大リーグの試合が今日なく、19:30の通常の回も出ておらず、
-    その週末をまだ出していない日だけ。同じ週末を2度出さない。
+
+def due(data: dict, state: dict, record: dict, *, scheduled=False) -> tuple:
+    """週末の回を出すか。(出す, 理由)。
+
+    scheduled=True は月曜朝の独立枠。既存の手動呼び出しは夕方の空き枠判定を保つ。
     """
     today = data.get("date") or ""
+    if scheduled:
+        try:
+            monday = date.fromisoformat(today)
+        except ValueError:
+            return False, "日付を確認できない"
+        if monday.weekday() != 0:
+            return False, "月曜朝の対象日ではない"
+        key = monday.isoformat()
+        if data.get('key') != key:
+            return False, "週の記録と対象日が一致しない"
+        if key in (state.get('done') or []) or key in (record.get('soccer_week') or {}):
+            return False, f"{key}の週末まとめはもう出した"
+        if key in (state.get('pending') or {}):
+            return False, f"{key}の投稿結果を確認中"
+        if not data.get('rows'):
+            return False, "この週末の終了した対象試合が無い"
+        return True, f"{key}月曜の週末まとめ（{len(data['rows'])}行）"
     if data.get("today_matches"):
         return False, f"今日は5大リーグの試合が{data['today_matches']}試合ある"
     if today in (record.get("daily_soccer") or {}):
@@ -349,14 +373,18 @@ def main() -> int:
     ap.add_argument("--out", default="data/soccer_jp_week.json")
     ap.add_argument("--state", default="data/soccer_week_state.json")
     ap.add_argument("--record", default="data/published_videos.json")
+    ap.add_argument("--scheduled", action="store_true", help="月曜朝の独立枠。週のキーは月曜の日付")
     args = ap.parse_args()
+    today = datetime.now(JST).date()
+    if args.scheduled and today.weekday() != 0:
+        print("[info] 月曜朝の対象日ではありません")
+        return 0
     key = os.environ.get("FOOTBALL_DATA_API_KEY") or ""
     if not key:
         print("[info] FOOTBALL_DATA_API_KEY が無いので作りません")
         return 0
-    today = datetime.now(JST).date()
     fetched = fetch_matches(key, today)
-    matches = finished(fetched)
+    matches = weekend_matches(fetched, today) if args.scheduled else finished(fetched)
     mds = {m.get("matchday") for m in matches.get("PL") or []
            if m.get("matchday")}
     try:
@@ -368,7 +396,7 @@ def main() -> int:
     data = {"updated_at": datetime.now(timezone.utc).isoformat(),
             "date": today.isoformat(), "window_days": WINDOW_DAYS,
             "headline": headline(rows), "rows": rows,
-            "key": week_key(rows),
+            "key": today.isoformat() if args.scheduled else week_key(rows),
             "today_matches": today_count(fetched, today)}
     p = pathlib.Path(args.out)
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -377,7 +405,7 @@ def main() -> int:
     print(f"[info] {data['headline']} / {len(rows)}人 -> {p}")
     for r in rows[:10]:
         print("   " + line(r))
-    ok, why = due(data, _load(args.state), _load(args.record))
+    ok, why = due(data, _load(args.state), _load(args.record), scheduled=args.scheduled)
     print(f"[gate] {'出す' if ok else '出さない'}: {why}")
     gh = os.environ.get("GITHUB_OUTPUT")
     if gh:

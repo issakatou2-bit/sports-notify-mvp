@@ -83,7 +83,7 @@ def narration(data):
 def program_spec(data):
     day=results.date.fromisoformat(data['date_jst'])
     import host_split
-    return {'source':host_split.credit(CREDIT),'ticker':f"日本時間{day.month}月{day.day}日の夜〜翌朝の試合　欧州の日本人選手の結果",'label':'欧州サッカー　結果'}
+    return {'source':host_split.credit(CREDIT),'ticker':data.get('result_ticker') or f"日本時間{day.month}月{day.day}日の夜〜翌朝の試合　欧州の日本人選手の結果",'label':'欧州サッカー　結果'}
 
 
 def cover(t,data,game,clubs,spec):
@@ -303,18 +303,25 @@ def render_video(data,narr,audio,out):
     return verification
 
 
+def production_narration(data, *, goal_short=False):
+    """速報は既存の得点導入、朝の結果は既存の注目試合導入を使う。"""
+    narr = narration(data) if goal_short else __import__('soccer_result_story').narration(data)
+    if soccer_look.v5() and not any(s['kind']=='followup' for s in narr['segments']):
+        from soccer_v5_program import add_player_scene
+        narr = add_player_scene(narr, data)
+    import host_split
+    return host_split.adapt(narr, 'soccer_results')
+
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--data',type=Path,default=ROOT/'data/soccer_results.json')
     ap.add_argument('--narration-out',type=Path)
     ap.add_argument('--audio-dir',type=Path)
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer_results')
-    args=ap.parse_args();data=json.loads(args.data.read_text(encoding='utf-8'));narr=__import__('soccer_result_story').narration(data)
-    if soccer_look.v5() and not any(s['kind']=='followup' for s in narr['segments']):
-        from soccer_v5_program import add_player_scene
-        narr=add_player_scene(narr,data)
+    ap.add_argument('--goal-short',action='store_true',help='既存の日本人選手の得点・アシスト導入を使う')
+    args=ap.parse_args();data=json.loads(args.data.read_text(encoding='utf-8'));narr=production_narration(data,goal_short=args.goal_short)
     import host_split
-    narr = host_split.adapt(narr, 'soccer_results')
     if args.audio_dir:
         # 立ち絵欠落で全音声が代役になった場合も、確定後の原稿を読む。
         host_split.render_audio(args.audio_dir, args.out)

@@ -1,6 +1,7 @@
 """終了前/鮮度/二重投稿/未知の成績/決勝点を固定材料で検査。"""
 import copy
 import json
+import sys
 from pathlib import Path
 import unittest
 
@@ -87,4 +88,4 @@ class Tests(unittest.TestCase):
             self.assertFalse(rules.check_layout(im)+rules.check_spacing(im))
 
 
-if __name__ == '__main__': unittest.main(argv=['test_soccer_now'])
+if __name__ == '__main__': unittest.main(argv=[sys.argv[0]])
