@@ -348,6 +348,15 @@ def due(services, late_edition=False) -> list:
     return out
 
 
+class VideoNotPublic(ValueError):
+    """所有チャンネルの非公開・予約中動画。SNS配信は見送る。"""
+
+    def __init__(self, reason):
+        # asset_sns等の既存の呼び手にも従来の例外を渡す。
+        super().__init__('YouTube video is not public')
+        self.reason = reason
+
+
 def verify_youtube(record):
     query = urllib.parse.urlencode({'part': 'status,snippet', 'id': record['video_id'],
                                    'key': os.environ['YOUTUBE_API_KEY']})
@@ -356,10 +365,16 @@ def verify_youtube(record):
             items = json.load(response).get('items', [])
     except Exception:
         raise RuntimeError('Unable to verify YouTube publication') from None
-    if not items or items[0]['status'].get('privacyStatus') != 'public':
-        raise ValueError('YouTube video is not public')
+    if not items:
+        raise ValueError('YouTube video could not be found')
     if items[0]['snippet']['channelId'] != 'UCpZ_j8X8uOex5VvKwwTJj3Q':
         raise ValueError('YouTube video belongs to a different channel')
+    status = items[0]['status']
+    privacy = status.get('privacyStatus')
+    if privacy in ('private', 'unlisted'):
+        raise VideoNotPublic('予約中' if status.get('publishAt') else '非公開（' + privacy + '）')
+    if privacy != 'public':
+        raise ValueError('Unknown YouTube privacy status')
     return items[0]['snippet']
 
 
@@ -831,7 +846,16 @@ def main():
         print('[info] Source PS program explicitly skipped; no SNS post: '+reason)
         return
     _key, _artifact, _file, _wf = source_of(args.kind)
-    snippet = verify_youtube(record)
+    try:
+        snippet = verify_youtube(record)
+    except VideoNotPublic as exc:
+        message = f'{day} / {args.kind} / {record["video_id"]}: 飛ばした（{exc.reason}）'
+        print('[skip] ' + message)
+        summary = os.environ.get('GITHUB_STEP_SUMMARY')
+        if summary:
+            with open(summary, 'a', encoding='utf-8') as report:
+                report.write('\n- ' + message + '\n')
+        return
     record = {**record, 'title': snippet['title'], 'description': snippet.get('description', '')}
     available = graphql('{channels(input:{organizationId:' + json.dumps(ORG) + '}){id name service}}')['channels']
     for service in services:

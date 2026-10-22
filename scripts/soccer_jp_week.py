@@ -71,17 +71,23 @@ def resolve(elements: list, name_en: str):
     """名簿の選手を、プレミア公式の選手IDに。**決まらなければ None。**
 
     姓だけで引くと、同じ姓の選手がいたときに別人の成績を言う。
-    姓で1人に絞れなければ名でも照合し、それでも決まらなければ
+    姓で1人に絞れても、名が分かるときは名も照合する。決まらなければ
     引かない（本人のことを言わないだけで、クラブの結果は出る）。
     """
     sur = _surname(name_en)
-    first = (name_en or "").split()[0] if name_en else ""
+    parts = (name_en or "").split()
+    first = parts[0].casefold().rstrip('.') if len(parts) > 1 else ""
     cands = [e for e in elements
              if sur and sur in ((e.get("web_name") or "").strip(),
                                 (e.get("second_name") or "").strip())]
-    if len(cands) > 1:
+    if first:
+        def same_given(element):
+            given = (element.get('first_name') or '').casefold().rstrip('.')
+            if not given:
+                return False
+            return given == first or (min(len(given), len(first)) == 1 and given[0] == first[0])
         cands = [e for e in cands
-                 if first and (e.get("first_name") or "").startswith(first)]
+                 if same_given(e)]
     return cands[0].get("id") if len(cands) == 1 else None
 
 

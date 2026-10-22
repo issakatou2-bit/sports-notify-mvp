@@ -4315,6 +4315,9 @@ def main():
     if args.mode == 'press' and topic_hub.enabled():
         reporters_data = topic_hub.reporter_material(topic_hub.load('data/topic_hub.json'))
         data['reporters'] = reporters_data
+    from article_freshness import fresh_material
+    reporters_data = fresh_material(reporters_data, data.get('date_jst'))
+    data['reporters'] = reporters_data
 
     # ポストシーズン進出争い。9月と10月だけ材料がある。
     # 取れていなければ、その枠を作らないだけ。
