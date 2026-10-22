@@ -19,11 +19,8 @@
       「今季初登板の投手が今季15勝」のような、個々の値は正しくても
       並べると噛み合わない文。ここは機械では書ききれない。
 
-  二段目の指摘だけでは投稿を止めない。材料との機械照合で
-  矛盾が確認された場合は、一段目と同様に止める。
-  言語模型の違和感は当たることもあれば外れることもあるので、
-  それで止めると、正しい日に出せなくなる。
-  代わりに実行ページに出して、人が見る。
+  二段目の重大な指摘(high)は、予約前に止めて人の確認へ回す。
+  材料との機械照合で確定した矛盾も止める。軽微な指摘は参考として残す。
 
 使い方:
   python3 scripts/sanity.py                     # 一段目だけ
@@ -431,7 +428,7 @@ def main():
                     default=["public/narration.json",
                              "public/soccer_narration.json"])
     ap.add_argument("--strict", action="store_true",
-                    help="ありえない数字があれば異常終了する")
+                    help="ありえない数字・材料との矛盾・重大な指摘(high)で異常終了する")
     ap.add_argument("--out", default="data/sanity.json")
     args = ap.parse_args()
 
@@ -478,11 +475,14 @@ def main():
         else:
             print("\n(ANTHROPIC_API_KEY がないので二段目は飛ばした)")
 
+    high = [o for o in odd if str(o.get('severity', '')).lower() == 'high']
+    if high:
+        print('::error::重大な矛盾の指摘(high)があるため予約を止め、非公開のまま確認へ回します')
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"impossible": impossible, "odd": odd, "contradictions": contradictions,
                                "date_jst": next((d.get('date_jst') for d in documents if d.get('date_jst')), None),
-                               "warnings": warnings},
+                               "blocking_issues": high, "warnings": warnings},
                               ensure_ascii=False, indent=2), encoding="utf-8")
 
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
@@ -495,10 +495,11 @@ def main():
                 f.write('- **材料と矛盾** %s\n' % b)
             for o in odd:
                 f.write("- %s 「%s」 — %s\n"
-                        % ("**材料と矛盾**" if o.get("confirmed") else "参考（未確定）",
+                        % ("**重大な指摘・予約停止**" if o in high else
+                           "**材料と矛盾**" if o.get("confirmed") else "参考（未確定）",
                            o.get("where", ""), o.get("why", "")))
 
-    return 1 if ((impossible or contradictions) and args.strict) else 0
+    return 1 if ((impossible or contradictions or high) and args.strict) else 0
 
 
 if __name__ == "__main__":

@@ -374,12 +374,13 @@ jobs:
             #
             # ありえない数字が原稿に入っていたら、この1本だけ出さない。
             # 他の枠は別の材料で別の原稿を作っているので、巻き込まない。
-            # 通し読み(--general)のほうは止めない。言語模型の違和感で
-            # 正しい日の投稿を潰すと、その損のほうが大きい。
+            # 通し読みの重大な指摘(high)も予約前に止める。
             if ! python scripts/sanity.py --general --strict \
                 --narration "build/mr_narration_${mode}.json" \
                 --out "data/sanity_${mode}.json"; then
-              echo "::warning::$mode の原稿にありえない数字があるため出しません"
+              echo "::error::$mode の原稿に重大な指摘または矛盾があるため予約を止めました"
+              echo "$mode: 原稿の重大な指摘または矛盾のため予約停止。data/sanity_${mode}.json を確認してください。" >> "$GITHUB_STEP_SUMMARY"
+              CLAIM_FAILED=1
               echo "::endgroup::"; continue
             fi
 
@@ -553,7 +554,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           exit 1
 
-      - name: 描画検査の失敗を実行結果に反映
+      - name: 原稿と描画の検査失敗を実行結果に反映
         if: steps.shorts.outputs.claims_failed == '1'
         run: exit 1
 
