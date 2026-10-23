@@ -45,15 +45,15 @@ jobs:
           pip install pyflakes pyyaml pillow pytest imageio_ffmpeg 'cryptography>=46,<50'
 
       - name: Install Japanese fonts for diagram checks
-        # 10/7〜8 に apt-get update が120秒を超えて2回落ちた（検査の中身は通っていた）。
-        # 入っている一覧のままでまず入れ、だめなときだけ一覧を取り直す（3回まで）。
-        timeout-minutes: 12
+        # 同梱の日本語字体を使い、aptの通信状態に検査結果を左右させない。
+        # 欠落・破損・日本語の無い字体はここで失敗させる。
         run: |
-          for i in 1 2 3; do
-            sudo timeout 180 apt-get install -y -qq --no-install-recommends fonts-noto-cjk && exit 0
-            sudo timeout 150 apt-get update -qq -o Acquire::Retries=2 || true
-          done
-          exit 1
+          python scripts/check_diagram_font.py
+          font_dir="$HOME/.local/share/fonts/collespo"
+          mkdir -p "$font_dir"
+          cp assets/fonts/soccer-v5/NotoSansJP-VF.ttf "$font_dir/"
+          fc-cache -f "$font_dir"
+          echo "COLLESPO_FONT=$GITHUB_WORKSPACE/assets/fonts/soccer-v5/NotoSansJP-VF.ttf" >> "$GITHUB_ENV"
 
       - name: Run checks
         run: python scripts/run_checks.py
