@@ -68,6 +68,23 @@ class VideoTitlesTest(unittest.TestCase):
         self.assertEqual(vt.public_title(soccer, soccer=True),
                          vt.club_display_names.youtube_title(vt.press_names.press_title(soccer)))
 
+    def test_repeated_nickname_gets_city_once(self):
+        for name, city in vt.TEAM_CITIES.items():
+            title = f'【MLB】{name}の殿堂入り選手｜{name}から殿堂入りした3人'
+            expected = title.replace(name, city + '・' + name, 1)
+            self.assertEqual(vt.team_city_text(title), expected)
+            self.assertEqual(vt.team_city_text(expected), expected)
+            self.assertEqual(vt.public_title(title), expected)
+        title = 'タイガースとジャイアンツ｜タイガースとジャイアンツ'
+        self.assertEqual(vt.team_city_text(title),
+                         'デトロイト・タイガースとサンフランシスコ・ジャイアンツ｜タイガースとジャイアンツ')
+        title = '阪神タイガースとタイガース｜タイガース'
+        self.assertEqual(vt.team_city_text(title),
+                         '阪神タイガースとデトロイト・タイガース｜タイガース')
+        title = 'タイガース vs KC｜タイガースの記録｜タイガース'
+        self.assertEqual(vt.team_city_text(title),
+                         'タイガース vs KC｜デトロイト・タイガースの記録｜タイガース')
+
     def test_description_only_first_line(self):
         self.assertEqual(vt.description_head('タイガースの記録\nタイガースの札'),
                          'デトロイト・タイガースの記録\nタイガースの札')
