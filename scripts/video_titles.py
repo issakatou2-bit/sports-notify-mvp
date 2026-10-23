@@ -14,7 +14,7 @@ TEAM_CITIES = {'タイガース': 'デトロイト', 'ジャイアンツ': 'サ�
 
 
 def team_city_text(text: str) -> str:
-    """単独の呼び名を補足する。対戦カードと既に街名のある表記は保つ。"""
+    """単独の呼び名の初出だけ補足する。対戦カードと既存の街名は保つ。"""
     text = str(text or '')
     teams = '|'.join(map(re.escape, press_names.ne.MLB_TEAM_NAME_JP.values()))
     abbreviations = '|'.join(map(re.escape, press_names.ne.MLB_TEAM_ABBR.values()))
@@ -25,10 +25,19 @@ def team_city_text(text: str) -> str:
     card = rf'{team}(?:\s*(?:vs\.?|対|×|/|－|–|—|-)\s*{team})+'
     protected = [m.span() for m in re.finditer(card, text, re.IGNORECASE)]
     for name, city in TEAM_CITIES.items():
+        seen = False
         pattern = rf'{city}[・\s]*{name}|(?:阪神|読売)[・\s]*{name}|{name}'
         def replace(match):
-            if match.group() != name or any(a <= match.start() < b for a, b in protected):
+            nonlocal seen
+            if any(a <= match.start() < b for a, b in protected):
                 return match.group()
+            if match.group() != name:
+                if match.group().startswith(city):
+                    seen = True
+                return match.group()
+            if seen:
+                return name
+            seen = True
             return city + '・' + name
         # 置換でずれた位置を次の球団のカード判定へ持ち越さない。
         text = re.sub(pattern, replace, text)
