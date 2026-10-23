@@ -606,7 +606,9 @@ def friendly_lead(title):
 
 def caption(service, day, record, kind=DEFAULT_KIND):
     w = words(kind, record)
-    title = ht.strip_tags(record['title'].split(w['cut'])[0].replace('【MLB】', '').strip())
+    import video_titles
+    source_title = record['title'] if w['sport'] == 'soccer' else video_titles.team_city_text(record['title'])
+    title = ht.strip_tags(source_title.split(w['cut'])[0].replace('【MLB】', '').strip())
     if kind == DEFAULT_KIND:
         title = re.split(r'｜\d{1,2}/\d{1,2}の注目試合', title)[0].strip()
     lead = friendly_lead(title) if kind == DEFAULT_KIND else title

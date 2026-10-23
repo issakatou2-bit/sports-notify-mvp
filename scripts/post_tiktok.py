@@ -253,6 +253,9 @@ def caption(title: str) -> str:
         # どちらとも決まらないものはMLB扱い。本数が圧倒的に多い。
         tags = TAGS_MLB
     sport = 'soccer' if tags == TAGS_SOCCER else 'mlb'
+    if sport == 'mlb':
+        import video_titles
+        t = video_titles.team_city_text(t)
     return f"{t}\n\n{ht.display(ht.select(t, 'tiktok', sport=sport))}"
 
 
