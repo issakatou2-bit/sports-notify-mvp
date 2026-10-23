@@ -6655,6 +6655,14 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-22": {
+      "video_id": "mAdaRHA_404",
+      "url": "https://youtu.be/mAdaRHA_404",
+      "title": "【欧州サッカー】昨夜の注目試合 バイエルン 2-2 アーセナル #Shorts",
+      "published_at": "2026-10-22T01:06:27+00:00",
+      "publish_at": "2026-10-22T01:06:27Z",
+      "backfilled": true
     }
   },
   "weekly": {
@@ -7317,6 +7325,26 @@
       "planned_host": "ui",
       "actual_host": "metan",
       "host_fallback_reason": "ui_unavailable",
+      "privacy": "public"
+    },
+    "2026-10-23": {
+      "video_id": "ohC1Yt8JwMY",
+      "url": "https://youtu.be/ohC1Yt8JwMY",
+      "title": "【MLB】ガーディアンズ vs レイズ 現地のファンは何と言ったか｜返信72件ついたコメント 10月23日更新 #Shorts",
+      "published_at": "2026-10-23T06:21:44.911237+00:00",
+      "publish_at": "2026-10-23T08:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-23",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
       "privacy": "public"
     }
   },
@@ -13262,6 +13290,357 @@
         }
       ],
       "social_summary": "ワールドシリーズレイズ対ブリュワーズ。初戦は日本時間10月24日9時の予定です。。各カードの勝敗と勝ち上がりをまとめました。"
+    },
+    "2026-10-23": {
+      "video_id": "mc8kd26Jt2o",
+      "url": "https://youtu.be/mc8kd26Jt2o",
+      "title": "【10/23更新】レイズのワールドシリーズは0勝0敗｜PSシリーズの最新情勢 #Shorts",
+      "published_at": "2026-10-23T06:07:20.195430+00:00",
+      "publish_at": "2026-10-23T11:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-23",
+        "kind": "morning_postseason",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public",
+      "program_version": "ps-program-20260928-v2",
+      "program_edition": "95e45ee0a1419b0981fb021ec20e3f14ffac3a4047b896d2c1301d877f157354",
+      "program_phase": "situation",
+      "program_series": [
+        {
+          "key": "F:111-147",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 147,
+          "next": null,
+          "teams": [
+            {
+              "id": 147,
+              "name": "ヤンキース",
+              "wins": 2,
+              "players": []
+            },
+            {
+              "id": 111,
+              "name": "レッドソックス",
+              "wins": 0,
+              "players": [
+                "吉田正尚"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:117-145",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ア・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 145,
+          "next": null,
+          "teams": [
+            {
+              "id": 145,
+              "name": "ホワイトソックス",
+              "wins": 2,
+              "players": [
+                "村上宗隆"
+              ]
+            },
+            {
+              "id": 117,
+              "name": "アストロズ",
+              "wins": 0,
+              "players": [
+                "今井達也"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:112-135",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 2,
+          "over": true,
+          "winner": 135,
+          "next": null,
+          "teams": [
+            {
+              "id": 135,
+              "name": "パドレス",
+              "wins": 2,
+              "players": [
+                "松井裕樹"
+              ]
+            },
+            {
+              "id": 112,
+              "name": "カブス",
+              "wins": 0,
+              "players": [
+                "今永昇太",
+                "鈴木誠也"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "F:143-144",
+          "round": "F",
+          "round_jp": "ワイルドカードシリーズ",
+          "stage": 1,
+          "league_jp": "ナ・リーグ",
+          "best_of": 3,
+          "need": 2,
+          "played": 3,
+          "over": true,
+          "winner": 144,
+          "next": null,
+          "teams": [
+            {
+              "id": 144,
+              "name": "ブレーブス",
+              "wins": 2,
+              "players": []
+            },
+            {
+              "id": 143,
+              "name": "フィリーズ",
+              "wins": 1,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:114-145",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 5,
+          "over": true,
+          "winner": 114,
+          "next": null,
+          "teams": [
+            {
+              "id": 114,
+              "name": "ガーディアンズ",
+              "wins": 3,
+              "players": []
+            },
+            {
+              "id": 145,
+              "name": "ホワイトソックス",
+              "wins": 2,
+              "players": [
+                "村上宗隆"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "D:139-147",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ア・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 3,
+          "over": true,
+          "winner": 139,
+          "next": null,
+          "teams": [
+            {
+              "id": 139,
+              "name": "レイズ",
+              "wins": 3,
+              "players": []
+            },
+            {
+              "id": 147,
+              "name": "ヤンキース",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:119-144",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 4,
+          "over": true,
+          "winner": 119,
+          "next": null,
+          "teams": [
+            {
+              "id": 119,
+              "name": "ドジャース",
+              "wins": 3,
+              "players": [
+                "大谷翔平",
+                "佐々木朗希",
+                "山本由伸"
+              ]
+            },
+            {
+              "id": 144,
+              "name": "ブレーブス",
+              "wins": 1,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "D:135-158",
+          "round": "D",
+          "round_jp": "地区シリーズ",
+          "stage": 2,
+          "league_jp": "ナ・リーグ",
+          "best_of": 5,
+          "need": 3,
+          "played": 4,
+          "over": true,
+          "winner": 158,
+          "next": null,
+          "teams": [
+            {
+              "id": 158,
+              "name": "ブリュワーズ",
+              "wins": 3,
+              "players": []
+            },
+            {
+              "id": 135,
+              "name": "パドレス",
+              "wins": 1,
+              "players": [
+                "松井裕樹"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "L:114-139",
+          "round": "L",
+          "round_jp": "リーグ優勝決定シリーズ",
+          "stage": 3,
+          "league_jp": "ア・リーグ",
+          "best_of": 7,
+          "need": 4,
+          "played": 6,
+          "over": true,
+          "winner": 139,
+          "next": null,
+          "teams": [
+            {
+              "id": 139,
+              "name": "レイズ",
+              "wins": 4,
+              "players": []
+            },
+            {
+              "id": 114,
+              "name": "ガーディアンズ",
+              "wins": 2,
+              "players": []
+            }
+          ]
+        },
+        {
+          "key": "L:119-158",
+          "round": "L",
+          "round_jp": "リーグ優勝決定シリーズ",
+          "stage": 3,
+          "league_jp": "ナ・リーグ",
+          "best_of": 7,
+          "need": 4,
+          "played": 4,
+          "over": true,
+          "winner": 158,
+          "next": null,
+          "teams": [
+            {
+              "id": 158,
+              "name": "ブリュワーズ",
+              "wins": 4,
+              "players": []
+            },
+            {
+              "id": 119,
+              "name": "ドジャース",
+              "wins": 0,
+              "players": [
+                "大谷翔平",
+                "佐々木朗希",
+                "山本由伸"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "W:139-158",
+          "round": "W",
+          "round_jp": "ワールドシリーズ",
+          "stage": 4,
+          "league_jp": "",
+          "best_of": 7,
+          "need": 4,
+          "played": 0,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月24日",
+            "game": 1,
+            "live": false,
+            "verified_label": "日本時間10月24日9時"
+          },
+          "teams": [
+            {
+              "id": 139,
+              "name": "レイズ",
+              "wins": 0,
+              "players": []
+            },
+            {
+              "id": 158,
+              "name": "ブリュワーズ",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        }
+      ],
+      "social_summary": "ワールドシリーズレイズ対ブリュワーズ。初戦は日本時間10月24日9時の予定です。。各カードの勝敗と勝ち上がりをまとめました。"
     }
   },
   "soccer_race": {
@@ -13981,6 +14360,86 @@
       "privacy": "private",
       "held": false,
       "publish_at": "2026-10-23T09:00:00Z"
+    },
+    "season_team_120": {
+      "video_id": "U4gJbDLMdhg",
+      "url": "https://youtu.be/U4gJbDLMdhg",
+      "title": "【MLB】ナショナルズ｜2026年シーズンまとめ　77勝85敗 #Shorts",
+      "published_at": "2026-10-23T06:33:08.120291+00:00",
+      "publish_at": "2026-10-23T07:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-23",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_team_133": {
+      "video_id": "C-V93694TnI",
+      "url": "https://youtu.be/C-V93694TnI",
+      "title": "【MLB】アスレチックス｜2026年シーズンまとめ　64勝98敗 #Shorts",
+      "published_at": "2026-10-23T06:35:30.951743+00:00",
+      "publish_at": "2026-10-23T13:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-23",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_team_134": {
+      "video_id": "Qo69lcgyftU",
+      "url": "https://youtu.be/Qo69lcgyftU",
+      "title": "【MLB】パイレーツ｜2026年シーズンまとめ　82勝80敗 #Shorts",
+      "published_at": "2026-10-23T06:38:43.111445+00:00",
+      "publish_at": "2026-10-23T14:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-23",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_team_136": {
+      "video_id": "vnF5bMEM6FA",
+      "url": "https://youtu.be/vnF5bMEM6FA",
+      "title": "【MLB】マリナーズ｜2026年シーズンまとめ　76勝86敗 #Shorts",
+      "published_at": "2026-10-23T06:41:55.855868+00:00",
+      "publish_at": "2026-10-23T14:30:00Z",
+      "host_assignment": {
+        "day": "2026-10-23",
+        "kind": "asset:season_team",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
@@ -14021,6 +14480,26 @@
       },
       "planned_host": "ui",
       "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-10-22": {
+      "video_id": "EkFT0Bm9u7w",
+      "url": "https://youtu.be/EkFT0Bm9u7w",
+      "title": "【欧州サッカー】久保建英が先発｜リールストロム 0-6 レアル・ソシエダ ほか 日本人選手の結果 #Shorts",
+      "published_at": "2026-10-23T00:52:32.537851+00:00",
+      "publish_at": "2026-10-23T01:07:00Z",
+      "host_assignment": {
+        "day": "2026-10-23",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
     }
