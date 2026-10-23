@@ -20,6 +20,7 @@
       並べると噛み合わない文。ここは機械では書ききれない。
 
   二段目の重大な指摘(high)は、予約前に止めて人の確認へ回す。
+  引用の主張全体を公式材料で裏付けた誤検出だけは警告として通す。
   材料との機械照合で確定した矛盾も止める。軽微な指摘は参考として残す。
 
 使い方:
@@ -439,7 +440,7 @@ def main():
                     default=["public/narration.json",
                              "public/soccer_narration.json"])
     ap.add_argument("--strict", action="store_true",
-                    help="ありえない数字・材料照合NG・確認済みの矛盾で異常終了する")
+                    help="ありえない数字・材料照合NG・材料で裏付けられないhighで異常終了する")
     ap.add_argument("--out", default="data/sanity.json")
     ap.add_argument('--hold-record', help='見送り印と区別する、この実行のアップロード保留記録')
     ap.add_argument('--kind', default='daily')
@@ -490,12 +491,13 @@ def main():
         else:
             print("\n(ANTHROPIC_API_KEY がないので二段目は飛ばした)")
 
-    high = [o for o in odd if str(o.get('severity', '')).lower() == 'high' and o.get('confirmed')]
-    unconfirmed = [o for o in odd if not o.get('confirmed')]
+    high = [o for o in odd if str(o.get('severity', '')).lower() == 'high' and not o.get('supported')]
+    unconfirmed = [o for o in odd if not o.get('confirmed') and not o.get('supported')]
     if high:
-        print('::error::材料で確認済みの矛盾(high)があるため予約停止・アップロード未実行です')
-    for issue in unconfirmed:
-        print('::warning::常識点検の未確認指摘（アップロードは止めません）: ' + issue.get('why', ''))
+        print('::error::材料で裏付けられない重大な指摘(high)があるため予約停止・アップロード未実行です')
+    for issue in odd:
+        if issue not in high:
+            print('::warning::常識点検（%s）: %s' % (issue['verification'], issue.get('why', '')))
     blocked = bool((impossible or contradictions or high) and args.strict)
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -529,7 +531,8 @@ def main():
             for o in odd:
                 f.write("- %s 「%s」 — %s\n"
                         % ("**重大な指摘・予約停止**" if o in high else
-                           "**材料と矛盾**" if o.get("confirmed") else "参考（未確定）",
+                           "**材料と矛盾**" if o.get("confirmed") else
+                           o['verification'] if o.get('supported') else "参考（未確定）",
                            o.get("where", ""), o.get("why", "")))
 
     return 1 if blocked else 0

@@ -62,8 +62,12 @@ class GroundingTests(unittest.TestCase):
         self.assertFalse(report['upload_held'])
         self.assertFalse(report['blocking_issues'])
         self.assertFalse(report['contradictions'])
-        self.assertEqual(report['unconfirmed_issues'][0]['severity'], 'high')
-        self.assertFalse(report['unconfirmed_issues'][0]['confirmed'])
+        self.assertFalse(report['unconfirmed_issues'])
+        self.assertEqual(report['odd'][0]['severity'], 'high')
+        self.assertFalse(report['odd'][0]['confirmed'])
+        self.assertTrue(report['odd'][0]['supported'])
+        self.assertEqual(report['odd'][0]['verification'], '材料で裏付け済み（誤検出）')
+        self.assertIn('材料で裏付け済み（誤検出）', Path('summary.md').read_text(encoding='utf-8'))
         self.assertEqual(report['materials'][0]['retrieved_at'], FIXTURE['postseason']['updated_at'])
         self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text())['status'], 'passed')
 
@@ -93,8 +97,84 @@ class GroundingTests(unittest.TestCase):
         self.assertEqual(sanity_material.grounding([self.document]), [])
         Path('data/postseason.json').write_text('invalid', encoding='utf-8')
         code, report = self.run_sanity()
-        self.assertEqual(code, 0)
+        self.assertEqual(code, 1)
         self.assertFalse(report['materials'])
+        self.assertTrue(report['blocking_issues'])
+
+    def test_invented_stat_high_stops_and_verify_records_the_reason(self):
+        text = '架空太郎は今季55本塁打です。'
+        issue = dict(severity='high', where=text, why='作り物の成績に誤りがある')
+        code, report = self.run_sanity(text, [issue])
+        self.assertEqual(code, 1)
+        self.assertFalse(report['impossible'])
+        self.assertFalse(report['contradictions'])
+        self.assertFalse(report['blocking_issues'][0]['confirmed'])
+        self.assertFalse(report['blocking_issues'][0]['supported'])
+        verify_code, output = self.verify()
+        self.assertEqual(verify_code, 1)
+        self.assertIn('常識点検による保留・アップロード未実行', output)
+        self.assertIn(issue['why'], output)
+
+    def test_partial_match_unknown_name_or_date_does_not_exempt_high(self):
+        for text in (FIXTURE['text'] + 'で、架空太郎は今季55本塁打です。',
+                     FIXTURE['text'].replace('レイズ', '架空球団'),
+                     '10月23日の' + FIXTURE['text'],
+                     '昨年の' + FIXTURE['text'],
+                     '『' + FIXTURE['text'] + '』は誤りです。'):
+            with self.subTest(text=text):
+                code, report = self.run_sanity(text, [dict(FIXTURE['issue'], where=text)])
+                self.assertEqual(code, 1)
+                self.assertFalse(report['odd'][0]['supported'])
+
+    def test_matching_date_and_reverse_pair_can_be_supported(self):
+        text = '10月24日のレイズ対ブリュワーズはワールドシリーズ第1戦です。'
+        code, report = self.run_sanity(text, [dict(FIXTURE['issue'], where=text)])
+        self.assertEqual(code, 0)
+        self.assertTrue(report['odd'][0]['supported'])
+
+    def test_game_number_date_and_material_completeness_are_required(self):
+        for changes in (dict(game=2), dict(day='10月25日'), dict(game=None), dict(day=None)):
+            with self.subTest(changes=changes):
+                snapshot = copy.deepcopy(FIXTURE['postseason'])
+                snapshot['series'][0]['next'].update(changes)
+                Path('data/postseason.json').write_text(json.dumps(snapshot), encoding='utf-8')
+                code, report = self.run_sanity()
+                self.assertEqual(code, 1)
+                self.assertFalse(report['odd'][0]['supported'])
+
+    def test_model_cannot_supply_its_own_exemption_or_quote_outside_the_script(self):
+        code, report = self.run_sanity('架空太郎は今季55本塁打です。',
+            [dict(FIXTURE['issue'], supported=True, confirmed=False,
+                  verification='材料で裏付け済み（誤検出）')])
+        self.assertEqual(code, 1)
+        self.assertFalse(report['odd'][0]['supported'])
+
+    def test_supported_quote_cannot_release_another_high(self):
+        text = FIXTURE['text'] + '。架空太郎は今季55本塁打です。'
+        issues = [FIXTURE['issue'], dict(severity='high', where='架空太郎は今季55本塁打',
+                                        why='作り物の成績')]
+        code, report = self.run_sanity(text, issues)
+        self.assertEqual(code, 1)
+        self.assertTrue(report['odd'][0]['supported'])
+        self.assertEqual(len(report['blocking_issues']), 1)
+        self.assertEqual(report['blocking_issues'][0]['why'], issues[1]['why'])
+
+    def test_partial_quote_cannot_hide_negation_past_or_unverified_facts(self):
+        for text in ('昨年の' + FIXTURE['text'],
+                     '『' + FIXTURE['text'] + '』は誤りです。',
+                     FIXTURE['text'] + 'で、架空太郎は55本塁打です。'):
+            with self.subTest(text=text):
+                code, report = self.run_sanity(text)
+                self.assertEqual(code, 1)
+                self.assertFalse(report['odd'][0]['supported'])
+
+    def test_conflicting_material_cannot_support_claim(self):
+        self.document['ps_program'] = dict(date_jst='2026-10-24',
+            series=copy.deepcopy(FIXTURE['postseason']['series']))
+        self.document['ps_program']['series'][0]['next']['game'] = 2
+        code, report = self.run_sanity()
+        self.assertEqual(code, 1)
+        self.assertFalse(report['odd'][0]['supported'])
 
     def test_confirmed_round_mismatch_stops_and_verify_explains_hold(self):
         text = FIXTURE['text'].replace('ワールドシリーズ', '地区シリーズ')

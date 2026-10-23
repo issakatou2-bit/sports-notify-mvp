@@ -1,4 +1,4 @@
-"""LLMの違和感は候補。原稿に添付された材料との矛盾だけを確定する。"""
+"""highは停止を基本にし、引用の主張全体を材料で裏付けた誤検出だけ除く。"""
 import re
 import json
 from pathlib import Path
@@ -135,16 +135,71 @@ def check(document, materials=None):
     return list(dict.fromkeys(errors))
 
 
+def _supported_claim(quoted, document, materials):
+    """対応済みの対戦・シリーズ・試合番号・日付をすべて照合する。
+
+    一部一致や未知の主張は裏付けにしない。成績など別の事実が続く引用も
+    fullmatchで除外し、判定できる文型を広げるときは固定試験を加える。
+    """
+    # 引用が過去の言及や否定文の一部分なら、現在の試合の事実で免除しない。
+    sentences = [sentence.strip() for segment in document.get('segments') or []
+                 for sentence in re.split(r'[。！？\n]', segment.get('text') or '')
+                 if quoted.rstrip('。').strip() in sentence]
+    if not sentences or any(sentence != quoted.rstrip('。').strip() for sentence in sentences):
+        return False
+    program = document.get('ps_program') or {}
+    try:
+        day = datetime.fromisoformat(program.get('target_day') or document.get('date_jst')
+                                     or program['date_jst']).date()
+    except (KeyError, TypeError, ValueError):
+        return False
+    matches = []
+    for source in materials or []:
+        try:
+            source_day = datetime.fromisoformat(source['date_jst']).date()
+        except (KeyError, TypeError, ValueError):
+            continue
+        if not 0 <= (day - source_day).days <= 1:
+            continue
+        for row in source.get('series') or []:
+            names = [t.get('name') for t in row.get('teams') or []]
+            if len(names) != 2 or not all(names):
+                continue
+            pair = '|'.join(re.escape(a + join + b)
+                            for a, b in (names, names[::-1])
+                            for join in ('対', 'vs', ' vs '))
+            claim = re.fullmatch(
+                r'(?:(\d+)月(\d+)日(?:の|、)?)?(?:' + pair + r')(?:は|の|、)?'
+                r'(ワイルドカードシリーズ|地区シリーズ|リーグ優勝決定シリーズ|ワールドシリーズ)'
+                r'第(\d+)戦(?:です|だ)?[。]?', quoted.strip())
+            if not claim:
+                continue
+            month, date, round_jp, game = claim.groups()
+            nxt = row.get('next') or {}
+            matches.append(bool(
+                round_jp == row.get('round_jp') and int(game) == nxt.get('game')
+                and nxt.get('day') == f'{day.month}月{day.day}日'
+                and (not month or (int(month), int(date)) == (day.month, day.day))))
+    return bool(matches) and all(matches)
+
+
 def assess(issues, documents, materials=None):
     errors = [error for document in documents for error in check(document, materials)]
     # severityは受信値として残す。停止可否を同じ値へ上書きしない。
     reviewed = []
     for issue in issues:
         quoted = issue.get('where') or ''
-        scoped = [dict(document, segments=[s for s in document.get('segments') or []
+        referenced = [document for document in documents
+                      if quoted and any(quoted in (s.get('text') or '')
+                                        for s in document.get('segments') or [])]
+        scoped = [dict(document, segments=[dict(s, text=quoted)
+                                          for s in document.get('segments') or []
                                           if quoted and quoted in (s.get('text') or '')])
-                  for document in documents]
+                  for document in referenced]
         confirmed = any(check(document, materials) for document in scoped)
-        reviewed.append(dict(issue, confirmed=confirmed,
-                             verification='材料と矛盾あり' if confirmed else '材料との矛盾は確認されず'))
+        supported = bool(scoped) and not confirmed and all(
+            _supported_claim(quoted, document, materials) for document in referenced)
+        reviewed.append(dict(issue, confirmed=confirmed, supported=supported,
+                             verification='材料と矛盾あり' if confirmed else
+                             '材料で裏付け済み（誤検出）' if supported else '材料で確認できず'))
     return reviewed, list(dict.fromkeys(errors))
