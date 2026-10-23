@@ -63,7 +63,7 @@ class EveningFixTests(unittest.TestCase):
             document['segments'][index]['text'] = document['segments'][index]['text'].replace(old, new)
             self.assertIn('日本時間', ' '.join(sanity_material.check(document)))
 
-    def test_strict_cli_high_stops_even_without_confirmed_material_mismatch(self):
+    def test_strict_cli_unverified_high_stops_with_or_without_material_mismatch(self):
         with tempfile.TemporaryDirectory() as folder:
             narration, result = Path(folder) / 'narration.json', Path(folder) / 'sanity.json'
             for mismatched, expected in [(False, 1), (True, 1)]:
@@ -72,14 +72,18 @@ class EveningFixTests(unittest.TestCase):
                     document['segments'][0]['text'] = document['segments'][0]['text'].replace('2勝3敗', '3勝2敗')
                 narration.write_text(json.dumps(document, ensure_ascii=False), encoding='utf-8')
                 args = ['sanity.py', '--general', '--strict', '--narration', str(narration), '--out', str(result)]
+                issues = copy.deepcopy(FIXTURE['llm_issues'])
+                if mismatched:
+                    issues[0]['where'] = issues[0]['where'].replace('2勝3敗', '3勝2敗')
                 with patch.object(sys, 'argv', args), patch.dict(os.environ, {'ANTHROPIC_API_KEY': 'TEST'}), \
-                     patch.object(sanity, 'general', return_value=FIXTURE['llm_issues']), \
+                     patch.object(sanity, 'general', return_value=issues), \
                      patch.object(sanity, 'check_scores', return_value=[]), \
                      patch.object(sanity, 'check_stat_files', return_value=[]):
                     self.assertEqual(sanity.main(), expected)
                 report = json.loads(result.read_text(encoding='utf-8'))
                 self.assertEqual(bool(report['contradictions']), mismatched)
                 self.assertTrue(report['blocking_issues'])
+                self.assertFalse(any(i['supported'] for i in report['blocking_issues']))
 
     def test_no_movie_skips_before_upload_and_records_reason(self):
         with tempfile.TemporaryDirectory() as folder:

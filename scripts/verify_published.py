@@ -41,6 +41,7 @@ def main() -> int:
     ap.add_argument("--kind", required=True,
                     help="published_videos.json の区分 (daily / daily_soccer など)")
     ap.add_argument("--record", default=RECORD)
+    ap.add_argument('--hold-record', help='この実行の常識点検の保留記録')
     ap.add_argument("--allow-missing", action="store_true",
                     help="出ていなくても赤くしない(記録だけ残す)")
     args = ap.parse_args()
@@ -48,6 +49,24 @@ def main() -> int:
     jst = timezone(timedelta(hours=9))
     now = datetime.now(jst)
     day = now.strftime("%Y-%m-%d")
+    summary = os.environ.get('GITHUB_STEP_SUMMARY')
+    # 同日の以前の動画や「試合なし」の印で、今回の保留を成功にしない。
+    if args.hold_record:
+        try:
+            hold = json.loads(pathlib.Path(args.hold_record).read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            hold = {}
+        same_run = all(not os.environ.get(env) or hold.get(field) == os.environ[env]
+                       for field, env in (('run_id', 'GITHUB_RUN_ID'),
+                                          ('run_attempt', 'GITHUB_RUN_ATTEMPT')))
+        if hold.get('status') == 'held' and hold.get('kind') == args.kind and same_run:
+            line = f'{day} の {args.kind}: 常識点検による保留・アップロード未実行'
+            reasons = '\n'.join('- ' + str(r) for r in hold.get('reasons') or [])
+            print(f'[error] {line}\n{reasons}')
+            if summary:
+                with open(summary, 'a', encoding='utf-8') as f:
+                    f.write(f'## 動画の保留\n\n{line}\n\n{reasons}\n\n')
+            return 1
     try:
         rec = json.loads(pathlib.Path(args.record).read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError) as e:
@@ -81,8 +100,6 @@ def main() -> int:
                   f"{hours:.1f}時間前に出しています。"
                   "実行が日をまたいだものとして扱います。")
             entry, day = cand, prev
-
-    summary = os.environ.get("GITHUB_STEP_SUMMARY")
 
     if entry and entry.get("video_id"):
         line = (f"{day} の {args.kind}: 出ました "
