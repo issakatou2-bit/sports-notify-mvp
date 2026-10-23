@@ -838,6 +838,7 @@ def record_video(kind: str, date_key: str, video_id: str,
         entry.update(experiment)
     if host_tracking:
         entry.update(host_tracking)
+    if privacy is not None or host_tracking:
         entry['privacy'] = privacy or 'public'
     data.setdefault(kind, {})[date_key] = entry
     p.parent.mkdir(parents=True, exist_ok=True)

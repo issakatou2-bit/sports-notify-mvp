@@ -22,6 +22,13 @@ import soccer_jp_week as week
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = '2026-10-20'
 TITLE = 'Shohei Ohtani returns to Dodgers lineup after resting knee'
+NOW = datetime(2026, 10, 20, 12, tzinfo=timezone.utc)
+
+
+class FrozenClock(datetime):
+    @classmethod
+    def now(cls, tz=None):
+        return NOW.astimezone(tz) if tz else NOW.replace(tzinfo=None)
 
 
 def article(at='', url='https://abc30.invalid/ohtani', source='ABC30', title=TITLE):
@@ -29,6 +36,10 @@ def article(at='', url='https://abc30.invalid/ohtani', source='ABC30', title=TIT
 
 
 class ArticleDates(unittest.TestCase):
+    def setUp(self):
+        self.enterContext(patch.object(af, 'datetime', FrozenClock))
+        self.enterContext(patch.object(mlb_buzz, 'datetime', FrozenClock))
+
     def test_two_day_boundary_old_rss_and_unknown(self):
         rows = [article('Sun, 18 Oct 2026 00:00:00 GMT'),
                 article('Sat, 17 Oct 2026 23:59:59 GMT'),
@@ -98,7 +109,7 @@ class ArticleDates(unittest.TestCase):
         self.assertEqual(result['posts'], [])
 
     def test_local_buzz_rss_and_atom_dates(self):
-        now = datetime.now(timezone.utc).isoformat()
+        now = NOW.isoformat()
         for raw in [f'<rss><channel><title>Feed</title><item><title>Old</title><pubDate>2026-06-03</pubDate></item><item><title>Fresh</title><pubDate>{now}</pubDate></item><item><title>Unknown</title></item></channel></rss>',
                     f'<feed xmlns="http://www.w3.org/2005/Atom"><title>Feed</title><entry><title>Old</title><published>2026-06-03</published></entry><entry><title>Fresh</title><published>{now}</published></entry><entry><title>Unknown</title><updated>{now}</updated></entry></feed>']:
             response = SimpleNamespace(content=raw.encode(), status_code=200, raise_for_status=lambda: None)
@@ -106,15 +117,24 @@ class ArticleDates(unittest.TestCase):
                 self.assertEqual(local_buzz.fetch_titles('fixture', 'https://feed.invalid'), ['Fresh'])
 
     def test_saved_buzz_checks_individual_video_dates(self):
-        now = datetime.now(timezone.utc).isoformat()
+        now = NOW.isoformat()
         with tempfile.TemporaryDirectory() as td:
             path = Path(td)/'buzz.json'
             path.write_text(json.dumps(dict(updated_at=now, videos=[dict(title='old', published_at='2026-06-03'),
                            dict(title='new', published_at=now), dict(title='unknown')])), encoding='utf-8')
             self.assertEqual([r['title'] for r in mlb_buzz.load(str(path))], ['new'])
 
+    def test_buzz_cache_with_unknown_zone_or_future_update_is_unusable(self):
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / 'buzz.json'
+            for stamp in ('2026-10-20T12:00:00', '2026-10-21T12:00:00Z', None, 'broken'):
+                with self.subTest(stamp=stamp):
+                    path.write_text(json.dumps(dict(updated_at=stamp, videos=[
+                        dict(title='new', published_at=NOW.isoformat())])), encoding='utf-8')
+                    self.assertEqual(mlb_buzz.load(str(path)), [])
+
     def test_buzz_uses_original_publication_instead_of_playlist_addition(self):
-        now = datetime.now(timezone.utc).isoformat()
+        now = NOW.isoformat()
         response = SimpleNamespace(raise_for_status=lambda: None, json=lambda: dict(items=[
             dict(snippet=dict(title='Old Highlights', publishedAt=now, resourceId=dict(videoId='old')),
                  contentDetails=dict(videoPublishedAt='2026-06-03T00:00:00Z')),
@@ -218,7 +238,7 @@ class PlayerIdentity(unittest.TestCase):
         self.assertIsNone(week.resolve([self.row('Kodai')], 'Kaishu Sano'))
         self.assertIsNone(week.resolve([self.row('Kaishun')], 'Kaishu Sano'))
         self.assertEqual(week.resolve([self.row('Kaishu')], 'Kaishu Sano'), 1)
-        self.assertEqual(week.resolve([self.row('K.')], 'Kaishu Sano'), 1)
+        self.assertIsNone(week.resolve([self.row('K.')], 'Kaishu Sano'))
         self.assertIsNone(week.resolve([self.row('')], 'Kaishu Sano'))
         self.assertIsNone(week.resolve([self.row('K.'), dict(self.row('Kodai'), id=2)], 'K. Sano'))
         self.assertIsNone(week.resolve([], ''))

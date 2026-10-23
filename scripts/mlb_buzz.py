@@ -786,9 +786,13 @@ def load(path: str = "data/mlb_buzz.json", max_age_hours: int = 30) -> list:
         return []
     try:
         updated = datetime.fromisoformat(data.get("updated_at", ""))
-    except ValueError:
+    except (TypeError, ValueError):
+        return []
+    if updated.tzinfo is None:
         return []
     age = (datetime.now(timezone.utc) - updated).total_seconds() / 3600
+    if age < 0:
+        return []
     if age > max_age_hours:
         print(f"[info] 注目度データが古いため使いません({age:.0f}時間前)")
         return []

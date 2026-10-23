@@ -236,6 +236,7 @@ jobs:
 
           # 1本が失敗しても残りを試す。ここを素通しにしていたため、
           # jp_players の不具合1件で以降のトピックが丸ごと未処理になった。
+          source scripts/asset_publish_args.sh
           set +e
           FAILED=""
           for t in $TOPICS; do
@@ -270,15 +271,14 @@ jobs:
             # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
             bash scripts/shorts_thumbnail.sh "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png"
 
-            # 非公開の試作には公開予約を付けない（10/21 private で作った回に 18:30 の予約が付いていた）。
-            PUB=(--publish-at "18:30")
-            if [ "${PRIVACY:-public}" = private ]; then PUB=(); fi
+            # 公開を選んだ回だけ予約する。限定公開・非公開の指定を保つ。
+            asset_publication_args "${PRIVACY:-public}" "18:30"
             python scripts/upload_youtube.py \
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
               --thumbnail "build/asset_$t/short.png" \
               --privacy "${PRIVACY:-public}" $FORCE \
-              "${PUB[@]}"
+              "${ASSET_PUBLISH_ARGS[@]}"
             if [ $? -eq 0 ]; then
               echo "$t: 完了"
             else

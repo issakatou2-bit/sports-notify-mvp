@@ -137,8 +137,12 @@ def narration(data):
         g = game['winner_goal']; text = ''
         # 決勝点の得点者も、名前が確かなときだけ名前で言う。
         if g:
-            text = f"決勝点は{rr.spoken_minute(g['minute'])}。{rf.goal_name(g,game)}が得点。"
-            if g.get('own_goal'): text += 'オウンゴール。'
+            text = f"決勝点は{rr.spoken_minute(g['minute'])}。"
+            if g.get('own_goal'):
+                text += (f"{rf.scorer_name(g)}のオウンゴール。" if rf.named_scorer(g) else
+                         f"{rf.club_of(g,game)}にオウンゴールで得点が入りました。")
+            else:
+                text += f"{rf.goal_name(g,game)}が得点。"
         text += ''.join(f"{game[r['side']]['name_jp']}は{r['before']}位から{r['after']}位。" for r in game['rank_changes'])
         segments.append(dict(kind='context', text=text, speaker=2, meta={}))
     for i, v in enumerate(data['voices']):

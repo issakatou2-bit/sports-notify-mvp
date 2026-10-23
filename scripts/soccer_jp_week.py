@@ -81,13 +81,9 @@ def resolve(elements: list, name_en: str):
              if sur and sur in ((e.get("web_name") or "").strip(),
                                 (e.get("second_name") or "").strip())]
     if first:
-        def same_given(element):
-            given = (element.get('first_name') or '').casefold().rstrip('.')
-            if not given:
-                return False
-            return given == first or (min(len(given), len(first)) == 1 and given[0] == first[0])
+        from soccer_player_identity import same_given_name
         cands = [e for e in cands
-                 if same_given(e)]
+                 if same_given_name(e.get('first_name'), name_en)]
     return cands[0].get("id") if len(cands) == 1 else None
 
 
@@ -122,10 +118,11 @@ def fpl_stats(matchdays: set, roster: list = None) -> dict:
             continue
         for name, pid in ids.items():
             st = live.get(pid) if pid else None
-            if st is not None:
-                out[(name, md)] = {"minutes": st.get("minutes") or 0,
-                                   "goals": st.get("goals_scored") or 0,
-                                   "assists": st.get("assists") or 0}
+            if isinstance(st, dict) and all(st.get(key) is not None
+                                           for key in ('minutes', 'goals_scored', 'assists')):
+                out[(name, md)] = {"minutes": st['minutes'],
+                                   "goals": st['goals_scored'],
+                                   "assists": st['assists']}
     return out
 
 
@@ -155,6 +152,18 @@ def build(matches: dict, fpl: dict = None, out_now: set = None,
     out_now = out_now or set()
     players_for = players_for or ne.jp_players_for_club
     club_jp = club_jp or ne.club_name_jp
+    # FPL/event は節全体の合計。同じクラブがその節に複数試合あると、
+    # 直近1試合の本人の成績として結び付けられない。
+    pl_games = {}
+    for match in matches.get('PL') or []:
+        ft = (match.get('score') or {}).get('fullTime') or {}
+        if ft.get('home') is None or ft.get('away') is None:
+            continue
+        teams = tuple((match.get(side) or {}).get('name') or ''
+                      for side in ('homeTeam', 'awayTeam'))
+        ident = match.get('id') or (match.get('utcDate'), teams)
+        for team in teams:
+            pl_games.setdefault((team, match.get('matchday')), set()).add(ident)
     rows = {}
     for code, ms in matches.items():
         for m in sorted(ms, key=lambda x: x.get("utcDate") or ""):
@@ -184,7 +193,7 @@ def build(matches: dict, fpl: dict = None, out_now: set = None,
                         "out": p["name_jp"] in out_now,
                         "stats": None,
                     }
-                    if code == "PL":
+                    if code == "PL" and len(pl_games.get((team, m.get('matchday')), ())) == 1:
                         row["stats"] = fpl.get(
                             (p["name_jp"], m.get("matchday")))
                     old = rows.get(p["name_jp"])
@@ -294,7 +303,8 @@ def headline(rows: list) -> str:
     win = [r for r in rows if r["result"] == "勝ち" and not sat_out(r)]
     if win:
         return f"{win[0]['name']}の{win[0]['club']}が勝利"
-    return f"欧州の日本人選手{len(rows)}人の週末" if rows else ""
+    people = sum(len(r.get('players') or [r]) for r in rows)
+    return f"欧州の日本人選手{people}人の週末" if rows else ""
 
 
 def finished(matches: dict) -> dict:

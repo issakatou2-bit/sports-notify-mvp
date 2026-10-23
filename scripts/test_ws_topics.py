@@ -271,6 +271,31 @@ def ps_fixture():
 
 
 class PlayerTopics(unittest.TestCase):
+    def test_missing_schedule_is_not_zero_games(self):
+        for missing in ({}, {'dates': None}, {'dates': [{}]}, {'dates': [{'games': None}]}):
+            with self.subTest(missing=missing):
+                def get(path, **params):
+                    if path == '/schedule' and params.get('gameType') == wt.PS_TYPES and params.get('teamId') == TB:
+                        return missing
+                    return self.fixture_get(path, **params)
+                with self.assertRaisesRegex(ValueError, '欠測'):
+                    wt.postseason_players(2026, (TB, MIL), get)
+                with self.assertRaisesRegex(ValueError, '欠測'):
+                    wt.head_to_head_topic(2026, (TB, MIL), NAMES, lambda *a, **k: missing)
+        self.assertEqual(wt.games_of({'dates': []}), [])
+
+    def test_empty_final_boxscore_omits_rankings_instead_of_using_partial_totals(self):
+        def get(path, **params):
+            result = self.fixture_get(path, **params)
+            if path == '/game/2/boxscore':
+                result['teams']['away']['players'] = {}
+            return result
+        with self.assertRaisesRegex(ValueError, '選手成績一覧が欠測'):
+            wt.postseason_players(2026, (TB, MIL), get)
+        with patch.object(wt, 'load_history', return_value=[]):
+            topics = wt.build_topics(2026, get=get, cache_path=None)
+        self.assertEqual([t['key'] for t in topics], ['ws_schedule', 'ws_season_matchup'])
+
     def fixture_get(self, path, **params):
         games, boxes = ps_fixture()
         if path == "/schedule":

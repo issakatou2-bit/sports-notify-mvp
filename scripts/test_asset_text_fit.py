@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """資産動画v3のカード本文: 禁則の折り返し・球団札と文字の重なり・枠内への収まり。"""
 import json
+import os
 import pathlib
 import sys
 import unittest
@@ -23,7 +24,7 @@ BODIES = [
 
 
 def materials():
-    data = json.loads((ROOT / "data/ws_topics.json").read_text(encoding="utf-8"))
+    data = json.loads((ROOT / "scripts/fixtures/asset-text-fit/ws-topics.json").read_text(encoding="utf-8"))
     return data["topics"]
 
 
@@ -48,15 +49,26 @@ def render(topic, start=0, count=2, look="v4"):
     common.item.cache_clear()
     try:
         spec = topic
-        return asset.render_v3(3.0, "list", {"topic": spec["key"], "start": start, "count": count},
-                               spec, spec["key"])
+        with patch.object(asset, 'LIST_TOPICS', {spec['key']: spec}):
+            return asset.render_v3(3.0, "list", {"topic": spec["key"], "start": start, "count": count},
+                                   spec, spec["key"])
     finally:
         r3.LOOK = old
         r3._item_card.cache_clear()
         common.item.cache_clear()
 
 
-class Kinsoku(unittest.TestCase):
+class FixedLayout(unittest.TestCase):
+    def setUp(self):
+        env = {k: v for k, v in os.environ.items() if not k.startswith('COLLESPO_')}
+        env['COLLESPO_SHORT_LOOK'] = 'v4'
+        self.enterContext(patch.dict(os.environ, env, clear=True))
+        self.enterContext(patch.object(r3, 'LOOK', 'v4'))
+        r3._item_card.cache_clear()
+        self.addCleanup(r3._item_card.cache_clear)
+
+
+class Kinsoku(FixedLayout):
     def test_narrow_width_preserves_kinsoku_and_all_characters(self):
         bodies = BODIES + ['説明「カタカナカタカナカタカナカタカナ」、次の文。',
                            '説明（補足（内側）も含む）です。']
@@ -96,7 +108,7 @@ class Kinsoku(unittest.TestCase):
         self.assertIn("（今回を含む）", lines[1], lines)
 
 
-class Badges(unittest.TestCase):
+class Badges(FixedLayout):
     def test_badge_style_switch_does_not_reuse_previous_card(self):
         old = r3.LOOK
         r3.LOOK = 'v4'
@@ -143,7 +155,7 @@ class Badges(unittest.TestCase):
                                 for b in badges), entry)
 
 
-class Fit(unittest.TestCase):
+class Fit(FixedLayout):
     def test_narrow_card_keeps_badge_with_team_and_reduces_whole_item(self):
         old = r3.LOOK
         r3.LOOK = 'v4'
