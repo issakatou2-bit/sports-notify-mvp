@@ -115,20 +115,28 @@ def timestamp(value):
         return None
 
 
-def public_videos(ids, get):
+def public_videos(ids, get, *, details=False):
     """公開状態と自チャンネル所有をvideos.listで二重確認。"""
-    valid = set()
+    valid = {} if details else set()
     ids = sorted(ids)
     for offset in range(0, len(ids), 50):
         page = get("videos", part="snippet,status", id=",".join(ids[offset:offset + 50]), maxResults=50)
+        if details and not isinstance(page.get("items"), list):
+            raise ValueError("videosの公開確認が欠測")
         for row in page.get("items") or []:
             if ((row.get("snippet") or {}).get("channelId") == CHANNEL_ID
                     and (row.get("status") or {}).get("privacyStatus") == "public"):
-                valid.add(row["id"])
+                if details:
+                    valid[row["id"]] = (row.get("snippet") or {}).get("title", "（題の取得なし）")
+                else:
+                    valid.add(row["id"])
     return valid
 
 
-def collect(*, get=youtube_get, now=None, days=7, max_pages=10):
+def collect(*, get=youtube_get, now=None, days=7, max_pages=10,
+            classifier=None, include_comments=False):
+    """取得と公開確認を共用。本文の保持は訂正通知が明示した場合だけ。"""
+    classifier = classifier or classify
     now = now or datetime.now(timezone.utc)
     cutoff = now - timedelta(days=days)
     payload = dict(updated_at=now.isoformat(), source="YouTube Data API commentThreads・videos",
@@ -165,7 +173,7 @@ def collect(*, get=youtube_get, now=None, days=7, max_pages=10):
             if not vid or not cid or cid in seen or item.get("channelId") != CHANNEL_ID:
                 continue
             seen.add(cid)
-            seed = classify(item.get("textOriginal") or item.get("textDisplay") or "")
+            seed = classifier(item.get("textOriginal") or item.get("textDisplay") or "")
             if seed:
                 candidates.append((vid, seed))
         token = page.get("nextPageToken")
@@ -178,7 +186,11 @@ def collect(*, get=youtube_get, now=None, days=7, max_pages=10):
     else:
         if token:
             payload["coverage"]["complete"] = False
-    valid = public_videos({vid for vid, _ in candidates}, get)
+    valid = public_videos({vid for vid, _ in candidates}, get, details=include_comments)
+    if include_comments:
+        payload["seeds"] = [dict(seed, source_video_id=vid, source_video_title=valid[vid])
+                            for vid, seed in candidates if vid in valid]
+        return payload
     # 同じ定型要約はまとめて件数化。個々のコメントへの逆引き情報を出さない。
     groups = {}
     for vid, seed in candidates:

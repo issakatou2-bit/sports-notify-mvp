@@ -1,0 +1,25 @@
+name: 訂正コメントの確認（既定オフ）
+on:
+  schedule:
+    - cron: '37 22 * * *' # 毎朝7:37 JST
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: correction-comments
+  cancel-in-progress: false
+jobs:
+  watch:
+    if: vars.COLLESPO_CORRECTION_WATCH == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read public correction candidates
+        env:
+          COLLESPO_CORRECTION_WATCH: ${{ vars.COLLESPO_CORRECTION_WATCH || 'off' }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python scripts/correction_comments.py
