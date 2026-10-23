@@ -615,8 +615,8 @@ def build_asset_metadata(topic: str) -> dict:
             lines = solo_host.credit('\n'.join(lines), segments).splitlines()
     return {
         "snippet": {
-            "title": club_display_title(__import__("press_names").press_title(meta["title"]))[:100],
-            "description": "\n".join(lines)[:5000],
+            "title": __import__('video_titles').public_title(meta["title"]),
+            "description": __import__('video_titles').description_head("\n".join(lines))[:5000],
             "tags": meta["tags"][:15],
             "categoryId": CATEGORY_SPORTS,
             "defaultLanguage": "ja",
@@ -1363,7 +1363,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         import player_story
         narr = _json_or_empty(narration_path)
         player_story.validate(narr)
-        return {'snippet': {'title': narr['title'], 'description': __import__('host_split').credit(narr['description']),
+        return {'snippet': {'title': __import__('video_titles').public_title(narr['title']), 'description': __import__('host_split').credit(__import__('video_titles').description_head(narr['description'])),
                             'tags': ['MLB', narr['player']['name_jp'], 'コレスポ'],
                             'categoryId': CATEGORY_SPORTS, 'defaultLanguage': 'ja',
                             'defaultAudioLanguage': 'ja'}}
@@ -1693,14 +1693,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             print(f"[warn] シリーズの題を作れません（元の題のまま）: {e}")
             series_main = []
     # 選手名と球団名を新聞の書き方に（「村上宗隆のホワイトソックス」→「村上ホワイトソックス」。10/10 本人）
-    import press_names
-    title = press_names.press_title(title)
-    title = club_display_title(title)
-    if sport == 'soccer' or kind in ('soccer_race', 'soccer_week', 'soccer_results', 'soccer_voices'):
-        import club_display_names
-        title = club_display_names.youtube_title(title)
-    else:
-        title = title[:100]  # YouTubeのタイトル上限
+    import video_titles
+    title = video_titles.public_title(title, soccer=(sport == 'soccer' or kind in (
+        'soccer_race', 'soccer_week', 'soccer_results', 'soccer_voices')))
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
@@ -2000,7 +1995,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     return {
         "snippet": {
             "title": title,
-            "description": solo_host.credit("\n".join(lines), _json_or_empty(narration_path).get('segments', []))[:5000],
+            "description": solo_host.credit(video_titles.description_head("\n".join(lines)), _json_or_empty(narration_path).get('segments', []))[:5000],
             # 上限は500文字。15本に絞っていたが、主役の名前を前に置くように
             # したので、そのぶん後ろの一般語が押し出されていた。
             "tags": _fit_tags(tags),

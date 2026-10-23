@@ -57,6 +57,8 @@ def register(topic, artifact, run):
 
 
 def bsky_record(text, title, video_id, now, description='コレスポのPSの話題です。'):
+    import video_titles
+    title = video_titles.public_title(title)
     if len(text) > 300:
         raise ValueError('Bluesky caption is longer than 300 characters')
     url = 'https://www.youtube.com/watch?v=' + video_id
