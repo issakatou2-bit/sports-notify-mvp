@@ -155,11 +155,11 @@ class PublicationGate(unittest.TestCase):
         doc['segments'][0]['meta']['source_headlines'] = [article(TARGET)]
         self.assertFalse(sanity_material.check(doc))
 
-    def test_high_stops_low_passes_and_results_are_saved(self):
+    def test_unconfirmed_high_and_low_warn_and_results_are_saved(self):
         with tempfile.TemporaryDirectory() as td:
             narration, output, summary = [Path(td)/name for name in ('narr.json', 'sanity.json', 'summary.md')]
             narration.write_text(json.dumps(dict(date_jst=TARGET, segments=[dict(text='大谷翔平はスタメンに復帰しました。')])), encoding='utf-8')
-            for severity, status in [('high', 1), ('low', 0)]:
+            for severity, status in [('high', 0), ('low', 0)]:
                 issue = dict(severity=severity, where='大谷翔平はスタメンに復帰しました。', why='6月の記事が10月の材料に混入')
                 with patch.object(sys, 'argv', ['sanity.py', '--general', '--strict', '--narration', str(narration), '--out', str(output)]), \
                      patch.dict(os.environ, dict(ANTHROPIC_API_KEY='TEST', GITHUB_STEP_SUMMARY=str(summary))), \
@@ -168,8 +168,9 @@ class PublicationGate(unittest.TestCase):
                      patch.object(sanity, 'check_stat_files', return_value=[]):
                     self.assertEqual(sanity.main(), status)
                 report = json.loads(output.read_text(encoding='utf-8'))
-                self.assertEqual(bool(report['blocking_issues']), severity == 'high')
-            self.assertIn('予約停止', summary.read_text(encoding='utf-8'))
+                self.assertFalse(report['blocking_issues'])
+                self.assertTrue(report['unconfirmed_issues'])
+            self.assertIn('参考（未確定）', summary.read_text(encoding='utf-8'))
 
     def test_workflow_gate_fails_job_and_precedes_upload(self):
         import yaml

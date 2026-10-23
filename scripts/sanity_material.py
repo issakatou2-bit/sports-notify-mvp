@@ -1,8 +1,45 @@
 """LLMの違和感は候補。原稿に添付された材料との矛盾だけを確定する。"""
 import re
+import json
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
 JST = timezone(timedelta(hours=9))
+
+
+def grounding(documents, snapshot_path='data/postseason.json'):
+    """保存済みのPS材料を、出典・取得時刻を保った小さな形で渡す。通信しない。"""
+    sources = []
+    for document in documents:
+        program = document.get('ps_program') or {}
+        if program:
+            sources.append(dict(source='narration.ps_program',
+                                retrieved_at=program.get('retrieved_at'),
+                                date_jst=program.get('date_jst'),
+                                source_url=program.get('source_url'),
+                                series=program.get('series') or []))
+    try:
+        snapshot = json.loads(Path(snapshot_path).read_text(encoding='utf-8'))
+        source_day = datetime.fromisoformat(snapshot['date']).date()
+        # PS予告の原稿日付は翌日の試合日になる場合もある。
+        days = {(d.get('ps_program') or {}).get('date_jst') or d.get('date_jst')
+                for d in documents}
+        if any(day and 0 <= (datetime.fromisoformat(day).date() - source_day).days <= 1
+               for day in days):
+            sources.append(dict(source=str(snapshot_path), retrieved_at=snapshot.get('updated_at'),
+                                date_jst=snapshot['date'],
+                                source_url='https://statsapi.mlb.com/api/v1/schedule',
+                                series=snapshot.get('series') or []))
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    result = [dict(source, series=[{k: row[k] for k in
+            ('key', 'round', 'round_jp', 'teams', 'next', 'played', 'over') if k in row}
+            for row in source['series']]) for source in sources]
+    for source in result:
+        for row in source['series']:
+            row['teams'] = [{k: t[k] for k in ('id', 'name', 'wins') if k in t}
+                            for t in row.get('teams') or []]
+    return result
 
 
 def _clock(text, base):
@@ -18,7 +55,7 @@ def _clock(text, base):
         return None
 
 
-def check(document):
+def check(document, materials=None):
     import verify_numbers
     import game_fact_guard
     errors = verify_numbers.check(document) + game_fact_guard.check(document)
@@ -72,11 +109,34 @@ def check(document):
                 actual, expected = _clock(text, base), _clock(label, base)
                 if actual and expected and actual != expected:
                     errors.append(f'行{index}: 初戦の日本時間が材料と不一致')
+    # 現在の明示された対戦カードだけを見る。過去回の言及や別カードへ
+    # 現在のシリーズを当てはめない。学習済みの記憶は照合根拠にしない。
+    for index, segment in enumerate(document.get('segments') or [], 1):
+        for sentence in (segment.get('text') or '').split('。'):
+            if re.search(r'昨年|昨季|前回|振り返|だった|でした', sentence):
+                continue
+            for source in materials or []:
+                for row in source.get('series') or []:
+                    names = [t.get('name') for t in row.get('teams') or []]
+                    if len(names) != 2 or not all(names):
+                        continue
+                    rounds = ('ワイルドカードシリーズ', '地区シリーズ',
+                              'リーグ優勝決定シリーズ', 'ワールドシリーズ')
+                    pair = '|'.join(re.escape(a + join + b)
+                                    for a, b in (names, names[::-1])
+                                    for join in ('対', 'vs', ' vs '))
+                    claim = re.search('(?:' + pair + r')(?:は|の|、)?\s*('
+                                      + '|'.join(rounds) + ')', sentence)
+                    if claim and re.match(r'ではなく|ではない|でなく', sentence[claim.end():]):
+                        continue
+                    spoken = claim[1] if claim else None
+                    if spoken and row.get('round_jp') and spoken != row['round_jp']:
+                        errors.append(f'行{index}: 対戦カードのシリーズ名が材料と不一致')
     return list(dict.fromkeys(errors))
 
 
-def assess(issues, documents):
-    errors = [error for document in documents for error in check(document)]
+def assess(issues, documents, materials=None):
+    errors = [error for document in documents for error in check(document, materials)]
     # severityは受信値として残す。停止可否を同じ値へ上書きしない。
     reviewed = []
     for issue in issues:
@@ -84,7 +144,7 @@ def assess(issues, documents):
         scoped = [dict(document, segments=[s for s in document.get('segments') or []
                                           if quoted and quoted in (s.get('text') or '')])
                   for document in documents]
-        confirmed = any(check(document) for document in scoped)
+        confirmed = any(check(document, materials) for document in scoped)
         reviewed.append(dict(issue, confirmed=confirmed,
                              verification='材料と矛盾あり' if confirmed else '材料との矛盾は確認されず'))
     return reviewed, list(dict.fromkeys(errors))
