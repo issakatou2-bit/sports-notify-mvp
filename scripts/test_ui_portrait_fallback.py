@@ -59,7 +59,9 @@ class PortraitFallback(unittest.TestCase):
             if failure == 'missing':
                 del queue.files[ref]
             elif failure == 'corrupt':
-                queue.files[ref] = queue.files[ref][:-1]+b'!'
+                # 暗号文が偶然同じ末尾でも、必ず認証に失敗させる。
+                blob = queue.files[ref]
+                queue.files[ref] = blob[:-1]+bytes([blob[-1] ^ 1])
 
         with patch.object(q, 'GitQueue', return_value=queue), \
              patch.object(stock, 'asset_context', return_value=None), \
