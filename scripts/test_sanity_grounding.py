@@ -16,6 +16,7 @@ import verify_published
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = json.loads((ROOT / 'scripts/fixtures/fact-guards/sanity_ws_20261023.json').read_text(encoding='utf-8'))
+EVENING = json.loads((ROOT / 'scripts/fixtures/fact-guards/sanity_evening_20261024.json').read_text(encoding='utf-8'))
 
 
 class GroundingTests(unittest.TestCase):
@@ -33,16 +34,105 @@ class GroundingTests(unittest.TestCase):
         self.env.start()
         self.addCleanup(self.env.stop)
 
-    def run_sanity(self, text=None, issues=None):
+    def run_sanity(self, text=None, issues=None, kind='daily'):
         document = copy.deepcopy(self.document)
         document['segments'][0]['text'] = text or FIXTURE['text']
         Path('narration.json').write_text(json.dumps(document), encoding='utf-8')
         args = ['sanity.py', '--general', '--strict', '--narration', 'narration.json',
-                '--out', 'data/sanity.json', '--hold-record', 'build/sanity_hold.json', '--kind', 'daily']
+                '--out', 'data/sanity.json', '--hold-record', 'build/sanity_hold.json', '--kind', kind]
         with patch.object(sys, 'argv', args), \
              patch.object(sanity, 'general', return_value=issues if issues is not None else [FIXTURE['issue']]):
             code = sanity.main()
         return code, json.loads(Path('data/sanity.json').read_text(encoding='utf-8'))
+
+    def test_evening_three_fixed_findings_warn_without_holding(self):
+        Path('data/postseason.json').write_text(json.dumps(EVENING['postseason']), encoding='utf-8')
+        for issue in EVENING['cases']:
+            with self.subTest(mode=issue['mode'], text=issue['where']):
+                # 本番voices/pressと同じく、トップレベルdate_jstはない。
+                self.document = dict(segments=[dict(text=issue['where'], meta=dict(date='2026-10-24'))])
+                code, report = self.run_sanity(issue['where'], [issue], kind='morning_' + issue['mode'])
+                self.assertEqual(code, 0)
+                self.assertFalse(report['blocking_issues'])
+                self.assertFalse(report['upload_held'])
+                self.assertIn(report['odd'][0], report['warnings'])
+                self.assertEqual(report['odd'][0]['severity'], 'high')
+                self.assertEqual(report['odd'][0]['kind'], sanity_material.CONTEXT)
+                source = report['materials'][0]
+                ws = source['series'][0]
+                self.assertEqual(ws['round'], 'W')
+                self.assertEqual(ws['played'], 1)
+                self.assertEqual(ws['teams'][0]['wins'], 1)
+                self.assertEqual(ws['next'], dict(day='10月25日', game=2))
+                self.assertIn('statsapi.mlb.com', source['source_url'])
+                self.assertEqual(source['retrieved_at'], EVENING['postseason']['updated_at'])
+                self.assertEqual(report['date_jst'], '2026-10-24')
+                self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text())['status'], 'passed')
+                self.assertIn('説明不足・文脈', Path('summary.md').read_text(encoding='utf-8'))
+
+    def test_admitted_valid_claim_is_not_a_factual_error(self):
+        issue = dict(EVENING['cases'][0], kind=sanity_material.FACT)
+        code, report = self.run_sanity(issue['where'], [issue])
+        self.assertEqual(code, 0)
+        self.assertEqual(report['odd'][0]['kind'], sanity_material.CONTEXT)
+
+    def test_context_findings_never_hold_at_any_severity(self):
+        for severity in ('high', 'low'):
+            issue = dict(EVENING['cases'][1], severity=severity)
+            self.assertEqual(self.run_sanity(issue['where'], [issue])[0], 0)
+
+    def test_negated_or_questioned_validity_does_not_release_factual_high(self):
+        for why in ('この主張が成立するとは言えない。', '所属の誤りではないか。'):
+            issue = dict(kind=sanity_material.FACT, severity='high', where='架空太郎はレイズ所属です。', why=why)
+            self.assertEqual(self.run_sanity(issue['where'], [issue])[0], 1)
+
+    def test_invented_score_and_affiliation_factual_high_hold(self):
+        for text, why in (
+            ('レイズはブリュワーズに3対2で勝ちました。', '公式材料はレイズ2対3ブリュワーズで、勝敗と得点が逆です。'),
+            ('ジェイコブ・ミジオロウスキーはレイズの投手です。', '材料の所属はブリュワーズで、レイズという主張は誤りです。'),
+        ):
+            issue = dict(kind=sanity_material.FACT, severity='high', where=text, why=why)
+            code, report = self.run_sanity(text, [issue])
+            self.assertEqual(code, 1)
+            self.assertTrue(report['upload_held'])
+            self.assertEqual(report['blocking_issues'][0]['kind'], sanity_material.FACT)
+            self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text())['status'], 'held')
+
+    def test_context_cannot_release_another_factual_high_or_material_ng(self):
+        context = EVENING['cases'][0]
+        fact = dict(kind=sanity_material.FACT, severity='high', where='架空太郎はレイズ所属です。', why='材料の所属と異なる')
+        code, report = self.run_sanity(context['where'] + fact['where'], [context, fact])
+        self.assertEqual(code, 1)
+        self.assertEqual(report['blocking_issues'], [report['odd'][1]])
+        text = FIXTURE['text'].replace('ワールドシリーズ', '地区シリーズ')
+        code, report = self.run_sanity(text, [dict(context, where=text)])
+        self.assertEqual(code, 1)
+        self.assertTrue(report['contradictions'])
+
+    def test_voices_and_press_real_prompt_get_official_ws_material(self):
+        Path('data/postseason.json').write_text(json.dumps(EVENING['postseason']), encoding='utf-8')
+        for mode in ('voices', 'press'):
+            document = dict(segments=[dict(text='第1戦の話です。', meta=dict(date='2026-10-24'))])
+            Path('narration.json').write_text(json.dumps(document), encoding='utf-8')
+            response = SimpleNamespace(content=[SimpleNamespace(type='text', text='[]')])
+            with patch.dict(sys.modules, {'anthropic': SimpleNamespace(Anthropic=Mock())}), \
+                 patch('backstage_guard.create', return_value=response) as create, \
+                 patch.object(sanity.token_log, 'record'):
+                self.assertEqual(sanity.general(['narration.json'], 'TEST'), [])
+            prompt = create.call_args.kwargs['messages'][0]['content']
+            for expected in ('"kind"', '事実の誤り', '説明不足・文脈', '成立する', 'NLCS',
+                             'ワールドシリーズ', 'ブリュワーズ', 'レイズ', '10月25日',
+                             '"played": 1', 'statsapi.mlb.com', EVENING['postseason']['updated_at']):
+                self.assertIn(expected, prompt, mode)
+
+    def test_missing_kind_is_recorded_as_invalid_response_warning(self):
+        Path('narration.json').write_text(json.dumps(self.document), encoding='utf-8')
+        response = SimpleNamespace(content=[SimpleNamespace(type='text', text=json.dumps([dict(severity='high')]))])
+        with patch.dict(sys.modules, {'anthropic': SimpleNamespace(Anthropic=Mock())}), \
+             patch('backstage_guard.create', return_value=response), patch.object(sanity.token_log, 'record'):
+            issues = sanity.general(['narration.json'], 'TEST')
+        self.assertIn('必須のkind', issues[0]['why'])
+        self.assertEqual(issues[0]['kind'], sanity_material.CONTEXT)
 
     def verify(self, **changes):
         if changes:

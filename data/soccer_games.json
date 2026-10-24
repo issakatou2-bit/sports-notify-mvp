@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-10-23T09:53:55.366049+00:00",
+  "generated_at": "2026-10-24T09:54:14.816416+00:00",
   "games": [
     {
-      "game_id": "565833",
-      "league": "ブンデスリーガ",
-      "home_team_id": "BL1-10",
-      "away_team_id": "BL1-18",
-      "home_team_name": "シュツットガルト",
-      "away_team_name": "ボルシアMG",
+      "game_id": "560614",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-58",
+      "away_team_id": "PL-65",
+      "home_team_name": "アストンヴィラ",
+      "away_team_name": "マンチェスター・シティ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "ボルシアMG vs シュツットガルト",
+      "matchup": "マンチェスター・シティ vs アストンヴィラ",
       "abbr_matchup": null,
-      "start_time_jst": "10/24 03:30",
+      "start_time_jst": "10/24 20:30",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -22,22 +22,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 13,
-        "games_back": 2.7,
+        "rank": 12,
+        "games_back": 4.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 8.0
+        "points_back": 13.0
       },
       "away_standing": {
-        "rank": 18,
-        "games_back": 4.7,
+        "rank": 1,
+        "games_back": 0.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 14.0
+        "points_back": 0.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -47,40 +47,280 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 2,
+      "score": 4,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "マンチェスター・シティ の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "アストンヴィラ（昨季プレミアリーグ4位）とマンチェスター・シティ（昨季プレミアリーグ2位）",
+          "weight": 3
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "プレミアリーグ首位のマンチェスター・シティが、敵地アストンヴィラを訪れる。昨季プレミアリーグ4位だったアストンヴィラは今季12位と出遅れており、【首位との勝ち点差は13】である。首位チームの試合は常にリーグ全体の優勝争いを左右するもので、この一戦も例外ではない。マンチェスター・シティの攻撃がアストンヴィラの守備をどう崩すのか、そして昨季の高い成績から現在の順位へと落ちているアストンヴィラが、首位チームにどのような対抗手段を見せるのかが見どころとなる。",
+      "notification_hook": "首位シティ、敵地で昨季4位ヴィラに臨む。勝ち点差13の差を埋める戦いへ。",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401879256",
+      "competition_code": "PL",
+      "start_time_utc": "2026-10-24T20:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 30,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "プレミアリーグ"
+          },
+          {
+            "key": "leader",
+            "points": 10,
+            "evidence": {
+              "kind": "leader",
+              "text": "首位チームと12位の対戦",
+              "ranks": [
+                12,
+                1
+              ]
+            }
+          },
+          {
+            "key": "marquee_away",
+            "points": 10,
+            "evidence": "Manchester City FC"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "leader",
+              "text": "首位チームと12位の対戦",
+              "ranks": [
+                12,
+                1
+              ]
+            },
+            {
+              "kind": "points",
+              "text": "勝点差13",
+              "gap": 13.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "560617",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-61",
+      "away_team_id": "PL-73",
+      "home_team_name": "チェルシー",
+      "away_team_name": "トッテナム",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "トッテナム vs チェルシー",
+      "abbr_matchup": null,
+      "start_time_jst": "10/25 01:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 4,
+        "games_back": 2.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 8.0
+      },
+      "away_standing": {
+        "rank": 16,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 4,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "トッテナムには高井幸大が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "チェルシー と トッテナム の対戦",
+          "weight": 3
+        },
+        {
+          "tag": "quality",
+          "text": "チェルシー（昨季プレミアリーグ10位）とトッテナム（昨季プレミアリーグ17位）の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "プレミアリーグ7試合時点でチェルシーが4位に位置する一方、トッテナムは16位と【勝ち点で7点の差】をつけられている。昨季プレミアリーグ10位のチェルシーと17位のトッテナムという、順位を大きく変えた両チームの現在地を示す一戦となる。トッテナムに所属する日本人選手の高井幸大の活躍がどう影響するかに注目したい。",
+      "notification_hook": "チェルシーと勝ち点差7のトッテナム、高井幸大の存在感が試合を左右するか。",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401878767",
+      "competition_code": "PL",
+      "start_time_utc": "2026-10-25T01:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 30,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "プレミアリーグ"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Chelsea FC"
+          },
+          {
+            "key": "marquee_away",
+            "points": 10,
+            "evidence": "Tottenham Hotspur FC"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差7",
+              "gap": 7.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "565837",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-4",
+      "away_team_id": "BL1-19",
+      "home_team_name": "ドルトムント",
+      "away_team_name": "フランクフルト",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "フランクフルト vs ドルトムント",
+      "abbr_matchup": null,
+      "start_time_jst": "10/25 01:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "away_standing": {
+        "rank": 11,
+        "games_back": 2.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 6.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 4,
       "game_type": "R",
       "is_notable": false,
       "reasons": [
         {
           "tag": "jp_team",
-          "text": "ボルシアMGには町野修斗・宇野禅斗・橋岡大樹・板倉滉が所属",
+          "text": "フランクフルトには堂安律・小杉啓太が所属",
           "weight": 2
         },
         {
           "tag": "quality",
-          "text": "シュツットガルト（昨季ブンデスリーガ4位）とボルシアMG（昨季ブンデスリーガ12位）の対戦",
-          "weight": 0
+          "text": "ドルトムント の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "ドルトムント（昨季ブンデスリーガ2位）とフランクフルト（昨季ブンデスリーガ8位）の対戦",
+          "weight": 1
         }
       ],
       "log_notes": [],
-      "ai_summary": "シュツットガルトは昨季ブンデスリーガ4位の上位クラブながら、今シーズンは【13位に下降】し首位との勝ち点差が8に広がっている。一方、ボルシアMGは昨季12位から18位へさらに順位を落とし、首位との勝ち点差は14に達している。両チームとも序盤戦で思わしい成績が続く中での対戦となり、シュツットガルトにとっては巻き返しの一戦、ボルシアMGにとっては浮上への足がかりとなる。町野修斗、宇野禅斗、橋岡大樹、板倉滉といったボルシアMGに所属する日本人選手らが、どのような活躍を見せるかにも注目したい。",
-      "notification_hook": "昨季4位のシュツットガルトが13位に下降。日本人4名在籍のボルシアMGとの一戦は両チームの浮上がかかる。",
+      "ai_summary": "ブンデスリーガ第6節を終えた時点で、ドルトムントは首位と勝ち点差0で並ぶ2位の位置にある。本拠地に迎えるのは、昨季ブンデスリーガ8位から今季11位へと順位を下げているフランクフルトだ。首位争いの渦中にあるドルトムントにとって、敵地から訪れるフランクフルトとの一戦は、リーグ優勝を目指す上で重要な勝点の獲得が求められる試合となる。また、フランクフルトには堂安律と小杉啓太という日本人選手が所属しており、日本からの注目も集まる対戦相手である。ドルトムントがどのような攻撃を仕掛け、フランクフルトの日本人選手がそれにどう対峙するかが見どころになる。",
+      "notification_hook": "首位と勝ち点差0で並ぶドルトムントが堂安律・小杉啓太らフランクフルトと激突。",
       "fixture_sources": [
         "ESPN",
         "football-data.org"
       ],
-      "espn_event_id": "401884761",
+      "espn_event_id": "401884763",
       "competition_code": "BL1",
-      "start_time_utc": "2026-10-24T03:30:00+09:00",
+      "start_time_utc": "2026-10-25T01:30:00+09:00",
       "season_players": [],
       "preview_out_names": [],
       "preview_rating": {
-        "score": 10,
+        "score": 20,
         "factors": [
           {
             "key": "competition",
             "points": 10,
             "evidence": "ブンデスリーガ"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Borussia Dortmund"
           }
         ],
         "interest": {
@@ -97,19 +337,270 @@
       }
     },
     {
-      "game_id": "560620",
-      "league": "プレミアリーグ",
-      "home_team_id": "PL-349",
-      "away_team_id": "PL-351",
-      "home_team_name": "イプスウィッチ",
-      "away_team_name": "ノッティンガム・フォレスト",
+      "game_id": "565830",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-15",
+      "away_team_id": "BL1-12",
+      "home_team_name": "マインツ",
+      "away_team_name": "ブレーメン",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "ノッティンガム・フォレスト vs イプスウィッチ",
+      "matchup": "ブレーメン vs マインツ",
       "abbr_matchup": null,
-      "start_time_jst": "10/24 04:00",
+      "start_time_jst": "10/24 22:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 5,
+        "games_back": 1.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 4.0
+      },
+      "away_standing": {
+        "rank": 8,
+        "games_back": 1.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 5.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "マインツには佐野海舟・川﨑颯太が所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "マインツ（昨季ブンデスリーガ10位）とブレーメン（昨季ブンデスリーガ15位）の対戦",
+          "weight": 0
+        },
+        {
+          "tag": "quality",
+          "text": "マインツ5位 と ブレーメン8位",
+          "weight": 1
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401884757",
+      "competition_code": "BL1",
+      "start_time_utc": "2026-10-24T22:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 25,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "ブンデスリーガ"
+          },
+          {
+            "key": "rank",
+            "points": 10,
+            "evidence": {
+              "kind": "rank",
+              "text": "順位差3の直接対決",
+              "ranks": [
+                5,
+                8
+              ],
+              "rank_difference": 3
+            }
+          },
+          {
+            "key": "points_close",
+            "points": 5,
+            "evidence": {
+              "kind": "points",
+              "text": "勝点差1",
+              "gap": 1.0
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "rank",
+              "text": "順位差3の直接対決",
+              "ranks": [
+                5,
+                8
+              ],
+              "rank_difference": 3
+            },
+            {
+              "kind": "points",
+              "text": "勝点差1",
+              "gap": 1.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "565832",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-721",
+      "away_team_id": "BL1-719",
+      "home_team_name": "ライプツィヒ",
+      "away_team_name": "エルバースベルク",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "エルバースベルク vs ライプツィヒ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/24 22:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 7,
+        "games_back": 1.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 5.0
+      },
+      "away_standing": {
+        "rank": 6,
+        "games_back": 1.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 4.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ライプツィヒ（昨季ブンデスリーガ3位）",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "ライプツィヒ7位 と エルバースベルク6位",
+          "weight": 1
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401884762",
+      "competition_code": "BL1",
+      "start_time_utc": "2026-10-24T22:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 25,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "ブンデスリーガ"
+          },
+          {
+            "key": "rank",
+            "points": 10,
+            "evidence": {
+              "kind": "rank",
+              "text": "順位差1の直接対決",
+              "ranks": [
+                7,
+                6
+              ],
+              "rank_difference": 1
+            }
+          },
+          {
+            "key": "points_close",
+            "points": 5,
+            "evidence": {
+              "kind": "points",
+              "text": "勝点差1",
+              "gap": 1.0
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "rank",
+              "text": "順位差1の直接対決",
+              "ranks": [
+                7,
+                6
+              ],
+              "rank_difference": 1
+            },
+            {
+              "kind": "points",
+              "text": "勝点差1",
+              "gap": 1.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "558564",
+      "league": "セリエA",
+      "home_team_id": "SA-113",
+      "away_team_id": "SA-100",
+      "home_team_name": "ナポリ",
+      "away_team_name": "ローマ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ローマ vs ナポリ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/25 01:00",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -118,12 +609,609 @@
       "jp_players": [],
       "home_standing": {
         "rank": 10,
-        "games_back": 4.0,
+        "games_back": 3.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 12.0
+        "points_back": 9.0
+      },
+      "away_standing": {
+        "rank": 3,
+        "games_back": 0.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 2.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ナポリ（昨季セリエA2位）とローマ（昨季セリエA3位）",
+          "weight": 3
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874948",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-25T01:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 10,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "セリエA"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差7",
+              "gap": 7.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "564724",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-78",
+      "away_team_id": "PD-560",
+      "home_team_name": "アトレティコ・マドリード",
+      "away_team_name": "デポルティボ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "デポルティボ vs アトレティコ・マドリード",
+      "abbr_matchup": null,
+      "start_time_jst": "10/25 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 1.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 5.0
+      },
+      "away_standing": {
+        "rank": 9,
+        "games_back": 5.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 16.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "アトレティコ・マドリード の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "アトレティコ・マドリード（昨季ラ・リーガ4位）",
+          "weight": 2
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401882834",
+      "competition_code": "PD",
+      "start_time_utc": "2026-10-25T04:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 20,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "ラ・リーガ"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Club Atlético de Madrid"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差11",
+              "gap": 11.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "560616",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-57",
+      "away_team_id": "PL-62",
+      "home_team_name": "アーセナル",
+      "away_team_name": "エバートン",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "エバートン vs アーセナル",
+      "abbr_matchup": null,
+      "start_time_jst": "10/24 23:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 1.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 3.0
+      },
+      "away_standing": {
+        "rank": 8,
+        "games_back": 3.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 11.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "アーセナル の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "アーセナル（昨季プレミアリーグ1位）とエバートン（昨季プレミアリーグ13位）の対戦",
+          "weight": 0
+        },
+        {
+          "tag": "quality",
+          "text": "アーセナル2位 と エバートン8位",
+          "weight": 1
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401878768",
+      "competition_code": "PL",
+      "start_time_utc": "2026-10-24T23:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 20,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "プレミアリーグ"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Arsenal FC"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差8",
+              "gap": 8.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "564722",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-95",
+      "away_team_id": "PD-94",
+      "home_team_name": "バレンシア",
+      "away_team_name": "ビジャレアル",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ビジャレアル vs バレンシア",
+      "abbr_matchup": null,
+      "start_time_jst": "10/25 01:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 19,
+        "games_back": 7.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 21.0
+      },
+      "away_standing": {
+        "rank": 12,
+        "games_back": 6.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 18.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "バレンシアには佐藤龍之介が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "バレンシア（昨季ラ・リーガ9位）とビジャレアル（昨季ラ・リーガ3位）の対戦",
+          "weight": 1
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401882827",
+      "competition_code": "PD",
+      "start_time_utc": "2026-10-25T01:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 15,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "ラ・リーガ"
+          },
+          {
+            "key": "points_close",
+            "points": 5,
+            "evidence": {
+              "kind": "points",
+              "text": "勝点差3",
+              "gap": 3.0
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差3",
+              "gap": 3.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "558560",
+      "league": "セリエA",
+      "home_team_id": "SA-104",
+      "away_team_id": "SA-103",
+      "home_team_name": "カリアリ",
+      "away_team_name": "ボローニャ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ボローニャ vs カリアリ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/24 22:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 8,
+        "games_back": 2.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 6.0
+      },
+      "away_standing": {
+        "rank": 15,
+        "games_back": 4.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 14.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "カリアリには菅原由勢が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "カリアリ（昨季セリエA14位）とボローニャ（昨季セリエA8位）の対戦",
+          "weight": 0
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874958",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-24T22:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 10,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "セリエA"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差8",
+              "gap": 8.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "565831",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-1",
+      "away_team_id": "BL1-6",
+      "home_team_name": "ケルン",
+      "away_team_name": "シャルケ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "シャルケ vs ケルン",
+      "abbr_matchup": null,
+      "start_time_jst": "10/24 22:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 12,
+        "games_back": 2.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 7.0
+      },
+      "away_standing": {
+        "rank": 15,
+        "games_back": 3.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 9.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "シャルケには田中聡が所属",
+          "weight": 1
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401884756",
+      "competition_code": "BL1",
+      "start_time_utc": "2026-10-24T22:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 25,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "ブンデスリーガ"
+          },
+          {
+            "key": "rank",
+            "points": 10,
+            "evidence": {
+              "kind": "rank",
+              "text": "順位差3の直接対決",
+              "ranks": [
+                12,
+                15
+              ],
+              "rank_difference": 3
+            }
+          },
+          {
+            "key": "points_close",
+            "points": 5,
+            "evidence": {
+              "kind": "points",
+              "text": "勝点差2",
+              "gap": 2.0
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "rank",
+              "text": "順位差3の直接対決",
+              "ranks": [
+                12,
+                15
+              ],
+              "rank_difference": 3
+            },
+            {
+              "kind": "points",
+              "text": "勝点差2",
+              "gap": 2.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "560618",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-1076",
+      "away_team_id": "PL-63",
+      "home_team_name": "コベントリー",
+      "away_team_name": "フラム",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "フラム vs コベントリー",
+      "abbr_matchup": null,
+      "start_time_jst": "10/24 23:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 18,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
       },
       "away_standing": {
         "rank": 19,
@@ -148,33 +1236,153 @@
       "reasons": [
         {
           "tag": "jp_team",
-          "text": "イプスウィッチには前田大然が所属",
+          "text": "コベントリーには坂元達裕が所属",
           "weight": 1
         }
       ],
-      "log_notes": [],
-      "ai_summary": "プレミアリーグ7試合を消化した現在、イプスウィッチは10位で首位との勝ち点差が12、ノッティンガム・フォレストは19位で首位との勝ち点差が16となっている。敵地を訪れるノッティンガム・フォレストにとっては、順位を上げるための重要な一戦であり、迎えるイプスウィッチにとっても【上位との競争から脱落しないための試合】になる。イプスウィッチに所属する前田大然の活躍がどの程度本拠地での勝点獲得に貢献できるかに注目したい。",
-      "notification_hook": "前田大然擁するイプスウィッチが、苦しい19位ノッティンガムを本拠地で迎える。",
       "fixture_sources": [
         "ESPN",
         "football-data.org"
       ],
-      "espn_event_id": "401879253",
+      "espn_event_id": "401879255",
       "competition_code": "PL",
-      "start_time_utc": "2026-10-24T04:00:00+09:00",
+      "start_time_utc": "2026-10-24T23:00:00+09:00",
       "season_players": [
         {
-          "name": "前田大然",
-          "club": "イプスウィッチ",
+          "name": "坂元達裕",
+          "club": "コベントリー",
           "scope": "season",
-          "goals": 1,
+          "goals": 0,
           "assists": 0,
-          "minutes": 409,
+          "minutes": 137,
           "out": false,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 25,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "プレミアリーグ"
+          },
+          {
+            "key": "rank",
+            "points": 10,
+            "evidence": {
+              "kind": "rank",
+              "text": "順位差1の直接対決",
+              "ranks": [
+                18,
+                19
+              ],
+              "rank_difference": 1
+            }
+          },
+          {
+            "key": "points_close",
+            "points": 5,
+            "evidence": {
+              "kind": "points",
+              "text": "勝点差1",
+              "gap": 1.0
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "rank",
+              "text": "順位差1の直接対決",
+              "ranks": [
+                18,
+                19
+              ],
+              "rank_difference": 1
+            },
+            {
+              "kind": "points",
+              "text": "勝点差1",
+              "gap": 1.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "558565",
+      "league": "セリエA",
+      "home_team_id": "SA-110",
+      "away_team_id": "SA-112",
+      "home_team_name": "ラツィオ",
+      "away_team_name": "パルマ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "パルマ vs ラツィオ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/25 03:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "away_standing": {
+        "rank": 19,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パルマには鈴木ザイオンが所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "ラツィオ（昨季セリエA9位）とパルマ（昨季セリエA12位）の対戦",
+          "weight": 0
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874955",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-25T03:45:00+09:00",
+      "season_players": [],
       "preview_out_names": [],
       "preview_rating": {
         "score": 10,
@@ -182,7 +1390,271 @@
           {
             "key": "competition",
             "points": 10,
-            "evidence": "プレミアリーグ"
+            "evidence": "セリエA"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差15",
+              "gap": 15.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "564718",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-87",
+      "away_team_id": "PD-285",
+      "home_team_name": "ラージョ・バジェカーノ",
+      "away_team_name": "エルチェ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "エルチェ vs ラージョ・バジェカーノ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/24 21:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 14,
+        "games_back": 6.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 18.0
+      },
+      "away_standing": {
+        "rank": 18,
+        "games_back": 6.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 20.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ラージョ・バジェカーノ（昨季ラ・リーガ8位）とエルチェ（昨季ラ・リーガ13位）の対戦",
+          "weight": 0
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401882830",
+      "competition_code": "PD",
+      "start_time_utc": "2026-10-24T21:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 15,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "ラ・リーガ"
+          },
+          {
+            "key": "points_close",
+            "points": 5,
+            "evidence": {
+              "kind": "points",
+              "text": "勝点差2",
+              "gap": 2.0
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差2",
+              "gap": 2.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "558561",
+      "league": "セリエA",
+      "home_team_id": "SA-7397",
+      "away_team_id": "SA-471",
+      "home_team_name": "コモ",
+      "away_team_name": "サッスオーロ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "サッスオーロ vs コモ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/24 22:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 5,
+        "games_back": 1.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 5.0
+      },
+      "away_standing": {
+        "rank": 13,
+        "games_back": 3.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 11.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "コモ（昨季セリエA4位）とサッスオーロ（昨季セリエA11位）の対戦",
+          "weight": 0
+        }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874961",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-24T22:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 10,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "セリエA"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差6",
+              "gap": 6.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "565834",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-29",
+      "away_team_id": "BL1-7",
+      "home_team_name": "パーダーボルン",
+      "away_team_name": "ハンブルク",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ハンブルク vs パーダーボルン",
+      "abbr_matchup": null,
+      "start_time_jst": "10/24 22:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 16,
+        "games_back": 3.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 9.0
+      },
+      "away_standing": {
+        "rank": 9,
+        "games_back": 1.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 5.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401884755",
+      "competition_code": "BL1",
+      "start_time_utc": "2026-10-24T22:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 10,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "ブンデスリーガ"
           }
         ],
         "interest": {
@@ -199,19 +1671,19 @@
       }
     },
     {
-      "game_id": "558567",
-      "league": "セリエA",
-      "home_team_id": "SA-586",
-      "away_team_id": "SA-5911",
-      "home_team_name": "トリノ",
-      "away_team_name": "モンツァ",
+      "game_id": "565838",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-16",
+      "away_team_id": "BL1-28",
+      "home_team_name": "アウクスブルク",
+      "away_team_name": "ウニオン・ベルリン",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "モンツァ vs トリノ",
+      "matchup": "ウニオン・ベルリン vs アウクスブルク",
       "abbr_matchup": null,
-      "start_time_jst": "10/24 03:45",
+      "start_time_jst": "10/24 22:30",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -220,111 +1692,21 @@
       "jp_players": [],
       "home_standing": {
         "rank": 10,
-        "games_back": 3.0,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 9.0
-      },
-      "away_standing": {
-        "rank": 14,
-        "games_back": 4.0,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 12.0
-      },
-      "home_probable": null,
-      "away_probable": null,
-      "venue_name": null,
-      "venue_jp": null,
-      "venue_note": null,
-      "venue_runs_note": null,
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "score": 0,
-      "game_type": "R",
-      "is_notable": false,
-      "reasons": [],
-      "fixture_sources": [
-        "ESPN",
-        "football-data.org"
-      ],
-      "espn_event_id": "401874957",
-      "competition_code": "SA",
-      "start_time_utc": "2026-10-24T03:45:00+09:00",
-      "season_players": [],
-      "preview_out_names": [],
-      "preview_rating": {
-        "score": 15,
-        "factors": [
-          {
-            "key": "competition",
-            "points": 10,
-            "evidence": "セリエA"
-          },
-          {
-            "key": "points_close",
-            "points": 5,
-            "evidence": {
-              "kind": "points",
-              "text": "勝点差3",
-              "gap": 3.0
-            }
-          }
-        ],
-        "interest": {
-          "reasons": [
-            {
-              "kind": "points",
-              "text": "勝点差3",
-              "gap": 3.0
-            }
-          ],
-          "player": null
-        },
-        "japanese": false
-      }
-    },
-    {
-      "game_id": "559654",
-      "league": "リーグ・アン",
-      "home_team_id": "FL1-512",
-      "away_team_id": "FL1-522",
-      "home_team_name": "ブレスト",
-      "away_team_name": "ニース",
-      "home_abbr": null,
-      "away_abbr": null,
-      "home_color": null,
-      "away_color": null,
-      "matchup": "ニース vs ブレスト",
-      "abbr_matchup": null,
-      "start_time_jst": "10/24 03:45",
-      "home_division": null,
-      "away_division": null,
-      "same_division": false,
-      "rivalry_type": null,
-      "jp_starters": [],
-      "jp_players": [],
-      "home_standing": {
-        "rank": 10,
-        "games_back": 1.7,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 5.0
-      },
-      "away_standing": {
-        "rank": 13,
         "games_back": 2.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
         "points_back": 6.0
+      },
+      "away_standing": {
+        "rank": 17,
+        "games_back": 3.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 9.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -340,7 +1722,7 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "ブレスト（昨季リーグ・アン12位）とニース（昨季リーグ・アン16位）の対戦",
+          "text": "アウクスブルク（昨季ブンデスリーガ9位）とウニオン・ベルリン（昨季ブンデスリーガ11位）の対戦",
           "weight": 0
         }
       ],
@@ -348,57 +1730,35 @@
         "ESPN",
         "football-data.org"
       ],
-      "espn_event_id": "401876428",
-      "competition_code": "FL1",
-      "start_time_utc": "2026-10-24T03:45:00+09:00",
+      "espn_event_id": "401884758",
+      "competition_code": "BL1",
+      "start_time_utc": "2026-10-24T22:30:00+09:00",
       "season_players": [],
       "preview_out_names": [],
       "preview_rating": {
-        "score": 25,
+        "score": 15,
         "factors": [
           {
             "key": "competition",
             "points": 10,
-            "evidence": "リーグ・アン"
-          },
-          {
-            "key": "rank",
-            "points": 10,
-            "evidence": {
-              "kind": "rank",
-              "text": "順位差3の直接対決",
-              "ranks": [
-                10,
-                13
-              ],
-              "rank_difference": 3
-            }
+            "evidence": "ブンデスリーガ"
           },
           {
             "key": "points_close",
             "points": 5,
             "evidence": {
               "kind": "points",
-              "text": "勝点差1",
-              "gap": 1.0
+              "text": "勝点差3",
+              "gap": 3.0
             }
           }
         ],
         "interest": {
           "reasons": [
             {
-              "kind": "rank",
-              "text": "順位差3の直接対決",
-              "ranks": [
-                10,
-                13
-              ],
-              "rank_difference": 3
-            },
-            {
               "kind": "points",
-              "text": "勝点差1",
-              "gap": 1.0
+              "text": "勝点差3",
+              "gap": 3.0
             }
           ],
           "player": null
@@ -407,19 +1767,19 @@
       }
     },
     {
-      "game_id": "564719",
+      "game_id": "564727",
       "league": "ラ・リーガ",
-      "home_team_id": "PD-263",
-      "away_team_id": "PD-84",
-      "home_team_name": "アラベス",
-      "away_team_name": "マラガ",
+      "home_team_id": "PD-5335",
+      "away_team_id": "PD-80",
+      "home_team_name": "ラシン・サンタンデール",
+      "away_team_name": "エスパニョール",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "マラガ vs アラベス",
+      "matchup": "エスパニョール vs ラシン・サンタンデール",
       "abbr_matchup": null,
-      "start_time_jst": "10/24 04:00",
+      "start_time_jst": "10/24 23:15",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -427,22 +1787,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 7,
-        "games_back": 5.3,
+        "rank": 17,
+        "games_back": 6.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 16.0
+        "points_back": 19.0
       },
       "away_standing": {
-        "rank": 20,
-        "games_back": 7.7,
+        "rank": 16,
+        "games_back": 6.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 23.0
+        "points_back": 19.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -460,26 +1820,57 @@
         "ESPN",
         "football-data.org"
       ],
-      "espn_event_id": "401882836",
+      "espn_event_id": "401882831",
       "competition_code": "PD",
-      "start_time_utc": "2026-10-24T04:00:00+09:00",
+      "start_time_utc": "2026-10-24T23:15:00+09:00",
       "season_players": [],
       "preview_out_names": [],
       "preview_rating": {
-        "score": 10,
+        "score": 25,
         "factors": [
           {
             "key": "competition",
             "points": 10,
             "evidence": "ラ・リーガ"
+          },
+          {
+            "key": "rank",
+            "points": 10,
+            "evidence": {
+              "kind": "rank",
+              "text": "順位差1の直接対決",
+              "ranks": [
+                17,
+                16
+              ],
+              "rank_difference": 1
+            }
+          },
+          {
+            "key": "points_close",
+            "points": 5,
+            "evidence": {
+              "kind": "points",
+              "text": "勝点差0",
+              "gap": 0.0
+            }
           }
         ],
         "interest": {
           "reasons": [
             {
+              "kind": "rank",
+              "text": "順位差1の直接対決",
+              "ranks": [
+                17,
+                16
+              ],
+              "rank_difference": 1
+            },
+            {
               "kind": "points",
-              "text": "勝点差7",
-              "gap": 7.0
+              "text": "勝点差0",
+              "gap": 0.0
             }
           ],
           "player": null
@@ -488,124 +1879,91 @@
       }
     },
     {
-      "game_id": "espn-401879256",
-      "espn_event_id": "401879256",
-      "competition_code": "PL",
-      "league": "プレミアリーグ",
-      "start_time_utc": "2026-10-24T11:30:00+00:00",
-      "start_time_jst": "10/24 20:30",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "Aston Villa FC",
-      "home_team_id": "espn-362",
-      "away_team_name": "Manchester City FC",
-      "away_team_id": "espn-382",
-      "jp_by_side": {
-        "home": [],
-        "away": []
+      "game_id": "559652",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-546",
+      "away_team_id": "FL1-1045",
+      "home_team_name": "ランス",
+      "away_team_name": "パリFC",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "パリFC vs ランス",
+      "abbr_matchup": null,
+      "start_time_jst": "10/25 03:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 9,
+        "games_back": 1.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 4.0
       },
+      "away_standing": {
+        "rank": 3,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "season_players": []
-    },
-    {
-      "game_id": "espn-401878768",
-      "espn_event_id": "401878768",
-      "competition_code": "PL",
-      "league": "プレミアリーグ",
-      "start_time_utc": "2026-10-24T14:00:00+00:00",
-      "start_time_jst": "10/24 23:00",
+      "score": 0,
+      "game_type": "R",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "Arsenal FC",
-      "home_team_id": "espn-359",
-      "away_team_name": "Everton FC",
-      "away_team_id": "espn-368",
-      "jp_by_side": {
-        "home": [],
-        "away": []
-      },
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "season_players": []
-    },
-    {
-      "game_id": "espn-401879255",
-      "espn_event_id": "401879255",
-      "competition_code": "PL",
-      "league": "プレミアリーグ",
-      "start_time_utc": "2026-10-24T14:00:00+00:00",
-      "start_time_jst": "10/24 23:00",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "Coventry City FC",
-      "home_team_id": "espn-388",
-      "away_team_name": "Fulham FC",
-      "away_team_id": "espn-370",
-      "jp_by_side": {
-        "home": [
-          "坂元達裕"
-        ],
-        "away": []
-      },
-      "home_has_jp": true,
-      "away_has_jp": false,
-      "season_players": [
+      "reasons": [
         {
-          "name": "坂元達裕",
-          "club": "コベントリー",
-          "scope": "season",
-          "goals": 0,
-          "assists": 0,
-          "minutes": 137,
-          "out": false,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
-          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+          "tag": "quality",
+          "text": "ランス（昨季リーグ・アン2位）とパリFC（昨季リーグ・アン11位）の対戦",
+          "weight": 0
         }
-      ]
-    },
-    {
-      "game_id": "espn-401878767",
-      "espn_event_id": "401878767",
-      "competition_code": "PL",
-      "league": "プレミアリーグ",
-      "start_time_utc": "2026-10-24T16:30:00+00:00",
-      "start_time_jst": "10/25 01:30",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
       ],
-      "home_team_name": "Chelsea FC",
-      "home_team_id": "espn-363",
-      "away_team_name": "Tottenham Hotspur FC",
-      "away_team_id": "espn-367",
-      "jp_by_side": {
-        "home": [],
-        "away": [
-          "高井幸大"
-        ]
-      },
-      "home_has_jp": false,
-      "away_has_jp": true,
-      "season_players": []
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401876427",
+      "competition_code": "FL1",
+      "start_time_utc": "2026-10-25T03:45:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 10,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "リーグ・アン"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差4",
+              "gap": 4.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
     },
     {
       "game_id": "espn-401879254",
@@ -643,7 +2001,7 @@
           "assists": 3,
           "minutes": 610,
           "out": false,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         },
         {
@@ -654,7 +2012,7 @@
           "assists": 0,
           "minutes": 189,
           "out": true,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -694,7 +2052,7 @@
           "assists": 0,
           "minutes": 75,
           "out": false,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -736,7 +2094,7 @@
           "assists": 0,
           "minutes": 0,
           "out": false,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         },
         {
@@ -747,7 +2105,7 @@
           "assists": 0,
           "minutes": 0,
           "out": true,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -813,29 +2171,29 @@
           "assists": 2,
           "minutes": 405,
           "out": false,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
     },
     {
-      "game_id": "espn-401882830",
-      "espn_event_id": "401882830",
-      "competition_code": "PD",
-      "league": "ラ・リーガ",
-      "start_time_utc": "2026-10-24T12:00:00+00:00",
-      "start_time_jst": "10/24 21:00",
+      "game_id": "espn-401879248",
+      "espn_event_id": "401879248",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T12:30:00+00:00",
+      "start_time_jst": "10/31 21:30",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "Rayo Vallecano de Madrid",
-      "home_team_id": "espn-101",
-      "away_team_name": "Elche CF",
-      "away_team_id": "espn-3751",
+      "home_team_name": "Chelsea FC",
+      "home_team_id": "espn-363",
+      "away_team_name": "Manchester United FC",
+      "away_team_id": "espn-360",
       "jp_by_side": {
         "home": [],
         "away": []
@@ -845,23 +2203,63 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401882831",
-      "espn_event_id": "401882831",
-      "competition_code": "PD",
-      "league": "ラ・リーガ",
-      "start_time_utc": "2026-10-24T14:15:00+00:00",
-      "start_time_jst": "10/24 23:15",
+      "game_id": "espn-401879251",
+      "espn_event_id": "401879251",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "Real Racing Club de Santander",
-      "home_team_id": "espn-87",
-      "away_team_name": "RCD Espanyol de Barcelona",
-      "away_team_id": "espn-88",
+      "home_team_name": "AFC Bournemouth",
+      "home_team_id": "espn-349",
+      "away_team_name": "Leeds United FC",
+      "away_team_id": "espn-357",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "田中碧"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "田中碧",
+          "club": "リーズ",
+          "scope": "season",
+          "goals": 0,
+          "assists": 2,
+          "minutes": 405,
+          "out": false,
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401879249",
+      "espn_event_id": "401879249",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Brentford FC",
+      "home_team_id": "espn-337",
+      "away_team_name": "Nottingham Forest FC",
+      "away_team_id": "espn-393",
       "jp_by_side": {
         "home": [],
         "away": []
@@ -871,51 +2269,210 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401882827",
-      "espn_event_id": "401882827",
-      "competition_code": "PD",
-      "league": "ラ・リーガ",
-      "start_time_utc": "2026-10-24T16:30:00+00:00",
-      "start_time_jst": "10/25 01:30",
+      "game_id": "espn-401879247",
+      "espn_event_id": "401879247",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "Valencia CF",
-      "home_team_id": "espn-94",
-      "away_team_name": "Villarreal CF",
-      "away_team_id": "espn-102",
+      "home_team_name": "Coventry City FC",
+      "home_team_id": "espn-388",
+      "away_team_name": "Sunderland AFC",
+      "away_team_id": "espn-366",
       "jp_by_side": {
         "home": [
-          "佐藤龍之介"
+          "坂元達裕"
         ],
         "away": []
       },
       "home_has_jp": true,
       "away_has_jp": false,
-      "season_players": []
+      "season_players": [
+        {
+          "name": "坂元達裕",
+          "club": "コベントリー",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 137,
+          "out": false,
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
     },
     {
-      "game_id": "espn-401882834",
-      "espn_event_id": "401882834",
-      "competition_code": "PD",
-      "league": "ラ・リーガ",
-      "start_time_utc": "2026-10-24T19:00:00+00:00",
-      "start_time_jst": "10/25 04:00",
+      "game_id": "espn-401878763",
+      "espn_event_id": "401878763",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "Club Atlético de Madrid",
-      "home_team_id": "espn-1068",
-      "away_team_name": "RC Deportivo La Coruña",
-      "away_team_id": "espn-90",
+      "home_team_name": "Hull City AFC",
+      "home_team_id": "espn-306",
+      "away_team_name": "Ipswich Town FC",
+      "away_team_id": "espn-373",
+      "jp_by_side": {
+        "home": [
+          "守田英正"
+        ],
+        "away": [
+          "前田大然"
+        ]
+      },
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "前田大然",
+          "club": "イプスウィッチ",
+          "scope": "season",
+          "goals": 1,
+          "assists": 0,
+          "minutes": 426,
+          "out": false,
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        },
+        {
+          "name": "守田英正",
+          "club": "ハル・シティ",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 75,
+          "out": false,
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401879245",
+      "espn_event_id": "401879245",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Manchester City FC",
+      "home_team_id": "espn-382",
+      "away_team_name": "Brighton & Hove Albion FC",
+      "away_team_id": "espn-331",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "三笘薫"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "三笘薫",
+          "club": "ブライトン",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 0,
+          "out": true,
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401878761",
+      "espn_event_id": "401878761",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T17:30:00+00:00",
+      "start_time_jst": "11/01 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Tottenham Hotspur FC",
+      "home_team_id": "espn-367",
+      "away_team_name": "Crystal Palace FC",
+      "away_team_id": "espn-384",
+      "jp_by_side": {
+        "home": [
+          "高井幸大"
+        ],
+        "away": [
+          "鎌田大地",
+          "冨安健洋"
+        ]
+      },
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "鎌田大地",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 1,
+          "assists": 3,
+          "minutes": 610,
+          "out": false,
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        },
+        {
+          "name": "冨安健洋",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 189,
+          "out": true,
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401879250",
+      "espn_event_id": "401879250",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T20:00:00+00:00",
+      "start_time_jst": "11/01 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Aston Villa FC",
+      "home_team_id": "espn-362",
+      "away_team_name": "Fulham FC",
+      "away_team_id": "espn-370",
       "jp_by_side": {
         "home": [],
         "away": []
@@ -1083,23 +2640,23 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401884758",
-      "espn_event_id": "401884758",
-      "competition_code": "BL1",
-      "league": "ブンデスリーガ",
-      "start_time_utc": "2026-10-24T13:30:00+00:00",
-      "start_time_jst": "10/24 22:30",
+      "game_id": "espn-401882820",
+      "espn_event_id": "401882820",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-10-31T13:00:00+00:00",
+      "start_time_jst": "10/31 22:00",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "FC Augsburg",
-      "home_team_id": "espn-3841",
-      "away_team_name": "1. FC Union Berlin",
-      "away_team_id": "espn-598",
+      "home_team_name": "Levante UD",
+      "home_team_id": "espn-1538",
+      "away_team_name": "Club Atlético de Madrid",
+      "away_team_id": "espn-1068",
       "jp_by_side": {
         "home": [],
         "away": []
@@ -1109,80 +2666,23 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401884756",
-      "espn_event_id": "401884756",
-      "competition_code": "BL1",
-      "league": "ブンデスリーガ",
-      "start_time_utc": "2026-10-24T13:30:00+00:00",
-      "start_time_jst": "10/24 22:30",
+      "game_id": "espn-401882818",
+      "espn_event_id": "401882818",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-10-31T15:15:00+00:00",
+      "start_time_jst": "11/01 00:15",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "1. FC Köln",
-      "home_team_id": "espn-122",
-      "away_team_name": "FC Schalke 04",
-      "away_team_id": "espn-133",
-      "jp_by_side": {
-        "home": [],
-        "away": [
-          "田中聡"
-        ]
-      },
-      "home_has_jp": false,
-      "away_has_jp": true,
-      "season_players": []
-    },
-    {
-      "game_id": "espn-401884757",
-      "espn_event_id": "401884757",
-      "competition_code": "BL1",
-      "league": "ブンデスリーガ",
-      "start_time_utc": "2026-10-24T13:30:00+00:00",
-      "start_time_jst": "10/24 22:30",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "1. FSV Mainz 05",
-      "home_team_id": "espn-2950",
-      "away_team_name": "SV Werder Bremen",
-      "away_team_id": "espn-137",
-      "jp_by_side": {
-        "home": [
-          "佐野海舟",
-          "川﨑颯太"
-        ],
-        "away": []
-      },
-      "home_has_jp": true,
-      "away_has_jp": false,
-      "season_players": []
-    },
-    {
-      "game_id": "espn-401884762",
-      "espn_event_id": "401884762",
-      "competition_code": "BL1",
-      "league": "ブンデスリーガ",
-      "start_time_utc": "2026-10-24T13:30:00+00:00",
-      "start_time_jst": "10/24 22:30",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "RB Leipzig",
-      "home_team_id": "espn-11420",
-      "away_team_name": "SV 07 Elversberg",
-      "away_team_id": "espn-10388",
+      "home_team_name": "Rayo Vallecano de Madrid",
+      "home_team_id": "espn-101",
+      "away_team_name": "RC Celta de Vigo",
+      "away_team_id": "espn-85",
       "jp_by_side": {
         "home": [],
         "away": []
@@ -1192,23 +2692,23 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401884755",
-      "espn_event_id": "401884755",
-      "competition_code": "BL1",
-      "league": "ブンデスリーガ",
-      "start_time_utc": "2026-10-24T13:30:00+00:00",
-      "start_time_jst": "10/24 22:30",
+      "game_id": "espn-401882825",
+      "espn_event_id": "401882825",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-10-31T17:30:00+00:00",
+      "start_time_jst": "11/01 02:30",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "SC Paderborn 07",
-      "home_team_id": "espn-3307",
-      "away_team_name": "Hamburger SV",
-      "away_team_id": "espn-127",
+      "home_team_name": "Real Betis Balompié",
+      "home_team_id": "espn-244",
+      "away_team_name": "Málaga CF",
+      "away_team_id": "espn-99",
       "jp_by_side": {
         "home": [],
         "away": []
@@ -1218,32 +2718,29 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401884763",
-      "espn_event_id": "401884763",
-      "competition_code": "BL1",
-      "league": "ブンデスリーガ",
-      "start_time_utc": "2026-10-24T16:30:00+00:00",
-      "start_time_jst": "10/25 01:30",
+      "game_id": "espn-401882822",
+      "espn_event_id": "401882822",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-10-31T20:00:00+00:00",
+      "start_time_jst": "11/01 05:00",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "Borussia Dortmund",
-      "home_team_id": "espn-124",
-      "away_team_name": "Eintracht Frankfurt",
-      "away_team_id": "espn-125",
+      "home_team_name": "FC Barcelona",
+      "home_team_id": "espn-83",
+      "away_team_name": "Deportivo Alavés",
+      "away_team_id": "espn-96",
       "jp_by_side": {
         "home": [],
-        "away": [
-          "堂安律",
-          "小杉啓太"
-        ]
+        "away": []
       },
       "home_has_jp": false,
-      "away_has_jp": true,
+      "away_has_jp": false,
       "season_players": []
     },
     {
@@ -1336,26 +2833,55 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401874958",
-      "espn_event_id": "401874958",
-      "competition_code": "SA",
-      "league": "セリエA",
-      "start_time_utc": "2026-10-24T13:00:00+00:00",
-      "start_time_jst": "10/24 22:00",
+      "game_id": "espn-401884753",
+      "espn_event_id": "401884753",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "Cagliari Calcio",
-      "home_team_id": "espn-2925",
-      "away_team_name": "Bologna FC 1909",
-      "away_team_id": "espn-107",
+      "home_team_name": "Bayer 04 Leverkusen",
+      "home_team_id": "espn-131",
+      "away_team_name": "VfB Stuttgart",
+      "away_team_id": "espn-134",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884749",
+      "espn_event_id": "401884749",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Borussia Mönchengladbach",
+      "home_team_id": "espn-268",
+      "away_team_name": "SC Paderborn 07",
+      "away_team_id": "espn-3307",
       "jp_by_side": {
         "home": [
-          "菅原由勢"
+          "町野修斗",
+          "宇野禅斗",
+          "橋岡大樹",
+          "板倉滉"
         ],
         "away": []
       },
@@ -1364,83 +2890,117 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401874961",
-      "espn_event_id": "401874961",
-      "competition_code": "SA",
-      "league": "セリエA",
-      "start_time_utc": "2026-10-24T13:00:00+00:00",
-      "start_time_jst": "10/24 22:00",
+      "game_id": "espn-401884751",
+      "espn_event_id": "401884751",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "Como 1907",
-      "home_team_id": "espn-2572",
-      "away_team_name": "US Sassuolo Calcio",
-      "away_team_id": "espn-3997",
-      "jp_by_side": {
-        "home": [],
-        "away": []
-      },
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "season_players": []
-    },
-    {
-      "game_id": "espn-401874948",
-      "espn_event_id": "401874948",
-      "competition_code": "SA",
-      "league": "セリエA",
-      "start_time_utc": "2026-10-24T16:00:00+00:00",
-      "start_time_jst": "10/25 01:00",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "SSC Napoli",
-      "home_team_id": "espn-114",
-      "away_team_name": "AS Roma",
-      "away_team_id": "espn-104",
-      "jp_by_side": {
-        "home": [],
-        "away": []
-      },
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "season_players": []
-    },
-    {
-      "game_id": "espn-401874955",
-      "espn_event_id": "401874955",
-      "competition_code": "SA",
-      "league": "セリエA",
-      "start_time_utc": "2026-10-24T18:45:00+00:00",
-      "start_time_jst": "10/25 03:45",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "SS Lazio",
-      "home_team_id": "espn-112",
-      "away_team_name": "Parma Calcio 1913",
-      "away_team_id": "espn-115",
+      "home_team_name": "FC Augsburg",
+      "home_team_id": "espn-3841",
+      "away_team_name": "SC Freiburg",
+      "away_team_id": "espn-126",
       "jp_by_side": {
         "home": [],
         "away": [
-          "鈴木ザイオン"
+          "鈴木唯人",
+          "後藤啓介",
+          "山本理仁"
         ]
       },
       "home_has_jp": false,
       "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884747",
+      "espn_event_id": "401884747",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Schalke 04",
+      "home_team_id": "espn-133",
+      "away_team_name": "RB Leipzig",
+      "away_team_id": "espn-11420",
+      "jp_by_side": {
+        "home": [
+          "田中聡"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884748",
+      "espn_event_id": "401884748",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SV Werder Bremen",
+      "home_team_id": "espn-137",
+      "away_team_name": "TSG 1899 Hoffenheim",
+      "away_team_id": "espn-7911",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "町田浩樹"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884754",
+      "espn_event_id": "401884754",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T17:30:00+00:00",
+      "start_time_jst": "11/01 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Bayern München",
+      "home_team_id": "espn-132",
+      "away_team_name": "Borussia Dortmund",
+      "away_team_id": "espn-124",
+      "jp_by_side": {
+        "home": [
+          "伊藤洋輝"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
       "season_players": []
     },
     {
@@ -1838,23 +3398,75 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401876427",
-      "espn_event_id": "401876427",
-      "competition_code": "FL1",
-      "league": "リーグ・アン",
-      "start_time_utc": "2026-10-24T18:45:00+00:00",
-      "start_time_jst": "10/25 03:45",
+      "game_id": "espn-401874798",
+      "espn_event_id": "401874798",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-10-31T14:00:00+00:00",
+      "start_time_jst": "10/31 23:00",
       "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
       "home_standing": null,
       "away_standing": null,
       "fixture_sources": [
         "ESPN"
       ],
-      "home_team_name": "Racing Club de Lens",
-      "home_team_id": "espn-175",
-      "away_team_name": "Paris FC",
-      "away_team_id": "espn-6851",
+      "home_team_name": "Bologna FC 1909",
+      "home_team_id": "espn-107",
+      "away_team_name": "AC Monza",
+      "away_team_id": "espn-4007",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874990",
+      "espn_event_id": "401874990",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-10-31T17:00:00+00:00",
+      "start_time_jst": "11/01 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Udinese Calcio",
+      "home_team_id": "espn-118",
+      "away_team_name": "AS Roma",
+      "away_team_id": "espn-104",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874795",
+      "espn_event_id": "401874795",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-10-31T19:45:00+00:00",
+      "start_time_jst": "11/01 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "AC Milan",
+      "home_team_id": "espn-103",
+      "away_team_name": "FC Internazionale Milano",
+      "away_team_id": "espn-110",
       "jp_by_side": {
         "home": [],
         "away": []
@@ -2032,8 +3644,8 @@
       "espn_event_id": "401876422",
       "competition_code": "FL1",
       "league": "リーグ・アン",
-      "start_time_utc": "2026-10-25T19:45:00+00:00",
-      "start_time_jst": "10/26 04:45",
+      "start_time_utc": "2026-10-26T19:30:00+00:00",
+      "start_time_jst": "10/27 04:30",
       "is_notable": false,
       "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
       "home_standing": null,
@@ -2108,6 +3720,110 @@
         "away": []
       },
       "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876416",
+      "espn_event_id": "401876416",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-10-31T16:15:00+00:00",
+      "start_time_jst": "11/01 01:15",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "OGC Nice",
+      "home_team_id": "espn-2502",
+      "away_team_name": "Stade Rennais FC 1901",
+      "away_team_id": "espn-169",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876419",
+      "espn_event_id": "401876419",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-10-31T19:45:00+00:00",
+      "start_time_jst": "11/01 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Lorient",
+      "home_team_id": "espn-273",
+      "away_team_name": "Stade Brestois 29",
+      "away_team_id": "espn-6997",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876418",
+      "espn_event_id": "401876418",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-10-31T19:45:00+00:00",
+      "start_time_jst": "11/01 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Olympique Lyonnais",
+      "home_team_id": "espn-167",
+      "away_team_name": "Angers SCO",
+      "away_team_id": "espn-7868",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876413",
+      "espn_event_id": "401876413",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-10-31T19:45:00+00:00",
+      "start_time_jst": "11/01 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "ES Troyes AC",
+      "home_team_id": "espn-170",
+      "away_team_name": "Le Mans FC",
+      "away_team_id": "espn-2697",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
       "away_has_jp": false,
       "season_players": []
     },
@@ -2198,7 +3914,7 @@
           "assists": 0,
           "minutes": 0,
           "out": true,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -2265,7 +3981,7 @@
           "assists": 3,
           "minutes": 610,
           "out": false,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         },
         {
@@ -2276,7 +3992,7 @@
           "assists": 0,
           "minutes": 189,
           "out": true,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -2342,7 +4058,7 @@
           "assists": 0,
           "minutes": 0,
           "out": false,
-          "as_of": "2026-10-23T10:14:43.380203+00:00",
+          "as_of": "2026-10-24T10:06:13.769607+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -4270,40 +5986,40 @@
     }
   ],
   "ai_status": {
-    "targets": 2,
-    "succeeded": 2,
-    "cost_usd": 0.00804
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.01988
   },
   "source_errors": [],
   "fixture_coverage": [
     {
       "competition": "PL",
       "status": "success",
-      "events": 10,
+      "events": 17,
       "label": "取得成功"
     },
     {
       "competition": "PD",
       "status": "success",
-      "events": 11,
+      "events": 14,
       "label": "取得成功"
     },
     {
       "competition": "BL1",
       "status": "success",
-      "events": 10,
+      "events": 15,
       "label": "取得成功"
     },
     {
       "competition": "SA",
       "status": "success",
-      "events": 20,
+      "events": 22,
       "label": "取得成功"
     },
     {
       "competition": "FL1",
       "status": "success",
-      "events": 11,
+      "events": 14,
       "label": "取得成功"
     },
     {
@@ -4363,7 +6079,7 @@
   ],
   "club_registration_check": {
     "days": 7,
-    "checked_at": "2026-10-23T19:14:57.746789+09:00",
+    "checked_at": "2026-10-24T19:06:31.581585+09:00",
     "missing": [
       {
         "club": "1. FC Magdeburg",
@@ -5194,14 +6910,18 @@
     ],
     "source_errors": []
   },
+  "source": "ESPN・football-data.org",
   "preview_selection": {
-    "day": "2026-10-23",
+    "day": "2026-10-24",
     "threshold": 30,
     "max_games": 4,
     "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
-    "selected_ids": [],
-    "count": 0,
-    "reason": "注目度がしきい値以上の試合なし",
+    "selected_ids": [
+      "560614",
+      "560617"
+    ],
+    "count": 2,
+    "reason": "",
     "rejected": [],
     "source_errors": []
   }
