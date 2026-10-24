@@ -19,7 +19,8 @@
       「今季初登板の投手が今季15勝」のような、個々の値は正しくても
       並べると噛み合わない文。ここは機械では書ききれない。
 
-  二段目の重大な指摘(high)は、予約前に止めて人の確認へ回す。
+  二段目は「事実の誤り」の重大な指摘(high)だけ予約前に止める。
+  説明不足・文脈の指摘はseverityに関わらず警告として残す。
   引用の主張全体を公式材料で裏付けた誤検出だけは警告として通す。
   材料との機械照合で確定した矛盾も止める。軽微な指摘は参考として残す。
 
@@ -363,7 +364,14 @@ PROMPT = """今日は {today}、{season}年シーズンの最中です。
   「実際はパドレスのはず」と指摘したことがありますが、この
   シーズンでは移籍済みで、原稿のほうが正しいものでした）
 
-文体の好みや構成の提案は要りません。事実の齟齬だけ。
+各指摘にはkindを必ず付け、次の2種類を区別してください。
+・「事実の誤り」: 材料や一般的な事実と食い違う主張（スコア・所属など）。
+・「説明不足・文脈」: 補足があるとよい、得点経過が省略されている、つながりが唐突など。
+説明不足・文脈はseverityに関わらず警告であり、公開を止めません。
+主張が「成立する」「事実としては正しい」と認める指摘は事実の誤りにしないでください。
+初優勝と初出場は別です。過去の所属リーグの補足不足は事実の誤りではありません。
+当日のWS第1戦の結果を、記憶や推測でNLCS第1戦だと読み替えないでください。
+文体の好みだけの提案は要りません。
 添付のPS材料は公式APIから取得・照合した材料です。出典と取得日時も参照してください。
 学習済みの過去年の組み合わせより、この材料を優先してください。
 「根拠が読み上げ本文に書かれていない」だけでは事実矛盾ではありません。
@@ -373,7 +381,7 @@ PROMPT = """今日は {today}、{season}年シーズンの最中です。
 相対日付は上記の日本時間の今日を基準に読み、絶対日付と同じなら矛盾ではありません。
 問題がなければ空の配列を返してください。
 JSONだけを返してください。形式:
-[{"severity":"high|low","where":"該当箇所の引用","why":"何がおかしいか"}]
+[{"kind":"事実の誤り|説明不足・文脈","severity":"high|low","where":"該当箇所の引用","why":"何がおかしいか"}]
 
 --- 原稿 ---
 """
@@ -427,9 +435,14 @@ def general(paths, api_key, materials=None):
         token_log.record("sanity", MODEL, resp)
         txt = "".join(b.text for b in resp.content if b.type == "text").strip()
         m = re.search(r"\[.*\]", txt, re.S)
-        return json.loads(m.group(0)) if m else []
+        issues = json.loads(m.group(0)) if m else []
+        if not isinstance(issues, list) or any(
+                not isinstance(o, dict) or o.get('kind') not in (sanity_material.FACT, sanity_material.CONTEXT)
+                for o in issues):
+            raise ValueError('常識点検の応答に必須のkind（事実の誤り/説明不足・文脈）がありません')
+        return issues
     except Exception as e:      # 見えなかっただけ。出すのは止めない
-        return [{"severity": "low", "where": "(確認できず)", "why": str(e)[:200]}]
+        return [{"kind": sanity_material.CONTEXT, "severity": "low", "where": "(確認できず)", "why": str(e)[:200]}]
 
 
 def main():
@@ -440,7 +453,7 @@ def main():
                     default=["public/narration.json",
                              "public/soccer_narration.json"])
     ap.add_argument("--strict", action="store_true",
-                    help="ありえない数字・材料照合NG・材料で裏付けられないhighで異常終了する")
+                    help="ありえない数字・材料照合NG・事実の誤りのhighで異常終了する")
     ap.add_argument("--out", default="data/sanity.json")
     ap.add_argument('--hold-record', help='見送り印と区別する、この実行のアップロード保留記録')
     ap.add_argument('--kind', default='daily')
@@ -483,7 +496,7 @@ def main():
                 general(args.narration, key, materials=materials), documents, materials)
             print("\n--- 読んで引っかかるところ ---")
             for o in odd:
-                print("  [%s] %s — %s" % (o.get("severity", "?"),
+                print("  [%s][%s] %s — %s" % (o.get("severity", "?"), o['kind'],
                                           o.get("where", "")[:60],
                                           o.get("why", "")[:120]))
             if not odd:
@@ -491,18 +504,20 @@ def main():
         else:
             print("\n(ANTHROPIC_API_KEY がないので二段目は飛ばした)")
 
-    high = [o for o in odd if str(o.get('severity', '')).lower() == 'high' and not o.get('supported')]
+    high = [o for o in odd if sanity_material.blocking(o)]
     unconfirmed = [o for o in odd if not o.get('confirmed') and not o.get('supported')]
     if high:
-        print('::error::材料で裏付けられない重大な指摘(high)があるため予約停止・アップロード未実行です')
+        print('::error::事実の誤りの重大な指摘(high)があるため予約停止・アップロード未実行です')
     for issue in odd:
         if issue not in high:
+            warnings.append(issue)
             print('::warning::常識点検（%s）: %s' % (issue['verification'], issue.get('why', '')))
     blocked = bool((impossible or contradictions or high) and args.strict)
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"impossible": impossible, "odd": odd, "contradictions": contradictions,
-                               "date_jst": next((d.get('date_jst') for d in documents if d.get('date_jst')), None),
+                               "date_jst": next((sanity_material.document_day(d) for d in documents
+                                                 if sanity_material.document_day(d)), None),
                                "blocking_issues": high, "warnings": warnings,
                                "unconfirmed_issues": unconfirmed, "materials": materials,
                                "upload_held": blocked},
@@ -529,11 +544,11 @@ def main():
             for b in contradictions:
                 f.write('- **材料と矛盾** %s\n' % b)
             for o in odd:
-                f.write("- %s 「%s」 — %s\n"
+                f.write("- %s [%s] 「%s」 — %s\n"
                         % ("**重大な指摘・予約停止**" if o in high else
                            "**材料と矛盾**" if o.get("confirmed") else
-                           o['verification'] if o.get('supported') else "参考（未確定）",
-                           o.get("where", ""), o.get("why", "")))
+                           o['verification'] if o.get('supported') or o['kind'] == sanity_material.CONTEXT else "参考（未確定）",
+                           o['kind'], o.get("where", ""), o.get("why", "")))
 
     return 1 if blocked else 0
 
