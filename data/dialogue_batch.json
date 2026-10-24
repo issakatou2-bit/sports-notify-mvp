@@ -1,16 +1,27 @@
 {
   "date": "2026-10-24",
-  "submits": 1,
+  "submits": 2,
   "stages": {
     "draft": {
       "key": "1b71a935e4735c527e1fef94b3370bb212075063e6fe266f9ce982d4dc187610",
       "n": 1,
       "custom_id": "dlg-draft-1b71a935e4735c52-1",
       "batch_id": "msgbatch_015cvVTPb4MUPjXvwH5ZRT1z",
+      "status": "used",
+      "tries": 1,
+      "recorded": true,
+      "submitted_at": "2026-10-24T15:12:02+09:00",
+      "model": "claude-sonnet-5-5"
+    },
+    "more": {
+      "key": "5ea99143d5317857ace4087054b23d32d91d0e0f251b891c94e302e7d992c11e",
+      "n": 1,
+      "custom_id": "dlg-more-5ea99143d5317857-1",
+      "batch_id": "msgbatch_01GUdTWVr2pfsvybXyBuJdD3",
       "status": "submitted",
       "tries": 1,
       "recorded": false,
-      "submitted_at": "2026-10-24T15:12:02+09:00",
+      "submitted_at": "2026-10-24T15:14:28+09:00",
       "model": "claude-sonnet-5-5"
     }
   }
