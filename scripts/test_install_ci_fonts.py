@@ -96,6 +96,8 @@ class CIFontsTest(unittest.TestCase):
             return path
 
         def load(path, *args, **kwargs):
+            if hasattr(path, 'read'):
+                return truetype(path, *args, **kwargs)
             return truetype(str(mapped(Path(path))), *args, **kwargs)
 
         with patch.dict(os.environ, {}, clear=True), \

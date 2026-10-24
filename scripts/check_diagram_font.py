@@ -7,7 +7,10 @@ FONT = Path(__file__).resolve().parents[1] / "assets/fonts/soccer-v5/NotoSansJP-
 
 
 def check(path=FONT):
-    font = ImageFont.truetype(str(path), 32)
+    # パスを渡すと、欠落・破損時に Pillow が同名のシステム字体で
+    # 代用する。指定ファイル自体を開き、別の字体で合格させない。
+    with Path(path).open("rb") as source:
+        font = ImageFont.truetype(source, 32)
     missing = bytes(font.getmask("\U0010ffff"))
     for char in "日本語カタカナ球場":
         mask = font.getmask(char)
