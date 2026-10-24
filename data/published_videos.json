@@ -14530,6 +14530,26 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-23": {
+      "video_id": "1skqllJd8D4",
+      "url": "https://youtu.be/1skqllJd8D4",
+      "title": "【欧州サッカー】町野修斗がゴール｜シュツットガルト 2-3 ボルシアMG ほか 日本人選手の結果 #Shorts",
+      "published_at": "2026-10-24T01:05:22.448734+00:00",
+      "publish_at": "2026-10-24T01:20:00Z",
+      "host_assignment": {
+        "day": "2026-10-24",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 5
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   }
 }
