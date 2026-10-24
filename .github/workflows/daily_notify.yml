@@ -606,6 +606,16 @@ jobs:
         with:
           name: collespo-video
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            public/narration.json
+            public/soccer_narration.json
+            public/games.json
             build/video/collespo_short.mp4
             build/video/short.png
             build/video/short.json
@@ -613,8 +623,6 @@ jobs:
             build/ps_program_forecast*.json
             build/ps_forecast_status.json
             build/ps_forecast_source.json
-            data/sanity.json
-            build/sanity_hold.json
             !build/**/portrait/**
           retention-days: 7
           if-no-files-found: ignore

@@ -323,8 +323,15 @@ class GroundingTests(unittest.TestCase):
         self.assertIn("steps.sanity.outcome == 'success'", upload['if'])
         self.assertIn('steps.sanity.outcome', final['run'])
         self.assertIn('--hold-record build/sanity_hold.json', final['run'])
-        self.assertIn('build/sanity_hold.json', artifact['with']['path'])
-        self.assertIn('data/sanity.json', artifact['with']['path'])
+        from fnmatch import fnmatchcase
+        patterns = artifact['with']['path'].splitlines()
+        for record in ('build/sanity_hold.json', 'build/sanity_soccer_hold.json',
+                       'data/sanity.json', 'data/sanity_soccer.json'):
+            with self.subTest(record=record):
+                self.assertTrue(any(fnmatchcase(record, p.strip())
+                                    for p in patterns if not p.strip().startswith('!')),
+                                f'{record} is missing from artifact paths')
+        self.assertEqual(artifact['if'], 'always()')
 
 
 if __name__ == '__main__':

@@ -198,7 +198,8 @@ def check_tests(tmp: str) -> int:
             #
             # unittest のように stdout へ何も出さない形もここで拾う。
             if not ng:
-                for line in (r.stderr or "").strip().splitlines()[-8:]:
+                # 末尾だけだとunittestの失敗名・Traceback・実測値が消える。
+                for line in (r.stderr or "").strip().splitlines():
                     print(f"      {line}")
         else:
             print(f"ok {f.stem:<22} {mark}")

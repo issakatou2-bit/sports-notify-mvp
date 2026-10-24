@@ -107,18 +107,25 @@ jobs:
         run: |
           T="${{ steps.topic.outputs.key }}"
           python scripts/generate_asset_video.py --topic "$T" --narration-out "build/narr_$T.json"
-          python scripts/sanity.py --strict --narration "build/narr_$T.json"
+          python scripts/sanity.py --strict --narration "build/narr_$T.json" --out "data/sanity_${T}.json" --hold-record "build/sanity_hold_${T}.json"
           python scripts/synthesize_narration.py --narration "build/narr_$T.json" --out-dir "build/audio_$T"
           python scripts/prepare_design_preview.py --manifest "build/audio_$T/manifest.json"
           python scripts/generate_asset_video.py --topic "$T" --audio-dir "build/audio_$T" --out build/preview
 
       - name: Save preview
-        if: steps.topic.outputs.key != ''
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: design-preview
           retention-days: 3
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
             build/preview/*.mp4
             build/narr_*.json
             build/audio_*/manifest.json

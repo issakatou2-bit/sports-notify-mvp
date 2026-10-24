@@ -73,10 +73,18 @@ jobs:
           python scripts/synthesize_narration.py --narration build/preview-narration.json --out-dir build/preview-audio
           "${builder[@]}" --audio-dir build/preview-audio
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: morning-design-preview
           retention-days: 3
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
             build/preview/*.mp4
             build/preview-narration.json
             build/preview-audio/manifest.json
