@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-24T06:11:12.049987+00:00",
+  "updated_at": "2026-10-24T08:36:49.831666+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -33,11 +33,11 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「あと3勝で子どもの頃の一番の夢が叶う。12歳の自分がこれを知ったらどう思うんだろう、想像もつかない。」"
+          "「今夜のコントレラス、狙い撃ちだったな。🍻」"
         ],
         [
           "MLB.comの見出しから",
-          "「ブルワーズが9回の嵐を乗り切り、熱狂するファンの前で第1戦をものにした」"
+          "「ブルワーズが9回の嵐を乗り切り、熱狂的なファンの前で第1戦をものにした」"
         ]
       ],
       "japanese": [],
@@ -47,14 +47,14 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "あと3勝で子どもの頃の一番の夢が叶う。12歳の自分がこれを知ったらどう思うんだろう、想像もつかない。",
-        "text": "3 more wins until my biggest childhood dream is accomplished. I couldn’t imagine what 12 year old me would think about this",
+        "said": "今夜のコントレラス、狙い撃ちだったな。🍻",
+        "text": "Contreras was a sniper tonight. 🍻",
         "url": "https://www.youtube.com/watch?v=sSAk4hyqnUQ",
-        "likes": 80,
-        "at": "2026-10-24T05:00:24Z"
+        "likes": 233,
+        "at": "2026-10-24T05:14:18Z"
       },
       "headline": {
-        "said": "ブルワーズが9回の嵐を乗り切り、熱狂するファンの前で第1戦をものにした",
+        "said": "ブルワーズが9回の嵐を乗り切り、熱狂的なファンの前で第1戦をものにした",
         "text": "Brewers weather ninth-inning storm, take Game 1 in front of raucous fans",
         "url": "https://www.mlb.com/news/brewers-win-world-series-game-1-2026",
         "at": "2026-10-24T05:47:00+00:00"
