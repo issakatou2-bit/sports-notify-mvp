@@ -9,7 +9,7 @@
 ここでは二段見る。
 
   一段目　ありえない数字            (機械。API不要)
-      打数2で3安打、防御率150、9回で25奪三振。
+      打数2で3安打、打率1.5。防御率は15超でも規則上ありえます。
       野球の規則の上で起こりえない値と、起こりうるが桁が違う値。
       いちばん静かに壊れるのは内部矛盾のほう。
       「安打 > 打数」は範囲をいくら見ても分からない。
@@ -31,6 +31,7 @@
 
 import argparse
 import json
+import math
 import os
 import pathlib
 import re
@@ -80,6 +81,7 @@ GAME_BOUNDS = {
     "回": (0, 15),         # 延長を含む
     "奪三振": (0, 21),     # 9回20が最多。延長で21
     "失点": (0, 20),
+    "防御率": (0, float("inf")),  # 短い登板でも15を超えうる
 }
 
 # 通算で起こりうる幅。
@@ -102,7 +104,7 @@ CAREER_BOUNDS = {
     "敗": (0, 400),
     "セーブ": (0, 750),
     "ホールド": (0, 400),
-    "防御率": (0, 15),
+    "防御率": (0, float("inf")),  # 自責点×9÷投球回。15超にも上限はない
     "奪三振": (0, 6500),
     "本塁打": (0, 900),
     "打点": (0, 2600),
@@ -138,7 +140,7 @@ SEASON_BOUNDS = {
     "敗": (0, 30),
     "セーブ": (0, 60),
     "ホールド": (0, 50),
-    "防御率": (0, 15),
+    "防御率": (0, float("inf")),  # 自責点×9÷投球回。15超にも上限はない
     "奪三振": (0, 400),
     "本塁打": (0, 75),     # 73本が最多記録
     "打点": (0, 200),
@@ -170,7 +172,7 @@ def parse_line(line):
     for unit in ("防御率", "打率"):
         if unit in out:
             continue
-        m = re.search(re.escape(unit) + "[ 　]*([0-9]*[.][0-9]+|[0-9]+)", line)
+        m = re.search(re.escape(unit) + "[ 　]*([+-]?(?:[0-9]*[.][0-9]+|[0-9]+))", line)
         if m:
             out[unit] = float(m.group(1))
     return out
@@ -192,7 +194,7 @@ def check_line(name, line):
         lo, hi = bounds.get(unit, (None, None))
         if lo is None:
             continue
-        if not (lo <= val <= hi):
+        if not math.isfinite(val) or not (lo <= val <= hi):
             bad.append("%s: 「%s」の%s%g は%sとしてありえない(%g〜%g)"
                        % (name, line, unit, val, where, lo, hi))
 
@@ -289,7 +291,7 @@ def check_narration(paths):
                 continue
             for unit, val in parse_line(text).items():
                 lo, hi = loose.get(unit, (None, None))
-                if lo is None or lo <= val <= hi:
+                if lo is None or (math.isfinite(val) and lo <= val <= hi):
                     continue
                 bad.append("%s の%d番目: 「%s」の%s%g はありえない(%g〜%g)"
                            % (pathlib.Path(p).name, i + 1,
