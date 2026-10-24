@@ -1,0 +1,93 @@
+{
+  "source_run": "https://github.com/issakatou2-bit/sports-notify-mvp/actions/runs/40077509273",
+  "source_commit": "48a632e849299a9cb05be1ee917b92bf9ad9f8cd",
+  "data": {
+    "players": [],
+    "voices": {
+      "updated_at": "2026-10-24T08:20:03.719394+00:00",
+      "source": "MLB公式ハイライトのコメント",
+      "voices": [
+        {
+          "ja": "これは最高の筋書きだな。どっちが勝っても初優勝のチームが誕生するなんて、まさに野球のロマンの極みだよ。ただ、両チームとも小市場の球団だからってテレビ視聴率が暴落しないといいんだけど。",
+          "likes": 496,
+          "replies": 25,
+          "reply_ja": [
+            {
+              "ja": "視聴率なんてテレビ局の人間じゃなきゃ誰が気にするんだよ。正直、大事なのはブルワーズとレイズのファンが観てるかどうかだけだろ。"
+            },
+            {
+              "ja": "なんで視聴率なんか気にするわけ？お前フォックスのオーナーか何かか？くだらないコメントだな。"
+            },
+            {
+              "ja": "自分で言ってたじゃん、いい試合なんだからそれでいいだろ。視聴率なんて誰が気にするんだよ。"
+            }
+          ],
+          "matchup": "RAYS vs. BREWERS",
+          "is_thread": true
+        },
+        {
+          "ja": "今夜のコントレラス、狙い撃ちだったな。🍻",
+          "likes": 233,
+          "replies": 3,
+          "reply_ja": [
+            {
+              "ja": "あの牽制、えげつなかった🔥"
+            },
+            {
+              "ja": "三塁への送球は見事だった。二塁への送球と違って、まず体を回してから投げなきゃいけないのに。それでもランナーの足が勝手にぶつかりに行くような完璧なところに投げ込んだ。"
+            },
+            {
+              "ja": "あのヤディアー・モリーナを見てるようだった。守備は最高だ！"
+            }
+          ],
+          "matchup": "RAYS vs. BREWERS",
+          "is_thread": false
+        },
+        {
+          "ja": "あと3勝で、子どもの頃からの一番大きな夢が叶う。12歳の自分がこれを見たらどう思うか、想像もつかないよ。",
+          "likes": 139,
+          "replies": 12,
+          "reply_ja": [
+            {
+              "ja": "56歳でも元気にしててほしいね。"
+            },
+            {
+              "ja": "@justinnzamora5366 忠誠心ってやつだよ。"
+            },
+            {
+              "ja": "@justinnzamora5366 俺は27だよｗ"
+            }
+          ],
+          "matchup": "RAYS vs. BREWERS",
+          "is_thread": false
+        },
+        {
+          "ja": "なんて試合だ！レギュラーシーズンの最強2チームが、球団史上初の優勝をかけて戦うなんて、映画みたいな展開じゃないか。これ以上の望みはないよ。最高のワールドシリーズにしようぜ！！",
+          "likes": 128,
+          "replies": 4,
+          "reply_ja": [
+            {
+              "ja": "たぶんうちのブルワーズにはならないだろうな😒"
+            },
+            {
+              "ja": "下手な煽りだな。「うちのブルワーズ」って、どうせレイズファンだろ。"
+            },
+            {
+              "ja": "@Doc_Cocked_Glock 俺はブルークルーのファンだぞ。"
+            }
+          ],
+          "matchup": "RAYS vs. BREWERS",
+          "is_thread": false
+        }
+      ]
+    },
+    "date_jst": "2026-10-24"
+  },
+  "env": {
+    "COLLESPO_COMMENTS_DESIGN": "comments",
+    "COLLESPO_SHORT_LOOK": "v4",
+    "COLLESPO_DUO": "off",
+    "COLLESPO_SOLO_HOST": "metan",
+    "COLLESPO_HOST_SPLIT": "half"
+  }
+}

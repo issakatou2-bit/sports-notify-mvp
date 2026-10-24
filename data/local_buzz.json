@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-23T06:02:22.761889+00:00",
+  "updated_at": "2026-10-24T08:19:47.151953+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -7,80 +7,27 @@
     },
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 25
     }
   ],
-  "titles_count": 49,
+  "titles_count": 50,
   "teams": [
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 10,
+      "mentions": 15,
       "tone": "好調",
-      "gist": "ブリュワーズがWS進出、G1はマルティネス先発"
+      "gist": "ブリュワーズがWS第1戦を3-2で先勝"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 7,
-      "tone": "好調",
-      "gist": "レイズがWS進出、G1はマルティネス先発"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ヴォクト、2027年もガーディアンズ続投を明言"
-    },
-    {
-      "team_id": "113",
-      "name": "レッズ",
-      "name_en": "Cincinnati Reds",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "元一塁手ベンジンガー氏の訃報を球団が発表"
-    },
-    {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "レンジャーズ初のリーグ優勝から16年"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "カブス、1945年以来のリーグ優勝から10年"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "ベナブル監督が年間最優秀監督の候補に"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ヴォクトがマリナーズ監督の噂に否定の回答"
+      "mentions": 10,
+      "tone": "不振",
+      "gist": "レイズ、第1戦を2-3で落とす"
     }
   ],
-  "players": [
-    {
-      "name": "松井裕樹",
-      "mentions": 1
-    }
-  ]
+  "players": []
 }

@@ -645,6 +645,55 @@
           "out": 2977
         }
       }
+    },
+    "2026-10-24": {
+      "calls": 48,
+      "in": 76415,
+      "out": 26542,
+      "usd": 0.38157,
+      "by": {
+        "localize": {
+          "calls": 8,
+          "in": 10038,
+          "out": 5676
+        },
+        "topic": {
+          "calls": 12,
+          "in": 2550,
+          "out": 428
+        },
+        "voices": {
+          "calls": 3,
+          "in": 3582,
+          "out": 1689
+        },
+        "reporters": {
+          "calls": 6,
+          "in": 7878,
+          "out": 2474
+        },
+        "translate": {
+          "calls": 2,
+          "in": 1634,
+          "out": 802
+        },
+        "buzz": {
+          "calls": 2,
+          "in": 1912,
+          "out": 171
+        },
+        "sanity": {
+          "calls": 11,
+          "in": 31733,
+          "out": 8124
+        },
+        "dialogue": {
+          "calls": 4,
+          "in": 17088,
+          "out": 7178,
+          "batch": 2
+        }
+      }
     }
   }
 }

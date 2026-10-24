@@ -607,6 +607,7 @@ jobs:
             build/morning/ps_program_upload_skip.json
             data/sanity_*.json
             build/mr_narration_*.json
+            build/morning/quote_alignment.json
             !build/**/portrait/**
           retention-days: 7
           if-no-files-found: ignore
