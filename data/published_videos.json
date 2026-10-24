@@ -6372,6 +6372,97 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-24": {
+      "video_id": "MQyma6NVRbA",
+      "url": "https://youtu.be/MQyma6NVRbA",
+      "title": "【MLB】現地はこう報じた「ブルワーズが9回の嵐を乗り切り、熱狂的なファンの前で第1戦をものにした」｜10月24日 番記者の投稿と現地の見出し #Shorts",
+      "published_at": "2026-10-24T08:35:12.589608+00:00",
+      "publish_at": "2026-10-24T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-10-24",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "ab_assigned_variant": "B",
+      "ab_fallback_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        9.0,
+        17.133333,
+        24.766667,
+        34.7,
+        41.1
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "ブルワーズが9回の嵐を乗り切り、熱狂的なファンの前で第1戦をものにした。10月24日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 9.030667,
+          "scene_start": 9.0,
+          "text": "Fox News。ドジャースのワールドシリーズ進出ならず　LA Times記者の大谷翔平論が過激すぎると話題に｜OutKick。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 17.186667,
+          "scene_start": 17.133333,
+          "text": "ESPN。大谷翔平は来季、投手としてもマウンドに上がる。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 24.841334,
+          "scene_start": 24.766667,
+          "text": "MLB.comの記者。ブランドン・ウッドラフ「気にしているのは勝つことだけ。簡単な決断じゃないのは分かっている」。決断が出た。ロースター入りだ。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 34.778667,
+          "scene_start": 34.7,
+          "text": "Baltimore Bannerの記者。うちの犬に「ブルワーズの試合が始まったよ」と教えた人がいるらしい。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 41.196,
+          "scene_start": 41.1,
+          "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 49.36666666666667,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "de369a69a873733919c8dc898c18395aa5bc7daa5d97a7a59b442b7f8e507d78",
+      "host_assignment": {
+        "day": "2026-10-24",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {

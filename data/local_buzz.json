@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-24T06:01:53.161556+00:00",
+  "updated_at": "2026-10-24T08:19:47.151953+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -16,39 +16,18 @@
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 13,
+      "mentions": 15,
       "tone": "好調",
-      "gist": "ブリュワーズがWS第1戦を3-2で先勝、Megillが締める"
+      "gist": "ブリュワーズがWS第1戦を3-2で先勝"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 6,
+      "mentions": 10,
       "tone": "不振",
-      "gist": "レイズは第1戦を2-3で落とす、中継プレーは好評"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "スタントンの2027年の位置づけを巡る話題"
-    },
-    {
-      "team_id": "137",
-      "name": "ジャイアンツ",
-      "name_en": "San Francisco Giants",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "松井秀喜氏がNPB巨人の監督に就任"
+      "gist": "レイズ、第1戦を2-3で落とす"
     }
   ],
-  "players": [
-    {
-      "name": "松井裕樹",
-      "mentions": 1
-    }
-  ]
+  "players": []
 }
