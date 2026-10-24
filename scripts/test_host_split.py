@@ -127,14 +127,14 @@ class HostSplitTest(unittest.TestCase):
         import synthesize_narration as sn
         import ui_voice_stock as stock
         import ui_voice_worker as worker
-        from test_ui_voice_queue import MemoryQueue, tone, portraits
+        from test_ui_voice_queue import MemoryQueue, tone, portraits, stock_sleep
         source = hs.prepare(SCRIPT, 'morning', day_for('ui'))
         path = self.folder/'ui.json'
         path.write_bytes(q.encoded(source))
         queue = MemoryQueue()
         with patch.dict(os.environ, COLLESPO_UI_PARTS_KEY=base64.b64encode(bytes(range(32))).decode('ascii')), \
              patch.object(q, 'GitQueue', return_value=queue), \
-             patch.object(stock.time, 'sleep', side_effect=lambda seconds: worker.process(queue, self.folder/'cache', tone, portraits())), \
+             stock_sleep(lambda seconds: worker.process(queue, self.folder/'cache', tone, portraits())), \
              patch.object(sys, 'argv', ['synth', '--narration', str(path), '--out-dir', str(self.folder/'audio')]):
             sn.main()
         hs.render_audio(self.folder/'audio', self.folder/'video')
