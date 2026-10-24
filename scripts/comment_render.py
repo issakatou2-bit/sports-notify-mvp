@@ -946,21 +946,25 @@ def _voices_source(voices_data):
     return ('引用：MLBコメント（訳：コレスポ）','コレスポの見解ではありません')
 
 
-def reading_times(voices,spoken,duration):
+def reading_times(voices,spoken,duration,issues=None):
     """原稿の引用位置を表示区間へ写す。未読の札は出さない。"""
     out=[];cursor=0;scale=duration/max(1,len(spoken))
     for voice in voices:
         if voice.get('read') is False:
             out.append(dict(voice,at=0,end=0));continue
-        if voice.get('clip'):
-            if voice['said'].strip().rstrip('。！!、.') not in spoken:
-                raise ValueError('引用区間と読み上げが一致しません')
-            out.append(dict(voice,at=0,end=duration));continue
         body=str(voice.get('said','')).strip().rstrip('。！!、.')
-        key=body[:12]
-        at=spoken.find(key,cursor)
-        if not key or at<0:
-            raise ValueError('画面の引用が読み上げ順にありません: '+key)
+        at=spoken.find(body,cursor) if body else -1
+        if at<0:
+            if issues is not None:
+                issues.append(dict(said=voice.get('said',''), spoken=spoken, cursor=cursor,
+                                   reason='out_of_order' if body and body in spoken else 'missing_or_changed',
+                                   action='omit_screen_quote'))
+            # 文言/順の違う札だけ外す。次の引用の検索位置は進めない。
+            continue
+        if voice.get('clip'):
+            out.append(dict(voice,at=0,end=duration))
+            cursor=at+len(body)
+            continue
         finish=min(len(spoken),at+len(body))
         out.append(dict(voice,at=at*scale,end=finish*scale))
         cursor=finish
@@ -976,10 +980,10 @@ def voices_screen(t, seg, voices_data, dur=None, team_id=None):
                     source_lines=_voices_source(voices_data))
 
 
-def voices_cues(seg, voices_data, dur=None):
+def voices_cues(seg, voices_data, dur=None, issues=None):
     voices = voices_for_segment(seg, voices_data)
     if dur:
-        voices = reading_times(voices, seg.get("text") or "", dur)
+        voices = reading_times(voices, seg.get("text") or "", dur, issues=issues)
     return unified_cues(voices)
 
 
