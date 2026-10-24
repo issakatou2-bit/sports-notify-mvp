@@ -1,10 +1,27 @@
-"""highは停止を基本にし、引用の主張全体を材料で裏付けた誤検出だけ除く。"""
+"""事実の誤りと説明不足を分け、公式材料と照合する。"""
 import re
 import json
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
 JST = timezone(timedelta(hours=9))
+FACT = '事実の誤り'
+CONTEXT = '説明不足・文脈'
+
+
+def document_day(document):
+    """夕方のvoices/pressは日本時間の日付をsegment.meta.dateに保存する。"""
+    return ((document.get('ps_program') or {}).get('date_jst')
+            or document.get('date_jst')
+            or next(((s.get('meta') or {}).get('date')
+                     for s in document.get('segments') or []
+                     if (s.get('meta') or {}).get('date')), None))
+
+
+def blocking(issue):
+    return (issue.get('kind') == FACT
+            and str(issue.get('severity', '')).lower() == 'high'
+            and not issue.get('supported'))
 
 
 def grounding(documents, snapshot_path='data/postseason.json'):
@@ -22,8 +39,7 @@ def grounding(documents, snapshot_path='data/postseason.json'):
         snapshot = json.loads(Path(snapshot_path).read_text(encoding='utf-8'))
         source_day = datetime.fromisoformat(snapshot['date']).date()
         # PS予告の原稿日付は翌日の試合日になる場合もある。
-        days = {(d.get('ps_program') or {}).get('date_jst') or d.get('date_jst')
-                for d in documents}
+        days = {document_day(d) for d in documents}
         if any(day and 0 <= (datetime.fromisoformat(day).date() - source_day).days <= 1
                for day in days):
             sources.append(dict(source=str(snapshot_path), retrieved_at=snapshot.get('updated_at'),
@@ -33,7 +49,7 @@ def grounding(documents, snapshot_path='data/postseason.json'):
     except (OSError, ValueError, KeyError, TypeError):
         pass
     result = [dict(source, series=[{k: row[k] for k in
-            ('key', 'round', 'round_jp', 'teams', 'next', 'played', 'over') if k in row}
+            ('key', 'round', 'round_jp', 'teams', 'next', 'played', 'over', 'games', 'results') if k in row}
             for row in source['series']]) for source in sources]
     for source in result:
         for row in source['series']:
@@ -199,7 +215,15 @@ def assess(issues, documents, materials=None):
         confirmed = any(check(document, materials) for document in scoped)
         supported = bool(scoped) and not confirmed and all(
             _supported_claim(quoted, document, materials) for document in referenced)
-        reviewed.append(dict(issue, confirmed=confirmed, supported=supported,
+        # 旧保存応答は事実指摘として扱い、稼働中のhighを黙って解除しない。
+        # 新しいAI応答のkind必須検査はsanity.generalで行う。
+        kind = issue.get('kind') or FACT
+        if not confirmed and re.search(r'(?:成立(?:する|している)|事実(?:として)?(?:は|が)?正しい)'
+                                       r'(?:[。．、,]|[」』]?(?:が|けれど|ものの|ただし)|$)',
+                                       issue.get('why') or ''):
+            kind = CONTEXT
+        reviewed.append(dict(issue, kind=kind, confirmed=confirmed, supported=supported,
                              verification='材料と矛盾あり' if confirmed else
-                             '材料で裏付け済み（誤検出）' if supported else '材料で確認できず'))
+                             '材料で裏付け済み（誤検出）' if supported else
+                             '説明不足・文脈（公開を止めない）' if kind == CONTEXT else '材料で確認できず'))
     return reviewed, list(dict.fromkeys(errors))
