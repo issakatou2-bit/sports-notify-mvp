@@ -9,7 +9,7 @@ MLBの球団ごとに、資産動画1本ぶんの材料を作る。
 
   もう一つ、APIから作ることに実利がある。球団は移転する。
   2026年時点でアスレチックスの locationName は "Sacramento" で、
-  本拠地はサッター・ヘルス・パーク(収容14,111人)。手書きの表なら
+  本拠地はサッター・ヘルス・パーク。収容人数は公式照合表を共用する。手書きの表なら
   こちらが気づいて直すまで古い内容を出し続けるが、APIを見ていれば
   移転した翌日から正しくなる。新球団が増えたときも同じ。
 
@@ -27,6 +27,7 @@ MLBの球団ごとに、資産動画1本ぶんの材料を作る。
 import argparse
 import functools
 import json
+from venue_capacity import apply_capacity, capacity_note
 import pathlib
 import sys
 from datetime import datetime, timezone
@@ -85,7 +86,7 @@ def fetch() -> tuple:
                       params={"sportId": 1,
                               "hydrate": "location,fieldInfo"},
                       headers=UA, timeout=30).json().get("venues", [])
-    venue = {v["id"]: v for v in vs}
+    venue = {v["id"]: apply_capacity(v) for v in vs}
     return teams, venue
 
 
@@ -314,7 +315,8 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
                       "球団です"))
     items.append((f"本拠地は{where}",
                   f"球場は{jp_venue(v.get('name', ''))}"
-                  + (f"、収容{f['capacity']:,}人" if f.get("capacity") else "")))
+                  + (f"、収容{f['capacity']:,}人{capacity_note(v.get('name'))}"
+                     if f.get("capacity") else "")))
     if div:
         items.append((div, "この地区の相手とは、年に13試合ずつ戦います"))
     riv = rivals_of(tid)
@@ -344,9 +346,9 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
                     + ("いちばん古い" if yr == 1 else f"{yr}番目に古い"))
     if not hook and f.get("capacity") and all_caps:
         if f["capacity"] == min(all_caps):
-            hook = f"本拠地の収容{f['capacity']:,}人　MLBでいちばん小さい"
+            hook = f"本拠地の収容{f['capacity']:,}人{capacity_note(v.get('name'))}　MLBでいちばん小さい"
         elif f["capacity"] == max(all_caps):
-            hook = f"本拠地の収容{f['capacity']:,}人　MLBでいちばん大きい"
+            hook = f"本拠地の収容{f['capacity']:,}人{capacity_note(v.get('name'))}　MLBでいちばん大きい"
     # 殿堂入りの人数は使わない。
     #
     # data/team_legends.json は球団ごとに上位3人しか保存していない。
@@ -358,10 +360,10 @@ def build(t: dict, venue: dict, all_caps: list, all_years: list,
     if not hook and f.get("capacity") and len(all_caps) >= 25:
         rank = sorted(all_caps, reverse=True).index(f["capacity"]) + 1
         if rank <= 3:
-            hook = f"本拠地の収容{f['capacity']:,}人　MLBで{rank}番目に大きい"
+            hook = f"本拠地の収容{f['capacity']:,}人{capacity_note(v.get('name'))}　MLBで{rank}番目に大きい"
         elif rank >= len(all_caps) - 2:
             small = len(all_caps) - rank + 1
-            hook = f"本拠地の収容{f['capacity']:,}人　MLBで{small}番目に小さい"
+            hook = f"本拠地の収容{f['capacity']:,}人{capacity_note(v.get('name'))}　MLBで{small}番目に小さい"
 
     # 地理の端。位置は全球団ぶん持っているので順位が出せる。
     if not hook:
@@ -457,6 +459,7 @@ def main() -> int:
     p.write_text(json.dumps({
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "source": "MLB Stats API",
+        "capacity_source": "data/venue_capacities.json",
         "topics": topics,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 

@@ -1,0 +1,32 @@
+{
+  "checked_on": "2026-10-24",
+  "discrepancy_source": "https://github.com/issakatou2-bit/sports-notify-mvp/actions/runs/39921737653",
+  "material_paths": ["data/team_topics.json", "data/venue_topics.json"],
+  "scope": "公式の現行球場案内に記載された収容人数。固定席数だけを比べた表ではない。",
+  "venues": {
+    "Sutter Health Park": {
+      "capacity": 14014,
+      "definition": "芝生席を含む収容人数（固定席10,624席）",
+      "source": "https://www.mlb.com/news/featured/sutter-health-park-guide-capacity-seating-chart-parking-and-more",
+      "supporting_source": "https://www.mlb.com/athletics/news/athletics-sell-out-season-tickets-sutter-health-park-2025",
+      "previous_material_values": [14111, 13416],
+      "note": "14,111は過去の公開題、13,416はMLB Stats APIを使う生成済み球団・球場材料。両値の現行公式根拠は未確認。"
+    },
+    "Progressive Field": {
+      "capacity": 33530,
+      "definition": "現行案内の収容人数",
+      "source": "https://www.mlb.com/news/featured/progressive-field-guide-capacity-seating-chart-parking-and-more",
+      "historical_source": "https://img.mlbstatic.com/mlb-images/image/upload/mlb/wvjgmgns89yoffz2no0h.pdf",
+      "previous_material_values": [34788, 34830],
+      "note": "34,788は過去の公開題で公式根拠未確認。34,830はMLB Stats API由来の生成材料にもあるが、旧公式メディアガイドの値。現行案内33,530を採用。"
+    },
+    "Coors Field": {
+      "capacity": 50144,
+      "definition": "立ち見を含む収容人数（固定席46,891席）",
+      "display_note": "（立ち見を含む）",
+      "source": "https://www.mlb.com/news/featured/coors-field-guide-capacity-seating-chart-parking-and-more",
+      "previous_material_values": [50144, 50480],
+      "note": "50,144は過去の公開題とも一致。50,480はMLB Stats API由来の生成済み球団材料。50,480の現行公式根拠は未確認。"
+    }
+  }
+}
