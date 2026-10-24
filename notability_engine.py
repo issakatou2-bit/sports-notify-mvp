@@ -2258,7 +2258,8 @@ def resolve_jp_player_teams(date_str: str) -> dict:
     return jp_team_map
 
 
-def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) -> dict | None:
+def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str,
+                         target_game_id: str | None = None) -> dict | None:
     """
     同じ2チームの直近の対戦成績・シリーズ内の位置づけを取得する。
     MLB Stats APIのスケジュールに含まれる seriesGameNumber/gamesInSeries を使う。
@@ -2285,6 +2286,16 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
         resp.raise_for_status()
         data = resp.json()
 
+        # UTCの日付だけでは、前の試合を未来のカードへ付けてしまう。
+        # 対象の公式gamePkを優先し、取得できなければ古い番号を出さない。
+        target = None
+        if target_game_id is not None:
+            target = next((g for d in data.get("dates", []) for g in d.get("games", [])
+                           if str(g.get("gamePk")) == str(target_game_id)), None)
+            if target is None:
+                print(f"[warn] シリーズ文脈の対象試合が未取得: {target_game_id}")
+                return None
+
         past_results = []  # (date, home_wins: bool)
         series_game_number = None
         games_in_series = None
@@ -2297,10 +2308,16 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
                 if pair != {home_team_id, away_team_id}:
                     continue
 
-                if g.get("gameDate", "").startswith(date_str):
+                is_target = (str(g.get("gamePk")) == str(target_game_id)
+                             if target_game_id is not None
+                             else g.get("gameDate", "").startswith(date_str))
+                if is_target:
                     series_game_number = g.get("seriesGameNumber")
                     games_in_series = g.get("gamesInSeries")
 
+                if target is not None and (is_target or
+                        g.get("gameDate", "") >= target.get("gameDate", "")):
+                    continue
                 if g.get("status", {}).get("abstractGameCode") == "F":
                     home_score = g["teams"]["home"].get("score")
                     away_score = g["teams"]["away"].get("score")
@@ -3562,7 +3579,8 @@ def main():
             if game["league"] != "MLB":
                 continue
             series_context = fetch_series_context(
-                game["home_team_id"], game["away_team_id"], date_str
+                game["home_team_id"], game["away_team_id"], date_str,
+                target_game_id=game["game_id"]
             )
             if series_context:
                 game["series_context"] = series_context

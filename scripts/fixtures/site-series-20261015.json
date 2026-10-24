@@ -1,0 +1,163 @@
+{
+  "source": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&season=2026&startDate=2026-09-01&endDate=2026-11-15&gameType=F,D,L,W&hydrate=team,probablePitcher",
+  "dates": [
+    {
+      "games": [
+        {
+          "gamePk": 849809,
+          "gameDate": "2026-10-12T00:00:00Z",
+          "seriesGameNumber": 1,
+          "gamesInSeries": 7,
+          "teams": {
+            "away": {
+              "team": {
+                "id": 119
+              },
+              "score": 1
+            },
+            "home": {
+              "team": {
+                "id": 158
+              },
+              "score": 2
+            }
+          },
+          "status": {
+            "abstractGameCode": "F"
+          }
+        },
+        {
+          "gamePk": 849812,
+          "gameDate": "2026-10-12T21:00:00Z",
+          "seriesGameNumber": 2,
+          "gamesInSeries": 7,
+          "teams": {
+            "away": {
+              "team": {
+                "id": 119
+              },
+              "score": 4
+            },
+            "home": {
+              "team": {
+                "id": 158
+              },
+              "score": 7
+            }
+          },
+          "status": {
+            "abstractGameCode": "F"
+          }
+        },
+        {
+          "gamePk": 849811,
+          "gameDate": "2026-10-15T00:00:00Z",
+          "seriesGameNumber": 3,
+          "gamesInSeries": 7,
+          "teams": {
+            "away": {
+              "team": {
+                "id": 158
+              },
+              "score": 6
+            },
+            "home": {
+              "team": {
+                "id": 119
+              },
+              "score": 2
+            }
+          },
+          "status": {
+            "abstractGameCode": "F"
+          }
+        },
+        {
+          "gamePk": 849810,
+          "gameDate": "2026-10-16T00:00:00Z",
+          "seriesGameNumber": 4,
+          "gamesInSeries": 7,
+          "teams": {
+            "away": {
+              "team": {
+                "id": 158
+              }
+            },
+            "home": {
+              "team": {
+                "id": 119
+              }
+            }
+          },
+          "status": {
+            "abstractGameCode": "P"
+          }
+        },
+        {
+          "gamePk": 849808,
+          "gameDate": "2026-10-17T01:00:00Z",
+          "seriesGameNumber": 5,
+          "gamesInSeries": 7,
+          "teams": {
+            "away": {
+              "team": {
+                "id": 158
+              }
+            },
+            "home": {
+              "team": {
+                "id": 119
+              }
+            }
+          },
+          "status": {
+            "abstractGameCode": "P"
+          }
+        },
+        {
+          "gamePk": 849806,
+          "gameDate": "2026-10-19T00:00:00Z",
+          "seriesGameNumber": 6,
+          "gamesInSeries": 7,
+          "teams": {
+            "away": {
+              "team": {
+                "id": 119
+              }
+            },
+            "home": {
+              "team": {
+                "id": 158
+              }
+            }
+          },
+          "status": {
+            "abstractGameCode": "P"
+          }
+        },
+        {
+          "gamePk": 849807,
+          "gameDate": "2026-10-20T00:00:00Z",
+          "seriesGameNumber": 7,
+          "gamesInSeries": 7,
+          "teams": {
+            "away": {
+              "team": {
+                "id": 119
+              }
+            },
+            "home": {
+              "team": {
+                "id": 158
+              }
+            }
+          },
+          "status": {
+            "abstractGameCode": "P"
+          }
+        }
+      ]
+    }
+  ],
+  "retrieved_at": "2026-10-15T09:54:59.203293+00:00"
+}
