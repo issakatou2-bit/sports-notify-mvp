@@ -286,6 +286,16 @@ jobs:
         with:
           name: collespo-soccer
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            build/soccer_narration.json
+            data/soccer_games.json
+            data/soccer_availability.json
             build/soccer/
             !build/**/portrait/**
           if-no-files-found: ignore

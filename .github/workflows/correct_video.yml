@@ -81,10 +81,18 @@ jobs:
           python scripts/generate_asset_video.py --topic "$TOPIC" --audio-dir build/corr/audio --out build/corr/out
           bash scripts/shorts_thumbnail.sh "build/corr/out/collespo_asset_$TOPIC.mp4" build/corr/out/short.png
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: corrected-video
           retention-days: 14
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
             build/corr/out/*.mp4
             build/corr/out/short.png
             build/corr/narr.json

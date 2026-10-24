@@ -136,7 +136,7 @@ jobs:
               for t in $(pending); do
                 echo "::group::$t"
                 python scripts/generate_asset_video.py                   --topic "$t" --narration-out "build/narr_$t.json" &&
-                python scripts/sanity.py --strict                   --narration "build/narr_$t.json" &&
+                python scripts/sanity.py --strict                   --narration "build/narr_$t.json" --out "data/sanity_${t}.json" --hold-record "build/sanity_hold_${t}.json" &&
                 python scripts/synthesize_narration.py                   --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&
                 python scripts/generate_asset_video.py                   --topic "$t" --narration "build/narr_$t.json" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
                 bash scripts/shorts_thumbnail.sh                   "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png" &&
@@ -163,11 +163,20 @@ jobs:
           exit 0
 
       - name: Keep the videos
-        if: always() && steps.plan.outputs.go == '1'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ps-game-now
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            build/narr_*.json
+            data/ps_game_topics.json
             build/asset/*.mp4
             build/asset/*.sns.json
             !build/**/portrait/**

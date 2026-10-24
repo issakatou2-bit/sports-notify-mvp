@@ -154,7 +154,7 @@ jobs:
             python scripts/generate_asset_video.py \
               --topic "$t" --publish-at "$AT" --narration-out "build/narr_$t.json" &&
             python scripts/sanity.py --strict \
-              --narration "build/narr_$t.json" &&
+              --narration "build/narr_$t.json" --out "data/sanity_${t}.json" --hold-record "build/sanity_hold_${t}.json" &&
             python scripts/synthesize_narration.py \
               --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&
             python scripts/generate_asset_video.py \
@@ -188,11 +188,20 @@ jobs:
             data/ps_odds_topics.json data/ps_momentum_topics.json data/ps_spotlight_topics.json data/player_kana.json
 
       - name: Keep the videos
-        if: always() && steps.pick.outputs.topics != ''
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: season-review
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            build/narr_*.json
+            data/season_topics.json
             build/asset/*.mp4
             build/asset/*.sns.json
             !build/**/portrait/**

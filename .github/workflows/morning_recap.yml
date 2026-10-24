@@ -600,12 +600,20 @@ jobs:
         with:
           name: collespo-ps-rendered-claims
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            data/morning_recap.json
+            data/player_profile.json
             build/ps_rendered_claims.json
             build/ps_program_situation*.json
             build/ps_editorial_source.json
             build/morning/ps_program_gate.json
             build/morning/ps_program_upload_skip.json
-            data/sanity_*.json
             build/mr_narration_*.json
             !build/**/portrait/**
           retention-days: 7

@@ -218,7 +218,7 @@ jobs:
         run: |
           python scripts/sanity.py --general --strict \
             --narration build/lf/dialogue.json \
-            --out data/sanity_longform.json
+            --out data/sanity_longform.json --hold-record build/sanity_hold_longform.json
 
       - name: Synthesize both voices
         if: steps.dialogue.outputs.made == '1'
@@ -251,6 +251,13 @@ jobs:
         with:
           name: longform
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
             build/lf/collespo_longform.mp4
             build/lf/dialogue.json
             build/lf/dialogue.model-*.txt

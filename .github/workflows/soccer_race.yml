@@ -292,11 +292,21 @@ jobs:
           RACE_KEY: ${{ steps.gate.outputs.key }}
 
       - name: Keep the video
-        if: always() && steps.gate.outputs.count != '0'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: soccer-race
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            data/soccer_race.json
+            data/soccer_preview.json
+            data/soccer_preview_prev.json
             build/race/collespo_morning_soccer_race.mp4
             build/race_narration.json
             !build/**/portrait/**

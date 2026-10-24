@@ -138,11 +138,19 @@ jobs:
             --privacy public --publish-at '09:00'
 
       - name: Keep the video
-        if: always() && steps.gate.outputs.due == '1'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: soccer-week
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            data/soccer_jp_week.json
             build/week/collespo_morning_soccer_week.mp4
             build/week_narration.json
             !build/**/portrait/**
