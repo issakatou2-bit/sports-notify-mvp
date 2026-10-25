@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-23T09:52:38.252871+00:00",
-  "date": "2026-10-23",
+  "updated_at": "2026-10-24T09:52:55.688200+00:00",
+  "date": "2026-10-24",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -278,23 +278,23 @@
       "league_jp": "",
       "best_of": 7,
       "need": 4,
-      "played": 0,
+      "played": 1,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月24日",
-        "game": 1
+        "day": "10月25日",
+        "game": 2
       },
       "teams": [
         {
-          "id": 139,
-          "name": "レイズ",
-          "wins": 0,
+          "id": 158,
+          "name": "ブリュワーズ",
+          "wins": 1,
           "players": []
         },
         {
-          "id": 158,
-          "name": "ブリュワーズ",
+          "id": 139,
+          "name": "レイズ",
           "wins": 0,
           "players": []
         }
@@ -302,9 +302,17 @@
     }
   ],
   "final_day": [],
-  "headline": "ワールドシリーズ レイズ対ブリュワーズ、10月24日に第1戦",
-  "changes": [],
-  "prev_date": "2026-10-22",
+  "headline": "ワールドシリーズ ブリュワーズが1勝0敗でリード",
+  "changes": [
+    {
+      "key": "W:139-158",
+      "kind": "game",
+      "text": "ワールドシリーズ ブリュワーズが1勝0敗でリード",
+      "jp": false,
+      "stage": 4
+    }
+  ],
+  "prev_date": "2026-10-23",
   "japanese": [
     {
       "team_id": 119,

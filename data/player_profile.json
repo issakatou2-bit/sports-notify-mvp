@@ -1,99 +1,108 @@
 {
-  "generated_at": "2026-10-24T08:18:48.199498+00:00",
-  "date_jst": "2026-10-24",
-  "name": "Aaron Ashby",
-  "player_id": "676879",
-  "team": "ブリュワーズ",
-  "group": "pitching",
-  "why": "2026-10-24のMLBで最も活躍",
-  "headline": "1.2回　3奪三振　自責0　ホールド",
-  "score": 82,
+  "generated_at": "2026-10-25T06:01:04.070630+00:00",
+  "date_jst": "2026-10-25",
+  "name": "Liam Hicks",
+  "player_id": "689414",
+  "team": "レイズ",
+  "group": "hitting",
+  "why": "2026-10-25のMLBで最も活躍",
+  "headline": "2打数1安打　1本塁打　2打点　1死球",
+  "score": 105,
   "bio": {
-    "name_en": "Aaron Ashby",
-    "age": 28,
-    "birth_city": "Kansas City",
-    "birth_state": "MO",
-    "birth_country": "USA",
-    "birth_date": "1998-05-24",
-    "debut": "2021-06-30",
-    "draft_year": 2018,
-    "bats": "Right",
-    "throws": "Left",
-    "number": "26",
-    "position": "Pitcher",
+    "name_en": "Liam Hicks",
+    "age": 27,
+    "birth_city": "Toronto",
+    "birth_state": "ON",
+    "birth_country": "Canada",
+    "birth_date": "1999-06-02",
+    "debut": "2025-03-28",
+    "draft_year": 2021,
+    "bats": "Left",
+    "throws": "Right",
+    "number": "34",
+    "position": "Catcher",
     "nickname": null,
-    "height": "6' 0\"",
-    "weight": 194
+    "height": "5' 9\"",
+    "weight": 185
   },
   "teams": [
     {
-      "team": "ブリュワーズ",
-      "from": 2021,
+      "team": "マーリンズ",
+      "from": 2025,
+      "to": 2026
+    },
+    {
+      "team": "レイズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 172,
-    "wins": 24,
-    "losses": 19,
-    "era": "3.48",
-    "so": 390,
-    "ip": "323.1",
-    "whip": "1.28"
+    "games": 261,
+    "avg": ".269",
+    "hr": 24,
+    "rbi": 127,
+    "ops": ".757",
+    "sb": 5,
+    "hits": 218
   },
   "this_season": {
-    "games": 75,
-    "wins": 13,
-    "losses": 3,
-    "era": "3.12",
-    "so": 116,
-    "ip": "89.1",
-    "whip": "1.31"
+    "games": 142,
+    "avg": ".284",
+    "hr": 18,
+    "rbi": 82,
+    "ops": ".801",
+    "sb": 3,
+    "hits": 136
   },
   "last_season": {
-    "games": 43,
-    "wins": 5,
-    "losses": 2,
-    "era": "2.16",
-    "so": 76,
-    "ip": "66.2",
-    "whip": "1.17"
+    "games": 119,
+    "avg": ".247",
+    "hr": 6,
+    "rbi": 45,
+    "ops": ".692",
+    "sb": 2,
+    "hits": 82
   },
   "recent": [
     {
-      "date": "2026-09-26",
-      "line": "2.0回 自責0 2奪三振",
-      "opponent": "St. Louis Cardinals"
-    },
-    {
-      "date": "2026-09-24",
-      "line": "2.0回 自責0 2奪三振",
+      "date": "2026-09-27",
+      "line": "4打数2安打",
       "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-19",
-      "line": "1.0回 自責0 1奪三振",
-      "opponent": "Baltimore Orioles"
+      "date": "2026-09-26",
+      "line": "6打数2安打",
+      "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-17",
-      "line": "1.0回 自責2 0奪三振",
-      "opponent": "Pittsburgh Pirates"
+      "date": "2026-09-24",
+      "line": "5打数0安打 1打点",
+      "opponent": "New York Yankees"
     },
     {
-      "date": "2026-09-15",
-      "line": "2.0回 自責0 2奪三振",
-      "opponent": "Pittsburgh Pirates"
+      "date": "2026-09-23",
+      "line": "2打数0安打",
+      "opponent": "New York Yankees"
+    },
+    {
+      "date": "2026-09-22",
+      "line": "3打数0安打",
+      "opponent": "New York Yankees"
     }
   ],
   "awards": [
     {
-      "season": "2019",
+      "season": "2023",
       "name": "MiLB.com Organization All-Star"
     },
     {
-      "season": "2019",
-      "name": "MID Mid-Season All-Star"
+      "season": "2023",
+      "name": "AFL Player of the Week"
+    },
+    {
+      "season": "2022",
+      "name": "MiLB.com Organization All-Star"
     }
   ],
   "quotes": []

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-24T08:19:47.151953+00:00",
+  "updated_at": "2026-10-25T06:02:15.837084+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -18,7 +18,7 @@
       "name_en": "Milwaukee Brewers",
       "mentions": 15,
       "tone": "好調",
-      "gist": "ブリュワーズがWS第1戦を3-2で先勝"
+      "gist": "ブリュワーズが逆転で2戦連勝、WS2-0リード"
     },
     {
       "team_id": "139",
@@ -26,7 +26,23 @@
       "name_en": "Tampa Bay Rays",
       "mentions": 10,
       "tone": "不振",
-      "gist": "レイズ、第1戦を2-3で落とす"
+      "gist": "レイズ4点先制も逆転負け、WS0-2"
+    },
+    {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ドジャース親会社、スパークス売却を検討か"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ヤンキース、投手コーチと3年延長で合意か"
     }
   ],
   "players": []
