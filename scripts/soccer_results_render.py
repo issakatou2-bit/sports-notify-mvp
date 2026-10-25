@@ -176,7 +176,7 @@ def roster_screen(t,data,meta,clubs,spec):
 def frame(t,seg,data,clubs=None):
     if soccer_look.readable():
         import soccer_readable
-        im=soccer_readable.results_frame(t,seg,data,clubs or resolve_clubs(data))
+        im=soccer_readable.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data))
         if im is not None:return im
     if seg['kind'].startswith('followup'):
         import soccer_result_story

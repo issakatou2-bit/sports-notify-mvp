@@ -264,9 +264,8 @@ def slots_frame(t, seg, plan):
     return None
 
 
-def results_frame(t,seg,data,clubs):
-    import soccer_results_render as render
-    s=Screen(clubs,t);spec=render.program_spec(data)
+def results_frame(t,seg,data,clubs,spec):
+    s=Screen(clubs,t)
     game=next((g for g in data['games'] if g['id']==seg['meta'].get('event_id')),None)
     if seg['kind']=='followup':return s.score(game,spec)
     if seg['kind'] in ('result','followup-detail'):
