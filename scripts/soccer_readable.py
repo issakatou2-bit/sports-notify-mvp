@@ -23,7 +23,8 @@ def page_at(t, count, duration=None):
 
 def minimum_seconds(seg, data=None):
     meta=seg['meta'];kind=seg['kind'];count=1
-    if kind=='player-stats':return 6
+    if kind=='player-stats':return 4
+    if kind=='team-stats':return 4
     if kind=='jp_roster':count=math.ceil(len(meta['rows'])/4)
     elif kind=='roster':count=math.ceil(meta['count']/4)
     elif kind in ('result','followup-detail'):
@@ -187,13 +188,14 @@ class Screen:
             self.text(520,1352,spec['gap'],30,390,c.LIME,role='supplement')
         return self.finish(spec)
 
-    def score(self, game, spec, title='試合結果', person=None):
+    def score(self, game, spec, title='試合結果', person=None, score_only=False):
         import soccer_result_facts as facts
         self.title(title, facts.competition(game))
-        self.panel(BODY_TOP,980)
-        self.name(100,440,game['home']['name_jp'],800,52)
-        self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
-        self.name(100,870,game['away']['name_jp'],800,52)
+        self.panel(BODY_TOP,BODY_BOTTOM if score_only else 980)
+        self.name(100,550 if score_only else 440,game['home']['name_jp'],800,52)
+        self.text(120,830 if score_only else 616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
+        self.name(100,1220 if score_only else 870,game['away']['name_jp'],800,52)
+        if score_only:return self.finish(spec)
         if game.get('match_stats'):
             self.match_statistics(game)
             return self.finish(spec)
@@ -327,8 +329,10 @@ def results_frame(t,seg,data,clubs,spec):
     if seg['kind']=='player-stats':
         people=[p for p in game['players'] if p['status']!='none']
         start=seg['meta'].get('start',0)
-        return s.player_statistics(game,people[start:start+2],spec)
-    if seg['kind']=='followup':return s.score(game,spec)
+        return s.player_statistics(game,people[start:start+seg['meta'].get('count',2)],spec)
+    if seg['kind']=='followup':return s.score(game,spec,score_only=seg['meta'].get('score_only',False))
+    if seg['kind']=='team-stats':
+        return s.score(game,spec,title='チームのスタッツ')
     if seg['kind'] in ('result','followup-detail'):
         return s.goals(game,seg['meta'].get('goals',game['goals']),spec)
     if seg['kind']=='intro':

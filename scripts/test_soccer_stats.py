@@ -63,16 +63,22 @@ class Stats(unittest.TestCase):
                 for p in game['players']:
                     p.update(shots=0,on_target=0,saves=0)
                 narr=render.production_narration(data)
-                self.assertFalse(any(s['kind']=='player-stats' for s in narr['segments']))
-                self.assertIn(stats.commentary(game),narr['segments'][0]['text'])
+                people=[p for p in game['players'] if p['status']!='none']
+                lines=[s for s in narr['segments'] if s['kind']=='player-stats']
+                self.assertEqual(len(lines),len(people))
+                self.assertFalse(any('シュート0本' in s['text'] for s in lines))
+                self.assertEqual([s['kind'] for s in narr['segments']][:2],['followup','followup-detail'])
+                for p,line in zip(people,lines):
+                    self.assertTrue(line['text'].startswith(p['name']+'は'))
+                    self.assertEqual(line['meta']['count'],1)
             data=copy.deepcopy(preview.cases()[0]['data'])
             people=data['games'][0]['players']
             people[0].update(position='MF',shots=1,on_target=0)
             for p in people[1:]:p.update(position='MF',shots=0,on_target=0)
             narr=render.production_narration(data)
-            spoken=''.join(s['text'] for s in narr['segments'] if s['kind']=='player-stats')
-            self.assertIn(people[0]['name']+'はシュート1本、枠内はなし。',spoken)
-            for p in people[1:]:self.assertNotIn(p['name'],spoken)
+            lines=[s for s in narr['segments'] if s['kind']=='player-stats']
+            self.assertIn('シュート1本、枠内はなし。',lines[0]['text'])
+            self.assertTrue(all('シュート' not in s['text'] for s in lines[1:]))
             self.assertEqual(stats.personal_line(people[-1]),'シュート0本（枠内0本）')
         for player,expected in (
             (dict(shots=2,on_target=1),'シュート2本、枠内は1本'),
@@ -84,6 +90,28 @@ class Stats(unittest.TestCase):
             (dict(status='none',shots=1,on_target=1),''),
         ):
             self.assertEqual(stats.personal_narration(player),expected)
+
+    def test_story_order_and_significant_team_differences(self):
+        import soccer_results_render as render
+        with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v6',COLLESPO_SHORT_LOOK='v4',COLLESPO_SOLO_HOST='metan',COLLESPO_DUO='off'):
+            for case in preview.cases(supplementary=True):
+                data=case['data'];game=data['games'][0]
+                segments=render.production_narration(data)['segments']
+                order={'followup':0,'followup-detail':1,'team-stats':2,'player-stats':3,'roster':4,'outro':5}
+                ranks=[order[s['kind']] for s in segments if s['kind'] in order]
+                self.assertEqual(ranks,sorted(ranks))
+                spoken=''.join(s['text'] for s in segments if s['kind']=='followup-detail')
+                import soccer_result_facts as facts
+                for goal in game['goals']:self.assertIn(facts.goal_line(goal,game),spoken)
+        game=copy.deepcopy(preview.cases()[0]['data']['games'][0])
+        game['match_stats']=dict(home=dict(shots=10,possession=50,on_target=2),away=dict(shots=6,possession=50,on_target=2))
+        self.assertEqual(stats.commentary(game),'')
+        game['match_stats']['home']['shots']=11
+        self.assertIn('シュート',stats.commentary(game))
+        game['match_stats']['home']['possession']=57.5
+        game['match_stats']['away']['possession']=42.5
+        self.assertIn('保持率',stats.commentary(game))
+        self.assertEqual(stats.result_narration(dict(name='小杉啓太',status='starter',subbed_out=False,red_cards=0,shots=0)),'小杉啓太はフル出場。')
 
     def test_attack_formula_thresholds_and_guards(self):
         p=dict(position='FW',status='starter',minutes=30,goals=1,assists=1,shots=3,on_target=2)
@@ -140,7 +168,7 @@ class Stats(unittest.TestCase):
                 for case in preview.cases(supplementary=True):
                     data=case['data'];before=copy.deepcopy(data)
                     clubs=render.resolve_clubs(data);narr=render.production_narration(data)
-                    self.assertIn(stats.commentary(data['games'][0]),narr['segments'][0]['text'])
+                    self.assertEqual(narr['segments'][0]['text'],f"{data['games'][0]['home']['name_jp']}対{data['games'][0]['away']['name_jp']}は、{data['games'][0]['score']['home']}対{data['games'][0]['score']['away']}。")
                     attached=sanity_sources.collect([narr])
                     self.assertTrue(any(s['games'][0].get('match_stats')==data['games'][0]['match_stats'] for s in attached))
                     self.assertTrue(any(s['players'][0].get('stats_source') for s in attached))
@@ -170,13 +198,13 @@ class Stats(unittest.TestCase):
         with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v4',COLLESPO_SHORT_LOOK='v4'):
             narr=render.production_narration(data)
             self.assertFalse(any(s['kind']=='player-stats' for s in narr['segments']))
-            self.assertNotIn(stats.commentary(data['games'][0]),narr['segments'][0]['text'])
+            self.assertFalse(any(s['kind']=='team-stats' for s in narr['segments']))
         data=copy.deepcopy(data);data['games'][0].pop('match_stats')
         for p in data['games'][0]['players']:
             for k in ('saves','conceded','shots','on_target'):p.pop(k,None)
         data['players']=copy.deepcopy(data['games'][0]['players'])
         with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v6',COLLESPO_SHORT_LOOK='v4'):
-            self.assertFalse(any(s['kind']=='player-stats' for s in render.production_narration(data)['segments']))
+            self.assertTrue(all('シュート' not in s['text'] for s in render.production_narration(data)['segments'] if s['kind']=='player-stats'))
 
     def test_frame_minimum_in_length_fitting_and_60_second_stop(self):
         import soccer_results_render as render
@@ -188,7 +216,7 @@ class Stats(unittest.TestCase):
             narr=render.production_narration(data);voices=[]
             for i,seg in enumerate(narr['segments']):
                 path=Path(directory)/f'{i}.wav'
-                seconds=20 if seg['kind'] in ('followup-detail','followup') else 2 if seg['kind']=='player-stats' else 5
+                seconds=40 if seg['kind']=='team-stats' else 2 if seg['kind']=='player-stats' else 5
                 with wave.open(str(path),'wb') as f:
                     f.setparams((1,2,8000,0,'NONE','not compressed'));f.writeframes(b'\0\0'*8000*seconds)
                 voices.append(dict(seg,file=str(path),duration=seconds))
@@ -197,8 +225,9 @@ class Stats(unittest.TestCase):
                 times=render.durations(fitted['segments'],audio)
                 total=sum(math.ceil(max(t,layout.minimum_seconds(s))*30)/30 for t,s in zip(times,fitted['segments']))
                 self.assertLessEqual(total,60)
-                self.assertFalse(any(s['kind']=='followup-detail' for s in fitted['segments']))
-                self.assertIn(stats.commentary(data['games'][0]),fitted['segments'][0]['text'])
+                self.assertFalse(any(s['kind']=='team-stats' for s in fitted['segments']))
+                self.assertTrue(any(s['kind']=='followup-detail' for s in fitted['segments']))
+                self.assertEqual(fitted['segments'][0]['text'],narr['segments'][0]['text'])
             # 必須の結果だけで61秒なら、補足の省略で成功したことにしない。
             with patch.object(synth,'audio_duration',return_value=61):
                 only=dict(narr,segments=[narr['segments'][0]])

@@ -3,46 +3,24 @@
   "segments": [
     {
       "kind": "followup",
-      "text": "フランクフルト対フライブルクは、2対2。堂安律は先発、約61分出場、1アシスト。小杉啓太は先発。鈴木唯人は先発、約83分出場、1得点。後藤啓介は途中出場、約6分出場。シュートはフランクフルト10本、フライブルク22本。枠内はそれぞれ3本と7本でした。",
+      "text": "フランクフルト対フライブルクは、2対2。",
       "speaker": 2,
       "caption_units": [
-        "フランクフルト対フライブルクは、2対2。",
-        "堂安律は先発、約61分出場、1アシスト。",
-        "小杉啓太は先発。",
-        "鈴木唯人は先発、約83分出場、1得点。",
-        "後藤啓介は途中出場、約6分出場。",
-        "シュートはフランクフルト10本、フライブルク22本。枠内はそれぞれ3本と7本でした。"
+        "フランクフルト対フライブルクは、2対2。"
       ],
       "meta": {
-        "event_id": "401884787"
-      }
-    },
-    {
-      "kind": "player-stats",
-      "text": "堂安律はシュート1本、枠内はなし。",
-      "speaker": 2,
-      "meta": {
         "event_id": "401884787",
-        "start": 0
-      }
-    },
-    {
-      "kind": "player-stats",
-      "text": "鈴木唯人はシュート2本、枠内は1本。",
-      "speaker": 2,
-      "meta": {
-        "event_id": "401884787",
-        "start": 2
+        "score_only": true
       }
     },
     {
       "kind": "followup-detail",
-      "text": "ブンデスリーガ。10分にフランクフルトが得点。48分に鈴木唯人が得点。",
+      "text": "10分にフランクフルトが得点。34分にフライブルクが得点。36分にフランクフルトが得点。",
       "speaker": 2,
       "caption_units": [
-        "ブンデスリーガ。",
         "10分にフランクフルトが得点。",
-        "48分に鈴木唯人が得点。"
+        "34分にフライブルクが得点。",
+        "36分にフランクフルトが得点。"
       ],
       "meta": {
         "event_id": "401884787",
@@ -97,7 +75,43 @@
             "own_goal": false,
             "japanese_goal": false,
             "japanese_assists": []
+          }
+        ],
+        "required": true
+      }
+    },
+    {
+      "kind": "followup-detail",
+      "text": "48分に鈴木唯人が得点。",
+      "speaker": 2,
+      "caption_units": [
+        "48分に鈴木唯人が得点。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "details": [
+          {
+            "club": null,
+            "text": "ブンデスリーガ"
           },
+          {
+            "club": "フランクフルト",
+            "text": "10分に得点"
+          },
+          {
+            "club": "フライブルク",
+            "text": "34分に得点"
+          },
+          {
+            "club": "フランクフルト",
+            "text": "36分に得点"
+          },
+          {
+            "club": null,
+            "text": "48分に鈴木唯人が得点"
+          }
+        ],
+        "goals": [
           {
             "minute": "48",
             "scorer": "鈴木唯人",
@@ -107,7 +121,68 @@
             "japanese_goal": true,
             "japanese_assists": []
           }
-        ]
+        ],
+        "required": true
+      }
+    },
+    {
+      "kind": "team-stats",
+      "text": "シュートはフランクフルト10本、フライブルク22本、保持率はフライブルクが58.3パーセント。",
+      "speaker": 2,
+      "meta": {
+        "event_id": "401884787"
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "堂安律は約61分出場、1アシスト、シュート1本、枠内はなし。",
+      "speaker": 2,
+      "caption_units": [
+        "堂安律は約61分出場、1アシスト、シュート1本、枠内はなし。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "start": 0,
+        "count": 1
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "小杉啓太はフル出場。",
+      "speaker": 2,
+      "caption_units": [
+        "小杉啓太はフル出場。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "start": 1,
+        "count": 1
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "鈴木唯人は約83分出場、1得点、シュート2本、枠内は1本。",
+      "speaker": 2,
+      "caption_units": [
+        "鈴木唯人は約83分出場、1得点、シュート2本、枠内は1本。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "start": 2,
+        "count": 1
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "後藤啓介は約6分出場。",
+      "speaker": 2,
+      "caption_units": [
+        "後藤啓介は約6分出場。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "start": 3,
+        "count": 1
       }
     },
     {

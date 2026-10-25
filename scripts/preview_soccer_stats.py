@@ -29,9 +29,9 @@ def main():
     import review_render_v3 as r3
     from PIL import Image, ImageDraw
     args.out.mkdir(parents=True, exist_ok=True)
-    # 同じ保存材料で17285792の描画と比較する。旧ファイルを変更しない。
+    # 同じ保存材料で83441c26の描画と比較する。旧ファイルを変更しない。
     def previous(name):
-        source=subprocess.check_output(['git','show',f'17285792:scripts/{name}.py'],cwd=ROOT).decode('utf8')
+        source=subprocess.check_output(['git','show',f'83441c26:scripts/{name}.py'],cwd=ROOT).decode('utf8')
         module=types.ModuleType(name+'_previous')
         exec(compile(source,name+'_previous','exec'),module.__dict__)
         return module
@@ -41,10 +41,9 @@ def main():
         data=case['data'];game=data['games'][0];clubs=render.resolve_clubs(data)
         narr=render.production_narration(data)
         (args.out/(game['id']+'-narration.json')).write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
-        result=next(s for s in narr['segments'] if s['kind']=='followup')
-        players=[s for s in narr['segments'] if s['kind']=='player-stats']
+        scenes=[s for s in narr['segments'] if s['kind'] in ('followup','followup-detail','team-stats','player-stats','roster')]
         images=[];old_images=[];errors=[]
-        for i,seg in enumerate([result]+players):
+        for i,seg in enumerate(scenes):
             r3.set_program_clock(None)
             r3.set_caption(seg['text'],12,40,speaker=seg['speaker'],caption_units=seg.get('caption_units'))
             im=render.frame(3,seg,data,clubs)
@@ -66,11 +65,18 @@ def main():
             old_images.append(before.resize((432,768)))
         comparison=Image.new('RGB',(864,768*len(images)+80),(18,29,26))
         d=ImageDraw.Draw(comparison);font=layout.c.jp(30)
-        d.text((20,12),'修正前 17285792',font=font,fill='white')
-        d.text((452,12),'修正後 星表示採用',font=font,fill='white')
+        d.text((20,12),'修正前 83441c26',font=font,fill='white')
+        d.text((452,12),'修正後 台詞順に表示',font=font,fill='white')
         for i,(before,after) in enumerate(zip(old_images,images)):
             comparison.paste(before,(0,80+768*i));comparison.paste(after,(432,80+768*i))
         comparison.save(args.out/f"{game['id']}-comparison.png")
+        storyboard=Image.new('RGB',(432*4,808*((len(images)+3)//4)),(18,29,26))
+        draw=ImageDraw.Draw(storyboard)
+        for i,(im,seg) in enumerate(zip(images,scenes)):
+            x=(i%4)*432;y=(i//4)*808
+            draw.text((x+10,y+4),f"{i+1} {seg['kind']}",font=layout.c.jp(22),fill='white')
+            storyboard.paste(im,(x,y+40))
+        storyboard.save(args.out/f"{game['id']}-storyboard.png")
         eligible=[p['name'] for p in game['players'] if soccer_stats.attack(p) is not None]
         supplementary=case not in cases()
         if not supplementary and not eligible:raise ValueError('攻撃関与が出る選手がいません: '+game['id'])

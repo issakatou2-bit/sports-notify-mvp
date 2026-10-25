@@ -158,13 +158,31 @@ def personal_narration(player):
     return text
 
 
+def result_narration(player):
+    import soccer_result_facts as facts
+    status=player['status']
+    full=status=='starter' and player.get('subbed_out') is False and player.get('red_cards')==0
+    appearance='フル出場' if full else minutes_label(player) or ('先発出場' if status=='starter' else '途中出場')
+    parts=[appearance]
+    positive=facts.positive_stats(player)
+    if positive:parts.append(positive)
+    personal=personal_narration(player)
+    if personal:parts.append(personal)
+    return player['name']+'は'+'、'.join(parts)+'。'
+
+
 def commentary(game):
     stats = game.get('match_stats')
-    if not stats:
-        return ''
-    h, a = stats['home'], stats['away']
-    return (f"シュートは{game['home']['name_jp']}{h['shots']}本、{game['away']['name_jp']}{a['shots']}本。"
-            f"枠内はそれぞれ{h['on_target']}本と{a['on_target']}本でした。")
+    if not stats:return ''
+    h,a=stats['home'],stats['away']
+    parts=[]
+    # 差が小さい日は読み上げを増やさない。保持率は15ポイント、シュートは5本差から。
+    if abs(h['shots']-a['shots'])>=5:
+        parts.append(f"シュートは{game['home']['name_jp']}{h['shots']}本、{game['away']['name_jp']}{a['shots']}本")
+    if abs(h['possession']-a['possession'])>=15:
+        side='home' if h['possession']>a['possession'] else 'away'
+        parts.append(f"保持率は{game[side]['name_jp']}が{stats[side]['possession']:g}パーセント")
+    return '、'.join(parts)+'。' if parts else ''
 
 
 def has_personal(game):
