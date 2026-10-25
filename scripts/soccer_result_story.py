@@ -42,8 +42,9 @@ def narration(data):
             people=[p for p in g['players'] if p['status']!='none']
             for start in range(0,len(people),2):
                 shown=people[start:start+2]
-                text=''.join(p['name']+'は'+soccer_stats.personal_line(p)+'。' for p in shown if soccer_stats.personal_line(p))
-                segments.append(dict(kind='player-stats',text=text or '日本人選手の結果です。',speaker=2,
+                text=''.join(p['name']+'は'+soccer_stats.personal_narration(p)+'。' for p in shown if soccer_stats.personal_narration(p))
+                if not text:continue
+                segments.append(dict(kind='player-stats',text=text,speaker=2,
                                      meta=dict(event_id=g['id'],start=start)))
         detail=facts.supplements(g,row)
         segments.append(dict(kind='followup-detail',text=''.join(detail),speaker=2,caption_units=detail,

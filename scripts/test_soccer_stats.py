@@ -54,6 +54,37 @@ class Stats(unittest.TestCase):
         self.assertEqual(stats.personal_line(dict(status='starter',shots=0,on_target=0)),'シュート0本（枠内0本）')
         self.assertEqual(stats.personal_line(dict(status='starter')),'')
 
+    def test_personal_narration_omits_zero_shots_and_empty_segments(self):
+        import soccer_results_render as render
+        with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v6',COLLESPO_SHORT_LOOK='v4',COLLESPO_SOLO_HOST='metan',COLLESPO_DUO='off'):
+            for case in preview.cases(supplementary=True):
+                data=copy.deepcopy(case['data'])
+                game=data['games'][0]
+                for p in game['players']:
+                    p.update(shots=0,on_target=0,saves=0)
+                narr=render.production_narration(data)
+                self.assertFalse(any(s['kind']=='player-stats' for s in narr['segments']))
+                self.assertIn(stats.commentary(game),narr['segments'][0]['text'])
+            data=copy.deepcopy(preview.cases()[0]['data'])
+            people=data['games'][0]['players']
+            people[0].update(position='MF',shots=1,on_target=0)
+            for p in people[1:]:p.update(position='MF',shots=0,on_target=0)
+            narr=render.production_narration(data)
+            spoken=''.join(s['text'] for s in narr['segments'] if s['kind']=='player-stats')
+            self.assertIn(people[0]['name']+'はシュート1本、枠内はなし。',spoken)
+            for p in people[1:]:self.assertNotIn(p['name'],spoken)
+            self.assertEqual(stats.personal_line(people[-1]),'シュート0本（枠内0本）')
+        for player,expected in (
+            (dict(shots=2,on_target=1),'シュート2本、枠内は1本'),
+            (dict(shots=1),'シュート1本'),
+            (dict(shots=0,on_target=0),''),
+            (dict(position='GK',saves=5,conceded=2),'5セーブ、2失点'),
+            (dict(position='GK',saves=0,conceded=2),''),
+            (dict(position='GK',conceded=2),''),
+            (dict(status='none',shots=1,on_target=1),''),
+        ):
+            self.assertEqual(stats.personal_narration(player),expected)
+
     def test_attack_formula_thresholds_and_guards(self):
         p=dict(position='FW',status='starter',minutes=30,goals=1,assists=1,shots=3,on_target=2)
         self.assertEqual(stats.attack(p),dict(version='attack-v1',raw=10,level=4,notice=stats.NOTICE))

@@ -144,6 +144,20 @@ def personal_line(player):
     return f"シュート{player['shots']}本" + (f"（枠内{player['on_target']}本）" if player.get('on_target') is not None else '')
 
 
+def personal_narration(player):
+    if player.get('status') == 'none':
+        return ''
+    if player.get('position') == 'GK':
+        return personal_line(player) if player.get('saves', 0) else ''
+    if not player.get('shots'):
+        return ''
+    text = f"シュート{player['shots']}本"
+    target = player.get('on_target')
+    if target is not None:
+        text += '、枠内はなし' if target == 0 else f'、枠内は{target}本'
+    return text
+
+
 def commentary(game):
     stats = game.get('match_stats')
     if not stats:
