@@ -1770,7 +1770,8 @@ JP_PLAYERS_SOCCER = [
      "team_jp": "シャルケ", "league": "BL2", "match": "schalke"},
 
     # --- セリエA(イタリア) ---
-    {"name_en": "Zion Suzuki", "name_jp": "鈴木ザイオン", "kana": "スズキ・ザイオン", "team_en": "Parma",
+    # 表示名はJFA公式漢字。読みと表示を混ぜない（全42人の根拠はsoccer_player_names.json）。
+    {"name_en": "Zion Suzuki", "name_jp": "鈴木彩艶", "kana": "スズキ・ザイオン", "team_en": "Parma",
      "team_jp": "パルマ", "league": "SA", "match": "parma"},
 
     # --- リーグ・アン(フランス) ---
@@ -1831,7 +1832,7 @@ JP_PLAYERS_SOCCER = [
     {"name_en": "Tomoki Iwata", "name_jp": "岩田智輝", "kana": "イワタ・トモキ",
      "team_en": "Birmingham City", "team_jp": "バーミンガム", "league": "ELC",
      "match": "birmingham"},
-    {"name_en": "Yu Hirakawa", "name_jp": "平川怜", "kana": "ヒラカワ・リョウ",
+    {"name_en": "Yu Hirakawa", "name_jp": "平河悠", "kana": "ヒラカワ・ユウ",
      "team_en": "Bristol City", "team_jp": "ブリストル・シティ",
      "league": "ELC", "match": "bristolcity"},
 ]

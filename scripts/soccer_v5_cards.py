@@ -531,6 +531,9 @@ def scarf_transition(previous,image,t):
 
 
 def check_frame(im,clubs):
+    if im.info.get('soccer_readable'):
+        import soccer_readable
+        return soccer_readable.check_frame(im,clubs)
     import v3_rules
     import characters
     errors=v3_rules.check_layout(im)+v3_rules.check_spacing(im)+original.check_club_badges(im,clubs)
