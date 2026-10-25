@@ -56,9 +56,9 @@ class SoccerResults(unittest.TestCase):
             self.assertEqual((players[name]['goals'],players[name]['status']),(1,status))
         for name in ('佐野海舟','堂安律','中村草太'):self.assertEqual(players[name]['assists'],1)
         self.assertEqual(players['久保建英']['status'],'none')
-        self.assertEqual(players['鈴木ザイオン']['status'],'starter')
+        self.assertEqual(players['鈴木彩艶']['status'],'starter')
         self.assertEqual(players['前田大然']['status'],'substitute')
-        self.assertEqual(players['鈴木ザイオン']['club'],'アストンヴィラ')
+        self.assertEqual(players['鈴木彩艶']['club'],'アストンヴィラ')
 
     def test_final_jst_date_not_kickoff(self):
         boards,summaries=fixture()

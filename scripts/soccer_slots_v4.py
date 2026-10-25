@@ -188,6 +188,10 @@ def program(mode,data):
 @motion.slot('soccer')
 def frame(t,seg,plan):
     if not enabled():raise ValueError('v3の描画は既存の入口を使う')
+    if soccer_look.readable():
+        import soccer_readable
+        im=soccer_readable.slots_frame(t,seg,plan)
+        if im is not None:return im
     if soccer_look.v5():
         import soccer_v5_cards as v5
         if seg['kind']=='outro':return v5.outro(t,seg['meta'],exclude='daily_soccer' if plan['mode']=='preview' else 'soccer_'+plan['mode'],credit=seg['meta']['source'],tagline=TAGLINE)
@@ -246,6 +250,9 @@ def durations(segments,audio,check_limit=True):
 def video_times(segments,audio):
     """音声後の間と30fpsの切り上げまで含めて予算を判定する。"""
     times=durations(segments,audio,check_limit=False)
+    if soccer_look.readable():
+        from soccer_readable import minimum_seconds
+        times=[max(length,minimum_seconds(seg)) for length,seg in zip(times,segments)]
     if motion.enabled():
         times=[max(t,float(row['duration'])+vc.SEGMENT_TAIL) for t,row in zip(times,audio)]
     return [math.ceil(t*30)/30 for t in times]

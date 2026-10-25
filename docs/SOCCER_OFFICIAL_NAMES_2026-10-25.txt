@@ -1,0 +1,50 @@
+欧州サッカーの日本人選手 表示名の公式照合（2026-10-25）
+
+対象: notability_engine.JP_PLAYERS_SOCCER 全42人。表示名2人を修正、40人一致、確認不能0人。
+全件の英名・公式漢字・従来名・読み・一次資料URL・確認日は data/soccer_player_names.json。
+空白だけを除去して比較し、「﨑」「斉」「冨」などの字形は置換しない。
+これは表示名の照合。所属先、移籍、現在の代表選出や出場資格の全件確認ではない。
+
+差分
+1. Zion Suzuki: 鈴木ザイオン → 鈴木彩艶。読みスズキザイオンを維持。
+   JFA選手名鑑: https://www.jfa.jp/samuraiblue/member/suzuki_zion.html
+   名鑑ページの題に「GK 鈴木 彩艶(SUZUKI Zion)」。本文の名前/読みはJFA招集記事も照合。
+   https://www.jfa.jp/samuraiblue/news/00036338/
+   同記事の選手欄: 鈴木 彩艶、ｽｽﾞｷ ｻﾞｲｵﾝ。
+2. Yu Hirakawa: 平川怜 → 平河悠。別人との対応違いなので読みもヒラカワユウへ訂正。
+   JFA選手名鑑: https://www.jfa.jp/national_team/u23_2024/member/hirakawa_yu.html
+   同ページは平河 悠 / HIRAKAWA Yu、経歴にブリストル・シティ。
+   読み: https://www.jfa.jp/national_team/u22_2023/news/00032990/
+   平川怜の読みヒラカワレイは別人の辞書として保持。平川怜→平河悠の一括別名登録はしない。
+
+表示名の流れ
+- notability_engine.JP_PLAYERS_SOCCER.name_jp → jp_players_for_club、予告/順位/週末/結果の材料。
+- soccer_results.player_result は名簿name_jpから name を作り、題・説明欄・原稿・画面へ渡す。
+- data/player_kana.json のreading_aliasesは英名→読み用の標準名。表示用のnamesとは用途が異なる。
+- 同readingsは漢字→読み。鈴木彩艶の読みは既登録なので、そのまま使用。
+- soccer_voices.load_names は名簿を標準名とし、soccer_voice_names.jsonの候補・EXTRAを統合。
+  EXTRAのZionと旧「鈴木ザイオン」は公式名へ照合する候補として保持する。
+- 現行の生成済みdata/soccer_games、preview、preview_prev、race、resultsの旧表示も補正。
+  保存API原本、過去の画素比較用fixture、既存の読み/高低の採用履歴は改変しない。
+
+再発防止
+- 公式照合の辞書を data/soccer_player_names.json に保存。
+- test_soccer_official_names.py が名簿全員・reading_aliases・読み・現地の声の標準名を照合。
+  追加選手が未照合のままなら対象集合の不一致で失敗する。
+- 保存APIを再処理し、鈴木彩艶が題/説明欄/原稿/旧v4・v5・v6画面へ届くことを検査。
+- 名前が増えたら公式資料で辞書を更新し、名簿→通常の材料生成を再実行する。
+  表示名を読みに置換しない。推測の姓名・読み・高低を登録しない。
+
+確認結果
+- e60556c0の旧名簿を注入すると追加試験で4失敗/例外0、修正版の追加3試験は成功。
+- 保存APIからの題/説明/原稿/v4・v5・v6画面を検査。v6実画像の漢字表示も自分で確認。
+- 現行材料5ファイルは表示名以外の数字・時刻・IDの構造比較が一致。
+- 全run_checks初回: 構文518成功、重大0/既存軽微53、既存190試験成功。
+  新試験の起動引数1件と依存検査98件で終了1。起動引数は既存形式へ修正し、
+  run_checksと同じ呼び方で追加3試験成功。全体の再実行はしていない。
+  imageio_ffmpeg依存98件は今回の変更前と同じ取り込み関係で検出される。
+  本番4入口で親/現版の依存集合一致、workflow/requirements/検査器/描画器の変更なし。
+  依頼外の依存設定は変更しない。詳細はbuild_reports/soccer-names-*.logと同parent-dependencies.json。
+- 最終変更の構文/pyflakes/差分検査成功。Bのスタッツ調査は本番コード変更なし。
+
+未確認: 新録音・完成動画・本番CI・公開結果。pushは本人。
