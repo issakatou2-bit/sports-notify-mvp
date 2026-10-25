@@ -1,0 +1,319 @@
+"""本人指定の整列一覧＋大きな一組のスコア。v6指定時だけ使用する。"""
+import copy
+import math
+
+from PIL import ImageDraw
+import soccer_v5_cards as c
+import review_render_v3 as r3
+
+L, R = 72, 940
+BODY_TOP, BODY_BOTTOM = 390, 1598
+CAPTION = (72, 1630, 682, 1860)
+PORTRAIT = (714, 1630, 940, 1860)
+
+
+def intersects(a, b):
+    return min(a[2], b[2]) > max(a[0], b[0]) and min(a[3], b[3]) > max(a[1], b[1])
+
+
+def page_at(t, count, duration=None):
+    duration = duration or r3._CAPTION['duration'] or 12
+    return min(count-1, max(0, int(t / max(.1, duration / count))))
+
+
+def minimum_seconds(seg, data=None):
+    meta=seg['meta'];kind=seg['kind'];count=1
+    if kind=='jp_roster':count=math.ceil(len(meta['rows'])/4)
+    elif kind=='roster':count=math.ceil(meta['count']/4)
+    elif kind in ('result','followup-detail'):
+        game=next(g for g in data['games'] if g['id']==meta['event_id'])
+        count=math.ceil(len(meta.get('goals',game['goals']))/3)
+    elif kind=='standings':
+        count=math.ceil(sum(1 for r in meta['rows'] if any(a<=r['position']<=b for a,b in meta['shown']))/4)
+    elif kind not in ('intro','followup','preview','cover'):return 0
+    return max(1,count)*4
+
+
+class Screen:
+    def __init__(self, clubs, t=3):
+        self.clubs, self.t = clubs, t
+        self.im = c.canvas(t, clubs, '欧州サッカー')
+        self.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='フェードイン 0.35秒・以後停止')
+
+    def text(self, x, y, value, size=44, width=800, color=None, number=False, role='text'):
+        if c.screen_text(value, number) != str(value):
+            raise ValueError('欠字を省略しません: '+str(value))
+        return c.text(self.im, x, y, value, size, color or c.CHALK,
+                      width=width, number=number, role=role, minimum=size)
+
+    def panel(self, y, bottom, x=L, right=R):
+        ImageDraw.Draw(self.im).rounded_rectangle((x, y, right, bottom), radius=12, fill=c.BOARD)
+        c.rec(self.im, 'card', (x, y, right, bottom))
+
+    def lines(self, x, y, value, size=44, width=800, color=None, role='text'):
+        rows = c.lines(value, size, width)
+        for i, row in enumerate(rows):
+            self.text(x, y+i*(size+12), row, size, width, color, role=role)
+        return y+len(rows)*(size+12)
+
+    def name(self, x, y, key, width=800, size=44):
+        club = copy.deepcopy(self.clubs[key])
+        name = c.club_display_names.display(club)
+        if not club.get('primary') and c.screen_text(club['abbr'], True) != club['abbr']:
+            club['abbr'] = '?'
+            self.im.info['unknown_club_badge'] = True
+        height = c.measure(name, size)[2][3]-c.measure(name, size)[2][1]
+        rows = c.lines(name, size, width-c.tag_width(club, height)-16)
+        if len(rows) > 2:
+            raise ValueError('クラブ名は次画面が必要: '+name)
+        # 継続行にも同じ札を付け、名前の字体と行高を維持する。
+        for i, row in enumerate(rows):
+            c.club_name(self.im, x, y+i*(size+10), club, size, width=width, display_name=row)
+        self.im.info['semantic_items'].append(name)
+        return y+len(rows)*(size+10)
+
+    def title(self, main, sub=''):
+        self.text(L, 260, main, 52, R-L)
+        if sub:
+            self.lines(L, 330, sub, 30, R-L, c.MUTED, 'supplement')
+
+    def finish(self, spec):
+        import characters
+        import solo_host
+        # 下部も情報・字幕・胸上で使う。旧v5の1150px下端やtickerは持ち込まない。
+        ctx = r3._CAPTION
+        elapsed = self.t if r3._PROGRAM_CLOCK[0] is None else r3._PROGRAM_CLOCK[0]-ctx['start']
+        line = r3.current_sentence(elapsed, ctx['text'], ctx['duration']) if ctx['text'] else ''
+        if line and not ctx.get('hide_caption'):
+            x, y, right, bottom = CAPTION
+            ImageDraw.Draw(self.im).polygon([(x+28,y),(right,y),(right-28,bottom),(x,bottom)], fill=c.CHALK)
+            speaker, _ = solo_host.presentation('metan', ('metan',))
+            self.text(x+32, y+10, characters.NAMES[speaker], 30, right-x-64, c.DARK, role='caption')
+            rows = c.lines(line, 40, right-x-70)
+            if len(rows) > 4:
+                raise ValueError('字幕は4行以内に分節してください')
+            for i, row in enumerate(rows):
+                self.text(x+32, y+52+i*43, row, 40, right-x-70, c.DARK, role='caption')
+            self.im.info['duo_caption'] = dict(box=list(CAPTION), speaker=speaker, font_size=40, rows=len(rows))
+        else:
+            speaker, _ = solo_host.presentation('metan', ('metan',))
+        face = r3.face_for(line, elapsed, ctx['duration'] or 1)
+        art = characters.bust(speaker, face, 460, False)
+        if art is None:
+            raise ValueError('胸上の既存素材がありません')
+        x = R-art.width
+        y = PORTRAIT[3]-art.height
+        self.im.paste(art, (x, y), art)
+        self.im.info['duo_layer'] = [dict(who=speaker, face=face, height=460, dim=False,
+                                         at=[x,y], cut=art.height)]
+        # 出典の長文は2行。日次の詳細出典は従来の説明欄と材料に保持。
+        source = spec.get('source', '')
+        source = source.replace('音声: VOICEVOX:四国めたん　出典: ', 'VOICEVOX:四国めたん / ')
+        rows = c.lines(source, 30, R-L)
+        if len(rows) > 1:
+            rows = c.lines(source, 30, 1000)
+        if len(rows) > 1:
+            raise ValueError('出典は説明欄と分けて短く指定してください')
+        if rows:
+            self.text(40 if c.measure(rows[0],30)[1]>R-L else L, 1880, rows[0], 30, 1000, c.MUTED, role='source')
+        self.im.info['readable_zones'] = dict(body=[L,BODY_TOP,R,BODY_BOTTOM], caption=CAPTION, portrait=PORTRAIT)
+        # 出現演出は1つ。説明中に動かさず、キャラ・字幕も同時にフェード。
+        if self.t < .35:
+            from PIL import Image
+            info = self.im.info
+            self.im = Image.blend(c._background(), self.im, max(0,self.t/.35))
+            self.im.info = info
+        return self.im
+
+    def roster(self, spec):
+        rows = spec['rows']
+        pages = [rows[i:i+4] for i in range(0, len(rows), 4)] or [[]]
+        index = page_at(self.t, len(pages));shown = pages[index]
+        self.title(spec['title'].split('　')[0], 'A＝アシスト')
+        self.im.info.update(readable_page=index, readable_page_count=len(pages), readable_rows=shown)
+        height = (BODY_BOTTOM-BODY_TOP)//max(1,len(shown))
+        for i,row in enumerate(shown):
+            y = BODY_TOP+i*height;self.panel(y,y+height-14)
+            self.text(100,y+round(height*.08),row['name'],76 if len(shown)==1 else 52,780)
+            self.name(100,y+round(height*.32),row['club'],800,52 if len(shown)==1 else 40)
+            stat_y=y+round(height*(.82 if len(shown)==1 else .64))
+            if row.get('note'):
+                self.lines(100,stat_y,row['note'],52 if len(shown)==1 else 40,790,c.MUTED)
+            else:
+                for j,(value,unit) in enumerate(row.get('values',[])):
+                    x=100+j*268
+                    box=self.text(x,stat_y,value,120 if len(shown)==1 else 76,160,c.LIME,True)
+                    self.text(box[2]+10,stat_y+36,unit,30,110,role='supplement')
+        return self.finish(spec)
+
+    def preview(self, specs, spec):
+        pages=[specs[i:i+4] for i in range(0,len(specs),4)]
+        index=page_at(self.t,len(pages));shown=pages[index]
+        self.title('注目試合の予告',' / '.join(dict.fromkeys(s['date'] for s in shown))+'　'+' / '.join(dict.fromkeys(s['league'] for s in shown)))
+        height=(BODY_BOTTOM-BODY_TOP)//len(shown)
+        for i,s in enumerate(shown):
+            y=BODY_TOP+i*height;self.panel(y,y+height-14)
+            # 時刻列を固定し、長いクラブ名は2行のまま40pxを保つ。
+            self.name(100,y+28,s['home'],566,40)
+            self.name(100,y+148,s['away'],566,40)
+            self.text(706,y+50,s['time'],68,210,c.LIME,True)
+            self.text(720,y+132,'日本時間',30,180,role='supplement')
+            self.im.info['semantic_items'].append(s['time'])
+        if self.im.info.get('unknown_club_badge'):
+            self.text(L,1596,'灰色の ? はクラブ色・略称が未確認',30,850,c.MUTED,role='supplement')
+        return self.finish(spec)
+
+    def standings(self, spec):
+        title=spec['title'].split('　');self.title(title[0],'　'.join(title[1:]))
+        rows={r['position']:r for r in spec['rows']}
+        shown=[rows[p] for a,b in spec['shown'] for p in range(a,b+1) if p in rows]
+        pages=[shown[i:i+4] for i in range(0,len(shown),4)] or [[]]
+        index=page_at(self.t,len(pages));shown=pages[index]
+        self.im.info.update(readable_page=index,readable_page_count=len(pages),readable_rows=shown)
+        labels=dict(spec.get('lines',[]))
+        top=442;bottom=1460 if spec.get('gap') else BODY_BOTTOM
+        height=(bottom-top)//max(1,len(shown))
+        for x,label,width in [(96,'順位',100),(220,'クラブ',420),(710,'試合',90),(830,'勝点',100)]:
+            self.text(x,390,label,30,width,c.MUTED,role='supplement')
+        for i,row in enumerate(shown):
+            y=top+i*height;self.panel(y,y+height-14)
+            self.text(100,y+44,row['position'],60,90,number=True)
+            self.name(220,y+38,row['team'],450,40)
+            self.text(714,y+44,row['played'],60,80,number=True)
+            self.text(832,y+30,row['points'],80,84,c.LIME,True)
+            if row['position'] in labels:
+                label=labels[row['position']]
+                color=c.LINE_COLORS.get(c.original._line_kind(label),c.MUTED)
+                self.text(100,y+height-66,label,30,800,color,role='supplement')
+                ImageDraw.Draw(self.im).line((L,y+height-16,R,y+height-16),fill=color,width=3)
+        if spec.get('gap'):
+            self.panel(1476,BODY_BOTTOM)
+            self.name(100,1494,spec['focus'],400,40)
+            self.text(520,1510,spec['gap'],30,390,c.LIME,role='supplement')
+        return self.finish(spec)
+
+    def score(self, game, spec, title='試合結果', person=None):
+        import soccer_result_facts as facts
+        self.title(title, facts.competition(game))
+        self.panel(BODY_TOP,1080)
+        self.name(100,440,game['home']['name_jp'],800,52)
+        self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
+        self.name(100,930,game['away']['name_jp'],800,52)
+        people=[person] if person else [p for p in game['players'] if p['status']!='none']
+        self.panel(1102,BODY_BOTTOM)
+        if not people:
+            self.text(100,1450,'日本人選手の出場なし',52,800)
+        y=1170
+        for i,p in enumerate(people):
+            if len(people)==1:
+                self.text(100,1200,p['name'],76,800)
+                detail=facts.player_line(p).rstrip('。').removeprefix(p['name']+'は')
+                y=self.lines(100,1370,detail,60,800)
+            else:
+                y=1140+i*(420//len(people))
+                self.text(100,y,p['name'],52,800)
+                detail=facts.player_line(p).rstrip('。').removeprefix(p['name']+'は')
+                y=self.lines(100,y+62,detail,40,800)+20
+        if y>BODY_BOTTOM:
+            raise ValueError('選手の結果は次画面が必要です')
+        return self.finish(spec)
+
+    def goals(self, game, goals, spec):
+        import soccer_result_facts as facts
+        goals=sorted(goals,key=lambda g:(not bool(g['japanese_goal'] or g['japanese_assists']),int(g['minute'].split('+')[0])))
+        pages=[goals[i:i+3] for i in range(0,len(goals),3)] or [[]]
+        index=page_at(self.t,len(pages));shown=pages[index]
+        self.title('得点・アシスト',facts.competition(game))
+        self.im.info.update(soccer_goals=shown,readable_page=index,readable_page_count=len(pages))
+        if not shown:
+            self.panel(BODY_TOP,BODY_BOTTOM)
+            self.name(100,440,game['home']['name_jp'],800,52)
+            self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
+            self.name(100,930,game['away']['name_jp'],800,52)
+            self.text(100,1450,'得点なし' if game['goals_complete'] else '得点経過は未取得',52,800)
+        height=(BODY_BOTTOM-BODY_TOP)//max(1,len(shown))
+        for i,g in enumerate(shown):
+            y=BODY_TOP+i*height;self.panel(y,y+height-14)
+            if len(shown)==1:
+                self.text(100,y+80,facts.minute_text(g['minute']),160,800,c.LIME)
+                self.name(100,y+430,game[g['side']]['name_jp'],800,52)
+                name=facts.scorer_name(g)
+                label='オウンゴール' if g['own_goal'] else '得点'
+                self.lines(100,y+650,label+('：'+name if name else ''),64,800)
+                assists=facts.assist_names(g)
+                self.lines(100,y+950,'アシスト：'+('・'.join(assists) if assists else '情報なし'),48,800,c.MUTED)
+                continue
+            y+=max(0,(height-390)//2)
+            self.text(100,y+22,facts.minute_text(g['minute']),68,800,c.LIME)
+            end=self.name(100,y+124,game[g['side']]['name_jp'],800,40)
+            name=facts.scorer_name(g)
+            # 既存の確定した日本語名だけを使い、未登録名の仮訳は作らない。
+            label='オウンゴール' if g['own_goal'] else '得点'
+            end=self.lines(100,end+10,label+('：'+name if name else ''),44,800)
+            assists=facts.assist_names(g)
+            self.lines(100,end+8,'アシスト：'+('・'.join(assists) if assists else '情報なし'),40,800,c.MUTED)
+        return self.finish(spec)
+
+
+def slots_frame(t, seg, plan):
+    s=Screen(plan['clubs'],t);kind=seg['kind'];spec=seg['meta']
+    if kind=='jp_roster':return s.roster(spec)
+    if kind=='standings':return s.standings(spec)
+    if plan['mode']=='preview' and kind in ('cover','preview'):
+        specs=[x['meta'] for x in plan['narration']['segments'] if x['kind']=='preview']
+        return s.preview(specs,spec)
+    return None
+
+
+def results_frame(t,seg,data,clubs):
+    import soccer_results_render as render
+    s=Screen(clubs,t);spec=render.program_spec(data)
+    game=next((g for g in data['games'] if g['id']==seg['meta'].get('event_id')),None)
+    if seg['kind']=='followup':return s.score(game,spec)
+    if seg['kind'] in ('result','followup-detail'):
+        return s.goals(game,seg['meta'].get('goals',game['goals']),spec)
+    if seg['kind']=='intro':
+        person=next(p for p in data['players'] if p['name']==seg['meta']['player_detail']) if seg['meta'].get('player_detail') else next(p for p in data['players'] if p['status']!='none')
+        return s.score(game,spec,person['name']+'の試合結果',person)
+    if seg['kind']=='roster':
+        rows=[p for p in data['players'] if p['status']!='none'][:seg['meta']['count']]
+        import soccer_results
+        display=[dict(name=p['name'],club=p['club'],values=[(p[k],u) for k,u in (('goals','得点'),('assists','A')) if p.get(k)],note='' if p.get('goals') or p.get('assists') else soccer_results.STATUS[p['status']]) for p in rows]
+        return s.roster(dict(spec,title='日本人選手の結果',rows=display))
+    return None
+
+
+def check_frame(im,clubs):
+    """最終描画のカード自体・字幕下の帯・40/30pxを検査する。"""
+    import characters
+    errors=c.original.check_club_badges(im,clubs)
+    entries=im.info['v3_layout']
+    body=[e for e in entries if e['role'] not in ('header','source','caption','ticker','team_badge','badge','decoration','card')]
+    for e in entries:
+        x,y,right,bottom=e['box']
+        if not (0<=x<=right<=1080 and 0<=y<=bottom<=1920):errors.append(dict(outside_screen=e))
+        size=e.get('v5_font')
+        minimum=30 if e['role'] in ('source','supplement') else 40
+        if e in body and size is not None and size<minimum:errors.append(dict(small_text=e,minimum=minimum))
+    for i,a in enumerate(body):
+        for b in body[i+1:]:
+            if intersects(a['box'],b['box']):errors.append(dict(text_overlap=[a,b]))
+    cards=[e for e in entries if e['role']=='card']
+    for card in cards:
+        x,y,right,bottom=card['box']
+        children=[e for e in body if x<=e['box'][0]<=e['box'][2]<=right and y<=e['box'][1]<=e['box'][3]<=bottom]
+        if not children or bottom-max(e['box'][3] for e in children)>200:
+            errors.append(dict(empty_card_bottom=card['box']))
+    for item in im.info.get('duo_layer',[]):
+        art=characters.bust(item['who'],item['face'],item['height'],item['dim'])
+        x,y=item['at'];box=[x,y,x+art.width,y+min(art.height,item['cut'])]
+        for e in cards+body:
+            if intersects(e['box'],box):errors.append(dict(presenter_overlap=e))
+    caption=im.info.get('duo_caption',{}).get('box')
+    if caption:
+        for e in cards+body:
+            if intersects(e['box'],caption):errors.append(dict(caption_overlap=e))
+        if 1920-caption[3]>100:errors.append(dict(empty_below_caption=1920-caption[3]))
+    if cards and BODY_BOTTOM-max(e['box'][3] for e in cards)>80:
+        errors.append(dict(empty_body_bottom=BODY_BOTTOM-max(e['box'][3] for e in cards)))
+    return errors
