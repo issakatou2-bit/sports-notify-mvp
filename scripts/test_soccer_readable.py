@@ -69,9 +69,50 @@ class Readable(unittest.TestCase):
         frames=[self.draw(case,seg,t) for t in (3,9)]
         actual=[g for im in frames for g in im.info['soccer_goals']]
         self.assertCountEqual(actual,seg['meta']['goals'])
+        self.assertEqual([g['minute'] for g in actual],['5','38','51','66','83'])
         body=''.join(e['text'] for im in frames for e in im.info['v3_layout'])
         self.assertIn('町野修斗',body);self.assertIn('宇野禅斗',body)
+        self.assertIn('Ermedin Demirovic',body);self.assertIn('Joe Scally',body)
+        self.assertNotIn('情報なし',body)
         self.assertEqual(layout.minimum_seconds(seg,case['data']),8)
+
+    def test_unknown_scorer_has_only_club_and_minute_and_stoppage_time_is_ordered(self):
+        case=next(c for c in self.cases if c['key']=='goal')
+        seg=copy.deepcopy(next(s for s in case['narration']['segments'] if s['kind']=='result'))
+        base=seg['meta']['goals'][0]
+        for missing in (None,'','得点者不明'):
+            seg['meta']['goals']=[dict(base,minute=m,scorer=missing,japanese_goal=False,japanese_assists=[])
+                                  for m in ('45+3','46','45+1','45')]
+            frames=[self.draw(case,seg,t) for t in (3,9)]
+            self.assertEqual([g['minute'] for im in frames for g in im.info['soccer_goals']],['45','45+1','45+3','46'])
+            for im in frames:
+                text=[e['text'] for e in im.info['v3_layout'] if e['role']=='text']
+                self.assertNotIn('得点',text)
+                self.assertFalse(any(x.startswith('アシスト：') or '不明' in x for x in text))
+                self.assertFalse(layout.check_frame(im,case['clubs']))
+
+    def test_preview_is_in_kickoff_order_and_standings_in_rank_order(self):
+        case=next(c for c in self.cases if c['key']=='preview')
+        seg=next(s for s in case['narration']['segments'] if s['kind']=='preview')
+        im=self.draw(case,seg)
+        self.assertEqual([x for x in im.info['semantic_items'] if ':' in x],['01:45','04:00','04:00','04:00'])
+        case=next(c for c in self.cases if c['key']=='race')
+        seg=copy.deepcopy(case['narration']['segments'][0])
+        seg['meta']['shown']=list(reversed(seg['meta']['shown']))
+        im=self.draw(case,seg)
+        ranks=[r['position'] for r in im.info['readable_rows']]
+        self.assertEqual(ranks,sorted(ranks))
+
+    def test_rejects_shrunken_caption_and_empty_placeholders(self):
+        case=self.cases[0];im=self.draw(case,case['narration']['segments'][0])
+        self.assertFalse(layout.check_frame(im,case['clubs']))
+        im.info['duo_caption']['box'][2]=682
+        im.info['duo_caption']['font_size']=20
+        layout.c.rec(im,'text',(100,400,200,450),'得点')
+        errors=layout.check_frame(im,case['clubs'])
+        self.assertTrue(any('narrow_caption' in e for e in errors))
+        self.assertTrue(any('small_caption' in e for e in errors))
+        self.assertTrue(any('empty_item' in e for e in errors))
 
     def test_large_score_is_one_pair(self):
         case=self.cases[0];seg=case['narration']['segments'][0]

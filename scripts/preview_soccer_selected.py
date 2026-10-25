@@ -51,8 +51,16 @@ def main():
         if not after.info.get('soccer_readable'):raise ValueError('新配置の入口に接続していません: '+key)
         before.save(out/(key+'-current.png'));after.save(out/(key+'-new.png'))
         errors=new.check_frame(after,case['clubs'])
+        current_caption=before.info.get('duo_caption')
+        new_caption=after.info.get('duo_caption')
+        if current_caption and new_caption:
+            if new_caption['font_size']<current_caption['font_size']:
+                errors.append(dict(caption_smaller_than_current=[current_caption,new_caption]))
+            if new_caption['box'][2]-new_caption['box'][0]<current_caption['box'][2]-current_caption['box'][0]:
+                errors.append(dict(caption_narrower_than_current=[current_caption,new_caption]))
         report=dict(key=key,source=case['source'],revision=case['revision'],segment=seg,
                     page=after.info.get('readable_page',0),errors=errors,
+                    current_caption=current_caption,new_caption=new_caption,
                     entries=after.info['v3_layout'],portraits=after.info.get('duo_layer'),
                     source_material_sha256=hashlib.sha256(json.dumps(case['data'],sort_keys=True).encode()).hexdigest())
         reports.append(report)

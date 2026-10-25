@@ -7,9 +7,9 @@ import soccer_v5_cards as c
 import review_render_v3 as r3
 
 L, R = 72, 940
-BODY_TOP, BODY_BOTTOM = 390, 1598
-CAPTION = (72, 1630, 682, 1860)
-PORTRAIT = (714, 1630, 940, 1860)
+BODY_TOP, BODY_BOTTOM = 390, 1440
+CAPTION = (64, 1660, 940, 1860)
+PORTRAIT = (714, 1460, 940, 1640)
 
 
 def intersects(a, b):
@@ -85,26 +85,20 @@ class Screen:
         elapsed = self.t if r3._PROGRAM_CLOCK[0] is None else r3._PROGRAM_CLOCK[0]-ctx['start']
         line = r3.current_sentence(elapsed, ctx['text'], ctx['duration']) if ctx['text'] else ''
         if line and not ctx.get('hide_caption'):
-            x, y, right, bottom = CAPTION
-            ImageDraw.Draw(self.im).polygon([(x+28,y),(right,y),(right-28,bottom),(x,bottom)], fill=c.CHALK)
+            import bubble_styles
             speaker, _ = solo_host.presentation('metan', ('metan',))
-            self.text(x+32, y+10, characters.NAMES[speaker], 30, right-x-64, c.DARK, role='caption')
-            rows = c.lines(line, 40, right-x-70)
-            if len(rows) > 4:
-                raise ValueError('字幕は4行以内に分節してください')
-            for i, row in enumerate(rows):
-                self.text(x+32, y+52+i*43, row, 40, right-x-70, c.DARK, role='caption')
-            self.im.info['duo_caption'] = dict(box=list(CAPTION), speaker=speaker, font_size=40, rows=len(rows))
+            # 既存の幅・48px起点・数字強調・文節改行を引き継ぐ。
+            bubble_styles.draw(self.im, speaker, line, style='slant', box=CAPTION, seconds=elapsed)
         else:
             speaker, _ = solo_host.presentation('metan', ('metan',))
         face = r3.face_for(line, elapsed, ctx['duration'] or 1)
-        art = characters.bust(speaker, face, 460, False)
+        art = characters.bust(speaker, face, 360, False)
         if art is None:
             raise ValueError('胸上の既存素材がありません')
         x = R-art.width
         y = PORTRAIT[3]-art.height
         self.im.paste(art, (x, y), art)
-        self.im.info['duo_layer'] = [dict(who=speaker, face=face, height=460, dim=False,
+        self.im.info['duo_layer'] = [dict(who=speaker, face=face, height=360, dim=False,
                                          at=[x,y], cut=art.height)]
         # 出典の長文は2行。日次の詳細出典は従来の説明欄と材料に保持。
         source = spec.get('source', '')
@@ -160,18 +154,18 @@ class Screen:
             self.text(720,y+132,'日本時間',30,180,role='supplement')
             self.im.info['semantic_items'].append(s['time'])
         if self.im.info.get('unknown_club_badge'):
-            self.text(L,1596,'灰色の ? はクラブ色・略称が未確認',30,850,c.MUTED,role='supplement')
+            self.text(L,1438,'灰色の ? はクラブ色・略称が未確認',30,850,c.MUTED,role='supplement')
         return self.finish(spec)
 
     def standings(self, spec):
         title=spec['title'].split('　');self.title(title[0],'　'.join(title[1:]))
         rows={r['position']:r for r in spec['rows']}
-        shown=[rows[p] for a,b in spec['shown'] for p in range(a,b+1) if p in rows]
+        shown=[rows[p] for p in sorted({p for a,b in spec['shown'] for p in range(a,b+1) if p in rows})]
         pages=[shown[i:i+4] for i in range(0,len(shown),4)] or [[]]
         index=page_at(self.t,len(pages));shown=pages[index]
         self.im.info.update(readable_page=index,readable_page_count=len(pages),readable_rows=shown)
         labels=dict(spec.get('lines',[]))
-        top=442;bottom=1460 if spec.get('gap') else BODY_BOTTOM
+        top=442;bottom=1302 if spec.get('gap') else BODY_BOTTOM
         height=(bottom-top)//max(1,len(shown))
         for x,label,width in [(96,'順位',100),(220,'クラブ',420),(710,'試合',90),(830,'勝点',100)]:
             self.text(x,390,label,30,width,c.MUTED,role='supplement')
@@ -187,30 +181,30 @@ class Screen:
                 self.text(100,y+height-66,label,30,800,color,role='supplement')
                 ImageDraw.Draw(self.im).line((L,y+height-16,R,y+height-16),fill=color,width=3)
         if spec.get('gap'):
-            self.panel(1476,BODY_BOTTOM)
-            self.name(100,1494,spec['focus'],400,40)
-            self.text(520,1510,spec['gap'],30,390,c.LIME,role='supplement')
+            self.panel(1318,BODY_BOTTOM)
+            self.name(100,1336,spec['focus'],400,40)
+            self.text(520,1352,spec['gap'],30,390,c.LIME,role='supplement')
         return self.finish(spec)
 
     def score(self, game, spec, title='試合結果', person=None):
         import soccer_result_facts as facts
         self.title(title, facts.competition(game))
-        self.panel(BODY_TOP,1080)
+        self.panel(BODY_TOP,980)
         self.name(100,440,game['home']['name_jp'],800,52)
         self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
-        self.name(100,930,game['away']['name_jp'],800,52)
+        self.name(100,870,game['away']['name_jp'],800,52)
         people=[person] if person else [p for p in game['players'] if p['status']!='none']
-        self.panel(1102,BODY_BOTTOM)
+        self.panel(1002,BODY_BOTTOM)
         if not people:
-            self.text(100,1450,'日本人選手の出場なし',52,800)
-        y=1170
+            self.text(100,1300,'日本人選手の出場なし',52,800)
+        y=1070
         for i,p in enumerate(people):
             if len(people)==1:
-                self.text(100,1200,p['name'],76,800)
+                self.text(100,1060,p['name'],76,800)
                 detail=facts.player_line(p).rstrip('。').removeprefix(p['name']+'は')
-                y=self.lines(100,1370,detail,60,800)
+                y=self.lines(100,1240,detail,60,800)
             else:
-                y=1140+i*(420//len(people))
+                y=1040+i*(370//len(people))
                 self.text(100,y,p['name'],52,800)
                 detail=facts.player_line(p).rstrip('。').removeprefix(p['name']+'は')
                 y=self.lines(100,y+62,detail,40,800)+20
@@ -220,7 +214,7 @@ class Screen:
 
     def goals(self, game, goals, spec):
         import soccer_result_facts as facts
-        goals=sorted(goals,key=lambda g:(not bool(g['japanese_goal'] or g['japanese_assists']),int(g['minute'].split('+')[0])))
+        goals=sorted(goals,key=lambda g:tuple(int(v) for v in (g['minute'].split('+')+['0'])[:2]))
         pages=[goals[i:i+3] for i in range(0,len(goals),3)] or [[]]
         index=page_at(self.t,len(pages));shown=pages[index]
         self.title('得点・アシスト',facts.competition(game))
@@ -229,29 +223,27 @@ class Screen:
             self.panel(BODY_TOP,BODY_BOTTOM)
             self.name(100,440,game['home']['name_jp'],800,52)
             self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
-            self.name(100,930,game['away']['name_jp'],800,52)
-            self.text(100,1450,'得点なし' if game['goals_complete'] else '得点経過は未取得',52,800)
+            self.name(100,870,game['away']['name_jp'],800,52)
+            self.text(100,1300,'得点なし' if game['goals_complete'] else '得点経過は未取得',52,800)
         height=(BODY_BOTTOM-BODY_TOP)//max(1,len(shown))
         for i,g in enumerate(shown):
             y=BODY_TOP+i*height;self.panel(y,y+height-14)
-            if len(shown)==1:
-                self.text(100,y+80,facts.minute_text(g['minute']),160,800,c.LIME)
-                self.name(100,y+430,game[g['side']]['name_jp'],800,52)
-                name=facts.scorer_name(g)
-                label='オウンゴール' if g['own_goal'] else '得点'
-                self.lines(100,y+650,label+('：'+name if name else ''),64,800)
-                assists=facts.assist_names(g)
-                self.lines(100,y+950,'アシスト：'+('・'.join(assists) if assists else '情報なし'),48,800,c.MUTED)
-                continue
-            y+=max(0,(height-390)//2)
-            self.text(100,y+22,facts.minute_text(g['minute']),68,800,c.LIME)
-            end=self.name(100,y+124,game[g['side']]['name_jp'],800,40)
-            name=facts.scorer_name(g)
-            # 既存の確定した日本語名だけを使い、未登録名の仮訳は作らない。
-            label='オウンゴール' if g['own_goal'] else '得点'
-            end=self.lines(100,end+10,label+('：'+name if name else ''),44,800)
+            # 名前がない行を埋め草で増やさず、ある事実をカード内で下へ整列。
+            name=(facts.scorer_name(g) or g.get('scorer') or '').strip()
+            if name in ('得点者不明','不明','情報なし'):name=''
             assists=facts.assist_names(g)
-            self.lines(100,end+8,'アシスト：'+('・'.join(assists) if assists else '情報なし'),40,800,c.MUTED)
+            size=64 if len(shown)==1 else 44
+            label='オウンゴール' if g['own_goal'] else '得点'
+            details=([label+'：'+name] if name else ['オウンゴール'] if g['own_goal'] else [])
+            if assists:details.append('アシスト：'+'・'.join(assists))
+            row_height=size+12
+            detail_rows=[line for value in details for line in c.lines(value,size,800)]
+            content_height=92+50+len(detail_rows)*row_height
+            start=y+max(18,height-40-content_height)
+            self.text(100,start,facts.minute_text(g['minute']),68,800,c.LIME)
+            end=self.name(100,start+92,game[g['side']]['name_jp'],800,40)
+            for value in details:
+                end=self.lines(100,end+8,value,size,800,c.MUTED if value.startswith('アシスト') else None)
         return self.finish(spec)
 
 
@@ -261,6 +253,9 @@ def slots_frame(t, seg, plan):
     if kind=='standings':return s.standings(spec)
     if plan['mode']=='preview' and kind in ('cover','preview'):
         specs=[x['meta'] for x in plan['narration']['segments'] if x['kind']=='preview']
+        from datetime import datetime
+        starts={g['game_id']:datetime.fromisoformat(g['start_time_utc']) for g in plan['data']['games']}
+        specs=sorted(specs,key=lambda x:starts[x['game_id']])
         return s.preview(specs,spec)
     return None
 
@@ -295,6 +290,8 @@ def check_frame(im,clubs):
         size=e.get('v5_font')
         minimum=30 if e['role'] in ('source','supplement') else 40
         if e in body and size is not None and size<minimum:errors.append(dict(small_text=e,minimum=minimum))
+        if e in body and (not e['text'].strip() or (e['role']=='text' and e['text'].strip()=='得点') or '情報なし' in e['text']):
+            errors.append(dict(empty_item=e))
     for i,a in enumerate(body):
         for b in body[i+1:]:
             if intersects(a['box'],b['box']):errors.append(dict(text_overlap=[a,b]))
@@ -311,6 +308,13 @@ def check_frame(im,clubs):
             if intersects(e['box'],box):errors.append(dict(presenter_overlap=e))
     caption=im.info.get('duo_caption',{}).get('box')
     if caption:
+        import bubble_styles
+        legacy=bubble_styles.geometry()
+        if caption[2]-caption[0]<legacy[2]-legacy[0]:errors.append(dict(narrow_caption=caption))
+        text=next(e['text'] for e in entries if e['role']=='caption')
+        _,minimum,_=bubble_styles._runs(ImageDraw.Draw(im.copy()),text,legacy,'slant',
+                                      band=im.info.get('bubble_style',{}).get('variant')=='band')
+        if im.info['duo_caption']['font_size']<minimum:errors.append(dict(small_caption=caption,minimum=minimum))
         for e in cards+body:
             if intersects(e['box'],caption):errors.append(dict(caption_overlap=e))
         if 1920-caption[3]>100:errors.append(dict(empty_below_caption=1920-caption[3]))

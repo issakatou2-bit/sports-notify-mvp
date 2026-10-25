@@ -67,7 +67,16 @@ def _runs(d, text, box, style, light=False, band=False):
     width = x1-x0-left-50-(40 if fan_events.enabled() else 0)
     # Unlike the old caption, an opt-in style never silently drops a fourth row.
     for size in range(48, 19, -1):
-        try:rows = r3._caption_lines(d, text, size, width)
+        try:
+            import caption_breaks
+            if caption_breaks.enabled():
+                rows = r3._caption_lines(d, text, size, width)
+            else:
+                # styleを引数で指定する呼出しでも、同じ文節・数字を保つ。
+                def measure(value):
+                    return sum(d.textlength(part,font=r3.num_font(round(size*1.18)) if numeric else r3.font(size))
+                               for part,numeric in caption_breaks.runs(value))
+                rows = [caption_breaks.runs(row) for row in caption_breaks.wrap(text,measure,width)]
         except ValueError:continue
         lh = round(size*1.36)
         if len(rows) <= 3 and len(rows)*lh <= room:

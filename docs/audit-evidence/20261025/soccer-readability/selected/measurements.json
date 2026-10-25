@@ -24,6 +24,28 @@
       },
       "page": 0,
       "errors": [],
+      "current_caption": {
+        "box": [
+          64,
+          1270,
+          940,
+          1456
+        ],
+        "speaker": "metan",
+        "font_size": 41,
+        "rows": 2
+      },
+      "new_caption": {
+        "box": [
+          64,
+          1660,
+          940,
+          1860
+        ],
+        "speaker": "metan",
+        "font_size": 41,
+        "rows": 2
+      },
       "entries": [
         {
           "role": "header",
@@ -103,7 +125,7 @@
             72,
             390,
             940,
-            1080
+            980
           ],
           "text": ""
         },
@@ -176,9 +198,9 @@
           "role": "team_badge",
           "box": [
             100,
-            930,
+            870,
             219,
-            978
+            918
           ],
           "text": "",
           "club_id": "Manchester City FC"
@@ -187,9 +209,9 @@
           "role": "badge",
           "box": [
             144,
-            940,
+            880,
             191,
-            967
+            907
           ],
           "text": "MCI",
           "club_id": null,
@@ -205,9 +227,9 @@
           "role": "text",
           "box": [
             231,
-            930,
+            870,
             629,
-            978
+            918
           ],
           "text": "マンチェスターC",
           "club_id": "Manchester City FC",
@@ -223,9 +245,9 @@
           "role": "card",
           "box": [
             72,
-            1102,
+            1002,
             940,
-            1598
+            1440
           ],
           "text": ""
         },
@@ -233,9 +255,9 @@
           "role": "text",
           "box": [
             100,
-            1200,
+            1060,
             556,
-            1272
+            1132
           ],
           "text": "鈴木ザイオン",
           "club_id": null,
@@ -251,9 +273,9 @@
           "role": "text",
           "box": [
             100,
-            1370,
+            1240,
             220,
-            1429
+            1299
           ],
           "text": "先発",
           "club_id": null,
@@ -268,56 +290,12 @@
         {
           "role": "caption",
           "box": [
-            104,
-            1640,
-            254,
-            1668
+            64,
+            1660,
+            940,
+            1860
           ],
-          "text": "四国めたん",
-          "club_id": null,
-          "v5_font": 30,
-          "v5_advance": 150.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1682,
-            624,
-            1721
-          ],
-          "text": "アストンヴィラ対マンチェス",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 520.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1725,
-            403.0,
-            1764
-          ],
-          "text": "ターCは、2対1。",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 299.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
+          "text": "アストンヴィラ対マンチェスターCは、2対1。"
         },
         {
           "role": "source",
@@ -342,13 +320,13 @@
         {
           "who": "metan",
           "face": "talk",
-          "height": 460,
+          "height": 360,
           "dim": false,
           "at": [
-            717,
-            1630
+            766,
+            1460
           ],
-          "cut": 230
+          "cut": 180
         }
       ],
       "source_material_sha256": "3584fe848d479c4606171483554948ee9639a8418ea00554b6aaf98eef268b0c"
@@ -396,6 +374,28 @@
       },
       "page": 0,
       "errors": [],
+      "current_caption": {
+        "box": [
+          64,
+          1270,
+          940,
+          1456
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 2
+      },
+      "new_caption": {
+        "box": [
+          64,
+          1660,
+          940,
+          1860
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 2
+      },
       "entries": [
         {
           "role": "header",
@@ -475,7 +475,7 @@
             72,
             390,
             940,
-            678
+            638
           ],
           "text": ""
         },
@@ -484,42 +484,42 @@
           "box": [
             100,
             418,
-            199,
-            454
+            193,
+            450
           ],
           "text": "",
-          "club_id": "FC Bayern München"
+          "club_id": "Como 1907"
         },
         {
           "role": "badge",
           "box": [
-            136,
+            133,
             426,
-            175,
-            446
+            171,
+            443
           ],
-          "text": "FCB",
+          "text": "COM",
           "club_id": null,
-          "v5_font": 28,
-          "v5_advance": 39,
+          "v5_font": 25,
+          "v5_advance": 38,
           "v5_color": [
-            0,
-            0,
-            0
+            255,
+            255,
+            255
           ]
         },
         {
           "role": "text",
           "box": [
-            211,
+            205,
             418,
-            411,
-            454
+            285,
+            450
           ],
-          "text": "バイエルン",
-          "club_id": "FC Bayern München",
+          "text": "コモ",
+          "club_id": "Como 1907",
           "v5_font": 40,
-          "v5_advance": 200.0,
+          "v5_advance": 80.0,
           "v5_color": [
             240,
             246,
@@ -531,24 +531,24 @@
           "box": [
             100,
             538,
-            199,
-            573
+            207,
+            575
           ],
           "text": "",
-          "club_id": "Arsenal FC"
+          "club_id": "Manchester United FC"
         },
         {
           "role": "badge",
           "box": [
             136,
             546,
-            176,
-            565
+            182,
+            566
           ],
-          "text": "ARS",
+          "text": "MUN",
           "club_id": null,
-          "v5_font": 27,
-          "v5_advance": 40,
+          "v5_font": 29,
+          "v5_advance": 46,
           "v5_color": [
             0,
             0,
@@ -558,15 +558,15 @@
         {
           "role": "text",
           "box": [
-            211,
+            219,
             538,
-            411,
-            573
+            530,
+            575
           ],
-          "text": "アーセナル",
-          "club_id": "Arsenal FC",
+          "text": "マンチェスターU",
+          "club_id": "Manchester United FC",
           "v5_font": 40,
-          "v5_advance": 200.0,
+          "v5_advance": 311.0,
           "v5_color": [
             240,
             246,
@@ -578,13 +578,13 @@
           "box": [
             706,
             440,
-            852,
+            842,
             490
           ],
-          "text": "04:00",
+          "text": "01:45",
           "club_id": null,
           "v5_font": 68,
-          "v5_advance": 146,
+          "v5_advance": 136,
           "v5_color": [
             196,
             244,
@@ -613,9 +613,9 @@
           "role": "card",
           "box": [
             72,
-            692,
+            652,
             940,
-            980
+            900
           ],
           "text": ""
         },
@@ -623,43 +623,43 @@
           "role": "team_badge",
           "box": [
             100,
-            720,
-            193,
-            752
+            680,
+            199,
+            716
           ],
           "text": "",
-          "club_id": "Como 1907"
+          "club_id": "FC Bayern München"
         },
         {
           "role": "badge",
           "box": [
-            133,
-            728,
-            171,
-            745
+            136,
+            688,
+            175,
+            708
           ],
-          "text": "COM",
+          "text": "FCB",
           "club_id": null,
-          "v5_font": 25,
-          "v5_advance": 38,
+          "v5_font": 28,
+          "v5_advance": 39,
           "v5_color": [
-            255,
-            255,
-            255
+            0,
+            0,
+            0
           ]
         },
         {
           "role": "text",
           "box": [
-            205,
-            720,
-            285,
-            752
+            211,
+            680,
+            411,
+            716
           ],
-          "text": "コモ",
-          "club_id": "Como 1907",
+          "text": "バイエルン",
+          "club_id": "FC Bayern München",
           "v5_font": 40,
-          "v5_advance": 80.0,
+          "v5_advance": 200.0,
           "v5_color": [
             240,
             246,
@@ -670,25 +670,25 @@
           "role": "team_badge",
           "box": [
             100,
-            840,
-            207,
-            877
+            800,
+            199,
+            835
           ],
           "text": "",
-          "club_id": "Manchester United FC"
+          "club_id": "Arsenal FC"
         },
         {
           "role": "badge",
           "box": [
             136,
-            848,
-            182,
-            868
+            808,
+            176,
+            827
           ],
-          "text": "MUN",
+          "text": "ARS",
           "club_id": null,
-          "v5_font": 29,
-          "v5_advance": 46,
+          "v5_font": 27,
+          "v5_advance": 40,
           "v5_color": [
             0,
             0,
@@ -698,15 +698,15 @@
         {
           "role": "text",
           "box": [
-            219,
-            840,
-            530,
-            877
+            211,
+            800,
+            411,
+            835
           ],
-          "text": "マンチェスターU",
-          "club_id": "Manchester United FC",
+          "text": "アーセナル",
+          "club_id": "Arsenal FC",
           "v5_font": 40,
-          "v5_advance": 311.0,
+          "v5_advance": 200.0,
           "v5_color": [
             240,
             246,
@@ -717,14 +717,14 @@
           "role": "text",
           "box": [
             706,
-            742,
-            842,
-            792
+            702,
+            852,
+            752
           ],
-          "text": "01:45",
+          "text": "04:00",
           "club_id": null,
           "v5_font": 68,
-          "v5_advance": 136,
+          "v5_advance": 146,
           "v5_color": [
             196,
             244,
@@ -735,9 +735,9 @@
           "role": "supplement",
           "box": [
             720,
-            824,
+            784,
             840,
-            853
+            813
           ],
           "text": "日本時間",
           "club_id": null,
@@ -753,9 +753,9 @@
           "role": "card",
           "box": [
             72,
-            994,
+            914,
             940,
-            1282
+            1162
           ],
           "text": ""
         },
@@ -763,9 +763,9 @@
           "role": "team_badge",
           "box": [
             100,
-            1022,
+            942,
             200,
-            1057
+            977
           ],
           "text": "",
           "club_id": "Real Madrid CF"
@@ -774,9 +774,9 @@
           "role": "badge",
           "box": [
             136,
-            1030,
+            950,
             177,
-            1049
+            969
           ],
           "text": "RMA",
           "club_id": null,
@@ -792,9 +792,9 @@
           "role": "text",
           "box": [
             212,
-            1022,
+            942,
             572,
-            1057
+            977
           ],
           "text": "レアル・マドリード",
           "club_id": "Real Madrid CF",
@@ -810,9 +810,9 @@
           "role": "team_badge",
           "box": [
             100,
-            1142,
+            1062,
             204,
-            1181
+            1101
           ],
           "text": "",
           "club_id": "RB Leipzig"
@@ -821,9 +821,9 @@
           "role": "badge",
           "box": [
             138,
-            1151,
+            1071,
             179,
-            1172
+            1092
           ],
           "text": "RBL",
           "club_id": null,
@@ -839,9 +839,9 @@
           "role": "text",
           "box": [
             216,
-            1142,
+            1062,
             456,
-            1181
+            1101
           ],
           "text": "ライプツィヒ",
           "club_id": "RB Leipzig",
@@ -857,9 +857,9 @@
           "role": "text",
           "box": [
             706,
-            1044,
+            964,
             852,
-            1094
+            1014
           ],
           "text": "04:00",
           "club_id": null,
@@ -875,9 +875,9 @@
           "role": "supplement",
           "box": [
             720,
-            1126,
+            1046,
             840,
-            1155
+            1075
           ],
           "text": "日本時間",
           "club_id": null,
@@ -893,9 +893,9 @@
           "role": "card",
           "box": [
             72,
-            1296,
+            1176,
             940,
-            1584
+            1424
           ],
           "text": ""
         },
@@ -903,9 +903,9 @@
           "role": "team_badge",
           "box": [
             100,
-            1324,
+            1204,
             195,
-            1360
+            1240
           ],
           "text": "",
           "club_id": "FC Internazionale Milano"
@@ -914,9 +914,9 @@
           "role": "badge",
           "box": [
             136,
-            1332,
+            1212,
             171,
-            1352
+            1232
           ],
           "text": "INT",
           "club_id": null,
@@ -932,9 +932,9 @@
           "role": "text",
           "box": [
             207,
-            1324,
+            1204,
             367,
-            1360
+            1240
           ],
           "text": "インテル",
           "club_id": "FC Internazionale Milano",
@@ -950,9 +950,9 @@
           "role": "team_badge",
           "box": [
             100,
-            1444,
+            1324,
             178,
-            1483
+            1363
           ],
           "text": "",
           "club_id": "シャフタール"
@@ -961,9 +961,9 @@
           "role": "badge",
           "box": [
             138,
-            1453,
+            1333,
             153,
-            1474
+            1354
           ],
           "text": "?",
           "club_id": null,
@@ -979,9 +979,9 @@
           "role": "text",
           "box": [
             190,
-            1444,
+            1324,
             430,
-            1483
+            1363
           ],
           "text": "シャフタール",
           "club_id": "シャフタール",
@@ -997,9 +997,9 @@
           "role": "text",
           "box": [
             706,
-            1346,
+            1226,
             852,
-            1396
+            1276
           ],
           "text": "04:00",
           "club_id": null,
@@ -1015,9 +1015,9 @@
           "role": "supplement",
           "box": [
             720,
-            1428,
+            1308,
             840,
-            1457
+            1337
           ],
           "text": "日本時間",
           "club_id": null,
@@ -1033,9 +1033,9 @@
           "role": "supplement",
           "box": [
             72,
-            1596,
+            1438,
             552,
-            1627
+            1469
           ],
           "text": "灰色の ? はクラブ色・略称が未確認",
           "club_id": null,
@@ -1050,56 +1050,12 @@
         {
           "role": "caption",
           "box": [
-            104,
-            1640,
-            254,
-            1668
+            64,
+            1660,
+            940,
+            1860
           ],
-          "text": "四国めたん",
-          "club_id": null,
-          "v5_font": 30,
-          "v5_advance": 150.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1682,
-            606.0,
-            1722
-          ],
-          "text": "日本時間4時、バイエルン対",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 502.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1725,
-            344,
-            1760
-          ],
-          "text": "アーセナル。",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 240.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
+          "text": "日本時間4時、バイエルン対アーセナル。"
         },
         {
           "role": "source",
@@ -1124,13 +1080,13 @@
         {
           "who": "metan",
           "face": "talk",
-          "height": 460,
+          "height": 360,
           "dim": false,
           "at": [
-            717,
-            1630
+            766,
+            1460
           ],
-          "cut": 230
+          "cut": 180
         }
       ],
       "source_material_sha256": "ec1f1f1ba9d301c81ee0f31fe5c07b4697913f1b40a618c68ad3d965712fcf19"
@@ -1205,6 +1161,28 @@
       },
       "page": 0,
       "errors": [],
+      "current_caption": {
+        "box": [
+          64,
+          1270,
+          940,
+          1456
+        ],
+        "speaker": "metan",
+        "font_size": 33,
+        "rows": 2
+      },
+      "new_caption": {
+        "box": [
+          64,
+          1660,
+          940,
+          1860
+        ],
+        "speaker": "metan",
+        "font_size": 35,
+        "rows": 3
+      },
       "entries": [
         {
           "role": "header",
@@ -1356,7 +1334,7 @@
             72,
             442,
             940,
-            717
+            677
           ],
           "text": ""
         },
@@ -1465,9 +1443,9 @@
           "role": "card",
           "box": [
             72,
-            731,
+            691,
             940,
-            1006
+            926
           ],
           "text": ""
         },
@@ -1475,9 +1453,9 @@
           "role": "text",
           "box": [
             100,
-            775,
+            735,
             128,
-            819
+            779
           ],
           "text": "8",
           "club_id": null,
@@ -1493,9 +1471,9 @@
           "role": "team_badge",
           "box": [
             220,
-            769,
+            729,
             321,
-            805
+            765
           ],
           "text": "",
           "club_id": "FC Barcelona"
@@ -1504,9 +1482,9 @@
           "role": "badge",
           "box": [
             256,
-            777,
+            737,
             297,
-            797
+            757
           ],
           "text": "BAR",
           "club_id": null,
@@ -1522,9 +1500,9 @@
           "role": "text",
           "box": [
             333,
-            769,
+            729,
             533,
-            805
+            765
           ],
           "text": "バルセロナ",
           "club_id": "FC Barcelona",
@@ -1540,9 +1518,9 @@
           "role": "text",
           "box": [
             714,
-            775,
+            735,
             743,
-            818
+            778
           ],
           "text": "3",
           "club_id": null,
@@ -1558,9 +1536,9 @@
           "role": "text",
           "box": [
             832,
-            761,
+            721,
             869,
-            819
+            779
           ],
           "text": "6",
           "club_id": null,
@@ -1576,9 +1554,9 @@
           "role": "supplement",
           "box": [
             100,
-            954,
+            874,
             400,
-            984
+            904
           ],
           "text": "決勝トーナメント直行",
           "club_id": null,
@@ -1594,9 +1572,9 @@
           "role": "card",
           "box": [
             72,
-            1020,
             940,
-            1295
+            940,
+            1175
           ],
           "text": ""
         },
@@ -1604,9 +1582,9 @@
           "role": "text",
           "box": [
             100,
-            1064,
+            984,
             128,
-            1108
+            1028
           ],
           "text": "9",
           "club_id": null,
@@ -1622,9 +1600,9 @@
           "role": "team_badge",
           "box": [
             220,
-            1058,
+            978,
             313,
-            1090
+            1010
           ],
           "text": "",
           "club_id": "Como 1907"
@@ -1633,9 +1611,9 @@
           "role": "badge",
           "box": [
             253,
-            1066,
+            986,
             291,
-            1083
+            1003
           ],
           "text": "COM",
           "club_id": null,
@@ -1651,9 +1629,9 @@
           "role": "text",
           "box": [
             325,
-            1058,
+            978,
             405,
-            1090
+            1010
           ],
           "text": "コモ",
           "club_id": "Como 1907",
@@ -1669,9 +1647,9 @@
           "role": "text",
           "box": [
             714,
-            1064,
+            984,
             743,
-            1107
+            1027
           ],
           "text": "3",
           "club_id": null,
@@ -1687,9 +1665,9 @@
           "role": "text",
           "box": [
             832,
-            1050,
+            970,
             869,
-            1108
+            1028
           ],
           "text": "6",
           "club_id": null,
@@ -1705,9 +1683,9 @@
           "role": "card",
           "box": [
             72,
-            1309,
+            1189,
             940,
-            1584
+            1424
           ],
           "text": ""
         },
@@ -1715,9 +1693,9 @@
           "role": "text",
           "box": [
             100,
-            1353,
+            1233,
             145,
-            1397
+            1277
           ],
           "text": "10",
           "club_id": null,
@@ -1733,9 +1711,9 @@
           "role": "team_badge",
           "box": [
             220,
-            1347,
+            1227,
             318,
-            1384
+            1264
           ],
           "text": "",
           "club_id": "Manchester City FC"
@@ -1744,9 +1722,9 @@
           "role": "badge",
           "box": [
             256,
-            1356,
+            1236,
             293,
-            1376
+            1256
           ],
           "text": "MCI",
           "club_id": null,
@@ -1762,9 +1740,9 @@
           "role": "text",
           "box": [
             330,
-            1347,
+            1227,
             636,
-            1384
+            1264
           ],
           "text": "マンチェスターC",
           "club_id": "Manchester City FC",
@@ -1780,9 +1758,9 @@
           "role": "text",
           "box": [
             714,
-            1353,
+            1233,
             743,
-            1396
+            1276
           ],
           "text": "3",
           "club_id": null,
@@ -1798,9 +1776,9 @@
           "role": "text",
           "box": [
             832,
-            1339,
+            1219,
             869,
-            1397
+            1277
           ],
           "text": "6",
           "club_id": null,
@@ -1815,74 +1793,12 @@
         {
           "role": "caption",
           "box": [
-            104,
-            1640,
-            254,
-            1668
+            64,
+            1660,
+            940,
+            1860
           ],
-          "text": "四国めたん",
-          "club_id": null,
-          "v5_font": 30,
-          "v5_advance": 150.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1682,
-            624,
-            1722
-          ],
-          "text": "チャンピオンズリーグの決勝",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 520.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1725,
-            624,
-            1765
-          ],
-          "text": "トーナメント直行の境目です",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 520.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1768,
-            364.0,
-            1808
-          ],
-          "text": "。勝点差は0。",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 260.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
+          "text": "チャンピオンズリーグの決勝トーナメント直行の境目です。勝点差は0。"
         },
         {
           "role": "source",
@@ -1907,13 +1823,13 @@
         {
           "who": "metan",
           "face": "talk",
-          "height": 460,
+          "height": 360,
           "dim": false,
           "at": [
-            717,
-            1630
+            766,
+            1460
           ],
-          "cut": 230
+          "cut": 180
         }
       ],
       "source_material_sha256": "5e19001ef707f6bc5e8ff3779115b133111ea7e21f1fd000d6f05a6fe7caa43f"
@@ -2005,6 +1921,28 @@
       },
       "page": 0,
       "errors": [],
+      "current_caption": {
+        "box": [
+          64,
+          1270,
+          940,
+          1456
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 2
+      },
+      "new_caption": {
+        "box": [
+          64,
+          1660,
+          940,
+          1860
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 2
+      },
       "entries": [
         {
           "role": "header",
@@ -2084,7 +2022,7 @@
             72,
             390,
             940,
-            678
+            638
           ],
           "text": ""
         },
@@ -2092,9 +2030,9 @@
           "role": "text",
           "box": [
             100,
-            414,
+            411,
             308,
-            464
+            461
           ],
           "text": "鎌田大地",
           "club_id": null,
@@ -2110,9 +2048,9 @@
           "role": "team_badge",
           "box": [
             100,
-            487,
+            474,
             204,
-            524
+            511
           ],
           "text": "",
           "club_id": "Crystal Palace FC"
@@ -2121,9 +2059,9 @@
           "role": "badge",
           "box": [
             136,
-            496,
+            482,
             179,
-            516
+            502
           ],
           "text": "CRY",
           "club_id": null,
@@ -2139,9 +2077,9 @@
           "role": "text",
           "box": [
             216,
-            487,
+            474,
             536,
-            524
+            511
           ],
           "text": "クリスタルパレス",
           "club_id": "Crystal Palace FC",
@@ -2157,9 +2095,9 @@
           "role": "text",
           "box": [
             100,
-            583,
+            558,
             125,
-            636
+            611
           ],
           "text": "1",
           "club_id": null,
@@ -2175,9 +2113,9 @@
           "role": "supplement",
           "box": [
             135,
-            619,
+            594,
             195,
-            649
+            624
           ],
           "text": "得点",
           "club_id": null,
@@ -2193,9 +2131,9 @@
           "role": "text",
           "box": [
             368,
-            583,
+            558,
             404,
-            638
+            613
           ],
           "text": "0",
           "club_id": null,
@@ -2211,9 +2149,9 @@
           "role": "supplement",
           "box": [
             414,
-            619,
+            594,
             435,
-            641
+            616
           ],
           "text": "A",
           "club_id": null,
@@ -2229,9 +2167,9 @@
           "role": "text",
           "box": [
             636,
-            583,
+            558,
             704,
-            638
+            613
           ],
           "text": "89",
           "club_id": null,
@@ -2247,9 +2185,9 @@
           "role": "supplement",
           "box": [
             714,
-            619,
+            594,
             744,
-            649
+            624
           ],
           "text": "分",
           "club_id": null,
@@ -2265,9 +2203,9 @@
           "role": "card",
           "box": [
             72,
-            692,
+            652,
             940,
-            980
+            900
           ],
           "text": ""
         },
@@ -2275,9 +2213,9 @@
           "role": "text",
           "box": [
             100,
-            716,
+            673,
             308,
-            767
+            724
           ],
           "text": "冨安健洋",
           "club_id": null,
@@ -2293,9 +2231,9 @@
           "role": "team_badge",
           "box": [
             100,
-            789,
+            736,
             204,
-            826
+            773
           ],
           "text": "",
           "club_id": "Crystal Palace FC"
@@ -2304,9 +2242,9 @@
           "role": "badge",
           "box": [
             136,
-            798,
+            744,
             179,
-            818
+            764
           ],
           "text": "CRY",
           "club_id": null,
@@ -2322,9 +2260,9 @@
           "role": "text",
           "box": [
             216,
-            789,
+            736,
             536,
-            826
+            773
           ],
           "text": "クリスタルパレス",
           "club_id": "Crystal Palace FC",
@@ -2340,9 +2278,9 @@
           "role": "text",
           "box": [
             100,
-            885,
+            820,
             260,
-            924
+            859
           ],
           "text": "出場なし",
           "club_id": null,
@@ -2358,9 +2296,9 @@
           "role": "card",
           "box": [
             72,
-            994,
+            914,
             940,
-            1282
+            1162
           ],
           "text": ""
         },
@@ -2368,9 +2306,9 @@
           "role": "text",
           "box": [
             100,
-            1018,
+            935,
             308,
-            1069
+            986
           ],
           "text": "坂元達裕",
           "club_id": null,
@@ -2386,9 +2324,9 @@
           "role": "team_badge",
           "box": [
             100,
-            1091,
+            998,
             198,
-            1125
+            1032
           ],
           "text": "",
           "club_id": "Coventry City FC"
@@ -2397,9 +2335,9 @@
           "role": "badge",
           "box": [
             134,
-            1098,
+            1006,
             174,
-            1117
+            1025
           ],
           "text": "COV",
           "club_id": null,
@@ -2415,9 +2353,9 @@
           "role": "text",
           "box": [
             210,
-            1091,
+            998,
             450,
-            1125
+            1032
           ],
           "text": "コベントリー",
           "club_id": "Coventry City FC",
@@ -2433,9 +2371,9 @@
           "role": "text",
           "box": [
             100,
-            1187,
+            1082,
             136,
-            1242
+            1137
           ],
           "text": "0",
           "club_id": null,
@@ -2451,9 +2389,9 @@
           "role": "supplement",
           "box": [
             146,
-            1223,
+            1118,
             206,
-            1253
+            1148
           ],
           "text": "得点",
           "club_id": null,
@@ -2469,9 +2407,9 @@
           "role": "text",
           "box": [
             368,
-            1187,
+            1082,
             404,
-            1242
+            1137
           ],
           "text": "0",
           "club_id": null,
@@ -2487,9 +2425,9 @@
           "role": "supplement",
           "box": [
             414,
-            1223,
+            1118,
             435,
-            1245
+            1140
           ],
           "text": "A",
           "club_id": null,
@@ -2505,9 +2443,9 @@
           "role": "text",
           "box": [
             636,
-            1187,
+            1082,
             704,
-            1242
+            1137
           ],
           "text": "29",
           "club_id": null,
@@ -2523,9 +2461,9 @@
           "role": "supplement",
           "box": [
             714,
-            1223,
+            1118,
             744,
-            1253
+            1148
           ],
           "text": "分",
           "club_id": null,
@@ -2541,9 +2479,9 @@
           "role": "card",
           "box": [
             72,
-            1296,
+            1176,
             940,
-            1584
+            1424
           ],
           "text": ""
         },
@@ -2551,9 +2489,9 @@
           "role": "text",
           "box": [
             100,
-            1320,
+            1197,
             308,
-            1371
+            1248
           ],
           "text": "久保建英",
           "club_id": null,
@@ -2569,9 +2507,9 @@
           "role": "team_badge",
           "box": [
             100,
-            1393,
+            1260,
             205,
-            1432
+            1299
           ],
           "text": "",
           "club_id": "Real Sociedad de Fútbol"
@@ -2580,9 +2518,9 @@
           "role": "badge",
           "box": [
             138,
-            1402,
+            1269,
             180,
-            1423
+            1290
           ],
           "text": "RSO",
           "club_id": null,
@@ -2598,9 +2536,9 @@
           "role": "text",
           "box": [
             217,
-            1393,
+            1260,
             537,
-            1432
+            1299
           ],
           "text": "レアル・ソシエダ",
           "club_id": "Real Sociedad de Fútbol",
@@ -2616,9 +2554,9 @@
           "role": "text",
           "box": [
             100,
-            1489,
+            1344,
             372.0,
-            1529
+            1384
           ],
           "text": "クラブ 3-2 勝ち",
           "club_id": null,
@@ -2633,56 +2571,12 @@
         {
           "role": "caption",
           "box": [
-            104,
-            1640,
-            254,
-            1668
+            64,
+            1660,
+            940,
+            1860
           ],
-          "text": "四国めたん",
-          "club_id": null,
-          "v5_font": 30,
-          "v5_advance": 150.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1682,
-            637.0,
-            1722
-          ],
-          "text": "鎌田大地が1得点。日本人選手",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 533.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1725,
-            344,
-            1763
-          ],
-          "text": "の週末です。",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 240.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
+          "text": "鎌田大地が1得点。日本人選手の週末です。"
         },
         {
           "role": "source",
@@ -2707,13 +2601,13 @@
         {
           "who": "metan",
           "face": "talk",
-          "height": 460,
+          "height": 360,
           "dim": false,
           "at": [
-            717,
-            1630
+            766,
+            1460
           ],
-          "cut": 230
+          "cut": 180
         }
       ],
       "source_material_sha256": "32972acd1ad11a79fc829a80aeb3c5d929fb182c66f0acf25255a2db9ff75b91"
@@ -2805,6 +2699,28 @@
       },
       "page": 1,
       "errors": [],
+      "current_caption": {
+        "box": [
+          64,
+          1270,
+          940,
+          1456
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 2
+      },
+      "new_caption": {
+        "box": [
+          64,
+          1660,
+          940,
+          1860
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 2
+      },
       "entries": [
         {
           "role": "header",
@@ -2884,7 +2800,7 @@
             72,
             390,
             940,
-            778
+            726
           ],
           "text": ""
         },
@@ -2892,9 +2808,9 @@
           "role": "text",
           "box": [
             100,
-            422,
+            418,
             308,
-            472
+            468
           ],
           "text": "鈴木唯人",
           "club_id": null,
@@ -2910,9 +2826,9 @@
           "role": "team_badge",
           "box": [
             100,
-            519,
+            502,
             204,
-            557
+            540
           ],
           "text": "",
           "club_id": "SC Freiburg"
@@ -2921,9 +2837,9 @@
           "role": "badge",
           "box": [
             138,
-            528,
+            510,
             180,
-            549
+            531
           ],
           "text": "SCF",
           "club_id": null,
@@ -2939,9 +2855,9 @@
           "role": "text",
           "box": [
             216,
-            519,
+            502,
             456,
-            557
+            540
           ],
           "text": "フライブルク",
           "club_id": "SC Freiburg",
@@ -2957,9 +2873,9 @@
           "role": "text",
           "box": [
             100,
-            647,
+            614,
             366.0,
-            687
+            654
           ],
           "text": "クラブ 2-1 勝ち",
           "club_id": null,
@@ -2975,9 +2891,9 @@
           "role": "card",
           "box": [
             72,
-            792,
+            740,
             940,
-            1180
+            1076
           ],
           "text": ""
         },
@@ -2985,9 +2901,9 @@
           "role": "text",
           "box": [
             100,
-            824,
+            768,
             308,
-            875
+            819
           ],
           "text": "後藤啓介",
           "club_id": null,
@@ -3003,9 +2919,9 @@
           "role": "team_badge",
           "box": [
             100,
-            921,
+            852,
             204,
-            959
+            890
           ],
           "text": "",
           "club_id": "SC Freiburg"
@@ -3014,9 +2930,9 @@
           "role": "badge",
           "box": [
             138,
-            930,
+            860,
             180,
-            951
+            881
           ],
           "text": "SCF",
           "club_id": null,
@@ -3032,9 +2948,9 @@
           "role": "text",
           "box": [
             216,
-            921,
+            852,
             456,
-            959
+            890
           ],
           "text": "フライブルク",
           "club_id": "SC Freiburg",
@@ -3050,9 +2966,9 @@
           "role": "text",
           "box": [
             100,
-            1049,
+            964,
             366.0,
-            1089
+            1004
           ],
           "text": "クラブ 2-1 勝ち",
           "club_id": null,
@@ -3068,9 +2984,9 @@
           "role": "card",
           "box": [
             72,
-            1194,
+            1090,
             940,
-            1582
+            1426
           ],
           "text": ""
         },
@@ -3078,9 +2994,9 @@
           "role": "text",
           "box": [
             100,
-            1226,
+            1118,
             308,
-            1276
+            1168
           ],
           "text": "山本理仁",
           "club_id": null,
@@ -3096,9 +3012,9 @@
           "role": "team_badge",
           "box": [
             100,
-            1323,
+            1202,
             204,
-            1361
+            1240
           ],
           "text": "",
           "club_id": "SC Freiburg"
@@ -3107,9 +3023,9 @@
           "role": "badge",
           "box": [
             138,
-            1332,
+            1210,
             180,
-            1353
+            1231
           ],
           "text": "SCF",
           "club_id": null,
@@ -3125,9 +3041,9 @@
           "role": "text",
           "box": [
             216,
-            1323,
+            1202,
             456,
-            1361
+            1240
           ],
           "text": "フライブルク",
           "club_id": "SC Freiburg",
@@ -3143,9 +3059,9 @@
           "role": "text",
           "box": [
             100,
-            1451,
+            1314,
             366.0,
-            1491
+            1354
           ],
           "text": "クラブ 2-1 勝ち",
           "club_id": null,
@@ -3160,56 +3076,12 @@
         {
           "role": "caption",
           "box": [
-            104,
-            1640,
-            254,
-            1668
+            64,
+            1660,
+            940,
+            1860
           ],
-          "text": "四国めたん",
-          "club_id": null,
-          "v5_font": 30,
-          "v5_advance": 150.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1682,
-            637.0,
-            1722
-          ],
-          "text": "鎌田大地が1得点。日本人選手",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 533.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1725,
-            344,
-            1763
-          ],
-          "text": "の週末です。",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 240.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
+          "text": "鎌田大地が1得点。日本人選手の週末です。"
         },
         {
           "role": "source",
@@ -3234,13 +3106,13 @@
         {
           "who": "metan",
           "face": "talk",
-          "height": 460,
+          "height": 360,
           "dim": false,
           "at": [
-            717,
-            1630
+            766,
+            1460
           ],
-          "cut": 230
+          "cut": 180
         }
       ],
       "source_material_sha256": "32972acd1ad11a79fc829a80aeb3c5d929fb182c66f0acf25255a2db9ff75b91"
@@ -3259,6 +3131,28 @@
       },
       "page": 0,
       "errors": [],
+      "current_caption": {
+        "box": [
+          64,
+          1270,
+          940,
+          1456
+        ],
+        "speaker": "metan",
+        "font_size": 36,
+        "rows": 2
+      },
+      "new_caption": {
+        "box": [
+          64,
+          1660,
+          940,
+          1860
+        ],
+        "speaker": "metan",
+        "font_size": 36,
+        "rows": 2
+      },
       "entries": [
         {
           "role": "header",
@@ -3338,7 +3232,7 @@
             72,
             390,
             940,
-            1080
+            980
           ],
           "text": ""
         },
@@ -3411,9 +3305,9 @@
           "role": "team_badge",
           "box": [
             100,
-            930,
+            870,
             227,
-            978
+            918
           ],
           "text": "",
           "club_id": "Borussia Mönchengladbach"
@@ -3422,9 +3316,9 @@
           "role": "badge",
           "box": [
             144,
-            940,
+            880,
             199,
-            967
+            907
           ],
           "text": "BMG",
           "club_id": null,
@@ -3440,9 +3334,9 @@
           "role": "text",
           "box": [
             239,
-            930,
+            870,
             529,
-            978
+            918
           ],
           "text": "ボルシアMG",
           "club_id": "Borussia Mönchengladbach",
@@ -3458,9 +3352,9 @@
           "role": "card",
           "box": [
             72,
-            1102,
+            1002,
             940,
-            1598
+            1440
           ],
           "text": ""
         },
@@ -3468,9 +3362,9 @@
           "role": "text",
           "box": [
             100,
-            1200,
+            1060,
             404,
-            1272
+            1132
           ],
           "text": "町野修斗",
           "club_id": null,
@@ -3486,9 +3380,9 @@
           "role": "text",
           "box": [
             100,
-            1370,
+            1240,
             419.0,
-            1429
+            1299
           ],
           "text": "先発、1得点",
           "club_id": null,
@@ -3503,74 +3397,12 @@
         {
           "role": "caption",
           "box": [
-            104,
-            1640,
-            254,
-            1668
+            64,
+            1660,
+            940,
+            1860
           ],
-          "text": "四国めたん",
-          "club_id": null,
-          "v5_font": 30,
-          "v5_advance": 150.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1682,
-            624,
-            1721
-          ],
-          "text": "町野修斗がゴール。シュツッ",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 520.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1725,
-            629.0,
-            1765
-          ],
-          "text": "トガルト対ボルシアMGは、2",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 525.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1768,
-            203.0,
-            1807
-          ],
-          "text": "対3。",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 99.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
+          "text": "町野修斗がゴール。シュツットガルト対ボルシアMGは、2対3。"
         },
         {
           "role": "source",
@@ -3595,13 +3427,13 @@
         {
           "who": "metan",
           "face": "talk",
-          "height": 460,
+          "height": 360,
           "dim": false,
           "at": [
-            717,
-            1630
+            766,
+            1460
           ],
-          "cut": 230
+          "cut": 180
         }
       ],
       "source_material_sha256": "3bcef17465d5fdbcd8d9f6dd97c8de7e2921037105c4dd0be6f5be8728ae80e3"
@@ -3670,6 +3502,28 @@
       },
       "page": 0,
       "errors": [],
+      "current_caption": {
+        "box": [
+          64,
+          1270,
+          940,
+          1456
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 1
+      },
+      "new_caption": {
+        "box": [
+          64,
+          1660,
+          940,
+          1860
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 1
+      },
       "entries": [
         {
           "role": "header",
@@ -3749,7 +3603,7 @@
             72,
             390,
             940,
-            778
+            726
           ],
           "text": ""
         },
@@ -3757,231 +3611,9 @@
           "role": "text",
           "box": [
             100,
-            418,
-            234.0,
-            485
-          ],
-          "text": "38分",
-          "club_id": null,
-          "v5_font": 68,
-          "v5_advance": 134.0,
-          "v5_color": [
-            196,
-            244,
-            76
-          ]
-        },
-        {
-          "role": "team_badge",
-          "box": [
-            100,
-            520,
-            204,
-            557
-          ],
-          "text": "",
-          "club_id": "Borussia Mönchengladbach"
-        },
-        {
-          "role": "badge",
-          "box": [
-            136,
-            528,
-            179,
-            548
-          ],
-          "text": "BMG",
-          "club_id": null,
-          "v5_font": 29,
-          "v5_advance": 43,
-          "v5_color": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "role": "text",
-          "box": [
-            216,
-            520,
-            440,
-            557
-          ],
-          "text": "ボルシアMG",
-          "club_id": "Borussia Mönchengladbach",
-          "v5_font": 40,
-          "v5_advance": 224.0,
-          "v5_color": [
-            240,
-            246,
-            240
-          ]
-        },
-        {
-          "role": "text",
-          "box": [
-            100,
-            580,
-            188,
-            623
-          ],
-          "text": "得点",
-          "club_id": null,
-          "v5_font": 44,
-          "v5_advance": 88.0,
-          "v5_color": [
-            240,
-            246,
-            240
-          ]
-        },
-        {
-          "role": "text",
-          "box": [
-            100,
-            644,
-            460,
-            682
-          ],
-          "text": "アシスト：宇野禅斗",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 360.0,
-          "v5_color": [
-            150,
-            180,
-            166
-          ]
-        },
-        {
-          "role": "card",
-          "box": [
-            72,
-            792,
-            940,
-            1180
-          ],
-          "text": ""
-        },
-        {
-          "role": "text",
-          "box": [
-            100,
-            820,
-            223.0,
-            887
-          ],
-          "text": "51分",
-          "club_id": null,
-          "v5_font": 68,
-          "v5_advance": 123.0,
-          "v5_color": [
-            196,
-            244,
-            76
-          ]
-        },
-        {
-          "role": "team_badge",
-          "box": [
-            100,
-            922,
-            204,
-            959
-          ],
-          "text": "",
-          "club_id": "Borussia Mönchengladbach"
-        },
-        {
-          "role": "badge",
-          "box": [
-            136,
-            930,
-            179,
-            950
-          ],
-          "text": "BMG",
-          "club_id": null,
-          "v5_font": 29,
-          "v5_advance": 43,
-          "v5_color": [
-            0,
-            0,
-            0
-          ]
-        },
-        {
-          "role": "text",
-          "box": [
-            216,
-            922,
-            440,
-            959
-          ],
-          "text": "ボルシアMG",
-          "club_id": "Borussia Mönchengladbach",
-          "v5_font": 40,
-          "v5_advance": 224.0,
-          "v5_color": [
-            240,
-            246,
-            240
-          ]
-        },
-        {
-          "role": "text",
-          "box": [
-            100,
-            982,
-            408,
-            1025
-          ],
-          "text": "得点：町野修斗",
-          "club_id": null,
-          "v5_font": 44,
-          "v5_advance": 308.0,
-          "v5_color": [
-            240,
-            246,
-            240
-          ]
-        },
-        {
-          "role": "text",
-          "box": [
-            100,
-            1046,
-            460,
-            1085
-          ],
-          "text": "アシスト：情報なし",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 360.0,
-          "v5_color": [
-            150,
-            180,
-            166
-          ]
-        },
-        {
-          "role": "card",
-          "box": [
-            72,
-            1194,
-            940,
-            1582
-          ],
-          "text": ""
-        },
-        {
-          "role": "text",
-          "box": [
-            100,
-            1222,
+            502,
             201.0,
-            1289
+            569
           ],
           "text": "5分",
           "club_id": null,
@@ -3997,9 +3629,9 @@
           "role": "team_badge",
           "box": [
             100,
-            1324,
+            594,
             205,
-            1363
+            633
           ],
           "text": "",
           "club_id": "VfB Stuttgart"
@@ -4008,9 +3640,9 @@
           "role": "badge",
           "box": [
             138,
-            1333,
+            603,
             180,
-            1354
+            624
           ],
           "text": "VFB",
           "club_id": null,
@@ -4026,9 +3658,9 @@
           "role": "text",
           "box": [
             217,
-            1324,
+            594,
             537,
-            1363
+            633
           ],
           "text": "シュツットガルト",
           "club_id": "VfB Stuttgart",
@@ -4044,14 +3676,89 @@
           "role": "text",
           "box": [
             100,
-            1384,
-            188,
-            1427
+            652,
+            645,
+            695
           ],
-          "text": "得点",
+          "text": "得点：Ermedin Demirovic",
           "club_id": null,
           "v5_font": 44,
-          "v5_advance": 88.0,
+          "v5_advance": 545.0,
+          "v5_color": [
+            240,
+            246,
+            240
+          ]
+        },
+        {
+          "role": "card",
+          "box": [
+            72,
+            740,
+            940,
+            1076
+          ],
+          "text": ""
+        },
+        {
+          "role": "text",
+          "box": [
+            100,
+            796,
+            234.0,
+            863
+          ],
+          "text": "38分",
+          "club_id": null,
+          "v5_font": 68,
+          "v5_advance": 134.0,
+          "v5_color": [
+            196,
+            244,
+            76
+          ]
+        },
+        {
+          "role": "team_badge",
+          "box": [
+            100,
+            888,
+            204,
+            925
+          ],
+          "text": "",
+          "club_id": "Borussia Mönchengladbach"
+        },
+        {
+          "role": "badge",
+          "box": [
+            136,
+            896,
+            179,
+            916
+          ],
+          "text": "BMG",
+          "club_id": null,
+          "v5_font": 29,
+          "v5_advance": 43,
+          "v5_color": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "role": "text",
+          "box": [
+            216,
+            888,
+            440,
+            925
+          ],
+          "text": "ボルシアMG",
+          "club_id": "Borussia Mönchengladbach",
+          "v5_font": 40,
+          "v5_advance": 224.0,
           "v5_color": [
             240,
             246,
@@ -4062,14 +3769,32 @@
           "role": "text",
           "box": [
             100,
-            1448,
-            460,
-            1487
+            946,
+            450,
+            994
           ],
-          "text": "アシスト：情報なし",
+          "text": "得点：Joe Scally",
           "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 360.0,
+          "v5_font": 44,
+          "v5_advance": 350.0,
+          "v5_color": [
+            240,
+            246,
+            240
+          ]
+        },
+        {
+          "role": "text",
+          "box": [
+            100,
+            1010,
+            496,
+            1052
+          ],
+          "text": "アシスト：宇野禅斗",
+          "club_id": null,
+          "v5_font": 44,
+          "v5_advance": 396.0,
           "v5_color": [
             150,
             180,
@@ -4077,40 +3802,107 @@
           ]
         },
         {
-          "role": "caption",
+          "role": "card",
           "box": [
-            104,
-            1640,
-            254,
-            1668
+            72,
+            1090,
+            940,
+            1426
           ],
-          "text": "四国めたん",
+          "text": ""
+        },
+        {
+          "role": "text",
+          "box": [
+            100,
+            1202,
+            223.0,
+            1269
+          ],
+          "text": "51分",
           "club_id": null,
-          "v5_font": 30,
-          "v5_advance": 150.0,
+          "v5_font": 68,
+          "v5_advance": 123.0,
           "v5_color": [
-            18,
-            28,
-            24
+            196,
+            244,
+            76
+          ]
+        },
+        {
+          "role": "team_badge",
+          "box": [
+            100,
+            1294,
+            204,
+            1331
+          ],
+          "text": "",
+          "club_id": "Borussia Mönchengladbach"
+        },
+        {
+          "role": "badge",
+          "box": [
+            136,
+            1302,
+            179,
+            1322
+          ],
+          "text": "BMG",
+          "club_id": null,
+          "v5_font": 29,
+          "v5_advance": 43,
+          "v5_color": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "role": "text",
+          "box": [
+            216,
+            1294,
+            440,
+            1331
+          ],
+          "text": "ボルシアMG",
+          "club_id": "Borussia Mönchengladbach",
+          "v5_font": 40,
+          "v5_advance": 224.0,
+          "v5_color": [
+            240,
+            246,
+            240
+          ]
+        },
+        {
+          "role": "text",
+          "box": [
+            100,
+            1352,
+            408,
+            1395
+          ],
+          "text": "得点：町野修斗",
+          "club_id": null,
+          "v5_font": 44,
+          "v5_advance": 308.0,
+          "v5_color": [
+            240,
+            246,
+            240
           ]
         },
         {
           "role": "caption",
           "box": [
-            104,
-            1682,
-            577.0,
-            1722
+            64,
+            1660,
+            940,
+            1860
           ],
-          "text": "町野修斗は51分にゴール。",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 473.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
+          "text": "町野修斗は51分にゴール。"
         },
         {
           "role": "source",
@@ -4135,13 +3927,13 @@
         {
           "who": "metan",
           "face": "talk",
-          "height": 460,
+          "height": 360,
           "dim": false,
           "at": [
-            717,
-            1630
+            766,
+            1460
           ],
-          "cut": 230
+          "cut": 180
         }
       ],
       "source_material_sha256": "3bcef17465d5fdbcd8d9f6dd97c8de7e2921037105c4dd0be6f5be8728ae80e3"
@@ -4210,6 +4002,28 @@
       },
       "page": 1,
       "errors": [],
+      "current_caption": {
+        "box": [
+          64,
+          1270,
+          940,
+          1456
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 1
+      },
+      "new_caption": {
+        "box": [
+          64,
+          1660,
+          940,
+          1860
+        ],
+        "speaker": "metan",
+        "font_size": 48,
+        "rows": 1
+      },
       "entries": [
         {
           "role": "header",
@@ -4289,7 +4103,7 @@
             72,
             390,
             940,
-            980
+            901
           ],
           "text": ""
         },
@@ -4297,9 +4111,9 @@
           "role": "text",
           "box": [
             100,
-            519,
+            677,
             234.0,
-            586
+            744
           ],
           "text": "66分",
           "club_id": null,
@@ -4315,9 +4129,9 @@
           "role": "team_badge",
           "box": [
             100,
-            621,
+            769,
             204,
-            658
+            806
           ],
           "text": "",
           "club_id": "Borussia Mönchengladbach"
@@ -4326,9 +4140,9 @@
           "role": "badge",
           "box": [
             136,
-            630,
+            778,
             179,
-            650
+            798
           ],
           "text": "BMG",
           "club_id": null,
@@ -4344,9 +4158,9 @@
           "role": "text",
           "box": [
             216,
-            621,
+            769,
             440,
-            658
+            806
           ],
           "text": "ボルシアMG",
           "club_id": "Borussia Mönchengladbach",
@@ -4362,14 +4176,14 @@
           "role": "text",
           "box": [
             100,
-            681,
-            188,
-            724
+            827,
+            493,
+            875
           ],
-          "text": "得点",
+          "text": "得点：Wael Mohya",
           "club_id": null,
           "v5_font": 44,
-          "v5_advance": 88.0,
+          "v5_advance": 393.0,
           "v5_color": [
             240,
             246,
@@ -4377,30 +4191,12 @@
           ]
         },
         {
-          "role": "text",
-          "box": [
-            100,
-            745,
-            460,
-            784
-          ],
-          "text": "アシスト：情報なし",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 360.0,
-          "v5_color": [
-            150,
-            180,
-            166
-          ]
-        },
-        {
           "role": "card",
           "box": [
             72,
-            994,
+            915,
             940,
-            1584
+            1426
           ],
           "text": ""
         },
@@ -4408,9 +4204,9 @@
           "role": "text",
           "box": [
             100,
-            1123,
+            1202,
             234.0,
-            1190
+            1269
           ],
           "text": "83分",
           "club_id": null,
@@ -4426,9 +4222,9 @@
           "role": "team_badge",
           "box": [
             100,
-            1225,
+            1294,
             205,
-            1264
+            1333
           ],
           "text": "",
           "club_id": "VfB Stuttgart"
@@ -4437,9 +4233,9 @@
           "role": "badge",
           "box": [
             138,
-            1234,
+            1303,
             180,
-            1255
+            1324
           ],
           "text": "VFB",
           "club_id": null,
@@ -4455,9 +4251,9 @@
           "role": "text",
           "box": [
             217,
-            1225,
+            1294,
             537,
-            1264
+            1333
           ],
           "text": "シュツットガルト",
           "club_id": "VfB Stuttgart",
@@ -4473,14 +4269,14 @@
           "role": "text",
           "box": [
             100,
-            1285,
-            188,
-            1328
+            1352,
+            645,
+            1395
           ],
-          "text": "得点",
+          "text": "得点：Ermedin Demirovic",
           "club_id": null,
           "v5_font": 44,
-          "v5_advance": 88.0,
+          "v5_advance": 545.0,
           "v5_color": [
             240,
             246,
@@ -4488,58 +4284,14 @@
           ]
         },
         {
-          "role": "text",
-          "box": [
-            100,
-            1349,
-            460,
-            1388
-          ],
-          "text": "アシスト：情報なし",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 360.0,
-          "v5_color": [
-            150,
-            180,
-            166
-          ]
-        },
-        {
           "role": "caption",
           "box": [
-            104,
-            1640,
-            254,
-            1668
+            64,
+            1660,
+            940,
+            1860
           ],
-          "text": "四国めたん",
-          "club_id": null,
-          "v5_font": 30,
-          "v5_advance": 150.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
-        },
-        {
-          "role": "caption",
-          "box": [
-            104,
-            1682,
-            577.0,
-            1722
-          ],
-          "text": "町野修斗は51分にゴール。",
-          "club_id": null,
-          "v5_font": 40,
-          "v5_advance": 473.0,
-          "v5_color": [
-            18,
-            28,
-            24
-          ]
+          "text": "町野修斗は51分にゴール。"
         },
         {
           "role": "source",
@@ -4564,13 +4316,13 @@
         {
           "who": "metan",
           "face": "talk",
-          "height": 460,
+          "height": 360,
           "dim": false,
           "at": [
-            717,
-            1630
+            766,
+            1460
           ],
-          "cut": 230
+          "cut": 180
         }
       ],
       "source_material_sha256": "3bcef17465d5fdbcd8d9f6dd97c8de7e2921037105c4dd0be6f5be8728ae80e3"
