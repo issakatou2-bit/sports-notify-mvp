@@ -206,6 +206,65 @@ def _supported_claim(quoted, document, materials):
     return bool(matches) and all(matches)
 
 
+def headline_grounding(documents):
+    """読み上げた見出しだけを、原文・翻訳・記事URL・公開日時と対応づける。"""
+    return [dict(source='segment.meta.source_headlines',
+                 date_jst=document_day(document), text=segment.get('text'),
+                 headline={k: head[k] for k in ('title', 'jp', 'url', 'source', 'at', 'published_date')
+                           if k in head})
+            for document in documents for segment in document.get('segments') or []
+            for head in (segment.get('meta') or {}).get('source_headlines') or []]
+
+
+def _supported_headline_comeback(quoted, document, materials):
+    """試合の逆転と、その勝利後のシリーズ勝敗を混同した指摘を照合する。
+
+    原文と訳文を丸ごと解釈できる文型だけ扱う。見出しの一部一致や未知の
+    言い換えでは解除せず、別の数字・所属などの指摘にも適用しない。
+    """
+    from urllib.parse import urlparse
+    from team_names import team_names_jp
+    from article_freshness import fresh_articles
+    for evidence in headline_grounding([document]):
+        head = evidence['headline']
+        if quoted.rstrip('。').strip() != (head.get('jp') or '').rstrip('。').strip():
+            continue
+        claim = quoted.rstrip('。').strip()
+        sentences = [s.strip() for s in re.split(r'[。！？\n]', evidence['text'] or '') if claim in s]
+        if not sentences or any(s != claim for s in sentences):
+            continue
+        day = evidence['date_jst']
+        if not day or not fresh_articles([head], day):
+            continue
+        url = urlparse(head.get('url') or '')
+        game = re.fullmatch(r'/news/[a-z0-9-]+-win-world-series-game-(\d+)-(\d+)', url.path)
+        if url.scheme != 'https' or url.hostname != 'www.mlb.com' or head.get('source') != 'MLB.com' or not game:
+            continue
+        original = re.fullmatch(r'(Methodical )?(.+?) chip away at (.+?), rally to seize (\d+)-(\d+) lead',
+                                head.get('title') or '')
+        if not original or not day.startswith(game[2] + '-'):
+            continue
+        style, winner_en, loser_en, wins, losses = original.groups()
+        winner, loser = team_names_jp(winner_en), team_names_jp(loser_en)
+        # 不明な英名や、日本語へ変換できない主語は裏付けにしない。
+        if winner == winner_en or loser == loser_en:
+            continue
+        expected = f'{"手堅い" if style else ""}{winner}、{loser}にじわじわ迫り逆転 {wins}勝{losses}敗とリード'
+        if quoted.rstrip('。').strip() != expected:
+            continue
+        for source in materials or []:
+            if source.get('date_jst') != day:
+                continue
+            for series in source.get('series') or []:
+                teams = {t.get('name'): t.get('wins') for t in series.get('teams') or []}
+                if (series.get('round') == 'W' and set(teams) == {winner, loser}
+                        and teams[winner] == int(wins) and teams[loser] == int(losses)
+                        and int(wins) > int(losses)
+                        and series.get('played') == int(game[1]) == int(wins) + int(losses)):
+                    return True
+    return False
+
+
 def assess(issues, documents, materials=None):
     errors = [error for document in documents for error in check(document, materials)]
     # severityは受信値として残す。停止可否を同じ値へ上書きしない。
@@ -221,7 +280,8 @@ def assess(issues, documents, materials=None):
                   for document in referenced]
         confirmed = any(check(document, materials) for document in scoped)
         supported = bool(scoped) and not confirmed and all(
-            _supported_claim(quoted, document, materials) for document in referenced)
+            (_supported_claim(quoted, document, materials)
+             or _supported_headline_comeback(quoted, document, materials)) for document in referenced)
         import soccer_sanity_material
         if referenced and not confirmed:
             supported = supported or all(soccer_sanity_material.review(

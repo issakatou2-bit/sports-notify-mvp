@@ -41,6 +41,9 @@ def main() -> int:
     ap.add_argument("--kind", required=True,
                     help="published_videos.json の区分 (daily / daily_soccer など)")
     ap.add_argument("--record", default=RECORD)
+    ap.add_argument("--video-date", help="確認する材料日（公開日と分ける）")
+    ap.add_argument("--games", help="この実行のサッカー材料")
+    ap.add_argument("--narration", help="この実行のサッカー予告原稿（材料と組で照合）")
     ap.add_argument('--hold-record', help='この実行の常識点検の保留記録')
     ap.add_argument("--allow-missing", action="store_true",
                     help="出ていなくても赤くしない(記録だけ残す)")
@@ -49,6 +52,25 @@ def main() -> int:
     jst = timezone(timedelta(hours=9))
     now = datetime.now(jst)
     day = now.strftime("%Y-%m-%d")
+    exact_day = bool(args.video_date or args.games)
+    if args.video_date:
+        day = args.video_date
+    material = narration = None
+    if args.games:
+        if args.kind not in ('daily_soccer', 'soccer_results'):
+            ap.error('--games はサッカーの予告・結果の確認用です')
+        if args.kind == 'daily_soccer' and not args.narration:
+            ap.error('サッカー予告の確認には --games と --narration の両方が必要です')
+        try:
+            from upload_youtube import material_date_key
+            material = json.loads(pathlib.Path(args.games).read_text(encoding='utf-8'))
+            if args.narration:
+                narration = json.loads(pathlib.Path(args.narration).read_text(encoding='utf-8'))
+            day = material_date_key('daily' if args.kind == 'daily_soccer' else args.kind,
+                                    'soccer', material, args.video_date)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            print(f'[error] 確認用の材料・原稿・日付を読めません: {error}')
+            return 1
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     # 同日の以前の動画や「試合なし」の印で、今回の保留を成功にしない。
     if args.hold_record:
@@ -75,6 +97,10 @@ def main() -> int:
 
     rows = rec.get(args.kind) or {}
     entry = rows.get(day)
+    import backfill_records
+    if entry and not backfill_records.matches_kind(args.kind, entry):
+        print(f'[error] {args.kind}/{day} の動画は別の種類のため公開確認に使いません')
+        return 1
 
     # **日をまたいだ実行を、欠けと数えない。**
     #
@@ -86,7 +112,7 @@ def main() -> int:
     # 日付ではなく、**記録された時刻がこの実行の少し前か**で見る。
     # 前日の記録でも、いま投稿したばかりなら「出た」でよい。
     # 逆に前日の朝に出したものは拾わない（RECENT_HOURSで切る）。
-    if not (entry and entry.get("video_id")):
+    if not exact_day and not (entry and entry.get("video_id")):
         prev = (now - timedelta(days=1)).strftime("%Y-%m-%d")
         cand = rows.get(prev) or {}
         at = cand.get("published_at") or ""
@@ -95,13 +121,19 @@ def main() -> int:
             hours = (now - posted.astimezone(jst)).total_seconds() / 3600
         except (ValueError, TypeError):
             hours = None
-        if cand.get("video_id") and hours is not None                 and 0 <= hours <= RECENT_HOURS:
+        if (cand.get("video_id") and backfill_records.matches_kind(args.kind, cand)
+                and hours is not None and 0 <= hours <= RECENT_HOURS):
             print(f"[info] {day} の記録はありませんが、{prev} の分を"
                   f"{hours:.1f}時間前に出しています。"
                   "実行が日をまたいだものとして扱います。")
             entry, day = cand, prev
 
     if entry and entry.get("video_id"):
+        if material is not None and args.kind == 'daily_soccer':
+            from soccer_preview_history import binding
+            if entry.get('preview_binding') != binding(material, narration):
+                print('[error] 公開予告の材料/原稿hashが一致しません（公開確認失敗）')
+                return 1
         line = (f"{day} の {args.kind}: 出ました "
                 f"https://www.youtube.com/watch?v={entry['video_id']}")
         print(f"[info] {line}")
