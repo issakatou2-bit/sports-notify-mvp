@@ -83,6 +83,8 @@ class EveningHoldsTests(unittest.TestCase):
         self.assertTrue(sanity_material.blocking(self.assessed()[0]))
         self.materials = copy.deepcopy(FIXTURE['materials'])
         self.document['segments'].append(dict(text='架空太郎はレイズ所属です。'))
+        self.materials.append(dict(source='fixture.roster', date_jst='2026-10-25',
+                                   players=[dict(name='架空太郎', team_name='ブリュワーズ')]))
         self.issue.update(where='架空太郎はレイズ所属です。', why='所属が材料と違う')
         self.assertTrue(sanity_material.blocking(self.assessed()[0]))
 

@@ -77,7 +77,9 @@ def narration(data):
         # 出場なしの選手は画面の1行だけ。読み上げで名前を出さない（クラブの結果を本人のことと読ませない）
         segments.append({'kind':'roster','text':text,'speaker':2,'meta':dict(meta,page=1)})
     segments.append({'kind':'outro','text':r3.OUTRO_TEXT,'speaker':2,'meta':{}})
-    return {'label':data['date_jst'],'segments':segments,'duration_budget':{'limit':results.LIMIT,'grace':0}}
+    import sanity_sources
+    return sanity_sources.attach({'label':data['date_jst'],'segments':segments,
+        'duration_budget':{'limit':results.LIMIT,'grace':0}}, data, sport='soccer')
 
 
 def program_spec(data):

@@ -25,7 +25,11 @@ def wav(path, seconds):
 def material(day, folder):
     fixture = json.loads((FIX / (day + '.json')).read_text(encoding='utf-8'))
     plan = selected.program(fixture['data'])
-    if plan['narration'] != fixture['narration']:
+    # 点検用の入力材料は追加されるが、台詞・札・話者・表示時間の契約は同一。
+    evidence = {'soccer_material', 'sanity_materials', 'sanity_date_jst'}
+    actual = {k: v for k, v in plan['narration'].items() if k not in evidence}
+    expected = {k: v for k, v in fixture['narration'].items() if k not in evidence}
+    if actual != expected:
         raise AssertionError('保存原稿の組み立てが変わりました')
     audio = []
     for i, (seg, seconds) in enumerate(zip(plan['narration']['segments'], fixture['audio_seconds'])):

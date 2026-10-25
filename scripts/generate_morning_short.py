@@ -813,6 +813,11 @@ def jp_date(day: str) -> str:
 
 
 def build_narration(data: dict, mode: str = "all") -> dict:
+    import sanity_sources
+    return sanity_sources.attach(_build_narration(data, mode), data)
+
+
+def _build_narration(data: dict, mode: str = "all") -> dict:
     """
     mode で扱う内容を切り替える。
 

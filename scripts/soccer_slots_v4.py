@@ -160,6 +160,8 @@ def package(mode,data,segs,names,head,clubs=None):
     narration=dict(label=day,title='【欧州サッカー】'+head+' #Shorts' if head else '',soccer_v4_mode=mode,segments=segs,duration_budget=dict(limit=40,grace=0))
     import soccer_sanity_material
     narration['soccer_material']=soccer_sanity_material.compact(data)
+    import sanity_sources
+    narration = sanity_sources.attach(narration, data, sport='soccer')
     # 札の配列をJSONの型にそろえ、保存原稿・音声manifestとも同じ値で照合する。
     narration=json.loads(json.dumps(narration,ensure_ascii=False))
     import host_split

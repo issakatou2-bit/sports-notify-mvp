@@ -22,6 +22,7 @@
   二段目は「事実の誤り」の重大な指摘(high)だけ予約前に止める。
   説明不足・文脈の指摘はseverityに関わらず警告として残す。
   引用の主張全体を公式材料で裏付けた誤検出だけは警告として通す。
+  材料が空の原稿のhighは、材料不足の警告として残す。
   材料との機械照合で確定した矛盾も止める。軽微な指摘は参考として残す。
 
 使い方:
@@ -376,6 +377,8 @@ PROMPT = """今日は {today}、{season}年シーズンの最中です。
 「首位チームと12位の対戦」のようにどちらの順位か明示していない表現は説明不足です。
 順位・勝点・スコア・所属など、指摘の対象が材料と一致するなら事実の誤りにしないでください。
 学習済みの過去年の組み合わせより、この材料を優先してください。
+材料が今の事実です。学習した知識の所属・順位・結果で材料に反論しないでください。
+名簿・順位表・試合結果・PSの材料は長編と短編で同じ扱いです。
 「根拠が読み上げ本文に書かれていない」だけでは事実矛盾ではありません。
 材料が足りず確認できない指摘はlowにし、推測でhighにしないでください。
 記事の原文・翻訳・対象試合のURLも照合してください。1試合の逆転勝ちと、
@@ -426,7 +429,7 @@ def general(paths, api_key, materials=None):
     import sanity_material
     if materials is None:
         materials = sanity_material.grounding(documents)
-    evidence = '\n--- 公式照合済みPS材料・サッカー順位表と試合材料（出典・取得日時付き）---\n' + json.dumps(
+    evidence = '\n--- 原稿が使ったPS・順位表・名簿・試合結果（出典・取得日時付き）---\n' + json.dumps(
         materials, ensure_ascii=False)
     evidence += '\n--- 読み上げ見出しの原文・訳・対象記事（試合中の経過とシリーズ勝敗は別）---\n' + json.dumps(
         sanity_material.headline_grounding(documents), ensure_ascii=False) + '\n--- 原稿本文 ---\n'
@@ -492,6 +495,11 @@ def main():
         except (OSError, json.JSONDecodeError):
             continue
     materials = sanity_material.grounding(documents)
+    import sanity_sources
+    material_status = sanity_sources.availability(documents, materials)
+    for status in material_status:
+        if status['status'] == '材料が空':
+            print('::warning::材料が空：この原稿のhighは材料不足として記録します')
     odd, contradictions = sanity_material.assess([], documents, materials)
     for error in contradictions:
         print('  NG 材料照合:', error)
@@ -526,6 +534,7 @@ def main():
                                                  if sanity_material.document_day(d)), None),
                                "blocking_issues": high, "warnings": warnings,
                                "unconfirmed_issues": unconfirmed, "materials": materials,
+                               "material_status": material_status,
                                "upload_held": blocked},
                               ensure_ascii=False, indent=2), encoding="utf-8")
     if args.hold_record:
@@ -553,7 +562,7 @@ def main():
                 f.write("- %s [%s] 「%s」 — %s\n"
                         % ("**重大な指摘・予約停止**" if o in high else
                            "**材料と矛盾**" if o.get("confirmed") else
-                           o['verification'] if o.get('supported') or o['kind'] == sanity_material.CONTEXT else "参考（未確定）",
+                           o['verification'] if o.get('supported') or o.get('material_missing') or o['kind'] == sanity_material.CONTEXT else "参考（未確定）",
                            o['kind'], o.get("where", ""), o.get("why", "")))
 
     return 1 if blocked else 0

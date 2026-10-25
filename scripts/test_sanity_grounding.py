@@ -82,11 +82,13 @@ class GroundingTests(unittest.TestCase):
             self.assertEqual(self.run_sanity(issue['where'], [issue])[0], 0)
 
     def test_negated_or_questioned_validity_does_not_release_factual_high(self):
+        self.document['game_material'] = dict(players=[dict(name='架空太郎', team_name='ブリュワーズ')])
         for why in ('この主張が成立するとは言えない。', '所属の誤りではないか。'):
             issue = dict(kind=sanity_material.FACT, severity='high', where='架空太郎はレイズ所属です。', why=why)
             self.assertEqual(self.run_sanity(issue['where'], [issue])[0], 1)
 
     def test_invented_score_and_affiliation_factual_high_hold(self):
+        self.document['game_material'] = dict(players=[dict(name='ジェイコブ・ミジオロウスキー', team_name='ブリュワーズ')])
         for text, why in (
             ('レイズはブリュワーズに3対2で勝ちました。', '公式材料はレイズ2対3ブリュワーズで、勝敗と得点が逆です。'),
             ('ジェイコブ・ミジオロウスキーはレイズの投手です。', '材料の所属はブリュワーズで、レイズという主張は誤りです。'),
@@ -99,6 +101,7 @@ class GroundingTests(unittest.TestCase):
             self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text())['status'], 'held')
 
     def test_context_cannot_release_another_factual_high_or_material_ng(self):
+        self.document['game_material'] = dict(players=[dict(name='架空太郎', team_name='ブリュワーズ')])
         context = EVENING['cases'][0]
         fact = dict(kind=sanity_material.FACT, severity='high', where='架空太郎はレイズ所属です。', why='材料の所属と異なる')
         code, report = self.run_sanity(context['where'] + fact['where'], [context, fact])
@@ -182,14 +185,15 @@ class GroundingTests(unittest.TestCase):
         self.assertEqual(source['retrieved_at'], '2026-10-23T18:01:00+09:00')
         self.assertEqual(source['source_url'], self.document['ps_program']['source_url'])
 
-    def test_missing_or_old_material_does_not_turn_high_into_a_fact(self):
+    def test_missing_or_old_material_high_is_material_shortage_warning(self):
         self.document['date_jst'] = '2026-11-01'
         self.assertEqual(sanity_material.grounding([self.document]), [])
         Path('data/postseason.json').write_text('invalid', encoding='utf-8')
         code, report = self.run_sanity()
-        self.assertEqual(code, 1)
+        self.assertEqual(code, 0)
         self.assertFalse(report['materials'])
-        self.assertTrue(report['blocking_issues'])
+        self.assertFalse(report['blocking_issues'])
+        self.assertTrue(report['odd'][0]['material_missing'])
 
     def test_invented_stat_high_stops_and_verify_records_the_reason(self):
         text = '架空太郎は今季55本塁打です。'
