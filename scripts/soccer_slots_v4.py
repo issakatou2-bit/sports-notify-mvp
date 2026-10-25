@@ -103,7 +103,9 @@ def race_program(data):
                 gap='は'+race.phrase(near)
                 text=f"{focus['name']}の{focus['club_jp']}は、{race.phrase(near)}。"
             else:
-                focus_key=None;gap='';text=f"{comp['name_jp']}の{line['label']}の境目です。勝点差は{line['diff']}。"
+                boundary=[next((r for r in rows if r['position']==pos),None) for pos in (line['at'],line['at']+1)]
+                pair='と'.join(f"{r['position']}位の{clubs[r['team']]['name_jp']}" for r in boundary if r)
+                focus_key=None;gap='';text=f"{comp['name_jp']}の{line['label']}の境目です。{pair}の勝点差は{line['diff']}。"
             segs.append(segment('standings',text,dict(title=comp['name_jp']+'　'+line['label'],rows=rows,shown=[(r['position'],r['position']) for r in rows],lines=[(line['at'],line['label'])],focus=focus_key,highlights=[r['team'] for r in rows if clubs[r['team']]['name_jp'] in highlights],gap=gap)))
     return package('race',data,segs,list(names),race.title_of(data),clubs)
 
@@ -156,6 +158,8 @@ def package(mode,data,segs,names,head,clubs=None):
     for seg in segs:seg['meta'].update(shared)
     if segs:segs.append(segment('outro',r3.OUTRO_TEXT,shared))
     narration=dict(label=day,title='【欧州サッカー】'+head+' #Shorts' if head else '',soccer_v4_mode=mode,segments=segs,duration_budget=dict(limit=40,grace=0))
+    import soccer_sanity_material
+    narration['soccer_material']=soccer_sanity_material.compact(data)
     # 札の配列をJSONの型にそろえ、保存原稿・音声manifestとも同じ値で照合する。
     narration=json.loads(json.dumps(narration,ensure_ascii=False))
     import host_split

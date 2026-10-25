@@ -347,7 +347,7 @@
       },
       {
         "kind": "preview",
-        "text": "日本時間4時、マンチェスター・シティ対パリ・サンジェルマン。昨季CLリーグフェーズでホーム側は8位、アウェー側は11位。見どころは、この順位差が今回どう表れるかです。",
+        "text": "日本時間4時、マンチェスター・シティ対パリ・サンジェルマン。マンチェスターCは昨季CLリーグフェーズ8位。パリ・サンジェルマンは昨季CLリーグフェーズ11位。見どころは、この順位差が今回どう表れるかです。",
         "speaker": 2,
         "meta": {
           "date": "10月15日（木）",
@@ -422,6 +422,42 @@
     "duration_budget": {
       "limit": 55,
       "grace": 0
+    },
+    "soccer_material": {
+      "source": "ESPN・football-data.org",
+      "retrieved_at": "2026-10-14T09:54:02.064822+00:00",
+      "date_jst": "2026-10-14",
+      "games": [
+        {
+          "game_id": "575353",
+          "league": "チャンピオンズリーグ",
+          "home_team_name": "マンチェスター・シティ",
+          "away_team_name": "パリ・サンジェルマン",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN",
+            "football-data.org"
+          ],
+          "start_time_jst": "10/15 04:00",
+          "start_time_utc": "2026-10-15T04:00:00+09:00"
+        },
+        {
+          "game_id": "575352",
+          "league": "チャンピオンズリーグ",
+          "home_team_name": "ローマ",
+          "away_team_name": "レアル・マドリード",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN",
+            "football-data.org"
+          ],
+          "start_time_jst": "10/15 04:00",
+          "start_time_utc": "2026-10-15T04:00:00+09:00"
+        }
+      ],
+      "competitions": []
     }
   },
   "audio_seconds": [
