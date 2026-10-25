@@ -377,7 +377,9 @@ jobs:
             # 通し読みの重大な指摘(high)も予約前に止める。
             if ! python scripts/sanity.py --general --strict \
                 --narration "build/mr_narration_${mode}.json" \
-                --out "data/sanity_${mode}.json"; then
+                --out "data/sanity_${mode}.json" \
+                --hold-record "build/sanity_hold_${mode}.json" \
+                --kind "$([ "$mode" = players ] && echo morning || echo morning_${mode})"; then
               echo "::error::$mode の原稿に重大な指摘または矛盾があるため予約を止めました"
               echo "$mode: 原稿の重大な指摘または矛盾のため予約停止。data/sanity_${mode}.json を確認してください。" >> "$GITHUB_STEP_SUMMARY"
               CLAIM_FAILED=1

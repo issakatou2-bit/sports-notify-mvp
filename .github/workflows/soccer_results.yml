@@ -158,7 +158,7 @@ jobs:
           if-no-files-found: ignore
       - name: Confirm reservation
         if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0'
-        run: python scripts/verify_published.py --kind soccer_results
+        run: python scripts/verify_published.py --kind soccer_results --games data/soccer_results.json
 
       - name: Keep unsaved data records
         if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''

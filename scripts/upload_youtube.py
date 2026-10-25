@@ -714,7 +714,27 @@ def published_video(kind: str, date_key: str,
         data = json.loads(p.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return {}
-    return (data.get(kind) or {}).get(date_key) or {}
+    entry = (data.get(kind) or {}).get(date_key) or {}
+    import backfill_records
+    return entry if backfill_records.matches_kind(kind, entry) else {}
+
+
+def material_date_key(kind: str, sport: str, games: dict, explicit: str | None = None) -> str:
+    """サッカーの結果は材料日、予告は材料取得日の日本日付で照合する。"""
+    from datetime import datetime, timedelta, timezone
+    expected = None
+    if kind == 'soccer_results':
+        expected = games['date_jst']
+    elif record_kind(kind, sport=sport) == 'daily_soccer':
+        at = datetime.fromisoformat(games['generated_at'].replace('Z', '+00:00'))
+        if at.tzinfo is None:
+            raise ValueError('サッカー材料の取得日時にタイムゾーンがありません')
+        expected = at.astimezone(timezone(timedelta(hours=9))).date().isoformat()
+    if expected:
+        datetime.strptime(expected, '%Y-%m-%d')
+        if explicit and explicit != expected:
+            raise ValueError('動画の日付とサッカー材料の日付が一致しません')
+    return explicit or expected or datetime.now(timezone.utc).date().isoformat()
 
 
 def resolve_publish_at(spec: str | None) -> str | None:
@@ -2106,9 +2126,7 @@ def main():
     #
     # 日付で引ける枠は全部ここで止める。資産動画は日付ではなく
     # 話題で引くので、上の分岐がそのまま受け持つ。
-    from datetime import datetime as _dt, timezone as _tz
-
-    date_key = args.video_date or _dt.now(_tz.utc).date().isoformat()
+    date_key = material_date_key(args.kind, args.sport, _json_or_empty(args.games), args.video_date)
     rec_kind = record_kind(args.kind, args.morning_mode, args.sport)
     if args.kind in DATED_KINDS and not args.force:
         already = published_video(rec_kind, date_key)

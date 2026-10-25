@@ -304,7 +304,9 @@ jobs:
       # そこを赤くすると毎週何度も嘘の警報が鳴る。
       - name: Confirm the video went out
         if: always() && steps.gate.outputs.count != '0'
-        run: python scripts/verify_published.py --kind daily_soccer
+        run: |
+          python scripts/verify_published.py --kind daily_soccer \
+            --games data/soccer_games.json --narration build/soccer_narration.json
 
       - name: Keep unsaved data records
         if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
