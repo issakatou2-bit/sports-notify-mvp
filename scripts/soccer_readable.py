@@ -226,20 +226,24 @@ class Screen:
             self.name(100,870,game['away']['name_jp'],800,52)
             self.text(100,1300,'得点なし' if game['goals_complete'] else '得点経過は未取得',52,800)
         height=(BODY_BOTTOM-BODY_TOP)//max(1,len(shown))
-        for i,g in enumerate(shown):
-            y=BODY_TOP+i*height;self.panel(y,y+height-14)
-            # 名前がない行を埋め草で増やさず、ある事実をカード内で下へ整列。
+        rows=[]
+        size=64 if len(shown)==1 else 44
+        for g in shown:
+            # 名前がない行を埋め草で増やさず、同じ画面の開始位置をそろえる。
             name=(facts.scorer_name(g) or g.get('scorer') or '').strip()
             if name in ('得点者不明','不明','情報なし'):name=''
             assists=facts.assist_names(g)
-            size=64 if len(shown)==1 else 44
             label='オウンゴール' if g['own_goal'] else '得点'
             details=([label+'：'+name] if name else ['オウンゴール'] if g['own_goal'] else [])
             if assists:details.append('アシスト：'+'・'.join(assists))
             row_height=size+12
             detail_rows=[line for value in details for line in c.lines(value,size,800)]
             content_height=92+50+len(detail_rows)*row_height
-            start=y+max(18,height-40-content_height)
+            rows.append((g,details,content_height))
+        offset=max(18,height-40-max((row[2] for row in rows),default=0))
+        for i,(g,details,_) in enumerate(rows):
+            y=BODY_TOP+i*height;self.panel(y,y+height-14)
+            start=y+offset
             self.text(100,start,facts.minute_text(g['minute']),68,800,c.LIME)
             end=self.name(100,start+92,game[g['side']]['name_jp'],800,40)
             for value in details:

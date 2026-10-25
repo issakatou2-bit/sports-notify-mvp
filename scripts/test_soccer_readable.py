@@ -76,6 +76,17 @@ class Readable(unittest.TestCase):
         self.assertNotIn('情報なし',body)
         self.assertEqual(layout.minimum_seconds(seg,case['data']),8)
 
+    def test_goal_cards_align_minutes_despite_different_detail_counts(self):
+        case=next(c for c in self.cases if c['key']=='goal')
+        seg=next(s for s in case['narration']['segments'] if s['kind']=='result')
+        for t in (3,9):
+            im=self.draw(case,seg,t)
+            cards=[e['box'] for e in im.info['v3_layout'] if e['role']=='card']
+            minutes=[e['box'] for e in im.info['v3_layout']
+                     if e['text'] in [g['minute']+'分' for g in im.info['soccer_goals']]]
+            self.assertEqual(len(minutes),len(cards))
+            self.assertEqual(len({minute[1]-card[1] for minute,card in zip(minutes,cards)}),1)
+
     def test_unknown_scorer_has_only_club_and_minute_and_stoppage_time_is_ordered(self):
         case=next(c for c in self.cases if c['key']=='goal')
         seg=copy.deepcopy(next(s for s in case['narration']['segments'] if s['kind']=='result'))
