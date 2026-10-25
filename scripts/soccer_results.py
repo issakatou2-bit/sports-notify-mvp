@@ -77,7 +77,7 @@ def clock_label(value):
     return match[1]+('+'+match[2] if match[2] else '')
 
 
-def player_result(player,rows,side,event_id):
+def player_result(player,rows,side,event_id,summary=None):
     row=resolve_player(rows,player['name_en'])
     result={'name':player['name_jp'],'name_en':player['name_en'],'club':player['team_jp'],
             'side':side,'event_id':event_id,'athlete_id':None,'status':'none',
@@ -95,7 +95,8 @@ def player_result(player,rows,side,event_id):
     import soccer_stats
     result.update(soccer_stats.player_stats(row))
     if result['status']=='none' and (result['goals'] or result['assists']):raise ValueError('出場なしに得点/アシスト')
-    result['subbed_out']=bool(row.get('subbedOut'))
+    result['subbed_out']=row.get('subbedOut') if type(row.get('subbedOut')) is bool else None
+    result.update(soccer_stats.appearance_minutes(result,summary or {}))
     result['appearance_evidence']='ESPN starter/subbedIn'
     result['plays']=[{'minute':clock_label((p.get('clock') or {}).get('displayValue')),'goal':bool(p.get('didScore')),'assist':bool(p.get('didAssist'))}
                      for p in row.get('plays',[]) if p.get('didScore') or p.get('didAssist')]
@@ -195,7 +196,7 @@ def build(boards,summaries,target_date,football=None,roster=None,preview=None):
                     for player in roster:
                         if resolve_player(rows,player['name_en']) is not None:
                             actual=dict(player,team_jp=game[side]['name_jp'])
-                            game['players'].append(player_result(actual,rows,side,id))
+                            game['players'].append(player_result(actual,rows,side,id,summary))
                     game['unresolved'].extend(p['name_jp'] for p in candidates[side]
                                               if resolve_player(rows,p['name_en']) is None)
                 matched={p['name'] for p in game['players']}
@@ -212,7 +213,7 @@ def build(boards,summaries,target_date,football=None,roster=None,preview=None):
                         group=next(g for g in summary['rosters'] if str(g['team']['id'])==game[side]['id'])
                         if resolve_player(group['roster'],expected['name_en']) is not None:
                             person=dict(name_en=expected['name_en'],name_jp=expected['name'],team_jp=game[side]['name_jp'])
-                            try:extras.setdefault(id,[]).append(player_result(person,group['roster'],side,id))
+                            try:extras.setdefault(id,[]).append(player_result(person,group['roster'],side,id,summary))
                             except ValueError:print('[omit] 期待選手の出場/成績を照合できません:',expected['name'],id)
                 people={p['athlete_id']:p for p in game['players'] if p['athlete_id']}
                 side_by_id={game[s]['id']:s for s in ('home','away')}

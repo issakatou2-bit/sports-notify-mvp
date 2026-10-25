@@ -1,0 +1,505 @@
+{
+  "label": "2026-09-20",
+  "segments": [
+    {
+      "kind": "followup",
+      "text": "ニース対リールは、2対1。上田綺世は先発、1得点。シュートはニース10本、リール21本。枠内はそれぞれ4本と8本でした。",
+      "speaker": 2,
+      "caption_units": [
+        "ニース対リールは、2対1。",
+        "上田綺世は先発、1得点。",
+        "シュートはニース10本、リール21本。枠内はそれぞれ4本と8本でした。"
+      ],
+      "meta": {
+        "event_id": "401876452"
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "上田綺世はシュート4本（枠内4本）。",
+      "speaker": 2,
+      "meta": {
+        "event_id": "401876452",
+        "start": 0
+      }
+    },
+    {
+      "kind": "followup-detail",
+      "text": "リーグ・アン。67分にニースが得点。79分に上田綺世が得点。",
+      "speaker": 2,
+      "caption_units": [
+        "リーグ・アン。",
+        "67分にニースが得点。",
+        "79分に上田綺世が得点。"
+      ],
+      "meta": {
+        "event_id": "401876452",
+        "details": [
+          {
+            "club": null,
+            "text": "リーグ・アン"
+          },
+          {
+            "club": "ニース",
+            "text": "22分に得点（オウンゴール）"
+          },
+          {
+            "club": "ニース",
+            "text": "67分に得点"
+          },
+          {
+            "club": null,
+            "text": "79分に上田綺世が得点"
+          }
+        ],
+        "goals": [
+          {
+            "minute": "22",
+            "scorer": "Nathan Ngoy",
+            "athlete_id": "318577",
+            "side": "home",
+            "own_goal": true,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "67",
+            "scorer": "Mohamed Amoura",
+            "athlete_id": "315384",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "79",
+            "scorer": "上田綺世",
+            "athlete_id": "274277",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": true,
+            "japanese_assists": []
+          }
+        ]
+      }
+    },
+    {
+      "kind": "roster",
+      "text": "日本人選手の結果です。",
+      "speaker": 2,
+      "caption_units": [
+        "日本人選手の結果です。"
+      ],
+      "meta": {
+        "start": 0,
+        "count": 1,
+        "more": 0,
+        "absent": [],
+        "page": 1
+      }
+    },
+    {
+      "kind": "outro",
+      "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+      "speaker": 2,
+      "meta": {}
+    }
+  ],
+  "duration_budget": {
+    "limit": 60.0,
+    "grace": 0
+  },
+  "sanity_date_jst": "2026-09-20",
+  "soccer_material": {
+    "source": "ESPN・football-data.org",
+    "retrieved_at": "2026-10-25T15:03:31.657843+00:00",
+    "source_at": null,
+    "date_jst": "2026-09-20",
+    "games": [
+      {
+        "league": "FL1",
+        "id": "401876452",
+        "date_jst": "2026-09-20",
+        "score": {
+          "home": 2,
+          "away": 1
+        },
+        "home": {
+          "id": "2502",
+          "name_en": "Nice",
+          "name_jp": "ニース",
+          "abbr": "NICE"
+        },
+        "away": {
+          "id": "166",
+          "name_en": "Lille",
+          "name_jp": "リール",
+          "abbr": "LILL"
+        },
+        "goals": [
+          {
+            "minute": "22",
+            "scorer": "Nathan Ngoy",
+            "athlete_id": "318577",
+            "side": "home",
+            "own_goal": true,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "67",
+            "scorer": "Mohamed Amoura",
+            "athlete_id": "315384",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "79",
+            "scorer": "上田綺世",
+            "athlete_id": "274277",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": true,
+            "japanese_assists": []
+          }
+        ],
+        "players": [
+          {
+            "name": "上田綺世",
+            "name_en": "Ayase Ueda",
+            "club": "リール",
+            "side": "away",
+            "event_id": "401876452",
+            "athlete_id": "274277",
+            "status": "starter",
+            "goals": 1,
+            "assists": 0,
+            "yellow_cards": 0,
+            "red_cards": 0,
+            "plays": [
+              {
+                "minute": "79",
+                "goal": true,
+                "assist": false
+              }
+            ],
+            "position": "FW",
+            "stats_source": "ESPN summary.rosters.roster.stats",
+            "shots": 4,
+            "on_target": 4,
+            "subbed_out": false,
+            "appearance_evidence": "ESPN starter/subbedIn"
+          }
+        ],
+        "match_stats": {
+          "source": "ESPN summary.boxscore.teams.statistics",
+          "home": {
+            "possession": 41.4,
+            "shots": 10,
+            "on_target": 4
+          },
+          "away": {
+            "possession": 58.6,
+            "shots": 21,
+            "on_target": 8
+          }
+        },
+        "score_crosscheck": "unavailable"
+      }
+    ],
+    "competitions": [],
+    "rows": [],
+    "players": [
+      {
+        "name": "上田綺世",
+        "name_en": "Ayase Ueda",
+        "club": "リール",
+        "side": "away",
+        "event_id": "401876452",
+        "athlete_id": "274277",
+        "status": "starter",
+        "goals": 1,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [
+          {
+            "minute": "79",
+            "goal": true,
+            "assist": false
+          }
+        ],
+        "position": "FW",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 4,
+        "on_target": 4,
+        "subbed_out": false,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      }
+    ]
+  },
+  "sanity_materials": [
+    {
+      "source": "ESPN・football-data.org",
+      "retrieved_at": "2026-10-25T15:03:31.657843+00:00",
+      "source_at": null,
+      "date_jst": "2026-09-20",
+      "games": [
+        {
+          "league": "FL1",
+          "id": "401876452",
+          "date_jst": "2026-09-20",
+          "score": {
+            "home": 2,
+            "away": 1
+          },
+          "home": {
+            "id": "2502",
+            "name_en": "Nice",
+            "name_jp": "ニース",
+            "abbr": "NICE"
+          },
+          "away": {
+            "id": "166",
+            "name_en": "Lille",
+            "name_jp": "リール",
+            "abbr": "LILL"
+          },
+          "goals": [
+            {
+              "minute": "22",
+              "scorer": "Nathan Ngoy",
+              "athlete_id": "318577",
+              "side": "home",
+              "own_goal": true,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "67",
+              "scorer": "Mohamed Amoura",
+              "athlete_id": "315384",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "79",
+              "scorer": "上田綺世",
+              "athlete_id": "274277",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": true,
+              "japanese_assists": []
+            }
+          ],
+          "players": [
+            {
+              "name": "上田綺世",
+              "name_en": "Ayase Ueda",
+              "club": "リール",
+              "side": "away",
+              "event_id": "401876452",
+              "athlete_id": "274277",
+              "status": "starter",
+              "goals": 1,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [
+                {
+                  "minute": "79",
+                  "goal": true,
+                  "assist": false
+                }
+              ],
+              "position": "FW",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 4,
+              "on_target": 4,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            }
+          ],
+          "match_stats": {
+            "source": "ESPN summary.boxscore.teams.statistics",
+            "home": {
+              "possession": 41.4,
+              "shots": 10,
+              "on_target": 4
+            },
+            "away": {
+              "possession": 58.6,
+              "shots": 21,
+              "on_target": 8
+            }
+          },
+          "score_crosscheck": "unavailable"
+        }
+      ],
+      "competitions": [],
+      "rows": [],
+      "players": [
+        {
+          "name": "上田綺世",
+          "name_en": "Ayase Ueda",
+          "club": "リール",
+          "side": "away",
+          "event_id": "401876452",
+          "athlete_id": "274277",
+          "status": "starter",
+          "goals": 1,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [
+            {
+              "minute": "79",
+              "goal": true,
+              "assist": false
+            }
+          ],
+          "position": "FW",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 4,
+          "on_target": 4,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        }
+      ],
+      "sport": "soccer",
+      "used_for_date": "2026-09-20"
+    },
+    {
+      "source": "generation.input",
+      "date_jst": "2026-09-20",
+      "retrieved_at": "2026-10-25T15:03:31.657843+00:00",
+      "source_url": "ESPN・football-data.org",
+      "games": [
+        {
+          "league": "FL1",
+          "id": "401876452",
+          "date_jst": "2026-09-20",
+          "score": {
+            "home": 2,
+            "away": 1
+          },
+          "home": {
+            "id": "2502",
+            "name_en": "Nice",
+            "name_jp": "ニース",
+            "abbr": "NICE"
+          },
+          "away": {
+            "id": "166",
+            "name_en": "Lille",
+            "name_jp": "リール",
+            "abbr": "LILL"
+          },
+          "goals": [
+            {
+              "minute": "22",
+              "scorer": "Nathan Ngoy",
+              "athlete_id": "318577",
+              "side": "home",
+              "own_goal": true,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "67",
+              "scorer": "Mohamed Amoura",
+              "athlete_id": "315384",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "79",
+              "scorer": "上田綺世",
+              "athlete_id": "274277",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": true,
+              "japanese_assists": []
+            }
+          ],
+          "players": [
+            {
+              "name": "上田綺世",
+              "name_en": "Ayase Ueda",
+              "club": "リール",
+              "side": "away",
+              "event_id": "401876452",
+              "athlete_id": "274277",
+              "status": "starter",
+              "goals": 1,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [
+                {
+                  "minute": "79",
+                  "goal": true,
+                  "assist": false
+                }
+              ],
+              "position": "FW",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 4,
+              "on_target": 4,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            }
+          ],
+          "match_stats": {
+            "source": "ESPN summary.boxscore.teams.statistics",
+            "home": {
+              "possession": 41.4,
+              "shots": 10,
+              "on_target": 4
+            },
+            "away": {
+              "possession": 58.6,
+              "shots": 21,
+              "on_target": 8
+            }
+          },
+          "score_crosscheck": "unavailable"
+        }
+      ],
+      "players": [
+        {
+          "name": "上田綺世",
+          "name_en": "Ayase Ueda",
+          "club": "リール",
+          "side": "away",
+          "event_id": "401876452",
+          "athlete_id": "274277",
+          "status": "starter",
+          "goals": 1,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [
+            {
+              "minute": "79",
+              "goal": true,
+              "assist": false
+            }
+          ],
+          "position": "FW",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 4,
+          "on_target": 4,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        }
+      ]
+    }
+  ]
+}

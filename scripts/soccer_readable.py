@@ -219,8 +219,8 @@ class Screen:
     def match_statistics(self, game):
         stats=game['match_stats']
         self.panel(1002,BODY_BOTTOM)
-        self.text(100,1022,'ホーム',30,200,c.MUTED,role='supplement')
-        self.text(744,1022,'アウェー',30,160,c.MUTED,role='supplement')
+        self.text(100,1022,self.clubs[game['home']['name_jp']]['abbr'],30,200,c.MUTED,role='supplement')
+        self.text(744,1022,self.clubs[game['away']['name_jp']]['abbr'],30,160,c.MUTED,role='supplement')
         for i,(key,label) in enumerate((('possession','保持率'),('shots','シュート'),('on_target','枠内'))):
             y=1090+i*102
             left=f"{stats['home'][key]:g}"+('%' if key=='possession' else '')
@@ -235,30 +235,38 @@ class Screen:
         import soccer_results
         self.title('日本人選手の結果',game['date_jst']+'の夜 / ESPN')
         single=len(people)==1
+        # 10/26本人指定：1人札は内容に合わせて上下を詰める。
+        self.im.info['compact_player_statistics']=single
         height=(BODY_BOTTOM-BODY_TOP)//max(1,len(people))
         for i,p in enumerate(people):
             y=BODY_TOP+i*height
-            self.panel(y,y+height-14)
+            label=soccer_stats.attack_label(p)
+            bottom=y+height-14
+            if single:
+                bottom=y+(920 if label else 720 if p.get('position')=='GK' else 820)
+            self.panel(y,bottom)
             self.text(100,y+40 if single else y+20,p['name'],76 if single else 52,800)
             self.name(100,y+160 if single else y+90,p['club'],800,52 if single else 40)
             state=soccer_results.STATUS[p['status']]
-            if p.get('minutes') is not None:state+=f" / {p['minutes']}分出場"
-            self.text(100,y+280 if single else y+156,state,52 if single else 40,800)
+            minute_label=soccer_stats.minutes_label(p)
+            if minute_label:state+=' / '+minute_label
+            self.text(100,y+250 if single else y+156,state,52 if single else 40,800)
             ga=' / '.join(f"{p[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト')) if p.get(k) is not None)
-            if ga and p.get('position')!='GK':self.text(100,y+400 if single else y+216,ga,60 if single else 44,800)
-            label=soccer_stats.attack_label(p,game.get('attack_style','stars'))
+            if ga and p.get('position')!='GK':self.text(100,y+340 if single else y+216,ga,60 if single else 44,800)
+            label=soccer_stats.attack_label(p)
             detail=soccer_stats.personal_line(p)
             if single and detail:
                 measures=(('saves','セーブ'),('conceded','失点')) if p.get('position')=='GK' else (('shots','シュート'),('on_target','枠内'))
                 for j,(key,unit) in enumerate(measures):
                     if p.get(key) is None:continue
                     x=110+j*410
-                    self.text(x,y+(570 if label else 660),p[key],120 if label else 180,350,c.LIME,True)
-                    self.text(x,y+(720 if label else 890),unit,44,350)
+                    offset=340 if p.get('position')=='GK' else 470
+                    self.text(x,y+offset,p[key],120 if label else 180,350,c.LIME,True)
+                    self.text(x,y+offset+(150 if label else 210),unit,44,350)
             elif detail:self.lines(100,y+286,detail,40,800)
             if label:
-                self.text(100,y+810 if single else y+362,label,52 if single else 40,800,c.LIME)
-                self.text(100,y+950 if single else y+442,soccer_stats.NOTICE,30,800,c.MUTED,role='supplement')
+                self.text(100,y+710 if single else y+362,label,52 if single else 40,800,c.LIME)
+                self.text(100,y+810 if single else y+442,soccer_stats.NOTICE,30,800,c.MUTED,role='supplement')
         return self.finish(spec)
 
     def goals(self, game, goals, spec):
@@ -374,6 +382,6 @@ def check_frame(im,clubs):
         for e in cards+body:
             if intersects(e['box'],caption):errors.append(dict(caption_overlap=e))
         if 1920-caption[3]>100:errors.append(dict(empty_below_caption=1920-caption[3]))
-    if cards and BODY_BOTTOM-max(e['box'][3] for e in cards)>80:
+    if cards and not im.info.get('compact_player_statistics') and BODY_BOTTOM-max(e['box'][3] for e in cards)>80:
         errors.append(dict(empty_body_bottom=BODY_BOTTOM-max(e['box'][3] for e in cards)))
     return errors

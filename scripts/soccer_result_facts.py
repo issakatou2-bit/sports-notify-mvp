@@ -16,7 +16,9 @@ def positive_stats(player):
 def player_line(player, expected=False):
     parts=[results.STATUS[player['status']]]
     if player['status']!='none':
-        if player.get('minutes'):parts.append(f"{player['minutes']}分出場")
+        if player.get('minutes') is not None:
+            from soccer_stats import minutes_label
+            parts.append(minutes_label(player))
         stats=positive_stats(player)
         if stats:parts.append(stats)
     # 一人の出場・成績を途中の句点で別の吹き出しにしない。

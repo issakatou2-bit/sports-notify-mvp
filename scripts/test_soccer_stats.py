@@ -18,7 +18,7 @@ import preview_soccer_stats as preview
 
 class Stats(unittest.TestCase):
     def test_saved_summary_extract_and_club_ids(self):
-        for case in preview.cases():
+        for case in preview.cases(supplementary=True):
             game=case['data']['games'][0];raw=case['extract']
             results.validate_data(case['data'])
             self.assertEqual(stats.team_stats(raw,game),game['match_stats'])
@@ -29,9 +29,12 @@ class Stats(unittest.TestCase):
                 group=next(g for g in raw['rosters'] if str(g['team']['id'])==game[p['side']]['id'])
                 row=next(r for r in group['roster'] if str(r['athlete']['id'])==p['athlete_id'])
                 self.assertEqual(stats.player_stats(row),{k:p[k] for k in stats.player_stats(row)})
-                self.assertNotIn('minutes',p)
-                self.assertIsNone(stats.attack(p))
-        game=preview.cases()[0]['data']['games'][0]
+                actual=results.player_result(dict(name_en=p['name_en'],name_jp=p['name'],team_jp=p['club']),group['roster'],p['side'],p['event_id'],raw)
+                self.assertEqual(actual,p)
+                expected=stats.appearance_minutes({k:v for k,v in p.items() if k not in ('minutes','minutes_source','minutes_approx')},raw)
+                self.assertEqual(expected,{k:p[k] for k in expected})
+                if p.get('minutes_approx'):self.assertTrue(stats.minutes_label(p).startswith('約'))
+        game=preview.cases(supplementary=True)[-1]['data']['games'][0]
         self.assertEqual(game['match_stats']['home'],dict(possession=63.8,shots=20,on_target=7))
         suzuki=game['players'][0]
         self.assertEqual((suzuki['saves'],suzuki['conceded']),(5,2))
@@ -55,13 +58,46 @@ class Stats(unittest.TestCase):
         p=dict(position='FW',status='starter',minutes=30,goals=1,assists=1,shots=3,on_target=2)
         self.assertEqual(stats.attack(p),dict(version='attack-v1',raw=10,level=4,notice=stats.NOTICE))
         self.assertEqual(stats.attack_label(p),'攻撃関与 ★★★★☆')
-        self.assertEqual(stats.attack_label(p,'stages'),'攻撃関与 段階4')
         for delta in (dict(position='DF'),dict(position='GK'),dict(position=None),dict(minutes=None),
                       dict(minutes=29),dict(status='none'),dict(shots=None),dict(on_target=4),dict(goals=3)):
             self.assertIsNone(stats.attack(dict(p,**delta)),delta)
         for raw,level in ((0,0),(1,1),(2,1),(3,2),(5,3),(8,4),(12,5),(50,5)):
             result=stats.attack(dict(p,goals=0,assists=0,shots=raw,on_target=0))
             self.assertEqual((result['raw'],result['level']),(raw,level))
+
+    def test_appearance_boundaries_and_missing_clocks(self):
+        def event(in_id,out_id,minute):
+            return dict(type=dict(type='substitution'),clock=dict(displayValue=minute),
+                        participants=[dict(athlete=dict(id=in_id)),dict(athlete=dict(id=out_id))])
+        p=dict(athlete_id='10',status='starter',subbed_out=True,red_cards=0,
+               position='MF',goals=0,assists=0,shots=1,on_target=0)
+        def inferred(person,events):
+            return dict(person,**stats.appearance_minutes(person,dict(keyEvents=events)))
+        for minute,expected in (("29'",29),("30'",30),("45'+4'",45),("90'+6'",90)):
+            person=inferred(p,[event('20','10',minute)])
+            self.assertEqual(person['minutes'],expected)
+            self.assertEqual(stats.attack(person) is not None,expected>=30)
+        sub=dict(p,status='substitute',subbed_out=False)
+        for minute,expected in (("60'",30),("61'",29),("90'+4'",0)):
+            person=inferred(sub,[event('10','20',minute)])
+            self.assertEqual(person['minutes'],expected)
+            self.assertEqual(stats.attack(person) is not None,expected>=30)
+        for person in (p,sub):
+            for events in ([],[event('10','10','unknown')]):
+                self.assertNotIn('minutes',inferred(person,events))
+                self.assertIsNone(stats.attack(inferred(person,events)))
+        full=dict(p,subbed_out=False)
+        self.assertIsNotNone(stats.attack(full))
+        self.assertEqual(stats.minutes_label(full),'')
+        self.assertIsNone(stats.attack(dict(full,red_cards=1)))
+        suboff=dict(sub,subbed_out=True)
+        self.assertEqual(inferred(suboff,[event('10','20',"45'+2'"),event('30','10',"75'")])['minutes'],30)
+        direct=dict(p,minutes=12)
+        self.assertEqual(stats.appearance_minutes(direct,{}),dict(minutes=12,minutes_source='ESPN minutesPlayed'))
+        self.assertIsNone(stats.attack(direct))
+        self.assertEqual(stats.minutes_label(direct),'約12分出場')
+        for case in preview.cases():
+            self.assertTrue(any(stats.attack(p) for p in case['data']['players']))
 
     def test_materials_and_production_frames(self):
         import soccer_results_render as render
@@ -70,7 +106,7 @@ class Stats(unittest.TestCase):
         import sanity_sources
         with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v6',COLLESPO_SHORT_LOOK='v4',COLLESPO_SOLO_HOST='metan',COLLESPO_DUO='off'):
             try:
-                for case in preview.cases():
+                for case in preview.cases(supplementary=True):
                     data=case['data'];before=copy.deepcopy(data)
                     clubs=render.resolve_clubs(data);narr=render.production_narration(data)
                     self.assertIn(stats.commentary(data['games'][0]),narr['segments'][0]['text'])
@@ -82,6 +118,17 @@ class Stats(unittest.TestCase):
                         im=render.frame(3,seg,data,clubs)
                         if im.info.get('soccer_readable'):
                             self.assertFalse(render.validate_frame(im,data,clubs),(seg['kind'],render.validate_frame(im,data,clubs)))
+                            text=[e['text'] for e in im.info['v3_layout']]
+                            self.assertNotIn('ホーム',text);self.assertNotIn('アウェー',text)
+                            self.assertFalse(any('段階' in t for t in text))
+                            if im.info.get('compact_player_statistics'):
+                                cards=[e for e in im.info['v3_layout'] if e['role']=='card']
+                                self.assertLess(cards[-1]['box'][3]-cards[-1]['box'][1],1000)
+                                # 上下を詰めても札内の大きな空白は引き続き検出する。
+                                broken=im.copy();broken.info=copy.deepcopy(im.info)
+                                card=next(e for e in broken.info['v3_layout'] if e['role']=='card')
+                                card['box']=list(card['box']);card['box'][3]=1440
+                                self.assertTrue(any('empty_card_bottom' in e for e in render.validate_frame(broken,data,clubs)))
                     self.assertEqual(data,before)
                     self.assertLess(sum(layout.minimum_seconds(s,data) for s in narr['segments']),60)
             finally:r3.set_caption('',0,0);r3.set_program_clock(None)

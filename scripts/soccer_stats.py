@@ -1,5 +1,6 @@
 """既存ESPN summaryだけから読む任意統計。欠測と実測0を区別する。"""
 import math
+import re
 
 NOTICE = 'コレスポ独自・攻撃面のみ'
 VERSION = 'attack-v1'
@@ -63,12 +64,14 @@ def player_stats(row):
 
 
 def attack(player):
-    """3G+2A+S+T、30分以上が明示されたFW/MFのみ。上限/90分換算なし。"""
+    """3G+2A+S+T。直接分・交代分・交代なし先発で出場条件を確認。"""
     if player.get('position') not in ('FW', 'MF') or player.get('status') not in ('starter', 'substitute'):
         return None
     minutes = number(player.get('minutes'))
     nums = [number(player.get(k)) for k in ('goals', 'assists', 'shots', 'on_target')]
-    if minutes is None or minutes < 30 or any(n is None for n in nums):
+    full_start = (player.get('status') == 'starter' and player.get('subbed_out') is False
+                  and player.get('red_cards') == 0)
+    if (minutes is None and not full_start) or (minutes is not None and minutes < 30) or any(n is None for n in nums):
         return None
     goals, assists, shots, target = nums
     if goals > target or target > shots:
@@ -77,13 +80,58 @@ def attack(player):
     return dict(version=VERSION, raw=raw, level=sum(raw >= t for t in THRESHOLDS), notice=NOTICE)
 
 
-def attack_label(player, style='stars'):
+def attack_label(player):
     result = attack(player)
     if result is None:
         return ''
     level = result['level']
-    value = ('★' * level + '☆' * (5-level)) if style == 'stars' else f'段階{level}'
+    value = '★' * level + '☆' * (5-level)
     return '攻撃関与 ' + value
+
+
+def appearance_minutes(player, summary):
+    """交代はparticipantsの入る/出るIDで照合。追加時間は数えない概算。"""
+    if number(player.get('minutes')) is not None:
+        return dict(minutes=player['minutes'], minutes_source='ESPN minutesPlayed')
+    status = player.get('status')
+    if status not in ('starter', 'substitute') or player.get('red_cards') != 0:
+        return {}
+    incoming, outgoing = [], []
+    end = 120 if any((e.get('period') or {}).get('number', 0) in (3, 4)
+                     for e in summary.get('keyEvents', [])) else 90
+    for event in summary.get('keyEvents', []):
+        kind = event.get('type') or {}
+        if kind.get('type') != 'substitution' and str(kind.get('id')) != '76':
+            continue
+        people = event.get('participants') or []
+        if len(people) != 2:
+            continue
+        for index, times in ((0, incoming), (1, outgoing)):
+            if str((people[index].get('athlete') or {}).get('id')) == player.get('athlete_id'):
+                match = re.fullmatch(r"(\d+)'?(?:\+\d+'?)?", str((event.get('clock') or {}).get('displayValue', '')).strip())
+                times.append(int(match[1]) if match and int(match[1]) <= end else None)
+    if status == 'starter' and not incoming and player.get('subbed_out') is True and len(outgoing) == 1:
+        start, stop = 0, outgoing[0]
+    elif status == 'substitute' and len(incoming) == 1:
+        start = incoming[0]
+        if player.get('subbed_out') is True and len(outgoing) == 1:
+            stop = outgoing[0]
+        elif player.get('subbed_out') is False and not outgoing:
+            stop = end
+        else:
+            return {}
+    else:
+        return {}
+    if start is None or stop is None or stop < start:
+        return {}
+    return dict(minutes=stop-start, minutes_source='ESPN keyEvents substitution', minutes_approx=True)
+
+
+def minutes_label(player):
+    minutes = number(player.get('minutes'))
+    if minutes is None:
+        return ''
+    return f"約{minutes}分出場"
 
 
 def personal_line(player):
