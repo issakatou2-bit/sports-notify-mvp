@@ -134,6 +134,7 @@ jobs:
       - name: Build and upload
         if: steps.pick.outputs.topics != ''
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -153,8 +154,7 @@ jobs:
             echo "::group::$t ($AT)"
             python scripts/generate_asset_video.py \
               --topic "$t" --publish-at "$AT" --narration-out "build/narr_$t.json" &&
-            python scripts/sanity.py --strict \
-              --narration "build/narr_$t.json" --out "data/sanity_${t}.json" --hold-record "build/sanity_hold_${t}.json" &&
+            python scripts/sanity.py --general --strict --narration "build/narr_$t.json" --out "data/sanity_${t}.json" --hold-record "build/sanity_hold_${t}.json" --kind asset &&
             python scripts/synthesize_narration.py \
               --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&
             python scripts/generate_asset_video.py \
@@ -218,3 +218,14 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

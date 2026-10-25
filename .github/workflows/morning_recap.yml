@@ -143,11 +143,6 @@ jobs:
       # 成績データを常識で見ておく。ここは知らせるだけ。
       # 止めるのは1本ずつ、下のループの中で判断する——
       # 1行おかしいからといって、関係のない4本まで落とす理由はない。
-      - name: Sanity check
-        continue-on-error: true
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/sanity.py --narration
 
       - name: Install video tools
         timeout-minutes: 16
@@ -303,6 +298,7 @@ jobs:
         id: shorts
         continue-on-error: true
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -364,11 +360,9 @@ jobs:
             #
             # 新しくAPIは叩かない。原稿の facts を読むだけ。
             # この枠は登録者の8割が来ているので、いちばん守りたい。
-            if ! python scripts/verify_numbers.py \
-                --dialogue "build/mr_narration_${mode}.json" --strict --omit-unsupported; then
-              echo "::warning::$mode の数字が材料と違うため出しません"
-              echo "::endgroup::"; continue
-            fi
+            python scripts/verify_numbers.py \
+                --dialogue "build/mr_narration_${mode}.json" --omit-unsupported
+            # 停止判断と1回の再点検は、下の共通入口にまとめる。
 
             # 原稿ができた時点で、常識で読み直す。
             #
@@ -654,3 +648,14 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

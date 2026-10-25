@@ -19,10 +19,10 @@
       「今季初登板の投手が今季15勝」のような、個々の値は正しくても
       並べると噛み合わない文。ここは機械では書ききれない。
 
-  二段目は「事実の誤り」の重大な指摘(high)だけ予約前に止める。
+  二段目のhighは材料と照合し、一度だけ指摘行を再点検する。
   説明不足・文脈の指摘はseverityに関わらず警告として残す。
   引用の主張全体を公式材料で裏付けた誤検出だけは警告として通す。
-  材料が空の原稿のhighは、材料不足の警告として残す。
+  材料でも原稿内でも確定できないhighは警告として残す。
   材料との機械照合で確定した矛盾も止める。軽微な指摘は参考として残す。
 
 使い方:
@@ -454,6 +454,13 @@ def general(paths, api_key, materials=None):
         return [{"kind": sanity_material.CONTEXT, "severity": "low", "where": "(確認できず)", "why": str(e)[:200]}]
 
 
+def command(kind, narration, out, hold_record):
+    """Pythonで投稿を駆動する経路も、workflowと同じCLIを使う。"""
+    return [sys.executable, str(pathlib.Path(__file__).resolve()), '--general', '--strict',
+            '--narration', str(narration), '--out', str(out),
+            '--hold-record', str(hold_record), '--kind', kind]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--general", action="store_true",
@@ -462,7 +469,7 @@ def main():
                     default=["public/narration.json",
                              "public/soccer_narration.json"])
     ap.add_argument("--strict", action="store_true",
-                    help="ありえない数字・材料照合NG・事実の誤りのhighで異常終了する")
+                    help="一度再点検し、原稿内の確定した誤り・材料との矛盾で異常終了する")
     ap.add_argument("--out", default="data/sanity.json")
     ap.add_argument('--hold-record', help='見送り印と区別する、この実行のアップロード保留記録')
     ap.add_argument('--kind', default='daily')
@@ -473,9 +480,9 @@ def main():
     # 以前は名簿全体の検査も同じ列に足していた。名簿に1行おかしな
     # ものがあるだけで、その選手に触れてもいない動画まで止まる。
     # 8/29はそれで6本が消えた。
-    impossible = check_scores() + check_narration(args.narration)
+    impossible = check_narration(args.narration)
     # 手元のデータの疑わしさ。直す手がかりにはなるが、出すのは止めない。
-    warnings = check_stat_files()
+    warnings = check_stat_files() + check_scores()
 
     print("--- 原稿のありえない数字（これがあると出しません）---")
     for b in impossible:
@@ -493,7 +500,11 @@ def main():
         try:
             documents.append(json.loads(pathlib.Path(path).read_text(encoding='utf-8')))
         except (OSError, json.JSONDecodeError):
-            continue
+            if not (args.kind == 'daily' and pathlib.Path('build/narration_skipped.txt').is_file()
+                    and not pathlib.Path(path).exists()):
+                impossible.append('点検対象の原稿を読めません: ' + str(path))
+    import sanity_internal
+    impossible += sanity_internal.check(documents)
     materials = sanity_material.grounding(documents)
     import sanity_sources
     material_status = sanity_sources.availability(documents, materials)
@@ -518,10 +529,15 @@ def main():
         else:
             print("\n(ANTHROPIC_API_KEY がないので二段目は飛ばした)")
 
+    import sanity_recheck
+    odd, contradictions, materials, attempts = sanity_recheck.run(
+        documents, odd, materials, impossible, contradictions,
+        os.environ.get('ANTHROPIC_API_KEY', '') if args.general else '')
+    material_status = sanity_sources.availability(documents, materials)
     high = [o for o in odd if sanity_material.blocking(o)]
     unconfirmed = [o for o in odd if not o.get('confirmed') and not o.get('supported')]
     if high:
-        print('::error::事実の誤りの重大な指摘(high)があるため予約停止・アップロード未実行です')
+        print('::error::再点検でも材料との矛盾が確定したため予約停止・アップロード未実行です')
     for issue in odd:
         if issue not in high:
             warnings.append(issue)
@@ -535,6 +551,7 @@ def main():
                                "blocking_issues": high, "warnings": warnings,
                                "unconfirmed_issues": unconfirmed, "materials": materials,
                                "material_status": material_status,
+                               "attempts": attempts,
                                "upload_held": blocked},
                               ensure_ascii=False, indent=2), encoding="utf-8")
     if args.hold_record:
@@ -548,7 +565,7 @@ def main():
             run_attempt=os.environ.get('GITHUB_RUN_ATTEMPT', ''),
             reason='常識点検による保留・アップロード未実行' if blocked else '',
             reasons=impossible + contradictions + [o.get('why', '') for o in high],
-            report=str(out)), ensure_ascii=False, indent=2), encoding='utf-8')
+            report=str(out), attempts=attempts), ensure_ascii=False, indent=2), encoding='utf-8')
 
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary and (impossible or contradictions or odd):

@@ -20,6 +20,14 @@ FIXTURE = json.loads((ROOT / 'scripts/fixtures/fact-guards/evening_20261011.json
 
 
 class EveningFixTests(unittest.TestCase):
+    def setUp(self):
+        offline = patch('sanity_refresh.fetch', side_effect=RuntimeError('offline fixture'))
+        offline.start()
+        self.addCleanup(offline.stop)
+        retry = patch('sanity_recheck.ai_review', return_value=([], dict(status='offline fixture', calls=0)))
+        retry.start()
+        self.addCleanup(retry.stop)
+
     def test_today_high_is_unconfirmed_and_game_mismatch_is_confirmed(self):
         document = json.loads((ROOT / 'scripts/fixtures/fact-guards/evening_20261012.json').read_text(encoding='utf-8'))
         reviewed, errors = sanity_material.assess(document['llm_issues'], [document])
@@ -63,10 +71,10 @@ class EveningFixTests(unittest.TestCase):
             document['segments'][index]['text'] = document['segments'][index]['text'].replace(old, new)
             self.assertIn('日本時間', ' '.join(sanity_material.check(document)))
 
-    def test_strict_cli_unverified_high_stops_with_or_without_material_mismatch(self):
+    def test_strict_cli_stops_only_with_material_mismatch(self):
         with tempfile.TemporaryDirectory() as folder:
             narration, result = Path(folder) / 'narration.json', Path(folder) / 'sanity.json'
-            for mismatched, expected in [(False, 1), (True, 1)]:
+            for mismatched, expected in [(False, 0), (True, 1)]:
                 document = copy.deepcopy(FIXTURE)
                 if mismatched:
                     document['segments'][0]['text'] = document['segments'][0]['text'].replace('2勝3敗', '3勝2敗')
@@ -82,7 +90,7 @@ class EveningFixTests(unittest.TestCase):
                     self.assertEqual(sanity.main(), expected)
                 report = json.loads(result.read_text(encoding='utf-8'))
                 self.assertEqual(bool(report['contradictions']), mismatched)
-                self.assertTrue(report['blocking_issues'])
+                self.assertEqual(bool(report['blocking_issues']), mismatched)
                 self.assertFalse(any(i['supported'] for i in report['blocking_issues']))
 
     def test_no_movie_skips_before_upload_and_records_reason(self):

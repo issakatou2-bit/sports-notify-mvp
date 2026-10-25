@@ -205,6 +205,7 @@ jobs:
       # 途中で失敗しても残りを試し、最後に結果をまとめて出す。
       - name: Build and upload topics
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -247,6 +248,11 @@ jobs:
             if [ $? -ne 0 ]; then
               echo "::warning::$t の原稿生成に失敗しました"
               FAILED="$FAILED $t(原稿)"
+              echo "::endgroup::"; continue
+            fi
+
+            if ! python scripts/sanity.py --general --strict --narration "build/narr_$t.json" --out "data/sanity_${t}.json" --hold-record "build/sanity_hold_${t}.json" --kind asset; then
+              FAILED="$FAILED $t(点検)"
               echo "::endgroup::"; continue
             fi
 
@@ -328,3 +334,14 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
