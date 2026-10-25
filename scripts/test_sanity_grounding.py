@@ -21,6 +21,12 @@ EVENING = json.loads((ROOT / 'scripts/fixtures/fact-guards/sanity_evening_202610
 
 class GroundingTests(unittest.TestCase):
     def setUp(self):
+        offline = patch('sanity_refresh.fetch', side_effect=RuntimeError('offline fixture'))
+        offline.start()
+        self.addCleanup(offline.stop)
+        retry = patch('sanity_recheck.ai_review', return_value=([], dict(status='offline fixture', calls=0)))
+        retry.start()
+        self.addCleanup(retry.stop)
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.old = Path.cwd()
@@ -89,6 +95,9 @@ class GroundingTests(unittest.TestCase):
 
     def test_invented_score_and_affiliation_factual_high_hold(self):
         self.document['game_material'] = dict(players=[dict(name='ジェイコブ・ミジオロウスキー', team_name='ブリュワーズ')])
+        self.document['sanity_materials'] = sanity_material.grounding([self.document]) + [dict(
+            source='saved official score', games=[dict(home=dict(name_jp='レイズ'),
+            away=dict(name_jp='ブリュワーズ'), score=dict(home=2, away=3))])]
         for text, why in (
             ('レイズはブリュワーズに3対2で勝ちました。', '公式材料はレイズ2対3ブリュワーズで、勝敗と得点が逆です。'),
             ('ジェイコブ・ミジオロウスキーはレイズの投手です。', '材料の所属はブリュワーズで、レイズという主張は誤りです。'),
@@ -195,19 +204,17 @@ class GroundingTests(unittest.TestCase):
         self.assertFalse(report['blocking_issues'])
         self.assertTrue(report['odd'][0]['material_missing'])
 
-    def test_invented_stat_high_stops_and_verify_records_the_reason(self):
+    def test_unconfirmed_season_stat_high_warns_after_one_recheck(self):
         text = '架空太郎は今季55本塁打です。'
         issue = dict(severity='high', where=text, why='作り物の成績に誤りがある')
         code, report = self.run_sanity(text, [issue])
-        self.assertEqual(code, 1)
+        self.assertEqual(code, 0)
         self.assertFalse(report['impossible'])
         self.assertFalse(report['contradictions'])
-        self.assertFalse(report['blocking_issues'][0]['confirmed'])
-        self.assertFalse(report['blocking_issues'][0]['supported'])
-        verify_code, output = self.verify()
-        self.assertEqual(verify_code, 1)
-        self.assertIn('常識点検による保留・アップロード未実行', output)
-        self.assertIn(issue['why'], output)
+        self.assertFalse(report['odd'][0]['confirmed'])
+        self.assertFalse(report['odd'][0]['supported'])
+        self.assertEqual(len(report['attempts']), 2)
+        self.assertTrue(report['odd'][0]['rechecked'])
 
     def test_partial_match_unknown_name_or_date_does_not_exempt_high(self):
         for text in (FIXTURE['text'] + 'で、架空太郎は今季55本塁打です。',
@@ -217,7 +224,8 @@ class GroundingTests(unittest.TestCase):
                      '『' + FIXTURE['text'] + '』は誤りです。'):
             with self.subTest(text=text):
                 code, report = self.run_sanity(text, [dict(FIXTURE['issue'], where=text)])
-                self.assertEqual(code, 1)
+                # 部分一致で裏付けたことにはしない。明示した日付の矛盾だけ停止。
+                self.assertEqual(code, 1 if text.startswith('10月23日') else 0)
                 self.assertFalse(report['odd'][0]['supported'])
 
     def test_matching_date_and_reverse_pair_can_be_supported(self):
@@ -233,14 +241,14 @@ class GroundingTests(unittest.TestCase):
                 snapshot['series'][0]['next'].update(changes)
                 Path('data/postseason.json').write_text(json.dumps(snapshot), encoding='utf-8')
                 code, report = self.run_sanity()
-                self.assertEqual(code, 1)
+                self.assertEqual(code, 0 if None in changes.values() else 1)
                 self.assertFalse(report['odd'][0]['supported'])
 
     def test_model_cannot_supply_its_own_exemption_or_quote_outside_the_script(self):
         code, report = self.run_sanity('架空太郎は今季55本塁打です。',
             [dict(FIXTURE['issue'], supported=True, confirmed=False,
                   verification='材料で裏付け済み（誤検出）')])
-        self.assertEqual(code, 1)
+        self.assertEqual(code, 0)
         self.assertFalse(report['odd'][0]['supported'])
 
     def test_supported_quote_cannot_release_another_high(self):
@@ -248,10 +256,11 @@ class GroundingTests(unittest.TestCase):
         issues = [FIXTURE['issue'], dict(severity='high', where='架空太郎は今季55本塁打',
                                         why='作り物の成績')]
         code, report = self.run_sanity(text, issues)
-        self.assertEqual(code, 1)
+        self.assertEqual(code, 0)
         self.assertTrue(report['odd'][0]['supported'])
-        self.assertEqual(len(report['blocking_issues']), 1)
-        self.assertEqual(report['blocking_issues'][0]['why'], issues[1]['why'])
+        self.assertFalse(report['blocking_issues'])
+        self.assertEqual(report['odd'][1]['why'], issues[1]['why'])
+        self.assertTrue(report['odd'][1]['rechecked'])
 
     def test_partial_quote_cannot_hide_negation_past_or_unverified_facts(self):
         for text in ('昨年の' + FIXTURE['text'],
@@ -259,7 +268,7 @@ class GroundingTests(unittest.TestCase):
                      FIXTURE['text'] + 'で、架空太郎は55本塁打です。'):
             with self.subTest(text=text):
                 code, report = self.run_sanity(text)
-                self.assertEqual(code, 1)
+                self.assertEqual(code, 0)
                 self.assertFalse(report['odd'][0]['supported'])
 
     def test_conflicting_material_cannot_support_claim(self):

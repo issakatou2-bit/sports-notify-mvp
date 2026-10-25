@@ -227,7 +227,7 @@ class Script(unittest.TestCase):
         self.assertEqual(set(on),{'workflow_dispatch'})
         self.assertIs(on['workflow_dispatch']['inputs']['publish']['default'],False)
         self.assertLess(src.index('bash scripts/install_video_tools.sh'),src.index('python scripts/test_soccer_voices.py'))
-        self.assertLess(src.index('publish=True'),src.index('--kind soccer_voices'))
+        self.assertLess(src.index('publish=True'),src.index('python scripts/upload_youtube.py'))
 
     def test_live_path_uses_existing_fetch_and_translate_and_checks_next_video(self):
         raw=json.loads(FIX.read_text(encoding='utf-8'));video=raw['video']

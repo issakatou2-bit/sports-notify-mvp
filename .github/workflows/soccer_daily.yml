@@ -172,8 +172,9 @@ jobs:
         # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
         continue-on-error: true
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/sanity.py --general --strict --narration build/soccer_narration.json
+        run: python scripts/sanity.py --general --strict --narration build/soccer_narration.json --out data/sanity_soccer.json --hold-record build/sanity_soccer_hold.json --kind daily_soccer
 
       - name: Synthesize narration
         if: steps.gate.outputs.count != '0'
@@ -318,3 +319,14 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

@@ -479,6 +479,9 @@ def main():
     narration = build_narration(verdict, label,
                                 career_streaks(pathlib.Path(args.archive_dir)),
                                 base)  # noqa: F821  下で読み込んだ実測
+    import sanity_sources
+    narration = sanity_sources.attach(narration, dict(date_jst=week[-1][0], source='archive',
+        games=[dict(g, date_jst=day) for day, g in week]))
 
     if args.narration_out:
         p = pathlib.Path(args.narration_out)

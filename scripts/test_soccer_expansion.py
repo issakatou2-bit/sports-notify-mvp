@@ -153,6 +153,7 @@ class GoalTests(unittest.TestCase):
                 now.publish(dict(data, sample_fictional=True), 'unused', {}, goal_short=True)
             import host_split
             with patch.object(host_split, 'publication', return_value=None), \
+                    patch.object(now.subprocess, 'run') as sanity_run, \
                     patch.object(now, 'checkpoint_receipt', side_effect=ValueError('checkpoint failure')) as checkpoint, \
                     patch.object(Path, 'write_text'):
                 ledger = {}
@@ -160,6 +161,8 @@ class GoalTests(unittest.TestCase):
                     now.publish(data, 'unused', ledger, goal_short=True)
                 self.assertEqual(ledger['401876452']['status'], 'pending')
                 self.assertEqual(checkpoint.call_args.args[0].name, 'soccer_goal_short_receipts.json')
+                sanity_run.assert_called_once()
+                self.assertTrue(sanity_run.call_args.kwargs['check'])
 
     def test_checkpoint_reads_back_same_remote_receipt(self):
         path = now.ROOT/'data/soccer_goal_short_receipts.json'

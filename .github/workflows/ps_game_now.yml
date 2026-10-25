@@ -100,6 +100,7 @@ jobs:
       - name: Watch and publish
         if: steps.plan.outputs.go == '1'
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -136,7 +137,7 @@ jobs:
               for t in $(pending); do
                 echo "::group::$t"
                 python scripts/generate_asset_video.py                   --topic "$t" --narration-out "build/narr_$t.json" &&
-                python scripts/sanity.py --strict                   --narration "build/narr_$t.json" --out "data/sanity_${t}.json" --hold-record "build/sanity_hold_${t}.json" &&
+                python scripts/sanity.py --general --strict --narration "build/narr_$t.json" --out "data/sanity_${t}.json" --hold-record "build/sanity_hold_${t}.json" --kind asset &&
                 python scripts/synthesize_narration.py                   --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&
                 python scripts/generate_asset_video.py                   --topic "$t" --narration "build/narr_$t.json" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
                 bash scripts/shorts_thumbnail.sh                   "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png" &&
@@ -193,3 +194,14 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

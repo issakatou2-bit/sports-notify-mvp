@@ -68,6 +68,7 @@ jobs:
           exit 1
       - name: 直した材料で作り直す
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           set -e
@@ -76,7 +77,7 @@ jobs:
           echo "OLD_VIDEO=$OLD_VIDEO" >> "$GITHUB_ENV"
           python scripts/correct_video.py prepare --fix "$FIX" | tee -a "$GITHUB_STEP_SUMMARY"
           python scripts/generate_asset_video.py --topic "$TOPIC" --narration-out build/corr/narr.json
-          python scripts/sanity.py --strict --narration build/corr/narr.json
+          python scripts/sanity.py --general --strict --narration build/corr/narr.json --out data/sanity_correction.json --hold-record build/sanity_hold_correction.json --kind asset
           python scripts/synthesize_narration.py --narration build/corr/narr.json --out-dir build/corr/audio
           python scripts/generate_asset_video.py --topic "$TOPIC" --audio-dir build/corr/audio --out build/corr/out
           bash scripts/shorts_thumbnail.sh "build/corr/out/collespo_asset_$TOPIC.mp4" build/corr/out/short.png
@@ -133,3 +134,14 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

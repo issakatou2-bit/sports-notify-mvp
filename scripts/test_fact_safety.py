@@ -147,6 +147,14 @@ class ArticleDates(unittest.TestCase):
 
 
 class PublicationGate(unittest.TestCase):
+    def setUp(self):
+        offline = patch('sanity_refresh.fetch', side_effect=RuntimeError('offline fixture'))
+        offline.start()
+        self.addCleanup(offline.stop)
+        retry = patch('sanity_recheck.ai_review', return_value=([], dict(status='offline fixture', calls=0)))
+        retry.start()
+        self.addCleanup(retry.stop)
+
     def test_old_or_unknown_sources_in_saved_narration_stop_without_llm(self):
         for source in [article('2026-06-03'), article()]:
             doc = dict(date_jst=TARGET, segments=[dict(text='大谷翔平は復帰しました。',

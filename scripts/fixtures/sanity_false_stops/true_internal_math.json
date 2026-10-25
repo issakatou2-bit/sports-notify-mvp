@@ -1,0 +1,415 @@
+{
+  "source": "synthetic contradiction against saved official evidence",
+  "expected_held": true,
+  "document": {
+    "date_jst": "2026-10-25",
+    "segments": [
+      {
+        "text": "2＋3＝6です。"
+      }
+    ],
+    "sanity_materials": [
+      {
+        "source": "data/postseason.json",
+        "date_jst": "2026-10-25",
+        "retrieved_at": "2026-10-25T06:01:54.730686+00:00",
+        "source_url": "https://statsapi.mlb.com/api/v1/schedule",
+        "series": [
+          {
+            "key": "W:139-158",
+            "round": "W",
+            "round_jp": "ワールドシリーズ",
+            "stage": 4,
+            "league_jp": "",
+            "best_of": 7,
+            "need": 4,
+            "played": 2,
+            "over": false,
+            "winner": null,
+            "next": {
+              "day": "10月27日",
+              "game": 3
+            },
+            "teams": [
+              {
+                "id": 158,
+                "name": "ブリュワーズ",
+                "wins": 2,
+                "players": []
+              },
+              {
+                "id": 139,
+                "name": "レイズ",
+                "wins": 0,
+                "players": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "football-data.org",
+        "retrieved_at": "2026-10-24T10:15:58.501309+00:00",
+        "source_at": "2026-10-24T06:14:40.646517+00:00",
+        "date_jst": "2026-10-24",
+        "games": [],
+        "competitions": [
+          {
+            "code": "PL",
+            "name_jp": "プレミアリーグ",
+            "lines": [
+              {
+                "at": 4,
+                "label": "CL圏内",
+                "inside": [
+                  {
+                    "position": 3,
+                    "team": "ブライトン",
+                    "team_en": "Brighton & Hove Albion FC",
+                    "played": 7,
+                    "points": 16,
+                    "gf": 23,
+                    "ga": 5,
+                    "jp": [
+                      "三笘薫"
+                    ]
+                  },
+                  {
+                    "position": 4,
+                    "team": "チェルシー",
+                    "team_en": "Chelsea FC",
+                    "played": 7,
+                    "points": 13,
+                    "gf": 17,
+                    "ga": 13,
+                    "jp": []
+                  }
+                ],
+                "outside": [
+                  {
+                    "position": 5,
+                    "team": "リバプール",
+                    "team_en": "Liverpool FC",
+                    "played": 7,
+                    "points": 12,
+                    "gf": 9,
+                    "ga": 8,
+                    "jp": [
+                      "遠藤航"
+                    ]
+                  },
+                  {
+                    "position": 6,
+                    "team": "ブレントフォード",
+                    "team_en": "Brentford FC",
+                    "played": 7,
+                    "points": 10,
+                    "gf": 13,
+                    "ga": 8,
+                    "jp": []
+                  }
+                ],
+                "diff": 1,
+                "moved": {
+                  "line": 4,
+                  "in": [],
+                  "out": []
+                },
+                "jp": [
+                  "三笘薫",
+                  "遠藤航"
+                ]
+              },
+              {
+                "at": 5,
+                "label": "EL圏内",
+                "inside": [
+                  {
+                    "position": 4,
+                    "team": "チェルシー",
+                    "team_en": "Chelsea FC",
+                    "played": 7,
+                    "points": 13,
+                    "gf": 17,
+                    "ga": 13,
+                    "jp": []
+                  },
+                  {
+                    "position": 5,
+                    "team": "リバプール",
+                    "team_en": "Liverpool FC",
+                    "played": 7,
+                    "points": 12,
+                    "gf": 9,
+                    "ga": 8,
+                    "jp": [
+                      "遠藤航"
+                    ]
+                  }
+                ],
+                "outside": [
+                  {
+                    "position": 6,
+                    "team": "ブレントフォード",
+                    "team_en": "Brentford FC",
+                    "played": 7,
+                    "points": 10,
+                    "gf": 13,
+                    "ga": 8,
+                    "jp": []
+                  },
+                  {
+                    "position": 7,
+                    "team": "リーズ",
+                    "team_en": "Leeds United FC",
+                    "played": 7,
+                    "points": 10,
+                    "gf": 9,
+                    "ga": 6,
+                    "jp": [
+                      "田中碧"
+                    ]
+                  }
+                ],
+                "diff": 2,
+                "moved": {
+                  "line": 5,
+                  "in": [],
+                  "out": []
+                },
+                "jp": [
+                  "田中碧",
+                  "遠藤航"
+                ]
+              }
+            ],
+            "jp": [
+              {
+                "name": "三笘薫",
+                "club_jp": "ブライトン",
+                "position": 3,
+                "points": 16,
+                "out": true,
+                "out_note": "Hamstring injury - Expected back 31 Oct",
+                "lines": [
+                  {
+                    "line": 4,
+                    "position": 3,
+                    "side": "inside",
+                    "diff": 4,
+                    "label": "CL圏内",
+                    "text": "CL圏内。落ちるまで勝点4"
+                  },
+                  {
+                    "line": 5,
+                    "position": 3,
+                    "side": "inside",
+                    "diff": 6,
+                    "label": "EL圏内",
+                    "text": "EL圏内。落ちるまで勝点6"
+                  }
+                ]
+              },
+              {
+                "name": "遠藤航",
+                "club_jp": "リバプール",
+                "position": 5,
+                "points": 12,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 4,
+                    "position": 5,
+                    "side": "outside",
+                    "diff": 1,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点1"
+                  },
+                  {
+                    "line": 5,
+                    "position": 5,
+                    "side": "inside",
+                    "diff": 2,
+                    "label": "EL圏内",
+                    "text": "EL圏内。落ちるまで勝点2"
+                  }
+                ]
+              },
+              {
+                "name": "田中碧",
+                "club_jp": "リーズ",
+                "position": 7,
+                "points": 10,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 7,
+                    "side": "outside",
+                    "diff": 2,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点2"
+                  },
+                  {
+                    "line": 4,
+                    "position": 7,
+                    "side": "outside",
+                    "diff": 3,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点3"
+                  }
+                ]
+              },
+              {
+                "name": "前田大然",
+                "club_jp": "イプスウィッチ",
+                "position": 9,
+                "points": 10,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 9,
+                    "side": "outside",
+                    "diff": 2,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点2"
+                  },
+                  {
+                    "line": 4,
+                    "position": 9,
+                    "side": "outside",
+                    "diff": 3,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点3"
+                  }
+                ]
+              },
+              {
+                "name": "守田英正",
+                "club_jp": "ハル・シティ",
+                "position": 10,
+                "points": 9,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 10,
+                    "side": "outside",
+                    "diff": 3,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点3"
+                  },
+                  {
+                    "line": 4,
+                    "position": 10,
+                    "side": "outside",
+                    "diff": 4,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点4"
+                  }
+                ]
+              },
+              {
+                "name": "鎌田大地",
+                "club_jp": "クリスタル・パレス",
+                "position": 14,
+                "points": 7,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 14,
+                    "side": "outside",
+                    "diff": 5,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点5"
+                  },
+                  {
+                    "line": 4,
+                    "position": 14,
+                    "side": "outside",
+                    "diff": 6,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点6"
+                  }
+                ]
+              },
+              {
+                "name": "冨安健洋",
+                "club_jp": "クリスタル・パレス",
+                "position": 14,
+                "points": 7,
+                "out": true,
+                "out_note": "Calf injury - Expected back 8 Nov",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 14,
+                    "side": "outside",
+                    "diff": 5,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点5"
+                  },
+                  {
+                    "line": 4,
+                    "position": 14,
+                    "side": "outside",
+                    "diff": 6,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点6"
+                  }
+                ]
+              },
+              {
+                "name": "高井幸大",
+                "club_jp": "トッテナム",
+                "position": 16,
+                "points": 6,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 16,
+                    "side": "outside",
+                    "diff": 6,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点6"
+                  }
+                ]
+              },
+              {
+                "name": "坂元達裕",
+                "club_jp": "コベントリー",
+                "position": 18,
+                "points": 6,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 18,
+                    "side": "outside",
+                    "diff": 6,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点6"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "rows": [],
+        "players": [],
+        "sport": "soccer"
+      }
+    ]
+  },
+  "issues": []
+}
