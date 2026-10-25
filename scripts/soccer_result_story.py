@@ -34,10 +34,20 @@ def narration(data):
         if answer:
             units.append(facts.player_line(answer,expected=True))
         units.extend(facts.player_line(p) for p in g['players'] if p['status']!='none' and (not answer or p['name']!=answer['name']))
+        import soccer_look
+        import soccer_stats
+        if soccer_look.readable() and soccer_stats.commentary(g):units.append(soccer_stats.commentary(g))
         segments.append(dict(kind='followup',text=''.join(units),speaker=2,caption_units=units,meta=dict(event_id=g['id'])))
+        if soccer_look.readable() and soccer_stats.has_personal(g):
+            people=[p for p in g['players'] if p['status']!='none']
+            for start in range(0,len(people),2):
+                shown=people[start:start+2]
+                text=''.join(p['name']+'は'+soccer_stats.personal_line(p)+'。' for p in shown if soccer_stats.personal_line(p))
+                segments.append(dict(kind='player-stats',text=text or '日本人選手の結果です。',speaker=2,
+                                     meta=dict(event_id=g['id'],start=start)))
         detail=facts.supplements(g,row)
         segments.append(dict(kind='followup-detail',text=''.join(detail),speaker=2,caption_units=detail,
-                             meta=dict(event_id=g['id'],details=facts.display_details(g,row))))
+                             meta=dict(event_id=g['id'],details=facts.display_details(g,row),goals=g['goals'])))
     played=[p for p in data['players'] if p['status']!='none']
     if played:
         answer_names={r['answer']['name'] for r in rows if r.get('answer')}
@@ -165,6 +175,9 @@ def fit_to_audio(narration,audio):
     while True:
         try:
             times=render.durations(narr['segments'],voices)
+            if render.soccer_look.readable():
+                from soccer_readable import minimum_seconds
+                times=[max(t,minimum_seconds(s)) for s,t in zip(narr['segments'],times)]
             if sum(math.ceil(t*render.FPS)/render.FPS for t in times)<=results.LIMIT:return narr,voices
         except ValueError as error:
             if '60秒' not in str(error):raise

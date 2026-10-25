@@ -92,6 +92,8 @@ def player_result(player,rows,side,event_id):
     for dest,key in (('goals','totalGoals'),('assists','goalAssists'),('yellow_cards','yellowCards'),('red_cards','redCards')):
         result[dest]=stats.get(key)
     if stats.get('minutesPlayed') is not None:result['minutes']=stats['minutesPlayed']
+    import soccer_stats
+    result.update(soccer_stats.player_stats(row))
     if result['status']=='none' and (result['goals'] or result['assists']):raise ValueError('出場なしに得点/アシスト')
     result['subbed_out']=bool(row.get('subbedOut'))
     result['appearance_evidence']='ESPN starter/subbedIn'
@@ -197,6 +199,9 @@ def build(boards,summaries,target_date,football=None,roster=None,preview=None):
                     game['unresolved'].extend(p['name_jp'] for p in candidates[side]
                                               if resolve_player(rows,p['name_en']) is None)
                 matched={p['name'] for p in game['players']}
+                import soccer_stats
+                match_stats=soccer_stats.team_stats(summary,sides)
+                if match_stats:game['match_stats']=match_stats
                 game['unresolved']=[name for name in game['unresolved'] if name not in matched]
                 import soccer_result_followup as followup
                 announced=followup.match(preview,game['home']['name_en'],game['away']['name_en'],game['start_utc'])
@@ -253,6 +258,13 @@ def validate_data(data):
     for game in data['games']:
         if not in_window(utc(game['finished_utc']),day):raise ValueError('終了時刻が対象の夜（締め時刻から翌日の締め時刻）の外')
         if game['home']['id']==game['away']['id']:raise ValueError('対戦クラブが同じ')
+        import soccer_stats
+        if game.get('match_stats'):
+            for side in ('home','away'):
+                stats=game['match_stats'][side]
+                if any(soccer_stats.number(stats.get(k),k!='possession') is None for k in ('possession','shots','on_target')):raise ValueError('試合スタッツが不正')
+                if stats['possession']>100 or stats['on_target']>stats['shots']:raise ValueError('試合スタッツの矛盾')
+            if abs(sum(game['match_stats'][s]['possession'] for s in ('home','away'))-100)>1:raise ValueError('保持率の矛盾')
         if any(type(v) is not int or v<0 for v in game['score'].values()):raise ValueError('スコアが不正')
         if game['goals_complete']!=all(sum(g['side']==s for g in game['goals'])==game['score'][s] for s in ('home','away')):raise ValueError('得点経過の完全性が不一致')
         for p in game['players']:
@@ -262,6 +274,9 @@ def validate_data(data):
             if p['status']=='none' and (p.get('goals') or p.get('assists')):raise ValueError('出場なしを活躍にしない')
             for key in ('goals','assists','yellow_cards','red_cards'):
                 if p[key] is not None and (type(p[key]) is not int or p[key]<0):raise ValueError('個人成績が不正')
+            for key in ('shots','on_target','saves','conceded'):
+                if p.get(key) is not None and soccer_stats.number(p[key]) is None:raise ValueError('個人スタッツが不正')
+            if p.get('shots') is not None and p.get('on_target') is not None and p['on_target']>p['shots']:raise ValueError('個人シュートの矛盾')
             if game['goals_complete'] and p['goals'] is not None and p['goals']!=sum(g['athlete_id']==p['athlete_id'] and not g['own_goal'] for g in game['goals']):raise ValueError('得点数と経過が不一致')
             flattened.append(p)
         people={p['athlete_id']:p for p in game['players']}
@@ -297,6 +312,15 @@ def description_lines(data):
     lines += [f"・{p['name']}（{names.display(p['club'])}）{STATUS[p['status']]}"+ ''.join(f" / {p[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト'),('yellow_cards','警告'),('red_cards','退場')) if p.get(k)) for p in data['players']]
     lines += ['', '出典: '+SOURCE+'。終了時刻・出場区分・個人成績・得点経過はESPN。football-data.orgのスコアを取得できた試合は照合し、不一致は除外します。',
               '出場なしは一覧のみ。クラブの勝敗を選手本人の活躍とは扱っていません。']
+    import soccer_stats
+    for game in data['games']:
+        if game.get('match_stats'):lines.append(soccer_stats.commentary(game))
+    for player in data['players']:
+        detail=soccer_stats.personal_line(player)
+        if detail:lines.append(player['name']+'：'+detail)
+        label=soccer_stats.attack_label(player)
+        if label:lines.append(player['name']+'：'+label+'（'+soccer_stats.NOTICE+'）')
+    lines.append('攻撃関与：コレスポ独自・攻撃面のみ。3×得点＋2×アシスト＋シュート＋枠内。加算1/3/5/8/12以上で星1/2/3/4/5、0は星なし。総合評価ではありません。FW・MFで出場30分以上を確認できた場合のみ。出場分不明・短時間・DF・GK・必要統計欠測は非表示。')
     return lines
 
 
