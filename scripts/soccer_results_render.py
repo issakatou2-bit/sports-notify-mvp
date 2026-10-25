@@ -176,6 +176,10 @@ def roster_screen(t,data,meta,clubs,spec):
 
 
 def frame(t,seg,data,clubs=None):
+    if soccer_look.readable():
+        import soccer_readable
+        im=soccer_readable.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data))
+        if im is not None:return im
     if seg['kind'].startswith('followup'):
         import soccer_result_story
         return soccer_result_story.frame(t,seg,data,clubs or resolve_clubs(data))
@@ -260,6 +264,9 @@ def render_video(data,narr,audio,out):
     results.validate_data(data)
     __import__('solo_host').validate_audio(audio)
     times=durations(narr['segments'],audio);out.mkdir(parents=True,exist_ok=True);ensure_ffmpeg(out)
+    if soccer_look.readable():
+        from soccer_readable import minimum_seconds
+        times=[max(length,minimum_seconds(seg,data)) for seg,length in zip(narr['segments'],times)]
     if soccer_look.v5():
         times=[max(length,1.45+.25*(len(seg['meta'].get('goals',[]))-1)) if seg['kind']=='result' else length
                for seg,length in zip(narr['segments'],times)]

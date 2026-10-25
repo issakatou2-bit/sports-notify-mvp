@@ -46,7 +46,7 @@ class Names(unittest.TestCase):
             self.assertEqual(sv.names_in(text,players('堂安律')),['堂安律'])
 
     def test_possessive_nicknames_and_partial_words(self):
-        for text,person in (("Sugawara's crosses were great",'菅原由勢'),('Take Kubo is magic','久保建英'),('Zion saved us again','鈴木ザイオン')):
+        for text,person in (("Sugawara's crosses were great",'菅原由勢'),('Take Kubo is magic','久保建英'),('Zion saved us again','鈴木彩艶')):
             self.assertEqual(sv.names_in(text,players(person)),[person])
         self.assertFalse(sv.names_in('Kuboviak scored',players('久保建英')))
 
@@ -64,7 +64,7 @@ class Names(unittest.TestCase):
         self.assertEqual(sv.names_in('Satoshi Tanaka played well',both),['田中聡'])
         self.assertFalse(sv.names_in('Satoshi Tanaka played well',players('田中碧')))
         self.assertFalse(sv.names_in('田中聡はいい',players('田中碧')))
-        self.assertFalse(sv.names_in('Yuito Suzuki played well',players('鈴木ザイオン')))
+        self.assertFalse(sv.names_in('Yuito Suzuki played well',players('鈴木彩艶')))
 
 
 class Selection(unittest.TestCase):
