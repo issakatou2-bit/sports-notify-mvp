@@ -25,7 +25,7 @@ def document_day(document):
 def blocking(issue):
     return (issue.get('kind') == FACT
             and str(issue.get('severity', '')).lower() == 'high'
-            and not issue.get('material_missing')
+            and issue.get('confirmed')
             and not issue.get('supported'))
 
 
@@ -108,7 +108,11 @@ def check(document, materials=None):
     import game_fact_guard
     errors = verify_numbers.check(document) + game_fact_guard.check(document)
     import soccer_sanity_material
+    import sanity_evidence
     for index, segment in enumerate(document.get('segments') or [], 1):
+        if sanity_evidence.review(segment.get('text') or '', materials,
+                day=(segment.get('meta') or {}).get('date') or document_day(document)) is False:
+            errors.append(f'行{index}: 所属・試合番号・スコア・日付が材料と不一致')
         import sanity_claims
         if sanity_claims.review(segment.get('text') or '', materials,
                                 context=segment.get('_sanity_context') or claim_context(
@@ -118,13 +122,33 @@ def check(document, materials=None):
                 soccer_sanity_material.for_document(document, materials)) is False:
             errors.append(f'行{index}: サッカーの順位・勝点が材料と不一致')
     from article_freshness import fresh_articles
-    if document.get('date_jst'):
+    if document_day(document):
         sources = [h for segment in document.get('segments') or []
                    for h in (segment.get('meta') or {}).get('source_headlines') or []]
-        current = fresh_articles(sources, document['date_jst'])
+        current = fresh_articles(sources, document_day(document))
         for row in sources:
-            if not fresh_articles([row], document['date_jst'], corroborating=current):
+            if not fresh_articles([row], document_day(document), corroborating=current):
                 errors.append('記事の公開日が古いか確認できない: ' + (row.get('title') or row.get('url') or '出典不明'))
+    # 原見出しが明示するシリーズ勝敗を、訳文・当日の公式PSと照合する。
+    # 試合中の「逆転」からシリーズ連敗を推測しない。
+    from team_names import team_names_jp
+    for evidence in headline_grounding([document]):
+        head = evidence['headline']
+        original = re.fullmatch(r'(?:Methodical )?(.+?) chip away at (.+?), rally to seize (\d+)-(\d+) lead',
+                                head.get('title') or '')
+        if not original:
+            continue
+        counts = tuple(map(int, original.groups()[2:]))
+        spoken = re.search(r'(\d+)勝(\d+)敗', head.get('jp') or '')
+        if spoken and tuple(map(int, spoken.groups())) != counts:
+            errors.append('見出しの訳のシリーズ勝敗が原文と不一致')
+        winner, loser = (team_names_jp(original[n]) for n in (1, 2))
+        for source in materials:
+            for series in source.get('series') or []:
+                teams = {t.get('name'): t.get('wins') for t in series.get('teams') or []}
+                if (source.get('date_jst') == document_day(document) and series.get('round') == 'W'
+                        and set(teams) == {winner, loser} and (teams[winner], teams[loser]) != counts):
+                    errors.append('見出しのシリーズ勝敗が当日の公式PS材料と不一致')
     program = document.get('ps_program') or {}
     for index, segment in enumerate(document.get('segments') or [], 1):
         text = segment.get('text') or ''
@@ -321,6 +345,13 @@ def assess(issues, documents, materials=None):
              or _supported_headline_comeback(quoted, document, sanity_sources.for_document(document, materials))) for document in referenced)
         import soccer_sanity_material
         if referenced and not confirmed:
+            import sanity_evidence
+            supported = supported or all(all(sentence.strip() == quoted.rstrip('。').strip()
+                for s in document.get('segments') or [] for sentence in re.split(r'[。！？\n]', s.get('text') or '')
+                if quoted.rstrip('。').strip() in sentence) and sanity_evidence.review(
+                quoted, sanity_sources.for_document(document, materials), issue.get('why') or '',
+                day=document_day(document)) is True
+                for document in referenced)
             supported = supported or all(sanity_claims.review(
                 quoted, sanity_sources.for_document(document, materials), issue.get('why') or '',
                 context=claim_context(document, quoted, sanity_sources.for_document(document, materials))) is True

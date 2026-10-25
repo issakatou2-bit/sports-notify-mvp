@@ -110,6 +110,14 @@ jobs:
       - name: Render and measure 60 seconds
         if: steps.gate.outputs.count != '0'
         run: python scripts/soccer_results_render.py --data data/soccer_results.json --audio-dir build/soccer_results/audio --out build/soccer_results
+      - name: Sanity gate (soccer_results)
+        id: sanity
+        if: steps.gate.outputs.count != '0'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/sanity.py --general --strict --narration build/soccer_results/narration.json --out data/sanity_soccer_results.json --hold-record build/sanity_hold_soccer_results.json --kind soccer_results
+
       - name: Vertical thumbnail
         if: steps.gate.outputs.count != '0'
         run: bash scripts/shorts_thumbnail.sh build/soccer_results/collespo_soccer_results.mp4 build/soccer_results/short.png
@@ -170,3 +178,14 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

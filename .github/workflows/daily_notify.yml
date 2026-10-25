@@ -318,6 +318,7 @@ jobs:
         # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
         continue-on-error: true
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           # 注目試合が無くて原稿を作らなかった日は、確かめる原稿が無い。
@@ -327,7 +328,7 @@ jobs:
           else
             python scripts/mlb_availability.py --games notable_games.json --check-narration public/narration.json
           fi
-          python scripts/sanity.py --general --strict --hold-record build/sanity_hold.json --kind daily
+          python scripts/sanity.py --general --strict --narration public/narration.json --out data/sanity.json --hold-record build/sanity_hold.json --kind daily
 
       - name: Synthesize narration
         continue-on-error: true
@@ -671,3 +672,14 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

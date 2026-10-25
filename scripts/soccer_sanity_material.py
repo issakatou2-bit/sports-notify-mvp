@@ -10,7 +10,8 @@ import club_display_names as clubs
 def compact(data):
     games = [{k: g[k] for k in ('game_id', 'league', 'home_team_name', 'away_team_name',
              'home_standing', 'away_standing', 'fixture_sources', 'start_time_jst',
-             'start_time_utc', 'id', 'date_jst', 'score', 'home', 'away', 'goals',
+             'start_time_utc', 'id', 'gamePk', 'espn', 'league_slug', 'league_code', 'code',
+             'date_jst', 'score', 'final_score', 'series_context', 'home', 'away', 'goals',
              'players', 'match_stats', 'score_crosscheck', 'jp_players', 'season_players') if k in g}
              for g in data.get('games') or []]
     competitions = [{k: c[k] for k in ('code', 'name_jp', 'season', 'stale', 'table',

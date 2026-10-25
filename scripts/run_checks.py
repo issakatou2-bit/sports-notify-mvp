@@ -991,6 +991,12 @@ def main() -> int:
     failed += check_syntax()
     failed += check_pyflakes()
     failed += check_yaml()
+    step('点検の呼び方・投稿前の共通入口')
+    import sanity_workflows
+    gate_errors = sanity_workflows.errors(ROOT)
+    for error in gate_errors:
+        print('NG', error)
+    failed += len(gate_errors)
     failed += check_shell_in_yaml()
     failed += check_imports()
     failed += check_tests(tmp)

@@ -24,6 +24,12 @@ FIXTURE = json.loads((ROOT / 'scripts/fixtures/fact-guards/evening_holds_2026102
 
 class EveningHoldsTests(unittest.TestCase):
     def setUp(self):
+        offline = patch('sanity_refresh.fetch', side_effect=RuntimeError('offline fixture'))
+        offline.start()
+        self.addCleanup(offline.stop)
+        retry = patch('sanity_recheck.ai_review', return_value=([], dict(status='offline fixture', calls=0)))
+        retry.start()
+        self.addCleanup(retry.stop)
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.old = Path.cwd()
@@ -50,7 +56,7 @@ class EveningHoldsTests(unittest.TestCase):
         self.assertFalse(sanity_material.blocking(issue))
         self.assertEqual(issue['severity'], 'high')
 
-    def test_missing_original_or_wrong_game_or_translation_still_holds(self):
+    def test_missing_evidence_does_not_fake_support_but_proven_mismatch_holds(self):
         original = copy.deepcopy(self.document)
         for change in ('missing', 'game', 'date', 'source', 'original', 'translation', 'extra'):
             with self.subTest(change=change):
@@ -76,7 +82,12 @@ class EveningHoldsTests(unittest.TestCase):
                     self.document['segments'][0]['text'] = head['jp'] + '。'
                 self.issue['where'] = (head['jp'] if change in ('translation', 'extra') else
                                        FIXTURE['issue']['where'].rstrip('。')) + '。'
-                self.assertTrue(sanity_material.blocking(self.assessed()[0]))
+                issue, errors = self.assessed()
+                self.assertFalse(issue['supported'])
+                if change in ('date', 'translation'):
+                    self.assertTrue(errors)
+                else:
+                    self.assertFalse(sanity_material.blocking(issue))
 
     def test_wrong_series_and_unrelated_factual_high_still_hold(self):
         self.materials[0]['series'][0]['teams'][0]['wins'] = 1
@@ -93,7 +104,7 @@ class EveningHoldsTests(unittest.TestCase):
         for text in (f'昨年の{claim}。', f'「{claim}」は誤りです。', '別の原稿です。'):
             with self.subTest(text=text):
                 self.document['segments'][0]['text'] = text
-                self.assertTrue(sanity_material.blocking(self.assessed()[0]))
+                self.assertFalse(self.assessed()[0]['supported'])
 
     def test_real_sanity_entry_passes_and_keeps_original_evidence(self):
         self.write('narration.json', self.document)

@@ -19,6 +19,12 @@ FIXTURE = json.loads((Path(__file__).parent/'fixtures/fact-guards/sanity_longfor
 
 class AllMaterials(unittest.TestCase):
     def setUp(self):
+        offline = patch('sanity_refresh.fetch', side_effect=RuntimeError('offline fixture'))
+        offline.start()
+        self.addCleanup(offline.stop)
+        retry = patch('sanity_recheck.ai_review', return_value=([], dict(status='offline fixture', calls=0)))
+        retry.start()
+        self.addCleanup(retry.stop)
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.old = Path.cwd()

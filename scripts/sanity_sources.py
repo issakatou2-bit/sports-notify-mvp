@@ -73,8 +73,8 @@ def capture(document, material=None):
                     names = {}
                 import notability_engine
                 names = dict(names, **{p['name_en']: p['name_jp'] for p in notability_engine.JP_PLAYERS_MLB})
-                players = [dict(p, name_jp=names.get(p.get('name')))
-                           for p in (data.get('players') or {}).values()
+                players = [dict(p, id=p.get('id') or ident, name_jp=names.get(p.get('name')))
+                           for ident, p in (data.get('players') or {}).items()
                            if any(n and n in text for n in (p.get('name'), names.get(p.get('name'))))]
                 if not players:
                     continue
@@ -174,6 +174,7 @@ def attach(document, data, sport=None):
     embedded = []
     if data.get('games') or data.get('players'):
         embedded.append(dict(source='generation.input', date_jst=day,
+            sport=sport or data.get('sport') or 'baseball',
             retrieved_at=data.get('generated_at') or data.get('updated_at'),
             source_url=data.get('source'), games=soccer_sanity_material.compact(data)['games'],
             players=data.get('players') or []))

@@ -354,6 +354,9 @@ def main():
         if not hub: hub = topic_hub.build(reporters, read(args.buzz), read(args.voices), as_of=as_of)
         reporters = dict(reporters, _topic_hub=hub)
     narr = build(recap, reporters, read(args.buzz), read(args.voices), stats, as_of)
+    import sanity_sources
+    narr = sanity_sources.attach(narr, dict(date_jst=as_of.date().isoformat(),
+        source='generation.player_story', players=[narr['player']] if narr.get('player') else []))
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(narr, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(dict(can_make=narr['can_make'], direction=narr.get('direction')), ensure_ascii=False))
