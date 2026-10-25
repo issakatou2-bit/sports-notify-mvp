@@ -23,7 +23,7 @@ class Interest(unittest.TestCase):
 
     def test_reasons_when_present_none_when_missing(self):
         picked=interest.decide(self.cases[0])
-        self.assertEqual([r['text'] for r in picked['reasons']],['順位差2の直接対決','勝点差1'])
+        self.assertEqual([r['text'] for r in picked['reasons']],['15位クリスタルパレス対13位ノッティンガムF、順位差2の直接対決','勝点差1'])
         self.assertEqual(interest.decide(self.cases[1]),dict(reasons=[],player=None))
 
     def test_japanese_eligible_player_prioritized_only_one(self):

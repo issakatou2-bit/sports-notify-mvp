@@ -102,15 +102,16 @@ def decide(game,limit=2):
     ranks=[home.get('rank'),away.get('rank')];gap=point_gap(home,away)
     valid_ranks=all(type(r) is int and r>0 for r in ranks) and ranks[0]!=ranks[1]
     if valid_ranks:
+        named='対'.join(('首位' if rank==1 else f'{rank}位')+(clubs.lookup(game.get(side+'_team_name')) or {}).get('display',game.get(side+'_team_name','')) for side,rank in zip(('home','away'),ranks))
         a,b=sorted(ranks);cut=game.get('cl_line');drop=game.get('relegation_line')
         if a==1 and b<=3 and gap is not None and gap<=3:
-            reasons.append(dict(kind='title',text=f'{a}位と{b}位の首位争い',ranks=ranks,gap=gap))
+            reasons.append(dict(kind='title',text=named+'の首位争い',ranks=ranks,gap=gap))
         elif type(cut) is int and cut>0 and a<=cut<b and b-a<=2 and gap is not None and gap<=3:
-            reasons.append(dict(kind='cl',text=f'CL圏の境目 {a}位と{b}位',line=cut,ranks=ranks,gap=gap))
+            reasons.append(dict(kind='cl',text='CL圏の境目 '+named,line=cut,ranks=ranks,gap=gap))
         elif type(drop) is int and drop>0 and a>=drop-2 and gap is not None and gap<=3:
-            reasons.append(dict(kind='relegation',text=f'残留争い {a}位と{b}位',line=drop,ranks=ranks,gap=gap))
-        elif b-a<=3:reasons.append(dict(kind='rank',text=f'順位差{b-a}の直接対決',ranks=ranks,rank_difference=b-a))
-        elif a==1:reasons.append(dict(kind='leader',text=f'首位チームと{b}位の対戦',ranks=ranks))
+            reasons.append(dict(kind='relegation',text='残留争い '+named,line=drop,ranks=ranks,gap=gap))
+        elif b-a<=3:reasons.append(dict(kind='rank',text=named+f'、順位差{b-a}の直接対決',ranks=ranks,rank_difference=b-a))
+        elif a==1:reasons.append(dict(kind='leader',text=named,ranks=ranks))
     if gap is not None:reasons.append(dict(kind='points',text=f'勝点差{gap:g}',gap=gap))
     for side,label,standing in [('home','ホーム側',home),('away','アウェー側',away)]:
         form=standing.get('last_five')

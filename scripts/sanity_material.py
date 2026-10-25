@@ -13,6 +13,7 @@ def document_day(document):
     """夕方のvoices/pressは日本時間の日付をsegment.meta.dateに保存する。"""
     return ((document.get('ps_program') or {}).get('date_jst')
             or document.get('date_jst')
+            or (document.get('soccer_material') or {}).get('date_jst')
             or next(((s.get('meta') or {}).get('date')
                      for s in document.get('segments') or []
                      if (s.get('meta') or {}).get('date')), None))
@@ -55,7 +56,8 @@ def grounding(documents, snapshot_path='data/postseason.json'):
         for row in source['series']:
             row['teams'] = [{k: t[k] for k in ('id', 'name', 'wins') if k in t}
                             for t in row.get('teams') or []]
-    return result
+    import soccer_sanity_material
+    return result + soccer_sanity_material.grounding(documents)
 
 
 def _clock(text, base):
@@ -75,6 +77,11 @@ def check(document, materials=None):
     import verify_numbers
     import game_fact_guard
     errors = verify_numbers.check(document) + game_fact_guard.check(document)
+    import soccer_sanity_material
+    for index, segment in enumerate(document.get('segments') or [], 1):
+        if soccer_sanity_material.review(segment.get('text') or '',
+                soccer_sanity_material.for_document(document, materials)) is False:
+            errors.append(f'行{index}: サッカーの順位・勝点が材料と不一致')
     from article_freshness import fresh_articles
     if document.get('date_jst'):
         sources = [h for segment in document.get('segments') or []
@@ -275,6 +282,13 @@ def assess(issues, documents, materials=None):
         supported = bool(scoped) and not confirmed and all(
             (_supported_claim(quoted, document, materials)
              or _supported_headline_comeback(quoted, document, materials)) for document in referenced)
+        import soccer_sanity_material
+        if referenced and not confirmed:
+            supported = supported or all(soccer_sanity_material.review(
+                quoted, soccer_sanity_material.for_document(document, materials),
+                issue.get('why') or '', context='。'.join(s.get('text') or ''
+                    for s in document.get('segments') or [] if quoted in (s.get('text') or ''))
+                ) is True for document in referenced)
         # 旧保存応答は事実指摘として扱い、稼働中のhighを黙って解除しない。
         # 新しいAI応答のkind必須検査はsanity.generalで行う。
         kind = issue.get('kind') or FACT
