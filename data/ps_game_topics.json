@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-24T08:36:49.831666+00:00",
+  "updated_at": "2026-10-25T04:35:19.163565+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -33,11 +33,11 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「今夜のコントレラス、狙い撃ちだったな。🍻」"
+          "「今夜のコントレラス、まさにスナイパーだった🍻」"
         ],
         [
           "MLB.comの見出しから",
-          "「ブルワーズが9回の嵐を乗り切り、熱狂的なファンの前で第1戦をものにした」"
+          "「ブリュワーズ、9回の猛攻をしのぎ、熱狂のファンの前で第1戦を制す」"
         ]
       ],
       "japanese": [],
@@ -47,14 +47,14 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "今夜のコントレラス、狙い撃ちだったな。🍻",
+        "said": "今夜のコントレラス、まさにスナイパーだった🍻",
         "text": "Contreras was a sniper tonight. 🍻",
         "url": "https://www.youtube.com/watch?v=sSAk4hyqnUQ",
-        "likes": 233,
+        "likes": 841,
         "at": "2026-10-24T05:14:18Z"
       },
       "headline": {
-        "said": "ブルワーズが9回の嵐を乗り切り、熱狂的なファンの前で第1戦をものにした",
+        "said": "ブリュワーズ、9回の猛攻をしのぎ、熱狂のファンの前で第1戦を制す",
         "text": "Brewers weather ninth-inning storm, take Game 1 in front of raucous fans",
         "url": "https://www.mlb.com/news/brewers-win-world-series-game-1-2026",
         "at": "2026-10-24T05:47:00+00:00"
@@ -153,6 +153,146 @@
           }
         ],
         "ticker": "次の試合　日本時間10月25日　ワールドシリーズ第2戦"
+      }
+    },
+    {
+      "key": "season_game_849802",
+      "label": "ワールドシリーズ第2戦",
+      "hook": "ブリュワーズがレイズに5対4でワールドシリーズ2勝0敗に",
+      "heading": "レイズ 対 ブリュワーズ　ワールドシリーズ第2戦",
+      "intro": "ワールドシリーズ第2戦、ブリュワーズが本拠地でレイズに5対4で勝ちました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "team_id": 158,
+      "abbr": "MIL",
+      "title": "【MLB】ブリュワーズがレイズに5対4でワールドシリーズ2勝0敗に #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "ブリュワーズ 5対4 レイズ　本拠地で勝利　シリーズはブリュワーズの2勝0敗"
+        ],
+        [
+          "本塁打",
+          "ブリュワーズ1本（フレリック）　レイズ1本（ヒックス）"
+        ],
+        [
+          "先発",
+          "ブリュワーズ ヘンダーソン 3回を4失点　レイズ ラスムッセン 3回と3分の2を3失点"
+        ],
+        [
+          "勝ち投手・セーブ",
+          "勝ち アブナー・ウリーベ（1回と3分の1を無失点）　セーブ アーロン・アシュビー"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「着実に攻めたブリュワーズがレイズを追い上げ、シリーズ2勝0敗に」"
+        ]
+      ],
+      "japanese": [],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": {
+        "said": "着実に攻めたブリュワーズがレイズを追い上げ、シリーズ2勝0敗に",
+        "text": "Methodical Brewers chip away at Rays, rally to seize 2-0 lead",
+        "url": "https://www.mlb.com/news/brewers-win-world-series-game-2-2026",
+        "at": "2026-10-25T03:55:00+00:00"
+      },
+      "game_pk": 849802,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 4,
+              "home": 2
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 5,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": null
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 139,
+            "name": "レイズ",
+            "abbr": "TB",
+            "total": 4
+          },
+          "home": {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "abbr": "MIL",
+            "total": 5
+          }
+        },
+        "decisive": null
+      },
+      "game_date": "2026-10-25T00:00:00Z",
+      "jp_first": false,
+      "next_team_id": 158,
+      "finished_at": "2026-10-25T03:47:48.112000+00:00",
+      "v3": {
+        "who": "ブリュワーズ　ワールドシリーズ第2戦",
+        "big": "5-4",
+        "unit": "",
+        "sub": "本拠地で勝利",
+        "tag": "ワールドシリーズ2勝0敗",
+        "chips": [
+          {
+            "label": "ワールドシリーズ　ブリュワーズ",
+            "score": "2-0",
+            "win": true
+          },
+          {
+            "label": "本塁打　ブリュワーズ",
+            "score": "1"
+          },
+          {
+            "label": "本塁打　レイズ（ヒックス）",
+            "score": "1"
+          }
+        ],
+        "ticker": "ブリュワーズ 5対4 レイズ　本拠地で勝利　シリーズはブリュワーズの2勝0敗"
       }
     }
   ]
