@@ -15449,6 +15449,26 @@
       "actual_host": "ui",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-24": {
+      "video_id": "1Iy8UsDuSl8",
+      "url": "https://youtu.be/1Iy8UsDuSl8",
+      "title": "【欧州サッカー】佐野海舟が先発｜マインツ 2-3 ブレーメン ほか 日本人選手の結果 #Shorts",
+      "published_at": "2026-10-25T00:32:06.865875+00:00",
+      "publish_at": "2026-10-25T00:46:00Z",
+      "host_assignment": {
+        "day": "2026-10-25",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 41,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   }
 }
