@@ -619,6 +619,66 @@
     "duration_budget": {
       "limit": 55,
       "grace": 0
+    },
+    "soccer_material": {
+      "source": "ESPN",
+      "retrieved_at": "2026-10-15T09:53:56.805003+00:00",
+      "date_jst": "2026-10-15",
+      "games": [
+        {
+          "game_id": "espn-401915566",
+          "league": "ヨーロッパリーグ",
+          "home_team_name": "Olympique Lyonnais",
+          "away_team_name": "Crystal Palace FC",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN"
+          ],
+          "start_time_jst": "10/16 01:45",
+          "start_time_utc": "2026-10-15T16:45:00+00:00"
+        },
+        {
+          "game_id": "espn-401915567",
+          "league": "ヨーロッパリーグ",
+          "home_team_name": "AC Sparta Praha",
+          "away_team_name": "Lillestrøm SK",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN"
+          ],
+          "start_time_jst": "10/16 01:45",
+          "start_time_utc": "2026-10-15T16:45:00+00:00"
+        },
+        {
+          "game_id": "espn-401915574",
+          "league": "ヨーロッパリーグ",
+          "home_team_name": "Royale Union Saint-Gilloise",
+          "away_team_name": "Real Sociedad de Fútbol",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN"
+          ],
+          "start_time_jst": "10/16 01:45",
+          "start_time_utc": "2026-10-15T16:45:00+00:00"
+        },
+        {
+          "game_id": "espn-401915563",
+          "league": "ヨーロッパリーグ",
+          "home_team_name": "TSG 1899 Hoffenheim",
+          "away_team_name": "Beşiktaş JK",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN"
+          ],
+          "start_time_jst": "10/16 04:00",
+          "start_time_utc": "2026-10-15T19:00:00+00:00"
+        }
+      ],
+      "competitions": []
     }
   },
   "audio_seconds": [

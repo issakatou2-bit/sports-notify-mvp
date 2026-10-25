@@ -1,0 +1,8 @@
+{
+  "text": "アストンヴィラ対マンチェスターC。首位チームと12位の対戦。勝点差13。",
+  "issue": {"kind": "事実の誤り", "severity": "high", "where": "アストンヴィラ対マンチェスターC。首位チームと12位の対戦。勝点差13。", "why": "ホームとアウェーのどちらが首位か書かれていない"},
+  "data": {
+    "generated_at": "2026-10-24T09:54:14.816416+00:00",
+    "games": [{"game_id": "560614", "league": "プレミアリーグ", "home_team_name": "アストンヴィラ", "away_team_name": "マンチェスター・シティ", "home_standing": {"rank": 12, "points_back": 13}, "away_standing": {"rank": 1, "points_back": 0}}]
+  }
+}

@@ -51,7 +51,7 @@ def program(data):
         if facts:
             paired=[re.search(r'は昨季(.+?)(\d+)位$', f) for f in facts]
             if len(paired)==2 and all(paired) and paired[0][1]==paired[1][1]:
-                seg['text']+=f'昨季{paired[0][1]}でホーム側は{paired[0][2]}位、アウェー側は{paired[1][2]}位。'
+                seg['text']+='。'.join(facts)+'。'
             else:
                 seg['text']+='注目は昨季の成績。'+'。'.join(facts)+'。'
             if not meta['interest']['reasons']:
