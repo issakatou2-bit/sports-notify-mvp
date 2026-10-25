@@ -21,7 +21,7 @@ SPEECH_LIMIT = 225
 LIMIT = 40
 LABEL = '現地の声（翻訳）'
 FICTION = '見本用の架空のコメント（実在の投稿ではありません）'
-EXTRA = {'久保建英': ['Take Kubo', 'Takefusa'], '鈴木ザイオン': ['Zion'],
+EXTRA = {'久保建英': ['Take Kubo', 'Takefusa'], '鈴木彩艶': ['Zion', '鈴木ザイオン'],
          '三笘薫': ['Kaoru'], '冨安健洋': ['Tomi', 'Tommy'], '堂安律': ['Ritsu'], '南野拓実': ['Taki']}
 COMMON = {'Uno', 'Sano', 'Seko', 'Ito', 'Sato', 'Goto', 'Ueda', 'Saito'}
 ABUSE = (r'\bidiot', r'\bstupid', r'\bmoron', r'\btrash\b', r'\bgarbage\b', r'\bclown',
