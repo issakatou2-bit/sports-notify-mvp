@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-25T04:35:19.163565+00:00",
+  "updated_at": "2026-10-25T06:26:21.597134+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -33,11 +33,11 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「今夜のコントレラス、まさにスナイパーだった🍻」"
+          "「今夜のコントレラス、狙撃手だったな。🍻」"
         ],
         [
           "MLB.comの見出しから",
-          "「ブリュワーズ、9回の猛攻をしのぎ、熱狂のファンの前で第1戦を制す」"
+          "「ブリュワーズ、9回の猛攻をしのぎ第1戦を制す 沸き返るファンの前で」"
         ]
       ],
       "japanese": [],
@@ -47,14 +47,14 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "今夜のコントレラス、まさにスナイパーだった🍻",
+        "said": "今夜のコントレラス、狙撃手だったな。🍻",
         "text": "Contreras was a sniper tonight. 🍻",
         "url": "https://www.youtube.com/watch?v=sSAk4hyqnUQ",
-        "likes": 841,
+        "likes": 848,
         "at": "2026-10-24T05:14:18Z"
       },
       "headline": {
-        "said": "ブリュワーズ、9回の猛攻をしのぎ、熱狂のファンの前で第1戦を制す",
+        "said": "ブリュワーズ、9回の猛攻をしのぎ第1戦を制す 沸き返るファンの前で",
         "text": "Brewers weather ninth-inning storm, take Game 1 in front of raucous fans",
         "url": "https://www.mlb.com/news/brewers-win-world-series-game-1-2026",
         "at": "2026-10-24T05:47:00+00:00"
@@ -135,10 +135,6 @@
       "jp_first": false,
       "next_team_id": 158,
       "finished_at": "2026-10-24T03:26:24.976000+00:00",
-      "next_game_jp": {
-        "day": "10月25日",
-        "game": 2
-      },
       "v3": {
         "who": "ブリュワーズ　ワールドシリーズ第1戦",
         "big": "3-2",
@@ -152,7 +148,7 @@
             "win": true
           }
         ],
-        "ticker": "次の試合　日本時間10月25日　ワールドシリーズ第2戦"
+        "ticker": "ブリュワーズ 3対2 レイズ　本拠地で勝利　シリーズはブリュワーズの1勝0敗"
       }
     },
     {
@@ -185,7 +181,7 @@
         ],
         [
           "MLB.comの見出しから",
-          "「着実に攻めたブリュワーズがレイズを追い上げ、シリーズ2勝0敗に」"
+          "「手堅いブリュワーズ、レイズにじわじわ迫り逆転 2勝0敗とリード」"
         ]
       ],
       "japanese": [],
@@ -196,10 +192,10 @@
       "source": null,
       "voice": null,
       "headline": {
-        "said": "着実に攻めたブリュワーズがレイズを追い上げ、シリーズ2勝0敗に",
+        "said": "手堅いブリュワーズ、レイズにじわじわ迫り逆転 2勝0敗とリード",
         "text": "Methodical Brewers chip away at Rays, rally to seize 2-0 lead",
         "url": "https://www.mlb.com/news/brewers-win-world-series-game-2-2026",
-        "at": "2026-10-25T03:55:00+00:00"
+        "at": "2026-10-25T05:42:00+00:00"
       },
       "game_pk": 849802,
       "game_v4": {
@@ -271,6 +267,10 @@
       "jp_first": false,
       "next_team_id": 158,
       "finished_at": "2026-10-25T03:47:48.112000+00:00",
+      "next_game_jp": {
+        "day": "10月27日",
+        "game": 3
+      },
       "v3": {
         "who": "ブリュワーズ　ワールドシリーズ第2戦",
         "big": "5-4",
@@ -292,7 +292,7 @@
             "score": "1"
           }
         ],
-        "ticker": "ブリュワーズ 5対4 レイズ　本拠地で勝利　シリーズはブリュワーズの2勝0敗"
+        "ticker": "次の試合　日本時間10月27日　ワールドシリーズ第3戦"
       }
     }
   ]
