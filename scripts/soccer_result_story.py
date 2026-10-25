@@ -30,14 +30,43 @@ def narration(data):
     for row in rows:
         g=next(g for g in data['games'] if g['id']==row['event_id'])
         text=f"{g['home']['name_jp']}対{g['away']['name_jp']}は、{g['score']['home']}対{g['score']['away']}。"
-        units=[text];answer=row.get('answer')
-        if answer:
-            units.append(facts.player_line(answer,expected=True))
-        units.extend(facts.player_line(p) for p in g['players'] if p['status']!='none' and (not answer or p['name']!=answer['name']))
-        segments.append(dict(kind='followup',text=''.join(units),speaker=2,caption_units=units,meta=dict(event_id=g['id'])))
-        detail=facts.supplements(g,row)
-        segments.append(dict(kind='followup-detail',text=''.join(detail),speaker=2,caption_units=detail,
-                             meta=dict(event_id=g['id'],details=facts.display_details(g,row))))
+        import soccer_look
+        import soccer_stats
+        if soccer_look.readable():
+            segments.append(dict(kind='followup',text=text,speaker=2,caption_units=[text],meta=dict(event_id=g['id'],score_only=True)))
+            goals=sorted(g['goals'],key=lambda goal:tuple(int(v) for v in (goal['minute'].split('+')+['0'])[:2]))
+            for start in range(0,max(1,len(goals)),3):
+                shown=goals[start:start+3]
+                detail=[facts.goal_line(goal,g) for goal in shown] or ['得点なし。' if g['goals_complete'] else '得点経過は未取得です。']
+                segments.append(dict(kind='followup-detail',text=''.join(detail),speaker=2,caption_units=detail,
+                    meta=dict(event_id=g['id'],details=facts.display_details(g,row),goals=shown,required=True)))
+            comment=soccer_stats.commentary(g)
+            if comment:segments.append(dict(kind='team-stats',text=comment,speaker=2,meta=dict(event_id=g['id'])))
+            people=[p for p in g['players'] if p['status']!='none']
+            for start,p in enumerate(people):
+                line=soccer_stats.result_narration(p)
+                segments.append(dict(kind='player-stats',text=line,speaker=2,caption_units=[line],
+                    meta=dict(event_id=g['id'],start=start,count=1)))
+        else:
+            units=[text];answer=row.get('answer')
+            if answer:
+                units.append(facts.player_line(answer,expected=True))
+            units.extend(facts.player_line(p) for p in g['players'] if p['status']!='none' and (not answer or p['name']!=answer['name']))
+            import soccer_look
+            import soccer_stats
+            if soccer_look.readable() and soccer_stats.commentary(g):units.append(soccer_stats.commentary(g))
+            segments.append(dict(kind='followup',text=''.join(units),speaker=2,caption_units=units,meta=dict(event_id=g['id'])))
+            if soccer_look.readable() and soccer_stats.has_personal(g):
+                people=[p for p in g['players'] if p['status']!='none']
+                for start in range(0,len(people),2):
+                    shown=people[start:start+2]
+                    text=''.join(p['name']+'は'+soccer_stats.personal_narration(p)+'。' for p in shown if soccer_stats.personal_narration(p))
+                    if not text:continue
+                    segments.append(dict(kind='player-stats',text=text,speaker=2,
+                                         meta=dict(event_id=g['id'],start=start)))
+            detail=facts.supplements(g,row)
+            segments.append(dict(kind='followup-detail',text=''.join(detail),speaker=2,caption_units=detail,
+                                 meta=dict(event_id=g['id'],details=facts.display_details(g,row),goals=g['goals'])))
     played=[p for p in data['players'] if p['status']!='none']
     if played:
         answer_names={r['answer']['name'] for r in rows if r.get('answer')}
@@ -165,11 +194,14 @@ def fit_to_audio(narration,audio):
     while True:
         try:
             times=render.durations(narr['segments'],voices)
+            if render.soccer_look.readable():
+                from soccer_readable import minimum_seconds
+                times=[max(t,minimum_seconds(s)) for s,t in zip(narr['segments'],times)]
             if sum(math.ceil(t*render.FPS)/render.FPS for t in times)<=results.LIMIT:return narr,voices
         except ValueError as error:
             if '60秒' not in str(error):raise
-        index=next((i for i in reversed(range(len(narr['segments']))) if narr['segments'][i]['kind']=='followup-detail'),None)
-        if index is None:index=next((i for kind in ('followup-next','followup-change') for i,s in enumerate(narr['segments']) if s['kind']==kind),None)
+        index=next((i for i in reversed(range(len(narr['segments']))) if narr['segments'][i]['kind']=='followup-detail' and not narr['segments'][i]['meta'].get('required')),None)
+        if index is None:index=next((i for kind in ('team-stats','followup-next','followup-change') for i,s in enumerate(narr['segments']) if s['kind']==kind),None)
         if index is None:raise ValueError('必須の結果/期待選手/日本人選手の実音声が60秒を超えます')
         omitted=narr['segments'][index]
         narr.setdefault('results_length_adjustment',[]).append(dict(kind=omitted['kind'],event_id=omitted['meta'].get('event_id')))

@@ -23,11 +23,13 @@ def page_at(t, count, duration=None):
 
 def minimum_seconds(seg, data=None):
     meta=seg['meta'];kind=seg['kind'];count=1
+    if kind=='player-stats':return 4
+    if kind=='team-stats':return 4
     if kind=='jp_roster':count=math.ceil(len(meta['rows'])/4)
     elif kind=='roster':count=math.ceil(meta['count']/4)
     elif kind in ('result','followup-detail'):
-        game=next(g for g in data['games'] if g['id']==meta['event_id'])
-        count=math.ceil(len(meta.get('goals',game['goals']))/3)
+        game=next(g for g in data['games'] if g['id']==meta['event_id']) if data else {}
+        count=math.ceil(len(meta.get('goals',game.get('goals',[])))/3)
     elif kind=='standings':
         count=math.ceil(sum(1 for r in meta['rows'] if any(a<=r['position']<=b for a,b in meta['shown']))/4)
     elif kind not in ('intro','followup','preview','cover'):return 0
@@ -186,13 +188,17 @@ class Screen:
             self.text(520,1352,spec['gap'],30,390,c.LIME,role='supplement')
         return self.finish(spec)
 
-    def score(self, game, spec, title='試合結果', person=None):
+    def score(self, game, spec, title='試合結果', person=None, score_only=False):
         import soccer_result_facts as facts
         self.title(title, facts.competition(game))
-        self.panel(BODY_TOP,980)
-        self.name(100,440,game['home']['name_jp'],800,52)
-        self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
-        self.name(100,870,game['away']['name_jp'],800,52)
+        self.panel(BODY_TOP,BODY_BOTTOM if score_only else 980)
+        self.name(100,550 if score_only else 440,game['home']['name_jp'],800,52)
+        self.text(120,830 if score_only else 616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
+        self.name(100,1220 if score_only else 870,game['away']['name_jp'],800,52)
+        if score_only:return self.finish(spec)
+        if game.get('match_stats'):
+            self.match_statistics(game)
+            return self.finish(spec)
         people=[person] if person else [p for p in game['players'] if p['status']!='none']
         self.panel(1002,BODY_BOTTOM)
         if not people:
@@ -210,6 +216,59 @@ class Screen:
                 y=self.lines(100,y+62,detail,40,800)+20
         if y>BODY_BOTTOM:
             raise ValueError('選手の結果は次画面が必要です')
+        return self.finish(spec)
+
+    def match_statistics(self, game):
+        stats=game['match_stats']
+        self.panel(1002,BODY_BOTTOM)
+        self.text(100,1022,self.clubs[game['home']['name_jp']]['abbr'],30,200,c.MUTED,role='supplement')
+        self.text(744,1022,self.clubs[game['away']['name_jp']]['abbr'],30,160,c.MUTED,role='supplement')
+        for i,(key,label) in enumerate((('possession','保持率'),('shots','シュート'),('on_target','枠内'))):
+            y=1090+i*102
+            left=f"{stats['home'][key]:g}"+('%' if key=='possession' else '')
+            right=f"{stats['away'][key]:g}"+('%' if key=='possession' else '')
+            self.text(110,y,left,60,260,c.LIME,True)
+            self.text(426,y+10,label,40,240)
+            self.text(724,y,right,60,190,c.LIME,True)
+        self.text(100,1390,'ESPN / '+game['date_jst']+'の夜',30,800,c.MUTED,role='supplement')
+
+    def player_statistics(self, game, people, spec):
+        import soccer_stats
+        import soccer_results
+        self.title('日本人選手の結果',game['date_jst']+'の夜 / ESPN')
+        single=len(people)==1
+        # 10/26本人指定：1人札は内容に合わせて上下を詰める。
+        self.im.info['compact_player_statistics']=single
+        height=(BODY_BOTTOM-BODY_TOP)//max(1,len(people))
+        for i,p in enumerate(people):
+            y=BODY_TOP+i*height
+            label=soccer_stats.attack_label(p)
+            bottom=y+height-14
+            if single:
+                bottom=y+(920 if label else 720 if p.get('position')=='GK' else 820)
+            self.panel(y,bottom)
+            self.text(100,y+40 if single else y+20,p['name'],76 if single else 52,800)
+            self.name(100,y+160 if single else y+90,p['club'],800,52 if single else 40)
+            state=soccer_results.STATUS[p['status']]
+            minute_label=soccer_stats.minutes_label(p)
+            if minute_label:state+=' / '+minute_label
+            self.text(100,y+250 if single else y+156,state,52 if single else 40,800)
+            ga=' / '.join(f"{p[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト')) if p.get(k) is not None)
+            if ga and p.get('position')!='GK':self.text(100,y+340 if single else y+216,ga,60 if single else 44,800)
+            label=soccer_stats.attack_label(p)
+            detail=soccer_stats.personal_line(p)
+            if single and detail:
+                measures=(('saves','セーブ'),('conceded','失点')) if p.get('position')=='GK' else (('shots','シュート'),('on_target','枠内'))
+                for j,(key,unit) in enumerate(measures):
+                    if p.get(key) is None:continue
+                    x=110+j*410
+                    offset=340 if p.get('position')=='GK' else 470
+                    self.text(x,y+offset,p[key],120 if label else 180,350,c.LIME,True)
+                    self.text(x,y+offset+(150 if label else 210),unit,44,350)
+            elif detail:self.lines(100,y+286,detail,40,800)
+            if label:
+                self.text(100,y+710 if single else y+362,label,52 if single else 40,800,c.LIME)
+                self.text(100,y+810 if single else y+442,soccer_stats.NOTICE,30,800,c.MUTED,role='supplement')
         return self.finish(spec)
 
     def goals(self, game, goals, spec):
@@ -267,7 +326,13 @@ def slots_frame(t, seg, plan):
 def results_frame(t,seg,data,clubs,spec):
     s=Screen(clubs,t)
     game=next((g for g in data['games'] if g['id']==seg['meta'].get('event_id')),None)
-    if seg['kind']=='followup':return s.score(game,spec)
+    if seg['kind']=='player-stats':
+        people=[p for p in game['players'] if p['status']!='none']
+        start=seg['meta'].get('start',0)
+        return s.player_statistics(game,people[start:start+seg['meta'].get('count',2)],spec)
+    if seg['kind']=='followup':return s.score(game,spec,score_only=seg['meta'].get('score_only',False))
+    if seg['kind']=='team-stats':
+        return s.score(game,spec,title='チームのスタッツ')
     if seg['kind'] in ('result','followup-detail'):
         return s.goals(game,seg['meta'].get('goals',game['goals']),spec)
     if seg['kind']=='intro':
@@ -321,6 +386,6 @@ def check_frame(im,clubs):
         for e in cards+body:
             if intersects(e['box'],caption):errors.append(dict(caption_overlap=e))
         if 1920-caption[3]>100:errors.append(dict(empty_below_caption=1920-caption[3]))
-    if cards and BODY_BOTTOM-max(e['box'][3] for e in cards)>80:
+    if cards and not im.info.get('compact_player_statistics') and BODY_BOTTOM-max(e['box'][3] for e in cards)>80:
         errors.append(dict(empty_body_bottom=BODY_BOTTOM-max(e['box'][3] for e in cards)))
     return errors

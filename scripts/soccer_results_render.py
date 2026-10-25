@@ -210,6 +210,17 @@ def numeric_material(data):
     for meta in roster_pages(data):values.update({str(meta['more']),str(meta['count']+meta['more'])})
     # Date is explicitly supplied material, not a guessed match day.
     values.update(re.findall(r'\d+',data['date_jst']))
+    import soccer_stats
+    for g in data['games']:
+        for side in ('home','away'):
+            for value in (g.get('match_stats') or {}).get(side,{}).values():
+                values.add(f'{value:g}')
+                values.update(re.findall(r'\d+',f'{value:g}'))
+    for p in data['players']:
+        for key in ('shots','on_target','saves','conceded'):
+            if p.get(key) is not None:values.add(str(p[key]))
+        attack=soccer_stats.attack(p)
+        if attack:values.add(str(attack['level']))
     return values
 
 

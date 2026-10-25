@@ -12,7 +12,7 @@ def compact(data):
              'home_standing', 'away_standing', 'fixture_sources', 'start_time_jst',
              'start_time_utc', 'id', 'gamePk', 'espn', 'league_slug', 'league_code', 'code',
              'date_jst', 'score', 'final_score', 'series_context', 'home', 'away', 'goals',
-             'players', 'score_crosscheck', 'jp_players', 'season_players') if k in g}
+             'players', 'match_stats', 'score_crosscheck', 'jp_players', 'season_players') if k in g}
              for g in data.get('games') or []]
     competitions = [{k: c[k] for k in ('code', 'name_jp', 'season', 'stale', 'table',
                      'last_season', 'last_season_year', 'lines', 'jp') if k in c}
