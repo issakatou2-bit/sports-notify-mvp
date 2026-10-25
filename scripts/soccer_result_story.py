@@ -55,7 +55,9 @@ def narration(data):
         text=f"次は日本時間{at.month}月{at.day}日{at.hour}時"+(f'{at.minute}分' if at.minute else '')+f"、{names.display(upcoming['home'])}対{names.display(upcoming['away'])}。"
         segments.append(dict(kind='followup-next',text=text,speaker=2,meta=dict(row=upcoming)))
     segments.append(dict(kind='outro',text=render.r3.OUTRO_TEXT,speaker=2,meta={}))
-    return dict(label=data['date_jst'],segments=segments,duration_budget=dict(limit=results.LIMIT,grace=0))
+    import sanity_sources
+    return sanity_sources.attach(dict(label=data['date_jst'],segments=segments,
+        duration_budget=dict(limit=results.LIMIT,grace=0)), data, sport='soccer')
 
 
 def numeric_material(data):

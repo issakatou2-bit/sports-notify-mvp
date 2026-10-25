@@ -12,7 +12,10 @@ CONTEXT = '説明不足・文脈'
 def document_day(document):
     """夕方のvoices/pressは日本時間の日付をsegment.meta.dateに保存する。"""
     return ((document.get('ps_program') or {}).get('date_jst')
+            or document.get('sanity_date_jst')
             or document.get('date_jst')
+            or document.get('date')
+            or (document.get('label') if re.fullmatch(r'\d{4}-\d{2}-\d{2}', str(document.get('label', ''))) else None)
             or (document.get('soccer_material') or {}).get('date_jst')
             or next(((s.get('meta') or {}).get('date')
                      for s in document.get('segments') or []
@@ -22,10 +25,11 @@ def document_day(document):
 def blocking(issue):
     return (issue.get('kind') == FACT
             and str(issue.get('severity', '')).lower() == 'high'
+            and not issue.get('material_missing')
             and not issue.get('supported'))
 
 
-def grounding(documents, snapshot_path='data/postseason.json'):
+def _legacy_grounding(documents, snapshot_path='data/postseason.json'):
     """保存済みのPS材料を、出典・取得時刻を保った小さな形で渡す。通信しない。"""
     sources = []
     for document in documents:
@@ -60,6 +64,30 @@ def grounding(documents, snapshot_path='data/postseason.json'):
     return result + soccer_sanity_material.grounding(documents)
 
 
+def grounding(documents):
+    import sanity_sources
+    return sanity_sources.collect(documents)
+
+
+def claim_context(document, quoted, materials):
+    """話者交代で人物名と順位の行が分かれた場合だけ直前の行を引き継ぐ。"""
+    names = [r.get('name') for s in materials or [] for c in s.get('competitions') or []
+             for r in c.get('jp') or [] if r.get('name')]
+    result = []
+    segments = document.get('segments') or []
+    for index, segment in enumerate(segments):
+        text = segment.get('text') or ''
+        if not quoted or quoted not in text:
+            continue
+        previous = segments[index-1] if index else {}
+        same_panel = not (previous.get('panel') and segment.get('panel') and
+                          previous['panel'] != segment['panel'])
+        if index and same_panel and not any(n in text for n in names):
+            text = (previous.get('text') or '') + '。' + text
+        result.append(text)
+    return '。'.join(result)
+
+
 def _clock(text, base):
     match = re.search(r'(?:(\d+)月(\d+)日|(今日|明日|あさって))\s*(\d+)時(?:(\d+)分)?', text)
     if not match:
@@ -74,11 +102,18 @@ def _clock(text, base):
 
 
 def check(document, materials=None):
+    import sanity_sources
+    materials = sanity_sources.for_document(document, materials)
     import verify_numbers
     import game_fact_guard
     errors = verify_numbers.check(document) + game_fact_guard.check(document)
     import soccer_sanity_material
     for index, segment in enumerate(document.get('segments') or [], 1):
+        import sanity_claims
+        if sanity_claims.review(segment.get('text') or '', materials,
+                                context=segment.get('_sanity_context') or claim_context(
+                                    document, segment.get('text') or '', materials)) is False:
+            errors.append(f'行{index}: 所属・順位・勝点・勝敗が材料と不一致')
         if soccer_sanity_material.review(segment.get('text') or '',
                 soccer_sanity_material.for_document(document, materials)) is False:
             errors.append(f'行{index}: サッカーの順位・勝点が材料と不一致')
@@ -266,6 +301,8 @@ def _supported_headline_comeback(quoted, document, materials):
 
 
 def assess(issues, documents, materials=None):
+    import sanity_sources
+    import sanity_claims
     errors = [error for document in documents for error in check(document, materials)]
     # severityは受信値として残す。停止可否を同じ値へ上書きしない。
     reviewed = []
@@ -274,16 +311,20 @@ def assess(issues, documents, materials=None):
         referenced = [document for document in documents
                       if quoted and any(quoted in (s.get('text') or '')
                                         for s in document.get('segments') or [])]
-        scoped = [dict(document, segments=[dict(s, text=quoted)
+        scoped = [dict(document, _sanity_document_key=sanity_sources.key(document), segments=[dict(s, text=quoted, _sanity_context=claim_context(document, quoted, sanity_sources.for_document(document, materials)))
                                           for s in document.get('segments') or []
                                           if quoted and quoted in (s.get('text') or '')])
                   for document in referenced]
         confirmed = any(check(document, materials) for document in scoped)
         supported = bool(scoped) and not confirmed and all(
-            (_supported_claim(quoted, document, materials)
-             or _supported_headline_comeback(quoted, document, materials)) for document in referenced)
+            (_supported_claim(quoted, document, sanity_sources.for_document(document, materials))
+             or _supported_headline_comeback(quoted, document, sanity_sources.for_document(document, materials))) for document in referenced)
         import soccer_sanity_material
         if referenced and not confirmed:
+            supported = supported or all(sanity_claims.review(
+                quoted, sanity_sources.for_document(document, materials), issue.get('why') or '',
+                context=claim_context(document, quoted, sanity_sources.for_document(document, materials))) is True
+                for document in referenced)
             supported = supported or all(soccer_sanity_material.review(
                 quoted, soccer_sanity_material.for_document(document, materials),
                 issue.get('why') or '', context='。'.join(s.get('text') or ''
@@ -296,8 +337,12 @@ def assess(issues, documents, materials=None):
                                        r'(?:[。．、,]|[」』]?(?:が|けれど|ものの|ただし)|$)',
                                        issue.get('why') or ''):
             kind = CONTEXT
+        missing = kind == FACT and not confirmed and not supported and any(
+            sanity_sources.missing_for(issue, d, materials) for d in (referenced or documents))
         reviewed.append(dict(issue, kind=kind, confirmed=confirmed, supported=supported,
+                             material_missing=missing,
                              verification='材料と矛盾あり' if confirmed else
                              '材料で裏付け済み（誤検出）' if supported else
+                             '材料不足（材料が空・公開を止めない）' if missing else
                              '説明不足・文脈（公開を止めない）' if kind == CONTEXT else '材料で確認できず'))
     return reviewed, list(dict.fromkeys(errors))

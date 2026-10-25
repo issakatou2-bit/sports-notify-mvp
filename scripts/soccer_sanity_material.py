@@ -10,22 +10,24 @@ import club_display_names as clubs
 def compact(data):
     games = [{k: g[k] for k in ('game_id', 'league', 'home_team_name', 'away_team_name',
              'home_standing', 'away_standing', 'fixture_sources', 'start_time_jst',
-             'start_time_utc') if k in g} for g in data.get('games') or []]
+             'start_time_utc', 'id', 'date_jst', 'score', 'home', 'away', 'goals',
+             'players', 'score_crosscheck', 'jp_players', 'season_players') if k in g}
+             for g in data.get('games') or []]
     competitions = [{k: c[k] for k in ('code', 'name_jp', 'season', 'stale', 'table',
-                     'last_season', 'last_season_year', 'lines') if k in c}
+                     'last_season', 'last_season_year', 'lines', 'jp') if k in c}
                     for c in data.get('competitions') or []]
     return dict(source=data.get('source') or 'football-data.org',
                 retrieved_at=data.get('generated_at') or data.get('updated_at'),
+                source_at=data.get('source_at'),
                 date_jst=data.get('date_jst') or data.get('date') or
                 (data.get('generated_at') or data.get('updated_at') or '')[:10],
-                games=games, competitions=competitions)
+                games=games, competitions=competitions,
+                rows=data.get('rows') or [], players=data.get('players') or [])
 
 
 def grounding(documents):
     result = []
     for document in documents:
-        if not document.get('soccer_v4_mode'):
-            continue
         candidates = [document['soccer_material']] if document.get('soccer_material') else []
         if not candidates:
             for filename in ('data/soccer_games.json', 'data/soccer_race.json', 'data/soccer_preview.json'):
@@ -35,7 +37,8 @@ def grounding(documents):
                 except (OSError, ValueError, TypeError):
                     pass
         for source in candidates:
-            day = document.get('date_jst') or (document.get('soccer_material') or {}).get('date_jst')
+            import sanity_material
+            day = sanity_material.document_day(document)
             if not day:
                 # 旧原稿には「10月24日（土）」のlabelだけがある。
                 label = document.get('label') or ''
@@ -59,13 +62,15 @@ def aliases(name):
 
 def for_document(document, materials):
     """別の日の原稿へ、同時に点検した回の順位を流用しない。"""
-    day = document.get('date_jst') or (document.get('soccer_material') or {}).get('date_jst')
+    import sanity_material
+    import sanity_sources
+    day = sanity_material.document_day(document)
     label = document.get('label') or ''
     result = []
-    for source in materials or []:
+    for source in sanity_sources.for_document(document, materials):
         if source.get('sport') != 'soccer':
             continue
-        if day and day == source.get('date_jst'):
+        if day and day == source.get('used_for_date', source.get('date_jst')):
             result.append(source)
         elif not day:
             try:

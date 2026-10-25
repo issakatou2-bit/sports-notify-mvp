@@ -1856,6 +1856,11 @@ def main():
         VOICE_CREDIT = solo_host.UI_CREDIT
 
     if args.narration_out:
+        import sanity_sources
+        import hook_ab
+        if 'sanity_materials' not in narration:
+            narration['sanity_date_jst'] = hook_ab.publication_day(args.publish_at)
+            narration['sanity_materials'] = sanity_sources.capture(narration)
         p = pathlib.Path(args.narration_out)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(narration, ensure_ascii=False), encoding="utf-8")

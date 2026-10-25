@@ -67,9 +67,9 @@ class SoccerSanity(unittest.TestCase):
             with self.subTest(why=why):
                 self.assertEqual(self.run_sanity(text, why)[0], 0)
 
-    def test_missing_material_unknown_target_and_wrong_gap_hold(self):
-        self.assertNotEqual(self.run_sanity(material=False)[0], 0)
-        self.assertNotEqual(self.run_sanity(why='所属が違う')[0], 0)
+    def test_missing_required_material_warns_and_wrong_gap_holds(self):
+        self.assertEqual(self.run_sanity(material=False)[0], 0)
+        self.assertEqual(self.run_sanity(why='所属が違う')[0], 0)
         self.assertNotEqual(self.run_sanity(FIXTURE['text'].replace('差13', '差14'), '勝点差が違う')[0], 0)
 
     def test_stale_material_is_not_used(self):
@@ -88,6 +88,7 @@ class SoccerSanity(unittest.TestCase):
         reviewed, _ = sanity_material.assess([issue], [self.document], materials)
         self.assertTrue(reviewed[0]['supported'])
         self.document['segments'][0]['text'] = 'アストンヴィラは12位、マンチェスターCは首位。'
+        materials = sanity_material.grounding([self.document])
         issue['where'] = 'アストンヴィラは12位'
         reviewed, _ = sanity_material.assess([issue], [self.document], materials)
         self.assertTrue(reviewed[0]['supported'])
