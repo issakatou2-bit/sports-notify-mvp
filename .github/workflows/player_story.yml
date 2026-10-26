@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: player-story
+  group: mlb-player-publication
   cancel-in-progress: false
 env:
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
@@ -31,6 +31,8 @@ jobs:
       COLLESPO_SHORT_LOOK: v4
     steps:
       - uses: actions/checkout@v4
+      - name: Refresh both MLB player publication ledgers
+        run: python scripts/player_publications.py --sync
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

@@ -267,11 +267,15 @@ def from_rows(player,rows,client,*,report=None):
         if len(segments)>=3:
             report['unreviewed']+=1;counts['unreviewed']+=1
             continue
+        import fan_privacy
+        if not fan_privacy.safe(row): continue
+        row = dict(row, source=fan_privacy.source(row))
         text=f"{row['source']}では、{row['original']}。"
         # Attribution itself is translated by the same guarded role; never leave Japanese in the English screen.
         try:
             if not row['original'].strip(): raise ValueError('material_empty')
             attributed=translate(client,dict(row,original=text,headline_original=row['original']))
+            if not fan_privacy.safe(dict(caption_en=attributed['english'])): raise ValueError('backstage_source')
         except ValueError as error:
             reason=failure_reason(error)
             for totals in (report,counts):
@@ -292,7 +296,9 @@ def from_rows(player,rows,client,*,report=None):
 def metadata(data):
     lines=[data['title'],'Selected Japanese-language reactions, translated by Collespo. Not the views of everyone in Japan.',
            'No highlight footage is used. Japanese audio with English subtitles.', 'Source date: '+data['date']]
-    for source in data['sources']: lines += [source['source']+': '+source['original'],source['url']]
+    for source in data['sources']:
+        import fan_privacy
+        lines += [fan_privacy.LABEL] if fan_privacy.reddit(source) else [source['source']+': '+source['original'],source['url']]
     for speaker in sorted({s['speaker'] for s in data['segments']}): lines.append({2:'VOICEVOX:四国めたん',3:'VOICEVOX:ずんだもん',108:'VOICEVOX:東北きりたん'}[speaker])
     return dict(title=('[SAVED PREVIEW '+data['date']+'] ' if data['saved_preview'] else '')+data['title'],description='\n'.join(lines),language='en',audio_language='ja')
 
@@ -311,7 +317,7 @@ def frame(data,t,seg):
     cards.plain(im,cards.L+30,372,data['date']+' / SAVED SOURCE' if data['saved_preview'] else data['date'],30,r3.GOLD,width=cards.R-cards.L-60)
     lines,size=r3._lines(d,seg['caption_en'],52,cards.R-cards.L-72,max_lines=7,floor=34)
     for i,line in enumerate(lines): cards.plain(im,cards.L+36,445+i*(size+18),line,size,width=cards.R-cards.L-72)
-    source='Source: '+', '.join(sorted({s['source'] for s in data['sources']}))
+    source='Source: '+', '.join(sorted({__import__('fan_privacy').source(s) for s in data['sources']}))
     # English visual attribution, Japanese VOICEVOX character and speaking movement.
     source=source.replace('スポニチ','Sponichi').replace('スポーツ報知','Sports Hochi').replace('サンスポ','Sanspo').replace('サッカーキング','Soccer King')
     im=cards.finish(im,t,dict(source=source,ticker='Selected reactions, not everyone’s opinion. Japanese voice / English subtitles.'))

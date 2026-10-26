@@ -215,6 +215,9 @@ def pick_season(args) -> int:
                    if kind_of(k) == "season" and k not in done and not started(v)
                    and not asset_policy.paused(k)),
                   key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
+    import player_publications as publications
+    ledgers = publications.load(assets_path=args.published)
+    todo = [k for k in todo if not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)]
     import ui_voice_stock
     todo = ui_voice_stock.prioritize(todo)
     picked = []
@@ -270,8 +273,11 @@ def main() -> int:
     import generate_asset_video as gav
 
     done = published(args.published)
+    import player_publications as publications
+    ledgers = publications.load(assets_path=args.published)
     todo = sorted(k for k in gav.LIST_TOPICS if k not in done
-                  and not asset_policy.paused(k))
+                  and not asset_policy.paused(k)
+                  and (not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)))
 
     # よく見られている種類から先に。まだ測れない種類は真ん中に置く
     # （後回しにすると永久に測れないままになる）。

@@ -147,7 +147,7 @@ def timeline(t,game,clubs,spec,goals):
 
 def roster_screen(t,data,meta,clubs,spec):
     im=cards.canvas(t,clubs,spec['label'])
-    rows=[p for p in data['players'] if p['status']!='none'][:meta['count']]
+    rows=[p for p in data['players'] if p['status']!='none' and str(p['event_id']) not in meta.get('exclude_events',[])][:meta['count']]
     foot=bool(meta.get('absent') or meta.get('more'))
     v4.panel(im,(cards.L,258,cards.R,258+108+len(rows)*100+(52 if foot else 0)))
     cards.plain(im,cards.L+22,276,'日本人選手の結果',44,width=cards.R-cards.L-44)
@@ -176,6 +176,9 @@ def roster_screen(t,data,meta,clubs,spec):
 
 
 def frame(t,seg,data,clubs=None):
+    if seg['kind'] in ('flash-results','other-results'):
+        import soccer_readable
+        return soccer_readable.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data))
     if soccer_look.readable():
         import soccer_readable
         im=soccer_readable.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data))
@@ -225,7 +228,7 @@ def numeric_material(data):
 
 
 def validate_frame(im,data,clubs):
-    if soccer_look.v5():
+    if soccer_look.v5() or im.info.get('soccer_readable'):
         import soccer_v5_cards as v5
         problems=v5.check_frame(im,clubs)
         if not im.info.get('v3_outro'):
@@ -326,7 +329,7 @@ def render_video(data,narr,audio,out):
 def production_narration(data, *, goal_short=False):
     """速報は既存の得点導入、朝の結果は既存の注目試合導入を使う。"""
     narr = narration(data) if goal_short else __import__('soccer_result_story').narration(data)
-    if soccer_look.v5() and not any(s['kind']=='followup' for s in narr['segments']):
+    if not goal_short and soccer_look.v5() and not any(s['kind'] in ('followup','flash-results','other-results') for s in narr['segments']):
         from soccer_v5_program import add_player_scene
         narr = add_player_scene(narr, data)
     import host_split

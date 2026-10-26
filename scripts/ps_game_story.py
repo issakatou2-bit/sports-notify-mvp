@@ -231,6 +231,7 @@ def pick_voice(voices: dict, feed: dict, after: str, words: dict,
     teams = [feed["gameData"]["teams"][s].get("teamName", "").upper() for s in ("away", "home")]
     rows = []
     for v in (voices.get("jp_praise") or []) + (voices.get("voices") or []):
+        if not __import__('fan_privacy').safe(v): continue
         m = (v.get("matchup") or "").upper()
         if not all(t and t in m for t in teams):
             continue
@@ -247,7 +248,7 @@ def pick_voice(voices: dict, feed: dict, after: str, words: dict,
         said = localize(v.get("ja") or "", words, table, jp)
         if said and len(said) <= 70:
             return {"said": said, "text": v.get("title") or "", "url": v.get("url") or "",
-                    "likes": v.get("likes"), "at": v.get("at")}
+                    "likes": v.get("likes"), "at": v.get("at"), "source": __import__('fan_privacy').source(v)}
     return None
 
 
@@ -488,7 +489,7 @@ def story(game: dict, feed: dict, table: dict, jp: dict, voices: dict, quotes: l
     source = voice = None
     v = pick_voice(voices, feed, start, words, table, jp, jp_names)
     if v:
-        items.append(("ハイライトのコメント欄から", quoted(v["said"])))
+        items.append((v.get("source") if v.get("source")==__import__('fan_privacy').LABEL else "ハイライトのコメント欄から", quoted(v["said"])))
         voice = v
     jp_side = next((s for s in (win_side, lose_side)
                     if player_lines(box[s], jp)), win_side)

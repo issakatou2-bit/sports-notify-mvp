@@ -922,7 +922,7 @@ def material(buzz_path: str, voices_path: str) -> dict:
             return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             return {}
-    b, v = load(buzz_path), load(voices_path)
+    b, v = load(buzz_path), __import__('fan_privacy').material(load(voices_path))
     vids = b.get("videos") or []
     if not vids:
         return {}

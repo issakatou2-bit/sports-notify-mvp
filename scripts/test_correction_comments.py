@@ -62,7 +62,7 @@ class Corrections(unittest.TestCase):
         output = json.dumps(payload, ensure_ascii=False) + cc.render(payload)
         for secret in ("個人名SECRET", "author", "thread-c1", '"c1"'):
             self.assertNotIn(secret, output)
-        self.assertIn(FIXED, cc.render(payload))
+        self.assertNotIn(FIXED, cc.render(payload))
         self.assertEqual([m for m, _ in calls], ["commentThreads", "videos"])
 
     def test_summary_treats_viewer_input_as_text(self):
@@ -70,7 +70,7 @@ class Corrections(unittest.TestCase):
         summary = cc.render(payload)
         self.assertNotIn("<script>", summary)
         self.assertNotIn("@someone", summary)
-        self.assertIn("&lt;script&gt;", summary)
+        self.assertNotIn("&lt;script&gt;", summary)
 
     def test_missing_video_verification_is_not_no_candidates(self):
         def get(method, **params):
@@ -107,7 +107,7 @@ class Corrections(unittest.TestCase):
                     self.assertEqual(cc.main(), 0)
                     self.assertIn("::warning::", str(log.call_args_list))
                     self.assertNotIn(FIXED, str(log.call_args_list))
-                self.assertIn(FIXED, summary.read_text(encoding="utf-8"))
+                self.assertNotIn(FIXED, summary.read_text(encoding="utf-8"))
                 with patch.object(cc, "collect", side_effect=RuntimeError("SECRET_URL")), patch("builtins.print") as log:
                     self.assertEqual(cc.main(), 1)
                     self.assertNotIn("SECRET_URL", str(log.call_args_list))

@@ -12,6 +12,7 @@ MAX_JA=26
 
 
 def short_translation(original, translated):
+    if not __import__('fan_privacy').safe(dict(original=original, translation=translated)): return False
     # 全文の訳だけ。切り出しや要約では長いコメントを通さない。
     return bool(original and translated and len(translated)<=MAX_JA and
                 '\n' not in translated and not any(x in original+translated for x in ('@','/u/','u/')))
@@ -77,7 +78,7 @@ def program(material, translations, context, youtube=None, youtube_translations=
             raise ValueError('保存RSSと短い引用・訳の確認が一致しません')
         if quote!=original or not short_translation(original,translation['ja']):continue
         rows.append(dict(kind='fan',speaker=2,text='「'+translation['ja']+'」',
-                         meta=dict(source='r/'+context['board']+' / 公開RSS（評価数未確認）',heading='匿名のファンの感想',at=source['at'],url=source['url'],
+                         meta=dict(source=__import__('fan_privacy').LABEL,heading='匿名のファンの感想',at=source['at'],url=source['url'],
                                    platform='Reddit',likes=count(source.get('score')) if source.get('score_verified') else None,
                                    original=original,quote=quote,translation=translation['ja'],reviewed=True)))
     if youtube:rows+=youtube_rows(youtube,youtube_translations or [])

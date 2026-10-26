@@ -75,7 +75,7 @@ def _frame(t, seg, narr):
         if meta.get('likes') is not None:metrics.append(f"高評価 {meta['likes']:,}")
         if meta.get('replies') is not None:metrics.append(f"返信 {meta['replies']:,}件")
         if metrics:cards.text(im,100,850,'　'.join(metrics),48,r3.GOLD,width=740)
-    credit = report.get('author') or meta['source']
+    credit = __import__('fan_privacy').LABEL if __import__('fan_privacy').reddit(meta) else report.get('author') or meta['source']
     if report.get('author'):
         credit += ' / '+meta['source']
     at = meta.get('display_time') or meta.get('at') or narr['label']

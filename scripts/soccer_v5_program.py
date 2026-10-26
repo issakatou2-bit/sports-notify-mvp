@@ -67,7 +67,7 @@ def results_frame(t,seg,data,clubs,spec,credit):
     import soccer_results as results
     if seg['kind']=='outro':return c.outro(t,spec,'soccer_results',credit,TAGLINE)
     if seg['kind']=='roster':
-        rows=[p for p in data['players'] if p['status']!='none'][:seg['meta']['count']]
+        rows=[p for p in data['players'] if p['status']!='none' and str(p['event_id']) not in seg['meta'].get('exclude_events',[])][:seg['meta']['count']]
         display=[dict(name=p['name'],club=p['club'],values=[(p[k],u) for k,u in (('goals','得点'),('assists','A')) if p.get(k)],note='') for p in rows]
         im=c.jp_roster(t,dict(spec,title='日本人選手の結果　A＝アシスト',rows=display),clubs)
         # 出場区分は数字と重ならない名前の行に。出場なしは名前だけ・読み上げない。

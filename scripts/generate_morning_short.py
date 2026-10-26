@@ -3856,6 +3856,7 @@ def render_thread(p, v):
 
 
 def render_voices(p, voices, picked=None):
+    voices = __import__('fan_privacy').voices(voices)
     """
     現地のファンが何と言っているか。
 

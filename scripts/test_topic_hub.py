@@ -43,7 +43,7 @@ class HubTests(unittest.TestCase):
         self.assertTrue(h.phrase(event).startswith('MLB.comによると、'))
         bad=deepcopy(event);bad['certainty']='official'
         with self.assertRaises(ValueError):h.phrase(bad)
-        p=s.build({}, {'_topic_hub':hub}, {}, {}, {}, NOW)
+        p=s.build({}, {'_topic_hub':hub}, {}, {}, {}, NOW, publication_ledgers=({}, {}))
         self.assertIn('MLB.comによると、',p['segments'][1]['text']); s.validate(p)
 
     def test_distinct_outlets_and_syndication(self):

@@ -62,6 +62,10 @@ on:
 # 投稿済みの記録(data/published_assets.json)をコミットして残すため、
 # 書き込み権限が要る。これが無いと毎回まっさらな状態から判断することになり、
 # 同じ資産動画を何度も投稿してしまう。
+concurrency:
+  group: mlb-player-publication
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -96,6 +100,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Refresh both MLB player publication ledgers
+        run: python scripts/player_publications.py --sync
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -117,6 +123,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Refresh both MLB player publication ledgers
+        run: python scripts/player_publications.py --sync
 
       - name: Set up Python
         uses: actions/setup-python@v5
