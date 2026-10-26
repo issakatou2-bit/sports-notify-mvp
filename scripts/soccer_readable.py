@@ -105,14 +105,20 @@ class Screen:
                                          at=[x,y], cut=art.height)]
         # 出典の長文は2行。日次の詳細出典は従来の説明欄と材料に保持。
         source = spec.get('source', '')
-        source = source.replace('音声: VOICEVOX:四国めたん　出典: ', 'VOICEVOX:四国めたん / ')
-        rows = c.lines(source, 30, R-L)
-        if len(rows) > 1:
-            rows = c.lines(source, 30, 1000)
+        # 雨衣の回はクレジットが長い（10/26 朝の結果が書き出しで停止）。前置きを詰め、入らなければ字を2段まで小さくする。
+        if source.startswith('音声: '):
+            source = source[len('音声: '):]
+        source = source.replace('　出典: ', ' / ')
+        for size in (30, 28, 26):
+            rows = c.lines(source, size, R-L)
+            if len(rows) > 1:
+                rows = c.lines(source, size, 1000)
+            if len(rows) <= 1:
+                break
         if len(rows) > 1:
             raise ValueError('出典は説明欄と分けて短く指定してください')
         if rows:
-            self.text(40 if c.measure(rows[0],30)[1]>R-L else L, 1880, rows[0], 30, 1000, c.MUTED, role='source')
+            self.text(40 if c.measure(rows[0],size)[1]>R-L else L, 1880, rows[0], size, 1000, c.MUTED, role='source')
         self.im.info['readable_zones'] = dict(body=[L,BODY_TOP,R,BODY_BOTTOM], caption=CAPTION, portrait=PORTRAIT)
         # 出現演出は1つ。説明中に動かさず、キャラ・字幕も同時にフェード。
         if self.t < .35:
