@@ -1,0 +1,453 @@
+{
+  "run_id": 40249272204,
+  "base_commit": "4edb08f3",
+  "audio": "6 narration characters per second; not actual speech",
+  "seconds": 52.5,
+  "stages": [
+    1,
+    2,
+    3
+  ],
+  "roster_samples": "stage 2; stage 3 omits duplicate roster",
+  "errors": [],
+  "frames": [
+    {
+      "file": "00-followup-0.png",
+      "kind": "followup",
+      "text": "瀬古歩夢、中村草太、水多海斗のル・アーブルは、マルセイユに3対4で敗れました。",
+      "meta": {
+        "event_id": "401876426",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "55",
+            "scorer": "Himad Abdelli",
+            "athlete_id": "277525",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      },
+      "errors": []
+    },
+    {
+      "file": "01-player-stats-0.png",
+      "kind": "player-stats",
+      "text": "水多海斗は1アシスト。",
+      "meta": {
+        "event_id": "401876426",
+        "start": 2,
+        "count": 1
+      },
+      "errors": []
+    },
+    {
+      "file": "02-followup-0.png",
+      "kind": "followup",
+      "text": "鎌田大地のクリスタル・パレスは、ニューカッスルに0対2で敗れました。",
+      "meta": {
+        "event_id": "401879254",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "47",
+            "scorer": "William Osula",
+            "athlete_id": "319431",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      },
+      "errors": []
+    },
+    {
+      "file": "03-followup-0.png",
+      "kind": "followup",
+      "text": "守田英正のハル・シティは、ブレントフォードと1対1で引き分けました。",
+      "meta": {
+        "event_id": "401878766",
+        "score_only": true,
+        "goals": [],
+        "compact_goals": true
+      },
+      "errors": []
+    },
+    {
+      "file": "04-followup-0.png",
+      "kind": "followup",
+      "text": "遠藤航のリバプールは、ブライトンに2対0で勝ちました。",
+      "meta": {
+        "event_id": "401878765",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "17",
+            "scorer": "Pascal Gross",
+            "athlete_id": "132659",
+            "side": "home",
+            "own_goal": true,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      },
+      "errors": []
+    },
+    {
+      "file": "05-followup-0.png",
+      "kind": "followup",
+      "text": "田中碧のリーズは、サンダーランドと0対0で引き分けました。",
+      "meta": {
+        "event_id": "401878764",
+        "score_only": true,
+        "goals": [],
+        "compact_goals": true
+      },
+      "errors": []
+    },
+    {
+      "file": "06-followup-0.png",
+      "kind": "followup",
+      "text": "久保建英のレアル・ソシエダは、レバンテに2対1で勝ちました。",
+      "meta": {
+        "event_id": "401882829",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "27",
+            "scorer": "Beñat Turrientes",
+            "athlete_id": "297371",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      },
+      "errors": []
+    },
+    {
+      "file": "07-followup-0.png",
+      "kind": "followup",
+      "text": "町田浩樹のホッフェンハイムは、レバークーゼンに3対0で勝ちました。",
+      "meta": {
+        "event_id": "401884760",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "79",
+            "scorer": "Andrej Kramaric",
+            "athlete_id": "139520",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      },
+      "errors": []
+    },
+    {
+      "file": "08-followup-0.png",
+      "kind": "followup",
+      "text": "鈴木唯人、山本理仁のフライブルクは、伊藤洋輝のバイエルンに1対3で敗れました。",
+      "meta": {
+        "event_id": "401884759",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "42",
+            "scorer": "Serge Gnabry",
+            "athlete_id": "178980",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      },
+      "errors": []
+    },
+    {
+      "file": "09-followup-0.png",
+      "kind": "followup",
+      "text": "南野拓実のモナコは、リールと1対1で引き分けました。",
+      "meta": {
+        "event_id": "401876425",
+        "score_only": true,
+        "goals": [],
+        "compact_goals": true
+      },
+      "errors": []
+    },
+    {
+      "file": "10-roster-0.png",
+      "kind": "roster",
+      "text": "瀬古歩夢、田中碧、町田浩樹が先発しました。",
+      "meta": {
+        "start": 0,
+        "count": 4,
+        "more": 0,
+        "absent": [],
+        "page": 1,
+        "player_names": [
+          "水多海斗",
+          "瀬古歩夢",
+          "田中碧",
+          "町田浩樹"
+        ],
+        "exclude_events": []
+      },
+      "errors": []
+    },
+    {
+      "file": "11-roster-0.png",
+      "kind": "roster",
+      "text": "鈴木唯人、鎌田大地が先発しました。中村草太、伊藤洋輝が途中出場しました。",
+      "meta": {
+        "start": 4,
+        "count": 4,
+        "more": 0,
+        "absent": [],
+        "page": 2,
+        "player_names": [
+          "鈴木唯人",
+          "鎌田大地",
+          "中村草太",
+          "伊藤洋輝"
+        ],
+        "exclude_events": []
+      },
+      "errors": []
+    },
+    {
+      "file": "12-roster-0.png",
+      "kind": "roster",
+      "text": "守田英正、山本理仁が途中出場しました。",
+      "meta": {
+        "start": 8,
+        "count": 2,
+        "more": 0,
+        "absent": [],
+        "page": 3,
+        "player_names": [
+          "守田英正",
+          "山本理仁"
+        ],
+        "exclude_events": []
+      },
+      "errors": []
+    }
+  ],
+  "segments": [
+    {
+      "kind": "followup",
+      "text": "瀬古歩夢、中村草太、水多海斗のル・アーブルは、マルセイユに3対4で敗れました。",
+      "speaker": 2,
+      "caption_units": [
+        "瀬古歩夢、中村草太、水多海斗のル・アーブルは、マルセイユに3対4で敗れました。"
+      ],
+      "meta": {
+        "event_id": "401876426",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "55",
+            "scorer": "Himad Abdelli",
+            "athlete_id": "277525",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "水多海斗は1アシスト。",
+      "speaker": 2,
+      "caption_units": [
+        "水多海斗は1アシスト。"
+      ],
+      "meta": {
+        "event_id": "401876426",
+        "start": 2,
+        "count": 1
+      }
+    },
+    {
+      "kind": "followup",
+      "text": "鎌田大地のクリスタル・パレスは、ニューカッスルに0対2で敗れました。",
+      "speaker": 2,
+      "caption_units": [
+        "鎌田大地のクリスタル・パレスは、ニューカッスルに0対2で敗れました。"
+      ],
+      "meta": {
+        "event_id": "401879254",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "47",
+            "scorer": "William Osula",
+            "athlete_id": "319431",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      }
+    },
+    {
+      "kind": "followup",
+      "text": "守田英正のハル・シティは、ブレントフォードと1対1で引き分けました。",
+      "speaker": 2,
+      "caption_units": [
+        "守田英正のハル・シティは、ブレントフォードと1対1で引き分けました。"
+      ],
+      "meta": {
+        "event_id": "401878766",
+        "score_only": true,
+        "goals": [],
+        "compact_goals": true
+      }
+    },
+    {
+      "kind": "followup",
+      "text": "遠藤航のリバプールは、ブライトンに2対0で勝ちました。",
+      "speaker": 2,
+      "caption_units": [
+        "遠藤航のリバプールは、ブライトンに2対0で勝ちました。"
+      ],
+      "meta": {
+        "event_id": "401878765",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "17",
+            "scorer": "Pascal Gross",
+            "athlete_id": "132659",
+            "side": "home",
+            "own_goal": true,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      }
+    },
+    {
+      "kind": "followup",
+      "text": "田中碧のリーズは、サンダーランドと0対0で引き分けました。",
+      "speaker": 2,
+      "caption_units": [
+        "田中碧のリーズは、サンダーランドと0対0で引き分けました。"
+      ],
+      "meta": {
+        "event_id": "401878764",
+        "score_only": true,
+        "goals": [],
+        "compact_goals": true
+      }
+    },
+    {
+      "kind": "followup",
+      "text": "久保建英のレアル・ソシエダは、レバンテに2対1で勝ちました。",
+      "speaker": 2,
+      "caption_units": [
+        "久保建英のレアル・ソシエダは、レバンテに2対1で勝ちました。"
+      ],
+      "meta": {
+        "event_id": "401882829",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "27",
+            "scorer": "Beñat Turrientes",
+            "athlete_id": "297371",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      }
+    },
+    {
+      "kind": "followup",
+      "text": "町田浩樹のホッフェンハイムは、レバークーゼンに3対0で勝ちました。",
+      "speaker": 2,
+      "caption_units": [
+        "町田浩樹のホッフェンハイムは、レバークーゼンに3対0で勝ちました。"
+      ],
+      "meta": {
+        "event_id": "401884760",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "79",
+            "scorer": "Andrej Kramaric",
+            "athlete_id": "139520",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      }
+    },
+    {
+      "kind": "followup",
+      "text": "鈴木唯人、山本理仁のフライブルクは、伊藤洋輝のバイエルンに1対3で敗れました。",
+      "speaker": 2,
+      "caption_units": [
+        "鈴木唯人、山本理仁のフライブルクは、伊藤洋輝のバイエルンに1対3で敗れました。"
+      ],
+      "meta": {
+        "event_id": "401884759",
+        "score_only": true,
+        "goals": [
+          {
+            "minute": "42",
+            "scorer": "Serge Gnabry",
+            "athlete_id": "178980",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "compact_goals": true
+      }
+    },
+    {
+      "kind": "followup",
+      "text": "南野拓実のモナコは、リールと1対1で引き分けました。",
+      "speaker": 2,
+      "caption_units": [
+        "南野拓実のモナコは、リールと1対1で引き分けました。"
+      ],
+      "meta": {
+        "event_id": "401876425",
+        "score_only": true,
+        "goals": [],
+        "compact_goals": true
+      }
+    }
+  ]
+}

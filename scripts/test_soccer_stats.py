@@ -168,7 +168,13 @@ class Stats(unittest.TestCase):
                 for case in preview.cases(supplementary=True):
                     data=case['data'];before=copy.deepcopy(data)
                     clubs=render.resolve_clubs(data);narr=render.production_narration(data)
-                    self.assertEqual(narr['segments'][0]['text'],f"{data['games'][0]['home']['name_jp']}対{data['games'][0]['away']['name_jp']}は、{data['games'][0]['score']['home']}対{data['games'][0]['score']['away']}。")
+                    result=narr['segments'][0]['text'];game=data['games'][0]
+                    people=[p for p in game['players'] if p['status']!='none'] or game['players']
+                    for p in people:self.assertIn(p['name'],result)
+                    for side in ('home','away'):self.assertIn(game[side]['name_jp'],result)
+                    first='away' if all(p['side']=='away' for p in people) else 'home'
+                    second='home' if first=='away' else 'away'
+                    self.assertIn(f"{game['score'][first]}対{game['score'][second]}で",result)
                     attached=sanity_sources.collect([narr])
                     self.assertTrue(any(s['games'][0].get('match_stats')==data['games'][0]['match_stats'] for s in attached))
                     self.assertTrue(any(s['players'][0].get('stats_source') for s in attached))

@@ -51,9 +51,11 @@ class RequiredFit(unittest.TestCase):
             self.assertEqual([1,2,3],[r['stage'] for r in fitted['results_length_adjustment'] if 'stage' in r])
             self.assertEqual(9,sum(s['kind']=='followup' for s in fitted['segments']))
             self.assertTrue(any('水多海斗は1アシスト' in s['text'] for s in fitted['segments']))
-            roster=next(s for s in fitted['segments'] if s['kind']=='roster')
-            self.assertEqual(10,roster['meta']['count'])
-            self.assertIn('先発しました',roster['text']);self.assertIn('途中出場しました',roster['text'])
+            self.assertFalse(any(s['kind']=='roster' for s in fitted['segments']))
+            for seg in fitted['segments']:
+                if seg['kind']=='followup':
+                    game=next(g for g in self.data['games'] if g['id']==seg['meta']['event_id'])
+                    self.assertTrue(all(p['name'] in seg['text'] for p in game['players'] if p['status']!='none'))
             self.assertEqual(original,unchanged)
             print(f'run40249272204: 6文字/秒の見積もり＋全画面最低尺＋30fps丸め={total:.3f}秒')
 
@@ -67,6 +69,48 @@ class RequiredFit(unittest.TestCase):
                 fitted,voices=story.fit_to_audio(original,audio,data=data)
             self.assertEqual(original,fitted);self.assertEqual(audio,voices);rebuild.assert_not_called()
 
+    def test_involved_japanese_match_first_and_names_survive_every_stage(self):
+        segments=self.narration()['segments']
+        first=next(s for s in segments if s['kind']=='followup')
+        game=next(g for g in self.data['games'] if g['id']==first['meta']['event_id'])
+        self.assertTrue(any(p.get('goals') or p.get('assists') for p in game['players']))
+        for stage in (0,1,2,3):
+            if stage:segments=story.shorten_required(segments,self.data,stage)
+            for seg in segments:
+                if seg['kind']!='followup':continue
+                game=next(g for g in self.data['games'] if g['id']==seg['meta']['event_id'])
+                people=[p for p in game['players'] if p['status']!='none'] or game['players']
+                self.assertTrue(all(p['name'] in seg['text'] for p in people))
+
+    def test_winning_goal_fallback_has_club_and_short_panel(self):
+        import soccer_result_facts as facts
+        segments=self.narration()['segments']
+        for stage in (1,2,3):segments=story.shorten_required(segments,self.data,stage)
+        clubs=render.resolve_clubs(self.data)
+        for seg in segments:
+            if seg['kind']!='followup':continue
+            game=next(g for g in self.data['games'] if g['id']==seg['meta']['event_id'])
+            for goal in seg['meta']['goals']:
+                if not goal['japanese_goal'] and not facts.named_scorer(goal):
+                    self.assertIn(game[goal['side']]['name_jp'],facts.compact_goal_line(goal,game))
+            frame=render.frame(1.4,seg,self.data,clubs)
+            cards=[e['box'] for e in frame.info['v3_layout'] if e['role']=='card']
+            self.assertLessEqual(max(b[3] for b in cards),1300)
+            if not seg['meta']['goals']:self.assertEqual(1,len(cards))
+
+    def test_draw_result_uses_natural_japanese(self):
+        import soccer_result_facts as facts
+        game=next(g for g in self.data['games'] if g['score']==dict(home=1,away=1))
+        self.assertIn('と1対1で引き分けました。',facts.result_line(game))
+
+    def test_original_roster_names_are_on_fixed_page(self):
+        clubs=render.resolve_clubs(self.data)
+        for seg in self.narration()['segments']:
+            if seg['kind']!='roster':continue
+            for t in (0,4,20):
+                frame=render.frame(t,seg,self.data,clubs)
+                self.assertEqual(seg['meta']['player_names'],[p['name'] for p in frame.info['readable_rows']])
+
     def test_stage_one_keeps_goals_assists_without_shots_or_minutes(self):
         segments=story.shorten_required(self.narration()['segments'],self.data,1)
         texts=[s['text'] for s in segments if s['kind']=='player-stats']
@@ -75,11 +119,18 @@ class RequiredFit(unittest.TestCase):
 
     def test_stage_two_all_ten_players_remain_on_roster_pages(self):
         segments=story.shorten_required(story.shorten_required(self.narration()['segments'],self.data,1),self.data,2)
-        roster=next(s for s in segments if s['kind']=='roster')
+        rosters=[s for s in segments if s['kind']=='roster']
         clubs=render.resolve_clubs(self.data);spec=render.program_spec(self.data);names=[]
-        for t in (1,5,9):
-            frame=layout.results_frame(t,roster,self.data,clubs,spec)
-            names.extend(p['name'] for p in frame.info['readable_rows'])
+        for roster in rosters:
+            for t in (1,5,9):
+                frame=layout.results_frame(t,roster,self.data,clubs,spec)
+                visible=[p['name'] for p in frame.info['readable_rows']]
+                self.assertEqual(roster['meta']['player_names'],visible)
+                for p in self.data['players']:
+                    if p['name'] in roster['text']:self.assertIn(p['name'],visible)
+                spoken=[name for name in visible if name in roster['text']]
+                self.assertEqual(spoken,sorted(spoken,key=roster['text'].index))
+            names.extend(visible)
         self.assertEqual({p['name'] for p in self.data['players'] if p['status']!='none'},set(names))
 
     def test_stage_three_retains_only_japanese_and_winning_goals(self):
@@ -121,7 +172,7 @@ class RequiredFit(unittest.TestCase):
         original=self.narration()
         players=[s for s in original['segments'] if s['kind']=='player-stats'][:3]
         scores=[s for s in original['segments'] if s['kind']=='followup'][:2]
-        roster=[s for s in original['segments'] if s['kind']=='roster']
+        roster=[s for s in original['segments'] if s['kind']=='roster'][:1]
         original['segments']=scores+players+roster
         audio=[dict(s,file='existing.wav',duration=12) for s in original['segments']]
         def times(segments,voices):
