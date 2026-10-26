@@ -1,7 +1,6 @@
 {
   "updated_at": "2026-10-26T06:38:56.964167+00:00",
   "source": "MLB Stats API",
-  "capacity_source": "data/venue_capacities.json",
   "topics": [
     {
       "key": "venue_angel_stadium",
@@ -803,5 +802,7 @@
         ]
       ]
     }
-  ]
+  ],
+  "capacity_source": "data/venue_capacities.json",
+  "capacity_checked_on": "2026-10-24"
 }

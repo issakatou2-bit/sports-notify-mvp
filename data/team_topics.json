@@ -1,7 +1,6 @@
 {
   "updated_at": "2026-10-26T06:39:00.184911+00:00",
   "source": "MLB Stats API",
-  "capacity_source": "data/venue_capacities.json",
   "topics": [
     {
       "key": "team_ath",
@@ -6470,5 +6469,7 @@
         ]
       ]
     }
-  ]
+  ],
+  "capacity_source": "data/venue_capacities.json",
+  "capacity_checked_on": "2026-10-24"
 }
