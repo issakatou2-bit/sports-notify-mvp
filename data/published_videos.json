@@ -16343,6 +16343,26 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-25": {
+      "video_id": "LWUL4lgaKb8",
+      "url": "https://youtu.be/LWUL4lgaKb8",
+      "title": "【欧州サッカー】水多海斗が1アシスト｜マルセイユ 4-3 ルアーブル ほか 日本人選手の結果 #Shorts",
+      "published_at": "2026-10-26T09:13:12.622296+00:00",
+      "publish_at": "2026-10-26T10:00:00Z",
+      "host_assignment": {
+        "day": "2026-10-26",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 0
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   }
 }
