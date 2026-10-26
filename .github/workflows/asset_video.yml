@@ -20,7 +20,7 @@ on:
   #   出し切ったところで止まっていた。いちばんよく見られる種類が
   #   いちばん出ていない状態だった。
   #
-  #   球場のぶんは venue_topics.py が公式APIから作るので玉が尽きない。
+  #   球場・球団まとめは10/26に停止。選択対象がなければ本数を補充しない。
   #
   # 起動は cron-job.org から(13:00 UTC = JST 22:00)。
   #
@@ -228,6 +228,11 @@ jobs:
               exit 0
             fi
             echo "::notice::今日の資産動画: $TOPICS"
+          fi
+          TOPICS="$(python scripts/asset_policy.py "$TOPICS")"
+          if [ -z "$TOPICS" ]; then
+            echo "::notice::選択対象は停止中です。きょうは補充しません"
+            exit 0
           fi
           FORCE=""
           if [ "${{ inputs.force }}" = "true" ]; then

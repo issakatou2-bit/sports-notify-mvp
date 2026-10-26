@@ -14,9 +14,10 @@ import time
 
 import ui_voice_queue as q
 import ui_voice_parts as parts_crypto
+import asset_policy
 
 POLICY = (
-    ('資産動画（球団・歴史・殿堂など）', '採用。v3のめたんソロ、次の試合に依存しないもの'),
+    ('資産動画（歴史・殿堂など）', '採用。v3のめたんソロ、次の試合に依存しないもの'),
     ('終了済みシーズンまとめ', '採用。現行のseason_topicsが終了判定したもの'),
     ('選手のいまの流れ', '除外。player_story.validateの公開条件が当日原稿'),
     ('試合直後・PS情勢・予告・現地の声・報道', '除外。試合開始や新しい発言で古くなる'),
@@ -24,7 +25,7 @@ POLICY = (
 
 
 def eligible(topic, spec):
-    return (spec.get('style') == 'v3' and not any(spec.get(k) for k in
+    return (not asset_policy.paused(topic) and spec.get('style') == 'v3' and not any(spec.get(k) for k in
             ('game', 'story', 'spotlight', 'odds', 'momentum', 'next_line', 'next_game'))
             and not topic.startswith(('soccer_', 'ps_')))
 
