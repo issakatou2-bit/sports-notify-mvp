@@ -201,23 +201,149 @@ def frame(t,seg,data,clubs):
     return c.finish(im,t,spec)
 
 
-def fit_to_audio(narration,audio):
+def shorten_required(segments, data, stage):
+    """尺不足時だけ使う。成績の材料と画面の名簿は保持する。"""
+    import copy
+    shortened=copy.deepcopy(segments)
+    games={g['id']:g for g in data['games']}
+    if stage==1:
+        for seg in shortened:
+            if seg['kind']!='player-stats':continue
+            people=[p for p in games[seg['meta']['event_id']]['players'] if p['status']!='none']
+            start=seg['meta'].get('start',0)
+            shown=people[start:start+seg['meta'].get('count',2)]
+            seg['text']=''.join(p['name']+'は'+(facts.positive_stats(p) or results.STATUS[p['status']])+'。' for p in shown)
+            seg['caption_units']=[seg['text']]
+    elif stage==2:
+        removed=[];kept=[];template=None
+        for seg in shortened:
+            if seg['kind']=='player-stats':
+                people=[p for p in games[seg['meta']['event_id']]['players'] if p['status']!='none']
+                start=seg['meta'].get('start',0)
+                shown=people[start:start+seg['meta'].get('count',2)]
+                if all(not p.get('goals') and not p.get('assists') for p in shown):
+                    removed.extend(shown);template=template or seg
+                    continue
+            if seg['kind']!='roster':kept.append(seg)
+        if not removed:return shortened
+        clauses=[]
+        for status,verb in (('starter','先発しました'),('substitute','途中出場しました')):
+            people=[p for p in removed if p['status']==status]
+            if people:
+                clauses.append('、'.join(p['name'] for p in people[:2])+('ら' if len(people)>2 else '')+'が'+verb+'。')
+        roster=copy.deepcopy(template)
+        roster.update(kind='roster',text='ほかに、'+''.join(clauses))
+        roster['caption_units']=[roster['text']]
+        # v6は4人ずつページを送る。全員分の表示時間もminimum_secondsで確保。
+        roster['meta']=dict(start=0,count=sum(p['status']!='none' for p in data['players']),more=0,
+                            absent=[],page=1,exclude_events=[])
+        insert=next((i for i,s in enumerate(kept) if s['kind']=='outro'),len(kept))
+        kept.insert(insert,roster)
+        shortened=kept
+    elif stage==3:
+        seen=set();kept=[];selected={}
+        for seg in shortened:
+            if seg['kind']!='followup-detail':kept.append(seg);continue
+            ident=seg['meta']['event_id']
+            if ident in seen:continue
+            seen.add(ident);game=games[ident]
+            goals=sorted(game['goals'],key=lambda g:tuple(int(v) for v in (g['minute'].split('+')+['0'])[:2]))
+            score=game['score'];winner='home' if score['home']>score['away'] else 'away' if score['away']>score['home'] else None
+            decisive=None
+            if winner and game['goals_complete']:
+                winner_goals=[g for g in goals if g['side']==winner]
+                decisive=winner_goals[score['away' if winner=='home' else 'home']]
+            shown=[g for g in goals if g['japanese_goal'] or g is decisive]
+            selected[ident]=shown
+        for seg in kept:
+            if seg['kind']!='followup':continue
+            game=games[seg['meta']['event_id']]
+            shown=selected.get(game['id'],[])
+            seg['meta']['goals']=shown
+            seg['meta']['compact_goals']=True
+            score=game['score']
+            units=[f"{game['home']['name_jp']}{score['home']}対{score['away']}{game['away']['name_jp']}。"]
+            units.extend(facts.goal_line(g,game) if g['japanese_goal'] else facts.minute_text(g['minute'])+'に決勝点。' for g in shown)
+            seg['text']=''.join(units);seg['caption_units']=units
+        shortened=kept
+    return shortened
+
+
+def rebuild_voice(seg, previous, directory, stage):
+    """元と同じ声・速度・読み検査で、変更した文だけ合成し直す。"""
+    import hashlib
+    import synthesize_narration as synth
+    import solo_host
+    directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)
+    digest=hashlib.sha256(json.dumps(seg,ensure_ascii=False,sort_keys=True).encode()).hexdigest()[:16]
+    path=directory/f'fit_{stage}_{digest}.wav'
+    ok=(solo_host.synthesize(seg['text'],path) if previous.get('voice_host')=='ui'
+        else synth.synth_one(seg['text'],seg['speaker'],path))
+    if not ok:raise ValueError('短縮した台詞の音声合成に失敗しました')
+    duration=synth.audio_duration(path)
+    if duration<=0:raise ValueError('短縮した台詞の実音声がありません')
+    return dict(previous,**seg,file=str(path),duration=duration)
+
+
+def rebuild_ui(narr, segments, directory, stage):
+    """Actionsでも既存の雨衣注文窓口を使い、変更分を一度に作る。"""
+    import copy
+    import ui_voice_stock
+    import name_reading_guard
+    document=copy.deepcopy(narr);document['segments']=segments
+    name_reading_guard.validate_dialogue(document)
+    directory=Path(directory)/f'fit_stage_{stage}';directory.mkdir(parents=True,exist_ok=True)
+    path=directory/'narration.json'
+    path.write_text(json.dumps(document,ensure_ascii=False),encoding='utf8')
+    if not ui_voice_stock.fulfill(document,path,directory):
+        raise ValueError('短縮した雨衣の音声を受け取れませんでした')
+    return json.loads((directory/'manifest.json').read_text(encoding='utf8'))['segments']
+
+
+def fit_to_audio(narration,audio, *, data=None, audio_dir=None, resynthesize=None):
     """実音声とフレーム丸めで60秒を超えたら、後ろの試合の補足から省く。"""
     import soccer_results_render as render
     import copy
-    narr=copy.deepcopy(narration);voices=copy.deepcopy(audio)
+    narr=copy.deepcopy(narration);voices=copy.deepcopy(audio);stage=0
     while True:
         try:
             times=render.durations(narr['segments'],voices)
             if render.soccer_look.readable():
                 from soccer_readable import minimum_seconds
-                times=[max(t,minimum_seconds(s)) for s,t in zip(narr['segments'],times)]
+                times=[max(t,minimum_seconds(s,data)) for s,t in zip(narr['segments'],times)]
             if sum(math.ceil(t*render.FPS)/render.FPS for t in times)<=results.LIMIT:return narr,voices
         except ValueError as error:
             if '60秒' not in str(error):raise
         index=next((i for i in reversed(range(len(narr['segments']))) if narr['segments'][i]['kind']=='followup-detail' and not narr['segments'][i]['meta'].get('required')),None)
-        if index is None:index=next((i for kind in ('team-stats','followup-next','followup-change') for i,s in enumerate(narr['segments']) if s['kind']==kind),None)
-        if index is None:raise ValueError('必須の結果/期待選手/日本人選手の実音声が60秒を超えます')
+        if index is None:index=next((i for kind in ('team-stats','followup-next','followup-change','outro') for i,s in enumerate(narr['segments']) if s['kind']==kind),None)
+        if index is None:
+            if data is None or not render.soccer_look.readable() or stage==3:raise ValueError('必須の結果/期待選手/日本人選手の実音声が60秒を超えます（段階短縮後）')
+            stage+=1
+            shortened=shorten_required(narr['segments'],data,stage)
+            while True:
+                narr.setdefault('results_length_adjustment',[]).append(dict(stage=stage,kind='required-shortening',segments=len(shortened)))
+                print('[shorten] 必須部分を短縮します: stage',stage)
+                # 表示の最低秒数だけで超える段階は合成を待たず、次の短縮へ。
+                from soccer_readable import minimum_seconds
+                floor=sum(max(3 if s['kind']=='roster' else 2.6 if s['kind']=='outro' else 2,
+                              minimum_seconds(s,data) if render.soccer_look.readable() else 0) for s in shortened)
+                if floor<=results.LIMIT or stage==3:break
+                stage+=1;shortened=shorten_required(shortened,data,stage)
+            changed=[s for s in shortened if s not in narr['segments']]
+            ui_audio=None
+            if changed and not resynthesize and any(v.get('voice_host')=='ui' for v in voices):
+                ui_audio=iter(rebuild_ui(narr,changed,audio_dir or Path(voices[0]['file']).parent,stage))
+            revised=[]
+            for seg in shortened:
+                same=next((v for s,v in zip(narr['segments'],voices) if s==seg),None)
+                if same is not None:revised.append(same);continue
+                previous=next((v for s,v in zip(narr['segments'],voices) if s['kind']==seg['kind'] and s['meta'].get('event_id')==seg['meta'].get('event_id')),voices[0])
+                if ui_audio is not None:voice=next(ui_audio)
+                elif resynthesize:voice=resynthesize(seg,previous,stage)
+                else:voice=rebuild_voice(seg,previous,audio_dir or Path(previous['file']).parent,stage)
+                revised.append(voice)
+            narr['segments']=shortened;voices=revised
+            continue
         omitted=narr['segments'][index]
         narr.setdefault('results_length_adjustment',[]).append(dict(kind=omitted['kind'],event_id=omitted['meta'].get('event_id')))
         print('[omit] 実測60秒に収めるため補足を省きます:',omitted['kind'],omitted['meta'].get('event_id',''))
@@ -226,9 +352,11 @@ def fit_to_audio(narration,audio):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--narration',type=Path,required=True);ap.add_argument('--audio-dir',type=Path,required=True)
+    ap.add_argument('--data',type=Path,default=results.ROOT/'data/soccer_results.json')
     args=ap.parse_args();narr=json.loads(args.narration.read_text(encoding='utf8'));manifest=args.audio_dir/'manifest.json';voices=json.loads(manifest.read_text(encoding='utf8'))
     if not any(s['kind']=='followup' for s in narr['segments']):return
-    narr,audio=fit_to_audio(narr,voices['segments']);voices['segments']=audio
+    data=json.loads(args.data.read_text(encoding='utf8'))
+    narr,audio=fit_to_audio(narr,voices['segments'],data=data,audio_dir=args.audio_dir);voices['segments']=audio
     args.narration.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     manifest.write_text(json.dumps(voices,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
 if __name__=='__main__':main()

@@ -27,6 +27,7 @@ def minimum_seconds(seg, data=None):
     if kind=='team-stats':return 4
     if kind=='jp_roster':count=math.ceil(len(meta['rows'])/4)
     elif kind=='roster':count=math.ceil(meta['count']/4)
+    elif kind=='followup' and meta.get('compact_goals'):count=max(1,len(meta.get('goals',[])))
     elif kind in ('result','followup-detail'):
         game=next(g for g in data['games'] if g['id']==meta['event_id']) if data else {}
         count=math.ceil(len(meta.get('goals',game.get('goals',[])))/3)
@@ -188,9 +189,26 @@ class Screen:
             self.text(520,1352,spec['gap'],30,390,c.LIME,role='supplement')
         return self.finish(spec)
 
-    def score(self, game, spec, title='試合結果', person=None, score_only=False):
+    def score(self, game, spec, title='試合結果', person=None, score_only=False, compact_goals=None):
         import soccer_result_facts as facts
         self.title(title, facts.competition(game))
+        if compact_goals:
+            page=page_at(self.t,len(compact_goals))
+            shown=compact_goals[page:page+1]
+            self.im.info.update(readable_page=page,readable_page_count=len(compact_goals))
+            self.panel(BODY_TOP,1000)
+            self.name(100,440,game['home']['name_jp'],800,52)
+            self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
+            self.name(100,870,game['away']['name_jp'],800,52)
+            self.panel(1020,BODY_BOTTOM)
+            y=1210
+            for goal in shown:
+                line=(facts.goal_line(goal,game) if goal['japanese_goal'] and facts.named_scorer(goal)
+                      else facts.minute_text(goal['minute'])+'に決勝点。')
+                y=self.lines(100,y,line,40,800)+16
+            if y>BODY_BOTTOM:raise ValueError('短縮した得点経過が結果の札に入りません')
+            self.im.info['soccer_goals']=shown
+            return self.finish(spec)
         self.panel(BODY_TOP,BODY_BOTTOM if score_only else 980)
         self.name(100,550 if score_only else 440,game['home']['name_jp'],800,52)
         self.text(120,830 if score_only else 616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
@@ -343,7 +361,8 @@ def results_frame(t,seg,data,clubs,spec):
         people=[p for p in game['players'] if p['status']!='none']
         start=seg['meta'].get('start',0)
         return s.player_statistics(game,people[start:start+seg['meta'].get('count',2)],spec)
-    if seg['kind']=='followup':return s.score(game,spec,score_only=seg['meta'].get('score_only',False))
+    if seg['kind']=='followup':return s.score(game,spec,score_only=seg['meta'].get('score_only',False),
+        compact_goals=seg['meta'].get('goals',[]) if seg['meta'].get('compact_goals') else None)
     if seg['kind']=='team-stats':
         return s.score(game,spec,title='チームのスタッツ')
     if seg['kind'] in ('result','followup-detail'):
