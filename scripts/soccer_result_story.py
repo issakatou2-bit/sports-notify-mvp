@@ -27,6 +27,9 @@ def narration(data):
     if not data.get('can_make'):return dict(label=data['date_jst'],segments=[],duration_budget=dict(limit=results.LIMIT,grace=0))
     rows=followup['games'] if followup else [dict(event_id=g['id']) for g in data['games']]
     rows = list(rows)
+    import soccer_look
+    if soccer_look.readable():
+        rows.sort(key=lambda row:not any(p.get('goals') or p.get('assists') for g in data['games'] if g['id']==row['event_id'] for p in g['players']))
     known = {str(r['event_id']) for r in rows}
     flash = __import__('soccer_publications').load()
     brief = [g for g in data['games'] if str(g['id']) in flash]
@@ -36,14 +39,13 @@ def narration(data):
     for compact, kind, heading in ((brief, 'flash-results', '速報済みの試合結果'), (other, 'other-results', 'そのほかの試合結果')):
         for start in range(0, len(compact), 4):
             games = compact[start:start+4]
-            lines = [f"{g['home']['name_jp']} {g['score']['home']}対{g['score']['away']} {g['away']['name_jp']}" for g in games]
+            lines = [facts.result_line(g).rstrip('。') for g in games]
             compact_segments.append(dict(kind=kind, text='。'.join(lines)+'。', caption_units=[line+'。' for line in lines], speaker=2,
                                  meta=dict(event_ids=[g['id'] for g in games], lines=lines, heading=heading)))
     for row in rows:
         if str(row['event_id']) in flash: continue
         g=next(g for g in data['games'] if g['id']==row['event_id'])
-        text=f"{g['home']['name_jp']}対{g['away']['name_jp']}は、{g['score']['home']}対{g['score']['away']}。"
-        import soccer_look
+        text=facts.result_line(g)
         import soccer_stats
         if soccer_look.readable():
             segments.append(dict(kind='followup',text=text,speaker=2,caption_units=[text],meta=dict(event_id=g['id'],score_only=True)))
@@ -65,7 +67,6 @@ def narration(data):
             if answer:
                 units.append(facts.player_line(answer,expected=True))
             units.extend(facts.player_line(p) for p in g['players'] if p['status']!='none' and (not answer or p['name']!=answer['name']))
-            import soccer_look
             import soccer_stats
             if soccer_look.readable() and soccer_stats.commentary(g):units.append(soccer_stats.commentary(g))
             segments.append(dict(kind='followup',text=''.join(units),speaker=2,caption_units=units,meta=dict(event_id=g['id'])))
@@ -88,7 +89,15 @@ def narration(data):
         answer_names.update(p['name'] for g in data['games'] if g['id'] in {r['event_id'] for r in rows} for p in g['players'])
         said=[p for p in played if p['name'] not in answer_names][:2]
         units=[facts.player_line(p) for p in said] or ['日本人選手の結果です。']
-        segments.append(dict(kind='roster',text=''.join(units),speaker=2,caption_units=units,meta=dict(render.roster_pages(roster_data)[0],page=1,exclude_events=list(compact_ids))))
+        if soccer_look.readable():
+            for start in range(0,len(played),4):
+                shown=played[start:start+4]
+                units=[facts.player_line(p) for p in said if p in shown] or ['日本人選手の結果です。']
+                segments.append(dict(kind='roster',text=''.join(units),speaker=2,caption_units=units,
+                    meta=dict(start=start,count=len(shown),more=0,absent=[],page=start//4+1,
+                              player_names=[p['name'] for p in shown],exclude_events=list(compact_ids))))
+        else:
+            segments.append(dict(kind='roster',text=''.join(units),speaker=2,caption_units=units,meta=dict(render.roster_pages(roster_data)[0],page=1,exclude_events=list(compact_ids))))
     changes=[c for r in rows if str(r['event_id']) not in flash for c in r.get('rank_changes',[])][:2]
     if changes:
         text=''.join(f"{c['club']}の順位は{c['before']}位から{c['after']}位。" for c in changes)
@@ -226,19 +235,23 @@ def shorten_required(segments, data, stage):
                     continue
             if seg['kind']!='roster':kept.append(seg)
         if not removed:return shortened
-        clauses=[]
-        for status,verb in (('starter','先発しました'),('substitute','途中出場しました')):
-            people=[p for p in removed if p['status']==status]
-            if people:
-                clauses.append('、'.join(p['name'] for p in people[:2])+('ら' if len(people)>2 else '')+'が'+verb+'。')
-        roster=copy.deepcopy(template)
-        roster.update(kind='roster',text='ほかに、'+''.join(clauses))
-        roster['caption_units']=[roster['text']]
-        # v6は4人ずつページを送る。全員分の表示時間もminimum_secondsで確保。
-        roster['meta']=dict(start=0,count=sum(p['status']!='none' for p in data['players']),more=0,
-                            absent=[],page=1,exclude_events=[])
+        people=[p for p in data['players'] if p['status']!='none']
         insert=next((i for i,s in enumerate(kept) if s['kind']=='outro'),len(kept))
-        kept.insert(insert,roster)
+        rosters=[]
+        for start in range(0,len(people),4):
+            shown=people[start:start+4];clauses=[]
+            # 画面の上から順に読み、先発/途中出場で並べ替えない。
+            from itertools import groupby
+            for status, group in groupby((p for p in shown if p in removed),key=lambda p:p['status']):
+                verb='先発しました' if status=='starter' else '途中出場しました'
+                clauses.append('、'.join(p['name'] for p in group)+'が'+verb+'。')
+            roster=copy.deepcopy(template)
+            roster.update(kind='roster',text=''.join(clauses) or '日本人選手の出場結果です。')
+            roster['caption_units']=[roster['text']]
+            roster['meta']=dict(start=start,count=len(shown),more=0,absent=[],page=start//4+1,
+                                player_names=[p['name'] for p in shown],exclude_events=[])
+            rosters.append(roster)
+        kept[insert:insert]=rosters
         shortened=kept
     elif stage==3:
         seen=set();kept=[];selected={}
@@ -261,11 +274,11 @@ def shorten_required(segments, data, stage):
             shown=selected.get(game['id'],[])
             seg['meta']['goals']=shown
             seg['meta']['compact_goals']=True
-            score=game['score']
-            units=[f"{game['home']['name_jp']}{score['home']}対{score['away']}{game['away']['name_jp']}。"]
-            units.extend(facts.goal_line(g,game) if g['japanese_goal'] else facts.minute_text(g['minute'])+'に決勝点。' for g in shown)
+            units=[facts.result_line(game)]
+            units.extend(facts.goal_line(g,game) for g in shown if g['japanese_goal'])
             seg['text']=''.join(units);seg['caption_units']=units
-        shortened=kept
+        # 全員の名前は結果文と結果札に残る。最後は重複する名簿を省く。
+        shortened=[s for s in kept if s['kind']!='roster']
     return shortened
 
 

@@ -198,28 +198,31 @@ class Screen:
     def score(self, game, spec, title='試合結果', person=None, score_only=False, compact_goals=None):
         import soccer_result_facts as facts
         self.title(title, facts.competition(game))
-        if compact_goals:
-            page=page_at(self.t,len(compact_goals))
-            shown=compact_goals[page:page+1]
-            self.im.info.update(readable_page=page,readable_page_count=len(compact_goals))
+        if compact_goals is not None or score_only:
+            shown=[]
+            if compact_goals:
+                page=page_at(self.t,len(compact_goals));shown=compact_goals[page:page+1]
+                self.im.info.update(readable_page=page,readable_page_count=len(compact_goals))
+            # Keep the score and one short explanation close together.
             self.panel(BODY_TOP,1000)
-            self.name(100,440,game['home']['name_jp'],800,52)
-            self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
-            self.name(100,870,game['away']['name_jp'],800,52)
-            self.panel(1020,BODY_BOTTOM)
-            y=1210
-            for goal in shown:
-                line=(facts.goal_line(goal,game) if goal['japanese_goal'] and facts.named_scorer(goal)
-                      else facts.minute_text(goal['minute'])+'に決勝点。')
-                y=self.lines(100,y,line,40,800)+16
-            if y>BODY_BOTTOM:raise ValueError('短縮した得点経過が結果の札に入りません')
-            self.im.info['soccer_goals']=shown
+            self.name(100,430,game['home']['name_jp'],800,52)
+            self.text(120,570,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
+            self.name(100,880,game['away']['name_jp'],800,52)
+            people=[p['name'] for p in game['players'] if p['status']!='none'] or [p['name'] for p in game['players']]
+            if people:self.text(100,1030,' / '.join(people),40,800)
+            if shown:
+                line=facts.compact_goal_line(shown[0],game)
+                from soccer_v5_program import quote_lines, _quote_rows
+                rows=quote_lines(line,40,800,self.clubs)
+                height=len(rows)*60+48
+                self.panel(1110,1110+height)
+                _quote_rows(self.im,100,1134,rows,40,c.CHALK)
+            self.im.info.update(soccer_goals=shown,compact_score=True)
             return self.finish(spec)
-        self.panel(BODY_TOP,BODY_BOTTOM if score_only else 980)
-        self.name(100,550 if score_only else 440,game['home']['name_jp'],800,52)
-        self.text(120,830 if score_only else 616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
-        self.name(100,1220 if score_only else 870,game['away']['name_jp'],800,52)
-        if score_only:return self.finish(spec)
+        self.panel(BODY_TOP,980)
+        self.name(100,440,game['home']['name_jp'],800,52)
+        self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
+        self.name(100,870,game['away']['name_jp'],800,52)
         if game.get('match_stats'):
             self.match_statistics(game)
             return self.finish(spec)
@@ -377,7 +380,11 @@ def results_frame(t,seg,data,clubs,spec):
         person=next(p for p in data['players'] if p['name']==seg['meta']['player_detail']) if seg['meta'].get('player_detail') else next(p for p in data['players'] if p['status']!='none')
         return s.score(game,spec,person['name']+'の試合結果',person)
     if seg['kind']=='roster':
-        rows=[p for p in data['players'] if p['status']!='none' and str(p['event_id']) not in seg['meta'].get('exclude_events',[] )][:seg['meta']['count']]
+        rows=[p for p in data['players'] if p['status']!='none' and str(p['event_id']) not in seg['meta'].get('exclude_events',[] )]
+        if not seg['meta'].get('player_names'):rows=rows[:seg['meta']['count']]
+        if seg['meta'].get('player_names'):
+            by_name={p['name']:p for p in rows}
+            rows=[by_name[name] for name in seg['meta']['player_names']]
         import soccer_results
         display=[dict(name=p['name'],club=p['club'],values=[(p[k],u) for k,u in (('goals','得点'),('assists','A')) if p.get(k)],note='' if p.get('goals') or p.get('assists') else soccer_results.STATUS[p['status']]) for p in rows]
         return s.roster(dict(spec,title='日本人選手の結果',rows=display))
@@ -424,6 +431,6 @@ def check_frame(im,clubs):
         for e in cards+body:
             if intersects(e['box'],caption):errors.append(dict(caption_overlap=e))
         if 1920-caption[3]>100:errors.append(dict(empty_below_caption=1920-caption[3]))
-    if cards and not im.info.get('compact_player_statistics') and not im.info.get('compact_results') and BODY_BOTTOM-max(e['box'][3] for e in cards)>80:
+    if cards and not any(im.info.get(k) for k in ('compact_player_statistics','compact_results','compact_score')) and BODY_BOTTOM-max(e['box'][3] for e in cards)>80:
         errors.append(dict(empty_body_bottom=BODY_BOTTOM-max(e['box'][3] for e in cards)))
     return errors
