@@ -26,8 +26,21 @@ def narration(data):
     followup=data.get('preview_followup')
     if not data.get('can_make'):return dict(label=data['date_jst'],segments=[],duration_budget=dict(limit=results.LIMIT,grace=0))
     rows=followup['games'] if followup else [dict(event_id=g['id']) for g in data['games']]
-    segments=[]
+    rows = list(rows)
+    known = {str(r['event_id']) for r in rows}
+    flash = __import__('soccer_publications').load()
+    brief = [g for g in data['games'] if str(g['id']) in flash]
+    other = [g for g in data['games'] if str(g['id']) not in known and str(g['id']) not in flash]
+    compact_ids = {str(g['id']) for g in brief+other}
+    segments=[]; compact_segments=[]
+    for compact, kind, heading in ((brief, 'flash-results', '速報済みの試合結果'), (other, 'other-results', 'そのほかの試合結果')):
+        for start in range(0, len(compact), 4):
+            games = compact[start:start+4]
+            lines = [f"{g['home']['name_jp']} {g['score']['home']}対{g['score']['away']} {g['away']['name_jp']}" for g in games]
+            compact_segments.append(dict(kind=kind, text='。'.join(lines)+'。', caption_units=[line+'。' for line in lines], speaker=2,
+                                 meta=dict(event_ids=[g['id'] for g in games], lines=lines, heading=heading)))
     for row in rows:
+        if str(row['event_id']) in flash: continue
         g=next(g for g in data['games'] if g['id']==row['event_id'])
         text=f"{g['home']['name_jp']}対{g['away']['name_jp']}は、{g['score']['home']}対{g['score']['away']}。"
         import soccer_look
@@ -67,18 +80,20 @@ def narration(data):
             detail=facts.supplements(g,row)
             segments.append(dict(kind='followup-detail',text=''.join(detail),speaker=2,caption_units=detail,
                                  meta=dict(event_id=g['id'],details=facts.display_details(g,row),goals=g['goals'])))
-    played=[p for p in data['players'] if p['status']!='none']
+    segments.extend(compact_segments)
+    roster_data = dict(data, players=[p for p in data['players'] if str(p['event_id']) not in compact_ids])
+    played=[p for p in roster_data['players'] if p['status']!='none']
     if played:
         answer_names={r['answer']['name'] for r in rows if r.get('answer')}
         answer_names.update(p['name'] for g in data['games'] if g['id'] in {r['event_id'] for r in rows} for p in g['players'])
         said=[p for p in played if p['name'] not in answer_names][:2]
         units=[facts.player_line(p) for p in said] or ['日本人選手の結果です。']
-        segments.append(dict(kind='roster',text=''.join(units),speaker=2,caption_units=units,meta=dict(render.roster_pages(data)[0],page=1)))
-    changes=[c for r in rows for c in r.get('rank_changes',[])][:2]
+        segments.append(dict(kind='roster',text=''.join(units),speaker=2,caption_units=units,meta=dict(render.roster_pages(roster_data)[0],page=1,exclude_events=list(compact_ids))))
+    changes=[c for r in rows if str(r['event_id']) not in flash for c in r.get('rank_changes',[])][:2]
     if changes:
         text=''.join(f"{c['club']}の順位は{c['before']}位から{c['after']}位。" for c in changes)
         segments.append(dict(kind='followup-change',text=text,speaker=2,meta=dict(rows=changes)))
-    upcoming=next((r['next_game'] for r in rows if r.get('next_game')),None)
+    upcoming=next((r['next_game'] for r in rows if str(r['event_id']) not in flash and r.get('next_game')),None)
     if upcoming:
         at=results.utc(upcoming['start_utc']).astimezone(results.JST)
         text=f"次は日本時間{at.month}月{at.day}日{at.hour}時"+(f'{at.minute}分' if at.minute else '')+f"、{names.display(upcoming['home'])}対{names.display(upcoming['away'])}。"

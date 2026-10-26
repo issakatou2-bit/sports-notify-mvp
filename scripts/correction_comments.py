@@ -50,7 +50,7 @@ def render(payload):
         lines += [f"動画ID: <code>{escaped(vid)}</code>",
                   f"<pre>{escaped(row['source_video_title'])}</pre>",
                   f"指摘の種類: {escaped('／'.join(row['kinds']))}",
-                  f"<pre>{escaped(row['text'])}</pre>", ""]
+                  '件数: 1', ""]
     if not payload["corrections"]:
         lines.append("この取得範囲では候補なし。")
     return "\n".join(lines) + "\n"

@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def build(boards, summaries, clock, receipts=None):
-    items, rejected = now.build(boards, summaries, clock, receipts, max_age=now.GOAL_MAX_AGE)
+    items, rejected = now.build(boards, summaries, clock, receipts, max_age=now.GOAL_MAX_AGE, goal_short=True)
     selected = []
     seen = set(receipts or {})
     for data in items:
@@ -93,8 +93,7 @@ def main():
     if os.environ.get('COLLESPO_SOCCER_GOAL_SHORT') != 'on':
         print('go=0' if args.plan else 'disabled')
         return
-    path = ROOT/'data/soccer_goal_short_receipts.json'
-    ledger = json.loads(path.read_text(encoding='utf8')) if path.exists() else {}
+    ledger = __import__('soccer_publications').load()
     clock = datetime.now(timezone.utc)
     boards, summaries = live_material(clock, ledger)
     items, rejected = build(boards, summaries, clock, ledger)

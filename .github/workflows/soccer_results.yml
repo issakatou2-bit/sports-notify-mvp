@@ -30,7 +30,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: soccer-results
+  group: soccer-flash
   cancel-in-progress: false
 
 env:
@@ -54,6 +54,8 @@ jobs:
       COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
     steps:
       - uses: actions/checkout@v4
+      - name: Refresh shared match publication ledger
+        run: python scripts/soccer_publications.py --sync
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

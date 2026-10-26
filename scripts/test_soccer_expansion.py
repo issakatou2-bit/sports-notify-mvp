@@ -152,7 +152,7 @@ class GoalTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, '試作'):
                 now.publish(dict(data, sample_fictional=True), 'unused', {}, goal_short=True)
             import host_split
-            with patch.object(host_split, 'publication', return_value=None), \
+            with patch.object(host_split, 'publication', return_value=None), patch('soccer_publications.load', return_value={}), \
                     patch.object(now.subprocess, 'run') as sanity_run, \
                     patch.object(now, 'checkpoint_receipt', side_effect=ValueError('checkpoint failure')) as checkpoint, \
                     patch.object(Path, 'write_text'):
@@ -160,7 +160,7 @@ class GoalTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'checkpoint failure'):
                     now.publish(data, 'unused', ledger, goal_short=True)
                 self.assertEqual(ledger['401876452']['status'], 'pending')
-                self.assertEqual(checkpoint.call_args.args[0].name, 'soccer_goal_short_receipts.json')
+                self.assertEqual(checkpoint.call_args.args[0].name, 'soccer_flash_receipts.json')
                 sanity_run.assert_called_once()
                 self.assertTrue(sanity_run.call_args.kwargs['check'])
 

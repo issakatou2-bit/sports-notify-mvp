@@ -6,9 +6,10 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: soccer-now
+  group: soccer-flash
   cancel-in-progress: false
 env:
+  COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v6' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
@@ -34,6 +35,8 @@ jobs:
       YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      - name: Refresh shared match publication ledger
+        run: python scripts/soccer_publications.py --sync
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: soccer-goal-short
+  group: soccer-flash
   cancel-in-progress: false
 env:
   COLLESPO_SOCCER_GOAL_SHORT: ${{ vars.COLLESPO_SOCCER_GOAL_SHORT || 'off' }}
@@ -27,6 +27,8 @@ jobs:
     timeout-minutes: 110
     steps:
       - uses: actions/checkout@v4
+      - name: Refresh shared match publication ledger
+        run: python scripts/soccer_publications.py --sync
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

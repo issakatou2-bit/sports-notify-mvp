@@ -38,6 +38,11 @@ PUBLIC_RECORDS = {'published_assets.json', 'published_videos.json', 'published_t
 
 def merge_three_way(base, upstream, local, path, keys=()):
     """共通の元からの変更を合わせる。公開台帳の削除・IDの上書きはしない。"""
+    if (path.endswith('soccer_flash_receipts.json') and len(keys)==1
+            and isinstance(upstream,dict) and isinstance(local,dict)
+            and upstream != local and upstream != base and local != base
+            and (upstream.get('at'),upstream.get('kind')) != (local.get('at'),local.get('kind'))):
+        raise ValueError('同じ試合に別の速報予約があります。上書きせず投稿を停止します')
     public = path.rsplit('/', 1)[-1] in PUBLIC_RECORDS
     if isinstance(upstream, dict) and isinstance(local, dict):
         original = base if isinstance(base, dict) else {}

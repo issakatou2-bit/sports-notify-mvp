@@ -268,7 +268,7 @@ def story(team: dict, series: dict, games: list, boxes: list, last_feed: dict, r
     if last_feed:
         v = gs.pick_voice(voices, last_feed, after, words, table, jp, team["players"])
         if v:
-            items.append(("ハイライトのコメント欄から", gs.quoted(v["said"])))
+            items.append((v.get("source") if v.get("source")==__import__('fan_privacy').LABEL else "ハイライトのコメント欄から", gs.quoted(v["said"])))
             voice = v
         q = gs.pick_reporter(quotes, name, after, words, table, jp, team["players"])
         if q:

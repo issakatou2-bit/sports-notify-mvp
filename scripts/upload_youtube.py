@@ -2236,7 +2236,7 @@ def main():
                               longform_subject=longform_subject)
     # 説明欄のクラブ名は表示名の表（帯と同じ1か所）を通す。古い書き方を残さない（Opus-32）。
     # 題は Opus-33 で同じ関数を通す。
-    body["snippet"]["description"] = club_display_description(body["snippet"]["description"])
+    body["snippet"]["description"] = __import__('fan_privacy').description(club_display_description(body["snippet"]["description"]))
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)
@@ -2254,6 +2254,20 @@ def main():
     }
     if publish_at:
         body["status"]["publishAt"] = publish_at
+
+    import player_publications as player_pubs
+    player_kind = 'player_story' if args.kind == 'player_story' else 'season_player' if args.kind == 'asset' and player_pubs.topic_id(args.asset_topic) else None
+    if player_kind:
+        player_id = (player_pubs.identity(_json_or_empty(args.narration)['player']) if player_kind == 'player_story'
+                     else player_pubs.topic_id(args.asset_topic))
+        at = datetime.fromisoformat(publish_at.replace('Z', '+00:00')) if publish_at else datetime.now(timezone.utc)
+        player_record = player_pubs.publication(player_id, player_kind, at)
+        if player_record is None:
+            print('[info] 同じMLB選手の別枠が7日以内にあるため公開を見送ります')
+            return
+        if publish_at:
+            player_record['publish_at'] = publish_at
+        experiment = dict(experiment or {}, **player_record)
 
     try:
         youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)

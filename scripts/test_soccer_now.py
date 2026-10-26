@@ -10,6 +10,10 @@ import soccer_now as now
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def saved_material(*args, **kwargs):
+    return now.build(*args, goal_short=None, **kwargs)
+
+
 class Tests(unittest.TestCase):
     def setUp(self):
         self.boards = json.loads((ROOT/'scripts/fixtures/soccer-results/scoreboards.json').read_text(encoding='utf8'))
@@ -17,35 +21,35 @@ class Tests(unittest.TestCase):
         self.clock = now.results.utc('2026-09-20T17:15:00Z')
 
     def test_saved_finished(self):
-        data, errors = now.build(self.boards,self.summaries,self.clock)
+        data, errors = saved_material(self.boards,self.summaries,self.clock)
         self.assertFalse(errors); self.assertEqual(len(data),1)
         g = data[0]['games'][0]
         self.assertEqual(g['id'],'401876452')
         self.assertEqual(g['winner_goal']['side'],'home')
-        self.assertEqual(data[0]['players'][0]['contribution'],2)
-        self.assertIsNone(data[0]['players'][0]['minutes'])
+        self.assertNotIn('contribution',data[0]['players'][0])
+        self.assertIsNone(data[0]['players'][0].get('minutes'))
         self.assertEqual(g['rank_changes'],[])
 
     def test_not_finished_future_stale_duplicate(self):
         for clock in ('2026-09-20T17:10:00Z','2026-09-20T18:12:00Z'):
-            data,_ = now.build(self.boards,self.summaries,now.results.utc(clock))
+            data,_ = saved_material(self.boards,self.summaries,now.results.utc(clock))
             self.assertEqual(data,[])
-        self.assertEqual(now.build(self.boards,self.summaries,self.clock,{'401876452':{'status':'pending'}})[0],[])
+        self.assertEqual(saved_material(self.boards,self.summaries,self.clock,{'401876452':{'status':'pending'}})[0],[])
         b = copy.deepcopy(self.boards)
         for board in b.values():
             for e in board['events']: e['competitions'][0]['status']['type']['completed'] = False
-        self.assertEqual(now.build(b,self.summaries,self.clock)[0],[])
+        self.assertEqual(saved_material(b,self.summaries,self.clock)[0],[])
 
     def test_unknown_and_goal_sequence(self):
-        d,_ = now.build(self.boards,self.summaries,self.clock); g = d[0]['games'][0]
+        d,_ = saved_material(self.boards,self.summaries,self.clock); g = d[0]['games'][0]
         g['players'][0]['goals'] = None
         summary = self.summaries[g['id']].get('summary',self.summaries[g['id']])
-        self.assertIsNone(now.enrich(g,summary)['players'][0]['contribution'])
+        self.assertNotIn('contribution',now.enrich(g,summary)['players'][0])
         g['goals_complete'] = False
         self.assertIsNone(now.enrich(g,summary)['winner_goal'])
 
     def test_quote_match_and_review(self):
-        d,_ = now.build(self.boards,self.summaries,self.clock); d = d[0]
+        d,_ = saved_material(self.boards,self.summaries,self.clock); d = d[0]
         f = json.loads((ROOT/'scripts/fixtures/soccer-now/voices.json').read_text(encoding='utf8'))
         self.assertEqual(now.attach_voices(d,f['video'],f['comments'],sample=True)['voices'],[])
         for v in f['comments']:
@@ -67,7 +71,7 @@ class Tests(unittest.TestCase):
         with self.assertRaises(ValueError): now.publish({'sample_fictional':True},ROOT/'build/no',{})
 
     def test_rank_snapshots(self):
-        data,_ = now.build(self.boards,self.summaries,self.clock); g = data[0]['games'][0]
+        data,_ = saved_material(self.boards,self.summaries,self.clock); g = data[0]['games'][0]
         a = dict(competition=g['league'],season=2026,played=4,rank=8,source='fixture',as_of=g['start_utc'])
         a['as_of'] = (now.results.utc(g['start_utc'])-now.timedelta(hours=1)).isoformat()
         b = dict(a,played=5,rank=9,as_of=g['finished_utc'])
@@ -80,7 +84,7 @@ class Tests(unittest.TestCase):
     def test_render_uses_bundled_font_and_badges(self):
         import short_saved_render as sr
         sr.setup()
-        data,_ = now.build(self.boards,self.summaries,self.clock); d=data[0]
+        data,_ = saved_material(self.boards,self.summaries,self.clock); d=data[0]
         d['sample_fictional']=True
         import v3_rules as rules
         for s in now.narration(d)['segments']:

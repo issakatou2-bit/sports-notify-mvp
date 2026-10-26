@@ -90,21 +90,21 @@ class SoccerResultNames(unittest.TestCase):
     def test_match_flash_own_goal_is_not_credited_as_a_normal_goal(self):
         boards=json.loads((ROOT/'scripts/fixtures/soccer-results/scoreboards.json').read_text(encoding='utf8'))
         summaries=json.loads((ROOT/'scripts/fixtures/soccer-results/summaries.json').read_text(encoding='utf8'))
-        built,errors=now.build(boards,summaries,now.results.utc('2026-09-20T17:15:00Z'))
+        built,errors=now.build(boards,summaries,now.results.utc('2026-09-20T17:15:00Z'), goal_short=None)
         self.assertFalse(errors)
         data=built[0];goal=data['games'][0]['winner_goal']
         goal.update(own_goal=True,japanese_goal=False)
         for scorer,known in [('Unknown Player',False),('鎌田大地',True)]:
             with self.subTest(scorer=scorer):
                 goal['scorer']=scorer
-                text=next(s['text'] for s in now.narration(data)['segments'] if s['kind']=='context')
+                text=''.join(s['text'] for s in now.narration(data)['segments'] if s['kind']=='followup-detail')
                 self.assertIn('オウンゴール',text)
                 self.assertNotIn(scorer+'が得点',text)
                 if known:
                     self.assertIn(scorer+'のオウンゴール',text)
                 else:
                     self.assertNotIn(scorer,text)
-                    self.assertIn(facts.club_of(goal,data['games'][0])+'にオウンゴール',text)
+                    self.assertIn(facts.club_of(goal,data['games'][0])+'が得点。オウンゴール',text)
 
     def test_only_confirmed_dictionary_names_are_used(self):
         goal=dict(minute='57',scorer='未確認カタカナ',side='away',own_goal=False,japanese_goal=False)
@@ -216,7 +216,7 @@ class SoccerResultNames(unittest.TestCase):
         """試合速報（soccer_now）の決勝点も、英語名を読み上げない。"""
         boards=json.loads((ROOT/'scripts/fixtures/soccer-results/scoreboards.json').read_text(encoding='utf8'))
         summaries=json.loads((ROOT/'scripts/fixtures/soccer-results/summaries.json').read_text(encoding='utf8'))
-        built,errors=now.build(boards,summaries,now.results.utc('2026-09-20T17:15:00Z'))
+        built,errors=now.build(boards,summaries,now.results.utc('2026-09-20T17:15:00Z'), goal_short=None)
         self.assertFalse(errors)
         data=built[0];game=data['games'][0]
         scorer=game['winner_goal']['scorer']
