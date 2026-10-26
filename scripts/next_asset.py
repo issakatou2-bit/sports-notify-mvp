@@ -7,8 +7,8 @@
   ところが手で書いた24本を出し終えて在庫がゼロになり、
   いちばんよく見られている種類が止まっていた。
 
-  球場のトピックは venue_topics.py が公式APIから作るので、
-  玉は増え続ける。あとは毎日1本ずつ出せばよい。
+  球場・球団まとめは2026-10-26の本人判断で停止。
+  asset_policy の停止条件を先に適用し、在庫が無ければ制作を見送る。
 
 選び方:
   **実測でよく見られている種類から先に出す。**
@@ -49,6 +49,8 @@ import json
 import os
 import pathlib
 import sys
+
+import asset_policy
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
@@ -210,7 +212,8 @@ def pick_season(args) -> int:
     left = max(0, args.season - posted_today(args.published,
                                              kinds={"season"}, count=True))
     todo = sorted((k for k, v in gav.LIST_TOPICS.items()
-                   if kind_of(k) == "season" and k not in done and not started(v)),
+                   if kind_of(k) == "season" and k not in done and not started(v)
+                   and not asset_policy.paused(k)),
                   key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
     import player_publications as publications
     ledgers = publications.load(assets_path=args.published)
@@ -272,7 +275,9 @@ def main() -> int:
     done = published(args.published)
     import player_publications as publications
     ledgers = publications.load(assets_path=args.published)
-    todo = sorted(k for k in gav.LIST_TOPICS if k not in done and (not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)))
+    todo = sorted(k for k in gav.LIST_TOPICS if k not in done
+                  and not asset_policy.paused(k)
+                  and (not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)))
 
     # よく見られている種類から先に。まだ測れない種類は真ん中に置く
     # （後回しにすると永久に測れないままになる）。
