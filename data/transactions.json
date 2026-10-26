@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-26T06:39:05.580983+00:00",
+  "updated_at": "2026-10-26T09:52:47.807376+00:00",
   "start": "2026-10-05",
   "end": "2026-10-26",
   "players": {
@@ -10,19 +10,19 @@
       "team": "San Diego Padres",
       "text": "San Diego Padres activated RHP Walker Buehler from the paternity list."
     },
-    "695243": {
-      "kind": "from_il",
-      "date": "2026-10-07",
-      "name_en": "Mason Miller",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Mason Miller from the paternity list."
-    },
     "593974": {
       "kind": "from_il",
       "date": "2026-10-08",
       "name_en": "Wandy Peralta",
       "team": "San Diego Padres",
       "text": "San Diego Padres activated LHP Wandy Peralta."
+    },
+    "695243": {
+      "kind": "from_il",
+      "date": "2026-10-07",
+      "name_en": "Mason Miller",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Mason Miller from the paternity list."
     },
     "686218": {
       "kind": "up",
@@ -31,19 +31,40 @@
       "team": "Los Angeles Dodgers",
       "text": "Los Angeles Dodgers recalled RHP Emmet Sheehan from Oklahoma City Comets."
     },
-    "657376": {
+    "571657": {
       "kind": "from_il",
       "date": "2026-10-08",
-      "name_en": "Clarke Schmidt",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Clarke Schmidt."
-    },
-    "693821": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Bryce Elder",
+      "name_en": "Kyle Farmer",
       "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Bryce Elder."
+      "text": "Atlanta Braves activated DH Kyle Farmer."
+    },
+    "676702": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Hunter Stratton",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Hunter Stratton."
+    },
+    "683409": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Angel Chivilli",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RHP Angel Chivilli."
+    },
+    "686628": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Blake Burkhalter",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated RHP Blake Burkhalter."
+    },
+    "527048": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Martín Pérez",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated LHP Martín Pérez."
     },
     "592450": {
       "kind": "from_il",
@@ -51,6 +72,13 @@
       "name_en": "Aaron Judge",
       "team": "New York Yankees",
       "text": "New York Yankees activated RF Aaron Judge."
+    },
+    "700413": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Tyler Uberstine",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated RHP Tyler Uberstine."
     },
     "641555": {
       "kind": "from_il",
@@ -65,6 +93,13 @@
       "name_en": "Garrett Hawkins",
       "team": "San Diego Padres",
       "text": "San Diego Padres activated RHP Garrett Hawkins."
+    },
+    "695238": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Will Wagner",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated DH Will Wagner."
     },
     "669200": {
       "kind": "from_il",
@@ -87,47 +122,19 @@
       "team": "San Diego Padres",
       "text": "San Diego Padres activated 3B Gage Workman."
     },
-    "663554": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Casey Mize",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Casey Mize from the 15-day injured list."
-    },
-    "660787": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Yerry De los Santos",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Yerry De los Santos."
-    },
-    "605242": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Michael Fulmer",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Michael Fulmer."
-    },
-    "676664": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "JP Sears",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated LHP JP Sears."
-    },
-    "676702": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Hunter Stratton",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Hunter Stratton."
-    },
     "663897": {
       "kind": "from_il",
       "date": "2026-10-08",
       "name_en": "Luke Williams",
       "team": "Atlanta Braves",
       "text": "Atlanta Braves activated SS Luke Williams."
+    },
+    "695684": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Elmer Rodríguez",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RHP Elmer Rodríguez."
     },
     "625643": {
       "kind": "from_il",
@@ -143,26 +150,33 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves activated RHP James Karinchak."
     },
-    "681190": {
+    "642708": {
       "kind": "from_il",
       "date": "2026-10-08",
-      "name_en": "Randy Vásquez",
+      "name_en": "Amed Rosario",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated 3B Amed Rosario."
+    },
+    "642086": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Dominic Smith",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated DH Dominic Smith."
+    },
+    "663554": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Casey Mize",
       "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Randy Vásquez."
+      "text": "San Diego Padres activated RHP Casey Mize from the 15-day injured list."
     },
-    "571657": {
+    "657376": {
       "kind": "from_il",
       "date": "2026-10-08",
-      "name_en": "Kyle Farmer",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated DH Kyle Farmer."
-    },
-    "700413": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Tyler Uberstine",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Tyler Uberstine."
+      "name_en": "Clarke Schmidt",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RHP Clarke Schmidt."
     },
     "656288": {
       "kind": "from_il",
@@ -178,13 +192,6 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves activated RHP Rolddy Muñoz."
     },
-    "695238": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Will Wagner",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated DH Will Wagner."
-    },
     "691176": {
       "kind": "from_il",
       "date": "2026-10-08",
@@ -192,33 +199,26 @@
       "team": "New York Yankees",
       "text": "New York Yankees activated RF Jasson Domínguez."
     },
-    "695684": {
+    "660787": {
       "kind": "from_il",
       "date": "2026-10-08",
-      "name_en": "Elmer Rodríguez",
+      "name_en": "Yerry De los Santos",
       "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Elmer Rodríguez."
+      "text": "New York Yankees activated RHP Yerry De los Santos."
     },
-    "683409": {
+    "605242": {
       "kind": "from_il",
       "date": "2026-10-08",
-      "name_en": "Angel Chivilli",
+      "name_en": "Michael Fulmer",
       "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Angel Chivilli."
+      "text": "New York Yankees activated RHP Michael Fulmer."
     },
-    "686628": {
+    "693821": {
       "kind": "from_il",
       "date": "2026-10-08",
-      "name_en": "Blake Burkhalter",
+      "name_en": "Bryce Elder",
       "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Blake Burkhalter."
-    },
-    "527048": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Martín Pérez",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated LHP Martín Pérez."
+      "text": "Atlanta Braves activated RHP Bryce Elder."
     },
     "657612": {
       "kind": "from_il",
@@ -248,13 +248,6 @@
       "team": "San Diego Padres",
       "text": "San Diego Padres activated RHP Jhony Brito."
     },
-    "642708": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Amed Rosario",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated 3B Amed Rosario."
-    },
     "805347": {
       "kind": "from_il",
       "date": "2026-10-08",
@@ -262,12 +255,19 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves activated SS Jim Jarvis."
     },
-    "642086": {
+    "681190": {
       "kind": "from_il",
       "date": "2026-10-08",
-      "name_en": "Dominic Smith",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated DH Dominic Smith."
+      "name_en": "Randy Vásquez",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Randy Vásquez."
+    },
+    "676664": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "JP Sears",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated LHP JP Sears."
     },
     "669093": {
       "kind": "from_il",
@@ -276,12 +276,33 @@
       "team": "San Diego Padres",
       "text": "San Diego Padres activated RHP Jeremiah Estrada."
     },
-    "661563": {
+    "669165": {
       "kind": "up",
       "date": "2026-10-08",
-      "name_en": "Luis Gil",
+      "name_en": "Kyle Hurt",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers recalled RHP Kyle Hurt from Oklahoma City Comets."
+    },
+    "675627": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Michael Grove",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves recalled RHP Michael Grove from Gwinnett Stripers."
+    },
+    "702566": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Owen Murphy",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves recalled RHP Owen Murphy from FCL Braves."
+    },
+    "694341": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Brendan Beck",
       "team": "New York Yankees",
-      "text": "New York Yankees recalled RHP Luis Gil from FCL Yankees."
+      "text": "New York Yankees recalled RHP Brendan Beck from FCL Yankees."
     },
     "702047": {
       "kind": "up",
@@ -297,6 +318,13 @@
       "team": "Milwaukee Brewers",
       "text": "Milwaukee Brewers recalled LHP Colton Gordon from Biloxi Shuckers."
     },
+    "661563": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Luis Gil",
+      "team": "New York Yankees",
+      "text": "New York Yankees recalled RHP Luis Gil from FCL Yankees."
+    },
     "690440": {
       "kind": "up",
       "date": "2026-10-08",
@@ -304,40 +332,12 @@
       "team": "New York Yankees",
       "text": "New York Yankees recalled RHP Bradley Hanner from FCL Yankees."
     },
-    "669165": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Kyle Hurt",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers recalled RHP Kyle Hurt from Oklahoma City Comets."
-    },
     "606996": {
       "kind": "up",
       "date": "2026-10-08",
       "name_en": "Kyle Hart",
       "team": "San Diego Padres",
       "text": "San Diego Padres recalled LHP Kyle Hart from ACL Padres."
-    },
-    "694341": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Brendan Beck",
-      "team": "New York Yankees",
-      "text": "New York Yankees recalled RHP Brendan Beck from FCL Yankees."
-    },
-    "675627": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Michael Grove",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves recalled RHP Michael Grove from Gwinnett Stripers."
-    },
-    "702566": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Owen Murphy",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves recalled RHP Owen Murphy from FCL Braves."
     },
     "664849": {
       "kind": "up",

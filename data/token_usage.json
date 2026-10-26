@@ -745,10 +745,10 @@
       }
     },
     "2026-10-26": {
-      "calls": 15,
-      "in": 26105,
-      "out": 5680,
-      "usd": 0.10625,
+      "calls": 22,
+      "in": 171899,
+      "out": 10183,
+      "usd": 0.44285,
       "by": {
         "topic": {
           "calls": 4,
@@ -771,19 +771,24 @@
           "out": 903
         },
         "sanity": {
-          "calls": 3,
-          "in": 14636,
-          "out": 1587
+          "calls": 7,
+          "in": 156557,
+          "out": 3606
         },
         "localize": {
-          "calls": 3,
-          "in": 3779,
-          "out": 2101
+          "calls": 5,
+          "in": 6911,
+          "out": 4229
         },
         "sanity_recheck": {
           "calls": 1,
           "in": 1145,
           "out": 226
+        },
+        "translate": {
+          "calls": 1,
+          "in": 741,
+          "out": 356
         }
       }
     }
