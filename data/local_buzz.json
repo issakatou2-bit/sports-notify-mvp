@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-25T06:02:15.837084+00:00",
+  "updated_at": "2026-10-26T06:02:00.356011+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -7,34 +7,50 @@
     },
     {
       "name": "MLB公式",
-      "items": 25
+      "items": 24
     }
   ],
-  "titles_count": 50,
+  "titles_count": 49,
   "teams": [
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 15,
+      "mentions": 27,
       "tone": "好調",
-      "gist": "ブリュワーズが逆転で2戦連勝、WS2-0リード"
+      "gist": "ブリュワーズWS2連勝、救援陣ERA1.24"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 10,
+      "mentions": 9,
       "tone": "不振",
-      "gist": "レイズ4点先制も逆転負け、WS0-2"
+      "gist": "レイズ2連敗、Caminero不満も3戦目へ"
     },
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ドジャース親会社、スパークス売却を検討か"
+      "gist": "ブリュワーズ全勝なら2005年ソックスと並ぶ"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ベルデリ、マリナーズ監督選考から辞退"
+    },
+    {
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "アリゾナ秋季リーグ第3週の好成績者"
     },
     {
       "team_id": "147",
@@ -42,7 +58,15 @@
       "name_en": "New York Yankees",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ヤンキース、投手コーチと3年延長で合意か"
+      "gist": "ブリュワーズ全勝なら1999年ヤンキースと並ぶ"
+    },
+    {
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "1976年レッズが唯一の複数シリーズ全勝"
     }
   ],
   "players": []

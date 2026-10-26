@@ -1,334 +1,13 @@
 {
-  "updated_at": "2026-10-25T06:02:03.263181+00:00",
+  "updated_at": "2026-10-26T06:01:46.698389+00:00",
   "hours": 30,
   "channel_id": "UCoLrcjPV5PbUrUyXq5mjc_A",
   "videos": [
     {
-      "video_id": "sSAk4hyqnUQ",
-      "title": "RAYS vs. BREWERS: World Series Full Game 1 Highlights (October 23) | 2026 MLB Postseason",
-      "published_at": "2026-10-24T04:48:53Z",
-      "views": 1861846,
-      "matchup": "RAYS vs. BREWERS",
-      "game_date": "2026-10-23",
-      "result": {
-        "away_jp": "レイズ",
-        "home_jp": "ブリュワーズ",
-        "away_score": 2,
-        "home_score": 3,
-        "series": {
-          "name": "ワールドシリーズ",
-          "game_number": 1,
-          "games_in_series": 7,
-          "after": "MIL leads 1-0",
-          "is_over": false,
-          "winner_today": "ブリュワーズ",
-          "after_jp": "1勝0敗（MIL leads 1-0）",
-          "next": "第2戦",
-          "next_game_number": 2,
-          "after_by_team": {
-            "ブリュワーズ": {
-              "wins": 1,
-              "losses": 0
-            },
-            "レイズ": {
-              "wins": 0,
-              "losses": 1
-            }
-          },
-          "before_by_team": {
-            "ブリュワーズ": {
-              "wins": 0,
-              "losses": 0
-            },
-            "レイズ": {
-              "wins": 0,
-              "losses": 0
-            }
-          },
-          "before_jp": "ブリュワーズ0勝0敗、レイズ0勝0敗",
-          "is_decider": false
-        },
-        "innings": [
-          {
-            "num": 1,
-            "away": 0,
-            "home": 2
-          },
-          {
-            "num": 2,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 3,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 4,
-            "away": 1,
-            "home": 0
-          },
-          {
-            "num": 5,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 6,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 7,
-            "away": 0,
-            "home": 1
-          },
-          {
-            "num": 8,
-            "away": 0,
-            "home": 0
-          },
-          {
-            "num": 9,
-            "away": 1,
-            "home": null
-          }
-        ],
-        "away_hits": 7,
-        "away_errors": 0,
-        "home_hits": 8,
-        "home_errors": 0,
-        "batting_facts": [
-          {
-            "name": "Cooper Pratt",
-            "name_en": "Cooper Pratt",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Joey Ortiz",
-            "name_en": "Joey Ortiz",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Jackson Chourio",
-            "name_en": "Jackson Chourio",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 2,
-            "rbi": 1
-          },
-          {
-            "name": "Christian Yelich",
-            "name_en": "Christian Yelich",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 1,
-            "rbi": 1
-          },
-          {
-            "name": "Jake Bauers",
-            "name_en": "Jake Bauers",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Sal Frelick",
-            "name_en": "Sal Frelick",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Garrett Mitchell",
-            "name_en": "Garrett Mitchell",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "David Hamilton",
-            "name_en": "David Hamilton",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "William Contreras",
-            "name_en": "William Contreras",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 2,
-            "rbi": 1
-          },
-          {
-            "name": "Brice Turang",
-            "name_en": "Brice Turang",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Gary Sánchez",
-            "name_en": "Gary Sánchez",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Luis Lara",
-            "name_en": "Luis Lara",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Taylor Walls",
-            "name_en": "Taylor Walls",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Jorge Mateo",
-            "name_en": "Jorge Mateo",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Ryan Vilade",
-            "name_en": "Ryan Vilade",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Chandler Simpson",
-            "name_en": "Chandler Simpson",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 2,
-            "rbi": 0
-          },
-          {
-            "name": "Jonny DeLuca",
-            "name_en": "Jonny DeLuca",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Liam Hicks",
-            "name_en": "Liam Hicks",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 2
-          },
-          {
-            "name": "Jonathan Aranda",
-            "name_en": "Jonathan Aranda",
-            "type": "batter",
-            "aliases": [],
-            "runs": 1,
-            "hits": 3,
-            "rbi": 0
-          },
-          {
-            "name": "Yandy Díaz",
-            "name_en": "Yandy Díaz",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Ben Williamson",
-            "name_en": "Ben Williamson",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 0,
-            "rbi": 0
-          },
-          {
-            "name": "Victor Mesa Jr.",
-            "name_en": "Victor Mesa Jr.",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          },
-          {
-            "name": "Junior Caminero",
-            "name_en": "Junior Caminero",
-            "type": "batter",
-            "aliases": [],
-            "runs": 0,
-            "hits": 1,
-            "rbi": 0
-          }
-        ],
-        "star_name": "Jacob Misiorowski",
-        "star_line": "5.0回 3奪三振 自責1",
-        "star_team": "ブリュワーズ",
-        "away_starter": {
-          "name": "Nick Martinez",
-          "team": "レイズ",
-          "line": "5.0回 5奪三振 自責2　敗戦投手（通算1勝1敗）"
-        },
-        "home_starter": {
-          "name": "Jacob Misiorowski",
-          "team": "ブリュワーズ",
-          "line": "5.0回 3奪三振 自責1　勝利投手（通算1勝0敗）"
-        }
-      },
-      "topic_jp": "レイズ 対 ブリュワーズ"
-    },
-    {
       "video_id": "UmfmgsZBw2w",
       "title": "RAYS vs. BREWERS: World Series Full Game 2 Highlights (October 24) | 2026 MLB Postseason",
       "published_at": "2026-10-25T04:29:04Z",
-      "views": 174495,
+      "views": 2265196,
       "matchup": "RAYS vs. BREWERS",
       "game_date": "2026-10-24",
       "result": {
@@ -628,123 +307,114 @@
       "topic_jp": "レイズ 対 ブリュワーズ"
     },
     {
-      "video_id": "-2hLSV5StbQ",
-      "title": "THRILLING 9th INNING: Brewers ESCAPE jam vs. Rays for World Series Game 1 win 🍿 | MLB Highlights",
-      "published_at": "2026-10-24T03:50:02Z",
-      "views": 300866,
-      "matchup": "",
-      "game_date": "",
-      "topic_jp": "ブルワーズ、9回の窮地を脱しワールドシリーズ第1戦を制す"
-    },
-    {
       "video_id": "rmR2Z4HJthQ",
       "title": "FULL 1st INNING: Rays grab early Game 2 lead vs. the Brewers! | MLB 2026 World Series Highlights",
       "published_at": "2026-10-25T00:33:32Z",
-      "views": 209482,
+      "views": 252622,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "レイズ、第2戦の初回に先制 ブルワーズ相手に"
+      "topic_jp": "レイズ、第2戦で初回に先制（ブルワーズ戦）"
+    },
+    {
+      "video_id": "ZktqKEWeN_8",
+      "title": "Brewers take the lead after coming back from 4-run deficit! | MLB Highlights (World Series Game 2)",
+      "published_at": "2026-10-25T03:09:52Z",
+      "views": 231415,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "ブルワーズが4点差を覆して逆転"
+    },
+    {
+      "video_id": "njXSfh58ZiI",
+      "title": "Sal Frelick hits Brewers' first World Series homer in 16,075 days! | MLB Highlights",
+      "published_at": "2026-10-25T02:27:50Z",
+      "views": 194215,
+      "matchup": "",
+      "game_date": "",
+      "topic_jp": "サル・フレリックがブルワーズ初のワールドシリーズ本塁打を放つ"
     },
     {
       "video_id": "2PwLpqTCMlE",
       "title": "FULL INNING: Bases loaded for Christian Yelich and the Brewers! | MLB 2026 World Series Highlights",
       "published_at": "2026-10-25T01:56:44Z",
-      "views": 150082,
+      "views": 193148,
       "matchup": "",
       "game_date": "",
-      "topic_jp": "満塁のクリスチャン・イェリッチとブルワーズ、イニング全体がハイライト"
+      "topic_jp": "FULL INNING: Bases loaded for Christian Yelich and the Brewers!"
     }
   ],
   "all": [
     {
-      "video_id": "sSAk4hyqnUQ",
-      "matchup": "RAYS vs. BREWERS",
-      "game_date": "2026-10-23",
-      "views": 1861846
-    },
-    {
       "video_id": "UmfmgsZBw2w",
       "matchup": "RAYS vs. BREWERS",
       "game_date": "2026-10-24",
-      "views": 174495
-    },
-    {
-      "video_id": "-2hLSV5StbQ",
-      "matchup": "",
-      "game_date": "",
-      "views": 300866
+      "views": 2265196
     },
     {
       "video_id": "rmR2Z4HJthQ",
       "matchup": "",
       "game_date": "",
-      "views": 209482
-    },
-    {
-      "video_id": "2PwLpqTCMlE",
-      "matchup": "",
-      "game_date": "",
-      "views": 150082
-    },
-    {
-      "video_id": "uMgwC4oBuHM",
-      "matchup": "",
-      "game_date": "",
-      "views": 145544
+      "views": 252622
     },
     {
       "video_id": "ZktqKEWeN_8",
       "matchup": "",
       "game_date": "",
-      "views": 117010
+      "views": 231415
     },
     {
       "video_id": "njXSfh58ZiI",
       "matchup": "",
       "game_date": "",
-      "views": 116498
+      "views": 194215
     },
     {
-      "video_id": "5Kqabec5c70",
+      "video_id": "2PwLpqTCMlE",
       "matchup": "",
       "game_date": "",
-      "views": 68568
-    },
-    {
-      "video_id": "VX4jilMvyLQ",
-      "matchup": "",
-      "game_date": "",
-      "views": 56439
-    },
-    {
-      "video_id": "WCp1jp7hJfo",
-      "matchup": "",
-      "game_date": "",
-      "views": 21397
-    },
-    {
-      "video_id": "NSb0mYaLxrc",
-      "matchup": "",
-      "game_date": "",
-      "views": 14972
+      "views": 193148
     },
     {
       "video_id": "u-z8o1gHKiQ",
       "matchup": "",
       "game_date": "",
-      "views": 12024
+      "views": 125969
     },
     {
       "video_id": "xsoidx00diw",
       "matchup": "",
       "game_date": "",
-      "views": 5615
+      "views": 80026
     },
     {
       "video_id": "fFDYO01b7nQ",
       "matchup": "",
       "game_date": "",
-      "views": 1073
+      "views": 55760
+    },
+    {
+      "video_id": "QsHDbY-_VTY",
+      "matchup": "",
+      "game_date": "",
+      "views": 40733
+    },
+    {
+      "video_id": "WCp1jp7hJfo",
+      "matchup": "",
+      "game_date": "",
+      "views": 25401
+    },
+    {
+      "video_id": "VO7X2GAvQ8s",
+      "matchup": "",
+      "game_date": "",
+      "views": 19007
+    },
+    {
+      "video_id": "T6glSpV6PJA",
+      "matchup": "",
+      "game_date": "",
+      "views": 9989
     }
   ]
 }

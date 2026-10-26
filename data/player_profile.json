@@ -1,104 +1,95 @@
 {
-  "generated_at": "2026-10-25T06:01:04.070630+00:00",
-  "date_jst": "2026-10-25",
-  "name": "Liam Hicks",
-  "player_id": "689414",
-  "team": "レイズ",
+  "generated_at": "2026-10-26T06:01:06.125819+00:00",
+  "date_jst": "2026-10-26",
+  "name": "Sal Frelick",
+  "player_id": "686217",
+  "team": "ブリュワーズ",
   "group": "hitting",
   "why": "2026-10-25のMLBで最も活躍",
-  "headline": "2打数1安打　1本塁打　2打点　1死球",
-  "score": 105,
+  "headline": "4打数2安打　1本塁打　1打点",
+  "score": 100,
   "bio": {
-    "name_en": "Liam Hicks",
-    "age": 27,
-    "birth_city": "Toronto",
-    "birth_state": "ON",
-    "birth_country": "Canada",
-    "birth_date": "1999-06-02",
-    "debut": "2025-03-28",
+    "name_en": "Sal Frelick",
+    "age": 26,
+    "birth_city": "Boston",
+    "birth_state": "MA",
+    "birth_country": "USA",
+    "birth_date": "2000-04-19",
+    "debut": "2023-07-22",
     "draft_year": 2021,
     "bats": "Left",
     "throws": "Right",
-    "number": "34",
-    "position": "Catcher",
+    "number": "10",
+    "position": "Outfielder",
     "nickname": null,
     "height": "5' 9\"",
-    "weight": 185
+    "weight": 191
   },
   "teams": [
     {
-      "team": "マーリンズ",
-      "from": 2025,
-      "to": 2026
-    },
-    {
-      "team": "レイズ",
-      "from": 2026,
+      "team": "ブリュワーズ",
+      "from": 2023,
       "to": 2026
     }
   ],
   "career": {
-    "games": 261,
-    "avg": ".269",
-    "hr": 24,
-    "rbi": 127,
-    "ops": ".757",
-    "sb": 5,
-    "hits": 218
+    "games": 455,
+    "avg": ".261",
+    "hr": 21,
+    "rbi": 159,
+    "ops": ".685",
+    "sb": 51,
+    "hits": 400
   },
   "this_season": {
-    "games": 142,
-    "avg": ".284",
-    "hr": 18,
-    "rbi": 82,
-    "ops": ".801",
-    "sb": 3,
-    "hits": 136
+    "games": 111,
+    "avg": ".230",
+    "hr": 4,
+    "rbi": 40,
+    "ops": ".614",
+    "sb": 7,
+    "hits": 78
   },
   "last_season": {
-    "games": 119,
-    "avg": ".247",
-    "hr": 6,
-    "rbi": 45,
-    "ops": ".692",
-    "sb": 2,
-    "hits": 82
+    "games": 142,
+    "avg": ".288",
+    "hr": 12,
+    "rbi": 63,
+    "ops": ".756",
+    "sb": 19,
+    "hits": 152
   },
   "recent": [
     {
       "date": "2026-09-27",
-      "line": "4打数2安打",
-      "opponent": "Philadelphia Phillies"
+      "line": "3打数0安打",
+      "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-09-26",
-      "line": "6打数2安打",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-25",
+      "line": "2打数0安打",
+      "opponent": "St. Louis Cardinals"
     },
     {
       "date": "2026-09-24",
-      "line": "5打数0安打 1打点",
-      "opponent": "New York Yankees"
+      "line": "2打数1安打 1打点",
+      "opponent": "Philadelphia Phillies"
     },
     {
       "date": "2026-09-23",
-      "line": "2打数0安打",
-      "opponent": "New York Yankees"
+      "line": "3打数0安打",
+      "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-22",
+      "date": "2026-09-20",
       "line": "3打数0安打",
-      "opponent": "New York Yankees"
+      "opponent": "Baltimore Orioles"
     }
   ],
   "awards": [
     {
-      "season": "2023",
-      "name": "MiLB.com Organization All-Star"
-    },
-    {
-      "season": "2023",
-      "name": "AFL Player of the Week"
+      "season": "2024",
+      "name": "Rawlings NL Gold Glove"
     },
     {
       "season": "2022",
