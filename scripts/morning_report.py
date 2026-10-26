@@ -11,6 +11,7 @@ from statistics import median
 import urllib.error
 import urllib.request
 from urllib.parse import urlsplit
+from asset_policy import PAUSE_NOTE
 
 JST = timezone(timedelta(hours=9))
 METRICS = ("views", "estimatedMinutesWatched", "subscribersGained", "subscribersLost")
@@ -207,6 +208,7 @@ def report(data, now, check=oembed, actions=None):
     dates2, current = week(daily, yesterday)
     lines = [f"# 状況とアナリティクス {today}", "", f"取得・確認日: {now:%Y-%m-%d %H:%M JST}", "",
              "出典: 公開台帳2種、data/analytics.json、GitHub Actions API、YouTube oEmbed。", "",
+             PAUSE_NOTE + "この2種類の不在は不足に含めません。", "",
              "## 前日〜当日の予約・公開", "",
              "未公開の題・IDは非掲載。oEmbed 200は視聴可能の確認で、限定公開と一般公開は判別できない。台帳publicだけで実公開と断定しない。", "",
              "| JST日時 | 種類 | 台帳 | 実際の確認 |", "|---|---|---|---|"]
