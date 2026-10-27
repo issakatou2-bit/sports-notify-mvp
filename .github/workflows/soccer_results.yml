@@ -110,6 +110,22 @@ jobs:
       - name: Render and measure 60 seconds
         if: steps.gate.outputs.count != '0'
         run: python scripts/soccer_results_render.py --data data/soccer_results.json --audio-dir build/soccer_results/audio --out build/soccer_results
+      - name: Capture visual contact sheets (non-blocking)
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        timeout-minutes: 3
+        run: python scripts/visual_capture.py video --video build/soccer_results/collespo_soccer_results.mp4 --out build/visual/$(TZ=Asia/Tokyo date +%Y%m%d)
+      - name: Save visual contact sheets
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-soccer-results
+          path: |
+            build/visual/**/video/*-contact-*.jpg
+            !build/**/portrait/**
+          retention-days: 7
+          if-no-files-found: ignore
       - name: Sanity gate (soccer_results)
         id: sanity
         if: steps.gate.outputs.count != '0'
