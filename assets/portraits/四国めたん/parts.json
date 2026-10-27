@@ -33,5 +33,2458 @@
     "上げ": "左腕_上げ.png",
     "考え": "左腕_考え.png",
     "指": "左腕_指.png"
+  },
+  "schema_version": 2,
+  "catalog": [
+    {
+      "file": "差分_回転移動でポニテにするなど.png",
+      "category": "髪・輪郭",
+      "source_layers": [
+        "回転移動でポニテにするなど"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        0
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        507,
+        46,
+        849,
+        627
+      ],
+      "sha256": "f6b9a80e3695148e1dd0565d5e23d8ee3dc30a53ab7e6ab59a589379f26a2576",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_ツインドリル右.png",
+      "category": "髪・輪郭",
+      "source_layers": [
+        "ツインドリル右"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        182,
+        173,
+        450,
+        817
+      ],
+      "sha256": "6735977df469ee179359aa4dccac89cd12105a211439ac4a43d2b2311f35d86f",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_ツインドリル左.png",
+      "category": "髪・輪郭",
+      "source_layers": [
+        "ツインドリル左"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        640,
+        129,
+        920,
+        740
+      ],
+      "sha256": "85e92641c426a97c03f8d00299987714eaf8b21cc36ec61fe8068012ad46f246",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_その他の服_素体.png",
+      "category": "体・服",
+      "source_layers": [
+        "*その他の服/!素体"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        3,
+        0
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        271,
+        81,
+        836,
+        1763
+      ],
+      "sha256": "ddc6b728f16279a422a476678e5f15e215f527ea2e958117a513b44eaeba894e",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "slot": "outfit"
+    },
+    {
+      "file": "差分_その他の服_(非表示).png",
+      "category": "体・服",
+      "source_layers": [
+        "*その他の服/*(非表示)"
+      ],
+      "meaning": "非表示（透明）",
+      "direction": "共通",
+      "order": [
+        3,
+        1
+      ],
+      "exclusive_group": "共通:その他の衣装",
+      "bbox": null,
+      "sha256": "0ecdf1f1b627009206868f3eddbfc06512362a7cd87a7d13e3fd85fe1a8e7eaa",
+      "requires": [
+        "source:*その他の服/!素体"
+      ],
+      "forbids": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "slot": "outfit"
+    },
+    {
+      "file": "差分_その他の服_バスタオル.png",
+      "category": "体・服",
+      "source_layers": [
+        "*その他の服/*バスタオル"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        3,
+        2
+      ],
+      "exclusive_group": "共通:その他の衣装",
+      "bbox": [
+        311,
+        591,
+        767,
+        1199
+      ],
+      "sha256": "d9444a63701bb0016d190c95ed0fa5f65479bbc1438c7d1543c454f393b0169c",
+      "requires": [
+        "source:*その他の服/!素体"
+      ],
+      "forbids": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "slot": "outfit"
+    },
+    {
+      "file": "差分_その他の服_水着.png",
+      "category": "体・服",
+      "source_layers": [
+        "*その他の服/*水着"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        3,
+        3
+      ],
+      "exclusive_group": "共通:その他の衣装",
+      "bbox": [
+        249,
+        427,
+        802,
+        1204
+      ],
+      "sha256": "c9a4363c41e9e227399fae4c6785ddb82eae49e885b0dfd27b40e272d21bd74d",
+      "requires": [
+        "source:*その他の服/!素体"
+      ],
+      "forbids": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "slot": "outfit"
+    },
+    {
+      "file": "差分_その他の服_バニー服.png",
+      "category": "体・服",
+      "source_layers": [
+        "*その他の服/*バニー服"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        3,
+        4
+      ],
+      "exclusive_group": "共通:その他の衣装",
+      "bbox": [
+        317,
+        451,
+        765,
+        1780
+      ],
+      "sha256": "8c80fa3be950db1eba76de0531e546f42c9c0adcf9f4d6084bff828290ff28b1",
+      "requires": [
+        "source:*その他の服/!素体"
+      ],
+      "forbids": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "slot": "outfit"
+    },
+    {
+      "file": "差分_白ロリ服_体.png",
+      "category": "体・服",
+      "source_layers": [
+        "*白ロリ服/!体"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        0
+      ],
+      "exclusive_group": "共通:体・服",
+      "bbox": [
+        111,
+        81,
+        969,
+        1793
+      ],
+      "sha256": "a1693d430d948ec667f3be225505ed3009eea4c59dbee5a264eec1220d975c16",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "outfit"
+    },
+    {
+      "file": "差分_白ロリ服_右腕_まんじゅう.png",
+      "category": "小物",
+      "source_layers": [
+        "*白ロリ服/!右腕/まんじゅう"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        1,
+        0
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        182,
+        413,
+        298,
+        524
+      ],
+      "sha256": "356bdea4a02b2321d929d2b0d0f99f0d95f6086ec897b57e876e387df0535b37",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "prop"
+    },
+    {
+      "file": "差分_白ロリ服_右腕_手をかざす.png",
+      "category": "右腕",
+      "source_layers": [
+        "*白ロリ服/!右腕/*手をかざす"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        1,
+        1
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        173,
+        459,
+        491,
+        848
+      ],
+      "sha256": "443c1577d8540ba9e2c341babcfd8edeebdca1f85bc1a7ade60dd46ab9ff360c",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_白ロリ服_右腕_指差す.png",
+      "category": "右腕",
+      "source_layers": [
+        "*白ロリ服/!右腕/*指差す"
+      ],
+      "meaning": "指示",
+      "direction": "共通",
+      "order": [
+        4,
+        1,
+        2
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        114,
+        477,
+        491,
+        848
+      ],
+      "sha256": "276e7eff6f87d8fdc6b77be83d0500ab3320ea47ed37ce8a087d785f84521726",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_白ロリ服_右腕_普通.png",
+      "category": "右腕",
+      "source_layers": [
+        "*白ロリ服/!右腕/*普通"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        1,
+        3
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        166,
+        492,
+        491,
+        1067
+      ],
+      "sha256": "db31679771838f3cf6033435bfda1e5fa2ebedc2618f5a3ace73ad6b547ecbde",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_白ロリ服_左腕_まんじゅう袋.png",
+      "category": "小物",
+      "source_layers": [
+        "*白ロリ服/!左腕/まんじゅう袋"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        2,
+        0
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        313,
+        575,
+        604,
+        844
+      ],
+      "sha256": "105fa0a6187dd530650d13e8756df6bd20055fc9d952ecef0c23d6dc44cf955d",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "prop"
+    },
+    {
+      "file": "差分_白ロリ服_左腕_抱える.png",
+      "category": "左腕",
+      "source_layers": [
+        "*白ロリ服/!左腕/*抱える"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        2,
+        1
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        321,
+        491,
+        738,
+        963
+      ],
+      "sha256": "8de8d5cd74ee7d6c7395eff91c9e30d74e2ccf6f79312dd7f787b0fd02f298f5",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_白ロリ服_左腕_マイク.png",
+      "category": "左腕",
+      "source_layers": [
+        "*白ロリ服/!左腕/*マイク"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        2,
+        2
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        475,
+        428,
+        749,
+        826
+      ],
+      "sha256": "9486b7635e710e63ef3602c71c6870ca25ac090c9ea3f9a68efb2c92e654b82a",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_白ロリ服_左腕_ひそひそ.png",
+      "category": "左腕",
+      "source_layers": [
+        "*白ロリ服/!左腕/*ひそひそ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        2,
+        3
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        462,
+        386,
+        713,
+        839
+      ],
+      "sha256": "a9e9ba9546811ac171063488030d88b535dded77ba733b0e67924822b0c74f45",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_白ロリ服_左腕_口元に指.png",
+      "category": "左腕",
+      "source_layers": [
+        "*白ロリ服/!左腕/*口元に指"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        2,
+        4
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        429,
+        416,
+        713,
+        863
+      ],
+      "sha256": "41d1c8bc6152bf6d68838c82e99bca257e70e58193260963a9ae7d7652bc6680",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_白ロリ服_左腕_普通.png",
+      "category": "左腕",
+      "source_layers": [
+        "*白ロリ服/!左腕/*普通"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        4,
+        2,
+        5
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        593,
+        494,
+        932,
+        1097
+      ],
+      "sha256": "1b4d7e8b99b5cd45144257c337b93cb6056bbf2375c9900e4838f967003e049b",
+      "requires": [],
+      "forbids": [
+        "source_prefix:*その他の服/"
+      ],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_顔色_かげり.png",
+      "category": "顔色",
+      "source_layers": [
+        "!顔色/かげり"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        5,
+        0
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        359,
+        138,
+        672,
+        338
+      ],
+      "sha256": "56cc12d9cabcac4313c23c340ce507511e4a7c6be6d81a518e1506690e295ca2",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_顔色_(非表示).png",
+      "category": "顔色",
+      "source_layers": [
+        "!顔色/*(非表示)"
+      ],
+      "meaning": "非表示（透明）",
+      "direction": "共通",
+      "order": [
+        5,
+        1
+      ],
+      "exclusive_group": "共通:顔色",
+      "bbox": null,
+      "sha256": "97dda6082e009abec58b6bf2309aae0beef9d75000f6438be95a7bd3ee7d2875",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_顔色_青ざめ.png",
+      "category": "顔色",
+      "source_layers": [
+        "!顔色/*青ざめ"
+      ],
+      "meaning": "ピンチ",
+      "direction": "共通",
+      "order": [
+        5,
+        2
+      ],
+      "exclusive_group": "共通:顔色",
+      "bbox": [
+        363,
+        145,
+        625,
+        317
+      ],
+      "sha256": "feea04113695856d366b50e422384cd96b685c5ec011e640d1b4b6a78f42c963",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_顔色_赤面.png",
+      "category": "顔色",
+      "source_layers": [
+        "!顔色/*赤面"
+      ],
+      "meaning": "照れ",
+      "direction": "共通",
+      "order": [
+        5,
+        3
+      ],
+      "exclusive_group": "共通:顔色",
+      "bbox": [
+        370,
+        252,
+        670,
+        465
+      ],
+      "sha256": "a9244ce51a0a1884af80c679c7ecdebd7cebc3445be192beaf1929c750cefd98",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_顔色_普通2.png",
+      "category": "顔色",
+      "source_layers": [
+        "!顔色/*普通2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        5,
+        4
+      ],
+      "exclusive_group": "共通:顔色",
+      "bbox": [
+        348,
+        269,
+        686,
+        437
+      ],
+      "sha256": "6c4ac4d676fddf6b1013d014a3924a54f12e54a7209d3510282a9f9acc9a6f25",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_顔色_普通.png",
+      "category": "顔色",
+      "source_layers": [
+        "!顔色/*普通"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        5,
+        5
+      ],
+      "exclusive_group": "共通:顔色",
+      "bbox": [
+        382,
+        301,
+        654,
+        404
+      ],
+      "sha256": "f723ad080788144c827e9448a8b8517183df4f9a04a81d9f65f20e9315dca378",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_口_もむー.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*もむー"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        0
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        489,
+        378,
+        546,
+        405
+      ],
+      "sha256": "9ef93b5ee7df61e86aa061f837ea975b0afb832cd3b607fdaf9e1e44864a5c6c",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_んー.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*んー"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        1
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        489,
+        391,
+        567,
+        412
+      ],
+      "sha256": "70a6d0717e3f8ccdf3d4a54d819390c7f15e27e0681ef9379a36bfbb167646d2",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_うえー.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*うえー"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        2
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        487,
+        372,
+        566,
+        422
+      ],
+      "sha256": "d296c4232e35f5cb7307fac7b3c41f9bdc1d7675e56617a265b30146bbe4e829",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_いー.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*いー"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        3
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        497,
+        384,
+        553,
+        410
+      ],
+      "sha256": "e00696233b021b852873fe38e33706656c092ddccd2a33e208ec9f13aab0a779",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_む.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*む"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        4
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        506,
+        390,
+        546,
+        410
+      ],
+      "sha256": "dafadb4f326326a34098fad194080ab47ea46510fb3ba58af86ebe9d581e6997",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_△.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*△"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        5
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        505,
+        376,
+        545,
+        410
+      ],
+      "sha256": "254b0baf1dc7849bbc78d01a55df232259573047d2b113b845ae617df72e39de",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_ゆ.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*ゆ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        6
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        513,
+        394,
+        536,
+        411
+      ],
+      "sha256": "f4ecae8472c30c3192d00c1d905e005be8df14a09effdfd6209f2e51c4c3d044",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_お.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*お"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        7
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        508,
+        385,
+        536,
+        412
+      ],
+      "sha256": "2445ed70a770ba5b6d6f4b6607f1d7f3c799721d845274ad5ce16b00bd4cc6f0",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_ぺろり.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*ぺろり"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        8
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        500,
+        385,
+        559,
+        415
+      ],
+      "sha256": "4ed2a106dfe1e240f63347f071e0c0b6c6366a4d326a5ad70f395bbf3b072455",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_にやり.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*にやり"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        9
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        491,
+        378,
+        554,
+        408
+      ],
+      "sha256": "9d3696d1ac87cb8db45b951ba588252f5dac0169cfd57c8493e5ab79a1c28e3e",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_▽.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*▽"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        10
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        492,
+        375,
+        541,
+        419
+      ],
+      "sha256": "f4d4dd6fa195c6e235b548186561b352b8fa1910e06430a00693c82d7993d9a5",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_ほほえみ.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*ほほえみ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        11
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        500,
+        387,
+        542,
+        412
+      ],
+      "sha256": "7c0281efab6dc3954f625283e9af7f971c39edb65983f9c6854ed73cac7f0c22",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_口_わあー.png",
+      "category": "口",
+      "source_layers": [
+        "!口/*わあー"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        6,
+        12
+      ],
+      "exclusive_group": "共通:口",
+      "bbox": [
+        494,
+        380,
+        544,
+        420
+      ],
+      "sha256": "68f2c9ca30d2ba9fc90e9a45afa72c27cc6b0e866327237c79ca6ac0684a7286",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_目_ぐるぐる.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*ぐるぐる"
+      ],
+      "meaning": "混乱",
+      "direction": "共通",
+      "order": [
+        7,
+        0
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        388,
+        233,
+        609,
+        364
+      ],
+      "sha256": "956c363364f271f7c047aa24949b3f1c0f09c4f034952dbea31e6eda0d4e47ee",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目_＞＜.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*><"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        1
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        384,
+        236,
+        620,
+        369
+      ],
+      "sha256": "f35bcd869c3ac5e311df18ad1c395253fe17f891a308a6b4e800438fad5e1fd0",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目_○○.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*○○"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        2
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        389,
+        239,
+        611,
+        362
+      ],
+      "sha256": "7a7178ac86e6a50e09e80aea52ae467862a856ea6858269a538fc1f3d5e970e1",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目_目閉じ2.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目閉じ2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        3
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        390,
+        270,
+        629,
+        355
+      ],
+      "sha256": "8746f696cc005a7b8a59d33ea472091d61af25bfdb7612a2255b5a2fc36a208b",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目_目閉じ.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目閉じ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        4
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        389,
+        264,
+        632,
+        361
+      ],
+      "sha256": "69607a237d94dc77b2359bb4e0fa0d09a3973e57391c83069c284a6c9ed3d63e",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目_見上げ2.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*見上げ2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        5
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        369,
+        215,
+        634,
+        368
+      ],
+      "sha256": "462b5814bff5c2bd4fa5959640706ea10f6fcb5503d8e2ea793a3f3744329748",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目_見上げ.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*見上げ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        6
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        369,
+        215,
+        634,
+        368
+      ],
+      "sha256": "64492d6f6b5feb3a27f2d8a6c240b63e09fe671311d12d8237c654101a203996",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_眉_太眉こまり.png",
+      "category": "眉",
+      "source_layers": [
+        "!眉/*太眉こまり"
+      ],
+      "meaning": "困る",
+      "direction": "共通",
+      "order": [
+        8,
+        0
+      ],
+      "exclusive_group": "共通:眉",
+      "bbox": [
+        401,
+        186,
+        572,
+        245
+      ],
+      "sha256": "8f646b073952bec711b056c96ffb595cc18e4d6cd9c5d5c94c1811f1494b22f6",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_眉_太眉おこ.png",
+      "category": "眉",
+      "source_layers": [
+        "!眉/*太眉おこ"
+      ],
+      "meaning": "怒り",
+      "direction": "共通",
+      "order": [
+        8,
+        1
+      ],
+      "exclusive_group": "共通:眉",
+      "bbox": [
+        397,
+        184,
+        573,
+        242
+      ],
+      "sha256": "32f0f64e2749ab814129db4f2fca79a466f20d269d52907e1f7ba40c43c1ecc6",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_眉_太眉ごきげん.png",
+      "category": "眉",
+      "source_layers": [
+        "!眉/*太眉ごきげん"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        8,
+        2
+      ],
+      "exclusive_group": "共通:眉",
+      "bbox": [
+        388,
+        180,
+        578,
+        240
+      ],
+      "sha256": "23e1e0abbde8420e31b8a283b9af9163aafb4a72ad42215291f3010ab1cb8220",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_眉_こまり.png",
+      "category": "眉",
+      "source_layers": [
+        "!眉/*こまり"
+      ],
+      "meaning": "困る",
+      "direction": "共通",
+      "order": [
+        8,
+        3
+      ],
+      "exclusive_group": "共通:眉",
+      "bbox": [
+        367,
+        195,
+        609,
+        260
+      ],
+      "sha256": "534d0ea102531ea3d4853b484c3908e8938468d5dfbc3cdb0ec7e6f8031a3def",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_眉_おこ.png",
+      "category": "眉",
+      "source_layers": [
+        "!眉/*おこ"
+      ],
+      "meaning": "怒り",
+      "direction": "共通",
+      "order": [
+        8,
+        4
+      ],
+      "exclusive_group": "共通:眉",
+      "bbox": [
+        371,
+        169,
+        606,
+        251
+      ],
+      "sha256": "7754d5a92a7ba8ce98cce8ba88175f325d84f395dcbd176df00ff18f25d2abb7",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_眉_ややおこ.png",
+      "category": "眉",
+      "source_layers": [
+        "!眉/*ややおこ"
+      ],
+      "meaning": "怒り",
+      "direction": "共通",
+      "order": [
+        8,
+        5
+      ],
+      "exclusive_group": "共通:眉",
+      "bbox": [
+        367,
+        181,
+        604,
+        249
+      ],
+      "sha256": "83cd0049e076fbbf1aee3ab483929db53d96c7f781b0a74a8c72f15bc11596ef",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_眉_ごきげん.png",
+      "category": "眉",
+      "source_layers": [
+        "!眉/*ごきげん"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        8,
+        6
+      ],
+      "exclusive_group": "共通:眉",
+      "bbox": [
+        365,
+        193,
+        599,
+        255
+      ],
+      "sha256": "25ff5b5b330d26b20a8ae58c604f72969f265bd60531bf7bf59fe1f6015bd1d0",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_頭部アクセサリ_髪留めフリル.png",
+      "category": "アクセサリ",
+      "source_layers": [
+        "頭部アクセサリ/髪留めフリル"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        9,
+        0
+      ],
+      "exclusive_group": "共通:髪留め",
+      "bbox": [
+        330,
+        58,
+        735,
+        258
+      ],
+      "sha256": "7a4f227a6671a9cdd8ec0a1dad0a84ec910a8b635dde4145079adefd8fa310ac",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_頭部アクセサリ_髪留めハート.png",
+      "category": "アクセサリ",
+      "source_layers": [
+        "頭部アクセサリ/髪留めハート"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        9,
+        1
+      ],
+      "exclusive_group": "共通:髪留め",
+      "bbox": [
+        215,
+        24,
+        797,
+        222
+      ],
+      "sha256": "50e1018290a8e2747240627aec4d7e9dfc9bcf5aaf74184e38e7c0e8db3d79ff",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_頭部アクセサリ_うさみみ.png",
+      "category": "アクセサリ",
+      "source_layers": [
+        "頭部アクセサリ/うさみみ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        9,
+        2
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        241,
+        2,
+        712,
+        192
+      ],
+      "sha256": "4888a6b9368bc0805d4693d7342c758a866326d144cfcf7100bc1c579371c5d4",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_頭部アクセサリ_ヘッドドレス.png",
+      "category": "アクセサリ",
+      "source_layers": [
+        "頭部アクセサリ/ヘッドドレス"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        9,
+        3
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        294,
+        44,
+        731,
+        290
+      ],
+      "sha256": "fc98ce660d86a2aa86090fda51f7cc81f7f22974920d9d336d47295a4fc6754b",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_前髪もみあげ.png",
+      "category": "髪・輪郭",
+      "source_layers": [
+        "!前髪もみあげ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        10
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        206,
+        81,
+        746,
+        585
+      ],
+      "sha256": "707370bc17a436f68ebabb12e17e3df0c2a9d5a5e44cd7376332f68eb6418343",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_記号など_汗.png",
+      "category": "汗",
+      "source_layers": [
+        "記号など/汗"
+      ],
+      "meaning": "焦り",
+      "direction": "共通",
+      "order": [
+        11,
+        0
+      ],
+      "exclusive_group": "共通:汗",
+      "bbox": [
+        434,
+        415,
+        457,
+        439
+      ],
+      "sha256": "019ba9c9440ef17e32eb6f4102d014276fb4e17cbf6e4488feb4de15311b8a32",
+      "requires": [],
+      "forbids": [],
+      "slot": "fx"
+    },
+    {
+      "file": "差分_記号など_涙.png",
+      "category": "涙",
+      "source_layers": [
+        "記号など/涙"
+      ],
+      "meaning": "悲しみ",
+      "direction": "共通",
+      "order": [
+        11,
+        1
+      ],
+      "exclusive_group": "共通:涙",
+      "bbox": [
+        386,
+        297,
+        644,
+        378
+      ],
+      "sha256": "943b1da8c286f947d2985e40334c37b2a437e1b68379f992c524fc10d33fb4af",
+      "requires": [],
+      "forbids": [],
+      "slot": "fx"
+    },
+    {
+      "file": "差分_目セット_見開き白目_目そらし2.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*見開き白目",
+        "!目/*目セット/!黒目/*目そらし2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        369,
+        215,
+        634,
+        368
+      ],
+      "sha256": "b552037c80dc9bc58b337f3a53bfba6a7d376fba9278b43794e0ddac6dc5197c",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_見開き白目_目そらし.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*見開き白目",
+        "!目/*目セット/!黒目/*目そらし"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        369,
+        215,
+        634,
+        368
+      ],
+      "sha256": "091a59cc8bcef38abbfa37bf8d62e3cbdc0bf833acaa28708589eba45b7e26d6",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_見開き白目_カメラ目線2.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*見開き白目",
+        "!目/*目セット/!黒目/*カメラ目線2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        369,
+        215,
+        634,
+        368
+      ],
+      "sha256": "5e8aff912741b74c9e1f3504764f159078b97c4a86e25107e0a9fb0899b0d468",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_見開き白目_カメラ目線.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*見開き白目",
+        "!目/*目セット/!黒目/*カメラ目線"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        369,
+        215,
+        634,
+        368
+      ],
+      "sha256": "ac80f28035e24e6acd16e41c1cfc2e43f45cedd8a49e966e3247d636e183696b",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_見開き白目_普通目2.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*見開き白目",
+        "!目/*目セット/!黒目/*普通目2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        369,
+        215,
+        634,
+        368
+      ],
+      "sha256": "1a2d5a1f4d50160fbd71e79eedd4437301f240fcc3906bfcb678752ebda6c455",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_見開き白目_普通目.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*見開き白目",
+        "!目/*目セット/!黒目/*普通目"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        369,
+        215,
+        634,
+        368
+      ],
+      "sha256": "1e432569bdcef205fa7615e5bd6c1c845db38fdd9da91f477cfc74c91289df6f",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_普通白目_目そらし2.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*普通白目",
+        "!目/*目セット/!黒目/*目そらし2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        379,
+        227,
+        634,
+        363
+      ],
+      "sha256": "03550a858465d92784b14bddbeef5f672865d2d1162068f226ca5719a393d922",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_普通白目_目そらし.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*普通白目",
+        "!目/*目セット/!黒目/*目そらし"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        379,
+        227,
+        634,
+        363
+      ],
+      "sha256": "71657b0e8096b0bfc4a4f5434ba32b30063704668886f34c96cf58fc1548c7f2",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_普通白目_カメラ目線2.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*普通白目",
+        "!目/*目セット/!黒目/*カメラ目線2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        379,
+        227,
+        634,
+        363
+      ],
+      "sha256": "b508bb777e36fd4560199d39ce1416d16e7d937386843f87e86aad352ba9133b",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_普通白目_カメラ目線.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*普通白目",
+        "!目/*目セット/!黒目/*カメラ目線"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        379,
+        227,
+        634,
+        363
+      ],
+      "sha256": "667de99e56ec853ef22f68015053c1cd9eb902a73ca45f366c752c99e659ebee",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_普通白目_普通目2.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*普通白目",
+        "!目/*目セット/!黒目/*普通目2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        379,
+        227,
+        634,
+        363
+      ],
+      "sha256": "2f2af916f6f0448d7816a5651648cac2b80f44210b4dea0246b65c1fdb0cadd4",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_目セット_普通白目_普通目.png",
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット/*普通白目",
+        "!目/*目セット/!黒目/*普通目"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        7,
+        7
+      ],
+      "exclusive_group": "共通:目",
+      "bbox": [
+        379,
+        227,
+        634,
+        363
+      ],
+      "sha256": "78ca2a06f4c3682ff1458a60733fe3b84c7a474bd36906deb1add208ad596c29",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    }
+  ],
+  "legacy_metadata": {
+    "体.png": {
+      "category": "旧下地",
+      "source_layers": [
+        "ツインドリル右",
+        "ツインドリル左",
+        "*白ロリ服/!体",
+        "!顔色/*普通2",
+        "頭部アクセサリ/髪留めハート",
+        "頭部アクセサリ/ヘッドドレス",
+        "!前髪もみあげ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "2dfea7df1cd42bbaad00b7e4d9e79cdbadc18c003a74ef37b1a064f529f24709",
+      "exclusive_group": "旧:旧下地"
+    },
+    "口_大.png": {
+      "category": "口",
+      "source_layers": [
+        "!口/*わあー"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "ae518e3b7215abf287a300996d835290511161fd4cd9fdf578224cc4bdd391f2",
+      "exclusive_group": "旧:口"
+    },
+    "口_笑.png": {
+      "category": "口",
+      "source_layers": [
+        "!口/*ほほえみ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "63b6eb8dbb11cebace9fec09fd81abc840cad4cbb295f93b0c15a9f596a8c10b",
+      "exclusive_group": "旧:口"
+    },
+    "口_閉.png": {
+      "category": "口",
+      "source_layers": [
+        "!口/*▽"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "000afb811478507e33f4b4917d3642c9499cf57e1f8a017d64e823605201fb93",
+      "exclusive_group": "旧:口"
+    },
+    "口_開.png": {
+      "category": "口",
+      "source_layers": [
+        "!口/*お"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "4e5127435fa0996b87ec5af2d05507b494e1885481dab890fe6b9b10046d45c4",
+      "exclusive_group": "旧:口"
+    },
+    "右腕_上げ.png": {
+      "category": "右腕",
+      "source_layers": [
+        "*白ロリ服/!右腕/*手をかざす"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "df39241547df3ddb6d376717a8f0fc7effce28f3fd9befdce3f193510ca4af59",
+      "exclusive_group": "旧:右腕"
+    },
+    "右腕_基本.png": {
+      "category": "右腕",
+      "source_layers": [
+        "*白ロリ服/!右腕/*普通"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "1205f761b713f879afc1bcc74974a335bfc644c52b2ca95a6e14b24d79295165",
+      "exclusive_group": "旧:右腕"
+    },
+    "右腕_指.png": {
+      "category": "右腕",
+      "source_layers": [
+        "*白ロリ服/!右腕/*指差す"
+      ],
+      "meaning": "指示",
+      "direction": "共通",
+      "sha256": "f2e8e1f4db14a7560ff2020b1468a777b42f725ebcc86b62d3063e79228367c3",
+      "exclusive_group": "旧:右腕"
+    },
+    "右腕_考え.png": {
+      "category": "右腕",
+      "source_layers": [
+        "*白ロリ服/!右腕/*普通"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "4c592a9427b498dffc4b8a7bdcd737f2f523337b708539a2e7690ef33f8d0223",
+      "exclusive_group": "旧:右腕"
+    },
+    "左腕_上げ.png": {
+      "category": "左腕",
+      "source_layers": [
+        "*白ロリ服/!左腕/*マイク"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "9df5bea8bf984898395cc867aac44b2a5aaa5d251a72b4d6ad61489dddb3e783",
+      "exclusive_group": "旧:左腕"
+    },
+    "左腕_基本.png": {
+      "category": "左腕",
+      "source_layers": [
+        "*白ロリ服/!左腕/*マイク"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "9df5bea8bf984898395cc867aac44b2a5aaa5d251a72b4d6ad61489dddb3e783",
+      "exclusive_group": "旧:左腕"
+    },
+    "左腕_指.png": {
+      "category": "左腕",
+      "source_layers": [
+        "*白ロリ服/!左腕/*マイク"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "9ca9ff760c6288c3c668b204bc0132ff3abedd59c9ce8910cd04fd9effbdfeaf",
+      "exclusive_group": "旧:左腕"
+    },
+    "左腕_考え.png": {
+      "category": "左腕",
+      "source_layers": [
+        "*白ロリ服/!左腕/*口元に指"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "8eae5503c1a84d821e070bbb5ac9b082521532f5a387dd9e353e6e40b8d5b062",
+      "exclusive_group": "旧:左腕"
+    },
+    "目_ジト.png": {
+      "category": "目",
+      "source_layers": [
+        "!目/*目閉じ2"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "42da4160b346a9b477e21ff887705f2962dc71a6f72b997cd996440e269b26ff",
+      "exclusive_group": "旧:目"
+    },
+    "目_笑.png": {
+      "category": "目",
+      "source_layers": [
+        "!目/*><"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "5aa714b1543345e67e0f0797ec6b027c66019375aabe6bb8abda8353953477fe",
+      "exclusive_group": "旧:目"
+    },
+    "目_見開.png": {
+      "category": "目",
+      "source_layers": [
+        "!目/*見上げ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "3accb9a8f366b4a54a83b74273a39aa7dbd8a35325291a1fceae2ce4e6a0a97c",
+      "exclusive_group": "旧:目"
+    },
+    "目_閉.png": {
+      "category": "目",
+      "source_layers": [
+        "!目/*目閉じ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "1d73d298c0413820ed385afc1fff79eb050d873a8d517e8cad83ed7fc1d6e842",
+      "exclusive_group": "旧:目"
+    },
+    "目_開.png": {
+      "category": "目",
+      "source_layers": [
+        "!目/*目セット"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "4807808fc62bc80a7d3eb22d48cc55a8ae2ce02671d5253031aba04c6cdc5a69",
+      "exclusive_group": "旧:目"
+    },
+    "眉_上げ.png": {
+      "category": "眉",
+      "source_layers": [
+        "!眉/*ややおこ"
+      ],
+      "meaning": "怒り",
+      "direction": "共通",
+      "sha256": "dcc1d389e4147e7f8fd69a0e85239541a5b8530080ff22704c8207f9fe045aa8",
+      "exclusive_group": "旧:眉"
+    },
+    "眉_困り.png": {
+      "category": "眉",
+      "source_layers": [
+        "!眉/*こまり"
+      ],
+      "meaning": "困る",
+      "direction": "共通",
+      "sha256": "464a80175432a39d192a9bcff65408cadb918bbe31184bb7f2fb1506af4f2a16",
+      "exclusive_group": "旧:眉"
+    },
+    "眉_基本.png": {
+      "category": "眉",
+      "source_layers": [
+        "!眉/*ごきげん"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "sha256": "0294a53aaf6458e8bfe552884d31787827d7c79693994b319d00ea1d46ddb5b2",
+      "exclusive_group": "旧:眉"
+    }
+  },
+  "source": {
+    "file": "四国めたん.psd",
+    "sha256": "0b52d59cd125da75cb4ad05006a0eed34d44051bce65c8027fc645670924e13b",
+    "leaf_count": 67,
+    "covered_leaf_count": 67
+  },
+  "composition": {
+    "origin": [
+      0,
+      0
+    ],
+    "order": "catalog.orderの昇順（PSDの下から上）",
+    "legacy": "旧21部品と新catalogは別の組立て。旧体には顔色・髪・服・装飾が焼込み済み。"
+  },
+  "constraints": [
+    "同じexclusive_groupは1枚だけ。小物・アクセサリ・髪は個別に選択可。",
+    "正面と上向きの頭・目・眉・口・顔色・枝豆・汗・涙を混在させない。共通の体・腕は利用可。",
+    "めたんの白目・黒目は目セット合成済み。目セットと他の目を同時使用しない。",
+    "ずんだもんの腕組みは右腕非表示。前傾用ポケットは体前傾、直立用は体直立。",
+    "めたんの白ロリ服とその他の服は排他。その他の服は素体と衣装1枚を重ね、白ロリ用腕を使わない。",
+    "めたんのかげりは顔色に追加可。髪留めフリルと髪留めハートは排他。",
+    "非表示PNGは透明の選択肢。ポニテ用の髪は作者の注記通り配置加工が必要。元座標のまま保管。"
+  ],
+  "eye": {
+    "共通": [
+      "差分_目_ぐるぐる.png",
+      "差分_目_＞＜.png",
+      "差分_目_○○.png",
+      "差分_目_目閉じ2.png",
+      "差分_目_目閉じ.png",
+      "差分_目_見上げ2.png",
+      "差分_目_見上げ.png",
+      "差分_目セット_見開き白目_目そらし2.png",
+      "差分_目セット_見開き白目_目そらし.png",
+      "差分_目セット_見開き白目_カメラ目線2.png",
+      "差分_目セット_見開き白目_カメラ目線.png",
+      "差分_目セット_見開き白目_普通目2.png",
+      "差分_目セット_見開き白目_普通目.png",
+      "差分_目セット_普通白目_目そらし2.png",
+      "差分_目セット_普通白目_目そらし.png",
+      "差分_目セット_普通白目_カメラ目線2.png",
+      "差分_目セット_普通白目_カメラ目線.png",
+      "差分_目セット_普通白目_普通目2.png",
+      "差分_目セット_普通白目_普通目.png"
+    ]
+  },
+  "brow": {
+    "共通": [
+      "差分_眉_太眉こまり.png",
+      "差分_眉_太眉おこ.png",
+      "差分_眉_太眉ごきげん.png",
+      "差分_眉_こまり.png",
+      "差分_眉_おこ.png",
+      "差分_眉_ややおこ.png",
+      "差分_眉_ごきげん.png"
+    ]
+  },
+  "mouth": {
+    "共通": [
+      "差分_口_もむー.png",
+      "差分_口_んー.png",
+      "差分_口_うえー.png",
+      "差分_口_いー.png",
+      "差分_口_む.png",
+      "差分_口_△.png",
+      "差分_口_ゆ.png",
+      "差分_口_お.png",
+      "差分_口_ぺろり.png",
+      "差分_口_にやり.png",
+      "差分_口_▽.png",
+      "差分_口_ほほえみ.png",
+      "差分_口_わあー.png"
+    ]
+  },
+  "cheek": {
+    "共通": [
+      "差分_顔色_かげり.png",
+      "差分_顔色_(非表示).png",
+      "差分_顔色_青ざめ.png",
+      "差分_顔色_赤面.png",
+      "差分_顔色_普通2.png",
+      "差分_顔色_普通.png"
+    ]
+  },
+  "fx": {
+    "共通": [
+      "差分_記号など_汗.png",
+      "差分_記号など_涙.png"
+    ]
+  },
+  "arm_back": {
+    "共通": [
+      "差分_白ロリ服_右腕_手をかざす.png",
+      "差分_白ロリ服_右腕_指差す.png",
+      "差分_白ロリ服_右腕_普通.png"
+    ]
+  },
+  "arm_front": {
+    "共通": [
+      "差分_白ロリ服_左腕_抱える.png",
+      "差分_白ロリ服_左腕_マイク.png",
+      "差分_白ロリ服_左腕_ひそひそ.png",
+      "差分_白ロリ服_左腕_口元に指.png",
+      "差分_白ロリ服_左腕_普通.png"
+    ]
+  },
+  "head": {
+    "共通": [
+      "差分_回転移動でポニテにするなど.png",
+      "差分_ツインドリル右.png",
+      "差分_ツインドリル左.png",
+      "差分_頭部アクセサリ_髪留めフリル.png",
+      "差分_頭部アクセサリ_髪留めハート.png",
+      "差分_頭部アクセサリ_うさみみ.png",
+      "差分_頭部アクセサリ_ヘッドドレス.png",
+      "差分_前髪もみあげ.png"
+    ]
+  },
+  "outfit": {
+    "共通": [
+      "差分_その他の服_素体.png",
+      "差分_その他の服_(非表示).png",
+      "差分_その他の服_バスタオル.png",
+      "差分_その他の服_水着.png",
+      "差分_その他の服_バニー服.png",
+      "差分_白ロリ服_体.png"
+    ]
+  },
+  "prop": {
+    "共通": [
+      "差分_白ロリ服_右腕_まんじゅう.png",
+      "差分_白ロリ服_左腕_まんじゅう袋.png"
+    ]
+  },
+  "rules": {
+    "exclusive_groups": {
+      "共通:その他の衣装": [
+        "差分_その他の服_(非表示).png",
+        "差分_その他の服_バスタオル.png",
+        "差分_その他の服_水着.png",
+        "差分_その他の服_バニー服.png"
+      ],
+      "共通:体・服": [
+        "差分_白ロリ服_体.png"
+      ],
+      "共通:右腕": [
+        "差分_白ロリ服_右腕_手をかざす.png",
+        "差分_白ロリ服_右腕_指差す.png",
+        "差分_白ロリ服_右腕_普通.png"
+      ],
+      "共通:左腕": [
+        "差分_白ロリ服_左腕_抱える.png",
+        "差分_白ロリ服_左腕_マイク.png",
+        "差分_白ロリ服_左腕_ひそひそ.png",
+        "差分_白ロリ服_左腕_口元に指.png",
+        "差分_白ロリ服_左腕_普通.png"
+      ],
+      "共通:顔色": [
+        "差分_顔色_(非表示).png",
+        "差分_顔色_青ざめ.png",
+        "差分_顔色_赤面.png",
+        "差分_顔色_普通2.png",
+        "差分_顔色_普通.png"
+      ],
+      "共通:口": [
+        "差分_口_もむー.png",
+        "差分_口_んー.png",
+        "差分_口_うえー.png",
+        "差分_口_いー.png",
+        "差分_口_む.png",
+        "差分_口_△.png",
+        "差分_口_ゆ.png",
+        "差分_口_お.png",
+        "差分_口_ぺろり.png",
+        "差分_口_にやり.png",
+        "差分_口_▽.png",
+        "差分_口_ほほえみ.png",
+        "差分_口_わあー.png"
+      ],
+      "共通:目": [
+        "差分_目_ぐるぐる.png",
+        "差分_目_＞＜.png",
+        "差分_目_○○.png",
+        "差分_目_目閉じ2.png",
+        "差分_目_目閉じ.png",
+        "差分_目_見上げ2.png",
+        "差分_目_見上げ.png",
+        "差分_目セット_見開き白目_目そらし2.png",
+        "差分_目セット_見開き白目_目そらし.png",
+        "差分_目セット_見開き白目_カメラ目線2.png",
+        "差分_目セット_見開き白目_カメラ目線.png",
+        "差分_目セット_見開き白目_普通目2.png",
+        "差分_目セット_見開き白目_普通目.png",
+        "差分_目セット_普通白目_目そらし2.png",
+        "差分_目セット_普通白目_目そらし.png",
+        "差分_目セット_普通白目_カメラ目線2.png",
+        "差分_目セット_普通白目_カメラ目線.png",
+        "差分_目セット_普通白目_普通目2.png",
+        "差分_目セット_普通白目_普通目.png"
+      ],
+      "共通:眉": [
+        "差分_眉_太眉こまり.png",
+        "差分_眉_太眉おこ.png",
+        "差分_眉_太眉ごきげん.png",
+        "差分_眉_こまり.png",
+        "差分_眉_おこ.png",
+        "差分_眉_ややおこ.png",
+        "差分_眉_ごきげん.png"
+      ],
+      "共通:髪留め": [
+        "差分_頭部アクセサリ_髪留めフリル.png",
+        "差分_頭部アクセサリ_髪留めハート.png"
+      ],
+      "共通:汗": [
+        "差分_記号など_汗.png"
+      ],
+      "共通:涙": [
+        "差分_記号など_涙.png"
+      ]
+    },
+    "directions": {
+      "差分_回転移動でポニテにするなど.png": "共通",
+      "差分_ツインドリル右.png": "共通",
+      "差分_ツインドリル左.png": "共通",
+      "差分_その他の服_素体.png": "共通",
+      "差分_その他の服_(非表示).png": "共通",
+      "差分_その他の服_バスタオル.png": "共通",
+      "差分_その他の服_水着.png": "共通",
+      "差分_その他の服_バニー服.png": "共通",
+      "差分_白ロリ服_体.png": "共通",
+      "差分_白ロリ服_右腕_まんじゅう.png": "共通",
+      "差分_白ロリ服_右腕_手をかざす.png": "共通",
+      "差分_白ロリ服_右腕_指差す.png": "共通",
+      "差分_白ロリ服_右腕_普通.png": "共通",
+      "差分_白ロリ服_左腕_まんじゅう袋.png": "共通",
+      "差分_白ロリ服_左腕_抱える.png": "共通",
+      "差分_白ロリ服_左腕_マイク.png": "共通",
+      "差分_白ロリ服_左腕_ひそひそ.png": "共通",
+      "差分_白ロリ服_左腕_口元に指.png": "共通",
+      "差分_白ロリ服_左腕_普通.png": "共通",
+      "差分_顔色_かげり.png": "共通",
+      "差分_顔色_(非表示).png": "共通",
+      "差分_顔色_青ざめ.png": "共通",
+      "差分_顔色_赤面.png": "共通",
+      "差分_顔色_普通2.png": "共通",
+      "差分_顔色_普通.png": "共通",
+      "差分_口_もむー.png": "共通",
+      "差分_口_んー.png": "共通",
+      "差分_口_うえー.png": "共通",
+      "差分_口_いー.png": "共通",
+      "差分_口_む.png": "共通",
+      "差分_口_△.png": "共通",
+      "差分_口_ゆ.png": "共通",
+      "差分_口_お.png": "共通",
+      "差分_口_ぺろり.png": "共通",
+      "差分_口_にやり.png": "共通",
+      "差分_口_▽.png": "共通",
+      "差分_口_ほほえみ.png": "共通",
+      "差分_口_わあー.png": "共通",
+      "差分_目_ぐるぐる.png": "共通",
+      "差分_目_＞＜.png": "共通",
+      "差分_目_○○.png": "共通",
+      "差分_目_目閉じ2.png": "共通",
+      "差分_目_目閉じ.png": "共通",
+      "差分_目_見上げ2.png": "共通",
+      "差分_目_見上げ.png": "共通",
+      "差分_眉_太眉こまり.png": "共通",
+      "差分_眉_太眉おこ.png": "共通",
+      "差分_眉_太眉ごきげん.png": "共通",
+      "差分_眉_こまり.png": "共通",
+      "差分_眉_おこ.png": "共通",
+      "差分_眉_ややおこ.png": "共通",
+      "差分_眉_ごきげん.png": "共通",
+      "差分_頭部アクセサリ_髪留めフリル.png": "共通",
+      "差分_頭部アクセサリ_髪留めハート.png": "共通",
+      "差分_頭部アクセサリ_うさみみ.png": "共通",
+      "差分_頭部アクセサリ_ヘッドドレス.png": "共通",
+      "差分_前髪もみあげ.png": "共通",
+      "差分_記号など_汗.png": "共通",
+      "差分_記号など_涙.png": "共通",
+      "差分_目セット_見開き白目_目そらし2.png": "共通",
+      "差分_目セット_見開き白目_目そらし.png": "共通",
+      "差分_目セット_見開き白目_カメラ目線2.png": "共通",
+      "差分_目セット_見開き白目_カメラ目線.png": "共通",
+      "差分_目セット_見開き白目_普通目2.png": "共通",
+      "差分_目セット_見開き白目_普通目.png": "共通",
+      "差分_目セット_普通白目_目そらし2.png": "共通",
+      "差分_目セット_普通白目_目そらし.png": "共通",
+      "差分_目セット_普通白目_カメラ目線2.png": "共通",
+      "差分_目セット_普通白目_カメラ目線.png": "共通",
+      "差分_目セット_普通白目_普通目2.png": "共通",
+      "差分_目セット_普通白目_普通目.png": "共通"
+    },
+    "requires": {
+      "差分_回転移動でポニテにするなど.png": [],
+      "差分_ツインドリル右.png": [],
+      "差分_ツインドリル左.png": [],
+      "差分_その他の服_素体.png": [],
+      "差分_その他の服_(非表示).png": [
+        "source:*その他の服/!素体"
+      ],
+      "差分_その他の服_バスタオル.png": [
+        "source:*その他の服/!素体"
+      ],
+      "差分_その他の服_水着.png": [
+        "source:*その他の服/!素体"
+      ],
+      "差分_その他の服_バニー服.png": [
+        "source:*その他の服/!素体"
+      ],
+      "差分_白ロリ服_体.png": [],
+      "差分_白ロリ服_右腕_まんじゅう.png": [],
+      "差分_白ロリ服_右腕_手をかざす.png": [],
+      "差分_白ロリ服_右腕_指差す.png": [],
+      "差分_白ロリ服_右腕_普通.png": [],
+      "差分_白ロリ服_左腕_まんじゅう袋.png": [],
+      "差分_白ロリ服_左腕_抱える.png": [],
+      "差分_白ロリ服_左腕_マイク.png": [],
+      "差分_白ロリ服_左腕_ひそひそ.png": [],
+      "差分_白ロリ服_左腕_口元に指.png": [],
+      "差分_白ロリ服_左腕_普通.png": [],
+      "差分_顔色_かげり.png": [],
+      "差分_顔色_(非表示).png": [],
+      "差分_顔色_青ざめ.png": [],
+      "差分_顔色_赤面.png": [],
+      "差分_顔色_普通2.png": [],
+      "差分_顔色_普通.png": [],
+      "差分_口_もむー.png": [],
+      "差分_口_んー.png": [],
+      "差分_口_うえー.png": [],
+      "差分_口_いー.png": [],
+      "差分_口_む.png": [],
+      "差分_口_△.png": [],
+      "差分_口_ゆ.png": [],
+      "差分_口_お.png": [],
+      "差分_口_ぺろり.png": [],
+      "差分_口_にやり.png": [],
+      "差分_口_▽.png": [],
+      "差分_口_ほほえみ.png": [],
+      "差分_口_わあー.png": [],
+      "差分_目_ぐるぐる.png": [],
+      "差分_目_＞＜.png": [],
+      "差分_目_○○.png": [],
+      "差分_目_目閉じ2.png": [],
+      "差分_目_目閉じ.png": [],
+      "差分_目_見上げ2.png": [],
+      "差分_目_見上げ.png": [],
+      "差分_眉_太眉こまり.png": [],
+      "差分_眉_太眉おこ.png": [],
+      "差分_眉_太眉ごきげん.png": [],
+      "差分_眉_こまり.png": [],
+      "差分_眉_おこ.png": [],
+      "差分_眉_ややおこ.png": [],
+      "差分_眉_ごきげん.png": [],
+      "差分_頭部アクセサリ_髪留めフリル.png": [],
+      "差分_頭部アクセサリ_髪留めハート.png": [],
+      "差分_頭部アクセサリ_うさみみ.png": [],
+      "差分_頭部アクセサリ_ヘッドドレス.png": [],
+      "差分_前髪もみあげ.png": [],
+      "差分_記号など_汗.png": [],
+      "差分_記号など_涙.png": [],
+      "差分_目セット_見開き白目_目そらし2.png": [],
+      "差分_目セット_見開き白目_目そらし.png": [],
+      "差分_目セット_見開き白目_カメラ目線2.png": [],
+      "差分_目セット_見開き白目_カメラ目線.png": [],
+      "差分_目セット_見開き白目_普通目2.png": [],
+      "差分_目セット_見開き白目_普通目.png": [],
+      "差分_目セット_普通白目_目そらし2.png": [],
+      "差分_目セット_普通白目_目そらし.png": [],
+      "差分_目セット_普通白目_カメラ目線2.png": [],
+      "差分_目セット_普通白目_カメラ目線.png": [],
+      "差分_目セット_普通白目_普通目2.png": [],
+      "差分_目セット_普通白目_普通目.png": []
+    },
+    "forbids": {
+      "差分_回転移動でポニテにするなど.png": [],
+      "差分_ツインドリル右.png": [],
+      "差分_ツインドリル左.png": [],
+      "差分_その他の服_素体.png": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "差分_その他の服_(非表示).png": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "差分_その他の服_バスタオル.png": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "差分_その他の服_水着.png": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "差分_その他の服_バニー服.png": [
+        "source_prefix:*白ロリ服/"
+      ],
+      "差分_白ロリ服_体.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_右腕_まんじゅう.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_右腕_手をかざす.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_右腕_指差す.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_右腕_普通.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_左腕_まんじゅう袋.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_左腕_抱える.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_左腕_マイク.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_左腕_ひそひそ.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_左腕_口元に指.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_白ロリ服_左腕_普通.png": [
+        "source_prefix:*その他の服/"
+      ],
+      "差分_顔色_かげり.png": [],
+      "差分_顔色_(非表示).png": [],
+      "差分_顔色_青ざめ.png": [],
+      "差分_顔色_赤面.png": [],
+      "差分_顔色_普通2.png": [],
+      "差分_顔色_普通.png": [],
+      "差分_口_もむー.png": [],
+      "差分_口_んー.png": [],
+      "差分_口_うえー.png": [],
+      "差分_口_いー.png": [],
+      "差分_口_む.png": [],
+      "差分_口_△.png": [],
+      "差分_口_ゆ.png": [],
+      "差分_口_お.png": [],
+      "差分_口_ぺろり.png": [],
+      "差分_口_にやり.png": [],
+      "差分_口_▽.png": [],
+      "差分_口_ほほえみ.png": [],
+      "差分_口_わあー.png": [],
+      "差分_目_ぐるぐる.png": [],
+      "差分_目_＞＜.png": [],
+      "差分_目_○○.png": [],
+      "差分_目_目閉じ2.png": [],
+      "差分_目_目閉じ.png": [],
+      "差分_目_見上げ2.png": [],
+      "差分_目_見上げ.png": [],
+      "差分_眉_太眉こまり.png": [],
+      "差分_眉_太眉おこ.png": [],
+      "差分_眉_太眉ごきげん.png": [],
+      "差分_眉_こまり.png": [],
+      "差分_眉_おこ.png": [],
+      "差分_眉_ややおこ.png": [],
+      "差分_眉_ごきげん.png": [],
+      "差分_頭部アクセサリ_髪留めフリル.png": [],
+      "差分_頭部アクセサリ_髪留めハート.png": [],
+      "差分_頭部アクセサリ_うさみみ.png": [],
+      "差分_頭部アクセサリ_ヘッドドレス.png": [],
+      "差分_前髪もみあげ.png": [],
+      "差分_記号など_汗.png": [],
+      "差分_記号など_涙.png": [],
+      "差分_目セット_見開き白目_目そらし2.png": [],
+      "差分_目セット_見開き白目_目そらし.png": [],
+      "差分_目セット_見開き白目_カメラ目線2.png": [],
+      "差分_目セット_見開き白目_カメラ目線.png": [],
+      "差分_目セット_見開き白目_普通目2.png": [],
+      "差分_目セット_見開き白目_普通目.png": [],
+      "差分_目セット_普通白目_目そらし2.png": [],
+      "差分_目セット_普通白目_目そらし.png": [],
+      "差分_目セット_普通白目_カメラ目線2.png": [],
+      "差分_目セット_普通白目_カメラ目線.png": [],
+      "差分_目セット_普通白目_普通目2.png": [],
+      "差分_目セット_普通白目_普通目.png": []
+    }
   }
 }

@@ -33,5 +33,3438 @@
     "上げ": "左腕_上げ.png",
     "考え": "左腕_考え.png",
     "指": "左腕_指.png"
+  },
+  "schema_version": 2,
+  "catalog": [
+    {
+      "file": "差分_体_体前傾.png",
+      "category": "体・服",
+      "source_layers": [
+        "!体/*体前傾"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        0,
+        0
+      ],
+      "exclusive_group": "共通:体・服",
+      "bbox": [
+        212,
+        209,
+        1031,
+        1476
+      ],
+      "sha256": "f834c804457c2ab12ca0c3abf42ae9fc1f06bc82e3c055fe49528f57942ba43f",
+      "requires": [],
+      "forbids": [],
+      "slot": "outfit"
+    },
+    {
+      "file": "差分_体_体直立.png",
+      "category": "体・服",
+      "source_layers": [
+        "!体/*体直立"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        0,
+        1
+      ],
+      "exclusive_group": "共通:体・服",
+      "bbox": [
+        236,
+        209,
+        977,
+        1507
+      ],
+      "sha256": "6a9a19c018fe7c3553fe9f970ff81f2abfdb8b1144429c6b53bc358f1e542186",
+      "requires": [],
+      "forbids": [],
+      "slot": "outfit"
+    },
+    {
+      "file": "差分_右腕_(非表示).png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*(非表示)"
+      ],
+      "meaning": "非表示（透明）",
+      "direction": "共通",
+      "order": [
+        1,
+        0
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": null,
+      "sha256": "71d01ef4295210494ee3240e289d66ca70e60bac55e165ab72bac94638514670",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_下.png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*下"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1,
+        1
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        321,
+        540,
+        500,
+        962
+      ],
+      "sha256": "5097d0fcb27d19b0b1e6102c7e9c946ed7eba4e8a50a1cf5ed00de3e41e2f403",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_斜め下.png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*斜め下"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1,
+        2
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        110,
+        541,
+        498,
+        867
+      ],
+      "sha256": "b8ebf527b0d95ab30fdbec33dad4a8d7a04e0430b624c179e892f5fa822abb0a",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_横.png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*横"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1,
+        3
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        119,
+        537,
+        505,
+        743
+      ],
+      "sha256": "dfa87252197ec36a3c5a725e5e261f2a0da87808dd046b866c15bdc87b7d6025",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_指さし横.png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*指さし横"
+      ],
+      "meaning": "指示",
+      "direction": "共通",
+      "order": [
+        1,
+        4
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        122,
+        521,
+        505,
+        743
+      ],
+      "sha256": "0b4d93110bd1148676e449db48aa86ac030dde3bcce031859850d1dacbd63e68",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_手を挙げる.png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*手を挙げる"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1,
+        5
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        138,
+        261,
+        514,
+        674
+      ],
+      "sha256": "59dae6d44fc1e4fe2fdad9fcb0f736fc26f0628a9777b6b5ffe834bd8ad0fd92",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_指さし上.png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*指さし上"
+      ],
+      "meaning": "指示",
+      "direction": "共通",
+      "order": [
+        1,
+        6
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        172,
+        244,
+        514,
+        674
+      ],
+      "sha256": "bc6a4a55b5b7102e344b98560dc38134640ac23b8ac61b0d98ca8e8771147e7d",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_チョップ.png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*チョップ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1,
+        7
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        297,
+        510,
+        496,
+        794
+      ],
+      "sha256": "d6b2b01a3579899566e9de892619fd9b5d203691257ee96de4711df898b4f122",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_口元.png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*口元"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1,
+        8
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        297,
+        519,
+        496,
+        794
+      ],
+      "sha256": "31ac923fd51d64cd48d7204d7d39dffb34052da2b440d063c68e81da6368de70",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_ポケット(前傾用).png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*ポケット(前傾用)"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1,
+        9
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        262,
+        545,
+        496,
+        874
+      ],
+      "sha256": "d05fca1674c7194bb596c7794b93534b1c313e146d514bb1aced96233a7e82fd",
+      "requires": [
+        "source:!体/*体前傾"
+      ],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_ポケット(直立用).png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*ポケット(直立用)"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1,
+        10
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        292,
+        545,
+        496,
+        947
+      ],
+      "sha256": "28e4974b071839b150aac2202901b792227df9925853b5ec95606ba7e3b4a391",
+      "requires": [
+        "source:!体/*体直立"
+      ],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_右腕_基本(直立用).png",
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*基本(直立用)"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        1,
+        11
+      ],
+      "exclusive_group": "共通:右腕",
+      "bbox": [
+        281,
+        551,
+        488,
+        954
+      ],
+      "sha256": "04be676028f21adbd1e580688b2dc0d1d035a6d359fca2a732d681decc0b3772",
+      "requires": [
+        "source:!体/*体直立"
+      ],
+      "forbids": [],
+      "slot": "arm_back"
+    },
+    {
+      "file": "差分_左腕_腕組み(右腕は非表示に).png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*腕組み(右腕は非表示に)"
+      ],
+      "meaning": "腕組み",
+      "direction": "共通",
+      "order": [
+        2,
+        0
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        345,
+        546,
+        693,
+        804
+      ],
+      "sha256": "09579b7b096ed034a873e2af0fa91c1c140035aac1ca8e696384526b8af0ddc0",
+      "requires": [],
+      "forbids": [
+        "category:右腕"
+      ],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_左腕_下.png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*下"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2,
+        1
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        464,
+        533,
+        681,
+        968
+      ],
+      "sha256": "f9185d35cd8d57d559beac4811fde83d5b5b65ceb435e5cd8a9cf0fbc2dd2f19",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_左腕_斜め下.png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*斜め下"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2,
+        2
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        598,
+        531,
+        934,
+        863
+      ],
+      "sha256": "b1c6d200a33becdb73e3c778a5a611c2c7197eaa2278cc805d87a1873426b5f1",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_左腕_横.png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*横"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2,
+        3
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        600,
+        530,
+        862,
+        742
+      ],
+      "sha256": "267a12a504b3b6693af8e667882c71ae8d92f202e45fa1e4e76e6378547de279",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_左腕_手を挙げる.png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*手を挙げる"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2,
+        4
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        596,
+        271,
+        914,
+        694
+      ],
+      "sha256": "b186284bb0435499a77548082a09529e92e26e0aa66bb41c0ed21febe00e51b2",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_左腕_あごに指.png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*あごに指"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2,
+        5
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        454,
+        527,
+        724,
+        807
+      ],
+      "sha256": "8bdf10d6b67b841d7256822d70e4996edd4ec57903a00d2dcaff89c2e3b7341b",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_左腕_ぐっ.png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*ぐっ"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2,
+        6
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        564,
+        516,
+        731,
+        813
+      ],
+      "sha256": "2b17144f7404a3a73d1660b277b3ef15f8fd2d949fee955d96840106965d13f4",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_左腕_口元.png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*口元"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2,
+        7
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        529,
+        520,
+        735,
+        804
+      ],
+      "sha256": "4b5b867c5920b985aeb1c4ab45a07b7466361680b68541cdf2d87f0a2e37bed5",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_左腕_ポケット.png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*ポケット"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2,
+        8
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        605,
+        538,
+        792,
+        947
+      ],
+      "sha256": "1ff36f6785e7f8795e0d66b4ed24f8268d35a3e694bdf066e0bc8d85c9e3f7f3",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_front"
+    },
+    {
+      "file": "差分_左腕_基本.png",
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*基本"
+      ],
+      "meaning": "未定",
+      "direction": "共通",
+      "order": [
+        2,
+        9
+      ],
+      "exclusive_group": "共通:左腕",
+      "bbox": [
+        605,
+        538,
+        830,
+        968
+      ],
+      "sha256": "0bd8dda5adefbf91d1aaefcf4e2af7e237208aa608d6d27ab9db948f17b4891e",
+      "requires": [],
+      "forbids": [],
+      "slot": "arm_front"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_頭.png",
+      "category": "髪・輪郭",
+      "source_layers": [
+        "*頭_上向き/!頭"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        0
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        302,
+        191,
+        757,
+        534
+      ],
+      "sha256": "f90a46812cd5d1403b29539394fd35cdd1296b00f96291bfcce7a473cf75872c",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_枝豆_枝豆萎え.png",
+      "category": "枝豆",
+      "source_layers": [
+        "*頭_上向き/!枝豆/*枝豆萎え"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        1,
+        0
+      ],
+      "exclusive_group": "上向き:枝豆",
+      "bbox": [
+        237,
+        180,
+        812,
+        453
+      ],
+      "sha256": "c931bc4d32b76e280b835103d306a301ca68a1053966e17e7c0513a8ee33dcd8",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_枝豆_枝豆上げ.png",
+      "category": "枝豆",
+      "source_layers": [
+        "*頭_上向き/!枝豆/*枝豆上げ"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        1,
+        1
+      ],
+      "exclusive_group": "上向き:枝豆",
+      "bbox": [
+        198,
+        51,
+        867,
+        310
+      ],
+      "sha256": "28f0dff7d6acec27f511e5f98c32830267b271c1f5d22e12e0fa4f665f634ceb",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_枝豆_枝豆通常.png",
+      "category": "枝豆",
+      "source_layers": [
+        "*頭_上向き/!枝豆/*枝豆通常"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        1,
+        2
+      ],
+      "exclusive_group": "上向き:枝豆",
+      "bbox": [
+        259,
+        59,
+        779,
+        461
+      ],
+      "sha256": "d90f4367c0632aefffb0099ef037991d2192167e42edb394f6598e632d4fe98b",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_顔色_青ざめ.png",
+      "category": "顔色",
+      "source_layers": [
+        "*頭_上向き/*顔色/*青ざめ"
+      ],
+      "meaning": "ピンチ",
+      "direction": "上向き",
+      "order": [
+        3,
+        2,
+        0
+      ],
+      "exclusive_group": "上向き:顔色",
+      "bbox": [
+        374,
+        352,
+        623,
+        418
+      ],
+      "sha256": "5ea9e56f28612854066c99a586124625a67ef1951d894e6725757a349ca1909d",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_顔色_赤面.png",
+      "category": "顔色",
+      "source_layers": [
+        "*頭_上向き/*顔色/*赤面"
+      ],
+      "meaning": "照れ",
+      "direction": "上向き",
+      "order": [
+        3,
+        2,
+        1
+      ],
+      "exclusive_group": "上向き:顔色",
+      "bbox": [
+        358,
+        354,
+        638,
+        453
+      ],
+      "sha256": "738348b751e9f4cefac1c804dd806284023f177f8dc1c069d72fc034e5f712f2",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_顔色_ほっぺ赤め.png",
+      "category": "顔色",
+      "source_layers": [
+        "*頭_上向き/*顔色/*ほっぺ赤め"
+      ],
+      "meaning": "照れ",
+      "direction": "上向き",
+      "order": [
+        3,
+        2,
+        2
+      ],
+      "exclusive_group": "上向き:顔色",
+      "bbox": [
+        358,
+        380,
+        637,
+        445
+      ],
+      "sha256": "f347a4427b34bf346ee71290b781855925b7c270101bbf9c461ba21e9e743e87",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_顔色_ほっぺ基本.png",
+      "category": "顔色",
+      "source_layers": [
+        "*頭_上向き/*顔色/*ほっぺ基本"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        2,
+        3
+      ],
+      "exclusive_group": "上向き:顔色",
+      "bbox": [
+        359,
+        381,
+        635,
+        437
+      ],
+      "sha256": "901505433a6045acb4f51e119ce23461e6d4a9d55c9921926d9d1856ef885575",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_うへー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*うへー"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        0
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        459,
+        426,
+        531,
+        471
+      ],
+      "sha256": "cf3b37146bb90894282aa1b637a084dd48b14b3f088ba62f3f78607ab3a7847c",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_むくー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*むくー"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        1
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        475,
+        435,
+        527,
+        457
+      ],
+      "sha256": "d223dc7958041fa52746ba2719aff3d8ca48c732b1f05f53d161a61331f2e7d0",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_にやり.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*にやり"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        2
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        455,
+        432,
+        534,
+        464
+      ],
+      "sha256": "f61cc034bc2aaf34508c62fd62e4aeda581438d4d139a745c871a76765a32390",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_うわー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*うわー"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        3
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        455,
+        413,
+        535,
+        485
+      ],
+      "sha256": "49f54bf8b7d39ba4c7a6622ed62ab4b7c609bf9953e0e58ad6e1a19d08a2fac1",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_んえー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*んえー"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        4
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        456,
+        428,
+        533,
+        469
+      ],
+      "sha256": "1707875f2e3516b1fe478d66fdb3deeec8c3ab8e501cf8e25b9660f2b4d02f0a",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_んー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*んー"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        5
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        467,
+        443,
+        528,
+        456
+      ],
+      "sha256": "71dc25fcf8b7966fd42d33413d9974457b04701d8c098e631154c0fd8ed31fd3",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_お.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*お"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        6
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        474,
+        426,
+        513,
+        466
+      ],
+      "sha256": "19fd45db0ad43a7f40e809ad942feef93863b4de0f32ddeb9fa43cdc59e57a5d",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_Δ.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*Δ"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        7
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        480,
+        428,
+        509,
+        460
+      ],
+      "sha256": "58fbd5e6527b130cf1e65a21434affa60ac3f654151a0358b5557bef14c3e344",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_ん.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*ん"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        8
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        482,
+        441,
+        504,
+        454
+      ],
+      "sha256": "53a7e9cd39ce9b0493e53358bd816cc985bc19d32f301d9a2d8870656e81b4f6",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_ほあー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*ほあー"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        9
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        458,
+        414,
+        532,
+        487
+      ],
+      "sha256": "e582e3195e03ef7730911d6313232d637335a48724035ef040a54cea4779b26c",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_ほあ.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*ほあ"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        10
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        462,
+        420,
+        528,
+        476
+      ],
+      "sha256": "919b03a5402acb2605a005e37cdefc810a49233a63f65d61fce8710f9b341b13",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_ほう.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*ほう"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        11
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        465,
+        416,
+        526,
+        480
+      ],
+      "sha256": "e0c919911626908d5c5564f77e92ea2a09729b9f0e3a536f6d73486d06e16314",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_口_むふ.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_上向き/!口/*むふ"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        3,
+        12
+      ],
+      "exclusive_group": "上向き:口",
+      "bbox": [
+        461,
+        436,
+        532,
+        453
+      ],
+      "sha256": "1a0c9531b2861f31957733d0eab143a22e52f0fd599b3ca70cc9d7e39d471731",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_＞＜.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*><"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        0
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        376,
+        327,
+        628,
+        408
+      ],
+      "sha256": "6d13fa457e39dd7884e294622d8e5d5c00f5a798697b7f991c2a91daeaee0d36",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_〇〇.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*〇〇"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        1
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        379,
+        325,
+        621,
+        403
+      ],
+      "sha256": "7305312d02ac278dc1828ae111eaa8a91e794d11c9c0667c27ae889c54b07a63",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_なごみ目.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*なごみ目"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        2
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        374,
+        337,
+        628,
+        396
+      ],
+      "sha256": "d0b96f888c79d85ce96d1d7d87c78146551cedd277dfac8acd9f1cdc8e9a010f",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_にっこり.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*にっこり"
+      ],
+      "meaning": "笑顔",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        3
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        364,
+        339,
+        641,
+        398
+      ],
+      "sha256": "9d7af323d2c07ffb919d9b230b57abdedc51c4a59d2b4edb85e7ec2620b07674",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_閉じ目.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*閉じ目"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        4
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        367,
+        348,
+        634,
+        397
+      ],
+      "sha256": "1de411b30d8b62e0809e8061a7d421bae9175b17f563b8a418484b39f3061718",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_見開き.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*見開き"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        5
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        350,
+        299,
+        647,
+        410
+      ],
+      "sha256": "91e1770abfd5d6ba86be9f31287fde57538e101a70118b320026831a0e4a0e2c",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_三白眼↑.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*三白眼↑"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        6
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        350,
+        317,
+        647,
+        407
+      ],
+      "sha256": "1990cc4adc1e8a9d0054c4f6ce28bb7ac2ec943c87132d99dac3a1f01997f02b",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_ジト目.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*ジト目"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        7
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        350,
+        304,
+        647,
+        406
+      ],
+      "sha256": "9aa980de14ffb74f0ec5349f0cde87b73bab105bf1d949fd076dec3f9c1a8b43",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_普通目↑.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*普通目↑"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        8
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        350,
+        299,
+        647,
+        406
+      ],
+      "sha256": "474d1403e12ad039d76fcf0e79cc9dcec896f8d5d50cd2b00c978e271afde4aa",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_目_普通目.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_上向き/!目/*普通目"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        4,
+        9
+      ],
+      "exclusive_group": "上向き:目",
+      "bbox": [
+        350,
+        299,
+        647,
+        406
+      ],
+      "sha256": "c87591267a777d35426e1631aca21e8899336e6c3a8f89c901e53f3a0101527b",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_眉_困り眉.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_上向き/!眉/*困り眉"
+      ],
+      "meaning": "困る",
+      "direction": "上向き",
+      "order": [
+        3,
+        5,
+        0
+      ],
+      "exclusive_group": "上向き:眉",
+      "bbox": [
+        405,
+        256,
+        615,
+        291
+      ],
+      "sha256": "265967a6439c70491727cca0365cd18857fe34ffa01adfb42daa19ff4a001dfd",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_眉_怒り眉2.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_上向き/!眉/*怒り眉2"
+      ],
+      "meaning": "怒り",
+      "direction": "上向き",
+      "order": [
+        3,
+        5,
+        1
+      ],
+      "exclusive_group": "上向き:眉",
+      "bbox": [
+        418,
+        250,
+        614,
+        288
+      ],
+      "sha256": "4495fa47467a37a1c8b27364d90c296a23464936d37873b4a155bbf9fd95d5bb",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_眉_怒り眉.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_上向き/!眉/*怒り眉"
+      ],
+      "meaning": "怒り",
+      "direction": "上向き",
+      "order": [
+        3,
+        5,
+        2
+      ],
+      "exclusive_group": "上向き:眉",
+      "bbox": [
+        411,
+        244,
+        615,
+        279
+      ],
+      "sha256": "eb3e2d0a055767270dff5f5a11bb33cc1148ffb8e2aa18fcb135efd75b527d8d",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_眉_上がり眉.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_上向き/!眉/*上がり眉"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        5,
+        3
+      ],
+      "exclusive_group": "上向き:眉",
+      "bbox": [
+        405,
+        247,
+        617,
+        276
+      ],
+      "sha256": "07c2352636ab3d5f3ee6673208610ebb83e32905d6d93c4c40da06db12da1688",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_眉_基本眉.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_上向き/!眉/*基本眉"
+      ],
+      "meaning": "未定",
+      "direction": "上向き",
+      "order": [
+        3,
+        5,
+        4
+      ],
+      "exclusive_group": "上向き:眉",
+      "bbox": [
+        410,
+        265,
+        610,
+        280
+      ],
+      "sha256": "c0a0750c2569d6ad4ebcc862b7a9bca2b11072ed816858d964ba7c625ff45d24",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_汗.png",
+      "category": "汗",
+      "source_layers": [
+        "*頭_上向き/汗"
+      ],
+      "meaning": "焦り",
+      "direction": "上向き",
+      "order": [
+        3,
+        6
+      ],
+      "exclusive_group": "上向き:汗",
+      "bbox": [
+        385,
+        447,
+        408,
+        470
+      ],
+      "sha256": "4c71c99c61698f2e2a6a98672e2b7a131869f33eb58d205fcfa50f3152df4c64",
+      "requires": [],
+      "forbids": [],
+      "slot": "fx"
+    },
+    {
+      "file": "上向き/差分_頭_上向き_涙.png",
+      "category": "涙",
+      "source_layers": [
+        "*頭_上向き/涙"
+      ],
+      "meaning": "悲しみ",
+      "direction": "上向き",
+      "order": [
+        3,
+        7
+      ],
+      "exclusive_group": "上向き:涙",
+      "bbox": [
+        368,
+        381,
+        632,
+        420
+      ],
+      "sha256": "8a9f452a9fd40e15137e73f121cef93fe647f10206eddf53099e56ff203fcfa7",
+      "requires": [],
+      "forbids": [],
+      "slot": "fx"
+    },
+    {
+      "file": "差分_頭_正面向き_頭.png",
+      "category": "髪・輪郭",
+      "source_layers": [
+        "*頭_正面向き/!頭"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        0
+      ],
+      "exclusive_group": null,
+      "bbox": [
+        311,
+        163,
+        758,
+        542
+      ],
+      "sha256": "131bbe83cf01e77648a20a1c031e916719c8cc6ac9b7a0f476398655ff404cfc",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_頭_正面向き_枝豆_枝豆萎え.png",
+      "category": "枝豆",
+      "source_layers": [
+        "*頭_正面向き/!枝豆/*枝豆萎え"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        1,
+        0
+      ],
+      "exclusive_group": "正面:枝豆",
+      "bbox": [
+        233,
+        183,
+        767,
+        490
+      ],
+      "sha256": "cca4ec0772b3268012dbbdd20f4d43c80c10997310751441a0b9cbff516e4452",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_頭_正面向き_枝豆_枝豆通常.png",
+      "category": "枝豆",
+      "source_layers": [
+        "*頭_正面向き/!枝豆/*枝豆通常"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        1,
+        1
+      ],
+      "exclusive_group": "正面:枝豆",
+      "bbox": [
+        254,
+        35,
+        774,
+        476
+      ],
+      "sha256": "a58e1d992b5a0348314e57bfe14acef74d4f46ea183b61c476bdaade1dac74b2",
+      "requires": [],
+      "forbids": [],
+      "slot": "head"
+    },
+    {
+      "file": "差分_頭_正面向き_顔色_青ざめ.png",
+      "category": "顔色",
+      "source_layers": [
+        "*頭_正面向き/!顔色/*青ざめ"
+      ],
+      "meaning": "ピンチ",
+      "direction": "正面",
+      "order": [
+        4,
+        2,
+        0
+      ],
+      "exclusive_group": "正面:顔色",
+      "bbox": [
+        384,
+        396,
+        615,
+        459
+      ],
+      "sha256": "b6ac1425cab5269e17e885c9c513527812e68142057be1fa9662ae51d053d855",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_頭_正面向き_顔色_赤面.png",
+      "category": "顔色",
+      "source_layers": [
+        "*頭_正面向き/!顔色/*赤面"
+      ],
+      "meaning": "照れ",
+      "direction": "正面",
+      "order": [
+        4,
+        2,
+        1
+      ],
+      "exclusive_group": "正面:顔色",
+      "bbox": [
+        366,
+        405,
+        635,
+        486
+      ],
+      "sha256": "194ca525b71cdf11c70fe881c4d9207b6c4058a9443dcd17722c06ae3060426a",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_頭_正面向き_顔色_ほっぺ赤め.png",
+      "category": "顔色",
+      "source_layers": [
+        "*頭_正面向き/!顔色/*ほっぺ赤め"
+      ],
+      "meaning": "照れ",
+      "direction": "正面",
+      "order": [
+        4,
+        2,
+        2
+      ],
+      "exclusive_group": "正面:顔色",
+      "bbox": [
+        367,
+        420,
+        634,
+        480
+      ],
+      "sha256": "3d5db5248064faaf224b9f4b258adc42181d5078ae03306984a2149fdddfad58",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_頭_正面向き_顔色_ほっぺ基本.png",
+      "category": "顔色",
+      "source_layers": [
+        "*頭_正面向き/!顔色/*ほっぺ基本"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        2,
+        3
+      ],
+      "exclusive_group": "正面:顔色",
+      "bbox": [
+        368,
+        426,
+        633,
+        471
+      ],
+      "sha256": "71b0cd1a35d9025b87136d20349d17e90e754624c384fdeeaebb1a641d9a6757",
+      "requires": [],
+      "forbids": [],
+      "slot": "cheek"
+    },
+    {
+      "file": "差分_頭_正面向き_口_うへえ.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*うへえ"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        0
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        464,
+        480,
+        533,
+        506
+      ],
+      "sha256": "2423bf494cb7f0695f0ca2041027a94bc6724d65ccb624e7140634dc6bab61ba",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_むくー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*むくー"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        1
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        481,
+        484,
+        520,
+        504
+      ],
+      "sha256": "bdba804ce9f06557156a6ed8e9c106bc547ae87c61538d04f5d16a58315f9bb8",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_にやり.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*にやり"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        2
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        462,
+        476,
+        537,
+        507
+      ],
+      "sha256": "3c75de978e01b67cbd3735e8b83002f323f7f7da668739d3bfe76a48f6e99bbb",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_うわー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*うわー"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        3
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        459,
+        464,
+        536,
+        521
+      ],
+      "sha256": "cb173ca17181511bca2f27e2add74ae59ec5000181038cf9ef83e4d2cd1ed9ec",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_んえー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*んえー"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        4
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        461,
+        474,
+        534,
+        511
+      ],
+      "sha256": "c2d49ed3ceae4e126fc5f6749d384a84f32262abfe4bca519b911d53f98914fe",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_んー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*んー"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        5
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        468,
+        491,
+        530,
+        502
+      ],
+      "sha256": "03e9ed1b5a3f4197d46b99c4dcd89f60df354e884cffb005c2b0d77ff4d71200",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_お.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*お"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        6
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        476,
+        476,
+        513,
+        512
+      ],
+      "sha256": "55704775476a82c81c0c5d50d637d44e05c5c36198feeb68f41f8185e66f49c5",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_Δ.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*Δ"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        7
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        478,
+        479,
+        513,
+        506
+      ],
+      "sha256": "85550c9d85654ee6cea733872c42c3993c4270dfa9dd24094ce5c15564cf29ca",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_ん.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*ん"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        8
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        484,
+        489,
+        508,
+        501
+      ],
+      "sha256": "304e1650fac9a1bb29e36ebd078516b13ece46f4088c8822cd2ab00ce0cc8ca7",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_ほあー.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*ほあー"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        9
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        465,
+        463,
+        528,
+        516
+      ],
+      "sha256": "456a44a7235a751ec3bb0b0261d1431f3e6c7597eae20eb13a75e7e23028bf1b",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_ほあ.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*ほあ"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        10
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        465,
+        467,
+        527,
+        513
+      ],
+      "sha256": "82f710fa129ee98bf684bf7d79335502fd2bf06941836088b23844279fab7290",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_ほう.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*ほう"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        11
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        469,
+        464,
+        526,
+        516
+      ],
+      "sha256": "c6a32b22808d1aaee6fb58393e7aed21e8ac204f66a0b2dc90ea39e5302e75ed",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_口_むふ.png",
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*むふ"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        3,
+        12
+      ],
+      "exclusive_group": "正面:口",
+      "bbox": [
+        465,
+        479,
+        531,
+        497
+      ],
+      "sha256": "53b5b1005b842ae30e751d701fb292588f765e7fdf48e27976db86c1a96256c4",
+      "requires": [],
+      "forbids": [],
+      "slot": "mouth"
+    },
+    {
+      "file": "差分_頭_正面向き_目_＞＜.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*><"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        0
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        365,
+        364,
+        617,
+        447
+      ],
+      "sha256": "0d9a1dfe0d608658c679555e0d658cc6ffbd3a4000ef3316d1996f09b78c69b0",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_〇〇.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*〇〇"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        1
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        372,
+        358,
+        616,
+        441
+      ],
+      "sha256": "b99f45d3527c06db7e708ed2afb4bca52c23e93ee15e52d5a77c36c861c35827",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_なごみ目.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*なごみ目"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        2
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        372,
+        388,
+        620,
+        430
+      ],
+      "sha256": "a94eb4dcea3fb4abd39200685b62578c7063ceb9bd5dedafcccd2dd3e9c882e8",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_にっこり.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*にっこり"
+      ],
+      "meaning": "笑顔",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        3
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        361,
+        389,
+        634,
+        438
+      ],
+      "sha256": "4da4bf6ba35710070e999a7dcec01be2eca0fced19a989a319d5696f4558484f",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_閉じ目.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*閉じ目"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        4
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        367,
+        396,
+        625,
+        439
+      ],
+      "sha256": "3f81b15d19be5708303caeb172909f149beb9dce881e16767e668b93b1356fbe",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_見開き.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*見開き"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        5
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        357,
+        335,
+        638,
+        464
+      ],
+      "sha256": "0ca2247f41abcf375f4e90aa82a7314fe86c0175094ebf1fce221691acedd302",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_三白眼←.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*三白眼←"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        6
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        356,
+        353,
+        635,
+        464
+      ],
+      "sha256": "4bdf8b8f6f6f43a3c4fdde825724fac851560757439690ac86199f38e8e73ab8",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_三白眼→.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*三白眼→"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        7
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        356,
+        353,
+        635,
+        464
+      ],
+      "sha256": "aa9e29dfe39199ea11b38ef12ac2e8830fcb0104ed07adca478dea588c45b7dd",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_三白眼.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*三白眼"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        8
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        356,
+        353,
+        635,
+        464
+      ],
+      "sha256": "6880bf1dc801cc77441003ce4043119a86796a32fb29d4f623b57de3ccc38a72",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_ジト目←.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*ジト目←"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        9
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        358,
+        347,
+        638,
+        464
+      ],
+      "sha256": "b815c0e2e8510dda27996240baf221b0cfade7b80a4570a9616177032619f194",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_ジト目→.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*ジト目→"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        10
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        358,
+        347,
+        638,
+        464
+      ],
+      "sha256": "c6ba96ae7318a3d234b9f63d6f5ddd2468973021d248e59649b5c305528a02fa",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_ジト目.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*ジト目"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        11
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        358,
+        347,
+        638,
+        464
+      ],
+      "sha256": "c98c3c8a269dbe62697b27f8d617b0172897ef989b94946a8bd40040bcd490d0",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_基本目←.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*基本目←"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        12
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        358,
+        333,
+        638,
+        464
+      ],
+      "sha256": "c8f8e516a7dc8e97af15bc8e6ec3b41fda8b52320e59480d4a9f68f75bfd7684",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_基本目→.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*基本目→"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        13
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        358,
+        333,
+        638,
+        464
+      ],
+      "sha256": "81defca4b102c7024d8f91631a57509e61d03c53307892d89f1403949e508f6e",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_目_基本目.png",
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*基本目"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        4,
+        14
+      ],
+      "exclusive_group": "正面:目",
+      "bbox": [
+        358,
+        333,
+        638,
+        464
+      ],
+      "sha256": "93f3d6b7d693682b9cb263176e7a4d79ca1e81902cfe4b0978cf06cc711e9e27",
+      "requires": [],
+      "forbids": [],
+      "slot": "eye"
+    },
+    {
+      "file": "差分_頭_正面向き_眉_困り眉.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_正面向き/!眉/*困り眉"
+      ],
+      "meaning": "困る",
+      "direction": "正面",
+      "order": [
+        4,
+        5,
+        0
+      ],
+      "exclusive_group": "正面:眉",
+      "bbox": [
+        375,
+        291,
+        591,
+        327
+      ],
+      "sha256": "5dfa9a92efa1d46b029e27fdc70992dcbe9ebd022f22542eca60ec22dd9b358b",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_頭_正面向き_眉_怒り眉2.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_正面向き/!眉/*怒り眉2"
+      ],
+      "meaning": "怒り",
+      "direction": "正面",
+      "order": [
+        4,
+        5,
+        1
+      ],
+      "exclusive_group": "正面:眉",
+      "bbox": [
+        391,
+        306,
+        581,
+        329
+      ],
+      "sha256": "63f8241597e3119480b7ad470e6d32337e7c2fc8d8049fe6d5d5b010f2f2ec37",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_頭_正面向き_眉_怒り眉.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_正面向き/!眉/*怒り眉"
+      ],
+      "meaning": "怒り",
+      "direction": "正面",
+      "order": [
+        4,
+        5,
+        2
+      ],
+      "exclusive_group": "正面:眉",
+      "bbox": [
+        378,
+        294,
+        584,
+        319
+      ],
+      "sha256": "9cf834846f8c549ebf7f797251ef2d021f84991460c42d5b94ffdf9641be99d7",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_頭_正面向き_眉_上がり眉.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_正面向き/!眉/*上がり眉"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        5,
+        3
+      ],
+      "exclusive_group": "正面:眉",
+      "bbox": [
+        379,
+        282,
+        590,
+        310
+      ],
+      "sha256": "f6d97e14249f2f55ec5220e735da8a2ca47e7a6267d844bb9e98abdaff277ccc",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_頭_正面向き_眉_基本眉.png",
+      "category": "眉",
+      "source_layers": [
+        "*頭_正面向き/!眉/*基本眉"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "order": [
+        4,
+        5,
+        4
+      ],
+      "exclusive_group": "正面:眉",
+      "bbox": [
+        378,
+        301,
+        589,
+        319
+      ],
+      "sha256": "242da72ca2c67dbeb4d49ad2e032dbdf748cd0340d8a2d2136886712e446e59b",
+      "requires": [],
+      "forbids": [],
+      "slot": "brow"
+    },
+    {
+      "file": "差分_頭_正面向き_汗.png",
+      "category": "汗",
+      "source_layers": [
+        "*頭_正面向き/汗"
+      ],
+      "meaning": "焦り",
+      "direction": "正面",
+      "order": [
+        4,
+        6
+      ],
+      "exclusive_group": "正面:汗",
+      "bbox": [
+        409,
+        488,
+        428,
+        508
+      ],
+      "sha256": "e8cb94153d13c3ae80416f367bf04ff986ed7eea996c6c4f37f94edcd2525679",
+      "requires": [],
+      "forbids": [],
+      "slot": "fx"
+    },
+    {
+      "file": "差分_頭_正面向き_涙.png",
+      "category": "涙",
+      "source_layers": [
+        "*頭_正面向き/涙"
+      ],
+      "meaning": "悲しみ",
+      "direction": "正面",
+      "order": [
+        4,
+        7
+      ],
+      "exclusive_group": "正面:涙",
+      "bbox": [
+        369,
+        425,
+        625,
+        456
+      ],
+      "sha256": "d8dc484aa9e57f8195e5a8e50942485a4cc954c99609c666d4a102495fb11556",
+      "requires": [],
+      "forbids": [],
+      "slot": "fx"
+    }
+  ],
+  "legacy_metadata": {
+    "体.png": {
+      "category": "旧下地",
+      "source_layers": [
+        "!体/*体直立",
+        "*頭_正面向き/!頭",
+        "*頭_正面向き/!枝豆/*枝豆通常",
+        "*頭_正面向き/!顔色/*ほっぺ基本"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "1e07870a293dcb78bb44332878de46982c43d339fea1307c7c8dcd0309d8c683",
+      "exclusive_group": "旧:旧下地"
+    },
+    "口_大.png": {
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*うわー"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "f05d41741d078b64b3bbf9521b6fe619c55702a416bfea9a38eafce071fcd4dd",
+      "exclusive_group": "旧:口"
+    },
+    "口_笑.png": {
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*にやり"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "5ed4345fac3276cb581f9ced353e4cb5daa9d4683d037feeb859d6f5ea34b926",
+      "exclusive_group": "旧:口"
+    },
+    "口_閉.png": {
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*ん"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "ff0b5aa8d446747268c5bf1e91daedd908505c6e5f44244964b4793cf89a68be",
+      "exclusive_group": "旧:口"
+    },
+    "口_開.png": {
+      "category": "口",
+      "source_layers": [
+        "*頭_正面向き/!口/*お"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "5f2878945633f7b52f6aa12b6bf2cea541c4d5aa6c13424e11f9556e102ad9cc",
+      "exclusive_group": "旧:口"
+    },
+    "右腕_上げ.png": {
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*手を挙げる"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "efb91fc43c5106196d06c5afa934db629afc61e8a633ef1da08ad8a2b3e9ab60",
+      "exclusive_group": "旧:右腕"
+    },
+    "右腕_基本.png": {
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*基本(直立用)"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "efcdaf0ec470b876bd1c7cfdb66243bbaf4df2b05eee46fe90ba668dbda29f3c",
+      "exclusive_group": "旧:右腕"
+    },
+    "右腕_指.png": {
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*指さし横"
+      ],
+      "meaning": "指示",
+      "direction": "正面",
+      "sha256": "92b88700813c0258d80701a7c2fae8a477ddaa3e291e6d6884dd7b0efb4adb18",
+      "exclusive_group": "旧:右腕"
+    },
+    "右腕_考え.png": {
+      "category": "右腕",
+      "source_layers": [
+        "!右腕/*口元"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "3528ab83ca33ee3de54c3e7a998c566b0407b9233ce98d7ead33cd4455928835",
+      "exclusive_group": "旧:右腕"
+    },
+    "左腕_上げ.png": {
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*手を挙げる"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "e3fc3f4bae5ce0db0e2aaca760849d30478911f47e75b874aeb977915ada755a",
+      "exclusive_group": "旧:左腕"
+    },
+    "左腕_基本.png": {
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*基本"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "d33402d7d54db176a96b0e9b204ea2acc6b54905b68db96df152b19c736c00b2",
+      "exclusive_group": "旧:左腕"
+    },
+    "左腕_指.png": {
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*横"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "f8e43e886b38e9bd8d7b8e8de220d2e3270d9b95655013958fad76c17eaa2a28",
+      "exclusive_group": "旧:左腕"
+    },
+    "左腕_考え.png": {
+      "category": "左腕",
+      "source_layers": [
+        "!左腕/*あごに指"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "8b316d1000fcd771fbf16fd41881542c50949de22c9422e1ac28f48747fe7d83",
+      "exclusive_group": "旧:左腕"
+    },
+    "目_ジト.png": {
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*ジト目"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "3668442256abc38a58868f8356a6253ba74b95390bafb464091c43e61806b38d",
+      "exclusive_group": "旧:目"
+    },
+    "目_笑.png": {
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*にっこり"
+      ],
+      "meaning": "笑顔",
+      "direction": "正面",
+      "sha256": "d38ee99aabf3105565732cce9c2add85d315b278ffbcdc356e503578a413cc6f",
+      "exclusive_group": "旧:目"
+    },
+    "目_見開.png": {
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*見開き"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "d2d4d15163d4e54ef873d1b4458a7256b476c3facc6ff8566d5246e85c72d67d",
+      "exclusive_group": "旧:目"
+    },
+    "目_閉.png": {
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*閉じ目"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "5123bf82492da9c1cf1765590668e744d876ee00201ba61ba8fb7673bc8a39e7",
+      "exclusive_group": "旧:目"
+    },
+    "目_開.png": {
+      "category": "目",
+      "source_layers": [
+        "*頭_正面向き/!目/*基本目"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "297b1f430b6c67a8a7595e3493db60bd82b9b5298d4b8df9a296024b4760c900",
+      "exclusive_group": "旧:目"
+    },
+    "眉_上げ.png": {
+      "category": "眉",
+      "source_layers": [
+        "*頭_正面向き/!眉/*上がり眉"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "fda30c3f429add08b7fd3e66803bf0d427434909cc59aef0de80b91e89057b74",
+      "exclusive_group": "旧:眉"
+    },
+    "眉_困り.png": {
+      "category": "眉",
+      "source_layers": [
+        "*頭_正面向き/!眉/*困り眉"
+      ],
+      "meaning": "困る",
+      "direction": "正面",
+      "sha256": "223696ff5f2bcaeb42cf99d1e10db51d40833291ac7dc88a299001b6050bea75",
+      "exclusive_group": "旧:眉"
+    },
+    "眉_基本.png": {
+      "category": "眉",
+      "source_layers": [
+        "*頭_正面向き/!眉/*基本眉"
+      ],
+      "meaning": "未定",
+      "direction": "正面",
+      "sha256": "2f0d2701af41ee082228a146b9342bc50802411f51e292abd9e53fadd27ccac5",
+      "exclusive_group": "旧:眉"
+    }
+  },
+  "source": {
+    "file": "ずんだもん.psd",
+    "sha256": "7e50624531b1e3ddbf22ef4cac49437cf7069d25629d5a1c01256ff86de89514",
+    "leaf_count": 104,
+    "covered_leaf_count": 104
+  },
+  "composition": {
+    "origin": [
+      0,
+      0
+    ],
+    "order": "catalog.orderの昇順（PSDの下から上）",
+    "legacy": "旧21部品と新catalogは別の組立て。旧体には顔色・髪・服・装飾が焼込み済み。"
+  },
+  "constraints": [
+    "同じexclusive_groupは1枚だけ。小物・アクセサリ・髪は個別に選択可。",
+    "正面と上向きの頭・目・眉・口・顔色・枝豆・汗・涙を混在させない。共通の体・腕は利用可。",
+    "めたんの白目・黒目は目セット合成済み。目セットと他の目を同時使用しない。",
+    "ずんだもんの腕組みは右腕非表示。前傾用ポケットは体前傾、直立用は体直立。",
+    "めたんの白ロリ服とその他の服は排他。その他の服は素体と衣装1枚を重ね、白ロリ用腕を使わない。",
+    "めたんのかげりは顔色に追加可。髪留めフリルと髪留めハートは排他。",
+    "非表示PNGは透明の選択肢。ポニテ用の髪は作者の注記通り配置加工が必要。元座標のまま保管。"
+  ],
+  "eye": {
+    "上向き": [
+      "上向き/差分_頭_上向き_目_＞＜.png",
+      "上向き/差分_頭_上向き_目_〇〇.png",
+      "上向き/差分_頭_上向き_目_なごみ目.png",
+      "上向き/差分_頭_上向き_目_にっこり.png",
+      "上向き/差分_頭_上向き_目_閉じ目.png",
+      "上向き/差分_頭_上向き_目_見開き.png",
+      "上向き/差分_頭_上向き_目_三白眼↑.png",
+      "上向き/差分_頭_上向き_目_ジト目.png",
+      "上向き/差分_頭_上向き_目_普通目↑.png",
+      "上向き/差分_頭_上向き_目_普通目.png"
+    ],
+    "正面": [
+      "差分_頭_正面向き_目_＞＜.png",
+      "差分_頭_正面向き_目_〇〇.png",
+      "差分_頭_正面向き_目_なごみ目.png",
+      "差分_頭_正面向き_目_にっこり.png",
+      "差分_頭_正面向き_目_閉じ目.png",
+      "差分_頭_正面向き_目_見開き.png",
+      "差分_頭_正面向き_目_三白眼←.png",
+      "差分_頭_正面向き_目_三白眼→.png",
+      "差分_頭_正面向き_目_三白眼.png",
+      "差分_頭_正面向き_目_ジト目←.png",
+      "差分_頭_正面向き_目_ジト目→.png",
+      "差分_頭_正面向き_目_ジト目.png",
+      "差分_頭_正面向き_目_基本目←.png",
+      "差分_頭_正面向き_目_基本目→.png",
+      "差分_頭_正面向き_目_基本目.png"
+    ]
+  },
+  "brow": {
+    "上向き": [
+      "上向き/差分_頭_上向き_眉_困り眉.png",
+      "上向き/差分_頭_上向き_眉_怒り眉2.png",
+      "上向き/差分_頭_上向き_眉_怒り眉.png",
+      "上向き/差分_頭_上向き_眉_上がり眉.png",
+      "上向き/差分_頭_上向き_眉_基本眉.png"
+    ],
+    "正面": [
+      "差分_頭_正面向き_眉_困り眉.png",
+      "差分_頭_正面向き_眉_怒り眉2.png",
+      "差分_頭_正面向き_眉_怒り眉.png",
+      "差分_頭_正面向き_眉_上がり眉.png",
+      "差分_頭_正面向き_眉_基本眉.png"
+    ]
+  },
+  "mouth": {
+    "上向き": [
+      "上向き/差分_頭_上向き_口_うへー.png",
+      "上向き/差分_頭_上向き_口_むくー.png",
+      "上向き/差分_頭_上向き_口_にやり.png",
+      "上向き/差分_頭_上向き_口_うわー.png",
+      "上向き/差分_頭_上向き_口_んえー.png",
+      "上向き/差分_頭_上向き_口_んー.png",
+      "上向き/差分_頭_上向き_口_お.png",
+      "上向き/差分_頭_上向き_口_Δ.png",
+      "上向き/差分_頭_上向き_口_ん.png",
+      "上向き/差分_頭_上向き_口_ほあー.png",
+      "上向き/差分_頭_上向き_口_ほあ.png",
+      "上向き/差分_頭_上向き_口_ほう.png",
+      "上向き/差分_頭_上向き_口_むふ.png"
+    ],
+    "正面": [
+      "差分_頭_正面向き_口_うへえ.png",
+      "差分_頭_正面向き_口_むくー.png",
+      "差分_頭_正面向き_口_にやり.png",
+      "差分_頭_正面向き_口_うわー.png",
+      "差分_頭_正面向き_口_んえー.png",
+      "差分_頭_正面向き_口_んー.png",
+      "差分_頭_正面向き_口_お.png",
+      "差分_頭_正面向き_口_Δ.png",
+      "差分_頭_正面向き_口_ん.png",
+      "差分_頭_正面向き_口_ほあー.png",
+      "差分_頭_正面向き_口_ほあ.png",
+      "差分_頭_正面向き_口_ほう.png",
+      "差分_頭_正面向き_口_むふ.png"
+    ]
+  },
+  "cheek": {
+    "上向き": [
+      "上向き/差分_頭_上向き_顔色_青ざめ.png",
+      "上向き/差分_頭_上向き_顔色_赤面.png",
+      "上向き/差分_頭_上向き_顔色_ほっぺ赤め.png",
+      "上向き/差分_頭_上向き_顔色_ほっぺ基本.png"
+    ],
+    "正面": [
+      "差分_頭_正面向き_顔色_青ざめ.png",
+      "差分_頭_正面向き_顔色_赤面.png",
+      "差分_頭_正面向き_顔色_ほっぺ赤め.png",
+      "差分_頭_正面向き_顔色_ほっぺ基本.png"
+    ]
+  },
+  "fx": {
+    "上向き": [
+      "上向き/差分_頭_上向き_汗.png",
+      "上向き/差分_頭_上向き_涙.png"
+    ],
+    "正面": [
+      "差分_頭_正面向き_汗.png",
+      "差分_頭_正面向き_涙.png"
+    ]
+  },
+  "arm_back": {
+    "共通": [
+      "差分_右腕_(非表示).png",
+      "差分_右腕_下.png",
+      "差分_右腕_斜め下.png",
+      "差分_右腕_横.png",
+      "差分_右腕_指さし横.png",
+      "差分_右腕_手を挙げる.png",
+      "差分_右腕_指さし上.png",
+      "差分_右腕_チョップ.png",
+      "差分_右腕_口元.png",
+      "差分_右腕_ポケット(前傾用).png",
+      "差分_右腕_ポケット(直立用).png",
+      "差分_右腕_基本(直立用).png"
+    ]
+  },
+  "arm_front": {
+    "共通": [
+      "差分_左腕_腕組み(右腕は非表示に).png",
+      "差分_左腕_下.png",
+      "差分_左腕_斜め下.png",
+      "差分_左腕_横.png",
+      "差分_左腕_手を挙げる.png",
+      "差分_左腕_あごに指.png",
+      "差分_左腕_ぐっ.png",
+      "差分_左腕_口元.png",
+      "差分_左腕_ポケット.png",
+      "差分_左腕_基本.png"
+    ]
+  },
+  "head": {
+    "上向き": [
+      "上向き/差分_頭_上向き_頭.png",
+      "上向き/差分_頭_上向き_枝豆_枝豆萎え.png",
+      "上向き/差分_頭_上向き_枝豆_枝豆上げ.png",
+      "上向き/差分_頭_上向き_枝豆_枝豆通常.png"
+    ],
+    "正面": [
+      "差分_頭_正面向き_頭.png",
+      "差分_頭_正面向き_枝豆_枝豆萎え.png",
+      "差分_頭_正面向き_枝豆_枝豆通常.png"
+    ]
+  },
+  "outfit": {
+    "共通": [
+      "差分_体_体前傾.png",
+      "差分_体_体直立.png"
+    ]
+  },
+  "prop": {},
+  "rules": {
+    "exclusive_groups": {
+      "共通:体・服": [
+        "差分_体_体前傾.png",
+        "差分_体_体直立.png"
+      ],
+      "共通:右腕": [
+        "差分_右腕_(非表示).png",
+        "差分_右腕_下.png",
+        "差分_右腕_斜め下.png",
+        "差分_右腕_横.png",
+        "差分_右腕_指さし横.png",
+        "差分_右腕_手を挙げる.png",
+        "差分_右腕_指さし上.png",
+        "差分_右腕_チョップ.png",
+        "差分_右腕_口元.png",
+        "差分_右腕_ポケット(前傾用).png",
+        "差分_右腕_ポケット(直立用).png",
+        "差分_右腕_基本(直立用).png"
+      ],
+      "共通:左腕": [
+        "差分_左腕_腕組み(右腕は非表示に).png",
+        "差分_左腕_下.png",
+        "差分_左腕_斜め下.png",
+        "差分_左腕_横.png",
+        "差分_左腕_手を挙げる.png",
+        "差分_左腕_あごに指.png",
+        "差分_左腕_ぐっ.png",
+        "差分_左腕_口元.png",
+        "差分_左腕_ポケット.png",
+        "差分_左腕_基本.png"
+      ],
+      "上向き:枝豆": [
+        "上向き/差分_頭_上向き_枝豆_枝豆萎え.png",
+        "上向き/差分_頭_上向き_枝豆_枝豆上げ.png",
+        "上向き/差分_頭_上向き_枝豆_枝豆通常.png"
+      ],
+      "上向き:顔色": [
+        "上向き/差分_頭_上向き_顔色_青ざめ.png",
+        "上向き/差分_頭_上向き_顔色_赤面.png",
+        "上向き/差分_頭_上向き_顔色_ほっぺ赤め.png",
+        "上向き/差分_頭_上向き_顔色_ほっぺ基本.png"
+      ],
+      "上向き:口": [
+        "上向き/差分_頭_上向き_口_うへー.png",
+        "上向き/差分_頭_上向き_口_むくー.png",
+        "上向き/差分_頭_上向き_口_にやり.png",
+        "上向き/差分_頭_上向き_口_うわー.png",
+        "上向き/差分_頭_上向き_口_んえー.png",
+        "上向き/差分_頭_上向き_口_んー.png",
+        "上向き/差分_頭_上向き_口_お.png",
+        "上向き/差分_頭_上向き_口_Δ.png",
+        "上向き/差分_頭_上向き_口_ん.png",
+        "上向き/差分_頭_上向き_口_ほあー.png",
+        "上向き/差分_頭_上向き_口_ほあ.png",
+        "上向き/差分_頭_上向き_口_ほう.png",
+        "上向き/差分_頭_上向き_口_むふ.png"
+      ],
+      "上向き:目": [
+        "上向き/差分_頭_上向き_目_＞＜.png",
+        "上向き/差分_頭_上向き_目_〇〇.png",
+        "上向き/差分_頭_上向き_目_なごみ目.png",
+        "上向き/差分_頭_上向き_目_にっこり.png",
+        "上向き/差分_頭_上向き_目_閉じ目.png",
+        "上向き/差分_頭_上向き_目_見開き.png",
+        "上向き/差分_頭_上向き_目_三白眼↑.png",
+        "上向き/差分_頭_上向き_目_ジト目.png",
+        "上向き/差分_頭_上向き_目_普通目↑.png",
+        "上向き/差分_頭_上向き_目_普通目.png"
+      ],
+      "上向き:眉": [
+        "上向き/差分_頭_上向き_眉_困り眉.png",
+        "上向き/差分_頭_上向き_眉_怒り眉2.png",
+        "上向き/差分_頭_上向き_眉_怒り眉.png",
+        "上向き/差分_頭_上向き_眉_上がり眉.png",
+        "上向き/差分_頭_上向き_眉_基本眉.png"
+      ],
+      "上向き:汗": [
+        "上向き/差分_頭_上向き_汗.png"
+      ],
+      "上向き:涙": [
+        "上向き/差分_頭_上向き_涙.png"
+      ],
+      "正面:枝豆": [
+        "差分_頭_正面向き_枝豆_枝豆萎え.png",
+        "差分_頭_正面向き_枝豆_枝豆通常.png"
+      ],
+      "正面:顔色": [
+        "差分_頭_正面向き_顔色_青ざめ.png",
+        "差分_頭_正面向き_顔色_赤面.png",
+        "差分_頭_正面向き_顔色_ほっぺ赤め.png",
+        "差分_頭_正面向き_顔色_ほっぺ基本.png"
+      ],
+      "正面:口": [
+        "差分_頭_正面向き_口_うへえ.png",
+        "差分_頭_正面向き_口_むくー.png",
+        "差分_頭_正面向き_口_にやり.png",
+        "差分_頭_正面向き_口_うわー.png",
+        "差分_頭_正面向き_口_んえー.png",
+        "差分_頭_正面向き_口_んー.png",
+        "差分_頭_正面向き_口_お.png",
+        "差分_頭_正面向き_口_Δ.png",
+        "差分_頭_正面向き_口_ん.png",
+        "差分_頭_正面向き_口_ほあー.png",
+        "差分_頭_正面向き_口_ほあ.png",
+        "差分_頭_正面向き_口_ほう.png",
+        "差分_頭_正面向き_口_むふ.png"
+      ],
+      "正面:目": [
+        "差分_頭_正面向き_目_＞＜.png",
+        "差分_頭_正面向き_目_〇〇.png",
+        "差分_頭_正面向き_目_なごみ目.png",
+        "差分_頭_正面向き_目_にっこり.png",
+        "差分_頭_正面向き_目_閉じ目.png",
+        "差分_頭_正面向き_目_見開き.png",
+        "差分_頭_正面向き_目_三白眼←.png",
+        "差分_頭_正面向き_目_三白眼→.png",
+        "差分_頭_正面向き_目_三白眼.png",
+        "差分_頭_正面向き_目_ジト目←.png",
+        "差分_頭_正面向き_目_ジト目→.png",
+        "差分_頭_正面向き_目_ジト目.png",
+        "差分_頭_正面向き_目_基本目←.png",
+        "差分_頭_正面向き_目_基本目→.png",
+        "差分_頭_正面向き_目_基本目.png"
+      ],
+      "正面:眉": [
+        "差分_頭_正面向き_眉_困り眉.png",
+        "差分_頭_正面向き_眉_怒り眉2.png",
+        "差分_頭_正面向き_眉_怒り眉.png",
+        "差分_頭_正面向き_眉_上がり眉.png",
+        "差分_頭_正面向き_眉_基本眉.png"
+      ],
+      "正面:汗": [
+        "差分_頭_正面向き_汗.png"
+      ],
+      "正面:涙": [
+        "差分_頭_正面向き_涙.png"
+      ]
+    },
+    "directions": {
+      "差分_体_体前傾.png": "共通",
+      "差分_体_体直立.png": "共通",
+      "差分_右腕_(非表示).png": "共通",
+      "差分_右腕_下.png": "共通",
+      "差分_右腕_斜め下.png": "共通",
+      "差分_右腕_横.png": "共通",
+      "差分_右腕_指さし横.png": "共通",
+      "差分_右腕_手を挙げる.png": "共通",
+      "差分_右腕_指さし上.png": "共通",
+      "差分_右腕_チョップ.png": "共通",
+      "差分_右腕_口元.png": "共通",
+      "差分_右腕_ポケット(前傾用).png": "共通",
+      "差分_右腕_ポケット(直立用).png": "共通",
+      "差分_右腕_基本(直立用).png": "共通",
+      "差分_左腕_腕組み(右腕は非表示に).png": "共通",
+      "差分_左腕_下.png": "共通",
+      "差分_左腕_斜め下.png": "共通",
+      "差分_左腕_横.png": "共通",
+      "差分_左腕_手を挙げる.png": "共通",
+      "差分_左腕_あごに指.png": "共通",
+      "差分_左腕_ぐっ.png": "共通",
+      "差分_左腕_口元.png": "共通",
+      "差分_左腕_ポケット.png": "共通",
+      "差分_左腕_基本.png": "共通",
+      "上向き/差分_頭_上向き_頭.png": "上向き",
+      "上向き/差分_頭_上向き_枝豆_枝豆萎え.png": "上向き",
+      "上向き/差分_頭_上向き_枝豆_枝豆上げ.png": "上向き",
+      "上向き/差分_頭_上向き_枝豆_枝豆通常.png": "上向き",
+      "上向き/差分_頭_上向き_顔色_青ざめ.png": "上向き",
+      "上向き/差分_頭_上向き_顔色_赤面.png": "上向き",
+      "上向き/差分_頭_上向き_顔色_ほっぺ赤め.png": "上向き",
+      "上向き/差分_頭_上向き_顔色_ほっぺ基本.png": "上向き",
+      "上向き/差分_頭_上向き_口_うへー.png": "上向き",
+      "上向き/差分_頭_上向き_口_むくー.png": "上向き",
+      "上向き/差分_頭_上向き_口_にやり.png": "上向き",
+      "上向き/差分_頭_上向き_口_うわー.png": "上向き",
+      "上向き/差分_頭_上向き_口_んえー.png": "上向き",
+      "上向き/差分_頭_上向き_口_んー.png": "上向き",
+      "上向き/差分_頭_上向き_口_お.png": "上向き",
+      "上向き/差分_頭_上向き_口_Δ.png": "上向き",
+      "上向き/差分_頭_上向き_口_ん.png": "上向き",
+      "上向き/差分_頭_上向き_口_ほあー.png": "上向き",
+      "上向き/差分_頭_上向き_口_ほあ.png": "上向き",
+      "上向き/差分_頭_上向き_口_ほう.png": "上向き",
+      "上向き/差分_頭_上向き_口_むふ.png": "上向き",
+      "上向き/差分_頭_上向き_目_＞＜.png": "上向き",
+      "上向き/差分_頭_上向き_目_〇〇.png": "上向き",
+      "上向き/差分_頭_上向き_目_なごみ目.png": "上向き",
+      "上向き/差分_頭_上向き_目_にっこり.png": "上向き",
+      "上向き/差分_頭_上向き_目_閉じ目.png": "上向き",
+      "上向き/差分_頭_上向き_目_見開き.png": "上向き",
+      "上向き/差分_頭_上向き_目_三白眼↑.png": "上向き",
+      "上向き/差分_頭_上向き_目_ジト目.png": "上向き",
+      "上向き/差分_頭_上向き_目_普通目↑.png": "上向き",
+      "上向き/差分_頭_上向き_目_普通目.png": "上向き",
+      "上向き/差分_頭_上向き_眉_困り眉.png": "上向き",
+      "上向き/差分_頭_上向き_眉_怒り眉2.png": "上向き",
+      "上向き/差分_頭_上向き_眉_怒り眉.png": "上向き",
+      "上向き/差分_頭_上向き_眉_上がり眉.png": "上向き",
+      "上向き/差分_頭_上向き_眉_基本眉.png": "上向き",
+      "上向き/差分_頭_上向き_汗.png": "上向き",
+      "上向き/差分_頭_上向き_涙.png": "上向き",
+      "差分_頭_正面向き_頭.png": "正面",
+      "差分_頭_正面向き_枝豆_枝豆萎え.png": "正面",
+      "差分_頭_正面向き_枝豆_枝豆通常.png": "正面",
+      "差分_頭_正面向き_顔色_青ざめ.png": "正面",
+      "差分_頭_正面向き_顔色_赤面.png": "正面",
+      "差分_頭_正面向き_顔色_ほっぺ赤め.png": "正面",
+      "差分_頭_正面向き_顔色_ほっぺ基本.png": "正面",
+      "差分_頭_正面向き_口_うへえ.png": "正面",
+      "差分_頭_正面向き_口_むくー.png": "正面",
+      "差分_頭_正面向き_口_にやり.png": "正面",
+      "差分_頭_正面向き_口_うわー.png": "正面",
+      "差分_頭_正面向き_口_んえー.png": "正面",
+      "差分_頭_正面向き_口_んー.png": "正面",
+      "差分_頭_正面向き_口_お.png": "正面",
+      "差分_頭_正面向き_口_Δ.png": "正面",
+      "差分_頭_正面向き_口_ん.png": "正面",
+      "差分_頭_正面向き_口_ほあー.png": "正面",
+      "差分_頭_正面向き_口_ほあ.png": "正面",
+      "差分_頭_正面向き_口_ほう.png": "正面",
+      "差分_頭_正面向き_口_むふ.png": "正面",
+      "差分_頭_正面向き_目_＞＜.png": "正面",
+      "差分_頭_正面向き_目_〇〇.png": "正面",
+      "差分_頭_正面向き_目_なごみ目.png": "正面",
+      "差分_頭_正面向き_目_にっこり.png": "正面",
+      "差分_頭_正面向き_目_閉じ目.png": "正面",
+      "差分_頭_正面向き_目_見開き.png": "正面",
+      "差分_頭_正面向き_目_三白眼←.png": "正面",
+      "差分_頭_正面向き_目_三白眼→.png": "正面",
+      "差分_頭_正面向き_目_三白眼.png": "正面",
+      "差分_頭_正面向き_目_ジト目←.png": "正面",
+      "差分_頭_正面向き_目_ジト目→.png": "正面",
+      "差分_頭_正面向き_目_ジト目.png": "正面",
+      "差分_頭_正面向き_目_基本目←.png": "正面",
+      "差分_頭_正面向き_目_基本目→.png": "正面",
+      "差分_頭_正面向き_目_基本目.png": "正面",
+      "差分_頭_正面向き_眉_困り眉.png": "正面",
+      "差分_頭_正面向き_眉_怒り眉2.png": "正面",
+      "差分_頭_正面向き_眉_怒り眉.png": "正面",
+      "差分_頭_正面向き_眉_上がり眉.png": "正面",
+      "差分_頭_正面向き_眉_基本眉.png": "正面",
+      "差分_頭_正面向き_汗.png": "正面",
+      "差分_頭_正面向き_涙.png": "正面"
+    },
+    "requires": {
+      "差分_体_体前傾.png": [],
+      "差分_体_体直立.png": [],
+      "差分_右腕_(非表示).png": [],
+      "差分_右腕_下.png": [],
+      "差分_右腕_斜め下.png": [],
+      "差分_右腕_横.png": [],
+      "差分_右腕_指さし横.png": [],
+      "差分_右腕_手を挙げる.png": [],
+      "差分_右腕_指さし上.png": [],
+      "差分_右腕_チョップ.png": [],
+      "差分_右腕_口元.png": [],
+      "差分_右腕_ポケット(前傾用).png": [
+        "source:!体/*体前傾"
+      ],
+      "差分_右腕_ポケット(直立用).png": [
+        "source:!体/*体直立"
+      ],
+      "差分_右腕_基本(直立用).png": [
+        "source:!体/*体直立"
+      ],
+      "差分_左腕_腕組み(右腕は非表示に).png": [],
+      "差分_左腕_下.png": [],
+      "差分_左腕_斜め下.png": [],
+      "差分_左腕_横.png": [],
+      "差分_左腕_手を挙げる.png": [],
+      "差分_左腕_あごに指.png": [],
+      "差分_左腕_ぐっ.png": [],
+      "差分_左腕_口元.png": [],
+      "差分_左腕_ポケット.png": [],
+      "差分_左腕_基本.png": [],
+      "上向き/差分_頭_上向き_頭.png": [],
+      "上向き/差分_頭_上向き_枝豆_枝豆萎え.png": [],
+      "上向き/差分_頭_上向き_枝豆_枝豆上げ.png": [],
+      "上向き/差分_頭_上向き_枝豆_枝豆通常.png": [],
+      "上向き/差分_頭_上向き_顔色_青ざめ.png": [],
+      "上向き/差分_頭_上向き_顔色_赤面.png": [],
+      "上向き/差分_頭_上向き_顔色_ほっぺ赤め.png": [],
+      "上向き/差分_頭_上向き_顔色_ほっぺ基本.png": [],
+      "上向き/差分_頭_上向き_口_うへー.png": [],
+      "上向き/差分_頭_上向き_口_むくー.png": [],
+      "上向き/差分_頭_上向き_口_にやり.png": [],
+      "上向き/差分_頭_上向き_口_うわー.png": [],
+      "上向き/差分_頭_上向き_口_んえー.png": [],
+      "上向き/差分_頭_上向き_口_んー.png": [],
+      "上向き/差分_頭_上向き_口_お.png": [],
+      "上向き/差分_頭_上向き_口_Δ.png": [],
+      "上向き/差分_頭_上向き_口_ん.png": [],
+      "上向き/差分_頭_上向き_口_ほあー.png": [],
+      "上向き/差分_頭_上向き_口_ほあ.png": [],
+      "上向き/差分_頭_上向き_口_ほう.png": [],
+      "上向き/差分_頭_上向き_口_むふ.png": [],
+      "上向き/差分_頭_上向き_目_＞＜.png": [],
+      "上向き/差分_頭_上向き_目_〇〇.png": [],
+      "上向き/差分_頭_上向き_目_なごみ目.png": [],
+      "上向き/差分_頭_上向き_目_にっこり.png": [],
+      "上向き/差分_頭_上向き_目_閉じ目.png": [],
+      "上向き/差分_頭_上向き_目_見開き.png": [],
+      "上向き/差分_頭_上向き_目_三白眼↑.png": [],
+      "上向き/差分_頭_上向き_目_ジト目.png": [],
+      "上向き/差分_頭_上向き_目_普通目↑.png": [],
+      "上向き/差分_頭_上向き_目_普通目.png": [],
+      "上向き/差分_頭_上向き_眉_困り眉.png": [],
+      "上向き/差分_頭_上向き_眉_怒り眉2.png": [],
+      "上向き/差分_頭_上向き_眉_怒り眉.png": [],
+      "上向き/差分_頭_上向き_眉_上がり眉.png": [],
+      "上向き/差分_頭_上向き_眉_基本眉.png": [],
+      "上向き/差分_頭_上向き_汗.png": [],
+      "上向き/差分_頭_上向き_涙.png": [],
+      "差分_頭_正面向き_頭.png": [],
+      "差分_頭_正面向き_枝豆_枝豆萎え.png": [],
+      "差分_頭_正面向き_枝豆_枝豆通常.png": [],
+      "差分_頭_正面向き_顔色_青ざめ.png": [],
+      "差分_頭_正面向き_顔色_赤面.png": [],
+      "差分_頭_正面向き_顔色_ほっぺ赤め.png": [],
+      "差分_頭_正面向き_顔色_ほっぺ基本.png": [],
+      "差分_頭_正面向き_口_うへえ.png": [],
+      "差分_頭_正面向き_口_むくー.png": [],
+      "差分_頭_正面向き_口_にやり.png": [],
+      "差分_頭_正面向き_口_うわー.png": [],
+      "差分_頭_正面向き_口_んえー.png": [],
+      "差分_頭_正面向き_口_んー.png": [],
+      "差分_頭_正面向き_口_お.png": [],
+      "差分_頭_正面向き_口_Δ.png": [],
+      "差分_頭_正面向き_口_ん.png": [],
+      "差分_頭_正面向き_口_ほあー.png": [],
+      "差分_頭_正面向き_口_ほあ.png": [],
+      "差分_頭_正面向き_口_ほう.png": [],
+      "差分_頭_正面向き_口_むふ.png": [],
+      "差分_頭_正面向き_目_＞＜.png": [],
+      "差分_頭_正面向き_目_〇〇.png": [],
+      "差分_頭_正面向き_目_なごみ目.png": [],
+      "差分_頭_正面向き_目_にっこり.png": [],
+      "差分_頭_正面向き_目_閉じ目.png": [],
+      "差分_頭_正面向き_目_見開き.png": [],
+      "差分_頭_正面向き_目_三白眼←.png": [],
+      "差分_頭_正面向き_目_三白眼→.png": [],
+      "差分_頭_正面向き_目_三白眼.png": [],
+      "差分_頭_正面向き_目_ジト目←.png": [],
+      "差分_頭_正面向き_目_ジト目→.png": [],
+      "差分_頭_正面向き_目_ジト目.png": [],
+      "差分_頭_正面向き_目_基本目←.png": [],
+      "差分_頭_正面向き_目_基本目→.png": [],
+      "差分_頭_正面向き_目_基本目.png": [],
+      "差分_頭_正面向き_眉_困り眉.png": [],
+      "差分_頭_正面向き_眉_怒り眉2.png": [],
+      "差分_頭_正面向き_眉_怒り眉.png": [],
+      "差分_頭_正面向き_眉_上がり眉.png": [],
+      "差分_頭_正面向き_眉_基本眉.png": [],
+      "差分_頭_正面向き_汗.png": [],
+      "差分_頭_正面向き_涙.png": []
+    },
+    "forbids": {
+      "差分_体_体前傾.png": [],
+      "差分_体_体直立.png": [],
+      "差分_右腕_(非表示).png": [],
+      "差分_右腕_下.png": [],
+      "差分_右腕_斜め下.png": [],
+      "差分_右腕_横.png": [],
+      "差分_右腕_指さし横.png": [],
+      "差分_右腕_手を挙げる.png": [],
+      "差分_右腕_指さし上.png": [],
+      "差分_右腕_チョップ.png": [],
+      "差分_右腕_口元.png": [],
+      "差分_右腕_ポケット(前傾用).png": [],
+      "差分_右腕_ポケット(直立用).png": [],
+      "差分_右腕_基本(直立用).png": [],
+      "差分_左腕_腕組み(右腕は非表示に).png": [
+        "category:右腕"
+      ],
+      "差分_左腕_下.png": [],
+      "差分_左腕_斜め下.png": [],
+      "差分_左腕_横.png": [],
+      "差分_左腕_手を挙げる.png": [],
+      "差分_左腕_あごに指.png": [],
+      "差分_左腕_ぐっ.png": [],
+      "差分_左腕_口元.png": [],
+      "差分_左腕_ポケット.png": [],
+      "差分_左腕_基本.png": [],
+      "上向き/差分_頭_上向き_頭.png": [],
+      "上向き/差分_頭_上向き_枝豆_枝豆萎え.png": [],
+      "上向き/差分_頭_上向き_枝豆_枝豆上げ.png": [],
+      "上向き/差分_頭_上向き_枝豆_枝豆通常.png": [],
+      "上向き/差分_頭_上向き_顔色_青ざめ.png": [],
+      "上向き/差分_頭_上向き_顔色_赤面.png": [],
+      "上向き/差分_頭_上向き_顔色_ほっぺ赤め.png": [],
+      "上向き/差分_頭_上向き_顔色_ほっぺ基本.png": [],
+      "上向き/差分_頭_上向き_口_うへー.png": [],
+      "上向き/差分_頭_上向き_口_むくー.png": [],
+      "上向き/差分_頭_上向き_口_にやり.png": [],
+      "上向き/差分_頭_上向き_口_うわー.png": [],
+      "上向き/差分_頭_上向き_口_んえー.png": [],
+      "上向き/差分_頭_上向き_口_んー.png": [],
+      "上向き/差分_頭_上向き_口_お.png": [],
+      "上向き/差分_頭_上向き_口_Δ.png": [],
+      "上向き/差分_頭_上向き_口_ん.png": [],
+      "上向き/差分_頭_上向き_口_ほあー.png": [],
+      "上向き/差分_頭_上向き_口_ほあ.png": [],
+      "上向き/差分_頭_上向き_口_ほう.png": [],
+      "上向き/差分_頭_上向き_口_むふ.png": [],
+      "上向き/差分_頭_上向き_目_＞＜.png": [],
+      "上向き/差分_頭_上向き_目_〇〇.png": [],
+      "上向き/差分_頭_上向き_目_なごみ目.png": [],
+      "上向き/差分_頭_上向き_目_にっこり.png": [],
+      "上向き/差分_頭_上向き_目_閉じ目.png": [],
+      "上向き/差分_頭_上向き_目_見開き.png": [],
+      "上向き/差分_頭_上向き_目_三白眼↑.png": [],
+      "上向き/差分_頭_上向き_目_ジト目.png": [],
+      "上向き/差分_頭_上向き_目_普通目↑.png": [],
+      "上向き/差分_頭_上向き_目_普通目.png": [],
+      "上向き/差分_頭_上向き_眉_困り眉.png": [],
+      "上向き/差分_頭_上向き_眉_怒り眉2.png": [],
+      "上向き/差分_頭_上向き_眉_怒り眉.png": [],
+      "上向き/差分_頭_上向き_眉_上がり眉.png": [],
+      "上向き/差分_頭_上向き_眉_基本眉.png": [],
+      "上向き/差分_頭_上向き_汗.png": [],
+      "上向き/差分_頭_上向き_涙.png": [],
+      "差分_頭_正面向き_頭.png": [],
+      "差分_頭_正面向き_枝豆_枝豆萎え.png": [],
+      "差分_頭_正面向き_枝豆_枝豆通常.png": [],
+      "差分_頭_正面向き_顔色_青ざめ.png": [],
+      "差分_頭_正面向き_顔色_赤面.png": [],
+      "差分_頭_正面向き_顔色_ほっぺ赤め.png": [],
+      "差分_頭_正面向き_顔色_ほっぺ基本.png": [],
+      "差分_頭_正面向き_口_うへえ.png": [],
+      "差分_頭_正面向き_口_むくー.png": [],
+      "差分_頭_正面向き_口_にやり.png": [],
+      "差分_頭_正面向き_口_うわー.png": [],
+      "差分_頭_正面向き_口_んえー.png": [],
+      "差分_頭_正面向き_口_んー.png": [],
+      "差分_頭_正面向き_口_お.png": [],
+      "差分_頭_正面向き_口_Δ.png": [],
+      "差分_頭_正面向き_口_ん.png": [],
+      "差分_頭_正面向き_口_ほあー.png": [],
+      "差分_頭_正面向き_口_ほあ.png": [],
+      "差分_頭_正面向き_口_ほう.png": [],
+      "差分_頭_正面向き_口_むふ.png": [],
+      "差分_頭_正面向き_目_＞＜.png": [],
+      "差分_頭_正面向き_目_〇〇.png": [],
+      "差分_頭_正面向き_目_なごみ目.png": [],
+      "差分_頭_正面向き_目_にっこり.png": [],
+      "差分_頭_正面向き_目_閉じ目.png": [],
+      "差分_頭_正面向き_目_見開き.png": [],
+      "差分_頭_正面向き_目_三白眼←.png": [],
+      "差分_頭_正面向き_目_三白眼→.png": [],
+      "差分_頭_正面向き_目_三白眼.png": [],
+      "差分_頭_正面向き_目_ジト目←.png": [],
+      "差分_頭_正面向き_目_ジト目→.png": [],
+      "差分_頭_正面向き_目_ジト目.png": [],
+      "差分_頭_正面向き_目_基本目←.png": [],
+      "差分_頭_正面向き_目_基本目→.png": [],
+      "差分_頭_正面向き_目_基本目.png": [],
+      "差分_頭_正面向き_眉_困り眉.png": [],
+      "差分_頭_正面向き_眉_怒り眉2.png": [],
+      "差分_頭_正面向き_眉_怒り眉.png": [],
+      "差分_頭_正面向き_眉_上がり眉.png": [],
+      "差分_頭_正面向き_眉_基本眉.png": [],
+      "差分_頭_正面向き_汗.png": [],
+      "差分_頭_正面向き_涙.png": []
+    }
   }
 }
