@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-27T04:04:57.695466+00:00",
+  "updated_at": "2026-10-27T06:45:07.252161+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -29,7 +29,7 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「レイズが最後に大量得点して、点差が9点まで縮まった。」"
+          "「初優勝のトロフィーまであと1勝!!ミルウォーキーでは1957年のブレーブス以来だ!」"
         ]
       ],
       "japanese": [],
@@ -39,11 +39,11 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "レイズが最後に大量得点して、点差が9点まで縮まった。",
-        "text": "Rays scored a big run at the end to cut the lead down to 9",
+        "said": "初優勝のトロフィーまであと1勝!!ミルウォーキーでは1957年のブレーブス以来だ!",
+        "text": "1 more win to that FIRST trophy! First in Milwaukee since 1957 Braves",
         "url": "https://www.youtube.com/watch?v=b7BE1gwgv64",
-        "likes": 72,
-        "at": "2026-10-27T03:42:25Z",
+        "likes": 32,
+        "at": "2026-10-27T03:41:21Z",
         "source": "MLB公式ハイライトのコメント"
       },
       "headline": null,
@@ -123,6 +123,10 @@
       "jp_first": false,
       "next_team_id": 158,
       "finished_at": "2026-10-27T03:10:16.219000+00:00",
+      "next_game_jp": {
+        "day": "10月28日",
+        "game": 4
+      },
       "v3": {
         "who": "ブリュワーズ　ワールドシリーズ第3戦",
         "big": "10",
@@ -136,7 +140,7 @@
             "win": true
           }
         ],
-        "ticker": "ブリュワーズ 10対1 レイズ　敵地で勝利　シリーズはブリュワーズの3勝0敗"
+        "ticker": "次の試合　日本時間10月28日　ワールドシリーズ第4戦"
       }
     }
   ]
