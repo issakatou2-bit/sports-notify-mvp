@@ -45,9 +45,16 @@ def eligible(data, ledger, *, goal_short=False):
             (goal_involvement(data) if goal_short else not goal_involvement(data)))
 
 
+def mirror_receipt(game_id, entry):
+    from publication_writer import mirror_documents
+    mirror_documents({'soccer_flash_receipts': {str(game_id): entry}}, root=ROOT)
+
+
 if __name__ == '__main__':
     import argparse
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--sync', action='store_true')
     if ap.parse_args().sync:
         (ROOT/PATH).write_text(json.dumps(load(refresh=True), ensure_ascii=False, indent=2)+'\n', encoding='utf8')
+        from publication_writer import mirror_file
+        mirror_file(ROOT/PATH, root=ROOT)

@@ -670,6 +670,8 @@ def record_published(topic: str, video_id: str, privacy: str,
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps({"assets": assets}, ensure_ascii=False, indent=2),
                  encoding="utf-8")
+    from publication_writer import mirror_documents, root_for
+    mirror_documents({'published_assets': {'assets': {topic: assets[topic]}}}, root=root_for(p))
     print(f"[info] 投稿済みとして記録しました: {topic} -> {path}")
 
 
@@ -863,6 +865,8 @@ def record_video(kind: str, date_key: str, video_id: str,
     data.setdefault(kind, {})[date_key] = entry
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    from publication_writer import mirror_documents, root_for
+    mirror_documents({'published_videos': {kind: {date_key: entry}}}, root=root_for(p))
     print(f"[info] 動画を記録しました: {kind}/{date_key} -> {path}")
 
 
