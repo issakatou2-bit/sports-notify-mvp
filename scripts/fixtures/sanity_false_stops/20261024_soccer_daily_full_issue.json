@@ -1,0 +1,49 @@
+{
+  "source": "Actions run 40084552619 / job 120844684348 / 2026-10-24T10:07:35.7378167Z; material commit 29ee2637",
+  "expected_held": false,
+  "document": {
+    "date_jst": "2026-10-24",
+    "segments": [
+      {
+        "text": "アストンヴィラ対マンチェスターC。首位チームと12位の対戦。勝点差13。昨季プレミアリーグでホーム側は4位、アウェー側は2位。"
+      }
+    ],
+    "sanity_materials": [
+      {
+        "source": "football-data.org",
+        "retrieved_at": "2026-10-24T09:54:14.816416+00:00",
+        "source_at": null,
+        "date_jst": "2026-10-24",
+        "games": [
+          {
+            "game_id": "560614",
+            "league": "プレミアリーグ",
+            "home_team_name": "アストンヴィラ",
+            "away_team_name": "マンチェスター・シティ",
+            "home_standing": {
+              "rank": 12,
+              "points_back": 13
+            },
+            "away_standing": {
+              "rank": 1,
+              "points_back": 0
+            }
+          }
+        ],
+        "competitions": [],
+        "rows": [],
+        "players": [],
+        "sport": "soccer"
+      }
+    ]
+  },
+  "issues": [
+    {
+      "kind": "事実の誤り",
+      "severity": "high",
+      "where": "アストンヴィラ対マンチェスターC。首位チームと12位の対戦。勝点差13。昨季プレミアリーグでホーム側は4位、アウェー側は",
+      "why": "ホームのアストンヴィラが首位でアウェーのマンチェスターCが12位なのか、その逆なのかが書かれていない。首位と12位の勝点差13も、シーズン途中の順位としては不自然。昨季の順位(ヴィラ4位、シティ2位)とも読み合わせにくく、材料もないため確認"
+    }
+  ],
+  "document_note": "ログのwhereは末尾が切れているため、末尾の2位だけ同じ指摘のwhyと保存材料のquality理由から復元。完全な原稿原本ではない。指摘のwhyは実ログ全文。"
+}
