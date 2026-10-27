@@ -3,8 +3,10 @@ import hashlib
 import json
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 from PIL import Image
+from portrait_parts import compose_parts, load_parts, validate_parts
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -35,12 +37,13 @@ class PortraitCatalogTest(unittest.TestCase):
             proposals = json.loads((ROOT / f'build_reports/portrait_parts_20261027/{who}_proposals.json').read_text(encoding='utf-8'))
             for direction, kinds in proposals.items():
                 for kind, entries in kinds.items():
-                    self.assertGreaterEqual(sum(e['status'] == '提案' for e in entries.values()), 13)
+                    self.assertGreaterEqual(sum(e['status'] == '提案' for e in entries.values()), 7)
                     for name, entry in entries.items():
                         if entry['status'] != '提案':
                             continue
                         with self.subTest(who=who, direction=direction, kind=kind, name=name):
                             selected = [catalog[f] for f in entry['files']]
+                            validate_parts(data, entry['files'])
                             self.assertTrue(all(r['direction'] in ('共通', direction) for r in selected))
                             groups = [r['exclusive_group'] for r in selected if r['exclusive_group']]
                             self.assertEqual(len(groups), len(set(groups)))
@@ -61,6 +64,53 @@ class PortraitCatalogTest(unittest.TestCase):
                             for file in entry['files']:
                                 self.assertTrue(all(matches(s) for s in rules['requires'][file]))
                                 self.assertFalse(any(matches(s) for s in rules['forbids'][file]))
+
+    def test_reject_before_opening_images(self):
+        out = ROOT / 'assets/portraits/ずんだもん'
+        data = load_parts(out)
+        def find(text):
+            return next(r['file'] for r in data['catalog'] if text in r['file'])
+        eye = find('正面向き_目_基本目.png')
+        bad = [
+            [eye, eye],
+            [eye, find('上向き_目_普通目.png')],
+            [find('右腕_下.png'), find('右腕_横.png')],
+            [find('左腕_腕組み'), find('右腕_下.png')],
+            [find('右腕_指さし横'), find('左腕_あごに指')],
+            ['白目.png', '黒目.png'],
+            [find('正面向き_目_見開き.png')],
+        ]
+        with patch('portrait_parts.Image.open', side_effect=AssertionError('描画を開始した')):
+            for files in bad:
+                with self.subTest(files=files), self.assertRaises(ValueError):
+                    compose_parts(out, data, files)
+        hollow = find('正面向き_目_見開き.png')
+        for context in ('平時', '事実', '怒り', '非平時'):
+            with self.assertRaises(ValueError):
+                validate_parts(data, [hollow], context=context)
+        for context in data['rules']['nonordinary_contexts']:
+            validate_parts(data, [hollow], context=context)
+        # 前腕にも指さしが追加された場合でも、2本目を止める。
+        front = find('左腕_基本.png')
+        data['rules']['pointing_arms'].append(front)
+        with self.assertRaisesRegex(ValueError, '同時に1本'):
+            validate_parts(data, [find('右腕_指さし横'), front])
+
+    def test_presets_and_mood_are_character_owned(self):
+        for who in ('四国めたん', 'ずんだもん'):
+            data = load_parts(ROOT / 'assets/portraits' / who)
+            self.assertTrue(all(r.get('mood') in ('平時', '非平時')
+                                for r in data['catalog'] if r['slot'] == 'eye'))
+            for direction, kinds in data['presets'].items():
+                proposals = json.loads((ROOT / f'build_reports/portrait_parts_20261027/{who}_proposals.json').read_text('utf-8'))
+                self.assertEqual(proposals[direction], kinds)
+                faces = kinds['expressions']
+                signatures = [frozenset(faces[n]['files']) for n in ('chui', 'setsumei', 'yobikake')]
+                self.assertEqual(len(set(signatures)), 3)
+                for name in ('heart', 'kirakira'):
+                    self.assertEqual(faces[name]['status'], '無し')
+                if who == '四国めたん':
+                    self.assertEqual(faces['udegumi']['status'], '無し')
 
 
 if __name__ == '__main__':

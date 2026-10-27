@@ -93,7 +93,26 @@ APSCと同じ `eye/brow/mouth/cheek/fx/arm_front/arm_back/head/outfit` にも、
 ポニテ用の髪は元座標のまま保存しており、作者の注記通り回転・移動が必要。
 
 再生成は `python scripts/export_all_portrait_parts.py --source <PSDディレクトリ>`。
-一覧だけなら同じコマンドに `--review-only` を追加。psd-tools 1.18で抽出。
+一覧だけなら `python scripts/export_all_portrait_parts.py --review-only`（PSD不要）。psd-tools 1.18で抽出。
+
+### APSCと共通の部位名・組合せ（10/27追記）
+
+`eye/brow/mouth/cheek/fx/arm_front/arm_back/head/outfit` は各人物のparts.jsonの索引。
+値はキャラごとに異なるため、そのJSONから選ぶ。headは正面/上向きの系統、
+outfitは体・服、前腕/奥腕はPSDの描画順（左腕/右腕）。小物はprop。
+上向き/parts.jsonは顔だけの索引。共通の体・腕を含む全身には親のparts.jsonを使う。
+
+表情・ポーズの値もparts.jsonの`presets`が正本。報告用のproposals.jsonはその写し。
+一覧生成器にキャラ別の部品名・表情の値は持たせない。
+`portrait_parts.compose_parts(folder, data, files, context='平時')` はPNGを開く前に
+JSONのrulesで向き混在・同部位重複・必要部品・禁止部品・腕の組を検査し、違反をValueErrorで止める。
+白目と黒目は合成済みの目セットだけを選ぶ。指さしは同時1本、両手は待機＋1動作か同じ意味の組だけ。
+腕組みでは奥腕の描画を外す（透明な非表示部品は可）。
+
+目のcatalogに`mood`を持つ。ハイライトのない虚ろな黒目は`非平時`とし、
+異変・不穏・呆然・夢うつつ・催眠/洗脳ネタ・不気味のcontextだけで使う。
+普段の感情と事実の行では使わない（本人10/27）。閉じ目や白目だけの記号目は別。
+実動画の既存描画への接続は今回行っていない。
 表情・ポーズの提案と一覧は `build_reports/portrait_parts_20261027/`、
 判断・確認結果は `build_reports/portrait_parts_20261027.md` を参照。
 本番の長編・ショートの描画にはまだ接続していない。

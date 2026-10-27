@@ -50,7 +50,8 @@ def add_compatibility_keys(data):
              '体・服': 'outfit', '小物': 'prop'}
     for slot in slots.values():
         data[slot] = {}
-    rules = {'exclusive_groups': {}, 'directions': {}, 'requires': {}, 'forbids': {}}
+    rules = dict(data.get('rules', {}))
+    rules.update(exclusive_groups={}, directions={}, requires={}, forbids={})
     for r in data['catalog']:
         r['slot'] = slots[r['category']]
         data[r['slot']].setdefault(r['direction'], []).append(r['file'])
@@ -75,6 +76,16 @@ def legacy_body_sources(source_file):
                 result.append('/'.join(path))
     walk(PSDImage.open(source_file))
     return result
+
+
+def write_upper(out, data):
+    upper = dict(size=data['size'], origin=[0, 0],
+                 catalog=[dict(r, file=Path(r['file']).name) for r in data['catalog'] if r['direction'] == '上向き'],
+                 common_catalog='../parts.json', constraints=data['constraints'],
+                 schema_version=data['schema_version'],
+                 rules={k: data['rules'][k] for k in ('nonordinary_contexts', 'max_pointing_arms')})
+    upper['rules'].update(pointing_arms=[], allowed_arm_pairs=[])
+    write_json(out / '上向き/parts.json', upper)
 
 
 def export(who, source):
@@ -182,7 +193,14 @@ def export(who, source):
         legacy_metadata[name] = dict(category=category, source_layers=paths,
                                      meaning=meaning(paths[0]), direction='正面' if who == 'ずんだもん' else '共通',
                                      sha256=old[name], exclusive_group=f'旧:{category}')
-    legacy.update(schema_version=2, catalog=records, legacy_metadata=legacy_metadata,
+    # 再抽出でもキャラJSONで確認済みの用途指定を保持する。
+    previous = {r['file']: r for r in legacy.get('catalog', [])}
+    for record in records:
+        if record['category'] == '目':
+            for key in ('mood', 'mood_note'):
+                if key in previous.get(record['file'], {}):
+                    record[key] = previous[record['file']][key]
+    legacy.update(schema_version=3, catalog=records, legacy_metadata=legacy_metadata,
                   source=dict(file=f'{who}.psd', sha256=digest(source / f'{who}.psd'),
                               leaf_count=len(leaves), covered_leaf_count=len(covered)),
                   composition=dict(origin=[0, 0], order='catalog.orderの昇順（PSDの下から上）',
@@ -198,9 +216,7 @@ def export(who, source):
     enrich_catalog(records)
     write_json(out / 'parts.json', legacy)
     if who == 'ずんだもん':
-        write_json(out / '上向き/parts.json', dict(size=legacy['size'], origin=[0, 0],
-                   catalog=[dict(r, file=Path(r['file']).name) for r in records if r['direction'] == '上向き'],
-                   common_catalog='../parts.json', constraints=legacy['constraints']))
+        write_upper(out, legacy)
     assert all(digest(out / n) == h for n, h in old.items())
     return out, legacy
 
@@ -254,89 +270,17 @@ def sheet(items, title, path, face=False):
 
 
 def proposals(out, data):
+    from portrait_parts import compose_parts
     records = data['catalog']
     who = out.name
-    is_z = who == 'ずんだもん'
-    all_proposals = {}
-    def pick(suffix, direction='共通'):
-        matches = [r for r in records if r['direction'] == direction and any(('/' + s).endswith(suffix) for s in r['source_layers'])]
-        assert len(matches) == 1, (who, suffix, direction, len(matches))
-        return matches[0]
-
-    def compose(selected):
-        im = Image.new('RGBA', data['size'])
-        assert len({r['file'] for r in selected}) == len(selected)
-        for r in sorted(selected, key=lambda r: r['order']):
-            im = Image.alpha_composite(im, Image.open(out / r['file']).convert('RGBA'))
-        return im
-
-    for direction in (['正面', '上向き'] if is_z else ['共通']):
-        def face(group, name):
-            return pick('/' + ('*顔色' if direction == '上向き' and group == '顔色' else '!' + group) + '/*' + name, direction)
-        if is_z:
-            base = [pick('!体/*体直立'), pick('/!頭', direction), face('枝豆', '枝豆通常')]
-            default_eye = '基本目' if direction == '正面' else '普通目'
-            default_brow, default_mouth, default_color = '基本眉', 'ん', 'ほっぺ基本'
-            normal_arms = [pick('!右腕/*基本(直立用)'), pick('!左腕/*基本')]
-        else:
-            base = [pick('ツインドリル右'), pick('ツインドリル左'), pick('*白ロリ服/!体'),
-                    pick('!前髪もみあげ'), pick('頭部アクセサリ/髪留めハート'), pick('頭部アクセサリ/ヘッドドレス')]
-            default_eye, default_brow, default_mouth, default_color = '見上げ', 'ごきげん', '▽', '普通2'
-            normal_arms = [pick('!右腕/*普通'), pick('!左腕/*普通')]
-        normal_face = [face('目', default_eye), face('眉', default_brow), face('口', default_mouth), face('顔色', default_color)]
-        # 名前はAPSCと一致。理由の台詞は使用時に事実に合わせて記述する。
-        configs = {
-            'heart': None, 'kirakira': None, 'konran': None if is_z else ('ぐるぐる', 'こまり', 'わあー', '普通2', None),
-            'pinch': ('見開き' if is_z else '○○', '困り眉' if is_z else 'こまり', 'うわー' if is_z else 'わあー', '青ざめ', None),
-            'tere': ('にっこり' if is_z else '目閉じ', default_brow, 'にやり' if is_z else 'ほほえみ', 'ほっぺ赤め' if is_z else '赤面', None),
-            'aseri': (default_eye, '困り眉' if is_z else 'こまり', 'お', default_color, '汗'),
-            'zannen': ('閉じ目' if is_z else '目閉じ', '困り眉' if is_z else 'こまり', 'んー', default_color, None),
-            'chui': (default_eye, '怒り眉' if is_z else 'ややおこ', 'お', default_color, None),
-            'gutsu': ('にっこり' if is_z else '><', default_brow, 'むふ' if is_z else 'ほほえみ', default_color, None),
-            'yobikake': (default_eye, '上がり眉' if is_z else 'ごきげん', 'お', default_color, None),
-            'setsumei': (default_eye, default_brow, 'お', default_color, None),
-            'udegumi': (default_eye, default_brow, default_mouth, default_color, None) if is_z else None,
-            'jishin': ('ジト目' if is_z else '見上げ', default_brow, 'にやり', default_color, None),
-            'neutral': (default_eye, default_brow, default_mouth, default_color, None),
-            'smile': ('にっこり' if is_z else '目閉じ', default_brow, 'にやり' if is_z else 'ほほえみ', default_color, None),
-            'surprise': ('見開き' if is_z else '○○', '上がり眉' if is_z else 'ごきげん', 'うわー' if is_z else 'わあー', default_color, None),
-            'sad': ('閉じ目' if is_z else '目閉じ', '困り眉' if is_z else 'こまり', 'んー', default_color, '涙')}
-        faces, poses, entries = [], [], {'expressions': {}, 'poses': {}}
-        for name, cfg in configs.items():
-            if cfg is None:
-                entries['expressions'][name] = {'status': '無し', 'reason': '該当する目または腕の差分がPSDに無い'}
-                continue
-            eye, brow, mouth, color, effect = cfg
-            chosen = [face('目', eye), face('眉', brow), face('口', mouth), face('顔色', color)]
-            if effect:
-                chosen.append(pick(effect, direction))
-            arms = [pick('!左腕/*腕組み(右腕は非表示に)')] if name == 'udegumi' else normal_arms
-            selected = base + chosen + arms
-            entries['expressions'][name] = {'status': '提案', 'files': [r['file'] for r in selected],
-                                            'rule': '反応の理由を直後の台詞で述べる'}
-            faces.append((name, compose(selected)))
-        if is_z:
-            pairs = [('neutral', '*基本(直立用)', '*基本'), ('setsumei', '*指さし横', '*横'),
-                     ('yobikake', '*手を挙げる', '*基本'), ('gutsu', '*基本(直立用)', '*ぐっ'),
-                     ('jishin', '*ポケット(直立用)', '*ポケット'), ('thinking', '*口元', '*あごに指'),
-                     ('both_up', '*手を挙げる', '*手を挙げる'), ('point_up', '*指さし上', '*基本'),
-                     ('chui', '*チョップ', '*基本'), ('down', '*下', '*下'),
-                     ('diagonal', '*斜め下', '*斜め下'), ('whisper', '*口元', '*口元'),
-                     ('udegumi', None, '*腕組み(右腕は非表示に)'), ('lean', '*ポケット(前傾用)', '*ポケット')]
-        else:
-            pairs = [('neutral', '*普通', '*普通'), ('setsumei', '*指差す', '*マイク'),
-                     ('yobikake', '*手をかざす', '*普通'), ('thinking', '*普通', '*口元に指'),
-                     ('whisper', '*普通', '*ひそひそ'), ('hold', '*普通', '*抱える'),
-                     ('point', '*指差す', '*普通'), ('point_think', '*指差す', '*口元に指'),
-                     ('point_whisper', '*指差す', '*ひそひそ'), ('point_hold', '*指差す', '*抱える'),
-                     ('raise_mic', '*手をかざす', '*マイク'), ('raise_think', '*手をかざす', '*口元に指'),
-                     ('raise_whisper', '*手をかざす', '*ひそひそ'), ('raise_hold', '*手をかざす', '*抱える')]
-        for name, right, left in pairs:
-            selected = base + normal_face + ([pick('!右腕/' + right)] if right else []) + [pick('!左腕/' + left)]
-            if name == 'lean':
-                selected = [r for r in selected if not r['file'].endswith('体直立.png')] + [pick('!体/*体前傾')]
-            entries['poses'][name] = {'status': '提案', 'files': [r['file'] for r in selected]}
-            poses.append((name, compose(selected)))
+    all_proposals = data['presets']
+    for direction, entries in all_proposals.items():
+        faces, poses = [], []
+        for kind, target in [('expressions', faces), ('poses', poses)]:
+            for name, entry in entries[kind].items():
+                if entry['status'] == '提案':
+                    target.append((name, compose_parts(out, data, entry['files'],
+                                   context=entry.get('context', '平時'))))
         sheet(faces, f'{who} {direction} 表情案', REPORT / f'{who}_{direction}_expressions.png', face=True)
         sheet(poses, f'{who} {direction} ポーズ案（PSDの左右）', REPORT / f'{who}_{direction}_poses.png')
         # 全部品の位置・形を確認するための接触表。葉の欠落はJSONで照合。
@@ -354,7 +298,7 @@ def proposals(out, data):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--source', type=Path, required=True)
+    parser.add_argument('--source', type=Path)
     parser.add_argument('--review-only', action='store_true', help='既存catalogから一覧だけを再生成')
     args = parser.parse_args()
     REPORT.mkdir(parents=True, exist_ok=True)
@@ -362,14 +306,13 @@ def main():
         if args.review_only:
             out = ROOT / 'assets/portraits' / who
             data = json.loads((out / 'parts.json').read_text(encoding='utf-8'))
-            data['legacy_metadata']['体.png']['source_layers'] = legacy_body_sources(args.source / f'{who}.psd')
             enrich_catalog(data['catalog'])
             write_json(out / 'parts.json', data)
             if who == 'ずんだもん':
-                upper = json.loads((out / '上向き/parts.json').read_text(encoding='utf-8'))
-                upper['catalog'] = [dict(r, file=Path(r['file']).name) for r in data['catalog'] if r['direction'] == '上向き']
-                write_json(out / '上向き/parts.json', upper)
+                write_upper(out, data)
         else:
+            if args.source is None:
+                parser.error('部品の抽出には--sourceが必要')
             out, data = export(who, args.source)
         proposals(out, data)
         print(who, len(data['catalog']), 'parts; all leaves covered; legacy hashes unchanged', flush=True)
