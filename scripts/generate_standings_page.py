@@ -206,8 +206,7 @@ def render_page(data: dict, season: int, now: datetime) -> str:
         title=f"{season} MLB 順位表（最新）｜ア・リーグ ナ・リーグ 地区別・ワイルドカード",
         description=html.escape(desc), canonical=f"{ga.SITE_URL}standings.html", root="./",
         style=ga.STYLE + STYLE_EXTRA,
-        extra_head='<script src="/site-theme.js"></script><link rel="stylesheet" href="/site-theme.css">'
-                   '<link rel="icon" href="/favicon.ico" sizes="any">',
+        extra_head='<link rel="icon" href="/favicon.ico" sizes="any">',
     )
     body = [head, '<main><header class="std-hero"><p class="std-kicker">MLB公式データで現在の順位を確認</p>',
             f'<h1>{season} MLB 順位表（最新）</h1>',

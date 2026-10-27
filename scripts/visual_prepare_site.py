@@ -42,7 +42,7 @@ def main():
         fixture=ROOT/'scripts/fixtures/visual/standings-data.json'
         data={int(k):v for k,v in json.loads(fixture.read_text(encoding='utf-8')).items()}
         page=standings.render_page(data,2026,datetime(2026,10,27,tzinfo=timezone.utc))
-        page=page.replace('<body>','<body><p style="background:#ffe08a;padding:12px">見た目検査用の架空データ。本番順位ではありません。</p>')
+        page=page.replace('<body>','<body><p style="background:#ffe08a;color:#15242d;padding:12px">見た目検査用の架空データ。本番順位ではありません。</p>')
         (out/'standings.html').write_text(page,encoding='utf-8')
         records.append({'script':'standings-fixture','code':0,'log':'explicit synthetic test data; not official standings'})
     # Saved data, with provenance; do not pretend these are current production values.
@@ -52,7 +52,7 @@ def main():
         source = ROOT / 'data' / name
         if source.exists(): shutil.copy2(source, out/name)
     (out/'visual-build.json').write_text(json.dumps({'source': subprocess.run(['git','rev-parse','HEAD'],cwd=ROOT,capture_output=True,text=True).stdout.strip(),
-        'games_source': str(latest.relative_to(ROOT)), 'generators': records,
+        'games_source': latest.relative_to(ROOT).as_posix(), 'generators': records,
         'scope': 'local saved-data rehearsal, external requests blocked'},ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(records,ensure_ascii=False))
     return int(any(r['code'] for r in records))
