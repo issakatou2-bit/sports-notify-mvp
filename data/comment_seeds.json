@@ -1,5 +1,12 @@
 {
-  "updated_at": "2026-10-27T01:31:41.002176+00:00",
+  "updated_at": "2026-10-27T02:18:09.833531+00:00",
   "status": "fetch_failed",
-  "seeds": []
+  "seeds": [],
+  "reason": {
+    "call": "videos",
+    "page": 1,
+    "exception_type": "HTTPError",
+    "http_status": 403,
+    "api_reason": "quotaExceeded"
+  }
 }
