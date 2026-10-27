@@ -22,3 +22,15 @@ inventoryのapproved:falseで不合格として記録し、比較コマンドの
 
 判定・元画像寸法はinventory.json、詳細はbuild_reports/visual_first_pass_20261027.md。
 次回は同じ撮影条件で比較し、review.jsonのdifferenceとverdictを埋めてから必要な画像だけ更新する。
+
+## 10/27 配色の修正後
+
+初版のapproved:false 126枚は再撮影へ差し替えた。旧/新の完全一致組を28組にまとめ、
+比較一覧4枚を自分で開いて配色・遷移領域を確認した。対応と撮影元・旧新の指紋は
+`build_reports/visual_fixes_20261027/baseline-replacements.{md,json}`。
+JPEGは共有コピーの `build/visual-baseline/` のみ。旧版は作業枝の
+`build/visual-fixes/baseline-before/` に保存し、リポジトリには入れない。
+残る611枚の判定は今回変更していない。126枚についても外部埋込・全字・全フレームまでの合格ではない。
+
+サッカーの締めはv6優先、v4も共通配置を修正。両方の4場面一覧を目視した記録は
+`build_reports/visual_fixes_20261027.md`。完成動画の合格基準は今回も作っていない。

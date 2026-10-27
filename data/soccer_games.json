@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-10-26T09:53:54.895880+00:00",
+  "generated_at": "2026-10-27T09:54:03.504237+00:00",
   "games": [
     {
-      "game_id": "559648",
-      "league": "リーグ・アン",
-      "home_team_id": "FL1-524",
-      "away_team_id": "FL1-523",
-      "home_team_name": "パリ・サンジェルマン",
-      "away_team_name": "リヨン",
+      "game_id": "558555",
+      "league": "セリエA",
+      "home_team_id": "SA-100",
+      "away_team_id": "SA-104",
+      "home_team_name": "ローマ",
+      "away_team_name": "カリアリ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "リヨン vs パリ・サンジェルマン",
+      "matchup": "カリアリ vs ローマ",
       "abbr_matchup": null,
-      "start_time_jst": "10/27 04:30",
+      "start_time_jst": "10/28 04:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -22,22 +22,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 5,
-        "games_back": 0.7,
+        "rank": 3,
+        "games_back": 1.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 2.0
+        "points_back": 4.0
       },
       "away_standing": {
-        "rank": 4,
-        "games_back": 0.7,
+        "rank": 9,
+        "games_back": 3.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 2.0
+        "points_back": 9.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -47,94 +47,48 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 8,
+      "score": 1,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
       "reasons": [
         {
-          "tag": "quality",
-          "text": "パリ・サンジェルマン の試合",
+          "tag": "jp_team",
+          "text": "カリアリには菅原由勢が所属",
           "weight": 1
         },
         {
           "tag": "quality",
-          "text": "パリ・サンジェルマン（昨季リーグ・アン1位）とリヨン（昨季リーグ・アン4位）",
-          "weight": 3
-        },
-        {
-          "tag": "quality",
-          "text": "パリ・サンジェルマン5位 と リヨン4位",
-          "weight": 1
-        },
-        {
-          "tag": "div",
-          "text": "首位争い、勝ち点差は0",
-          "weight": 3
+          "text": "ローマ（昨季セリエA3位）とカリアリ（昨季セリエA14位）の対戦",
+          "weight": 0
         }
       ],
       "log_notes": [],
-      "ai_summary": "リーグ・アン7試合を消化した現在、首位との勝ち点差が2で並ぶパリ・サンジェルマン(5位)とリヨン(4位)の対戦である。昨季リーグ・アン1位のパリ・サンジェルマンと昨季同4位のリヨンが、【勝ち点差0で競い合う立場】から迎える本試合は、両チームの優勝争いへの歩みを大きく左右する。パリ・サンジェルマンのホームでの戦いぶりと、リヨンの敵地での攻撃力がどこまで機能するかに注目したい。",
-      "notification_hook": "首位と同じ勝ち点差のパリ・サンジェルマンvsリヨン、勝ち点争奪戦",
+      "ai_summary": "昨季セリエA3位のローマが本拠地に迎える敵地訪問のカリアリとの一戦である。現在ローマはリーグ3位で首位と【勝ち点差4】、カリアリは9位で首位との差が9という序盤8試合を消化した段階での立場にある。昨季14位だったカリアリがここまでどの程度まで順位を上げているのか、そして昨季3位の実績を持つローマがどこまで上位を狙えるのかが問われる展開となる。また、カリアリに所属する菅原由勢の活躍の場となるかにも注目したい。",
+      "notification_hook": "昨季3位ローマと14位カリアリの序盤の力関係。菅原由勢の出場は。",
       "fixture_sources": [
         "ESPN",
         "football-data.org"
       ],
-      "espn_event_id": "401876422",
-      "competition_code": "FL1",
-      "start_time_utc": "2026-10-27T04:30:00+09:00",
+      "espn_event_id": "401874780",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-28T04:45:00+09:00",
       "season_players": [],
       "preview_out_names": [],
       "preview_rating": {
-        "score": 35,
+        "score": 10,
         "factors": [
           {
             "key": "competition",
             "points": 10,
-            "evidence": "リーグ・アン"
-          },
-          {
-            "key": "rank",
-            "points": 10,
-            "evidence": {
-              "kind": "rank",
-              "text": "5位パリ・サンジェルマン対4位リヨン、順位差1の直接対決",
-              "ranks": [
-                5,
-                4
-              ],
-              "rank_difference": 1
-            }
-          },
-          {
-            "key": "points_close",
-            "points": 5,
-            "evidence": {
-              "kind": "points",
-              "text": "勝点差0",
-              "gap": 0.0
-            }
-          },
-          {
-            "key": "marquee_home",
-            "points": 10,
-            "evidence": "Paris Saint-Germain FC"
+            "evidence": "セリエA"
           }
         ],
         "interest": {
           "reasons": [
             {
-              "kind": "rank",
-              "text": "5位パリ・サンジェルマン対4位リヨン、順位差1の直接対決",
-              "ranks": [
-                5,
-                4
-              ],
-              "rank_difference": 1
-            },
-            {
               "kind": "points",
-              "text": "勝点差0",
-              "gap": 0.0
+              "text": "勝点差5",
+              "gap": 5.0
             }
           ],
           "player": null
@@ -143,19 +97,19 @@
       }
     },
     {
-      "game_id": "564721",
-      "league": "ラ・リーガ",
-      "home_team_id": "PD-559",
-      "away_team_id": "PD-79",
-      "home_team_name": "セビージャ",
-      "away_team_name": "オサスナ",
+      "game_id": "558557",
+      "league": "セリエA",
+      "home_team_id": "SA-586",
+      "away_team_id": "SA-7397",
+      "home_team_name": "トリノ",
+      "away_team_name": "コモ",
       "home_abbr": null,
       "away_abbr": null,
       "home_color": null,
       "away_color": null,
-      "matchup": "オサスナ vs セビージャ",
+      "matchup": "コモ vs トリノ",
       "abbr_matchup": null,
-      "start_time_jst": "10/27 05:00",
+      "start_time_jst": "10/28 04:45",
       "home_division": null,
       "away_division": null,
       "same_division": false,
@@ -163,22 +117,139 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 6,
-        "games_back": 4.3,
+        "rank": 8,
+        "games_back": 3.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 13.0
+        "points_back": 9.0
       },
       "away_standing": {
-        "rank": 12,
-        "games_back": 5.3,
+        "rank": 5,
+        "games_back": 1.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 16.0
+        "points_back": 5.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "トリノ（昨季セリエA13位）とコモ（昨季セリエA4位）の対戦",
+          "weight": 0
+        },
+        {
+          "tag": "quality",
+          "text": "トリノ8位 と コモ5位",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "昨季セリエA13位のトリノが今季8位まで順位を上げて迎える一戦であり、昨季4位のコモとの【順位の入れ替わり】が注目される。現在トリノは首位との勝ち点差が9、コモは5という状況の中、上位進出を目指す両チームの力関係がどこまで詰まっているかが問われる。本拠地トリノの攻撃陣がコモの守備にどう対応するか、また敵地コモの前線がトリノのディフェンスをどう崩すかといった個々の対面に注目したい。",
+      "notification_hook": "昨季4位コモが今季5位へ、13位トリノが8位へ。立場が逆転した両者の真価が問われる。",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874786",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-28T04:45:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 20,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "セリエA"
+          },
+          {
+            "key": "rank",
+            "points": 10,
+            "evidence": {
+              "kind": "rank",
+              "text": "8位トリノ対5位コモ、順位差3の直接対決",
+              "ranks": [
+                8,
+                5
+              ],
+              "rank_difference": 3
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "rank",
+              "text": "8位トリノ対5位コモ、順位差3の直接対決",
+              "ranks": [
+                8,
+                5
+              ],
+              "rank_difference": 3
+            },
+            {
+              "kind": "points",
+              "text": "勝点差4",
+              "gap": 4.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "558556",
+      "league": "セリエA",
+      "home_team_id": "SA-471",
+      "away_team_id": "SA-110",
+      "home_team_name": "サッスオーロ",
+      "away_team_name": "ラツィオ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ラツィオ vs サッスオーロ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/28 02:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 14,
+        "games_back": 4.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 14.0
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -194,46 +265,37 @@
       "reasons": [
         {
           "tag": "quality",
-          "text": "セビージャ（昨季ラ・リーガ15位）とオサスナ（昨季ラ・リーガ16位）の対戦",
+          "text": "サッスオーロ（昨季セリエA11位）とラツィオ（昨季セリエA9位）の対戦",
           "weight": 0
         }
       ],
       "log_notes": [],
-      "ai_summary": "昨季ラ・リーガでともに下位に沈んだセビージャとオサスナが対戦する。現在セビージャは6位で首位との勝ち点差が13、オサスナは12位で首位との差が16となっており、【両チームとも上位進出に向けた勝ち点の積み重ねが急務】となっている。昨季15位のセビージャが今季どこまで順位を上げられるか、昨季16位のオサスナが浮上を図れるかという、リーグ全体の階級変動を占う一戦になる。セビージャの本拠地での守備の堅さと、オサスナの敵地での得点力がどう機能するかに注目したい。",
-      "notification_hook": "昨季15位と16位の上昇戦。セビージャは首位に勝ち点13差、オサスナは16差。",
+      "ai_summary": "セリエA第8節を迎えた段階で、首位と勝ち点差0で並ぶラツィオが敵地を訪れる。昨季セリエA11位のサッスオーロは現在14位と苦しい状況にあり、【首位グループとの勝ち点差14】を背負う。一方、昨季9位からの飛躍で首位争いを繰り広げるラツィオにとっては、困難な相手との戦いがどのような結果につながるかが、今後のシーズン展開を左右する重要な一戦となる。サッスオーロの底力と、ラツィオの安定性がぶつかる中で、両チームの現在地がどう変わるかに注目したい。",
+      "notification_hook": "首位と並ぶラツィオが、14位サッスオーロの本拠地へ。上位の座は揺らぐか。",
       "fixture_sources": [
         "ESPN",
         "football-data.org"
       ],
-      "espn_event_id": "401882828",
-      "competition_code": "PD",
-      "start_time_utc": "2026-10-27T05:00:00+09:00",
+      "espn_event_id": "401874980",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-28T02:30:00+09:00",
       "season_players": [],
       "preview_out_names": [],
       "preview_rating": {
-        "score": 15,
+        "score": 10,
         "factors": [
           {
             "key": "competition",
             "points": 10,
-            "evidence": "ラ・リーガ"
-          },
-          {
-            "key": "points_close",
-            "points": 5,
-            "evidence": {
-              "kind": "points",
-              "text": "勝点差3",
-              "gap": 3.0
-            }
+            "evidence": "セリエA"
           }
         ],
         "interest": {
           "reasons": [
             {
               "kind": "points",
-              "text": "勝点差3",
-              "gap": 3.0
+              "text": "勝点差14",
+              "gap": 14.0
             }
           ],
           "player": null
@@ -302,7 +364,7 @@
           "assists": 2,
           "minutes": 493,
           "out": false,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -368,7 +430,7 @@
           "assists": 0,
           "minutes": 222,
           "out": false,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -410,7 +472,7 @@
           "assists": 0,
           "minutes": 426,
           "out": false,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         },
         {
@@ -421,7 +483,7 @@
           "assists": 0,
           "minutes": 93,
           "out": false,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -461,7 +523,7 @@
           "assists": 0,
           "minutes": 0,
           "out": true,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -504,7 +566,7 @@
           "assists": 3,
           "minutes": 700,
           "out": false,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         },
         {
@@ -515,7 +577,7 @@
           "assists": 0,
           "minutes": 189,
           "out": true,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -581,7 +643,7 @@
           "assists": 0,
           "minutes": 0,
           "out": false,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -1132,86 +1194,6 @@
       "season_players": []
     },
     {
-      "game_id": "espn-401874980",
-      "espn_event_id": "401874980",
-      "competition_code": "SA",
-      "league": "セリエA",
-      "start_time_utc": "2026-10-27T17:30:00+00:00",
-      "start_time_jst": "10/28 02:30",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "US Sassuolo Calcio",
-      "home_team_id": "espn-3997",
-      "away_team_name": "SS Lazio",
-      "away_team_id": "espn-112",
-      "jp_by_side": {
-        "home": [],
-        "away": []
-      },
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "season_players": []
-    },
-    {
-      "game_id": "espn-401874780",
-      "espn_event_id": "401874780",
-      "competition_code": "SA",
-      "league": "セリエA",
-      "start_time_utc": "2026-10-27T19:45:00+00:00",
-      "start_time_jst": "10/28 04:45",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "AS Roma",
-      "home_team_id": "espn-104",
-      "away_team_name": "Cagliari Calcio",
-      "away_team_id": "espn-2925",
-      "jp_by_side": {
-        "home": [],
-        "away": [
-          "菅原由勢"
-        ]
-      },
-      "home_has_jp": false,
-      "away_has_jp": true,
-      "season_players": []
-    },
-    {
-      "game_id": "espn-401874786",
-      "espn_event_id": "401874786",
-      "competition_code": "SA",
-      "league": "セリエA",
-      "start_time_utc": "2026-10-27T19:45:00+00:00",
-      "start_time_jst": "10/28 04:45",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "Torino FC",
-      "home_team_id": "espn-239",
-      "away_team_name": "Como 1907",
-      "away_team_id": "espn-2572",
-      "jp_by_side": {
-        "home": [],
-        "away": []
-      },
-      "home_has_jp": false,
-      "away_has_jp": false,
-      "season_players": []
-    },
-    {
       "game_id": "espn-401874993",
       "espn_event_id": "401874993",
       "competition_code": "SA",
@@ -1690,6 +1672,32 @@
       "season_players": []
     },
     {
+      "game_id": "espn-401876416",
+      "espn_event_id": "401876416",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-10-30T18:00:00+00:00",
+      "start_time_jst": "10/31 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "OGC Nice",
+      "home_team_id": "espn-2502",
+      "away_team_name": "Stade Rennais FC 1901",
+      "away_team_id": "espn-169",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
       "game_id": "espn-401876420",
       "espn_event_id": "401876420",
       "competition_code": "FL1",
@@ -1714,32 +1722,6 @@
         "away": []
       },
       "home_has_jp": true,
-      "away_has_jp": false,
-      "season_players": []
-    },
-    {
-      "game_id": "espn-401876416",
-      "espn_event_id": "401876416",
-      "competition_code": "FL1",
-      "league": "リーグ・アン",
-      "start_time_utc": "2026-10-31T16:15:00+00:00",
-      "start_time_jst": "11/01 01:15",
-      "is_notable": false,
-      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
-      "home_standing": null,
-      "away_standing": null,
-      "fixture_sources": [
-        "ESPN"
-      ],
-      "home_team_name": "OGC Nice",
-      "home_team_id": "espn-2502",
-      "away_team_name": "Stade Rennais FC 1901",
-      "away_team_id": "espn-169",
-      "jp_by_side": {
-        "home": [],
-        "away": []
-      },
-      "home_has_jp": false,
       "away_has_jp": false,
       "season_players": []
     },
@@ -1902,6 +1884,244 @@
       "season_players": []
     },
     {
+      "game_id": "espn-401915311",
+      "espn_event_id": "401915311",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T17:45:00+00:00",
+      "start_time_jst": "11/04 02:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Galatasaray SK",
+      "home_team_id": "espn-432",
+      "away_team_name": "VfB Stuttgart",
+      "away_team_id": "espn-134",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915310",
+      "espn_event_id": "401915310",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T17:45:00+00:00",
+      "start_time_jst": "11/04 02:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FK Shakhtar Donetsk",
+      "home_team_id": "espn-493",
+      "away_team_name": "Sporting Clube de Portugal",
+      "away_team_id": "espn-2250",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915386",
+      "espn_event_id": "401915386",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Club Atlético de Madrid",
+      "home_team_id": "espn-1068",
+      "away_team_name": "FC Bayern München",
+      "away_team_id": "espn-132",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "伊藤洋輝"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915387",
+      "espn_event_id": "401915387",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Barcelona",
+      "home_team_id": "espn-83",
+      "away_team_name": "Aston Villa FC",
+      "away_team_id": "espn-362",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915384",
+      "espn_event_id": "401915384",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FK Bodø/Glimt",
+      "home_team_id": "espn-2980",
+      "away_team_name": "Lille OSC",
+      "away_team_id": "espn-166",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "上田綺世"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915307",
+      "espn_event_id": "401915307",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Feyenoord Rotterdam",
+      "home_team_id": "espn-142",
+      "away_team_name": "FC Internazionale Milano",
+      "away_team_id": "espn-110",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915385",
+      "espn_event_id": "401915385",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "LASK Linz",
+      "home_team_id": "espn-4411",
+      "away_team_name": "ŠK Slovan Bratislava",
+      "away_team_id": "espn-521",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915308",
+      "espn_event_id": "401915308",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Manchester United FC",
+      "home_team_id": "espn-360",
+      "away_team_name": "AS Roma",
+      "away_team_id": "espn-104",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915309",
+      "espn_event_id": "401915309",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Villarreal CF",
+      "home_team_id": "espn-102",
+      "away_team_name": "Paris Saint-Germain FC",
+      "away_team_id": "espn-160",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
       "game_id": "espn-401921833",
       "espn_event_id": "401921833",
       "competition_code": "EFL",
@@ -1988,7 +2208,7 @@
           "assists": 0,
           "minutes": 0,
           "out": true,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -2055,7 +2275,7 @@
           "assists": 3,
           "minutes": 700,
           "out": false,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         },
         {
@@ -2066,7 +2286,7 @@
           "assists": 0,
           "minutes": 189,
           "out": true,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -2132,7 +2352,7 @@
           "assists": 0,
           "minutes": 0,
           "out": false,
-          "as_of": "2026-10-26T10:06:07.332425+00:00",
+          "as_of": "2026-10-27T10:03:44.703070+00:00",
           "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
         }
       ]
@@ -3648,7 +3868,34 @@
       },
       "home_has_jp": false,
       "away_has_jp": true,
-      "season_players": []
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 27,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "DFBポカール"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [],
+              "away": [
+                "堂安律",
+                "小杉啓太"
+              ]
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
     },
     {
       "game_id": "espn-401917027",
@@ -3755,7 +4002,28 @@
       },
       "home_has_jp": false,
       "away_has_jp": false,
-      "season_players": []
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 22,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "DFBポカール"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Borussia Dortmund"
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": false
+      }
     },
     {
       "game_id": "espn-401917031",
@@ -3812,7 +4080,23 @@
       },
       "home_has_jp": false,
       "away_has_jp": false,
-      "season_players": []
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 12,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "DFBポカール"
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": false
+      }
     },
     {
       "game_id": "espn-401916923",
@@ -4060,9 +4344,9 @@
     }
   ],
   "ai_status": {
-    "targets": 2,
-    "succeeded": 2,
-    "cost_usd": 0.01202
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.01959
   },
   "source_errors": [],
   "fixture_coverage": [
@@ -4075,7 +4359,7 @@
     {
       "competition": "PD",
       "status": "success",
-      "events": 11,
+      "events": 10,
       "label": "取得成功"
     },
     {
@@ -4093,14 +4377,14 @@
     {
       "competition": "FL1",
       "status": "success",
-      "events": 10,
+      "events": 9,
       "label": "取得成功"
     },
     {
       "competition": "CL",
-      "status": "no_games",
-      "events": 0,
-      "label": "試合なし"
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
     },
     {
       "competition": "EL",
@@ -4153,7 +4437,7 @@
   ],
   "club_registration_check": {
     "days": 7,
-    "checked_at": "2026-10-26T19:06:23.384016+09:00",
+    "checked_at": "2026-10-27T19:04:03.887262+09:00",
     "missing": [
       {
         "club": "1. FC Magdeburg",
@@ -4986,16 +5270,115 @@
   },
   "source": "ESPN・football-data.org",
   "preview_selection": {
-    "day": "2026-10-26",
+    "day": "2026-10-27",
     "threshold": 30,
     "max_games": 4,
     "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
-    "selected_ids": [
-      "559648"
+    "selected_ids": [],
+    "count": 0,
+    "reason": "取得不足/名前や日時を確認できない材料があります",
+    "rejected": [
+      {
+        "id": "espn-401921833",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401921835",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928493",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928501",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928520",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928495",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928521",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928549",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928509",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928534",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928508",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928510",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928553",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928502",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928488",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928547",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928503",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928522",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928533",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928499",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401917027",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401917028",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401917029",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401917031",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401916923",
+        "reason": "クラブの表示名/読みが未登録"
+      }
     ],
-    "count": 1,
-    "reason": "",
-    "rejected": [],
     "source_errors": []
   }
 }
