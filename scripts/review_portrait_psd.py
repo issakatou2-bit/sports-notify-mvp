@@ -10,10 +10,10 @@ from portrait_parts import compose_parts, load_parts
 
 
 def main():
-    from psd_tools import PSDImage
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, required=True)
     args = parser.parse_args()
+    from psd_tools import PSDImage  # --help ではPSDを読まないので、CIに無くても起動検査を通す
     root = Path(__file__).resolve().parent.parent
     out = root / 'build_reports/portrait_parts_20261027'
     folder = root / 'assets/portraits/ずんだもん'
