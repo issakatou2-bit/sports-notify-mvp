@@ -290,6 +290,8 @@ def render_video(data,narr,audio,out):
     # Ceil to complete frames; the resulting actual movie remains inside the strict budget.
     times=[math.ceil(t*FPS)/FPS for t in times]
     if sum(times)>results.LIMIT:raise ValueError('フレームの丸め後に60秒を超える')
+    import short_content
+    short_content.require(narr, times, out, data, maximum=results.LIMIT, video_name='collespo_soccer_results.mp4')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('声つきの動画だけを作る枠です')
     video=out/'collespo_soccer_results.mp4';clubs=__import__('soccer_result_story').clubs_for(data) if data.get('preview_followup') else resolve_clubs(data);images=[];layouts=[];previous=None;clock=0
@@ -331,7 +333,8 @@ def render_video(data,narr,audio,out):
 
 def production_narration(data, *, goal_short=False):
     """速報は既存の得点導入、朝の結果は既存の注目試合導入を使う。"""
-    narr = narration(data) if goal_short else __import__('soccer_result_story').narration(data)
+    narr = __import__('short_context').goal(data) if goal_short else __import__('soccer_result_story').narration(data)
+    narr = __import__('short_context').soccer(narr, data)
     if not goal_short and soccer_look.v5() and not any(s['kind'] in ('followup','flash-results','other-results') for s in narr['segments']):
         from soccer_v5_program import add_player_scene
         narr = add_player_scene(narr, data)

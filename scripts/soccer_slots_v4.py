@@ -184,7 +184,7 @@ def program(mode,data):
     if mode=='preview' and soccer_look.v5():
         import soccer_match_interest
         plan=soccer_match_interest.enrich_plan(plan)
-    return plan
+    return __import__('short_context').slots(plan)
 
 
 @motion.slot('soccer')
@@ -339,6 +339,8 @@ def render_video(plan,audio,out):
         motion.measured(audio)
     if sum(times)>limit:raise ValueError(f'丸め後{limit}秒を超える')
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
+    import short_content
+    short_content.require(narr, times, out, plan.get('data'), maximum=limit, video_name=FILENAMES[plan['mode']])
     if not shutil.which('ffmpeg'):raise ValueError('FFmpegがありません。install_video_tools.shまたは保存材料のpreviewを使ってください')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('声がありません')

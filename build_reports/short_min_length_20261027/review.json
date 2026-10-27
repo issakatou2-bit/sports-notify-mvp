@@ -1,0 +1,178 @@
+{
+  "complete": true,
+  "reviewer": "Codex 自分で確認",
+  "kinds": 19,
+  "files": [
+    {
+      "path": "build_reports\\short_min_length_20261027\\asset_game-overview-001.jpg",
+      "sha256": "d2baaa317ffd51fba2787fe99d3b1e030b9ae2e28e12e547cd00eeff2d46af69",
+      "checked_utc": "2026-10-27T14:06:29.327473+00:00",
+      "result": "目視確認",
+      "note": "10対1の結果、決勝点、両先発を表示。6回の大きな数値札は実寸でも確認し、空白判定候補は欠落ではなかった。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\asset_league-overview-001.jpg",
+      "sha256": "2ec326cad88e33d7a3743e9df6bbc64775bf751dbc25be18d01259ad59cb2154",
+      "checked_utc": "2026-10-27T14:06:29.327784+00:00",
+      "result": "目視確認",
+      "note": "本塁打・打率・打点・盗塁の4部門。部門、選手、値が対応し判読可能。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\asset_legend-overview-001.jpg",
+      "sha256": "590e9cdda3b4d4b1aa6d4afa25159993c1cf4f0da30dcea958b928f28087c902",
+      "checked_utc": "2026-10-27T14:06:29.328031+00:00",
+      "result": "目視確認",
+      "note": "2人それぞれの殿堂入り年、通算本塁打・安打を判読。2枚の同じ事実を重複計数しない。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\asset_player-overview-001.jpg",
+      "sha256": "b6bbb412f4c5e00bcf286cfd1384888905e17f2f6a94a52e76e752246568b6a4",
+      "checked_utc": "2026-10-27T14:06:29.328352+00:00",
+      "result": "目視確認",
+      "note": "今季139試合・30本塁打、昨季55本からの比較、リーグ順位等を判読。札や字幕の重なりなし。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\asset_rare-overview-001.jpg",
+      "sha256": "af6681d7a5e2e5a43fb4c3976dd9f2a70dec53ca7c7cfa5f25ae8a634cf279ee",
+      "checked_utc": "2026-10-27T14:06:29.328590+00:00",
+      "result": "目視確認",
+      "note": "旧描画のため自動矩形検査は未実施。実寸でWHIP0.87、今季28登板14勝9敗、昨季勝利12→14・奪三振201→182を確認。字サイズと書体は既存。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\asset_story-overview-001.jpg",
+      "sha256": "e1e8f37c04385e78f816e2d155d1883b4a28b04a675a59c13fa15993ba62a98f",
+      "checked_utc": "2026-10-27T14:06:29.328918+00:00",
+      "result": "目視確認",
+      "note": "シリーズの結果、バウアーズの14打数4安打・1本塁打、当該シリーズの日本人3選手の成績を判読。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\asset_team-overview-001.jpg",
+      "sha256": "8d820c77335191a660fde49f83d1e447a7cd6f4beb77da0f24047bba54456c67",
+      "checked_utc": "2026-10-27T14:06:29.329276+00:00",
+      "result": "目視確認",
+      "note": "100勝62敗・地区優勝、PSでの結末、球団本塁打1位の3項目。ページ数と読み量が対応。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\asset_venue-overview-001.jpg",
+      "sha256": "28a7fb6a5e2334c58e106956e78e3d7b63540370fc08aa7be7e8fe0c08899b58",
+      "checked_utc": "2026-10-27T14:06:29.329564+00:00",
+      "result": "目視確認",
+      "note": "旧描画のため自動矩形検査は未実施。実寸で8.83点・88試合・収容40,100人を確認。既存の細い書体を維持、縮小一覧では弱い。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\daily-overview-001.jpg",
+      "sha256": "6e2530da8d6e34214b4bbdaa7e0fb716c3174543f53bb6d84def00161e5098a2",
+      "checked_utc": "2026-10-27T14:06:29.329948+00:00",
+      "result": "目視確認",
+      "note": "前戦の4対7・MILホームが別札に出る。先発の札も見え、切替境界の空画像は再作成して解消。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\daily_soccer-overview-001.jpg",
+      "sha256": "96842c7074d83d109824a1fecf39b006ea5f99c4413e762b93c0819e7b19e8f5",
+      "checked_utc": "2026-10-27T14:06:29.330330+00:00",
+      "result": "目視確認",
+      "note": "1試合の開始時刻と両クラブの現在順位・昨季順位を字幕で示す。順位は原稿にも残り、未表示メタだけで計数しない。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\morning-overview-001.jpg",
+      "sha256": "6f3faab5a7c98e5036167d3d210366a95240e8e0d89032bca2a2aebefa5a64dd",
+      "checked_utc": "2026-10-27T14:06:29.330762+00:00",
+      "result": "目視確認",
+      "note": "3選手の当日成績を読める。大谷の4打数の札は実寸でも確認。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\morning_postseason-overview-001.jpg",
+      "sha256": "27d84fbbd47a8fcc70fd2c00900285f0dd8f9d657e2bd9202ab9de4c33ee9df0",
+      "checked_utc": "2026-10-27T14:06:29.331097+00:00",
+      "result": "目視確認",
+      "note": "最終1組の勝敗に、前戦10対1・TBホーム・3回表の決勝打を追加。字幕と札の干渉なし。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\morning_press-overview-001.jpg",
+      "sha256": "121920f72b374c79e15196e9f6522859a3d115ea9ce3189ebbba463c6a7892f6",
+      "checked_utc": "2026-10-27T14:06:29.331593+00:00",
+      "result": "目視確認",
+      "note": "出典付き5件の報道を判読。長いボルティモアの段は全文量に応じた17.63秒。署名は公開報道の記者。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\morning_voices-overview-001.jpg",
+      "sha256": "477156fba38d79a75843adae575a591cdde94b688ab4940a2551e13507b3df2f",
+      "checked_utc": "2026-10-27T14:06:29.331949+00:00",
+      "result": "目視確認",
+      "note": "3件の別の親コメント。投稿者名の表示なし。引用とコレスポの見解の区別あり。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\soccer_goal_short-overview-001.jpg",
+      "sha256": "3f5fe370605ddc12d3ae4da772fd0b829da6c1743892e91cdf82e3c771ed426e",
+      "checked_utc": "2026-10-27T14:06:29.332317+00:00",
+      "result": "目視確認",
+      "note": "元の本人のゴールの冒頭を保持。得点経過と本人4本のシュート・枠内4本を後段で判読。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\soccer_now-overview-001.jpg",
+      "sha256": "a25c7e36d97496a53a1874583fd4f3c7aaf5b4dba5a6da386ecd2eef2c1f4505",
+      "checked_utc": "2026-10-27T14:06:29.332816+00:00",
+      "result": "目視確認",
+      "note": "0対0の結果と本人3人の成績、チームのシュート13対12・保持率50.6対49.4を判読。得点なしだけの重複段は除去。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\soccer_race-overview-001.jpg",
+      "sha256": "e2531d8229158ddc98ee435b1874e54e612b8bb250dc39a3b99ecded882a9835",
+      "checked_utc": "2026-10-27T14:06:29.333117+00:00",
+      "result": "目視確認",
+      "note": "3位24点・4位20点・消化10試合を追加。2つの境界表が読め、主役との区別もある。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\soccer_results-overview-001.jpg",
+      "sha256": "50a43d130a1160d7dad17fd45fe3447c944762ea03b08768e14503d7dca07300",
+      "checked_utc": "2026-10-27T14:06:29.333575+00:00",
+      "result": "目視確認",
+      "note": "4得点の経過と4選手の成績を維持。個別札後の同じ名簿は除去。48分の1件の札は実寸で欠落がないことを確認。"
+    },
+    {
+      "path": "build_reports\\short_min_length_20261027\\soccer_week-overview-001.jpg",
+      "sha256": "2b37caf4aab579c866bcb340ac22fa69a30033164c05bebad0458c4f9ae46687",
+      "checked_utc": "2026-10-27T14:06:29.333938+00:00",
+      "result": "目視確認",
+      "note": "PL2試合へ絞った3人の一覧と鎌田・坂元の個別札。本人の成績と所属クラブの最終スコアを区別。"
+    },
+    {
+      "path": "previews/asset_rare/01-1.png",
+      "sha256": "280f313740c3d7987e0e2cefda8cc19b1e700416a2b7fcba6c6aaa0dda0a1574",
+      "checked_utc": "2026-10-27T14:06:29.334213+00:00",
+      "result": "目視確認",
+      "note": "WHIPと今季成績の実寸。追加した14勝9敗・182奪三振を判読。"
+    },
+    {
+      "path": "previews/asset_rare/02-1.png",
+      "sha256": "8526668ec8dc7699c8dd8db8bdfa2668483487922c35cd612cb2c31019ecc205",
+      "checked_utc": "2026-10-27T14:06:29.334447+00:00",
+      "result": "目視確認",
+      "note": "昨季比較の実寸。2025年の勝利と奪三振を判読。"
+    },
+    {
+      "path": "previews/asset_venue/01-1.png",
+      "sha256": "300c5047c0794c9bcebcb33ea9ee21f57a5b4d555187f3426ff9c0d07de6ae34",
+      "checked_utc": "2026-10-27T14:06:29.334693+00:00",
+      "result": "目視確認",
+      "note": "旧描画の実寸。年度、平均得点、母数と収容人数を判読。"
+    },
+    {
+      "path": "previews/asset_game/02-1.png",
+      "sha256": "dcd4b727fcfd82c4f57b1be8554d500eec21d972976e93d23122134e3185c1b7",
+      "checked_utc": "2026-10-27T14:06:29.334996+00:00",
+      "result": "目視確認",
+      "note": "empty候補の実寸。6回の数値札と先発名・字幕は表示済み。"
+    },
+    {
+      "path": "previews/soccer_results/02-1.png",
+      "sha256": "861e7427b97e2ee441ca386a6d240afa998cf150265d279f917a1aa332aff036",
+      "checked_utc": "2026-10-27T14:06:29.335264+00:00",
+      "result": "目視確認",
+      "note": "empty候補の実寸。48分・鈴木唯人の得点は表示済み。1得点用の既存の縦長札。"
+    }
+  ],
+  "pacing": "字幕の表示と各段の読む時間を確認。6字/秒と既存の札の読取下限。音声は未合成で、実音声同期と声の間は未確認。",
+  "static_candidates": "asset_game・morning・soccer_resultsのempty候補は数字1個または得点1件の既存札。実寸も開き、欠落ではないと判断。自動規則は変更していない。",
+  "limitations": "頭・中・終の状態から作る構成確認版。連続アニメーション・実音声を全編再生して合格としたものではない。旧描画のvenue/rareは矩形検査未実施を維持。"
+}

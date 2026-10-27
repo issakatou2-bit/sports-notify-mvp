@@ -2277,6 +2277,11 @@ def main():
             player_record['publish_at'] = publish_at
         experiment = dict(experiment or {}, **player_record)
 
+    if args.kind not in ('longform', 'weekly'):
+        import short_content
+        quality = short_content.validate_upload(video_path)
+        experiment = dict(experiment or {}, **short_content.publication_fields(quality))
+
     try:
         youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)
         response = insert_with_retry(youtube, body, video_path)

@@ -73,6 +73,8 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
     times=[max(duration,len(seg['caption_en'].split())/3) if seg.get('caption_en') else duration for seg,duration in zip(narr['segments'],times)]
     times = [math.ceil(t*30)/30 for t in times]
     if sum(times) > 40: raise ValueError('40秒を超えるため原稿を短くしてください')
+    import short_content
+    short_content.require(narr, times, out, narr.get('soccer_material'), maximum=40, video_name=filename)
     ffmpeg = rr.ensure_ffmpeg(out)
     track = vc.build_narration_track(audio, times, out) if voiced else None
     cmd = [ffmpeg, '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', '30', '-i', '-']

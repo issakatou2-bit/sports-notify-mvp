@@ -493,6 +493,8 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
         program = None
     if program is None:
         return None
+    import short_context
+    program = short_context.ps(program, ctx, games, rows)
     if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
         import review_render_v3 as r3
         if r3.LOOK=='v4':
@@ -622,10 +624,14 @@ def check_program(program):
 def script(program):
     target=program.get('target_day',program['date_jst'])
     import host_split
-    return host_split.carry(program, dict(title=program['title'], date_jst=target,
+    document = host_split.carry(program, dict(title=program['title'], date_jst=target,
                 date_label=datetime.fromisoformat(target).strftime('%m/%d'), segments=program['segments'],
                 source_url=program['source_url'], ps_program=program,
                 **({'mlb_forecast':program['mlb_forecast']} if program.get('mlb_forecast') else {})))
+    if program.get('short_context_material'):
+        import sanity_sources
+        document['sanity_materials'] = sanity_sources.capture(document) + [program['short_context_material']]
+    return document
 
 
 def movie(program, audio_dir, out):
@@ -638,7 +644,6 @@ def movie(program, audio_dir, out):
         program['edition_key'] = content_key(program)
         host_split.render_audio(audio_dir, out)
     __import__('slant_by_episode').set_episode('ps_situation' if program.get('mode')=='situation' else 'ps_preview')
-    check = check_program(program)
     audio = read(Path(audio_dir) / 'manifest.json')['segments']
     if len(audio) != len(program['segments']):
         raise ValueError('台本と音声の件数が不一致')
@@ -649,6 +654,9 @@ def movie(program, audio_dir, out):
             raise ValueError('台本と音声の不一致または音声欠落')
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
     durations = [max(3.0, float(a['duration']) + vc.SEGMENT_TAIL) for a in audio]
+    import short_content
+    short_content.require(program, durations, out, video_name='collespo_short.mp4' if program['kind']=='daily' else 'collespo_morning_postseason.mp4')
+    check = check_program(program)
     track = vc.build_narration_track(audio, durations, out)
     import fan_events
     fan_events.prepare(program, audio, durations, out, fps=30)

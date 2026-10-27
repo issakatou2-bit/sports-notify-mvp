@@ -1009,6 +1009,10 @@ def main():
     total_games = len(games[:3])
 
     # --- 音声を先に連結しておく ---
+    import short_content
+    short_content.require({'segments': segments},
+                          [max(2.0, float(s.get('duration') or 0) or 4.0) for s in segments],
+                          out_dir, games_data, maximum=post_common.MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_files = [s["file"] for s in segments if s.get("file")]
     audio_path = None
 
