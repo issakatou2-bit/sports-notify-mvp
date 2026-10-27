@@ -17,6 +17,12 @@ def enabled(spec):
 
 def finish(im, t, spec, source=None):
     v = spec.get('v3') or {}
+    if spec.get('_game_ui_static'):
+        c.balance_content(im,t)
+        r3.ticker(im,t,v.get('ticker',''),once=v.get('ticker_once',False))
+        r3.source(ImageDraw.Draw(im),source or v.get('source') or r3.page_source(spec.get('items') or []),r3.colors(None)[1])
+        r3.presenter(im,t)
+        return im
     return c.finish(im, t, v.get('ticker', ''), source or v.get('source') or r3.page_source(spec.get('items') or []), v.get('ticker_once', False))
 
 

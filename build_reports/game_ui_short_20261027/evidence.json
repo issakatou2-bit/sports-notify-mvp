@@ -1,0 +1,97 @@
+{
+  "reviewer": "Codex（自分で画像を開いて確認）",
+  "date": "2026-10-27 JST",
+  "videos": [
+    {
+      "fixture": "ws849804",
+      "video": "build\\game-ui-short\\videos\\ws849804\\ws849804.mp4",
+      "sha256": "dbad2fe23fd12adb6d53a033a27a3e648934b9cbddfe0f672f6a96646fb77287",
+      "scenes": [
+        {
+          "number": 1,
+          "heading": "結果",
+          "status": null,
+          "slide_seconds": 0.3
+        },
+        {
+          "number": 2,
+          "heading": "試合の結果",
+          "status": null,
+          "slide_seconds": 0.3
+        },
+        {
+          "number": 3,
+          "heading": "先発",
+          "status": null,
+          "slide_seconds": 0.3
+        },
+        {
+          "number": 4,
+          "heading": "次の試合",
+          "status": "世界一に王手",
+          "slide_seconds": 0.3
+        }
+      ],
+      "static": "PASS"
+    },
+    {
+      "fixture": "ordinary849802",
+      "video": "build\\game-ui-short\\videos\\ordinary849802\\ordinary849802.mp4",
+      "sha256": "c1b3ac88c6693341caf2d913ee5656a78ab1682b6dfa0b760a70bccdd99a72d1",
+      "scenes": [
+        {
+          "number": 1,
+          "heading": "結果",
+          "status": null,
+          "slide_seconds": 0.3
+        },
+        {
+          "number": 2,
+          "heading": "試合の結果",
+          "status": null,
+          "slide_seconds": 0.3
+        },
+        {
+          "number": 3,
+          "heading": "先発",
+          "status": null,
+          "slide_seconds": 0.3
+        }
+      ],
+      "static": "PASS"
+    },
+    {
+      "fixture": "few849802",
+      "video": "build\\game-ui-short\\videos\\few849802\\few849802.mp4",
+      "sha256": "807f2841da9b34ea8f77f16df12be678638f21b785bc0610c5e941ca3eccc3da",
+      "scenes": [
+        {
+          "number": 1,
+          "heading": "結果",
+          "status": null,
+          "slide_seconds": 0.3
+        },
+        {
+          "number": 2,
+          "heading": "試合の結果",
+          "status": null,
+          "slide_seconds": 0.3
+        }
+      ],
+      "static": "PASS"
+    }
+  ],
+  "audio": "描画と動きの検証用の無音動画。音声生成・公開・CIは未実施",
+  "checks": {
+    "log": "build/game-ui-short/run_checks-final.log",
+    "sha256": "17e5ca12521af46f59c75cebf08bf710a5f7bc20907d0ffd4bdb27340a2dfcbe",
+    "exit_code": 0,
+    "syntax_files": 560,
+    "test_files": 205,
+    "fatal_warnings": 0,
+    "existing_minor_warnings": 53,
+    "period_jst": "2026-10-27 18:17-18:48",
+    "python_utf8": true,
+    "temp_root": "build/game-ui-short/check-tmp"
+  }
+}
