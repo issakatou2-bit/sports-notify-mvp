@@ -132,7 +132,8 @@ def mixed_lines(value,size=54,number_size=None,width=R-L-48):
     for token in re.findall(r'\d+(?:\.\d+)?|[ァ-ヴー・]+|[A-Za-z][A-Za-z.\-]*|[一-龥]{1,2}|[^\d]',common.screen_text(value)):
         numeric=bool(re.fullmatch(r'\d+(?:\.\d+)?',token))
         font=r3.num_font(number_size) if numeric else r3.font(size)
-        tw=font.getlength(token)
+        tw=0 if token=="
+" else font.getlength(token)  # Linuxのraqmは改行の長さを測れず落ちる
         import notability_engine as ne
         named=next((tid for tid,name in ne.MLB_TEAM_NAME_JP.items() if token==name),None)
         if named:tw+=c.inline_badge_width(named,size)+12
