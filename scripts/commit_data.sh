@@ -20,6 +20,9 @@ set -u
 MESSAGE="${1:?コミットメッセージを渡してください}"
 shift
 
+# P1の二重書きと回収記録は、旧ファイルの指定に必ず同伴させる。
+set -- "$@" data/publications data/publication_recovery
+
 # rebaseを始める前の生成物を残す。失敗時もrunnerの終了前にartifactへ回収できる。
 PYTHON_BIN=$(command -v python3 || command -v python) || exit 1
 RECOVERY=$("$PYTHON_BIN" scripts/data_save_recovery.py snapshot "$@") || exit 1

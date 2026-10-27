@@ -143,6 +143,8 @@ class Ledger:
     def set(self, key, value):
         self.data['deliveries'][key] = value
         self.save()
+        from publication_writer import mirror_buffer
+        mirror_buffer(key, value, github, STATE_BRANCH)
 
 
 # 既定の枠。これまでどおり「明日の注目試合」。

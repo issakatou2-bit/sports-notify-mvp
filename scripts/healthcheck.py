@@ -663,6 +663,9 @@ def main() -> int:
             "| 対象 | 埋まり | |", "|---|---|---|"]
     out += content_lines
 
+    from ledger_compare import health_table
+    ledger_root = pathlib.Path(__file__).resolve().parents[1]
+    out += health_table(ledger_root, ledger_root / 'build/ledger-buffer')
     text = "\n".join(out)
     print(text)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
