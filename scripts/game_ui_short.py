@@ -121,6 +121,21 @@ def heading(im, number, label):
     text(im, r3.LEFT+122, 270, label, 43, width=r3.SAFE_RIGHT-r3.LEFT-150)
 
 
+def result_notes(spec, result):
+    """シリーズ成績の短い札と詳しい行は同じ事実なので一度だけ出す。"""
+    tag = (spec.get('v3') or {}).get('tag')
+    series = result.get('series')
+    equivalent = {series}
+    state = cover._series_state(result)
+    if state:
+        wins, losses, over = state
+        rnd, _ = cover._round_and_number(spec.get('label'))
+        equivalent.add(f'{rnd}{wins}勝{losses}敗')
+        if (wins, losses) == (1, 0):equivalent.add(f'{rnd}先勝')
+        if over:equivalent.add(f'{rnd}突破')
+    return [line for line in (tag if tag not in equivalent else None, series) if line]
+
+
 def result_card(im, spec):
     result = cover._game_result(spec.get('items') or [])
     if not result:
@@ -138,9 +153,10 @@ def result_card(im, spec):
     text(im,x,572 if width>c.R-x else 548,result['W']+'-'+result['L'],260,r3.GOLD,True,width=c.R-x)
     text(im,x,825,result['where']+'勝利',38,width=c.R-x)
     panel(im,890,116)
-    v=spec.get('v3') or {}
-    if v.get('tag'):text(im,x+16,905,v['tag'],30,r3.GOLD,width=c.R-x-48)
-    if result.get('series'):text(im,x+16,960,result['series'],28,width=c.R-x-48)
+    notes=result_notes(spec,result)
+    for i,line in enumerate(notes):
+        text(im,x+16,905+i*55,line,30 if i==0 else 28,
+             r3.GOLD if len(notes)>1 and i==0 else r3.INK,width=c.R-x-48)
 
 
 def starters(im,spec,body):

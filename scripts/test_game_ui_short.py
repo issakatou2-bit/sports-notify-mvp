@@ -41,6 +41,34 @@ class GameUI(unittest.TestCase):
         got=scenes(spec)
         self.assertEqual([s['meta']['game_ui_number'] for s in got],[1,2,4,5])
 
+    def test_result_panel_never_repeats_series_fact(self):
+        for name in ('ordinary849802','few849802'):
+            spec=fixture(name)
+            for state,tag,series in (
+                ('2勝0敗','ワールドシリーズ2勝0敗','シリーズはブリュワーズの2勝0敗'),
+                ('1勝0敗','ワールドシリーズ先勝','シリーズはブリュワーズの1勝0敗'),
+                ('4勝0敗','ワールドシリーズ突破','ブリュワーズが4勝0敗でワールドシリーズ突破'),
+            ):
+                with self.subTest(name=name,tag=tag):
+                    spec['v3']['tag']=tag
+                    spec['items'][0][1]=spec['items'][0][1].split('　シリーズは')[0].split('　ブリュワーズが')[0]+'　'+series
+                    with patch.object(ui,'text',wraps=ui.text) as drawn:
+                        ui.frame(1,'intro',{},spec,'PSの話題')
+                    notes=[call.args[3] for call in drawn.call_args_list if 900<=call.args[2]<=1005]
+                    self.assertEqual(notes,[series])
+                    self.assertEqual(sum(line.count(state) for line in notes),1)
+
+    def test_result_panel_keeps_distinct_fact_and_single_available_line(self):
+        spec=fixture()
+        with patch.object(ui,'text',wraps=ui.text) as drawn:
+            ui.frame(1,'intro',{},spec,'PSの話題')
+        notes=[call.args[3] for call in drawn.call_args_list if 900<=call.args[2]<=1005]
+        self.assertEqual(notes,[spec['v3']['tag'],'シリーズはブリュワーズの3勝0敗'])
+        spec['items'][0][1]=spec['items'][0][1].split('　シリーズは')[0]
+        self.assertEqual(ui.result_notes(spec,ui.cover._game_result(spec['items'])),[spec['v3']['tag']])
+        spec['v3'].pop('tag')
+        self.assertEqual(ui.result_notes(spec,ui.cover._game_result(spec['items'])),[])
+
     def test_red_is_decisive_and_once(self):
         self.assertEqual(ui.series_status(fixture()),'世界一に王手')
         self.assertIsNone(ui.series_status(fixture('ordinary849802')))

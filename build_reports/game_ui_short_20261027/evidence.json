@@ -4,7 +4,7 @@
   "videos": [
     {
       "fixture": "ws849804",
-      "video": "build\\game-ui-short\\videos\\ws849804\\ws849804.mp4",
+      "video": "build\\game-ui-short\\followup-videos\\ws849804\\ws849804.mp4",
       "sha256": "dbad2fe23fd12adb6d53a033a27a3e648934b9cbddfe0f672f6a96646fb77287",
       "scenes": [
         {
@@ -32,12 +32,13 @@
           "slide_seconds": 0.3
         }
       ],
-      "static": "PASS"
+      "static": "PASS",
+      "visual": "Codexが修正後の一覧全6枚とordinary849802の01結果の実寸画像を開いて確認"
     },
     {
       "fixture": "ordinary849802",
-      "video": "build\\game-ui-short\\videos\\ordinary849802\\ordinary849802.mp4",
-      "sha256": "c1b3ac88c6693341caf2d913ee5656a78ab1682b6dfa0b760a70bccdd99a72d1",
+      "video": "build\\game-ui-short\\followup-videos\\ordinary849802\\ordinary849802.mp4",
+      "sha256": "96db999aa3590682e2d4f256a88718a812b251b614193c16640aa22788cfb423",
       "scenes": [
         {
           "number": 1,
@@ -58,12 +59,13 @@
           "slide_seconds": 0.3
         }
       ],
-      "static": "PASS"
+      "static": "PASS",
+      "visual": "Codexが修正後の一覧全6枚とordinary849802の01結果の実寸画像を開いて確認"
     },
     {
       "fixture": "few849802",
-      "video": "build\\game-ui-short\\videos\\few849802\\few849802.mp4",
-      "sha256": "807f2841da9b34ea8f77f16df12be678638f21b785bc0610c5e941ca3eccc3da",
+      "video": "build\\game-ui-short\\followup-videos\\few849802\\few849802.mp4",
+      "sha256": "601199b882d33c7379f4456a25742aa81b1480f9fb06a450d955c5f25de8258c",
       "scenes": [
         {
           "number": 1,
@@ -78,7 +80,8 @@
           "slide_seconds": 0.3
         }
       ],
-      "static": "PASS"
+      "static": "PASS",
+      "visual": "Codexが修正後の一覧全6枚とordinary849802の01結果の実寸画像を開いて確認"
     }
   ],
   "audio": "描画と動きの検証用の無音動画。音声生成・公開・CIは未実施",
@@ -93,5 +96,13 @@
     "period_jst": "2026-10-27 18:17-18:48",
     "python_utf8": true,
     "temp_root": "build/game-ui-short/check-tmp"
+  },
+  "followup": {
+    "reviewed_at": "2026-10-27T18:56:29",
+    "change": "シリーズ成績と同じ札を省いて補足枠を1行にする。材料追加なし。",
+    "result_frame": "ordinary849802-result-fixed.png",
+    "tests": "専用10・既存v3/v4各33試験成功。旧動作の重複6ケース失敗を確認。全run_checks 2026-10-27 18:53:36〜19:14:16 JST、終了0、構文560/試験205ファイル、重大0/既存軽微53。",
+    "overview": "overview-001.jpgも修正版を開いて確認",
+    "checks_log_sha256": "f86a2f66027264e0e55f487783afc53fc8d6c67f5c6a3da60829fb2ac6d4400d"
   }
 }
