@@ -395,6 +395,9 @@ jobs:
               echo "::endgroup::"; continue
             fi
 
+            # Evidence is lightweight and must not stop publication. No frame files.
+            timeout 180 python scripts/visual_capture.py video --video "$VIDEO" --out "build/visual/$(TZ=Asia/Tokyo date +%Y%m%d)" || echo "::warning::visual contact sheet failed: $mode"
+
             if [ "$mode" = "postseason" ]; then
               python scripts/generate_ps_preview.py --thumbnail-out "build/morning/thumb_${mode}.png"
             else
@@ -648,6 +651,18 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save visual contact sheets
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-morning-four
+          path: |
+            build/visual/**/video/*-contact-*.jpg
+            !build/**/portrait/**
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Save sanity gate records
         if: always()
