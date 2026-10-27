@@ -87,6 +87,8 @@ class DataCommitTest(unittest.TestCase):
         (self.local / 'scripts/unused.txt').write_text('local output')
         result = self.save()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('押しました (1回目)', result.stdout)
+        self.assertNotIn('failed to push some refs', result.stdout)
         for name, kind in [('published_assets', 'assets'), ('published_videos', 'asset')]:
             self.assertEqual(set(self.remote_json(name)[kind]), {'old', 'longform', 'game'})
         self.assertEqual(self.remote_json('token_usage')['days']['2026-10-16'], {'calls': 15, 'in': 150})
@@ -175,6 +177,16 @@ if n < 2:
         self.assertIn('押しました (3回目)', result.stdout)
         self.assertEqual(set(self.remote_json('published_assets')['assets']), {'old', 'race0', 'race1', 'game'})
         self.assertEqual(self.remote_json('token_usage')['days']['2026-10-16'], {'calls': 15, 'in': 150})
+
+    def test_failed_prefetch_stops_before_sending_and_keeps_recovery(self):
+        self.add_run(self.local, 'game', 'unsent-preview', 13)
+        self.git(self.local, 'remote', 'set-url', 'origin', str(self.root/'unavailable.git'))
+        result=self.save()
+        self.assertNotEqual(result.returncode,0)
+        self.assertNotIn('押しました',result.stdout)
+        marker,=(self.local/'build/data-save-recovery').glob('*/FAILED')
+        self.assertIn('送信前の取得・取り込みに失敗',marker.read_text(encoding='utf8'))
+        self.assertNotIn('game',self.remote_json('published_assets')['assets'])
 
     def test_push_exhaustion_fails_and_keeps_recovery_with_video_id(self):
         hook = self.remote / 'hooks/pre-receive'

@@ -234,7 +234,7 @@ jobs:
       # こちらは20時に「今夜の注目試合」で、1つにまとめると
       # どちらかの言い方が必ず嘘になる。
       - name: Save the actually published preview
-        if: steps.gate.outputs.count != '0' && steps.upload.outcome == 'success'
+        if: steps.gate.outputs.count != '0' && steps.upload.outputs.uploaded == 'true'
         run: python scripts/soccer_preview_history.py
 
       - name: Post to Bluesky

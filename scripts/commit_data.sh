@@ -73,19 +73,16 @@ if ! git diff --quiet; then
   PENDING_STASH=$(git rev-parse refs/stash) || failed "退避先の取得に失敗"
 fi
 
-# 押せるまでやり直す。相手も同じことをしているので、少し待つ。
+# 動画制作中に他の実行が進むので、初回も先に取得・取り込みを済ませる。
+# その直後に相手が進んだ場合だけ、pushを再試行する。
 for attempt in 1 2 3 4 5; do
-  if git push > "$RECOVERY/push.log" 2>&1; then
-    cat "$RECOVERY/push.log"
-    echo "押しました (${attempt}回目)"
-    saved
-  fi
-  cat "$RECOVERY/push.log"
-  echo "他の実行と競合しました。取り込んでやり直します (${attempt}回目)"
   PRE_PULL=$(git rev-parse HEAD) || failed "取り込み前のHEAD取得に失敗"
   RECONCILE=true
   if ! git -c rebase.autoStash=false pull --rebase --quiet > "$RECOVERY/pull.log" 2>&1; then
     cat "$RECOVERY/pull.log"
+    if [ ! -d "$(git rev-parse --git-path rebase-merge)" ] && [ ! -d "$(git rev-parse --git-path rebase-apply)" ]; then
+      failed "送信前の取得・取り込みに失敗"
+    fi
     # 取り込み自体が止まる場合。同じJSONの同じあたりを両方が
     # 書き換えていると、ここへ来る。記録の中身は「別の枠・別の日が
     # 増えた」だけのことがほとんどで、両方を残せば正しい。
@@ -118,6 +115,13 @@ for attempt in 1 2 3 4 5; do
       git commit -m "$MESSAGE" || failed "合わせ直した記録のgit commitに失敗"
     fi
   fi
+  if git push > "$RECOVERY/push.log" 2>&1; then
+    cat "$RECOVERY/push.log"
+    echo "押しました (${attempt}回目)"
+    saved
+  fi
+  cat "$RECOVERY/push.log"
+  echo "送信できませんでした。再取得してやり直します (${attempt}回目)"
   sleep $((attempt * 3))
 done
 

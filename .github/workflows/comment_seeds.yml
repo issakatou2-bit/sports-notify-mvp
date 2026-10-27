@@ -22,7 +22,9 @@ jobs:
         env:
           COLLESPO_COMMENT_SEEDS: ${{ vars.COLLESPO_COMMENT_SEEDS || 'off' }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-        run: python scripts/comment_seeds.py --out data/comment_seeds.json
+        # 通常10頁。権限・引数エラー時は直近7日の最大50動画×2頁へ切替。
+        # commentThreads.list / videos.list 各1単位、既定の最大見込み112単位。
+        run: python scripts/comment_seeds.py --out data/comment_seeds.json --max-pages 10 --max-videos 50 --video-pages 2
       - name: Save candidate list or fetch failure
         if: always()
         run: |

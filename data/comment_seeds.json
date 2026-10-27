@@ -1,6 +1,12 @@
 {
-  "updated_at": null,
-  "status": "not_fetched",
-  "source": "YouTube Data API commentThreads・videos",
-  "seeds": []
+  "updated_at": "2026-10-27T02:18:09.833531+00:00",
+  "status": "fetch_failed",
+  "seeds": [],
+  "reason": {
+    "call": "videos",
+    "page": 1,
+    "exception_type": "HTTPError",
+    "http_status": 403,
+    "api_reason": "quotaExceeded"
+  }
 }
