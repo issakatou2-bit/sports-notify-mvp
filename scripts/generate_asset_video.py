@@ -649,7 +649,8 @@ def build_narration(topic: str) -> dict:
             if LIST_TOPICS[topic].get('game') and duo.enabled('game'):
                 narration['segments']=duo.game(narration['segments'],LIST_TOPICS[topic],list_items(topic))
                 narration['duration_budget']={'limit':45,'grace':0}
-        return narration
+        import ps_comment_facts
+        return ps_comment_facts.attach(narration, LIST_TOPICS[topic])
     if topic == "mlb_venue":
         return _narration_venue()
     if topic == "mlb_rivalry":

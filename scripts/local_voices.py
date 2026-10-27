@@ -502,6 +502,9 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
         "  実際に出た失敗: 観客の妨害でレイズが得をした話の Yankee"
         " →×「ヤンキースの選手さん」\n"
         "- 感想や補足は加えない。書かれていないことを足さない\n"
+        "- big run、only、finally 等は皮肉・誇張の可能性がある。a big run は1点で、"
+        "「大量得点」にしない。only / finally の限定や呆れを逆の意味にしない。"
+        "点数・点差を増やさず、皮肉の解釈が確かでないときは訳文を空にする\n"
         "- 前置きや説明は不要"
     )
     if sport == "soccer":
