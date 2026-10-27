@@ -2037,7 +2037,15 @@ def club_display_description(text: str) -> str:
     return club_display_names.display_text(text, include_short=True)[:5000]
 
 
+def workflow_upload_result(uploaded):
+    path=os.environ.get('GITHUB_OUTPUT')
+    if path:
+        with open(path,'a',encoding='utf8') as output:
+            output.write('uploaded='+('true' if uploaded else 'false')+'\n')
+
+
 def main():
+    workflow_upload_result(False)
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
     parser.add_argument("--games", default="notable_games.json")
@@ -2327,6 +2335,7 @@ def main():
                          publish_at=publish_at,preview_binding=preview_binding,
                          host_tracking=__import__('host_split').publication(args.video, args.narration), privacy=args.privacy,
                          experiment=experiment)
+            workflow_upload_result(True)
             # 長編を上げたら、同じ日のコメント欄ショートから繋ぐ。
             # ショートにはフィードがあるが、長編には無い。
             # 人が来ているほうから、来ていないほうへ道を作る。

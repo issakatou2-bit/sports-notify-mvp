@@ -1,0 +1,160 @@
+{
+  "generated_at": "2026-10-26T09:53:54.895880+00:00",
+  "games": [
+    {
+      "game_id": "559648",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-524",
+      "away_team_id": "FL1-523",
+      "home_team_name": "パリ・サンジェルマン",
+      "away_team_name": "リヨン",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "リヨン vs パリ・サンジェルマン",
+      "abbr_matchup": null,
+      "start_time_jst": "10/27 04:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 5,
+        "games_back": 0.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 2.0
+      },
+      "away_standing": {
+        "rank": 4,
+        "games_back": 0.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 2.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 8,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "パリ・サンジェルマン の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "パリ・サンジェルマン（昨季リーグ・アン1位）とリヨン（昨季リーグ・アン4位）",
+          "weight": 3
+        },
+        {
+          "tag": "quality",
+          "text": "パリ・サンジェルマン5位 と リヨン4位",
+          "weight": 1
+        },
+        {
+          "tag": "div",
+          "text": "首位争い、勝ち点差は0",
+          "weight": 3
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "リーグ・アン7試合を消化した現在、首位との勝ち点差が2で並ぶパリ・サンジェルマン(5位)とリヨン(4位)の対戦である。昨季リーグ・アン1位のパリ・サンジェルマンと昨季同4位のリヨンが、【勝ち点差0で競い合う立場】から迎える本試合は、両チームの優勝争いへの歩みを大きく左右する。パリ・サンジェルマンのホームでの戦いぶりと、リヨンの敵地での攻撃力がどこまで機能するかに注目したい。",
+      "notification_hook": "首位と同じ勝ち点差のパリ・サンジェルマンvsリヨン、勝ち点争奪戦",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401876422",
+      "competition_code": "FL1",
+      "start_time_utc": "2026-10-27T04:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 35,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "リーグ・アン"
+          },
+          {
+            "key": "rank",
+            "points": 10,
+            "evidence": {
+              "kind": "rank",
+              "text": "5位パリ・サンジェルマン対4位リヨン、順位差1の直接対決",
+              "ranks": [
+                5,
+                4
+              ],
+              "rank_difference": 1
+            }
+          },
+          {
+            "key": "points_close",
+            "points": 5,
+            "evidence": {
+              "kind": "points",
+              "text": "勝点差0",
+              "gap": 0.0
+            }
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Paris Saint-Germain FC"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "rank",
+              "text": "5位パリ・サンジェルマン対4位リヨン、順位差1の直接対決",
+              "ranks": [
+                5,
+                4
+              ],
+              "rank_difference": 1
+            },
+            {
+              "kind": "points",
+              "text": "勝点差0",
+              "gap": 0.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    }
+  ],
+  "source": "ESPN・football-data.org",
+  "preview_selection": {
+    "day": "2026-10-26",
+    "threshold": 30,
+    "max_games": 4,
+    "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+    "selected_ids": [
+      "559648"
+    ],
+    "count": 1,
+    "reason": "",
+    "rejected": [],
+    "source_errors": []
+  }
+}
