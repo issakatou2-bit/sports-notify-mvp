@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-10-26T10:10:50.035364+00:00",
-  "date_jst": "2026-10-26",
-  "source_at": "2026-10-26T06:41:39.059613+00:00",
+  "updated_at": "2026-10-27T10:04:56.016248+00:00",
+  "date_jst": "2026-10-27",
+  "source_at": "2026-10-27T06:50:12.819915+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -370,9 +370,9 @@
               "line": 5,
               "position": 5,
               "side": "inside",
-              "diff": 5,
+              "diff": 2,
               "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点5"
+              "text": "EL圏内。落ちるまで勝点2"
             }
           ]
         },
@@ -429,9 +429,9 @@
               "position": 6,
               "team": "セビージャ",
               "team_en": "Sevilla FC",
-              "played": 9,
-              "points": 14,
-              "gf": 14,
+              "played": 10,
+              "points": 17,
+              "gf": 16,
               "ga": 16,
               "jp": []
             }
@@ -478,9 +478,9 @@
               "position": 6,
               "team": "セビージャ",
               "team_en": "Sevilla FC",
-              "played": 9,
-              "points": 14,
-              "gf": 14,
+              "played": 10,
+              "points": 17,
+              "gf": 16,
               "ga": 16,
               "jp": []
             },
@@ -495,7 +495,7 @@
               "jp": []
             }
           ],
-          "diff": 5,
+          "diff": 2,
           "moved": {
             "line": 5,
             "in": [],
@@ -1030,8 +1030,8 @@
     },
     {
       "code": "FL1",
-      "round": 7,
-      "round_complete": false,
+      "round": 8,
+      "round_complete": true,
       "name_jp": "リーグ・アン",
       "played": 8,
       "clubs": 18,
@@ -1040,22 +1040,22 @@
         {
           "name": "上田綺世",
           "club_jp": "リール",
-          "position": 2,
+          "position": 3,
           "points": 15,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 3,
-              "position": 2,
+              "position": 3,
               "side": "inside",
-              "diff": 1,
+              "diff": 0,
               "label": "CL圏内",
-              "text": "CL圏内。落ちるまで勝点1"
+              "text": "CL圏内だが、すぐ下と勝点で並んでいる"
             },
             {
               "line": 5,
-              "position": 2,
+              "position": 3,
               "side": "inside",
               "diff": 1,
               "label": "EL圏内",
@@ -1066,22 +1066,22 @@
         {
           "name": "南野拓実",
           "club_jp": "モナコ",
-          "position": 3,
+          "position": 4,
           "points": 15,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 3,
-              "position": 3,
-              "side": "inside",
-              "diff": 1,
+              "position": 4,
+              "side": "outside",
+              "diff": 0,
               "label": "CL圏内",
-              "text": "CL圏内。落ちるまで勝点1"
+              "text": "CL圏内と勝点で並んでいる"
             },
             {
               "line": 5,
-              "position": 3,
+              "position": 4,
               "side": "inside",
               "diff": 1,
               "label": "EL圏内",
@@ -1124,6 +1124,16 @@
           "inside": [
             {
               "position": 2,
+              "team": "レンヌ",
+              "team_en": "Stade Rennais FC 1901",
+              "played": 8,
+              "points": 16,
+              "gf": 18,
+              "ga": 14,
+              "jp": []
+            },
+            {
+              "position": 3,
               "team": "リール",
               "team_en": "Lille OSC",
               "played": 8,
@@ -1133,9 +1143,11 @@
               "jp": [
                 "上田綺世"
               ]
-            },
+            }
+          ],
+          "outside": [
             {
-              "position": 3,
+              "position": 4,
               "team": "モナコ",
               "team_en": "AS Monaco FC",
               "played": 8,
@@ -1145,31 +1157,19 @@
               "jp": [
                 "南野拓実"
               ]
-            }
-          ],
-          "outside": [
-            {
-              "position": 4,
-              "team": "リヨン",
-              "team_en": "Olympique Lyonnais",
-              "played": 7,
-              "points": 14,
-              "gf": 13,
-              "ga": 5,
-              "jp": []
             },
             {
               "position": 5,
-              "team": "パリ・サンジェルマン",
-              "team_en": "Paris Saint-Germain FC",
-              "played": 7,
+              "team": "リヨン",
+              "team_en": "Olympique Lyonnais",
+              "played": 8,
               "points": 14,
-              "gf": 14,
-              "ga": 9,
+              "gf": 13,
+              "ga": 7,
               "jp": []
             }
           ],
-          "diff": 1,
+          "diff": 0,
           "moved": {
             "line": 3,
             "in": [],
@@ -1186,22 +1186,24 @@
           "inside": [
             {
               "position": 4,
-              "team": "リヨン",
-              "team_en": "Olympique Lyonnais",
-              "played": 7,
-              "points": 14,
-              "gf": 13,
-              "ga": 5,
-              "jp": []
+              "team": "モナコ",
+              "team_en": "AS Monaco FC",
+              "played": 8,
+              "points": 15,
+              "gf": 11,
+              "ga": 7,
+              "jp": [
+                "南野拓実"
+              ]
             },
             {
               "position": 5,
-              "team": "パリ・サンジェルマン",
-              "team_en": "Paris Saint-Germain FC",
-              "played": 7,
+              "team": "リヨン",
+              "team_en": "Olympique Lyonnais",
+              "played": 8,
               "points": 14,
-              "gf": 14,
-              "ga": 9,
+              "gf": 13,
+              "ga": 7,
               "jp": []
             }
           ],
@@ -1233,7 +1235,9 @@
             "in": [],
             "out": []
           },
-          "jp": []
+          "jp": [
+            "南野拓実"
+          ]
         }
       ]
     },
@@ -1361,7 +1365,7 @@
     }
   ],
   "picked": [
-    "PD"
+    "PL"
   ],
   "moved_count": 0,
   "have_before": true

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T06:41:39.059613+00:00",
+  "generated_at": "2026-10-27T06:50:12.819915+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -1238,12 +1238,12 @@
         {
           "position": 6,
           "team": "Sevilla FC",
-          "played": 9,
-          "won": 4,
+          "played": 10,
+          "won": 5,
           "draw": 2,
           "lost": 3,
-          "points": 14,
-          "gf": 14,
+          "points": 17,
+          "gf": 16,
           "ga": 16
         },
         {
@@ -1304,13 +1304,13 @@
         {
           "position": 12,
           "team": "CA Osasuna",
-          "played": 9,
+          "played": 10,
           "won": 3,
           "draw": 2,
-          "lost": 4,
+          "lost": 5,
           "points": 11,
           "gf": 10,
-          "ga": 18
+          "ga": 20
         },
         {
           "position": 13,
@@ -3609,6 +3609,17 @@
       "table": [
         {
           "position": 1,
+          "team": "Paris Saint-Germain FC",
+          "played": 8,
+          "won": 5,
+          "draw": 2,
+          "lost": 1,
+          "points": 17,
+          "gf": 16,
+          "ga": 9
+        },
+        {
+          "position": 2,
           "team": "Stade Rennais FC 1901",
           "played": 8,
           "won": 5,
@@ -3619,7 +3630,7 @@
           "ga": 14
         },
         {
-          "position": 2,
+          "position": 3,
           "team": "Lille OSC",
           "played": 8,
           "won": 4,
@@ -3630,7 +3641,7 @@
           "ga": 6
         },
         {
-          "position": 3,
+          "position": 4,
           "team": "AS Monaco FC",
           "played": 8,
           "won": 4,
@@ -3641,26 +3652,15 @@
           "ga": 7
         },
         {
-          "position": 4,
+          "position": 5,
           "team": "Olympique Lyonnais",
-          "played": 7,
+          "played": 8,
           "won": 4,
           "draw": 2,
-          "lost": 1,
+          "lost": 2,
           "points": 14,
           "gf": 13,
-          "ga": 5
-        },
-        {
-          "position": 5,
-          "team": "Paris Saint-Germain FC",
-          "played": 7,
-          "won": 4,
-          "draw": 2,
-          "lost": 1,
-          "points": 14,
-          "gf": 14,
-          "ga": 9
+          "ga": 7
         },
         {
           "position": 6,
