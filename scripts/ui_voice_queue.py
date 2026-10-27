@@ -96,6 +96,11 @@ def validate_file(path, blob):
     if re.fullmatch(PARTS_REF, path):
         if not blob.startswith(PARTS_MAGIC) or len(blob) < len(PARTS_MAGIC)+28:
             raise QueueError('立ち絵は暗号化が必要です')
+    elif path == 'worker-health.json':
+        health = json.loads(blob)
+        if (health.get('version') != 1 or health.get('status') not in ('ready', 'unavailable', 'blocked', 'failed')
+                or stamp(health['checked_at']).tzinfo is None or len(blob) > 512):
+            raise QueueError('係の確認時刻が不正です')
     elif path == 'parts/current.json':
         if not re.fullmatch(PARTS_REF, json.loads(blob).get('ref', '')):
             raise QueueError('共用部品の参照が不正です')
@@ -112,7 +117,7 @@ def compact(state, files):
     result = {}
     for path, blob in files.items():
         validate_file(path, blob)
-        if (path == 'parts/current.json' or path in refs or
+        if (path in ('parts/current.json', 'worker-health.json') or path in refs or
                 (path.startswith('payload/') and state.get(path.split('/')[1], {}).get('status') == 'ready')):
             result[path] = blob
     return result
@@ -205,6 +210,7 @@ def terminal(queue, key, status):
     def change(state, files):
         if key in state:
             state[key]['status'] = status
+            state[key]['closed_at'] = now().isoformat()
     queue.update(change)
 
 
@@ -289,11 +295,13 @@ def configure(args):
         data = json.loads(path.read_text(encoding='utf8'))
         if not isinstance(data, dict):
             continue
+        import ui_voice_policy
+        ui_voice_policy.assert_publishable(data)
         resolution = data.get('voice_resolution')
         if not resolution:
             assignment = data.get('host_assignment')
             if split and host_split.valid(assignment):
-                os.environ['COLLESPO_SOLO_HOST'] = assignment['planned_host']
+                os.environ['COLLESPO_SOLO_HOST'] = ui_voice_policy.planned(data)
                 return
             continue
         host = resolution['host']
@@ -303,21 +311,15 @@ def configure(args):
             try:
                 resolution['portrait_dir'] = ensure_portrait(resolution, Path(audio)/'portrait')
             except QueueError:
-                # 描画前に部品が失われた場合も全音声をめたんで作り直す。
-                source = Path(data.get('narration_path') or Path(audio)/'narration-fallback.json')
-                narration = host_split.read(source) or host_split.carry(data, dict(segments=[
-                    {k: v for k, v in seg.items() if k not in ('file', 'duration', 'voice_host', 'voice_engine', 'voice_name', 'index')}
-                    for seg in data.get('segments', [])]))
-                if not narration.get('segments'):
-                    raise QueueError('めたんで再生成する原稿がありません')
-                narration['voice_resolution'] = dict(host='metan', reason='ui_portrait_unavailable')
-                source.write_bytes(encoded(narration))
+                source = Path(data.get('narration_path') or Path(audio)/'narration-rebuilt.json')
+                narration = host_split.read(source) or data
+                rebuilt = ui_voice_policy.failure(narration, source, audio, 'ui_portrait_unavailable')
+                source.write_bytes(encoded(rebuilt))
                 synthesize_narration = importlib.import_module('synthesize_narration')
                 synthesize_narration.main(['--narration', str(source), '--out-dir', str(audio)])
                 data = host_split.read(path)
                 resolution = data['voice_resolution']
                 host = resolution['host']
-                print('[warn] 予定=雨衣・実際=めたん・理由=立ち絵なし（全音声を再生成）')
         os.environ['COLLESPO_SOLO_HOST'] = host
         if host == 'ui' and resolution.get('portrait_dir'):
             os.environ['COLLESPO_UI_PORTRAIT_DIR'] = str(Path(resolution['portrait_dir']).resolve())

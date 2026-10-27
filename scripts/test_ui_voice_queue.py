@@ -21,6 +21,7 @@ import wave
 from PIL import Image
 import ui_voice_queue as q
 import ui_voice_stock as stock
+import ui_voice_policy as policy
 import ui_voice_worker as worker
 import ui_voice_parts as parts_crypto
 
@@ -189,8 +190,9 @@ class QueueTest(unittest.TestCase):
     def test_incomplete_local_synthesis_does_not_submit_twice(self):
         order = self.order()
         synth = unittest.mock.Mock(side_effect=RuntimeError('fixed crash'))
-        with self.assertRaises(RuntimeError):
-            worker.process(self.queue, self.folder/'cache', synth, portraits())
+        worker.process(self.queue, self.folder/'cache', synth, portraits())
+        self.assertEqual(self.queue.state[order['id']]['failure']['stage'], 'synthesize')
+        self.assertNotIn('fixed crash', json.dumps(self.queue.state))
         worker.process(self.queue, self.folder/'cache', synth, portraits())
         self.assertEqual(synth.call_count, 1)
         self.assertEqual(self.queue.state[order['id']]['status'], 'discarded')
@@ -203,7 +205,7 @@ class QueueTest(unittest.TestCase):
              patch.object(worker, 'apsc_synthesizer') as client, patch.object(q, 'GitQueue') as remote, \
              patch.object(sys, 'argv', ['worker']):
             worker.main()
-            client.assert_not_called(); remote.assert_not_called()
+            client.assert_not_called(); remote.assert_called_once()
 
     def test_apsc_adapter_is_lazy_and_uses_local_fixed_output_without_real_client(self):
         apsc = self.folder/'apsc'
@@ -270,12 +272,15 @@ class QueueTest(unittest.TestCase):
         self.assertEqual(by_name['stale']['status'], 'discarded')
         self.assertEqual(by_name['new']['status'], 'ready')
 
-    def test_missing_stock_does_not_queue_live_or_wait(self):
+    def test_missing_stock_orders_early_in_available_window(self):
+        script = copy.deepcopy(SCRIPT)
+        path = self.folder/'n.json'
+        path.write_bytes(q.encoded(script))
         with patch.object(stock, 'asset_context', return_value=dict(topic='team_fixture', material_key='fixed')), \
-             patch.object(stock.time, 'sleep', side_effect=AssertionError('在庫なしで待たない')):
-            result = stock.fulfill(copy.deepcopy(SCRIPT), self.folder/'n.json', self.folder/'audio', self.queue)
-        self.assertIsNone(result)
-        self.assertEqual(self.queue.state, {})
+             patch.object(stock.time, 'sleep', side_effect=lambda seconds: worker.process(self.queue,self.folder/'stock-miss-cache',tone,portraits())):
+            result = stock.fulfill(script,path,self.folder/'audio',self.queue)
+        self.assertEqual(result['host'],'ui')
+        self.assertEqual(len(self.queue.state),1)
 
     def test_prioritization_discards_stale_before_choosing_a_topic(self):
         for name, age in [('new', 0), ('old', 1), ('stale', 2)]:
@@ -296,7 +301,8 @@ class QueueTest(unittest.TestCase):
         with patch.object(q, 'now', side_effect=lambda: clock[0]), \
              patch.dict(os.environ, COLLESPO_UI_VOICE_WAIT_MINUTES='1'), \
              patch.object(stock.time, 'sleep', side_effect=lambda seconds: clock.__setitem__(0, clock[0]+timedelta(seconds=seconds))):
-            self.assertIsNone(stock.fulfill(copy.deepcopy(SCRIPT), self.folder/'n.json', self.folder/'audio', self.queue))
+            with self.assertRaises(policy.VoiceUnavailable):
+                stock.fulfill(copy.deepcopy(SCRIPT), self.folder/'n.json', self.folder/'audio', self.queue)
             self.assertEqual(clock[0], AT+timedelta(minutes=1))
             synth = unittest.mock.Mock()
             worker.process(self.queue, self.folder/'cache', synth, portraits())
@@ -379,7 +385,8 @@ class QueueTest(unittest.TestCase):
         for key in ('', 'invalid', base64.b64encode(b'short').decode('ascii')):
             with patch.dict(os.environ, COLLESPO_UI_PARTS_KEY=key), \
                  patch.object(q, 'GitQueue') as remote, patch.object(stock.time, 'sleep') as wait:
-                self.assertIsNone(stock.fulfill(copy.deepcopy(SCRIPT), path, self.folder/'no-key'))
+                with self.assertRaises(policy.VoiceUnavailable):
+                    stock.fulfill(copy.deepcopy(SCRIPT), path, self.folder/'no-key')
                 remote.assert_not_called(); wait.assert_not_called()
                 with patch(__name__+'.tone') as synth:
                     with self.assertRaises(q.QueueError):
@@ -537,7 +544,7 @@ exit $LASTEXITCODE
             qa.update(lambda state, blobs: blobs.update({'payload/'+two['id']+'/p000.png': portraits()['p000.png']}))
         self.assertIsNotNone(stock.take(qa, two['id']))
         _, _, files = qa.read()
-        self.assertEqual(set(files), {'parts/current.json', ref})
+        self.assertEqual(set(files), {'parts/current.json', 'worker-health.json', ref})
         self.assertEqual(git('--git-dir', remote, 'rev-list', '--count', 'ui-voice-queue'), '1')
 
 

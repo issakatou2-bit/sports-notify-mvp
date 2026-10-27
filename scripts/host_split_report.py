@@ -69,6 +69,9 @@ def aggregate(records, snaps, end):
                                                    fallback=0, unavailable=0, excluded=0, new=0))
         planned = rec.get('planned_host')
         actual = rec.get('actual_host')
+        if (rec.get('host_delivery') or {}).get('comparison_eligible') is False:
+            group['excluded'] += 1
+            continue
         if planned != rec['host_assignment']['planned_host'] or planned not in hs.HOSTS:
             group['excluded'] += 1
             continue
@@ -116,6 +119,7 @@ def render(videos, snaps, end, latest, lag):
              f'対象：実験の記録がある回の累計（公開日が{end}以前）。今週だけに絞らず、同じ種類で本数をためます。',
              f'出典：data/published_videos.json / data/analytics.json（最新保存 {latest or "なし"}、既存推定の集計遅れ {lag}日）。',
              '予定＝実際の回だけを比較し、雨衣の予定→めたんはめたん群にも混ぜません。旧動画の話者は題から推定しません。',
+             '雨衣不可で最初から予定めたんにした回と、雨衣回を停止後めたんで作り直した回も比較から除外します。',
              '24時間・3日・7日はJST公開日の各日後に相当する日次保存の近似です。時刻ぴったりの値ではありません。対象日の保存欠け・上位200本に未掲載・未成熟は不明で、0にしません。',
              '再生は1本当たり平均。平均視聴秒数と視聴率は7日の観測値を再生数で重み付け、高評価・登録増は7日の合計です。括弧内は各指標を観測できた本数です。',
              '各話者の観測が10本未満なら判定しません。95%幅は動画単位の再標本化2,000回による平均再生差（雨衣−めたん）の目安で、因果や優劣を断定するものではありません。', '']

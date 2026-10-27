@@ -1848,6 +1848,8 @@ def main():
     import host_split
     if not args.narration_out:
         narration = host_split.use_audio(narration, args.audio_dir)
+    if host_split.enabled():
+        narration['ui_stock_topic'] = args.topic
     narration = host_split.prepare(narration, host_split.asset_kind(args.topic))
     import solo_host
     if solo_host.for_segments(narration['segments']) == 'ui':
