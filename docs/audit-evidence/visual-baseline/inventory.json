@@ -90,80 +90,94 @@
     },
     {
       "image": "pwa/phone/archive/2026-07-25.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/2026-07-25.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/2026-07-25.html-back-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/2026-07-25.html-back-0.png",
+      "replacement_sha256": "811d064aece151b97448cdbe9b68126375d1f838633ad13523392f562123b2c6"
     },
     {
       "image": "pwa/phone/archive/2026-07-25.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/2026-07-25.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/2026-07-25.html-back-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/2026-07-25.html-back-1.png",
+      "replacement_sha256": "811d064aece151b97448cdbe9b68126375d1f838633ad13523392f562123b2c6"
     },
     {
       "image": "pwa/phone/archive/2026-07-25.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/2026-07-25.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/2026-07-25.html-back-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/2026-07-25.html-back-2.png",
+      "replacement_sha256": "811d064aece151b97448cdbe9b68126375d1f838633ad13523392f562123b2c6"
     },
     {
       "image": "pwa/phone/archive/2026-07-25.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/2026-07-25.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/2026-07-25.html-link-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/2026-07-25.html-link-0.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/archive/2026-07-25.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/2026-07-25.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/2026-07-25.html-link-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/2026-07-25.html-link-1.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/archive/2026-07-25.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/2026-07-25.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/2026-07-25.html-link-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/2026-07-25.html-link-2.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/archive/2026-07-25.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/2026-07-25.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/2026-07-25.html-link-before.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/2026-07-25.html-link-before.png",
+      "replacement_sha256": "811d064aece151b97448cdbe9b68126375d1f838633ad13523392f562123b2c6"
     },
     {
       "image": "pwa/phone/archive/2026-07-25.html.png",
@@ -1190,80 +1204,94 @@
     },
     {
       "image": "pwa/phone/archive/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/index.html-back-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/index.html-back-0.png",
+      "replacement_sha256": "d17ec8da6e8188c10a142ccf7d47649419427367f8715b7f39460c327d57793c"
     },
     {
       "image": "pwa/phone/archive/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/index.html-back-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/index.html-back-1.png",
+      "replacement_sha256": "d17ec8da6e8188c10a142ccf7d47649419427367f8715b7f39460c327d57793c"
     },
     {
       "image": "pwa/phone/archive/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/index.html-back-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/index.html-back-2.png",
+      "replacement_sha256": "d17ec8da6e8188c10a142ccf7d47649419427367f8715b7f39460c327d57793c"
     },
     {
       "image": "pwa/phone/archive/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/index.html-link-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/index.html-link-0.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/archive/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/index.html-link-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/index.html-link-1.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/archive/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/index.html-link-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/index.html-link-2.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/archive/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/archive/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/archive/index.html-link-before.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/archive/index.html-link-before.png",
+      "replacement_sha256": "d17ec8da6e8188c10a142ccf7d47649419427367f8715b7f39460c327d57793c"
     },
     {
       "image": "pwa/phone/archive/index.html.png",
@@ -1553,80 +1581,94 @@
     },
     {
       "image": "pwa/phone/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/index.html-back-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/index.html-back-0.png",
+      "replacement_sha256": "a192e234dfc474e27536c560d4a80995f4084312d117ee56297a4acce7e845f2"
     },
     {
       "image": "pwa/phone/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/index.html-back-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/index.html-back-1.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/index.html-back-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/index.html-back-2.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/index.html-link-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/themes-final/pwa-states/phone/theme-light-to-players-during-0.png",
+      "replacement_sha256": "07c7ceacbbc154c27cb05964e4b200b04c1361077f83154d0e446887cbdf1533"
     },
     {
       "image": "pwa/phone/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/index.html-link-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/themes-final/pwa-states/phone/theme-light-to-players-during-1.png",
+      "replacement_sha256": "07c7ceacbbc154c27cb05964e4b200b04c1361077f83154d0e446887cbdf1533"
     },
     {
       "image": "pwa/phone/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/index.html-link-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/themes-final/pwa-states/phone/theme-light-to-players-during-2.png",
+      "replacement_sha256": "07c7ceacbbc154c27cb05964e4b200b04c1361077f83154d0e446887cbdf1533"
     },
     {
       "image": "pwa/phone/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/index.html-link-before.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/index.html-link-before.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/index.html.png",
@@ -1729,80 +1771,94 @@
     },
     {
       "image": "pwa/phone/players/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/index.html-back-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/index.html-back-0.png",
+      "replacement_sha256": "c8e878447b748991abb8efe062f0a539a4c6cee6f5aef49822ed3215659fb4ed"
     },
     {
       "image": "pwa/phone/players/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/index.html-back-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/index.html-back-1.png",
+      "replacement_sha256": "c8e878447b748991abb8efe062f0a539a4c6cee6f5aef49822ed3215659fb4ed"
     },
     {
       "image": "pwa/phone/players/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/index.html-back-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/index.html-back-2.png",
+      "replacement_sha256": "c8e878447b748991abb8efe062f0a539a4c6cee6f5aef49822ed3215659fb4ed"
     },
     {
       "image": "pwa/phone/players/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/index.html-link-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/index.html-link-0.png",
+      "replacement_sha256": "a192e234dfc474e27536c560d4a80995f4084312d117ee56297a4acce7e845f2"
     },
     {
       "image": "pwa/phone/players/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/index.html-link-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/index.html-link-1.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/players/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/index.html-link-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/index.html-link-2.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/players/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/index.html-link-before.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/index.html-link-before.png",
+      "replacement_sha256": "c8e878447b748991abb8efe062f0a539a4c6cee6f5aef49822ed3215659fb4ed"
     },
     {
       "image": "pwa/phone/players/index.html.png",
@@ -1817,80 +1873,94 @@
     },
     {
       "image": "pwa/phone/players/kazuma-okamoto.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/kazuma-okamoto.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/kazuma-okamoto.html-back-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/kazuma-okamoto.html-back-0.png",
+      "replacement_sha256": "427d6e1c32400be899a8ceb702d7378966d80ff2f4676964d9c94c26707d2609"
     },
     {
       "image": "pwa/phone/players/kazuma-okamoto.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/kazuma-okamoto.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/kazuma-okamoto.html-back-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/kazuma-okamoto.html-back-1.png",
+      "replacement_sha256": "8fadc53f2bc5d91ca650d2cbbd36cb407f4c57b1b19e89b74c7eae994a5ed585"
     },
     {
       "image": "pwa/phone/players/kazuma-okamoto.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/kazuma-okamoto.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/kazuma-okamoto.html-back-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/kazuma-okamoto.html-back-2.png",
+      "replacement_sha256": "8fadc53f2bc5d91ca650d2cbbd36cb407f4c57b1b19e89b74c7eae994a5ed585"
     },
     {
       "image": "pwa/phone/players/kazuma-okamoto.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/kazuma-okamoto.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/kazuma-okamoto.html-link-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/kazuma-okamoto.html-link-0.png",
+      "replacement_sha256": "e2baa4eff86d7d39b551c126358e467f46e7485a7b1aae5d58d55b390a98d1ec"
     },
     {
       "image": "pwa/phone/players/kazuma-okamoto.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/kazuma-okamoto.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/kazuma-okamoto.html-link-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/kazuma-okamoto.html-link-1.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/players/kazuma-okamoto.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/kazuma-okamoto.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/kazuma-okamoto.html-link-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/kazuma-okamoto.html-link-2.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/players/kazuma-okamoto.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/players/kazuma-okamoto.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/players/kazuma-okamoto.html-link-before.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/players/kazuma-okamoto.html-link-before.png",
+      "replacement_sha256": "8fadc53f2bc5d91ca650d2cbbd36cb407f4c57b1b19e89b74c7eae994a5ed585"
     },
     {
       "image": "pwa/phone/players/kazuma-okamoto.html.png",
@@ -2224,80 +2294,94 @@
     },
     {
       "image": "pwa/phone/score.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/score.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/score.html-back-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/phone/score.html-back-0.png",
+      "replacement_sha256": "ce8f04ebdcbca0859f67eeb7ba7257b5fce7b5629128b8e4e58630badf92598d"
     },
     {
       "image": "pwa/phone/score.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/score.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/score.html-back-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/phone/score.html-back-1.png",
+      "replacement_sha256": "ce8f04ebdcbca0859f67eeb7ba7257b5fce7b5629128b8e4e58630badf92598d"
     },
     {
       "image": "pwa/phone/score.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/score.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/score.html-back-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/phone/score.html-back-2.png",
+      "replacement_sha256": "ce8f04ebdcbca0859f67eeb7ba7257b5fce7b5629128b8e4e58630badf92598d"
     },
     {
       "image": "pwa/phone/score.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/score.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/score.html-link-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/phone/score.html-link-0.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/score.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/score.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/score.html-link-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/phone/score.html-link-1.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/score.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/score.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/score.html-link-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/phone/score.html-link-2.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/score.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/score.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/score.html-link-before.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/phone/score.html-link-before.png",
+      "replacement_sha256": "ce8f04ebdcbca0859f67eeb7ba7257b5fce7b5629128b8e4e58630badf92598d"
     },
     {
       "image": "pwa/phone/score.html.png",
@@ -2400,80 +2484,94 @@
     },
     {
       "image": "pwa/phone/soccer.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/soccer.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/soccer.html-back-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/soccer.html-back-0.png",
+      "replacement_sha256": "61284dbd642deb353dde1cc0547afbdbac74de9803b289f6c838dcd8fe2e0dbe"
     },
     {
       "image": "pwa/phone/soccer.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/soccer.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/soccer.html-back-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/soccer.html-back-1.png",
+      "replacement_sha256": "61284dbd642deb353dde1cc0547afbdbac74de9803b289f6c838dcd8fe2e0dbe"
     },
     {
       "image": "pwa/phone/soccer.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/soccer.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/soccer.html-back-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/soccer.html-back-2.png",
+      "replacement_sha256": "61284dbd642deb353dde1cc0547afbdbac74de9803b289f6c838dcd8fe2e0dbe"
     },
     {
       "image": "pwa/phone/soccer.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/soccer.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/soccer.html-link-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/soccer.html-link-0.png",
+      "replacement_sha256": "a192e234dfc474e27536c560d4a80995f4084312d117ee56297a4acce7e845f2"
     },
     {
       "image": "pwa/phone/soccer.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/soccer.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/soccer.html-link-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/soccer.html-link-1.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/soccer.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/soccer.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/soccer.html-link-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/soccer.html-link-2.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/soccer.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/soccer.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/soccer.html-link-before.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/soccer.html-link-before.png",
+      "replacement_sha256": "61284dbd642deb353dde1cc0547afbdbac74de9803b289f6c838dcd8fe2e0dbe"
     },
     {
       "image": "pwa/phone/soccer.html.png",
@@ -2774,80 +2872,94 @@
     },
     {
       "image": "pwa/phone/threads/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/threads/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/threads/index.html-back-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/threads/index.html-back-0.png",
+      "replacement_sha256": "ab720ab4207f78fa349038926294621a30fb3d145704d4ab34a6da5643d85a1d"
     },
     {
       "image": "pwa/phone/threads/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/threads/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/threads/index.html-back-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/threads/index.html-back-1.png",
+      "replacement_sha256": "ab720ab4207f78fa349038926294621a30fb3d145704d4ab34a6da5643d85a1d"
     },
     {
       "image": "pwa/phone/threads/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/threads/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/threads/index.html-back-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/threads/index.html-back-2.png",
+      "replacement_sha256": "ab720ab4207f78fa349038926294621a30fb3d145704d4ab34a6da5643d85a1d"
     },
     {
       "image": "pwa/phone/threads/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/threads/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/threads/index.html-link-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/threads/index.html-link-0.png",
+      "replacement_sha256": "a192e234dfc474e27536c560d4a80995f4084312d117ee56297a4acce7e845f2"
     },
     {
       "image": "pwa/phone/threads/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/threads/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/threads/index.html-link-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/threads/index.html-link-1.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/threads/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/threads/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/threads/index.html-link-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/threads/index.html-link-2.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/threads/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/threads/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/threads/index.html-link-before.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/threads/index.html-link-before.png",
+      "replacement_sha256": "ab720ab4207f78fa349038926294621a30fb3d145704d4ab34a6da5643d85a1d"
     },
     {
       "image": "pwa/phone/threads/index.html.png",
@@ -2873,80 +2985,94 @@
     },
     {
       "image": "pwa/phone/tiktok/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/tiktok/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/tiktok/index.html-back-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/tiktok/index.html-back-0.png",
+      "replacement_sha256": "142e45d8b83fe307ac4c226f0fcf61b5f7871f2f2e4ca0887f264ba664aa0abe"
     },
     {
       "image": "pwa/phone/tiktok/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/tiktok/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/tiktok/index.html-back-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/tiktok/index.html-back-1.png",
+      "replacement_sha256": "142e45d8b83fe307ac4c226f0fcf61b5f7871f2f2e4ca0887f264ba664aa0abe"
     },
     {
       "image": "pwa/phone/tiktok/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/tiktok/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/tiktok/index.html-back-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/tiktok/index.html-back-2.png",
+      "replacement_sha256": "142e45d8b83fe307ac4c226f0fcf61b5f7871f2f2e4ca0887f264ba664aa0abe"
     },
     {
       "image": "pwa/phone/tiktok/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/tiktok/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/tiktok/index.html-link-0.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/tiktok/index.html-link-0.png",
+      "replacement_sha256": "a192e234dfc474e27536c560d4a80995f4084312d117ee56297a4acce7e845f2"
     },
     {
       "image": "pwa/phone/tiktok/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/tiktok/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/tiktok/index.html-link-1.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/tiktok/index.html-link-1.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/tiktok/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/tiktok/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/tiktok/index.html-link-2.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/tiktok/index.html-link-2.png",
+      "replacement_sha256": "a558403298acab0182fea120a111aca52dabaceb557aa5023e573e7144cc7ebf"
     },
     {
       "image": "pwa/phone/tiktok/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/phone/tiktok/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/phone/tiktok/index.html-link-before.jpg",
       "source_size": [
         1170,
         2532
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/phone/tiktok/index.html-link-before.png",
+      "replacement_sha256": "142e45d8b83fe307ac4c226f0fcf61b5f7871f2f2e4ca0887f264ba664aa0abe"
     },
     {
       "image": "pwa/phone/tiktok/index.html.png",
@@ -3137,80 +3263,94 @@
     },
     {
       "image": "pwa/tablet/archive/2026-07-25.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/2026-07-25.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/2026-07-25.html-back-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/2026-07-25.html-back-0.png",
+      "replacement_sha256": "7c72782a8adca0c37e076b25c1d2e772f651484750ddb9c4afcd3dcaf755ce1f"
     },
     {
       "image": "pwa/tablet/archive/2026-07-25.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/2026-07-25.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/2026-07-25.html-back-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/2026-07-25.html-back-1.png",
+      "replacement_sha256": "7c72782a8adca0c37e076b25c1d2e772f651484750ddb9c4afcd3dcaf755ce1f"
     },
     {
       "image": "pwa/tablet/archive/2026-07-25.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/2026-07-25.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/2026-07-25.html-back-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/2026-07-25.html-back-2.png",
+      "replacement_sha256": "7c72782a8adca0c37e076b25c1d2e772f651484750ddb9c4afcd3dcaf755ce1f"
     },
     {
       "image": "pwa/tablet/archive/2026-07-25.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/2026-07-25.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/2026-07-25.html-link-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/2026-07-25.html-link-0.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/archive/2026-07-25.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/2026-07-25.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/2026-07-25.html-link-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/2026-07-25.html-link-1.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/archive/2026-07-25.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/2026-07-25.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/2026-07-25.html-link-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/2026-07-25.html-link-2.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/archive/2026-07-25.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/2026-07-25.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/2026-07-25.html-link-before.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/2026-07-25.html-link-before.png",
+      "replacement_sha256": "7c72782a8adca0c37e076b25c1d2e772f651484750ddb9c4afcd3dcaf755ce1f"
     },
     {
       "image": "pwa/tablet/archive/2026-07-25.html.png",
@@ -4237,80 +4377,94 @@
     },
     {
       "image": "pwa/tablet/archive/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/index.html-back-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/index.html-back-0.png",
+      "replacement_sha256": "c20b1cb91fec905db44f37ba86f9838babecb07c62b2e6ea0872e569cf467095"
     },
     {
       "image": "pwa/tablet/archive/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/index.html-back-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/index.html-back-1.png",
+      "replacement_sha256": "c20b1cb91fec905db44f37ba86f9838babecb07c62b2e6ea0872e569cf467095"
     },
     {
       "image": "pwa/tablet/archive/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/index.html-back-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/index.html-back-2.png",
+      "replacement_sha256": "c20b1cb91fec905db44f37ba86f9838babecb07c62b2e6ea0872e569cf467095"
     },
     {
       "image": "pwa/tablet/archive/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/index.html-link-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/index.html-link-0.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/archive/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/index.html-link-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/index.html-link-1.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/archive/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/index.html-link-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/index.html-link-2.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/archive/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/archive/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/archive/index.html-link-before.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/archive/index.html-link-before.png",
+      "replacement_sha256": "c20b1cb91fec905db44f37ba86f9838babecb07c62b2e6ea0872e569cf467095"
     },
     {
       "image": "pwa/tablet/archive/index.html.png",
@@ -4600,80 +4754,94 @@
     },
     {
       "image": "pwa/tablet/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/index.html-back-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/index.html-back-0.png",
+      "replacement_sha256": "fc291b5c8200650694929a99dbd1c7f8e5461d282f91d8cbe6d03bfc995a41d7"
     },
     {
       "image": "pwa/tablet/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/index.html-back-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/index.html-back-1.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/index.html-back-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/index.html-back-2.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/index.html-link-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/themes-final/pwa-states/tablet/theme-light-to-archive-index-during-0.png",
+      "replacement_sha256": "606bf1a8a1f6aef6ba7514f4cdea2333343a95a57ff928ea117fd540936deee3"
     },
     {
       "image": "pwa/tablet/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/index.html-link-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/themes-final/pwa-states/tablet/theme-light-to-archive-index-during-1.png",
+      "replacement_sha256": "606bf1a8a1f6aef6ba7514f4cdea2333343a95a57ff928ea117fd540936deee3"
     },
     {
       "image": "pwa/tablet/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/index.html-link-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/themes-final/pwa-states/tablet/theme-light-to-archive-index-during-2.png",
+      "replacement_sha256": "606bf1a8a1f6aef6ba7514f4cdea2333343a95a57ff928ea117fd540936deee3"
     },
     {
       "image": "pwa/tablet/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/index.html-link-before.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/index.html-link-before.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/index.html.png",
@@ -4776,80 +4944,94 @@
     },
     {
       "image": "pwa/tablet/players/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/index.html-back-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/index.html-back-0.png",
+      "replacement_sha256": "510792362df6299bcbe088569c58bef630239eab80a7cb704986d68de1803649"
     },
     {
       "image": "pwa/tablet/players/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/index.html-back-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/index.html-back-1.png",
+      "replacement_sha256": "510792362df6299bcbe088569c58bef630239eab80a7cb704986d68de1803649"
     },
     {
       "image": "pwa/tablet/players/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/index.html-back-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/index.html-back-2.png",
+      "replacement_sha256": "510792362df6299bcbe088569c58bef630239eab80a7cb704986d68de1803649"
     },
     {
       "image": "pwa/tablet/players/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/index.html-link-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/index.html-link-0.png",
+      "replacement_sha256": "fc291b5c8200650694929a99dbd1c7f8e5461d282f91d8cbe6d03bfc995a41d7"
     },
     {
       "image": "pwa/tablet/players/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/index.html-link-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/index.html-link-1.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/players/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/index.html-link-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/index.html-link-2.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/players/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/index.html-link-before.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/index.html-link-before.png",
+      "replacement_sha256": "510792362df6299bcbe088569c58bef630239eab80a7cb704986d68de1803649"
     },
     {
       "image": "pwa/tablet/players/index.html.png",
@@ -4864,80 +5046,94 @@
     },
     {
       "image": "pwa/tablet/players/kazuma-okamoto.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-back-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/kazuma-okamoto.html-back-0.png",
+      "replacement_sha256": "749b4b57cd538c1afc1f2e7ba613dbdd1ee70ce2e12f0bc042610938ab57cce3"
     },
     {
       "image": "pwa/tablet/players/kazuma-okamoto.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-back-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/kazuma-okamoto.html-back-1.png",
+      "replacement_sha256": "725dc4db0a0a3cbee0e2e75c947321c45c92530e3620b5f49a1cf6c268a6ac2f"
     },
     {
       "image": "pwa/tablet/players/kazuma-okamoto.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-back-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/kazuma-okamoto.html-back-2.png",
+      "replacement_sha256": "725dc4db0a0a3cbee0e2e75c947321c45c92530e3620b5f49a1cf6c268a6ac2f"
     },
     {
       "image": "pwa/tablet/players/kazuma-okamoto.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-link-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/kazuma-okamoto.html-link-0.png",
+      "replacement_sha256": "fc291b5c8200650694929a99dbd1c7f8e5461d282f91d8cbe6d03bfc995a41d7"
     },
     {
       "image": "pwa/tablet/players/kazuma-okamoto.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-link-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/kazuma-okamoto.html-link-1.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/players/kazuma-okamoto.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-link-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/kazuma-okamoto.html-link-2.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/players/kazuma-okamoto.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/players/kazuma-okamoto.html-link-before.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/players/kazuma-okamoto.html-link-before.png",
+      "replacement_sha256": "725dc4db0a0a3cbee0e2e75c947321c45c92530e3620b5f49a1cf6c268a6ac2f"
     },
     {
       "image": "pwa/tablet/players/kazuma-okamoto.html.png",
@@ -5271,80 +5467,94 @@
     },
     {
       "image": "pwa/tablet/score.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/score.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/score.html-back-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/tablet/score.html-back-0.png",
+      "replacement_sha256": "723bd5895c6adbaf6c77366c3d231e3ba73a611be02e9275f51554f4021bc93a"
     },
     {
       "image": "pwa/tablet/score.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/score.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/score.html-back-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/tablet/score.html-back-1.png",
+      "replacement_sha256": "723bd5895c6adbaf6c77366c3d231e3ba73a611be02e9275f51554f4021bc93a"
     },
     {
       "image": "pwa/tablet/score.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/score.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/score.html-back-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/tablet/score.html-back-2.png",
+      "replacement_sha256": "723bd5895c6adbaf6c77366c3d231e3ba73a611be02e9275f51554f4021bc93a"
     },
     {
       "image": "pwa/tablet/score.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/score.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/score.html-link-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/tablet/score.html-link-0.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/score.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/score.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/score.html-link-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/tablet/score.html-link-1.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/score.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/score.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/score.html-link-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/tablet/score.html-link-2.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/score.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/score.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/score.html-link-before.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/score-final/pwa/tablet/score.html-link-before.png",
+      "replacement_sha256": "723bd5895c6adbaf6c77366c3d231e3ba73a611be02e9275f51554f4021bc93a"
     },
     {
       "image": "pwa/tablet/score.html.png",
@@ -5447,80 +5657,94 @@
     },
     {
       "image": "pwa/tablet/soccer.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/soccer.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/soccer.html-back-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/soccer.html-back-0.png",
+      "replacement_sha256": "e9c9f70542e4edcf7fbe23fa194388f108ee2a1b5f945f2b7ec4b7bd22f95649"
     },
     {
       "image": "pwa/tablet/soccer.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/soccer.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/soccer.html-back-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/soccer.html-back-1.png",
+      "replacement_sha256": "e9c9f70542e4edcf7fbe23fa194388f108ee2a1b5f945f2b7ec4b7bd22f95649"
     },
     {
       "image": "pwa/tablet/soccer.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/soccer.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/soccer.html-back-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/soccer.html-back-2.png",
+      "replacement_sha256": "e9c9f70542e4edcf7fbe23fa194388f108ee2a1b5f945f2b7ec4b7bd22f95649"
     },
     {
       "image": "pwa/tablet/soccer.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/soccer.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/soccer.html-link-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/soccer.html-link-0.png",
+      "replacement_sha256": "fc291b5c8200650694929a99dbd1c7f8e5461d282f91d8cbe6d03bfc995a41d7"
     },
     {
       "image": "pwa/tablet/soccer.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/soccer.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/soccer.html-link-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/soccer.html-link-1.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/soccer.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/soccer.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/soccer.html-link-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/soccer.html-link-2.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/soccer.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/soccer.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/soccer.html-link-before.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/soccer.html-link-before.png",
+      "replacement_sha256": "e9c9f70542e4edcf7fbe23fa194388f108ee2a1b5f945f2b7ec4b7bd22f95649"
     },
     {
       "image": "pwa/tablet/soccer.html.png",
@@ -5821,80 +6045,94 @@
     },
     {
       "image": "pwa/tablet/threads/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/threads/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/threads/index.html-back-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/threads/index.html-back-0.png",
+      "replacement_sha256": "a64cab44d9c2302eb68959c2e90112e6e3a18a215005cdfb945474a307763692"
     },
     {
       "image": "pwa/tablet/threads/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/threads/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/threads/index.html-back-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/threads/index.html-back-1.png",
+      "replacement_sha256": "a64cab44d9c2302eb68959c2e90112e6e3a18a215005cdfb945474a307763692"
     },
     {
       "image": "pwa/tablet/threads/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/threads/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/threads/index.html-back-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/threads/index.html-back-2.png",
+      "replacement_sha256": "a64cab44d9c2302eb68959c2e90112e6e3a18a215005cdfb945474a307763692"
     },
     {
       "image": "pwa/tablet/threads/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/threads/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/threads/index.html-link-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/threads/index.html-link-0.png",
+      "replacement_sha256": "fc291b5c8200650694929a99dbd1c7f8e5461d282f91d8cbe6d03bfc995a41d7"
     },
     {
       "image": "pwa/tablet/threads/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/threads/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/threads/index.html-link-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/threads/index.html-link-1.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/threads/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/threads/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/threads/index.html-link-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/threads/index.html-link-2.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/threads/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/threads/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/threads/index.html-link-before.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/threads/index.html-link-before.png",
+      "replacement_sha256": "a64cab44d9c2302eb68959c2e90112e6e3a18a215005cdfb945474a307763692"
     },
     {
       "image": "pwa/tablet/threads/index.html.png",
@@ -5920,80 +6158,94 @@
     },
     {
       "image": "pwa/tablet/tiktok/index.html-back-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/tiktok/index.html-back-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/tiktok/index.html-back-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/tiktok/index.html-back-0.png",
+      "replacement_sha256": "2d75b5b097c918cbc0c49d9c063dfd94bddedd9b5765e8b488b7b16c90b200dc"
     },
     {
       "image": "pwa/tablet/tiktok/index.html-back-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/tiktok/index.html-back-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/tiktok/index.html-back-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/tiktok/index.html-back-1.png",
+      "replacement_sha256": "2d75b5b097c918cbc0c49d9c063dfd94bddedd9b5765e8b488b7b16c90b200dc"
     },
     {
       "image": "pwa/tablet/tiktok/index.html-back-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/tiktok/index.html-back-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/tiktok/index.html-back-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/tiktok/index.html-back-2.png",
+      "replacement_sha256": "2d75b5b097c918cbc0c49d9c063dfd94bddedd9b5765e8b488b7b16c90b200dc"
     },
     {
       "image": "pwa/tablet/tiktok/index.html-link-0.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/tiktok/index.html-link-0.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/tiktok/index.html-link-0.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/tiktok/index.html-link-0.png",
+      "replacement_sha256": "fc291b5c8200650694929a99dbd1c7f8e5461d282f91d8cbe6d03bfc995a41d7"
     },
     {
       "image": "pwa/tablet/tiktok/index.html-link-1.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/tiktok/index.html-link-1.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/tiktok/index.html-link-1.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/tiktok/index.html-link-1.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/tiktok/index.html-link-2.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/tiktok/index.html-link-2.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/tiktok/index.html-link-2.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/tiktok/index.html-link-2.png",
+      "replacement_sha256": "8d13585414debfc0040511bf37865d73a06c335741dde74b21363b9492daddfb"
     },
     {
       "image": "pwa/tablet/tiktok/index.html-link-before.png",
-      "baseline": "docs/audit-evidence/visual-baseline/pwa/tablet/tiktok/index.html-link-before.jpg",
+      "baseline": "build/visual-baseline/pwa/tablet/tiktok/index.html-link-before.jpg",
       "source_size": [
         1536,
         2048
       ],
-      "review": "不合格（異なるページへ進むと配色が切り替わる）",
+      "review": "合格（2026-10-27再撮影。配色・遷移領域の部分確認）",
       "scope": "全ページ冒頭・操作と遷移。長文中段/末尾は代表抜取。外部埋込・最新値・全字は未確認。",
-      "approved": false
+      "approved": true,
+      "replacement_source": "build/visual-fixes/pwa/pwa/tablet/tiktok/index.html-link-before.png",
+      "replacement_sha256": "2d75b5b097c918cbc0c49d9c063dfd94bddedd9b5765e8b488b7b16c90b200dc"
     },
     {
       "image": "pwa/tablet/tiktok/index.html.png",

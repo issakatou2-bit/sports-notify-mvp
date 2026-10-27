@@ -9,7 +9,7 @@ import review_render_v3 as r3
 L, R = 72, 940
 BODY_TOP, BODY_BOTTOM = 390, 1440
 CAPTION = (64, 1660, 940, 1860)
-PORTRAIT = (714, 1460, 940, 1640)
+PORTRAIT = (694, 1484, 920, CAPTION[1]+24)
 
 
 def intersects(a, b):
@@ -87,22 +87,21 @@ class Screen:
         ctx = r3._CAPTION
         elapsed = self.t if r3._PROGRAM_CLOCK[0] is None else r3._PROGRAM_CLOCK[0]-ctx['start']
         line = r3.current_sentence(elapsed, ctx['text'], ctx['duration']) if ctx['text'] else ''
-        if line and not ctx.get('hide_caption'):
-            import bubble_styles
-            speaker, _ = solo_host.presentation('metan', ('metan',))
-            # 既存の幅・48px起点・数字強調・文節改行を引き継ぐ。
-            bubble_styles.draw(self.im, speaker, line, style='slant', box=CAPTION, seconds=elapsed)
-        else:
-            speaker, _ = solo_host.presentation('metan', ('metan',))
+        speaker, _ = solo_host.presentation('metan', ('metan',))
         face = r3.face_for(line, elapsed, ctx['duration'] or 1)
         art = characters.bust(speaker, face, 360, False)
         if art is None:
             raise ValueError('胸上の既存素材がありません')
-        x = R-art.width
+        x = PORTRAIT[2]-art.width
         y = PORTRAIT[3]-art.height
         self.im.paste(art, (x, y), art)
         self.im.info['duo_layer'] = [dict(who=speaker, face=face, height=360, dim=False,
-                                         at=[x,y], cut=art.height)]
+                                         at=[x,y], cut=max(1,CAPTION[1]-y))]
+        if line and not ctx.get('hide_caption'):
+            import bubble_styles
+            # 既存の幅・48px起点・数字強調・文節改行を引き継ぐ。
+            # 胸上の下端に字幕を後から重ね、切れ目を箱の下へ隠す。
+            bubble_styles.draw(self.im, speaker, line, style='slant', box=CAPTION, seconds=elapsed)
         # 出典の長文は2行。日次の詳細出典は従来の説明欄と材料に保持。
         source = spec.get('source', '')
         # 雨衣の回はクレジットが長い（10/26 朝の結果が書き出しで停止）。前置きを詰め、入らなければ字を2段まで小さくする。
