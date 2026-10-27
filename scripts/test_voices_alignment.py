@@ -21,7 +21,8 @@ class VoicesAlignment(unittest.TestCase):
     def program(self):
         fixture = json.loads((Path(__file__).parent / 'fixtures/comment/voices-20261024.json').read_text(encoding='utf-8'))
         data = fixture['data']
-        with patch.dict(os.environ, fixture['env']), patch.object(r3, 'LOOK', 'v4'):
+        import ui_voice_policy
+        with patch.dict(os.environ, fixture['env']), patch.object(r3, 'LOOK', 'v4'), patch.object(ui_voice_policy,'decide',return_value=dict(version=1,planned_host='ui',reason=None,comparison_eligible=True,mode='live')):
             narration = g.build_narration(data, 'voices')
             design = daily_v3.prepare(data, narration, 'voices')
             original = copy.deepcopy(narration)

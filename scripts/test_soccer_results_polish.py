@@ -30,6 +30,9 @@ class ResultsPolish(unittest.TestCase):
         self.env=patch.dict(os.environ,dict(COLLESPO_SOLO_HOST='metan',COLLESPO_HOST_SPLIT='',
             COLLESPO_SHORT_LOOK='v4',COLLESPO_SOCCER_LOOK='v5',COLLESPO_BUBBLE='slant',COLLESPO_CAPTION_BREAKS='on'))
         self.env.start();self.addCleanup(self.env.stop)
+        import ui_voice_policy
+        decision=patch.object(ui_voice_policy,'decide',return_value=dict(version=1,planned_host='ui',reason=None,comparison_eligible=True,mode='live'))
+        decision.start();self.addCleanup(decision.stop)
         self.addCleanup(render.r3.set_program_clock,None)
 
     def test_every_announced_match_has_factual_details_and_no_zero_stats(self):
@@ -139,6 +142,7 @@ class ResultsPolish(unittest.TestCase):
         narr=story.narration(fixed())
         assignment=host_split.plan('soccer_results','2026-10-16')
         narr.update(host_assignment=assignment,voice_resolution=dict(host='ui',portrait_dir='missing'))
+        narr['host_original_segments'] = __import__('copy').deepcopy(narr['segments'])
         build=render.ROOT/'build';build.mkdir(exist_ok=True)
         with tempfile.TemporaryDirectory(dir=build) as folder,patch.dict(os.environ,{'COLLESPO_HOST_SPLIT':'half'}):
             folder=Path(folder);source=folder/'narration.json';audio=folder/'audio';audio.mkdir()

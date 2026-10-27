@@ -99,6 +99,8 @@ def check_fresh(fix):
 
 def note(fix, video_id):
     """新しい動画の説明欄の頭に、作り直した理由を足す（同じ文が既にあれば足さない）。"""
+    from publication_writer import mirror_correction
+    mirror_correction(fix, video_id, root=ROOT)
     import hold_video
     yt = hold_video.client()
     if yt is None or not fix.get("note"):

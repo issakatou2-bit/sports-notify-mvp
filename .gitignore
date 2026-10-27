@@ -36,4 +36,7 @@ collespo-demo/
 /docs/DECISIONS.md
 /docs/PLAN.md
 /docs/REVENUE_OPERATIONS.md
+/data/publications/**/*.lock
+/data/publications/**/*.tmp
+/data/publication_recovery/*.tmp
 !/docs/PUBLIC_CLEANUP_2026-10-14.md

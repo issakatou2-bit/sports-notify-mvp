@@ -1703,6 +1703,11 @@ def _v3_focus(t, kind, meta, spec, topic, seg, dur):
 def render_v3(t, kind, meta, spec, topic, seg=None, dur=None):
     """新デザイン「電光掲示板」（review_render_v3）。材料の style="v3" のときだけ。"""
     import review_render_v3 as r3
+    if r3.LOOK == 'v4' and spec.get('game') and kind != 'outro':
+        import game_ui_short
+        material = dict(spec, items=list_items(meta.get('topic', topic)))
+        return game_ui_short.frame(t, kind, meta, material,
+                                   spec.get('kind_label') or ('PSの話題' if spec.get('story') else 'シーズンまとめ'))
     focus = _v3_focus(t, kind, meta, spec, topic, seg, dur)
     if kind=='next_line':
         import next_line
@@ -1849,6 +1854,8 @@ def main():
     import host_split
     if not args.narration_out:
         narration = host_split.use_audio(narration, args.audio_dir)
+    if host_split.enabled():
+        narration['ui_stock_topic'] = args.topic
     narration = host_split.prepare(narration, host_split.asset_kind(args.topic))
     import solo_host
     if solo_host.for_segments(narration['segments']) == 'ui':
@@ -1892,6 +1899,9 @@ def main():
     import duo
     is_duo=any((s.get('meta') or {}).get('duo') for s in narration['segments'])
     durations = duo.durations(segs) if is_duo else plan_durations(segs)
+    if (LIST_TOPICS.get(args.topic) or {}).get('game'):
+        import game_ui_short
+        segs = game_ui_short.annotate(segs, dict(LIST_TOPICS[args.topic], items=list_items(args.topic)))
     if is_duo:
         if len(segs)!=len(narration['segments']) or any(
             (a.get('text'),a.get('speaker'),a.get('kind'))!=(b.get('text'),b.get('speaker'),b.get('kind'))
@@ -1972,7 +1982,7 @@ def main():
                     key=(screen,card.get('kind'),card.get('head'),card.get('name'),card.get('page'),card.get('row'))
                     if key!=visual_key:
                         visual_key=key;wipe_frame=0;wipe_previous=previous_frame
-                    raw=video_common.short_transition(wipe_previous,image,wipe_frame,FPS,True) if _r3.LOOK=='v4' else image.tobytes()
+                    raw=video_common.short_transition(wipe_previous,image,wipe_frame,FPS,True) if _r3.LOOK=='v4' and not image.info.get('game_ui') else image.tobytes()
                     wipe_frame+=1
                     proc.stdin.write(raw)
                     previous_frame=raw

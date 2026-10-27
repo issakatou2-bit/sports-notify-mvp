@@ -91,3 +91,5 @@ if __name__ == '__main__':
     if ap.parse_args().sync:
         for path, rows in zip(PATHS, load(refresh=True)):
             (ROOT/path).write_text(json.dumps(rows, ensure_ascii=False, indent=2)+'\n', encoding='utf8')
+            from publication_writer import mirror_file
+            mirror_file(ROOT/path, root=ROOT)

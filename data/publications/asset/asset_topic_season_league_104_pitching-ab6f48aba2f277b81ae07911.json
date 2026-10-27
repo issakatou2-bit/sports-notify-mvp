@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:season_league_104_pitching",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "season_league_104_pitching"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/asset/season_league_104_pitching",
+      "service": "youtube",
+      "video_id": "4DMS6qKPFiQ",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-20T07:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-10-20",
+      "run_at": "2026-10-20T06:52:30.032610+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.675466+00:00",
+      "fingerprint": "3f3f05d8b2a29239ab11ec9ea0136f930c1938dddc7d2fb2362d0c1891442d93",
+      "event_id": "bcce82d360f150a71e157e8514a1db7f0242e3e2c14f1ea90a744f62cc84b89a"
+    },
+    {
+      "source": "published_assets/assets/season_league_104_pitching",
+      "service": "youtube",
+      "video_id": "4DMS6qKPFiQ",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-10-20T06:52:30.024378+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.796379+00:00",
+      "fingerprint": "ca5c34f9a4ef0d6b7528a61a84dae36eeb139c398378c187dd0ee88c26c10828",
+      "event_id": "4ec25f2d0d2d6c44f6d1eb3a07bf078658d605e76d2233a02259b6281e486048"
+    }
+  ]
+}

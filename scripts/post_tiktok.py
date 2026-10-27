@@ -388,6 +388,8 @@ def main():
     }
     rec.write_text(json.dumps(data, ensure_ascii=False, indent=2),
                    encoding="utf-8")
+    from publication_writer import mirror_file
+    mirror_file(rec, ledger_name='published_tiktok')
     print(f"\n{message} ({rec})")
     return exit_code
 

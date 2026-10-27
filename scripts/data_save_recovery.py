@@ -20,7 +20,11 @@ def snapshot(paths):
     root.mkdir(parents=True, exist_ok=True)
     target = pathlib.Path(tempfile.mkdtemp(prefix='save-', dir=root))
     ids = set()
+    expanded = []
     for name in paths:
+        path = pathlib.Path(name)
+        expanded.extend(sorted(path.rglob('*.json')) if path.is_dir() else [path])
+    for name in expanded:
         path = pathlib.Path(name)
         if path.is_absolute() or '..' in path.parts or not path.is_file() or path.suffix != '.json':
             continue
