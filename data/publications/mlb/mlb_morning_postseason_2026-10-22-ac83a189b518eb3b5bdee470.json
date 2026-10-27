@@ -1,0 +1,30 @@
+{
+  "publication_id": "mlb:morning_postseason:2026-10-22",
+  "domain": "mlb",
+  "kind": "morning_postseason",
+  "key_parts": {
+    "legacy_key": "2026-10-22"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/morning_postseason/2026-10-22",
+      "service": "youtube",
+      "video_id": "tUqx1lJLHkE",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-22T11:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-10-22",
+      "run_at": "2026-10-22T06:10:36.071032+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.654138+00:00",
+      "fingerprint": "c615899d0785e91e81616d3327d1225bea28c0660effc177ea6b16014647dcba",
+      "event_id": "14e270805a2df07ef91bcd02be5cd8dd2c8bbe491fd91035e4d996cade0e5358"
+    }
+  ]
+}

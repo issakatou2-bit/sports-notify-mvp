@@ -1,0 +1,30 @@
+{
+  "publication_id": "mlb:morning_voices:2026-10-19",
+  "domain": "mlb",
+  "kind": "morning_voices",
+  "key_parts": {
+    "legacy_key": "2026-10-19"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/morning_voices/2026-10-19",
+      "service": "youtube",
+      "video_id": "mMZIGs8s7kk",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-19T08:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-10-19",
+      "run_at": "2026-10-19T06:26:12.439412+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.587449+00:00",
+      "fingerprint": "c252604ff13e8bd460597e93f46a456e4addfd1a9f5b646f52834777b799f834",
+      "event_id": "05a236da61fd6055c869d5513956fb38c4d2fa3083f694deada8e392238b692e"
+    }
+  ]
+}

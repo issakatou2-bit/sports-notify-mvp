@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:season_team_115",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "season_team_115"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/asset/season_team_115",
+      "service": "youtube",
+      "video_id": "jSkBbAiXqXw",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-21T07:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-10-21",
+      "run_at": "2026-10-21T06:42:57.298322+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.677537+00:00",
+      "fingerprint": "8995fe4d8782b925a866a7ac8e5e4e16075fda253cfffd82890c7b3f15c117d2",
+      "event_id": "179cf09615f39bdd97663a2e6b1e41202683be9f8dab5f542dda7c8be11eb47d"
+    },
+    {
+      "source": "published_assets/assets/season_team_115",
+      "service": "youtube",
+      "video_id": "jSkBbAiXqXw",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-10-21T06:42:57.288798+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.799183+00:00",
+      "fingerprint": "a456e9563c821e6bd7afffd80fcb0a8e06fb9bee313857bd26e47b36241ee6ce",
+      "event_id": "b962417e744088a2ebe701f9bb5be84ca36c29cdc85ccd37fb11ccb2f919737a"
+    }
+  ]
+}

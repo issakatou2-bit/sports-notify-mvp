@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:venue_fenway",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "venue_fenway"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/venue_fenway",
+      "service": "youtube",
+      "video_id": "ENlvvo6diM8",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-08-07T15:07:51.631469+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.699995+00:00",
+      "fingerprint": "a58d62706b91229cd678565323adbbd1ab62854d6d7e4f8d530015c2b657918a",
+      "event_id": "2745ed21478c9531cb140dc81596198c02d06d5180653d4b3f8eeefe40d66fdc"
+    }
+  ]
+}

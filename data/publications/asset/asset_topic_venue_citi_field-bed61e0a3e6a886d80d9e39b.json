@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:venue_citi_field",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "venue_citi_field"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/venue_citi_field",
+      "service": "youtube",
+      "video_id": "tmbAB3s15t4",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-10-20T06:50:45.176601+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.795787+00:00",
+      "fingerprint": "b82921c04a28b98a7332ee69def7e026cdee46fb8929b93230b423288ab29331",
+      "event_id": "8ed1623b0fce91c3fd148be149551e28dd8865a2a054f990a509653947a8b191"
+    }
+  ]
+}

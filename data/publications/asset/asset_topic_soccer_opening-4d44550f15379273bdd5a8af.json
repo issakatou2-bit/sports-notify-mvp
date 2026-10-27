@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:soccer_opening",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "soccer_opening"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/soccer_opening",
+      "service": "youtube",
+      "video_id": "hCONC_ioPUY",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-08-11T13:16:09.754369+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.706866+00:00",
+      "fingerprint": "578333c42975c124d706e1afa80200d9f904d00bc5bbb81e56eac2946d3e05d1",
+      "event_id": "fa73168744bf9102505cf5313d12fa8a7f52e0df3a969e32ee5b862cf19b437f"
+    }
+  ]
+}
