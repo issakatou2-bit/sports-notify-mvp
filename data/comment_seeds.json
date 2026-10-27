@@ -1,6 +1,32 @@
 {
-  "updated_at": null,
-  "status": "not_fetched",
+  "updated_at": "2026-10-27T07:31:45.337014+00:00",
+  "status": "ok",
+  "seeds": [],
+  "reason": {
+    "call": "videos",
+    "page": 1,
+    "exception_type": "HTTPError",
+    "http_status": 403,
+    "api_reason": "quotaExceeded"
+  },
   "source": "YouTube Data API commentThreads・videos",
-  "seeds": []
+  "scope": {
+    "days": 7,
+    "since": "2026-10-20T07:31:45.337014+00:00",
+    "until": "2026-10-27T07:31:45.337014+00:00",
+    "comments": "公開動画の公開トップレベルコメント（返信は対象外）",
+    "max_pages": 10,
+    "max_videos": 50,
+    "video_pages": 2,
+    "mode": "channel",
+    "fallback_video_days": 7
+  },
+  "coverage": {
+    "pages": 1,
+    "scanned": 9,
+    "complete": true,
+    "api_calls": {
+      "commentThreads": 1
+    }
+  }
 }

@@ -151,10 +151,17 @@ class Screen:
     def preview(self, specs, spec):
         pages=[specs[i:i+4] for i in range(0,len(specs),4)]
         index=page_at(self.t,len(pages));shown=pages[index]
-        self.title('注目試合の予告',' / '.join(dict.fromkeys(s['date'] for s in shown))+'　'+' / '.join(dict.fromkeys(s['league'] for s in shown)))
-        height=(BODY_BOTTOM-BODY_TOP)//len(shown)
+        self.title('注目試合の予告')
+        subtitle=' / '.join(dict.fromkeys(s['date'] for s in shown))+'　'+' / '.join(dict.fromkeys(s['league'] for s in shown))
+        subtitle_bottom=self.lines(L,330,subtitle,30,R-L,c.MUTED,'supplement')
+        # 件数が少なくても1件分の中身を縦に引き伸ばさない。
+        # 札内は4件の日と同じ文字・行間を保ち、まとまりを中央へ置く。
+        body_top=max(BODY_TOP,subtitle_bottom+16)
+        height=min(300,(BODY_BOTTOM-body_top)//len(shown))
+        top=body_top+(BODY_BOTTOM-body_top-height*len(shown))//2
+        self.im.info['preview_body']=[L,top,R,top+height*len(shown)-14]
         for i,s in enumerate(shown):
-            y=BODY_TOP+i*height;self.panel(y,y+height-14)
+            y=top+i*height;self.panel(y,y+height-14)
             # 時刻列を固定し、長いクラブ名は2行のまま40pxを保つ。
             self.name(100,y+28,s['home'],566,40)
             self.name(100,y+148,s['away'],566,40)
@@ -430,6 +437,9 @@ def check_frame(im,clubs):
         for e in cards+body:
             if intersects(e['box'],caption):errors.append(dict(caption_overlap=e))
         if 1920-caption[3]>100:errors.append(dict(empty_below_caption=1920-caption[3]))
-    if cards and not any(im.info.get(k) for k in ('compact_player_statistics','compact_results','compact_score')) and BODY_BOTTOM-max(e['box'][3] for e in cards)>80:
-        errors.append(dict(empty_body_bottom=BODY_BOTTOM-max(e['box'][3] for e in cards)))
+    # 予告は内容量に合わせた中央配置。札の中の余白は上の200px検査で
+    # 従来どおり検査し、外側は描画が宣言した情報領域の下端へ照合する。
+    body_bottom=im.info.get('preview_body',[L,BODY_TOP,R,BODY_BOTTOM])[3]
+    if cards and not any(im.info.get(k) for k in ('compact_player_statistics','compact_results','compact_score')) and body_bottom-max(e['box'][3] for e in cards)>80:
+        errors.append(dict(empty_body_bottom=body_bottom-max(e['box'][3] for e in cards)))
     return errors

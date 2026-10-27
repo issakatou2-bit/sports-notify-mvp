@@ -85,8 +85,15 @@ def for_document(document, materials):
 
 def review(text, materials, why=None, context=None):
     """戻り値は一致/矛盾/確認不能。指摘された種類だけを免除する。"""
-    if re.search(r'昨季|昨年|前季|ではない|ではなく|だった|でした', text):
-        return None
+    # 現在順位と昨季順位が同じ段落にある。過去の一文だけを外し、
+    # 現在の勝点差まで検査対象から落とさない（10/24夜の実例）。
+    current=[]
+    for sentence in re.split(r'[。！？\n]',text):
+        # 過去の話の次の文も、その時点を引き継ぐ可能性がある。
+        if re.search(r'昨季|昨年|前季|だった|でした',sentence):break
+        if not re.search(r'ではない|ではなく',sentence):current.append(sentence)
+    text='。'.join(current)
+    if not text.strip():return None
     targets = set()
     if why is not None:
         if re.search(r'順位|首位|何位|\d+位', why):

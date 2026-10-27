@@ -11,6 +11,7 @@ import pathlib
 import re
 import sys
 import unicodedata
+from urllib.error import HTTPError
 from datetime import datetime, timedelta, timezone
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -115,6 +116,67 @@ def timestamp(value):
         return None
 
 
+API_REASONS = frozenset(("commentsDisabled", "forbidden", "quotaExceeded",
+    "dailyLimitExceeded", "invalidParameter", "badRequest", "operationNotSupported",
+    "notFound", "videoNotFound", "processingFailure", "accessNotConfigured",
+    "keyInvalid", "ipRefererBlocked", "insufficientPermissions", "unsupportedOperation"))
+FALLBACK_REASONS = frozenset(("forbidden", "invalidParameter", "badRequest",
+    "operationNotSupported", "unsupportedOperation", "insufficientPermissions"))
+
+
+class FetchError(ValueError):
+    def __init__(self, reason):
+        self.reason = reason
+        super().__init__(json.dumps(reason, ensure_ascii=False))
+
+
+def failure_reason(exc, call="collect", page=1):
+    """例外文字列・URLは使わず、HTTP本文から許可した理由識別子だけを拾う。"""
+    if isinstance(exc, FetchError):
+        return exc.reason
+    kind = type(exc).__name__
+    result = dict(call=call, page=page,
+                  exception_type=kind if re.fullmatch(r"[A-Za-z_][A-Za-z_0-9]{0,63}", kind) else "Exception")
+    if isinstance(exc, HTTPError):
+        result["http_status"] = exc.code
+        reason = "unknown"
+        try:
+            body = json.loads(exc.read(65536))
+            value = body["error"]["errors"][0]["reason"]
+            if isinstance(value, str) and value in API_REASONS:
+                reason = value
+        except (ValueError, KeyError, IndexError, TypeError, OSError):
+            pass
+        finally:
+            exc.close()
+        result["api_reason"] = reason
+    return result
+
+
+def recent_video_ids(now, *, paths=None):
+    """両台帳の公開日時で直近7日を選ぶ。予定・非公開・日付不明は除外。"""
+    paths = paths if paths is not None else [HERE.parent / "data" / name for name in
+            ("published_videos.json", "published_assets.json")]
+    found = {}
+
+    def visit(node):
+        if isinstance(node, dict):
+            vid = node.get("video_id")
+            published = timestamp(node.get("published_at"))
+            if (isinstance(vid, str) and re.fullmatch(r"[A-Za-z0-9_-]{11}", vid)
+                    and published and now - timedelta(days=7) <= published <= now
+                    and node.get("privacy", "public") == "public"):
+                found[vid] = max(found.get(vid, published), published)
+            for value in node.values():
+                visit(value)
+        elif isinstance(node, list):
+            for value in node:
+                visit(value)
+    for path in paths:
+        visit(json.loads(pathlib.Path(path).read_text(encoding="utf-8")))
+    return sorted(found, key=lambda vid: (found[vid], vid), reverse=True)
+
+
 def public_videos(ids, get, *, details=False):
     """公開状態と自チャンネル所有をvideos.listで二重確認。"""
     valid = {} if details else set()
@@ -134,58 +196,119 @@ def public_videos(ids, get, *, details=False):
 
 
 def collect(*, get=youtube_get, now=None, days=7, max_pages=10,
-            classifier=None, include_comments=False):
+            classifier=None, include_comments=False, max_videos=50, video_pages=2,
+            ledger_paths=None):
     """取得と公開確認を共用。本文の保持は訂正通知が明示した場合だけ。"""
+    if min(days, max_pages, max_videos, video_pages) < 1:
+        raise ValueError("取得上限は正数が必要です")
     classifier = classifier or classify
     now = now or datetime.now(timezone.utc)
     cutoff = now - timedelta(days=days)
     payload = dict(updated_at=now.isoformat(), source="YouTube Data API commentThreads・videos",
                    status="ok", scope=dict(days=days, since=cutoff.isoformat(), until=now.isoformat(),
-                   comments="公開動画の公開トップレベルコメント（返信は対象外）", max_pages=max_pages),
+                   comments="公開動画の公開トップレベルコメント（返信は対象外）", max_pages=max_pages,
+                   max_videos=max_videos, video_pages=video_pages, mode="channel", fallback_video_days=7),
                    coverage=dict(pages=0, scanned=0, complete=True), seeds=[])
-    candidates, seen, tokens = [], set(), set()
-    token = None
-    for _ in range(max_pages):
-        params = dict(part="snippet", allThreadsRelatedToChannelId=CHANNEL_ID,
-                      textFormat="plainText", order="time", maxResults=100)
-        if token:
-            params["pageToken"] = token
-        page = get("commentThreads", **params)
-        if not isinstance(page.get("items"), list):
-            raise ValueError("commentThreadsの一覧が欠測")
-        payload["coverage"]["pages"] += 1
-        older = False
-        for thread in page.get("items") or []:
-            sn = thread.get("snippet") or {}
-            top = sn.get("topLevelComment") or {}
-            item = top.get("snippet") or {}
-            payload["coverage"]["scanned"] += 1
-            published = timestamp(item.get("publishedAt"))
-            if not published:
+    candidates, seen = [], set()
+    raw_get = get
+    calls = {}
+    def get(method, **params):
+        calls[method] = calls.get(method, 0) + 1
+        try:
+            response = raw_get(method, **params)
+            if not isinstance(response, dict) or not isinstance(response.get("items"), list):
+                raise ValueError("一覧が欠測")
+            return response
+        except Exception as exc:
+            raise FetchError(failure_reason(exc, method, calls[method])) from None
+
+    def pages(video_id=None):
+        token, tokens = None, set()
+        limit = video_pages if video_id else max_pages
+        for page_number in range(1, limit + 1):
+            params = dict(part="snippet", textFormat="plainText", order="time", maxResults=100)
+            if video_id:
+                params["videoId"] = video_id
+            else:
+                params["allThreadsRelatedToChannelId"] = CHANNEL_ID
+            if token:
+                params["pageToken"] = token
+            try:
+                page = get("commentThreads", **params)
+                if not isinstance(page.get("items"), list):
+                    raise ValueError("一覧が欠測")
+            except Exception as exc:
+                reason = dict(failure_reason(exc, "commentThreads", page_number), page=page_number)
+                if video_id:
+                    reason["video_id"] = video_id
+                raise FetchError(reason) from None
+            payload["coverage"]["pages"] += 1
+            yield page
+            token = page.get("nextPageToken")
+            if not token:
+                return
+            if token in tokens:
                 payload["coverage"]["complete"] = False
-                continue
-            if published < cutoff:
-                older = True
-                continue
-            if published > now or sn.get("isPublic") is not True or sn.get("channelId") != CHANNEL_ID:
-                continue
-            vid, cid = sn.get("videoId"), top.get("id")
-            if not vid or not cid or cid in seen or item.get("channelId") != CHANNEL_ID:
-                continue
-            seen.add(cid)
-            seed = classifier(item.get("textOriginal") or item.get("textDisplay") or "")
-            if seed:
-                candidates.append((vid, seed))
-        token = page.get("nextPageToken")
-        if older or not token:
-            break
-        if token in tokens:
-            payload["coverage"]["complete"] = False
-            break
-        tokens.add(token)
-    else:
+                return
+            tokens.add(token)
         if token:
             payload["coverage"]["complete"] = False
+
+    def scan(video_id=None):
+        for page in pages(video_id):
+            older = False
+            for thread in page.get("items") or []:
+                sn = thread.get("snippet") or {}
+                top = sn.get("topLevelComment") or {}
+                item = top.get("snippet") or {}
+                payload["coverage"]["scanned"] += 1
+                published = timestamp(item.get("publishedAt"))
+                if not published:
+                    payload["coverage"]["complete"] = False
+                    continue
+                if published < cutoff:
+                    older = True
+                    continue
+                if published > now or sn.get("isPublic") is not True or sn.get("channelId") != CHANNEL_ID:
+                    continue
+                vid, cid = sn.get("videoId"), top.get("id")
+                if video_id and vid != video_id:
+                    continue
+                if not vid or not cid or cid in seen or item.get("channelId") != CHANNEL_ID:
+                    continue
+                seen.add(cid)
+                seed = classifier(item.get("textOriginal") or item.get("textDisplay") or "")
+                if seed:
+                    candidates.append((vid, seed))
+            if older:
+                break
+
+    try:
+        scan()
+    except FetchError as exc:
+        reason = exc.reason
+        if (reason.get("http_status") not in (400, 403, 410)
+                or reason.get("api_reason") not in FALLBACK_REASONS):
+            raise
+        payload["reason"] = reason
+        candidates.clear()
+        seen.clear()
+        payload["scope"]["mode"] = "videoId"
+        payload["coverage"]["complete"] = False  # 古い動画への新着コメントは代替対象外
+        ids = recent_video_ids(now, paths=ledger_paths)
+        payload["coverage"].update(videos_available=len(ids), videos_selected=min(len(ids), max_videos),
+                                  skipped=[])
+        valid_ids = public_videos(ids[:max_videos], get)
+        for vid in ids[:max_videos]:
+            if vid not in valid_ids:
+                continue
+            try:
+                scan(vid)
+            except FetchError as video_exc:
+                if video_exc.reason.get("api_reason") != "commentsDisabled":
+                    raise
+                payload["coverage"]["skipped"].append(video_exc.reason)
+    payload["coverage"]["api_calls"] = calls
     valid = public_videos({vid for vid, _ in candidates}, get, details=include_comments)
     if include_comments:
         payload["seeds"] = [dict(seed, source_video_id=vid, source_video_title=valid[vid])
@@ -210,9 +333,11 @@ def main():
     ap.add_argument("--out", default="data/comment_seeds.json")
     ap.add_argument("--days", type=int, default=7)
     ap.add_argument("--max-pages", type=int, default=10)
+    ap.add_argument("--max-videos", type=int, default=50)
+    ap.add_argument("--video-pages", type=int, default=2)
     args = ap.parse_args()
-    if args.days < 1 or args.max_pages < 1:
-        ap.error("daysとmax-pagesは正数が必要です")
+    if min(args.days, args.max_pages, args.max_videos, args.video_pages) < 1:
+        ap.error("取得日数・動画数・ページ数は正数が必要です")
     # 引数処理が先なので --help は鍵の参照も通信もしない。
     if os.environ.get("COLLESPO_COMMENT_SEEDS", "off") != "on":
         print("[info] コメント候補は既定オフです")
@@ -223,16 +348,21 @@ def main():
         code = 1
     else:
         try:
-            payload = collect(now=now, days=args.days, max_pages=args.max_pages)
+            payload = collect(now=now, days=args.days, max_pages=args.max_pages,
+                              max_videos=args.max_videos, video_pages=args.video_pages)
             code = 0
-        except Exception:
-            # 例外には鍵付きURLや応答本文が入る可能性があるため固定の失敗理由にする。
-            payload = dict(updated_at=now.isoformat(), status="fetch_failed", seeds=[])
+        except Exception as exc:
+            payload = dict(updated_at=now.isoformat(), status="fetch_failed", seeds=[],
+                           reason=failure_reason(exc))
             code = 1
     dest = pathlib.Path(args.out)
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"[info] コメント候補 {payload['status']}: {len(payload['seeds'])}件")
+    if "reason" in payload:
+        print("[info] reason: " + json.dumps(payload["reason"], ensure_ascii=False))
+    for skipped in payload.get("coverage", {}).get("skipped", []):
+        print("[info] skipped: " + json.dumps(skipped, ensure_ascii=False))
     return code
 
 
