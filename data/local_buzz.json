@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-26T06:02:00.356011+00:00",
+  "updated_at": "2026-10-27T06:01:55.758965+00:00",
   "sources": [
     {
       "name": "r/baseball",
@@ -16,25 +16,25 @@
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 27,
+      "mentions": 18,
       "tone": "好調",
-      "gist": "ブリュワーズWS2連勝、救援陣ERA1.24"
+      "gist": "ブリュワーズ、WS第3戦10-1大勝で3勝0敗に王手"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 9,
+      "mentions": 7,
       "tone": "不振",
-      "gist": "レイズ2連敗、Caminero不満も3戦目へ"
+      "gist": "レイズ、第3戦大敗で崖っぷち、第4戦必勝"
     },
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 1,
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 2,
       "tone": "話題",
-      "gist": "ブリュワーズ全勝なら2005年ソックスと並ぶ"
+      "gist": "メッツ、ドゥンカンのコーチ入りが報じられる"
     },
     {
       "team_id": "136",
@@ -42,7 +42,15 @@
       "name_en": "Seattle Mariners",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ベルデリ、マリナーズ監督選考から辞退"
+      "gist": "マリナーズ、監督候補2人と対面面接へ"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "フィリーズ、ファッツィ氏を新打撃コーチに起用"
     },
     {
       "team_id": "109",
@@ -50,23 +58,7 @@
       "name_en": "Arizona Diamondbacks",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アリゾナ秋季リーグ第3週の好成績者"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ブリュワーズ全勝なら1999年ヤンキースと並ぶ"
-    },
-    {
-      "team_id": "113",
-      "name": "レッズ",
-      "name_en": "Cincinnati Reds",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "1976年レッズが唯一の複数シリーズ全勝"
+      "gist": "アリゾナ・フォールリーグ第3週の好成績者"
     }
   ],
   "players": []
