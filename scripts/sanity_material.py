@@ -107,6 +107,8 @@ def check(document, materials=None):
     import verify_numbers
     import game_fact_guard
     errors = verify_numbers.check(document) + game_fact_guard.check(document)
+    import ps_comment_facts
+    errors += ps_comment_facts.check(document, materials)
     import soccer_sanity_material
     import sanity_evidence
     for index, segment in enumerate(document.get('segments') or [], 1):
