@@ -228,6 +228,9 @@ def numeric_material(data):
 
 
 def validate_frame(im,data,clubs):
+    from visual_capture import layout_issues, renderer_layout
+    body_problems = layout_issues(renderer_layout({'v3_outro': im.info.get('v3_outro'),
+        'duo_portraits': im.info.get('duo_portraits', []), 'duo_caption': im.info.get('duo_caption')}))
     if soccer_look.v5() or im.info.get('soccer_readable'):
         import soccer_v5_cards as v5
         problems=v5.check_frame(im,clubs)
@@ -235,13 +238,13 @@ def validate_frame(im,data,clubs):
             import soccer_result_story
             extra=set(cards.drawn_numbers(im))-(numeric_material(data)|soccer_result_story.numeric_material(data))
             if extra:problems.append({'numbers_missing_from_material':sorted(extra)})
-        return problems
+        return problems + body_problems
     problems=rules.check_layout(im)+cards.check_club_badges(im,clubs)+rules.check_spacing(im)
     if not im.info.get('v3_outro'):
         import soccer_result_story
         extra=set(cards.drawn_numbers(im))-(numeric_material(data)|soccer_result_story.numeric_material(data))
         if extra:problems.append({'numbers_missing_from_material':sorted(extra)})
-    return problems
+    return problems + body_problems
 
 
 def durations(segments,audio):

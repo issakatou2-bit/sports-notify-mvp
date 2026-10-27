@@ -25,6 +25,7 @@ import re
 
 import site_videos
 from site_analytics import analytics_script
+from site_theme import THEME_HEAD
 
 SITE_URL = "https://collespo.com/"
 DATE_FILE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})\.json$")
@@ -117,7 +118,7 @@ HEAD = """<!DOCTYPE html>
 </head>
 <body>
 <a class="back" href="../">&larr; コレスポ トップへ</a>
-"""
+""".replace('</head>', THEME_HEAD + '\n</head>')
 
 
 def collect_player_games(archive_dir: pathlib.Path) -> dict:

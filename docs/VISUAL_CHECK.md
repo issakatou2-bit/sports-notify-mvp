@@ -235,10 +235,34 @@ checks.ymlのPWA撮影追加は今回行わず、初回報告の実測を基に�
 |選手を選択|候補を選ぶ|枠と値が表示される|`lineup-selected.jpg`|
 |おまかせ|おまかせ編成|各枠が収まる|`lineup-random.jpg`|
 |編成解除|クリア|空の枠に戻る|`lineup-cleared.jpg`|
-|配色を保った遷移|ライトのトップ→日本人選手|ライトを保持|未合格。`scripts/fixtures/visual/theme-light-to-players.jpg`|
+|配色を保った遷移|ライトのトップ→日本人選手|ライトを保持|10/27改修後：`build/visual-fixes/themes-final/pwa-states/{phone,tablet}/theme-light-to-players.png`。旧失敗例はfixturesに保持|
 
 初版の比較JPEGはCSS幅へ縮小。DPR3/2の原寸PNGはbuild側に保持する。
 公式順位表を取れない場合は、明示的に `visual_prepare_site.py --standings-fixture` で架空材料を使える。
 既存rendererのverification.jsonにv3_layoutがあれば、動画撮影時にその範囲の重なり・はみ出し・空きを静的候補として別記録する。
 
 サッカー結果の初版は現行main既定v4の停止後の静止画3枚だけ。締めの体の切れ目を目視で不合格としたため、完成動画の合格とは区別する。詳細は初回報告。
+
+## 10/27の不合格2点の修正確認
+
+生成headは `site_theme.THEME_HEAD` で静的ページと同じ `/site-theme.js` と
+`/site-theme.css` を読む。CSSはページ固有のstyleより後、スクリプトは初回描画前に実行する。
+一覧・詳細・日別アーカイブ・score/soccer/standingsと連携案内も同じ保存値を使用する。
+履歴から戻ったページもpageshowで保存値を読み直す。所有確認用の一行HTMLは表示ページの対象外。
+
+`--states-only --state-groups theme-nav` は両サイズでライト、ダーク、端末連動の明暗を撮る。
+トップで選択→選手一覧→選手詳細→戻る→アーカイブ一覧→score→soccer→standings→日別へ進む。
+手動の明暗は端末設定と逆にして優先順位を確かめ、各到着の保存値・適用値・背景色をmanifestに残す。
+連携・投稿のボタンは押さない。撮影先の日付は保存材料のPOSIX相対パスから取り出す。
+
+`python scripts/preview_visual_fixes.py` は保存ESPN材料（2026-09-20）から
+v6とv4それぞれの冒頭・結果・名簿・締めを3秒地点の静止画として描く。
+字幕がない締めは共通の立ち絵を画面下端へ、v6通常場面は切れ目を字幕の箱の下へ置く。
+既存の札・字幕幅・字サイズ・表情素材は維持する。
+実描画の立ち絵矩形は `visual_capture.renderer_layout` で締めのbody-cut検査に渡す。
+`test_visual_fixes.py` は失敗fixtureの検出と、v6/v4の実描画の合格・再び浮かせた時の不合格を確認する。
+日本語を含む判定文の生成処理はUTF-8の.pyへ保存して実行し、PowerShellのパイプに直接流さない。
+同試験で差し替え一覧の見出し・inventoryの「合格」表記と`???`への文字化けも検査する。
+
+今回の撮影・目視の範囲、基準126枚の差し替え一覧と検査結果は
+`build_reports/visual_fixes_20261027.md` を参照する。完成動画・音声・実公開の合格とは区別する。

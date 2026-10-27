@@ -131,6 +131,13 @@ def layout_issues(layout):
 def renderer_layout(frame, width=1080, height=1920):
     """Adapt the existing v3 renderer evidence without guessing face positions."""
     boxes = []
+    # characters.place_bustsが実際に描いた矩形。締めの下端を推測せず検査する。
+    for i, portrait in enumerate(frame.get('duo_portraits', [])):
+        x, y, right, bottom = portrait['box']
+        if frame.get('v3_outro') and not frame.get('duo_caption'):
+            boxes.append({'id': f'character-{i}', 'role': 'character',
+                          'rect': [x, y, right-x, min(height, bottom)-y],
+                          'body_cut_y': bottom})
     for i, entry in enumerate(frame.get('v3_layout', [])):
         x, y, right, bottom = entry['box']
         boxes.append({'id': str(i), 'role': entry['role'], 'rect': [x,y,right-x,bottom-y],
@@ -161,9 +168,11 @@ DOM = """() => {
   if(s.overflow==='hidden'&&e.scrollHeight>e.clientHeight+3&&e.textContent.trim())findings.push({kind:'clipping-candidate',element:label});
  }
  const preference=localStorage.getItem('collespo.theme');
- if(['light','dark'].includes(preference)&&document.documentElement.dataset.theme!==preference)
+ const expected=['light','dark'].includes(preference)?preference:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+ if(document.documentElement.dataset.theme!==expected)
   findings.push({kind:'theme-preference-not-applied',preference,actual:document.documentElement.dataset.theme||null});
- return {width:innerWidth,height:document.documentElement.scrollHeight,findings};
+ return {width:innerWidth,height:document.documentElement.scrollHeight,preference,theme:document.documentElement.dataset.theme,
+         expected,background:getComputedStyle(document.body).backgroundColor,findings};
 }"""
 
 
@@ -175,8 +184,8 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
 async def capture_pwa(args):
     site = args.site.resolve()
     if not site.is_dir(): raise ValueError(f'Site directory does not exist: {site}')
-    pages = sorted(p.relative_to(site).as_posix() for p in site.rglob('*.html')
-                   if p.relative_to(site).match(args.include))
+    available = sorted(p.relative_to(site).as_posix() for p in site.rglob('*.html'))
+    pages = [name for name in available if Path(name).match(args.include)]
     if not pages: raise ValueError('No HTML pages matched; capture was not performed')
     # Optional PWA dependency: video CI must not need a browser installation.
     async_playwright = importlib.import_module('playwright.async_api').async_playwright
@@ -227,7 +236,7 @@ async def capture_pwa(args):
                             target = urljoin(base + name, href)
                             route_path = urlparse(target).path.lstrip('/') or 'index.html'
                             if route_path.endswith('/'): route_path += 'index.html'
-                            if (not target.startswith(base) or route_path not in pages or route_path == name or
+                            if (not target.startswith(base) or route_path not in available or route_path == name or
                                 re.search(r'callback|tiktok|threads|subscribe|publish|notify|post', href, re.I) or
                                 re.search(r'購読|投稿|公開|通知|購入|ログイン|連携', link['text'])):
                                 continue
@@ -334,10 +343,20 @@ async def capture_states(page, context, out, base, device, w, h, dpr, groups):
                 await save('lineup-cleared',lambda:page.locator('#clearBtn').click())
                 await context.unroute('**/player_stats.json*',sample)
             elif task=='theme-nav':
-                await page.goto(base+'index.html',wait_until='networkidle')
-                await page.locator('#themeChoice').select_option('light')
-                await save('theme-light-source')
-                await save('theme-light-to-players',lambda:page.locator('a[href="players/"]:visible').first.click())
+                for label, choice, media in (('light','light','dark'), ('dark','dark','light'),
+                                              ('system-light','system','light'), ('system-dark','system','dark')):
+                    await page.emulate_media(color_scheme=media)
+                    await page.goto(base+'index.html',wait_until='networkidle')
+                    await page.locator('#themeChoice').select_option(choice)
+                    await save(f'theme-{label}-source')
+                    await save(f'theme-{label}-to-players',lambda:page.locator('a[href="players/"]:visible').first.click())
+                    await save(f'theme-{label}-to-player',lambda:page.locator('.playerlist a[href]').first.click())
+                    await save(f'theme-{label}-back',lambda:page.go_back(wait_until='networkidle'))
+                    for target in ('archive/index.html', 'score.html', 'soccer.html', 'standings.html'):
+                        await save(f'theme-{label}-to-'+target.replace('/','-').replace('.html',''),
+                                   lambda target=target:page.goto(base+target,wait_until='networkidle'))
+                    day=await page.evaluate("fetch('/visual-build.json').then(r=>r.json()).then(d=>d.games_source.split('/').pop().replace('.json','.html'))")
+                    await save(f'theme-{label}-to-archive-day',lambda:page.goto(base+'archive/'+day,wait_until='networkidle'))
         except Exception as error:
             rows.append({'page':task,'device':device,'error':str(error),'visual':'未確認'})
     return rows
