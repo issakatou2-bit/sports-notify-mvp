@@ -5,11 +5,29 @@ from pathlib import Path
 from PIL import Image
 
 
+def apply_usage_policy(data):
+    """10/27の確認済み分類。記号目と虚ろな目を混同しない。"""
+    for r in data['catalog']:
+        if r['slot'] == 'eye':
+            name = Path(r['file']).stem
+            hollow = name.endswith(('見上げ2', '目そらし2', 'カメラ目線2', '普通目2'))
+            r['mood'] = '非平時' if hollow else '平時'
+            r['mood_note'] = ('ハイライトが無い虚ろな目（本人/APSC 10/27）。原画には濃色の小点があるため瞳孔無しとは断定しない'
+                              if hollow else '非平時の虚ろな目に該当しない。目立つ目の制限は別途適用')
+            r['emphatic'] = any(s in name for s in ('○○', '〇〇', '＞＜', 'ぐるぐる', 'コンセント', '縮小', '三白眼')) or name.endswith('見開き')
+        if r['slot'] == 'outfit':
+            r['usage'] = '必要時のみ' if 'その他の服' in r['file'] else '既定'
+    data['eye_moods'] = {m: [r['file'] for r in data['catalog'] if r.get('mood') == m]
+                         for m in ('平時', '非平時')}
+    data['emphatic_eyes'] = [r['file'] for r in data['catalog'] if r.get('emphatic')]
+    data['outfit_usage'] = {r['file']: r['usage'] for r in data['catalog'] if r['slot'] == 'outfit'}
+
+
 def load_parts(folder):
     return json.loads((Path(folder) / 'parts.json').read_text(encoding='utf-8'))
 
 
-def validate_parts(data, files, *, context='平時'):
+def validate_parts(data, files, *, context='平時', factual=False, listener=False, automatic=True):
     catalog = {r['file']: r for r in data['catalog']}
     if len(files) != len(set(files)):
         raise ValueError('同じ部品の重複')
@@ -44,6 +62,10 @@ def validate_parts(data, files, *, context='平時'):
             raise ValueError('目の用途が未確認')
         if eye.get('mood') == '非平時' and context not in rules['nonordinary_contexts']:
             raise ValueError('虚ろな目は非平時の場面だけ（普段の感情・事実説明は禁止）')
+        if (factual or listener or context in ('事実', '聞き手')) and (eye.get('mood') == '非平時' or eye.get('emphatic')):
+            raise ValueError('事実の行・聞き手に虚ろな目や目立つ目は使えません')
+        if automatic and eye.get('usage') == '必要時のみ':
+            raise ValueError('コレスポの自動動画では必要時のみの服は使えません。手動使用は本人へ見本を提示')
     arms = [r for r in selected if r['slot'] in ('arm_front', 'arm_back') and r['bbox']]
     if sum(r['file'] in rules['pointing_arms'] for r in arms) > rules['max_pointing_arms']:
         raise ValueError('指さしは同時に1本まで')
@@ -54,9 +76,9 @@ def validate_parts(data, files, *, context='平時'):
     return selected
 
 
-def compose_parts(folder, data, files, *, context='平時'):
+def compose_parts(folder, data, files, *, context='平時', factual=False, listener=False, automatic=True):
     # 検査が完了するまでPNGを開かない。
-    selected = validate_parts(data, files, context=context)
+    selected = validate_parts(data, files, context=context, factual=factual, listener=listener, automatic=automatic)
     image = Image.new('RGBA', data['size'])
     for record in sorted(selected, key=lambda r: r['order']):
         with Image.open(Path(folder) / record['file']) as layer:

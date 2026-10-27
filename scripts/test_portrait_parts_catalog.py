@@ -78,18 +78,18 @@ class PortraitCatalogTest(unittest.TestCase):
             [find('左腕_腕組み'), find('右腕_下.png')],
             [find('右腕_指さし横'), find('左腕_あごに指')],
             ['白目.png', '黒目.png'],
-            [find('正面向き_目_見開き.png')],
         ]
         with patch('portrait_parts.Image.open', side_effect=AssertionError('描画を開始した')):
             for files in bad:
                 with self.subTest(files=files), self.assertRaises(ValueError):
                     compose_parts(out, data, files)
-        hollow = find('正面向き_目_見開き.png')
-        for context in ('平時', '事実', '怒り', '非平時'):
+        emphatic = find('正面向き_目_見開き.png')
+        for context in ('平時', '怒り', '混乱', 'がーん'):
+            validate_parts(data, [emphatic], context=context)
+        for flag in ('factual', 'listener'):
             with self.assertRaises(ValueError):
-                validate_parts(data, [hollow], context=context)
-        for context in data['rules']['nonordinary_contexts']:
-            validate_parts(data, [hollow], context=context)
+                validate_parts(data, [emphatic], **{flag: True})
+        self.assertEqual(data['eye_moods']['非平時'], [])
         # 前腕にも指さしが追加された場合でも、2本目を止める。
         front = find('左腕_基本.png')
         data['rules']['pointing_arms'].append(front)
@@ -111,6 +111,57 @@ class PortraitCatalogTest(unittest.TestCase):
                     self.assertEqual(faces[name]['status'], '無し')
                 if who == '四国めたん':
                     self.assertEqual(faces['udegumi']['status'], '無し')
+
+    def test_hollow_eyes_and_restricted_outfits(self):
+        data = load_parts(ROOT / 'assets/portraits/四国めたん')
+        hollow = data['eye_moods']['非平時']
+        self.assertEqual(len(hollow), 7)
+        for file in hollow:
+            with self.assertRaises(ValueError):
+                validate_parts(data, [file])
+            validate_parts(data, [file], context='異変')
+            with self.assertRaises(ValueError):
+                validate_parts(data, [file], context='異変', factual=True)
+        catalog = data['catalog']
+        bare = next(r['file'] for r in catalog if r['file'].endswith('_素体.png'))
+        for r in catalog:
+            if r.get('usage') == '必要時のみ':
+                files = [bare] if r['file'] == bare else [bare, r['file']]
+                with self.assertRaisesRegex(ValueError, '自動動画'):
+                    validate_parts(data, files)
+                validate_parts(data, files, automatic=False)
+
+    def test_common_composer_and_manifest(self):
+        import importlib.util
+        from share_portrait_parts import common_manifest
+        spec = importlib.util.spec_from_file_location('apsc_common', ROOT / 'tools/portrait-common/portrait_parts.py')
+        common = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(common)
+        for who in ('四国めたん', 'ずんだもん'):
+            folder = ROOT / 'assets/portraits' / who
+            raw = load_parts(folder)
+            m = common_manifest(raw)
+            self.assertEqual(m, json.loads((folder / 'common.parts.json').read_text('utf-8')))
+            indexed = {f for entries in m['parts'].values() for item in entries.values() for f in common.values(item)}
+            self.assertEqual(indexed, {r['file'] for r in raw['catalog']})
+            composer = common.Composer(folder)
+            composer.manifest = common.normalize(m)
+            for direction, kinds in raw['presets'].items():
+                for kind, entries in kinds.items():
+                    for name, entry in entries.items():
+                        if entry['status'] != '提案':
+                            continue
+                        prefix = '' if direction in ('共通', '正面') else '上向き_'
+                        preset = prefix + ('' if kind == 'expressions' else 'pose_') + name
+                        with self.subTest(who=who, preset=preset):
+                            image = composer.image(preset)
+                            expected = compose_parts(folder, raw, entry['files'])
+                            self.assertEqual(image.tobytes(), expected.tobytes())
+            # 共通resolverでも向き混在と両手の衝突を拒否する。
+            if who == 'ずんだもん':
+                upper_eye = next(n for n in m['parts']['eye'] if '上向き' in n)
+                with self.assertRaises(ValueError):
+                    composer.image(face={'eye': upper_eye})
 
 
 if __name__ == '__main__':

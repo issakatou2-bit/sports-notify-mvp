@@ -61,6 +61,8 @@ def add_compatibility_keys(data):
         rules['requires'][r['file']] = r['requires']
         rules['forbids'][r['file']] = r['forbids']
     data['rules'] = rules
+    from portrait_parts import apply_usage_policy
+    apply_usage_policy(data)
 
 
 def legacy_body_sources(source_file):
@@ -264,7 +266,8 @@ def sheet(items, title, path, face=False):
             im = im.crop((160, 0, 950, 680 if im.height == 1820 else 760))
         im.thumbnail((w - 12, h - 52))
         canvas.paste(im, (x + (w - im.width) // 2, y), im)
-        for j, line in enumerate([label[k:k+19] for k in range(0, len(label), 19)][:2]):
+        lines = [s[:19] for s in label.splitlines()] if '\n' in label else [label[k:k+19] for k in range(0, len(label), 19)]
+        for j, line in enumerate(lines[:2]):
             draw.text((x + 5, y + h - 48 + j * 20), line, font=font, fill='black')
     canvas.save(path)
 
