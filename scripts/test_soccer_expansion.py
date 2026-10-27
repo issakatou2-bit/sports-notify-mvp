@@ -155,11 +155,12 @@ class GoalTests(unittest.TestCase):
             with patch.object(host_split, 'publication', return_value=None), patch('soccer_publications.load', return_value={}), \
                     patch.object(now.subprocess, 'run') as sanity_run, \
                     patch.object(now, 'checkpoint_receipt', side_effect=ValueError('checkpoint failure')) as checkpoint, \
-                    patch.object(Path, 'write_text'):
+                    patch.object(Path, 'write_text'), patch('soccer_publications.mirror_receipt') as mirror:
                 ledger = {}
                 with self.assertRaisesRegex(ValueError, 'checkpoint failure'):
                     now.publish(data, 'unused', ledger, goal_short=True)
                 self.assertEqual(ledger['401876452']['status'], 'pending')
+                mirror.assert_called_once_with('401876452', ledger['401876452'])
                 self.assertEqual(checkpoint.call_args.args[0].name, 'soccer_flash_receipts.json')
                 sanity_run.assert_called_once()
                 self.assertTrue(sanity_run.call_args.kwargs['check'])

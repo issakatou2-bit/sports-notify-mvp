@@ -78,6 +78,32 @@ class DataCommitTest(unittest.TestCase):
     def remote_json(self, name):
         return json.loads(self.git(self.remote, 'show', 'main:data/' + name + '.json').stdout)
 
+    def test_publications_auto_saved_with_old_path_and_snapshot(self):
+        import publication_writer as writer
+        from ledger_adapter import observation
+        self.add_run(self.local, 'game', 'new-video', 13)
+        obs = observation('daily', '2026-10-27', {'video_id': 'new-video'},
+                          'published_videos/daily/2026-10-27')
+        path = writer.write(obs, self.local)
+        # 別の回を先に保存する競合。両方の1回1ファイルがremoteまで残る。
+        other = observation('daily', '2026-10-26', {'video_id': 'other-video'},
+                            'published_videos/daily/2026-10-26')
+        other_path = writer.write(other, self.upstream)
+        self.commit(self.upstream, 'another publication')
+        self.git(self.upstream, 'push', '-q')
+        writer.recover(obs, OSError('fixture'), self.local)
+        result = self.save('data/published_videos.json')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for target, repo in ((path, self.local), (other_path, self.upstream)):
+            name = target.relative_to(repo).as_posix()
+            doc = json.loads(self.git(self.remote, 'show', 'main:' + name).stdout)
+            self.assertEqual(len(doc['history']), 1)
+        recovery, = (self.local / 'data/publication_recovery').glob('*.json')
+        self.assertEqual(self.git(self.remote, 'cat-file', '-e',
+                                 'main:' + recovery.relative_to(self.local).as_posix()).returncode, 0)
+        snapshots = list((self.local / 'build/data-save-recovery').glob('*/data/publications/*/*.json'))
+        self.assertEqual(len(snapshots), 1)
+
     def test_competing_runs_keep_both_records_and_usage_in_real_push(self):
         self.add_run(self.upstream, 'longform', 'other-video', 12)
         self.commit(self.upstream, 'other run')

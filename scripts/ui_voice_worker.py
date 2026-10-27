@@ -1,6 +1,7 @@
 """本人のPCから音声注文を取りに行く。タスク登録やVoiSonaの起動はしない。"""
 import argparse
 from contextlib import contextmanager
+from datetime import timedelta
 import importlib
 import json
 import os
@@ -117,6 +118,12 @@ def apsc_synthesizer(apsc):
 def process(queue, cache, synthesize, portraits, limit=10):
     """生成済み区間を保持し、返送に失敗しても同じ声を作り直さない。"""
     import wave
+    import ui_voice_policy as policy
+    if policy.window_reason():
+        policy.heartbeat(queue, 'blocked')
+        return 0
+    policy.heartbeat(queue)
+    next_health = q.now()+timedelta(minutes=2)
     secret = parts_crypto.key()
     # 合成より前に鍵・暗号依存・ローカル部品を確認する。
     parts_crypto.cipher(secret)
@@ -142,7 +149,7 @@ def process(queue, cache, synthesize, portraits, limit=10):
             if (saved.get('status') not in ('pending', 'working') or
                     saved.get('worker', worker) != worker or q.stamp(saved['deadline']) <= q.now()):
                 return False
-            saved.update(status='working', worker=worker)
+            saved.update(status='working', worker=worker, claimed_at=q.now().isoformat())
             return True
         if not queue.update(claim):
             continue
@@ -151,6 +158,12 @@ def process(queue, cache, synthesize, portraits, limit=10):
         bundle = {}
         chunks = []
         for i, seg in enumerate(order['narration']['segments']):
+            if policy.window_reason():
+                policy.heartbeat(queue, 'blocked')
+                return completed
+            if q.now() >= next_health:
+                policy.heartbeat(queue)
+                next_health = q.now()+timedelta(minutes=2)
             if q.now() >= q.stamp(order['deadline']):
                 break
             wav = folder/f'seg_{i:03d}.wav'
@@ -162,7 +175,22 @@ def process(queue, cache, synthesize, portraits, limit=10):
                     print('[warn] 中断した注文を再生成せず破棄しました。次の注文へ進みます', file=sys.stderr)
                     break
                 started.write_text('started', encoding='ascii')
-                synthesize(seg['text'], wav)
+                try:
+                    synthesize(seg['text'], wav)
+                except Exception as exc:
+                    # 例外の本文/引数は認証値を含みうる。段階と固定分類のみ保存。
+                    category = ('timeout' if isinstance(exc, TimeoutError) else
+                                'connection' if isinstance(exc, ConnectionError) else 'synthesis')
+                    failure = dict(stage='synthesize', category=category, segment=i,
+                                   failed_at=q.now().isoformat())
+                    (folder/'failure.json').write_bytes(q.encoded(failure))
+                    def fail(rows, files):
+                        if rows.get(key, {}).get('worker') == worker:
+                            rows[key].update(status='discarded', failure=failure)
+                    queue.update(fail)
+                    policy.heartbeat(queue, 'failed')
+                    print('[warn] 雨衣の声作りを中止しました: '+category, file=sys.stderr)
+                    break
             try:
                 with wave.open(str(wav), 'rb') as audio:
                     if audio.getsampwidth() != 2 or not audio.getnframes() or audio.getframerate() > 96000:
@@ -191,7 +219,7 @@ def process(queue, cache, synthesize, portraits, limit=10):
                 result['parts_ref'] = ref
                 bundle['result.json'] = q.encoded(result)
                 files.update({'payload/'+key+'/'+name: blob for name, blob in bundle.items()})
-                saved.update(status='ready', parts_ref=ref)
+                saved.update(status='ready', parts_ref=ref, ready_at=q.now().isoformat())
                 return True
             if queue.update(deliver):
                 completed += 1
@@ -204,7 +232,13 @@ def main():
     p.add_argument('--cache', type=Path, default=q.ROOT/'build/ui-voice-worker')
     p.add_argument('--limit', type=int, default=10)
     args = p.parse_args()
+    import ui_voice_policy as policy
+    if policy.window_reason():
+        policy.heartbeat(q.GitQueue(), 'blocked')
+        print('配信・APSCの予約時間のため終了')
+        return
     if not available():
+        policy.heartbeat(q.GitQueue(), 'unavailable')
         print('VoiSona Talk未起動のため終了')
         return
     with single_worker(args.cache) as acquired:
@@ -215,6 +249,10 @@ def main():
             count = process(q.GitQueue(), args.cache, apsc_synthesizer(args.apsc_root.resolve()), portraits, args.limit)
             print(f'雨衣の声を返しました: {count}件')
         except Exception:
+            try:
+                policy.heartbeat(q.GitQueue(), 'failed')
+            except q.QueueError:
+                pass
             # APSC側例外にも認証の詳細が混ざりうるので値/スタックを表示しない。
             print('音声の処理を完了できませんでした。VoiSona・注文キャッシュ・Git接続を確認してください', file=sys.stderr)
             raise SystemExit(1) from None

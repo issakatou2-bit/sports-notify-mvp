@@ -58,6 +58,8 @@ def save_ps_delivery(uri, kind, edition, linked, path=Path('data/bluesky_deliver
     temporary = path.with_suffix('.tmp')
     temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     temporary.replace(path)
+    from publication_writer import mirror_file
+    mirror_file(path, ledger_name='bluesky_delivery')
 
 
 def report_failure(error, stage):

@@ -274,6 +274,7 @@ def publish(data, out, ledger, *, goal_short=False):
     if not publications.eligible(data, ledger, goal_short=goal_short): return
     def checkpoint():
         path.write_text(json.dumps(ledger,ensure_ascii=False,indent=2),encoding='utf8')
+        publications.mirror_receipt(ident, ledger[ident])
         extra = ['data/published_videos.json'] if tracking else []
         checkpoint_receipt(path, ident, ledger[ident], extra)
     ledger[ident] = {'status':'pending','kind':kind,'at':datetime.now(timezone.utc).isoformat()}; checkpoint()
