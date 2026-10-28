@@ -192,6 +192,29 @@ class MediaRecords(unittest.TestCase):
         self.assertEqual(len(media_records_check.errors(self.folder)), 2)
         self.assertEqual(media_records_check.errors(ROOT), [])
 
+    def test_record_failure_never_stops_video_or_voice(self):
+        # 記録は確認用。壊れても動画・音声づくりは成功のまま（警告だけ）。
+        recorder = render_timeline.Recorder(30, [dict(index=0, text='台詞')])
+        recorder.select(dict(index=0), 0)
+        stream = io.BytesIO()
+        with patch('builtins.print') as log:
+            recorder.repeat(stream, b'xx')  # 描画前のキャッシュ
+            recorder.write(stream, b'yy', Image.new('RGB', (2, 2)))
+            self.assertIsNone(recorder.save(self.folder / 'none.mp4', self.folder))
+        self.assertEqual(stream.getvalue(), b'xxyy')
+        self.assertIn('::warning::', str(log.call_args_list))
+        fresh = render_timeline.Recorder(30, [dict(index=0, text='台詞')])
+        with patch('builtins.print') as log, patch.object(fresh, '_save', side_effect=ValueError('不一致')):
+            self.assertIsNone(fresh.save(self.folder / 'none.mp4', self.folder))
+        self.assertIn('不一致', str(log.call_args_list))
+        broken = self.folder / 'broken'
+        broken.mkdir()
+        (broken / 'voice_manifest.json').write_text('{壊れた', encoding='utf-8')
+        with patch('builtins.print') as log:
+            self.assertIsNone(voice_manifest.record_file(broken / 'seg_000.wav', '文', 'voicevox', 2))
+            self.assertIsNone(voice_manifest.save(broken, [dict(file=str(broken / 'missing.wav'), speaker=2)], None, status=object()))
+        self.assertIn('声の出所の記録', str(log.call_args_list))
+
 
 if __name__ == '__main__':
     unittest.main(argv=[sys.argv[0]])

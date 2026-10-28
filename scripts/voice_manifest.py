@@ -53,6 +53,15 @@ def row(segment, index, directory, engine, planned=None):
 
 
 def save(directory, segments, data=None, default_engine='voicevox', status='complete'):
+    """記録は確認用。失敗しても音声づくりは止めず、警告だけ出す。"""
+    try:
+        return _save(directory, segments, data, default_engine, status)
+    except Exception as exc:
+        print(f'::warning::声の出所の記録を保存できませんでした（{type(exc).__name__}: {exc}）')
+        return None
+
+
+def _save(directory, segments, data=None, default_engine='voicevox', status='complete'):
     directory = Path(directory)
     planned = plan(data or {})
     rows = [row(seg, seg.get('index', i), directory,
@@ -64,6 +73,14 @@ def save(directory, segments, data=None, default_engine='voicevox', status='comp
 
 
 def record_file(destination, text, engine, speaker=None, *, index=None, planned=None):
+    try:
+        return _record_file(destination, text, engine, speaker, index=index, planned=planned)
+    except Exception as exc:
+        print(f'::warning::声の出所の記録を書き足せませんでした（{type(exc).__name__}: {exc}）')
+        return None
+
+
+def _record_file(destination, text, engine, speaker=None, *, index=None, planned=None):
     """共通関数の単独利用も記録する。呼出元の最終saveで全行の予定と結合する。"""
     path = Path(destination)
     target = path.parent / 'voice_manifest.json'

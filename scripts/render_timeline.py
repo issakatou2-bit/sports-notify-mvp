@@ -36,6 +36,7 @@ class Recorder:
         self.last_subtitle = self.previous_subtitle = None
         self.last_image = None
         self.current = None
+        self.broken = None
 
     def select(self, segment, index, page=None):
         self.previous_subtitle = self.last_subtitle
@@ -49,6 +50,16 @@ class Recorder:
         result = stream.write(raw)
         if result is not None and result != len(raw):
             raise OSError('フレームの書込みが途中で終わりました')
+        if self.broken:
+            return result
+        try:
+            self._observe(image, overlap)
+        except Exception as exc:
+            # 記録は確認用。記録の失敗で動画の書き出しを止めない。
+            self.broken = f'{type(exc).__name__}: {exc}'
+        return result
+
+    def _observe(self, image, overlap):
         info = image.info
         self.last_image = image
         current = self.current
@@ -77,14 +88,25 @@ class Recorder:
             _append(self.overlaps, (tuple(old['source_line_ids']), old['subtitle']), self.frames,
                     dict(old, intentional='前画面の字幕が既存のクロスフェードで重なる'))
         self.frames += 1
-        return result
 
     def repeat(self, stream, raw, overlap=False):
         if self.last_image is None:
-            raise ValueError('最初の描画より前にキャッシュを記録できません')
+            self.broken = self.broken or '最初の描画より前にキャッシュを書いた'
+            return stream.write(raw)
         return self.write(stream, raw, self.last_image, overlap=overlap)
 
     def save(self, video, audio_dir):
+        """記録を保存する。失敗しても警告だけにし、動画の書き出しは成功のまま。"""
+        if self.broken:
+            print(f'::warning::字幕とカットの時刻の記録を保存しませんでした（{self.broken}）')
+            return None
+        try:
+            return self._save(video, audio_dir)
+        except Exception as exc:
+            print(f'::warning::字幕とカットの時刻の記録を保存できませんでした（{type(exc).__name__}: {exc}）')
+            return None
+
+    def _save(self, video, audio_dir):
         """完成ファイルのフレーム数で末尾を切る（-shortestにも追従）。"""
         video = Path(video)
         result = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
