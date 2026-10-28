@@ -25,6 +25,25 @@
       "recorded_at": "2026-10-27T13:01:39.403918+00:00",
       "fingerprint": "50a204f386806e3c1825686170208a97678997708308a779c750315698360611",
       "event_id": "a5b05d2717acf4591f6ff64d17aadcb5a368734db695a1943ba7daffb0943ae4"
+    },
+    {
+      "source": "bluesky_delivery/editions/daily:2026-10-26",
+      "service": "bluesky",
+      "video_id": "6i973MO7epU",
+      "state": "distributed",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": null,
+      "details": {
+        "uri": "at://did:plc:hznbjnd6yyljefazjw3alyiq/app.bsky.feed.post/3myrhxeljlz25"
+      },
+      "run_id": "40669557590",
+      "attempt": "1",
+      "recorded_at": "2026-10-28T10:07:40.461116+00:00",
+      "fingerprint": "17cee44cb7d989e13dbb1505e009c3287d6f286703cf332322a901cc660471a2",
+      "event_id": "38c617423f0d2ddfe13903e1de01c20274b584d0e4ef3bc136c0ca062052e4b7"
     }
   ]
 }
