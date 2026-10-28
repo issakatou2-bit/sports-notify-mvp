@@ -41,4 +41,4 @@ class WritesTo(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(argv=[sys.argv[0]])  # run_checks は一時置場を引数で渡す
