@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-28T06:17:34.991376+00:00",
+  "updated_at": "2026-10-28T07:37:16.790550+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -29,11 +29,11 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「あの泣いてる子のショット、リアルすぎた。まあ、たまにこうなるよな😂」"
+          "「このシリーズが4戦で終わらなくてよかった。毎試合楽しく見てる。」"
         ],
         [
           "MLB.comの見出しから",
-          "「歴史的大勝で止まらないクルー、ワールドシリーズ初制覇まであと1勝」"
+          "「歴史的大勝のクルー、悲願のワールドシリーズ初制覇まであと1勝」"
         ]
       ],
       "japanese": [],
@@ -43,15 +43,15 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "あの泣いてる子のショット、リアルすぎた。まあ、たまにこうなるよな😂",
-        "text": "That shot of the kid crying was too real. It do be like that sometimes 😂",
-        "url": "https://www.youtube.com/watch?v=b7BE1gwgv64",
-        "likes": 937,
-        "at": "2026-10-27T04:27:02Z",
+        "said": "このシリーズが4戦で終わらなくてよかった。毎試合楽しく見てる。",
+        "text": "I'm glad this series didn't end in 4. It's been fun watching these games.",
+        "url": "https://www.youtube.com/watch?v=_7zaliemWbg",
+        "likes": 168,
+        "at": "2026-10-28T05:43:48Z",
         "source": "MLB公式ハイライトのコメント"
       },
       "headline": {
-        "said": "歴史的大勝で止まらないクルー、ワールドシリーズ初制覇まであと1勝",
+        "said": "歴史的大勝のクルー、悲願のワールドシリーズ初制覇まであと1勝",
         "text": "With historic romp, unrelenting Crew just 1 win from 1st World Series title",
         "url": "https://www.mlb.com/news/brewers-win-world-series-game-3-2026",
         "at": "2026-10-27T04:48:00+00:00"
@@ -177,8 +177,12 @@
           "イアン・シーモア（1回を1失点）"
         ],
         [
+          "ハイライトのコメント欄から",
+          "「このシリーズが4戦で終わらなくてよかった。毎試合楽しく見てる。」"
+        ],
+        [
           "MLB.comの見出しから",
-          "「ウィリアムソンのサヨナラ安打でレイズが首の皮一枚つながる」"
+          "「レイズ、ウィリアムソンのサヨナラ安打で首の皮一枚つながる」"
         ]
       ],
       "japanese": [],
@@ -187,9 +191,16 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
+      "voice": {
+        "said": "このシリーズが4戦で終わらなくてよかった。毎試合楽しく見てる。",
+        "text": "I'm glad this series didn't end in 4. It's been fun watching these games.",
+        "url": "https://www.youtube.com/watch?v=_7zaliemWbg",
+        "likes": 168,
+        "at": "2026-10-28T05:43:48Z",
+        "source": "MLB公式ハイライトのコメント"
+      },
       "headline": {
-        "said": "ウィリアムソンのサヨナラ安打でレイズが首の皮一枚つながる",
+        "said": "レイズ、ウィリアムソンのサヨナラ安打で首の皮一枚つながる",
         "text": "Rays live to fight another day thanks to Williamson's walk-off single",
         "url": "https://www.mlb.com/news/rays-win-world-series-game-4-2026",
         "at": "2026-10-28T04:50:00+00:00"
