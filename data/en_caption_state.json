@@ -251,6 +251,20 @@
       "video_id": "3kJyLT3IoSc",
       "status": "forbidden_check_scope_or_quota",
       "units": 0
+    },
+    {
+      "at": "2026-10-28T10:06:31.352858+00:00",
+      "day": "2026-10-28",
+      "video_id": "p9GYdKlKTOA",
+      "status": "list_reserved",
+      "units": 50
+    },
+    {
+      "at": "2026-10-28T10:06:32.686373+00:00",
+      "day": "2026-10-28",
+      "video_id": "p9GYdKlKTOA",
+      "status": "translation_budget",
+      "units": 0
     }
   ]
 }
