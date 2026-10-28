@@ -7691,6 +7691,106 @@
       "actual_host": "metan",
       "host_fallback_reason": "ui_unavailable",
       "privacy": "public"
+    },
+    "2026-10-28": {
+      "video_id": "pcmCRJMf2Z0",
+      "url": "https://youtu.be/pcmCRJMf2Z0",
+      "title": "【MLB】現地はこう報じた「レイズ、ウィリアムソンのサヨナラ安打で首の皮一枚つながる」｜10月28日 番記者の投稿と現地の見出し #Shorts",
+      "published_at": "2026-10-28T07:30:47.462300+00:00",
+      "publish_at": "2026-10-28T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-10-28",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "ab_assigned_variant": "B",
+      "ab_fallback_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        8.1,
+        14.033333,
+        22.966667,
+        33.133333,
+        42.4
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "レイズ、ウィリアムソンのサヨナラ安打で首の皮一枚つながる。10月28日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 8.124,
+          "scene_start": 8.1,
+          "text": "MLB.com。ワールドシリーズの記録を塗り替えているのは、あの1イニングだけではない。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 14.072,
+          "scene_start": 14.033333,
+          "text": "MLB.com。歴史的大勝のクルー、悲願のワールドシリーズ初制覇まであと1勝。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 23.028,
+          "scene_start": 22.966667,
+          "text": "MLB.comの記者。フィリーズはランディ・アロザレーナや鈴木誠也のような選手と、大型の複数年契約を結ぶ余裕があるのか。結ばない余裕はあるのか。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 33.210667,
+          "scene_start": 33.133333,
+          "text": "Baltimore Bannerの記者。トレードの条件や年俸総額、ロースター構成の事情はもちろん分かっている。それでも、セドリックはオリオールズの選手だったんだ。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 42.508,
+          "scene_start": 42.4,
+          "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 50.67,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "f0e57490307a3636b0fd98e7974efa9d50c350128742a1332f49ed9b326ba54b",
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-28",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-28T16:19:26.023058+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
