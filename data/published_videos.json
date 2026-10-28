@@ -8817,6 +8817,49 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-28": {
+      "video_id": "AszDPZRyiHM",
+      "url": "https://youtu.be/AszDPZRyiHM",
+      "title": "【MLB】ブリュワーズ vs レイズ 現地のファンは何と言ったか｜返信22件ついたコメント 10月28日更新 #Shorts",
+      "published_at": "2026-10-28T08:11:27.524900+00:00",
+      "publish_at": "2026-10-28T08:30:00Z",
+      "duration_seconds": 81.03,
+      "short_information_count": 7,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-28",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-28T07:48:45.191960+00:00",
+        "comparison_eligible": false,
+        "planned_host": "metan",
+        "previous_attempt": {
+          "action": "rebuild_metan",
+          "checked_at": "2026-10-28T07:46:25.736116+00:00",
+          "comparison_eligible": true,
+          "failed_at": "2026-10-28T07:48:45.187034+00:00",
+          "failure_reason": "ui_order_discarded",
+          "label": "予定雨衣",
+          "mode": "live",
+          "planned_host": "ui",
+          "reason": null,
+          "status": "held",
+          "version": 1
+        },
+        "reason": "ui_rebuilt_after_hold",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "verdict": {

@@ -1,83 +1,75 @@
 {
-  "generated_at": "2026-10-28T07:13:33.299555+00:00",
+  "generated_at": "2026-10-28T07:43:44.996993+00:00",
   "date_jst": "2026-10-28",
-  "name": "Chandler Simpson",
-  "player_id": "802415",
+  "name": "Ben Williamson",
+  "player_id": "810938",
   "team": "レイズ",
   "group": "hitting",
   "why": "2026-10-28のMLBで最も活躍",
-  "headline": "5打数3安打　1二塁打　1打点",
-  "score": 85,
+  "headline": "1打数1安打　1打点",
+  "score": 62,
   "bio": {
-    "name_en": "Chandler Simpson",
+    "name_en": "Ben Williamson",
     "age": 25,
-    "birth_city": "Atlanta",
-    "birth_state": "GA",
+    "birth_city": "Fairfax",
+    "birth_state": "VA",
     "birth_country": "USA",
-    "birth_date": "2000-11-18",
-    "debut": "2025-04-19",
-    "draft_year": 2022,
-    "bats": "Left",
+    "birth_date": "2000-11-05",
+    "debut": "2025-04-15",
+    "draft_year": 2023,
+    "bats": "Right",
     "throws": "Right",
-    "number": "14",
-    "position": "Outfielder",
+    "number": "15",
+    "position": "Second Base",
     "nickname": null,
-    "height": "5' 11\"",
-    "weight": 170
+    "height": "6' 0\"",
+    "weight": 210
   },
   "teams": [
     {
-      "team": "レイズ",
+      "team": "マリナーズ",
       "from": 2025,
+      "to": 2025
+    },
+    {
+      "team": "レイズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 260,
-    "avg": ".302",
-    "hr": 0,
-    "rbi": 64,
-    "ops": ".681",
-    "sb": 90,
-    "hits": 297,
-    "wins": 7,
-    "losses": 7,
-    "era": "3.59",
-    "so": 124,
-    "ip": "143.0",
-    "whip": "1.17"
+    "games": 174,
+    "avg": ".245",
+    "hr": 4,
+    "rbi": 47,
+    "ops": ".612",
+    "sb": 13,
+    "hits": 132
   },
   "this_season": {
-    "games": 151,
-    "avg": ".306",
-    "hr": 0,
-    "rbi": 38,
-    "ops": ".689",
-    "sb": 46,
-    "hits": 175,
-    "wins": 5,
-    "losses": 5,
-    "era": "3.87",
-    "so": 103,
-    "ip": "109.1",
-    "whip": "1.19"
+    "games": 89,
+    "avg": ".238",
+    "hr": 3,
+    "rbi": 26,
+    "ops": ".620",
+    "sb": 8,
+    "hits": 62
   },
   "last_season": {
-    "games": 109,
-    "avg": ".295",
-    "hr": 0,
-    "rbi": 26,
-    "ops": ".671",
-    "sb": 44,
-    "hits": 122,
-    "wins": 0,
-    "losses": 2,
-    "era": "3.18",
-    "so": 5,
-    "ip": "5.2",
-    "whip": "1.59"
+    "games": 85,
+    "avg": ".253",
+    "hr": 1,
+    "rbi": 21,
+    "ops": ".604",
+    "sb": 5,
+    "hits": 70
   },
   "recent": [
+    {
+      "date": "2026-09-27",
+      "line": "2打数0安打",
+      "opponent": "Philadelphia Phillies"
+    },
     {
       "date": "2026-09-25",
       "line": "3打数0安打",
@@ -85,7 +77,7 @@
     },
     {
       "date": "2026-09-24",
-      "line": "5打数1安打",
+      "line": "2打数0安打",
       "opponent": "New York Yankees"
     },
     {
@@ -94,33 +86,11 @@
       "opponent": "New York Yankees"
     },
     {
-      "date": "2026-09-22",
-      "line": "3打数1安打",
-      "opponent": "New York Yankees"
-    },
-    {
       "date": "2026-09-20",
-      "line": "3打数1安打 2打点",
+      "line": "3打数0安打",
       "opponent": "Boston Red Sox"
     }
   ],
-  "awards": [
-    {
-      "season": "2024",
-      "name": "SOU Post-Season All-Star"
-    },
-    {
-      "season": "2024",
-      "name": "Baseball America Double-A All-Star"
-    },
-    {
-      "season": "2023",
-      "name": "MiLB.com Organization All-Star"
-    },
-    {
-      "season": "2023",
-      "name": "CAR Post-Season All-Star"
-    }
-  ],
+  "awards": [],
   "quotes": []
 }
