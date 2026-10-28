@@ -1,112 +1,89 @@
 {
-  "generated_at": "2026-10-28T07:43:44.996993+00:00",
+  "generated_at": "2026-10-28T08:17:12.334021+00:00",
   "date_jst": "2026-10-28",
-  "name": "Ben Williamson",
-  "player_id": "810938",
-  "team": "レイズ",
-  "group": "hitting",
+  "name": "Abner Uribe",
+  "player_id": "682842",
+  "team": "ブリュワーズ",
+  "group": "pitching",
   "why": "2026-10-28のMLBで最も活躍",
-  "headline": "1打数1安打　1打点",
-  "score": 62,
+  "headline": "2.0回　2奪三振　自責0　1被安打",
+  "score": 61,
   "bio": {
-    "name_en": "Ben Williamson",
-    "age": 25,
-    "birth_city": "Fairfax",
-    "birth_state": "VA",
-    "birth_country": "USA",
-    "birth_date": "2000-11-05",
-    "debut": "2025-04-15",
-    "draft_year": 2023,
+    "name_en": "Abner Uribe",
+    "age": 26,
+    "birth_city": "Santo Domingo",
+    "birth_state": null,
+    "birth_country": "Dominican Republic",
+    "birth_date": "2000-06-20",
+    "debut": "2023-07-08",
+    "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "15",
-    "position": "Second Base",
+    "number": "45",
+    "position": "Pitcher",
     "nickname": null,
-    "height": "6' 0\"",
-    "weight": 210
+    "height": "6' 3\"",
+    "weight": 205
   },
   "teams": [
     {
-      "team": "マリナーズ",
-      "from": 2025,
-      "to": 2025
-    },
-    {
-      "team": "レイズ",
-      "from": 2026,
+      "team": "ブリュワーズ",
+      "from": 2023,
       "to": 2026
     }
   ],
   "career": {
-    "games": 174,
-    "avg": ".245",
-    "hr": 4,
-    "rbi": 47,
-    "ops": ".612",
-    "sb": 13,
-    "hits": 132,
-    "wins": 7,
+    "games": 182,
+    "wins": 12,
     "losses": 7,
-    "era": "3.59",
-    "so": 124,
-    "ip": "143.0",
-    "whip": "1.17"
+    "era": "2.20",
+    "so": 205,
+    "ip": "179.2",
+    "whip": "1.12"
   },
   "this_season": {
-    "games": 89,
-    "avg": ".238",
-    "hr": 3,
-    "rbi": 26,
-    "ops": ".620",
-    "sb": 8,
-    "hits": 62,
-    "wins": 5,
-    "losses": 5,
-    "era": "3.87",
-    "so": 103,
-    "ip": "109.1",
-    "whip": "1.19"
+    "games": 61,
+    "wins": 6,
+    "losses": 3,
+    "era": "1.97",
+    "so": 62,
+    "ip": "59.1",
+    "whip": "1.03"
   },
   "last_season": {
-    "games": 85,
-    "avg": ".253",
-    "hr": 1,
-    "rbi": 21,
-    "ops": ".604",
-    "sb": 5,
-    "hits": 70,
-    "wins": 0,
+    "games": 75,
+    "wins": 3,
     "losses": 2,
-    "era": "3.18",
-    "so": 5,
-    "ip": "5.2",
-    "whip": "1.59"
+    "era": "1.67",
+    "so": 90,
+    "ip": "75.1",
+    "whip": "1.04"
   },
   "recent": [
     {
-      "date": "2026-09-27",
-      "line": "2打数0安打",
-      "opponent": "Philadelphia Phillies"
-    },
-    {
       "date": "2026-09-25",
-      "line": "3打数0安打",
+      "line": "1.0回 自責0 1奪三振",
+      "opponent": "St. Louis Cardinals"
+    },
+    {
+      "date": "2026-09-23",
+      "line": "1.0回 自責0 1奪三振",
       "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-24",
-      "line": "2打数0安打",
-      "opponent": "New York Yankees"
+      "date": "2026-09-19",
+      "line": "1.0回 自責0 1奪三振",
+      "opponent": "Baltimore Orioles"
     },
     {
-      "date": "2026-09-22",
-      "line": "4打数1安打",
-      "opponent": "New York Yankees"
+      "date": "2026-09-18",
+      "line": "1.0回 自責0 3奪三振",
+      "opponent": "Baltimore Orioles"
     },
     {
-      "date": "2026-09-20",
-      "line": "3打数0安打",
-      "opponent": "Boston Red Sox"
+      "date": "2026-09-16",
+      "line": "1.0回 自責0 0奪三振",
+      "opponent": "Pittsburgh Pirates"
     }
   ],
   "awards": [],
