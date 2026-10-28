@@ -2259,7 +2259,8 @@ def resolve_jp_player_teams(date_str: str) -> dict:
     return jp_team_map
 
 
-def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) -> dict | None:
+def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str,
+                         game_pk: str | None = None) -> dict | None:
     """
     同じ2チームの直近の対戦成績・シリーズ内の位置づけを取得する。
     MLB Stats APIのスケジュールに含まれる seriesGameNumber/gamesInSeries を使う。
@@ -2298,7 +2299,10 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
                 if pair != {home_team_id, away_team_id}:
                     continue
 
-                if g.get("gameDate", "").startswith(date_str):
+                # 試合IDで照合する。gameDate は UTC なので、米国の夜の試合は
+                # 前日の試合が date_str に一致する（10/28 第5戦の通知に第4戦の番号が入った）。
+                if (str(g.get("gamePk")) == str(game_pk) if game_pk
+                        else g.get("gameDate", "").startswith(date_str)):
                     series_game_number = g.get("seriesGameNumber")
                     games_in_series = g.get("gamesInSeries")
 
@@ -3563,7 +3567,8 @@ def main():
             if game["league"] != "MLB":
                 continue
             series_context = fetch_series_context(
-                game["home_team_id"], game["away_team_id"], date_str
+                game["home_team_id"], game["away_team_id"], date_str,
+                game.get("game_id"),
             )
             if series_context:
                 game["series_context"] = series_context
