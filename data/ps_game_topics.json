@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-27T06:45:07.252161+00:00",
+  "updated_at": "2026-10-28T05:19:08.649592+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -29,7 +29,11 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「初優勝のトロフィーまであと1勝!!ミルウォーキーでは1957年のブレーブス以来だ!」"
+          "「泣いてる子どもの映像、リアルすぎた。まあ、たまにああなるよね😂」"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「歴史的な大勝、止まらないクルーが初のワールドシリーズ制覇まであと1勝」"
         ]
       ],
       "japanese": [],
@@ -39,14 +43,19 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "初優勝のトロフィーまであと1勝!!ミルウォーキーでは1957年のブレーブス以来だ!",
-        "text": "1 more win to that FIRST trophy! First in Milwaukee since 1957 Braves",
+        "said": "泣いてる子どもの映像、リアルすぎた。まあ、たまにああなるよね😂",
+        "text": "That shot of the kid crying was too real. It do be like that sometimes 😂",
         "url": "https://www.youtube.com/watch?v=b7BE1gwgv64",
-        "likes": 32,
-        "at": "2026-10-27T03:41:21Z",
+        "likes": 935,
+        "at": "2026-10-27T04:27:02Z",
         "source": "MLB公式ハイライトのコメント"
       },
-      "headline": null,
+      "headline": {
+        "said": "歴史的な大勝、止まらないクルーが初のワールドシリーズ制覇まであと1勝",
+        "text": "With historic romp, unrelenting Crew just 1 win from 1st World Series title",
+        "url": "https://www.mlb.com/news/brewers-win-world-series-game-3-2026",
+        "at": "2026-10-27T04:48:00+00:00"
+      },
       "game_pk": 849804,
       "game_v4": {
         "score": {
@@ -141,6 +150,157 @@
           }
         ],
         "ticker": "次の試合　日本時間10月28日　ワールドシリーズ第4戦"
+      }
+    },
+    {
+      "key": "season_game_849803",
+      "label": "ワールドシリーズ第4戦",
+      "hook": "レイズがブリュワーズに4対3でワールドシリーズ1勝3敗に",
+      "heading": "ブリュワーズ 対 レイズ　ワールドシリーズ第4戦",
+      "intro": "ワールドシリーズ第4戦、レイズが本拠地でブリュワーズに4対3で勝ちました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "team_id": 139,
+      "abbr": "TB",
+      "title": "【MLB】レイズがブリュワーズに4対3でワールドシリーズ1勝3敗に #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "レイズ 4対3 ブリュワーズ　本拠地で勝利　シリーズはレイズの1勝3敗"
+        ],
+        [
+          "本塁打",
+          "ブリュワーズ2本"
+        ],
+        [
+          "先発",
+          "レイズ ジャックス 4回を2失点　ブリュワーズ メイ 3回を2失点"
+        ],
+        [
+          "勝ち投手",
+          "イアン・シーモア（1回を1失点）"
+        ],
+        [
+          "MLB.comの見出しから",
+          "「レイズがウィリアムソンのサヨナラ安打で首の皮一枚つなぐ」"
+        ]
+      ],
+      "japanese": [],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": {
+        "said": "レイズがウィリアムソンのサヨナラ安打で首の皮一枚つなぐ",
+        "text": "Rays live to fight another day thanks to Williamson's walk-off single",
+        "url": "https://www.mlb.com/news/rays-win-world-series-game-4-2026",
+        "at": "2026-10-28T04:50:00+00:00"
+      },
+      "game_pk": 849803,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 2,
+              "away": 0,
+              "home": 1
+            },
+            {
+              "num": 3,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 4,
+              "away": 1,
+              "home": 1
+            },
+            {
+              "num": 5,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 10,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 11,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 12,
+              "away": 1,
+              "home": 2
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "abbr": "MIL",
+            "total": 3
+          },
+          "home": {
+            "id": 139,
+            "name": "レイズ",
+            "abbr": "TB",
+            "total": 4
+          }
+        },
+        "decisive": null
+      },
+      "game_date": "2026-10-28T00:00:00Z",
+      "jp_first": false,
+      "next_team_id": 139,
+      "finished_at": "2026-10-28T04:28:32.899000+00:00",
+      "v3": {
+        "who": "レイズ　ワールドシリーズ第4戦",
+        "big": "4-3",
+        "unit": "",
+        "sub": "本拠地で勝利",
+        "tag": "ワールドシリーズ1勝3敗",
+        "chips": [
+          {
+            "label": "ワールドシリーズ　レイズ",
+            "score": "1-3",
+            "win": false
+          },
+          {
+            "label": "本塁打　ブリュワーズ",
+            "score": "2"
+          }
+        ],
+        "ticker": "レイズ 4対3 ブリュワーズ　本拠地で勝利　シリーズはレイズの1勝3敗"
       }
     }
   ]

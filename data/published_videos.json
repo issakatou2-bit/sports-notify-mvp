@@ -17468,6 +17468,37 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_game_849803": {
+      "video_id": "3kJyLT3IoSc",
+      "url": "https://youtu.be/3kJyLT3IoSc",
+      "title": "【MLB】レイズがブリュワーズに4対3でワールドシリーズ1勝3敗に #Shorts",
+      "published_at": "2026-10-28T05:30:26.245343+00:00",
+      "duration_seconds": 49.63,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-28",
+        "kind": "asset:season_game",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 2
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_delivery": {
+        "checked_at": "2026-10-28T05:19:10.632163+00:00",
+        "comparison_eligible": true,
+        "label": "予定雨衣",
+        "mode": "live",
+        "planned_host": "ui",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
