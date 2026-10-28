@@ -95,7 +95,8 @@ def _day(value) -> date | None:
     if not value:
         return None
     try:
-        return date.fromisoformat(str(value)[:10])
+        from sports_dates import jst_day
+        return date.fromisoformat(jst_day(value))
     except ValueError:
         return None
 

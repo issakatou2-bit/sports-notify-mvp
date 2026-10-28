@@ -146,7 +146,8 @@ def week_program(data):
 
 
 def package(mode,data,segs,names,head,clubs=None):
-    day=(data.get('date_jst') or data.get('date') or data.get('generated_at','')[:10])
+    from sports_dates import material_day
+    day=material_day(data)
     source=data.get('source') or ('football-data.org / プレミアリーグ公式' if mode=='week' else 'football-data.org')
     try:
         _d=__import__('datetime').date.fromisoformat(day[:10]);day=f"{_d.month}月{_d.day}日（{'月火水木金土日'[_d.weekday()]}）"

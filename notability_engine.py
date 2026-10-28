@@ -2290,6 +2290,7 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str,
         past_results = []  # (date, home_wins: bool)
         series_game_number = None
         games_in_series = None
+        targets = {}
 
         for date_entry in data.get("dates", []):
             for g in date_entry.get("games", []):
@@ -2302,9 +2303,8 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str,
                 # 試合IDで照合する。gameDate は UTC なので、米国の夜の試合は
                 # 前日の試合が date_str に一致する（10/28 第5戦の通知に第4戦の番号が入った）。
                 if (str(g.get("gamePk")) == str(game_pk) if game_pk
-                        else g.get("gameDate", "").startswith(date_str)):
-                    series_game_number = g.get("seriesGameNumber")
-                    games_in_series = g.get("gamesInSeries")
+                        else (g.get("officialDate") or date_entry.get("date")) == date_str):
+                    targets[g.get("gamePk")] = g
 
                 if g.get("status", {}).get("abstractGameCode") == "F":
                     home_score = g["teams"]["home"].get("score")
@@ -2317,6 +2317,12 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str,
                         this_game_home_won if home_id == home_team_id else not this_game_home_won
                     )
                     past_results.append(normalized_home_won)
+
+        # 日付だけではダブルヘッダーのどちらかを決められない。
+        if len(targets) == 1:
+            target = next(iter(targets.values()))
+            series_game_number = target.get("seriesGameNumber")
+            games_in_series = target.get("gamesInSeries")
 
         if not past_results and series_game_number is None:
             return None
@@ -3560,6 +3566,9 @@ def main():
             print(f"[info] manual_notes.jsonから{len(manual_notes)}件の手動情報を反映しました")
 
     result = build_output(games, standings, jp_team_map, manual_reasons)
+    if not args.mock:
+        # 取得時刻と検索した公式日付は、日またぎや --date 指定では異なる。
+        result["schedule_date"] = date_str
 
     # シリーズ文脈(前の試合結果・第何戦か)を取得
     if not args.mock:

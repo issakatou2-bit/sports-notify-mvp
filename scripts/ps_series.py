@@ -18,6 +18,7 @@
 """
 
 import json
+from sports_dates import mlb_jp_label
 from japanese_team_names import team_names
 import pathlib
 import sys
@@ -148,9 +149,8 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
                 "league": (me.get("team") or {}).get("league", {}).get("id"),
                 "best_of": int(g.get("gamesInSeries") or 0), "id": mid,
                 "name": (me.get("team") or {}).get("name", ""), "days": []})
-            w["days"].append((g.get("officialDate")
-                              or (g.get("gameDate") or "")[:10],
-                              int(g.get("seriesGameNumber") or 0)))
+            w["days"].append((g.get("officialDate") or g.get("gameDate") or "",
+                              int(g.get("seriesGameNumber") or 0), mlb_jp_label(g)))
             continue
         key = series_key(gt, aid, hid)
         s = by.setdefault(key, {
@@ -184,9 +184,8 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
                     s["wins"][tid] += 1
                     s["played"] += 1
         else:
-            s["upcoming"].append((g.get("officialDate")
-                                  or (g.get("gameDate") or "")[:10],
-                                  int(g.get("seriesGameNumber") or 0)))
+            s["upcoming"].append((g.get("officialDate") or g.get("gameDate") or "",
+                                  int(g.get("seriesGameNumber") or 0), mlb_jp_label(g)))
 
     out = []
     for s in by.values():
@@ -197,8 +196,8 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
         teams = sorted(s["wins"], key=lambda t: (-s["wins"][t], t))
         nxt = None
         if winner is None and s["upcoming"]:
-            when, num = sorted(s["upcoming"])[0]
-            nxt = {"day": _jp_day(when), "game": num}
+            _, num, label = sorted(s["upcoming"])[0]
+            nxt = {"day": label, "game": num}
         out.append({
             "key": s["key"], "round": s["round"], "round_jp": s["round_jp"],
             "stage": s["stage"],
@@ -221,7 +220,7 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
         if any(s["round"] == w["round"] and w["id"] in
                [t["id"] for t in s["teams"]] for s in out):
             continue
-        day, num = sorted(w["days"])[0]
+        _, num, day = sorted(w["days"])[0]
         out.append({
             "key": w["key"], "round": w["round"], "round_jp": w["round_jp"],
             "stage": w["stage"], "waiting": True,
@@ -229,7 +228,7 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
                           else LEAGUE_JP.get(w["league"], "")),
             "best_of": w["best_of"], "need": w["best_of"] // 2 + 1,
             "played": 0, "over": False, "winner": None,
-            "next": {"day": _jp_day(day), "game": num},
+            "next": {"day": day, "game": num},
             "teams": [{"id": w["id"],
                        "name": names.get(w["id"]) or names.get(str(w["id"]))
                        or w["name"], "wins": 0,

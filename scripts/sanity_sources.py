@@ -4,6 +4,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from sports_dates import material_day
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -60,7 +61,7 @@ def capture(document, material=None):
             continue
         try:
             data = json.loads((Path('data')/filename).read_text(encoding='utf-8'))
-            stamp = data.get('date_jst') or data.get('date') or (data.get('updated_at') or data.get('generated_at') or '')[:10]
+            stamp = material_day(data)
             if not day or stamp != day:
                 continue
             if filename.startswith('soccer_'):
@@ -164,8 +165,7 @@ def attach(document, data, sport=None):
     """各生成器の出口から、実際に使った入力を共通の形で添付する。"""
     import soccer_sanity_material
     import sanity_material
-    day = (sanity_material.document_day(document) or data.get('date_jst') or
-           data.get('date') or (data.get('generated_at') or data.get('updated_at') or '')[:10])
+    day = sanity_material.document_day(document) or material_day(data)
     if day:
         # 話者の曜日割当へ影響させず、点検用の日付として保存する。
         document['sanity_date_jst'] = day
