@@ -359,5 +359,122 @@
         }
       }
     ]
+  },
+  "2026-10-28": {
+    "day": "2026-10-28",
+    "video_id": "aGfjs2CmZ30",
+    "title": "【欧州サッカー】今夜の注目試合｜リバプール vs チェルシー ほか #Shorts",
+    "published_at": "2026-10-28T10:17:49.668632+00:00",
+    "binding": {
+      "material_sha256": "21cb3e59d907d2d4bea259ac4bbbd12fb6e95d9d5429f4819501d807423c4581",
+      "narration_sha256": "cf7721d391ca496abf2e1e05edb3c2219ce6195432fbc6c085983c9eb435beda"
+    },
+    "games": [
+      {
+        "game_id": "espn-401921842",
+        "espn_event_id": "401921842",
+        "league": "リーグ杯",
+        "competition_code": "EFL",
+        "home": "Liverpool FC",
+        "away": "Chelsea FC",
+        "start_utc": "2026-10-29T05:00:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間5時、リバプール対チェルシー。注目はリーグ杯での、この両チームの対戦です。遠藤航の所属クラブの一戦。出場する場合のプレーにも注目です。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-28T09:54:05.966826+00:00",
+            "competition": "EFL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-28T09:54:05.966826+00:00",
+            "competition": "EFL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "espn-401921834",
+        "espn_event_id": "401921834",
+        "league": "リーグ杯",
+        "competition_code": "EFL",
+        "home": "Manchester City FC",
+        "away": "Brighton & Hove Albion FC",
+        "start_utc": "2026-10-29T04:30:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間4時30分、マンチェスター・シティ対ブライトン。注目はリーグ杯での、この両チームの対戦です。見どころはマンチェスター・シティのホームで、ブライトンがどう戦うかです。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-28T09:54:05.966826+00:00",
+            "competition": "EFL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-28T09:54:05.966826+00:00",
+            "competition": "EFL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "espn-401917035",
+        "espn_event_id": "401917035",
+        "league": "DFBポカール",
+        "competition_code": "DFB",
+        "home": "FC Bayern München",
+        "away": "1. FC Magdeburg",
+        "start_utc": "2026-10-29T04:45:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間4時45分、バイエルン対1. FC Magdeburg。注目はDFBポカールでの、この両チームの対戦です。伊藤洋輝の所属クラブの一戦。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-28T09:54:05.966826+00:00",
+            "competition": "DFB",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-28T09:54:05.966826+00:00",
+            "competition": "DFB",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "espn-401921841",
+        "espn_event_id": "401921841",
+        "league": "リーグ杯",
+        "competition_code": "EFL",
+        "home": "Fulham FC",
+        "away": "Crystal Palace FC",
+        "start_utc": "2026-10-29T04:45:00+09:00",
+        "reasons": [],
+        "expectation": {
+          "name": "鎌田大地",
+          "club": "クリスタル・パレス",
+          "goals": 1,
+          "assists": 3,
+          "japanese": true,
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "name_en": "Daichi Kamada"
+        },
+        "spoken": "日本時間4時45分、フラム対クリスタル・パレス。期待選手は鎌田大地。今季FPL集計で1得点 3アシストです。",
+        "standings": {
+          "home": {
+            "as_of": "2026-10-28T09:54:05.966826+00:00",
+            "competition": "EFL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-10-28T09:54:05.966826+00:00",
+            "competition": "EFL",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }

@@ -2,6 +2,344 @@
   "generated_at": "2026-10-28T09:54:05.966826+00:00",
   "games": [
     {
+      "game_id": "espn-401921842",
+      "espn_event_id": "401921842",
+      "competition_code": "EFL",
+      "league": "リーグ杯",
+      "start_time_utc": "2026-10-28T20:00:00+00:00",
+      "start_time_jst": "10/29 05:00",
+      "is_notable": true,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.league_cup/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Liverpool FC",
+      "home_team_id": "espn-364",
+      "away_team_name": "Chelsea FC",
+      "away_team_id": "espn-363",
+      "phase": "knockout",
+      "phase_source": "fourth round",
+      "jp_by_side": {
+        "home": [
+          "遠藤航"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": [
+        {
+          "name": "遠藤航",
+          "club": "リバプール",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 0,
+          "out": false,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 59,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "リーグ杯"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "fourth round"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Liverpool FC"
+          },
+          {
+            "key": "marquee_away",
+            "points": 10,
+            "evidence": "Chelsea FC"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [
+                "遠藤航"
+              ],
+              "away": []
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
+    },
+    {
+      "game_id": "espn-401921834",
+      "espn_event_id": "401921834",
+      "competition_code": "EFL",
+      "league": "リーグ杯",
+      "start_time_utc": "2026-10-28T19:30:00+00:00",
+      "start_time_jst": "10/29 04:30",
+      "is_notable": true,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.league_cup/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Manchester City FC",
+      "home_team_id": "espn-382",
+      "away_team_name": "Brighton & Hove Albion FC",
+      "away_team_id": "espn-331",
+      "phase": "knockout",
+      "phase_source": "fourth round",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "三笘薫"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "三笘薫",
+          "club": "ブライトン",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 0,
+          "out": true,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ],
+      "preview_out_names": [
+        "三笘薫"
+      ],
+      "preview_rating": {
+        "score": 49,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "リーグ杯"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "fourth round"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Manchester City FC"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [],
+              "away": [
+                "三笘薫"
+              ]
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
+    },
+    {
+      "game_id": "espn-401917035",
+      "espn_event_id": "401917035",
+      "competition_code": "DFB",
+      "league": "DFBポカール",
+      "start_time_utc": "2026-10-28T19:45:00+00:00",
+      "start_time_jst": "10/29 04:45",
+      "is_notable": true,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.dfb_pokal/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Bayern München",
+      "home_team_id": "espn-132",
+      "away_team_name": "1. FC Magdeburg",
+      "away_team_id": "espn-10382",
+      "phase": "knockout",
+      "phase_source": "second round",
+      "jp_by_side": {
+        "home": [
+          "伊藤洋輝"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 49,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "DFBポカール"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "second round"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "FC Bayern München"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [
+                "伊藤洋輝"
+              ],
+              "away": []
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
+    },
+    {
+      "game_id": "espn-401921841",
+      "espn_event_id": "401921841",
+      "competition_code": "EFL",
+      "league": "リーグ杯",
+      "start_time_utc": "2026-10-28T19:45:00+00:00",
+      "start_time_jst": "10/29 04:45",
+      "is_notable": true,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.league_cup/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Fulham FC",
+      "home_team_id": "espn-370",
+      "away_team_name": "Crystal Palace FC",
+      "away_team_id": "espn-384",
+      "phase": "knockout",
+      "phase_source": "fourth round",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "鎌田大地",
+          "冨安健洋"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "鎌田大地",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 1,
+          "assists": 3,
+          "minutes": 700,
+          "out": false,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        },
+        {
+          "name": "冨安健洋",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 189,
+          "out": true,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ],
+      "preview_out_names": [
+        "冨安健洋"
+      ],
+      "preview_rating": {
+        "score": 49,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "リーグ杯"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "fourth round"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [],
+              "away": [
+                "鎌田大地",
+                "冨安健洋"
+              ]
+            }
+          },
+          {
+            "key": "expectation",
+            "points": 10,
+            "evidence": {
+              "name": "鎌田大地",
+              "club": "クリスタル・パレス",
+              "goals": 1,
+              "assists": 3,
+              "japanese": true,
+              "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+              "as_of": "2026-10-28T10:07:36.909975+00:00"
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": {
+            "name": "鎌田大地",
+            "club": "クリスタル・パレス",
+            "goals": 1,
+            "assists": 3,
+            "japanese": true,
+            "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+            "as_of": "2026-10-28T10:07:36.909975+00:00"
+          }
+        },
+        "japanese": true
+      }
+    },
+    {
       "game_id": "558550",
       "league": "セリエA",
       "home_team_id": "SA-454",
@@ -49,7 +387,7 @@
       "away_has_jp": false,
       "score": 3,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
       "reasons": [
         {
           "tag": "quality",
@@ -64,7 +402,42 @@
       ],
       "log_notes": [],
       "ai_summary": "昨季セリエA1位のインテルが敵地・ベネチアを訪れる一戦である。現在【首位と勝ち点差3】で追う2位のインテルにとって、勝ち点を積み重ねることが不可欠な局面が続いている。一方、首位との差が勝ち点差22に及ぶベネチアは、リーグ下位の立場から反発を見せたいところとなる。インテルの攻撃力がリーグ下位のチームの守備にどう機能するか、その攻防の質に注目したい。",
-      "notification_hook": "首位と3点差のインテル、下位ベネチア相手に勝点を奪えるか"
+      "notification_hook": "首位と3点差のインテル、下位ベネチア相手に勝点を奪えるか",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874773",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-29T02:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 20,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "セリエA"
+          },
+          {
+            "key": "marquee_away",
+            "points": 10,
+            "evidence": "FC Internazionale Milano"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差19",
+              "gap": 19.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
     },
     {
       "game_id": "558549",
@@ -114,7 +487,7 @@
       "away_has_jp": false,
       "score": 2,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
       "reasons": [
         {
           "tag": "quality",
@@ -129,7 +502,42 @@
       ],
       "log_notes": [],
       "ai_summary": "セリエAの首位と勝ち点差7のACミランが、昨季8位から今季13位へと順位を下げたボローニャを本拠地に迎える。8試合を消化した現在、ミランは上位進出を狙う立場にあり、訪問するボローニャとの対戦は両者の現在地を測る指標となる。昨季セリエA5位のミランが昨季8位のボローニャに対してどのような試合運びを見せるのか、注目したい。",
-      "notification_hook": "昨季5位ミランが首位と7差の現在、13位ボローニャとの直接対決で何を示すか"
+      "notification_hook": "昨季5位ミランが首位と7差の現在、13位ボローニャとの直接対決で何を示すか",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874993",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-29T02:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 20,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "セリエA"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "AC Milan"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差10",
+              "gap": 10.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
     },
     {
       "game_id": "558554",
@@ -179,7 +587,7 @@
       "away_has_jp": false,
       "score": 2,
       "game_type": "R",
-      "is_notable": true,
+      "is_notable": false,
       "reasons": [
         {
           "tag": "quality",
@@ -189,7 +597,37 @@
       ],
       "log_notes": [],
       "ai_summary": "ナポリが敵地モンツァを訪れる一戦は、セリエA全体の順位争いの現在地を映す試合になる。モンツァはリーグ15位で首位との勝ち点差が18に達する一方、ナポリはリーグ10位で勝ち点差14と、昨季セリエA2位の実績を持つチームにしては【首位から14勝ち点後塵を拝している】状況にある。本拠地モンツァを迎える立場でも、訪問側ナポリにとっても、現在地から這い上がるための重要な局面となる試合であり、各チームの攻撃の組み立てや守備の安定感がどう機能するかに注目したい。",
-      "notification_hook": "昨季セリエA2位ナポリ、敵地モンツァで首位との勝ち点差縮められるか。"
+      "notification_hook": "昨季セリエA2位ナポリ、敵地モンツァで首位との勝ち点差縮められるか。",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874799",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-29T04:45:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 10,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "セリエA"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差4",
+              "gap": 4.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
     },
     {
       "game_id": "558553",
@@ -251,7 +689,68 @@
           "text": "パルマ（昨季セリエA12位）とウディネーゼ（昨季セリエA10位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874965",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-29T02:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 25,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "セリエA"
+          },
+          {
+            "key": "rank",
+            "points": 10,
+            "evidence": {
+              "kind": "rank",
+              "text": "19位パルマ対17位ウディネーゼ、順位差2の直接対決",
+              "ranks": [
+                19,
+                17
+              ],
+              "rank_difference": 2
+            }
+          },
+          {
+            "key": "points_close",
+            "points": 5,
+            "evidence": {
+              "kind": "points",
+              "text": "勝点差0",
+              "gap": 0.0
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "rank",
+              "text": "19位パルマ対17位ウディネーゼ、順位差2の直接対決",
+              "ranks": [
+                19,
+                17
+              ],
+              "rank_difference": 2
+            },
+            {
+              "kind": "points",
+              "text": "勝点差0",
+              "gap": 0.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
     },
     {
       "game_id": "558552",
@@ -313,7 +812,3521 @@
           "text": "ジェノア（昨季セリエA16位）とユベントス（昨季セリエA6位）の対戦",
           "weight": 0
         }
+      ],
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401874988",
+      "competition_code": "SA",
+      "start_time_utc": "2026-10-29T04:45:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 20,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "セリエA"
+          },
+          {
+            "key": "marquee_away",
+            "points": 10,
+            "evidence": "Juventus FC"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差7",
+              "gap": 7.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "espn-401879248",
+      "espn_event_id": "401879248",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T12:30:00+00:00",
+      "start_time_jst": "10/31 21:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Chelsea FC",
+      "home_team_id": "espn-363",
+      "away_team_name": "Manchester United FC",
+      "away_team_id": "espn-360",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401879251",
+      "espn_event_id": "401879251",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "AFC Bournemouth",
+      "home_team_id": "espn-349",
+      "away_team_name": "Leeds United FC",
+      "away_team_id": "espn-357",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "田中碧"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "田中碧",
+          "club": "リーズ",
+          "scope": "season",
+          "goals": 0,
+          "assists": 2,
+          "minutes": 493,
+          "out": false,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
       ]
+    },
+    {
+      "game_id": "espn-401879249",
+      "espn_event_id": "401879249",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Brentford FC",
+      "home_team_id": "espn-337",
+      "away_team_name": "Nottingham Forest FC",
+      "away_team_id": "espn-393",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401879247",
+      "espn_event_id": "401879247",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Coventry City FC",
+      "home_team_id": "espn-388",
+      "away_team_name": "Sunderland AFC",
+      "away_team_id": "espn-366",
+      "jp_by_side": {
+        "home": [
+          "坂元達裕"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": [
+        {
+          "name": "坂元達裕",
+          "club": "コベントリー",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 222,
+          "out": false,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401878763",
+      "espn_event_id": "401878763",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Hull City AFC",
+      "home_team_id": "espn-306",
+      "away_team_name": "Ipswich Town FC",
+      "away_team_id": "espn-373",
+      "jp_by_side": {
+        "home": [
+          "守田英正"
+        ],
+        "away": [
+          "前田大然"
+        ]
+      },
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "前田大然",
+          "club": "イプスウィッチ",
+          "scope": "season",
+          "goals": 1,
+          "assists": 0,
+          "minutes": 426,
+          "out": false,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        },
+        {
+          "name": "守田英正",
+          "club": "ハル・シティ",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 93,
+          "out": false,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401879245",
+      "espn_event_id": "401879245",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T15:00:00+00:00",
+      "start_time_jst": "11/01 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Manchester City FC",
+      "home_team_id": "espn-382",
+      "away_team_name": "Brighton & Hove Albion FC",
+      "away_team_id": "espn-331",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "三笘薫"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "三笘薫",
+          "club": "ブライトン",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 0,
+          "out": true,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401878761",
+      "espn_event_id": "401878761",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T17:30:00+00:00",
+      "start_time_jst": "11/01 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Tottenham Hotspur FC",
+      "home_team_id": "espn-367",
+      "away_team_name": "Crystal Palace FC",
+      "away_team_id": "espn-384",
+      "jp_by_side": {
+        "home": [
+          "高井幸大"
+        ],
+        "away": [
+          "鎌田大地",
+          "冨安健洋"
+        ]
+      },
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "鎌田大地",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 1,
+          "assists": 3,
+          "minutes": 700,
+          "out": false,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        },
+        {
+          "name": "冨安健洋",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 189,
+          "out": true,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401879250",
+      "espn_event_id": "401879250",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-10-31T20:00:00+00:00",
+      "start_time_jst": "11/01 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Aston Villa FC",
+      "home_team_id": "espn-362",
+      "away_team_name": "Fulham FC",
+      "away_team_id": "espn-370",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401879246",
+      "espn_event_id": "401879246",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-11-01T16:30:00+00:00",
+      "start_time_jst": "11/02 01:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Liverpool FC",
+      "home_team_id": "espn-364",
+      "away_team_name": "Arsenal FC",
+      "away_team_id": "espn-359",
+      "jp_by_side": {
+        "home": [
+          "遠藤航"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": [
+        {
+          "name": "遠藤航",
+          "club": "リバプール",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 0,
+          "out": false,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401878762",
+      "espn_event_id": "401878762",
+      "competition_code": "PL",
+      "league": "プレミアリーグ",
+      "start_time_utc": "2026-11-02T20:00:00+00:00",
+      "start_time_jst": "11/03 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Newcastle United FC",
+      "home_team_id": "espn-361",
+      "away_team_name": "Everton FC",
+      "away_team_id": "espn-368",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882817",
+      "espn_event_id": "401882817",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-10-30T20:00:00+00:00",
+      "start_time_jst": "10/31 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Villarreal CF",
+      "home_team_id": "espn-102",
+      "away_team_name": "RCD Espanyol de Barcelona",
+      "away_team_id": "espn-88",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882820",
+      "espn_event_id": "401882820",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-10-31T13:00:00+00:00",
+      "start_time_jst": "10/31 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Levante UD",
+      "home_team_id": "espn-1538",
+      "away_team_name": "Club Atlético de Madrid",
+      "away_team_id": "espn-1068",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882818",
+      "espn_event_id": "401882818",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-10-31T15:15:00+00:00",
+      "start_time_jst": "11/01 00:15",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Rayo Vallecano de Madrid",
+      "home_team_id": "espn-101",
+      "away_team_name": "RC Celta de Vigo",
+      "away_team_id": "espn-85",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882825",
+      "espn_event_id": "401882825",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-10-31T17:30:00+00:00",
+      "start_time_jst": "11/01 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Real Betis Balompié",
+      "home_team_id": "espn-244",
+      "away_team_name": "Málaga CF",
+      "away_team_id": "espn-99",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882822",
+      "espn_event_id": "401882822",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-10-31T20:00:00+00:00",
+      "start_time_jst": "11/01 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Barcelona",
+      "home_team_id": "espn-83",
+      "away_team_name": "Deportivo Alavés",
+      "away_team_id": "espn-96",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882821",
+      "espn_event_id": "401882821",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-11-01T13:00:00+00:00",
+      "start_time_jst": "11/01 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Getafe CF",
+      "home_team_id": "espn-2922",
+      "away_team_name": "Sevilla FC",
+      "away_team_id": "espn-243",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882819",
+      "espn_event_id": "401882819",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-11-01T15:15:00+00:00",
+      "start_time_jst": "11/02 00:15",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Real Racing Club de Santander",
+      "home_team_id": "espn-87",
+      "away_team_name": "Real Madrid CF",
+      "away_team_id": "espn-86",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882823",
+      "espn_event_id": "401882823",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-11-01T17:30:00+00:00",
+      "start_time_jst": "11/02 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Elche CF",
+      "home_team_id": "espn-3751",
+      "away_team_name": "Valencia CF",
+      "away_team_id": "espn-94",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "佐藤龍之介"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882826",
+      "espn_event_id": "401882826",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-11-01T20:00:00+00:00",
+      "start_time_jst": "11/02 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Athletic Club",
+      "home_team_id": "espn-93",
+      "away_team_name": "Real Sociedad de Fútbol",
+      "away_team_id": "espn-89",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "久保建英"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401882824",
+      "espn_event_id": "401882824",
+      "competition_code": "PD",
+      "league": "ラ・リーガ",
+      "start_time_utc": "2026-11-02T20:00:00+00:00",
+      "start_time_jst": "11/03 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "RC Deportivo La Coruña",
+      "home_team_id": "espn-90",
+      "away_team_name": "CA Osasuna",
+      "away_team_id": "espn-97",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884746",
+      "espn_event_id": "401884746",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-30T19:30:00+00:00",
+      "start_time_jst": "10/31 04:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SV 07 Elversberg",
+      "home_team_id": "espn-10388",
+      "away_team_name": "1. FSV Mainz 05",
+      "away_team_id": "espn-2950",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "佐野海舟",
+          "川﨑颯太"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884753",
+      "espn_event_id": "401884753",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Bayer 04 Leverkusen",
+      "home_team_id": "espn-131",
+      "away_team_name": "VfB Stuttgart",
+      "away_team_id": "espn-134",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884749",
+      "espn_event_id": "401884749",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Borussia Mönchengladbach",
+      "home_team_id": "espn-268",
+      "away_team_name": "SC Paderborn 07",
+      "away_team_id": "espn-3307",
+      "jp_by_side": {
+        "home": [
+          "町野修斗",
+          "宇野禅斗",
+          "橋岡大樹",
+          "板倉滉"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884751",
+      "espn_event_id": "401884751",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Augsburg",
+      "home_team_id": "espn-3841",
+      "away_team_name": "SC Freiburg",
+      "away_team_id": "espn-126",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "鈴木唯人",
+          "後藤啓介",
+          "山本理仁"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884747",
+      "espn_event_id": "401884747",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Schalke 04",
+      "home_team_id": "espn-133",
+      "away_team_name": "RB Leipzig",
+      "away_team_id": "espn-11420",
+      "jp_by_side": {
+        "home": [
+          "田中聡"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884748",
+      "espn_event_id": "401884748",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T14:30:00+00:00",
+      "start_time_jst": "10/31 23:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SV Werder Bremen",
+      "home_team_id": "espn-137",
+      "away_team_name": "TSG 1899 Hoffenheim",
+      "away_team_id": "espn-7911",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "町田浩樹"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884754",
+      "espn_event_id": "401884754",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-10-31T17:30:00+00:00",
+      "start_time_jst": "11/01 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Bayern München",
+      "home_team_id": "espn-132",
+      "away_team_name": "Borussia Dortmund",
+      "away_team_id": "espn-124",
+      "jp_by_side": {
+        "home": [
+          "伊藤洋輝"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884750",
+      "espn_event_id": "401884750",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-11-01T14:30:00+00:00",
+      "start_time_jst": "11/01 23:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "1. FC Union Berlin",
+      "home_team_id": "espn-598",
+      "away_team_name": "1. FC Köln",
+      "away_team_id": "espn-122",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401884752",
+      "espn_event_id": "401884752",
+      "competition_code": "BL1",
+      "league": "ブンデスリーガ",
+      "start_time_utc": "2026-11-01T16:30:00+00:00",
+      "start_time_jst": "11/02 01:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Eintracht Frankfurt",
+      "home_team_id": "espn-125",
+      "away_team_name": "Hamburger SV",
+      "away_team_id": "espn-127",
+      "jp_by_side": {
+        "home": [
+          "堂安律",
+          "小杉啓太"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874976",
+      "espn_event_id": "401874976",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-10-29T17:30:00+00:00",
+      "start_time_jst": "10/30 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Frosinone Calcio",
+      "home_team_id": "espn-4057",
+      "away_team_name": "US Lecce",
+      "away_team_id": "espn-113",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874969",
+      "espn_event_id": "401874969",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-10-29T19:45:00+00:00",
+      "start_time_jst": "10/30 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "ACF Fiorentina",
+      "home_team_id": "espn-109",
+      "away_team_name": "Atalanta BC",
+      "away_team_id": "espn-105",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874798",
+      "espn_event_id": "401874798",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-10-31T14:00:00+00:00",
+      "start_time_jst": "10/31 23:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Bologna FC 1909",
+      "home_team_id": "espn-107",
+      "away_team_name": "AC Monza",
+      "away_team_id": "espn-4007",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874990",
+      "espn_event_id": "401874990",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-10-31T17:00:00+00:00",
+      "start_time_jst": "11/01 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Udinese Calcio",
+      "home_team_id": "espn-118",
+      "away_team_name": "AS Roma",
+      "away_team_id": "espn-104",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874795",
+      "espn_event_id": "401874795",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-10-31T19:45:00+00:00",
+      "start_time_jst": "11/01 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "AC Milan",
+      "home_team_id": "espn-103",
+      "away_team_name": "FC Internazionale Milano",
+      "away_team_id": "espn-110",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401875002",
+      "espn_event_id": "401875002",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-11-01T11:30:00+00:00",
+      "start_time_jst": "11/01 20:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Como 1907",
+      "home_team_id": "espn-2572",
+      "away_team_name": "Venezia FC",
+      "away_team_id": "espn-17530",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874782",
+      "espn_event_id": "401874782",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-11-01T14:00:00+00:00",
+      "start_time_jst": "11/01 23:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Frosinone Calcio",
+      "home_team_id": "espn-4057",
+      "away_team_name": "Torino FC",
+      "away_team_id": "espn-239",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874983",
+      "espn_event_id": "401874983",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-11-01T14:00:00+00:00",
+      "start_time_jst": "11/01 23:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SS Lazio",
+      "home_team_id": "espn-112",
+      "away_team_name": "Cagliari Calcio",
+      "away_team_id": "espn-2925",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "菅原由勢"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874968",
+      "espn_event_id": "401874968",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-11-01T17:00:00+00:00",
+      "start_time_jst": "11/02 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "US Lecce",
+      "home_team_id": "espn-113",
+      "away_team_name": "Genoa CFC",
+      "away_team_id": "espn-3263",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874949",
+      "espn_event_id": "401874949",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-11-01T19:45:00+00:00",
+      "start_time_jst": "11/02 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Juventus FC",
+      "home_team_id": "espn-111",
+      "away_team_name": "SSC Napoli",
+      "away_team_id": "espn-114",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874963",
+      "espn_event_id": "401874963",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-11-02T17:30:00+00:00",
+      "start_time_jst": "11/03 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "US Sassuolo Calcio",
+      "home_team_id": "espn-3997",
+      "away_team_name": "ACF Fiorentina",
+      "away_team_id": "espn-109",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401874971",
+      "espn_event_id": "401874971",
+      "competition_code": "SA",
+      "league": "セリエA",
+      "start_time_utc": "2026-11-02T19:45:00+00:00",
+      "start_time_jst": "11/03 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Atalanta BC",
+      "home_team_id": "espn-105",
+      "away_team_name": "Parma Calcio 1913",
+      "away_team_id": "espn-115",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "鈴木彩艶"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876421",
+      "espn_event_id": "401876421",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-10-30T18:00:00+00:00",
+      "start_time_jst": "10/31 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Le Havre AC",
+      "home_team_id": "espn-3236",
+      "away_team_name": "Paris Saint-Germain FC",
+      "away_team_id": "espn-160",
+      "jp_by_side": {
+        "home": [
+          "瀬古歩夢",
+          "中村草太",
+          "水多海斗"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876416",
+      "espn_event_id": "401876416",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-10-30T18:00:00+00:00",
+      "start_time_jst": "10/31 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "OGC Nice",
+      "home_team_id": "espn-2502",
+      "away_team_name": "Stade Rennais FC 1901",
+      "away_team_id": "espn-169",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876420",
+      "espn_event_id": "401876420",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-10-30T20:05:00+00:00",
+      "start_time_jst": "10/31 05:05",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Lille OSC",
+      "home_team_id": "espn-166",
+      "away_team_name": "Racing Club de Lens",
+      "away_team_id": "espn-175",
+      "jp_by_side": {
+        "home": [
+          "上田綺世"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876413",
+      "espn_event_id": "401876413",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-10-31T19:45:00+00:00",
+      "start_time_jst": "11/01 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "ES Troyes AC",
+      "home_team_id": "espn-170",
+      "away_team_name": "Le Mans FC",
+      "away_team_id": "espn-2697",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876414",
+      "espn_event_id": "401876414",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-11-01T14:00:00+00:00",
+      "start_time_jst": "11/01 23:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "RC Strasbourg Alsace",
+      "home_team_id": "espn-180",
+      "away_team_name": "AJ Auxerre",
+      "away_team_id": "espn-172",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876418",
+      "espn_event_id": "401876418",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-11-01T16:15:00+00:00",
+      "start_time_jst": "11/02 01:15",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Olympique Lyonnais",
+      "home_team_id": "espn-167",
+      "away_team_name": "Angers SCO",
+      "away_team_id": "espn-7868",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876415",
+      "espn_event_id": "401876415",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-11-01T16:15:00+00:00",
+      "start_time_jst": "11/02 01:15",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Paris FC",
+      "home_team_id": "espn-6851",
+      "away_team_name": "AS Monaco FC",
+      "away_team_id": "espn-174",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "南野拓実"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876417",
+      "espn_event_id": "401876417",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-11-01T19:45:00+00:00",
+      "start_time_jst": "11/02 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Olympique de Marseille",
+      "home_team_id": "espn-176",
+      "away_team_name": "Toulouse FC",
+      "away_team_id": "espn-179",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401876419",
+      "espn_event_id": "401876419",
+      "competition_code": "FL1",
+      "league": "リーグ・アン",
+      "start_time_utc": "2026-11-02T19:45:00+00:00",
+      "start_time_jst": "11/03 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Lorient",
+      "home_team_id": "espn-273",
+      "away_team_name": "Stade Brestois 29",
+      "away_team_id": "espn-6997",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915311",
+      "espn_event_id": "401915311",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T17:45:00+00:00",
+      "start_time_jst": "11/04 02:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Galatasaray SK",
+      "home_team_id": "espn-432",
+      "away_team_name": "VfB Stuttgart",
+      "away_team_id": "espn-134",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915310",
+      "espn_event_id": "401915310",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T17:45:00+00:00",
+      "start_time_jst": "11/04 02:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FK Shakhtar Donetsk",
+      "home_team_id": "espn-493",
+      "away_team_name": "Sporting Clube de Portugal",
+      "away_team_id": "espn-2250",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915386",
+      "espn_event_id": "401915386",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Club Atlético de Madrid",
+      "home_team_id": "espn-1068",
+      "away_team_name": "FC Bayern München",
+      "away_team_id": "espn-132",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "伊藤洋輝"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915387",
+      "espn_event_id": "401915387",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Barcelona",
+      "home_team_id": "espn-83",
+      "away_team_name": "Aston Villa FC",
+      "away_team_id": "espn-362",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915384",
+      "espn_event_id": "401915384",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FK Bodø/Glimt",
+      "home_team_id": "espn-2980",
+      "away_team_name": "Lille OSC",
+      "away_team_id": "espn-166",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "上田綺世"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915307",
+      "espn_event_id": "401915307",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Feyenoord Rotterdam",
+      "home_team_id": "espn-142",
+      "away_team_name": "FC Internazionale Milano",
+      "away_team_id": "espn-110",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915385",
+      "espn_event_id": "401915385",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "LASK Linz",
+      "home_team_id": "espn-4411",
+      "away_team_name": "ŠK Slovan Bratislava",
+      "away_team_id": "espn-521",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915308",
+      "espn_event_id": "401915308",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Manchester United FC",
+      "home_team_id": "espn-360",
+      "away_team_name": "AS Roma",
+      "away_team_id": "espn-104",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915309",
+      "espn_event_id": "401915309",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-03T20:00:00+00:00",
+      "start_time_jst": "11/04 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Villarreal CF",
+      "home_team_id": "espn-102",
+      "away_team_name": "Paris Saint-Germain FC",
+      "away_team_id": "espn-160",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915383",
+      "espn_event_id": "401915383",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-04T17:45:00+00:00",
+      "start_time_jst": "11/05 02:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "PAE AEK",
+      "home_team_id": "espn-887",
+      "away_team_name": "Real Madrid CF",
+      "away_team_id": "espn-86",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915382",
+      "espn_event_id": "401915382",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-04T17:45:00+00:00",
+      "start_time_jst": "11/05 02:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Fenerbahçe SK",
+      "home_team_id": "espn-436",
+      "away_team_name": "Liverpool FC",
+      "away_team_id": "espn-364",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "遠藤航"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "遠藤航",
+          "club": "リバプール",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 0,
+          "out": false,
+          "as_of": "2026-10-28T10:07:36.909975+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ]
+    },
+    {
+      "game_id": "espn-401915304",
+      "espn_event_id": "401915304",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-04T20:00:00+00:00",
+      "start_time_jst": "11/05 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Borussia Dortmund",
+      "home_team_id": "espn-124",
+      "away_team_name": "Real Betis Balompié",
+      "away_team_id": "espn-244",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915301",
+      "espn_event_id": "401915301",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-04T20:00:00+00:00",
+      "start_time_jst": "11/05 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Porto",
+      "home_team_id": "espn-437",
+      "away_team_name": "SSC Napoli",
+      "away_team_id": "espn-114",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915305",
+      "espn_event_id": "401915305",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-04T20:00:00+00:00",
+      "start_time_jst": "11/05 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Racing Club de Lens",
+      "home_team_id": "espn-175",
+      "away_team_name": "Como 1907",
+      "away_team_id": "espn-2572",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915303",
+      "espn_event_id": "401915303",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-04T20:00:00+00:00",
+      "start_time_jst": "11/05 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "PSV",
+      "home_team_id": "espn-148",
+      "away_team_name": "Club Brugge KV",
+      "away_team_id": "espn-570",
+      "jp_by_side": {
+        "home": [
+          "佐野航大"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915306",
+      "espn_event_id": "401915306",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-04T20:00:00+00:00",
+      "start_time_jst": "11/05 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "RB Leipzig",
+      "home_team_id": "espn-11420",
+      "away_team_name": "Manchester City FC",
+      "away_team_id": "espn-382",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915381",
+      "espn_event_id": "401915381",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-04T20:00:00+00:00",
+      "start_time_jst": "11/05 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SK Slavia Praha",
+      "home_team_id": "espn-494",
+      "away_team_name": "Arsenal FC",
+      "away_team_id": "espn-359",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401915302",
+      "espn_event_id": "401915302",
+      "competition_code": "CL",
+      "league": "チャンピオンズリーグ",
+      "start_time_utc": "2026-11-04T20:00:00+00:00",
+      "start_time_jst": "11/05 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Viking FK",
+      "home_team_id": "espn-510",
+      "away_team_name": "Sabah FK",
+      "away_team_id": "espn-21922",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401921840",
+      "espn_event_id": "401921840",
+      "competition_code": "EFL",
+      "league": "リーグ杯",
+      "start_time_utc": "2026-10-28T19:45:00+00:00",
+      "start_time_jst": "10/29 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.league_cup/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "AFC Bournemouth",
+      "home_team_id": "espn-349",
+      "away_team_name": "Aston Villa FC",
+      "away_team_id": "espn-362",
+      "phase": "knockout",
+      "phase_source": "fourth round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 24,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "リーグ杯"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "fourth round"
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "espn-401921843",
+      "espn_event_id": "401921843",
+      "competition_code": "EFL",
+      "league": "リーグ杯",
+      "start_time_utc": "2026-10-28T19:45:00+00:00",
+      "start_time_jst": "10/29 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.league_cup/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Sunderland AFC",
+      "home_team_id": "espn-366",
+      "away_team_name": "Brentford FC",
+      "away_team_id": "espn-337",
+      "phase": "knockout",
+      "phase_source": "fourth round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 24,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "リーグ杯"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "fourth round"
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "espn-401921844",
+      "espn_event_id": "401921844",
+      "competition_code": "EFL",
+      "league": "リーグ杯",
+      "start_time_utc": "2026-10-29T19:45:00+00:00",
+      "start_time_jst": "10/30 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.league_cup/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Everton FC",
+      "home_team_id": "espn-368",
+      "away_team_name": "Newcastle United FC",
+      "away_team_id": "espn-361",
+      "phase": "knockout",
+      "phase_source": "fourth round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928514",
+      "espn_event_id": "401928514",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T18:00:00+00:00",
+      "start_time_jst": "10/29 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "ANAITASUNA",
+      "home_team_id": "espn-20776",
+      "away_team_name": "Deportivo Alavés",
+      "away_team_id": "espn-96",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928516",
+      "espn_event_id": "401928516",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T18:00:00+00:00",
+      "start_time_jst": "10/29 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CD Pamplona",
+      "home_team_id": "espn-133835",
+      "away_team_name": "Eibar",
+      "away_team_id": "espn-3752",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928527",
+      "espn_event_id": "401928527",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T18:00:00+00:00",
+      "start_time_jst": "10/29 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CD Tarancon",
+      "home_team_id": "espn-133837",
+      "away_team_name": "Levante UD",
+      "away_team_id": "espn-1538",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928494",
+      "espn_event_id": "401928494",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T18:00:00+00:00",
+      "start_time_jst": "10/29 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Coruxo",
+      "home_team_id": "espn-8961",
+      "away_team_name": "Zamora CF",
+      "away_team_id": "espn-17565",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928515",
+      "espn_event_id": "401928515",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T18:00:00+00:00",
+      "start_time_jst": "10/29 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Peña Sport",
+      "home_team_id": "espn-7041",
+      "away_team_name": "Huesca",
+      "away_team_id": "espn-5413",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928525",
+      "espn_event_id": "401928525",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T18:00:00+00:00",
+      "start_time_jst": "10/29 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Poblense",
+      "home_team_id": "espn-9414",
+      "away_team_name": "Ceuta",
+      "away_team_id": "espn-5404",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928518",
+      "espn_event_id": "401928518",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T18:00:00+00:00",
+      "start_time_jst": "10/29 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Portugalete",
+      "home_team_id": "espn-5464",
+      "away_team_name": "Real Unión Irun",
+      "away_team_id": "espn-8678",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928497",
+      "espn_event_id": "401928497",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T18:00:00+00:00",
+      "start_time_jst": "10/29 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Utebo",
+      "home_team_id": "espn-21723",
+      "away_team_name": "CD Sabadell",
+      "away_team_id": "espn-11487",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928505",
+      "espn_event_id": "401928505",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:00:00+00:00",
+      "start_time_jst": "10/29 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Alcoyano",
+      "home_team_id": "espn-6827",
+      "away_team_name": "Mallorca",
+      "away_team_id": "espn-84",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928519",
+      "espn_event_id": "401928519",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:00:00+00:00",
+      "start_time_jst": "10/29 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Amorebieta",
+      "home_team_id": "espn-12587",
+      "away_team_name": "UD Logroñés",
+      "away_team_id": "espn-7206",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928532",
+      "espn_event_id": "401928532",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:00:00+00:00",
+      "start_time_jst": "10/29 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Badajoz",
+      "home_team_id": "espn-5535",
+      "away_team_name": "Tenerife",
+      "away_team_id": "espn-245",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928506",
+      "espn_event_id": "401928506",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:00:00+00:00",
+      "start_time_jst": "10/29 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Calvo Sotelo",
+      "home_team_id": "espn-21291",
+      "away_team_name": "Albacete",
+      "away_team_id": "espn-2737",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928511",
+      "espn_event_id": "401928511",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:00:00+00:00",
+      "start_time_jst": "10/29 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Covadonga",
+      "home_team_id": "espn-22084",
+      "away_team_name": "Real Valladolid",
+      "away_team_id": "espn-95",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928528",
+      "espn_event_id": "401928528",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:00:00+00:00",
+      "start_time_jst": "10/29 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Mijas Las Lagunas",
+      "home_team_id": "espn-22043",
+      "away_team_name": "Real Jaen CF",
+      "away_team_id": "espn-5401",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928490",
+      "espn_event_id": "401928490",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:00:00+00:00",
+      "start_time_jst": "10/29 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Numancia",
+      "home_team_id": "espn-100",
+      "away_team_name": "Real Oviedo",
+      "away_team_id": "espn-92",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928550",
+      "espn_event_id": "401928550",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:00:00+00:00",
+      "start_time_jst": "10/29 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Trival Valderas",
+      "home_team_id": "espn-17573",
+      "away_team_name": "Leganés",
+      "away_team_id": "espn-17534",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928524",
+      "espn_event_id": "401928524",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:30:00+00:00",
+      "start_time_jst": "10/29 04:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CD Minera",
+      "home_team_id": "espn-22437",
+      "away_team_name": "FC Cartagena",
+      "away_team_id": "espn-5419",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928530",
+      "espn_event_id": "401928530",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:30:00+00:00",
+      "start_time_jst": "10/29 04:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Cieza",
+      "home_team_id": "espn-131466",
+      "away_team_name": "Granada",
+      "away_team_id": "espn-3747",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928517",
+      "espn_event_id": "401928517",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:30:00+00:00",
+      "start_time_jst": "10/29 04:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Gimnástica Torrelavega",
+      "home_team_id": "espn-17570",
+      "away_team_name": "UD Ourense",
+      "away_team_id": "espn-131474",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928500",
+      "espn_event_id": "401928500",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T19:30:00+00:00",
+      "start_time_jst": "10/29 04:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Reus FC Reddis",
+      "home_team_id": "espn-131470",
+      "away_team_name": "Barakaldo",
+      "away_team_id": "espn-5421",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928551",
+      "espn_event_id": "401928551",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T20:00:00+00:00",
+      "start_time_jst": "10/29 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CD Artistico Navalcarnero",
+      "home_team_id": "espn-19288",
+      "away_team_name": "Real Betis Balompié",
+      "away_team_id": "espn-244",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928487",
+      "espn_event_id": "401928487",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T20:00:00+00:00",
+      "start_time_jst": "10/29 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Salamanca UDS",
+      "home_team_id": "espn-22440",
+      "away_team_name": "RC Celta de Vigo",
+      "away_team_id": "espn-85",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928504",
+      "espn_event_id": "401928504",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T20:00:00+00:00",
+      "start_time_jst": "10/29 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Tavernes de la Valldigna",
+      "home_team_id": "espn-133846",
+      "away_team_name": "Valencia CF",
+      "away_team_id": "espn-94",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "佐藤龍之介"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 39,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "コパ・デル・レイ"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "first round"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [],
+              "away": [
+                "佐藤龍之介"
+              ]
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
+    },
+    {
+      "game_id": "espn-401928548",
+      "espn_event_id": "401928548",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-28T20:00:00+00:00",
+      "start_time_jst": "10/29 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Xerez",
+      "home_team_id": "espn-3835",
+      "away_team_name": "Cádiz",
+      "away_team_id": "espn-3842",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928529",
+      "espn_event_id": "401928529",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T18:00:00+00:00",
+      "start_time_jst": "10/30 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Atlético Baleares",
+      "home_team_id": "espn-14263",
+      "away_team_name": "Eldense",
+      "away_team_id": "espn-7320",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928496",
+      "espn_event_id": "401928496",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T18:00:00+00:00",
+      "start_time_jst": "10/30 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Atlético Calatayud",
+      "home_team_id": "espn-131403",
+      "away_team_name": "CA Osasuna",
+      "away_team_id": "espn-97",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928535",
+      "espn_event_id": "401928535",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T18:00:00+00:00",
+      "start_time_jst": "10/30 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "San Sebastián de los Reyes",
+      "home_team_id": "espn-18342",
+      "away_team_name": "Coria",
+      "away_team_id": "espn-20821",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928526",
+      "espn_event_id": "401928526",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T18:00:00+00:00",
+      "start_time_jst": "10/30 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "UB Lebrijana",
+      "home_team_id": "espn-133844",
+      "away_team_name": "Getafe CF",
+      "away_team_id": "espn-2922",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928523",
+      "espn_event_id": "401928523",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T19:00:00+00:00",
+      "start_time_jst": "10/30 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Antequera CF",
+      "home_team_id": "espn-9449",
+      "away_team_name": "Aguilas",
+      "away_team_id": "espn-21299",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928491",
+      "espn_event_id": "401928491",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T19:00:00+00:00",
+      "start_time_jst": "10/30 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CD Laredo",
+      "home_team_id": "espn-17888",
+      "away_team_name": "Burgos",
+      "away_team_id": "espn-12597",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928498",
+      "espn_event_id": "401928498",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T19:00:00+00:00",
+      "start_time_jst": "10/30 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CD Varea",
+      "home_team_id": "espn-17569",
+      "away_team_name": "FC Andorra",
+      "away_team_id": "espn-20179",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928531",
+      "espn_event_id": "401928531",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T19:00:00+00:00",
+      "start_time_jst": "10/30 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Conquense",
+      "home_team_id": "espn-4475",
+      "away_team_name": "Castellón",
+      "away_team_id": "espn-4438",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928492",
+      "espn_event_id": "401928492",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T19:00:00+00:00",
+      "start_time_jst": "10/30 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Guijuelo",
+      "home_team_id": "espn-6858",
+      "away_team_name": "Sporting Gijón",
+      "away_team_id": "espn-3788",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928512",
+      "espn_event_id": "401928512",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T19:00:00+00:00",
+      "start_time_jst": "10/30 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Real Ávila",
+      "home_team_id": "espn-22439",
+      "away_team_name": "Unionistas de Salamanca",
+      "away_team_id": "espn-19294",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928513",
+      "espn_event_id": "401928513",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T20:00:00+00:00",
+      "start_time_jst": "10/30 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "AE Prat",
+      "home_team_id": "espn-18334",
+      "away_team_name": "Athletic Club",
+      "away_team_id": "espn-93",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928507",
+      "espn_event_id": "401928507",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T20:00:00+00:00",
+      "start_time_jst": "10/30 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Auriense Cented Academy",
+      "home_team_id": "espn-133847",
+      "away_team_name": "RC Deportivo La Coruña",
+      "away_team_id": "espn-90",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928489",
+      "espn_event_id": "401928489",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T20:00:00+00:00",
+      "start_time_jst": "10/30 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Ribadesella",
+      "home_team_id": "espn-133842",
+      "away_team_name": "Real Racing Club de Santander",
+      "away_team_id": "espn-87",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928552",
+      "espn_event_id": "401928552",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-10-29T20:00:00+00:00",
+      "start_time_jst": "10/30 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Sporting Hortaleza",
+      "home_team_id": "espn-133831",
+      "away_team_name": "Sevilla FC",
+      "away_team_id": "espn-243",
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401916921",
+      "espn_event_id": "401916921",
+      "competition_code": "DFB",
+      "league": "DFBポカール",
+      "start_time_utc": "2026-10-28T17:00:00+00:00",
+      "start_time_jst": "10/29 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.dfb_pokal/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Dynamo Dresden",
+      "home_team_id": "espn-7017",
+      "away_team_name": "FC Schalke 04",
+      "away_team_id": "espn-133",
+      "phase": "knockout",
+      "phase_source": "second round",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "田中聡"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 39,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "DFBポカール"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "second round"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [],
+              "away": [
+                "田中聡"
+              ]
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
+    },
+    {
+      "game_id": "espn-401917036",
+      "espn_event_id": "401917036",
+      "competition_code": "DFB",
+      "league": "DFBポカール",
+      "start_time_utc": "2026-10-28T17:00:00+00:00",
+      "start_time_jst": "10/29 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.dfb_pokal/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SC Freiburg",
+      "home_team_id": "espn-126",
+      "away_team_name": "VfL Wolfsburg",
+      "away_team_id": "espn-138",
+      "phase": "knockout",
+      "phase_source": "second round",
+      "jp_by_side": {
+        "home": [
+          "鈴木唯人",
+          "後藤啓介",
+          "山本理仁"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 39,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "DFBポカール"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "second round"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [
+                "鈴木唯人",
+                "後藤啓介",
+                "山本理仁"
+              ],
+              "away": []
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
+    },
+    {
+      "game_id": "espn-401917032",
+      "espn_event_id": "401917032",
+      "competition_code": "DFB",
+      "league": "DFBポカール",
+      "start_time_utc": "2026-10-28T17:00:00+00:00",
+      "start_time_jst": "10/29 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.dfb_pokal/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SC Paderborn 07",
+      "home_team_id": "espn-3307",
+      "away_team_name": "VfB Stuttgart",
+      "away_team_id": "espn-134",
+      "phase": "knockout",
+      "phase_source": "second round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 24,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "DFBポカール"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "second round"
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "espn-401916919",
+      "espn_event_id": "401916919",
+      "competition_code": "DFB",
+      "league": "DFBポカール",
+      "start_time_utc": "2026-10-28T17:00:00+00:00",
+      "start_time_jst": "10/29 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.dfb_pokal/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "SSV Jeddeloh II",
+      "home_team_id": "espn-19233",
+      "away_team_name": "Hertha Berlin",
+      "away_team_id": "espn-129",
+      "phase": "knockout",
+      "phase_source": "second round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401917033",
+      "espn_event_id": "401917033",
+      "competition_code": "DFB",
+      "league": "DFBポカール",
+      "start_time_utc": "2026-10-28T19:45:00+00:00",
+      "start_time_jst": "10/29 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.dfb_pokal/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Bayer 04 Leverkusen",
+      "home_team_id": "espn-131",
+      "away_team_name": "1. FC Nürnberg",
+      "away_team_id": "espn-269",
+      "phase": "knockout",
+      "phase_source": "second round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401916922",
+      "espn_event_id": "401916922",
+      "competition_code": "DFB",
+      "league": "DFBポカール",
+      "start_time_utc": "2026-10-28T19:45:00+00:00",
+      "start_time_jst": "10/29 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.dfb_pokal/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Hannover 96",
+      "home_team_id": "espn-2428",
+      "away_team_name": "Kaiserslautern",
+      "away_team_id": "espn-130",
+      "phase": "knockout",
+      "phase_source": "second round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401917034",
+      "espn_event_id": "401917034",
+      "competition_code": "DFB",
+      "league": "DFBポカール",
+      "start_time_utc": "2026-10-28T19:45:00+00:00",
+      "start_time_jst": "10/29 04:45",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.dfb_pokal/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Holstein Kiel",
+      "home_team_id": "espn-7884",
+      "away_team_name": "TSG 1899 Hoffenheim",
+      "away_team_id": "espn-7911",
+      "phase": "knockout",
+      "phase_source": "second round",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "町田浩樹"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 39,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 12,
+            "evidence": "DFBポカール"
+          },
+          {
+            "key": "knockout",
+            "points": 12,
+            "evidence": "second round"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [],
+              "away": [
+                "町田浩樹"
+              ]
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
     }
   ],
   "ai_status": {
@@ -344,7 +4357,7 @@
     {
       "competition": "SA",
       "status": "success",
-      "events": 20,
+      "events": 17,
       "label": "取得成功"
     },
     {
@@ -356,7 +4369,7 @@
     {
       "competition": "CL",
       "status": "success",
-      "events": 9,
+      "events": 18,
       "label": "取得成功"
     },
     {
@@ -380,19 +4393,19 @@
     {
       "competition": "EFL",
       "status": "success",
-      "events": 8,
+      "events": 6,
       "label": "取得成功"
     },
     {
       "competition": "CDR",
       "status": "success",
-      "events": 56,
+      "events": 38,
       "label": "取得成功"
     },
     {
       "competition": "DFB",
       "status": "success",
-      "events": 16,
+      "events": 8,
       "label": "取得成功"
     },
     {
@@ -410,15 +4423,8 @@
   ],
   "club_registration_check": {
     "days": 7,
-    "checked_at": "2026-10-27T19:04:03.887262+09:00",
+    "checked_at": "2026-10-28T19:07:55.264551+09:00",
     "missing": [
-      {
-        "club": "1. FC Magdeburg",
-        "game_ids": [
-          "espn-401917035"
-        ],
-        "candidates": []
-      },
       {
         "club": "1. FC Nürnberg",
         "game_ids": [
@@ -430,6 +4436,13 @@
         "club": "AE Prat",
         "game_ids": [
           "espn-401928513"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "ANAITASUNA",
+        "game_ids": [
+          "espn-401928514"
         ],
         "candidates": []
       },
@@ -448,27 +4461,6 @@
         "candidates": []
       },
       {
-        "club": "Alcalá",
-        "game_ids": [
-          "espn-401928549"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Alcoyano",
-        "game_ids": [
-          "espn-401928505"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Almería",
-        "game_ids": [
-          "espn-401928521"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Amorebieta",
         "game_ids": [
           "espn-401928519"
@@ -476,23 +4468,9 @@
         "candidates": []
       },
       {
-        "club": "Anaitasuna",
-        "game_ids": [
-          "espn-401928514"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Antequera CF",
         "game_ids": [
           "espn-401928523"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Arosa",
-        "game_ids": [
-          "espn-401928488"
         ],
         "candidates": []
       },
@@ -512,42 +4490,6 @@
         "club": "Atlético Calatayud",
         "game_ids": [
           "espn-401928496"
-        ],
-        "candidates": [
-          {
-            "id": "Club Atlético de Madrid",
-            "display": "アトレティコ・マドリード"
-          }
-        ]
-      },
-      {
-        "club": "Atlético Paso",
-        "game_ids": [
-          "espn-401928547"
-        ],
-        "candidates": [
-          {
-            "id": "Club Atlético de Madrid",
-            "display": "アトレティコ・マドリード"
-          }
-        ]
-      },
-      {
-        "club": "Atlético Pinatarense",
-        "game_ids": [
-          "espn-401928501"
-        ],
-        "candidates": [
-          {
-            "id": "Club Atlético de Madrid",
-            "display": "アトレティコ・マドリード"
-          }
-        ]
-      },
-      {
-        "club": "Atlético Tordesillas",
-        "game_ids": [
-          "espn-401928509"
         ],
         "candidates": [
           {
@@ -578,13 +4520,6 @@
         "candidates": []
       },
       {
-        "club": "Bradford City",
-        "game_ids": [
-          "espn-401921833"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Burgos",
         "game_ids": [
           "espn-401928491"
@@ -595,20 +4530,6 @@
         "club": "CD Artistico Navalcarnero",
         "game_ids": [
           "espn-401928551"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "CD Cuarte",
-        "game_ids": [
-          "espn-401928493"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "CD Extremadura",
-        "game_ids": [
-          "espn-401928553"
         ],
         "candidates": []
       },
@@ -648,30 +4569,9 @@
         "candidates": []
       },
       {
-        "club": "CD Tudelano",
-        "game_ids": [
-          "espn-401928503"
-        ],
-        "candidates": []
-      },
-      {
         "club": "CD Varea",
         "game_ids": [
           "espn-401928498"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "CE Europa",
-        "game_ids": [
-          "espn-401928520"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "CF Calamocha",
-        "game_ids": [
-          "espn-401928520"
         ],
         "candidates": []
       },
@@ -704,13 +4604,6 @@
         "candidates": []
       },
       {
-        "club": "Ciudad De Lucena",
-        "game_ids": [
-          "espn-401928534"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Conquense",
         "game_ids": [
           "espn-401928531"
@@ -739,37 +4632,9 @@
         "candidates": []
       },
       {
-        "club": "Cultural Leonesa",
-        "game_ids": [
-          "espn-401928508"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Cádiz",
         "game_ids": [
           "espn-401928548"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Córdoba",
-        "game_ids": [
-          "espn-401928547"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Don Benito",
-        "game_ids": [
-          "espn-401928553"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Dynamo Dresden",
-        "game_ids": [
-          "espn-401916921"
         ],
         "candidates": []
       },
@@ -802,30 +4667,9 @@
         "candidates": []
       },
       {
-        "club": "Fleetwood Town",
-        "game_ids": [
-          "espn-401921835"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Gimnastica Segoviana",
-        "game_ids": [
-          "espn-401928508"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Gimnástica Torrelavega",
         "game_ids": [
           "espn-401928517"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Girona",
-        "game_ids": [
-          "espn-401928493"
         ],
         "candidates": []
       },
@@ -858,13 +4702,6 @@
         "candidates": []
       },
       {
-        "club": "Holstein Kiel",
-        "game_ids": [
-          "espn-401917034"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Huesca",
         "game_ids": [
           "espn-401928515"
@@ -879,30 +4716,9 @@
         "candidates": []
       },
       {
-        "club": "Karlsruher SC",
-        "game_ids": [
-          "espn-401917031"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Las Palmas",
-        "game_ids": [
-          "espn-401928549"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Leganés",
         "game_ids": [
           "espn-401928550"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Llanera",
-        "game_ids": [
-          "espn-401928510"
         ],
         "candidates": []
       },
@@ -914,20 +4730,6 @@
         "candidates": []
       },
       {
-        "club": "Manacor",
-        "game_ids": [
-          "espn-401928522"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Manresa",
-        "game_ids": [
-          "espn-401928502"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Mijas Las Lagunas",
         "game_ids": [
           "espn-401928528"
@@ -935,23 +4737,9 @@
         "candidates": []
       },
       {
-        "club": "Mirandés",
-        "game_ids": [
-          "espn-401928509"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Numancia",
         "game_ids": [
           "espn-401928490"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Peterborough United",
-        "game_ids": [
-          "espn-401921833"
         ],
         "candidates": []
       },
@@ -975,37 +4763,11 @@
         ]
       },
       {
-        "club": "Ponferradina",
-        "game_ids": [
-          "espn-401928510"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Pontevedra",
-        "game_ids": [
-          "espn-401928488"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Portugalete",
         "game_ids": [
           "espn-401928518"
         ],
         "candidates": []
-      },
-      {
-        "club": "Rayo Majadahonda",
-        "game_ids": [
-          "espn-401928534"
-        ],
-        "candidates": [
-          {
-            "id": "Rayo Vallecano de Madrid",
-            "display": "ラージョ・バジェカーノ"
-          }
-        ]
       },
       {
         "club": "Real Jaen CF",
@@ -1036,23 +4798,9 @@
         "candidates": []
       },
       {
-        "club": "Real Zaragoza",
-        "game_ids": [
-          "espn-401928503"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Real Ávila",
         "game_ids": [
           "espn-401928512"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Recreativo Huelva",
-        "game_ids": [
-          "espn-401928533"
         ],
         "candidates": []
       },
@@ -1071,30 +4819,9 @@
         "candidates": []
       },
       {
-        "club": "Rot-Weiss Essen",
-        "game_ids": [
-          "espn-401917027"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "SG Sonnenhof Großaspach",
-        "game_ids": [
-          "espn-401917028"
-        ],
-        "candidates": []
-      },
-      {
         "club": "SSV Jeddeloh II",
         "game_ids": [
           "espn-401916919"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "SV Darmstadt 98",
-        "game_ids": [
-          "espn-401916923"
         ],
         "candidates": []
       },
@@ -1113,20 +4840,6 @@
         "candidates": []
       },
       {
-        "club": "Sant Andreu",
-        "game_ids": [
-          "espn-401928502"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Sestao",
-        "game_ids": [
-          "espn-401928495"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Sporting Gijón",
         "game_ids": [
           "espn-401928492"
@@ -1137,20 +4850,6 @@
         "club": "Sporting Hortaleza",
         "game_ids": [
           "espn-401928552"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Sporting de Alcázar",
-        "game_ids": [
-          "espn-401928499"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Tavernes de la Valldigna",
-        "game_ids": [
-          "espn-401928504"
         ],
         "candidates": []
       },
@@ -1172,13 +4871,6 @@
         "club": "UB Lebrijana",
         "game_ids": [
           "espn-401928526"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "UD Castellonense",
-        "game_ids": [
-          "espn-401928521"
         ],
         "candidates": []
       },
@@ -1211,20 +4903,6 @@
         "candidates": []
       },
       {
-        "club": "VfL Bochum",
-        "game_ids": [
-          "espn-401917029"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "VfL Wolfsburg",
-        "game_ids": [
-          "espn-401917036"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Xerez",
         "game_ids": [
           "espn-401928548"
@@ -1241,117 +4919,127 @@
     ],
     "source_errors": []
   },
-  "source": "ESPN・football-data.org",
+  "source": "ESPN",
   "preview_selection": {
-    "day": "2026-10-27",
+    "day": "2026-10-28",
     "threshold": 30,
     "max_games": 4,
     "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
-    "selected_ids": [],
-    "count": 0,
-    "reason": "取得不足/名前や日時を確認できない材料があります",
+    "selected_ids": [
+      "espn-401921842",
+      "espn-401921834",
+      "espn-401917035",
+      "espn-401921841"
+    ],
+    "count": 4,
+    "reason": "",
     "rejected": [
       {
-        "id": "espn-401921833",
+        "id": "espn-401928514",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401921835",
+        "id": "espn-401928516",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928493",
+        "id": "espn-401928527",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928501",
+        "id": "espn-401928494",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928520",
+        "id": "espn-401928515",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928495",
+        "id": "espn-401928525",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928521",
+        "id": "espn-401928518",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928549",
+        "id": "espn-401928497",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928509",
+        "id": "espn-401928505",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928534",
+        "id": "espn-401928519",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928508",
+        "id": "espn-401928532",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928510",
+        "id": "espn-401928506",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928553",
+        "id": "espn-401928511",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928502",
+        "id": "espn-401928528",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928488",
+        "id": "espn-401928490",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928547",
+        "id": "espn-401928550",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928503",
+        "id": "espn-401928524",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928522",
+        "id": "espn-401928530",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928533",
+        "id": "espn-401928517",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401928499",
+        "id": "espn-401928500",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401917027",
+        "id": "espn-401928551",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401917028",
+        "id": "espn-401928487",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401917029",
+        "id": "espn-401928548",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401917031",
+        "id": "espn-401916919",
         "reason": "クラブの表示名/読みが未登録"
       },
       {
-        "id": "espn-401916923",
+        "id": "espn-401917033",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401916922",
         "reason": "クラブの表示名/読みが未登録"
       }
     ],
+    "rescued": [],
     "source_errors": []
   }
 }

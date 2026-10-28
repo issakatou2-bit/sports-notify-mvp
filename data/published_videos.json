@@ -8438,6 +8438,42 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-28": {
+      "video_id": "aGfjs2CmZ30",
+      "url": "https://youtu.be/aGfjs2CmZ30",
+      "title": "【欧州サッカー】今夜の注目試合｜リバプール vs チェルシー ほか #Shorts",
+      "published_at": "2026-10-28T10:17:49.668632+00:00",
+      "publish_at": "2026-10-28T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "21cb3e59d907d2d4bea259ac4bbbd12fb6e95d9d5429f4819501d807423c4581",
+        "narration_sha256": "cf7721d391ca496abf2e1e05edb3c2219ce6195432fbc6c085983c9eb435beda"
+      },
+      "duration_seconds": 53.83,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-28",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-28T10:08:41.666490+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
