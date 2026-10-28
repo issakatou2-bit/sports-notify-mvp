@@ -112,6 +112,10 @@ class Corrections(unittest.TestCase):
                     self.assertEqual(cc.main(), 1)
                     self.assertNotIn("SECRET_URL", str(log.call_args_list))
                 self.assertIn("取得失敗", summary.read_text(encoding="utf-8"))
+                quota = cc.cs.FetchError(dict(call="videos", page=1, http_status=403, api_reason="quotaExceeded"))
+                with patch.object(cc, "collect", side_effect=quota), patch("builtins.print") as log:
+                    self.assertEqual(cc.main(), 0)  # 枠切れは失敗メールにしない
+                    self.assertIn("使用枠切れ", str(log.call_args_list))
 
     def test_workflow_gate_daily_and_read_only(self):
         workflow = (Path(__file__).resolve().parent.parent / ".github/workflows/correction_comments.yml").read_text(encoding="utf-8")

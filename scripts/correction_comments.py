@@ -2,6 +2,7 @@
 """自チャンネルの訂正らしい公開コメントをActions要約へ。AI・返信・動画変更なし。"""
 import argparse
 import html
+import json
 import os
 from pathlib import Path
 import re
@@ -70,13 +71,20 @@ def main():
         if not os.environ.get("YOUTUBE_API_KEY"):
             raise ValueError("missing key")
         payload = collect(days=args.days, max_pages=args.max_pages)
-    except Exception:
-        # 鍵を含むURLやAPI応答・投稿者情報を例外ログへ出さない。
+    except Exception as exc:
+        # 鍵を含むURLやAPI応答・投稿者情報を例外ログへ出さない。理由は許可した識別子だけ。
+        reason = cs.failure_reason(exc)
         summary = os.environ.get("GITHUB_STEP_SUMMARY")
         if summary:
             with Path(summary).open("a", encoding="utf-8") as out:
                 out.write("## 訂正コメントの候補\n\n取得失敗。候補の有無は未確認です。\n")
-        print("::error::訂正コメントを取得できませんでした（本文・鍵はログに出しません）")
+        # 枠切れは APSC と共用の枠が尽きただけで、次の回で読み直せる。
+        # 失敗にすると毎回メールが飛ぶので注記に留める（10/28 10:39）。
+        if isinstance(reason, dict) and reason.get("api_reason") in ("quotaExceeded", "dailyLimitExceeded"):
+            print("::warning::YouTubeの使用枠切れで訂正コメントを読めませんでした。次の回で読み直します")
+            return 0
+        print("::error::訂正コメントを取得できませんでした（本文・鍵はログに出しません） "
+              + json.dumps(reason, ensure_ascii=False))
         return 1
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
