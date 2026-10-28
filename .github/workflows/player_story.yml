@@ -87,7 +87,7 @@ jobs:
           DAY=$(python -c "import json; print(json.load(open('build/player_story/narration.json',encoding='utf8'))['label'])")
           python scripts/upload_youtube.py --kind player_story --video build/player_story/collespo_player_story.mp4 --games build/player_story/narration.json --narration build/player_story/narration.json --video-date "$DAY" --privacy public
           bash scripts/commit_data.sh "player story: ${{ github.run_id }}" \
-            data/published_videos.json data/local_reporters.json data/local_buzz.json data/local_voices.json data/reddit_voices.json data/topic_hub.json data/token_usage.json
+            data/published_videos.json data/local_reporters.json data/local_buzz.json data/local_voices.json data/topic_hub.json data/token_usage.json
       - name: Save preview
         if: always()
         uses: actions/upload-artifact@v4
