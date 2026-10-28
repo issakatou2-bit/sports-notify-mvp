@@ -15,6 +15,7 @@ import soccer_goal_short as goal
 import soccer_jp_week as week
 import soccer_now as now
 import soccer_week_publish as release
+from test_short_content import passed_video
 
 ROOT = Path(__file__).resolve().parents[1]
 CLOCK = datetime(2026, 10, 25, 22, 30, tzinfo=timezone.utc)  # 月曜7:30 JST
@@ -152,18 +153,33 @@ class GoalTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, '試作'):
                 now.publish(dict(data, sample_fictional=True), 'unused', {}, goal_short=True)
             import host_split
-            with patch.object(host_split, 'publication', return_value=None), patch('soccer_publications.load', return_value={}), \
-                    patch.object(now.subprocess, 'run') as sanity_run, \
+            with passed_video() as out, patch.object(host_split, 'publication', return_value=None), patch('soccer_publications.load', return_value={}), \
+                    patch.object(now.subprocess, 'run', return_value=SimpleNamespace(stderr='Duration: 00:00:30.00')) as sanity_run, \
                     patch.object(now, 'checkpoint_receipt', side_effect=ValueError('checkpoint failure')) as checkpoint, \
                     patch.object(Path, 'write_text'), patch('soccer_publications.mirror_receipt') as mirror:
                 ledger = {}
                 with self.assertRaisesRegex(ValueError, 'checkpoint failure'):
-                    now.publish(data, 'unused', ledger, goal_short=True)
+                    now.publish(data, out, ledger, goal_short=True)
                 self.assertEqual(ledger['401876452']['status'], 'pending')
                 mirror.assert_called_once_with('401876452', ledger['401876452'])
                 self.assertEqual(checkpoint.call_args.args[0].name, 'soccer_flash_receipts.json')
-                sanity_run.assert_called_once()
-                self.assertTrue(sanity_run.call_args.kwargs['check'])
+                self.assertEqual(sanity_run.call_count, 2)  # 点検と、実際の合格記録の尺照合。
+                self.assertTrue(sanity_run.call_args_list[0].kwargs['check'])
+                self.assertEqual(sanity_run.call_args_list[1].args[0][1:3], ['-hide_banner', '-i'])
+
+    def test_missing_content_receipt_stops_before_pending(self):
+        data = self.items()[0]
+        with patch.dict(os.environ, {'COLLESPO_SOCCER_GOAL_SHORT':'on'}), \
+                patch.object(now, 'datetime') as clock, \
+                patch('soccer_publications.load', return_value={}), \
+                patch.object(now.subprocess, 'run'), \
+                patch.object(now, 'checkpoint_receipt') as checkpoint:
+            clock.now.return_value = self.clock
+            ledger = {}
+            with self.assertRaisesRegex(ValueError, '合格記録'):
+                now.publish(data, ROOT/'build'/('missing-receipt-'+uuid4().hex), ledger, goal_short=True)
+            self.assertEqual(ledger, {})
+            checkpoint.assert_not_called()
 
     def test_checkpoint_reads_back_same_remote_receipt(self):
         path = now.ROOT/'data/soccer_goal_short_receipts.json'

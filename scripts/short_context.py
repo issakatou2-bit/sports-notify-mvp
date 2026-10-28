@@ -1,6 +1,10 @@
 """既存の取得済み一次資料からだけ、短い回の背景を加える。取得・尺の水増しなし。"""
 import copy
 import math
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 
 def rare(spec, topics, season):
@@ -23,72 +27,6 @@ def rare(spec, topics, season):
     return result
 
 
-def ps(program, ctx, games, rows):
-    """PSが1組の日は直前の終了試合を補う。日程と同じ公式応答を根拠にする。"""
-    import ps_program as p
-    pairs = []
-    names = {t['id']: t['name'] for row in rows for t in row.get('teams', [])}
-    for seg in program['segments']:
-        scoreboard = (seg.get('meta', {}).get('card') or {}).get('scoreboard') or {}
-        pair = {r.get('name') for r in scoreboard.get('rows', [])}
-        if len(pair) == 2 and pair not in pairs:
-            pairs.append(pair)
-    if len(pairs) != 1:
-        return program
-    pair = pairs[0]
-    finished = []
-    for game in games:
-        if game.get('status', {}).get('abstractGameState') != 'Final':
-            continue
-        teams = game.get('teams') or {}
-        if set(names.get((teams.get(side, {}).get('team') or {}).get('id')) for side in ('away', 'home')) != pair:
-            continue
-        if not all(type(teams[side].get('score')) is int for side in ('away', 'home')):
-            continue
-        finished.append(game)
-    if not finished:
-        return program
-    game = max(finished, key=lambda g: (g.get('gameDate', ''), g['gamePk']))
-    # 取得済みの当該シリーズだけ。別回戦の同じ組合せへ遡らない。
-    relevant = [row for row in rows if {t['name'] for t in row.get('teams', [])} == pair and row['round'] == game['gameType']]
-    if not relevant:
-        return program
-    away, home = (game['teams'][side] for side in ('away', 'home'))
-    a, h = (names[team['team']['id']] for team in (away, home))
-    rnd = p.ROUND[game['gameType']][0]
-    number = game.get('seriesGameNumber')
-    if not isinstance(number, int):
-        return program
-    label = f'{rnd}第{number}戦'
-    result = f'{a} {away["score"]}対{home["score"]} {h}'
-    text = f'直前に終了した{label}は、{a}対{h}が{away["score"]}対{home["score"]}でした。前戦は{h}のホームでした。'
-    card = dict(p.common(ctx, '前戦の結果', program.get('target_day')),
-                layout='facts', short_context=True, headline=a+'\n対'+h, subhead=label+' / 終了',
-                items=[dict(label='前戦の最終結果', value=result, value_size=60),
-                       dict(label='前戦の開催地', value=h+'のホーム', value_size=44)])
-    # 同じ試合の既存の試合経過が残っていれば、決勝点も補足する。
-    # 公式日程と得点/球団IDが一致しないtopicは混ぜない。
-    import generated_topics
-    topic = generated_topics.get('season_game_'+str(game['gamePk']))
-    score = (topic.get('game_v4') or {}).get('score') or {}
-    decisive = (topic.get('game_v4') or {}).get('decisive') or {}
-    same = topic.get('game') and topic.get('game_pk') == game['gamePk'] and all(
-        (score.get(side) or {}).get('id') == game['teams'][side]['team']['id']
-        and (score.get(side) or {}).get('total') == game['teams'][side]['score'] for side in ('home','away'))
-    detail = None
-    if same and all(decisive.get(k) for k in ('inning','subject','action')):
-        detail = decisive['inning']+' '+decisive['subject']+'の'+decisive['action']
-        card['items'].append(dict(label='前戦の決勝点', value=detail, value_size=44))
-        text += '決勝点は'+detail+'でした。'
-    seg = p.segment(card, text)
-    seg['meta']['context_game_id'] = game['gamePk']
-    program = copy.deepcopy(program)
-    program['segments'].append(seg)
-    program['short_context_material'] = dict(source='generation.ps.previous_game', source_url=ctx['source_url'],
-        games=[dict(game_pk=game['gamePk'], home_team_name=h, away_team_name=a,
-                    final_score=dict(home=home['score'], away=away['score']))],
-        facts=[dict(label='前戦の決勝点', text=detail, source='MLB公式 liveData.plays')] if detail else [])
-    return program
 
 
 def attach_asset(document, spec):
@@ -101,25 +39,11 @@ def attach_asset(document, spec):
     return document
 
 
-def goal(data):
-    """得点回も速報と同じ試合経過・本人の出場/詳細成績を使う。"""
-    import soccer_result_story
-    import soccer_results_render
-    # 得点の事実・最終結果・得点時刻・本人の出場/シュートを別の札にする。
-    # 既存のv5/v6札を再利用し、材料がない日はgate側で止める。
-    base = soccer_results_render.narration(data)
-    detail = soccer_result_story.narration(data)
-    # 元の得点・アシストの冒頭を保ち、後段だけを既存の詳しい結果と共有。
-    if base.get('segments'):
-        base['segments'] = [base['segments'][0]] + [s for s in detail['segments']
-            if s['kind'] not in ('followup','roster','outro','flash-results','other-results')] + [base['segments'][-1]]
-    return soccer(base, data)
 
 
-def soccer(narr, data):
+def soccer(narr, data, *, readable):
     """短い結果/速報は、同じ試合の取得済みシュート・保持率を補足する。"""
-    import soccer_look
-    if soccer_look.readable():
+    if readable:
         covered = set()
         for seg in narr.get('segments', []):
             if seg['kind'] != 'player-stats':
@@ -140,7 +64,7 @@ def soccer(narr, data):
             kept.append(seg)
         if len(kept) != len(narr.get('segments', [])):
             narr = copy.deepcopy(dict(narr,segments=kept))
-    if not soccer_look.readable() or sum(len(s.get('text','')) for s in narr.get('segments', [])) >= 180:
+    if not readable or sum(len(s.get('text','')) for s in narr.get('segments', [])) >= 180:
         return narr
     for game in data.get('games') or []:
         if any(s['kind']=='team-stats' and str(s['meta'].get('event_id')) == str(game['id']) for s in narr['segments']):
@@ -165,8 +89,10 @@ def soccer(narr, data):
     return narr
 
 
-def slots(plan):
+def slots(plan, *, modern):
     """既に画面にある順位/勝点、週末のクラブ結果を音声でも2件補う。"""
+    if not modern:
+        return plan  # 旧画面の台詞・画素は保つ。公開前の下限検査は全種類で実行する。
     import notability_engine as ne
     narr = plan['narration']
     if sum(len(s.get('text','')) for s in narr.get('segments', [])) >= 180:

@@ -215,3 +215,57 @@ PSの1組だけの回は、公式日程の前戦と同じ試合の既存topicを
 | 2026-10-25 | soccer_results | `1Iy8UsDuSl8` / 2026-10-24 | 不明 | 1以上・全編不明 | 全編の原稿未保存。題の主事実1件以上 | public |
 | 2026-10-26 | soccer_results | `LWUL4lgaKb8` / 2026-10-25 | 不明 | 1以上・全編不明 | 全編の原稿未保存。題の主事実1件以上 | public |
 | 2026-10-15 | soccer_week | `qNqzkqsk4sU` / 2026-10-15 | 23.70 | 15（原稿/材料） | build\channel-audit-20261015\soccer-week\week\collespo_morning_soccer_week.mp4 | 記載なし |
+
+## 10/28 PR #258 のCI失敗修正（Codex・自分で確認）
+
+- 作業前は `0fbb14bd`、未コミット差分なし。共有コピーの `origin/hiro/short-min-length-20261027` の指定版 `eae62a19b7c92e52a0893fc204a0443c68fb49ca` を専用管理領域へfetchし、fast-forward。Gitの直接接続は拒否されたが、GitHub接続ツールで同枝のAPIを読み、現時点のremote先頭も指定版と一致することを確認。run 40528947602本文は未確認。
+- 指定4試験を再現：6失敗・50成功・9追加ケース。合格記録なし3件と場面順の旧期待3件だった。
+- 得点公開の保存失敗・二重投稿再確認の単体試験でも `require` で独立3情報・30秒の実際の合格記録を作り、公開経路の `validate_upload` で読み戻す。外部の点検とメディアの尺取得だけ試験用応答に置換し、合格判定器は置換しない。本番のMP4名別記録を使う経路は維持。記録なしなら得点回のpending前に止まる回帰も追加。下限28秒・情報3件・上限・古い記録の拒否は変更なし。
+- 即時privateの確認アップロードを公開前検査から除外。public・unlisted・予約privateは対象を維持し、実際の記録欠落で送信関数に到達しない追加試験を通した。非公開試験の本番台帳との分離も維持。
+- 場面順は意図した変更として試験を更新し、本番の順は変えていない。元からある「導入→得点経過→試合統計→本人統計」は保持し、短い回へ足す試合統計だけ本人の後へ。0対0直後の「得点なし」の重複札を省くこと、得点ショートが導入1場面の後に得点経過へ進むことを検査。
+- `short_content.py` / `short_context.py` にリポジトリ直下への `sys.path` 追加。
+- 全体検査で旧v4の順位画面の3コマが基点画素と不一致になることも検出。追加台詞が旧画面へ入る意図しない影響だったため、順位・週末の音声補足を現行v5/v6に限定した。旧v3/v4の台詞を変えない試験と現行では補足する試験を追加。全種類の公開前の長さ・情報数の関門は維持し、基点画素を書き換えて通す方法は採っていない。
+- 共通の情報点検からPS・描画・声まで依存扱いになる経路も全体検査で検出。PS専用補足を `ps_program.previous_short_context`、得点専用の組み立てを `soccer_results_render.goal_short_narration` へ移し、呼出し側を更新した。共通の `short_context` はその制作機能へ依存しない。FFmpeg同梱版はシステムにFFmpegがないときだけ `importlib` で読み込み、両経路を試験。入れ忘れ検査や合格条件を緩めず、不要な描画・声のパッケージを全workflowへ追加する対応はしていない。
+- 表示モードは制作側から共通補足へ明示引数で渡す。成績の短い文も `soccer_stats.positive_stats` に共有化し、成績点検から結果制作へ逆向きに依存しないようにした。共通2モジュールの追加パッケージ依存が空であることを回帰試験で固定した。
+- Reddit保存漏れは保存済み `origin/main d0ab72877c586cb5760799e21ee60047adeebaf3` にも両workflowで存在。GitHub APIで現在のmain先頭も同じと確認。#258固有ではないが依頼範囲で `morning_recap.yml` / `player_story.yml` の既存 `commit_data.sh` 引数へ `data/reddit_voices.json` を追加。変数は変更なし。
+
+### 朝枠への影響：保存済み公開履歴
+
+期間は日本時間2026-10-14〜10-27。更新後台帳全体122本を `scripts/audit_short_content.py --saved-root C:/Users/issak/Desktop/pwa-mvp` で再集計し、指定5種類29本を抽出。前回の全体120本から2本増えた。停止は尺28秒未満または確認できる独立情報3件未満。資料不足を合格・停止と断定しない。保存MP4と公開版の同一性は未確認。
+
+| 種類 | 履歴本数 | 下限未達が確定 | 合格が確定 | 資料不足 | 保存資料での停止理由 |
+|---|---:|---:|---:|---:|---|
+| MLB朝のショート | 1 | 1 | 0 | 0 | 10/16、28.30秒だが情報2件 |
+| 欧州予告 | 4 | 1 | 0 | 3 | 10/14、17.13秒 |
+| 順位争い | 11 | 1 | 0 | 10 | 10/15、18.43秒・情報6件 |
+| PS情勢 | 12 | 2 | 0 | 10 | 10/14は26.69秒、10/15は25.71秒 |
+| 週末 | 1 | 1 | 0 | 0 | 10/15、23.70秒・情報15件 |
+| 合計 | 29 | 6 | 0 | 23 | 下限未達6本、残り23本の実際の停止数は不明 |
+
+出典は証拠JSONの各 `duration_source` / `information_basis`（共有 `build/channel-audit-20261014〜16` のMP4と原稿）。再集計全体は `build/shortlen-audit-20261028.json`、抽出証拠は `build_reports/short_min_length_20261027/ci_followup_20261028.json`。
+
+### 修正版で保存材料から各1本を再構成した場合
+
+`scripts/preview_short_content.py --saved-root C:/Users/issak/Desktop/pwa-mvp --out build/shortlen-recheck-20261028 --prepare-only`。既存保存材料の再構成であり、翌朝の新規材料ではない。声は合成せず、6字/秒と既存の最低可読時間からの見積り。28秒へ合わせる無音・定数は追加していない。
+
+| 種類 | 本数 | 見積秒 | 独立情報 | この段階で停止 |
+|---|---:|---:|---:|---:|
+| MLB朝のショート | 1 | 29.00 | 3 | 0 |
+| 欧州予告 | 1 | 34.30 | 3 | 0 |
+| 順位争い | 1 | 27.43 | 5 | 1（28秒未満） |
+| PS情勢 | 1 | 29.47 | 4 | 0 |
+| 週末 | 1 | 31.77 | 3 | 0 |
+| 合計 | 5 | — | — | 1 |
+
+材料・原稿・計画は `build/shortlen-recheck-20261028-final/<種類>/{material,narration,plan}.json`。構造整理後に再構成し、5種類の尺・情報数・停止理由が初回とすべて一致した。順位争いは見送りを維持。PSは保存した前戦資料の再構成、週末はPLの2試合の確認見本なので、全期間の合格率へ一般化しない。実音声・新規公開版・CI・実API・本番公開は未確認。
+
+### 最終検証
+
+- 専用5試験ファイル：88成功・12追加ケース（`build/shortlen-targeted-complete.log`、10.61秒）。実際の合格記録の読戻し、記録欠落・古い記録・実尺の不一致・下限・情報数・既存上限、旧画面保持、FFmpegの両経路、共通部品の依存制限を含む。
+- PS専用25試験成功（`build/shortlen-ps-program-complete.log`）。旧v3/v4の基点画素92コマ一致・v5検査成功（`build/shortlen-pixels-complete.log`）。基点の画素・保護指紋は書換えなし。
+- 依存関係の入れ忘れ0件（`build/shortlen-dependencies-clean.log`）。保存材料の最終再構成も終了0（`build/shortlen-materials-complete.log`）。
+- `scripts/update_protected_hashes.py`：すべて一致、書換えなし。`git diff --check` 通過。
+- 最終の全 `run_checks` は終了0、2026-10-28 10:05:15〜10:33:50 JST（28分35秒）。構文573ファイル、試験209ファイルすべて成功、重大0・既存軽微53、保存漏れ・依存不足・直下への経路の抜け0。ログ `build/shortlen-run-checks-verified.log`、時刻と終了値 `build/shortlen-run-checks-verified-result.json`。上記の修正をすべて含む状態で確認した。
+- 描画を含む検査と全体検査は `C:/Users/issak/Tools/heavy-guard/heavy_wait.py --minutes 30` で包んだ。`PYTHONUTF8=1`、pytestの `--basetemp` と `TEMP` / `TMP` はworktree内。18:30より前に完了。
+- 初回は待機道具の子プロセス出力がPowerShellの保存先へ渡らないことを出力試験で確認して中断し、以降は子の標準出力・エラーをログへ直接渡した。このWindows環境では標準入力を明示しないと `test_data_commit` 内のPythonが `WinError 6` で落ちるため、子の `stdin=subprocess.DEVNULL` を明示した。検査コードを変えず単体17試験と最終全体が成功。実行用は `build/shortlen_logged_command.py`。既知のWindowsApps起動役の問題は実PythonのディレクトリをPATHの先頭に置いて回避した。
+- コード・手元の検査は上記で確認。push・リモートCI・実音声・実API・本番公開・本番変数変更は行っていない。次は取込担当による差分確認とpush後のCI確認。

@@ -59,7 +59,7 @@ def episodes(saved):
                     seriesGameNumber=active[0]['played'],status=dict(abstractGameState='Final'),
                     teams={side:dict(team=dict(id=score[side]['id']),score=score[side]['total']) for side in ('home','away')})
                 program = ps.situation_program(ctx,current['series'],dict(program_series=current['series']))
-                program = __import__('short_context').ps(program,ctx,[game],current['series'])
+                program = ps.previous_short_context(program,ctx,[game],current['series'])
                 import review_render_v3
                 card = dict(ps.common(ctx,'コレスポ'),layout='facts',headline='コレスポ',items=[],outro=True,lineup_kind='postseason')
                 ending = ps.segment(card,review_render_v3.OUTRO_TEXT);ending['kind']='outro'

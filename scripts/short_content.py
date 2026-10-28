@@ -4,11 +4,15 @@
 句点・場面数・文字数は情報数にしない。未対応の材料は確認不能として止める。
 """
 import hashlib
+import importlib
 import json
 import math
 from pathlib import Path
 import re
 import unicodedata
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 MIN_SECONDS = 28.0
 TARGET_SECONDS = 30.0
@@ -281,7 +285,8 @@ def validate_upload(video):
         raise ValueError('ショートの検査が不合格・古い記録・別動画です。公開を停止します')
     executable = shutil.which('ffmpeg')
     if not executable:
-        import imageio_ffmpeg
+        # システムのFFmpegがない場合だけ、任意の同梱版を読み込む。
+        imageio_ffmpeg = importlib.import_module('imageio_ffmpeg')
         executable = imageio_ffmpeg.get_ffmpeg_exe()
     probe = subprocess.run([executable, '-hide_banner', '-i', str(video)], capture_output=True,
                            text=True, encoding='utf-8', errors='replace')

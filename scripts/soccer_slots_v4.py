@@ -184,7 +184,7 @@ def program(mode,data):
     if mode=='preview' and soccer_look.v5():
         import soccer_match_interest
         plan=soccer_match_interest.enrich_plan(plan)
-    return __import__('short_context').slots(plan)
+    return __import__('short_context').slots(plan, modern=soccer_look.v5())
 
 
 @motion.slot('soccer')

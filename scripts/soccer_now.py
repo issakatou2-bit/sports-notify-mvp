@@ -122,7 +122,7 @@ def narration(data):
         segments.append(dict(kind='voice', text='ハイライトのコメントでは、'+voices.spoken_names(v['ja'], voices.load_names())+'。', speaker=2, meta={'index':i}))
     import sanity_sources
     narr = __import__('short_context').soccer(dict(label='サッカー試合速報', segments=segments,
-        duration_budget={'limit':40,'grace':0}), data)
+        duration_budget={'limit':40,'grace':0}), data, readable=__import__('soccer_look').readable())
     return sanity_sources.attach(narr, data, sport='soccer')
 
 

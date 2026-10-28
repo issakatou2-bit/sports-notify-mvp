@@ -1,13 +1,14 @@
 """短い/薄い回・重複・短縮後・古い合格記録を公開へ流さない。"""
 import copy
 import ast
+from contextlib import contextmanager
 import json
 import os
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import short_content as s
 import short_context
@@ -20,7 +21,58 @@ def asset(count=3):
     return doc, data
 
 
+@contextmanager
+def passed_video():
+    """公開経路の単体試験用。合格判定を偽装せず、通常の記録を作る。"""
+    with tempfile.TemporaryDirectory() as folder:
+        doc, data = asset()
+        name = 'collespo_soccer_results.mp4'
+        s.require(doc, [30], folder, data, video_name=name)
+        video = Path(folder)/name
+        video.write_bytes(b'fixture media; probe is mocked by caller')
+        at = video.with_name(name+'.short_content.json').stat().st_mtime_ns+1
+        os.utime(video, ns=(at, at))
+        # 尺取得は呼出し側の試験用応答を使い、実FFmpeg探索は行わない。
+        with patch('shutil.which', return_value='fixture-ffmpeg'):
+            yield Path(folder)
+
+
 class ShortContent(unittest.TestCase):
+    def test_common_content_helpers_need_no_optional_packages(self):
+        import run_checks
+        for filename in ('short_content.py', 'short_context.py'):
+            self.assertEqual(run_checks._third_party(filename), set(), filename)
+
+    def test_system_probe_does_not_load_optional_bundle(self):
+        load = Mock()
+        with passed_video() as folder, patch.object(s, 'importlib', SimpleNamespace(import_module=load)), \
+                patch('subprocess.run', return_value=SimpleNamespace(stderr='Duration: 00:00:30.00')):
+            self.assertEqual(s.validate_upload(folder/'collespo_soccer_results.mp4')['status'], 'passed')
+            load.assert_not_called()
+
+    def test_optional_probe_bundle_is_loaded_only_without_system_probe(self):
+        load = Mock(return_value=SimpleNamespace(get_ffmpeg_exe=lambda:'bundled-ffmpeg'))
+        with passed_video() as folder, patch('shutil.which', return_value=None), \
+                patch.object(s, 'importlib', SimpleNamespace(import_module=load)), \
+                patch('subprocess.run', return_value=SimpleNamespace(stderr='Duration: 00:00:30.00')) as probe:
+            self.assertEqual(s.validate_upload(folder/'collespo_soccer_results.mp4')['status'], 'passed')
+            load.assert_called_once_with('imageio_ffmpeg')
+            self.assertEqual(probe.call_args.args[0][0], 'bundled-ffmpeg')
+
+    def test_legacy_slots_keep_original_narration(self):
+        plan = dict(mode='race', narration=dict(segments=[dict(kind='standings', text='元の文',
+            meta=dict(rows=[dict(team='Arsenal', position=1, points=10),
+                            dict(team='Liverpool', position=2, points=9)]))]))
+        original = copy.deepcopy(plan)
+        for look in ('v3', 'v4'):
+            with patch.dict(os.environ, COLLESPO_SOCCER_LOOK=look, COLLESPO_SHORT_LOOK='v4'):
+                self.assertIs(short_context.slots(plan, modern=__import__('soccer_look').v5()), plan)
+                self.assertEqual(plan, original)
+        for look in ('v5', 'v6'):
+            with patch.dict(os.environ, COLLESPO_SOCCER_LOOK=look, COLLESPO_SHORT_LOOK='v4'):
+                updated = short_context.slots(copy.deepcopy(original), modern=__import__('soccer_look').v5())
+                self.assertIn('勝点10', updated['narration']['segments'][0]['text'])
+
     def test_28_seconds_is_the_lower_boundary(self):
         doc, data = asset()
         self.assertEqual(s.assess(doc, [28], data)['status'], 'passed')
@@ -119,13 +171,13 @@ class ShortContent(unittest.TestCase):
         rows = [dict(round='W',teams=[dict(id=1,name='A'),dict(id=2,name='B')])]
         game = dict(gamePk=12,gameType='W',seriesGameNumber=1,gameDate='2026-10-26',
             status=dict(abstractGameState='Final'),teams=dict(away=dict(team=dict(id=1),score=3),home=dict(team=dict(id=2),score=2)))
-        fixed = short_context.ps(program,ctx,[game],rows)
+        fixed = __import__('ps_program').previous_short_context(program,ctx,[game],rows)
         self.assertEqual(len(fixed['segments']),2)
         self.assertIn('3対2',fixed['segments'][-1]['text'])
         bad = copy.deepcopy(game);bad['teams']['home'].pop('score')
-        self.assertEqual(short_context.ps(program,ctx,[bad],rows),program)
+        self.assertEqual(__import__('ps_program').previous_short_context(program,ctx,[bad],rows),program)
         bad = copy.deepcopy(game);bad['gameType']='L'
-        self.assertEqual(short_context.ps(program,ctx,[bad],rows),program)
+        self.assertEqual(__import__('ps_program').previous_short_context(program,ctx,[bad],rows),program)
 
     def test_rare_supplements_require_same_player_year_and_finished_season(self):
         spec = dict(key='rare_123',items=[['WHIP','0.87']])
@@ -145,11 +197,11 @@ class ShortContent(unittest.TestCase):
         game = dict(id='1',home=dict(name_jp='A'),away=dict(name_jp='B'),
                     match_stats=dict(source='ESPN summary',home=dict(shots=13,possession=50.6),away=dict(shots=12,possession=49.4)))
         with patch.dict(os.environ, COLLESPO_SOCCER_LOOK='v6'):
-            result = short_context.soccer(doc,dict(games=[game]))
+            result = short_context.soccer(doc,dict(games=[game]),readable=True)
             self.assertEqual(result['segments'][-1]['meta']['event_id'],'1')
             self.assertIn('50.6',result['segments'][-1]['text'])
             bad = copy.deepcopy(game);bad['match_stats']['home'].pop('shots')
-            self.assertEqual(short_context.soccer(doc,dict(games=[bad])),doc)
+            self.assertEqual(short_context.soccer(doc,dict(games=[bad]),readable=True),doc)
 
     def test_supplementary_asset_material_reaches_existing_sanity(self):
         doc, data = asset()
@@ -220,7 +272,7 @@ class ShortContent(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         data = json.loads((root/'scripts/fixtures/soccer-stats/saved-cases.json').read_text(encoding='utf8'))['cases'][2]['data']
         with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v6'):
-            narr = short_context.goal(data)
+            narr = __import__('soccer_results_render').goal_short_narration(data)
         self.assertEqual(narr['segments'][0]['kind'],'intro')
         self.assertIn(data['players'][0]['name'],narr['segments'][0]['text'])
         self.assertGreaterEqual(len(s.information(narr,data)),3)
@@ -231,18 +283,18 @@ class ShortContent(unittest.TestCase):
         doc = dict(segments=[dict(kind='player-stats',meta=dict(event_id='1',start=0,count=2)),
                              dict(kind='roster',meta=dict(player_names=['A','B'],absent=[]))])
         with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v6'):
-            self.assertEqual(len(short_context.soccer(doc,data)['segments']),1)
+            self.assertEqual(len(short_context.soccer(doc,data,readable=True)['segments']),1)
             doc['segments'][0]['meta']['count']=1
-            self.assertEqual(len(short_context.soccer(doc,data)['segments']),2)
+            self.assertEqual(len(short_context.soccer(doc,data,readable=True)['segments']),2)
 
     def test_scoreless_result_does_not_add_a_second_empty_scene(self):
         data = dict(games=[dict(id='1',goals_complete=True,goals=[],score=dict(home=0,away=0))])
         doc = dict(segments=[dict(kind='followup',text='0対0',meta=dict(event_id='1')),
                              dict(kind='followup-detail',text='得点なし。',meta=dict(event_id='1'))])
         with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v6'):
-            self.assertEqual(len(short_context.soccer(doc,data)['segments']),1)
+            self.assertEqual(len(short_context.soccer(doc,data,readable=True)['segments']),1)
             data['games'][0]['goals_complete']=False
-            self.assertEqual(len(short_context.soccer(doc,data)['segments']),2)
+            self.assertEqual(len(short_context.soccer(doc,data,readable=True)['segments']),2)
 
 
 if __name__ == '__main__':
