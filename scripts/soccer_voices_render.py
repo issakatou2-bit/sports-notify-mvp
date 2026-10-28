@@ -231,6 +231,8 @@ def render_video(data,narr,audio,out):
     times=[math.ceil(t*FPS)/FPS for t in times]
     if sum(times)>sv.LIMIT:raise ValueError('フレームの丸め後40秒を超える')
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
+    import short_content
+    short_content.require(narr, times, out, data, maximum=sv.LIMIT, video_name='collespo_soccer_voices.mp4')
     if not shutil.which('ffmpeg'):raise ValueError('FFmpegをinstall_video_tools.shで入れてください')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('実音声なしでは動画を作りません')

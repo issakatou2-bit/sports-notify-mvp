@@ -121,8 +121,9 @@ def narration(data):
     for i, v in enumerate(data['voices']):
         segments.append(dict(kind='voice', text='ハイライトのコメントでは、'+voices.spoken_names(v['ja'], voices.load_names())+'。', speaker=2, meta={'index':i}))
     import sanity_sources
-    return sanity_sources.attach(dict(label='サッカー試合速報', segments=segments,
-        duration_budget={'limit':40,'grace':0}), data, sport='soccer')
+    narr = __import__('short_context').soccer(dict(label='サッカー試合速報', segments=segments,
+        duration_budget={'limit':40,'grace':0}), data, readable=__import__('soccer_look').readable())
+    return sanity_sources.attach(narr, data, sport='soccer')
 
 
 def metadata(data):
@@ -267,7 +268,10 @@ def publish(data, out, ledger, *, goal_short=False):
     subprocess.run(sanity.command(kind, Path(out)/'narration.json',
         Path(out)/'sanity.json', Path(out)/'sanity_hold.json'), cwd=ROOT, check=True)
     video = Path(out)/('collespo_soccer_results.mp4' if goal_short else 'preview.mp4')
-    tracking = host_split.publication(video)
+    import short_content
+    quality = short_content.validate_upload(video)
+    quality_fields = short_content.publication_fields(quality)
+    tracking = dict(host_split.publication(video) or {}, **quality_fields)
     path = ROOT/publications.PATH
     fresh = publications.load(refresh=True)
     ledger.clear(); ledger.update(fresh)
@@ -299,7 +303,7 @@ def publish(data, out, ledger, *, goal_short=False):
         from upload_youtube import record_video
         record_video(kind, host_split.today()+':'+str(ident), response['id'], meta['title'],
                      host_tracking=tracking)
-    ledger[ident].update(status='uploaded',video_id=response['id']); checkpoint()
+    ledger[ident].update(status='uploaded',video_id=response['id'], **quality_fields); checkpoint()
 
 
 def main():

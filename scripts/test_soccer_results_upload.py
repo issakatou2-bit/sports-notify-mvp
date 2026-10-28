@@ -16,6 +16,28 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class PrivateResults(unittest.TestCase):
+    def test_public_unlisted_and_scheduled_private_require_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            video = Path(directory)/'sample.mp4'
+            video.write_bytes(b'fixture')
+            material = Path(directory)/'results.json'
+            material.write_text(json.dumps({'date_jst': '2026-10-09'}), encoding='utf-8')
+            for privacy, reservation in (('public', None), ('unlisted', None),
+                                         ('private', '2099-10-09T00:00:00Z')):
+                argv = ['upload', '--kind', 'soccer_results', '--sport', 'soccer',
+                        '--video', str(video), '--video-date', '2026-10-09',
+                        '--games', str(material), '--privacy', privacy]
+                with self.subTest(privacy=privacy), patch.object(sys, 'argv', argv), \
+                        patch.dict(os.environ, {'YOUTUBE_CLIENT_ID':'test', 'YOUTUBE_CLIENT_SECRET':'test', 'YOUTUBE_REFRESH_TOKEN':'test'}), \
+                        patch.object(entry.upload, 'Credentials'), patch.object(entry.upload, 'build'), \
+                        patch.object(entry.upload, 'published_video', return_value={}), \
+                        patch.object(entry.upload, 'resolve_publish_at', return_value=reservation), \
+                        patch.object(entry.upload, 'build_metadata', return_value={'snippet': {'title':'試験', 'description':''}}), \
+                        patch.object(entry.upload, 'insert_with_retry') as send:
+                    with self.assertRaisesRegex(ValueError, '合格記録'):
+                        entry.upload.main()
+                    send.assert_not_called()
+
     def setUp(self):
         # CIでも作り物の動画URLを実行Summaryへ書かない。
         summary = patch.dict(os.environ, {'GITHUB_STEP_SUMMARY': ''})

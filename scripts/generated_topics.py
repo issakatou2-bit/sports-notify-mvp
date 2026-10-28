@@ -45,6 +45,7 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
     if _CACHE is not None and not refresh:
         return _CACHE
     out = {}
+    seasons = {}
     for path in sources:
         try:
             d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
@@ -54,6 +55,11 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
             key = spec.get("key")
             if key and key not in out:
                 out[key] = spec
+                seasons[key] = d.get('season')
+    import short_context
+    for key, spec in list(out.items()):
+        if key.startswith('rare_'):
+            out[key] = short_context.rare(spec, out, seasons.get(key))
     _CACHE = out
     return out
 

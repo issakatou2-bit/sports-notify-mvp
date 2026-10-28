@@ -3,14 +3,14 @@ import json
 from functools import lru_cache
 import re
 import soccer_results as results
+import soccer_stats as stats
 
 # 英語のまま書くと、画面でも声でも読めない名前になる。
 LATIN=re.compile(r'[A-Za-z]')
 
 
 def positive_stats(player):
-    return '、'.join(f'{player[key]}{unit}' for key,unit in
-                    (('goals','得点'),('assists','アシスト')) if player.get(key))
+    return stats.positive_stats(player)
 
 
 def player_line(player, expected=False):

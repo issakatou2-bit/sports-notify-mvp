@@ -290,6 +290,8 @@ def render_video(data,narr,audio,out):
     # Ceil to complete frames; the resulting actual movie remains inside the strict budget.
     times=[math.ceil(t*FPS)/FPS for t in times]
     if sum(times)>results.LIMIT:raise ValueError('フレームの丸め後に60秒を超える')
+    import short_content
+    short_content.require(narr, times, out, data, maximum=results.LIMIT, video_name='collespo_soccer_results.mp4')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('声つきの動画だけを作る枠です')
     video=out/'collespo_soccer_results.mp4';clubs=__import__('soccer_result_story').clubs_for(data) if data.get('preview_followup') else resolve_clubs(data);images=[];layouts=[];previous=None;clock=0
@@ -329,9 +331,24 @@ def render_video(data,narr,audio,out):
     return verification
 
 
+def goal_short_narration(data):
+    """得点回も速報と同じ試合経過・本人の出場/詳細成績を使う。"""
+    # 得点の事実・最終結果・得点時刻・本人の出場/シュートを別の札にする。
+    # 既存のv5/v6札を再利用し、材料がない日はgate側で止める。
+    base = narration(data)
+    detail = __import__('soccer_result_story').narration(data)
+    # 元の得点・アシストの冒頭を保ち、後段だけを既存の詳しい結果と共有。
+    if base.get('segments'):
+        base['segments'] = [base['segments'][0]] + [s for s in detail['segments']
+            if s['kind'] not in ('followup','roster','outro','flash-results','other-results')] + [base['segments'][-1]]
+    return __import__('short_context').soccer(base, data, readable=soccer_look.readable())
+
+
+
 def production_narration(data, *, goal_short=False):
     """速報は既存の得点導入、朝の結果は既存の注目試合導入を使う。"""
-    narr = narration(data) if goal_short else __import__('soccer_result_story').narration(data)
+    narr = goal_short_narration(data) if goal_short else __import__('soccer_result_story').narration(data)
+    narr = __import__('short_context').soccer(narr, data, readable=soccer_look.readable())
     if not goal_short and soccer_look.v5() and not any(s['kind'] in ('followup','flash-results','other-results') for s in narr['segments']):
         from soccer_v5_program import add_player_scene
         narr = add_player_scene(narr, data)

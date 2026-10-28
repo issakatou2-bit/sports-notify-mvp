@@ -159,16 +159,20 @@ def personal_narration(player):
 
 
 def result_narration(player):
-    import soccer_result_facts as facts
     status=player['status']
     full=status=='starter' and player.get('subbed_out') is False and player.get('red_cards')==0
     appearance='フル出場' if full else minutes_label(player) or ('先発出場' if status=='starter' else '途中出場')
     parts=[appearance]
-    positive=facts.positive_stats(player)
+    positive=positive_stats(player)
     if positive:parts.append(positive)
     personal=personal_narration(player)
     if personal:parts.append(personal)
     return player['name']+'は'+'、'.join(parts)+'。'
+
+
+def positive_stats(player):
+    return '、'.join(f'{player[key]}{unit}' for key,unit in
+                    (('goals','得点'),('assists','アシスト')) if player.get(key))
 
 
 def commentary(game):

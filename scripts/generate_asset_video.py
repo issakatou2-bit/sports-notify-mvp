@@ -650,7 +650,8 @@ def build_narration(topic: str) -> dict:
                 narration['segments']=duo.game(narration['segments'],LIST_TOPICS[topic],list_items(topic))
                 narration['duration_budget']={'limit':45,'grace':0}
         import ps_comment_facts
-        return ps_comment_facts.attach(narration, LIST_TOPICS[topic])
+        narration = ps_comment_facts.attach(narration, LIST_TOPICS[topic])
+        return __import__('short_context').attach_asset(narration, LIST_TOPICS[topic])
     if topic == "mlb_venue":
         return _narration_venue()
     if topic == "mlb_rivalry":
@@ -1908,6 +1909,11 @@ def main():
             raise ValueError('掛け合い音声が保存原稿と一致しません。両話者の音声を作り直してください')
         errors=duo.check(segs,durations)
         if errors:raise ValueError('掛け合いの実音声: '+str(errors))
+    import short_content
+    import post_common
+    short_content.require(dict(narration, segments=[dict(s, **{k: a[k] for k in ('text', 'meta') if k in a})
+                           for s, a in zip(narration['segments'], segs)]), durations, out_dir,
+                          LIST_TOPICS.get(args.topic), maximum=post_common.MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
     import fan_events
     fan_events.prepare({'items':list_items(args.topic)}, segs, durations, out_dir)
