@@ -17590,6 +17590,35 @@
       "actual_host": "ui",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-27": {
+      "video_id": "7OkutmV__44",
+      "url": "https://youtu.be/7OkutmV__44",
+      "title": "【欧州サッカー】菅原由勢が先発｜ローマ 4-2 カリアリ 日本人選手の結果 #Shorts",
+      "published_at": "2026-10-28T01:38:02.518355+00:00",
+      "publish_at": "2026-10-28T01:52:00Z",
+      "host_assignment": {
+        "day": "2026-10-28",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 2
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_delivery": {
+        "checked_at": "2026-10-28T01:27:32.273202+00:00",
+        "comparison_eligible": true,
+        "label": "予定雨衣",
+        "mode": "live",
+        "planned_host": "ui",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   }
 }

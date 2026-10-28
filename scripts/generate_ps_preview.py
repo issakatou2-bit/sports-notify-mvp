@@ -150,6 +150,8 @@ def movie(context, script, audio_dir, out, require_audio):
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     durations = [max(4.0, float(s['duration']) + vc.SEGMENT_TAIL) for s in audio]
+    import short_content
+    short_content.require(script, durations, out, video_name='collespo_morning_postseason.mp4')
     track = vc.build_narration_track(audio, durations, out)
     if require_audio and not track:
         raise ValueError('音声を結合できません')

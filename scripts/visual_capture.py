@@ -391,6 +391,17 @@ def probe(video):
     return float(data['format']['duration']), num / den
 
 
+def safe_video_frame(video, t, fps):
+    """最終PTSより丸めで僅かに先をseekした場合だけ、2〜3フレーム戻す。"""
+    for at in (t, max(0, t-max(.1, 2/fps))):
+        data = subprocess.run(['ffmpeg', '-v', 'error', '-threads', '1', '-ss', str(at), '-i', str(video),
+                               '-frames:v', '1', '-vf', 'scale=320:-2', '-f', 'image2pipe', '-vcodec', 'png', '-'],
+                              check=True, capture_output=True).stdout
+        if data:
+            return Image.open(io.BytesIO(data)).convert('RGB'), at
+    raise ValueError(f'完成動画から時刻{t:.3f}秒の画像を取得できません')
+
+
 def video_capture(args):
     duration, fps = probe(args.video)
     # Low-resolution streaming scene detection: no extracted full-size frame files.
@@ -446,11 +457,12 @@ def video_capture(args):
         candidates = [(score, t) for score, t in risks if start <= t < end]
         if candidates: add(max(candidates)[1], 'caption-near-table-or-face:candidate')
     stem = args.video.stem
+    seek_fallbacks = []
     def frame(t):
-        data = subprocess.run(['ffmpeg', '-v', 'error', '-threads', '1', '-ss', str(t), '-i', str(args.video),
-                               '-frames:v', '1', '-vf', 'scale=320:-2', '-f', 'image2pipe', '-vcodec', 'png', '-'],
-                              check=True, capture_output=True).stdout
-        return Image.open(io.BytesIO(data)).convert('RGB')
+        result, actual = safe_video_frame(args.video, t, fps)
+        if actual != t:
+            seek_fallbacks.append(dict(requested=t, actual=actual, reason='末尾PTSの丸めによる空画像'))
+        return result
     items = [(f'{t:.3f}s {"/".join(reasons)}', functools.partial(frame, t)) for t, reasons in sorted(samples.items())]
     sheet(items, args.out / 'video' / f'{stem}-contact.jpg', cell=(320, 590))
     with args.video.open('rb') as source:
@@ -469,6 +481,7 @@ def video_capture(args):
     write_json(args.out / 'video' / f'{stem}-manifest.json', {
         'source': args.video.name, 'sha256': digest,
         'duration': duration, 'fps': fps, 'cuts': cuts, 'detected_transition_ranges':groups, 'samples': samples,
+        'seek_fallbacks': seek_fallbacks,
         'proximity': 'heuristic candidates; declare exact times with --timeline for authored layouts',
         'static': static['status'], 'visual': '未確認', 'difference': '',
         'checklist': OBSERVATIONS, 'extracted_files': 0})

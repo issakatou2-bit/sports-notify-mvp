@@ -118,6 +118,8 @@ def render(narr, audio, out):
     if sum(times) > story.RULES['max_story_seconds']:
         raise ValueError('60秒を超えています。原稿を短くしてください')
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
+    import short_content
+    short_content.require(narr, times, out, maximum=story.RULES['max_story_seconds'], video_name='collespo_player_story.mp4')
     track = vc.build_narration_track(audio, times, out)
     if not track:
         raise ValueError('声を結合できませんでした')

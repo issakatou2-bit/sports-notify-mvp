@@ -67,7 +67,10 @@ class Stats(unittest.TestCase):
                 lines=[s for s in narr['segments'] if s['kind']=='player-stats']
                 self.assertEqual(len(lines),len(people))
                 self.assertFalse(any('シュート0本' in s['text'] for s in lines))
-                self.assertEqual([s['kind'] for s in narr['segments']][:2],['followup','followup-detail'])
+                self.assertEqual(narr['segments'][0]['kind'],'followup')
+                # 0対0直後の「得点なし」の重複札は省く。
+                self.assertFalse(any(s['kind']=='followup-detail' and s['text']=='得点なし。'
+                                     for s in narr['segments']))
                 for p,line in zip(people,lines):
                     self.assertTrue(line['text'].startswith(p['name']+'は'))
                     self.assertEqual(line['meta']['count'],1)
@@ -97,8 +100,10 @@ class Stats(unittest.TestCase):
             for case in preview.cases(supplementary=True):
                 data=case['data'];game=data['games'][0]
                 segments=render.production_narration(data)['segments']
-                order={'followup':0,'followup-detail':1,'team-stats':2,'player-stats':3,'roster':4,'outro':5}
-                ranks=[order[s['kind']] for s in segments if s['kind'] in order]
+                # 元からある試合解説の順は保持。短い回への追加統計だけ本人の後。
+                order={'followup':0,'followup-detail':1,'team-stats':2,'player-stats':3,'roster':4,'outro':6}
+                ranks=[5 if s['kind']=='team-stats' and s['meta'].get('short_context_stats')
+                       else order[s['kind']] for s in segments if s['kind'] in order]
                 self.assertEqual(ranks,sorted(ranks))
                 spoken=''.join(s['text'] for s in segments if s['kind']=='followup-detail')
                 import soccer_result_facts as facts

@@ -4103,6 +4103,9 @@ def build_player_video(args):
                         f"{'、'.join(dropped)}を外しました"
                         f"(残り{sum(durations):.0f}秒){chr(10)}")
 
+    import short_content
+    short_content.require(dict(narration, segments=segs), durations, out_dir,
+                          prof, maximum=MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
     if args.require_audio and not audio_path:
         print("::error::音声が作れませんでした。無音のまま投稿しないよう、"
@@ -4499,6 +4502,10 @@ def main():
                 pathlib.Path(args.narration).write_text(json.dumps(narration,ensure_ascii=False),encoding='utf-8')
         if sum(durations)>limit+grace:
             raise ValueError(f'17:00の尺が予算{limit}+{grace}秒を超えています: {sum(durations):.2f}秒。声の設定を変えず原稿を短くしてください')
+    import short_content
+    short_content.require(dict(narration, segments=segs), durations, out_dir,
+                          dict(data, players=players), maximum=sum(post_common.duration_budget('morning')) if args.mode=='players' else post_common.MAX_SECONDS+post_common.BUDGET_GRACE,
+                          video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
     if any((s.get('meta') or {}).get('duo') for s in narration['segments']):
         import duo

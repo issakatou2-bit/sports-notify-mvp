@@ -511,6 +511,9 @@ def main():
     if dropped:
         segs = [segs[i] for i in keep]
         durations = [durations[i] for i in keep]
+    import short_content
+    short_content.require(dict(narration, segments=segs), durations, out_dir,
+                          verdict, maximum=post_common.MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
 
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",

@@ -7,6 +7,8 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace
+from test_short_content import passed_video
 from unittest.mock import patch
 
 import fan_privacy as privacy
@@ -60,16 +62,17 @@ class SoccerTests(unittest.TestCase):
         self.assertEqual(set(merge_three_way({},first,{'other':second[self.ident]},path)),{self.ident,'other'})
 
     def test_publish_rechecks_after_sanity_before_pending_or_upload(self):
-        with patch.dict(os.environ, {'COLLESPO_SOCCER_GOAL_SHORT':'on'}), \
+        with passed_video() as out, patch.dict(os.environ, {'COLLESPO_SOCCER_GOAL_SHORT':'on'}), \
                 patch.object(now, 'datetime') as clock, \
                 patch.object(flashes, 'load', side_effect=[{}, {self.ident:dict(status='pending')}]) as load, \
-                patch.object(now.subprocess, 'run') as sanity, \
+                patch.object(now.subprocess, 'run', return_value=SimpleNamespace(stderr='Duration: 00:00:30.00')) as sanity, \
                 patch.object(now, 'checkpoint_receipt') as checkpoint:
             clock.now.return_value = self.clock
-            now.publish(self.data, 'unused', {}, goal_short=True)
+            now.publish(self.data, out, {}, goal_short=True)
             self.assertEqual(load.call_count, 2)
             self.assertTrue(all(c.kwargs['refresh'] for c in load.call_args_list))
-            sanity.assert_called_once()
+            self.assertEqual(sanity.call_count, 2)
+            self.assertEqual(sanity.call_args_list[1].args[0][1:3], ['-hide_banner', '-i'])
             checkpoint.assert_not_called()
 
     def test_goal_opening_is_one_scene_in_v5_and_v6(self):
@@ -77,7 +80,7 @@ class SoccerTests(unittest.TestCase):
         for look in ('v5', 'v6'):
             with patch.dict(os.environ, {'COLLESPO_SOCCER_LOOK':look, 'COLLESPO_HOST_SPLIT':''}):
                 narr = render.production_narration(self.data, goal_short=True)
-            self.assertEqual([s['kind'] for s in narr['segments'][:2]], ['intro', 'result'])
+            self.assertEqual([s['kind'] for s in narr['segments'][:2]], ['intro', 'followup-detail'])
             self.assertEqual(sum(s['kind']=='intro' for s in narr['segments']), 1)
 
     def test_morning_retains_all_matches_but_only_one_line_for_flash(self):

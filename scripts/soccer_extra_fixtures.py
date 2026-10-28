@@ -32,9 +32,13 @@ def parse(board,competition):
             game[side+'_team_name']=row['id'] if row else team['displayName']
             game[side+'_team_id']='espn-'+str(team['id'])
         # 試合材料の明示したラウンドだけを読む。月/日付から段階を推測しない。
+        # 杯戦のラウンドは type/notes ではなく season.slug（second-round 等）に入る（10/28 DFB・国王杯で確認）。
         texts=[str((comp.get('type') or {}).get('text',''))]+[str(n.get('headline','')) for n in comp.get('notes',[])]
-        text=' / '.join(texts)
-        if re.search(r'\b(round of \d+|quarter.?finals?|semi.?finals?|final|knockout|leg [12])\b',text,re.I):
+        texts.append(str((event.get('season') or {}).get('slug','')).replace('-',' '))
+        text=' / '.join(t for t in texts if t)
+        cup=not competition['football_free'] and competition['code'] not in ('CL','EL','UECL')
+        if re.search(r'\b(round of \d+|quarter.?finals?|semi.?finals?|final|knockout|leg [12])\b',text,re.I) or \
+           (cup and re.search(r'\b(first|second|third|fourth|fifth|[1-5](st|nd|rd|th)) round\b',text,re.I)):
             game.update(phase='knockout',phase_source=text)
         game['jp_by_side']=selection.members(game)
         game['home_has_jp']=bool(game['jp_by_side']['home']);game['away_has_jp']=bool(game['jp_by_side']['away'])
