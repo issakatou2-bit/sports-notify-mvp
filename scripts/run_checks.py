@@ -239,8 +239,16 @@ def _writes_to(script: str, dest: str) -> bool:
     for i, line in enumerate(lines):
         if not any(a in line for a in aliases):
             continue
-        # 書き込みは同じ行か、続く数行に現れる
-        if _is_write(" ".join(lines[i:i + 3])):
+        # 書き込みは同じ行か、括弧が閉じずに続く数行に現れる。
+        # 文が閉じたあとの行は別の文。10/28 topic_hub.py の
+        # load(args.reddit) が2行下の target.write_text と組まれ、
+        # 読むだけの Reddit の材料が「コミット漏れ」と出た。
+        part = line
+        j = i + 1
+        while j < min(i + 3, len(lines)) and part.count("(") > part.count(")"):
+            part += " " + lines[j]
+            j += 1
+        if _is_write(part):
             return True
         # 他の関数へ渡している形。ニュースの履歴はこれで、
         # append_news_log(Path(args.log), ...) と渡した先で書いていた。
