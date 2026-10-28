@@ -2293,19 +2293,9 @@ def main():
         # ここで失敗しても動画自体は上がっているので、警告に留める。
         thumb = pathlib.Path(args.thumbnail) if args.thumbnail else None
         if thumb and thumb.exists() and vid:
-            try:
-                youtube.thumbnails().set(
-                    videoId=vid,
-                    media_body=MediaFileUpload(str(thumb), mimetype="image/png"),
-                ).execute()
-                print(f"[info] サムネイルを設定しました: {thumb}")
-            except Exception as e:
-                # カスタムサムネイルはアカウントの電話番号確認が必要。
-                # 未確認だとここで必ず失敗するので、原因が分かるように書く
-                print(f"[warn] サムネイルの設定に失敗しました: {e}", file=sys.stderr)
-                print("       YouTubeアカウントの電話番号確認が済んでいるか"
-                      "確認してください(未確認だとカスタムサムネイルは使えません)",
-                      file=sys.stderr)
+            set_thumbnail(youtube, thumb, vid,
+                          record_kind(args.kind, args.morning_mode, args.sport),
+                          body["snippet"]["title"])
         elif thumb:
             print(f"[info] サムネイル画像が無いためスキップします: {thumb}")
 
@@ -2357,6 +2347,27 @@ def main():
 # 同じ実行の失敗扱いで長編（後続）まで止まった。410 と 5xx は送り直せば通ることが多い。
 # 受け口が切れた・サーバー側の失敗のときは動画は作られていないので、二重にはならない。
 RETRY_STATUS = {410, 500, 502, 503, 504}
+
+
+def set_thumbnail(youtube, thumb, vid, kind, title):
+    """投稿後の失敗は警告に留め、枠切れの画像だけ保存する。"""
+    try:
+        youtube.thumbnails().set(
+            videoId=vid,
+            media_body=MediaFileUpload(str(thumb), mimetype="image/png"),
+        ).execute()
+        print(f"[info] サムネイルを設定しました: {thumb}")
+    except Exception as error:
+        import thumbnail_pending
+        try:
+            if thumbnail_pending.remember(error, thumb, vid, kind, title):
+                print("[warn] 使用枠切れのサムネイルを付け直し用に保存しました", file=sys.stderr)
+        except (OSError, ValueError, TypeError) as pending_error:
+            print(f"[warn] サムネイルの付け直し記録を保存できません: "
+                  f"{type(pending_error).__name__}", file=sys.stderr)
+        print(f"[warn] サムネイルの設定に失敗しました: {error}", file=sys.stderr)
+        print("       YouTubeアカウントの電話番号確認が済んでいるか"
+              "確認してください(未確認だとカスタムサムネイルは使えません)", file=sys.stderr)
 
 
 def insert_with_retry(youtube, body, video_path, waits=(15, 45)):
