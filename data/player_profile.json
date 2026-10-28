@@ -1,125 +1,91 @@
 {
-  "generated_at": "2026-10-27T06:01:08.932263+00:00",
-  "date_jst": "2026-10-27",
-  "name": "Robert Gasser",
-  "player_id": "688107",
+  "generated_at": "2026-10-28T06:01:07.529794+00:00",
+  "date_jst": "2026-10-28",
+  "name": "Cooper Pratt",
+  "player_id": "806198",
   "team": "ブリュワーズ",
-  "group": "pitching",
-  "why": "2026-10-27のMLBで最も活躍",
-  "headline": "6.0回　3奪三振　自責0　1被安打",
-  "score": 120,
+  "group": "hitting",
+  "why": "2026-10-28のMLBで最も活躍",
+  "headline": "5打数4安打　1本塁打　1二塁打　2打点",
+  "score": 134,
   "bio": {
-    "name_en": "Robert Gasser",
-    "age": 27,
-    "birth_city": "El Dorado Hills",
-    "birth_state": "CA",
+    "name_en": "Cooper Pratt",
+    "age": 22,
+    "birth_city": "Hialeah",
+    "birth_state": "FL",
     "birth_country": "USA",
-    "birth_date": "1999-05-31",
-    "debut": "2024-05-10",
-    "draft_year": 2021,
-    "bats": "Left",
-    "throws": "Left",
-    "number": "54",
-    "position": "Pitcher",
+    "birth_date": "2004-08-18",
+    "debut": "2026-06-16",
+    "draft_year": 2023,
+    "bats": "Right",
+    "throws": "Right",
+    "number": "12",
+    "position": "Shortstop",
     "nickname": null,
-    "height": "6' 0\"",
-    "weight": 197
+    "height": "6' 4\"",
+    "weight": 210
   },
   "teams": [
     {
       "team": "ブリュワーズ",
-      "from": 2024,
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 28,
-    "avg": ".261",
-    "hr": 21,
-    "rbi": 159,
-    "ops": ".685",
-    "sb": 51,
-    "hits": 400,
-    "wins": 7,
-    "losses": 7,
-    "era": "3.59",
-    "so": 124,
-    "ip": "143.0",
-    "whip": "1.17"
+    "games": 74,
+    "avg": ".281",
+    "hr": 3,
+    "rbi": 34,
+    "ops": ".718",
+    "sb": 19,
+    "hits": 64
   },
   "this_season": {
-    "games": 21,
-    "avg": ".230",
-    "hr": 4,
-    "rbi": 40,
-    "ops": ".614",
-    "sb": 7,
-    "hits": 78,
-    "wins": 5,
-    "losses": 5,
-    "era": "3.87",
-    "so": 103,
-    "ip": "109.1",
-    "whip": "1.19"
-  },
-  "last_season": {
-    "games": 2,
-    "avg": ".288",
-    "hr": 12,
-    "rbi": 63,
-    "ops": ".756",
+    "games": 74,
+    "avg": ".281",
+    "hr": 3,
+    "rbi": 34,
+    "ops": ".718",
     "sb": 19,
-    "hits": 152,
-    "wins": 0,
-    "losses": 2,
-    "era": "3.18",
-    "so": 5,
-    "ip": "5.2",
-    "whip": "1.59"
+    "hits": 64
   },
+  "last_season": {},
   "recent": [
     {
-      "date": "2026-09-25",
-      "line": "6.0回 自責1 9奪三振",
+      "date": "2026-09-27",
+      "line": "4打数1安打",
       "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-09-19",
-      "line": "7.0回 自責0 2奪三振",
-      "opponent": "Baltimore Orioles"
+      "date": "2026-09-26",
+      "line": "3打数1安打",
+      "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-09-13",
-      "line": "5.0回 自責1 5奪三振",
-      "opponent": "Cincinnati Reds"
+      "date": "2026-09-25",
+      "line": "1打数0安打",
+      "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-09-07",
-      "line": "4.2回 自責1 5奪三振",
-      "opponent": "Chicago Cubs"
+      "date": "2026-09-24",
+      "line": "3打数2安打 1打点",
+      "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-01",
-      "line": "4.1回 自責2 4奪三振",
-      "opponent": "Chicago Cubs"
+      "date": "2026-09-22",
+      "line": "4打数0安打",
+      "opponent": "Philadelphia Phillies"
     }
   ],
   "awards": [
     {
-      "season": "2023",
-      "name": "MiLB.com Organization All-Star"
+      "season": "2024",
+      "name": "Rawlings MiLB Gold Glove"
     },
     {
-      "season": "2023",
-      "name": "Baseball America Triple-A All-Star"
-    },
-    {
-      "season": "2023",
-      "name": "INT Post-Season All-Star"
-    },
-    {
-      "season": "2023",
-      "name": "Baseball America Minor League All-Star"
+      "season": "2024",
+      "name": "CAR Post-Season All-Star"
     }
   ],
   "quotes": []

@@ -1,40 +1,28 @@
 {
-  "updated_at": "2026-10-27T06:01:55.758965+00:00",
+  "updated_at": "2026-10-28T06:01:52.177016+00:00",
   "sources": [
     {
-      "name": "r/baseball",
-      "items": 25
-    },
-    {
       "name": "MLB公式",
-      "items": 24
+      "items": 25
     }
   ],
-  "titles_count": 49,
+  "titles_count": 25,
   "teams": [
-    {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 18,
-      "tone": "好調",
-      "gist": "ブリュワーズ、WS第3戦10-1大勝で3勝0敗に王手"
-    },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 7,
-      "tone": "不振",
-      "gist": "レイズ、第3戦大敗で崖っぷち、第4戦必勝"
+      "mentions": 5,
+      "tone": "好調",
+      "gist": "ウィリアムソンのサヨナラ打でレイズ延命、第5戦へ"
     },
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "メッツ、ドゥンカンのコーチ入りが報じられる"
+      "tone": "好調",
+      "gist": "ブリュワーズ、5回2死から8得点"
     },
     {
       "team_id": "136",
@@ -42,7 +30,7 @@
       "name_en": "Seattle Mariners",
       "mentions": 1,
       "tone": "話題",
-      "gist": "マリナーズ、監督候補2人と対面面接へ"
+      "gist": "マリナーズ、エスパーダらと監督面接"
     },
     {
       "team_id": "143",
@@ -50,15 +38,15 @@
       "name_en": "Philadelphia Phillies",
       "mentions": 1,
       "tone": "話題",
-      "gist": "フィリーズ、ファッツィ氏を新打撃コーチに起用"
+      "gist": "フィリーズ、ファッツ氏を打撃コーチに採用"
     },
     {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "アリゾナ・フォールリーグ第3週の好成績者"
+      "tone": "好調",
+      "gist": "シュリットラーのサイ・ヤング賞確実視"
     }
   ],
   "players": []

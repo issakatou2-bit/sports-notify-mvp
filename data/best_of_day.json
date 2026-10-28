@@ -1,64 +1,22 @@
 {
-  "date": "2026-10-26",
-  "date_jst": "2026-10-27",
-  "updated_at": "2026-10-27T06:01:08.642957+00:00",
-  "scored": 32,
+  "date": "2026-10-27",
+  "date_jst": "2026-10-28",
+  "updated_at": "2026-10-28T06:01:07.274835+00:00",
+  "scored": 35,
   "players": [
     {
-      "name": "Robert Gasser",
-      "team": "ブリュワーズ",
-      "type": "pitcher",
-      "score": 120,
-      "headline": "6.0回　3奪三振　自責0　1被安打",
-      "is_japanese": false,
-      "stats": {
-        "ip": "6.0",
-        "er": 0,
-        "hits": 1,
-        "so": 3,
-        "bb": 1,
-        "gs": 1,
-        "saves": 0,
-        "save_opp": 0,
-        "blown": 0,
-        "holds": 0
-      }
-    },
-    {
-      "name": "Jackson Chourio",
+      "name": "Cooper Pratt",
       "team": "ブリュワーズ",
       "type": "batter",
-      "score": 94,
-      "headline": "5打数4安打　1二塁打　1打点　1盗塁",
+      "score": 134,
+      "headline": "5打数4安打　1本塁打　1二塁打　2打点",
       "is_japanese": false,
       "stats": {
         "ab": 5,
         "pa": 5,
         "hits": 4,
-        "hr": 0,
-        "tb": 5,
-        "rbi": 1,
-        "bb": 0,
-        "so": 1,
-        "doubles": 1,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 1
-      }
-    },
-    {
-      "name": "Brice Turang",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "score": 91,
-      "headline": "5打数3安打　1二塁打　2打点",
-      "is_japanese": false,
-      "stats": {
-        "ab": 5,
-        "pa": 5,
-        "hits": 3,
-        "hr": 0,
-        "tb": 4,
+        "hr": 1,
+        "tb": 8,
         "rbi": 2,
         "bb": 0,
         "so": 0,
@@ -69,43 +27,43 @@
       }
     },
     {
-      "name": "William Contreras",
-      "team": "ブリュワーズ",
+      "name": "Chandler Simpson",
+      "team": "レイズ",
       "type": "batter",
-      "score": 76,
-      "headline": "5打数3安打　1打点",
+      "score": 85,
+      "headline": "5打数3安打　1二塁打　1打点",
       "is_japanese": false,
       "stats": {
         "ab": 5,
         "pa": 5,
         "hits": 3,
         "hr": 0,
-        "tb": 3,
+        "tb": 4,
         "rbi": 1,
         "bb": 0,
-        "so": 1,
-        "doubles": 0,
+        "so": 0,
+        "doubles": 1,
         "triples": 0,
         "hbp": 0,
         "sb": 0
       }
     },
     {
-      "name": "Christian Yelich",
+      "name": "David Hamilton",
       "team": "ブリュワーズ",
       "type": "batter",
-      "score": 74,
-      "headline": "3打数2安打　1打点　1四球",
+      "score": 84,
+      "headline": "3打数1安打　1本塁打　1打点",
       "is_japanese": false,
       "stats": {
         "ab": 3,
-        "pa": 4,
-        "hits": 2,
-        "hr": 0,
-        "tb": 2,
+        "pa": 3,
+        "hits": 1,
+        "hr": 1,
+        "tb": 4,
         "rbi": 1,
-        "bb": 1,
-        "so": 0,
+        "bb": 0,
+        "so": 2,
         "doubles": 0,
         "triples": 0,
         "hbp": 0,
@@ -113,61 +71,17 @@
       }
     },
     {
-      "name": "Yandy Díaz",
-      "team": "レイズ",
-      "type": "batter",
-      "score": 73,
-      "headline": "4打数2安打　1二塁打　1打点",
-      "is_japanese": false,
-      "stats": {
-        "ab": 4,
-        "pa": 4,
-        "hits": 2,
-        "hr": 0,
-        "tb": 3,
-        "rbi": 1,
-        "bb": 0,
-        "so": 0,
-        "doubles": 1,
-        "triples": 0,
-        "hbp": 0,
-        "sb": 0
-      }
-    },
-    {
-      "name": "Sal Frelick",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "score": 64,
-      "headline": "4打数1安打　1二塁打　1打点　1死球",
-      "is_japanese": false,
-      "stats": {
-        "ab": 4,
-        "pa": 5,
-        "hits": 1,
-        "hr": 0,
-        "tb": 2,
-        "rbi": 1,
-        "bb": 0,
-        "so": 0,
-        "doubles": 1,
-        "triples": 0,
-        "hbp": 1,
-        "sb": 0
-      }
-    },
-    {
-      "name": "Antonio Senzatela",
+      "name": "Aaron Ashby",
       "team": "ブリュワーズ",
       "type": "pitcher",
-      "score": 63,
-      "headline": "2.0回　1奪三振　自責0",
+      "score": 69,
+      "headline": "2.1回　3奪三振　自責0",
       "is_japanese": false,
       "stats": {
-        "ip": "2.0",
+        "ip": "2.1",
         "er": 0,
         "hits": 0,
-        "so": 1,
+        "so": 3,
         "bb": 0,
         "gs": 0,
         "saves": 0,
@@ -175,41 +89,41 @@
         "blown": 0,
         "holds": 0
       }
-    }
-  ],
-  "pitchers": [
+    },
     {
-      "name": "Robert Gasser",
-      "team": "ブリュワーズ",
-      "type": "pitcher",
-      "score": 120,
-      "headline": "6.0回　3奪三振　自責0　1被安打",
+      "name": "Ben Williamson",
+      "team": "レイズ",
+      "type": "batter",
+      "score": 62,
+      "headline": "1打数1安打　1打点",
       "is_japanese": false,
       "stats": {
-        "ip": "6.0",
-        "er": 0,
+        "ab": 1,
+        "pa": 1,
         "hits": 1,
-        "so": 3,
-        "bb": 1,
-        "gs": 1,
-        "saves": 0,
-        "save_opp": 0,
-        "blown": 0,
-        "holds": 0
+        "hr": 0,
+        "tb": 1,
+        "rbi": 1,
+        "bb": 0,
+        "so": 0,
+        "doubles": 0,
+        "triples": 0,
+        "hbp": 0,
+        "sb": 0
       }
     },
     {
-      "name": "Antonio Senzatela",
+      "name": "Abner Uribe",
       "team": "ブリュワーズ",
       "type": "pitcher",
-      "score": 63,
-      "headline": "2.0回　1奪三振　自責0",
+      "score": 61,
+      "headline": "2.0回　2奪三振　自責0　1被安打",
       "is_japanese": false,
       "stats": {
         "ip": "2.0",
         "er": 0,
-        "hits": 0,
-        "so": 1,
+        "hits": 1,
+        "so": 2,
         "bb": 0,
         "gs": 0,
         "saves": 0,
@@ -222,11 +136,93 @@
       "name": "Tyler Wells",
       "team": "レイズ",
       "type": "pitcher",
-      "score": 58,
-      "headline": "1.0回　1奪三振　自責0",
+      "score": 61,
+      "headline": "1.2回　1奪三振　自責0",
       "is_japanese": false,
       "stats": {
-        "ip": "1.0",
+        "ip": "1.2",
+        "er": 0,
+        "hits": 0,
+        "so": 1,
+        "bb": 0,
+        "gs": 0,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
+    },
+    {
+      "name": "Nick Martinez",
+      "team": "レイズ",
+      "type": "pitcher",
+      "score": 60,
+      "headline": "2.0回　1奪三振　自責0　1被安打",
+      "is_japanese": false,
+      "stats": {
+        "ip": "2.0",
+        "er": 0,
+        "hits": 1,
+        "so": 1,
+        "bb": 0,
+        "gs": 0,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
+    }
+  ],
+  "pitchers": [
+    {
+      "name": "Aaron Ashby",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "score": 69,
+      "headline": "2.1回　3奪三振　自責0",
+      "is_japanese": false,
+      "stats": {
+        "ip": "2.1",
+        "er": 0,
+        "hits": 0,
+        "so": 3,
+        "bb": 0,
+        "gs": 0,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
+    },
+    {
+      "name": "Abner Uribe",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "score": 61,
+      "headline": "2.0回　2奪三振　自責0　1被安打",
+      "is_japanese": false,
+      "stats": {
+        "ip": "2.0",
+        "er": 0,
+        "hits": 1,
+        "so": 2,
+        "bb": 0,
+        "gs": 0,
+        "saves": 0,
+        "save_opp": 0,
+        "blown": 0,
+        "holds": 0
+      }
+    },
+    {
+      "name": "Tyler Wells",
+      "team": "レイズ",
+      "type": "pitcher",
+      "score": 61,
+      "headline": "1.2回　1奪三振　自責0",
+      "is_japanese": false,
+      "stats": {
+        "ip": "1.2",
         "er": 0,
         "hits": 0,
         "so": 1,
@@ -241,110 +237,110 @@
   ],
   "everyone": [
     {
-      "name": "Robert Gasser",
-      "team": "ブリュワーズ",
-      "type": "pitcher",
-      "line": "6.0回　3奪三振　自責0　1被安打"
-    },
-    {
-      "name": "Jackson Chourio",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "5打数4安打　1二塁打　1打点　1盗塁"
-    },
-    {
-      "name": "Brice Turang",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "5打数3安打　1二塁打　2打点"
-    },
-    {
-      "name": "William Contreras",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "5打数3安打　1打点"
-    },
-    {
-      "name": "Christian Yelich",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "3打数2安打　1打点　1四球"
-    },
-    {
-      "name": "Yandy Díaz",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "4打数2安打　1二塁打　1打点"
-    },
-    {
-      "name": "Sal Frelick",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "4打数1安打　1二塁打　1打点　1死球"
-    },
-    {
-      "name": "Antonio Senzatela",
-      "team": "ブリュワーズ",
-      "type": "pitcher",
-      "line": "2.0回　1奪三振　自責0"
-    },
-    {
-      "name": "Tyler Wells",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0"
-    },
-    {
-      "name": "Garrett Cleavinger",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "1.0回　1奪三振　自責0"
-    },
-    {
       "name": "Cooper Pratt",
       "team": "ブリュワーズ",
       "type": "batter",
-      "line": "5打数1安打　1二塁打　2打点"
+      "line": "5打数4安打　1本塁打　1二塁打　2打点"
+    },
+    {
+      "name": "Chandler Simpson",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "5打数3安打　1二塁打　1打点"
     },
     {
       "name": "David Hamilton",
       "team": "ブリュワーズ",
       "type": "batter",
-      "line": "3打数1安打　1打点"
+      "line": "3打数1安打　1本塁打　1打点"
     },
     {
-      "name": "Cedric Mullins",
+      "name": "Aaron Ashby",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "2.1回　3奪三振　自責0"
+    },
+    {
+      "name": "Ben Williamson",
       "team": "レイズ",
       "type": "batter",
-      "line": "1打数1安打"
+      "line": "1打数1安打　1打点"
     },
     {
-      "name": "Garrett Mitchell",
+      "name": "Abner Uribe",
       "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "3打数1安打　1打点　1四球"
+      "type": "pitcher",
+      "line": "2.0回　2奪三振　自責0　1被安打"
     },
     {
-      "name": "Steven Matz",
+      "name": "Tyler Wells",
       "team": "レイズ",
       "type": "pitcher",
-      "line": "1.0回　0奪三振　自責0　1被安打"
+      "line": "1.2回　1奪三振　自責0"
     },
     {
-      "name": "Victor Mesa Jr.",
+      "name": "Nick Martinez",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "2.0回　1奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Bryan Baker",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "2.0回　0奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Liam Hicks",
       "team": "レイズ",
       "type": "batter",
-      "line": "2打数0安打　1四球"
+      "line": "5打数2安打"
     },
     {
-      "name": "Andrew Vaughn",
+      "name": "JoJo Romero",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "1.0回　0奪三振　自責0"
+    },
+    {
+      "name": "DL Hall",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "1.2回　0奪三振　自責0　1被安打"
+    },
+    {
+      "name": "Kevin Kelly",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "1.0回　1奪三振　自責0"
+    },
+    {
+      "name": "Jackson Chourio",
       "team": "ブリュワーズ",
       "type": "batter",
-      "line": "1打数0安打"
+      "line": "6打数2安打　1二塁打"
     },
     {
-      "name": "Luis Lara",
+      "name": "Christian Yelich",
       "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "3打数0安打　2四球　1盗塁"
+    },
+    {
+      "name": "Jonny DeLuca",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "5打数1安打　1打点"
+    },
+    {
+      "name": "Yandy Díaz",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "4打数1安打　1四球"
+    },
+    {
+      "name": "Ryan Vilade",
+      "team": "レイズ",
       "type": "batter",
       "line": "1打数0安打"
     },
@@ -355,82 +351,100 @@
       "line": "2打数0安打"
     },
     {
-      "name": "Jorge Mateo",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "1打数0安打"
-    },
-    {
-      "name": "Jonathan Aranda",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Nick Fortes",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Taylor Walls",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Ryan Vilade",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "2打数0安打"
-    },
-    {
-      "name": "Chandler Simpson",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Junior Caminero",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Jake Bauers",
+      "name": "William Contreras",
       "team": "ブリュワーズ",
       "type": "batter",
       "line": "4打数0安打　1四球"
     },
     {
-      "name": "Jonny DeLuca",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Ben Williamson",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "3打数0安打"
-    },
-    {
-      "name": "Brandon Woodruff",
+      "name": "Antonio Senzatela",
       "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "0.2回　1奪三振　自責0"
+    },
+    {
+      "name": "Trevor Megill",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "0.1回　1奪三振　自責0"
+    },
+    {
+      "name": "Sal Frelick",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "5打数1安打"
+    },
+    {
+      "name": "Griffin Jax",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "4.0回　6奪三振　防御率4.50　4被安打"
+    },
+    {
+      "name": "Junior Caminero",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "5打数1安打"
+    },
+    {
+      "name": "Cam Booser",
+      "team": "レイズ",
+      "type": "pitcher",
+      "line": "0.1回　1奪三振　自責0"
+    },
+    {
+      "name": "Brice Turang",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "4打数0安打　1四球"
+    },
+    {
+      "name": "Victor Mesa Jr.",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "3打数0安打"
+    },
+    {
+      "name": "Dustin May",
+      "team": "ブリュワーズ",
+      "type": "pitcher",
+      "line": "3.0回　3奪三振　防御率6.00　3被安打"
+    },
+    {
+      "name": "Richie Palacios",
+      "team": "レイズ",
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Ian Seymour",
+      "team": "レイズ",
       "type": "pitcher",
       "line": "1.0回　1奪三振　防御率9.00　2被安打"
     },
     {
-      "name": "Cole Sulser",
+      "name": "Jonathan Aranda",
       "team": "レイズ",
-      "type": "pitcher",
-      "line": "1.1回　1奪三振　防御率6.75　4被安打"
+      "type": "batter",
+      "line": "5打数0安打"
     },
     {
-      "name": "Freddy Peralta",
+      "name": "Jake Bauers",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "6打数0安打"
+    },
+    {
+      "name": "Taylor Walls",
       "team": "レイズ",
-      "type": "pitcher",
-      "line": "4.2回　4奪三振　防御率9.64　7被安打"
+      "type": "batter",
+      "line": "4打数0安打"
+    },
+    {
+      "name": "Garrett Mitchell",
+      "team": "ブリュワーズ",
+      "type": "batter",
+      "line": "5打数0安打"
     }
   ]
 }

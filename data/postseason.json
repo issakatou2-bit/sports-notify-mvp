@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-27T09:52:43.181191+00:00",
-  "date": "2026-10-27",
+  "updated_at": "2026-10-28T06:01:36.133022+00:00",
+  "date": "2026-10-28",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -51,7 +51,8 @@
           "name": "ホワイトソックス",
           "wins": 2,
           "players": [
-            "村上宗隆"
+            "村上宗隆",
+            "西田陸浮"
           ]
         },
         {
@@ -147,7 +148,8 @@
           "name": "ホワイトソックス",
           "wins": 2,
           "players": [
-            "村上宗隆"
+            "村上宗隆",
+            "西田陸浮"
           ]
         }
       ]
@@ -278,12 +280,12 @@
       "league_jp": "",
       "best_of": 7,
       "need": 4,
-      "played": 3,
+      "played": 4,
       "over": false,
       "winner": null,
       "next": {
-        "day": "10月28日",
-        "game": 4
+        "day": "10月29日",
+        "game": 5
       },
       "teams": [
         {
@@ -295,24 +297,24 @@
         {
           "id": 139,
           "name": "レイズ",
-          "wins": 0,
+          "wins": 1,
           "players": []
         }
       ]
     }
   ],
   "final_day": [],
-  "headline": "ワールドシリーズ ブリュワーズが3勝0敗とし、世界一に王手",
+  "headline": "ワールドシリーズ ブリュワーズが3勝1敗とし、世界一に王手",
   "changes": [
     {
       "key": "W:139-158",
       "kind": "game",
-      "text": "ワールドシリーズ ブリュワーズが3勝0敗とし、世界一に王手",
+      "text": "ワールドシリーズ ブリュワーズが3勝1敗とし、世界一に王手",
       "jp": false,
       "stage": 4
     }
   ],
-  "prev_date": "2026-10-26",
+  "prev_date": "2026-10-27",
   "japanese": [
     {
       "team_id": 119,
@@ -410,7 +412,8 @@
       "wc_gb": null,
       "clinched": true,
       "players": [
-        "村上宗隆"
+        "村上宗隆",
+        "西田陸浮"
       ]
     },
     {
@@ -2380,8 +2383,8 @@
   },
   "editorial": {
     "version": 1,
-    "date_jst": "2026-10-27",
-    "retrieved_at": "2026-10-27T06:03:09.747596+00:00",
+    "date_jst": "2026-10-28",
+    "retrieved_at": "2026-10-28T06:03:13.935305+00:00",
     "stage": "series",
     "source_url": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&season=2026&startDate=2026-09-15&endDate=2026-11-10&gameType=F,D,L,W&hydrate=team,probablePitcher",
     "warnings": [],
