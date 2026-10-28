@@ -4490,7 +4490,6 @@ def main():
 
     durations = plan_durations(segs)
     if args.mode=='players':
-        import post_common
         limit,grace=post_common.duration_budget('morning')
         keep,dropped=fit_budget(segs,durations,('week','reach','praise'),limit,grace)
         if dropped:
