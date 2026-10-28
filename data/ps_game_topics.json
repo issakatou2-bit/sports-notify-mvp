@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-28T05:19:08.649592+00:00",
+  "updated_at": "2026-10-28T06:17:34.991376+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -29,11 +29,11 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「泣いてる子どもの映像、リアルすぎた。まあ、たまにああなるよね😂」"
+          "「あの泣いてる子のショット、リアルすぎた。まあ、たまにこうなるよな😂」"
         ],
         [
           "MLB.comの見出しから",
-          "「歴史的な大勝、止まらないクルーが初のワールドシリーズ制覇まであと1勝」"
+          "「歴史的大勝で止まらないクルー、ワールドシリーズ初制覇まであと1勝」"
         ]
       ],
       "japanese": [],
@@ -43,15 +43,15 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "泣いてる子どもの映像、リアルすぎた。まあ、たまにああなるよね😂",
+        "said": "あの泣いてる子のショット、リアルすぎた。まあ、たまにこうなるよな😂",
         "text": "That shot of the kid crying was too real. It do be like that sometimes 😂",
         "url": "https://www.youtube.com/watch?v=b7BE1gwgv64",
-        "likes": 935,
+        "likes": 937,
         "at": "2026-10-27T04:27:02Z",
         "source": "MLB公式ハイライトのコメント"
       },
       "headline": {
-        "said": "歴史的な大勝、止まらないクルーが初のワールドシリーズ制覇まであと1勝",
+        "said": "歴史的大勝で止まらないクルー、ワールドシリーズ初制覇まであと1勝",
         "text": "With historic romp, unrelenting Crew just 1 win from 1st World Series title",
         "url": "https://www.mlb.com/news/brewers-win-world-series-game-3-2026",
         "at": "2026-10-27T04:48:00+00:00"
@@ -132,10 +132,6 @@
       "jp_first": false,
       "next_team_id": 158,
       "finished_at": "2026-10-27T03:10:16.219000+00:00",
-      "next_game_jp": {
-        "day": "10月28日",
-        "game": 4
-      },
       "v3": {
         "who": "ブリュワーズ　ワールドシリーズ第3戦",
         "big": "10",
@@ -149,7 +145,7 @@
             "win": true
           }
         ],
-        "ticker": "次の試合　日本時間10月28日　ワールドシリーズ第4戦"
+        "ticker": "ブリュワーズ 10対1 レイズ　敵地で勝利　シリーズはブリュワーズの3勝0敗"
       }
     },
     {
@@ -182,7 +178,7 @@
         ],
         [
           "MLB.comの見出しから",
-          "「レイズがウィリアムソンのサヨナラ安打で首の皮一枚つなぐ」"
+          "「ウィリアムソンのサヨナラ安打でレイズが首の皮一枚つながる」"
         ]
       ],
       "japanese": [],
@@ -193,7 +189,7 @@
       "source": null,
       "voice": null,
       "headline": {
-        "said": "レイズがウィリアムソンのサヨナラ安打で首の皮一枚つなぐ",
+        "said": "ウィリアムソンのサヨナラ安打でレイズが首の皮一枚つながる",
         "text": "Rays live to fight another day thanks to Williamson's walk-off single",
         "url": "https://www.mlb.com/news/rays-win-world-series-game-4-2026",
         "at": "2026-10-28T04:50:00+00:00"
@@ -283,6 +279,10 @@
       "jp_first": false,
       "next_team_id": 139,
       "finished_at": "2026-10-28T04:28:32.899000+00:00",
+      "next_game_jp": {
+        "day": "10月29日",
+        "game": 5
+      },
       "v3": {
         "who": "レイズ　ワールドシリーズ第4戦",
         "big": "4-3",
@@ -300,7 +300,7 @@
             "score": "2"
           }
         ],
-        "ticker": "レイズ 4対3 ブリュワーズ　本拠地で勝利　シリーズはレイズの1勝3敗"
+        "ticker": "次の試合　日本時間10月29日　ワールドシリーズ第5戦"
       }
     }
   ]
