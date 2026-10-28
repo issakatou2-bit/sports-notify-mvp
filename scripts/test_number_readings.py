@@ -31,7 +31,7 @@ class NumberReadingsTest(unittest.TestCase):
         import scripts.synthesize_narration as sn
         for speaker in (2, 3, 108):
             with patch.object(sn.requests, 'post') as post, patch.object(sn.name_reading_guard, 'prepare_query', return_value={}), \
-                 patch.object(sn.name_reading_guard, 'validate_query', return_value={}), patch.object(Path, 'write_text'), patch.object(Path, 'write_bytes'):
+                 patch.object(sn.name_reading_guard, 'validate_query', return_value={}), patch.object(Path, 'write_text'), patch.object(Path, 'write_bytes'), patch('voice_manifest.record_file'):
                 post.return_value.json.return_value = {}
                 post.return_value.content = b'wav'
                 self.assertTrue(sn.synth_one('3分の1', speaker, Path('test.wav')))

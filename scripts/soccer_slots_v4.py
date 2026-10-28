@@ -331,9 +331,11 @@ def fit_preview(plan,audio):
         audio[index]['meta']=json.loads(json.dumps(meta))
 
 
-def render_video(plan,audio,out):
+def render_video(plan,audio,out,audio_dir=None):
     __import__('slant_by_episode').set_episode('soccer_'+plan['mode'])
     narr=plan['narration'];times=video_times(narr['segments'],audio)
+    import render_timeline
+    timeline=render_timeline.Recorder(30,audio,narr)
     limit=narr['duration_budget']['limit']
     if motion.enabled():
         motion.measured(audio)
@@ -350,6 +352,7 @@ def render_video(plan,audio,out):
         proc=subprocess.Popen(cmd,stdin=subprocess.PIPE,stderr=log)
         try:
             for i,(seg,duration) in enumerate(zip(narr['segments'],times)):
+                timeline.select(audio[i],i)
                 r3.set_caption(seg['text'],duration,sum(times),speaker=2,duo=False,hide_caption=seg['kind']=='outro')
                 snap=min(3,duration*.6) if seg['kind']=='outro' else min(1.4,duration*.6)
                 r3.set_program_clock(clock+snap);im=frame(snap,seg,plan)
@@ -358,10 +361,11 @@ def render_video(plan,audio,out):
                 im.save(out/f'{i+1:02d}.png');images.append(im)
                 for k in range(round(duration*30)):
                     r3.set_program_clock(clock+k/30);im=frame(k/30,seg,plan)
-                    proc.stdin.write(soccer_look.transition(previous,im,k,30))
+                    timeline.write(proc.stdin,soccer_look.transition(previous,im,k,30),im)
                 previous=im.tobytes();clock+=duration
         finally:proc.stdin.close();code=proc.wait();r3.set_program_clock(None)
     if code:raise ValueError('動画生成失敗。ffmpeg.logを確認')
+    timeline.save(video,audio_dir or next((Path(s['file']).parent for s in audio if s.get('file')),out))
     from preview_unified_v3 import sheet
     sheet(images,[s['kind'] for s in narr['segments']],out/'all-screens.png',columns=4)
     probe=subprocess.run(['ffmpeg','-hide_banner','-i',str(video)],capture_output=True,text=True,encoding='utf-8',errors='replace')

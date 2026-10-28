@@ -498,6 +498,8 @@ def draw_spoken(d, color=None) -> None:
     d.rounded_rectangle([60, y, 68, y + h], 4, fill=color or ACCENT)
     for i, ln in enumerate(lines):
         d.text((92, y + 18 + i * 46), ln, font=font(34), fill=DIM)
+    import render_timeline
+    render_timeline.subtitle(d._image, ''.join(lines))
 
 
 def base(progress):
@@ -4082,6 +4084,8 @@ def build_player_video(args):
         segs = [{"kind": s["kind"], "file": None, "duration": 0.0,
                  "meta": s["meta"]} for s in narration["segments"]]
 
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs, narration)
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / "collespo_morning_player.mp4"
@@ -4130,6 +4134,7 @@ def build_player_video(args):
     last_frame = None
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+            timeline.select(seg, seg_i)
             set_step(seg_i, len(segs))
             # その画面で読み上げている文を、画面下に出す
             set_spoken((narration["segments"][seg_i].get("text") or "")
@@ -4144,11 +4149,11 @@ def build_player_video(args):
             for k in range(n):
                 pp, settled = video_common.anim_step(k, n)
                 if settled and still is not None:
-                    proc.stdin.write(still)
+                    timeline.repeat(proc.stdin, still)
                     continue
                 im = draw(pp, prof) if draw else render_outro(pp, "player")
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im, overlap=last_frame is not None and k < fade)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
@@ -4162,6 +4167,7 @@ def build_player_video(args):
     if proc.returncode != 0:
         print(f"::error::ffmpegが失敗しました ({proc.returncode})")
         return 1
+    timeline.save(video_path, args.audio_dir)
     print(f"[info] 書き出しました -> {video_path}")
     return 0
 
@@ -4481,6 +4487,8 @@ def main():
         segs = [{"kind": s["kind"], "file": None, "duration": 0.0,
                  "meta": s["meta"]} for s in narration["segments"]]
 
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs, narration)
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     # モードごとに別ファイルにする。同じ名前だと2本目が1本目を上書きする
@@ -4561,6 +4569,7 @@ def main():
     hook_scenes = hook_ab.SceneRecorder()
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+            timeline.select(seg, seg_i)
             set_step(seg_i, len(segs))
             # その画面で読み上げている文を、画面下に出す
             set_spoken((narration["segments"][seg_i].get("text") or "")
@@ -4597,20 +4606,20 @@ def main():
                     cached = video_common.short_transition(None if same else last_frame,im,k,FPS,r3.LOOK=='v4')
                     if k < fade:
                         cached = r3.redraw_ticker(cached, (W, H))
-                    proc.stdin.write(cached)
+                    timeline.write(proc.stdin, cached, im, overlap=not same and r3.LOOK!='v4' and last_frame is not None and k < fade)
                     total += 1
                     continue
                 if bn_plan:
                     image=bn.frame(bn_time+k/FPS,bn_plan)
                     cached=video_common.short_transition(last_frame,image,k,FPS,True) if r3.LOOK=='v4' else image.tobytes()
-                    proc.stdin.write(cached)
+                    timeline.write(proc.stdin, cached, image, overlap=r3.LOOK!='v4' and last_frame is not None and k < fade)
                     total += 1
                     continue
                 pp, settled = video_common.anim_step(k, n)
                 if kind=='intro' and meta.get('press_hook'):
                     settled=False  # 3秒の引用札切替を静止画キャッシュで止めない。
                 if settled and still is not None:
-                    proc.stdin.write(cached)
+                    timeline.repeat(proc.stdin, cached, overlap=last_frame is not None and k < fade)
                     total += 1
                     continue
                 if kind == "outro":
@@ -4719,7 +4728,7 @@ def main():
                 if narration.get('hook_ab') and meta.get('press_hook'):
                     hook_scenes.observe(im,total,FPS,meta.get('screen',seg_i))
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im, overlap=last_frame is not None and k < fade)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
@@ -4742,6 +4751,7 @@ def main():
               file=sys.stderr)
         sys.exit(1)
 
+    timeline.save(video_path, args.audio_dir)
     secs = total / FPS
     host_split.bind_video(video_path, args.audio_dir)
     import hook_ab

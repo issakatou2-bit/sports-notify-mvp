@@ -123,6 +123,7 @@ class Screen:
         if self.t < .35:
             from PIL import Image
             info = self.im.info
+            info['timeline_subtitle_visible'] = self.t > 0
             self.im = Image.blend(c._background(), self.im, max(0,self.t/.35))
             self.im.info = info
         return self.im

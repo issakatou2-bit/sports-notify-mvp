@@ -64,7 +64,8 @@ class NamePhrases(unittest.TestCase):
         import tempfile
         audio=Mock();audio.json.return_value=dict(accent_phrases=[phrase('オータニ'),phrase('ショーヘーデス')])
         mora=Mock();mora.json.return_value=[phrase('オータニショーヘーデス')]
-        wav=Mock();wav.content=b'wave'
+        from voice_test_fixture import pcm_wav_bytes
+        wav=Mock();wav.content=pcm_wav_bytes()
         with tempfile.TemporaryDirectory() as d,patch.object(sn.requests,'post',side_effect=[audio,mora,wav]) as post:
             self.assertTrue(sn.synth_one('大谷翔平です。',2,Path(d)/'sample.wav'))
             self.assertEqual(len(post.call_args.kwargs['json']['accent_phrases']),1)

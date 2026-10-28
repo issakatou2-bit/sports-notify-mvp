@@ -154,6 +154,8 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
         )
         s.raise_for_status()
         out_path.write_bytes(s.content)
+        import voice_manifest
+        voice_manifest.record_file(out_path, original, 'voicevox', speaker)
         if os.environ.get('COLLESPO_LIPSYNC') == 'voice':
             import hashlib
             out_path.with_suffix('.lipsync.json').write_text(json.dumps(
@@ -328,6 +330,9 @@ def main(argv=None):
         if resolution:
             payload['voice_resolution'] = resolution
         json.dump(payload, f, ensure_ascii=False)
+
+    import voice_manifest
+    voice_manifest.save(out_dir, manifest, data)
 
     total = sum(m["duration"] for m in manifest)
     print(f"[info] 音声合成が完了しました(合計{total:.1f}秒)")

@@ -1936,6 +1936,8 @@ def main():
     # パイプのままだと、こちらが読まない限りバッファが埋まって止まる。
     err_path = out_dir / "ffmpeg_error.log"
     err_file = open(err_path, "wb")
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs)
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
                             stdout=subprocess.DEVNULL, stderr=err_file)
     total = 0
@@ -1949,6 +1951,7 @@ def main():
     hook_scenes = hook_ab.SceneRecorder()
     try:
         for seg_index,(seg, dur) in enumerate(zip(segs, durations)):
+            timeline.select(seg, seg_index)
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
@@ -1984,12 +1987,12 @@ def main():
                         visual_key=key;wipe_frame=0;wipe_previous=previous_frame
                     raw=video_common.short_transition(wipe_previous,image,wipe_frame,FPS,True) if _r3.LOOK=='v4' and not image.info.get('game_ui') else image.tobytes()
                     wipe_frame+=1
-                    proc.stdin.write(raw)
+                    timeline.write(proc.stdin, raw, image)
                     previous_frame=raw
                     total += 1
                     continue
                 if kind != "map" and settled and still is not None:
-                    proc.stdin.write(still)
+                    timeline.repeat(proc.stdin, still)
                     total += 1
                     continue
                 if v2.get("style") in ("v2", "v3") and kind in ("intro", "list", "people"):
@@ -2034,7 +2037,7 @@ def main():
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
@@ -2056,6 +2059,7 @@ def main():
               file=sys.stderr)
         sys.exit(1)
 
+    timeline.save(video_path, args.audio_dir)
     secs = total / FPS
     size_mb = video_path.stat().st_size / 1024 / 1024
     host_split.bind_video(video_path, args.audio_dir)
