@@ -103,7 +103,9 @@ def race_program(data):
                 gap='は'+race.phrase(near)
                 text=f"{focus['name']}の{focus['club_jp']}は、{race.phrase(near)}。"
             else:
-                focus_key=None;gap='';text=f"{comp['name_jp']}の{line['label']}の境目です。勝点差は{line['diff']}。"
+                boundary=[next((r for r in rows if r['position']==pos),None) for pos in (line['at'],line['at']+1)]
+                pair='と'.join(f"{r['position']}位の{clubs[r['team']]['name_jp']}" for r in boundary if r)
+                focus_key=None;gap='';text=f"{comp['name_jp']}の{line['label']}の境目です。{pair}の勝点差は{line['diff']}。"
             segs.append(segment('standings',text,dict(title=comp['name_jp']+'　'+line['label'],rows=rows,shown=[(r['position'],r['position']) for r in rows],lines=[(line['at'],line['label'])],focus=focus_key,highlights=[r['team'] for r in rows if clubs[r['team']]['name_jp'] in highlights],gap=gap)))
     return package('race',data,segs,list(names),race.title_of(data),clubs)
 
@@ -156,6 +158,10 @@ def package(mode,data,segs,names,head,clubs=None):
     for seg in segs:seg['meta'].update(shared)
     if segs:segs.append(segment('outro',r3.OUTRO_TEXT,shared))
     narration=dict(label=day,title='【欧州サッカー】'+head+' #Shorts' if head else '',soccer_v4_mode=mode,segments=segs,duration_budget=dict(limit=40,grace=0))
+    import soccer_sanity_material
+    narration['soccer_material']=soccer_sanity_material.compact(data)
+    import sanity_sources
+    narration = sanity_sources.attach(narration, data, sport='soccer')
     # 札の配列をJSONの型にそろえ、保存原稿・音声manifestとも同じ値で照合する。
     narration=json.loads(json.dumps(narration,ensure_ascii=False))
     import host_split
@@ -178,12 +184,16 @@ def program(mode,data):
     if mode=='preview' and soccer_look.v5():
         import soccer_match_interest
         plan=soccer_match_interest.enrich_plan(plan)
-    return plan
+    return __import__('short_context').slots(plan, modern=soccer_look.v5())
 
 
 @motion.slot('soccer')
 def frame(t,seg,plan):
     if not enabled():raise ValueError('v3の描画は既存の入口を使う')
+    if soccer_look.readable():
+        import soccer_readable
+        im=soccer_readable.slots_frame(t,seg,plan)
+        if im is not None:return im
     if soccer_look.v5():
         import soccer_v5_cards as v5
         if seg['kind']=='outro':return v5.outro(t,seg['meta'],exclude='daily_soccer' if plan['mode']=='preview' else 'soccer_'+plan['mode'],credit=seg['meta']['source'],tagline=TAGLINE)
@@ -242,6 +252,9 @@ def durations(segments,audio,check_limit=True):
 def video_times(segments,audio):
     """音声後の間と30fpsの切り上げまで含めて予算を判定する。"""
     times=durations(segments,audio,check_limit=False)
+    if soccer_look.readable():
+        from soccer_readable import minimum_seconds
+        times=[max(length,minimum_seconds(seg)) for length,seg in zip(times,segments)]
     if motion.enabled():
         times=[max(t,float(row['duration'])+vc.SEGMENT_TAIL) for t,row in zip(times,audio)]
     return [math.ceil(t*30)/30 for t in times]
@@ -326,6 +339,8 @@ def render_video(plan,audio,out):
         motion.measured(audio)
     if sum(times)>limit:raise ValueError(f'丸め後{limit}秒を超える')
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
+    import short_content
+    short_content.require(narr, times, out, plan.get('data'), maximum=limit, video_name=FILENAMES[plan['mode']])
     if not shutil.which('ffmpeg'):raise ValueError('FFmpegがありません。install_video_tools.shまたは保存材料のpreviewを使ってください')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('声がありません')

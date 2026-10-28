@@ -1770,7 +1770,8 @@ JP_PLAYERS_SOCCER = [
      "team_jp": "シャルケ", "league": "BL2", "match": "schalke"},
 
     # --- セリエA(イタリア) ---
-    {"name_en": "Zion Suzuki", "name_jp": "鈴木ザイオン", "kana": "スズキ・ザイオン", "team_en": "Parma",
+    # 表示名はJFA公式漢字。読みと表示を混ぜない（全42人の根拠はsoccer_player_names.json）。
+    {"name_en": "Zion Suzuki", "name_jp": "鈴木彩艶", "kana": "スズキ・ザイオン", "team_en": "Parma",
      "team_jp": "パルマ", "league": "SA", "match": "parma"},
 
     # --- リーグ・アン(フランス) ---
@@ -1831,7 +1832,7 @@ JP_PLAYERS_SOCCER = [
     {"name_en": "Tomoki Iwata", "name_jp": "岩田智輝", "kana": "イワタ・トモキ",
      "team_en": "Birmingham City", "team_jp": "バーミンガム", "league": "ELC",
      "match": "birmingham"},
-    {"name_en": "Yu Hirakawa", "name_jp": "平川怜", "kana": "ヒラカワ・リョウ",
+    {"name_en": "Yu Hirakawa", "name_jp": "平河悠", "kana": "ヒラカワ・ユウ",
      "team_en": "Bristol City", "team_jp": "ブリストル・シティ",
      "league": "ELC", "match": "bristolcity"},
 ]
@@ -2258,7 +2259,8 @@ def resolve_jp_player_teams(date_str: str) -> dict:
     return jp_team_map
 
 
-def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) -> dict | None:
+def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str,
+                         game_pk: str | None = None) -> dict | None:
     """
     同じ2チームの直近の対戦成績・シリーズ内の位置づけを取得する。
     MLB Stats APIのスケジュールに含まれる seriesGameNumber/gamesInSeries を使う。
@@ -2297,7 +2299,10 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
                 if pair != {home_team_id, away_team_id}:
                     continue
 
-                if g.get("gameDate", "").startswith(date_str):
+                # 試合IDで照合する。gameDate は UTC なので、米国の夜の試合は
+                # 前日の試合が date_str に一致する（10/28 第5戦の通知に第4戦の番号が入った）。
+                if (str(g.get("gamePk")) == str(game_pk) if game_pk
+                        else g.get("gameDate", "").startswith(date_str)):
                     series_game_number = g.get("seriesGameNumber")
                     games_in_series = g.get("gamesInSeries")
 
@@ -3562,7 +3567,8 @@ def main():
             if game["league"] != "MLB":
                 continue
             series_context = fetch_series_context(
-                game["home_team_id"], game["away_team_id"], date_str
+                game["home_team_id"], game["away_team_id"], date_str,
+                game.get("game_id"),
             )
             if series_context:
                 game["series_context"] = series_context

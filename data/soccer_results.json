@@ -1,343 +1,96 @@
 {
   "schema_version": 1,
-  "date_jst": "2026-10-21",
-  "generated_at": "2026-10-22T00:43:09.620032+00:00",
+  "date_jst": "2026-10-27",
+  "generated_at": "2026-10-28T01:26:33.875868+00:00",
   "source": "ESPN・football-data.org",
   "games": [
     {
-      "id": "401915312",
-      "league": "CL",
-      "league_jp": "チャンピオンズリーグ",
-      "start_utc": "2026-10-21T19:00Z",
-      "finished_utc": "2026-10-21T20:52:16+00:00",
-      "date_jst": "2026-10-21",
+      "id": "401874780",
+      "league": "SA",
+      "league_jp": "セリエA",
+      "start_utc": "2026-10-27T19:45Z",
+      "finished_utc": "2026-10-27T21:38:07+00:00",
+      "date_jst": "2026-10-27",
       "score": {
-        "home": 2,
+        "home": 4,
         "away": 2
       },
       "players": [
         {
-          "name": "伊藤洋輝",
-          "name_en": "Hiroki Ito",
-          "club": "バイエルン",
-          "side": "home",
-          "event_id": "401915312",
-          "athlete_id": "97111",
-          "status": "none",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        }
-      ],
-      "goals": [
-        {
-          "minute": "25",
-          "scorer": "Eberechi Eze",
-          "athlete_id": "251400",
+          "name": "菅原由勢",
+          "name_en": "Yukinari Sugawara",
+          "club": "カリアリ",
           "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "35",
-          "scorer": "Alphonso Davies",
-          "athlete_id": "236721",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "61",
-          "scorer": "Harry Kane",
-          "athlete_id": "142200",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "82",
-          "scorer": "Declan Rice",
-          "athlete_id": "238262",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        }
-      ],
-      "unresolved": [],
-      "home": {
-        "id": "132",
-        "name_en": "Bayern Munich",
-        "name_jp": "バイエルン",
-        "abbr": "MUN"
-      },
-      "away": {
-        "id": "359",
-        "name_en": "Arsenal",
-        "name_jp": "アーセナル",
-        "abbr": "ARS"
-      },
-      "goals_complete": true,
-      "score_crosscheck": "unavailable"
-    },
-    {
-      "id": "401915395",
-      "league": "CL",
-      "league_jp": "チャンピオンズリーグ",
-      "start_utc": "2026-10-21T16:45Z",
-      "finished_utc": "2026-10-21T18:38:20+00:00",
-      "date_jst": "2026-10-21",
-      "score": {
-        "home": 4,
-        "away": 1
-      },
-      "players": [],
-      "goals": [
-        {
-          "minute": "2",
-          "scorer": "Nico Paz",
-          "athlete_id": "337970",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "49",
-          "scorer": "Anastasios Douvikas",
-          "athlete_id": "262071",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "57",
-          "scorer": "Nico Paz",
-          "athlete_id": "337970",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "76",
-          "scorer": "Jacobo Ramón",
-          "athlete_id": "380318",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "90+1",
-          "scorer": "Joshua Zirkzee",
-          "athlete_id": "276327",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        }
-      ],
-      "unresolved": [],
-      "home": {
-        "id": "2572",
-        "name_en": "Como",
-        "name_jp": "コモ",
-        "abbr": "COMO"
-      },
-      "away": {
-        "id": "360",
-        "name_en": "Manchester United",
-        "name_jp": "マンチェスターU",
-        "abbr": "MAN"
-      },
-      "goals_complete": true,
-      "score_crosscheck": "unavailable"
-    },
-    {
-      "id": "401915313",
-      "league": "CL",
-      "league_jp": "チャンピオンズリーグ",
-      "start_utc": "2026-10-21T19:00Z",
-      "finished_utc": "2026-10-21T20:53:41+00:00",
-      "date_jst": "2026-10-21",
-      "score": {
-        "home": 4,
-        "away": 1
-      },
-      "players": [],
-      "goals": [
-        {
-          "minute": "43",
-          "scorer": "Bernardo Silva",
-          "athlete_id": "199833",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "52",
-          "scorer": "Arda Güler",
-          "athlete_id": "310452",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "83",
-          "scorer": "Kylian Mbappé",
-          "athlete_id": "231388",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "85",
-          "scorer": "Tidiam Gomis",
-          "athlete_id": "366911",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "87",
-          "scorer": "Yan Diomande",
-          "athlete_id": "402479",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        }
-      ],
-      "unresolved": [],
-      "home": {
-        "id": "86",
-        "name_en": "Real Madrid",
-        "name_jp": "レアル・マドリード",
-        "abbr": "RMA"
-      },
-      "away": {
-        "id": "11420",
-        "name_en": "RB Leipzig",
-        "name_jp": "ライプツィヒ",
-        "abbr": "RBL"
-      },
-      "goals_complete": true,
-      "score_crosscheck": "unavailable"
-    },
-    {
-      "id": "401915390",
-      "league": "CL",
-      "league_jp": "チャンピオンズリーグ",
-      "start_utc": "2026-10-21T19:00Z",
-      "finished_utc": "2026-10-21T20:53:43+00:00",
-      "date_jst": "2026-10-21",
-      "score": {
-        "home": 1,
-        "away": 0
-      },
-      "players": [],
-      "goals": [
-        {
-          "minute": "77",
-          "scorer": "Carlos Augusto",
-          "athlete_id": "271769",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        }
-      ],
-      "unresolved": [],
-      "home": {
-        "id": "110",
-        "name_en": "Internazionale",
-        "name_jp": "インテル",
-        "abbr": "INT"
-      },
-      "away": {
-        "id": "493",
-        "name_en": "Shakhtar Donetsk",
-        "name_jp": "シャフタール",
-        "abbr": "SHK"
-      },
-      "goals_complete": true,
-      "score_crosscheck": "unavailable"
-    },
-    {
-      "id": "401915394",
-      "league": "CL",
-      "league_jp": "チャンピオンズリーグ",
-      "start_utc": "2026-10-21T19:00Z",
-      "finished_utc": "2026-10-21T20:55:37+00:00",
-      "date_jst": "2026-10-21",
-      "score": {
-        "home": 3,
-        "away": 1
-      },
-      "players": [
-        {
-          "name": "鈴木ザイオン",
-          "name_en": "Zion Suzuki",
-          "club": "アストンヴィラ",
-          "side": "home",
-          "event_id": "401915394",
-          "athlete_id": "265958",
+          "event_id": "401874780",
+          "athlete_id": "265965",
           "status": "starter",
           "goals": 0,
           "assists": 0,
           "yellow_cards": 0,
           "red_cards": 0,
           "plays": [],
-          "subbed_out": false,
+          "position": "MF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 1,
+          "on_target": 0,
+          "subbed_out": true,
+          "minutes": 90,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
           "appearance_evidence": "ESPN starter/subbedIn"
         }
       ],
       "goals": [
         {
-          "minute": "23",
-          "scorer": "Ross Barkley",
-          "athlete_id": "152469",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "37",
-          "scorer": "Emiliano Buendía",
-          "athlete_id": "214375",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "62",
-          "scorer": "Henrik Heggheim",
-          "athlete_id": "303977",
-          "side": "home",
-          "own_goal": true,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "84",
-          "scorer": "Peter Christiansen",
-          "athlete_id": "9167",
+          "minute": "10",
+          "scorer": "M'Bala Nzola",
+          "athlete_id": "261173",
           "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "15",
+          "scorer": "Emanuele Lulli",
+          "athlete_id": "409371",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "21",
+          "scorer": "Niccolò Pisilli",
+          "athlete_id": "360235",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "81",
+          "scorer": "Daniel Maldini",
+          "athlete_id": "290545",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "85",
+          "scorer": "Rodrigo Mora",
+          "athlete_id": "387204",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "87",
+          "scorer": "Donyell Malen",
+          "athlete_id": "259481",
+          "side": "home",
           "own_goal": false,
           "japanese_goal": false,
           "japanese_assists": []
@@ -345,366 +98,180 @@
       ],
       "unresolved": [],
       "home": {
-        "id": "362",
-        "name_en": "Aston Villa",
-        "name_jp": "アストンヴィラ",
-        "abbr": "AVL"
+        "id": "104",
+        "name_en": "AS Roma",
+        "name_jp": "ローマ",
+        "abbr": "ROMA"
       },
       "away": {
-        "id": "510",
-        "name_en": "Viking FK",
-        "name_jp": "バイキング",
-        "abbr": "VFK"
+        "id": "2925",
+        "name_en": "Cagliari",
+        "name_jp": "カリアリ",
+        "abbr": "CAG"
+      },
+      "match_stats": {
+        "source": "ESPN summary.boxscore.teams.statistics",
+        "home": {
+          "possession": 60.7,
+          "shots": 20,
+          "on_target": 8
+        },
+        "away": {
+          "possession": 39.3,
+          "shots": 19,
+          "on_target": 8
+        }
       },
       "goals_complete": true,
-      "score_crosscheck": "unavailable"
+      "score_crosscheck": "matched"
     }
   ],
   "players": [
     {
-      "name": "鈴木ザイオン",
-      "name_en": "Zion Suzuki",
-      "club": "アストンヴィラ",
-      "side": "home",
-      "event_id": "401915394",
-      "athlete_id": "265958",
+      "name": "菅原由勢",
+      "name_en": "Yukinari Sugawara",
+      "club": "カリアリ",
+      "side": "away",
+      "event_id": "401874780",
+      "athlete_id": "265965",
       "status": "starter",
       "goals": 0,
       "assists": 0,
       "yellow_cards": 0,
       "red_cards": 0,
       "plays": [],
-      "subbed_out": false,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "伊藤洋輝",
-      "name_en": "Hiroki Ito",
-      "club": "バイエルン",
-      "side": "home",
-      "event_id": "401915312",
-      "athlete_id": "97111",
-      "status": "none",
-      "goals": 0,
-      "assists": 0,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [],
-      "subbed_out": false,
+      "position": "MF",
+      "stats_source": "ESPN summary.rosters.roster.stats",
+      "shots": 1,
+      "on_target": 0,
+      "subbed_out": true,
+      "minutes": 90,
+      "minutes_source": "ESPN keyEvents substitution",
+      "minutes_approx": true,
       "appearance_evidence": "ESPN starter/subbedIn"
     }
   ],
   "can_make": true,
   "rejected": [
     {
-      "event_id": "401882870",
+      "event_id": "401874980",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401915396",
+      "event_id": "401874786",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401915388",
+      "event_id": "401921833",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401915389",
+      "event_id": "401921835",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401915391",
+      "event_id": "401928493",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928501",
       "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401928520",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928495",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401928521",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928549",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928509",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928534",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928508",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928510",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928553",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928502",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928488",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928547",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928503",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928522",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401928533",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401928499",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401916920",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917027",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917028",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917029",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917030",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917031",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917026",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401916923",
+      "reason": "終了実時刻なし"
     }
-  ],
-  "preview_expectation_results": {},
-  "preview_next_fixtures": [
-    {
-      "home": "FK Shakhtar Donetsk",
-      "away": "Sporting Clube de Portugal",
-      "start_utc": "2026-11-03T17:45:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Galatasaray SK",
-      "away": "VfB Stuttgart",
-      "start_utc": "2026-11-03T17:45:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Feyenoord Rotterdam",
-      "away": "FC Internazionale Milano",
-      "start_utc": "2026-11-03T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "FC Barcelona",
-      "away": "Aston Villa FC",
-      "start_utc": "2026-11-03T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Club Atlético de Madrid",
-      "away": "FC Bayern München",
-      "start_utc": "2026-11-03T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Villarreal CF",
-      "away": "Paris Saint-Germain FC",
-      "start_utc": "2026-11-03T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Manchester United FC",
-      "away": "AS Roma",
-      "start_utc": "2026-11-03T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "FK Bodø/Glimt",
-      "away": "Lille OSC",
-      "start_utc": "2026-11-03T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "LASK Linz",
-      "away": "ŠK Slovan Bratislava",
-      "start_utc": "2026-11-03T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "PAE AEK",
-      "away": "Real Madrid CF",
-      "start_utc": "2026-11-04T17:45:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Fenerbahçe SK",
-      "away": "Liverpool FC",
-      "start_utc": "2026-11-04T17:45:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "RB Leipzig",
-      "away": "Manchester City FC",
-      "start_utc": "2026-11-04T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "SK Slavia Praha",
-      "away": "Arsenal FC",
-      "start_utc": "2026-11-04T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "PSV",
-      "away": "Club Brugge KV",
-      "start_utc": "2026-11-04T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Borussia Dortmund",
-      "away": "Real Betis Balompié",
-      "start_utc": "2026-11-04T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "FC Porto",
-      "away": "SSC Napoli",
-      "start_utc": "2026-11-04T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Racing Club de Lens",
-      "away": "Como 1907",
-      "start_utc": "2026-11-04T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Viking FK",
-      "away": "Sabah FK",
-      "start_utc": "2026-11-04T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    }
-  ],
-  "preview_followup": {
-    "day": "2026-10-21",
-    "video_id": "3XOnyWk-gI0",
-    "games": [
-      {
-        "event_id": "401915312",
-        "forecast": {
-          "game_id": "575372",
-          "espn_event_id": "401915312",
-          "league": "チャンピオンズリーグ",
-          "competition_code": "CL",
-          "home": "バイエルン",
-          "away": "アーセナル",
-          "start_utc": "2026-10-22T04:00:00+09:00",
-          "reasons": [
-            {
-              "kind": "previous_season",
-              "text": "バイエルンは昨季CLリーグフェーズ2位",
-              "evidence": "reasons.quality"
-            },
-            {
-              "kind": "previous_season",
-              "text": "アーセナルは昨季CLリーグフェーズ1位",
-              "evidence": "reasons.quality"
-            }
-          ],
-          "expectation": null,
-          "spoken": "日本時間4時、バイエルン対アーセナル。昨季CLリーグフェーズでホーム側は2位、アウェー側は1位。見どころは、この順位差が今回どう表れるかです。",
-          "standings": {
-            "home": {
-              "as_of": "2026-10-21T09:53:51.869932+00:00",
-              "competition": "CL",
-              "season": null
-            },
-            "away": {
-              "as_of": "2026-10-21T09:53:51.869932+00:00",
-              "competition": "CL",
-              "season": null
-            }
-          }
-        },
-        "answer": null,
-        "rank_changes": [],
-        "next_game": {
-          "home": "Club Atlético de Madrid",
-          "away": "FC Bayern München",
-          "start_utc": "2026-11-03T20:00:00Z",
-          "source": "https://api.football-data.org/v4/competitions/CL/matches",
-          "competition": "CL"
-        }
-      },
-      {
-        "event_id": "401915395",
-        "forecast": {
-          "game_id": "575368",
-          "espn_event_id": "401915395",
-          "league": "チャンピオンズリーグ",
-          "competition_code": "CL",
-          "home": "コモ",
-          "away": "マンチェスター・ユナイテッド",
-          "start_utc": "2026-10-22T01:45:00+09:00",
-          "reasons": [],
-          "expectation": null,
-          "spoken": "日本時間1時45分、コモ対マンチェスターU。注目はチャンピオンズリーグでの、この両チームの対戦です。見どころはコモのホームで、マンチェスターUがどう戦うかです。",
-          "standings": {
-            "home": {
-              "as_of": "2026-10-21T09:53:51.869932+00:00",
-              "competition": "CL",
-              "season": null
-            },
-            "away": {
-              "as_of": "2026-10-21T09:53:51.869932+00:00",
-              "competition": "CL",
-              "season": null
-            }
-          }
-        },
-        "answer": null,
-        "rank_changes": [],
-        "next_game": {
-          "home": "Manchester United FC",
-          "away": "AS Roma",
-          "start_utc": "2026-11-03T20:00:00Z",
-          "source": "https://api.football-data.org/v4/competitions/CL/matches",
-          "competition": "CL"
-        }
-      },
-      {
-        "event_id": "401915313",
-        "forecast": {
-          "game_id": "575370",
-          "espn_event_id": "401915313",
-          "league": "チャンピオンズリーグ",
-          "competition_code": "CL",
-          "home": "レアル・マドリード",
-          "away": "ライプツィヒ",
-          "start_utc": "2026-10-22T04:00:00+09:00",
-          "reasons": [],
-          "expectation": null,
-          "spoken": "日本時間4時、レアル・マドリード対ライプツィヒ。注目はチャンピオンズリーグでの、この両チームの対戦です。見どころはレアル・マドリードのホームで、ライプツィヒがどう戦うかです。",
-          "standings": {
-            "home": {
-              "as_of": "2026-10-21T09:53:51.869932+00:00",
-              "competition": "CL",
-              "season": null
-            },
-            "away": {
-              "as_of": "2026-10-21T09:53:51.869932+00:00",
-              "competition": "CL",
-              "season": null
-            }
-          }
-        },
-        "answer": null,
-        "rank_changes": [],
-        "next_game": {
-          "home": "PAE AEK",
-          "away": "Real Madrid CF",
-          "start_utc": "2026-11-04T17:45:00Z",
-          "source": "https://api.football-data.org/v4/competitions/CL/matches",
-          "competition": "CL"
-        }
-      },
-      {
-        "event_id": "401915390",
-        "forecast": {
-          "game_id": "575371",
-          "espn_event_id": "401915390",
-          "league": "チャンピオンズリーグ",
-          "competition_code": "CL",
-          "home": "インテル",
-          "away": "シャフタール",
-          "start_utc": "2026-10-22T04:00:00+09:00",
-          "reasons": [],
-          "expectation": null,
-          "spoken": "日本時間4時、インテル対シャフタール。注目はチャンピオンズリーグでの、この両チームの対戦です。見どころはインテルのホームで、シャフタールがどう戦うかです。",
-          "standings": {
-            "home": {
-              "as_of": "2026-10-21T09:53:51.869932+00:00",
-              "competition": "CL",
-              "season": null
-            },
-            "away": {
-              "as_of": "2026-10-21T09:53:51.869932+00:00",
-              "competition": "CL",
-              "season": null
-            }
-          }
-        },
-        "answer": null,
-        "rank_changes": [],
-        "next_game": {
-          "home": "FK Shakhtar Donetsk",
-          "away": "Sporting Clube de Portugal",
-          "start_utc": "2026-11-03T17:45:00Z",
-          "source": "https://api.football-data.org/v4/competitions/CL/matches",
-          "competition": "CL"
-        }
-      }
-    ]
-  }
+  ]
 }

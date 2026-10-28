@@ -1,72 +1,28 @@
 {
-  "updated_at": "2026-10-21T06:01:58.526910+00:00",
+  "updated_at": "2026-10-28T08:18:10.236584+00:00",
   "sources": [
-    {
-      "name": "r/baseball",
-      "items": 26
-    },
     {
       "name": "MLB公式",
       "items": 25
     }
   ],
-  "titles_count": 51,
+  "titles_count": 25,
   "teams": [
-    {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 16,
-      "tone": "好調",
-      "gist": "ペラルタとブリュワーズがWS進出"
-    },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 14,
+      "mentions": 10,
       "tone": "好調",
-      "gist": "ペラルタMVPでレイズがWS進出"
+      "gist": "レイズ、延長12回サヨナラでGame 5へ"
     },
     {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 4,
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 3,
       "tone": "不振",
-      "gist": "レイズにALCS敗退、オフが焦点"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ペラルタのメッツ時代は失敗"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "昨年スプリンガー弾でWS進出"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ドンブロウスキー、外野補強を模索"
-    },
-    {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "アリゾナ秋季リーグの有望株"
+      "gist": "ブリュワーズ、失策で敗戦もミズに期待"
     },
     {
       "team_id": "136",
@@ -74,7 +30,23 @@
       "name_en": "Seattle Mariners",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブリュワーズ初年度はシアトル"
+      "gist": "マリナーズ、監督候補エスパダらと面接"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "フィリーズ、ファッツィを打撃コーチに採用"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ヤンキースのシュリトラー、サイ・ヤング賞確実視"
     }
   ],
   "players": []

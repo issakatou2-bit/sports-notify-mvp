@@ -1,0 +1,39 @@
+name: 公開コメントから動画の候補（既定オフ）
+on:
+  schedule:
+    - cron: '23 22 * * *' # 毎朝7:23 JST
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: comment-seeds-collector
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: vars.COLLESPO_COMMENT_SEEDS == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read public comments and make anonymous seeds
+        env:
+          COLLESPO_COMMENT_SEEDS: ${{ vars.COLLESPO_COMMENT_SEEDS || 'off' }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        # 通常10頁。権限・引数エラー時は直近7日の最大50動画×2頁へ切替。
+        # commentThreads.list / videos.list 各1単位、既定の最大見込み112単位。
+        run: python scripts/comment_seeds.py --out data/comment_seeds.json --max-pages 10 --max-videos 50 --video-pages 2
+      - name: Save candidate list or fetch failure
+        if: always()
+        run: |
+          bash scripts/commit_data.sh "comment seeds: ${{ github.run_id }}" data/comment_seeds.json
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: build/data-save-recovery/
+          retention-days: 14
+          if-no-files-found: error

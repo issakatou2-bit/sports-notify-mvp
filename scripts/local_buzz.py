@@ -109,9 +109,21 @@ def fetch_titles(name: str, url: str, retries: int = 2) -> list:
             print(f"[warn] {name} の取得に失敗しました: {e}", file=sys.stderr)
             return []
     # Atom(Reddit)とRSS2.0(MLB/ESPN)の両方に対応する
-    titles = [e.text.strip() for e in root.iter()
-              if e.tag.endswith("title") and e.text and e.text.strip()]
-    return titles[1:]   # 先頭はフィード自体の名前
+    from article_freshness import fresh_articles
+    from local_reporters import article_publications
+    rows = []
+    for item in root.iter():
+        if item.tag.rsplit('}', 1)[-1] not in ('item', 'entry'):
+            continue
+        fields = {e.tag.rsplit('}', 1)[-1]: e for e in item}
+        def value(key):
+            return fields[key].text or '' if key in fields else ''
+        link = fields.get('link')
+        url = (link.get('href') or link.text or '') if link is not None else ''
+        row = dict(title=value('title').strip(), url=url, source=name,
+                   at=value('pubDate') or value('published'))
+        rows.append(row)
+    return [row['title'] for row in fresh_articles(article_publications(rows)) if row['title']]
 
 
 def count_mentions(text: str) -> tuple:

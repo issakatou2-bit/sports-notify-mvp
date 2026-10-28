@@ -14,9 +14,10 @@ import time
 
 import ui_voice_queue as q
 import ui_voice_parts as parts_crypto
+import asset_policy
 
 POLICY = (
-    ('資産動画（球団・歴史・殿堂など）', '採用。v3のめたんソロ、次の試合に依存しないもの'),
+    ('資産動画（歴史・殿堂など）', '採用。v3のめたんソロ、次の試合に依存しないもの'),
     ('終了済みシーズンまとめ', '採用。現行のseason_topicsが終了判定したもの'),
     ('選手のいまの流れ', '除外。player_story.validateの公開条件が当日原稿'),
     ('試合直後・PS情勢・予告・現地の声・報道', '除外。試合開始や新しい発言で古くなる'),
@@ -24,7 +25,7 @@ POLICY = (
 
 
 def eligible(topic, spec):
-    return (spec.get('style') == 'v3' and not any(spec.get(k) for k in
+    return (not asset_policy.paused(topic) and spec.get('style') == 'v3' and not any(spec.get(k) for k in
             ('game', 'story', 'spotlight', 'odds', 'momentum', 'next_line', 'next_game'))
             and not topic.startswith(('soccer_', 'ps_')))
 
@@ -71,6 +72,7 @@ def take(queue, key):
             raise parts_crypto.PortraitUnavailable('雨衣の共用部品がありません')
         bundle[ref] = files[ref]
         order['status'] = 'used'
+        order['used_at'] = q.now().isoformat()
         return copy.deepcopy(order), bundle
     return queue.update(change)
 
@@ -116,7 +118,7 @@ def install(order, bundle, out, narration):
 
 
 def fulfill(narration, npath, out, queue=None):
-    """在庫対象は待たず在庫だけ、それ以外は既定15分待つ。失敗はその回のめたんへ。"""
+    """完成在庫を先に使い、それ以外は受付直後に注文。未着は理由を返して停止。"""
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     resolution = None
@@ -146,12 +148,14 @@ def fulfill(narration, npath, out, queue=None):
             else:
                 resolution = None
             if not resolution:
-                print('[info] 雨衣の在庫がないためめたん')
-                return None
-        else:
-            minutes = float(os.getenv('COLLESPO_UI_VOICE_WAIT_MINUTES') or '15')
-            if not 0 <= minutes <= 60:
-                raise q.QueueError('声の締め切りは0〜60分です')
+                # 在庫切れを理由に声を変更しない。利用可能時間なら通常注文へ。
+                pass
+        if not resolution:
+            import ui_voice_policy as policy
+            minutes = policy.wait_minutes()
+            reason = policy.window_reason(minutes=minutes)
+            if reason:
+                raise policy.VoiceUnavailable(reason)
             order = q.enqueue(queue, q.make_order(narration, Path(npath).stem, minutes))
             while q.now() < q.stamp(order['deadline']):
                 _, state, _ = queue.read()
@@ -162,13 +166,12 @@ def fulfill(narration, npath, out, queue=None):
                         resolution = install(*payload, out, narration)
                         break
                 if saved.get('status') in ('used', 'discarded', 'expired'):
-                    break
+                    raise policy.VoiceUnavailable('ui_order_'+saved['status'])
                 time.sleep(min(20, max(0, (q.stamp(order['deadline'])-q.now()).total_seconds())))
             else:
                 q.terminal(queue, order['id'], 'expired')
             if not resolution:
-                print('[warn] 雨衣の声が間に合わずめたん')
-                return None
+                raise policy.VoiceUnavailable('ui_delivery_timeout')
         narration['voice_resolution'] = resolution
         Path(npath).write_bytes(q.encoded(narration))
         manifest = out/'manifest.json'
@@ -177,14 +180,13 @@ def fulfill(narration, npath, out, queue=None):
         manifest.write_bytes(q.encoded(saved))
         return resolution
     except parts_crypto.PortraitUnavailable:
-        narration['voice_resolution'] = dict(host='metan', reason='ui_portrait_unavailable')
-        print('[warn] 予定=雨衣・実際=めたん・理由=立ち絵なし')
-        return None
-    except Exception:
-        # 外部キュー・メディアの検査失敗を含め、この回のVOICEVOXに必ず戻す。
-        # 固有名詞の検査は呼出元がこの処理より前に実行している。
-        print('[warn] 雨衣の声が間に合わずめたん（注文・受取を完了できませんでした）')
-        return None
+        from ui_voice_policy import VoiceUnavailable
+        raise VoiceUnavailable('ui_portrait_unavailable') from None
+    except Exception as exc:
+        from ui_voice_policy import VoiceUnavailable
+        if isinstance(exc, VoiceUnavailable):
+            raise
+        raise VoiceUnavailable('ui_queue_or_payload_failed') from None
 
 
 def prioritize(topics):
@@ -228,6 +230,11 @@ def prepare(count):
         parts_crypto.key()
     except q.QueueError:
         print('[warn] 雨衣の部品鍵がないため在庫注文を作りません')
+        return
+    import ui_voice_policy as policy
+    reason = policy.window_reason(minutes=15)
+    if reason:
+        print('::warning::雨衣の在庫注文を見送り: '+reason)
         return
     queue = q.GitQueue()
     _, state, _ = queue.read()

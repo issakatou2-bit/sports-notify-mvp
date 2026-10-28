@@ -1,0 +1,94 @@
+name: 日本人選手の得点・アシスト速報
+on:
+  schedule:
+    - cron: '17,47 * * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: soccer-flash
+  cancel-in-progress: false
+env:
+  COLLESPO_SOCCER_GOAL_SHORT: ${{ vars.COLLESPO_SOCCER_GOAL_SHORT || 'off' }}
+  COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v5' }}
+  COLLESPO_SHORT_LOOK: v4
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+jobs:
+  build:
+    if: vars.COLLESPO_SOCCER_GOAL_SHORT == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh shared match publication ledger
+        run: python scripts/soccer_publications.py --sync
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg pyyaml
+      - name: Find completed matches with a Japanese goal or assist
+        id: plan
+        run: python scripts/soccer_goal_short.py --plan | tail -1 >> "$GITHUB_OUTPUT"
+      - name: Install video tools
+        if: steps.plan.outputs.go == '1'
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX
+        if: steps.plan.outputs.go == '1'
+        run: |
+          docker run -d --rm -p 50021:50021 voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Build and publish one short per match
+        if: steps.plan.outputs.go == '1'
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/soccer_goal_short.py --out build/soccer-goal-short
+      - name: Keep review material
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-goal-short-${{ github.run_id }}
+          path: |
+            build/soccer-goal-short/
+            !build/**/portrait/**
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore

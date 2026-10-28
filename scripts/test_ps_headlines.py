@@ -82,12 +82,16 @@ class Headlines(unittest.TestCase):
     def test_freshness_boundary_and_missing_future_end(self):
         f = material()
         end = ps.finished_at(f)
-        for age, count in ((timedelta(hours=30), 1), (timedelta(hours=30, seconds=1), 0),
-                           (timedelta(seconds=-1), 0)):
-            with self.subTest(age=age):
-                self.assertEqual(len(ps.build([GAME], {GAME["gamePk"]: f}, {}, [], now=end+age)), count)
-        f["liveData"]["plays"]["allPlays"][-1]["about"].pop("endTime")
-        self.assertEqual(ps.build([GAME], {GAME["gamePk"]: f}, {}, [], now=NOW), [])
+        # ここは鮮度の境界を検査する。本文の名前辞書からの追加取得は別の試験対象。
+        # 本文と見出しの照合は、他の検査が明示したKANAで既存のstoryを通す。
+        with patch.object(ps, 'story', return_value={'jp_first': True}), \
+             patch.object(ps.ps_v3_cover, 'apply', side_effect=lambda topic, rows: topic):
+            for age, count in ((timedelta(hours=30), 1), (timedelta(hours=30, seconds=1), 0),
+                               (timedelta(seconds=-1), 0)):
+                with self.subTest(age=age):
+                    self.assertEqual(len(ps.build([GAME], {GAME["gamePk"]: f}, {}, [], now=end+age)), count)
+            f["liveData"]["plays"]["allPlays"][-1]["about"].pop("endTime")
+            self.assertEqual(ps.build([GAME], {GAME["gamePk"]: f}, {}, [], now=NOW), [])
 
     def test_failure_replaces_old_topics_and_returns_failure(self):
         with tempfile.TemporaryDirectory() as d:

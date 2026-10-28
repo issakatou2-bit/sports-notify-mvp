@@ -15,7 +15,10 @@
 """
 
 import pathlib
+import json
 import sys
+from datetime import date
+from unittest.mock import patch
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -124,7 +127,7 @@ hasnt("進行中を「終わった」と書かない", sf2, "第5節終了時点
 has("進行中と分かるように書く", sf2, "第6節は進行中")
 has("札は進行中でも短いまま", nm.panels(mix)["soccer"]["head"], "第5節")
 
-section("実データ")
+section("固定の成績材料")
 # **その日の中身は検査しない。**
 #
 # 「選手が並ぶ」「話せる材料がある」を求めていたら、9/20に落ちた。
@@ -132,14 +135,16 @@ section("実データ")
 # **コードが何も変わっていないのに日が変わって赤くなる検査**は、
 # 9/15に別の場所でも直したばかりの型（test_soccer_rules）。
 #
-# ここで見たいのは「実データを通しても壊れないか」であって、
-# その日に選手が何人いたかではない。
-real = nm.load(str(HERE.parent / "data"))
-check("実データで落ちない", isinstance(real, dict), True)
+# 当日のdataを読むと出場者次第で追加のAPI取得も走る。
+# 保存した架空の成績と固定日付で、材料から事実・札まで通す。
+_fixed = json.loads((HERE / 'fixtures/fact-guards/longform_fixed.json').read_text(encoding='utf-8'))
+with patch.object(nm, '_read', side_effect=lambda p: _fixed.get(pathlib.Path(p).name, {})), \
+     patch('milestones.best_for', return_value={}), patch('insight.player', return_value=[]):
+    real = nm.load('fixture', today=date(2026, 10, 22))
+check("固定の材料で落ちない", isinstance(real, dict), True)
+check("作り物の投手を実際に読み込む", [r['name'] for r in real['players']], ['試験投手'])
 check("人数を絞る", len(real["players"]) <= nm.MAX_PLAYERS, True)
 check("材料の有無を答えられる", isinstance(nm.has_enough(real), bool), True)
-if not real["players"]:
-    print("    （きょうは出場した選手がいないので、中身の検査は飛ばします）")
 text = nm.facts(real)
 # 禁じたいのは「圏内まで+1.5」という**符号付きの曖昧な形**。
 # 9/15にこう書いて、圏内なのか圏内を目指しているのか読めなかった。
@@ -149,9 +154,9 @@ hasnt("圏内まで＋符号、という書き方をしない", text, "圏内ま
 hasnt("圏内で＋符号も書かない", text, "圏内で+")
 for row in real["rare"]:
     check("同率を拾わない（%s）" % row["stat"], "タイ" in row["rank"], False)
-# 実データに同率が無い日もあるので、作り物でも押さえておく。
+# 固定材料には同率の指標を明示的に含めてある。
 check("ties>1 は出さない",
-      [r for r in nm.load(str(HERE / "no-such-dir"))["rare"]], [])
+      real["rare"], [])
 panels = nm.panels(real)
 check("札に締めがある", "topic" in panels, True)
 for key, panel in panels.items():

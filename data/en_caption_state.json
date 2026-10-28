@@ -139,6 +139,132 @@
       "video_id": "",
       "status": "video_missing",
       "units": 0
+    },
+    {
+      "at": "2026-10-22T10:00:01.933605+00:00",
+      "day": "2026-10-22",
+      "video_id": "",
+      "status": "video_missing",
+      "units": 0
+    },
+    {
+      "at": "2026-10-24T04:25:51.591477+00:00",
+      "day": "2026-10-24",
+      "video_id": "Mq8KO8H3Xbc",
+      "status": "list_reserved",
+      "units": 50
+    },
+    {
+      "at": "2026-10-24T04:25:57.657822+00:00",
+      "day": "2026-10-24",
+      "video_id": "Mq8KO8H3Xbc",
+      "status": "translation_names",
+      "units": 0
+    },
+    {
+      "at": "2026-10-24T10:05:14.316602+00:00",
+      "day": "2026-10-24",
+      "video_id": "wHPKEFaRvps",
+      "status": "list_reserved",
+      "units": 50
+    },
+    {
+      "at": "2026-10-24T10:05:18.417787+00:00",
+      "day": "2026-10-24",
+      "video_id": "wHPKEFaRvps",
+      "status": "translation_numbers",
+      "units": 0
+    },
+    {
+      "at": "2026-10-25T04:40:03.540257+00:00",
+      "day": "2026-10-25",
+      "video_id": "U6_YLrfbIvk",
+      "status": "list_reserved",
+      "units": 50
+    },
+    {
+      "at": "2026-10-25T04:40:08.569012+00:00",
+      "day": "2026-10-25",
+      "video_id": "U6_YLrfbIvk",
+      "status": "translation_numbers",
+      "units": 0
+    },
+    {
+      "at": "2026-10-25T10:00:01.417932+00:00",
+      "day": "2026-10-25",
+      "video_id": "",
+      "status": "video_missing",
+      "units": 0
+    },
+    {
+      "at": "2026-10-26T10:05:02.103902+00:00",
+      "day": "2026-10-26",
+      "video_id": "6i973MO7epU",
+      "status": "list_reserved",
+      "units": 50
+    },
+    {
+      "at": "2026-10-26T10:05:06.294304+00:00",
+      "day": "2026-10-26",
+      "video_id": "6i973MO7epU",
+      "status": "translation_numbers",
+      "units": 0
+    },
+    {
+      "at": "2026-10-27T04:10:53.582877+00:00",
+      "day": "2026-10-27",
+      "video_id": "nn6eGTOqQs4",
+      "status": "list_reserved",
+      "units": 50
+    },
+    {
+      "at": "2026-10-27T04:10:53.777588+00:00",
+      "day": "2026-10-27",
+      "video_id": "nn6eGTOqQs4",
+      "status": "forbidden_check_scope_or_quota",
+      "units": 0
+    },
+    {
+      "at": "2026-10-27T10:01:40.916772+00:00",
+      "day": "2026-10-27",
+      "video_id": "Ukdm6T1zcFU",
+      "status": "list_reserved",
+      "units": 50
+    },
+    {
+      "at": "2026-10-27T10:01:48.250206+00:00",
+      "day": "2026-10-27",
+      "video_id": "Ukdm6T1zcFU",
+      "status": "translation_numbers",
+      "units": 0
+    },
+    {
+      "at": "2026-10-28T05:30:26.774077+00:00",
+      "day": "2026-10-28",
+      "video_id": "3kJyLT3IoSc",
+      "status": "list_reserved",
+      "units": 50
+    },
+    {
+      "at": "2026-10-28T05:30:27.131059+00:00",
+      "day": "2026-10-28",
+      "video_id": "3kJyLT3IoSc",
+      "status": "forbidden_check_scope_or_quota",
+      "units": 0
+    },
+    {
+      "at": "2026-10-28T10:06:31.352858+00:00",
+      "day": "2026-10-28",
+      "video_id": "p9GYdKlKTOA",
+      "status": "list_reserved",
+      "units": 50
+    },
+    {
+      "at": "2026-10-28T10:06:32.686373+00:00",
+      "day": "2026-10-28",
+      "video_id": "p9GYdKlKTOA",
+      "status": "translation_budget",
+      "units": 0
     }
   ]
 }

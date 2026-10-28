@@ -18,6 +18,10 @@
   }
   apply();
   media.addEventListener('change', apply);
+  window.addEventListener('pageshow', () => {
+    try { preference = normalize(localStorage.getItem(key)); } catch (_) { /* Keep the in-page choice. */ }
+    apply();
+  });
   window.addEventListener('storage', event => {
     if (event.key !== key && event.key !== null) return;
     preference = normalize(event.newValue);

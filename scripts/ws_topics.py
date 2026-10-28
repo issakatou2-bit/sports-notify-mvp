@@ -14,6 +14,11 @@
   2. 日程と本拠地（key: ws_schedule）
      第1戦の本拠地、2-3-2の並び、各戦の日本時間の日付・曜日・時刻、先に4勝で優勝。
      本拠地の理由は、レギュラーシーズンの勝率で裏付けられるときだけ書く。
+  3. 今季PSの両球団それぞれの本塁打・打点・打率・奪三振・防御率の上位。
+     打率は既定20打席以上、防御率は既定5回以上。各上位3人と境界の同順位。
+     確定試合のboxscoreを合算し、率も打数・安打・自責点・アウト数から計算する。
+  4. 今季PSで継続中の連続試合安打・本塁打、今季レギュラーシーズンの直接対決、
+     既存の日本人選手名簿と公式の出場者・登録選手を照合したPS成績。
 
 過去の優勝は、1903年から昨季までのポストシーズン日程（gameType W）の最終結果から
 求める。移転・改名した球団も、APIが返す今の球団idで数える。build/ にキャッシュする。
@@ -28,6 +33,8 @@ import argparse
 import json
 import pathlib
 import sys
+from decimal import Decimal, ROUND_HALF_UP
+from fractions import Fraction
 from datetime import datetime, timedelta, timezone
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -43,6 +50,9 @@ FIRST_WS = 1903
 DEFAULT_CACHE = ROOT / "build" / "ws_history_cache.json"
 JST = timezone(timedelta(hours=9))
 WEEKDAYS = "月火水木金土日"
+PS_TYPES = "F,D,L,W"
+MIN_PA = 20
+MIN_OUTS = 15  # 5回。投球回の小数部分は十進数ではなくアウト数。
 
 
 def _get(path: str, **params) -> dict:
@@ -73,8 +83,15 @@ def venue_jp(name_en: str) -> str:
 # ---------------------------------------------------------------- API
 
 def games_of(schedule: dict) -> list:
-    return [g for day in (schedule or {}).get("dates") or []
-            for g in day.get("games") or []]
+    # dates=[] は試合なし。dates欠落は取得した日程として扱えない。
+    if not isinstance(schedule, dict) or not isinstance(schedule.get('dates'), list):
+        raise ValueError('日程の一覧が欠測')
+    games = []
+    for day in schedule['dates']:
+        if not isinstance(day, dict) or not isinstance(day.get('games'), list):
+            raise ValueError('日付ごとの試合一覧が欠測')
+        games.extend(day['games'])
+    return games
 
 
 def ws_games(season: int, get=_get) -> list:
@@ -304,7 +321,6 @@ def title_history_topic(season: int, pair: tuple, history: list, names: dict,
     apps = {tid: appearances(history, tid) for tid in pair}
     states = {tid: title_state(apps[tid]) for tid in pair}
     gaps = {tid: _gap_text(apps[tid], season) for tid in pair}
-    first = {tid: int(first_years.get(tid) or 0) for tid in pair}
     titles = {tid: states[tid]["titles"] for tid in pair}
     lasts = {tid: (apps[tid][-1]["season"] if apps[tid] else None) for tid in pair}
 
@@ -374,7 +390,6 @@ def title_history_topic(season: int, pair: tuple, history: list, names: dict,
         "story": True,
         "ws": True,
         "ps_ended": False,
-        "ws": True,
         "season": season,
     }
 
@@ -535,14 +550,211 @@ def schedule_topic(season: int, games: list, names: dict,
         "story": True,
         "ws": True,
         "ps_ended": False,
-        "ws": True,
         "season": season,
     }
 
 
+# ---------------------------------------------------------------- 今季の注目選手・記録
+
+def final_games(rows: list, types: str) -> list:
+    """確定試合だけを日付順に。同じgamePkの再開・重複行は1試合。"""
+    unique = {g["gamePk"]: g for g in rows
+              if g.get("gamePk") and g.get("gameType") in types.split(",")
+              and (g.get("status") or {}).get("abstractGameState") == "Final"}
+    return sorted(unique.values(), key=lambda g: (g.get("officialDate") or
+                                                 g.get("gameDate") or "",
+                                                 g.get("gameDate") or "", g["gamePk"]))
+
+
+def innings_outs(value: str) -> int:
+    whole, dot, part = str(value).partition(".")
+    if not whole.isdigit() or (dot and part not in ("0", "1", "2")):
+        raise ValueError("投球回の表記が不正")
+    return int(whole) * 3 + (int(part) if dot else 0)
+
+
+def innings_text(outs: int) -> str:
+    return str(outs // 3) + (f"回{outs % 3}/3" if outs % 3 else "回")
+
+
+def rate_text(num: int, den: int, places: int) -> str:
+    if not den:
+        return "—"
+    value = (Decimal(num) / Decimal(den)).quantize(
+        Decimal(10) ** -places, rounding=ROUND_HALF_UP)
+    return format(value, f".{places}f").removeprefix("0") if places == 3 else format(value, f".{places}f")
+
+
+def player_name(name: str) -> str:
+    import notability_engine as ne
+    jp = next((p["name_jp"] for p in ne.JP_PLAYERS_MLB if p["name_en"] == name), None)
+    return jp or ne.MLB_NAME_READINGS.get(name) or ne.MLB_NAME_READINGS.get(name.rsplit(" ", 1)[-1]) or name
+
+
+def postseason_players(season: int, pair: tuple, get=_get) -> tuple:
+    """両球団の今季PS全確定試合のboxscoreを合算。欠測は例外にして部分順位を防ぐ。"""
+    games = []
+    for tid in pair:
+        games.extend(games_of(get("/schedule", sportId=1, teamId=tid,
+                                  gameType=PS_TYPES, season=season)))
+    games = final_games(games, PS_TYPES)
+    players, counts = {}, {tid: 0 for tid in pair}
+    for g in games:
+        box = get(f"/game/{g['gamePk']}/boxscore")
+        for side in ("away", "home"):
+            tid = g["teams"][side]["team"]["id"]
+            if tid not in pair:
+                continue
+            team = box["teams"][side]
+            if team["team"]["id"] != tid:
+                raise ValueError("boxscoreの球団が不一致")
+            if not isinstance(team.get('players'), dict) or not team['players']:
+                raise ValueError('確定試合の選手成績一覧が欠測')
+            counts[tid] += 1
+            for p in team["players"].values():
+                person, stats = p["person"], p.get("stats") or {}
+                key = (tid, person["id"])
+                row = players.setdefault(key, dict(team=tid, id=person["id"],
+                    name=person["fullName"], pa=0, ab=0, hits=0, hr=0, rbi=0,
+                    outs=0, er=0, so=0, pitching_games=0, batting=[]))
+                bat, pitch = stats.get("batting") or {}, stats.get("pitching") or {}
+                if bat and int(bat["plateAppearances"]) > 0:
+                    for dest, src in (("pa", "plateAppearances"), ("ab", "atBats"),
+                                      ("hits", "hits"), ("hr", "homeRuns"), ("rbi", "rbi")):
+                        row[dest] += int(bat[src])
+                    row["batting"].append(dict(hits=int(bat["hits"]), hr=int(bat["homeRuns"]),
+                        ab=int(bat["atBats"]), sf=int(bat.get("sacFlies") or 0)))
+                if pitch:
+                    row["outs"] += innings_outs(pitch["inningsPitched"])
+                    row["er"] += int(pitch["earnedRuns"])
+                    row["so"] += int(pitch["strikeOuts"])
+                    row["pitching_games"] += 1
+    return list(players.values()), counts
+
+
+def current_streak(batting: list, field: str) -> int:
+    """今季PSの出場試合を末尾から数える。安打は四球・犠打だけの試合で途切れない。"""
+    count = 0
+    for row in reversed(batting):
+        if row[field] > 0:
+            count += 1
+        elif field == "hits" and row["ab"] == 0 and row["sf"] == 0:
+            continue
+        else:
+            break
+    return count
+
+
+def watch_topic(key: str, heading: str, season: int, pair: tuple, names: dict,
+                items: list, scope: str) -> dict:
+    return dict(key="ws_" + key, hook=heading, heading=heading, intro=scope,
+                items=items, title=f"【MLB】{heading} #Shorts", label=heading,
+                intro_as_is=True, japanese=[], story=True, ws=True, ps_ended=False,
+                season=season, team_id=pair[1],
+                source="MLB Stats API", scope=scope)
+
+
+def player_topics(season: int, pair: tuple, names: dict, players: list, counts: dict,
+                  min_pa: int = MIN_PA, min_outs: int = MIN_OUTS, top: int = 3) -> list:
+    """各球団の上位。境界の同順位を含め、率の比較には丸め前の分数を使う。"""
+    scope = (f"{season}年ポストシーズンの確定試合。" +
+             "、".join(f"{names[t]}{counts[t]}試合" for t in pair) + "が対象です。")
+    topics = []
+    metrics = [
+        ("ps_home_runs", "本塁打", lambda p: p["hr"], lambda p: p["pa"] > 0,
+         lambda p: f"{p['hr']}本塁打", False, ""),
+        ("ps_rbi", "打点", lambda p: p["rbi"], lambda p: p["pa"] > 0,
+         lambda p: f"{p['rbi']}打点", False, ""),
+        ("ps_average", "打率", lambda p: Fraction(p["hits"], p["ab"]),
+         lambda p: p["pa"] >= min_pa and p["ab"] > 0,
+         lambda p: f"打率{rate_text(p['hits'], p['ab'], 3)}（{p['pa']}打席・{p['ab']}打数{p['hits']}安打）",
+         False, f"対象は{min_pa}打席以上です。"),
+        ("ps_strikeouts", "奪三振", lambda p: p["so"], lambda p: p["pitching_games"] > 0,
+         lambda p: f"{p['so']}奪三振", False, ""),
+        ("ps_era", "防御率", lambda p: Fraction(p["er"] * 27, p["outs"]),
+         lambda p: p["outs"] >= min_outs and p["outs"] > 0,
+         lambda p: f"防御率{rate_text(p['er'] * 27, p['outs'], 2)}（{innings_text(p['outs'])}・自責点{p['er']}）",
+         True, f"対象は{innings_text(min_outs)}以上です。"),
+    ]
+    for key, label, score, eligible, display, ascending, rule in metrics:
+        items = []
+        for tid in pair:
+            rows = sorted((p for p in players if p["team"] == tid and eligible(p)),
+                          key=lambda p: (score(p) if ascending else -score(p), p["id"]))
+            cutoff = score(rows[min(top, len(rows)) - 1]) if rows else None
+            selected = [p for i, p in enumerate(rows)
+                        if i < top or score(p) == cutoff]
+            items.extend((f"{names[tid]}　{player_name(p['name'])}", display(p)) for p in selected)
+            if not selected:
+                items.append((names[tid], "対象選手なし"))
+        topics.append(watch_topic(key, f"WS両球団の今季PS{label}上位", season,
+                                  pair, names, items, scope + rule))
+    for field, label in (("hits", "安打"), ("hr", "本塁打")):
+        rows = [(p, current_streak(p["batting"], field)) for p in players]
+        rows = sorted(((p, n) for p, n in rows if n >= 2), key=lambda x: (-x[1], x[0]["id"]))
+        if rows:
+            topics.append(watch_topic(f"ps_{field}_streak", f"今季PSで継続中の連続試合{label}",
+                season, pair, names,
+                [(f"{names[p['team']]}　{player_name(p['name'])}", f"{n}試合連続{label}") for p, n in rows],
+                scope + "選手自身の出場試合が対象です。" +
+                ("安打は四球・死球・犠打のみの試合を挟んでも継続し、その試合は数えません。" if field == "hits" else "")))
+    return topics
+
+
+def head_to_head_topic(season: int, pair: tuple, names: dict, get=_get) -> dict:
+    a, b = pair
+    rows = final_games(games_of(get("/schedule", sportId=1, teamId=a,
+                                    opponentId=b, gameType="R", season=season)), "R")
+    wins = {a: 0, b: 0}
+    ties = 0
+    for g in rows:
+        teams = g["teams"]
+        if {teams[s]["team"]["id"] for s in ("away", "home")} != set(pair):
+            raise ValueError("対戦カードが不一致")
+        aw, hw = (teams[s].get("score") for s in ("away", "home"))
+        if aw is None or hw is None:
+            raise ValueError("確定スコアが欠測")
+        if aw == hw:
+            ties += 1
+        else:
+            wins[teams["away" if aw > hw else "home"]["team"]["id"]] += 1
+    items = [(names[t], f"{wins[t]}勝{wins[b if t == a else a]}敗") for t in pair]
+    if ties:
+        items.append(("引き分け", f"{ties}試合"))
+    return watch_topic("season_matchup", "WS両球団の今季の直接対決", season, pair, names,
+                       items, f"{season}年レギュラーシーズンの直接対決{len(rows)}試合の確定結果です。")
+
+
+def japanese_topic(season: int, pair: tuple, names: dict, players: list, get=_get):
+    import notability_engine as ne
+    registry = {p["name_en"]: p["name_jp"] for p in ne.JP_PLAYERS_MLB}
+    # PS出場者と、現時点の登録選手（PS未出場を含む）を合わせる。
+    people = {(p["team"], p["id"]): p["name"] for p in players if p["name"] in registry}
+    for tid in pair:
+        for entry in get(f"/teams/{tid}/roster", rosterType="active", season=season)["roster"]:
+            p = entry["person"]
+            if p["fullName"] in registry:
+                people[(tid, p["id"])] = p["fullName"]
+    by_id = {(p["team"], p["id"]): p for p in players}
+    items = []
+    for key, name in sorted(people.items()):
+        p = by_id.get(key)
+        lines = []
+        if p and p["pa"]:
+            lines.append(f"{p['pa']}打席・{p['ab']}打数{p['hits']}安打・打率{rate_text(p['hits'], p['ab'], 3)}・{p['hr']}本塁打・{p['rbi']}打点")
+        if p and p["pitching_games"]:
+            lines.append(f"{p['pitching_games']}登板・{innings_text(p['outs'])}・{p['so']}奪三振・自責点{p['er']}・防御率{rate_text(p['er'] * 27, p['outs'], 2)}")
+        items.append((f"{names[key[0]]}　{registry[name]}", "／".join(lines) or "今季PSの打席・登板なし"))
+    if items:
+        return watch_topic("japanese_players", "WS両球団の日本人選手の今季PS成績", season,
+                           pair, names, items, f"{season}年PS確定試合の成績です。日本人選手は既存名簿と公式の出場者・登録選手を照合しています。")
+    return None
+
+
 # ---------------------------------------------------------------- 組み立て
 
-def build_topics(season: int, get=_get, cache_path=DEFAULT_CACHE) -> list:
+def build_topics(season: int, get=_get, cache_path=DEFAULT_CACHE,
+                 min_pa: int = MIN_PA, min_outs: int = MIN_OUTS, top: int = 3) -> list:
     """その年のワールドシリーズの材料。日程が無ければ []。"""
     try:
         games = ws_games(season, get)
@@ -592,6 +804,22 @@ def build_topics(season: int, get=_get, cache_path=DEFAULT_CACHE) -> list:
         print("[warn] 過去のワールドシリーズが揃わないため、球団史の話題は作りません",
               file=sys.stderr)
     topics.append(schedule_topic(season, games, names, records))
+    try:
+        players, counts = postseason_players(season, pair, get)
+        if all(counts.values()):
+            topics.extend(player_topics(season, pair, names, players, counts, min_pa, min_outs, top))
+            try:
+                japanese = japanese_topic(season, pair, names, players, get)
+                if japanese:
+                    topics.append(japanese)
+            except Exception:  # 部分的な名簿で「日本人なし」と結論しない
+                print("[warn] 日本人選手の登録情報が欠測。該当話題を省略", file=sys.stderr)
+    except Exception:
+        print("[warn] 今季PSの成績が欠測。選手順位・連続記録を省略", file=sys.stderr)
+    try:
+        topics.append(head_to_head_topic(season, pair, names, get))
+    except Exception:
+        print("[warn] 今季の直接対決が欠測。該当話題を省略", file=sys.stderr)
     return topics
 
 
@@ -600,13 +828,20 @@ def main() -> int:
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--season", type=int, default=None)
     ap.add_argument("--cache", default=str(DEFAULT_CACHE))
+    ap.add_argument("--min-pa", type=int, default=MIN_PA)
+    ap.add_argument("--min-ip", default="5.0", help="防御率対象の最少投球回。例: 5.1")
+    ap.add_argument("--top", type=int, default=3)
     args = ap.parse_args()
+    min_outs = innings_outs(args.min_ip)
+    if args.min_pa < 1 or min_outs < 1 or args.top < 1:
+        ap.error("打席・投球回・順位数は正数が必要です")
     now = datetime.now(timezone.utc)
     season = args.season or now.year
-    topics = build_topics(season, cache_path=args.cache or None)
+    topics = build_topics(season, cache_path=args.cache or None,
+                          min_pa=args.min_pa, min_outs=min_outs, top=args.top)
     pathlib.Path(args.out).write_text(json.dumps(
         {"updated_at": now.isoformat(),
-         "source": "MLB Stats API（球団情報・過去のワールドシリーズの試合結果・順位表）",
+         "source": "MLB Stats API（球団情報・試合結果・順位表・今季PSのboxscore・登録選手）",
          "topics": topics}, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[info] {len(topics)}件 -> {args.out}")
     for t in topics:

@@ -1,0 +1,602 @@
+{
+  "label": "2026-09-19",
+  "segments": [
+    {
+      "kind": "followup",
+      "text": "トッテナム対アストンヴィラは、2対3。",
+      "speaker": 2,
+      "caption_units": [
+        "トッテナム対アストンヴィラは、2対3。"
+      ],
+      "meta": {
+        "event_id": "401879269",
+        "score_only": true
+      }
+    },
+    {
+      "kind": "followup-detail",
+      "text": "45分＋4分にアストンヴィラが得点。67分にアストンヴィラが得点。79分にアストンヴィラが得点。",
+      "speaker": 2,
+      "caption_units": [
+        "45分＋4分にアストンヴィラが得点。",
+        "67分にアストンヴィラが得点。",
+        "79分にアストンヴィラが得点。"
+      ],
+      "meta": {
+        "event_id": "401879269",
+        "details": [
+          {
+            "club": null,
+            "text": "プレミアリーグ"
+          },
+          {
+            "club": "アストンヴィラ",
+            "text": "45分＋4分に得点"
+          },
+          {
+            "club": "アストンヴィラ",
+            "text": "67分に得点"
+          },
+          {
+            "club": "アストンヴィラ",
+            "text": "79分に得点"
+          },
+          {
+            "club": "トッテナム",
+            "text": "86分に得点"
+          },
+          {
+            "club": "トッテナム",
+            "text": "90分＋8分に得点"
+          }
+        ],
+        "goals": [
+          {
+            "minute": "45+4",
+            "scorer": "Johan Manzambi",
+            "athlete_id": "386992",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "67",
+            "scorer": "Nicolas Jackson",
+            "athlete_id": "308524",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "79",
+            "scorer": "Emiliano Buendía",
+            "athlete_id": "214375",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "required": true
+      }
+    },
+    {
+      "kind": "followup-detail",
+      "text": "86分にトッテナムが得点。90分＋8分にトッテナムが得点。",
+      "speaker": 2,
+      "caption_units": [
+        "86分にトッテナムが得点。",
+        "90分＋8分にトッテナムが得点。"
+      ],
+      "meta": {
+        "event_id": "401879269",
+        "details": [
+          {
+            "club": null,
+            "text": "プレミアリーグ"
+          },
+          {
+            "club": "アストンヴィラ",
+            "text": "45分＋4分に得点"
+          },
+          {
+            "club": "アストンヴィラ",
+            "text": "67分に得点"
+          },
+          {
+            "club": "アストンヴィラ",
+            "text": "79分に得点"
+          },
+          {
+            "club": "トッテナム",
+            "text": "86分に得点"
+          },
+          {
+            "club": "トッテナム",
+            "text": "90分＋8分に得点"
+          }
+        ],
+        "goals": [
+          {
+            "minute": "86",
+            "scorer": "Conor Gallagher",
+            "athlete_id": "266696",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "90+8",
+            "scorer": "Jan Paul van Hecke",
+            "athlete_id": "282583",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "required": true
+      }
+    },
+    {
+      "kind": "team-stats",
+      "text": "シュートはトッテナム20本、アストンヴィラ15本、保持率はトッテナムが63.8パーセント。",
+      "speaker": 2,
+      "meta": {
+        "event_id": "401879269"
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "鈴木彩艶はフル出場、5セーブ、2失点。",
+      "speaker": 2,
+      "caption_units": [
+        "鈴木彩艶はフル出場、5セーブ、2失点。"
+      ],
+      "meta": {
+        "event_id": "401879269",
+        "start": 0,
+        "count": 1
+      }
+    },
+    {
+      "kind": "roster",
+      "text": "日本人選手の結果です。",
+      "speaker": 2,
+      "caption_units": [
+        "日本人選手の結果です。"
+      ],
+      "meta": {
+        "start": 0,
+        "count": 1,
+        "more": 0,
+        "absent": [],
+        "page": 1
+      }
+    },
+    {
+      "kind": "outro",
+      "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+      "speaker": 2,
+      "meta": {}
+    }
+  ],
+  "duration_budget": {
+    "limit": 60.0,
+    "grace": 0
+  },
+  "sanity_date_jst": "2026-09-19",
+  "soccer_material": {
+    "source": "ESPN・football-data.org",
+    "retrieved_at": "2026-10-25T15:03:31.538479+00:00",
+    "source_at": null,
+    "date_jst": "2026-09-19",
+    "games": [
+      {
+        "league": "PL",
+        "id": "401879269",
+        "date_jst": "2026-09-19",
+        "score": {
+          "home": 2,
+          "away": 3
+        },
+        "home": {
+          "id": "367",
+          "name_en": "Tottenham Hotspur",
+          "name_jp": "トッテナム",
+          "abbr": "TOT"
+        },
+        "away": {
+          "id": "362",
+          "name_en": "Aston Villa",
+          "name_jp": "アストンヴィラ",
+          "abbr": "AVL"
+        },
+        "goals": [
+          {
+            "minute": "45+4",
+            "scorer": "Johan Manzambi",
+            "athlete_id": "386992",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "67",
+            "scorer": "Nicolas Jackson",
+            "athlete_id": "308524",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "79",
+            "scorer": "Emiliano Buendía",
+            "athlete_id": "214375",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "86",
+            "scorer": "Conor Gallagher",
+            "athlete_id": "266696",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "90+8",
+            "scorer": "Jan Paul van Hecke",
+            "athlete_id": "282583",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "players": [
+          {
+            "name": "鈴木彩艶",
+            "name_en": "Zion Suzuki",
+            "club": "アストンヴィラ",
+            "side": "away",
+            "event_id": "401879269",
+            "athlete_id": "265958",
+            "status": "starter",
+            "goals": 0,
+            "assists": 0,
+            "yellow_cards": 0,
+            "red_cards": 0,
+            "plays": [],
+            "position": "GK",
+            "stats_source": "ESPN summary.rosters.roster.stats",
+            "saves": 5,
+            "conceded": 2,
+            "subbed_out": false,
+            "appearance_evidence": "ESPN starter/subbedIn"
+          }
+        ],
+        "match_stats": {
+          "source": "ESPN summary.boxscore.teams.statistics",
+          "home": {
+            "possession": 63.8,
+            "shots": 20,
+            "on_target": 7
+          },
+          "away": {
+            "possession": 36.2,
+            "shots": 15,
+            "on_target": 6
+          }
+        },
+        "score_crosscheck": "unavailable"
+      }
+    ],
+    "competitions": [],
+    "rows": [],
+    "players": [
+      {
+        "name": "鈴木彩艶",
+        "name_en": "Zion Suzuki",
+        "club": "アストンヴィラ",
+        "side": "away",
+        "event_id": "401879269",
+        "athlete_id": "265958",
+        "status": "starter",
+        "goals": 0,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [],
+        "position": "GK",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "saves": 5,
+        "conceded": 2,
+        "subbed_out": false,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      }
+    ]
+  },
+  "sanity_materials": [
+    {
+      "source": "ESPN・football-data.org",
+      "retrieved_at": "2026-10-25T15:03:31.538479+00:00",
+      "source_at": null,
+      "date_jst": "2026-09-19",
+      "games": [
+        {
+          "league": "PL",
+          "id": "401879269",
+          "date_jst": "2026-09-19",
+          "score": {
+            "home": 2,
+            "away": 3
+          },
+          "home": {
+            "id": "367",
+            "name_en": "Tottenham Hotspur",
+            "name_jp": "トッテナム",
+            "abbr": "TOT"
+          },
+          "away": {
+            "id": "362",
+            "name_en": "Aston Villa",
+            "name_jp": "アストンヴィラ",
+            "abbr": "AVL"
+          },
+          "goals": [
+            {
+              "minute": "45+4",
+              "scorer": "Johan Manzambi",
+              "athlete_id": "386992",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "67",
+              "scorer": "Nicolas Jackson",
+              "athlete_id": "308524",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "79",
+              "scorer": "Emiliano Buendía",
+              "athlete_id": "214375",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "86",
+              "scorer": "Conor Gallagher",
+              "athlete_id": "266696",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "90+8",
+              "scorer": "Jan Paul van Hecke",
+              "athlete_id": "282583",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            }
+          ],
+          "players": [
+            {
+              "name": "鈴木彩艶",
+              "name_en": "Zion Suzuki",
+              "club": "アストンヴィラ",
+              "side": "away",
+              "event_id": "401879269",
+              "athlete_id": "265958",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": "GK",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "saves": 5,
+              "conceded": 2,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            }
+          ],
+          "match_stats": {
+            "source": "ESPN summary.boxscore.teams.statistics",
+            "home": {
+              "possession": 63.8,
+              "shots": 20,
+              "on_target": 7
+            },
+            "away": {
+              "possession": 36.2,
+              "shots": 15,
+              "on_target": 6
+            }
+          },
+          "score_crosscheck": "unavailable"
+        }
+      ],
+      "competitions": [],
+      "rows": [],
+      "players": [
+        {
+          "name": "鈴木彩艶",
+          "name_en": "Zion Suzuki",
+          "club": "アストンヴィラ",
+          "side": "away",
+          "event_id": "401879269",
+          "athlete_id": "265958",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "GK",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "saves": 5,
+          "conceded": 2,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        }
+      ],
+      "sport": "soccer",
+      "used_for_date": "2026-09-19"
+    },
+    {
+      "source": "generation.input",
+      "date_jst": "2026-09-19",
+      "retrieved_at": "2026-10-25T15:03:31.538479+00:00",
+      "source_url": "ESPN・football-data.org",
+      "games": [
+        {
+          "league": "PL",
+          "id": "401879269",
+          "date_jst": "2026-09-19",
+          "score": {
+            "home": 2,
+            "away": 3
+          },
+          "home": {
+            "id": "367",
+            "name_en": "Tottenham Hotspur",
+            "name_jp": "トッテナム",
+            "abbr": "TOT"
+          },
+          "away": {
+            "id": "362",
+            "name_en": "Aston Villa",
+            "name_jp": "アストンヴィラ",
+            "abbr": "AVL"
+          },
+          "goals": [
+            {
+              "minute": "45+4",
+              "scorer": "Johan Manzambi",
+              "athlete_id": "386992",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "67",
+              "scorer": "Nicolas Jackson",
+              "athlete_id": "308524",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "79",
+              "scorer": "Emiliano Buendía",
+              "athlete_id": "214375",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "86",
+              "scorer": "Conor Gallagher",
+              "athlete_id": "266696",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "90+8",
+              "scorer": "Jan Paul van Hecke",
+              "athlete_id": "282583",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            }
+          ],
+          "players": [
+            {
+              "name": "鈴木彩艶",
+              "name_en": "Zion Suzuki",
+              "club": "アストンヴィラ",
+              "side": "away",
+              "event_id": "401879269",
+              "athlete_id": "265958",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": "GK",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "saves": 5,
+              "conceded": 2,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            }
+          ],
+          "match_stats": {
+            "source": "ESPN summary.boxscore.teams.statistics",
+            "home": {
+              "possession": 63.8,
+              "shots": 20,
+              "on_target": 7
+            },
+            "away": {
+              "possession": 36.2,
+              "shots": 15,
+              "on_target": 6
+            }
+          },
+          "score_crosscheck": "unavailable"
+        }
+      ],
+      "players": [
+        {
+          "name": "鈴木彩艶",
+          "name_en": "Zion Suzuki",
+          "club": "アストンヴィラ",
+          "side": "away",
+          "event_id": "401879269",
+          "athlete_id": "265958",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "GK",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "saves": 5,
+          "conceded": 2,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        }
+      ]
+    }
+  ]
+}

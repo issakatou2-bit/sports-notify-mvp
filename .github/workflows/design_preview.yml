@@ -39,6 +39,7 @@ permissions:
 env:
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
   COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
@@ -101,25 +102,44 @@ jobs:
       - name: Build voiced preview
         if: steps.topic.outputs.key != ''
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           COLLESPO_BGM: ${{ inputs.bgm }}
           # 数値検査だけ。AIの検算は呼ばず、秘密も渡さない。
           ANTHROPIC_API_KEY: ''
         run: |
           T="${{ steps.topic.outputs.key }}"
           python scripts/generate_asset_video.py --topic "$T" --narration-out "build/narr_$T.json"
-          python scripts/sanity.py --strict --narration "build/narr_$T.json"
+          python scripts/sanity.py --general --strict --narration "build/narr_$T.json" --out "data/sanity_${T}.json" --hold-record "build/sanity_hold_${T}.json" --kind asset
           python scripts/synthesize_narration.py --narration "build/narr_$T.json" --out-dir "build/audio_$T"
           python scripts/prepare_design_preview.py --manifest "build/audio_$T/manifest.json"
           python scripts/generate_asset_video.py --topic "$T" --audio-dir "build/audio_$T" --out build/preview
 
       - name: Save preview
-        if: steps.topic.outputs.key != ''
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: design-preview
           retention-days: 3
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
             build/preview/*.mp4
             build/narr_*.json
             build/audio_*/manifest.json
             !build/**/portrait/**
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

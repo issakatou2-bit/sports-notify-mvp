@@ -75,7 +75,7 @@ def _frame(t, seg, narr):
         if meta.get('likes') is not None:metrics.append(f"高評価 {meta['likes']:,}")
         if meta.get('replies') is not None:metrics.append(f"返信 {meta['replies']:,}件")
         if metrics:cards.text(im,100,850,'　'.join(metrics),48,r3.GOLD,width=740)
-    credit = report.get('author') or meta['source']
+    credit = __import__('fan_privacy').LABEL if __import__('fan_privacy').reddit(meta) else report.get('author') or meta['source']
     if report.get('author'):
         credit += ' / '+meta['source']
     at = meta.get('display_time') or meta.get('at') or narr['label']
@@ -118,6 +118,8 @@ def render(narr, audio, out):
     if sum(times) > story.RULES['max_story_seconds']:
         raise ValueError('60秒を超えています。原稿を短くしてください')
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
+    import short_content
+    short_content.require(narr, times, out, maximum=story.RULES['max_story_seconds'], video_name='collespo_player_story.mp4')
     track = vc.build_narration_track(audio, times, out)
     if not track:
         raise ValueError('声を結合できませんでした')

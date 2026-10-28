@@ -112,6 +112,8 @@ def spec(card, focus=None, ticker_line=None):
 
 
 def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
+    if card.get('short_context'):
+        focus = None  # 前戦の札は主役カードの再掲に置き換えない。
     if card.get('next_line'):
         import next_line
         return next_line.frame(t,card['next_line'])
@@ -130,7 +132,7 @@ def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
         chosen=(focus or card) if card.get('card_index') is None else card
         if chosen.get('scoreboard') and (card.get('card_index') is None or t<min(8,duration*.5)):
             return draw_focus(t,chosen,spec(chosen,chosen,ticker_line))
-    if card.get('card_index') is None and not card.get('outro'):
+    if card.get('card_index') is None and not card.get('outro') and not card.get('short_context'):
         im = r3.intro(t, view, card.get('label','PS'))
         r3.source(r3.ImageDraw.Draw(im), '出典：'+card.get('source_label','説明欄'), r3.colors(view['team_id'])[1])
         if r3.LOOK=='v4':

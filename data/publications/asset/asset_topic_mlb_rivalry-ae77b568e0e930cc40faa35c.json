@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:mlb_rivalry",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "mlb_rivalry"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/mlb_rivalry",
+      "service": "youtube",
+      "video_id": "Q1LqbseX-zI",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-08-07T00:00:00+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.696243+00:00",
+      "fingerprint": "5f28bd50daa1c62cc6239c617360f9dd1b448c3aa6a5b8c9d25404a59f9dc679",
+      "event_id": "8b1c5f9d20da0f18967d3c2cbcce11ba16eee616c154a7362bb58420c0d5541c"
+    }
+  ]
+}

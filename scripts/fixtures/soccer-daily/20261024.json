@@ -1,0 +1,250 @@
+{
+  "generated_at": "2026-10-24T09:54:14.816416+00:00",
+  "games": [
+    {
+      "game_id": "560614",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-58",
+      "away_team_id": "PL-65",
+      "home_team_name": "アストンヴィラ",
+      "away_team_name": "マンチェスター・シティ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "マンチェスター・シティ vs アストンヴィラ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/24 20:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 12,
+        "games_back": 4.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 13.0
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 4,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "マンチェスター・シティ の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "アストンヴィラ（昨季プレミアリーグ4位）とマンチェスター・シティ（昨季プレミアリーグ2位）",
+          "weight": 3
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "プレミアリーグ首位のマンチェスター・シティが、敵地アストンヴィラを訪れる。昨季プレミアリーグ4位だったアストンヴィラは今季12位と出遅れており、【首位との勝ち点差は13】である。首位チームの試合は常にリーグ全体の優勝争いを左右するもので、この一戦も例外ではない。マンチェスター・シティの攻撃がアストンヴィラの守備をどう崩すのか、そして昨季の高い成績から現在の順位へと落ちているアストンヴィラが、首位チームにどのような対抗手段を見せるのかが見どころとなる。",
+      "notification_hook": "首位シティ、敵地で昨季4位ヴィラに臨む。勝ち点差13の差を埋める戦いへ。",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401879256",
+      "competition_code": "PL",
+      "start_time_utc": "2026-10-24T20:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 30,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "プレミアリーグ"
+          },
+          {
+            "key": "leader",
+            "points": 10,
+            "evidence": {
+              "kind": "leader",
+              "text": "首位チームと12位の対戦",
+              "ranks": [
+                12,
+                1
+              ]
+            }
+          },
+          {
+            "key": "marquee_away",
+            "points": 10,
+            "evidence": "Manchester City FC"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "leader",
+              "text": "首位チームと12位の対戦",
+              "ranks": [
+                12,
+                1
+              ]
+            },
+            {
+              "kind": "points",
+              "text": "勝点差13",
+              "gap": 13.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    },
+    {
+      "game_id": "560617",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-61",
+      "away_team_id": "PL-73",
+      "home_team_name": "チェルシー",
+      "away_team_name": "トッテナム",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "トッテナム vs チェルシー",
+      "abbr_matchup": null,
+      "start_time_jst": "10/25 01:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 4,
+        "games_back": 2.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 8.0
+      },
+      "away_standing": {
+        "rank": 16,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 4,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "トッテナムには高井幸大が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "チェルシー と トッテナム の対戦",
+          "weight": 3
+        },
+        {
+          "tag": "quality",
+          "text": "チェルシー（昨季プレミアリーグ10位）とトッテナム（昨季プレミアリーグ17位）の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "プレミアリーグ7試合時点でチェルシーが4位に位置する一方、トッテナムは16位と【勝ち点で7点の差】をつけられている。昨季プレミアリーグ10位のチェルシーと17位のトッテナムという、順位を大きく変えた両チームの現在地を示す一戦となる。トッテナムに所属する日本人選手の高井幸大の活躍がどう影響するかに注目したい。",
+      "notification_hook": "チェルシーと勝ち点差7のトッテナム、高井幸大の存在感が試合を左右するか。",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401878767",
+      "competition_code": "PL",
+      "start_time_utc": "2026-10-25T01:30:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 30,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "プレミアリーグ"
+          },
+          {
+            "key": "marquee_home",
+            "points": 10,
+            "evidence": "Chelsea FC"
+          },
+          {
+            "key": "marquee_away",
+            "points": 10,
+            "evidence": "Tottenham Hotspur FC"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "points",
+              "text": "勝点差7",
+              "gap": 7.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    }
+  ],
+  "source": "ESPN・football-data.org",
+  "preview_selection": {
+    "day": "2026-10-24",
+    "threshold": 30,
+    "max_games": 4,
+    "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+    "selected_ids": [
+      "560614",
+      "560617"
+    ],
+    "count": 2,
+    "reason": "",
+    "rejected": [],
+    "source_errors": []
+  }
+}

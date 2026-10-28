@@ -1,28 +1,16 @@
 name: 欧州サッカー　日本人選手の週末
 
-# 19:30の欧州サッカーの回が出ない日（5大リーグの試合が無い平日・代表戦期間）に、
-# 直前の週末の日本人選手の結果を1本にする。同じ週末は2度出さない
-# （data/soccer_week_state.json）。19:00の回が終わった後に動くので、
-# その日に通常の回が出ていれば何もしない。
+# 月曜7:15 JSTに制作を開始し、同日9:00 JSTに公開予約。既定オフ。
 
 on:
-  workflow_run:
-    workflows: ["毎日 19:00　欧州サッカー"]
-    types: [completed]
+  schedule:
+    - cron: '15 22 * * 0'
   workflow_dispatch:
     inputs:
-      privacy:
-        description: '公開設定 (private / unlisted / public)'
-        required: false
-        default: 'public'
       upload:
-        description: 'YouTubeへ上げるか'
-        required: false
-        default: 'true'
-      publish_at:
-        description: '公開時刻 (HH:MM、空なら 19:30)'
-        required: false
-        default: ''
+        description: '月曜9:00の公開を予約する（公開変数onも必要）'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -33,21 +21,23 @@ concurrency:
 
 env:
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
 
 jobs:
   build:
+    if: github.event_name == 'workflow_dispatch' || vars.COLLESPO_SOCCER_WEEK == 'on'
     runs-on: ubuntu-latest
     env:
-      # サッカーの3枠は専用の変数で切り替える（本人が試作を見てから COLLESPO_SOCCER_LOOK=v4。10/10 エマ）
+      COLLESPO_SOCCER_WEEK: ${{ vars.COLLESPO_SOCCER_WEEK || 'off' }}
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
       COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
       COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
       COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
       COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
-      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
-      COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
+      COLLESPO_SHORT_LOOK: v4
+      COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v5' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -58,14 +48,14 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r scripts/requirements.txt
-          pip install pillow google-api-python-client google-auth
+          pip install pillow google-api-python-client google-auth imageio_ffmpeg
 
       - name: Build the week material
         id: gate
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: |
-          python scripts/soccer_jp_week.py --out data/soccer_jp_week.json \
+          python scripts/soccer_jp_week.py --scheduled --out data/soccer_jp_week.json \
             | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Install video tools
@@ -99,10 +89,10 @@ jobs:
         if: steps.gate.outputs.due == '1'
         continue-on-error: true
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python scripts/sanity.py --general --strict \
-            --narration build/week_narration.json
+          python scripts/sanity.py --general --strict --narration build/week_narration.json --out data/sanity_week.json --hold-record build/sanity_hold_week.json --kind soccer_week
 
       - name: Synthesize narration
         if: steps.gate.outputs.due == '1'
@@ -130,50 +120,38 @@ jobs:
         if: >-
           steps.gate.outputs.due == '1' &&
           steps.sanity.outcome == 'success' &&
+          vars.COLLESPO_SOCCER_WEEK == 'on' &&
           (github.event_name != 'workflow_dispatch' ||
-           inputs.upload == 'true')
+           inputs.upload)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
-          AT="${{ inputs.publish_at }}"
-          [ -n "$AT" ] || AT="19:30"
-          python scripts/upload_youtube.py \
+          WEEK_KEY="${{ steps.gate.outputs.key }}"
+          python scripts/soccer_week_publish.py \
+            --week data/soccer_jp_week.json --video-date "$WEEK_KEY" \
             --video build/week/collespo_morning_soccer_week.mp4 \
             --kind soccer_week --sport soccer \
             --narration build/week_narration.json \
             --thumbnail build/week/short.png \
-            --privacy "${{ inputs.privacy || 'public' }}" --publish-at "$AT"
-
-      - name: Remember the weekend
-        if: steps.upload.outcome == 'success' && steps.gate.outputs.key != ''
-        run: |
-          python - <<'PY'
-          import json, pathlib, os
-          p = pathlib.Path("data/soccer_week_state.json")
-          try:
-              state = json.loads(p.read_text(encoding="utf-8"))
-          except Exception:
-              state = {}
-          done = state.setdefault("done", [])
-          if os.environ["WEEK_KEY"] not in done:
-              done.append(os.environ["WEEK_KEY"])
-          state["done"] = done[-20:]
-          p.write_text(json.dumps(state, ensure_ascii=False, indent=2),
-                       encoding="utf-8")
-          print("記録しました:", state)
-          PY
-        env:
-          WEEK_KEY: ${{ steps.gate.outputs.key }}
+            --privacy public --publish-at '09:00'
 
       - name: Keep the video
-        if: always() && steps.gate.outputs.due == '1'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: soccer-week
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            data/soccer_jp_week.json
             build/week/collespo_morning_soccer_week.mp4
             build/week_narration.json
             !build/**/portrait/**
@@ -210,3 +188,25 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore

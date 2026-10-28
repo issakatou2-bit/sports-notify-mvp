@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:mlb_stats",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "mlb_stats"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/mlb_stats",
+      "service": "youtube",
+      "video_id": "_KmUEwgQZvQ",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-08-07T00:00:00+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.696761+00:00",
+      "fingerprint": "d7643c488193aa17261a41f3b3779e993570d514d9b9cca917b0a17850d52871",
+      "event_id": "47939a6870021fc4190dc3ef0b8c295f7c7d0c991880cf1f58767f3cb7bb6dc6"
+    }
+  ]
+}

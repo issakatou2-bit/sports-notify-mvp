@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:venue_daikin_park",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "venue_daikin_park"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/venue_daikin_park",
+      "service": "youtube",
+      "video_id": "HOKntIm9hew",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-10-24T06:15:57.816085+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.810834+00:00",
+      "fingerprint": "9d1a7613068eae86aa131f9dfe5b52be74862b8800d74011008889597a031a31",
+      "event_id": "a0f4bf932c0357c3b72a84e5fa7d0609712251d44f04b5f09aa776976ad830c4"
+    }
+  ]
+}

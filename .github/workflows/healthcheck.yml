@@ -115,6 +115,19 @@ jobs:
             python scripts/review_board.py
           fi
 
+      - name: Read Buffer ledger for comparison
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          ref: codex/buffer-state
+          path: build/ledger-buffer
+          persist-credentials: false
+          sparse-checkout: |
+            data/buffer_delivery.json
+            data/publications
+            data/publication_recovery
+          sparse-checkout-cone-mode: false
+
       - name: Check
         env:
           DAY: ${{ inputs.date }}

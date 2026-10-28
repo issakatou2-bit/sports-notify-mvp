@@ -38,6 +38,7 @@ concurrency:
 
 env:
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
 
@@ -172,8 +173,9 @@ jobs:
         # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
         continue-on-error: true
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/sanity.py --general --strict --narration build/soccer_narration.json
+        run: python scripts/sanity.py --general --strict --narration build/soccer_narration.json --out data/sanity_soccer.json --hold-record build/sanity_soccer_hold.json --kind daily_soccer
 
       - name: Synthesize narration
         if: steps.gate.outputs.count != '0'
@@ -233,7 +235,7 @@ jobs:
       # こちらは20時に「今夜の注目試合」で、1つにまとめると
       # どちらかの言い方が必ず嘘になる。
       - name: Save the actually published preview
-        if: steps.gate.outputs.count != '0' && steps.upload.outcome == 'success'
+        if: steps.gate.outputs.count != '0' && steps.upload.outputs.uploaded == 'true'
         run: python scripts/soccer_preview_history.py
 
       - name: Post to Bluesky
@@ -286,6 +288,16 @@ jobs:
         with:
           name: collespo-soccer
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            build/soccer_narration.json
+            data/soccer_games.json
+            data/soccer_availability.json
             build/soccer/
             !build/**/portrait/**
           if-no-files-found: ignore
@@ -294,7 +306,9 @@ jobs:
       # そこを赤くすると毎週何度も嘘の警報が鳴る。
       - name: Confirm the video went out
         if: always() && steps.gate.outputs.count != '0'
-        run: python scripts/verify_published.py --kind daily_soccer
+        run: |
+          python scripts/verify_published.py --kind daily_soccer \
+            --games data/soccer_games.json --narration build/soccer_narration.json
 
       - name: Keep unsaved data records
         if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
@@ -306,3 +320,25 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore

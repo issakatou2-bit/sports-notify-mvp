@@ -3,20 +3,22 @@ import json
 from functools import lru_cache
 import re
 import soccer_results as results
+import soccer_stats as stats
 
 # 英語のまま書くと、画面でも声でも読めない名前になる。
 LATIN=re.compile(r'[A-Za-z]')
 
 
 def positive_stats(player):
-    return '、'.join(f'{player[key]}{unit}' for key,unit in
-                    (('goals','得点'),('assists','アシスト')) if player.get(key))
+    return stats.positive_stats(player)
 
 
 def player_line(player, expected=False):
     parts=[results.STATUS[player['status']]]
     if player['status']!='none':
-        if player.get('minutes'):parts.append(f"{player['minutes']}分出場")
+        if player.get('minutes') is not None:
+            from soccer_stats import minutes_label
+            parts.append(minutes_label(player))
         stats=positive_stats(player)
         if stats:parts.append(stats)
     # 一人の出場・成績を途中の句点で別の吹き出しにしない。
@@ -116,3 +118,26 @@ def display_details(game,row):
     details.extend(screen_goal_line(g,game) for g in game['goals'])
     if not game['goals']:details.append(dict(club=None,text='得点なし' if game['goals_complete'] else '得点経過は未取得'))
     return details
+
+
+def result_line(game):
+    """日本人の所属側を主語にする。出場状況は別の補足で扱う。"""
+    people=[p for p in game['players'] if p['status']!='none'] or game['players']
+    sides=[]
+    for side in ('home','away'):
+        players=[p['name'] for p in people if p['side']==side]
+        club=game[side]['name_jp']
+        sides.append(('、'.join(players)+'の' if players else '')+club)
+    home,away=game['score']['home'],game['score']['away']
+    if people and all(p['side']=='away' for p in people):
+        sides.reverse();home,away=away,home
+    verb='勝ちました' if home>away else '敗れました' if home<away else '引き分けました'
+    particle='と' if home==away else 'に'
+    return f"{sides[0]}は、{sides[1]}{particle}{home}対{away}で{verb}。"
+
+
+def compact_goal_line(goal, game):
+    if goal['japanese_goal']:
+        return goal_line(goal,game)
+    subject=scorer_name(goal) if named_scorer(goal) and not goal.get('own_goal') else club_of(goal,game)
+    return minute_text(goal['minute'])+'に'+subject+'が決勝点。'

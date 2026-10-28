@@ -97,3 +97,13 @@ def create(client, *, label, mode='whole', category=None, **kw):
                           label=label, mode=mode,
                           rejected=lambda r: token_log.record(category or label, kw['model'], r),
                           allowed=lambda: token_log.allowed(category or label))
+
+
+def create_once(client, *, label, **kw):
+    """再点検など回数に上限がある呼出し。受信検査を保ち、訂正要求は出さない。"""
+    response = client.messages.create(**with_instruction(kw))
+    if violations(response_text(response)):
+        error = BackstageError(f'{label}: 楽屋の言葉を含む再点検結果は使用しません')
+        error.response = response  # 呼出し側が不採用分の費用も記録する。
+        raise error
+    return response

@@ -502,6 +502,9 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
         "  実際に出た失敗: 観客の妨害でレイズが得をした話の Yankee"
         " →×「ヤンキースの選手さん」\n"
         "- 感想や補足は加えない。書かれていないことを足さない\n"
+        "- big run、only、finally 等は皮肉・誇張の可能性がある。a big run は1点で、"
+        "「大量得点」にしない。only / finally の限定や呆れを逆の意味にしない。"
+        "点数・点差を増やさず、皮肉の解釈が確かでないときは訳文を空にする\n"
         "- 前置きや説明は不要"
     )
     if sport == "soccer":
@@ -683,13 +686,13 @@ def build(limit: int = MAX_VOICES) -> dict:
         for v in praise:
             print(f"   {'、'.join(v['jp_players'])}: {v['ja'][:44]}")
 
-    return {
+    return __import__('fan_privacy').material({
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "source": source_name,
         "source_url": source_url,
         "voices": voices,
         "jp_praise": praise,
-    }
+    })
 
 
 def load(path: str = "data/local_voices.json", max_age_hours: int = 30) -> dict:
@@ -720,7 +723,7 @@ def load(path: str = "data/local_voices.json", max_age_hours: int = 30) -> dict:
     # 前に取った材料にも同じ決まりを当てる
     if isinstance(data.get("voices"), list):
         data["voices"] = drop_near_duplicates(data["voices"])
-    return data
+    return __import__('fan_privacy').voices(data)
 
 
 def _timing_lines(raw: list) -> list:

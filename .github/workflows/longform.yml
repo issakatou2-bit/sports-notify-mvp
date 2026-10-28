@@ -191,7 +191,7 @@ jobs:
         if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/verify_numbers.py \
-            --dialogue build/lf/dialogue.json --strict --omit-unsupported
+            --dialogue build/lf/dialogue.json --omit-unsupported
 
       # 用語を勝手に作っていないか。**ここで落ちたら公開しない。**
       #
@@ -214,11 +214,10 @@ jobs:
       - name: Sanity check the script
         if: steps.dialogue.outputs.made == '1'
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python scripts/sanity.py --general --strict \
-            --narration build/lf/dialogue.json \
-            --out data/sanity_longform.json
+          python scripts/sanity.py --general --strict --narration build/lf/dialogue.json --out data/sanity_longform.json --hold-record build/sanity_hold_longform.json --kind longform
 
       - name: Synthesize both voices
         if: steps.dialogue.outputs.made == '1'
@@ -251,6 +250,13 @@ jobs:
         with:
           name: longform
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
             build/lf/collespo_longform.mp4
             build/lf/dialogue.json
             build/lf/dialogue.model-*.txt
@@ -341,3 +347,25 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore

@@ -68,7 +68,14 @@ def prepare(narration, kind=None, day=None, default=3):
         return narration
     result = copy.deepcopy(narration)
     result['host_assignment'] = assignment
-    os.environ['COLLESPO_SOLO_HOST'] = (narration.get('voice_resolution') or {}).get('host', assignment['planned_host'])
+    import ui_voice_policy as policy
+    policy.assert_publishable(result)
+    if 'host_delivery' not in result and not result.get('voice_resolution'):
+        result['host_delivery'] = (policy.decide(result) if assignment['planned_host'] == 'ui'
+                                   else dict(version=1, planned_host='metan', comparison_eligible=True,
+                                             reason=None, checked_at=datetime.now(JST).isoformat()))
+        result['host_original_segments'] = copy.deepcopy(result['segments'])
+    os.environ['COLLESPO_SOLO_HOST'] = (narration.get('voice_resolution') or {}).get('host', policy.planned(result))
     return result
 
 
@@ -96,6 +103,9 @@ def resolve_credits(narration, host):
 def carry(source, target):
     if source.get('host_assignment'):
         target['host_assignment'] = copy.deepcopy(source['host_assignment'])
+    for name in ('host_delivery', 'host_original_segments'):
+        if name in source:
+            target[name] = copy.deepcopy(source[name])
     return target
 
 
@@ -120,6 +130,8 @@ def use_audio(narration, audio_dir):
     if not enabled() or not audio_dir:
         return narration
     manifest = read(Path(audio_dir)/'manifest.json')
+    import ui_voice_policy
+    ui_voice_policy.assert_publishable(manifest)
     if valid(manifest.get('host_assignment')):
         saved = read(manifest.get('narration_path', ''))
         if saved.get('host_assignment') != manifest['host_assignment']:
@@ -136,6 +148,8 @@ def video_receipt(video):
 def bind_video(video, audio_dir=None):
     video = Path(video)
     data = read(Path(audio_dir)/'manifest.json') if audio_dir else read(video.parent/'voice-resolution.json')
+    import ui_voice_policy
+    ui_voice_policy.assert_publishable(data)
     if not valid(data.get('host_assignment')):
         return
     receipt = carry(data, dict(voice_resolution=data.get('voice_resolution'),
@@ -146,6 +160,8 @@ def bind_video(video, audio_dir=None):
 def publication(video, narration=None):
     """動画と同じ出力先の受領記録が根拠。予定から実際の声を推測しない。"""
     data = read(video_receipt(video))
+    import ui_voice_policy
+    ui_voice_policy.assert_publishable(data)
     if data and (not Path(video).is_file() or data.get('video_sha256') != hashlib.sha256(Path(video).read_bytes()).hexdigest()):
         return None
     if enabled() and not data:
@@ -159,8 +175,10 @@ def publication(video, narration=None):
     actual = resolution.get('host', 'unknown')
     if actual not in HOSTS or resolution.get('audio_available') is False:
         actual = 'unknown'
-    return dict(host_assignment=assignment, planned_host=assignment['planned_host'], actual_host=actual,
-                host_fallback_reason=resolution.get('reason') if actual != assignment['planned_host'] else None)
+    delivery = data.get('host_delivery')
+    return dict(host_assignment=assignment, planned_host=ui_voice_policy.planned(data), actual_host=actual,
+                **({'host_delivery': delivery} if delivery else {}),
+                host_fallback_reason=resolution.get('reason') if actual != ui_voice_policy.planned(data) else None)
 
 
 def credit(text):

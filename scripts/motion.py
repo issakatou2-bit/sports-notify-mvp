@@ -375,6 +375,7 @@ def slot(kind):
             token=DEPTH.set(1)
             try:im=fn(t,*args,**kwargs)
             finally:DEPTH.reset(token)
+            if im.info.get('soccer_readable'):return im
             return list_frame(im,t,rows,heading,cues,duration,entrance,soccer)
         return render
     return decorate

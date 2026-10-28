@@ -922,7 +922,7 @@ def material(buzz_path: str, voices_path: str) -> dict:
             return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             return {}
-    b, v = load(buzz_path), load(voices_path)
+    b, v = load(buzz_path), __import__('fan_privacy').material(load(voices_path))
     vids = b.get("videos") or []
     if not vids:
         return {}
@@ -2134,6 +2134,8 @@ def main() -> int:
     payload = {"kind": "dialogue", "segments": segs, "panels": ps}
     payload.update(nmat.meta(m, segs) if args.mode == "numbers"
                    else _voices_meta(m))
+    payload['sanity_date_jst'] = m.get('date') or m.get('date_jst') or datetime.datetime.now(
+        datetime.timezone(datetime.timedelta(hours=9))).date().isoformat()
     import game_fact_guard
     payload['game_material'] = game_fact_guard.material(m, args.mode)
     payload, game_issues = game_fact_guard.prepare(payload)
@@ -2156,6 +2158,8 @@ def main() -> int:
             print('::error::'+issue)
         print('[error] 試合の材料との照合で停止。追加APIでの再生成はしません')
         return 1
+    import sanity_sources
+    payload['sanity_materials'] = sanity_sources.capture(payload, m)
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                    encoding="utf-8")
     print(f"[info] 台本を出力しました -> {out}")

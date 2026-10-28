@@ -1,27 +1,27 @@
 {
-  "date": "2026-10-20",
-  "submits": 2,
+  "date": "2026-10-28",
+  "submits": 4,
   "stages": {
     "draft": {
-      "key": "b6823eeb43930b9bcf6f8a0799d1aee6a97d4269f74a93cb3e4ffa22a4140166",
-      "n": 1,
-      "custom_id": "dlg-draft-b6823eeb43930b9b-1",
-      "batch_id": "msgbatch_01CJfgnJQQ54R2EqKardmJDG",
+      "key": "134f26fcda20e5bb472434227aac3aae3adee009d0d55f4a78009da030c4370d",
+      "n": 2,
+      "custom_id": "dlg-draft-134f26fcda20e5bb-2",
+      "batch_id": "msgbatch_0145vMk2wnynRkrbtTjJocpM",
       "status": "used",
       "tries": 1,
       "recorded": true,
-      "submitted_at": "2026-10-20T15:47:21+09:00",
+      "submitted_at": "2026-10-28T16:32:32+09:00",
       "model": "claude-sonnet-5-5"
     },
     "more": {
-      "key": "d6da700dda4895dac320268485728dd4d9fe4d5093e525c840f75c9ee6f9c5c4",
-      "n": 1,
-      "custom_id": "dlg-more-d6da700dda4895da-1",
-      "batch_id": "msgbatch_01MkhwAL5pSLQErS5XHGbjoF",
+      "key": "3fb553aea333f63c3f512c8c468af274ab5501eeb172ba3695b3f04833effc97",
+      "n": 2,
+      "custom_id": "dlg-more-3fb553aea333f63c-2",
+      "batch_id": "msgbatch_01YMbycX4KkedtAEGscc7qpE",
       "status": "used",
       "tries": 1,
       "recorded": true,
-      "submitted_at": "2026-10-20T15:57:50+09:00",
+      "submitted_at": "2026-10-28T16:35:05+09:00",
       "model": "claude-sonnet-5-5"
     }
   }

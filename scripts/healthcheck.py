@@ -454,6 +454,14 @@ def check_assets(max_gap_days: int = 2) -> tuple:
     出るはずのものが出ていないことは、結果の側からしか分からない。
     """
     a = (load("data/published_assets.json") or {}).get("assets") or {}
+    # 停止した種類だけ残っていても制作不足としない。
+    # 生成器は保持し、選択可能な未投稿候補の有無だけを見る。
+    import asset_policy
+    candidates = [k for k in asset_policy.topic_catalog()
+                  if k not in a and not asset_policy.paused(k)
+                  and not k.startswith('ws_')]
+    if not candidates:
+        return "| 資産動画 | 選択対象なし（制作見送り） | 球場・球団まとめは停止中・補充なし |", 0
     days = sorted({(v.get("published_at") or "")[:10]
                    for v in a.values()
                    if isinstance(v, dict) and v.get("published_at")})
@@ -655,6 +663,9 @@ def main() -> int:
             "| 対象 | 埋まり | |", "|---|---|---|"]
     out += content_lines
 
+    from ledger_compare import health_table
+    ledger_root = pathlib.Path(__file__).resolve().parents[1]
+    out += health_table(ledger_root, ledger_root / 'build/ledger-buffer')
     text = "\n".join(out)
     print(text)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")

@@ -6,10 +6,11 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: player-story
+  group: mlb-player-publication
   cancel-in-progress: false
 env:
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
 
@@ -31,6 +32,8 @@ jobs:
       COLLESPO_SHORT_LOOK: v4
     steps:
       - uses: actions/checkout@v4
+      - name: Refresh both MLB player publication ledgers
+        run: python scripts/player_publications.py --sync
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -60,6 +63,14 @@ jobs:
             sleep 2
           done
           curl -fsS http://127.0.0.1:50021/version
+      - name: Sanity gate (player_story)
+        id: sanity
+        if: steps.gate.outputs.count == '1'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/sanity.py --general --strict --narration build/player_story/narration.json --out data/sanity_player_story.json --hold-record build/sanity_hold_player_story.json --kind player_story
+
       - name: Synthesize and render
         if: steps.gate.outputs.count == '1'
         run: |
@@ -97,3 +108,25 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore

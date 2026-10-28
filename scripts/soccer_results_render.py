@@ -77,13 +77,15 @@ def narration(data):
         # 出場なしの選手は画面の1行だけ。読み上げで名前を出さない（クラブの結果を本人のことと読ませない）
         segments.append({'kind':'roster','text':text,'speaker':2,'meta':dict(meta,page=1)})
     segments.append({'kind':'outro','text':r3.OUTRO_TEXT,'speaker':2,'meta':{}})
-    return {'label':data['date_jst'],'segments':segments,'duration_budget':{'limit':results.LIMIT,'grace':0}}
+    import sanity_sources
+    return sanity_sources.attach({'label':data['date_jst'],'segments':segments,
+        'duration_budget':{'limit':results.LIMIT,'grace':0}}, data, sport='soccer')
 
 
 def program_spec(data):
     day=results.date.fromisoformat(data['date_jst'])
     import host_split
-    return {'source':host_split.credit(CREDIT),'ticker':f"日本時間{day.month}月{day.day}日の夜〜翌朝の試合　欧州の日本人選手の結果",'label':'欧州サッカー　結果'}
+    return {'source':host_split.credit(CREDIT),'ticker':data.get('result_ticker') or f"日本時間{day.month}月{day.day}日の夜〜翌朝の試合　欧州の日本人選手の結果",'label':'欧州サッカー　結果'}
 
 
 def cover(t,data,game,clubs,spec):
@@ -145,7 +147,7 @@ def timeline(t,game,clubs,spec,goals):
 
 def roster_screen(t,data,meta,clubs,spec):
     im=cards.canvas(t,clubs,spec['label'])
-    rows=[p for p in data['players'] if p['status']!='none'][:meta['count']]
+    rows=[p for p in data['players'] if p['status']!='none' and str(p['event_id']) not in meta.get('exclude_events',[])][:meta['count']]
     foot=bool(meta.get('absent') or meta.get('more'))
     v4.panel(im,(cards.L,258,cards.R,258+108+len(rows)*100+(52 if foot else 0)))
     cards.plain(im,cards.L+22,276,'日本人選手の結果',44,width=cards.R-cards.L-44)
@@ -174,6 +176,13 @@ def roster_screen(t,data,meta,clubs,spec):
 
 
 def frame(t,seg,data,clubs=None):
+    if seg['kind'] in ('flash-results','other-results'):
+        import soccer_readable
+        return soccer_readable.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data))
+    if soccer_look.readable():
+        import soccer_readable
+        im=soccer_readable.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data))
+        if im is not None:return im
     if seg['kind'].startswith('followup'):
         import soccer_result_story
         return soccer_result_story.frame(t,seg,data,clubs or resolve_clubs(data))
@@ -204,24 +213,38 @@ def numeric_material(data):
     for meta in roster_pages(data):values.update({str(meta['more']),str(meta['count']+meta['more'])})
     # Date is explicitly supplied material, not a guessed match day.
     values.update(re.findall(r'\d+',data['date_jst']))
+    import soccer_stats
+    for g in data['games']:
+        for side in ('home','away'):
+            for value in (g.get('match_stats') or {}).get(side,{}).values():
+                values.add(f'{value:g}')
+                values.update(re.findall(r'\d+',f'{value:g}'))
+    for p in data['players']:
+        for key in ('shots','on_target','saves','conceded'):
+            if p.get(key) is not None:values.add(str(p[key]))
+        attack=soccer_stats.attack(p)
+        if attack:values.add(str(attack['level']))
     return values
 
 
 def validate_frame(im,data,clubs):
-    if soccer_look.v5():
+    from visual_capture import layout_issues, renderer_layout
+    body_problems = layout_issues(renderer_layout({'v3_outro': im.info.get('v3_outro'),
+        'duo_portraits': im.info.get('duo_portraits', []), 'duo_caption': im.info.get('duo_caption')}))
+    if soccer_look.v5() or im.info.get('soccer_readable'):
         import soccer_v5_cards as v5
         problems=v5.check_frame(im,clubs)
         if not im.info.get('v3_outro'):
             import soccer_result_story
             extra=set(cards.drawn_numbers(im))-(numeric_material(data)|soccer_result_story.numeric_material(data))
             if extra:problems.append({'numbers_missing_from_material':sorted(extra)})
-        return problems
+        return problems + body_problems
     problems=rules.check_layout(im)+cards.check_club_badges(im,clubs)+rules.check_spacing(im)
     if not im.info.get('v3_outro'):
         import soccer_result_story
         extra=set(cards.drawn_numbers(im))-(numeric_material(data)|soccer_result_story.numeric_material(data))
         if extra:problems.append({'numbers_missing_from_material':sorted(extra)})
-    return problems
+    return problems + body_problems
 
 
 def durations(segments,audio):
@@ -258,12 +281,17 @@ def render_video(data,narr,audio,out):
     results.validate_data(data)
     __import__('solo_host').validate_audio(audio)
     times=durations(narr['segments'],audio);out.mkdir(parents=True,exist_ok=True);ensure_ffmpeg(out)
+    if soccer_look.readable():
+        from soccer_readable import minimum_seconds
+        times=[max(length,minimum_seconds(seg,data)) for seg,length in zip(narr['segments'],times)]
     if soccer_look.v5():
         times=[max(length,1.45+.25*(len(seg['meta'].get('goals',[]))-1)) if seg['kind']=='result' else length
                for seg,length in zip(narr['segments'],times)]
     # Ceil to complete frames; the resulting actual movie remains inside the strict budget.
     times=[math.ceil(t*FPS)/FPS for t in times]
     if sum(times)>results.LIMIT:raise ValueError('フレームの丸め後に60秒を超える')
+    import short_content
+    short_content.require(narr, times, out, data, maximum=results.LIMIT, video_name='collespo_soccer_results.mp4')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('声つきの動画だけを作る枠です')
     video=out/'collespo_soccer_results.mp4';clubs=__import__('soccer_result_story').clubs_for(data) if data.get('preview_followup') else resolve_clubs(data);images=[];layouts=[];previous=None;clock=0
@@ -303,18 +331,40 @@ def render_video(data,narr,audio,out):
     return verification
 
 
+def goal_short_narration(data):
+    """得点回も速報と同じ試合経過・本人の出場/詳細成績を使う。"""
+    # 得点の事実・最終結果・得点時刻・本人の出場/シュートを別の札にする。
+    # 既存のv5/v6札を再利用し、材料がない日はgate側で止める。
+    base = narration(data)
+    detail = __import__('soccer_result_story').narration(data)
+    # 元の得点・アシストの冒頭を保ち、後段だけを既存の詳しい結果と共有。
+    if base.get('segments'):
+        base['segments'] = [base['segments'][0]] + [s for s in detail['segments']
+            if s['kind'] not in ('followup','roster','outro','flash-results','other-results')] + [base['segments'][-1]]
+    return __import__('short_context').soccer(base, data, readable=soccer_look.readable())
+
+
+
+def production_narration(data, *, goal_short=False):
+    """速報は既存の得点導入、朝の結果は既存の注目試合導入を使う。"""
+    narr = goal_short_narration(data) if goal_short else __import__('soccer_result_story').narration(data)
+    narr = __import__('short_context').soccer(narr, data, readable=soccer_look.readable())
+    if not goal_short and soccer_look.v5() and not any(s['kind'] in ('followup','flash-results','other-results') for s in narr['segments']):
+        from soccer_v5_program import add_player_scene
+        narr = add_player_scene(narr, data)
+    import host_split
+    return host_split.adapt(narr, 'soccer_results')
+
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--data',type=Path,default=ROOT/'data/soccer_results.json')
     ap.add_argument('--narration-out',type=Path)
     ap.add_argument('--audio-dir',type=Path)
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer_results')
-    args=ap.parse_args();data=json.loads(args.data.read_text(encoding='utf-8'));narr=__import__('soccer_result_story').narration(data)
-    if soccer_look.v5() and not any(s['kind']=='followup' for s in narr['segments']):
-        from soccer_v5_program import add_player_scene
-        narr=add_player_scene(narr,data)
+    ap.add_argument('--goal-short',action='store_true',help='既存の日本人選手の得点・アシスト導入を使う')
+    args=ap.parse_args();data=json.loads(args.data.read_text(encoding='utf-8'));narr=production_narration(data,goal_short=args.goal_short)
     import host_split
-    narr = host_split.adapt(narr, 'soccer_results')
     if args.audio_dir:
         # 立ち絵欠落で全音声が代役になった場合も、確定後の原稿を読む。
         host_split.render_audio(args.audio_dir, args.out)

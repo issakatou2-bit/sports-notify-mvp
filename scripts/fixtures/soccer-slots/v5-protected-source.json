@@ -2,10 +2,10 @@
   "base": "bbf0073",
   "files": {
     "scripts/soccer_v4_cards.py": "ec1f26eae58e30791c85472966dcdce80882e18eb154f2e505083e26509673b3",
-    "scripts/characters.py": "3f347ac88ff4b3474e1ebaf3ceabcb2a85db3bad9dc5c8fe38062ba37f3794a5",
+    "scripts/characters.py": "573d107399e85f1d9814c1aced80381bc7feef72a8c1564ebc7351158d28260d",
     "scripts/video_common.py": "4ff4cd759858ea8964f2a29a883eb41c9155767be5b71226340567ca4b797a3e",
-    "scripts/generate_video.py": "c093032b4967ad1675a9d4cf83af070792bfc42c3b0742712d6a0c28a401129c",
-    "scripts/generate_morning_short.py": "fc5be58ec5fd1ce107f71c57c996060a339567e7f6360b5846b77deeff380115"
+    "scripts/generate_video.py": "77de97ce4c46b71e725dd3070a19f5bf53d98e4cb002c7e788f048e5fe782824",
+    "scripts/generate_morning_short.py": "2bc110078e841743b5503792f504170b22b81eb2c877b6802006507777f0a27d"
   },
   "functions": {
     "scripts/review_render_v3.py": {
@@ -62,19 +62,19 @@
       "clubs_for": "60b7e7feccb5f69cf4a0851559b26c432ae921a507bec04b26459c3e850837f4",
       "kickoff": "9f038c8ba3ceefb8ceb67be2ec696ea5dd6c0c1373d7d694d995c73d95f8726d",
       "preview_program": "331620c576b80f896d838ed5a0f248f1fbcd743f783e1e3d9dddcd16e2f396eb",
-      "race_program": "41ac4a5df53e462da2f6880eaf4b416cad76401c0883c54e6f6e26d09511d5e0",
+      "race_program": "bdb40251b99df74869b0de9da1ab5b700a0dca2f8f262ead4b3cbeb11be88e57",
       "week_program": "9090815686c1c6258c169cd5d1229bba4ae2f6ae490d0064ed535c7906c3d01c",
-      "package": "66b35a83aaa71f4abd91db75c99885556eb84e99c9208077e309b73d4d7ba6dd",
+      "package": "9aab4969499fa5d510ee0c50df4a0e4f57e79c1438bf963dd297f8482c852467",
       "durations": "55f753980e1ada30405e7ab6856a159b102b07fe78f60f7de726beaf270fdebe"
     },
     "scripts/soccer_results_render.py": {
       "resolve_clubs": "693f56be7caf60e4ebf54b43a25eac9c62172ccc4e9f0ee2043c91f9eaa64d76",
-      "narration": "2e80655c56a9fe4d954c0d4a36befed1fdf7f6ad57c065b3898728f497072d07",
-      "program_spec": "620751b9340024b83fb734d03e92f41822cf04566073464d00da5037d0c7f3ab",
+      "narration": "53b880424230f66e99aab44804cccc2ba773ef455ce7cde8d678ba42318610fd",
+      "program_spec": "38a823f5d81c8a23910d74510fd16824f41afe2d5dadd2552265689c755c4a5b",
       "cover": "07e7a1a1e6c4bce7e93777f08b0caf788049f6a01ab51a10973dd3c9bc2e80e5",
       "timeline": "b7cff289ec9a64ba1e21113d8a80790fc5f9e17f476adcb24842a2fe8f100bca",
-      "roster_screen": "af4c45c8273b11c7e14bf085ec7f8d6e5f965a11236f6e3fc3a9ae973b599ab2",
-      "numeric_material": "9dff45da41454cd155723c2378325cac325ca479e8edfcba5187bcc00e1f23d8",
+      "roster_screen": "62a34dcc2d243f4bad7991c09065a768a149cc652242b3776beb64b00799ea66",
+      "numeric_material": "bce77ea01971d2c55a9a776575c0edba5530cacc512e34b15d51432559a61c8f",
       "durations": "08758b321344f2f655cbdd5c03a55ec28829ac3918060854b3f85c85769f4379"
     },
     "scripts/soccer_voices_render.py": {

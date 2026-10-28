@@ -210,6 +210,7 @@ def fan_rows(material, reddit=False):
     out = []
     for row in material.get('voices') or []:
         text = row.get('ja') or row.get('original') or row.get('title') or ''
+        if not __import__('fan_privacy').safe(row): continue
         if not text or len(text) > (140 if reddit else 100) or not row.get('url') or '@' in text: continue
         targets=[p for p in PLAYERS if story.player_match(row,p)]
         if reddit and not targets:
@@ -222,7 +223,7 @@ def fan_rows(material, reddit=False):
             item.update(original=original, translated=row.get('ja'), display_text=text,
                         subject_type='thread' if p['name_en'].startswith('reddit:') else 'player',
                         language='ja' if re.search(r'[ぁ-んァ-ン一-龯]', original) else 'other',
-                        source='Redditの試合スレッド' if reddit else row.get('source') or '公式ハイライトのコメント',
+                        source=__import__('fan_privacy').LABEL if reddit else row.get('source') or '公式ハイライトのコメント',
                         platform='reddit' if reddit else 'youtube', translation_note=FAN_NOTE)
             item['id'] = digest(['fan', row['url'], original, p['name_en']]); out.append(item)
     return out[:6]
@@ -352,7 +353,7 @@ def reaction_material(hub, player_en, now=None):
             row=event['observations'][-1]
             if row.get('language')!='ja': continue
             rows.append(dict(kind='youtube' if row['platform']=='youtube' else 'reddit', original=row['original']+'（'+FAN_NOTE+'）',
-                             source=row['source'], url=row['url'], at=row['published_at'], player_en=player_en, hub_event=event))
+                             source=__import__('fan_privacy').source(row), url=row['url'], at=row['published_at'], player_en=player_en, hub_event=event))
         else:
             row=event['observations'][-1]
             if row['origin'] not in ('sponichi','hochi','sanspo','daily') or not re.search(r'[ぁ-んァ-ン一-龯]',row['original']): continue

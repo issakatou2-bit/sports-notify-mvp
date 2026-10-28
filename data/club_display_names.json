@@ -2852,6 +2852,136 @@
       ],
       "reason": "ELリーグフェーズ参加クラブ。",
       "source": "https://www.uefa.com/uefaeuropaleague/clubs/"
+    },
+    {
+      "id": "SG Sonnenhof Großaspach",
+      "league": "DFB",
+      "current": "グロースアスパッハ",
+      "display": "グロースアスパッハ",
+      "short": "グロースアスパッハ",
+      "reading": "グロースアスパッハ",
+      "legacy": "グロースアスパッハ",
+      "aliases": [
+        "SG Sonnenhof Großaspach"
+      ],
+      "reason": "杯戦のAPI表記を登録。日本語出典の通常の短い呼称を使用。所属は名簿で別途照合。",
+      "source": "https://soccer.yahoo.co.jp/ws/category/ger/game/261027021/info"
+    },
+    {
+      "id": "VfL Bochum",
+      "league": "DFB",
+      "current": "ボーフム",
+      "display": "ボーフム",
+      "short": "ボーフム",
+      "reading": "ボーフム",
+      "legacy": "ボーフム",
+      "aliases": [
+        "VfL Bochum"
+      ],
+      "reason": "杯戦のAPI表記を登録。日本語出典の通常の短い呼称を使用。所属は名簿で別途照合。",
+      "source": "https://ja.wikipedia.org/wiki/VfLボーフム"
+    },
+    {
+      "id": "Karlsruher SC",
+      "league": "DFB",
+      "current": "カールスルーエ",
+      "display": "カールスルーエ",
+      "short": "カールスルーエ",
+      "reading": "カールスルーエ",
+      "legacy": "カールスルーエ",
+      "aliases": [
+        "Karlsruher SC"
+      ],
+      "reason": "杯戦のAPI表記を登録。日本語出典の通常の短い呼称を使用。所属は名簿で別途照合。",
+      "source": "https://ja.wikipedia.org/wiki/カールスルーエSC"
+    },
+    {
+      "id": "Holstein Kiel",
+      "league": "DFB",
+      "current": "ホルシュタイン・キール",
+      "display": "ホルシュタイン・キール",
+      "short": "ホルシュタイン・キール",
+      "reading": "ホルシュタインキール",
+      "legacy": "ホルシュタイン・キール",
+      "aliases": [
+        "Holstein Kiel"
+      ],
+      "reason": "杯戦のAPI表記を登録。日本語出典の通常の短い呼称を使用。所属は名簿で別途照合。",
+      "source": "https://ja.wikipedia.org/wiki/ホルシュタイン・キール"
+    },
+    {
+      "id": "1. FC Magdeburg",
+      "league": "DFB",
+      "current": "マクデブルク",
+      "display": "マクデブルク",
+      "short": "マクデブルク",
+      "reading": "マクデブルク",
+      "legacy": "マクデブルク",
+      "aliases": [
+        "1. FC Magdeburg"
+      ],
+      "reason": "杯戦のAPI表記を登録。日本語出典の通常の短い呼称を使用。所属は名簿で別途照合。",
+      "source": "https://ja.wikipedia.org/wiki/1.FCマクデブルク"
+    },
+    {
+      "id": "Tavernes de la Valldigna",
+      "league": "CDR",
+      "current": "タベルネス",
+      "display": "タベルネス",
+      "short": "タベルネス",
+      "reading": "タベルネス",
+      "legacy": "タベルネス",
+      "aliases": [
+        "Tavernes de la Valldigna",
+        "UE Tavernes",
+        "UE Tavernes de la Valldigna"
+      ],
+      "reason": "杯戦のAPI表記を登録。日本語出典の通常の短い呼称を使用。所属は名簿で別途照合。",
+      "source": "https://www.nikkansports.com/soccer/world/news/202610050002018.html"
+    },
+    {
+      "id": "Alcoyano",
+      "league": "CDR",
+      "current": "アルコヤーノ",
+      "display": "アルコヤーノ",
+      "short": "アルコヤーノ",
+      "reading": "アルコヤーノ",
+      "legacy": "アルコヤーノ",
+      "aliases": [
+        "Alcoyano",
+        "CD Alcoyano"
+      ],
+      "reason": "杯戦のAPI表記を登録。日本語出典の通常の短い呼称を使用。所属は名簿で別途照合。",
+      "source": "https://ja.wikipedia.org/wiki/CDアルコヤーノ"
+    },
+    {
+      "id": "Dynamo Dresden",
+      "league": "DFB",
+      "current": "ディナモ・ドレスデン",
+      "display": "ディナモ・ドレスデン",
+      "short": "ディナモ・ドレスデン",
+      "reading": "ディナモドレスデン",
+      "legacy": "ディナモ・ドレスデン",
+      "aliases": [
+        "Dynamo Dresden",
+        "SG Dynamo Dresden"
+      ],
+      "reason": "杯戦のAPI表記を登録。日本語出典の通常の短い呼称を使用。所属は名簿で別途照合。",
+      "source": "https://ja.wikipedia.org/wiki/SGディナモ・ドレスデン"
+    },
+    {
+      "id": "VfL Wolfsburg",
+      "league": "DFB",
+      "current": "ヴォルフスブルク",
+      "display": "ヴォルフスブルク",
+      "short": "ヴォルフスブルク",
+      "reading": "ヴォルフスブルク",
+      "legacy": "ヴォルフスブルク",
+      "aliases": [
+        "VfL Wolfsburg"
+      ],
+      "reason": "杯戦のAPI表記を登録。日本語出典の通常の短い呼称を使用。所属は名簿で別途照合。",
+      "source": "https://ja.wikipedia.org/wiki/VfLヴォルフスブルク"
     }
   ]
 }

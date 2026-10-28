@@ -17,6 +17,7 @@ import ui_voice_parts as parts
 import ui_voice_queue as q
 import ui_voice_stock as stock
 import ui_voice_worker as worker
+import ui_voice_policy as policy
 from test_host_split import day_for
 import test_ui_voice_queue as fixtures
 from test_ui_voice_queue import AT, MemoryQueue, SCRIPT, portraits, stock_sleep, tone
@@ -40,9 +41,11 @@ class PortraitFallback(unittest.TestCase):
         self.env.start()
         self.clock = patch.object(q, 'now', return_value=AT)
         self.clock.start()
+        self.decision = patch.object(policy,'decide',return_value=dict(version=1,planned_host='ui',reason=None,comparison_eligible=True,mode='live'))
+        self.decision.start()
 
     def tearDown(self):
-        self.clock.stop(); self.env.stop(); self.temp.cleanup()
+        self.decision.stop(); self.clock.stop(); self.env.stop(); self.temp.cleanup()
 
     def generate(self, folder, kind, failure=None):
         folder.mkdir(parents=True)
@@ -50,6 +53,7 @@ class PortraitFallback(unittest.TestCase):
         source = hs.prepare(copy.deepcopy(SCRIPT), kind, day_for('ui', kind))
         # 複数区間の途中で雨衣が残らないことも検査する。
         source['segments'].append(dict(kind='outro', speaker=2, text='次の試合です。', meta={'who':'四国めたん'}))
+        source['host_original_segments'] = copy.deepcopy(source['segments'])
         path = folder/'narration.json'; path.write_bytes(q.encoded(source))
         audio = folder/'audio'
 
@@ -59,8 +63,9 @@ class PortraitFallback(unittest.TestCase):
             if failure == 'missing':
                 del queue.files[ref]
             elif failure == 'corrupt':
-                # 末尾が元から'!'でも必ず壊れるよう、1ビット反転する。
-                queue.files[ref] = queue.files[ref][:-1]+bytes([queue.files[ref][-1] ^ 1])
+                # 暗号文が偶然同じ末尾でも、必ず認証に失敗させる。
+                blob = queue.files[ref]
+                queue.files[ref] = blob[:-1]+bytes([blob[-1] ^ 1])
 
         with patch.object(q, 'GitQueue', return_value=queue), \
              patch.object(stock, 'asset_context', return_value=None), \
@@ -75,7 +80,8 @@ class PortraitFallback(unittest.TestCase):
         self.assertTrue(all(s['file'] and s['duration'] > 0 for s in manifest['segments']))
         self.assertTrue(all(s.get('voice_host', 'metan') == actual for s in manifest['segments']))
         if failure:
-            self.assertEqual(manifest['voice_resolution']['reason'], 'ui_portrait_unavailable')
+            self.assertEqual(manifest['voice_resolution']['reason'], 'ui_rebuilt_after_hold')
+            self.assertFalse(manifest['host_delivery']['comparison_eligible'])
         return path, audio, queue
 
     def test_every_kind_with_and_without_parts_finishes_video(self):
@@ -88,6 +94,11 @@ class PortraitFallback(unittest.TestCase):
             for missing in (False, True):
                 with self.subTest(kind=kind, missing=missing):
                     folder = self.folder/(kind.replace(':','-')+str(missing))
+                    if missing and policy.failure_action(dict(host_assignment=dict(kind=kind))) == 'defer_next_day':
+                        with self.assertRaises(policy.VoiceUnavailable):
+                            self.generate(folder,kind,'missing')
+                        self.assertEqual(hs.read(folder/'audio/manifest.json')['host_delivery']['action'],'defer_next_day')
+                        continue
                     _, audio, _ = self.generate(folder, kind, 'missing' if missing else None)
                     out = folder/'video'
                     hs.render_audio(audio, out)
@@ -105,8 +116,8 @@ class PortraitFallback(unittest.TestCase):
                     subprocess.run([q.ffmpeg(),'-v','error','-i',str(video),'-f','null','-'], check=True,capture_output=True)
                     hs.bind_video(video,audio)
                     receipt = hs.publication(video)
-                    self.assertEqual((receipt['planned_host'],receipt['actual_host']),('ui','metan' if missing else 'ui'))
-                    self.assertEqual(bool(receipt['host_fallback_reason']),missing)
+                    self.assertEqual((receipt['planned_host'],receipt['actual_host']),('metan','metan') if missing else ('ui','ui'))
+                    self.assertIsNone(receipt['host_fallback_reason'])
 
     def test_bad_cipher_and_missing_key_use_metan_for_all_segments(self):
         self.generate(self.folder/'corrupt', 'morning', 'corrupt')
@@ -122,7 +133,7 @@ class PortraitFallback(unittest.TestCase):
              patch.object(sn,'synth_one',side_effect=lambda text,speaker,out:(tone(text,out) or True)) as vv:
             q.configure(argparse.Namespace(audio_dir=audio,out=self.folder/'recovered'))
         self.assertEqual(vv.call_count,2)
-        self.assertEqual(hs.read(path)['voice_resolution']['reason'],'ui_portrait_unavailable')
+        self.assertEqual(hs.read(path)['voice_resolution']['reason'],'ui_rebuilt_after_hold')
         solo_host.validate_audio(hs.read(audio/'manifest.json')['segments'])
 
     def test_ps_validation_before_voice_receives_parts_or_uses_metan_preview(self):

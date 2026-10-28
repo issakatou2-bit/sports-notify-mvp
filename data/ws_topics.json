@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-21T04:09:28.380303+00:00",
-  "source": "MLB Stats API（球団情報・過去のワールドシリーズの試合結果・順位表）",
+  "updated_at": "2026-10-28T08:29:09.898889+00:00",
+  "source": "MLB Stats API（球団情報・試合結果・順位表・今季PSのboxscore・登録選手）",
   "topics": [
     {
       "key": "ws_title_history",
@@ -107,51 +107,27 @@
             "score": "10月28日"
           }
         ],
-        "ticker": "第1戦　10月24日（土）9時　ブリュワーズの本拠地"
+        "ticker": "第1戦　10月24日（土）・25日（日）9時　ブリュワーズの本拠地"
       },
       "team_id": 158,
       "abbr": "MIL",
       "title": "【MLB】ワールドシリーズ｜第1戦はブリュワーズの本拠地 #Shorts",
       "items": [
         [
-          "第1戦",
-          "10月24日（土）9時　ブリュワーズの本拠地"
+          "第1・2戦",
+          "10月24日（土）・25日（日）9時　ブリュワーズの本拠地"
         ],
         [
-          "第2戦",
-          "10月25日（日）9時　ブリュワーズの本拠地"
+          "第3〜5戦",
+          "10月27日（火）〜29日（木）9時　レイズの本拠地（第5戦は必要な場合）"
         ],
         [
-          "第3戦",
-          "10月27日（火）9時　レイズの本拠地"
-        ],
-        [
-          "第4戦",
-          "10月28日（水）9時　レイズの本拠地"
-        ],
-        [
-          "第5戦",
-          "10月29日（木）9時　レイズの本拠地"
-        ],
-        [
-          "第6戦",
-          "10月31日（土）9時　ブリュワーズの本拠地"
-        ],
-        [
-          "第7戦",
-          "11月1日（日）9時　ブリュワーズの本拠地"
-        ],
-        [
-          "本拠地の並び",
-          "2-3-2　第1・2・6・7戦がブリュワーズ、第3〜5戦がレイズ"
+          "第6・7戦",
+          "10月31日（土）・11月1日（日）9時　ブリュワーズの本拠地（必要な場合）"
         ],
         [
           "優勝まで",
           "先に4勝した球団がワールドシリーズ優勝　最大7試合"
-        ],
-        [
-          "第5戦以降",
-          "どちらも4勝に届いていない場合だけ開催"
         ],
         [
           "本拠地の理由",
@@ -163,6 +139,319 @@
       "ws": true,
       "ps_ended": false,
       "season": 2026
+    },
+    {
+      "key": "ws_ps_home_runs",
+      "hook": "WS両球団の今季PS本塁打上位",
+      "heading": "WS両球団の今季PS本塁打上位",
+      "intro": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。",
+      "items": [
+        [
+          "レイズ　Yandy Díaz",
+          "2本塁打"
+        ],
+        [
+          "レイズ　Cedric Mullins",
+          "1本塁打"
+        ],
+        [
+          "レイズ　Jonathan Aranda",
+          "1本塁打"
+        ],
+        [
+          "レイズ　Ryan Vilade",
+          "1本塁打"
+        ],
+        [
+          "レイズ　Victor Mesa Jr.",
+          "1本塁打"
+        ],
+        [
+          "レイズ　Liam Hicks",
+          "1本塁打"
+        ],
+        [
+          "レイズ　Junior Caminero",
+          "1本塁打"
+        ],
+        [
+          "ブリュワーズ　コントレラス",
+          "3本塁打"
+        ],
+        [
+          "ブリュワーズ　David Hamilton",
+          "2本塁打"
+        ],
+        [
+          "ブリュワーズ　Garrett Mitchell",
+          "2本塁打"
+        ],
+        [
+          "ブリュワーズ　Jackson Chourio",
+          "2本塁打"
+        ]
+      ],
+      "title": "【MLB】WS両球団の今季PS本塁打上位 #Shorts",
+      "label": "WS両球団の今季PS本塁打上位",
+      "intro_as_is": true,
+      "japanese": [],
+      "story": true,
+      "ws": true,
+      "ps_ended": false,
+      "season": 2026,
+      "team_id": 158,
+      "source": "MLB Stats API",
+      "scope": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。"
+    },
+    {
+      "key": "ws_ps_rbi",
+      "hook": "WS両球団の今季PS打点上位",
+      "heading": "WS両球団の今季PS打点上位",
+      "intro": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。",
+      "items": [
+        [
+          "レイズ　Liam Hicks",
+          "8打点"
+        ],
+        [
+          "レイズ　Chandler Simpson",
+          "6打点"
+        ],
+        [
+          "レイズ　Yandy Díaz",
+          "5打点"
+        ],
+        [
+          "レイズ　Jonathan Aranda",
+          "5打点"
+        ],
+        [
+          "レイズ　Junior Caminero",
+          "5打点"
+        ],
+        [
+          "ブリュワーズ　Jackson Chourio",
+          "9打点"
+        ],
+        [
+          "ブリュワーズ　コントレラス",
+          "8打点"
+        ],
+        [
+          "ブリュワーズ　Jake Bauers",
+          "6打点"
+        ]
+      ],
+      "title": "【MLB】WS両球団の今季PS打点上位 #Shorts",
+      "label": "WS両球団の今季PS打点上位",
+      "intro_as_is": true,
+      "japanese": [],
+      "story": true,
+      "ws": true,
+      "ps_ended": false,
+      "season": 2026,
+      "team_id": 158,
+      "source": "MLB Stats API",
+      "scope": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。"
+    },
+    {
+      "key": "ws_ps_average",
+      "hook": "WS両球団の今季PS打率上位",
+      "heading": "WS両球団の今季PS打率上位",
+      "intro": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。対象は20打席以上です。",
+      "items": [
+        [
+          "レイズ　Chandler Simpson",
+          "打率.293（44打席・41打数12安打）"
+        ],
+        [
+          "レイズ　Richie Palacios",
+          "打率.276（30打席・29打数8安打）"
+        ],
+        [
+          "レイズ　Yandy Díaz",
+          "打率.268（59打席・56打数15安打）"
+        ],
+        [
+          "ブリュワーズ　コントレラス",
+          "打率.383（54打席・47打数18安打）"
+        ],
+        [
+          "ブリュワーズ　David Hamilton",
+          "打率.348（25打席・23打数8安打）"
+        ],
+        [
+          "ブリュワーズ　Cooper Pratt",
+          "打率.333（48打席・45打数15安打）"
+        ]
+      ],
+      "title": "【MLB】WS両球団の今季PS打率上位 #Shorts",
+      "label": "WS両球団の今季PS打率上位",
+      "intro_as_is": true,
+      "japanese": [],
+      "story": true,
+      "ws": true,
+      "ps_ended": false,
+      "season": 2026,
+      "team_id": 158,
+      "source": "MLB Stats API",
+      "scope": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。対象は20打席以上です。"
+    },
+    {
+      "key": "ws_ps_strikeouts",
+      "hook": "WS両球団の今季PS奪三振上位",
+      "heading": "WS両球団の今季PS奪三振上位",
+      "intro": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。",
+      "items": [
+        [
+          "レイズ　Drew Rasmussen",
+          "27奪三振"
+        ],
+        [
+          "レイズ　Freddy Peralta",
+          "16奪三振"
+        ],
+        [
+          "レイズ　Ian Seymour",
+          "13奪三振"
+        ],
+        [
+          "ブリュワーズ　Aaron Ashby",
+          "20奪三振"
+        ],
+        [
+          "ブリュワーズ　Jacob Misiorowski",
+          "14奪三振"
+        ],
+        [
+          "ブリュワーズ　Abner Uribe",
+          "11奪三振"
+        ]
+      ],
+      "title": "【MLB】WS両球団の今季PS奪三振上位 #Shorts",
+      "label": "WS両球団の今季PS奪三振上位",
+      "intro_as_is": true,
+      "japanese": [],
+      "story": true,
+      "ws": true,
+      "ps_ended": false,
+      "season": 2026,
+      "team_id": 158,
+      "source": "MLB Stats API",
+      "scope": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。"
+    },
+    {
+      "key": "ws_ps_era",
+      "hook": "WS両球団の今季PS防御率上位",
+      "heading": "WS両球団の今季PS防御率上位",
+      "intro": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。対象は5回以上です。",
+      "items": [
+        [
+          "レイズ　Bryan Baker",
+          "防御率0.00（9回・自責点0）"
+        ],
+        [
+          "レイズ　Steven Matz",
+          "防御率1.80（5回・自責点1）"
+        ],
+        [
+          "レイズ　Kevin Kelly",
+          "防御率1.80（5回・自責点1）"
+        ],
+        [
+          "ブリュワーズ　DL Hall",
+          "防御率0.00（8回・自責点0）"
+        ],
+        [
+          "ブリュワーズ　Aaron Ashby",
+          "防御率0.00（18回・自責点0）"
+        ],
+        [
+          "ブリュワーズ　Robert Gasser",
+          "防御率0.60（15回・自責点1）"
+        ]
+      ],
+      "title": "【MLB】WS両球団の今季PS防御率上位 #Shorts",
+      "label": "WS両球団の今季PS防御率上位",
+      "intro_as_is": true,
+      "japanese": [],
+      "story": true,
+      "ws": true,
+      "ps_ended": false,
+      "season": 2026,
+      "team_id": 158,
+      "source": "MLB Stats API",
+      "scope": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。対象は5回以上です。"
+    },
+    {
+      "key": "ws_ps_hits_streak",
+      "hook": "今季PSで継続中の連続試合安打",
+      "heading": "今季PSで継続中の連続試合安打",
+      "intro": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。選手自身の出場試合が対象です。安打は四球・死球・犠打のみの試合を挟んでも継続し、その試合は数えません。",
+      "items": [
+        [
+          "ブリュワーズ　Sal Frelick",
+          "4試合連続安打"
+        ],
+        [
+          "ブリュワーズ　Jackson Chourio",
+          "4試合連続安打"
+        ],
+        [
+          "ブリュワーズ　Cooper Pratt",
+          "3試合連続安打"
+        ],
+        [
+          "レイズ　Yandy Díaz",
+          "2試合連続安打"
+        ],
+        [
+          "ブリュワーズ　David Hamilton",
+          "2試合連続安打"
+        ],
+        [
+          "レイズ　Liam Hicks",
+          "2試合連続安打"
+        ]
+      ],
+      "title": "【MLB】今季PSで継続中の連続試合安打 #Shorts",
+      "label": "今季PSで継続中の連続試合安打",
+      "intro_as_is": true,
+      "japanese": [],
+      "story": true,
+      "ws": true,
+      "ps_ended": false,
+      "season": 2026,
+      "team_id": 158,
+      "source": "MLB Stats API",
+      "scope": "2026年ポストシーズンの確定試合。レイズ13試合、ブリュワーズ12試合が対象です。選手自身の出場試合が対象です。安打は四球・死球・犠打のみの試合を挟んでも継続し、その試合は数えません。"
+    },
+    {
+      "key": "ws_season_matchup",
+      "hook": "WS両球団の今季の直接対決",
+      "heading": "WS両球団の今季の直接対決",
+      "intro": "2026年レギュラーシーズンの直接対決3試合の確定結果です。",
+      "items": [
+        [
+          "レイズ",
+          "1勝2敗"
+        ],
+        [
+          "ブリュワーズ",
+          "2勝1敗"
+        ]
+      ],
+      "title": "【MLB】WS両球団の今季の直接対決 #Shorts",
+      "label": "WS両球団の今季の直接対決",
+      "intro_as_is": true,
+      "japanese": [],
+      "story": true,
+      "ws": true,
+      "ps_ended": false,
+      "season": 2026,
+      "team_id": 158,
+      "source": "MLB Stats API",
+      "scope": "2026年レギュラーシーズンの直接対決3試合の確定結果です。"
     }
   ]
 }

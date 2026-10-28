@@ -649,7 +649,9 @@ def build_narration(topic: str) -> dict:
             if LIST_TOPICS[topic].get('game') and duo.enabled('game'):
                 narration['segments']=duo.game(narration['segments'],LIST_TOPICS[topic],list_items(topic))
                 narration['duration_budget']={'limit':45,'grace':0}
-        return narration
+        import ps_comment_facts
+        narration = ps_comment_facts.attach(narration, LIST_TOPICS[topic])
+        return __import__('short_context').attach_asset(narration, LIST_TOPICS[topic])
     if topic == "mlb_venue":
         return _narration_venue()
     if topic == "mlb_rivalry":
@@ -1701,6 +1703,11 @@ def _v3_focus(t, kind, meta, spec, topic, seg, dur):
 def render_v3(t, kind, meta, spec, topic, seg=None, dur=None):
     """新デザイン「電光掲示板」（review_render_v3）。材料の style="v3" のときだけ。"""
     import review_render_v3 as r3
+    if r3.LOOK == 'v4' and spec.get('game') and kind != 'outro':
+        import game_ui_short
+        material = dict(spec, items=list_items(meta.get('topic', topic)))
+        return game_ui_short.frame(t, kind, meta, material,
+                                   spec.get('kind_label') or ('PSの話題' if spec.get('story') else 'シーズンまとめ'))
     focus = _v3_focus(t, kind, meta, spec, topic, seg, dur)
     if kind=='next_line':
         import next_line
@@ -1829,6 +1836,10 @@ def main():
             at=next_line.publication_time(now.date().isoformat(),args.publish_at,now) if args.publish_at else now
             spec['next_line']=next_line.acquire('asset',at,spec.get('next_team_id') or spec.get('team_id'),args.next_schedule)
         narration = build_narration(args.topic)
+        import hook_ab
+        import host_split
+        narration = hook_ab.prepare(narration, host_split.asset_kind(args.topic),
+                                    hook_ab.publication_day(args.publish_at), LIST_TOPICS.get(args.topic))
     global VOICE_CREDIT
     if (LIST_TOPICS.get(args.topic) or {}).get("style") == "v3":
         # 新デザインの回は四国めたんが話す（10/6 本人「めたんをメインで」）。立ち絵も四国めたん。
@@ -1843,6 +1854,8 @@ def main():
     import host_split
     if not args.narration_out:
         narration = host_split.use_audio(narration, args.audio_dir)
+    if host_split.enabled():
+        narration['ui_stock_topic'] = args.topic
     narration = host_split.prepare(narration, host_split.asset_kind(args.topic))
     import solo_host
     if solo_host.for_segments(narration['segments']) == 'ui':
@@ -1852,6 +1865,11 @@ def main():
         VOICE_CREDIT = solo_host.UI_CREDIT
 
     if args.narration_out:
+        import sanity_sources
+        import hook_ab
+        if 'sanity_materials' not in narration:
+            narration['sanity_date_jst'] = hook_ab.publication_day(args.publish_at)
+            narration['sanity_materials'] = sanity_sources.capture(narration)
         p = pathlib.Path(args.narration_out)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(narration, ensure_ascii=False), encoding="utf-8")
@@ -1881,6 +1899,9 @@ def main():
     import duo
     is_duo=any((s.get('meta') or {}).get('duo') for s in narration['segments'])
     durations = duo.durations(segs) if is_duo else plan_durations(segs)
+    if (LIST_TOPICS.get(args.topic) or {}).get('game'):
+        import game_ui_short
+        segs = game_ui_short.annotate(segs, dict(LIST_TOPICS[args.topic], items=list_items(args.topic)))
     if is_duo:
         if len(segs)!=len(narration['segments']) or any(
             (a.get('text'),a.get('speaker'),a.get('kind'))!=(b.get('text'),b.get('speaker'),b.get('kind'))
@@ -1888,6 +1909,11 @@ def main():
             raise ValueError('掛け合い音声が保存原稿と一致しません。両話者の音声を作り直してください')
         errors=duo.check(segs,durations)
         if errors:raise ValueError('掛け合いの実音声: '+str(errors))
+    import short_content
+    import post_common
+    short_content.require(dict(narration, segments=[dict(s, **{k: a[k] for k in ('text', 'meta') if k in a})
+                           for s, a in zip(narration['segments'], segs)]), durations, out_dir,
+                          LIST_TOPICS.get(args.topic), maximum=post_common.MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
     import fan_events
     fan_events.prepare({'items':list_items(args.topic)}, segs, durations, out_dir)
@@ -1919,6 +1945,8 @@ def main():
     visual_key=None
     wipe_frame=0
     wipe_previous=None
+    import hook_ab
+    hook_scenes = hook_ab.SceneRecorder()
     try:
         for seg_index,(seg, dur) in enumerate(zip(segs, durations)):
             n = int(dur * FPS)
@@ -1948,11 +1976,13 @@ def main():
                     import review_render_v3 as _r3
                     _r3.set_program_clock(total / FPS)
                     image=render_v3(scene_elapsed+k/FPS,kind,meta,v2,args.topic,seg=seg,dur=dur)
+                    if narration.get('hook_ab'):
+                        hook_scenes.observe(image, total, FPS, screen)
                     card=image.info.get('asset_v4') or {}
                     key=(screen,card.get('kind'),card.get('head'),card.get('name'),card.get('page'),card.get('row'))
                     if key!=visual_key:
                         visual_key=key;wipe_frame=0;wipe_previous=previous_frame
-                    raw=video_common.short_transition(wipe_previous,image,wipe_frame,FPS,True) if _r3.LOOK=='v4' else image.tobytes()
+                    raw=video_common.short_transition(wipe_previous,image,wipe_frame,FPS,True) if _r3.LOOK=='v4' and not image.info.get('game_ui') else image.tobytes()
                     wipe_frame+=1
                     proc.stdin.write(raw)
                     previous_frame=raw
@@ -2029,6 +2059,8 @@ def main():
     secs = total / FPS
     size_mb = video_path.stat().st_size / 1024 / 1024
     host_split.bind_video(video_path, args.audio_dir)
+    import hook_ab
+    hook_ab.bind_video(video_path, narration, segs, durations, FPS, hook_scenes.starts)
     print(f"[info] 資産動画を生成しました: {video_path} "
           f"({size_mb:.1f}MB, {secs:.0f}秒)")
 
