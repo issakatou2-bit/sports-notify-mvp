@@ -15,7 +15,7 @@ import sys
 import tempfile
 import types
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 import wave
 
 from PIL import Image
@@ -52,6 +52,12 @@ def tone(text, path):
         wav.setparams((1, 2, 24000, 0, 'NONE', 'not compressed'))
         wav.writeframes(b''.join(struct.pack('<h', round(2000*math.sin(i*2*math.pi*440/24000)))
                                  for i in range(7200)))
+
+
+def stock_sleep(side_effect=None):
+    """注文待ちのsleepだけを差し替える。stock.timeは共通のtime部品で、そのsleepを替えると
+    Linuxのsubprocessの終了待ちまで横取りし、作業者が入れ子で2回動く（10/21・10/22のCI）。"""
+    return patch.object(stock, 'time', types.SimpleNamespace(sleep=Mock(side_effect=side_effect)))
 
 
 def portraits():
@@ -115,7 +121,7 @@ class QueueTest(unittest.TestCase):
             calls.append(seconds)
             worker.process(self.queue, self.folder/'cache', tone, portraits())
 
-        with patch.object(stock, 'asset_context', return_value=None), patch.object(stock.time, 'sleep', side_effect=poll), \
+        with patch.object(stock, 'asset_context', return_value=None), stock_sleep(poll), \
              patch.object(q, 'GitQueue', return_value=self.queue), \
              patch.object(sys, 'argv', ['synthesize', '--narration', str(narration), '--out-dir', str(audio)]), \
              patch.object(sn, 'engine_available') as vv, patch.object(worker, 'apsc_synthesizer') as real:
@@ -277,7 +283,7 @@ class QueueTest(unittest.TestCase):
         path = self.folder/'n.json'
         path.write_bytes(q.encoded(script))
         with patch.object(stock, 'asset_context', return_value=dict(topic='team_fixture', material_key='fixed')), \
-             patch.object(stock.time, 'sleep', side_effect=lambda seconds: worker.process(self.queue,self.folder/'stock-miss-cache',tone,portraits())):
+             stock_sleep(lambda seconds: worker.process(self.queue,self.folder/'stock-miss-cache',tone,portraits())):
             result = stock.fulfill(script,path,self.folder/'audio',self.queue)
         self.assertEqual(result['host'],'ui')
         self.assertEqual(len(self.queue.state),1)
@@ -300,7 +306,7 @@ class QueueTest(unittest.TestCase):
         clock = [AT]
         with patch.object(q, 'now', side_effect=lambda: clock[0]), \
              patch.dict(os.environ, COLLESPO_UI_VOICE_WAIT_MINUTES='1'), \
-             patch.object(stock.time, 'sleep', side_effect=lambda seconds: clock.__setitem__(0, clock[0]+timedelta(seconds=seconds))):
+             stock_sleep(lambda seconds: clock.__setitem__(0, clock[0]+timedelta(seconds=seconds))):
             with self.assertRaises(policy.VoiceUnavailable):
                 stock.fulfill(copy.deepcopy(SCRIPT), self.folder/'n.json', self.folder/'audio', self.queue)
             self.assertEqual(clock[0], AT+timedelta(minutes=1))
@@ -384,10 +390,10 @@ class QueueTest(unittest.TestCase):
         path.write_bytes(q.encoded(SCRIPT))
         for key in ('', 'invalid', base64.b64encode(b'short').decode('ascii')):
             with patch.dict(os.environ, COLLESPO_UI_PARTS_KEY=key), \
-                 patch.object(q, 'GitQueue') as remote, patch.object(stock.time, 'sleep') as wait:
+                 patch.object(q, 'GitQueue') as remote, stock_sleep() as clock:
                 with self.assertRaises(policy.VoiceUnavailable):
                     stock.fulfill(copy.deepcopy(SCRIPT), path, self.folder/'no-key')
-                remote.assert_not_called(); wait.assert_not_called()
+                remote.assert_not_called(); clock.sleep.assert_not_called()
                 with patch(__name__+'.tone') as synth:
                     with self.assertRaises(q.QueueError):
                         worker.process(self.queue, self.folder/'cache', synth, portraits())
