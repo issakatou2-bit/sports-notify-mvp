@@ -1,19 +1,277 @@
 {
   "schema_version": 1,
-  "date_jst": "2026-10-26",
-  "generated_at": "2026-10-27T01:30:47.752415+00:00",
+  "date_jst": "2026-10-27",
+  "generated_at": "2026-10-28T01:26:33.875868+00:00",
   "source": "ESPN・football-data.org",
-  "games": [],
-  "players": [],
-  "can_make": false,
+  "games": [
+    {
+      "id": "401874780",
+      "league": "SA",
+      "league_jp": "セリエA",
+      "start_utc": "2026-10-27T19:45Z",
+      "finished_utc": "2026-10-27T21:38:07+00:00",
+      "date_jst": "2026-10-27",
+      "score": {
+        "home": 4,
+        "away": 2
+      },
+      "players": [
+        {
+          "name": "菅原由勢",
+          "name_en": "Yukinari Sugawara",
+          "club": "カリアリ",
+          "side": "away",
+          "event_id": "401874780",
+          "athlete_id": "265965",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "MF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 1,
+          "on_target": 0,
+          "subbed_out": true,
+          "minutes": 90,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        }
+      ],
+      "goals": [
+        {
+          "minute": "10",
+          "scorer": "M'Bala Nzola",
+          "athlete_id": "261173",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "15",
+          "scorer": "Emanuele Lulli",
+          "athlete_id": "409371",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "21",
+          "scorer": "Niccolò Pisilli",
+          "athlete_id": "360235",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "81",
+          "scorer": "Daniel Maldini",
+          "athlete_id": "290545",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "85",
+          "scorer": "Rodrigo Mora",
+          "athlete_id": "387204",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "87",
+          "scorer": "Donyell Malen",
+          "athlete_id": "259481",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        }
+      ],
+      "unresolved": [],
+      "home": {
+        "id": "104",
+        "name_en": "AS Roma",
+        "name_jp": "ローマ",
+        "abbr": "ROMA"
+      },
+      "away": {
+        "id": "2925",
+        "name_en": "Cagliari",
+        "name_jp": "カリアリ",
+        "abbr": "CAG"
+      },
+      "match_stats": {
+        "source": "ESPN summary.boxscore.teams.statistics",
+        "home": {
+          "possession": 60.7,
+          "shots": 20,
+          "on_target": 8
+        },
+        "away": {
+          "possession": 39.3,
+          "shots": 19,
+          "on_target": 8
+        }
+      },
+      "goals_complete": true,
+      "score_crosscheck": "matched"
+    }
+  ],
+  "players": [
+    {
+      "name": "菅原由勢",
+      "name_en": "Yukinari Sugawara",
+      "club": "カリアリ",
+      "side": "away",
+      "event_id": "401874780",
+      "athlete_id": "265965",
+      "status": "starter",
+      "goals": 0,
+      "assists": 0,
+      "yellow_cards": 0,
+      "red_cards": 0,
+      "plays": [],
+      "position": "MF",
+      "stats_source": "ESPN summary.rosters.roster.stats",
+      "shots": 1,
+      "on_target": 0,
+      "subbed_out": true,
+      "minutes": 90,
+      "minutes_source": "ESPN keyEvents substitution",
+      "minutes_approx": true,
+      "appearance_evidence": "ESPN starter/subbedIn"
+    }
+  ],
+  "can_make": true,
   "rejected": [
     {
-      "event_id": "401882828",
+      "event_id": "401874980",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401876422",
+      "event_id": "401874786",
       "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401921833",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401921835",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401928493",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928501",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401928520",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928495",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401928521",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928549",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928509",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928534",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928508",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928510",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928553",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928502",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928488",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928547",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928503",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401928522",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401928533",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401928499",
+      "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401916920",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917027",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917028",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917029",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917030",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917031",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917026",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401916923",
+      "reason": "終了実時刻なし"
     }
   ]
 }
