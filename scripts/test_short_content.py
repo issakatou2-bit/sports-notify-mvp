@@ -76,7 +76,8 @@ class ShortContent(unittest.TestCase):
     def test_28_seconds_is_the_lower_boundary(self):
         doc, data = asset()
         self.assertEqual(s.assess(doc, [28], data)['status'], 'passed')
-        self.assertEqual(s.assess(doc, [27.999], data)['status'], 'held')
+        self.assertEqual(s.assess(doc, [27.2], data)['status'], 'passed')  # 1秒未満の不足は出す
+        self.assertEqual(s.assess(doc, [26.999], data)['status'], 'held')
 
     def test_35_seconds_with_one_fact_is_held(self):
         doc, data = asset(1)
