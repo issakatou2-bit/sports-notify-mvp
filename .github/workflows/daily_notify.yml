@@ -662,6 +662,17 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
   deploy:
     needs: build_and_notify
     if: needs.build_and_notify.outputs.standings_ready == 'true'
