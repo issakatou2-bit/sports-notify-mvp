@@ -150,7 +150,8 @@ class ResultsPolish(unittest.TestCase):
             manifest=dict(narr,narration_path=str(source),segments=[dict(s,voice_host='ui') for s in narr['segments']])
             (audio/'manifest.json').write_text(json.dumps(manifest),encoding='utf8')
             def synth(text,speaker,path):
-                Path(path).write_bytes(b'test audio');return True
+                from voice_test_fixture import wav_file
+                wav_file(path,frames=24000);return True
             with patch.object(queue,'ensure_portrait',side_effect=queue.QueueError('missing')),patch.object(sn,'engine_available',return_value=True),patch.object(sn,'synth_one',side_effect=synth) as generated,patch.object(sn,'audio_duration',return_value=1):
                 queue.configure(argparse.Namespace(audio_dir=audio,out=folder/'video'))
             saved=json.loads((audio/'manifest.json').read_text(encoding='utf8'))

@@ -169,6 +169,8 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
     if focus:
         im.info['v3_focus']=focus_info
     im.info['v3_card_contents']=layer.info.get('v3_card_contents',[])
+    import render_timeline
+    render_timeline.scene(im, dict(page=selected))
     v3 = spec.get('v3') or {}
     r3.ticker(im, t, v3.get('ticker'), once=v3.get('ticker_once',False))
     r3.source(d, source_text, second)

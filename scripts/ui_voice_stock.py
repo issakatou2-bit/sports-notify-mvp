@@ -114,6 +114,8 @@ def install(order, bundle, out, narration):
     import host_split
     payload = host_split.carry(narration, dict(segments=manifest, voice_resolution=resolution))
     (out/'manifest.json').write_bytes(q.encoded(payload))
+    import voice_manifest
+    voice_manifest.save(out, manifest, dict(narration, voice_resolution=resolution), 'voisona')
     return resolution
 
 

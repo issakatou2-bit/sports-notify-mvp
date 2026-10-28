@@ -129,6 +129,11 @@ class QueueTest(unittest.TestCase):
             vv.assert_not_called(); real.assert_not_called()
         self.assertEqual(calls, [20])
         manifest = json.loads((audio/'manifest.json').read_text(encoding='utf8'))
+        voice_record = json.loads((audio/'voice_manifest.json').read_text(encoding='utf8'))['segments'][0]
+        self.assertEqual((voice_record['voice_engine'], voice_record['speaker'], voice_record['source_speaker']),
+                         ('voisona', None, 2))
+        import voice_manifest
+        self.assertEqual(voice_record['sha256'], voice_manifest.sha256(audio/voice_record['file']))
         expected = self.folder/'expected.wav'
         tone('', expected)
         self.assertEqual((audio/'seg_000.wav').read_bytes()[-14400:], expected.read_bytes()[-14400:])

@@ -100,6 +100,8 @@ def synthesize(text, destination):
                 if not wav.getnframes() or wav.getsampwidth() != 2:
                     raise ValueError('雨衣のWAVが空または16-bit PCMではありません')
             pending.replace(destination)
+            import voice_manifest
+            voice_manifest.record_file(destination, text, 'voisona', 2)
             return True
         time.sleep(.25)
     raise ValueError('雨衣の音声生成が時間内に完了しませんでした')

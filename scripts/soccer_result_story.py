@@ -295,6 +295,11 @@ def rebuild_voice(seg, previous, directory, stage):
     if not ok:raise ValueError('短縮した台詞の音声合成に失敗しました')
     duration=synth.audio_duration(path)
     if duration<=0:raise ValueError('短縮した台詞の実音声がありません')
+    import voice_manifest
+    source_manifest=Path(previous['file']).parent/'voice_manifest.json' if previous.get('file') else None
+    provenance=json.loads(source_manifest.read_text(encoding='utf-8')) if source_manifest and source_manifest.is_file() else {}
+    voice_manifest.record_file(path,seg['text'],'voisona' if previous.get('voice_host')=='ui' else 'voicevox',
+                               seg['speaker'],index=previous.get('index'),planned=provenance)
     return dict(previous,**seg,file=str(path),duration=duration)
 
 

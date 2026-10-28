@@ -391,8 +391,12 @@ def check_commit_list() -> int:
       gitが追跡していて、commit_data.sh の引数に無いもの。
     """
     step("作ったのにコミットしていないもの")
+    import media_records_check
+    record_errors = media_records_check.errors(ROOT)
+    for error in record_errors:
+        print('NG', error)
     tracked = set((run(["git", "ls-files", "data"]).stdout or "").split())
-    bad = 0
+    bad = len(record_errors)
     for wf in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
         text = wf.read_text(encoding="utf-8")
         if "commit_data.sh" not in text:

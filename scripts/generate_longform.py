@@ -788,6 +788,8 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None,
         for ln in lines[:shown]:
             d.text((COL_X0 + TALK_PAD, yy), ln, font=font(size), fill=TEXT)
             yy += size + TALK_LEAD
+        import render_timeline
+        render_timeline.subtitle(im, ''.join(lines), visible=bool(lines[:shown]))
 
     # 音声の表記。立ち絵が画面の下端まで来ているので、
     # 左右の隅ではなく中央の列の下に置く(重ならない唯一の場所)。
@@ -868,6 +870,9 @@ def main() -> int:
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / "collespo_longform.mp4"
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs)
+    segs = [dict(s, _source_line_ids=[s.get('index', i) + 1]) for i, s in enumerate(segs)]
 
     # 冒頭。2人ぶんの「コレスポ」を1つに重ねて、1枚の札にする。
     # 重ねられなかったら(音が無い日など)、そのまま前へ出さずに落とす。
@@ -884,6 +889,7 @@ def main() -> int:
         dur = max(float(s.get("duration") or 0) for s in pair)
         card = {"kind": kind, "text": "", "speaker": 3, "panel": None,
                 "file": str(mixed), "duration": dur}
+        card['_source_line_ids'] = [n for s in pair for n in s['_source_line_ids']]
         if where == 0:
             body.insert(0, card)
         else:
@@ -958,6 +964,7 @@ def main() -> int:
     frame0 = 0
     try:
         for i, (seg, dur) in enumerate(pages):
+            timeline.select(seg, i, page=i)
             if seg.get("panel"):
                 current = cards.get(seg["panel"])
             n = int(dur * FPS)
@@ -982,7 +989,7 @@ def main() -> int:
                                          panel_t=r["panel_since"] + tk, chapter_t=r["chapter_since"] + tk,
                                          dur=dur)
                     last_frame = video_common.crossfade(last, im, k, fade, (W, H))
-                    proc.stdin.write(last_frame)
+                    timeline.write(proc.stdin, last_frame, im, overlap=last is not None and k < fade)
                     continue
                 p, settled = video_common.anim_step(k, n)
                 if __import__('bubble_styles').selected():
@@ -1012,7 +1019,7 @@ def main() -> int:
                                 args.portrait_dir, state,
                                 "冒頭" if is_intro else "対話")
                 last_frame = video_common.crossfade(last, im, k, fade, (W, H))
-                proc.stdin.write(last_frame)
+                timeline.write(proc.stdin, last_frame, im, overlap=last is not None and k < fade)
             last = last_frame
             frame0 += n
     except BrokenPipeError:
@@ -1035,6 +1042,7 @@ def main() -> int:
             encoding="utf-8", errors="replace")[:600])
         return 1
     mb = video_path.stat().st_size / 1024 / 1024
+    timeline.save(video_path, args.audio_dir)
     print(f"[info] 動画を出力しました -> {video_path} "
           f"({total:.0f}秒 / {mb:.1f}MB)")
     return 0

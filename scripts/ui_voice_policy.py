@@ -146,6 +146,8 @@ def failure(narration, npath, out, reason):
                 voice_resolution=narration['voice_resolution'], segments=[])
     (out/'manifest.json').write_bytes(q.encoded(held))
     (out/'voice-hold.json').write_bytes(q.encoded(held))
+    import voice_manifest
+    voice_manifest.save(out, [], held, status='held')
     print('::warning title=雨衣の回を停止::'+reason+' / '+action)
     if action == 'defer_next_day':
         raise VoiceUnavailable(reason)

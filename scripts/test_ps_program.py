@@ -96,7 +96,7 @@ class ProgramTests(unittest.TestCase):
         self.assertIn('CWSとWSH',spoken)
         self.assertEqual(apply_readings('NEWS lowercase ws CWCS'), 'NEWS lowercase ws CWCS')
         reply=mock.Mock();reply.json.return_value={};reply.content=b'audio'
-        with mock.patch.object(synth.requests,'post',return_value=reply) as post:
+        with mock.patch.object(synth.requests,'post',return_value=reply) as post,mock.patch('voice_manifest.record_file'):
             self.assertTrue(synth.synth_one(source,2,mock.Mock()))
             self.assertEqual(post.call_args_list[0].kwargs['params']['text'],spoken)
         snap,ev,now=fixture(29)
