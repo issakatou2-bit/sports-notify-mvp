@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-27T06:50:12.819915+00:00",
+  "generated_at": "2026-10-28T08:31:59.949731+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -7,7 +7,7 @@
       "season": {
         "start": "2026-08-21",
         "end": "2027-05-30",
-        "matchday": 8,
+        "matchday": 9,
         "year": 2026
       },
       "stale": false,
@@ -2028,6 +2028,17 @@
       "table": [
         {
           "position": 1,
+          "team": "SS Lazio",
+          "played": 9,
+          "won": 8,
+          "draw": 1,
+          "lost": 0,
+          "points": 25,
+          "gf": 22,
+          "ga": 7
+        },
+        {
+          "position": 2,
           "team": "FC Internazionale Milano",
           "played": 8,
           "won": 7,
@@ -2038,29 +2049,29 @@
           "ga": 10
         },
         {
-          "position": 2,
-          "team": "SS Lazio",
-          "played": 8,
-          "won": 7,
-          "draw": 1,
-          "lost": 0,
-          "points": 22,
-          "gf": 16,
-          "ga": 5
-        },
-        {
           "position": 3,
           "team": "AS Roma",
-          "played": 8,
-          "won": 5,
+          "played": 9,
+          "won": 6,
           "draw": 3,
           "lost": 0,
-          "points": 18,
-          "gf": 19,
-          "ga": 6
+          "points": 21,
+          "gf": 23,
+          "ga": 8
         },
         {
           "position": 4,
+          "team": "Como 1907",
+          "played": 9,
+          "won": 6,
+          "draw": 2,
+          "lost": 1,
+          "points": 20,
+          "gf": 17,
+          "ga": 8
+        },
+        {
+          "position": 5,
           "team": "AC Milan",
           "played": 8,
           "won": 5,
@@ -2068,17 +2079,6 @@
           "lost": 0,
           "points": 18,
           "gf": 16,
-          "ga": 7
-        },
-        {
-          "position": 5,
-          "team": "Como 1907",
-          "played": 8,
-          "won": 5,
-          "draw": 2,
-          "lost": 1,
-          "points": 17,
-          "gf": 14,
           "ga": 7
         },
         {
@@ -2106,24 +2106,24 @@
         {
           "position": 8,
           "team": "Torino FC",
-          "played": 8,
+          "played": 9,
           "won": 4,
           "draw": 1,
-          "lost": 3,
+          "lost": 4,
           "points": 13,
-          "gf": 13,
-          "ga": 11
+          "gf": 14,
+          "ga": 14
         },
         {
           "position": 9,
           "team": "Cagliari Calcio",
-          "played": 8,
+          "played": 9,
           "won": 4,
           "draw": 1,
-          "lost": 3,
+          "lost": 4,
           "points": 13,
-          "gf": 6,
-          "ga": 9
+          "gf": 8,
+          "ga": 13
         },
         {
           "position": 10,
@@ -2172,13 +2172,13 @@
         {
           "position": 14,
           "team": "US Sassuolo Calcio",
-          "played": 8,
+          "played": 9,
           "won": 2,
           "draw": 2,
-          "lost": 4,
+          "lost": 5,
           "points": 8,
-          "gf": 12,
-          "ga": 16
+          "gf": 14,
+          "ga": 22
         },
         {
           "position": 15,
@@ -2539,7 +2539,7 @@
       "season": {
         "start": "2026-08-28",
         "end": "2027-05-22",
-        "matchday": 7,
+        "matchday": 8,
         "year": 2026
       },
       "stale": false,
