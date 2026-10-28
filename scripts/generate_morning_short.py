@@ -4502,8 +4502,10 @@ def main():
         if sum(durations)>limit+grace:
             raise ValueError(f'17:00の尺が予算{limit}+{grace}秒を超えています: {sum(durations):.2f}秒。声の設定を変えず原稿を短くしてください')
     import short_content
+    # 夕方の上限は 17:00 の players だけ。voices・press は以前から上限なし（10/27 voices 75.4秒）。
+    # 55+6秒を当てると 10/28 voices 79秒が止まった。ショートの上限3分だけを守る
     short_content.require(dict(narration, segments=segs), durations, out_dir,
-                          dict(data, players=players), maximum=sum(post_common.duration_budget('morning')) if args.mode=='players' else post_common.MAX_SECONDS+post_common.BUDGET_GRACE,
+                          dict(data, players=players), maximum=sum(post_common.duration_budget('morning')) if args.mode=='players' else 180.0,
                           video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
     if any((s.get('meta') or {}).get('duo') for s in narration['segments']):
