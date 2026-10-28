@@ -89,6 +89,16 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(extra.supplement(data,{'EL':{'events':[event]}})['games']),1)
         self.assertTrue(extra.supplement(material([]),{'EL':ValueError('bad')})['source_errors'])
 
+    def test_cup_round_from_season_slug(self):
+        # DFB・国王杯はラウンドを season.slug にだけ持つ。リーグの「〜round」は杯戦扱いしない。
+        def ev(slug):return dict(id='7',date='2026-10-28T19:45:00Z',season=dict(slug=slug),competitions=[dict(competitors=[dict(homeAway='home',team=dict(id='1',displayName='Bayern Munich')),dict(homeAway='away',team=dict(id='2',displayName='1. FC Magdeburg'))],status={'type':{'completed':False}})])
+        dfb=next(c for c in select.competitions() if c['code']=='DFB')
+        bl1=next(c for c in select.competitions() if c['code']=='BL1')
+        cup=extra.parse({'events':[ev('second-round')]},dfb)[0]
+        self.assertEqual((cup['phase'],cup['phase_source']),('knockout','second round'))
+        self.assertNotIn('phase',extra.parse({'events':[ev('second-round')]},bl1)[0])
+        self.assertNotIn('phase',extra.parse({'events':[ev('2026-27')]},dfb)[0])
+
     def test_single_day_fetch_deduplicates_and_never_masks_partial_failure(self):
         comp=next(c for c in select.competitions() if c['code']=='PL')
         event={'id':'42'}
