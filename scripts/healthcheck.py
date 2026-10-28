@@ -462,7 +462,8 @@ def check_assets(max_gap_days: int = 2) -> tuple:
                   and not k.startswith('ws_')]
     if not candidates:
         return "| 資産動画 | 選択対象なし（制作見送り） | 球場・球団まとめは停止中・補充なし |", 0
-    days = sorted({(v.get("published_at") or "")[:10]
+    from sports_dates import jst_day
+    days = sorted({jst_day(v.get("published_at"))
                    for v in a.values()
                    if isinstance(v, dict) and v.get("published_at")})
     if not days:

@@ -5,7 +5,7 @@ Player names, AI summaries and standings alone never establish the four claims.
 PS games have already qualified; do not frame their next game as qualifying for PS.
 """
 import argparse
-from datetime import datetime
+from sports_dates import archive_day
 import hashlib
 import json
 import os
@@ -105,13 +105,7 @@ def _load(path):
 
 
 def _generated_date(data):
-    value = data.get('generated_at')
-    if not isinstance(value, str):
-        return None
-    try:
-        return datetime.fromisoformat(value.replace('Z', '+00:00')).date().isoformat()
-    except ValueError:
-        return None
+    return archive_day(data)
 
 
 def _identity(game):

@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 import club_display_names as clubs
+from sports_dates import material_day
 
 
 def compact(data):
@@ -20,8 +21,7 @@ def compact(data):
     return dict(source=data.get('source') or 'football-data.org',
                 retrieved_at=data.get('generated_at') or data.get('updated_at'),
                 source_at=data.get('source_at'),
-                date_jst=data.get('date_jst') or data.get('date') or
-                (data.get('generated_at') or data.get('updated_at') or '')[:10],
+                date_jst=material_day(data),
                 games=games, competitions=competitions,
                 rows=data.get('rows') or [], players=data.get('players') or [])
 

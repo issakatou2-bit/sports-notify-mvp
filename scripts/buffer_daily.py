@@ -745,7 +745,7 @@ def reconcile():
             continue
         # Buffer が error と返して2日たったものは、もう出ない。毎回の実行を赤くし続けると、
         # 新しい失敗が見えなくなる（10/7 の Instagram 1件で 10/8〜10/10 の実行がすべて赤だった）。
-        if row.get('state') == 'error' and key[:10] < (datetime.now(timezone.utc) - timedelta(days=2)).date().isoformat():
+        if row.get('state') == 'error' and key[:10] < (datetime.now(JST) - timedelta(days=2)).date().isoformat():
             ledger.set(key, {**row, 'state': 'gave_up', 'checked_at': datetime.now(timezone.utc).isoformat()})
             print('::warning::Buffer が失敗のまま2日たったので打ち切ります: ' + key)
             continue
