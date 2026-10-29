@@ -48,6 +48,7 @@ class ContentTests(unittest.TestCase):
 
     def test_dialogue_routes_audio_and_pitch_to_the_named_presenter(self):
         data = episode()
+        data['segments'][0]['speech'] = '3分の1です。'
         stream = io.BytesIO()
         with wave.open(stream, 'wb') as audio:
             audio.setparams((1, 2, 24000, 0, 'NONE', 'not compressed'))
@@ -61,6 +62,8 @@ class ContentTests(unittest.TestCase):
                 return json.dumps([{'name': name, 'styles': [{'id': sid, 'name': 'ノーマル'}]}
                                    for name, sid in series.PRESENTERS.values()]).encode()
             if endpoint == '/audio_query':
+                if not calls:
+                    self.assertEqual(params['text'], 'さんぶんの1です。')
                 calls.append(('query', params['speaker']))
                 return b'{"kana":"","pauseLengthScale":1}'
             calls.append(('audio', params['speaker'], body['pitchScale'], body['speedScale']))

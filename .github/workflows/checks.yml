@@ -42,18 +42,21 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r scripts/requirements.txt
-          pip install pyflakes pyyaml pillow pytest 'cryptography>=46,<50'
+          pip install pyflakes pyyaml pillow pytest imageio_ffmpeg 'cryptography>=46,<50'
 
-      - name: Install Japanese fonts for diagram checks
-        # 10/7〜8 に apt-get update が120秒を超えて2回落ちた（検査の中身は通っていた）。
-        # 入っている一覧のままでまず入れ、だめなときだけ一覧を取り直す（3回まで）。
-        timeout-minutes: 12
+      - name: Cache Japanese fonts
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/collespo-noto-cjk
+          key: ${{ runner.os }}-${{ runner.arch }}-noto-cjk-v1
+
+      - name: Install Japanese fonts for checks
+        # 環境変数を消す試験と固定パスを使う描画処理にも字体を届ける。
+        # キャッシュがなければ apt を再試行し、実際に描けなければ失敗する。
         run: |
-          for i in 1 2 3; do
-            sudo timeout 180 apt-get install -y -qq --no-install-recommends fonts-noto-cjk && exit 0
-            sudo timeout 150 apt-get update -qq -o Acquire::Retries=2 || true
-          done
-          exit 1
+          python scripts/check_diagram_font.py
+          python scripts/install_ci_fonts.py
+          fc-cache -f /usr/share/fonts/opentype/noto
 
       - name: Run checks
         run: python scripts/run_checks.py

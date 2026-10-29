@@ -56,9 +56,9 @@ class SoccerResults(unittest.TestCase):
             self.assertEqual((players[name]['goals'],players[name]['status']),(1,status))
         for name in ('佐野海舟','堂安律','中村草太'):self.assertEqual(players[name]['assists'],1)
         self.assertEqual(players['久保建英']['status'],'none')
-        self.assertEqual(players['鈴木ザイオン']['status'],'starter')
+        self.assertEqual(players['鈴木彩艶']['status'],'starter')
         self.assertEqual(players['前田大然']['status'],'substitute')
-        self.assertEqual(players['鈴木ザイオン']['club'],'アストン・ヴィラ')
+        self.assertEqual(players['鈴木彩艶']['club'],'アストンヴィラ')
 
     def test_final_jst_date_not_kickoff(self):
         boards,summaries=fixture()
@@ -84,6 +84,9 @@ class SoccerResults(unittest.TestCase):
         self.assertIsNone(sr.resolve_player(rows,'Shuto Suzuki'))
         self.assertIsNone(sr.resolve_player(rows+[deepcopy(rows[0])],'Zion Suzuki'))
         self.assertEqual(sr.resolve_player([{'athlete':{'id':'3','lastName':'Maeda','fullName':'D. Maeda'}}],'Daizen Maeda')['athlete']['id'],'3')
+        kodai=[{'athlete':{'id':'341715','lastName':'Sano','fullName':'Kodai Sano'}}]
+        self.assertIsNone(sr.resolve_player(kodai,'Kaishu Sano'))
+        self.assertEqual(sr.resolve_player(kodai,'Kodai Sano')['athlete']['id'],'341715')
 
     def test_score_crosscheck_and_espn_disagreement(self):
         boards,summaries=fixture();data=fixed();g=next(g for g in data['games'] if g['id']=='401876452')
@@ -182,7 +185,7 @@ class SoccerResults(unittest.TestCase):
         for s in pages:
             r3.set_caption('',12,30);self.assertFalse(__import__('v3_rules').check_layout(render.frame(1.4,s,data,clubs)))
 
-    def test_audio_manifest_and_strict_40_seconds(self):
+    def test_audio_manifest_and_strict_60_seconds(self):
         segments=render.narration(fixed())['segments']
         with tempfile.TemporaryDirectory() as directory:
             p=Path(directory)/'voice.wav'
@@ -192,9 +195,9 @@ class SoccerResults(unittest.TestCase):
             self.assertLess(sum(render.durations(segments,audio)),40)
             audio[0]['text']='違う原稿'
             with self.assertRaises(ValueError):render.durations(segments,audio)
-            audio=[dict(s,file=str(p),duration=11) for s in segments]
-            with patch('synthesize_narration.audio_duration',return_value=11):
-                with self.assertRaisesRegex(ValueError,'40秒'):render.durations(segments,audio)
+            audio=[dict(s,file=str(p),duration=61) for s in segments]
+            with patch('synthesize_narration.audio_duration',return_value=61):
+                with self.assertRaisesRegex(ValueError,'60秒'):render.durations(segments,audio)
 
     def test_manual_workflow_default_closed_and_upload_metadata(self):
         import yaml

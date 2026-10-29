@@ -35,6 +35,7 @@
 
 import argparse
 import json
+from japanese_team_names import team_names
 import pathlib
 import sys
 import urllib.request
@@ -492,12 +493,14 @@ def main() -> int:
             changes = ps_series.changes(series, before.get("series") or [])
             head = ps_series.headline(series, changes) or head
 
+    import ps_offseason
     out = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "date": today,
         "season": season,
         "phase": phase,
         "series": series,
+        "ws_finished_on": ps_offseason.finished_on(games if series else [], series),
         "final_day": final_day,
         "headline": head,
         "changes": changes,
@@ -506,6 +509,10 @@ def main() -> int:
         "teams": flat_teams,
         "leagues": {str(k): v for k, v in data.items()},
     }
+    if ps_offseason.completed_before(out, datetime.now(JST)):
+        changes = []
+        out.update(changes=changes, final_day=[])
+        print('[info] WS決着後のため、当日のPS変化はありません')
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(out, ensure_ascii=False, indent=2),
                  encoding="utf-8")
@@ -519,7 +526,7 @@ def main() -> int:
         for x in jp[:6]:
             tag = f"第{x['seed']}シード" if x["seed"] else x["route"]
             print("    %-8s %-12s %s" % (tag, x["team"],
-                                         "・".join(x["players"])))
+                                         team_names(x["players"])))
     if changes:
         print("[info] 昨日からの変化 %d件" % len(changes))
         for c in changes[:6]:

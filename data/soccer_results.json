@@ -1,99 +1,211 @@
 {
   "schema_version": 1,
-  "date_jst": "2026-09-20",
-  "generated_at": "2026-10-09T17:01:57.807581+00:00",
+  "date_jst": "2026-10-28",
+  "generated_at": "2026-10-29T01:52:07.400737+00:00",
   "source": "ESPN・football-data.org",
   "games": [
     {
-      "id": "401878778",
-      "league": "PL",
-      "league_jp": "プレミアリーグ",
-      "start_utc": "2026-09-19T14:00Z",
-      "finished_utc": "2026-09-19T15:55:43+00:00",
-      "date_jst": "2026-09-20",
+      "id": "401921842",
+      "league": "EFL",
+      "league_jp": "リーグ杯",
+      "start_utc": "2026-10-28T20:00Z",
+      "finished_utc": "2026-10-28T21:53:40+00:00",
+      "date_jst": "2026-10-28",
       "score": {
         "home": 1,
-        "away": 0
-      },
-      "players": [
-        {
-          "name": "前田大然",
-          "name_en": "Daizen Maeda",
-          "club": "イプスウィッチ",
-          "side": "away",
-          "event_id": "401878778",
-          "athlete_id": "286347",
-          "status": "substitute",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        }
-      ],
-      "goals": [
-        {
-          "minute": "11",
-          "scorer": "Thierno Barry",
-          "athlete_id": "301166",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        }
-      ],
-      "unresolved": [],
-      "home": {
-        "id": "368",
-        "name_en": "Everton",
-        "name_jp": "エバートン",
-        "abbr": "EVE"
-      },
-      "away": {
-        "id": "373",
-        "name_en": "Ipswich Town",
-        "name_jp": "イプスウィッチ",
-        "abbr": "IPS"
-      },
-      "goals_complete": true,
-      "score_crosscheck": "matched"
-    },
-    {
-      "id": "401879270",
-      "league": "PL",
-      "league_jp": "プレミアリーグ",
-      "start_utc": "2026-09-19T16:30Z",
-      "finished_utc": "2026-09-19T18:24:54+00:00",
-      "date_jst": "2026-09-20",
-      "score": {
-        "home": 0,
         "away": 1
       },
       "players": [
         {
-          "name": "坂元達裕",
-          "name_en": "Tatsuhiro Sakamoto",
-          "club": "コベントリー",
-          "side": "away",
-          "event_id": "401879270",
-          "athlete_id": "302002",
+          "name": "遠藤航",
+          "name_en": "Wataru Endo",
+          "club": "リバプール",
+          "side": "home",
+          "event_id": "401921842",
+          "athlete_id": "152479",
           "status": "none",
           "goals": 0,
           "assists": 0,
           "yellow_cards": 0,
           "red_cards": 0,
           "plays": [],
+          "position": null,
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 0,
+          "on_target": 0,
           "subbed_out": false,
           "appearance_evidence": "ESPN starter/subbedIn"
         }
       ],
       "goals": [
         {
-          "minute": "55",
-          "scorer": "Jay Da Silva",
-          "athlete_id": "206172",
+          "minute": "40",
+          "scorer": "Morgan Rogers",
+          "athlete_id": "265653",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "43",
+          "scorer": "Cody Gakpo",
+          "athlete_id": "249524",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        }
+      ],
+      "unresolved": [],
+      "home": {
+        "id": "364",
+        "name_en": "Liverpool",
+        "name_jp": "リバプール",
+        "abbr": "LIV"
+      },
+      "away": {
+        "id": "363",
+        "name_en": "Chelsea",
+        "name_jp": "チェルシー",
+        "abbr": "CHE"
+      },
+      "match_stats": {
+        "source": "ESPN summary.boxscore.teams.statistics",
+        "home": {
+          "possession": 51.7,
+          "shots": 10,
+          "on_target": 4
+        },
+        "away": {
+          "possession": 48.3,
+          "shots": 11,
+          "on_target": 4
+        }
+      },
+      "goals_complete": true,
+      "score_crosscheck": "unavailable"
+    },
+    {
+      "id": "401921834",
+      "league": "EFL",
+      "league_jp": "リーグ杯",
+      "start_utc": "2026-10-28T19:30Z",
+      "finished_utc": "2026-10-28T21:23:06+00:00",
+      "date_jst": "2026-10-28",
+      "score": {
+        "home": 2,
+        "away": 2
+      },
+      "players": [],
+      "goals": [
+        {
+          "minute": "30",
+          "scorer": "Malick Yalcouyé",
+          "athlete_id": "359097",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "40",
+          "scorer": "Mateo Kovacic",
+          "athlete_id": "154595",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "47",
+          "scorer": "Georginio Rutter",
+          "athlete_id": "278061",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "72",
+          "scorer": "Vitor Reis",
+          "athlete_id": "361434",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        }
+      ],
+      "unresolved": [],
+      "home": {
+        "id": "382",
+        "name_en": "Manchester City",
+        "name_jp": "マンチェスター・シティ",
+        "abbr": "MNC"
+      },
+      "away": {
+        "id": "331",
+        "name_en": "Brighton & Hove Albion",
+        "name_jp": "ブライトン",
+        "abbr": "BHA"
+      },
+      "match_stats": {
+        "source": "ESPN summary.boxscore.teams.statistics",
+        "home": {
+          "possession": 56.6,
+          "shots": 13,
+          "on_target": 3
+        },
+        "away": {
+          "possession": 43.4,
+          "shots": 17,
+          "on_target": 6
+        }
+      },
+      "goals_complete": true,
+      "score_crosscheck": "unavailable"
+    },
+    {
+      "id": "401921841",
+      "league": "EFL",
+      "league_jp": "リーグ杯",
+      "start_utc": "2026-10-28T19:45Z",
+      "finished_utc": "2026-10-28T21:38:41+00:00",
+      "date_jst": "2026-10-28",
+      "score": {
+        "home": 0,
+        "away": 1
+      },
+      "players": [
+        {
+          "name": "鎌田大地",
+          "name_en": "Daichi Kamada",
+          "club": "クリスタル・パレス",
+          "side": "away",
+          "event_id": "401921841",
+          "athlete_id": "219362",
+          "status": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": null,
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 1,
+          "on_target": 0,
+          "subbed_out": false,
+          "minutes": 13,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        }
+      ],
+      "goals": [
+        {
+          "minute": "37",
+          "scorer": "Eddie Nketiah",
+          "athlete_id": "259486",
           "side": "away",
           "own_goal": false,
           "japanese_goal": false,
@@ -102,88 +214,10 @@
       ],
       "unresolved": [],
       "home": {
-        "id": "393",
-        "name_en": "Nottingham Forest",
-        "name_jp": "ノッティンガム・フォレスト",
-        "abbr": "NFO"
-      },
-      "away": {
-        "id": "388",
-        "name_en": "Coventry City",
-        "name_jp": "コベントリー",
-        "abbr": "COV"
-      },
-      "goals_complete": true,
-      "score_crosscheck": "matched"
-    },
-    {
-      "id": "401879273",
-      "league": "PL",
-      "league_jp": "プレミアリーグ",
-      "start_utc": "2026-09-20T13:00Z",
-      "finished_utc": "2026-09-20T14:52:47+00:00",
-      "date_jst": "2026-09-20",
-      "score": {
-        "home": 0,
-        "away": 0
-      },
-      "players": [
-        {
-          "name": "田中碧",
-          "name_en": "Ao Tanaka",
-          "club": "リーズ",
-          "side": "home",
-          "event_id": "401879273",
-          "athlete_id": "253173",
-          "status": "starter",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 1,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": true,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "鎌田大地",
-          "name_en": "Daichi Kamada",
-          "club": "クリスタル・パレス",
-          "side": "away",
-          "event_id": "401879273",
-          "athlete_id": "219362",
-          "status": "starter",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "冨安健洋",
-          "name_en": "Takehiro Tomiyasu",
-          "club": "クリスタル・パレス",
-          "side": "away",
-          "event_id": "401879273",
-          "athlete_id": "238004",
-          "status": "starter",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": true,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        }
-      ],
-      "goals": [],
-      "unresolved": [],
-      "home": {
-        "id": "357",
-        "name_en": "Leeds United",
-        "name_jp": "リーズ",
-        "abbr": "LEE"
+        "id": "370",
+        "name_en": "Fulham",
+        "name_jp": "フラム",
+        "abbr": "FUL"
       },
       "away": {
         "id": "384",
@@ -191,403 +225,60 @@
         "name_jp": "クリスタル・パレス",
         "abbr": "CRY"
       },
+      "match_stats": {
+        "source": "ESPN summary.boxscore.teams.statistics",
+        "home": {
+          "possession": 74.4,
+          "shots": 14,
+          "on_target": 4
+        },
+        "away": {
+          "possession": 25.6,
+          "shots": 4,
+          "on_target": 3
+        }
+      },
       "goals_complete": true,
-      "score_crosscheck": "matched"
+      "score_crosscheck": "unavailable"
     },
     {
-      "id": "401884786",
-      "league": "BL1",
-      "league_jp": "ブンデスリーガ",
-      "start_utc": "2026-09-19T13:30Z",
-      "finished_utc": "2026-09-19T15:31:56+00:00",
-      "date_jst": "2026-09-20",
+      "id": "401921840",
+      "league": "EFL",
+      "league_jp": "リーグ杯",
+      "start_utc": "2026-10-28T19:45Z",
+      "finished_utc": "2026-10-28T21:34:37+00:00",
+      "date_jst": "2026-10-28",
       "score": {
         "home": 3,
-        "away": 4
+        "away": 0
       },
       "players": [
         {
-          "name": "町野修斗",
-          "name_en": "Shuto Machino",
-          "club": "ボルシアMG",
-          "side": "home",
-          "event_id": "401884786",
-          "athlete_id": "271352",
-          "status": "substitute",
-          "goals": 1,
-          "assists": 0,
-          "yellow_cards": 1,
-          "red_cards": 0,
-          "plays": [
-            {
-              "minute": "90+5",
-              "goal": true,
-              "assist": false
-            }
-          ],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "橋岡大樹",
-          "name_en": "Daiki Hashioka",
-          "club": "ボルシアMG",
-          "side": "home",
-          "event_id": "401884786",
-          "athlete_id": "256966",
-          "status": "substitute",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "板倉滉",
-          "name_en": "Ko Itakura",
-          "club": "ボルシアMG",
-          "side": "home",
-          "event_id": "401884786",
-          "athlete_id": "238033",
-          "status": "starter",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": true,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "佐野海舟",
-          "name_en": "Kaishu Sano",
-          "club": "マインツ",
+          "name": "鈴木彩艶",
+          "name_en": "Zion Suzuki",
+          "club": "アストンヴィラ",
           "side": "away",
-          "event_id": "401884786",
-          "athlete_id": "357030",
-          "status": "starter",
-          "goals": 0,
-          "assists": 1,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [
-            {
-              "minute": "78",
-              "goal": false,
-              "assist": true
-            }
-          ],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        }
-      ],
-      "goals": [
-        {
-          "minute": "11",
-          "scorer": "Florian Neuhaus",
-          "athlete_id": "238527",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "18",
-          "scorer": "Phillip Tietz",
-          "athlete_id": "234376",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "45+1",
-          "scorer": "Sheraldo Becker",
-          "athlete_id": "195027",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "59",
-          "scorer": "Isac Lidberg",
-          "athlete_id": "221690",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "78",
-          "scorer": "Eric Martel",
-          "athlete_id": "290398",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": [
-            "佐野海舟"
-          ]
-        },
-        {
-          "minute": "89",
-          "scorer": "Danny da Costa",
-          "athlete_id": "154603",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "90+5",
-          "scorer": "町野修斗",
-          "athlete_id": "271352",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": true,
-          "japanese_assists": []
-        }
-      ],
-      "unresolved": [
-        "宇野禅斗",
-        "川﨑颯太"
-      ],
-      "home": {
-        "id": "268",
-        "name_en": "Borussia Mönchengladbach",
-        "name_jp": "ボルシアMG",
-        "abbr": "BMG"
-      },
-      "away": {
-        "id": "2950",
-        "name_en": "Mainz",
-        "name_jp": "マインツ",
-        "abbr": "M05"
-      },
-      "goals_complete": true,
-      "score_crosscheck": "matched"
-    },
-    {
-      "id": "401884787",
-      "league": "BL1",
-      "league_jp": "ブンデスリーガ",
-      "start_utc": "2026-09-19T13:30Z",
-      "finished_utc": "2026-09-19T15:21:23+00:00",
-      "date_jst": "2026-09-20",
-      "score": {
-        "home": 2,
-        "away": 2
-      },
-      "players": [
-        {
-          "name": "堂安律",
-          "name_en": "Ritsu Doan",
-          "club": "フランクフルト",
-          "side": "home",
-          "event_id": "401884787",
-          "athlete_id": "219627",
-          "status": "starter",
-          "goals": 0,
-          "assists": 1,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [
-            {
-              "minute": "10",
-              "goal": false,
-              "assist": true
-            }
-          ],
-          "subbed_out": true,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "小杉啓太",
-          "name_en": "Keita Kosugi",
-          "club": "フランクフルト",
-          "side": "home",
-          "event_id": "401884787",
-          "athlete_id": "371596",
-          "status": "starter",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "鈴木唯人",
-          "name_en": "Yuito Suzuki",
-          "club": "フライブルク",
-          "side": "away",
-          "event_id": "401884787",
-          "athlete_id": "303031",
-          "status": "starter",
-          "goals": 1,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [
-            {
-              "minute": "48",
-              "goal": true,
-              "assist": false
-            }
-          ],
-          "subbed_out": true,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "後藤啓介",
-          "name_en": "Keisuke Goto",
-          "club": "フライブルク",
-          "side": "away",
-          "event_id": "401884787",
-          "athlete_id": "346208",
-          "status": "substitute",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        }
-      ],
-      "goals": [
-        {
-          "minute": "10",
-          "scorer": "Younes Ebnoutalib",
-          "athlete_id": "359793",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": [
-            "堂安律"
-          ]
-        },
-        {
-          "minute": "34",
-          "scorer": "Derry Scherhant",
-          "athlete_id": "346619",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "36",
-          "scorer": "Jonathan Burkardt",
-          "athlete_id": "274887",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "48",
-          "scorer": "鈴木唯人",
-          "athlete_id": "303031",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": true,
-          "japanese_assists": []
-        }
-      ],
-      "unresolved": [
-        "山本理仁"
-      ],
-      "home": {
-        "id": "125",
-        "name_en": "Eintracht Frankfurt",
-        "name_jp": "フランクフルト",
-        "abbr": "SGE"
-      },
-      "away": {
-        "id": "126",
-        "name_en": "SC Freiburg",
-        "name_jp": "フライブルク",
-        "abbr": "SCF"
-      },
-      "goals_complete": true,
-      "score_crosscheck": "matched"
-    },
-    {
-      "id": "401876450",
-      "league": "FL1",
-      "league_jp": "リーグ・アン",
-      "start_utc": "2026-09-19T18:45Z",
-      "finished_utc": "2026-09-19T20:36:26+00:00",
-      "date_jst": "2026-09-20",
-      "score": {
-        "home": 3,
-        "away": 2
-      },
-      "players": [
-        {
-          "name": "瀬古歩夢",
-          "name_en": "Ayumu Seko",
-          "club": "ル・アーブル",
-          "side": "away",
-          "event_id": "401876450",
-          "athlete_id": "258270",
-          "status": "starter",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "中村草太",
-          "name_en": "Sota Nakamura",
-          "club": "ル・アーブル",
-          "side": "away",
-          "event_id": "401876450",
-          "athlete_id": "399434",
-          "status": "substitute",
-          "goals": 0,
-          "assists": 1,
-          "yellow_cards": 1,
-          "red_cards": 0,
-          "plays": [
-            {
-              "minute": "71",
-              "goal": false,
-              "assist": true
-            }
-          ],
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        },
-        {
-          "name": "水多海斗",
-          "name_en": "Kaito Mizuta",
-          "club": "ル・アーブル",
-          "side": "away",
-          "event_id": "401876450",
-          "athlete_id": "325043",
+          "event_id": "401921840",
+          "athlete_id": "265958",
           "status": "none",
           "goals": 0,
           "assists": 0,
           "yellow_cards": 0,
           "red_cards": 0,
           "plays": [],
+          "position": null,
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 0,
+          "on_target": 0,
           "subbed_out": false,
           "appearance_evidence": "ESPN starter/subbedIn"
         }
       ],
       "goals": [
         {
-          "minute": "49",
-          "scorer": "Casper Tengstedt",
-          "athlete_id": "306664",
+          "minute": "7",
+          "scorer": "Amine Adli",
+          "athlete_id": "291613",
           "side": "home",
           "own_goal": false,
           "japanese_goal": false,
@@ -595,38 +286,18 @@
         },
         {
           "minute": "51",
-          "scorer": "Casper Tengstedt",
-          "athlete_id": "306664",
+          "scorer": "Lewis Cook",
+          "athlete_id": "223452",
           "side": "home",
           "own_goal": false,
           "japanese_goal": false,
           "japanese_assists": []
         },
         {
-          "minute": "71",
-          "scorer": "Josh Maja",
-          "athlete_id": "243514",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": [
-            "中村草太"
-          ]
-        },
-        {
-          "minute": "79",
-          "scorer": "Thomas Jørgensen",
-          "athlete_id": "362777",
+          "minute": "69",
+          "scorer": "Álvaro Rodríguez",
+          "athlete_id": "353151",
           "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "88",
-          "scorer": "Mbwana Samatta",
-          "athlete_id": "231366",
-          "side": "away",
           "own_goal": false,
           "japanese_goal": false,
           "japanese_assists": []
@@ -634,305 +305,95 @@
       ],
       "unresolved": [],
       "home": {
-        "id": "179",
-        "name_en": "Toulouse",
-        "name_jp": "トゥールーズ",
-        "abbr": "TOU"
+        "id": "349",
+        "name_en": "AFC Bournemouth",
+        "name_jp": "ボーンマス",
+        "abbr": "BOU"
       },
       "away": {
-        "id": "3236",
-        "name_en": "Le Havre AC",
-        "name_jp": "ル・アーブル",
-        "abbr": "HAC"
+        "id": "362",
+        "name_en": "Aston Villa",
+        "name_jp": "アストンヴィラ",
+        "abbr": "AVL"
+      },
+      "match_stats": {
+        "source": "ESPN summary.boxscore.teams.statistics",
+        "home": {
+          "possession": 49.1,
+          "shots": 19,
+          "on_target": 7
+        },
+        "away": {
+          "possession": 50.9,
+          "shots": 17,
+          "on_target": 5
+        }
       },
       "goals_complete": true,
-      "score_crosscheck": "matched"
+      "score_crosscheck": "unavailable"
     }
   ],
   "players": [
-    {
-      "name": "町野修斗",
-      "name_en": "Shuto Machino",
-      "club": "ボルシアMG",
-      "side": "home",
-      "event_id": "401884786",
-      "athlete_id": "271352",
-      "status": "substitute",
-      "goals": 1,
-      "assists": 0,
-      "yellow_cards": 1,
-      "red_cards": 0,
-      "plays": [
-        {
-          "minute": "90+5",
-          "goal": true,
-          "assist": false
-        }
-      ],
-      "subbed_out": false,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "鈴木唯人",
-      "name_en": "Yuito Suzuki",
-      "club": "フライブルク",
-      "side": "away",
-      "event_id": "401884787",
-      "athlete_id": "303031",
-      "status": "starter",
-      "goals": 1,
-      "assists": 0,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [
-        {
-          "minute": "48",
-          "goal": true,
-          "assist": false
-        }
-      ],
-      "subbed_out": true,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "中村草太",
-      "name_en": "Sota Nakamura",
-      "club": "ル・アーブル",
-      "side": "away",
-      "event_id": "401876450",
-      "athlete_id": "399434",
-      "status": "substitute",
-      "goals": 0,
-      "assists": 1,
-      "yellow_cards": 1,
-      "red_cards": 0,
-      "plays": [
-        {
-          "minute": "71",
-          "goal": false,
-          "assist": true
-        }
-      ],
-      "subbed_out": false,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "佐野海舟",
-      "name_en": "Kaishu Sano",
-      "club": "マインツ",
-      "side": "away",
-      "event_id": "401884786",
-      "athlete_id": "357030",
-      "status": "starter",
-      "goals": 0,
-      "assists": 1,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [
-        {
-          "minute": "78",
-          "goal": false,
-          "assist": true
-        }
-      ],
-      "subbed_out": false,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "堂安律",
-      "name_en": "Ritsu Doan",
-      "club": "フランクフルト",
-      "side": "home",
-      "event_id": "401884787",
-      "athlete_id": "219627",
-      "status": "starter",
-      "goals": 0,
-      "assists": 1,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [
-        {
-          "minute": "10",
-          "goal": false,
-          "assist": true
-        }
-      ],
-      "subbed_out": true,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "冨安健洋",
-      "name_en": "Takehiro Tomiyasu",
-      "club": "クリスタル・パレス",
-      "side": "away",
-      "event_id": "401879273",
-      "athlete_id": "238004",
-      "status": "starter",
-      "goals": 0,
-      "assists": 0,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [],
-      "subbed_out": true,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "小杉啓太",
-      "name_en": "Keita Kosugi",
-      "club": "フランクフルト",
-      "side": "home",
-      "event_id": "401884787",
-      "athlete_id": "371596",
-      "status": "starter",
-      "goals": 0,
-      "assists": 0,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [],
-      "subbed_out": false,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "板倉滉",
-      "name_en": "Ko Itakura",
-      "club": "ボルシアMG",
-      "side": "home",
-      "event_id": "401884786",
-      "athlete_id": "238033",
-      "status": "starter",
-      "goals": 0,
-      "assists": 0,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [],
-      "subbed_out": true,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "瀬古歩夢",
-      "name_en": "Ayumu Seko",
-      "club": "ル・アーブル",
-      "side": "away",
-      "event_id": "401876450",
-      "athlete_id": "258270",
-      "status": "starter",
-      "goals": 0,
-      "assists": 0,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [],
-      "subbed_out": false,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "田中碧",
-      "name_en": "Ao Tanaka",
-      "club": "リーズ",
-      "side": "home",
-      "event_id": "401879273",
-      "athlete_id": "253173",
-      "status": "starter",
-      "goals": 0,
-      "assists": 0,
-      "yellow_cards": 1,
-      "red_cards": 0,
-      "plays": [],
-      "subbed_out": true,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
     {
       "name": "鎌田大地",
       "name_en": "Daichi Kamada",
       "club": "クリスタル・パレス",
       "side": "away",
-      "event_id": "401879273",
+      "event_id": "401921841",
       "athlete_id": "219362",
-      "status": "starter",
-      "goals": 0,
-      "assists": 0,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [],
-      "subbed_out": false,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "前田大然",
-      "name_en": "Daizen Maeda",
-      "club": "イプスウィッチ",
-      "side": "away",
-      "event_id": "401878778",
-      "athlete_id": "286347",
       "status": "substitute",
       "goals": 0,
       "assists": 0,
       "yellow_cards": 0,
       "red_cards": 0,
       "plays": [],
+      "position": null,
+      "stats_source": "ESPN summary.rosters.roster.stats",
+      "shots": 1,
+      "on_target": 0,
       "subbed_out": false,
+      "minutes": 13,
+      "minutes_source": "ESPN keyEvents substitution",
+      "minutes_approx": true,
       "appearance_evidence": "ESPN starter/subbedIn"
     },
     {
-      "name": "後藤啓介",
-      "name_en": "Keisuke Goto",
-      "club": "フライブルク",
-      "side": "away",
-      "event_id": "401884787",
-      "athlete_id": "346208",
-      "status": "substitute",
-      "goals": 0,
-      "assists": 0,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [],
-      "subbed_out": false,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "橋岡大樹",
-      "name_en": "Daiki Hashioka",
-      "club": "ボルシアMG",
+      "name": "遠藤航",
+      "name_en": "Wataru Endo",
+      "club": "リバプール",
       "side": "home",
-      "event_id": "401884786",
-      "athlete_id": "256966",
-      "status": "substitute",
-      "goals": 0,
-      "assists": 0,
-      "yellow_cards": 0,
-      "red_cards": 0,
-      "plays": [],
-      "subbed_out": false,
-      "appearance_evidence": "ESPN starter/subbedIn"
-    },
-    {
-      "name": "坂元達裕",
-      "name_en": "Tatsuhiro Sakamoto",
-      "club": "コベントリー",
-      "side": "away",
-      "event_id": "401879270",
-      "athlete_id": "302002",
+      "event_id": "401921842",
+      "athlete_id": "152479",
       "status": "none",
       "goals": 0,
       "assists": 0,
       "yellow_cards": 0,
       "red_cards": 0,
       "plays": [],
+      "position": null,
+      "stats_source": "ESPN summary.rosters.roster.stats",
+      "shots": 0,
+      "on_target": 0,
       "subbed_out": false,
       "appearance_evidence": "ESPN starter/subbedIn"
     },
     {
-      "name": "水多海斗",
-      "name_en": "Kaito Mizuta",
-      "club": "ル・アーブル",
+      "name": "鈴木彩艶",
+      "name_en": "Zion Suzuki",
+      "club": "アストンヴィラ",
       "side": "away",
-      "event_id": "401876450",
-      "athlete_id": "325043",
+      "event_id": "401921840",
+      "athlete_id": "265958",
       "status": "none",
       "goals": 0,
       "assists": 0,
       "yellow_cards": 0,
       "red_cards": 0,
       "plays": [],
+      "position": null,
+      "stats_source": "ESPN summary.rosters.roster.stats",
+      "shots": 0,
+      "on_target": 0,
       "subbed_out": false,
       "appearance_evidence": "ESPN starter/subbedIn"
     }
@@ -940,84 +401,273 @@
   "can_make": true,
   "rejected": [
     {
-      "event_id": "401879274",
+      "event_id": "401874993",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401879271",
+      "event_id": "401874965",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401879276",
+      "event_id": "401874773",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401879272",
+      "event_id": "401874988",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401882866",
+      "event_id": "401874799",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401882864",
+      "event_id": "401921843",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401882859",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928493",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401882861",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928520",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401884785",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928521",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401884784",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928549",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401884789",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928509",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401874753",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928534",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401874956",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928508",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401874934",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928510",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401874801",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928553",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401876451",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928502",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401876457",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928488",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401876455",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928547",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401876454",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401928503",
+      "reason": "終了実時刻なし"
     },
     {
-      "event_id": "401876456",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
+      "event_id": "401916920",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917027",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917028",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917029",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917030",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917031",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917026",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401916923",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401916921",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917036",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917032",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401916919",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917033",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917035",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401916922",
+      "reason": "終了実時刻なし"
+    },
+    {
+      "event_id": "401917034",
+      "reason": "終了実時刻なし"
     }
-  ]
+  ],
+  "preview_expectation_results": {},
+  "preview_next_fixtures": [],
+  "preview_followup": {
+    "day": "2026-10-28",
+    "video_id": "aGfjs2CmZ30",
+    "games": [
+      {
+        "event_id": "401921842",
+        "forecast": {
+          "game_id": "espn-401921842",
+          "espn_event_id": "401921842",
+          "league": "リーグ杯",
+          "competition_code": "EFL",
+          "home": "Liverpool FC",
+          "away": "Chelsea FC",
+          "start_utc": "2026-10-29T05:00:00+09:00",
+          "reasons": [],
+          "expectation": null,
+          "spoken": "日本時間5時、リバプール対チェルシー。注目はリーグ杯での、この両チームの対戦です。遠藤航の所属クラブの一戦。出場する場合のプレーにも注目です。",
+          "standings": {
+            "home": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": null
+      },
+      {
+        "event_id": "401921834",
+        "forecast": {
+          "game_id": "espn-401921834",
+          "espn_event_id": "401921834",
+          "league": "リーグ杯",
+          "competition_code": "EFL",
+          "home": "Manchester City FC",
+          "away": "Brighton & Hove Albion FC",
+          "start_utc": "2026-10-29T04:30:00+09:00",
+          "reasons": [],
+          "expectation": null,
+          "spoken": "日本時間4時30分、マンチェスター・シティ対ブライトン。注目はリーグ杯での、この両チームの対戦です。見どころはマンチェスター・シティのホームで、ブライトンがどう戦うかです。",
+          "standings": {
+            "home": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": null
+      },
+      {
+        "event_id": "401921841",
+        "forecast": {
+          "game_id": "espn-401921841",
+          "espn_event_id": "401921841",
+          "league": "リーグ杯",
+          "competition_code": "EFL",
+          "home": "Fulham FC",
+          "away": "Crystal Palace FC",
+          "start_utc": "2026-10-29T04:45:00+09:00",
+          "reasons": [],
+          "expectation": {
+            "name": "鎌田大地",
+            "club": "クリスタル・パレス",
+            "goals": 1,
+            "assists": 3,
+            "japanese": true,
+            "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+            "as_of": "2026-10-28T10:07:36.909975+00:00",
+            "name_en": "Daichi Kamada"
+          },
+          "spoken": "日本時間4時45分、フラム対クリスタル・パレス。期待選手は鎌田大地。今季FPL集計で1得点 3アシストです。",
+          "standings": {
+            "home": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            }
+          }
+        },
+        "answer": {
+          "name": "鎌田大地",
+          "name_en": "Daichi Kamada",
+          "club": "クリスタル・パレス",
+          "side": "away",
+          "event_id": "401921841",
+          "athlete_id": "219362",
+          "status": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": null,
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 1,
+          "on_target": 0,
+          "subbed_out": false,
+          "minutes": 13,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        "rank_changes": [],
+        "next_game": null
+      }
+    ]
+  }
 }

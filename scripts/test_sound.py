@@ -69,7 +69,7 @@ class Timing(unittest.TestCase):
     def test_list_cues_one_per_card(self):
         items = [("A", "1"), ("ハイライトのコメント欄から", "「すごい」"), ("C", "3")]
         c = r3.cues("list", SPEC, items, 0, 2)
-        self.assertEqual([k for _, k, _, _ in c], ["transition", "swish", "notify"])
+        self.assertEqual([k for _, k, _, _ in c], ["transition", "notify"])
 
 
 class Drawing(unittest.TestCase):

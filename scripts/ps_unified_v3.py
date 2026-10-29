@@ -1,5 +1,6 @@
 """検証済みPSカードを、共通表紙・項目札へ写す。元カードは変更しない。"""
 import re
+from japanese_team_names import team_names
 import review_render_v3 as r3
 import v3_slot_render as common
 
@@ -57,7 +58,11 @@ def program_ticker(program):
 def rows(card):
     result = []
     for row in (card.get('scoreboard') or {}).get('rows', []):
-        result.append((row['abbr']+'　'+row['name'], str(row['wins'])+'勝　'+'・'.join(row.get('players') or [])))
+        players=row.get('players') or []
+        if len(players)>=2:
+            result.append((row['abbr']+'　'+team_names(players,row['name']), str(row['wins'])+'勝'))
+        else:
+            result.append((row['abbr']+'　'+row['name'], str(row['wins'])+'勝　'+team_names(players)))
     for row in card.get('items', []):
         if card['layout'] == 'schedule':
             result.append((row['home']+' 対 '+row['away'], row['when']))
@@ -107,6 +112,8 @@ def spec(card, focus=None, ticker_line=None):
 
 
 def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
+    if card.get('short_context'):
+        focus = None  # 前戦の札は主役カードの再掲に置き換えない。
     if card.get('next_line'):
         import next_line
         return next_line.frame(t,card['next_line'])
@@ -125,7 +132,7 @@ def frame(t, card, focus=None, cover=False, duration=20, ticker_line=None):
         chosen=(focus or card) if card.get('card_index') is None else card
         if chosen.get('scoreboard') and (card.get('card_index') is None or t<min(8,duration*.5)):
             return draw_focus(t,chosen,spec(chosen,chosen,ticker_line))
-    if card.get('card_index') is None and not card.get('outro'):
+    if card.get('card_index') is None and not card.get('outro') and not card.get('short_context'):
         im = r3.intro(t, view, card.get('label','PS'))
         r3.source(r3.ImageDraw.Draw(im), '出典：'+card.get('source_label','説明欄'), r3.colors(view['team_id'])[1])
         if r3.LOOK=='v4':
@@ -183,7 +190,7 @@ def cues(card, focus=None, cover=False, duration=20):
         return r3.cues('intro', spec(card, focus))
     result=common.cues(rows(card))
     if cover:
-        result=r3.cues('intro', spec(card,focus))+[(at+min(4,duration/3),kind,var,db) for at,kind,var,db in result]
+        result=r3.cues('intro', spec(card,focus))+[(at+min(4,duration/3),kind,var,db) for at,kind,var,db in result if kind!='transition']
     return result
 
 

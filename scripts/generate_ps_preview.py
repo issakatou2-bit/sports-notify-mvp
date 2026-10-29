@@ -150,6 +150,8 @@ def movie(context, script, audio_dir, out, require_audio):
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     durations = [max(4.0, float(s['duration']) + vc.SEGMENT_TAIL) for s in audio]
+    import short_content
+    short_content.require(script, durations, out, video_name='collespo_morning_postseason.mp4')
     track = vc.build_narration_track(audio, durations, out)
     if require_audio and not track:
         raise ValueError('音声を結合できません')
@@ -253,6 +255,8 @@ def main():
     parser.add_argument('--morning-mode', default='players')
     parser.add_argument('--thumbnail-out')
     args, _ = parser.parse_known_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
     if not args.upload and not args.thumbnail_out and args.mode != 'postseason':
         raise SystemExit(subprocess.call([sys.executable, str(Path(__file__).with_name('generate_morning_short.py')), *sys.argv[1:]]))
     if args.upload and args.morning_mode != 'postseason':
@@ -262,6 +266,13 @@ def main():
         return
     data = json.loads(Path(args.postseason).read_text(encoding='utf-8')) if Path(args.postseason).exists() else {}
     context = data.get('editorial', {})
+    import ps_offseason
+    if args.mode == 'postseason' and (ps_offseason.completed_before(data, datetime.now(ps_offseason.JST))
+                                      or context.get('stage') == 'offseason'):
+        if args.narration_out:
+            Path(args.narration_out).unlink(missing_ok=True)
+        print('[info] PS情勢は見送り：シーズン終了')
+        return
     import ps_program as program
     if program.desired(data) and program.layout() != 'legacy':
         stored = Path('build/ps_program_situation.json')

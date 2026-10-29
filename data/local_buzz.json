@@ -1,90 +1,29 @@
 {
-  "updated_at": "2026-10-13T06:01:59.495887+00:00",
+  "updated_at": "2026-10-29T07:21:33.132295+00:00",
   "sources": [
-    {
-      "name": "r/baseball",
-      "items": 26
-    },
     {
       "name": "MLB公式",
       "items": 25
     }
   ],
-  "titles_count": 51,
+  "titles_count": 25,
   "teams": [
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 12,
-      "tone": "好調",
-      "gist": "ガーディアンズ、ALCS初戦7-3先勝"
-    },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 11,
+      "mentions": 9,
       "tone": "好調",
-      "gist": "ブルペン5回完全でNLCS2連勝"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 7,
-      "tone": "不振",
-      "gist": "ブルワーズに敗れ0勝2敗、打線不振"
+      "gist": "ブリュワーズ、初のWS制覇"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 6,
+      "mentions": 2,
       "tone": "不振",
-      "gist": "ガーディアンズに3-7、ALCS初戦落とす"
-    },
-    {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "Francisca、秋季リーグ週間表彰"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ガーディアンズが1戦でALDS総得点並ぶ"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "2027年の先発ローテ編成を展望"
-    },
-    {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "オフの最大の疑問5点を整理"
+      "gist": "レイズ、WS敗退 ラスムセン好投も"
     }
   ],
-  "players": [
-    {
-      "name": "山本由伸",
-      "mentions": 5
-    },
-    {
-      "name": "大谷翔平",
-      "mentions": 4
-    }
-  ]
+  "players": []
 }

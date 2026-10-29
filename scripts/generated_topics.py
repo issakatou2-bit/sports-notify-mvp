@@ -20,6 +20,9 @@
 
 import json
 import pathlib
+import sys
+from datetime import datetime, timezone
+import ps_offseason
 
 # 材料を持つファイル。増えるときはここだけに足す。
 SOURCES = (
@@ -33,9 +36,12 @@ SOURCES = (
     "data/ps_odds_topics.json",   # PSの話題：2勝0敗・0勝2敗を過去の同じ状況から (ps_odds.py)
     "data/ps_momentum_topics.json",  # PSの話題：連勝・敵地での勝ちの流れ (ps_momentum.py)
     "data/ps_spotlight_topics.json",  # PSの話題：日本人投手の圧巻の投球 (ps_spotlight.py)
+    "data/ws_topics.json",         # WSの話題：球団史・日程と本拠地 (ws_topics.py)
 )
 
 _CACHE = None
+DAILY_PS_SOURCES = frozenset({'ps_game_topics.json', 'ps_odds_topics.json',
+    'ps_momentum_topics.json', 'ps_spotlight_topics.json', 'ws_topics.json'})
 
 
 def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
@@ -44,7 +50,16 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
     if _CACHE is not None and not refresh:
         return _CACHE
     out = {}
+    seasons = {}
+    try:
+        snapshot = json.loads(pathlib.Path('data/postseason.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        snapshot = {}
+    ended = ps_offseason.completed_before(snapshot, datetime.now(timezone.utc))
     for path in sources:
+        if ended and pathlib.Path(path).name in DAILY_PS_SOURCES:
+            print(f'[info] {path}: WS決着後の当日向け材料は見送り', file=sys.stderr)
+            continue
         try:
             d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
@@ -53,6 +68,11 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
             key = spec.get("key")
             if key and key not in out:
                 out[key] = spec
+                seasons[key] = d.get('season')
+    import short_context
+    for key, spec in list(out.items()):
+        if key.startswith('rare_'):
+            out[key] = short_context.rare(spec, out, seasons.get(key))
     _CACHE = out
     return out
 

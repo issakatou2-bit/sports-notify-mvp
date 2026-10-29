@@ -34,9 +34,9 @@ def rows(data):
         for value in data:yield from rows(value)
 
 
-def decision(line, material):
+def decision(line, material, *, motion_only=False):
     import characters
-    if not enabled():return None
+    if not enabled() and not motion_only:return None
     for p in rows(material):
         name = str(p.get('name') or p.get('name_jp') or '')
         if not name or not any(n in name for n in characters.fan_names()):continue
@@ -58,20 +58,20 @@ def decision(line, material):
             return pick('surprise','burst','record','record_value',p.get('record_value'))
         if typ == 'pitcher':
             if (p.get('losses') or 0)>0:
-                return pick('jitome','sweat',None,'losses',p['losses'])
+                return pick('sad',None,None,'losses',p['losses'])
             if (p.get('wins') or 0)>0:
                 return pick('pose-smile','sparkle','win','wins',p['wins'])
             if p.get('er') == 0 and float(p.get('ip') or 0)>0:
                 return pick('pose-smile','sparkle',None,'er',0,'自責')
             if (p.get('er') or 0)>0:
-                return pick('jitome','sweat',None,'er',p['er'],'自責')
+                return pick('sad',None,None,'er',p['er'],'自責')
         elif typ == 'batter':
             if (p.get('hr') or 0)>0:
                 return pick('pose-smile','sparkle','home_run','hr',p['hr'],'本塁打')
             if (p.get('hits') or 0)>=2:
                 return pick('pose-smile','sparkle',None,'hits',p['hits'],'安打')
             if p.get('hits') == 0 and (p.get('ab') or 0)>0:
-                return pick('jitome','sweat',None,'hits',0,'安打')
+                return pick('sad',None,None,'hits',0,'安打')
         if (p.get('goals') or 0)>0:
             return pick('pose-smile','sparkle','goal','goals',p['goals'],'ゴール')
         if p.get('starter_confirmed') is True:
@@ -84,6 +84,8 @@ def decision(line, material):
 
 def prepare(material, segments, durations, out_dir, fps=FPS):
     TRACK.clear()
+    import motion
+    if motion.enabled():motion.prepare_highlights(material,segments,durations)
     if not enabled():return
     start = 0.
     for seg,duration in zip(segments,durations):

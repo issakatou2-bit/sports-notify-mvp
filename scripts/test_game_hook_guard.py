@@ -46,6 +46,14 @@ class GameHookGuard(unittest.TestCase):
                 self.assertIn(term, guard.rejection_reasons(game)[0])
                 self.assertEqual(game, original)
 
+    def test_hook_game_number_must_match_rule_reason(self):
+        # 10/28 第5戦の通知が「王手の第4戦へ」になった
+        game = fixture(hook='Jacob Misiorowski防御率1.80、ブリュワーズはワールドシリーズ王手の第4戦へ')
+        game['reasons'] = [{'tag': 'postseason', 'text': 'ワールドシリーズ 第5戦(ブリュワーズが3勝1敗で王手、レイズは負ければ敗退)'}]
+        self.assertIn('一言の「第N戦」がルール由来のreasons.textの試合番号と違う', guard.rejection_reasons(game))
+        game['notification_hook'] = 'ブリュワーズはワールドシリーズ王手の第5戦へ'
+        self.assertEqual(guard.rejection_reasons(game), [])
+
     def test_safe_hook_is_preserved_verbatim(self):
         game = fixture(hook='  菊池雄星、1勝6敗の状況でマリナーズと対戦へ\n')
         self.assertEqual(guard.validated_hook(game), game['notification_hook'])

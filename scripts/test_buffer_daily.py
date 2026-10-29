@@ -2,12 +2,113 @@ import io
 import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 import zipfile
+from contextlib import ExitStack
 
 import buffer_daily as daily
+
+
+class RecentPostsRecovery(unittest.TestCase):
+    def page(self, posts=(), more=False, cursor=None):
+        return {'posts': {'edges': [{'node': p} for p in posts],
+                          'pageInfo': {'hasNextPage': more, 'endCursor': cursor}}}
+
+    def ledger(self, rows):
+        ledger = daily.Ledger.__new__(daily.Ledger)
+        ledger.data = {'version': 1, 'deliveries': rows}
+        ledger.set = lambda key, value: ledger.data['deliveries'].__setitem__(key, value)
+        return ledger
+
+    def test_page_is_retried_once_without_repeating_previous_page(self):
+        first = dict(id='p1', text='first', status='sent')
+        second = dict(id='p2', text='second', status='sending')
+        with patch.object(daily, 'graphql', side_effect=[self.page([first], True, 'cursor'),
+                         RuntimeError('private-token'), self.page([second])]) as api, \
+             patch.object(daily.time, 'sleep'), patch('sys.stdout', new_callable=io.StringIO) as log:
+            self.assertEqual(daily.recent_posts('x'), [first, second])
+        self.assertEqual(api.call_count, 3)
+        self.assertEqual(api.call_args_list[1], api.call_args_list[2])
+        self.assertNotIn('private-token', log.getvalue())
+
+    def test_double_failure_warns_and_never_creates_a_post(self):
+        ledger = self.ledger({})
+        with patch.object(daily, 'graphql', side_effect=RuntimeError('private-token')) as api, \
+             patch.object(daily.time, 'sleep'), patch('sys.stdout', new_callable=io.StringIO) as log:
+            with self.assertRaises(daily.RecentPostsUnavailable):
+                daily.submit_once(ledger, 'key', dict(channelId='x', text='today'), {})
+        self.assertEqual(api.call_count, 2)
+        self.assertTrue(all('mutation' not in c.args[0] for c in api.call_args_list))
+        self.assertEqual(ledger.data['deliveries'], {})
+        self.assertIn('::warning::', log.getvalue()); self.assertNotIn('private-token', log.getvalue())
+
+    def test_refresh_preserves_sent_and_continues_other_channels(self):
+        prefix = '2026-10-15:daily:'
+        sent = dict(state='sent', post_id='x1', external_link='https://x.com/receipt')
+        ledger = self.ledger({prefix+'twitter': dict(sent),
+                              prefix+'instagram': dict(state='sending', post_id='i1'),
+                              prefix+'tiktok': dict(state='sending', post_id='t1')})
+        def query(channel):
+            if channel == daily.CHANNELS['instagram']:
+                raise daily.RecentPostsUnavailable()
+            self.assertEqual(channel, daily.CHANNELS['tiktok'])
+            return [dict(id='t1', text='today', status='sent', externalLink='https://tiktok.com/receipt')]
+        with patch.object(daily, 'recent_posts', side_effect=query), patch.object(daily.time, 'sleep'):
+            unavailable = daily.refresh_deliveries(ledger, '2026-10-15', 'daily', daily.CHANNELS)
+        self.assertEqual(unavailable, {'instagram'})
+        self.assertEqual(ledger.data['deliveries'][prefix+'twitter'], sent)
+        self.assertEqual(ledger.data['deliveries'][prefix+'instagram']['state'], 'sending')
+        self.assertEqual(ledger.data['deliveries'][prefix+'tiktok']['state'], 'sent')
+
+    def test_reconcile_double_failure_keeps_durable_records(self):
+        entry = dict(state='sending', post_id='i1')
+        ledger = self.ledger({'2026-10-15:daily:instagram': dict(entry)})
+        with patch.object(daily, 'Ledger', return_value=ledger), \
+             patch.object(daily, 'graphql', side_effect=RuntimeError('private-token')) as api, \
+             patch.object(daily.time, 'sleep'), patch('sys.stdout', new_callable=io.StringIO):
+            daily.reconcile()
+        self.assertEqual(api.call_count, 2)
+        self.assertEqual(ledger.data['deliveries']['2026-10-15:daily:instagram'], entry)
+
+    def test_main_keeps_success_after_confirmation_outage(self):
+        day = '2026-10-15'; record = dict(video_id='abc12345678', title='title')
+        ledger = self.ledger({day+':daily:twitter': dict(state='sent', post_id='x1'),
+                              day+':daily:instagram': dict(state='sending', post_id='i1')})
+        available = [dict(id=daily.CHANNELS[s], service=s, name='collespo_jp')
+                     for s in ('twitter', 'instagram')]
+        def graphql(query, *args):
+            if 'channels(input' in query:
+                return dict(channels=available)
+            raise RuntimeError('private-token')
+        def github(path, *args, **kwargs):
+            if path.endswith('/artifacts'):
+                return dict(artifacts=[dict(name=daily.SOURCES['daily'][1], expired=False, size_in_bytes=10, id=1)])
+            return dict(id=1)
+        with tempfile.TemporaryDirectory() as directory, ExitStack() as stack:
+            summary = Path(directory) / 'summary.md'
+            for name, kwargs in {
+                'Ledger': dict(return_value=ledger), 'github': dict(side_effect=github),
+                'select_record': dict(return_value=(day, record)),
+                'verify_youtube': dict(return_value=dict(title='title')),
+                'extract_video': dict(return_value='digest'), 'verify_media': dict(return_value=51),
+                'host_video': dict(return_value='https://example.test/video'),
+                'submit_once': dict(return_value=dict(id='existing')),
+                'graphql': dict(side_effect=graphql),
+            }.items():
+                stack.enter_context(patch.object(daily, name, **kwargs))
+            stack.enter_context(patch.object(daily.time, 'sleep'))
+            stack.enter_context(patch.object(daily.os, 'environ',
+                {'BUFFER_CHANNELS': 'twitter,instagram', 'GITHUB_STEP_SUMMARY': str(summary)}))
+            stack.enter_context(patch('sys.argv', ['buffer_daily.py', '--source-run', '1', '--publish']))
+            stack.enter_context(patch.object(Path, 'read_text', return_value='{}'))
+            output = stack.enter_context(patch('sys.stdout', new_callable=io.StringIO))
+            daily.main()  # 照合障害だけではSystemExitにならない。
+            self.assertNotIn('private-token', output.getvalue())
+        self.assertEqual(ledger.data['deliveries'][day+':daily:twitter']['state'], 'sent')
+        self.assertEqual(ledger.data['deliveries'][day+':daily:instagram']['state'], 'sending')
 
 
 class BufferTests(unittest.TestCase):
@@ -372,6 +473,105 @@ class ReleaseIsolation(unittest.TestCase):
             upload.assert_not_called()
 
 
+class Response:
+    def __init__(self, payload=b'{}'):
+        self.payload = payload
+
+    def read(self, size=-1):
+        return self.payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+class Opener:
+    def __init__(self, outcomes):
+        self.outcomes = list(outcomes)
+        self.urls = []
+        self.calls = 0
+
+    def open(self, request, timeout=None):
+        self.urls.append(request.full_url)
+        self.calls += 1
+        outcome = self.outcomes.pop(0)
+        if isinstance(outcome, Exception):
+            raise outcome
+        return outcome
+
+
+def http_error(code):
+    return daily.urllib.error.HTTPError(
+        'https://example.test', code, str(code), {}, None)
+
+
+class GitHubTransientFailures(unittest.TestCase):
+    def run_github(self, outcomes):
+        opener = Opener(outcomes)
+        sleeps = []
+        with patch.object(daily.urllib.request, 'build_opener',
+                          return_value=opener), \
+                patch.object(daily.time, 'sleep', side_effect=sleeps.append), \
+                patch.dict(daily.os.environ, {'GH_TOKEN': 'dummy'}):
+            try:
+                result = daily.github('/x')
+            except Exception as exc:
+                return opener, sleeps, exc
+        return opener, sleeps, result
+
+    def test_500_is_retried_then_succeeds(self):
+        opener, sleeps, result = self.run_github(
+            [http_error(500), Response(b'{"ok": true}')])
+        self.assertEqual(result, {'ok': True})
+        self.assertEqual(opener.calls, 2)
+        self.assertEqual(sleeps, [2])
+
+    def test_404_is_not_retried(self):
+        opener, sleeps, error = self.run_github([http_error(404)])
+        self.assertIsInstance(error, daily.urllib.error.HTTPError)
+        self.assertEqual(error.code, 404)
+        self.assertEqual(opener.calls, 1)
+        self.assertEqual(sleeps, [])
+
+    def test_four_500s_give_up_after_the_third_delay(self):
+        opener, sleeps, error = self.run_github([http_error(500)] * 4)
+        self.assertIsInstance(error, daily.urllib.error.HTTPError)
+        self.assertEqual(error.code, 500)
+        self.assertEqual(opener.calls, 4)
+        self.assertEqual(sleeps, [2, 5, 10])
+
+    def test_connection_error_is_retried_too(self):
+        opener, sleeps, result = self.run_github(
+            [daily.urllib.error.URLError('down'), Response(b'{"ok": true}')])
+        self.assertEqual(result, {'ok': True})
+        self.assertEqual(opener.calls, 2)
+        self.assertEqual(sleeps, [2])
+
+    def test_post_500_then_422_reads_the_existing_tag(self):
+        release = {'assets': [{'name': 'collespo-morning-2026-09-19.mp4',
+                               'digest': 'sha256:media',
+                               'browser_download_url': 'https://example.test/video'}]}
+        opener = Opener([http_error(404), http_error(500), http_error(422),
+                         Response(json.dumps(release).encode())])
+        sleeps = []
+        run = {'head_sha': 'old-source-sha',
+               'html_url': 'https://example.test/run/1'}
+        with patch.object(daily.urllib.request, 'build_opener',
+                          return_value=opener), \
+                patch.object(daily.time, 'sleep', side_effect=sleeps.append), \
+                patch.dict(daily.os.environ, {'GH_TOKEN': 'dummy'}):
+            url = daily.host_video(run, '2026-09-19', None, 'media', 'morning')
+        self.assertEqual(url, 'https://example.test/video')
+        self.assertEqual(opener.calls, 4)
+        self.assertEqual(sleeps, [2])
+        posts = [u for u in opener.urls if u.endswith('/releases')]
+        self.assertEqual(len(posts), 2)
+        self.assertTrue(opener.urls[-1].endswith(
+            '/releases/tags/social-morning-2026-09-19'))
+
+
 class EachKindSpeaksForItself(unittest.TestCase):
     """枠ごとに、1行目でその回が何なのかを言い切るか。
 
@@ -535,4 +735,4 @@ class SnapshotCaption(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main(argv=['test_buffer_daily'])
+    unittest.main(argv=[sys.argv[0]])

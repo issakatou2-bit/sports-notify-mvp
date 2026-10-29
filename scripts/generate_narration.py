@@ -27,6 +27,7 @@ AIを使う箇所:
 """
 
 import argparse
+from japanese_team_names import team_names
 import datetime
 import functools
 import json
@@ -597,7 +598,7 @@ def pick_hook(games: list, availability=None) -> dict:
     for at, g in enumerate(games):
         names = [n for n in (g.get("jp_players") or []) if n]
         if names:
-            return {"big": "・".join(names[:3]), "sub": "", "at": at}
+            return {"big": team_names(names), "sub": "", "at": at}
 
     # 13. サッカーは、大会名を最後の手がかりにする。
     #     クラブ名だけのタイトルだと、どのリーグの話か分からない。
@@ -1164,6 +1165,8 @@ def main():
     import mlb_forecast
     value=mlb_forecast.decorate({'date_label':date_label,'segments':segments},
         forecast_games, data.get('generated_at') or __import__('datetime').datetime.now(mlb_forecast.JST).isoformat())
+    import sanity_sources
+    value = sanity_sources.attach(value, data)
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", encoding="utf-8") as f:

@@ -1,0 +1,35 @@
+{
+  "publication_id": "delivery:legacy_tiktok:morning_press:2026-09-17",
+  "domain": "delivery",
+  "kind": "legacy_tiktok",
+  "key_parts": {
+    "kind": "morning_press",
+    "legacy_key": "2026-09-17"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_tiktok/morning_press/2026-09-17",
+      "service": "tiktok",
+      "video_id": null,
+      "state": "unknown",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-09-17T06:12:43+0000",
+      "details": {
+        "privacy": null,
+        "status": "SEND_TO_USER_INBOX",
+        "publish_id": "v_inbox_file~v2.7686382728652245012",
+        "public_post_ids": [],
+        "publicly_available": false
+      },
+      "run_id": "40669557265",
+      "attempt": "1",
+      "recorded_at": "2026-10-28T10:18:19.182059+00:00",
+      "fingerprint": "15c167d4bf89ddd1f6b4d6b14f5a1201ca1da4135c2266b822d5e8c1f1e50730",
+      "event_id": "9a789c9807472ebbbbf942350d77e518536e8d88f40f1f323f4bd3930d0e21e2"
+    }
+  ]
+}

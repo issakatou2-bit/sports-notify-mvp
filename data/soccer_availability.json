@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-13T10:01:19.449338+00:00",
+  "updated_at": "2026-10-29T10:01:24.160274+00:00",
   "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
   "players": {
     "遠藤航": {
@@ -20,14 +20,14 @@
       "goals": 0,
       "assists": 0,
       "chance_next": 0,
-      "news": "Hamstring injury - Expected back 18 Oct",
+      "news": "Hamstring injury - Expected back 31 Oct",
       "out": true,
-      "reason": "Hamstring injury - Expected back 18 Oct"
+      "reason": "Hamstring injury - Expected back 31 Oct"
     },
     "鎌田大地": {
       "name_en": "Daichi Kamada",
       "club_jp": "クリスタル・パレス",
-      "minutes": 530,
+      "minutes": 700,
       "goals": 1,
       "assists": 3,
       "chance_next": null,
@@ -38,7 +38,7 @@
     "田中碧": {
       "name_en": "Ao Tanaka",
       "club_jp": "リーズ",
-      "minutes": 325,
+      "minutes": 493,
       "goals": 0,
       "assists": 2,
       "chance_next": null,
@@ -49,7 +49,7 @@
     "坂元達裕": {
       "name_en": "Tatsuhiro Sakamoto",
       "club_jp": "コベントリー",
-      "minutes": 60,
+      "minutes": 222,
       "goals": 0,
       "assists": 0,
       "chance_next": null,
@@ -60,8 +60,8 @@
     "前田大然": {
       "name_en": "Daizen Maeda",
       "club_jp": "イプスウィッチ",
-      "minutes": 339,
-      "goals": 0,
+      "minutes": 426,
+      "goals": 1,
       "assists": 0,
       "chance_next": null,
       "news": "",
@@ -71,7 +71,7 @@
     "守田英正": {
       "name_en": "Hidemasa Morita",
       "club_jp": "ハル・シティ",
-      "minutes": 60,
+      "minutes": 93,
       "goals": 0,
       "assists": 0,
       "chance_next": 100,
@@ -86,9 +86,9 @@
       "goals": 0,
       "assists": 0,
       "chance_next": 0,
-      "news": "Calf injury - Expected back 18 Oct",
+      "news": "Calf injury - Expected back 8 Nov",
       "out": true,
-      "reason": "Calf injury - Expected back 18 Oct"
+      "reason": "Calf injury - Expected back 8 Nov"
     }
   }
 }

@@ -15,7 +15,7 @@ def main():
     check('未設定なら何もしない',c.fan_mood('山本由伸が先発します') is None)
     c.EXPR='fan'
     check('先発の予告は笑顔とキラキラ',c.fan_mood('山本由伸がきょう先発します')[:2]==('smile','sparkle'))
-    check('名字でも分かる',c.fan_mood('大谷は4打数無安打')[:2]==('jitome','sweat'))
+    check('名字でも分かる',c.fan_mood('大谷は4打数無安打')[:2]==('sad',None))
     check('記録は驚き',c.fan_mood('村上が自己最多の36号本塁打')[:2]==('surprise','burst'))
     check('活躍は大きい笑顔',c.fan_mood('鈴木誠也が決勝の本塁打')[:2]==('pose-smile','sparkle'))
     check('日本人選手の名前が無ければ普通のまま',c.fan_mood('ブリュワーズが先発を発表、本塁打で勝利') is None)

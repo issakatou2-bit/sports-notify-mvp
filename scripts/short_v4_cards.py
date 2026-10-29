@@ -1,4 +1,6 @@
 """ショートv4専用の札。材料・台本・共通の背景/字幕/時計は変更しない。"""
+import math
+import motion
 import re
 from pathlib import Path
 import sys
@@ -9,6 +11,10 @@ import review_render_v3 as r3
 CREAM = (247, 242, 223)
 L, R = r3.LEFT, r3.SAFE_RIGHT
 TONE_COLORS = {'称賛': (40, 108, 80), '批判': (163, 56, 62), '中立': (75, 83, 98)}
+
+
+SHORT_ROUNDS = (('リーグ優勝決定シリーズ', '優勝決定S'), ('ワイルドカードシリーズ', 'WCシリーズ'),
+                ('ワールドシリーズ', 'WS'), ('地区シリーズ', '地区S'))
 
 
 def text(im, x, y, value, size=40, color=None, width=None, number=False, team_id=None):
@@ -25,8 +31,20 @@ def text(im, x, y, value, size=40, color=None, width=None, number=False, team_id
     font = r3.num_font if number else r3.font
     def advance(s):
         return font(s).getlength(value)+sum(inline_badge_width(names[v],s)+12 for v in runs if v in names)
+    start_size = size
     while width and advance(size) > width and size > 18:
         size -= 2
+    if width and advance(size) > width and not number:
+        # 止める前に、長いシリーズ名を短い呼び方にして収め直す（10/16 「リーグ優勝決定シリーズ　ガーディアンズ」で試合の回が出なかった）。
+        shorter = value
+        for long_name, short_name in SHORT_ROUNDS:
+            shorter = shorter.replace(long_name, short_name)
+        if shorter != value:
+            value = shorter
+            runs = re.split(pattern, value)
+            size = start_size
+            while advance(size) > width and size > 18:
+                size -= 2
     if width and advance(size) > width:
         raise ValueError('v4の文字が札の幅に入りません: '+value)
     f = font(size)
@@ -111,12 +129,31 @@ def panel(im, box, fill=None, outline=None):
     r3.record_box(im, 'card', box)
 
 
+def text_length(value, size):
+    """text() と同じ実寸。球団名の横の小札の幅も含める。"""
+    from team_names import team_names_jp
+    import notability_engine as ne
+    value=team_names_jp(str(value))
+    names={name:str(tid) for tid,name in ne.MLB_TEAM_NAME_JP.items()}
+    pattern='('+ '|'.join(re.escape(n) for n in sorted(names,key=len,reverse=True))+')'
+    return r3.font(size).getlength(value)+sum(inline_badge_width(names[v],size)+12
+                                              for v in re.split(pattern,value) if v in names)
+
+
 def tag(im, x, y, value, fill=None, color=None, size=28, width=None):
     f=r3.font(size)
     if width:
         while f.getlength(str(value))+28 > width and size > 18:
             size-=2;f=r3.font(size)
-    w=round(f.getlength(str(value)))+28;h=size+26
+    w=round(f.getlength(str(value)))+28
+    if text_length(value,18) > w-28:
+        # 球団名の横の小札の分で、本文が最小の字でも入らないときだけ、本文と同じ測り方で
+        # 幅を決め直す（10/29「ドジャース Way」で止まった）。入っていた札の見た目は変えない。
+        if width:
+            while text_length(value,size)+28 > width and size > 18:
+                size-=2
+        w=math.ceil(text_length(value,size))+28
+    h=size+26
     panel(im,(x,y,x+w,y+h),fill or r3.DARK_INK,fill or r3.GOLD)
     text(im,x+14,y+10,value,size,color or r3.INK,width=w-28)
     return w
@@ -327,6 +364,7 @@ def stat_cards(im,values,y,height=148):
                             box=[x,y,x+w,y+height],font_size=size,center=x+w/2))
 
 
+@motion.slot('roster')
 def cover(t,spec):
     im=canvas(t,spec.get('label') or '日本人選手の成績')
     roster=spec['roster'];text(im,L,264,'出場した日本人選手',48,width=R-L-180)
@@ -386,6 +424,7 @@ def player_detail(t,spec,player):
     return finish(im,t,spec.get('ticker',''),spec.get('source') or '出典：MLB公式（Stats API）')
 
 
+@motion.slot('others')
 def others(t,spec):
     players=spec['other_players'];duration=max(.1,spec.get('dur',8));spoken=spec.get('say','')
     if spec.get('kind')=='others':
@@ -412,6 +451,7 @@ def others(t,spec):
     return player_detail(t,spec,players[index])
 
 
+@motion.slot('ranking')
 def ranking(t,spec,rows,source):
     im=canvas(t,'日本人選手の成績')
     text(im,L,260,'今日の勝利貢献順位',48,width=R-L)
@@ -518,6 +558,7 @@ def live_line(im,value):
         return False
     return True
 
+@motion.slot('quotes')
 def quotes(t,voices,label,live,ticker,source,animate=True):
     import v3_slot_render as common
     voices=[v for v in voices if not v.get('fact')]
@@ -582,6 +623,7 @@ def quotes(t,voices,label,live,ticker,source,animate=True):
     return finish(im,t,ticker,source)
 
 
+@motion.slot('schedule')
 def schedule(t,spec,rows,label,source):
     if len(rows)>4:raise ValueError('全試合の一覧は4行までです')
     im=canvas(t,label);text(im,L,260,'明日の全試合',48,width=R-L)
@@ -629,6 +671,7 @@ def team_row(im,box,row,need):
 
 
 def focus(t,card,view):
+    from japanese_team_names import team_names
     im=canvas(t,card.get('label','PS予告'))
     text(im,L,256,card.get('round_game') or card.get('subhead',''),40,width=R-L)
     v=view['v3'];clock=v.get('big','')
@@ -648,7 +691,7 @@ def focus(t,card,view):
             phrase=(card.get('v4_club_mentions') or {}).get(row['name'])
             if phrase==row['name']:
                 text(im,L+24,y,'注目球団',32,r3.GOLD,width=R-L-48)
-            else:text(im,L+24,y,'・'.join(row['players']),40,width=R-L-48)
+            else:text(im,L+24,y,team_names(row['players'],row['name']) if len(row['players'])>=2 else team_names(row['players']),40,width=R-L-48)
             y+=60
     return finish(im,t,v.get('ticker',''),'出典：'+card.get('source_label','MLB公式日程'),True)
 

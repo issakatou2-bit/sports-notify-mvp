@@ -19,16 +19,26 @@ on:
       - 'scripts/video_design/**'
       - '.github/workflows/ps_program_preview.yml'
 permissions:
-  contents: read
+  contents: write
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
+  COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
   COLLESPO_SHORT_LOOK: ${{ inputs.look || 'v3' }}
   COLLESPO_MLB_BADGE: ${{ vars.COLLESPO_MLB_BADGE || '' }}
 
 jobs:
   preview:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: ${{ (vars.COLLESPO_SOLO_HOST == 'ui' || vars.COLLESPO_HOST_SPLIT == 'half') && 120 || 18 }}
     env:
       PS_PROGRAM_LAYOUT: v2
       COLLESPO_PS_DESIGN: ${{ inputs.design == 'v3' && 'v3' || 'legacy' }}
@@ -90,3 +100,16 @@ jobs:
             build/ps_editorial_source.json
             build/ps_voice_check.json
             build/ps-design/
+            !build/**/portrait/**
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

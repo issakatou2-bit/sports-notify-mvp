@@ -16,12 +16,13 @@ def add_player_scene(narr,data):
     person=next((p for p in data['players'] if p['status']!='none'),None)
     if not person:return result
     game=next(g for g in data['games'] if g['id']==person['event_id'])
-    parts=[f"{person['name']}は{person[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト')) if person.get(k) is not None]
-    text='。'.join(parts)+'。'
+    import soccer_result_facts
+    player_text=soccer_result_facts.player_line(person)
+    text=player_text
     side=person['side'];other='away' if side=='home' else 'home'
     if all(game['score'].get(s) is not None for s in ('home','away')):
         text+=f"{person['club']}の試合は、{game['score'][side]}対{game['score'][other]}でした。"
-    seg=dict(kind='intro',text=text,speaker=2,meta=dict(event_id=game['id'],player_detail=person['name'],enhancement='score'))
+    seg=dict(kind='intro',text=text,speaker=2,caption_units=[player_text,text[len(player_text):]] if text!=player_text else [text],meta=dict(event_id=game['id'],player_detail=person['name'],enhancement='score'))
     result['segments'].insert(1,seg)
     return result
 
@@ -31,9 +32,13 @@ def player_result_frame(t,person,game,clubs,spec,enhancement='score'):
     c.heading(im,'日本人選手の成績')
     c.text(im,L+20,338,person['name'],68,width=R-L-40,weight=900)
     c.club_name(im,L+20,444,clubs[person['club']],36,width=R-L-40)
-    for index,(key,unit) in enumerate((('goals','得点'),('assists','アシスト'))):
-        left=L+index*((R-L+24)//2);right=left+(R-L-24)//2
-        if person.get(key) is not None:c.stat(im,(left,520,right,806),person[key],unit)
+    positive=[(key,unit) for key,unit in (('goals','得点'),('assists','アシスト')) if person.get(key)]
+    for index,(key,unit) in enumerate(positive):
+        left=L+index*((R-L+24)//2);right=R if len(positive)==1 else left+(R-L-24)//2
+        c.stat(im,(left,520,right,806),person[key],unit)
+    if not positive:
+        import soccer_results
+        c.panel(im,(L,520,R,806));c.text(im,L+72,620,soccer_results.STATUS[person['status']],64,width=R-L-144)
     c.panel(im,(L,858,R,1120))
     if enhancement=='score':
         c.text(im,L+72,882,'チームの試合結果',30,c.LIME,width=R-L-144)
@@ -46,7 +51,7 @@ def player_result_frame(t,person,game,clubs,spec,enhancement='score'):
         c.text(im,L+72,882,'出場とカード',30,c.LIME,width=R-L-144)
         c.text(im,L+72,936,results.STATUS[person['status']],52,width=R-L-144)
         for i,(key,label) in enumerate((('yellow_cards','警告'),('red_cards','退場'))):
-            if person.get(key) is not None:c.text(im,L+72+i*350,1060,f'{label} {person[key]}',32,width=300)
+            if person.get(key):c.text(im,L+72+i*350,1060,f'{label} {person[key]}',32,width=300)
     elif enhancement=='plays':
         c.text(im,L+72,882,'得点・アシストの場面',30,c.LIME,width=R-L-144)
         plays=[g for g in game['goals'] if (g.get('japanese_goal') and g['scorer']==person['name']) or person['name'] in g.get('japanese_assists',[])]
@@ -62,8 +67,8 @@ def results_frame(t,seg,data,clubs,spec,credit):
     import soccer_results as results
     if seg['kind']=='outro':return c.outro(t,spec,'soccer_results',credit,TAGLINE)
     if seg['kind']=='roster':
-        rows=[p for p in data['players'] if p['status']!='none'][:seg['meta']['count']]
-        display=[dict(name=p['name'],club=p['club'],values=[(p[k],u) for k,u in (('goals','得点'),('assists','A')) if p.get(k) is not None],note='') for p in rows]
+        rows=[p for p in data['players'] if p['status']!='none' and str(p['event_id']) not in seg['meta'].get('exclude_events',[])][:seg['meta']['count']]
+        display=[dict(name=p['name'],club=p['club'],values=[(p[k],u) for k,u in (('goals','得点'),('assists','A')) if p.get(k)],note='') for p in rows]
         im=c.jp_roster(t,dict(spec,title='日本人選手の結果　A＝アシスト',rows=display),clubs)
         # 出場区分は数字と重ならない名前の行に。出場なしは名前だけ・読み上げない。
         for row,p in zip([e for e in im.info['v3_layout'] if e['role']=='card'],rows):

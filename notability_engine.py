@@ -242,11 +242,12 @@ def rule_japanese_player(game: Game, jp_team_map: dict) -> list[Reason]:
                 if not playing:
                     continue          # 誰も直近で出ていないなら理由にしない
                 names = playing
-            names_str = "・".join(names)
+            from scripts.japanese_team_names import team_names
+            names_str = team_names(names)
             reasons.append(
                 Reason(
                     tag="jp_team",
-                    text=f"{team_name}には{names_str}が所属",
+                    text=team_names(names, team_name) if len(names) >= 2 else f"{team_name}には{names_str}が所属",
                     weight=jp_roster_weight(len(names)),
                 )
             )
@@ -1563,6 +1564,8 @@ def apply_readings(text: str) -> str:
     """
     if not text:
         return text
+    from scripts.number_readings import apply as apply_number_readings
+    text = apply_number_readings(text)
     from scripts.name_reading_guard import apply as apply_name_readings
     text = apply_name_readings(text)
     for kanji in sorted(JP_PLAYER_READINGS, key=len, reverse=True):
@@ -1747,6 +1750,12 @@ JP_PLAYERS_SOCCER = [
      "team_jp": "マインツ", "league": "BL1", "match": "mainz"},
     {"name_en": "Sota Kawasaki", "name_jp": "川﨑颯太", "kana": "カワサキ・ソウタ", "team_en": "Mainz",
      "team_jp": "マインツ", "league": "BL1", "match": "mainz"},
+    # 2026年10月21日追加。CLのポルト0-1PSVで出場した佐野航大を、一覧にいる
+    # 兄の佐野海舟(マインツ)と取り違えた事故を受けて。PSV公式の移籍記事:
+    # https://www.psv.nl/media/artikel/transfer-psv-neemt-kodai-sano-over-van-nec
+    # 漢字・読み: https://www.jfa.jp/samuraiblue/member/sano_kodai.html （佐野 航大 SANO Kodai）
+    {"name_en": "Kodai Sano", "name_jp": "佐野航大", "kana": "サノ・コウダイ", "team_en": "PSV Eindhoven",
+     "team_jp": "PSV", "league": "DED", "match": "psv"},
     # "borussia" はドルトムントとぶつかるので地名側を使う
     {"name_en": "Shuto Machino", "name_jp": "町野修斗", "kana": "マチノ・シュウト",
      "team_en": "Borussia Monchengladbach", "team_jp": "ボルシアMG",
@@ -1761,7 +1770,8 @@ JP_PLAYERS_SOCCER = [
      "team_jp": "シャルケ", "league": "BL2", "match": "schalke"},
 
     # --- セリエA(イタリア) ---
-    {"name_en": "Zion Suzuki", "name_jp": "鈴木ザイオン", "kana": "スズキ・ザイオン", "team_en": "Parma",
+    # 表示名はJFA公式漢字。読みと表示を混ぜない（全42人の根拠はsoccer_player_names.json）。
+    {"name_en": "Zion Suzuki", "name_jp": "鈴木彩艶", "kana": "スズキ・ザイオン", "team_en": "Parma",
      "team_jp": "パルマ", "league": "SA", "match": "parma"},
 
     # --- リーグ・アン(フランス) ---
@@ -1822,7 +1832,7 @@ JP_PLAYERS_SOCCER = [
     {"name_en": "Tomoki Iwata", "name_jp": "岩田智輝", "kana": "イワタ・トモキ",
      "team_en": "Birmingham City", "team_jp": "バーミンガム", "league": "ELC",
      "match": "birmingham"},
-    {"name_en": "Yu Hirakawa", "name_jp": "平川怜", "kana": "ヒラカワ・リョウ",
+    {"name_en": "Yu Hirakawa", "name_jp": "平河悠", "kana": "ヒラカワ・ユウ",
      "team_en": "Bristol City", "team_jp": "ブリストル・シティ",
      "league": "ELC", "match": "bristolcity"},
 ]
@@ -1899,7 +1909,7 @@ def jp_players_for_club(name: str, league: str | None = None) -> list:
 SOCCER_CLUB_NAME_JP = {
     # --- プレミアリーグ ---
     "arsenal": "アーセナル",
-    "astonvilla": "アストン・ヴィラ",
+    "astonvilla": "アストンヴィラ",   # 表示名（data/club_display_names.json）に合わせる（Opus-32）
     "bournemouth": "ボーンマス",
     "brentford": "ブレントフォード",
     "brighton": "ブライトン",
@@ -2060,6 +2070,16 @@ SOCCER_CLUB_NAME_JP = {
 _SOCCER_CLUB_KEYS = sorted(SOCCER_CLUB_NAME_JP, key=len, reverse=True)
 
 
+def club_display_name(name: str) -> str:
+    from scripts import club_display_names
+    return club_display_names.display(name)
+
+
+def club_display_text(text: str) -> str:
+    from scripts import club_display_names
+    return club_display_names.display_text(text)
+
+
 def club_name_jp(name: str) -> str:
     """
     APIが返したクラブ名を日本語表記にする。一覧に無ければ元の文字列。
@@ -2077,7 +2097,7 @@ def club_name_jp(name: str) -> str:
         return name
     for p in JP_PLAYERS_SOCCER:
         if p["match"] in norm:
-            return p["team_jp"] if legacy else display_names.display(p["team_jp"])
+            return club_display_text(p["team_jp"]) if "astonvilla" in norm else p["team_jp"] if legacy else display_names.display(p["team_jp"])
     for key in _SOCCER_CLUB_KEYS:
         if key in norm:
             return SOCCER_CLUB_NAME_JP[key] if legacy else display_names.display(SOCCER_CLUB_NAME_JP[key])
@@ -2239,7 +2259,8 @@ def resolve_jp_player_teams(date_str: str) -> dict:
     return jp_team_map
 
 
-def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) -> dict | None:
+def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str,
+                         game_pk: str | None = None) -> dict | None:
     """
     同じ2チームの直近の対戦成績・シリーズ内の位置づけを取得する。
     MLB Stats APIのスケジュールに含まれる seriesGameNumber/gamesInSeries を使う。
@@ -2269,6 +2290,7 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
         past_results = []  # (date, home_wins: bool)
         series_game_number = None
         games_in_series = None
+        targets = {}
 
         for date_entry in data.get("dates", []):
             for g in date_entry.get("games", []):
@@ -2278,9 +2300,11 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
                 if pair != {home_team_id, away_team_id}:
                     continue
 
-                if g.get("gameDate", "").startswith(date_str):
-                    series_game_number = g.get("seriesGameNumber")
-                    games_in_series = g.get("gamesInSeries")
+                # 試合IDで照合する。gameDate は UTC なので、米国の夜の試合は
+                # 前日の試合が date_str に一致する（10/28 第5戦の通知に第4戦の番号が入った）。
+                if (str(g.get("gamePk")) == str(game_pk) if game_pk
+                        else (g.get("officialDate") or date_entry.get("date")) == date_str):
+                    targets[g.get("gamePk")] = g
 
                 if g.get("status", {}).get("abstractGameCode") == "F":
                     home_score = g["teams"]["home"].get("score")
@@ -2293,6 +2317,12 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
                         this_game_home_won if home_id == home_team_id else not this_game_home_won
                     )
                     past_results.append(normalized_home_won)
+
+        # 日付だけではダブルヘッダーのどちらかを決められない。
+        if len(targets) == 1:
+            target = next(iter(targets.values()))
+            series_game_number = target.get("seriesGameNumber")
+            games_in_series = target.get("gamesInSeries")
 
         if not past_results and series_game_number is None:
             return None
@@ -2869,10 +2899,6 @@ def _build_ai_prompt(game: dict, standings: dict) -> str:
     )
 
     structural_notes = []
-    if game.get('league') in {'CL', 'チャンピオンズリーグ', 'UEFA Champions League'}:
-        structural_notes.append(
-            '現行CLは出場資格を得た36クラブのリーグフェーズ。各クラブは8つの異なる相手と対戦（ホーム4・アウェー4）。'
-            'グループ内総当たりではなく、欧州1部の全クラブが参加する大会でもない')
     if soccer:
         # サッカーには地区が無い。MLB用の地区の話をそのまま通すと、
         # 「同地区内で対峙する」という存在しない構図が書かれる。
@@ -3135,6 +3161,13 @@ FORBIDDEN_SOCCER_WORDS = ["ゲーム差", "地区", "完封", "先発投手",
                           "球場", "本塁打", "打率", "防御率"]
 
 
+# 大会の形式（総当たり・参加チームなど）は材料に無く、AIが言い切ると誤りになる。
+# 10/21「CLは1部リーグの全チームによる総当たり戦」と書いた（正しくは36クラブが
+# 各8チームと対戦。UEFA規程17条）。形式の説明そのものを書かせない。
+FORMAT_CLAIM = re.compile(r"総当たり|全(?:チーム|クラブ)(?:が|と)(?:参加|対戦|戦)"
+                          r"|1部リーグの全|ホーム・?アンド・?アウェー方式|リーグフェーズは")
+
+
 def forbidden_wording(text: str, soccer: bool = False) -> list:
     """その文に含まれる、使ってはいけない語を返す。"""
     if not text:
@@ -3142,7 +3175,10 @@ def forbidden_wording(text: str, soccer: bool = False) -> list:
     words = list(FORBIDDEN_WORDING)
     if soccer:
         words += FORBIDDEN_SOCCER_WORDS
-    return [w for w in words if w in text]
+    found = [w for w in words if w in text]
+    if soccer:
+        found += sorted(set(m.group(0) for m in FORMAT_CLAIM.finditer(text)))
+    return found
 
 
 def _call_ai(prompt: str, api_key: str, max_tokens: int = 700):
@@ -3332,23 +3368,6 @@ def soccer_venue_instruction(game: dict) -> str:
     return soccer_venue.instruction(game)
 
 
-def soccer_format_issues(text: str, game: dict) -> list:
-    """Only check today's CL preview; explicit old-format comparisons remain valid."""
-    if game.get('league') not in {'CL', 'チャンピオンズリーグ', 'UEFA Champions League'}:
-        return []
-    bad = []
-    for sentence in re.split(r'[。!！\n]', text or ''):
-        if re.search(r'旧|従来|以前|202[0-3]', sentence):
-            continue
-        if (re.search(r'グループ(?:ステージ|リーグ)|総当たり', sentence) and
-                not re.search(r'(?:グループ(?:ステージ|リーグ)|総当たり)(?:戦)?では(?:なく|ない|ありません)', sentence)):
-            bad.append('現行CLはグループ内総当たりではなく36クラブのリーグフェーズ')
-        if (re.search(r'(?:欧州|ヨーロッパ).{0,15}(?:1|１|一)部リーグ(?:の)?(?:全体|すべて|全て|全チーム|全クラブ).{0,18}(?:参加|参戦|出場|総当たり)', sentence) and
-                not re.search(r'参加.{0,12}(?:ではない|ではなく|しない|わけではない)', sentence)):
-            bad.append('CLには出場資格を得たクラブが参加し、欧州1部の全クラブ参加ではない')
-    return list(dict.fromkeys(bad))
-
-
 def enhance_games_with_ai(
     output: dict, standings: dict, api_key: str, count: int = 3
 ) -> None:
@@ -3394,7 +3413,7 @@ def enhance_games_with_ai(
         # 頼むだけでなく、出力を見て弾く。1回の書き直しで直らなければ
         # AIの文は捨てて、ルールベースの理由文だけで出す。
         bad = forbidden_wording(ai_text, is_soccer_league(game.get("league")))
-        bad = bad + host_reversed(ai_text, game) + soccer_format_issues(ai_text, game)
+        bad = bad + host_reversed(ai_text, game)
         if bad and not truncated:
             print(f"[info] 書き直し: {game['matchup']} に "
                   f"{'・'.join(bad)} が入っていました")
@@ -3408,7 +3427,7 @@ def enhance_games_with_ai(
             ai_text, c2, in_tok, out_tok, truncated = _call_ai(retry, api_key)
             total_cost += c2
             if (forbidden_wording(ai_text, is_soccer_league(game.get("league")))
-                    or host_reversed(ai_text, game) or soccer_format_issues(ai_text, game)):
+                    or host_reversed(ai_text, game)):
                 print(f"[warn] {game['matchup']}: 書き直しでも直らないため、"
                       "AIの文は使いません")
                 game.pop("ai_summary", None)
@@ -3549,6 +3568,9 @@ def main():
             print(f"[info] manual_notes.jsonから{len(manual_notes)}件の手動情報を反映しました")
 
     result = build_output(games, standings, jp_team_map, manual_reasons)
+    if not args.mock:
+        # 取得時刻と検索した公式日付は、日またぎや --date 指定では異なる。
+        result["schedule_date"] = date_str
 
     # シリーズ文脈(前の試合結果・第何戦か)を取得
     if not args.mock:
@@ -3556,7 +3578,8 @@ def main():
             if game["league"] != "MLB":
                 continue
             series_context = fetch_series_context(
-                game["home_team_id"], game["away_team_id"], date_str
+                game["home_team_id"], game["away_team_id"], date_str,
+                game.get("game_id"),
             )
             if series_context:
                 game["series_context"] = series_context

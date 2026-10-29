@@ -1,0 +1,19 @@
+{
+ "policy_date":"2026-10-13",
+ "note":"本人方針：公式の日本向けハイライトコメント、確認済みスポーツ媒体の見出し、記者/公式投稿。見出しはGoogleニュースの検索RSSのみで取得し本文は取らない。記事は記者のSNS名簿と分けて媒体で確認。短く出典リンク付き。一般SNS・Yahooコメント・5chなし。",
+ "youtube":[
+  {"name":"SPOTV NOW", "handle":"SPOTVNOW_JP", "channel_id":"UCJ-l-sMQFHogSy8KXRyMIRA", "sport":"MLB", "source":"https://prtimes.jp/main/html/rd/p/000000026.000075946.html"},
+  {"name":"DAZN Japan", "handle":"DAZNJapan", "sport":"PL", "source":"https://dazngroup.com/press-room/0424/"},
+  {"name":"ABEMA Soccer", "handle":"ABEMA_soccer", "channel_id":"UCVjvtweGM-Kak2D53AvfNOA", "sport":"PL", "source":"https://www.youtube.com/channel/UCVjvtweGM-Kak2D53AvfNOA"},
+  {"name":"U-NEXT Football", "handle":"UNEXT_football", "sport":"PL", "source":"https://www.youtube.com/watch?v=NfE37gixgyQ"}
+ ],
+ "papers":[
+  {"name":"スポニチ", "rss_names":["スポニチアネックス Sponichi Annex","スポニチ Sponichi Annex","スポニチアネックス","スポニチ"], "domain":"www.sponichi.co.jp"},
+  {"name":"スポーツ報知", "rss_names":["スポーツ報知"], "domain":"hochi.news"},
+  {"name":"サンスポ", "rss_names":["サンスポ","サンケイスポーツ"], "domain":"www.sanspo.com"},
+  {"name":"デイリースポーツ", "rss_names":["デイリースポーツ","デイリースポーツオンライン"], "domain":"www.daily.co.jp"},
+  {"name":"Full-Count", "rss_names":["Full-Count","フルカウント"], "domain":"full-count.jp", "sports":["MLB"]},
+  {"name":"サッカーキング", "rss_names":["サッカーキング","SOCCER KING"], "domain":"www.soccer-king.jp", "sports":["PL"]}
+ ],
+ "reporters":[]
+}

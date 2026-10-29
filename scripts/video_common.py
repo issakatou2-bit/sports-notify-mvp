@@ -143,7 +143,8 @@ def anim_step(k: int, n: int, still_after: float = STILL_AFTER):
     止まる時点をちゃんと後ろに取れば、丸める必要は無い。
     """
     p = k / max(1, n - 1)
-    return p, p >= still_after
+    import motion
+    return p, p >= still_after and not motion.enabled()
 
 
 def pop_text(d, xy, text, fnt, fill, stroke=None, stroke_w=0,
@@ -294,6 +295,9 @@ def crossfade(prev_bytes, im, k: int, fade_frames: int, size):
     混ぜるのは頭だけで、そのあとは素通し。全編に効かせると
     動きのある画面(スコアボードが左から開く等)が濁る。
     """
+    import motion
+    moved = motion.transition(prev_bytes, im, k, max(1, round(fade_frames / FADE_SECONDS)))
+    if moved is not None:return moved
     raw = im.tobytes()
     if not prev_bytes or k >= fade_frames or fade_frames <= 0:
         return raw
@@ -311,6 +315,9 @@ SHORT_WIPE_SECONDS = .5
 
 def short_transition(prev_bytes, im, k, fps=30, v4=False):
     """v4だけ円ワイプ。字幕・帯は次のコマの一枚を保つ。v3は従来通り。"""
+    import motion
+    moved = motion.transition(prev_bytes, im, k, fps)
+    if moved is not None:return moved
     if not v4:
         return crossfade(prev_bytes,im,k,round(FADE_SECONDS*fps),im.size)
     frames=round(SHORT_WIPE_SECONDS*fps)
@@ -396,6 +403,8 @@ def short_effects(im,t,quote=False,score=False):
 # 4つとも少しずつ違っていて、統合は別途(短編を測っている最中に
 # 4か所を同時に触らない)。ここは長編のための正本。
 def build_narration_track(segs, durations, out_dir):
+    import solo_host
+    solo_host.validate_audio(segs)
     import lipsync
     lipsync.prepare(segs, durations, out_dir)
     if not any(s.get("file") for s in segs):

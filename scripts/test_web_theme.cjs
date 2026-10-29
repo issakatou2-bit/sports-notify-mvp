@@ -55,3 +55,10 @@ test('changes and cleared storage in another tab are reflected',()=>{
   h.events.storage({key:null,newValue:null});
   assert.equal(h.nodes.themeChoice.value,'system');
 });
+
+test('history restores the latest saved choice after a cached page is shown',()=>{
+  const h=harness('light',true);
+  h.store.value='dark';h.events.pageshow();
+  assert.equal(h.root.dataset.theme,'dark');
+  assert.equal(h.nodes.themeChoice.value,'dark');
+});

@@ -1,0 +1,115 @@
+{
+  "run_a": 40167564998,
+  "run_b": 40182984818,
+  "document": {
+    "segments": [
+      {
+        "kind": "intro",
+        "text": "手堅いブリュワーズ、レイズにじわじわ迫り逆転 2勝0敗とリード。10月25日、現地の報道です。",
+        "meta": {
+          "date": "2026-10-25",
+          "mode": "press",
+          "source_headlines": [
+            {
+              "query": "PS試合総括",
+              "title": "Methodical Brewers chip away at Rays, rally to seize 2-0 lead",
+              "url": "https://www.mlb.com/news/brewers-win-world-series-game-2-2026",
+              "source": "MLB.com",
+              "at": "2026-10-25T05:42:00+00:00",
+              "publication_evidence": [
+                {
+                  "source": "at",
+                  "date": "2026-10-25"
+                }
+              ],
+              "published_date": "2026-10-25",
+              "jp": "手堅いブリュワーズ、レイズにじわじわ迫り逆転 2勝0敗とリード"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "issue": {
+    "kind": "事実の誤り",
+    "severity": "high",
+    "where": "手堅いブリュワーズ、レイズにじわじわ迫り逆転 2勝0敗とリード。",
+    "why": "材料ではWSはブリュワーズ2勝0敗で、2勝0敗のリード自体は合っている。ただし「じわじわ迫り逆転」は、先行してリードしているシリーズの状況と合わない。2戦とも勝っており、逆転という表現は成立しない。"
+  },
+  "materials": [
+    {
+      "source": "data/postseason.json",
+      "source_url": "https://statsapi.mlb.com/api/v1/schedule",
+      "date_jst": "2026-10-25",
+      "retrieved_at": "2026-10-25T06:01:54.730686+00:00",
+      "series": [
+        {
+          "key": "W:139-158",
+          "round": "W",
+          "round_jp": "ワールドシリーズ",
+          "stage": 4,
+          "league_jp": "",
+          "best_of": 7,
+          "need": 4,
+          "played": 2,
+          "over": false,
+          "winner": null,
+          "next": {
+            "day": "10月27日",
+            "game": 3
+          },
+          "teams": [
+            {
+              "id": 158,
+              "name": "ブリュワーズ",
+              "wins": 2,
+              "players": []
+            },
+            {
+              "id": 139,
+              "name": "レイズ",
+              "wins": 0,
+              "players": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "records": {
+    "daily_soccer": {
+      "2026-10-25": {
+        "video_id": "1Iy8UsDuSl8",
+        "url": "https://youtu.be/1Iy8UsDuSl8",
+        "title": "【欧州サッカー】佐野海舟が先発｜マインツ 2-3 ブレーメン ほか 日本人選手の結果 #Shorts",
+        "published_at": "2026-10-25T00:46:40+00:00",
+        "publish_at": "2026-10-25T00:46:40Z",
+        "backfilled": true
+      }
+    },
+    "soccer_results": {
+      "2026-10-24": {
+        "video_id": "1Iy8UsDuSl8",
+        "url": "https://youtu.be/1Iy8UsDuSl8",
+        "title": "【欧州サッカー】佐野海舟が先発｜マインツ 2-3 ブレーメン ほか 日本人選手の結果 #Shorts",
+        "published_at": "2026-10-25T00:32:06.865875+00:00",
+        "publish_at": "2026-10-25T00:46:00Z",
+        "host_assignment": {
+          "day": "2026-10-25",
+          "kind": "soccer_results",
+          "phase": 1,
+          "planned_host": "metan",
+          "rule": "half-jst-week-v1",
+          "week": 41,
+          "weekday": 6
+        },
+        "planned_host": "metan",
+        "actual_host": "metan",
+        "host_fallback_reason": null,
+        "privacy": "public"
+      }
+    }
+  },
+  "snapshot_commit": "2203b3dc297e50cc4de42ef201494b470b62c6bb",
+  "document_basis": "保存見出しと本番build_narrationのsegment.metaを固定。停止指摘は実行ログの全文。"
+}

@@ -1,0 +1,692 @@
+{
+  "source_commit": "a75e944d",
+  "source_path": "data/soccer_games.json",
+  "note": "Selected game rows from saved material. Narration rebuilt deterministically; audio durations are synthetic, not the original WAV measurements.",
+  "data": {
+    "generated_at": "2026-10-15T09:53:56.805003+00:00",
+    "games": [
+      {
+        "game_id": "espn-401915566",
+        "espn_event_id": "401915566",
+        "competition_code": "EL",
+        "league": "ヨーロッパリーグ",
+        "start_time_utc": "2026-10-15T16:45:00+00:00",
+        "start_time_jst": "10/16 01:45",
+        "is_notable": true,
+        "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+        "home_standing": null,
+        "away_standing": null,
+        "fixture_sources": [
+          "ESPN"
+        ],
+        "home_team_name": "Olympique Lyonnais",
+        "home_team_id": "espn-167",
+        "away_team_name": "Crystal Palace FC",
+        "away_team_id": "espn-384",
+        "jp_by_side": {
+          "home": [],
+          "away": [
+            "鎌田大地",
+            "冨安健洋"
+          ]
+        },
+        "home_has_jp": false,
+        "away_has_jp": true,
+        "season_players": [
+          {
+            "name": "鎌田大地",
+            "club": "クリスタル・パレス",
+            "scope": "season",
+            "goals": 1,
+            "assists": 3,
+            "minutes": 530,
+            "out": false,
+            "as_of": "2026-10-15T10:01:58.005593+00:00",
+            "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+          },
+          {
+            "name": "冨安健洋",
+            "club": "クリスタル・パレス",
+            "scope": "season",
+            "goals": 0,
+            "assists": 0,
+            "minutes": 189,
+            "out": true,
+            "as_of": "2026-10-15T10:01:58.005593+00:00",
+            "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+          }
+        ],
+        "preview_out_names": [
+          "冨安健洋"
+        ],
+        "preview_rating": {
+          "score": 45,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 20,
+              "evidence": "ヨーロッパリーグ"
+            },
+            {
+              "key": "japanese_club",
+              "points": 15,
+              "evidence": {
+                "home": [],
+                "away": [
+                  "鎌田大地",
+                  "冨安健洋"
+                ]
+              }
+            },
+            {
+              "key": "expectation",
+              "points": 10,
+              "evidence": {
+                "name": "鎌田大地",
+                "club": "クリスタル・パレス",
+                "goals": 1,
+                "assists": 3,
+                "japanese": true,
+                "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+                "as_of": "2026-10-15T10:01:58.005593+00:00"
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": {
+              "name": "鎌田大地",
+              "club": "クリスタル・パレス",
+              "goals": 1,
+              "assists": 3,
+              "japanese": true,
+              "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+              "as_of": "2026-10-15T10:01:58.005593+00:00"
+            }
+          },
+          "japanese": true
+        }
+      },
+      {
+        "game_id": "espn-401915567",
+        "espn_event_id": "401915567",
+        "competition_code": "EL",
+        "league": "ヨーロッパリーグ",
+        "start_time_utc": "2026-10-15T16:45:00+00:00",
+        "start_time_jst": "10/16 01:45",
+        "is_notable": true,
+        "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+        "home_standing": null,
+        "away_standing": null,
+        "fixture_sources": [
+          "ESPN"
+        ],
+        "home_team_name": "AC Sparta Praha",
+        "home_team_id": "espn-433",
+        "away_team_name": "Lillestrøm SK",
+        "away_team_id": "espn-987",
+        "jp_by_side": {
+          "home": [],
+          "away": [
+            "上田綺世"
+          ]
+        },
+        "home_has_jp": false,
+        "away_has_jp": true,
+        "season_players": [],
+        "preview_out_names": [],
+        "preview_rating": {
+          "score": 35,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 20,
+              "evidence": "ヨーロッパリーグ"
+            },
+            {
+              "key": "japanese_club",
+              "points": 15,
+              "evidence": {
+                "home": [],
+                "away": [
+                  "上田綺世"
+                ]
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": true
+        }
+      },
+      {
+        "game_id": "espn-401915574",
+        "espn_event_id": "401915574",
+        "competition_code": "EL",
+        "league": "ヨーロッパリーグ",
+        "start_time_utc": "2026-10-15T16:45:00+00:00",
+        "start_time_jst": "10/16 01:45",
+        "is_notable": true,
+        "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+        "home_standing": null,
+        "away_standing": null,
+        "fixture_sources": [
+          "ESPN"
+        ],
+        "home_team_name": "Royale Union Saint-Gilloise",
+        "home_team_id": "espn-5807",
+        "away_team_name": "Real Sociedad de Fútbol",
+        "away_team_id": "espn-89",
+        "jp_by_side": {
+          "home": [],
+          "away": [
+            "久保建英"
+          ]
+        },
+        "home_has_jp": false,
+        "away_has_jp": true,
+        "season_players": [],
+        "preview_out_names": [],
+        "preview_rating": {
+          "score": 35,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 20,
+              "evidence": "ヨーロッパリーグ"
+            },
+            {
+              "key": "japanese_club",
+              "points": 15,
+              "evidence": {
+                "home": [],
+                "away": [
+                  "久保建英"
+                ]
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": true
+        }
+      },
+      {
+        "game_id": "espn-401915563",
+        "espn_event_id": "401915563",
+        "competition_code": "EL",
+        "league": "ヨーロッパリーグ",
+        "start_time_utc": "2026-10-15T19:00:00+00:00",
+        "start_time_jst": "10/16 04:00",
+        "is_notable": true,
+        "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+        "home_standing": null,
+        "away_standing": null,
+        "fixture_sources": [
+          "ESPN"
+        ],
+        "home_team_name": "TSG 1899 Hoffenheim",
+        "home_team_id": "espn-7911",
+        "away_team_name": "Beşiktaş JK",
+        "away_team_id": "espn-1895",
+        "jp_by_side": {
+          "home": [
+            "町田浩樹"
+          ],
+          "away": []
+        },
+        "home_has_jp": true,
+        "away_has_jp": false,
+        "season_players": [],
+        "preview_out_names": [],
+        "preview_rating": {
+          "score": 35,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 20,
+              "evidence": "ヨーロッパリーグ"
+            },
+            {
+              "key": "japanese_club",
+              "points": 15,
+              "evidence": {
+                "home": [
+                  "町田浩樹"
+                ],
+                "away": []
+              }
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": true
+        }
+      }
+    ],
+    "ai_status": {
+      "targets": 0,
+      "succeeded": 0,
+      "cost_usd": 0.0
+    },
+    "source_errors": [],
+    "fixture_coverage": [
+      {
+        "competition": "PL",
+        "status": "success",
+        "events": 10,
+        "label": "取得成功"
+      },
+      {
+        "competition": "PD",
+        "status": "success",
+        "events": 11,
+        "label": "取得成功"
+      },
+      {
+        "competition": "BL1",
+        "status": "success",
+        "events": 9,
+        "label": "取得成功"
+      },
+      {
+        "competition": "SA",
+        "status": "success",
+        "events": 10,
+        "label": "取得成功"
+      },
+      {
+        "competition": "FL1",
+        "status": "success",
+        "events": 9,
+        "label": "取得成功"
+      },
+      {
+        "competition": "CL",
+        "status": "success",
+        "events": 18,
+        "label": "取得成功"
+      },
+      {
+        "competition": "EL",
+        "status": "success",
+        "events": 36,
+        "label": "取得成功"
+      },
+      {
+        "competition": "UECL",
+        "status": "success",
+        "events": 36,
+        "label": "取得成功"
+      },
+      {
+        "competition": "FAC",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "EFL",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "CDR",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "DFB",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "CI",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "CDF",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      }
+    ],
+    "club_registration_check": {
+      "days": 7,
+      "checked_at": "2026-10-15T19:02:07.727596+09:00",
+      "missing": [
+        {
+          "club": "Atlético Madrid",
+          "game_ids": [
+            "espn-401882843",
+            "espn-401915392"
+          ]
+        },
+        {
+          "club": "Barcelona",
+          "game_ids": [
+            "espn-401882846",
+            "espn-401915399"
+          ]
+        },
+        {
+          "club": "Bayern Munich",
+          "game_ids": [
+            "espn-401884772",
+            "espn-401915312"
+          ]
+        },
+        {
+          "club": "Brest",
+          "game_ids": [
+            "espn-401876436"
+          ]
+        },
+        {
+          "club": "Deportivo",
+          "game_ids": [
+            "espn-401882844"
+          ]
+        },
+        {
+          "club": "FC Cologne",
+          "game_ids": [
+            "espn-401884770"
+          ]
+        },
+        {
+          "club": "Hamburg SV",
+          "game_ids": [
+            "espn-401884767"
+          ]
+        },
+        {
+          "club": "Racing Santander",
+          "game_ids": [
+            "espn-401882840"
+          ]
+        },
+        {
+          "club": "Rayo Vallecano",
+          "game_ids": [
+            "espn-401882842"
+          ]
+        },
+        {
+          "club": "SV Elversberg",
+          "game_ids": [
+            "espn-401884764"
+          ]
+        },
+        {
+          "club": "Schalke 04",
+          "game_ids": [
+            "espn-401884765"
+          ]
+        },
+        {
+          "club": "Werder Bremen",
+          "game_ids": [
+            "espn-401884766"
+          ]
+        }
+      ],
+      "source_errors": []
+    },
+    "source": "ESPN",
+    "preview_selection": {
+      "day": "2026-10-15",
+      "threshold": 30,
+      "max_games": 4,
+      "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+      "selected_ids": [
+        "espn-401915566",
+        "espn-401915567",
+        "espn-401915574",
+        "espn-401915563"
+      ],
+      "count": 4,
+      "reason": "",
+      "rejected": [],
+      "source_errors": []
+    }
+  },
+  "narration": {
+    "label": "10月15日（木）",
+    "title": "【欧州サッカー】鎌田大地のクリスタル・パレスがリヨンと対戦 #Shorts",
+    "soccer_v4_mode": "preview",
+    "segments": [
+      {
+        "kind": "cover",
+        "text": "欧州サッカーの注目試合です。",
+        "speaker": 2,
+        "meta": {
+          "kicker": "欧州サッカー　予告",
+          "name": "鎌田大地",
+          "club": "Crystal Palace FC",
+          "big": "01:45",
+          "unit": "日本時間",
+          "context": "鎌田大地のクリスタル・パレスがリヨンと対戦",
+          "chips": [],
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・FPL",
+          "ticker": "10月15日（木）　鎌田大地のクリスタル・パレスがリヨンと対戦"
+        }
+      },
+      {
+        "kind": "preview",
+        "text": "日本時間1時45分、リヨン対クリスタル・パレス。期待選手は鎌田大地。今季FPL集計で1得点 3アシストです。注目はヨーロッパリーグでの、この両チームの対戦です。鎌田大地の所属クラブの一戦。出場する場合のプレーにも注目です。",
+        "speaker": 2,
+        "meta": {
+          "date": "10月16日（金）",
+          "time": "01:45",
+          "league": "ヨーロッパリーグ",
+          "home": "Olympique Lyonnais",
+          "away": "Crystal Palace FC",
+          "ranks": {},
+          "jp": {
+            "home": [],
+            "away": [
+              "鎌田大地"
+            ]
+          },
+          "game_id": "espn-401915566",
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・FPL",
+          "ticker": "10月15日（木）　鎌田大地のクリスタル・パレスがリヨンと対戦",
+          "interest": {
+            "reasons": [],
+            "player": {
+              "name": "鎌田大地",
+              "club": "クリスタル・パレス",
+              "goals": 1,
+              "assists": 3,
+              "japanese": true,
+              "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+              "as_of": "2026-10-15T10:01:58.005593+00:00"
+            }
+          },
+          "expectation_name": "鎌田大地",
+          "preview_duration_limit": 55
+        }
+      },
+      {
+        "kind": "preview",
+        "text": "日本時間1時45分、スパルタ・プラハ対リール。注目はヨーロッパリーグでの、この両チームの対戦です。上田綺世の所属クラブの一戦。出場する場合のプレーにも注目です。",
+        "speaker": 2,
+        "meta": {
+          "date": "10月16日（金）",
+          "time": "01:45",
+          "league": "ヨーロッパリーグ",
+          "home": "AC Sparta Praha",
+          "away": "Lillestrøm SK",
+          "ranks": {},
+          "jp": {
+            "home": [],
+            "away": [
+              "上田綺世"
+            ]
+          },
+          "game_id": "espn-401915567",
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・FPL",
+          "ticker": "10月15日（木）　鎌田大地のクリスタル・パレスがリヨンと対戦",
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "preview_duration_limit": 55
+        }
+      },
+      {
+        "kind": "preview",
+        "text": "日本時間1時45分、ユニオン・サンジロワーズ対レアル・ソシエダ。注目はヨーロッパリーグでの、この両チームの対戦です。久保建英の所属クラブの一戦。出場する場合のプレーにも注目です。",
+        "speaker": 2,
+        "meta": {
+          "date": "10月16日（金）",
+          "time": "01:45",
+          "league": "ヨーロッパリーグ",
+          "home": "Royale Union Saint-Gilloise",
+          "away": "Real Sociedad de Fútbol",
+          "ranks": {},
+          "jp": {
+            "home": [],
+            "away": [
+              "久保建英"
+            ]
+          },
+          "game_id": "espn-401915574",
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・FPL",
+          "ticker": "10月15日（木）　鎌田大地のクリスタル・パレスがリヨンと対戦",
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "preview_duration_limit": 55
+        }
+      },
+      {
+        "kind": "preview",
+        "text": "日本時間4時、ホッフェンハイム対Beşiktaş JK。注目はヨーロッパリーグでの、この両チームの対戦です。町田浩樹の所属クラブの一戦。出場する場合のプレーにも注目です。",
+        "speaker": 2,
+        "meta": {
+          "date": "10月16日（金）",
+          "time": "04:00",
+          "league": "ヨーロッパリーグ",
+          "home": "TSG 1899 Hoffenheim",
+          "away": "Beşiktaş JK",
+          "ranks": {},
+          "jp": {
+            "home": [
+              "町田浩樹"
+            ],
+            "away": []
+          },
+          "game_id": "espn-401915563",
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・FPL",
+          "ticker": "10月15日（木）　鎌田大地のクリスタル・パレスがリヨンと対戦",
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "preview_duration_limit": 55
+        }
+      },
+      {
+        "kind": "outro",
+        "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+        "speaker": 2,
+        "meta": {
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・FPL",
+          "ticker": "10月15日（木）　鎌田大地のクリスタル・パレスがリヨンと対戦"
+        }
+      }
+    ],
+    "duration_budget": {
+      "limit": 55,
+      "grace": 0
+    },
+    "soccer_material": {
+      "source": "ESPN",
+      "retrieved_at": "2026-10-15T09:53:56.805003+00:00",
+      "date_jst": "2026-10-15",
+      "games": [
+        {
+          "game_id": "espn-401915566",
+          "league": "ヨーロッパリーグ",
+          "home_team_name": "Olympique Lyonnais",
+          "away_team_name": "Crystal Palace FC",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN"
+          ],
+          "start_time_jst": "10/16 01:45",
+          "start_time_utc": "2026-10-15T16:45:00+00:00"
+        },
+        {
+          "game_id": "espn-401915567",
+          "league": "ヨーロッパリーグ",
+          "home_team_name": "AC Sparta Praha",
+          "away_team_name": "Lillestrøm SK",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN"
+          ],
+          "start_time_jst": "10/16 01:45",
+          "start_time_utc": "2026-10-15T16:45:00+00:00"
+        },
+        {
+          "game_id": "espn-401915574",
+          "league": "ヨーロッパリーグ",
+          "home_team_name": "Royale Union Saint-Gilloise",
+          "away_team_name": "Real Sociedad de Fútbol",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN"
+          ],
+          "start_time_jst": "10/16 01:45",
+          "start_time_utc": "2026-10-15T16:45:00+00:00"
+        },
+        {
+          "game_id": "espn-401915563",
+          "league": "ヨーロッパリーグ",
+          "home_team_name": "TSG 1899 Hoffenheim",
+          "away_team_name": "Beşiktaş JK",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN"
+          ],
+          "start_time_jst": "10/16 04:00",
+          "start_time_utc": "2026-10-15T19:00:00+00:00"
+        }
+      ],
+      "competitions": []
+    }
+  },
+  "audio_seconds": [
+    1.9,
+    15.987,
+    11.25,
+    11.55,
+    10.2,
+    7.6
+  ]
+}

@@ -367,9 +367,10 @@ def quotes(name_jp: str, name_en: str, reporters_path: str,
             out.append({"who": item.get("source", "現地メディア"),
                         "text": body, "kind": "headline"})
     for item in (voi.get("voices") or []):
+        if not __import__('fan_privacy').safe(item): continue
         body = item.get("ja") or ""
         if name_jp in body or (name_en and name_en in body):
-            out.append({"who": "現地のファン", "text": body,
+            out.append({"who": __import__('fan_privacy').LABEL if __import__('fan_privacy').reddit(item) else "現地のファン", "text": body,
                         "kind": "fan", "likes": item.get("likes")})
     return out[:4]
 

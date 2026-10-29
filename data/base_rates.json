@@ -1,14 +1,14 @@
 {
   "sport": "mlb",
   "overall": {
-    "games": 357,
-    "home_wins": 194,
+    "games": 368,
+    "home_wins": 200,
     "draws": 0,
-    "away_wins": 163,
+    "away_wins": 168,
     "home_win_pct": 54,
     "avg_total": 8.5,
-    "one_run": 101,
-    "one_run_pct": 28,
+    "one_run": 105,
+    "one_run_pct": 29,
     "shutouts": 44,
     "shutout_pct": 12
   },
@@ -65,29 +65,29 @@
       "games": 10,
       "avg_total": 9.1
     },
-    "アメリカン・ファミリー・フィールド": {
-      "games": 9,
-      "avg_total": 9.0
-    },
     "ヤンキー・スタジアム": {
       "games": 19,
       "avg_total": 8.9
     },
+    "アメリカン・ファミリー・フィールド": {
+      "games": 11,
+      "avg_total": 8.6
+    },
     "プログレッシブ・フィールド": {
-      "games": 12,
-      "avg_total": 8.5
+      "games": 14,
+      "avg_total": 8.4
     },
     "トロピカーナ・フィールド": {
-      "games": 15,
-      "avg_total": 8.5
+      "games": 20,
+      "avg_total": 8.2
+    },
+    "ドジャー・スタジアム": {
+      "games": 27,
+      "avg_total": 8.3
     },
     "オラクル・パーク": {
       "games": 6,
       "avg_total": 8.3
-    },
-    "ドジャー・スタジアム": {
-      "games": 25,
-      "avg_total": 8.2
     },
     "ローンデポ・パーク": {
       "games": 10,

@@ -947,6 +947,9 @@ def main():
                         help="音声が作れなければ動画を作らずに終わる")
     parser.add_argument("--out", default="build/video")
     args = parser.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
+    __import__('slant_by_episode').set_episode('daily',sport=args.sport)
     global DATA_SOURCE
     DATA_SOURCE = DATA_SOURCES[args.sport]
 
@@ -1006,6 +1009,10 @@ def main():
     total_games = len(games[:3])
 
     # --- 音声を先に連結しておく ---
+    import short_content
+    short_content.require({'segments': segments},
+                          [max(2.0, float(s.get('duration') or 0) or 4.0) for s in segments],
+                          out_dir, games_data, maximum=post_common.MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_files = [s["file"] for s in segments if s.get("file")]
     audio_path = None
 
@@ -1076,7 +1083,7 @@ def main():
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             for k in range(n):
                 p_, settled = video_common.anim_step(k, n)
-                if settled and still is not None:
+                if settled and still is not None and not __import__('bubble_styles').selected():
                     # 動きが止まった区間は描き直さず、直前のフレームを使い回す
                     proc.stdin.write(still)
                     frame_no += 1
@@ -1100,6 +1107,7 @@ def main():
                     im = render_news(p_, seg.get("text", ""))
                 else:
                     im = render_outro(p_)
+                im=__import__('bubble_styles').narration_frame(im,seg,k/FPS,dur)
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
                 proc.stdin.write(cached)
                 # 動きが終わった最初の1枚。これを残りに使い回す。

@@ -16,8 +16,10 @@ import review_render_v3 as r3
 import video_common as vc
 
 PORTRAIT_DIR = str(r3.ROOT / "assets/portraits")
-NAMES = {"metan": "四国めたん", "zundamon": "ずんだもん"}
-COLORS = {"metan": (236, 120, 178), "zundamon": (118, 190, 84)}
+NAMES = {"metan": "四国めたん", "zundamon": "ずんだもん", "kiritan": "東北きりたん", "ui": "雨衣"}
+COLORS = {"metan": (236, 120, 178), "zundamon": (118, 190, 84), "kiritan": (166, 68, 70), "ui": (100, 140, 183)}
+SPEAKERS = {2: "metan", 3: "zundamon", 108: "kiritan"}
+PORTRAIT_CAST = ("metan", "zundamon")  # Names/colors also include voices without a puppet.
 # v4 の表情の名前 → 部品の組み合わせ（眉, 目, 口）
 FACE_PARTS = {
     "base": ("基本", "開", "閉"),
@@ -25,7 +27,8 @@ FACE_PARTS = {
     "smile": ("基本", "開", "笑"),
     "surprise": ("上げ", "見開", "大"),
     "question": ("上げ", "開", "開"),
-    "jitome": ("困り", "開", "閉"),     # ジト目は本人NG（10/8）。負けの日は困り眉
+    "jitome": ("困り", "開", "閉"),
+    "sad": ("困り", "開", "閉"),        # 不調・負け。汗は苦笑いに見えるので付けない（10/14 本人）     # ジト目は本人NG（10/8）。負けの日は困り眉
     "pose-smile": ("基本", "笑", "笑"),
 }
 for _k, _v in FACE_PARTS.items():
@@ -46,6 +49,9 @@ def figure(who, face="base", height=1000):
 
 @functools.lru_cache(maxsize=64)
 def bust(who, face, height, dim=False):
+    if who == 'ui':
+        import solo_host
+        return solo_host.portrait(face, height)
     art = vc.face(NAMES[who], height, "v4_" + face, PORTRAIT_DIR)
     if art is None:
         return None
@@ -70,6 +76,12 @@ def redraw(im, layer):
         if art is not None:
             art = art.crop((0, 0, art.width, min(art.height, r["cut"])))
             im.paste(art, tuple(r["at"]), art)
+    # 動く札を重ねた後にも、雨衣の頭の記号を最前面へ戻す。
+    for r in layer or ():
+        if r['who'] == 'ui' and r.get('effect'):
+            import ui_puppet
+            x, y = r['at']; art = bust(r['who'], r['face'], r['height'], r['dim'])
+            fan_effect(im, r['effect'], ui_puppet.head_box([x,y,x+art.width,y+art.height]), r['elapsed'])
     return im
 
 
@@ -99,10 +111,17 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
     level = lipsync.at(clock if clock is not None else elapsed,
                        3 if speaker == 'zundamon' else 2) if voice_mode else None
     arts = []
+    ui_fan = None
     for who in cast:
         active = who == speaker
         mood = zunda_face(line) if who == "zundamon" else r3.face_for(line, elapsed, duration)
         fan = fan_mood(line) if active else None
+        if who == 'ui' and active and EXPR == 'fan' and not fan and 'ホールド' in line:
+            name = next((n for n in fan_names() if n in line), None)
+            if name:
+                fan = ('pose-smile', 'sparkle', name+'・ホールド')
+        if who == 'ui' and fan and fan[0] == 'sad' and not fan[1]:
+            fan = (fan[0], 'sad', fan[2])
         if fan:
             mood = fan[0]
         if mood == "talk":
@@ -110,25 +129,42 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
         face = ("talk" if (mouth and mood == "base") else mood) if active else "base"
         if voice_mode:
             face = f'{mood if active else "base"}:mouth{level if active else 0}'
+        if who == 'ui':
+            ui_fan = fan
+            import ui_puppet
+            face = ui_puppet.state(mood, line, elapsed, clock if clock is not None else elapsed,
+                                   duration, level, fan)
         arts.append((who, active, bust(who, face, BUST_ACTIVE if active else BUST_IDLE, not active), face))
     x = r3.SAFE_RIGHT + 4
     # 吹き出しの無い画面（締め）は、吹き出しの場所まで下げて、上の札・ボタンにかけない
     bottom = BUST_BOTTOM if line and not r3._CAPTION.get("hide_caption") else BUBBLE[3]
+    # 字幕のない締めは胸上の切れ目を画面の下端に隠す。v4/v6共通。
+    if im.info.get('v3_outro') and (not line or r3._CAPTION.get('hide_caption')):
+        bottom = im.height
     records, layer = [], []
     for who, active, art, face in reversed(arts):
         if art is None:
             continue
         x -= art.width - (30 if len(arts) > 1 else 0)
-        bob = round(4 * math.sin(elapsed * math.pi * 2 / 1.2)) if active and speaking else 0
-        y = bottom - art.height + bob
+        import calm_motion
+        bob = round(4 * calm_motion.value('presenter_bob',1) * math.sin(elapsed * math.pi * 2 / (1.2 * calm_motion.value('presenter_period',1)))) if active and speaking else 0
+        if bottom == im.height:
+            bob = 0
+        y = bottom - art.height + (0 if who == 'ui' else bob)
         im.paste(art, (x, y), art)
         records.append(dict(who=who, active=active, box=[x, y, x + art.width, y + art.height]))
         # 吹き出しの枠に重なる下の端は描き直さない（吹き出しが上に来るように）
         cut = art.height if bottom != BUST_BOTTOM else max(1, BUBBLE[1] - y)
         layer.append(dict(who=who, face=face, height=BUST_ACTIVE if active else BUST_IDLE, dim=not active, at=[x, y], cut=cut))
     active_box = next((r["box"] for r in records if r["active"]), None)
-    fan = fan_mood(line)
+    fan = ui_fan if speaker == 'ui' else fan_mood(line)
     if fan and active_box:
+        if speaker == 'ui':
+            for record in layer:
+                if record['who'] == 'ui':
+                    record.update(effect=fan[1], elapsed=elapsed)
+            import ui_puppet
+            active_box = ui_puppet.head_box(active_box)
         fan_effect(im, fan[1], active_box, elapsed)
         im.info["fan_expr"] = dict(face=fan[0], effect=fan[1], reason=fan[2], line=line)
     im.info["duo_portraits"] = records
@@ -147,7 +183,7 @@ FAN_RULES = (  # 上から順に見る。(表情, 効果, 言葉)
     ("surprise", "burst", ("自己最多", "初めて", "初の", "新記録", "記録を")),
     ("pose-smile", "sparkle", ("本塁打", "ホームラン", "勝ち投手", "完封", "好投", "無失点", "適時打", "決勝打",
                                "白星", "セーブ", "ゴール", "得点を", "アシスト", "マルチ安打", "猛打賞")),
-    ("jitome", "sweat", ("無安打", "0安打", "敗戦投手", "黒星", "降板", "失点", "敗れ", "敗退", "出場なし")),
+    ("sad", None, ("無安打", "0安打", "敗戦投手", "黒星", "降板", "失点", "敗れ", "敗退", "出場なし")),
     ("smile", "sparkle", ("先発", "登板予定", "出場予定", "スタメン", "期待")),
 )
 
@@ -218,12 +254,21 @@ def fan_effect(im, effect, box, elapsed):
         d.ellipse((cx - 11, cy, cx + 11, cy + 24), fill=(140, 200, 255, 230))
         d.polygon([(cx - 10, cy + 8), (cx + 10, cy + 8), (cx, cy - 16)], fill=(140, 200, 255, 230))
         d.ellipse((cx - 4, cy + 8, cx + 2, cy + 15), fill=(255, 255, 255, 220))
+    elif effect == 'sad':
+        # 雨衣のみ。顔は描き換えず、頭の横に小さな沈んだ線を重ねる。
+        for i in range(3):
+            x = x0 + w*(.87+.045*i)
+            y = y0 + w*(.20+.025*i)
+            d.line((x,y,x,y+w*.06), fill=(153,185,214,200), width=3)
     im.alpha_composite(layer) if im.mode == "RGBA" else im.paste(layer, (0, 0), layer)
 
 def bubble(im, speaker, text):
     """横いっぱいの吹き出し（白地・話者の色の枠・名前の札）。数字は濃い金色。3行まで、入らなければ字を小さく。"""
     if not text:
         return
+    if os.environ.get("COLLESPO_BUBBLE") in ("slant", "glass"):
+        import bubble_styles
+        return bubble_styles.draw(im, speaker, text)
     x0, y0, x1, y1 = BUBBLE
     color = COLORS[speaker]
     base = im.convert("RGBA")
@@ -234,14 +279,22 @@ def bubble(im, speaker, text):
     d.rounded_rectangle((x0, y0, x1, y1), radius=28, fill=(250, 247, 238), outline=color, width=6)
     f = r3.font(28); w = d.textlength(NAMES[speaker], font=f) + 40
     d.rounded_rectangle((x0 + 28, y0 - 24, x0 + 28 + w, y0 + 24), radius=24, fill=color)
-    d.text((x0 + 28 + w / 2, y0), NAMES[speaker], font=f, fill=(255, 255, 255), anchor="mm")
+    name_ink=(255,255,255)
+    if __import__('caption_breaks').enabled():
+        import bubble_styles
+        name_ink=max((bubble_styles.WHITE,bubble_styles.SHADOW),key=lambda ink:float(bubble_styles.contrast(ink,color)))
+        im.info['name_tag']=dict(speaker=speaker,color=list(color),ink=list(name_ink),contrast=float(bubble_styles.contrast(name_ink,color)))
+    d.text((x0 + 28 + w / 2, y0), NAMES[speaker], font=f, fill=name_ink, anchor="mm")
     room = y1 - y0 - 44
     import fan_events
+    rows = []
     for size in (48, 44, 40, 36, 33):
-        rows = r3._caption_lines(d, text, size, x1 - x0 - (120 if fan_events.enabled() else 80))
+        try:rows = r3._caption_lines(d, text, size, x1 - x0 - (120 if fan_events.enabled() else 80))
+        except ValueError:continue
         lh = round(size * 1.36)
         if len(rows) <= 3 and len(rows) * lh <= room:
             break
+    if __import__('caption_breaks').enabled() and (not rows or len(rows)>3):raise ValueError('吹き出しを文節でページ分割してください')
     y = y0 + 30 + (room - min(3, len(rows)) * lh) // 2
     for row in rows[:3]:
         x = x0 + 40
@@ -249,8 +302,10 @@ def bubble(im, speaker, text):
             fnt = r3.num_font(round(size * 1.15)) if isnum else r3.font(size)
             focus = isnum and fan_events.number_focus(part)
             drawn = r3.num_font(round(size * 1.15 * 1.06)) if focus else fnt
-            d.text((x, y + size), part, font=drawn, fill=(155, 79, 8) if focus else (196, 132, 16) if isnum else (30, 30, 34), anchor="ls")
+            import motion
+            motion.draw_number(d,(x,y+size),part,drawn,(155,79,8) if focus else (196,132,16) if isnum else (30,30,34))
             reserve = r3.num_font(round(size * 1.15 * 1.06)) if isnum and fan_events.enabled() else fnt
+            if isnum:reserve=motion.reserve_font(reserve)
             x += d.textlength(part, font=reserve)
         y += lh
     im.paste(base.convert(im.mode))
@@ -265,7 +320,9 @@ def presenter(im, t, cast=("metan",)):
     clock = r3._PROGRAM_CLOCK[0]
     elapsed = (clock - ctx["start"]) if clock is not None else t
     line = r3.current_sentence(elapsed, ctx["text"], ctx["duration"]) if ctx["text"] else ""
-    speaker = "zundamon" if ctx.get("speaker") == 3 else "metan"
+    speaker = SPEAKERS.get(ctx.get("speaker"), "metan") if __import__('caption_breaks').enabled() else "zundamon" if ctx.get("speaker") == 3 else "metan"
+    import solo_host
+    speaker, cast = solo_host.presentation(speaker, cast)
     if speaker not in cast:
         cast = tuple(cast) + (speaker,)
     place_busts(im, speaker, line, elapsed, ctx["duration"] or 1, cast)

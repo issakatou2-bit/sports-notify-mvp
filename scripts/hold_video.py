@@ -92,6 +92,8 @@ def sync_record(video_id, saved):
     """保存後/既に一致のread結果を台帳へ。未登録を成功と呼ばない。"""
     import video_visibility
     count=video_visibility.record_status('data/published_videos.json',video_id,saved)
+    from publication_writer import mirror_visibility
+    mirror_visibility(video_id, saved, root=pathlib.Path.cwd())
     if count:
         print(f'[info] 確認済み公開設定を同じ動画の台帳{count}件へ反映しました')
     else:

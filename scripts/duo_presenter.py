@@ -72,24 +72,51 @@ def caption(im,t):
     if not ctx['text'] or ctx.get('hide_caption'):return
     clock=r3._PROGRAM_CLOCK[0]
     elapsed=clock-ctx['start'] if clock is not None else t
+    import bubble_styles
+    if bubble_styles.selected():
+        import characters
+        b=geometry()['caption'];box=(b[0],b[1]+8,b[2],b[3]-8)
+        values=bubble_styles.page_lines(ctx['text'],box)
+        texts=[''.join(rows) for rows in values];weights=list(map(len,texts))
+        at=max(0,elapsed)/max(.1,ctx['duration'])*sum(weights);end=0;line=texts[-1]
+        for value,weight in zip(texts,weights):
+            end+=weight
+            if at<end:line=value;break
+        if line:bubble_styles.draw(im,characters.SPEAKERS.get(ctx.get('speaker'),'metan'),line,box=box,seconds=clock if clock is not None else t)
+        return
     # Split at glyphs into measured <=3-line pages; never silently slice long text.
     size=48;box=geometry()['caption'];width=box[2]-box[0]-56
     d=ImageDraw.Draw(im)
-    rows=r3._caption_lines(d,ctx['text'],size,width)
-    pages=[rows[i:i+3] for i in range(0,len(rows),3)]
+    import caption_breaks
+    if caption_breaks.enabled():
+        for size in range(48,23,-1):
+            try:r3._caption_lines(d,ctx['text'],size,width);break
+            except ValueError:continue
+        text_pages=caption_breaks.pages(ctx['text'],fits=lambda s:len(r3._caption_lines(d,s,size,width))<=3)
+        pages=[r3._caption_lines(d,s,size,width) for s in text_pages]
+    else:
+        rows=r3._caption_lines(d,ctx['text'],size,width)
+        pages=[rows[i:i+3] for i in range(0,len(rows),3)]
     weights=[sum(len(run) for row in page for run,_ in row) for page in pages]
     at=max(0,elapsed)/max(.1,ctx['duration'])*sum(weights);end=0;page=pages[-1]
     for p,w in zip(pages,weights):
         end+=w
         if at<end:page=p;break
     color,name=(GREEN,'ずんだもん') if ctx.get('speaker')==3 else (r3.METAN_PINK,'四国めたん')
+    if caption_breaks.enabled():
+        import characters
+        import bubble_styles
+        who=characters.SPEAKERS.get(ctx.get('speaker'),'metan')
+        color,name=characters.COLORS[who],characters.NAMES[who]
+    ink=r3.DARK_INK
+    if caption_breaks.enabled():ink=max((bubble_styles.WHITE,bubble_styles.SHADOW),key=lambda rgb:float(bubble_styles.contrast(rgb,color)))
     layer=Image.new('RGBA',im.size);ld=ImageDraw.Draw(layer)
     ld.rounded_rectangle(box,radius=22,fill=(11,20,32,240))
     ld.rectangle((box[0],box[1]+18,box[0]+10,box[3]-18),fill=color)
     merged=im.convert('RGBA');merged.alpha_composite(layer);im.paste(merged.convert('RGB'))
     d=ImageDraw.Draw(im);f=r3.font(24);w=f.getlength(name)+32
     d.rounded_rectangle((box[0]+24,box[1]-22,box[0]+24+w,box[1]+22),radius=8,fill=color)
-    d.text((box[0]+40,box[1]-17),name,font=f,fill=r3.DARK_INK)
+    d.text((box[0]+40,box[1]-17),name,font=f,fill=ink)
     for i,row in enumerate(page):
         x=box[0]+28;base=box[1]+62+i*68
         for text,numeric in row:

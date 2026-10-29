@@ -18,6 +18,14 @@ on:
       kind:
         description: '種類を1つに絞る (morning_press など。空なら全部)'
         required: false
+      topic:
+        description: 'asset の対象 topic 名（カンマ区切りで複数可。空なら全部）'
+        required: false
+      only_team_city:
+        description: 'asset の現在の題に街名の補足だけを適用する'
+        type: boolean
+        required: false
+        default: false
       write:
         description: 'true にすると実際に変える(既定は下読みだけ)'
         required: false
@@ -51,16 +59,32 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           DATE: ${{ inputs.date }}
           KIND: ${{ inputs.kind }}
+          TOPIC: ${{ inputs.topic }}
+          ONLY_TEAM_CITY: ${{ inputs.only_team_city }}
+          WRITE: ${{ inputs.write }}
+          FORCE: ${{ inputs.force }}
         run: |
-          ARGS="--date ${DATE:-$(TZ=Asia/Tokyo date +%F)}"
-          if [ -n "$KIND" ]; then ARGS="$ARGS --kind $KIND"; fi
-          if [ "${{ inputs.write }}" = "true" ]; then ARGS="$ARGS --write"; fi
-          if [ "${{ inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
-          echo "python scripts/retitle.py $ARGS"
-          python scripts/retitle.py $ARGS
+          ARGS=(--date "${DATE:-$(TZ=Asia/Tokyo date +%F)}")
+          if [ -n "$KIND" ]; then ARGS+=(--kind "$KIND"); fi
+          if [ -n "$TOPIC" ]; then ARGS+=(--topic "$TOPIC"); fi
+          if [ "$ONLY_TEAM_CITY" = "true" ]; then ARGS+=(--only-team-city); fi
+          if [ "$WRITE" = "true" ]; then ARGS+=(--write); fi
+          if [ "$FORCE" = "true" ]; then ARGS+=(--force); fi
+          python scripts/retitle.py "${ARGS[@]}"
 
       # 題を変えたら記録も変わる。押しておかないと次の実行でまた差分が出る。
       - name: Commit
         if: always()
         run: |
           bash scripts/commit_data.sh             "retitle: ${{ github.run_id }}"             data/published_videos.json
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error

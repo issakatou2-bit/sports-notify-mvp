@@ -1,0 +1,33 @@
+{
+  "publication_id": "delivery:legacy_tiktok:daily_soccer:2026-08-21",
+  "domain": "delivery",
+  "kind": "legacy_tiktok",
+  "key_parts": {
+    "kind": "daily_soccer",
+    "legacy_key": "2026-08-21"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_tiktok/daily_soccer/2026-08-21",
+      "service": "tiktok",
+      "video_id": null,
+      "state": "unknown",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": null,
+      "details": {
+        "privacy": null,
+        "status": "SEND_TO_USER_INBOX",
+        "publish_id": "v_inbox_file~v2.7676423359907219477"
+      },
+      "run_id": "40669557265",
+      "attempt": "1",
+      "recorded_at": "2026-10-28T10:18:19.222233+00:00",
+      "fingerprint": "705dc595c794cfd6b22112e519238aa2f18a7b17e51deadd9e4847864fb26d14",
+      "event_id": "6462ed252418ba0a22dd06436e74ed484ebc3222bdce9421b1fbc144e1af5b07"
+    }
+  ]
+}

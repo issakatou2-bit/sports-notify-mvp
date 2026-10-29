@@ -1,0 +1,95 @@
+{
+  "compositions": [
+    {
+      "direction": "正面",
+      "name": "pinch",
+      "display_diff_bbox": [
+        288,
+        167,
+        830,
+        968
+      ],
+      "face_pixel_equal": false,
+      "cheek": [
+        "差分_頭_正面向き_顔色_青ざめ.png"
+      ]
+    },
+    {
+      "direction": "正面",
+      "name": "surprise",
+      "display_diff_bbox": [
+        288,
+        167,
+        830,
+        968
+      ],
+      "face_pixel_equal": false,
+      "cheek": [
+        "差分_頭_正面向き_顔色_ほっぺ基本.png"
+      ]
+    },
+    {
+      "direction": "上向き",
+      "name": "pinch",
+      "display_diff_bbox": [
+        288,
+        204,
+        830,
+        968
+      ],
+      "face_pixel_equal": false,
+      "cheek": [
+        "上向き/差分_頭_上向き_顔色_青ざめ.png"
+      ]
+    },
+    {
+      "direction": "上向き",
+      "name": "surprise",
+      "display_diff_bbox": [
+        288,
+        204,
+        830,
+        968
+      ],
+      "face_pixel_equal": false,
+      "cheek": [
+        "上向き/差分_頭_上向き_顔色_ほっぺ基本.png"
+      ]
+    }
+  ],
+  "isolated_blue_layers": [
+    {
+      "file": "上向き/差分_頭_上向き_顔色_青ざめ.png",
+      "psd_layer_bbox": [
+        374,
+        352,
+        623,
+        418
+      ],
+      "png_bbox": [
+        374,
+        352,
+        623,
+        418
+      ],
+      "pixel_equal": true
+    },
+    {
+      "file": "差分_頭_正面向き_顔色_青ざめ.png",
+      "psd_layer_bbox": [
+        384,
+        396,
+        615,
+        459
+      ],
+      "png_bbox": [
+        384,
+        396,
+        615,
+        459
+      ],
+      "pixel_equal": true
+    }
+  ],
+  "note": "PSD全体合成と個別PNG重ねには画素差あり（原因の切分けは未実施）。表示を目視し、青ざめ層単体の全画素と座標は一致を直接確認。surpriseは青ざめなし。"
+}

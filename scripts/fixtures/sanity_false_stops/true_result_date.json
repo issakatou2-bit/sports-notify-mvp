@@ -1,0 +1,34 @@
+{
+  "source": "synthetic contradiction against saved official evidence",
+  "expected_held": true,
+  "document": {
+    "date_jst": "2026-10-25",
+    "segments": [
+      {
+        "text": "10月24日のホーム対アウェーです。"
+      }
+    ],
+    "sanity_materials": [
+      {
+        "source": "fixture.result",
+        "games": [
+          {
+            "id": "fixture123",
+            "date_jst": "2026-10-25",
+            "home": {
+              "name_jp": "ホーム"
+            },
+            "away": {
+              "name_jp": "アウェー"
+            },
+            "score": {
+              "home": 2,
+              "away": 1
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "issues": []
+}

@@ -95,8 +95,10 @@ class Slots(unittest.TestCase):
         data=load('week');row=next(r for r in data['rows'] if r['league']!='PL')
         row['players'][0]['stats']={'goals':9876,'assists':7654,'minutes':9999}
         plan=slots.program('week',data)
-        self.assertNotIn('9876',json.dumps(plan['narration'],ensure_ascii=False))
-        self.assertNotIn('7654',json.dumps(plan['narration'],ensure_ascii=False))
+        # 点検材料には元の値を残す。表示・読み上げのセグメントへは出さない。
+        visible = json.dumps(plan['narration']['segments'],ensure_ascii=False)
+        self.assertNotIn('9876',visible)
+        self.assertNotIn('7654',visible)
         for spec in [s['meta'] for s in plan['narration']['segments'] if s['kind']=='jp_roster']:
             for r in spec['rows']:
                 if r['name']==row['players'][0]['name']:self.assertEqual(r['values'],[])
@@ -132,7 +134,7 @@ class Slots(unittest.TestCase):
             with tempfile.TemporaryDirectory() as directory:
                 file=Path(directory)/'narr.json';file.write_text(json.dumps(plan['narration'],ensure_ascii=False),encoding='utf-8')
                 meta=upload.build_metadata(str(FIX/'preview.json'),'10月10日','daily' if mode=='preview' else 'soccer_'+mode,narration_path=str(file),sport='soccer')
-            self.assertEqual(meta['snippet']['title'],plan['narration']['title'][:100])
+            self.assertEqual(meta['snippet']['title'],upload.club_display_title(plan['narration']['title'])[:100])
             self.assertIn('VOICEVOX:四国めたん',meta['snippet']['description'])
 
     def test_saved_manifest_and_40_second_budget(self):

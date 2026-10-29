@@ -73,19 +73,19 @@ class Tests(unittest.TestCase):
         narr=dict(segments=[dict(kind=k,text='fixture',speaker=2,meta={}) for k in kinds])
         with tempfile.TemporaryDirectory() as folder:
             audio=[]
-            for i,(seg,seconds) in enumerate(zip(narr['segments'],[15,3,12,12,3])):
+            for i,(seg,seconds) in enumerate(zip(narr['segments'],[30,3,15,15,3])):
                 path=Path(folder)/f'{i}.wav'
                 with wave.open(str(path),'wb') as stream:
                     stream.setparams((1,2,8000,0,'NONE','not compressed'));stream.writeframes(b'\0\0'*(8000*seconds))
                 audio.append(dict(seg,file=str(path),duration=seconds))
             shorter,voices=story.fit_to_audio(narr,audio)
             self.assertEqual([s['kind'] for s in shorter['segments']],['followup','roster','followup-change','outro'])
-            self.assertLessEqual(sum(render.durations(shorter['segments'],voices)),40)
+            self.assertLessEqual(sum(render.durations(shorter['segments'],voices)),60)
             self.assertEqual(shorter['segments'][0],narr['segments'][0])
-    def test_no_preview_is_exact_existing_narration(self):
+    def test_no_preview_enriches_each_material_game(self):
         _,_,data=fixed()
         self.assertEqual(followup.attach(data,None),data)
-        self.assertEqual(story.narration(data),render.narration(data))
+        self.assertEqual([s['meta']['event_id'] for s in story.narration(data)['segments'] if s['kind']=='followup'],[g['id'] for g in data['games']])
 
     def test_preview_result_first_expected_numbers_and_same_fixture_bind(self):
         boards,summaries,data=fixed();preview=announced(data)

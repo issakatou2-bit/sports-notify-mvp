@@ -41,6 +41,7 @@ except ImportError:
     sys.exit(0)
 
 import upload_youtube as uy  # noqa: E402
+import video_titles  # noqa: E402
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 RECORD = "data/published_videos.json"
@@ -154,9 +155,10 @@ def asset_targets(only: str = "") -> list:
             encoding="utf-8")).get("assets") or {}
     except (OSError, json.JSONDecodeError):
         return []
+    topics = {topic.strip() for topic in only.split(',') if topic.strip()}
     return [(k, v["video_id"]) for k, v in sorted(got.items())
             if isinstance(v, dict) and v.get("video_id")
-            and (not only or k == only)]
+            and (not topics or k in topics)]
 
 
 def wanted_asset_title(topic: str) -> str:
@@ -169,8 +171,10 @@ def wanted_asset_title(topic: str) -> str:
     return (meta.get("snippet") or {}).get("title") or ""
 
 
-def apply(yt, video_id: str, title: str, dry: bool) -> bool:
+def apply(yt, video_id: str, title: str, dry: bool, *, only_team_city: bool = False) -> bool:
     """題だけ差し替える。説明もタグも触らない。"""
+    if not only_team_city:
+        title = uy.club_display_title(title)
     try:
         res = yt.videos().list(part="snippet", id=video_id).execute()
     except HttpError as e:
@@ -181,6 +185,8 @@ def apply(yt, video_id: str, title: str, dry: bool) -> bool:
         print("[warn] %s が見つかりません" % video_id)
         return False
     sn = items[0]["snippet"]
+    if only_team_city:
+        title = video_titles.team_city_text(sn.get("title", ""))
     if sn.get("title") == title:
         print("  変更なし %s" % video_id)
         return False
@@ -208,13 +214,17 @@ def main() -> int:
     ap.add_argument("--kind", help="種類を1つに絞る (morning_press など)。"
                                    "asset にすると資産動画が対象")
     ap.add_argument("--topic", help="--kind asset のときに、"
-                                    "このトピックだけを対象にする")
+                                    "このトピックだけを対象にする（カンマ区切りで複数可）")
+    ap.add_argument("--only-team-city", action="store_true",
+                    help="--kind asset のとき、現在の題に街名の補足だけを適用する")
     ap.add_argument("--title", help="--video のときに、この題をそのまま付ける")
     ap.add_argument("--write", action="store_true",
                     help="実際に変える(既定は下読みだけ)")
     ap.add_argument("--force", action="store_true",
                     help="よく見られている動画も対象にする")
     args = ap.parse_args()
+    if args.only_team_city and (args.kind != "asset" or args.title):
+        ap.error("--only-team-city は --kind asset と指定し、--title と併用しないでください")
 
     yt = client()
     if yt is None:
@@ -237,11 +247,11 @@ def main() -> int:
                 print("%s は %d回見られているので触りません" % (topic, got))
                 skipped += 1
                 continue
-            title = args.title or wanted_asset_title(topic)
-            if not title:
+            title = "" if args.only_team_city else (args.title or wanted_asset_title(topic))
+            if not title and not args.only_team_city:
                 continue
             print("%s" % topic)
-            if apply(yt, vid, title, not args.write):
+            if apply(yt, vid, title, not args.write, only_team_city=args.only_team_city):
                 changed += 1
         print()
         print("%d本を%s" % (changed, "変えました" if args.write else "変えます"))

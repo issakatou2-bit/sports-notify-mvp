@@ -2,6 +2,7 @@
 
 既存v4の関数・書体・色は変更しない。幅と字の実際の箱を測り、入らなければ停止する。
 """
+import motion
 from functools import lru_cache
 import math
 import os
@@ -217,7 +218,7 @@ def _background(tints=()):
 
 
 def canvas(t,clubs,label='欧州サッカー',tints=()):
-    im=_background(tuple(tints)).copy()
+    im=motion.background(_background(tuple(tints)).copy(),t)
     im.info=dict(soccer_v5=True,v3_layout=[],soccer_club_names=tuple(sorted({n for n,c in clubs.items() if n in (c.get('name_jp'),c['team_en']) and len(n)>=2},key=len,reverse=True)),v5_elapsed=t)
     d=ImageDraw.Draw(im)
     d.polygon(para((L,168,L+12,206)),fill=LIME)
@@ -272,13 +273,19 @@ def _presenter(im,t):
     ctx=r3._CAPTION;clock=r3._PROGRAM_CLOCK[0]
     elapsed=clock-ctx['start'] if clock is not None else t
     line=r3.current_sentence(elapsed,ctx['text'],ctx['duration']) if ctx['text'] else ''
-    characters.place_busts(im,'metan',line,elapsed,ctx['duration'] or 1,('metan',))
-    if line and not ctx.get('hide_caption'):
+    import solo_host
+    speaker,cast=solo_host.presentation('metan',('metan',))
+    characters.place_busts(im,speaker,line,elapsed,ctx['duration'] or 1,cast)
+    styled = os.environ.get('COLLESPO_BUBBLE') in ('slant','glass')
+    if line and not ctx.get('hide_caption') and styled:
+        characters.bubble(im,speaker,line)
+    if line and not ctx.get('hide_caption') and not styled:
         box=characters.BUBBLE
         ImageDraw.Draw(im).polygon(para(box),fill=CHALK)
         x,y,right,bottom=box
-        ImageDraw.Draw(im).polygon(para((x+28,y-18,x+240,y+26)),fill=LIME)
-        text(im,x+54,y-8,'四国めたん',24,DARK,role='caption',width=180)
+        color=characters.COLORS[speaker] if speaker=='ui' else LIME
+        ImageDraw.Draw(im).polygon(para((x+28,y-18,x+240,y+26)),fill=color)
+        text(im,x+54,y-8,characters.NAMES[speaker],24,DARK,role='caption',width=180)
         # 同じ読んでいる区間を、3行以内で全文表示する。切り捨てない。
         size=48
         while True:
@@ -288,7 +295,7 @@ def _presenter(im,t):
             size-=1
         top=y+30+(bottom-y-42-len(rows)*(size+10))//2
         for i,row in enumerate(rows):text(im,x+62,top+i*(size+10),row,size,DARK,width=right-x-116,role='caption')
-        im.info['duo_caption']=dict(box=list(box),speaker='metan',font_size=size,rows=len(rows))
+        im.info['duo_caption']=dict(box=list(box),speaker=speaker,font_size=size,rows=len(rows))
     total=ctx.get('total',0)
     if total and clock is not None:
         ImageDraw.Draw(im).rectangle((L,222,L+round((R-L)*max(0,min(1,clock/total))),226),fill=LIME)
@@ -335,6 +342,22 @@ def chips(im,y,values,height=126):
     return y+height
 
 
+def sentence(im,x,y,value,size,color,width,clubs,role='text',max_lines=1):
+    """引用と同じ分割・札部品で、見出しと理由を収める。"""
+    from soccer_v5_program import quote_lines, _quote_rows
+    value=screen_text(value)
+    for fitted in range(size,17,-1):
+        try:rows=quote_lines(value,fitted,width,clubs)
+        except ValueError:continue
+        if len(rows)<=max_lines:break
+    else:raise ValueError('札つきの文が幅に入りません: '+value)
+    before=len(im.info.get('v3_layout',[]))
+    _quote_rows(im,x,y,rows,fitted,color)
+    if role!='text':
+        for row in im.info['v3_layout'][before:]:
+            if row['role']=='text':row['role']=role
+
+
 def cover(t,spec,clubs):
     im=canvas(t,clubs,spec.get('label','欧州サッカー'))
     heading(im,spec['kicker'])
@@ -348,8 +371,8 @@ def cover(t,spec,clubs):
         club_name(im,L+20,450,clubs[spec['club']],36,width=R-L-40)
         stat(im,(L,538,R,930),spec.get('big') or '—',spec.get('unit',''),CHALK if spec.get('unit')=='日本時間' else LIME)
         if spec.get('context') and not spec.get('chips'):
-            panel(im,(L,986,R,1070))
-            text(im,L+36,1008,spec['context'],28,MUTED,width=R-L-72)
+            panel(im,(L,986,R,1120))
+            sentence(im,L+36,1008,spec['context'],28,MUTED,R-L-260,clubs,max_lines=2)
     chips(im,982,spec.get('chips',[]))
     # 数字以外の補足がない表紙は主札を下へ中央配置し、空きは透かしで埋めない。
     if not spec.get('chips'):im.info['v5_allow_centered']=True
@@ -381,7 +404,7 @@ def preview(t,spec,clubs):
         panel(im,(L,882,R,1120))
         if interest.get('reasons'):text(im,L+46,894,'注目理由',22,MUTED,width=300,role='interest')
         for i,row in enumerate(interest.get('reasons',[])):
-            text(im,L+46,926+i*35,row['text'],28,LIME,width=R-L-96,role='interest')
+            sentence(im,L+46,926+i*35,row['text'],28,LIME,R-L-96,clubs,role='interest')
         player=interest.get('player')
         if player:
             import soccer_match_interest
@@ -390,6 +413,7 @@ def preview(t,spec,clubs):
     return finish(im,t,spec)
 
 
+@motion.slot('jp_roster')
 def jp_roster(t,spec,clubs):
     im=canvas(t,clubs,spec.get('label','欧州サッカー'))
     heading(im,spec['title'])
@@ -421,6 +445,7 @@ def jp_player(t,spec,clubs):
     return finish(im,t,spec)
 
 
+@motion.slot('standings')
 def standings(t,spec,clubs):
     import characters
     table_right=R-characters.reserved_width()
@@ -506,6 +531,9 @@ def scarf_transition(previous,image,t):
 
 
 def check_frame(im,clubs):
+    if im.info.get('soccer_readable'):
+        import soccer_readable
+        return soccer_readable.check_frame(im,clubs)
     import v3_rules
     import characters
     errors=v3_rules.check_layout(im)+v3_rules.check_spacing(im)+original.check_club_badges(im,clubs)

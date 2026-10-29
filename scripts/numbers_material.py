@@ -95,7 +95,8 @@ def _day(value) -> date | None:
     if not value:
         return None
     try:
-        return date.fromisoformat(str(value)[:10])
+        from sports_dates import jst_day
+        return date.fromisoformat(jst_day(value))
     except ValueError:
         return None
 
@@ -508,6 +509,10 @@ def load(root: str = "data", today: date = None) -> dict:
             print("[info] 切り口ごとの成績を取れません(%s)" % e)
 
     post = _fresh_read(base / "postseason.json", today, days=0)
+    import ps_offseason
+    if ps_offseason.completed_before(post, today):
+        print('[info] WS決着後のため、PSを当日の数字の材料にしません')
+        post = {}
     race = {"headline": post.get("headline") or "",
             "changes": (post.get("changes") or [])[:MAX_CHANGES],
             "japanese": post.get("japanese") or [],
@@ -516,8 +521,8 @@ def load(root: str = "data", today: date = None) -> dict:
             "series": post.get("series") or []}
 
     soccer = {}
-    for comp in (_fresh_read(base / "soccer_race.json", today)
-                 .get("competitions") or []):
+    soccer_data = _fresh_read(base / "soccer_race.json", today)
+    for comp in (soccer_data.get("competitions") or []):
         # round_complete（全クラブが同じ試合数）は求めない。
         # **次の節が始まった瞬間に False になる**ので、これを条件に
         # するとサッカーが長編に入らない（9/20のラ・リーガがそうだった）。
@@ -525,7 +530,17 @@ def load(root: str = "data", today: date = None) -> dict:
             soccer = comp
             break
 
-    return {"date": recap.get("date_jst") or recap.get("date") or "",
+    import soccer_sanity_material
+    sanity_sources = []
+    if post:
+        sanity_sources.append(dict(source='data/postseason.json', date_jst=post.get('date'),
+            retrieved_at=post.get('updated_at'), series=post.get('series') or [],
+            source_url='https://statsapi.mlb.com/api/v1/schedule'))
+    if soccer:
+        sanity_sources.append(dict(soccer_sanity_material.compact(dict(soccer_data,
+            competitions=[soccer])), sport='soccer', source='data/soccer_race.json'))
+    return {"date": recap.get("date_jst") or recap.get("date") or today.isoformat(),
+            "_sanity_sources": sanity_sources,
             "players": players, "trends": trends, "shots": shots, "rare": rare,
             "race": race, "soccer": soccer}
 

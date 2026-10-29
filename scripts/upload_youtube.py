@@ -25,6 +25,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import post_common  # noqa: E402
+import solo_host
 from longform_links import replace_longform_link  # noqa: E402
 import race_words as _rw  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
@@ -406,7 +407,11 @@ def asset_meta_from_spec(spec: dict) -> dict:
         lead += [f"・{j['name']}　{j['line']}"
                  for j in (spec.get("japanese") or [])]
         src = spec.get("source") or {}
-        if spec.get("odds"):
+        if not isinstance(src, dict):
+            src = {}  # 出典が文字だけの話題（記者の引用ではない）
+        if spec.get("ws"):
+            lead += ["", "数字はMLB公式の過去のワールドシリーズの結果と、今季の順位表・日程です。"]
+        elif spec.get("odds"):
             lead += ["", "過去の数は、MLB公式の試合結果（1995年から昨季までの地区シリーズ）を集計したものです。予想ではありません。"]
         elif spec.get("momentum"):
             lead += ["", "数字はMLB公式の試合の成績表と順位表（レギュラーシーズン）です。"]
@@ -601,10 +606,17 @@ def build_asset_metadata(topic: str) -> dict:
         "―――",
         "音声: VOICEVOX:ずんだもん / 四国めたん",
     ]
+    if solo_host.selected() == 'ui':
+        import generate_asset_video as asset_video
+        if (asset_video.LIST_TOPICS.get(topic) or {}).get('style') == 'v3':
+            segments = asset_video.build_narration(topic)['segments']
+            for segment in segments:
+                segment.setdefault('speaker', 2)
+            lines = solo_host.credit('\n'.join(lines), segments).splitlines()
     return {
         "snippet": {
-            "title": __import__("press_names").press_title(meta["title"])[:100],
-            "description": "\n".join(lines)[:5000],
+            "title": __import__('video_titles').public_title(meta["title"]),
+            "description": __import__('video_titles').description_head("\n".join(lines))[:5000],
             "tags": meta["tags"][:15],
             "categoryId": CATEGORY_SPORTS,
             "defaultLanguage": "ja",
@@ -629,7 +641,7 @@ def load_published(path: str = PUBLISHED_PATH) -> dict:
 
 
 def record_published(topic: str, video_id: str, privacy: str,
-                     path: str = PUBLISHED_PATH) -> None:
+                     path: str = PUBLISHED_PATH, experiment: dict | None = None) -> None:
     """
     投稿できたトピックを控える。
 
@@ -653,9 +665,13 @@ def record_published(topic: str, video_id: str, privacy: str,
         "privacy": privacy,
         "published_at": datetime.now(timezone.utc).isoformat(),
     }
+    if experiment:
+        assets[topic].update(experiment)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps({"assets": assets}, ensure_ascii=False, indent=2),
                  encoding="utf-8")
+    from publication_writer import mirror_documents, root_for
+    mirror_documents({'published_assets': {'assets': {topic: assets[topic]}}}, root=root_for(p))
     print(f"[info] 投稿済みとして記録しました: {topic} -> {path}")
 
 
@@ -687,7 +703,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_week", "soccer_results", "soccer_voices")
+               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "player_story")
 
 
 def published_video(kind: str, date_key: str,
@@ -700,7 +716,27 @@ def published_video(kind: str, date_key: str,
         data = json.loads(p.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return {}
-    return (data.get(kind) or {}).get(date_key) or {}
+    entry = (data.get(kind) or {}).get(date_key) or {}
+    import backfill_records
+    return entry if backfill_records.matches_kind(kind, entry) else {}
+
+
+def material_date_key(kind: str, sport: str, games: dict, explicit: str | None = None) -> str:
+    """サッカーの結果は材料日、予告は材料取得日の日本日付で照合する。"""
+    from datetime import datetime, timedelta, timezone
+    expected = None
+    if kind == 'soccer_results':
+        expected = games['date_jst']
+    elif record_kind(kind, sport=sport) == 'daily_soccer':
+        at = datetime.fromisoformat(games['generated_at'].replace('Z', '+00:00'))
+        if at.tzinfo is None:
+            raise ValueError('サッカー材料の取得日時にタイムゾーンがありません')
+        expected = at.astimezone(timezone(timedelta(hours=9))).date().isoformat()
+    if expected:
+        datetime.strptime(expected, '%Y-%m-%d')
+        if explicit and explicit != expected:
+            raise ValueError('動画の日付とサッカー材料の日付が一致しません')
+    return explicit or expected or datetime.now(timezone.utc).date().isoformat()
 
 
 def resolve_publish_at(spec: str | None) -> str | None:
@@ -789,7 +825,9 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
 
 def record_video(kind: str, date_key: str, video_id: str,
                  title: str, path: str = VIDEOS_PATH,
-                 publish_at: str | None = None, preview_binding: dict | None = None) -> None:
+                 publish_at: str | None = None, preview_binding: dict | None = None,
+                 host_tracking: dict | None = None, privacy: str | None = None,
+                 experiment: dict | None = None) -> None:
     """
     その日の動画のIDを残す。
 
@@ -818,9 +856,17 @@ def record_video(kind: str, date_key: str, video_id: str,
         entry["publish_at"] = publish_at
     if preview_binding is not None:
         entry['preview_binding']=preview_binding
+    if experiment:
+        entry.update(experiment)
+    if host_tracking:
+        entry.update(host_tracking)
+    if privacy is not None or host_tracking:
+        entry['privacy'] = privacy or 'public'
     data.setdefault(kind, {})[date_key] = entry
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    from publication_writer import mirror_documents, root_for
+    mirror_documents({'published_videos': {kind: {date_key: entry}}}, root=root_for(p))
     print(f"[info] 動画を記録しました: {kind}/{date_key} -> {path}")
 
 
@@ -1311,6 +1357,18 @@ def _soccer_race_lines() -> list:
     return out
 
 
+def club_display_title(title: str) -> str:
+    """題のクラブの古い書き方（「マンチェスター・シティ」など）を表示名に（Opus-33、10/14）。
+
+    表は notability_engine の1か所（data/club_display_names.json、帯・説明欄と同じ。Opus-32 の
+    club_display_text）。その関数がまだ無い版では、題をそのまま返す（ここで別の表は持たない）。
+    """
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+    import notability_engine as ne
+    fix = getattr(ne, "club_display_text", None)
+    return fix(title) if fix else title
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
@@ -1326,6 +1384,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    longform_mode: str = "voices",
                    longform_subject: str = "") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
+    if kind == 'player_story':
+        import player_story
+        narr = _json_or_empty(narration_path)
+        player_story.validate(narr)
+        return {'snippet': {'title': __import__('video_titles').public_title(narr['title']), 'description': __import__('host_split').credit(__import__('video_titles').description_head(narr['description'])),
+                            'tags': ['MLB', narr['player']['name_jp'], 'コレスポ'],
+                            'categoryId': CATEGORY_SPORTS, 'defaultLanguage': 'ja',
+                            'defaultAudioLanguage': 'ja'}}
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
         games = [g for g in data.get("games", []) if g.get("is_notable")][:3]
@@ -1652,9 +1718,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             print(f"[warn] シリーズの題を作れません（元の題のまま）: {e}")
             series_main = []
     # 選手名と球団名を新聞の書き方に（「村上宗隆のホワイトソックス」→「村上ホワイトソックス」。10/10 本人）
-    import press_names
-    title = press_names.press_title(title)
-    title = title[:100]  # YouTubeのタイトル上限
+    import video_titles
+    title = video_titles.public_title(title, soccer=(sport == 'soccer' or kind in (
+        'soccer_race', 'soccer_week', 'soccer_results', 'soccer_voices')))
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
@@ -1954,7 +2020,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     return {
         "snippet": {
             "title": title,
-            "description": "\n".join(lines)[:5000],
+            "description": solo_host.credit(video_titles.description_head("\n".join(lines)), _json_or_empty(narration_path).get('segments', []))[:5000],
             # 上限は500文字。15本に絞っていたが、主役の名前を前に置くように
             # したので、そのぶん後ろの一般語が押し出されていた。
             "tags": _fit_tags(tags),
@@ -1968,14 +2034,29 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     }
 
 
+def club_display_description(text: str) -> str:
+    """説明欄のクラブの古い書き方（「アストン・ヴィラ」など）を表示名に。表は notability_engine の1か所。"""
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+    import club_display_names
+    return club_display_names.display_text(text, include_short=True)[:5000]
+
+
+def workflow_upload_result(uploaded):
+    path=os.environ.get('GITHUB_OUTPUT')
+    if path:
+        with open(path,'a',encoding='utf8') as output:
+            output.write('uploaded='+('true' if uploaded else 'false')+'\n')
+
+
 def main():
+    workflow_upload_result(False)
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
                                  "morning", "longform", "soccer_race",
-                                 "soccer_week", "soccer_results", "soccer_voices"],
+                                 "soccer_week", "soccer_results", "soccer_voices", "player_story"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "
@@ -2018,6 +2099,14 @@ def main():
                         help="JSTの公開時刻 HH:MM。指定すると予約投稿になる。"
                              "過ぎている場合はそのまま公開する")
     args = parser.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
+    if args.kind == 'player_story':
+        if os.environ.get('COLLESPO_PLAYER_STORY') != 'on' or os.environ.get('PLAYER_STORY_PUBLISH') != 'true':
+            print('[info] 選手の話題の回の生成・公開スイッチは既定オフです')
+            return
+        import player_story
+        player_story.validate(_json_or_empty(args.narration), publish=True)
 
     video_path = pathlib.Path(args.video)
     if not video_path.exists():
@@ -2049,9 +2138,7 @@ def main():
     #
     # 日付で引ける枠は全部ここで止める。資産動画は日付ではなく
     # 話題で引くので、上の分岐がそのまま受け持つ。
-    from datetime import datetime as _dt, timezone as _tz
-
-    date_key = args.video_date or _dt.now(_tz.utc).date().isoformat()
+    date_key = material_date_key(args.kind, args.sport, _json_or_empty(args.games), args.video_date)
     rec_kind = record_kind(args.kind, args.morning_mode, args.sport)
     if args.kind in DATED_KINDS and not args.force:
         already = published_video(rec_kind, date_key)
@@ -2159,9 +2246,14 @@ def main():
                               jp_team_name=jp_team_name,
                               longform_mode=longform_mode,
                               longform_subject=longform_subject)
+    # 説明欄のクラブ名は表示名の表（帯と同じ1か所）を通す。古い書き方を残さない（Opus-32）。
+    # 題は Opus-33 で同じ関数を通す。
+    body["snippet"]["description"] = __import__('fan_privacy').description(club_display_description(body["snippet"]["description"]))
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)
+    import hook_ab
+    experiment = hook_ab.publication(args.video, publish_at)
     body["status"] = {
         "privacyStatus": "private" if publish_at else args.privacy,
         "selfDeclaredMadeForKids": False,
@@ -2175,6 +2267,26 @@ def main():
     if publish_at:
         body["status"]["publishAt"] = publish_at
 
+    import player_publications as player_pubs
+    player_kind = 'player_story' if args.kind == 'player_story' else 'season_player' if args.kind == 'asset' and player_pubs.topic_id(args.asset_topic) else None
+    if player_kind:
+        player_id = (player_pubs.identity(_json_or_empty(args.narration)['player']) if player_kind == 'player_story'
+                     else player_pubs.topic_id(args.asset_topic))
+        at = datetime.fromisoformat(publish_at.replace('Z', '+00:00')) if publish_at else datetime.now(timezone.utc)
+        player_record = player_pubs.publication(player_id, player_kind, at)
+        if player_record is None:
+            print('[info] 同じMLB選手の別枠が7日以内にあるため公開を見送ります')
+            return
+        if publish_at:
+            player_record['publish_at'] = publish_at
+        experiment = dict(experiment or {}, **player_record)
+
+    # 即時の非公開確認は公開対象外。予約はprivateで送る場合も公開前検査が必要。
+    if args.kind not in ('longform', 'weekly') and (args.privacy != 'private' or publish_at):
+        import short_content
+        quality = short_content.validate_upload(video_path)
+        experiment = dict(experiment or {}, **short_content.publication_fields(quality))
+
     try:
         youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)
         response = insert_with_retry(youtube, body, video_path)
@@ -2187,24 +2299,19 @@ def main():
         # ここで失敗しても動画自体は上がっているので、警告に留める。
         thumb = pathlib.Path(args.thumbnail) if args.thumbnail else None
         if thumb and thumb.exists() and vid:
-            try:
-                youtube.thumbnails().set(
-                    videoId=vid,
-                    media_body=MediaFileUpload(str(thumb), mimetype="image/png"),
-                ).execute()
-                print(f"[info] サムネイルを設定しました: {thumb}")
-            except Exception as e:
-                # カスタムサムネイルはアカウントの電話番号確認が必要。
-                # 未確認だとここで必ず失敗するので、原因が分かるように書く
-                print(f"[warn] サムネイルの設定に失敗しました: {e}", file=sys.stderr)
-                print("       YouTubeアカウントの電話番号確認が済んでいるか"
-                      "確認してください(未確認だとカスタムサムネイルは使えません)",
-                      file=sys.stderr)
+            set_thumbnail(youtube, thumb, vid,
+                          record_kind(args.kind, args.morning_mode, args.sport),
+                          body["snippet"]["title"])
         elif thumb:
             print(f"[info] サムネイル画像が無いためスキップします: {thumb}")
 
         if args.kind == "asset" and vid:
-            record_published(args.asset_topic or "mlb_abbr", vid, args.privacy)
+            record_published(args.asset_topic or "mlb_abbr", vid, args.privacy, experiment=experiment)
+            import host_split
+            tracking = host_split.publication(args.video, args.narration)
+            if tracking or experiment:
+                record_video('asset', args.asset_topic or 'mlb_abbr', vid, body['snippet']['title'],
+                             publish_at=publish_at, host_tracking=tracking, privacy=args.privacy, experiment=experiment)
         elif vid:
             # 日付ものは、アーカイブページから辿れるよう日付で記録する。
             # キーはUTC日付にする。archive/YYYY-MM-DD.json と同じ決め方なので、
@@ -2225,7 +2332,10 @@ def main():
                 except (OSError,ValueError,TypeError):
                     print('[omit] 予告の材料/原稿hashを記録できません')
             record_video(rec_kind, key, vid, body["snippet"]["title"],
-                         publish_at=publish_at,preview_binding=preview_binding)
+                         publish_at=publish_at,preview_binding=preview_binding,
+                         host_tracking=__import__('host_split').publication(args.video, args.narration), privacy=args.privacy,
+                         experiment=experiment)
+            workflow_upload_result(True)
             # 長編を上げたら、同じ日のコメント欄ショートから繋ぐ。
             # ショートにはフィードがあるが、長編には無い。
             # 人が来ているほうから、来ていないほうへ道を作る。
@@ -2245,15 +2355,38 @@ def main():
 RETRY_STATUS = {410, 500, 502, 503, 504}
 
 
+def set_thumbnail(youtube, thumb, vid, kind, title):
+    """投稿後の失敗は警告に留め、枠切れの画像だけ保存する。"""
+    try:
+        youtube.thumbnails().set(
+            videoId=vid,
+            media_body=MediaFileUpload(str(thumb), mimetype="image/png"),
+        ).execute()
+        print(f"[info] サムネイルを設定しました: {thumb}")
+    except Exception as error:
+        import thumbnail_pending
+        try:
+            if thumbnail_pending.remember(error, thumb, vid, kind, title):
+                print("[warn] 使用枠切れのサムネイルを付け直し用に保存しました", file=sys.stderr)
+        except (OSError, ValueError, TypeError) as pending_error:
+            print(f"[warn] サムネイルの付け直し記録を保存できません: "
+                  f"{type(pending_error).__name__}", file=sys.stderr)
+        print(f"[warn] サムネイルの設定に失敗しました: {error}", file=sys.stderr)
+        print("       YouTubeアカウントの電話番号確認が済んでいるか"
+              "確認してください(未確認だとカスタムサムネイルは使えません)", file=sys.stderr)
+
+
 def insert_with_retry(youtube, body, video_path, waits=(15, 45)):
     import time
+    import localize_videos
     from googleapiclient.errors import HttpError
+    body = localize_videos.prepare_upload(body)
     for attempt in range(len(waits) + 1):
         media = MediaFileUpload(str(video_path), chunksize=-1, resumable=True,
                                 mimetype="video/mp4")
         try:
             return youtube.videos().insert(
-                part="snippet,status", body=body, media_body=media).execute()
+                part=localize_videos.upload_parts(body), body=body, media_body=media).execute()
         except HttpError as e:
             status = getattr(getattr(e, "resp", None), "status", None)
             if int(status or 0) not in RETRY_STATUS or attempt == len(waits):

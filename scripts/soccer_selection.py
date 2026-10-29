@@ -3,6 +3,7 @@ import argparse
 import copy
 import hashlib
 import json
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -30,6 +31,53 @@ def members(game):
 def visible_members(game):
     omitted=game.get('preview_out_names') or []
     return {s:[n for n in values if n not in omitted] for s,values in members(game).items()}
+
+
+def missing_clubs(data, now):
+    """今後7日の未登録名。選定点数に関係なく、試合と別名のまま知らせる。"""
+    found = {}
+    for game in data['games']:
+        try:
+            start = kickoff(game, data['generated_at'])
+        except (ValueError, KeyError, TypeError):
+            continue
+        if not now <= start < now + timedelta(days=7):
+            continue
+        if game.get('status') in ('POSTPONED', 'CANCELLED', 'FINISHED', 'ABANDONED'):
+            continue
+        for side in ('home', 'away'):
+            name = game.get(side + '_team_name')
+            row = clubs.lookup(name)
+            if not row or not row.get('display') or not row.get('reading'):
+                found.setdefault(name or '(名称なし)', set()).add(str(game.get('game_id')))
+    return [dict(club=name, game_ids=sorted(ids), candidates=clubs.candidates(name))
+            for name, ids in sorted(found.items())]
+
+
+def opponent_fallbacks(game):
+    """名簿で所属を確認できる登録クラブの相手だけ、原語表示へ救う。"""
+    people=members(game)
+    registered={side:clubs.lookup(game.get(side+'_team_name')) for side in ('home','away')}
+    complete=lambda row: bool(row and row.get('display') and row.get('reading'))
+    if not any(people[side] and complete(registered[side]) for side in registered):
+        return None
+    fallback={}
+    for side,row in registered.items():
+        if complete(row):continue
+        name=game.get(side+'_team_name')
+        # 登録行の読み欠測・曖昧な別名・空名は救わず、従来どおり止める。
+        if row or not isinstance(name,str) or not re.fullmatch(r"[A-Za-zÀ-ž0-9][A-Za-zÀ-ž0-9 .&'’()/-]*",name):return None
+        if clubs.normalize(name) in clubs.index():return None
+        fallback[side]=name
+    return fallback
+
+
+def registration_warning(row):
+    message='::warning::今後7日の未登録クラブ: '+row['club']+' / 試合 '+', '.join(row['game_ids'])
+    suggestions=row.get('candidates') or []
+    if suggestions:
+        message+=' / 候補：'+', '.join(c['display']+' ('+c['id']+')' for c in suggestions)
+    return message
 
 
 def score(game,availability=None,cfg=None):
@@ -78,17 +126,23 @@ def select(data,now=None,availability=None,cfg=None):
     now=(now or material).astimezone(JST);day=now.date();hh,mm=map(int,cfg['publish_jst'].split(':'))
     publish=datetime(day.year,day.month,day.day,hh,mm,tzinfo=JST)
     earliest=max(publish+timedelta(minutes=cfg['kickoff_margin_minutes']),now+timedelta(minutes=cfg['kickoff_margin_minutes']))
-    latest=publish+timedelta(hours=cfg['window_hours']);eligible=[];rejected=[]
+    latest=publish+timedelta(hours=cfg['window_hours']);eligible=[];rejected=[];rescued=[]
+    result['club_registration_check'] = dict(days=7, checked_at=now.isoformat(), missing=missing_clubs(result, now), source_errors=result.get('source_errors', []))
     result=interest.attach_season_stats(result,availability)
     for game in result['games']:
+        game.pop('preview_name_fallbacks',None)
         game['is_notable']=False;comp=competition(game)
         if not comp:continue
         try:at=kickoff(game,result['generated_at'])
         except (ValueError,KeyError,TypeError):rejected.append(dict(id=game.get('game_id'),reason='開始時刻を照合できません'));continue
         if not earliest<=at<latest:continue
         if game.get('status') in ('POSTPONED','CANCELLED','FINISHED','ABANDONED'):continue
-        if not all(clubs.lookup(game.get(s+'_team_name')) for s in ('home','away')):
-            rejected.append(dict(id=game.get('game_id'),reason='クラブの表示名/読みが未登録'));continue
+        if not all((row := clubs.lookup(game.get(s+'_team_name'))) and row.get('display') and row.get('reading') for s in ('home','away')):
+            fallback=opponent_fallbacks(game)
+            if not fallback:
+                rejected.append(dict(id=game.get('game_id'),reason='クラブの表示名/読みが未登録'));continue
+            game['preview_name_fallbacks']=fallback
+            rescued.append(dict(id=game.get('game_id'),reason='日本人所属クラブの相手を原語表示で救済',clubs=fallback,speech='未確認のクラブ名はホーム/アウェーのクラブと読み上げる'))
         snapshot=availability or {};at_snapshot=interest.timestamp(snapshot.get('updated_at'));start=interest.timestamp(game.get('start_time_utc'))
         game['preview_out_names']=[]
         if snapshot.get('source')=='https://fantasy.premierleague.com/api/bootstrap-static/' and at_snapshot and start and 0<=(start-at_snapshot).total_seconds()<=48*3600:
@@ -99,13 +153,24 @@ def select(data,now=None,availability=None,cfg=None):
         row=score(game,availability,cfg);game['preview_rating']=row
         if row['score']>=cfg['threshold']:eligible.append((game,at))
     eligible.sort(key=lambda pair:(-pair[0]['preview_rating']['score'],-int(pair[0]['preview_rating']['japanese']),pair[1],str(pair[0]['game_id'])))
-    picked=[g for g,_ in eligible[:cfg['max_games']]];ids=[str(g['game_id']) for g in picked]
+    # 辞書追加前に別名のまま補われた保存材料にも、同一カードが二重にある。
+    unique = []; seen = set()
+    for game, at in eligible:
+        key = (competition(game)['code'], *((clubs.lookup(game[s+'_team_name']) or {}).get('id',game[s+'_team_name']) for s in ('home','away')), at.isoformat())
+        if key not in seen:
+            seen.add(key); unique.append(game)
+    picked=unique[:cfg['max_games']];ids=[str(g['game_id']) for g in picked]
+    ratings={str(g['game_id']):g.get('preview_rating',{}).get('score',0) for g in result['games']}
+    for record in rescued:
+        record['score']=ratings[str(record['id'])]
+        record['selected']=str(record['id']) in ids
+        record['outcome']='selected' if record['selected'] else 'below_threshold' if record['score']<cfg['threshold'] else 'duplicate_or_max_games'
     for g in picked:g['is_notable']=True
     if picked:result['source']='・'.join(sorted({s for g in picked for s in (g.get('fixture_sources') or ['football-data.org'])}))
     picked_ids={id(g) for g in picked};result['games']=picked+[g for g in result['games'] if id(g) not in picked_ids]
     reason='' if picked else '取得不足/名前や日時を確認できない材料があります' if result.get('source_errors') or rejected else '対象時間帯の試合なし' if not any(g.get('preview_rating') for g in result['games']) else '注目度がしきい値以上の試合なし'
     digest=hashlib.sha256(json.dumps(cfg,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
-    result['preview_selection']=dict(day=day.isoformat(),threshold=cfg['threshold'],max_games=cfg['max_games'],policy_sha256=digest,selected_ids=ids,count=len(ids),reason=reason,rejected=rejected,source_errors=result.get('source_errors',[]))
+    result['preview_selection']=dict(day=day.isoformat(),threshold=cfg['threshold'],max_games=cfg['max_games'],policy_sha256=digest,selected_ids=ids,count=len(ids),reason=reason,rejected=rejected,rescued=rescued,source_errors=result.get('source_errors',[]))
     return result
 
 
@@ -123,6 +188,10 @@ def main():
     selected=select(data,now,availability);out=args.out or args.games
     out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(selected,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     decision=selected['preview_selection'];print(json.dumps(decision,ensure_ascii=False))
+    check = selected['club_registration_check']
+    print(json.dumps(dict(club_registration_check=check), ensure_ascii=False))
+    for row in check['missing']:
+        print(registration_warning(row))
     if args.github_output:
         with args.github_output.open('a',encoding='utf8') as f:f.write(f"count={decision['count']}\n")
 if __name__=='__main__':main()

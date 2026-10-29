@@ -20,6 +20,7 @@
 
 import argparse
 import json
+from japanese_team_names import team_names
 import pathlib
 import re
 import sys
@@ -222,7 +223,7 @@ def story(team: dict, series: dict, games: list, boxes: list, last_feed: dict, r
     if start <= now:
         return {}
     name = team["name"]
-    jpn = "・".join(team["players"][:2])
+    jpn = team_names(team["players"])
     n, road = s["streak"], s["road"]
     if road == n:
         where = f"{n}試合すべて敵地"
@@ -267,7 +268,7 @@ def story(team: dict, series: dict, games: list, boxes: list, last_feed: dict, r
     if last_feed:
         v = gs.pick_voice(voices, last_feed, after, words, table, jp, team["players"])
         if v:
-            items.append(("ハイライトのコメント欄から", gs.quoted(v["said"])))
+            items.append((v.get("source") if v.get("source")==__import__('fan_privacy').LABEL else "ハイライトのコメント欄から", gs.quoted(v["said"])))
             voice = v
         q = gs.pick_reporter(quotes, name, after, words, table, jp, team["players"])
         if q:

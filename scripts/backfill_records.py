@@ -49,8 +49,9 @@ PATTERNS = [
     # 「PS全4試合」、20:00の情勢はそれ以外。予告を先に見る。
     ("daily", r"PS全\d+試合"),
     ("morning_postseason", r"^【\d{1,2}/\d{1,2}更新】"),
-    ("soccer_race", r"順位争い【欧州サッカー】"),
+    ("soccer_race", r"順位争い.*【欧州サッカー】"),
     ("soccer_week", r"日本人選手の週末"),
+    ("soccer_results", r"【欧州サッカー】.*(?:日本人選手の結果|昨夜の注目試合)"),
     ("daily_soccer", r"欧州サッカー|注目試合【サッカー】"),
     ("verdict", r"答え合わせ"),
     ("weekly", r"1週間を振り返る|今週の日本人選手"),
@@ -111,6 +112,59 @@ def kind_of(title: str) -> str:
     return ""
 
 
+def matches_kind(kind: str, entry: dict) -> bool:
+    """結果と予告の取り違えを、重複判定と公開確認の両方で拒む。"""
+    inferred = kind_of(entry.get('title') or '')
+    if kind in ('daily_soccer', 'soccer_results'):
+        return not inferred or inferred == kind
+    return True
+
+
+def repair_backfilled_aliases(rec: dict) -> list:
+    """正規の同一IDが残る場合だけ、誤った補完記録を取り除く。日付を推測しない。"""
+    removed = []
+    for kind, rows in rec.items():
+        for day, entry in list(rows.items()):
+            inferred = kind_of(entry.get('title') or '')
+            if not entry.get('backfilled') or not entry.get('video_id') or not inferred or inferred == kind:
+                continue
+            originals = [(d, e) for d, e in (rec.get(inferred) or {}).items()
+                         if e.get('video_id') == entry['video_id'] and not e.get('backfilled')]
+            if len(originals) == 1:
+                del rows[day]
+                removed.append((day, kind, entry['video_id'], inferred, originals[0][0]))
+    return removed
+
+
+def add_entries(rec: dict, entries: list) -> list:
+    """既存IDと材料日を優先し、公開日から別枠・別日へ複製しない。"""
+    known = {e.get('video_id') for rows in rec.values() for e in rows.values() if e.get('video_id')}
+    added = []
+    for when, vid, title in entries:
+        if vid in known:
+            continue
+        kind = kind_of(title)
+        if not kind:
+            print(f"(区分が分かりません) {title[:60]}")
+            continue
+        # 結果の材料日は「夜〜翌朝」の開始日。題と公開日だけでは復元できない。
+        if kind == 'soccer_results':
+            print(f"[warn] 結果の材料日を確認できないため補完しません: {vid}")
+            continue
+        day = when.strftime("%Y-%m-%d")
+        if (rec.get(kind) or {}).get(day):
+            continue
+        rec.setdefault(kind, {})[day] = {
+            "video_id": vid, "url": f"https://youtu.be/{vid}", "title": title,
+            "published_at": when.astimezone(timezone.utc).isoformat(),
+            "publish_at": when.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "backfilled": True,
+        }
+        known.add(vid)
+        added.append((day, kind, vid, title))
+    return added
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--record", default=RECORD)
@@ -142,30 +196,12 @@ def main() -> int:
             return 0
         print(f"[info] アップロード一覧から{len(entries)}本")
 
-    added = []
-    for when, vid, title in entries:
-        kind = kind_of(title)
-        if not kind:
-            print(f"(区分が分かりません) {title[:60]}")
-            continue
-        day = when.strftime("%Y-%m-%d")
-        # 週次は日付ではなく回で1件なので、その日の記録として置く。
-        if (rec.get(kind) or {}).get(day):
-            continue
-        rec.setdefault(kind, {})[day] = {
-            "video_id": vid,
-            "url": f"https://youtu.be/{vid}",
-            "title": title,
-            "published_at": when.astimezone(timezone.utc).isoformat(),
-            # 予約公開の時刻は記録が無いと分からない。
-            # 実際に公開された時刻をそのまま置く。嘘を書かない。
-            "publish_at": when.astimezone(timezone.utc)
-                              .strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "backfilled": True,
-        }
-        added.append((day, kind, vid, title))
+    removed = repair_backfilled_aliases(rec)
+    added = add_entries(rec, entries)
+    for day, kind, vid, original_kind, original_day in removed:
+        print(f"誤補完を解消: {kind}/{day} {vid}（正規記録 {original_kind}/{original_day} を保持）")
 
-    if not added:
+    if not added and not removed:
         print("足りない記録はありません")
         return 0
 

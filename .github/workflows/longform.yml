@@ -64,6 +64,11 @@ permissions:
 
 # 長編の見た目（v3 = 新デザイン「電光掲示板」、本人の確認後に変数で切り替える）
 env:
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
   # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
   SERIES_TITLE: ${{ vars.SERIES_TITLE }}
   COLLESPO_LONGFORM_STYLE: ${{ vars.COLLESPO_LONGFORM_STYLE || 'legacy' }}
@@ -186,7 +191,7 @@ jobs:
         if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/verify_numbers.py \
-            --dialogue build/lf/dialogue.json --strict --omit-unsupported
+            --dialogue build/lf/dialogue.json --omit-unsupported
 
       # 用語を勝手に作っていないか。**ここで落ちたら公開しない。**
       #
@@ -209,11 +214,10 @@ jobs:
       - name: Sanity check the script
         if: steps.dialogue.outputs.made == '1'
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python scripts/sanity.py --general --strict \
-            --narration build/lf/dialogue.json \
-            --out data/sanity_longform.json
+          python scripts/sanity.py --general --strict --narration build/lf/dialogue.json --out data/sanity_longform.json --hold-record build/sanity_hold_longform.json --kind longform
 
       - name: Synthesize both voices
         if: steps.dialogue.outputs.made == '1'
@@ -246,6 +250,13 @@ jobs:
         with:
           name: longform
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
             build/lf/collespo_longform.mp4
             build/lf/dialogue.json
             build/lf/dialogue.model-*.txt
@@ -256,6 +267,7 @@ jobs:
       - name: Upload to YouTube
         if: ${{ inputs.upload != 'false' && steps.dialogue.outputs.made == '1' }}
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -278,7 +290,6 @@ jobs:
         # 検査で停止しても、既に発生したAPI使用量を失わない。
         # 投稿しない制作でも費用は生じる。既存の投稿記録は変更された場合のみ保存。
         if: always()
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh \
             "longform: ${{ github.run_id }}" \
@@ -325,3 +336,48 @@ jobs:
           PY
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

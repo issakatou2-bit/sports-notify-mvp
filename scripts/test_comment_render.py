@@ -173,7 +173,7 @@ class Cues(unittest.TestCase):
         self.assertEqual(cr.list_cues(spec, items, 0, 2), r3.cues("list", spec, items, 0, 2))
         k = next(i for i, (h, _) in enumerate(items) if h == cr.COMMENT_HEAD)
         c = cr.list_cues(spec, items, k - k % 2, 2)
-        self.assertEqual(c[0], (0.0, "transition", "b", -6))
+        self.assertEqual(c[0], (0.0, "transition", "b", -10))
         self.assertTrue(any(x[1] == "notify" for x in c))
 
 
@@ -237,7 +237,7 @@ class Words(unittest.TestCase):
         th = cr.voices_for_segment(segs["thread"], vd)
         v = vd["voices"][segs["thread"]["meta"]["index"]]
         parent=[] if segs['thread']['meta'].get('parent_read') else [v['ja']]
-        self.assertEqual([x["said"] for x in th], parent + [r["ja"] for r in v["reply_ja"][:3]])
+        self.assertEqual([x["said"] for x in th], parent + [r["ja"] for r in v["reply_ja"][:3] if "@" not in r["ja"]])
 
     def test_layout_keeps_every_character(self):
         vd = voices_data()

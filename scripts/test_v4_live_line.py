@@ -11,7 +11,7 @@ def main():
         nonlocal ok
         print(('ok  ' if cond else 'NG  ')+name);ok=ok and cond
     im=s4.canvas(0,'現地のファンの声')
-    raw='Shohei Ohtani 対 Jacob Misiorowski! (Both plate appearances in 2026 NLCS Game 1) | MLB Highlights'
+    raw='Shohei Ohtani vs Jacob Misiorowski! (Both plate appearances in 2026 NLCS Game 1) | MLB Highlights'
     check('日本語の無い長い題は省いて落ちない',s4.live_line(im,raw) is False)
     check('長すぎる日本語の題も省いて落ちない',s4.live_line(im,'大谷翔平'*40) is False)
     check('ふつうの日本語の題は描く',s4.live_line(im,'ドジャース 対 ブリュワーズ 第1戦') is True)

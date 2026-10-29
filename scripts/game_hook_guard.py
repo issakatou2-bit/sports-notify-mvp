@@ -5,7 +5,7 @@ Player names, AI summaries and standings alone never establish the four claims.
 PS games have already qualified; do not frame their next game as qualifying for PS.
 """
 import argparse
-from datetime import datetime
+from sports_dates import archive_day
 import hashlib
 import json
 import os
@@ -76,9 +76,16 @@ def rejection_reasons(game):
     evidence = [reason['text'] for reason in reasons
                 if isinstance(reason, dict) and isinstance(reason.get('text'), str)] \
         if isinstance(reasons, list) else []
-    return [f'「{term}」の根拠がルール由来のreasons.textにない'
-            for term in GUARDED_TERMS
-            if term in hook and not any(term in text for text in evidence)] + postseason_rejections(game, 'notification_hook')
+    rejected = [f'「{term}」の根拠がルール由来のreasons.textにない'
+                for term in GUARDED_TERMS
+                if term in hook and not any(term in text for text in evidence)]
+    # 一言は次の試合のこと。ルール由来の「第N戦」と違う番号を書かない
+    # （10/28 第5戦の通知が「王手の第4戦へ」になった）。
+    numbers = {int(n) for text in evidence for n in re.findall(r'第([0-9]+)戦', text)}
+    said = {int(n) for n in re.findall(r'第([0-9]+)戦', hook)}
+    if numbers and said - numbers:
+        rejected.append('一言の「第N戦」がルール由来のreasons.textの試合番号と違う')
+    return rejected + postseason_rejections(game, 'notification_hook')
 
 
 def validated_hook(game):
@@ -98,13 +105,7 @@ def _load(path):
 
 
 def _generated_date(data):
-    value = data.get('generated_at')
-    if not isinstance(value, str):
-        return None
-    try:
-        return datetime.fromisoformat(value.replace('Z', '+00:00')).date().isoformat()
-    except ValueError:
-        return None
+    return archive_day(data)
 
 
 def _identity(game):

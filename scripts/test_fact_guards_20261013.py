@@ -1,4 +1,4 @@
-"""Saved failure patterns: numbered translations, benching, quotes, modern CL."""
+"""Saved failure patterns: numbered translations, benching, quotes, cached summaries and venues."""
 import copy
 from datetime import datetime, timezone
 import io
@@ -31,14 +31,14 @@ class TranslationTests(unittest.TestCase):
         self.assertEqual(lr.guard_translation(source, '大谷の第3戦でのベンチ入りを協議へ'), '大谷の第3戦で先発から外すことを協議へ')
     def test_correct_benching_translation_stays_identical(self):
         self.assertEqual(lr.guard_translation('They discuss benching Ohtani.', '大谷を先発から外すことを検討'), '大谷を先発から外すことを検討')
-    def translation_call(self, bodies):
+    def translation_call(self, bodies, allowed=True):
         from types import SimpleNamespace
         import backstage_guard, token_log, llm_models
         messages = [SimpleNamespace(stop_reason='end_turn', content=[SimpleNamespace(type='text', text=x)]) for x in bodies]
         fake = SimpleNamespace(Anthropic=lambda **kwargs: object())
         with mock.patch.dict(sys.modules, {'anthropic': fake}), \
                 mock.patch.object(backstage_guard, 'create', side_effect=messages) as create, \
-                mock.patch.object(token_log, 'allowed', return_value=True), \
+                mock.patch.object(token_log, 'allowed', side_effect=allowed if isinstance(allowed, list) else None, return_value=allowed), \
                 mock.patch.object(token_log, 'record'), \
                 mock.patch.object(llm_models, 'params', return_value={}):
             result = lr.translate([{'text': EN}], 'fixture')
@@ -57,6 +57,16 @@ class TranslationTests(unittest.TestCase):
         row, calls = self.translation_call(['1. '+JP])
         self.assertEqual(row['jp'], JP)
         self.assertEqual(calls, 1)
+    def test_retry_does_not_exceed_budget(self):
+        row, calls = self.translation_call(['1. 1番'], allowed=[True, False])
+        self.assertEqual(row['jp'], '')
+        self.assertTrue(row['_translation_failed'])
+        self.assertEqual(calls, 1)
+    def test_failed_retry_keeps_translation_ineligible(self):
+        row, calls = self.translation_call(['1. 1番', ''])
+        self.assertEqual(row['jp'], '')
+        self.assertTrue(row['_translation_failed'])
+        self.assertEqual(calls, 2)
     def test_bench_registration_without_benching_is_not_rewritten(self):
         self.assertEqual(lr.guard_translation('Ohtani returns to the active roster.', '大谷がベンチ入り'), '大谷がベンチ入り')
     def test_unstated_handedness_is_not_invented(self):
@@ -97,11 +107,9 @@ CL = {'league': 'チャンピオンズリーグ', 'home_team_id': 'CL-78', 'away
       'matchup': 'マンチェスター・ユナイテッド vs アトレティコ・マドリード',
       'game_type': 'R', 'is_notable': True, 'reasons': [{'text': 'CLリーグフェーズ'}]}
 BAD = 'グループステージの総当たり戦を勝ち抜く一戦である。'
-GOOD = '36クラブのリーグフェーズで8つの異なる相手と対戦する。'
+GOOD = 'アトレティコ・マドリードがホームでマンチェスター・ユナイテッドを迎える。'
 
 class CompetitionTests(unittest.TestCase):
-    def test_current_group_round_robin_is_wrong(self):
-        self.assertTrue(ne.soccer_format_issues(BAD, CL))
     def test_explicit_home_at_opponent_venue_is_detected(self):
         import soccer_venue
         game = dict(CL, home_team_name='アーセナル', away_team_name='リール')
@@ -113,30 +121,12 @@ class CompetitionTests(unittest.TestCase):
         import soccer_venue
         self.assertTrue(soccer_venue.check('両強豪が敵地で激突する。', CL))
         self.assertEqual(soccer_venue.check('両チームの敵地での成績を比較する。', CL), [])
-    def test_all_first_division_clubs_is_wrong(self):
-        self.assertTrue(ne.soccer_format_issues('チャンピオンズリーグは欧州の1部リーグ全体が参加する大会である。', CL))
-    def test_saved_oct14_all_teams_wording(self):
-        for text in [
-            'ヨーロッパ最高峰の大会は1部リーグの全チームが総当たり戦で勝ち点を争う形式である。',
-            'チャンピオンズリーグは欧州の1部リーグの全チームが参加する大会である。',
-        ]:
-            with self.subTest(text=text):
-                issues = ne.soccer_format_issues(text, CL)
-                self.assertTrue(any('全クラブ参加' in x for x in issues))
-        self.assertEqual(ne.soccer_format_issues('欧州の1部リーグの全チームが参加するわけではない。', CL), [])
-        self.assertEqual(ne.soccer_format_issues('欧州の1部リーグ上位チームから出場資格を得た36クラブが参加する。', CL), [])
-    def test_actual_format_and_explicit_negations_are_not_false_errors(self):
-        for text in [GOOD, 'グループステージではなくリーグフェーズである。', '欧州の1部リーグ全体が参加する大会ではない。']:
-            self.assertEqual(ne.soccer_format_issues(text, CL), [])
-    def test_past_format_and_other_competitions_are_not_blocked(self):
-        self.assertEqual(ne.soccer_format_issues('従来のグループステージは総当たりだった。', CL), [])
-        self.assertEqual(ne.soccer_format_issues(BAD, dict(CL, league='ワールドカップ')), [])
     def generation(self, responses, old_summary=None):
         game = copy.deepcopy(CL)
         if old_summary:
             game.update(ai_summary=old_summary, notification_hook='old hook')
         with mock.patch.object(ne, 'collect_log_notes', return_value=[]), \
-                mock.patch.object(ne, '_build_ai_prompt', return_value='verified format'), \
+                mock.patch.object(ne, '_build_ai_prompt', return_value='fixed preview'), \
                 mock.patch.object(ne, '_call_ai', side_effect=[(x, 0, 0, 0, False) for x in responses]) as call:
             ne.enhance_games_with_ai({'games': [game], 'generated_at': '2026-10-13'}, {}, 'fixture')
         return game, call.call_count

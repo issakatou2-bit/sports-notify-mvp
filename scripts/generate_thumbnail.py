@@ -788,6 +788,8 @@ def main():
                         help="週次で --label を省いたときの期間の算出元")
     parser.add_argument("--out", default="build/thumb.png")
     args = parser.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
 
     im, d = base()
 

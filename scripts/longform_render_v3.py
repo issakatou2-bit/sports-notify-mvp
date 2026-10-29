@@ -333,6 +333,8 @@ def _beam():
 
 
 def background(t, tid):
+    import motion
+    if motion.enabled():t *= motion.SETTINGS['background_speed']
     base, second, _ = colors(tid)
     im = Image.new("RGB", (W, H), base)
     d = ImageDraw.Draw(im)
@@ -352,7 +354,7 @@ def background(t, tid):
         bx = round(-700 + k * (W + 900))
         im.paste(white, (bx, -280), mask)
     d.rectangle((0, 0, W, TOP_BAND), fill=second)
-    return im
+    return motion.background(im,t)
 
 
 # ---------------------------------------------------------------------------
@@ -938,15 +940,25 @@ def subtitle_text(seg):
 
 def layout_subtitle(d, text):
     """(大きさ, 行の高さ, 行)。字幕の札に収まるいちばん大きい文字で。"""
+    import bubble_styles
+    if bubble_styles.selected():
+        pages=bubble_styles.page_lines(text,bubble_styles.longform_box())
+        if len(pages)!=1:raise ValueError('長編を文節でページ分割してください')
+        return 36,49,pages[0]
     width = SUB_X1 - SUB_X0 - SUB_BAR - SUB_PAD_X * 2
     room = SUB_Y1 - SUB_Y0 - SUB_PAD_TOP - SUB_PAD_BOTTOM
+    import caption_breaks
     lines = []
     for size, lh in SUB_SIZES:
-        lines = wrap(d, text, font(size), width)
+        try:
+            lines = caption_breaks.wrap(text,lambda s:video_common.text_width(d,s,font(size)),width) if caption_breaks.enabled() else wrap(d,text,font(size),width)
+        except ValueError:continue
         if len(lines) * lh <= room:
             return size, lh, lines
     size, lh = SUB_SIZES[-1]
     keep = max(1, room // lh)
+    if caption_breaks.enabled() and (not lines or len(lines)>keep):
+        raise ValueError('字幕の全文が入りません。文節でページ分割してください')
     if len(lines) > keep:
         print(f"[warn] 字幕が札に入りきりません（{len(text)}字）。分け方を見直してください")
     return size, lh, lines[:keep]
@@ -959,6 +971,16 @@ def paginate(segs):
     幅も高さも違うので、新デザインのときはこちらで分ける。音は分けない（1つの読み上げのまま）。
     尺は文字数で按分する（いまの長編と同じ）。戻り値の形も同じ（_size・_lines・_share）。
     """
+    import bubble_styles
+    if bubble_styles.selected():
+        out=[]
+        for seg in segs:
+            pages=bubble_styles.page_lines(str(seg.get('text') or ''),bubble_styles.longform_box())
+            weights=[max(1,sum(map(len,lines))) for lines in pages]
+            for lines,weight in zip(pages,weights):
+                out.append({**seg,'_size':36,'_lines':lines,'_share':weight/sum(weights)})
+        return out
+    import caption_breaks
     d = ImageDraw.Draw(Image.new("RGB", (8, 8)))
     width = SUB_X1 - SUB_X0 - SUB_BAR - SUB_PAD_X * 2
     room = SUB_Y1 - SUB_Y0 - SUB_PAD_TOP - SUB_PAD_BOTTOM
@@ -967,11 +989,18 @@ def paginate(segs):
         text = " ".join(str(s.get("text") or "").split())
         size, lh, lines = SUB_SIZES[-1] + (None,)
         for size, lh in SUB_SIZES:
-            lines = wrap(d, text, font(size), width)
+            try:
+                lines = caption_breaks.wrap(text,lambda s:video_common.text_width(d,s,font(size)),width) if caption_breaks.enabled() else wrap(d,text,font(size),width)
+            except ValueError:continue
             if len(lines) * lh <= room:
                 break
+        if caption_breaks.enabled() and lines is None:raise ValueError('文節が字幕の幅に入りません')
         per = max(1, room // lh)
         pages = [lines[i:i + per] for i in range(0, len(lines), per)] or [[]]
+        if caption_breaks.enabled():
+            measure=lambda value:video_common.text_width(d,value,font(size))
+            values=caption_breaks.pages(text,fits=lambda value:len(caption_breaks.wrap(value,measure,width))<=per)
+            pages=[caption_breaks.wrap(value,measure,width) for value in values] or [[]]
         if len(pages) == 1:
             out.append({**s, "_size": size, "_lines": pages[0], "_share": 1.0})
             continue
@@ -991,10 +1020,25 @@ def type_seconds(text, dur=None):
 
 
 def subtitle(im, d, t, seg, who, dur=None):
+    import bubble_styles
+    if bubble_styles.selected():
+        import characters
+        key=next((key for key,name in characters.NAMES.items() if name==who['name']),'metan')
+        text=subtitle_text(seg)
+        if text:bubble_styles.draw(im,key,text,seconds=t,box=bubble_styles.longform_box(),episode='longform')
+        return
     text = subtitle_text(seg)
     if not text:
         return
     color = who["color"]
+    name_ink=DARK_INK
+    import caption_breaks
+    if caption_breaks.enabled():
+        import characters
+        import bubble_styles
+        key=next((k for k,v in characters.NAMES.items() if v==who['name']),'metan')
+        color=characters.COLORS[key]
+        name_ink=max((bubble_styles.WHITE,bubble_styles.SHADOW),key=lambda ink:float(bubble_styles.contrast(ink,color)))
     d.rounded_rectangle((SUB_X0, SUB_Y0, SUB_X1, SUB_Y1), radius=24, fill=SUB_BG)
     d.rounded_rectangle((SUB_X0, SUB_Y0, SUB_X0 + SUB_BAR + 8, SUB_Y1), radius=8, fill=color)
     d.rectangle((SUB_X0 + SUB_BAR, SUB_Y0, SUB_X0 + SUB_BAR + 8, SUB_Y1), fill=SUB_BG)
@@ -1003,7 +1047,7 @@ def subtitle(im, d, t, seg, who, dur=None):
     f = font(26)
     nw = _textlen(d, nm, f) + 36
     d.rounded_rectangle((SUB_X0 + 28, SUB_Y0 - 26, SUB_X0 + 28 + nw, SUB_Y0 + 18), radius=8, fill=color)
-    d.text((SUB_X0 + 28 + nw / 2, SUB_Y0 - 4), nm, font=f, fill=DARK_INK, anchor="mm")
+    d.text((SUB_X0 + 28 + nw / 2, SUB_Y0 - 4), nm, font=f, fill=name_ink, anchor="mm")
     # 文字。数字（単位まで）は金色。左から現れる（e-type の clip-path を行ごとに）。
     size, lh, lines = layout_subtitle(d, text)
     f = font(size)
@@ -1011,6 +1055,7 @@ def subtitle(im, d, t, seg, who, dur=None):
     total = sum(widths) or 1
     k = _clamp((t - T_TYPE0) / type_seconds(text, dur))
     shown = total * k
+    visible = False
     x0 = SUB_X0 + SUB_BAR + SUB_PAD_X
     block = len(lines) * lh
     room = SUB_Y1 - SUB_Y0 - SUB_PAD_TOP - SUB_PAD_BOTTOM
@@ -1025,9 +1070,12 @@ def subtitle(im, d, t, seg, who, dur=None):
             x = _draw_text(lay, ld, (x, 0), part, f, GOLD if gold else INK)
         cut = int(min(w, shown)) + (16 if shown >= w else 0)
         part = lay.crop((0, 0, cut, lay.height))
+        visible = visible or bool(part.getbbox())
         im.paste(part, (x0, y), part)
         shown -= w
         y += lh
+    import render_timeline
+    render_timeline.subtitle(im, text, visible=visible)
 
 
 def _gold_runs(line):
@@ -1092,7 +1140,7 @@ def render_line(t, seg, portrait_dir="", topic="", panel=None, state=None, score
 # ---------------------------------------------------------------------------
 def _panel_events(kind, panel):
     """札が出てからの秒で、[(秒, 種類, 案, 追加の音量dB)]。"""
-    out = [(T_CARD, "notify" if kind == "quote" else "swish", "a", -3)]
+    out = [(T_CARD, "notify", "a", -3)] if kind == "quote" else []
     if kind == "stat":
         if panel.get("value"):
             out.append((T_ROLL[0], "roll", "a", -2))
@@ -1110,9 +1158,6 @@ def _panel_events(kind, panel):
             out.append((T_ROLL[1] - 0.04, "stop", "a", 0))
         if isinstance(a, int) and isinstance(h, int) and a != h:
             out.append((T_WIN, "pop", "a", -2))
-    elif kind == "group":
-        for i, _ in enumerate((panel.get("rows") or [])[:4]):
-            out.append((T_ROW0 + i * T_ROW_GAP, "swish", "b", -5))
     elif kind == "star":
         n = len(_tokens(panel.get("line", "")))
         for i in range(min(n, 8)):
@@ -1131,8 +1176,8 @@ def cues(seg, panel=None, topic="", *, panel_since=0.0, chapter_start=False, cha
     chapter_start: この画面で章が変わったか（章の札が明るくなるときに切り替えの音）。
     """
     out = []
-    if chapter_start and chapter_index(seg or {}, chapters) is not None:
-        out.append((0.0, "transition", "b", -6))
+    if panel_since == 0 or (chapter_start and chapter_index(seg or {}, chapters) is not None):
+        out.append((0.0, "transition", "b", -10))
     kind, panel_ = panel_kind(panel, topic)
     for at, k, v, db in _panel_events(kind, panel_):
         rel = at - panel_since

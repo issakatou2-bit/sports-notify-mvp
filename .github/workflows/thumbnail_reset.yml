@@ -1,0 +1,67 @@
+name: 道具　サムネイルを付け直す
+
+# 投稿のあとのサムネイル設定に失敗した動画へ、あとから付け直す。
+# 絵はその回の保存物（動画）から、投稿時と同じ切り出し方で作る。
+#
+# 既定は下読みだけ。題と絵の対応を実行ページで見てから write: true で。
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: '投稿した回の実行番号'
+        required: true
+      artifact:
+        description: '動画が入っている保存物の名前'
+        required: false
+        default: 'collespo-social-shorts'
+      pairs:
+        description: '動画ファイル名=動画ID をカンマ区切り（例 press=0LeUJdKUw-4）'
+        required: true
+      write:
+        description: 'true にすると実際に設定する(既定は下読みだけ)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install google-api-python-client google-auth
+          command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+
+      - name: Fetch videos
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.run_id }}
+          ARTIFACT: ${{ inputs.artifact }}
+        run: gh run download "$RUN_ID" -n "$ARTIFACT" -D build/thumb_src
+
+      - name: Reset
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          PAIRS: ${{ inputs.pairs }}
+        run: |
+          ARGS=""
+          IFS=',' read -ra ITEMS <<< "$PAIRS"
+          for item in "${ITEMS[@]}"; do
+            name="${item%%=*}"; vid="${item#*=}"
+            bash scripts/shorts_thumbnail.sh "build/thumb_src/${name}.mp4" "build/thumb/${name}.png"
+            ARGS="$ARGS ${vid}=build/thumb/${name}.png"
+          done
+          WRITE=""
+          if [ "${{ inputs.write }}" = "true" ]; then WRITE="--write"; fi
+          python scripts/reset_thumbnail.py $ARGS $WRITE

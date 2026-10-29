@@ -1,7 +1,9 @@
 """枠ごとの材料を、連勝回の既存部品で描く。台本と尺は扱わない。"""
+import motion
 import functools
 from PIL import Image, ImageDraw, ImageEnhance
 import review_render_v3 as r3
+import calm_motion as calm
 
 
 @functools.lru_cache(maxsize=4096)
@@ -18,11 +20,15 @@ def screen_text(text):
                    and not 0x1f3fb <= ord(ch) <= 0x1f3ff and (ch.isspace() or _supported(ch)))
 
 
-@functools.lru_cache(maxsize=128)
 def item(head, body, width, base, second, reply=False, height=900):
     return r3._item_card(head, body, width, base, second, quote_size=38 if reply else 52,
                          attribution_above=str(body).startswith('「'),
-                         quote_height=height if str(body).startswith('「') else None)
+                         quote_height=height)
+
+
+# カード本体の見た目を含むキャッシュへ一本化。
+item.cache_clear = r3._item_card.cache_clear
+item.cache_info = r3._item_card.cache_info
 
 
 def outro(t,spec,exclude,credit='音声: VOICEVOX:四国めたん　データ: MLB Stats API'):
@@ -75,12 +81,23 @@ def check_pages(spec,rows,replies=None):
             if not (r3.LEFT<= (box:=cell['box'])[0]<box[2]<=r3.SAFE_RIGHT and top<=box[1]<box[3]<=r3.CONTENT_BOTTOM)]
 
 
-def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=None, page_seconds=4):
+def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=None, page_seconds=4, focus=None):
     """高さを超えたら次ページへ。引用は読む札を明るくする。"""
     base, second, _ = r3.colors(spec.get("team_id"))
     im = r3.background(t, spec.get("team_id"))
     d = ImageDraw.Draw(im)
     pages=paginate(spec,rows,replies)
+    if not calm.enabled():
+        focus=None
+    elif focus is None and len(rows)>1 and not motion.DEPTH.get():
+        if times is not None and ends is not None:
+            timeline=[(a,b,i) for i,(a,b) in enumerate(zip(times,ends)) if b>a]
+            focus=calm.weights(timeline,t,len(rows))
+        else:
+            duration=r3._CAPTION.get('duration') or 0
+            markers=[head or body for head,body in rows]
+            settle=r3.T_CARD0+(len(rows)-1)*r3.T_CARD_GAP+r3.SLIDE
+            focus=calm.focus_for(t,r3._CAPTION['text'],duration,len(rows),markers=markers,settle=settle)
     if times is not None:
         selected=0
         for p,page in enumerate(pages):
@@ -96,7 +113,10 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
     lines,size,top=heading(spec)
     for i, line in enumerate(lines):
         r3._text(d,(r3.LEFT, 250+i*(size+10)), line, font=r3.font(size), fill=r3.INK)
-    layer=Image.new('RGBA',(r3.SAFE_RIGHT-r3.LEFT,r3.CONTENT_BOTTOM-top),(0,0,0,0))
+    # 札を大きくするぶんだけ、左に余白を取る（右は安全域の端から出さない）。focus が無ければ 0（今と同じ）。
+    pad=(round((r3.SAFE_RIGHT-r3.LEFT)*(calm.TUNING['focus_scale']-1))+2) if focus else 0
+    layer=Image.new('RGBA',(r3.SAFE_RIGHT-r3.LEFT+pad,r3.CONTENT_BOTTOM-top),(0,0,0,0))
+    lifted=[]
     for j,cell in enumerate(pages[selected]):
         i=cell['row'];a,b=cell['fraction'];card=cell['card']
         if times is not None:
@@ -111,12 +131,46 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
             progress=1
         else:
             progress=r3.back_out((t-selected*page_seconds-r3.T_CARD0-j*r3.T_CARD_GAP)/r3.SLIDE)
-        r3._paste_card(layer,card,0,cell['box'][1]-top,progress)
-    im.paste(layer,(r3.LEFT,top),layer)
+        y=cell['box'][1]-top
+        if focus:
+            own=focus[i] if i<len(focus) else 0.0
+            others=max([w for k,w in enumerate(focus) if k!=i] or [0.0])
+            card,gw,gh=calm.styled(card,own,others,anchor='right')
+            # その場で大きくする: 右端はそのまま、上下は真ん中から。画面全体は動かさない。
+            x=pad-gw;y=max(0,min(layer.height-card.height,y-gh//2))
+            if own>0:
+                # 上がっている札は最後に描く（となりの札の上に重なる）
+                lifted.append((own,i,card,x,y,progress));continue
+            r3._paste_card(layer,card,x,y,progress)
+        else:
+            r3._paste_card(layer,card,0,y,progress)
+    focus_info=[]
+    for own,i,card,x,y,progress in sorted(lifted,key=lambda e:e[0]):
+        before=len(layer.info.get('v3_layout',[]))
+        r3._paste_card(layer,card,x,y,progress)
+        added=layer.info.get('v3_layout',[])[before:]
+        box=next((e['box'] for e in added if e['role']=='card'),None)
+        focus_info.append({'row':i,'weight':round(own,3),
+                           'box':[box[0]+r3.LEFT-pad,box[1]+top,box[2]+r3.LEFT-pad,box[3]+top] if box else None,
+                           'text':[e['text'] for e in added if e['role']!='card']})
+    im.paste(layer,(r3.LEFT-pad,top),layer)
     for entry in layer.info.get('v3_layout',[]):
         a,b,c,e=entry['box']
-        r3.record_box(im,entry['role'],(a+r3.LEFT,b+top,c+r3.LEFT,e+top),entry['text'])
+        r3.record_box(im,entry['role'],(a+r3.LEFT-pad,b+top,c+r3.LEFT-pad,e+top),entry['text'])
+        saved=im.info['v3_layout'][-1]
+        for key in ('team_id','v4_font','v4_color'):
+            if key in entry:
+                saved[key]=entry[key]
+    for badge in layer.info.get('v4_badges',[]):
+        a,b,c,e=badge['box']
+        moved=dict(badge)
+        moved['box']=[a+r3.LEFT-pad,b+top,c+r3.LEFT-pad,e+top]
+        im.info.setdefault('v4_badges',[]).append(moved)
+    if focus:
+        im.info['v3_focus']=focus_info
     im.info['v3_card_contents']=layer.info.get('v3_card_contents',[])
+    import render_timeline
+    render_timeline.scene(im, dict(page=selected))
     v3 = spec.get('v3') or {}
     r3.ticker(im, t, v3.get('ticker'), once=v3.get('ticker_once',False))
     r3.source(d, source_text, second)
@@ -124,6 +178,7 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
     return im
 
 
+@motion.slot('ranking')
 def ranking(t,spec,rows,source_text):
     if r3.LOOK == 'v4':
         from short_v4_cards import ranking as draw
@@ -148,6 +203,7 @@ def ranking(t,spec,rows,source_text):
     return im
 
 
+@motion.slot('schedule')
 def schedule(t,spec,rows,label,source_text):
     if r3.LOOK == 'v4':
         from short_v4_cards import schedule as draw
@@ -180,5 +236,7 @@ def schedule(t,spec,rows,label,source_text):
 def cues(rows, times=None):
     result = r3.cues("list", {}, rows, 0, len(rows))
     if times is not None:
-        result = [result[0]] + [(at, *cue[1:]) for at, cue in zip(times, result[1:])]
+        # notifyだけ残るので、削除された通常行の時刻を詰めて割り当てない。
+        timing = {r3.T_CARD0 + i * r3.T_CARD_GAP: at for i, at in enumerate(times)}
+        result = [result[0]] + [(timing.get(cue[0], cue[0]), *cue[1:]) for cue in result[1:]]
     return result

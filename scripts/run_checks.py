@@ -198,7 +198,8 @@ def check_tests(tmp: str) -> int:
             #
             # unittest のように stdout へ何も出さない形もここで拾う。
             if not ng:
-                for line in (r.stderr or "").strip().splitlines()[-8:]:
+                # 末尾だけだとunittestの失敗名・Traceback・実測値が消える。
+                for line in (r.stderr or "").strip().splitlines():
                     print(f"      {line}")
         else:
             print(f"ok {f.stem:<22} {mark}")
@@ -238,8 +239,16 @@ def _writes_to(script: str, dest: str) -> bool:
     for i, line in enumerate(lines):
         if not any(a in line for a in aliases):
             continue
-        # 書き込みは同じ行か、続く数行に現れる
-        if _is_write(" ".join(lines[i:i + 3])):
+        # 書き込みは同じ行か、括弧が閉じずに続く数行に現れる。
+        # 文が閉じたあとの行は別の文。10/28 topic_hub.py の
+        # load(args.reddit) が2行下の target.write_text と組まれ、
+        # 読むだけの Reddit の材料が「コミット漏れ」と出た。
+        part = line
+        j = i + 1
+        while j < min(i + 3, len(lines)) and part.count("(") > part.count(")"):
+            part += " " + lines[j]
+            j += 1
+        if _is_write(part):
             return True
         # 他の関数へ渡している形。ニュースの履歴はこれで、
         # append_news_log(Path(args.log), ...) と渡した先で書いていた。
@@ -382,8 +391,12 @@ def check_commit_list() -> int:
       gitが追跡していて、commit_data.sh の引数に無いもの。
     """
     step("作ったのにコミットしていないもの")
+    import media_records_check
+    record_errors = media_records_check.errors(ROOT)
+    for error in record_errors:
+        print('NG', error)
     tracked = set((run(["git", "ls-files", "data"]).stdout or "").split())
-    bad = 0
+    bad = len(record_errors)
     for wf in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
         text = wf.read_text(encoding="utf-8")
         if "commit_data.sh" not in text:
@@ -990,6 +1003,12 @@ def main() -> int:
     failed += check_syntax()
     failed += check_pyflakes()
     failed += check_yaml()
+    step('点検の呼び方・投稿前の共通入口')
+    import sanity_workflows
+    gate_errors = sanity_workflows.errors(ROOT)
+    for error in gate_errors:
+        print('NG', error)
+    failed += len(gate_errors)
     failed += check_shell_in_yaml()
     failed += check_imports()
     failed += check_tests(tmp)

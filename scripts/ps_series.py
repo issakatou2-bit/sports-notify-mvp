@@ -18,6 +18,8 @@
 """
 
 import json
+from sports_dates import mlb_jp_label
+from japanese_team_names import team_names
 import pathlib
 import sys
 import urllib.request
@@ -147,9 +149,8 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
                 "league": (me.get("team") or {}).get("league", {}).get("id"),
                 "best_of": int(g.get("gamesInSeries") or 0), "id": mid,
                 "name": (me.get("team") or {}).get("name", ""), "days": []})
-            w["days"].append((g.get("officialDate")
-                              or (g.get("gameDate") or "")[:10],
-                              int(g.get("seriesGameNumber") or 0)))
+            w["days"].append((g.get("officialDate") or g.get("gameDate") or "",
+                              int(g.get("seriesGameNumber") or 0), mlb_jp_label(g)))
             continue
         key = series_key(gt, aid, hid)
         s = by.setdefault(key, {
@@ -183,9 +184,8 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
                     s["wins"][tid] += 1
                     s["played"] += 1
         else:
-            s["upcoming"].append((g.get("officialDate")
-                                  or (g.get("gameDate") or "")[:10],
-                                  int(g.get("seriesGameNumber") or 0)))
+            s["upcoming"].append((g.get("officialDate") or g.get("gameDate") or "",
+                                  int(g.get("seriesGameNumber") or 0), mlb_jp_label(g)))
 
     out = []
     for s in by.values():
@@ -196,8 +196,8 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
         teams = sorted(s["wins"], key=lambda t: (-s["wins"][t], t))
         nxt = None
         if winner is None and s["upcoming"]:
-            when, num = sorted(s["upcoming"])[0]
-            nxt = {"day": _jp_day(when), "game": num}
+            _, num, label = sorted(s["upcoming"])[0]
+            nxt = {"day": label, "game": num}
         out.append({
             "key": s["key"], "round": s["round"], "round_jp": s["round_jp"],
             "stage": s["stage"],
@@ -220,7 +220,7 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
         if any(s["round"] == w["round"] and w["id"] in
                [t["id"] for t in s["teams"]] for s in out):
             continue
-        day, num = sorted(w["days"])[0]
+        _, num, day = sorted(w["days"])[0]
         out.append({
             "key": w["key"], "round": w["round"], "round_jp": w["round_jp"],
             "stage": w["stage"], "waiting": True,
@@ -228,7 +228,7 @@ def build(games: list, names: dict = None, players: dict = None, strict: bool = 
                           else LEAGUE_JP.get(w["league"], "")),
             "best_of": w["best_of"], "need": w["best_of"] // 2 + 1,
             "played": 0, "over": False, "winner": None,
-            "next": {"day": _jp_day(day), "game": num},
+            "next": {"day": day, "game": num},
             "teams": [{"id": w["id"],
                        "name": names.get(w["id"]) or names.get(str(w["id"]))
                        or w["name"], "wins": 0,
@@ -290,18 +290,18 @@ def jp_text(s: dict) -> str:
     mine = next((x for x in t if x["players"]), None)
     day = (s.get("next") or {}).get("day") or ""
     if s.get("waiting") and mine is not None:
-        who = f"{'・'.join(mine['players'])}の{mine['name']}"
+        who = team_names(mine['players'], mine['name'])
         head = (f"{who}はワイルドカードシリーズを免除され、{s['round_jp']}から"
                 if s["stage"] == 2 else f"{who}は{s['round_jp']}で相手を待つ")
         return head + (f"。{day}に第1戦" if day else "")
     if mine is None or len(t) < 2:
         return ""
     opp = t[1] if mine is t[0] else t[0]
-    who = f"{'・'.join(mine['players'])}の{mine['name']}"
+    who = team_names(mine['players'], mine['name'])
     # **相手にも日本人選手がいれば、その名前も言う。**言わないと
     # 「アストロズ対ホワイトソックス」で村上宗隆が消える。
     if opp["players"]:
-        opp = dict(opp, name=f"{'・'.join(opp['players'])}の{opp['name']}")
+        opp = dict(opp, name=team_names(opp['players'], opp['name']))
     rec = f"{mine['wins']}勝{opp['wins']}敗"
     if s["over"]:
         if s["winner"] == mine["id"]:

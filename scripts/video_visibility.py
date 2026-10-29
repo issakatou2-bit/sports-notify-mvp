@@ -72,4 +72,10 @@ def record_status(path, video_id, saved):
         temp=path.with_suffix(path.suffix+'.tmp')
         temp.write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
         temp.replace(path)
+        from publication_writer import mirror_documents, root_for
+        selected = {kind: {key: row for key, row in rows.items()
+                              if isinstance(row, dict) and row.get('video_id') == video_id}
+                    for kind, rows in data.items() if isinstance(rows, dict)}
+        name = 'published_assets' if path.stem == 'published_assets' else 'published_videos'
+        mirror_documents({name: selected}, root=root_for(path), verified=True)
     return len(matching)

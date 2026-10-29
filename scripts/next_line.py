@@ -193,7 +193,8 @@ def _effective_start(g, games):
     """言える開始時刻。時刻未定なら None。ダブルヘッダー第2試合の未定は第1試合を返す（after=True）。"""
     if not _tbd(g):
         return _start(g), False
-    if g.get("doubleHeader") in ("Y", "S") and int(g.get("gameNumber") or 1) == 2:
+    if (g.get("officialDate") and g.get("doubleHeader") in ("Y", "S")
+            and int(g.get("gameNumber") or 1) == 2):
         first = next((x for x in games if x is not g and int(x.get("gameNumber") or 1) == 1
                       and x.get("officialDate") == g.get("officialDate")
                       and {_tid(x, "away"), _tid(x, "home")} == {_tid(g, "away"), _tid(g, "home")}
@@ -266,7 +267,9 @@ def when_words(g, games, now, relative=True):
     num = int(g.get("gameNumber") or 1)
     if when is None:
         # 日本時間の日付は決まらない。材料の現地の日付で言う
-        od = g.get("officialDate") or (g.get("gameDate") or "")[:10]
+        od = g.get("officialDate")
+        if not od:
+            return "日時未定", "日時未定", {"local_date": None, "time": None}
         m, d = int(od[5:7]), int(od[8:10])
         say = screen = f"現地{m}月{d}日"
         if dh:

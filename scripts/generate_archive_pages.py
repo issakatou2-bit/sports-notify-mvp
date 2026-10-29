@@ -27,6 +27,7 @@ from datetime import datetime
 
 import site_videos
 from site_analytics import analytics_script
+from site_theme import THEME_HEAD
 
 SITE_URL = "https://collespo.com/"
 
@@ -235,7 +236,7 @@ HEAD_TMPL = """<!DOCTYPE html>
 </head>
 <body>
 <a class="home-link" href="{root}">&larr; コレスポ トップへ</a>
-"""
+""".replace('</head>', THEME_HEAD + '\n</head>')
 
 
 def parse_date_files(archive_dir: pathlib.Path) -> list:
@@ -628,6 +629,7 @@ def render_sitemap(entries: list, site_root: pathlib.Path = None) -> str:
         (f"{SITE_URL}soccer.html", None),
         (f"{SITE_URL}score.html", None),
         (f"{SITE_URL}about.html", None),
+        (f"{SITE_URL}contact.html", None),
         (f"{SITE_URL}services.html", None),
         (f"{SITE_URL}team-post-guide.html", None),
         (f"{SITE_URL}football-competitions.html", None),

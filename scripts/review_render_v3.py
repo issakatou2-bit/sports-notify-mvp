@@ -25,6 +25,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont  # noqa: E402
 from ps_brand_components import TEAM_SECONDARY_COLORS, font  # noqa: E402
 from ps_render_template import SAFE_BOTTOM, SAFE_RIGHT  # noqa: E402
 from review_render import page_source, PORTRAITS, _tokens  # noqa: E402
+import calm_motion  # noqa: E402  COLLESPO_MOTION=on のときだけ動きを控えめに（Opus-32）
 
 W, H = 1080, 1920
 LEFT = 72
@@ -145,7 +146,8 @@ def ease_out(x):
 
 
 def back_out(x, s=1.6):
-    """少し行き過ぎて戻る。"""
+    """少し行き過ぎて戻る。COLLESPO_MOTION=on では行き過ぎを小さく（弾みは1回だけ）。"""
+    s = s * calm_motion.value('overshoot', 1.0)
     x = max(0.0, min(1.0, x))
     x -= 1
     return 1 + x * x * ((s + 1) * x + s)
@@ -162,6 +164,8 @@ def _beam():
 
 
 def background(t, team_id):
+    import motion
+    if motion.enabled():t *= motion.SETTINGS['background_speed']
     base, second, _ = colors(team_id)
     im = Image.new("RGB", (W, H), base)
     d = ImageDraw.Draw(im)
@@ -178,7 +182,7 @@ def background(t, team_id):
         bx = round(-900 + ph / 0.5 * 2200)
         im.paste(white, (bx, -300), beam)
     d.rectangle((0, 0, W, 16), fill=second)
-    return im
+    return motion.background(im,t)
 
 
 # ------------------------------------------------------------------ 部品
@@ -244,6 +248,9 @@ def redraw_ticker(raw, size=(1080, 1920)):
 def ticker(im, t, text, y=1486, once=False):
     if not text:
         return
+    # クラブ名は表示名の表（notability_engine.club_display_text）を通す。古い書き方を帯に出さない
+    import notability_engine as ne
+    text = ne.club_display_text(text)
     if _PROGRAM_CLOCK[0] is not None:
         t = _PROGRAM_CLOCK[0]
     LAST_TICKER[0] = (text, y, once)
@@ -324,10 +331,13 @@ def face_for(line, elapsed, duration):
 _CAPTION = {"text": "", "start": 0.0, "duration": 0.0, "total": 0.0}
 
 
-def set_caption(text, duration, total=None, speaker=2, duo=False, hide_caption=False):
+def set_caption(text, duration, total=None, speaker=2, duo=False, hide_caption=False, caption_units=None):
+    if caption_units is not None and ''.join(caption_units) != str(text or ''):
+        raise ValueError('吹き出しのまとまりと原稿が一致しません')
     _CAPTION.update(text=str(text or ""), duration=float(duration or 0),
                     start=_PROGRAM_CLOCK[0] or 0.0, total=float(total or _CAPTION["total"] or 0),
-                    speaker=speaker, duo=bool(duo and LOOK=='v4'),hide_caption=hide_caption)
+                    speaker=speaker, duo=bool(duo and LOOK=='v4'),hide_caption=hide_caption,
+                    caption_units=caption_units)
 
 
 def sentences(text):
@@ -339,6 +349,8 @@ CAPTION_CHUNK = 38   # 字幕の箱に3行で入る字数の目安。短い文�
 
 def caption_chunks(text, limit=CAPTION_CHUNK):
     """短い文はまとめて1つの字幕にする（10/8 本人「細かく刻み過ぎ」。1文ずつだと切り替えが多い）。"""
+    import caption_breaks
+    if caption_breaks.enabled():return caption_breaks.pages(str(text or ''),limit)
     out = []
     for s in sentences(text):
         if out and len(out[-1]) + len(s) <= limit:
@@ -350,7 +362,7 @@ def caption_chunks(text, limit=CAPTION_CHUNK):
 
 def current_sentence(elapsed, text, duration):
     """読み上げの速さは文字数にほぼ比例するので、文字数で区切って今の字幕を選ぶ。"""
-    parts = caption_chunks(text)
+    parts = (_CAPTION.get('caption_units') if text == _CAPTION['text'] else None) or caption_chunks(text)
     if not parts:
         return ""
     total = sum(len(p) for p in parts)
@@ -364,6 +376,15 @@ def current_sentence(elapsed, text, duration):
 
 
 def caption(im, t):
+    import bubble_styles
+    if bubble_styles.selected():
+        if not _CAPTION['text'] or _CAPTION.get('hide_caption'):return
+        import characters
+        clock=_PROGRAM_CLOCK[0]
+        elapsed=clock-_CAPTION['start'] if clock is not None else t
+        line=current_sentence(elapsed,_CAPTION['text'],_CAPTION['duration'])
+        if line:bubble_styles.draw(im,characters.SPEAKERS.get(_CAPTION.get('speaker'),'metan'),line,seconds=clock if clock is not None else t)
+        return
     if LOOK != "v4" or not _CAPTION["text"]:
         return
     clock = _PROGRAM_CLOCK[0]
@@ -381,14 +402,25 @@ def caption(im, t):
     im.paste(base.convert("RGB"))
     d = ImageDraw.Draw(im)
     f = font(24)
-    w = d.textlength("四国めたん", font=f) + 32
-    d.rounded_rectangle((box[0] + 24, box[1] - 22, box[0] + 24 + w, box[1] + 22), radius=8, fill=METAN_PINK)
-    d.text((box[0] + 24 + w / 2, box[1]), "四国めたん", font=f, fill=DARK_INK, anchor="mm")
+    name,color,ink="四国めたん",METAN_PINK,DARK_INK
+    import caption_breaks
+    if caption_breaks.enabled():
+        import characters
+        import bubble_styles
+        who=characters.SPEAKERS.get(_CAPTION.get('speaker'),'metan')
+        name,color=characters.NAMES[who],characters.COLORS[who]
+        ink=max((bubble_styles.WHITE,bubble_styles.SHADOW),key=lambda rgb:float(bubble_styles.contrast(rgb,color)))
+    w = d.textlength(name, font=f) + 32
+    d.rounded_rectangle((box[0] + 24, box[1] - 22, box[0] + 24 + w, box[1] + 22), radius=8, fill=color)
+    d.text((box[0] + 24 + w / 2, box[1]), name, font=f, fill=ink, anchor="mm")
     # 数字は金色（項目の札と同じ書き分け）。3行まで、入らなければ字を小さく
+    rows = []
     for size in (42, 38, 34):
-        rows = _caption_lines(d, line, size, box[2] - box[0] - 64)
+        try:rows = _caption_lines(d, line, size, box[2] - box[0] - 64)
+        except ValueError:continue
         if len(rows) <= 3:
             break
+    if caption_breaks.enabled() and (not rows or len(rows)>3):raise ValueError('字幕を文節でページ分割してください')
     y = box[1] + 44
     for row in rows[:3]:
         x = box[0] + 36
@@ -411,6 +443,11 @@ def _caption_lines(d, text, size, width):
     """数字の続き（3対2・4打数 など）を途中で切らずに折り返す。行頭に句読点を置かない。"""
     # 英語の語（Dodgers など）も途中で切らない。書体に無い字（絵文字など）は出さない
     text = "".join(ch for ch in str(text) if ch.isspace() or _has_glyph(ch))
+    import caption_breaks
+    if caption_breaks.enabled():
+        def measure(value):
+            return sum(d.textlength(part,font=num_font(round(size*1.18)) if numeric else font(size)) for part,numeric in caption_breaks.runs(value))
+        return [caption_breaks.runs(row) for row in caption_breaks.wrap(text,measure,width)]
     tokens = re.findall(r"\d[\d.,:]*|[A-Za-z][A-Za-z'.\-]*|[^\d]", text)
     rows, cur, cur_w = [], [], 0.0
     for tok in tokens:
@@ -452,7 +489,8 @@ def presenter(im, t, which="right", who="metan"):
         sp = _portrait_v4(who, face if who == "metan" else "base")
     else:
         sp = _portrait(who)
-    bob = round(6 * math.sin(t * 2 * math.pi / 2.4))
+    bob = round(6 * calm_motion.value('presenter_bob', 1.0)
+                * math.sin(t * 2 * math.pi / (2.4 * calm_motion.value('presenter_period', 1.0))))
     x = SAFE_RIGHT - sp.width + (24 if LOOK == "v4" else 0) if which == "right" else 24
     # テロップ（1486〜1574）の上に立つ。テロップの文字を隠さない
     im.paste(sp, (x, 1480 - sp.height + bob), sp)
@@ -464,7 +502,7 @@ def _paste_card(im, card, x, y, k):
     """札を、飛び込みの進み具合 k（0〜1、行き過ぎあり）で置く。"""
     if k <= 0:
         return
-    dx = round(140 * (1 - k))
+    dx = round(140 * calm_motion.value('slide_distance', 1.0) * (1 - k))
     alpha = card.split()[3].point(lambda a: round(a * min(1.0, k * 1.6)))
     # 入場中も見出し・左右・テロップの予約領域へ出さない。
     if im.size==(W,H):
@@ -483,6 +521,18 @@ def _paste_card(im, card, x, y, k):
         box=(max(left,x+dx+a),max(top,y+b),min(right,x+dx+c),min(bottom,y+e))
         if box[0]<box[2] and box[1]<box[3]:
             record_box(im,entry['role'],box,entry['text'])
+            saved=im.info['v3_layout'][-1]
+            for key in ('team_id','v4_font','v4_color'):
+                if key in entry:
+                    saved[key]=entry[key]
+    # 札の中で描いた球団の小札も、画面の座標へ移して残す。
+    for badge in card.info.get('v4_badges',[]):
+        a,b,c,e=badge['box']
+        box=(max(left,x+dx+a),max(top,y+b),min(right,x+dx+c),min(bottom,y+e))
+        if box[0]<box[2] and box[1]<box[3]:
+            moved=dict(badge)
+            moved['box']=list(box)
+            im.info.setdefault('v4_badges',[]).append(moved)
 
 
 # ------------------------------------------------------------------ 表紙
@@ -623,10 +673,7 @@ def intro(t, spec, kind_label):
 
 
 # ------------------------------------------------------------------ 項目の画面
-# 文字の大中小（10/6 本人「注目個所に色、重要度で文字サイズに差を」）。
-#   大: 項目の1つ目のかたまり（全角スペースまで）。いちばん言いたいこと。金色。
-#   中: 2つ目以降のかたまり。数字（単位まで）だけ金色。
-#   小: かっこの中の補足。くすんだ色。
+# 重要度の区分と色。カード本文では項目内のサイズを統一して使う。
 SIZE_L, SIZE_M, SIZE_S = 66, 46, 34
 NUM_RE = re.compile(r"\d[\d,.]*(?:対\d+)?(?:本塁打|奪三振|打数|安打|打点|試合|連勝|連敗|勝|敗|本|点|年|回|戦|位|人|%|割|秒|分)?")
 NO_HEAD = "、。，．）」』・ー％%"
@@ -670,50 +717,176 @@ def _atoms(runs):
             yield m.group(0), size, gold
 
 
-def rich_lines(runs, width, second_rgb):
-    sizes = {"L": SIZE_L, "M": SIZE_M, "S": SIZE_S}
+OPEN_HEAD = "（「『【〈《"
+CLOSE_HEAD = "）」』】〉》"
+SMALL_HEAD = "ゃゅょっャュョッ"   # 小さい仮名は行頭に置かない
+
+
+@functools.lru_cache(maxsize=128)
+def _team_badge_id(text):
+    """本文の1かたまりが球団名そのものなら、そのID。"""
+    import notability_engine as ne
+    for tid, name in ne.MLB_TEAM_NAME_JP.items():
+        if text == name:
+            return str(tid)
+    return None
+
+
+def _badge_width(tid, size):
+    import short_v4_cards as cards
+    return cards.inline_badge_width(tid, size)
+
+
+BADGE_LEAD = 6
+
+
+def _piece_width(probe, text, size, badges):
+    w = probe.textlength(text, font=font(size))
+    if badges:
+        tid = _team_badge_id(text)
+        if tid:
+            # 前の文字との間にも少し空ける（字形のはみ出しは環境で違い、CI の字体で 0.4px 重なった）。
+            w += BADGE_LEAD + _badge_width(tid, size) + 12
+    return w
+
+
+def _kinsoku_units(atoms):
+    """折り返してよい単位。開き括弧は次へ、閉じ括弧・句読点は前へくっつける。"""
+    units = []
+    for atom in atoms:
+        text = atom[0]
+        if units and units[-1] and units[-1][-1][0] and units[-1][-1][0][-1] in OPEN_HEAD \
+                and text != "　":
+            units[-1].append(atom)
+            continue
+        if text == "　":
+            units.append([atom])
+            continue
+        if text and (text[0] in CLOSE_HEAD or text[0] in NO_HEAD or text[0] in SMALL_HEAD):
+            if units and units[-1][0][0] != "　":
+                units[-1].append(atom)
+            else:
+                units.append([atom])
+            continue
+        units.append([atom])
+    return units
+
+
+def rich_lines(runs, width, second_rgb, size=None, badges=None):
+    """本文を折る。size を渡すと項目全体を同じ大きさにそろえる。
+
+    禁則: 開き括弧は行末に残さず、閉じ括弧・句読点・小さい仮名は行頭に置かない。
+    全角スペースは区切りとして優先して折る。"""
+    if badges is None:
+        badges = LOOK == "v4"
+    default_sizes = {"L": SIZE_L, "M": SIZE_M, "S": SIZE_S}
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+
+    def atom_size(size_class):
+        return size or default_sizes[size_class]
+
     atoms = list(_atoms(runs))
-    widths = [probe.textlength(a[0], font=font(sizes[a[1]])) for a in atoms]
-    lines, cur, x = [], [], 0
-    for k, (text, size, gold) in enumerate(atoms):
-        f = font(sizes[size])
-        w = widths[k]
-        if text == "　" and cur:
-            # 次のかたまり（次の全角スペースまで）が今の行に入らず、次の行には入るなら、ここで改行
-            j = k + 1
-            while j < len(atoms) and atoms[j][0] != "　":
+    units = _kinsoku_units(atoms)
+    # 「（…）」「「…」」は、幅に入るなら一続きにして途中で折らない。
+    merged = []
+    i = 0
+    while i < len(units):
+        first = units[i][0][0]
+        if first and first[0] in OPEN_HEAD:
+            j, total, closed = i, 0, False
+            while j < len(units):
+                if len(units[j]) == 1 and units[j][0][0] == "　":
+                    break
+                total += sum(_piece_width(probe, t, atom_size(s), badges) for t, s, _ in units[j])
+                if any(atom[0] and atom[0][-1] in CLOSE_HEAD for atom in units[j]):
+                    closed = True
+                    break
                 j += 1
-            seg = sum(widths[k + 1:j])
-            if x + w + seg > width and seg <= width:
+            if closed and total <= width:
+                merged.append([atom for unit in units[i:j + 1] for atom in unit])
+                i = j + 1
+                continue
+        merged.append(units[i])
+        i += 1
+    units = merged
+    # 幅に入らないかたまりだけ、文字へ分ける（長いカタカナ語・数字の連なり）。
+    split_units = []
+    for unit in units:
+        space = len(unit) == 1 and unit[0][0] == "　"
+        total = sum(_piece_width(probe, t, atom_size(s), badges) for t, s, _ in unit)
+        if not space and total > width:
+            pieces = []
+            for atom in unit:
+                # 札と球団名は離さない。入らない場合は項目全体のサイズで調整する。
+                if badges and _team_badge_id(atom[0]):
+                    pieces.append(atom)
+                else:
+                    pieces.extend((ch, atom[1], atom[2]) for ch in atom[0])
+            split_units.extend(_kinsoku_units(pieces))
+        else:
+            split_units.append(unit)
+    units = split_units
+
+    lines, cur, x = [], [], 0
+    for i, unit in enumerate(units):
+        space = len(unit) == 1 and unit[0][0] == "　"
+        uw = sum(_piece_width(probe, t, atom_size(s), badges) for t, s, _ in unit)
+        if space:
+            if not cur:
+                continue                                   # 行頭の空白は捨てる
+            # 次の区切りまでを1つのかたまりと見て、入らないならここで折る（優先）。
+            j, seg = i + 1, 0
+            while j < len(units) and not (len(units[j]) == 1 and units[j][0][0] == "　"):
+                seg += sum(_piece_width(probe, t, atom_size(s), badges) for t, s, _ in units[j])
+                j += 1
+            if x + uw + seg > width:
                 lines.append(cur)
                 cur, x = [], 0
                 continue
-        if cur and x + w > width and text.strip("　 "):
-            if text in NO_HEAD and len(cur)>1:
-                last=cur.pop()
-                lines.append(cur)
-                cur=[(0,*last[1:])]
-                x=probe.textlength(last[1],font=last[2])
-            else:
-                lines.append(cur)
-                cur, x = [], 0
-        if not cur and not text.strip("　 "):
-            continue                                       # 行頭の空白は捨てる
-        color = GOLD if gold else (_mix(second_rgb, INK, 0.3) if size == "S" else INK)
-        cur.append((x, text, f, color, sizes[size]))
-        x += w
+        if cur and x + uw > width:
+            lines.append(cur)
+            cur, x = [], 0
+        for text, size_class, gold in unit:
+            s = atom_size(size_class)
+            w = _piece_width(probe, text, s, badges)
+            color = GOLD if gold else (_mix(second_rgb, INK, 0.3) if size_class == "S" else INK)
+            cur.append((x, text, font(s), color, s))
+            x += w
     if cur:
         lines.append(cur)
     return lines
 
 
-@functools.lru_cache(maxsize=64)
 def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_above=False, quote_height=None):
+    return _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
+                             attribution_above, quote_height, LOOK,
+                             os.environ.get('COLLESPO_MLB_BADGE', ''))
+
+
+@functools.lru_cache(maxsize=64)
+def _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
+                      attribution_above, quote_height, look, badge_style):
+    # 見た目・札の種類もキーに含め、切り替え前の札を使い回さない。
     quote = "番記者" in head or str(body).startswith("「")
     if not quote:
-        lines = rich_lines(_runs(body), w - 72, second_rgb)
-        heights = [max(it[4] for it in ln) + 16 for ln in lines]
+        runs = _runs(body)
+        limit = quote_height or (CONTENT_BOTTOM - CONTENT_TOP)
+        # まず行を増やし、それでも入らないときだけ一段ずつ小さくする。
+        # 1つの項目の中で文字の大きさは混ぜない。
+        lines = heights = None
+        probe = ImageDraw.Draw(Image.new('RGB', (8, 8)))
+        for candidate in (SIZE_M, SIZE_M - 4, SIZE_M - 8, SIZE_M - 12, SIZE_M - 16, 26):
+            wrapped = rich_lines(runs, w - 72, second_rgb, size=candidate)
+            lh = candidate + 16
+            total = 84 + lh * max(1, len(wrapped)) + 30
+            fits_width = all(x + _piece_width(probe, text, drawn, LOOK == 'v4') <= w - 72
+                             for line in wrapped for x, text, _, _, drawn in line)
+            if total <= limit and fits_width:
+                lines, heights = wrapped, [lh] * len(wrapped)
+                break
+        if lines is None:
+            # 呼び出し元のpaginateが本文を次のカードへ分ける。
+            raise ValueError('本文が札の安全域に収まりません')
         h = 84 + sum(heights) + 30
         card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(card)
@@ -721,24 +894,37 @@ def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_a
                             outline=_mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)
         label,label_size=_lines(d,head,32,w-72,1)
         _text(d,(36, 30),label[0] if label else '',font=font(label_size),fill=second_rgb)
+        badges = LOOK == "v4"
         y = 84
         for ln, lh in zip(lines, heights):
             base_y = y + lh - 16
-            for x, text, f, color, _ in ln:
-                _text(d,(36 + x, base_y), text, font=f, fill=color, anchor="ls")
+            for x, text, f, color, drawn in ln:
+                left = 36 + x
+                tid = _team_badge_id(text) if badges else None
+                if tid:
+                    import short_v4_cards as cards
+                    left += BADGE_LEAD
+                    bbox = f.getbbox(text, anchor="ls")
+                    cards.inline_badge(card, left, base_y + bbox[1], tid, drawn,
+                                       bbox[3] - bbox[1])
+                    left += cards.inline_badge_width(tid, drawn) + 12
+                _text(d,(left, base_y), text, font=f, fill=color, anchor="ls")
+                entry = card.info['v3_layout'][-1]
+                entry['v4_font'] = drawn
+                entry['v4_color'] = color
+                if tid:
+                    entry['team_id'] = tid
             y += lh
         return card
-    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
-    lines, size = _lines(probe, body, quote_size if quote else 64, w - 72, 8 if quote else 4)
-    if quote_height:
-        size = quote_size
-        while True:
-            lines, _ = _lines(probe, body, size, w-72, max(8, len(body)))
-            if 126+len(lines)*(size+14) <= quote_height:
-                break
-            size -= 2
-            if size < 24:
-                raise ValueError('引用全文が共通札の安全域に収まりません')
+    # 引用も同じ禁則を使い、行数の上限によって本文を切り捨てない。
+    limit = quote_height or (CONTENT_BOTTOM - CONTENT_TOP)
+    for size in range(quote_size, 23, -2):
+        wrapped = rich_lines(_runs(body), w - 72, second_rgb, size=size, badges=False)
+        lines = [''.join(text for _, text, _, _, _ in line) for line in wrapped]
+        if 126 + len(lines) * (size + 14) <= limit:
+            break
+    else:
+        raise ValueError('引用全文が共通札の安全域に収まりません')
     h = 40 + 50 + len(lines) * (size + 14) + 36
     card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(card)
@@ -752,7 +938,11 @@ def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_a
     return card
 
 
-def list_page(t, spec, items, start, count, page, pages, kind_label):
+_item_card.cache_clear = _cached_item_card.cache_clear
+_item_card.cache_info = _cached_item_card.cache_info
+
+
+def list_page(t, spec, items, start, count, page, pages, kind_label, focus=None):
     if LOOK == 'v4':
         import asset_v4_cards as cards
         if cards.enabled(spec):
@@ -760,11 +950,11 @@ def list_page(t, spec, items, start, count, page, pages, kind_label):
     import v3_slot_render as common
     view=dict(spec,team_id=design_team(spec),page=f'{page}/{pages}')
     selected=list(items)[start:start+count]
-    return common.frame(t,view,selected,kind_label,page_source(selected))
+    return common.frame(t,view,selected,kind_label,page_source(selected),focus=focus)
 
 
 # ------------------------------------------------------------------ 効果音の時刻
-def people(t, spec, rows, heading, kind_label):
+def people(t, spec, rows, heading, kind_label, focus=None):
     if LOOK == 'v4':
         import asset_v4_cards as cards
         if cards.enabled(spec) and rows:
@@ -772,7 +962,7 @@ def people(t, spec, rows, heading, kind_label):
     import v3_slot_render as common
     view=dict(spec,team_id=design_team(spec),heading=heading)
     items=[(r.get('name',''),r.get('line',r.get('why',''))) for r in rows[:3]]
-    return common.frame(t,view,items,kind_label,'出典: MLB公式（Stats API）')
+    return common.frame(t,view,items,kind_label,'出典: MLB公式（Stats API）',focus=focus)
 
 
 def cues(kind, spec, items=(), start=0, count=0):
@@ -782,7 +972,7 @@ def cues(kind, spec, items=(), start=0, count=0):
     if kind == "outro":
         return outro_cues(spec.get("lineup_kind", ""))
     if kind == "intro":
-        out.append((T_WHO, "swish", "a", -4))
+        out.append((0.0, "transition", "b", -10))
         if v3.get("big"):
             out.append((T_ROLL[0], "roll", "a", -2))
             out.append((T_ROLL[1] - 0.04, "stop", "a", 0))
@@ -790,14 +980,14 @@ def cues(kind, spec, items=(), start=0, count=0):
             out.append((T_TAG, "marker", "a", -3))
         for i, c in enumerate((v3.get("chips") or [])[:4]):
             t0 = T_CHIP0 + i * T_CHIP_GAP
-            out.append((t0, "swish", "b", -3))
             if c.get("win") and c.get('win_explanation'):
                 out.append((t0 + SLIDE + T_RING_AFTER, "pop", "a", -2))
     elif kind == "list":
-        out.append((0.0, "transition", "b", -6))
+        out.append((0.0, "transition", "b", -10))
         for i, (head, body) in enumerate(list(items)[start:start + count]):
             quote = "番記者" in head or str(body).startswith("「")
-            out.append((T_CARD0 + i * T_CARD_GAP, "notify" if quote else "swish", "a", -3))
+            if quote:
+                out.append((T_CARD0 + i * T_CARD_GAP, "notify", "a", -3))
     return out
 
 
@@ -818,6 +1008,9 @@ def outro_rows(exclude=""):
 
 def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　データ: MLB Stats API",
           tagline="毎日のMLBを数字と現地の声で"):
+    import solo_host
+    if LOOK == 'v4' and solo_host.selected() == 'ui':
+        credit = credit.replace('VOICEVOX:四国めたん', solo_host.UI_CREDIT)
     im = background(t, None)
     im.info['v3_outro']=True
     d = ImageDraw.Draw(im)
@@ -865,8 +1058,6 @@ def _outro_row(at, name, w):
 
 
 def outro_cues(exclude=""):
-    out = [(0.0, "transition", "b", -6)]
-    for i, _ in enumerate(outro_rows(exclude)):
-        out.append((T_OUTRO_ROW0 + i * T_OUTRO_GAP, "swish", "b", -8))
+    out = [(0.0, "transition", "b", -10)]
     out.append((1.8, "marker", "a", -4))
     return out
