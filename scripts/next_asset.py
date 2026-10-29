@@ -46,6 +46,7 @@
 
 import argparse
 import json
+from datetime import datetime, timezone
 import os
 import pathlib
 import sys
@@ -190,6 +191,14 @@ def superseded(spec: dict) -> bool:
     pk = spec.get("game_pk") if spec.get("game") else None
     if not pk:
         return False
+    import ps_offseason
+    try:
+        snapshot = json.loads(pathlib.Path('data/postseason.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        snapshot = {}
+    if ps_offseason.completed_before(snapshot, datetime.now(timezone.utc)):
+        print(f'[info] {pk} はWS決着後のため当日の試合の回に選びません', file=sys.stderr)
+        return True
     try:
         import series_check
         later = series_check.later_games(pk)

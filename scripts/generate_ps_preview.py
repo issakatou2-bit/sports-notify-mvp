@@ -266,6 +266,13 @@ def main():
         return
     data = json.loads(Path(args.postseason).read_text(encoding='utf-8')) if Path(args.postseason).exists() else {}
     context = data.get('editorial', {})
+    import ps_offseason
+    if args.mode == 'postseason' and (ps_offseason.completed_before(data, datetime.now(ps_offseason.JST))
+                                      or context.get('stage') == 'offseason'):
+        if args.narration_out:
+            Path(args.narration_out).unlink(missing_ok=True)
+        print('[info] PS情勢は見送り：シーズン終了')
+        return
     import ps_program as program
     if program.desired(data) and program.layout() != 'legacy':
         stored = Path('build/ps_program_situation.json')

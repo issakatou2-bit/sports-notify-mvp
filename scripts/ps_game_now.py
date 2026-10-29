@@ -29,6 +29,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 
 import next_asset  # noqa: E402
+import ps_offseason  # noqa: E402
 
 DELAY_MINUTES = 45      # 試合が終わってから待つ時間
 DAILY_CAP = 4           # season_review.yml の既定（--season 4）と同じ
@@ -63,7 +64,7 @@ def due(topics: list, published: set, now: datetime, left: int) -> list:
         if not t.get("game") or not key or key in published:
             continue
         end = _utc(t.get("finished_at"))
-        if end is None or now - end < timedelta(minutes=DELAY_MINUTES):
+        if end is None or not timedelta(minutes=DELAY_MINUTES) <= now - end <= timedelta(hours=24):
             continue
         ready.append((not t.get("jp_first"), end, key, t))
     ready.sort(key=lambda r: r[:3])
@@ -77,7 +78,7 @@ def waiting(topics: list, published: set, now: datetime) -> bool:
     for t in topics:
         end = _utc(t.get("finished_at"))
         if t.get("game") and t.get("key") not in published and end and \
-                now - end < timedelta(minutes=DELAY_MINUTES):
+                timedelta(0) <= now - end < timedelta(minutes=DELAY_MINUTES):
             return True
     return False
 
@@ -87,7 +88,10 @@ def games_ahead(games: list, now: datetime) -> bool:
     for g in games:
         if g.get("gameType") not in PS_TYPES:
             continue
-        if (g.get("status") or {}).get("abstractGameState") == "Final":
+        status = g.get('status') or {}
+        if (status.get("abstractGameState") == "Final"
+                or status.get('codedGameState') in ('D', 'C')
+                or status.get('detailedState') in ('Postponed', 'Cancelled', 'Canceled')):
             continue
         start = _utc(g.get("gameDate"))
         if start and now - timedelta(hours=12) <= start <= now + timedelta(hours=LOOKAHEAD_HOURS):
@@ -115,6 +119,16 @@ def main() -> int:
                     help="出さないキーを1行ずつ書いたファイル（この起動で失敗したもの）")
     args = ap.parse_args()
     now = datetime.now(timezone.utc)
+    try:
+        snapshot = json.loads(pathlib.Path('data/postseason.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        snapshot = {}
+    if ps_offseason.completed_before(snapshot, now):
+        print('[info] 見張りは見送り：ワールドシリーズは決着済み', file=sys.stderr)
+        if args.due:
+            print('')
+            return 0
+        return 1 if args.watch else 0
     topics = load_topics(args.topics)
     published = next_asset.published(args.published)
     left = left_today(args.published)

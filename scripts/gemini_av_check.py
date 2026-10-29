@@ -69,12 +69,17 @@ def deny_markers(value):
         raise CheckError('VoiSona・公式素材の印がある入力は送れません')
 
 
-def validate_sources(video, script_path, provenance_path):
+def validate_sources(video, script_path, provenance_path, *, provenance_data=None):
     """外部送信・音声抽出・ASRより前に呼ぶ。未知の素材は拒否。"""
     video, script_path, provenance_path = map(checked_path, (video, script_path, provenance_path))
     if video.suffix.lower() != '.mp4' or not video.is_file():
         raise CheckError('存在するmp4が必要です')
-    script, provenance = read_json(script_path), read_json(provenance_path)
+    if not script_path.is_file():
+        raise CheckError('時刻つき台本JSONがありません')
+    if provenance_data is None and not provenance_path.is_file():
+        raise CheckError('出所JSONがありません。変換の拒否理由を確認してください')
+    script = read_json(script_path)
+    provenance = read_json(provenance_path) if provenance_data is None else provenance_data
     deny_markers([script, provenance, str(video)])
     if provenance.get('version') != 1 or provenance.get('video_sha256') != sha256(video):
         raise CheckError('動画と出所記録の指紋が一致しません')
@@ -403,6 +408,7 @@ def main(argv=None):
     parser.add_argument('--asr-model', help='取得済みローカルフォルダ。CPU/int8のみ')
     parser.add_argument('--ffmpeg', default='ffmpeg')
     parser.add_argument('--ffprobe', default='ffprobe')
+    parser.add_argument('--dry-run', action='store_true', help='出所・時刻・復号だけ。ASR/Gemini/鍵に触れない')
     args = parser.parse_args(argv)
     out = Path(args.out)
     if out.exists() and any(out.iterdir()):
@@ -417,6 +423,12 @@ def main(argv=None):
         # 全フレームをデコードして破損を検査（文字の内容を全フレームOCRするものではない）。
         subprocess.run([args.ffmpeg, '-v', 'error', '-xerror', '-i', args.video,
                         '-f', 'null', '-'], check=True, capture_output=True, timeout=1800)
+        if args.dry_run:
+            write_json(out/'result.json', dict(status='preflight_only', duration=duration,
+                       video_sha256=sha256(args.video), script_sha256=sha256(args.script),
+                       asr_status='not_run', gemini_status='not_run'))
+            print('送信前の検査のみ完了（ASR・Gemini未実施、内容の合格ではありません）')
+            return 0
         if os.getenv('CI', '').lower() == 'true' or os.getenv('GITHUB_ACTIONS', '').lower() == 'true':
             raise CheckError('CIでは実ASR・Geminiを呼びません。偽CLIの単体試験だけを実行してください')
         asr = run_asr(args.video, script, out, args.asr_python, args.asr_model)
