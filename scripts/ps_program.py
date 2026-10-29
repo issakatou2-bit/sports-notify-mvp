@@ -542,6 +542,9 @@ def previous_short_context(program, ctx, games, rows):
 
 def prepare(snapshot, evidence, slot, now, ledger=None):
     ctx, games = validate_source(snapshot, evidence, now)
+    if ctx['stage'] == 'offseason':
+        print('[info] PS枠は見送り：ワールドシリーズは決着済み')
+        return None
     names = {int(k): v['name'] for k, v in snapshot.get('teams', {}).items()}
     players = {int(k): v.get('players', []) for k, v in snapshot.get('teams', {}).items()}
     # Canonical roster owns team eligibility and names; no invented participants.

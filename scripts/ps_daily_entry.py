@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 import sys
 import ps_program as ps
+import ps_offseason
 
 STATUS = Path('build/ps_forecast_status.json')
 PROGRAM = Path('build/ps_program_forecast.json')
@@ -23,6 +24,14 @@ def main():
     if args.stage == 'narration':
         STATUS.unlink(missing_ok=True)
         snapshot = ps.read('data/postseason.json')
+        if ps_offseason.completed_before(snapshot, datetime.now(timezone.utc)):
+            Path(option(rest, '--out', 'public/narration.json')).unlink(missing_ok=True)
+            PROGRAM.unlink(missing_ok=True)
+            reason = 'ワールドシリーズは決着済みのためPS予告を見送り'
+            ps.write(STATUS, dict(state='skipped', reason=reason))
+            Path('build/narration_skipped.txt').write_text(reason, encoding='utf-8')
+            print('[info] ' + reason)
+            return
         if ps.desired(snapshot) and ps.layout() != 'legacy':
             out = Path(option(rest, '--out', 'public/narration.json'))
             out.unlink(missing_ok=True)

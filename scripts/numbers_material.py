@@ -509,6 +509,10 @@ def load(root: str = "data", today: date = None) -> dict:
             print("[info] 切り口ごとの成績を取れません(%s)" % e)
 
     post = _fresh_read(base / "postseason.json", today, days=0)
+    import ps_offseason
+    if ps_offseason.completed_before(post, today):
+        print('[info] WS決着後のため、PSを当日の数字の材料にしません')
+        post = {}
     race = {"headline": post.get("headline") or "",
             "changes": (post.get("changes") or [])[:MAX_CHANGES],
             "japanese": post.get("japanese") or [],

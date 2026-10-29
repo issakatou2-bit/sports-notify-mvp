@@ -20,6 +20,9 @@
 
 import json
 import pathlib
+import sys
+from datetime import datetime, timezone
+import ps_offseason
 
 # 材料を持つファイル。増えるときはここだけに足す。
 SOURCES = (
@@ -37,6 +40,8 @@ SOURCES = (
 )
 
 _CACHE = None
+DAILY_PS_SOURCES = frozenset({'ps_game_topics.json', 'ps_odds_topics.json',
+    'ps_momentum_topics.json', 'ps_spotlight_topics.json', 'ws_topics.json'})
 
 
 def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
@@ -46,7 +51,15 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
         return _CACHE
     out = {}
     seasons = {}
+    try:
+        snapshot = json.loads(pathlib.Path('data/postseason.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        snapshot = {}
+    ended = ps_offseason.completed_before(snapshot, datetime.now(timezone.utc))
     for path in sources:
+        if ended and pathlib.Path(path).name in DAILY_PS_SOURCES:
+            print(f'[info] {path}: WS決着後の当日向け材料は見送り', file=sys.stderr)
+            continue
         try:
             d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
