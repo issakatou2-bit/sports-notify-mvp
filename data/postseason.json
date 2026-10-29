@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-28T09:52:44.565368+00:00",
-  "date": "2026-10-28",
+  "updated_at": "2026-10-29T06:01:50.980415+00:00",
+  "date": "2026-10-29",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -280,18 +280,15 @@
       "league_jp": "",
       "best_of": 7,
       "need": 4,
-      "played": 4,
-      "over": false,
-      "winner": null,
-      "next": {
-        "day": "10月29日",
-        "game": 5
-      },
+      "played": 5,
+      "over": true,
+      "winner": 158,
+      "next": null,
       "teams": [
         {
           "id": 158,
           "name": "ブリュワーズ",
-          "wins": 3,
+          "wins": 4,
           "players": []
         },
         {
@@ -304,17 +301,17 @@
     }
   ],
   "final_day": [],
-  "headline": "ワールドシリーズ ブリュワーズが3勝1敗とし、世界一に王手",
+  "headline": "ブリュワーズが4勝1敗でレイズを破り、ワールドシリーズ制覇",
   "changes": [
     {
       "key": "W:139-158",
-      "kind": "game",
-      "text": "ワールドシリーズ ブリュワーズが3勝1敗とし、世界一に王手",
+      "kind": "advance",
+      "text": "ブリュワーズが4勝1敗でレイズを破り、ワールドシリーズ制覇",
       "jp": false,
       "stage": 4
     }
   ],
-  "prev_date": "2026-10-27",
+  "prev_date": "2026-10-28",
   "japanese": [
     {
       "team_id": 119,
@@ -2383,8 +2380,8 @@
   },
   "editorial": {
     "version": 1,
-    "date_jst": "2026-10-28",
-    "retrieved_at": "2026-10-28T08:19:30.040694+00:00",
+    "date_jst": "2026-10-29",
+    "retrieved_at": "2026-10-29T06:03:53.225205+00:00",
     "stage": "series",
     "source_url": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&season=2026&startDate=2026-09-15&endDate=2026-11-10&gameType=F,D,L,W&hydrate=team,probablePitcher",
     "warnings": [],

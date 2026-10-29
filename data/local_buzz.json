@@ -1,52 +1,28 @@
 {
-  "updated_at": "2026-10-28T08:18:10.236584+00:00",
+  "updated_at": "2026-10-29T06:02:28.334830+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 25
+      "items": 24
     }
   ],
-  "titles_count": 25,
+  "titles_count": 24,
   "teams": [
-    {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 10,
-      "tone": "好調",
-      "gist": "レイズ、延長12回サヨナラでGame 5へ"
-    },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 3,
-      "tone": "不振",
-      "gist": "ブリュワーズ、失策で敗戦もミズに期待"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "マリナーズ、監督候補エスパダらと面接"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "フィリーズ、ファッツィを打撃コーチに採用"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 1,
+      "mentions": 8,
       "tone": "好調",
-      "gist": "ヤンキースのシュリトラー、サイ・ヤング賞確実視"
+      "gist": "ブリュワーズが初のWS制覇、金曜にパレード"
+    },
+    {
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ラスムッセンが中3日で第5戦5回前後まで好投"
     }
   ],
   "players": []
