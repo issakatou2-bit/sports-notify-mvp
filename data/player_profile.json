@@ -1,125 +1,111 @@
 {
-  "generated_at": "2026-10-29T06:01:09.960606+00:00",
+  "generated_at": "2026-10-29T07:17:33.205879+00:00",
   "date_jst": "2026-10-29",
-  "name": "Jacob Misiorowski",
-  "player_id": "694819",
+  "name": "Brice Turang",
+  "player_id": "668930",
   "team": "ブリュワーズ",
-  "group": "pitching",
+  "group": "hitting",
   "why": "2026-10-29のMLBで最も活躍",
-  "headline": "5.2回　2奪三振　自責0　2被安打",
-  "score": 101,
+  "headline": "4打数2安打　1二塁打　1盗塁",
+  "score": 66,
   "bio": {
-    "name_en": "Jacob Misiorowski",
-    "age": 24,
-    "birth_city": "Blue Springs",
-    "birth_state": "MO",
+    "name_en": "Brice Turang",
+    "age": 26,
+    "birth_city": "Corona",
+    "birth_state": "CA",
     "birth_country": "USA",
-    "birth_date": "2002-04-03",
-    "debut": "2025-06-12",
-    "draft_year": 2022,
-    "bats": "Right",
+    "birth_date": "1999-11-21",
+    "debut": "2023-03-30",
+    "draft_year": 2018,
+    "bats": "Left",
     "throws": "Right",
-    "number": "32",
-    "position": "Pitcher",
+    "number": "2",
+    "position": "Second Base",
     "nickname": null,
-    "height": "6' 7\"",
-    "weight": 201
+    "height": "6' 0\"",
+    "weight": 190
   },
   "teams": [
     {
       "team": "ブリュワーズ",
-      "from": 2025,
+      "from": 2023,
       "to": 2026
     }
   ],
   "career": {
-    "games": 45,
-    "avg": ".245",
-    "hr": 4,
-    "rbi": 47,
-    "ops": ".612",
-    "sb": 13,
-    "hits": 132,
-    "wins": 21,
-    "losses": 8,
-    "era": "2.51",
-    "so": 339,
-    "ip": "240.2",
-    "whip": "0.92"
+    "games": 599,
+    "avg": ".260",
+    "hr": 52,
+    "rbi": 272,
+    "ops": ".727",
+    "sb": 119,
+    "hits": 554
   },
   "this_season": {
-    "games": 30,
-    "avg": ".238",
-    "hr": 3,
-    "rbi": 26,
-    "ops": ".620",
-    "sb": 8,
-    "hits": 62,
-    "wins": 16,
-    "losses": 5,
-    "era": "1.80",
-    "so": 252,
-    "ip": "174.2",
-    "whip": "0.80"
+    "games": 151,
+    "avg": ".268",
+    "hr": 21,
+    "rbi": 100,
+    "ops": ".816",
+    "sb": 19,
+    "hits": 156
   },
   "last_season": {
-    "games": 15,
-    "avg": ".253",
-    "hr": 1,
-    "rbi": 21,
-    "ops": ".604",
-    "sb": 5,
-    "hits": 70,
-    "wins": 5,
-    "losses": 3,
-    "era": "4.36",
-    "so": 87,
-    "ip": "66.0",
-    "whip": "1.24"
+    "games": 156,
+    "avg": ".288",
+    "hr": 18,
+    "rbi": 81,
+    "ops": ".794",
+    "sb": 24,
+    "hits": 168
   },
   "recent": [
     {
       "date": "2026-09-27",
-      "line": "5.1回 自責0 5奪三振",
+      "line": "4打数1安打 1打点",
       "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-09-20",
-      "line": "3.0回 自責0 4奪三振",
-      "opponent": "Baltimore Orioles"
+      "date": "2026-09-26",
+      "line": "3打数1安打 1本塁打 2打点",
+      "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-09-15",
-      "line": "5.0回 自責0 7奪三振",
-      "opponent": "Pittsburgh Pirates"
+      "date": "2026-09-25",
+      "line": "5打数3安打 3打点",
+      "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-09-08",
-      "line": "6.1回 自責1 9奪三振",
-      "opponent": "Chicago Cubs"
+      "date": "2026-09-24",
+      "line": "5打数1安打",
+      "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-02",
-      "line": "4.0回 自責5 5奪三振",
-      "opponent": "Chicago Cubs"
+      "date": "2026-09-23",
+      "line": "4打数2安打 1本塁打 1打点",
+      "opponent": "Philadelphia Phillies"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "NL All-Star"
-    },
-    {
-      "season": "2026",
-      "name": "NL Player of the Week"
+      "season": "2025",
+      "name": "Brewers MVP"
     },
     {
       "season": "2025",
-      "name": "NL All-Star"
+      "name": "NL Player of the Month"
     },
     {
-      "season": "2025",
-      "name": "NL Rookie of the Month"
+      "season": "2024",
+      "name": "Rawlings NL Gold Glove"
+    },
+    {
+      "season": "2022",
+      "name": "MiLB.com Organization All-Star"
+    },
+    {
+      "season": "2019",
+      "name": "MID Mid-Season All-Star"
     }
   ],
   "quotes": []

@@ -1,28 +1,28 @@
 {
-  "updated_at": "2026-10-29T06:02:28.334830+00:00",
+  "updated_at": "2026-10-29T07:21:33.132295+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 25
     }
   ],
-  "titles_count": 24,
+  "titles_count": 25,
   "teams": [
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 8,
+      "mentions": 9,
       "tone": "好調",
-      "gist": "ブリュワーズが初のWS制覇、金曜にパレード"
+      "gist": "ブリュワーズ、初のWS制覇"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ラスムッセンが中3日で第5戦5回前後まで好投"
+      "mentions": 2,
+      "tone": "不振",
+      "gist": "レイズ、WS敗退 ラスムセン好投も"
     }
   ],
   "players": []

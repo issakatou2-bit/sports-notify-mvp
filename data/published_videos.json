@@ -8155,6 +8155,119 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-29": {
+      "video_id": "Y6SwcpEv6xc",
+      "url": "https://youtu.be/Y6SwcpEv6xc",
+      "title": "【MLB】現地はこう報じた「大谷翔平、MLBアワードではピート・クロウ＝アームストロングの陰に」｜10月29日 番記者の投稿と現地の見出し #Shorts",
+      "published_at": "2026-10-29T07:34:42.365241+00:00",
+      "publish_at": "2026-10-29T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-10-29",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "ab_assigned_variant": "B",
+      "ab_fallback_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        9.8,
+        16.5,
+        26.5,
+        42.966667,
+        50.066667
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "大谷翔平、MLBアワードではピート・クロウ＝アームストロングの陰に。10月29日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 9.809333,
+          "scene_start": 9.8,
+          "text": "Dodgers Way。ドジャース・大谷翔平の2027年計画、故障騒動を経てもおおむね順調そう。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 16.514666,
+          "scene_start": 16.5,
+          "text": "True Blue LA。ドジャース関連ノート：佐々木朗希、大谷翔平、Shoki Oda。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 26.515999,
+          "scene_start": 26.5,
+          "text": "MLB.comの記者。ミルウォーキー在住57年目、ブルワーズが1957年以来となる同市のワールドシリーズ制覇。最後に出場してから44年目の優勝は、背番号44がアメリカンファミリー・フィールドに掲げられるヘンリー・アーロンのためでもあった。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 43.013332,
+          "scene_start": 42.966667,
+          "text": "Baltimore Bannerの記者。長い待ち時間は終わり、ブルワーズがワールドシリーズを制した。どうだい、父さん？。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 50.123999,
+          "scene_start": 50.066667,
+          "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 58.33,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "f8099210a9d7bc6fc7916b7fdf51c574477ea2f4686572e5a7b52ce99d3b622e",
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-29",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 3
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-29T07:24:49.865453+00:00",
+        "comparison_eligible": false,
+        "planned_host": "metan",
+        "previous_attempt": {
+          "action": "rebuild_metan",
+          "checked_at": "2026-10-29T07:22:55.987512+00:00",
+          "comparison_eligible": true,
+          "failed_at": "2026-10-29T07:24:49.859207+00:00",
+          "failure_reason": "ui_order_discarded",
+          "label": "予定雨衣",
+          "mode": "live",
+          "planned_host": "ui",
+          "reason": null,
+          "status": "held",
+          "version": 1
+        },
+        "reason": "ui_rebuilt_after_hold",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
