@@ -1,0 +1,33 @@
+{
+  "publication_id": "soccer:daily:2026-10-15",
+  "domain": "soccer",
+  "kind": "daily",
+  "key_parts": {
+    "material_day": "2026-10-15"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/daily_soccer/2026-10-15",
+      "service": "youtube",
+      "video_id": "v9liJ18zQVQ",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": "2026-10-15",
+      "edition_day": null,
+      "run_at": "2026-10-15T13:28:58.281964+00:00",
+      "details": {
+        "preview_binding": {
+          "material_sha256": "1bb061b6bc068273c7e257216005ba7f2eec15b81d6d11b5722a48e05d3a8f92",
+          "narration_sha256": "837354bffdb90c7d73f1f530b6eee59401e9114b84a473b08291bd846fd1867f"
+        }
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.539117+00:00",
+      "fingerprint": "38f60b70b661cd255dee047f8fa88ba65e1c706285327cd217d1f7b2939e69f3",
+      "event_id": "d25c6be390c667da6757a4341b8690728658885f1546f5244ea833cc824a0c0c"
+    }
+  ]
+}

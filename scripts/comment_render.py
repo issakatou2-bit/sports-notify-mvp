@@ -807,6 +807,7 @@ def voices_from_items(items, spec=None):
         who = head[:-2] if head.endswith("から") else head
         if is_voice_head(head) or body.startswith("「"):
             said = unquote(body)
+            if not __import__('fan_privacy').safe(dict(text=said)): continue
             if head.endswith(REPORTER_TAIL) and src.get("author"):
                 who += f"　{src['author']}" + (f"（{src['outlet']}）" if src.get("outlet") else "")
             out.append({"said": said, "who": who, "mark": pick_mark(said, names)})
@@ -877,10 +878,12 @@ def voices_for_segment(seg, voices_data):
     thread: 1件のコメントと、それへの返信（reply_ja の先頭3件。読み上げと同じ）。"""
     kind, meta = seg.get("kind"), seg.get("meta") or {}
     vs = (voices_data or {}).get("voices") or []
+    vs = [v if __import__('fan_privacy').safe(v) else dict(v, ja='', title='', original='', reply_ja=[]) for v in vs]
     if 'quote_rows' in meta:
         allowed={v.get('ja','') for v in vs}
         allowed.update(r.get('ja','') for v in vs for r in v.get('reply_ja',[]))
         for row in meta['quote_rows']:
+            if not __import__('fan_privacy').safe(row): raise ValueError('引用に匿名化できない表記があります')
             if not row.get('fact') and row.get('said') not in allowed:
                 raise ValueError('引用区間のコメントが原材料にありません')
         return material_tags(list(meta['quote_rows']),voices_data)
@@ -913,6 +916,7 @@ def voices_for_segment(seg, voices_data):
         if not meta.get('parent_read'):
             out.append({"said": said, "who": who, "mark": pick_mark(said, v.get("jp_players") or ())})
         for r in (v.get("reply_ja") or [])[:3]:
+            if not __import__('fan_privacy').safe(r): continue
             rs = str(r.get("ja") or "").strip()
             if rs:
                 out.append({"said": rs, "who": "返信", "mark": pick_mark(rs), "reply": True})
@@ -938,29 +942,34 @@ def strip_for_voices(voices_data, seg=None):
             g = jp_matchup(vs[i]["matchup"])
             if g and g not in games:
                 games.append(g)
-    src = (voices_data or {}).get("source") or ""
+    src = __import__('fan_privacy').source(voices_data or {})
     return "　".join(games[:2] + ([f"{src}を翻訳"] if src else []))
 
 
 def _voices_source(voices_data):
+    if __import__('fan_privacy').reddit(voices_data or {}): return (__import__('fan_privacy').LABEL,'コレスポの見解ではありません')
     return ('引用：MLBコメント（訳：コレスポ）','コレスポの見解ではありません')
 
 
-def reading_times(voices,spoken,duration):
+def reading_times(voices,spoken,duration,issues=None):
     """原稿の引用位置を表示区間へ写す。未読の札は出さない。"""
     out=[];cursor=0;scale=duration/max(1,len(spoken))
     for voice in voices:
         if voice.get('read') is False:
             out.append(dict(voice,at=0,end=0));continue
-        if voice.get('clip'):
-            if voice['said'].strip().rstrip('。！!、.') not in spoken:
-                raise ValueError('引用区間と読み上げが一致しません')
-            out.append(dict(voice,at=0,end=duration));continue
         body=str(voice.get('said','')).strip().rstrip('。！!、.')
-        key=body[:12]
-        at=spoken.find(key,cursor)
-        if not key or at<0:
-            raise ValueError('画面の引用が読み上げ順にありません: '+key)
+        at=spoken.find(body,cursor) if body else -1
+        if at<0:
+            if issues is not None:
+                issues.append(dict(said=voice.get('said',''), spoken=spoken, cursor=cursor,
+                                   reason='out_of_order' if body and body in spoken else 'missing_or_changed',
+                                   action='omit_screen_quote'))
+            # 文言/順の違う札だけ外す。次の引用の検索位置は進めない。
+            continue
+        if voice.get('clip'):
+            out.append(dict(voice,at=0,end=duration))
+            cursor=at+len(body)
+            continue
         finish=min(len(spoken),at+len(body))
         out.append(dict(voice,at=at*scale,end=finish*scale))
         cursor=finish
@@ -976,10 +985,10 @@ def voices_screen(t, seg, voices_data, dur=None, team_id=None):
                     source_lines=_voices_source(voices_data))
 
 
-def voices_cues(seg, voices_data, dur=None):
+def voices_cues(seg, voices_data, dur=None, issues=None):
     voices = voices_for_segment(seg, voices_data)
     if dur:
-        voices = reading_times(voices, seg.get("text") or "", dur)
+        voices = reading_times(voices, seg.get("text") or "", dur, issues=issues)
     return unified_cues(voices)
 
 

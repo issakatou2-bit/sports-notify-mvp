@@ -154,6 +154,8 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
         )
         s.raise_for_status()
         out_path.write_bytes(s.content)
+        import voice_manifest
+        voice_manifest.record_file(out_path, original, 'voicevox', speaker)
         if os.environ.get('COLLESPO_LIPSYNC') == 'voice':
             import hashlib
             out_path.with_suffix('.lipsync.json').write_text(json.dumps(
@@ -187,12 +189,13 @@ def audio_duration(path: pathlib.Path) -> float:
             return 0.0
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--narration", default="public/narration.json")
     parser.add_argument("--out-dir", default="build/audio")
     parser.add_argument("--speaker", type=int, default=DEFAULT_SPEAKER)
-    args = parser.parse_args()
+    parser.add_argument('--queue-only', action='store_true', help='検査済み原稿の雨衣注文だけ先に出す')
+    args = parser.parse_args(argv)
 
     npath = pathlib.Path(args.narration)
     if not npath.exists():
@@ -205,9 +208,18 @@ def main():
     with open(npath, "r", encoding="utf-8") as f:
         data = json.load(f)
     import host_split
+    import solo_host
+    saved_resolution = data.get('voice_resolution') or {}
+    if saved_resolution.get('host') == 'metan':
+        os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+    import ui_voice_policy
+    ui_voice_policy.assert_publishable(data)
     if host_split.enabled():
         os.environ['COLLESPO_SOLO_HOST'] = 'metan'
         data = host_split.prepare(data, default=args.speaker)
+    import copy
+    if solo_host.for_segments(data.get('segments', []), args.speaker) == 'ui':
+        data.setdefault('host_original_segments', copy.deepcopy(data.get('segments', [])))
     import ui_tone
     adapted = ui_tone.narration(data, args.speaker)
     if adapted != data:
@@ -221,27 +233,47 @@ def main():
 
     out_dir = pathlib.Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    import solo_host
     host = solo_host.for_segments(segments, args.speaker)
+    if args.queue_only:
+        npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
+        if host == 'ui' and (data.get('host_delivery') or {}).get('mode') != 'stock':
+            import ui_voice_queue
+            try:
+                reason = ui_voice_policy.window_reason(minutes=ui_voice_policy.wait_minutes())
+                if reason:
+                    raise ui_voice_policy.VoiceUnavailable(reason)
+                ui_voice_queue.enqueue(ui_voice_queue.GitQueue(), ui_voice_queue.make_order(
+                    data, npath.stem, ui_voice_policy.wait_minutes()))
+            except ui_voice_queue.QueueError:
+                rebuilt = ui_voice_policy.failure(data, npath, out_dir, 'ui_early_order_failed')
+                npath.write_text(json.dumps(rebuilt, ensure_ascii=False), encoding='utf8')
+        return
     resolution = (dict(host='metan', reason=(data.get('voice_resolution') or {}).get('reason',
-                       'host_split' if host_split.enabled() else 'host_split_disabled'))
+                       (data.get('host_delivery') or {}).get('reason') or
+                       ('host_split' if host_split.enabled() else 'host_split_disabled')))
                   if data.get('host_assignment') else None)
+    if host == 'metan' and saved_resolution.get('host') == 'metan':
+        resolution = dict(saved_resolution)
     if host == 'ui':
         import ui_voice_stock
-        resolution = ui_voice_stock.fulfill(data, npath, out_dir)
+        import ui_voice_policy as policy
+        try:
+            resolution = ui_voice_stock.fulfill(data, npath, out_dir)
+            if not resolution:
+                raise policy.VoiceUnavailable('ui_delivery_missing')
+        except policy.VoiceUnavailable as exc:
+            data = policy.failure(data, npath, out_dir, exc.reason)
+            host = 'metan'
+            segments = data['segments']
+            os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+            resolution = dict(host='metan', reason='ui_rebuilt_after_hold')
+            data['voice_resolution'] = resolution
+            host_split.resolve_credits(data, 'metan')
+            npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
         if resolution:
-            print('[info] 雨衣の注文音声を受け取りました')
-            return
-        # この回の保存原稿と音声にだけ実際の話者を記録。親の環境や他の回を変えない。
-        host = 'metan'
-        resolution = dict(host='metan', reason='ui_unavailable')
-        data['voice_resolution'] = resolution
-        host_split.resolve_credits(data, 'metan')
-        for seg in segments:
-            if (seg.get('meta') or {}).get('who') == '雨衣':
-                seg['meta']['who'] = '四国めたん'
-        npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
-
+            if resolution['host'] == 'ui':
+                print('[info] 雨衣の注文音声を受け取りました')
+                return
     if host != 'ui' and not engine_available():
         print(f"[warn] VOICEVOX ENGINE({VOICEVOX_URL})に接続できませんでした。"
               "音声なしで進めます(動画は無音になります)。")
@@ -298,6 +330,9 @@ def main():
         if resolution:
             payload['voice_resolution'] = resolution
         json.dump(payload, f, ensure_ascii=False)
+
+    import voice_manifest
+    voice_manifest.save(out_dir, manifest, data)
 
     total = sum(m["duration"] for m in manifest)
     print(f"[info] 音声合成が完了しました(合計{total:.1f}秒)")

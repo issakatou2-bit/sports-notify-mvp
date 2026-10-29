@@ -65,7 +65,7 @@ def cases():
     out.append(('soccer-voices',vs,lambda t:vr.frame(t,vs,vd,vr.clubs_for(vd),20)))
     import soccer_now as now
     boards,summaries=results.fixture()
-    nd,errors=now.build(boards,summaries,now.results.utc('2026-09-20T17:15:00Z'))
+    nd,errors=now.build(boards,summaries,now.results.utc('2026-09-20T17:15:00Z'), goal_short=None)
     if errors:raise ValueError(errors)
     ns=next(s for s in now.narration(nd[0])['segments'] if s['kind'] not in ('intro','outro'))
     out.append(('soccer-now',ns,lambda t:now.frame(nd[0],t,ns)))

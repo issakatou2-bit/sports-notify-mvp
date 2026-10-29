@@ -26,6 +26,7 @@
 """
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import functools
 import json
 import os
@@ -435,7 +436,33 @@ def fetch_headlines(query: str, limit: int = 8) -> list:
     url = NEWS_RSS.format(q=urllib.parse.quote(f"{query} when:1d"))
     r = requests.get(url, headers=UA, timeout=20)
     r.raise_for_status()
-    return parse_headlines(r.text,query,limit)
+    return article_publications(parse_headlines(r.text,query,limit))
+
+
+def article_publications(rows):
+    # 記事の日付確認で日次処理が長時間直列待ちにならないよう、取得数を限定して並行する。
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        return list(pool.map(article_publication, rows))
+
+
+@functools.lru_cache(maxsize=256)
+def _article_html(url):
+    r = requests.get(url, headers=UA, timeout=20)
+    r.raise_for_status()
+    return r.text, r.url
+
+
+def article_publication(row):
+    from article_freshness import dated_article
+    from article_sources import safe_url
+    url = safe_url(row.get('url'))
+    html, resolved = '', ''
+    if url:
+        try:
+            html, resolved = _article_html(url)
+        except Exception:  # 記事を開けなくてもRSS/URLの日付は検査する。
+            pass
+    return dated_article(row, html, resolved)
 
 
 def parse_headlines(text, query, limit=8):
@@ -520,7 +547,7 @@ LEAGUE_QUERIES = (
 )
 
 
-def collect_headlines(sleep: float = 0.4) -> list:
+def collect_headlines(sleep: float = 0.4, target_date=None) -> list:
     """現地の見出しを引く。日本人選手の名前と、リーグ全体の話題。"""
     out, dropped = [], 0
     # PS総括は最大4件。既存の翻訳上限内で使い、APIの呼出回数は増やさない。
@@ -563,8 +590,11 @@ def collect_headlines(sleep: float = 0.4) -> list:
 
     # 同じ見出しが複数の選手で出ることがある。
     # 媒体によって "Exclusive | " のような枕が付くので、そこも落として比べる。
+    from article_freshness import fresh_articles
+    current = fresh_articles(out, target_date)
+    print(f"[info] 公開日が古い/不明/対象日より先の見出しを{len(out) - len(current)}件外しました")
     seen, uniq = set(), []
-    for h in out:
+    for h in current:
         k = _dedupe_key(h["title"])
         if k in seen:
             continue
@@ -656,7 +686,10 @@ def main():
         # 残す（訳さないので、ここを増やしても課金は増えない）。
         "headline_pool": [{"query": h.get("query", ""),
                            "title": h.get("title", ""),
-                           "source": h.get("source", "")}
+                           "source": h.get("source", ""),
+                           "url": h.get("url", ""), "at": h.get("at", ""),
+                           "publication_evidence": h.get("publication_evidence", []),
+                           "corroborated_by": h.get("corroborated_by", [])}
                           for h in heads],
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[done] {out}")

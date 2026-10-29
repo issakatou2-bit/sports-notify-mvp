@@ -120,6 +120,14 @@ jobs:
             --archive-dir archive \
             --out build/weekly_narration.json
 
+      - name: Sanity gate (weekly)
+        id: sanity_weekly
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/sanity.py --general --strict --narration build/weekly_narration.json --out data/sanity_weekly.json --hold-record build/sanity_hold_weekly.json --kind weekly
+
       - name: Synthesize weekly narration
         continue-on-error: true
         run: |
@@ -154,8 +162,10 @@ jobs:
       # 深夜に無言で現れても、誰の目にも触れない。
       # 22:00に置く。日次の枠(17:00〜20:00)とぶつからない時刻。
       - name: Upload to YouTube
+        if: steps.sanity_weekly.outcome == 'success'
         continue-on-error: true
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -180,6 +190,14 @@ jobs:
             --archive-dir archive \
             --base-rates data/base_rates.json \
             --narration-out build/vs_narration.json
+
+      - name: Sanity gate (verdict)
+        id: sanity_verdict
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/sanity.py --general --strict --narration build/vs_narration.json --out data/sanity_verdict.json --hold-record build/sanity_hold_verdict.json --kind verdict
 
       - name: Synthesize verdict narration
         continue-on-error: true
@@ -207,8 +225,10 @@ jobs:
           bash scripts/shorts_thumbnail.sh build/verdict/collespo_verdict.mp4 build/verdict/short.png
 
       - name: Upload verdict short to YouTube
+        if: steps.sanity_verdict.outcome == 'success'
         continue-on-error: true
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -262,3 +282,37 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

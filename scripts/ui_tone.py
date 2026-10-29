@@ -23,7 +23,14 @@ PHRASES = {'今日の勝利貢献順位です。': '今日の勝利貢献順位�
 QUOTES = re.compile(r'(「[^」]*」|『[^』]*』|“[^”]*”)')
 
 
-def text(source):
+def text(source, protected=()):
+    # v4の引用は括弧なしで読む。画面用の原文を敬語へ変えない。
+    bodies = sorted({str(v).strip().rstrip('。！!、.') for v in protected if v}, key=len, reverse=True)
+    bodies = [v for v in bodies if v]
+    if bodies:
+        pattern = '(' + '|'.join(re.escape(v) for v in bodies) + ')'
+        return ''.join(chunk if i % 2 else text(chunk)
+                       for i, chunk in enumerate(re.split(pattern, source)))
     def prose(value):
         for before, after in PHRASES.items():
             value = value.replace(before, after)
@@ -46,7 +53,9 @@ def narration(source, default_speaker=2):
         return source
     result = copy.deepcopy(source)
     for seg in result['segments']:
-        seg['text'] = text(seg.get('text', ''))
+        quotes = [r.get('said') for r in (seg.get('meta') or {}).get('quote_rows', [])
+                  if not r.get('fact')]
+        seg['text'] = text(seg.get('text', ''), quotes)
         # 数字だけを並べる成績札も敬体で読む。引用は対象外。
         if seg.get('kind') in ('hero', 'list') and seg['text'].endswith('。'):
             body = seg['text'][:-1]

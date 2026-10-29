@@ -174,9 +174,13 @@ def numeric_flow(p, stats):
                 season=baseline, source=stats.get('source'))
 
 
-def build(recap, reporters, buzz, voices, stats, as_of):
+def build(recap, reporters, buzz, voices, stats, as_of, *, publication_ledgers=None):
     candidates = []
+    import player_publications as publications
+    ledgers = publications.load() if publication_ledgers is None else publication_ledgers
     for p in JP_PLAYERS_MLB:
+        p = dict(p, player_id=publications.identity(p))
+        if publications.recent(p['player_id'], 'player_story', as_of, ledgers): continue
         numeric = stats.get(p['name_en']) or {}
         flow = None
         if fresh(numeric.get('updated_at'), as_of) and numeric.get('source'):
@@ -218,6 +222,7 @@ def build(recap, reporters, buzz, voices, stats, as_of):
     safe_fan = re.compile(r'けが|怪我|負傷|病|疲|心理|精神|プレッシャー|原因|せい|だから|なので|理由|必ず|絶対|だろう|はず|引退|クビ|@')
     count = 0
     for voice in voices.get('voices') or []:
+        if not __import__('fan_privacy').safe(voice): continue
         text = voice.get('ja') or ''
         if (count >= 2 or not player_match(voice, p) or not fresh(voice.get('at'), as_of)
                 or not voice.get('url') or not text or len(text) > 90 or safe_fan.search(text)):
@@ -226,11 +231,11 @@ def build(recap, reporters, buzz, voices, stats, as_of):
         if re.fullmatch(r'[\d０-９]+番[。.!！]?', text) or not re.search(r'頑張|がんば|応援|復調|調子|怖|驚|すご|凄|想像|活躍|打席', text):
             continue
         add('fan', 'ファンの感想には「'+text+'」という声もあります。',
-            voice.get('source') or 'ファンの声', url=voice['url'], at=voice['at'])
+            __import__('fan_privacy').source(voice) or 'ファンの声', url=voice['url'], at=voice['at'])
         count += 1
     add('closing', RULES[direction]['closing'], 'コレスポの応援の言葉')
     sources = [f"{r['source']} {r['author']} / {r['at']}\n{r['url']}\n原文: {r['original']}" for r in reports]
-    sources += [f"匿名のファンの感想（事実の判定やチャンネルの見解ではありません）\n{seg['meta']['url']}" for seg in segments if seg['kind'] == 'fan']
+    sources += [(__import__('fan_privacy').LABEL if __import__('fan_privacy').reddit(seg['meta']) else f"匿名のファンの感想（事実の判定やチャンネルの見解ではありません）\n{seg['meta']['url']}") for seg in segments if seg['kind'] == 'fan']
     sources += [flow['source']] if flow else []
     if direction == 'down' and not flow:
         # 最新報道とは別の見出しが不調を明記している場合も、締めの根拠を出典付きで残す。
@@ -354,6 +359,9 @@ def main():
         if not hub: hub = topic_hub.build(reporters, read(args.buzz), read(args.voices), as_of=as_of)
         reporters = dict(reporters, _topic_hub=hub)
     narr = build(recap, reporters, read(args.buzz), read(args.voices), stats, as_of)
+    import sanity_sources
+    narr = sanity_sources.attach(narr, dict(date_jst=as_of.date().isoformat(),
+        source='generation.player_story', players=[narr['player']] if narr.get('player') else []))
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(narr, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(dict(can_make=narr['can_make'], direction=narr.get('direction')), ensure_ascii=False))

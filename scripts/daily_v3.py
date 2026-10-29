@@ -1,5 +1,6 @@
 """既存の日次原稿を案Dへ。明示指定時のみ、投稿と有料生成は持たない。"""
 import os
+import json
 from pathlib import Path
 
 
@@ -34,6 +35,9 @@ def prepare(data, narration, mode):
 
 def frame(t, seg, design, duration):
     import review_render_v3 as r3
+    if design['mode']=='press' and seg['kind']=='intro' and seg.get('meta',{}).get('press_hook'):
+        from press_hook import frame as hook_frame
+        return hook_frame(t,min(1,t),seg['meta'],design['reporters'],modern=True)
     if (seg.get('meta') or {}).get('duo_ask'):
         seg=dict(seg,text=seg['meta']['answer_text'])
     if seg['kind']=='outro':
@@ -71,8 +75,9 @@ def mix(audio, segments, durations, design, out_dir):
     if any(s.get('speaker') not in ((2,3) if (s.get('meta') or {}).get('duo') else (2,)) for s in segments):
         raise ValueError("案Dの音声を四国めたん（話者2）で作り直してください")
     cues, start = [], 0.0
+    quote_issues = []
     previous_screen=None
-    for seg, dur in zip(segments, durations):
+    for index, (seg, dur) in enumerate(zip(segments, durations)):
         speech = float(seg.get('duration') or dur)
         spoken_seg=(dict(seg,text=seg['meta']['answer_text'])
                     if (seg.get('meta') or {}).get('duo_ask') else seg)
@@ -83,14 +88,27 @@ def mix(audio, segments, durations, design, out_dir):
             import press_v3
             local = press_v3.cues(seg, design["reporters"], speech)
         else:
-            local = (cr.voices_cues(spoken_seg, design["voices"], speech)
+            issues = []
+            local = (cr.voices_cues(spoken_seg, design["voices"], speech, issues=issues)
                  if seg["kind"] in {"voices", "thread"}
                  else [(0.0, "transition", "a", -6)])
+            if seg['kind'] == 'intro':
+                cr.reading_times(cr.voices_for_segment(spoken_seg, design['voices']),
+                                 spoken_seg.get('text') or '', speech, issues=issues)
+            quote_issues.extend(dict(issue, segment=index, kind=seg['kind']) for issue in issues)
         if not ((seg.get('meta') or {}).get('duo') and
                 seg['meta'].get('screen')==previous_screen):
             cues.extend((start + at, kind, variant, db) for at, kind, variant, db in local)
         previous_screen=(seg.get('meta') or {}).get('screen')
         start += dur
+    if design['mode'] == 'voices':
+        report = Path(out_dir) / 'quote_alignment.json'
+        report.parent.mkdir(parents=True, exist_ok=True)
+        report.write_text(json.dumps(dict(mode='voices', omissions=quote_issues),
+                                     ensure_ascii=False, indent=2), encoding='utf-8')
+        for issue in quote_issues:
+            print(f"[warn] 引用の画面表示を省略: segment={issue['segment']} "
+                  f"{issue['reason']} {issue['said']}（記録: {report}）")
     bgm = sound_mix.bgm_path()
     import fan_events
     cues += fan_events.event_cues()

@@ -19,6 +19,7 @@ permissions:
 env:
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
   # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
@@ -318,6 +319,7 @@ jobs:
         # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
         continue-on-error: true
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           # 注目試合が無くて原稿を作らなかった日は、確かめる原稿が無い。
@@ -327,7 +329,7 @@ jobs:
           else
             python scripts/mlb_availability.py --games notable_games.json --check-narration public/narration.json
           fi
-          python scripts/sanity.py --general --strict
+          python scripts/sanity.py --general --strict --narration public/narration.json --out data/sanity.json --hold-record build/sanity_hold.json --kind daily
 
       - name: Synthesize narration
         continue-on-error: true
@@ -420,6 +422,7 @@ jobs:
         if: steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -605,6 +608,16 @@ jobs:
         with:
           name: collespo-video
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            public/narration.json
+            public/soccer_narration.json
+            public/games.json
             build/video/collespo_short.mp4
             build/video/short.png
             build/video/short.json
@@ -627,12 +640,12 @@ jobs:
           # 注目試合が無いと決めたのは原稿を作る段で、そこが印を置く。
           # 印が無いのに動画が無ければ、これまでどおり落とす。
           # 9/21は見送りの日を「出し損ね」として実行全体を赤にした。
-          if [ -f build/narration_skipped.txt ]; then
+          if [ -f build/narration_skipped.txt ] && [ "${{ steps.sanity.outcome }}" != "failure" ]; then
             echo "### 注目試合が無い日のため、今日の注目試合の動画は作っていません（見送りで、失敗ではありません）" >> "$GITHUB_STEP_SUMMARY"
             echo "注目試合が無い日なので、公開の確認はしません"
             exit 0
           fi
-          python scripts/verify_published.py --kind daily
+          python scripts/verify_published.py --kind daily --hold-record build/sanity_hold.json
 
       - name: Explain a skipped site update
         if: always() && (steps.standings.outcome != 'success' || steps.archive.outcome != 'success')
@@ -649,6 +662,29 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore
   deploy:
     needs: build_and_notify
     if: needs.build_and_notify.outputs.standings_ready == 'true'
@@ -660,3 +696,14 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

@@ -1,0 +1,48 @@
+{
+  "source_commit": "c334ac2ff10e5c661c0ab85012603c243d7b3c35",
+  "source_path": "data/postseason.json",
+  "text": "ブリュワーズ対レイズはワールドシリーズ第1戦",
+  "postseason": {
+    "date": "2026-10-23",
+    "updated_at": "2026-10-23T09:52:38.252871+00:00",
+    "season": "2026",
+    "phase": "postseason",
+    "series": [
+      {
+        "key": "W:139-158",
+        "round": "W",
+        "round_jp": "ワールドシリーズ",
+        "stage": 4,
+        "league_jp": "",
+        "best_of": 7,
+        "need": 4,
+        "played": 0,
+        "over": false,
+        "winner": null,
+        "next": {
+          "day": "10月24日",
+          "game": 1
+        },
+        "teams": [
+          {
+            "id": 139,
+            "name": "レイズ",
+            "wins": 0,
+            "players": []
+          },
+          {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "wins": 0,
+            "players": []
+          }
+        ]
+      }
+    ]
+  },
+  "issue": {
+    "severity": "high",
+    "where": "ブリュワーズ対レイズはワールドシリーズ第1戦",
+    "why": "本文にワールドシリーズ第1戦である根拠が書かれていない"
+  }
+}

@@ -19,11 +19,11 @@
       「今季初登板の投手が今季15勝」のような、個々の値は正しくても
       並べると噛み合わない文。ここは機械では書ききれない。
 
-  二段目の指摘だけでは投稿を止めない。材料との機械照合で
-  矛盾が確認された場合は、一段目と同様に止める。
-  言語模型の違和感は当たることもあれば外れることもあるので、
-  それで止めると、正しい日に出せなくなる。
-  代わりに実行ページに出して、人が見る。
+  二段目のhighは材料と照合し、一度だけ指摘行を再点検する。
+  説明不足・文脈の指摘はseverityに関わらず警告として残す。
+  引用の主張全体を公式材料で裏付けた誤検出だけは警告として通す。
+  材料でも原稿内でも確定できないhighは警告として残す。
+  材料との機械照合で確定した矛盾も止める。軽微な指摘は参考として残す。
 
 使い方:
   python3 scripts/sanity.py                     # 一段目だけ
@@ -365,13 +365,30 @@ PROMPT = """今日は {today}、{season}年シーズンの最中です。
   「実際はパドレスのはず」と指摘したことがありますが、この
   シーズンでは移籍済みで、原稿のほうが正しいものでした）
 
-文体の好みや構成の提案は要りません。事実の齟齬だけ。
+各指摘にはkindを必ず付け、次の2種類を区別してください。
+・「事実の誤り」: 材料や一般的な事実と食い違う主張（スコア・所属など）。
+・「説明不足・文脈」: 補足があるとよい、得点経過が省略されている、つながりが唐突など。
+説明不足・文脈はseverityに関わらず警告であり、公開を止めません。
+主張が「成立する」「事実としては正しい」と認める指摘は事実の誤りにしないでください。
+初優勝と初出場は別です。過去の所属リーグの補足不足は事実の誤りではありません。
+当日のWS第1戦の結果を、記憶や推測でNLCS第1戦だと読み替えないでください。
+文体の好みだけの提案は要りません。
+添付のPS・サッカーの順位表と試合材料は公式APIから取得・照合した材料です。出典と取得日時も参照してください。
+「首位チームと12位の対戦」のようにどちらの順位か明示していない表現は説明不足です。
+順位・勝点・スコア・所属など、指摘の対象が材料と一致するなら事実の誤りにしないでください。
+学習済みの過去年の組み合わせより、この材料を優先してください。
+材料が今の事実です。学習した知識の所属・順位・結果で材料に反論しないでください。
+名簿・順位表・試合結果・PSの材料は長編と短編で同じ扱いです。
+「根拠が読み上げ本文に書かれていない」だけでは事実矛盾ではありません。
+材料が足りず確認できない指摘はlowにし、推測でhighにしないでください。
+記事の原文・翻訳・対象試合のURLも照合してください。1試合の逆転勝ちと、
+勝利後のシリーズ2勝0敗は両立します。シリーズ連勝を根拠に試合中の逆転を否定しないでください。
 地区シリーズの2勝3敗での敗退は正しい結果です。
 「A対B」と「B対A」は同じ対戦です。表記順だけを重大な誤りにしないでください。
 相対日付は上記の日本時間の今日を基準に読み、絶対日付と同じなら矛盾ではありません。
 問題がなければ空の配列を返してください。
 JSONだけを返してください。形式:
-[{"severity":"high|low","where":"該当箇所の引用","why":"何がおかしいか"}]
+[{"kind":"事実の誤り|説明不足・文脈","severity":"high|low","where":"該当箇所の引用","why":"何がおかしいか"}]
 
 --- 原稿 ---
 """
@@ -393,14 +410,15 @@ def _prompt() -> str:
                   .replace("{season}", season))
 
 
-def general(paths, api_key):
+def general(paths, api_key, materials=None):
     """競技を知っている人が読んで引っかかるところを挙げてもらう。"""
-    chunks = []
+    chunks, documents = [], []
     for p in paths:
         try:
             d = json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             continue
+        documents.append(d)
         for s in (d.get("segments") or []):
             t = (s.get("text") or "").strip()
             if t:
@@ -408,19 +426,39 @@ def general(paths, api_key):
     if not chunks:
         return []
 
+    import sanity_material
+    if materials is None:
+        materials = sanity_material.grounding(documents)
+    evidence = '\n--- 原稿が使ったPS・順位表・名簿・試合結果（出典・取得日時付き）---\n' + json.dumps(
+        materials, ensure_ascii=False)
+    evidence += '\n--- 読み上げ見出しの原文・訳・対象記事（試合中の経過とシリーズ勝敗は別）---\n' + json.dumps(
+        sanity_material.headline_grounding(documents), ensure_ascii=False) + '\n--- 原稿本文 ---\n'
+
     try:
         import anthropic
         import backstage_guard
         resp = backstage_guard.create(anthropic.Anthropic(api_key=api_key), label='sanity', category='sanity',
             **llm_models.params("review", 900),
             messages=[{"role": "user",
-                       "content": _prompt() + "\n".join(chunks)[:6000]}])
+                       "content": _prompt() + evidence + "\n".join(chunks)[:6000]}])
         token_log.record("sanity", MODEL, resp)
         txt = "".join(b.text for b in resp.content if b.type == "text").strip()
         m = re.search(r"\[.*\]", txt, re.S)
-        return json.loads(m.group(0)) if m else []
+        issues = json.loads(m.group(0)) if m else []
+        if not isinstance(issues, list) or any(
+                not isinstance(o, dict) or o.get('kind') not in (sanity_material.FACT, sanity_material.CONTEXT)
+                for o in issues):
+            raise ValueError('常識点検の応答に必須のkind（事実の誤り/説明不足・文脈）がありません')
+        return issues
     except Exception as e:      # 見えなかっただけ。出すのは止めない
-        return [{"severity": "low", "where": "(確認できず)", "why": str(e)[:200]}]
+        return [{"kind": sanity_material.CONTEXT, "severity": "low", "where": "(確認できず)", "why": str(e)[:200]}]
+
+
+def command(kind, narration, out, hold_record):
+    """Pythonで投稿を駆動する経路も、workflowと同じCLIを使う。"""
+    return [sys.executable, str(pathlib.Path(__file__).resolve()), '--general', '--strict',
+            '--narration', str(narration), '--out', str(out),
+            '--hold-record', str(hold_record), '--kind', kind]
 
 
 def main():
@@ -431,8 +469,10 @@ def main():
                     default=["public/narration.json",
                              "public/soccer_narration.json"])
     ap.add_argument("--strict", action="store_true",
-                    help="ありえない数字があれば異常終了する")
+                    help="一度再点検し、原稿内の確定した誤り・材料との矛盾で異常終了する")
     ap.add_argument("--out", default="data/sanity.json")
+    ap.add_argument('--hold-record', help='見送り印と区別する、この実行のアップロード保留記録')
+    ap.add_argument('--kind', default='daily')
     args = ap.parse_args()
 
     # 出すのを止めるのは、これから喋る文に問題があるときだけ。
@@ -440,9 +480,9 @@ def main():
     # 以前は名簿全体の検査も同じ列に足していた。名簿に1行おかしな
     # ものがあるだけで、その選手に触れてもいない動画まで止まる。
     # 8/29はそれで6本が消えた。
-    impossible = check_scores() + check_narration(args.narration)
+    impossible = check_narration(args.narration)
     # 手元のデータの疑わしさ。直す手がかりにはなるが、出すのは止めない。
-    warnings = check_stat_files()
+    warnings = check_stat_files() + check_scores()
 
     print("--- 原稿のありえない数字（これがあると出しません）---")
     for b in impossible:
@@ -460,17 +500,28 @@ def main():
         try:
             documents.append(json.loads(pathlib.Path(path).read_text(encoding='utf-8')))
         except (OSError, json.JSONDecodeError):
-            continue
-    odd, contradictions = sanity_material.assess([], documents)
+            if not (args.kind == 'daily' and pathlib.Path('build/narration_skipped.txt').is_file()
+                    and not pathlib.Path(path).exists()):
+                impossible.append('点検対象の原稿を読めません: ' + str(path))
+    import sanity_internal
+    impossible += sanity_internal.check(documents)
+    materials = sanity_material.grounding(documents)
+    import sanity_sources
+    material_status = sanity_sources.availability(documents, materials)
+    for status in material_status:
+        if status['status'] == '材料が空':
+            print('::warning::材料が空：この原稿のhighは材料不足として記録します')
+    odd, contradictions = sanity_material.assess([], documents, materials)
     for error in contradictions:
         print('  NG 材料照合:', error)
     if args.general:
         key = os.environ.get("ANTHROPIC_API_KEY", "")
         if key:
-            odd, contradictions = sanity_material.assess(general(args.narration, key), documents)
+            odd, contradictions = sanity_material.assess(
+                general(args.narration, key, materials=materials), documents, materials)
             print("\n--- 読んで引っかかるところ ---")
             for o in odd:
-                print("  [%s] %s — %s" % (o.get("severity", "?"),
+                print("  [%s][%s] %s — %s" % (o.get("severity", "?"), o['kind'],
                                           o.get("where", "")[:60],
                                           o.get("why", "")[:120]))
             if not odd:
@@ -478,12 +529,43 @@ def main():
         else:
             print("\n(ANTHROPIC_API_KEY がないので二段目は飛ばした)")
 
+    import sanity_recheck
+    odd, contradictions, materials, attempts = sanity_recheck.run(
+        documents, odd, materials, impossible, contradictions,
+        os.environ.get('ANTHROPIC_API_KEY', '') if args.general else '')
+    material_status = sanity_sources.availability(documents, materials)
+    high = [o for o in odd if sanity_material.blocking(o)]
+    unconfirmed = [o for o in odd if not o.get('confirmed') and not o.get('supported')]
+    if high:
+        print('::error::再点検でも材料との矛盾が確定したため予約停止・アップロード未実行です')
+    for issue in odd:
+        if issue not in high:
+            warnings.append(issue)
+            print('::warning::常識点検（%s）: %s' % (issue['verification'], issue.get('why', '')))
+    blocked = bool((impossible or contradictions or high) and args.strict)
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"impossible": impossible, "odd": odd, "contradictions": contradictions,
-                               "date_jst": next((d.get('date_jst') for d in documents if d.get('date_jst')), None),
-                               "warnings": warnings},
+                               "date_jst": next((sanity_material.document_day(d) for d in documents
+                                                 if sanity_material.document_day(d)), None),
+                               "blocking_issues": high, "warnings": warnings,
+                               "unconfirmed_issues": unconfirmed, "materials": materials,
+                               "material_status": material_status,
+                               "attempts": attempts,
+                               "upload_held": blocked},
                               ensure_ascii=False, indent=2), encoding="utf-8")
+    if args.hold_record:
+        from datetime import datetime, timezone
+        hold = pathlib.Path(args.hold_record)
+        hold.parent.mkdir(parents=True, exist_ok=True)
+        hold.write_text(json.dumps(dict(
+            status='held' if blocked else 'passed', kind=args.kind,
+            checked_at=datetime.now(timezone.utc).isoformat(),
+            run_id=os.environ.get('GITHUB_RUN_ID', ''),
+            run_attempt=os.environ.get('GITHUB_RUN_ATTEMPT', ''),
+            reason='常識点検による保留・アップロード未実行' if blocked else '',
+            reasons=impossible + contradictions + [o.get('why', '') for o in high],
+            report=str(out), attempts=attempts), ensure_ascii=False, indent=2), encoding='utf-8')
 
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary and (impossible or contradictions or odd):
@@ -494,11 +576,13 @@ def main():
             for b in contradictions:
                 f.write('- **材料と矛盾** %s\n' % b)
             for o in odd:
-                f.write("- %s 「%s」 — %s\n"
-                        % ("**材料と矛盾**" if o.get("confirmed") else "参考（未確定）",
-                           o.get("where", ""), o.get("why", "")))
+                f.write("- %s [%s] 「%s」 — %s\n"
+                        % ("**重大な指摘・予約停止**" if o in high else
+                           "**材料と矛盾**" if o.get("confirmed") else
+                           o['verification'] if o.get('supported') or o.get('material_missing') or o['kind'] == sanity_material.CONTEXT else "参考（未確定）",
+                           o['kind'], o.get("where", ""), o.get("why", "")))
 
-    return 1 if ((impossible or contradictions) and args.strict) else 0
+    return 1 if blocked else 0
 
 
 if __name__ == "__main__":

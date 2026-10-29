@@ -20,7 +20,7 @@ def bundled_font(size, latin=False, serif=False):
 
 def setup():
     os.environ['COLLESPO_SHORT_LOOK'] = 'v4'
-    os.environ['COLLESPO_SOCCER_LOOK'] = 'v4'
+    os.environ.setdefault('COLLESPO_SOCCER_LOOK', 'v4')
     os.environ['COLLESPO_DUO'] = 'off'
     bundled = str(ROOT/'assets/fonts/soccer-v5/NotoSansJP-VF.ttf')
     os.environ['COLLESPO_FONT'] = bundled
@@ -66,10 +66,15 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
                 raise ValueError('VOICEVOXの合成失敗（無音へ置換しません）')
             audio.append(dict(seg, file=str(file.resolve()), duration=sn.audio_duration(file)))
     times = rr.durations(narr['segments'], audio) if voiced else [max(3.5, len(s['text'].split())/2.5) for s in narr['segments']]
+    if __import__('soccer_look').readable():
+        from soccer_readable import minimum_seconds
+        times = [max(t, minimum_seconds(s)) for s,t in zip(narr['segments'],times)]
     if motion.enabled():motion.measured(audio)
     times=[max(duration,len(seg['caption_en'].split())/3) if seg.get('caption_en') else duration for seg,duration in zip(narr['segments'],times)]
     times = [math.ceil(t*30)/30 for t in times]
     if sum(times) > 40: raise ValueError('40秒を超えるため原稿を短くしてください')
+    import short_content
+    short_content.require(narr, times, out, narr.get('soccer_material'), maximum=40, video_name=filename)
     ffmpeg = rr.ensure_ffmpeg(out)
     track = vc.build_narration_track(audio, times, out) if voiced else None
     cmd = [ffmpeg, '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', '30', '-i', '-']

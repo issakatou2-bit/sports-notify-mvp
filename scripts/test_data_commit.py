@@ -69,8 +69,8 @@ class DataCommitTest(unittest.TestCase):
         self.write(repo, 'token_usage', {'days': {'2026-10-16': {'calls': calls, 'in': calls * 10}}})
         self.write(repo, 'ps_game_topics', {'topics': [{'key': 'old', 'items': [key]}, {'key': key}]})
 
-    def save(self):
-        result = subprocess.run(['bash', '-c', 'export PATH="$PWD/test-bin:$PATH"; bash scripts/commit_data.sh test data/*.json'],
+    def save(self, paths='data/*.json'):
+        result = subprocess.run(['bash', '-c', 'export PATH="$PWD/test-bin:$PATH"; bash scripts/commit_data.sh test ' + paths],
                                 cwd=self.local, env=self.env, capture_output=True,
                                 encoding='utf-8', errors='replace', timeout=90)
         return result
@@ -78,20 +78,104 @@ class DataCommitTest(unittest.TestCase):
     def remote_json(self, name):
         return json.loads(self.git(self.remote, 'show', 'main:data/' + name + '.json').stdout)
 
+    def test_publications_auto_saved_with_old_path_and_snapshot(self):
+        import publication_writer as writer
+        from ledger_adapter import observation
+        self.add_run(self.local, 'game', 'new-video', 13)
+        obs = observation('daily', '2026-10-27', {'video_id': 'new-video'},
+                          'published_videos/daily/2026-10-27')
+        path = writer.write(obs, self.local)
+        # 別の回を先に保存する競合。両方の1回1ファイルがremoteまで残る。
+        other = observation('daily', '2026-10-26', {'video_id': 'other-video'},
+                            'published_videos/daily/2026-10-26')
+        other_path = writer.write(other, self.upstream)
+        self.commit(self.upstream, 'another publication')
+        self.git(self.upstream, 'push', '-q')
+        writer.recover(obs, OSError('fixture'), self.local)
+        result = self.save('data/published_videos.json')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for target, repo in ((path, self.local), (other_path, self.upstream)):
+            name = target.relative_to(repo).as_posix()
+            doc = json.loads(self.git(self.remote, 'show', 'main:' + name).stdout)
+            self.assertEqual(len(doc['history']), 1)
+        recovery, = (self.local / 'data/publication_recovery').glob('*.json')
+        self.assertEqual(self.git(self.remote, 'cat-file', '-e',
+                                 'main:' + recovery.relative_to(self.local).as_posix()).returncode, 0)
+        snapshots = list((self.local / 'build/data-save-recovery').glob('*/data/publications/*/*.json'))
+        self.assertEqual(len(snapshots), 1)
+
     def test_competing_runs_keep_both_records_and_usage_in_real_push(self):
         self.add_run(self.upstream, 'longform', 'other-video', 12)
         self.commit(self.upstream, 'other run')
         self.git(self.upstream, 'push', '-q')
         self.add_run(self.local, 'game', 'GhJYUObTp3I', 13)
-        # --autostashも通す。保存対象でない生成物があっても台帳を失わない。
+        # 保存対象でない生成物があっても台帳を失わない。
         (self.local / 'scripts/unused.txt').write_text('local output')
         result = self.save()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('押しました (1回目)', result.stdout)
+        self.assertNotIn('failed to push some refs', result.stdout)
         for name, kind in [('published_assets', 'assets'), ('published_videos', 'asset')]:
             self.assertEqual(set(self.remote_json(name)[kind]), {'old', 'longform', 'game'})
         self.assertEqual(self.remote_json('token_usage')['days']['2026-10-16'], {'calls': 15, 'in': 150})
         self.assertEqual({row['key'] for row in self.remote_json('ps_game_topics')['topics']}, {'old', 'longform', 'game'})
         self.assertEqual((self.local / 'scripts/unused.txt').read_text(), 'local output')
+
+    def test_unselected_usage_conflict_does_not_block_record_push(self):
+        # run 39104770308: 公開台帳のrebase解決後、対象外の使用量復元で競合。
+        self.add_run(self.upstream, 'other', 'other-video', 12)
+        self.commit(self.upstream, 'competing publication and usage')
+        self.git(self.upstream, 'push', '-q')
+        self.add_run(self.local, 'game', 'GhJYUObTp3I', 13)
+        result = self.save('data/published_assets.json data/published_videos.json data/ps_game_topics.json')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for name, kind in [('published_assets', 'assets'), ('published_videos', 'asset')]:
+            self.assertEqual(set(self.remote_json(name)[kind]), {'old', 'other', 'game'})
+        self.assertEqual(self.remote_json('token_usage')['days']['2026-10-16']['calls'], 12)
+        restored = json.loads((self.local / 'data/token_usage.json').read_text())
+        self.assertEqual(restored['days']['2026-10-16']['calls'], 15)
+        self.assertEqual(self.git(self.local, 'diff', '--name-only', '--diff-filter=U').stdout, '')
+        self.assertEqual(self.git(self.local, 'stash', 'list').stdout, '')
+
+    def test_non_json_restore_conflict_keeps_records_and_failure_reason(self):
+        (self.upstream / 'scripts/unused.txt').write_text('remote output')
+        self.commit(self.upstream, 'other run changes non record file only')
+        self.git(self.upstream, 'push', '-q')
+        self.add_run(self.local, 'game', 'GhJYUObTp3I', 13)
+        (self.local / 'scripts/unused.txt').write_text('local output')
+        result = self.save()
+        self.assertNotEqual(result.returncode, 0)
+        for name, kind in [('published_assets', 'assets'), ('published_videos', 'asset')]:
+            self.assertIn('game', self.remote_json(name)[kind])
+        marker, = (self.local / 'build/data-save-recovery').glob('*/FAILED')
+        reason = marker.read_text(encoding='utf-8')
+        self.assertIn('記録は保存済み', reason)
+        self.assertIn('records: saved', reason)
+        self.assertIn('scripts/unused.txt', reason)
+        self.assertIn('local output', (marker.parent / 'pending.patch').read_text())
+        self.assertNotIn('公開済みだが記録が保存できなかった', result.stdout)
+
+    def test_only_topic_and_kana_remote_changes_keep_public_records(self):
+        for name in ('season_topics', 'player_kana'):
+            self.write(self.upstream, name, {'old': 'before'})
+        self.commit(self.upstream, 'seed topic and kana')
+        self.git(self.upstream, 'push', '-q')
+        self.git(self.local, 'pull', '--ff-only', '-q')
+        for name in ('season_topics', 'player_kana', 'ps_game_topics'):
+            self.write(self.upstream, name, {'remote': 'other run'})
+            self.write(self.local, name, {'local': 'this run'})
+        self.commit(self.upstream, 'other run changes non record JSON only')
+        self.git(self.upstream, 'push', '-q')
+        # add_run はPS一覧も更新するので、台帳だけ追加。
+        for name, kind in [('published_assets', 'assets'), ('published_videos', 'asset')]:
+            self.write(self.local, name, {kind: {'old': {'video_id': 'old-video'},
+                                               'game': {'video_id': 'GhJYUObTp3I'}}})
+        result = self.save()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for name, kind in [('published_assets', 'assets'), ('published_videos', 'asset')]:
+            self.assertEqual(set(self.remote_json(name)[kind]), {'old', 'game'})
+        for name in ('season_topics', 'player_kana', 'ps_game_topics'):
+            self.assertEqual(self.remote_json(name), {'remote': 'other run', 'local': 'this run'})
 
     def test_second_race_retries_without_double_counting_usage(self):
         race = self.root / 'race.py'
@@ -120,6 +204,16 @@ if n < 2:
         self.assertEqual(set(self.remote_json('published_assets')['assets']), {'old', 'race0', 'race1', 'game'})
         self.assertEqual(self.remote_json('token_usage')['days']['2026-10-16'], {'calls': 15, 'in': 150})
 
+    def test_failed_prefetch_stops_before_sending_and_keeps_recovery(self):
+        self.add_run(self.local, 'game', 'unsent-preview', 13)
+        self.git(self.local, 'remote', 'set-url', 'origin', str(self.root/'unavailable.git'))
+        result=self.save()
+        self.assertNotEqual(result.returncode,0)
+        self.assertNotIn('押しました',result.stdout)
+        marker,=(self.local/'build/data-save-recovery').glob('*/FAILED')
+        self.assertIn('送信前の取得・取り込みに失敗',marker.read_text(encoding='utf8'))
+        self.assertNotIn('game',self.remote_json('published_assets')['assets'])
+
     def test_push_exhaustion_fails_and_keeps_recovery_with_video_id(self):
         hook = self.remote / 'hooks/pre-receive'
         hook.write_text('#!/bin/sh\nexit 1\n', encoding='utf-8')
@@ -131,6 +225,10 @@ if n < 2:
         self.assertIn('5回試しても', result.stdout)
         saved = list((self.local / 'build/data-save-recovery').glob('*/FAILED'))
         self.assertEqual(len(saved), 1)
+        reason = saved[0].read_text(encoding='utf-8')
+        self.assertIn('5回試してもpushできませんでした', reason)
+        self.assertIn('pre-receive hook declined', reason)
+        self.assertIn('-WWdo4q-JcE', reason)
         value = json.loads((saved[0].parent / 'data/published_assets.json').read_text())
         self.assertEqual(value['assets']['game']['video_id'], '-WWdo4q-JcE')
         self.assertNotIn('game', self.remote_json('published_assets')['assets'])
@@ -153,6 +251,8 @@ if n < 2:
         result = self.save()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('公開済みだが記録が保存できなかった：GhJYUObTp3I', result.stdout)
+        marker, = (self.local / 'build/data-save-recovery').glob('*/FAILED')
+        self.assertIn('保存対象のgit commitに失敗', marker.read_text(encoding='utf-8'))
 
     def test_conflicting_video_id_cannot_overwrite_public_record(self):
         self.add_run(self.upstream, 'game', 'other-video', 12)

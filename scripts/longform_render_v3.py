@@ -1055,6 +1055,7 @@ def subtitle(im, d, t, seg, who, dur=None):
     total = sum(widths) or 1
     k = _clamp((t - T_TYPE0) / type_seconds(text, dur))
     shown = total * k
+    visible = False
     x0 = SUB_X0 + SUB_BAR + SUB_PAD_X
     block = len(lines) * lh
     room = SUB_Y1 - SUB_Y0 - SUB_PAD_TOP - SUB_PAD_BOTTOM
@@ -1069,9 +1070,12 @@ def subtitle(im, d, t, seg, who, dur=None):
             x = _draw_text(lay, ld, (x, 0), part, f, GOLD if gold else INK)
         cut = int(min(w, shown)) + (16 if shown >= w else 0)
         part = lay.crop((0, 0, cut, lay.height))
+        visible = visible or bool(part.getbbox())
         im.paste(part, (x0, y), part)
         shown -= w
         y += lh
+    import render_timeline
+    render_timeline.subtitle(im, text, visible=visible)
 
 
 def _gold_runs(line):

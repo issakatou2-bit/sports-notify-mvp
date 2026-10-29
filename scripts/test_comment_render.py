@@ -237,7 +237,7 @@ class Words(unittest.TestCase):
         th = cr.voices_for_segment(segs["thread"], vd)
         v = vd["voices"][segs["thread"]["meta"]["index"]]
         parent=[] if segs['thread']['meta'].get('parent_read') else [v['ja']]
-        self.assertEqual([x["said"] for x in th], parent + [r["ja"] for r in v["reply_ja"][:3]])
+        self.assertEqual([x["said"] for x in th], parent + [r["ja"] for r in v["reply_ja"][:3] if "@" not in r["ja"]])
 
     def test_layout_keeps_every_character(self):
         vd = voices_data()

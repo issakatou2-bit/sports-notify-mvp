@@ -38,8 +38,14 @@ class HostSplitTest(unittest.TestCase):
         self.folder = Path(self.temp.name)
         self.env = patch.dict(os.environ, COLLESPO_HOST_SPLIT='half', COLLESPO_SOLO_HOST='metan')
         self.env.start()
+        import ui_voice_policy
+        self.policy = patch.object(ui_voice_policy, 'decide', return_value=dict(version=1, planned_host='ui', reason=None, comparison_eligible=True, mode='live'))
+        self.policy.start()
+        self.clock = patch.object(q, 'now', return_value=__import__('datetime').datetime(2026,10,27,3,tzinfo=__import__('datetime').timezone.utc))
+        self.clock.start()
 
     def tearDown(self):
+        self.policy.stop(); self.clock.stop()
         self.env.stop()
         self.temp.cleanup()
 
@@ -111,7 +117,7 @@ class HostSplitTest(unittest.TestCase):
                 (video/'fixed.mp4').write_bytes(b'fixed-video')
                 hs.bind_video(video/'fixed.mp4', audio)
                 receipt = hs.publication(video/'fixed.mp4')
-                self.assertEqual(receipt['planned_host'], planned)
+                self.assertEqual(receipt['planned_host'], 'metan')
                 self.assertEqual(receipt['actual_host'], 'metan')
                 self.assertEqual(hs.use_audio({}, audio)['host_assignment'], source['host_assignment'])
                 store = self.folder/'published.json'
@@ -120,21 +126,23 @@ class HostSplitTest(unittest.TestCase):
                 self.assertEqual(saved['actual_host'], 'metan')
                 self.assertEqual(saved['host_assignment'], source['host_assignment'])
                 if planned == 'ui':
-                    self.assertEqual(saved['host_fallback_reason'], 'ui_unavailable')
+                    self.assertIsNone(saved['host_fallback_reason'])
+                    self.assertFalse(saved['host_delivery']['comparison_eligible'])
+                    self.assertEqual(saved['host_delivery']['previous_attempt']['status'], 'held')
 
     def test_ready_ui_audio_carries_plan_through_queue_install_and_render(self):
         import base64
         import synthesize_narration as sn
         import ui_voice_stock as stock
         import ui_voice_worker as worker
-        from test_ui_voice_queue import MemoryQueue, tone, portraits
+        from test_ui_voice_queue import MemoryQueue, tone, portraits, stock_sleep
         source = hs.prepare(SCRIPT, 'morning', day_for('ui'))
         path = self.folder/'ui.json'
         path.write_bytes(q.encoded(source))
         queue = MemoryQueue()
         with patch.dict(os.environ, COLLESPO_UI_PARTS_KEY=base64.b64encode(bytes(range(32))).decode('ascii')), \
              patch.object(q, 'GitQueue', return_value=queue), \
-             patch.object(stock.time, 'sleep', side_effect=lambda seconds: worker.process(queue, self.folder/'cache', tone, portraits())), \
+             stock_sleep(lambda seconds: worker.process(queue, self.folder/'cache', tone, portraits())), \
              patch.object(sys, 'argv', ['synth', '--narration', str(path), '--out-dir', str(self.folder/'audio')]):
             sn.main()
         hs.render_audio(self.folder/'audio', self.folder/'video')
@@ -157,8 +165,9 @@ class HostSplitTest(unittest.TestCase):
         source['voice_resolution'] = dict(host='metan', audio_available=False)
         path.write_bytes(q.encoded(source))
         (self.folder/'manifest.json').write_bytes(q.encoded(source))
-        hs.bind_video(video, self.folder)
-        self.assertEqual(hs.publication(self.folder/'fixed.mp4', path)['actual_host'], 'unknown')
+        import ui_voice_policy
+        with self.assertRaises(ui_voice_policy.VoiceUnavailable):
+            hs.bind_video(video, self.folder)
 
     def test_default_publication_record_has_no_new_fields(self):
         import upload_youtube as upload
@@ -184,10 +193,14 @@ class HostSplitTest(unittest.TestCase):
             ui.assert_not_called()
         self.assertEqual(hs.read(path)['voice_resolution']['host'],'metan')
         (self.folder/'fixed.mp4').write_bytes(b'fixed-video')
-        hs.bind_video(self.folder/'fixed.mp4', self.folder/'audio')
-        self.assertEqual(hs.publication(self.folder/'fixed.mp4',path)['actual_host'],'metan')
+        import ui_voice_policy
+        with self.assertRaises(ui_voice_policy.VoiceUnavailable):
+            hs.bind_video(self.folder/'fixed.mp4', self.folder/'audio')
 
     def test_shared_output_folder_never_overwrites_another_videos_host(self):
+        from test_ui_voice_queue import portraits
+        for name, blob in portraits().items():
+            (self.folder/name).write_bytes(blob)
         out = self.folder/'shared'
         out.mkdir()
         for host in hs.HOSTS:

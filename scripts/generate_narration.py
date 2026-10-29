@@ -1165,6 +1165,8 @@ def main():
     import mlb_forecast
     value=mlb_forecast.decorate({'date_label':date_label,'segments':segments},
         forecast_games, data.get('generated_at') or __import__('datetime').datetime.now(mlb_forecast.JST).isoformat())
+    import sanity_sources
+    value = sanity_sources.attach(value, data)
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", encoding="utf-8") as f:

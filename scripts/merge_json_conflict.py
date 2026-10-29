@@ -38,6 +38,23 @@ PUBLIC_RECORDS = {'published_assets.json', 'published_videos.json', 'published_t
 
 def merge_three_way(base, upstream, local, path, keys=()):
     """共通の元からの変更を合わせる。公開台帳の削除・IDの上書きはしない。"""
+    if path.startswith('data/publications/'):
+        if keys == ('history',) and isinstance(upstream, list) and isinstance(local, list):
+            original = base if isinstance(base, list) else []
+            if upstream[:len(original)] != original or local[:len(original)] != original:
+                raise ValueError('公開履歴の既存部分が変更されています')
+            if not all(isinstance(row, dict) and row.get('event_id') for row in upstream + local):
+                raise ValueError('公開履歴の識別子がありません')
+            seen = {row['event_id'] for row in upstream}
+            return upstream + [row for row in local if row['event_id'] not in seen]
+        if keys in (('publication_id',), ('domain',), ('kind',), ('key_parts',)):
+            if upstream is not MISSING and local is not MISSING and upstream != local:
+                raise ValueError('同じ公開ファイルの鍵が異なります')
+    if (path.endswith('soccer_flash_receipts.json') and len(keys)==1
+            and isinstance(upstream,dict) and isinstance(local,dict)
+            and upstream != local and upstream != base and local != base
+            and (upstream.get('at'),upstream.get('kind')) != (local.get('at'),local.get('kind'))):
+        raise ValueError('同じ試合に別の速報予約があります。上書きせず投稿を停止します')
     public = path.rsplit('/', 1)[-1] in PUBLIC_RECORDS
     if isinstance(upstream, dict) and isinstance(local, dict):
         original = base if isinstance(base, dict) else {}

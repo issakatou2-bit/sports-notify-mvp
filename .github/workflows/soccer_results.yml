@@ -35,6 +35,7 @@ concurrency:
 
 env:
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
 
@@ -107,9 +108,33 @@ jobs:
       - name: Fit the story to measured audio
         if: steps.gate.outputs.count != '0'
         run: python scripts/soccer_result_story.py --narration build/soccer_results/narration.json --audio-dir build/soccer_results/audio
-      - name: Render and measure 40 seconds
+      - name: Render and measure 60 seconds
         if: steps.gate.outputs.count != '0'
         run: python scripts/soccer_results_render.py --data data/soccer_results.json --audio-dir build/soccer_results/audio --out build/soccer_results
+      - name: Capture visual contact sheets (non-blocking)
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        timeout-minutes: 3
+        run: python scripts/visual_capture.py video --video build/soccer_results/collespo_soccer_results.mp4 --out build/visual/$(TZ=Asia/Tokyo date +%Y%m%d)
+      - name: Save visual contact sheets
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-soccer-results
+          path: |
+            build/visual/**/video/*-contact-*.jpg
+            !build/**/portrait/**
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: Sanity gate (soccer_results)
+        id: sanity
+        if: steps.gate.outputs.count != '0'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/sanity.py --general --strict --narration build/soccer_results/narration.json --out data/sanity_soccer_results.json --hold-record build/sanity_hold_soccer_results.json --kind soccer_results
+
       - name: Vertical thumbnail
         if: steps.gate.outputs.count != '0'
         run: bash scripts/shorts_thumbnail.sh build/soccer_results/collespo_soccer_results.mp4 build/soccer_results/short.png
@@ -124,6 +149,7 @@ jobs:
       - name: Upload to YouTube
         if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish) && steps.gate.outputs.count != '0'
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -157,7 +183,7 @@ jobs:
           if-no-files-found: ignore
       - name: Confirm reservation
         if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0'
-        run: python scripts/verify_published.py --kind soccer_results
+        run: python scripts/verify_published.py --kind soccer_results --games data/soccer_results.json
 
       - name: Keep unsaved data records
         if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
@@ -169,3 +195,37 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

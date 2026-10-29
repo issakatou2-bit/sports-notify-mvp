@@ -347,8 +347,12 @@ def main():
 
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
+    import sanity_sources
+    document = sanity_sources.attach(dict(label=label, segments=segments), dict(
+        date_jst=week[-1][0], source='archive', games=[dict(g, date_jst=day) for day, g in week],
+        players=ops_players + league_players))
     out.write_text(
-        json.dumps({"label": label, "segments": segments}, ensure_ascii=False),
+        json.dumps(document, ensure_ascii=False),
         encoding="utf-8",
     )
     chars = sum(len(s["text"]) for s in segments)

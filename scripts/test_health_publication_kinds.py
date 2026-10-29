@@ -28,6 +28,8 @@ class PublicationKindTests(unittest.TestCase):
                 stack.enter_context(patch.object(hc, name, return_value=value))
             stack.enter_context(patch.object(sys, "argv", argv))
             stack.enter_context(patch.dict("os.environ", {"GITHUB_STEP_SUMMARY": ""}))
+            # mainで追加された台帳照合は、この欠配試験では保存dataを読ませない。
+            stack.enter_context(patch("ledger_compare.health_table", return_value=[]))
             stack.enter_context(contextlib.redirect_stdout(output))
             result = hc.main()
         return result, output.getvalue()

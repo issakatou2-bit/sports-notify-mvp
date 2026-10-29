@@ -20,7 +20,11 @@ def snapshot(paths):
     root.mkdir(parents=True, exist_ok=True)
     target = pathlib.Path(tempfile.mkdtemp(prefix='save-', dir=root))
     ids = set()
+    expanded = []
     for name in paths:
+        path = pathlib.Path(name)
+        expanded.extend(sorted(path.rglob('*.json')) if path.is_dir() else [path])
+    for name in expanded:
         path = pathlib.Path(name)
         if path.is_absolute() or '..' in path.parts or not path.is_file() or path.suffix != '.json':
             continue
@@ -41,16 +45,27 @@ def snapshot(paths):
     return target
 
 
-def report(target):
-    ids = json.loads((pathlib.Path(target) / 'video_ids.json').read_text(encoding='utf-8'))
-    for video in ids:
-        print(f'::error::公開済みだが記録が保存できなかった：{video}')
-    print(f'::error::データの保存に失敗しました。復旧用の記録：{target}')
-    (pathlib.Path(target) / 'FAILED').touch()
+def report(target, reason='保存処理に失敗（理由未指定）', state='unsaved'):
+    target = pathlib.Path(target)
+    ids = json.loads((target / 'video_ids.json').read_text(encoding='utf-8'))
+    if state != 'saved':
+        for video in ids:
+            print(f'::error::公開済みだが記録が保存できなかった：{video}')
+    status = subprocess.run(['git', 'status', '--short'], capture_output=True,
+                            encoding='utf-8', errors='replace')
+    details = (f'{reason}\nrecords: {state}\nvideo_ids: {", ".join(ids)}\n'
+               f'git status:\n{status.stdout}{status.stderr}')
+    for name in ('push', 'pull', 'merge'):
+        log = target / (name + '.log')
+        if log.exists():
+            details += f'\nlast {name}:\n' + log.read_text(encoding='utf-8', errors='replace')
+    (target / 'FAILED').write_text(details, encoding='utf-8')
+    print(f'::error::{reason}')
+    print(f'::error::復旧用の記録：{target}')
 
 
 if __name__ == '__main__':
     if sys.argv[1] == 'snapshot':
         print(snapshot(sys.argv[2:]))
     else:
-        report(sys.argv[2])
+        report(*sys.argv[2:])

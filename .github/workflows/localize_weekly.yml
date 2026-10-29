@@ -1,0 +1,63 @@
+name: 点検　英語の題と説明の週次確認
+
+on:
+  schedule:
+    - cron: '10 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: '英語を足す上限本数（1本50ユニット）'
+        default: '10'
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: localize-weekly
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+      - name: Count missing English metadata
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ENABLED: ${{ vars.COLLESPO_LOCALIZE_WEEKLY }}
+          LIMIT: ${{ inputs.limit }}
+        run: |
+          MODE=--dry-run
+          if [ "$ENABLED" = "on" ]; then MODE=--apply; fi
+          python scripts/localize_weekly.py "$MODE" --limit "${LIMIT:-10}"
+      - name: Save localization records
+        if: always() && vars.COLLESPO_LOCALIZE_WEEKLY == 'on'
+        run: |
+          bash scripts/commit_data.sh "weekly localization: ${{ github.run_id }}" data/localized.json data/token_usage.json
+      - name: Keep audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: localize-weekly-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/localize-weekly.json
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error

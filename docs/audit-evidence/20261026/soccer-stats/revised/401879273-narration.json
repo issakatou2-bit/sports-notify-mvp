@@ -1,0 +1,653 @@
+{
+  "label": "2026-09-20",
+  "segments": [
+    {
+      "kind": "followup",
+      "text": "リーズ対クリスタル・パレスは、0対0。",
+      "speaker": 2,
+      "caption_units": [
+        "リーズ対クリスタル・パレスは、0対0。"
+      ],
+      "meta": {
+        "event_id": "401879273",
+        "score_only": true
+      }
+    },
+    {
+      "kind": "followup-detail",
+      "text": "得点なし。",
+      "speaker": 2,
+      "caption_units": [
+        "得点なし。"
+      ],
+      "meta": {
+        "event_id": "401879273",
+        "details": [
+          {
+            "club": null,
+            "text": "プレミアリーグ"
+          },
+          {
+            "club": null,
+            "text": "得点なし"
+          }
+        ],
+        "goals": [],
+        "required": true
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "田中碧は約67分出場、シュート2本、枠内はなし。",
+      "speaker": 2,
+      "caption_units": [
+        "田中碧は約67分出場、シュート2本、枠内はなし。"
+      ],
+      "meta": {
+        "event_id": "401879273",
+        "start": 0,
+        "count": 1
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "鎌田大地はフル出場、シュート3本、枠内は1本。",
+      "speaker": 2,
+      "caption_units": [
+        "鎌田大地はフル出場、シュート3本、枠内は1本。"
+      ],
+      "meta": {
+        "event_id": "401879273",
+        "start": 1,
+        "count": 1
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "冨安健洋は約45分出場。",
+      "speaker": 2,
+      "caption_units": [
+        "冨安健洋は約45分出場。"
+      ],
+      "meta": {
+        "event_id": "401879273",
+        "start": 2,
+        "count": 1
+      }
+    },
+    {
+      "kind": "roster",
+      "text": "日本人選手の結果です。",
+      "speaker": 2,
+      "caption_units": [
+        "日本人選手の結果です。"
+      ],
+      "meta": {
+        "start": 0,
+        "count": 3,
+        "more": 0,
+        "absent": [],
+        "page": 1
+      }
+    },
+    {
+      "kind": "outro",
+      "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+      "speaker": 2,
+      "meta": {}
+    }
+  ],
+  "duration_budget": {
+    "limit": 60.0,
+    "grace": 0
+  },
+  "sanity_date_jst": "2026-09-20",
+  "soccer_material": {
+    "source": "ESPN・football-data.org",
+    "retrieved_at": "2026-10-25T15:03:31.538479+00:00",
+    "source_at": null,
+    "date_jst": "2026-09-20",
+    "games": [
+      {
+        "league": "PL",
+        "id": "401879273",
+        "date_jst": "2026-09-20",
+        "score": {
+          "home": 0,
+          "away": 0
+        },
+        "home": {
+          "id": "357",
+          "name_en": "Leeds United",
+          "name_jp": "リーズ",
+          "abbr": "LEE"
+        },
+        "away": {
+          "id": "384",
+          "name_en": "Crystal Palace",
+          "name_jp": "クリスタル・パレス",
+          "abbr": "CRY"
+        },
+        "goals": [],
+        "players": [
+          {
+            "name": "田中碧",
+            "name_en": "Ao Tanaka",
+            "club": "リーズ",
+            "side": "home",
+            "event_id": "401879273",
+            "athlete_id": "253173",
+            "status": "starter",
+            "goals": 0,
+            "assists": 0,
+            "yellow_cards": 1,
+            "red_cards": 0,
+            "plays": [],
+            "position": "MF",
+            "stats_source": "ESPN summary.rosters.roster.stats",
+            "shots": 2,
+            "on_target": 0,
+            "subbed_out": true,
+            "minutes": 67,
+            "minutes_source": "ESPN keyEvents substitution",
+            "minutes_approx": true,
+            "appearance_evidence": "ESPN starter/subbedIn"
+          },
+          {
+            "name": "鎌田大地",
+            "name_en": "Daichi Kamada",
+            "club": "クリスタル・パレス",
+            "side": "away",
+            "event_id": "401879273",
+            "athlete_id": "219362",
+            "status": "starter",
+            "goals": 0,
+            "assists": 0,
+            "yellow_cards": 0,
+            "red_cards": 0,
+            "plays": [],
+            "position": "FW",
+            "stats_source": "ESPN summary.rosters.roster.stats",
+            "shots": 3,
+            "on_target": 1,
+            "subbed_out": false,
+            "appearance_evidence": "ESPN starter/subbedIn"
+          },
+          {
+            "name": "冨安健洋",
+            "name_en": "Takehiro Tomiyasu",
+            "club": "クリスタル・パレス",
+            "side": "away",
+            "event_id": "401879273",
+            "athlete_id": "238004",
+            "status": "starter",
+            "goals": 0,
+            "assists": 0,
+            "yellow_cards": 0,
+            "red_cards": 0,
+            "plays": [],
+            "position": "DF",
+            "stats_source": "ESPN summary.rosters.roster.stats",
+            "shots": 0,
+            "on_target": 0,
+            "subbed_out": true,
+            "minutes": 45,
+            "minutes_source": "ESPN keyEvents substitution",
+            "minutes_approx": true,
+            "appearance_evidence": "ESPN starter/subbedIn"
+          }
+        ],
+        "match_stats": {
+          "source": "ESPN summary.boxscore.teams.statistics",
+          "home": {
+            "possession": 50.6,
+            "shots": 13,
+            "on_target": 2
+          },
+          "away": {
+            "possession": 49.4,
+            "shots": 12,
+            "on_target": 4
+          }
+        },
+        "score_crosscheck": "unavailable"
+      }
+    ],
+    "competitions": [],
+    "rows": [],
+    "players": [
+      {
+        "name": "冨安健洋",
+        "name_en": "Takehiro Tomiyasu",
+        "club": "クリスタル・パレス",
+        "side": "away",
+        "event_id": "401879273",
+        "athlete_id": "238004",
+        "status": "starter",
+        "goals": 0,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [],
+        "position": "DF",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 0,
+        "on_target": 0,
+        "subbed_out": true,
+        "minutes": 45,
+        "minutes_source": "ESPN keyEvents substitution",
+        "minutes_approx": true,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      },
+      {
+        "name": "田中碧",
+        "name_en": "Ao Tanaka",
+        "club": "リーズ",
+        "side": "home",
+        "event_id": "401879273",
+        "athlete_id": "253173",
+        "status": "starter",
+        "goals": 0,
+        "assists": 0,
+        "yellow_cards": 1,
+        "red_cards": 0,
+        "plays": [],
+        "position": "MF",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 2,
+        "on_target": 0,
+        "subbed_out": true,
+        "minutes": 67,
+        "minutes_source": "ESPN keyEvents substitution",
+        "minutes_approx": true,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      },
+      {
+        "name": "鎌田大地",
+        "name_en": "Daichi Kamada",
+        "club": "クリスタル・パレス",
+        "side": "away",
+        "event_id": "401879273",
+        "athlete_id": "219362",
+        "status": "starter",
+        "goals": 0,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [],
+        "position": "FW",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 3,
+        "on_target": 1,
+        "subbed_out": false,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      }
+    ]
+  },
+  "sanity_materials": [
+    {
+      "source": "ESPN・football-data.org",
+      "retrieved_at": "2026-10-25T15:03:31.538479+00:00",
+      "source_at": null,
+      "date_jst": "2026-09-20",
+      "games": [
+        {
+          "league": "PL",
+          "id": "401879273",
+          "date_jst": "2026-09-20",
+          "score": {
+            "home": 0,
+            "away": 0
+          },
+          "home": {
+            "id": "357",
+            "name_en": "Leeds United",
+            "name_jp": "リーズ",
+            "abbr": "LEE"
+          },
+          "away": {
+            "id": "384",
+            "name_en": "Crystal Palace",
+            "name_jp": "クリスタル・パレス",
+            "abbr": "CRY"
+          },
+          "goals": [],
+          "players": [
+            {
+              "name": "田中碧",
+              "name_en": "Ao Tanaka",
+              "club": "リーズ",
+              "side": "home",
+              "event_id": "401879273",
+              "athlete_id": "253173",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 1,
+              "red_cards": 0,
+              "plays": [],
+              "position": "MF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 2,
+              "on_target": 0,
+              "subbed_out": true,
+              "minutes": 67,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            },
+            {
+              "name": "鎌田大地",
+              "name_en": "Daichi Kamada",
+              "club": "クリスタル・パレス",
+              "side": "away",
+              "event_id": "401879273",
+              "athlete_id": "219362",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": "FW",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 3,
+              "on_target": 1,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            },
+            {
+              "name": "冨安健洋",
+              "name_en": "Takehiro Tomiyasu",
+              "club": "クリスタル・パレス",
+              "side": "away",
+              "event_id": "401879273",
+              "athlete_id": "238004",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": "DF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 0,
+              "on_target": 0,
+              "subbed_out": true,
+              "minutes": 45,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            }
+          ],
+          "match_stats": {
+            "source": "ESPN summary.boxscore.teams.statistics",
+            "home": {
+              "possession": 50.6,
+              "shots": 13,
+              "on_target": 2
+            },
+            "away": {
+              "possession": 49.4,
+              "shots": 12,
+              "on_target": 4
+            }
+          },
+          "score_crosscheck": "unavailable"
+        }
+      ],
+      "competitions": [],
+      "rows": [],
+      "players": [
+        {
+          "name": "冨安健洋",
+          "name_en": "Takehiro Tomiyasu",
+          "club": "クリスタル・パレス",
+          "side": "away",
+          "event_id": "401879273",
+          "athlete_id": "238004",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "DF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 0,
+          "on_target": 0,
+          "subbed_out": true,
+          "minutes": 45,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        {
+          "name": "田中碧",
+          "name_en": "Ao Tanaka",
+          "club": "リーズ",
+          "side": "home",
+          "event_id": "401879273",
+          "athlete_id": "253173",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 1,
+          "red_cards": 0,
+          "plays": [],
+          "position": "MF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 2,
+          "on_target": 0,
+          "subbed_out": true,
+          "minutes": 67,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        {
+          "name": "鎌田大地",
+          "name_en": "Daichi Kamada",
+          "club": "クリスタル・パレス",
+          "side": "away",
+          "event_id": "401879273",
+          "athlete_id": "219362",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "FW",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 3,
+          "on_target": 1,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        }
+      ],
+      "sport": "soccer",
+      "used_for_date": "2026-09-20"
+    },
+    {
+      "source": "generation.input",
+      "date_jst": "2026-09-20",
+      "retrieved_at": "2026-10-25T15:03:31.538479+00:00",
+      "source_url": "ESPN・football-data.org",
+      "games": [
+        {
+          "league": "PL",
+          "id": "401879273",
+          "date_jst": "2026-09-20",
+          "score": {
+            "home": 0,
+            "away": 0
+          },
+          "home": {
+            "id": "357",
+            "name_en": "Leeds United",
+            "name_jp": "リーズ",
+            "abbr": "LEE"
+          },
+          "away": {
+            "id": "384",
+            "name_en": "Crystal Palace",
+            "name_jp": "クリスタル・パレス",
+            "abbr": "CRY"
+          },
+          "goals": [],
+          "players": [
+            {
+              "name": "田中碧",
+              "name_en": "Ao Tanaka",
+              "club": "リーズ",
+              "side": "home",
+              "event_id": "401879273",
+              "athlete_id": "253173",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 1,
+              "red_cards": 0,
+              "plays": [],
+              "position": "MF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 2,
+              "on_target": 0,
+              "subbed_out": true,
+              "minutes": 67,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            },
+            {
+              "name": "鎌田大地",
+              "name_en": "Daichi Kamada",
+              "club": "クリスタル・パレス",
+              "side": "away",
+              "event_id": "401879273",
+              "athlete_id": "219362",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": "FW",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 3,
+              "on_target": 1,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            },
+            {
+              "name": "冨安健洋",
+              "name_en": "Takehiro Tomiyasu",
+              "club": "クリスタル・パレス",
+              "side": "away",
+              "event_id": "401879273",
+              "athlete_id": "238004",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": "DF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 0,
+              "on_target": 0,
+              "subbed_out": true,
+              "minutes": 45,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            }
+          ],
+          "match_stats": {
+            "source": "ESPN summary.boxscore.teams.statistics",
+            "home": {
+              "possession": 50.6,
+              "shots": 13,
+              "on_target": 2
+            },
+            "away": {
+              "possession": 49.4,
+              "shots": 12,
+              "on_target": 4
+            }
+          },
+          "score_crosscheck": "unavailable"
+        }
+      ],
+      "players": [
+        {
+          "name": "冨安健洋",
+          "name_en": "Takehiro Tomiyasu",
+          "club": "クリスタル・パレス",
+          "side": "away",
+          "event_id": "401879273",
+          "athlete_id": "238004",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "DF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 0,
+          "on_target": 0,
+          "subbed_out": true,
+          "minutes": 45,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        {
+          "name": "田中碧",
+          "name_en": "Ao Tanaka",
+          "club": "リーズ",
+          "side": "home",
+          "event_id": "401879273",
+          "athlete_id": "253173",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 1,
+          "red_cards": 0,
+          "plays": [],
+          "position": "MF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 2,
+          "on_target": 0,
+          "subbed_out": true,
+          "minutes": 67,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        {
+          "name": "鎌田大地",
+          "name_en": "Daichi Kamada",
+          "club": "クリスタル・パレス",
+          "side": "away",
+          "event_id": "401879273",
+          "athlete_id": "219362",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "FW",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 3,
+          "on_target": 1,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        }
+      ]
+    }
+  ]
+}

@@ -30,6 +30,7 @@ concurrency:
 env:
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
   COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
@@ -68,6 +69,7 @@ jobs:
           exit 1
       - name: 直した材料で作り直す
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           set -e
@@ -76,15 +78,23 @@ jobs:
           echo "OLD_VIDEO=$OLD_VIDEO" >> "$GITHUB_ENV"
           python scripts/correct_video.py prepare --fix "$FIX" | tee -a "$GITHUB_STEP_SUMMARY"
           python scripts/generate_asset_video.py --topic "$TOPIC" --narration-out build/corr/narr.json
-          python scripts/sanity.py --strict --narration build/corr/narr.json
+          python scripts/sanity.py --general --strict --narration build/corr/narr.json --out data/sanity_correction.json --hold-record build/sanity_hold_correction.json --kind asset
           python scripts/synthesize_narration.py --narration build/corr/narr.json --out-dir build/corr/audio
           python scripts/generate_asset_video.py --topic "$TOPIC" --audio-dir build/corr/audio --out build/corr/out
           bash scripts/shorts_thumbnail.sh "build/corr/out/collespo_asset_$TOPIC.mp4" build/corr/out/short.png
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: corrected-video
           retention-days: 14
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
             build/corr/out/*.mp4
             build/corr/out/short.png
             build/corr/narr.json
@@ -93,6 +103,7 @@ jobs:
         if: inputs.mode == 'publish'
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -112,7 +123,7 @@ jobs:
       - name: 台帳を保存
         if: inputs.mode == 'publish'
         run: |
-          bash scripts/commit_data.sh "correct video: $FIX" data/published_assets.json data/published_videos.json
+          bash scripts/commit_data.sh "correct video: $FIX" data/published_assets.json data/published_videos.json data/token_usage.json
 
       - name: Keep unsaved data records
         if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
@@ -124,3 +135,37 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

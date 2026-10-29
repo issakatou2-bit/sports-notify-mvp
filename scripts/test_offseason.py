@@ -25,6 +25,7 @@ import json
 import pathlib
 import sys
 from datetime import date, datetime, timedelta, timezone
+from unittest.mock import patch
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -61,7 +62,7 @@ check("PS中は動いた日だけ話す（固定の材料）",
       rw.race_is_over({"phase": "postseason", "changes": []}), True)
 
 section("長編は、古い材料で作らない")
-_today = date.today()
+_today = date(2026, 9, 15)
 
 
 def _stamp(days_ago: int) -> dict:
@@ -82,12 +83,20 @@ check("日付が無いものは使わない", nm.fresh({"players": [1, 2]}, _tod
 check("未来の日付は使わない", nm.fresh(_stamp(-5), _today), False)
 
 section("シーズンが終われば、長編も止まる")
-_after = nm.load(str(DATA), today=_today + timedelta(days=90))
+_materials = {
+    'morning_recap.json': {'date': '2026-09-14', 'date_jst': '2026-09-15', 'players': [
+        {'name': '試験投手', 'type': 'pitcher', 'ip': '7.0', 'hits': 3, 'er': 0, 'so': 10, 'bb': 1}]},
+    'postseason.json': {'date_jst': '2026-09-15', 'changes': [{'text': '固定の順位変動'}]},
+}
+with patch.object(nm, '_read', side_effect=lambda p: _materials.get(pathlib.Path(p).name, {})), \
+     patch('milestones.best_for', return_value={}):
+    _after = nm.load('fixture', today=_today + timedelta(days=90))
+    _now = nm.load('fixture', today=_today)
 check("3か月後は選手がいない", _after["players"], [])
 check("3か月後は進出争いも無い", _after["race"]["changes"], [])
 check("3か月後は作らない", nm.has_enough(_after), False)
-_now = nm.load(str(DATA), today=_today)
-check("実材料でも制作可否を判定できる", isinstance(nm.has_enough(_now), bool), True)
+check("同じ固定材料は当日なら使える", nm.has_enough(_now), True)
+check("当日の選手が実際に材料に入る", len(_now['players']), 1)
 
 section("サッカーの季")
 _comp = {"code": "PL", "season": {"year": 2026, "end": "2027-05-30"}}
@@ -111,12 +120,19 @@ _next = {"competitions": [{
     "name_jp": "プレミアリーグ",
     "table": [{"position": i, "played": 6, "points": 10,
                "name": "Club %d" % i} for i in range(1, 21)]}]}
-check("今季の記録は来季をふさがない",
-      [d["round"] for d in sr.due(_next, {"PL:2026": 38})], [6])
-check("同じ季の同じ節は二度出さない",
-      sr.due(_next, {"PL:2027": 6}), [])
-check("季が終わっていれば出さない",
-      sr.due({"competitions": [dict(_next["competitions"][0],
-                                    season={"year": 2027,
-                                            "end": "2020-01-01"})]}, {}), [])
+class FixedDate(date):
+    @classmethod
+    def today(cls):
+        return cls(2027, 10, 1)
+
+
+with patch.object(sr, 'date', FixedDate):
+    check("今季の記録は来季をふさがない",
+          [d["round"] for d in sr.due(_next, {"PL:2026": 38})], [6])
+    check("同じ季の同じ節は二度出さない",
+          sr.due(_next, {"PL:2027": 6}), [])
+    check("季が終わっていれば出さない",
+          sr.due({"competitions": [dict(_next["competitions"][0],
+                                        season={"year": 2027,
+                                                "end": "2020-01-01"})]}, {}), [])
 sys.exit(done())
