@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import correct_video as cv
@@ -45,9 +46,10 @@ class Fresh(unittest.TestCase):
 
 
 class Superseded(unittest.TestCase):
-    def test_game_topic_is_skipped_after_the_next_game_starts(self):
+    # WS決着前の材料に固定。決着後の見送りはtest_after_wsで別に検査する。
+    @mock.patch("next_asset.pathlib.Path.read_text", return_value='{"series": []}')
+    def test_game_topic_is_skipped_after_the_next_game_starts(self, _snapshot):
         import next_asset
-        from unittest import mock
         with mock.patch("series_check.later_games", return_value=[4]):
             self.assertTrue(next_asset.superseded({"game": True, "game_pk": 3}))
         with mock.patch("series_check.later_games", return_value=[]):

@@ -10,6 +10,7 @@ import hashlib
 import json
 from pathlib import Path
 import urllib.request
+import ps_offseason
 
 JST = timezone(timedelta(hours=9))
 API = 'https://statsapi.mlb.com/api/v1/'
@@ -94,6 +95,12 @@ def editorial(snapshot, schedule, now, schedule_url):
               'matchups': [], 'reactions': []}
     result['fixture_evidence'] = {'dates': [{'games': [g for g in games
         if g.get('gameType') in ('F', 'D') and g.get('seriesGameNumber') == 1]}]}
+    import ps_series
+    series_rows = ps_series.build([g for g in games if g.get('gameType') == 'W'])
+    end = ps_offseason.finished_on(games, series_rows)
+    if end and end < day:
+        result.update(stage='offseason', reason='ワールドシリーズは決着済み', ws_finished_on=end)
+        return result
     # Qualifications alone cannot prove the seed/opponent assignment.
     if len(qualifiers) == 12:
         result['stage'] = 'bracket_pending'
@@ -198,6 +205,12 @@ def main():
     snapshot = json.loads(path.read_text(encoding='utf-8'))
     now = datetime.now(timezone.utc)
     year = now.astimezone(JST).year
+    if ps_offseason.completed_before(snapshot, now):
+        snapshot['editorial'] = dict(stage='offseason', date_jst=now.astimezone(JST).date().isoformat(),
+                                     reason='ワールドシリーズは決着済み')
+        path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding='utf-8')
+        print('[info] PS情勢は見送り：ワールドシリーズは決着済み')
+        return
     # Only fetch near the end of the regular season. Other months delegate.
     if now.astimezone(JST).month not in (9, 10, 11):
         snapshot['editorial'] = {'stage': 'offseason', 'date_jst': now.astimezone(JST).date().isoformat()}

@@ -49,6 +49,8 @@ VoiSonaの印がある台本・素材・音声manifest・動画の受領記録�
 
 ## 実行
 
+#269の記録からの変換は [AV_CHECK_INPUTS.md](AV_CHECK_INPUTS.md)。`--dry-run`は同じ出所・時刻・全フレーム復号の検査の後、ASRとGeminiの前で終了する。キーもCLIも使わない。終了0は送信前検査の成功のみで、`result.json`は`preflight_only`、ASR/Geminiは`not_run`となる。出所不足なら復号より前に拒否する。
+
 `--out` は毎回新しい空のフォルダを指定する。前回の結果を上書きして混同しないため、使用済みの出力先は拒否する。声の素材はWAV/FLAC、画面の素材はPNG/JPEG/WebPに限る。閲覧禁止の置き場や秘密用ディレクトリは、ファイルを開く前に拒否する。
 
 Python標準ライブラリとffmpeg/ffprobeが必要。ASRだけ既存のfaster-whisper環境を別Pythonとして指定できる。モデルは取得済みCTranslate2形式のフォルダを明示し、自動取得をしない。現在はCPU/int8・4スレッドで実行しGPUを使わない。将来GPU対応を足す場合は `heavy_wait.py --gpu` を必須にする。
