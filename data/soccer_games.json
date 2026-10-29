@@ -113,10 +113,718 @@
       "notification_hook": "昨季7位のアタランタが下位フィオレンティーナの本拠地へ。順位差を詰める一戦"
     }
   ],
-  "schedule_date": "2026-10-29",
   "ai_status": {
     "targets": 1,
     "succeeded": 1,
     "cost_usd": 0.0038
-  }
+  },
+  "source_errors": [],
+  "fixture_coverage": [
+    {
+      "competition": "PL",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "PD",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "BL1",
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
+    },
+    {
+      "competition": "SA",
+      "status": "success",
+      "events": 17,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FL1",
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "EL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "UECL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "FAC",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "EFL",
+      "status": "success",
+      "events": 6,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CDR",
+      "status": "success",
+      "events": 38,
+      "label": "取得成功"
+    },
+    {
+      "competition": "DFB",
+      "status": "success",
+      "events": 8,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CI",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDF",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    }
+  ],
+  "club_registration_check": {
+    "days": 7,
+    "checked_at": "2026-10-28T19:07:55.264551+09:00",
+    "missing": [
+      {
+        "club": "1. FC Nürnberg",
+        "game_ids": [
+          "espn-401917033"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "AE Prat",
+        "game_ids": [
+          "espn-401928513"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "ANAITASUNA",
+        "game_ids": [
+          "espn-401928514"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Aguilas",
+        "game_ids": [
+          "espn-401928523"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Albacete",
+        "game_ids": [
+          "espn-401928506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Amorebieta",
+        "game_ids": [
+          "espn-401928519"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Antequera CF",
+        "game_ids": [
+          "espn-401928523"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Atlético Baleares",
+        "game_ids": [
+          "espn-401928529"
+        ],
+        "candidates": [
+          {
+            "id": "Club Atlético de Madrid",
+            "display": "アトレティコ・マドリード"
+          }
+        ]
+      },
+      {
+        "club": "Atlético Calatayud",
+        "game_ids": [
+          "espn-401928496"
+        ],
+        "candidates": [
+          {
+            "id": "Club Atlético de Madrid",
+            "display": "アトレティコ・マドリード"
+          }
+        ]
+      },
+      {
+        "club": "Auriense Cented Academy",
+        "game_ids": [
+          "espn-401928507"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Badajoz",
+        "game_ids": [
+          "espn-401928532"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Barakaldo",
+        "game_ids": [
+          "espn-401928500"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Burgos",
+        "game_ids": [
+          "espn-401928491"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Artistico Navalcarnero",
+        "game_ids": [
+          "espn-401928551"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Laredo",
+        "game_ids": [
+          "espn-401928491"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Minera",
+        "game_ids": [
+          "espn-401928524"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Pamplona",
+        "game_ids": [
+          "espn-401928516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Sabadell",
+        "game_ids": [
+          "espn-401928497"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Tarancon",
+        "game_ids": [
+          "espn-401928527"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Varea",
+        "game_ids": [
+          "espn-401928498"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Calvo Sotelo",
+        "game_ids": [
+          "espn-401928506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Castellón",
+        "game_ids": [
+          "espn-401928531"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Ceuta",
+        "game_ids": [
+          "espn-401928525"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Cieza",
+        "game_ids": [
+          "espn-401928530"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Conquense",
+        "game_ids": [
+          "espn-401928531"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Coria",
+        "game_ids": [
+          "espn-401928535"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Coruxo",
+        "game_ids": [
+          "espn-401928494"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Covadonga",
+        "game_ids": [
+          "espn-401928511"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Cádiz",
+        "game_ids": [
+          "espn-401928548"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Eibar",
+        "game_ids": [
+          "espn-401928516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Eldense",
+        "game_ids": [
+          "espn-401928529"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Andorra",
+        "game_ids": [
+          "espn-401928498"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Cartagena",
+        "game_ids": [
+          "espn-401928524"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Gimnástica Torrelavega",
+        "game_ids": [
+          "espn-401928517"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Granada",
+        "game_ids": [
+          "espn-401928530"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Guijuelo",
+        "game_ids": [
+          "espn-401928492"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Hannover 96",
+        "game_ids": [
+          "espn-401916922"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Hertha Berlin",
+        "game_ids": [
+          "espn-401916919"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Huesca",
+        "game_ids": [
+          "espn-401928515"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Kaiserslautern",
+        "game_ids": [
+          "espn-401916922"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Leganés",
+        "game_ids": [
+          "espn-401928550"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Mallorca",
+        "game_ids": [
+          "espn-401928505"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Mijas Las Lagunas",
+        "game_ids": [
+          "espn-401928528"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Numancia",
+        "game_ids": [
+          "espn-401928490"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Peña Sport",
+        "game_ids": [
+          "espn-401928515"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Poblense",
+        "game_ids": [
+          "espn-401928525"
+        ],
+        "candidates": [
+          {
+            "id": "Racing Club de Lens",
+            "display": "ランス"
+          }
+        ]
+      },
+      {
+        "club": "Portugalete",
+        "game_ids": [
+          "espn-401928518"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Real Jaen CF",
+        "game_ids": [
+          "espn-401928528"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Real Oviedo",
+        "game_ids": [
+          "espn-401928490"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Real Unión Irun",
+        "game_ids": [
+          "espn-401928518"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Real Valladolid",
+        "game_ids": [
+          "espn-401928511"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Real Ávila",
+        "game_ids": [
+          "espn-401928512"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Reus FC Reddis",
+        "game_ids": [
+          "espn-401928500"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Ribadesella",
+        "game_ids": [
+          "espn-401928489"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "SSV Jeddeloh II",
+        "game_ids": [
+          "espn-401916919"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Salamanca UDS",
+        "game_ids": [
+          "espn-401928487"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "San Sebastián de los Reyes",
+        "game_ids": [
+          "espn-401928535"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Sporting Gijón",
+        "game_ids": [
+          "espn-401928492"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Sporting Hortaleza",
+        "game_ids": [
+          "espn-401928552"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Tenerife",
+        "game_ids": [
+          "espn-401928532"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Trival Valderas",
+        "game_ids": [
+          "espn-401928550"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "UB Lebrijana",
+        "game_ids": [
+          "espn-401928526"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "UD Logroñés",
+        "game_ids": [
+          "espn-401928519"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "UD Ourense",
+        "game_ids": [
+          "espn-401928517"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Unionistas de Salamanca",
+        "game_ids": [
+          "espn-401928512"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Utebo",
+        "game_ids": [
+          "espn-401928497"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Xerez",
+        "game_ids": [
+          "espn-401928548"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Zamora CF",
+        "game_ids": [
+          "espn-401928494"
+        ],
+        "candidates": []
+      }
+    ],
+    "source_errors": []
+  },
+  "source": "ESPN",
+  "preview_selection": {
+    "day": "2026-10-28",
+    "threshold": 30,
+    "max_games": 4,
+    "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+    "selected_ids": [
+      "espn-401921842",
+      "espn-401921834",
+      "espn-401917035",
+      "espn-401921841"
+    ],
+    "count": 4,
+    "reason": "",
+    "rejected": [
+      {
+        "id": "espn-401928514",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928516",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928527",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928494",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928515",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928525",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928518",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928497",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928505",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928519",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928532",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928506",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928511",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928528",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928490",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928550",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928524",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928530",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928517",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928500",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928551",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928487",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401928548",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401916919",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401917033",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401916922",
+        "reason": "クラブの表示名/読みが未登録"
+      }
+    ],
+    "source_errors": [],
+    "rescued": []
+  },
+  "schedule_date": "2026-10-29"
 }
