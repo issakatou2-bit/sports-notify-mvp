@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-29T04:05:47.530192+00:00",
+  "updated_at": "2026-10-29T06:24:02.113395+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
@@ -33,7 +33,7 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「この試合、広告に何回も割り込まれるんだけど」"
+          "「ブルワーズおめでとう。勝ち取った優勝だ🏆⚾」"
         ]
       ],
       "japanese": [],
@@ -43,11 +43,11 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "この試合、広告に何回も割り込まれるんだけど",
-        "text": "This baseball game keeps interrupting my ads",
-        "url": "https://www.youtube.com/watch?v=_7zaliemWbg",
-        "likes": 1560,
-        "at": "2026-10-28T06:21:25Z",
+        "said": "ブルワーズおめでとう。勝ち取った優勝だ🏆⚾",
+        "text": "Congratulations to the Brewers. They earned it🏆⚾",
+        "url": "https://www.youtube.com/watch?v=B4GJazslV4Q",
+        "likes": 290,
+        "at": "2026-10-29T04:01:36Z",
         "source": "MLB公式ハイライトのコメント"
       },
       "headline": null,
@@ -136,10 +136,6 @@
       "jp_first": false,
       "next_team_id": 139,
       "finished_at": "2026-10-28T04:28:32.899000+00:00",
-      "next_game_jp": {
-        "day": "10月29日",
-        "game": 5
-      },
       "v3": {
         "who": "レイズ　ワールドシリーズ第4戦",
         "big": "4-3",
@@ -157,7 +153,7 @@
             "score": "2"
           }
         ],
-        "ticker": "次の試合　日本時間10月29日　ワールドシリーズ第5戦"
+        "ticker": "レイズ 4対3 ブリュワーズ　本拠地で勝利　シリーズはレイズの1勝3敗"
       }
     },
     {
@@ -179,6 +175,10 @@
         [
           "先発",
           "ブリュワーズ ミジオロウスキー 5回と3分の2を無失点　レイズ ラスムッセン 4回を1失点"
+        ],
+        [
+          "ハイライトのコメント欄から",
+          "「ブルワーズおめでとう。勝ち取った優勝だ🏆⚾」"
         ]
       ],
       "japanese": [],
@@ -187,7 +187,14 @@
       "story": true,
       "game": true,
       "source": null,
-      "voice": null,
+      "voice": {
+        "said": "ブルワーズおめでとう。勝ち取った優勝だ🏆⚾",
+        "text": "Congratulations to the Brewers. They earned it🏆⚾",
+        "url": "https://www.youtube.com/watch?v=B4GJazslV4Q",
+        "likes": 290,
+        "at": "2026-10-29T04:01:36Z",
+        "source": "MLB公式ハイライトのコメント"
+      },
       "headline": null,
       "game_pk": 849799,
       "game_v4": {
