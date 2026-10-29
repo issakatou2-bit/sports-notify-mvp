@@ -31,7 +31,8 @@ class Interest(unittest.TestCase):
         self.assertEqual(player['name'],'鎌田大地');self.assertEqual(player['assists'],3)
         game=copy.deepcopy(game);game['season_players'][0]['assists']=2
         self.assertEqual(interest.decide(game)['player']['name'],'ハーランド')
-        readings.validate_query('期待選手はハーランドです。',{'accent_phrases':[{'moras':[{'text':'ハーランドデス'}]}]})
+        # VOICEVOXの実queryと同じく1モーラずつ（名前の範囲はモーラの区切りで照合する）
+        readings.validate_query('期待選手はハーランドです。',{'accent_phrases':[{'moras':[{'text':m} for m in ('ハ','ー','ラ','ン','ド','デ','ス')]}]})
 
     def test_stale_future_last_game_stats_and_injury_not_expectation(self):
         for update in ({'as_of':'2026-09-24T10:00:00Z'},{'as_of':'2026-10-13T10:00:00Z'},

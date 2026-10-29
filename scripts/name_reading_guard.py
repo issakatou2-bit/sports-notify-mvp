@@ -170,21 +170,36 @@ def japanese_readings():
     return {normalized_kana(player_readings().get(name,'')) for name in names}
 
 
-def name_phrase_spans(original, query):
-    """読み照合後、氏名がまたぐqueryの句番号を返す。長音表記も同一視。"""
-    phrases=query.get('accent_phrases',[])
-    raw='';owners=[]
-    for index,phrase in enumerate(phrases):
-        raw+=''.join(m['text'] for m in phrase.get('moras',[]))
-        owners.extend([index]*(len(normalized_kana(raw))-len(owners)))
-    actual=normalized_kana(raw);used={};out=[];full=japanese_readings()
+def query_name_locations(original,query):
+    """候補の氏名範囲の中だけで長音を照合し、前の語の母音を持ち込まない。"""
+    raw='';owners=[];boundaries={0}
+    for pi,phrase in enumerate(query.get('accent_phrases',[])):
+        for mi,mora in enumerate(phrase.get('moras',[])):
+            text=unicodedata.normalize('NFKC',mora['text'])
+            text=''.join(chr(ord(c)+0x60) if 'ぁ'<=c<='ゖ' else c for c in text)
+            text=re.sub(r'[^ァ-ヶー]','',text)
+            raw+=text;owners.extend([(pi,mi)]*len(text));boundaries.add(len(raw))
+    used={};out=[]
     for row in assert_known(original):
         kana=normalized_kana(row['reading'])
-        if row['kind']!='player' or not kana or kana not in full:continue
-        start=actual.find(kana,used.get(kana,0))
-        if start<0:raise NameReadingError('氏名のquery位置が不明: '+row['name'])
+        if not kana:continue
+        start=next((i for i in range(used.get(kana,0),len(raw)-len(kana)+1)
+                    if i in boundaries and i+len(kana) in boundaries and
+                    normalized_kana(raw[i:i+len(kana)])==kana),None)
+        if start is None:
+            raise NameReadingError('VOICEVOX queryの読み不一致: '+kana+' / 実際 '+normalized_kana(raw)+' / 元の読み '+raw)
         end=start+len(kana);used[kana]=end
-        out.append(dict(name=row['name'],first=owners[start],last=owners[end-1]))
+        out.append(dict(row,first=owners[start],last=owners[end-1],query_reading=raw[start:end]))
+    return out
+
+
+def name_phrase_spans(original, query):
+    """読み照合後、氏名がまたぐqueryの句番号を返す。長音表記も同一視。"""
+    out=[];full=japanese_readings()
+    for row in query_name_locations(original,query):
+        kana=normalized_kana(row['reading'])
+        if row['kind']!='player' or not kana or kana not in full:continue
+        out.append(dict(name=row['name'],first=row['first'][0],last=row['last'][0]))
     return out
 
 
@@ -226,13 +241,10 @@ def prepare_query(original, query, speaker, url):
 
 def validate_query(original, query, check_phrases=True):
     actual=''.join(m['text'] for phrase in query.get('accent_phrases',[]) for m in phrase.get('moras',[]))
-    actual=normalized_kana(actual);expected={};details=[]
-    for row in assert_known(original):
-        kana=normalized_kana(row['reading']);expected[kana]=expected.get(kana,0)+1
-        details.append(dict(name=row['name'],kind=row['kind'],expected=kana))
-    for kana,count in expected.items():
-        if actual.count(kana)<count:
-            raise NameReadingError('VOICEVOX queryの読み不一致: '+kana+' / 実際 '+actual)
+    actual=normalized_kana(actual);details=[]
+    for row in query_name_locations(original,query):
+        kana=normalized_kana(row['reading'])
+        details.append(dict(name=row['name'],kind=row['kind'],expected=kana,actual=normalized_kana(row['query_reading'])))
     spans=name_phrase_spans(original,query) if check_phrases else []
     for span in spans:
         if span['first']!=span['last']:

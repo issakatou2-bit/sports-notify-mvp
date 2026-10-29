@@ -38,19 +38,12 @@ def locations(original,query):
     import name_reading_guard as guard
     table=entries();by_name={r['name']:r for r in table};by_kana={}
     for r in table:by_kana.setdefault(guard.normalized_kana(r['reading']),r)
-    raw='';owners=[]
-    for pi,phrase in enumerate(query.get('accent_phrases',[])):
-        for mi,mora in enumerate(phrase['moras']):
-            raw+=mora['text'];owners.extend([(pi,mi)]*(len(guard.normalized_kana(raw))-len(owners)))
-    actual=guard.normalized_kana(raw);used={};out=[]
-    for row in guard.assert_known(original):
+    out=[]
+    for row in guard.query_name_locations(original,query):
         kana=guard.normalized_kana(row['reading'])
         target=by_name.get(row['name']) or by_kana.get(kana)
         if row['kind']!='player' or not target:continue
-        start=actual.find(kana,used.get(kana,0))
-        if start<0:raise guard.NameReadingError('氏名高低のquery位置が不明: '+row['name'])
-        end=start+len(kana);used[kana]=end
-        out.append(dict(**target,spoken_name=row['name'],first=owners[start],last=owners[end-1]))
+        out.append(dict(**target,spoken_name=row['name'],first=row['first'],last=row['last']))
     return out
 
 

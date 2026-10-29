@@ -59,6 +59,19 @@ class NamePhrases(unittest.TestCase):
             self.assertIs(guard.prepare_query('上田綺世です。',q,2,'http://engine'),q)
         post.assert_not_called()
 
+    def test_sentence_boundary_vowels_keep_the_name_and_pause(self):
+        pause=dict(text='。',vowel='pau',vowel_length=.3)
+        for original,prefix,name in [('15よ。上田綺世です。','ジュウゴヨ','ウエダアヤセデス'),
+                                     ('ブンデスリーガで伊藤洋輝です。','ブンデスリイガデ','イトオヒロキデス')]:
+            q=dict(accent_phrases=[phrase(prefix,pause),phrase(name)])
+            q['accent_phrases'][1]['accent']=len(q['accent_phrases'][1]['moras'])
+            before=copy.deepcopy(q)
+            with patch('requests.post') as post:
+                result=guard.prepare_query(original,q,2,'http://engine')
+            post.assert_not_called()
+            self.assertEqual(result,before)
+            self.assertEqual(guard.validate_query(original,result)['name_phrases'][0]['first'],1)
+
     def test_synthesis_receives_joined_query(self):
         import synthesize_narration as sn
         import tempfile

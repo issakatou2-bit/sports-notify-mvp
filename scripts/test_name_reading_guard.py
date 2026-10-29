@@ -97,6 +97,40 @@ class Readings(unittest.TestCase):
         guard.validate_query('大谷翔平です。',query('オータニショーヘーデス'))
         guard.validate_query('グアルディオラ監督です。',query('グアルディオラカントクデス'))
 
+    def test_previous_sentence_yo_does_not_change_ueda_to_oeda(self):
+        original='リールは3位で、勝点は15よ。上田綺世所属のチームね。'
+        q=query('リイルワサンイデカチテンワジュウゴヨウエダアヤセショゾクノチイムネ')
+        # 旧検査は文全体を先に長音化し、ヨ＋ウエダをヨオエダとした。
+        raw=''.join(m['text'] for p in q['accent_phrases'] for m in p['moras'])
+        self.assertIn('ヨオエダ',guard.normalized_kana(raw))
+        guard.validate_query(original,q,check_phrases=False)
+        locations=guard.query_name_locations(original,q)
+        name=next(r for r in locations if r['name']=='上田綺世')
+        self.assertEqual(q['accent_phrases'][name['first'][0]]['moras'][name['first'][1]]['text'],'ウ')
+        with self.assertRaises(guard.NameReadingError):
+            guard.validate_query(original,query('リイルワサンイデカチテンワジュウゴヨオエダアヤセショゾクノチイムネ'),check_phrases=False)
+
+    def test_previous_de_does_not_change_ito_to_eto(self):
+        original='ブンデスリーガで伊藤洋輝選手のバイエルンは、いま何位なのだ?'
+        q=query('ブンデスリイガデイトオヒロキセンシュノバイエルンワイマナンイナノダ')
+        guard.validate_query(original,q,check_phrases=False)
+        with self.assertRaises(guard.NameReadingError):
+            guard.validate_query(original,query('ブンデスリイガデエトオヒロキセンシュノバイエルンワイマナンイナノダ'),check_phrases=False)
+
+    def test_name_boundary_locations_are_shared_with_accent_check(self):
+        import name_accent_guard
+        for original,kana in [('15よ。上田綺世です。','ジュウゴヨウエダアヤセデス'),
+                              ('ブンデスリーガで伊藤洋輝です。','ブンデスリイガデイトオヒロキデス')]:
+            q=query(kana)
+            # 検証済み高低を適用する段階でも同じ位置が見つかる。
+            located=name_accent_guard.locations(original,q)
+            self.assertEqual(len(located),1)
+            self.assertEqual(guard.name_phrase_spans(original,q)[0]['first'],0)
+
+    def test_repeated_boundary_names_do_not_reuse_one_correct_occurrence(self):
+        with self.assertRaises(guard.NameReadingError):
+            guard.validate_query('15よ。上田綺世。上田綺世。',query('ジュウゴヨウエダアヤセウエダキヨ'),check_phrases=False)
+
     def test_engine_foreign_name_overrides_keep_expected_reading(self):
         self.assertEqual(guard.apply('アストンヴィラです。'),'あすとんゔぃらです。')
         self.assertEqual(guard.apply('ポチェッティーノ監督です。'),'ぽチェッティーノ監督です。')
