@@ -18566,6 +18566,36 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-28": {
+      "video_id": "lw8bzwhd88Q",
+      "url": "https://youtu.be/lw8bzwhd88Q",
+      "title": "【欧州サッカー】昨夜の注目試合 リバプール 1-1 チェルシー #Shorts",
+      "published_at": "2026-10-29T02:01:10.365648+00:00",
+      "publish_at": "2026-10-29T02:15:00Z",
+      "duration_seconds": 50.9,
+      "short_information_count": 13,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-29",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 3
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-29T10:53:26.894826+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   }
 }
