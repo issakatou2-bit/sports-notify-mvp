@@ -96,7 +96,8 @@ class AllMaterials(unittest.TestCase):
             self.assertTrue(report['odd'][0]['material_missing'])
             self.assertFalse(report['odd'][0]['supported'])
             self.assertIn('材料不足', report['odd'][0]['verification'])
-        doc['segments'] = [dict(text='防御率150。')]
+        # 防御率150は短い登板で起こりうる。規則上不可能な打率で停止を確かめる。
+        doc['segments'] = [dict(text='打率1.5。')]
         self.assertEqual(self.run_sanity(doc, [])[0], 1)
 
     def test_other_document_same_day_cannot_supply_an_exemption(self):

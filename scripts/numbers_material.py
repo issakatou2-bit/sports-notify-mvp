@@ -412,6 +412,9 @@ def load(root: str = "data", today: date = None) -> dict:
             "type": row.get("type") or "",
             "player_id": str(row.get("player_id") or ""),
             "numbers": _numbers(row),
+            # _rowを落とした後も、事実検査に当日成績を渡す（欠測と0を区別）。
+            "game_facts": {k: ((row.get("batting") or {}) if row.get("type") == "two_way" else row).get(k)
+                           for k in ("runs", "hits", "rbi")},
             "readings": readings(row),
             "scenes": scenes(row),
             "_row": row,
