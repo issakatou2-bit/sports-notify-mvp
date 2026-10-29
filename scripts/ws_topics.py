@@ -763,6 +763,11 @@ def build_topics(season: int, get=_get, cache_path=DEFAULT_CACHE,
         return []
     if not games:
         return []
+    import ps_series
+    import ps_offseason
+    if ps_offseason.world_series_over(ps_series.build([dict(g, gameType='W') for g in games])):
+        print('[info] WSの見どころは見送り：優勝が決着済み', file=sys.stderr)
+        return []
     first = _sort_games(games)[0]
     pair = tuple(((first.get("teams") or {}).get(side) or {})
                  .get("team", {}).get("id") for side in ("away", "home"))
