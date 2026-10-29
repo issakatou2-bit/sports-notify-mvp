@@ -128,12 +128,23 @@ def panel(im, box, fill=None, outline=None):
     r3.record_box(im, 'card', box)
 
 
+def text_length(value, size):
+    """text() と同じ実寸。球団名の横の小札の幅も含める。"""
+    from team_names import team_names_jp
+    import notability_engine as ne
+    value=team_names_jp(str(value))
+    names={name:str(tid) for tid,name in ne.MLB_TEAM_NAME_JP.items()}
+    pattern='('+ '|'.join(re.escape(n) for n in sorted(names,key=len,reverse=True))+')'
+    return r3.font(size).getlength(value)+sum(inline_badge_width(names[v],size)+12
+                                              for v in re.split(pattern,value) if v in names)
+
+
 def tag(im, x, y, value, fill=None, color=None, size=28, width=None):
-    f=r3.font(size)
+    # 幅は text() と同じ測り方で決める（10/29「ドジャース Way」が小札の分だけはみ出して止まった）。
     if width:
-        while f.getlength(str(value))+28 > width and size > 18:
-            size-=2;f=r3.font(size)
-    w=round(f.getlength(str(value)))+28;h=size+26
+        while text_length(value,size)+28 > width and size > 18:
+            size-=2
+    w=round(text_length(value,size))+28;h=size+26
     panel(im,(x,y,x+w,y+h),fill or r3.DARK_INK,fill or r3.GOLD)
     text(im,x+14,y+10,value,size,color or r3.INK,width=w-28)
     return w
