@@ -41,5 +41,13 @@ class FitTest(unittest.TestCase):
         self.assertIn('リーグ優勝決定シリーズ', drawn)
 
 
+    def test_tag_counts_team_badge_width(self):
+        # 10/29 現地の報道の札「ドジャース Way」が、球団名の横の小札の分だけ入らず生成が止まった
+        for chips in (1, 2, 3):  # 4枚では最小の字でも幅を超える（文字だけの札と同じ扱い）
+            width = (v4.R - v4.L - 56 - 12 * (chips - 1)) // chips
+            drawn = v4.tag(canvas(), v4.L + 28, 900, 'ドジャース Way', None, size=24, width=width)
+            self.assertLessEqual(drawn, width)
+
+
 if __name__ == '__main__':
     unittest.main(argv=[sys.argv[0]])
