@@ -75,6 +75,10 @@ def check(text, game):
                            and re.search(home+r'(?:の)?$', claim['between']))
                 if not at_home:
                     errors.append(f"アウェーの{sides['away']}をホームとして表現")
+        if re.search(home+r'(?:が|は)[^。]{0,35}?敵地'+away+r'(?:を|と)[^。]{0,12}迎え(?!られ)', sentence):
+            errors.append(f"ホームの{sides['home']}が敵地の相手を迎えると表現")
+        if re.search(r'(?:両チーム|両クラブ|両強豪|両者)(?:が|は)[^。]{0,20}敵地で[^。]{0,8}(?:対戦|激突)', sentence):
+            errors.append('双方が敵地で対戦すると表現')
         if re.search(home+r'(?:が|は|、)[^。]{0,60}?(?:敵地(?:で|へ|に)|訪れ)', sentence):
             errors.append(f"ホームの{sides['home']}を敵地側として表現")
         if re.search(r'(?:ホーム|本拠地)(?:の|で戦う|で対戦する)'+away, sentence):

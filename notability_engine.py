@@ -3430,6 +3430,8 @@ def enhance_games_with_ai(
                     or host_reversed(ai_text, game)):
                 print(f"[warn] {game['matchup']}: 書き直しでも直らないため、"
                       "AIの文は使いません")
+                game.pop("ai_summary", None)
+                game.pop("notification_hook", None)
                 continue
 
         # 途中で切れた出力は、文としても事実としても壊れている可能性がある。

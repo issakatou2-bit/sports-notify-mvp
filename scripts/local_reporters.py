@@ -300,8 +300,23 @@ def _jp_name_hint() -> str:
                      for p in JP_PLAYERS_MLB)
 
 
+def placeholder_translation(source: str, translated: str) -> bool:
+    """A numbered batch label is not a translation of a substantive post."""
+    return (len((source or '').strip()) > 20 and
+            re.fullmatch(r'\s*[0-9０-９]+(?:番|[.):])?\s*[。.!]?\s*', translated or '') is not None)
+
+
 def guard_translation(source: str, translated: str) -> str:
     """Keep baseball shorthand from inventing a run count or challenge actor."""
+    if placeholder_translation(source, translated):
+        print('[warning] 番号だけの翻訳を採用しません（原文は保持）')
+        return ''
+    if re.search(r'\b(?:benching|bench(?:ed|es)?|sitting)\b', source, re.I):
+        translated = translated.replace('でのベンチ入り', 'で先発から外すこと')
+        translated = translated.replace('ベンチ入り', '先発から外すこと')
+    if (re.search(r'\b(?:pitcher|starter)\b', source, re.I) and
+            not re.search(r'\b(?:right|left|righty|lefty|RHP|LHP|southpaw)\b', source, re.I)):
+        translated = re.sub(r'右腕|左腕', '投手', translated)
     # 勝敗と、試合中に相手のリードを許したかは別の記録（10/4の公式見出し）。
     if re.search(r"\byet to trail this postseason\b", source, re.I):
         translated = re.sub(r"(?:(?:ポストシーズン|PS)(?:で)?)?無敗の",
@@ -322,7 +337,7 @@ def guard_translation(source: str, translated: str) -> str:
     return translated
 
 
-def translate(posts: list, api_key: str) -> list:
+def translate(posts: list, api_key: str, _retry_placeholder: bool = True) -> list:
     """
     まとめて1回で訳す。1件ずつ呼ぶと件数ぶん課金される。
 
@@ -341,13 +356,14 @@ def translate(posts: list, api_key: str) -> list:
     prompt = (
         "次はMLBの番記者がSNSに書いた投稿です。"
         "それぞれを日本語に訳してください。\n"
-        "・1行に1件、番号をつけて出力\n"
+        "・1行に1件、番号の後に訳文の本文を出力。番号だけは不可\n"
         "・**日本語として自然に読めることを先に取る。逐語訳にしない。**\n"
         "  英語の語順をなぞると、読んでも意味が入ってこない\n"
         "・**意味の取れない直訳を作らない。**実際に出た失敗:\n"
         "    Rocchio October → ×「ロッチオクトーバーのロッチオ」\n"
         "  何のことか分からない語は、訳さずに英語のまま置く\n"
-        "・書かれていないことは足さない\n"
+        "・書かれていないことは足さない。投手の左右も原文にある場合だけ\n"
+        "・benching/sitting a playerは先発から外すこと。「ベンチ入り」ではない\n"
         # 9/27、"held until a possible NLDS" を「ワイルドカード進出まで温存」
         # と訳した（正しくは地区シリーズ）。「ゲーム1-2」も直訳のまま出た。
         "・ポストシーズンの用語: Wild Card Series=ワイルドカードシリーズ、"
@@ -391,9 +407,18 @@ def translate(posts: list, api_key: str) -> list:
         m = re.match(r"\s*(\d+)[.):]\s*(.+)", line)
         if m:
             lines[int(m.group(1))] = m.group(2).strip()
+    invalid = []
     for i, p in enumerate(posts, 1):
         if i in lines:
             p["jp"] = team_names_jp(baseball_jp(guard_translation(p["text"], lines[i])))
+            if placeholder_translation(p['text'], lines[i]):
+                p['_translation_failed'] = True
+                invalid.append(p)
+            else:
+                p.pop('_translation_failed', None)
+    if invalid and _retry_placeholder:
+        print(f'[warning] 番号だけの訳{len(invalid)}件をまとめて1回再翻訳します')
+        translate(invalid, api_key, _retry_placeholder=False)
     return posts
 
 
@@ -655,13 +680,17 @@ def main():
     print(f"[info] 現地の見出し(直近1日): {len(heads)}件")
 
     key = os.environ.get("ANTHROPIC_API_KEY", "")
-    top = translate(top, key)
+    top = [p for p in translate(top, key) if not p.get("_translation_failed")]
     # 見出しも同じ形に詰めて、まとめて1回で訳す
     head_items = [{"text": h["title"]} for h in heads[:args.top]]
     head_items = translate(head_items, key)
     for h, t in zip(heads, head_items):
+        if t.get("_translation_failed"):
+            h["_translation_failed"] = True
         if t.get("jp"):
             h["jp"] = t["jp"]
+
+    heads = [h for h in heads if not h.get("_translation_failed")]
 
     for p in top:
         print(f"   ♥{p['likes']:4} RT{p['reposts']:3}  @{p['handle'][:22]:24}"
