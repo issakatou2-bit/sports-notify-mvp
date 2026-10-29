@@ -1,78 +1,29 @@
 {
-  "updated_at": "2026-10-15T06:02:08.702164+00:00",
+  "updated_at": "2026-10-29T07:21:33.132295+00:00",
   "sources": [
-    {
-      "name": "r/baseball",
-      "items": 26
-    },
     {
       "name": "MLB公式",
       "items": 25
     }
   ],
-  "titles_count": 51,
+  "titles_count": 25,
   "teams": [
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 14,
-      "tone": "好調",
-      "gist": "ブリュワーズが6-2、NLCS3連勝でWS王手"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
       "mentions": 9,
-      "tone": "不振",
-      "gist": "ドジャース0-3、ブリュワーズに6-2敗戦"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ALCS第3戦前、ホセがクリーブランドの星と紹介"
+      "tone": "好調",
+      "gist": "ブリュワーズ、初のWS制覇"
     },
     {
       "team_id": "139",
       "name": "レイズ",
       "name_en": "Tampa Bay Rays",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "ALCS第3戦FAQ、ロースター編成の舞台裏"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "フィリーズがマティングリー監督と2年契約で再登板"
-    },
-    {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 1,
       "tone": "不振",
-      "gist": "アストロズがホー・エスパダ監督と決別"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "バートマン事件から23周年"
+      "gist": "レイズ、WS敗退 ラスムセン好投も"
     }
   ],
-  "players": [
-    {
-      "name": "大谷翔平",
-      "mentions": 1
-    }
-  ]
+  "players": []
 }

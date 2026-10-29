@@ -132,3 +132,12 @@ jobs:
           V3_SNS_ENABLED: ${{ vars.V3_SNS_ENABLED }}
         run: |
           python scripts/asset_sns.py --publish
+
+      - name: Keep publication ledger recovery
+        if: always() && hashFiles('data/publication_recovery/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-ledger-recovery-${{ github.run_id }}-${{ github.run_attempt }}
+          path: data/publication_recovery/
+          retention-days: 14
+          if-no-files-found: error

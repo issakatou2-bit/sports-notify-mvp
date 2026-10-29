@@ -33,6 +33,7 @@ SOURCES = (
     "data/ps_odds_topics.json",   # PSの話題：2勝0敗・0勝2敗を過去の同じ状況から (ps_odds.py)
     "data/ps_momentum_topics.json",  # PSの話題：連勝・敵地での勝ちの流れ (ps_momentum.py)
     "data/ps_spotlight_topics.json",  # PSの話題：日本人投手の圧巻の投球 (ps_spotlight.py)
+    "data/ws_topics.json",         # WSの話題：球団史・日程と本拠地 (ws_topics.py)
 )
 
 _CACHE = None
@@ -44,6 +45,7 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
     if _CACHE is not None and not refresh:
         return _CACHE
     out = {}
+    seasons = {}
     for path in sources:
         try:
             d = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
@@ -53,6 +55,11 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
             key = spec.get("key")
             if key and key not in out:
                 out[key] = spec
+                seasons[key] = d.get('season')
+    import short_context
+    for key, spec in list(out.items()):
+        if key.startswith('rare_'):
+            out[key] = short_context.rare(spec, out, seasons.get(key))
     _CACHE = out
     return out
 

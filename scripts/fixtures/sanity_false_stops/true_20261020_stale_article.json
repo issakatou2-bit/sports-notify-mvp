@@ -1,0 +1,24 @@
+{
+  "source": "10/20 stale June article; synthetic reproduction of article freshness violation",
+  "expected_held": true,
+  "document": {
+    "date_jst": "2026-10-20",
+    "segments": [
+      {
+        "text": "大谷がスタメン復帰。",
+        "meta": {
+          "source_headlines": [
+            {
+              "title": "古い記事",
+              "at": "2026-06-01T00:00:00Z",
+              "published_date": "2026-06-01",
+              "url": "https://abc30.com/old-story"
+            }
+          ]
+        }
+      }
+    ],
+    "sanity_materials": []
+  },
+  "issues": []
+}

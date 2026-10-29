@@ -1,0 +1,26 @@
+{
+  "verified_at": "2026-10-26T00:44:58.278456+09:00",
+  "base_commit": "8033126eb4336a50aaa9ae2806efc1cced486944",
+  "branch": "hiro/soccer-stats-20261026",
+  "command": "python scripts/run_checks.py",
+  "exit_code": 0,
+  "syntax_files": 527,
+  "test_scripts_passed": 195,
+  "pyflakes_fatal": 0,
+  "pyflakes_existing_warnings": 53,
+  "process_environment": {
+    "PYTHONUTF8": "1",
+    "PYTEST_DEBUG_TEMPROOT": "build_reports/pytest-stats"
+  },
+  "initial_run_findings": [
+    "Windows cp932; fixed using process-only UTF-8 mode",
+    "Pytest existing temp access; fixed using a workspace temp root",
+    "Intentional numeric_material change; updated exactly one protected function fingerprint"
+  ],
+  "new_tests": 6,
+  "legacy_pixel_frames": 92,
+  "saved_originals_sha256_verified": true,
+  "completed_voice_or_video_rendered": false,
+  "push": false,
+  "production_settings_changed": false
+}

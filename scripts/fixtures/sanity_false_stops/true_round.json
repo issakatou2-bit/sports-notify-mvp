@@ -1,0 +1,53 @@
+{
+  "source": "synthetic contradiction against saved official evidence",
+  "expected_held": true,
+  "document": {
+    "date_jst": "2026-10-24",
+    "segments": [
+      {
+        "text": "ブリュワーズ対レイズは地区シリーズ第1戦"
+      }
+    ],
+    "sanity_materials": [
+      {
+        "source": "data/postseason.json",
+        "date_jst": "2026-10-23",
+        "retrieved_at": "2026-10-23T09:52:38.252871+00:00",
+        "source_url": "https://statsapi.mlb.com/api/v1/schedule",
+        "series": [
+          {
+            "key": "W:139-158",
+            "round": "W",
+            "round_jp": "ワールドシリーズ",
+            "stage": 4,
+            "league_jp": "",
+            "best_of": 7,
+            "need": 4,
+            "played": 0,
+            "over": false,
+            "winner": null,
+            "next": {
+              "day": "10月24日",
+              "game": 1
+            },
+            "teams": [
+              {
+                "id": 139,
+                "name": "レイズ",
+                "wins": 0,
+                "players": []
+              },
+              {
+                "id": 158,
+                "name": "ブリュワーズ",
+                "wins": 0,
+                "players": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "issues": []
+}

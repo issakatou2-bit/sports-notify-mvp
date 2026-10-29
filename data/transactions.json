@@ -1,2814 +1,14 @@
 {
-  "updated_at": "2026-10-15T09:52:49.028074+00:00",
-  "start": "2026-09-24",
-  "end": "2026-10-15",
+  "updated_at": "2026-10-29T09:52:39.180676+00:00",
+  "start": "2026-10-08",
+  "end": "2026-10-29",
   "players": {
-    "657376": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Clarke Schmidt",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Clarke Schmidt."
-    },
-    "527048": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Martín Pérez",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated LHP Martín Pérez."
-    },
-    "690829": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Ben Joyce",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels activated RHP Ben Joyce from the 15-day injured list."
-    },
-    "683734": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Andrew Vaughn",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers activated 1B Andrew Vaughn from the 10-day injured list."
-    },
-    "669203": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Corbin Burnes",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks activated RHP Corbin Burnes from the 15-day injured list."
-    },
-    "801126": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Brock Rodden",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated SS Brock Rodden from the 10-day injured list."
-    },
-    "662139": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Daulton Varsho",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated CF Daulton Varsho."
-    },
-    "656546": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Jeff Hoffman",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins activated RHP Jeff Hoffman from the 15-day injured list."
-    },
-    "694341": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Brendan Beck",
-      "team": "New York Yankees",
-      "text": "New York Yankees recalled RHP Brendan Beck from FCL Yankees."
-    },
-    "622491": {
-      "kind": "to_il",
-      "date": "2026-09-24",
-      "name_en": "Luis Castillo",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox placed RHP Luis Castillo on the 15-day injured list. Right shoulder impingement."
-    },
-    "622694": {
-      "kind": "up",
-      "date": "2026-09-24",
-      "name_en": "Elieser Hernández",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves selected the contract of RHP Elieser Hernández from Gwinnett Stripers."
-    },
-    "663765": {
-      "kind": "up",
-      "date": "2026-09-24",
-      "name_en": "Jake Woodford",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays selected the contract of RHP Jake Woodford from Durham Bulls."
-    },
-    "694462": {
-      "kind": "up",
-      "date": "2026-09-24",
-      "name_en": "Hurston Waldrep",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves recalled RHP Hurston Waldrep from Gwinnett Stripers."
-    },
-    "674444": {
-      "kind": "to_il",
-      "date": "2026-09-27",
-      "name_en": "Steven Cruz",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals placed RHP Steven Cruz on the restricted list."
-    },
-    "660844": {
-      "kind": "up",
-      "date": "2026-09-24",
-      "name_en": "Leo Rivas",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners recalled 3B Leo Rivas from Tacoma Rainiers."
-    },
-    "544150": {
-      "kind": "up",
-      "date": "2026-09-24",
-      "name_en": "Albert Suárez",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles selected the contract of RHP Albert Suárez from Norfolk Tides."
-    },
-    "702352": {
-      "kind": "up",
-      "date": "2026-09-24",
-      "name_en": "Spencer Bivens",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled RHP Spencer Bivens from ACL Royals."
-    },
-    "681895": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Evan Sisk",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled LHP Evan Sisk from FCL Pirates."
-    },
-    "694346": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Trey Gibson",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled RHP Trey Gibson from FCL Orioles."
-    },
-    "669438": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Mason Englert",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays recalled RHP Mason Englert from Durham Bulls."
-    },
-    "690440": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Bradley Hanner",
-      "team": "New York Yankees",
-      "text": "New York Yankees recalled RHP Bradley Hanner from FCL Yankees."
-    },
-    "694680": {
-      "kind": "up",
-      "date": "2026-09-24",
-      "name_en": "Trevor Martin",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels recalled RHP Trevor Martin from Salt Lake Bees."
-    },
-    "699823": {
-      "kind": "from_il",
-      "date": "2026-10-03",
-      "name_en": "Tyler Davis",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Tyler Davis."
-    },
-    "678489": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Jorge Barrosa",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated CF Jorge Barrosa."
-    },
-    "694753": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Khristian Curtis",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled RHP Khristian Curtis from FCL Pirates."
-    },
-    "594027": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Tyron Guerrero",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated RHP Tyron Guerrero."
-    },
-    "655889": {
-      "kind": "from_il",
-      "date": "2026-09-25",
-      "name_en": "Manuel Rodríguez",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Manuel Rodríguez from the 15-day injured list."
-    },
-    "669060": {
-      "kind": "from_il",
-      "date": "2026-09-25",
-      "name_en": "Bryse Wilson",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers activated RHP Bryse Wilson from the 15-day injured list."
-    },
-    "676604": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Tyler Zuber",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins activated RHP Tyler Zuber from the 15-day injured list."
-    },
-    "662253": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Andrés Muñoz",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated RHP Andrés Muñoz from the 15-day injured list."
-    },
-    "666808": {
-      "kind": "from_il",
-      "date": "2026-09-25",
-      "name_en": "Camilo Doval",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated RHP Camilo Doval."
-    },
-    "687221": {
-      "kind": "from_il",
-      "date": "2026-09-25",
-      "name_en": "Dalton Rushing",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated C Dalton Rushing from the 10-day injured list."
-    },
-    "668970": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Gavin Hollowell",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Gavin Hollowell."
-    },
-    "669310": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "CJ Van Eyk",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays recalled RHP CJ Van Eyk from FCL Blue Jays."
-    },
-    "663604": {
-      "kind": "up",
-      "date": "2026-09-25",
-      "name_en": "Brandon Lockridge",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled LF Brandon Lockridge from Nashville Sounds."
-    },
-    "663795": {
-      "kind": "up",
-      "date": "2026-09-25",
-      "name_en": "Justin Hagenman",
-      "team": "New York Mets",
-      "text": "New York Mets recalled RHP Justin Hagenman from Syracuse Mets."
-    },
-    "674073": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jack Weisenburger",
-      "team": "New York Mets",
-      "text": "New York Mets recalled RHP Jack Weisenburger from FCL Mets."
-    },
-    "661563": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Luis Gil",
-      "team": "New York Yankees",
-      "text": "New York Yankees recalled RHP Luis Gil from FCL Yankees."
-    },
-    "702885": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Cesar Perdomo",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants recalled LHP Cesar Perdomo from Sacramento River Cats."
-    },
-    "687309": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Cooper Hjerpe",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals recalled LHP Cooper Hjerpe from Memphis Redbirds."
-    },
-    "670103": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Raymond Burgos",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated LHP Raymond Burgos."
-    },
-    "703615": {
-      "kind": "up",
-      "date": "2026-09-25",
-      "name_en": "Jose Cabrera",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled RHP Jose Cabrera from Reno Aces."
-    },
-    "690976": {
-      "kind": "down",
-      "date": "2026-09-25",
-      "name_en": "Alex Freeland",
-      "team": "Oklahoma City Comets",
-      "text": "Los Angeles Dodgers optioned 2B Alex Freeland to Oklahoma City Comets."
-    },
-    "684516": {
-      "kind": "up",
-      "date": "2026-09-25",
-      "name_en": "Hancel Rincon",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals recalled RHP Hancel Rincon from Memphis Redbirds."
-    },
-    "529017": {
-      "kind": "up",
-      "date": "2026-09-25",
-      "name_en": "Alexander Cornielle",
-      "team": "New York Yankees",
-      "text": "New York Yankees selected the contract of RHP Alexander Cornielle from Scranton/Wilkes-Barre RailRiders."
-    },
-    "682790": {
-      "kind": "up",
-      "date": "2026-09-25",
-      "name_en": "Wikelman González",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins recalled RHP Wikelman González from Jacksonville Jumbo Shrimp."
-    },
-    "660787": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Yerry De los Santos",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Yerry De los Santos."
-    },
-    "700187": {
-      "kind": "up",
-      "date": "2026-09-25",
-      "name_en": "Troy Taylor",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners recalled RHP Troy Taylor from Tacoma Rainiers."
-    },
-    "804619": {
-      "kind": "up",
-      "date": "2026-09-25",
-      "name_en": "John Klein",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays recalled RHP John Klein from Buffalo Bisons."
-    },
-    "699151": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Jedixson Paez",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated RHP Jedixson Paez."
-    },
-    "663554": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Casey Mize",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Casey Mize from the 15-day injured list."
-    },
-    "813349": {
-      "kind": "from_il",
-      "date": "2026-09-26",
-      "name_en": "Connelly Early",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals activated LHP Connelly Early from the 60-day injured list."
-    },
-    "434378": {
-      "kind": "from_il",
-      "date": "2026-09-26",
-      "name_en": "Justin Verlander",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated RHP Justin Verlander from the reserve list."
-    },
-    "668670": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Jake Rogers",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated C Jake Rogers from the paternity list."
-    },
-    "679845": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Nick Loftin",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals activated 3B Nick Loftin from the paternity list."
-    },
-    "701785": {
-      "kind": "from_il",
-      "date": "2026-09-26",
-      "name_en": "Kaelen Culpepper",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins activated SS Kaelen Culpepper from the 10-day injured list."
-    },
-    "657757": {
-      "kind": "from_il",
-      "date": "2026-09-26",
-      "name_en": "Gavin Sheets",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated 1B Gavin Sheets from the 10-day injured list."
-    },
-    "673962": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Josh Jung",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers activated 3B Josh Jung from the 10-day injured list."
-    },
-    "694646": {
-      "kind": "up",
-      "date": "2026-09-26",
-      "name_en": "Chayce McDermott",
-      "team": "New York Mets",
-      "text": "New York Mets recalled RHP Chayce McDermott from Syracuse Mets."
-    },
-    "683090": {
-      "kind": "up",
-      "date": "2026-09-26",
-      "name_en": "Matthew Lugo",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled LF Matthew Lugo from Omaha Storm Chasers."
-    },
-    "808825": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Andrew Sears",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled LHP Andrew Sears from FCL Tigers."
-    },
-    "805074": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Yunior Marte",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants recalled RHP Yunior Marte from Sacramento River Cats."
-    },
-    "675920": {
-      "kind": "up",
-      "date": "2026-09-26",
-      "name_en": "Seth Lonsway",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants recalled LHP Seth Lonsway from Sacramento River Cats."
-    },
-    "656288": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Griffin Canning",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Griffin Canning."
-    },
-    "696062": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Wilber Dotel",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled RHP Wilber Dotel from FCL Pirates."
-    },
-    "686560": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Gavin Collyer",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled RHP Gavin Collyer from ACL Rangers."
-    },
-    "691011": {
-      "kind": "up",
-      "date": "2026-09-26",
-      "name_en": "Drew Romo",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled C Drew Romo from Charlotte Knights."
-    },
-    "642376": {
-      "kind": "up",
-      "date": "2026-09-27",
-      "name_en": "Jefry Yan",
-      "team": "New York Mets",
-      "text": "New York Mets recalled LHP Jefry Yan from FCL Mets."
-    },
-    "682995": {
-      "kind": "up",
-      "date": "2026-09-26",
-      "name_en": "Hunter Barco",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled LHP Hunter Barco from Indianapolis Indians."
-    },
-    "606996": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Kyle Hart",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres recalled LHP Kyle Hart from ACL Padres."
-    },
-    "691384": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Luis Perales",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled RHP Luis Perales from Rochester Red Wings."
-    },
-    "695239": {
-      "kind": "up",
-      "date": "2026-09-26",
-      "name_en": "Robby Ahlstrom",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled LHP Robby Ahlstrom from Round Rock Express."
-    },
-    "681351": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Logan O'Hoppe",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled DH Logan O'Hoppe from ACL Rangers."
-    },
-    "687924": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Julian Aguiar",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Julian Aguiar."
-    },
-    "680728": {
-      "kind": "up",
-      "date": "2026-09-26",
-      "name_en": "Adrian Del Castillo",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled DH Adrian Del Castillo from Reno Aces."
-    },
-    "681508": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Mickey Gasper",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated DH Mickey Gasper."
-    },
-    "702752": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Jonathan Pintaro",
-      "team": "New York Mets",
-      "text": "New York Mets activated RHP Jonathan Pintaro from the 15-day injured list."
-    },
-    "656427": {
-      "kind": "from_il",
-      "date": "2026-09-27",
-      "name_en": "Jack Flaherty",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated RHP Jack Flaherty from the 15-day injured list."
-    },
-    "664062": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Tony Gonsolin",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals activated RHP Tony Gonsolin from the 15-day injured list."
-    },
-    "663704": {
-      "kind": "from_il",
-      "date": "2026-09-27",
-      "name_en": "James McArthur",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals activated RHP James McArthur from the 60-day injured list."
-    },
-    "595014": {
-      "kind": "to_il",
-      "date": "2026-09-27",
-      "name_en": "Blake Treinen",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers placed RHP Blake Treinen on the 15-day injured list. Right shoulder inflammation."
-    },
-    "656557": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Tanner Houck",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated RHP Tanner Houck."
-    },
-    "666200": {
-      "kind": "from_il",
-      "date": "2026-09-27",
-      "name_en": "Jesús Luzardo",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated LHP Jesús Luzardo from the 15-day injured list."
-    },
-    "804926": {
-      "kind": "up",
-      "date": "2026-09-27",
-      "name_en": "Austin Peterson",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled RHP Austin Peterson from Columbus Clippers."
-    },
-    "695508": {
-      "kind": "up",
-      "date": "2026-09-27",
-      "name_en": "Cam Cauley",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled CF Cam Cauley from Round Rock Express."
-    },
-    "676272": {
-      "kind": "up",
-      "date": "2026-09-27",
-      "name_en": "Bobby Miller",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers recalled RHP Bobby Miller from Oklahoma City Comets."
-    },
-    "684974": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Craig Yoho",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled RHP Craig Yoho from Columbus Clippers."
-    },
-    "669947": {
-      "kind": "up",
-      "date": "2026-09-27",
-      "name_en": "Jesse Scholtens",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays recalled RHP Jesse Scholtens from Durham Bulls."
-    },
-    "669854": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Ronel Blanco",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated RHP Ronel Blanco."
-    },
-    "694494": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ty Johnson",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays recalled RHP Ty Johnson from Durham Bulls."
-    },
-    "681544": {
-      "kind": "up",
-      "date": "2026-09-27",
-      "name_en": "Wyatt Olds",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox recalled RHP Wyatt Olds from Worcester Red Sox."
-    },
-    "666129": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Braxton Garrett",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated LHP Braxton Garrett."
-    },
-    "669384": {
-      "kind": "up",
-      "date": "2026-09-27",
-      "name_en": "Raynel Delgado",
-      "team": "Houston Astros",
-      "text": "Houston Astros recalled 2B Raynel Delgado from Sugar Land Space Cowboys."
-    },
-    "668716": {
-      "kind": "up",
-      "date": "2026-09-27",
-      "name_en": "Noah Murdock",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled RHP Noah Murdock from Indianapolis Indians."
-    },
-    "676428": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Brant Hurter",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled LHP Brant Hurter from FCL Tigers."
-    },
-    "681987": {
-      "kind": "up",
-      "date": "2026-09-27",
-      "name_en": "Nate Eaton",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox recalled LF Nate Eaton from Worcester Red Sox."
-    },
-    "592791": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Jameson Taillon",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated RHP Jameson Taillon from the 15-day injured list."
-    },
-    "671305": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Michel Otañez",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers activated RHP Michel Otañez from the 15-day injured list."
-    },
-    "657277": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Logan Webb",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated RHP Logan Webb from the 15-day injured list."
-    },
-    "691946": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "George Klassen",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels activated RHP George Klassen from the 15-day injured list."
-    },
-    "683357": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Owen Caissie",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins activated RF Owen Caissie from the 10-day injured list."
-    },
-    "656302": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Dylan Cease",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated RHP Dylan Cease from the 15-day injured list."
-    },
-    "681035": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Christian Scott",
-      "team": "New York Mets",
-      "text": "New York Mets activated RHP Christian Scott from the 15-day injured list."
-    },
-    "687377": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Orlando Ribalta",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals activated RHP Orlando Ribalta from the 15-day injured list."
-    },
-    "669622": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Anthony Bender",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins activated RHP Anthony Bender from the 15-day injured list."
-    },
-    "663556": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Shane McClanahan",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated LHP Shane McClanahan from the 15-day injured list."
-    },
-    "670062": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Julian Garcia",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds activated RHP Julian Garcia from the 15-day injured list."
-    },
-    "669456": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Shane Bieber",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated RHP Shane Bieber from the 15-day injured list."
-    },
-    "543309": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Kyle Higashioka",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers activated C Kyle Higashioka from the 10-day injured list."
-    },
-    "681982": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Grant Anderson",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers activated RHP Grant Anderson from the 15-day injured list."
-    },
-    "805811": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Bryce Eldridge",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated DH Bryce Eldridge from the 7-day injured list."
-    },
-    "695611": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Gage Jump",
-      "team": "Athletics",
-      "text": "Athletics activated LHP Gage Jump from the 15-day injured list."
-    },
-    "694360": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Beck Way",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals activated RHP Beck Way from the 15-day injured list."
-    },
-    "695491": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Joshua Báez",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals activated LF Joshua Báez from the 10-day injured list."
-    },
-    "695505": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Chase Burns",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds activated RHP Chase Burns from the 15-day injured list."
-    },
-    "663574": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Tony Santillan",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds activated RHP Tony Santillan from the 15-day injured list."
-    },
-    "642715": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Willy Adames",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated SS Willy Adames from the 10-day injured list."
-    },
-    "675512": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Troy Melton",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated RHP Troy Melton from the 15-day injured list."
-    },
-    "690993": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Colt Keith",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated 3B Colt Keith from the 10-day injured list."
-    },
-    "657675": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Rudy Martin Jr.",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated RF Rudy Martin Jr. from the 10-day injured list."
-    },
-    "676974": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Max Meyer",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins activated RHP Max Meyer from the 15-day injured list."
-    },
-    "691777": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Max Muncy",
-      "team": "Athletics",
-      "text": "Athletics activated 3B Max Muncy from the 10-day injured list."
-    },
-    "656555": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Rhys Hoskins",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated 1B Rhys Hoskins from the 10-day injured list."
-    },
-    "691458": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Blaze Jordan",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals activated 3B Blaze Jordan from the 10-day injured list."
-    },
-    "676724": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Jared Young",
-      "team": "New York Mets",
-      "text": "New York Mets activated 1B Jared Young from the 7-day injured list."
-    },
-    "592626": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Joc Pederson",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers activated DH Joc Pederson from the 10-day injured list."
-    },
-    "680977": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Brendan Donovan",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated 3B Brendan Donovan from the 7-day injured list."
-    },
-    "669330": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Tyler Wells",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Tyler Wells from the 15-day injured list."
-    },
-    "476594": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Robert Stock",
-      "team": "New York Mets",
-      "text": "New York Mets activated RHP Robert Stock from the 15-day injured list."
-    },
-    "694212": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Samuel Basallo",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles activated C Samuel Basallo from the 7-day injured list."
-    },
-    "673357": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Luis Robert Jr.",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles activated CF Luis Robert Jr. from the 10-day injured list."
-    },
-    "676755": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Isaac Mattson",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates activated RHP Isaac Mattson from the 15-day injured list."
-    },
-    "677942": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Blaze Alexander",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles activated 3B Blaze Alexander from the 10-day injured list."
-    },
-    "702616": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Jackson Holliday",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles activated 2B Jackson Holliday from the 10-day injured list."
-    },
-    "677347": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Kyren Paris",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels activated 2B Kyren Paris from the 10-day injured list."
-    },
-    "621439": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Byron Buxton",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins activated CF Byron Buxton from the 10-day injured list."
-    },
-    "677592": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Everson Pereira",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals activated RF Everson Pereira from the 10-day injured list."
-    },
-    "640448": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Kyle Finnegan",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated RHP Kyle Finnegan from the 15-day injured list."
-    },
-    "694384": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Nolan Schanuel",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels activated 1B Nolan Schanuel from the 10-day injured list."
-    },
-    "672569": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Gustavo Campero",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels activated OF Gustavo Campero from the 10-day injured list."
-    },
-    "663423": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Trent Thornton",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Trent Thornton."
-    },
-    "664141": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "JT Brubaker",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated RHP JT Brubaker from the 10-day injured list."
-    },
-    "650960": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Daniel Duarte",
-      "team": "New York Mets",
-      "text": "New York Mets activated RHP Daniel Duarte from the 15-day injured list."
-    },
-    "691769": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Philip Abner",
-      "team": "New York Mets",
-      "text": "New York Mets activated LHP Philip Abner."
-    },
-    "677961": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Cole Wilcox",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated RHP Cole Wilcox from the 15-day injured list."
-    },
-    "649966": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Luis Urías",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated 2B Luis Urías from the 10-day injured list."
-    },
-    "696519": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Samy Natera Jr.",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels activated LHP Samy Natera Jr. from the 15-day injured list."
-    },
-    "660853": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Enyel De Los Santos",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated RHP Enyel De Los Santos."
-    },
-    "669093": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Jeremiah Estrada",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Jeremiah Estrada."
-    },
-    "664126": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Pete Fairbanks",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins activated RHP Pete Fairbanks from the 15-day injured list."
-    },
-    "609280": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Miguel Andujar",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated DH Miguel Andujar from the 10-day injured list."
-    },
-    "694728": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Brice Matthews",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated CF Brice Matthews."
-    },
-    "665795": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Edward Cabrera",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Edward Cabrera."
-    },
-    "664299": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Cristian Javier",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated RHP Cristian Javier."
-    },
-    "677952": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Braxton Ashcraft",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates activated RHP Braxton Ashcraft from the 15-day injured list."
-    },
-    "693821": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Bryce Elder",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Bryce Elder."
-    },
-    "663698": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Joey Bart",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated C Joey Bart from the 10-day injured list."
-    },
-    "670059": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Colin Holderman",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Colin Holderman from the 15-day injured list."
-    },
-    "699013": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Esmerlyn Valdez",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates activated RF Esmerlyn Valdez from the 10-day injured list."
-    },
-    "676106": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Emerson Hancock",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated RHP Emerson Hancock from the 15-day injured list."
-    },
-    "650489": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Willi Castro",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies activated 2B Willi Castro from the 10-day injured list."
-    },
-    "663616": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Trevor Larnach",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins activated LF Trevor Larnach from the 10-day injured list."
-    },
-    "595345": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Steven Okert",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated LHP Steven Okert."
-    },
-    "664076": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Garrett Cleavinger",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated LHP Garrett Cleavinger from the 15-day injured list."
-    },
-    "694397": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Marco Raya",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled RHP Marco Raya from St. Paul Saints."
-    },
-    "801501": {
-      "kind": "from_il",
-      "date": "2026-09-28",
-      "name_en": "Nate Furman",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated 2B Nate Furman from the 10-day injured list."
-    },
-    "702674": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Caden Dana",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels recalled RHP Caden Dana from Salt Lake Bees."
-    },
-    "687060": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Blake Adams",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled RHP Blake Adams from Albuquerque Isotopes."
-    },
-    "691373": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jhostynxon Garcia",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled RF Jhostynxon Garcia from Indianapolis Indians."
-    },
-    "701649": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "James Triantos",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated 2B James Triantos."
-    },
-    "666745": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Jhony Brito",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Jhony Brito."
-    },
-    "670242": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Matt Wallner",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled RF Matt Wallner from St. Paul Saints."
-    },
-    "694230": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Hendry Mendez",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled OF Hendry Mendez from St. Paul Saints."
-    },
-    "694224": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Gabriel Gonzalez",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled RF Gabriel Gonzalez from St. Paul Saints."
-    },
-    "700652": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Kenny Piper",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays recalled C Kenny Piper from Durham Bulls."
-    },
-    "700337": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Edgar Quero",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled C Edgar Quero from Charlotte Knights."
-    },
-    "701780": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Tanner McDougal",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled RHP Tanner McDougal from Charlotte Knights."
-    },
-    "700280": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Miguel Mendez",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants recalled RHP Miguel Mendez from Richmond Flying Squirrels."
-    },
-    "699130": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jadher Areinamo",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays recalled 2B Jadher Areinamo from Durham Bulls."
-    },
-    "699214": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Leandro Lopez",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled RHP Leandro Lopez from Frisco RoughRiders."
-    },
-    "663853": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Romy Gonzalez",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated DH Romy Gonzalez."
-    },
-    "692216": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "CJ Kayfus",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled 1B CJ Kayfus from Columbus Clippers."
-    },
-    "700932": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Kyle Manzardo",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled 1B Kyle Manzardo from Columbus Clippers."
-    },
-    "678868": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Eddy Yean",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled RHP Eddy Yean from Rochester Red Wings."
-    },
-    "676105": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jeff Criswell",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled RHP Jeff Criswell from Albuquerque Isotopes."
-    },
-    "691414": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Yorman Gómez",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled RHP Yorman Gómez from Columbus Clippers."
-    },
-    "695490": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Edwin Arroyo",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds recalled 2B Edwin Arroyo from Louisville Bats."
-    },
-    "691009": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Dylan Ray",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled RHP Dylan Ray from Reno Aces."
-    },
-    "686628": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Blake Burkhalter",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Blake Burkhalter."
-    },
-    "621053": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Tyler Ferguson",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Tyler Ferguson."
-    },
-    "682634": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Kevin Alcántara",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated DH Kevin Alcántara."
-    },
-    "694876": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Cooper Ingle",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled C Cooper Ingle from Columbus Clippers."
-    },
-    "657649": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jared Koenig",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled LHP Jared Koenig from Nashville Sounds."
-    },
-    "805904": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Zach Cole",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated LF Zach Cole."
-    },
-    "671106": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Logan Allen",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled LHP Logan Allen from Columbus Clippers."
-    },
-    "694335": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Matt Svanson",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals recalled RHP Matt Svanson from Memphis Redbirds."
-    },
-    "687394": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jack Brannigan",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled SS Jack Brannigan from Indianapolis Indians."
-    },
-    "687515": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Colby Thomas",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RF Colby Thomas."
-    },
-    "676664": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "JP Sears",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated LHP JP Sears."
-    },
-    "676702": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Hunter Stratton",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Hunter Stratton."
-    },
-    "676572": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Eric Wagaman",
-      "team": "New York Mets",
-      "text": "New York Mets recalled 1B Eric Wagaman from Syracuse Mets."
-    },
-    "677060": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Chad Stevens",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled 2B Chad Stevens from Albuquerque Isotopes."
-    },
-    "689672": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Drew Thorpe",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled RHP Drew Thorpe from Charlotte Knights."
-    },
-    "701655": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Reed Trimble",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled LF Reed Trimble from Norfolk Tides."
-    },
-    "670224": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Kameron Misner",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated CF Kameron Misner."
-    },
-    "687606": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Paxton Schultz",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled RHP Paxton Schultz from Rochester Red Wings."
-    },
-    "687765": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Mitch Spence",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled RHP Mitch Spence from Omaha Storm Chasers."
-    },
-    "696522": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Hayden Juenger",
-      "team": "Athletics",
-      "text": "Athletics recalled RHP Hayden Juenger from Las Vegas Aviators."
-    },
-    "681230": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "BJ Murray Jr.",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated 3B BJ Murray Jr.."
-    },
-    "671286": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Johnathan Rodríguez",
-      "team": "Athletics",
-      "text": "Athletics recalled RF Johnathan Rodríguez from Las Vegas Aviators."
-    },
-    "694377": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Nick Yorke",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled 3B Nick Yorke from Indianapolis Indians."
-    },
-    "686482": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Logan Driscoll",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins recalled C Logan Driscoll from Jacksonville Jumbo Shrimp."
-    },
-    "682622": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Noelvi Marte",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds recalled RF Noelvi Marte from Louisville Bats."
-    },
-    "680880": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Grant Holman",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RHP Grant Holman."
-    },
-    "689441": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Coleman Crow",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled RHP Coleman Crow from Nashville Sounds."
-    },
-    "700413": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Tyler Uberstine",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Tyler Uberstine."
-    },
-    "805347": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Jim Jarvis",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated SS Jim Jarvis."
-    },
-    "806960": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Luis Morales",
-      "team": "Athletics",
-      "text": "Athletics recalled RHP Luis Morales from Las Vegas Aviators."
-    },
-    "801725": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Luis De León",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled LHP Luis De León from FCL Orioles."
-    },
-    "687223": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Carson Palmquist",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled LHP Carson Palmquist from Rochester Red Wings."
-    },
-    "805725": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jake Miller",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled LHP Jake Miller from Erie SeaWolves."
-    },
-    "802686": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Hayden Harris",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled LHP Hayden Harris from Albuquerque Isotopes."
-    },
-    "672629": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Gerardo Carrillo",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled RHP Gerardo Carrillo from Reno Aces."
-    },
-    "686753": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Drey Jameson",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled RHP Drey Jameson from Reno Aces."
-    },
-    "681151": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Jayden Murray",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Jayden Murray."
-    },
-    "686796": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Blake Walston",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled LHP Blake Walston from Reno Aces."
-    },
-    "691947": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ronan Kopp",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers recalled LHP Ronan Kopp from Oklahoma City Comets."
-    },
-    "672613": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Eliezer Alfonzo",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers recalled C Eliezer Alfonzo from Oklahoma City Comets."
-    },
-    "801434": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Paul Gervase",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers recalled RHP Paul Gervase from Oklahoma City Comets."
-    },
-    "686551": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Christian Cairo",
-      "team": "New York Mets",
-      "text": "New York Mets recalled SS Christian Cairo from Syracuse Mets."
-    },
-    "669298": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "TJ Shook",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled RHP TJ Shook from Albuquerque Isotopes."
-    },
-    "686563": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jonathan Cannon",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled RHP Jonathan Cannon from Charlotte Knights."
-    },
-    "680474": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Max Schuemann",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated LF Max Schuemann."
-    },
-    "665861": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Sebastián Rivero",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels recalled C Sebastián Rivero from Salt Lake Bees."
-    },
-    "694350": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Zach Brzykcy",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins recalled RHP Zach Brzykcy from Jacksonville Jumbo Shrimp."
-    },
-    "671936": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Adam Macko",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled LHP Adam Macko from ACL Rangers."
-    },
-    "669200": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Mason McCoy",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated 2B Mason McCoy."
-    },
-    "689958": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Andrew Walters",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled RHP Andrew Walters from Columbus Clippers."
-    },
-    "701719": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Tyler Samaniego",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated LHP Tyler Samaniego."
-    },
-    "696135": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Kahlil Watson",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled RF Kahlil Watson from Columbus Clippers."
-    },
-    "690925": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Clayton Beeter",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled RHP Clayton Beeter from Rochester Red Wings."
-    },
-    "682818": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Yohendrick Piñango",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays recalled LF Yohendrick Piñango from Buffalo Bisons."
-    },
-    "694410": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "LuJames Groover",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled 1B LuJames Groover from Reno Aces."
-    },
-    "693312": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Kyle Nicolas",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled RHP Kyle Nicolas from Rochester Red Wings."
-    },
-    "646241": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Enmanuel De Jesus",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled LHP Enmanuel De Jesus from Toledo Mud Hens."
-    },
-    "699073": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Thayron Liranzo",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled C Thayron Liranzo from Erie SeaWolves."
-    },
-    "691951": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Sam Aldegheri",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels recalled LHP Sam Aldegheri from Salt Lake Bees."
-    },
-    "694357": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ricky Tiedemann",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays recalled LHP Ricky Tiedemann from Buffalo Bisons."
-    },
-    "621550": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Patrick Wisdom",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners recalled 3B Patrick Wisdom from Tacoma Rainiers."
-    },
-    "669208": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ryan Bliss",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners recalled 2B Ryan Bliss from Tacoma Rainiers."
-    },
-    "687209": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Zach Maxwell",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds recalled RHP Zach Maxwell from Louisville Bats."
-    },
-    "668831": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Garrett Stallings",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled RHP Garrett Stallings from Nashville Sounds."
-    },
-    "683409": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Angel Chivilli",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Angel Chivilli."
-    },
-    "681252": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jack Anderson",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled RHP Jack Anderson from St. Paul Saints."
-    },
-    "690022": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ryan Ritter",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled SS Ryan Ritter from Albuquerque Isotopes."
-    },
-    "663611": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Nick Madrigal",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays recalled 3B Nick Madrigal from Durham Bulls."
-    },
-    "681909": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Justin Dean",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated CF Justin Dean."
-    },
-    "694388": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Joey Loperfido",
-      "team": "Houston Astros",
-      "text": "Houston Astros recalled LF Joey Loperfido from Sugar Land Space Cowboys."
-    },
-    "692064": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "José Rodríguez",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays recalled RHP José Rodríguez from FCL Blue Jays."
-    },
-    "681293": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Spencer Arrighetti",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays recalled RHP Spencer Arrighetti from FCL Blue Jays."
-    },
-    "695684": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Elmer Rodríguez",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Elmer Rodríguez."
-    },
-    "676254": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ryan Walker",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants recalled RHP Ryan Walker from Sacramento River Cats."
-    },
-    "691907": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Tsung-Che Cheng",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated SS Tsung-Che Cheng."
-    },
-    "692225": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Kristian Campbell",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated OF Kristian Campbell."
-    },
-    "805326": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Tyler Schweitzer",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled LHP Tyler Schweitzer from Charlotte Knights."
-    },
-    "695001": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Alimber Santa",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated RHP Alimber Santa."
-    },
-    "691330": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Moisés Chace",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RHP Moisés Chace."
-    },
-    "695238": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Will Wagner",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated DH Will Wagner."
-    },
-    "676051": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Codi Heuer",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled RHP Codi Heuer from Norfolk Tides."
-    },
-    "681343": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Shane Smith",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled RHP Shane Smith from Charlotte Knights."
-    },
-    "687605": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Andrew Pinckney",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled LF Andrew Pinckney from Rochester Red Wings."
-    },
-    "686632": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Steven Zobac",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled RHP Steven Zobac from Northwest Arkansas Naturals."
-    },
-    "669398": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Gage Workman",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated 3B Gage Workman."
-    },
-    "687830": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Sawyer Gipson-Long",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled RHP Sawyer Gipson-Long from Toledo Mud Hens."
-    },
-    "696131": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Mason Black",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled RHP Mason Black from Omaha Storm Chasers."
-    },
-    "682769": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Eiberson Castellano",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled RHP Eiberson Castellano from Albuquerque Isotopes."
-    },
-    "672012": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Tyler Black",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled DH Tyler Black from Nashville Sounds."
-    },
-    "694371": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Tommy Troy",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled LF Tommy Troy from Reno Aces."
-    },
-    "671382": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Cameron Foster",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled RHP Cameron Foster from Norfolk Tides."
-    },
-    "805672": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Collin Price",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated C Collin Price."
-    },
-    "641555": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "J.C. Escarra",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated C J.C. Escarra."
-    },
-    "670183": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Garrett Acton",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled RHP Garrett Acton from St. Paul Saints."
-    },
-    "685801": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Hunter Bigge",
-      "team": "Athletics",
-      "text": "Athletics recalled RHP Hunter Bigge from Las Vegas Aviators."
-    },
-    "678906": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Kai-Wei Teng",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated RHP Kai-Wei Teng."
-    },
-    "678577": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Junior Perez",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled CF Junior Perez from Charlotte Knights."
-    },
-    "678184": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Garrett Hawkins",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Garrett Hawkins."
-    },
-    "686678": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Chase Solesky",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds recalled RHP Chase Solesky from Louisville Bats."
-    },
-    "691548": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Rolddy Muñoz",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Rolddy Muñoz."
-    },
-    "695034": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Kade Morris",
-      "team": "Athletics",
-      "text": "Athletics recalled RHP Kade Morris from Las Vegas Aviators."
-    },
-    "660604": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Alan Rangel",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RHP Alan Rangel."
-    },
-    "691185": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Maximo Acosta",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins recalled SS Maximo Acosta from Jacksonville Jumbo Shrimp."
-    },
-    "807743": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Sean Sullivan",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled LHP Sean Sullivan from Albuquerque Isotopes."
-    },
-    "692437": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Winston Santos",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled RHP Winston Santos from ACL Rangers."
-    },
-    "668731": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Akil Baddoo",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled LF Akil Baddoo from Nashville Sounds."
-    },
-    "687231": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Darell Hernaiz",
-      "team": "Athletics",
-      "text": "Athletics recalled SS Darell Hernaiz from Las Vegas Aviators."
-    },
-    "676566": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Shawn Ross",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays recalled C Shawn Ross from Buffalo Bisons."
-    },
-    "697812": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Joe Rock",
-      "team": "Athletics",
-      "text": "Athletics recalled LHP Joe Rock from Las Vegas Aviators."
-    },
-    "687282": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Gabriel Rincones Jr.",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RF Gabriel Rincones Jr.."
-    },
-    "695049": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Brett Kerry",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels recalled RHP Brett Kerry from Salt Lake Bees."
-    },
-    "679358": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Eric Orze",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled RHP Eric Orze from St. Paul Saints."
-    },
-    "687312": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Gabriel Hughes",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled RHP Gabriel Hughes from Albuquerque Isotopes."
-    },
-    "669704": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Kade Strowd",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled RHP Kade Strowd from Reno Aces."
-    },
-    "686701": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ryan Bergert",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled RHP Ryan Bergert from Omaha Storm Chasers."
-    },
-    "804556": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Braden Nett",
-      "team": "Athletics",
-      "text": "Athletics recalled RHP Braden Nett from Midland RockHounds."
-    },
-    "701305": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Zach Dezenzo",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated LF Zach Dezenzo."
-    },
-    "663584": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Hayden Senger",
-      "team": "New York Mets",
-      "text": "New York Mets recalled C Hayden Senger from Syracuse Mets."
-    },
-    "689017": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Landon Knack",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers recalled RHP Landon Knack from Oklahoma City Comets."
-    },
-    "693713": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Emiliano Teodo",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled RHP Emiliano Teodo from Round Rock Express."
-    },
-    "671155": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ivan Johnson",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds recalled 2B Ivan Johnson from Louisville Bats."
-    },
-    "682274": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Yaramil Hiraldo",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled RHP Yaramil Hiraldo from Norfolk Tides."
-    },
-    "668834": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Easton McGee",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled RHP Easton McGee from Omaha Storm Chasers."
-    },
-    "681890": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Troy Watson",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners recalled RHP Troy Watson from Tacoma Rainiers."
-    },
-    "700246": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Carson Williams",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays recalled SS Carson Williams from Durham Bulls."
-    },
-    "808975": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Hyeseong Kim",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers recalled SS Hyeseong Kim from Oklahoma City Comets."
-    },
-    "683155": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Joey Estes",
-      "team": "Athletics",
-      "text": "Athletics recalled RHP Joey Estes from Las Vegas Aviators."
-    },
-    "694851": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Andrew Hoffmann",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RHP Andrew Hoffmann."
-    },
-    "687721": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Cameron Weston",
-      "team": "New York Mets",
-      "text": "New York Mets recalled RHP Cameron Weston from Syracuse Mets."
-    },
-    "681006": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Josh Simpson",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners recalled LHP Josh Simpson from Tacoma Rainiers."
-    },
-    "700249": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Cade Povich",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled LHP Cade Povich from Norfolk Tides."
-    },
-    "700270": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Yilber Díaz",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled RHP Yilber Díaz from Toledo Mud Hens."
-    },
-    "694358": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Tekoah Roby",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals recalled RHP Tekoah Roby from Memphis Redbirds."
-    },
-    "680604": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Blas Castaño",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled RHP Blas Castaño from Albuquerque Isotopes."
-    },
-    "694514": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Sterlin Thompson",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies recalled RF Sterlin Thompson from Albuquerque Isotopes."
-    },
-    "687239": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ben Peoples",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled RHP Ben Peoples from Round Rock Express."
-    },
-    "683742": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jose Franco",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds recalled RHP Jose Franco from Louisville Bats."
-    },
-    "699114": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Leo Balcazar",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds recalled SS Leo Balcazar from Louisville Bats."
-    },
-    "679922": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Carlos Duran",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled RHP Carlos Duran from Omaha Storm Chasers."
-    },
-    "696136": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Jordan Wicks",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated LHP Jordan Wicks."
-    },
-    "660710": {
-      "kind": "to_il",
-      "date": "2026-09-29",
-      "name_en": "Rodolfo Durán",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres placed C Rodolfo Durán on the 60-day injured list. Right forearm strain."
-    },
-    "671212": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Joe Boyle",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays recalled RHP Joe Boyle from Durham Bulls."
-    },
-    "683352": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Mitch Bratt",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled LHP Mitch Bratt from Reno Aces."
-    },
-    "699625": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jimmy Crooks",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals recalled C Jimmy Crooks from Memphis Redbirds."
-    },
-    "805373": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Nacho Alvarez Jr.",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels recalled SS Nacho Alvarez Jr. from Salt Lake Bees."
-    },
-    "687985": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Josh White",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins recalled RHP Josh White from Jacksonville Jumbo Shrimp."
-    },
-    "691620": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jeferson Quero",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled C Jeferson Quero from Nashville Sounds."
-    },
-    "641482": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Nestor Cortes",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated LHP Nestor Cortes."
-    },
-    "681799": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Ethan Roberts",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Ethan Roberts."
-    },
-    "697811": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Dylan Ross",
-      "team": "New York Mets",
-      "text": "New York Mets recalled RHP Dylan Ross from Syracuse Mets."
-    },
-    "663368": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Blake Perkins",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled CF Blake Perkins from Columbus Clippers."
-    },
-    "680916": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Franco Aleman",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians recalled RHP Franco Aleman from Columbus Clippers."
-    },
-    "656234": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jake Bird",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled RHP Jake Bird from Rochester Red Wings."
-    },
-    "682997": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Tyler Callihan",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled LF Tyler Callihan from Indianapolis Indians."
-    },
-    "802419": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Thomas Harrington",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates recalled RHP Thomas Harrington from Indianapolis Indians."
-    },
-    "675916": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "James Karinchak",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP James Karinchak."
-    },
-    "680862": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Willie MacIver",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners recalled C Willie MacIver from Tacoma Rainiers."
-    },
-    "684442": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Kohl Drake",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled LHP Kohl Drake from Reno Aces."
-    },
-    "682515": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Logan Porter",
-      "team": "Los Angeles Angels",
-      "text": "Los Angeles Angels recalled C Logan Porter from Salt Lake Bees."
-    },
-    "681676": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ryan Fernandez",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals recalled RHP Ryan Fernandez from Memphis Redbirds."
-    },
-    "696070": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Kendry Rojas",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled LHP Kendry Rojas from St. Paul Saints."
-    },
-    "687075": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Brandon Sproat",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled RHP Brandon Sproat from Nashville Sounds."
-    },
-    "699314": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "David Davalillo",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers recalled RHP David Davalillo from Round Rock Express."
-    },
-    "669724": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Brenan Hanifee",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled RHP Brenan Hanifee from Toledo Mud Hens."
-    },
-    "800600": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jackson Kent",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled LHP Jackson Kent from Rochester Red Wings."
-    },
-    "695667": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Ben Kudrna",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals recalled RHP Ben Kudrna from Omaha Storm Chasers."
-    },
-    "691172": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Yosver Zulueta",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles recalled RHP Yosver Zulueta from Norfolk Tides."
-    },
-    "807747": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Rikuu Nishida",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled RF Rikuu Nishida from Charlotte Knights."
-    },
-    "687849": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Zak Kent",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled RHP Zak Kent from Rochester Red Wings."
-    },
-    "688692": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Jared Simpson",
-      "team": "Washington Nationals",
-      "text": "Washington Nationals recalled LHP Jared Simpson from Rochester Red Wings."
-    },
-    "690916": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Richard Fitts",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals recalled RHP Richard Fitts from Memphis Redbirds."
-    },
-    "681439": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Zach Morgan",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants recalled C Zach Morgan from Sacramento River Cats."
-    },
-    "656484": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Tristan Gray",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins recalled SS Tristan Gray from St. Paul Saints."
-    },
-    "692013": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Henry Baez",
-      "team": "Athletics",
-      "text": "Athletics recalled RHP Henry Baez from Midland RockHounds."
-    },
-    "684049": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Brandan Bidois",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins recalled RHP Brandan Bidois from Jacksonville Jumbo Shrimp."
-    },
-    "687287": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Patrick Monteverde",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins recalled LHP Patrick Monteverde from Jacksonville Jumbo Shrimp."
-    },
-    "686228": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Juan Burgos",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks recalled RHP Juan Burgos from Reno Aces."
-    },
-    "691176": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Jasson Domínguez",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RF Jasson Domínguez."
-    },
-    "695534": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Chase Petty",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds recalled RHP Chase Petty from Louisville Bats."
-    },
-    "673662": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Robinson Ortiz",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners recalled LHP Robinson Ortiz from Tacoma Rainiers."
-    },
-    "667452": {
-      "kind": "up",
-      "date": "2026-09-28",
-      "name_en": "Corey Julks",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers recalled LF Corey Julks from Toledo Mud Hens."
-    },
-    "689147": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Orion Kerkering",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RHP Orion Kerkering."
-    },
-    "690928": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Hunter Dobbins",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals activated RHP Hunter Dobbins from the 15-day injured list."
-    },
-    "519317": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Giancarlo Stanton",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated DH Giancarlo Stanton from the 60-day injured list."
-    },
-    "605397": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Joe Musgrove",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Joe Musgrove from the 60-day injured list."
-    },
-    "665665": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Reiver Sanmartin",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated LHP Reiver Sanmartin from the 15-day injured list."
-    },
-    "808982": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Jung Hoo Lee",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated RF Jung Hoo Lee from the 10-day injured list."
-    },
-    "518886": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Craig Kimbrel",
-      "team": "Kansas City Royals",
-      "text": "Kansas City Royals activated RHP Craig Kimbrel from the bereavement list."
-    },
-    "663757": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Trent Grisham",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated CF Trent Grisham from the 10-day injured list."
-    },
-    "683618": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Edgardo Henriquez",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Edgardo Henriquez from the 15-day injured list."
-    },
-    "676979": {
-      "kind": "from_il",
-      "date": "2026-09-29",
-      "name_en": "Garrett Crochet",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated LHP Garrett Crochet from the 60-day injured list."
-    },
-    "642133": {
-      "kind": "up",
-      "date": "2026-09-29",
-      "name_en": "Rowdy Tellez",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves selected the contract of 1B Rowdy Tellez from Gwinnett Stripers."
-    },
-    "663897": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Luke Williams",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated SS Luke Williams."
-    },
-    "678554": {
-      "kind": "from_il",
-      "date": "2026-09-30",
-      "name_en": "Curtis Mead",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated 3B Curtis Mead."
-    },
-    "663776": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Patrick Sandoval",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated LHP Patrick Sandoval."
-    },
-    "664774": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "LaMonte Wade Jr.",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated LF LaMonte Wade Jr.."
-    },
-    "663558": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Jovani Morán",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated LHP Jovani Morán."
-    },
-    "573204": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Caleb Thielbar",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated LHP Caleb Thielbar."
-    },
-    "814490": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Ethan Pecko",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated RHP Ethan Pecko."
-    },
-    "701350": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Roman Anthony",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated LF Roman Anthony."
-    },
-    "807799": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Masataka Yoshida",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated DH Masataka Yoshida."
-    },
-    "678011": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Anthony Seigler",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated 2B Anthony Seigler."
-    },
-    "679775": {
-      "kind": "up",
-      "date": "2026-10-02",
-      "name_en": "Kyle Backhus",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies recalled LHP Kyle Backhus from Lehigh Valley IronPigs."
-    },
-    "548384": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Brooks Raley",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated LHP Brooks Raley."
-    },
-    "676661": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Max Lazar",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RHP Max Lazar."
-    },
-    "650333": {
-      "kind": "from_il",
-      "date": "2026-10-02",
-      "name_en": "Luis Arraez",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated 2B Luis Arraez."
-    },
     "621111": {
       "kind": "from_il",
       "date": "2026-10-05",
       "name_en": "Walker Buehler",
       "team": "San Diego Padres",
       "text": "San Diego Padres activated RHP Walker Buehler from the paternity list."
-    },
-    "657041": {
-      "kind": "from_il",
-      "date": "2026-10-03",
-      "name_en": "Lane Thomas",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated LF Lane Thomas."
-    },
-    "681190": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Randy Vásquez",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Randy Vásquez."
-    },
-    "702275": {
-      "kind": "from_il",
-      "date": "2026-10-03",
-      "name_en": "JR Ritchie",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP JR Ritchie."
-    },
-    "800543": {
-      "kind": "from_il",
-      "date": "2026-10-03",
-      "name_en": "Josue De Paula",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated DH Josue De Paula."
-    },
-    "677960": {
-      "kind": "from_il",
-      "date": "2026-10-03",
-      "name_en": "Ryan Weathers",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated LHP Ryan Weathers."
-    },
-    "700363": {
-      "kind": "from_il",
-      "date": "2026-10-03",
-      "name_en": "AJ Smith-Shawver",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP AJ Smith-Shawver."
     },
     "593974": {
       "kind": "from_il",
@@ -2825,67 +25,11 @@
       "text": "San Diego Padres activated RHP Mason Miller from the paternity list."
     },
     "686218": {
-      "kind": "up",
-      "date": "2026-10-06",
+      "kind": "from_il",
+      "date": "2026-10-16",
       "name_en": "Emmet Sheehan",
       "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers recalled RHP Emmet Sheehan from Oklahoma City Comets."
-    },
-    "605242": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Michael Fulmer",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Michael Fulmer."
-    },
-    "625643": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Reynaldo López",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Reynaldo López."
-    },
-    "642708": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Amed Rosario",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated 3B Amed Rosario."
-    },
-    "592450": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Aaron Judge",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RF Aaron Judge."
-    },
-    "657612": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Tim Hill",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated LHP Tim Hill."
-    },
-    "680577": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "DaShawn Keirsey Jr.",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated CF DaShawn Keirsey Jr.."
-    },
-    "823550": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Sung-Mun Song",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated 2B Sung-Mun Song."
-    },
-    "642086": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Dominic Smith",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated DH Dominic Smith."
+      "text": "Los Angeles Dodgers activated RHP Emmet Sheehan."
     },
     "571657": {
       "kind": "from_il",
@@ -2894,26 +38,250 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves activated DH Kyle Farmer."
     },
-    "676467": {
-      "kind": "up",
+    "676702": {
+      "kind": "from_il",
       "date": "2026-10-08",
-      "name_en": "Colton Gordon",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled LHP Colton Gordon from Biloxi Shuckers."
+      "name_en": "Hunter Stratton",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Hunter Stratton."
     },
-    "702566": {
-      "kind": "up",
+    "683409": {
+      "kind": "from_il",
       "date": "2026-10-08",
-      "name_en": "Owen Murphy",
+      "name_en": "Angel Chivilli",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RHP Angel Chivilli."
+    },
+    "686628": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Blake Burkhalter",
       "team": "Atlanta Braves",
-      "text": "Atlanta Braves recalled RHP Owen Murphy from FCL Braves."
+      "text": "Atlanta Braves activated RHP Blake Burkhalter."
+    },
+    "527048": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Martín Pérez",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated LHP Martín Pérez."
+    },
+    "592450": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Aaron Judge",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RF Aaron Judge."
+    },
+    "700413": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Tyler Uberstine",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated RHP Tyler Uberstine."
+    },
+    "641555": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "J.C. Escarra",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated C J.C. Escarra."
+    },
+    "678184": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Garrett Hawkins",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Garrett Hawkins."
+    },
+    "695238": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Will Wagner",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated DH Will Wagner."
+    },
+    "669200": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Mason McCoy",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated 2B Mason McCoy."
+    },
+    "823550": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Sung-Mun Song",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated 2B Sung-Mun Song."
+    },
+    "669398": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Gage Workman",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated 3B Gage Workman."
+    },
+    "663897": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Luke Williams",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated SS Luke Williams."
+    },
+    "695684": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Elmer Rodríguez",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RHP Elmer Rodríguez."
+    },
+    "625643": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Reynaldo López",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated RHP Reynaldo López."
+    },
+    "675916": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "James Karinchak",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated RHP James Karinchak."
+    },
+    "642708": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Amed Rosario",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated 3B Amed Rosario."
+    },
+    "642086": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Dominic Smith",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated DH Dominic Smith."
+    },
+    "663554": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Casey Mize",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Casey Mize from the 15-day injured list."
+    },
+    "657376": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Clarke Schmidt",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RHP Clarke Schmidt."
+    },
+    "656288": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Griffin Canning",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Griffin Canning."
+    },
+    "691548": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Rolddy Muñoz",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated RHP Rolddy Muñoz."
+    },
+    "691176": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Jasson Domínguez",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RF Jasson Domínguez."
+    },
+    "660787": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Yerry De los Santos",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RHP Yerry De los Santos."
+    },
+    "605242": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Michael Fulmer",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RHP Michael Fulmer."
+    },
+    "693821": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Bryce Elder",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated RHP Bryce Elder."
+    },
+    "657612": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Tim Hill",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated LHP Tim Hill."
+    },
+    "680474": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Max Schuemann",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated LF Max Schuemann."
+    },
+    "680577": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "DaShawn Keirsey Jr.",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated CF DaShawn Keirsey Jr.."
+    },
+    "666745": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Jhony Brito",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Jhony Brito."
+    },
+    "805347": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Jim Jarvis",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves activated SS Jim Jarvis."
+    },
+    "681190": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Randy Vásquez",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Randy Vásquez."
+    },
+    "676664": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "JP Sears",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated LHP JP Sears."
+    },
+    "669093": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Jeremiah Estrada",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Jeremiah Estrada."
     },
     "669165": {
-      "kind": "up",
-      "date": "2026-10-08",
+      "kind": "from_il",
+      "date": "2026-10-16",
       "name_en": "Kyle Hurt",
       "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers recalled RHP Kyle Hurt from Oklahoma City Comets."
+      "text": "Los Angeles Dodgers activated RHP Kyle Hurt."
     },
     "675627": {
       "kind": "up",
@@ -2922,12 +290,54 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves recalled RHP Michael Grove from Gwinnett Stripers."
     },
+    "702566": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Owen Murphy",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves recalled RHP Owen Murphy from FCL Braves."
+    },
+    "694341": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Brendan Beck",
+      "team": "New York Yankees",
+      "text": "New York Yankees recalled RHP Brendan Beck from FCL Yankees."
+    },
     "702047": {
       "kind": "up",
       "date": "2026-10-08",
       "name_en": "Alex Cook",
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays recalled RHP Alex Cook from Durham Bulls."
+    },
+    "676467": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Colton Gordon",
+      "team": "Milwaukee Brewers",
+      "text": "Milwaukee Brewers recalled LHP Colton Gordon from Biloxi Shuckers."
+    },
+    "661563": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Luis Gil",
+      "team": "New York Yankees",
+      "text": "New York Yankees recalled RHP Luis Gil from FCL Yankees."
+    },
+    "690440": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Bradley Hanner",
+      "team": "New York Yankees",
+      "text": "New York Yankees recalled RHP Bradley Hanner from FCL Yankees."
+    },
+    "606996": {
+      "kind": "up",
+      "date": "2026-10-08",
+      "name_en": "Kyle Hart",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres recalled LHP Kyle Hart from ACL Padres."
     },
     "664849": {
       "kind": "up",
@@ -2943,6 +353,13 @@
       "team": "Los Angeles Dodgers",
       "text": "Los Angeles Dodgers activated LHP Justin Wrobleski."
     },
+    "811315": {
+      "kind": "from_il",
+      "date": "2026-10-12",
+      "name_en": "Brody Hopkins",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated RHP Brody Hopkins."
+    },
     "677944": {
       "kind": "from_il",
       "date": "2026-10-12",
@@ -2950,30 +367,316 @@
       "team": "Cleveland Guardians",
       "text": "Cleveland Guardians activated RHP Slade Cecconi."
     },
-    "811315": {
+    "689172": {
+      "kind": "up",
+      "date": "2026-10-15",
+      "name_en": "Brett Wisely",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves selected the contract of 2B Brett Wisely from Gwinnett Stripers."
+    },
+    "605540": {
       "kind": "from_il",
-      "date": "2026-10-12",
-      "name_en": "Brody Hopkins",
+      "date": "2026-10-23",
+      "name_en": "Brandon Woodruff",
+      "team": "Milwaukee Brewers",
+      "text": "Milwaukee Brewers activated RHP Brandon Woodruff from the 60-day injured list."
+    },
+    "664076": {
+      "kind": "from_il",
+      "date": "2026-10-23",
+      "name_en": "Garrett Cleavinger",
       "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Brody Hopkins."
+      "text": "Tampa Bay Rays activated LHP Garrett Cleavinger."
+    },
+    "689672": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Drew Thorpe",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RHP Drew Thorpe."
+    },
+    "663698": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Joey Bart",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated C Joey Bart."
+    },
+    "623211": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Huascar Brazobán",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RHP Huascar Brazobán."
+    },
+    "686563": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Jonathan Cannon",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RHP Jonathan Cannon."
+    },
+    "701780": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Tanner McDougal",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RHP Tanner McDougal."
+    },
+    "691011": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Drew Romo",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated C Drew Romo."
+    },
+    "700337": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Edgar Quero",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated C Edgar Quero."
+    },
+    "678577": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Junior Perez",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated CF Junior Perez."
+    },
+    "807747": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Rikuu Nishida",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RF Rikuu Nishida."
+    },
+    "805326": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Tyler Schweitzer",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated LHP Tyler Schweitzer."
+    },
+    "622491": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Luis Castillo",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RHP Luis Castillo."
+    },
+    "681343": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Shane Smith",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RHP Shane Smith."
+    },
+    "670950": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Trevor Richards",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RHP Trevor Richards."
+    },
+    "669684": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Chris Murphy",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated LHP Chris Murphy."
+    },
+    "690976": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Alex Freeland",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated 2B Alex Freeland."
+    },
+    "691947": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Ronan Kopp",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated LHP Ronan Kopp."
+    },
+    "595014": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Blake Treinen",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Blake Treinen."
+    },
+    "676263": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Jack Dreyer",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated LHP Jack Dreyer."
+    },
+    "689017": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Landon Knack",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Landon Knack."
+    },
+    "678020": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Seth Halvorsen",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Seth Halvorsen."
+    },
+    "676272": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Bobby Miller",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Bobby Miller."
+    },
+    "808975": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Hyeseong Kim",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated SS Hyeseong Kim."
+    },
+    "801434": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Paul Gervase",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Paul Gervase."
+    },
+    "687221": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Dalton Rushing",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated C Dalton Rushing."
+    },
+    "672613": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Eliezer Alfonzo",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated C Eliezer Alfonzo."
+    },
+    "669743": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Alex Call",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated LF Alex Call."
+    },
+    "804926": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Austin Peterson",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated RHP Austin Peterson."
+    },
+    "691414": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Yorman Gómez",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated RHP Yorman Gómez."
+    },
+    "671106": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Logan Allen",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated LHP Logan Allen."
+    },
+    "663368": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Blake Perkins",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated CF Blake Perkins."
+    },
+    "682177": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Daniel Schneemann",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated CF Daniel Schneemann."
+    },
+    "694876": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Cooper Ingle",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated C Cooper Ingle."
+    },
+    "670059": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Colin Holderman",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated RHP Colin Holderman."
+    },
+    "680916": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Franco Aleman",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated RHP Franco Aleman."
+    },
+    "692216": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "CJ Kayfus",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated 1B CJ Kayfus."
+    },
+    "656555": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Rhys Hoskins",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated 1B Rhys Hoskins."
+    },
+    "684974": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Craig Yoho",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated RHP Craig Yoho."
+    },
+    "700932": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Kyle Manzardo",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated 1B Kyle Manzardo."
+    },
+    "696135": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Kahlil Watson",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated RF Kahlil Watson."
+    },
+    "689958": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Andrew Walters",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated RHP Andrew Walters."
     }
   },
   "japanese": {
     "807747": {
-      "kind": "up",
-      "date": "2026-09-28",
+      "kind": "from_il",
+      "date": "2026-10-11",
       "name_en": "Rikuu Nishida",
       "team": "Chicago White Sox",
-      "text": "Chicago White Sox recalled RF Rikuu Nishida from Charlotte Knights.",
+      "text": "Chicago White Sox activated RF Rikuu Nishida.",
       "name_jp": "西田陸浮"
-    },
-    "807799": {
-      "kind": "from_il",
-      "date": "2026-10-01",
-      "name_en": "Masataka Yoshida",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated DH Masataka Yoshida.",
-      "name_jp": "吉田正尚"
     }
   }
 }

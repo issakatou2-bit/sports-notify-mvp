@@ -97,8 +97,10 @@ def upload(day):
         snippet['description']=(day+'時点のポストシーズン進出争いです。地区優勝、PS進出確定、現在の地区首位を区別して表示しています。\n\n'
                                 +snippet.get('description','')+'\n[COLLESPO-PILOT:'+key+']')
         pilot.record(key,{'status':'pending','old_video_id':old_id,'run_id':os.environ.get('GITHUB_RUN_ID')})
-        request=yt.videos().insert(part='snippet,status',notifySubscribers=False,
-            body={'snippet':snippet,'status':{'privacyStatus':'private','selfDeclaredMadeForKids':False}},
+        import localize_videos
+        body = localize_videos.prepare_upload({'snippet':snippet,'status':{'privacyStatus':'private','selfDeclaredMadeForKids':False}})
+        request=yt.videos().insert(part=localize_videos.upload_parts(body),notifySubscribers=False,
+            body=body,
             media_body=MediaFileUpload(str(path),mimetype='video/mp4',chunksize=8*1024*1024,resumable=True))
         response=None
         while response is None:

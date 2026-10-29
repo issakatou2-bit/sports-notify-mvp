@@ -1,0 +1,469 @@
+{
+  "source_commit": "a694793a",
+  "source_path": "data/soccer_games.json",
+  "note": "Selected game rows from saved material. Narration rebuilt deterministically; audio durations are synthetic, not the original WAV measurements.",
+  "data": {
+    "generated_at": "2026-10-14T09:54:02.064822+00:00",
+    "games": [
+      {
+        "game_id": "575353",
+        "league": "チャンピオンズリーグ",
+        "home_team_id": "CL-65",
+        "away_team_id": "CL-524",
+        "home_team_name": "マンチェスター・シティ",
+        "away_team_name": "パリ・サンジェルマン",
+        "home_abbr": null,
+        "away_abbr": null,
+        "home_color": null,
+        "away_color": null,
+        "matchup": "パリ・サンジェルマン vs マンチェスター・シティ",
+        "abbr_matchup": null,
+        "start_time_jst": "10/15 04:00",
+        "home_division": null,
+        "away_division": null,
+        "same_division": false,
+        "rivalry_type": null,
+        "jp_starters": [],
+        "jp_players": [],
+        "home_standing": null,
+        "away_standing": null,
+        "home_probable": null,
+        "away_probable": null,
+        "venue_name": null,
+        "venue_jp": null,
+        "venue_note": null,
+        "venue_runs_note": null,
+        "home_has_jp": false,
+        "away_has_jp": false,
+        "score": 3,
+        "game_type": "R",
+        "is_notable": true,
+        "reasons": [
+          {
+            "tag": "quality",
+            "text": "マンチェスター・シティ と パリ・サンジェルマン の対戦",
+            "weight": 3
+          },
+          {
+            "tag": "quality",
+            "text": "マンチェスター・シティ（昨季CLリーグフェーズ8位）とパリ・サンジェルマン（昨季CLリーグフェーズ11位）の対戦",
+            "weight": 0
+          }
+        ],
+        "log_notes": [],
+        "ai_summary": "チャンピオンズリーグのリーグフェーズが開幕する中、昨季の同大会で【8位と11位】という成績を収めたマンチェスター・シティとパリ・サンジェルマンが対戦する。両強豪の実力が現シーズンでどのように表れるかが、リーグフェーズ全体の勢力図を占う上で重要になる。攻撃と守備のバランス、セットプレーへの対応など、両チームの戦術がどう機能するかに注目したい。",
+        "notification_hook": "昨季CLで8位と11位の強豪が激突。両チームの開幕戦での出来が問われる。",
+        "fixture_sources": [
+          "ESPN",
+          "football-data.org"
+        ],
+        "espn_event_id": "401915407",
+        "competition_code": "CL",
+        "start_time_utc": "2026-10-15T04:00:00+09:00",
+        "season_players": [],
+        "preview_out_names": [],
+        "preview_rating": {
+          "score": 45,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 25,
+              "evidence": "チャンピオンズリーグ"
+            },
+            {
+              "key": "marquee_home",
+              "points": 10,
+              "evidence": "Manchester City FC"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Paris Saint-Germain FC"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        }
+      },
+      {
+        "game_id": "575352",
+        "league": "チャンピオンズリーグ",
+        "home_team_id": "CL-100",
+        "away_team_id": "CL-86",
+        "home_team_name": "ローマ",
+        "away_team_name": "レアル・マドリード",
+        "home_abbr": null,
+        "away_abbr": null,
+        "home_color": null,
+        "away_color": null,
+        "matchup": "レアル・マドリード vs ローマ",
+        "abbr_matchup": null,
+        "start_time_jst": "10/15 04:00",
+        "home_division": null,
+        "away_division": null,
+        "same_division": false,
+        "rivalry_type": null,
+        "jp_starters": [],
+        "jp_players": [],
+        "home_standing": null,
+        "away_standing": null,
+        "home_probable": null,
+        "away_probable": null,
+        "venue_name": null,
+        "venue_jp": null,
+        "venue_note": null,
+        "venue_runs_note": null,
+        "home_has_jp": false,
+        "away_has_jp": false,
+        "score": 1,
+        "game_type": "R",
+        "is_notable": true,
+        "reasons": [
+          {
+            "tag": "quality",
+            "text": "レアル・マドリード の試合",
+            "weight": 1
+          }
+        ],
+        "log_notes": [],
+        "ai_summary": "チャンピオンズリーグは欧州の1部リーグ上位チームが集う大会であり、シーズン開幕直後となる本大会では、各チームの新シーズンでの実力を測る重要な一戦となる。本拠地ローマを迎える敵地訪問のレアル・マドリードは、【ヨーロッパの伝統的な強豪】として毎年この舞台で結果を求められるチームである。開幕間もない段階で両者がぶつかる本試合では、新加入選手や選手層の充実ぶり、そしてチーム全体の準備状況がどの程度整っているかに注目したい。",
+        "notification_hook": "開幕直後、ローマの本拠地に乗り込むレアル・マドリード。新シーズンの調整具合はいかに。",
+        "fixture_sources": [
+          "ESPN",
+          "football-data.org"
+        ],
+        "espn_event_id": "401915414",
+        "competition_code": "CL",
+        "start_time_utc": "2026-10-15T04:00:00+09:00",
+        "season_players": [],
+        "preview_out_names": [],
+        "preview_rating": {
+          "score": 35,
+          "factors": [
+            {
+              "key": "competition",
+              "points": 25,
+              "evidence": "チャンピオンズリーグ"
+            },
+            {
+              "key": "marquee_away",
+              "points": 10,
+              "evidence": "Real Madrid CF"
+            }
+          ],
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "japanese": false
+        }
+      }
+    ],
+    "ai_status": {
+      "targets": 3,
+      "succeeded": 3,
+      "cost_usd": 0.01598
+    },
+    "source_errors": [],
+    "fixture_coverage": [
+      {
+        "competition": "PL",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "PD",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "BL1",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "SA",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "FL1",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "CL",
+        "status": "success",
+        "events": 9,
+        "label": "取得成功"
+      },
+      {
+        "competition": "EL",
+        "status": "success",
+        "events": 18,
+        "label": "取得成功"
+      },
+      {
+        "competition": "UECL",
+        "status": "success",
+        "events": 18,
+        "label": "取得成功"
+      },
+      {
+        "competition": "FAC",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "EFL",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "CDR",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "DFB",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "CI",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      },
+      {
+        "competition": "CDF",
+        "status": "no_games",
+        "events": 0,
+        "label": "試合なし"
+      }
+    ],
+    "source": "ESPN・football-data.org",
+    "preview_selection": {
+      "day": "2026-10-14",
+      "threshold": 30,
+      "max_games": 3,
+      "policy_sha256": "c705897f70c7935c0be4930d4c7baa5acebb4104e1c948598ca409e35cb8e4ea",
+      "selected_ids": [
+        "575353",
+        "575352"
+      ],
+      "count": 2,
+      "reason": "",
+      "rejected": [
+        {
+          "id": "575350",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "575354",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "575351",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "575355",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "575356",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "575357",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "575358",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "espn-401915416",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "espn-401915409",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "espn-401915393",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "espn-401915408",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "espn-401915406",
+          "reason": "クラブの表示名/読みが未登録"
+        },
+        {
+          "id": "espn-401915405",
+          "reason": "クラブの表示名/読みが未登録"
+        }
+      ],
+      "source_errors": []
+    }
+  },
+  "narration": {
+    "label": "10月14日（水）",
+    "title": "【欧州サッカー】マンチェスター・シティ対パリ・サンジェルマンの注目試合 #Shorts",
+    "soccer_v4_mode": "preview",
+    "segments": [
+      {
+        "kind": "cover",
+        "text": "欧州サッカーの注目試合です。",
+        "speaker": 2,
+        "meta": {
+          "kicker": "欧州サッカー　予告",
+          "name": "",
+          "club": "マンチェスター・シティ",
+          "big": "04:00",
+          "unit": "日本時間",
+          "context": "マンチェスター・シティ対パリ・サンジェルマンの注目試合",
+          "chips": [],
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・football-data.org",
+          "ticker": "10月14日（水）　マンチェスター・シティ対パリ・サンジェルマンの注目試合"
+        }
+      },
+      {
+        "kind": "preview",
+        "text": "日本時間4時、マンチェスター・シティ対パリ・サンジェルマン。マンチェスターCは昨季CLリーグフェーズ8位。パリ・サンジェルマンは昨季CLリーグフェーズ11位。見どころは、この順位差が今回どう表れるかです。",
+        "speaker": 2,
+        "meta": {
+          "date": "10月15日（木）",
+          "time": "04:00",
+          "league": "チャンピオンズリーグ",
+          "home": "マンチェスター・シティ",
+          "away": "パリ・サンジェルマン",
+          "ranks": {},
+          "jp": {
+            "home": [],
+            "away": []
+          },
+          "game_id": "575353",
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・football-data.org",
+          "ticker": "10月14日（水）　マンチェスター・シティ対パリ・サンジェルマンの注目試合",
+          "interest": {
+            "reasons": [
+              {
+                "kind": "previous_season",
+                "text": "マンチェスターCは昨季CLリーグフェーズ8位",
+                "evidence": "reasons.quality"
+              },
+              {
+                "kind": "previous_season",
+                "text": "パリ・サンジェルマンは昨季CLリーグフェーズ11位",
+                "evidence": "reasons.quality"
+              }
+            ],
+            "player": null
+          },
+          "preview_duration_limit": 55
+        }
+      },
+      {
+        "kind": "preview",
+        "text": "日本時間4時、ローマ対レアル・マドリード。注目はチャンピオンズリーグでの、この両チームの対戦です。見どころはローマのホームで、レアル・マドリードがどう戦うかです。",
+        "speaker": 2,
+        "meta": {
+          "date": "10月15日（木）",
+          "time": "04:00",
+          "league": "チャンピオンズリーグ",
+          "home": "ローマ",
+          "away": "レアル・マドリード",
+          "ranks": {},
+          "jp": {
+            "home": [],
+            "away": []
+          },
+          "game_id": "575352",
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・football-data.org",
+          "ticker": "10月14日（水）　マンチェスター・シティ対パリ・サンジェルマンの注目試合",
+          "interest": {
+            "reasons": [],
+            "player": null
+          },
+          "preview_duration_limit": 55
+        }
+      },
+      {
+        "kind": "outro",
+        "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+        "speaker": 2,
+        "meta": {
+          "label": "欧州サッカー　予告",
+          "source": "音声: VOICEVOX:四国めたん　出典: ESPN・football-data.org",
+          "ticker": "10月14日（水）　マンチェスター・シティ対パリ・サンジェルマンの注目試合"
+        }
+      }
+    ],
+    "duration_budget": {
+      "limit": 55,
+      "grace": 0
+    },
+    "soccer_material": {
+      "source": "ESPN・football-data.org",
+      "retrieved_at": "2026-10-14T09:54:02.064822+00:00",
+      "date_jst": "2026-10-14",
+      "games": [
+        {
+          "game_id": "575353",
+          "league": "チャンピオンズリーグ",
+          "home_team_name": "マンチェスター・シティ",
+          "away_team_name": "パリ・サンジェルマン",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN",
+            "football-data.org"
+          ],
+          "start_time_jst": "10/15 04:00",
+          "start_time_utc": "2026-10-15T04:00:00+09:00"
+        },
+        {
+          "game_id": "575352",
+          "league": "チャンピオンズリーグ",
+          "home_team_name": "ローマ",
+          "away_team_name": "レアル・マドリード",
+          "home_standing": null,
+          "away_standing": null,
+          "fixture_sources": [
+            "ESPN",
+            "football-data.org"
+          ],
+          "start_time_jst": "10/15 04:00",
+          "start_time_utc": "2026-10-15T04:00:00+09:00"
+        }
+      ],
+      "competitions": []
+    }
+  },
+  "audio_seconds": [
+    2.0,
+    20.7,
+    20.7,
+    7.6
+  ]
+}

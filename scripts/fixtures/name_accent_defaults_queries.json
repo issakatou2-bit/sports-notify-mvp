@@ -1,0 +1,580 @@
+[
+  {
+    "name": "三笘薫",
+    "speaker": 2,
+    "source": "03-speaker2-current.query.json",
+    "query": {
+      "accent_phrases": [
+        {
+          "moras": [
+            {
+              "text": "ミ",
+              "consonant": "m",
+              "consonant_length": 0.05148806422948837,
+              "vowel": "i",
+              "vowel_length": 0.07406552135944366,
+              "pitch": 5.42843770980835
+            },
+            {
+              "text": "ト",
+              "consonant": "t",
+              "consonant_length": 0.05742020905017853,
+              "vowel": "o",
+              "vowel_length": 0.06241031736135483,
+              "pitch": 5.8453145027160645
+            },
+            {
+              "text": "マ",
+              "consonant": "m",
+              "consonant_length": 0.04629413038492203,
+              "vowel": "a",
+              "vowel_length": 0.08785993605852127,
+              "pitch": 5.919770240783691
+            },
+            {
+              "text": "カ",
+              "consonant": "k",
+              "consonant_length": 0.05672863870859146,
+              "vowel": "a",
+              "vowel_length": 0.07352175563573837,
+              "pitch": 5.965378761291504
+            },
+            {
+              "text": "オ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "o",
+              "vowel_length": 0.08784615248441696,
+              "pitch": 5.948794841766357
+            },
+            {
+              "text": "ル",
+              "consonant": "r",
+              "consonant_length": 0.03963515907526016,
+              "vowel": "u",
+              "vowel_length": 0.05437254160642624,
+              "pitch": 5.925451278686523
+            },
+            {
+              "text": "デ",
+              "consonant": "d",
+              "consonant_length": 0.04771029204130173,
+              "vowel": "e",
+              "vowel_length": 0.08491278439760208,
+              "pitch": 5.788107395172119
+            },
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.06012196093797684,
+              "vowel": "U",
+              "vowel_length": 0.100297711789608,
+              "pitch": 0.0
+            }
+          ],
+          "accent": 6,
+          "pause_mora": null,
+          "is_interrogative": false
+        }
+      ],
+      "speedScale": 1.32,
+      "pitchScale": 0.0,
+      "intonationScale": 1.35,
+      "volumeScale": 1.0,
+      "prePhonemeLength": 0.1,
+      "postPhonemeLength": 0.25,
+      "pauseLength": null,
+      "pauseLengthScale": 1.25,
+      "outputSamplingRate": 24000,
+      "outputStereo": false,
+      "kana": "ミトマカオル'デ_ス"
+    }
+  },
+  {
+    "name": "三笘薫",
+    "speaker": 3,
+    "source": "03-speaker3-current.query.json",
+    "query": {
+      "accent_phrases": [
+        {
+          "moras": [
+            {
+              "text": "ミ",
+              "consonant": "m",
+              "consonant_length": 0.07784654945135117,
+              "vowel": "i",
+              "vowel_length": 0.0850062444806099,
+              "pitch": 5.4209442138671875
+            },
+            {
+              "text": "ト",
+              "consonant": "t",
+              "consonant_length": 0.062445856630802155,
+              "vowel": "o",
+              "vowel_length": 0.07613413035869598,
+              "pitch": 5.823673248291016
+            },
+            {
+              "text": "マ",
+              "consonant": "m",
+              "consonant_length": 0.05403778702020645,
+              "vowel": "a",
+              "vowel_length": 0.0987255796790123,
+              "pitch": 5.984187126159668
+            },
+            {
+              "text": "カ",
+              "consonant": "k",
+              "consonant_length": 0.06779184937477112,
+              "vowel": "a",
+              "vowel_length": 0.0853642150759697,
+              "pitch": 6.084789276123047
+            },
+            {
+              "text": "オ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "o",
+              "vowel_length": 0.1068524494767189,
+              "pitch": 6.0850043296813965
+            },
+            {
+              "text": "ル",
+              "consonant": "r",
+              "consonant_length": 0.045409850776195526,
+              "vowel": "u",
+              "vowel_length": 0.06505825370550156,
+              "pitch": 6.0788350105285645
+            },
+            {
+              "text": "デ",
+              "consonant": "d",
+              "consonant_length": 0.05285262316465378,
+              "vowel": "e",
+              "vowel_length": 0.1251799315214157,
+              "pitch": 5.964595794677734
+            },
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.0807451456785202,
+              "vowel": "U",
+              "vowel_length": 0.10496654361486435,
+              "pitch": 0.0
+            }
+          ],
+          "accent": 6,
+          "pause_mora": null,
+          "is_interrogative": false
+        }
+      ],
+      "speedScale": 1.4,
+      "pitchScale": 0.0,
+      "intonationScale": 1.35,
+      "volumeScale": 1.0,
+      "prePhonemeLength": 0.1,
+      "postPhonemeLength": 0.25,
+      "pauseLength": null,
+      "pauseLengthScale": 1.25,
+      "outputSamplingRate": 24000,
+      "outputStereo": false,
+      "kana": "ミトマカオル'デ_ス"
+    }
+  },
+  {
+    "name": "鈴木ザイオン",
+    "speaker": 2,
+    "source": "55-speaker2-current.query.json",
+    "query": {
+      "accent_phrases": [
+        {
+          "moras": [
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.05165416747331619,
+              "vowel": "u",
+              "vowel_length": 0.0719006285071373,
+              "pitch": 5.45710563659668
+            },
+            {
+              "text": "ズ",
+              "consonant": "z",
+              "consonant_length": 0.0664769634604454,
+              "vowel": "u",
+              "vowel_length": 0.07693027704954147,
+              "pitch": 5.567055702209473
+            },
+            {
+              "text": "キ",
+              "consonant": "k",
+              "consonant_length": 0.060728684067726135,
+              "vowel": "i",
+              "vowel_length": 0.06508312374353409,
+              "pitch": 5.899359703063965
+            },
+            {
+              "text": "ザ",
+              "consonant": "z",
+              "consonant_length": 0.05957121402025223,
+              "vowel": "a",
+              "vowel_length": 0.12035273760557175,
+              "pitch": 5.904162406921387
+            },
+            {
+              "text": "イ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "i",
+              "vowel_length": 0.07004433125257492,
+              "pitch": 5.919285297393799
+            },
+            {
+              "text": "オ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "o",
+              "vowel_length": 0.138277068734169,
+              "pitch": 5.919477939605713
+            },
+            {
+              "text": "ン",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "N",
+              "vowel_length": 0.05945359915494919,
+              "pitch": 5.897751331329346
+            },
+            {
+              "text": "デ",
+              "consonant": "d",
+              "consonant_length": 0.03314390033483505,
+              "vowel": "e",
+              "vowel_length": 0.08416024595499039,
+              "pitch": 5.915958881378174
+            },
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.058604903519153595,
+              "vowel": "U",
+              "vowel_length": 0.0997505858540535,
+              "pitch": 0.0
+            }
+          ],
+          "accent": 8,
+          "pause_mora": null,
+          "is_interrogative": false
+        }
+      ],
+      "speedScale": 1.32,
+      "pitchScale": 0.0,
+      "intonationScale": 1.35,
+      "volumeScale": 1.0,
+      "prePhonemeLength": 0.1,
+      "postPhonemeLength": 0.25,
+      "pauseLength": null,
+      "pauseLengthScale": 1.25,
+      "outputSamplingRate": 24000,
+      "outputStereo": false,
+      "kana": "スズキザイオンデ'_ス"
+    }
+  },
+  {
+    "name": "鈴木ザイオン",
+    "speaker": 3,
+    "source": "55-speaker3-current.query.json",
+    "query": {
+      "accent_phrases": [
+        {
+          "moras": [
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.10314243286848068,
+              "vowel": "u",
+              "vowel_length": 0.07364731281995773,
+              "pitch": 5.430919647216797
+            },
+            {
+              "text": "ズ",
+              "consonant": "z",
+              "consonant_length": 0.07383070886135101,
+              "vowel": "u",
+              "vowel_length": 0.08939158171415329,
+              "pitch": 5.556574821472168
+            },
+            {
+              "text": "キ",
+              "consonant": "k",
+              "consonant_length": 0.07282053679227829,
+              "vowel": "i",
+              "vowel_length": 0.07555815577507019,
+              "pitch": 5.975079536437988
+            },
+            {
+              "text": "ザ",
+              "consonant": "z",
+              "consonant_length": 0.06815158575773239,
+              "vowel": "a",
+              "vowel_length": 0.13295243680477142,
+              "pitch": 6.0240044593811035
+            },
+            {
+              "text": "イ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "i",
+              "vowel_length": 0.08505279570817947,
+              "pitch": 6.067707061767578
+            },
+            {
+              "text": "オ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "o",
+              "vowel_length": 0.15146464109420776,
+              "pitch": 6.095828533172607
+            },
+            {
+              "text": "ン",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "N",
+              "vowel_length": 0.07298668473958969,
+              "pitch": 6.090582370758057
+            },
+            {
+              "text": "デ",
+              "consonant": "d",
+              "consonant_length": 0.03670232743024826,
+              "vowel": "e",
+              "vowel_length": 0.12382840365171432,
+              "pitch": 6.145941734313965
+            },
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.07855173200368881,
+              "vowel": "U",
+              "vowel_length": 0.09658519178628922,
+              "pitch": 0.0
+            }
+          ],
+          "accent": 8,
+          "pause_mora": null,
+          "is_interrogative": false
+        }
+      ],
+      "speedScale": 1.4,
+      "pitchScale": 0.0,
+      "intonationScale": 1.35,
+      "volumeScale": 1.0,
+      "prePhonemeLength": 0.1,
+      "postPhonemeLength": 0.25,
+      "pauseLength": null,
+      "pauseLengthScale": 1.25,
+      "outputSamplingRate": 24000,
+      "outputStereo": false,
+      "kana": "スズキザイオンデ'_ス"
+    }
+  },
+  {
+    "name": "鈴木彩艶",
+    "speaker": 2,
+    "source": "57-speaker2-current.query.json",
+    "query": {
+      "accent_phrases": [
+        {
+          "moras": [
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.05165416747331619,
+              "vowel": "u",
+              "vowel_length": 0.0719006285071373,
+              "pitch": 5.45710563659668
+            },
+            {
+              "text": "ズ",
+              "consonant": "z",
+              "consonant_length": 0.0664769634604454,
+              "vowel": "u",
+              "vowel_length": 0.07693027704954147,
+              "pitch": 5.567055702209473
+            },
+            {
+              "text": "キ",
+              "consonant": "k",
+              "consonant_length": 0.060728684067726135,
+              "vowel": "i",
+              "vowel_length": 0.06508312374353409,
+              "pitch": 5.899359703063965
+            },
+            {
+              "text": "ザ",
+              "consonant": "z",
+              "consonant_length": 0.05957121402025223,
+              "vowel": "a",
+              "vowel_length": 0.12035273760557175,
+              "pitch": 5.904162406921387
+            },
+            {
+              "text": "イ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "i",
+              "vowel_length": 0.07004433125257492,
+              "pitch": 5.919285297393799
+            },
+            {
+              "text": "オ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "o",
+              "vowel_length": 0.138277068734169,
+              "pitch": 5.919477939605713
+            },
+            {
+              "text": "ン",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "N",
+              "vowel_length": 0.05945359915494919,
+              "pitch": 5.897751331329346
+            },
+            {
+              "text": "デ",
+              "consonant": "d",
+              "consonant_length": 0.03314390033483505,
+              "vowel": "e",
+              "vowel_length": 0.08416024595499039,
+              "pitch": 5.915958881378174
+            },
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.058604903519153595,
+              "vowel": "U",
+              "vowel_length": 0.0997505858540535,
+              "pitch": 0.0
+            }
+          ],
+          "accent": 8,
+          "pause_mora": null,
+          "is_interrogative": false
+        }
+      ],
+      "speedScale": 1.32,
+      "pitchScale": 0.0,
+      "intonationScale": 1.35,
+      "volumeScale": 1.0,
+      "prePhonemeLength": 0.1,
+      "postPhonemeLength": 0.25,
+      "pauseLength": null,
+      "pauseLengthScale": 1.25,
+      "outputSamplingRate": 24000,
+      "outputStereo": false,
+      "kana": "スズキザイオンデ'_ス"
+    }
+  },
+  {
+    "name": "鈴木彩艶",
+    "speaker": 3,
+    "source": "57-speaker3-current.query.json",
+    "query": {
+      "accent_phrases": [
+        {
+          "moras": [
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.10314243286848068,
+              "vowel": "u",
+              "vowel_length": 0.07364731281995773,
+              "pitch": 5.430919647216797
+            },
+            {
+              "text": "ズ",
+              "consonant": "z",
+              "consonant_length": 0.07383070886135101,
+              "vowel": "u",
+              "vowel_length": 0.08939158171415329,
+              "pitch": 5.556574821472168
+            },
+            {
+              "text": "キ",
+              "consonant": "k",
+              "consonant_length": 0.07282053679227829,
+              "vowel": "i",
+              "vowel_length": 0.07555815577507019,
+              "pitch": 5.975079536437988
+            },
+            {
+              "text": "ザ",
+              "consonant": "z",
+              "consonant_length": 0.06815158575773239,
+              "vowel": "a",
+              "vowel_length": 0.13295243680477142,
+              "pitch": 6.0240044593811035
+            },
+            {
+              "text": "イ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "i",
+              "vowel_length": 0.08505279570817947,
+              "pitch": 6.067707061767578
+            },
+            {
+              "text": "オ",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "o",
+              "vowel_length": 0.15146464109420776,
+              "pitch": 6.095828533172607
+            },
+            {
+              "text": "ン",
+              "consonant": null,
+              "consonant_length": null,
+              "vowel": "N",
+              "vowel_length": 0.07298668473958969,
+              "pitch": 6.090582370758057
+            },
+            {
+              "text": "デ",
+              "consonant": "d",
+              "consonant_length": 0.03670232743024826,
+              "vowel": "e",
+              "vowel_length": 0.12382840365171432,
+              "pitch": 6.145941734313965
+            },
+            {
+              "text": "ス",
+              "consonant": "s",
+              "consonant_length": 0.07855173200368881,
+              "vowel": "U",
+              "vowel_length": 0.09658519178628922,
+              "pitch": 0.0
+            }
+          ],
+          "accent": 8,
+          "pause_mora": null,
+          "is_interrogative": false
+        }
+      ],
+      "speedScale": 1.4,
+      "pitchScale": 0.0,
+      "intonationScale": 1.35,
+      "volumeScale": 1.0,
+      "prePhonemeLength": 0.1,
+      "postPhonemeLength": 0.25,
+      "pauseLength": null,
+      "pauseLengthScale": 1.25,
+      "outputSamplingRate": 24000,
+      "outputStereo": false,
+      "kana": "スズキザイオンデ'_ス"
+    }
+  }
+]

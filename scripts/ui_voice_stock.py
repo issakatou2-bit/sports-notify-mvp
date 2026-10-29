@@ -14,9 +14,10 @@ import time
 
 import ui_voice_queue as q
 import ui_voice_parts as parts_crypto
+import asset_policy
 
 POLICY = (
-    ('資産動画（球団・歴史・殿堂など）', '採用。v3のめたんソロ、次の試合に依存しないもの'),
+    ('資産動画（歴史・殿堂など）', '採用。v3のめたんソロ、次の試合に依存しないもの'),
     ('終了済みシーズンまとめ', '採用。現行のseason_topicsが終了判定したもの'),
     ('選手のいまの流れ', '除外。player_story.validateの公開条件が当日原稿'),
     ('試合直後・PS情勢・予告・現地の声・報道', '除外。試合開始や新しい発言で古くなる'),
@@ -24,7 +25,7 @@ POLICY = (
 
 
 def eligible(topic, spec):
-    return (spec.get('style') == 'v3' and not any(spec.get(k) for k in
+    return (not asset_policy.paused(topic) and spec.get('style') == 'v3' and not any(spec.get(k) for k in
             ('game', 'story', 'spotlight', 'odds', 'momentum', 'next_line', 'next_game'))
             and not topic.startswith(('soccer_', 'ps_')))
 
@@ -68,16 +69,16 @@ def take(queue, key):
         bundle = {name[len(prefix):]: blob for name, blob in files.items() if name.startswith(prefix)}
         ref = order.get('parts_ref', '')
         if not re.fullmatch(parts_crypto.REF, ref) or ref not in files:
-            raise q.QueueError('雨衣の共用部品がありません')
+            raise parts_crypto.PortraitUnavailable('雨衣の共用部品がありません')
         bundle[ref] = files[ref]
         order['status'] = 'used'
+        order['used_at'] = q.now().isoformat()
         return copy.deepcopy(order), bundle
     return queue.update(change)
 
 
 def install(order, bundle, out, narration):
     """返送データの指紋・話者・順番・実音声を検査し、FLACをWAVに戻す。"""
-    from PIL import Image
     import wave
     out = Path(out)
     result = json.loads(bundle['result.json'])
@@ -89,20 +90,8 @@ def install(order, bundle, out, narration):
     ref = result.get('parts_ref', '')
     if ref != order.get('parts_ref'):
         raise q.QueueError('雨衣の部品参照が違います')
-    portraits = parts_crypto.decrypt(ref, bundle[ref])
     portrait_dir = out/'portrait'
-    portrait_dir.mkdir(parents=True, exist_ok=True)
-    for name, blob in portraits.items():
-        if re.fullmatch(r'p[0-9]{3}\.png', name):
-            path = portrait_dir/name
-            path.write_bytes(blob)
-            with Image.open(path) as im:
-                im.verify()
-    parts = json.loads(portraits['parts.json'])
-    names = [parts['体']]+[v for k in ('右腕', '左腕', '眉', '目', '口') for v in parts[k].values()]
-    if not all(re.fullmatch(r'p[0-9]{3}\.png', n) and (portrait_dir/n).is_file() for n in names):
-        raise q.QueueError('雨衣の立ち絵部品が不足しています')
-    (portrait_dir/'parts.json').write_bytes(q.encoded(parts))
+    parts_crypto.install(ref, bundle.get(ref, b''), portrait_dir)
     manifest = []
     for i, (chunk, seg) in enumerate(zip(result['chunks'], narration['segments'])):
         name = f'seg_{i:03d}.flac'
@@ -120,18 +109,26 @@ def install(order, bundle, out, narration):
             raise q.QueueError('返された音声の長さが不正です')
         manifest.append(dict(seg, index=i, file=str(wav), duration=duration,
                              voice_host='ui', voice_engine='voisona', voice_name='ui_ja_JP'))
-    resolution = dict(host='ui', order=order['id'], portrait_dir=str(portrait_dir.resolve()))
-    (out/'manifest.json').write_bytes(q.encoded(dict(segments=manifest, voice_resolution=resolution)))
+    resolution = dict(host='ui', order=order['id'], portrait_dir=str(portrait_dir.resolve()), parts_ref=ref)
+    os.environ['COLLESPO_UI_PORTRAIT_DIR'] = resolution['portrait_dir']
+    import host_split
+    payload = host_split.carry(narration, dict(segments=manifest, voice_resolution=resolution))
+    (out/'manifest.json').write_bytes(q.encoded(payload))
+    import voice_manifest
+    voice_manifest.save(out, manifest, dict(narration, voice_resolution=resolution), 'voisona')
     return resolution
 
 
 def fulfill(narration, npath, out, queue=None):
-    """在庫対象は待たず在庫だけ、それ以外は既定15分待つ。失敗はその回のめたんへ。"""
+    """完成在庫を先に使い、それ以外は受付直後に注文。未着は理由を返して停止。"""
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     resolution = None
     try:
-        parts_crypto.key()
+        try:
+            parts_crypto.key()
+        except q.QueueError:
+            raise parts_crypto.PortraitUnavailable('雨衣の部品鍵がありません') from None
         queue = queue or q.GitQueue()
         context = asset_context(narration)
         if context:
@@ -153,12 +150,14 @@ def fulfill(narration, npath, out, queue=None):
             else:
                 resolution = None
             if not resolution:
-                print('[info] 雨衣の在庫がないためめたん')
-                return None
-        else:
-            minutes = float(os.getenv('COLLESPO_UI_VOICE_WAIT_MINUTES') or '15')
-            if not 0 <= minutes <= 60:
-                raise q.QueueError('声の締め切りは0〜60分です')
+                # 在庫切れを理由に声を変更しない。利用可能時間なら通常注文へ。
+                pass
+        if not resolution:
+            import ui_voice_policy as policy
+            minutes = policy.wait_minutes()
+            reason = policy.window_reason(minutes=minutes)
+            if reason:
+                raise policy.VoiceUnavailable(reason)
             order = q.enqueue(queue, q.make_order(narration, Path(npath).stem, minutes))
             while q.now() < q.stamp(order['deadline']):
                 _, state, _ = queue.read()
@@ -169,26 +168,33 @@ def fulfill(narration, npath, out, queue=None):
                         resolution = install(*payload, out, narration)
                         break
                 if saved.get('status') in ('used', 'discarded', 'expired'):
-                    break
+                    raise policy.VoiceUnavailable('ui_order_'+saved['status'])
                 time.sleep(min(20, max(0, (q.stamp(order['deadline'])-q.now()).total_seconds())))
             else:
                 q.terminal(queue, order['id'], 'expired')
             if not resolution:
-                print('[warn] 雨衣の声が間に合わずめたん')
-                return None
+                raise policy.VoiceUnavailable('ui_delivery_timeout')
         narration['voice_resolution'] = resolution
         Path(npath).write_bytes(q.encoded(narration))
+        manifest = out/'manifest.json'
+        saved = json.loads(manifest.read_text(encoding='utf8'))
+        saved['narration_path'] = str(Path(npath).resolve())
+        manifest.write_bytes(q.encoded(saved))
         return resolution
-    except Exception:
-        # 外部キュー・メディアの検査失敗を含め、この回のVOICEVOXに必ず戻す。
-        # 固有名詞の検査は呼出元がこの処理より前に実行している。
-        print('[warn] 雨衣の声が間に合わずめたん（注文・受取を完了できませんでした）')
-        return None
+    except parts_crypto.PortraitUnavailable:
+        from ui_voice_policy import VoiceUnavailable
+        raise VoiceUnavailable('ui_portrait_unavailable') from None
+    except Exception as exc:
+        from ui_voice_policy import VoiceUnavailable
+        if isinstance(exc, VoiceUnavailable):
+            raise
+        raise VoiceUnavailable('ui_queue_or_payload_failed') from None
 
 
 def prioritize(topics):
     """既存の候補・日次上限・種類制限を保ち、その中の在庫を古い順にする。"""
-    if os.getenv('COLLESPO_SOLO_HOST') != 'ui':
+    # 比較中は在庫の有無で題材や公開順を変えない。
+    if os.getenv('COLLESPO_HOST_SPLIT') == 'half' or os.getenv('COLLESPO_SOLO_HOST') != 'ui':
         return topics
     try:
         parts_crypto.key()
@@ -214,7 +220,8 @@ def rebuild(topic):
     with tempfile.TemporaryDirectory(dir=q.ROOT/'build') as folder:
         path = Path(folder)/'narration.json'
         subprocess.run([sys.executable, str(q.ROOT/'scripts/generate_asset_video.py'), '--topic', topic,
-                        '--narration-out', str(path)], cwd=q.ROOT, check=True, capture_output=True)
+                        '--narration-out', str(path)], cwd=q.ROOT, check=True, capture_output=True,
+                       env=dict(os.environ, COLLESPO_HOST_SPLIT='', COLLESPO_SOLO_HOST='ui'))
         return json.loads(path.read_text(encoding='utf8'))
 
 
@@ -225,6 +232,11 @@ def prepare(count):
         parts_crypto.key()
     except q.QueueError:
         print('[warn] 雨衣の部品鍵がないため在庫注文を作りません')
+        return
+    import ui_voice_policy as policy
+    reason = policy.window_reason(minutes=15)
+    if reason:
+        print('::warning::雨衣の在庫注文を見送り: '+reason)
         return
     queue = q.GitQueue()
     _, state, _ = queue.read()
@@ -263,9 +275,10 @@ def main():
             if eligible(topic, spec):
                 print(f'候補 {topic}: {spec.get("label", topic)}')
         return
-    if os.getenv('COLLESPO_SOLO_HOST') != 'ui':
+    if os.getenv('COLLESPO_SOLO_HOST') != 'ui' and os.getenv('COLLESPO_HOST_SPLIT') != 'half':
         print('雨衣が未選択のため注文しません')
         return
+    os.environ['COLLESPO_SOLO_HOST'] = 'ui'
     if not 1 <= args.count <= 10:
         p.error('--count は1〜10です')
     (q.ROOT/'build').mkdir(exist_ok=True)

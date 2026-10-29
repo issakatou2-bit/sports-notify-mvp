@@ -138,6 +138,9 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
     x = r3.SAFE_RIGHT + 4
     # 吹き出しの無い画面（締め）は、吹き出しの場所まで下げて、上の札・ボタンにかけない
     bottom = BUST_BOTTOM if line and not r3._CAPTION.get("hide_caption") else BUBBLE[3]
+    # 字幕のない締めは胸上の切れ目を画面の下端に隠す。v4/v6共通。
+    if im.info.get('v3_outro') and (not line or r3._CAPTION.get('hide_caption')):
+        bottom = im.height
     records, layer = [], []
     for who, active, art, face in reversed(arts):
         if art is None:
@@ -145,6 +148,8 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
         x -= art.width - (30 if len(arts) > 1 else 0)
         import calm_motion
         bob = round(4 * calm_motion.value('presenter_bob',1) * math.sin(elapsed * math.pi * 2 / (1.2 * calm_motion.value('presenter_period',1)))) if active and speaking else 0
+        if bottom == im.height:
+            bob = 0
         y = bottom - art.height + (0 if who == 'ui' else bob)
         im.paste(art, (x, y), art)
         records.append(dict(who=who, active=active, box=[x, y, x + art.width, y + art.height]))

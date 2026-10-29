@@ -1,0 +1,71 @@
+name: 道具　枠切れサムネイルの自動付け直し
+
+on:
+  schedule:
+    - cron: '20 7 * * *' # 毎日16:20 JST
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: thumbnail-retry
+  cancel-in-progress: false
+
+jobs:
+  retry:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Collect pending thumbnails
+        id: collect
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/retry_thumbnails.py
+
+      # APIへ送る前に印を保存する。途中終了も含め、その日の2回目は何もしない。
+      # 自動生成サムネイルもsnippet.thumbnailsに含まれるため、存在判定には使わない。
+      - name: Record daily attempt before writing
+        if: steps.collect.outputs.pending == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-retry-${{ steps.collect.outputs.day }}
+          path: |
+            build/thumbnail_retry/attempt.json
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: error
+
+      - name: Install dependencies
+        if: steps.collect.outputs.pending == 'true'
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install google-api-python-client google-auth
+
+      - name: Apply pending thumbnails
+        if: steps.collect.outputs.pending == 'true'
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          set -o pipefail
+          python scripts/retry_thumbnails.py --apply 2>&1 | tee build/thumbnail_retry/result.log
+
+      - name: Keep retry records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-retry-records-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/thumbnail_retry/*.json
+            build/thumbnail_retry/result.log
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore

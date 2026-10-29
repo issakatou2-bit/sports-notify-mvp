@@ -1,6 +1,7 @@
-"""共通CSVの本人確認済みの高低だけ補正。未確認を合格/推定の正解にしない。"""
+"""本人確認済みの高低と、出所を分けて採用した既定の高低を補正。"""
 import copy
 import csv
+import json
 from pathlib import Path
 
 import voice_accent_common as common
@@ -15,9 +16,13 @@ def entries():
     names.update(p['name_jp'] for key in ('JP_PLAYERS_MLB','JP_PLAYERS_SOCCER') for p in getattr(ne,key,[]))
     with (ROOT/'data/yomi_shared.csv').open(encoding='utf-8-sig',newline='') as stream:
         shared={r['語']:r for r in csv.DictReader(stream)}
+    defaults=json.loads((ROOT/'data/name_accent_defaults.json').read_text(encoding='utf-8'))
     rows=[]
     for name in sorted(names):
         reading=guard.player_readings().get(name,'');row=shared.get(name,{})
+        confirmed=bool(row.get('高低の並び'))
+        if not confirmed:
+            row=defaults.get(name,{})
         pat=row.get('高低の並び','').strip().upper() or None
         if pat:
             if (guard.normalized_kana(reading)!=guard.normalized_kana(row['読み']) or
@@ -25,7 +30,7 @@ def entries():
                 raise guard.NameReadingError('確認済み高低辞書の読み/型/出所が不正: '+name)
         rows.append(dict(name=name,reading=reading,pattern=pat,
                          source=row.get('どこで分かったか') if pat else None,
-                         status='CONFIRMED' if pat else 'UNVERIFIED'))
+                         status=('CONFIRMED' if confirmed else 'DEFAULT_ACCEPTED') if pat else 'UNVERIFIED'))
     return rows
 
 
@@ -33,19 +38,12 @@ def locations(original,query):
     import name_reading_guard as guard
     table=entries();by_name={r['name']:r for r in table};by_kana={}
     for r in table:by_kana.setdefault(guard.normalized_kana(r['reading']),r)
-    raw='';owners=[]
-    for pi,phrase in enumerate(query.get('accent_phrases',[])):
-        for mi,mora in enumerate(phrase['moras']):
-            raw+=mora['text'];owners.extend([(pi,mi)]*(len(guard.normalized_kana(raw))-len(owners)))
-    actual=guard.normalized_kana(raw);used={};out=[]
-    for row in guard.assert_known(original):
+    out=[]
+    for row in guard.query_name_locations(original,query):
         kana=guard.normalized_kana(row['reading'])
         target=by_name.get(row['name']) or by_kana.get(kana)
         if row['kind']!='player' or not target:continue
-        start=actual.find(kana,used.get(kana,0))
-        if start<0:raise guard.NameReadingError('氏名高低のquery位置が不明: '+row['name'])
-        end=start+len(kana);used[kana]=end
-        out.append(dict(**target,spoken_name=row['name'],first=owners[start],last=owners[end-1]))
+        out.append(dict(**target,spoken_name=row['name'],first=row['first'],last=row['last']))
     return out
 
 
@@ -77,6 +75,11 @@ def prepare(original,query,speaker,url):
         pi,mi=row['first'];pj,mj=row['last']
         if pi!=pj:raise guard.NameReadingError('高低補正前の氏名が複数句: '+row['name'])
         phrase=phrases[pi]
+        # 既定採用は氏名内のL/Hだけを固定する。既に一致していれば、
+        # 姓名後の「です」等の下降位置まで平板に変えない。
+        if (row['status']=='DEFAULT_ACCEPTED' and
+                common.phrase_pattern(len(phrase['moras']),phrase['accent'])[mi:mj+1]==row['pattern']):
+            continue
         if mi:
             prefix=copy.deepcopy(phrase);prefix['moras']=prefix['moras'][:mi]
             prefix['accent']=min(prefix['accent'],mi);prefix['pause_mora']=None;prefix['is_interrogative']=False

@@ -1,0 +1,1090 @@
+{
+  "label": "2026-09-19",
+  "segments": [
+    {
+      "kind": "followup",
+      "text": "フランクフルト対フライブルクは、2対2。",
+      "speaker": 2,
+      "caption_units": [
+        "フランクフルト対フライブルクは、2対2。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "score_only": true
+      }
+    },
+    {
+      "kind": "followup-detail",
+      "text": "10分にフランクフルトが得点。34分にフライブルクが得点。36分にフランクフルトが得点。",
+      "speaker": 2,
+      "caption_units": [
+        "10分にフランクフルトが得点。",
+        "34分にフライブルクが得点。",
+        "36分にフランクフルトが得点。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "details": [
+          {
+            "club": null,
+            "text": "ブンデスリーガ"
+          },
+          {
+            "club": "フランクフルト",
+            "text": "10分に得点"
+          },
+          {
+            "club": "フライブルク",
+            "text": "34分に得点"
+          },
+          {
+            "club": "フランクフルト",
+            "text": "36分に得点"
+          },
+          {
+            "club": null,
+            "text": "48分に鈴木唯人が得点"
+          }
+        ],
+        "goals": [
+          {
+            "minute": "10",
+            "scorer": "Younes Ebnoutalib",
+            "athlete_id": "359793",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": [
+              "堂安律"
+            ]
+          },
+          {
+            "minute": "34",
+            "scorer": "Derry Scherhant",
+            "athlete_id": "346619",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "36",
+            "scorer": "Jonathan Burkardt",
+            "athlete_id": "274887",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          }
+        ],
+        "required": true
+      }
+    },
+    {
+      "kind": "followup-detail",
+      "text": "48分に鈴木唯人が得点。",
+      "speaker": 2,
+      "caption_units": [
+        "48分に鈴木唯人が得点。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "details": [
+          {
+            "club": null,
+            "text": "ブンデスリーガ"
+          },
+          {
+            "club": "フランクフルト",
+            "text": "10分に得点"
+          },
+          {
+            "club": "フライブルク",
+            "text": "34分に得点"
+          },
+          {
+            "club": "フランクフルト",
+            "text": "36分に得点"
+          },
+          {
+            "club": null,
+            "text": "48分に鈴木唯人が得点"
+          }
+        ],
+        "goals": [
+          {
+            "minute": "48",
+            "scorer": "鈴木唯人",
+            "athlete_id": "303031",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": true,
+            "japanese_assists": []
+          }
+        ],
+        "required": true
+      }
+    },
+    {
+      "kind": "team-stats",
+      "text": "シュートはフランクフルト10本、フライブルク22本、保持率はフライブルクが58.3パーセント。",
+      "speaker": 2,
+      "meta": {
+        "event_id": "401884787"
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "堂安律は約61分出場、1アシスト、シュート1本、枠内はなし。",
+      "speaker": 2,
+      "caption_units": [
+        "堂安律は約61分出場、1アシスト、シュート1本、枠内はなし。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "start": 0,
+        "count": 1
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "小杉啓太はフル出場。",
+      "speaker": 2,
+      "caption_units": [
+        "小杉啓太はフル出場。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "start": 1,
+        "count": 1
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "鈴木唯人は約83分出場、1得点、シュート2本、枠内は1本。",
+      "speaker": 2,
+      "caption_units": [
+        "鈴木唯人は約83分出場、1得点、シュート2本、枠内は1本。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "start": 2,
+        "count": 1
+      }
+    },
+    {
+      "kind": "player-stats",
+      "text": "後藤啓介は約6分出場。",
+      "speaker": 2,
+      "caption_units": [
+        "後藤啓介は約6分出場。"
+      ],
+      "meta": {
+        "event_id": "401884787",
+        "start": 3,
+        "count": 1
+      }
+    },
+    {
+      "kind": "roster",
+      "text": "日本人選手の結果です。",
+      "speaker": 2,
+      "caption_units": [
+        "日本人選手の結果です。"
+      ],
+      "meta": {
+        "start": 0,
+        "count": 4,
+        "more": 0,
+        "absent": [],
+        "page": 1
+      }
+    },
+    {
+      "kind": "outro",
+      "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+      "speaker": 2,
+      "meta": {}
+    }
+  ],
+  "duration_budget": {
+    "limit": 60.0,
+    "grace": 0
+  },
+  "sanity_date_jst": "2026-09-19",
+  "soccer_material": {
+    "source": "ESPN・football-data.org",
+    "retrieved_at": "2026-10-25T15:03:31.538479+00:00",
+    "source_at": null,
+    "date_jst": "2026-09-19",
+    "games": [
+      {
+        "league": "BL1",
+        "id": "401884787",
+        "date_jst": "2026-09-19",
+        "score": {
+          "home": 2,
+          "away": 2
+        },
+        "home": {
+          "id": "125",
+          "name_en": "Eintracht Frankfurt",
+          "name_jp": "フランクフルト",
+          "abbr": "SGE"
+        },
+        "away": {
+          "id": "126",
+          "name_en": "SC Freiburg",
+          "name_jp": "フライブルク",
+          "abbr": "SCF"
+        },
+        "goals": [
+          {
+            "minute": "10",
+            "scorer": "Younes Ebnoutalib",
+            "athlete_id": "359793",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": [
+              "堂安律"
+            ]
+          },
+          {
+            "minute": "34",
+            "scorer": "Derry Scherhant",
+            "athlete_id": "346619",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "36",
+            "scorer": "Jonathan Burkardt",
+            "athlete_id": "274887",
+            "side": "home",
+            "own_goal": false,
+            "japanese_goal": false,
+            "japanese_assists": []
+          },
+          {
+            "minute": "48",
+            "scorer": "鈴木唯人",
+            "athlete_id": "303031",
+            "side": "away",
+            "own_goal": false,
+            "japanese_goal": true,
+            "japanese_assists": []
+          }
+        ],
+        "players": [
+          {
+            "name": "堂安律",
+            "name_en": "Ritsu Doan",
+            "club": "フランクフルト",
+            "side": "home",
+            "event_id": "401884787",
+            "athlete_id": "219627",
+            "status": "starter",
+            "goals": 0,
+            "assists": 1,
+            "yellow_cards": 0,
+            "red_cards": 0,
+            "plays": [
+              {
+                "minute": "10",
+                "goal": false,
+                "assist": true
+              }
+            ],
+            "position": "MF",
+            "stats_source": "ESPN summary.rosters.roster.stats",
+            "shots": 1,
+            "on_target": 0,
+            "subbed_out": true,
+            "appearance_evidence": "ESPN starter/subbedIn",
+            "minutes": 61,
+            "minutes_source": "ESPN keyEvents substitution",
+            "minutes_approx": true
+          },
+          {
+            "name": "小杉啓太",
+            "name_en": "Keita Kosugi",
+            "club": "フランクフルト",
+            "side": "home",
+            "event_id": "401884787",
+            "athlete_id": "371596",
+            "status": "starter",
+            "goals": 0,
+            "assists": 0,
+            "yellow_cards": 0,
+            "red_cards": 0,
+            "plays": [],
+            "position": "DF",
+            "stats_source": "ESPN summary.rosters.roster.stats",
+            "shots": 0,
+            "on_target": 0,
+            "subbed_out": false,
+            "appearance_evidence": "ESPN starter/subbedIn"
+          },
+          {
+            "name": "鈴木唯人",
+            "name_en": "Yuito Suzuki",
+            "club": "フライブルク",
+            "side": "away",
+            "event_id": "401884787",
+            "athlete_id": "303031",
+            "status": "starter",
+            "goals": 1,
+            "assists": 0,
+            "yellow_cards": 0,
+            "red_cards": 0,
+            "plays": [
+              {
+                "minute": "48",
+                "goal": true,
+                "assist": false
+              }
+            ],
+            "position": "MF",
+            "stats_source": "ESPN summary.rosters.roster.stats",
+            "shots": 2,
+            "on_target": 1,
+            "subbed_out": true,
+            "appearance_evidence": "ESPN starter/subbedIn",
+            "minutes": 83,
+            "minutes_source": "ESPN keyEvents substitution",
+            "minutes_approx": true
+          },
+          {
+            "name": "後藤啓介",
+            "name_en": "Keisuke Goto",
+            "club": "フライブルク",
+            "side": "away",
+            "event_id": "401884787",
+            "athlete_id": "346208",
+            "status": "substitute",
+            "goals": 0,
+            "assists": 0,
+            "yellow_cards": 0,
+            "red_cards": 0,
+            "plays": [],
+            "position": null,
+            "stats_source": "ESPN summary.rosters.roster.stats",
+            "shots": 0,
+            "on_target": 0,
+            "subbed_out": false,
+            "appearance_evidence": "ESPN starter/subbedIn",
+            "minutes": 6,
+            "minutes_source": "ESPN keyEvents substitution",
+            "minutes_approx": true
+          }
+        ],
+        "match_stats": {
+          "source": "ESPN summary.boxscore.teams.statistics",
+          "home": {
+            "possession": 41.7,
+            "shots": 10,
+            "on_target": 3
+          },
+          "away": {
+            "possession": 58.3,
+            "shots": 22,
+            "on_target": 7
+          }
+        },
+        "score_crosscheck": "unavailable"
+      }
+    ],
+    "competitions": [],
+    "rows": [],
+    "players": [
+      {
+        "name": "鈴木唯人",
+        "name_en": "Yuito Suzuki",
+        "club": "フライブルク",
+        "side": "away",
+        "event_id": "401884787",
+        "athlete_id": "303031",
+        "status": "starter",
+        "goals": 1,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [
+          {
+            "minute": "48",
+            "goal": true,
+            "assist": false
+          }
+        ],
+        "position": "MF",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 2,
+        "on_target": 1,
+        "subbed_out": true,
+        "appearance_evidence": "ESPN starter/subbedIn",
+        "minutes": 83,
+        "minutes_source": "ESPN keyEvents substitution",
+        "minutes_approx": true
+      },
+      {
+        "name": "堂安律",
+        "name_en": "Ritsu Doan",
+        "club": "フランクフルト",
+        "side": "home",
+        "event_id": "401884787",
+        "athlete_id": "219627",
+        "status": "starter",
+        "goals": 0,
+        "assists": 1,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [
+          {
+            "minute": "10",
+            "goal": false,
+            "assist": true
+          }
+        ],
+        "position": "MF",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 1,
+        "on_target": 0,
+        "subbed_out": true,
+        "appearance_evidence": "ESPN starter/subbedIn",
+        "minutes": 61,
+        "minutes_source": "ESPN keyEvents substitution",
+        "minutes_approx": true
+      },
+      {
+        "name": "小杉啓太",
+        "name_en": "Keita Kosugi",
+        "club": "フランクフルト",
+        "side": "home",
+        "event_id": "401884787",
+        "athlete_id": "371596",
+        "status": "starter",
+        "goals": 0,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [],
+        "position": "DF",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 0,
+        "on_target": 0,
+        "subbed_out": false,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      },
+      {
+        "name": "後藤啓介",
+        "name_en": "Keisuke Goto",
+        "club": "フライブルク",
+        "side": "away",
+        "event_id": "401884787",
+        "athlete_id": "346208",
+        "status": "substitute",
+        "goals": 0,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [],
+        "position": null,
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 0,
+        "on_target": 0,
+        "subbed_out": false,
+        "appearance_evidence": "ESPN starter/subbedIn",
+        "minutes": 6,
+        "minutes_source": "ESPN keyEvents substitution",
+        "minutes_approx": true
+      }
+    ]
+  },
+  "sanity_materials": [
+    {
+      "source": "ESPN・football-data.org",
+      "retrieved_at": "2026-10-25T15:03:31.538479+00:00",
+      "source_at": null,
+      "date_jst": "2026-09-19",
+      "games": [
+        {
+          "league": "BL1",
+          "id": "401884787",
+          "date_jst": "2026-09-19",
+          "score": {
+            "home": 2,
+            "away": 2
+          },
+          "home": {
+            "id": "125",
+            "name_en": "Eintracht Frankfurt",
+            "name_jp": "フランクフルト",
+            "abbr": "SGE"
+          },
+          "away": {
+            "id": "126",
+            "name_en": "SC Freiburg",
+            "name_jp": "フライブルク",
+            "abbr": "SCF"
+          },
+          "goals": [
+            {
+              "minute": "10",
+              "scorer": "Younes Ebnoutalib",
+              "athlete_id": "359793",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": [
+                "堂安律"
+              ]
+            },
+            {
+              "minute": "34",
+              "scorer": "Derry Scherhant",
+              "athlete_id": "346619",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "36",
+              "scorer": "Jonathan Burkardt",
+              "athlete_id": "274887",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "48",
+              "scorer": "鈴木唯人",
+              "athlete_id": "303031",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": true,
+              "japanese_assists": []
+            }
+          ],
+          "players": [
+            {
+              "name": "堂安律",
+              "name_en": "Ritsu Doan",
+              "club": "フランクフルト",
+              "side": "home",
+              "event_id": "401884787",
+              "athlete_id": "219627",
+              "status": "starter",
+              "goals": 0,
+              "assists": 1,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [
+                {
+                  "minute": "10",
+                  "goal": false,
+                  "assist": true
+                }
+              ],
+              "position": "MF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 1,
+              "on_target": 0,
+              "subbed_out": true,
+              "appearance_evidence": "ESPN starter/subbedIn",
+              "minutes": 61,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true
+            },
+            {
+              "name": "小杉啓太",
+              "name_en": "Keita Kosugi",
+              "club": "フランクフルト",
+              "side": "home",
+              "event_id": "401884787",
+              "athlete_id": "371596",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": "DF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 0,
+              "on_target": 0,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            },
+            {
+              "name": "鈴木唯人",
+              "name_en": "Yuito Suzuki",
+              "club": "フライブルク",
+              "side": "away",
+              "event_id": "401884787",
+              "athlete_id": "303031",
+              "status": "starter",
+              "goals": 1,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [
+                {
+                  "minute": "48",
+                  "goal": true,
+                  "assist": false
+                }
+              ],
+              "position": "MF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 2,
+              "on_target": 1,
+              "subbed_out": true,
+              "appearance_evidence": "ESPN starter/subbedIn",
+              "minutes": 83,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true
+            },
+            {
+              "name": "後藤啓介",
+              "name_en": "Keisuke Goto",
+              "club": "フライブルク",
+              "side": "away",
+              "event_id": "401884787",
+              "athlete_id": "346208",
+              "status": "substitute",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": null,
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 0,
+              "on_target": 0,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn",
+              "minutes": 6,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true
+            }
+          ],
+          "match_stats": {
+            "source": "ESPN summary.boxscore.teams.statistics",
+            "home": {
+              "possession": 41.7,
+              "shots": 10,
+              "on_target": 3
+            },
+            "away": {
+              "possession": 58.3,
+              "shots": 22,
+              "on_target": 7
+            }
+          },
+          "score_crosscheck": "unavailable"
+        }
+      ],
+      "competitions": [],
+      "rows": [],
+      "players": [
+        {
+          "name": "鈴木唯人",
+          "name_en": "Yuito Suzuki",
+          "club": "フライブルク",
+          "side": "away",
+          "event_id": "401884787",
+          "athlete_id": "303031",
+          "status": "starter",
+          "goals": 1,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [
+            {
+              "minute": "48",
+              "goal": true,
+              "assist": false
+            }
+          ],
+          "position": "MF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 2,
+          "on_target": 1,
+          "subbed_out": true,
+          "appearance_evidence": "ESPN starter/subbedIn",
+          "minutes": 83,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true
+        },
+        {
+          "name": "堂安律",
+          "name_en": "Ritsu Doan",
+          "club": "フランクフルト",
+          "side": "home",
+          "event_id": "401884787",
+          "athlete_id": "219627",
+          "status": "starter",
+          "goals": 0,
+          "assists": 1,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [
+            {
+              "minute": "10",
+              "goal": false,
+              "assist": true
+            }
+          ],
+          "position": "MF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 1,
+          "on_target": 0,
+          "subbed_out": true,
+          "appearance_evidence": "ESPN starter/subbedIn",
+          "minutes": 61,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true
+        },
+        {
+          "name": "小杉啓太",
+          "name_en": "Keita Kosugi",
+          "club": "フランクフルト",
+          "side": "home",
+          "event_id": "401884787",
+          "athlete_id": "371596",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "DF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 0,
+          "on_target": 0,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        {
+          "name": "後藤啓介",
+          "name_en": "Keisuke Goto",
+          "club": "フライブルク",
+          "side": "away",
+          "event_id": "401884787",
+          "athlete_id": "346208",
+          "status": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": null,
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 0,
+          "on_target": 0,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn",
+          "minutes": 6,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true
+        }
+      ],
+      "sport": "soccer",
+      "used_for_date": "2026-09-19"
+    },
+    {
+      "source": "generation.input",
+      "date_jst": "2026-09-19",
+      "retrieved_at": "2026-10-25T15:03:31.538479+00:00",
+      "source_url": "ESPN・football-data.org",
+      "games": [
+        {
+          "league": "BL1",
+          "id": "401884787",
+          "date_jst": "2026-09-19",
+          "score": {
+            "home": 2,
+            "away": 2
+          },
+          "home": {
+            "id": "125",
+            "name_en": "Eintracht Frankfurt",
+            "name_jp": "フランクフルト",
+            "abbr": "SGE"
+          },
+          "away": {
+            "id": "126",
+            "name_en": "SC Freiburg",
+            "name_jp": "フライブルク",
+            "abbr": "SCF"
+          },
+          "goals": [
+            {
+              "minute": "10",
+              "scorer": "Younes Ebnoutalib",
+              "athlete_id": "359793",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": [
+                "堂安律"
+              ]
+            },
+            {
+              "minute": "34",
+              "scorer": "Derry Scherhant",
+              "athlete_id": "346619",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "36",
+              "scorer": "Jonathan Burkardt",
+              "athlete_id": "274887",
+              "side": "home",
+              "own_goal": false,
+              "japanese_goal": false,
+              "japanese_assists": []
+            },
+            {
+              "minute": "48",
+              "scorer": "鈴木唯人",
+              "athlete_id": "303031",
+              "side": "away",
+              "own_goal": false,
+              "japanese_goal": true,
+              "japanese_assists": []
+            }
+          ],
+          "players": [
+            {
+              "name": "堂安律",
+              "name_en": "Ritsu Doan",
+              "club": "フランクフルト",
+              "side": "home",
+              "event_id": "401884787",
+              "athlete_id": "219627",
+              "status": "starter",
+              "goals": 0,
+              "assists": 1,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [
+                {
+                  "minute": "10",
+                  "goal": false,
+                  "assist": true
+                }
+              ],
+              "position": "MF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 1,
+              "on_target": 0,
+              "subbed_out": true,
+              "appearance_evidence": "ESPN starter/subbedIn",
+              "minutes": 61,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true
+            },
+            {
+              "name": "小杉啓太",
+              "name_en": "Keita Kosugi",
+              "club": "フランクフルト",
+              "side": "home",
+              "event_id": "401884787",
+              "athlete_id": "371596",
+              "status": "starter",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": "DF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 0,
+              "on_target": 0,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn"
+            },
+            {
+              "name": "鈴木唯人",
+              "name_en": "Yuito Suzuki",
+              "club": "フライブルク",
+              "side": "away",
+              "event_id": "401884787",
+              "athlete_id": "303031",
+              "status": "starter",
+              "goals": 1,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [
+                {
+                  "minute": "48",
+                  "goal": true,
+                  "assist": false
+                }
+              ],
+              "position": "MF",
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 2,
+              "on_target": 1,
+              "subbed_out": true,
+              "appearance_evidence": "ESPN starter/subbedIn",
+              "minutes": 83,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true
+            },
+            {
+              "name": "後藤啓介",
+              "name_en": "Keisuke Goto",
+              "club": "フライブルク",
+              "side": "away",
+              "event_id": "401884787",
+              "athlete_id": "346208",
+              "status": "substitute",
+              "goals": 0,
+              "assists": 0,
+              "yellow_cards": 0,
+              "red_cards": 0,
+              "plays": [],
+              "position": null,
+              "stats_source": "ESPN summary.rosters.roster.stats",
+              "shots": 0,
+              "on_target": 0,
+              "subbed_out": false,
+              "appearance_evidence": "ESPN starter/subbedIn",
+              "minutes": 6,
+              "minutes_source": "ESPN keyEvents substitution",
+              "minutes_approx": true
+            }
+          ],
+          "match_stats": {
+            "source": "ESPN summary.boxscore.teams.statistics",
+            "home": {
+              "possession": 41.7,
+              "shots": 10,
+              "on_target": 3
+            },
+            "away": {
+              "possession": 58.3,
+              "shots": 22,
+              "on_target": 7
+            }
+          },
+          "score_crosscheck": "unavailable"
+        }
+      ],
+      "players": [
+        {
+          "name": "鈴木唯人",
+          "name_en": "Yuito Suzuki",
+          "club": "フライブルク",
+          "side": "away",
+          "event_id": "401884787",
+          "athlete_id": "303031",
+          "status": "starter",
+          "goals": 1,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [
+            {
+              "minute": "48",
+              "goal": true,
+              "assist": false
+            }
+          ],
+          "position": "MF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 2,
+          "on_target": 1,
+          "subbed_out": true,
+          "appearance_evidence": "ESPN starter/subbedIn",
+          "minutes": 83,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true
+        },
+        {
+          "name": "堂安律",
+          "name_en": "Ritsu Doan",
+          "club": "フランクフルト",
+          "side": "home",
+          "event_id": "401884787",
+          "athlete_id": "219627",
+          "status": "starter",
+          "goals": 0,
+          "assists": 1,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [
+            {
+              "minute": "10",
+              "goal": false,
+              "assist": true
+            }
+          ],
+          "position": "MF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 1,
+          "on_target": 0,
+          "subbed_out": true,
+          "appearance_evidence": "ESPN starter/subbedIn",
+          "minutes": 61,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true
+        },
+        {
+          "name": "小杉啓太",
+          "name_en": "Keita Kosugi",
+          "club": "フランクフルト",
+          "side": "home",
+          "event_id": "401884787",
+          "athlete_id": "371596",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "DF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 0,
+          "on_target": 0,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        {
+          "name": "後藤啓介",
+          "name_en": "Keisuke Goto",
+          "club": "フライブルク",
+          "side": "away",
+          "event_id": "401884787",
+          "athlete_id": "346208",
+          "status": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": null,
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 0,
+          "on_target": 0,
+          "subbed_out": false,
+          "appearance_evidence": "ESPN starter/subbedIn",
+          "minutes": 6,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true
+        }
+      ]
+    }
+  ]
+}

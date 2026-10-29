@@ -104,15 +104,17 @@ def published_items(videos: dict, assets: dict) -> list:
         if not isinstance(by_day, dict):
             continue
         label = KIND_LABEL.get(kind, kind)
-        for rec in by_day.values():
+        for key, rec in by_day.items():
             if not isinstance(rec, dict) or not rec.get("video_id"):
+                continue
+            if rec.get('privacy') not in (None, 'public'):
                 continue
             # 予約公開は publish_at が実際に出た時刻
             t = parse_time(rec.get("publish_at") or rec.get("published_at"))
             if t is None or rec["video_id"] in seen:
                 continue
             seen.add(rec["video_id"])
-            items.append({"id": rec["video_id"], "type": label,
+            items.append({"id": rec["video_id"], "type": asset_label(key) if kind == 'asset' else label,
                           "published": t, "title": rec.get("title", "")})
     for key, rec in ((assets or {}).get("assets") or {}).items():
         if not isinstance(rec, dict) or not rec.get("video_id"):
@@ -305,7 +307,9 @@ def build(data_dir: pathlib.Path, week_end: date = None, lag: int = None) -> str
     this = summarize(items, snaps, week_end)
     prev = summarize(items, snaps, week_end - timedelta(days=7))
     older=prev
-    return render(this, prev, week_end, latest, lag, older)
+    import host_split_report
+    return render(this, prev, week_end, latest, lag, older) + host_split_report.render(
+        load(data_dir / 'published_videos.json'), snaps, week_end, latest, lag)
 
 
 def main(argv=None) -> int:

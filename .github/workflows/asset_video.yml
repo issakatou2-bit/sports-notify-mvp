@@ -20,7 +20,7 @@ on:
   #   出し切ったところで止まっていた。いちばんよく見られる種類が
   #   いちばん出ていない状態だった。
   #
-  #   球場のぶんは venue_topics.py が公式APIから作るので玉が尽きない。
+  #   球場・球団まとめは10/26に停止。選択対象がなければ本数を補充しない。
   #
   # 起動は cron-job.org から(13:00 UTC = JST 22:00)。
   #
@@ -62,12 +62,19 @@ on:
 # 投稿済みの記録(data/published_assets.json)をコミットして残すため、
 # 書き込み権限が要る。これが無いと毎回まっさらな状態から判断することになり、
 # 同じ資産動画を何度も投稿してしまう。
+concurrency:
+  group: mlb-player-publication
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
+  COLLESPO_HOOK_AB: ${{ vars.COLLESPO_HOOK_AB || '' }}
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
   COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
   # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
@@ -94,6 +101,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Refresh both MLB player publication ledgers
+        run: python scripts/player_publications.py --sync
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -115,6 +124,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Refresh both MLB player publication ledgers
+        run: python scripts/player_publications.py --sync
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -150,6 +161,12 @@ jobs:
       - name: Fetch venue stats
         continue-on-error: true
         run: python scripts/venue_stats.py --out data/venue_stats.json
+
+      # ワールドシリーズの球団史・日程。日程が無い季節は空の topics を書いて
+      # 正常終了するので、年じゅうこの段を置いておける。
+      - name: Build World Series topics
+        continue-on-error: true
+        run: python scripts/ws_topics.py --out data/ws_topics.json
 
       # サッカーの開幕日程・昨季順位。soccer_opening と soccer_last_season が
       # これを読む。取れなければその2トピックだけが作られず、他は通る。
@@ -197,6 +214,8 @@ jobs:
       # 途中で失敗しても残りを試し、最後に結果をまとめて出す。
       - name: Build and upload topics
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -219,6 +238,11 @@ jobs:
             fi
             echo "::notice::今日の資産動画: $TOPICS"
           fi
+          TOPICS="$(python scripts/asset_policy.py "$TOPICS")"
+          if [ -z "$TOPICS" ]; then
+            echo "::notice::選択対象は停止中です。きょうは補充しません"
+            exit 0
+          fi
           FORCE=""
           if [ "${{ inputs.force }}" = "true" ]; then
             FORCE="--force"
@@ -227,8 +251,11 @@ jobs:
 
           # 1本が失敗しても残りを試す。ここを素通しにしていたため、
           # jp_players の不具合1件で以降のトピックが丸ごと未処理になった。
+          source scripts/asset_publish_args.sh
           set +e
           FAILED=""
+          PREPARED=""
+          # 全対象を点検して先に注文。前の動画の描画中にも係が次の声を作れる。
           for t in $TOPICS; do
             echo "::group::$t"
 
@@ -240,10 +267,29 @@ jobs:
               echo "::endgroup::"; continue
             fi
 
-            # VOICEVOXが落ちていても無音で作れるよう、ここは失敗を許容する
-            python scripts/synthesize_narration.py \
+            if ! python scripts/sanity.py --general --strict --narration "build/narr_$t.json" --out "data/sanity_${t}.json" --hold-record "build/sanity_hold_${t}.json" --kind asset; then
+              FAILED="$FAILED $t(点検)"
+              echo "::endgroup::"; continue
+            fi
+
+            if ! python scripts/synthesize_narration.py \
+              --narration "build/narr_$t.json" --out-dir "build/audio_$t" --queue-only; then
+              FAILED="$FAILED $t(先行注文・翌日へ)"
+              echo "::endgroup::"; continue
+            fi
+            PREPARED="$PREPARED $t"
+            echo "::endgroup::"
+          done
+
+          for t in $PREPARED; do
+            echo "::group::$t"
+            # 雨衣未着の資産回は翌日へ。描画・投稿へ進めない。
+            if ! python scripts/synthesize_narration.py \
               --narration "build/narr_$t.json" \
-              --out-dir "build/audio_$t"
+              --out-dir "build/audio_$t"; then
+              FAILED="$FAILED $t(音声・翌日へ)"
+              echo "::endgroup::"; continue
+            fi
 
             python scripts/generate_asset_video.py \
               --topic "$t" --narration "build/narr_$t.json" --audio-dir "build/audio_$t" --out "build/asset_$t"
@@ -261,16 +307,18 @@ jobs:
             # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
             bash scripts/shorts_thumbnail.sh "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png"
 
+            # 公開を選んだ回だけ予約する。限定公開・非公開の指定を保つ。
+            asset_publication_args "${PRIVACY:-public}" "18:30"
             python scripts/upload_youtube.py \
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
               --thumbnail "build/asset_$t/short.png" \
               --privacy "${PRIVACY:-public}" $FORCE \
-              --publish-at "18:30"
+              "${ASSET_PUBLISH_ARGS[@]}"
             if [ $? -eq 0 ]; then
               echo "$t: 完了"
             else
-              echo "::warning::$t の投稿に失敗しました(APIの割り当て超過の可能性)"
+              echo "::warning::$t の投稿に失敗しました（理由は上の記録の Traceback を見る）"
               FAILED="$FAILED $t(投稿)"
             fi
             echo "::endgroup::"
@@ -291,8 +339,8 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "published assets: ${{ github.run_id }}" \
-            data/published_assets.json data/venue_topics.json data/team_topics.json data/venue_stats.json data/soccer_preview.json \
-            data/rarity.json data/rare_topics.json data/legend_topics.json
+            data/published_assets.json data/published_videos.json data/venue_topics.json data/team_topics.json data/venue_stats.json data/soccer_preview.json \
+            data/rarity.json data/rare_topics.json data/legend_topics.json data/ws_topics.json data/token_usage.json
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
       - name: Save videos as artifact
@@ -300,6 +348,54 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: collespo-asset-${{ inputs.topic }}
-          path: build/asset/*.mp4
+          path: |
+            build/asset/*.mp4
+            build/audio_*/voice-hold.json
+            !build/**/portrait/**
           retention-days: 14
           if-no-files-found: warn
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

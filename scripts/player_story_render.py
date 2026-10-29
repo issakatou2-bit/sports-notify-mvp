@@ -75,7 +75,7 @@ def _frame(t, seg, narr):
         if meta.get('likes') is not None:metrics.append(f"高評価 {meta['likes']:,}")
         if meta.get('replies') is not None:metrics.append(f"返信 {meta['replies']:,}件")
         if metrics:cards.text(im,100,850,'　'.join(metrics),48,r3.GOLD,width=740)
-    credit = report.get('author') or meta['source']
+    credit = __import__('fan_privacy').LABEL if __import__('fan_privacy').reddit(meta) else report.get('author') or meta['source']
     if report.get('author'):
         credit += ' / '+meta['source']
     at = meta.get('display_time') or meta.get('at') or narr['label']
@@ -85,7 +85,8 @@ def _frame(t, seg, narr):
     for text in (credit, at):
         cards.text(im, 100, 990 if text == credit else 1060, text, 30, r3.GOLD, width=740)
     r3.presenter(im, t)
-    r3.ticker(im, t, '音声：VOICEVOX 四国めたん　'+narr['label']+'　'+(narr.get('program_label') or '選手の話題'))
+    import host_split
+    r3.ticker(im, t, host_split.credit('音声：VOICEVOX 四国めたん　'+narr['label']+'　'+(narr.get('program_label') or '選手の話題')))
     return im
 
 
@@ -117,6 +118,8 @@ def render(narr, audio, out):
     if sum(times) > story.RULES['max_story_seconds']:
         raise ValueError('60秒を超えています。原稿を短くしてください')
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
+    import short_content
+    short_content.require(narr, times, out, maximum=story.RULES['max_story_seconds'], video_name='collespo_player_story.mp4')
     track = vc.build_narration_track(audio, times, out)
     if not track:
         raise ValueError('声を結合できませんでした')
@@ -182,10 +185,13 @@ def main():
     ap.add_argument('--audio-dir', required=True)
     ap.add_argument('--out', default='build/player_story')
     args = ap.parse_args()
+    import host_split
+    host_split.render_audio(args.audio_dir, args.out, args.narration)
     if os.environ.get('COLLESPO_PLAYER_STORY') != 'on':
         print('選手の話題の回は既定オフです'); return
     narr = story.read(args.narration)
     render(narr, story.read(Path(args.audio_dir)/'manifest.json')['segments'], args.out)
+    host_split.bind_video(Path(args.out)/'collespo_player_story.mp4', args.audio_dir)
 
 
 if __name__ == '__main__':

@@ -124,6 +124,13 @@ def budget_reason(state, video, env=None, now=None):
     return ''
 
 
+class TranslationRejected(ValueError):
+    """診断用の応答は属性に保持。通常ログ・例外文字列には本文を含めない。"""
+    def __init__(self, code, original, english):
+        super().__init__(code)
+        self.original, self.english = original, english
+
+
 def translate(cues, ai):
     source = [text for _, _, text in cues]
     if any(backstage_guard.violations(text) for text in source):
@@ -131,6 +138,12 @@ def translate(cues, ai):
     prompt = ('Translate each Japanese caption to English. Return ONLY a JSON array of strings, '
               'one per input cue in exactly the same order. Do not merge or split cues. '
               'Keep facts, numbers, speakers, and quotation attribution; add no claims or explanations. '
+              'Preserve every count, ordinal and calendar day explicitly, preferably with digits: '
+              'In baseball headlines, 1号 means the first home run (not merely a solo homer), '
+              '1安打 means one hit and 1回 means the first inning. 第1戦 means Game 1. '
+              '一発 means one homer/a homer; 1番 as a batting-order position means leadoff/top of the order. '
+              '21日 means the 21st: never replace a calendar day with a month, weekday or relative date, '
+              'and never infer a month absent from the source. Do not shorten away numeric details. '
               'Use the full official spellings in this canonical name table wherever those names occur. '
               'Other player names must use MLB official English spellings. No markdown.\n'
               + json.dumps({ja: name for text in source for ja, name in caption_names.required(text).items()}, ensure_ascii=False) + '\nINPUT:\n'
@@ -147,17 +160,23 @@ def translate(cues, ai):
     if not isinstance(result, list) or len(result) != len(cues):
         raise ValueError('translation_count')
     for original, english in zip(source, result):
+        if isinstance(english, str) and not english.strip():
+            raise TranslationRejected('translation_empty',original,english)
+        if isinstance(english, str) and backstage_guard.violations(english):
+            raise TranslationRejected('translation_backstage',original,english)
         if (not isinstance(english, str) or not english.strip() or len(english) > 1000
                 or re.search(r'[\u3040-\u30ff\u3400-\u9fff]', english)
                 or backstage_guard.violations(english)):
-            raise ValueError('translation_invalid')
-        if any(name not in english for name in caption_names.required(original).values()):
-            raise ValueError('translation_names')
+            raise TranslationRejected('translation_invalid',original,english)
+        missing_names, extra_names = caption_names.mismatches(original, english)
+        if missing_names or extra_names:
+            print(f'[warn] 英語字幕: translation_names Japanese={missing_names} English={extra_names}')
+            raise TranslationRejected('translation_names',original,english)
         missing, extra = number_mismatches(original, english)
         if missing or extra:
             # 原稿やモデルの応答を出さず、照合で余った数字だけを残す。
             print(f'[warn] 英語字幕: translation_numbers Japanese={missing} English={extra}')
-            raise ValueError('translation_numbers')
+            raise TranslationRejected('translation_numbers',original,english)
     return [(start, end, text.strip()) for (start, end, _), text in zip(cues, result)]
 
 
@@ -185,7 +204,7 @@ _UNDER_HUNDRED = ('(?:' + '|'.join(_TENS) + r')(?:[\s-]+(?:' + _UNIT_WORDS + '))
 _WORD_NUMBERS = re.compile(r'\b(?:'
     + '(?:' + '|'.join(_CARDINALS[1:10]) + r')[\s-]+hundred(?:[\s-]+(?:and[\s-]+)?(?:'
     + _UNDER_HUNDRED + '))?|' + _UNDER_HUNDRED + r')\b', re.IGNORECASE)
-_COUNT_NOUN = r'(?:home runs?|runs?|hits?|walks?|strikeouts?|wins?|loss(?:es)?|outs?|homers?|innings?)'
+_COUNT_NOUN = r'(?:home runs?|runs?|hits?|singles?|walks?|strikeouts?|wins?|loss(?:es)?|outs?|homers?|innings?|goals?)'
 _FRACTION_WORD = r'(?:third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)'
 
 
@@ -197,43 +216,89 @@ def _word_number(match):
     return str(sum(_WORD_VALUES[w] for w in words))
 
 
+def _japanese_number_text(text):
+    # 人名（一平・十亀）や熟語（一方・統一・二刀流）の文字を数にしない。
+    digits={word:str(n) for n,word in enumerate('〇一二三四五六七八九')}
+    def convert(match):
+        word=match.group()
+        if word.count('十')>1:return word
+        if '十' in word:
+            tens,ones=word.split('十')
+            if len(tens)>1 or len(ones)>1:return word
+            return str(int(digits.get(tens,'1'))*10+int(digits.get(ones,'0')))
+        return ''.join(digits[c] for c in word)
+    numeral=r'[〇一二三四五六七八九十]+'
+    units=r'(?:打席|打数|打点|安打|本塁打|四球|奪三振|盗塁|得点|失点|アシスト|連勝|連敗|連発|試合|発|本|点|戦|回|人|番|勝|敗|塁|死|日|月|年|分|秒|度|号|対)'
+    return re.sub(r'(?<![〇零一二三四五六七八九十百千万億\d])'+numeral+r'(?='+units+r')'
+                  + r'|(?<![一-龯\w])'+numeral+r'(?![一-龯\w])',convert,text)
+
+
 def number_mismatches(original, english):
     """数の表記と語順をそろえ、日本語側・英語側に余る数字だけを返す。
 
     序数（first / 3rd）・点数（two-run / 6-2）・分数（one third / 1/3）も
     数字として数える。同じ数字の出現回数も一致させ、増減・脱落を見逃さない。
     """
-    original = unicodedata.normalize('NFKC', original)
+    original = _japanese_number_text(unicodedata.normalize('NFKC', original))
     english = unicodedata.normalize('NFKC', english).lower()
+    # 打順だけの同義語。first inningや単なるtopには足さない。
+    if re.search(r'(?<!\d)1番',original):
+        english = re.sub(r'\blead[ -]?off\b|\btop of (?:the )?(?:batting )?order\b', '1', english)
+    if re.search(r'初|(?<!\d)1(?:回|戦)',original):
+        # opening inning / series opener も「初回」「第1戦」と同じ1。
+        english = re.sub(r'\bopening(?=\s+(?:inning|game|pitch|round|day)\b)', 'first', english)
+        english = re.sub(r'\bopener\b', 'first game', english)
+    japanese_firsts = len(re.findall(r'初めて|最初|(?<![当最])初(?![期心級旬頭夏秋冬春])', original))
+    matched_firsts = min(japanese_firsts, len(re.findall(r'\b(?:first|1st)\b', english)))
     # 「44年ぶり」は "first ... in 44 years" とも訳す。ここでのfirstは
     # 日本語に独立した1がなくても同じ意味（年数自体は通常どおり照合する）。
-    first_in_years = len(re.findall(r'\b(?:first|1st)\b[^.!?]{0,120}\b(?:in|for)\b'
-                                   r'[^.!?]{0,40}\byears\b', english))
-    # a walk / no strikeouts / two and a third も数を表す。通常の冠詞や
-    # 無失点→scorelessで数字を増やさないよう、明示された数の不足だけを補う。
+    first_after_gap = len(re.findall(r'\b(?:first|1st)\b[^.!?;]{0,120}?\b(?:in|for)\s+'
+                                    r'(?:\d+|'+_UNDER_HUNDRED+r')\s+(?:years?|days?|games?|matches?|plate appearances?)\b', english))
+    # a goal / a hitは1。ただし分数の単位（of an inning）は別の1ではない。
+    counted_articles = len(re.findall(r'\b(?:a|an)\s+(?:(?:earned|unearned)\s+)?'
+                                     + _COUNT_NOUN + r'\b', english))
+    counted_articles -= len(re.findall(r'\b(?:' + _FRACTION_WORD + r's?|\d+/\d+)\s+of\s+an\s+inning\b', english))
+    # a third の分子とno/scorelessの0は、明示された数の不足だけを補う。
     implicit = {
-        '1': len(re.findall(r'\b(?:a|an)\s+(?:(?:earned|unearned)\s+)?(?:'
-                            + _COUNT_NOUN + '|' + _FRACTION_WORD + r')\b', english)),
+        '1': len(re.findall(r'\ba\s+' + _FRACTION_WORD + r'\b', english)),
         '0': len(re.findall(r'\bno\s+(?:earned\s+)?' + _COUNT_NOUN
                             + r'\b|\bscoreless\b', english)),
     }
     english = re.sub(r'\b(one|two|three|four|five|six|seven|eight|nine|\d+)[\s-]+('
                      + _FRACTION_WORD + r')s\b', r'\1 \2', english)
-    if re.search(r'\d{1,2}月', original):
+    if re.search(r'\d{1,2}[月日]', original):
+        def month_number(match):
+            word=match.group()
+            if (word in ('may','march') and not re.search(r'\d{1,2}月',original)
+                    and not re.match(r'\s+\d',english[match.end():])
+                    and not re.search(r'\b(?:in|of|on)\s*$',english[:match.start()])):
+                return word  # 助動詞may・動詞marchを月として足さない。
+            return _MONTHS[word]
         english = re.sub(r'\b(?:' + '|'.join(_MONTHS) + r')\b',
-                         lambda m: _MONTHS[m.group()], english)
+                         month_number, english)
     english = _WORD_NUMBERS.sub(_word_number, english)
     pattern = r'\d+(?:[.,]\d+)?'
     want = Counter(re.findall(pattern, original))
     have = Counter(re.findall(pattern, english))
+    # 「最初」をa hitの冠詞で埋めないよう、対応するfirstは先に取り出す。
+    want['first'] = japanese_firsts
+    have['first'] = matched_firsts
+    have['1'] += counted_articles - matched_firsts
     # 無失点・無安打のようなゼロも、英訳が明示的にzeroと書いた分だけ照合する。
     want['0'] += min(max(0, have['0'] - want['0']),
                      len(re.findall(r'無(?:失点|安打|四球|得点|本塁打)', original)))
-    want['1'] += min(max(0, have['1'] - want['1']), first_in_years,
-                     len(re.findall(r'\d+年ぶり', original)))
+    # 「64日ぶり」「26試合ぶり」もfirst ... inと同義。数字自体は通常照合。
+    want['1'] += min(max(0, have['1'] - want['1']), first_after_gap,
+                     len(re.findall(r'\d+(?:年|日|試合|戦|打席)ぶり', original)))
+    # 「開幕2連勝」のfirst 2 matchesは、独立した第1戦の追加ではない。
+    opening_wins=re.findall(r'開幕(\d+)連勝',original)
+    for count in opening_wins:
+        if re.search(r'\b1\s+'+re.escape(count)+r'\b(?:\s+[a-z]+){0,3}\s+(?:games?|matches?)\b',english):
+            want['1'] += min(max(0,have['1']-want['1']),1)
     for number, count in implicit.items():
         have[number] += min(max(0, want[number] - have[number]), count)
-    return sorted((want - have).elements()), sorted((have - want).elements())
+    return tuple(sorted('1' if n == 'first' else n for n in difference.elements())
+                 for difference in (want - have, have - want))
 
 
 def numbers_survive(original, english):
@@ -320,7 +385,8 @@ def main(args):
     except Exception as exc:
         # Never dump OAuth/HTTP objects or model responses into public records.
         known = {'backstage_source', 'translation_budget', 'translation_truncated', 'translation_count',
-                 'translation_invalid', 'translation_names', 'translation_numbers'}
+                 'translation_invalid', 'translation_names', 'translation_numbers',
+                 'translation_empty', 'translation_backstage'}
         status = str(exc) if isinstance(exc, ValueError) and str(exc) in known else 'failed_' + type(exc).__name__
         if getattr(getattr(exc, 'resp', None), 'status', None) == 403:
             status = 'forbidden_check_scope_or_quota'

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T06:18:56.279347+00:00",
+  "generated_at": "2026-10-29T07:39:35.957553+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -7,7 +7,7 @@
       "season": {
         "start": "2026-08-21",
         "end": "2027-05-30",
-        "matchday": 6,
+        "matchday": 9,
         "year": 2026
       },
       "stale": false,
@@ -339,222 +339,222 @@
         {
           "position": 1,
           "team": "Manchester City FC",
-          "played": 6,
-          "won": 6,
+          "played": 8,
+          "won": 7,
           "draw": 0,
-          "lost": 0,
-          "points": 18,
-          "gf": 16,
-          "ga": 5
+          "lost": 1,
+          "points": 21,
+          "gf": 20,
+          "ga": 9
         },
         {
           "position": 2,
           "team": "Arsenal FC",
-          "played": 6,
-          "won": 5,
+          "played": 8,
+          "won": 7,
           "draw": 0,
           "lost": 1,
-          "points": 15,
-          "gf": 10,
+          "points": 21,
+          "gf": 13,
           "ga": 5
         },
         {
           "position": 3,
           "team": "Brighton & Hove Albion FC",
-          "played": 6,
-          "won": 4,
+          "played": 8,
+          "won": 5,
           "draw": 1,
-          "lost": 1,
-          "points": 13,
-          "gf": 18,
-          "ga": 5
+          "lost": 2,
+          "points": 16,
+          "gf": 23,
+          "ga": 7
         },
         {
           "position": 4,
-          "team": "Brentford FC",
-          "played": 6,
-          "won": 2,
-          "draw": 4,
-          "lost": 0,
-          "points": 10,
-          "gf": 12,
-          "ga": 6
+          "team": "Liverpool FC",
+          "played": 8,
+          "won": 4,
+          "draw": 3,
+          "lost": 1,
+          "points": 15,
+          "gf": 11,
+          "ga": 8
         },
         {
           "position": 5,
-          "team": "Everton FC",
-          "played": 6,
-          "won": 2,
-          "draw": 4,
-          "lost": 0,
-          "points": 10,
-          "gf": 8,
-          "ga": 5
+          "team": "Chelsea FC",
+          "played": 8,
+          "won": 4,
+          "draw": 1,
+          "lost": 3,
+          "points": 13,
+          "gf": 17,
+          "ga": 15
         },
         {
           "position": 6,
-          "team": "Chelsea FC",
-          "played": 6,
-          "won": 3,
-          "draw": 1,
-          "lost": 2,
-          "points": 10,
-          "gf": 15,
-          "ga": 13
+          "team": "Brentford FC",
+          "played": 8,
+          "won": 2,
+          "draw": 5,
+          "lost": 1,
+          "points": 11,
+          "gf": 14,
+          "ga": 9
         },
         {
           "position": 7,
           "team": "Leeds United FC",
-          "played": 6,
+          "played": 8,
           "won": 2,
-          "draw": 3,
+          "draw": 5,
           "lost": 1,
-          "points": 9,
-          "gf": 8,
-          "ga": 5
-        },
-        {
-          "position": 8,
-          "team": "Hull City AFC",
-          "played": 6,
-          "won": 2,
-          "draw": 3,
-          "lost": 1,
-          "points": 9,
-          "gf": 8,
+          "points": 11,
+          "gf": 9,
           "ga": 6
         },
         {
-          "position": 9,
-          "team": "Liverpool FC",
-          "played": 6,
-          "won": 2,
-          "draw": 3,
-          "lost": 1,
-          "points": 9,
-          "gf": 7,
-          "ga": 7
+          "position": 8,
+          "team": "Newcastle United FC",
+          "played": 8,
+          "won": 3,
+          "draw": 2,
+          "lost": 3,
+          "points": 11,
+          "gf": 12,
+          "ga": 14
         },
         {
-          "position": 10,
-          "team": "Ipswich Town FC",
-          "played": 6,
+          "position": 9,
+          "team": "Aston Villa FC",
+          "played": 8,
           "won": 3,
-          "draw": 0,
+          "draw": 2,
           "lost": 3,
-          "points": 9,
+          "points": 11,
           "gf": 9,
           "ga": 12
         },
         {
+          "position": 10,
+          "team": "Hull City AFC",
+          "played": 8,
+          "won": 2,
+          "draw": 4,
+          "lost": 2,
+          "points": 10,
+          "gf": 9,
+          "ga": 8
+        },
+        {
           "position": 11,
-          "team": "Newcastle United FC",
-          "played": 6,
+          "team": "Everton FC",
+          "played": 8,
+          "won": 2,
+          "draw": 4,
+          "lost": 2,
+          "points": 10,
+          "gf": 8,
+          "ga": 9
+        },
+        {
+          "position": 12,
+          "team": "Ipswich Town FC",
+          "played": 8,
+          "won": 3,
+          "draw": 1,
+          "lost": 4,
+          "points": 10,
+          "gf": 12,
+          "ga": 16
+        },
+        {
+          "position": 13,
+          "team": "AFC Bournemouth",
+          "played": 8,
+          "won": 2,
+          "draw": 3,
+          "lost": 3,
+          "points": 9,
+          "gf": 12,
+          "ga": 13
+        },
+        {
+          "position": 14,
+          "team": "Tottenham Hotspur FC",
+          "played": 8,
+          "won": 2,
+          "draw": 3,
+          "lost": 3,
+          "points": 9,
+          "gf": 8,
+          "ga": 10
+        },
+        {
+          "position": 15,
+          "team": "Fulham FC",
+          "played": 8,
           "won": 2,
           "draw": 2,
-          "lost": 2,
+          "lost": 4,
           "points": 8,
+          "gf": 8,
+          "ga": 10
+        },
+        {
+          "position": 16,
+          "team": "Manchester United FC",
+          "played": 8,
+          "won": 1,
+          "draw": 4,
+          "lost": 3,
+          "points": 7,
           "gf": 10,
           "ga": 13
         },
         {
-          "position": 12,
+          "position": 17,
           "team": "Crystal Palace FC",
-          "played": 6,
+          "played": 8,
           "won": 2,
           "draw": 1,
-          "lost": 3,
+          "lost": 5,
           "points": 7,
           "gf": 9,
-          "ga": 12
-        },
-        {
-          "position": 13,
-          "team": "Manchester United FC",
-          "played": 6,
-          "won": 1,
-          "draw": 3,
-          "lost": 2,
-          "points": 6,
-          "gf": 9,
-          "ga": 9
-        },
-        {
-          "position": 14,
-          "team": "Coventry City FC",
-          "played": 6,
-          "won": 2,
-          "draw": 0,
-          "lost": 4,
-          "points": 6,
-          "gf": 5,
-          "ga": 11
-        },
-        {
-          "position": 15,
-          "team": "Nottingham Forest FC",
-          "played": 6,
-          "won": 1,
-          "draw": 2,
-          "lost": 3,
-          "points": 5,
-          "gf": 5,
-          "ga": 8
-        },
-        {
-          "position": 16,
-          "team": "Aston Villa FC",
-          "played": 6,
-          "won": 1,
-          "draw": 2,
-          "lost": 3,
-          "points": 5,
-          "gf": 6,
-          "ga": 11
-        },
-        {
-          "position": 17,
-          "team": "Sunderland AFC",
-          "played": 6,
-          "won": 1,
-          "draw": 1,
-          "lost": 4,
-          "points": 4,
-          "gf": 6,
-          "ga": 12
+          "ga": 19
         },
         {
           "position": 18,
-          "team": "AFC Bournemouth",
-          "played": 6,
-          "won": 0,
+          "team": "Nottingham Forest FC",
+          "played": 8,
+          "won": 1,
           "draw": 3,
-          "lost": 3,
-          "points": 3,
-          "gf": 7,
-          "ga": 13
+          "lost": 4,
+          "points": 6,
+          "gf": 6,
+          "ga": 10
         },
         {
           "position": 19,
-          "team": "Tottenham Hotspur FC",
-          "played": 6,
-          "won": 0,
-          "draw": 3,
-          "lost": 3,
-          "points": 3,
-          "gf": 3,
-          "ga": 9
+          "team": "Coventry City FC",
+          "played": 8,
+          "won": 2,
+          "draw": 0,
+          "lost": 6,
+          "points": 6,
+          "gf": 6,
+          "ga": 15
         },
         {
           "position": 20,
-          "team": "Fulham FC",
-          "played": 6,
-          "won": 0,
+          "team": "Sunderland AFC",
+          "played": 8,
+          "won": 1,
           "draw": 2,
-          "lost": 4,
-          "points": 2,
+          "lost": 5,
+          "points": 5,
           "gf": 6,
-          "ga": 10
+          "ga": 14
         }
       ],
       "last_season": [
@@ -790,7 +790,7 @@
           "away_short": "Aston Villa",
           "score": 38.0,
           "reasons": [
-            "昨季8位と4位",
+            "昨季8位のブライトンと4位のアストンヴィラ",
             "三笘薫の所属クラブ"
           ]
         },
@@ -803,7 +803,7 @@
           "away_short": "Brighton Hove",
           "score": 38.0,
           "reasons": [
-            "昨季10位と8位",
+            "昨季10位のチェルシーと8位のブライトン",
             "三笘薫の所属クラブ"
           ]
         },
@@ -851,7 +851,7 @@
       "season": {
         "start": "2026-08-16",
         "end": "2027-05-30",
-        "matchday": 8,
+        "matchday": 10,
         "year": 2026
       },
       "stale": false,
@@ -1183,222 +1183,222 @@
         {
           "position": 1,
           "team": "FC Barcelona",
-          "played": 8,
-          "won": 8,
+          "played": 10,
+          "won": 9,
           "draw": 0,
-          "lost": 0,
-          "points": 24,
-          "gf": 34,
-          "ga": 7
+          "lost": 1,
+          "points": 27,
+          "gf": 40,
+          "ga": 11
         },
         {
           "position": 2,
           "team": "Club Atlético de Madrid",
-          "played": 8,
-          "won": 6,
+          "played": 10,
+          "won": 8,
           "draw": 1,
           "lost": 1,
-          "points": 19,
-          "gf": 18,
+          "points": 25,
+          "gf": 20,
           "ga": 8
         },
         {
           "position": 3,
-          "team": "Real Betis Balompié",
-          "played": 8,
-          "won": 6,
-          "draw": 1,
-          "lost": 1,
-          "points": 19,
-          "gf": 14,
-          "ga": 9
+          "team": "Real Madrid CF",
+          "played": 10,
+          "won": 8,
+          "draw": 0,
+          "lost": 2,
+          "points": 24,
+          "gf": 25,
+          "ga": 10
         },
         {
           "position": 4,
-          "team": "Real Madrid CF",
-          "played": 8,
+          "team": "Real Betis Balompié",
+          "played": 10,
           "won": 6,
-          "draw": 0,
+          "draw": 2,
           "lost": 2,
-          "points": 18,
-          "gf": 19,
-          "ga": 8
+          "points": 20,
+          "gf": 16,
+          "ga": 14
         },
         {
           "position": 5,
-          "team": "Sevilla FC",
-          "played": 8,
-          "won": 4,
-          "draw": 2,
-          "lost": 2,
-          "points": 14,
-          "gf": 13,
-          "ga": 12
+          "team": "Real Sociedad de Fútbol",
+          "played": 10,
+          "won": 6,
+          "draw": 1,
+          "lost": 3,
+          "points": 19,
+          "gf": 19,
+          "ga": 18
         },
         {
           "position": 6,
-          "team": "Real Sociedad de Fútbol",
-          "played": 8,
-          "won": 4,
-          "draw": 1,
+          "team": "Sevilla FC",
+          "played": 10,
+          "won": 5,
+          "draw": 2,
           "lost": 3,
-          "points": 13,
-          "gf": 12,
-          "ga": 15
+          "points": 17,
+          "gf": 16,
+          "ga": 16
         },
         {
           "position": 7,
           "team": "Deportivo Alavés",
-          "played": 8,
+          "played": 10,
           "won": 3,
-          "draw": 2,
-          "lost": 3,
-          "points": 11,
-          "gf": 12,
-          "ga": 8
+          "draw": 3,
+          "lost": 4,
+          "points": 12,
+          "gf": 14,
+          "ga": 11
         },
         {
           "position": 8,
-          "team": "RC Deportivo La Coruña",
-          "played": 8,
-          "won": 2,
-          "draw": 4,
-          "lost": 2,
-          "points": 10,
+          "team": "Athletic Club",
+          "played": 9,
+          "won": 3,
+          "draw": 3,
+          "lost": 3,
+          "points": 12,
           "gf": 12,
-          "ga": 11
+          "ga": 9
         },
         {
           "position": 9,
           "team": "RC Celta de Vigo",
-          "played": 8,
-          "won": 1,
-          "draw": 5,
+          "played": 10,
+          "won": 2,
+          "draw": 6,
           "lost": 2,
-          "points": 8,
-          "gf": 8,
-          "ga": 6
+          "points": 12,
+          "gf": 10,
+          "ga": 7
         },
         {
           "position": 10,
-          "team": "Athletic Club",
-          "played": 6,
-          "won": 2,
-          "draw": 2,
-          "lost": 2,
-          "points": 8,
-          "gf": 7,
-          "ga": 6
+          "team": "Villarreal CF",
+          "played": 10,
+          "won": 3,
+          "draw": 3,
+          "lost": 4,
+          "points": 12,
+          "gf": 15,
+          "ga": 14
         },
         {
           "position": 11,
-          "team": "Villarreal CF",
-          "played": 8,
+          "team": "RC Deportivo La Coruña",
+          "played": 10,
           "won": 2,
-          "draw": 2,
-          "lost": 4,
-          "points": 8,
+          "draw": 5,
+          "lost": 3,
+          "points": 11,
           "gf": 13,
           "ga": 13
         },
         {
           "position": 12,
-          "team": "RCD Espanyol de Barcelona",
-          "played": 8,
-          "won": 2,
+          "team": "CA Osasuna",
+          "played": 10,
+          "won": 3,
           "draw": 2,
-          "lost": 4,
-          "points": 8,
-          "gf": 11,
-          "ga": 11
+          "lost": 5,
+          "points": 11,
+          "gf": 10,
+          "ga": 20
         },
         {
           "position": 13,
-          "team": "Rayo Vallecano de Madrid",
-          "played": 7,
-          "won": 2,
+          "team": "Real Racing Club de Santander",
+          "played": 10,
+          "won": 3,
           "draw": 2,
-          "lost": 3,
-          "points": 8,
-          "gf": 11,
-          "ga": 16
+          "lost": 5,
+          "points": 11,
+          "gf": 15,
+          "ga": 26
         },
         {
           "position": 14,
-          "team": "Getafe CF",
-          "played": 8,
+          "team": "Levante UD",
+          "played": 10,
           "won": 2,
-          "draw": 2,
+          "draw": 4,
           "lost": 4,
-          "points": 8,
-          "gf": 4,
-          "ga": 10
+          "points": 10,
+          "gf": 16,
+          "ga": 19
         },
         {
           "position": 15,
-          "team": "Real Racing Club de Santander",
-          "played": 8,
+          "team": "Elche CF",
+          "played": 10,
           "won": 2,
-          "draw": 2,
+          "draw": 4,
           "lost": 4,
-          "points": 8,
-          "gf": 13,
-          "ga": 23
+          "points": 10,
+          "gf": 14,
+          "ga": 17
         },
         {
           "position": 16,
-          "team": "CA Osasuna",
-          "played": 8,
+          "team": "Rayo Vallecano de Madrid",
+          "played": 9,
           "won": 2,
-          "draw": 2,
+          "draw": 3,
           "lost": 4,
-          "points": 8,
-          "gf": 8,
-          "ga": 18
+          "points": 9,
+          "gf": 12,
+          "ga": 20
         },
         {
           "position": 17,
-          "team": "Levante UD",
-          "played": 7,
-          "won": 1,
+          "team": "Getafe CF",
+          "played": 10,
+          "won": 2,
           "draw": 3,
-          "lost": 3,
-          "points": 6,
-          "gf": 11,
+          "lost": 5,
+          "points": 9,
+          "gf": 5,
           "ga": 15
         },
         {
           "position": 18,
-          "team": "Elche CF",
-          "played": 8,
-          "won": 1,
-          "draw": 3,
-          "lost": 4,
-          "points": 6,
-          "gf": 11,
-          "ga": 17
+          "team": "RCD Espanyol de Barcelona",
+          "played": 10,
+          "won": 2,
+          "draw": 2,
+          "lost": 6,
+          "points": 8,
+          "gf": 12,
+          "ga": 14
         },
         {
           "position": 19,
           "team": "Valencia CF",
-          "played": 8,
+          "played": 10,
           "won": 1,
-          "draw": 2,
-          "lost": 5,
-          "points": 5,
-          "gf": 6,
-          "ga": 15
+          "draw": 3,
+          "lost": 6,
+          "points": 6,
+          "gf": 7,
+          "ga": 17
         },
         {
           "position": 20,
           "team": "Málaga CF",
-          "played": 8,
+          "played": 10,
           "won": 0,
-          "draw": 4,
-          "lost": 4,
-          "points": 4,
-          "gf": 4,
-          "ga": 13
+          "draw": 5,
+          "lost": 5,
+          "points": 5,
+          "gf": 7,
+          "ga": 19
         }
       ],
       "last_season": [
@@ -1634,7 +1634,7 @@
           "away_short": "Real Sociedad",
           "score": 38.0,
           "reasons": [
-            "昨季5位と10位",
+            "昨季5位のレアル・ベティスと10位のレアル・ソシエダ",
             "久保建英の所属クラブ"
           ]
         },
@@ -1647,7 +1647,7 @@
           "away_short": "Celta",
           "score": 38.0,
           "reasons": [
-            "昨季9位と6位",
+            "昨季9位のバレンシアと6位のセルタ",
             "佐藤龍之介の所属クラブ"
           ]
         },
@@ -1660,7 +1660,7 @@
           "away_short": "Real Betis",
           "score": 38.0,
           "reasons": [
-            "昨季9位と5位",
+            "昨季9位のバレンシアと5位のレアル・ベティス",
             "佐藤龍之介の所属クラブ"
           ]
         },
@@ -1673,7 +1673,7 @@
           "away_short": "Real Sociedad",
           "score": 38.0,
           "reasons": [
-            "昨季2位と10位",
+            "昨季2位のレアル・マドリードと10位のレアル・ソシエダ",
             "久保建英の所属クラブ"
           ]
         },
@@ -1686,7 +1686,7 @@
           "away_short": "Villarreal",
           "score": 20.0,
           "reasons": [
-            "昨季4位と3位"
+            "昨季4位のアトレティコ・マドリードと3位のビジャレアル"
           ]
         }
       ]
@@ -1697,7 +1697,7 @@
       "season": {
         "start": "2026-08-23",
         "end": "2027-05-30",
-        "matchday": 6,
+        "matchday": 9,
         "year": 2026
       },
       "stale": false,
@@ -2029,222 +2029,222 @@
         {
           "position": 1,
           "team": "FC Internazionale Milano",
-          "played": 6,
-          "won": 5,
+          "played": 9,
+          "won": 8,
           "draw": 1,
           "lost": 0,
-          "points": 16,
-          "gf": 18,
-          "ga": 8
+          "points": 25,
+          "gf": 25,
+          "ga": 10
         },
         {
           "position": 2,
           "team": "SS Lazio",
-          "played": 6,
-          "won": 5,
+          "played": 9,
+          "won": 8,
           "draw": 1,
           "lost": 0,
-          "points": 16,
-          "gf": 11,
-          "ga": 4
+          "points": 25,
+          "gf": 22,
+          "ga": 7
         },
         {
           "position": 3,
           "team": "AS Roma",
-          "played": 6,
-          "won": 4,
-          "draw": 2,
+          "played": 9,
+          "won": 6,
+          "draw": 3,
           "lost": 0,
-          "points": 14,
-          "gf": 14,
-          "ga": 3
+          "points": 21,
+          "gf": 23,
+          "ga": 8
         },
         {
           "position": 4,
-          "team": "Cagliari Calcio",
-          "played": 6,
-          "won": 4,
-          "draw": 1,
+          "team": "Como 1907",
+          "played": 9,
+          "won": 6,
+          "draw": 2,
           "lost": 1,
-          "points": 13,
-          "gf": 6,
-          "ga": 3
+          "points": 20,
+          "gf": 17,
+          "ga": 8
         },
         {
           "position": 5,
           "team": "AC Milan",
-          "played": 6,
-          "won": 3,
+          "played": 9,
+          "won": 5,
           "draw": 3,
-          "lost": 0,
-          "points": 12,
-          "gf": 11,
-          "ga": 5
+          "lost": 1,
+          "points": 18,
+          "gf": 18,
+          "ga": 11
         },
         {
           "position": 6,
-          "team": "Juventus FC",
-          "played": 6,
-          "won": 3,
+          "team": "SSC Napoli",
+          "played": 9,
+          "won": 4,
           "draw": 2,
-          "lost": 1,
-          "points": 11,
-          "gf": 9,
-          "ga": 5
+          "lost": 3,
+          "points": 14,
+          "gf": 17,
+          "ga": 11
         },
         {
           "position": 7,
-          "team": "Como 1907",
-          "played": 6,
-          "won": 3,
+          "team": "Frosinone Calcio",
+          "played": 8,
+          "won": 4,
           "draw": 2,
-          "lost": 1,
-          "points": 11,
-          "gf": 9,
-          "ga": 6
+          "lost": 2,
+          "points": 14,
+          "gf": 17,
+          "ga": 13
         },
         {
           "position": 8,
-          "team": "SSC Napoli",
-          "played": 6,
-          "won": 3,
-          "draw": 1,
-          "lost": 2,
-          "points": 10,
-          "gf": 10,
-          "ga": 6
-        },
-        {
-          "position": 9,
-          "team": "Frosinone Calcio",
-          "played": 6,
-          "won": 3,
-          "draw": 1,
-          "lost": 2,
-          "points": 10,
-          "gf": 9,
-          "ga": 7
-        },
-        {
-          "position": 10,
-          "team": "Atalanta BC",
-          "played": 6,
-          "won": 3,
-          "draw": 0,
-          "lost": 3,
-          "points": 9,
-          "gf": 8,
-          "ga": 8
-        },
-        {
-          "position": 11,
-          "team": "US Sassuolo Calcio",
-          "played": 6,
-          "won": 2,
+          "team": "Juventus FC",
+          "played": 9,
+          "won": 4,
           "draw": 2,
-          "lost": 2,
-          "points": 8,
-          "gf": 10,
+          "lost": 3,
+          "points": 14,
+          "gf": 11,
           "ga": 10
         },
         {
-          "position": 12,
+          "position": 9,
           "team": "Torino FC",
-          "played": 6,
-          "won": 2,
+          "played": 9,
+          "won": 4,
           "draw": 1,
-          "lost": 3,
-          "points": 7,
-          "gf": 7,
-          "ga": 9
+          "lost": 4,
+          "points": 13,
+          "gf": 14,
+          "ga": 14
         },
         {
-          "position": 13,
-          "team": "US Lecce",
-          "played": 6,
-          "won": 2,
-          "draw": 0,
+          "position": 10,
+          "team": "Cagliari Calcio",
+          "played": 9,
+          "won": 4,
+          "draw": 1,
           "lost": 4,
-          "points": 6,
-          "gf": 6,
+          "points": 13,
+          "gf": 8,
+          "ga": 13
+        },
+        {
+          "position": 11,
+          "team": "Bologna FC 1909",
+          "played": 9,
+          "won": 3,
+          "draw": 2,
+          "lost": 4,
+          "points": 11,
+          "gf": 12,
           "ga": 12
         },
         {
+          "position": 12,
+          "team": "Atalanta BC",
+          "played": 8,
+          "won": 3,
+          "draw": 1,
+          "lost": 4,
+          "points": 10,
+          "gf": 14,
+          "ga": 15
+        },
+        {
+          "position": 13,
+          "team": "Genoa CFC",
+          "played": 9,
+          "won": 3,
+          "draw": 1,
+          "lost": 5,
+          "points": 10,
+          "gf": 8,
+          "ga": 13
+        },
+        {
           "position": 14,
-          "team": "Bologna FC 1909",
-          "played": 6,
-          "won": 1,
-          "draw": 2,
-          "lost": 3,
-          "points": 5,
-          "gf": 5,
-          "ga": 7
+          "team": "US Lecce",
+          "played": 8,
+          "won": 3,
+          "draw": 0,
+          "lost": 5,
+          "points": 9,
+          "gf": 9,
+          "ga": 14
         },
         {
           "position": 15,
-          "team": "Udinese Calcio",
-          "played": 6,
-          "won": 1,
-          "draw": 1,
-          "lost": 4,
-          "points": 4,
-          "gf": 9,
-          "ga": 13
+          "team": "US Sassuolo Calcio",
+          "played": 9,
+          "won": 2,
+          "draw": 2,
+          "lost": 5,
+          "points": 8,
+          "gf": 14,
+          "ga": 22
         },
         {
           "position": 16,
           "team": "AC Monza",
-          "played": 6,
-          "won": 1,
+          "played": 9,
+          "won": 2,
           "draw": 1,
-          "lost": 4,
-          "points": 4,
-          "gf": 9,
-          "ga": 15
+          "lost": 6,
+          "points": 7,
+          "gf": 16,
+          "ga": 22
         },
         {
           "position": 17,
-          "team": "Genoa CFC",
-          "played": 6,
+          "team": "Udinese Calcio",
+          "played": 9,
           "won": 1,
-          "draw": 1,
-          "lost": 4,
-          "points": 4,
-          "gf": 5,
-          "ga": 11
+          "draw": 2,
+          "lost": 6,
+          "points": 5,
+          "gf": 9,
+          "ga": 18
         },
         {
           "position": 18,
           "team": "Parma Calcio 1913",
-          "played": 6,
+          "played": 9,
           "won": 1,
-          "draw": 1,
-          "lost": 4,
-          "points": 4,
-          "gf": 4,
-          "ga": 10
+          "draw": 2,
+          "lost": 6,
+          "points": 5,
+          "gf": 5,
+          "ga": 15
         },
         {
           "position": 19,
           "team": "ACF Fiorentina",
-          "played": 6,
+          "played": 8,
           "won": 1,
           "draw": 1,
-          "lost": 4,
+          "lost": 6,
           "points": 4,
-          "gf": 7,
-          "ga": 14
+          "gf": 9,
+          "ga": 19
         },
         {
           "position": 20,
           "team": "Venezia FC",
-          "played": 6,
-          "won": 0,
+          "played": 9,
+          "won": 1,
           "draw": 0,
-          "lost": 6,
-          "points": 0,
-          "gf": 5,
-          "ga": 16
+          "lost": 8,
+          "points": 3,
+          "gf": 6,
+          "ga": 19
         }
       ],
       "last_season": [
@@ -2480,7 +2480,7 @@
           "away_short": "Napoli",
           "score": 33.3,
           "reasons": [
-            "昨季1位と2位"
+            "昨季1位のインテルと2位のナポリ"
           ]
         },
         {
@@ -2492,7 +2492,7 @@
           "away_short": "Cagliari",
           "score": 30.0,
           "reasons": [
-            "鈴木ザイオン・菅原由勢の所属クラブ"
+            "鈴木彩艶・菅原由勢の所属クラブ"
           ]
         },
         {
@@ -2504,7 +2504,7 @@
           "away_short": "Parma",
           "score": 30.0,
           "reasons": [
-            "鈴木ザイオンの所属クラブ"
+            "鈴木彩艶の所属クラブ"
           ]
         },
         {
@@ -2528,7 +2528,7 @@
           "away_short": "Como 1907",
           "score": 20.0,
           "reasons": [
-            "昨季2位と4位"
+            "昨季2位のナポリと4位のコモ"
           ]
         }
       ]
@@ -2539,7 +2539,7 @@
       "season": {
         "start": "2026-08-28",
         "end": "2027-05-22",
-        "matchday": 6,
+        "matchday": 8,
         "year": 2026
       },
       "stale": false,
@@ -2838,201 +2838,201 @@
       "table": [
         {
           "position": 1,
-          "team": "SC Freiburg",
-          "played": 5,
-          "won": 4,
-          "draw": 1,
+          "team": "FC Bayern München",
+          "played": 7,
+          "won": 5,
+          "draw": 2,
           "lost": 0,
-          "points": 13,
-          "gf": 14,
-          "ga": 4
+          "points": 17,
+          "gf": 25,
+          "ga": 6
         },
         {
           "position": 2,
           "team": "Borussia Dortmund",
-          "played": 5,
-          "won": 4,
-          "draw": 1,
+          "played": 7,
+          "won": 5,
+          "draw": 2,
           "lost": 0,
-          "points": 13,
-          "gf": 11,
+          "points": 17,
+          "gf": 12,
           "ga": 4
         },
         {
           "position": 3,
-          "team": "FC Bayern München",
-          "played": 5,
-          "won": 3,
-          "draw": 2,
-          "lost": 0,
-          "points": 11,
+          "team": "SC Freiburg",
+          "played": 7,
+          "won": 4,
+          "draw": 1,
+          "lost": 2,
+          "points": 13,
           "gf": 16,
-          "ga": 4
+          "ga": 9
         },
         {
           "position": 4,
           "team": "Bayer 04 Leverkusen",
-          "played": 5,
-          "won": 3,
+          "played": 7,
+          "won": 4,
           "draw": 1,
-          "lost": 1,
-          "points": 10,
-          "gf": 14,
-          "ga": 8
+          "lost": 2,
+          "points": 13,
+          "gf": 16,
+          "ga": 12
         },
         {
           "position": 5,
           "team": "RB Leipzig",
-          "played": 5,
-          "won": 3,
+          "played": 7,
+          "won": 4,
           "draw": 0,
-          "lost": 2,
-          "points": 9,
-          "gf": 15,
-          "ga": 5
+          "lost": 3,
+          "points": 12,
+          "gf": 20,
+          "ga": 11
         },
         {
           "position": 6,
-          "team": "FC Augsburg",
-          "played": 5,
-          "won": 2,
-          "draw": 2,
+          "team": "SV Werder Bremen",
+          "played": 7,
+          "won": 3,
+          "draw": 3,
           "lost": 1,
-          "points": 8,
-          "gf": 13,
-          "ga": 8
+          "points": 12,
+          "gf": 15,
+          "ga": 14
         },
         {
           "position": 7,
-          "team": "SV Werder Bremen",
-          "played": 5,
-          "won": 2,
-          "draw": 2,
-          "lost": 1,
-          "points": 8,
-          "gf": 10,
-          "ga": 10
+          "team": "1. FSV Mainz 05",
+          "played": 7,
+          "won": 3,
+          "draw": 1,
+          "lost": 3,
+          "points": 10,
+          "gf": 16,
+          "ga": 13
         },
         {
           "position": 8,
-          "team": "1. FSV Mainz 05",
-          "played": 5,
-          "won": 2,
-          "draw": 1,
-          "lost": 2,
-          "points": 7,
-          "gf": 13,
-          "ga": 10
-        },
-        {
-          "position": 9,
           "team": "SV 07 Elversberg",
-          "played": 5,
-          "won": 2,
+          "played": 7,
+          "won": 3,
           "draw": 1,
-          "lost": 2,
-          "points": 7,
-          "gf": 8,
-          "ga": 8
-        },
-        {
-          "position": 10,
-          "team": "1. FC Köln",
-          "played": 5,
-          "won": 2,
-          "draw": 1,
-          "lost": 2,
-          "points": 7,
-          "gf": 8,
-          "ga": 10
-        },
-        {
-          "position": 11,
-          "team": "VfB Stuttgart",
-          "played": 5,
-          "won": 2,
-          "draw": 0,
           "lost": 3,
-          "points": 6,
-          "gf": 8,
-          "ga": 9
-        },
-        {
-          "position": 12,
-          "team": "Hamburger SV",
-          "played": 5,
-          "won": 2,
-          "draw": 0,
-          "lost": 3,
-          "points": 6,
-          "gf": 5,
+          "points": 10,
+          "gf": 12,
           "ga": 15
         },
         {
-          "position": 13,
-          "team": "FC Schalke 04",
-          "played": 5,
-          "won": 1,
-          "draw": 2,
+          "position": 9,
+          "team": "FC Augsburg",
+          "played": 7,
+          "won": 2,
+          "draw": 3,
           "lost": 2,
-          "points": 5,
-          "gf": 4,
-          "ga": 6
+          "points": 9,
+          "gf": 17,
+          "ga": 13
+        },
+        {
+          "position": 10,
+          "team": "TSG 1899 Hoffenheim",
+          "played": 7,
+          "won": 3,
+          "draw": 0,
+          "lost": 4,
+          "points": 9,
+          "gf": 14,
+          "ga": 14
+        },
+        {
+          "position": 11,
+          "team": "Hamburger SV",
+          "played": 7,
+          "won": 3,
+          "draw": 0,
+          "lost": 4,
+          "points": 9,
+          "gf": 6,
+          "ga": 16
+        },
+        {
+          "position": 12,
+          "team": "1. FC Köln",
+          "played": 7,
+          "won": 2,
+          "draw": 2,
+          "lost": 3,
+          "points": 8,
+          "gf": 8,
+          "ga": 11
+        },
+        {
+          "position": 13,
+          "team": "SC Paderborn 07",
+          "played": 7,
+          "won": 2,
+          "draw": 2,
+          "lost": 3,
+          "points": 8,
+          "gf": 6,
+          "ga": 9
         },
         {
           "position": 14,
           "team": "Eintracht Frankfurt",
-          "played": 5,
-          "won": 1,
+          "played": 7,
+          "won": 2,
           "draw": 2,
-          "lost": 2,
-          "points": 5,
-          "gf": 9,
-          "ga": 16
-        },
-        {
-          "position": 15,
-          "team": "SC Paderborn 07",
-          "played": 5,
-          "won": 1,
-          "draw": 1,
           "lost": 3,
-          "points": 4,
-          "gf": 3,
-          "ga": 7
-        },
-        {
-          "position": 16,
-          "team": "1. FC Union Berlin",
-          "played": 5,
-          "won": 1,
-          "draw": 1,
-          "lost": 3,
-          "points": 4,
-          "gf": 5,
+          "points": 8,
+          "gf": 10,
           "ga": 17
         },
         {
-          "position": 17,
-          "team": "TSG 1899 Hoffenheim",
-          "played": 5,
-          "won": 1,
+          "position": 15,
+          "team": "VfB Stuttgart",
+          "played": 7,
+          "won": 2,
           "draw": 0,
-          "lost": 4,
-          "points": 3,
-          "gf": 9,
+          "lost": 5,
+          "points": 6,
+          "gf": 10,
           "ga": 13
+        },
+        {
+          "position": 16,
+          "team": "FC Schalke 04",
+          "played": 7,
+          "won": 1,
+          "draw": 3,
+          "lost": 3,
+          "points": 6,
+          "gf": 4,
+          "ga": 7
+        },
+        {
+          "position": 17,
+          "team": "1. FC Union Berlin",
+          "played": 7,
+          "won": 1,
+          "draw": 3,
+          "lost": 3,
+          "points": 6,
+          "gf": 6,
+          "ga": 18
         },
         {
           "position": 18,
           "team": "Borussia Mönchengladbach",
-          "played": 5,
-          "won": 0,
+          "played": 7,
+          "won": 1,
           "draw": 0,
-          "lost": 5,
-          "points": 0,
-          "gf": 7,
-          "ga": 18
+          "lost": 6,
+          "points": 3,
+          "gf": 11,
+          "ga": 22
         }
       ],
       "last_season": [
@@ -3246,7 +3246,7 @@
           "away_short": "Stuttgart",
           "score": 50.0,
           "reasons": [
-            "昨季1位と4位",
+            "昨季1位のバイエルンと4位のシュツットガルト",
             "伊藤洋輝の所属クラブ"
           ]
         },
@@ -3259,7 +3259,7 @@
           "away_short": "Dortmund",
           "score": 43.3,
           "reasons": [
-            "昨季5位と2位",
+            "昨季5位のホッフェンハイムと2位のドルトムント",
             "町田浩樹の所属クラブ"
           ]
         },
@@ -3272,7 +3272,7 @@
           "away_short": "Stuttgart",
           "score": 43.3,
           "reasons": [
-            "昨季5位と4位",
+            "昨季5位のホッフェンハイムと4位のシュツットガルト",
             "町田浩樹の所属クラブ"
           ]
         },
@@ -3285,7 +3285,7 @@
           "away_short": "Augsburg",
           "score": 38.0,
           "reasons": [
-            "昨季8位と9位",
+            "昨季8位のフランクフルトと9位のアウクスブルク",
             "堂安律・小杉啓太の所属クラブ"
           ]
         },
@@ -3298,7 +3298,7 @@
           "away_short": "Frankfurt",
           "score": 38.0,
           "reasons": [
-            "昨季10位と8位",
+            "昨季10位のマインツと8位のフランクフルト",
             "佐野海舟・川﨑颯太・堂安律・小杉啓太の所属クラブ"
           ]
         }
@@ -3310,7 +3310,7 @@
       "season": {
         "start": "2026-08-22",
         "end": "2027-05-29",
-        "matchday": 7,
+        "matchday": 9,
         "year": 2026
       },
       "stale": false,
@@ -3609,201 +3609,201 @@
       "table": [
         {
           "position": 1,
-          "team": "AS Monaco FC",
-          "played": 6,
-          "won": 4,
-          "draw": 2,
-          "lost": 0,
-          "points": 14,
-          "gf": 10,
-          "ga": 5
-        },
-        {
-          "position": 2,
-          "team": "Lille OSC",
-          "played": 6,
-          "won": 4,
-          "draw": 1,
-          "lost": 1,
-          "points": 13,
-          "gf": 9,
-          "ga": 4
-        },
-        {
-          "position": 3,
-          "team": "Stade Rennais FC 1901",
-          "played": 6,
-          "won": 4,
-          "draw": 1,
-          "lost": 1,
-          "points": 13,
-          "gf": 12,
-          "ga": 10
-        },
-        {
-          "position": 4,
-          "team": "Olympique Lyonnais",
-          "played": 6,
-          "won": 3,
-          "draw": 2,
-          "lost": 1,
-          "points": 11,
-          "gf": 11,
-          "ga": 4
-        },
-        {
-          "position": 5,
-          "team": "Paris FC",
-          "played": 6,
-          "won": 3,
-          "draw": 2,
-          "lost": 1,
-          "points": 11,
-          "gf": 8,
-          "ga": 4
-        },
-        {
-          "position": 6,
           "team": "Paris Saint-Germain FC",
-          "played": 6,
-          "won": 3,
+          "played": 8,
+          "won": 5,
           "draw": 2,
           "lost": 1,
-          "points": 11,
-          "gf": 11,
-          "ga": 8
-        },
-        {
-          "position": 7,
-          "team": "Stade Brestois 29",
-          "played": 6,
-          "won": 2,
-          "draw": 2,
-          "lost": 2,
-          "points": 8,
-          "gf": 12,
+          "points": 17,
+          "gf": 16,
           "ga": 9
         },
         {
-          "position": 8,
-          "team": "FC Lorient",
-          "played": 6,
-          "won": 2,
-          "draw": 2,
+          "position": 2,
+          "team": "Stade Rennais FC 1901",
+          "played": 8,
+          "won": 5,
+          "draw": 1,
           "lost": 2,
-          "points": 8,
-          "gf": 6,
+          "points": 16,
+          "gf": 18,
+          "ga": 14
+        },
+        {
+          "position": 3,
+          "team": "Lille OSC",
+          "played": 8,
+          "won": 4,
+          "draw": 3,
+          "lost": 1,
+          "points": 15,
+          "gf": 11,
           "ga": 6
         },
         {
-          "position": 9,
-          "team": "OGC Nice",
-          "played": 6,
-          "won": 2,
-          "draw": 2,
-          "lost": 2,
-          "points": 8,
-          "gf": 5,
+          "position": 4,
+          "team": "AS Monaco FC",
+          "played": 8,
+          "won": 4,
+          "draw": 3,
+          "lost": 1,
+          "points": 15,
+          "gf": 11,
           "ga": 7
         },
         {
-          "position": 10,
+          "position": 5,
+          "team": "Olympique Lyonnais",
+          "played": 8,
+          "won": 4,
+          "draw": 2,
+          "lost": 2,
+          "points": 14,
+          "gf": 13,
+          "ga": 7
+        },
+        {
+          "position": 6,
+          "team": "Paris FC",
+          "played": 8,
+          "won": 4,
+          "draw": 2,
+          "lost": 2,
+          "points": 14,
+          "gf": 13,
+          "ga": 9
+        },
+        {
+          "position": 7,
           "team": "Racing Club de Lens",
-          "played": 6,
-          "won": 2,
+          "played": 8,
+          "won": 4,
           "draw": 1,
           "lost": 3,
-          "points": 7,
-          "gf": 11,
+          "points": 13,
+          "gf": 16,
+          "ga": 12
+        },
+        {
+          "position": 8,
+          "team": "Olympique de Marseille",
+          "played": 8,
+          "won": 4,
+          "draw": 0,
+          "lost": 4,
+          "points": 12,
+          "gf": 18,
+          "ga": 13
+        },
+        {
+          "position": 9,
+          "team": "FC Lorient",
+          "played": 8,
+          "won": 3,
+          "draw": 3,
+          "lost": 2,
+          "points": 12,
+          "gf": 7,
+          "ga": 6
+        },
+        {
+          "position": 10,
+          "team": "OGC Nice",
+          "played": 8,
+          "won": 3,
+          "draw": 2,
+          "lost": 3,
+          "points": 11,
+          "gf": 8,
           "ga": 10
         },
         {
           "position": 11,
-          "team": "RC Strasbourg Alsace",
-          "played": 6,
-          "won": 2,
-          "draw": 1,
-          "lost": 3,
-          "points": 7,
-          "gf": 11,
-          "ga": 12
-        },
-        {
-          "position": 12,
-          "team": "Angers SCO",
-          "played": 6,
-          "won": 2,
-          "draw": 1,
-          "lost": 3,
-          "points": 7,
-          "gf": 7,
-          "ga": 10
-        },
-        {
-          "position": 13,
-          "team": "Olympique de Marseille",
-          "played": 6,
-          "won": 2,
-          "draw": 0,
-          "lost": 4,
-          "points": 6,
-          "gf": 9,
-          "ga": 8
-        },
-        {
-          "position": 14,
-          "team": "Le Mans FC",
-          "played": 6,
-          "won": 1,
-          "draw": 3,
-          "lost": 2,
-          "points": 6,
-          "gf": 10,
-          "ga": 12
-        },
-        {
-          "position": 15,
           "team": "Toulouse FC",
-          "played": 6,
-          "won": 1,
-          "draw": 3,
+          "played": 8,
+          "won": 2,
+          "draw": 4,
           "lost": 2,
-          "points": 6,
-          "gf": 9,
+          "points": 10,
+          "gf": 12,
           "ga": 11
         },
         {
-          "position": 16,
+          "position": 12,
           "team": "AJ Auxerre",
-          "played": 6,
-          "won": 2,
-          "draw": 0,
+          "played": 8,
+          "won": 3,
+          "draw": 1,
           "lost": 4,
-          "points": 6,
-          "gf": 8,
+          "points": 10,
+          "gf": 12,
+          "ga": 18
+        },
+        {
+          "position": 13,
+          "team": "Stade Brestois 29",
+          "played": 8,
+          "won": 2,
+          "draw": 3,
+          "lost": 3,
+          "points": 9,
+          "gf": 14,
+          "ga": 12
+        },
+        {
+          "position": 14,
+          "team": "Angers SCO",
+          "played": 8,
+          "won": 2,
+          "draw": 2,
+          "lost": 4,
+          "points": 8,
+          "gf": 9,
+          "ga": 15
+        },
+        {
+          "position": 15,
+          "team": "Le Mans FC",
+          "played": 8,
+          "won": 1,
+          "draw": 4,
+          "lost": 3,
+          "points": 7,
+          "gf": 11,
           "ga": 16
+        },
+        {
+          "position": 16,
+          "team": "RC Strasbourg Alsace",
+          "played": 8,
+          "won": 2,
+          "draw": 1,
+          "lost": 5,
+          "points": 7,
+          "gf": 12,
+          "ga": 18
         },
         {
           "position": 17,
           "team": "ES Troyes AC",
-          "played": 6,
+          "played": 8,
           "won": 1,
-          "draw": 1,
-          "lost": 4,
-          "points": 4,
-          "gf": 4,
-          "ga": 13
+          "draw": 2,
+          "lost": 5,
+          "points": 5,
+          "gf": 5,
+          "ga": 16
         },
         {
           "position": 18,
           "team": "Le Havre AC",
-          "played": 6,
+          "played": 8,
           "won": 0,
           "draw": 2,
-          "lost": 4,
+          "lost": 6,
           "points": 2,
-          "gf": 4,
-          "ga": 8
+          "gf": 8,
+          "ga": 15
         }
       ],
       "last_season": [
@@ -4017,7 +4017,7 @@
           "away_short": "PSG",
           "score": 56.7,
           "reasons": [
-            "昨季3位と1位",
+            "昨季3位のリールと1位のパリ・サンジェルマン",
             "上田綺世の所属クラブ"
           ]
         },
@@ -4030,7 +4030,7 @@
           "away_short": "Marseille",
           "score": 38.0,
           "reasons": [
-            "昨季7位と5位",
+            "昨季7位のモナコと5位のマルセイユ",
             "南野拓実の所属クラブ"
           ]
         },
@@ -4043,7 +4043,7 @@
           "away_short": "Lille",
           "score": 38.0,
           "reasons": [
-            "昨季10位と3位",
+            "昨季10位のトゥールーズと3位のリール",
             "上田綺世の所属クラブ"
           ]
         },
@@ -4056,7 +4056,7 @@
           "away_short": "Monaco",
           "score": 38.0,
           "reasons": [
-            "昨季1位と7位",
+            "昨季1位のパリ・サンジェルマンと7位のモナコ",
             "南野拓実の所属クラブ"
           ]
         },
@@ -4080,7 +4080,7 @@
       "season": {
         "start": "2026-09-08",
         "end": "2027-01-27",
-        "matchday": 2,
+        "matchday": 4,
         "year": 2026
       },
       "stale": false,
@@ -4668,398 +4668,398 @@
         {
           "position": 1,
           "team": "Paris Saint-Germain FC",
-          "played": 2,
-          "won": 2,
+          "played": 3,
+          "won": 3,
           "draw": 0,
           "lost": 0,
-          "points": 6,
-          "gf": 10,
-          "ga": 3
+          "points": 9,
+          "gf": 14,
+          "ga": 5
         },
         {
           "position": 2,
-          "team": "FC Barcelona",
-          "played": 2,
-          "won": 2,
+          "team": "Aston Villa FC",
+          "played": 3,
+          "won": 3,
           "draw": 0,
           "lost": 0,
-          "points": 6,
-          "gf": 9,
-          "ga": 2
+          "points": 9,
+          "gf": 12,
+          "ga": 3
         },
         {
           "position": 3,
-          "team": "Aston Villa FC",
-          "played": 2,
-          "won": 2,
+          "team": "Liverpool FC",
+          "played": 3,
+          "won": 3,
           "draw": 0,
           "lost": 0,
-          "points": 6,
-          "gf": 9,
-          "ga": 2
+          "points": 9,
+          "gf": 12,
+          "ga": 7
         },
         {
           "position": 4,
-          "team": "VfB Stuttgart",
-          "played": 2,
-          "won": 2,
+          "team": "Real Madrid CF",
+          "played": 3,
+          "won": 3,
           "draw": 0,
           "lost": 0,
-          "points": 6,
-          "gf": 6,
-          "ga": 1
+          "points": 9,
+          "gf": 10,
+          "ga": 5
         },
         {
           "position": 5,
-          "team": "Liverpool FC",
-          "played": 2,
-          "won": 2,
+          "team": "Real Betis Balompié",
+          "played": 3,
+          "won": 3,
           "draw": 0,
           "lost": 0,
-          "points": 6,
-          "gf": 8,
+          "points": 9,
+          "gf": 7,
           "ga": 4
         },
         {
           "position": 6,
-          "team": "Sporting Clube de Portugal",
-          "played": 2,
+          "team": "VfB Stuttgart",
+          "played": 3,
           "won": 2,
-          "draw": 0,
+          "draw": 1,
           "lost": 0,
-          "points": 6,
-          "gf": 5,
-          "ga": 1
+          "points": 7,
+          "gf": 7,
+          "ga": 2
         },
         {
           "position": 7,
           "team": "Arsenal FC",
-          "played": 2,
+          "played": 3,
           "won": 2,
-          "draw": 0,
-          "lost": 0,
-          "points": 6,
-          "gf": 4,
-          "ga": 0
-        },
-        {
-          "position": 8,
-          "team": "Real Madrid CF",
-          "played": 2,
-          "won": 2,
-          "draw": 0,
-          "lost": 0,
-          "points": 6,
-          "gf": 6,
-          "ga": 4
-        },
-        {
-          "position": 9,
-          "team": "Real Betis Balompié",
-          "played": 2,
-          "won": 2,
-          "draw": 0,
-          "lost": 0,
-          "points": 6,
-          "gf": 6,
-          "ga": 4
-        },
-        {
-          "position": 10,
-          "team": "FC Bayern München",
-          "played": 2,
-          "won": 1,
           "draw": 1,
           "lost": 0,
-          "points": 4,
-          "gf": 8,
-          "ga": 3
-        },
-        {
-          "position": 11,
-          "team": "FK Shakhtar Donetsk",
-          "played": 2,
-          "won": 1,
-          "draw": 1,
-          "lost": 0,
-          "points": 4,
-          "gf": 4,
+          "points": 7,
+          "gf": 6,
           "ga": 2
         },
         {
-          "position": 12,
-          "team": "Como 1907",
-          "played": 2,
-          "won": 1,
+          "position": 8,
+          "team": "FC Barcelona",
+          "played": 3,
+          "won": 2,
           "draw": 0,
           "lost": 1,
-          "points": 3,
-          "gf": 6,
+          "points": 6,
+          "gf": 11,
+          "ga": 6
+        },
+        {
+          "position": 9,
+          "team": "Como 1907",
+          "played": 3,
+          "won": 2,
+          "draw": 0,
+          "lost": 1,
+          "points": 6,
+          "gf": 10,
+          "ga": 5
+        },
+        {
+          "position": 10,
+          "team": "Manchester City FC",
+          "played": 3,
+          "won": 2,
+          "draw": 0,
+          "lost": 1,
+          "points": 6,
+          "gf": 9,
+          "ga": 5
+        },
+        {
+          "position": 11,
+          "team": "Club Brugge KV",
+          "played": 3,
+          "won": 2,
+          "draw": 0,
+          "lost": 1,
+          "points": 6,
+          "gf": 9,
+          "ga": 6
+        },
+        {
+          "position": 12,
+          "team": "Sporting Clube de Portugal",
+          "played": 3,
+          "won": 2,
+          "draw": 0,
+          "lost": 1,
+          "points": 6,
+          "gf": 7,
           "ga": 4
         },
         {
           "position": 13,
-          "team": "Manchester United FC",
-          "played": 2,
-          "won": 1,
+          "team": "Borussia Dortmund",
+          "played": 3,
+          "won": 2,
           "draw": 0,
           "lost": 1,
-          "points": 3,
-          "gf": 4,
-          "ga": 2
-        },
-        {
-          "position": 14,
-          "team": "Villarreal CF",
-          "played": 2,
-          "won": 1,
-          "draw": 0,
-          "lost": 1,
-          "points": 3,
+          "points": 6,
           "gf": 5,
           "ga": 4
         },
         {
-          "position": 15,
-          "team": "Club Atlético de Madrid",
-          "played": 2,
+          "position": 14,
+          "team": "FC Bayern München",
+          "played": 3,
           "won": 1,
-          "draw": 0,
+          "draw": 2,
+          "lost": 0,
+          "points": 5,
+          "gf": 10,
+          "ga": 5
+        },
+        {
+          "position": 15,
+          "team": "AS Roma",
+          "played": 3,
+          "won": 1,
+          "draw": 1,
           "lost": 1,
-          "points": 3,
-          "gf": 3,
-          "ga": 2
+          "points": 4,
+          "gf": 8,
+          "ga": 5
         },
         {
           "position": 16,
-          "team": "Club Brugge KV",
-          "played": 2,
+          "team": "Club Atlético de Madrid",
+          "played": 3,
           "won": 1,
-          "draw": 0,
+          "draw": 1,
           "lost": 1,
-          "points": 3,
-          "gf": 6,
-          "ga": 6
+          "points": 4,
+          "gf": 4,
+          "ga": 3
         },
         {
           "position": 17,
-          "team": "Manchester City FC",
-          "played": 2,
+          "team": "FK Shakhtar Donetsk",
+          "played": 3,
           "won": 1,
-          "draw": 0,
+          "draw": 1,
           "lost": 1,
-          "points": 3,
+          "points": 4,
           "gf": 4,
-          "ga": 4
+          "ga": 3
         },
         {
           "position": 18,
-          "team": "Borussia Dortmund",
-          "played": 2,
-          "won": 1,
-          "draw": 0,
-          "lost": 1,
-          "points": 3,
-          "gf": 3,
-          "ga": 3
-        },
-        {
-          "position": 19,
-          "team": "Racing Club de Lens",
-          "played": 2,
-          "won": 1,
-          "draw": 0,
-          "lost": 1,
-          "points": 3,
-          "gf": 3,
-          "ga": 4
-        },
-        {
-          "position": 20,
-          "team": "PAE AEK",
-          "played": 2,
-          "won": 1,
-          "draw": 0,
-          "lost": 1,
-          "points": 3,
-          "gf": 2,
-          "ga": 3
-        },
-        {
-          "position": 21,
-          "team": "RB Leipzig",
-          "played": 2,
-          "won": 1,
-          "draw": 0,
-          "lost": 1,
-          "points": 3,
-          "gf": 2,
-          "ga": 4
-        },
-        {
-          "position": 22,
-          "team": "Sabah FK",
-          "played": 2,
-          "won": 1,
-          "draw": 0,
-          "lost": 1,
-          "points": 3,
-          "gf": 2,
-          "ga": 4
-        },
-        {
-          "position": 23,
-          "team": "Feyenoord Rotterdam",
-          "played": 2,
-          "won": 1,
-          "draw": 0,
-          "lost": 1,
-          "points": 3,
-          "gf": 4,
-          "ga": 7
-        },
-        {
-          "position": 24,
-          "team": "FK Bodø/Glimt",
-          "played": 2,
-          "won": 1,
-          "draw": 0,
-          "lost": 1,
-          "points": 3,
-          "gf": 1,
-          "ga": 5
-        },
-        {
-          "position": 25,
-          "team": "AS Roma",
-          "played": 2,
-          "won": 0,
-          "draw": 1,
-          "lost": 1,
-          "points": 1,
-          "gf": 4,
-          "ga": 5
-        },
-        {
-          "position": 26,
           "team": "PSV",
-          "played": 2,
-          "won": 0,
+          "played": 3,
+          "won": 1,
           "draw": 1,
           "lost": 1,
-          "points": 1,
-          "gf": 1,
+          "points": 4,
+          "gf": 2,
           "ga": 2
         },
         {
-          "position": 27,
-          "team": "Viking FK",
-          "played": 2,
-          "won": 0,
-          "draw": 1,
-          "lost": 1,
-          "points": 1,
-          "gf": 4,
+          "position": 19,
+          "team": "Villarreal CF",
+          "played": 3,
+          "won": 1,
+          "draw": 0,
+          "lost": 2,
+          "points": 3,
+          "gf": 8,
+          "ga": 8
+        },
+        {
+          "position": 20,
+          "team": "FC Internazionale Milano",
+          "played": 3,
+          "won": 1,
+          "draw": 0,
+          "lost": 2,
+          "points": 3,
+          "gf": 5,
           "ga": 6
         },
         {
-          "position": 28,
-          "team": "Fenerbahçe SK",
-          "played": 2,
-          "won": 0,
-          "draw": 1,
-          "lost": 1,
-          "points": 1,
-          "gf": 1,
+          "position": 20,
+          "team": "Manchester United FC",
+          "played": 3,
+          "won": 1,
+          "draw": 0,
+          "lost": 2,
+          "points": 3,
+          "gf": 5,
+          "ga": 6
+        },
+        {
+          "position": 22,
+          "team": "SSC Napoli",
+          "played": 3,
+          "won": 1,
+          "draw": 0,
+          "lost": 2,
+          "points": 3,
+          "gf": 5,
           "ga": 7
         },
         {
-          "position": 29,
-          "team": "FC Internazionale Milano",
-          "played": 2,
-          "won": 0,
+          "position": 23,
+          "team": "Galatasaray SK",
+          "played": 3,
+          "won": 1,
           "draw": 0,
           "lost": 2,
-          "points": 0,
-          "gf": 4,
+          "points": 3,
+          "gf": 6,
+          "ga": 9
+        },
+        {
+          "position": 24,
+          "team": "LASK Linz",
+          "played": 3,
+          "won": 1,
+          "draw": 0,
+          "lost": 2,
+          "points": 3,
+          "gf": 6,
+          "ga": 9
+        },
+        {
+          "position": 25,
+          "team": "Sabah FK",
+          "played": 3,
+          "won": 1,
+          "draw": 0,
+          "lost": 2,
+          "points": 3,
+          "gf": 3,
           "ga": 6
         },
         {
-          "position": 30,
-          "team": "FC Porto",
-          "played": 2,
-          "won": 0,
+          "position": 26,
+          "team": "Feyenoord Rotterdam",
+          "played": 3,
+          "won": 1,
           "draw": 0,
           "lost": 2,
-          "points": 0,
-          "gf": 2,
-          "ga": 5
+          "points": 3,
+          "gf": 4,
+          "ga": 8
         },
         {
-          "position": 31,
-          "team": "SK Slavia Praha",
-          "played": 2,
-          "won": 0,
+          "position": 27,
+          "team": "Racing Club de Lens",
+          "played": 3,
+          "won": 1,
           "draw": 0,
           "lost": 2,
-          "points": 0,
-          "gf": 2,
-          "ga": 5
-        },
-        {
-          "position": 32,
-          "team": "SSC Napoli",
-          "played": 2,
-          "won": 0,
-          "draw": 0,
-          "lost": 2,
-          "points": 0,
-          "gf": 1,
-          "ga": 4
-        },
-        {
-          "position": 33,
-          "team": "LASK Linz",
-          "played": 2,
-          "won": 0,
-          "draw": 0,
-          "lost": 2,
-          "points": 0,
+          "points": 3,
           "gf": 3,
           "ga": 7
         },
         {
-          "position": 34,
-          "team": "Lille OSC",
-          "played": 2,
-          "won": 0,
+          "position": 28,
+          "team": "FK Bodø/Glimt",
+          "played": 3,
+          "won": 1,
           "draw": 0,
           "lost": 2,
+          "points": 3,
+          "gf": 4,
+          "ga": 9
+        },
+        {
+          "position": 29,
+          "team": "PAE AEK",
+          "played": 3,
+          "won": 1,
+          "draw": 0,
+          "lost": 2,
+          "points": 3,
+          "gf": 3,
+          "ga": 8
+        },
+        {
+          "position": 29,
+          "team": "RB Leipzig",
+          "played": 3,
+          "won": 1,
+          "draw": 0,
+          "lost": 2,
+          "points": 3,
+          "gf": 3,
+          "ga": 8
+        },
+        {
+          "position": 31,
+          "team": "Fenerbahçe SK",
+          "played": 3,
+          "won": 0,
+          "draw": 2,
+          "lost": 1,
+          "points": 2,
+          "gf": 3,
+          "ga": 9
+        },
+        {
+          "position": 32,
+          "team": "SK Slavia Praha",
+          "played": 3,
+          "won": 0,
+          "draw": 1,
+          "lost": 2,
+          "points": 1,
+          "gf": 4,
+          "ga": 7
+        },
+        {
+          "position": 33,
+          "team": "Viking FK",
+          "played": 3,
+          "won": 0,
+          "draw": 1,
+          "lost": 2,
+          "points": 1,
+          "gf": 5,
+          "ga": 9
+        },
+        {
+          "position": 34,
+          "team": "FC Porto",
+          "played": 3,
+          "won": 0,
+          "draw": 0,
+          "lost": 3,
           "points": 0,
           "gf": 2,
           "ga": 6
         },
         {
           "position": 35,
-          "team": "Galatasaray SK",
-          "played": 2,
+          "team": "Lille OSC",
+          "played": 3,
           "won": 0,
           "draw": 0,
-          "lost": 2,
+          "lost": 3,
           "points": 0,
-          "gf": 2,
-          "ga": 7
+          "gf": 4,
+          "ga": 10
         },
         {
           "position": 36,
           "team": "ŠK Slovan Bratislava",
-          "played": 2,
+          "played": 3,
           "won": 0,
           "draw": 0,
-          "lost": 2,
+          "lost": 3,
           "points": 0,
           "gf": 1,
-          "ga": 9
+          "ga": 13
         }
       ],
       "last_season": [
@@ -5471,7 +5471,7 @@
           "away_short": "Arsenal",
           "score": 63.3,
           "reasons": [
-            "昨季2位と1位",
+            "昨季2位のバイエルンと1位のアーセナル",
             "伊藤洋輝の所属クラブ"
           ]
         },
@@ -5501,6 +5501,18 @@
         },
         {
           "matchday": 1,
+          "utc": "2026-09-10T16:45:00Z",
+          "home": "PSV",
+          "away": "FK Shakhtar Donetsk",
+          "home_short": "PSV",
+          "away_short": "Shaktar",
+          "score": 30.0,
+          "reasons": [
+            "佐野航大の所属クラブ"
+          ]
+        },
+        {
+          "matchday": 1,
           "utc": "2026-09-10T19:00:00Z",
           "home": "FC Bayern München",
           "away": "FK Bodø/Glimt",
@@ -5509,18 +5521,6 @@
           "score": 30.0,
           "reasons": [
             "伊藤洋輝の所属クラブ"
-          ]
-        },
-        {
-          "matchday": 2,
-          "utc": "2026-10-13T19:00:00Z",
-          "home": "Arsenal FC",
-          "away": "Lille OSC",
-          "home_short": "Arsenal",
-          "away_short": "Lille",
-          "score": 30.0,
-          "reasons": [
-            "上田綺世の所属クラブ"
           ]
         }
       ]

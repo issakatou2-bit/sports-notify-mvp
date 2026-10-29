@@ -46,7 +46,7 @@ class Names(unittest.TestCase):
             self.assertEqual(sv.names_in(text,players('堂安律')),['堂安律'])
 
     def test_possessive_nicknames_and_partial_words(self):
-        for text,person in (("Sugawara's crosses were great",'菅原由勢'),('Take Kubo is magic','久保建英'),('Zion saved us again','鈴木ザイオン')):
+        for text,person in (("Sugawara's crosses were great",'菅原由勢'),('Take Kubo is magic','久保建英'),('Zion saved us again','鈴木彩艶')):
             self.assertEqual(sv.names_in(text,players(person)),[person])
         self.assertFalse(sv.names_in('Kuboviak scored',players('久保建英')))
 
@@ -64,7 +64,7 @@ class Names(unittest.TestCase):
         self.assertEqual(sv.names_in('Satoshi Tanaka played well',both),['田中聡'])
         self.assertFalse(sv.names_in('Satoshi Tanaka played well',players('田中碧')))
         self.assertFalse(sv.names_in('田中聡はいい',players('田中碧')))
-        self.assertFalse(sv.names_in('Yuito Suzuki played well',players('鈴木ザイオン')))
+        self.assertFalse(sv.names_in('Yuito Suzuki played well',players('鈴木彩艶')))
 
 
 class Selection(unittest.TestCase):
@@ -227,7 +227,7 @@ class Script(unittest.TestCase):
         self.assertEqual(set(on),{'workflow_dispatch'})
         self.assertIs(on['workflow_dispatch']['inputs']['publish']['default'],False)
         self.assertLess(src.index('bash scripts/install_video_tools.sh'),src.index('python scripts/test_soccer_voices.py'))
-        self.assertLess(src.index('publish=True'),src.index('--kind soccer_voices'))
+        self.assertLess(src.index('publish=True'),src.index('python scripts/upload_youtube.py'))
 
     def test_live_path_uses_existing_fetch_and_translate_and_checks_next_video(self):
         raw=json.loads(FIX.read_text(encoding='utf-8'));video=raw['video']

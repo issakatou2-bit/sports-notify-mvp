@@ -851,7 +851,10 @@ def frame(t, plan):
             cur = s
         else:
             break
-    return scene(t - cur["t0"], cur)
+    im = scene(t - cur["t0"], cur)
+    import render_timeline
+    render_timeline.scene(im, dict(kind=cur.get('layout'), page=cur['t0'], head=cur.get('head')))
+    return im
 
 
 def plan_cues(plan):

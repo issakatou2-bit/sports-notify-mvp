@@ -18,7 +18,7 @@ class StoryTests(unittest.TestCase):
     def build(self, **kwargs):
         values = dict(recap={}, reporters={}, buzz={}, voices={}, stats={}, as_of=AS_OF)
         values.update(kwargs)
-        return s.build(**values)
+        return s.build(**values, publication_ledgers=({}, {}))
 
     def fixture(self):
         return self.build(recap=s.read(FIX/'recap_20261013.json'),

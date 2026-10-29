@@ -13,8 +13,9 @@ import soccer_voices as voices
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_AGE = timedelta(minutes=60)
+GOAL_MAX_AGE = timedelta(hours=3)
 WATCH_LIMIT = 50*60
-SCORE_FORMULA = '得点×2＋アシスト×1。公式採点ではなく攻撃関与の独自指標。守備・勝敗の因果は評価しない。'
+SCORE_FORMULA = '攻撃関与★は3×得点＋2×アシスト＋シュート＋枠内シュート。FW/MFの30分以上（交代なし先発を含む）が対象の独自指標。守備を含む公式採点ではありません。'
 
 
 def completed(event):
@@ -58,13 +59,6 @@ def rank_changes(game, standings):
 
 def enrich(game, summary, standings=None):
     game = copy.deepcopy(game)
-    for player in game['players']:
-        group = next(g for g in summary['rosters'] if str(g['team']['id']) == game[player['side']]['id'])
-        row = results.resolve_player(group['roster'], player['name_en'])
-        stats = {s['name']: results.integer(s.get('value', s.get('displayValue'))) for s in row.get('stats', [])}
-        player['minutes'] = stats.get('minutesPlayed')
-        # None never becomes zero. Missing goals/assists means no metric.
-        player['contribution'] = (2*player['goals']+player['assists']) if player['goals'] is not None and player['assists'] is not None else None
     game['winner_goal'] = None
     if game['goals_complete'] and game['score']['home'] != game['score']['away']:
         winner = 'home' if game['score']['home'] > game['score']['away'] else 'away'
@@ -75,9 +69,9 @@ def enrich(game, summary, standings=None):
     return game
 
 
-def build(boards, summaries, now, receipts=None, standings=None):
+def build(boards, summaries, now, receipts=None, standings=None, *, max_age=MAX_AGE, goal_short=False):
     """保存/本番が同じ経路。終了の時刻・本人の出場・鮮度を照合。"""
-    out = []; rejected = []; receipts = receipts or {}
+    out = []; rejected = []; receipts = dict(__import__('soccer_publications').load() if receipts is None else receipts)
     for key, board in boards.items():
         for event in board.get('events', []):
             ident = str(event['id'])
@@ -86,7 +80,7 @@ def build(boards, summaries, now, receipts=None, standings=None):
             if summary is None: continue
             summary = summary.get('summary', summary)
             end = results.completion_time(event['competitions'][0], summary)
-            if not end or not timedelta(0) <= now-results.utc(end) <= MAX_AGE: continue
+            if not end or not timedelta(0) <= now-results.utc(end) <= max_age: continue
             # Results window starts at 07:15 JST, not calendar midnight.
             local = results.utc(end).astimezone(results.JST)
             day = local.date() - timedelta(days=int((local.hour, local.minute) < (7, 15)))
@@ -96,6 +90,8 @@ def build(boards, summaries, now, receipts=None, standings=None):
             game = enrich(data['games'][0], summary, (standings or {}).get(ident))
             data.update(games=[game], players=sorted(game['players'], key=results.rank_key),
                         sample_fictional=False, voices=[], video_url='', metric_formula=SCORE_FORMULA)
+            if goal_short is not None and not __import__('soccer_publications').eligible(data, receipts, goal_short=goal_short): continue
+            receipts[ident] = {}
             out.append(data)
     return out, rejected
 
@@ -119,42 +115,40 @@ def attach_voices(data, video, items, *, sample=False):
 
 
 def narration(data):
-    game = data['games'][0]; player = next(p for p in data['players'] if p['status'] != 'none')
-    text = f"{player['name']}{results.action(player)}。{game['home']['name_jp']}対{game['away']['name_jp']}は{game['score']['home']}対{game['score']['away']}。"
-    segments = [dict(kind='intro', text=text, speaker=2, meta={'event_id':game['id']})]
-    details = []
-    for p in game['players']:
-        if p['status'] == 'none': continue
-        facts = ([f"{p['minutes']}分出場"] if p['minutes'] is not None else [])
-        facts += [f"{p[k]}{label}" for k, label in (('goals','得点'), ('assists','アシスト')) if p[k] is not None]
-        details.append(p['name']+'は'+'、'.join(facts)+'。' if facts else p['name']+results.action(p)+'。')
-    if player['contribution'] is not None: details.append(f"独自の攻撃関与スコアは{player['contribution']}点。得点は2点、アシストは1点です。")
-    segments.append(dict(kind='detail', text=''.join(details), speaker=2, meta={}))
-    if game['winner_goal'] or game['rank_changes']:
-        import soccer_results_render as rr
-        g = game['winner_goal']; text = f"決勝点は{rr.spoken_minute(g['minute'])}の{g['scorer']}。" if g else ''
-        text += ''.join(f"{game[r['side']]['name_jp']}は{r['before']}位から{r['after']}位。" for r in game['rank_changes'])
-        segments.append(dict(kind='context', text=text, speaker=2, meta={}))
+    import soccer_result_story
+    base = soccer_result_story.narration(data)
+    segments = [s for s in base['segments'] if s['kind'] not in ('roster', 'outro')]
     for i, v in enumerate(data['voices']):
         segments.append(dict(kind='voice', text='ハイライトのコメントでは、'+voices.spoken_names(v['ja'], voices.load_names())+'。', speaker=2, meta={'index':i}))
-    return dict(label='サッカー試合速報', segments=segments, duration_budget={'limit':40,'grace':0})
+    import sanity_sources
+    narr = __import__('short_context').soccer(dict(label='サッカー試合速報', segments=segments,
+        duration_budget={'limit':40,'grace':0}), data, readable=__import__('soccer_look').readable())
+    return sanity_sources.attach(narr, data, sport='soccer')
 
 
 def metadata(data):
+    import club_display_names as names
     g = data['games'][0]; p = next(p for p in data['players'] if p['status'] != 'none')
     lines = [f"試合終了 {g['finished_utc']}。出典: ESPN", SCORE_FORMULA]
     lines += [f"順位: {r['source']}" for r in g['rank_changes']]
     if data['voices']:
         lines += ['YouTube公式ハイライトのコメントの翻訳。選んだ声であり現地全体の総意ではありません。', data['video_url']]
         for v in data['voices']: lines += ['原文: '+v['title'], '訳: '+v['ja'], v.get('url','')]
-    return dict(title=('【保存材料の試作】' if data.get('sample_fictional') else '')+p['name']+results.action(p)+'｜'+g['home']['name_jp']+'対'+g['away']['name_jp'], description='\n'.join(lines)+'\n音声: VOICEVOX:四国めたん', language='ja')
+    title=('【保存材料の試作】' if data.get('sample_fictional') else '')+p['name']+results.action(p)+'｜'+names.display(g['home']['name_en'])+'対'+names.display(g['away']['name_en'])
+    return dict(title=names.youtube_title(title), description=names.display_text('\n'.join(lines), include_short=True)+'\n音声: VOICEVOX:四国めたん', language='ja')
 
 
 def frame(data, t, seg):
     import soccer_results_render as rr
     c = rr.cards; clubs = rr.resolve_clubs(data); spec = rr.program_spec(data)
     spec.update(label='サッカー試合速報', ticker='保存材料の試作・架空の声' if data.get('sample_fictional') else '試合終了後の結果', source='出典: ESPN / YouTube（翻訳）')
-    if seg['kind'] == 'intro': return rr.cover(t, data, data['games'][0], clubs, spec)
+    if seg['kind'] != 'voice': return rr.frame(t, seg, data, clubs)
+    if rr.soccer_look.readable():
+        from soccer_readable import Screen
+        screen = Screen(clubs, t)
+        screen.title('現地の声（翻訳）')
+        screen.lines(c.L, 430, data['voices'][seg['meta']['index']]['ja'], 48, c.R-c.L)
+        return screen.finish(spec)
     im = c.canvas(t, clubs, spec['label']); rr.v4.panel(im, (c.L,258,c.R,1120))
     c.plain(im,c.L+28,282,{'detail':'本人の記録と独自指標','context':'決勝点と順位','voice':'現地の声（翻訳）'}[seg['kind']],46,rr.r3.GOLD,width=c.R-c.L-56)
     text = seg['text']
@@ -181,7 +175,10 @@ def save(data, out):
     (out/'metadata.json').write_text(json.dumps(metadata(data),ensure_ascii=False,indent=2),encoding='utf8')
     # Drop whole comment pairs to fit measured speech; never cut or accelerate quotes.
     while True:
-        try: return render.render(narration(data), lambda t,s:frame(data,t,s), out, voiced=True)
+        try:
+            import host_split
+            narr = host_split.adapt(narration(data), 'soccer_now')
+            return render.render(narr, lambda t,s:frame(data,t,s), out, voiced=True)
         except ValueError as error:
             if '40秒' not in str(error) or not data['voices']: raise
             data['voices'].pop()
@@ -241,33 +238,72 @@ def live_voices(data):
     return data
 
 
-def publish(data, out, ledger):
-    if os.environ.get('COLLESPO_SOCCER_NOW') != 'on' or os.environ.get('SOCCER_NOW_PUBLISH','false') != 'true': raise ValueError('公開変数が無効')
+def checkpoint_receipt(path, key, entry, extra=()):
+    """投稿前の記録を保存し、保存先の main に同じ記録があることまで照合する。"""
+    path = Path(path)
+    subprocess.run(['bash','scripts/commit_data.sh','soccer publication receipt',str(path.relative_to(ROOT)),*extra],cwd=ROOT,check=True)
+    subprocess.run(['git','fetch','origin','main'],cwd=ROOT,check=True,capture_output=True)
+    saved = subprocess.run(['git','show','origin/main:'+path.relative_to(ROOT).as_posix()],cwd=ROOT,check=True,capture_output=True,text=True,encoding='utf8')
+    if json.loads(saved.stdout).get(key) != entry:
+        raise ValueError('本番台帳に記録できないため投稿停止')
+
+
+def publish(data, out, ledger, *, goal_short=False):
+    enabled = (os.environ.get('COLLESPO_SOCCER_GOAL_SHORT') == 'on' if goal_short else
+               os.environ.get('COLLESPO_SOCCER_NOW') == 'on' and os.environ.get('SOCCER_NOW_PUBLISH','false') == 'true')
+    if not enabled: raise ValueError('公開変数が無効')
     if data.get('sample_fictional'): raise ValueError('試作は公開不可')
     results.validate_data(data)
-    if not timedelta(0)<=datetime.now(timezone.utc)-results.utc(data['games'][0]['finished_utc'])<=MAX_AGE: raise ValueError('公開直前の鮮度を超過')
-    ident = data['games'][0]['id']
-    if ident in ledger: return
-    path = ROOT/'data/soccer_now_receipts.json'
+    if goal_short and (len(data['games']) != 1 or not any(p['status'] != 'none' and (p.get('goals') or p.get('assists')) for p in data['players'])):
+        raise ValueError('得点・アシストのある1試合が必要')
+    age = GOAL_MAX_AGE if goal_short else MAX_AGE
+    if not timedelta(0)<=datetime.now(timezone.utc)-results.utc(data['games'][0]['finished_utc'])<=age: raise ValueError('公開直前の鮮度を超過')
+    ident = str(data['games'][0]['id'])
+    import soccer_publications as publications
+    if ident in ledger or not publications.eligible(data, publications.load(refresh=True), goal_short=goal_short): return
+    import host_split
+    kind = 'soccer_goal_short' if goal_short else 'soccer_now'
+    import sanity
+    # 完成原稿を同じCLIで点検し、失敗した回は投稿要求・pending記録より前で止める。
+    subprocess.run(sanity.command(kind, Path(out)/'narration.json',
+        Path(out)/'sanity.json', Path(out)/'sanity_hold.json'), cwd=ROOT, check=True)
+    video = Path(out)/('collespo_soccer_results.mp4' if goal_short else 'preview.mp4')
+    import short_content
+    quality = short_content.validate_upload(video)
+    quality_fields = short_content.publication_fields(quality)
+    tracking = dict(host_split.publication(video) or {}, **quality_fields)
+    path = ROOT/publications.PATH
+    fresh = publications.load(refresh=True)
+    ledger.clear(); ledger.update(fresh)
+    if not publications.eligible(data, ledger, goal_short=goal_short): return
     def checkpoint():
         path.write_text(json.dumps(ledger,ensure_ascii=False,indent=2),encoding='utf8')
-        subprocess.run(['bash','scripts/commit_data.sh','soccer now receipt',str(path.relative_to(ROOT))],cwd=ROOT,check=True)
-        # commit_data.sh has legacy exit-0 error paths. Confirm the remote receipt,
-        # so a failed checkpoint cannot be mistaken for duplicate protection.
-        subprocess.run(['git','fetch','origin','main'],cwd=ROOT,check=True,capture_output=True)
-        saved = subprocess.run(['git','show','origin/main:data/soccer_now_receipts.json'],cwd=ROOT,check=True,capture_output=True,text=True,encoding='utf8')
-        if json.loads(saved.stdout).get(ident) != ledger[ident]: raise ValueError('本番台帳に記録できないため投稿停止')
-    ledger[ident] = {'status':'pending','at':datetime.now(timezone.utc).isoformat()}; checkpoint()
+        publications.mirror_receipt(ident, ledger[ident])
+        extra = ['data/published_videos.json'] if tracking else []
+        checkpoint_receipt(path, ident, ledger[ident], extra)
+    ledger[ident] = {'status':'pending','kind':kind,'at':datetime.now(timezone.utc).isoformat()}; checkpoint()
     # Pending remains on uncertain response. Never retry an upload automatically.
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build as api_build
     from googleapiclient.http import MediaFileUpload
     creds = Credentials(None, refresh_token=os.environ['YOUTUBE_REFRESH_TOKEN'],token_uri='https://oauth2.googleapis.com/token',client_id=os.environ['YOUTUBE_CLIENT_ID'],client_secret=os.environ['YOUTUBE_CLIENT_SECRET'])
-    meta = metadata(data)
+    meta = metadata(data) if not goal_short else None
+    if goal_short:
+        lines = results.description_lines(data)
+        ended = results.utc(data['games'][0]['finished_utc']).astimezone(results.JST)
+        lines[0] = f"日本時間{ended:%Y年%m月%d日 %H:%M}に終了した試合の、日本人選手の得点・アシスト速報です。"
+        meta = dict(title=results.title(data), description='\n'.join(lines))
+    meta['description'] = host_split.credit(meta['description'])
     body = {'snippet':dict(title=meta['title'],description=meta['description'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'), 'status':dict(privacyStatus='public',selfDeclaredMadeForKids=False)}
-    response = api_build('youtube','v3',credentials=creds,cache_discovery=False).videos().insert(part='snippet,status',body=body,media_body=MediaFileUpload(str(Path(out)/'preview.mp4'),resumable=True)).execute()
+    import localize_videos
+    body = localize_videos.prepare_upload(body)
+    response = api_build('youtube','v3',credentials=creds,cache_discovery=False).videos().insert(part=localize_videos.upload_parts(body),body=body,media_body=MediaFileUpload(str(video),resumable=True)).execute()
     if not response.get('id'): raise ValueError('投稿結果のIDなし。pendingを手動照合')
-    ledger[ident].update(status='uploaded',video_id=response['id']); checkpoint()
+    if tracking:
+        from upload_youtube import record_video
+        record_video(kind, host_split.today()+':'+str(ident), response['id'], meta['title'],
+                     host_tracking=tracking)
+    ledger[ident].update(status='uploaded',video_id=response['id'], **quality_fields); checkpoint()
 
 
 def main():
@@ -278,7 +314,7 @@ def main():
     if args.sample:
         boards = json.loads((ROOT/'scripts/fixtures/soccer-results/scoreboards.json').read_text(encoding='utf8'))
         summaries = json.loads((ROOT/'scripts/fixtures/soccer-results/summaries.json').read_text(encoding='utf8'))
-        data,_ = build(boards,summaries,results.utc('2026-09-20T17:15:00Z'))
+        data,_ = build(boards,summaries,results.utc('2026-09-20T17:15:00Z'), goal_short=None)
         item = data[0]; item['sample_fictional'] = True
         fixture = json.loads((ROOT/'scripts/fixtures/soccer-now/voices.json').read_text(encoding='utf8'))
         for v in fixture['comments']:
@@ -287,17 +323,16 @@ def main():
         attach_voices(item,fixture['video'],fixture['comments'],sample=True)
         print(save(item,args.out)); return
     if os.environ.get('COLLESPO_SOCCER_NOW') != 'on': print('disabled'); return
-    path = ROOT/'data/soccer_now_receipts.json'
-    ledger = json.loads(path.read_text(encoding='utf8')) if path.exists() else {}
+    ledger = __import__('soccer_publications').load()
     processed = set(ledger); deadline = time.monotonic()+WATCH_LIMIT
     if args.plan:
         current = datetime.now(timezone.utc); boards,summaries,events = live_boards(current)
-        due,_ = build(boards,summaries,current,ledger)
+        due,_ = build(boards,summaries,current,ledger,goal_short=False)
         print('go=1' if due or watch_delay(events,current) is not None else 'go=0')
         return
     while True:
         now = datetime.now(timezone.utc); boards,summaries,events = live_boards(now)
-        data,rejected = build(boards,summaries,now,dict.fromkeys(processed))
+        data,rejected = build(boards,summaries,now,dict.fromkeys(processed | set(__import__('soccer_publications').load())),goal_short=False)
         if rejected: print('rejected:',json.dumps(rejected,ensure_ascii=False))
         for item in data:
             ident = item['games'][0]['id']; folder = args.out/ident

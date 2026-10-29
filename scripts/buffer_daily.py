@@ -35,6 +35,11 @@ CHANNELS = {'twitter': '6aa114c5cd8b9c702c36144a',
 ORG = '6aa11108acee3b0c72033754'
 MAX_BYTES = 80 * 1024 * 1024
 
+# GitHub が一時的に不調なだけの応答。404・401・403・422 などは
+# やり直しても変わらないので、すぐ呼び出し元へ返す。
+RETRY_STATUSES = (500, 502, 503, 504)
+RETRY_DELAYS = (2, 5, 10)
+
 # A post Buffer is still processing is not a post that failed.
 #
 # TikTok's video ingest routinely outruns the six minutes this runner waits,
@@ -93,8 +98,18 @@ def github(path, method='GET', body=None, raw=False):
         headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
                  'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json',
                  'User-Agent': 'Collespo/1.0'})
-    with urllib.request.build_opener(SafeRedirect).open(req, timeout=60) as response:
-        content = response.read(MAX_BYTES + 1)
+    for attempt in range(len(RETRY_DELAYS) + 1):
+        try:
+            with urllib.request.build_opener(SafeRedirect).open(req, timeout=60) as response:
+                content = response.read(MAX_BYTES + 1)
+            break
+        except urllib.error.HTTPError as exc:
+            if exc.code not in RETRY_STATUSES or attempt >= len(RETRY_DELAYS):
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if attempt >= len(RETRY_DELAYS):
+                raise
+        time.sleep(RETRY_DELAYS[attempt])
     if len(content) > MAX_BYTES:
         raise ValueError('GitHub response exceeds allowed size')
     return content if raw else json.loads(content) if content else {}
@@ -128,6 +143,8 @@ class Ledger:
     def set(self, key, value):
         self.data['deliveries'][key] = value
         self.save()
+        from publication_writer import mirror_buffer
+        mirror_buffer(key, value, github, STATE_BRANCH)
 
 
 # 既定の枠。これまでどおり「明日の注目試合」。
@@ -333,6 +350,15 @@ def due(services, late_edition=False) -> list:
     return out
 
 
+class VideoNotPublic(ValueError):
+    """所有チャンネルの非公開・予約中動画。SNS配信は見送る。"""
+
+    def __init__(self, reason):
+        # asset_sns等の既存の呼び手にも従来の例外を渡す。
+        super().__init__('YouTube video is not public')
+        self.reason = reason
+
+
 def verify_youtube(record):
     query = urllib.parse.urlencode({'part': 'status,snippet', 'id': record['video_id'],
                                    'key': os.environ['YOUTUBE_API_KEY']})
@@ -341,10 +367,16 @@ def verify_youtube(record):
             items = json.load(response).get('items', [])
     except Exception:
         raise RuntimeError('Unable to verify YouTube publication') from None
-    if not items or items[0]['status'].get('privacyStatus') != 'public':
-        raise ValueError('YouTube video is not public')
+    if not items:
+        raise ValueError('YouTube video could not be found')
     if items[0]['snippet']['channelId'] != 'UCpZ_j8X8uOex5VvKwwTJj3Q':
         raise ValueError('YouTube video belongs to a different channel')
+    status = items[0]['status']
+    privacy = status.get('privacyStatus')
+    if privacy in ('private', 'unlisted'):
+        raise VideoNotPublic('予約中' if status.get('publishAt') else '非公開（' + privacy + '）')
+    if privacy != 'public':
+        raise ValueError('Unknown YouTube privacy status')
     return items[0]['snippet']
 
 
@@ -408,15 +440,22 @@ def host_video(run, day, path, digest, kind=DEFAULT_KIND):
     except urllib.error.HTTPError as exc:
         if exc.code != 404:
             raise
-        release = github('/releases', 'POST', {
-            # This release hosts media, not source code. Older source commits
-            # can require workflows:write to tag when workflows changed since.
-            # Use the maintained branch, keeping media provenance below and in
-            # the delivery ledger; never broaden the publishing token's scope.
-            'tag_name': tag, 'target_commitish': 'main',
-            'name': day + ' ' + words(kind)['long'] + '・配信用動画',
-            'body': 'コレスポの自動生成動画。YouTubeでの公開を確認後、SNS配信に利用します。\n元の実行: ' + run['html_url'] + '\n動画生成元SHA: ' + run['head_sha'] + '\n動画SHA256: ' + digest,
-            'make_latest': 'false'})
+        try:
+            release = github('/releases', 'POST', {
+                # This release hosts media, not source code. Older source commits
+                # can require workflows:write to tag when workflows changed since.
+                # Use the maintained branch, keeping media provenance below and in
+                # the delivery ledger; never broaden the publishing token's scope.
+                'tag_name': tag, 'target_commitish': 'main',
+                'name': day + ' ' + words(kind)['long'] + '・配信用動画',
+                'body': 'コレスポの自動生成動画。YouTubeでの公開を確認後、SNS配信に利用します。\n元の実行: ' + run['html_url'] + '\n動画生成元SHA: ' + run['head_sha'] + '\n動画SHA256: ' + digest,
+                'make_latest': 'false'})
+        except urllib.error.HTTPError as exc:
+            # A 500 may have hidden a release that GitHub did create. The
+            # retry then reports 422 already_exists; use the existing one.
+            if exc.code != 422:
+                raise
+            release = github('/releases/tags/' + tag)
     name = 'collespo-' + kind + '-' + day + '.mp4'
     asset = next((a for a in release['assets'] if a['name'] == name), None)
     if asset:
@@ -569,7 +608,9 @@ def friendly_lead(title):
 
 def caption(service, day, record, kind=DEFAULT_KIND):
     w = words(kind, record)
-    title = ht.strip_tags(record['title'].split(w['cut'])[0].replace('【MLB】', '').strip())
+    import video_titles
+    source_title = record['title'] if w['sport'] == 'soccer' else video_titles.team_city_text(record['title'])
+    title = ht.strip_tags(source_title.split(w['cut'])[0].replace('【MLB】', '').strip())
     if kind == DEFAULT_KIND:
         title = re.split(r'｜\d{1,2}/\d{1,2}の注目試合', title)[0].strip()
     lead = friendly_lead(title) if kind == DEFAULT_KIND else title
@@ -621,18 +662,41 @@ def selected_services(value):
     return services
 
 
+class RecentPostsUnavailable(RuntimeError):
+    """照合を取得できない。投稿失敗や空の一覧とは区別する。"""
+
+
 def recent_posts(channel):
     posts, cursor = [], None
     for _ in range(5):
         after = ', after: ' + json.dumps(cursor) if cursor else ''
-        result = graphql('{ posts(first: 100' + after + ', input: { organizationId: ' +
+        query = ('{ posts(first: 100' + after + ', input: { organizationId: ' +
             json.dumps(ORG) + ', filter: {channelIds:[' + json.dumps(channel) +
-            ']}, sort:[{field:createdAt,direction:desc}]}) { edges {node {id text status externalLink}} pageInfo {hasNextPage endCursor} } }')['posts']
+            ']}, sort:[{field:createdAt,direction:desc}]}) { edges {node {id text status externalLink}} pageInfo {hasNextPage endCursor} } }')
+        for attempt in range(2):
+            try:
+                result = graphql(query)['posts']
+                # 欠けた応答も、空の一覧として扱わず再照合する。
+                nodes = [edge['node'] for edge in result['edges']]
+                for node in nodes:
+                    for field in ('id', 'text', 'status'):
+                        node[field]
+                page = result['pageInfo']
+                page['hasNextPage']; page['endCursor']
+                break
+            except Exception:
+                # 例外本文・応答・URLには秘密が含まれうるので出さない。
+                if attempt:
+                    print('::warning::Bufferの投稿照合を2回取得できませんでした。記録を保持し、次回照合へ引き継ぎます')
+                    raise RecentPostsUnavailable('Buffer recent_posts unavailable') from None
+                print('::warning::Bufferの投稿照合を再試行します（1回）')
+                time.sleep(1)
         posts.extend(e['node'] for e in result['edges'])
         if not result['pageInfo']['hasNextPage']:
             return posts
         cursor = result['pageInfo']['endCursor']
-    raise RuntimeError('Too many posts to reconcile safely')
+    print('::warning::Bufferの投稿一覧が照合上限を超えました。記録を保持します')
+    raise RecentPostsUnavailable('Buffer recent_posts pagination limit')
 
 
 def create_payload(service, text, media_url):
@@ -652,10 +716,17 @@ def reconcile():
     ledger = Ledger()
     pending_services = {key.rsplit(':', 1)[-1] for key, entry in ledger.data['deliveries'].items()
                         if entry.get('state') not in ('sent', 'gave_up')}
-    posts_by_channel = {service: recent_posts(channel) for service, channel in CHANNELS.items()
-                       if service in pending_services}
+    posts_by_channel = {}
+    for service, channel in CHANNELS.items():
+        if service not in pending_services:
+            continue
+        try:
+            posts_by_channel[service] = recent_posts(channel)
+        except RecentPostsUnavailable:
+            continue
     if not posts_by_channel:
-        print('No pending deliveries; no Buffer request needed')
+        if not pending_services:
+            print('No pending deliveries; no Buffer request needed')
         return
     unresolved, settling = [], []
     for key, entry in list(ledger.data['deliveries'].items()):
@@ -674,7 +745,7 @@ def reconcile():
             continue
         # Buffer が error と返して2日たったものは、もう出ない。毎回の実行を赤くし続けると、
         # 新しい失敗が見えなくなる（10/7 の Instagram 1件で 10/8〜10/10 の実行がすべて赤だった）。
-        if row.get('state') == 'error' and key[:10] < (datetime.now(timezone.utc) - timedelta(days=2)).date().isoformat():
+        if row.get('state') == 'error' and key[:10] < (datetime.now(JST) - timedelta(days=2)).date().isoformat():
             ledger.set(key, {**row, 'state': 'gave_up', 'checked_at': datetime.now(timezone.utc).isoformat()})
             print('::warning::Buffer が失敗のまま2日たったので打ち切ります: ' + key)
             continue
@@ -709,6 +780,34 @@ def submit_once(ledger, key, payload, metadata, retry_rejected=False):
     ledger.set(key, {**entry, 'state': post['status'], 'post_id': post['id'],
                      'external_link': post.get('externalLink')})
     return post
+
+
+def refresh_deliveries(ledger, day, kind, services):
+    """照合不能の媒体を保留し、他媒体の確認と保存は続ける。"""
+    unavailable = set()
+    for _ in range(12):
+        pending = False
+        for service in services:
+            key = day + ':' + kind + ':' + service
+            entry = ledger.data['deliveries'].get(key, {})
+            if not entry.get('post_id') or entry.get('state') == 'sent' or service in unavailable:
+                continue
+            try:
+                posts = recent_posts(CHANNELS[service])
+            except RecentPostsUnavailable:
+                unavailable.add(service)
+                continue
+            post = next((p for p in posts if p['id'] == entry['post_id']), None)
+            if post:
+                if entry.get('state') != post['status'] or entry.get('external_link') != post.get('externalLink'):
+                    ledger.set(key, {**entry, 'state': post['status'], 'external_link': post.get('externalLink'),
+                                     'checked_at': datetime.now(timezone.utc).isoformat()})
+                print(service, post['status'], post.get('externalLink'))
+                pending |= post['status'] not in ('sent', 'error')
+        if not pending:
+            break
+        time.sleep(30)
+    return unavailable
 
 
 def main():
@@ -751,7 +850,16 @@ def main():
         print('[info] Source PS program explicitly skipped; no SNS post: '+reason)
         return
     _key, _artifact, _file, _wf = source_of(args.kind)
-    snippet = verify_youtube(record)
+    try:
+        snippet = verify_youtube(record)
+    except VideoNotPublic as exc:
+        message = f'{day} / {args.kind} / {record["video_id"]}: 飛ばした（{exc.reason}）'
+        print('[skip] ' + message)
+        summary = os.environ.get('GITHUB_STEP_SUMMARY')
+        if summary:
+            with open(summary, 'a', encoding='utf-8') as report:
+                report.write('\n- ' + message + '\n')
+        return
     record = {**record, 'title': snippet['title'], 'description': snippet.get('description', '')}
     available = graphql('{channels(input:{organizationId:' + json.dumps(ORG) + '}){id name service}}')['channels']
     for service in services:
@@ -778,6 +886,7 @@ def main():
     ledger = Ledger()
     url = host_video(run, day, video, digest, args.kind)
     failed = False
+    unavailable = set()
     for service in services:
         key = day + ':' + args.kind + ':' + service
         try:
@@ -785,6 +894,9 @@ def main():
                 {'source_run': args.source_run, 'youtube_id': record['video_id'], 'sha256': digest,
                  'media_url': url, 'checked_at': datetime.now(timezone.utc).isoformat()}, args.retry_rejected)
             print(service, json.dumps(post, ensure_ascii=False))
+        except RecentPostsUnavailable:
+            unavailable.add(service)
+            print('::warning::' + service + ': 照合不能のため新規送信を保留します（二重投稿防止）')
         except Exception as exc:
             print(service, 'Delivery did not complete:', type(exc).__name__, str(exc)[:300])
             failed = True
@@ -805,30 +917,15 @@ def main():
             # Bluesky が落ちても、ほかの媒体の結果は変えない
             print('bluesky', 'Delivery did not complete:', type(exc).__name__, str(exc)[:300])
     # Give platforms time to process the uploaded video. This is a runner, not an interactive wait.
-    for _ in range(12):
-        pending = False
-        for service in services:
-            channel = CHANNELS[service]
-            key = day + ':' + args.kind + ':' + service
-            entry = ledger.data['deliveries'].get(key, {})
-            if not entry.get('post_id'):
-                continue
-            post = next((p for p in recent_posts(channel) if p['id'] == entry['post_id']), None)
-            if post:
-                if entry.get('state') != post['status'] or entry.get('external_link') != post.get('externalLink'):
-                    ledger.set(key, {**entry, 'state': post['status'], 'external_link': post.get('externalLink'),
-                                     'checked_at': datetime.now(timezone.utc).isoformat()})
-                print(service, post['status'], post.get('externalLink'))
-                pending |= post['status'] not in ('sent', 'error')
-        if not pending:
-            break
-        time.sleep(30)
+    unavailable.update(refresh_deliveries(ledger, day, args.kind,
+                                         [s for s in services if s not in unavailable]))
     rows = {s: ledger.data['deliveries'].get(
         day + ':' + args.kind + ':' + s, {}) for s in services}
     statuses = {s: row.get('state') for s, row in rows.items()}
     pending = [s for s, row in rows.items() if row.get('state') != 'sent']
     waiting = [s for s in pending if still_settling(rows[s])]
-    stuck = [s for s in pending if s not in waiting]
+    stuck = [s for s in pending if s not in waiting and
+             (s not in unavailable or rows[s].get('state') in FAILED_STATES)]
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a', encoding='utf-8') as report:
@@ -836,6 +933,8 @@ def main():
             for service in services:
                 row = rows.get(service, {})
                 report.write(f'- {service}: {row.get("state", "未投入")} {row.get("external_link") or ""}\n')
+            if unavailable:
+                report.write('\n' + '・'.join(sorted(unavailable)) + ' は照合の取得に失敗しました。保存済みの状態を保持し、次回へ引き継ぎます。\n')
             if waiting:
                 report.write('\n' + '・'.join(waiting) + ' はBufferがまだ処理中です。'
                              '**失敗ではありません。**19:47と23:47の照合で確定します。\n')

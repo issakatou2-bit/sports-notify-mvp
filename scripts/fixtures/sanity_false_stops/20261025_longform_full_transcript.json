@@ -1,0 +1,530 @@
+{
+  "source": {
+    "run": 40169031031,
+    "fixture": "sanity_longform_transcript_20261025.json"
+  },
+  "expected_held": false,
+  "document": {
+    "date_jst": "2026-10-25",
+    "segments": [
+      {
+        "text": "今日は日本人選手の出番がなかったのだ。でも、ワールドシリーズはブリュワーズが2勝0敗でリードしているのだ。"
+      },
+      {
+        "text": "そうね。日本人選手の出場はなかったけれど、シリーズはブリュワーズが2連勝よ。ワールドシリーズの勝敗は、この2勝0敗がすべてね。"
+      },
+      {
+        "text": "2試合やって2つとも取っているのだ。ぼくは、シリーズの入りで連勝したのが大きいと見るのだ。"
+      },
+      {
+        "text": "初戦と第2戦を続けて取ったのは事実よ。シリーズは先に勝ち星を積んだ側が、相手に負けられない状況を作っているわね。ブリュワーズは負けがゼロ、相手は2敗という並びよ。"
+      },
+      {
+        "text": "負けがゼロと2敗だと、見た目の差がはっきりするのだ。"
+      },
+      {
+        "text": "そうね。2勝差がついているわ。この差を数字で見ると、ブリュワーズが勝ち星を2つ、相手が0よ。"
+      },
+      {
+        "text": "野球の出番がない日は、欧州のほうも見ておくのだ。"
+      },
+      {
+        "text": "いちばん上にいるのはどこなのだ？"
+      },
+      {
+        "text": "三笘薫のブライトンよ。3位で勝点16。チャンピオンズリーグ圏内にいて、圏内から落ちるまで勝点4あるわ。"
+      },
+      {
+        "text": "三笘は負傷などで離脱中なのだ。クラブは3位で圏内なのに、本人がいないのは気になるのだ。"
+      },
+      {
+        "text": "そうね。クラブの位置は4つの中でいちばん高いわ。圏内に入っているのも、このブライトンだけよ。"
+      },
+      {
+        "text": "ほかの3つは圏外なのだ？"
+      },
+      {
+        "text": "そうよ。次は遠藤航のリバプール。5位で勝点12。チャンピオンズリーグ圏内まで勝点1だから、圏外だけれど、すぐ下にいるわ。"
+      },
+      {
+        "text": "三笘のブライトンが勝点16、遠藤のリバプールが勝点12だから、4点差なのだ。順位は3位と5位で、2つ違いなのだ。"
+      },
+      {
+        "text": "計算は合っているわね。勝点4の差で順位が2つ。ただ、遠藤のリバプールは圏内との差が勝点1しかないから、圏外とはいえ手の届く位置よ。"
+      },
+      {
+        "text": "ブライトンが圏内から落ちるまで勝点4で、リバプールとの差も4なのだ。同じ数字が出てくるのだ。"
+      },
+      {
+        "text": "そこは数字が重なっているだけよ。見るなら、ブライトンは圏内、リバプールは圏外で勝点1差、というところね。"
+      },
+      {
+        "text": "その下が、田中碧のリーズなのだ。"
+      },
+      {
+        "text": "リーズは7位で勝点10。ヨーロッパリーグ圏内まで勝点2よ。こちらも圏外ね。"
+      },
+      {
+        "text": "遠藤のリバプールが勝点12だから、リーズとは2点差なのだ。順位も5位と7位で2つ違いなのだ。"
+      },
+      {
+        "text": "その見方でいいわ。リバプールは圏内まで勝点1、リーズは圏内まで勝点2。どちらも圏外でも、差の小さいところにいるのよ。"
+      },
+      {
+        "text": "最後は前田大然のイプスウィッチなのだ。"
+      },
+      {
+        "text": "イプスウィッチは9位で勝点10。リーズと同じ勝点で、こちらもヨーロッパリーグ圏内まで勝点2よ。"
+      },
+      {
+        "text": "同じ勝点10で、圏内まで勝点2も同じなのに、順位は7位と9位で違うのだ。ここが引っかかるのだ。"
+      },
+      {
+        "text": "勝点も圏内までの差も同じなのに、順位は2つ離れているわね。この中段は、勝点が詰まっているのが見て取れるわ。"
+      },
+      {
+        "text": "4クラブを順番に並べると、勝点16、12、10、10なのだ。"
+      },
+      {
+        "text": "そうね。16から12で4点、12から10で2点、10から10で0点。上から下まで、勝点6の中に収まっているわ。"
+      },
+      {
+        "text": "圏内はブライトンだけで、あとの3つは圏外なのだ。リバプールが勝点1差、リーズとイプスウィッチが勝点2差なのだ。"
+      },
+      {
+        "text": "その整理でいいわ。第8節は進行中だから、ここで見たのは第7節までの位置よ。"
+      },
+      {
+        "text": "欧州は、三笘のブライトンが3位で圏内、遠藤のリバプールが5位、田中のリーズが7位、前田のイプスウィッチが9位なのだ。"
+      }
+    ],
+    "sanity_materials": [
+      {
+        "source": "data/postseason.json",
+        "date_jst": "2026-10-25",
+        "retrieved_at": "2026-10-25T06:01:54.730686+00:00",
+        "source_url": "https://statsapi.mlb.com/api/v1/schedule",
+        "series": [
+          {
+            "key": "W:139-158",
+            "round": "W",
+            "round_jp": "ワールドシリーズ",
+            "stage": 4,
+            "league_jp": "",
+            "best_of": 7,
+            "need": 4,
+            "played": 2,
+            "over": false,
+            "winner": null,
+            "next": {
+              "day": "10月27日",
+              "game": 3
+            },
+            "teams": [
+              {
+                "id": 158,
+                "name": "ブリュワーズ",
+                "wins": 2,
+                "players": []
+              },
+              {
+                "id": 139,
+                "name": "レイズ",
+                "wins": 0,
+                "players": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "source": "football-data.org",
+        "retrieved_at": "2026-10-24T10:15:58.501309+00:00",
+        "source_at": "2026-10-24T06:14:40.646517+00:00",
+        "date_jst": "2026-10-24",
+        "games": [],
+        "competitions": [
+          {
+            "code": "PL",
+            "name_jp": "プレミアリーグ",
+            "lines": [
+              {
+                "at": 4,
+                "label": "CL圏内",
+                "inside": [
+                  {
+                    "position": 3,
+                    "team": "ブライトン",
+                    "team_en": "Brighton & Hove Albion FC",
+                    "played": 7,
+                    "points": 16,
+                    "gf": 23,
+                    "ga": 5,
+                    "jp": [
+                      "三笘薫"
+                    ]
+                  },
+                  {
+                    "position": 4,
+                    "team": "チェルシー",
+                    "team_en": "Chelsea FC",
+                    "played": 7,
+                    "points": 13,
+                    "gf": 17,
+                    "ga": 13,
+                    "jp": []
+                  }
+                ],
+                "outside": [
+                  {
+                    "position": 5,
+                    "team": "リバプール",
+                    "team_en": "Liverpool FC",
+                    "played": 7,
+                    "points": 12,
+                    "gf": 9,
+                    "ga": 8,
+                    "jp": [
+                      "遠藤航"
+                    ]
+                  },
+                  {
+                    "position": 6,
+                    "team": "ブレントフォード",
+                    "team_en": "Brentford FC",
+                    "played": 7,
+                    "points": 10,
+                    "gf": 13,
+                    "ga": 8,
+                    "jp": []
+                  }
+                ],
+                "diff": 1,
+                "moved": {
+                  "line": 4,
+                  "in": [],
+                  "out": []
+                },
+                "jp": [
+                  "三笘薫",
+                  "遠藤航"
+                ]
+              },
+              {
+                "at": 5,
+                "label": "EL圏内",
+                "inside": [
+                  {
+                    "position": 4,
+                    "team": "チェルシー",
+                    "team_en": "Chelsea FC",
+                    "played": 7,
+                    "points": 13,
+                    "gf": 17,
+                    "ga": 13,
+                    "jp": []
+                  },
+                  {
+                    "position": 5,
+                    "team": "リバプール",
+                    "team_en": "Liverpool FC",
+                    "played": 7,
+                    "points": 12,
+                    "gf": 9,
+                    "ga": 8,
+                    "jp": [
+                      "遠藤航"
+                    ]
+                  }
+                ],
+                "outside": [
+                  {
+                    "position": 6,
+                    "team": "ブレントフォード",
+                    "team_en": "Brentford FC",
+                    "played": 7,
+                    "points": 10,
+                    "gf": 13,
+                    "ga": 8,
+                    "jp": []
+                  },
+                  {
+                    "position": 7,
+                    "team": "リーズ",
+                    "team_en": "Leeds United FC",
+                    "played": 7,
+                    "points": 10,
+                    "gf": 9,
+                    "ga": 6,
+                    "jp": [
+                      "田中碧"
+                    ]
+                  }
+                ],
+                "diff": 2,
+                "moved": {
+                  "line": 5,
+                  "in": [],
+                  "out": []
+                },
+                "jp": [
+                  "田中碧",
+                  "遠藤航"
+                ]
+              }
+            ],
+            "jp": [
+              {
+                "name": "三笘薫",
+                "club_jp": "ブライトン",
+                "position": 3,
+                "points": 16,
+                "out": true,
+                "out_note": "Hamstring injury - Expected back 31 Oct",
+                "lines": [
+                  {
+                    "line": 4,
+                    "position": 3,
+                    "side": "inside",
+                    "diff": 4,
+                    "label": "CL圏内",
+                    "text": "CL圏内。落ちるまで勝点4"
+                  },
+                  {
+                    "line": 5,
+                    "position": 3,
+                    "side": "inside",
+                    "diff": 6,
+                    "label": "EL圏内",
+                    "text": "EL圏内。落ちるまで勝点6"
+                  }
+                ]
+              },
+              {
+                "name": "遠藤航",
+                "club_jp": "リバプール",
+                "position": 5,
+                "points": 12,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 4,
+                    "position": 5,
+                    "side": "outside",
+                    "diff": 1,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点1"
+                  },
+                  {
+                    "line": 5,
+                    "position": 5,
+                    "side": "inside",
+                    "diff": 2,
+                    "label": "EL圏内",
+                    "text": "EL圏内。落ちるまで勝点2"
+                  }
+                ]
+              },
+              {
+                "name": "田中碧",
+                "club_jp": "リーズ",
+                "position": 7,
+                "points": 10,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 7,
+                    "side": "outside",
+                    "diff": 2,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点2"
+                  },
+                  {
+                    "line": 4,
+                    "position": 7,
+                    "side": "outside",
+                    "diff": 3,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点3"
+                  }
+                ]
+              },
+              {
+                "name": "前田大然",
+                "club_jp": "イプスウィッチ",
+                "position": 9,
+                "points": 10,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 9,
+                    "side": "outside",
+                    "diff": 2,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点2"
+                  },
+                  {
+                    "line": 4,
+                    "position": 9,
+                    "side": "outside",
+                    "diff": 3,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点3"
+                  }
+                ]
+              },
+              {
+                "name": "守田英正",
+                "club_jp": "ハル・シティ",
+                "position": 10,
+                "points": 9,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 10,
+                    "side": "outside",
+                    "diff": 3,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点3"
+                  },
+                  {
+                    "line": 4,
+                    "position": 10,
+                    "side": "outside",
+                    "diff": 4,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点4"
+                  }
+                ]
+              },
+              {
+                "name": "鎌田大地",
+                "club_jp": "クリスタル・パレス",
+                "position": 14,
+                "points": 7,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 14,
+                    "side": "outside",
+                    "diff": 5,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点5"
+                  },
+                  {
+                    "line": 4,
+                    "position": 14,
+                    "side": "outside",
+                    "diff": 6,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点6"
+                  }
+                ]
+              },
+              {
+                "name": "冨安健洋",
+                "club_jp": "クリスタル・パレス",
+                "position": 14,
+                "points": 7,
+                "out": true,
+                "out_note": "Calf injury - Expected back 8 Nov",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 14,
+                    "side": "outside",
+                    "diff": 5,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点5"
+                  },
+                  {
+                    "line": 4,
+                    "position": 14,
+                    "side": "outside",
+                    "diff": 6,
+                    "label": "CL圏内",
+                    "text": "CL圏内まで勝点6"
+                  }
+                ]
+              },
+              {
+                "name": "高井幸大",
+                "club_jp": "トッテナム",
+                "position": 16,
+                "points": 6,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 16,
+                    "side": "outside",
+                    "diff": 6,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点6"
+                  }
+                ]
+              },
+              {
+                "name": "坂元達裕",
+                "club_jp": "コベントリー",
+                "position": 18,
+                "points": 6,
+                "out": false,
+                "out_note": "",
+                "lines": [
+                  {
+                    "line": 5,
+                    "position": 18,
+                    "side": "outside",
+                    "diff": 6,
+                    "label": "EL圏内",
+                    "text": "EL圏内まで勝点6"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "rows": [],
+        "players": [],
+        "sport": "soccer"
+      }
+    ]
+  },
+  "issues": [
+    {
+      "kind": "事実の誤り",
+      "severity": "high",
+      "where": "ワールドシリーズはブリュワーズが2勝0敗でリードしているのだ。",
+      "why": "PS材料が空(公式照合なし)で、ブリュワーズが2勝0敗という数字を確認できない。2026年WSの組み合わせや結果を裏付ける根拠がないため、要確認。"
+    },
+    {
+      "kind": "事実の誤り",
+      "severity": "high",
+      "where": "遠藤航のリバプール。5位で勝点12。チャンピオンズリーグ圏内まで勝点1",
+      "why": "プレミアリーグのCL圏は4位まで。3位ブライトン(16)と5位リバプール(12)の間に4位があり、4位の勝点は12〜16の間。圏内まで勝点1差なら4位の勝点は13になるが、ブライトンが圏内から落ちる(4位)まで勝点4と矛盾はしない。ただし5"
+    },
+    {
+      "kind": "事実の誤り",
+      "severity": "high",
+      "where": "イプスウィッチは9位で勝点10。リーズと同じ勝点で",
+      "why": "前田大然はセルティック所属で、イプスウィッチの選手として扱うのは不自然。また、イプスウィッチは2025-26シーズンのプレミアリーグにいるか疑わしい(2024-25に降格)。選手と所属クラブの対応が要確認。"
+    },
+    {
+      "kind": "事実の誤り",
+      "severity": "high",
+      "where": "三笘薫のブライトンよ。3位で勝点16。チャンピオンズリーグ圏内にいて、圏内から落ちるまで勝点4あるわ。",
+      "why": "「圏内から落ちるまで勝点4」は、3位が圏外の5位との差とも読めるが、5位リバプールが勝点12で差は4、4位の勝点が不明なので、数字の根拠が確認できない。"
+    }
+  ]
+}

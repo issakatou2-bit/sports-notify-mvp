@@ -86,6 +86,44 @@ class CaptionsTest(unittest.TestCase):
         self.assertEqual(guard.call_args.kwargs['mode'],'whole')
         self.assertEqual(caption_names.required('大谷翔平とドジャース'), {'大谷翔平':'Shohei Ohtani','ドジャース':'Los Angeles Dodgers'})
 
+    def test_oct16_game_titles_allow_team_and_kana_surname_forms(self):
+        # run38862920384の題。英訳は当日の未保存応答ではなく正しい対応の固定例。
+        pairs = [
+            ('【MLB】ブリュワーズがドジャースに6対4でリーグ優勝決定シリーズ突破｜ミッチェルの決勝本塁打　大谷翔平 #Shorts',
+             '[MLB] Brewers beat Dodgers 6-4 to advance from the NLCS | Mitchell hits the winning homer; Shohei Ohtani #Shorts'),
+            ('【MLB】ガーディアンズがレイズに3対2でリーグ優勝決定シリーズ2勝1敗に #Shorts',
+             '[MLB] Guardians beat Rays 3-2 to take a 2-1 lead in the ALCS #Shorts'),
+            ('ギャレット・ミッチェルと大谷翔平', 'Garrett Mitchell and Shohei Ohtani'),
+            ('ミッチェルとブリュワーズ', 'Garrett Mitchell and Milwaukee Brewers'),
+            ('大谷翔平とドジャース', 'SHOHEI OHTANI and Dodgers'),
+        ]
+        with patch.object(en.backstage_guard,'create',return_value=response(json.dumps([t for _,t in pairs]))), \
+             patch.object(en.token_log,'allowed',return_value=True), patch.object(en.token_log,'record'):
+            got = en.translate([(i,i+1,ja) for i,(ja,_) in enumerate(pairs)],Mock())
+        self.assertEqual([text for _,_,text in got],[text for _,text in pairs])
+
+    def test_wrong_names_and_missing_full_names_still_fail_with_name_only_logs(self):
+        for original, english, missing, extra in [
+            ('大谷翔平が活躍した試合', 'Aaron Judge shines in the game', '大谷翔平', 'Aaron Judge'),
+            ('ブリュワーズが勝利', 'Dodgers win', 'ブリュワーズ', 'Dodgers'),
+            ('ミッチェルの本塁打', 'Mitchellson homers', 'ミッチェル', ''),
+            ('ギャレット・ミッチェルの本塁打', 'Mitchell homers', 'ギャレット・ミッチェル', ''),
+            ('大谷翔平が活躍した試合', 'Ohtani shines in the game', '大谷翔平', 'Ohtani'),
+        ]:
+            with self.subTest(original=original), \
+                 patch.object(en.backstage_guard,'create',return_value=response(json.dumps([english]))), \
+                 patch.object(en.token_log,'allowed',return_value=True), patch.object(en.token_log,'record'), \
+                 patch('sys.stdout',new_callable=io.StringIO) as log:
+                with self.assertRaisesRegex(ValueError,'^translation_names$'):
+                    en.translate([(0,1,original)],Mock())
+                self.assertIn('translation_names Japanese=',log.getvalue())
+                self.assertIn(missing,log.getvalue())
+                self.assertIn('English=',log.getvalue())
+                if extra:
+                    self.assertIn(extra,log.getvalue())
+                self.assertNotIn(original,log.getvalue())
+                self.assertNotIn(english,log.getvalue())
+
     def test_budget_unknown_stale_future_date_and_units(self):
         # 窓口が無いときは1日の上限本数の範囲で付ける（10/14）。窓口があって読めないときは見送る。
         self.assertEqual(en.budget_reason(self.state,'v',{},NOW),'')
@@ -244,6 +282,37 @@ class NumbersSurviveTest(unittest.TestCase):
             with self.subTest(original=original, english=english):
                 self.assertFalse(en.numbers_survive(original, english))
 
+    def test_japanese_first_and_counted_articles(self):
+        examples = (
+            ('初ゴール', 'his first goal'), ('初めて得点した', 'scored for the first time'),
+            ('最初の安打', 'the first hit'), ('史上初の快挙', 'a first in history'),
+            ('1点を決めた', 'scored a goal'), ('1本打った', 'hit a homer'),
+            ('1本塁打', 'a home run'), ('1安打', 'a hit'), ('1安打', 'one hit'),
+            ('1回を投げた', 'pitched an inning'),
+            ('初出場で1安打', 'a hit in his first appearance'),
+            ('初めて1点を決めた', 'scored a goal for the first time'),
+        )
+        for original,english in examples:
+            with self.subTest(original=original,english=english):
+                self.assertEqual(en.number_mismatches(original,english),([],[]))
+        cues=[(i,i+1,ja) for i,(ja,_) in enumerate(examples)]
+        with patch.object(en.backstage_guard,'create',return_value=response(json.dumps([text for _,text in examples]))), \
+             patch.object(en.token_log,'allowed',return_value=True), patch.object(en.token_log,'record'):
+            self.assertEqual(len(en.translate(cues,Mock())),len(examples))
+
+    def test_first_and_article_do_not_hide_changed_counts(self):
+        for original,english in (
+            ('初ゴール','his second goal'), ('初めて得点した','scored'),
+            ('最初の安打','a hit'), ('2点を決めた','scored a goal'),
+            ('2本塁打','a homer'), ('2安打','one hit'),
+            ('1安打','a great performance'), ('1安打','an amazing performance'),
+            ('1点','a goalkeeper'), ('1安打1四球','a hit'),
+            ('初出場で2安打','a hit in his first appearance'),
+            ('1点','a goal in his first game'),
+        ):
+            with self.subTest(original=original,english=english):
+                self.assertTrue(any(en.number_mismatches(original,english)))
+
     def test_translation_logs_only_unmatched_numbers(self):
         with patch.object(en.backstage_guard, 'create', return_value=response('["6-3"]')), \
              patch.object(en.token_log, 'allowed', return_value=True), \
@@ -253,6 +322,92 @@ class NumbersSurviveTest(unittest.TestCase):
         self.assertEqual(log.getvalue(),
                          "[warn] 英語字幕: translation_numbers Japanese=['2'] English=['3']\n")
         self.assertEqual(en.number_mismatches('2安打2打点', 'two hits'), (['2'], []))
+
+    def test_synthetic_headline_number_forms(self):
+        # 10/16の応答は未保存。見出し特有の同義表現と脱落を固定材料で区別する。
+        examples=(
+            ('大谷翔平1号','Shohei Ohtani hits his first homer'),
+            ('大谷翔平1安打','Shohei Ohtani records a single'),
+            ('大谷翔平1安打','Shohei Ohtani records one hit'),
+            ('21日に第1戦','Game 1 on the twenty-first'),
+            ('第1戦の1回','The first inning of Game 1'),
+            ('初回に1安打','A hit in the opening inning'),
+            ('第1戦に1安打','A single in the series opener'),
+            ('1回に1号','His first home run in the first inning'),
+            ('初回に1安打、21日に第1戦','A single in the opening inning; Game 1 on the 21st'),
+            ('21日に出場する可能性','He may play on the 21st'),
+        )
+        for original,english in examples:
+            with self.subTest(original=original,english=english):
+                self.assertEqual(en.number_mismatches(original,english),([],[]))
+        with patch.object(en.backstage_guard,'create',return_value=response(json.dumps([t for _,t in examples]))), \
+             patch.object(en.token_log,'allowed',return_value=True),patch.object(en.token_log,'record'):
+            en.translate([(i,i+1,original) for i,(original,_) in enumerate(examples)],Mock())
+
+    def test_headline_omissions_and_changed_numbers_still_fail(self):
+        for original,english in (
+            ('大谷翔平1号','Shohei Ohtani hits his second homer'),
+            ('大谷翔平1号','Shohei Ohtani goes deep'),
+            ('大谷翔平1安打','Shohei Ohtani records two hits'),
+            ('大谷翔平2安打','Shohei Ohtani records a single'),
+            ('21日に第1戦','Game 1 on the 9th'),
+            ('第1戦の1回','The first inning of Game 2'),
+            ('1回に1安打','A hit in the second inning'),
+            ('初回に1安打','A single in the second inning'),
+            ('21日に1号','A homer in September'),
+        ):
+            with self.subTest(original=original,english=english):
+                self.assertTrue(any(en.number_mismatches(original,english)))
+        self.assertEqual(en.number_mismatches('大谷翔平は21日に1号','Shohei Ohtani goes deep in September'),(['1','21'],['9']))
+
+    def test_translation_instruction_preserves_headline_details(self):
+        with patch.object(en.backstage_guard,'create',return_value=response('["Game 1 on the 21st"]')) as create, \
+             patch.object(en.token_log,'allowed',return_value=True),patch.object(en.token_log,'record'):
+            en.translate([(0,1,'21日に第1戦')],Mock())
+        prompt=create.call_args.kwargs['messages'][0]['content']
+        for text in ('1号','1安打','第1戦','1回','21日','never infer a month'):
+            self.assertIn(text,prompt)
+
+    def test_oct16_logged_headlines_pass_production_translation(self):
+        rows=json.loads((ROOT/'scripts/fixtures/japan-reacts/numbers-20261016.json').read_text(encoding='utf8'))
+        for row in rows:
+            with self.subTest(original=row['original']):
+                self.assertEqual(en.number_mismatches(row['original'],row['english']),([],[]))
+        with patch.object(en.backstage_guard,'create',return_value=response(json.dumps([r['english'] for r in rows]))), \
+             patch.object(en.token_log,'allowed',return_value=True),patch.object(en.token_log,'record'):
+            translated=en.translate([(i,i+1,r['original']) for i,r in enumerate(rows)],Mock())
+        self.assertEqual([text for _,_,text in translated],[r['english'] for r in rows])
+
+    def test_kanji_counts_homers_and_batting_order(self):
+        for original,english in [('一発','one homer'),('一発','a homer'),('一発','a home run'),
+                           ('1番打者','leadoff hitter'),('1番・大谷翔平','Shohei Ohtani at the top of the order'),
+                           ('「一番」で初出場','His first appearance batting lead-off'),
+                           ('二安打と一打点','two hits and one RBI'),('十二本目','12th homer'),
+                           ('三打数一安打','1-for-3'),('二死二塁','two outs, runner on second'),
+                           ('三失点五奪三振','three runs allowed and five strikeouts'),
+                           ('一〜十','one to ten'),('一平の投球','Ippei pitches'),
+                           ('十亀が登板','Togame pitches')]:
+            with self.subTest(original=original,english=english):
+                self.assertEqual(en.number_mismatches(original,english),([],[]))
+        for number,kanji in enumerate('一二三四五六七八九十',1):
+            self.assertEqual(en.number_mismatches(kanji+'安打',str(number)+' hits'),([],[]))
+
+    def test_oct16_changes_and_omissions_still_fail(self):
+        rows=json.loads((ROOT/'scripts/fixtures/japan-reacts/numbers-20261016.json').read_text(encoding='utf8'))
+        for index,before,after in [(0,'58','57'),(0,'116','115'),(0,'64','63'),
+                                   (1,'leadoff','second'),(2,'3-run','2-run'),(2,'26','25'),
+                                   (2,'12th','11th'),(3,'leadoff','second'),(4,'2 assists','3 assists'),
+                                   (4,'2nd','3rd'),(4,'first 2','first 3')]:
+            with self.subTest(index=index,change=after):
+                row=rows[index]
+                self.assertTrue(any(en.number_mismatches(row['original'],row['english'].replace(before,after))))
+        for original,english in [('一発','two homers'),('二発','a homer'),('1番打者','hitter'),
+                           ('二番打者','leadoff hitter'),('初の1番','leadoff hitter'),
+                           ('1番打者','leadoff hitter in the first inning'),
+                           ('26試合ぶり','first in 25 games'),('開幕2連敗','won their first 2 matches'),
+                           ('一安打と一打点','one hit'),('十安打','9 hits')]:
+            with self.subTest(original=original,english=english):
+                self.assertTrue(any(en.number_mismatches(original,english)))
 
 
 if __name__ == '__main__':

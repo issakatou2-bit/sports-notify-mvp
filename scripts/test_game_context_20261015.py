@@ -3,6 +3,9 @@ import copy
 import json
 from pathlib import Path
 import unittest
+from datetime import date
+from unittest.mock import patch
+import numbers_material as nm
 import game_fact_guard as guard
 FIX=json.loads((Path(__file__).parent/'fixtures/fact-guards/20261015_numbers.json').read_text(encoding='utf-8'))
 class GameContext(unittest.TestCase):
@@ -39,6 +42,26 @@ class GameContext(unittest.TestCase):
             m=copy.deepcopy(FIX);m['race']['series'][0].update(round_jp=name,played=need-1,need=need)
             with self.subTest(name=name):
                 self.assertTrue(guard.check(self.dialogue(f'{name}の負ければ終わりの試合で、大谷が3回出塁した。',m)))
+
+    def test_current_load_keeps_game_facts_after_row_removed(self):
+        # mainのdate_jstによる版の選択を経て、現在の保存形で検査へ渡す。
+        for kind in ('batter', 'two_way'):
+            for runs in (0, 1, None):
+                with self.subTest(kind=kind, runs=runs):
+                    stats = {'ab': 4, 'hits': 3, 'hr': 1, 'rbi': 2, 'runs': runs}
+                    row = dict(name='大谷翔平', type=kind, **stats)
+                    if kind == 'two_way':
+                        row.update(ip='7.0', so=10, batting=stats)
+                    recap = {'date': '2026-10-21', 'date_jst': '2026-10-22', 'players': [row]}
+                    with patch.object(nm, '_read', side_effect=lambda p: recap if p.name == 'morning_recap.json' else {}), \
+                         patch('milestones.best_for', return_value={}), patch('insight.player', return_value=[]):
+                        loaded = nm.load('fixture', today=date(2026, 10, 22))
+                    self.assertEqual(len(loaded['players']), 1)
+                    self.assertNotIn('_row', loaded['players'][0])
+                    saved = json.loads(json.dumps(loaded, ensure_ascii=False))
+                    player = guard.material(saved, 'numbers')['players'][0]
+                    self.assertEqual(player['runs'], runs)
+                    self.assertEqual(player['hits'], 3)
 
     def test_serialized_runs_and_missing(self):
         m=copy.deepcopy(FIX);m['players'][0]['game_facts']['runs']=1

@@ -1750,6 +1750,12 @@ JP_PLAYERS_SOCCER = [
      "team_jp": "マインツ", "league": "BL1", "match": "mainz"},
     {"name_en": "Sota Kawasaki", "name_jp": "川﨑颯太", "kana": "カワサキ・ソウタ", "team_en": "Mainz",
      "team_jp": "マインツ", "league": "BL1", "match": "mainz"},
+    # 2026年10月21日追加。CLのポルト0-1PSVで出場した佐野航大を、一覧にいる
+    # 兄の佐野海舟(マインツ)と取り違えた事故を受けて。PSV公式の移籍記事:
+    # https://www.psv.nl/media/artikel/transfer-psv-neemt-kodai-sano-over-van-nec
+    # 漢字・読み: https://www.jfa.jp/samuraiblue/member/sano_kodai.html （佐野 航大 SANO Kodai）
+    {"name_en": "Kodai Sano", "name_jp": "佐野航大", "kana": "サノ・コウダイ", "team_en": "PSV Eindhoven",
+     "team_jp": "PSV", "league": "DED", "match": "psv"},
     # "borussia" はドルトムントとぶつかるので地名側を使う
     {"name_en": "Shuto Machino", "name_jp": "町野修斗", "kana": "マチノ・シュウト",
      "team_en": "Borussia Monchengladbach", "team_jp": "ボルシアMG",
@@ -1764,7 +1770,8 @@ JP_PLAYERS_SOCCER = [
      "team_jp": "シャルケ", "league": "BL2", "match": "schalke"},
 
     # --- セリエA(イタリア) ---
-    {"name_en": "Zion Suzuki", "name_jp": "鈴木ザイオン", "kana": "スズキ・ザイオン", "team_en": "Parma",
+    # 表示名はJFA公式漢字。読みと表示を混ぜない（全42人の根拠はsoccer_player_names.json）。
+    {"name_en": "Zion Suzuki", "name_jp": "鈴木彩艶", "kana": "スズキ・ザイオン", "team_en": "Parma",
      "team_jp": "パルマ", "league": "SA", "match": "parma"},
 
     # --- リーグ・アン(フランス) ---
@@ -1825,7 +1832,7 @@ JP_PLAYERS_SOCCER = [
     {"name_en": "Tomoki Iwata", "name_jp": "岩田智輝", "kana": "イワタ・トモキ",
      "team_en": "Birmingham City", "team_jp": "バーミンガム", "league": "ELC",
      "match": "birmingham"},
-    {"name_en": "Yu Hirakawa", "name_jp": "平川怜", "kana": "ヒラカワ・リョウ",
+    {"name_en": "Yu Hirakawa", "name_jp": "平河悠", "kana": "ヒラカワ・ユウ",
      "team_en": "Bristol City", "team_jp": "ブリストル・シティ",
      "league": "ELC", "match": "bristolcity"},
 ]
@@ -2252,7 +2259,8 @@ def resolve_jp_player_teams(date_str: str) -> dict:
     return jp_team_map
 
 
-def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) -> dict | None:
+def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str,
+                         game_pk: str | None = None) -> dict | None:
     """
     同じ2チームの直近の対戦成績・シリーズ内の位置づけを取得する。
     MLB Stats APIのスケジュールに含まれる seriesGameNumber/gamesInSeries を使う。
@@ -2282,6 +2290,7 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
         past_results = []  # (date, home_wins: bool)
         series_game_number = None
         games_in_series = None
+        targets = {}
 
         for date_entry in data.get("dates", []):
             for g in date_entry.get("games", []):
@@ -2291,9 +2300,11 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
                 if pair != {home_team_id, away_team_id}:
                     continue
 
-                if g.get("gameDate", "").startswith(date_str):
-                    series_game_number = g.get("seriesGameNumber")
-                    games_in_series = g.get("gamesInSeries")
+                # 試合IDで照合する。gameDate は UTC なので、米国の夜の試合は
+                # 前日の試合が date_str に一致する（10/28 第5戦の通知に第4戦の番号が入った）。
+                if (str(g.get("gamePk")) == str(game_pk) if game_pk
+                        else (g.get("officialDate") or date_entry.get("date")) == date_str):
+                    targets[g.get("gamePk")] = g
 
                 if g.get("status", {}).get("abstractGameCode") == "F":
                     home_score = g["teams"]["home"].get("score")
@@ -2306,6 +2317,12 @@ def fetch_series_context(home_team_id: str, away_team_id: str, date_str: str) ->
                         this_game_home_won if home_id == home_team_id else not this_game_home_won
                     )
                     past_results.append(normalized_home_won)
+
+        # 日付だけではダブルヘッダーのどちらかを決められない。
+        if len(targets) == 1:
+            target = next(iter(targets.values()))
+            series_game_number = target.get("seriesGameNumber")
+            games_in_series = target.get("gamesInSeries")
 
         if not past_results and series_game_number is None:
             return None
@@ -3144,6 +3161,13 @@ FORBIDDEN_SOCCER_WORDS = ["ゲーム差", "地区", "完封", "先発投手",
                           "球場", "本塁打", "打率", "防御率"]
 
 
+# 大会の形式（総当たり・参加チームなど）は材料に無く、AIが言い切ると誤りになる。
+# 10/21「CLは1部リーグの全チームによる総当たり戦」と書いた（正しくは36クラブが
+# 各8チームと対戦。UEFA規程17条）。形式の説明そのものを書かせない。
+FORMAT_CLAIM = re.compile(r"総当たり|全(?:チーム|クラブ)(?:が|と)(?:参加|対戦|戦)"
+                          r"|1部リーグの全|ホーム・?アンド・?アウェー方式|リーグフェーズは")
+
+
 def forbidden_wording(text: str, soccer: bool = False) -> list:
     """その文に含まれる、使ってはいけない語を返す。"""
     if not text:
@@ -3151,7 +3175,10 @@ def forbidden_wording(text: str, soccer: bool = False) -> list:
     words = list(FORBIDDEN_WORDING)
     if soccer:
         words += FORBIDDEN_SOCCER_WORDS
-    return [w for w in words if w in text]
+    found = [w for w in words if w in text]
+    if soccer:
+        found += sorted(set(m.group(0) for m in FORMAT_CLAIM.finditer(text)))
+    return found
 
 
 def _call_ai(prompt: str, api_key: str, max_tokens: int = 700):
@@ -3539,6 +3566,9 @@ def main():
             print(f"[info] manual_notes.jsonから{len(manual_notes)}件の手動情報を反映しました")
 
     result = build_output(games, standings, jp_team_map, manual_reasons)
+    if not args.mock:
+        # 取得時刻と検索した公式日付は、日またぎや --date 指定では異なる。
+        result["schedule_date"] = date_str
 
     # シリーズ文脈(前の試合結果・第何戦か)を取得
     if not args.mock:
@@ -3546,7 +3576,8 @@ def main():
             if game["league"] != "MLB":
                 continue
             series_context = fetch_series_context(
-                game["home_team_id"], game["away_team_id"], date_str
+                game["home_team_id"], game["away_team_id"], date_str,
+                game.get("game_id"),
             )
             if series_context:
                 game["series_context"] = series_context

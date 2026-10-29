@@ -11,15 +11,22 @@ import name_reading_guard as readings
 ROOT=Path(__file__).resolve().parents[1]
 
 
+def published_entry(data,published):
+    day=slots.datetime.fromisoformat(data['generated_at'].replace('Z','+00:00')).astimezone(slots.JST).date().isoformat()
+    entry=(published.get('daily_soccer') or {}).get(day) or {}
+    import backfill_records
+    if not entry.get('video_id') or not backfill_records.matches_kind('daily_soccer',entry):
+        raise ValueError('当日の公開/予約済み予告の記録がありません')
+    return day,entry
+
+
 def binding(data,narration):
     def digest(value):return hashlib.sha256(json.dumps(value,ensure_ascii=False,sort_keys=True).encode('utf8')).hexdigest()
     return dict(material_sha256=digest(data),narration_sha256=digest(narration))
 
 
 def snapshot(data,narration,published):
-    day=slots.datetime.fromisoformat(data['generated_at'].replace('Z','+00:00')).astimezone(slots.JST).date().isoformat()
-    entry=(published.get('daily_soccer') or {}).get(day) or {}
-    if not entry.get('video_id'):raise ValueError('当日の公開/予約済み予告の記録がありません')
+    day,entry=published_entry(data,published)
     actual=entry.get('preview_binding') or {}
     if any(actual.get(k)!=v for k,v in binding(data,narration).items()):raise ValueError('公開予告の材料/原稿hashが一致しません')
     segments=[s for s in narration.get('segments',[]) if s.get('kind') in ('preview','game')]
@@ -46,7 +53,12 @@ def snapshot(data,narration,published):
                          home=game['home_team_name'],away=game['away_team_name'],start_utc=slots.kickoff(game,data['generated_at']).isoformat(),
                          reasons=copy.deepcopy(facts.get('reasons',[])),expectation=player,spoken=seg['text'],
                          standings={s:dict(game.get(s+'_standing') or {},as_of=data['generated_at'],competition=code,season=game.get('season')) for s in ('home','away')}))
-    if selected is not None and [r['game_id'] for r in rows]!=selected:raise ValueError('公開予告と選定順が一致しません')
+    if selected is not None and [r['game_id'] for r in rows]!=selected:
+        adjustment=narration.get('preview_length_adjustment') or {}
+        kept=[r['game_id'] for r in rows]
+        if not (kept and adjustment.get('original_ids')==selected and
+                adjustment.get('kept_ids')==kept and kept==selected[:len(kept)]):
+            raise ValueError('公開予告と選定順が一致しません')
     if not rows:raise ValueError('予告原稿に試合の区間がありません')
     return dict(day=day,video_id=entry['video_id'],title=entry.get('title'),published_at=entry.get('published_at'),binding=actual,games=rows)
 
@@ -54,10 +66,14 @@ def snapshot(data,narration,published):
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--games',type=Path,default=ROOT/'data/soccer_games.json');ap.add_argument('--narration',type=Path,default=ROOT/'build/soccer_narration.json');ap.add_argument('--published',type=Path,default=ROOT/'data/published_videos.json');ap.add_argument('--out',type=Path,default=ROOT/'data/soccer_preview_history.json')
     args=ap.parse_args();read=lambda p:json.loads(p.read_text(encoding='utf8'))
-    record=snapshot(read(args.games),read(args.narration),read(args.published))
+    data,published=read(args.games),read(args.published)
+    day,entry=published_entry(data,published)
     history=read(args.out) if args.out.exists() else {}
-    if (history.get(record['day']) or {}).get('video_id')==record['video_id']:
-        print('公開予告は保存済み:',record['day']);return
+    previous=history.get(day) or {}
+    if previous.get('video_id')==entry['video_id'] and previous.get('binding')==entry.get('preview_binding') and entry.get('preview_binding'):
+        # 再実行の材料・原稿で、既に保存した別の実行の予告を作り直さない。
+        print('公開予告は保存済み:',day);return
+    record=snapshot(data,read(args.narration),published)
     import soccer_result_context
     record=soccer_result_context.capture_before(record)
     history[record['day']]=record

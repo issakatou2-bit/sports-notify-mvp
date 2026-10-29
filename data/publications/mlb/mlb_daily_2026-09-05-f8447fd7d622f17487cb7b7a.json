@@ -1,0 +1,28 @@
+{
+  "publication_id": "mlb:daily:2026-09-05",
+  "domain": "mlb",
+  "kind": "daily",
+  "key_parts": {
+    "legacy_key": "2026-09-05"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/daily/2026-09-05",
+      "service": "youtube",
+      "video_id": "NghSwV5R270",
+      "state": "scheduled",
+      "scheduled_at": "2026-09-05T10:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-09-05",
+      "run_at": "2026-09-05T09:56:53.745799+00:00",
+      "details": {},
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.372349+00:00",
+      "fingerprint": "68227defa538fb00e1ecb295d9edb620107ba8695c35073484d31909b493eac8",
+      "event_id": "f7e424e22b050728fb4d103b76eab906b3e849ec92bb0ad073875a09284eecec"
+    }
+  ]
+}

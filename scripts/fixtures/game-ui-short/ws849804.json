@@ -1,0 +1,290 @@
+{
+  "provenance": "data/ps_game_topics.json (origin/main 4f953958); 次戦日時は保存映像 build/codex/tmp/gameui_short/current.mp4 29秒の表示より",
+  "topic": {
+    "key": "season_game_849804",
+    "label": "ワールドシリーズ第3戦",
+    "hook": "ブリュワーズがレイズに10対1でワールドシリーズ3勝0敗に",
+    "heading": "ブリュワーズ 対 レイズ　ワールドシリーズ第3戦",
+    "intro": "ワールドシリーズ第3戦、ブリュワーズが敵地でレイズに10対1で勝ちました。",
+    "intro_as_is": true,
+    "style": "v3",
+    "team_id": 158,
+    "abbr": "MIL",
+    "title": "【MLB】ブリュワーズがレイズに10対1でワールドシリーズ3勝0敗に｜コントレラスの決勝打 #Shorts",
+    "items": [
+      [
+        "試合の結果",
+        "ブリュワーズ 10対1 レイズ　敵地で勝利　シリーズはブリュワーズの3勝0敗"
+      ],
+      [
+        "先発",
+        "ブリュワーズ ガッサー 6回を無失点　レイズ ペラルタ 4回と3分の2を5失点"
+      ]
+    ],
+    "japanese": [],
+    "japanese_lead": "この試合の日本人選手は、",
+    "ps_ended": true,
+    "story": true,
+    "game": true,
+    "source": null,
+    "voice": {
+      "said": "初優勝のトロフィーまであと1勝!!ミルウォーキーでは1957年のブレーブス以来だ!",
+      "text": "1 more win to that FIRST trophy! First in Milwaukee since 1957 Braves",
+      "url": "https://www.youtube.com/watch?v=b7BE1gwgv64",
+      "likes": 32,
+      "at": "2026-10-27T03:41:21Z",
+      "source": "MLB公式ハイライトのコメント"
+    },
+    "headline": null,
+    "game_pk": 849804,
+    "game_v4": {
+      "score": {
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 2,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 8,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": 1
+          }
+        ],
+        "source": "MLB Stats API / liveData.linescore",
+        "away": {
+          "id": 158,
+          "name": "ブリュワーズ",
+          "abbr": "MIL",
+          "total": 10
+        },
+        "home": {
+          "id": 139,
+          "name": "レイズ",
+          "abbr": "TB",
+          "total": 1
+        }
+      },
+      "decisive": {
+        "inning": "3回表",
+        "subject": "ウィリアム・コントレラス",
+        "action": "タイムリー",
+        "detail": "",
+        "event": "Single"
+      }
+    },
+    "game_date": "2026-10-27T00:00:00Z",
+    "jp_first": false,
+    "next_team_id": 158,
+    "finished_at": "2026-10-27T03:10:16.219000+00:00",
+    "next_game_jp": {
+      "day": "10月28日",
+      "game": 4
+    },
+    "v3": {
+      "who": "ブリュワーズ　ワールドシリーズ第3戦",
+      "big": "10",
+      "unit": "対1",
+      "sub": "敵地で勝利",
+      "tag": "決勝点 コントレラスのタイムリー",
+      "chips": [
+        {
+          "label": "ワールドシリーズ　ブリュワーズ",
+          "score": "3-0",
+          "win": true
+        }
+      ],
+      "ticker": "次の試合　日本時間10月28日　ワールドシリーズ第4戦"
+    },
+    "next_line": {
+      "kind": "team",
+      "say": "次は10月28日9時、ワールドシリーズ第4戦です。",
+      "screen": "次の試合　10月28日(水)9時　ワールドシリーズ第4戦　対レイズ",
+      "team_ids": [
+        158,
+        139
+      ],
+      "facts": {
+        "jst": "2026-10-28T09:00:00+09:00",
+        "round": "ワールドシリーズ",
+        "game": 4
+      },
+      "source_url": "https://statsapi.mlb.com/api/v1/schedule"
+    }
+  },
+  "full_topic": {
+    "key": "season_game_849804",
+    "label": "ワールドシリーズ第3戦",
+    "hook": "ブリュワーズがレイズに10対1でワールドシリーズ3勝0敗に",
+    "heading": "ブリュワーズ 対 レイズ　ワールドシリーズ第3戦",
+    "intro": "ワールドシリーズ第3戦、ブリュワーズが敵地でレイズに10対1で勝ちました。",
+    "intro_as_is": true,
+    "style": "v3",
+    "team_id": 158,
+    "abbr": "MIL",
+    "title": "【MLB】ブリュワーズがレイズに10対1でワールドシリーズ3勝0敗に｜コントレラスの決勝打 #Shorts",
+    "items": [
+      [
+        "試合の結果",
+        "ブリュワーズ 10対1 レイズ　敵地で勝利　シリーズはブリュワーズの3勝0敗"
+      ],
+      [
+        "決勝点",
+        "3回表　ウィリアム・コントレラスのタイムリー"
+      ],
+      [
+        "先発",
+        "ブリュワーズ ガッサー 6回を無失点　レイズ ペラルタ 4回と3分の2を5失点"
+      ],
+      [
+        "ハイライトのコメント欄から",
+        "「初優勝のトロフィーまであと1勝!!ミルウォーキーでは1957年のブレーブス以来だ!」"
+      ]
+    ],
+    "japanese": [],
+    "japanese_lead": "この試合の日本人選手は、",
+    "ps_ended": true,
+    "story": true,
+    "game": true,
+    "source": null,
+    "voice": {
+      "said": "初優勝のトロフィーまであと1勝!!ミルウォーキーでは1957年のブレーブス以来だ!",
+      "text": "1 more win to that FIRST trophy! First in Milwaukee since 1957 Braves",
+      "url": "https://www.youtube.com/watch?v=b7BE1gwgv64",
+      "likes": 32,
+      "at": "2026-10-27T03:41:21Z",
+      "source": "MLB公式ハイライトのコメント"
+    },
+    "headline": null,
+    "game_pk": 849804,
+    "game_v4": {
+      "score": {
+        "innings": [
+          {
+            "num": 1,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 2,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 3,
+            "away": 2,
+            "home": 0
+          },
+          {
+            "num": 4,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 5,
+            "away": 8,
+            "home": 0
+          },
+          {
+            "num": 6,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 7,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 8,
+            "away": 0,
+            "home": 0
+          },
+          {
+            "num": 9,
+            "away": 0,
+            "home": 1
+          }
+        ],
+        "source": "MLB Stats API / liveData.linescore",
+        "away": {
+          "id": 158,
+          "name": "ブリュワーズ",
+          "abbr": "MIL",
+          "total": 10
+        },
+        "home": {
+          "id": 139,
+          "name": "レイズ",
+          "abbr": "TB",
+          "total": 1
+        }
+      },
+      "decisive": {
+        "inning": "3回表",
+        "subject": "ウィリアム・コントレラス",
+        "action": "タイムリー",
+        "detail": "",
+        "event": "Single"
+      }
+    },
+    "game_date": "2026-10-27T00:00:00Z",
+    "jp_first": false,
+    "next_team_id": 158,
+    "finished_at": "2026-10-27T03:10:16.219000+00:00",
+    "next_game_jp": {
+      "day": "10月28日",
+      "game": 4
+    },
+    "v3": {
+      "who": "ブリュワーズ　ワールドシリーズ第3戦",
+      "big": "10",
+      "unit": "対1",
+      "sub": "敵地で勝利",
+      "tag": "決勝点 コントレラスのタイムリー",
+      "chips": [
+        {
+          "label": "ワールドシリーズ　ブリュワーズ",
+          "score": "3-0",
+          "win": true
+        }
+      ],
+      "ticker": "次の試合　日本時間10月28日　ワールドシリーズ第4戦"
+    }
+  }
+}

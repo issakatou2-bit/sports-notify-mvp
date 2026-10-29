@@ -5,6 +5,7 @@ import hmac
 import importlib
 import json
 import os
+from pathlib import Path
 import re
 
 import ui_voice_queue as q
@@ -12,6 +13,60 @@ import ui_voice_queue as q
 MAGIC = q.PARTS_MAGIC
 REF = q.PARTS_REF
 MAX_PLAIN = 12 * 1024 * 1024
+
+
+class PortraitUnavailable(q.QueueError):
+    """声を使う前に、回全体をめたんへ戻すための区別。"""
+
+
+def validate(directory):
+    """口・目・腕の全状態が実際に描けることを受取時に確認する。"""
+    from PIL import Image
+    folder = Path(directory)
+    spec = json.loads((folder/'parts.json').read_text(encoding='utf8'))
+    required = {'右腕': ('基本', '上げ', '指', '考え'), '左腕': ('基本', '上げ'),
+                '眉': ('基本', '上げ', '困り'), '目': ('開', '閉', '笑', '見開'),
+                '口': ('閉', '開', '大', '笑')}
+    names = [spec['体']]
+    for group, states in required.items():
+        names.extend(spec[group][state] for state in states)
+    size, crop = spec['size'], spec['crop']
+    if (len(size) != 2 or not all(isinstance(n, int) and 0 < n <= 8192 for n in size)
+            or len(crop) != 4 or not 0 <= crop[0] < crop[2] <= size[0]
+            or not 0 <= crop[1] < crop[3] <= size[1]):
+        raise PortraitUnavailable('雨衣の立ち絵の範囲が不正です')
+    for name in set(names):
+        if not re.fullmatch(r'p[0-9]{3}\.png', name):
+            raise PortraitUnavailable('雨衣の立ち絵の部品名が不正です')
+        with Image.open(folder/name) as im:
+            if im.size != tuple(size):
+                raise PortraitUnavailable('雨衣の立ち絵の部品サイズが不一致です')
+            im.verify()
+    return str(folder.resolve())
+
+
+def install(ref, blob, directory):
+    """注文の声と原稿検査が使う、共通の復号・部品検査。"""
+    try:
+        files = decrypt(ref, blob)
+        folder = Path(directory)
+        folder.mkdir(parents=True, exist_ok=True)
+        for name, content in files.items():
+            (folder/name).write_bytes(content)
+        return validate(folder)
+    except Exception:
+        raise PortraitUnavailable('雨衣の立ち絵を受け取り・復号できません') from None
+
+
+def receive(directory, queue=None, ref=None):
+    """音声専用枝の共用部品。検証前のPS原稿も同じ部品を使う。"""
+    try:
+        key()
+        _, _, files = (queue or q.GitQueue()).read()
+        ref = ref or json.loads(files['parts/current.json'])['ref']
+        return install(ref, files[ref], directory)
+    except Exception:
+        raise PortraitUnavailable('雨衣の立ち絵がありません') from None
 
 
 def key():

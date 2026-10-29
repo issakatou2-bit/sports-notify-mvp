@@ -157,9 +157,10 @@ def main():
     if args.archive_dir:
         # The engine saved this edition before the availability filter. Update only
         # matching game IDs in that edition; preserve soccer and historical results.
-        day = str(payload.get('generated_at', ''))[:10]
-        from datetime import date
-        date.fromisoformat(day)
+        from sports_dates import archive_day
+        day = archive_day(payload)
+        if day is None:
+            raise ValueError('アーカイブの対象日を確認できません')
         archive = Path(args.archive_dir) / (day + '.json')
         if archive.exists():
             previous = json.loads(archive.read_text(encoding='utf-8'))

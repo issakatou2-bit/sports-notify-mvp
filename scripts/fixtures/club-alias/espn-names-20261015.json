@@ -1,0 +1,394 @@
+{
+  "checked_on": "2026-10-15",
+  "method": "ESPN順位表/チーム一覧は接続制限のため取得不可。保存済みESPN日程を使用。soccer_gamesは既知名をクラブIDへ変換済みのため、その名称も含む。未確認の呼称は推測追加しない。",
+  "sources": [
+    {
+      "path": "data/soccer_games.json",
+      "commit": "91ea1e19e25716dd86a11b4a1a4cb80e901741cd",
+      "sha256": "0b042241fdb6009108fa6caebcf846711a9360d639342327f51fd4b745044f2d",
+      "generated_at": "2026-10-15T09:53:56.805003+00:00",
+      "run": 38740942922,
+      "names_canonicalized": true
+    },
+    {
+      "path": "scripts/fixtures/soccer-results/scoreboards.json",
+      "sha256": "8026c65d908aac3a68dbd86b9869fb86fd7aaecba2b3aaefc24e252661dfcc34",
+      "fields": [
+        "displayName",
+        "name",
+        "shortDisplayName"
+      ],
+      "names_canonicalized": false
+    }
+  ],
+  "competitions": {
+    "EL": {
+      "AC Milan": "AC Milan",
+      "AC Omonia Nicosia": "AC Omonia Nicosia",
+      "AC Sparta Praha": "AC Sparta Praha",
+      "AFC Bournemouth": "AFC Bournemouth",
+      "AZ Alkmaar": "AZ Alkmaar",
+      "Bayer 04 Leverkusen": "Bayer 04 Leverkusen",
+      "Beşiktaş JK": "Beşiktaş JK",
+      "Celtic FC": "Celtic FC",
+      "Crystal Palace FC": "Crystal Palace FC",
+      "FC Ararat-Armenia": "FC Ararat-Armenia",
+      "FC Red Bull Salzburg": "FC Red Bull Salzburg",
+      "FC Viktoria Plzeň": "FC Viktoria Plzeň",
+      "Ferencvárosi TC": "Ferencvárosi TC",
+      "GNK Dinamo Zagreb": "GNK Dinamo Zagreb",
+      "Hapoel Be'er Sheva FC": "Hapoel Be'er Sheva FC",
+      "Jagiellonia Białystok": "Jagiellonia Białystok",
+      "Juventus FC": "Juventus FC",
+      "KKS Lech Poznań": "KKS Lech Poznań",
+      "Lillestrøm SK": "Lillestrøm SK",
+      "NEC Nijmegen": "NEC Nijmegen",
+      "NK Celje": "NK Celje",
+      "OFI Crete FC": "OFI Crete FC",
+      "Olympiacos FC": "Olympiacos FC",
+      "Olympique Lyonnais": "Olympique Lyonnais",
+      "Olympique de Marseille": "Olympique de Marseille",
+      "PFC Levski Sofia": "PFC Levski Sofia",
+      "RC Celta de Vigo": "RC Celta de Vigo",
+      "RSC Anderlecht": "RSC Anderlecht",
+      "Real Sociedad de Fútbol": "Real Sociedad de Fútbol",
+      "Royale Union Saint-Gilloise": "Royale Union Saint-Gilloise",
+      "SC União Torreense": "SC União Torreense",
+      "SK Sturm Graz": "SK Sturm Graz",
+      "SL Benfica": "SL Benfica",
+      "Stade Rennais FC 1901": "Stade Rennais FC 1901",
+      "Sunderland AFC": "Sunderland AFC",
+      "TSG 1899 Hoffenheim": "TSG 1899 Hoffenheim"
+    },
+    "PL": {
+      "AFC Bournemouth": "AFC Bournemouth",
+      "Arsenal FC": "Arsenal FC",
+      "Aston Villa FC": "Aston Villa FC",
+      "Brentford FC": "Brentford FC",
+      "Brighton & Hove Albion FC": "Brighton & Hove Albion FC",
+      "Chelsea FC": "Chelsea FC",
+      "Coventry City FC": "Coventry City FC",
+      "Crystal Palace FC": "Crystal Palace FC",
+      "Everton FC": "Everton FC",
+      "Fulham FC": "Fulham FC",
+      "Hull City AFC": "Hull City AFC",
+      "Ipswich Town FC": "Ipswich Town FC",
+      "Leeds United FC": "Leeds United FC",
+      "Liverpool FC": "Liverpool FC",
+      "Manchester City FC": "Manchester City FC",
+      "Manchester United FC": "Manchester United FC",
+      "Newcastle United FC": "Newcastle United FC",
+      "Nottingham Forest FC": "Nottingham Forest FC",
+      "Sunderland AFC": "Sunderland AFC",
+      "Tottenham Hotspur FC": "Tottenham Hotspur FC"
+    },
+    "PD": {
+      "Athletic Club": "Athletic Club",
+      "Atlético Madrid": "Club Atlético de Madrid",
+      "Barcelona": "FC Barcelona",
+      "CA Osasuna": "CA Osasuna",
+      "Deportivo": "RC Deportivo La Coruña",
+      "Deportivo Alavés": "Deportivo Alavés",
+      "Elche CF": "Elche CF",
+      "Getafe CF": "Getafe CF",
+      "Levante UD": "Levante UD",
+      "Málaga CF": "Málaga CF",
+      "RC Celta de Vigo": "RC Celta de Vigo",
+      "RCD Espanyol de Barcelona": "RCD Espanyol de Barcelona",
+      "Racing Santander": "Real Racing Club de Santander",
+      "Rayo Vallecano": "Rayo Vallecano de Madrid",
+      "Real Betis Balompié": "Real Betis Balompié",
+      "Real Madrid CF": "Real Madrid CF",
+      "Real Sociedad de Fútbol": "Real Sociedad de Fútbol",
+      "Sevilla FC": "Sevilla FC",
+      "Valencia CF": "Valencia CF",
+      "Villarreal CF": "Villarreal CF"
+    },
+    "BL1": {
+      "1. FC Union Berlin": "1. FC Union Berlin",
+      "1. FSV Mainz 05": "1. FSV Mainz 05",
+      "Bayer 04 Leverkusen": "Bayer 04 Leverkusen",
+      "Bayern Munich": "FC Bayern München",
+      "Borussia Dortmund": "Borussia Dortmund",
+      "Borussia Mönchengladbach": "Borussia Mönchengladbach",
+      "Eintracht Frankfurt": "Eintracht Frankfurt",
+      "FC Augsburg": "FC Augsburg",
+      "FC Cologne": "1. FC Köln",
+      "Hamburg SV": "Hamburger SV",
+      "RB Leipzig": "RB Leipzig",
+      "SC Freiburg": "SC Freiburg",
+      "SC Paderborn 07": "SC Paderborn 07",
+      "SV Elversberg": "SV 07 Elversberg",
+      "Schalke 04": "FC Schalke 04",
+      "TSG 1899 Hoffenheim": "TSG 1899 Hoffenheim",
+      "VfB Stuttgart": "VfB Stuttgart",
+      "Werder Bremen": "SV Werder Bremen"
+    },
+    "SA": {
+      "AC Milan": "AC Milan",
+      "AC Monza": "AC Monza",
+      "ACF Fiorentina": "ACF Fiorentina",
+      "AS Roma": "AS Roma",
+      "Atalanta BC": "Atalanta BC",
+      "Bologna FC 1909": "Bologna FC 1909",
+      "Cagliari Calcio": "Cagliari Calcio",
+      "Como 1907": "Como 1907",
+      "FC Internazionale Milano": "FC Internazionale Milano",
+      "Frosinone Calcio": "Frosinone Calcio",
+      "Genoa CFC": "Genoa CFC",
+      "Juventus FC": "Juventus FC",
+      "Parma Calcio 1913": "Parma Calcio 1913",
+      "SS Lazio": "SS Lazio",
+      "SSC Napoli": "SSC Napoli",
+      "Torino FC": "Torino FC",
+      "US Lecce": "US Lecce",
+      "US Sassuolo Calcio": "US Sassuolo Calcio",
+      "Udinese Calcio": "Udinese Calcio",
+      "Venezia FC": "Venezia FC"
+    },
+    "FL1": {
+      "AJ Auxerre": "AJ Auxerre",
+      "AS Monaco FC": "AS Monaco FC",
+      "Angers SCO": "Angers SCO",
+      "Brest": "Stade Brestois 29",
+      "ES Troyes AC": "ES Troyes AC",
+      "FC Lorient": "FC Lorient",
+      "Le Havre AC": "Le Havre AC",
+      "Le Mans FC": "Le Mans FC",
+      "Lille OSC": "Lille OSC",
+      "OGC Nice": "OGC Nice",
+      "Olympique Lyonnais": "Olympique Lyonnais",
+      "Olympique de Marseille": "Olympique de Marseille",
+      "Paris FC": "Paris FC",
+      "Paris Saint-Germain FC": "Paris Saint-Germain FC",
+      "RC Strasbourg Alsace": "RC Strasbourg Alsace",
+      "Racing Club de Lens": "Racing Club de Lens",
+      "Stade Rennais FC 1901": "Stade Rennais FC 1901",
+      "Toulouse FC": "Toulouse FC"
+    },
+    "CL": {
+      "AS Roma": "AS Roma",
+      "Arsenal FC": "Arsenal FC",
+      "Aston Villa FC": "Aston Villa FC",
+      "Atlético Madrid": "Club Atlético de Madrid",
+      "Barcelona": "FC Barcelona",
+      "Bayern Munich": "FC Bayern München",
+      "Borussia Dortmund": "Borussia Dortmund",
+      "Club Brugge KV": "Club Brugge KV",
+      "Como 1907": "Como 1907",
+      "FC Internazionale Milano": "FC Internazionale Milano",
+      "FC Porto": "FC Porto",
+      "FK Bodø/Glimt": "FK Bodø/Glimt",
+      "FK Shakhtar Donetsk": "FK Shakhtar Donetsk",
+      "Fenerbahçe SK": "Fenerbahçe SK",
+      "Feyenoord Rotterdam": "Feyenoord Rotterdam",
+      "Galatasaray SK": "Galatasaray SK",
+      "LASK Linz": "LASK Linz",
+      "Lille OSC": "Lille OSC",
+      "Liverpool FC": "Liverpool FC",
+      "Manchester City FC": "Manchester City FC",
+      "Manchester United FC": "Manchester United FC",
+      "PAE AEK": "PAE AEK",
+      "PSV": "PSV",
+      "Paris Saint-Germain FC": "Paris Saint-Germain FC",
+      "RB Leipzig": "RB Leipzig",
+      "Racing Club de Lens": "Racing Club de Lens",
+      "Real Betis Balompié": "Real Betis Balompié",
+      "Real Madrid CF": "Real Madrid CF",
+      "SK Slavia Praha": "SK Slavia Praha",
+      "SSC Napoli": "SSC Napoli",
+      "Sabah FK": "Sabah FK",
+      "Sporting Clube de Portugal": "Sporting Clube de Portugal",
+      "VfB Stuttgart": "VfB Stuttgart",
+      "Viking FK": "Viking FK",
+      "Villarreal CF": "Villarreal CF",
+      "ŠK Slovan Bratislava": "ŠK Slovan Bratislava"
+    },
+    "UECL": {
+      "AFC Ajax": "AFC Ajax",
+      "AGF Aarhus": "AGF Aarhus",
+      "AS Monaco FC": "AS Monaco FC",
+      "Atalanta BC": "Atalanta BC",
+      "Brighton & Hove Albion FC": "Brighton & Hove Albion FC",
+      "CS Universitatea Craiova": "CS Universitatea Craiova",
+      "FC Iberia 1999": "FC Iberia 1999",
+      "FC Kairat Almaty": "FC Kairat Almaty",
+      "FC København": "FC København",
+      "FC Lugano": "FC Lugano",
+      "FC Midtjylland": "FC Midtjylland",
+      "FC Nordsjælland": "FC Nordsjælland",
+      "FC Thun": "FC Thun",
+      "FC Twente": "FC Twente",
+      "FK Borac Banja Luka": "FK Borac Banja Luka",
+      "FK Crvena Zvezda": "FK Crvena Zvezda",
+      "FK Jablonec": "FK Jablonec",
+      "FK Kauno Žalgiris": "FK Kauno Žalgiris",
+      "Getafe CF": "Getafe CF",
+      "HNK Hajduk Split": "HNK Hajduk Split",
+      "Heart of Midlothian FC": "Heart of Midlothian FC",
+      "Inter Club d'Escaldes": "Inter Club d'Escaldes",
+      "KAA Gent": "KAA Gent",
+      "KF Egnatia": "KF Egnatia",
+      "KuPS Kuopio": "KuPS Kuopio",
+      "Lincoln Red Imps FC": "Lincoln Red Imps FC",
+      "Mjällby AIF": "Mjällby AIF",
+      "PFC CSKA Sofia": "PFC CSKA Sofia",
+      "Pafos FC": "Pafos FC",
+      "Panathinaikos FC": "Panathinaikos FC",
+      "Riga FC": "Riga FC",
+      "SC Braga": "SC Braga",
+      "SC Freiburg": "SC Freiburg",
+      "SK Brann": "SK Brann",
+      "Sint-Truidense VV": "Sint-Truidense VV",
+      "Trabzonspor": "Trabzonspor"
+    }
+  },
+  "scoreboard_names": {
+    "1. FC Union Berlin": [
+      "1. FC Union Berlin",
+      "Union Berlin"
+    ],
+    "1. FSV Mainz 05": [
+      "Mainz"
+    ],
+    "AFC Bournemouth": [
+      "AFC Bournemouth",
+      "Bournemouth"
+    ],
+    "AJ Auxerre": [
+      "AJ Auxerre",
+      "Auxerre"
+    ],
+    "AS Monaco FC": [
+      "AS Monaco",
+      "Monaco"
+    ],
+    "Arsenal FC": [
+      "Arsenal"
+    ],
+    "Aston Villa FC": [
+      "Aston Villa"
+    ],
+    "Borussia Mönchengladbach": [
+      "Borussia Mönchengladbach",
+      "Gladbach"
+    ],
+    "Brighton & Hove Albion FC": [
+      "Brighton",
+      "Brighton & Hove Albion"
+    ],
+    "Cagliari Calcio": [
+      "Cagliari"
+    ],
+    "Coventry City FC": [
+      "Coventry",
+      "Coventry City"
+    ],
+    "Crystal Palace FC": [
+      "C Palace",
+      "Crystal Palace"
+    ],
+    "Eintracht Frankfurt": [
+      "Eintracht Frankfurt",
+      "Frankfurt"
+    ],
+    "Elche CF": [
+      "Elche"
+    ],
+    "Everton FC": [
+      "Everton"
+    ],
+    "FC Bayern München": [
+      "Bayern",
+      "Bayern Munich"
+    ],
+    "Fulham FC": [
+      "Fulham"
+    ],
+    "Genoa CFC": [
+      "Genoa"
+    ],
+    "Hull City AFC": [
+      "Hull",
+      "Hull City"
+    ],
+    "Ipswich Town FC": [
+      "Ipswich",
+      "Ipswich Town"
+    ],
+    "Le Havre AC": [
+      "Le Havre AC"
+    ],
+    "Leeds United FC": [
+      "Leeds",
+      "Leeds United"
+    ],
+    "Lille OSC": [
+      "Lille"
+    ],
+    "Liverpool FC": [
+      "Liverpool"
+    ],
+    "Manchester United FC": [
+      "Man United",
+      "Manchester United"
+    ],
+    "Newcastle United FC": [
+      "Newcastle",
+      "Newcastle United"
+    ],
+    "Nottingham Forest FC": [
+      "Nottingham Forest",
+      "Nottm Forest"
+    ],
+    "OGC Nice": [
+      "Nice"
+    ],
+    "Paris FC": [
+      "Paris FC"
+    ],
+    "Parma Calcio 1913": [
+      "Parma"
+    ],
+    "RC Strasbourg Alsace": [
+      "Strasbourg"
+    ],
+    "RCD Espanyol de Barcelona": [
+      "Espanyol"
+    ],
+    "Racing Club de Lens": [
+      "Lens"
+    ],
+    "Real Sociedad de Fútbol": [
+      "Real Sociedad"
+    ],
+    "SC Freiburg": [
+      "Freiburg",
+      "SC Freiburg"
+    ],
+    "SC Paderborn 07": [
+      "Paderborn",
+      "SC Paderborn 07"
+    ],
+    "Stade Brestois 29": [
+      "Brest"
+    ],
+    "TSG 1899 Hoffenheim": [
+      "Hoffenheim",
+      "TSG Hoffenheim"
+    ],
+    "Tottenham Hotspur FC": [
+      "Spurs",
+      "Tottenham Hotspur"
+    ],
+    "Toulouse FC": [
+      "Toulouse"
+    ],
+    "Udinese Calcio": [
+      "Udinese"
+    ],
+    "Valencia CF": [
+      "Valencia"
+    ]
+  }
+}

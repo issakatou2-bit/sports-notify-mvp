@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import ui_voice_queue
 
 from ps_render_template import render, background_team
 from ps_daily_titles import ROUND, forecast_title, situation
@@ -71,14 +72,20 @@ def validate_source(snapshot, evidence, now):
     if not timedelta(0) <= age <= timedelta(hours=2):
         raise ValueError('PS日程が古いか未来の取得時刻です')
     ctx = pe.editorial(snapshot, evidence['schedule'], now, evidence['source_url'])
-    games = [g for d in evidence['schedule'].get('dates', []) for g in d.get('games', [])]
-    for game in games:
+    games = []
+    for game in (g for d in evidence['schedule'].get('dates', []) for g in d.get('games', [])):
         if game.get('gameType') not in ROUND:
             raise ValueError('PS専用資料に対象外の試合が混入')
         if game.get('status', {}).get('abstractGameState') == 'Final':
-            winners = [game['teams'][s].get('isWinner') for s in ('home', 'away')]
+            winners = [(game.get('teams', {}).get(s) or {}).get('isWinner') for s in ('home', 'away')]
             if any(w is not None and type(w) is not bool for w in winners) or sum(w is True for w in winners) != 1:
-                raise ValueError('終了試合の勝者が一意に確認できません')
+                reason = ('isWinnerが真偽値ではありません' if any(
+                    w is not None and type(w) is not bool for w in winners)
+                    else 'isWinner=Trueが1球団ではありません')
+                print(f'[warn] 勝者を決められず外した試合：game_pk={game.get("gamePk", "不明")}・理由={reason}',
+                      file=sys.stderr)
+                continue
+        games.append(game)
     return ctx, games
 
 
@@ -465,6 +472,74 @@ def verify_next_games(rows, games):
             nxt['verified_label'] = f'日本時間{start.month}月{start.day}日' + spoken_clock(start.strftime('%H:%M'))
 
 
+def previous_short_context(program, ctx, games, rows):
+    """PSが1組の日は直前の終了試合を補う。日程と同じ公式応答を根拠にする。"""
+    pairs = []
+    names = {t['id']: t['name'] for row in rows for t in row.get('teams', [])}
+    for seg in program['segments']:
+        scoreboard = (seg.get('meta', {}).get('card') or {}).get('scoreboard') or {}
+        pair = {r.get('name') for r in scoreboard.get('rows', [])}
+        if len(pair) == 2 and pair not in pairs:
+            pairs.append(pair)
+    if len(pairs) != 1:
+        return program
+    pair = pairs[0]
+    finished = []
+    for game in games:
+        if game.get('status', {}).get('abstractGameState') != 'Final':
+            continue
+        teams = game.get('teams') or {}
+        if set(names.get((teams.get(side, {}).get('team') or {}).get('id')) for side in ('away', 'home')) != pair:
+            continue
+        if not all(type(teams[side].get('score')) is int for side in ('away', 'home')):
+            continue
+        finished.append(game)
+    if not finished:
+        return program
+    game = max(finished, key=lambda g: (g.get('gameDate', ''), g['gamePk']))
+    # 取得済みの当該シリーズだけ。別回戦の同じ組合せへ遡らない。
+    relevant = [row for row in rows if {t['name'] for t in row.get('teams', [])} == pair and row['round'] == game['gameType']]
+    if not relevant:
+        return program
+    away, home = (game['teams'][side] for side in ('away', 'home'))
+    a, h = (names[team['team']['id']] for team in (away, home))
+    rnd = ROUND[game['gameType']][0]
+    number = game.get('seriesGameNumber')
+    if not isinstance(number, int):
+        return program
+    label = f'{rnd}第{number}戦'
+    result = f'{a} {away["score"]}対{home["score"]} {h}'
+    text = f'直前に終了した{label}は、{a}対{h}が{away["score"]}対{home["score"]}でした。前戦は{h}のホームでした。'
+    card = dict(common(ctx, '前戦の結果', program.get('target_day')),
+                layout='facts', short_context=True, headline=a+'\n対'+h, subhead=label+' / 終了',
+                items=[dict(label='前戦の最終結果', value=result, value_size=60),
+                       dict(label='前戦の開催地', value=h+'のホーム', value_size=44)])
+    # 同じ試合の既存の試合経過が残っていれば、決勝点も補足する。
+    # 公式日程と得点/球団IDが一致しないtopicは混ぜない。
+    import generated_topics
+    topic = generated_topics.get('season_game_'+str(game['gamePk']))
+    score = (topic.get('game_v4') or {}).get('score') or {}
+    decisive = (topic.get('game_v4') or {}).get('decisive') or {}
+    same = topic.get('game') and topic.get('game_pk') == game['gamePk'] and all(
+        (score.get(side) or {}).get('id') == game['teams'][side]['team']['id']
+        and (score.get(side) or {}).get('total') == game['teams'][side]['score'] for side in ('home','away'))
+    detail = None
+    if same and all(decisive.get(k) for k in ('inning','subject','action')):
+        detail = decisive['inning']+' '+decisive['subject']+'の'+decisive['action']
+        card['items'].append(dict(label='前戦の決勝点', value=detail, value_size=44))
+        text += '決勝点は'+detail+'でした。'
+    seg = segment(card, text)
+    seg['meta']['context_game_id'] = game['gamePk']
+    program = copy.deepcopy(program)
+    program['segments'].append(seg)
+    program['short_context_material'] = dict(source='generation.ps.previous_game', source_url=ctx['source_url'],
+        games=[dict(game_pk=game['gamePk'], home_team_name=h, away_team_name=a,
+                    final_score=dict(home=home['score'], away=away['score']))],
+        facts=[dict(label='前戦の決勝点', text=detail, source='MLB公式 liveData.plays')] if detail else [])
+    return program
+
+
+
 def prepare(snapshot, evidence, slot, now, ledger=None):
     ctx, games = validate_source(snapshot, evidence, now)
     names = {int(k): v['name'] for k, v in snapshot.get('teams', {}).items()}
@@ -486,6 +561,7 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
         program = None
     if program is None:
         return None
+    program = previous_short_context(program, ctx, games, rows)
     if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
         import review_render_v3 as r3
         if r3.LOOK=='v4':
@@ -534,6 +610,8 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
                    retrieved_at=evidence['retrieved_at'], edition_key=edition, series=rows,
                    material_sha256=hashlib.sha256(json.dumps(evidence['schedule'], sort_keys=True).encode()).hexdigest())
     apply_design(program)
+    import host_split
+    program = host_split.prepare(program, kind)
     import ui_tone
     adapted = ui_tone.narration(program)
     if adapted != program:
@@ -571,6 +649,7 @@ def content_key(program):
     return hashlib.sha256(json.dumps(payload,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
 
 
+@ui_voice_queue.preview_portraits()
 def check_program(program):
     cards=[s['meta']['card'] for s in program['segments']
            if s['meta']['card'].get('label')=='PS情勢' and s['meta']['card'].get('scoreboard')]
@@ -611,15 +690,27 @@ def check_program(program):
 
 def script(program):
     target=program.get('target_day',program['date_jst'])
-    return dict(title=program['title'], date_jst=target,
+    import host_split
+    document = host_split.carry(program, dict(title=program['title'], date_jst=target,
                 date_label=datetime.fromisoformat(target).strftime('%m/%d'), segments=program['segments'],
                 source_url=program['source_url'], ps_program=program,
-                **({'mlb_forecast':program['mlb_forecast']} if program.get('mlb_forecast') else {}))
+                **({'mlb_forecast':program['mlb_forecast']} if program.get('mlb_forecast') else {})))
+    if program.get('short_context_material'):
+        import sanity_sources
+        document['sanity_materials'] = sanity_sources.capture(document) + [program['short_context_material']]
+    return document
 
 
 def movie(program, audio_dir, out):
+    import host_split
+    if host_split.enabled():
+        if content_key(program) != program['edition_key']:
+            raise ValueError('検証後の台本・画面・題が変更されています')
+        saved = host_split.use_audio(script(program), audio_dir)
+        program = dict(program, segments=saved['segments'])
+        program['edition_key'] = content_key(program)
+        host_split.render_audio(audio_dir, out)
     __import__('slant_by_episode').set_episode('ps_situation' if program.get('mode')=='situation' else 'ps_preview')
-    check = check_program(program)
     audio = read(Path(audio_dir) / 'manifest.json')['segments']
     if len(audio) != len(program['segments']):
         raise ValueError('台本と音声の件数が不一致')
@@ -630,6 +721,9 @@ def movie(program, audio_dir, out):
             raise ValueError('台本と音声の不一致または音声欠落')
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
     durations = [max(3.0, float(a['duration']) + vc.SEGMENT_TAIL) for a in audio]
+    import short_content
+    short_content.require(program, durations, out, video_name='collespo_short.mp4' if program['kind']=='daily' else 'collespo_morning_postseason.mp4')
+    check = check_program(program)
     track = vc.build_narration_track(audio, durations, out)
     import fan_events
     fan_events.prepare(program, audio, durations, out, fps=30)
@@ -692,6 +786,7 @@ def movie(program, audio_dir, out):
     check.update(video=str(path), expected_segments=len(audio), durations=durations,
                  motion='sequential-left-entry / subtle-background-drift / shared-crossfade')
     write(out / 'ps_program_gate.json', check)
+    host_split.bind_video(path, audio_dir)
 
 
 def metadata(program):

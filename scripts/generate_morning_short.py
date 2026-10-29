@@ -469,7 +469,8 @@ def spoken_lines(d) -> list:
         return []
     text = _SPOKEN
     if len(text) > SPOKEN_MAX:
-        text = text[:SPOKEN_MAX].rstrip("、。") + "…"
+        from press_hook import caption_prefix
+        text = caption_prefix(text, SPOKEN_MAX)
     return wrap(d, text, font(34), W - 200)[:3]
 
 
@@ -497,6 +498,8 @@ def draw_spoken(d, color=None) -> None:
     d.rounded_rectangle([60, y, 68, y + h], 4, fill=color or ACCENT)
     for i, ln in enumerate(lines):
         d.text((92, y + 18 + i * 46), ln, font=font(34), fill=DIM)
+    import render_timeline
+    render_timeline.subtitle(d._image, ''.join(lines))
 
 
 def base(progress):
@@ -812,6 +815,11 @@ def jp_date(day: str) -> str:
 
 
 def build_narration(data: dict, mode: str = "all") -> dict:
+    import sanity_sources
+    return sanity_sources.attach(_build_narration(data, mode), data)
+
+
+def _build_narration(data: dict, mode: str = "all") -> dict:
     """
     mode で扱う内容を切り替える。
 
@@ -1839,7 +1847,7 @@ def render_intro_players(p, meta, top, extra=None):
     return im
 
 
-def render_intro(p, meta, top, extra=None):
+def render_intro(p, meta, top, extra=None, elapsed=0):
     """
     1枚目。ショートのサムネはこの絵そのものなので、ここで見る理由を出す。
 
@@ -1851,6 +1859,9 @@ def render_intro(p, meta, top, extra=None):
     暗い背景に灰色の字を並べても、一覧に並んだ小さなサムネでは読めない。
     """
     mode = meta.get("mode") or ("local" if meta.get("local") else "players")
+    if mode=='press' and meta.get('press_hook'):
+        from press_hook import frame
+        return frame(elapsed,p,meta,(extra or {}).get('reporters') or {})
     if mode == "players":
         return render_intro_players(p, meta, top, extra)
     im, d = base(p)
@@ -3847,6 +3858,7 @@ def render_thread(p, v):
 
 
 def render_voices(p, voices, picked=None):
+    voices = __import__('fan_privacy').voices(voices)
     """
     現地のファンが何と言っているか。
 
@@ -4072,6 +4084,8 @@ def build_player_video(args):
         segs = [{"kind": s["kind"], "file": None, "duration": 0.0,
                  "meta": s["meta"]} for s in narration["segments"]]
 
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs, narration)
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / "collespo_morning_player.mp4"
@@ -4093,6 +4107,9 @@ def build_player_video(args):
                         f"{'、'.join(dropped)}を外しました"
                         f"(残り{sum(durations):.0f}秒){chr(10)}")
 
+    import short_content
+    short_content.require(dict(narration, segments=segs), durations, out_dir,
+                          prof, maximum=MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
     if args.require_audio and not audio_path:
         print("::error::音声が作れませんでした。無音のまま投稿しないよう、"
@@ -4117,6 +4134,7 @@ def build_player_video(args):
     last_frame = None
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+            timeline.select(seg, seg_i)
             set_step(seg_i, len(segs))
             # その画面で読み上げている文を、画面下に出す
             set_spoken((narration["segments"][seg_i].get("text") or "")
@@ -4131,11 +4149,11 @@ def build_player_video(args):
             for k in range(n):
                 pp, settled = video_common.anim_step(k, n)
                 if settled and still is not None:
-                    proc.stdin.write(still)
+                    timeline.repeat(proc.stdin, still)
                     continue
                 im = draw(pp, prof) if draw else render_outro(pp, "player")
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im, overlap=last_frame is not None and k < fade)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
@@ -4149,6 +4167,7 @@ def build_player_video(args):
     if proc.returncode != 0:
         print(f"::error::ffmpegが失敗しました ({proc.returncode})")
         return 1
+    timeline.save(video_path, args.audio_dir)
     print(f"[info] 書き出しました -> {video_path}")
     return 0
 
@@ -4311,6 +4330,9 @@ def main():
     if args.mode == 'press' and topic_hub.enabled():
         reporters_data = topic_hub.reporter_material(topic_hub.load('data/topic_hub.json'))
         data['reporters'] = reporters_data
+    from article_freshness import fresh_material
+    reporters_data = fresh_material(reporters_data, data.get('date_jst'))
+    data['reporters'] = reporters_data
 
     # ポストシーズン進出争い。9月と10月だけ材料がある。
     # 取れていなければ、その枠を作らないだけ。
@@ -4371,9 +4393,19 @@ def main():
             at=next_line.publication_time(recap_day(data),clock)
             data['next_line']=next_line.acquire(MODE_KIND.get(args.mode,''),at,players[0].get('team_id') if players else None,args.next_schedule)
         narration = build_narration(data, args.mode)
+        if args.mode == 'press':
+            import hook_ab
+            narration = hook_ab.prepare(narration, 'morning_press', hook_ab.publication_day(args.publish_at))
     bn_scenes = bignumber_scenes(data, narration, args.mode)
     import daily_v3
     daily_design = daily_v3.prepare(data, narration, args.mode)
+    import host_split
+    split_kind = 'morning' if args.mode == 'players' else ('morning_'+args.mode)
+    if split_kind in host_split.KINDS:
+        narration = host_split.adapt(narration, split_kind)
+        if not args.narration_out:
+            narration = host_split.use_audio(narration, args.audio_dir)
+            host_split.render_audio(args.audio_dir, args.out)
     kinds = [s["kind"] for s in narration["segments"]]
     print(f"[info] mode={args.mode} / 画面 {len(kinds)}枚: {kinds}")
     # 材料が1つも無い日は作らない。
@@ -4455,6 +4487,8 @@ def main():
         segs = [{"kind": s["kind"], "file": None, "duration": 0.0,
                  "meta": s["meta"]} for s in narration["segments"]]
 
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs, narration)
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     # モードごとに別ファイルにする。同じ名前だと2本目が1本目を上書きする
@@ -4464,7 +4498,6 @@ def main():
 
     durations = plan_durations(segs)
     if args.mode=='players':
-        import post_common
         limit,grace=post_common.duration_budget('morning')
         keep,dropped=fit_budget(segs,durations,('week','reach','praise'),limit,grace)
         if dropped:
@@ -4476,6 +4509,12 @@ def main():
                 pathlib.Path(args.narration).write_text(json.dumps(narration,ensure_ascii=False),encoding='utf-8')
         if sum(durations)>limit+grace:
             raise ValueError(f'17:00の尺が予算{limit}+{grace}秒を超えています: {sum(durations):.2f}秒。声の設定を変えず原稿を短くしてください')
+    import short_content
+    # 夕方の上限は 17:00 の players だけ。voices・press は以前から上限なし（10/27 voices 75.4秒）。
+    # 55+6秒を当てると 10/28 voices 79秒が止まった。ショートの上限3分だけを守る
+    short_content.require(dict(narration, segments=segs), durations, out_dir,
+                          dict(data, players=players), maximum=sum(post_common.duration_budget('morning')) if args.mode=='players' else 180.0,
+                          video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
     if any((s.get('meta') or {}).get('duo') for s in narration['segments']):
         import duo
@@ -4526,8 +4565,11 @@ def main():
     last_frame = None
     bn_time = 0.0
     duo_scene_elapsed=0.0
+    import hook_ab
+    hook_scenes = hook_ab.SceneRecorder()
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+            timeline.select(seg, seg_i)
             set_step(seg_i, len(segs))
             # その画面で読み上げている文を、画面下に出す
             set_spoken((narration["segments"][seg_i].get("text") or "")
@@ -4557,23 +4599,27 @@ def main():
                 if daily_design:
                     speech = float(seg.get('duration') or dur)
                     im = daily_v3.frame(k / FPS, narration["segments"][seg_i], daily_design, speech)
+                    if narration.get('hook_ab'):
+                        hook_scenes.observe(im, total, FPS, meta.get('screen', seg_i))
                     same=(seg_i>0 and meta.get('duo') and meta.get('screen')==
                           (segs[seg_i-1].get('meta') or {}).get('screen'))
                     cached = video_common.short_transition(None if same else last_frame,im,k,FPS,r3.LOOK=='v4')
                     if k < fade:
                         cached = r3.redraw_ticker(cached, (W, H))
-                    proc.stdin.write(cached)
+                    timeline.write(proc.stdin, cached, im, overlap=not same and r3.LOOK!='v4' and last_frame is not None and k < fade)
                     total += 1
                     continue
                 if bn_plan:
                     image=bn.frame(bn_time+k/FPS,bn_plan)
                     cached=video_common.short_transition(last_frame,image,k,FPS,True) if r3.LOOK=='v4' else image.tobytes()
-                    proc.stdin.write(cached)
+                    timeline.write(proc.stdin, cached, image, overlap=r3.LOOK!='v4' and last_frame is not None and k < fade)
                     total += 1
                     continue
                 pp, settled = video_common.anim_step(k, n)
+                if kind=='intro' and meta.get('press_hook'):
+                    settled=False  # 3秒の引用札切替を静止画キャッシュで止めない。
                 if settled and still is not None:
-                    proc.stdin.write(cached)
+                    timeline.repeat(proc.stdin, cached, overlap=last_frame is not None and k < fade)
                     total += 1
                     continue
                 if kind == "outro":
@@ -4589,7 +4635,7 @@ def main():
                                      {"buzz": buzz,
                                       "voices": voices_data,
                                       "reporters": reporters_data,
-                                      "players": players})
+                                      "players": players},elapsed=k/FPS)
                 elif kind == "list":
                     im = render_list(pp, players, meta.get("start", 0),
                                      meta.get("count", 1))
@@ -4679,8 +4725,10 @@ def main():
                     draw_peek(im, ImageDraw.Draw(im), who,
                               expr={who: mine, other: yours},
                               names=False, edge=250)
+                if narration.get('hook_ab') and meta.get('press_hook'):
+                    hook_scenes.observe(im,total,FPS,meta.get('screen',seg_i))
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im, overlap=last_frame is not None and k < fade)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
@@ -4703,7 +4751,11 @@ def main():
               file=sys.stderr)
         sys.exit(1)
 
+    timeline.save(video_path, args.audio_dir)
     secs = total / FPS
+    host_split.bind_video(video_path, args.audio_dir)
+    import hook_ab
+    hook_ab.bind_video(video_path, narration, segs, durations, FPS, hook_scenes.starts)
     print(f"[info] 夕方のショートを生成しました: {video_path} "
           f"({video_path.stat().st_size / 1024 / 1024:.1f}MB, {secs:.0f}秒)")
 

@@ -86,7 +86,8 @@ def collect(days: int) -> list:
                      or {}).items():
         if not isinstance(v, dict) or not v.get("video_id"):
             continue
-        date = (v.get("published_at") or "")[:10]
+        from sports_dates import jst_day
+        date = jst_day(v.get("published_at"))
         if date >= cutoff:
             out.append((date, "asset", v["video_id"], topic))
     # 同じIDをlongformと確認済み別名等で二重に数えない。

@@ -27,6 +27,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 import clutch  # noqa: E402
 import morning_recap as mr  # noqa: E402
+from site_theme import THEME_HEAD  # noqa: E402
 
 SITE_URL = "https://collespo.com/"
 
@@ -60,7 +61,7 @@ STYLE = """
        white-space: nowrap; }
   td.num { text-align: right; font-variant-numeric: tabular-nums;
            white-space: nowrap; }
-  .formula { background: #0E121A; border: 1px solid var(--border);
+  .formula { background: var(--surface-raised); border: 1px solid var(--border);
              border-radius: 10px; padding: 0.9rem 1rem; margin: 0.6rem 0;
              font-family: ui-monospace, SFMono-Regular, monospace;
              font-size: 0.85rem; overflow-x: auto; white-space: pre; }
@@ -191,6 +192,7 @@ def render() -> str:
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{STYLE}</style>
+{THEME_HEAD}
 </head>
 <body>
   <a class="back" href="index.html">&larr; コレスポ トップへ</a>

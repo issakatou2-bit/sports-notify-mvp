@@ -35,12 +35,32 @@ def press_title(title: str, limit: int = TITLE_MAX) -> str:
     """「村上宗隆のホワイトソックス」→「村上ホワイトソックス」、「ホワイトソックス 村上宗隆、」→「ホワイトソックス村上、」。"""
     out = str(title or "")
     teams = "|".join(map(re.escape, _teams()))
+    names = "|".join(map(re.escape, sorted(SURNAME, key=len, reverse=True)))
+
+    def team_subject(match):
+        full, team = match.group("names", "team")
+        # 空白を含む列挙も、途中の1人だけ省略しない。
+        if (full not in SURNAME or
+                out[:match.start()].rstrip().endswith(("・", "、", "と", "＆", "&", "/", "／"))):
+            return match.group(0)
+        sur = SURNAME[full]
+        join = "の" if re.fullmatch(r"[ァ-ヶー・]+", sur) else ""
+        return f"{sur}{join}{team}"
+
+    out = re.sub(rf"(?P<names>(?:{names})(?:[・、と＆&/／\s]+(?:{names}))*)"
+                 rf"(?:が所属する|の)(?P<team>{teams})", team_subject, out)
     for full, sur in sorted(SURNAME.items(), key=lambda kv: -len(kv[0])):
         f = re.escape(full)
-        # チームが主語（1人の選手＋球団）。「大谷翔平・山本由伸のドジャース」のような2人以上は触らない。
-        out = re.sub(rf"(?<![・、]){f}(?:が所属する|の)({teams})", rf"{sur}\1", out)
+        kana = bool(re.fullmatch(r"[ァ-ヶー・]+", sur))
+        if kana:
+            # 以前の変換で連結済みの題も、付け直すときに修復する。
+            out = re.sub(rf"(?<![・、と＆&/／]){re.escape(sur)}({teams})",
+                         rf"{sur}の\1", out)
         # 選手が主語（球団＋選手）
-        out = re.sub(rf"({teams})(?:\s|　|の)?{f}(?=[、｜ 　の])", rf"\1{sur}", out)
+        gap = " " if kana else ""
+        ending = r"(?=[、｜ 　の]|$)" if kana else r"(?=[、｜ 　の])"
+        out = re.sub(rf"({teams})(?:\s|　|の)?{f}{ending}",
+                     rf"\1{gap}{sur}", out)
     if len(out) > limit:
         for long, short in SHORT_TEAM.items():
             out = out.replace(long, short)

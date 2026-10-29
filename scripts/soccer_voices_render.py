@@ -168,7 +168,7 @@ def frame(t,seg,data,clubs=None,duration=20):
     if r3.LOOK!='v4':raise ValueError('新設のサッカー現地の声はv4専用')
     clubs=clubs or clubs_for(data)
     if seg['kind']=='outro':
-        credit='音声: VOICEVOX:四国めたん　'+spec(data)['source']
+        credit=__import__('host_split').credit('音声: VOICEVOX:四国めたん　'+spec(data)['source'])
         im=r3.outro(t,{},'soccer_voices',credit,tagline=TAGLINE)
         im.info['soccer_outro_elapsed']=t
         return im
@@ -231,6 +231,8 @@ def render_video(data,narr,audio,out):
     times=[math.ceil(t*FPS)/FPS for t in times]
     if sum(times)>sv.LIMIT:raise ValueError('フレームの丸め後40秒を超える')
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
+    import short_content
+    short_content.require(narr, times, out, data, maximum=sv.LIMIT, video_name='collespo_soccer_voices.mp4')
     if not shutil.which('ffmpeg'):raise ValueError('FFmpegをinstall_video_tools.shで入れてください')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('実音声なしでは動画を作りません')
@@ -277,15 +279,20 @@ def main():
     ap.add_argument('--audio-dir',type=Path)
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer_voices')
     args=ap.parse_args();data=json.loads(args.data.read_text(encoding='utf-8'))
+    import host_split
     if args.narration_out:
         data=prepare(data)
         args.data.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
         args.narration_out.parent.mkdir(parents=True,exist_ok=True)
-        args.narration_out.write_text(json.dumps(sv.narration(data),ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+        narr = host_split.adapt(sv.narration(data), 'soccer_voices')
+        args.narration_out.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     if not data['can_make']:print(data['reason']);return 0
     if args.audio_dir:
         audio=json.loads((args.audio_dir/'manifest.json').read_text(encoding='utf-8'))['segments']
-        render_video(data,sv.narration(data),audio,args.out)
+        narr = host_split.use_audio(sv.narration(data), args.audio_dir)
+        host_split.render_audio(args.audio_dir, args.out)
+        render_video(data,narr,audio,args.out)
+        host_split.bind_video(args.out/'collespo_soccer_voices.mp4', args.audio_dir)
     return 0
 
 

@@ -1,0 +1,21 @@
+{
+  "source": "policy regression: unknown is not contradiction",
+  "expected_held": false,
+  "document": {
+    "date_jst": "2026-10-25",
+    "segments": [
+      {
+        "text": "架空太郎は今季55本塁打です。"
+      }
+    ],
+    "sanity_materials": []
+  },
+  "issues": [
+    {
+      "kind": "事実の誤り",
+      "severity": "high",
+      "where": "架空太郎は今季55本塁打です。",
+      "why": "学習知識と今季成績が違う"
+    }
+  ]
+}
