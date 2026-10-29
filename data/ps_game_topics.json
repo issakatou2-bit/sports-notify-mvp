@@ -1,144 +1,8 @@
 {
-  "updated_at": "2026-10-28T08:27:41.736811+00:00",
+  "updated_at": "2026-10-29T04:05:47.530192+00:00",
   "status": "ok",
   "source": "MLB Stats API（試合経過・成績表・計測）・ハイライトのコメント・番記者の投稿・MLB.com見出し",
   "topics": [
-    {
-      "key": "season_game_849804",
-      "label": "ワールドシリーズ第3戦",
-      "hook": "ブリュワーズがレイズに10対1でワールドシリーズ3勝0敗に",
-      "heading": "ブリュワーズ 対 レイズ　ワールドシリーズ第3戦",
-      "intro": "ワールドシリーズ第3戦、ブリュワーズが敵地でレイズに10対1で勝ちました。",
-      "intro_as_is": true,
-      "style": "v3",
-      "team_id": 158,
-      "abbr": "MIL",
-      "title": "【MLB】ブリュワーズがレイズに10対1でワールドシリーズ3勝0敗に｜コントレラスの決勝打 #Shorts",
-      "items": [
-        [
-          "試合の結果",
-          "ブリュワーズ 10対1 レイズ　敵地で勝利　シリーズはブリュワーズの3勝0敗"
-        ],
-        [
-          "決勝点",
-          "3回表　ウィリアム・コントレラスのタイムリー"
-        ],
-        [
-          "先発",
-          "ブリュワーズ ガッサー 6回を無失点　レイズ ペラルタ 4回と3分の2を5失点"
-        ],
-        [
-          "ハイライトのコメント欄から",
-          "「このシリーズが4試合で終わらなくてよかった。どの試合も見てて楽しい。」"
-        ]
-      ],
-      "japanese": [],
-      "japanese_lead": "この試合の日本人選手は、",
-      "ps_ended": true,
-      "story": true,
-      "game": true,
-      "source": null,
-      "voice": {
-        "said": "このシリーズが4試合で終わらなくてよかった。どの試合も見てて楽しい。",
-        "text": "I'm glad this series didn't end in 4. It's been fun watching these games.",
-        "url": "https://www.youtube.com/watch?v=_7zaliemWbg",
-        "likes": 229,
-        "at": "2026-10-28T05:43:48Z",
-        "source": "MLB公式ハイライトのコメント"
-      },
-      "headline": null,
-      "game_pk": 849804,
-      "game_v4": {
-        "score": {
-          "innings": [
-            {
-              "num": 1,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 2,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 3,
-              "away": 2,
-              "home": 0
-            },
-            {
-              "num": 4,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 5,
-              "away": 8,
-              "home": 0
-            },
-            {
-              "num": 6,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 7,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 8,
-              "away": 0,
-              "home": 0
-            },
-            {
-              "num": 9,
-              "away": 0,
-              "home": 1
-            }
-          ],
-          "source": "MLB Stats API / liveData.linescore",
-          "away": {
-            "id": 158,
-            "name": "ブリュワーズ",
-            "abbr": "MIL",
-            "total": 10
-          },
-          "home": {
-            "id": 139,
-            "name": "レイズ",
-            "abbr": "TB",
-            "total": 1
-          }
-        },
-        "decisive": {
-          "inning": "3回表",
-          "subject": "ウィリアム・コントレラス",
-          "action": "タイムリー",
-          "detail": "",
-          "event": "Single"
-        }
-      },
-      "game_date": "2026-10-27T00:00:00Z",
-      "jp_first": false,
-      "next_team_id": 158,
-      "finished_at": "2026-10-27T03:10:16.219000+00:00",
-      "v3": {
-        "who": "ブリュワーズ　ワールドシリーズ第3戦",
-        "big": "10",
-        "unit": "対1",
-        "sub": "敵地で勝利",
-        "tag": "決勝点 コントレラスのタイムリー",
-        "chips": [
-          {
-            "label": "ワールドシリーズ　ブリュワーズ",
-            "score": "3-0",
-            "win": true
-          }
-        ],
-        "ticker": "ブリュワーズ 10対1 レイズ　敵地で勝利　シリーズはブリュワーズの3勝0敗"
-      }
-    },
     {
       "key": "season_game_849803",
       "label": "ワールドシリーズ第4戦",
@@ -169,7 +33,7 @@
         ],
         [
           "ハイライトのコメント欄から",
-          "「このシリーズが4試合で終わらなくてよかった。どの試合も見てて楽しい。」"
+          "「この試合、広告に何回も割り込まれるんだけど」"
         ]
       ],
       "japanese": [],
@@ -179,11 +43,11 @@
       "game": true,
       "source": null,
       "voice": {
-        "said": "このシリーズが4試合で終わらなくてよかった。どの試合も見てて楽しい。",
-        "text": "I'm glad this series didn't end in 4. It's been fun watching these games.",
+        "said": "この試合、広告に何回も割り込まれるんだけど",
+        "text": "This baseball game keeps interrupting my ads",
         "url": "https://www.youtube.com/watch?v=_7zaliemWbg",
-        "likes": 229,
-        "at": "2026-10-28T05:43:48Z",
+        "likes": 1560,
+        "at": "2026-10-28T06:21:25Z",
         "source": "MLB公式ハイライトのコメント"
       },
       "headline": null,
@@ -294,6 +158,121 @@
           }
         ],
         "ticker": "次の試合　日本時間10月29日　ワールドシリーズ第5戦"
+      }
+    },
+    {
+      "key": "season_game_849799",
+      "label": "ワールドシリーズ第5戦",
+      "hook": "ブリュワーズがレイズに4対1でワールドシリーズ突破",
+      "heading": "ブリュワーズ 対 レイズ　ワールドシリーズ第5戦",
+      "intro": "ワールドシリーズ第5戦、ブリュワーズが敵地でレイズに4対1で勝ちました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "team_id": 158,
+      "abbr": "MIL",
+      "title": "【MLB】ブリュワーズがレイズに4対1でワールドシリーズ突破 #Shorts",
+      "items": [
+        [
+          "試合の結果",
+          "ブリュワーズ 4対1 レイズ　敵地で勝利　ブリュワーズが4勝1敗でワールドシリーズ突破"
+        ],
+        [
+          "先発",
+          "ブリュワーズ ミジオロウスキー 5回と3分の2を無失点　レイズ ラスムッセン 4回を1失点"
+        ]
+      ],
+      "japanese": [],
+      "japanese_lead": "この試合の日本人選手は、",
+      "ps_ended": true,
+      "story": true,
+      "game": true,
+      "source": null,
+      "voice": null,
+      "headline": null,
+      "game_pk": 849799,
+      "game_v4": {
+        "score": {
+          "innings": [
+            {
+              "num": 1,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 2,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 3,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 4,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 5,
+              "away": 1,
+              "home": 0
+            },
+            {
+              "num": 6,
+              "away": 2,
+              "home": 0
+            },
+            {
+              "num": 7,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 8,
+              "away": 0,
+              "home": 0
+            },
+            {
+              "num": 9,
+              "away": 0,
+              "home": 1
+            }
+          ],
+          "source": "MLB Stats API / liveData.linescore",
+          "away": {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "abbr": "MIL",
+            "total": 4
+          },
+          "home": {
+            "id": 139,
+            "name": "レイズ",
+            "abbr": "TB",
+            "total": 1
+          }
+        },
+        "decisive": null
+      },
+      "game_date": "2026-10-29T00:00:00Z",
+      "jp_first": false,
+      "next_team_id": 158,
+      "finished_at": "2026-10-29T03:13:11.342000+00:00",
+      "v3": {
+        "who": "ブリュワーズ　ワールドシリーズ第5戦",
+        "big": "4-1",
+        "unit": "",
+        "sub": "敵地で勝利",
+        "tag": "ワールドシリーズ突破",
+        "chips": [
+          {
+            "label": "ワールドシリーズ突破　ブリュワーズ",
+            "score": "4-1",
+            "win": true
+          }
+        ],
+        "ticker": "ブリュワーズ 4対1 レイズ　敵地で勝利　ブリュワーズが4勝1敗でワールドシリーズ突破"
       }
     }
   ]
