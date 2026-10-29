@@ -1,4 +1,5 @@
 """ショートv4専用の札。材料・台本・共通の背景/字幕/時計は変更しない。"""
+import math
 import motion
 import re
 from pathlib import Path
@@ -140,11 +141,19 @@ def text_length(value, size):
 
 
 def tag(im, x, y, value, fill=None, color=None, size=28, width=None):
-    # 幅は text() と同じ測り方で決める（10/29「ドジャース Way」が小札の分だけはみ出して止まった）。
+    f=r3.font(size)
     if width:
-        while text_length(value,size)+28 > width and size > 18:
-            size-=2
-    w=round(text_length(value,size))+28;h=size+26
+        while f.getlength(str(value))+28 > width and size > 18:
+            size-=2;f=r3.font(size)
+    w=round(f.getlength(str(value)))+28
+    if text_length(value,18) > w-28:
+        # 球団名の横の小札の分で、本文が最小の字でも入らないときだけ、本文と同じ測り方で
+        # 幅を決め直す（10/29「ドジャース Way」で止まった）。入っていた札の見た目は変えない。
+        if width:
+            while text_length(value,size)+28 > width and size > 18:
+                size-=2
+        w=math.ceil(text_length(value,size))+28
+    h=size+26
     panel(im,(x,y,x+w,y+h),fill or r3.DARK_INK,fill or r3.GOLD)
     text(im,x+14,y+10,value,size,color or r3.INK,width=w-28)
     return w
