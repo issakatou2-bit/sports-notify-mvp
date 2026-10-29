@@ -1,36 +1,8 @@
 {
-  "updated_at": "2026-10-28T09:52:56.033114+00:00",
-  "start": "2026-10-07",
-  "end": "2026-10-28",
+  "updated_at": "2026-10-29T06:18:33.887974+00:00",
+  "start": "2026-10-08",
+  "end": "2026-10-29",
   "players": {
-    "621111": {
-      "kind": "from_il",
-      "date": "2026-10-05",
-      "name_en": "Walker Buehler",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Walker Buehler from the paternity list."
-    },
-    "593974": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Wandy Peralta",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated LHP Wandy Peralta."
-    },
-    "695243": {
-      "kind": "from_il",
-      "date": "2026-10-07",
-      "name_en": "Mason Miller",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Mason Miller from the paternity list."
-    },
-    "686218": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Emmet Sheehan",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Emmet Sheehan."
-    },
     "571657": {
       "kind": "from_il",
       "date": "2026-10-08",
@@ -93,6 +65,13 @@
       "name_en": "Garrett Hawkins",
       "team": "San Diego Padres",
       "text": "San Diego Padres activated RHP Garrett Hawkins."
+    },
+    "593974": {
+      "kind": "from_il",
+      "date": "2026-10-08",
+      "name_en": "Wandy Peralta",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated LHP Wandy Peralta."
     },
     "695238": {
       "kind": "from_il",
@@ -346,48 +325,6 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves selected the contract of LHP Danny Young from Gwinnett Stripers."
     },
-    "680736": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Justin Wrobleski",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated LHP Justin Wrobleski."
-    },
-    "811315": {
-      "kind": "from_il",
-      "date": "2026-10-12",
-      "name_en": "Brody Hopkins",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Brody Hopkins."
-    },
-    "677944": {
-      "kind": "from_il",
-      "date": "2026-10-12",
-      "name_en": "Slade Cecconi",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Slade Cecconi."
-    },
-    "689172": {
-      "kind": "up",
-      "date": "2026-10-15",
-      "name_en": "Brett Wisely",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves selected the contract of 2B Brett Wisely from Gwinnett Stripers."
-    },
-    "605540": {
-      "kind": "from_il",
-      "date": "2026-10-23",
-      "name_en": "Brandon Woodruff",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers activated RHP Brandon Woodruff from the 60-day injured list."
-    },
-    "664076": {
-      "kind": "from_il",
-      "date": "2026-10-23",
-      "name_en": "Garrett Cleavinger",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated LHP Garrett Cleavinger."
-    },
     "689672": {
       "kind": "from_il",
       "date": "2026-10-11",
@@ -472,6 +409,13 @@
       "team": "Chicago White Sox",
       "text": "Chicago White Sox activated RHP Shane Smith."
     },
+    "680736": {
+      "kind": "from_il",
+      "date": "2026-10-11",
+      "name_en": "Justin Wrobleski",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated LHP Justin Wrobleski."
+    },
     "670950": {
       "kind": "from_il",
       "date": "2026-10-11",
@@ -486,40 +430,26 @@
       "team": "Chicago White Sox",
       "text": "Chicago White Sox activated LHP Chris Murphy."
     },
-    "690976": {
+    "811315": {
       "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Alex Freeland",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated 2B Alex Freeland."
+      "date": "2026-10-12",
+      "name_en": "Brody Hopkins",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated RHP Brody Hopkins."
     },
-    "691947": {
+    "677944": {
       "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Ronan Kopp",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated LHP Ronan Kopp."
+      "date": "2026-10-12",
+      "name_en": "Slade Cecconi",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated RHP Slade Cecconi."
     },
-    "595014": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Blake Treinen",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Blake Treinen."
-    },
-    "676263": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Jack Dreyer",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated LHP Jack Dreyer."
-    },
-    "689017": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Landon Knack",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Landon Knack."
+    "689172": {
+      "kind": "up",
+      "date": "2026-10-15",
+      "name_en": "Brett Wisely",
+      "team": "Atlanta Braves",
+      "text": "Atlanta Braves selected the contract of 2B Brett Wisely from Gwinnett Stripers."
     },
     "678020": {
       "kind": "from_il",
@@ -527,6 +457,13 @@
       "name_en": "Seth Halvorsen",
       "team": "Los Angeles Dodgers",
       "text": "Los Angeles Dodgers activated RHP Seth Halvorsen."
+    },
+    "691947": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Ronan Kopp",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated LHP Ronan Kopp."
     },
     "676272": {
       "kind": "from_il",
@@ -549,12 +486,26 @@
       "team": "Los Angeles Dodgers",
       "text": "Los Angeles Dodgers activated RHP Paul Gervase."
     },
-    "687221": {
+    "686218": {
       "kind": "from_il",
       "date": "2026-10-16",
-      "name_en": "Dalton Rushing",
+      "name_en": "Emmet Sheehan",
       "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated C Dalton Rushing."
+      "text": "Los Angeles Dodgers activated RHP Emmet Sheehan."
+    },
+    "676263": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Jack Dreyer",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated LHP Jack Dreyer."
+    },
+    "690976": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Alex Freeland",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated 2B Alex Freeland."
     },
     "672613": {
       "kind": "from_il",
@@ -563,6 +514,27 @@
       "team": "Los Angeles Dodgers",
       "text": "Los Angeles Dodgers activated C Eliezer Alfonzo."
     },
+    "595014": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Blake Treinen",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Blake Treinen."
+    },
+    "689017": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Landon Knack",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Landon Knack."
+    },
+    "687221": {
+      "kind": "from_il",
+      "date": "2026-10-16",
+      "name_en": "Dalton Rushing",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated C Dalton Rushing."
+    },
     "669743": {
       "kind": "from_il",
       "date": "2026-10-16",
@@ -570,33 +542,19 @@
       "team": "Los Angeles Dodgers",
       "text": "Los Angeles Dodgers activated LF Alex Call."
     },
-    "804926": {
+    "680916": {
       "kind": "from_il",
       "date": "2026-10-20",
-      "name_en": "Austin Peterson",
+      "name_en": "Franco Aleman",
       "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Austin Peterson."
+      "text": "Cleveland Guardians activated RHP Franco Aleman."
     },
-    "691414": {
+    "684974": {
       "kind": "from_il",
       "date": "2026-10-20",
-      "name_en": "Yorman Gómez",
+      "name_en": "Craig Yoho",
       "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Yorman Gómez."
-    },
-    "671106": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Logan Allen",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated LHP Logan Allen."
-    },
-    "663368": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Blake Perkins",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated CF Blake Perkins."
+      "text": "Cleveland Guardians activated RHP Craig Yoho."
     },
     "682177": {
       "kind": "from_il",
@@ -619,33 +577,40 @@
       "team": "Cleveland Guardians",
       "text": "Cleveland Guardians activated RHP Colin Holderman."
     },
-    "680916": {
+    "804926": {
       "kind": "from_il",
       "date": "2026-10-20",
-      "name_en": "Franco Aleman",
+      "name_en": "Austin Peterson",
       "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Franco Aleman."
+      "text": "Cleveland Guardians activated RHP Austin Peterson."
     },
-    "692216": {
+    "689958": {
       "kind": "from_il",
       "date": "2026-10-20",
-      "name_en": "CJ Kayfus",
+      "name_en": "Andrew Walters",
       "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated 1B CJ Kayfus."
+      "text": "Cleveland Guardians activated RHP Andrew Walters."
     },
-    "656555": {
+    "691414": {
       "kind": "from_il",
       "date": "2026-10-20",
-      "name_en": "Rhys Hoskins",
+      "name_en": "Yorman Gómez",
       "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated 1B Rhys Hoskins."
+      "text": "Cleveland Guardians activated RHP Yorman Gómez."
     },
-    "684974": {
+    "671106": {
       "kind": "from_il",
       "date": "2026-10-20",
-      "name_en": "Craig Yoho",
+      "name_en": "Logan Allen",
       "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Craig Yoho."
+      "text": "Cleveland Guardians activated LHP Logan Allen."
+    },
+    "663368": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Blake Perkins",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated CF Blake Perkins."
     },
     "700932": {
       "kind": "from_il",
@@ -661,12 +626,33 @@
       "team": "Cleveland Guardians",
       "text": "Cleveland Guardians activated RF Kahlil Watson."
     },
-    "689958": {
+    "692216": {
       "kind": "from_il",
       "date": "2026-10-20",
-      "name_en": "Andrew Walters",
+      "name_en": "CJ Kayfus",
       "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Andrew Walters."
+      "text": "Cleveland Guardians activated 1B CJ Kayfus."
+    },
+    "656555": {
+      "kind": "from_il",
+      "date": "2026-10-20",
+      "name_en": "Rhys Hoskins",
+      "team": "Cleveland Guardians",
+      "text": "Cleveland Guardians activated 1B Rhys Hoskins."
+    },
+    "605540": {
+      "kind": "from_il",
+      "date": "2026-10-23",
+      "name_en": "Brandon Woodruff",
+      "team": "Milwaukee Brewers",
+      "text": "Milwaukee Brewers activated RHP Brandon Woodruff from the 60-day injured list."
+    },
+    "664076": {
+      "kind": "from_il",
+      "date": "2026-10-23",
+      "name_en": "Garrett Cleavinger",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated LHP Garrett Cleavinger."
     }
   },
   "japanese": {
