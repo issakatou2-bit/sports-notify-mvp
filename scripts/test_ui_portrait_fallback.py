@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -21,6 +22,17 @@ import ui_voice_policy as policy
 from test_host_split import day_for
 import test_ui_voice_queue as fixtures
 from test_ui_voice_queue import AT, MemoryQueue, SCRIPT, portraits, stock_sleep, tone
+
+
+REAL_WAIT = subprocess.Popen.wait
+
+
+def posix_wait(self, timeout=None):
+    """LinuxのPopen._waitは子の終了前にtime.sleepで待つ。Windowsでも同じ順で呼び、
+    共通のtime.sleepを差し替えた試験が手元でも落ちるようにする（10/27 #252のCI）。"""
+    if timeout is not None:
+        time.sleep(0.001)
+    return REAL_WAIT(self, timeout=timeout)
 
 
 class PortraitFallback(unittest.TestCase):
@@ -70,6 +82,7 @@ class PortraitFallback(unittest.TestCase):
         with patch.object(q, 'GitQueue', return_value=queue), \
              patch.object(stock, 'asset_context', return_value=None), \
              stock_sleep(deliver), \
+             patch.object(subprocess.Popen, 'wait', posix_wait), \
              patch.object(sn, 'engine_available', return_value=True), \
              patch.object(sn, 'synth_one', side_effect=lambda text, speaker, out: (tone(text, out) or True)) as vv:
             sn.main(['--narration', str(path), '--out-dir', str(audio)])
@@ -82,6 +95,8 @@ class PortraitFallback(unittest.TestCase):
         if failure:
             self.assertEqual(manifest['voice_resolution']['reason'], 'ui_rebuilt_after_hold')
             self.assertFalse(manifest['host_delivery']['comparison_eligible'])
+            # 部品の欠け・壊れ・鍵なしは立ち絵なしで止まる。受取の失敗に化けたら試験の配達が二重。
+            self.assertEqual(manifest['host_delivery']['previous_attempt']['failure_reason'], 'ui_portrait_unavailable')
         return path, audio, queue
 
     def test_every_kind_with_and_without_parts_finishes_video(self):
@@ -97,7 +112,8 @@ class PortraitFallback(unittest.TestCase):
                     if missing and policy.failure_action(dict(host_assignment=dict(kind=kind))) == 'defer_next_day':
                         with self.assertRaises(policy.VoiceUnavailable):
                             self.generate(folder,kind,'missing')
-                        self.assertEqual(hs.read(folder/'audio/manifest.json')['host_delivery']['action'],'defer_next_day')
+                        held = hs.read(folder/'audio/manifest.json')['host_delivery']
+                        self.assertEqual((held['action'],held['failure_reason']),('defer_next_day','ui_portrait_unavailable'))
                         continue
                     _, audio, _ = self.generate(folder, kind, 'missing' if missing else None)
                     out = folder/'video'
