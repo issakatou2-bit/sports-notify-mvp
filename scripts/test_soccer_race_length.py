@@ -118,4 +118,4 @@ class RaceLength(unittest.TestCase):
         self.assertEqual(plan,original)
 
 
-if __name__=='__main__':unittest.main()
+if __name__=='__main__':unittest.main(argv=[sys.argv[0]])
