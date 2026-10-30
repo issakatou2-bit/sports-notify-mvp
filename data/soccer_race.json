@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-10-29T10:02:32.314203+00:00",
-  "date_jst": "2026-10-29",
-  "source_at": "2026-10-29T07:39:35.957553+00:00",
+  "updated_at": "2026-10-30T10:03:20.195025+00:00",
+  "date_jst": "2026-10-30",
+  "source_at": "2026-10-30T06:37:55.896080+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -18,7 +18,7 @@
           "position": 3,
           "points": 16,
           "out": true,
-          "out_note": "Hamstring injury - Expected back 31 Oct",
+          "out_note": "Hamstring injury - Expected back 22 Nov",
           "lines": [
             {
               "line": 4,
@@ -509,8 +509,8 @@
     },
     {
       "code": "SA",
-      "round": 8,
-      "round_complete": false,
+      "round": 9,
+      "round_complete": true,
       "name_jp": "セリエA",
       "played": 9,
       "clubs": 20,
@@ -537,7 +537,7 @@
         {
           "name": "鈴木彩艶",
           "club_jp": "パルマ",
-          "position": 18,
+          "position": 19,
           "points": 5,
           "out": false,
           "out_note": "",
@@ -583,12 +583,12 @@
             },
             {
               "position": 6,
-              "team": "ナポリ",
-              "team_en": "SSC Napoli",
+              "team": "フロジノーネ",
+              "team_en": "Frosinone Calcio",
               "played": 9,
-              "points": 14,
-              "gf": 17,
-              "ga": 11,
+              "points": 17,
+              "gf": 22,
+              "ga": 14,
               "jp": []
             }
           ],
@@ -628,6 +628,16 @@
           "outside": [
             {
               "position": 6,
+              "team": "フロジノーネ",
+              "team_en": "Frosinone Calcio",
+              "played": 9,
+              "points": 17,
+              "gf": 22,
+              "ga": 14,
+              "jp": []
+            },
+            {
+              "position": 7,
               "team": "ナポリ",
               "team_en": "SSC Napoli",
               "played": 9,
@@ -635,19 +645,9 @@
               "gf": 17,
               "ga": 11,
               "jp": []
-            },
-            {
-              "position": 7,
-              "team": "フロジノーネ",
-              "team_en": "Frosinone Calcio",
-              "played": 8,
-              "points": 14,
-              "gf": 17,
-              "ga": 13,
-              "jp": []
             }
           ],
-          "diff": 4,
+          "diff": 1,
           "moved": {
             "line": 5,
             "in": [],
