@@ -8268,6 +8268,104 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-30": {
+      "video_id": "CB19n25GKMg",
+      "url": "https://youtu.be/CB19n25GKMg",
+      "title": "【MLB】現地はこう報じた「フリードマン氏、大谷翔平は手術不要と明言　2027年の投手復帰を見込む」｜10月30日 番記者の投稿と現地の見出し #Shorts",
+      "published_at": "2026-10-30T06:33:52.958365+00:00",
+      "publish_at": "2026-10-30T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-10-30",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        9.766667,
+        17.333333,
+        28.433333,
+        42.3,
+        51.066667
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "フリードマン氏、大谷翔平は手術不要と明言　2027年の投手復帰を見込む。10月30日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 9.788,
+          "scene_start": 9.766667,
+          "text": "thv11.com。議論：2017年アストロズと大谷翔平がワールドシリーズ王者ランキングで白熱の論争🔥。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 17.368,
+          "scene_start": 17.333333,
+          "text": "The Times of India。大谷翔平とアーロン・ジャッジの最高額MLBカード：希少性と記録的な活躍が価格を左右。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 28.478667,
+          "scene_start": 28.433333,
+          "text": "The Athleticの記者。今井達也が1800万ドルのプレーヤーオプションを行使し、2027年もアストロズに残留する。情報筋が@theathletic.comに語った。第一報は@jonheyman.bsky.social。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 42.362667,
+          "scene_start": 42.3,
+          "text": "The Athleticの記者。Crush City Territoryの新エピソード：Matt Kleineの件、今井達也がオプトイン、急ぐべき場面でゆっくり動くこと。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 51.158667,
+          "scene_start": 51.066667,
+          "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 59.33,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "a8b7db8bd4bcd7f32ef7f7027d89331d22e9c61f8454699effafd1119bac3cfb",
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-30",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-30T15:22:59.400821+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
@@ -9399,6 +9497,49 @@
         "comparison_eligible": true,
         "planned_host": "metan",
         "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-10-30": {
+      "video_id": "G8hxOLPMAlM",
+      "url": "https://youtu.be/G8hxOLPMAlM",
+      "title": "【MLB】ブリュワーズ vs レイズ 現地のファンは何と言ったか｜返信57件ついたコメント 10月30日更新 #Shorts",
+      "published_at": "2026-10-30T06:22:58.129883+00:00",
+      "publish_at": "2026-10-30T08:30:00Z",
+      "duration_seconds": 77.2,
+      "short_information_count": 6,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-30",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-30T06:06:41.998411+00:00",
+        "comparison_eligible": false,
+        "planned_host": "metan",
+        "previous_attempt": {
+          "action": "rebuild_metan",
+          "checked_at": "2026-10-30T06:03:28.324694+00:00",
+          "comparison_eligible": true,
+          "failed_at": "2026-10-30T06:06:41.995815+00:00",
+          "failure_reason": "ui_order_discarded",
+          "label": "予定雨衣",
+          "mode": "live",
+          "planned_host": "ui",
+          "reason": null,
+          "status": "held",
+          "version": 1
+        },
+        "reason": "ui_rebuilt_after_hold",
         "version": 1
       },
       "host_fallback_reason": null,

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-29T07:21:33.132295+00:00",
+  "updated_at": "2026-10-30T06:01:58.869280+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -12,17 +12,65 @@
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 9,
+      "mentions": 8,
       "tone": "好調",
-      "gist": "ブリュワーズ、初のWS制覇"
+      "gist": "ブリュワーズが初のWS制覇、優勝パレード"
     },
     {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "レイズ、WS敗退 ラスムセン好投も"
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "マリナーズがムニョスのオプション行使、ロブレスはFA"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "アスレチックスがイートンとレッドソックス右腕を交換"
+    },
+    {
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ロイヤルズがエステベスを見送りゴンソリンを行使"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "キングがパドレスとの契約を破棄しFAに"
+    },
+    {
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ブレーブスがアクーニャとアルビーズのオプション行使"
+    },
+    {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "カブスがFA開幕と共に投手補強を狙う"
+    },
+    {
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ビシェットがオプトアウトせず2027年もメッツ残留"
     }
   ],
   "players": []

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-29T07:17:34.645291+00:00",
+  "updated_at": "2026-10-30T06:01:09.142340+00:00",
   "season": "2026",
   "teams": [
     "レイズ",
@@ -49,12 +49,6 @@
       "line": "今季 16勝5敗　防御率2.67　174奪三振"
     },
     {
-      "name": "Freddy Peralta",
-      "team": "レイズ",
-      "type": "pitcher",
-      "line": "今季 10勝11敗　防御率4.42　156奪三振"
-    },
-    {
       "name": "Garrett Cleavinger",
       "team": "レイズ",
       "type": "pitcher",
@@ -83,12 +77,6 @@
       "team": "レイズ",
       "type": "batter",
       "line": "今季 打率.266　11本塁打　50打点"
-    },
-    {
-      "name": "Jorge Mateo",
-      "team": "レイズ",
-      "type": "batter",
-      "line": "今季 打率.203　5本塁打　18打点"
     },
     {
       "name": "Junior Caminero",
@@ -187,12 +175,6 @@
       "line": "今季 11勝5敗　防御率4.05　60奪三振"
     },
     {
-      "name": "Brandon Woodruff",
-      "team": "ブリュワーズ",
-      "type": "pitcher",
-      "line": "今季 2勝2敗　防御率2.98　47奪三振"
-    },
-    {
       "name": "Brice Turang",
       "team": "ブリュワーズ",
       "type": "batter",
@@ -251,18 +233,6 @@
       "team": "ブリュワーズ",
       "type": "pitcher",
       "line": "今季 16勝5敗　防御率1.80　252奪三振"
-    },
-    {
-      "name": "Jake Bauers",
-      "team": "ブリュワーズ",
-      "type": "batter",
-      "line": "今季 打率.266　26本塁打　86打点"
-    },
-    {
-      "name": "JoJo Romero",
-      "team": "ブリュワーズ",
-      "type": "pitcher",
-      "line": "今季 3勝3敗　防御率3.36　54奪三振"
     },
     {
       "name": "Joey Ortiz",
@@ -691,11 +661,6 @@
       "id": 595879
     },
     {
-      "name": "Henry Baez",
-      "team": "アスレチックス",
-      "id": 692013
-    },
-    {
       "name": "Joshua Báez",
       "team": "カージナルス",
       "id": 695491
@@ -724,6 +689,11 @@
       "name": "Drake Baldwin",
       "team": "ブレーブス",
       "id": 686948
+    },
+    {
+      "name": "Brooks Baldwin",
+      "team": "ホワイトソックス",
+      "id": 681460
     },
     {
       "name": "Moisés Ballesteros",
@@ -949,6 +919,11 @@
       "name": "Brennan Bernardino",
       "team": "ロッキーズ",
       "id": 657514
+    },
+    {
+      "name": "Prelander Berroa",
+      "team": "ホワイトソックス",
+      "id": 672860
     },
     {
       "name": "Steward Berroa",
@@ -1286,6 +1261,11 @@
       "id": 683737
     },
     {
+      "name": "Ky Bush",
+      "team": "ホワイトソックス",
+      "id": 681066
+    },
+    {
       "name": "Lawrence Butler",
       "team": "アスレチックス",
       "id": 671732
@@ -1552,7 +1532,7 @@
     },
     {
       "name": "Tsung-Che Cheng",
-      "team": "レッドソックス",
+      "team": "タイガース",
       "id": 691907
     },
     {
@@ -1694,11 +1674,6 @@
       "name": "Carlos Cortes",
       "team": "アスレチックス",
       "id": 666126
-    },
-    {
-      "name": "Nestor Cortes",
-      "team": "フィリーズ",
-      "id": 641482
     },
     {
       "name": "Tom Cosgrove",
@@ -2056,11 +2031,6 @@
       "id": 676263
     },
     {
-      "name": "Logan Driscoll",
-      "team": "マーリンズ",
-      "id": 686482
-    },
-    {
       "name": "Shane Drohan",
       "team": "ブリュワーズ",
       "id": 675660
@@ -2122,7 +2092,7 @@
     },
     {
       "name": "Nate Eaton",
-      "team": "レッドソックス",
+      "team": "アスレチックス",
       "id": 681987
     },
     {
@@ -2764,11 +2734,6 @@
       "name": "Romy Gonzalez",
       "team": "レッドソックス",
       "id": 663853
-    },
-    {
-      "name": "Wikelman González",
-      "team": "マーリンズ",
-      "id": 682790
     },
     {
       "name": "Hunter Goodman",
@@ -4462,7 +4427,7 @@
     },
     {
       "name": "Jorge Mateo",
-      "team": "レイズ",
+      "team": "ブレーブス",
       "id": 622761
     },
     {
@@ -4577,7 +4542,7 @@
     },
     {
       "name": "Grant McCray",
-      "team": "ジャイアンツ",
+      "team": "マリナーズ",
       "id": 687529
     },
     {
@@ -5362,7 +5327,7 @@
     },
     {
       "name": "Kyren Paris",
-      "team": "エンゼルス",
+      "team": "メッツ",
       "id": 677347
     },
     {
@@ -5982,7 +5947,7 @@
     },
     {
       "name": "Johnathan Rodríguez",
-      "team": "アスレチックス",
+      "team": "オリオールズ",
       "id": 671286
     },
     {
@@ -6007,7 +5972,7 @@
     },
     {
       "name": "Jake Rogers",
-      "team": "ホワイトソックス",
+      "team": "タイガース",
       "id": 668670
     },
     {
@@ -6107,7 +6072,7 @@
     },
     {
       "name": "Braxton Roxby",
-      "team": "ジャイアンツ",
+      "team": "ナショナルズ",
       "id": 694820
     },
     {
@@ -6359,6 +6324,11 @@
       "name": "Tyler Schweitzer",
       "team": "ホワイトソックス",
       "id": 805326
+    },
+    {
+      "name": "Spencer Schwellenbach",
+      "team": "ブレーブス",
+      "id": 680885
     },
     {
       "name": "Christian Scott",
@@ -7286,6 +7256,11 @@
       "id": 662139
     },
     {
+      "name": "Mike Vasil",
+      "team": "ホワイトソックス",
+      "id": 678024
+    },
+    {
       "name": "Randy Vásquez",
       "team": "パドレス",
       "id": 681190
@@ -7569,6 +7544,11 @@
       "name": "Davis Wendzel",
       "team": "パイレーツ",
       "id": 673995
+    },
+    {
+      "name": "Joey Wentz",
+      "team": "ブレーブス",
+      "id": 666214
     },
     {
       "name": "Hayden Wesneski",
