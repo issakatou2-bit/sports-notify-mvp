@@ -165,6 +165,10 @@ def package(mode,data,segs,names,head,clubs=None):
     narration = sanity_sources.attach(narration, data, sport='soccer')
     # 札の配列をJSONの型にそろえ、保存原稿・音声manifestとも同じ値で照合する。
     narration=json.loads(json.dumps(narration,ensure_ascii=False))
+    if mode=='race' and soccer_look.v5():
+        plan=dict(mode=mode,data=data,narration=narration,shared=shared)
+        __import__('short_context').slots(plan, modern=True)
+        race_details(plan)
     import host_split
     narration = host_split.adapt(narration, 'daily_soccer' if mode == 'preview' else 'soccer_'+mode)
     return dict(mode=mode,data=data,clubs=clubs or clubs_for(names),narration=narration,shared=shared)
@@ -185,7 +189,34 @@ def program(mode,data):
     if mode=='preview' and soccer_look.v5():
         import soccer_match_interest
         plan=soccer_match_interest.enrich_plan(plan)
-    return __import__('short_context').slots(plan, modern=soccer_look.v5())
+    return plan if mode=='race' else __import__('short_context').slots(plan, modern=soccer_look.v5())
+
+
+def race_details(plan):
+    """短い順位回は、選んだ大会の日本人所属クラブの順位・勝点を補う。"""
+    narr=plan['narration'];segs=narr['segments']
+    if not segs or sum(len(s['text']) for s in segs)>=180:return
+    # 冒頭の勝点差の繰り返しではなく、まだ読み上げていない順位と総勝点。
+    spoken=''.join(s['text'] for s in segs if s['kind']!='outro')
+    added=[];seen=set()
+    for comp in plan['data'].get('competitions',[]):
+        if comp.get('code') not in plan['data'].get('picked',[]) or not comp.get('ready'):continue
+        for person in comp.get('jp',[]):
+            club=person.get('club_jp');rank=person.get('position');points=person.get('points')
+            if (not club or not person.get('name') or person.get('out') or club in seen
+                    or type(rank) is not int or rank<1 or type(points) is not int):continue
+            if f'{club}は{rank}位で勝点{points}' in spoken:continue
+            seen.add(club)
+            meta=dict(plan['shared'],kicker=comp['name_jp']+'　所属クラブの順位',
+                      name=person['name'],club=club,big=str(rank),unit='位',
+                      chips=[(points,'勝点')],notes=[])
+            added.append(segment('jp_player',f"{person['name']}の{club}は{rank}位で勝点{points}。",meta))
+            if len(added)==2:break
+        if len(added)==2:break
+    # 話者・口調の割付より前に追加し、保存原稿と音声の対象をそろえる。
+    if added:
+        at=next((i for i,s in enumerate(segs) if s['kind']=='outro'),len(segs))
+        segs[at:at]=json.loads(json.dumps(added,ensure_ascii=False))
 
 
 @motion.slot('soccer')

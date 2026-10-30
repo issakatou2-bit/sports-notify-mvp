@@ -71,6 +71,7 @@ def grounding(documents):
 
 def claim_context(document, quoted, materials):
     """話者交代で人物名と順位の行が分かれた場合だけ直前の行を引き継ぐ。"""
+    import soccer_sanity_material
     names = [r.get('name') for s in materials or [] for c in s.get('competitions') or []
              for r in c.get('jp') or [] if r.get('name')]
     result = []
@@ -82,7 +83,19 @@ def claim_context(document, quoted, materials):
         previous = segments[index-1] if index else {}
         same_panel = not (previous.get('panel') and segment.get('panel') and
                           previous['panel'] != segment['panel'])
-        if index and same_panel and not any(n in text for n in names):
+        # 別クラブを明示した順位行へ、直前の日本人選手を主語として渡さない。
+        clubs = [r.get('team_en') or r.get('team') for source in materials or []
+                 for comp in source.get('competitions') or []
+                 for line in comp.get('lines') or []
+                 for r in line.get('inside', []) + line.get('outside', [])]
+        explicit_club = any(alias in text for club in clubs if club
+                            for alias in soccer_sanity_material.aliases(club))
+        previous_clubs = [r.get('club_jp') for source in materials or []
+                          for comp in source.get('competitions') or [] for r in comp.get('jp') or []
+                          if r.get('name') and r['name'] in (previous.get('text') or '')]
+        same_club = any(alias in text for club in previous_clubs if club
+                        for alias in soccer_sanity_material.aliases(club))
+        if index and same_panel and not any(n in text for n in names) and (not explicit_club or same_club):
             text = (previous.get('text') or '') + '。' + text
         result.append(text)
     return '。'.join(result)
