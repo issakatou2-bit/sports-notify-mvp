@@ -14,6 +14,7 @@ NARRATIONS = {
     'player_story': ['build/player_story/narration.json'],
     'ps_game_now': ['"build/narr_$t.json"'],
     'season_review': ['"build/narr_$t.json"'],
+    'offseason_news': ['"build/narr_$t.json"'],
     'soccer_daily': ['build/soccer_narration.json'],
     'soccer_race': ['build/race_narration.json'],
     'soccer_results': ['build/soccer_results/narration.json'],
@@ -24,7 +25,7 @@ NARRATIONS = {
 KINDS = {
     'asset_video': 'asset', 'correct_video': 'asset', 'daily_notify': 'daily',
     'design_preview': 'asset', 'longform': 'longform', 'morning_design_preview': 'morning_preview',
-    'player_story': 'player_story', 'ps_game_now': 'asset', 'season_review': 'asset',
+    'player_story': 'player_story', 'ps_game_now': 'asset', 'season_review': 'asset', 'offseason_news': 'asset',
     'soccer_daily': 'daily_soccer', 'soccer_race': 'soccer_race', 'soccer_results': 'soccer_results',
     'soccer_voices': 'soccer_voices', 'soccer_week': 'soccer_week',
 }

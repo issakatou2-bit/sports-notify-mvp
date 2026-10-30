@@ -1009,6 +1009,9 @@ def outro_rows(exclude=""):
 def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　データ: MLB Stats API",
           tagline="毎日のMLBを数字と現地の声で"):
     import solo_host
+    offseason = bool((spec or {}).get('offseason'))
+    if offseason:
+        tagline = 'オフの動きを公式の記録で'
     if LOOK == 'v4' and solo_host.selected() == 'ui':
         credit = credit.replace('VOICEVOX:四国めたん', solo_host.UI_CREDIT)
     im = background(t, None)
@@ -1018,10 +1021,11 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
     _text(d,(LEFT, 250), "コレスポ", font=font(150), fill=GOLD)
     _text(d,(LEFT, 440), tagline, font=font(42), fill=INK)
     y = 520
-    _text(d,(LEFT, y), "毎日のお届け", font=font(30), fill=(196, 206, 212))
+    if not offseason:
+        _text(d,(LEFT, y), "毎日のお届け", font=font(30), fill=(196, 206, 212))
     y += 44
     w = SAFE_RIGHT - LEFT - 250                                 # 右下の立ち絵にかからない幅
-    for i, (at, name) in enumerate(outro_rows(exclude)):
+    for i, (at, name) in enumerate([] if offseason else outro_rows(exclude)):
         row = _outro_row(at, name, w)
         _paste_card(im, row, LEFT, y, back_out((t - T_OUTRO_ROW0 - i * T_OUTRO_GAP) / SLIDE))
         y += row.height + 8

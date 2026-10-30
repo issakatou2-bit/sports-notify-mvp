@@ -13,8 +13,9 @@ import requests
 import buffer_daily as bd
 import generated_topics as gt
 
-WORKFLOWS = {'season_review.yml': 'season-review', 'ps_game_now.yml': 'ps-game-now'}
-TOPIC = re.compile(r'season_(?:momentum|game|odds)_[A-Za-z0-9_]+\Z')
+WORKFLOWS = {'season_review.yml': 'season-review', 'ps_game_now.yml': 'ps-game-now',
+             'offseason_news.yml': 'offseason-news'}
+TOPIC = re.compile(r'(?:season_(?:momentum|game|odds)_[A-Za-z0-9_]+|offseason_(?:schedule|awards|transactions)_\d{4}_[a-f0-9]{12})\Z')
 
 
 def select(run, assets, topics, now):
@@ -31,6 +32,13 @@ def select(run, assets, topics, now):
         return []
     rows = []
     for topic, record in sorted(assets.items()):
+        offseason = topic.startswith('offseason_')
+        if offseason != (wf == 'offseason_news.yml'):
+            continue
+        if offseason:
+            import offseason_switches
+            if not offseason_switches.enabled():
+                continue
         if not TOPIC.fullmatch(topic) or topics.get(topic, {}).get('style') != 'v3':
             continue
         stamp = bd.instant(record['published_at'])
@@ -50,8 +58,9 @@ def register(topic, artifact, run):
     kind = 'asset_' + topic
     filename = 'collespo_asset_' + topic + '.mp4'
     bd.SOURCES[kind] = (topic, artifact, filename, run['path'].rsplit('/', 1)[-1])
-    bd.KIND_WORDS[kind] = dict(short='PSの話題', long='PSの話題',
-                              lead='試合とシリーズの状況を公式の数字で紹介します',
+    offseason = topic.startswith('offseason_')
+    bd.KIND_WORDS[kind] = dict(short='MLB' if offseason else 'PSの話題', long='MLB公式の話題' if offseason else 'PSの話題',
+                              lead='MLB公式に確認できたオフの話題です' if offseason else '試合とシリーズの状況を公式の数字で紹介します',
                               cut='\x00', sport='mlb')
     return kind, filename
 
@@ -176,6 +185,10 @@ def distribute(run, rows, publish=False):
         return
     if publish and os.environ.get('V3_SNS_ENABLED') != 'true':
         raise RuntimeError('V3_SNS_ENABLED must be enabled after review')
+    if publish and any(topic.startswith('offseason_') for _, topic, _, _ in rows):
+        import offseason_switches
+        if not offseason_switches.enabled():
+            raise RuntimeError('オフの話題の公開スイッチが停止中です')
     services = bd.selected_services(os.environ.get('BUFFER_CHANNELS'))
     ledger = bd.Ledger() if publish else None
     archive = None
@@ -209,7 +222,8 @@ def distribute(run, rows, publish=False):
                                      '音声：VOICEVOX:四国めたん') for s, text in texts.items()}
             # Bluesky uses the compact published title and an external video card.
             btext = bd.caption('twitter', day, verified, kind)
-            bpost = bsky_record(btext, verified['title'], record['video_id'], datetime.now(timezone.utc))
+            description = 'MLB公式で確認できたオフの話題です。' if topic.startswith('offseason_') else 'コレスポのPSの話題です。'
+            bpost = bsky_record(btext, verified['title'], record['video_id'], datetime.now(timezone.utc), description)
             print(json.dumps(dict(topic=topic, video_id=record['video_id'], duration=duration,
                                   sha256=digest, captions=texts, bluesky=bpost), ensure_ascii=False))
             if not publish:
@@ -257,6 +271,10 @@ def main():
     now = datetime.now(timezone.utc)
     assets = json.loads(Path('data/published_assets.json').read_text(encoding='utf-8'))['assets']
     topics = gt.all_topics(refresh=True)
+    import offseason_switches
+    saved = Path('data/offseason_published.json')
+    if offseason_switches.enabled() and saved.exists():
+        topics = dict(topics, **json.loads(saved.read_text(encoding='utf-8')).get('topics', {}))
     if args.source_run:
         runs = [bd.github('/actions/runs/' + str(args.source_run))]
     else:

@@ -711,11 +711,41 @@ def create_payload(service, text, media_url):
     return payload
 
 
+def matched_post(posts, entry):
+    """失敗IDより一意の実投稿を優先する。本文・媒体は変えず再投稿もしない。"""
+    import unicodedata
+    def normalized(text):
+        return ' '.join(unicodedata.normalize('NFKC', text or '').split())
+    text = normalized(entry.get('text'))
+    same = [p for p in posts if text and normalized(p.get('text')) == text]
+    sent = {p['id']: p for p in same if p.get('status') == 'sent' and p.get('externalLink')}
+    if len(sent) > 1:
+        raise RuntimeError('Buffer本文が一致する実投稿が複数あります。再送せず確認してください')
+    if sent:
+        return next(iter(sent.values()))
+    exact = [p for p in posts if p['id'] == entry.get('post_id')]
+    if exact:
+        return exact[0]
+    same = {p['id']: p for p in same}
+    if len(same) > 1:
+        raise RuntimeError('Buffer本文が一致する候補が複数あります。再送せず確認してください')
+    return next(iter(same.values()), None)
+
+
+def delivery_update(entry, post):
+    result = dict(entry, state=post['status'], post_id=post['id'],
+                  external_link=post.get('externalLink'), checked_at=datetime.now(timezone.utc).isoformat())
+    if entry.get('post_id') and entry['post_id'] != post['id']:
+        result['previous_post_ids'] = sorted(set(entry.get('previous_post_ids', [])) | {entry['post_id']})
+        result['confirmation'] = 'unique_sent_post_with_same_text'
+    return result
+
+
 def reconcile():
     """Refresh saved deliveries without creating media or posts, even after midnight."""
     ledger = Ledger()
     pending_services = {key.rsplit(':', 1)[-1] for key, entry in ledger.data['deliveries'].items()
-                        if entry.get('state') not in ('sent', 'gave_up')}
+                        if entry.get('state') != 'sent'}
     posts_by_channel = {}
     for service, channel in CHANNELS.items():
         if service not in pending_services:
@@ -731,17 +761,14 @@ def reconcile():
     unresolved, settling = [], []
     for key, entry in list(ledger.data['deliveries'].items()):
         service = key.rsplit(':', 1)[-1]
-        if entry.get('state') in ('sent', 'gave_up') or service not in posts_by_channel:
+        if entry.get('state') == 'sent' or service not in posts_by_channel:
             continue
-        post = next((p for p in posts_by_channel[service]
-                     if p['id'] == entry.get('post_id') or p['text'] == entry.get('text')), None)
+        post = matched_post(posts_by_channel[service], entry)
         if post:
-            ledger.set(key, {**entry, 'state': post['status'], 'post_id': post['id'],
-                            'external_link': post.get('externalLink'),
-                            'checked_at': datetime.now(timezone.utc).isoformat()})
+            ledger.set(key, delivery_update(entry, post))
         row = ledger.data['deliveries'][key]
         print(key, row.get('state'), row.get('external_link'))
-        if row.get('state') == 'sent':
+        if row.get('state') in ('sent', 'gave_up'):
             continue
         # Buffer が error と返して2日たったものは、もう出ない。毎回の実行を赤くし続けると、
         # 新しい失敗が見えなくなる（10/7 の Instagram 1件で 10/8〜10/10 の実行がすべて赤だった）。
@@ -759,11 +786,9 @@ def reconcile():
 def submit_once(ledger, key, payload, metadata, retry_rejected=False):
     old = ledger.data['deliveries'].get(key)
     posts = recent_posts(payload['channelId'])
-    matches = [p for p in posts if (old and p['id'] == old.get('post_id')) or p['text'] == payload['text']]
-    if matches:
-        post = matches[0]
-        ledger.set(key, {**metadata, 'state': post['status'], 'post_id': post['id'],
-                         'external_link': post.get('externalLink')})
+    post = matched_post(posts, dict(old or {}, text=payload['text']))
+    if post:
+        ledger.set(key, delivery_update({**(old or {}), **metadata, 'text': payload['text']}, post))
         return post
     if old and not (old['state'] == 'rejected' and retry_rejected):
         raise RuntimeError('Existing reservation requires inspection; will not resend: ' + key)
@@ -797,11 +822,10 @@ def refresh_deliveries(ledger, day, kind, services):
             except RecentPostsUnavailable:
                 unavailable.add(service)
                 continue
-            post = next((p for p in posts if p['id'] == entry['post_id']), None)
+            post = matched_post(posts, entry)
             if post:
                 if entry.get('state') != post['status'] or entry.get('external_link') != post.get('externalLink'):
-                    ledger.set(key, {**entry, 'state': post['status'], 'external_link': post.get('externalLink'),
-                                     'checked_at': datetime.now(timezone.utc).isoformat()})
+                    ledger.set(key, delivery_update(entry, post))
                 print(service, post['status'], post.get('externalLink'))
                 pending |= post['status'] not in ('sent', 'error')
         if not pending:

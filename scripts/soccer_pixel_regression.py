@@ -48,16 +48,21 @@ def cases():
 
 
 def hashes():
+    from unittest.mock import patch
+    import post_common
     import review_render_v3 as r3
     output={}
-    for mode,index,seg,draw in cases():
-        for t in ((3.,) if seg['kind']=='outro' else (0.,.8,1.4)):
-            r3.set_program_clock(0)
-            r3.set_caption(seg['text'],12,40,speaker=2,hide_caption=seg['kind']=='outro')
-            r3.set_program_clock(t)
-            image=draw(t)
-            key=f'{mode}/{index}/{seg["kind"]}/{t}'
-            output[key]=hashlib.sha256(image.convert('RGB').tobytes()).hexdigest()
+    # 基点はPS開催中。実データのWS決着で共通の番組表だけ変わるのを回帰にしない。
+    with patch.object(post_common, '_postseason_now', return_value={
+            'phase': 'postseason', 'series': [{'over': False}], 'changes': []}):
+        for mode,index,seg,draw in cases():
+            for t in ((3.,) if seg['kind']=='outro' else (0.,.8,1.4)):
+                r3.set_program_clock(0)
+                r3.set_caption(seg['text'],12,40,speaker=2,hide_caption=seg['kind']=='outro')
+                r3.set_program_clock(t)
+                image=draw(t)
+                key=f'{mode}/{index}/{seg["kind"]}/{t}'
+                output[key]=hashlib.sha256(image.convert('RGB').tobytes()).hexdigest()
     r3.set_program_clock(None)
     return output
 

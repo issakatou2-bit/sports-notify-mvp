@@ -7,6 +7,9 @@ PAUSE_NOTE = "球場・球団まとめは10/26の本人判断で新規制作を�
 
 def paused(topic):
     topic = (topic or "").removeprefix("asset:")
+    if topic.startswith('offseason_'):
+        import offseason_switches
+        return not offseason_switches.enabled()
     kind = ("season_team" if topic == "season_team" or topic.startswith("season_team_")
             else "venue" if topic == "mlb_venue" else topic.split("_")[0])
     return kind in PAUSED_KINDS

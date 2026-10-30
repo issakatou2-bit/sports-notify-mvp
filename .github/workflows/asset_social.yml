@@ -1,7 +1,7 @@
 name: 公開済みv3の話題をSNSへ
 on:
   workflow_run:
-    workflows: ['シーズンまとめ（球団・日本人選手）', 'PS 試合の話題（試合のすぐ後に）']
+    workflows: ['シーズンまとめ（球団・日本人選手）', 'PS 試合の話題（試合のすぐ後に）', 'MLB オフの公式話題']
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -47,6 +47,7 @@ jobs:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
           V3_SNS_ENABLED: ${{ vars.V3_SNS_ENABLED }}
+          COLLESPO_OFFSEASON_NEWS: ${{ vars.COLLESPO_OFFSEASON_NEWS || '' }}
           SOURCE_RUN: ${{ github.event.workflow_run.id || inputs.source_run }}
           MODE: ${{ github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
         run: |
