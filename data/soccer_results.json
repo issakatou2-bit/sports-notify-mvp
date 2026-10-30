@@ -139,5 +139,134 @@
       "event_id": "401917034",
       "reason": "終了実時刻なし"
     }
-  ]
+  ],
+  "preview_expectation_results": {},
+  "preview_next_fixtures": [],
+  "preview_followup": {
+    "day": "2026-10-28",
+    "video_id": "aGfjs2CmZ30",
+    "games": [
+      {
+        "event_id": "401921842",
+        "forecast": {
+          "game_id": "espn-401921842",
+          "espn_event_id": "401921842",
+          "league": "リーグ杯",
+          "competition_code": "EFL",
+          "home": "Liverpool FC",
+          "away": "Chelsea FC",
+          "start_utc": "2026-10-29T05:00:00+09:00",
+          "reasons": [],
+          "expectation": null,
+          "spoken": "日本時間5時、リバプール対チェルシー。注目はリーグ杯での、この両チームの対戦です。遠藤航の所属クラブの一戦。出場する場合のプレーにも注目です。",
+          "standings": {
+            "home": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": null
+      },
+      {
+        "event_id": "401921834",
+        "forecast": {
+          "game_id": "espn-401921834",
+          "espn_event_id": "401921834",
+          "league": "リーグ杯",
+          "competition_code": "EFL",
+          "home": "Manchester City FC",
+          "away": "Brighton & Hove Albion FC",
+          "start_utc": "2026-10-29T04:30:00+09:00",
+          "reasons": [],
+          "expectation": null,
+          "spoken": "日本時間4時30分、マンチェスター・シティ対ブライトン。注目はリーグ杯での、この両チームの対戦です。見どころはマンチェスター・シティのホームで、ブライトンがどう戦うかです。",
+          "standings": {
+            "home": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": null
+      },
+      {
+        "event_id": "401921841",
+        "forecast": {
+          "game_id": "espn-401921841",
+          "espn_event_id": "401921841",
+          "league": "リーグ杯",
+          "competition_code": "EFL",
+          "home": "Fulham FC",
+          "away": "Crystal Palace FC",
+          "start_utc": "2026-10-29T04:45:00+09:00",
+          "reasons": [],
+          "expectation": {
+            "name": "鎌田大地",
+            "club": "クリスタル・パレス",
+            "goals": 1,
+            "assists": 3,
+            "japanese": true,
+            "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+            "as_of": "2026-10-28T10:07:36.909975+00:00",
+            "name_en": "Daichi Kamada"
+          },
+          "spoken": "日本時間4時45分、フラム対クリスタル・パレス。期待選手は鎌田大地。今季FPL集計で1得点 3アシストです。",
+          "standings": {
+            "home": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-10-28T09:54:05.966826+00:00",
+              "competition": "EFL",
+              "season": null
+            }
+          }
+        },
+        "answer": {
+          "name": "鎌田大地",
+          "name_en": "Daichi Kamada",
+          "club": "クリスタル・パレス",
+          "side": "away",
+          "event_id": "401921841",
+          "athlete_id": "219362",
+          "status": "substitute",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": null,
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 1,
+          "on_target": 0,
+          "subbed_out": false,
+          "minutes": 13,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        "rank_changes": [],
+        "next_game": null
+      }
+    ]
+  }
 }
