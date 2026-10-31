@@ -18046,6 +18046,36 @@
       "actual_host": "metan",
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-31": {
+      "video_id": "sbun1tjmtRs",
+      "url": "https://youtu.be/sbun1tjmtRs",
+      "title": "菅原由勢のカリアリ、EL圏内まで勝点5｜セリエA 順位争い【欧州サッカー】#Shorts",
+      "published_at": "2026-10-31T10:18:30.838915+00:00",
+      "publish_at": "2026-10-31T11:30:00Z",
+      "duration_seconds": 31.4,
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-31",
+        "kind": "soccer_race",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-31T19:13:28.098415+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_week": {
