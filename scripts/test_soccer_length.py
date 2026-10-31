@@ -4,6 +4,7 @@ import io
 import json
 from pathlib import Path
 import tempfile
+import sys
 import unittest
 import wave
 from unittest.mock import patch
@@ -12,6 +13,7 @@ import soccer_selected_preview as selected
 import soccer_slots_v4 as slots
 import soccer_preview_history as history
 import synthesize_narration as sn
+import review_render_v3 as r3
 
 FIX = Path(__file__).parent / 'fixtures' / 'soccer-length'
 
@@ -24,7 +26,9 @@ def wav(path, seconds):
 
 def material(day, folder):
     fixture = json.loads((FIX / (day + '.json')).read_text(encoding='utf-8'))
-    plan = selected.program(fixture['data'])
+    # 保存した10月中旬の回は、当時の試合開催期の締めで比較する。
+    with patch.object(r3, 'OUTRO_TEXT', r3.INSEASON_OUTRO_TEXT):
+        plan = selected.program(fixture['data'])
     # 点検用の入力材料は追加されるが、台詞・札・話者・表示時間の契約は同一。
     evidence = {'soccer_material', 'sanity_materials', 'sanity_date_jst'}
     actual = {k: v for k, v in plan['narration'].items() if k not in evidence}
@@ -162,4 +166,4 @@ def wave_seconds(path):
 
 
 if __name__ == '__main__':
-    unittest.main(argv=[__file__])
+    unittest.main(argv=[sys.argv[0]])

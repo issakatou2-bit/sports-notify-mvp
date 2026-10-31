@@ -394,6 +394,18 @@ def _postseason_now(path: str = None) -> dict:
         return {}
 
 
+def mlb_offseason(ps=None, today=None):
+    """既存の日次PS・数字枠と同じWS決着判定。欠測時は従来表示。"""
+    from datetime import datetime
+    import ps_offseason
+    try:
+        snapshot = _postseason_now() if ps is None else ps
+        return ps_offseason.completed_before(
+            snapshot, today or datetime.now(ps_offseason.JST))
+    except (OSError, ValueError, TypeError, AttributeError, KeyError):
+        return False
+
+
 def lineup(exclude: str = "", ps: dict = None) -> list:
     """**表示用の**毎日の一覧。時期で変わる枠を、その日の姿にする。
 
@@ -413,9 +425,14 @@ def lineup(exclude: str = "", ps: dict = None) -> list:
     """
     import race_words as rw
     ps = _postseason_now() if ps is None else ps
+    offseason = mlb_offseason(ps)
     out = []
     for kind, name, what, at in DAILY_LINEUP:
         if kind == exclude:
+            continue
+        # コメント・報道は独立した材料で継続。healthcheckの旧一覧は両者も
+        # 試合依存とするため使わず、実制作のWS終了ゲートに合わせる。
+        if offseason and kind in {"morning", "postseason", "daily", "longform"}:
             continue
         if kind == "postseason":
             if rw.is_settled(ps):
@@ -430,7 +447,7 @@ def lineup(exclude: str = "", ps: dict = None) -> list:
         if kind == "longform" and rw.is_settled(ps):
             what = what.replace("進出争い", "ポストシーズン")
         out.append((kind, name, what, at))
-    return out
+    return sorted(out, key=lambda row: row[3]) if offseason else out
 
 
 def lineup_names(exclude: str = "") -> list:
