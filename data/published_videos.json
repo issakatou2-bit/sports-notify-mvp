@@ -18888,6 +18888,36 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-30": {
+      "video_id": "rJcA29QbOEg",
+      "url": "https://youtu.be/rJcA29QbOEg",
+      "title": "【欧州サッカー】中村草太が先発｜ルアーブル 1-5 パリ・サンジェルマン ほか 日本人選手の結果 #Shorts",
+      "published_at": "2026-10-31T01:45:38.723271+00:00",
+      "publish_at": "2026-10-31T02:00:00Z",
+      "duration_seconds": 55.87,
+      "short_information_count": 17,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-31",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-31T10:39:22.451986+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   }
 }
