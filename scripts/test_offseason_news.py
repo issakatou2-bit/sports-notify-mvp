@@ -6,6 +6,7 @@ import io
 import json
 import os
 from pathlib import Path
+import sys
 import unittest
 import uuid
 from unittest.mock import patch
@@ -99,7 +100,7 @@ class OffseasonTests(unittest.TestCase):
         with patch.object(r3, 'outro_rows', side_effect=AssertionError('オフで番組表を呼んだ')):
             image = r3.outro(3, spec)
         self.assertTrue(image.info['v3_outro'])
-        self.assertIn('明日の試合',r3.OUTRO_TEXT)
+        self.assertIn('明日の試合',r3.INSEASON_OUTRO_TEXT)
 
     def test_optional_stats_keeps_transaction_text_visible(self):
         import asset_v4_cards as cards
@@ -393,4 +394,4 @@ class OffseasonTests(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main(argv=[__file__])
+    unittest.main(argv=[sys.argv[0]])

@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import types
+import sys
 import unittest
 from unittest.mock import patch
 import wave
@@ -33,7 +34,7 @@ EXAMPLES = (
 
 class UiSoloTest(unittest.TestCase):
     def test_outro_delivery_is_polite_only_for_ui(self):
-        from review_render_v3 import OUTRO_TEXT
+        from review_render_v3 import INSEASON_OUTRO_TEXT as OUTRO_TEXT
         source = dict(segments=[dict(speaker=2, kind='outro', text=OUTRO_TEXT)])
         for host in ('ui', 'metan', ''):
             with self.subTest(host=host), patch.dict(os.environ, COLLESPO_SOLO_HOST=host):
@@ -160,4 +161,4 @@ class UiSoloTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main(argv=[__file__])
+    unittest.main(argv=[sys.argv[0]])

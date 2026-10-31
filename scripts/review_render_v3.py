@@ -995,8 +995,19 @@ def cues(kind, spec, items=(), start=0, count=0):
 # 10/7 本人「最後のコレスポの紹介、ちょっと雑すぎ。もっと突き詰めて各ショートの最後に付けられる？」。
 # どの枠の最後にも付ける。毎日の番組表（post_common.lineup、時刻つき）を時刻の順に並べ、
 # いま見ている枠は外す。地はコレスポの色（球団色にしない）。
-OUTRO_TEXT = ("コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。"
+INSEASON_OUTRO_TEXT = ("コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。"
               "チャンネル登録して、また見に来てくださいね。")
+OFFSEASON_OUTRO_TEXT = ("コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けています。"
+                        "チャンネル登録して、また見に来てくださいね。")
+
+
+def outro_text(ps=None, today=None):
+    import post_common
+    return OFFSEASON_OUTRO_TEXT if post_common.mlb_offseason(ps, today) else INSEASON_OUTRO_TEXT
+
+
+# 各制作器は1回の起動で原稿と描画を作る。既存の取り込み口を保つ。
+OUTRO_TEXT = outro_text()
 T_OUTRO_ROW0, T_OUTRO_GAP = 0.6, 0.18
 
 

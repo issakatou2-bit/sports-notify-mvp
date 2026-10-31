@@ -73,7 +73,9 @@ def check_spacing(image):
         if bottom-y>=200 and (not children or bottom-max(e['box'][3] for e in children)>=200):
             errors.append({'empty_card_bottom':card['box']})
     moving,outer=content_group(image)
-    if moving:
+    # 共通締めは番組表の行数で登録札の高さが変わる既存の配置。
+    # オフ・0行・1行でも札を伸ばさず、画面下の余白だけ許す。
+    if moving and not image.info.get('v3_outro'):
         top=min(e['box'][1] for e in moving);bottom=max(e['box'][3] for e in moving)
         centered=abs((top+bottom)/2-(320+r3.CONTENT_BOTTOM)/2)<=24
         if r3.CONTENT_BOTTOM-bottom>=200 and not (len(outer)<=1 and centered):
