@@ -297,6 +297,26 @@ class ShortContent(unittest.TestCase):
             data['games'][0]['goals_complete']=False
             self.assertEqual(len(short_context.soccer(doc,data,readable=True)['segments']),2)
 
+    def preview_case(self):
+        # 10/30 の実際の予告の形。理由に evidence 欄は無い。
+        return {'segments': [dict(kind='preview', text='日本時間3時、ル・アーブル対パリ・サンジェルマン。'
+            '18位ルアーブル対首位パリ・サンジェルマン。勝点差15。', meta=dict(date='10月31日（土）', time='03:00',
+            home='ル・アーブル', away='パリ・サンジェルマン', ranks=dict(home=18, away=1), interest=dict(reasons=[
+                dict(kind='leader', text='18位ルアーブル対首位パリ・サンジェルマン', ranks=[18, 1]),
+                dict(kind='points', text='勝点差15', gap=15.0)])))]}
+
+    def test_read_interest_reasons_count_without_an_evidence_field(self):
+        report = s.assess(self.preview_case(), [27.6], {})
+        self.assertEqual(report['status'], 'passed')
+        self.assertEqual([u['fact'] for u in report['information']], ['開始予定', 'leader', 'points'])
+
+    def test_unread_interest_reasons_do_not_count(self):
+        document = self.preview_case()
+        document['segments'][0]['text'] = '日本時間3時、ル・アーブル対パリ・サンジェルマン。'
+        report = s.assess(document, [27.6], {})
+        self.assertEqual(report['information_count'], 1)
+        self.assertEqual(report['status'], 'held')
+
 
 if __name__ == '__main__':
     unittest.main(argv=[__file__])

@@ -211,8 +211,11 @@ def information(document, material=None):
                         or name+normalized(f'は現在{rank}位') in text):
                     add(meta[side], '当該大会順位', rank, '生成入力:同大会順位表', index)
             for reason in (meta.get('interest') or {}).get('reasons', []):
-                if reason.get('evidence') and reason.get('text') and normalized(reason['text']) in normalized(seg.get('text','')):
-                    add(subject, reason.get('kind'), reason['text'], '生成入力:'+str(reason['evidence']), index)
+                # 実際の理由に evidence 欄は無い（10/30 の予告が情報1件で止まった）。出どころは種類で決まる。
+                evidence = reason.get('evidence') or reason.get('source') or (
+                    '同大会順位表' if 'ranks' in reason or 'gap' in reason else '直近成績' if 'form' in reason else None)
+                if evidence and reason.get('text') and normalized(reason['text']) in normalized(seg.get('text','')):
+                    add(subject, reason.get('kind'), reason['text'], '生成入力:'+str(evidence), index)
         if kind == 'standings':
             for row in meta.get('rows', []):
                 position = row.get('position')
