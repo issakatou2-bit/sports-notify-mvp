@@ -476,5 +476,184 @@
         }
       }
     ]
+  },
+  "2026-10-31": {
+    "day": "2026-10-31",
+    "video_id": "XC1PJDjcfE0",
+    "title": "【欧州サッカー】今夜の注目試合｜バイエルン vs ドルトムント ほか #Shorts",
+    "published_at": "2026-10-31T10:10:44.656590+00:00",
+    "binding": {
+      "material_sha256": "afd90e32c2590ec395a23de20b56431eb2fa214942bcf1cbe2bca69a1b3848c8",
+      "narration_sha256": "04e9fb093d312e93be540af46002dbbe8e023d943a63ae5c1d4d0b5d067cef32"
+    },
+    "games": [
+      {
+        "game_id": "565845",
+        "espn_event_id": "401884754",
+        "league": "ブンデスリーガ",
+        "competition_code": "BL1",
+        "home": "バイエルン",
+        "away": "ドルトムント",
+        "start_utc": "2026-11-01T02:30:00+09:00",
+        "reasons": [
+          {
+            "kind": "title",
+            "text": "首位バイエルン対2位ドルトムントの首位争い",
+            "ranks": [
+              1,
+              2
+            ],
+            "gap": 0.0
+          },
+          {
+            "kind": "points",
+            "text": "勝点差0",
+            "gap": 0.0
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間2時30分、バイエルン対ドルトムント。首位バイエルン対2位ドルトムントの首位争い。勝点差0。バイエルンは昨季ブンデスリーガ1位。",
+        "standings": {
+          "home": {
+            "rank": 1,
+            "games_back": 0.0,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 0.0,
+            "as_of": "2026-10-31T09:53:50.278056+00:00",
+            "competition": "BL1",
+            "season": null
+          },
+          "away": {
+            "rank": 2,
+            "games_back": 0.0,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 0.0,
+            "as_of": "2026-10-31T09:53:50.278056+00:00",
+            "competition": "BL1",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "560627",
+        "espn_event_id": "401878761",
+        "league": "プレミアリーグ",
+        "competition_code": "PL",
+        "home": "トッテナム",
+        "away": "クリスタル・パレス",
+        "start_utc": "2026-11-01T02:30:00+09:00",
+        "reasons": [
+          {
+            "kind": "rank",
+            "text": "14位トッテナム対17位クリスタルパレス、順位差3の直接対決",
+            "ranks": [
+              14,
+              17
+            ],
+            "rank_difference": 3
+          },
+          {
+            "kind": "points",
+            "text": "勝点差2",
+            "gap": 2.0
+          }
+        ],
+        "expectation": {
+          "name": "鎌田大地",
+          "club": "クリスタル・パレス",
+          "goals": 1,
+          "assists": 3,
+          "japanese": true,
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+          "as_of": "2026-10-31T10:01:08.818813+00:00",
+          "name_en": "Daichi Kamada"
+        },
+        "spoken": "日本時間2時30分、トッテナム対クリスタル・パレス。14位トッテナム対17位クリスタルパレス、順位差3の直接対決。勝点差2。期待選手は鎌田大地。今季FPL集計で1得点 3アシストです。",
+        "standings": {
+          "home": {
+            "rank": 14,
+            "games_back": 4.0,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 12.0,
+            "as_of": "2026-10-31T09:53:50.278056+00:00",
+            "competition": "PL",
+            "season": null
+          },
+          "away": {
+            "rank": 17,
+            "games_back": 4.7,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 14.0,
+            "as_of": "2026-10-31T09:53:50.278056+00:00",
+            "competition": "PL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "558548",
+        "espn_event_id": "401874795",
+        "league": "セリエA",
+        "competition_code": "SA",
+        "home": "ACミラン",
+        "away": "インテル",
+        "start_utc": "2026-11-01T04:45:00+09:00",
+        "reasons": [
+          {
+            "kind": "leader",
+            "text": "5位ACミラン対首位インテル",
+            "ranks": [
+              5,
+              1
+            ]
+          },
+          {
+            "kind": "points",
+            "text": "勝点差7",
+            "gap": 7.0
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間4時45分、ACミラン対インテル。5位ACミラン対首位インテル。勝点差7。ACミランは昨季セリエA5位。",
+        "standings": {
+          "home": {
+            "rank": 5,
+            "games_back": 2.3,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 7.0,
+            "as_of": "2026-10-31T09:53:50.278056+00:00",
+            "competition": "SA",
+            "season": null
+          },
+          "away": {
+            "rank": 1,
+            "games_back": 0.0,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 0.0,
+            "as_of": "2026-10-31T09:53:50.278056+00:00",
+            "competition": "SA",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }

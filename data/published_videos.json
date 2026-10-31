@@ -8796,6 +8796,40 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-31": {
+      "video_id": "XC1PJDjcfE0",
+      "url": "https://youtu.be/XC1PJDjcfE0",
+      "title": "【欧州サッカー】今夜の注目試合｜バイエルン vs ドルトムント ほか #Shorts",
+      "published_at": "2026-10-31T10:10:44.656590+00:00",
+      "publish_at": "2026-10-31T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "afd90e32c2590ec395a23de20b56431eb2fa214942bcf1cbe2bca69a1b3848c8",
+        "narration_sha256": "04e9fb093d312e93be540af46002dbbe8e023d943a63ae5c1d4d0b5d067cef32"
+      },
+      "duration_seconds": 47.03,
+      "short_information_count": 12,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-31",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-31T19:02:24.977272+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
