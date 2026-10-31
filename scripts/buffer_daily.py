@@ -719,6 +719,14 @@ def matched_post(posts, entry):
     text = normalized(entry.get('text'))
     same = [p for p in posts if text and normalized(p.get('text')) == text]
     sent = {p['id']: p for p in same if p.get('status') == 'sent' and p.get('externalLink')}
+    if not sent:
+        # Xが受けた投稿をBufferが写し直すと、リンクはt.coに変わり画像分が増える（10/29の実例）。
+        def linkless(value):
+            return re.sub(r'\s+', '', re.sub(r'https?://\S+', '', unicodedata.normalize('NFKC', value or '')))
+        wanted = linkless(entry.get('text'))
+        sent = {p['id']: p for p in posts
+                if wanted and p.get('status') == 'sent' and p.get('externalLink')
+                and 'https://t.co/' in (p.get('text') or '') and linkless(p.get('text')) == wanted}
     if len(sent) > 1:
         raise RuntimeError('Buffer本文が一致する実投稿が複数あります。再送せず確認してください')
     if sent:

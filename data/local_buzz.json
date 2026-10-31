@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-30T06:01:58.869280+00:00",
+  "updated_at": "2026-10-31T06:01:47.483684+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -12,17 +12,25 @@
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
-      "mentions": 8,
+      "mentions": 3,
       "tone": "好調",
-      "gist": "ブリュワーズが初のWS制覇、優勝パレード"
+      "gist": "ブリュワーズ、44年ぶり優勝パレード"
     },
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
       "mentions": 1,
       "tone": "話題",
-      "gist": "マリナーズがムニョスのオプション行使、ロブレスはFA"
+      "gist": "フィリーズ新打撃コーチ、粘る打線へ"
+    },
+    {
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "レンジャーズのウォルコット、秋季リーグで外野へ"
     },
     {
       "team_id": "111",
@@ -30,47 +38,39 @@
       "name_en": "Boston Red Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アスレチックスがイートンとレッドソックス右腕を交換"
+      "gist": "タイガースがレッドソックスからチェン獲得"
     },
     {
-      "team_id": "118",
-      "name": "ロイヤルズ",
-      "name_en": "Kansas City Royals",
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ロイヤルズがエステベスを見送りゴンソリンを行使"
+      "gist": "ウォルコット、秋季リーグで外野に挑戦"
     },
     {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "キングがパドレスとの契約を破棄しFAに"
+      "gist": "タイガース、レッドソックスからチェン獲得"
     },
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "ブレーブスがアクーニャとアルビーズのオプション行使"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
       "mentions": 1,
       "tone": "話題",
-      "gist": "カブスがFA開幕と共に投手補強を狙う"
+      "gist": "アストロズ、フローレスを新GMに起用"
     },
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "ビシェットがオプトアウトせず2027年もメッツ残留"
+      "tone": "不振",
+      "gist": "レイズ、マルティネスとマリンズ契約見送り"
     }
   ],
   "players": []
