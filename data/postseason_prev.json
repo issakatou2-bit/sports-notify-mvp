@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-29T09:52:38.135246+00:00",
-  "date": "2026-10-29",
+  "updated_at": "2026-10-30T09:52:37.612434+00:00",
+  "date": "2026-10-30",
   "season": "2026",
   "phase": "postseason",
   "series": [
@@ -90,10 +90,7 @@
           "id": 112,
           "name": "カブス",
           "wins": 0,
-          "players": [
-            "今永昇太",
-            "鈴木誠也"
-          ]
+          "players": []
         }
       ]
     },
@@ -301,17 +298,9 @@
     }
   ],
   "final_day": [],
-  "headline": "ブリュワーズが4勝1敗でレイズを破り、ワールドシリーズ制覇",
-  "changes": [
-    {
-      "key": "W:139-158",
-      "kind": "advance",
-      "text": "ブリュワーズが4勝1敗でレイズを破り、ワールドシリーズ制覇",
-      "jp": false,
-      "stage": 4
-    }
-  ],
-  "prev_date": "2026-10-28",
+  "headline": "ポストシーズン進出争い",
+  "changes": [],
+  "prev_date": "2026-10-29",
   "japanese": [
     {
       "team_id": 119,
@@ -361,23 +350,6 @@
       "clinched": true,
       "players": [
         "松井裕樹"
-      ]
-    },
-    {
-      "team_id": 112,
-      "team": "カブス",
-      "league": 104,
-      "league_jp": "ナ・リーグ",
-      "seed": 5,
-      "route": "ワイルドカード",
-      "w": 89,
-      "l": 73,
-      "magic": null,
-      "wc_gb": "+1.0",
-      "clinched": true,
-      "players": [
-        "今永昇太",
-        "鈴木誠也"
       ]
     },
     {
@@ -443,22 +415,6 @@
       "clinched": false,
       "players": [
         "ヌートバー"
-      ]
-    },
-    {
-      "team_id": 115,
-      "team": "ロッキーズ",
-      "league": 104,
-      "league_jp": "ナ・リーグ",
-      "seed": null,
-      "route": "圏外",
-      "w": 58,
-      "l": 104,
-      "magic": null,
-      "wc_gb": "30.0",
-      "clinched": false,
-      "players": [
-        "菅野智之"
       ]
     },
     {
@@ -2380,9 +2336,9 @@
   },
   "editorial": {
     "version": 1,
-    "date_jst": "2026-10-29",
+    "date_jst": "2026-10-30",
     "retrieved_at": "2026-10-29T07:22:54.408150+00:00",
-    "stage": "series",
+    "stage": "offseason",
     "source_url": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&season=2026&startDate=2026-09-15&endDate=2026-11-10&gameType=F,D,L,W&hydrate=team,probablePitcher",
     "warnings": [],
     "matchups": [],
@@ -3883,6 +3839,8 @@
         }
       ]
     },
-    "edition_key": "ad9a2024acf19b08afcaaa89c97840746455d6871589c8b707873ee9d21716d5"
-  }
+    "edition_key": "ad9a2024acf19b08afcaaa89c97840746455d6871589c8b707873ee9d21716d5",
+    "reason": "ワールドシリーズは決着済み"
+  },
+  "ws_finished_on": "2026-10-29"
 }

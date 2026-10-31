@@ -1,113 +1,116 @@
 {
-  "generated_at": "2026-10-30T06:01:07.407058+00:00",
-  "date_jst": "2026-10-30",
-  "name": "Ian Seymour",
-  "player_id": "693855",
-  "team": "レイズ",
-  "group": "pitching",
+  "generated_at": "2026-10-31T06:01:04.933413+00:00",
+  "date_jst": "2026-10-31",
+  "name": "William Contreras",
+  "player_id": "661388",
+  "team": "ブリュワーズ",
+  "group": "hitting",
   "why": "2026-10-29のMLBで最も活躍",
-  "headline": "1.0回　2奪三振　自責0",
-  "score": 60,
+  "headline": "4打数1安打　1二塁打　1打点",
+  "score": 59,
   "bio": {
-    "name_en": "Ian Seymour",
-    "age": 27,
-    "birth_city": "Madison",
-    "birth_state": "CT",
-    "birth_country": "USA",
-    "birth_date": "1998-12-13",
-    "debut": "2025-06-09",
-    "draft_year": 2020,
-    "bats": "Left",
-    "throws": "Left",
-    "number": "61",
-    "position": "Pitcher",
+    "name_en": "William Contreras",
+    "age": 28,
+    "birth_city": "Puerto Cabello",
+    "birth_state": null,
+    "birth_country": "Venezuela",
+    "birth_date": "1997-12-24",
+    "debut": "2020-07-24",
+    "draft_year": null,
+    "bats": "Right",
+    "throws": "Right",
+    "number": "24",
+    "position": "Catcher",
     "nickname": null,
-    "height": "6' 0\"",
-    "weight": 215
+    "height": "5' 10\"",
+    "weight": 217
   },
   "teams": [
     {
-      "team": "レイズ",
-      "from": 2025,
+      "team": "ブレーブス",
+      "from": 2020,
+      "to": 2022
+    },
+    {
+      "team": "ブリュワーズ",
+      "from": 2023,
       "to": 2026
     }
   ],
   "career": {
-    "games": 66,
-    "avg": ".260",
-    "hr": 52,
-    "rbi": 272,
-    "ops": ".727",
-    "sb": 119,
-    "hits": 554,
-    "wins": 13,
-    "losses": 10,
-    "era": "4.03",
-    "so": 222,
-    "ip": "189.2",
-    "whip": "1.14"
+    "games": 746,
+    "avg": ".272",
+    "hr": 103,
+    "rbi": 409,
+    "ops": ".796",
+    "sb": 24,
+    "hits": 755
   },
   "this_season": {
-    "games": 47,
-    "avg": ".268",
-    "hr": 21,
-    "rbi": 100,
-    "ops": ".816",
-    "sb": 19,
-    "hits": 156,
-    "wins": 9,
-    "losses": 7,
-    "era": "4.21",
-    "so": 158,
-    "ip": "132.2",
-    "whip": "1.13"
+    "games": 147,
+    "avg": ".270",
+    "hr": 18,
+    "rbi": 94,
+    "ops": ".758",
+    "sb": 1,
+    "hits": 153
   },
   "last_season": {
-    "games": 19,
-    "avg": ".288",
-    "hr": 18,
-    "rbi": 81,
-    "ops": ".794",
-    "sb": 24,
-    "hits": 168,
-    "wins": 4,
-    "losses": 3,
-    "era": "3.63",
-    "so": 64,
-    "ip": "57.0",
-    "whip": "1.18"
+    "games": 150,
+    "avg": ".260",
+    "hr": 17,
+    "rbi": 76,
+    "ops": ".754",
+    "sb": 6,
+    "hits": 147
   },
   "recent": [
     {
-      "date": "2026-09-27",
-      "line": "0.1回 自責0 0奪三振",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-26",
+      "line": "3打数1安打",
+      "opponent": "St. Louis Cardinals"
+    },
+    {
+      "date": "2026-09-25",
+      "line": "5打数1安打 1打点",
+      "opponent": "St. Louis Cardinals"
     },
     {
       "date": "2026-09-24",
-      "line": "5.0回 自責0 3奪三振",
-      "opponent": "New York Yankees"
+      "line": "2打数0安打",
+      "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-18",
-      "line": "5.0回 自責4 5奪三振",
-      "opponent": "Boston Red Sox"
+      "date": "2026-09-23",
+      "line": "4打数1安打 2打点",
+      "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-12",
-      "line": "6.0回 自責2 10奪三振",
-      "opponent": "Houston Astros"
-    },
-    {
-      "date": "2026-09-06",
-      "line": "3.0回 自責3 2奪三振",
-      "opponent": "Texas Rangers"
+      "date": "2026-09-22",
+      "line": "3打数1安打 3打点",
+      "opponent": "Philadelphia Phillies"
     }
   ],
   "awards": [
     {
+      "season": "2026",
+      "name": "World Series Championship"
+    },
+    {
+      "season": "2026",
+      "name": "Willie Mays World Series MVP"
+    },
+    {
+      "season": "2026",
+      "name": "NL All-Star"
+    },
+    {
+      "season": "2025",
+      "name": "NL Player of the Week"
+    },
+    {
       "season": "2024",
-      "name": "SOU Post-Season All-Star"
+      "name": "NL Silver Slugger"
     }
   ],
   "quotes": []

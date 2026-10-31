@@ -8366,6 +8366,117 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-10-31": {
+      "video_id": "Eh__SUEGvPM",
+      "url": "https://youtu.be/Eh__SUEGvPM",
+      "title": "【MLB】現地はこう報じた「ドジャース監督、大谷翔平の7億ドル契約をLAにとっての「掘り出し物」と評価」｜10月31日 番記者の投稿と現地の見出し #Shorts",
+      "published_at": "2026-10-31T06:33:06.751236+00:00",
+      "publish_at": "2026-10-31T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-10-31",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        10.033333,
+        16.033333,
+        26.3,
+        41.7,
+        47.433333
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "ドジャース監督、大谷翔平の7億ドル契約をLAにとっての「掘り出し物」と評価。10月31日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 10.054667,
+          "scene_start": 10.033333,
+          "text": "DodgersBeat。大谷翔平の東京シリーズ着用ジャージが過去最高の205万ドルで落札。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 16.088,
+          "scene_start": 16.033333,
+          "text": "Yahoo Sports。ドジャースのオフ展望：ブルペンの補強点、大谷翔平のコンディション、先行き不透明な冬。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 26.366667,
+          "scene_start": 26.3,
+          "text": "MLB.comの記者。ミルウォーキー市警の推計によると、ワールドシリーズ王者@ブリュワーズのパレードとサマーフェスト会場での集会に75万人が来場。市警は「州史上、1日のイベントとして最大規模の人出だった可能性がある」としています。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 41.776,
+          "scene_start": 41.7,
+          "text": "The Athleticの記者。アストロズがランディ・フローレスをGMに迎えたと発表しました。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 47.521333,
+          "scene_start": 47.433333,
+          "text": "コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 55.7,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "f12a4c59c8b4e86ba6dd2a52f825c540500c9ffbed34babf6db443d7a0a309f0",
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-31",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-31T06:21:47.562880+00:00",
+        "comparison_eligible": false,
+        "planned_host": "metan",
+        "previous_attempt": {
+          "action": "rebuild_metan",
+          "checked_at": "2026-10-31T06:20:38.043622+00:00",
+          "comparison_eligible": true,
+          "failed_at": "2026-10-31T06:21:47.561249+00:00",
+          "failure_reason": "ui_order_discarded",
+          "label": "予定雨衣",
+          "mode": "live",
+          "planned_host": "ui",
+          "reason": null,
+          "status": "held",
+          "version": 1
+        },
+        "reason": "ui_rebuilt_after_hold",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
@@ -9540,6 +9651,36 @@
           "version": 1
         },
         "reason": "ui_rebuilt_after_hold",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-10-31": {
+      "video_id": "EPaFtIMqa9M",
+      "url": "https://youtu.be/EPaFtIMqa9M",
+      "title": "【MLB】ブルワーズ、初の優勝を祝うパレードのハイライト 現地のファンは何と言ったか｜返信4件ついたコメント 10月31日更新 #Shorts",
+      "published_at": "2026-10-31T06:20:36.440230+00:00",
+      "publish_at": "2026-10-31T08:30:00Z",
+      "duration_seconds": 63.83,
+      "short_information_count": 6,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-10-31",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-31T15:03:12.589346+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
         "version": 1
       },
       "host_fallback_reason": null,
