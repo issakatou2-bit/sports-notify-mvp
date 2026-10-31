@@ -1364,10 +1364,252 @@
       ]
     }
   ],
-  "schedule_date": "2026-10-31",
   "ai_status": {
     "targets": 3,
     "succeeded": 1,
     "cost_usd": 0.01988
-  }
+  },
+  "source_errors": [],
+  "fixture_coverage": [
+    {
+      "competition": "PL",
+      "status": "success",
+      "events": 11,
+      "label": "取得成功"
+    },
+    {
+      "competition": "PD",
+      "status": "success",
+      "events": 11,
+      "label": "取得成功"
+    },
+    {
+      "competition": "BL1",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "SA",
+      "status": "success",
+      "events": 11,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FL1",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "EL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "UECL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FAC",
+      "status": "success",
+      "events": 2,
+      "label": "取得成功"
+    },
+    {
+      "competition": "EFL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDR",
+      "status": "success",
+      "events": 11,
+      "label": "取得成功"
+    },
+    {
+      "competition": "DFB",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CI",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDF",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    }
+  ],
+  "club_registration_check": {
+    "days": 7,
+    "checked_at": "2026-10-30T19:01:17.511241+09:00",
+    "missing": [
+      {
+        "club": "Albacete",
+        "game_ids": [
+          "espn-401928506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Amorebieta",
+        "game_ids": [
+          "espn-401928519"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Anaitasuna",
+        "game_ids": [
+          "espn-401928514"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Badajoz",
+        "game_ids": [
+          "espn-401928532"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Barakaldo",
+        "game_ids": [
+          "espn-401928500"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Minera",
+        "game_ids": [
+          "espn-401928524"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Pamplona",
+        "game_ids": [
+          "espn-401928516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Sabadell",
+        "game_ids": [
+          "espn-401928497"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Tarancon",
+        "game_ids": [
+          "espn-401928527"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Calvo Sotelo",
+        "game_ids": [
+          "espn-401928506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Eibar",
+        "game_ids": [
+          "espn-401928516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Cartagena",
+        "game_ids": [
+          "espn-401928524"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Mallorca",
+        "game_ids": [
+          "espn-401928505"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Portugalete",
+        "game_ids": [
+          "espn-401928518"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Real Unión Irun",
+        "game_ids": [
+          "espn-401928518"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Reus FC Reddis",
+        "game_ids": [
+          "espn-401928500"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Tenerife",
+        "game_ids": [
+          "espn-401928532"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "UD Logroñés",
+        "game_ids": [
+          "espn-401928519"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Utebo",
+        "game_ids": [
+          "espn-401928497"
+        ],
+        "candidates": []
+      }
+    ],
+    "source_errors": []
+  },
+  "source": "ESPN・football-data.org",
+  "preview_selection": {
+    "day": "2026-10-30",
+    "threshold": 30,
+    "max_games": 4,
+    "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+    "selected_ids": [
+      "559644"
+    ],
+    "count": 1,
+    "reason": "",
+    "rejected": [],
+    "source_errors": [],
+    "rescued": []
+  },
+  "schedule_date": "2026-10-31"
 }
