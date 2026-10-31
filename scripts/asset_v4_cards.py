@@ -12,7 +12,7 @@ L, R = r3.LEFT, r3.SAFE_RIGHT
 
 
 def enabled(spec):
-    return bool(spec.get('game') or spec.get('spotlight'))
+    return bool(spec.get('game') or spec.get('spotlight') or spec.get('offseason'))
 
 
 def finish(im, t, spec, source=None):
@@ -226,6 +226,8 @@ def stat_screen(t,spec,label,head,body,page=0):
 
 
 def item_pages(spec,head,body):
+    if spec.get('offseason'):
+        return len(text_pages(head,body)[0])
     if head=='試合の結果' and (spec.get('game_v4') or {}).get('score'):
         return (len(spec['game_v4']['score']['innings'])+8)//9
     if body.startswith('「') or '見出しから' in head or '投稿から' in head:
@@ -235,6 +237,8 @@ def item_pages(spec,head,body):
 
 
 def item(t,spec,label,head,body,page=0):
+    if spec.get('offseason'):
+        return text_screen(t,spec,label,head,body,page)
     if head=='試合の結果':
         image=score(t,spec,label,page)
         if image is not None:return image
@@ -274,7 +278,11 @@ def timing(t, weights, duration=None):
 
 def list_page(t,spec,items,start,count,page,pages,label):
     selected=list(items)[start:start+count]
-    weights=[len((spec.get('speech') or {}).get(h) or f'{h.replace("｜","、")}。{b}。') for h,b in selected]
+    if spec.get('offseason'):
+        from offseason_news import item_speech
+        weights=[len(item_speech(h,b)) for h,b in selected]
+    else:
+        weights=[len((spec.get('speech') or {}).get(h) or f'{h.replace("｜","、")}。{b}。') for h,b in selected]
     i,fraction=timing(t,weights);head,body=selected[i]
     total=item_pages(spec,head,body);p=min(total-1,int(fraction*total))
     im=item(t,spec,label,head,body,p)

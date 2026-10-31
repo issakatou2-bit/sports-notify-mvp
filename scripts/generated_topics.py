@@ -37,6 +37,7 @@ SOURCES = (
     "data/ps_momentum_topics.json",  # PSの話題：連勝・敵地での勝ちの流れ (ps_momentum.py)
     "data/ps_spotlight_topics.json",  # PSの話題：日本人投手の圧巻の投球 (ps_spotlight.py)
     "data/ws_topics.json",         # WSの話題：球団史・日程と本拠地 (ws_topics.py)
+    "data/offseason_topics.json",  # オフの公式発表。専用の公開変数がonの時だけ。
 )
 
 _CACHE = None
@@ -57,6 +58,10 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
         snapshot = {}
     ended = ps_offseason.completed_before(snapshot, datetime.now(timezone.utc))
     for path in sources:
+        if pathlib.Path(path).name == 'offseason_topics.json':
+            import offseason_switches
+            if not offseason_switches.enabled():
+                continue
         if ended and pathlib.Path(path).name in DAILY_PS_SOURCES:
             print(f'[info] {path}: WS決着後の当日向け材料は見送り', file=sys.stderr)
             continue
@@ -65,6 +70,10 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
         except (OSError, json.JSONDecodeError):
             continue
         for spec in d.get("topics") or []:
+            if spec.get('offseason'):
+                import offseason_switches
+                if not offseason_switches.enabled() or not offseason_switches.available(spec):
+                    continue
             key = spec.get("key")
             if key and key not in out:
                 out[key] = spec

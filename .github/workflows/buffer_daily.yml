@@ -123,6 +123,7 @@ jobs:
           always() && vars.V3_SNS_ENABLED == 'true' &&
           (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.mode == 'publish_due')
         env:
+          COLLESPO_OFFSEASON_NEWS: ${{ vars.COLLESPO_OFFSEASON_NEWS || '' }}
           GH_TOKEN: ${{ github.token }}
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNELS: ${{ vars.BUFFER_CHANNELS }}

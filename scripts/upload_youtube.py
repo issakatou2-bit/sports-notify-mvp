@@ -2108,6 +2108,18 @@ def main():
         import player_story
         player_story.validate(_json_or_empty(args.narration), publish=True)
 
+    if args.kind == 'asset' and (args.asset_topic or '').startswith('offseason_'):
+        import offseason_news
+        import generated_topics
+        spec = generated_topics.get(args.asset_topic)
+        if not offseason_news.enabled() or not offseason_news.available(spec):
+            raise ValueError('オフの話題は既定停止、または当日の公式材料がありません')
+        narration = _json_or_empty(args.narration)
+        errors = offseason_news.check(narration)
+        if (not narration.get('offseason') or narration.get('offseason_sample') or errors
+                or narration.get('offseason') != spec.get('offseason')):
+            raise ValueError('オフの公式材料と原稿を確認できません: '+str(errors))
+
     video_path = pathlib.Path(args.video)
     if not video_path.exists():
         print(f"[info] {video_path} が無いため、アップロードをスキップします")

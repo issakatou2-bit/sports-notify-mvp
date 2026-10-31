@@ -638,7 +638,7 @@ def build_narration(topic: str) -> dict:
                 raise ValueError('話し言葉の数字が画面の材料と一致しません: '+str(errors))
             for seg in narration['segments']:
                 if seg['kind']=='outro':
-                    seg['text']=r3.OUTRO_TEXT
+                    seg['text']=(__import__('offseason_news').OUTRO_TEXT if LIST_TOPICS[topic].get('offseason') else r3.OUTRO_TEXT)
             if r3.LOOK=='v4':
                 from content_v4 import ClubMentions, affiliations
                 tracker=ClubMentions(affiliations(s['text'] for s in narration['segments']))
@@ -651,7 +651,8 @@ def build_narration(topic: str) -> dict:
                 narration['duration_budget']={'limit':45,'grace':0}
         import ps_comment_facts
         narration = ps_comment_facts.attach(narration, LIST_TOPICS[topic])
-        return __import__('short_context').attach_asset(narration, LIST_TOPICS[topic])
+        narration = __import__('short_context').attach_asset(narration, LIST_TOPICS[topic])
+        return __import__('offseason_news').attach(narration, LIST_TOPICS[topic])
     if topic == "mlb_venue":
         return _narration_venue()
     if topic == "mlb_rivalry":
@@ -1040,6 +1041,8 @@ def _intro_text(topic: str, items: list) -> str:
 
 def _list_item_speech(spec: dict, head: str, body: str) -> str:
     """一覧の1項目の読み上げ。原稿と、読み上げている札を決める所（calm_motion）が同じものを見る。"""
+    if spec.get('offseason'):
+        return __import__('offseason_news').item_speech(head, body)
     return (spec.get("speech") or {}).get(head) or f"{head.replace('｜', '、')}。{body}。"
 
 
@@ -1730,7 +1733,7 @@ def render_v3(t, kind, meta, spec, topic, seg=None, dur=None):
         return decorate(r3.intro(t, spec, tag))
     if kind == "outro":
         # 共通の締め（毎日の番組表・チャンネル登録・音声の表記）
-        return r3.outro(t, spec, spec.get("lineup_kind", ""), VOICE_CREDIT + "　データ: MLB Stats API")
+        return r3.outro(t, spec, spec.get("lineup_kind", ""), VOICE_CREDIT + "　データ: " + spec.get('data_credit', 'MLB Stats API'))
     if kind == "people":
         rows=spec.get(meta.get('group','japanese')) or []
         if meta.get('duo') and 'row' in meta:rows=rows[meta['row']:meta['row']+1]
@@ -1821,6 +1824,10 @@ def main():
     parser.add_argument('--publish-at',help='次情報を数える公開予約のJST時刻またはISO日時')
     parser.add_argument('--next-schedule',help='保存した公式日程（試作用）')
     args = parser.parse_args()
+    if args.topic.startswith('offseason_') and not args.narration_out:
+        import review_render_v3 as r3
+        if r3.LOOK != 'v4':
+            raise ValueError('オフの話題は既存の標準立ち絵を使うv4で描画してください')
     import ui_voice_queue
     ui_voice_queue.configure(args)
     __import__('slant_by_episode').set_episode('asset')
@@ -1847,7 +1854,7 @@ def main():
             s.setdefault("speaker", METAN)
             if s.get("kind") == "outro" and 'voice_resolution' not in narration:
                 import review_render_v3 as r3
-                s["text"] = r3.OUTRO_TEXT
+                s["text"] = (__import__('offseason_news').OUTRO_TEXT if LIST_TOPICS[args.topic].get('offseason') else r3.OUTRO_TEXT)
         import duo
         VOICE_CREDIT = duo.credit(narration['segments'])
 

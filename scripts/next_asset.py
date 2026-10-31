@@ -316,6 +316,8 @@ def main() -> int:
     todo = [k for k in todo if kind_of(k) != "season"]
     # ワールドシリーズの話題（ws_）は本人が試作を見てから手で出す（10/21）。
     todo = [k for k in todo if kind_of(k) != "ws"]
+    # 日付を持つオフの速報は専用workflowでのみ選ぶ。
+    todo = [k for k in todo if not k.startswith('offseason_')]
     import ui_voice_stock
     todo = ui_voice_stock.prioritize(todo)
 
