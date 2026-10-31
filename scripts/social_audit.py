@@ -81,6 +81,19 @@ def same_text(post_text, ledger_text):
     return bool(post and ledger and (ledger.startswith(post) or post.startswith(ledger)))
 
 
+def without_links(text):
+    return normalized(re.sub(r'https?://\S+', '', text or ''))
+
+
+def restored_links(text, entries):
+    """A post Buffer copied back from X has t.co links; the ledger keeps the originals."""
+    if 'https://t.co/' in text:
+        for entry in entries:
+            if entry.get('text') and without_links(text) == without_links(entry['text']):
+                return entry['text']
+    return text
+
+
 def collespo_form(service, text):
     """X needs the site link; Instagram/TikTok are captions without it."""
     if service != 'twitter':
@@ -242,6 +255,7 @@ def audit(posts_by_service, ledger, records, now, known=None):
             checked += 1
             service_checked += 1
             matching = [entry for entry in entries if entry.get('post_id') == pid]
+            text = restored_links(text, matching)
             reasons = []
             if not matching:
                 reasons.append('台帳にない投稿・予約')

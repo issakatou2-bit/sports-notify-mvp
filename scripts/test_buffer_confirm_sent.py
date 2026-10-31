@@ -68,6 +68,47 @@ class ConfirmSentTests(unittest.TestCase):
         ledger['deliveries'][self.key] = dict(repaired, checked_at='2026-10-30T11:00:00Z')
         self.assertEqual(audit.audit(posts, ledger, videos, now)['findings'], [])
 
+    def tco_case(self):
+        text = ('10/29更新｜現地の反応\nブリュワーズ vs レイズ 現地のファンは何と言ったか\n\n'
+                'https://www.youtube.com/watch?v=abcdefghijk\nhttps://collespo.com/\n#MLB #ブリュワーズ')
+        entry = dict(self.entry, text=text, youtube_id='abcdefghijk', checked_at='2026-10-29T01:00:00Z')
+        copied = text.replace('https://www.youtube.com/watch?v=abcdefghijk', 'https://t.co/AAAAAAAAAA')
+        copied = copied.replace('https://collespo.com/', 'https://t.co/BBBBBBBBBB') + ' https://t.co/CCCCCCCCCC'
+        return entry, dict(self.sent, text=copied)
+
+    def test_x_shortened_copy_is_the_actual_post(self):
+        entry, copied = self.tco_case()
+        failed = dict(self.failed, text=entry['text'])
+        for rows in ([failed, copied], [copied, failed]):
+            self.assertEqual(b.matched_post(rows, entry), copied)
+
+    def test_shortened_copy_needs_the_same_words(self):
+        entry, copied = self.tco_case()
+        self.assertIsNone(b.matched_post([dict(copied, text='別の動画 ' + copied['text'])], entry))
+        self.assertIsNone(b.matched_post([dict(copied, status='error')], entry))
+        with self.assertRaises(RuntimeError):
+            b.matched_post([copied, dict(copied, id='second')], entry)
+
+    def test_real_links_stay_stricter_than_shortened_ones(self):
+        entry, copied = self.tco_case()
+        other = copied['text'].replace('https://t.co/AAAAAAAAAA', 'https://example.com/')
+        other = other.replace('https://t.co/BBBBBBBBBB', '').replace('https://t.co/CCCCCCCCCC', '')
+        self.assertIsNone(b.matched_post([dict(copied, text=other)], entry))
+
+    def test_shortened_copy_clears_the_audit(self):
+        import social_audit as audit
+        entry, copied = self.tco_case()
+        post = dict(copied, channelId=audit.CHANNELS['twitter'], sentAt='2026-10-29T01:05:40Z', dueAt=None)
+        posts = {s: [] for s in audit.CHANNELS}
+        posts['twitter'] = [post]
+        videos = {'morning_voices': {'2026-10-29': {'video_id': 'abcdefghijk'}}}
+        now = audit.instant('2026-10-30T12:00:00Z')
+        repaired = b.delivery_update(entry, b.matched_post([post], entry))
+        ledger = {'deliveries': {self.key: dict(repaired, checked_at='2026-10-30T11:00:00Z')}}
+        self.assertEqual(audit.audit(posts, ledger, videos, now)['findings'], [])
+        ledger['deliveries'][self.key]['text'] = entry['text'] + '別の動画'
+        self.assertNotEqual(audit.audit(posts, ledger, videos, now)['findings'], [])
+
 
 if __name__ == '__main__':
     unittest.main(argv=[__file__])
