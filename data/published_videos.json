@@ -19124,5 +19124,38 @@
       "host_fallback_reason": null,
       "privacy": "public"
     }
+  },
+  "soccer_goal_short": {
+    "2026-11-01:401879247": {
+      "video_id": "2tUeezfjlF0",
+      "url": "https://youtu.be/2tUeezfjlF0",
+      "title": "【欧州サッカー】坂元達裕がゴール｜コベントリー 3-1 サンダーランド 日本人選手の結果 #Shorts",
+      "published_at": "2026-10-31T19:40:15.895057+00:00",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-10-31T19:35:06.945615+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_before_0840",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "duration_seconds": 30.07,
+      "short_information_count": 8,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
+    }
   }
 }
