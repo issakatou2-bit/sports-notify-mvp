@@ -1,5 +1,511 @@
 {
   "day": "2026-11-01",
-  "topics": [],
-  "state": "collecting"
+  "state": "ready",
+  "topics": [
+    {
+      "key": "offseason_schedule_2026_35b4bc2c79e5",
+      "label": "MLBオフの1週間の予定",
+      "heading": "MLBオフの1週間の予定",
+      "kind_label": "MLB",
+      "data_credit": "MLB.com",
+      "v3": {
+        "source": "出典: MLB.com / 日付は米東部"
+      },
+      "hook": "MLBオフの1週間の予定",
+      "intro": "この先1週間のMLBオフの予定です。日付はすべてアメリカ東部の日付でお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式｜日付は米東部",
+      "source_url": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+      "items": [
+        [
+          "11月1日｜ゴールドグラブ発表",
+          "11月1日、ゴールドグラブ賞の受賞者が発表される予定です"
+        ],
+        [
+          "11月2日｜主要賞の最終候補",
+          "11月2日、MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です"
+        ],
+        [
+          "11月2日｜全球団との交渉解禁",
+          "11月2日、FA選手と全球団との交渉が解禁される予定です"
+        ],
+        [
+          "11月2日｜QOの提示期限",
+          "11月2日、クオリファイング・オファーの提示期限は米東部の午後5時です"
+        ]
+      ],
+      "offseason": {
+        "kind": "schedule",
+        "day": "2026-11-01",
+        "season": 2026,
+        "events": [
+          {
+            "id": "gold-glove",
+            "date_et": "2026-11-01",
+            "label": "ゴールドグラブ発表",
+            "text": "ゴールドグラブ賞の受賞者が発表される予定です",
+            "source": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+            "event_id": "calendar:gold-glove",
+            "head": "11月1日｜ゴールドグラブ発表",
+            "body": "11月1日、ゴールドグラブ賞の受賞者が発表される予定です",
+            "japanese": false
+          },
+          {
+            "id": "finalists",
+            "date_et": "2026-11-02",
+            "label": "主要賞の最終候補",
+            "text": "MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:finalists",
+            "head": "11月2日｜主要賞の最終候補",
+            "body": "11月2日、MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です",
+            "japanese": false
+          },
+          {
+            "id": "free-agency",
+            "date_et": "2026-11-02",
+            "label": "全球団との交渉解禁",
+            "text": "FA選手と全球団との交渉が解禁される予定です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:free-agency",
+            "head": "11月2日｜全球団との交渉解禁",
+            "body": "11月2日、FA選手と全球団との交渉が解禁される予定です",
+            "japanese": false
+          },
+          {
+            "id": "qo-offer",
+            "date_et": "2026-11-02",
+            "label": "QOの提示期限",
+            "text": "クオリファイング・オファーの提示期限は米東部の午後5時です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:qo-offer",
+            "head": "11月2日｜QOの提示期限",
+            "body": "11月2日、クオリファイング・オファーの提示期限は米東部の午後5時です",
+            "japanese": false
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_transactions_2026_da4808b59196",
+      "label": "鈴木誠也・菅野智之・今永昇太のFA宣言｜日本人選手の来季 第1回",
+      "heading": "日本人選手の来季 第1回",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "鈴木誠也・菅野智之・今永昇太のFA宣言｜日本人選手の来季 第1回",
+      "intro": "日本人選手の来季 第1回です。鈴木誠也・菅野智之・今永昇太のFA宣言がMLB公式に記録されました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/transactions?playerId=673548&startDate=2026-10-26&endDate=2026-11-01",
+      "items": [
+        [
+          "鈴木誠也｜FA宣言",
+          "鈴木誠也はカブスからFAを宣言しました。2026年は143試合、26本塁打、打率.270"
+        ],
+        [
+          "菅野智之｜FA宣言",
+          "菅野智之はロッキーズからFAを宣言しました。2026年は29登板、防御率5.37、96奪三振"
+        ],
+        [
+          "今永昇太｜FA宣言",
+          "今永昇太はカブスからFAを宣言しました。2026年は32登板、防御率3.77、174奪三振"
+        ]
+      ],
+      "offseason": {
+        "kind": "transactions",
+        "day": "2026-11-01",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "transaction:947332",
+            "head": "鈴木誠也｜FA宣言",
+            "body": "鈴木誠也はカブスからFAを宣言しました。2026年は143試合、26本塁打、打率.270",
+            "name": "鈴木誠也",
+            "japanese": true,
+            "raw": {
+              "id": 947332,
+              "person": {
+                "id": 673548,
+                "fullName": "Seiya Suzuki",
+                "link": "/api/v1/people/673548"
+              },
+              "toTeam": {
+                "id": 112,
+                "name": "Chicago Cubs",
+                "link": "/api/v1/teams/112"
+              },
+              "date": "2026-10-29",
+              "effectiveDate": "2026-10-29",
+              "resolutionDate": "2026-10-29",
+              "typeCode": "DFA",
+              "typeDesc": "Declared Free Agency",
+              "description": "RF Seiya Suzuki elected free agency."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=673548&startDate=2026-10-26&endDate=2026-11-01",
+            "season_stats": {
+              "season": 2026,
+              "person_id": 673548,
+              "payload": {
+                "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+                "stats": [
+                  {
+                    "type": {
+                      "displayName": "season"
+                    },
+                    "group": {
+                      "displayName": "hitting"
+                    },
+                    "exemptions": [],
+                    "splits": [
+                      {
+                        "season": "2026",
+                        "stat": {
+                          "age": 31,
+                          "gamesPlayed": 143,
+                          "groundOuts": 108,
+                          "airOuts": 138,
+                          "runs": 96,
+                          "doubles": 31,
+                          "triples": 1,
+                          "homeRuns": 26,
+                          "strikeOuts": 155,
+                          "baseOnBalls": 81,
+                          "intentionalWalks": 4,
+                          "hits": 147,
+                          "hitByPitch": 5,
+                          "avg": ".270",
+                          "atBats": 545,
+                          "obp": ".368",
+                          "slg": ".473",
+                          "ops": ".841",
+                          "caughtStealing": 0,
+                          "stolenBases": 3,
+                          "stolenBasePercentage": "1.000",
+                          "caughtStealingPercentage": ".000",
+                          "groundIntoDoublePlay": 13,
+                          "numberOfPitches": 2735,
+                          "plateAppearances": 634,
+                          "totalBases": 258,
+                          "rbi": 86,
+                          "leftOnBase": 282,
+                          "sacBunts": 0,
+                          "sacFlies": 3,
+                          "babip": ".330",
+                          "groundOutsToAirouts": "0.78",
+                          "catchersInterference": 0,
+                          "atBatsPerHomeRun": "20.96"
+                        },
+                        "team": {
+                          "id": 112,
+                          "name": "Chicago Cubs",
+                          "link": "/api/v1/teams/112"
+                        },
+                        "player": {
+                          "id": 673548,
+                          "fullName": "Seiya Suzuki",
+                          "link": "/api/v1/people/673548"
+                        },
+                        "league": {
+                          "id": 104,
+                          "name": "National League",
+                          "link": "/api/v1/league/104"
+                        },
+                        "sport": {
+                          "id": 1,
+                          "link": "/api/v1/sports/1",
+                          "abbreviation": "MLB"
+                        },
+                        "gameType": "R"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "source": "https://statsapi.mlb.com/api/v1/people/673548/stats?stats=season&group=hitting,pitching&season=2026&gameType=R&sportIds=1"
+            }
+          },
+          {
+            "event_id": "transaction:947338",
+            "head": "菅野智之｜FA宣言",
+            "body": "菅野智之はロッキーズからFAを宣言しました。2026年は29登板、防御率5.37、96奪三振",
+            "name": "菅野智之",
+            "japanese": true,
+            "raw": {
+              "id": 947338,
+              "person": {
+                "id": 608372,
+                "fullName": "Tomoyuki Sugano",
+                "link": "/api/v1/people/608372"
+              },
+              "toTeam": {
+                "id": 115,
+                "name": "Colorado Rockies",
+                "link": "/api/v1/teams/115"
+              },
+              "date": "2026-10-29",
+              "effectiveDate": "2026-10-29",
+              "resolutionDate": "2026-10-29",
+              "typeCode": "DFA",
+              "typeDesc": "Declared Free Agency",
+              "description": "RHP Tomoyuki Sugano elected free agency."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=608372&startDate=2026-10-26&endDate=2026-11-01",
+            "season_stats": {
+              "season": 2026,
+              "person_id": 608372,
+              "payload": {
+                "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+                "stats": [
+                  {
+                    "type": {
+                      "displayName": "season"
+                    },
+                    "group": {
+                      "displayName": "pitching"
+                    },
+                    "exemptions": [],
+                    "splits": [
+                      {
+                        "season": "2026",
+                        "stat": {
+                          "age": 36,
+                          "gamesPlayed": 29,
+                          "gamesStarted": 29,
+                          "groundOuts": 155,
+                          "airOuts": 199,
+                          "runs": 95,
+                          "doubles": 39,
+                          "triples": 6,
+                          "homeRuns": 33,
+                          "strikeOuts": 96,
+                          "baseOnBalls": 36,
+                          "intentionalWalks": 0,
+                          "hits": 167,
+                          "hitByPitch": 3,
+                          "avg": ".276",
+                          "atBats": 606,
+                          "obp": ".315",
+                          "slg": ".523",
+                          "ops": ".838",
+                          "caughtStealing": 3,
+                          "stolenBases": 11,
+                          "stolenBasePercentage": ".786",
+                          "caughtStealingPercentage": ".214",
+                          "groundIntoDoublePlay": 9,
+                          "numberOfPitches": 2522,
+                          "era": "5.37",
+                          "inningsPitched": "154.1",
+                          "wins": 12,
+                          "losses": 12,
+                          "saves": 0,
+                          "saveOpportunities": 0,
+                          "holds": 0,
+                          "blownSaves": 0,
+                          "earnedRuns": 92,
+                          "whip": "1.32",
+                          "battersFaced": 656,
+                          "outs": 463,
+                          "gamesPitched": 29,
+                          "completeGames": 0,
+                          "shutouts": 0,
+                          "strikes": 1560,
+                          "strikePercentage": ".620",
+                          "hitBatsmen": 3,
+                          "balks": 0,
+                          "wildPitches": 2,
+                          "pickoffs": 1,
+                          "totalBases": 317,
+                          "groundOutsToAirouts": "0.78",
+                          "winPercentage": ".500",
+                          "pitchesPerInning": "16.34",
+                          "gamesFinished": 0,
+                          "strikeoutWalkRatio": "2.67",
+                          "strikeoutsPer9Inn": "5.60",
+                          "walksPer9Inn": "2.10",
+                          "hitsPer9Inn": "9.74",
+                          "runsScoredPer9": "5.54",
+                          "homeRunsPer9": "1.92",
+                          "inheritedRunners": 0,
+                          "inheritedRunnersScored": 0,
+                          "catchersInterference": 0,
+                          "sacBunts": 2,
+                          "sacFlies": 9
+                        },
+                        "team": {
+                          "id": 115,
+                          "name": "Colorado Rockies",
+                          "link": "/api/v1/teams/115"
+                        },
+                        "player": {
+                          "id": 608372,
+                          "fullName": "Tomoyuki Sugano",
+                          "link": "/api/v1/people/608372"
+                        },
+                        "league": {
+                          "id": 104,
+                          "name": "National League",
+                          "link": "/api/v1/league/104"
+                        },
+                        "sport": {
+                          "id": 1,
+                          "link": "/api/v1/sports/1",
+                          "abbreviation": "MLB"
+                        },
+                        "gameType": "R"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "source": "https://statsapi.mlb.com/api/v1/people/608372/stats?stats=season&group=hitting,pitching&season=2026&gameType=R&sportIds=1"
+            }
+          },
+          {
+            "event_id": "transaction:947387",
+            "head": "今永昇太｜FA宣言",
+            "body": "今永昇太はカブスからFAを宣言しました。2026年は32登板、防御率3.77、174奪三振",
+            "name": "今永昇太",
+            "japanese": true,
+            "raw": {
+              "id": 947387,
+              "person": {
+                "id": 684007,
+                "fullName": "Shota Imanaga",
+                "link": "/api/v1/people/684007"
+              },
+              "toTeam": {
+                "id": 112,
+                "name": "Chicago Cubs",
+                "link": "/api/v1/teams/112"
+              },
+              "date": "2026-10-29",
+              "effectiveDate": "2026-10-29",
+              "resolutionDate": "2026-10-29",
+              "typeCode": "DFA",
+              "typeDesc": "Declared Free Agency",
+              "description": "LHP Shota Imanaga elected free agency."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=684007&startDate=2026-10-26&endDate=2026-11-01",
+            "season_stats": {
+              "season": 2026,
+              "person_id": 684007,
+              "payload": {
+                "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+                "stats": [
+                  {
+                    "type": {
+                      "displayName": "season"
+                    },
+                    "group": {
+                      "displayName": "pitching"
+                    },
+                    "exemptions": [],
+                    "splits": [
+                      {
+                        "season": "2026",
+                        "stat": {
+                          "age": 32,
+                          "gamesPlayed": 32,
+                          "gamesStarted": 32,
+                          "groundOuts": 138,
+                          "airOuts": 196,
+                          "runs": 75,
+                          "doubles": 22,
+                          "triples": 2,
+                          "homeRuns": 35,
+                          "strikeOuts": 174,
+                          "baseOnBalls": 37,
+                          "intentionalWalks": 0,
+                          "hits": 154,
+                          "hitByPitch": 7,
+                          "avg": ".233",
+                          "atBats": 660,
+                          "obp": ".281",
+                          "slg": ".432",
+                          "ops": ".713",
+                          "caughtStealing": 1,
+                          "stolenBases": 5,
+                          "stolenBasePercentage": ".833",
+                          "caughtStealingPercentage": ".167",
+                          "groundIntoDoublePlay": 11,
+                          "numberOfPitches": 2810,
+                          "era": "3.77",
+                          "inningsPitched": "174.1",
+                          "wins": 11,
+                          "losses": 10,
+                          "saves": 0,
+                          "saveOpportunities": 0,
+                          "holds": 0,
+                          "blownSaves": 0,
+                          "earnedRuns": 73,
+                          "whip": "1.10",
+                          "battersFaced": 706,
+                          "outs": 523,
+                          "gamesPitched": 32,
+                          "completeGames": 0,
+                          "shutouts": 0,
+                          "strikes": 1837,
+                          "strikePercentage": ".650",
+                          "hitBatsmen": 7,
+                          "balks": 0,
+                          "wildPitches": 4,
+                          "pickoffs": 5,
+                          "totalBases": 285,
+                          "groundOutsToAirouts": "0.70",
+                          "winPercentage": ".524",
+                          "pitchesPerInning": "16.12",
+                          "gamesFinished": 0,
+                          "strikeoutWalkRatio": "4.70",
+                          "strikeoutsPer9Inn": "8.98",
+                          "walksPer9Inn": "1.91",
+                          "hitsPer9Inn": "7.95",
+                          "runsScoredPer9": "3.87",
+                          "homeRunsPer9": "1.81",
+                          "inheritedRunners": 0,
+                          "inheritedRunnersScored": 0,
+                          "catchersInterference": 0,
+                          "sacBunts": 1,
+                          "sacFlies": 1
+                        },
+                        "team": {
+                          "id": 112,
+                          "name": "Chicago Cubs",
+                          "link": "/api/v1/teams/112"
+                        },
+                        "player": {
+                          "id": 684007,
+                          "fullName": "Shota Imanaga",
+                          "link": "/api/v1/people/684007"
+                        },
+                        "league": {
+                          "id": 104,
+                          "name": "National League",
+                          "link": "/api/v1/league/104"
+                        },
+                        "sport": {
+                          "id": 1,
+                          "link": "/api/v1/sports/1",
+                          "abbreviation": "MLB"
+                        },
+                        "gameType": "R"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "source": "https://statsapi.mlb.com/api/v1/people/684007/stats?stats=season&group=hitting,pitching&season=2026&gameType=R&sportIds=1"
+            }
+          }
+        ],
+        "series_number": 1,
+        "series_title": "日本人選手の来季"
+      },
+      "description_line": "連載「日本人選手の来季」では、MLB公式に確定した移籍・契約などの動きを追います。"
+    }
+  ]
 }
