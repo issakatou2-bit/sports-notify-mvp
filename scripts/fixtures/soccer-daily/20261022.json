@@ -1,0 +1,522 @@
+{
+  "generated_at": "2026-10-22T09:53:43.215240+00:00",
+  "games": [
+    {
+      "game_id": "espn-401915553",
+      "espn_event_id": "401915553",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-22T19:00:00+00:00",
+      "start_time_jst": "10/23 04:00",
+      "is_notable": true,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Beşiktaş JK",
+      "home_team_id": "espn-1895",
+      "away_team_name": "Crystal Palace FC",
+      "away_team_id": "espn-384",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "鎌田大地",
+          "冨安健洋"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "鎌田大地",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 1,
+          "assists": 3,
+          "minutes": 610,
+          "out": false,
+          "as_of": "2026-10-22T10:01:02.872019+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        },
+        {
+          "name": "冨安健洋",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 189,
+          "out": true,
+          "as_of": "2026-10-22T10:01:02.872019+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ],
+      "preview_out_names": [
+        "冨安健洋"
+      ],
+      "preview_rating": {
+        "score": 45,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 20,
+            "evidence": "ヨーロッパリーグ"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [],
+              "away": [
+                "鎌田大地",
+                "冨安健洋"
+              ]
+            }
+          },
+          {
+            "key": "expectation",
+            "points": 10,
+            "evidence": {
+              "name": "鎌田大地",
+              "club": "クリスタル・パレス",
+              "goals": 1,
+              "assists": 3,
+              "japanese": true,
+              "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+              "as_of": "2026-10-22T10:01:02.872019+00:00"
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": {
+            "name": "鎌田大地",
+            "club": "クリスタル・パレス",
+            "goals": 1,
+            "assists": 3,
+            "japanese": true,
+            "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+            "as_of": "2026-10-22T10:01:02.872019+00:00"
+          }
+        },
+        "japanese": true
+      }
+    },
+    {
+      "game_id": "espn-401915540",
+      "espn_event_id": "401915540",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-22T19:00:00+00:00",
+      "start_time_jst": "10/23 04:00",
+      "is_notable": true,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Lillestrøm SK",
+      "home_team_id": "espn-987",
+      "away_team_name": "Real Sociedad de Fútbol",
+      "away_team_id": "espn-89",
+      "jp_by_side": {
+        "home": [
+          "上田綺世"
+        ],
+        "away": [
+          "久保建英"
+        ]
+      },
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 35,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 20,
+            "evidence": "ヨーロッパリーグ"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [
+                "上田綺世"
+              ],
+              "away": [
+                "久保建英"
+              ]
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
+    },
+    {
+      "game_id": "espn-401915543",
+      "espn_event_id": "401915543",
+      "competition_code": "EL",
+      "league": "ヨーロッパリーグ",
+      "start_time_utc": "2026-10-22T19:00:00+00:00",
+      "start_time_jst": "10/23 04:00",
+      "is_notable": true,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "TSG 1899 Hoffenheim",
+      "home_team_id": "espn-7911",
+      "away_team_name": "Olympique Lyonnais",
+      "away_team_id": "espn-167",
+      "jp_by_side": {
+        "home": [
+          "町田浩樹"
+        ],
+        "away": []
+      },
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 35,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 20,
+            "evidence": "ヨーロッパリーグ"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [
+                "町田浩樹"
+              ],
+              "away": []
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
+    },
+    {
+      "game_id": "espn-401915842",
+      "espn_event_id": "401915842",
+      "competition_code": "UECL",
+      "league": "カンファレンスリーグ",
+      "start_time_utc": "2026-10-22T16:45:00+00:00",
+      "start_time_jst": "10/23 01:45",
+      "is_notable": true,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FK Jablonec",
+      "home_team_id": "espn-7922",
+      "away_team_name": "Brighton & Hove Albion FC",
+      "away_team_id": "espn-331",
+      "jp_by_side": {
+        "home": [],
+        "away": [
+          "三笘薫"
+        ]
+      },
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "season_players": [
+        {
+          "name": "三笘薫",
+          "club": "ブライトン",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 0,
+          "out": true,
+          "as_of": "2026-10-22T10:01:02.872019+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ],
+      "preview_out_names": [
+        "三笘薫"
+      ],
+      "preview_rating": {
+        "score": 30,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 15,
+            "evidence": "カンファレンスリーグ"
+          },
+          {
+            "key": "japanese_club",
+            "points": 15,
+            "evidence": {
+              "home": [],
+              "away": [
+                "三笘薫"
+              ]
+            }
+          }
+        ],
+        "interest": {
+          "reasons": [],
+          "player": null
+        },
+        "japanese": true
+      }
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  },
+  "source_errors": [],
+  "fixture_coverage": [
+    {
+      "competition": "PL",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "PD",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "BL1",
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
+    },
+    {
+      "competition": "SA",
+      "status": "success",
+      "events": 20,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FL1",
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "EL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "UECL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FAC",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "EFL",
+      "status": "success",
+      "events": 8,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CDR",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "DFB",
+      "status": "success",
+      "events": 16,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CI",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDF",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    }
+  ],
+  "club_registration_check": {
+    "days": 7,
+    "checked_at": "2026-10-22T19:01:12.542421+09:00",
+    "missing": [
+      {
+        "club": "1. FC Magdeburg",
+        "game_ids": [
+          "espn-401917035"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "1. FC Nürnberg",
+        "game_ids": [
+          "espn-401917033"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Bradford City",
+        "game_ids": [
+          "espn-401921833"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Dynamo Dresden",
+        "game_ids": [
+          "espn-401916921"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Fleetwood Town",
+        "game_ids": [
+          "espn-401921835"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Hannover 96",
+        "game_ids": [
+          "espn-401916922"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Hertha Berlin",
+        "game_ids": [
+          "espn-401916919"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Holstein Kiel",
+        "game_ids": [
+          "espn-401917034"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Kaiserslautern",
+        "game_ids": [
+          "espn-401916922"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Karlsruher SC",
+        "game_ids": [
+          "espn-401917031"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Peterborough United",
+        "game_ids": [
+          "espn-401921833"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Rot-Weiss Essen",
+        "game_ids": [
+          "espn-401917027"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "SG Sonnenhof Großaspach",
+        "game_ids": [
+          "espn-401917028"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "SSV Jeddeloh II",
+        "game_ids": [
+          "espn-401916919"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "SV Darmstadt 98",
+        "game_ids": [
+          "espn-401916923"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "VfL Bochum",
+        "game_ids": [
+          "espn-401917029"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "VfL Wolfsburg",
+        "game_ids": [
+          "espn-401917036"
+        ],
+        "candidates": []
+      }
+    ],
+    "source_errors": []
+  },
+  "source": "ESPN",
+  "preview_selection": {
+    "day": "2026-10-22",
+    "threshold": 30,
+    "max_games": 4,
+    "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+    "selected_ids": [
+      "espn-401915553",
+      "espn-401915540",
+      "espn-401915543",
+      "espn-401915842"
+    ],
+    "count": 4,
+    "reason": "",
+    "rejected": [],
+    "source_errors": []
+  }
+}

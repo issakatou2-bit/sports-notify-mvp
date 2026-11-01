@@ -46,6 +46,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      # 初回の通常点検＋追加1回。限定再点検も次点制作も、この1つを共有する。
+      COLLESPO_SANITY_BUDGET_FILE: build/soccer_sanity_budget.json
       # サッカーの3枠は専用の変数で切り替える（本人が試作を見てから COLLESPO_SOCCER_LOOK=v4。10/10 エマ）
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
       COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
@@ -178,7 +180,7 @@ jobs:
         run: python scripts/sanity.py --general --strict --narration build/soccer_narration.json --out data/sanity_soccer.json --hold-record build/sanity_soccer_hold.json --kind daily_soccer
 
       - name: Synthesize narration
-        if: steps.gate.outputs.count != '0'
+        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
         continue-on-error: true
         run: |
           python scripts/synthesize_narration.py \
@@ -186,12 +188,27 @@ jobs:
             --out-dir build/soccer_audio
 
       - name: Generate video
-        if: steps.gate.outputs.count != '0'
+        id: video
+        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        continue-on-error: true
         run: |
           python scripts/generate_video.py \
             --games data/soccer_games.json --sport soccer \
             --audio-dir build/soccer_audio \
             --out build/soccer --require-audio
+
+      - name: Retry the selected runner-up once
+        id: retry
+        if: >-
+          steps.gate.outputs.count != '0' &&
+          (steps.sanity.outcome == 'failure' || steps.video.outcome == 'failure')
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: >-
+          python scripts/soccer_daily_retry.py
+          --sanity-outcome '${{ steps.sanity.outcome }}'
+          --video-outcome '${{ steps.video.outcome }}'
 
       - name: Generate thumbnail
         if: steps.gate.outputs.count != '0'
@@ -214,7 +231,9 @@ jobs:
       # そのまま即時公開に倒れる(予約が過去になるとAPIが弾くため)。
       - name: Upload to YouTube
         id: upload
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        if: >-
+          steps.gate.outputs.count != '0' &&
+          ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -239,7 +258,7 @@ jobs:
         run: python scripts/soccer_preview_history.py
 
       - name: Post to Bluesky
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        if: steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
         continue-on-error: true
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -249,7 +268,7 @@ jobs:
         run: python scripts/post_bluesky.py --games data/soccer_games.json --kind daily_soccer
 
       - name: Post to Threads
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        if: steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
         continue-on-error: true
         env:
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
@@ -258,7 +277,7 @@ jobs:
         run: python scripts/post_threads.py --games data/soccer_games.json
 
       - name: Post to TikTok
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        if: steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
         continue-on-error: true
         env:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
@@ -296,6 +315,8 @@ jobs:
             notable_games.json
             archive/*.json
             build/soccer_narration.json
+            build/soccer_retry/
+            build/soccer_sanity_budget.json
             data/soccer_games.json
             data/soccer_availability.json
             build/soccer/
