@@ -154,7 +154,8 @@ class Screen:
         index=page_at(self.t,len(pages));shown=pages[index]
         self.title('注目試合の予告')
         subtitle=' / '.join(dict.fromkeys(s['date'] for s in shown))+'　'+' / '.join(dict.fromkeys(s['league'] for s in shown))
-        subtitle_bottom=self.lines(L,330,subtitle,30,R-L,c.MUTED,'supplement')
+        subtitle_y=max(330,self.im.info['focus_title_bottom']+12) if self.im.info.get('focus_title_bottom') else 330
+        subtitle_bottom=self.lines(L,subtitle_y,subtitle,30,R-L,c.MUTED,'supplement')
         # 件数が少なくても1件分の中身を縦に引き伸ばさない。
         # 札内は4件の日と同じ文字・行間を保ち、まとまりを中央へ置く。
         body_top=max(BODY_TOP,subtitle_bottom+16)
