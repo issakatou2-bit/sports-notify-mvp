@@ -421,7 +421,11 @@ def adapt(kind,t,args,kwargs):
         voices=args[0];heading=args[1]
         for i,v in enumerate(voices):
             if v.get('fact'):continue
-            rows.append(dict(key=str(i),title=v.get('said',''),body=v.get('who') or '匿名のファン',anchor=v.get('said',''),quote=True))
+            # 絵文字は日本語の字体に無く、一覧で四角になる（11/1 コメントの回）。声と照合する anchor は元の文のまま。
+            import v3_slot_render
+            shown=v3_slot_render.screen_text(v.get('said','')).strip()
+            if not shown:continue
+            rows.append(dict(key=str(i),title=shown,body=v.get('who') or '匿名のファン',anchor=v.get('said',''),quote=True))
             if v.get('read') is not False and v.get('end',0)>v.get('at',0):
                 start=max(SETTINGS['overview'],v.get('at',0));end=min(duration,v['end'])
                 if end>start:cues.append(Cue(str(i),start,end,v['said']))

@@ -16,6 +16,12 @@ ROWS=[dict(key=str(i),title=n,body='確認用の固定材料',metric=f'{i+1}安�
 
 
 class Motion(unittest.TestCase):
+    def test_emoji_is_not_drawn_as_boxes_in_comment_list(self):
+        voices=[dict(said='だってブルワーズだぜ 😂😂',who='ファン',at=1,end=3),dict(said='🍻',who='別のファン',at=3,end=5)]
+        rows=m.adapt('quotes',1,(voices,'ファンのコメント'),{})[0]
+        self.assertEqual([r['title'] for r in rows],['だってブルワーズだぜ'])
+        self.assertEqual(rows[0]['anchor'],'だってブルワーズだぜ 😂😂')
+
     def test_long_comment_is_excerpted_without_changing_quote_or_voice_anchor(self):
         import copy
         from short_v4_cards import quotes
