@@ -8477,6 +8477,115 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-01": {
+      "video_id": "-160Yw6NjuI",
+      "url": "https://youtu.be/-160Yw6NjuI",
+      "title": "【MLB】現地はこう報じた「ドジャース大谷、手術を回避　2027年に二刀流で復帰の見込み」｜11月1日 番記者の投稿と現地の見出し #Shorts",
+      "published_at": "2026-11-01T06:34:18.197463+00:00",
+      "publish_at": "2026-11-01T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-11-01",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "ab_assigned_variant": "B",
+      "ab_fallback_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        9.9,
+        16.266667,
+        24.1,
+        27.833333,
+        34.733333
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "ドジャースの大谷翔平、手術を回避　2027年に二刀流で復帰の見込み。11月1日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 9.926667,
+          "scene_start": 9.9,
+          "text": "DodgersBeat。大谷翔平、ドジャース退団をめぐる「フラストレーション」を語る。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 16.312,
+          "scene_start": 16.266667,
+          "text": "조선일보。ロハス、父の死後に大谷翔平が見せた心温まる気遣いを振り返る。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 24.148,
+          "scene_start": 24.1,
+          "text": "Chicago Tribuneの記者。バウザーからハッピーハロウィン！🎃。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 27.909333,
+          "scene_start": 27.833333,
+          "text": "The Athleticの記者。アストロズがランディ・フローレスをゼネラルマネジャーとして招へい、たった今発表された。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 34.838666,
+          "scene_start": 34.733333,
+          "text": "コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 42.3,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "9ef579dfd38dfee88ba144512b390a8517bf5a2b829c504a68b84e64c1eac1cc",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T15:26:32.952590+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
@@ -9714,6 +9823,47 @@
         "checked_at": "2026-10-31T15:03:12.589346+09:00",
         "comparison_eligible": true,
         "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-11-01": {
+      "video_id": "YLr41EuwJEc",
+      "url": "https://youtu.be/YLr41EuwJEc",
+      "title": "【MLB】ブルワーズ、初の優勝を祝うパレードのハイライト 現地のファンは何と言ったか｜返信4件ついたコメント 11月1日更新 #Shorts",
+      "published_at": "2026-11-01T06:26:31.659525+00:00",
+      "publish_at": "2026-11-01T08:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 58.13,
+      "short_information_count": 7,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_delivery": {
+        "checked_at": "2026-11-01T06:04:42.939300+00:00",
+        "comparison_eligible": true,
+        "label": "予定雨衣",
+        "mode": "live",
+        "planned_host": "ui",
         "reason": null,
         "version": 1
       },

@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-10-31T13:04:37.758360+00:00",
+  "updated_at": "2026-11-01T06:02:48.844628+00:00",
   "season": "2026",
   "min_pa": 300,
   "min_ip": 60,
   "player_pool": "ALL",
   "pool_counts": {
-    "hitting": 267,
+    "hitting": 0,
     "pitching": 276
   },
   "players": {
@@ -37,82 +37,6 @@
           "side": "top"
         }
       ]
-    },
-    "村上宗隆": {
-      "player_id": "808959",
-      "items": [
-        {
-          "value": 0.5840867992766727,
-          "shown": "58.4%",
-          "at": 1,
-          "of": 267,
-          "ties": 1,
-          "leader": {
-            "name": "Munetaka Murakami",
-            "shown": "58.4%"
-          },
-          "above": null,
-          "below": {
-            "name": "Nick Kurtz",
-            "shown": "55.5%"
-          },
-          "key": "tto",
-          "label": "アダム・ダン率",
-          "note": "本塁打・四球・三振で終わった打席の割合",
-          "group": "hitting",
-          "side": "top",
-          "namesake": "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
-        },
-        {
-          "value": 0.35443037974683544,
-          "shown": "35.4%",
-          "at": 3,
-          "of": 267,
-          "ties": 1,
-          "leader": {
-            "name": "Owen Caissie",
-            "shown": "37.3%"
-          },
-          "above": {
-            "name": "Colson Montgomery",
-            "shown": "35.6%"
-          },
-          "below": {
-            "name": "Eugenio Suárez",
-            "shown": "33.9%"
-          },
-          "key": "k_rate",
-          "label": "三振率",
-          "note": "三振で終わった打席の割合",
-          "group": "hitting",
-          "side": "top"
-        },
-        {
-          "value": 0.16636528028933092,
-          "shown": "16.6%",
-          "at": 3,
-          "of": 267,
-          "ties": 1,
-          "leader": {
-            "name": "Nick Kurtz",
-            "shown": "18.2%"
-          },
-          "above": {
-            "name": "Mike Trout",
-            "shown": "16.9%"
-          },
-          "below": {
-            "name": "James Wood",
-            "shown": "16.4%"
-          },
-          "key": "bb_rate",
-          "label": "四球率",
-          "note": "四球で終わった打席の割合",
-          "group": "hitting",
-          "side": "top"
-        }
-      ],
-      "mendoza": "打率.207。メンドーサ・ライン（.200）のすぐ上"
     }
   }
 }
