@@ -103,7 +103,7 @@ class SavedCases(Offline):
             self.assertEqual(selected.preview_details(game), [])
             self.assertNotIn('アストンヴィラは昨季', selected.program(data)['narration']['segments'][1]['text'])
 
-    def test_oct20_oct22_long_ui_still_resynthesizes_while_short_input_does_not(self):
+    def test_oct20_oct22_long_ui_goes_to_rebuild_without_calling_voisona(self):
         # WAV原本は無い。実材料＋作り物の長短で残存経路だけ再現する。
         for day in ('20261020','20261022'):
             with self.subTest(day=day), tempfile.TemporaryDirectory() as tmp:
@@ -113,10 +113,10 @@ class SavedCases(Offline):
                     with patch.dict(os.environ, COLLESPO_SOLO_HOST='ui'), patch('solo_host.synthesize',
                             side_effect=ValueError('雨衣の声には、この実行環境のVoiSona Talk API認証が必要です')) as synth:
                         if long:
-                            with self.assertRaisesRegex(ValueError, '認証が必要'): slots.fit_preview(plan, rows)
-                            synth.assert_called_once()
+                            with self.assertRaises(slots.PreviewVoiceUnavailable): slots.fit_preview(plan, rows)
                         else:
-                            slots.fit_preview(plan, rows); synth.assert_not_called()
+                            slots.fit_preview(plan, rows)
+                        synth.assert_not_called()
 
     def test_oct25_binding_accepts_saved_pair_and_rejects_changed_script(self):
         plan = selected.program(load('20261025')); data, doc = plan['data'], plan['narration']

@@ -28,7 +28,9 @@ def metadata(spec):
     lead += ['', '出典: ' + spec.get('source', 'MLB公式')]
     if spec.get('source_url'):
         lead.append(spec['source_url'])
-    return dict(title=f'【MLB】{label} #Shorts', lead=lead,
+    # 連載は見出しが「第N回」だけなので、題は選手名と動きが入った label を使う。
+    series = spec['offseason'].get('series_number')
+    return dict(title=f'【MLB】{spec["label"] if series else label} #Shorts', lead=lead,
                 tags=['MLB', 'メジャーリーグ', '野球', 'コレスポ'])
 
 

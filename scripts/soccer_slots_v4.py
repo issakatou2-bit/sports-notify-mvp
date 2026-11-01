@@ -1,6 +1,7 @@
 """既存の欧州予告・順位争い・週末を、同じ材料からv4に描く。"""
 import motion
 from datetime import datetime, timedelta, timezone
+import os
 import json
 import math
 from pathlib import Path
@@ -292,6 +293,43 @@ def video_times(segments,audio):
     return [math.ceil(t*30)/30 for t in times]
 
 
+class PreviewVoiceUnavailable(ValueError):
+    """runnerから雨衣の短縮再合成を要求せず、既存の代役規則へ戻す。"""
+
+
+def rebuild_preview_metan(plan, audio_dir, narration_path=None):
+    import copy
+    import host_split
+    import synthesize_narration as synth
+    import ui_voice_policy as policy
+    original = copy.deepcopy(plan['narration'])
+    folder = Path(audio_dir)
+    held_path = folder/'shortening-held-narration.json'
+    rebuilt = policy.failure(original, held_path, folder, 'ui_shortening_unavailable')
+    target = folder/'metan-rebuild'
+    target.mkdir(parents=True, exist_ok=True)
+    source = target/'narration.json'
+    host_split.resolve_credits(rebuilt, 'metan')
+    rebuilt['voice_resolution'] = dict(host='metan', reason='ui_rebuilt_after_hold')
+    source.write_text(json.dumps(rebuilt, ensure_ascii=False, indent=2), encoding='utf-8')
+    before = os.environ.get('COLLESPO_SOLO_HOST')
+    try:
+        os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+        synth.main(['--narration', str(source), '--out-dir', str(target), '--speaker', '2'])
+    finally:
+        if before is None:
+            os.environ.pop('COLLESPO_SOLO_HOST', None)
+        else:
+            os.environ['COLLESPO_SOLO_HOST'] = before
+    manifest = json.loads((target/'manifest.json').read_text(encoding='utf-8'))
+    rows = manifest['segments']
+    if (len(rows) != len(rebuilt['segments']) or not rows or
+            any(not r.get('file') or r.get('duration', 0) <= 0 or r.get('voice_host') == 'ui' for r in rows)):
+        raise policy.VoiceUnavailable('ui_metan_rebuild_incomplete')
+    plan['narration'] = json.loads(source.read_text(encoding='utf-8'))
+    return rows, target, manifest
+
+
 def fit_preview(plan,audio):
     """補足→4試合目→3試合目の順に短縮し、実測してから描画へ渡す。"""
     import synthesize_narration as sn
@@ -308,7 +346,9 @@ def fit_preview(plan,audio):
         # 元音声は保持。音声を切ったり速度を上げたりせず、同じ話者で再合成する。
         path=Path(row['file']).with_name(Path(row['file']).stem+'_short.wav')
         host=solo_host.for_segments([seg],seg['speaker'])
-        ok=(solo_host.synthesize(text,path) if host=='ui' else sn.synth_one(text,seg['speaker'],path))
+        if host == 'ui':
+            raise PreviewVoiceUnavailable('雨衣の短縮はrunnerで再合成せず別のめたん回へ作り直します')
+        ok=sn.synth_one(text,seg['speaker'],path)
         if not ok:raise ValueError('短縮原稿の音声合成に失敗しました')
         actual=sn.audio_duration(path)
         if actual<=0:raise ValueError('短縮音声の実測尺がありません')
@@ -432,12 +472,34 @@ def run_compat(mode,path,narration_out=None,audio_dir=None,out=None,narration_pa
     manifest_path=Path(audio_dir)/'manifest.json'
     manifest=json.loads(manifest_path.read_text(encoding='utf-8'));audio=manifest['segments']
     original=json.loads(json.dumps(narr))
-    fit_preview(plan,audio)
+    rebuilt_after_hold = False
+    try:
+        fit_preview(plan,audio)
+    except PreviewVoiceUnavailable:
+        # 短縮途中の原稿を引き継がず、話者切替前の全文から全音声を作る。
+        plan['narration'] = original
+        audio, audio_dir, manifest = rebuild_preview_metan(plan, audio_dir, narration_path)
+        narr = plan['narration']
+        manifest_path = Path(audio_dir)/'manifest.json'
+        os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+        host_split.render_audio(audio_dir, out, str(Path(audio_dir)/'narration.json'))
+        before = os.environ.get('COLLESPO_SOLO_HOST')
+        try:
+            os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+            fit_preview(plan, audio)
+        finally:
+            if before is None: os.environ.pop('COLLESPO_SOLO_HOST', None)
+            else: os.environ['COLLESPO_SOLO_HOST'] = before
+        rebuilt_after_hold = True
     if narr!=original:
+        if rebuilt_after_hold:
+            Path(manifest.get('narration_path', Path(audio_dir)/'narration.json')).write_text(
+                json.dumps(narr, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+        __import__('voice_manifest').save(audio_dir, audio, narr)
         manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
         # 日次の後続処理（表紙・説明欄）も実際に読んだ原稿を使う。
         saved=Path(narration_path) if narration_path else Path(audio_dir).parent/'soccer_narration.json'
-        if saved.is_file() and json.loads(saved.read_text(encoding='utf-8'))==original:
+        if rebuilt_after_hold or (saved.is_file() and json.loads(saved.read_text(encoding='utf-8'))==original):
             saved.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
         target=Path(out)/'narration.json';target.parent.mkdir(parents=True,exist_ok=True)
         target.write_text(json.dumps(narr,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

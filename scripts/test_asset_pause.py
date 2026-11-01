@@ -14,6 +14,7 @@ import healthcheck
 
 PAUSED = ('venue_a', 'mlb_venue', 'team_a', 'season_team_1')
 TOPICS = {k: {'style': 'v3'} for k in (*PAUSED, 'legend_1', 'season_player_1')}
+TOPICS['season_player_1'].update(title='大谷翔平の成績', source='MLB Stats API', game_type='R')
 
 
 class PauseTests(unittest.TestCase):
@@ -39,7 +40,7 @@ class PauseTests(unittest.TestCase):
 
     def test_unmeasured_and_high_views_cannot_restart(self):
         for avg in ({}, {'team': 99999, 'venue': 99999}):
-            self.assertEqual(self.select(TOPICS, avg=avg), ['legend_1'])
+            self.assertEqual(self.select(TOPICS, avg=avg), [])
 
     def test_no_replacement_when_only_paused_remain(self):
         self.assertEqual(self.select({k: TOPICS[k] for k in PAUSED}), [])

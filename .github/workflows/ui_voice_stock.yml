@@ -17,6 +17,7 @@ jobs:
       COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
       COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
       COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+      COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
       COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
       COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}

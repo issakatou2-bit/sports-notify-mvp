@@ -513,6 +513,9 @@ def build(ps: dict, only: int = 0) -> list:
                 print(f"[warn] {j['name']} を作れません({e})", file=sys.stderr)
                 continue
             if p:
+                p['items'] = [row for row in p['items'] if row[0] not in ('Statcastで見ると', '球団の結末')]
+                p['game_type'] = 'R'
+                p['source'] = 'MLB Stats API / レギュラーシーズン成績'
                 out.append(p)
     return out
 
