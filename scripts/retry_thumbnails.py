@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 import zipfile
 
 from thumbnail_pending import VIDEO_ID
@@ -26,6 +27,19 @@ def gh_json(endpoint, key):
     result = subprocess.run(["gh", "api", "--paginate", "--slurp", endpoint],
                             check=True, capture_output=True)
     return [item for page in json.loads(result.stdout) for item in page[key]]
+
+
+def run_artifacts(base, run_id):
+    """1回分の保存物の一覧。GitHubの一時的な失敗で全体を止めない（10/30 1件の失敗で全滅した）。"""
+    endpoint = f"{base}/runs/{int(run_id)}/artifacts?per_page=100"
+    for attempt in (1, 2):
+        try:
+            return gh_json(endpoint, "artifacts")
+        except subprocess.CalledProcessError:
+            print(f"::warning::実行 {int(run_id)} の保存物を読めませんでした（{attempt}回目）")
+            if attempt == 1:
+                time.sleep(5)
+    return []
 
 
 def collect(repository, directory, now=None):
@@ -53,7 +67,7 @@ def collect(repository, directory, now=None):
                 or run.get("status") != "completed"
                 or not start <= stamp(run["updated_at"]) <= now):
             continue
-        artifacts = gh_json(f"{base}/runs/{int(run['id'])}/artifacts?per_page=100", "artifacts")
+        artifacts = run_artifacts(base, run["id"])
         for artifact in artifacts:
             if artifact["name"] != "thumbnail-pending" or artifact.get("expired"):
                 continue

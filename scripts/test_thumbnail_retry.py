@@ -28,6 +28,21 @@ def error(reason="quotaExceeded", status=403):
         {"error": {"errors": [{"reason": reason}]}}).encode())
 
 
+class RunArtifacts(unittest.TestCase):
+    def test_retry_once_after_a_temporary_failure(self):
+        error = retry.subprocess.CalledProcessError(1, "gh")
+        with mock.patch.object(retry, "gh_json", side_effect=[error, [{"name": "a"}]]) as read,                 mock.patch.object(retry.time, "sleep"), mock.patch("sys.stdout", new=io.StringIO()):
+            self.assertEqual(retry.run_artifacts("repos/x/actions", 1), [{"name": "a"}])
+        self.assertEqual(read.call_count, 2)
+
+    def test_skip_only_that_run_after_two_failures(self):
+        error = retry.subprocess.CalledProcessError(1, "gh")
+        with mock.patch.object(retry, "gh_json", side_effect=error) as read,                 mock.patch.object(retry.time, "sleep"), mock.patch("sys.stdout", new=io.StringIO()) as out:
+            self.assertEqual(retry.run_artifacts("repos/x/actions", 1), [])
+        self.assertEqual(read.call_count, 2)
+        self.assertIn("::warning::", out.getvalue())
+
+
 class Pending(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
