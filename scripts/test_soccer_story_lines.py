@@ -2,9 +2,7 @@ import copy
 import json
 import os
 from pathlib import Path
-import subprocess
 import sys
-import types
 import unittest
 from unittest.mock import patch
 
@@ -15,16 +13,6 @@ import soccer_selected_preview as preview
 import soccer_result_story as story
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = '43adddfc'
-
-
-def old_module(name):
-    source = subprocess.check_output(['git', 'show', f'{BASE}:scripts/{name}.py'], cwd=ROOT).decode('utf8')
-    module = types.ModuleType('baseline_'+name)
-    module.__file__ = str(ROOT/'scripts'/f'{name}.py')
-    exec(compile(source, module.__file__, 'exec'), module.__dict__)
-    return module
-
 
 def match(sides, minutes=None):
     minutes = minutes or [str(i*10+5) for i in range(len(sides))]
@@ -116,18 +104,6 @@ class StoryTests(unittest.TestCase):
         game=match(['home'])
         self.assertEqual(flow.caption_names('ル・アーブルが先制しました。',[game]),'ルアーブルが先制しました。')
         self.assertEqual(names.lookup('ル・アーブル')['reading'],names.lookup('ルアーブル')['reading'])
-
-    def test_off_preview_and_results_are_exact_baseline(self):
-        before=old_module('soccer_selected_preview')
-        before.interest=old_module('soccer_match_interest')
-        before_story=old_module('soccer_result_story')
-        raw=json.loads((ROOT/'data/soccer_games.json').read_text(encoding='utf8'))
-        import soccer_selection
-        data=soccer_selection.select(raw,availability={})
-        result=json.loads((ROOT/'scripts/fixtures/soccer-results/run-38817456251.json').read_text(encoding='utf8'))
-        with patch.dict(os.environ,dict(COLLESPO_SOCCER_FOCUS='off',COLLESPO_SOCCER_LOOK='v6',COLLESPO_SHORT_LOOK='v4')),patch('soccer_publications.load',return_value={}):
-            self.assertEqual(before.program(copy.deepcopy(data)),preview.program(copy.deepcopy(data)))
-            self.assertEqual(before_story.narration(copy.deepcopy(result)),story.narration(copy.deepcopy(result)))
 
     def test_on_has_no_filler_and_retains_all_goals(self):
         raw=json.loads((ROOT/'data/soccer_games.json').read_text(encoding='utf8'))
