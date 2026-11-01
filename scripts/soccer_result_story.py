@@ -15,6 +15,8 @@ def clubs_for(data):
     for row in (data.get('preview_followup') or {}).get('games',[]):
         if row.get('next_game'):clubs.extend(row['next_game'][s] for s in ('home','away'))
     resolved=soccer_slots_v4.clubs_for(clubs)
+    # 画面は display の名前で引く。和名の表とずれるクラブがある（11/1 エルフェアスベルクで朝の回が止まった）。
+    for name in clubs:resolved.setdefault(names.display(name),resolved[name])
     # 保存当時の日本語名も同じ試合の英語名に結び、別名表更新後も再制作できる。
     import soccer_results_render
     resolved.update(soccer_results_render.resolve_clubs(data))
