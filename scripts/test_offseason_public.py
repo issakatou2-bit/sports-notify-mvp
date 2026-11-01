@@ -23,6 +23,13 @@ class OffseasonPublic(unittest.TestCase):
     def tearDown(self):
         r3.set_caption('', 0)
 
+    def test_series_title_keeps_player_and_action(self):
+        spec = dict(label='村上宗隆のFA契約｜日本人選手の来季 第1回', heading='日本人選手の来季 第1回',
+                    offseason=dict(kind='transactions', series_number=1))
+        meta = op.metadata(spec)
+        self.assertEqual(meta['title'], f'【MLB】{spec["label"]} #Shorts')
+        self.assertEqual(meta['lead'][0], '日本人選手の来季 第1回を、MLB公式の記録から紹介します。')
+
     def test_actual_metadata_and_sns_of_all_three(self):
         for row in SAMPLES:
             spec = row['spec']
