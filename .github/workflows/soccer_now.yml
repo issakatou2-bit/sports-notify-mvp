@@ -10,6 +10,7 @@ concurrency:
   cancel-in-progress: false
 env:
   COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v6' }}
+  COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
