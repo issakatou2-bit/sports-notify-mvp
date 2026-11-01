@@ -50,9 +50,9 @@ def phrases(text):
     return tuple(text[a:b] for a,b in zip(breaks,breaks[1:]))
 
 
-def pages(text, limit=38, fits=None):
+def pages(text, limit=38, fits=None, *, splitter=phrases, min_clause=0):
     """Prefer full stop, then comma, then phrase; never discard or split an atom."""
-    atoms = phrases(str(text));out=[];at=0
+    atoms = splitter(str(text));out=[];at=0
     if fits is None:fits=lambda value:len(value)<=limit
     while at<len(atoms):
         options=[];value=''
@@ -60,7 +60,7 @@ def pages(text, limit=38, fits=None):
             value+=atoms[end]
             if not fits(value):break
             stripped=value.rstrip()
-            priority=3 if stripped.endswith(tuple('。！？!?')) else 2 if stripped.endswith('、') else 1
+            priority=3 if stripped.endswith(tuple('。！？!?')) else 2 if stripped.endswith('、') and len(stripped)>=min_clause else 1
             options.append((priority,end+1,value))
         if not options:
             # Indivisible quantity/phrase. Drawing must shrink or explicitly fail.
@@ -70,9 +70,9 @@ def pages(text, limit=38, fits=None):
     return out
 
 
-def wrap(text, measure, width):
+def wrap(text, measure, width, *, splitter=phrases):
     rows=[];cur=''
-    for atom in phrases(str(text)):
+    for atom in splitter(str(text)):
         if '\n' in atom:
             for i,part in enumerate(atom.split('\n')):
                 if i:
@@ -98,12 +98,12 @@ def runs(text):
     return out
 
 
-def violations(text, chunks):
+def violations(text, chunks, *, splitter=phrases):
     normalized=text.replace('\n','')
     chunks=[s.replace('\n','') for s in chunks]
     if ''.join(chunks)!=normalized:return ['全文の欠落/重複']
     allowed=set();at=0
-    for atom in phrases(text):at+=len(atom.replace('\n',''));allowed.add(at)
+    for atom in splitter(text):at+=len(atom.replace('\n',''));allowed.add(at)
     at=0;errors=[]
     for chunk in chunks[:-1]:
         at+=len(chunk)

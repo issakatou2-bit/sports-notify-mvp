@@ -218,8 +218,9 @@ def distribute(run, rows, publish=False):
                 continue
             duration = bd.verify_media(video)
             texts = {s: bd.caption(s, day, verified, kind) for s in services}
-            texts = {s: text.replace('音声：VOICEVOX:ずんだもん / VOICEVOX:四国めたん',
-                                     '音声：VOICEVOX:四国めたん') for s, text in texts.items()}
+            if not __import__('offseason_public').social_kind(kind):
+                texts = {s: text.replace('音声：VOICEVOX:ずんだもん / VOICEVOX:四国めたん',
+                                         '音声：VOICEVOX:四国めたん') for s, text in texts.items()}
             # Bluesky uses the compact published title and an external video card.
             btext = bd.caption('twitter', day, verified, kind)
             description = 'MLB公式で確認できたオフの話題です。' if topic.startswith('offseason_') else 'コレスポのPSの話題です。'

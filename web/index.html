@@ -352,9 +352,11 @@
     );
 
     if (games.length === 0) {
-      const msg = activeLeague === 'MLB' ? '対象のMLBの試合がありません' : '今はシーズンオフのため試合がありません';
+      const msg = activeLeague === 'MLB' ? '対象のMLBの試合がありません' : '対象の欧州サッカーの試合がありません';
+      document.getElementById('pickLabel').textContent = '注目試合';
+      document.getElementById('boardLabel').textContent = '試合一覧 (JST)';
       notableEl.innerHTML = '<p class="sub">' + msg + '</p>';
-      allEl.innerHTML = '';
+      allEl.innerHTML = '<p class="sub">' + msg + '</p>';
       return;
     }
 

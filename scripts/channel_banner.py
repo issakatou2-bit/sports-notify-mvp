@@ -84,11 +84,12 @@ def build() -> Image.Image:
     x0, y0 = (W - SAFE_W) // 2, (H - SAFE_H) // 2
     d.text((x0, y0 + 8), "コレスポ", font=font(112), fill=ACCENT)
     d.text((x0 + 6, y0 + 146),
-           "MLBと欧州サッカーの注目試合を、理由つきで毎日",
+           __import__("offseason_text").seasonal("MLBと欧州サッカーの注目試合を、理由つきで毎日"),
            font=font(44), fill=TEXT)
 
     # 出している枠を並べる。実際に出しているものだけ。
-    names = [name for _, name, _, _ in post_common.DAILY_LINEUP]
+    rows = post_common.lineup() if post_common.mlb_offseason() else post_common.DAILY_LINEUP
+    names = [name for _, name, _, _ in rows]
     line = "　".join(names[:4])
     line2 = "　".join(names[4:])
     d.text((x0 + 6, y0 + 226), line, font=font(34), fill=DIM)
