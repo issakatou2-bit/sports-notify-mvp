@@ -167,6 +167,19 @@ def enrich_plan(plan):
             continue
         game=matches[0];meta['game_id']=str(game['game_id'])
         interest=decide(game);meta['interest']=interest;facts[str(game['game_id'])]=interest
+        import soccer_look
+        if soccer_look.focus():
+            import soccer_story_lines as story
+            player = interest['player']
+            if player and player.get('japanese'):
+                # 日本人は当日メンバーの事実だけ。期待・活躍の評価を加えない。
+                interest['player'] = None
+            conclusion = story.preview_conclusion(game)
+            if conclusion:
+                seg['text'] += conclusion
+            if player and not player.get('japanese'):
+                seg['text'] += f'{player["name"]}は{stats_label(player)}で{player_numbers(player)}です。'
+            continue
         if interest['reasons']:seg['text']+='。'.join(r['text'] for r in interest['reasons'])+'。'
         player=interest['player']
         if player:

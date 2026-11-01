@@ -74,6 +74,15 @@ def program(data):
     plan=interest.enrich_plan(slots.package('preview',data,segs,list(names),head,clubs))
     for seg,g in zip(plan['narration']['segments'][1:-1],games):
         meta=seg['meta'];facts=preview_details(g)
+        import soccer_look
+        if soccer_look.focus():
+            import soccer_story_lines as story
+            seg['text'] += ''.join(story.preview_facts(g, facts))
+            seg['text'] = story.caption_names(seg['text'], [g])
+            # 読み上げた昨季順位も、元のquality材料との対応を保持する。
+            meta['interest']['reasons'].extend(dict(kind='previous_season',text=f,evidence='reasons.quality') for f in facts)
+            meta['preview_duration_limit'] = 55
+            continue
         if facts:
             paired=[re.search(r'は昨季(.+?)(\d+)位$', f) for f in facts]
             if len(paired)==2 and all(paired) and paired[0][1]==paired[1][1]:
