@@ -4,6 +4,7 @@
 name: 毎日 17:00-20:00　夕方の4本
 
 env:
+  COLLESPO_MLB_TITLE_V2: ${{ vars.COLLESPO_MLB_TITLE_V2 == 'on' && 'on' || 'off' }}
   COLLESPO_HOOK_AB: ${{ vars.COLLESPO_HOOK_AB || '' }}
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
