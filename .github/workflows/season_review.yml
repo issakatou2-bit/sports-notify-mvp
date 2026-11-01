@@ -18,7 +18,7 @@ on:
     inputs:
       count:
         description: 'きょう出す上限（既に出したぶんを引く）'
-        default: '4'
+        default: '2'
       privacy:
         description: 公開設定
         type: choice
@@ -113,7 +113,7 @@ jobs:
         id: pick
         run: |
           python scripts/jp_assets.py --out build/jp_asset_topics.json
-          T="$(python scripts/next_asset.py --season "${{ inputs.count || '4' }}")"
+          T="$(python scripts/next_asset.py --season "${{ inputs.count || '2' }}")"
           echo "topics=$T" >> "$GITHUB_OUTPUT"
           echo "きょうのシーズンまとめ: ${T:-なし}" | tee -a "$GITHUB_STEP_SUMMARY"
 
