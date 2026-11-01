@@ -516,6 +516,12 @@ def base(progress):
     return im, d
 
 
+def readable_headline(head: dict) -> bool:
+    """声で読めない文字（ハングルなど）の媒体名や見出しを読まない（11/1「조선일보」）。"""
+    text = f"{head.get('source', '')}{head.get('jp') or head.get('title', '')}"
+    return not any("가" <= c <= "힣" or "ᄀ" <= c <= "ᇿ" for c in text)
+
+
 def usable_headline(text: str) -> bool:
     """
     冒頭でそのまま読める見出しかどうか。
@@ -1407,11 +1413,11 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
         parts = [press_premise(heads, pool) or "現地の見出しです。"]
         # 収まらない見出しは切らずに飛ばす。6件取れているので選び直せる。
         fits = [(i, h) for i, h in enumerate(heads)
-                if i != used
+                if i != used and readable_headline(h)
                 and len((h.get("jp") or h.get("title", ""))) <= HEADLINE_MAX
                 and not boilerplate_headline(h.get("jp") or h.get("title", ""))]
         if not fits:
-            fits = [(i, h) for i, h in enumerate(heads) if i != used]
+            fits = [(i, h) for i, h in enumerate(heads) if i != used and readable_headline(h)]
         picked = []
         for i, h in fits[:HEADLINES_SHOWN]:
             body = h.get("jp") or h.get("title", "")
