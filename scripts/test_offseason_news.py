@@ -175,6 +175,18 @@ class OffseasonTests(unittest.TestCase):
         rows = [self.award(season=2025), self.award(name='Unknown'), dict(player=dict(id=1, name='Shohei Ohtani'))]
         self.assertEqual(n.award_rows({'NLMVP': {'awards': rows}}, 2026, jp, table), [])
 
+    def test_recheck_of_flagged_lines_only_is_not_a_missing_intro(self):
+        day = date(2026, 11, 1)
+        spec = n.topic('schedule', n.schedule(day), day, 2026)
+        doc = dict(offseason=spec['offseason'], sanity_materials=[dict(offseason=spec['offseason'])])
+        line = n.item_speech(*spec['items'][0])+n.item_speech(*spec['items'][1])
+        partial = dict(doc, segments=[dict(kind='list', text=line, _sanity_original_line=2)])
+        self.assertEqual(n.check(partial), [])
+        wrong = dict(doc, segments=[dict(kind='list', text=line+'追加', _sanity_original_line=2)])
+        self.assertEqual(n.check(wrong), ['オフの再点検の行が公式材料と不一致'])
+        self.assertEqual(n.check(dict(doc, segments=[dict(kind='list', text=line)])),
+                         ['オフの冒頭または未対応の追加文が公式材料と不一致'])
+
     def test_award_before_announcement_is_empty_but_other_errors_stop(self):
         import requests
         from unittest.mock import Mock

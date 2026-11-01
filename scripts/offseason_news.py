@@ -354,14 +354,21 @@ def check(document):
     expected_intro = spec['intro']
     if document.get('offseason_sample'):
         expected_intro = sample_intro(evidence['kind'], evidence['season'])
-    if intros != [expected_intro] or any(s.get('kind') not in ('intro', 'list', 'outro') for s in document.get('segments', [])):
-        return ['オフの冒頭または未対応の追加文が公式材料と不一致']
     # 既存話者の敬語・字幕変換後も、材料由来の本体を全文で照合する。
     expected = []
     items = spec['items']
     for index in range(0, len(items), 2):
         text = ''.join(item_speech(head, body) for head, body in items[index:index+2])
         expected.append(text)
+    # 再点検には指摘された行だけが届く。全文の並びは1回目で照合済みなので、届いた行だけを見る
+    # （11/1 冒頭が無いと誤って止まり、オフの話題が出なかった）。
+    if any('_sanity_original_line' in s for s in document.get('segments', [])):
+        allowed = {expected_intro, OUTRO_TEXT, *expected}
+        if any(s.get('text') not in allowed for s in document.get('segments', [])):
+            return ['オフの再点検の行が公式材料と不一致']
+        return []
+    if intros != [expected_intro] or any(s.get('kind') not in ('intro', 'list', 'outro') for s in document.get('segments', [])):
+        return ['オフの冒頭または未対応の追加文が公式材料と不一致']
     actual = [s['text'] for s in document.get('segments', []) if s.get('kind') == 'list']
     if actual != expected:
         return ['オフの予定・表彰・移籍の本文が公式材料と不一致']
