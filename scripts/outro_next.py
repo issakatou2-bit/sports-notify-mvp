@@ -30,7 +30,7 @@ def choice(day=None, lineup=None):
         result['reason'] = 'confirmed_next_missing'
         return result
     _, name, _, at = row
-    if not re.fullmatch(r'\d{2}:\d{2}', at) or len(name) > 10:
+    if not re.fullmatch(r'\d{2}:\d{2}', at) or name != '欧州サッカー':
         result['reason'] = 'confirmed_next_unusable'
         return result
     tomorrow = day + timedelta(days=1)
@@ -61,17 +61,24 @@ def card(text, default):
     return f'次は{month}/{day} {int(hour):02d}:{int(minute or 0):02d}の{name}'
 
 
-def publication(video, day=None):
+def publication(video, day=None, narration=None):
     """完成動画に結びついた実読上げの記録から、台帳の条件を作る。"""
     video = Path(video)
     path = video.with_suffix('')/'render_timeline.json'
     if not path.exists():
+        common = any(s.get('kind') == 'outro' and s.get('text', '').startswith('コレスポでは毎日、')
+                     for s in (narration or {}).get('segments', []))
+        if os.getenv('COLLESPO_OUTRO_NEXT') == 'on' and common:
+            raise ValueError('共通締めの実動画記録がありません。比較条件を記録できないため停止します')
         return None
     timeline = json.loads(path.read_text(encoding='utf-8'))
     if timeline.get('video_sha256') != hashlib.sha256(video.read_bytes()).hexdigest():
         raise ValueError('締め比較の完成動画と記録が不一致')
     texts = [r.get('text','') for r in timeline.get('lines', []) if r.get('kind') == 'outro']
-    variant = 'next' if any(card(t, '') for t in texts) else 'generic' if any(LEGACY in t for t in texts) else 'other'
+    variant = 'next' if any(card(t, '') for t in texts) else 'generic' if any(t.startswith('コレスポでは毎日、') and LEGACY in t for t in texts) else 'other'
     plan = choice(day)
+    if plan.get('enabled') and plan.get('eligible') and variant != 'other':
+        if variant != plan['variant'] or (variant == 'next' and not any(plan['speech'] in t for t in texts)):
+            raise ValueError('締め比較の公開日と録音済みの案内が不一致。再制作が必要です')
     plan.update(variant=variant, eligible=bool(plan.get('eligible')) and variant != 'other')
     return {'outro_next': plan}

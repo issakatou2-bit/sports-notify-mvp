@@ -457,8 +457,8 @@ def check_assets(max_gap_days: int = 2) -> tuple:
     # 停止した種類だけ残っていても制作不足としない。
     # 生成器は保持し、選択可能な未投稿候補の有無だけを見る。
     import asset_policy
-    candidates = [k for k in asset_policy.topic_catalog()
-                  if k not in a and not asset_policy.paused(k)
+    candidates = [k for k, spec in asset_policy.topic_catalog().items()
+                  if k not in a and asset_policy.selectable(k, spec)
                   and not k.startswith('ws_')]
     if not candidates:
         return "| 資産動画 | 選択対象なし（制作見送り） | 球場・球団まとめは停止中・補充なし |", 0

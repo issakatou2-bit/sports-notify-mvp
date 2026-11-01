@@ -20,6 +20,7 @@ os.environ['COLLESPO_SOLO_HOST'] = 'metan'
 os.environ['COLLESPO_HOST_SPLIT'] = ''
 os.environ['COLLESPO_UI_VOICE_STOCK'] = ''
 os.environ['COLLESPO_MOTION'] = 'on'
+os.environ['COLLESPO_CAPTION_BREAKS'] = 'bunsetsu'  # 見本プロセスのみ。既存の文節分割で契約などの単語を保つ。
 os.environ['PYTHONUTF8'] = '1'
 
 
@@ -59,7 +60,8 @@ def run(only=None):
     c = __import__('jp_future_series').topic(historical, end, 2025, state={})
     c['offseason']['window_start'] = str(start)
     c['offseason_sample'] = True
-    c['label'] = c['heading'] = c['hook'] = '日本人選手の来季 第1回（2025年の過年度見本）'
+    c['label'] = c['heading'] = '日本人選手の来季 第1回'
+    c['hook'] = '2025年オフの取引記録'
     c['intro'] = n.sample_intro('transactions', 2025)
     c['source'] = 'MLB公式 / 2025年オフの過年度見本'
     c['v3']['source'] = '出典: MLB Stats API / 2025年10〜12月'

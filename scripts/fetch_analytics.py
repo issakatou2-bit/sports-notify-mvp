@@ -79,6 +79,8 @@ def channel_daily(yta, start, end, fetched_at):
 
 
 CONTENT_TYPES = ("shorts", "videoOnDemand", "liveStream", "unspecified")
+CONTENT_TYPE_KEYS = {"SHORTS": "shorts", "VIDEO_ON_DEMAND": "videoOnDemand",
+                     "LIVE_STREAM": "liveStream", "UNSPECIFIED": "unspecified"}
 
 
 def registration_daily(yta, start, end, fetched_at):
@@ -95,7 +97,8 @@ def registration_daily(yta, start, end, fetched_at):
             values = {}
             for row in res.get("rows", []):
                 rec = dict(zip(cols, row))
-                kind = rec.get("creatorContentType")
+                raw_kind = rec.get("creatorContentType")
+                kind = CONTENT_TYPE_KEYS.get(raw_kind, raw_kind)
                 if kind not in CONTENT_TYPES:
                     raise ValueError("unknown creatorContentType")
                 values[kind] = rec["subscribersGained"]

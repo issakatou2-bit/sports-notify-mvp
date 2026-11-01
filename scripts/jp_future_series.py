@@ -12,7 +12,6 @@ def targets(root=Path('data')):
     season = json.loads((root/'season_topics.json').read_text(encoding='utf-8'))['topics']
     candidates = json.loads((root/'offseason_players.json').read_text(encoding='utf-8'))['players']
     # 日本人個人の保存済み成績札で対象を確定する。日本語名だけで国籍を推測しない。
-    jps = {r['jp'] for r in season if r.get('jp')}
     roster = json.loads((root/'roster_snapshot.json').read_text(encoding='utf-8'))['players']
     result = {roster[str(r['player_id'])]['name']: r['jp'] for r in season
               if r.get('jp') and str(r.get('player_id')) in roster}
@@ -29,6 +28,8 @@ def number(state):
 
 def topic(rows, day, season, state=None, episode=None):
     import offseason_news as news
+    if not rows:
+        return None
     jp, kana = targets()
     seen = set((state or {}).get('events', []))
     pending = []

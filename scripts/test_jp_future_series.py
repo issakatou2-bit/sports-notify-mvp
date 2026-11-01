@@ -1,5 +1,4 @@
-﻿import copy
-from datetime import date
+﻿from datetime import date
 import json
 from pathlib import Path
 import sys
@@ -28,6 +27,19 @@ class FutureTest(unittest.TestCase):
         jp,kana=series.targets();kana.pop(rows[0]['raw']['person']['fullName'])
         with patch.object(series,'targets',return_value=(jp,kana)),self.assertRaises(ValueError):
             series.topic(rows,date(2025,12,21),2025,{})
+    def test_posting_requires_explicit_official_record(self):
+        row=dict(id=1, date='2025-12-21', typeCode='unknown',
+                 person={'id':808959,'fullName':'Munetaka Murakami'},
+                 fromTeam={'name':'Tokyo Yakult Swallows'},
+                 description='Tokyo Yakult Swallows posted Munetaka Murakami.')
+        jp,kana=series.targets()
+        args=(date(2025,12,21),date(2025,12,21),jp,kana,set())
+        self.assertEqual(len(news.transaction_rows({'transactions':[row]},*args)),1)
+        for wording in ('Tokyo Yakult Swallows may post Munetaka Murakami.',
+                        'Tokyo Yakult Swallows has not posted Munetaka Murakami.'):
+            row['description']=wording
+            self.assertEqual(news.transaction_rows({'transactions':[row]},*args),[])
+
     def test_series_material_roundtrip(self):
         import generate_asset_video as g
         rows=self.rows()

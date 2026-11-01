@@ -17,6 +17,25 @@ class OutroTest(unittest.TestCase):
             concrete=next(p for p in plans if p['variant']=='next')
             self.assertEqual(n.card(concrete['speech'],'old'),concrete['card'])
             self.assertIn('19時30分',concrete['speech'])
+    def test_publication_uses_video_bound_actual_and_excludes_special_outro(self):
+        import hashlib, json, tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {'COLLESPO_OUTRO_NEXT':'on'}):
+            video=Path(directory)/'test.mp4';video.write_bytes(b'video')
+            receipt=video.with_suffix('')/'render_timeline.json';receipt.parent.mkdir()
+            with self.assertRaises(ValueError):
+                n.publication(video,'2026-11-02',{'segments':[dict(kind='outro',text='コレスポでは毎日、話題を届けています。'+n.LEGACY)]})
+            def save(text):
+                receipt.write_text(json.dumps(dict(video_sha256=hashlib.sha256(b'video').hexdigest(),lines=[dict(kind='outro',text=text)])),encoding='utf-8')
+            plan=n.choice('2026-11-02')
+            save('コレスポでは毎日、話題を届けています。'+plan['speech'])
+            self.assertEqual(n.publication(video,'2026-11-02')['outro_next']['variant'],'next')
+            with self.assertRaises(ValueError):n.publication(video,'2026-11-03')
+            save('コレスポでは、オフの動きを追っています。'+n.LEGACY)
+            self.assertFalse(n.publication(video,'2026-11-02')['outro_next']['eligible'])
+            video.write_bytes(b'changed')
+            with self.assertRaises(ValueError):n.publication(video,'2026-11-02')
+
     def test_existing_outro_unchanged_off(self):
         import review_render_v3 as r
         with patch.dict(os.environ, {'COLLESPO_OUTRO_NEXT':'off'}):

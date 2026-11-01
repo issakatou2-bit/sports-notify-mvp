@@ -2301,7 +2301,7 @@ def main():
     import hook_ab
     experiment = hook_ab.publication(args.video, publish_at)
     import outro_next
-    outro_record = outro_next.publication(args.video, hook_ab.publication_day(publish_at))
+    outro_record = outro_next.publication(args.video, hook_ab.publication_day(publish_at), _json_or_empty(args.narration))
     if outro_record:
         experiment = dict(experiment or {}, **outro_record)
     body["status"] = {

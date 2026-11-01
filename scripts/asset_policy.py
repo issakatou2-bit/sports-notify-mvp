@@ -51,7 +51,8 @@ def selectable(topic, spec, names=None):
         return False
     # 成績だけ。PS、順位表、球団の結末、Savantの評価を混ぜない。
     forbidden = ('ポストシーズン', 'Statcast', 'Savant', '球団の結末', '順位表')
-    return not any(word in str(spec.get('items', [])) for word in forbidden)
+    content = title + str(spec.get('heading', '')) + str(spec.get('items', []))
+    return not any(word in content for word in (*forbidden, '球団まとめ'))
 
 
 if __name__ == "__main__":

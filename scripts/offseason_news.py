@@ -183,6 +183,18 @@ def transaction_rows(payload, start, end, jp, table, stars):
         if original not in jp and person.get('id') not in stars:
             continue
         code = row.get('typeCode')
+        # コードを推測しない。公式取引本文が本人のpostedを明記する場合だけ。
+        description = row.get('description', '')
+        posting_teams = [(row.get(k) or {}).get('name') for k in ('fromTeam', 'toTeam')]
+        posted = bool(original and any(team and re.fullmatch(
+            re.escape(team) + r' posted ' + re.escape(original) + r'(?: for .+)?\.',
+            description, re.IGNORECASE) for team in posting_teams))
+        if posted:
+            rows.append(dict(event_id=f'transaction:{row["id"]}', head=f'{name}｜ポスティング',
+                body=f'{name}のポスティングがMLB公式の取引記録に載りました',
+                name=name, japanese=original in jp, raw=copy.deepcopy(row),
+                source=f'{API}/transactions?playerId={person.get("id")}&startDate={start}&endDate={end}'))
+            continue
         if code not in MOVES:
             continue  # DES・OUT・REL・SC等は取り上げない。
         action = MOVES[code]
