@@ -259,6 +259,10 @@ jobs:
       # いたが、逆向きが一つも無く、サイトに来た人は同じ内容を動画でも
       # 見られることを知らないまま帰っていた。
       # 用語集は特に相性が良い(「OPSとは」を調べに来た人へ、同じ説明の動画)。
+      - name: Adjust offseason public wording
+        continue-on-error: true
+        run: python scripts/offseason_text.py --site public
+
       - name: Inject video links into the site
         continue-on-error: true
         run: python scripts/inject_video_links.py --site public

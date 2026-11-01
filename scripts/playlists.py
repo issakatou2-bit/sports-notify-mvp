@@ -112,6 +112,18 @@ PLAYLISTS = {
 }
 
 
+def playlist_text(kind):
+    title, desc = PLAYLISTS[kind]
+    if __import__("post_common").mlb_offseason():
+        if kind in {"morning", "daily", "morning_local"}:
+            title = title.replace("｜毎日更新", "｜シーズンの記録")
+            desc = desc.replace(_at(kind) + "追加しています。", "シーズン中の記録を掲載しています。")
+            desc = desc.replace("毎日追加しています。", "シーズン中の記録を掲載しています。")
+        elif kind == "longform":
+            desc += "現在はシーズン中の解説を掲載しています。"
+    return title, desc
+
+
 def client():
     cid = os.environ.get("YOUTUBE_CLIENT_ID")
     secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
@@ -180,7 +192,7 @@ def ensure_playlist(yt, store: dict, kind: str) -> str:
     """その種類の再生リストIDを返す。無ければ作る。"""
     if store.get(kind, {}).get("id"):
         return store[kind]["id"]
-    title, desc = PLAYLISTS[kind]
+    title, desc = playlist_text(kind)
     res = yt.playlists().insert(
         part="snippet,status",
         body={"snippet": {"title": title, "description": desc,

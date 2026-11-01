@@ -262,6 +262,15 @@ def fan_effect(im, effect, box, elapsed):
             d.line((x,y,x,y+w*.06), fill=(153,185,214,200), width=3)
     im.alpha_composite(layer) if im.mode == "RGBA" else im.paste(layer, (0, 0), layer)
 
+def caption_layout():
+    """標準吹き出しの実際の幅・基本字サイズ・収まる行数。"""
+    import fan_events
+    x0, y0, x1, y1 = BUBBLE
+    size = 48
+    return (x1 - x0 - (120 if fan_events.enabled() else 80), size,
+            min(3, (y1 - y0 - 44) // round(size * 1.36)))
+
+
 def bubble(im, speaker, text):
     """横いっぱいの吹き出し（白地・話者の色の枠・名前の札）。数字は濃い金色。3行まで、入らなければ字を小さく。"""
     if not text:
@@ -288,13 +297,14 @@ def bubble(im, speaker, text):
     room = y1 - y0 - 44
     import fan_events
     rows = []
-    for size in (48, 44, 40, 36, 33):
+    for size in ((caption_layout()[1],) if r3._CAPTION.get('phrase_wrap') else (48, 44, 40, 36, 33)):
         try:rows = r3._caption_lines(d, text, size, x1 - x0 - (120 if fan_events.enabled() else 80))
         except ValueError:continue
         lh = round(size * 1.36)
         if len(rows) <= 3 and len(rows) * lh <= room:
             break
     if __import__('caption_breaks').enabled() and (not rows or len(rows)>3):raise ValueError('吹き出しを文節でページ分割してください')
+    if r3._CAPTION.get('phrase_wrap') and (not rows or len(rows)>3 or len(rows)*lh>room):raise ValueError('吹き出しを文節でページ分割してください')
     y = y0 + 30 + (room - min(3, len(rows)) * lh) // 2
     for row in rows[:3]:
         x = x0 + 40
@@ -319,7 +329,10 @@ def presenter(im, t, cast=("metan",)):
     ctx = r3._CAPTION
     clock = r3._PROGRAM_CLOCK[0]
     elapsed = (clock - ctx["start"]) if clock is not None else t
-    line = r3.current_sentence(elapsed, ctx["text"], ctx["duration"]) if ctx["text"] else ""
+    if ctx.get('phrase_wrap'):
+        line = r3.current_sentence(elapsed, ctx['text'], ctx['duration'], caption_layout=caption_layout()) if ctx['text'] else ''
+    else:
+        line = r3.current_sentence(elapsed, ctx["text"], ctx["duration"]) if ctx["text"] else ""
     speaker = SPEAKERS.get(ctx.get("speaker"), "metan") if __import__('caption_breaks').enabled() else "zundamon" if ctx.get("speaker") == 3 else "metan"
     import solo_host
     speaker, cast = solo_host.presentation(speaker, cast)

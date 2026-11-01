@@ -549,6 +549,10 @@ LIST_TOPICS = {
     },
 }
 
+# サービス紹介の約束を原稿と画面で揃える。
+for _seasonal_topic in ("collespo_guide", "mlb_watch", "mlb_terms"):
+    LIST_TOPICS[_seasonal_topic] = __import__("offseason_text").guide(LIST_TOPICS[_seasonal_topic])
+
 
 def load_generated_topics() -> dict:
     """
@@ -686,8 +690,9 @@ def build_narration(topic: str) -> dict:
 def _outro_segment() -> dict:
     return {
         "kind": "outro",
-        "text": "コレスポでは、毎日午後七時に、その日の注目試合を"
-                "理由つきでお届けしています。",
+        "text": __import__("offseason_text").seasonal(
+            "コレスポでは、毎日午後七時に、その日の注目試合を"
+            "理由つきでお届けしています。"),
         "meta": {},
     }
 
@@ -1795,7 +1800,7 @@ def render_outro(p):
     d.text((80, 640), "コレスポ", font=font(120), fill=ACCENT)
     d.text((80, 800), "collespo.com", font=font(58), fill=TEXT)
     if p > 0.12:
-        d.text((80, 910), "毎日19時 更新", font=font(46), fill=DIM)
+        d.text((80, 910), __import__("offseason_text").seasonal("毎日19時 更新"), font=font(46), fill=DIM)
     # VOICEVOXの利用規約で、動画内または説明欄へのクレジット表記が
     # 求められているため、アウトロに必ず表示する
     d.text((80, 1150), VOICE_CREDIT, font=font(40), fill=DIM)
@@ -1966,7 +1971,8 @@ def main():
             import review_render_v3 as _r3
             _r3.set_program_clock(total / FPS)
             _r3.set_caption(seg.get('text','') if meta.get('duo') or kind!='outro' else '',dur,sum(durations),
-                            speaker=seg.get('speaker',2),duo=meta.get('duo',False),hide_caption=kind=='outro')
+                            speaker=seg.get('speaker',2),duo=meta.get('duo',False),hide_caption=kind=='outro',
+                            phrase_wrap=__import__('offseason_public').applies(LIST_TOPICS.get(args.topic) or {}))
             screen=meta.get('screen',seg_index)
             changed=screen!=previous_screen
             if changed:scene_elapsed=0.0

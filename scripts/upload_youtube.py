@@ -380,6 +380,12 @@ DAILY_LINEUP_LINES = [
 ]
 
 
+def daily_lineup_lines():
+    if not post_common.mlb_offseason():
+        return DAILY_LINEUP_LINES
+    return ["コレスポでは、次の内容をお届けしています。", "", *post_common.lineup_lines()]
+
+
 def generated_topic(topic: str) -> dict:
     """自動で作ったトピックの材料。無ければ空。"""
     import generated_topics as gt
@@ -399,6 +405,9 @@ def asset_meta_from_spec(spec: dict) -> dict:
     hook = spec.get("hook", "")
     where = spec.get("where", "")
     items = spec.get("items") or []
+    import offseason_public
+    if offseason_public.applies(spec):
+        return offseason_public.metadata(spec)
     # シーズンまとめ（season_topics.py）は題を材料の側で決めている。
     # 球場の言い方（「○○の本拠地」「（所在地）を」）は合わない。
     if spec.get("title"):
@@ -585,8 +594,12 @@ def subject_tags(kind: str, morning_mode: str, games: list,
     return out
 
 
-def build_asset_metadata(topic: str) -> dict:
+def build_asset_metadata(topic: str, narration=None) -> dict:
+    import offseason_public
+    off_spec = generated_topic(topic) if topic.startswith('offseason_') else {}
     meta = ASSET_META.get(topic)
+    if topic in {"collespo_guide", "mlb_watch", "mlb_terms"} and meta:
+        meta = __import__("offseason_text").guide(meta)
     if not meta:
         spec = generated_topic(topic)
         if spec:
@@ -599,14 +612,21 @@ def build_asset_metadata(topic: str) -> dict:
         ht.display(ht.select(meta["title"] + "\n" + "\n".join(meta["lead"]),
                              'youtube', subjects=meta["tags"], shorts=True)),
         "",
-        *DAILY_LINEUP_LINES,
+        *daily_lineup_lines(),
         "",
         *OTHER_CHANNEL_LINES,
         "",
         "―――",
         "音声: VOICEVOX:ずんだもん / 四国めたん",
     ]
-    if solo_host.selected() == 'ui':
+    if offseason_public.applies(off_spec):
+        lines = [line.replace('ポッドキャスト(同じ内容を音声で)',
+                              'ポッドキャスト(シーズン中の試合予告)') for line in lines]
+        if narration is None:
+            import generate_asset_video as asset_video
+            narration = asset_video.build_narration(topic)
+        lines[-1] = '音声: ' + offseason_public.voice_credit(narration)
+    elif solo_host.selected() == 'ui':
         import generate_asset_video as asset_video
         if (asset_video.LIST_TOPICS.get(topic) or {}).get('style') == 'v3':
             segments = asset_video.build_narration(topic)['segments']
@@ -1951,7 +1971,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     lines += [
         ht.display(public_hashtags),
         "",
-        *DAILY_LINEUP_LINES,
+        *daily_lineup_lines(),
         "",
         # 同じ枠の前回まで。検索から来た人が次の1本へ行けるように。
         *related_lines("morning_" + morning_mode
@@ -2184,7 +2204,18 @@ def main():
 
     if args.kind == "asset":
         # 資産動画は試合データを一切参照しない(日付に依存しないため)
-        body = build_asset_metadata(args.asset_topic or "mlb_abbr")
+        topic = args.asset_topic or "mlb_abbr"
+        if topic.startswith('offseason_'):
+            narration = _json_or_empty(args.narration)
+            import host_split
+            receipt = host_split.read(host_split.video_receipt(args.video))
+            if receipt.get('voice_resolution'):
+                import hashlib
+                narration = __import__('offseason_public').saved_voice(
+                    narration, receipt, hashlib.sha256(pathlib.Path(args.video).read_bytes()).hexdigest())
+            body = build_asset_metadata(topic, narration=narration)
+        else:
+            body = build_asset_metadata(topic)
     else:
         date_label = ""
         try:

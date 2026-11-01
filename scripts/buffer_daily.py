@@ -644,6 +644,9 @@ def caption(service, day, record, kind=DEFAULT_KIND):
     if any(line.strip().removeprefix('音声: ') == ui_voice_queue.UI_CREDIT
            for line in record.get('description', '').splitlines()):
         voice = ui_voice_queue.UI_CREDIT
+    import offseason_public
+    if offseason_public.social_kind(kind):
+        voice = offseason_public.description_voice(record.get('description', ''))
     return (f'{stamp}更新｜{w["long"]}\n{summary}\n\n' + w['lead'] + '。\n'
             '動画・記事はこちら：collespo.com\nYouTube：' + youtube +
             '\n\n音声：' + voice + '\n' + ht.display(tags))

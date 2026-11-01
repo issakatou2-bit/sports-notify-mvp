@@ -331,13 +331,13 @@ def face_for(line, elapsed, duration):
 _CAPTION = {"text": "", "start": 0.0, "duration": 0.0, "total": 0.0}
 
 
-def set_caption(text, duration, total=None, speaker=2, duo=False, hide_caption=False, caption_units=None):
+def set_caption(text, duration, total=None, speaker=2, duo=False, hide_caption=False, caption_units=None, phrase_wrap=False):
     if caption_units is not None and ''.join(caption_units) != str(text or ''):
         raise ValueError('吹き出しのまとまりと原稿が一致しません')
     _CAPTION.update(text=str(text or ""), duration=float(duration or 0),
                     start=_PROGRAM_CLOCK[0] or 0.0, total=float(total or _CAPTION["total"] or 0),
                     speaker=speaker, duo=bool(duo and LOOK=='v4'),hide_caption=hide_caption,
-                    caption_units=caption_units)
+                    caption_units=caption_units, phrase_wrap=phrase_wrap)
 
 
 def sentences(text):
@@ -347,9 +347,12 @@ def sentences(text):
 CAPTION_CHUNK = 38   # 字幕の箱に3行で入る字数の目安。短い文はまとめて出す
 
 
-def caption_chunks(text, limit=CAPTION_CHUNK):
+def caption_chunks(text, limit=CAPTION_CHUNK, *, layout=None):
     """短い文はまとめて1つの字幕にする（10/8 本人「細かく刻み過ぎ」。1文ずつだと切り替えが多い）。"""
     import caption_breaks
+    if _CAPTION.get('phrase_wrap'):
+        width, size, max_rows = layout or (CAPTION_RIGHT - (LEFT - 8) - 64, 42, 3)
+        return list(_offseason_caption_chunks(str(text or ''), limit, width, size, max_rows))
     if caption_breaks.enabled():return caption_breaks.pages(str(text or ''),limit)
     out = []
     for s in sentences(text):
@@ -360,9 +363,22 @@ def caption_chunks(text, limit=CAPTION_CHUNK):
     return out
 
 
-def current_sentence(elapsed, text, duration):
+@functools.lru_cache(maxsize=4096)
+def _offseason_caption_chunks(text, limit, width, size, max_rows):
+    import caption_breaks
+    draw = ImageDraw.Draw(Image.new('RGB', (1, 1)))
+    def fits(value):
+        try:
+            return len(_caption_lines(draw, value, size, width)) <= max_rows
+        except ValueError:
+            return False
+    return tuple(caption_breaks.pages(text, limit, fits=fits,
+                                     splitter=__import__('offseason_public').caption_phrases, min_clause=12))
+
+
+def current_sentence(elapsed, text, duration, *, caption_layout=None):
     """読み上げの速さは文字数にほぼ比例するので、文字数で区切って今の字幕を選ぶ。"""
-    parts = (_CAPTION.get('caption_units') if text == _CAPTION['text'] else None) or caption_chunks(text)
+    parts = (_CAPTION.get('caption_units') if text == _CAPTION['text'] else None) or caption_chunks(text, layout=caption_layout)
     if not parts:
         return ""
     total = sum(len(p) for p in parts)
@@ -415,12 +431,12 @@ def caption(im, t):
     d.text((box[0] + 24 + w / 2, box[1]), name, font=f, fill=ink, anchor="mm")
     # 数字は金色（項目の札と同じ書き分け）。3行まで、入らなければ字を小さく
     rows = []
-    for size in (42, 38, 34):
+    for size in ((42,) if _CAPTION.get('phrase_wrap') else (42, 38, 34)):
         try:rows = _caption_lines(d, line, size, box[2] - box[0] - 64)
         except ValueError:continue
         if len(rows) <= 3:
             break
-    if caption_breaks.enabled() and (not rows or len(rows)>3):raise ValueError('字幕を文節でページ分割してください')
+    if (caption_breaks.enabled() or _CAPTION.get('phrase_wrap')) and (not rows or len(rows)>3):raise ValueError('字幕を文節でページ分割してください')
     y = box[1] + 44
     for row in rows[:3]:
         x = box[0] + 36
@@ -444,10 +460,12 @@ def _caption_lines(d, text, size, width):
     # 英語の語（Dodgers など）も途中で切らない。書体に無い字（絵文字など）は出さない
     text = "".join(ch for ch in str(text) if ch.isspace() or _has_glyph(ch))
     import caption_breaks
-    if caption_breaks.enabled():
+    if caption_breaks.enabled() or _CAPTION.get('phrase_wrap'):
         def measure(value):
             return sum(d.textlength(part,font=num_font(round(size*1.18)) if numeric else font(size)) for part,numeric in caption_breaks.runs(value))
-        return [caption_breaks.runs(row) for row in caption_breaks.wrap(text,measure,width)]
+        kwargs = ({'splitter': __import__('offseason_public').caption_phrases}
+                  if _CAPTION.get('phrase_wrap') else {})
+        return [caption_breaks.runs(row) for row in caption_breaks.wrap(text,measure,width,**kwargs)]
     tokens = re.findall(r"\d[\d.,:]*|[A-Za-z][A-Za-z'.\-]*|[^\d]", text)
     rows, cur, cur_w = [], [], 0.0
     for tok in tokens:

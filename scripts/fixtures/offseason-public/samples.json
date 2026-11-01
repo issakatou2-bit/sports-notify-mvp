@@ -1,0 +1,1100 @@
+[
+  {
+    "sample": "a_schedule",
+    "spec": {
+      "key": "offseason_schedule_2026_35b4bc2c79e5",
+      "label": "MLBオフの1週間の予定",
+      "heading": "MLBオフの1週間の予定",
+      "kind_label": "MLB",
+      "data_credit": "MLB.com",
+      "v3": {
+        "source": "出典: MLB.com / 日付は米東部"
+      },
+      "hook": "MLBオフの1週間の予定",
+      "intro": "この先1週間のMLBオフの予定です。日付はすべてアメリカ東部の日付でお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式｜日付は米東部",
+      "source_url": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+      "items": [
+        [
+          "11月1日｜ゴールドグラブ発表",
+          "11月1日、ゴールドグラブ賞の受賞者が発表される予定です"
+        ],
+        [
+          "11月2日｜主要賞の最終候補",
+          "11月2日、MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です"
+        ],
+        [
+          "11月2日｜全球団との交渉解禁",
+          "11月2日、FA選手と全球団との交渉が解禁される予定です"
+        ],
+        [
+          "11月2日｜QOの提示期限",
+          "11月2日、クオリファイング・オファーの提示期限は米東部の午後5時です"
+        ]
+      ],
+      "offseason": {
+        "kind": "schedule",
+        "day": "2026-11-01",
+        "season": 2026,
+        "events": [
+          {
+            "id": "gold-glove",
+            "date_et": "2026-11-01",
+            "label": "ゴールドグラブ発表",
+            "text": "ゴールドグラブ賞の受賞者が発表される予定です",
+            "source": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+            "event_id": "calendar:gold-glove",
+            "head": "11月1日｜ゴールドグラブ発表",
+            "body": "11月1日、ゴールドグラブ賞の受賞者が発表される予定です",
+            "japanese": false
+          },
+          {
+            "id": "finalists",
+            "date_et": "2026-11-02",
+            "label": "主要賞の最終候補",
+            "text": "MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:finalists",
+            "head": "11月2日｜主要賞の最終候補",
+            "body": "11月2日、MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です",
+            "japanese": false
+          },
+          {
+            "id": "free-agency",
+            "date_et": "2026-11-02",
+            "label": "全球団との交渉解禁",
+            "text": "FA選手と全球団との交渉が解禁される予定です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:free-agency",
+            "head": "11月2日｜全球団との交渉解禁",
+            "body": "11月2日、FA選手と全球団との交渉が解禁される予定です",
+            "japanese": false
+          },
+          {
+            "id": "qo-offer",
+            "date_et": "2026-11-02",
+            "label": "QOの提示期限",
+            "text": "クオリファイング・オファーの提示期限は米東部の午後5時です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:qo-offer",
+            "head": "11月2日｜QOの提示期限",
+            "body": "11月2日、クオリファイング・オファーの提示期限は米東部の午後5時です",
+            "japanese": false
+          }
+        ]
+      }
+    },
+    "narration": {
+      "label": "MLBオフの1週間の予定",
+      "segments": [
+        {
+          "kind": "intro",
+          "text": "この先1週間のMLBオフの予定です。日付はすべてアメリカ東部の日付でお伝えします。",
+          "meta": {},
+          "speaker": 2
+        },
+        {
+          "kind": "list",
+          "text": "11月1日、ゴールドグラブ賞の受賞者が発表される予定です。11月2日、MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です。",
+          "meta": {
+            "topic": "offseason_schedule_2026_35b4bc2c79e5",
+            "start": 0,
+            "count": 2
+          },
+          "speaker": 2
+        },
+        {
+          "kind": "list",
+          "text": "11月2日、FA選手と全球団との交渉が解禁される予定です。11月2日、クオリファイング・オファーの提示期限は米東部の午後5時です。",
+          "meta": {
+            "topic": "offseason_schedule_2026_35b4bc2c79e5",
+            "start": 2,
+            "count": 2
+          },
+          "speaker": 2
+        },
+        {
+          "kind": "outro",
+          "text": "コレスポでは、オフの動きを公式の記録で追っています。チャンネル登録して、また見に来てくださいね。",
+          "meta": {},
+          "speaker": 2
+        }
+      ],
+      "sanity_materials": [
+        {
+          "source": "generation.asset",
+          "source_url": "MLB公式｜日付は米東部",
+          "topic": "offseason_schedule_2026_35b4bc2c79e5",
+          "facts": [
+            {
+              "label": "11月1日｜ゴールドグラブ発表",
+              "text": "11月1日、ゴールドグラブ賞の受賞者が発表される予定です"
+            },
+            {
+              "label": "11月2日｜主要賞の最終候補",
+              "text": "11月2日、MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です"
+            },
+            {
+              "label": "11月2日｜全球団との交渉解禁",
+              "text": "11月2日、FA選手と全球団との交渉が解禁される予定です"
+            },
+            {
+              "label": "11月2日｜QOの提示期限",
+              "text": "11月2日、クオリファイング・オファーの提示期限は米東部の午後5時です"
+            }
+          ],
+          "supplementary_sources": null
+        },
+        {
+          "source": "MLB公式・オフ",
+          "source_url": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+          "offseason": {
+            "kind": "schedule",
+            "day": "2026-11-01",
+            "season": 2026,
+            "events": [
+              {
+                "id": "gold-glove",
+                "date_et": "2026-11-01",
+                "label": "ゴールドグラブ発表",
+                "text": "ゴールドグラブ賞の受賞者が発表される予定です",
+                "source": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+                "event_id": "calendar:gold-glove",
+                "head": "11月1日｜ゴールドグラブ発表",
+                "body": "11月1日、ゴールドグラブ賞の受賞者が発表される予定です",
+                "japanese": false
+              },
+              {
+                "id": "finalists",
+                "date_et": "2026-11-02",
+                "label": "主要賞の最終候補",
+                "text": "MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です",
+                "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+                "event_id": "calendar:finalists",
+                "head": "11月2日｜主要賞の最終候補",
+                "body": "11月2日、MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です",
+                "japanese": false
+              },
+              {
+                "id": "free-agency",
+                "date_et": "2026-11-02",
+                "label": "全球団との交渉解禁",
+                "text": "FA選手と全球団との交渉が解禁される予定です",
+                "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+                "event_id": "calendar:free-agency",
+                "head": "11月2日｜全球団との交渉解禁",
+                "body": "11月2日、FA選手と全球団との交渉が解禁される予定です",
+                "japanese": false
+              },
+              {
+                "id": "qo-offer",
+                "date_et": "2026-11-02",
+                "label": "QOの提示期限",
+                "text": "クオリファイング・オファーの提示期限は米東部の午後5時です",
+                "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+                "event_id": "calendar:qo-offer",
+                "head": "11月2日｜QOの提示期限",
+                "body": "11月2日、クオリファイング・オファーの提示期限は米東部の午後5時です",
+                "japanese": false
+              }
+            ]
+          },
+          "facts": [
+            {
+              "label": "11月1日｜ゴールドグラブ発表",
+              "text": "11月1日、ゴールドグラブ賞の受賞者が発表される予定です",
+              "source_url": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+              "raw": null
+            },
+            {
+              "label": "11月2日｜主要賞の最終候補",
+              "text": "11月2日、MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です",
+              "source_url": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+              "raw": null
+            },
+            {
+              "label": "11月2日｜全球団との交渉解禁",
+              "text": "11月2日、FA選手と全球団との交渉が解禁される予定です",
+              "source_url": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+              "raw": null
+            },
+            {
+              "label": "11月2日｜QOの提示期限",
+              "text": "11月2日、クオリファイング・オファーの提示期限は米東部の午後5時です",
+              "source_url": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+              "raw": null
+            }
+          ]
+        }
+      ],
+      "offseason": {
+        "kind": "schedule",
+        "day": "2026-11-01",
+        "season": 2026,
+        "events": [
+          {
+            "id": "gold-glove",
+            "date_et": "2026-11-01",
+            "label": "ゴールドグラブ発表",
+            "text": "ゴールドグラブ賞の受賞者が発表される予定です",
+            "source": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+            "event_id": "calendar:gold-glove",
+            "head": "11月1日｜ゴールドグラブ発表",
+            "body": "11月1日、ゴールドグラブ賞の受賞者が発表される予定です",
+            "japanese": false
+          },
+          {
+            "id": "finalists",
+            "date_et": "2026-11-02",
+            "label": "主要賞の最終候補",
+            "text": "MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:finalists",
+            "head": "11月2日｜主要賞の最終候補",
+            "body": "11月2日、MVP、サイ・ヤング、新人王、監督、救援の各賞の最終候補が発表される予定です",
+            "japanese": false
+          },
+          {
+            "id": "free-agency",
+            "date_et": "2026-11-02",
+            "label": "全球団との交渉解禁",
+            "text": "FA選手と全球団との交渉が解禁される予定です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:free-agency",
+            "head": "11月2日｜全球団との交渉解禁",
+            "body": "11月2日、FA選手と全球団との交渉が解禁される予定です",
+            "japanese": false
+          },
+          {
+            "id": "qo-offer",
+            "date_et": "2026-11-02",
+            "label": "QOの提示期限",
+            "text": "クオリファイング・オファーの提示期限は米東部の午後5時です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:qo-offer",
+            "head": "11月2日｜QOの提示期限",
+            "body": "11月2日、クオリファイング・オファーの提示期限は米東部の午後5時です",
+            "japanese": false
+          }
+        ]
+      },
+      "sanity_date_jst": "2026-11-01"
+    }
+  },
+  {
+    "sample": "b_awards_2025",
+    "spec": {
+      "key": "offseason_awards_2025_15df6b3c31fe",
+      "label": "2025年のMLB表彰の見本",
+      "heading": "2025年のMLB表彰の見本",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB.com/awards/2025 / 過年度見本"
+      },
+      "hook": "2025年の受賞結果",
+      "intro": "これは2025年のMLB表彰を使った動作見本です。2026年の受賞結果ではありません。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 2025年の受賞結果",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/NLMVP/recipients?season=2025",
+      "items": [
+        [
+          "大谷翔平｜ナ・リーグMVP",
+          "大谷翔平は2025年のナ・リーグMVPを受賞しました"
+        ],
+        [
+          "タリク・スクーバル｜ア・リーグのサイ・ヤング賞",
+          "タリク・スクーバルは2025年のア・リーグのサイ・ヤング賞を受賞しました"
+        ],
+        [
+          "アーロン・ジャッジ｜ア・リーグMVP",
+          "アーロン・ジャッジは2025年のア・リーグMVPを受賞しました"
+        ],
+        [
+          "ポール・スキーンズ｜ナ・リーグのサイ・ヤング賞",
+          "ポール・スキーンズは2025年のナ・リーグのサイ・ヤング賞を受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-01",
+        "season": 2025,
+        "events": [
+          {
+            "event_id": "award:2025:NLMVP:660271:winner",
+            "head": "大谷翔平｜ナ・リーグMVP",
+            "body": "大谷翔平は2025年のナ・リーグMVPを受賞しました",
+            "name": "大谷翔平",
+            "japanese": true,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLMVP/recipients?season=2025",
+            "raw": {
+              "season": "2025",
+              "rank": 1,
+              "player": {
+                "id": 660271,
+                "name": "Shohei Ohtani"
+              }
+            }
+          },
+          {
+            "event_id": "award:2025:ALCY:669373:winner",
+            "head": "タリク・スクーバル｜ア・リーグのサイ・ヤング賞",
+            "body": "タリク・スクーバルは2025年のア・リーグのサイ・ヤング賞を受賞しました",
+            "name": "タリク・スクーバル",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALCY/recipients?season=2025",
+            "raw": {
+              "season": "2025",
+              "rank": 1,
+              "player": {
+                "id": 669373,
+                "name": "Tarik Skubal"
+              }
+            }
+          },
+          {
+            "event_id": "award:2025:ALMVP:592450:winner",
+            "head": "アーロン・ジャッジ｜ア・リーグMVP",
+            "body": "アーロン・ジャッジは2025年のア・リーグMVPを受賞しました",
+            "name": "アーロン・ジャッジ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALMVP/recipients?season=2025",
+            "raw": {
+              "season": "2025",
+              "rank": 1,
+              "player": {
+                "id": 592450,
+                "name": "Aaron Judge"
+              }
+            }
+          },
+          {
+            "event_id": "award:2025:NLCY:694973:winner",
+            "head": "ポール・スキーンズ｜ナ・リーグのサイ・ヤング賞",
+            "body": "ポール・スキーンズは2025年のナ・リーグのサイ・ヤング賞を受賞しました",
+            "name": "ポール・スキーンズ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLCY/recipients?season=2025",
+            "raw": {
+              "season": "2025",
+              "rank": 1,
+              "player": {
+                "id": 694973,
+                "name": "Paul Skenes"
+              }
+            }
+          }
+        ]
+      },
+      "offseason_sample": true
+    },
+    "narration": {
+      "label": "2025年のMLB表彰の見本",
+      "segments": [
+        {
+          "kind": "intro",
+          "text": "これは2025年のMLB表彰を使った動作見本です。2026年の受賞結果ではありません。",
+          "meta": {},
+          "speaker": 2
+        },
+        {
+          "kind": "list",
+          "text": "大谷翔平は2025年のナ・リーグMVPを受賞しました。タリク・スクーバルは2025年のア・リーグのサイ・ヤング賞を受賞しました。",
+          "meta": {
+            "topic": "offseason_awards_2025_15df6b3c31fe",
+            "start": 0,
+            "count": 2
+          },
+          "speaker": 2
+        },
+        {
+          "kind": "list",
+          "text": "アーロン・ジャッジは2025年のア・リーグMVPを受賞しました。ポール・スキーンズは2025年のナ・リーグのサイ・ヤング賞を受賞しました。",
+          "meta": {
+            "topic": "offseason_awards_2025_15df6b3c31fe",
+            "start": 2,
+            "count": 2
+          },
+          "speaker": 2
+        },
+        {
+          "kind": "outro",
+          "text": "コレスポでは、オフの動きを公式の記録で追っています。チャンネル登録して、また見に来てくださいね。",
+          "meta": {},
+          "speaker": 2
+        }
+      ],
+      "sanity_materials": [
+        {
+          "source": "generation.asset",
+          "source_url": "MLB公式 / 2025年の受賞結果",
+          "topic": "offseason_awards_2025_15df6b3c31fe",
+          "facts": [
+            {
+              "label": "大谷翔平｜ナ・リーグMVP",
+              "text": "大谷翔平は2025年のナ・リーグMVPを受賞しました"
+            },
+            {
+              "label": "タリク・スクーバル｜ア・リーグのサイ・ヤング賞",
+              "text": "タリク・スクーバルは2025年のア・リーグのサイ・ヤング賞を受賞しました"
+            },
+            {
+              "label": "アーロン・ジャッジ｜ア・リーグMVP",
+              "text": "アーロン・ジャッジは2025年のア・リーグMVPを受賞しました"
+            },
+            {
+              "label": "ポール・スキーンズ｜ナ・リーグのサイ・ヤング賞",
+              "text": "ポール・スキーンズは2025年のナ・リーグのサイ・ヤング賞を受賞しました"
+            }
+          ],
+          "supplementary_sources": null
+        },
+        {
+          "source": "MLB公式・オフ",
+          "source_url": "https://statsapi.mlb.com/api/v1/awards/NLMVP/recipients?season=2025",
+          "offseason": {
+            "kind": "awards",
+            "day": "2026-11-01",
+            "season": 2025,
+            "events": [
+              {
+                "event_id": "award:2025:NLMVP:660271:winner",
+                "head": "大谷翔平｜ナ・リーグMVP",
+                "body": "大谷翔平は2025年のナ・リーグMVPを受賞しました",
+                "name": "大谷翔平",
+                "japanese": true,
+                "source": "https://statsapi.mlb.com/api/v1/awards/NLMVP/recipients?season=2025",
+                "raw": {
+                  "season": "2025",
+                  "rank": 1,
+                  "player": {
+                    "id": 660271,
+                    "name": "Shohei Ohtani"
+                  }
+                }
+              },
+              {
+                "event_id": "award:2025:ALCY:669373:winner",
+                "head": "タリク・スクーバル｜ア・リーグのサイ・ヤング賞",
+                "body": "タリク・スクーバルは2025年のア・リーグのサイ・ヤング賞を受賞しました",
+                "name": "タリク・スクーバル",
+                "japanese": false,
+                "source": "https://statsapi.mlb.com/api/v1/awards/ALCY/recipients?season=2025",
+                "raw": {
+                  "season": "2025",
+                  "rank": 1,
+                  "player": {
+                    "id": 669373,
+                    "name": "Tarik Skubal"
+                  }
+                }
+              },
+              {
+                "event_id": "award:2025:ALMVP:592450:winner",
+                "head": "アーロン・ジャッジ｜ア・リーグMVP",
+                "body": "アーロン・ジャッジは2025年のア・リーグMVPを受賞しました",
+                "name": "アーロン・ジャッジ",
+                "japanese": false,
+                "source": "https://statsapi.mlb.com/api/v1/awards/ALMVP/recipients?season=2025",
+                "raw": {
+                  "season": "2025",
+                  "rank": 1,
+                  "player": {
+                    "id": 592450,
+                    "name": "Aaron Judge"
+                  }
+                }
+              },
+              {
+                "event_id": "award:2025:NLCY:694973:winner",
+                "head": "ポール・スキーンズ｜ナ・リーグのサイ・ヤング賞",
+                "body": "ポール・スキーンズは2025年のナ・リーグのサイ・ヤング賞を受賞しました",
+                "name": "ポール・スキーンズ",
+                "japanese": false,
+                "source": "https://statsapi.mlb.com/api/v1/awards/NLCY/recipients?season=2025",
+                "raw": {
+                  "season": "2025",
+                  "rank": 1,
+                  "player": {
+                    "id": 694973,
+                    "name": "Paul Skenes"
+                  }
+                }
+              }
+            ]
+          },
+          "facts": [
+            {
+              "label": "大谷翔平｜ナ・リーグMVP",
+              "text": "大谷翔平は2025年のナ・リーグMVPを受賞しました",
+              "source_url": "https://statsapi.mlb.com/api/v1/awards/NLMVP/recipients?season=2025",
+              "raw": {
+                "season": "2025",
+                "rank": 1,
+                "player": {
+                  "id": 660271,
+                  "name": "Shohei Ohtani"
+                }
+              }
+            },
+            {
+              "label": "タリク・スクーバル｜ア・リーグのサイ・ヤング賞",
+              "text": "タリク・スクーバルは2025年のア・リーグのサイ・ヤング賞を受賞しました",
+              "source_url": "https://statsapi.mlb.com/api/v1/awards/ALCY/recipients?season=2025",
+              "raw": {
+                "season": "2025",
+                "rank": 1,
+                "player": {
+                  "id": 669373,
+                  "name": "Tarik Skubal"
+                }
+              }
+            },
+            {
+              "label": "アーロン・ジャッジ｜ア・リーグMVP",
+              "text": "アーロン・ジャッジは2025年のア・リーグMVPを受賞しました",
+              "source_url": "https://statsapi.mlb.com/api/v1/awards/ALMVP/recipients?season=2025",
+              "raw": {
+                "season": "2025",
+                "rank": 1,
+                "player": {
+                  "id": 592450,
+                  "name": "Aaron Judge"
+                }
+              }
+            },
+            {
+              "label": "ポール・スキーンズ｜ナ・リーグのサイ・ヤング賞",
+              "text": "ポール・スキーンズは2025年のナ・リーグのサイ・ヤング賞を受賞しました",
+              "source_url": "https://statsapi.mlb.com/api/v1/awards/NLCY/recipients?season=2025",
+              "raw": {
+                "season": "2025",
+                "rank": 1,
+                "player": {
+                  "id": 694973,
+                  "name": "Paul Skenes"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-01",
+        "season": 2025,
+        "events": [
+          {
+            "event_id": "award:2025:NLMVP:660271:winner",
+            "head": "大谷翔平｜ナ・リーグMVP",
+            "body": "大谷翔平は2025年のナ・リーグMVPを受賞しました",
+            "name": "大谷翔平",
+            "japanese": true,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLMVP/recipients?season=2025",
+            "raw": {
+              "season": "2025",
+              "rank": 1,
+              "player": {
+                "id": 660271,
+                "name": "Shohei Ohtani"
+              }
+            }
+          },
+          {
+            "event_id": "award:2025:ALCY:669373:winner",
+            "head": "タリク・スクーバル｜ア・リーグのサイ・ヤング賞",
+            "body": "タリク・スクーバルは2025年のア・リーグのサイ・ヤング賞を受賞しました",
+            "name": "タリク・スクーバル",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALCY/recipients?season=2025",
+            "raw": {
+              "season": "2025",
+              "rank": 1,
+              "player": {
+                "id": 669373,
+                "name": "Tarik Skubal"
+              }
+            }
+          },
+          {
+            "event_id": "award:2025:ALMVP:592450:winner",
+            "head": "アーロン・ジャッジ｜ア・リーグMVP",
+            "body": "アーロン・ジャッジは2025年のア・リーグMVPを受賞しました",
+            "name": "アーロン・ジャッジ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALMVP/recipients?season=2025",
+            "raw": {
+              "season": "2025",
+              "rank": 1,
+              "player": {
+                "id": 592450,
+                "name": "Aaron Judge"
+              }
+            }
+          },
+          {
+            "event_id": "award:2025:NLCY:694973:winner",
+            "head": "ポール・スキーンズ｜ナ・リーグのサイ・ヤング賞",
+            "body": "ポール・スキーンズは2025年のナ・リーグのサイ・ヤング賞を受賞しました",
+            "name": "ポール・スキーンズ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLCY/recipients?season=2025",
+            "raw": {
+              "season": "2025",
+              "rank": 1,
+              "player": {
+                "id": 694973,
+                "name": "Paul Skenes"
+              }
+            }
+          }
+        ]
+      },
+      "offseason_sample": true,
+      "sanity_date_jst": "2026-11-01"
+    }
+  },
+  {
+    "sample": "c_transactions_2025",
+    "spec": {
+      "key": "offseason_transactions_2025_93db314f1eb3",
+      "label": "2025年オフのFA宣言とFA契約の見本",
+      "heading": "2025年オフのFA宣言とFA契約の見本",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB Stats API / 2025年10〜12月"
+      },
+      "hook": "2025年オフのFA宣言とFA契約の見本",
+      "intro": "これは2025年のMLB公式取引記録を使った過年度見本です。今年の移籍情報ではありません。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 2025年オフの過年度見本",
+      "source_url": "https://statsapi.mlb.com/api/v1/transactions?playerId=608372&startDate=2025-10-29&endDate=2025-12-21",
+      "items": [
+        [
+          "菅野智之｜FA宣言",
+          "菅野智之はオリオールズからFAを宣言しました"
+        ],
+        [
+          "今永昇太｜FA宣言",
+          "今永昇太はカブスからFAを宣言しました"
+        ],
+        [
+          "村上宗隆｜FA契約",
+          "村上宗隆はホワイトソックスとFA契約を結びました"
+        ]
+      ],
+      "offseason": {
+        "kind": "transactions",
+        "day": "2025-12-21",
+        "season": 2025,
+        "events": [
+          {
+            "event_id": "transaction:874305",
+            "head": "菅野智之｜FA宣言",
+            "body": "菅野智之はオリオールズからFAを宣言しました",
+            "name": "菅野智之",
+            "japanese": true,
+            "raw": {
+              "id": 874305,
+              "person": {
+                "id": 608372,
+                "fullName": "Tomoyuki Sugano",
+                "link": "/api/v1/people/608372"
+              },
+              "toTeam": {
+                "id": 110,
+                "name": "Baltimore Orioles",
+                "link": "/api/v1/teams/110"
+              },
+              "date": "2025-11-02",
+              "effectiveDate": "2025-11-02",
+              "resolutionDate": "2025-11-02",
+              "typeCode": "DFA",
+              "typeDesc": "Declared Free Agency",
+              "description": "RHP Tomoyuki Sugano elected free agency."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=608372&startDate=2025-10-29&endDate=2025-12-21"
+          },
+          {
+            "event_id": "transaction:874679",
+            "head": "今永昇太｜FA宣言",
+            "body": "今永昇太はカブスからFAを宣言しました",
+            "name": "今永昇太",
+            "japanese": true,
+            "raw": {
+              "id": 874679,
+              "person": {
+                "id": 684007,
+                "fullName": "Shota Imanaga",
+                "link": "/api/v1/people/684007"
+              },
+              "toTeam": {
+                "id": 112,
+                "name": "Chicago Cubs",
+                "link": "/api/v1/teams/112"
+              },
+              "date": "2025-11-04",
+              "effectiveDate": "2025-11-04",
+              "resolutionDate": "2025-11-04",
+              "typeCode": "DFA",
+              "typeDesc": "Declared Free Agency",
+              "description": "LHP Shota Imanaga elected free agency."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=684007&startDate=2025-10-29&endDate=2025-12-21"
+          },
+          {
+            "event_id": "transaction:879420",
+            "head": "村上宗隆｜FA契約",
+            "body": "村上宗隆はホワイトソックスとFA契約を結びました",
+            "name": "村上宗隆",
+            "japanese": true,
+            "raw": {
+              "id": 879420,
+              "person": {
+                "id": 808959,
+                "fullName": "Munetaka Murakami",
+                "link": "/api/v1/people/808959"
+              },
+              "toTeam": {
+                "id": 145,
+                "name": "Chicago White Sox",
+                "link": "/api/v1/teams/145"
+              },
+              "date": "2025-12-21",
+              "effectiveDate": "2025-12-21",
+              "resolutionDate": "2025-12-21",
+              "typeCode": "SFA",
+              "typeDesc": "Signed as Free Agent",
+              "description": "Chicago White Sox signed free agent IF Munetaka Murakami."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=808959&startDate=2025-10-29&endDate=2025-12-21"
+          }
+        ],
+        "window_start": "2025-10-29"
+      },
+      "offseason_sample": true
+    },
+    "narration": {
+      "label": "2025年オフのFA宣言とFA契約の見本",
+      "segments": [
+        {
+          "kind": "intro",
+          "text": "これは2025年のMLB公式取引記録を使った過年度見本です。今年の移籍情報ではありません。",
+          "meta": {},
+          "speaker": 2
+        },
+        {
+          "kind": "list",
+          "text": "菅野智之はオリオールズからFAを宣言しました。今永昇太はカブスからFAを宣言しました。",
+          "meta": {
+            "topic": "offseason_transactions_2025_93db314f1eb3",
+            "start": 0,
+            "count": 2
+          },
+          "speaker": 2
+        },
+        {
+          "kind": "list",
+          "text": "村上宗隆はホワイトソックスとFA契約を結びました。",
+          "meta": {
+            "topic": "offseason_transactions_2025_93db314f1eb3",
+            "start": 2,
+            "count": 1
+          },
+          "speaker": 2
+        },
+        {
+          "kind": "outro",
+          "text": "コレスポでは、オフの動きを公式の記録で追っています。チャンネル登録して、また見に来てくださいね。",
+          "meta": {},
+          "speaker": 2
+        }
+      ],
+      "sanity_materials": [
+        {
+          "source": "generation.asset",
+          "source_url": "MLB公式 / 2025年オフの過年度見本",
+          "topic": "offseason_transactions_2025_93db314f1eb3",
+          "facts": [
+            {
+              "label": "菅野智之｜FA宣言",
+              "text": "菅野智之はオリオールズからFAを宣言しました"
+            },
+            {
+              "label": "今永昇太｜FA宣言",
+              "text": "今永昇太はカブスからFAを宣言しました"
+            },
+            {
+              "label": "村上宗隆｜FA契約",
+              "text": "村上宗隆はホワイトソックスとFA契約を結びました"
+            }
+          ],
+          "supplementary_sources": null
+        },
+        {
+          "source": "MLB公式・オフ",
+          "source_url": "https://statsapi.mlb.com/api/v1/transactions?playerId=608372&startDate=2025-10-29&endDate=2025-12-21",
+          "offseason": {
+            "kind": "transactions",
+            "day": "2025-12-21",
+            "season": 2025,
+            "events": [
+              {
+                "event_id": "transaction:874305",
+                "head": "菅野智之｜FA宣言",
+                "body": "菅野智之はオリオールズからFAを宣言しました",
+                "name": "菅野智之",
+                "japanese": true,
+                "raw": {
+                  "id": 874305,
+                  "person": {
+                    "id": 608372,
+                    "fullName": "Tomoyuki Sugano",
+                    "link": "/api/v1/people/608372"
+                  },
+                  "toTeam": {
+                    "id": 110,
+                    "name": "Baltimore Orioles",
+                    "link": "/api/v1/teams/110"
+                  },
+                  "date": "2025-11-02",
+                  "effectiveDate": "2025-11-02",
+                  "resolutionDate": "2025-11-02",
+                  "typeCode": "DFA",
+                  "typeDesc": "Declared Free Agency",
+                  "description": "RHP Tomoyuki Sugano elected free agency."
+                },
+                "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=608372&startDate=2025-10-29&endDate=2025-12-21"
+              },
+              {
+                "event_id": "transaction:874679",
+                "head": "今永昇太｜FA宣言",
+                "body": "今永昇太はカブスからFAを宣言しました",
+                "name": "今永昇太",
+                "japanese": true,
+                "raw": {
+                  "id": 874679,
+                  "person": {
+                    "id": 684007,
+                    "fullName": "Shota Imanaga",
+                    "link": "/api/v1/people/684007"
+                  },
+                  "toTeam": {
+                    "id": 112,
+                    "name": "Chicago Cubs",
+                    "link": "/api/v1/teams/112"
+                  },
+                  "date": "2025-11-04",
+                  "effectiveDate": "2025-11-04",
+                  "resolutionDate": "2025-11-04",
+                  "typeCode": "DFA",
+                  "typeDesc": "Declared Free Agency",
+                  "description": "LHP Shota Imanaga elected free agency."
+                },
+                "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=684007&startDate=2025-10-29&endDate=2025-12-21"
+              },
+              {
+                "event_id": "transaction:879420",
+                "head": "村上宗隆｜FA契約",
+                "body": "村上宗隆はホワイトソックスとFA契約を結びました",
+                "name": "村上宗隆",
+                "japanese": true,
+                "raw": {
+                  "id": 879420,
+                  "person": {
+                    "id": 808959,
+                    "fullName": "Munetaka Murakami",
+                    "link": "/api/v1/people/808959"
+                  },
+                  "toTeam": {
+                    "id": 145,
+                    "name": "Chicago White Sox",
+                    "link": "/api/v1/teams/145"
+                  },
+                  "date": "2025-12-21",
+                  "effectiveDate": "2025-12-21",
+                  "resolutionDate": "2025-12-21",
+                  "typeCode": "SFA",
+                  "typeDesc": "Signed as Free Agent",
+                  "description": "Chicago White Sox signed free agent IF Munetaka Murakami."
+                },
+                "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=808959&startDate=2025-10-29&endDate=2025-12-21"
+              }
+            ],
+            "window_start": "2025-10-29"
+          },
+          "facts": [
+            {
+              "label": "菅野智之｜FA宣言",
+              "text": "菅野智之はオリオールズからFAを宣言しました",
+              "source_url": "https://statsapi.mlb.com/api/v1/transactions?playerId=608372&startDate=2025-10-29&endDate=2025-12-21",
+              "raw": {
+                "id": 874305,
+                "person": {
+                  "id": 608372,
+                  "fullName": "Tomoyuki Sugano",
+                  "link": "/api/v1/people/608372"
+                },
+                "toTeam": {
+                  "id": 110,
+                  "name": "Baltimore Orioles",
+                  "link": "/api/v1/teams/110"
+                },
+                "date": "2025-11-02",
+                "effectiveDate": "2025-11-02",
+                "resolutionDate": "2025-11-02",
+                "typeCode": "DFA",
+                "typeDesc": "Declared Free Agency",
+                "description": "RHP Tomoyuki Sugano elected free agency."
+              }
+            },
+            {
+              "label": "今永昇太｜FA宣言",
+              "text": "今永昇太はカブスからFAを宣言しました",
+              "source_url": "https://statsapi.mlb.com/api/v1/transactions?playerId=684007&startDate=2025-10-29&endDate=2025-12-21",
+              "raw": {
+                "id": 874679,
+                "person": {
+                  "id": 684007,
+                  "fullName": "Shota Imanaga",
+                  "link": "/api/v1/people/684007"
+                },
+                "toTeam": {
+                  "id": 112,
+                  "name": "Chicago Cubs",
+                  "link": "/api/v1/teams/112"
+                },
+                "date": "2025-11-04",
+                "effectiveDate": "2025-11-04",
+                "resolutionDate": "2025-11-04",
+                "typeCode": "DFA",
+                "typeDesc": "Declared Free Agency",
+                "description": "LHP Shota Imanaga elected free agency."
+              }
+            },
+            {
+              "label": "村上宗隆｜FA契約",
+              "text": "村上宗隆はホワイトソックスとFA契約を結びました",
+              "source_url": "https://statsapi.mlb.com/api/v1/transactions?playerId=808959&startDate=2025-10-29&endDate=2025-12-21",
+              "raw": {
+                "id": 879420,
+                "person": {
+                  "id": 808959,
+                  "fullName": "Munetaka Murakami",
+                  "link": "/api/v1/people/808959"
+                },
+                "toTeam": {
+                  "id": 145,
+                  "name": "Chicago White Sox",
+                  "link": "/api/v1/teams/145"
+                },
+                "date": "2025-12-21",
+                "effectiveDate": "2025-12-21",
+                "resolutionDate": "2025-12-21",
+                "typeCode": "SFA",
+                "typeDesc": "Signed as Free Agent",
+                "description": "Chicago White Sox signed free agent IF Munetaka Murakami."
+              }
+            }
+          ]
+        }
+      ],
+      "offseason": {
+        "kind": "transactions",
+        "day": "2025-12-21",
+        "season": 2025,
+        "events": [
+          {
+            "event_id": "transaction:874305",
+            "head": "菅野智之｜FA宣言",
+            "body": "菅野智之はオリオールズからFAを宣言しました",
+            "name": "菅野智之",
+            "japanese": true,
+            "raw": {
+              "id": 874305,
+              "person": {
+                "id": 608372,
+                "fullName": "Tomoyuki Sugano",
+                "link": "/api/v1/people/608372"
+              },
+              "toTeam": {
+                "id": 110,
+                "name": "Baltimore Orioles",
+                "link": "/api/v1/teams/110"
+              },
+              "date": "2025-11-02",
+              "effectiveDate": "2025-11-02",
+              "resolutionDate": "2025-11-02",
+              "typeCode": "DFA",
+              "typeDesc": "Declared Free Agency",
+              "description": "RHP Tomoyuki Sugano elected free agency."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=608372&startDate=2025-10-29&endDate=2025-12-21"
+          },
+          {
+            "event_id": "transaction:874679",
+            "head": "今永昇太｜FA宣言",
+            "body": "今永昇太はカブスからFAを宣言しました",
+            "name": "今永昇太",
+            "japanese": true,
+            "raw": {
+              "id": 874679,
+              "person": {
+                "id": 684007,
+                "fullName": "Shota Imanaga",
+                "link": "/api/v1/people/684007"
+              },
+              "toTeam": {
+                "id": 112,
+                "name": "Chicago Cubs",
+                "link": "/api/v1/teams/112"
+              },
+              "date": "2025-11-04",
+              "effectiveDate": "2025-11-04",
+              "resolutionDate": "2025-11-04",
+              "typeCode": "DFA",
+              "typeDesc": "Declared Free Agency",
+              "description": "LHP Shota Imanaga elected free agency."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=684007&startDate=2025-10-29&endDate=2025-12-21"
+          },
+          {
+            "event_id": "transaction:879420",
+            "head": "村上宗隆｜FA契約",
+            "body": "村上宗隆はホワイトソックスとFA契約を結びました",
+            "name": "村上宗隆",
+            "japanese": true,
+            "raw": {
+              "id": 879420,
+              "person": {
+                "id": 808959,
+                "fullName": "Munetaka Murakami",
+                "link": "/api/v1/people/808959"
+              },
+              "toTeam": {
+                "id": 145,
+                "name": "Chicago White Sox",
+                "link": "/api/v1/teams/145"
+              },
+              "date": "2025-12-21",
+              "effectiveDate": "2025-12-21",
+              "resolutionDate": "2025-12-21",
+              "typeCode": "SFA",
+              "typeDesc": "Signed as Free Agent",
+              "description": "Chicago White Sox signed free agent IF Munetaka Murakami."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=808959&startDate=2025-10-29&endDate=2025-12-21"
+          }
+        ],
+        "window_start": "2025-10-29"
+      },
+      "offseason_sample": true,
+      "sanity_date_jst": "2025-12-21"
+    }
+  }
+]
