@@ -222,7 +222,7 @@ def pick_season(args) -> int:
                                              kinds={"season"}, count=True))
     todo = sorted((k for k, v in gav.LIST_TOPICS.items()
                    if kind_of(k) == "season" and k not in done and not started(v)
-                   and not asset_policy.paused(k)),
+                   and asset_policy.selectable(k, v)),
                   key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
     import player_publications as publications
     ledgers = publications.load(assets_path=args.published)
@@ -285,7 +285,7 @@ def main() -> int:
     import player_publications as publications
     ledgers = publications.load(assets_path=args.published)
     todo = sorted(k for k in gav.LIST_TOPICS if k not in done
-                  and not asset_policy.paused(k)
+                  and asset_policy.selectable(k, gav.LIST_TOPICS[k])
                   and (not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)))
 
     # よく見られている種類から先に。まだ測れない種類は真ん中に置く

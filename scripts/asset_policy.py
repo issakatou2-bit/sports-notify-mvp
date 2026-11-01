@@ -29,6 +29,31 @@ def topic_catalog():
     return {**generated_topics.all_topics(), **topics}
 
 
+def selectable(topic, spec, names=None):
+    """自動選定は題に日本人名がある、公式RS成績の材料に限定する。"""
+    if paused(topic):
+        return False
+    if topic.startswith('offseason_'):
+        return True  # 別workflowの公式速報。本数は既存の専用枠。
+    if not spec:
+        return False
+    if names is None:
+        import json
+        from pathlib import Path
+        saved = json.loads(Path('data/season_topics.json').read_text(encoding='utf-8'))
+        names = {r['jp'] for r in saved.get('topics', []) if r.get('jp')}
+    title = spec.get('title') or spec.get('label', '')
+    if not any(name and name in title for name in names):
+        return False
+    source = spec.get('source', '')
+    regular = spec.get('game_type') == 'R' or (spec.get('season_stock') and 'レギュラーシーズン' in source)
+    if not regular or 'MLB Stats API' not in source:
+        return False
+    # 成績だけ。PS、順位表、球団の結末、Savantの評価を混ぜない。
+    forbidden = ('ポストシーズン', 'Statcast', 'Savant', '球団の結末', '順位表')
+    return not any(word in str(spec.get('items', [])) for word in forbidden)
+
+
 if __name__ == "__main__":
     import sys
     # ワークフローの明示指定にも同じ選択条件を適用する。
