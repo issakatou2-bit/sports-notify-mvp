@@ -190,7 +190,11 @@ def program(mode,data):
     if mode=='preview' and soccer_look.v5():
         import soccer_match_interest
         plan=soccer_match_interest.enrich_plan(plan)
-    return plan if mode=='race' else __import__('short_context').slots(plan, modern=soccer_look.v5())
+    plan = plan if mode=='race' else __import__('short_context').slots(plan, modern=soccer_look.v5())
+    import soccer_title_v2
+    if mode=='preview' and soccer_title_v2.enabled():
+        plan=soccer_title_v2.preview_plan(plan)
+    return plan
 
 
 def race_details(plan):
@@ -223,6 +227,10 @@ def race_details(plan):
 @motion.slot('soccer')
 def frame(t,seg,plan):
     if not enabled():raise ValueError('v3の描画は既存の入口を使う')
+    import soccer_title_v2
+    if soccer_title_v2.enabled() and seg['kind']=='cover' and seg['meta'].get('title_focus'):
+        return soccer_title_v2.headline_frame(t, seg['meta']['title_focus'], plan['clubs'], seg['meta'],
+            [s['meta'] for s in plan['narration']['segments'] if s['kind']=='preview'])
     if soccer_look.readable():
         import soccer_readable
         im=soccer_readable.slots_frame(t,seg,plan)

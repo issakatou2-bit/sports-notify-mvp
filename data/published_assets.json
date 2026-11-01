@@ -1094,6 +1094,50 @@
       "duration_seconds": 49.63,
       "short_information_count": 4,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_compare_2026_579328_608372": {
+      "video_id": "2WZP5sJpdSc",
+      "url": "https://youtu.be/2WZP5sJpdSc",
+      "privacy": "public",
+      "published_at": "2026-11-01T10:33:59.019346+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "player_ids": [
+        "579328",
+        "608372"
+      ],
+      "duration_seconds": 32.54,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_game_823818": {
+      "video_id": "WBAQ5zfGnvQ",
+      "url": "https://youtu.be/WBAQ5zfGnvQ",
+      "privacy": "public",
+      "published_at": "2026-11-01T10:38:21.971273+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "player_ids": [
+        "673540"
+      ],
+      "publish_at": "2026-11-01T13:00:00Z",
+      "duration_seconds": 37.25,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }

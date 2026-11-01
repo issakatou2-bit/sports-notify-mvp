@@ -174,7 +174,7 @@ def information(document, material=None):
             if kind in ('intro', 'roster', 'player-stats', 'followup') and not (kind == 'followup' and meta.get('score_only')):
                 people = game.get('players') or []
                 if kind == 'intro':
-                    people = people[:1]
+                    people = [p for p in people if p['name']==meta['player_detail']] if meta.get('title_focus_v2') and meta.get('player_detail') else people[:1]
                 if kind == 'player-stats':
                     people = people[meta.get('start', 0):meta.get('start', 0)+meta.get('count', 1)]
                 for person in people:
