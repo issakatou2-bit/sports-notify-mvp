@@ -209,7 +209,7 @@ class Screen:
         import soccer_title_v2
         # 題の結論は表紙の見出しに出す。別の試合の場面へ持ち越さない。
         head=(spec.get('title_focus') or {}).get('head','').split('｜')[0] if soccer_title_v2.enabled() else ''
-        title_bottom=self.lines(L,260,head,52,R-L) if head else 0
+        title_bottom=self.lines(L,260,head,52,R-L,role='supplement') if head else 0
         if not head:self.title('今日の注目カード' if len(specs)==1 else f'注目{len(specs)}試合')
         body_top=max(BODY_TOP,title_bottom+16)
         chips=self.focus_lines(hero)
