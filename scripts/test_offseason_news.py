@@ -177,6 +177,7 @@ class OffseasonTests(unittest.TestCase):
 
     def test_award_before_announcement_is_empty_but_other_errors_stop(self):
         import requests
+        from unittest.mock import Mock
         def failing(status):
             def fetch(path, **params):
                 raise requests.HTTPError(response=Mock(status_code=status))
