@@ -1152,6 +1152,27 @@ def _clip(jp: str, limit: int) -> str:
     return head
 
 
+def mlb_title_terms(text: str) -> list:
+    """実際の題・原稿にある名前だけを、既存の名簿で検索用に戻す。"""
+    import re
+    import press_names
+
+    terms = ["MLB"]
+    # 保存材料の訳語は名簿の「ブリュワーズ」と異なる。原綴りを残す。
+    if 'ブルワーズ' in text:
+        terms.append('ブルワーズ')
+    for full, aliases in ht.entities():
+        if any(ht.present(alias, text) for alias in aliases):
+            if full not in terms:
+                terms.append(full)
+    for full, surname in press_names.SURNAME.items():
+        # 題で既存の短縮表記になった選手もフルネームを保持する。
+        if re.search(re.escape(surname) + r"(?=[、。がはのにとを｜「」\s]|$)", text):
+            if full not in terms:
+                terms.append(full)
+    return terms
+
+
 def top_talked_team(path: str = "data/local_buzz.json") -> str:
     """現地で最も名前が挙がった球団。無ければ空。
 
@@ -1752,6 +1773,31 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             if _focus:
                 title = soccer_title_v2.title(_focus['head'], _focus['league'])
 
+    mlb_title_v2 = (os.environ.get('COLLESPO_MLB_TITLE_V2') == 'on'
+                    and kind == 'morning' and morning_mode in ('press', 'voices'))
+    mlb_search_terms = []
+    if mlb_title_v2:
+        original_title = title
+        if morning_mode == 'press':
+            # top_headline の句点・否定・次候補への処理をそのまま使う。
+            subject = head
+            title = f'「{head}」｜現地の報道 #Shorts' if head else 'MLB 現地の報道まとめ #Shorts'
+        else:
+            short_card = card.removesuffix('のハイライト')
+            subject = '｜'.join(x for x in (who, short_card) if x)
+            # 主題の言葉は材料のまま。説明だけを短い定型にする。
+            title = (f'{subject}に現地ファンの声 #Shorts' if subject
+                     else 'MLB公式ハイライトに現地ファンの声 #Shorts')
+        title = video_titles.public_title(title)
+        raw_subject = (head if morning_mode == 'press' else
+                       '｜'.join(x for x in (who, m.get('matchup_jp') or m.get('topic_jp')) if x))
+        narration_text = '\n'.join(str(s.get('text') or '') for s in
+                                    _json_or_empty(narration_path).get('segments', []))
+        mlb_search_terms = mlb_title_terms(raw_subject)
+        if raw_subject and raw_subject not in mlb_search_terms:
+            mlb_search_terms.append(raw_subject)
+        mlb_search_terms = list(dict.fromkeys(mlb_search_terms + mlb_title_terms(narration_text)))
+
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
     # タイトルと同じく、具体的な事実を先に置く。
@@ -1971,6 +2017,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             if r.get("visible", True) and r.get("text"):
                 lines.append(f"   ・{r['text']}")
         lines.append("")
+    if mlb_title_v2:
+        # 元の題の情報（日付・返信数・枠の説明）と本文を全部残す。
+        lines = ['｜'.join(mlb_search_terms), raw_subject, original_title, '', *lines]
     editorial_text = title + "\n" + "\n".join(lines)
     # 順位争いは必ずサッカー。**渡し忘れると #MLB が付く。**
     # 区分から分かることを、呼ぶ側の引数に頼らない。
@@ -2011,6 +2060,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 21秒に対して5倍で、いちばん濃い流入がそこだった。
     tags = [t for t in subject_tags(kind, morning_mode, games, morning_players,
                                    profile_path, buzz_path) if ht.present(t, editorial_text)]
+    if mlb_title_v2:
+        tags = list(dict.fromkeys(mlb_search_terms + tags))
     tags += [t for t in public_hashtags if t not in tags]
     for x in SPORTS.get(sport, SPORTS["mlb"])["tags"]:
         if x not in tags:
