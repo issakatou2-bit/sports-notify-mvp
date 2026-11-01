@@ -10,6 +10,11 @@ def readable():
     return os.environ.get('COLLESPO_SOCCER_LOOK') == 'v6' or os.environ.get('COLLESPO_SHORT_LOOK') == 'v6'
 
 
+def focus():
+    # 話している試合を大きく見せる画面。v6の上だけで動き、切替は変数。
+    return readable() and os.environ.get('COLLESPO_SOCCER_FOCUS') == 'on'
+
+
 def activate():
     # 共通のcharacters/outroはv4の配置を使う。別プロセスのMLBには影響しない。
     if v5():

@@ -52,7 +52,13 @@ def narration(data):
         if soccer_look.readable():
             segments.append(dict(kind='followup',text=text,speaker=2,caption_units=[text],meta=dict(event_id=g['id'],score_only=True)))
             goals=sorted(g['goals'],key=lambda goal:tuple(int(v) for v in (goal['minute'].split('+')+['0'])[:2]))
+            if soccer_look.focus():
+                import soccer_story_lines as flow
+                detail = flow.flow_units(g)
+                segments.append(dict(kind='followup-detail',text=''.join(detail),speaker=2,caption_units=detail,
+                    meta=dict(event_id=g['id'],details=facts.display_details(g,row),goals=goals,required=True)))
             for start in range(0,max(1,len(goals)),3):
+                if soccer_look.focus():break
                 shown=goals[start:start+3]
                 detail=[facts.goal_line(goal,g) for goal in shown] or ['得点なし。' if g['goals_complete'] else '得点経過は未取得です。']
                 segments.append(dict(kind='followup-detail',text=''.join(detail),speaker=2,caption_units=detail,
@@ -110,6 +116,12 @@ def narration(data):
         text=f"次は日本時間{at.month}月{at.day}日{at.hour}時"+(f'{at.minute}分' if at.minute else '')+f"、{names.display(upcoming['home'])}対{names.display(upcoming['away'])}。"
         segments.append(dict(kind='followup-next',text=text,speaker=2,meta=dict(row=upcoming)))
     segments.append(dict(kind='outro',text=render.r3.OUTRO_TEXT,speaker=2,meta={}))
+    if soccer_look.focus():
+        import soccer_story_lines as flow
+        for seg in segments:
+            seg['text'] = flow.caption_names(seg['text'], data['games'])
+            if 'caption_units' in seg:
+                seg['caption_units'] = [flow.caption_names(s, data['games']) for s in seg['caption_units']]
     import sanity_sources
     return sanity_sources.attach(dict(label=data['date_jst'],segments=segments,
         duration_budget=dict(limit=results.LIMIT,grace=0)), data, sport='soccer')
@@ -277,7 +289,14 @@ def shorten_required(segments, data, stage):
             seg['meta']['goals']=shown
             seg['meta']['compact_goals']=True
             units=[facts.result_line(game)]
-            units.extend(facts.goal_line(g,game) for g in shown if g['japanese_goal'])
+            import soccer_look
+            if soccer_look.focus():
+                import soccer_story_lines as flow
+                units.extend(flow.flow_units(game))
+                seg['meta']['goals'] = sorted(game['goals'],key=lambda g:tuple(int(v) for v in (g['minute'].split('+')+['0'])[:2]))
+                units = [flow.caption_names(u, [game]) for u in units]
+            else:
+                units.extend(facts.goal_line(g,game) for g in shown if g['japanese_goal'])
             seg['text']=''.join(units);seg['caption_units']=units
         # 全員の名前は結果文と結果札に残る。最後は重複する名簿を省く。
         shortened=[s for s in kept if s['kind']!='roster']

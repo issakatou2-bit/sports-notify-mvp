@@ -149,7 +149,120 @@ class Screen:
                     self.text(box[2]+10,stat_y+36,unit,30,110,role='supplement')
         return self.finish(spec)
 
+    def centered_score(self, game, y):
+        value=f"{game['score']['home']}-{game['score']['away']}"
+        box=c.measure(value,246,True)[2]
+        self.text((L+R-(box[2]-box[0]))//2,y,value,246,R-L-60,c.LIME,True)
+
+    def name_right(self, y, key, size=52):
+        # 右端をカードの内側にそろえる。長い名前は左端までで折り返す。
+        club=self.clubs[key];name=c.club_display_names.display(club)
+        box=c.measure(name,size)[2];width=c.tag_width(club,box[3]-box[1])+12+box[2]-box[0]
+        return self.name(max(100,R-28-width),y,key,R-28-100,size)
+
+    def stripe(self, y, home, away):
+        # 既存の札と同じ主色だけ。主役の試合を一目で分ける帯で、飾りは足さない。
+        d=ImageDraw.Draw(self.im)
+        for key,x0,x1 in ((home,L,(L+R)//2),(away,(L+R)//2,R)):
+            d.rectangle((x0,y,x1,y+9),fill=c.colors(self.clubs[key])[0])
+
+    def focus_lines(self, s):
+        # 材料に書いてある見どころだけ。クラブ名は札の行に任せ、ここは結論の語だけにする。
+        rows=[]
+        for r in (s.get('interest') or {}).get('reasons',[]):
+            kind=r.get('kind');text=r['text']
+            if kind=='rank':rows.append(text.rsplit('、',1)[-1])
+            elif kind=='points':rows.append('勝点で並ぶ' if r.get('gap')==0 else text)
+            elif kind in ('cl','relegation'):rows.append(text.split(' ')[0])
+            elif kind=='title':rows.append('首位争い')
+            elif kind in ('derby','h2h'):rows.append(text)
+        return rows[:3]
+
+    def mini_row(self, y, s):
+        # 次の試合は1行。名前が入らない日は両方を略称の札にそろえる。
+        def tag(key):
+            return c.tag_width(self.clubs[key],40)
+        def fits(key):
+            name=c.club_display_names.display(self.clubs[key],short=True)
+            box=c.measure(name,40)[2]
+            return tag(key)+12+box[2]-box[0]<=340
+        self.text(100,y+24,s['time'],44,130,c.LIME,True)
+        self.im.info['semantic_items'].append(s['time'])
+        if fits(s['home']) and fits(s['away']):
+            self.name(240,y+24,s['home'],340,40,short=True)
+            self.name(590,y+24,s['away'],340,40,short=True)
+            return
+        x=240
+        for i,key in enumerate((s['home'],s['away'])):
+            club=self.clubs[key]
+            c.scarf(self.im,(x,y+24,x+tag(key),y+64),club,inline=True)
+            self.im.info['semantic_items'].append(club['abbr'])
+            x+=tag(key)+18
+            if not i:
+                self.text(x,y+28,'対',30,30,c.MUTED,role='supplement');x+=48
+
+    def focus_preview(self, specs, spec):
+        import soccer_match_interest as interest
+        lead=spec.get('game_id') or (spec.get('title_focus') or {}).get('game_id')
+        hero=next((s for s in specs if s['game_id']==lead),specs[0])
+        rest=[s for s in specs if s is not hero][:3]
+        import soccer_title_v2
+        # 題の結論は表紙の見出しに出す。別の試合の場面へ持ち越さない。
+        head=(spec.get('title_focus') or {}).get('head','').split('｜')[0] if soccer_title_v2.enabled() else ''
+        title_bottom=self.lines(L,260,head,52,R-L,role='supplement') if head else 0
+        if not head:self.title('今日の注目カード' if len(specs)==1 else f'注目{len(specs)}試合')
+        body_top=max(BODY_TOP,title_bottom+16)
+        chips=self.focus_lines(hero)
+        people=[n for side in ('home','away') for n in (hero.get('jp') or {}).get(side,[])]
+        note=('日本人選手　'+'・'.join(people[:3])) if people else ''
+        player=(hero.get('interest') or {}).get('player')
+        if player and player.get('name') and interest.player_numbers(player):
+            chips.append(player['name']+' '+interest.stats_label(player)+' '+interest.player_numbers(player))
+            chips=chips[:3]
+        facts=[f for f in ((hero.get('interest') or {}).get('reasons') or []) if f.get('kind')=='previous_season']
+        extra=[row for f in facts for row in c.lines(f['text'],40,R-L-56)] if not chips else []
+        rows=len(chips)+(1 if note else 0)+len(extra)
+        card=536+(rows*70+24 if rows else 0)
+        mini=len(rest)*104
+        top=body_top+max(0,(BODY_BOTTOM-body_top-card-mini-(18 if rest else 0))//4)
+        self.panel(top,top+card);self.stripe(top,hero['home'],hero['away'])
+        self.text(100,top+36,hero['league']+'　'+hero['date'],30,R-L-56,c.MUTED,role='supplement')
+        ranks=hero.get('ranks') or {}
+        name_width=R-L-56-(170 if ranks else 0)
+        for side,y in (('home',top+100),('away',top+208)):
+            self.name(100,y,hero[side],name_width,64)
+            if side in ranks:
+                value=f"{ranks[side]}位"
+                box=c.measure(value,72)[2]
+                self.text(R-28-(box[2]-box[0]),y-6,value,72,170,c.LIME)
+        box=self.text(100,top+330,hero['time'],156,440,c.LIME,True)
+        self.text(box[2]+24,top+428,'日本時間',40,240)
+        self.im.info['semantic_items'].append(hero['time'])
+        y=top+536
+        d=ImageDraw.Draw(self.im)
+        for chip in chips:
+            d.rectangle((100,y+6,108,y+52),fill=c.LIME)
+            # 長い行だけ下限の40へ。1行に入らない語は材料側で短くする。
+            size=48 if c.measure(chip,48)[1]<=R-L-84 else 40
+            self.text(128,y+(4 if size==48 else 10),chip,size,R-L-84);y+=70
+        for row in extra:
+            self.text(100,y,row,40,R-L-56,role='supplement');y+=70
+        if note:
+            self.text(100,y+4,note,40,R-L-56,c.MUTED,role='supplement');y+=70
+        y=top+card+18
+        for s in rest:
+            self.panel(y,y+90)
+            self.mini_row(y,s)
+            y+=104
+        self.im.info['preview_body']=[L,top,R,top+card+(18+mini-14 if rest else 0)]
+        self.im.info['focus_game']=hero['game_id']
+        if self.im.info.get('unknown_club_badge'):
+            self.text(L,1438,'灰色の ? はクラブ色・略称が未確認',30,850,c.MUTED,role='supplement')
+        return self.finish(spec)
+
     def preview(self, specs, spec):
+        import soccer_look
+        if soccer_look.focus():return self.focus_preview(specs,spec)
         pages=[specs[i:i+4] for i in range(0,len(specs),4)]
         index=page_at(self.t,len(pages));shown=pages[index]
         self.title('注目試合の予告')
@@ -228,9 +341,15 @@ class Screen:
             self.im.info.update(soccer_goals=shown,compact_score=True)
             return self.finish(spec)
         self.panel(BODY_TOP,980)
-        self.name(100,440,game['home']['name_jp'],800,52)
-        self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
-        self.name(100,870,game['away']['name_jp'],800,52)
+        import soccer_look
+        if soccer_look.focus():
+            self.name(100,440,game['home']['name_jp'],800,52)
+            self.centered_score(game,590)
+            self.name_right(870,game['away']['name_jp'])
+        else:
+            self.name(100,440,game['home']['name_jp'],800,52)
+            self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
+            self.name(100,870,game['away']['name_jp'],800,52)
         if game.get('match_stats'):
             self.match_statistics(game)
             return self.finish(spec)
@@ -306,6 +425,51 @@ class Screen:
                 self.text(100,y+810 if single else y+442,soccer_stats.NOTICE,30,800,c.MUTED,role='supplement')
         return self.finish(spec)
 
+    @staticmethod
+    def goal_key(goal):
+        return goal['minute'],goal['side'],goal.get('scorer') or goal.get('athlete_id')
+
+    def running_scores(self, game):
+        # 得点の順に足した途中経過。最終スコアと合わない時は出さない。
+        count=dict(home=0,away=0);result={}
+        for g in sorted(game['goals'],key=lambda g:tuple(int(v) for v in (g['minute'].split('+')+['0'])[:2])):
+            count[g['side']]+=1
+            result[self.goal_key(g)]=f"{count['home']}-{count['away']}"
+        if len(result)!=len(game['goals']) or count!=dict(game['score']):return {}
+        return result
+
+    def focus_goals(self, game, shown, spec):
+        import soccer_result_facts as facts
+        score=self.running_scores(game)
+        rows=[]
+        for g in shown:
+            name=(facts.scorer_name(g) or g.get('scorer') or '').strip()
+            if name in ('得点者不明','不明','情報なし'):name=''
+            scorer=('OG '+name if g['own_goal'] else name) if name else 'オウンゴール' if g['own_goal'] else ''
+            scorer_rows=c.lines(scorer,48,R-306-190) if scorer else []
+            names=facts.assist_names(g)
+            assists=c.lines('A '+'・'.join(names),36,R-306-28) if names else []
+            rows.append((g,scorer_rows,assists,84+len(scorer_rows)*60+len(assists)*48))
+        total=sum(r[3]+60 for r in rows)
+        top=(BODY_TOP+BODY_BOTTOM-total)//2
+        self.panel(top,top+total)
+        y=top+30
+        d=ImageDraw.Draw(self.im)
+        for i,(g,scorer_rows,assists,height) in enumerate(rows):
+            if i:d.line((100,y-30,R-28,y-30),fill=(46,84,66),width=2)
+            self.text(100,y+12,facts.minute_text(g['minute']),72,190,c.LIME)
+            end=self.name(306,y,game[g['side']]['name_jp'],R-306-28,40)
+            for row in scorer_rows:
+                self.text(306,end+10,row,48,R-306-190);end+=60
+            for row in assists:
+                self.text(306,end+8,row,36,R-306-28,c.MUTED,role='supplement');end+=48
+            key=self.goal_key(g)
+            if key in score:
+                self.text(R-170,y+50,score[key],72,146,c.CHALK,True)
+            y+=height+60
+        self.im.info['preview_body']=[L,top,R,top+total]
+        return self.finish(spec)
+
     def goals(self, game, goals, spec):
         import soccer_result_facts as facts
         goals=sorted(goals,key=lambda g:tuple(int(v) for v in (g['minute'].split('+')+['0'])[:2]))
@@ -319,6 +483,8 @@ class Screen:
             self.text(120,616,f"{game['score']['home']}-{game['score']['away']}",246,760,c.LIME,True)
             self.name(100,870,game['away']['name_jp'],800,52)
             self.text(100,1300,'得点なし' if game['goals_complete'] else '得点経過は未取得',52,800)
+        import soccer_look
+        if shown and soccer_look.focus():return self.focus_goals(game,shown,spec)
         height=(BODY_BOTTOM-BODY_TOP)//max(1,len(shown))
         rows=[]
         size=64 if len(shown)==1 else 44

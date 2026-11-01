@@ -53,6 +53,7 @@ jobs:
       COLLESPO_SHORT_LOOK: v4
       COLLESPO_SOCCER_TITLE_V2: ${{ vars.COLLESPO_SOCCER_TITLE_V2 == 'on' && 'on' || 'off' }}
       COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v4' }}
+      COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
       COLLESPO_DUO: 'off'
       COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
     steps:

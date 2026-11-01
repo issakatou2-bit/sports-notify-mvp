@@ -303,9 +303,9 @@ def _presenter(im,t):
 
 def finish(im,t,spec):
     _body_effect(im,t)
-    source=spec.get('source','');body=lines(source,22,610)
+    source=spec.get('source','');body=lines(source,22,860 if im.info.get('v3_outro') and soccer_look.focus() else 610)
     if len(body)>2:raise ValueError('出典が2行に入りません')
-    for i,line in enumerate(body):text(im,L,1166+i*28,line,22,MUTED,width=610,role='source')
+    for i,line in enumerate(body):text(im,L,1166+i*28,line,22,MUTED,width=860 if im.info.get('v3_outro') and soccer_look.focus() else 610,role='source')
     d=ImageDraw.Draw(im);d.rectangle((0,1486,1080,1574),fill=PITCH)
     d.line((0,1488,1080,1488),fill=LIME,width=2);d.line((0,1572,1080,1572),fill=LIME,width=2)
     for yy in range(1495,1570,8):d.line((0,yy,1080,yy),fill=GRASS,width=1)

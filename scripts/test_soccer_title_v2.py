@@ -78,7 +78,7 @@ class Tests(unittest.TestCase):
         for game in data['games']:
             game['jp_by_side']={'home':[], 'away':[]}
         self.assertEqual(v2.preview_head(data)['name'],'')
-        self.assertTrue(v2.preview_head(data)['head'].startswith(('勝点差', '勝点で並ぶ')))
+        self.assertRegex(v2.preview_head(data)['head'],r'^\d+位.+対\d+位.+｜(勝点差|勝点で並ぶ)')
 
     def test_no_unconfirmed_cl_line_or_win(self):
         data=read('soccer-daily/20261025.json')
