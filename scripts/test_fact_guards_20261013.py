@@ -23,6 +23,13 @@ class TranslationTests(unittest.TestCase):
         for text in ['1番', '８番', '3.', '2', '7番。']:
             with self.subTest(text=text):
                 self.assertEqual(lr.guard_translation(EN, text), '')
+    def test_exit_is_not_leaving_the_team(self):
+        source = 'Shohei Ohtani Opens Up about the "Frustration" of the Dodger Exit'
+        self.assertEqual(lr.guard_translation(source, '大谷翔平、ドジャース退団をめぐる「フラストレーション」を語る'), '')
+        self.assertEqual(lr.guard_translation(source, '大谷翔平、ドジャースの敗退をめぐる悔しさを語る'),
+                         '大谷翔平、ドジャースの敗退をめぐる悔しさを語る')
+        moved = 'Veteran will exit Dodgers and sign with Mets'
+        self.assertEqual(lr.guard_translation(moved, 'ベテランがドジャース退団、メッツと契約'), 'ベテランがドジャース退団、メッツと契約')
     def test_real_short_number_and_rank_keep_their_meaning(self):
         self.assertEqual(lr.guard_translation('No. 1!', '1番'), '1番')
         self.assertEqual(lr.guard_translation(EN, '山本は先発3番手。'), '山本は先発3番手。')
