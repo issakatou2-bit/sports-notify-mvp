@@ -78,6 +78,60 @@ def channel_daily(yta, start, end, fetched_at):
     return out
 
 
+CONTENT_TYPES = ("shorts", "videoOnDemand", "liveStream", "unspecified")
+
+
+def registration_daily(yta, start, end, fetched_at):
+    """日単位の照会。未収録・取得失敗はゼロにせず以前の値を保持する。"""
+    out = {}
+    day = start
+    while day <= end:
+        try:
+            res = yta.reports().query(
+                ids="channel==MINE", startDate=day.isoformat(),
+                endDate=day.isoformat(), dimensions="creatorContentType",
+                metrics="subscribersGained", maxResults=10).execute()
+            cols = [c["name"] for c in res.get("columnHeaders", [])]
+            values = {}
+            for row in res.get("rows", []):
+                rec = dict(zip(cols, row))
+                kind = rec.get("creatorContentType")
+                if kind not in CONTENT_TYPES:
+                    raise ValueError("unknown creatorContentType")
+                values[kind] = rec["subscribersGained"]
+            if values:
+                out[day.isoformat()] = {
+                    "subscribersGainedByContentType": {k: values.get(k, 0) for k in CONTENT_TYPES},
+                    "registration_fetched_at": fetched_at}
+        except Exception as exc:  # noqa: BLE001
+            print(f"[info] {day} の登録内訳は未収録({type(exc).__name__})")
+        day += timedelta(days=1)
+    return out
+
+
+def engagement_daily(yta, start, end):
+    out = {}
+    for field, metrics, filters in (
+            (None, "likes", None),
+            ("subscribedViews", "views", "subscribedStatus==SUBSCRIBED")):
+        try:
+            kwargs = dict(ids="channel==MINE", startDate=start.isoformat(),
+                          endDate=end.isoformat(), dimensions="day", metrics=metrics,
+                          sort="day", maxResults=500)
+            if filters:
+                kwargs["filters"] = filters
+            res = yta.reports().query(**kwargs).execute()
+            cols = [c["name"] for c in res.get("columnHeaders", [])]
+            for row in res.get("rows", []):
+                rec = dict(zip(cols, row))
+                day = rec.get("day")
+                if day and start.isoformat() <= day <= end.isoformat():
+                    out.setdefault(day, {})[field or metrics] = rec[metrics]
+        except Exception as exc:  # noqa: BLE001
+            print(f"[info] {field or metrics} は未収録({type(exc).__name__})")
+    return out
+
+
 def merge_daily(store, rows):
     """再取得した実値だけ更新。欠測で以前の観測値を消さない。"""
     daily = store.setdefault("daily", {})
@@ -392,7 +446,11 @@ def _run() -> int:
     # 既存の曲線12回等は増やさず、日別は1回だけ。短期指定でも28日を補完。
     daily = channel_daily(yta, min(start, end - timedelta(days=28)), end, fetched_at)
     merge_daily(store, daily)
-    if daily:
+    extra = registration_daily(yta, min(start, end - timedelta(days=28)), end, fetched_at)
+    merge_daily(store, extra)
+    engagement = engagement_daily(yta, min(start, end - timedelta(days=28)), end)
+    merge_daily(store, engagement)
+    if daily or extra or engagement:
         # 動画別APIが失敗しても、取得できた日別値は失わない。
         p = pathlib.Path(args.out)
         p.parent.mkdir(parents=True, exist_ok=True)
