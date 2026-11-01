@@ -60,6 +60,11 @@ class SoccerResults(unittest.TestCase):
         self.assertEqual(players['前田大然']['status'],'substitute')
         self.assertEqual(players['鈴木彩艶']['club'],'アストンヴィラ')
 
+    def test_next_opponent_is_found_by_display_name(self):
+        import soccer_result_story as story
+        data=dict(fixed(),preview_followup=dict(games=[dict(next_game=dict(home='SV 07 Elversberg',away='Hertha BSC'))]))
+        self.assertIn('エルフェアスベルク',story.clubs_for(data))
+
     def test_final_jst_date_not_kickoff(self):
         boards,summaries=fixture()
         # ニース対リールは日本時間 9/21 2時台に終わった → 「9/20の夜（8時〜翌8時）」の回に入る
