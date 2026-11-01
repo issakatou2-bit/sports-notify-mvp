@@ -296,6 +296,8 @@ def validate_data(data):
 
 def title(data):
     if not data.get('can_make'):return ''
+    import soccer_title_v2
+    if soccer_title_v2.enabled():return soccer_title_v2.results_title(data)
     import club_display_names as names
     if data.get('preview_followup'):
         row=data['preview_followup']['games'][0];g=next(g for g in data['games'] if g['id']==row['event_id'])
@@ -309,10 +311,18 @@ def title(data):
 
 def description_lines(data):
     import club_display_names as names
+    import soccer_title_v2
+    focused = soccer_title_v2.result_focus(data) if soccer_title_v2.enabled() else None
+    if focused:
+        data = dict(data, games=[focused['game']], players=[focused['lead']] if focused['lead'] else [])
     lines=[f"{data['date_jst']}の夜〜翌朝（日本時間）に終わった欧州サッカーの試合から、日本人選手本人の結果です。"]
     lines += [f"・{p['name']}（{names.display(p['club'])}）{STATUS[p['status']]}"+ ''.join(f" / {p[k]}{unit}" for k,unit in (('goals','得点'),('assists','アシスト'),('yellow_cards','警告'),('red_cards','退場')) if p.get(k)) for p in data['players']]
     lines += ['', '出典: '+SOURCE+'。終了時刻・出場区分・個人成績・得点経過はESPN。football-data.orgのスコアを取得できた試合は照合し、不一致は除外します。',
               '出場なしは一覧のみ。クラブの勝敗を選手本人の活躍とは扱っていません。']
+    if focused:
+        game = focused['game']
+        lines[0] = f"{data['date_jst']}の夜〜翌朝（日本時間）の{names.display(game['home']['name_en'])}対{names.display(game['away']['name_en'])}の結果です。"
+        lines = [line for line in lines if not line.startswith('出場なしは一覧のみ')]
     import soccer_stats
     for game in data['games']:
         if game.get('match_stats'):lines.append(soccer_stats.commentary(game))
@@ -321,7 +331,8 @@ def description_lines(data):
         if detail:lines.append(player['name']+'：'+detail)
         label=soccer_stats.attack_label(player)
         if label:lines.append(player['name']+'：'+label+'（'+soccer_stats.NOTICE+'）')
-    lines.append('攻撃関与：コレスポ独自・攻撃面のみ。3×得点＋2×アシスト＋シュート＋枠内。加算1/3/5/8/12以上で星1/2/3/4/5、0は星なし。総合評価ではありません。FW・MFで出場30分以上を確認できた場合のみ。出場分不明・短時間・DF・GK・必要統計欠測は非表示。')
+    if not focused or any(soccer_stats.attack(p) for p in data['players']):
+        lines.append('攻撃関与：コレスポ独自・攻撃面のみ。3×得点＋2×アシスト＋シュート＋枠内。加算1/3/5/8/12以上で星1/2/3/4/5、0は星なし。総合評価ではありません。FW・MFで出場30分以上を確認できた場合のみ。出場分不明・短時間・DF・GK・必要統計欠測は非表示。')
     return lines
 
 

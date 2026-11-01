@@ -1741,6 +1741,16 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     import video_titles
     title = video_titles.public_title(title, soccer=(sport == 'soccer' or kind in (
         'soccer_race', 'soccer_week', 'soccer_results', 'soccer_voices')))
+    import soccer_title_v2
+    _title_v2_data = None
+    if soccer_title_v2.enabled() and (kind == 'soccer_results' or kind == 'daily' and sport == 'soccer'):
+        _title_v2_data = _json_or_empty(games_path)
+        if kind == 'soccer_results':
+            title = soccer_title_v2.results_title(_title_v2_data)
+        else:
+            _focus = soccer_title_v2.preview_head(_title_v2_data)
+            if _focus:
+                title = soccer_title_v2.title(_focus['head'], _focus['league'])
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
@@ -2028,6 +2038,12 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             for name in g.get("jp_players") or []:
                 if ht.present(name, editorial_text) and name not in tags:
                     tags.append(name)
+
+    if _title_v2_data is not None:
+        _full_names = soccer_title_v2.metadata_names(_title_v2_data, results=kind == 'soccer_results')
+        if _full_names:
+            lines.insert(1, '選手名：'+'・'.join(_full_names))
+            tags = _full_names+[t for t in tags if t not in _full_names]
 
     if series_main:
         try:

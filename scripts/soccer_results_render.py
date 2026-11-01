@@ -176,6 +176,10 @@ def roster_screen(t,data,meta,clubs,spec):
 
 
 def frame(t,seg,data,clubs=None):
+    import soccer_title_v2
+    if soccer_title_v2.enabled() and seg['meta'].get('title_focus_v2') and seg['kind'] in ('intro','followup'):
+        focus = soccer_title_v2.result_focus(data)
+        return soccer_title_v2.headline_frame(t, focus, clubs or resolve_clubs(data), program_spec(data))
     if seg['kind'] in ('flash-results','other-results'):
         import soccer_readable
         return soccer_readable.results_frame(t,seg,data,clubs or resolve_clubs(data),program_spec(data))
@@ -347,6 +351,9 @@ def goal_short_narration(data):
 
 def production_narration(data, *, goal_short=False):
     """速報は既存の得点導入、朝の結果は既存の注目試合導入を使う。"""
+    import soccer_title_v2
+    if soccer_title_v2.enabled() and not goal_short:
+        return __import__('host_split').adapt(soccer_title_v2.result_narration(data), 'soccer_results')
     narr = goal_short_narration(data) if goal_short else __import__('soccer_result_story').narration(data)
     narr = __import__('short_context').soccer(narr, data, readable=soccer_look.readable())
     if not goal_short and soccer_look.v5() and not any(s['kind'] in ('followup','flash-results','other-results') for s in narr['segments']):

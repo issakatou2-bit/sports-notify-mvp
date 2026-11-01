@@ -97,4 +97,7 @@ def program(data):
         for g in games:
             for side,name in (g.get('preview_name_fallbacks') or {}).items():
                 seg['text']=seg['text'].replace(name,'ホームのクラブ' if side=='home' else 'アウェーのクラブ')
+    import soccer_title_v2
+    if soccer_title_v2.enabled():
+        plan = soccer_title_v2.preview_plan(plan)
     return plan
