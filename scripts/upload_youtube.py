@@ -2134,6 +2134,7 @@ def main():
         spec = generated_topics.get(args.asset_topic)
         if not offseason_news.enabled() or not offseason_news.available(spec):
             raise ValueError('オフの話題は既定停止、または当日の公式材料がありません')
+        __import__('jp_future_series').validate_pending(spec, _json_or_empty('data/offseason_published.json'))
         narration = _json_or_empty(args.narration)
         errors = offseason_news.check(narration)
         if (not narration.get('offseason') or narration.get('offseason_sample') or errors
@@ -2291,6 +2292,8 @@ def main():
                               longform_subject=longform_subject)
     # 説明欄のクラブ名は表示名の表（帯と同じ1か所）を通す。古い書き方を残さない（Opus-32）。
     # 題は Opus-33 で同じ関数を通す。
+    if _json_or_empty(args.narration).get('offseason', {}).get('series_number'):
+        body['snippet']['description'] += '\n' + __import__('jp_future_series').DESCRIPTION
     body["snippet"]["description"] = __import__('fan_privacy').description(club_display_description(body["snippet"]["description"]))
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。

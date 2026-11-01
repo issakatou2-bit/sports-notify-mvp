@@ -325,7 +325,8 @@ def check(document):
             return ['オフの材料の種類が不明']
         if event not in rebuilt:
             return ['オフの文面・名前・区分が受信した公式記録と不一致']
-    spec = topic(evidence['kind'], evidence['events'], date.fromisoformat(evidence['day']), evidence['season'])
+    spec = (__import__('jp_future_series').topic(evidence['events'], day, evidence['season'], episode=evidence['series_number'])
+            if evidence.get('series_number') else topic(evidence['kind'], evidence['events'], day, evidence['season']))
     intros = [s.get('text') for s in document.get('segments', []) if s.get('kind') == 'intro']
     expected_intro = spec['intro']
     if document.get('offseason_sample'):
@@ -365,7 +366,11 @@ def main():
         state = json.loads(record.read_text(encoding='utf-8')) if record.exists() else {'events': []}
         state['events'] = sorted(set(state['events']) | {r['event_id'] for r in spec['offseason']['events']})
         # 当日中に材料を再取得しても、予約公開待ちのSNS用の版情報を失わない。
-        state.setdefault('topics', {})[spec['key']] = {'style': spec['style']}
+        existing = state.setdefault('topics', {}).get(spec['key'])
+        episode = spec['offseason'].get('series_number')
+        if episode and not existing and episode != __import__('jp_future_series').number(state):
+            raise ValueError('連載番号が公開成功記録と一致しません。再選定が必要です')
+        state['topics'][spec['key']] = {'style': spec['style'], **({'series_number': episode} if episode else {})}
         record.write_text(json.dumps(state, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
         return
     if args.pick:
@@ -385,12 +390,14 @@ def main():
     path.write_text(json.dumps(dict(day=str(day), topics=[], state='collecting')), encoding='utf-8')
     materials = collect(day, args.season)
     state = Path('data/offseason_published.json')
-    seen = set(json.loads(state.read_text(encoding='utf-8'))['events']) if state.exists() else set()
+    history = json.loads(state.read_text(encoding='utf-8')) if state.exists() else {'events': []}
+    seen = set(history['events'])
     topics = []
     for kind, rows in materials.items():
         pending = [r for r in rows if r['event_id'] not in seen]
         topics.extend([spec for spec in award_topics(rows, day, args.season)
                        if not any(r['event_id'] in seen for r in spec['offseason']['events'])] if kind == 'awards'
+                      else [__import__('jp_future_series').topic(pending, day, args.season, state=history)] if kind == 'transactions'
                       else [topic(kind, pending, day, args.season)])
     path.write_text(json.dumps(dict(day=str(day), state='ready', topics=[t for t in topics if t]),
                                ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
