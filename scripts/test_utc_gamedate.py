@@ -147,7 +147,7 @@ class JapaneseMaterialDate(unittest.TestCase):
                 return datetime(2026, 10, 29, 9, tzinfo=JST).astimezone(tz)
         assets = dict(assets=dict(sample=dict(video_id='example', published_at='2026-10-28T23:30:00Z')))
         with patch.object(healthcheck, 'load', return_value=assets), patch.object(healthcheck, 'datetime', Clock), \
-                patch('asset_policy.topic_catalog', return_value=['unused']), patch('asset_policy.paused', return_value=False):
+                patch('asset_policy.topic_catalog', return_value={'unused': {}}), patch('asset_policy.selectable', return_value=True):
             text, errors = healthcheck.check_assets(max_gap_days=0)
         self.assertEqual(errors, 0, text)
         self.assertIn('0日前', text)

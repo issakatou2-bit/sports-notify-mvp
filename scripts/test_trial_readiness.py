@@ -169,6 +169,7 @@ class PlayerTests(unittest.TestCase):
                 patch.object(next_asset, 'posted_today', return_value=0), \
                 patch.object(players, 'load', return_value=({'player_story':{'day':row}}, {})), \
                 patch('ui_voice_stock.prioritize', side_effect=lambda x:x), \
+                patch('asset_policy.selectable', return_value=True), \
                 patch('sys.stdout', new_callable=io.StringIO) as output:
             next_asset.pick_season(args)
         self.assertEqual(output.getvalue().strip(), 'season_player_808967')
