@@ -28,6 +28,39 @@ def original(name):
 
 
 class Tests(unittest.TestCase):
+    def test_focus_and_title_switches_keep_match_flow(self):
+        import soccer_story_lines as flow
+        data = read('soccer-results/run-40249272204.json')
+        with patch.dict(os.environ, dict(COLLESPO_SOCCER_LOOK='v6', COLLESPO_SHORT_LOOK='v4', COLLESPO_SOCCER_FOCUS='on', COLLESPO_SOCCER_TITLE_V2='on')):
+            game = v2.result_focus(data)['game']
+            narr = v2.result_narration(data)
+            details = [s for s in narr['segments'] if s['kind']=='followup-detail']
+            self.assertEqual(len(details), 1)
+            expected = [flow.caption_names(u, [game]) for u in flow.flow_units(game)]
+            self.assertTrue(details[0]['text'].startswith(''.join(expected)))
+            self.assertEqual(details[0]['caption_units'][:len(expected)], expected)
+            self.assertEqual(len(details[0]['meta']['goals']), len(game['goals']))
+
+    def test_focus_off_keeps_title_v2_narration(self):
+        before = original('soccer_title_v2')
+        data = read('soccer-results/run-40249272204.json')
+        with patch.dict(os.environ, dict(COLLESPO_SOCCER_FOCUS='off', COLLESPO_SOCCER_TITLE_V2='on')):
+            self.assertEqual(v2.result_narration(data), before.result_narration(data))
+
+    def test_focus_keeps_appearance_without_an_empty_stats_card(self):
+        data=read('soccer-results/run-40249272204.json')
+        for game in data['games']:
+            for person in game['players']:
+                for field in ('shots','on_target','saves','conceded'):person.pop(field,None)
+        for person in data['players']:
+            for field in ('shots','on_target','saves','conceded'):person.pop(field,None)
+        with patch.dict(os.environ, dict(COLLESPO_SOCCER_LOOK='v6',COLLESPO_SHORT_LOOK='v4',COLLESPO_SOCCER_FOCUS='on')):
+            focus=v2.result_focus(data)
+            narr=v2.result_narration(data)
+            self.assertFalse(any(s['kind']=='player-stats' for s in narr['segments']))
+            import soccer_stats
+            self.assertIn(soccer_stats.result_narration(focus['lead']), ''.join(s['text'] for s in narr['segments']))
+
     def test_explicit_names_and_ambiguous_names(self):
         for full, short in [('久保建英','久保'),('三笘薫','三笘'),('鎌田大地','鎌田'),('遠藤航','遠藤')]:
             self.assertEqual(v2.player_name(full), short)

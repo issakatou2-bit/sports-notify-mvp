@@ -156,7 +156,7 @@ def build(boards,summaries,target_date,football=None,roster=None,preview=None):
             seen.add(id)
             sides={c['homeAway']:c for c in comp.get('competitors',[])}
             if not all(s in sides for s in ('home','away')):continue
-            candidates={s:[p for p in roster if p['league']==code and p['match'] in ne.normalize_club(sides[s]['team']['displayName'])] for s in sides}
+            candidates={s:[p for p in roster if p['league']==code and ne.club_token_in(p['match'],ne.normalize_club(sides[s]['team']['displayName']))] for s in sides}
             # Club membership in the identity roster can lag transfers. The final
             # ESPN squad establishes the actual club; search Japanese identities on both sides.
             if not any(candidates.values()) and id not in summaries:continue

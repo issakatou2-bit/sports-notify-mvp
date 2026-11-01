@@ -25,7 +25,7 @@ def completed(event):
 
 def relevant(event, code):
     names = [results.ne.normalize_club(c['team']['displayName']) for c in event['competitions'][0]['competitors']]
-    return any(p['league'] == code and any(p['match'] in name for name in names) for p in results.ne.JP_PLAYERS_SOCCER)
+    return any(p['league'] == code and any(results.ne.club_token_in(p['match'], name) for name in names) for p in results.ne.JP_PLAYERS_SOCCER)
 
 
 def watch_delay(events, now):

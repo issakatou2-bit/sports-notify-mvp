@@ -203,7 +203,15 @@ def result_narration(data):
     pages = math.ceil(len(goals)/3)
     sizes = [len(goals)//pages+(i<len(goals)%pages) for i in range(pages)] if pages else []
     start = 0
-    for count in sizes:
+    import soccer_look
+    if soccer_look.focus():
+        import soccer_story_lines as flow
+        row = next((r for r in (data.get('preview_followup') or {}).get('games', []) if str(r['event_id'])==str(g['id'])), {})
+        units = flow.flow_units(g)
+        add('followup-detail', ''.join(units), goals=goals,
+            details=facts.display_details(g, row), required=True)
+        segs[-1]['caption_units'] = units
+    for count in ([] if soccer_look.focus() else sizes):
         shown = goals[start:start+count]
         start += count
         row = next((r for r in (data.get('preview_followup') or {}).get('games', []) if str(r['event_id'])==str(g['id'])), {})
@@ -211,13 +219,25 @@ def result_narration(data):
             goals=shown, details=facts.display_details(g, row), required=True)
     if p:
         index = [x for x in g['players'] if x['status']!='none'].index(p)
-        add('player-stats', stats.result_narration(p), start=index, count=1)
+        line=stats.result_narration(p)
+        if soccer_look.focus() and not stats.personal_line(p):
+            # 個人成績の追加材料がない日は、大きな空欄の成績札を作らない。
+            # 出場と得点の文は経過の字幕へ残す。
+            segs[-1]['text']+=line
+            segs[-1].setdefault('caption_units',[]).append(line)
+        else:
+            add('player-stats', line, start=index, count=1)
     add('team-stats', stats.commentary(g))
     row = next((r for r in (data.get('preview_followup') or {}).get('games', []) if str(r['event_id'])==str(g['id'])), {})
     if row.get('rank_changes'):
         changes = row['rank_changes']
         add('followup-change', ''.join(f"{c['club']}の順位は{c['before']}位から{c['after']}位。" for c in changes), rows=changes)
     segs.append(dict(kind='outro', text=r3.OUTRO_TEXT, speaker=2, meta={}))
+    if soccer_look.focus():
+        for seg in segs:
+            seg['text'] = flow.caption_names(seg['text'], [g])
+            if 'caption_units' in seg:
+                seg['caption_units'] = [flow.caption_names(u, [g]) for u in seg['caption_units']]
     narr = sanity_sources.attach(dict(label=data['date_jst'], title=results_title(data), segments=segs,
         duration_budget=dict(limit=60, grace=0), soccer_title_v2={k:focus[k] for k in ('head','subject','score','game_id','name')}), data, sport='soccer')
     # 元の3情報・尺ゲートは描画時も通す。材料不足を他試合の羅列で埋めない。
