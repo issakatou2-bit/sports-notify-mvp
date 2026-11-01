@@ -26,6 +26,7 @@ import ps_offseason
 
 # 材料を持つファイル。増えるときはここだけに足す。
 SOURCES = (
+    "build/jp_asset_topics.json",  # 日本人の比較・所属球団（jp_assets.py）
     "data/venue_topics.json",   # 球場 (venue_topics.py)
     "data/team_topics.json",    # 球団 (team_topics.py)
     "data/rare_topics.json",    # 名前のある指標 (rare_topics.py)

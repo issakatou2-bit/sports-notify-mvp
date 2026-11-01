@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 import urllib.error
@@ -81,11 +82,12 @@ class Check(unittest.TestCase):
     def test_cache_and_request_spacing(self):
         with tempfile.TemporaryDirectory() as td:
             f=t.Fetcher(td)
-            with patch.object(t.urllib.request,'urlopen',side_effect=lambda *a,**kw:io.BytesIO(json.dumps({'events':EVENTS}).encode())) as get,patch.object(t.time,'sleep') as sleep:
+            # 実際のJSON保存時間やPC負荷で、必要な待機時間は短くなる。時計を固定して間隔を検査する。
+            with patch.object(t.urllib.request,'urlopen',side_effect=lambda *a,**kw:io.BytesIO(json.dumps({'events':EVENTS}).encode())) as get,patch.object(t.time,'sleep') as sleep,patch.object(t.time,'monotonic',side_effect=[100,100.05,100.05]):
                 self.assertEqual(f.get(('4328','2026-09-19'))[1],'fetched')
                 self.assertEqual(f.get(('4328','2026-09-19'))[1],'cached')
                 f.get(('4328','2026-09-20'))
                 self.assertEqual(get.call_count,2);self.assertGreater(sleep.call_args.args[0],2)
 
 
-if __name__=='__main__':unittest.main(argv=[__file__])
+if __name__=='__main__':unittest.main(argv=[sys.argv[0]])

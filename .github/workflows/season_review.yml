@@ -112,6 +112,7 @@ jobs:
       - name: Pick today's topics
         id: pick
         run: |
+          python scripts/jp_assets.py --out build/jp_asset_topics.json
           T="$(python scripts/next_asset.py --season "${{ inputs.count || '4' }}")"
           echo "topics=$T" >> "$GITHUB_OUTPUT"
           echo "きょうのシーズンまとめ: ${T:-なし}" | tee -a "$GITHUB_STEP_SUMMARY"
@@ -204,6 +205,7 @@ jobs:
             data/roster_stats.json
             notable_games.json
             archive/*.json
+            build/jp_asset_topics.json
             build/narr_*.json
             data/season_topics.json
             build/asset/*.mp4
