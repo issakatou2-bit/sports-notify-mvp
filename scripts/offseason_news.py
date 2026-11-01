@@ -239,12 +239,12 @@ def topic(kind, rows, day, season=2026):
     if not rows:
         return None
     digest = hashlib.sha256('|'.join(sorted(r['event_id'] for r in rows)).encode()).hexdigest()[:12]
-    title = {'schedule': 'MLBオフの1週間の予定', 'awards': f'{season}年のMLB公式表彰',
+    title = {'schedule': 'MLBオフの主な予定', 'awards': f'{season}年のMLB公式表彰',
              'transactions': 'MLB公式に記録された選手の動き'}[kind]
     lead = next((r.get('name') for r in rows if r.get('japanese')), None)
     if lead:
         title = lead + 'と' + title
-    intro = {'schedule': 'この先1週間のMLBオフの予定です。日付はすべてアメリカ東部の日付でお伝えします。',
+    intro = {'schedule': 'この先のMLBオフの主な予定です。日付はすべてアメリカ東部の日付でお伝えします。',
              'awards': f'{season}年のMLBの表彰です。MLB公式の受賞記録からお伝えします。',
              'transactions': 'MLB公式の取引記録に載った選手の動きです。FA宣言とFA契約、トレードを分けてお伝えします。'}[kind]
     return dict(key=f'offseason_{kind}_{season}_{digest}', label=title, heading=title,
